@@ -1,5 +1,3 @@
-set(proj ITK)
-
 include(ExternalProject)
 
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")
@@ -14,6 +12,8 @@ if(CMAKE_BUILD_TYPE)
   set(build_type "${CMAKE_BUILD_TYPE}")
 endif() 
 
+set(proj ITK)
+
 ExternalProject_Add(${proj}
   LIST_SEPARATOR ${sep}
   CVS_REPOSITORY ":pserver:anonymous:insight@public.kitware.com:/cvsroot/Insight"                                                          
@@ -27,7 +27,58 @@ ExternalProject_Add(${proj}
     -DBUILD_TESTING:BOOL=${testing}
     -DITK_USE_REVIEW:BOOL=ON
     -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
-)  
+)
+
+set(proj tclap)
+
+ExternalProject_Add(${proj}
+  SVN_REPOSITORY "http://svn.slicer.org/Slicer3/trunk/Libs/tclap"
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
+    -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
+    -DBUILD_TESTING:BOOL=${testing}
+)
+
+set(proj ModuleDescriptionParser)
+ 
+ExternalProject_Add(${proj}
+  SVN_REPOSITORY 
+    "http://svn.slicer.org/Slicer3/trunk/Libs/ModuleDescriptionParser"
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
+    -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
+    -DBUILD_TESTING:BOOL=${testing}
+    -DITK_DIR:PATH=${prefix}/lib/InsightToolkit
+  DEPENDS
+    "ITK"
+)
+
+set(proj GenerateCLP)
+ 
+ExternalProject_Add(${proj}
+  SVN_REPOSITORY 
+    "http://svn.slicer.org/Slicer3/trunk/Libs/GenerateCLP"
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
+    -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
+    -DBUILD_TESTING:BOOL=${testing}
+    -DITK_DIR:PATH=${prefix}/lib/InsightToolkit
+    -DTCLAP_DIR:PATH=${prefix}/lib/tclap
+    -DModuleDescriptionParser_DIR:PATH=${prefix}/lib/ModuleDescriptionParser
+  DEPENDS
+    "ITK"
+    "tclap"
+    "ModuleDescriptionParser"
+)
 
 set(proj TubeTK-inner)
 
@@ -37,10 +88,12 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
-    -Ditk-based_USE_SUPERBUILD:BOOL=FALSE
+    -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
     -DITK_DIR:PATH=${prefix}/lib/InsightToolkit
+    -DGenerateCLP_DIR:PATH=${prefix}/lib/GenerateCLP
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
   BINARY_DIR ${CMAKE_BINARY_DIR}/CMakeExternals/Build/TubeTK-inner
   DEPENDS
     "ITK"
+    "GenerateCLP"
 )

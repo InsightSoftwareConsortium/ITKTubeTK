@@ -21,3 +21,7 @@ else(ITK_FOUND)
     "Cannot build TubeTK without ITK.  Please set ITK_DIR.")
 endif(ITK_FOUND)
 
+install(FILES README.txt
+  DESTINATION doc
+)
+
