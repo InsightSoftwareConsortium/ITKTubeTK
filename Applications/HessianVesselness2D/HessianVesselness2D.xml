@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Filtering</category>
+  <title>Hessian Vesselness 2D</title>
+  <description>Compute vesselness score of an image using Frangi's method.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>Patrick Reynolds</contributor>
+<acknowledgements>This work was funded by USC:EXPOSE and is an adaptation of Hua Yang's work.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Blurred Volume</description>
+    </image>
+    <double>
+      <name>timeStep</name>
+      <label>Time Step</label>
+      <description>Time Step.</description>
+      <longflag>timestep</longflag>
+      <default>0.05</default>
+    </double>
+    <double>
+      <name>minSigma</name>
+      <label>Min Sigma</label>
+      <description>Minimum sigma scale</description>
+      <longflag>min</longflag>
+      <default>1.0</default>
+    </double>
+    <double>
+      <name>maxSigma</name>
+      <label>Max Sigma</label>
+      <description>Maximum sigma scale</description>
+      <longflag>max</longflag>
+      <default>1.0</default>
+    </double>
+    <integer>
+      <name>numSigmaSteps</name>
+      <label>Num Sigma Steps</label>
+      <description>Number of sigma steps</description>
+      <longflag>steps</longflag>
+      <default>1</default>
+    </integer>
+    <integer>
+      <name>numIterations</name>
+      <label>Num Iterations</label>
+      <description>Number of iterations</description>
+      <longflag>iterations</longflag>
+      <default>1</default>
+    </integer>
+    <integer>
+      <name>recalculateVesselness</name>
+      <label>Recalculate Vesselness</label>
+      <flag>r</flag>
+      <longflag>recalculate</longflag>
+      <description>
+        How many iterations do we recalculate vesselness.
+      </description>
+      <default>100</default>
+    </integer>
+    <double>
+      <name>beta</name>
+      <label>beta</label>
+      <flag>b</flag>
+      <longflag>beta</longflag>
+      <description>How sensitive the filter is to blobness</description>
+      <default>0.5</default>
+    </double>
+    <double>
+      <name>gamma</name>
+      <label>gamma</label>
+      <flag>g</flag>
+      <longflag>gamma</longflag>
+      <description>
+        How sensitive the filter is to second order structureness.
+      </description>
+      <default>0.5</default>
+    </double>
+    <double>
+      <name>epsilon</name>
+      <label>Epsilon</label>
+      <flag>e</flag>
+      <longflag>epsilon</longflag>
+      <description>Our epsilon value.</description>
+      <default>0.01</default>
+    </double>
+    <double>
+      <name>omega</name>
+      <label>Omega</label>
+      <flag>w</flag>
+      <longflag>omega</longflag>
+      <description>Our Omega value.</description>
+      <default>25.0</default>
+    </double>
+    <double>
+      <name>sensitivity</name>
+      <label>Sensitivity</label>
+      <flag>s</flag>
+      <longflag>sensitivity</longflag>
+      <description>How Sensitive the filter is.</description>
+      <default>5.0</default>
+    </double>
+        
+  </parameters>
+
+</executable>
