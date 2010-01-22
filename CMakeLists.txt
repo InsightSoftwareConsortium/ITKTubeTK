@@ -1,3 +1,4 @@
+project(TubeTK)
 #-----------------------------------------------------------------------------
 # Require CMake 2.8 for the superbuild functionality
 cmake_minimum_required(VERSION 2.8)
