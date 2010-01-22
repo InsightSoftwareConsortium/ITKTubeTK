@@ -22,6 +22,10 @@ include(${USE_ITK_FILE})
 find_package(GenerateCLP REQUIRED)
 include(${GenerateCLP_USE_FILE})
 
+include_directories(
+  ${TubeTK_SOURCE_DIR}/Base/Preprocessing
+)
+
 set ( HessianVesselness2D_SOURCE 
 HessianVesselness2D.cxx
 )

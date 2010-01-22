@@ -2,6 +2,8 @@
 # Require CMake 2.8 for the superbuild functionality
 cmake_minimum_required(VERSION 2.8)
 
+project(TubeTK)
+
 #-----------------------------------------------------------------------------
 # Superbuild is used by default
 option(TubeTK_USE_SUPERBUILD
@@ -21,6 +23,7 @@ else(ITK_FOUND)
     "Cannot build TubeTK without ITK.  Please set ITK_DIR.")
 endif(ITK_FOUND)
 
+add_subdirectory(Base)
 add_subdirectory(Applications)
 
 install(FILES README.txt
