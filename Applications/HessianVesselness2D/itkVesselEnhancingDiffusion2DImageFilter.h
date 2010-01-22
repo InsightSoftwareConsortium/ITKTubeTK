@@ -1,12 +1,3 @@
-/*=========================================================================
-
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkVesselEnhancingDiffusion2DImageFilter.h,v $
-  Language:  C++
-  Date:      $Date: 2008/12/30 12:32:29 $
-  Version:   $Revision: 1.1 $
-
-=========================================================================*/
 #ifndef __itkVesselEnhancingDiffusion2DImageFilter_h
 #define __itkVesselEnhancingDiffusion2DImageFilter_h
 
@@ -16,14 +7,14 @@
 namespace itk
 {
 
-/** \class VesselEnhancingDiffusion3DImageFilter
+/** \class VesselEnhancingDiffusion2DImageFilter
  *
  * Complete rewrite of previous versions, only using itk/vnl routines
  * for derivatives, eigensystem calculations and diffusion. Internally,
  * the input image image is converted to internalprecision (float) for
  * calculation, and converted back when returning the results.
  *
- * Uses simple forward Euler scheme (explicit) with 3x3x3 stencil,
+ * Uses simple forward Euler scheme (explicit) with 3x3 stencil,
  * see eg phd of Joachim Weickert for theory and implementation regarding
  * the construction of this discretization scheme. See 'Vessel Enhancing
  * Diffusion', Manniesing, media 2006, for information regarding the 
@@ -58,10 +49,6 @@ namespace itk
  * email: r.manniesing@erasmusmc.nl
  *
  */
-
- 
-
-
 template <class PixelType = short int, unsigned int Dimension = 2>
 class ITK_EXPORT VesselEnhancingDiffusion2DImageFilter : 
     public ImageToImageFilter<Image<PixelType, Dimension> ,

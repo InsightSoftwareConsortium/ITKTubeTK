@@ -1,12 +1,3 @@
-/*=========================================================================
-
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkVesselEnhancingDiffusion2DImageFilter.txx,v $
-  Language:  C++
-  Date:      $Date: 2009/01/09 11:15:27 $
-  Version:   $Revision: 1.2 $
-
-=========================================================================*/
 #ifndef __itkVesselEnhancingDiffusion2DImageFilter_txx
 #define __itkVesselEnhancingDiffusion2DImageFilter_txx
 #include "itkVesselEnhancingDiffusion2DImageFilter.h"
