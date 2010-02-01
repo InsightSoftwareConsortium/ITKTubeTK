@@ -137,8 +137,6 @@ public:
   virtual void SaveOutput(const char * filename);
   virtual void ShowProgress(float);
   virtual void ShowStatus(const char * text);
-  virtual void ShowSpatialFunctionControl( void );
-  virtual void HideSpatialFunctionControl( void );
   virtual void Execute(void);
   virtual void SetSigma( RealType );
 
