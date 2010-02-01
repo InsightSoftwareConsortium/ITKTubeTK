@@ -1,12 +1,12 @@
 set(TubeTK_Base_VesselSegmentation_H_Files
-  itkCurves2DImageFilter.h
+  tubeCurves2DImageFilter.h
 )
 
 set(TubeTK_Base_VesselSegmentation_TXX_Files
 )
 
 set(TubeTK_Base_VesselSegmentation_CXX_Files
-  itkCurves2DImageFilter.cxx
+  tubeCurves2DImageFilter.cxx
 )
 
 add_library( TubeTKVesselSegmentation 

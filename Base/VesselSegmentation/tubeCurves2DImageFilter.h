@@ -27,7 +27,7 @@
 #define FRUSTUM_FUNCTION
 
 
-namespace itk
+namespace tube
 {
 
 class Curves2DImageFilter
@@ -186,6 +186,6 @@ protected:
 
 };
 
-} // end namespace itk
+} // end namespace tube
 
 #endif

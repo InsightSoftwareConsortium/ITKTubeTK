@@ -19,10 +19,10 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkCurves2DImageFilter.h"
+#include "tubeCurves2DImageFilter.h"
 #include "itkMinimumMaximumImageCalculator.h"
 
-namespace itk
+namespace tube
 {
 
 /************************************
@@ -399,4 +399,4 @@ Curves2DImageFilter
 
 }
 
-} // end namespace itk
+} // end namespace tube
