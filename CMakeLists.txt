@@ -12,8 +12,9 @@ option(TubeTK_USE_SUPERBUILD
   ON)
 
 if(TubeTK_USE_SUPERBUILD)
-  option(TubeTK_SUPERBUILD_ITK "Build ITK via SuperBuild." ON)
-  if(NOT TubeTK_SUPERBUILD_ITK)
+
+  option(USE_SYSTEM_ITK "Exclude ITK from SuperBuild and use an existing build instead." OFF)
+  if(USE_SYSTEM_ITK)
     find_package(ITK)
     if(ITK_FOUND)
       include(${ITK_USE_FILE})
@@ -21,23 +22,35 @@ if(TubeTK_USE_SUPERBUILD)
       message(FATAL_ERROR 
         "Cannot build TubeTK without ITK.  Please set ITK_DIR.")
     endif(ITK_FOUND)
-  endif(NOT TubeTK_SUPERBUILD_ITK)
+  endif(USE_SYSTEM_ITK)
   include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
   return()
-endif(TubeTK_USE_SUPERBUILD)
 
-find_package(ITK)
-if(ITK_FOUND)
-  include(${ITK_USE_FILE})
-else(ITK_FOUND)
-  message(FATAL_ERROR 
-    "Cannot build TubeTK without ITK.  Please set ITK_DIR.")
-endif(ITK_FOUND)
+else(TubeTK_USE_SUPERBUILD)
+
+  find_package(ITK)
+  if(ITK_FOUND)
+    include(${ITK_USE_FILE})
+  else(ITK_FOUND)
+    message(FATAL_ERROR 
+      "Cannot build TubeTK without ITK.  Please set ITK_DIR.")
+  endif(ITK_FOUND)
+
+  find_package(GenerateCLP)
+  if(GenerateCLP_FOUND)
+    include(${GenerateCLP_USE_FILE})
+  else(GenerateCLP_FOUND)
+    message(FATAL_ERROR 
+      "Cannot build TubeTK without GenerateCLP.  Please set GenerateCLP_DIR.")
+  endif(GenerateCLP_FOUND)
+
+endif(TubeTK_USE_SUPERBUILD)
 
 add_subdirectory(Base)
 add_subdirectory(Applications)
 
-install(FILES README.txt
+install(
+  FILES README.txt
   DESTINATION doc
 )
 
