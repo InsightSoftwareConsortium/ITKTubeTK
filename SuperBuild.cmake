@@ -12,7 +12,7 @@ if(CMAKE_BUILD_TYPE)
   set(build_type "${CMAKE_BUILD_TYPE}")
 endif() 
 
-if(TubeTK_SUPERBUILD_ITK)
+if(NOT USE_SYSTEM_ITK)
 
 set(proj ITK)
 
@@ -33,7 +33,7 @@ ExternalProject_Add(${proj}
 
 #SET( ITK_DIR ${prefix}/lib/InsightToolkit )
 
-endif(TubeTK_SUPERBUILD_ITK)
+endif(NOT USE_SYSTEM_ITK)
 
 set(proj tclap)
 
@@ -50,7 +50,7 @@ ExternalProject_Add(${proj}
 
 set(proj ModuleDescriptionParser)
  
-if(TubeTK_SUPERBUILD_ITK)
+if(NOT USE_SYSTEM_ITK)
   ExternalProject_Add(${proj}
     SVN_REPOSITORY 
       "http://svn.slicer.org/Slicer3/trunk/Libs/ModuleDescriptionParser"
@@ -65,7 +65,7 @@ if(TubeTK_SUPERBUILD_ITK)
     DEPENDS
       "ITK"
   )
-else(TubeTK_SUPERBUILD_ITK)
+else(NOT USE_SYSTEM_ITK)
   ExternalProject_Add(${proj}
     SVN_REPOSITORY 
       "http://svn.slicer.org/Slicer3/trunk/Libs/ModuleDescriptionParser"
@@ -78,7 +78,7 @@ else(TubeTK_SUPERBUILD_ITK)
       -DBUILD_TESTING:BOOL=${testing}
       -DITK_DIR:PATH=${ITK_DIR}
   )
-endif(TubeTK_SUPERBUILD_ITK)
+endif(NOT USE_SYSTEM_ITK)
 
 set(proj GenerateCLP)
  
