@@ -48,18 +48,18 @@ IF( TubeTK_USE_KWSTYLE )
   ENDIF( KWSTYLE_USE_MSVC_FORMAT )
 
   CONFIGURE_FILE( ${TubeTK_SOURCE_DIR}/KWStyle/TubeTK.kws.xml.in
-                  ${TubeTK_BINARY_DIR}/TubeTK.kws.xml )
+                  ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml )
 
   CONFIGURE_FILE( ${TubeTK_SOURCE_DIR}/KWStyle/TubeTKFiles.txt.in
-                  ${TubeTK_BINARY_DIR}/TubeTKFiles.txt )
+                  ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt )
 
   CONFIGURE_FILE( ${TubeTK_SOURCE_DIR}/KWStyle/TubeTKOverwrite.txt.in
-                  ${TubeTK_BINARY_DIR}/TubeTKOverwrite.txt )
+                  ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt )
 
   ADD_CUSTOM_COMMAND( 
     OUTPUT ${TubeTK_BINARY_DIR}/KWStyleReport.txt
     COMMAND ${KWSTYLE_EXECUTABLE}
-    ARGS    -xml ${TubeTK_BINARY_DIR}/TubeTK.kws.xml -o ${TubeTK_SOURCE_DIR}/KWStyle/TubeTKOverwrite.txt ${KWSTYLE_ARGUMENTS} -D ${TubeTK_BINARY_DIR}/TubeTKFiles.txt
+    ARGS    -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt ${KWSTYLE_ARGUMENTS} -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt
     COMMENT "Coding Style Checker" )
   ADD_CUSTOM_TARGET( StyleCheck DEPENDS ${TubeTK_BINARY_DIR}/KWStyleReport.txt )
 ENDIF( TubeTK_USE_KWSTYLE )
@@ -68,7 +68,9 @@ ENDIF( TubeTK_USE_KWSTYLE )
 # MSVC setup
 IF( WIN32 )
   ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS )
-  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP" )
+  IF( NOT CMAKE_FIRST_PASS_COMPLETED )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP" CACHE STRING "Flags used by all build types" FORCE )
+  ENDIF( NOT CMAKE_FIRST_PASS_COMPLETED )
   OPTION( DISABLE_MSVC8_DEPRECATED_WARNINGS 
          "Disable Visual Studio 8 deprecated warnings" ON )
   MARK_AS_ADVANCED( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )  
@@ -80,21 +82,30 @@ ENDIF( WIN32 )
 #-----------------------------------------------------------------------------
 # Mac setup
 IF( APPLE )
- SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common" )
- SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common" )
+  IF( NOT CMAKE_FIRST_PASS_COMPLETED )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common" CACHE STRING "Flags used by all build types" FORCE )
+    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common" CACHE STRING "Flags used by all build types" FORCE )
+  ENDIF( NOT CMAKE_FIRST_PASS_COMPLETED )
 ENDIF( APPLE )
 
 #-----------------------------------------------------------------------------
 # Linux setup
 IF( UNIX )
-  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing" )
-  SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing" )
-  IF( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
-    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" )
-  ENDIF( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+  IF( NOT CMAKE_FIRST_PASS_COMPLETED )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing" CACHE STRING "Flags used by all build types" FORCE ) 
+    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing" CACHE STRING "Flags used by all build types" FORCE )
+    IF( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+      SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" CACHE STRING "Flags used by all build types" FORCE )
+      SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" CACHE STRING "Flags used by all build types" FORCE )
+    ENDIF( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+  ENDIF( NOT CMAKE_FIRST_PASS_COMPLETED )
 ENDIF( UNIX ) 
 
+#-----------------------------------------------------------------------------
+# Indicate that this cmakelists.txt file has already been parsed once.
+# Keeps append commands from having an effect every time cmake is run.
+SET( CMAKE_FIRST_PASS_COMPLETED ON CACHE BOOL "Modify the cache vars only on first pass thru cmake file" FORCE )
+MARK_AS_ADVANCED( CMAKE_FIRST_PASS_COMPLETED )
 
 #-----------------------------------------------------------------------------
 # Superbuild setup
