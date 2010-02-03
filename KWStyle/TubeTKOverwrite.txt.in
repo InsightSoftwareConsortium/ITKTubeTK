@@ -1,0 +1,4 @@
+.*\.h Namespace Disable
+.*\.cxx Namespace Disable
+.*\.txx Namespace Disable
+

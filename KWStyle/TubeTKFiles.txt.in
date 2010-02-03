@@ -1,0 +1,13 @@
+@TubeTK_SOURCE_DIR@/Applications/Curves2DExtractor/*.h [R]
+@TubeTK_SOURCE_DIR@/Applications/Curves2DExtractor/*.cxx [R]
+@TubeTK_SOURCE_DIR@/Applications/Hessianvesselness2D/*.h [R]
+@TubeTK_SOURCE_DIR@/Applications/Hessianvesselness2D/*.cxx [R]
+@TubeTK_SOURCE_DIR@/Base/DataStructures/*.h [R]
+@TubeTK_SOURCE_DIR@/Base/DataStructures/*.cxx [R]
+@TubeTK_SOURCE_DIR@/Base/DataStructures/Testing/*.h [R]
+@TubeTK_SOURCE_DIR@/Base/DataStructures/Testing/*.cxx [R]
+@TubeTK_SOURCE_DIR@/Base/Preprocessing/*.h [R]
+@TubeTK_SOURCE_DIR@/Base/Preprocessing/*.cxx [R]
+@TubeTK_SOURCE_DIR@/Base/VesselSegmentation/*.h [R]
+@TubeTK_SOURCE_DIR@/Base/VesselSegmentation/*.cxx [R]
+
