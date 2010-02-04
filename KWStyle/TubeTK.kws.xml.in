@@ -3,13 +3,16 @@
 <LineLength>100</LineLength>
 <DeclarationOrder>0,1,2</DeclarationOrder>
 <Typedefs>[A-Z]</Typedefs>
-<InternalVariables>m_[A-Z]</InternalVariables>
+<InternalVariables>
+  <regex>m_[A-Z]</regex>
+  <alignment>m_[A-Z]</alignment>
+</InternalVariables>
 <SemicolonSpace>0</SemicolonSpace>
 <EndOfFileNewLine>1</EndOfFileNewLine>
 <Tabs>1</Tabs>
 <Spaces>3</Spaces>
 <Comments>/**, *, */,true</Comments>
-<Header>"@TubeTK_SOURCE_DIR@/KWStyle/Headers",false,true</Header>
+<Header>"@TubeTK_SOURCE_DIR@/KWStyle/Headers/TubeTKHeader.h",false,true</Header>
 <Indent>SPACE,2,true,true</Indent>
 <Namespace>tube</Namespace>
 <NameOfClass>[NameOfClass],tube</NameOfClass>

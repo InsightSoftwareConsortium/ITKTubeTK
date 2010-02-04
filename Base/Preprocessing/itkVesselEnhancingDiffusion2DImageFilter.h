@@ -59,7 +59,7 @@ public:
 
     typedef float                                           Precision;
     typedef Image<PixelType, Dimension>                     ImageType;
-    typedef Image<Precision,Dimension>                      PrecisionImageType;
+    typedef Image<Precision, Dimension>                     PrecisionImageType;
 
     typedef VesselEnhancingDiffusion2DImageFilter           Self;
     typedef ImageToImageFilter<ImageType,ImageType>         Superclass;
@@ -141,12 +141,12 @@ private:
     typename PrecisionImageType::Pointer m_Dxy;
     typename PrecisionImageType::Pointer m_Dyy;
 
-    void VED2DSingleIteration (typename ImageType::Pointer );
+    void VED2DSingleIteration( typename PrecisionImageType::Pointer );
 
     // Calculates maxvessel response of the range
     // of scales and stores the hessian of each voxel
     // into the member images m_Dij. 
-    void MaxVesselResponse (const typename ImageType::Pointer);
+    void MaxVesselResponse( const typename PrecisionImageType::Pointer );
 
     // calculates diffusion tensor
     // based on current values of hessian (for which we have

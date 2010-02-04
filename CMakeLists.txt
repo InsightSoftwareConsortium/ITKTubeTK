@@ -5,6 +5,13 @@ project( TubeTK )
 cmake_minimum_required( VERSION 2.8)
 
 #-----------------------------------------------------------------------------
+# Paths for TubeTK
+INCLUDE_DIRECTORIES( 
+  Base/Preprocessing
+  )
+
+
+#-----------------------------------------------------------------------------
 # Dashboard setup
 INCLUDE( ${CMAKE_ROOT}/Modules/Dart.cmake )
 MARK_AS_ADVANCED( TCL_TCLSH DART_ROOT )
@@ -56,12 +63,10 @@ IF( TubeTK_USE_KWSTYLE )
   CONFIGURE_FILE( ${TubeTK_SOURCE_DIR}/KWStyle/TubeTKOverwrite.txt.in
                   ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt )
 
-  ADD_CUSTOM_COMMAND( 
-    OUTPUT ${TubeTK_BINARY_DIR}/KWStyleReport.txt
-    COMMAND ${KWSTYLE_EXECUTABLE}
-    ARGS    -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt ${KWSTYLE_ARGUMENTS} -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt
-    COMMENT "Coding Style Checker" )
-  ADD_CUSTOM_TARGET( StyleCheck DEPENDS ${TubeTK_BINARY_DIR}/KWStyleReport.txt )
+  ADD_CUSTOM_TARGET( StyleCheck 
+    COMMAND ${KWSTYLE_EXECUTABLE} -lesshtml -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt -dart ${TubeTK_BINARY_DIR} -1 1 -R -d ${TubeTK_SOURCE_DIR} -v
+    WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
+    COMMENT "Coding Style Checker" VERBATIM )
 ENDIF( TubeTK_USE_KWSTYLE )
 
 #-----------------------------------------------------------------------------
