@@ -21,6 +21,7 @@
 
 #include "tubeCurves2DImageFilter.h"
 #include "itkMinimumMaximumImageCalculator.h"
+#include "itkPoint.h"
 
 namespace tube
 {
@@ -150,6 +151,21 @@ Curves2DImageFilter
 
   m_InverseParametricFilter->SetInput( 
       m_SpatialFunctionFilter->GetOutput() );
+
+  SpatialFunctionType::Pointer spatialFunction =
+    m_SpatialFunctionFilter->GetSpatialFunction();
+
+  itk::Point<float,3> apex;
+  apex[0] = 0.4;
+  apex[1] = 0;
+  apex[2] = 1;
+
+  spatialFunction->SetAngleZ( 20.0f );
+  spatialFunction->SetApertureAngleX( 12.0f );
+  spatialFunction->SetApertureAngleY(  3.0f );
+  spatialFunction->SetTopPlane( 0.1f );
+  spatialFunction->SetBottomPlane( 2.0f );
+  spatialFunction->SetApex( apex );
 
 }
 
