@@ -248,7 +248,8 @@ Curves2DImageFilter
   typedef OutputPixelType::ValueType  OutputValueType;
 
   const double factor = 
-    itk::NumericTraits< OutputValueType >::max() / ( maximumValue - minimumValue );
+    itk::NumericTraits< OutputValueType >::max() / 
+    ( maximumValue - minimumValue );
 
   while( !it.IsAtEnd() )
     {
@@ -261,10 +262,14 @@ Curves2DImageFilter
     }
 
 
-  ImageSpaceMeshType::ConstPointer outputMesh = m_InverseParametricFilter->GetOutput();
-  typedef ImageSpaceMeshType::PointsContainer   OutputPointsContainer;
-  typedef OutputPointsContainer::ConstPointer   OutputPointsContainerConstPointer;
-  typedef OutputPointsContainer::ConstIterator  OutputPointsConstIterator;
+  ImageSpaceMeshType::ConstPointer outputMesh = 
+    m_InverseParametricFilter->GetOutput();
+  typedef ImageSpaceMeshType::PointsContainer 
+    OutputPointsContainer;
+  typedef OutputPointsContainer::ConstPointer 
+    OutputPointsContainerConstPointer;
+  typedef OutputPointsContainer::ConstIterator  
+    OutputPointsConstIterator;
 
   OutputPointsContainerConstPointer outputPoints = outputMesh->GetPoints();
 
