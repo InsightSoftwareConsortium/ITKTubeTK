@@ -41,7 +41,7 @@ ExternalProject_Add(${proj}
   SVN_REPOSITORY "http://svn.slicer.org/Slicer3/trunk/Libs/tclap"
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
+    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}/tclapsandbox
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=${shared}
@@ -93,7 +93,7 @@ ExternalProject_Add(${proj}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_TESTING:BOOL=OFF
     -DITK_DIR:PATH=${ITK_DIR}
-    -DTCLAP_DIR:PATH=${prefix}/lib/tclap
+    -DTCLAP_DIR:PATH=${prefix}/tclapsandbox/lib/tclap
     -DModuleDescriptionParser_DIR:PATH=${prefix}/lib/ModuleDescriptionParser
   DEPENDS
     "tclap"
