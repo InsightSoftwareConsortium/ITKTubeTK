@@ -111,6 +111,7 @@ ExternalProject_Add(${proj}
     -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
     -DITK_DIR:PATH=${ITK_DIR}
     -DGenerateCLP_DIR:PATH=${prefix}/lib/GenerateCLP
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
   BINARY_DIR ${CMAKE_BINARY_DIR}/CMakeExternals/Build/TubeTK-inner
   DEPENDS
