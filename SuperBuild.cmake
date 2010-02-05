@@ -7,7 +7,7 @@ set(prefix "${base}/Install")
 
 set(shared ON) # use for BUILD_SHARED_LIBS on all subsequent projects
 set(testing OFF) # use for BUILD_TESTING on all subsequent projects
-                                                                               set(build_type "")
+set(build_type "")
 if(CMAKE_BUILD_TYPE)
   set(build_type "${CMAKE_BUILD_TYPE}")
 endif() 
@@ -26,12 +26,12 @@ ExternalProject_Add(${proj}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=${shared}
-    -DBUILD_TESTING:BOOL=${testing}
+    -DBUILD_TESTING:BOOL=OFF
     -DITK_USE_REVIEW:BOOL=ON
     -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
 )
 
-SET( ITK_DIR ${prefix}/lib/ITK )
+SET( ITK_DIR ${prefix}/lib/InsightToolkit )
 
 endif(NOT USE_SYSTEM_ITK)
 
@@ -45,7 +45,7 @@ ExternalProject_Add(${proj}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=${shared}
-    -DBUILD_TESTING:BOOL=${testing}
+    -DBUILD_TESTING:BOOL=OFF
 )
 
 set(proj ModuleDescriptionParser)
@@ -60,7 +60,7 @@ if(NOT USE_SYSTEM_ITK)
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DBUILD_TESTING:BOOL=${testing}
+      -DBUILD_TESTING:BOOL=OFF
       -DITK_DIR:PATH=${ITK_DIR}
     DEPENDS
       "ITK"
@@ -75,7 +75,7 @@ else(NOT USE_SYSTEM_ITK)
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DBUILD_TESTING:BOOL=${testing}
+      -DBUILD_TESTING:BOOL=OFF
       -DITK_DIR:PATH=${ITK_DIR}
   )
 endif(NOT USE_SYSTEM_ITK)
@@ -91,7 +91,7 @@ ExternalProject_Add(${proj}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=${shared}
-    -DBUILD_TESTING:BOOL=${testing}
+    -DBUILD_TESTING:BOOL=OFF
     -DITK_DIR:PATH=${ITK_DIR}
     -DTCLAP_DIR:PATH=${prefix}/lib/tclap
     -DModuleDescriptionParser_DIR:PATH=${prefix}/lib/ModuleDescriptionParser
