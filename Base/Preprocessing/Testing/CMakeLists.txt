@@ -1,5 +1,3 @@
-  )
-
 INCLUDE_REGULAR_EXPRESSION("^.*$")
 
 IF(TCL_TCLSH)
@@ -33,6 +31,7 @@ ADD_TEST(itkVesselEnhancingDiffusion2DImageFilterTest
              ${TEMP}/itkVesselEnhancingDiffusion2DImageFilterTest.mha)
 
 SET(tubeBasePreprocessingFilters_SRCS
+  tubeBasePreprocessingFiltersPrintTest.cxx
   itkVesselEnhancingDiffusion2DImageFilterTest.cxx
   )
 

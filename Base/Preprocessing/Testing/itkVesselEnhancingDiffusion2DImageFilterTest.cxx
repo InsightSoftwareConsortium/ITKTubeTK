@@ -69,8 +69,8 @@ int itkVesselEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
   filter->SetInput( reader->GetOutput() );
   filter->SetDefaultPars( ); // duplicates assignments given below
   filter->SetTimeStep( 0.25 );
-  filter->SetIterations( 200 );
-  filter->SetRecalculateVesselness( 25 ); // Default is 100
+  filter->SetIterations( 100 );
+  filter->SetRecalculateVesselness( 50 ); // Default is 100
   filter->SetBeta( 0.5 );
   filter->SetGamma( 5.0 );
   filter->SetEpsilon( 0.01 );
@@ -78,8 +78,8 @@ int itkVesselEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
   filter->SetSensitivity( 20.0 );
   std::vector< float > scales;
   scales.resize(2);
-  scales[0] = 6;
-  scales[1] = 8;
+  scales[0] = 2;
+  scales[1] = 4;
   filter->SetScales( scales );
   filter->SetDarkObjectLightBackground( true );
   filter->SetVerbose( true );
