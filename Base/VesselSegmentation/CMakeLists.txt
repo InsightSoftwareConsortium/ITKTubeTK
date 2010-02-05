@@ -17,10 +17,10 @@ target_link_libraries( TubeTKVesselSegmentation
   ${ITK_LIBRARIES}
 )
 
-install(FILES 
-  ${TubeTK_Base_VesselSegmentation_H_Files}
-  ${TubeTK_Base_VesselSegmentation_H_Files}
-  DESTINATION include)
+#install(FILES 
+  #${TubeTK_Base_VesselSegmentation_H_Files}
+  #${TubeTK_Base_VesselSegmentation_H_Files}
+  #DESTINATION include)
 
-install(TARGETS TubeTKVesselSegmentation
-  DESTINATION lib)
+#install(TARGETS TubeTKVesselSegmentation
+  #DESTINATION lib)
