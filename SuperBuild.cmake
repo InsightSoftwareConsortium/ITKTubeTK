@@ -31,7 +31,7 @@ ExternalProject_Add(${proj}
     -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
 )
 
-#SET( ITK_DIR ${prefix}/lib/InsightToolkit )
+SET( ITK_DIR ${prefix}/lib/ITK )
 
 endif(NOT USE_SYSTEM_ITK)
 

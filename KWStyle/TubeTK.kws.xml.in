@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Description>
+<LineLength>100</LineLength>
+<DeclarationOrder>0,1,2</DeclarationOrder>
+<Typedefs>[A-Z]</Typedefs>
+<InternalVariables>
+  <regex>m_[A-Z]</regex>
+  <alignment>m_[A-Z]</alignment>
+</InternalVariables>
+<SemicolonSpace>0</SemicolonSpace>
+<EndOfFileNewLine>1</EndOfFileNewLine>
+<Tabs>1</Tabs>
+<Spaces>3</Spaces>
+<Comments>/**, *, */,true</Comments>
+<Header>"@TubeTK_SOURCE_DIR@/KWStyle/Headers/TubeTKHeader.h",false,true</Header>
+<Indent>SPACE,2,true,true</Indent>
+<Namespace>tube</Namespace>
+<NameOfClass>[NameOfClass],tube</NameOfClass>
+<IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
+<EmptyLines>2</EmptyLines>
+<Template>[TNV]</Template>
+<Operator>1,1</Operator>
+</Description>

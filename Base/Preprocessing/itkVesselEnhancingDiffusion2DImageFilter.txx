@@ -57,7 +57,7 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 // singleiter
 template <class PixelType, unsigned int Dimension>
 void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
-::VED2DSingleIteration(typename ImageType::Pointer ci)
+::VED2DSingleIteration(typename PrecisionImageType::Pointer ci)
 {
     bool rec(false);
     if ( 
@@ -248,7 +248,7 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 // maxvesselresponse
 template <class PixelType, unsigned int Dimension>
 void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
-::MaxVesselResponse(const typename ImageType::Pointer im)  
+::MaxVesselResponse(const typename PrecisionImageType::Pointer im)  
 {
 
     // alloc memory for hessian/tensor

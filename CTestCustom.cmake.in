@@ -1,0 +1,17 @@
+SET(CTEST_CUSTOM_WARNING_MATCH
+  ${CTEST_CUSTOM_WARNING_MATCH}
+  "{standard input}:[0-9][0-9]*: Warning: "
+  "{standard input}:[0-9][0-9]*: warning: "
+  )
+
+SET(CTEST_CUSTOM_WARNING_EXCEPTION
+    ${CTEST_CUSTOM_WARNING_EXCEPTION}
+    "has no symbols"
+    "no public symbols found"
+    )
+
+SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
+    ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
+    "Applications"
+    )
+    
