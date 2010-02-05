@@ -1,12 +1,8 @@
-INCLUDE_DIRECTORIES(
-  ${ITK_SOURCE_DIR}/Testing/Code/BasicFilters
-  )
-
 INCLUDE_REGULAR_EXPRESSION("^.*$")
 
 IF(TCL_TCLSH)
   ADD_TEST(PrintSelf-BasePreprocessingFilters ${TCL_TCLSH}
-           ${ITK_SOURCE_DIR}/Utilities/Dart/PrintSelfCheck.tcl  
+           ${TubeTK_SOURCE_DIR}/Base/Preprocessing/Testing/PrintSelfCheck.tcl  
            ${TubeTK_SOURCE_DIR}/Base/Preprocessing)
 ENDIF(TCL_TCLSH)
 
@@ -35,6 +31,7 @@ ADD_TEST(itkVesselEnhancingDiffusion2DImageFilterTest
              ${TEMP}/itkVesselEnhancingDiffusion2DImageFilterTest.mha)
 
 SET(tubeBasePreprocessingFilters_SRCS
+  tubeBasePreprocessingFiltersPrintTest.cxx
   itkVesselEnhancingDiffusion2DImageFilterTest.cxx
   )
 

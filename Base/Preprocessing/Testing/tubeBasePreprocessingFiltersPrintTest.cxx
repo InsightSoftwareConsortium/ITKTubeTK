@@ -1,10 +1,10 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkBasicFiltersTests.cxx,v $
+  Module:    $RCSfile: itkBasicFiltersPrintTest.cxx,v $
   Language:  C++
-  Date:      $Date: 2009-11-02 15:26:53 $
-  Version:   $Revision: 1.125 $
+  Date:      $Date: 2007-08-10 14:34:01 $
+  Version:   $Revision: 1.20 $
 
   Copyright (c) Insight Software Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
@@ -17,14 +17,18 @@
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
 #endif
+#define ITK_LEAN_AND_MEAN
 
-#include <iostream>
-#include "itkTestMain.h" 
+#include "itkVesselEnhancingDiffusion2DImageFilter.h"
 
 
-void RegisterTests()
+int tubeBasePreprocessingFiltersPrintTest( int, char* [] )
 {
-  REGISTER_TEST( tubeBasePreprocessingFiltersPrintTest );
-  REGISTER_TEST( itkVesselEnhancingDiffusion2DImageFilterTest );
-}
+  itk::VesselEnhancingDiffusion2DImageFilter< float, 2 >::Pointer 
+       vesselEnahncingObj =
+    itk::VesselEnhancingDiffusion2DImageFilter< float, 2 >::New();
+  std::cout << "-------------VesselEnhancingDiffusion2DImageFilter" 
+            << vesselEnahncingObj;
 
+  return EXIT_SUCCESS;
+}
