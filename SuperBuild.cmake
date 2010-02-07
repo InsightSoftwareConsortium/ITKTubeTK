@@ -7,7 +7,7 @@ set(prefix "${base}/Install")
 
 set(shared ON) # use for BUILD_SHARED_LIBS on all subsequent projects
 set(testing OFF) # use for BUILD_TESTING on all subsequent projects
-set(build_type "")
+set(build_type "Debug")
 if(CMAKE_BUILD_TYPE)
   set(build_type "${CMAKE_BUILD_TYPE}")
 endif() 

@@ -64,7 +64,7 @@ IF( TubeTK_USE_KWSTYLE )
                   ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt )
 
   ADD_CUSTOM_TARGET( StyleCheck 
-    COMMAND ${KWSTYLE_EXECUTABLE} -lesshtml -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt -dart ${TubeTK_BINARY_DIR} -1 1 -R -d ${TubeTK_SOURCE_DIR} -v
+    COMMAND ${KWSTYLE_EXECUTABLE} -lesshtml -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt -dart ${TubeTK_BINARY_DIR} -1 1 -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt 
     WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
     COMMENT "Coding Style Checker" VERBATIM )
 ENDIF( TubeTK_USE_KWSTYLE )
