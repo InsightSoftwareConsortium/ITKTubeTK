@@ -1,28 +1,29 @@
-INCLUDE_REGULAR_EXPRESSION("^.*$")
+include_regular_expression("^.*$")
 
-IF(TCL_TCLSH)
-  ADD_TEST(PrintSelf-BasePreprocessingFilters ${TCL_TCLSH}
+find_package( Tclsh )
+if(TCL_TCLSH)
+  add_test(PrintSelf-BasePreprocessingFilters ${TCL_TCLSH}
            ${TubeTK_SOURCE_DIR}/Base/Preprocessing/Testing/PrintSelfCheck.tcl  
            ${TubeTK_SOURCE_DIR}/Base/Preprocessing)
-ENDIF(TCL_TCLSH)
+endif(TCL_TCLSH)
 
 
-SET(BASE_PREPROCESSING_FILTERS_TESTS 
+set(BASE_PREPROCESSING_FILTERS_TESTS 
     ${TubeTK_BINARY_DIR}/Base/Preprocessing/Testing/tubeBasePreprocessingFiltersTests)
 
-SET(BASE_PREPROCESSING_FILTERS_HEADER_TEST 
+set(BASE_PREPROCESSING_FILTERS_HEADER_TEST 
     ${TubeTK_BINARY_DIR}/Base/Preprocessing/Testing/tubeBasePreprocessingFiltersHeaderTest)
 
-SET(INPUT_DATA ${TubeTK_SOURCE_DIR}/Data)
-SET(ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input)
-SET(BASELINE ${TubeTK_SOURCE_DIR}/Base/Preprocessing/Testing/Baselines)
-SET(TEMP ${TubeTK_BINARY_DIR}/Temporary)
+set(INPUT_DATA ${TubeTK_SOURCE_DIR}/Data)
+set(ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input)
+set(BASELINE ${TubeTK_SOURCE_DIR}/Base/Preprocessing/Testing/Baselines)
+set(TEMP ${TubeTK_BINARY_DIR}/Temporary)
 
-ADD_TEST(tubeBasePreprocessingFiltersPrintTest 
+add_test(tubeBasePreprocessingFiltersPrintTest 
            ${BASE_PREPROCESSING_FILTERS_TESTS}
            tubeBasePreprocessingFiltersPrintTest)
 
-ADD_TEST(itkTubeEnhancingDiffusion2DImageFilterTest 
+add_test(itkTubeEnhancingDiffusion2DImageFilterTest 
           ${BASE_PREPROCESSING_FILTERS_TESTS}
           --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
                     ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
@@ -30,22 +31,22 @@ ADD_TEST(itkTubeEnhancingDiffusion2DImageFilterTest
              ${INPUT_DATA}/ChipSlice0015.mha
              ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha)
 
-SET(tubeBasePreprocessingFilters_SRCS
+set(tubeBasePreprocessingFilters_SRCS
   tubeBasePreprocessingFiltersPrintTest.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
   )
 
-ADD_TEST(tubeBasePreprocessingFiltersHeaderTest 
+add_test(tubeBasePreprocessingFiltersHeaderTest 
          ${BASE_PREPROCESSING_FILTERS_HEADER_TEST})
 
-ADD_EXECUTABLE(tubeBasePreprocessingFiltersHeaderTest 
+add_executable(tubeBasePreprocessingFiltersHeaderTest 
                tubeBasePreprocessingFiltersHeaderTest.cxx)
-TARGET_LINK_LIBRARIES(tubeBasePreprocessingFiltersHeaderTest
+target_link_libraries(tubeBasePreprocessingFiltersHeaderTest
                       ITKIO ITKNumerics ITKBasicFilters)
 
-ADD_EXECUTABLE(tubeBasePreprocessingFiltersTests
+add_executable(tubeBasePreprocessingFiltersTests
                tubeBasePreprocessingFiltersTests.cxx
                ${tubeBasePreprocessingFilters_SRCS})
-TARGET_LINK_LIBRARIES(tubeBasePreprocessingFiltersTests
+target_link_libraries(tubeBasePreprocessingFiltersTests
                       ITKIO ITKNumerics ITKBasicFilters)
 
