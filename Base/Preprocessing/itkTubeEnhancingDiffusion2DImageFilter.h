@@ -1,5 +1,5 @@
-#ifndef __itkVesselEnhancingDiffusion2DImageFilter_h
-#define __itkVesselEnhancingDiffusion2DImageFilter_h
+#ifndef __itkTubeEnhancingDiffusion2DImageFilter_h
+#define __itkTubeEnhancingDiffusion2DImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include <vector>
@@ -7,7 +7,7 @@
 namespace itk
 {
 
-/** \class VesselEnhancingDiffusion2DImageFilter
+/** \class TubeEnhancingDiffusion2DImageFilter
  *
  * Complete rewrite of previous versions, only using itk/vnl routines
  * for derivatives, eigensystem calculations and diffusion. Internally,
@@ -16,7 +16,7 @@ namespace itk
  *
  * Uses simple forward Euler scheme (explicit) with 3x3 stencil,
  * see eg phd of Joachim Weickert for theory and implementation regarding
- * the construction of this discretization scheme. See 'Vessel Enhancing
+ * the construction of this discretization scheme. See 'Tube Enhancing
  * Diffusion', Manniesing, media 2006, for information regarding the 
  * construction of the diffusion tensor.
  * 
@@ -50,7 +50,7 @@ namespace itk
  *
  */
 template <class PixelType = short int, unsigned int Dimension = 2>
-class ITK_EXPORT VesselEnhancingDiffusion2DImageFilter : 
+class ITK_EXPORT TubeEnhancingDiffusion2DImageFilter : 
     public ImageToImageFilter<Image<PixelType, Dimension> ,
                               Image<PixelType, Dimension> >
 {
@@ -61,17 +61,17 @@ public:
     typedef Image<PixelType, Dimension>                     ImageType;
     typedef Image<Precision, Dimension>                     PrecisionImageType;
 
-    typedef VesselEnhancingDiffusion2DImageFilter           Self;
+    typedef TubeEnhancingDiffusion2DImageFilter           Self;
     typedef ImageToImageFilter<ImageType,ImageType>         Superclass;
     typedef SmartPointer<Self>                              Pointer;
     typedef SmartPointer<const Self>                        ConstPointer;
 
     itkNewMacro(Self);
-    itkTypeMacro(VesselEnhancingDiffusion2DImageFilter, ImageToImageFilter);
+    itkTypeMacro(TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter);
 
     itkSetMacro(TimeStep, Precision);
     itkSetMacro(Iterations, unsigned int);
-    itkSetMacro(RecalculateVesselness, unsigned int);
+    itkSetMacro(RecalculateTubeness, unsigned int);
 
     itkSetMacro(Beta, Precision);
     itkSetMacro(Gamma, Precision);
@@ -96,7 +96,7 @@ public:
     {
         m_TimeStep                  = 0.25;
         m_Iterations                = 200;
-        m_RecalculateVesselness     = 100;
+        m_RecalculateTubeness     = 100;
         m_Beta                      = 0.5;
         m_Gamma                     = 5.0;
         m_Epsilon                   = 0.01;
@@ -112,19 +112,19 @@ public:
     }
 
 protected: 
-    VesselEnhancingDiffusion2DImageFilter();
-    ~VesselEnhancingDiffusion2DImageFilter() {};
+    TubeEnhancingDiffusion2DImageFilter();
+    ~TubeEnhancingDiffusion2DImageFilter() {};
     void PrintSelf(std::ostream &os, Indent indent) const;
     void GenerateData();
 
 private: 
 
-    VesselEnhancingDiffusion2DImageFilter(const Self&); 
+    TubeEnhancingDiffusion2DImageFilter(const Self&); 
     void operator=(const Self&);            
 
     Precision                 m_TimeStep;
     unsigned int              m_Iterations;
-    unsigned int              m_RecalculateVesselness;
+    unsigned int              m_RecalculateTubeness;
     Precision                 m_Beta;
     Precision                 m_Gamma;
     Precision                 m_Epsilon;
@@ -146,14 +146,14 @@ private:
     // Calculates maxvessel response of the range
     // of scales and stores the hessian of each voxel
     // into the member images m_Dij. 
-    void MaxVesselResponse( const typename PrecisionImageType::Pointer );
+    void MaxTubeResponse( const typename PrecisionImageType::Pointer );
 
     // calculates diffusion tensor
     // based on current values of hessian (for which we have
     // maximim vessel response). 
     void DiffusionTensor();
 
-    inline Precision VesselnessFunction2D ( // sorted magn increasing
+    inline Precision TubenessFunction2D ( // sorted magn increasing
             const Precision,    // l1
             const Precision     // l2
             );
@@ -165,7 +165,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkVesselEnhancingDiffusion2DImageFilter.txx"
+#include "itkTubeEnhancingDiffusion2DImageFilter.txx"
 #endif
 
 #endif

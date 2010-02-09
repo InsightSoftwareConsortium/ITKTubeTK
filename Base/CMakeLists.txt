@@ -1,3 +1,3 @@
 add_subdirectory(Preprocessing)
 add_subdirectory(DataStructures)
-add_subdirectory(VesselSegmentation)
+add_subdirectory(TubeSegmentation)

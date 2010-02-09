@@ -22,17 +22,17 @@ ADD_TEST(tubeBasePreprocessingFiltersPrintTest
            ${BASE_PREPROCESSING_FILTERS_TESTS}
            tubeBasePreprocessingFiltersPrintTest)
 
-ADD_TEST(itkVesselEnhancingDiffusion2DImageFilterTest 
+ADD_TEST(itkTubeEnhancingDiffusion2DImageFilterTest 
           ${BASE_PREPROCESSING_FILTERS_TESTS}
-          --compare ${BASELINE}/itkVesselEnhancingDiffusion2DImageFilterTest.mha
-                    ${TEMP}/itkVesselEnhancingDiffusion2DImageFilterTest.mha
-          itkVesselEnhancingDiffusion2DImageFilterTest
+          --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
+                    ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
+          itkTubeEnhancingDiffusion2DImageFilterTest
              ${INPUT_DATA}/ChipSlice0015.mha
-             ${TEMP}/itkVesselEnhancingDiffusion2DImageFilterTest.mha)
+             ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha)
 
 SET(tubeBasePreprocessingFilters_SRCS
   tubeBasePreprocessingFiltersPrintTest.cxx
-  itkVesselEnhancingDiffusion2DImageFilterTest.cxx
+  itkTubeEnhancingDiffusion2DImageFilterTest.cxx
   )
 
 ADD_TEST(tubeBasePreprocessingFiltersHeaderTest 

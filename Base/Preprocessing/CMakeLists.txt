@@ -1,9 +1,9 @@
 set(TubeTK_Base_Preprocessing_H_Files
-  itkVesselEnhancingDiffusion2DImageFilter.h
+  itkTubeEnhancingDiffusion2DImageFilter.h
 )
 
 set(TubeTK_Base_Preprocessing_TXX_Files
-  itkVesselEnhancingDiffusion2DImageFilter.txx
+  itkTubeEnhancingDiffusion2DImageFilter.txx
 )
 
 IF( BUILD_TESTING )

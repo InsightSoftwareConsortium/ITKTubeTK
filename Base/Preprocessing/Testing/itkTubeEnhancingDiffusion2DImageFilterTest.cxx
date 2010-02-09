@@ -25,9 +25,9 @@
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-#include <itkVesselEnhancingDiffusion2DImageFilter.h>
+#include <itkTubeEnhancingDiffusion2DImageFilter.h>
 
-int itkVesselEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] ) 
+int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] ) 
 {
   if( argc != 3 )
     {
@@ -52,7 +52,7 @@ int itkVesselEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
   
  
   // Declare the type for the Filter
-  typedef itk::VesselEnhancingDiffusion2DImageFilter<
+  typedef itk::TubeEnhancingDiffusion2DImageFilter<
                            PixelType, Dimension > FilterType;
 
   // Create the reader and writer
@@ -70,7 +70,7 @@ int itkVesselEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
   filter->SetDefaultPars( ); // duplicates assignments given below
   filter->SetTimeStep( 0.25 );
   filter->SetIterations( 20 ); // Default is 200
-  filter->SetRecalculateVesselness( 10 ); // Default is 100
+  filter->SetRecalculateTubeness( 10 ); // Default is 100
   filter->SetBeta( 0.5 );
   filter->SetGamma( 5.0 );
   filter->SetEpsilon( 0.01 );

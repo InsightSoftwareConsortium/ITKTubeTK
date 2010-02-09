@@ -19,15 +19,15 @@
 #endif
 #define ITK_LEAN_AND_MEAN
 
-#include "itkVesselEnhancingDiffusion2DImageFilter.h"
+#include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
 
 int tubeBasePreprocessingFiltersPrintTest( int, char* [] )
 {
-  itk::VesselEnhancingDiffusion2DImageFilter< float, 2 >::Pointer 
+  itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer 
        vesselEnahncingObj =
-    itk::VesselEnhancingDiffusion2DImageFilter< float, 2 >::New();
-  std::cout << "-------------VesselEnhancingDiffusion2DImageFilter" 
+    itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
+  std::cout << "-------------TubeEnhancingDiffusion2DImageFilter" 
             << vesselEnahncingObj;
 
   return EXIT_SUCCESS;

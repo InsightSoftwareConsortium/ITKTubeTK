@@ -25,6 +25,6 @@
 void RegisterTests()
 {
   REGISTER_TEST( tubeBasePreprocessingFiltersPrintTest );
-  REGISTER_TEST( itkVesselEnhancingDiffusion2DImageFilterTest );
+  REGISTER_TEST( itkTubeEnhancingDiffusion2DImageFilterTest );
 }
 

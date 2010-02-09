@@ -1,6 +1,6 @@
-#ifndef __itkVesselEnhancingDiffusion2DImageFilter_txx
-#define __itkVesselEnhancingDiffusion2DImageFilter_txx
-#include "itkVesselEnhancingDiffusion2DImageFilter.h"
+#ifndef __itkTubeEnhancingDiffusion2DImageFilter_txx
+#define __itkTubeEnhancingDiffusion2DImageFilter_txx
+#include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
 #include "itkCastImageFilter.h"
 #include "itkConstShapedNeighborhoodIterator.h"
@@ -23,11 +23,11 @@ namespace itk
 
 // constructor
 template <class PixelType, unsigned int Dimension>
-VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
-::VesselEnhancingDiffusion2DImageFilter():
+TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
+::TubeEnhancingDiffusion2DImageFilter():
     m_TimeStep(NumericTraits<Precision>::Zero),
     m_Iterations(0),
-    m_RecalculateVesselness(0),
+    m_RecalculateTubeness(0),
     m_Epsilon(0.0),
     m_Omega(0.0),
     m_Sensitivity(0.0),
@@ -38,13 +38,13 @@ VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 
 // printself for debugging
 template <class PixelType, unsigned int Dimension>
-void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
+void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::PrintSelf(std::ostream &os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
   os << indent << "TimeStep                 : " << m_TimeStep  << std::endl;
   os << indent << "Iterations             : " << m_Iterations << std::endl;
-  os << indent << "RecalculateVesselness      : " << m_RecalculateVesselness << std::endl;
+  os << indent << "RecalculateTubeness      : " << m_RecalculateTubeness << std::endl;
   os << indent << "Scales     : ";
   for (unsigned int i=0; i<m_Scales.size(); ++i)
     os << m_Scales[i] << " ";
@@ -56,14 +56,14 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 }
 // singleiter
 template <class PixelType, unsigned int Dimension>
-void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
+void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::VED2DSingleIteration(typename PrecisionImageType::Pointer ci)
 {
     bool rec(false);
     if ( 
             (m_CurrentIteration == 1) || 
-            (m_RecalculateVesselness == 0) ||
-            (m_CurrentIteration % m_RecalculateVesselness == 0)
+            (m_RecalculateTubeness == 0) ||
+            (m_CurrentIteration % m_RecalculateTubeness == 0)
        )
     {
 
@@ -74,7 +74,7 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
             std::cout.flush();
             
         }
-        MaxVesselResponse (ci);
+        MaxTubeResponse (ci);
         DiffusionTensor (); 
     }
     if (m_Verbose)
@@ -247,8 +247,8 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 } 
 // maxvesselresponse
 template <class PixelType, unsigned int Dimension>
-void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
-::MaxVesselResponse(const typename PrecisionImageType::Pointer im)  
+void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
+::MaxTubeResponse(const typename PrecisionImageType::Pointer im)  
 {
 
     // alloc memory for hessian/tensor
@@ -327,7 +327,7 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 
           if ( vcl_abs(ev[0]) > vcl_abs(ev[1])  ) std::swap(ev[0], ev[1]);
 
-          const Precision vesselness = VesselnessFunction2D( ev[0], ev[1] );
+          const Precision vesselness = TubenessFunction2D( ev[0], ev[1] );
 
           if ( vesselness > 0 && vesselness > vit.Value() )
             {
@@ -344,8 +344,8 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 }
 // vesselnessfunction
 template <class PixelType, unsigned int Dimension>
-typename VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>::Precision
-VesselEnhancingDiffusion2DImageFilter<PixelType,Dimension>::VesselnessFunction2D
+typename TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>::Precision
+TubeEnhancingDiffusion2DImageFilter<PixelType,Dimension>::TubenessFunction2D
 (
   const Precision l1,
   const Precision l2
@@ -375,7 +375,7 @@ VesselEnhancingDiffusion2DImageFilter<PixelType,Dimension>::VesselnessFunction2D
 
 // diffusiontensor
 template <class PixelType, unsigned int Dimension>
-void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
+void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::DiffusionTensor() 
 {
   ImageRegionIterator<PrecisionImageType> 
@@ -406,7 +406,7 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 
     if ( vcl_abs(ev[0]) > vcl_abs(ev[1])  ) std::swap(ev[0], ev[1]);
 
-    const Precision V = VesselnessFunction2D( ev[0],ev[1] );
+    const Precision V = TubenessFunction2D( ev[0],ev[1] );
     vnl_vector<Precision> evn(2);
 
     // adjusting eigenvalues
@@ -432,7 +432,7 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 
 // generatedata
 template <class PixelType, unsigned int Dimension>
-void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
+void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::GenerateData()
 {
   if (m_Verbose)
@@ -468,7 +468,7 @@ void VesselEnhancingDiffusion2DImageFilter<PixelType, Dimension>
       {
       std::cout << "min/max             \t" << minmax->GetMinimum() << " " << minmax->GetMaximum() << std::endl;
       std::cout << "iterations/timestep \t" << m_Iterations << " " << m_TimeStep << std::endl; 
-      std::cout << "recalc v            \t" << m_RecalculateVesselness << std::endl;
+      std::cout << "recalc v            \t" << m_RecalculateTubeness << std::endl;
       std::cout << "scales              \t";
         for (unsigned int i=0; i<m_Scales.size(); ++i)
         {

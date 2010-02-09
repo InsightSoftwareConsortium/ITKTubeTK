@@ -10,9 +10,9 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
-#include "itkVesselEnhancingDiffusion2DImageFilter.h"
+#include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
-#include "HessianVesselness2DCLP.h"
+#include "HessianTubeness2DCLP.h"
 
 int main( int argc, char * argv[] )
 {
@@ -21,7 +21,7 @@ int main( int argc, char * argv[] )
   typedef float                                                   PixelType;
   typedef itk::Image< PixelType,  2 >                             ImageType;
   typedef itk::ImageFileReader< ImageType >                       ReaderType;
-  typedef itk::VesselEnhancingDiffusion2DImageFilter< PixelType > FilterType;
+  typedef itk::TubeEnhancingDiffusion2DImageFilter< PixelType > FilterType;
   
   ReaderType::Pointer reader = ReaderType::New();
 
@@ -49,7 +49,7 @@ int main( int argc, char * argv[] )
   // set paramters
   filter->SetTimeStep( timeStep );
   filter->SetIterations( numIterations );
-  filter->SetRecalculateVesselness( recalculateVesselness );
+  filter->SetRecalculateTubeness( recalculateTubeness );
   
   filter->SetBeta( beta );
   filter->SetGamma( gamma );

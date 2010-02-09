@@ -1,2 +1,2 @@
-add_subdirectory(HessianVesselness2D)
+add_subdirectory(HessianTubeness2D)
 add_subdirectory(Curves2DExtractor)

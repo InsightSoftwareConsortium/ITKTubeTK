@@ -1,4 +1,4 @@
-project (HessianVesselness2D)
+project (HessianTubeness2D)
 
 cmake_minimum_required(VERSION 2.8)
 if(COMMAND CMAKE_POLICY)
@@ -26,15 +26,15 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Preprocessing
 )
 
-set ( HessianVesselness2D_SOURCE 
-HessianVesselness2D.cxx
+set ( HessianTubeness2D_SOURCE 
+HessianTubeness2D.cxx
 )
 
-generateclp(HessianVesselness2D_SOURCE HessianVesselness2D.xml)
+generateclp(HessianTubeness2D_SOURCE HessianTubeness2D.xml)
 
-add_executable(HessianVesselness2D ${HessianVesselness2D_SOURCE})
-target_link_libraries(HessianVesselness2D ${ITK_LIBRARIES})
+add_executable(HessianTubeness2D ${HessianTubeness2D_SOURCE})
+target_link_libraries(HessianTubeness2D ${ITK_LIBRARIES})
 
-install(TARGETS HessianVesselness2D
+install(TARGETS HessianTubeness2D
   RUNTIME DESTINATION bin
 )

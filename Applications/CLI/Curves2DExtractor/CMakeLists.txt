@@ -23,7 +23,7 @@ find_package(GenerateCLP REQUIRED)
 include(${GenerateCLP_USE_FILE})
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/VesselSegmentation
+  ${TubeTK_SOURCE_DIR}/Base/TubeSegmentation
 )
 
 set ( Curves2DExtractor_SOURCE 
@@ -33,7 +33,7 @@ Curves2DExtractor.cxx
 generateclp(Curves2DExtractor_SOURCE Curves2DExtractor.xml)
 
 add_executable(Curves2DExtractor ${Curves2DExtractor_SOURCE})
-target_link_libraries(Curves2DExtractor TubeTKVesselSegmentation)
+target_link_libraries(Curves2DExtractor TubeTKTubeSegmentation)
 
 install(TARGETS Curves2DExtractor
   RUNTIME DESTINATION bin

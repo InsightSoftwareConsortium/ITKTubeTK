@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-#include "itkVesselEnhancingDiffusion2DImageFilter.h"
+#include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
 int main ( int , char ** )
 {
