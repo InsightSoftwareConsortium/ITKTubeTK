@@ -42,17 +42,22 @@ void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::PrintSelf(std::ostream &os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
-  os << indent << "TimeStep                 : " << m_TimeStep  << std::endl;
-  os << indent << "Iterations             : " << m_Iterations << std::endl;
-  os << indent << "RecalculateTubeness      : " << m_RecalculateTubeness << std::endl;
-  os << indent << "Scales     : ";
+  os << indent << "TimeStep                  : " << m_TimeStep  << std::endl;
+  os << indent << "Iterations                : " << m_Iterations << std::endl;
+  os << indent << "RecalculateTubeness       : " << m_RecalculateTubeness 
+     << std::endl;
+  os << indent << "Scales                    : ";
   for (unsigned int i=0; i<m_Scales.size(); ++i)
     os << m_Scales[i] << " ";
   os << std::endl;
-  os << indent << "Epsilon                 : " << m_Epsilon << std::endl;
-  os << indent << "Omega                   : " << m_Omega << std::endl;
-  os << indent << "Sensitivity             : " << m_Sensitivity << std::endl;
-    os << indent << "DarkObjectLightBackground  : " << m_DarkObjectLightBackground << std::endl;
+  os << indent << "Epsilon                   : " << m_Epsilon << std::endl;
+  os << indent << "Omega                     : " << m_Omega << std::endl;
+  os << indent << "Sensitivity               : " << m_Sensitivity << std::endl;
+  os << indent << "DarkObjectLightBackground : " 
+     << m_DarkObjectLightBackground << std::endl;
+  os << indent << "Beta                      : " << m_Beta << std::endl;
+  os << indent << "Gamma                     : " << m_Gamma << std::endl;
+  os << indent << "Verbose                   : " << m_Verbose << std::endl;
 }
 // singleiter
 template <class PixelType, unsigned int Dimension>
