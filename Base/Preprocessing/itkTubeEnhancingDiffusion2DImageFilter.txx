@@ -11,6 +11,7 @@
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkNumericTraits.h"
 #include "itkZeroFluxNeumannBoundaryCondition.h"
+#include "itkProgressAccumulator.h"
 
 #include <vnl/vnl_vector.h>
 #include <vnl/vnl_matrix.h>
@@ -446,11 +447,16 @@ void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
       "begin vesselenhancingdiffusion2Dimagefilter ... " << std::endl;
     }
 
+  ProgressReporter progress(this,0,m_Iterations+4);
+
   typedef MinimumMaximumImageFilter<ImageType> MinMaxType;
   typename MinMaxType::Pointer minmax = MinMaxType::New();
 
   minmax->SetInput(this->GetInput());
+
   minmax->Update();
+
+  progress.CompletedPixel();
 
   const typename ImageType::SpacingType 
     ispacing = this->GetInput()->GetSpacing();
@@ -491,6 +497,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 
     typename PrecisionImageType::Pointer ci = cast->GetOutput();
 
+    progress.CompletedPixel();
 
     if (m_Verbose)
     {
@@ -500,12 +507,15 @@ void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
   for (m_CurrentIteration=1; m_CurrentIteration<=m_Iterations; m_CurrentIteration++)
     {
         VED2DSingleIteration (ci);
+        progress.CompletedPixel();
     } 
 
     typedef MinimumMaximumImageFilter<PrecisionImageType> MMT;
     typename MMT::Pointer mm = MMT::New();
     mm->SetInput(ci);
     mm->Update();
+
+    progress.CompletedPixel();
 
     if (m_Verbose)
     {
@@ -522,6 +532,8 @@ void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
     casti->GraftOutput(this->GetOutput());
     casti->Update();
     this->GraftOutput(casti->GetOutput());
+    
+    progress.CompletedPixel();
 }
 
 
