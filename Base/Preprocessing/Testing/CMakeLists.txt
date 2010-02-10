@@ -28,7 +28,7 @@ add_test(itkTubeEnhancingDiffusion2DImageFilterTest
           --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
                     ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
           itkTubeEnhancingDiffusion2DImageFilterTest
-             ${INPUT_DATA}/ChipSlice0015.mha
+             ${INPUT_DATA}/slice256.png
              ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha)
 
 set(tubeBasePreprocessingFilters_SRCS
