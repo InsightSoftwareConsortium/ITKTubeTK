@@ -141,6 +141,8 @@ endif( TubeTK_USE_SUPERBUILD )
 add_subdirectory( Base )
 add_subdirectory( Applications )
 
+make_directory( ${TubeTK_BINARY_DIR}/Temporary )
+
 install(
   FILES README.txt
   DESTINATION doc
