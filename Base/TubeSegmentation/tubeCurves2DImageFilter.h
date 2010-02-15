@@ -20,6 +20,8 @@
 #include "itkParametricSpaceToImageSpaceMeshFilter.h"
 #include "itkRescaleIntensityImageFilter.h"
 
+#include "tubeBaseTubeSegmentation.h"
+
 
 // Define which type of spatial function to use
 // Only one of the following lines should be uncommented.
@@ -30,7 +32,7 @@
 namespace tube
 {
 
-class Curves2DImageFilter
+class tubeBaseTubeSegmentation_EXPORT Curves2DImageFilter
 {
 public:
 

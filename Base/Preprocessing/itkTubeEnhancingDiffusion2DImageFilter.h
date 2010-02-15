@@ -1,6 +1,8 @@
 #ifndef __itkTubeEnhancingDiffusion2DImageFilter_h
 #define __itkTubeEnhancingDiffusion2DImageFilter_h
 
+#include "tubeBasePreprocessing.h"
+
 #include "itkImageToImageFilter.h"
 #include <vector>
 
@@ -50,7 +52,7 @@ namespace itk
  *
  */
 template <class PixelType = short int, unsigned int Dimension = 2>
-class ITK_EXPORT TubeEnhancingDiffusion2DImageFilter : 
+class tubeBasePreprocessing_EXPORT TubeEnhancingDiffusion2DImageFilter : 
     public ImageToImageFilter<Image<PixelType, Dimension> ,
                               Image<PixelType, Dimension> >
 {
