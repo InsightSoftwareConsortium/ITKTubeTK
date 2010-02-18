@@ -45,6 +45,20 @@ IF( TubeTK_USE_KWSTYLE )
 
   OPTION( KWSTYLE_USE_VIM_FORMAT "Set KWStyle to generate errors with a VIM-compatible format." OFF )
   OPTION( KWSTYLE_USE_MSVC_FORMAT "Set KWStyle to generate errors with a VisualStudio-compatible format." OFF )
+  OPTION( KWSTYLE_DASHBOARD_SUBMISSION "Set KWStyle arguments to generate report for dashboard submission." ON )
+
+  IF( KWSTYLE_DASHBOARD_SUBMISSION )
+    SET(KWSTYLE_ARGUMENTS -lesshtml 
+                        -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml
+                        -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt 
+                        -dart ${TubeTK_BINARY_DIR} -1 1
+                         -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt)
+  ELSE( KWSTYLE_DASHBOARD_SUBMISSION )
+    SET(KWSTYLE_ARGUMENTS -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml
+                        -v -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt 
+                         -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt)
+  ENDIF( KWSTYLE_DASHBOARD_SUBMISSION )
+
 
   IF( KWSTYLE_USE_VIM_FORMAT )
     SET( KWSTYLE_ARGUMENTS -vim ${KWSTYLE_ARGUMENTS} )
@@ -64,7 +78,7 @@ IF( TubeTK_USE_KWSTYLE )
                   ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt )
 
   ADD_CUSTOM_TARGET( StyleCheck 
-    COMMAND ${KWSTYLE_EXECUTABLE} -lesshtml -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt -dart ${TubeTK_BINARY_DIR} -1 1 -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt 
+    COMMAND ${KWSTYLE_EXECUTABLE} ${KWSTYLE_ARGUMENTS}
     WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
     COMMENT "Coding Style Checker" VERBATIM )
 ENDIF( TubeTK_USE_KWSTYLE )
