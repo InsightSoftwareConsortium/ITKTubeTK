@@ -8,7 +8,7 @@
 
 #include "tubeCurves2DImageFilter.h"
 
-#include "Curves2DExtractorCLP.h"
+#include "ExtractCurves2DCLP.h"
 
 int main( int argc, char * argv[] )
 {

@@ -1,4 +1,4 @@
-project (Curves2DExtractor)
+project (ExtractCurves2D)
 
 cmake_minimum_required(VERSION 2.8)
 if(COMMAND CMAKE_POLICY)
@@ -26,15 +26,15 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/TubeSegmentation
 )
 
-set ( Curves2DExtractor_SOURCE 
-Curves2DExtractor.cxx
+set ( ExtractCurves2D_SOURCE 
+ExtractCurves2D.cxx
 )
 
-generateclp(Curves2DExtractor_SOURCE Curves2DExtractor.xml)
+generateclp(ExtractCurves2D_SOURCE ExtractCurves2D.xml)
 
-add_executable(Curves2DExtractor ${Curves2DExtractor_SOURCE})
-target_link_libraries(Curves2DExtractor TubeTKTubeSegmentation)
+add_executable(ExtractCurves2D ${ExtractCurves2D_SOURCE})
+target_link_libraries(ExtractCurves2D TubeTKTubeSegmentation)
 
-install(TARGETS Curves2DExtractor
+install(TARGETS ExtractCurves2D
   RUNTIME DESTINATION bin
 )

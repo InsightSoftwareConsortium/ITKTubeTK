@@ -1,3 +1,5 @@
 add_subdirectory(HessianTubeness2D)
-add_subdirectory(Curves2DExtractor)
+add_subdirectory(CurvesExtractor2D)
 add_subdirectory(HessianTubeness)
+add_subdirectory(SimulateTomosynthesis)
+add_subdirectory(ComputeImageSimilarity)

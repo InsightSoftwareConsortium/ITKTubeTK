@@ -21,6 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
+#ifndef DoIt_h
+#define DoIt_h
+
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
 #endif
@@ -29,19 +32,12 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-// Must declare a forward declaration of DoIt before tubeCLIHelperFunctions
-template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char **argv );
-
-// Must include CLP file before tubeCLIHelperFunctions
-#include "HessianTubenessCLP.h"
-
-#include "tubeCLIHelperFunctions.h"
-
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
+
+//#include "HessianTubenessCLP.h"
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char **argv )
@@ -121,10 +117,5 @@ int DoIt( int argc, char **argv )
   return EXIT_SUCCESS;
   }
 
-int main( int argc, char * argv[] )
-  {   
-  PARSE_ARGS;  
-
-  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
-  }
+#endif
 
