@@ -20,7 +20,9 @@ target_link_libraries( TubeTKTubeSegmentation
 #install(FILES 
   #${TubeTK_Base_TubeSegmentation_H_Files}
   #${TubeTK_Base_TubeSegmentation_H_Files}
-  #DESTINATION include)
+  #DESTINATION include
+  #)
 
 #install(TARGETS TubeTKTubeSegmentation
-  #DESTINATION lib)
+  #DESTINATION lib
+  #)

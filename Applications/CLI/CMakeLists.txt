@@ -1,4 +1,5 @@
+add_subdirectory(SampleCLIApplication)
 add_subdirectory(HessianTubeness2D)
-add_subdirectory(CurvesExtractor2D)
+add_subdirectory(ExtractCurves2D)
 add_subdirectory(SimulateTomosynthesis)
 add_subdirectory(ComputeImageSimilarity)
