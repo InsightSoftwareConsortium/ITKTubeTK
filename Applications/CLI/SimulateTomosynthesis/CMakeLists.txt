@@ -45,9 +45,9 @@ include( ${USE_ITK_FILE} )
 find_package( GenerateCLP REQUIRED )
 include( ${GenerateCLP_USE_FILE} )
 
-# Include Applications/CLI to access tubeCLIHelperFunctions.h
+# Include Utilities to access tubeCLIHelperFunctions.h
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Applications/CLI
+  ${TubeTK_SOURCE_DIR}/Utilities
   ${TubeTK_SOURCE_DIR}/Base/Preprocessing
   )
 
