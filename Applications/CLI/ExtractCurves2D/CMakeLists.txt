@@ -61,3 +61,4 @@ target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} TubeTKTubeSegmentation )
 install( TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
   )
+

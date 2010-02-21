@@ -62,3 +62,4 @@ target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} )
 install( TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
   )
+
