@@ -26,7 +26,7 @@ include_regular_expression( "^.*$" )
 find_package( Tclsh )
 if( TCL_TCLSH )
   add_test( PrintSelf-BasePreprocessingFilters ${TCL_TCLSH}
-              ${TubeTK_SOURCE_DIR}/Base/Preprocessing/Testing/PrintSelfCheck.tcl  
+              ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl  
               ${TubeTK_SOURCE_DIR}/Base/Preprocessing )
 endif( TCL_TCLSH )
 
@@ -44,6 +44,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBasePreprocessingFilters_SRCS
        tubeBasePreprocessingFiltersPrintTest.cxx
        itkTubeEnhancingDiffusion2DImageFilterTest.cxx )
+
+include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
 
 add_executable( tubeBasePreprocessingFiltersHeaderTest 
                   tubeBasePreprocessingFiltersHeaderTest.cxx )
