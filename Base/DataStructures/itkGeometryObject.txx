@@ -53,7 +53,7 @@ GeometryObject< TDimension >
 template< unsigned int TDimension >
 void
 GeometryObject< TDimension >
-::CopyInformation(const DataObject *data)
+::CopyInformation(const DataObject * itkNotUsed(data))
 {
 }
 
