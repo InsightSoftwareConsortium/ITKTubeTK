@@ -23,9 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-set( APPLICATION_PATH 
-       ${TubeTK_BINARY_DIR}/Applications/CLI/${PROJECT_NAME} )
-
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
