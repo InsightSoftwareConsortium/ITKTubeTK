@@ -39,14 +39,6 @@ int RegressionTestImage (const char *, const char *, int, bool,double,int,int);
 
 int main(int argc, char **argv)
 {
-  if(argc < 3)
-    {
-    std::cerr << "Usage:" << std::endl;
-    std::cerr << "testImage, baselineImage1, [baselineImage2, baselineImage3, ...]" << std::endl;
-    std::cerr << "Note that if you supply more than one baselineImage, this test will pass if any" << std::endl;
-    std::cerr << "of them match the testImage" << std::endl;
-    return -1;
-    }
   int bestBaselineStatus = 2001;
 
   // Process some command-line arguments intended for BatchMake
