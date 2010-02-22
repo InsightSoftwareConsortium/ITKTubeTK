@@ -37,7 +37,7 @@ add_test( ${PROJECT_NAME}Test1
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 add_test( ${PROJECT_NAME}Test1-Compare
-            ${IMAGE_COMPARE_COMMAND}
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
