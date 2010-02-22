@@ -30,4 +30,4 @@ add_executable(${KIT}CxxTests ${Tests})
 target_link_libraries(${KIT}CxxTests ITKCommon)
 
 add_test(itkGeometryObjectTest1 
-  ${KIT}CxxTests itkGeometryObjectTest1)
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/${KIT}CxxTests itkGeometryObjectTest1)

@@ -33,12 +33,12 @@ set( BASELINE ${APPLICATION_PATH}/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 add_test( ImageCompareCommandTest1
-            ${IMAGE_COMPARE_COMMAND}
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/ImageCompareCommand
                -t ${INPUT_DATA}/slice256.png
                -b ${INPUT_DATA}/slice256.png )
 
 add_test( ImageCompareCommandTest2
-            ${IMAGE_COMPARE_COMMAND}
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/ImageCompareCommand
                -i 50
                -t ${INPUT_DATA}/im0001.mha
                -b ${INPUT_DATA}/im0001_n10.mha )

@@ -31,10 +31,10 @@ if( TCL_TCLSH )
 endif( TCL_TCLSH )
 
 set( BASE_PREPROCESSING_FILTERS_TESTS 
-      ${TubeTK_BINARY_DIR}/Base/Preprocessing/Testing/tubeBasePreprocessingFiltersTests )
+      ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBasePreprocessingFiltersTests )
 
 set( BASE_PREPROCESSING_FILTERS_HEADER_TEST 
-      ${TubeTK_BINARY_DIR}/Base/Preprocessing/Testing/tubeBasePreprocessingFiltersHeaderTest )
+      ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBasePreprocessingFiltersHeaderTest )
 
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )

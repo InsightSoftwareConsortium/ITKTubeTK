@@ -51,11 +51,9 @@ add_executable( ImageCompareCommand
                 ImageCompareCommand.cxx )
 target_link_libraries( ImageCompareCommand
                          ${ITK_LIBRARIES} )
-SET(IMAGE_COMPARE_COMMAND "${TubeTK_BINARY_DIR}/Utilities/ImageCompareCommand" CACHE INTERNAL "ImageCompare path to be used by subprojects")
 
-install( TARGETS ImageCompareCommand
-  RUNTIME DESTINATION bin
-  )
+slicer3_set_plugins_output_path( ImageCompareCommand )
+slicer3_install_plugins( ImageCompareCommand )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
