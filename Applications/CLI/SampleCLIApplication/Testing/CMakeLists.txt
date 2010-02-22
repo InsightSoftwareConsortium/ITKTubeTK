@@ -24,17 +24,18 @@
 include_regular_expression( "^.*$" )
 
 set( APPLICATION_PATH 
-      ${TubeTK_BINARY_DIR}/Applications/CLI/${PROJECT_NAME} )
+       ${TubeTK_BINARY_DIR}/Applications/CLI/${PROJECT_NAME} )
 
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
-set( BASELINE ${APPLICATION_PATH}/Testing/Baselines )
+set( BASELINE 
+       ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 add_test( ${PROJECT_NAME}Test1
-            ${PROJECT_NAME}
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
                ${INPUT_DATA}/slice256.png
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 

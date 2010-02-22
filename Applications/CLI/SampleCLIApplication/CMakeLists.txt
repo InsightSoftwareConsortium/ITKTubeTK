@@ -69,13 +69,12 @@ add_executable( ${PROJECT_NAME}
                 ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )
 target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
 
-install( TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION bin
-  )
-
-install( TARGETS ${PROJECT_NAME}Module
-  DESTINATION lib
-  )
+slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
+slicer3_set_plugins_output_path( ${PROJECT_NAME} )
+set( TARGETS 
+     ${PROJECT_NAME}Module 
+     ${PROJECT_NAME} )
+slicer3_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

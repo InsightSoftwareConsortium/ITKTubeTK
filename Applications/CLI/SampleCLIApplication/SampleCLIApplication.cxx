@@ -70,11 +70,9 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef pixelT                                                  PixelType;
-  typedef float                                                   PrecisionPixelType;
-  typedef itk::Image< PrecisionPixelType,  dimensionT >           ImageType;
-  typedef itk::Image< PixelType,  dimensionT >                    OutputImageType;
-  typedef itk::ImageFileReader< ImageType >                       ReaderType;
+  typedef float                                         PixelType;
+  typedef itk::Image< PixelType,  dimensionT >          ImageType;
+  typedef itk::ImageFileReader< ImageType >             ReaderType;
   
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -128,16 +126,12 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop("Gaussian Blur");
     }
 
-  typedef itk::CastImageFilter< ImageType, OutputImageType >  CastFilterType;
-  typename CastFilterType::Pointer castFilter = CastFilterType::New();
-  castFilter->SetInput( curImage );
-
-  typedef itk::ImageFileWriter< OutputImageType  >   ImageWriterType;
+  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
   timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( castFilter->GetOutput() );
+  writer->SetInput( curImage );
   try
     {
     writer->Update();

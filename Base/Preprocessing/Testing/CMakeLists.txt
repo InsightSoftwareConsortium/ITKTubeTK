@@ -45,7 +45,10 @@ set( tubeBasePreprocessingFilters_SRCS
        tubeBasePreprocessingFiltersPrintTest.cxx
        itkTubeEnhancingDiffusion2DImageFilterTest.cxx )
 
-include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
+include_directories( 
+  ${TubeTK_SOURCE_DIR}/Utilities 
+  ${TubeTK_SOURCE_DIR}/Base/Preprocessing 
+  )
 
 add_executable( tubeBasePreprocessingFiltersHeaderTest 
                   tubeBasePreprocessingFiltersHeaderTest.cxx )

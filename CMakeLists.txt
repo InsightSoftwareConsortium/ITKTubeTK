@@ -1,3 +1,26 @@
+##############################################################################
+# 
+# Library:   TubeTK
+# 
+# Copyright 2010 Kitware Inc. 28 Corporate Drive,
+# Clifton Park, NY, 12065, USA.
+# 
+# All rights reserved. 
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+##############################################################################
+
 project( TubeTK )
 
 #-----------------------------------------------------------------------------
@@ -5,10 +28,14 @@ project( TubeTK )
 cmake_minimum_required( VERSION 2.8)
 
 #-----------------------------------------------------------------------------
-# Paths for TubeTK
-INCLUDE_DIRECTORIES( 
-  Base/Preprocessing
-  )
+#  Set TubeTK 
+set(TubeTK_VERSION_MAJOR "0")
+set(TubeTK_VERSION_MINOR "9")
+set(TubeTK_VERSION "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}")
+
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 
 #-----------------------------------------------------------------------------
@@ -152,14 +179,43 @@ else( TubeTK_USE_SUPERBUILD )
 
 endif( TubeTK_USE_SUPERBUILD )
 
+#-----------------------------------------------------------------------------
+# Define locations for applications and libraries
+#  We use Slicer3 variable names to simplify porting to Slicer3
+set(Slicer3_INSTALL_BIN_DIR "bin")
+set(Slicer3_INSTALL_LIB_DIR "lib/TubeTK")
+set(Slicer3_INSTALL_INCLUDE_DIR "include/TubeTK")
+set(Slicer3_INSTALL_SHARE_DIR "share/TubeTK")
+set(Slicer3_INSTALL_ITKFACTORIES_DIR "${Slicer3_INSTALL_LIB_DIR}/ITKFactories")
+
+set(Slicer3_INSTALL_PLUGINS_BIN_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins")
+set(Slicer3_INSTALL_PLUGINS_LIB_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins")
+set(Slicer3_INSTALL_PLUGINS_INCLUDE_DIR "${Slicer3_INSTALL_INCLUDE_DIR}/Plugins")
+set(Slicer3_INSTALL_PLUGINS_SHARE_DIR "${Slicer3_INSTALL_SHARE_DIR}/Plugins")
+set(Slicer3_INSTALL_PLUGINS_CACHE_DIR "${Slicer3_INSTALL_LIB_DIR}/PluginsCache")
+
+set(Slicer3_HOME "${Slicer3_BINARY_DIR}")
+
+include( ${TubeTK_SOURCE_DIR}/CMake/Slicer3PluginsMacros.cmake )
+
+#-----------------------------------------------------------------------------
+# Misc.
+include(${CMAKE_ROOT}/Modules/TestBigEndian.cmake)
+test_big_endian(CMAKE_WORDS_BIGENDIAN)
+
+
+#-----------------------------------------------------------------------------
+# Build TubeTK
 add_subdirectory( Utilities )
 add_subdirectory( Base )
 add_subdirectory( Applications )
 
+#-----------------------------------------------------------------------------
+# Create the directory where tests store temp results
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
 
 install(
   FILES README.txt
   DESTINATION doc
-)
+  )
 
