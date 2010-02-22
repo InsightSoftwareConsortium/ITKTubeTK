@@ -32,17 +32,15 @@ limitations under the License.
 // It is important to use OrientedImages
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
-#include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
 
 // The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
-#include "itkTimeProbesCollectorBase.h"
 #include "tubeCLIProgressReporter.h"
+#include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
 #include "itkRecursiveGaussianImageFilter.h"
-
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -98,7 +96,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start("Gaussian Blur");
 
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType > FilterType;
-    typename FilterType::Pointer filter = FilterType::New();
+    typename FilterType::Pointer filter;
 
     // Progress per iteration
     double progressFraction = 0.8/dimensionT;
@@ -145,6 +143,8 @@ int DoIt( int argc, char * argv[] )
   progress = 1.0;
   progressReporter.Report( progress );
   
+  timeCollector.Report();
+
   return EXIT_SUCCESS;
   }
 
