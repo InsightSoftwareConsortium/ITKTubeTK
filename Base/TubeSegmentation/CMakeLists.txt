@@ -17,9 +17,6 @@ target_link_libraries( TubeTKTubeSegmentation
   ${ITK_LIBRARIES}
   )
 
-slicer3_set_plugins_output_path( TubeTKTubeSegmentation )
-slicer3_install_plugins( TubeTKTubeSegmentation )
-
 #install(FILES 
   #${TubeTK_Base_TubeSegmentation_H_Files}
   #${TubeTK_Base_TubeSegmentation_H_Files}
