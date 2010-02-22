@@ -29,11 +29,20 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
+// It is important to use OrientedImages
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
+#include "itkCastImageFilter.h"
 #include "itkImageFileWriter.h"
 
+// The following three should be used in every CLI application
+#include "tubeCLIFilterWatcher.h"
+#include "itkTimeProbesCollectorBase.h"
+#include "tubeCLIProgressReporter.h"
+
+// Includes specific to this CLI application
 #include "itkRecursiveGaussianImageFilter.h"
+
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -52,15 +61,24 @@ int DoIt( int argc, char * argv[] )
   {
   PARSE_ARGS;
 
+  // The timeCollector is used to perform basic profiling of the components
+  //   of your algorithm.
+  itk::TimeProbesCollectorBase timeCollector;
+  
+  // CLIProgressReporter is used to communicate progress with the Slicer GUI
+  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
+                                                 CLPProcessInformation );
+  progressReporter.Start();
+
   typedef pixelT                                                  PixelType;
-  typedef itk::Image< PixelType,  dimensionT >                    ImageType;
+  typedef float                                                   PrecisionPixelType;
+  typedef itk::Image< PrecisionPixelType,  dimensionT >           ImageType;
+  typedef itk::Image< PixelType,  dimensionT >                    OutputImageType;
   typedef itk::ImageFileReader< ImageType >                       ReaderType;
   
+  timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
-
-  //read input image  
   reader->SetFileName( inputVolume.c_str() );
-
   try
     {
     reader->Update();
@@ -71,13 +89,21 @@ int DoIt( int argc, char * argv[] )
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
     }
+  timeCollector.Stop("Load data");
+  double progress = 0.1;
+  progressReporter.Report( progress );
 
   typename ImageType::Pointer curImage = reader->GetOutput();
 
   if( gaussianBlurStdDev > 0 )
     {
+    timeCollector.Start("Gaussian Blur");
+
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType > FilterType;
     typename FilterType::Pointer filter = FilterType::New();
+
+    // Progress per iteration
+    double progressFraction = 0.8/dimensionT;
 
     for(unsigned int i=0; i<dimensionT; i++)
       {
@@ -89,18 +115,29 @@ int DoIt( int argc, char * argv[] )
       filter->SetOrder( 
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       filter->SetDirection( i );
+      tube::CLIFilterWatcher( filter,
+                              "Blur Filter 1D",
+                              CLPProcessInformation,
+                              progressFraction,
+                              progress );
 
       filter->Update();
       curImage = filter->GetOutput();
       }
+
+    timeCollector.Stop("Gaussian Blur");
     }
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  typedef itk::CastImageFilter< ImageType, OutputImageType >  CastFilterType;
+  typename CastFilterType::Pointer castFilter = CastFilterType::New();
+  castFilter->SetInput( curImage );
+
+  typedef itk::ImageFileWriter< OutputImageType  >   ImageWriterType;
+
+  timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput ( curImage );
-
+  writer->SetInput( castFilter->GetOutput() );
   try
     {
     writer->Update();
@@ -110,6 +147,9 @@ int DoIt( int argc, char * argv[] )
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
+  timeCollector.Stop("Save data");
+  progress = 1.0;
+  progressReporter.Report( progress );
   
   return EXIT_SUCCESS;
   }

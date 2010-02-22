@@ -23,7 +23,7 @@
 
 # If you follow the SampleCLIApplication format, you only need to change the
 # following line to configure this CMakeLists.txt file.
-project( SampleCLIApplication )
+project( Utilities )
 
 cmake_minimum_required( VERSION 2.8 )
 if( COMMAND CMAKE_POLICY )
@@ -47,34 +47,14 @@ include( ${USE_ITK_FILE} )
 find_package( GenerateCLP REQUIRED )
 include( ${GenerateCLP_USE_FILE} )
 
-# Include Utilities to access tubeCLIHelperFunctions.h
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
-  ${TubeTK_SOURCE_DIR}/Base/Preprocessing
-  )
+add_executable( ImageCompareCommand
+                ImageCompareCommand.cxx )
+target_link_libraries( ImageCompareCommand
+                         ${ITK_LIBRARIES} )
+SET(IMAGE_COMPARE_COMMAND "${TubeTK_BINARY_DIR}/Utilities/ImageCompareCommand" CACHE INTERNAL "ImageCompare path to be used by subprojects")
 
-set( PROJECT_SOURCE 
-  ${PROJECT_NAME}.cxx
-  )
-
-generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
-
-# Build the shared library
-add_library( ${PROJECT_NAME}Module SHARED ${PROJECT_SOURCE} )
-set_target_properties( ${PROJECT_NAME}Module
-                       PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
-target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} )
-
-add_executable( ${PROJECT_NAME}
-                ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )
-target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
-
-install( TARGETS ${PROJECT_NAME}
+install( TARGETS ImageCompareCommand
   RUNTIME DESTINATION bin
-  )
-
-install( TARGETS ${PROJECT_NAME}Module
-  DESTINATION lib
   )
 
 if( BUILD_TESTING )

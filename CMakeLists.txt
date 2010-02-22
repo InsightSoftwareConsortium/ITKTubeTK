@@ -152,6 +152,7 @@ else( TubeTK_USE_SUPERBUILD )
 
 endif( TubeTK_USE_SUPERBUILD )
 
+add_subdirectory( Utilities )
 add_subdirectory( Base )
 add_subdirectory( Applications )
 

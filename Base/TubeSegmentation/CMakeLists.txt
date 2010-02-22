@@ -23,6 +23,6 @@ target_link_libraries( TubeTKTubeSegmentation
   #DESTINATION include
   #)
 
-#install(TARGETS TubeTKTubeSegmentation
-  #DESTINATION lib
-  #)
+install(TARGETS TubeTKTubeSegmentation
+  DESTINATION lib
+  )

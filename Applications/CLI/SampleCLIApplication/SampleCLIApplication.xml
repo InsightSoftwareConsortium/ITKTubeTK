@@ -25,7 +25,7 @@
       <label>Output Volume</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Tomosynthesis Volume</description>
+      <description>Output Volume</description>
     </image>
   </parameters>
 
