@@ -28,6 +28,12 @@
       <index>1</index>
       <description>Tomosynthesis Volume</description>
     </image>
+
+  </parameters>
+  <parameters>
+
+    <label>Input Image</label>
+    <description>Info about the input image</description>
     <float>
       <name>foreground</name>
       <label>Foreground intensity</label>
@@ -44,6 +50,12 @@
       <longflag>background</longflag>
       <default>0</default>
     </float>
+
+  </parameters>
+  <parameters>
+
+    <label>Tomosynthesis parameters</label>
+    <description>Params of forming the tomo image</description>
     <integer>
       <name>erodeRadius</name>
       <label>Erosion radius</label>
@@ -75,7 +87,29 @@
       <longflag>gaussianBlurStdDev</longflag>
       <default>1.0</default>
     </double>
-        
+
+  </parameters>
+  <parameters>
+
+    <label>Output Image</label>
+    <description>Info about the output image</description>
+    <double>
+      <name>outScale</name>
+      <label>Output intensity scaling</label>
+      <flag>s</flag>
+      <description>Scaling factor to apply to the output intensities</description>
+      <longflag>outScale</longflag>
+      <default>1.0</default>
+    </double>
+    <double>
+      <name>outOffset</name>
+      <label>Output intensity offset</label>
+      <flag>o</flag>
+      <description>Offset factor to apply to the output intensities</description>
+      <longflag>outOffset</longflag>
+      <default>0.0</default>
+    </double>
+
   </parameters>
 
 </executable>

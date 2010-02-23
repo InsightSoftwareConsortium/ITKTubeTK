@@ -40,6 +40,7 @@ limitations under the License.
 #include "itkBinaryDilateImageFilter.h"
 
 #include "itkRecursiveGaussianImageFilter.h"
+#include "itkShiftScaleImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -172,6 +173,20 @@ int DoIt( int argc, char * argv[] )
       filter->Update();
       curImage = filter->GetOutput();
       }
+    }
+
+  if( outOffset != 0 || outScale != 1 )
+    {
+    typedef itk::ShiftScaleImageFilter< ImageType, ImageType > FilterType;
+    typename FilterType::Pointer filter = FilterType::New();
+
+    filter = FilterType::New();
+    filter->SetInput( curImage );
+    filter->SetShift( outOffset );
+    filter->SetScale( outScale );
+
+    filter->Update();
+    curImage = filter->GetOutput();
     }
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
