@@ -19,9 +19,9 @@ namespace itk
  * Uses simple forward Euler scheme (explicit) with 3x3 stencil,
  * see eg phd of Joachim Weickert for theory and implementation regarding
  * the construction of this discretization scheme. See 'Tube Enhancing
- * Diffusion', Manniesing, media 2006, for information regarding the 
+ * Diffusion', Manniesing, media 2006, for information regarding the
  * construction of the diffusion tensor.
- * 
+ *
  * - Stores all elements of the Hessian of the complete image during
  *   diffusion. An alternative implementation is to only store the
  *   scale for which the vesselness has maximum response, and to
@@ -29,7 +29,7 @@ namespace itk
  *   the current image, ie at iteration i + temp image, therefore the complete
  *   memory consumption approximately peaks at 8 times the input image
  *   (input image in float)
- * - The hessian is stored as six individual images, an alternative 
+ * - The hessian is stored as six individual images, an alternative
  *   implementation is to use the itk symmetric second rank tensor
  *   as pixeltype (and eg using the class SymmetricEigenAnalysisImage
  *   Filter). However, we are lazy, and using this since we rely
@@ -52,12 +52,12 @@ namespace itk
  *
  */
 template <class PixelType = short int, unsigned int Dimension = 2>
-class tubeBasePreprocessing_EXPORT TubeEnhancingDiffusion2DImageFilter : 
+class tubeBasePreprocessing_EXPORT TubeEnhancingDiffusion2DImageFilter :
     public ImageToImageFilter<Image<PixelType, Dimension> ,
                               Image<PixelType, Dimension> >
 {
 
-public: 
+public:
 
     typedef float                                           Precision;
     typedef Image<PixelType, Dimension>                     ImageType;
@@ -82,9 +82,9 @@ public:
     itkSetMacro(Omega, Precision);
     itkSetMacro(Sensitivity, Precision);
 
-    void SetScales(const std::vector<Precision> scales) 
-      { 
-      m_Scales = scales; 
+    void SetScales(const std::vector<Precision> scales)
+      {
+      m_Scales = scales;
       }
 
     itkBooleanMacro(DarkObjectLightBackground);
@@ -113,16 +113,16 @@ public:
         m_Verbose                   = true;
     }
 
-protected: 
+protected:
     TubeEnhancingDiffusion2DImageFilter();
     ~TubeEnhancingDiffusion2DImageFilter() {};
     void PrintSelf(std::ostream &os, Indent indent) const;
     void GenerateData();
 
-private: 
+private:
 
-    TubeEnhancingDiffusion2DImageFilter(const Self&); 
-    void operator=(const Self&);            
+    TubeEnhancingDiffusion2DImageFilter(const Self&);
+    void operator=(const Self&);
 
     Precision                 m_TimeStep;
     unsigned int              m_Iterations;
@@ -132,7 +132,7 @@ private:
     Precision                 m_Epsilon;
     Precision                 m_Omega;
     Precision                 m_Sensitivity;
-    std::vector<Precision>    m_Scales;   
+    std::vector<Precision>    m_Scales;
     bool                      m_DarkObjectLightBackground;
     bool                      m_Verbose;
 
@@ -147,12 +147,12 @@ private:
 
     // Calculates maxvessel response of the range
     // of scales and stores the hessian of each voxel
-    // into the member images m_Dij. 
+    // into the member images m_Dij.
     void MaxTubeResponse( const typename PrecisionImageType::Pointer );
 
     // calculates diffusion tensor
     // based on current values of hessian (for which we have
-    // maximim vessel response). 
+    // maximim vessel response).
     void DiffusionTensor();
 
     inline Precision TubenessFunction2D ( // sorted magn increasing
