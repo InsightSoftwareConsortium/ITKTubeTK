@@ -27,14 +27,20 @@ template <class PixelType, unsigned int Dimension>
 TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::TubeEnhancingDiffusion2DImageFilter():
     m_TimeStep(NumericTraits<Precision>::Zero),
-    m_Iterations(0),
-    m_RecalculateTubeness(0),
-    m_Epsilon(0.0),
-    m_Omega(0.0),
-    m_Sensitivity(0.0),
+    m_Iterations(200),
+    m_RecalculateTubeness(100),
+    m_Epsilon(0.001),
+    m_Beta(0.5),
+    m_Omega(25.0),
+    m_Sensitivity(20.0),
     m_DarkObjectLightBackground(false)
+    m_Verbose(false)
 {
   this->SetNumberOfRequiredInputs(1);
+
+  m_Scales.resize(2);
+  m_Scales[0] = 6;
+  m_Scales[1] = 8;
 }
 
 // printself for debugging
@@ -43,13 +49,16 @@ void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::PrintSelf(std::ostream &os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
+
   os << indent << "TimeStep                  : " << m_TimeStep  << std::endl;
   os << indent << "Iterations                : " << m_Iterations << std::endl;
   os << indent << "RecalculateTubeness       : " << m_RecalculateTubeness 
      << std::endl;
   os << indent << "Scales                    : ";
   for (unsigned int i=0; i<m_Scales.size(); ++i)
+    {
     os << m_Scales[i] << " ";
+    }
   os << std::endl;
   os << indent << "Epsilon                   : " << m_Epsilon << std::endl;
   os << indent << "Omega                     : " << m_Omega << std::endl;
@@ -60,6 +69,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
   os << indent << "Gamma                     : " << m_Gamma << std::endl;
   os << indent << "Verbose                   : " << m_Verbose << std::endl;
 }
+
 // singleiter
 template <class PixelType, unsigned int Dimension>
 void TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
