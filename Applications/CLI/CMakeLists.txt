@@ -1,6 +1,72 @@
+##############################################################################
+# 
+# Library:   TubeTK
+# 
+# Copyright 2010 Kitware Inc. 28 Corporate Drive,
+# Clifton Park, NY, 12065, USA.
+# 
+# All rights reserved. 
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+##############################################################################
+
 add_subdirectory(SampleCLIApplication)
 add_subdirectory(HessianTubeness2D)
 add_subdirectory(ExtractCurves2D)
 add_subdirectory(SimulateTomosynthesis)
 add_subdirectory(ComputeImageSimilarity)
+
+IF( NOT SVNCOMMAND )
+  FIND_PACKAGE( Subversion REQUIRED )
+  SET( SVNCOMMAND ${Subversion_SVN_EXECUTABLE} )
+ENDIF( NOT SVNCOMMAND )
+
+# CLI_SOURCE_DIR is a Slicer3 variable.  Needs to point to the top of
+#   the Slicer3 CLI modules.
+set( CLI_SOURCE_DIR "${TubeTK_BINARY_DIR}/Applications/CLI/Slicer3-Src" )
+set( CLI_BINARY_DIR "${TubeTK_BINARY_DIR}/Applications/CLI/Slicer3-Bin" )
+make_directory( ${CLI_SOURCE_DIR} )
+make_directory( ${CLI_BINARY_DIR} )
+set( Slicer3_SOURCE_DIR ${CLI_SOURCE_DIR} )
+
+macro( svnGetSlicerCLI FILENAME )
+  set( svnCmd "co" )
+  set( svnSite "http://svn.slicer.org/Slicer3/trunk/Applications/CLI" )
+  execute_process(
+    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${CLI_SOURCE_DIR}/${FILENAME}
+    OUTPUT_VARIABLE svnOutput
+    ERROR_VARIABLE svnError
+    RESULT_VARIABLE svnResult
+    )
+  if( svnError )
+    message( "Error while fetching CLI module from Slicer3 SVN..." )
+    message( "Svn = ${SVNCOMMAND}" )
+    message( "Command = ${svnCmd}" )
+    message( "Site = ${svnSite}" )
+    message( "File = ${FILENAME}" )
+    message( "Dir = ${CLI_SOURCE_DIR}" )
+    message( "Output = ${svnOutput}" )
+    message( FATAL "Result = ${svnResult}" )
+  endif( svnError )
+endmacro( svnGetSlicerCLI FILENAME )
+
+svnGetSlicerCLI( Templates ${CLI_SOURCE_DIR} )
+svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
+
+set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR} )
+set( LAUNCH_EXE  "" )
+
+add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
+                  ${CLI_BINARY_DIR}/RegisterImagesModule )
 
