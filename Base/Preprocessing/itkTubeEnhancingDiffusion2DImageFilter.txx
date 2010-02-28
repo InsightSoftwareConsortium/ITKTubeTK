@@ -26,14 +26,15 @@ namespace itk
 template <class PixelType, unsigned int Dimension>
 TubeEnhancingDiffusion2DImageFilter<PixelType, Dimension>
 ::TubeEnhancingDiffusion2DImageFilter():
-    m_TimeStep(NumericTraits<Precision>::Zero),
+    m_TimeStep(0.2),
     m_Iterations(200),
     m_RecalculateTubeness(100),
-    m_Epsilon(0.001),
     m_Beta(0.5),
+    m_Gamma(5.0),
+    m_Epsilon(0.001),
     m_Omega(25.0),
     m_Sensitivity(20.0),
-    m_DarkObjectLightBackground(false)
+    m_DarkObjectLightBackground(false),
     m_Verbose(false)
 {
   this->SetNumberOfRequiredInputs(1);
