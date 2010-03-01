@@ -55,7 +55,7 @@ int DoIt( int argc, char * argv[] );
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )
-  {
+{
   PARSE_ARGS;
 
   typedef float                                                   PixelType;
@@ -206,12 +206,12 @@ int DoIt( int argc, char * argv[] )
     }
   
   return EXIT_SUCCESS;
-  }
+}
 
 int main( int argc, char **argv )
-  {
+{
   PARSE_ARGS;
 
   return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
-  }
+}
 
