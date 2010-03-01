@@ -58,77 +58,72 @@ class tubeBaseTubeSegmentation_EXPORT Curves2DImageFilter
 {
 public:
 
-  typedef   double                            InputPixelType;
-  typedef   double                            PixelType;
+  typedef   double                                   InputPixelType;
+  typedef   double                                   PixelType;
 
-  typedef   itk::Vector< PixelType, 2 >           VectorType;
+  typedef   itk::Vector< PixelType, 2 >              VectorType;
 
-  typedef   itk::CovariantVector< PixelType, 2 >  CovariantVectorType;
+  typedef   itk::CovariantVector< PixelType, 2 >     CovariantVectorType;
 
-  typedef   itk::Image< InputPixelType, 2 >       InputImageType;
-  typedef   itk::Image< PixelType, 2 >            ImageType;
-  typedef   itk::Image< VectorType, 2 >           VectorImageType;
-  typedef   itk::Image< CovariantVectorType, 2 >  CovariantVectorImageType;
+  typedef   itk::Image< InputPixelType, 2 >          InputImageType;
+  typedef   itk::Image< PixelType, 2 >               ImageType;
+  typedef   itk::Image< VectorType, 2 >              VectorImageType;
+  typedef   itk::Image< CovariantVectorType, 2 >     CovariantVectorImageType;
 
-  typedef   itk::RGBPixel< unsigned char >        OutputPixelType;
-  typedef   itk::Image< OutputPixelType, 2 >      OutputImageType;
+  typedef   itk::RGBPixel< unsigned char >           OutputPixelType;
+  typedef   itk::Image< OutputPixelType, 2 >         OutputImageType;
 
-  typedef   itk::Point<float,2>                   MeshPointDataType;
+  typedef   itk::Point<float,2>                      MeshPointDataType;
 
-  typedef   itk::Mesh< MeshPointDataType, 3 >     MeshType;
+  typedef   itk::Mesh< MeshPointDataType, 3 >        MeshType;
 
-  typedef   itk::ImageFileReader<
-                            InputImageType >      VolumeReaderType;
+  typedef   itk::ImageFileReader< InputImageType >   VolumeReaderType;
 
-  typedef   itk::ImageFileWriter<
-                            OutputImageType >     VolumeWriterType;
+  typedef   itk::ImageFileWriter< OutputImageType >  VolumeWriterType;
 
-  typedef   itk::Mesh< MeshType::PointType, 2 >   ImageSpaceMeshType;
+  typedef   itk::Mesh< MeshType::PointType, 2 >      ImageSpaceMeshType;
 
+  typedef   itk::RecursiveGaussianImageFilter< InputImageType, ImageType >
+                                               InputGaussianFilterType;
 
-  typedef   itk::RecursiveGaussianImageFilter<
-                            InputImageType,
-                            ImageType        > InputGaussianFilterType;
+  typedef   itk::RecursiveGaussianImageFilter< ImageType, ImageType >
+                                               GaussianFilterType;
 
-  typedef   itk::RecursiveGaussianImageFilter<
-                            ImageType,
-                            ImageType         > GaussianFilterType;
+  typedef   itk::AddImageFilter< ImageType, ImageType, ImageType >
+                                               AddFilterType;
 
-  typedef   itk::AddImageFilter< ImageType,
-                            ImageType, ImageType >  AddFilterType;
+  typedef   itk::BinaryMagnitudeImageFilter< ImageType, ImageType,
+                                             ImageType >
+                                               ModulusFilterType;
 
-  typedef   itk::BinaryMagnitudeImageFilter< ImageType,
-                            ImageType, ImageType >  ModulusFilterType;
+  typedef   itk::EigenAnalysis2DImageFilter< ImageType, ImageType,
+                                             VectorImageType >
+                                               EigenFilterType;
 
-  typedef   itk::EigenAnalysis2DImageFilter< ImageType,
-                            ImageType, VectorImageType >  EigenFilterType;
+  typedef   itk::GradientRecursiveGaussianImageFilter< InputImageType,
+                                                       CovariantVectorImageType >    
+                                               GradientFilterType;
 
-  typedef   itk::GradientRecursiveGaussianImageFilter<
-                            InputImageType,
-                            CovariantVectorImageType >    GradientFilterType;
-
-  typedef   itk::MultiplyImageFilter< VectorImageType,
-                                      VectorImageType,
-                                      ImageType >  ScalarProductFilterType;
+  typedef   itk::MultiplyImageFilter< VectorImageType, VectorImageType,
+                                      ImageType >
+                                               ScalarProductFilterType;
 
   typedef   itk::ImageToParametricSpaceFilter< ImageType, MeshType >
-                                                  ParametricSpaceFilterType;
+                                               ParametricSpaceFilterType;
 
-  typedef   itk::JoinImageFilter< ImageType, ImageType >      JoinFilterType;
+  typedef   itk::JoinImageFilter< ImageType, ImageType >
+                                               JoinFilterType;
 
-  typedef   itk::RescaleIntensityImageFilter< ImageType,
-                                              ImageType >
-    RescaleIntensityFilterType;
+  typedef   itk::RescaleIntensityImageFilter< ImageType, ImageType >
+                                               RescaleIntensityFilterType;
 
-  typedef   itk::SphereSpatialFunction<
-                                MeshType::PointDimension,
-                                MeshType::PointType >
-    SphereSpatialFunctionType;
+  typedef   itk::SphereSpatialFunction< MeshType::PointDimension,
+                                        MeshType::PointType >
+                                               SphereSpatialFunctionType;
 
-  typedef   itk::FrustumSpatialFunction<
-                                MeshType::PointDimension,
-                                MeshType::PointType >
-    FrustumSpatialFunctionType;
+  typedef   itk::FrustumSpatialFunction< MeshType::PointDimension,
+                                         MeshType::PointType >
+                                               FrustumSpatialFunctionType;
 
 
 
@@ -141,18 +136,15 @@ public:
    typedef  FrustumSpatialFunctionType         SpatialFunctionType;
 #endif
 
-  typedef itk::InteriorExteriorMeshFilter<
-                                        MeshType,
-                                        MeshType,
-                                        SpatialFunctionType  >
-                                                   SpatialFunctionFilterType;
+  typedef itk::InteriorExteriorMeshFilter< MeshType, MeshType,
+                                           SpatialFunctionType  >
+                                               SpatialFunctionFilterType;
 
-  typedef itk::ParametricSpaceToImageSpaceMeshFilter<
-                                      MeshType,
-                                      ImageSpaceMeshType
-                                      >         InverseParametricFilterType;
+  typedef itk::ParametricSpaceToImageSpaceMeshFilter< MeshType,
+                                      ImageSpaceMeshType >
+                                               InverseParametricFilterType;
 
-  typedef GaussianFilterType::RealType     RealType;
+  typedef GaussianFilterType::RealType         RealType;
 
 public:
   Curves2DImageFilter();
@@ -204,7 +196,7 @@ protected:
 
   InverseParametricFilterType::Pointer    m_InverseParametricFilter;
 
-  bool   m_ImageLoaded;
+  bool                                    m_ImageLoaded;
 
 };
 

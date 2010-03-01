@@ -463,7 +463,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
     itxx.Value() = HN(0,0);
     itxy.Value() = HN(0,1);
     ityy.Value() = HN(1,1);
-  }
+    }
   return;
 }
 
@@ -494,77 +494,85 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
   const Precision htmax = 0.5 /
      ( 1.0 / (ispacing[0] * ispacing[0]) + 1.0 / (ispacing[1] * ispacing[1]) );
 
-  if (m_TimeStep == NumericTraits<Precision>::Zero)
+   if( m_TimeStep == NumericTraits<Precision>::Zero)
     {
     m_TimeStep = htmax;
     }
 
-   if (m_TimeStep> htmax)
+  if( m_TimeStep> htmax )
     {
     std::cerr << "the time step size is too large!" << std::endl;
     this->AllocateOutputs();
     return;
     }
 
-    if (m_Verbose)
+  if(m_Verbose)
+    {
+    std::cout << "min/max             \t" << minmax->GetMinimum() 
+              << " " << minmax->GetMaximum() << std::endl;
+    std::cout << "iterations/timestep \t" << m_Iterations 
+              << " " << m_TimeStep << std::endl;
+    std::cout << "recalc v            \t" << m_RecalculateTubeness 
+              << std::endl;
+    std::cout << "scales              \t";
+    for (unsigned int i=0; i<m_Scales.size(); ++i)
       {
-      std::cout << "min/max             \t" << minmax->GetMinimum() << " " << minmax->GetMaximum() << std::endl;
-      std::cout << "iterations/timestep \t" << m_Iterations << " " << m_TimeStep << std::endl;
-      std::cout << "recalc v            \t" << m_RecalculateTubeness << std::endl;
-      std::cout << "scales              \t";
-        for (unsigned int i=0; i<m_Scales.size(); ++i)
-        {
-            std::cout << m_Scales[i] << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "eps/omega/sens      \t" << m_Epsilon <<  " " << m_Omega << " " << m_Sensitivity << std::endl;
+      std::cout << m_Scales[i] << " ";
+      }
+    std::cout << std::endl;
+    std::cout << "eps/omega/sens      \t" << m_Epsilon 
+              <<  " " << m_Omega << " " << m_Sensitivity << std::endl;
     }
 
-    // cast to precision
-    typedef CastImageFilter<ImageType,PrecisionImageType> CT;
-    typename CT::Pointer cast = CT::New();
-    cast->SetInput(this->GetInput());
-    cast->Update();
+  // cast to precision
+  typedef CastImageFilter<ImageType,PrecisionImageType> CT;
+  typename CT::Pointer cast = CT::New();
+  cast->SetInput(this->GetInput());
+  cast->Update();
 
-    typename PrecisionImageType::Pointer ci = cast->GetOutput();
+  typename PrecisionImageType::Pointer ci = cast->GetOutput();
 
-    progress.CompletedPixel();
+  progress.CompletedPixel();
 
-    if (m_Verbose)
+  if( m_Verbose )
     {
-        std::cout << "start algorithm ... " << std::endl;
+    std::cout << "start algorithm ... " << std::endl;
     }
 
-  for (m_CurrentIteration=1; m_CurrentIteration<=m_Iterations; m_CurrentIteration++)
+  for( m_CurrentIteration=1;
+       m_CurrentIteration<=m_Iterations;
+       m_CurrentIteration++ )
     {
-        VED2DSingleIteration (ci);
-        progress.CompletedPixel();
+    VED2DSingleIteration (ci);
+    progress.CompletedPixel();
     }
 
-    typedef MinimumMaximumImageFilter<PrecisionImageType> MMT;
-    typename MMT::Pointer mm = MMT::New();
-    mm->SetInput(ci);
-    mm->Update();
+  typedef MinimumMaximumImageFilter<PrecisionImageType> MMT;
+  typename MMT::Pointer mm = MMT::New();
+  mm->SetInput(ci);
+  mm->Update();
 
-    progress.CompletedPixel();
+  progress.CompletedPixel();
 
-    if (m_Verbose)
+  if( m_Verbose )
     {
-        std::cout << std::endl;
-        std::cout << "min/max             \t" << mm->GetMinimum() << " " << mm->GetMaximum() << std::endl;
-        std::cout << "end vesselenhancingdiffusion2Dimagefilter" << std::endl;
+    std::cout << std::endl;
+    std::cout << "min/max             \t" << mm->GetMinimum() 
+              << " " << mm->GetMaximum() << std::endl;
+    std::cout << "end vesselenhancingdiffusion2Dimagefilter" 
+              << std::endl;
     }
 
-    // cast back to pixeltype
-    this->AllocateOutputs();
-    typedef CastImageFilter<PrecisionImageType,ImageType> CTI;
-    typename CTI::Pointer casti = CTI::New();
-    casti->SetInput(ci);
-    casti->GraftOutput(this->GetOutput());
-    casti->Update();
-    this->GraftOutput(casti->GetOutput());
+  // cast back to pixeltype
+  this->AllocateOutputs();
+  typedef CastImageFilter<PrecisionImageType,ImageType> CTI;
+  typename CTI::Pointer casti = CTI::New();
+  casti->SetInput(ci);
+  casti->GraftOutput(this->GetOutput());
+  casti->Update();
+  this->GraftOutput(casti->GetOutput());
 
-    progress.CompletedPixel();
+  progress.CompletedPixel();
 }
 
 

@@ -412,4 +412,3 @@ Curves2DImageFilter
 }
 
 } // end namespace tube
-

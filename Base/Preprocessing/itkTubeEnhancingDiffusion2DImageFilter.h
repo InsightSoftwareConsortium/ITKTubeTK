@@ -59,7 +59,7 @@ namespace itk
  * - note: most of computation time is spent at calculation of vesselness
  *   response
  *
- * - PixelType      short, 2D
+ * - PixelT         short, 2D
  *   Precision      float, 2D
  *
  *
@@ -73,19 +73,19 @@ namespace itk
  * email: r.manniesing@erasmusmc.nl
  *
  */
-template <class PixelType = short int, unsigned int Dimension = 2>
+template <class PixelT = short int, unsigned int DimensionT = 2>
 class tubeBasePreprocessing_EXPORT TubeEnhancingDiffusion2DImageFilter :
-    public ImageToImageFilter<Image<PixelType, Dimension> ,
-                              Image<PixelType, Dimension> >
+    public ImageToImageFilter<Image<PixelT, DimensionT> ,
+                              Image<PixelT, DimensionT> >
 {
 
 public:
 
   typedef float                                           Precision;
-  typedef Image<PixelType, Dimension>                     ImageType;
-  typedef Image<Precision, Dimension>                     PrecisionImageType;
+  typedef Image<PixelT, DimensionT>                       ImageType;
+  typedef Image<Precision, DimensionT>                    PrecisionImageType;
 
-  typedef TubeEnhancingDiffusion2DImageFilter           Self;
+  typedef TubeEnhancingDiffusion2DImageFilter             Self;
   typedef ImageToImageFilter<ImageType,ImageType>         Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
@@ -177,10 +177,8 @@ private:
   // maximim vessel response).
   void DiffusionTensor();
 
-  inline Precision TubenessFunction2D ( // sorted magn increasing
-          const Precision,    // l1
-          const Precision     // l2
-          );
+  // Sorted increasing magnitude: l1, l2
+  inline Precision TubenessFunction2D ( const Precision, const Precision );
 
 };
 
@@ -191,4 +189,3 @@ private:
 #endif
 
 #endif
-
