@@ -56,7 +56,7 @@ int DoIt( int argc, char * argv[] );
 // Your code should be within the DoIt function...
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )
-  {
+{
   PARSE_ARGS;
 
   // The timeCollector is used to perform basic profiling of the components
@@ -146,16 +146,15 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Report();
 
   return EXIT_SUCCESS;
-  }
-
+}
 
 // Main
 int main( int argc, char **argv )
-  {
+{
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
   return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
-  }
+}
 
