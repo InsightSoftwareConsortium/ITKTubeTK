@@ -1,3 +1,25 @@
+/*=========================================================================
+
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
 #ifndef __itkTubeEnhancingDiffusion2DImageFilter_h
 #define __itkTubeEnhancingDiffusion2DImageFilter_h
 
@@ -59,110 +81,108 @@ class tubeBasePreprocessing_EXPORT TubeEnhancingDiffusion2DImageFilter :
 
 public:
 
-    typedef float                                           Precision;
-    typedef Image<PixelType, Dimension>                     ImageType;
-    typedef Image<Precision, Dimension>                     PrecisionImageType;
+  typedef float                                           Precision;
+  typedef Image<PixelType, Dimension>                     ImageType;
+  typedef Image<Precision, Dimension>                     PrecisionImageType;
 
-    typedef TubeEnhancingDiffusion2DImageFilter           Self;
-    typedef ImageToImageFilter<ImageType,ImageType>         Superclass;
-    typedef SmartPointer<Self>                              Pointer;
-    typedef SmartPointer<const Self>                        ConstPointer;
+  typedef TubeEnhancingDiffusion2DImageFilter           Self;
+  typedef ImageToImageFilter<ImageType,ImageType>         Superclass;
+  typedef SmartPointer<Self>                              Pointer;
+  typedef SmartPointer<const Self>                        ConstPointer;
 
-    itkNewMacro(Self);
-    itkTypeMacro(TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter);
+  itkNewMacro(Self);
+  itkTypeMacro(TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter);
 
-    itkSetMacro(TimeStep, Precision);
-    itkSetMacro(Iterations, unsigned int);
-    itkSetMacro(RecalculateTubeness, unsigned int);
+  itkSetMacro(TimeStep, Precision);
+  itkSetMacro(Iterations, unsigned int);
+  itkSetMacro(RecalculateTubeness, unsigned int);
 
-    itkSetMacro(Beta, Precision);
-    itkSetMacro(Gamma, Precision);
+  itkSetMacro(Beta, Precision);
+  itkSetMacro(Gamma, Precision);
 
-    itkSetMacro(Epsilon, Precision);
-    itkSetMacro(Omega, Precision);
-    itkSetMacro(Sensitivity, Precision);
+  itkSetMacro(Epsilon, Precision);
+  itkSetMacro(Omega, Precision);
+  itkSetMacro(Sensitivity, Precision);
 
-    void SetScales(const std::vector<Precision> scales)
-      {
-      m_Scales = scales;
-      }
-
-    itkBooleanMacro(DarkObjectLightBackground);
-    itkSetMacro(DarkObjectLightBackground,bool);
-    itkBooleanMacro(Verbose);
-    itkSetMacro(Verbose,bool);
-
-    // some defaults for lowdose example
-    // used in the paper
-    void SetDefaultPars()
+  void SetScales(const std::vector<Precision> scales)
     {
-        m_TimeStep                  = 0.25;
-        m_Iterations                = 200;
-        m_RecalculateTubeness     = 100;
-        m_Beta                      = 0.5;
-        m_Gamma                     = 5.0;
-        m_Epsilon                   = 0.01;
-        m_Omega                     = 25.0;
-        m_Sensitivity               = 20.0;
+    m_Scales = scales;
+    }
 
-        m_Scales.resize(2);
-        m_Scales[0] = 6;
-        m_Scales[1] = 8;
+  itkBooleanMacro(DarkObjectLightBackground);
+  itkSetMacro(DarkObjectLightBackground,bool);
+  itkBooleanMacro(Verbose);
+  itkSetMacro(Verbose,bool);
 
-        m_DarkObjectLightBackground = true;
-        m_Verbose                   = true;
+  // some defaults for lowdose example
+  // used in the paper
+  void SetDefaultPars()
+    {
+    m_TimeStep                  = 0.25;
+    m_Iterations                = 200;
+    m_RecalculateTubeness     = 100;
+    m_Beta                      = 0.5;
+    m_Gamma                     = 5.0;
+    m_Epsilon                   = 0.01;
+    m_Omega                     = 25.0;
+    m_Sensitivity               = 20.0;
+
+    m_Scales.resize(2);
+    m_Scales[0] = 6;
+    m_Scales[1] = 8;
+
+    m_DarkObjectLightBackground = true;
+    m_Verbose                   = true;
     }
 
 protected:
-    TubeEnhancingDiffusion2DImageFilter();
-    ~TubeEnhancingDiffusion2DImageFilter() {};
-    void PrintSelf(std::ostream &os, Indent indent) const;
-    void GenerateData();
+  TubeEnhancingDiffusion2DImageFilter();
+  ~TubeEnhancingDiffusion2DImageFilter() {};
+  void PrintSelf(std::ostream &os, Indent indent) const;
+  void GenerateData();
 
 private:
 
-    TubeEnhancingDiffusion2DImageFilter(const Self&);
-    void operator=(const Self&);
+  TubeEnhancingDiffusion2DImageFilter(const Self&);
+  void operator=(const Self&);
 
-    Precision                 m_TimeStep;
-    unsigned int              m_Iterations;
-    unsigned int              m_RecalculateTubeness;
-    Precision                 m_Beta;
-    Precision                 m_Gamma;
-    Precision                 m_Epsilon;
-    Precision                 m_Omega;
-    Precision                 m_Sensitivity;
-    std::vector<Precision>    m_Scales;
-    bool                      m_DarkObjectLightBackground;
-    bool                      m_Verbose;
+  Precision                 m_TimeStep;
+  unsigned int              m_Iterations;
+  unsigned int              m_RecalculateTubeness;
+  Precision                 m_Beta;
+  Precision                 m_Gamma;
+  Precision                 m_Epsilon;
+  Precision                 m_Omega;
+  Precision                 m_Sensitivity;
+  std::vector<Precision>    m_Scales;
+  bool                      m_DarkObjectLightBackground;
+  bool                      m_Verbose;
 
-    unsigned int              m_CurrentIteration;
+  unsigned int              m_CurrentIteration;
 
-    // current hessian for which we have max vesselresponse
-    typename PrecisionImageType::Pointer m_Dxx;
-    typename PrecisionImageType::Pointer m_Dxy;
-    typename PrecisionImageType::Pointer m_Dyy;
+  // current hessian for which we have max vesselresponse
+  typename PrecisionImageType::Pointer m_Dxx;
+  typename PrecisionImageType::Pointer m_Dxy;
+  typename PrecisionImageType::Pointer m_Dyy;
 
-    void VED2DSingleIteration( typename PrecisionImageType::Pointer );
+  void VED2DSingleIteration( typename PrecisionImageType::Pointer );
 
-    // Calculates maxvessel response of the range
-    // of scales and stores the hessian of each voxel
-    // into the member images m_Dij.
-    void MaxTubeResponse( const typename PrecisionImageType::Pointer );
+  // Calculates maxvessel response of the range
+  // of scales and stores the hessian of each voxel
+  // into the member images m_Dij.
+  void MaxTubeResponse( const typename PrecisionImageType::Pointer );
 
-    // calculates diffusion tensor
-    // based on current values of hessian (for which we have
-    // maximim vessel response).
-    void DiffusionTensor();
+  // calculates diffusion tensor
+  // based on current values of hessian (for which we have
+  // maximim vessel response).
+  void DiffusionTensor();
 
-    inline Precision TubenessFunction2D ( // sorted magn increasing
-            const Precision,    // l1
-            const Precision     // l2
-            );
-
+  inline Precision TubenessFunction2D ( // sorted magn increasing
+          const Precision,    // l1
+          const Precision     // l2
+          );
 
 };
-
 
 } // end namespace itk
 
