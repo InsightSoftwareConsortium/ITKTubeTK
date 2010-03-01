@@ -26,7 +26,11 @@ add_subdirectory(HessianTubeness2D)
 add_subdirectory(ExtractCurves2D)
 add_subdirectory(SimulateTomosynthesis)
 add_subdirectory(ComputeImageSimilarity)
+add_subdirectory(Crop)
 
+# The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
+#  building, and installing CLI modules that are distributed with Slicer3 and
+#  that we would like to access from TubeTK.
 IF( NOT SVNCOMMAND )
   FIND_PACKAGE( Subversion REQUIRED )
   SET( SVNCOMMAND ${Subversion_SVN_EXECUTABLE} )
