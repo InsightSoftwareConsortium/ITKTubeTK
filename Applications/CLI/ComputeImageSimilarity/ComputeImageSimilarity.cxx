@@ -34,6 +34,7 @@ limitations under the License.
 #include "itkIdentityTransform.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkMutualInformationImageToImageMetric.h"
+#include "itkNormalizedCorrelationImageToImageMetric.h"
 #include "itkNormalizeImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
@@ -107,9 +108,21 @@ int DoIt( int argc, char * argv[] )
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
   interpolator->SetInputImage( image2 );
 
-  typedef itk::MutualInformationImageToImageMetric< ImageType, ImageType >
-                                                           MetricType;
-  typename MetricType::Pointer metric = MetricType::New();
+  typedef itk::ImageToImageMetric< ImageType, ImageType >   MetricType;
+  typename MetricType::Pointer metric;
+
+  if( !correlation )
+    {
+    typedef itk::MutualInformationImageToImageMetric< ImageType, ImageType >
+                                                           MIMetricType;
+    metric = MIMetricType::New();
+    }
+  else
+    {
+    typedef itk::NormalizedCorrelationImageToImageMetric< ImageType, ImageType >
+                                                           CorMetricType;
+    metric = CorMetricType::New();
+    }
 
   typename ImageType::SizeType size = image1->GetLargestPossibleRegion().GetSize();
 

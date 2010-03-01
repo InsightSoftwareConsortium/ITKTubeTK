@@ -36,6 +36,14 @@
       <flag>r</flag>
       <default>0.05</default>
     </float>
+    <boolean>
+      <name>correlation</name>
+      <label>Normalized correlation</label>
+      <description>Use a normalized correlation metric instead of mutual information</description>
+      <longflag>correlation</longflag>
+      <flag>c</flag>
+      <default>false</default>
+    </boolean>
         
   </parameters>
 
