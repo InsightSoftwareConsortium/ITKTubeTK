@@ -107,8 +107,7 @@ public:
   typedef   itk::ImageToParametricSpaceFilter< ImageType, MeshType >
                                                ParametricSpaceFilterType;
 
-  typedef   itk::JoinImageFilter< ImageType, ImageType >
-                                               JoinFilterType;
+  typedef   itk::JoinImageFilter< ImageType, ImageType > JoinFilterType;
 
   typedef   itk::RescaleIntensityImageFilter< ImageType, ImageType >
                                                RescaleIntensityFilterType;
@@ -121,13 +120,13 @@ public:
                                          MeshType::PointType >
                                                FrustumSpatialFunctionType;
 
-// These typedefs select the particular SpatialFunction
+  // These typedefs select the particular SpatialFunction
 #ifdef SPHERE_FUNCTION
-   typedef  SphereSpatialFunctionType          SpatialFunctionType;
+  typedef SphereSpatialFunctionType          SpatialFunctionType;
 #endif
 
 #ifdef FRUSTUM_FUNCTION
-   typedef  FrustumSpatialFunctionType         SpatialFunctionType;
+  typedef FrustumSpatialFunctionType         SpatialFunctionType;
 #endif
 
   typedef itk::InteriorExteriorMeshFilter< MeshType, MeshType,
