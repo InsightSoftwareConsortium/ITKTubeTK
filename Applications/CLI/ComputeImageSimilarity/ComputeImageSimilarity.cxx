@@ -135,7 +135,15 @@ int DoIt( int argc, char * argv[] )
   metric->Initialize();
   metric->MultiThreadingInitialize();
 
-  std::cout << metric->GetValue( transform->GetParameters() ) << std::endl;
+  if( !correlation )
+    {
+    std::cout << metric->GetValue( transform->GetParameters() ) << std::endl;
+    }
+  else
+    {
+    std::cout << -metric->GetValue( transform->GetParameters() ) << std::endl;
+    }
+
 
   return EXIT_SUCCESS;
 }
