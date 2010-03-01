@@ -71,6 +71,7 @@ svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
 set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR} )
 set( LAUNCH_EXE  "" )
 
+set( SUPPORT_2D_IMAGES 1 )
 add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
                   ${CLI_BINARY_DIR}/RegisterImagesModule )
 
