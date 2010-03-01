@@ -1,20 +1,25 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: ceExtractorConsoleBase.cxx,v $
-  Language:  C++
-  Date:      $Date: 2010-01-27 22:46:22 $
-  Version:   $Revision: 1.17 $
+Library:   TubeTK
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
-
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
 #endif
@@ -27,10 +32,10 @@ namespace tube
 {
 
 /************************************
- *
- *  Constructor
- *
- ***********************************/
+*
+*  Constructor
+*
+***********************************/
 Curves2DImageFilter
 ::Curves2DImageFilter()
 {
@@ -170,36 +175,32 @@ Curves2DImageFilter
 }
 
 
-
-
 /************************************
- *
- *  Destructor
- *
- ***********************************/
+*
+*  Destructor
+*
+***********************************/
 Curves2DImageFilter
 ::~Curves2DImageFilter()
 {
 
 }
 
-
-
  
 /************************************
- *
- *  Load
- *
- ***********************************/
+*
+*  Load
+*
+***********************************/
 void
 Curves2DImageFilter
 ::Load( const char * filename )
 {
 
   if( !filename )
-  {
+    {
     return;
-  }
+    }
 
   m_Reader->SetFileName( filename );
   m_Reader->UpdateLargestPossibleRegion();
@@ -210,22 +211,21 @@ Curves2DImageFilter
 
 }
 
-
  
 /************************************
- *
- *  SaveOutput
- *
- ***********************************/
+*
+*  SaveOutput
+*
+***********************************/
 void
 Curves2DImageFilter
 ::SaveOutput( const char * filename )
 {
 
   if( !filename )
-  {
+    {
     return;
-  }
+    }
 
   m_InverseParametricFilter->Update();
 
@@ -328,13 +328,12 @@ Curves2DImageFilter
 
 }
 
-
  
 /************************************
- *
- *  Show Progress
- *
- ***********************************/
+*
+*  Show Progress
+*
+***********************************/
 void
 Curves2DImageFilter
 ::ShowProgress( float )
@@ -342,13 +341,12 @@ Curves2DImageFilter
 
 }
 
-
  
 /************************************
- *
- *  Show Status
- *
- ***********************************/
+*
+*  Show Status
+*
+***********************************/
 void
 Curves2DImageFilter
 ::ShowStatus( const char * )
@@ -356,15 +354,12 @@ Curves2DImageFilter
 
 }
 
-
-
-
  
 /************************************
- *
- *  Set Sigma
- *
- ***********************************/
+*
+*  Set Sigma
+*
+***********************************/
 void
 Curves2DImageFilter
 ::SetSigma( RealType value )
@@ -387,15 +382,12 @@ Curves2DImageFilter
 
 }
 
-
-
-
  
 /************************************
- *
- *  Execute
- *
- ***********************************/
+*
+*  Execute
+*
+***********************************/
 void
 Curves2DImageFilter
 ::Execute( void )
@@ -406,7 +398,6 @@ Curves2DImageFilter
     std::cout << "Please load an image first" << std::endl; 
     return;
     }
-  
 
   m_Hxy->Update();
 
@@ -421,3 +412,4 @@ Curves2DImageFilter
 }
 
 } // end namespace tube
+
