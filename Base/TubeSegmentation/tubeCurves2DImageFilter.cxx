@@ -250,7 +250,7 @@ Curves2DImageFilter
   black.Fill(0);
   outputImage->FillBuffer( black );
 
-  typedef itk::ImageRegionIterator< OutputImageType > OutputIterator;
+  typedef itk::ImageRegionIterator< OutputImageType >      OutputIterator;
   typedef itk::ImageRegionConstIterator< InputImageType  > InputIterator;
 
   InputIterator it( inputImage, region );

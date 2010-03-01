@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef itk_Curves2DImageFilter_h
-#define itk_Curves2DImageFilter_h
+#ifndef __tubeCurves2DImageFilter_h
+#define __tubeCurves2DImageFilter_h
 
 #include "itkImage.h"
 #include "itkRGBPixel.h"
@@ -62,7 +62,7 @@ public:
   typedef   double                            PixelType;
 
   typedef   itk::Vector< PixelType, 2 >           VectorType;
-  
+
   typedef   itk::CovariantVector< PixelType, 2 >  CovariantVectorType;
 
   typedef   itk::Image< InputPixelType, 2 >       InputImageType;
@@ -77,10 +77,10 @@ public:
 
   typedef   itk::Mesh< MeshPointDataType, 3 >     MeshType;
 
-  typedef   itk::ImageFileReader< 
+  typedef   itk::ImageFileReader<
                             InputImageType >      VolumeReaderType;
 
-  typedef   itk::ImageFileWriter< 
+  typedef   itk::ImageFileWriter<
                             OutputImageType >     VolumeWriterType;
 
   typedef   itk::Mesh< MeshType::PointType, 2 >   ImageSpaceMeshType;
@@ -89,21 +89,21 @@ public:
   typedef   itk::RecursiveGaussianImageFilter<
                             InputImageType,
                             ImageType        > InputGaussianFilterType;
-  
+
   typedef   itk::RecursiveGaussianImageFilter<
                             ImageType,
                             ImageType         > GaussianFilterType;
 
-  typedef   itk::AddImageFilter< ImageType, 
+  typedef   itk::AddImageFilter< ImageType,
                             ImageType, ImageType >  AddFilterType;
 
-  typedef   itk::BinaryMagnitudeImageFilter< ImageType, 
+  typedef   itk::BinaryMagnitudeImageFilter< ImageType,
                             ImageType, ImageType >  ModulusFilterType;
 
-  typedef   itk::EigenAnalysis2DImageFilter< ImageType, 
+  typedef   itk::EigenAnalysis2DImageFilter< ImageType,
                             ImageType, VectorImageType >  EigenFilterType;
 
-  typedef   itk::GradientRecursiveGaussianImageFilter< 
+  typedef   itk::GradientRecursiveGaussianImageFilter<
                             InputImageType,
                             CovariantVectorImageType >    GradientFilterType;
 
@@ -116,40 +116,40 @@ public:
 
   typedef   itk::JoinImageFilter< ImageType, ImageType >      JoinFilterType;
 
-  typedef   itk::RescaleIntensityImageFilter< ImageType, 
-                                              ImageType > 
+  typedef   itk::RescaleIntensityImageFilter< ImageType,
+                                              ImageType >
     RescaleIntensityFilterType;
 
-  typedef   itk::SphereSpatialFunction< 
+  typedef   itk::SphereSpatialFunction<
                                 MeshType::PointDimension,
-                                MeshType::PointType >  
+                                MeshType::PointType >
     SphereSpatialFunctionType;
-  
-  typedef   itk::FrustumSpatialFunction< 
+
+  typedef   itk::FrustumSpatialFunction<
                                 MeshType::PointDimension,
-                                MeshType::PointType >  
+                                MeshType::PointType >
     FrustumSpatialFunctionType;
 
 
-            
+
 // These typedefs select the particular SpatialFunction
 #ifdef SPHERE_FUNCTION
    typedef  SphereSpatialFunctionType          SpatialFunctionType;
-#endif 
+#endif
 
 #ifdef FRUSTUM_FUNCTION
    typedef  FrustumSpatialFunctionType         SpatialFunctionType;
 #endif
-                                
+
   typedef itk::InteriorExteriorMeshFilter<
                                         MeshType,
                                         MeshType,
-                                        SpatialFunctionType  >   
+                                        SpatialFunctionType  >
                                                    SpatialFunctionFilterType;
 
   typedef itk::ParametricSpaceToImageSpaceMeshFilter<
                                       MeshType,
-                                      ImageSpaceMeshType 
+                                      ImageSpaceMeshType
                                       >         InverseParametricFilterType;
 
   typedef GaussianFilterType::RealType     RealType;
@@ -193,11 +193,11 @@ protected:
   JoinFilterType::Pointer                 m_Join;
 
   RescaleIntensityFilterType::Pointer     m_RescaleIntensitySmoothed;
-  
+
   RescaleIntensityFilterType::Pointer     m_RescaleIntensityMaxEigen;
-  
+
   RescaleIntensityFilterType::Pointer     m_RescaleIntensityMedialness;
-  
+
   ParametricSpaceFilterType::Pointer      m_ParametricSpace;
 
   SpatialFunctionFilterType::Pointer      m_SpatialFunctionFilter;
