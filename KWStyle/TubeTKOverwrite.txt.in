@@ -1,1 +1,7 @@
-tubeBasePreprocessingFiltersHeaderTest.cxx Header Disable
+itkTubeEnhancingDiffusion2DImageFilter.h Namespace Disable
+itkTubeEnhancingDiffusion2DImageFilter.txx Namespace Disable
+SampleCLIApplication.cxx Namespace Disable
+SimulateTomosynthesis.cxx Namespace Disable
+Crop.cxx Namespace Disable
+HessianTubeness2D.cxx Namespace Disable
+ComputeImageSimilarity.cxx Namespace Disable
