@@ -92,20 +92,16 @@ public:
   typedef   itk::AddImageFilter< ImageType, ImageType, ImageType >
                                                AddFilterType;
 
-  typedef   itk::BinaryMagnitudeImageFilter< ImageType, ImageType,
-                                             ImageType >
+  typedef   itk::BinaryMagnitudeImageFilter< ImageType, ImageType, ImageType >
                                                ModulusFilterType;
 
-  typedef   itk::EigenAnalysis2DImageFilter< ImageType, ImageType,
-                                             VectorImageType >
+  typedef   itk::EigenAnalysis2DImageFilter< ImageType, ImageType, VectorImageType >
                                                EigenFilterType;
 
-  typedef   itk::GradientRecursiveGaussianImageFilter< InputImageType,
-                                                       CovariantVectorImageType >    
+  typedef   itk::GradientRecursiveGaussianImageFilter< InputImageType, CovariantVectorImageType >
                                                GradientFilterType;
 
-  typedef   itk::MultiplyImageFilter< VectorImageType, VectorImageType,
-                                      ImageType >
+  typedef   itk::MultiplyImageFilter< VectorImageType, VectorImageType, ImageType >
                                                ScalarProductFilterType;
 
   typedef   itk::ImageToParametricSpaceFilter< ImageType, MeshType >
@@ -124,8 +120,6 @@ public:
   typedef   itk::FrustumSpatialFunction< MeshType::PointDimension,
                                          MeshType::PointType >
                                                FrustumSpatialFunctionType;
-
-
 
 // These typedefs select the particular SpatialFunction
 #ifdef SPHERE_FUNCTION
