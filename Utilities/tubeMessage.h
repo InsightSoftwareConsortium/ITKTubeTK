@@ -1,14 +1,37 @@
+/*=========================================================================
 
-namespace mavPrintLevel
-{
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
+
+namespace tube {
+
+namespace MessageLevel {
   enum { Information, Warning, Error, Debug };
 }
 
 template <class T>
-void mavPrint( const T& str, int level = 0 )
+void Message( const T& str, int level = 0 )
 {
   #ifndef NDEBUG
-  if( level == mavPrintLevel::Debug )
+  if( level == MessageLevel::Debug )
     {
     std::cout << "<debug>" << str << "</debug>" << std::endl;
     return;
@@ -16,13 +39,13 @@ void mavPrint( const T& str, int level = 0 )
   #endif
   switch( level )
     {
-    case mavPrintLevel::Information:
+    case MessageLevel::Information:
       std::cout << "<info>" << str << "</info>" << std::endl;
       break;
-    case mavPrintLevel::Warning:
+    case MessageLevel::Warning:
       std::cout << "<warning>" << str << "</warning>" << std::endl;
       break;
-    case mavPrintLevel::Error:
+    case MessageLevel::Error:
       std::cout << "<error>" << str << "</error>" << std::endl;
       break;
     default:
@@ -31,80 +54,27 @@ void mavPrint( const T& str, int level = 0 )
 }
 
 template <class T>
-void mavPrintInfo( const T& str )
+void InfoMessage( const T& str )
 {
-  mavPrint( str, mavPrintLevel::Information );
+  Message( str, MessageLevel::Information );
 }
 
 template <class T>
-void mavPrintWarning( const T& str )
+void WarningMessage( const T& str )
 {
-  mavPrint( str, mavPrintLevel::Warning );
+  Message( str, MessageLevel::Warning );
 }
 
 template <class T>
-void mavPrintError( const T& str )
+void ErrorMessage( const T& str )
 {
-  mavPrint( str, mavPrintLevel::Error );
+  Message( str, MessageLevel::Error );
 }
 
 template <class T>
-void mavPrintDebug( const T& str )
+void DebugMessage( const T& str )
 {
-  mavPrint( str, mavPrintLevel::Debug );
+  Message( str, MessageLevel::Debug );
 }
 
-template <class T>
-void mavAssert( bool assertion, const T& str, int level=mavPrintLevel::Error )
-{
-  if( level == mavPrintLevel::Debug && !assertion )
-    {
-    #ifndef NDEBUG
-      mavPrintDebug( str );
-      mav::Exception e;
-      throw e;
-    #endif
-    return;
-    }
-  if( level == mavPrintLevel::Information && !assertion )
-    {
-    mavPrintInfo( str );
-    #ifndef NDEBUG
-      mav::Exception e;
-      throw e;
-    #endif
-    return;
-    }
-  if( !assertion ) // Warning or Error
-    {
-    mavPrint( std::string( "mavAssertion Failed: " ) + mavToString( str ),
-              level );
-    mav::Exception e;
-    throw e;
-    }
-}
-
-template <class T>
-void mavAssertInfo( bool assertion, const T& str )
-{
-  mavAssert( assertion, str, mavPrintLevel::Information );
-}
-
-template <class T>
-void mavAssertWarning( bool assertion, const T& str )
-{
-  mavAssert( assertion, str, mavPrintLevel::Warning );
-}
-
-template <class T>
-void mavAssertError( bool assertion, const T& str )
-{
-  mavAssert( assertion, str, mavPrintLevel::Error );
-}
-
-template <class T>
-void mavAssertDebug( bool assertion, const T& str )
-{
-  mavAssert( assertion, str, mavPrintLevel::Debug );
-}
-
+};
