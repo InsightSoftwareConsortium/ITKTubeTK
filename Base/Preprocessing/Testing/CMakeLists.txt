@@ -81,7 +81,7 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetinaTest
             --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
                       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
             itkTubeEnhancingDiffusion2DImageFilterTest
-               ${INPUT_DATA}/im0001.mha
+               ${INPUT_DATA}/im0001.crop.mha
                ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
                true )
 
@@ -90,6 +90,6 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
             --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
                       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
             itkTubeEnhancingDiffusion2DImageFilterTest
-               ${INPUT_DATA}/im0001_n10.mha
+               ${INPUT_DATA}/im0001_n10.crop.mha
                ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
                true )

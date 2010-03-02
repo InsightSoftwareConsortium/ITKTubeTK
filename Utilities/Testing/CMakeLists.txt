@@ -32,16 +32,31 @@ set( BASELINE ${APPLICATION_PATH}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
+file( COPY ${INPUT_DATA}/slice256.png DESTINATION ${TEMP} )
+file( COPY ${INPUT_DATA}/im0001.crop.mha DESTINATION ${TEMP} )
+
 add_test( ImageCompareCommandTest1
             ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-               -t ${INPUT_DATA}/slice256.png
+               -t ${TEMP}/slice256.png
                -b ${INPUT_DATA}/slice256.png )
 
 add_test( ImageCompareCommandTest2
             ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-               -n 10
+               -n 1000
                -r 1
                -i 50
-               -t ${INPUT_DATA}/im0001.mha
-               -b ${INPUT_DATA}/im0001_n10.mha )
+               -t ${TEMP}/im0001.crop.mha
+               -b ${INPUT_DATA}/im0001_n10.crop.mha )
+
+add_test( ImageCompareCommandTest3
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+               -t ${TEMP}/im0001.mha
+               -b ${INPUT_DATA}/im0001_n10.crop.mha )
+set_tests_properties( ImageCompareCommandTest3
+                      PROPERTIES WILL_FAIL true )
+
+add_test( ImageCompareCommandTest4
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+               -t ${TEMP}/im0001.crop.mha
+               -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001.crop.mha )
 
