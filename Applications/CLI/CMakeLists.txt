@@ -27,6 +27,7 @@ add_subdirectory(ExtractCurves2D)
 add_subdirectory(SimulateTomosynthesis)
 add_subdirectory(ComputeImageSimilarity)
 add_subdirectory(Crop)
+add_subdirectory(CompareImageWithPrior)
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and

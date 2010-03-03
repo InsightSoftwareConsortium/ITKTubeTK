@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Compare Image With Prior</title>
+  <description>
+    Compare an image with a known prior to create a goodness of fit
+    map.
+  </description>
+  <version>0.1.0</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Patrick Reynolds, Kitware</contributor>
+  <acknowledgements>
+    This work is part of the TubeTK project at Kitware
+  </acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume</description>
+    </image>
+    <image>
+      <name>priorVolume</name>
+      <label>Prior Volume</label>
+      <channel>prior</channel>
+      <index>1</index>
+      <description>Prior Volume</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Output Volume</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>Region Selection</label>
+    <integer>
+      <name>regionRadius</name>
+      <label>Sub-Region Radius</label>
+      <description>
+	The radius of each sub-region in the evaluation.
+      </description>
+      <longflag>regionRadius</longflag>
+      <flag>r</flag>
+      <default>148</default>
+    </integer>
+  </parameters>
+
+</executable>
