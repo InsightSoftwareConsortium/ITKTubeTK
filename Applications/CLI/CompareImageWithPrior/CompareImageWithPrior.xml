@@ -62,7 +62,7 @@
       </description>
       <longflag>threshold</longflag>
       <flag>t</flag>
-      <default>1.0</default>
+      <default>0</default>
     </double>
     <integer>
       <name>histogramSize</name>
@@ -71,8 +71,18 @@
 	The length of each size of the per-sample histogram
       </description>
       <longflag>histogramSize</longflag>
-      <flag>h</flag>
+      <flag>i</flag>
       <default>100</default>
+    </integer>
+    <integer>
+      <name>skipSize</name>
+      <label>Skip Size</label>
+      <description>
+	The length of the stride in each dimesion to make this thing doable.
+      </description>
+      <longflag>skipSize</longflag>
+      <flag>s</flag>
+      <default>10</default>
     </integer>
   </parameters>
 

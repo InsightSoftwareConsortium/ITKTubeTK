@@ -40,6 +40,9 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
+// Local Includes
+#include "tubeSubImageGenerator.h"
+
 // Includes specific to this CLI application
 #include "itkRecursiveGaussianImageFilter.h"
 
@@ -70,9 +73,10 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   // typedefs for inputs
-  typedef float                                         PixelType;
-  typedef itk::Image< PixelType,  dimensionT >          ImageType;
-  typedef itk::ImageFileReader< ImageType >             ReaderType;
+  typedef float                                              PixelType;
+  typedef itk::Image< PixelType,  dimensionT >               ImageType;
+  typedef itk::ImageFileReader< ImageType >                  ReaderType;
+  typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -100,21 +104,55 @@ int DoIt( int argc, char * argv[] )
   
   timeCollector.Start("Pull Sections");
   
-  typename ImageType::SizeType desiredSize = 
-    curImage->GetLargestPossibleRegion().GetSize();
-  for( unsigned int i = 0; i < dimensionT; ++i)
-    {
-    desiredSize[i] -= regionRadius;
-    }
-  typename ImageType::RegionType desiredRegion = 
-    curImage->GetLargestPossibleRegion();
-  desiredRegion.SetSize(desiredSize);
-
-  /*typename ImageType::SizeType size;
-  typename ImageType::IndexType index;
-  typename ImageType::RegionType region;*/
-
+  typename ImageType::RegionType region;
+  typename ImageType::SizeType size;
+  typename ImageType::IndexType start;
   
+  std::vector<int> roiSize = std::vector<int>(dimensionT);
+  
+  size = curImage->GetLargestPossibleRegion().GetSize();
+
+  for( unsigned int i = 0; i < dimensionT; ++i )
+    {
+    size[i] -= regionRadius;
+    start[i] = regionRadius/2;
+    roiSize[i] = regionRadius;
+    }
+  region.SetSize(size);
+  region.SetIndex(start);
+  
+  FullItrType imageItr( curImage, region);
+  imageItr.GoToBegin();
+  while( !imageItr.IsAtEnd() )
+    {
+    bool calc;
+    if( threshold != 0 && imageItr.Get() < threshold )
+      {
+      calc = true;
+      }
+    else if( skipSize != -1 )
+      {
+      calc = true;
+      }
+    else
+      {
+      calc = false;
+      }
+
+    typename ImageType::IndexType curIndex = imageItr.GetIndex();    
+    std::vector<int> roiCenter = std::vector<int>(dimensionT);    
+    for( unsigned int i = 0; i < dimensionT; ++i )
+      {
+      roiCenter[i] = curIndex[i];
+      }
+    tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
+    subGenerator.SetRoiCenter(roiCenter);
+    subGenerator.SetRoiSize(roiSize);
+    subGenerator.SetInputVolume(curImage);
+    subGenerator.SetInputMask(curPrior);
+    subGenerator.Update();
+    ++imageItr;
+    }
   
   
   
