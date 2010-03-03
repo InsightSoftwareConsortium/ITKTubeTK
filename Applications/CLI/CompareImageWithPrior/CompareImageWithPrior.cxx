@@ -120,51 +120,80 @@ int DoIt( int argc, char * argv[] )
     }
   region.SetSize(size);
   region.SetIndex(start);
+
+  typename ImageType::Pointer outImage = ImageType::New();
+  outImage->SetRegions(region);
+  outImage->Allocate();
+  outImage->FillBuffer(0);
   
   FullItrType imageItr( curImage, region);
   imageItr.GoToBegin();
   while( !imageItr.IsAtEnd() )
     {
-    bool calc;
-    if( threshold != 0 && imageItr.Get() < threshold )
+    bool doCalculation = true;
+    bool useThreshold;
+    bool useSkip;
+    if( threshold != 0 )
       {
-      calc = true;
+      useThreshold = true;
+      useSkip = false;
       }
     else if( skipSize != -1 )
       {
-      calc = true;
+      useThreshold = false;
+      useSkip = true;
       }
     else
       {
-      calc = false;
+      useThreshold = false;
+      useSkip = false;
       }
 
-    typename ImageType::IndexType curIndex = imageItr.GetIndex();    
-    std::vector<int> roiCenter = std::vector<int>(dimensionT);    
-    for( unsigned int i = 0; i < dimensionT; ++i )
+    if( useThreshold && imageItr.Get() > threshold )
       {
-      roiCenter[i] = curIndex[i];
+      doCalculation = false;
       }
-    tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
-    subGenerator.SetRoiCenter(roiCenter);
-    subGenerator.SetRoiSize(roiSize);
-    subGenerator.SetInputVolume(curImage);
-    subGenerator.SetInputMask(curPrior);
-    subGenerator.Update();
+
+    typename ImageType::IndexType curIndex;
+    std::vector<int> roiCenter;
+    if( doCalculation )
+      {
+      curIndex = imageItr.GetIndex();    
+      roiCenter = std::vector<int>(dimensionT);    
+      for( unsigned int i = 0; i < dimensionT; ++i )
+        {
+        if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
+          {
+          doCalculation = false;
+          break;
+          }
+        roiCenter[i] = curIndex[i];
+        }
+      }
+
+    if( doCalculation )
+      {
+      tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
+      subGenerator.SetRoiCenter(roiCenter);
+      subGenerator.SetRoiSize(roiSize);
+      subGenerator.SetInputVolume(curImage);
+      subGenerator.SetInputMask(curPrior);
+      subGenerator.Update();
+      outImage->SetPixel(curIndex,1);
+      }
     ++imageItr;
     }
-  
   
   
   timeCollector.Stop("Pull Sections");
 
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  typedef itk::ImageFileWriter< ImageType  > ImageWriterType;
 
   timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( curImage );
+  writer->SetInput( outImage );
   try
     {
     writer->Update();
