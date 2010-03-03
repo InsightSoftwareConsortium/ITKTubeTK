@@ -75,7 +75,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
   
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
+  tube::CLIProgressReporter    progressReporter( "MatchROIs",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
@@ -125,6 +125,7 @@ int DoIt( int argc, char * argv[] )
   curMask = readerMask->GetOutput();
   }
   timeCollector.Stop("Read");
+
 
   typename ImageType::SizeType inputSize = curVolume->GetLargestPossibleRegion().GetSize();
   typename ImageType::SizeType lowerCropSize;
@@ -178,6 +179,8 @@ int DoIt( int argc, char * argv[] )
   curMask = cropMaskFilter->GetOutput();
   }
   timeCollector.Stop("Crop");
+
+  typename ImageType::Pointer orgMask = curMask;
 
   if( foreground != 1 || background != 0 )
     {
@@ -289,24 +292,185 @@ int DoIt( int argc, char * argv[] )
     resampler->Update();
     curMask = resampler->GetOutput();
 
+    interpolator->SetInputImage( orgMask );
+    resampler->SetInput( orgMask );
+    resampler->SetInterpolator( interpolator.GetPointer() );
+    resampler->SetOutputParametersFromImage( orgMask );
+    resampler->SetTransform( reg->GetTypedTransform() );
+    resampler->Update();
+    orgMask = resampler->GetOutput();
+
     timeCollector.Stop("RegisterROIs");
     }
 
-  /*
-  if( outOffset != 0 || outScale != 1 )
     {
-    typedef itk::ShiftScaleImageFilter< ImageType, ImageType > FilterType;
-    typename FilterType::Pointer filter = FilterType::New();
+    timeCollector.Start("Normalize");
 
-    filter = FilterType::New();
-    filter->SetInput( curMask );
-    filter->SetShift( outOffset );
-    filter->SetScale( outScale );
+    typedef itk::ImageRegionIterator< ImageType > IterType;
+    IterType volIter( curVolume, curVolume->GetLargestPossibleRegion() );
+    IterType maskIter( curMask, curMask->GetLargestPossibleRegion() );
+    IterType orgMaskIter( orgMask, orgMask->GetLargestPossibleRegion() );
 
-    filter->Update();
-    curMask = filter->GetOutput();
+    int numBins = 50;
+    float volFgHisto[50];
+    float volBgHisto[50];
+    float maskFgHisto[50];
+    float maskBgHisto[50];
+    for( int i=0; i<numBins; i++ )
+      {
+      volFgHisto[i] = 0;
+      volBgHisto[i] = 0;
+      maskFgHisto[i] = 0;
+      maskBgHisto[i] = 0;
+      }
+    volIter.GoToBegin();
+    maskIter.GoToBegin();
+    orgMaskIter.GoToBegin();
+    double volMax = volIter.Get();
+    double maskMax = maskIter.Get();
+    double volMin = volMax;
+    double maskMin = maskMax;
+    while( !volIter.IsAtEnd() )
+      {
+      if( volIter.Get() > volMax )
+        {
+        volMax = volIter.Get();
+        }
+      if( volIter.Get() < volMin )
+        {
+        volMin = volIter.Get();
+        }
+      if( maskIter.Get() > maskMax )
+        {
+        maskMax = maskIter.Get();
+        }
+      if( maskIter.Get() > maskMin )
+        {
+        maskMin = maskIter.Get();
+        }
+
+      ++volIter;
+      ++maskIter;
+      }
+
+    int bin;
+    while( !volIter.IsAtEnd() )
+      {
+      if( orgMaskIter.Get() == foreground )
+        {
+        bin = (int)( (((double)(volIter.Get())-volMin)/(volMax-volMin)) * (numBins-1) );
+        ++volFgHisto[ bin ];
+        if( bin > 0 )
+          {
+          volFgHisto[ bin-1 ] += 0.5;
+          }
+        if( bin < numBins - 1 )
+          {
+          volFgHisto[ bin+1 ] += 0.5;
+          }
+
+        bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin)) * (numBins-1) );
+        ++maskFgHisto[ bin ];
+        if( bin > 0 )
+          {
+          maskFgHisto[ bin-1 ] += 0.5;
+          }
+        if( bin < numBins - 1 )
+          {
+          maskFgHisto[ bin+1 ] += 0.5;
+          }
+        }
+      else
+        {
+        bin = (int)( (((double)(volIter.Get())-volMin)/(volMax-volMin)) * (numBins-1) );
+        ++volBgHisto[ bin ];
+        if( bin > 0 )
+          {
+          volBgHisto[ bin-1 ] += 0.5;
+          }
+        if( bin < numBins - 1 )
+          {
+          volBgHisto[ bin+1 ] += 0.5;
+          }
+
+        bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin)) * (numBins-1) );
+        ++maskBgHisto[ bin ];
+        if( bin > 0 )
+          {
+          maskBgHisto[ bin-1 ] += 0.5;
+          }
+        if( bin < numBins - 1 )
+          {
+          maskBgHisto[ bin+1 ] += 0.5;
+          }
+        }
+
+      ++volIter;
+      ++maskIter;
+      }
+
+    float maxVFg = 0;
+    int maxVFgI = -1;
+    float maxVBg = 0;
+    int maxVBgI = -1;
+    float maxMFg = 0;
+    int maxMFgI = -1;
+    float maxMBg = 0;
+    int maxMBgI = -1;
+    for( int i=0; i<numBins; i++ )
+      {
+      if( volFgHisto[i] > maxVFg )
+        {
+        maxVFg = volFgHisto[i];
+        maxVFgI = i;
+        }
+      if( volBgHisto[i] > maxVBg )
+        {
+        maxVBg = volBgHisto[i];
+        maxVBgI = i;
+        }
+      if( maskFgHisto[i] > maxMFg )
+        {
+        maxMFg = maskFgHisto[i];
+        maxMFgI = i;
+        }
+      if( maskBgHisto[i] > maxMBg )
+        {
+        maxMBg = maskBgHisto[i];
+        maxMBgI = i;
+        }
+      }
+
+    maxVFg = (double)(maxVFgI)/(numBins-1) * (volMax - volMin) + volMin;
+    maxVBg = (double)(maxVBgI)/(numBins-1) * (volMax - volMin) + volMin;
+    maxMFg = (double)(maxMFgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
+    maxMBg = (double)(maxMBgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
+    std::cout << "VFg = " << maxVFg << std::endl;
+    std::cout << "VBg = " << maxVBg << std::endl;
+    std::cout << "MFg = " << maxMFg << std::endl;
+    std::cout << "MBg = " << maxMBg << std::endl;
+  
+    if( maxVFgI != -1 &&
+        maxVBgI != -1 &&
+        maxMFgI != -1 &&
+        maxMBgI != -1 )
+      {
+      typedef itk::ShiftScaleImageFilter< ImageType, ImageType > FilterType;
+      typename FilterType::Pointer filter = FilterType::New();
+  
+      double scale = (maxVFg - maxVBg) / (maxMFg - maxMBg);
+      double shift = (maxVBg - (maxMBg*scale));
+      filter = FilterType::New();
+      filter->SetInput( curMask );
+      filter->SetShift( shift );
+      filter->SetScale( scale );
+  
+      filter->Update();
+      curMask = filter->GetOutput();
+      }
+
+    timeCollector.Stop("Normalize");
     }
-    */
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
   typename ImageWriterType::Pointer writerVolume = ImageWriterType::New();
