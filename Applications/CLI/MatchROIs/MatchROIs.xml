@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>MatchROIs</title>
+  <description>Given an image and a mask, process the mask to match the ROI.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>Stephen R. Aylward</contributor>
+  <acknowledgements>This work was funded, in part, by USC:EXPOSE.</acknowledgements>
+
+  <parameters>
+
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <integer-vector>
+      <name>roiCenter</name>
+      <label>Center of ROI</label>
+      <description>Center of ROI to be processed</description>
+      <flag>C</flag>
+      <longflag>roiCenter</longflag>
+    </integer-vector>
+    <integer-vector>
+      <name>roiSize</name>
+      <label>Size of ROI</label>
+      <description>Size of ROI to be processed</description>
+      <flag>S</flag>
+      <longflag>roiSize</longflag>
+    </integer-vector>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume</description>
+    </image>
+    <image>
+      <name>inputMask</name>
+      <label>Input Mask</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Input mask</description>
+    </image>
+    <image>
+      <name>outputVolumeROI</name>
+      <label>Output Volume ROI</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Output volume ROI</description>
+    </image>
+    <image>
+      <name>outputMaskROI</name>
+      <label>Output Mask ROI</label>
+      <channel>output</channel>
+      <index>3</index>
+      <description>Output mask ROI</description>
+    </image>
+
+  </parameters>
+
+  <parameters>
+
+    <label>Options</label>
+    <description>Steps of the pipeline</description>
+
+    <float>
+      <name>foreground</name>
+      <label>Foreground intensity</label>
+      <description>Foreground intensity value, i.e., object value</description>
+      <flag>f</flag>
+      <longflag>foreground</longflag>
+      <default>0</default>
+    </float>
+    <float>
+      <name>background</name>
+      <label>Background intensity</label>
+      <flag>b</flag>
+      <description>Background intensity value</description>
+      <longflag>background</longflag>
+      <default>255</default>
+    </float>
+    <integer>
+      <name>erode</name>
+      <label>Erosion radius</label>
+      <flag>e</flag>
+      <description>Radius to use for erosion to simulate tomosynthesis</description>
+      <longflag>erode</longflag>
+      <default>3</default>
+    </integer>
+    <float>
+      <name>gaussianBlur</name>
+      <label>Blur sigma</label>
+      <flag>g</flag>
+      <description>Radius to use for blurring to simulate tomosynthesis</description>
+      <longflag>gaussianBlur</longflag>
+      <default>10</default>
+    </float>
+    <boolean>
+      <name>registerROIs</name>
+      <label>Register ROIs</label>
+      <flag>r</flag>
+      <description>Register the ROIs</description>
+      <longflag>registerROIs</longflag>
+      <default>true</default>
+    </boolean>
+    <integer-vector>
+      <name>size</name>
+      <label>Output size</label>
+      <flag>s</flag>
+      <description>Size of the output image</description>
+      <longflag>size</longflag>
+    </integer-vector>
+    <boolean>
+      <name>normalize</name>
+      <label>Normalize output image</label>
+      <flag>n</flag>
+      <description>Normalize output images to 0-1 intensity range</description>
+      <longflag>normalize</longflag>
+      <default>true</default>
+    </boolean>
+
+  </parameters>
+
+</executable>
+
