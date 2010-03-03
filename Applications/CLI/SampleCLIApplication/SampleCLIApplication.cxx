@@ -35,6 +35,7 @@ limitations under the License.
 #include "itkImageFileWriter.h"
 
 // The following three should be used in every CLI application
+#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
@@ -81,8 +82,9 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "ExceptionObject caught !" << std::endl;
-    std::cerr << err << std::endl;
+    tube::ErrorMessage( "Reading volume: Exception caught: " 
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
     return EXIT_FAILURE;
     }
   timeCollector.Stop("Load data");
@@ -136,7 +138,9 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "Exception caught: " << err << std::endl;
+    tube::ErrorMessage( "Writing volume: Exception caught: " 
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
     return EXIT_FAILURE;
     }
   timeCollector.Stop("Save data");
@@ -144,7 +148,6 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
   
   timeCollector.Report();
-
   return EXIT_SUCCESS;
 }
 
