@@ -58,7 +58,7 @@
       <label>Num Iterations</label>
       <description>Number of iterations</description>
       <longflag>iterations</longflag>
-      <default>1</default>
+      <default>50</default>
     </integer>
     <integer>
       <name>recalculateTubeness</name>
@@ -68,7 +68,7 @@
       <description>
         How many iterations do we recalculate vesselness.
       </description>
-      <default>100</default>
+      <default>11</default>
     </integer>
     <double>
       <name>beta</name>
@@ -86,7 +86,7 @@
       <description>
         How sensitive the filter is to second order structureness.
       </description>
-      <default>0.5</default>
+      <default>5.0</default>
     </double>
     <double>
       <name>epsilon</name>
@@ -110,7 +110,7 @@
       <flag>s</flag>
       <longflag>sensitivity</longflag>
       <description>How Sensitive the filter is.</description>
-      <default>5.0</default>
+      <default>20.0</default>
     </double>
         
   </parameters>

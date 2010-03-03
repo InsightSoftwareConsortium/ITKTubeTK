@@ -56,9 +56,24 @@ set( PROJECT_SOURCE
 
 generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
 
-add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} )
+# Build the shared library
+add_library( ${PROJECT_NAME}Module SHARED ${PROJECT_SOURCE} )
+set_target_properties( ${PROJECT_NAME}Module
+                       PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
+target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} )
 
-install( TARGETS ${PROJECT_NAME}
-  RUNTIME DESTINATION bin
-  )
+add_executable( ${PROJECT_NAME}
+                ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )
+target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
+
+slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
+slicer3_set_plugins_output_path( ${PROJECT_NAME} )
+set( TARGETS 
+     ${PROJECT_NAME}Module 
+     ${PROJECT_NAME} )
+slicer3_install_plugins( ${TARGETS} )
+
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
+
