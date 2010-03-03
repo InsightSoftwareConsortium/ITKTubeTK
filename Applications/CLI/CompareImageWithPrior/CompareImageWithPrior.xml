@@ -53,6 +53,27 @@
       <flag>r</flag>
       <default>148</default>
     </integer>
+    <double>
+      <name>threshold</name>
+      <label>Threshold Size</label>
+      <description>
+	The threshold value used to select candidate pixels in the input 
+	volume.
+      </description>
+      <longflag>threshold</longflag>
+      <flag>t</flag>
+      <default>1.0</default>
+    </double>
+    <integer>
+      <name>histogramSize</name>
+      <label>Histogram Size</label>
+      <description>
+	The length of each size of the per-sample histogram
+      </description>
+      <longflag>histogramSize</longflag>
+      <flag>h</flag>
+      <default>100</default>
+    </integer>
   </parameters>
 
 </executable>
