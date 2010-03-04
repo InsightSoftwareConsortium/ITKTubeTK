@@ -40,8 +40,9 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
-// Local Includes
+// Local Includes for helper functions
 #include "tubeSubImageGenerator.h"
+#include "tubeJointHistogramGenerator.h"
 
 // Includes specific to this CLI application
 #include "itkRecursiveGaussianImageFilter.h"
