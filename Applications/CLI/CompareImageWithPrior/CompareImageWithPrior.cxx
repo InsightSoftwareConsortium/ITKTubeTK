@@ -76,7 +76,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
   
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
+  tube::CLIProgressReporter    progressReporter( "CompareImageWithPrior",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
@@ -109,7 +109,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer curImage = reader->GetOutput();
   typename ImageType::Pointer curPrior = priorReader->GetOutput();
   
-  timeCollector.Start("Pull Sections");
+  timeCollector.Start("Get Mean and Stdev");
   
   typename ImageType::RegionType region;
   typename ImageType::SizeType size;
@@ -128,15 +128,71 @@ int DoIt( int argc, char * argv[] )
   region.SetSize(size);
   region.SetIndex(start);
 
+  typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
+    ::JointHistogramType    HistogramType;
+
   typename ImageType::Pointer outImage = ImageType::New();
   outImage->SetRegions(region);
   outImage->Allocate();
   outImage->FillBuffer(0);
   
   FullItrType imageItr( curImage, region);
+
+  // The first iteration is just to get the number of valid samples.
   imageItr.GoToBegin();
-  typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
-    ::JointHistogramType    HistogramType;
+  typename HistogramType::PixelType samples = 0;
+  while( !imageItr.IsAtEnd() )
+    {
+    bool doCalculation = true;
+    bool useThreshold;
+    bool useSkip;
+    if( threshold != 0 )
+      {
+      useThreshold = true;
+      useSkip = false;
+      }
+    else if( skipSize != -1 )
+      {
+      useThreshold = false;
+      useSkip = true;
+      }
+    else
+      {
+      useThreshold = false;
+      useSkip = false;
+      }
+
+    if( useThreshold && imageItr.Get() > threshold )
+      {
+      doCalculation = false;
+      }
+
+    typename ImageType::IndexType curIndex;
+    std::vector<int> roiCenter;
+    if( doCalculation )
+      {
+      curIndex = imageItr.GetIndex();    
+      roiCenter = std::vector<int>(dimensionT);    
+      for( unsigned int i = 0; i < dimensionT; ++i )
+        {
+        if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
+          {
+          doCalculation = false;
+          break;
+          }
+        roiCenter[i] = curIndex[i];
+        }
+      }
+
+    if( doCalculation )
+      {
+      ++samples;
+      }
+    ++imageItr;
+    }
+
+
+  imageItr.GoToBegin();
   typedef itk::DivideByConstantImageFilter< HistogramType, double, 
     HistogramType > DividerType;
   typedef itk::MultiplyByConstantImageFilter< HistogramType, double, 
@@ -156,7 +212,7 @@ int DoIt( int argc, char * argv[] )
   typename HistogramType::Pointer meanHist;
   typename HistogramType::Pointer stdevHist;
   bool firstPass = true;
-  typename HistogramType::PixelType samples = 0;
+  double proportion = 0.40;
   while( !imageItr.IsAtEnd() )
     {
     bool doCalculation = true;
@@ -209,7 +265,6 @@ int DoIt( int argc, char * argv[] )
       subGenerator.SetInputMask(curPrior);
       subGenerator.Update();
       
-      std::cout << curIndex[0] << " " << curIndex[1] << std::endl;
       tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
       histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
       histGenerator.SetInputMask(subGenerator.GetOutputMask());
@@ -247,14 +302,18 @@ int DoIt( int argc, char * argv[] )
       square->Update();
       adder->SetInput1(sumSqrHist);
       adder->SetInput2(square->GetOutput());
+      adder->Update();
       sumSqrHist = adder->GetOutput();
       
-      ++samples;
+      progress += proportion/samples;
+      progressReporter.Report( progress );
       }
     ++imageItr;
     }
+  timeCollector.Stop("Get Mean and Stdev");
   
   // Calculate the mean
+  timeCollector.Start("Calculate Mean and Stdev");
   typename DividerType::Pointer divider = DividerType::New();
   divider->SetInput( sumHist );
   divider->SetConstant( samples );
@@ -274,16 +333,21 @@ int DoIt( int argc, char * argv[] )
   square->Update();
   multiplier->SetInput(square->GetOutput());
   multiplier->SetConstant( meanCo );
+  multiplier->Update();
   meanSquaredDivided = multiplier->GetOutput();
   divider->SetInput(sumSqrHist);
   divider->SetConstant(samples-1);  
+  divider->Update();
   sumSquaresDivided = divider->GetOutput();
   subtracter->SetInput1(sumSquaresDivided);
   subtracter->SetInput2(meanSquaredDivided);
   subtracter->Update();
   sqrt->SetInput(subtracter->GetOutput());
+  sqrt->Update();
   stdevHist = sqrt->GetOutput();
+  timeCollector.Stop("Calculate Mean and Stdev");
   
+  timeCollector.Start("Write Mean and Stdev");
   typedef itk::ImageFileWriter< HistogramType> HistWriterType;
   
   typename HistWriterType::Pointer histWriter = HistWriterType::New();
@@ -296,7 +360,14 @@ int DoIt( int argc, char * argv[] )
   stdWriter->SetInput(stdevHist);
   stdWriter->Update();
 
+  timeCollector.Stop("Write Mean and Stdev");
+
+  progress += 0.05;
+  progressReporter.Report( progress );
+
+  timeCollector.Start("Calculate Z Scores");
   imageItr.GoToBegin();
+  proportion = 0.35;
   while( !imageItr.IsAtEnd() )
     {
     bool doCalculation = true;
@@ -385,13 +456,13 @@ int DoIt( int argc, char * argv[] )
         }
       
       outImage->SetPixel(curIndex,val);
+      progress += proportion/samples;
+      progressReporter.Report( progress );
       }
     ++imageItr;
     }
+  timeCollector.Stop("Calculate Z Scores");
   
-  timeCollector.Stop("Pull Sections");
-
-
   typedef itk::ImageFileWriter< ImageType  > ImageWriterType;
 
   timeCollector.Start("Save data");
