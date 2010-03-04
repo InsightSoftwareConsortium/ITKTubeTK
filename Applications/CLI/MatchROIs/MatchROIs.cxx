@@ -49,6 +49,7 @@ limitations under the License.
 
 #include "itkRecursiveGaussianImageFilter.h"
 
+#include "itkNormalizeImageFilter.h"
 #include "itkRigidImageToImageRegistrationMethod.h"
 #include "itkResampleImageFilter.h"
 
@@ -263,13 +264,29 @@ int DoIt( int argc, char * argv[] )
   if( !disableRegisterROIs )
     {
     timeCollector.Start("RegisterROIs");
+    typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
+
+    typename NormFilterType::Pointer norm1 = NormFilterType::New();
+    norm1->SetInput( curVolume );
+    norm1->Update();
+
+    typename NormFilterType::Pointer norm2 = NormFilterType::New();
+    norm2->SetInput( curMask );
+    norm2->Update();
+
     typedef itk::RigidImageToImageRegistrationMethod< ImageType >
                                                     RegistrationMethodType;
     typename RegistrationMethodType::Pointer reg = RegistrationMethodType::New();
-    reg->SetFixedImage( curVolume );
-    reg->SetMovingImage( curMask );
+    reg->SetFixedImage( norm1->GetOutput() );
+    reg->SetMovingImage( norm2->GetOutput() );
     reg->SetMaxIterations( 100 );
-    reg->SetUseEvolutionaryOptimization( false );
+    typename RegistrationMethodType::TransformParametersScalesType scales;
+    scales = reg->GetTransformParametersScales();
+    scales[0] = 1.0/0.02;
+    scales[1] = 1.0/5.0;
+    scales[2] = 1.0/5.0;
+    reg->SetTransformParametersScales( scales );
+    reg->SetUseEvolutionaryOptimization( true );
     int numSamples = 1;
     for( unsigned int i=0; i<dimensionT; i++)
       {
