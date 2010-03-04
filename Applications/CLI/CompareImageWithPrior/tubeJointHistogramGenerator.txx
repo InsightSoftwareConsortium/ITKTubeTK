@@ -60,21 +60,20 @@ JointHistogramGenerator<pixelT,dimensionT>
 ::Update()
 {
   typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
-  typedef itk::Image<unsigned int, 2>                   JointHistogramType;
 
   typename CalculatorType::Pointer calculator = CalculatorType::New();
-  calculator->SetInput(m_InputVolume);
+  calculator->SetImage(m_InputVolume);
   calculator->Compute();
   pixelT minInput = calculator->GetMinimum();
   pixelT maxInput = calculator->GetMaximum();
   pixelT rangeInput = maxInput - minInput;
   pixelT stepInput = rangeInput / 100;
-  calculator->SetInput(m_InputMask);
+  calculator->SetImage(m_InputMask);
   calculator->Compute();
   pixelT minMask = calculator->GetMinimum();
   pixelT maxMask = calculator->GetMaximum();
   pixelT rangeMask = maxMask - minMask;
-  pixelT stepMask = rangeInput / 100;
+  pixelT stepMask = rangeMask / 100;
 
   typename JointHistogramType::IndexType start;
   typename JointHistogramType::SizeType size;
@@ -105,6 +104,7 @@ JointHistogramGenerator<pixelT,dimensionT>
     ++maskItr;
     }
 
+  m_OutputVolume = hist;
 }
 
 template< class pixelT, unsigned int dimensionT>
@@ -132,7 +132,7 @@ JointHistogramGenerator<pixelT,dimensionT>
 }
 
 template< class pixelT, unsigned int dimensionT>
-typename JointHistogramGenerator<pixelT,dimensionT>::ImageType::Pointer
+JointHistogramGenerator<pixelT,dimensionT>::JointHistogramType::Pointer 
 JointHistogramGenerator<pixelT,dimensionT>
 ::GetOutputVolume()
 {
