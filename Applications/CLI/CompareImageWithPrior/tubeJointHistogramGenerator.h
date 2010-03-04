@@ -46,6 +46,8 @@ class JointHistogramGenerator
 public:
 
   typedef itk::Image<pixelT,dimensionT> ImageType;
+  typedef double                        PrecisionType;
+  typedef itk::Image<PrecisionType, 2>  JointHistogramType;
 
   /// Default Constructor
   JointHistogramGenerator();
@@ -62,15 +64,14 @@ public:
 
   void SetNumberOfBins( unsigned int numBins );
 
-  typename ImageType::Pointer GetOutputVolume();
-  typename ImageType::Pointer GetOutputMask();
+  JointHistogramType::Pointer GetOutputVolume();
 
 protected:
   
-  typename ImageType::Pointer   m_InputVolume;
-  typename ImageType::Pointer   m_InputMask;
-  typename ImageType::Pointer   m_OutputVolume;
-  unsigned int                  m_NumberOfBins;
+  typename ImageType::Pointer            m_InputVolume;
+  typename ImageType::Pointer            m_InputMask;
+  typename JointHistogramType::Pointer   m_OutputVolume;
+  unsigned int                           m_NumberOfBins;
   
 };
 

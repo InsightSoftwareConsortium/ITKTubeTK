@@ -180,6 +180,16 @@ int DoIt( int argc, char * argv[] )
       subGenerator.SetInputVolume(curImage);
       subGenerator.SetInputMask(curPrior);
       subGenerator.Update();
+      
+      tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
+      typename tube::JointHistogramGenerator<PixelType,dimensionT>::
+        JointHistogramType::Pointer hist;
+
+      histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
+      histGenerator.SetInputMask(subGenerator.GetOutputMask());
+      histGenerator.SetNumberOfBins(histogramSize);
+      histGenerator.Update();
+      hist = histGenerator.GetOutputVolume();
       outImage->SetPixel(curIndex,1);
       }
     ++imageItr;
