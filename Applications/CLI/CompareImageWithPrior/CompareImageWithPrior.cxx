@@ -108,10 +108,10 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   typename ImageType::Pointer curImage = reader->GetOutput();
-  typename ImageType::Pointer curPrior = priorReader->GetOutput();
-  
+  typename ImageType::Pointer curPrior = priorReader->GetOutput();  
   
   typename ImageType::RegionType region;
+  typename ImageType::RegionType fullRegion;
   typename ImageType::SizeType size;
   typename ImageType::IndexType start;
   
@@ -133,7 +133,7 @@ int DoIt( int argc, char * argv[] )
     ::JointHistogramType    HistogramType;
 
   typename ImageType::Pointer outImage = ImageType::New();
-  outImage->SetRegions(region);
+  outImage->SetRegions(curImage->GetLargestPossibleRegion());
   outImage->Allocate();
   outImage->FillBuffer(0);
   
