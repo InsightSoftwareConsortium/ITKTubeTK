@@ -34,6 +34,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 add_test( ${PROJECT_NAME}Test1
             ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
                ${INPUT_DATA}/im0001.crop.mha
+               --min 0.1 --max 3.0 --steps 10 --timestep 0.001 
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 add_test( ${PROJECT_NAME}Test1-Compare
