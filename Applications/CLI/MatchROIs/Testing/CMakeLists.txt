@@ -37,7 +37,7 @@ add_test( ${PROJECT_NAME}Test1
                ${INPUT_DATA}/GDS0015_Large.mha
                ${TEMP}/${PROJECT_NAME}_ESTest1.mha
                ${TEMP}/${PROJECT_NAME}_GDSTest1.mha
-               -C 200,200 -S 148,148 )
+               -C 200,200 -S 148,148 -o 128,128 )
 
 add_test( ${PROJECT_NAME}Test1-Compare
             ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
