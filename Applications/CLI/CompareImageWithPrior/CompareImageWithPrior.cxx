@@ -39,6 +39,7 @@ limitations under the License.
 #include "itkSquareImageFilter.h"
 #include "itkSqrtImageFilter.h"
 #include "itkDivideByConstantImageFilter.h"
+#include "itkMultiplyByConstantImageFilter.h"
 #include "vnl/vnl_math.h"
 
 // The following three should be used in every CLI application
@@ -136,12 +137,26 @@ int DoIt( int argc, char * argv[] )
   imageItr.GoToBegin();
   typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
     ::JointHistogramType    HistogramType;
+  typedef itk::DivideByConstantImageFilter< HistogramType, double, 
+    HistogramType > DividerType;
+  typedef itk::MultiplyByConstantImageFilter< HistogramType, double, 
+    HistogramType > MultiplierType;
+  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
+    AdderType;
+  typedef itk::SubtractImageFilter< HistogramType, HistogramType, 
+    HistogramType> SubtracterType;
+  typedef itk::SquareImageFilter< HistogramType, HistogramType > 
+    SquareType;
+  typedef itk::SqrtImageFilter< HistogramType, HistogramType > 
+    SqrtType;        
+
   typename HistogramType::Pointer hist;
   typename HistogramType::Pointer sumHist;
+  typename HistogramType::Pointer sumSqrHist;
   typename HistogramType::Pointer meanHist;
   typename HistogramType::Pointer stdevHist;
   bool firstPass = true;
-  double samples = 0;
+  typename HistogramType::PixelType samples = 0;
   while( !imageItr.IsAtEnd() )
     {
     bool doCalculation = true;
@@ -194,6 +209,7 @@ int DoIt( int argc, char * argv[] )
       subGenerator.SetInputMask(curPrior);
       subGenerator.Update();
       
+      std::cout << curIndex[0] << " " << curIndex[1] << std::endl;
       tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
       histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
       histGenerator.SetInputMask(subGenerator.GetOutputMask());
@@ -209,141 +225,63 @@ int DoIt( int argc, char * argv[] )
         sumHist->SetRegions(histRegion);
         sumHist->Allocate();
         sumHist->FillBuffer(0);
+        sumSqrHist = HistogramType::New();
+        sumSqrHist->SetRegions(histRegion);
+        sumSqrHist->Allocate();
+        sumSqrHist->FillBuffer(0);
         firstPass = false;
         }
       
-      typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-        AdderType;
-
       typename AdderType::Pointer adder = AdderType::New();
+      typename SquareType::Pointer square = SquareType::New();
+
+      // Calculate Running Sum
       adder->SetInput1(sumHist);
       adder->SetInput2(hist);
       adder->Update();
       sumHist = adder->GetOutput();
       
+      // Calculate Running Sum of Squares
+      adder = AdderType::New();
+      square->SetInput(hist);
+      square->Update();
+      adder->SetInput1(sumSqrHist);
+      adder->SetInput2(square->GetOutput());
+      sumSqrHist = adder->GetOutput();
+      
       ++samples;
-      outImage->SetPixel(curIndex,1);
       }
     ++imageItr;
     }
   
-  typedef itk::DivideByConstantImageFilter< HistogramType, double, HistogramType > DividerType;
+  // Calculate the mean
   typename DividerType::Pointer divider = DividerType::New();
   divider->SetInput( sumHist );
   divider->SetConstant( samples );
   divider->Update();
   meanHist = divider->GetOutput();
-
-  imageItr.GoToBegin();
-  firstPass = true;
-  while( !imageItr.IsAtEnd() )
-    {
-    bool doCalculation = true;
-    bool useThreshold;
-    bool useSkip;
-    if( threshold != 0 )
-      {
-      useThreshold = true;
-      useSkip = false;
-      }
-    else if( skipSize != -1 )
-      {
-      useThreshold = false;
-      useSkip = true;
-      }
-    else
-      {
-      useThreshold = false;
-      useSkip = false;
-      }
-
-    if( useThreshold && imageItr.Get() > threshold )
-      {
-      doCalculation = false;
-      }
-
-    typename ImageType::IndexType curIndex;
-    std::vector<int> roiCenter;
-    if( doCalculation )
-      {
-      curIndex = imageItr.GetIndex();    
-      roiCenter = std::vector<int>(dimensionT);    
-      for( unsigned int i = 0; i < dimensionT; ++i )
-        {
-        if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
-          {
-          doCalculation = false;
-          break;
-          }
-        roiCenter[i] = curIndex[i];
-        }
-      }
-
-    if( doCalculation )
-      {
-      tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
-      subGenerator.SetRoiCenter(roiCenter);
-      subGenerator.SetRoiSize(roiSize);
-      subGenerator.SetInputVolume(curImage);
-      subGenerator.SetInputMask(curPrior);
-      subGenerator.Update();
-      
-      tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
-      histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
-      histGenerator.SetInputMask(subGenerator.GetOutputMask());
-      histGenerator.SetNumberOfBins(histogramSize);
-      histGenerator.Update();
-      hist = histGenerator.GetOutputVolume();
-
-      if( firstPass )
-        {
-        typename HistogramType::RegionType histRegion = 
-          hist->GetLargestPossibleRegion();
-        sumHist = HistogramType::New();
-        stdevHist = HistogramType::New();
-        sumHist->SetRegions(histRegion);
-        stdevHist->SetRegions(histRegion);
-        sumHist->Allocate();
-        stdevHist->Allocate();
-        sumHist->FillBuffer(0);
-        stdevHist->FillBuffer(0);
-        firstPass = false;
-        }
-      
-      typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-        AdderType;
-      typedef itk::SubtractImageFilter< HistogramType, HistogramType, 
-        HistogramType> SubtracterType;
-      typedef itk::SquareImageFilter< HistogramType, HistogramType > 
-        SquareType;        
-
-      typename SubtracterType::Pointer subber = SubtracterType::New();
-      typename AdderType::Pointer adder = AdderType::New();
-      typename SquareType::Pointer square = SquareType::New();
-      subber->SetInput1(meanHist);
-      subber->SetInput2(hist);
-      subber->Update();
-      square->SetInput(subber->GetOutput());
-      square->Update();
-      adder->SetInput1(stdevHist);
-      adder->SetInput2(square->GetOutput());
-      stdevHist = adder->GetOutput();
-      
-      outImage->SetPixel(curIndex,1);
-      }
-    ++imageItr;
-    }
-
-  typename DividerType::Pointer stdDivider = DividerType::New();
-  stdDivider->SetInput( stdevHist );
-  stdDivider->SetConstant( samples );
-  stdDivider->Update();
-  stdevHist = divider->GetOutput();
-
-  typedef itk::SqrtImageFilter< HistogramType, HistogramType > SqrtType;
+  
+  // Calculate the standard deviation
+  typename SubtracterType::Pointer subtracter = SubtracterType::New();
+  typename SquareType::Pointer square = SquareType::New();
+  typename MultiplierType::Pointer multiplier = MultiplierType::New();
   typename SqrtType::Pointer sqrt = SqrtType::New();
-  sqrt->SetInput(stdevHist);
-  sqrt->Update();
+  divider = DividerType::New();
+  typename HistogramType::Pointer meanSquaredDivided;
+  typename HistogramType::Pointer sumSquaresDivided;
+  typename HistogramType::PixelType meanCo = samples/(samples-1);
+  square->SetInput(meanHist);
+  square->Update();
+  multiplier->SetInput(square->GetOutput());
+  multiplier->SetConstant( meanCo );
+  meanSquaredDivided = multiplier->GetOutput();
+  divider->SetInput(sumSqrHist);
+  divider->SetConstant(samples-1);  
+  sumSquaresDivided = divider->GetOutput();
+  subtracter->SetInput1(sumSquaresDivided);
+  subtracter->SetInput2(meanSquaredDivided);
+  subtracter->Update();
+  sqrt->SetInput(subtracter->GetOutput());
   stdevHist = sqrt->GetOutput();
   
   typedef itk::ImageFileWriter< HistogramType> HistWriterType;
