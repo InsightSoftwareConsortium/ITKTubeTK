@@ -40,6 +40,7 @@ limitations under the License.
 #include "itkSqrtImageFilter.h"
 #include "itkDivideByConstantImageFilter.h"
 #include "itkMultiplyByConstantImageFilter.h"
+#include "itkMinimumMaximumImageCalculator.h"
 #include "vnl/vnl_math.h"
 
 // The following three should be used in every CLI application
@@ -117,11 +118,12 @@ int DoIt( int argc, char * argv[] )
   std::vector<int> roiSize = std::vector<int>(dimensionT);
   
   size = curImage->GetLargestPossibleRegion().GetSize();
+  start = curImage->GetLargestPossibleRegion().GetIndex();
 
   for( unsigned int i = 0; i < dimensionT; ++i )
     {
     size[i] -= regionRadius;
-    start[i] = regionRadius/2;
+    start[i] += regionRadius/2;
     roiSize[i] = regionRadius;
     }
   region.SetSize(size);
@@ -170,7 +172,7 @@ int DoIt( int argc, char * argv[] )
     std::vector<int> roiCenter;
     if( doCalculation )
       {
-      curIndex = imageItr.GetIndex();    
+      curIndex = imageItr.GetIndex();
       roiCenter = std::vector<int>(dimensionT);    
       for( unsigned int i = 0; i < dimensionT; ++i )
         {
@@ -189,6 +191,24 @@ int DoIt( int argc, char * argv[] )
       }
     ++imageItr;
     }
+
+  // Caculate Image and Mask's Max and Min
+  typename ImageType::PixelType imageMin;
+  typename ImageType::PixelType imageMax;
+  typename ImageType::PixelType maskMin;
+  typename ImageType::PixelType maskMax;
+  typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
+  typename CalculatorType::Pointer calculator;
+  calculator = CalculatorType::New();
+  calculator->SetImage(curImage);
+  calculator->Compute();
+  imageMin = calculator->GetMinimum();
+  imageMax = calculator->GetMaximum();
+  calculator = CalculatorType::New();
+  calculator->SetImage(curPrior);
+  calculator->Compute();
+  maskMin = calculator->GetMinimum();
+  maskMax = calculator->GetMaximum();
 
 
   typedef itk::DivideByConstantImageFilter< HistogramType, double, 
@@ -294,6 +314,10 @@ int DoIt( int argc, char * argv[] )
         histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
         histGenerator.SetInputMask(subGenerator.GetOutputMask());
         histGenerator.SetNumberOfBins(histogramSize);
+        histGenerator.SetInputMin(imageMin);
+        histGenerator.SetInputMax(imageMax);
+        histGenerator.SetMaskMin(maskMin);
+        histGenerator.SetMaskMax(maskMax);
         histGenerator.Update();
         hist = histGenerator.GetOutputVolume();
         
@@ -371,6 +395,8 @@ int DoIt( int argc, char * argv[] )
     sqrt->Update();
     stdevHist = sqrt->GetOutput();
     timeCollector.Stop("Calculate Mean and Stdev");
+
+    proportion = 35;
     }
   
   timeCollector.Start("Write Mean and Stdev");
@@ -393,7 +419,6 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Calculate Z Scores");
   imageItr.GoToBegin();
-  proportion = 0.35;
   while( !imageItr.IsAtEnd() )
     {
     bool doCalculation = true;
@@ -450,6 +475,10 @@ int DoIt( int argc, char * argv[] )
       histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
       histGenerator.SetInputMask(subGenerator.GetOutputMask());
       histGenerator.SetNumberOfBins(histogramSize);
+      histGenerator.SetInputMin(imageMin);
+      histGenerator.SetInputMax(imageMax);
+      histGenerator.SetMaskMin(maskMin);
+      histGenerator.SetMaskMax(maskMax);
       histGenerator.Update();
       hist = histGenerator.GetOutputVolume();
       

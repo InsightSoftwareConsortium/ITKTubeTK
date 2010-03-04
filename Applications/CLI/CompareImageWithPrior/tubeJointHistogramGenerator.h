@@ -64,6 +64,11 @@ public:
 
   void SetNumberOfBins( unsigned int numBins );
 
+  void SetInputMin( pixelT min );
+  void SetInputMax( pixelT max );
+  void SetMaskMin( pixelT min );
+  void SetMaskMax( pixelT max );
+
   JointHistogramType::Pointer GetOutputVolume();
 
 protected:
@@ -72,6 +77,10 @@ protected:
   typename ImageType::Pointer            m_InputMask;
   typename JointHistogramType::Pointer   m_OutputVolume;
   unsigned int                           m_NumberOfBins;
+  pixelT                                 m_InputMin;
+  pixelT                                 m_InputMax;
+  pixelT                                 m_MaskMin;
+  pixelT                                 m_MaskMax;
   
 };
 

@@ -59,20 +59,13 @@ void
 JointHistogramGenerator<pixelT,dimensionT>
 ::Update()
 {
-  typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
-
-  typename CalculatorType::Pointer calculator = CalculatorType::New();
-  calculator->SetImage(m_InputVolume);
-  calculator->Compute();
-  pixelT minInput = calculator->GetMinimum();
-  pixelT maxInput = calculator->GetMaximum();
+  pixelT minInput = m_InputMin;
+  pixelT maxInput = m_InputMax;
   pixelT normInput = 0 - minInput;
   pixelT rangeInput = maxInput - minInput;
   pixelT stepInput = rangeInput / m_NumberOfBins;
-  calculator->SetImage(m_InputMask);
-  calculator->Compute();
-  pixelT minMask = calculator->GetMinimum();
-  pixelT maxMask = calculator->GetMaximum();
+  pixelT minMask = m_MaskMin;
+  pixelT maxMask = m_MaskMax;
   pixelT normMask = 0 - minMask;
   pixelT rangeMask = maxMask - minMask;
   pixelT stepMask = rangeMask / m_NumberOfBins;
@@ -132,6 +125,38 @@ JointHistogramGenerator<pixelT,dimensionT>
 ::SetNumberOfBins( unsigned int numBins )
 {
   m_NumberOfBins = numBins;
+}
+
+template< class pixelT, unsigned int dimensionT>
+void
+JointHistogramGenerator<pixelT,dimensionT>
+::SetInputMin( pixelT min )
+{
+  m_InputMin = min;
+}
+
+template< class pixelT, unsigned int dimensionT>
+void
+JointHistogramGenerator<pixelT,dimensionT>
+::SetInputMax( pixelT max )
+{
+  m_InputMax = max;
+}
+
+template< class pixelT, unsigned int dimensionT>
+void
+JointHistogramGenerator<pixelT,dimensionT>
+::SetMaskMin( pixelT min )
+{
+  m_MaskMin = min;
+}
+
+template< class pixelT, unsigned int dimensionT>
+void
+JointHistogramGenerator<pixelT,dimensionT>
+::SetMaskMax( pixelT max )
+{
+  m_MaskMax = max;
 }
  
 template< class pixelT, unsigned int dimensionT>

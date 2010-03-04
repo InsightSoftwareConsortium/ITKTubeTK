@@ -566,6 +566,8 @@ SubImageGenerator<pixelT,dimensionT>
   m_OutputMask->SetRegions( region );
   m_OutputVolume->Allocate();
   m_OutputMask->Allocate();
+  m_OutputVolume->FillBuffer(0);
+  m_OutputMask->FillBuffer(0);
 
   // Iterate through the input and mask and populate the outputs
   typename ImageType::RegionType inputRegion;
@@ -579,6 +581,8 @@ SubImageGenerator<pixelT,dimensionT>
   IteratorType outputMaskItr( m_OutputMask, region );
   inputItr.GoToBegin();
   maskItr.GoToBegin();
+  outputItr.GoToBegin();
+  outputMaskItr.GoToBegin();
   while( !inputItr.IsAtEnd() && !maskItr.IsAtEnd() &&
          !outputItr.IsAtEnd() && !outputMaskItr.IsAtEnd() )
     {
