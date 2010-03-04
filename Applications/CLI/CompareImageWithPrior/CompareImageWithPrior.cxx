@@ -433,7 +433,14 @@ int DoIt( int argc, char * argv[] )
         typename HistogramType::PixelType t = histItr.Get();
         typename HistogramType::PixelType m = meanItr.Get();
         typename HistogramType::PixelType s = stdItr.Get();
-        val += (t-m)/s;
+        if( s == 0 )
+          {
+          val += 0;
+          }
+        else
+          {
+          val += (t-m)/s;
+          }
         ++histItr;
         ++meanItr;
         ++stdItr;
