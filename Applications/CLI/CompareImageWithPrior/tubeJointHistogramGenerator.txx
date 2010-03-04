@@ -66,12 +66,14 @@ JointHistogramGenerator<pixelT,dimensionT>
   calculator->Compute();
   pixelT minInput = calculator->GetMinimum();
   pixelT maxInput = calculator->GetMaximum();
+  pixelT normInput = 0 - minInput;
   pixelT rangeInput = maxInput - minInput;
   pixelT stepInput = rangeInput / 100;
   calculator->SetImage(m_InputMask);
   calculator->Compute();
   pixelT minMask = calculator->GetMinimum();
   pixelT maxMask = calculator->GetMaximum();
+  pixelT normMask = 0 - minMask;
   pixelT rangeMask = maxMask - minMask;
   pixelT stepMask = rangeMask / 100;
 
@@ -97,8 +99,25 @@ JointHistogramGenerator<pixelT,dimensionT>
 
     {
     typename JointHistogramType::IndexType cur;
-    cur[0] = inputItr.Get() / stepInput;
-    cur[1] = maskItr.Get() / stepMask;
+    cur[0] = ((inputItr.Get()+normInput) / stepInput);
+    cur[1] = ((maskItr.Get()+normMask) / stepMask);
+    if( cur[0] > m_NumberOfBins - 1 )
+      {
+      cur[0] = m_NumberOfBins - 1;
+      }
+    if( cur[1] > m_NumberOfBins - 1 )
+      {
+      cur[1] = m_NumberOfBins - 1;
+      }
+    if( cur[0] < 0 )
+      {
+      cur[0] = 0;
+      }
+    if( cur[1] < 0 )
+      {
+      cur[1] = 0;
+      }
+
     hist->SetPixel(cur, hist->GetPixel(cur) + 1);
     ++inputItr;
     ++maskItr;
