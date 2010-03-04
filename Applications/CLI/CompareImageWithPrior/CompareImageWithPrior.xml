@@ -81,9 +81,25 @@
 	The length of the stride in each dimesion to make this thing doable.
       </description>
       <longflag>skipSize</longflag>
-      <flag>s</flag>
+      <flag>k</flag>
       <default>10</default>
     </integer>
+    <string>
+      <name>mean</name>
+      <label>Mean Histogram</label>
+      <description>A precomputed mean histogram.</description>
+      <longflag>mean</longflag>
+      <flag>m</flag>
+      <default>nil</default>
+    </string>
+    <string>
+      <name>stdev</name>
+      <label>Stdev Histogram</label>
+      <description>A precomputed standard deviation histogram.</description>
+      <longflag>stdev</longflag>
+      <flag>s</flag>
+      <default>nil</default>
+    </string>
   </parameters>
 
 </executable>
