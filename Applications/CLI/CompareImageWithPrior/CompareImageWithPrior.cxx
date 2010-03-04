@@ -463,6 +463,7 @@ int DoIt( int argc, char * argv[] )
       meanItr.GoToBegin();
       stdItr.GoToBegin();
       typename HistogramType::PixelType val = 0;
+      //typename HistogramType::PixelType maxVal = 0;
       while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
         {
         typename HistogramType::PixelType t = histItr.Get();
@@ -474,7 +475,11 @@ int DoIt( int argc, char * argv[] )
           }
         else
           {
-          val += (t-m)/s;
+          //val = vnl_math_abs(t-m)/s;
+          //if( maxVal < val )
+          // {
+          val += vnl_math_abs(t-m)/s;
+
           }
         ++histItr;
         ++meanItr;

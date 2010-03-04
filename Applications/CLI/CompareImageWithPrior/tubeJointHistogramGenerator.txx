@@ -68,14 +68,14 @@ JointHistogramGenerator<pixelT,dimensionT>
   pixelT maxInput = calculator->GetMaximum();
   pixelT normInput = 0 - minInput;
   pixelT rangeInput = maxInput - minInput;
-  pixelT stepInput = rangeInput / 100;
+  pixelT stepInput = rangeInput / m_NumberOfBins;
   calculator->SetImage(m_InputMask);
   calculator->Compute();
   pixelT minMask = calculator->GetMinimum();
   pixelT maxMask = calculator->GetMaximum();
   pixelT normMask = 0 - minMask;
   pixelT rangeMask = maxMask - minMask;
-  pixelT stepMask = rangeMask / 100;
+  pixelT stepMask = rangeMask / m_NumberOfBins;
 
   typename JointHistogramType::IndexType start;
   typename JointHistogramType::SizeType size;

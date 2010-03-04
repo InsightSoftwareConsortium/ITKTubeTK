@@ -93,7 +93,7 @@ void
 SubImageGenerator<pixelT,dimensionT>
 ::Update()
 {
-  typedef pixelT PixelType;
+  /**typedef pixelT PixelType;
 
   typename ImageType::Pointer curVolume = m_InputVolume;
   typename ImageType::Pointer curMask = m_InputMask;
@@ -113,7 +113,7 @@ SubImageGenerator<pixelT,dimensionT>
     *oSizeItr = *oSizeItr - 20;
     }
 
-  /** Crop input images to ROI */
+  // Crop input images to ROI 
   for( unsigned int i=0; i<dimensionT; i++ )
     {
     int ti = roiCenter[i] - (roiSize[i]-1)/2;
@@ -543,11 +543,10 @@ SubImageGenerator<pixelT,dimensionT>
     }
 
   m_OutputVolume = curVolume;
-  m_OutputMask = curMask;
-  
-  /*********************************************/
-  /*********************************************/
-  /** Old method 
+  m_OutputMask = curMask;**/
+
+  /*******/
+  // Old method 
   // Create blank output images of the appropriate size
   m_OutputVolume = ImageType::New();
   m_OutputMask = ImageType::New();
@@ -589,7 +588,7 @@ SubImageGenerator<pixelT,dimensionT>
     ++maskItr;
     ++outputItr;
     ++outputMaskItr;
-    }*/
+    }
 
 }
 
