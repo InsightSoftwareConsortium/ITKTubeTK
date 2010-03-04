@@ -35,6 +35,11 @@ limitations under the License.
 #include "itkImageFileWriter.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkAddImageFilter.h"
+#include "itkSubtractImageFilter.h"
+#include "itkSquareImageFilter.h"
+#include "itkSqrtImageFilter.h"
+#include "itkDivideByConstantImageFilter.h"
+#include "vnl/vnl_math.h"
 
 // The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
@@ -102,7 +107,6 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::Pointer curImage = reader->GetOutput();
   typename ImageType::Pointer curPrior = priorReader->GetOutput();
-
   
   timeCollector.Start("Pull Sections");
   
@@ -130,7 +134,8 @@ int DoIt( int argc, char * argv[] )
   
   FullItrType imageItr( curImage, region);
   imageItr.GoToBegin();
-  typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>::JointHistogramType    HistogramType;
+  typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
+    ::JointHistogramType    HistogramType;
   typename HistogramType::Pointer hist;
   typename HistogramType::Pointer sumHist;
   typename HistogramType::Pointer meanHist;
@@ -201,17 +206,9 @@ int DoIt( int argc, char * argv[] )
         typename HistogramType::RegionType histRegion = 
           hist->GetLargestPossibleRegion();
         sumHist = HistogramType::New();
-        meanHist = HistogramType::New();
-        stdevHist = HistogramType::New();
         sumHist->SetRegions(histRegion);
-        meanHist->SetRegions(histRegion);
-        stdevHist->SetRegions(histRegion);
         sumHist->Allocate();
-        meanHist->Allocate();
-        stdevHist->Allocate();
         sumHist->FillBuffer(0);
-        meanHist->FillBuffer(0);
-        stdevHist->FillBuffer(0);
         firstPass = false;
         }
       
@@ -223,18 +220,229 @@ int DoIt( int argc, char * argv[] )
       adder->SetInput2(hist);
       adder->Update();
       sumHist = adder->GetOutput();
+      
       ++samples;
       outImage->SetPixel(curIndex,1);
       }
     ++imageItr;
     }
   
+  typedef itk::DivideByConstantImageFilter< HistogramType, double, HistogramType > DividerType;
+  typename DividerType::Pointer divider = DividerType::New();
+  divider->SetInput( sumHist );
+  divider->SetConstant( samples );
+  divider->Update();
+  meanHist = divider->GetOutput();
+
+  imageItr.GoToBegin();
+  firstPass = true;
+  while( !imageItr.IsAtEnd() )
+    {
+    bool doCalculation = true;
+    bool useThreshold;
+    bool useSkip;
+    if( threshold != 0 )
+      {
+      useThreshold = true;
+      useSkip = false;
+      }
+    else if( skipSize != -1 )
+      {
+      useThreshold = false;
+      useSkip = true;
+      }
+    else
+      {
+      useThreshold = false;
+      useSkip = false;
+      }
+
+    if( useThreshold && imageItr.Get() > threshold )
+      {
+      doCalculation = false;
+      }
+
+    typename ImageType::IndexType curIndex;
+    std::vector<int> roiCenter;
+    if( doCalculation )
+      {
+      curIndex = imageItr.GetIndex();    
+      roiCenter = std::vector<int>(dimensionT);    
+      for( unsigned int i = 0; i < dimensionT; ++i )
+        {
+        if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
+          {
+          doCalculation = false;
+          break;
+          }
+        roiCenter[i] = curIndex[i];
+        }
+      }
+
+    if( doCalculation )
+      {
+      tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
+      subGenerator.SetRoiCenter(roiCenter);
+      subGenerator.SetRoiSize(roiSize);
+      subGenerator.SetInputVolume(curImage);
+      subGenerator.SetInputMask(curPrior);
+      subGenerator.Update();
+      
+      tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
+      histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
+      histGenerator.SetInputMask(subGenerator.GetOutputMask());
+      histGenerator.SetNumberOfBins(histogramSize);
+      histGenerator.Update();
+      hist = histGenerator.GetOutputVolume();
+
+      if( firstPass )
+        {
+        typename HistogramType::RegionType histRegion = 
+          hist->GetLargestPossibleRegion();
+        sumHist = HistogramType::New();
+        stdevHist = HistogramType::New();
+        sumHist->SetRegions(histRegion);
+        stdevHist->SetRegions(histRegion);
+        sumHist->Allocate();
+        stdevHist->Allocate();
+        sumHist->FillBuffer(0);
+        stdevHist->FillBuffer(0);
+        firstPass = false;
+        }
+      
+      typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
+        AdderType;
+      typedef itk::SubtractImageFilter< HistogramType, HistogramType, 
+        HistogramType> SubtracterType;
+      typedef itk::SquareImageFilter< HistogramType, HistogramType > 
+        SquareType;        
+
+      typename SubtracterType::Pointer subber = SubtracterType::New();
+      typename AdderType::Pointer adder = AdderType::New();
+      typename SquareType::Pointer square = SquareType::New();
+      subber->SetInput1(meanHist);
+      subber->SetInput2(hist);
+      subber->Update();
+      square->SetInput(subber->GetOutput());
+      square->Update();
+      adder->SetInput1(stdevHist);
+      adder->SetInput2(square->GetOutput());
+      stdevHist = adder->GetOutput();
+      
+      outImage->SetPixel(curIndex,1);
+      }
+    ++imageItr;
+    }
+
+  typename DividerType::Pointer stdDivider = DividerType::New();
+  stdDivider->SetInput( stdevHist );
+  stdDivider->SetConstant( samples );
+  stdDivider->Update();
+  stdevHist = divider->GetOutput();
+
+  typedef itk::SqrtImageFilter< HistogramType, HistogramType > SqrtType;
+  typename SqrtType::Pointer sqrt = SqrtType::New();
+  sqrt->SetInput(stdevHist);
+  sqrt->Update();
+  stdevHist = sqrt->GetOutput();
+  
   typedef itk::ImageFileWriter< HistogramType> HistWriterType;
   
   typename HistWriterType::Pointer histWriter = HistWriterType::New();
-  histWriter->SetFileName("bang.mha");
-  histWriter->SetInput(sumHist);
+  histWriter->SetFileName("mean_hist.mha");
+  histWriter->SetInput(meanHist);
   histWriter->Update();
+
+  typename HistWriterType::Pointer stdWriter = HistWriterType::New();
+  stdWriter->SetFileName("stdev_hist.mha");
+  stdWriter->SetInput(stdevHist);
+  stdWriter->Update();
+
+  imageItr.GoToBegin();
+  while( !imageItr.IsAtEnd() )
+    {
+    bool doCalculation = true;
+    bool useThreshold;
+    bool useSkip;
+    if( threshold != 0 )
+      {
+      useThreshold = true;
+      useSkip = false;
+      }
+    else if( skipSize != -1 )
+      {
+      useThreshold = false;
+      useSkip = true;
+      }
+    else
+      {
+      useThreshold = false;
+      useSkip = false;
+      }
+
+    if( useThreshold && imageItr.Get() > threshold )
+      {
+      doCalculation = false;
+      }
+
+    typename ImageType::IndexType curIndex;
+    std::vector<int> roiCenter;
+    if( doCalculation )
+      {
+      curIndex = imageItr.GetIndex();    
+      roiCenter = std::vector<int>(dimensionT);    
+      for( unsigned int i = 0; i < dimensionT; ++i )
+        {
+        if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
+          {
+          doCalculation = false;
+          break;
+          }
+        roiCenter[i] = curIndex[i];
+        }
+      }
+
+    if( doCalculation )
+      {
+      tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
+      subGenerator.SetRoiCenter(roiCenter);
+      subGenerator.SetRoiSize(roiSize);
+      subGenerator.SetInputVolume(curImage);
+      subGenerator.SetInputMask(curPrior);
+      subGenerator.Update();
+      
+      tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
+      histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
+      histGenerator.SetInputMask(subGenerator.GetOutputMask());
+      histGenerator.SetNumberOfBins(histogramSize);
+      histGenerator.Update();
+      hist = histGenerator.GetOutputVolume();
+      
+      typedef itk::ImageRegionConstIterator<HistogramType> HistIteratorType;
+      HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
+      HistIteratorType meanItr( meanHist, 
+                                meanHist->GetLargestPossibleRegion() );
+      HistIteratorType stdItr( stdevHist, 
+                               stdevHist->GetLargestPossibleRegion() );
+      histItr.GoToBegin();
+      meanItr.GoToBegin();
+      stdItr.GoToBegin();
+      typename HistogramType::PixelType val = 0;
+      while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+        {
+        typename HistogramType::PixelType t = histItr.Get();
+        typename HistogramType::PixelType m = meanItr.Get();
+        typename HistogramType::PixelType s = stdItr.Get();
+        val += (t-m)/s;
+        ++histItr;
+        ++meanItr;
+        ++stdItr;
+        }
+      
+      outImage->SetPixel(curIndex,val);
+      }
+    ++imageItr;
+    }
   
   timeCollector.Stop("Pull Sections");
 
