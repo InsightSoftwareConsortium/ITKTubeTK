@@ -34,6 +34,7 @@ limitations under the License.
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
+#include "itkAddImageFilter.h"
 
 // The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
@@ -129,6 +130,13 @@ int DoIt( int argc, char * argv[] )
   
   FullItrType imageItr( curImage, region);
   imageItr.GoToBegin();
+  typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>::JointHistogramType    HistogramType;
+  typename HistogramType::Pointer hist;
+  typename HistogramType::Pointer sumHist;
+  typename HistogramType::Pointer meanHist;
+  typename HistogramType::Pointer stdevHist;
+  bool firstPass = true;
+  double samples = 0;
   while( !imageItr.IsAtEnd() )
     {
     bool doCalculation = true;
@@ -182,19 +190,51 @@ int DoIt( int argc, char * argv[] )
       subGenerator.Update();
       
       tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
-      typename tube::JointHistogramGenerator<PixelType,dimensionT>::
-        JointHistogramType::Pointer hist;
-
       histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
       histGenerator.SetInputMask(subGenerator.GetOutputMask());
       histGenerator.SetNumberOfBins(histogramSize);
       histGenerator.Update();
       hist = histGenerator.GetOutputVolume();
+
+      if( firstPass )
+        {
+        typename HistogramType::RegionType histRegion = 
+          hist->GetLargestPossibleRegion();
+        sumHist = HistogramType::New();
+        meanHist = HistogramType::New();
+        stdevHist = HistogramType::New();
+        sumHist->SetRegions(histRegion);
+        meanHist->SetRegions(histRegion);
+        stdevHist->SetRegions(histRegion);
+        sumHist->Allocate();
+        meanHist->Allocate();
+        stdevHist->Allocate();
+        sumHist->FillBuffer(0);
+        meanHist->FillBuffer(0);
+        stdevHist->FillBuffer(0);
+        firstPass = false;
+        }
+      
+      typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
+        AdderType;
+
+      typename AdderType::Pointer adder = AdderType::New();
+      adder->SetInput1(sumHist);
+      adder->SetInput2(hist);
+      adder->Update();
+      sumHist = adder->GetOutput();
+      ++samples;
       outImage->SetPixel(curIndex,1);
       }
     ++imageItr;
     }
   
+  typedef itk::ImageFileWriter< HistogramType> HistWriterType;
+  
+  typename HistWriterType::Pointer histWriter = HistWriterType::New();
+  histWriter->SetFileName("bang.mha");
+  histWriter->SetInput(sumHist);
+  histWriter->Update();
   
   timeCollector.Stop("Pull Sections");
 
