@@ -86,7 +86,7 @@
       <flag>e</flag>
       <description>Radius to use for erosion to simulate tomosynthesis</description>
       <longflag>erode</longflag>
-      <default>3</default>
+      <default>7</default>
     </integer>
     <float>
       <name>gaussianBlur</name>
@@ -97,27 +97,27 @@
       <default>10</default>
     </float>
     <boolean>
-      <name>registerROIs</name>
-      <label>Register ROIs</label>
+      <name>disableRegisterROIs</name>
+      <label>Disable Register ROIs</label>
       <flag>r</flag>
-      <description>Register the ROIs</description>
-      <longflag>registerROIs</longflag>
-      <default>true</default>
+      <description>Turn off the registration of the ROIs</description>
+      <longflag>disableRegisterROIs</longflag>
+      <default>false</default>
     </boolean>
     <integer-vector>
-      <name>size</name>
+      <name>outputSize</name>
       <label>Output size</label>
-      <flag>s</flag>
+      <flag>o</flag>
       <description>Size of the output image</description>
-      <longflag>size</longflag>
+      <longflag>outputSize</longflag>
     </integer-vector>
     <boolean>
-      <name>normalize</name>
-      <label>Normalize output image</label>
+      <name>disableNormalize</name>
+      <label>Disable normalization of output mask roi</label>
       <flag>n</flag>
-      <description>Normalize output images to 0-1 intensity range</description>
-      <longflag>normalize</longflag>
-      <default>true</default>
+      <description>Disable attempt to match mask ROI intensity range with volume ROI intensity range</description>
+      <longflag>disableNormalize</longflag>
+      <default>false</default>
     </boolean>
 
   </parameters>
