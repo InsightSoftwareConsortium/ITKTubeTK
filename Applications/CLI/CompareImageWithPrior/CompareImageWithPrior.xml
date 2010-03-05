@@ -82,7 +82,7 @@
       </description>
       <longflag>skipSize</longflag>
       <flag>k</flag>
-      <default>10</default>
+      <default>-1</default>
     </integer>
     <string>
       <name>mean</name>
