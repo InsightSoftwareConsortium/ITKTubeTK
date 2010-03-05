@@ -100,6 +100,14 @@
       <flag>s</flag>
       <default>nil</default>
     </string>
+    <string>
+      <name>scoringMethod</name>
+      <label>Z Scoring Method</label>
+      <description>Which interpretation of the Z Score to use. The options are histogram, max, and sum.</description>
+      <longflag>scoringMethod</longflag>
+      <flag>z</flag>
+      <default>sum</default>
+    </string>
   </parameters>
 
 </executable>

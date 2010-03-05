@@ -492,29 +492,92 @@ int DoIt( int argc, char * argv[] )
       meanItr.GoToBegin();
       stdItr.GoToBegin();
       typename HistogramType::PixelType val = 0;
-      //typename HistogramType::PixelType maxVal = 0;
-      while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
-        {
-        typename HistogramType::PixelType t = histItr.Get();
-        typename HistogramType::PixelType m = meanItr.Get();
-        typename HistogramType::PixelType s = stdItr.Get();
-        if( s == 0 )
-          {
-          val += 0;
-          }
-        else
-          {
-          //val = vnl_math_abs(t-m)/s;
-          //if( maxVal < val )
-          // {
-          val += vnl_math_abs(t-m)/s;
-
-          }
-        ++histItr;
-        ++meanItr;
-        ++stdItr;
-        }
       
+      if( scoringMethod == std::string("histogram") )
+        {
+        int count = 0;
+        int zHistBins = 100;
+        double zMax = 10;
+        int zHist[100];
+        for( int i=0; i<zHistBins; i++ )
+          {
+          zHist[i] = 0;
+          }
+        while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+          {
+          typename HistogramType::PixelType t = histItr.Get();
+          typename HistogramType::PixelType m = meanItr.Get();
+          typename HistogramType::PixelType s = stdItr.Get();
+          if( s == 0 )
+            {
+            s = 0.0001;
+            }
+          double tf = vnl_math_abs(t-m)/s;
+          tf = tf / zMax * zHistBins;
+          if(tf >= zHistBins)
+            {
+            tf = zHistBins - 1;
+            }
+          ++zHist[ (int)tf ];
+          ++count;
+          
+          ++histItr;
+          ++meanItr;
+          ++stdItr;
+          }
+        
+        double thresh = count*0.95;
+        for( int i=zHistBins-1; i>0; i-- )
+          {
+          count -= zHist[i];
+          if( count < thresh )
+            {
+            val = ((i/(double)zHistBins) + 0.5) * zMax;
+            break;
+            }
+          }
+        }
+      else if(scoringMethod == std::string("max"))
+        {
+        typename HistogramType::PixelType maxVal = 0;
+        while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+          {
+          typename HistogramType::PixelType t = histItr.Get();
+          typename HistogramType::PixelType m = meanItr.Get();
+          typename HistogramType::PixelType s = stdItr.Get();
+          if( s == 0 )
+            {
+            s = 0.0001;
+            }
+          val = vnl_math_abs(t-m)/s;
+          if( maxVal < val )
+            {
+            maxVal = val;
+            }
+          ++histItr;
+          ++meanItr;
+          ++stdItr;
+          }
+        val = maxVal;
+        }
+      else // assume sum if nothing specified
+        {
+        while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+          {
+          typename HistogramType::PixelType t = histItr.Get();
+          typename HistogramType::PixelType m = meanItr.Get();
+          typename HistogramType::PixelType s = stdItr.Get();
+          if( s == 0 )
+            {
+            s = 0.0001;
+            }
+          val += vnl_math_abs(t-m)/s;
+          ++histItr;
+          ++meanItr;
+          ++stdItr;
+          }
+        }
+        
       outImage->SetPixel(curIndex,val);
       progress += proportion/samples;
       progressReporter.Report( progress );
