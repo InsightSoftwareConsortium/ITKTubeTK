@@ -396,7 +396,7 @@ int DoIt( int argc, char * argv[] )
     stdevHist = sqrt->GetOutput();
     timeCollector.Stop("Calculate Mean and Stdev");
 
-    proportion = 35;
+    proportion = 0.35;
     }
   
   timeCollector.Start("Write Mean and Stdev");
