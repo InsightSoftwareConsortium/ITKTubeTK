@@ -93,7 +93,7 @@ int DoIt( int argc, char **argv )
   // Compute scales and then set them
   std::vector< float > scales( numSigmaSteps );
   double deltaSigma = maxSigma - minSigma;
-  for( int i = 0; i <= numSigmaSteps; i++ )
+  for( int i = 0; i < numSigmaSteps; i++ )
     {
     scales[i] = minSigma + i * ( deltaSigma / numSigmaSteps );
     }
