@@ -85,8 +85,40 @@ int DoIt( int argc, char * argv[] )
   typedef float                                              PixelType;
   typedef itk::Image< PixelType,  dimensionT >               ImageType;
   typedef itk::ImageFileReader< ImageType >                  ReaderType;
-  typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
+  typedef itk::ImageFileWriter< ImageType  >                 WriterType;
 
+
+
+  // typedefs for internal storage
+  typedef std::vector<int>                                   VectorType;
+  typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
+    ::JointHistogramType                                     HistogramType;
+  typedef itk::ImageFileReader< HistogramType > HistReaderType;
+  typedef itk::ImageFileWriter< HistogramType> HistWriterType;
+  
+  // typedefs for iterators
+  typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
+  typedef itk::ImageRegionConstIterator<HistogramType> HistIteratorType;
+
+
+  // typedefs for mathematical filters
+  typedef itk::DivideByConstantImageFilter< HistogramType, double, 
+    HistogramType > DividerType;
+  typedef itk::MultiplyByConstantImageFilter< HistogramType, double, 
+    HistogramType > MultiplierType;
+  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
+    AdderType;
+  typedef itk::SubtractImageFilter< HistogramType, HistogramType, 
+    HistogramType> SubtracterType;
+  typedef itk::SquareImageFilter< HistogramType, HistogramType > 
+    SquareType;
+  typedef itk::SqrtImageFilter< HistogramType, HistogramType > 
+    SqrtType;
+  typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
+
+
+
+  // Load the input data (image + prior)
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
   typename ReaderType::Pointer priorReader = ReaderType::New();
@@ -107,19 +139,18 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
+  // Store the input images and prepare the target regions
   typename ImageType::Pointer curImage = reader->GetOutput();
   typename ImageType::Pointer curPrior = priorReader->GetOutput();  
-  
   typename ImageType::RegionType region;
   typename ImageType::RegionType fullRegion;
   typename ImageType::SizeType size;
   typename ImageType::IndexType start;
+  VectorType roiSize(dimensionT);
   
-  std::vector<int> roiSize = std::vector<int>(dimensionT);
-  
+  // Setup the target regions
   size = curImage->GetLargestPossibleRegion().GetSize();
   start = curImage->GetLargestPossibleRegion().GetIndex();
-
   for( unsigned int i = 0; i < dimensionT; ++i )
     {
     size[i] -= regionRadius;
@@ -129,9 +160,7 @@ int DoIt( int argc, char * argv[] )
   region.SetSize(size);
   region.SetIndex(start);
 
-  typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
-    ::JointHistogramType    HistogramType;
-
+  // Allocate the output image and fill with 0s
   typename ImageType::Pointer outImage = ImageType::New();
   outImage->SetRegions(curImage->GetLargestPossibleRegion());
   outImage->Allocate();
@@ -139,7 +168,9 @@ int DoIt( int argc, char * argv[] )
   
   FullItrType imageItr( curImage, region);
 
-  // The first iteration is just to get the number of valid samples.
+  // The first iteration through the image is to get the number of samples that
+  // we will use in the other iterations. This allows for the super-granular 
+  // progress reporting that we all know and love.
   imageItr.GoToBegin();
   typename HistogramType::PixelType samples = 0;
   while( !imageItr.IsAtEnd() )
@@ -197,7 +228,6 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::PixelType imageMax;
   typename ImageType::PixelType maskMin;
   typename ImageType::PixelType maskMax;
-  typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
   typename CalculatorType::Pointer calculator;
   calculator = CalculatorType::New();
   calculator->SetImage(curImage);
@@ -210,33 +240,23 @@ int DoIt( int argc, char * argv[] )
   maskMin = calculator->GetMinimum();
   maskMax = calculator->GetMaximum();
 
-
-  typedef itk::DivideByConstantImageFilter< HistogramType, double, 
-    HistogramType > DividerType;
-  typedef itk::MultiplyByConstantImageFilter< HistogramType, double, 
-    HistogramType > MultiplierType;
-  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-    AdderType;
-  typedef itk::SubtractImageFilter< HistogramType, HistogramType, 
-    HistogramType> SubtracterType;
-  typedef itk::SquareImageFilter< HistogramType, HistogramType > 
-    SquareType;
-  typedef itk::SqrtImageFilter< HistogramType, HistogramType > 
-    SqrtType;        
-
+  // Get some memory ready for our joint histograms
   typename HistogramType::Pointer hist;
   typename HistogramType::Pointer sumHist;
   typename HistogramType::Pointer sumSqrHist;
   typename HistogramType::Pointer meanHist;
   typename HistogramType::Pointer stdevHist;
 
+  // variable for managing the granularity of progress reporting. The loop uses
+  // progress += proportion/samples to appropriately gauge progress.
   double proportion;
   
+  // If we've specified mean and stdev inputs, load them and don't do the
+  // computation.
   if( mean != std::string("nil") && stdev != std::string("nil") )
     {
     timeCollector.Start("Load Mean and Stdev");
   
-    typedef itk::ImageFileReader< HistogramType > HistReaderType;
     typename HistReaderType::Pointer histReader;
     histReader = HistReaderType::New();
     histReader->SetFileName(mean);
@@ -251,10 +271,12 @@ int DoIt( int argc, char * argv[] )
     
     timeCollector.Stop("Load Mean and Stdev");
     }
+  // If no mean and stdev inputs are specified we'll calculate them
   else
     {
-    timeCollector.Start("Get Mean and Stdev");
-      
+
+    // Calculate the mean and standard deviation histograms
+    timeCollector.Start("Get Mean and Stdev");      
     bool firstPass = true;
     proportion = 0.40;
     imageItr.GoToBegin();
@@ -394,29 +416,30 @@ int DoIt( int argc, char * argv[] )
     sqrt->SetInput(subtracter->GetOutput());
     sqrt->Update();
     stdevHist = sqrt->GetOutput();
+
     timeCollector.Stop("Calculate Mean and Stdev");
 
     proportion = 0.35;
     }
   
+  // Write the mean and standard deviation histograms to disk
   timeCollector.Start("Write Mean and Stdev");
-  typedef itk::ImageFileWriter< HistogramType> HistWriterType;
-  
   typename HistWriterType::Pointer histWriter = HistWriterType::New();
   histWriter->SetFileName("mean_hist.mha");
   histWriter->SetInput(meanHist);
   histWriter->Update();
-
   typename HistWriterType::Pointer stdWriter = HistWriterType::New();
   stdWriter->SetFileName("stdev_hist.mha");
   stdWriter->SetInput(stdevHist);
   stdWriter->Update();
-
   timeCollector.Stop("Write Mean and Stdev");
 
+  // Report progress after the mean and stdev write
   progress += 0.05;
   progressReporter.Report( progress );
 
+  // Iterate through the image for a third and final time to calculate the Z
+  // scores in the manner specified.
   timeCollector.Start("Calculate Z Scores");
   imageItr.GoToBegin();
   while( !imageItr.IsAtEnd() )
@@ -482,7 +505,6 @@ int DoIt( int argc, char * argv[] )
       histGenerator.Update();
       hist = histGenerator.GetOutputVolume();
       
-      typedef itk::ImageRegionConstIterator<HistogramType> HistIteratorType;
       HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
       HistIteratorType meanItr( meanHist, 
                                 meanHist->GetLargestPossibleRegion() );
@@ -560,6 +582,26 @@ int DoIt( int argc, char * argv[] )
           }
         val = maxVal;
         }
+      else if( scoringMethod == std::string("mean") )
+        {
+        typename HistogramType::PixelType histCount = 0;
+        while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+          {
+          typename HistogramType::PixelType t = histItr.Get();
+          typename HistogramType::PixelType m = meanItr.Get();
+          typename HistogramType::PixelType s = stdItr.Get();
+          if( s == 0 )
+            {
+            s = 0.0001;
+            }
+          val += vnl_math_abs(t-m)/s;
+          ++histItr;
+          ++meanItr;
+          ++stdItr;
+          ++histCount;
+          }
+        val /= histCount;
+        }
       else // assume sum if nothing specified
         {
         while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
@@ -586,10 +628,9 @@ int DoIt( int argc, char * argv[] )
     }
   timeCollector.Stop("Calculate Z Scores");
   
-  typedef itk::ImageFileWriter< ImageType  > ImageWriterType;
-
+  // Write the output image of scores to disk
   timeCollector.Start("Save data");
-  typename ImageWriterType::Pointer writer = ImageWriterType::New();
+  typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( outImage );
   try
@@ -605,8 +646,10 @@ int DoIt( int argc, char * argv[] )
   progress = 1.0;
   progressReporter.Report( progress );
   
+  // Report the time each process step took
   timeCollector.Report();
 
+  // Return with a good value
   return EXIT_SUCCESS;
 }
 
