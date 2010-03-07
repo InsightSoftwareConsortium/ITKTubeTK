@@ -33,8 +33,9 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 add_test( ${PROJECT_NAME}Test1
             ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
-               ${INPUT_DATA}/im0001.crop.mha
-               ${TEMP}/${PROJECT_NAME}Test1.mha )
+               ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
+               ${TEMP}/${PROJECT_NAME}Test1.mha
+               --sigma 25 )
 
 add_test( ${PROJECT_NAME}Test1-Compare
             ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
