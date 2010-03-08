@@ -267,7 +267,10 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start("Load Mean and Stdev");
 
+<<<<<<< HEAD:Applications/CLI/CompareImageWithPrior/CompareImageWithPrior.cxx
     // Setup reader for mean histogram
+=======
+>>>>>>> STYLE: Removed extra spaces at the end of lines:Applications/CLI/CompareImageWithPrior/CompareImageWithPrior.cxx
     typename HistReaderType::Pointer histReader;
     histReader = HistReaderType::New();
     histReader->SetFileName(mean);
