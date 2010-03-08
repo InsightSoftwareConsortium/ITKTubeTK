@@ -88,43 +88,43 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer curMask;
 
   timeCollector.Start("Read");
-  {
-  typedef itk::ImageFileReader< ImageType >                       ReaderType;
-
-  typename ReaderType::Pointer readerVolume = ReaderType::New();
-  typename ReaderType::Pointer readerMask = ReaderType::New();
-
-  //read input image  
-  readerVolume->SetFileName( inputVolume.c_str() );
-  readerMask->SetFileName( inputMask.c_str() );
-
-  try
     {
-    readerVolume->Update();
+    typedef itk::ImageFileReader< ImageType >                       ReaderType;
+  
+    typename ReaderType::Pointer readerVolume = ReaderType::New();
+    typename ReaderType::Pointer readerMask = ReaderType::New();
+  
+    //read input image  
+    readerVolume->SetFileName( inputVolume.c_str() );
+    readerMask->SetFileName( inputMask.c_str() );
+  
+    try
+      {
+      readerVolume->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading volume. Exception caught: " 
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+  
+    try
+      {
+      readerMask->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading mask. Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+  
+    curVolume = readerVolume->GetOutput();
+    curMask = readerMask->GetOutput();
     }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume. Exception caught: " 
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
-  try
-    {
-    readerMask->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading mask. Exception caught: "
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
-  curVolume = readerVolume->GetOutput();
-  curMask = readerMask->GetOutput();
-  }
   timeCollector.Stop("Read");
 
 
@@ -134,51 +134,51 @@ int DoIt( int argc, char * argv[] )
 
   /** Crop input images to ROI */
   timeCollector.Start("Crop");
-  {
-  for( unsigned int i=0; i<dimensionT; i++ )
     {
-    int ti = roiCenter[i] - (roiSize[i]-1)/2;
-    if( ti < 0 )
+    for( unsigned int i=0; i<dimensionT; i++ )
       {
-      lowerCropSize[i] = 0;
+      int ti = roiCenter[i] - (roiSize[i]-1)/2;
+      if( ti < 0 )
+        {
+        lowerCropSize[i] = 0;
+        }
+      else if( ti >= (int)(inputSize[i]) )
+        {
+        lowerCropSize[i] = inputSize[i]-1;
+        }
+      else
+        {
+        lowerCropSize[i] = ti;
+        }
+  
+      ti = inputSize[i] - (int)( lowerCropSize[i] + roiSize[i] );
+      if( ti < 0 )
+        {
+        upperCropSize[i] = 0;
+        }
+      else if( ti >= (int)(inputSize[i]) - (int)(lowerCropSize[i]) )
+        {
+        ti = (int)(inputSize[i]) - (int)(lowerCropSize[i]);
+        }
+      upperCropSize[i] = ti;
       }
-    else if( ti >= (int)(inputSize[i]) )
-      {
-      lowerCropSize[i] = inputSize[i]-1;
-      }
-    else
-      {
-      lowerCropSize[i] = ti;
-      }
+  
+    typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
+    typename CropFilterType::Pointer cropVolumeFilter = CropFilterType::New();
+    typename CropFilterType::Pointer cropMaskFilter = CropFilterType::New();
+  
+    cropVolumeFilter->SetLowerBoundaryCropSize( lowerCropSize );
+    cropVolumeFilter->SetUpperBoundaryCropSize( upperCropSize );
+    cropVolumeFilter->SetInput( curVolume );
+    cropVolumeFilter->Update();
+    curVolume = cropVolumeFilter->GetOutput();
 
-    ti = inputSize[i] - (int)( lowerCropSize[i] + roiSize[i] );
-    if( ti < 0 )
-      {
-      upperCropSize[i] = 0;
-      }
-    else if( ti >= (int)(inputSize[i]) - (int)(lowerCropSize[i]) )
-      {
-      ti = (int)(inputSize[i]) - (int)(lowerCropSize[i]);
-      }
-    upperCropSize[i] = ti;
+    cropMaskFilter->SetLowerBoundaryCropSize( lowerCropSize );
+    cropMaskFilter->SetUpperBoundaryCropSize( upperCropSize );
+    cropMaskFilter->SetInput( curMask );
+    cropMaskFilter->Update();
+    curMask = cropMaskFilter->GetOutput();
     }
-
-  typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
-  typename CropFilterType::Pointer cropVolumeFilter = CropFilterType::New();
-  typename CropFilterType::Pointer cropMaskFilter = CropFilterType::New();
-
-  cropVolumeFilter->SetLowerBoundaryCropSize( lowerCropSize );
-  cropVolumeFilter->SetUpperBoundaryCropSize( upperCropSize );
-  cropVolumeFilter->SetInput( curVolume );
-  cropVolumeFilter->Update();
-  curVolume = cropVolumeFilter->GetOutput();
-
-  cropMaskFilter->SetLowerBoundaryCropSize( lowerCropSize );
-  cropMaskFilter->SetUpperBoundaryCropSize( upperCropSize );
-  cropMaskFilter->SetInput( curMask );
-  cropMaskFilter->Update();
-  curMask = cropMaskFilter->GetOutput();
-  }
   timeCollector.Stop("Crop");
 
   typename ImageType::Pointer orgMask = curMask;
