@@ -73,8 +73,8 @@ public:
 
 protected:
   
-  std::vector<int>     m_RoiCenter;
-  std::vector<int>     m_RoiSize;
+  std::vector<int>              m_RoiCenter;
+  std::vector<int>              m_RoiSize;
   typename ImageType::Pointer   m_InputVolume;
   typename ImageType::Pointer   m_InputMask;
   typename ImageType::Pointer   m_OutputVolume;
