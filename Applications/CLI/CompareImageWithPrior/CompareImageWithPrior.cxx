@@ -91,27 +91,27 @@ int DoIt( int argc, char * argv[] )
   typedef std::vector<int>                                   VectorType;
   typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
     ::JointHistogramType                                     HistogramType;
-  typedef itk::ImageFileReader< HistogramType > HistReaderType;
-  typedef itk::ImageFileWriter< HistogramType> HistWriterType;
+  typedef itk::ImageFileReader< HistogramType >              HistReaderType;
+  typedef itk::ImageFileWriter< HistogramType>               HistWriterType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
-  typedef itk::ImageRegionConstIterator<HistogramType> HistIteratorType;
+  typedef itk::ImageRegionConstIterator<HistogramType>       HistIteratorType;
 
   // typedefs for mathematical filters
   typedef itk::DivideByConstantImageFilter< HistogramType, double,
-    HistogramType > DividerType;
+    HistogramType >                                          DividerType;
   typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
-    HistogramType > MultiplierType;
+    HistogramType >                                          MultiplierType;
   typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-    AdderType;
+                                                             AdderType;
   typedef itk::SubtractImageFilter< HistogramType, HistogramType,
-    HistogramType> SubtracterType;
+    HistogramType>                                           SubtracterType;
   typedef itk::SquareImageFilter< HistogramType, HistogramType >
-    SquareType;
+                                                             SquareType;
   typedef itk::SqrtImageFilter< HistogramType, HistogramType >
-    SqrtType;
-  typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
+                                                             SqrtType;
+  typedef itk::MinimumMaximumImageCalculator<ImageType>      CalculatorType;
 
   // Setup the readers to load the input data (image + prior)
   timeCollector.Start("Load data");
@@ -267,10 +267,7 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start("Load Mean and Stdev");
 
-<<<<<<< HEAD:Applications/CLI/CompareImageWithPrior/CompareImageWithPrior.cxx
     // Setup reader for mean histogram
-=======
->>>>>>> STYLE: Removed extra spaces at the end of lines:Applications/CLI/CompareImageWithPrior/CompareImageWithPrior.cxx
     typename HistReaderType::Pointer histReader;
     histReader = HistReaderType::New();
     histReader->SetFileName(mean);
