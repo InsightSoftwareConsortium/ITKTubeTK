@@ -87,36 +87,31 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType >                  ReaderType;
   typedef itk::ImageFileWriter< ImageType  >                 WriterType;
 
-
-
   // typedefs for internal storage
   typedef std::vector<int>                                   VectorType;
   typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
     ::JointHistogramType                                     HistogramType;
-  typedef itk::ImageFileReader< HistogramType > HistReaderType;
-  typedef itk::ImageFileWriter< HistogramType> HistWriterType;
+  typedef itk::ImageFileReader< HistogramType >              HistReaderType;
+  typedef itk::ImageFileWriter< HistogramType>               HistWriterType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
-  typedef itk::ImageRegionConstIterator<HistogramType> HistIteratorType;
-
+  typedef itk::ImageRegionConstIterator<HistogramType>       HistIteratorType;
 
   // typedefs for mathematical filters
   typedef itk::DivideByConstantImageFilter< HistogramType, double,
-    HistogramType > DividerType;
+    HistogramType >                                          DividerType;
   typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
-    HistogramType > MultiplierType;
+    HistogramType >                                          MultiplierType;
   typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-    AdderType;
+                                                             AdderType;
   typedef itk::SubtractImageFilter< HistogramType, HistogramType,
-    HistogramType> SubtracterType;
+    HistogramType>                                           SubtracterType;
   typedef itk::SquareImageFilter< HistogramType, HistogramType >
-    SquareType;
+                                                             SquareType;
   typedef itk::SqrtImageFilter< HistogramType, HistogramType >
-    SqrtType;
-  typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
-
-
+                                                             SqrtType;
+  typedef itk::MinimumMaximumImageCalculator<ImageType>      CalculatorType;
 
   // Load the input data (image + prior)
   timeCollector.Start("Load data");
