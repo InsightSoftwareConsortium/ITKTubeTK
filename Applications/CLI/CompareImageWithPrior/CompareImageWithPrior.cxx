@@ -425,11 +425,11 @@ int DoIt( int argc, char * argv[] )
   // Write the mean and standard deviation histograms to disk
   timeCollector.Start("Write Mean and Stdev");
   typename HistWriterType::Pointer histWriter = HistWriterType::New();
-  histWriter->SetFileName("mean_hist.mha");
+  histWriter->SetFileName( meanOutput.c_str() );
   histWriter->SetInput(meanHist);
   histWriter->Update();
   typename HistWriterType::Pointer stdWriter = HistWriterType::New();
-  stdWriter->SetFileName("stdev_hist.mha");
+  stdWriter->SetFileName( stdevOutput.c_str() );
   stdWriter->SetInput(stdevHist);
   stdWriter->Update();
   timeCollector.Stop("Write Mean and Stdev");

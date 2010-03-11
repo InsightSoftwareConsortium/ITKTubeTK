@@ -100,6 +100,26 @@
       <flag>s</flag>
       <default>nil</default>
     </string>
+
+    <string>
+      <name>meanOutput</name>
+      <label>Mean Histogram Output File</label>
+      <description>A file in which to save the mean histogram.</description>
+      <longflag>meanout</longflag>
+      <flag>a</flag>
+      <default>mean_hist.mha</default>
+    </string>
+    <string>
+      <name>stdevOutput</name>
+      <label>Stdev Histogram Output File</label>
+      <description>
+	A file in which to save standard deviation histogram.
+      </description>
+      <longflag>stdevout</longflag>
+      <flag>d</flag>
+      <default>stdev_hist.mha</default>
+    </string>
+
     <string>
       <name>scoringMethod</name>
       <label>Z Scoring Method</label>
