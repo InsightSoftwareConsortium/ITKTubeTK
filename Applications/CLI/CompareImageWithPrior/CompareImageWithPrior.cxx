@@ -87,8 +87,6 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType >                  ReaderType;
   typedef itk::ImageFileWriter< ImageType  >                 WriterType;
 
-
-
   // typedefs for internal storage
   typedef std::vector<int>                                   VectorType;
   typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
@@ -99,7 +97,6 @@ int DoIt( int argc, char * argv[] )
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
   typedef itk::ImageRegionConstIterator<HistogramType> HistIteratorType;
-
 
   // typedefs for mathematical filters
   typedef itk::DivideByConstantImageFilter< HistogramType, double, 
@@ -116,22 +113,35 @@ int DoIt( int argc, char * argv[] )
     SqrtType;
   typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
 
-
-
-  // Load the input data (image + prior)
+  // Setup the readers to load the input data (image + prior)
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
   typename ReaderType::Pointer priorReader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   priorReader->SetFileName( priorVolume.c_str() );
+
+  // Load the input image with exception handling
   try
     {
     reader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject caught while reading the input image!" 
+              << std::endl;
+    std::cerr << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  // Load the input prior with exception handling
+  try
+    {
     priorReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "ExceptionObject caught !" << std::endl;
+    std::cerr << "ExceptionObject caught while reading the input prior!" 
+              << std::endl;
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
     }
@@ -257,14 +267,41 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start("Load Mean and Stdev");
   
+    // Setup reader for mean histogram
     typename HistReaderType::Pointer histReader;
     histReader = HistReaderType::New();
     histReader->SetFileName(mean);
-    histReader->Update();
+    
+    // Read mean histogram with exception handling
+    try
+      {
+      histReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      std::cerr << "ExceptionObject caught while reading the mean histogram!" 
+                << std::endl;
+      std::cerr << err << std::endl;
+      return EXIT_FAILURE;
+      }
     meanHist = histReader->GetOutput();
+    
+    // Setup reader for standard deviation histogram
     histReader = HistReaderType::New();
     histReader->SetFileName(stdev);
-    histReader->Update();
+
+    // Read standard deviation histogram with exception handling
+    try
+      {
+      histReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      std::cerr << "ExceptionObject caught while reading the stdev histogram!"
+                << std::endl;
+      std::cerr << err << std::endl;
+      return EXIT_FAILURE;
+      }
     stdevHist = histReader->GetOutput();
 
     proportion = 0.75;
@@ -424,14 +461,40 @@ int DoIt( int argc, char * argv[] )
   
   // Write the mean and standard deviation histograms to disk
   timeCollector.Start("Write Mean and Stdev");
+  
+  // Setup the mean histogram writer
   typename HistWriterType::Pointer histWriter = HistWriterType::New();
   histWriter->SetFileName( meanOutput.c_str() );
   histWriter->SetInput(meanHist);
-  histWriter->Update();
+  
+  // Write the mean histogram to disk, with exception handling
+  try
+    {
+    histWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject caught while writing the mean histogram!"
+              << std::endl;
+    std::cerr << err << std::endl;
+    }
+
+  // Setup the standard deviation histogram writer
   typename HistWriterType::Pointer stdWriter = HistWriterType::New();
   stdWriter->SetFileName( stdevOutput.c_str() );
   stdWriter->SetInput(stdevHist);
-  stdWriter->Update();
+
+  // Write the stdev histogram to disk, with exception handling
+  try
+    {
+    stdWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject caught while writing the stdev histogram!"
+              << std::endl;
+    std::cerr << err << std::endl;
+    }
   timeCollector.Stop("Write Mean and Stdev");
 
   // Report progress after the mean and stdev write
@@ -628,11 +691,13 @@ int DoIt( int argc, char * argv[] )
     }
   timeCollector.Stop("Calculate Z Scores");
   
-  // Write the output image of scores to disk
+  // Prepare to write the output image of scores to disk
   timeCollector.Start("Save data");
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( outImage );
+
+  // Write the output image to disk with exception handling
   try
     {
     writer->Update();
