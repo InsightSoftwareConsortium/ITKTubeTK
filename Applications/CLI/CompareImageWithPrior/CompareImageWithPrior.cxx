@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ int DoIt( int argc, char * argv[] )
   // The timeCollector is used to perform basic profiling of the components
   //   of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
-  
+
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
   tube::CLIProgressReporter    progressReporter( "CompareImageWithPrior",
                                                  CLPProcessInformation );
@@ -93,23 +93,23 @@ int DoIt( int argc, char * argv[] )
     ::JointHistogramType                                     HistogramType;
   typedef itk::ImageFileReader< HistogramType > HistReaderType;
   typedef itk::ImageFileWriter< HistogramType> HistWriterType;
-  
+
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
   typedef itk::ImageRegionConstIterator<HistogramType> HistIteratorType;
 
   // typedefs for mathematical filters
-  typedef itk::DivideByConstantImageFilter< HistogramType, double, 
+  typedef itk::DivideByConstantImageFilter< HistogramType, double,
     HistogramType > DividerType;
-  typedef itk::MultiplyByConstantImageFilter< HistogramType, double, 
+  typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
     HistogramType > MultiplierType;
   typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
     AdderType;
-  typedef itk::SubtractImageFilter< HistogramType, HistogramType, 
+  typedef itk::SubtractImageFilter< HistogramType, HistogramType,
     HistogramType> SubtracterType;
-  typedef itk::SquareImageFilter< HistogramType, HistogramType > 
+  typedef itk::SquareImageFilter< HistogramType, HistogramType >
     SquareType;
-  typedef itk::SqrtImageFilter< HistogramType, HistogramType > 
+  typedef itk::SqrtImageFilter< HistogramType, HistogramType >
     SqrtType;
   typedef itk::MinimumMaximumImageCalculator<ImageType> CalculatorType;
 
@@ -127,7 +127,7 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "ExceptionObject caught while reading the input image!" 
+    std::cerr << "ExceptionObject caught while reading the input image!"
               << std::endl;
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
@@ -140,7 +140,7 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "ExceptionObject caught while reading the input prior!" 
+    std::cerr << "ExceptionObject caught while reading the input prior!"
               << std::endl;
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
@@ -151,13 +151,13 @@ int DoIt( int argc, char * argv[] )
 
   // Store the input images and prepare the target regions
   typename ImageType::Pointer curImage = reader->GetOutput();
-  typename ImageType::Pointer curPrior = priorReader->GetOutput();  
+  typename ImageType::Pointer curPrior = priorReader->GetOutput();
   typename ImageType::RegionType region;
   typename ImageType::RegionType fullRegion;
   typename ImageType::SizeType size;
   typename ImageType::IndexType start;
   VectorType roiSize(dimensionT);
-  
+
   // Setup the target regions
   size = curImage->GetLargestPossibleRegion().GetSize();
   start = curImage->GetLargestPossibleRegion().GetIndex();
@@ -175,11 +175,11 @@ int DoIt( int argc, char * argv[] )
   outImage->SetRegions(curImage->GetLargestPossibleRegion());
   outImage->Allocate();
   outImage->FillBuffer(0);
-  
+
   FullItrType imageItr( curImage, region);
 
   // The first iteration through the image is to get the number of samples that
-  // we will use in the other iterations. This allows for the super-granular 
+  // we will use in the other iterations. This allows for the super-granular
   // progress reporting that we all know and love.
   imageItr.GoToBegin();
   typename HistogramType::PixelType samples = 0;
@@ -214,7 +214,7 @@ int DoIt( int argc, char * argv[] )
     if( doCalculation )
       {
       curIndex = imageItr.GetIndex();
-      roiCenter = std::vector<int>(dimensionT);    
+      roiCenter = std::vector<int>(dimensionT);
       for( unsigned int i = 0; i < dimensionT; ++i )
         {
         if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
@@ -260,18 +260,18 @@ int DoIt( int argc, char * argv[] )
   // variable for managing the granularity of progress reporting. The loop uses
   // progress += proportion/samples to appropriately gauge progress.
   double proportion;
-  
+
   // If we've specified mean and stdev inputs, load them and don't do the
   // computation.
   if( mean != std::string("nil") && stdev != std::string("nil") )
     {
     timeCollector.Start("Load Mean and Stdev");
-  
+
     // Setup reader for mean histogram
     typename HistReaderType::Pointer histReader;
     histReader = HistReaderType::New();
     histReader->SetFileName(mean);
-    
+
     // Read mean histogram with exception handling
     try
       {
@@ -279,13 +279,13 @@ int DoIt( int argc, char * argv[] )
       }
     catch( itk::ExceptionObject & err )
       {
-      std::cerr << "ExceptionObject caught while reading the mean histogram!" 
+      std::cerr << "ExceptionObject caught while reading the mean histogram!"
                 << std::endl;
       std::cerr << err << std::endl;
       return EXIT_FAILURE;
       }
     meanHist = histReader->GetOutput();
-    
+
     // Setup reader for standard deviation histogram
     histReader = HistReaderType::New();
     histReader->SetFileName(stdev);
@@ -305,7 +305,7 @@ int DoIt( int argc, char * argv[] )
     stdevHist = histReader->GetOutput();
 
     proportion = 0.75;
-    
+
     timeCollector.Stop("Load Mean and Stdev");
     }
   // If no mean and stdev inputs are specified we'll calculate them
@@ -313,7 +313,7 @@ int DoIt( int argc, char * argv[] )
     {
 
     // Calculate the mean and standard deviation histograms
-    timeCollector.Start("Get Mean and Stdev");      
+    timeCollector.Start("Get Mean and Stdev");
     bool firstPass = true;
     proportion = 0.40;
     imageItr.GoToBegin();
@@ -337,18 +337,18 @@ int DoIt( int argc, char * argv[] )
         useThreshold = false;
         useSkip = false;
         }
-      
+
       if( useThreshold && imageItr.Get() > threshold )
         {
         doCalculation = false;
         }
-      
+
       typename ImageType::IndexType curIndex;
       std::vector<int> roiCenter;
       if( doCalculation )
         {
-        curIndex = imageItr.GetIndex();    
-        roiCenter = std::vector<int>(dimensionT);    
+        curIndex = imageItr.GetIndex();
+        roiCenter = std::vector<int>(dimensionT);
         for( unsigned int i = 0; i < dimensionT; ++i )
           {
           if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
@@ -359,7 +359,7 @@ int DoIt( int argc, char * argv[] )
           roiCenter[i] = curIndex[i];
           }
         }
-      
+
       if( doCalculation )
         {
         tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
@@ -368,7 +368,7 @@ int DoIt( int argc, char * argv[] )
         subGenerator.SetInputVolume(curImage);
         subGenerator.SetInputMask(curPrior);
         subGenerator.Update();
-        
+
         tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
         histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
         histGenerator.SetInputMask(subGenerator.GetOutputMask());
@@ -379,10 +379,10 @@ int DoIt( int argc, char * argv[] )
         histGenerator.SetMaskMax(maskMax);
         histGenerator.Update();
         hist = histGenerator.GetOutputVolume();
-        
+
         if( firstPass )
           {
-          typename HistogramType::RegionType histRegion = 
+          typename HistogramType::RegionType histRegion =
             hist->GetLargestPossibleRegion();
           sumHist = HistogramType::New();
           sumHist->SetRegions(histRegion);
@@ -394,16 +394,16 @@ int DoIt( int argc, char * argv[] )
           sumSqrHist->FillBuffer(0);
           firstPass = false;
           }
-        
+
         typename AdderType::Pointer adder = AdderType::New();
         typename SquareType::Pointer square = SquareType::New();
-        
+
         // Calculate Running Sum
         adder->SetInput1(sumHist);
         adder->SetInput2(hist);
         adder->Update();
         sumHist = adder->GetOutput();
-        
+
         // Calculate Running Sum of Squares
         adder = AdderType::New();
         square->SetInput(hist);
@@ -412,14 +412,14 @@ int DoIt( int argc, char * argv[] )
         adder->SetInput2(square->GetOutput());
         adder->Update();
         sumSqrHist = adder->GetOutput();
-        
+
         progress += proportion/samples;
         progressReporter.Report( progress );
         }
       ++imageItr;
       }
     timeCollector.Stop("Get Mean and Stdev");
-    
+
     // Calculate the mean
     timeCollector.Start("Calculate Mean and Stdev");
     typename DividerType::Pointer divider = DividerType::New();
@@ -427,7 +427,7 @@ int DoIt( int argc, char * argv[] )
     divider->SetConstant( samples );
     divider->Update();
     meanHist = divider->GetOutput();
-  
+
     // Calculate the standard deviation
     typename SubtracterType::Pointer subtracter = SubtracterType::New();
     typename SquareType::Pointer square = SquareType::New();
@@ -444,7 +444,7 @@ int DoIt( int argc, char * argv[] )
     multiplier->Update();
     meanSquaredDivided = multiplier->GetOutput();
     divider->SetInput(sumSqrHist);
-    divider->SetConstant(samples-1);  
+    divider->SetConstant(samples-1);
     divider->Update();
     sumSquaresDivided = divider->GetOutput();
     subtracter->SetInput1(sumSquaresDivided);
@@ -458,15 +458,15 @@ int DoIt( int argc, char * argv[] )
 
     proportion = 0.35;
     }
-  
+
   // Write the mean and standard deviation histograms to disk
   timeCollector.Start("Write Mean and Stdev");
-  
+
   // Setup the mean histogram writer
   typename HistWriterType::Pointer histWriter = HistWriterType::New();
   histWriter->SetFileName( meanOutput.c_str() );
   histWriter->SetInput(meanHist);
-  
+
   // Write the mean histogram to disk, with exception handling
   try
     {
@@ -535,8 +535,8 @@ int DoIt( int argc, char * argv[] )
     std::vector<int> roiCenter;
     if( doCalculation )
       {
-      curIndex = imageItr.GetIndex();    
-      roiCenter = std::vector<int>(dimensionT);    
+      curIndex = imageItr.GetIndex();
+      roiCenter = std::vector<int>(dimensionT);
       for( unsigned int i = 0; i < dimensionT; ++i )
         {
         if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
@@ -556,7 +556,7 @@ int DoIt( int argc, char * argv[] )
       subGenerator.SetInputVolume(curImage);
       subGenerator.SetInputMask(curPrior);
       subGenerator.Update();
-      
+
       tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
       histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
       histGenerator.SetInputMask(subGenerator.GetOutputMask());
@@ -567,17 +567,17 @@ int DoIt( int argc, char * argv[] )
       histGenerator.SetMaskMax(maskMax);
       histGenerator.Update();
       hist = histGenerator.GetOutputVolume();
-      
+
       HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
-      HistIteratorType meanItr( meanHist, 
+      HistIteratorType meanItr( meanHist,
                                 meanHist->GetLargestPossibleRegion() );
-      HistIteratorType stdItr( stdevHist, 
+      HistIteratorType stdItr( stdevHist,
                                stdevHist->GetLargestPossibleRegion() );
       histItr.GoToBegin();
       meanItr.GoToBegin();
       stdItr.GoToBegin();
       typename HistogramType::PixelType val = 0;
-      
+
       if( scoringMethod == std::string("histogram") )
         {
         int count = 0;
@@ -605,12 +605,12 @@ int DoIt( int argc, char * argv[] )
             }
           ++zHist[ (int)tf ];
           ++count;
-          
+
           ++histItr;
           ++meanItr;
           ++stdItr;
           }
-        
+
         double thresh = count*0.95;
         for( int i=zHistBins-1; i>0; i-- )
           {
@@ -682,7 +682,7 @@ int DoIt( int argc, char * argv[] )
           ++stdItr;
           }
         }
-        
+
       outImage->SetPixel(curIndex,val);
       progress += proportion/samples;
       progressReporter.Report( progress );
@@ -690,7 +690,7 @@ int DoIt( int argc, char * argv[] )
     ++imageItr;
     }
   timeCollector.Stop("Calculate Z Scores");
-  
+
   // Prepare to write the output image of scores to disk
   timeCollector.Start("Save data");
   typename WriterType::Pointer writer = WriterType::New();
@@ -710,7 +710,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Save data");
   progress = 1.0;
   progressReporter.Report( progress );
-  
+
   // Report the time each process step took
   timeCollector.Report();
 
