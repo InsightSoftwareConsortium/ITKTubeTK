@@ -91,12 +91,15 @@ int DoIt( int argc, char * argv[] )
   typedef std::vector<int>                                   VectorType;
   typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
     ::JointHistogramType                                     HistogramType;
+  typedef bool                                               BoolPixelType;
+  typedef itk::Image< BoolPixelType, dimensionT >            SelectionMaskType;
   typedef itk::ImageFileReader< HistogramType >              HistReaderType;
   typedef itk::ImageFileWriter< HistogramType>               HistWriterType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
   typedef itk::ImageRegionConstIterator<HistogramType>       HistIteratorType;
+  typedef itk::ImageRegionIterator<SelectionMaskType>        SelectionMaskIteratorType;
 
   // typedefs for mathematical filters
   typedef itk::DivideByConstantImageFilter< HistogramType, double,
@@ -176,12 +179,22 @@ int DoIt( int argc, char * argv[] )
   outImage->Allocate();
   outImage->FillBuffer(0);
 
+  // Allocate the selection mask and fill it with 'false'
+  typename SelectionMaskType::Pointer mask = SelectionMaskType::New();
+  mask->SetRegions(curImage->GetLargestPossibleRegion());
+  mask->Allocate();
+  mask->FillBuffer(false);
+
+  // Setup the full image iterator and the selection Mask iterator
   FullItrType imageItr( curImage, region);
+  SelectionMaskIteratorType maskItr( mask, region );
 
   // The first iteration through the image is to get the number of samples that
   // we will use in the other iterations. This allows for the super-granular
-  // progress reporting that we all know and love.
+  // progress reporting that we all know and love. We aslo use this to create
+  // the image of booleans used to clean up the future iterations a bit.
   imageItr.GoToBegin();
+  maskItr.GoToBegin();
   typename HistogramType::PixelType samples = 0;
   while( !imageItr.IsAtEnd() )
     {
@@ -229,8 +242,10 @@ int DoIt( int argc, char * argv[] )
     if( doCalculation )
       {
       ++samples;
+      maskItr.Set(true);
       }
     ++imageItr;
+    ++maskItr;
     }
 
   // Caculate Image and Mask's Max and Min
@@ -317,51 +332,19 @@ int DoIt( int argc, char * argv[] )
     bool firstPass = true;
     proportion = 0.40;
     imageItr.GoToBegin();
+    maskItr.GoToBegin();
+
     while( !imageItr.IsAtEnd() )
       {
-      bool doCalculation = true;
-      bool useThreshold;
-      bool useSkip;
-      if( threshold != 0 )
+      if( maskItr.Get() )
         {
-        useThreshold = true;
-        useSkip = false;
-        }
-      else if( skipSize != -1 )
-        {
-        useThreshold = false;
-        useSkip = true;
-        }
-      else
-        {
-        useThreshold = false;
-        useSkip = false;
-        }
-
-      if( useThreshold && imageItr.Get() > threshold )
-        {
-        doCalculation = false;
-        }
-
-      typename ImageType::IndexType curIndex;
-      std::vector<int> roiCenter;
-      if( doCalculation )
-        {
-        curIndex = imageItr.GetIndex();
-        roiCenter = std::vector<int>(dimensionT);
+        typename ImageType::IndexType curIndex = imageItr.GetIndex();
+        std::vector<int> roiCenter = std::vector<int>(dimensionT);
         for( unsigned int i = 0; i < dimensionT; ++i )
           {
-          if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
-            {
-            doCalculation = false;
-            break;
-            }
           roiCenter[i] = curIndex[i];
           }
-        }
 
-      if( doCalculation )
-        {
         tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
         subGenerator.SetRoiCenter(roiCenter);
         subGenerator.SetRoiSize(roiSize);
@@ -416,7 +399,9 @@ int DoIt( int argc, char * argv[] )
         progress += proportion/samples;
         progressReporter.Report( progress );
         }
+
       ++imageItr;
+      ++maskItr;
       }
     timeCollector.Stop("Get Mean and Stdev");
 
@@ -455,7 +440,6 @@ int DoIt( int argc, char * argv[] )
     stdevHist = sqrt->GetOutput();
 
     timeCollector.Stop("Calculate Mean and Stdev");
-
     proportion = 0.35;
     }
 
@@ -505,50 +489,18 @@ int DoIt( int argc, char * argv[] )
   // scores in the manner specified.
   timeCollector.Start("Calculate Z Scores");
   imageItr.GoToBegin();
+  maskItr.GoToBegin();
   while( !imageItr.IsAtEnd() )
     {
-    bool doCalculation = true;
-    bool useThreshold;
-    bool useSkip;
-    if( threshold != 0 )
+
+    typename ImageType::IndexType curIndex = imageItr.GetIndex();
+    std::vector<int> roiCenter = std::vector<int>(dimensionT);
+    for( unsigned int i = 0; i < dimensionT; ++i )
       {
-      useThreshold = true;
-      useSkip = false;
-      }
-    else if( skipSize != -1 )
-      {
-      useThreshold = false;
-      useSkip = true;
-      }
-    else
-      {
-      useThreshold = false;
-      useSkip = false;
+      roiCenter[i] = curIndex[i];
       }
 
-    if( useThreshold && imageItr.Get() > threshold )
-      {
-      doCalculation = false;
-      }
-
-    typename ImageType::IndexType curIndex;
-    std::vector<int> roiCenter;
-    if( doCalculation )
-      {
-      curIndex = imageItr.GetIndex();
-      roiCenter = std::vector<int>(dimensionT);
-      for( unsigned int i = 0; i < dimensionT; ++i )
-        {
-        if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
-          {
-          doCalculation = false;
-          break;
-          }
-        roiCenter[i] = curIndex[i];
-        }
-      }
-
-    if( doCalculation )
+    if( maskItr.Get() )
       {
       tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
       subGenerator.SetRoiCenter(roiCenter);
@@ -688,6 +640,7 @@ int DoIt( int argc, char * argv[] )
       progressReporter.Report( progress );
       }
     ++imageItr;
+    ++maskItr;
     }
   timeCollector.Stop("Calculate Z Scores");
 
