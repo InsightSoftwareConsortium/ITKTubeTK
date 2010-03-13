@@ -353,7 +353,7 @@ template <class TInputImage, class TOutputImage>
 void
 AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 ::ThreadedApplyUpdate(TimeStepType dt, const ThreadRegionType &regionToProcess,
-                      const ThreadDiffusionImageRegionType & diffusionRegionToProcess,
+                      const ThreadDiffusionImageRegionType &,
                       int)
 {
   ImageRegionIterator<UpdateBufferType> u(m_UpdateBuffer,    regionToProcess);

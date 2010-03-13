@@ -57,7 +57,7 @@ template< class TImageType >
 typename AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
 ::TimeStepType
 AnisotropicEdgeEnhancementDiffusionFunction<TImageType>
-::ComputeGlobalTimeStep(void *GlobalData) const
+::ComputeGlobalTimeStep(void *) const
 {
   /* returns the time step supplied by the user. We don't need
      to use the global data supplied since we are returning a fixed value
@@ -65,18 +65,16 @@ AnisotropicEdgeEnhancementDiffusionFunction<TImageType>
 
   return this->GetTimeStep();
 }
- 
+
 template< class TImageType >
 typename AnisotropicEdgeEnhancementDiffusionFunction< TImageType >::PixelType
 AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
 ::ComputeUpdate(const NeighborhoodType &it, void *globalData,
                 const FloatOffsetType& offset)
 {
-  double value = 0.0;
-  
-  return (PixelType) (value);   
+  DiffusionTensorNeighborhoodType diffusionTensor; 
+  return this->ComputeUpdate( it, diffusionTensor,globalData, offset ); 
 }
-
 template< class TImageType >
 typename AnisotropicEdgeEnhancementDiffusionFunction< TImageType >::PixelType
 AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
