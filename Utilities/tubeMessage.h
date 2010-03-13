@@ -21,6 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
+#ifndef __tubeMessage_h
+#define __tubeMessage_h
+
 namespace tube {
 
 namespace MessageLevel {
@@ -78,3 +81,5 @@ void DebugMessage( const T& str )
 }
 
 };
+
+#endif
