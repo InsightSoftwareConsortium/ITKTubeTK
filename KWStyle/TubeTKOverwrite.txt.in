@@ -1,5 +1,9 @@
 itkTubeEnhancingDiffusion2DImageFilter.h Namespace Disable
 itkTubeEnhancingDiffusion2DImageFilter.txx Namespace Disable
+itkAnisotropicEdgeEnhancementDiffusionFunction.h Namespace Disable
+itkAnisotropicEdgeEnhancementDiffusionFunction.txx Namespace Disable
+itkAnisotropicEdgeEnhancementDiffusionImageFilter.h Namespace Disable
+itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx Namespace Disable
 SampleCLIApplication.cxx Namespace Disable
 SimulateTomosynthesis.cxx Namespace Disable
 Crop.cxx Namespace Disable

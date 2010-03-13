@@ -43,7 +43,9 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBasePreprocessingFilters_SRCS
        tubeBasePreprocessingFiltersPrintTest.cxx
-       itkTubeEnhancingDiffusion2DImageFilterTest.cxx )
+       itkTubeEnhancingDiffusion2DImageFilterTest.cxx 
+       itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
+)
 
 include_directories( 
   ${TubeTK_SOURCE_DIR}/Utilities 
@@ -92,4 +94,11 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
             itkTubeEnhancingDiffusion2DImageFilterTest
                ${INPUT_DATA}/im0001_n10.crop.mha
                ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
+               true )
+
+add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest 
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
+               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
+               ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 0.4 5.0 10 10
                true )
