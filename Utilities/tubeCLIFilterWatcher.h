@@ -41,13 +41,15 @@ public:
                       const char *comment="",
                       ModuleProcessInformation *inf=0,
                       double fraction = 1.0,
-                      double start = 0.0)
+                      double start = 0.0,
+                      bool useStdCout = false)
     : SimpleFilterWatcher(o, comment)
   {
     m_ProcessInformation = inf;
     m_Fraction = fraction;
     m_Start = start;
     m_StartCalled = false;
+    m_UseStdCout = useStdCout;
   };
 
 protected:
@@ -95,7 +97,7 @@ virtual void ShowProgress()
           (*(m_ProcessInformation->ProgressCallbackFunction))(m_ProcessInformation->ProgressCallbackClientData);
           }
         }
-      else
+      if( !m_ProcessInformation || m_UseStdCout )
         {
         std::cout << "<filter-progress>"
                   << (this->GetProcess()->GetProgress() * m_Fraction) + m_Start
@@ -136,7 +138,7 @@ virtual void StartFilter()
         (*(m_ProcessInformation->ProgressCallbackFunction))(m_ProcessInformation->ProgressCallbackClientData);
         }
       }
-    else
+    if( !m_ProcessInformation || m_UseStdCout )
       {
       std::cout << "<filter-start>"
                 << std::endl;
@@ -177,7 +179,7 @@ virtual void EndFilter()
         (*(m_ProcessInformation->ProgressCallbackFunction))(m_ProcessInformation->ProgressCallbackClientData);
         }
       }
-    else
+    if( !m_ProcessInformation || m_UseStdCout )
       {
       std::cout << "<filter-end>"
                 << std::endl;
@@ -201,6 +203,7 @@ virtual void EndFilter()
   double m_Fraction;
   double m_Start;
   bool m_StartCalled;
+  bool m_UseStdCout;
 };
 
 } // end namespace itk

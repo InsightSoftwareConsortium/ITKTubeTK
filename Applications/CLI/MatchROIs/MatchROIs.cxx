@@ -40,20 +40,12 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Application-specific includes
-#include "itkCropImageFilter.h"
-#include "itkBinaryThresholdImageFilter.h"
+#include "tubeCompareCroppedROIs.h"
 
-#include "itkBinaryBallStructuringElement.h"
-#include "itkBinaryErodeImageFilter.h"
-#include "itkBinaryDilateImageFilter.h"
+#include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
 
-#include "itkRecursiveGaussianImageFilter.h"
-
-#include "itkNormalizeImageFilter.h"
-#include "itkRigidImageToImageRegistrationMethod.h"
-#include "itkResampleImageFilter.h"
-
-#include "itkShiftScaleImageFilter.h"
+#include <map>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -75,13 +67,13 @@ int DoIt( int argc, char * argv[] )
   //   of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
   
-  // CLIProgressReporter is used to communicate progress with the Slicer GUI
+  // CLIProgressReporter is used to communicate progress with Slicer GUI
   tube::CLIProgressReporter    progressReporter( "MatchROIs",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                                   PixelType;
-  typedef itk::Image< PixelType,  dimensionT >                    ImageType;
+  typedef float                                 PixelType;
+  typedef itk::Image< PixelType,  dimensionT >  ImageType;
   
   /** Read input images */
   typename ImageType::Pointer curVolume;
@@ -89,7 +81,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Read");
     {
-    typedef itk::ImageFileReader< ImageType >                       ReaderType;
+    typedef itk::ImageFileReader< ImageType >   ReaderType;
   
     typename ReaderType::Pointer readerVolume = ReaderType::New();
     typename ReaderType::Pointer readerMask = ReaderType::New();
@@ -125,16 +117,27 @@ int DoIt( int argc, char * argv[] )
     curVolume = readerVolume->GetOutput();
     curMask = readerMask->GetOutput();
     }
+  progressReporter.Report( 0.1 );
   timeCollector.Stop("Read");
 
 
-  typename ImageType::SizeType inputSize = curVolume->GetLargestPossibleRegion().GetSize();
+  typename ImageType::SizeType inputSize = curVolume
+                                           ->GetLargestPossibleRegion()
+                                           .GetSize();
   typename ImageType::SizeType lowerCropSize;
   typename ImageType::SizeType upperCropSize;
 
   /** Crop input images to ROI */
   timeCollector.Start("Crop");
+  if( roiCenter.size()>0 || roiSize.size()>0 )
     {
+    if( roiCenter.size() != dimensionT 
+        || roiSize.size() != dimensionT )
+      {
+      tube::ErrorMessage( 
+             "MatchROIs: roiCenter or roiSize not of image dimension." );
+      return EXIT_FAILURE;
+      }
     for( unsigned int i=0; i<dimensionT; i++ )
       {
       int ti = roiCenter[i] - (roiSize[i]-1)/2;
@@ -164,8 +167,10 @@ int DoIt( int argc, char * argv[] )
       }
   
     typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
-    typename CropFilterType::Pointer cropVolumeFilter = CropFilterType::New();
-    typename CropFilterType::Pointer cropMaskFilter = CropFilterType::New();
+    typename CropFilterType::Pointer cropVolumeFilter =
+      CropFilterType::New();
+    typename CropFilterType::Pointer cropMaskFilter =
+      CropFilterType::New();
   
     cropVolumeFilter->SetLowerBoundaryCropSize( lowerCropSize );
     cropVolumeFilter->SetUpperBoundaryCropSize( upperCropSize );
@@ -180,6 +185,7 @@ int DoIt( int argc, char * argv[] )
     curMask = cropMaskFilter->GetOutput();
     }
   timeCollector.Stop("Crop");
+  progressReporter.Report( 0.2 );
 
   typename ImageType::Pointer orgMask = curMask;
 
@@ -187,7 +193,8 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start("Fg/Bg");
 
-    typedef itk::BinaryThresholdImageFilter< ImageType, ImageType > FilterType;
+    typedef itk::BinaryThresholdImageFilter< ImageType, ImageType > 
+      FilterType;
     typename FilterType::Pointer filter = FilterType::New();
     filter->SetInput( curMask );
     if( foreground != 1 )
@@ -209,383 +216,146 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Stop("Fg/Bg");
     }
+  progressReporter.Report( 0.3 );
   
-  if( erode > 0 )
+  if( true )
     {
-    timeCollector.Start("Erode");
+    typedef std::pair< int, float > MapPairType;
+    typedef std::map< MapPairType, float > MapType;
+    MapType gofValues;
 
-    typedef itk::BinaryBallStructuringElement<PixelType, dimensionT >  BallType;
-    BallType ball;
-    ball.SetRadius( 1 );
-    ball.CreateStructuringElement();
+    int erodeStep = 1;
+    float gaussianBlurStep = 1;
+    int erodeBest = erode;
+    float gaussianBlurBest = gaussianBlur;
 
-    typedef itk::BinaryErodeImageFilter
-                 <ImageType, ImageType, BallType>       ErodeFilterType;
+    typedef tube::CompareCroppedROIs< pixelT, dimensionT > ROIEvalType;  
+    ROIEvalType eval;
+    eval.SetVolumeImage( curVolume );
+    eval.SetMaskImage( curMask );
+    eval.SetOriginalMaskImage( orgMask );
+    eval.SetForeground( foreground );
+    eval.SetOutputSize( outputSize );
+    eval.SetTimeCollector( &timeCollector );
+    eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
+    eval.SetUseRegistration( true );
+    eval.SetUseRegistrationTransform( false );
+    eval.SetErode( erode );
+    eval.SetGaussianBlur( gaussianBlur );
+    eval.Update();
 
-    for(int r=0; r<erode; r++)
+    typedef typename ROIEvalType::RegistrationMethodType::TransformType  
+      TransformType;
+    typename TransformType::Pointer regTfm;
+    regTfm = eval.GetRegistrationTransform();
+    double gof = eval.GetGoodnessOfFit();
+    gofValues[ MapPairType( erode, gaussianBlur ) ] = gof;
+
+    double gofBest = gof;
+    bool erodeFlip = false;
+    bool gaussianBlurFlip = false;
+    bool done = false;
+    std::cout << "params = " << erode << ", " << gaussianBlur
+              << "  val = " << gof << std::endl;
+    while( !done )
       {
-      typename ErodeFilterType::Pointer filter = ErodeFilterType::New();
-      filter->SetBackgroundValue( 0 );
-      filter->SetErodeValue( 1 );
-      filter->SetKernel( ball );
-      filter->SetInput( curMask );
-      filter->Update();
-      curMask = filter->GetOutput();
-      }
-
-    timeCollector.Stop("Erode");
-    }
-
-  if( gaussianBlur > 0 )
-    {
-    timeCollector.Start("Blur");
-
-    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType > FilterType;
-    typename FilterType::Pointer filter = FilterType::New();
-
-    for(unsigned int i=0; i<dimensionT; i++)
-      {
-      filter = FilterType::New();
-      filter->SetInput( curMask );
-      // filter->SetNormalizeAcrossScale( true );
-      filter->SetSigma( gaussianBlur );
-
-      filter->SetOrder( 
-               itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
-      filter->SetDirection( i );
-
-      filter->Update();
-      curMask = filter->GetOutput();
-      }
-
-    timeCollector.Stop("Blur");
-    }
-
-  if( !disableRegisterROIs )
-    {
-    timeCollector.Start("RegisterROIs");
-    typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
-
-    typename NormFilterType::Pointer norm1 = NormFilterType::New();
-    norm1->SetInput( curVolume );
-    norm1->Update();
-
-    typename NormFilterType::Pointer norm2 = NormFilterType::New();
-    norm2->SetInput( curMask );
-    norm2->Update();
-
-    typedef itk::RigidImageToImageRegistrationMethod< ImageType >
-                                                    RegistrationMethodType;
-    typename RegistrationMethodType::Pointer reg = RegistrationMethodType::New();
-    reg->SetFixedImage( norm1->GetOutput() );
-    reg->SetMovingImage( norm2->GetOutput() );
-    reg->SetMaxIterations( 100 );
-    typename RegistrationMethodType::TransformParametersScalesType scales;
-    scales = reg->GetTransformParametersScales();
-    scales[0] = 1.0/0.02;
-    scales[1] = 1.0/5.0;
-    scales[2] = 1.0/5.0;
-    reg->SetTransformParametersScales( scales );
-    reg->SetUseEvolutionaryOptimization( true );
-    int numSamples = 1;
-    for( unsigned int i=0; i<dimensionT; i++)
-      {
-      numSamples *= inputSize[i];
-      }
-    reg->SetNumberOfSamples( numSamples * 0.2 );
-    reg->Update();
-
-    typedef itk::ResampleImageFilter< ImageType, ImageType, double > ResamplerType;
-    typename ResamplerType::Pointer resampler = ResamplerType::New();
-
-    typedef itk::LinearInterpolateImageFunction< ImageType, double > InterpolatorType;
-    typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
-    interpolator->SetInputImage( curMask );
-
-    resampler->SetInput( curMask );
-    resampler->SetInterpolator( interpolator.GetPointer() );
-    resampler->SetOutputParametersFromImage( curMask );
-    resampler->SetTransform( reg->GetTypedTransform() );
-    resampler->Update();
-    curMask = resampler->GetOutput();
-
-    typename ResamplerType::Pointer orgResampler = ResamplerType::New();
-    typename InterpolatorType::Pointer orgInterpolator = InterpolatorType::New();
-    orgInterpolator->SetInputImage( orgMask );
-    orgResampler->SetInput( orgMask );
-    orgResampler->SetInterpolator( orgInterpolator.GetPointer() );
-    orgResampler->SetOutputParametersFromImage( orgMask );
-    orgResampler->SetTransform( reg->GetTypedTransform() );
-    orgResampler->Update();
-    orgMask = orgResampler->GetOutput();
-
-    timeCollector.Stop("RegisterROIs");
-    }
-
-  if( outputSize.size() > 0 )
-    {
-    timeCollector.Start("Crop2");
-    for( unsigned int i=0; i<dimensionT; i++ )
-      {
-      int ti = (roiSize[i])/2 - (outputSize[i]-1)/2;
-      if( ti < 0 )
+      if( erode+erodeStep < 0 )
         {
-        lowerCropSize[i] = 0;
+        erodeStep = 0;
+        erode = 0;
+        erodeFlip = true;
         }
-      else if( ti >= (int)(roiSize[i]) )
+      if( gaussianBlur+gaussianBlurStep < 0 )
         {
-        lowerCropSize[i] = roiSize[i]-1;
+        done = true;
+        continue;
+        }
+
+      MapType::iterator iter = gofValues.find( 
+        MapPairType( erode+erodeStep, gaussianBlur+gaussianBlurStep ) );
+      if( iter == gofValues.end() )
+        {
+        eval.SetVolumeImage( curVolume );
+        eval.SetMaskImage( curMask );
+        eval.SetOriginalMaskImage( orgMask );
+        eval.SetErode( erode+erodeStep );
+        eval.SetGaussianBlur( gaussianBlur+gaussianBlurStep );
+        eval.SetUseRegistration( true );
+        eval.SetUseRegistrationTransform( true );
+        eval.SetRegistrationTransform( regTfm );
+        eval.Update();
+        gof = eval.GetGoodnessOfFit();
+        gofValues[ MapPairType( erode+erodeStep, 
+                                gaussianBlur+gaussianBlurStep ) ] = gof;
         }
       else
         {
-        lowerCropSize[i] = ti;
+        gof = iter->second;
+        std::cout << "======" << std::endl;
+        std::cout << "erode = " << erode+erodeStep << std::endl;
+        std::cout << "gaussianBlur = " << gaussianBlur+gaussianBlurStep 
+                  << std::endl;
+        std::cout << "stored value = " << gof << std::endl;
         }
-  
-      ti = roiSize[i] - (int)( lowerCropSize[i] + outputSize[i] );
-      if( ti < 0 )
+
+      std::cout << "params = " << erode+erodeStep 
+                << ", " << gaussianBlur+gaussianBlurStep
+                << "  val = " << gof << std::endl;
+
+      if( gof > gofBest )
         {
-        upperCropSize[i] = 0;
-        }
-      else if( ti >= (int)(roiSize[i]) - (int)(lowerCropSize[i]) )
-        {
-        ti = (int)(roiSize[i]) - (int)(lowerCropSize[i]);
-        }
-      upperCropSize[i] = ti;
-      }
-  
-    typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
-    typename CropFilterType::Pointer cropVolumeFilter = CropFilterType::New();
-    typename CropFilterType::Pointer cropMaskFilter = CropFilterType::New();
-  
-    cropVolumeFilter->SetLowerBoundaryCropSize( lowerCropSize );
-    cropVolumeFilter->SetUpperBoundaryCropSize( upperCropSize );
-    cropVolumeFilter->SetInput( curVolume );
-    cropVolumeFilter->Update();
-    curVolume = cropVolumeFilter->GetOutput();
-  
-    cropMaskFilter->SetLowerBoundaryCropSize( lowerCropSize );
-    cropMaskFilter->SetUpperBoundaryCropSize( upperCropSize );
-    cropMaskFilter->SetInput( curMask );
-    cropMaskFilter->Update();
-    curMask = cropMaskFilter->GetOutput();
-    timeCollector.Stop("Crop2");
-    }
-  
-  if( !disableNormalize )
-    {
-    timeCollector.Start("Normalize");
-  
-    typedef itk::ImageRegionIterator< ImageType > IterType;
-    IterType volIter( curVolume, curVolume->GetLargestPossibleRegion() );
-    IterType maskIter( curMask, curMask->GetLargestPossibleRegion() );
-    IterType orgMaskIter( orgMask, orgMask->GetLargestPossibleRegion() );
-  
-    int numBins = 50;
-    float volFgHisto[50];
-    float volBgHisto[50];
-    float maskFgHisto[50];
-    float maskBgHisto[50];
-    for( int i=0; i<numBins; i++ )
-      {
-      volFgHisto[i] = 0;
-      volBgHisto[i] = 0;
-      maskFgHisto[i] = 0;
-      maskBgHisto[i] = 0;
-      }
-    volIter.GoToBegin();
-    maskIter.GoToBegin();
-    orgMaskIter.GoToBegin();
-    double volMax = volIter.Get();
-    double maskMax = maskIter.Get();
-    double volMin = volMax;
-    double maskMin = maskMax;
-    while( !volIter.IsAtEnd() )
-      {
-      if( volIter.Get() > volMax )
-        {
-        volMax = volIter.Get();
-        }
-      if( volIter.Get() < volMin )
-        {
-        volMin = volIter.Get();
-        }
-      if( maskIter.Get() > maskMax )
-        {
-        maskMax = maskIter.Get();
-        }
-      if( maskIter.Get() < maskMin )
-        {
-        maskMin = maskIter.Get();
-        }
-  
-      ++volIter;
-      ++maskIter;
-      }
-  
-    int bin;
-    volIter.GoToBegin();
-    maskIter.GoToBegin();
-    orgMaskIter.GoToBegin();
-    while( !volIter.IsAtEnd() )
-      {
-      if( orgMaskIter.Get() == foreground )
-        {
-        bin = (int)( (((double)(volIter.Get())-volMin)/(volMax-volMin)) * (numBins-1) );
-        if( bin < 0 )
+        erode += erodeStep;
+        gaussianBlur += gaussianBlurStep;
+
+        gofBest = gof;
+        erodeBest = erode;
+        gaussianBlurBest = gaussianBlur;
+
+        erodeFlip = false;
+        if( erodeStep == 0 )
           {
-          bin = 0;
+          erodeStep = 1;
           }
-        else if( bin >= numBins )
-          {
-          bin = numBins - 1;
-          }
-        ++volFgHisto[ bin ];
-        if( bin > 0 )
-          {
-          volFgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          volFgHisto[ bin+1 ] += 0.5;
-          }
-  
-        bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin)) * (numBins-1) );
-        if( bin < 0 )
-          {
-          bin = 0;
-          }
-        else if( bin >= numBins )
-          {
-          bin = numBins - 1;
-          }
-        ++maskFgHisto[ bin ];
-        if( bin > 0 )
-          {
-          maskFgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          maskFgHisto[ bin+1 ] += 0.5;
-          }
+        gaussianBlurFlip = false;
         }
       else
         {
-        bin = (int)( (((double)(volIter.Get())-volMin)/(volMax-volMin)) * (numBins-1) );
-        if( bin < 0 )
+        if( !erodeFlip )
           {
-          bin = 0;
+          erodeFlip = true;
+          erodeStep *= -1;
           }
-        else if( bin >= numBins )
+        else
           {
-          bin = numBins - 1;
+          erodeStep = 0;
+          if( !gaussianBlurFlip )
+            {
+            gaussianBlurFlip = true;
+            gaussianBlurStep *= -1;
+            }
+          else
+            {
+            done = true;
+            }
           }
-        ++volBgHisto[ bin ];
-        if( bin > 0 )
-          {
-          volBgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          volBgHisto[ bin+1 ] += 0.5;
-          }
-  
-        bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin)) * (numBins-1) );
-        if( bin < 0 )
-          {
-          bin = 0;
-          }
-        else if( bin >= numBins )
-          {
-          bin = numBins - 1;
-          }
-        ++maskBgHisto[ bin ];
-        if( bin > 0 )
-          {
-          maskBgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          maskBgHisto[ bin+1 ] += 0.5;
-          }
-        }
-  
-      ++volIter;
-      ++maskIter;
-      ++orgMaskIter;
-      }
-    /*
-    for( bin=0; bin<numBins; bin++ )
-      {
-      std::cout << volBgHisto[bin] << " : " << volFgHisto[bin] << " - "
-                << maskBgHisto[bin] << " : " << maskFgHisto[bin]
-                << std::endl;
-      }
-      */
-  
-    float maxVFg = 0;
-    int maxVFgI = -1;
-    float maxVBg = 0;
-    int maxVBgI = -1;
-    float maxMFg = 0;
-    int maxMFgI = -1;
-    float maxMBg = 0;
-    int maxMBgI = -1;
-    for( int i=0; i<numBins; i++ )
-      {
-      if( volFgHisto[i] > maxVFg )
-        {
-        maxVFg = volFgHisto[i];
-        maxVFgI = i;
-        }
-      if( volBgHisto[i] > maxVBg )
-        {
-        maxVBg = volBgHisto[i];
-        maxVBgI = i;
-        }
-      if( maskFgHisto[i] > maxMFg )
-        {
-        maxMFg = maskFgHisto[i];
-        maxMFgI = i;
-        }
-      if( maskBgHisto[i] > maxMBg )
-        {
-        maxMBg = maskBgHisto[i];
-        maxMBgI = i;
         }
       }
-  
-    maxVFg = (double)(maxVFgI)/(numBins-1) * (volMax - volMin) + volMin;
-    maxVBg = (double)(maxVBgI)/(numBins-1) * (volMax - volMin) + volMin;
-    maxMFg = (double)(maxMFgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
-    maxMBg = (double)(maxMBgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
-    /*
-    std::cout << "VFg = " << maxVFg << std::endl;
-    std::cout << "VBg = " << maxVBg << std::endl;
-    std::cout << "MFg = " << maxMFg << std::endl;
-    std::cout << "MBg = " << maxMBg << std::endl;
-    */
-   
-    if( maxVFgI != -1 &&
-        maxVBgI != -1 &&
-        maxMFgI != -1 &&
-        maxMBgI != -1 )
-      {
-      typedef itk::ShiftScaleImageFilter< ImageType, ImageType > FilterType;
-      typename FilterType::Pointer filter = FilterType::New();
-   
-      double scale = (maxVFg - maxVBg) / (maxMFg - maxMBg);
-      double shift = (maxVBg - (maxMBg*scale));
-      filter = FilterType::New();
-      filter->SetInput( curMask );
-      filter->SetShift( shift );
-      filter->SetScale( scale );
-   
-      filter->Update();
-      curMask = filter->GetOutput();
-      }
-  
-    timeCollector.Stop("Normalize");
+
+    eval.SetVolumeImage( curVolume );
+    eval.SetMaskImage( curMask );
+    eval.SetOriginalMaskImage( orgMask );
+    eval.SetErode( erode+erodeStep );
+    eval.SetGaussianBlur( gaussianBlur+gaussianBlurStep );
+    eval.Update();
+    eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
+    gof = eval.GetGoodnessOfFit();
+
+    curVolume = eval.GetVolumeImage();
+    curMask = eval.GetMaskImage();
+
+    std::cout << "gof = " << gof << std::endl;
     }
+  progressReporter.Report( 0.9 );
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
   typename ImageWriterType::Pointer writerVolume = ImageWriterType::New();
@@ -620,6 +390,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   
+  progressReporter.Report( 1.0 );
   timeCollector.Report();
   return EXIT_SUCCESS;
 }

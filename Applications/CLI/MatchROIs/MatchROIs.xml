@@ -86,7 +86,7 @@
       <flag>e</flag>
       <description>Radius to use for erosion to simulate tomosynthesis</description>
       <longflag>erode</longflag>
-      <default>7</default>
+      <default>2</default>
     </integer>
     <float>
       <name>gaussianBlur</name>

@@ -172,6 +172,16 @@ public:
       }
     }
 
+  virtual std::string GetProcess( void )
+    {
+    return m_Process;
+    }
+
+  virtual ModuleProcessInformation * GetProcessInformation( void )
+    {
+    return m_ProcessInformation;
+    }
+
 protected:
 
   itk::TimeProbe             m_TimeProbe;

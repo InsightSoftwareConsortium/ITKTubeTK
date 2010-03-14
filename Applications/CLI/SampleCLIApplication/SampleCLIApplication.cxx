@@ -117,7 +117,8 @@ int DoIt( int argc, char * argv[] )
                               "Blur Filter 1D",
                               CLPProcessInformation,
                               progressFraction,
-                              progress );
+                              progress,
+                              true );
 
       filter->Update();
       curImage = filter->GetOutput();
