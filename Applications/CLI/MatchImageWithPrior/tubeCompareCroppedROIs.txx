@@ -72,7 +72,8 @@ CompareCroppedROIs( void )
   m_MaskImage = NULL;
   m_OrgMaskImage = NULL;
   m_Foreground = 0;
-  m_Erode = 2;
+  m_Erode = 4;
+  m_Dilate = 2;
   m_GaussianBlur = 10;
   m_UseRegistration = true;
   m_UseRegistrationTransform = false;
@@ -159,6 +160,13 @@ SetErode( int erode )
 
 template< class pixelT, unsigned int dimensionT >
 void CompareCroppedROIs< pixelT, dimensionT>::
+SetDilate( int dilate )
+{
+  m_Dilate = dilate;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void CompareCroppedROIs< pixelT, dimensionT>::
 SetGaussianBlur( float gaussianBlur )
 {
   m_GaussianBlur = gaussianBlur;
@@ -235,6 +243,48 @@ template< class pixelT, unsigned int dimensionT >
 void CompareCroppedROIs< pixelT, dimensionT>::
 Update( void )
 {
+
+  if( m_Dilate > 0 )
+    {
+    if( m_TimeCollector )
+      {
+      m_TimeCollector->Start("Dilate");
+      }
+    if( m_ProgressReporter )
+      {
+      m_ProgressReporter->Report( m_ProgressStart );
+      }
+
+    typedef itk::BinaryBallStructuringElement< PixelType, dimensionT >  
+      BallType;
+    BallType ball;
+    ball.SetRadius( 1 );
+    ball.CreateStructuringElement();
+
+    typedef itk::BinaryDilateImageFilter< ImageType, ImageType, BallType >
+      DilateFilterType;
+
+    for(int r=0; r<m_Dilate; r++)
+      {
+      typename DilateFilterType::Pointer filter = DilateFilterType::New();
+      filter->SetBackgroundValue( 0 );
+      filter->SetDilateValue( 1 );
+      filter->SetKernel( ball );
+      filter->SetInput( m_MaskImage );
+      filter->Update();
+      m_MaskImage = filter->GetOutput();
+      }
+
+    if( m_TimeCollector )
+      {
+      m_TimeCollector->Stop("Dilate");
+      }
+    if( m_ProgressReporter )
+      {
+      m_ProgressReporter->Report( m_ProgressStart + 0.2*m_ProgressRange );
+      }
+    }
+
   if( m_Erode > 0 )
     {
     if( m_TimeCollector )
@@ -308,7 +358,7 @@ Update( void )
       }
     if( m_ProgressReporter )
       {
-      m_ProgressReporter->Report( m_ProgressStart + 0.2*m_ProgressRange );
+      m_ProgressReporter->Report( m_ProgressStart + 0.3*m_ProgressRange );
       }
     }
 
@@ -358,7 +408,7 @@ Update( void )
         {
         tube::CLIFilterWatcher( reg, "Registration",
                                 m_ProgressReporter->GetProcessInformation(),
-                                0.3 * m_ProgressRange,
+                                0.4 * m_ProgressRange,
                                 m_ProgressStart + 0.2*m_ProgressRange,
                                 true );
         }
@@ -368,7 +418,7 @@ Update( void )
   
       if( m_ProgressReporter )
         {
-        m_ProgressReporter->Report( m_ProgressStart + 0.5*m_ProgressRange );
+        m_ProgressReporter->Report( m_ProgressStart + 0.6*m_ProgressRange );
         }
       }
   
@@ -407,7 +457,7 @@ Update( void )
       }
     if( m_ProgressReporter )
       {
-      m_ProgressReporter->Report( m_ProgressStart + 0.6*m_ProgressRange );
+      m_ProgressReporter->Report( m_ProgressStart + 0.7*m_ProgressRange );
       }
     }
 
@@ -473,7 +523,7 @@ Update( void )
       }
     if( m_ProgressReporter )
       {
-      m_ProgressReporter->Report( m_ProgressStart + 0.7*m_ProgressRange );
+      m_ProgressReporter->Report( m_ProgressStart + 0.8*m_ProgressRange );
       }
     }
   
@@ -761,7 +811,7 @@ Update( void )
       }
     if( m_ProgressReporter )
       {
-      m_ProgressReporter->Report( m_ProgressStart + 0.8*m_ProgressRange );
+      m_ProgressReporter->Report( m_ProgressStart + 0.9*m_ProgressRange );
       }
     }
 

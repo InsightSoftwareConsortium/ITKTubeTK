@@ -86,7 +86,15 @@
       <flag>e</flag>
       <description>Radius to use for erosion to simulate tomosynthesis</description>
       <longflag>erode</longflag>
-      <default>2</default>
+      <default>6</default>
+    </integer>
+    <integer>
+      <name>dilate</name>
+      <label>Dilation radius</label>
+      <flag>d</flag>
+      <description>Radius to use for dilation (after erosion) to simulate tomosynthesis</description>
+      <longflag>dilate</longflag>
+      <default>10</default>
     </integer>
     <float>
       <name>gaussianBlur</name>
@@ -94,7 +102,7 @@
       <flag>g</flag>
       <description>Radius to use for blurring to simulate tomosynthesis</description>
       <longflag>gaussianBlur</longflag>
-      <default>10</default>
+      <default>9</default>
     </float>
     <boolean>
       <name>disableRegisterROIs</name>

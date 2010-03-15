@@ -59,6 +59,8 @@ public:
 
   void SetErode( int erode );
 
+  void SetDilate( int dilate );
+
   void SetGaussianBlur( float gaussianBlur );
 
   void SetUseRegistration( bool reg );
@@ -89,6 +91,7 @@ private:
   typename ImageType::Pointer m_OrgMaskImage;
   float                       m_Foreground;
   int                         m_Erode;
+  int                         m_Dilate;
   float                       m_GaussianBlur;
   bool                        m_UseRegistration;
   bool                        m_UseRegistrationTransform;
