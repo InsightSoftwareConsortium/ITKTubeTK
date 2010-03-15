@@ -109,7 +109,7 @@ private:
 
 };
 
-};
+}
 
 #include "tubeCompareCroppedROIs.txx"
 
