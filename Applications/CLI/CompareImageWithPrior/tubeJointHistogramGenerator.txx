@@ -94,13 +94,13 @@ JointHistogramGenerator<pixelT,dimensionT>
     typename JointHistogramType::IndexType cur;
     cur[0] = ((inputItr.Get()+normInput) / stepInput);
     cur[1] = ((maskItr.Get()+normMask) / stepMask);
-    if( cur[0] > m_NumberOfBins - 1 )
+    if( cur[0] > (int)(m_NumberOfBins) - 1 )
       {
-      cur[0] = m_NumberOfBins - 1;
+      cur[0] = (int)(m_NumberOfBins) - 1;
       }
-    if( cur[1] > m_NumberOfBins - 1 )
+    if( cur[1] > (int)(m_NumberOfBins) - 1 )
       {
-      cur[1] = m_NumberOfBins - 1;
+      cur[1] = (int)(m_NumberOfBins) - 1;
       }
     if( cur[0] < 0 )
       {
