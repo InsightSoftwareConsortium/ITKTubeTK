@@ -53,7 +53,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "MatchROIsCLP.h"
+#include "MatchImageWithPriorCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -68,7 +68,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
   
   // CLIProgressReporter is used to communicate progress with Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "MatchROIs",
+  tube::CLIProgressReporter    progressReporter( "MatchImageWithPrior",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
@@ -135,7 +135,7 @@ int DoIt( int argc, char * argv[] )
         || roiSize.size() != dimensionT )
       {
       tube::ErrorMessage( 
-             "MatchROIs: roiCenter or roiSize not of image dimension." );
+             "MatchImageWithPrior: roiCenter or roiSize not of image dimension." );
       return EXIT_FAILURE;
       }
     for( unsigned int i=0; i<dimensionT; i++ )

@@ -21,7 +21,7 @@
 # 
 ##############################################################################
 
-project( MatchROIs )
+project( MatchImageWithPrior )
 
 cmake_minimum_required( VERSION 2.8 )
 if( COMMAND CMAKE_POLICY )
@@ -30,7 +30,8 @@ endif( COMMAND CMAKE_POLICY )
 
 # Disable MSVC 8 warnings
 if( WIN32 )
-  option( DISABLE_MSVC8_DEPRECATED_WARNINGS "Disable Visual Studio 8 deprecated warnings" ON )
+  option( DISABLE_MSVC8_DEPRECATED_WARNINGS
+    "Disable Visual Studio 8 deprecated warnings" ON )
   mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )  
   if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
