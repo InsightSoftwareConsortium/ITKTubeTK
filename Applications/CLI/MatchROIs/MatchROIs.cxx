@@ -220,8 +220,8 @@ int DoIt( int argc, char * argv[] )
   
   if( true )
     {
-    typedef std::pair< int, float > MapPairType;
-    typedef std::map< MapPairType, float > MapType;
+    typedef std::pair< int, float >           MapPairType;
+    typedef std::map< MapPairType, float >    MapType;
     MapType gofValues;
 
     int erodeStep = 1;
