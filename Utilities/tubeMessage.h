@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __tubeMessage_h
 #define __tubeMessage_h
 
+#include <iostream>
+
 namespace tube {
 
 namespace MessageLevel {

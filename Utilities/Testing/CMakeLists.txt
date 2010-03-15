@@ -23,6 +23,19 @@
 
 include_regular_expression( "^.*$" )
 
+find_package( Tclsh )
+if( TCL_TCLSH )
+  add_test( PrintSelf-UtilitiesFilters ${TCL_TCLSH}
+              ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl  
+              ${TubeTK_SOURCE_DIR}/Utilities )
+endif( TCL_TCLSH )
+
+set( UTILITIES_TESTS 
+      ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeUtilitiesTests )
+
+set( UTILITIES_HEADER_TEST 
+      ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeUtilitiesHeaderTest )
+
 set( APPLICATION_PATH ${TubeTK_BINARY_DIR}/Utilities )
 
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
@@ -35,28 +48,59 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 file( COPY ${INPUT_DATA}/slice256.png DESTINATION ${TEMP} )
 file( COPY ${INPUT_DATA}/im0001.crop.mha DESTINATION ${TEMP} )
 
+# Add test here
+set( tubeUtilities_SRCS
+  tubeUtilitiesPrintTest.cxx
+  tubeMessageTest.cxx )
+
+include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
+
+add_executable( tubeUtilitiesHeaderTest 
+  tubeUtilitiesHeaderTest.cxx )
+target_link_libraries( tubeUtilitiesHeaderTest
+  ITKIO ITKNumerics ITKBasicFilters )
+
+add_executable( tubeUtilitiesTests
+  tubeUtilitiesTests.cxx
+  ${tubeUtilities_SRCS} )
+target_link_libraries( tubeUtilitiesTests
+  ITKIO ITKNumerics ITKBasicFilters )
+
+add_test( tubeUtilitiesHeaderTest 
+            ${UTILITIES_HEADER_TEST} )
+
+add_test( tubeUtilitiesPrintTest 
+            ${UTILITIES_TESTS}
+            tubeUtilitiesPrintTest )
+
+## Add tests here
+add_test( tubeMessageTest 
+            ${UTILITIES_TESTS}
+            tubeMessageTest )
+
+## Image Compare
 add_test( ImageCompareCommandTest1
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-               -t ${TEMP}/slice256.png
-               -b ${INPUT_DATA}/slice256.png )
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+    -t ${TEMP}/slice256.png
+    -b ${INPUT_DATA}/slice256.png )
 
 add_test( ImageCompareCommandTest2
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-               -n 1000
-               -r 1
-               -i 50
-               -t ${TEMP}/im0001.crop.mha
-               -b ${INPUT_DATA}/im0001_n10.crop.mha )
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+    -n 1000
+    -r 1
+    -i 50
+    -t ${TEMP}/im0001.crop.mha
+    -b ${INPUT_DATA}/im0001_n10.crop.mha )
 
 add_test( ImageCompareCommandTest3
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-               -t ${TEMP}/im0001.mha
-               -b ${INPUT_DATA}/im0001_n10.crop.mha )
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+     -t ${TEMP}/im0001.mha
+     -b ${INPUT_DATA}/im0001_n10.crop.mha )
 set_tests_properties( ImageCompareCommandTest3
                       PROPERTIES WILL_FAIL true )
 
 add_test( ImageCompareCommandTest4
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-               -t ${TEMP}/im0001.crop.mha
-               -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001.crop.mha )
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+     -t ${TEMP}/im0001.crop.mha
+     -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001.crop.mha )
 
