@@ -17,6 +17,13 @@ target_link_libraries( TubeTKTubeSegmentation
   ${ITK_LIBRARIES}
   )
 
+# Install the tubetk tube segmentation in bin. This will fix the test on
+# windows and will hold until the refactoring of the curves2d extractor into
+# a more general framework.
+install(TARGETS
+  TubeTKTubeSegmentation
+  DESTINATION bin)
+
 #install(FILES 
   #${TubeTK_Base_TubeSegmentation_H_Files}
   #${TubeTK_Base_TubeSegmentation_H_Files}
