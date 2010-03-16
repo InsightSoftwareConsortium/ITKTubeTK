@@ -121,6 +121,17 @@
     </string>
 
     <string>
+      <name>selectionMask</name>
+      <label>Input selection mask</label>
+      <description>
+	A binary mask indicating where to do take samples for calculation.
+      </description>
+      <longflag>mask</longflag>
+      <flag>c</flag>
+      <default>nil</default>
+    </string>
+
+    <string>
       <name>scoringMethod</name>
       <label>Z Scoring Method</label>
       <description>Which interpretation of the Z Score to use. The options are histogram, max, and sum.</description>

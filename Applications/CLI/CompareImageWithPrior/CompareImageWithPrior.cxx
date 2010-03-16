@@ -95,6 +95,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< BoolPixelType, dimensionT >            SelectionMaskType;
   typedef itk::ImageFileReader< HistogramType >              HistReaderType;
   typedef itk::ImageFileWriter< HistogramType>               HistWriterType;
+  typedef itk::ImageFileReader< SelectionMaskType >          SelectionMaskReaderType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
@@ -179,75 +180,119 @@ int DoIt( int argc, char * argv[] )
   outImage->Allocate();
   outImage->FillBuffer(0);
 
-  // Allocate the selection mask and fill it with 'false'
-  typename SelectionMaskType::Pointer mask = SelectionMaskType::New();
-  mask->SetRegions(curImage->GetLargestPossibleRegion());
-  mask->Allocate();
-  mask->FillBuffer(false);
+  // Allocate the selection mask
+  typename SelectionMaskType::Pointer mask; 
 
   // Setup the full image iterator and the selection Mask iterator
   FullItrType imageItr( curImage, region);
-  SelectionMaskIteratorType maskItr( mask, region );
-
-  // The first iteration through the image is to get the number of samples that
-  // we will use in the other iterations. This allows for the super-granular
-  // progress reporting that we all know and love. We also use this to create
-  // the image of booleans used to clean up the future iterations a bit.
-  imageItr.GoToBegin();
-  maskItr.GoToBegin();
+  SelectionMaskIteratorType maskItr;
   typename HistogramType::PixelType samples = 0;
-  while( !imageItr.IsAtEnd() )
+  
+  if( selectionMask != std::string("nil") )
     {
-    bool doCalculation = true;
-    bool useThreshold;
-    bool useSkip;
-    if( threshold != 0 )
+
+    typename SelectionMaskReaderType::Pointer maskReader = 
+      SelectionMaskReaderType::New();
+    maskReader->SetFileName( selectionMask );
+      
+    // Load the selection mask with exception handling
+    try
       {
-      useThreshold = true;
-      useSkip = false;
+      maskReader->Update();
       }
-    else if( skipSize != -1 )
+    catch( itk::ExceptionObject & err )
       {
-      useThreshold = false;
-      useSkip = true;
-      }
-    else
-      {
-      useThreshold = false;
-      useSkip = false;
+      std::cerr << "ExceptionObject caught while reading the selection mask!"
+                << std::endl;
+      std::cerr << err << std::endl;
+      return EXIT_FAILURE;
       }
 
-    if( useThreshold && imageItr.Get() > threshold )
-      {
-      doCalculation = false;
-      }
+    // Place the data from the mask reader into the mask
+    mask = maskReader->GetOutput();
 
-    typename ImageType::IndexType curIndex;
-    std::vector<int> roiCenter;
-    if( doCalculation )
+    // Get the count from the read mask
+    maskItr = SelectionMaskIteratorType( mask, region );
+    maskItr.GoToBegin();
+    while( !maskItr.IsAtEnd() )
       {
-      curIndex = imageItr.GetIndex();
-      roiCenter = std::vector<int>(dimensionT);
-      for( unsigned int i = 0; i < dimensionT; ++i )
+      if( maskItr.Get() )
         {
-        if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
-          {
-          doCalculation = false;
-          break;
-          }
-        roiCenter[i] = curIndex[i];
+        samples++;
         }
+      ++maskItr;
       }
-
-    if( doCalculation )
-      {
-      ++samples;
-      maskItr.Set(true);
-      }
-    ++imageItr;
-    ++maskItr;
     }
+  else // Create a blank selection mask
+    {
+    mask = SelectionMaskType::New();
+    mask->SetRegions(curImage->GetLargestPossibleRegion());
+    mask->Allocate();
+    mask->FillBuffer(false);
 
+    // The first iteration through the image is to get the number of samples 
+    // that we will use in the other iterations. This allows for the 
+    // super-granular progress reporting that we all know and love. We also 
+    // use this to create the image of booleans used to clean up the future 
+    // iterations a bit.
+    maskItr = SelectionMaskIteratorType( mask, region );
+    imageItr.GoToBegin();
+    maskItr.GoToBegin();
+
+    while( !imageItr.IsAtEnd() )
+      {
+      bool doCalculation = true;
+      bool useThreshold;
+      bool useSkip;
+      if( threshold != 0 )
+        {
+        useThreshold = true;
+        useSkip = false;
+        }
+      else if( skipSize != -1 )
+        {
+        useThreshold = false;
+        useSkip = true;
+        }
+      else
+        {
+        useThreshold = false;
+        useSkip = false;
+        }
+      
+      if( useThreshold && imageItr.Get() > threshold )
+        {
+        doCalculation = false;
+        }
+      
+      typename ImageType::IndexType curIndex;
+      std::vector<int> roiCenter;
+      if( doCalculation )
+        {
+        curIndex = imageItr.GetIndex();
+        roiCenter = std::vector<int>(dimensionT);
+        for( unsigned int i = 0; i < dimensionT; ++i )
+          {
+          if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
+            {
+            doCalculation = false;
+            break;
+            }
+          roiCenter[i] = curIndex[i];
+          }
+        }
+      
+      if( doCalculation )
+        {
+        ++samples;
+        maskItr.Set(true);
+        }
+      ++imageItr;
+      ++maskItr;
+      }
+
+    }
+  
   // Caculate Image and Mask's Max and Min
   typename ImageType::PixelType imageMin;
   typename ImageType::PixelType imageMax;
