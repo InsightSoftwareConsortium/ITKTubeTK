@@ -54,22 +54,22 @@ int DoIt( int argc, char * argv[] );
 
 class triple 
 {
-  public:
-      int erode;
-      int dilate;
-      float gaussianBlur;
-      bool operator<(const triple &other) const 
-        {
-        return (this->erode < other.erode 
-                && this->dilate < other.dilate 
-                && this->gaussianBlur < other.gaussianBlur);
-        }
-      bool operator==(const triple &other) const 
-        {
-        return (this->erode == other.erode 
-                && this->dilate == other.dilate 
-                && this->gaussianBlur == other.gaussianBlur);
-        }
+public:
+  int erode;
+  int dilate;
+  float gaussianBlur;
+  bool operator<(const triple &other) const 
+    {
+    return (this->erode < other.erode 
+            && this->dilate < other.dilate 
+            && this->gaussianBlur < other.gaussianBlur);
+    }
+  bool operator==(const triple &other) const 
+    {
+    return (this->erode == other.erode 
+            && this->dilate == other.dilate 
+            && this->gaussianBlur == other.gaussianBlur);
+    }
 };
 
 
