@@ -191,7 +191,7 @@ int DoIt( int argc, char * argv[] )
 
   // The first iteration through the image is to get the number of samples that
   // we will use in the other iterations. This allows for the super-granular
-  // progress reporting that we all know and love. We aslo use this to create
+  // progress reporting that we all know and love. We also use this to create
   // the image of booleans used to clean up the future iterations a bit.
   imageItr.GoToBegin();
   maskItr.GoToBegin();
