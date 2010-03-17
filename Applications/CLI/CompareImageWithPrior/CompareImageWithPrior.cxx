@@ -590,10 +590,12 @@ int DoIt( int argc, char * argv[] )
           typename HistogramType::PixelType t = histItr.Get();
           typename HistogramType::PixelType m = meanItr.Get();
           typename HistogramType::PixelType s = stdItr.Get();
-          if( s == 0 )
-            {
-            s = 0.0001;
-            }
+
+          // We add a constant stdev to the image to account for standard
+          // deviations of 0. This is effectively adding a distribution of
+          // uniform noise to the image on the end of the pipeline.
+          s += 0.0001;
+
           double tf = vnl_math_abs(t-m)/s;
           tf = tf / zMax * zHistBins;
           if(tf >= zHistBins)
