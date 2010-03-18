@@ -14,6 +14,7 @@ SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
     ".*CLP.h"
     "Slicer3-Src"
     "Slicer3-Bin"
+    "Testing"
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
     )
     
