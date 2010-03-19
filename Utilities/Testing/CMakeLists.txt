@@ -51,7 +51,8 @@ file( COPY ${INPUT_DATA}/im0001.crop.mha DESTINATION ${TEMP} )
 # Add test here
 set( tubeUtilities_SRCS
   tubeUtilitiesPrintTest.cxx
-  tubeMessageTest.cxx )
+  tubeMessageTest.cxx 
+  tubeCLIFilterWatcherTest.cxx )
 
 include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
 
@@ -77,6 +78,10 @@ add_test( tubeUtilitiesPrintTest
 add_test( tubeMessageTest 
             ${UTILITIES_TESTS}
             tubeMessageTest )
+
+add_test( tubeCLIFilterWatcherTest 
+            ${UTILITIES_TESTS}
+            tubeCLIFilterWatcherTest ${INPUT_DATA}/Branch.n010.mha )
 
 ## Image Compare
 add_test( ImageCompareCommandTest1
