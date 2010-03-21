@@ -33,7 +33,14 @@ limitations under the License.
 
 void testCallbackFunction( void * data )
 {
-  std::cout << "Here" << std::endl;
+  if( data )
+    {
+    std::cout << "testCallbackFunction with pointer: " << data << std::endl;
+    }
+  else
+    {
+    std::cout << "testCallbackFunction with pointer: NULL" << std::endl;
+    }
 }
 
 int tubeCLIFilterWatcherTest(int argc, char* argv [] ) 
