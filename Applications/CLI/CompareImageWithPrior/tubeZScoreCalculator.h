@@ -47,12 +47,33 @@ class ZScoreCalculator
 {
 public:
 
-  typedef itk::Image< pixelT, dimensionT > ImageType;
-  typedef pixelT                           PixelType;
-  typedef double                           PrecisionType;
-  typedef itk::Image<PrecisionType, 2>     HistogramType;
-  typedef itk::Image<bool, dimensionT>     SelectionMaskType;
-  typedef std::vector<int>                 VectorType;
+  // input and storage typedefs
+  typedef itk::Image< pixelT, dimensionT >                   ImageType;
+  typedef pixelT                                             PixelType;
+  typedef double                                             PrecisionType;
+  typedef itk::Image<PrecisionType, 2>                       HistogramType;
+  typedef itk::Image<bool, dimensionT>                       SelectionMaskType;
+  typedef std::vector<int>                                   VectorType;
+
+  // typedefs for mathematical filters
+  typedef itk::DivideByConstantImageFilter< HistogramType, double,
+    HistogramType >                                          DividerType;
+  typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
+    HistogramType >                                          MultiplierType;
+  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
+                                                             AdderType;
+  typedef itk::SubtractImageFilter< HistogramType, HistogramType,
+    HistogramType>                                           SubtracterType;
+  typedef itk::SquareImageFilter< HistogramType, HistogramType >
+                                                             SquareType;
+  typedef itk::SqrtImageFilter< HistogramType, HistogramType >
+                                                             SqrtType;
+  typedef itk::MinimumMaximumImageCalculator<ImageType>      CalculatorType;
+
+  // typedefs for iterators
+  typedef itk::ImageRegionConstIteratorWithIndex<ImageType>  FullItrType;
+  typedef itk::ImageRegionConstIterator<HistogramType>       HistIteratorType;
+  typedef itk::ImageRegionConstIterator<SelectionMaskType>   SelectionMaskItrType;
 
   /// Default Constructor
   ZScoreCalculator();
@@ -66,6 +87,12 @@ public:
               double start,
               double proportion,
               double samples);
+
+  /// Calculate the mean and standard deviation to be used in the scoring
+  void CalculateMeanAndStdev(tube::CLIProgressReporter& progressReporter,
+                             double start,
+                             double proportion,
+                             double samples);
 
   void SetInputVolume( typename ImageType::Pointer inputVolume );
   void SetInputPrior( typename ImageType::Pointer inputPrior );
@@ -85,6 +112,9 @@ public:
   void SetMeanHistogram( typename HistogramType::Pointer mean );
   void SetStdevHistogram( typename HistogramType::Pointer stdev );
 
+  typename HistogramType::Pointer GetMeanHistogram();
+  typename HistogramType::Pointer GetStdevHistogram();
+
   typename ImageType::Pointer GetOutputVolume();
 
 protected:
@@ -102,6 +132,8 @@ protected:
   VectorType                             m_ROISize;
   typename HistogramType::Pointer        m_Mean;
   typename HistogramType::Pointer        m_Stdev;
+  typename HistogramType::Pointer        m_Sum;
+  typename HistogramType::Pointer        m_SumSqrs;
 
   double                                 m_Start;
   double                                 m_Proportion;

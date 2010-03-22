@@ -149,6 +149,139 @@ ZScoreCalculator<pixelT,dimensionT>
 template< class pixelT, unsigned int dimensionT>
 void
 ZScoreCalculator<pixelT,dimensionT>
+::CalculateMeanAndStdev(tube::CLIProgressReporter& progressReporter,
+                        double start,
+                        double proportion,
+                        double samples)
+{
+  double progress = start;
+  double increment = proportion/samples;
+
+  typename HistogramType::Pointer hist;
+  typename HistogramType::Pointer meanHist;
+  typename HistogramType::Pointer stdevHist;
+  typename HistogramType::Pointer sumHist;
+  typename HistogramType::Pointer sumSqrHist;
+
+  FullItrType imageItr( m_InputVolume, m_Region );
+  SelectionMaskItrType maskItr( m_SelectionMask, m_Region );
+
+  imageItr.GoToBegin();
+  maskItr.GoToBegin();
+  bool firstPass = true;
+  while( !imageItr.IsAtEnd() )
+    {
+    if( maskItr.Get() )
+      {
+      typename ImageType::IndexType curIndex = imageItr.GetIndex();
+      std::vector<int> roiCenter = std::vector<int>(dimensionT);
+      for( unsigned int i = 0; i < dimensionT; ++i )
+        {
+        roiCenter[i] = curIndex[i];
+        }
+
+      tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
+      subGenerator.SetRoiCenter(roiCenter);
+      subGenerator.SetRoiSize(m_ROISize);
+      subGenerator.SetInputVolume(m_InputVolume);
+      subGenerator.SetInputMask(m_InputPrior);
+      subGenerator.Update();
+
+      tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
+      histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
+      histGenerator.SetInputMask(subGenerator.GetOutputMask());
+      histGenerator.SetNumberOfBins(m_NumberOfBins);
+      histGenerator.SetInputMin(m_InputMin);
+      histGenerator.SetInputMax(m_InputMax);
+      histGenerator.SetMaskMin(m_MaskMin);
+      histGenerator.SetMaskMax(m_MaskMax);
+      histGenerator.Update();
+      hist = histGenerator.GetOutputVolume();
+      
+      if( firstPass )
+        {
+        typename HistogramType::RegionType histRegion =
+          hist->GetLargestPossibleRegion();
+        sumHist = HistogramType::New();
+        sumHist->SetRegions(histRegion);
+        sumHist->Allocate();
+        sumHist->FillBuffer(0);
+        sumSqrHist = HistogramType::New();
+        sumSqrHist->SetRegions(histRegion);
+        sumSqrHist->Allocate();
+        sumSqrHist->FillBuffer(0);
+        firstPass = false;
+        }
+      
+      typename AdderType::Pointer adder = AdderType::New();
+      typename SquareType::Pointer square = SquareType::New();
+      
+      // Calculate Running Sum
+      adder->SetInput1(sumHist);
+      adder->SetInput2(hist);
+      adder->Update();
+      sumHist = adder->GetOutput();
+      
+      // Calculate Running Sum of Squares
+      adder = AdderType::New();
+      square->SetInput(hist);
+      square->Update();
+      adder->SetInput1(sumSqrHist);
+      adder->SetInput2(square->GetOutput());
+      adder->Update();
+      sumSqrHist = adder->GetOutput();
+      
+      progress += increment;
+      progressReporter.Report( progress );
+      }
+    
+    ++imageItr;
+    ++maskItr;
+    }
+  
+  // Calculate the mean
+  typename DividerType::Pointer divider = DividerType::New();
+  divider->SetInput( sumHist );
+  divider->SetConstant( samples );
+  divider->Update();
+  meanHist = divider->GetOutput();
+  
+  // Calculate the standard deviation
+  typename SubtracterType::Pointer subtracter = SubtracterType::New();
+  typename SquareType::Pointer square = SquareType::New();
+  typename MultiplierType::Pointer multiplier = MultiplierType::New();
+  typename SqrtType::Pointer sqrt = SqrtType::New();
+  divider = DividerType::New();
+  typename HistogramType::Pointer meanSquaredDivided;
+  typename HistogramType::Pointer sumSquaresDivided;
+  typename HistogramType::PixelType meanCo = samples/(samples-1);
+  square->SetInput(meanHist);
+  square->Update();
+  multiplier->SetInput(square->GetOutput());
+  multiplier->SetConstant( meanCo );
+  multiplier->Update();
+  meanSquaredDivided = multiplier->GetOutput();
+  divider->SetInput(sumSqrHist);
+  divider->SetConstant(samples-1);
+  divider->Update();
+  sumSquaresDivided = divider->GetOutput();
+  subtracter->SetInput1(sumSquaresDivided);
+  subtracter->SetInput2(meanSquaredDivided);
+  subtracter->Update();
+  sqrt->SetInput(subtracter->GetOutput());
+  sqrt->Update();
+  stdevHist = sqrt->GetOutput();
+  
+  m_Sum = sumHist;
+  m_SumSqrs = sumSqrHist;
+
+  m_Mean = meanHist;
+  m_Stdev = stdevHist;
+}
+
+template< class pixelT, unsigned int dimensionT>
+void
+ZScoreCalculator<pixelT,dimensionT>
 ::SetNumberOfBins( unsigned int numBins )
 {
   m_NumberOfBins = numBins;
@@ -240,6 +373,22 @@ ZScoreCalculator<pixelT,dimensionT>
 ::SetStdevHistogram( typename HistogramType::Pointer stdev )
 {
   m_Stdev = stdev;
+}
+
+template< class pixelT, unsigned int dimensionT>
+ZScoreCalculator<pixelT,dimensionT>::HistogramType::Pointer 
+ZScoreCalculator<pixelT,dimensionT>
+::GetMeanHistogram()
+{
+  return m_Mean;
+}
+
+template< class pixelT, unsigned int dimensionT>
+ZScoreCalculator<pixelT,dimensionT>::HistogramType::Pointer 
+ZScoreCalculator<pixelT,dimensionT>
+::GetStdevHistogram()
+{
+  return m_Stdev;
 }
 
 template< class pixelT, unsigned int dimensionT>

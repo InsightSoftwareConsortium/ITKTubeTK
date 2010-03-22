@@ -103,19 +103,6 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageRegionConstIterator<HistogramType>       HistIteratorType;
   typedef itk::ImageRegionIterator<SelectionMaskType>        SelectionMaskIteratorType;
 
-  // typedefs for mathematical filters
-  typedef itk::DivideByConstantImageFilter< HistogramType, double,
-    HistogramType >                                          DividerType;
-  typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
-    HistogramType >                                          MultiplierType;
-  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-                                                             AdderType;
-  typedef itk::SubtractImageFilter< HistogramType, HistogramType,
-    HistogramType>                                           SubtracterType;
-  typedef itk::SquareImageFilter< HistogramType, HistogramType >
-                                                             SquareType;
-  typedef itk::SqrtImageFilter< HistogramType, HistogramType >
-                                                             SqrtType;
   typedef itk::MinimumMaximumImageCalculator<ImageType>      CalculatorType;
 
   // Setup the readers to load the input data (image + prior)
@@ -313,8 +300,6 @@ int DoIt( int argc, char * argv[] )
 
   // Get some memory ready for our joint histograms
   typename HistogramType::Pointer hist;
-  typename HistogramType::Pointer sumHist;
-  typename HistogramType::Pointer sumSqrHist;
   typename HistogramType::Pointer meanHist;
   typename HistogramType::Pointer stdevHist;
 
@@ -375,117 +360,27 @@ int DoIt( int argc, char * argv[] )
 
     // Calculate the mean and standard deviation histograms
     timeCollector.Start("Get Mean and Stdev");
-    bool firstPass = true;
     proportion = 0.40;
-    imageItr.GoToBegin();
-    maskItr.GoToBegin();
+    
+    tube::ZScoreCalculator<PixelType,dimensionT> zCalc;
+    zCalc.SetInputVolume( curImage );
+    zCalc.SetInputPrior( curPrior );
+    zCalc.SetSelectionMask( mask );
+    zCalc.SetNumberOfBins( histogramSize );
+    zCalc.SetInputMin( imageMin );
+    zCalc.SetInputMax( imageMax );
+    zCalc.SetMaskMin( maskMin );
+    zCalc.SetMaskMax( maskMax );
+    zCalc.SetROISize( roiSize );
+    zCalc.SetRegion( region );
+    zCalc.SetMeanHistogram( meanHist );
+    zCalc.SetStdevHistogram( stdevHist );
+    zCalc.CalculateMeanAndStdev( progressReporter, progress, 
+                                 proportion, samples );
+    meanHist = zCalc.GetMeanHistogram();
+    stdevHist = zCalc.GetStdevHistogram();
 
-    while( !imageItr.IsAtEnd() )
-      {
-      if( maskItr.Get() )
-        {
-        typename ImageType::IndexType curIndex = imageItr.GetIndex();
-        std::vector<int> roiCenter = std::vector<int>(dimensionT);
-        for( unsigned int i = 0; i < dimensionT; ++i )
-          {
-          roiCenter[i] = curIndex[i];
-          }
-
-        tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
-        subGenerator.SetRoiCenter(roiCenter);
-        subGenerator.SetRoiSize(roiSize);
-        subGenerator.SetInputVolume(curImage);
-        subGenerator.SetInputMask(curPrior);
-        subGenerator.Update();
-
-        tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
-        histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
-        histGenerator.SetInputMask(subGenerator.GetOutputMask());
-        histGenerator.SetNumberOfBins(histogramSize);
-        histGenerator.SetInputMin(imageMin);
-        histGenerator.SetInputMax(imageMax);
-        histGenerator.SetMaskMin(maskMin);
-        histGenerator.SetMaskMax(maskMax);
-        histGenerator.Update();
-        hist = histGenerator.GetOutputVolume();
-
-        if( firstPass )
-          {
-          typename HistogramType::RegionType histRegion =
-            hist->GetLargestPossibleRegion();
-          sumHist = HistogramType::New();
-          sumHist->SetRegions(histRegion);
-          sumHist->Allocate();
-          sumHist->FillBuffer(0);
-          sumSqrHist = HistogramType::New();
-          sumSqrHist->SetRegions(histRegion);
-          sumSqrHist->Allocate();
-          sumSqrHist->FillBuffer(0);
-          firstPass = false;
-          }
-
-        typename AdderType::Pointer adder = AdderType::New();
-        typename SquareType::Pointer square = SquareType::New();
-
-        // Calculate Running Sum
-        adder->SetInput1(sumHist);
-        adder->SetInput2(hist);
-        adder->Update();
-        sumHist = adder->GetOutput();
-
-        // Calculate Running Sum of Squares
-        adder = AdderType::New();
-        square->SetInput(hist);
-        square->Update();
-        adder->SetInput1(sumSqrHist);
-        adder->SetInput2(square->GetOutput());
-        adder->Update();
-        sumSqrHist = adder->GetOutput();
-
-        progress += proportion/samples;
-        progressReporter.Report( progress );
-        }
-
-      ++imageItr;
-      ++maskItr;
-      }
     timeCollector.Stop("Get Mean and Stdev");
-
-    // Calculate the mean
-    timeCollector.Start("Calculate Mean and Stdev");
-    typename DividerType::Pointer divider = DividerType::New();
-    divider->SetInput( sumHist );
-    divider->SetConstant( samples );
-    divider->Update();
-    meanHist = divider->GetOutput();
-
-    // Calculate the standard deviation
-    typename SubtracterType::Pointer subtracter = SubtracterType::New();
-    typename SquareType::Pointer square = SquareType::New();
-    typename MultiplierType::Pointer multiplier = MultiplierType::New();
-    typename SqrtType::Pointer sqrt = SqrtType::New();
-    divider = DividerType::New();
-    typename HistogramType::Pointer meanSquaredDivided;
-    typename HistogramType::Pointer sumSquaresDivided;
-    typename HistogramType::PixelType meanCo = samples/(samples-1);
-    square->SetInput(meanHist);
-    square->Update();
-    multiplier->SetInput(square->GetOutput());
-    multiplier->SetConstant( meanCo );
-    multiplier->Update();
-    meanSquaredDivided = multiplier->GetOutput();
-    divider->SetInput(sumSqrHist);
-    divider->SetConstant(samples-1);
-    divider->Update();
-    sumSquaresDivided = divider->GetOutput();
-    subtracter->SetInput1(sumSquaresDivided);
-    subtracter->SetInput2(meanSquaredDivided);
-    subtracter->Update();
-    sqrt->SetInput(subtracter->GetOutput());
-    sqrt->Update();
-    stdevHist = sqrt->GetOutput();
-
-    timeCollector.Stop("Calculate Mean and Stdev");
     proportion = 0.35;
     }
 
