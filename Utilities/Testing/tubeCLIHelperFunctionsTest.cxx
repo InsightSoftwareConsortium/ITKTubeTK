@@ -24,15 +24,31 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include <iostream>
-#include "itkTestMain.h" 
+#include <cstdlib>
 
+#include "itkImage.h"
 
-void RegisterTests()
+// Forward declaration required by CLIHelperFunctions
+template< class pixelT, unsigned int dimensionT >
+int DoIt( int argc, char *argv[] );
+
+// Must include CLP before including tubeCLIHleperFunctions
+#include "tubeCLIHelperFunctionsTestCLP.h"
+
+// Includes tube::ParseArgsAndCallDoIt function
+#include "tubeCLIHelperFunctions.h"
+
+template< class pixelT, unsigned int dimensionT >
+int DoIt( int argc, char *argv[] )
 {
-  REGISTER_TEST( tubeUtilitiesPrintTest );
-  REGISTER_TEST( tubeMessageTest );
-  REGISTER_TEST( tubeCLIFilterWatcherTest );
-  REGISTER_TEST( tubeCLIHelperFunctionsTest );
+  PARSE_ARGS;
+
+  return EXIT_SUCCESS;
 }
 
+int tubeCLIHelperFunctionsTest(int argc, char *argv[] ) 
+{
+  PARSE_ARGS;
+
+  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+}

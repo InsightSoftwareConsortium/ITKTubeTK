@@ -48,11 +48,18 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 file( COPY ${INPUT_DATA}/slice256.png DESTINATION ${TEMP} )
 file( COPY ${INPUT_DATA}/im0001.crop.mha DESTINATION ${TEMP} )
 
+# Test CLI generation
+set( tubeCLIHelperFunctionsTest_SOURCE
+     tubeCLIHelperFunctionsTest.cxx )
+generateclp( tubeCLIHelperFunctionsTest_SOURCE 
+             tubeCLIHelperFunctionsTest.xml )
+     
 # Add test here
 set( tubeUtilities_SRCS
   tubeUtilitiesPrintTest.cxx
   tubeMessageTest.cxx 
-  tubeCLIFilterWatcherTest.cxx )
+  tubeCLIFilterWatcherTest.cxx 
+  ${tubeCLIHelperFunctionsTest_SOURCE} )
 
 include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
 
@@ -80,6 +87,10 @@ add_test( tubeMessageTest
             tubeMessageTest )
 
 add_test( tubeCLIFilterWatcherTest 
+            ${UTILITIES_TESTS}
+            tubeCLIFilterWatcherTest ${INPUT_DATA}/Branch.n010.mha )
+
+add_test( tubeCLIHelperFunctionsTest 
             ${UTILITIES_TESTS}
             tubeCLIFilterWatcherTest ${INPUT_DATA}/Branch.n010.mha )
 
