@@ -53,9 +53,9 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef pixelT                                                  PixelType;
-  typedef itk::Image< PixelType,  dimensionT >                    ImageType;
-  typedef itk::ImageFileReader< ImageType >                       ReaderType;
+  typedef pixelT                                              PixelType;
+  typedef itk::Image< PixelType,  dimensionT >                ImageType;
+  typedef itk::ImageFileReader< ImageType >                   ReaderType;
   
   typename ReaderType::Pointer reader1 = ReaderType::New();
   typename ReaderType::Pointer reader2 = ReaderType::New();
@@ -101,14 +101,17 @@ int DoIt( int argc, char * argv[] )
   norm2->Update();
   image2 = norm2->GetOutput();
 
-  typedef itk::IdentityTransform< double, dimensionT > TransformType;
+  typedef itk::IdentityTransform< double, dimensionT > 
+    TransformType;
   typename TransformType::Pointer transform = TransformType::New();
 
-  typedef itk::LinearInterpolateImageFunction< ImageType, double > InterpolatorType;
+  typedef itk::LinearInterpolateImageFunction< ImageType, double > 
+    InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
   interpolator->SetInputImage( image2 );
 
-  typedef itk::ImageToImageMetric< ImageType, ImageType >   MetricType;
+  typedef itk::ImageToImageMetric< ImageType, ImageType >   
+    MetricType;
   typename MetricType::Pointer metric;
 
   if( !correlation )
@@ -119,12 +122,14 @@ int DoIt( int argc, char * argv[] )
     }
   else
     {
-    typedef itk::NormalizedCorrelationImageToImageMetric< ImageType, ImageType >
+    typedef itk::NormalizedCorrelationImageToImageMetric< ImageType,
+                                                           ImageType >
                                                            CorMetricType;
     metric = CorMetricType::New();
     }
 
-  typename ImageType::SizeType size = image1->GetLargestPossibleRegion().GetSize();
+  typename ImageType::SizeType size = image1->GetLargestPossibleRegion().
+                                              GetSize();
 
   metric->SetFixedImage( image1 );
   metric->SetMovingImage( image2 );
@@ -137,11 +142,13 @@ int DoIt( int argc, char * argv[] )
 
   if( !correlation )
     {
-    std::cout << metric->GetValue( transform->GetParameters() ) << std::endl;
+    std::cout << metric->GetValue( transform->GetParameters() ) 
+              << std::endl;
     }
   else
     {
-    std::cout << -metric->GetValue( transform->GetParameters() ) << std::endl;
+    std::cout << -metric->GetValue( transform->GetParameters() ) 
+              << std::endl;
     }
 
 
