@@ -62,12 +62,12 @@ protected:
       this->StartFilter();
       }
   
-    if (this->GetProcess())
+    if( this->GetProcess() )
       {
       this->SetSteps( this->GetSteps()+1 );
-      if (!this->GetQuiet())
+      if( !this->GetQuiet() )
         {
-        if (m_ProcessInformation)
+        if( m_ProcessInformation )
           {
           strncpy(m_ProcessInformation->ProgressMessage,
                   this->GetComment().c_str(), 1023);
