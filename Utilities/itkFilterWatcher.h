@@ -24,10 +24,16 @@
 
 class FilterWatcher
 {
+
 public:
+
   FilterWatcher(itk::ProcessObject* o, const char *comment="")
   {
-    m_Start = 0; m_End = 0; m_Process = o; m_Steps = 0; m_Comment = comment;
+    m_Start = 0;
+    m_End = 0;
+    m_Process = o;
+    m_Steps = 0;
+    m_Comment = comment;
     m_TestAbort = false;
 #if defined(_COMPILER_VERSION) && (_COMPILER_VERSION == 730)
     m_Quiet = true;
@@ -47,15 +53,15 @@ public:
     abortFilterCommand = itk::SimpleMemberCommand<FilterWatcher>::New();
 
     startFilterCommand->SetCallbackFunction(this,
-                                            &FilterWatcher::StartFilter);
+                                          &FilterWatcher::StartFilter);
     endFilterCommand->SetCallbackFunction(this,
                                           &FilterWatcher::EndFilter);
     progressFilterCommand->SetCallbackFunction(this,
-                                               &FilterWatcher::ShowProgress);
+                                          &FilterWatcher::ShowProgress);
     iterationFilterCommand->SetCallbackFunction(this,
-                                               &FilterWatcher::ShowIteration);
+                                          &FilterWatcher::ShowIteration);
     abortFilterCommand->SetCallbackFunction(this,
-                                               &FilterWatcher::ShowAbort);
+                                          &FilterWatcher::ShowAbort);
     m_Process->AddObserver(itk::StartEvent(), startFilterCommand);
     m_Process->AddObserver(itk::EndEvent(), endFilterCommand);
     m_Process->AddObserver(itk::ProgressEvent(), progressFilterCommand);
@@ -84,15 +90,18 @@ public:
         }
       }
   }
+
   virtual void ShowAbort()
   {
     std::cout << std::endl << "      ABORT" << std::endl << std::flush;
   }
+
   virtual void ShowIteration()
   {
     std::cout << " # " << std::flush;
     m_Iterations++;
   }
+
   virtual void StartFilter()
   {
     m_Steps = 0;
@@ -103,7 +112,8 @@ public:
               << m_Process
               << (m_Quiet ? "Progress Quiet " : "Progress ")
               << std::flush;
-    }
+  }
+
   const char *GetNameOfClass () {return m_Process->GetNameOfClass();}
   virtual void EndFilter()
   {
@@ -119,13 +129,15 @@ public:
       {
       itkExceptionMacro ("Filter does not have progress.");
       }
-    }
+  }
   
   void QuietOn() {m_Quiet = true;};
   void QuietOff() {m_Quiet = false;};
   void TestAbortOn() {m_TestAbort = true;};
   void TestAbortOff() {m_TestAbort = false;};
+
 protected:
+
   clock_t m_Start;
   clock_t m_End;
   int m_Steps;
@@ -134,8 +146,11 @@ protected:
   bool m_TestAbort;
   std::string m_Comment;
   itk::ProcessObject::Pointer m_Process;
+
 private:
+
   FilterWatcher(); // Purposely not implemented
+
 };
 
 #endif

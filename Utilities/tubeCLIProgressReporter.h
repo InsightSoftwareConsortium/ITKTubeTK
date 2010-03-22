@@ -40,18 +40,20 @@ class CLIProgressReporter
 public:
 
   CLIProgressReporter( const char * process,
-                         ModuleProcessInformation * inf )
-    {
+                       ModuleProcessInformation * inf,
+                       bool useStdCout = false )
+  {
     m_Process = process;
     m_ProcessInformation = inf;
-    }
+    m_UseStdCout = useStdCout;
+  }
 
   virtual ~CLIProgressReporter( void )
-    {
-    }
+  {
+  }
 
   virtual bool Report( double fraction )
-    {
+  {
     if( m_ProcessInformation )
       {
       strncpy( m_ProcessInformation->ProgressMessage,
@@ -82,7 +84,8 @@ public:
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
-    else
+
+    if( !m_ProcessInformation || m_UseStdCout )
       {
       std::cout << "<filter-progress>"
                 << fraction
@@ -97,12 +100,14 @@ public:
         // }
       // std::cout << std::flush;
       }
+
     return true;
-    }
+
+  }
 
   /** Callback method to show the StartEvent */
   virtual void Start( void )
-    {
+  {
     m_TimeProbe.Start( );
     if( m_ProcessInformation )
       {
@@ -118,7 +123,8 @@ public:
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
-    else
+
+    if( !m_ProcessInformation || m_UseStdCout )
       {
       std::cout << "<filter-start>"
                 << std::endl;
@@ -134,11 +140,11 @@ public:
                 << std::endl;
       std::cout << std::flush;
       }
-    }
+  }
 
   /** Callback method to show the EndEvent */
   virtual void End( void )
-    {
+  {
     m_TimeProbe.Stop( );
     if( m_ProcessInformation )
       {
@@ -155,7 +161,8 @@ public:
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
-    else
+
+    if( !m_ProcessInformation || m_UseStdCout )
       {
       std::cout << "<filter-end>"
                 << std::endl;
@@ -164,26 +171,38 @@ public:
                 << "</filter-name>"
                 << std::endl;
       std::cout << "<filter-time>"
-                << m_TimeProbe.GetMeanTime( ) * m_TimeProbe.GetNumberOfStops( )
+                << m_TimeProbe.GetMeanTime( ) 
+                   * m_TimeProbe.GetNumberOfStops( )
                 << "</filter-time>"
                 << std::endl;
       std::cout << "</filter-end>";
       std::cout << std::flush;
       }
-    }
+  }
+
+  virtual void SetUseStdCout( bool useStdCout )
+  {
+    m_UseStdCout = useStdCout;
+  }
+
+  virtual bool GetUseStdCout( void )
+  {
+    return m_UseStdCout;
+  }
 
   virtual std::string GetProcess( void )
-    {
+  {
     return m_Process;
-    }
+  }
 
   virtual ModuleProcessInformation * GetProcessInformation( void )
-    {
+  {
     return m_ProcessInformation;
-    }
+  }
 
 protected:
 
+  bool                       m_UseStdCout;
   itk::TimeProbe             m_TimeProbe;
   std::string                m_Process;
   ModuleProcessInformation * m_ProcessInformation;
