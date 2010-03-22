@@ -113,12 +113,12 @@ int DoIt( int argc, char * argv[] )
       filter->SetOrder( 
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       filter->SetDirection( i );
-      tube::CLIFilterWatcher( filter,
-                              "Blur Filter 1D",
-                              CLPProcessInformation,
-                              progressFraction,
-                              progress,
-                              true );
+      tube::CLIFilterWatcher watcher( filter,
+                                      "Blur Filter 1D",
+                                      CLPProcessInformation,
+                                      progressFraction,
+                                      progress,
+                                      true );
 
       filter->Update();
       curImage = filter->GetOutput();
@@ -147,6 +147,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Save data");
   progress = 1.0;
   progressReporter.Report( progress );
+  progressReporter.End( );
   
   timeCollector.Report();
   return EXIT_SUCCESS;
