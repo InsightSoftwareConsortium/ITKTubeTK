@@ -59,6 +59,7 @@ set( tubeUtilities_SRCS
   tubeUtilitiesPrintTest.cxx
   tubeMessageTest.cxx 
   tubeCLIFilterWatcherTest.cxx 
+  tubeCLIProgressReporterTest.cxx 
   ${tubeCLIHelperFunctionsTest_SOURCE} )
 
 include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
@@ -93,6 +94,10 @@ add_test( tubeCLIFilterWatcherTest
 add_test( tubeCLIHelperFunctionsTest 
             ${UTILITIES_TESTS}
             tubeCLIFilterWatcherTest ${INPUT_DATA}/Branch.n010.mha )
+
+add_test( tubeCLIProgressReporterTest 
+            ${UTILITIES_TESTS}
+            tubeCLIProgressReporterTest )
 
 ## Image Compare
 add_test( ImageCompareCommandTest1

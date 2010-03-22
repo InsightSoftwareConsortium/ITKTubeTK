@@ -34,5 +34,6 @@ void RegisterTests()
   REGISTER_TEST( tubeMessageTest );
   REGISTER_TEST( tubeCLIFilterWatcherTest );
   REGISTER_TEST( tubeCLIHelperFunctionsTest );
+  REGISTER_TEST( tubeCLIProgressReporterTest );
 }
 
