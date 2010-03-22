@@ -458,6 +458,8 @@ int DoIt( int argc, char * argv[] )
     }
   
   progressReporter.Report( 1.0 );
+  progressReporter.End( );
+
   timeCollector.Report();
   return EXIT_SUCCESS;
 }

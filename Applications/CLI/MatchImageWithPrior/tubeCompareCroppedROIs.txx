@@ -406,7 +406,7 @@ Update( void )
   
       if( m_ProgressReporter )
         {
-        tube::CLIFilterWatcher( reg, "Registration",
+        tube::CLIFilterWatcher watcher( reg, "Registration",
                                 m_ProgressReporter->GetProcessInformation(),
                                 0.4 * m_ProgressRange,
                                 m_ProgressStart + 0.2*m_ProgressRange,
