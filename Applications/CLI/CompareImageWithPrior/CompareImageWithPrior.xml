@@ -130,5 +130,5 @@
       <flag>c</flag>
       <default>nil</default>
     </string>
-
+  </parameters>
 </executable>

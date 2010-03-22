@@ -51,6 +51,7 @@ limitations under the License.
 // Local Includes for helper functions
 #include "tubeSubImageGenerator.h"
 #include "tubeJointHistogramGenerator.h"
+#include "tubeZScoreCalculator.h"
 
 // Includes specific to this CLI application
 #include "itkRecursiveGaussianImageFilter.h"
@@ -533,70 +534,23 @@ int DoIt( int argc, char * argv[] )
   // Iterate through the image for a third and final time to calculate the Z
   // scores in the manner specified.
   timeCollector.Start("Calculate Z Scores");
-  imageItr.GoToBegin();
-  maskItr.GoToBegin();
-  while( !imageItr.IsAtEnd() )
-    {
 
-    typename ImageType::IndexType curIndex = imageItr.GetIndex();
-    std::vector<int> roiCenter = std::vector<int>(dimensionT);
-    for( unsigned int i = 0; i < dimensionT; ++i )
-      {
-      roiCenter[i] = curIndex[i];
-      }
+  tube::ZScoreCalculator<PixelType,dimensionT> zCalc;
+  zCalc.SetInputVolume( curImage );
+  zCalc.SetInputPrior( curPrior );
+  zCalc.SetSelectionMask( mask );
+  zCalc.SetNumberOfBins( histogramSize );
+  zCalc.SetInputMin( imageMin );
+  zCalc.SetInputMax( imageMax );
+  zCalc.SetMaskMin( maskMin );
+  zCalc.SetMaskMax( maskMax );
+  zCalc.SetROISize( roiSize );
+  zCalc.SetRegion( region );
+  zCalc.SetMeanHistogram( meanHist );
+  zCalc.SetStdevHistogram( stdevHist );
+  zCalc.Update( progressReporter, progress, proportion, samples );
+  outImage = zCalc.GetOutputVolume();
 
-    if( maskItr.Get() )
-      {
-      tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
-      subGenerator.SetRoiCenter(roiCenter);
-      subGenerator.SetRoiSize(roiSize);
-      subGenerator.SetInputVolume(curImage);
-      subGenerator.SetInputMask(curPrior);
-      subGenerator.Update();
-
-      tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
-      histGenerator.SetInputVolume(subGenerator.GetOutputVolume());
-      histGenerator.SetInputMask(subGenerator.GetOutputMask());
-      histGenerator.SetNumberOfBins(histogramSize);
-      histGenerator.SetInputMin(imageMin);
-      histGenerator.SetInputMax(imageMax);
-      histGenerator.SetMaskMin(maskMin);
-      histGenerator.SetMaskMax(maskMax);
-      histGenerator.Update();
-      hist = histGenerator.GetOutputVolume();
-
-      HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
-      HistIteratorType meanItr( meanHist,
-                                meanHist->GetLargestPossibleRegion() );
-      HistIteratorType stdItr( stdevHist,
-                               stdevHist->GetLargestPossibleRegion() );
-      histItr.GoToBegin();
-      meanItr.GoToBegin();
-      stdItr.GoToBegin();
-      typename HistogramType::PixelType val = 0;
-      typename HistogramType::PixelType histCount = 0;
-      while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
-        {
-        typename HistogramType::PixelType t = histItr.Get();
-        typename HistogramType::PixelType m = meanItr.Get();
-        typename HistogramType::PixelType s = stdItr.Get();
-        if( s == 0 )
-          {
-          s = 0.0001;
-          }
-        val += vnl_math_abs(t-m)/s;
-        ++histItr;
-        ++meanItr;
-        ++stdItr;
-        ++histCount;
-        }
-      outImage->SetPixel(curIndex,val);
-      progress += proportion/samples;
-      progressReporter.Report( progress );
-      }
-    ++imageItr;
-    ++maskItr;
-    }
   timeCollector.Stop("Calculate Z Scores");
 
   // Prepare to write the output image of scores to disk
