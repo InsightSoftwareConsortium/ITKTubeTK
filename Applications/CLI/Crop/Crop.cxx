@@ -181,11 +181,12 @@ int DoIt( int argc, char * argv[] )
     filter->SetLowerBoundaryCropSize( lowerCropSize );
     filter->SetUpperBoundaryCropSize( upperCropSize );
 
-    tube::CLIFilterWatcher( filter,
-                            "Crop",
-                            CLPProcessInformation,
-                            progressFraction,
-                            progress );
+    tube::CLIFilterWatcher watcher( filter,
+                                    "Crop",
+                                    CLPProcessInformation,
+                                    progressFraction,
+                                    progress,
+                                    true );
 
     filter->Update();
     curImage = filter->GetOutput();
@@ -211,6 +212,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Save data");
   progress = 1.0;
   progressReporter.Report( progress );
+  progressReporter.End( );
   
   timeCollector.Report();
 
