@@ -376,7 +376,13 @@ int DoIt( int argc, char * argv[] )
     zCalc.SetMeanHistogram( meanHist );
     zCalc.SetStdevHistogram( stdevHist );
     zCalc.CalculateMeanAndStdev( progressReporter, progress, 
-                                 proportion, samples );
+                                 proportion/3, samples );
+    zCalc.Update( progressReporter, progress+(proportion/3), 
+                  proportion/3, samples );
+    zCalc.CalculateRobustMeanAndStdev( progressReporter, 
+                                       progress+(proportion/3), 
+                                       proportion/3, samples, 
+                                       robustPercentage );
     meanHist = zCalc.GetMeanHistogram();
     stdevHist = zCalc.GetStdevHistogram();
 

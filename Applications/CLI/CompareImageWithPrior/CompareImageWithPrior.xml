@@ -130,5 +130,18 @@
       <flag>c</flag>
       <default>nil</default>
     </string>
+
+    <double>
+      <name>robustPercentage</name>
+      <label>Robust Percentage</label>
+      <description>
+	The percentage of sample values to keep when calculating the
+	standard deviation
+      </description>
+      <longflag>robustPercentage</longflag>
+      <flag>g</flag>
+      <default>100</default>
+    </double>
+
   </parameters>
 </executable>

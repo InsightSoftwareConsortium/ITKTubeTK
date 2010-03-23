@@ -94,6 +94,10 @@ ZScoreCalculator<pixelT,dimensionT>
     delete m_ScoreVector;
     m_ScoreVector = new BigVectorType(samples);
     }
+  else
+    {
+    m_ScoreVector = new BigVectorType(samples);
+    }
   double count = 0;
   while( !imageItr.IsAtEnd() )
     {
