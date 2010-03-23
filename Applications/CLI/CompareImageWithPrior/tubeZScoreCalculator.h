@@ -54,6 +54,7 @@ public:
   typedef itk::Image<PrecisionType, 2>                       HistogramType;
   typedef itk::Image<bool, dimensionT>                       SelectionMaskType;
   typedef std::vector<int>                                   VectorType;
+  typedef std::vector<PrecisionType>                         BigVectorType;
 
   // typedefs for mathematical filters
   typedef itk::DivideByConstantImageFilter< HistogramType, double,
@@ -93,6 +94,12 @@ public:
                              double start,
                              double proportion,
                              double samples);
+
+  void CalculateRobustMeanAndStdev(tube::CLIProgressReporter& progressReporter,
+                                   double start,
+                                   double proportion,
+                                   double samples,
+                                   double percentageToKeep);
 
   void SetInputVolume( typename ImageType::Pointer inputVolume );
   void SetInputPrior( typename ImageType::Pointer inputPrior );
@@ -135,10 +142,7 @@ protected:
   typename HistogramType::Pointer        m_Sum;
   typename HistogramType::Pointer        m_SumSqrs;
 
-  double                                 m_Start;
-  double                                 m_Proportion;
-  double                                 m_Samples;
-  
+  BigVectorType*                         m_ScoreVector;
 };
 
 }

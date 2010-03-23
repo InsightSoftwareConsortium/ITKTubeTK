@@ -31,6 +31,8 @@ limitations under the License.
 
 #include "tubeZScoreCalculator.h"
 
+#include <algorithm>
+
 #include "tubeSubImageGenerator.h"
 #include "tubeJointHistogramGenerator.h"
 
@@ -49,12 +51,17 @@ ZScoreCalculator<pixelT,dimensionT>
   m_OutputVolume(NULL),
   m_NumberOfBins(100)
 {
+  m_ScoreVector = NULL;
 }
 
 template< class pixelT, unsigned int dimensionT>
 ZScoreCalculator<pixelT,dimensionT>
 ::~ZScoreCalculator()
 {
+  if( m_ScoreVector )
+    {
+    delete m_ScoreVector;
+    }
 }
 
 template< class pixelT, unsigned int dimensionT>
@@ -68,10 +75,6 @@ ZScoreCalculator<pixelT,dimensionT>
   double progress = start;
   double increment = proportion/samples;
 
-  typedef itk::ImageRegionConstIteratorWithIndex<ImageType> FullItrType;
-  typedef itk::ImageRegionConstIterator<HistogramType>      HistIteratorType;
-  typedef itk::ImageRegionConstIterator<SelectionMaskType>  SelectionMaskItrType;
-  
   FullItrType imageItr( m_InputVolume, m_Region );
   SelectionMaskItrType maskItr( m_SelectionMask, m_Region );
 
@@ -86,6 +89,12 @@ ZScoreCalculator<pixelT,dimensionT>
 
   imageItr.GoToBegin();
   maskItr.GoToBegin();
+  if( m_ScoreVector )
+    {
+    delete m_ScoreVector;
+    m_ScoreVector = new BigVectorType(samples);
+    }
+  double count = 0;
   while( !imageItr.IsAtEnd() )
     {
 
@@ -137,13 +146,162 @@ ZScoreCalculator<pixelT,dimensionT>
         ++histCount;
         }
       val /= histCount;
+      (*m_ScoreVector)[count] = val;
       m_OutputVolume->SetPixel(curIndex,val);
       progress += increment;
+      count++;
       progressReporter.Report( progress );
       }
     ++imageItr;
     ++maskItr;
     }
+}
+
+template< class pixelT, unsigned int dimensionT>
+void
+ZScoreCalculator<pixelT,dimensionT>
+::CalculateRobustMeanAndStdev(tube::CLIProgressReporter& progressReporter,
+                              double start,
+                              double proportion,
+                              double samples,
+                              double percentageToKeep=100)
+{
+  PrecisionType newSampleNumber = samples;
+  PrecisionType upperZScore = 0;
+  if( percentageToKeep > 0 && percentageToKeep < 100 )
+    {
+    std::sort( m_ScoreVector->begin(), m_ScoreVector->end() );
+    double fraction = (percentageToKeep/100) * samples;
+    upperZScore = (*m_ScoreVector)[static_cast<unsigned int>(fraction)];
+    }
+
+  double progress = start;
+  double increment = proportion/samples;
+
+  FullItrType imageItr( m_InputVolume, m_Region );
+  SelectionMaskItrType maskItr( m_SelectionMask, m_Region );
+
+  typename HistogramType::Pointer hist;
+
+  imageItr.GoToBegin();
+  maskItr.GoToBegin();
+  if( m_ScoreVector )
+    {
+    delete m_ScoreVector;
+    m_ScoreVector = new BigVectorType(samples);
+    }
+  double count = 0;
+  while( !imageItr.IsAtEnd() )
+    {
+
+    typename ImageType::IndexType curIndex = imageItr.GetIndex();
+
+    VectorType roiCenter(dimensionT);
+    for( unsigned int i = 0; i < dimensionT; ++i )
+      {
+      roiCenter[i] = curIndex[i];
+      }
+
+    if( maskItr.Get() )
+      {
+
+      tube::SubImageGenerator<PixelType,dimensionT> subGenerator;
+      subGenerator.SetRoiCenter( roiCenter );
+      subGenerator.SetRoiSize( m_ROISize );
+      subGenerator.SetInputVolume( m_InputVolume );
+      subGenerator.SetInputMask( m_InputPrior );
+      subGenerator.Update();
+
+      tube::JointHistogramGenerator<PixelType,dimensionT> histGenerator;
+      histGenerator.SetInputVolume( subGenerator.GetOutputVolume() );
+      histGenerator.SetInputMask( subGenerator.GetOutputMask() );
+      histGenerator.SetNumberOfBins( m_NumberOfBins );
+      histGenerator.SetInputMin( m_InputMin );
+      histGenerator.SetInputMax( m_InputMax );
+      histGenerator.SetMaskMin( m_MaskMin );
+      histGenerator.SetMaskMax( m_MaskMax );
+      histGenerator.Update();
+      hist = histGenerator.GetOutputVolume();
+
+      HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
+      HistIteratorType meanItr( m_Mean, m_Mean->GetLargestPossibleRegion() );
+      HistIteratorType stdItr( m_Stdev, m_Stdev->GetLargestPossibleRegion() );
+      histItr.GoToBegin();
+      meanItr.GoToBegin();
+      stdItr.GoToBegin();
+      typename HistogramType::PixelType val = 0;
+      typename HistogramType::PixelType histCount = 0;
+      while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+        {
+        typename HistogramType::PixelType t = histItr.Get();
+        typename HistogramType::PixelType m = meanItr.Get();
+        typename HistogramType::PixelType s = stdItr.Get();
+        s += 0.0001;
+        val += vnl_math_abs(t-m)/s;
+        ++histItr;
+        ++meanItr;
+        ++stdItr;
+        ++histCount;
+        }
+      val /= histCount;
+      if( val > upperZScore )
+        {
+        typename SubtracterType::Pointer subtracter = SubtracterType::New();
+        typename SquareType::Pointer square = SquareType::New();
+        square->SetInput(hist);
+        square->Update();
+        subtracter->SetInput1( m_SumSqrs );
+        subtracter->SetInput2( square->GetOutput() );
+        subtracter->Update();
+        m_SumSqrs = subtracter->GetOutput();
+        subtracter = SubtracterType::New();
+        subtracter->SetInput1( m_Sum );
+        subtracter->SetInput2( hist );
+        subtracter->Update();
+        m_Sum = subtracter->GetOutput();
+        newSampleNumber--;
+        }
+      progress += increment;
+      count++;
+      progressReporter.Report( progress );
+      }
+    ++imageItr;
+    ++maskItr;
+    }
+
+  // Calculate the mean
+  typename DividerType::Pointer divider = DividerType::New();
+  divider->SetInput( m_Sum );
+  divider->SetConstant( newSampleNumber );
+  divider->Update();
+  m_Mean = divider->GetOutput();
+  
+  // Calculate the standard deviation
+  typename SubtracterType::Pointer subtracter = SubtracterType::New();
+  typename SquareType::Pointer square = SquareType::New();
+  typename MultiplierType::Pointer multiplier = MultiplierType::New();
+  typename SqrtType::Pointer sqrt = SqrtType::New();
+  divider = DividerType::New();
+  typename HistogramType::Pointer meanSquaredDivided;
+  typename HistogramType::Pointer sumSquaresDivided;
+  typename HistogramType::PixelType meanCo = 
+    newSampleNumber/(newSampleNumber-1);
+  square->SetInput(m_Mean);
+  square->Update();
+  multiplier->SetInput(square->GetOutput());
+  multiplier->SetConstant( meanCo );
+  multiplier->Update();
+  meanSquaredDivided = multiplier->GetOutput();
+  divider->SetInput(m_SumSqrs);
+  divider->SetConstant(newSampleNumber-1);
+  divider->Update();
+  sumSquaresDivided = divider->GetOutput();
+  subtracter->SetInput1(sumSquaresDivided);
+  subtracter->SetInput2(meanSquaredDivided);
+  subtracter->Update();
+  sqrt->SetInput(subtracter->GetOutput());
+  sqrt->Update();
+  m_Stdev = sqrt->GetOutput();  
 }
 
 template< class pixelT, unsigned int dimensionT>
