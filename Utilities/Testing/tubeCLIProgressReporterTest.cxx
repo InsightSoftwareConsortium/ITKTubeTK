@@ -39,7 +39,7 @@ void cliProgressReporterTestCallbackFunction( void * data )
     }
 }
 
-int tubeCLIProgressReporterTest(int argc, char ** itkNotUsed(argv) ) 
+int tubeCLIProgressReporterTest(int argc, char *itkNotUsed(argv)[] ) 
 {
   if( argc != 1 )
     {
