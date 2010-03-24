@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeZScoreGenerator_h
-#define __tubeZScoreGenerator_h
+#ifndef __tubeZScoreCalculator_h
+#define __tubeZScoreCalculator_h
 
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
@@ -65,10 +65,10 @@ public:
                                                              AdderType;
   typedef itk::SubtractImageFilter< HistogramType, HistogramType,
     HistogramType>                                           SubtracterType;
-  typedef itk::SquareImageFilter< HistogramType, HistogramType >
-                                                             SquareType;
-  typedef itk::SqrtImageFilter< HistogramType, HistogramType >
-                                                             SqrtType;
+  typedef itk::SquareImageFilter< HistogramType, 
+    HistogramType >                                          SquareType;
+  typedef itk::SqrtImageFilter< HistogramType, 
+    HistogramType >                                          SqrtType;
   typedef itk::MinimumMaximumImageCalculator<ImageType>      CalculatorType;
 
   // typedefs for iterators
