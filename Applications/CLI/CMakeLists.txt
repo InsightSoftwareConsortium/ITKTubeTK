@@ -27,6 +27,7 @@ add_subdirectory( ExtractCurves2D )
 add_subdirectory( SimulateTomosynthesis )
 add_subdirectory( ComputeImageSimilarity )
 add_subdirectory( Crop )
+add_subdirectory( Merge )
 add_subdirectory( MatchImageWithPrior )
 add_subdirectory( CompareImageWithPrior )
 

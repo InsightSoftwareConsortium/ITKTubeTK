@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Merge</title>
+  <description>Merge the second image into the space of the first</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume1</name>
+      <label>Input Volume 1</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume 1</description>
+    </image>
+    <image>
+      <name>inputVolume2</name>
+      <label>Input Volume 2</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Input volume 2</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Output Volume</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>Merge options</label>
+    <boolean>
+      <name>average</name>
+      <label>Average values</label>
+      <description>Average values when overlap occurs</description>
+      <longflag>average</longflag>
+      <flag>a</flag>
+      <default>false</default>
+    </boolean>
+    <integer-vector>
+      <name>boundary</name>
+      <label>Additional boundary pixels</label>
+      <description>Pixel boundary in second image to be ignored</description>
+      <longflag>boundary</longflag>
+      <flag>b</flag>
+    </integer-vector>
+  </parameters>
+
+</executable>
