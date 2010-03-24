@@ -96,7 +96,8 @@ int DoIt( int argc, char * argv[] )
     {
     if( size.size() > 0 && max.size() > 0 )
       {
-      tube::ErrorMessage( "You must specify either --size or --max options.  Not both." );
+      tube::ErrorMessage( 
+        "You must specify either --size or --max options.  Not both." );
       return EXIT_FAILURE;
       }
 
@@ -111,12 +112,28 @@ int DoIt( int argc, char * argv[] )
     filter = FilterType::New();
     filter->SetInput( curImage );
 
-    if( min.size() == 0 )
+    if( center.size() > 0 && min.size() > 0 )
+      {
+      tube::ErrorMessage( 
+        "You must specify either --center or --min options.  Not both." );
+      return EXIT_FAILURE;
+      }
+
+    if( center.size() == 0 && min.size() == 0 )
       {
       min.resize( dimensionT );
       for( unsigned int i=0; i<dimensionT; i++ )
         {
         min[i] = 0;
+        }
+      }
+
+    if( center.size() > 0 )
+      {
+      min.resize( dimensionT );
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        min[i] = center[i] - size[i]/2;
         }
       }
 
@@ -167,6 +184,15 @@ int DoIt( int argc, char * argv[] )
       if( min[i] + outputSize[i] > imageSize[i] )
         {
         outputSize[i] = imageSize[i] - min[i];
+        }
+      }
+
+    if( boundary.size() > 0 )
+      {
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        min[i] -= boundary[i];
+        outputSize[i] += 2*boundary[i];
         }
       }
 

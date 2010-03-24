@@ -53,3 +53,15 @@ add_test( ${PROJECT_NAME}Test2-Compare
                -t ${TEMP}/${PROJECT_NAME}Test2.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
+add_test( ${PROJECT_NAME}Test3
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+               ${INPUT_DATA}/slice256.png
+               ${TEMP}/${PROJECT_NAME}Test3.mha
+               -m 15,15 -s 81,81 -b 5,5 )
+
+add_test( ${PROJECT_NAME}Test3-Compare
+            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+               -t ${TEMP}/${PROJECT_NAME}Test3.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
+
+

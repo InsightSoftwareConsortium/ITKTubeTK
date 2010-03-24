@@ -52,6 +52,20 @@
       <longflag>size</longflag>
       <flag>s</flag>
     </integer-vector>
+    <integer-vector>
+      <name>center</name>
+      <label>Center of roi (use instead of min/max)</label>
+      <description>Center of the hyper-rectangle</description>
+      <longflag>center</longflag>
+      <flag>c</flag>
+    </integer-vector>
+    <integer-vector>
+      <name>boundary</name>
+      <label>Additional boundary pixels</label>
+      <description>Add pixels beyond specified edges</description>
+      <longflag>boundary</longflag>
+      <flag>b</flag>
+    </integer-vector>
   </parameters>
 
 </executable>
