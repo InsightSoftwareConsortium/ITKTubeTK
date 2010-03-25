@@ -125,3 +125,11 @@ add_test( ImageCompareCommandTest4
      -t ${TEMP}/im0001.crop.mha
      -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001.crop.mha )
 
+add_test( ImageCompareCommandTest5
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+     -t ${TEMP}/im0001.crop.mha
+     -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001_n20.crop.mha )
+set_tests_properties( ImageCompareCommandTest5
+                      PROPERTIES WILL_FAIL true )
+
+
