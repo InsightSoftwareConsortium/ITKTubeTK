@@ -66,6 +66,13 @@
       <longflag>boundary</longflag>
       <flag>b</flag>
     </integer-vector>
+    <integer-vector>
+      <name>split</name>
+      <label>Split array</label>
+      <description>Split into an array of MxN sub-images that span the full image</description>
+      <longflag>split</longflag>
+      <flag>S</flag>
+    </integer-vector>
   </parameters>
 
 </executable>

@@ -31,36 +31,42 @@ set( BASELINE
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
+set( PROJ_EXE 
+ ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+
+set( IMAGECOMPARE_EXE
+ ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
+
 add_test( ${PROJECT_NAME}Test1
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+               ${PROJ_EXE}
                ${INPUT_DATA}/slice256.png
                ${TEMP}/${PROJECT_NAME}Test1.mha
                -m 10,10 -M 100,100 )
 
 add_test( ${PROJECT_NAME}Test1-Compare
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+               ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
 add_test( ${PROJECT_NAME}Test2
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+               ${PROJ_EXE}
                ${INPUT_DATA}/slice256.png
                ${TEMP}/${PROJECT_NAME}Test2.mha
                -m 10,10 -s 91,91 )
 
 add_test( ${PROJECT_NAME}Test2-Compare
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+               ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
 add_test( ${PROJECT_NAME}Test3
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+               ${PROJ_EXE}
                ${INPUT_DATA}/slice256.png
                ${TEMP}/${PROJECT_NAME}Test3.mha
                -m 15,15 -s 81,81 -b 5,5 )
 
 add_test( ${PROJECT_NAME}Test3-Compare
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+               ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test3.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
