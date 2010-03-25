@@ -12,3 +12,4 @@ ComputeImageSimilarity.cxx Namespace Disable
 MatchROIs.cxx Namespace Disable
 CompareImageWithPrior.cxx Namespace Disable
 MatchImageWithPrior.cxx Namespace Disable
+Merge.cxx Namespace Disable
