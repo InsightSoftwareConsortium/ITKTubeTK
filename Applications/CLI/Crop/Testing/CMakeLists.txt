@@ -70,4 +70,29 @@ add_test( ${PROJECT_NAME}Test3-Compare
                -t ${TEMP}/${PROJECT_NAME}Test3.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
+add_test( ${PROJECT_NAME}Test4
+               ${PROJ_EXE}
+               ${INPUT_DATA}/slice256.png
+               ${TEMP}/${PROJECT_NAME}Test4
+               -S 2,2 -b 5,5 )
+
+add_test( ${PROJECT_NAME}Test4-Compare00
+               ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test4_00.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test4_00.mha )
+
+add_test( ${PROJECT_NAME}Test4-Compare01
+               ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test4_01.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test4_01.mha )
+
+add_test( ${PROJECT_NAME}Test4-Compare10
+               ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test4_10.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test4_10.mha )
+
+add_test( ${PROJECT_NAME}Test4-Compare11
+               ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test4_11.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test4_11.mha )
 

@@ -252,20 +252,25 @@ Update( void )
         }
       }
 
-    for( unsigned int i=0; i<dimensionT; i++ )
-      {
-      if( m_ROIMin[i] + outputSize[i] > imageSize[i] )
-        {
-        outputSize[i] = imageSize[i] - m_ROIMin[i];
-        }
-      }
-  
     if( m_UseROIBoundary )
       {
       for( unsigned int i=0; i<dimensionT; i++ )
         {
         m_ROIMin[i] -= m_ROIBoundary[i];
         outputSize[i] += 2*m_ROIBoundary[i];
+        }
+      }
+
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      if( m_ROIMin[i] + outputSize[i] > imageSize[i] )
+        {
+        outputSize[i] = imageSize[i] - m_ROIMin[i];
+        }
+      if( m_ROIMin[i] < 0 )
+        {
+        outputSize[i] += m_ROIMin[i];
+        m_ROIMin[i] = 0;
         }
       }
   
