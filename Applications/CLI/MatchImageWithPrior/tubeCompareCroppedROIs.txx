@@ -107,7 +107,7 @@ SetVolumeImage( typename ImageType::Pointer volImage )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::Image< float, dimensionT >::Pointer 
+typename itk::OrientedImage< float, dimensionT >::Pointer 
 CompareCroppedROIs< pixelT, dimensionT>::
 GetVolumeImage( void )
 {
@@ -122,7 +122,7 @@ SetMaskImage( typename ImageType::Pointer maskImage )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::Image< float, dimensionT >::Pointer 
+typename itk::OrientedImage< float, dimensionT >::Pointer 
 CompareCroppedROIs< pixelT, dimensionT>::
 GetMaskImage( void )
 {
@@ -137,7 +137,7 @@ SetOriginalMaskImage( typename ImageType::Pointer orgMaskImage )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::Image< float, dimensionT >::Pointer 
+typename itk::OrientedImage< float, dimensionT >::Pointer 
 CompareCroppedROIs< pixelT, dimensionT>::
 GetOriginalMaskImage( void )
 {
@@ -190,14 +190,14 @@ template< class pixelT, unsigned int dimensionT >
 void CompareCroppedROIs< pixelT, dimensionT>::
 SetRegistrationTransform( 
   typename itk::RigidImageToImageRegistrationMethod< 
-    itk::Image< float, dimensionT > >::TransformType::Pointer tfm )
+    itk::OrientedImage< float, dimensionT > >::TransformType::Pointer tfm )
 {
   m_RegistrationTransform = tfm;
 }
 
 template< class pixelT, unsigned int dimensionT >
 typename itk::RigidImageToImageRegistrationMethod< 
-  itk::Image< float, dimensionT > >::TransformType::Pointer 
+  itk::OrientedImage< float, dimensionT > >::TransformType::Pointer 
 CompareCroppedROIs< pixelT, dimensionT>::
 GetRegistrationTransform( void )
 {

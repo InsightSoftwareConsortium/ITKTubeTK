@@ -37,11 +37,11 @@ class CompareCroppedROIs
 {
 public:
 
-  typedef float                                 PixelType;
-  typedef itk::Image< PixelType,  dimensionT >  ImageType;
+  typedef float                                         PixelType;
+  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
 
   typedef itk::RigidImageToImageRegistrationMethod< ImageType >
-                                                RegistrationMethodType;
+                                                    RegistrationMethodType;
 
   CompareCroppedROIs( void );
   ~CompareCroppedROIs( void );
