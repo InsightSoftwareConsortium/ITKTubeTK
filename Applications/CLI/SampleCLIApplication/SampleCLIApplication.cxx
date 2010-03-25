@@ -70,7 +70,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                         PixelType;
-  typedef itk::Image< PixelType,  dimensionT >          ImageType;
+  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
   typedef itk::ImageFileReader< ImageType >             ReaderType;
   
   timeCollector.Start("Load data");
