@@ -198,7 +198,7 @@ int DoIt( int argc, char * argv[] )
     {
     indexX = iter.GetIndex();
     outImage->TransformIndexToPhysicalPoint( indexX, pointX );
-    double tf1;
+    double tf1 = background;
     bool inImage1 = false;
     if( curImage1->TransformPhysicalPointToIndex( pointX, indexX ) )
       {
@@ -233,10 +233,6 @@ int DoIt( int argc, char * argv[] )
           }
         inImage2 = true;
         }
-      }
-    if( !inImage1 && !inImage2 )
-      {
-      tf1 = 0;
       }
     iter.Set( tf1 );
     ++iter;

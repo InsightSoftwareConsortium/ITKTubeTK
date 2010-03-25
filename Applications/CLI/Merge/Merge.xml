@@ -53,6 +53,14 @@
       <longflag>boundary</longflag>
       <flag>b</flag>
     </integer-vector>
+    <double>
+      <name>background</name>
+      <label>Background intensity</label>
+      <description>Value to assign to pixels in the output image that don't intersect an input image</description>
+      <longflag>background</longflag>
+      <flag>k</flag>
+      <default>0</default>
+    </double>
   </parameters>
 
 </executable>
