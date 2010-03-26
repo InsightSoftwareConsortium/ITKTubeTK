@@ -89,27 +89,9 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typename ReaderType::Pointer reader2 = ReaderType::New();
-  reader2->SetFileName( inputVolume2.c_str() );
-  try
-    {
-    reader2->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: " 
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
   timeCollector.Stop("Load data");
-  double progress = 0.1;
-  progressReporter.Report( progress );
 
   typename ImageType::Pointer curImage1 = reader1->GetOutput();
-  typename ImageType::Pointer curImage2 = reader2->GetOutput();
-
   typename ImageType::Pointer outImage = ImageType::New();
   outImage->CopyInformation( curImage1 );
   typename ImageType::PointType origin = curImage1->GetOrigin();
@@ -117,7 +99,7 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::PointType pointX;
   typename ImageType::IndexType indexX;
-
+ 
   typename ImageType::IndexType minX1;
   minX1 = curImage1->GetLargestPossibleRegion().GetIndex();
   typename ImageType::SizeType size1 = curImage1->
@@ -125,117 +107,204 @@ int DoIt( int argc, char * argv[] )
                                          GetSize();
   typename ImageType::IndexType maxX1;
   maxX1 = minX1 + size1;
-  
-  typename ImageType::IndexType minX2;
-  typename ImageType::IndexType minX2Org;
-  minX2Org = curImage2->GetLargestPossibleRegion().GetIndex();
-  curImage2->TransformIndexToPhysicalPoint( minX2Org, pointX );
-  curImage1->TransformPhysicalPointToIndex( pointX, minX2 );
-  typename ImageType::SizeType size2 = curImage2->
-                                         GetLargestPossibleRegion().
-                                         GetSize();
-  typename ImageType::IndexType maxX2;
-  typename ImageType::IndexType maxX2Org;
-  maxX2Org = minX2Org + size2;
-  curImage2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
-  curImage1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
+  double progress = 0.1;
+  progressReporter.Report( progress );
   typename ImageType::IndexType minXOut;
-  minXOut = minX1;
-  for( unsigned int i=0; i<dimensionT; i++ )
-    {
-    if( minX2[i] < minXOut[i] )
-      {
-      minXOut[i] = minX2[i];
-      }
-    if( maxX2[i] < minXOut[i] )
-      {
-      minXOut[i] = maxX2[i];
-      }
-    }
   typename ImageType::IndexType maxXOut;
-  maxXOut = maxX1;
-  for( unsigned int i=0; i<dimensionT; i++ )
+  typename ImageType::SizeType  sizeOut;
+  for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
     {
-    if( minX2[i] > maxXOut[i] )
+    timeCollector.Start("Load data");
+    typename ReaderType::Pointer reader2 = ReaderType::New();
+    reader2->SetFileName( inputVolume2[imageNum].c_str() );
+    try
       {
-      maxXOut[i] = minX2[i];
+      reader2->Update();
       }
-    if( maxX2[i] > maxXOut[i] )
+    catch( itk::ExceptionObject & err )
       {
-      maxXOut[i] = maxX2[i];
+      tube::ErrorMessage( "Reading volume: Exception caught: " 
+                          + std::string(err.GetDescription()) );
+      timeCollector.Stop("Load data");
+      timeCollector.Report();
+      return EXIT_FAILURE;
       }
-    }
-
-  bool useBoundary = false;
-  if( boundary.size() == dimensionT)
-    {
-    useBoundary = true;
+    timeCollector.Stop("Load data");
+  
+    typename ImageType::Pointer curImage2 = reader2->GetOutput();
+  
+    typename ImageType::IndexType minX2;
+    typename ImageType::IndexType minX2Org;
+    minX2Org = curImage2->GetLargestPossibleRegion().GetIndex();
+    curImage2->TransformIndexToPhysicalPoint( minX2Org, pointX );
+    curImage1->TransformPhysicalPointToIndex( pointX, minX2 );
+    typename ImageType::SizeType size2 = curImage2->
+                                           GetLargestPossibleRegion().
+                                           GetSize();
+    typename ImageType::IndexType maxX2;
+    typename ImageType::IndexType maxX2Org;
     for( unsigned int i=0; i<dimensionT; i++ )
       {
-      minX2Org[i] += boundary[i];
-      maxX2Org[i] -= boundary[i];
+      maxX2Org[i] = minX2Org[i] + size2[i] - 1;
+      }
+    curImage2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
+    curImage1->TransformPhysicalPointToIndex( pointX, maxX2 );
+
+    minXOut = minX1;
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      if( minX2[i] < minXOut[i] )
+        {
+        minXOut[i] = minX2[i];
+        }
+      if( maxX2[i] < minXOut[i] )
+        {
+        minXOut[i] = maxX2[i];
+        }
+      }
+    maxXOut = maxX1;
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      if( minX2[i] > maxXOut[i] )
+        {
+        maxXOut[i] = minX2[i];
+        }
+      if( maxX2[i] > maxXOut[i] )
+        {
+        maxXOut[i] = maxX2[i];
       }
     }
 
-  typename ImageType::SizeType sizeOut;
-  for( unsigned int i=0; i<dimensionT; i++ )
-    {
-    sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
+    bool useBoundary = false;
+    if( boundary.size() == dimensionT)
+      {
+      useBoundary = true;
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        minX2Org[i] += boundary[i];
+        maxX2Org[i] -= boundary[i];
+        }
+      }
+  
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
+      }
+
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      minX1[i] = minXOut[i];
+      maxX1[i] = minXOut[i] + sizeOut[i];
+      }
     }
+
   typename ImageType::RegionType regionOut = outImage->
                                                GetLargestPossibleRegion();
   regionOut.SetSize( sizeOut );
   regionOut.SetIndex( minXOut );
   outImage->SetRegions( regionOut );
   outImage->Allocate();
+  outImage->FillBuffer( background );
 
-  itk::ImageRegionIteratorWithIndex< ImageType > iter( outImage,
-    outImage->GetLargestPossibleRegion() );
-  iter.GoToBegin();
-  typename ImageType::IndexType indexX2;
+  itk::ImageRegionIteratorWithIndex< ImageType > iter( curImage1,
+    curImage1->GetLargestPossibleRegion() );
   while( !iter.IsAtEnd() )
     {
     indexX = iter.GetIndex();
-    outImage->TransformIndexToPhysicalPoint( indexX, pointX );
-    double tf1 = background;
-    bool inImage1 = false;
-    if( curImage1->TransformPhysicalPointToIndex( pointX, indexX ) )
+    outImage->SetPixel( indexX, iter.Get() );
+    ++iter;
+    }
+
+  for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
+    {
+    std::cout << inputVolume2[imageNum].c_str() << std::endl;
+
+    timeCollector.Start("Load data");
+    typename ReaderType::Pointer reader2 = ReaderType::New();
+    reader2->SetFileName( inputVolume2[imageNum].c_str() );
+    try
       {
-      tf1 = curImage1->GetPixel( indexX );
-      inImage1 = true;
+      reader2->Update();
       }
-    bool inImage2 = false;
-    if( curImage2->TransformPhysicalPointToIndex( pointX, indexX2 ) )
+    catch( itk::ExceptionObject & err )
       {
-      double tf2 = curImage2->GetPixel( indexX2 );
-      bool useTF2 = true;
+      tube::ErrorMessage( "Reading volume: Exception caught: " 
+                          + std::string(err.GetDescription()) );
+      timeCollector.Stop("Load data");
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    typename ImageType::Pointer curImage2 = reader2->GetOutput();
+    timeCollector.Stop("Load data");
+
+    typename ImageType::IndexType minX2Org;
+    minX2Org = curImage2->GetLargestPossibleRegion().GetIndex();
+    typename ImageType::SizeType size2 = curImage2->
+                                           GetLargestPossibleRegion().
+                                           GetSize();
+    typename ImageType::IndexType maxX2Org;
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      maxX2Org[i] = minX2Org[i] + size2[i] - 1;
+      }
+    bool useBoundary = false;
+    if( boundary.size() == dimensionT)
+      {
+      useBoundary = true;
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        minX2Org[i] += boundary[i];
+        maxX2Org[i] -= boundary[i];
+        }
+      }
+
+    itk::ImageRegionIteratorWithIndex< ImageType > iter2( curImage2,
+      curImage2->GetLargestPossibleRegion() );
+    iter2.GoToBegin();
+    typename ImageType::IndexType indexX2;
+    while( !iter2.IsAtEnd() )
+      {
+      indexX2 = iter2.GetIndex();
+      bool useTf2 = true;
       if( useBoundary )
         {
         for( unsigned int i=0; i<dimensionT; i++ )
           {
           if( indexX2[i]<minX2Org[i] || indexX2[i]>maxX2Org[i] )
             {
-            useTF2 = false;
+            useTf2 = false;
             break;
             }
           }
         }
-      if( useTF2 )
+      if( useTf2 )
         {
-        if( average && inImage1 )
+        double tf2 = iter2.Get();
+        curImage2->TransformIndexToPhysicalPoint( indexX2, pointX );
+        if( outImage->TransformPhysicalPointToIndex( pointX, indexX ) )
           {
-          tf1 = ( tf2 + tf1 ) / 2.0;
+          if( average )
+            {
+            double tf1 = outImage->GetPixel( indexX );
+            if( tf1 != background )
+              {
+              tf1 = ( tf2 + tf1 ) / 2.0;
+              }
+            else
+              {
+              tf1 = tf2;
+              }
+            outImage->SetPixel( indexX, tf1 );
+            }
+          else
+            {
+            outImage->SetPixel( indexX, tf2 );
+            }
           }
-        else
-          {
-          tf1 = tf2;
-          }
-        inImage2 = true;
         }
+      ++iter2;
       }
-    iter.Set( tf1 );
-    ++iter;
     }
 
   timeCollector.Start("Save data");

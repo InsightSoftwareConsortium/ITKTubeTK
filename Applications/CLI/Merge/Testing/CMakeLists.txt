@@ -31,27 +31,34 @@ set( BASELINE
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
+set( PROJ_EXE 
+ ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+
+set( IMAGECOMPARE_EXE
+ ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
+
+
 add_test( ${PROJECT_NAME}Test1
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+             ${PROJ_EXE}
                ${INPUT_DATA}/ES0015_Large.mha
-               ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
+               -m ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 add_test( ${PROJECT_NAME}Test1-Compare
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
 add_test( ${PROJECT_NAME}Test2
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+             ${PROJ_EXE}
                -a
                -b 50,50
                ${INPUT_DATA}/ES0015_Large.mha
-               ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
+               -m ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
                ${TEMP}/${PROJECT_NAME}Test2.mha )
 
 add_test( ${PROJECT_NAME}Test2-Compare
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test2.mha )
 
