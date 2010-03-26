@@ -106,7 +106,10 @@ int DoIt( int argc, char * argv[] )
                                          GetLargestPossibleRegion().
                                          GetSize();
   typename ImageType::IndexType maxX1;
-  maxX1 = minX1 + size1;
+  for( unsigned int i=0; i<dimensionT; i++ )
+    {
+    maxX1[i] = minX1[i] + size1[i] - 1;
+    }
 
   double progress = 0.1;
   progressReporter.Report( progress );
@@ -195,7 +198,7 @@ int DoIt( int argc, char * argv[] )
     for( unsigned int i=0; i<dimensionT; i++ )
       {
       minX1[i] = minXOut[i];
-      maxX1[i] = minXOut[i] + sizeOut[i];
+      maxX1[i] = minXOut[i] + sizeOut[i] - 1;
       }
     }
 
