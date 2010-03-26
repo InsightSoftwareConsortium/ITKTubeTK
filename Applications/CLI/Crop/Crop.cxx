@@ -216,7 +216,7 @@ int DoIt( int argc, char * argv[] )
     tube::CropROI< pixelT, dimensionT > cropFilter;
 
     typename ImageType::Pointer inputImage = reader->GetOutput();
-    typename ImageType::SizeType size = inputImage->
+    typename ImageType::SizeType inputImageSize = inputImage->
                                           GetLargestPossibleRegion().
                                           GetSize();
 
@@ -239,8 +239,8 @@ int DoIt( int argc, char * argv[] )
     typename ImageType::IndexType roiSize;
     for( unsigned int i=0; i<dimensionT; i++ )
       {
-      roiStep[i] = size[i]/(split[i]+1);
-      roiSize[i] = size[i]/split[i];
+      roiStep[i] = inputImageSize[i]/(split[i]+1);
+      roiSize[i] = inputImageSize[i]/split[i];
       }
     typename ImageType::IndexType roiIndex;
     roiIndex.Fill( 0 );
@@ -259,7 +259,7 @@ int DoIt( int argc, char * argv[] )
         roiMax[i] = roiMin[i] + roiSize[i] - 1; 
         if( roiIndex[i] == split[i]-1 )
           {
-          roiMax[i] = size[i]-1;
+          roiMax[i] = inputImageSize[i]-1;
           }
         }
 
