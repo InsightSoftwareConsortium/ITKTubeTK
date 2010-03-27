@@ -37,6 +37,9 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
+#######
+# Test1
+#######
 add_test( ${PROJECT_NAME}Test1
                ${PROJ_EXE}
                ${INPUT_DATA}/slice256.png
@@ -47,7 +50,12 @@ add_test( ${PROJECT_NAME}Test1-Compare
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
+set_tests_properties( ${PROJECT_NAME}Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
+#######
+# Test2
+#######
 add_test( ${PROJECT_NAME}Test2
                ${PROJ_EXE}
                ${INPUT_DATA}/slice256.png
@@ -58,7 +66,12 @@ add_test( ${PROJECT_NAME}Test2-Compare
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
+set_tests_properties( ${PROJECT_NAME}Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
 
+#######
+# Test3
+#######
 add_test( ${PROJECT_NAME}Test3
                ${PROJ_EXE}
                ${INPUT_DATA}/slice256.png
@@ -69,7 +82,12 @@ add_test( ${PROJECT_NAME}Test3-Compare
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test3.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
+set_tests_properties( ${PROJECT_NAME}Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
 
+#######
+# Test4
+#######
 add_test( ${PROJECT_NAME}Test4
                ${PROJ_EXE}
                ${INPUT_DATA}/slice256.png
@@ -80,19 +98,27 @@ add_test( ${PROJECT_NAME}Test4-Compare00
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test4_00.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test4_00.mha )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare00
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
 
 add_test( ${PROJECT_NAME}Test4-Compare01
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test4_01.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test4_01.mha )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare01
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
 
 add_test( ${PROJECT_NAME}Test4-Compare10
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test4_10.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test4_10.mha )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare10
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
 
 add_test( ${PROJECT_NAME}Test4-Compare11
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test4_11.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test4_11.mha )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare11
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
 

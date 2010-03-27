@@ -31,16 +31,27 @@ set( BASELINE
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
+set( PROJ_EXE 
+ ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+
+set( IMAGECOMPARE_EXE
+ ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
+
+
+#######
+# Test1
+#######
 add_test( ${PROJECT_NAME}Test1
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+            ${PROJ_EXE}
                -r 0.2
                ${INPUT_DATA}/im0001.crop.mha
                ${INPUT_DATA}/im0001.crop.mha )
 
+#######
+# Test2
+#######
 add_test( ${PROJECT_NAME}Test2
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+            ${PROJ_EXE}
                -c
                ${INPUT_DATA}/im0001.crop.mha
                ${INPUT_DATA}/im0001.crop.mha )
-
-
