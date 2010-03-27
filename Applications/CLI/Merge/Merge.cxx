@@ -100,15 +100,21 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::PointType pointX;
   typename ImageType::IndexType indexX;
  
-  typename ImageType::IndexType minX1;
-  minX1 = curImage1->GetLargestPossibleRegion().GetIndex();
+  typename ImageType::IndexType minX1Org;
+  minX1Org = curImage1->GetLargestPossibleRegion().GetIndex();
   typename ImageType::SizeType size1 = curImage1->
                                          GetLargestPossibleRegion().
                                          GetSize();
-  typename ImageType::IndexType maxX1;
+  typename ImageType::IndexType maxX1Org;
   for( unsigned int i=0; i<dimensionT; i++ )
     {
-    maxX1[i] = minX1[i] + size1[i] - 1;
+    maxX1Org[i] = minX1Org[i] + size1[i] - 1;
+    }
+
+  bool useBoundary = false;
+  if( boundary.size() == dimensionT)
+    {
+    useBoundary = true;
     }
 
   double progress = 0.1;
@@ -116,6 +122,8 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::IndexType minXOut;
   typename ImageType::IndexType maxXOut;
   typename ImageType::SizeType  sizeOut;
+  minXOut = minX1Org;
+  maxXOut = maxX1Org;
   for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
     {
     timeCollector.Start("Load data");
@@ -154,7 +162,6 @@ int DoIt( int argc, char * argv[] )
     curImage2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
     curImage1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
-    minXOut = minX1;
     for( unsigned int i=0; i<dimensionT; i++ )
       {
       if( minX2[i] < minXOut[i] )
@@ -166,7 +173,6 @@ int DoIt( int argc, char * argv[] )
         minXOut[i] = maxX2[i];
         }
       }
-    maxXOut = maxX1;
     for( unsigned int i=0; i<dimensionT; i++ )
       {
       if( minX2[i] > maxXOut[i] )
@@ -176,29 +182,12 @@ int DoIt( int argc, char * argv[] )
       if( maxX2[i] > maxXOut[i] )
         {
         maxXOut[i] = maxX2[i];
-      }
-    }
-
-    bool useBoundary = false;
-    if( boundary.size() == dimensionT)
-      {
-      useBoundary = true;
-      for( unsigned int i=0; i<dimensionT; i++ )
-        {
-        minX2Org[i] += boundary[i];
-        maxX2Org[i] -= boundary[i];
         }
       }
-  
+
     for( unsigned int i=0; i<dimensionT; i++ )
       {
       sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
-      }
-
-    for( unsigned int i=0; i<dimensionT; i++ )
-      {
-      minX1[i] = minXOut[i];
-      maxX1[i] = minXOut[i] + sizeOut[i] - 1;
       }
     }
 
@@ -210,12 +199,36 @@ int DoIt( int argc, char * argv[] )
   outImage->Allocate();
   outImage->FillBuffer( background );
 
+  if( useBoundary )
+    {
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      minX1Org[i] += boundary[i];
+      maxX1Org[i] -= boundary[i];
+      }
+    }
+
   itk::ImageRegionIteratorWithIndex< ImageType > iter( curImage1,
     curImage1->GetLargestPossibleRegion() );
   while( !iter.IsAtEnd() )
     {
     indexX = iter.GetIndex();
-    outImage->SetPixel( indexX, iter.Get() );
+    bool useTf1 = true;
+    if( useBoundary )
+      {
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        if( indexX[i]<minX1Org[i] || indexX[i]>maxX1Org[i] )
+          {
+          useTf1 = false;
+          break;
+          }
+        }
+      }
+    if( useTf1 )
+      {
+      outImage->SetPixel( indexX, iter.Get() );
+      }
     ++iter;
     }
 
@@ -251,10 +264,8 @@ int DoIt( int argc, char * argv[] )
       {
       maxX2Org[i] = minX2Org[i] + size2[i] - 1;
       }
-    bool useBoundary = false;
-    if( boundary.size() == dimensionT)
+    if( useBoundary )
       {
-      useBoundary = true;
       for( unsigned int i=0; i<dimensionT; i++ )
         {
         minX2Org[i] += boundary[i];
