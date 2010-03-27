@@ -38,6 +38,9 @@ set( IMAGECOMPARE_EXE
  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
 
+#######
+# Test1
+#######
 add_test( ${PROJECT_NAME}Test1
              ${PROJ_EXE}
                ${INPUT_DATA}/ES0015_Large.mha
@@ -48,11 +51,17 @@ add_test( ${PROJECT_NAME}Test1-Compare
              ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
+set_tests_properties( ${PROJECT_NAME}Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
+#######
+# Test2
+#######
 add_test( ${PROJECT_NAME}Test2
              ${PROJ_EXE}
                -a
                -b 50,50
+               -f
                ${INPUT_DATA}/ES0015_Large.mha
                -m ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
                ${TEMP}/${PROJECT_NAME}Test2.mha )
@@ -61,4 +70,24 @@ add_test( ${PROJECT_NAME}Test2-Compare
              ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test2.mha )
+set_tests_properties( ${PROJECT_NAME}Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
+
+#######
+# Test3
+#######
+add_test( ${PROJECT_NAME}Test3
+             ${PROJ_EXE}
+               -a
+               -b 50,50
+               ${INPUT_DATA}/ES0015_Large.mha
+               -m ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
+               ${TEMP}/${PROJECT_NAME}Test3.mha )
+
+add_test( ${PROJECT_NAME}Test3-Compare
+             ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test3.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test3.mha )
+set_tests_properties( ${PROJECT_NAME}Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
 
