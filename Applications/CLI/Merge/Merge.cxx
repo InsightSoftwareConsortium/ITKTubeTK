@@ -142,6 +142,9 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     timeCollector.Stop("Load data");
+
+    progress += 1.0/(double)inputVolume2.size() * 0.4;
+    progressReporter.Report( progress );
   
     typename ImageType::Pointer curImage2 = reader2->GetOutput();
   
@@ -214,7 +217,7 @@ int DoIt( int argc, char * argv[] )
     {
     indexX = iter.GetIndex();
     bool useTf1 = true;
-    if( useBoundary )
+    if( !firstImageSpecial && useBoundary )
       {
       for( unsigned int i=0; i<dimensionT; i++ )
         {
@@ -231,11 +234,11 @@ int DoIt( int argc, char * argv[] )
       }
     ++iter;
     }
+  progress += 0.1;
+  progressReporter.Report( progress );
 
   for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
     {
-    std::cout << inputVolume2[imageNum].c_str() << std::endl;
-
     timeCollector.Start("Load data");
     typename ReaderType::Pointer reader2 = ReaderType::New();
     reader2->SetFileName( inputVolume2[imageNum].c_str() );
@@ -272,6 +275,9 @@ int DoIt( int argc, char * argv[] )
         maxX2Org[i] -= boundary[i];
         }
       }
+
+    progress += 1.0/(double)inputVolume2.size() * 0.2;
+    progressReporter.Report( progress );
 
     itk::ImageRegionIteratorWithIndex< ImageType > iter2( curImage2,
       curImage2->GetLargestPossibleRegion() );
@@ -319,6 +325,8 @@ int DoIt( int argc, char * argv[] )
         }
       ++iter2;
       }
+    progress += 1.0/(double)inputVolume2.size() * 0.19;
+    progressReporter.Report( progress );
     }
 
   timeCollector.Start("Save data");
@@ -326,6 +334,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( outImage );
+  writer->SetUseCompression( true );
   try
     {
     writer->Update();

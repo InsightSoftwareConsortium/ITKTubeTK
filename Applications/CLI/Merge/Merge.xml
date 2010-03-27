@@ -46,6 +46,14 @@
       <flag>a</flag>
       <default>false</default>
     </boolean>
+    <boolean>
+      <name>firstImageSpecial</name>
+      <label>First image special (no bounardy)</label>
+      <description>First image is treated as special, boundary is not applied.</description>
+      <longflag>firstImageSpecial</longflag>
+      <flag>f</flag>
+      <default>false</default>
+    </boolean>
     <integer-vector>
       <name>boundary</name>
       <label>Additional boundary pixels</label>
