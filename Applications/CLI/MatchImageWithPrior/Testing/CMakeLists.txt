@@ -31,8 +31,17 @@ set( BASELINE
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
+set( PROJ_EXE 
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+
+set( IMAGECOMPARE_EXE
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
+
+#######
+# Test1
+#######
 add_test( ${PROJECT_NAME}Test1
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+            ${PROJ_EXE}
                ${INPUT_DATA}/ES0015_Large.mha
                ${INPUT_DATA}/GDS0015_Large.mha
                ${TEMP}/${PROJECT_NAME}_ESTest1.mha
@@ -40,14 +49,18 @@ add_test( ${PROJECT_NAME}Test1
                -f 0 -b 255 -C 200,200 -S 148,148 -o 128,128 )
 
 add_test( ${PROJECT_NAME}Test1-Compare
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+            ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}_ESTest1.mha 
                -b ${BASELINE}/${PROJECT_NAME}_ESTest1.mha )
+set_tests_properties( ${PROJECT_NAME}Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
 add_test( ${PROJECT_NAME}Test2-Compare
-            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+            ${IMAGECOMPARE_EXE}
                -i 1.0
                -n 10000
                -t ${TEMP}/${PROJECT_NAME}_GDSTest1.mha 
                -b ${BASELINE}/${PROJECT_NAME}_GDSTest1.mha )
+set_tests_properties( ${PROJECT_NAME}Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
