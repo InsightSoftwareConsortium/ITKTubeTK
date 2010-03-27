@@ -429,9 +429,11 @@ int DoIt( int argc, char * argv[] )
   typename ImageWriterType::Pointer writerMask = ImageWriterType::New();
 
   writerVolume->SetFileName( outputVolumeROI.c_str() );
-  writerVolume->SetInput ( curVolume );
+  writerVolume->SetInput( curVolume );
+  writerVolume->SetUseCompression( true );
   writerMask->SetFileName( outputMaskROI.c_str() );
-  writerMask->SetInput ( curMask );
+  writerMask->SetInput( curMask );
+  writerMask->SetUseCompression( true );
 
   try
     {

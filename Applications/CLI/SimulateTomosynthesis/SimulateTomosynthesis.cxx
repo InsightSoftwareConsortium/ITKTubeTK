@@ -193,7 +193,8 @@ int DoIt( int argc, char * argv[] )
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput ( curImage );
+  writer->SetInput( curImage );
+  writer->SetUseCompression( true );
 
   try
     {
