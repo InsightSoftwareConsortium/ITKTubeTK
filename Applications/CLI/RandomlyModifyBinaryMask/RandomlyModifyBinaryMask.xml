@@ -37,6 +37,7 @@
       <description>Number of random regions to modify</description>
       <longflag>numberOfRegions</longflag>
       <flag>n</flag>
+      <default>10</default>
     </integer>
     <integer-vector>
       <name>regionSize</name>
