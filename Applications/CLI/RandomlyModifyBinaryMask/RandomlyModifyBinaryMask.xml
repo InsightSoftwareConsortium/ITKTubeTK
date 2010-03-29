@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Randomly Modify Binary Mask</title>
+  <description>Randomly apply erosion, dilation, removal, and insertion to random regions of a binary mask</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output Volume</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>Options</label>
+    <integer>
+      <name>numberOfRegions</name>
+      <label>Number of regions</label>
+      <description>Number of random regions to modify</description>
+      <longflag>numberOfRegions</longflag>
+      <flag>n</flag>
+    </integer>
+    <integer-vector>
+      <name>regionSize</name>
+      <label>Region size</label>
+      <description>Size of the region for each random operation</description>
+      <longflag>regionSize</longflag>
+      <flag>r</flag>
+    </integer-vector>
+  </parameters>
+
+</executable>
