@@ -38,7 +38,7 @@ endif(NOT USE_SYSTEM_ITK)
 set(proj tclap)
 
 ExternalProject_Add(${proj}
-  SVN_REPOSITORY "http://svn.slicer.org/Slicer3/trunk/Libs/tclap"
+  SVN_REPOSITORY "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/tclap"
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=${prefix}/tclapsandbox
@@ -53,7 +53,7 @@ set(proj ModuleDescriptionParser)
 if(NOT USE_SYSTEM_ITK)
   ExternalProject_Add(${proj}
     SVN_REPOSITORY 
-      "http://svn.slicer.org/Slicer3/trunk/Libs/ModuleDescriptionParser"
+      "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
@@ -68,7 +68,7 @@ if(NOT USE_SYSTEM_ITK)
 else(NOT USE_SYSTEM_ITK)
   ExternalProject_Add(${proj}
     SVN_REPOSITORY 
-      "http://svn.slicer.org/Slicer3/trunk/Libs/ModuleDescriptionParser"
+      "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
@@ -84,7 +84,7 @@ set(proj GenerateCLP)
  
 ExternalProject_Add(${proj}
   SVN_REPOSITORY 
-    "http://svn.slicer.org/Slicer3/trunk/Libs/GenerateCLP"
+    "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/GenerateCLP"
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
