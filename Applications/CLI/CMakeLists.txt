@@ -68,6 +68,28 @@ macro( svnGetSlicerCLI FILENAME )
   endif( svnError )
 endmacro( svnGetSlicerCLI FILENAME )
 
+macro( svnGetSlicerBase FILENAME )
+  set( svnCmd "co" )
+  set( svnSite "http://svn.slicer.org/Slicer3/trunk/" )
+  execute_process(
+    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${CLI_SOURCE_DIR}/${FILENAME}
+    OUTPUT_VARIABLE svnOutput
+    ERROR_VARIABLE svnError
+    RESULT_VARIABLE svnResult
+    )
+  if( svnError )
+    message( "Error while fetching module from Slicer3 SVN..." )
+    message( "Svn = ${SVNCOMMAND}" )
+    message( "Command = ${svnCmd}" )
+    message( "Site = ${svnSite}" )
+    message( "File = ${FILENAME}" )
+    message( "Dir = ${CLI_SOURCE_DIR}" )
+    message( "Output = ${svnOutput}" )
+    message( FATAL "Result = ${svnResult}" )
+  endif( svnError )
+endmacro( svnGetSlicerBase FILENAME )
+
+svnGetSlicerBase( Resources ${CLI_SOURCE_DIR} )
 svnGetSlicerCLI( Templates ${CLI_SOURCE_DIR} )
 svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
 
