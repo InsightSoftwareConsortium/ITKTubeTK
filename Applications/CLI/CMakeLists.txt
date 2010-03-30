@@ -31,6 +31,7 @@ add_subdirectory( Merge )
 add_subdirectory( MatchImageWithPrior )
 add_subdirectory( CompareImageWithPrior )
 add_subdirectory( RandomlyModifyBinaryMask )
+add_subdirectory( DeblendImagesUsingPrior )
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and
