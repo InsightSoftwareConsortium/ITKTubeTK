@@ -113,6 +113,8 @@ class BlendCostFunction
     void GetDerivative( const ParametersType & params,
                         DerivativeType & deriv ) const
       {
+      ParametersType unusedP = params;
+      DerivativeType unusedD = deriv;
       return;
       }
 
