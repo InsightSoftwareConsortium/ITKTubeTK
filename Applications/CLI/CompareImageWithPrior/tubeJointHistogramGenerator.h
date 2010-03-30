@@ -45,9 +45,9 @@ class JointHistogramGenerator
 {
 public:
 
-  typedef itk::Image<pixelT,dimensionT> ImageType;
-  typedef double                        PrecisionType;
-  typedef itk::Image<PrecisionType, 2>  JointHistogramType;
+  typedef itk::OrientedImage<pixelT,dimensionT> ImageType;
+  typedef double                                PrecisionType;
+  typedef itk::Image<PrecisionType, 2>          JointHistogramType;
 
   /// Default Constructor
   JointHistogramGenerator();

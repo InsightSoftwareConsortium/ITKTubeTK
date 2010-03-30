@@ -83,7 +83,7 @@ ZScoreCalculator<pixelT,dimensionT>
   unsigned int dimensions = m_InputVolume->GetImageDimension();
 
   m_OutputVolume = ImageType::New();
-  m_OutputVolume->SetRegions(m_InputVolume->GetLargestPossibleRegion());
+  m_OutputVolume->CopyInformation( m_InputVolume );
   m_OutputVolume->Allocate();
   m_OutputVolume->FillBuffer(0);
 

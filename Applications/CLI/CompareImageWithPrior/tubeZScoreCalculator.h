@@ -48,11 +48,11 @@ class ZScoreCalculator
 public:
 
   // input and storage typedefs
-  typedef itk::Image< pixelT, dimensionT >                   ImageType;
+  typedef itk::OrientedImage< pixelT, dimensionT >           ImageType;
   typedef pixelT                                             PixelType;
   typedef double                                             PrecisionType;
   typedef itk::Image<PrecisionType, 2>                       HistogramType;
-  typedef itk::Image<bool, dimensionT>                       SelectionMaskType;
+  typedef itk::OrientedImage<bool, dimensionT>               SelectionMaskType;
   typedef std::vector<int>                                   VectorType;
   typedef std::vector<PrecisionType>                         BigVectorType;
 

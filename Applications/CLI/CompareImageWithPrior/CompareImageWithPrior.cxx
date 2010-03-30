@@ -84,7 +84,7 @@ int DoIt( int argc, char * argv[] )
 
   // typedefs for inputs
   typedef float                                              PixelType;
-  typedef itk::Image< PixelType,  dimensionT >               ImageType;
+  typedef itk::OrientedImage< PixelType,  dimensionT >       ImageType;
   typedef itk::ImageFileReader< ImageType >                  ReaderType;
   typedef itk::ImageFileWriter< ImageType  >                 WriterType;
 
@@ -93,7 +93,7 @@ int DoIt( int argc, char * argv[] )
   typedef typename tube::JointHistogramGenerator<PixelType,dimensionT>
     ::JointHistogramType                                     HistogramType;
   typedef bool                                               BoolPixelType;
-  typedef itk::Image< BoolPixelType, dimensionT >            SelectionMaskType;
+  typedef itk::OrientedImage< BoolPixelType, dimensionT >    SelectionMaskType;
   typedef itk::ImageFileReader< HistogramType >              HistReaderType;
   typedef itk::ImageFileWriter< HistogramType>               HistWriterType;
   typedef itk::ImageFileReader< SelectionMaskType >          SelectionMaskReaderType;
@@ -164,7 +164,8 @@ int DoIt( int argc, char * argv[] )
 
   // Allocate the output image and fill with 0s
   typename ImageType::Pointer outImage = ImageType::New();
-  outImage->SetRegions(curImage->GetLargestPossibleRegion());
+  //outImage->SetRegions(curImage->GetLargestPossibleRegion());
+  outImage->CopyInformation( curImage );
   outImage->Allocate();
   outImage->FillBuffer(0);
 

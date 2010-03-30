@@ -562,7 +562,9 @@ SubImageGenerator<pixelT,dimensionT>
   typename ImageType::RegionType region;
   region.SetSize( size );
   region.SetIndex( start );
+  m_OutputVolume->CopyInformation( m_InputVolume );
   m_OutputVolume->SetRegions( region );
+  m_OutputMask->CopyInformation( m_InputMask );
   m_OutputMask->SetRegions( region );
   m_OutputVolume->Allocate();
   m_OutputMask->Allocate();

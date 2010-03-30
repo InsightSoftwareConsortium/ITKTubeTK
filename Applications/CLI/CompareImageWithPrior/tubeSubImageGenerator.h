@@ -45,7 +45,7 @@ class SubImageGenerator
 {
 public:
 
-  typedef itk::Image<pixelT,dimensionT> ImageType;
+  typedef itk::OrientedImage<pixelT,dimensionT> ImageType;
 
   /// Default Constructor
   SubImageGenerator();
