@@ -142,8 +142,8 @@ ZScoreCalculator<pixelT,dimensionT>
         typename HistogramType::PixelType t = histItr.Get();
         typename HistogramType::PixelType m = meanItr.Get();
         typename HistogramType::PixelType s = stdItr.Get();
-        s += 0.0001;
-        val += vnl_math_abs(t-m)/s;
+        s += 0.001;
+        val += vnl_math_abs((t-m)/s);
         ++histItr;
         ++meanItr;
         ++stdItr;

@@ -41,6 +41,7 @@ limitations under the License.
 #include "itkDivideByConstantImageFilter.h"
 #include "itkMultiplyByConstantImageFilter.h"
 #include "itkMinimumMaximumImageCalculator.h"
+#include "itkRecursiveGaussianImageFilter.h"
 #include "vnl/vnl_math.h"
 
 // The following three should be used in every CLI application
@@ -52,9 +53,6 @@ limitations under the License.
 #include "tubeSubImageGenerator.h"
 #include "tubeJointHistogramGenerator.h"
 #include "tubeZScoreCalculator.h"
-
-// Includes specific to this CLI application
-#include "itkRecursiveGaussianImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -104,6 +102,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageRegionIterator<SelectionMaskType>        SelectionMaskIteratorType;
 
   typedef itk::MinimumMaximumImageCalculator<ImageType>      CalculatorType;
+  typedef itk::RecursiveGaussianImageFilter<HistogramType,HistogramType>
+                                                             BlurType;
 
   // Setup the readers to load the input data (image + prior)
   timeCollector.Start("Load data");
@@ -428,6 +428,18 @@ int DoIt( int argc, char * argv[] )
     std::cerr << err << std::endl;
     }
   timeCollector.Stop("Write Mean and Stdev");
+
+  // Blur the histograms
+  typename BlurType::Pointer blur = BlurType::New();
+  blur->SetInput( meanHist );
+  blur->SetSigma( 1 );
+  blur->Update();
+  meanHist = blur->GetOutput();
+
+  blur->SetInput( stdevHist );
+  blur->SetSigma( 1 );
+  blur->Update();
+  stdevHist = blur->GetOutput();
 
   // Report progress after the mean and stdev write
   progress += 0.05;
