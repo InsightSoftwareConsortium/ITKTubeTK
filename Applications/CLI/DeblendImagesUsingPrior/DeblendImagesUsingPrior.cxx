@@ -66,166 +66,168 @@ namespace itk {
 template< class pixelT, unsigned int dimensionT >
 class BlendCostFunction
 : public SingleValuedCostFunction
-  {
-  public:
-
-    typedef BlendCostFunction           Self;
-    typedef SingleValuedCostFunction    Superclass;
-    typedef SmartPointer< Self >        Pointer;
-    typedef SmartPointer< const Self >  ConstPointer;
-
-    itkTypeMacro( BlendCostFunction, SingleValuedCostFunction );
-
-    itkNewMacro( Self );
-
-    typedef Superclass::MeasureType     MeasureType;
-    typedef Superclass::ParametersType  ParametersType;
-    typedef Superclass::DerivativeType  DerivativeType;
-
-    typedef itk::OrientedImage<pixelT, dimensionT>  ImageType;
-
-    unsigned int GetNumberOfParameters( void ) const
-      {
-      return 4;
-      }
+{
+public:
   
-    void SetImageTop( typename ImageType::Pointer _top )
-      {
-      m_ImageTop = _top;
-      }
-    void SetImageMiddle( typename ImageType::Pointer _middle )
-      {
-      m_ImageMiddle = _middle;
-      }
-    void SetImageBottom( typename ImageType::Pointer _bottom )
-      {
-      m_ImageBottom = _bottom;
-      }
-    void SetMaskMiddle( typename ImageType::Pointer _maskMiddle )
-      {
-      m_MaskMiddle = _maskMiddle;
-      }
-    void SetImageOutput( typename ImageType::Pointer _output )
-      {
-      m_ImageOutput = _output;
-      }
+  typedef BlendCostFunction                       Self;
+  typedef SingleValuedCostFunction                Superclass;
+  typedef SmartPointer< Self >                    Pointer;
+  typedef SmartPointer< const Self >              ConstPointer;
+
+  itkTypeMacro( BlendCostFunction, SingleValuedCostFunction );
+
+  itkNewMacro( Self );
+
+  typedef Superclass::MeasureType                 MeasureType;
+  typedef Superclass::ParametersType              ParametersType;
+  typedef Superclass::DerivativeType              DerivativeType;
+  typedef itk::OrientedImage<pixelT, dimensionT>  ImageType;
   
-    void GetDerivative( const ParametersType & params,
-                        DerivativeType & deriv ) const
+  unsigned int GetNumberOfParameters( void ) const
+    { 
+    return 4;
+    }
+  
+  void SetImageTop( typename ImageType::Pointer _top )
+    {
+    m_ImageTop = _top;
+    }
+  
+  void SetImageMiddle( typename ImageType::Pointer _middle )
+    {
+    m_ImageMiddle = _middle;
+    }
+  
+  void SetImageBottom( typename ImageType::Pointer _bottom )
+    {
+    m_ImageBottom = _bottom;
+    }
+  
+  void SetMaskMiddle( typename ImageType::Pointer _maskMiddle )
+    {
+    m_MaskMiddle = _maskMiddle;
+    }
+  void SetImageOutput( typename ImageType::Pointer _output )
+    {
+    m_ImageOutput = _output;
+    }
+  
+  void GetDerivative( const ParametersType & params,
+                      DerivativeType & deriv ) const
+    {
+    ParametersType unusedP = params;
+    DerivativeType unusedD = deriv;
+    return;
+    }
+
+  MeasureType GetValue( const ParametersType & params ) const
+    {
+    static unsigned int calls = 0;
+    typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
+    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
+                                                  FilterType;
+
+    if( params[3] < 0.2 )
       {
-      ParametersType unusedP = params;
-      DerivativeType unusedD = deriv;
-      return;
+      return 10000;
       }
-
-    MeasureType GetValue( const ParametersType & params ) const
-      {
-      static unsigned int calls = 0;
-
-      typedef itk::ImageRegionIterator< ImageType >
-        ImageIteratorType;
-      typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
-        FilterType;
-
-      if( params[3] < 0.2 )
-        {
-        return 10000;
-        }
-
-      typename FilterType::Pointer filterTop = FilterType::New();
-      filterTop->SetInput( m_ImageTop );
-      filterTop->SetSigma( params[3] );
-      filterTop->Update();
-      typename ImageType::Pointer imageTopB = filterTop->GetOutput();
-
-      typename FilterType::Pointer filterBottom = FilterType::New();
-      filterBottom->SetInput( m_ImageBottom );
-      filterBottom->SetSigma( params[3] );
-      filterBottom->Update();
-      typename ImageType::Pointer imageBottomB = filterBottom->GetOutput();
-
-      ImageIteratorType iterTopB( imageTopB,
-                               imageTopB->GetLargestPossibleRegion() );
-      ImageIteratorType iterBottomB( imageBottomB,
-                               imageBottomB->GetLargestPossibleRegion() );
-      ImageIteratorType iterMiddle( m_ImageMiddle,
-                               m_ImageMiddle->GetLargestPossibleRegion() );
-      ImageIteratorType iterOutput( m_ImageOutput,
-                               m_ImageOutput->GetLargestPossibleRegion() );
-      while( !iterMiddle.IsAtEnd() )
-        {
-        float tf = params[0] * iterTopB.Get() +
-                   params[1] * iterBottomB.Get() +
-                   params[2];
-
-        iterOutput.Set( iterMiddle.Get() - tf );
-
-        ++iterMiddle;
-        ++iterTopB;
-        ++iterBottomB;
-        ++iterOutput;
-        }
-
-      typedef itk::IdentityTransform< double, dimensionT > 
-        TransformType;
-      typename TransformType::Pointer transform = TransformType::New();
-
-      typedef itk::LinearInterpolateImageFunction< ImageType, double > 
-        InterpolatorType;
-      typename InterpolatorType::Pointer interpolator = 
-        InterpolatorType::New();
-      interpolator->SetInputImage( m_ImageOutput );
-
-      typename ImageType::SizeType size;
-      size = m_ImageMiddle->GetLargestPossibleRegion().GetSize();
-
-      typedef itk::MeanSquaresImageToImageMetric< ImageType, ImageType >
-                                                             MetricType;
-      typename MetricType::Pointer metric = MetricType::New();
-
-      double samplingRate = 0.5;
-      metric->SetFixedImage( m_MaskMiddle );
-      metric->SetMovingImage( m_ImageOutput );
-      metric->SetFixedImageRegion( m_MaskMiddle->
-                                     GetLargestPossibleRegion() );
-      metric->SetTransform( transform );
-      metric->SetInterpolator( interpolator );
-      metric->SetNumberOfSpatialSamples( size[0]*size[1]*samplingRate );
-      metric->Initialize();
-      metric->MultiThreadingInitialize();
     
-      double result = metric->GetValue( transform->GetParameters() ) ;
+    typename FilterType::Pointer filterTop = FilterType::New();
+    filterTop->SetInput( m_ImageTop );
+    filterTop->SetSigma( params[3] );
+    filterTop->Update();
+    typename ImageType::Pointer imageTopB = filterTop->GetOutput();
 
-      std::cout << ++calls << ": "
-                << params[0] << ", "
-                << params[1] << ", "
-                << params[2] << ", "
-                << params[3] 
-                << " : result =" << result << std::endl;
-
-      return result;
-      }
-
-  protected:
-    BlendCostFunction() {};
-    virtual ~BlendCostFunction() {};
-
-    void PrintSelf( std::ostream & os, Indent indent ) const
+    typename FilterType::Pointer filterBottom = FilterType::New();
+    filterBottom->SetInput( m_ImageBottom );
+    filterBottom->SetSigma( params[3] );
+    filterBottom->Update();
+    typename ImageType::Pointer imageBottomB = filterBottom->GetOutput();
+  
+    ImageIteratorType iterTopB( imageTopB,
+                                imageTopB->GetLargestPossibleRegion() );
+    ImageIteratorType iterBottomB( imageBottomB,
+                                   imageBottomB->GetLargestPossibleRegion() );
+    ImageIteratorType iterMiddle( m_ImageMiddle,
+                                  m_ImageMiddle->GetLargestPossibleRegion() );
+    ImageIteratorType iterOutput( m_ImageOutput,
+                                  m_ImageOutput->GetLargestPossibleRegion() );
+    while( !iterMiddle.IsAtEnd() )
       {
-      Superclass::PrintSelf( os, indent );
+      float tf = params[0] * iterTopB.Get() +
+        params[1] * iterBottomB.Get() +
+        params[2];
+
+      iterOutput.Set( iterMiddle.Get() - tf );
+
+      ++iterMiddle;
+      ++iterTopB;
+      ++iterBottomB;
+      ++iterOutput;
       }
 
-  private:
-    BlendCostFunction( const Self & );
-    void operator=( const Self & );
+    typedef itk::IdentityTransform< double, dimensionT > 
+      TransformType;
+    typename TransformType::Pointer transform = TransformType::New();
 
-    typename ImageType::Pointer         m_ImageTop;
-    typename ImageType::Pointer         m_ImageMiddle;
-    typename ImageType::Pointer         m_ImageBottom;
-    typename ImageType::Pointer         m_MaskMiddle;
-    mutable typename ImageType::Pointer m_ImageOutput;
+    typedef itk::LinearInterpolateImageFunction< ImageType, double > 
+      InterpolatorType;
+    typename InterpolatorType::Pointer interpolator = 
+      InterpolatorType::New();
+    interpolator->SetInputImage( m_ImageOutput );
 
-  };
+    typename ImageType::SizeType size;
+    size = m_ImageMiddle->GetLargestPossibleRegion().GetSize();
+
+    typedef itk::MeanSquaresImageToImageMetric< ImageType, ImageType >
+      MetricType;
+    typename MetricType::Pointer metric = MetricType::New();
+
+    double samplingRate = 0.5;
+    metric->SetFixedImage( m_MaskMiddle );
+    metric->SetMovingImage( m_ImageOutput );
+    metric->SetFixedImageRegion( m_MaskMiddle->
+                                 GetLargestPossibleRegion() );
+    metric->SetTransform( transform );
+    metric->SetInterpolator( interpolator );
+    metric->SetNumberOfSpatialSamples( size[0]*size[1]*samplingRate );
+    metric->Initialize();
+    metric->MultiThreadingInitialize();
+    
+    double result = metric->GetValue( transform->GetParameters() );
+
+    std::cout << ++calls << ": "
+              << params[0] << ", "
+              << params[1] << ", "
+              << params[2] << ", "
+              << params[3] 
+              << " : result =" << result << std::endl;
+
+    return result;
+    }
+
+protected:
+  
+  BlendCostFunction() {};
+  virtual ~BlendCostFunction() {};
+
+  void PrintSelf( std::ostream & os, Indent indent ) const
+    {
+    Superclass::PrintSelf( os, indent );
+    }
+
+private:
+
+  BlendCostFunction( const Self & );
+  void operator=( const Self & );
+
+  typename ImageType::Pointer         m_ImageTop;
+  typename ImageType::Pointer         m_ImageMiddle;
+  typename ImageType::Pointer         m_ImageBottom;
+  typename ImageType::Pointer         m_MaskMiddle;
+  mutable typename ImageType::Pointer m_ImageOutput;
+
+};
 
 }; //namespace itk
 
@@ -340,12 +342,11 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( 0.1 );
   timeCollector.Stop("Read");
 
-  typedef itk::BlendCostFunction< PixelType, dimensionT >   
-                                                BlendCostFunctionType;
-  typedef itk::AmoebaOptimizer                    OptimizerType;;
-  typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
+  typedef itk::BlendCostFunction< PixelType, dimensionT > BlendCostFunctionType;
+  typedef itk::AmoebaOptimizer                            OptimizerType;
+  typedef itk::ImageRegionIterator< ImageType >           ImageIteratorType;
 
-   itk::Array<double> params(4);
+  itk::Array<double> params(4);
   params[0] = alpha;
   params[1] = beta;
   params[2] = gamma;
