@@ -99,7 +99,8 @@ public:
                                    double start,
                                    double proportion,
                                    double samples,
-                                   double percentageToKeep);
+                                   double percentageToKeep,
+                                   double scoreThreshold );
 
   void SetInputVolume( typename ImageType::Pointer inputVolume );
   void SetInputPrior( typename ImageType::Pointer inputPrior );

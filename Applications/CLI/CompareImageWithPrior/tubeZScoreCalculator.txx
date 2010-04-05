@@ -168,7 +168,8 @@ ZScoreCalculator<pixelT,dimensionT>
                               double start,
                               double proportion,
                               double samples,
-                              double percentageToKeep=100)
+                              double percentageToKeep=100,
+                              double scoreThreshold=0)
 {
   PrecisionType newSampleNumber = samples;
   PrecisionType upperZScore = 0;
@@ -178,6 +179,7 @@ ZScoreCalculator<pixelT,dimensionT>
     double fraction = (percentageToKeep/100) * samples;
     upperZScore = (*m_ScoreVector)[static_cast<unsigned int>(fraction)];
     }
+  upperZScore = scoreThreshold;
 
   double progress = start;
   double increment = proportion/samples;
