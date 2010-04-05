@@ -383,7 +383,8 @@ int DoIt( int argc, char * argv[] )
     zCalc.CalculateRobustMeanAndStdev( progressReporter, 
                                        progress+(proportion/3), 
                                        proportion/3, samples, 
-                                       robustPercentage );
+                                       robustPercentage,
+                                       robustZScore );
     meanHist = zCalc.GetMeanHistogram();
     stdevHist = zCalc.GetStdevHistogram();
 

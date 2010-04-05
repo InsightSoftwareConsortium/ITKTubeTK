@@ -142,6 +142,18 @@
       <flag>g</flag>
       <default>100</default>
     </double>
+    <double>
+      <name>robustZScore</name>
+      <label>Robust Z-Score Value</label>
+      <description>
+	The z-score value to use as a threshold when computing the
+	robust mean and standard deviation. This will override the
+	robustPercentage parameter.
+      </description>
+      <longflag>robustZScore</longflag>
+      <flag>z</flag>
+      <default>0</default>
+    </double>
 
   </parameters>
 </executable>
