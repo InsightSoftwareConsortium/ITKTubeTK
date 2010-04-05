@@ -42,6 +42,9 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "itkMersenneTwisterRandomVariateGenerator.h"
+#include "itkBinaryBallStructuringElement.h"
+#include "itkBinaryErodeImageFilter.h"
+#include "itkBinaryDilateImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -91,6 +94,22 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
+  if( regionSize.size() == 0 )
+    {
+    regionSize.resize( dimensionT );
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      regionSize[i] = 40;
+      }
+    }
+
+  int effectSize = regionSize[0]/4; 
+  int minChange = 1;
+  for( unsigned int i=0; i<dimensionT; i++ )
+    {
+    minChange *= effectSize/2;
+    }
+
   typename ImageType::Pointer curImage = reader->GetOutput();
 
   typename ImageType::IndexType index = curImage->
@@ -104,7 +123,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::IndexType regionCenterMax;
   for( unsigned int i=0; i<dimensionT; i++ )
     {
-    bufferSize[i] = 5;
+    bufferSize[i] = effectSize;
     regionCenterMin[i] = index[i] + regionSize[i]/2 + bufferSize[i] + 1;
     regionCenterMax[i] = index[i] + size[i] - 1 - regionSize[i]/2 
                                   - bufferSize[i] - 1;
@@ -115,30 +134,38 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::IndexType roiIndex;
   for( unsigned int i=0; i<dimensionT; i++ )
     {
-    tmpSize[i] = regionSize[i]+bufferSize[i]*2;
+    tmpSize[i] = regionSize[i]+bufferSize[i]*2+1;
     roiSize[i] = regionSize[i];
     roiIndex[i] = index[i] + bufferSize[i];
     }
 
   typename ImageType::RegionType tmpRegion;
   tmpRegion = curImage->GetLargestPossibleRegion();
+
+  typename ImageType::Pointer changeImage = ImageType::New();
+  changeImage->CopyInformation( curImage );
+  changeImage->SetRegions( tmpRegion );
+  changeImage->Allocate();
+  changeImage->FillBuffer( 0 );
+
   tmpRegion.SetSize( tmpSize );
   typename ImageType::Pointer tmpImage = ImageType::New();
   tmpImage->CopyInformation( curImage );
   tmpImage->SetRegions( tmpRegion );
   tmpImage->Allocate();
 
-  typename ImageType::Pointer changeImage = ImageType::New();
-  changeImage->CopyInformation( curImage );
-  changeImage->Allocate();
-  changeImage->FillBuffer( 0 );
+  typename ImageType::IndexType tmpCenter;
+  for( unsigned int i=0; i<dimensionT; i++ )
+    {
+    tmpCenter[i] = index[i] + tmpSize[i]/2;
+    }
 
   typename ImageType::RegionType tmpROIRegion;
   tmpROIRegion = curImage->GetLargestPossibleRegion();
   tmpROIRegion.SetSize( roiSize );
   tmpROIRegion.SetIndex( roiIndex );
 
-  typename ImageType::IndexType tmpCenter;
+  typename ImageType::IndexType roiCenter;
   typename ImageType::IndexType tmpMin;
   typename ImageType::IndexType tmpROIMin;
   for( int regionNum=0; regionNum<numberOfRegions; ++regionNum )
@@ -146,13 +173,30 @@ int DoIt( int argc, char * argv[] )
     itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer 
       randGen = 
       itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
-    for( unsigned int i=0; i<dimensionT; i++ )
+    if( seed != -1 )
       {
-      tmpCenter[i] = (int)( randGen->GetUniformVariate( 
-                                 regionCenterMin[i],
-                                 regionCenterMax[i] ) );
-      tmpMin[i] = tmpCenter[i] - tmpSize[i]/2;
-      tmpROIMin[i] = tmpCenter[i] - roiSize[i]/2;
+      randGen->Initialize( seed );
+      }
+    else
+      {
+      randGen->Initialize();
+      }
+
+    bool foundForegroundPixel = false;
+    while( !foundForegroundPixel )
+      {
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        roiCenter[i] = (int)( randGen->GetUniformVariate( 
+                                   regionCenterMin[i],
+                                   regionCenterMax[i] ) );
+        tmpMin[i] = roiCenter[i] - (tmpSize[i]-1)/2;
+        tmpROIMin[i] = tmpMin[i] + bufferSize[i];
+        }
+      if( curImage->GetPixel( roiCenter ) == foreground )
+        {
+        foundForegroundPixel = true;
+        }
       }
 
     typename ImageType::RegionType curRegion;
@@ -160,32 +204,121 @@ int DoIt( int argc, char * argv[] )
     curRegion.SetSize( tmpSize );
     curRegion.SetIndex( tmpMin );
 
-    itk::ImageRegionIterator< ImageType > curIter( curImage, curRegion );
-    itk::ImageRegionIterator< ImageType > tmpIter( tmpImage, tmpRegion );
-    curIter.GoToBegin();
-    tmpIter.GoToBegin();
-    while( !curIter.IsAtEnd() )
-      {
-      tmpIter.Set( curIter.Get() );
-      ++curIter;
-      ++tmpIter;
-      }
-
     int mode = (int)( randGen->GetUniformVariate( 0, 4 ) );
     switch( mode )
       {
       case 0:
-        std::cout << "Erode : " << tmpCenter << std::endl;
-        break;
       case 1:
-        std::cout << "Dilate : " << tmpCenter << std::endl;
+        {
+        tmpImage->FillBuffer( 0 );
+        typename ImageType::IndexType curTestIndex;
+        curTestIndex = roiCenter;
+        typename ImageType::IndexType tmpTestIndex;
+        tmpTestIndex = tmpCenter;
+        for( unsigned int i=0; i<dimensionT; i++ )
+          {
+          curTestIndex[i] = roiCenter[i] + effectSize/2;
+          if( curImage->GetPixel( curTestIndex ) == background )
+            {
+            tmpTestIndex[i] = tmpCenter[i] + effectSize/2;
+            tmpImage->SetPixel( tmpTestIndex, foreground );
+            tmpTestIndex[i] = tmpCenter[i];
+            }
+          curTestIndex[i] = roiCenter[i] - effectSize/2;
+          if( curImage->GetPixel( curTestIndex ) == background )
+            {
+            tmpTestIndex[i] = tmpCenter[i] - effectSize/2;
+            tmpImage->SetPixel( tmpTestIndex, foreground );
+            tmpTestIndex[i] = tmpCenter[i];
+            }
+          curTestIndex[i] = roiCenter[i];
+          }
+        typedef itk::BinaryBallStructuringElement<PixelType, dimensionT >
+          BallType;
+        BallType ball;
+        ball.SetRadius( effectSize );
+        ball.CreateStructuringElement();
+        typedef itk::BinaryDilateImageFilter< ImageType, ImageType, 
+          BallType > FilterType;
+        typename FilterType::Pointer filter = FilterType::New();
+        filter->SetDilateValue( foreground );
+        filter->SetKernel( ball );
+        filter->SetInput( tmpImage );
+        filter->Update();
+        typename ImageType::Pointer outImage = filter->GetOutput();
+        itk::ImageRegionIterator< ImageType > 
+          curIter( curImage, curRegion );
+        itk::ImageRegionIterator< ImageType > 
+          tmpIter( tmpImage, tmpRegion );
+        itk::ImageRegionIterator< ImageType > 
+          outIter( outImage, tmpRegion );
+        curIter.GoToBegin();
+        tmpIter.GoToBegin();
+        outIter.GoToBegin();
+        if( mode == 0 )
+          {
+          std::cout << "Constrict : " << roiCenter << std::endl;
+          while( !curIter.IsAtEnd() )
+            {
+            if( outIter.Get() == foreground )
+              {
+              tmpIter.Set( background );
+              }
+            else
+              {
+              tmpIter.Set( curIter.Get() );
+              }
+            ++outIter;
+            ++tmpIter;
+            ++curIter;
+            }
+          }
+        else
+          {
+          std::cout << "Bloat : " << roiCenter << std::endl;
+          while( !curIter.IsAtEnd() )
+            {
+            if( outIter.Get() == foreground )
+              {
+              tmpIter.Set( foreground );
+              }
+            else
+              {
+              tmpIter.Set( curIter.Get() );
+              }
+            ++outIter;
+            ++tmpIter;
+            ++curIter;
+            }
+          }
         break;
+        }
       case 2:
-        std::cout << "Add : " << tmpCenter << std::endl;
+        {
+        std::cout << "Add : " << roiCenter << std::endl;
+        itk::ImageRegionIterator< ImageType > iter( tmpImage,
+                                                    tmpROIRegion );
+        iter.GoToBegin();
+        while( !iter.IsAtEnd() )
+          {
+          iter.Set( foreground );
+          ++iter;
+          }
         break;
+        }
       case 3:
-        std::cout << "Subtract : " << tmpCenter << std::endl;
+        {
+        std::cout << "Subtract : " << roiCenter << std::endl;
+        itk::ImageRegionIterator< ImageType > iter( tmpImage,
+                                                    tmpROIRegion );
+        iter.GoToBegin();
+        while( !iter.IsAtEnd() )
+          {
+          iter.Set( background );
+          ++iter;
+          }
         break;
+        }
       }
 
     typename ImageType::RegionType curROIRegion;
@@ -202,13 +335,38 @@ int DoIt( int argc, char * argv[] )
     changeROIIter.GoToBegin();
     curROIIter.GoToBegin();
     tmpROIIter.GoToBegin();
-    while( !curROIIter.IsAtEnd() )
+    int count = 0;
+    while( !tmpROIIter.IsAtEnd() )
       {
-      curROIIter.Set( tmpROIIter.Get() );
-      changeROIIter.Set( mode+1 );
+      if( curROIIter.Get() != tmpROIIter.Get() )
+        {
+        ++count;
+        }
       ++changeROIIter;
       ++curROIIter;
       ++tmpROIIter;
+      }
+    if( count > minChange )
+      {
+      changeROIIter.GoToBegin();
+      curROIIter.GoToBegin();
+      tmpROIIter.GoToBegin();
+      while( !tmpROIIter.IsAtEnd() )
+        {
+        if( curROIIter.Get() != tmpROIIter.Get() )
+          {
+          ++count;
+          curROIIter.Set( tmpROIIter.Get() );
+          changeROIIter.Set( mode+1 );
+          }
+        ++changeROIIter;
+        ++curROIIter;
+        ++tmpROIIter;
+        }
+      }
+    else
+      {
+      --regionNum;
       }
     }
 
