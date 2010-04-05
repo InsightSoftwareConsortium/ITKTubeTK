@@ -43,6 +43,8 @@ limitations under the License.
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkAmoebaOptimizer.h"
+#include "itkOnePlusOneEvolutionaryOptimizer.h"
+#include "itkNormalVariateGenerator.h"
 #include "itkImageRegionIterator.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkIdentityTransform.h"
@@ -342,9 +344,11 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( 0.1 );
   timeCollector.Stop("Read");
 
-  typedef itk::BlendCostFunction< PixelType, dimensionT > BlendCostFunctionType;
-  typedef itk::AmoebaOptimizer                            OptimizerType;
-  typedef itk::ImageRegionIterator< ImageType >           ImageIteratorType;
+  typedef itk::BlendCostFunction< PixelType, dimensionT >   
+                                                BlendCostFunctionType;
+  typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
+  typedef itk::AmoebaOptimizer                  OptimizerType;
+  typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
 
   itk::Array<double> params(4);
   params[0] = alpha;
@@ -359,19 +363,38 @@ int DoIt( int argc, char * argv[] )
   costFunc->SetImageBottom( imageBottom );
   costFunc->SetMaskMiddle( maskMiddle );
 
+  InitialOptimizerType::Pointer initOptimizer = InitialOptimizerType::New();
+  initOptimizer->SetNormalVariateGenerator( 
+    itk::Statistics::NormalVariateGenerator::New() );
+  initOptimizer->Initialize( 0.1 );
+  initOptimizer->SetMetricWorstPossibleValue( 100 );
+  initOptimizer->SetMaximumIteration( iterations*0.75 );
+  initOptimizer->SetMaximize( false );
+
   OptimizerType::Pointer optimizer = OptimizerType::New();
-  optimizer->SetMaximumNumberOfIterations( iterations );
+  optimizer->SetMaximumNumberOfIterations( iterations*0.25 );
   optimizer->SetMaximize( false );
 
   OptimizerType::ScalesType scales( 4 );
-  scales[0] = 1.0 / 0.05;
-  scales[1] = 1.0 / 0.05;
+  scales[0] = 1.0 / 0.2;
+  scales[1] = 1.0 / 0.2;
   scales[2] = 1.0 / 1;
-  scales[3] = 1.0 / 0.2;
+  scales[3] = 1.0 / 0.5;
+
   optimizer->SetScales( scales );
 
+  OptimizerType::ScalesType scales2( 4 );
+  scales2[0] = scales[0] * scales[0];
+  scales2[1] = scales[1] * scales[1];
+  scales2[2] = scales[2] * scales[2];
+  scales2[3] = scales[3] * scales[3];
+
+  // OnePlusOne should be passed squared-scales
+  initOptimizer->SetScales( scales );
+
+  initOptimizer->SetCostFunction( costFunc );
+
   optimizer->SetCostFunction( costFunc );
-  optimizer->SetInitialPosition( params );
 
   //
   // Generate output image
@@ -382,6 +405,10 @@ int DoIt( int argc, char * argv[] )
   imageOutput->Allocate();
   costFunc->SetImageOutput( imageOutput );
 
+  initOptimizer->SetInitialPosition( params );
+  initOptimizer->StartOptimization();
+
+  optimizer->SetInitialPosition( initOptimizer->GetCurrentPosition() );
   optimizer->StartOptimization();
 
   params = optimizer->GetCurrentPosition();
