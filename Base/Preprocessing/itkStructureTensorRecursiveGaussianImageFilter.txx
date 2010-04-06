@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef _itkStructureTensorRecursiveGaussianImageFilter_txx
-#define _itkStructureTensorRecursiveGaussianImageFilter_txx
+#ifndef __itkStructureTensorRecursiveGaussianImageFilter_txx
+#define __itkStructureTensorRecursiveGaussianImageFilter_txx
 
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
@@ -86,8 +86,6 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
 }
 
-
-
 /**
  * Set Normalize Across Scale Space
  */
@@ -123,7 +121,8 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
   Superclass::GenerateInputRequestedRegion();
 
   // This filter needs all of the input
-  typename StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>::InputImagePointer image = const_cast<InputImageType *>( this->GetInput() );
+  typename StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+           ::InputImagePointer image = const_cast<InputImageType *>( this->GetInput() );
   image->SetRequestedRegion( this->GetInput()->GetLargestPossibleRegion() );
 }
 
@@ -152,7 +151,7 @@ void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 ::GenerateData(void)
 {
- // Create a process accumulator for tracking the progress of this
+  // Create a process accumulator for tracking the progress of this
   // minipipeline
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);

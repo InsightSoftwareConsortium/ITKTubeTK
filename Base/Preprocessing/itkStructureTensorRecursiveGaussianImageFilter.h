@@ -30,7 +30,6 @@ limitations under the License.
 #include "itkPixelTraits.h"
 #include "itkProgressAccumulator.h"
 
-
 namespace itk
 {
 
@@ -57,8 +56,8 @@ public:
   /** Standard class typedefs. */
   typedef StructureTensorRecursiveGaussianImageFilter  Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
-  typedef SmartPointer<Self>                   Pointer;
-  typedef SmartPointer<const Self>        ConstPointer;
+  typedef SmartPointer<Self>                           Pointer;
+  typedef SmartPointer<const Self>                     ConstPointer;
   
   
   /** Pixel Type of the input image */
@@ -79,15 +78,13 @@ public:
   typedef Image<InternalRealType, 
                 itkGetStaticConstMacro(ImageDimension) >   RealImageType;
 
-
-
-
   /**  Output Image Nth Element Adaptor
    *  This adaptor allows to use conventional scalar 
    *  smoothing filters to compute each one of the 
    *  components of the gradient image pixels. */
   typedef NthElementImageAdaptor< TOutputImage,
                                   InternalRealType >  OutputImageAdaptorType;
+
   typedef typename OutputImageAdaptorType::Pointer OutputImageAdaptorPointer;
 
   /**  Smoothing filter type */
@@ -110,11 +107,11 @@ public:
   typedef typename DerivativeFilterType::Pointer  DerivativeFilterPointer;
 
   /**  Pointer to the Output Image */
-  typedef typename TOutputImage::Pointer          OutputImagePointer;                                  
+  typedef typename TOutputImage::Pointer          OutputImagePointer;
 
 
   /** Type of the output Image */
-  typedef TOutputImage      OutputImageType;
+  typedef TOutputImage                                      OutputImageType;
   typedef typename          OutputImageType::PixelType      OutputPixelType;
   typedef typename PixelTraits<OutputPixelType>::ValueType  OutputComponentType;
 
@@ -166,7 +163,3 @@ private:
 #endif
 
 #endif
-
-
-
-
