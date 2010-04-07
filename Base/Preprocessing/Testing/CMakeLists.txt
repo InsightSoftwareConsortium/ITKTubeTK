@@ -44,7 +44,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBasePreprocessingFilters_SRCS
        tubeBasePreprocessingFiltersPrintTest.cxx
        itkTubeEnhancingDiffusion2DImageFilterTest.cxx 
-       itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
+#       itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
        itkStructureTensorRecursiveGaussianImageFilterTest.cxx
 )
 
@@ -97,12 +97,12 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
                ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
                true )
 
-add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest 
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
-               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
-               ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 0.4 5.0 10 10
-               true )
+#add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest 
+#            ${BASE_PREPROCESSING_FILTERS_TESTS}
+#            itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
+#               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
+#               ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 0.4 5.0 10 10
+#               true )
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest 
             ${BASE_PREPROCESSING_FILTERS_TESTS}
             itkStructureTensorRecursiveGaussianImageFilterTest
