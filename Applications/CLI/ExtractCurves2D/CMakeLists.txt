@@ -46,7 +46,6 @@ include( ${GenerateCLP_USE_FILE} )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
-  ${TubeTK_SOURCE_DIR}/Base/TubeSegmentation
   )
 
 set( PROJECT_SOURCE 
@@ -59,11 +58,11 @@ generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
 add_library( ${PROJECT_NAME}Module SHARED ${PROJECT_SOURCE} )
 set_target_properties( ${PROJECT_NAME}Module
                        PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
-target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} TubeTKTubeSegmentation )
+target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} )
 
 add_executable( ${PROJECT_NAME}
                 ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )
-target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module TubeTKTubeSegmentation )
+target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
 
 slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
 slicer3_set_plugins_output_path( ${PROJECT_NAME} )
