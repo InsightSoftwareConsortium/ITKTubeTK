@@ -243,8 +243,9 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     this->GetOutput(),
     this->GetOutput()->GetRequestedRegion() );
 
-  unsigned int numberTensorElements = (ImageDimension*(ImageDimension+1))/2;
-  PixelType tmp[numberTensorElements];
+  const unsigned int numberTensorElements = (ImageDimension*(ImageDimension+1))/2;
+
+  std::vector<PixelType> tmp( numberTensorElements );
 
   ottensor.GoToBegin();
   itgradient.GoToBegin();
