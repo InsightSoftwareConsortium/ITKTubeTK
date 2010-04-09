@@ -6,6 +6,7 @@ itkAnisotropicEdgeEnhancementDiffusionImageFilter.h Namespace Disable
 itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx Namespace Disable
 itkStructureTensorRecursiveGaussianImageFilter.h Namespace Disable
 itkStructureTensorRecursiveGaussianImageFilter.txx Namespace Disable
+itkSymmetricEigenVectorAnalysisImageFilter.h Namespace Disable
 SampleCLIApplication.cxx Namespace Disable
 SimulateTomosynthesis.cxx Namespace Disable
 Crop.cxx Namespace Disable
