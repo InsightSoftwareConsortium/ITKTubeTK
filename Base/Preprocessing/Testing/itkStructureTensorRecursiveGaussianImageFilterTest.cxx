@@ -29,6 +29,9 @@ limitations under the License.
 #include <itkImage.h>
 #include <itkStructureTensorRecursiveGaussianImageFilter.h>
 #include <itkImageRegionIteratorWithIndex.h>
+#include <itkSymmetricEigenAnalysisImageFilter.h>
+#include <itkSymmetricEigenVectorAnalysisImageFilter.h>
+#include <itkMatrix.h>
 
 
 int itkStructureTensorRecursiveGaussianImageFilterTest(int, char* [] ) 
@@ -107,13 +110,13 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int, char* [] )
 
   // Declare the type for the 
   typedef itk::StructureTensorRecursiveGaussianImageFilter < 
-                                            myImageType >  myFilterType;
+                                            myImageType >  myStructureTensorFilterType;
             
-  typedef myFilterType::OutputImageType myTensorImageType;
+  typedef myStructureTensorFilterType::OutputImageType myTensorImageType;
 
 
   // Create a  Filter                                
-  myFilterType::Pointer filter = myFilterType::New();
+  myStructureTensorFilterType::Pointer filter = myStructureTensorFilterType::New();
 
 
   // Connect the input images
@@ -149,6 +152,68 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int, char* [] )
     ++itg;
     }
 
+  // Compute the eigenvectors and eigenvalues of the structure tensor matrix 
+  typedef  itk::FixedArray< double, myDimension>    EigenValueArrayType;
+  typedef  itk::Image< EigenValueArrayType, myDimension> EigenValueImageType;
+
+  typedef  itk::Matrix< double, 6, 6>                           EigenVectorMatrixType;
+  typedef  itk::Image< EigenVectorMatrixType, myDimension>      EigenVectorImageType;
+
+  typedef  myStructureTensorFilterType::OutputImageType SymmetricSecondRankTensorImageType;
+
+  typedef itk::
+    SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType> EigenAnalysisFilterType;
+
+  EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
+  eigenAnalysisFilter->SetDimension( myDimension );
+  eigenAnalysisFilter->OrderEigenValuesBy( 
+      EigenAnalysisFilterType::FunctorType::OrderByValue );
+  
+  eigenAnalysisFilter->SetInput( filter->GetOutput() );
+  eigenAnalysisFilter->Update();
+
+  EigenValueImageType::ConstPointer eigenImage = 
+                    eigenAnalysisFilter->GetOutput();
+  
+  // walk through the image and print ouf the eigen values
+  itk::ImageRegionConstIterator<EigenValueImageType> eigenImageIterator;
+  eigenImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
+      eigenImage, eigenImage->GetRequestedRegion());
+
+  it.GoToBegin();
+
+  std::cout << "Print eigen values of the structure tensor....." << std::endl;
+  while (!eigenImageIterator.IsAtEnd())
+    {
+    // Get the eigen value
+    EigenValueArrayType eigenValue;
+    eigenValue = eigenImageIterator.Get();
+
+    std::cout << eigenValue[0] << "\t" << eigenValue[1] << "\t" << eigenValue[2] << std::endl; 
+    ++eigenImageIterator;
+    }
+
+  std::cout << "Write out the eigen vectors to an image " << std::endl;
+    
+  typedef  itk::Matrix< double, 6, 6>                           EigenVectorMatrixType;
+  typedef  itk::Image< EigenVectorMatrixType, myDimension>      EigenVectorImageType;
+
+  typedef itk::
+    SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType, EigenVectorImageType> EigenVectorAnalysisFilterType;
+
+  EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
+  eigenVectorAnalysisFilter->SetDimension( myDimension );
+  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
+      EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+  
+  eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
+  eigenVectorAnalysisFilter->Update();
+
+  EigenVectorImageType::ConstPointer eigenVectorImage = 
+                    eigenVectorAnalysisFilter->GetOutput();
+ 
+  
+ 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 
