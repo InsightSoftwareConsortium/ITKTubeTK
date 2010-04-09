@@ -17,3 +17,4 @@ MatchImageWithPrior.cxx Namespace Disable
 Merge.cxx Namespace Disable
 RandomlyModifyBinaryMask.cxx Namespace Disable
 DeblendImagesUsingPrior.cxx Namespace Disable
+ExtractCurves2D.cxx Namespace Disable
