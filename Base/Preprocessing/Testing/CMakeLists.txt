@@ -106,4 +106,6 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest 
             ${BASE_PREPROCESSING_FILTERS_TESTS}
             itkStructureTensorRecursiveGaussianImageFilterTest
+            ${INPUT_DATA}/PrimitiveObjects.mha
+            ${TEMP}/PrimitiveObjectsEigenVectorImage.mha
                )
