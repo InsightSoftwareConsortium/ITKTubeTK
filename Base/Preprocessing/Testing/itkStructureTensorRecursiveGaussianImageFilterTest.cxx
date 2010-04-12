@@ -32,188 +32,221 @@ limitations under the License.
 #include <itkSymmetricEigenAnalysisImageFilter.h>
 #include <itkSymmetricEigenVectorAnalysisImageFilter.h>
 #include <itkMatrix.h>
+#include <itkVectorImage.h>
+#include <itkVariableLengthVector.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 
-int itkStructureTensorRecursiveGaussianImageFilterTest(int, char* [] ) 
+int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  ) 
 {
-
+  if( argc < 3 )
+    {
+    std::cerr << "Missing arguments." << std::endl;
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << "  inputImage outputImage"<< std::endl;
+    return EXIT_FAILURE;
+    }
+ 
   // Define the dimension of the images
-  const unsigned int myDimension = 3;
+  const unsigned int Dimension = 3;
 
-  // Declare the types of the images
-  typedef itk::Image<float, myDimension>           myImageType;
-
-  // Declare the type of the index to access images
-  typedef itk::Index<myDimension>             myIndexType;
-
-  // Declare the type of the size 
-  typedef itk::Size<myDimension>              mySizeType;
-
-  // Declare the type of the Region
-  typedef itk::ImageRegion<myDimension>        myRegionType;
-
-  // Create the image
-  myImageType::Pointer inputImage  = myImageType::New();
-
+  // Define the pixel type
+  typedef short PixelType;
   
-  // Define their size, and start index
-  mySizeType size;
-  size[0] = 8;
-  size[1] = 8;
-  size[2] = 8;
+  // Declare the types of the images
+  typedef itk::Image<PixelType, Dimension>  InputImageType;
 
-  myIndexType start;
-  start.Fill(0);
-
-  myRegionType region;
-  region.SetIndex( start );
-  region.SetSize( size );
-
-  // Initialize Image A
-  inputImage->SetLargestPossibleRegion( region );
-  inputImage->SetBufferedRegion( region );
-  inputImage->SetRequestedRegion( region );
-  inputImage->Allocate();
-
-  // Declare Iterator type for the input image
-  typedef itk::ImageRegionIteratorWithIndex<myImageType>  myIteratorType;
-
-  // Create one iterator for the Input Image A (this is a light object)
-  myIteratorType it( inputImage, inputImage->GetRequestedRegion() );
-
-  // Initialize the content of Image A
-  while( !it.IsAtEnd() ) 
-    {
-    it.Set( 0.0 );
-    ++it;
-    }
-
-  size[0] = 4;
-  size[1] = 4;
-  size[2] = 4;
-
-  start[0] = 2;
-  start[1] = 2;
-  start[2] = 2;
-
-  // Create one iterator for an internal region
-  region.SetSize( size );
-  region.SetIndex( start );
-  myIteratorType itb( inputImage, region );
-
-  // Initialize the content the internal region
-  while( !itb.IsAtEnd() ) 
-    {
-    itb.Set( 100.0 );
-    ++itb;
-    }
+  // Declare the reader 
+  typedef itk::ImageFileReader< InputImageType > ReaderType;
+  
+  // Create the reader and writer
+  ReaderType::Pointer reader = ReaderType::New();
+  reader->SetFileName( argv[1] );
 
   // Declare the type for the 
   typedef itk::StructureTensorRecursiveGaussianImageFilter < 
-                                            myImageType >  myStructureTensorFilterType;
+                                            InputImageType >  StructureTensorFilterType;
             
-  typedef myStructureTensorFilterType::OutputImageType myTensorImageType;
-
+  typedef StructureTensorFilterType::OutputImageType myTensorImageType;
 
   // Create a  Filter                                
-  myStructureTensorFilterType::Pointer filter = myStructureTensorFilterType::New();
-
+  StructureTensorFilterType::Pointer filter = StructureTensorFilterType::New();
 
   // Connect the input images
-  filter->SetInput( inputImage ); 
+  filter->SetInput( reader->GetOutput() ); 
 
   // Select the value of Sigma
   filter->SetSigma( 2.5 ); 
 
-  
   // Execute the filter
   filter->Update();
 
-  // Get the Smart Pointer to the Filter Output 
-  // It is important to do it AFTER the filter is Updated
-  // Because the object connected to the output may be changed
-  // by another during GenerateData() call
-  myTensorImageType::Pointer outputImage = filter->GetOutput();
-
-  // Declare Iterator type for the output image
-  typedef itk::ImageRegionIteratorWithIndex<
-                                 myTensorImageType>  myOutputIteratorType;
-
-  // Create an iterator for going through the output image
-  myOutputIteratorType itg( outputImage, 
-                            outputImage->GetRequestedRegion() );
-  
-  //  Print the content of the result image
-  std::cout << " Result " << std::endl;
-  itg.GoToBegin();
-  while( !itg.IsAtEnd() ) 
-    {
-    std::cout << itg.Get() << std::endl;
-    ++itg;
-    }
-
   // Compute the eigenvectors and eigenvalues of the structure tensor matrix 
-  typedef  itk::FixedArray< double, myDimension>    EigenValueArrayType;
-  typedef  itk::Image< EigenValueArrayType, myDimension> EigenValueImageType;
+  typedef  itk::FixedArray< double, Dimension>    EigenValueArrayType;
+  typedef  itk::Image< EigenValueArrayType, Dimension> EigenValueImageType;
 
-  typedef  itk::Matrix< double, 6, 6>                           EigenVectorMatrixType;
-  typedef  itk::Image< EigenVectorMatrixType, myDimension>      EigenVectorImageType;
-
-  typedef  myStructureTensorFilterType::OutputImageType SymmetricSecondRankTensorImageType;
+  typedef  StructureTensorFilterType::OutputImageType SymmetricSecondRankTensorImageType;
 
   typedef itk::
     SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType> EigenAnalysisFilterType;
 
   EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
-  eigenAnalysisFilter->SetDimension( myDimension );
+  eigenAnalysisFilter->SetDimension( Dimension );
   eigenAnalysisFilter->OrderEigenValuesBy( 
       EigenAnalysisFilterType::FunctorType::OrderByValue );
   
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
   eigenAnalysisFilter->Update();
 
-  EigenValueImageType::ConstPointer eigenImage = 
-                    eigenAnalysisFilter->GetOutput();
-  
-  // walk through the image and print ouf the eigen values
-  itk::ImageRegionConstIterator<EigenValueImageType> eigenImageIterator;
-  eigenImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
-      eigenImage, eigenImage->GetRequestedRegion());
-
-  it.GoToBegin();
-
-  std::cout << "Print eigen values of the structure tensor....." << std::endl;
-  while (!eigenImageIterator.IsAtEnd())
-    {
-    // Get the eigen value
-    EigenValueArrayType eigenValue;
-    eigenValue = eigenImageIterator.Get();
-
-    std::cout << eigenValue[0] << "\t" << eigenValue[1] << "\t" << eigenValue[2] << std::endl; 
-    ++eigenImageIterator;
-    }
-
-  std::cout << "Write out the eigen vectors to an image " << std::endl;
-    
-  typedef  itk::Matrix< double, 6, 6>                           EigenVectorMatrixType;
-  typedef  itk::Image< EigenVectorMatrixType, myDimension>      EigenVectorImageType;
+  // Generate eigen vector image
+  typedef  itk::Matrix< double, 3, 3>                           EigenVectorMatrixType;
+  typedef  itk::Image< EigenVectorMatrixType, Dimension>      EigenVectorImageType;
 
   typedef itk::
     SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType, EigenVectorImageType> EigenVectorAnalysisFilterType;
 
   EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
-  eigenVectorAnalysisFilter->SetDimension( myDimension );
+  eigenVectorAnalysisFilter->SetDimension( Dimension );
   eigenVectorAnalysisFilter->OrderEigenValuesBy( 
       EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
   
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
   eigenVectorAnalysisFilter->Update();
 
+  //Generate an image with eigen vector pixel that correspond to the largest eigen value 
   EigenVectorImageType::ConstPointer eigenVectorImage = 
                     eigenVectorAnalysisFilter->GetOutput();
  
-  
+  typedef itk::VectorImage< double, 3 >    VectorImageType;  
+  VectorImageType::Pointer primaryEigenVectorImage = VectorImageType::New(); 
+
+  unsigned int vectorLength = 3; // Eigenvector length
+  primaryEigenVectorImage->SetVectorLength ( vectorLength );
+
+  VectorImageType::RegionType region;
+  region.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
+  region.SetIndex(eigenVectorImage->GetLargestPossibleRegion().GetIndex());
+  primaryEigenVectorImage->SetRegions( region );
+  primaryEigenVectorImage->SetOrigin(eigenVectorImage->GetOrigin());
+  primaryEigenVectorImage->SetSpacing(eigenVectorImage->GetSpacing());
+  primaryEigenVectorImage->SetRegions( region );
+  primaryEigenVectorImage->Allocate();
+
+  //Fill up the buffer with null vector
+  itk::VariableLengthVector< double > nullVector( vectorLength );
+  for ( unsigned int i=0; i < vectorLength; i++ )
+    {
+    nullVector[i] = 0.0;
+    }
+  primaryEigenVectorImage->FillBuffer( nullVector );
+
+
+  //Setup the iterators
+  //
+  //Iterator for the eigenvector matrix image
+  itk::ImageRegionConstIterator<EigenVectorImageType> eigenVectorImageIterator;
+  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorImageType>(
+      eigenVectorImage, eigenVectorImage->GetRequestedRegion());
+  eigenVectorImageIterator.GoToBegin();
+
+  //Iterator for the output image with the largest eigenvector 
+  itk::ImageRegionIterator<VectorImageType> primaryEigenVectorImageIterator;
+  primaryEigenVectorImageIterator = itk::ImageRegionIterator<VectorImageType>(
+      primaryEigenVectorImage, primaryEigenVectorImage->GetRequestedRegion());
+  primaryEigenVectorImageIterator.GoToBegin();
+
+  //Iterator for the eigen value image
+  EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
+  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
+      eigenImage, eigenImage->GetRequestedRegion());
+  eigenValueImageIterator.GoToBegin();
+
+  double toleranceEigenValues = 1e-4;
+
+  while (!eigenValueImageIterator.IsAtEnd())
+    {
+    // Get the eigen value
+    EigenValueArrayType eigenValue;
+    eigenValue = eigenValueImageIterator.Get();
+
+    // Find the smallest eigenvalue
+    double smallest = vnl_math_abs( eigenValue[0] );
+    double Lambda1 = eigenValue[0];
+    unsigned int smallestEigenValueIndex=0;
  
+    for ( unsigned int i=1; i <=2; i++ )
+      {
+      if ( vnl_math_abs( eigenValue[i] ) < smallest )
+        {
+        Lambda1 = eigenValue[i];
+        smallest = vnl_math_abs( eigenValue[i] );
+        smallestEigenValueIndex = i;
+        }
+      }
+
+    // Find the largest eigenvalue
+    double largest = vnl_math_abs( eigenValue[0] );
+    double Lambda3 = eigenValue[0];
+    unsigned int largestEigenValueIndex=0;
+ 
+    for ( unsigned int i=1; i <=2; i++ )
+      {
+      if (  vnl_math_abs( eigenValue[i] > largest ) )
+        {
+        Lambda3 = eigenValue[i];
+        largest = vnl_math_abs( eigenValue[i] );
+        largestEigenValueIndex = i;
+        }
+      }
+
+    // find Lambda2 so that |Lambda1| < |Lambda2| < |Lambda3|
+    double Lambda2 = eigenValue[0];
+    unsigned int middleEigenValueIndex=0;
+
+    for ( unsigned int i=0; i <=2; i++ )
+      {
+      if ( eigenValue[i] != Lambda1 && eigenValue[i] != Lambda3 )
+        {
+        Lambda2 = eigenValue[i];
+        middleEigenValueIndex = i;
+        break;
+        }
+      }
+
+
+    EigenValueImageType::IndexType pixelIndex;
+    pixelIndex = eigenValueImageIterator.GetIndex();
+
+    std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" << "\t" << smallest << "\t" << largest << std::endl;
+
+    if( fabs(largest) >  toleranceEigenValues  )
+      {
+      EigenVectorMatrixType   matrixPixel;
+      matrixPixel = eigenVectorImageIterator.Get();
+      //Assuming eigenvectors are columns
+      itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
+      for ( unsigned int i=0; i < vectorLength; i++ )
+      {
+      primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
+      }
+
+      std::cout << "\t" << "[" << primaryEigenVector[0] << "," << primaryEigenVector[1] << "," << primaryEigenVector[2] << "]" << std::endl;
+      primaryEigenVectorImageIterator.Set( primaryEigenVector );
+      }
+
+    ++eigenValueImageIterator;
+    ++eigenVectorImageIterator;
+    ++primaryEigenVectorImageIterator;
+    }
+
+  typedef itk::ImageFileWriter< VectorImageType > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetFileName( argv[2] );
+  writer->SetInput( primaryEigenVectorImage );
+  writer->Update();
+
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 
