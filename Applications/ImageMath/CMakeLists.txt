@@ -59,10 +59,6 @@ set( PROJECT_SOURCE
   ${PROJECT_NAME}.cxx
   )
 
-set( PROJECT_SOURCE2
-  ${PROJECT_NAME}2.cxx
-  )
-
 #generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
 
 # Build the shared library
@@ -77,18 +73,14 @@ set( PROJECT_SOURCE2
 
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
 target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} )
-add_executable( ${PROJECT_NAME}2 ${PROJECT_SOURCE2} )
-target_link_libraries( ${PROJECT_NAME}2 ${ITK_LIBRARIES} )
 
 #slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
 slicer3_set_plugins_output_path( ${PROJECT_NAME} )
-slicer3_set_plugins_output_path( ${PROJECT_NAME}2 )
 #set( TARGETS 
      #${PROJECT_NAME}Module 
      #${PROJECT_NAME} )
 set( TARGETS 
-     ${PROJECT_NAME} 
-     ${PROJECT_NAME}2 )
+     ${PROJECT_NAME} )
 slicer3_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )

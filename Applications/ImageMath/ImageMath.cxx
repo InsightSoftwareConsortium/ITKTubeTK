@@ -111,7 +111,8 @@ int DoIt( MetaCommand & command )
   
   // See if the file can be read - "try" otherwise program will 
   //   mysteriously exit on failure in the Object factory
-  std::cout << "Reading file ( " << command.GetValueAsString( "infile" ).c_str() 
+  std::cout << "Reading file ( " 
+            << command.GetValueAsString( "infile" ).c_str() 
             <<" )"<< std::endl;
   try
     {
@@ -128,7 +129,8 @@ int DoIt( MetaCommand & command )
     {
     if( ( *it ).name == "Write" )
       {
-      std::string outFilename = command.GetValueAsString( *it, "filename" );
+      std::string outFilename = 
+        command.GetValueAsString( *it, "filename" );
       std::cout << "Writing output1 ( " << outFilename.c_str()
                 << " )" << std::endl;
       typedef itk::ImageFileWriter< ImageType > VolumeWriterType;
@@ -150,7 +152,8 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "WriteType" )
       {
       int type = command.GetValueAsInt( "WriteType", "Type" );
-      std::string outFilename = command.GetValueAsString( *it, "filename" );
+      std::string outFilename = 
+        command.GetValueAsString( *it, "filename" );
       std::cout << "Writing output2 ( " << outFilename.c_str() 
                 << " )" << std::endl;
       switch( type )
@@ -158,12 +161,15 @@ int DoIt( MetaCommand & command )
         case 0:
           {
           typedef itk::CastImageFilter< ImageType, ImageTypeUChar> 
-                CastFilterType;
-          typename CastFilterType::Pointer castFilter = CastFilterType::New();
+            CastFilterType;
+          typename CastFilterType::Pointer castFilter = 
+            CastFilterType::New();
           castFilter->SetInput( imIn );
 
-          typedef itk::ImageFileWriter< ImageTypeUChar > VolumeWriterType;
-          typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
+          typedef itk::ImageFileWriter< ImageTypeUChar > 
+            VolumeWriterType;
+          typename VolumeWriterType::Pointer writer = 
+            VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
           writer->SetInput( castFilter->GetOutput() );
           writer->SetUseCompression( true );
@@ -173,12 +179,15 @@ int DoIt( MetaCommand & command )
         case 1:
           {
           typedef itk::CastImageFilter< ImageType, ImageTypeUShort> 
-                CastFilterType;
-          typename CastFilterType::Pointer castFilter = CastFilterType::New();
+            CastFilterType;
+          typename CastFilterType::Pointer castFilter = 
+            CastFilterType::New();
           castFilter->SetInput( imIn );
 
-          typedef itk::ImageFileWriter< ImageTypeUShort > VolumeWriterType;
-          typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
+          typedef itk::ImageFileWriter< ImageTypeUShort > 
+            VolumeWriterType;
+          typename VolumeWriterType::Pointer writer = 
+            VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
           writer->SetInput( castFilter->GetOutput() );
           writer->SetUseCompression( true );
@@ -188,12 +197,15 @@ int DoIt( MetaCommand & command )
         case 2:
           {
           typedef itk::CastImageFilter< ImageType, ImageTypeShort> 
-                CastFilterType;
-          typename CastFilterType::Pointer castFilter = CastFilterType::New();
+            CastFilterType;
+          typename CastFilterType::Pointer castFilter = 
+            CastFilterType::New();
           castFilter->SetInput( imIn );
 
-          typedef itk::ImageFileWriter< ImageTypeShort > VolumeWriterType;
-          typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
+          typedef itk::ImageFileWriter< ImageTypeShort > 
+            VolumeWriterType;
+          typename VolumeWriterType::Pointer writer = 
+            VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
           writer->SetInput( castFilter->GetOutput() );
           writer->SetUseCompression( true );
@@ -203,12 +215,15 @@ int DoIt( MetaCommand & command )
         case 3:
           {
           typedef itk::CastImageFilter< ImageType, ImageTypeShort> 
-                CastFilterType;
-          typename CastFilterType::Pointer castFilter = CastFilterType::New();
+            CastFilterType;
+          typename CastFilterType::Pointer castFilter = 
+            CastFilterType::New();
           castFilter->SetInput( imIn );
 
-          typedef itk::ImageFileWriter< ImageTypeShort > VolumeWriterType;
-          typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
+          typedef itk::ImageFileWriter< ImageTypeShort > 
+            VolumeWriterType;
+          typename VolumeWriterType::Pointer writer = 
+            VolumeWriterType::New();
 
           itk::MetaImageIO::Pointer metaWriter = itk::MetaImageIO::New();
           writer->SetImageIO( metaWriter );
@@ -331,7 +346,8 @@ int DoIt( MetaCommand & command )
         double tf = it2.Get();
         if( tf >= valMin && tf <= valMax )
           {
-          tf += ( 2.0*( rand()/( double )RAND_MAX )-1 )*noiseRange+noiseMean;
+          tf += ( 2.0*( rand()/( double )RAND_MAX )-1 ) * noiseRange
+                + noiseMean;
           it2.Set( ( PixelType )tf );
           }
         ++it2;
@@ -368,7 +384,8 @@ int DoIt( MetaCommand & command )
       float weight1 = command.GetValueAsFloat( *it, "weight1" );
       float weight2 = command.GetValueAsFloat( *it, "weight2" );
       typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it, "Infile" ).c_str() );
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "Infile" ).c_str() );
       typename ImageType::Pointer imIn2;
       imIn2 = reader2->GetOutput();
       try
@@ -377,7 +394,8 @@ int DoIt( MetaCommand & command )
         }
       catch( ... )
         {
-        std::cout << "Problems reading file format of inFile2." << std::endl;
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
         return EXIT_FAILURE;
         }
       itk::ImageRegionIterator< ImageType > it1( imIn, 
@@ -402,7 +420,8 @@ int DoIt( MetaCommand & command )
       std::cout << "Fusing" << std::endl;
       float offset2 = command.GetValueAsFloat( *it, "Offset2" );
       typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it, "Infile2" ).c_str() );
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "Infile2" ).c_str() );
       typename ImageType::Pointer imIn2;
       imIn2 = reader2->GetOutput();
       try
@@ -411,7 +430,8 @@ int DoIt( MetaCommand & command )
         }
       catch( ... )
         {
-        std::cout << "Problems reading file format of inFile2." << std::endl;
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
         return EXIT_FAILURE;
         }
       itk::ImageRegionIterator< ImageType > it1( imIn, 
@@ -472,7 +492,8 @@ int DoIt( MetaCommand & command )
       float threshHigh = command.GetValueAsFloat( *it, "threshHigh" );
 
       typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it, "inFile2" ).c_str() );
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "inFile2" ).c_str() );
 
       float valFalse = command.GetValueAsFloat( *it, "valFalse" );
 
@@ -483,7 +504,8 @@ int DoIt( MetaCommand & command )
         }
       catch( ... )
         {
-        std::cout << "Problems reading file format of inFile2." << std::endl;
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
         return EXIT_FAILURE;
         }
       imIn2 = ResampleImage< PixelType, dimensionT >( imIn2, imIn );
@@ -519,10 +541,13 @@ int DoIt( MetaCommand & command )
 
       float radius = command.GetValueAsFloat( *it, "radius" );
 
-      float foregroundValue = command.GetValueAsFloat( *it, "forgroundValue" );
-      float backgroundValue = command.GetValueAsFloat( *it, "backgroundValue" );
+      float foregroundValue = command.GetValueAsFloat( *it,
+        "forgroundValue" );
+      float backgroundValue = command.GetValueAsFloat( *it,
+        "backgroundValue" );
 
-      typedef itk::BinaryBallStructuringElement<PixelType, dimensionT>  BallType;
+      typedef itk::BinaryBallStructuringElement<PixelType, dimensionT>  
+        BallType;
       BallType ball;
       ball.SetRadius( 1 );
       ball.CreateStructuringElement();
@@ -537,7 +562,8 @@ int DoIt( MetaCommand & command )
           {
           for( int r=0; r<radius; r++ )
             {
-            typename ErodeFilterType::Pointer filter = ErodeFilterType::New();
+            typename ErodeFilterType::Pointer filter = 
+              ErodeFilterType::New();
             filter->SetBackgroundValue( backgroundValue );
             filter->SetKernel( ball );
             filter->SetObjectValue( foregroundValue );
@@ -551,7 +577,8 @@ int DoIt( MetaCommand & command )
           {
           for( int r=0; r<radius; r++ )
             {
-            typename DilateFilterType::Pointer filter = DilateFilterType::New();
+            typename DilateFilterType::Pointer filter = 
+              DilateFilterType::New();
             filter->SetKernel( ball );
             filter->SetObjectValue( foregroundValue );
             filter->SetInput( imIn );
@@ -569,7 +596,8 @@ int DoIt( MetaCommand & command )
       std::cout << "Blurring." << std::endl;
       float sigma = command.GetValueAsFloat( *it, "sigma" );
 
-      typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer filter;
+      typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer 
+        filter;
       typename ImageType::Pointer imTemp;
       for( unsigned int i=0; i<dimensionT; i++ )
         {
@@ -597,7 +625,8 @@ int DoIt( MetaCommand & command )
       int order = command.GetValueAsInt( *it, "order" );
       int direction = command.GetValueAsInt( *it, "direction" );
 
-      typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer filter;
+      typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer 
+        filter;
       filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
       filter->SetInput( imIn );
       // filter->SetNormalizeAcrossScale( true );
@@ -607,15 +636,15 @@ int DoIt( MetaCommand & command )
         {
         case 0:
           filter->SetOrder( 
-                  itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+            itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
           break;
         case 1:
           filter->SetOrder( 
-                  itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
+            itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
           break;
         case 2:
           filter->SetOrder( 
-                  itk::RecursiveGaussianImageFilter<ImageType>::SecondOrder );
+            itk::RecursiveGaussianImageFilter<ImageType>::SecondOrder );
           break;
         }
       typename ImageType::Pointer imTemp = filter->GetOutput();
@@ -628,7 +657,8 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Histogram" << std::endl;
 
-      unsigned int nBins = ( unsigned int )command.GetValueAsInt( *it, "nBins" );
+      unsigned int nBins = ( unsigned int )command.GetValueAsInt( *it,
+        "nBins" );
       const char * filename = 
         command.GetValueAsString( *it, "histOutputFile" ).c_str();
 
@@ -681,8 +711,8 @@ int DoIt( MetaCommand & command )
       writeStream.open( filename, std::ios::binary | std::ios::out );
       for( unsigned int i=0; i<nBins; i++ )
         {
-        writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin << " " 
-                    << bin[i] << std::endl;
+        writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin 
+                    << " " << bin[i] << std::endl;
         }
       writeStream.close();
       }
@@ -692,7 +722,8 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Histogram" << std::endl;
 
-      unsigned int nBins = ( unsigned int )command.GetValueAsInt( *it, "nBins" );
+      unsigned int nBins = ( unsigned int )command.GetValueAsInt( *it,
+        "nBins" );
       double binMin = command.GetValueAsFloat( *it, "binMin" );
       double binSize = command.GetValueAsFloat( *it, "binSIZE" );
       double binMax = binMin + binSize*nBins;
@@ -719,8 +750,8 @@ int DoIt( MetaCommand & command )
       writeStream.open( filename, std::ios::binary | std::ios::out );
       for( unsigned int i=0; i<nBins; i++ )
         {
-        writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin << " " 
-                    << bin[i] << std::endl;
+        writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin 
+                    << " " << bin[i] << std::endl;
         }
       writeStream.close();
       }
@@ -734,7 +765,8 @@ int DoIt( MetaCommand & command )
       double scaleMax = command.GetValueAsFloat( *it, "scaleMax" );
       double scaleStep = command.GetValueAsFloat( *it, "step" );
 
-      typename ImageFunctionType::Pointer imFunc = ImageFunctionType::New();
+      typename ImageFunctionType::Pointer imFunc = 
+        ImageFunctionType::New();
       imFunc->SetInputImage( imIn );
 
       typename ImageType::Pointer imIn2 = ImageType::New();
@@ -903,7 +935,8 @@ int DoIt( MetaCommand & command )
         }
       catch( ... )
         {
-        std::cout << "Problems reading file format of inFile2." << std::endl;
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
         return EXIT_FAILURE;
         }
       typename HistogramMatchFilterType::Pointer matchFilter;
@@ -960,7 +993,8 @@ int DoIt( MetaCommand & command )
         if( dimensionT == 3 )
           {
           size[2] = ( long unsigned int )
-                    ( imIn->GetLargestPossibleRegion().GetSize()[2]/factor );
+                    ( imIn->GetLargestPossibleRegion().GetSize()[2]
+                      / factor );
           spacing[2] = meanSpacing;
           }
         }
@@ -976,7 +1010,8 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Resampling" << std::endl;
       typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it, "inFile2" ).c_str() );
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "inFile2" ).c_str() );
       typename ImageType::Pointer imIn2;
       imIn2 = reader2->GetOutput();
       try
@@ -985,7 +1020,8 @@ int DoIt( MetaCommand & command )
         }
       catch( ... )
         {
-        std::cout << "Problems reading file format of inFile2." << std::endl;
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
         return EXIT_FAILURE;
         }
       imIn = ResampleImage< PixelType, dimensionT >( imIn, imIn2 );
@@ -1045,7 +1081,8 @@ int DoIt( MetaCommand & command )
     // SetRandom
     else if( ( *it ).name == "SetRandom" )
       {
-      unsigned int seed = ( unsigned int )command.GetValueAsInt( *it, "seedValue" );
+      unsigned int seed = ( unsigned int )command.GetValueAsInt( *it,
+        "seedValue" );
       srand( seed );
       gaussGen->Initialize( ( int )seed );
       } // end -S
@@ -1054,13 +1091,13 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Voronoi" )
       {
       unsigned int numberOfCentroids = 
-        ( unsigned int )command.GetValueAsInt( *it, "numberOfCentroids" );
+        ( unsigned int )command.GetValueAsInt( *it, "numCentroids" );
       unsigned int numberOfIterations = 
-        ( unsigned int )command.GetValueAsInt( *it, "numberOfIterations" );
+        ( unsigned int )command.GetValueAsInt( *it, "numIters" );
       unsigned int numberOfSamples = 
-        ( unsigned int )command.GetValueAsInt( *it, "numberOfSamples" );
+        ( unsigned int )command.GetValueAsInt( *it, "numSamples" );
       std::string filename = 
-        command.GetValueAsString( *it, "centroidOutputFile" );
+        command.GetValueAsString( *it, "centroidOutFile" );
       typedef itk::CVTImageFilter<ImageType, ImageType> FilterType;
       typename FilterType::Pointer filter = FilterType::New();
       filter->SetInput( imIn );
@@ -1071,7 +1108,8 @@ int DoIt( MetaCommand & command )
       filter->Update();
 
       std::ofstream writeStream;
-      writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
+      writeStream.open( filename.c_str(),
+        std::ios::binary | std::ios::out );
       writeStream << numberOfCentroids << std::endl;
       for( unsigned int i=0; i<numberOfCentroids; i++ )
         {
@@ -1088,7 +1126,8 @@ int DoIt( MetaCommand & command )
       writeStream.close();
 
       imIn = filter->GetOutput();
-      typename ImageType::SizeType size = imIn->GetLargestPossibleRegion().GetSize();
+      typename ImageType::SizeType size = 
+        imIn->GetLargestPossibleRegion().GetSize();
 
       filename = filename + ".mat";
 
@@ -1169,7 +1208,8 @@ int DoIt( MetaCommand & command )
           }
         }
 
-      writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
+      writeStream.open( filename.c_str(),
+        std::ios::binary | std::ios::out );
       writeStream << numberOfCentroids << std::endl;
       for( unsigned int i=0; i<numberOfCentroids; i++ )
         {
@@ -1232,13 +1272,12 @@ int main( int argc, char *argv[] )
   command.SetDescription( "Perform several filters on an image" );
 
   command.SetOption( "Write", "w", false, 
-    "writes the current image to the designated file" );
+    "writes current image to the designated file" );
   command.AddOptionField( "Write", "filename", MetaCommand::STRING, true,
     "", "output filename", MetaCommand::DATA_OUT );
 
   command.SetOption( "WriteType", "W", false, 
-    "writes the current image to the designated file with a type :"
-    " 0=unsigned char, 1=unsignedShort, 2=short, 3=formated for MIDAS" );
+    "writes using 0=uchar 1=ushort 2=short 3=Old-MIDAS" );
   command.AddOptionField( "WriteType", "Type", MetaCommand::INT, true );
   command.AddOptionField( "WriteType", "filename", MetaCommand::STRING,
     true, "", "output filename", MetaCommand::DATA_OUT );
@@ -1293,8 +1332,7 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
 
   command.SetOption( "Threshold", "t", false, 
-    "if threshLow <= I(x) <= threshHigh then" 
-    " I(x)=valTrue else I(x)=valFalse" );
+    "if tLow<=I(x)<=tHigh then I(x)=vTrue else I(x)=vFalse" );
   command.AddOptionField( "Threshold", "threshLow", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Threshold", "threshHigh", MetaCommand::FLOAT,
@@ -1305,8 +1343,7 @@ int main( int argc, char *argv[] )
     true );
 
   command.SetOption( "Masking", "m", false, 
-    "if threshLow <= inFile2(x) <= threshHigh then"
-    " I(x) = I(x) else I(x)=valFalse" );
+    "if tLow<=inFile2(x)<=tHigh then I(x)=I(x) else I(x)=vFalse" );
   command.AddOptionField( "Masking", "threshLow", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Masking", "threshHigh", MetaCommand::FLOAT,
@@ -1317,9 +1354,7 @@ int main( int argc, char *argv[] )
     true );
 
   command.SetOption( "Morphology", "M", false, 
-    "Mathematical morphology using a sphere.  Foreground voxels"
-    " are morphed ( mode 0=erode, 1=dilate ) ). Erosion fills-in"
-    " using backgroundValue." );
+    "Mathematical morphology using a sphere. Mode: 0=erode, 1=dilate." );
   command.AddOptionField( "Morphology", "mode", MetaCommand::INT, true );
   command.AddOptionField( "Morphology", "radius", MetaCommand::FLOAT,
     true );
@@ -1339,6 +1374,12 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "blurOrder", "direction", MetaCommand::INT,
     true );
 
+  command.SetOption( "vessels", "v", false, 
+    "Compute ridgness/vesselness for specified scales" );
+  command.AddOptionField( "vessels", "scaleMin", MetaCommand::INT, true );
+  command.AddOptionField( "vessels", "scaleMax", MetaCommand::INT, true );
+  command.AddOptionField( "vessels", "step", MetaCommand::INT, true );
+
   command.SetOption( "histogram", "l", false,
     "writes the image's histogram to the designated file" );
   command.AddOptionField( "histogram", "nBins", MetaCommand::INT, true );
@@ -1355,23 +1396,15 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "histogram2", "histOutputFile",
     MetaCommand::STRING, true );
 
-  command.SetOption( "vessels", "v", false, 
-    "Enhance vessels using specified scales" );
-  command.AddOptionField( "vessels", "scaleMin", MetaCommand::INT, true );
-  command.AddOptionField( "vessels", "scaleMax", MetaCommand::INT, true );
-  command.AddOptionField( "vessels", "step", MetaCommand::INT, true );
-
   command.SetOption( "CorrectionSlice", "c", false, 
-    "Correct intensity slice-by-slice NBins"
-    " & nMatchPoints are used by HistogramMatchingFilter" );
+    "Correct intensity slice-by-slice using HistogramMatchingFilter" );
   command.AddOptionField( "CorrectionSlice", "nBins", MetaCommand::INT,
     true );
   command.AddOptionField( "CorrectionSlice", "nMatchPoints",
     MetaCommand::INT, true );
 
   command.SetOption( "Correction", "C", false, 
-    "Correct intensity to match another volume's NBins"
-    " & nMatchPoints are used by HistogramMatchingFilter" );
+    "Match intensity to another volume using HistogramMatchingFilter" );
   command.AddOptionField( "Correction", "nBins", MetaCommand::INT, true );
   command.AddOptionField( "Correction", "nMatchPoints", MetaCommand::INT,
     true );
@@ -1379,19 +1412,15 @@ int main( int argc, char *argv[] )
     "Correction", "referenceVolume", MetaCommand::STRING, true );
 
   command.SetOption( "resize", "r", false, 
-    "resample an image to reduce dim size by a factor"
-    " ( if factor==0, then make isotropic )" );
+    "Resample to reduce by a factor (factor==0 means make isotropic)" );
   command.AddOptionField( "resize", "factor", MetaCommand::FLOAT, true );
   
-  command.SetOption( "resize2", "R", false,
-    "resample an image to match the dimensions of inFile2" );
+  command.SetOption( "resize2", "R", false, "resample to match inFile2" );
   command.AddOptionField( "resize2", "inFile2", MetaCommand::STRING,
     true );
 
   command.SetOption( "segment", "s", false,
-    "mode=0 - segment using threshold connected components from seed"
-    " ( x, y, z ) label connected points having"
-    " intensities bounded by ( inclusive ) the thresholds" );
+    "Segment using (inclusive) threshold connected components" );
   command.AddOptionField( "segment", "mode", MetaCommand::INT, true );
   command.AddOptionField( "segment", "threshLow", MetaCommand::FLOAT,
     true );
@@ -1404,7 +1433,7 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "segment", "z", MetaCommand::FLOAT, true );
 
   command.SetOption( "offset", "O", false,
-    "resample an image to match the dimensions of inFile2" );
+    "Set a new offset for the image" );
   command.AddOptionField( "offset", "offsetX", MetaCommand::FLOAT, true );
   command.AddOptionField( "offset", "offsetY", MetaCommand::FLOAT, true );
   command.AddOptionField( "offset", "offsetZ", MetaCommand::FLOAT, true );
@@ -1416,13 +1445,13 @@ int main( int argc, char *argv[] )
 
   command.SetOption( "Voronoi", "V", false,
     "Run centroid voronoi tessellation on the image" );
-  command.AddOptionField( "Voronoi", "numberOfCentroids",
+  command.AddOptionField( "Voronoi", "numCentroids",
     MetaCommand::FLOAT, true );
-  command.AddOptionField( "Voronoi", "numberOfIterations",
+  command.AddOptionField( "Voronoi", "numIters",
     MetaCommand::FLOAT, true );
-  command.AddOptionField( "Voronoi", "numberOfSamples",
+  command.AddOptionField( "Voronoi", "numSamples",
     MetaCommand::FLOAT, true );
-  command.AddOptionField( "Voronoi", "centroidOutputFile", 
+  command.AddOptionField( "Voronoi", "centroidOutFile", 
     MetaCommand::STRING, true );
 
   command.AddField( "infile", "infile filename", 
