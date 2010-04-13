@@ -23,8 +23,6 @@ limitations under the License.
 #ifndef __itkTubeEnhancingDiffusion2DImageFilter_h
 #define __itkTubeEnhancingDiffusion2DImageFilter_h
 
-#include "tubeBasePreprocessing.h"
-
 #include "itkImageToImageFilter.h"
 #include <vector>
 
@@ -74,7 +72,7 @@ namespace itk
  *
  */
 template <class PixelT = short int, unsigned int DimensionT = 2>
-class tubeBasePreprocessing_EXPORT TubeEnhancingDiffusion2DImageFilter :
+class ITK_EXPORT TubeEnhancingDiffusion2DImageFilter :
     public ImageToImageFilter<Image<PixelT, DimensionT> ,
                               Image<PixelT, DimensionT> >
 {
