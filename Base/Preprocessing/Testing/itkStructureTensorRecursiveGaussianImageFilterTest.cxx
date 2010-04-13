@@ -44,7 +44,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << "  inputImage outputImage"<< std::endl;
+    std::cerr << argv[0] << "  inputImage outputImage [Sigma]"<< std::endl;
     return EXIT_FAILURE;
     }
  
@@ -76,8 +76,12 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
   // Connect the input images
   filter->SetInput( reader->GetOutput() ); 
 
-  // Select the value of Sigma
-  filter->SetSigma( 2.5 ); 
+  // Set the value of sigma if specificed in command line
+  if ( argc > 3 )
+    {
+    double sigma = atof( argv[3] );
+    filter->SetSigma( sigma ); 
+    }
 
   // Execute the filter
   filter->Update();
@@ -94,13 +98,13 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
   EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
   eigenAnalysisFilter->OrderEigenValuesBy( 
-      EigenAnalysisFilterType::FunctorType::OrderByValue );
+      EigenAnalysisFilterType::FunctorType::OrderByMagnitude );
   
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
   eigenAnalysisFilter->Update();
 
   // Generate eigen vector image
-  typedef  itk::Matrix< double, 3, 3>                           EigenVectorMatrixType;
+  typedef  itk::Matrix< double, 3, 3>                         EigenVectorMatrixType;
   typedef  itk::Image< EigenVectorMatrixType, Dimension>      EigenVectorImageType;
 
   typedef itk::
@@ -109,7 +113,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
   EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
   eigenVectorAnalysisFilter->OrderEigenValuesBy( 
-      EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+      EigenVectorAnalysisFilterType::FunctorType::OrderByMagnitude );
   
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
   eigenVectorAnalysisFilter->Update();
@@ -219,13 +223,18 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     EigenValueImageType::IndexType pixelIndex;
     pixelIndex = eigenValueImageIterator.GetIndex();
 
+    EigenVectorMatrixType   matrixPixel;
+    matrixPixel = eigenVectorImageIterator.Get();
+
+    std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" << "\t" << eigenValue[0] << "\t" << eigenValue[1] << "\t"  << eigenValue[2] << std::endl;
     std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" << "\t" << smallest << "\t" << largest << std::endl;
+    std::cout << matrixPixel << std::endl;
 
     if( fabs(largest) >  toleranceEigenValues  )
       {
       EigenVectorMatrixType   matrixPixel;
       matrixPixel = eigenVectorImageIterator.Get();
-      //Assuming eigenvectors are columns
+      //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
       for ( unsigned int i=0; i < vectorLength; i++ )
       {
