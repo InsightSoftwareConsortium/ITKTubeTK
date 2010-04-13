@@ -80,7 +80,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
         case itk::ImageIOBase::SHORT:        
           return DoIt<short, 2>( argc, argv );
         case itk::ImageIOBase::UINT:        
-          return DoIt<unsigned int, 3>( argc, argv );
+          return DoIt<unsigned int, 2>( argc, argv );
         case itk::ImageIOBase::INT:        
           return DoIt<int, 2>( argc, argv );
         case itk::ImageIOBase::ULONG:        
