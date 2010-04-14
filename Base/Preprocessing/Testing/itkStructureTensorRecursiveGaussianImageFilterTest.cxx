@@ -226,14 +226,13 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     EigenVectorMatrixType   matrixPixel;
     matrixPixel = eigenVectorImageIterator.Get();
 
-    std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" << "\t" << eigenValue[0] << "\t" << eigenValue[1] << "\t"  << eigenValue[2] << std::endl;
-    std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" << "\t" << smallest << "\t" << largest << std::endl;
-    std::cout << matrixPixel << std::endl;
+    //std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" 
+    //          << "\t" << eigenValue[0] << "\t" << eigenValue[1] << "\t"  << eigenValue[2] << std::endl;
+    //std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" << "\t" << smallest << "\t" << largest << std::endl;
+    //std::cout << matrixPixel << std::endl;
 
     if( fabs(largest) >  toleranceEigenValues  )
       {
-      EigenVectorMatrixType   matrixPixel;
-      matrixPixel = eigenVectorImageIterator.Get();
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
       for ( unsigned int i=0; i < vectorLength; i++ )
@@ -241,7 +240,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
       primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
       }
 
-      std::cout << "\t" << "[" << primaryEigenVector[0] << "," << primaryEigenVector[1] << "," << primaryEigenVector[2] << "]" << std::endl;
+      //std::cout << "\t" << "[" << primaryEigenVector[0] << "," << primaryEigenVector[1] << "," << primaryEigenVector[2] << "]" << std::endl;
       primaryEigenVectorImageIterator.Set( primaryEigenVector );
       }
 
