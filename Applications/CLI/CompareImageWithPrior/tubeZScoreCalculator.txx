@@ -84,6 +84,7 @@ ZScoreCalculator<pixelT,dimensionT>
 
   m_OutputVolume = ImageType::New();
   m_OutputVolume->CopyInformation( m_InputVolume );
+  m_OutputVolume->SetRegions( m_InputVolume->GetLargestPossibleRegion() );
   m_OutputVolume->Allocate();
   m_OutputVolume->FillBuffer(0);
 
@@ -99,9 +100,8 @@ ZScoreCalculator<pixelT,dimensionT>
     m_ScoreVector = new BigVectorType(samples);
     }
   double count = 0;
-  while( !imageItr.IsAtEnd() )
+  while( !imageItr.IsAtEnd() && !maskItr.IsAtEnd() )
     {
-
     typename ImageType::IndexType curIndex = imageItr.GetIndex();
     VectorType roiCenter(dimensions);
     for( unsigned int i = 0; i < dimensionT; ++i )

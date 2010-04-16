@@ -89,7 +89,6 @@ JointHistogramGenerator<pixelT,dimensionT>
   inputItr.GoToBegin();
   maskItr.GoToBegin();
   while( !inputItr.IsAtEnd() && !maskItr.IsAtEnd() )
-
     {
     typename JointHistogramType::IndexType cur;
     cur[0] = ((inputItr.Get()+normInput) / stepInput);

@@ -164,8 +164,8 @@ int DoIt( int argc, char * argv[] )
 
   // Allocate the output image and fill with 0s
   typename ImageType::Pointer outImage = ImageType::New();
-  //outImage->SetRegions(curImage->GetLargestPossibleRegion());
   outImage->CopyInformation( curImage );
+  outImage->SetRegions( curImage->GetLargestPossibleRegion() );
   outImage->Allocate();
   outImage->FillBuffer(0);
 
@@ -215,6 +215,7 @@ int DoIt( int argc, char * argv[] )
   else // Create a blank selection mask
     {
     mask = SelectionMaskType::New();
+    mask->CopyInformation( curImage );
     mask->SetRegions(curImage->GetLargestPossibleRegion());
     mask->Allocate();
     mask->FillBuffer(false);
@@ -358,7 +359,6 @@ int DoIt( int argc, char * argv[] )
   // If no mean and stdev inputs are specified we'll calculate them
   else
     {
-
     // Calculate the mean and standard deviation histograms
     timeCollector.Start("Get Mean and Stdev");
     proportion = 0.40;
@@ -377,12 +377,12 @@ int DoIt( int argc, char * argv[] )
     zCalc.SetMeanHistogram( meanHist );
     zCalc.SetStdevHistogram( stdevHist );
     zCalc.CalculateMeanAndStdev( progressReporter, progress, 
-                                 proportion/3, samples );
-    zCalc.Update( progressReporter, progress+(proportion/3), 
-                  proportion/3, samples );
+                                 proportion, samples );
+    zCalc.Update( progressReporter, progress, 
+                  proportion, samples );
     zCalc.CalculateRobustMeanAndStdev( progressReporter, 
-                                       progress+(proportion/3), 
-                                       proportion/3, samples, 
+                                       progress, 
+                                       proportion, samples, 
                                        robustPercentage,
                                        robustZScore );
     meanHist = zCalc.GetMeanHistogram();
