@@ -179,7 +179,10 @@ ZScoreCalculator<pixelT,dimensionT>
     double fraction = (percentageToKeep/100) * samples;
     upperZScore = (*m_ScoreVector)[static_cast<unsigned int>(fraction)];
     }
-  upperZScore = scoreThreshold;
+  if( scoreThreshold != 0 )
+    {
+    upperZScore = scoreThreshold;
+    }
 
   double progress = start;
   double increment = proportion/samples;

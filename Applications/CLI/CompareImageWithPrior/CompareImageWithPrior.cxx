@@ -362,6 +362,7 @@ int DoIt( int argc, char * argv[] )
     // Calculate the mean and standard deviation histograms
     timeCollector.Start("Get Mean and Stdev");
     proportion = 0.40;
+    double propFrac = proportion/3.0;
     
     tube::ZScoreCalculator<PixelType,dimensionT> zCalc;
     zCalc.SetInputVolume( curImage );
@@ -377,18 +378,21 @@ int DoIt( int argc, char * argv[] )
     zCalc.SetMeanHistogram( meanHist );
     zCalc.SetStdevHistogram( stdevHist );
     zCalc.CalculateMeanAndStdev( progressReporter, progress, 
-                                 proportion, samples );
+                                 propFrac, samples );
+    progress += propFrac;
     zCalc.Update( progressReporter, progress, 
-                  proportion, samples );
+                  propFrac, samples );
+    progress += propFrac;
     zCalc.CalculateRobustMeanAndStdev( progressReporter, 
                                        progress, 
-                                       proportion, samples, 
+                                       propFrac, samples, 
                                        robustPercentage,
                                        robustZScore );
     meanHist = zCalc.GetMeanHistogram();
     stdevHist = zCalc.GetStdevHistogram();
 
     timeCollector.Stop("Get Mean and Stdev");
+    proportion += propFrac;
     proportion = 0.35;
     }
 
