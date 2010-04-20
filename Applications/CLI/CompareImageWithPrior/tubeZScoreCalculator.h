@@ -73,7 +73,7 @@ public:
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType>  FullItrType;
-  typedef itk::ImageRegionConstIterator<HistogramType>       HistIteratorType;
+  typedef itk::ImageRegionConstIteratorWithIndex<HistogramType>       HistIteratorType;
   typedef itk::ImageRegionConstIterator<SelectionMaskType>   SelectionMaskItrType;
 
   /// Default Constructor
@@ -125,12 +125,20 @@ public:
 
   typename ImageType::Pointer GetOutputVolume();
 
+  /// The two images we need for detecting additions and subtracts separately
+  typename ImageType::Pointer GetAddsVolume();
+  typename ImageType::Pointer GetSubtractionsVolume();
+
 protected:
   
   typename ImageType::Pointer            m_InputVolume;
   typename ImageType::Pointer            m_InputPrior;
   typename SelectionMaskType::Pointer    m_SelectionMask;
+
   typename ImageType::Pointer            m_OutputVolume;
+  typename ImageType::Pointer            m_AddsVolume;
+  typename ImageType::Pointer            m_SubtractsVolume;
+
   unsigned int                           m_NumberOfBins;
   typename ImageType::PixelType          m_InputMin;
   typename ImageType::PixelType          m_InputMax;
