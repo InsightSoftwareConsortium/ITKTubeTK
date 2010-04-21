@@ -14,8 +14,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _itkImageRegionMomentsCalculator_txx
-#define _itkImageRegionMomentsCalculator_txx
+#ifndef __itkImageRegionMomentsCalculator_txx
+#define __itkImageRegionMomentsCalculator_txx
 #include "itkImageRegionMomentsCalculator.h"
 
 #include "vnl/algo/vnl_real_eigensystem.h"
@@ -25,19 +25,22 @@
 namespace itk
 { 
 
-
 class ITK_EXPORT InvalidImageRegionMomentsError : public ExceptionObject
 {
 public:
   /*
-   * Constructor. Needed to ensure the exception object can be copied.
-   */
-  InvalidImageRegionMomentsError(const char *file, unsigned int lineNumber) : ExceptionObject(file, lineNumber) { this->SetDescription("No valid image moments are availble.");}
+  * Constructor. Needed to ensure the exception object can be copied.
+  */
+  InvalidImageRegionMomentsError(const char *file, unsigned int lineNumber) 
+    :ExceptionObject(file, lineNumber) 
+    { this->SetDescription("No valid image moments are availble.");}
 
   /*
-   * Constructor. Needed to ensure the exception object can be copied.
-   */
-  InvalidImageRegionMomentsError(const std::string& file, unsigned int lineNumber) : ExceptionObject(file, lineNumber) { this->SetDescription("No valid image moments are availble.");}  
+  * Constructor. Needed to ensure the exception object can be copied.
+  */
+  InvalidImageRegionMomentsError(const std::string& file, unsigned int lineNumber) 
+    :ExceptionObject(file, lineNumber) 
+    { this->SetDescription("No valid image moments are availble.");}  
   
   itkTypeMacro(InvalidImageRegionMomentsError, ExceptionObject);
 };
@@ -174,7 +177,8 @@ Compute()
   // Throw an error if the total mass is zero
   if ( m_M0 == 0.0 )
     {
-    itkExceptionMacro(<<"Compute(): Total Mass of the image was zero. Aborting here to prevent division by zero later on.");
+    itkExceptionMacro(
+     <<"Compute(): Total Mass of the image was zero. Aborting here to prevent division by zero later on.");
     }
 
   // Normalize using the total mass
@@ -239,7 +243,8 @@ GetTotalMass() const
 {
   if (!m_Valid) 
     {
-    itkExceptionMacro( << "GetTotalMass() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro( 
+        << "GetTotalMass() invoked, but the moments have not been computed. Call Compute() first.");
     }
   return m_M0;
 }
@@ -253,7 +258,8 @@ GetFirstMoments() const
 {
   if (!m_Valid)
     {
-    itkExceptionMacro( << "GetFirstMoments() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro( 
+       << "GetFirstMoments() invoked, but the moments have not been computed. Call Compute() first.");
     }
   return m_M1;
 }
@@ -265,9 +271,10 @@ typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
 GetSecondMoments() const
 {
-  if (!m_Valid)        
+  if (!m_Valid)
     {
-    itkExceptionMacro( << "GetSecondMoments() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro( 
+      << "GetSecondMoments() invoked, but the moments have not been computed. Call Compute() first.");
     }
   return m_M2;
 }
@@ -279,9 +286,10 @@ typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
 GetCenterOfGravity() const
 {
-  if (!m_Valid)        
+  if (!m_Valid)
     {
-    itkExceptionMacro( << "GetCenterOfGravity() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro( 
+      << "GetCenterOfGravity() invoked, but the moments have not been computed. Call Compute() first.");
     }
   return m_Cg;
 }
@@ -293,9 +301,10 @@ typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
 GetCentralMoments() const
 {
-  if (!m_Valid)        
+  if (!m_Valid)
     {
-    itkExceptionMacro( << "GetCentralMoments() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro( 
+    << "GetCentralMoments() invoked, but the moments have not been computed. Call Compute() first.");
     }
   return m_Cm;
 }
@@ -307,14 +316,13 @@ typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
 GetPrincipalMoments() const
 {
-  if (!m_Valid)        
+  if (!m_Valid)
     {
-    itkExceptionMacro( << "GetPrincipalMoments() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro( 
+    << "GetPrincipalMoments() invoked, but the moments have not been computed. Call Compute() first.");
     }
   return m_Pm;
 }
-
-
 
 //--------------------------------------------------------------------
 // Get principal axes, in physical coordinates
@@ -323,14 +331,13 @@ typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
 GetPrincipalAxes() const
 {
-  if (!m_Valid)        
+  if (!m_Valid)
     {
-    itkExceptionMacro( << "GetPrincipalAxes() invoked, but the moments have not been computed. Call Compute() first.");
+    itkExceptionMacro( 
+    << "GetPrincipalAxes() invoked, but the moments have not been computed. Call Compute() first.");
     }
   return m_Pa;
 }
-
-
 
 //--------------------------------------------------------------------
 // Get principal axes to physical axes transform
@@ -389,7 +396,5 @@ GetPhysicalAxesToPrincipalAxesTransform(void) const
 }
 
 } // end namespace itk
-
-
 
 #endif

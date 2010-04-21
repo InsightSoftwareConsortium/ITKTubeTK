@@ -33,7 +33,7 @@ namespace itk
 template <class TInputImage>
 NJetImageFunction<TInputImage>
 ::NJetImageFunction()
-  {
+{
   m_InputImage = 0;
   m_InputImageMask = 0;
   m_UseInputImageMask = false;
@@ -43,7 +43,7 @@ NJetImageFunction<TInputImage>
   m_InputImageSpacing.Fill(1);
   m_InputImageSpacingSquared.Fill(1);
   m_UseProjection = true;
-  }
+}
 
 /**
  * Set the input Image
@@ -52,7 +52,7 @@ template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
 ::SetInputImage( const InputImageType * ptr )
-  {
+{
   m_InputImage = ptr;
 
   if(ptr != 0)
@@ -73,7 +73,7 @@ NJetImageFunction<TInputImage>
 
   m_UseInputImageMask = false;
   m_ValidStats = false;
-  }
+}
 
 /**
  * Set the input Image
@@ -82,7 +82,7 @@ template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
 ::SetInputImageMask( const InputImageType * ptr )
-  {
+{
   m_InputImageMask = ptr;
 
   if(ptr != 0)
@@ -106,7 +106,7 @@ NJetImageFunction<TInputImage>
     }
 
   m_ValidStats = false;
-  }
+}
 
 /**
  * Print
@@ -115,10 +115,10 @@ template<class TInputImage>
 void
 NJetImageFunction<TInputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
-  {
+{
   this->Superclass::PrintSelf(os,indent);
   os << indent << "calculate NJet value at point:" << std::endl;
-  }
+}
 
 
 /**
@@ -128,17 +128,17 @@ template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
 ::ComputeStatistics(void)
-  {
+{
   if(m_InputImage)
     {
     m_ValidStats = true;
-    ImageRegionConstIterator<InputImageType> 
-        imageIt(m_InputImage,
-                m_InputImage->GetLargestPossibleRegion());
+    ImageRegionConstIterator<InputImageType> imageIt
+    (m_InputImage, m_InputImage->GetLargestPossibleRegion());
+
     if(m_UseInputImageMask)
       {
       ImageRegionConstIterator<InputImageType> 
-          maskIt(m_InputImageMask,
+      maskIt(m_InputImageMask,
                  m_InputImageMask->GetLargestPossibleRegion());
 
       imageIt.GoToBegin();
@@ -191,7 +191,7 @@ NJetImageFunction<TInputImage>
         }
       }
     }
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -200,9 +200,9 @@ template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::GetMin(void) const
-  {
+{
   return m_StatsMin;
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -211,9 +211,9 @@ template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::GetMax(void) const
-  {
+{
   return m_StatsMax;
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -222,7 +222,7 @@ template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::Evaluate(const PointType& point, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -237,7 +237,7 @@ NJetImageFunction<TInputImage>
     }
 
   return EvaluateAtContinuousIndex(cIndex, scale);
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -246,7 +246,7 @@ template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::Evaluate(const PointType& point, const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -261,7 +261,7 @@ NJetImageFunction<TInputImage>
     }
 
   return EvaluateAtContinuousIndex(cIndex, v1, scale);
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -271,7 +271,7 @@ double
 NJetImageFunction<TInputImage>
 ::Evaluate(const PointType& point,
            const VectorType & v1, const VectorType & v2, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -286,7 +286,7 @@ NJetImageFunction<TInputImage>
     }
 
   return EvaluateAtContinuousIndex(cIndex, v1, v2, scale);
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -295,7 +295,7 @@ template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtIndex(const IndexType& index, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -309,7 +309,7 @@ NJetImageFunction<TInputImage>
     }
 
   return EvaluateAtContinuousIndex(cIndex, scale);
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -318,7 +318,7 @@ template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtIndex(const IndexType& index, const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -332,7 +332,7 @@ NJetImageFunction<TInputImage>
     }
 
   return EvaluateAtContinuousIndex(cIndex, v1, scale);
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point
@@ -343,7 +343,7 @@ NJetImageFunction<TInputImage>
 ::EvaluateAtIndex(const IndexType& index,
                   const VectorType & v1, const VectorType & v2,
                   double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -357,7 +357,7 @@ NJetImageFunction<TInputImage>
     }
 
   return EvaluateAtContinuousIndex(cIndex, v1, v2, scale);
-  }
+}
 
 /**
  * Evaluate the fonction at the specified point 
@@ -367,7 +367,7 @@ double
 NJetImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex(const ContinuousIndexType & cIndex,
                             double scale) const
-  {
+{
   // EVALUATE
   double physGaussFactor = -0.5/(scale*scale);
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
@@ -421,7 +421,7 @@ NJetImageFunction<TInputImage>
         expValue = exp(physGaussFactor*physDist);
   
         vTotal += fabs(expValue);
-        v +=  pixelValue * expValue;     
+        v += pixelValue * expValue;
         }
       }
     
@@ -449,7 +449,7 @@ NJetImageFunction<TInputImage>
     }
 
   return v/vTotal;
-  }
+}
 
 template <class TInputImage>
 double
@@ -457,7 +457,7 @@ NJetImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex(const ContinuousIndexType & cIndex,
                             const VectorType & v1,
                             double scale) const
-  {
+{
   // EVALUATE
   if(m_UseProjection)
     {
@@ -484,7 +484,7 @@ NJetImageFunction<TInputImage>
   
     return (val0 + 0.5455*val1 + 0.5455*val2) / (1+2*0.5455) / 2; 
     }
-  }
+}
 
 
 template <class TInputImage>
@@ -493,7 +493,7 @@ NJetImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex(const ContinuousIndexType & cIndex,
                             const VectorType & v1, const VectorType & v2,
                             double scale) const
-  {
+{
   // EVALUATE
   if(m_UseProjection)
     {
@@ -530,13 +530,13 @@ NJetImageFunction<TInputImage>
   
     return (2*val0 + 0.5455*(val1+val2+val3+val4))/(2+4*0.5455) / 2; 
     }
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::Derivative(const PointType& point, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -551,14 +551,14 @@ NJetImageFunction<TInputImage>
     }
 
   return DerivativeAtContinuousIndex(cIndex, scale);
-  }
+}
 
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::DerivativeAtIndex(const IndexType& index, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -572,13 +572,13 @@ NJetImageFunction<TInputImage>
     }
 
   return DerivativeAtContinuousIndex(cIndex, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::DerivativeAtIndex(const IndexType& index, const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -592,14 +592,14 @@ NJetImageFunction<TInputImage>
     }
 
   return DerivativeAtContinuousIndex(cIndex, v1, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::DerivativeAtIndex(const IndexType& index, 
                     const VectorType & v1, const VectorType & v2, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -613,14 +613,14 @@ NJetImageFunction<TInputImage>
     }
 
   return DerivativeAtContinuousIndex(cIndex, v1, v2, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
                               double scale) const
-  {
+{
   // DERIVATIVE
   double physGaussFactor = -0.5/(scale*scale);
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
@@ -719,14 +719,14 @@ NJetImageFunction<TInputImage>
     }
 
   return d;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
                               const VectorType & v1, double scale) const
-  {
+{
   // DERIVATIVE
   itk::Vector<double, TInputImage::ImageDimension> d;
   if(m_UseProjection)
@@ -761,7 +761,7 @@ NJetImageFunction<TInputImage>
     }
 
   return d; 
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -769,7 +769,7 @@ NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
                               const VectorType & v1, const VectorType & v2,
                               double scale) const
-  {
+{
   // DERIVATIVE
   itk::Vector<double, TInputImage::ImageDimension> d;
   if(m_UseProjection)
@@ -818,13 +818,13 @@ NJetImageFunction<TInputImage>
     }
   
   return d;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::ValueAndDerivative(const PointType& point, double & val, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -839,14 +839,14 @@ NJetImageFunction<TInputImage>
     }
 
   return ValueAndDerivativeAtContinuousIndex(cIndex, val, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::ValueAndDerivative(const PointType& point, double & val, 
                      const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -861,14 +861,14 @@ NJetImageFunction<TInputImage>
     }
 
   return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::ValueAndDerivative(const PointType& point, double & val, 
                      const VectorType & v1, const VectorType & v2, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -883,14 +883,14 @@ NJetImageFunction<TInputImage>
     }
 
   return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtIndex(const IndexType& index, double & val,
                             double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -904,14 +904,14 @@ NJetImageFunction<TInputImage>
     }
 
   return ValueAndDerivativeAtContinuousIndex(cIndex, val, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtIndex(const IndexType& index, double & val,
                             const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -925,7 +925,7 @@ NJetImageFunction<TInputImage>
     }
 
   return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -933,7 +933,7 @@ NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtIndex(const IndexType& index, double & val,
                             const VectorType & v1, const VectorType & v2, 
                             double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -947,14 +947,14 @@ NJetImageFunction<TInputImage>
     }
 
   return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
                                    double & val, double scale) const
-  {
+{
   // VALUE AND DERIVATIVE
   double physGaussFactor = -0.5/(scale*scale);
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
@@ -1062,7 +1062,7 @@ NJetImageFunction<TInputImage>
     }
 
   return d;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1070,7 +1070,7 @@ NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
                                       double & val, 
                                       const VectorType & v1, double scale) const
-  {
+{
   // VALUE AND DERIVATIVE
   itk::Vector<double, TInputImage::ImageDimension> d;
 
@@ -1115,7 +1115,7 @@ NJetImageFunction<TInputImage>
     }
   
   return d; 
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1125,7 +1125,7 @@ NJetImageFunction<TInputImage>
                                       const VectorType & v1,
                                       const VectorType & v2, 
                                       double scale) const
-  {
+{
   // VALUE AND DERIVATIVE
   itk::Vector<double, TInputImage::ImageDimension> d;
 
@@ -1186,14 +1186,14 @@ NJetImageFunction<TInputImage>
     }
 
   return d;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::RidgenessAndDerivative(const PointType& point,
                          double & val, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1208,7 +1208,7 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1216,7 +1216,7 @@ NJetImageFunction<TInputImage>
 ::RidgenessAndDerivative(const PointType& point, double & val,
                          const VectorType & v1,
                          double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1231,7 +1231,7 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1240,7 +1240,7 @@ NJetImageFunction<TInputImage>
                          const VectorType & v1,
                          const VectorType & v2,
                          double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1255,7 +1255,7 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
-  }
+}
 
 
 template <class TInputImage>
@@ -1263,7 +1263,7 @@ typename NJetImageFunction<TInputImage>::VectorType
 NJetImageFunction<TInputImage>
 ::RidgenessAndDerivativeAtIndex(const IndexType& index, double & val,
                          double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1277,7 +1277,7 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1285,7 +1285,7 @@ NJetImageFunction<TInputImage>
 ::RidgenessAndDerivativeAtIndex(const IndexType& index, double & val,
                          const VectorType & v1,
                          double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1299,7 +1299,7 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1308,7 +1308,7 @@ NJetImageFunction<TInputImage>
                          const VectorType & v1,
                          const VectorType & v2,
                          double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1322,7 +1322,7 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
-  }
+}
 
 
 template <class TInputImage>
@@ -1331,7 +1331,7 @@ NJetImageFunction<TInputImage>
 ::RidgenessAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
                                       double & val, 
                                       double scale) const
-  {
+{
   // RIDGENESS AND DERIVATIVE
   double v;
   MatrixType h;
@@ -1360,7 +1360,7 @@ NJetImageFunction<TInputImage>
     }
 
   return d;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1369,7 +1369,7 @@ NJetImageFunction<TInputImage>
                                       double & val, 
                                       const VectorType & v1,
                                       double scale) const
-  {
+{
   // RIDGENESS AND DERIVATIVE
   itk::Vector<double, TInputImage::ImageDimension> d;
   if(m_UseProjection)
@@ -1403,7 +1403,7 @@ NJetImageFunction<TInputImage>
         }
       }
     }
-   else
+  else
     {
     d = RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
     }
@@ -1417,7 +1417,7 @@ NJetImageFunction<TInputImage>
   d[0] = dV1;
 
   return d;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType
@@ -1427,7 +1427,7 @@ NJetImageFunction<TInputImage>
                                       const VectorType & v1,
                                       const VectorType & v2, 
                                       double scale) const
-  {
+{
   // RIDGENESS AND DERIVATIVE
   itk::Vector<double, TInputImage::ImageDimension> d;
   if(m_UseProjection)
@@ -1470,7 +1470,7 @@ NJetImageFunction<TInputImage>
         }
       }
     }
-   else
+  else
     {
     d = RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
     }
@@ -1487,13 +1487,13 @@ NJetImageFunction<TInputImage>
   d[1] = dV2;
   
   return d;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
 NJetImageFunction<TInputImage>
 ::Hessian(const PointType& point, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1508,13 +1508,13 @@ NJetImageFunction<TInputImage>
     }
 
   return HessianAtContinuousIndex(cIndex, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
 NJetImageFunction<TInputImage>
 ::Hessian(const PointType& point, const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1529,14 +1529,14 @@ NJetImageFunction<TInputImage>
     }
 
   return HessianAtContinuousIndex(cIndex, v1, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
 NJetImageFunction<TInputImage>
 ::Hessian(const PointType& point, 
           const VectorType & v1, const VectorType & v2, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1551,14 +1551,13 @@ NJetImageFunction<TInputImage>
     }
 
   return HessianAtContinuousIndex(cIndex, v1, v2, scale);
-  }
-
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
 NJetImageFunction<TInputImage>
 ::HessianAtIndex(const IndexType& index, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1572,13 +1571,13 @@ NJetImageFunction<TInputImage>
     }
 
   return HessianAtContinuousIndex(cIndex, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
 NJetImageFunction<TInputImage>
 ::HessianAtIndex(const IndexType& index, const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1592,14 +1591,14 @@ NJetImageFunction<TInputImage>
     }
 
   return HessianAtContinuousIndex(cIndex, v1, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
 NJetImageFunction<TInputImage>
 ::HessianAtIndex(const IndexType& index, 
                  const VectorType & v1, const VectorType & v2, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1613,14 +1612,14 @@ NJetImageFunction<TInputImage>
     }
 
   return HessianAtContinuousIndex(cIndex, v1, v2, scale);
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
                            double scale) const
-  {
+{
   // HESSIAN
   double physGaussFactor = -0.5/(scale*scale);
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
@@ -1742,7 +1741,7 @@ NJetImageFunction<TInputImage>
     }
 
   return h;
-  }
+}
 
 
 template <class TInputImage>
@@ -1751,7 +1750,7 @@ NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
                            const VectorType & v1,
                            double scale) const
-  {
+{
   // HESSIAN
   MatrixType m;
   if(m_UseProjection)
@@ -1790,7 +1789,7 @@ NJetImageFunction<TInputImage>
     }
   
   return m; 
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::MatrixType
@@ -1798,7 +1797,7 @@ NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
                            const VectorType & v1, const VectorType & v2, 
                            double scale) const
-  {
+{
   // HESSIAN
   MatrixType m;
   if(m_UseProjection)
@@ -1854,14 +1853,14 @@ NJetImageFunction<TInputImage>
     }
   
   return m; 
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::Jet(const PointType& point, VectorType & d, MatrixType & h,
       double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1876,14 +1875,14 @@ NJetImageFunction<TInputImage>
     }
 
   return JetAtContinuousIndex(cIndex, d, h, scale);
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::JetAtIndex(const IndexType& index, VectorType & d, MatrixType & h,
              double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -1897,7 +1896,7 @@ NJetImageFunction<TInputImage>
     }
 
   return JetAtContinuousIndex(cIndex, d, h, scale);
-  }
+}
 
 template <class TInputImage>
 double
@@ -1906,7 +1905,7 @@ NJetImageFunction<TInputImage>
                                         VectorType & d,
                                         MatrixType & h,
                                         double scale) const
-  {
+{
   // JET
   double physGaussFactor = -0.5/(scale*scale);
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
@@ -2066,13 +2065,13 @@ NJetImageFunction<TInputImage>
   //std::cout << "h = " << h << std::endl;
 
   return v;
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::Ridgeness(const PointType& point, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -2087,13 +2086,13 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAtContinuousIndex(cIndex, scale);
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::Ridgeness(const PointType& point, const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -2108,14 +2107,14 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAtContinuousIndex(cIndex, v1, scale);
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::Ridgeness(const PointType& point, 
             const VectorType & v1, const VectorType & v2, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -2130,13 +2129,13 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAtContinuousIndex(cIndex, v1, v2, scale);
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtIndex(const IndexType& index, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -2150,14 +2149,14 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAtContinuousIndex(cIndex, scale);
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtIndex(const IndexType& index,
                    const VectorType & v1, double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -2171,7 +2170,7 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAtContinuousIndex(cIndex, v1, scale);
-  }
+}
 
 template <class TInputImage>
 double
@@ -2179,7 +2178,7 @@ NJetImageFunction<TInputImage>
 ::RidgenessAtIndex(const IndexType& index,
                    const VectorType & v1, const VectorType & v2,
                    double scale) const
-  {
+{
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
@@ -2193,14 +2192,14 @@ NJetImageFunction<TInputImage>
     }
 
   return RidgenessAtContinuousIndex(cIndex, v1, v2, scale);
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtContinuousIndex(const ContinuousIndexType & cIndex,
                              double scale) const
-  {
+{
   // RIDGENESS
   double v;
   VectorType d;
@@ -2229,14 +2228,14 @@ NJetImageFunction<TInputImage>
     }
 
   return val;
-  }
+}
 
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtContinuousIndex(const ContinuousIndexType & cIndex,
                              const VectorType & v1, double scale) const
-  {
+{
   // RIDGENESS
   double val = 0;
   if(m_UseProjection)
@@ -2276,7 +2275,7 @@ NJetImageFunction<TInputImage>
     }
 
   return val;
-  }
+}
 
 template <class TInputImage>
 double
@@ -2284,7 +2283,7 @@ NJetImageFunction<TInputImage>
 ::RidgenessAtContinuousIndex(const ContinuousIndexType & cIndex,
                              const VectorType & v1, const VectorType & v2,
                              double scale) const
-  {
+{
   // RIDGENESS
   double val = 0;
   if(m_UseProjection)
@@ -2332,13 +2331,13 @@ NJetImageFunction<TInputImage>
     }
 
   return val;
-  }
+}
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::InputImagePointer
 NJetImageFunction<TInputImage>
 ::ScaleSubsample(double factor)
-  {
+{
   if(m_InputImage)
     {
     typedef typename InputImageType::PixelType PixelType;
@@ -2406,7 +2405,7 @@ NJetImageFunction<TInputImage>
     }
 
   return 0;
-  }
+}
 
 } // namespace itk
 

@@ -1,5 +1,4 @@
 /*=========================================================================
-
   Program:   Insight Segmentation & Registration Toolkit
   Module:    $RCSfile: itkImageRegionMomentsCalculator.h,v $
   Language:  C++
@@ -62,9 +61,9 @@ class ITK_EXPORT ImageRegionMomentsCalculator : public Object
 public:
   /** Standard class typedefs. */
   typedef ImageRegionMomentsCalculator<TImage>   Self;
-  typedef Object Superclass;
-  typedef SmartPointer<Self> Pointer;
-  typedef SmartPointer<const Self> ConstPointer;
+  typedef Object                                 Superclass;
+  typedef SmartPointer<Self>                     Pointer;
+  typedef SmartPointer<const Self>               ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -88,8 +87,8 @@ public:
   typedef SpatialObject< itkGetStaticConstMacro(ImageDimension) > SpatialObjectType;
 
   /** Spatial Object member types used within this class. */
-  typedef typename SpatialObjectType::Pointer SpatialObjectPointer;
-  typedef typename SpatialObjectType::ConstPointer SpatialObjectConstPointer;
+  typedef typename SpatialObjectType::Pointer             SpatialObjectPointer;
+  typedef typename SpatialObjectType::ConstPointer        SpatialObjectConstPointer;
 
   /** Standard matrix type within this class. */
   typedef Matrix<ScalarType,
@@ -100,12 +99,12 @@ public:
   typedef TImage ImageType;
 
   /** Standard image type pointer within this class. */
-  typedef typename ImageType::Pointer ImagePointer;
+  typedef typename ImageType::Pointer      ImagePointer;
   typedef typename ImageType::ConstPointer ImageConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double,itkGetStaticConstMacro(ImageDimension)> AffineTransformType;
-  typedef typename AffineTransformType::Pointer      AffineTransformPointer;
+  typedef AffineTransform<double,itkGetStaticConstMacro(ImageDimension)>   AffineTransformType;
+  typedef typename AffineTransformType::Pointer                            AffineTransformPointer;
 
   /** Set the input image. */
   virtual void SetImage( const ImageType * image )
@@ -119,7 +118,8 @@ public:
     }
 
   /** Set the spatial object mask. */
-  virtual void SetSpatialObjectMask( const SpatialObject< itkGetStaticConstMacro( ImageDimension ) > * so )
+  virtual void SetSpatialObjectMask( 
+     const SpatialObject< itkGetStaticConstMacro( ImageDimension ) > * so )
     {
     if ( m_SpatialObjectMask != so )
       {
@@ -227,7 +227,7 @@ private:
   ImageRegionMomentsCalculator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
-  bool m_Valid;                      // Have moments been computed yet?
+  bool       m_Valid;                      // Have moments been computed yet?
   ScalarType m_M0;                   // Zeroth moment
   VectorType m_M1;                   // First moments about origin
   MatrixType m_M2;                   // Second moments about origin
@@ -240,7 +240,7 @@ private:
   PointType  m_RegionOfInterestPoint1;
   PointType  m_RegionOfInterestPoint2;
 
-  ImageConstPointer m_Image;
+  ImageConstPointer         m_Image;
   SpatialObjectConstPointer m_SpatialObjectMask;
 
 };  // class ImageRegionMomentsCalculator

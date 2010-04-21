@@ -14,6 +14,9 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
+#ifndef __itkCVTImageFilter_txx
+#define __itkCVTImageFilter_txx
+
 #include "itkCVTImageFilter.h"
 #include "itkDanielssonDistanceMapImageFilter.h"
 
@@ -491,3 +494,4 @@ CVTImageFilter< TInputImage, TOutputImage >
 }
 
 } // namespace itk
+#endif

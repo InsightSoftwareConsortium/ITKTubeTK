@@ -57,9 +57,9 @@ class ITK_EXPORT VectorImageToListGenerator :
 public:
   /** Standard class typedefs */
   typedef VectorImageToListGenerator        Self;
-  typedef ProcessObject               Superclass;
-  typedef SmartPointer< Self >        Pointer;
-  typedef SmartPointer<const Self>    ConstPointer;
+  typedef ProcessObject                     Superclass;
+  typedef SmartPointer< Self >              Pointer;
+  typedef SmartPointer<const Self>          ConstPointer;
   
   /** Run-time type information (and related methods). */
   itkTypeMacro(VectorImageToListGenerator, ProcessObject);
@@ -164,8 +164,8 @@ private:
   VectorImageToListGenerator(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
-  MaskPixelType m_MaskValue;
-  bool m_UseSingleMaskValue;
+  MaskPixelType       m_MaskValue;
+  bool                m_UseSingleMaskValue;
 
 }; // end of class VectorImageToListGenerator
 

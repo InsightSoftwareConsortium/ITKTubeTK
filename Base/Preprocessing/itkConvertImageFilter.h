@@ -117,6 +117,7 @@ public:
     Functor::IntensityLinearTransform< 
       typename TInputImage::PixelType, 
       typename TOutputImage::PixelType> >  Superclass;
+
   typedef SmartPointer<Self>               Pointer;
   typedef SmartPointer<const Self>         ConstPointer;
 

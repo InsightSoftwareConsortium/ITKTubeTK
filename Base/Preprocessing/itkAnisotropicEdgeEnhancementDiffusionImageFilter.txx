@@ -241,11 +241,14 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   typedef  itk::FixedArray< double, 3>                      EigenValueArrayType;
   typedef  itk::Image< EigenValueArrayType, 3>              EigenValueImageType;
 
-  typedef  typename StructureTensorFilterType::OutputImageType       SymmetricSecondRankTensorImageType;
+  typedef  typename StructureTensorFilterType::OutputImageType  SymmetricSecondRankTensorImageType;
   typedef itk::
-   SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType, EigenVectorImageType> EigenVectorAnalysisFilterType;
+   SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType, 
+                                           EigenValueImageType, EigenVectorImageType> 
+                    EigenVectorAnalysisFilterType;
 
-  typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
+  typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = 
+                                  EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
   eigenVectorAnalysisFilter->OrderEigenValuesBy( 
       EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
@@ -256,7 +259,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
   //Step 1.3: Compute the eigen values 
   typedef itk::
-    SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType> EigenAnalysisFilterType;
+    SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType> 
+                               EigenAnalysisFilterType;
 
   typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
