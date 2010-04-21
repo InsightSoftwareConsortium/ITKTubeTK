@@ -69,39 +69,13 @@ int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv [
   EdgeEnhancementFilterType::Pointer EdgeEnhancementFilter = 
                                       EdgeEnhancementFilterType::New();
   
- //EdgeEnhancementFilter->DebugOn();
+  //EdgeEnhancementFilter->DebugOn();
 
   EdgeEnhancementFilter->SetInput( reader->GetOutput() );
 
-  //Test Set/Get VED parameters
+  //Set/Get VED parameters
  
-  EdgeEnhancementFilter->SetSensitivity( 4.0 );
-  EdgeEnhancementFilter->SetWStrength( 24.0 );
-  EdgeEnhancementFilter->SetEpsilon( 0.01 );
-
-  if ( fabs( EdgeEnhancementFilter->GetSensitivity() - 4.0 ) > 0.01 )
-    {
-    std::cerr << "Error Set/Get Sensitivity" << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  if ( fabs( EdgeEnhancementFilter->GetWStrength() - 24.0 ) > 0.01 )
-    {
-    std::cerr << "Error Set/Get Sensitivity" << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  if ( fabs( EdgeEnhancementFilter->GetEpsilon() - 0.01 ) > 0.01 )
-    {
-    std::cerr << "Error Set/Get Sensitivity" << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  EdgeEnhancementFilter->SetSensitivity( 5.0 );
-  EdgeEnhancementFilter->SetWStrength( 25.0 );
-  EdgeEnhancementFilter->SetEpsilon( 10e-2 );
-
-  std::cout << "Enhancing vessels.........: " << argv[1] << std::endl;
+  std::cout << "Enhancing .........: " << argv[1] << std::endl;
 
   try
     {

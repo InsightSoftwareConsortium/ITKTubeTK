@@ -28,6 +28,9 @@ limitations under the License.
 #include "itkMultiThreader.h"
 #include "itkDiffusionTensor3D.h"
 #include "itkHessianRecursiveGaussianImageFilter.h"
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
+#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 namespace itk {
 /** \class AnisotropicEdgeEnhancementDiffusionImageFilter
@@ -71,7 +74,10 @@ public:
   typedef itk::Image< DiffusionTensor3D< double > , 3 > 
                                                 DiffusionTensorImageType;
 
-
+  // Structure tensor type 
+  typedef StructureTensorRecursiveGaussianImageFilter < InputImageType >
+                                                StructureTensorFilterType;
+  
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
@@ -237,6 +243,8 @@ private:
   double                                                 m_Epsilon;
   double                                                 m_WStrength;
   double                                                 m_Sensitivity;
+
+  typename StructureTensorFilterType::Pointer            m_StructureTensorFilter;
 };
   
 

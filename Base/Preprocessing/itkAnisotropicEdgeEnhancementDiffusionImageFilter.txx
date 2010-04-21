@@ -34,6 +34,7 @@ limitations under the License.
 
 #include "itkImageFileWriter.h"
 #include "itkVector.h"
+#include "itkFixedArray.h"
 
 //#define INTERMEDIATE_OUTPUTS
 
@@ -71,7 +72,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
  AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
  ::InitializeIteration()
 {
-  itkDebugMacro( << "InitializeIteration() called " );
+  //itkDebugMacro( << "InitializeIteration() called " );
+  std::cerr << "InitalizeIteration" << std::endl;
 
   AnisotropicEdgeEnhancementDiffusionFunction<UpdateBufferType> *f = 
      dynamic_cast<AnisotropicEdgeEnhancementDiffusionFunction<UpdateBufferType> *>
@@ -172,6 +174,10 @@ void
 AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 ::AllocateUpdateBuffer()
 {
+  itkDebugMacro( << "AllocateUpdateBuffer() called" ); 
+
+  std::cerr << "AllocateUpdaeBuffer() " << std::endl;
+
   /* The update buffer looks just like the output and holds the change in 
    the pixel  */
   
@@ -191,6 +197,9 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 ::AllocateDiffusionTensorImage()
 {
   itkDebugMacro( << "AllocateDiffusionTensorImage() called" ); 
+  
+  std::cerr << "AllocateDiffusionTensorImage() " << std::endl;
+  
 
   /* The diffusionTensor image has the same size as the output and holds 
      the diffusion tensor matrix for each pixel */
@@ -211,6 +220,136 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 ::UpdateDiffusionTensorImage()
 {
   itkDebugMacro( << "UpdateDiffusionTensorImage() called" ); 
+
+  std::cerr << "UpdateDiffusionTensorImage()" << std::endl;
+
+  /* IN THIS METHOD, the following items will be implemented
+   - Compute the structure tensor ( Multiscale version structure tensor )
+   - Compute its eigen vectors
+   - Compute eigen values corresponding to the diffusion matrix tensor 
+     ( Here is where all the magic happens for EED, CED and hybrid switch )
+  */
+
+  //Step 1: Compute the structure tensor and identify the eigen vectors 
+  //Step 1.1: Compute the structure tensor
+  m_StructureTensorFilter->SetInput( this->GetOutput() );
+  m_StructureTensorFilter->Update();
+
+  // Step 1.2: Identify the eigen vectors of the structure tensor 
+  typedef  Matrix< double, 3, 3>                            EigenVectorMatrixType;
+  typedef  Image< EigenVectorMatrixType, 3>                 EigenVectorImageType;
+  typedef  itk::FixedArray< double, 3>                      EigenValueArrayType;
+  typedef  itk::Image< EigenValueArrayType, 3>              EigenValueImageType;
+
+  typedef  typename StructureTensorFilterType::OutputImageType       SymmetricSecondRankTensorImageType;
+  typedef itk::
+   SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType, EigenVectorImageType> EigenVectorAnalysisFilterType;
+
+  typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
+  eigenVectorAnalysisFilter->SetDimension( 3 );
+  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
+      EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+  
+  eigenVectorAnalysisFilter->SetInput( m_StructureTensorFilter->GetOutput() );
+  eigenVectorAnalysisFilter->Modified();
+  eigenVectorAnalysisFilter->Update();
+
+  //Step 1.3: Compute the eigen values 
+  typedef itk::
+    SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType> EigenAnalysisFilterType;
+
+  typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
+  eigenAnalysisFilter->SetDimension( 3 );
+  eigenAnalysisFilter->OrderEigenValuesBy( 
+      EigenAnalysisFilterType::FunctorType::OrderByValue );
+  
+  eigenAnalysisFilter->SetInput( m_StructureTensorFilter->GetOutput() );
+  eigenAnalysisFilter->Update();
+
+  /* Step 2: Generate the diffusion tensor matrix 
+      D = [v1 v2 v3] [DiagonalMatrixContainingLambdas] [v1 v2 v3]^t
+  */
+
+  //Setup the iterators
+  //
+  //Iterator for the eigenvector matrix image
+  EigenVectorImageType::ConstPointer eigenVectorImage = 
+                    eigenVectorAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenVectorImageType> eigenVectorImageIterator;
+  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorImageType>(
+      eigenVectorImage, eigenVectorImage->GetRequestedRegion());
+  eigenVectorImageIterator.GoToBegin();
+
+  //Iterator for the diffusion tensor image
+  typedef itk::ImageRegionIterator< DiffusionTensorImageType > DiffusionTensorIteratorType;
+  DiffusionTensorIteratorType 
+      it( m_DiffusionTensorImage, m_DiffusionTensorImage->GetLargestPossibleRegion() );
+
+  //Iterator for the eigen value image
+  EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
+  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
+      eigenImage, eigenImage->GetRequestedRegion());
+  eigenValueImageIterator.GoToBegin();
+
+  it.GoToBegin();
+  eigenVectorImageIterator.GoToBegin();
+  eigenValueImageIterator.GoToBegin();
+
+  MatrixType  eigenValueMatrix;
+  while( !it.IsAtEnd() )
+    {
+    // Generate the diagonal matrix with the eigen values
+    eigenValueMatrix.SetIdentity();
+
+    //Set the lambda's appropriately. For now, set them to be equal to the eigen values
+    double Lambda1;
+    double Lambda2;
+    double Lambda3;
+  
+    // Get the eigen value
+    EigenValueArrayType eigenValue;
+    eigenValue = eigenValueImageIterator.Get();
+      
+    Lambda1 = eigenValue[0];
+    Lambda2 = eigenValue[1];
+    Lambda3 = eigenValue[2];
+
+    eigenValueMatrix(0,0) = Lambda1;
+    eigenValueMatrix(1,1) = Lambda2;
+    eigenValueMatrix(2,2) = Lambda3;
+
+    //Get the eigenVector matrix
+    EigenVectorMatrixType eigenVectorMatrix;
+    eigenVectorMatrix = eigenVectorImageIterator.Get();
+
+    EigenVectorMatrixType  eigenVectorMatrixTranspose;
+    eigenVectorMatrixTranspose = eigenVectorMatrix.GetTranspose();
+
+    // Generate the tensor matrix
+    EigenVectorMatrixType  productMatrix;
+    productMatrix = eigenVectorMatrix * eigenValueMatrix * eigenVectorMatrixTranspose;
+
+    //Copy the ITK::Matrix to the tensor...there should be a better way of doing this TODO
+    typename DiffusionTensorImageType::PixelType        tensor;
+
+    tensor(0,0) = productMatrix(0,0);
+    tensor(0,1) = productMatrix(0,1);
+    tensor(0,2) = productMatrix(0,2);
+
+    tensor(1,0) = productMatrix(1,0);
+    tensor(1,1) = productMatrix(1,1);
+    tensor(1,2) = productMatrix(1,2);
+
+    tensor(2,0) = productMatrix(2,0);
+    tensor(2,1) = productMatrix(2,1);
+    tensor(2,2) = productMatrix(2,2);
+    it.Set( tensor );
+
+    ++it;
+    ++eigenValueImageIterator;
+    ++eigenVectorImageIterator;
+    }
 }
 
 template<class TInputImage, class TOutputImage>
@@ -236,7 +375,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   writer->SetInput( m_UpdateBuffer );
   writer->Update(); 
 #endif
-
 }
 
 template<class TInputImage, class TOutputImage>
@@ -280,6 +418,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 ::CalculateChange()
 {
   itkDebugMacro( << "CalculateChange called" );
+
+  std::cerr << "CalculateChange called" << std::endl;
 
   int threadCount;
   TimeStepType dt;
