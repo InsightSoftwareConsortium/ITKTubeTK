@@ -75,9 +75,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::OrientedImage< OutputPixelType, dimensionT >  OutputImageType;
   typedef itk::ImageFileReader< ImageType >                  ReaderType;
   typedef itk::ImageFileWriter< OutputImageType  >           OutputWriterType;
-  typedef itk::OrImageFilter< ImageType, ImageType, OutputImageType >
-                                                             FilterType;
-  typedef itk::MultiplyByConstantImageFilter< OutputImageType, double,
+  typedef itk::OrImageFilter< ImageType >                    FilterType;
+  typedef itk::MultiplyByConstantImageFilter< ImageType, OutputPixelType,
     OutputImageType >                                        MultiplierType;
   
   const OutputPixelType OUTPUT_MAX = 
@@ -98,55 +97,58 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   typename ImageType::Pointer curImage1 = reader->GetOutput();
-  
-
-  reader = ReaderType::New();
-  reader->SetFileName( inputVolume2.c_str() );
-  try
-    {
-    reader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume 2: Exception caught: " 
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-  typename ImageType::Pointer curImage2 = reader->GetOutput();
-
   timeCollector.Stop("Load data");
   double progress = 0.1;
   progressReporter.Report( progress );
+  
+  double progressFraction = 1.0/(double)inputVolume2.size() * 0.6;
 
-  timeCollector.Start("Or Images");
+  for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
+    {
+    timeCollector.Start("Load data");
+    typename ReaderType::Pointer reader2 = ReaderType::New();
+    reader2->SetFileName( inputVolume2[imageNum].c_str() );
+    try
+      {
+      reader2->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading volume: Exception caught: " 
+                          + std::string(err.GetDescription()) );
+      timeCollector.Stop("Load data");
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    typename ImageType::Pointer curImage2 = reader2->GetOutput();
+    timeCollector.Stop("Load data");
 
-  typename FilterType::Pointer filter;
+    timeCollector.Start("Or Images");
 
-  // Progress per iteration
-  double progressFraction = 0.6;
+    typename FilterType::Pointer filter;
+  
+    filter = FilterType::New();
+    filter->SetInput1( curImage1 );
+    filter->SetInput2( curImage2 );
+    tube::CLIFilterWatcher watcher( filter,
+                                    "OrImageFilter",
+                                    CLPProcessInformation,
+                                    progressFraction,
+                                    progress,
+                                    true );
+    progress += 1.0/(double)inputVolume2.size() * 0.6;
+  
+    filter->Update();
+    curImage1 = filter->GetOutput();
+    timeCollector.Stop("Or Images");
+    }
 
-
-  filter = FilterType::New();
-  filter->SetInput1( curImage1 );
-  filter->SetInput2( curImage2 );
-  tube::CLIFilterWatcher watcher( filter,
-                                  "OrImageFilter",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
   progress = 0.7;
   progressFraction = 0.2;  
   
-  filter->Update();
-  typename OutputImageType::Pointer curImage = filter->GetOutput();
-  timeCollector.Stop("Or Images");
-
-
   timeCollector.Start("Multiply By a Constant");
   typename MultiplierType::Pointer multiplier = MultiplierType::New();
-  multiplier->SetInput( curImage );
+  multiplier->SetInput( curImage1 );
   multiplier->SetConstant( OUTPUT_MAX );
   tube::CLIFilterWatcher watcher2( multiplier,
                                    "Multiplier",
@@ -155,7 +157,8 @@ int DoIt( int argc, char * argv[] )
                                    progress,
                                    true );
   multiplier->Update();
-  curImage = multiplier->GetOutput();
+  
+  typename OutputImageType::Pointer curImage = multiplier->GetOutput();
   timeCollector.Stop("Multiply By a Constant");
 
   timeCollector.Start("Save data");
