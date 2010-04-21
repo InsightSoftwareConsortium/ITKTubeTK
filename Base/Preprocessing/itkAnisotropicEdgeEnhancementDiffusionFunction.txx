@@ -89,9 +89,10 @@ AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
   unsigned int i, j;  
   const ScalarValueType center_value  = it.GetCenterPixel();
 
+  FloatOffsetType offsetCum = offset;
+
   // Global data structure
   GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
-
 
   // m_dx -> Intensity first derivative 
   // m_dxy -> Intensity second derivative

@@ -238,11 +238,10 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   // Step 1.2: Identify the eigen vectors of the structure tensor 
   typedef  Matrix< double, 3, 3>                            EigenVectorMatrixType;
   typedef  Image< EigenVectorMatrixType, 3>                 EigenVectorImageType;
-  typedef  itk::FixedArray< double, 3>                      EigenValueArrayType;
-  typedef  itk::Image< EigenValueArrayType, 3>              EigenValueImageType;
+  typedef  typename itk::Image< EigenValueArrayType, 3>     EigenValueImageType;
 
   typedef  typename StructureTensorFilterType::OutputImageType  SymmetricSecondRankTensorImageType;
-  typedef itk::
+  typedef  typename itk::
    SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType, 
                                            EigenValueImageType, EigenVectorImageType> 
                     EigenVectorAnalysisFilterType;
@@ -290,7 +289,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
       it( m_DiffusionTensorImage, m_DiffusionTensorImage->GetLargestPossibleRegion() );
 
   //Iterator for the eigen value image
-  EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
+  typename EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
   eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
       eigenImage, eigenImage->GetRequestedRegion());
