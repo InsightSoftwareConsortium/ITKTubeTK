@@ -34,6 +34,7 @@ limitations under the License.
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkOrImageFilter.h"
+#include "itkMultiplyByConstantImageFilter.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -67,15 +68,21 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
+  
   typedef bool                                               PixelType;
   typedef unsigned char                                      OutputPixelType;
   typedef itk::OrientedImage< PixelType,  dimensionT >       ImageType;
   typedef itk::OrientedImage< OutputPixelType, dimensionT >  OutputImageType;
   typedef itk::ImageFileReader< ImageType >                  ReaderType;
   typedef itk::ImageFileWriter< OutputImageType  >           OutputWriterType;
-  typedef itk::OrImageFilter< ImageType, ImageType, OutputImageType >                    
+  typedef itk::OrImageFilter< ImageType, ImageType, OutputImageType >
                                                              FilterType;
+  typedef itk::MultiplyByConstantImageFilter< OutputImageType, double,
+    OutputImageType >                                        MultiplierType;
   
+  const OutputPixelType OUTPUT_MAX = 
+    itk::NumericTraits< OutputPixelType >::max();
+
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume1.c_str() );
@@ -114,11 +121,10 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Or Images");
 
-
   typename FilterType::Pointer filter;
 
   // Progress per iteration
-  double progressFraction = 0.8/dimensionT;
+  double progressFraction = 0.6;
 
 
   filter = FilterType::New();
@@ -130,11 +136,27 @@ int DoIt( int argc, char * argv[] )
                                   progressFraction,
                                   progress,
                                   true );
+  progress = 0.7;
+  progressFraction = 0.2;  
   
   filter->Update();
   typename OutputImageType::Pointer curImage = filter->GetOutput();
-  
   timeCollector.Stop("Or Images");
+
+
+  timeCollector.Start("Multiply By a Constant");
+  typename MultiplierType::Pointer multiplier = MultiplierType::New();
+  multiplier->SetInput( curImage );
+  multiplier->SetConstant( OUTPUT_MAX );
+  tube::CLIFilterWatcher watcher2( multiplier,
+                                   "Multiplier",
+                                   CLPProcessInformation,
+                                   progressFraction,
+                                   progress,
+                                   true );
+  multiplier->Update();
+  curImage = multiplier->GetOutput();
+  timeCollector.Stop("Multiply By a Constant");
 
   timeCollector.Start("Save data");
   typename OutputWriterType::Pointer writer = OutputWriterType::New();
