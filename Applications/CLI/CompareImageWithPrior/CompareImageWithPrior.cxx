@@ -97,7 +97,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< SelectionMaskType >          SelectionMaskReaderType;
 
   // typedefs for iterators
-  typedef itk::ImageRegionConstIteratorWithIndex<ImageType > FullItrType;
+  typedef itk::ImageRegionConstIteratorWithIndex< ImageType> FullItrType;
   typedef itk::ImageRegionConstIterator<HistogramType>       HistIteratorType;
   typedef itk::ImageRegionIterator<SelectionMaskType>        SelectionMaskIteratorType;
 
@@ -106,7 +106,7 @@ int DoIt( int argc, char * argv[] )
                                                              BlurType;
 
   // Setup the readers to load the input data (image + prior)
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   typename ReaderType::Pointer priorReader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
@@ -137,7 +137,7 @@ int DoIt( int argc, char * argv[] )
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
@@ -148,7 +148,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::RegionType fullRegion;
   typename ImageType::SizeType size;
   typename ImageType::IndexType start;
-  VectorType roiSize(dimensionT);
+  VectorType roiSize( dimensionT );
 
   // Setup the target regions
   size = curImage->GetLargestPossibleRegion().GetSize();
@@ -156,28 +156,28 @@ int DoIt( int argc, char * argv[] )
   for( unsigned int i = 0; i < dimensionT; ++i )
     {
     size[i] -= regionRadius;
-    start[i] += regionRadius/2;
+    start[i] += regionRadius / 2;
     roiSize[i] = regionRadius;
     }
-  region.SetSize(size);
-  region.SetIndex(start);
+  region.SetSize( size );
+  region.SetIndex( start );
 
   // Allocate the output image and fill with 0s
   typename ImageType::Pointer outImage = ImageType::New();
   outImage->CopyInformation( curImage );
   outImage->SetRegions( curImage->GetLargestPossibleRegion() );
   outImage->Allocate();
-  outImage->FillBuffer(0);
+  outImage->FillBuffer( 0 );
 
   // Allocate the selection mask
   typename SelectionMaskType::Pointer mask; 
 
   // Setup the full image iterator and the selection Mask iterator
-  FullItrType imageItr( curImage, region);
+  FullItrType imageItr( curImage, region );
   SelectionMaskIteratorType maskItr;
   typename HistogramType::PixelType samples = 0;
   
-  if( selectionMask != std::string("nil") )
+  if( selectionMask != std::string( "nil" ) )
     {
 
     typename SelectionMaskReaderType::Pointer maskReader = 
@@ -216,9 +216,9 @@ int DoIt( int argc, char * argv[] )
     {
     mask = SelectionMaskType::New();
     mask->CopyInformation( curImage );
-    mask->SetRegions(curImage->GetLargestPossibleRegion());
+    mask->SetRegions( curImage->GetLargestPossibleRegion() );
     mask->Allocate();
-    mask->FillBuffer(false);
+    mask->FillBuffer( false );
 
     // The first iteration through the image is to get the number of samples 
     // that we will use in the other iterations. This allows for the 
@@ -260,10 +260,10 @@ int DoIt( int argc, char * argv[] )
       if( doCalculation )
         {
         curIndex = imageItr.GetIndex();
-        roiCenter = std::vector<int>(dimensionT);
+        roiCenter = std::vector<int>( dimensionT );
         for( unsigned int i = 0; i < dimensionT; ++i )
           {
-          if( useSkip && (curIndex[i]-start[i]) % skipSize != 0 )
+          if( useSkip && ( curIndex[i] - start[i] ) % skipSize != 0 )
             {
             doCalculation = false;
             break;
@@ -275,7 +275,7 @@ int DoIt( int argc, char * argv[] )
       if( doCalculation )
         {
         ++samples;
-        maskItr.Set(true);
+        maskItr.Set( true );
         }
       ++imageItr;
       ++maskItr;
@@ -290,12 +290,12 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::PixelType maskMax;
   typename CalculatorType::Pointer calculator;
   calculator = CalculatorType::New();
-  calculator->SetImage(curImage);
+  calculator->SetImage( curImage );
   calculator->Compute();
   imageMin = calculator->GetMinimum();
   imageMax = calculator->GetMaximum();
   calculator = CalculatorType::New();
-  calculator->SetImage(curPrior);
+  calculator->SetImage( curPrior );
   calculator->Compute();
   maskMin = calculator->GetMinimum();
   maskMax = calculator->GetMaximum();
@@ -311,14 +311,14 @@ int DoIt( int argc, char * argv[] )
 
   // If we've specified mean and stdev inputs, load them and don't do the
   // computation.
-  if( mean != std::string("nil") && stdev != std::string("nil") )
+  if( mean != std::string( "nil" ) && stdev != std::string( "nil" ) )
     {
-    timeCollector.Start("Load Mean and Stdev");
+    timeCollector.Start( "Load Mean and Stdev" );
 
     // Setup reader for mean histogram
     typename HistReaderType::Pointer histReader;
     histReader = HistReaderType::New();
-    histReader->SetFileName(mean);
+    histReader->SetFileName( mean );
 
     // Read mean histogram with exception handling
     try
@@ -336,7 +336,7 @@ int DoIt( int argc, char * argv[] )
 
     // Setup reader for standard deviation histogram
     histReader = HistReaderType::New();
-    histReader->SetFileName(stdev);
+    histReader->SetFileName( stdev );
 
     // Read standard deviation histogram with exception handling
     try
@@ -354,13 +354,13 @@ int DoIt( int argc, char * argv[] )
 
     proportion = 0.75;
 
-    timeCollector.Stop("Load Mean and Stdev");
+    timeCollector.Stop( "Load Mean and Stdev" );
     }
   // If no mean and stdev inputs are specified we'll calculate them
   else
     {
     // Calculate the mean and standard deviation histograms
-    timeCollector.Start("Get Mean and Stdev");
+    timeCollector.Start( "Get Mean and Stdev" );
     proportion = 0.40;
     double propFrac = proportion/3.0;
     
@@ -391,18 +391,18 @@ int DoIt( int argc, char * argv[] )
     meanHist = zCalc.GetMeanHistogram();
     stdevHist = zCalc.GetStdevHistogram();
 
-    timeCollector.Stop("Get Mean and Stdev");
+    timeCollector.Stop( "Get Mean and Stdev" );
     proportion += propFrac;
     proportion = 0.35;
     }
 
   // Write the mean and standard deviation histograms to disk
-  timeCollector.Start("Write Mean and Stdev");
+  timeCollector.Start( "Write Mean and Stdev" );
 
   // Setup the mean histogram writer
   typename HistWriterType::Pointer histWriter = HistWriterType::New();
   histWriter->SetFileName( meanOutput.c_str() );
-  histWriter->SetInput(meanHist);
+  histWriter->SetInput( meanHist );
 
   // Write the mean histogram to disk, with exception handling
   try
@@ -419,7 +419,7 @@ int DoIt( int argc, char * argv[] )
   // Setup the standard deviation histogram writer
   typename HistWriterType::Pointer stdWriter = HistWriterType::New();
   stdWriter->SetFileName( stdevOutput.c_str() );
-  stdWriter->SetInput(stdevHist);
+  stdWriter->SetInput( stdevHist );
 
   // Write the stdev histogram to disk, with exception handling
   try
@@ -432,7 +432,7 @@ int DoIt( int argc, char * argv[] )
               << std::endl;
     std::cerr << err << std::endl;
     }
-  timeCollector.Stop("Write Mean and Stdev");
+  timeCollector.Stop( "Write Mean and Stdev" );
 
   // Blur the histograms
   typename BlurType::Pointer blur = BlurType::New();
@@ -452,7 +452,7 @@ int DoIt( int argc, char * argv[] )
 
   // Iterate through the image for a third and final time to calculate the Z
   // scores in the manner specified.
-  timeCollector.Start("Calculate Z Scores");
+  timeCollector.Start( "Calculate Z Scores" );
 
   tube::ZScoreCalculator<PixelType,dimensionT> zCalc;
   zCalc.SetInputVolume( curImage );
@@ -470,10 +470,10 @@ int DoIt( int argc, char * argv[] )
   zCalc.Update( progressReporter, progress, proportion, samples );
   outImage = zCalc.GetOutputVolume();
 
-  timeCollector.Stop("Calculate Z Scores");
+  timeCollector.Stop( "Calculate Z Scores" );
 
   // Prepare to write the output image of scores to disk
-  timeCollector.Start("Save data");
+  timeCollector.Start( "Save data" );
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( outImage );
@@ -488,7 +488,7 @@ int DoIt( int argc, char * argv[] )
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+  timeCollector.Stop( "Save data" );
   progress = 1.0;
   progressReporter.Report( progress );
 
