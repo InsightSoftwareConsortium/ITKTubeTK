@@ -60,10 +60,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
       = AnisotropicEdgeEnhancementDiffusionFunction<UpdateBufferType>::New();
   this->SetDifferenceFunction(q);
 
-  // Vesselness guided vesselness function algorithm parameter
-  m_WStrength  = 25.0;
-  m_Sensitivity  = 5.0;
-  m_Epsilon = 10e-2;
+  // Instantiate the structure tensor filter
+  m_StructureTensorFilter  = StructureTensorFilterType::New();
 }
 
 /** Prepare for the iteration process. */
@@ -690,9 +688,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   Superclass::PrintSelf(os, indent);
 
   os << indent << "TimeStep: " << m_TimeStep  << std::endl;
-  os << indent << "Epsilon : " << m_Epsilon << std::endl;
-  os << indent << "WStrength: " << m_WStrength  << std::endl;
-  os << indent << "Sensitivity: " << m_Sensitivity  << std::endl;
 }
 
 }// end namespace itk

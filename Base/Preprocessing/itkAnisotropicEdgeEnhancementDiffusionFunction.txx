@@ -84,8 +84,6 @@ AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
                 const FloatOffsetType& offset)
 {
 
-  std::cerr << "ComputeUpdate called " << std::endl;
-
   unsigned int i, j;  
   const ScalarValueType center_value  = it.GetCenterPixel();
 

@@ -121,14 +121,8 @@ public:
 
   /** Set/Get Macro for VED parameters */
   itkSetMacro( TimeStep, double ); 
-  itkSetMacro( Epsilon, double ); 
-  itkSetMacro( WStrength, double ); 
-  itkSetMacro( Sensitivity, double ); 
 
   itkGetMacro( TimeStep, double ); 
-  itkGetMacro( Epsilon, double ); 
-  itkGetMacro( WStrength, double ); 
-  itkGetMacro( Sensitivity, double ); 
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
@@ -239,10 +233,6 @@ private:
   TimeStepType                                          m_TimeStep;
   typename DiffusionTensorImageType::Pointer            m_DiffusionTensorImage;
   typename HessianFilterType::Pointer                   m_HessianFilter;  
-
-  double                                                 m_Epsilon;
-  double                                                 m_WStrength;
-  double                                                 m_Sensitivity;
 
   typename StructureTensorFilterType::Pointer            m_StructureTensorFilter;
 };
