@@ -19,3 +19,17 @@ Merge.cxx Namespace Disable
 RandomlyModifyBinaryMask.cxx Namespace Disable
 DeblendImagesUsingPrior.cxx Namespace Disable
 ExtractCurves2D.cxx Namespace Disable
+itkCVTImageFilter.h Namespace Disable
+itkCVTImageFilter.txx Namespace Disable
+itkConvertImageFilter.h Namespace Disable
+itkConvertImageFilter.txx Namespace Disable
+itkVotingResampleImageFunction.h Namespace Disable
+itkVotingResampleImageFunction.txx Namespace Disable
+itkVectorImageToListGenerator.h Namespace Disable
+itkVectorImageToListGenerator.txx Namespace Disable
+itkNJetImageFunction.h Namespace Disable
+itkNJetImageFunction.txx Namespace Disable
+itkImageRegionMomentsCalculator.h Namespace Disable
+itkImageRegionMomentsCalculator.txx Namespace Disable
+OtsuThreshold.cxx Namespace Disable
+OrImages.cxx Namespace Disable
