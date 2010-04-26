@@ -178,7 +178,8 @@ Compute()
   if ( m_M0 == 0.0 )
     {
     itkExceptionMacro(
-     <<"Compute(): Total Mass of the image was zero. Aborting here to prevent division by zero later on.");
+     << "Compute(): Total Mass of the image was zero. Aborting here to "
+     << "prevent division by zero later on. ");
     }
 
   // Normalize using the total mass
@@ -259,7 +260,8 @@ GetFirstMoments() const
   if (!m_Valid)
     {
     itkExceptionMacro( 
-       << "GetFirstMoments() invoked, but the moments have not been computed. Call Compute() first.");
+       << "GetFirstMoments() invoked, but the moments have not been computed. "
+       << "Call Compute() first.");
     }
   return m_M1;
 }
@@ -274,7 +276,8 @@ GetSecondMoments() const
   if (!m_Valid)
     {
     itkExceptionMacro( 
-      << "GetSecondMoments() invoked, but the moments have not been computed. Call Compute() first.");
+      << "GetSecondMoments() invoked, but the moments have not been computed. "
+      << "Call Compute() first.");
     }
   return m_M2;
 }
@@ -289,7 +292,8 @@ GetCenterOfGravity() const
   if (!m_Valid)
     {
     itkExceptionMacro( 
-      << "GetCenterOfGravity() invoked, but the moments have not been computed. Call Compute() first.");
+      << "GetCenterOfGravity() invoked, but the moments have not been "
+      << "computed. Call Compute() first.");
     }
   return m_Cg;
 }
@@ -304,7 +308,8 @@ GetCentralMoments() const
   if (!m_Valid)
     {
     itkExceptionMacro( 
-    << "GetCentralMoments() invoked, but the moments have not been computed. Call Compute() first.");
+      << "GetCentralMoments() invoked, but the moments have not been "
+      << "computed. Call Compute() first." );
     }
   return m_Cm;
 }
@@ -319,7 +324,8 @@ GetPrincipalMoments() const
   if (!m_Valid)
     {
     itkExceptionMacro( 
-    << "GetPrincipalMoments() invoked, but the moments have not been computed. Call Compute() first.");
+      << "GetPrincipalMoments() invoked, but the moments have not been "
+      << "computed. Call Compute() first." );
     }
   return m_Pm;
 }
