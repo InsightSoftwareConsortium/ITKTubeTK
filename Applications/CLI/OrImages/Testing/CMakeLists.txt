@@ -42,7 +42,8 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
-               ${INPUT_DATA}/slice256.png
+               ${INPUT_DATA}/GDS0015_Large.mha
+	       -o ${INPUT_DATA}/GDS0015_Large_Modified.png
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
