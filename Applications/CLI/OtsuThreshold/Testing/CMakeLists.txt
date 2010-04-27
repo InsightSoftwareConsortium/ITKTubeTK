@@ -42,7 +42,7 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
-               ${INPUT_DATA}/slice256.png
+               ${INPUT_DATA}/ES0015_1.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
