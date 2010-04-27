@@ -73,7 +73,7 @@ public:
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType>  FullItrType;
-  typedef itk::ImageRegionConstIteratorWithIndex<HistogramType>       
+  typedef itk::ImageRegionConstIteratorWithIndex<HistogramType>
                                                              HistIteratorType;
   typedef itk::ImageRegionConstIterator<SelectionMaskType>   SelectionMaskItrType;
 
