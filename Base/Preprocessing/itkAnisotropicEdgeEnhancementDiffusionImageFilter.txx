@@ -555,8 +555,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   FaceListType faceList = faceCalculator(output, regionToProcess, radius);
   typename FaceListType::iterator fIt = faceList.begin();
 
-   // Process the non-boundary region.
-  NeighborhoodIteratorType nD(radius, output, *fIt);
 
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<DiffusionTensorImageType>
     DiffusionTensorFaceCalculatorType;
@@ -571,7 +569,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
   typename DiffusionTensorFaceListType::iterator dfIt = diffusionTensorFaceList.begin();
   
-  DiffusionTensorNeighborhoodType  dTN(radius,m_DiffusionTensorImage, *dfIt); 
 
   // Ask the function object for a pointer to a data structure it
   // will use to manage any global values it needs.  We'll pass this
@@ -580,23 +577,27 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   // time step for this iteration.
   globalData = df->GetGlobalDataPointer();
 
-
+  // Process the non-boundary region.
+  NeighborhoodIteratorType nD(radius, output, *fIt);
   UpdateIteratorType       nU(m_UpdateBuffer,  *fIt);
+  DiffusionTensorNeighborhoodType  dTN(radius,m_DiffusionTensorImage, *dfIt); 
+
   nD.GoToBegin();
+  nU.GoToBegin();
+  dTN.GoToBegin();
   while( !nD.IsAtEnd() )
     {
     nU.Value() = df->ComputeUpdate(nD, dTN, globalData);
     ++nD;
     ++nU;
+    ++dTN;
     }
 
   // Process each of the boundary faces.
-
   NeighborhoodIteratorType bD;
-  
   DiffusionTensorNeighborhoodType bDD;
-
   UpdateIteratorType   bU;
+  ++dfIt;
   for (++fIt; fIt != faceList.end(); ++fIt)
     {
     bD = NeighborhoodIteratorType(radius, output, *fIt);
@@ -605,11 +606,13 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
      
     bD.GoToBegin();
     bU.GoToBegin();
+    bDD.GoToBegin();
     while ( !bD.IsAtEnd() )
       {
       bU.Value() = df->ComputeUpdate(bD,bDD,globalData);
       ++bD;
       ++bU;
+      ++bDD;
       }
     ++dfIt;
     }

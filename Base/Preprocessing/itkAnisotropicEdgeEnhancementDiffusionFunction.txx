@@ -83,8 +83,6 @@ AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
                 void *globalData,
                 const FloatOffsetType& offset)
 {
-
-  unsigned int i, j;  
   const ScalarValueType center_value  = it.GetCenterPixel();
 
   FloatOffsetType offsetCum = offset;
@@ -98,7 +96,7 @@ AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
 
   // Compute the first and 2nd derivative 
   gd->m_GradMagSqr = 1.0e-6;
-  for( i = 0; i < ImageDimension; i++)
+  for( unsigned int i = 0; i < ImageDimension; i++)
     {
     const unsigned int positionA = 
       static_cast<unsigned int>( m_Center + m_xStride[i]);
@@ -111,7 +109,7 @@ AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
     gd->m_dxy[i][i] = it.GetPixel( positionA )
       + it.GetPixel( positionB ) - 2.0 * center_value;
     
-    for( j = i+1; j < ImageDimension; j++ )
+    for( unsigned int j = i+1; j < ImageDimension; j++ )
       {
       const unsigned int positionAa = static_cast<unsigned int>( 
         m_Center - m_xStride[i] - m_xStride[j] );
@@ -133,7 +131,7 @@ AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
   // Compute the diffusion tensor matrix first derivatives 
   TensorPixelType center_Tensor_value  = gt.GetCenterPixel();
 
-  for( i = 0; i < ImageDimension; i++)
+  for( unsigned i = 0; i < ImageDimension; i++)
     {
     const unsigned int positionA = 
       static_cast<unsigned int>( m_Center + m_xStride[i]);
@@ -143,7 +141,7 @@ AnisotropicEdgeEnhancementDiffusionFunction< TImageType >
     TensorPixelType positionA_Tensor_value = gt.GetPixel( positionA );
     TensorPixelType positionB_Tensor_value = gt.GetPixel( positionB );
 
-    for( j = 0; j < ImageDimension; j++)
+    for( unsigned int j = 0; j < ImageDimension; j++)
       { 
       gd->m_DT_dxy[i][j] = 0.5 *  ( positionA_Tensor_value(i,j) - 
                                 positionB_Tensor_value(i,j) ); 
