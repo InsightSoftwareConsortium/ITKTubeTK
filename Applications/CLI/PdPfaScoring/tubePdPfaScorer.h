@@ -141,4 +141,6 @@ class BoundingBoxChangeList
 
 }  // End namespace tube
 
+#include "tubePdPfaScorer.txx"
+
 #endif
