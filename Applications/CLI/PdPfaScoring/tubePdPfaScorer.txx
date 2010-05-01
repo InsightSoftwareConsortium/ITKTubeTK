@@ -27,7 +27,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "tubePdPfaScoring.h"
+#include "tubePdPfaScorer.h"
 
 namespace tube
 {
@@ -36,10 +36,10 @@ const unsigned char                                  BG = 0;
 const unsigned char                                  WIRE = 255;
 const unsigned char                                  NOTWIRE = 128;
 
-template< class inputPixelT, class maskPixelT, unsigned int dimensionT >
+template< class pixelT, unsigned int dimensionT >
 void
-PdPfaScoring<inputPixelT,maskPixelT,dimensionT>
-::SegmentChanges( MaskType::Pointer changeImage,
+PdPfaScorer<pixelT,dimensionT>
+::SegmentChanges( typename ImageType::Pointer changeImage,
                   ChangeMapType& changes,
                   LabelMMapType& changesByLabel )
 {
@@ -84,14 +84,17 @@ PdPfaScoring<inputPixelT,maskPixelT,dimensionT>
 }
 
 // Assume that the input images are in unsigned char format
-template< class inputPixelT, class maskPixelT, unsigned int dimensionT >
+template< class pixelT, unsigned int dimensionT >
 void
-PdPfaScoring<inputPixelT,maskPixelT,dimensionT>
-::ComputeBoundingBoxes( MaskType::Pointer im,
-                        MaskType::Pointer labeledMaskImage,
-                        MaskType::Pointer maskImage,
+PdPfaScorer<pixelT,dimensionT>
+::ComputeBoundingBoxes( typename ImageType::Pointer im,
+                        typename ImageType::Pointer maskImage,
                         BBoxListType& BBList )
 {
+
+  int sizex = im->GetLargestPossibleRegion().GetSize()[0];
+  int sizey = im->GetLargestPossibleRegion().GetSize()[1];
+
   ChangeMapType changes;
   LabelMMapType changesByLabel;
   this->SegmentChanges( im , changes, changesByLabel );
@@ -100,7 +103,7 @@ PdPfaScoring<inputPixelT,maskPixelT,dimensionT>
   int currentSegment = 1;
   while( !allSegmentsProcessed ) 
     {
-    pair<LabelMMapType::iterator,LabelMMapType::iterator> ret;
+    std::pair<LabelMMapType::iterator,LabelMMapType::iterator> ret;
     ret = changesByLabel.equal_range( currentSegment );
     if( !( ret.first == ret.second ) )  // Elements with the given label found
       {
@@ -150,12 +153,12 @@ PdPfaScoring<inputPixelT,maskPixelT,dimensionT>
 
 }
 
-template< class inputPixelT, class maskPixelT, unsigned int dimensionT >
+template< class pixelT, unsigned int dimensionT >
 void
-PdPfaScoring<inputPixelT,maskPixelT,dimensionT>
-::ComputeChangeStatistics( MaskType::Pointer trueChangeImage, 
-                           MaskType::Pointer foundChangeImage,
-                           MaskType::Pointer maskImage,
+PdPfaScorer<pixelT,dimensionT>
+::ComputeChangeStatistics( typename ImageType::Pointer trueChangeImage, 
+                           typename ImageType::Pointer foundChangeImage,
+                           typename ImageType::Pointer maskImage,
                            int minPixels,
                            int& totalNumChanges,
                            int& totalNumChangesFound,

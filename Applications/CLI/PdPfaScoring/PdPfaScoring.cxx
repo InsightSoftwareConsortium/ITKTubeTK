@@ -32,7 +32,6 @@ limitations under the License.
 // It is important to use OrientedImages
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -41,7 +40,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkRecursiveGaussianImageFilter.h"
+#include "tubePdPfaScorer.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -49,7 +48,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "SampleCLIApplicationCLP.h"
+#include "PdPfaScoringCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -69,83 +68,85 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                         PixelType;
-  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
-  typedef itk::ImageFileReader< ImageType >             ReaderType;
+  typedef unsigned char                                    PixelType;
+  typedef itk::OrientedImage< PixelType, dimensionT >      ImageType;
+  typedef itk::ImageFileReader< ImageType >                ReaderType;
   
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
+  typename ReaderType::Pointer maskReader = ReaderType::New();
+  maskReader->SetFileName( inputPrior.c_str() );
+  typename ReaderType::Pointer modifiedMaskReader = ReaderType::New();
+  modifiedMaskReader->SetFileName( modifiedPrior.c_str() );
+
+  // read the input volume while handling exceptions
   try
     {
     reader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Reading volume: Exception caught: " 
+    tube::ErrorMessage( "Reading input volume: Exception caught: " 
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
-  double progress = 0.1;
-  progressReporter.Report( progress );
 
-  typename ImageType::Pointer curImage = reader->GetOutput();
-
-  if( gaussianBlurStdDev > 0 )
-    {
-    timeCollector.Start("Gaussian Blur");
-
-    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType > FilterType;
-    typename FilterType::Pointer filter;
-
-    // Progress per iteration
-    double progressFraction = 0.8/dimensionT;
-
-    for(unsigned int i=0; i<dimensionT; i++)
-      {
-      filter = FilterType::New();
-      filter->SetInput( curImage );
-      filter->SetNormalizeAcrossScale( true );
-      filter->SetSigma( gaussianBlurStdDev );
-
-      filter->SetOrder( 
-               itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
-      filter->SetDirection( i );
-      tube::CLIFilterWatcher watcher( filter,
-                                      "Blur Filter 1D",
-                                      CLPProcessInformation,
-                                      progressFraction,
-                                      progress,
-                                      true );
-
-      filter->Update();
-      curImage = filter->GetOutput();
-      }
-
-    timeCollector.Stop("Gaussian Blur");
-    }
-
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
-
-  timeCollector.Start("Save data");
-  typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( curImage );
-  writer->SetUseCompression( true );
+  // read the input prior while handling exceptions
   try
     {
-    writer->Update();
+    maskReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Writing volume: Exception caught: " 
+    tube::ErrorMessage( "Reading prior: Exception caught: " 
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+
+  // read the modified prior while handling exceptions
+  try
+    {
+    modifiedMaskReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Reading modfied prior: Exception caught: " 
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
+  timeCollector.Stop("Load data");
+
+  double progress = 0.1;
+  progressReporter.Report( progress );
+
+  typename ImageType::Pointer input = reader->GetOutput();
+  typename ImageType::Pointer prior = maskReader->GetOutput();
+  typename ImageType::Pointer modPrior = modifiedMaskReader->GetOutput();
+
+  timeCollector.Start( "Compute Change Statistics" );
+  int totalNumChanges;
+  int totalNumChangesFound;
+  int totalNumFalsePositives;
+  tube::PdPfaScorer< PixelType, dimensionT > scorer;
+  scorer.ComputeChangeStatistics( input, modPrior, prior, 
+                                  static_cast<int( featureSize ),
+                                  totalNumChanges, totalNumChangesFound,
+                                  totalNumFalsePositives );
+
+  std::cout << "Total Changes: " << totalNumChanges 
+            << std::endl;
+  std::cout << "Total Changes Found: " << totalNumChangesFound 
+            << std::endl;
+  std::cout << "Total False Positives: " << totalNumFalsePositives 
+            << std::endl;
+
+  timeCollector.Stop( "Compute Change Statistics" );
+
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End( );

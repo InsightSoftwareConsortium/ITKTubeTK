@@ -41,33 +41,31 @@ namespace tube
   class BoundingBoxChangeList;
   class ScoringOutput;
 
-template< class inputPixelT, class maskPixelT, unsigned int dimensionT >
-class PdPfaScoring
+template< class pixelT, unsigned int dimensionT >
+class PdPfaScorer
 {
  public:
 
-  typedef inputPixelT                                            PixelType;
-  typedef maskPixelT                                             MaskPixelType;
-  typedef itk::Image<PixelType,dimensionT>                       ImageType;
-  typedef itk::Image<MaskPixelType,dimensionT>                   MaskType;
-  typedef itk::ConnectedComponentImageFilter<MaskType,ImageType> SegmentFilter;
-  typedef itk::RelabelComponentImageFilter<ImageType,ImageType>  RelabelFilter;
-  typedef itk::ImageRegionConstIterator<ImageType>               ConstIteratorType;
+  typedef pixelT                                                  PixelType;
+  typedef itk::Image<PixelType,dimensionT>                        ImageType;
+  typedef itk::ConnectedComponentImageFilter<ImageType,ImageType> SegmentFilter;
+  typedef itk::RelabelComponentImageFilter<ImageType,ImageType>   RelabelFilter;
+  typedef itk::ImageRegionConstIterator<ImageType>                ConstIteratorType;
   typedef std::map<Pixel2D,int>                                  ChangeMapType;
   typedef std::multimap<int,Pixel2D>                             LabelMMapType;
   typedef std::list<BoundingBox>                                 BBoxListType;
 
-  void SegmentChanges( ImageType::Pointer changeImage,
+  void SegmentChanges( typename ImageType::Pointer changeImage,
                        ChangeMapType& changes,
                        LabelMMapType& changesByLabel );
 
-  void ComputeBoundingBoxes( ImageType::Pointer im,
-                             MaskType::Pointer labeledMaskImage,
+  void ComputeBoundingBoxes( typename ImageType::Pointer im,
+                             typename ImageType::Pointer labeledMaskImage,
                              BBoxListType& BBList );
 
-  void ComputeChangeStatistics( MaskType::Pointer trueChangeImage, 
-                                MaskType::Pointer foundChangeImage,
-                                MaskType::Pointer maskImage,
+  void ComputeChangeStatistics( typename ImageType::Pointer trueChangeImage, 
+                                typename ImageType::Pointer foundChangeImage,
+                                typename ImageType::Pointer maskImage,
                                 int minPixels,
                                 int& totalNumChanges,
                                 int& totalNumChangesFound,
@@ -121,21 +119,21 @@ class BoundingBoxChangeList
 
   // A vector specifying the layer on which each
   // of the changes was found
-  vector<int>   change_layer;
-  vector<int>   change_human_verified;
+  std::vector<int>   change_layer;
+  std::vector<int>   change_human_verified;
 
-  vector<double> startGDSCoords_x_um;
-  vector<double> endGDSCoords_x_um;
-  vector<double> startGDSCoords_y_um;
-  vector<double> endGDSCoords_y_um;
+  std::vector<double> startGDSCoords_x_um;
+  std::vector<double> endGDSCoords_x_um;
+  std::vector<double> startGDSCoords_y_um;
+  std::vector<double> endGDSCoords_y_um;
 
-  vector<int> startPixelCoords_x;
-  vector<int> endPixelCoords_x;
-  vector<int> startPixelCoords_y;
-  vector<int> endPixelCoords_y;
+  std::vector<int> startPixelCoords_x;
+  std::vector<int> endPixelCoords_x;
+  std::vector<int> startPixelCoords_y;
+  std::vector<int> endPixelCoords_y;
 
-  vector<double> area_pixels;
-  vector<double> area_nm;
+  std::vector<double> area_pixels;
+  std::vector<double> area_nm;
 
 };
 
