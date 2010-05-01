@@ -1,5 +1,9 @@
 @TubeTK_SOURCE_DIR@/Applications/CLI/*/*.cxx
+@TubeTK_SOURCE_DIR@/Applications/CLI/*/*.txx
 @TubeTK_SOURCE_DIR@/Applications/CLI/*/*.h
+@TubeTK_SOURCE_DIR@/Applications/*/*.cxx
+@TubeTK_SOURCE_DIR@/Applications/*/*.txx
+@TubeTK_SOURCE_DIR@/Applications/*/*.h
 @TubeTK_SOURCE_DIR@/Base/*/*.txx
 @TubeTK_SOURCE_DIR@/Base/*/*.cxx
 @TubeTK_SOURCE_DIR@/Base/*/*.h
