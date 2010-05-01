@@ -3,17 +3,12 @@
 
   <category>Filtering</category>
   <title>Compare Image With Prior</title>
-  <description>
-    Compare an image with a known prior to create a goodness of fit
-    map.
-  </description>
+  <description>Compare an image with a known prior to create a goodness of fit map.</description>
   <version>0.1.0</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Patrick Reynolds, Kitware</contributor>
-  <acknowledgements>
-    This work is part of the TubeTK project at Kitware
-  </acknowledgements>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
 
   <parameters>
     <label>IO</label>
@@ -46,9 +41,7 @@
     <integer>
       <name>regionRadius</name>
       <label>Sub-Region Radius</label>
-      <description>
-	The radius of each sub-region in the evaluation.
-      </description>
+      <description>The radius of each sub-region in the evaluation.</description>
       <longflag>regionRadius</longflag>
       <flag>r</flag>
       <default>148</default>
@@ -56,10 +49,7 @@
     <double>
       <name>threshold</name>
       <label>Threshold Size</label>
-      <description>
-	The threshold value used to select candidate pixels in the input 
-	volume.
-      </description>
+      <description>The threshold value used to select candidate pixels in the input volume.</description>
       <longflag>threshold</longflag>
       <flag>t</flag>
       <default>0</default>
@@ -67,9 +57,7 @@
     <integer>
       <name>histogramSize</name>
       <label>Histogram Size</label>
-      <description>
-	The length of each size of the per-sample histogram
-      </description>
+      <description> The length of each size of the per-sample histogram </description>
       <longflag>histogramSize</longflag>
       <flag>i</flag>
       <default>100</default>
@@ -77,9 +65,7 @@
     <integer>
       <name>skipSize</name>
       <label>Skip Size</label>
-      <description>
-	The length of the stride in each dimesion to make this thing doable.
-      </description>
+      <description> The length of the stride in each dimesion to make this thing doable.  </description>
       <longflag>skipSize</longflag>
       <flag>k</flag>
       <default>-1</default>
@@ -112,9 +98,7 @@
     <string>
       <name>stdevOutput</name>
       <label>Stdev Histogram Output File</label>
-      <description>
-	A file in which to save standard deviation histogram.
-      </description>
+      <description> A file in which to save standard deviation histogram.  </description>
       <longflag>stdevout</longflag>
       <flag>d</flag>
       <default>stdev_hist.mha</default>
@@ -123,9 +107,7 @@
     <string>
       <name>selectionMask</name>
       <label>Input selection mask</label>
-      <description>
-	A binary mask indicating where to do take samples for calculation.
-      </description>
+      <description> A binary mask indicating where to do take samples for calculation.  </description>
       <longflag>mask</longflag>
       <flag>c</flag>
       <default>nil</default>
@@ -134,10 +116,7 @@
     <double>
       <name>robustPercentage</name>
       <label>Robust Percentage</label>
-      <description>
-	The percentage of sample values to keep when calculating the
-	standard deviation
-      </description>
+      <description> The percentage of sample values to keep when calculating the standard deviation </description>
       <longflag>robustPercentage</longflag>
       <flag>g</flag>
       <default>100</default>
@@ -145,11 +124,7 @@
     <double>
       <name>robustZScore</name>
       <label>Robust Z-Score Value</label>
-      <description>
-	The z-score value to use as a threshold when computing the
-	robust mean and standard deviation. This will override the
-	robustPercentage parameter.
-      </description>
+      <description> The z-score value to use as a threshold when computing the robust mean and standard deviation. This will override the robustPercentage parameter.  </description>
       <longflag>robustZScore</longflag>
       <flag>z</flag>
       <default>0</default>
