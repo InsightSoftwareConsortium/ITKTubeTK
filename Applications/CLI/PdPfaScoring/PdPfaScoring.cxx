@@ -138,13 +138,6 @@ int DoIt( int argc, char * argv[] )
                                   totalNumChanges, totalNumChangesFound,
                                   totalNumFalsePositives );
 
-  std::cout << "Total Changes: " << totalNumChanges 
-            << std::endl;
-  std::cout << "Total Changes Found: " << totalNumChangesFound 
-            << std::endl;
-  std::cout << "Total False Positives: " << totalNumFalsePositives 
-            << std::endl;
-
   timeCollector.Stop( "Compute Change Statistics" );
 
   progress = 1.0;
@@ -152,6 +145,18 @@ int DoIt( int argc, char * argv[] )
   progressReporter.End( );
   
   timeCollector.Report();
+
+  // Print at the very end
+  std::cout << std::endl;
+  std::cout << "***RESULTS***" << std::endl;
+  std::cout << "Total Changes: " << totalNumChanges 
+            << std::endl;
+  std::cout << "Total Changes Found: " << totalNumChangesFound 
+            << std::endl;
+  std::cout << "Total False Positives: " << totalNumFalsePositives 
+            << std::endl;
+
+
   return EXIT_SUCCESS;
 }
 
