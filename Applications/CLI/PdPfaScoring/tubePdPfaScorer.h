@@ -36,10 +36,11 @@ limitations under the License.
 namespace tube
 {
 
-  class BoundingBox;
-  class Pixel2D;
-  class BoundingBoxChangeList;
-  class ScoringOutput;
+// Internal datatypes
+class BoundingBox;
+class Pixel2D;
+class BoundingBoxChangeList;
+class ScoringOutput;
 
 template< class pixelT, unsigned int dimensionT >
 class PdPfaScorer
@@ -47,13 +48,13 @@ class PdPfaScorer
  public:
 
   typedef pixelT                                                  PixelType;
-  typedef itk::Image<PixelType,dimensionT>                        ImageType;
+  typedef itk::OrientedImage<PixelType,dimensionT>                ImageType;
   typedef itk::ConnectedComponentImageFilter<ImageType,ImageType> SegmentFilter;
   typedef itk::RelabelComponentImageFilter<ImageType,ImageType>   RelabelFilter;
   typedef itk::ImageRegionConstIterator<ImageType>                ConstIteratorType;
-  typedef std::map<Pixel2D,int>                                  ChangeMapType;
-  typedef std::multimap<int,Pixel2D>                             LabelMMapType;
-  typedef std::list<BoundingBox>                                 BBoxListType;
+  typedef std::map<Pixel2D,int>                                   ChangeMapType;
+  typedef std::multimap<int,Pixel2D>                              LabelMMapType;
+  typedef std::list<BoundingBox>                                  BBoxListType;
 
   void SegmentChanges( typename ImageType::Pointer changeImage,
                        ChangeMapType& changes,
@@ -94,11 +95,11 @@ class Pixel2D
   Pixel2D()  { x = 0; y = 0; }
   ~Pixel2D() {}
 
-  bool operator<(const Pixel2D& rhs) const {
-    double norm_lhs = sqrt(x*x + y*y);
-    double norm_rhs = sqrt(rhs.x*rhs.x + rhs.y*rhs.y);
+  bool operator<( const Pixel2D& rhs ) const {
+    double norm_lhs = sqrt( x*x + y*y );
+    double norm_rhs = sqrt( rhs.x*rhs.x + rhs.y*rhs.y );
 
-    return (norm_lhs < norm_rhs);
+    return ( norm_lhs < norm_rhs );
   }
 
   int x;
@@ -115,22 +116,22 @@ class BoundingBoxChangeList
   BoundingBoxChangeList() { }
   ~BoundingBoxChangeList() {}
 
-  int numChanges;
+  int                 numChanges;
 
   // A vector specifying the layer on which each
   // of the changes was found
-  std::vector<int>   change_layer;
-  std::vector<int>   change_human_verified;
+  std::vector<int>    change_layer;
+  std::vector<int>    change_human_verified;
 
   std::vector<double> startGDSCoords_x_um;
   std::vector<double> endGDSCoords_x_um;
   std::vector<double> startGDSCoords_y_um;
   std::vector<double> endGDSCoords_y_um;
 
-  std::vector<int> startPixelCoords_x;
-  std::vector<int> endPixelCoords_x;
-  std::vector<int> startPixelCoords_y;
-  std::vector<int> endPixelCoords_y;
+  std::vector<int>    startPixelCoords_x;
+  std::vector<int>    endPixelCoords_x;
+  std::vector<int>    startPixelCoords_y;
+  std::vector<int>    endPixelCoords_y;
 
   std::vector<double> area_pixels;
   std::vector<double> area_nm;

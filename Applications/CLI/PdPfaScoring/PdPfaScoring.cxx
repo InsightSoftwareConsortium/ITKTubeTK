@@ -134,7 +134,7 @@ int DoIt( int argc, char * argv[] )
   int totalNumFalsePositives;
   tube::PdPfaScorer< PixelType, dimensionT > scorer;
   scorer.ComputeChangeStatistics( input, modPrior, prior, 
-                                  static_cast<int( featureSize ),
+                                  static_cast<int>( featureSize ),
                                   totalNumChanges, totalNumChangesFound,
                                   totalNumFalsePositives );
 
