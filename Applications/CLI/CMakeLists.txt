@@ -34,6 +34,7 @@ add_subdirectory( RandomlyModifyBinaryMask )
 add_subdirectory( DeblendImagesUsingPrior )
 add_subdirectory( OtsuThreshold )
 add_subdirectory( OrImages )
+add_subdirectory( PdPfaScoring )
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and
