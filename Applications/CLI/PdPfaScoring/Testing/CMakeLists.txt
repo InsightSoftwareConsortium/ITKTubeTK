@@ -26,33 +26,19 @@ include_regular_expression( "^.*$" )
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
-set( BASELINE 
-  ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE 
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
-
 #######
 # Test1
 #######
 add_test( ${PROJECT_NAME}Test1
-            ${PROJ_EXE}
-               ${INPUT_DATA}/slice256.png
-               ${TEMP}/${PROJECT_NAME}Test1.mha )
-
-#######
-# Test1-Compare
-#######
-add_test( ${PROJECT_NAME}Test1-Compare
-            ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test1.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
-set_tests_properties( ${PROJECT_NAME}Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
-
+          ${PROJ_EXE}
+          ${INPUT_DATA}/scoring-test.png
+	  ${INPUT_DATA}/scoring-truth.png
+	  ${INPUT_DATA}/scoring-truth.png )
+set_tests_properties( ${PROJECT_NAME}Test1 PROPERTIES PASS_REGULAR_EXPRESSION 
+  "Total Changes: 2\nTotal Changes Found: 2\nTotal False Positives: 0" )
 
