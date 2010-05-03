@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubePdPfaScoring_h
-#define __tubePdPfaScoring_h
+#ifndef __tubePdPfaScorer_h
+#define __tubePdPfaScorer_h
 
 #include <map>
 #include <vector>

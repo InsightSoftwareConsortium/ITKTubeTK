@@ -21,13 +21,20 @@ limitations under the License.
 
 =========================================================================*/
 
+#if defined(_MSC_VER)
+#pragma warning ( disable : 4786 )
+#endif
+
+#ifdef __BORLANDC__
+#define ITK_LEAN_AND_MEAN
+#endif
+
+#include "tubePdPfaScorer.h"
 
 #include "itkConnectedComponentImageFilter.h"
 #include "itkRelabelComponentImageFilter.h"
 
 #include <iostream>
-
-#include "tubePdPfaScorer.h"
 
 namespace tube
 {
@@ -101,7 +108,7 @@ PdPfaScorer<pixelT,dimensionT>
 
   bool allSegmentsProcessed = false;
   int currentSegment = 1;
-  while( !allSegmentsProcessed ) 
+  while( !allSegmentsProcessed )
     {
     std::pair<LabelMMapType::iterator,LabelMMapType::iterator> ret;
     ret = changesByLabel.equal_range( currentSegment );
@@ -139,7 +146,7 @@ PdPfaScorer<pixelT,dimensionT>
           }
 
         BB.numPixels++;
-      }
+        }
 
       BBList.push_back(BB);
 
@@ -156,7 +163,7 @@ PdPfaScorer<pixelT,dimensionT>
 template< class pixelT, unsigned int dimensionT >
 void
 PdPfaScorer<pixelT,dimensionT>
-::ComputeChangeStatistics( typename ImageType::Pointer trueChangeImage, 
+::ComputeChangeStatistics( typename ImageType::Pointer trueChangeImage,
                            typename ImageType::Pointer foundChangeImage,
                            typename ImageType::Pointer maskImage,
                            int minPixels,
@@ -183,30 +190,30 @@ PdPfaScorer<pixelT,dimensionT>
     ret = trueChangesByLabel.equal_range( currentSegment );
     if( !( ret.first == ret.second ) )  // Elements with the given label found
       {
-      
+
       int trueRegionSize = 0;
-      for( LabelMMapType::iterator it = ret.first; it != ret.second; it++ ) 
+      for( LabelMMapType::iterator it = ret.first; it != ret.second; it++ )
         {
-	trueRegionSize++;
+        trueRegionSize++;
         }
-      
+
       if( trueRegionSize >= minPixels )
         {
-	totalNumChanges++;
+        totalNumChanges++;
 
-	// Iterate over all of the pixels within this change
-	bool changeFound = false;
-	for( LabelMMapType::iterator it = ret.first; it != ret.second; it++ )
+        // Iterate over all of the pixels within this change
+        bool changeFound = false;
+        for( LabelMMapType::iterator it = ret.first; it != ret.second; it++ )
           {
-	  if( foundChanges.find( it->second ) != foundChanges.end() )
+          if( foundChanges.find( it->second ) != foundChanges.end() )
             {
-	    changeFound = true;
-	    break;
+            changeFound = true;
+            break;
             }
           }
-	if( changeFound)
+        if( changeFound)
           {
-	  totalNumChangesFound++;
+          totalNumChangesFound++;
           }
         }
       }
@@ -231,15 +238,15 @@ PdPfaScorer<pixelT,dimensionT>
       bool changeFound = false;
       for( LabelMMapType::iterator it = ret.first; it != ret.second; it++ )
         {
-	if( trueChanges.find( it->second ) != trueChanges.end() )
+        if( trueChanges.find( it->second ) != trueChanges.end() )
           {
-	  changeFound = true;
-	  break;
+          changeFound = true;
+          break;
           }
         }
       if( !( changeFound ) )
         {
-	totalNumFalsePositives++;
+        totalNumFalsePositives++;
         }
       }
     else
@@ -248,8 +255,6 @@ PdPfaScorer<pixelT,dimensionT>
       }
     currentSegment++;
     }
-
-}
-	
 }
 
+}
