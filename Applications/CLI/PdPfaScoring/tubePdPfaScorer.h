@@ -27,7 +27,7 @@ limitations under the License.
 #include <vector>
 #include <list>
 #include <string>
-#include <math.h>
+#include <vcl_cmath.h>
 
 #include "itkOrientedImage.h"
 #include "itkConnectedComponentImageFilter.h"
@@ -96,8 +96,8 @@ class Pixel2D
   ~Pixel2D() {}
 
   bool operator<( const Pixel2D& rhs ) const {
-    double norm_lhs = sqrt( x*x + y*y );
-    double norm_rhs = sqrt( rhs.x*rhs.x + rhs.y*rhs.y );
+    double norm_lhs = vcl_sqrt( x*x + y*y );
+    double norm_rhs = vcl_sqrt( rhs.x*rhs.x + rhs.y*rhs.y );
 
     return ( norm_lhs < norm_rhs );
   }
