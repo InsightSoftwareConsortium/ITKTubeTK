@@ -874,7 +874,7 @@ int DoIt( MetaCommand & command )
             }
           }
         }
-      for( z; z<zMax; z++ )
+      for(; z<zMax; z++ )
         {
         it2DIn.GoToBegin();
         it3DSliceStart = it3D;
