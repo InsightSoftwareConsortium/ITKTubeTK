@@ -78,8 +78,8 @@ PdPfaScorer<pixelT,dimensionT>
     Pixel2D tmpPixel;
     if( it.Get() > 0 )
       {
-      tmpPixel.x = ind[0];
-      tmpPixel.y = ind[1];
+      tmpPixel.m_X = ind[0];
+      tmpPixel.m_Y = ind[1];
       int label = it.Get();
       changeMap[tmpPixel] = label;
       inverseChangeMap.insert( LabelMMapType::value_type( label, tmpPixel ) );
@@ -115,37 +115,37 @@ PdPfaScorer<pixelT,dimensionT>
     if( !( ret.first == ret.second ) )  // Elements with the given label found
       {
       BoundingBox BB;
-      BB.numPixels = 0;
-      BB.start_pixel_x = sizex;
-      BB.end_pixel_x = 0;
-      BB.start_pixel_y = sizey;
-      BB.end_pixel_y = 0;
+      BB.m_NumPixels = 0;
+      BB.m_StartPixelX = sizex;
+      BB.m_EndPixelX = 0;
+      BB.m_StartPixelY = sizey;
+      BB.m_EndPixelY = 0;
 
       for( LabelMMapType::iterator it = ret.first; it != ret.second; it++ )
         {
         Pixel2D tmpPixel = (*it).second;
 
-        if( tmpPixel.x < BB.start_pixel_x )
+        if( tmpPixel.m_X < BB.m_StartPixelX )
           {
-          BB.start_pixel_x = tmpPixel.x;
+          BB.m_StartPixelX = tmpPixel.m_X;
           }
 
-        if( tmpPixel.x > BB.end_pixel_x )
+        if( tmpPixel.m_X > BB.m_EndPixelX )
           {
-          BB.end_pixel_x = tmpPixel.x;
+          BB.m_EndPixelX = tmpPixel.m_X;
           }
 
-        if( tmpPixel.y < BB.start_pixel_y )
+        if( tmpPixel.m_Y < BB.m_StartPixelY )
           {
-          BB.start_pixel_y = tmpPixel.y;
+          BB.m_StartPixelY = tmpPixel.m_Y;
           }
 
-        if( tmpPixel.y > BB.end_pixel_y )
+        if( tmpPixel.m_Y > BB.m_EndPixelY )
           {
-          BB.end_pixel_y = tmpPixel.y;
+          BB.m_EndPixelY = tmpPixel.m_Y;
           }
 
-        BB.numPixels++;
+        BB.m_NumPixels++;
         }
 
       BBList.push_back(BB);

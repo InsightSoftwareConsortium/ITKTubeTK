@@ -39,8 +39,6 @@ namespace tube
 // Internal datatypes
 class BoundingBox;
 class Pixel2D;
-class BoundingBoxChangeList;
-class ScoringOutput;
 
 template< class pixelT, unsigned int dimensionT >
 class PdPfaScorer
@@ -80,61 +78,30 @@ class BoundingBox
   BoundingBox() {}
   ~BoundingBox() {}
 
-  int start_pixel_x;
-  int end_pixel_x;
-  int start_pixel_y;
-  int end_pixel_y;
+  int m_StartPixelX;
+  int m_EndPixelX;
+  int m_StartPixelY;
+  int m_EndPixelY;
 
-  int numPixels;
+  int m_NumPixels;
 };
 
 class Pixel2D
 {
  public:
-  Pixel2D()  { x = 0; y = 0; }
+  Pixel2D()  { m_X = 0; m_Y = 0; }
   ~Pixel2D() {}
 
   bool operator<( const Pixel2D& rhs ) const
   {
-    double norm_lhs = vcl_sqrt( static_cast<double>( x*x + y*y ) );
-    double norm_rhs = vcl_sqrt( static_cast<double>( rhs.x*rhs.x + rhs.y*rhs.y ) );
+    double norm_lhs = vcl_sqrt( static_cast<double>( m_X*m_X + m_Y*m_Y ) );
+    double norm_rhs = vcl_sqrt( static_cast<double>( rhs.m_X*rhs.m_X + 
+                                                     rhs.m_Y*rhs.m_Y ) );
     return ( norm_lhs < norm_rhs );
   }
 
-  int x;
-  int y;
-};
-
-
-
-// Store the bounding box for all changes
-//class BoundingBoxChangeList
-class BoundingBoxChangeList
-{
- public:
-  BoundingBoxChangeList() { }
-  ~BoundingBoxChangeList() {}
-
-  int                 numChanges;
-
-  // A vector specifying the layer on which each
-  // of the changes was found
-  std::vector<int>    change_layer;
-  std::vector<int>    change_human_verified;
-
-  std::vector<double> startGDSCoords_x_um;
-  std::vector<double> endGDSCoords_x_um;
-  std::vector<double> startGDSCoords_y_um;
-  std::vector<double> endGDSCoords_y_um;
-
-  std::vector<int>    startPixelCoords_x;
-  std::vector<int>    endPixelCoords_x;
-  std::vector<int>    startPixelCoords_y;
-  std::vector<int>    endPixelCoords_y;
-
-  std::vector<double> area_pixels;
-  std::vector<double> area_nm;
-
+  int m_X;
+  int m_Y;
 };
 
 }  // End namespace tube
