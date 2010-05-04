@@ -874,7 +874,7 @@ int DoIt( MetaCommand & command )
             }
           }
         }
-      for( ; z<zMax; z++ )
+      for( z; z<zMax; z++ )
         {
         it2DIn.GoToBegin();
         it3DSliceStart = it3D;
@@ -976,10 +976,10 @@ int DoIt( MetaCommand & command )
           spacing[i] = imIn->GetSpacing()[i];
           }
 
-        double meanSpacing = ( spacing[0]+spacing[1] )/2 ;
+        double meanSpacing = ( spacing[0] + spacing[1] ) / 2;
         if( dimensionT == 3 )
           {
-          meanSpacing = ( meanSpacing + spacing[2] )/2;
+          meanSpacing = ( meanSpacing + spacing[2] ) / 2;
           }
         factor = meanSpacing/spacing[0];
         size[0] = ( long unsigned int )
@@ -1234,16 +1234,16 @@ int DoIt( MetaCommand & command )
 }
 
 // Description:
-// Get the ComponentType and dimension of the image 
+// Get the ComponentType and dimension of the image
 void GetImageInformation( std::string fileName,
-                          itk::ImageIOBase::IOComponentType &componentType, 
+                          itk::ImageIOBase::IOComponentType &componentType,
                           unsigned int & dimension )
-  {
+{
   // Find out the component type of the image in file
   typedef itk::ImageIOBase::IOComponentType  PixelType;
 
-  itk::ImageIOBase::Pointer imageIO = 
-    itk::ImageIOFactory::CreateImageIO( fileName.c_str(), 
+  itk::ImageIOBase::Pointer imageIO =
+    itk::ImageIOFactory::CreateImageIO( fileName.c_str(),
                                         itk::ImageIOFactory::ReadMode );
   if( !imageIO )
     {
@@ -1258,9 +1258,7 @@ void GetImageInformation( std::string fileName,
 
   componentType = imageIO->GetComponentType();
   dimension = imageIO->GetNumberOfDimensions();
-  }
-
-
+}
 
 int main( int argc, char *argv[] )
 {
@@ -1271,7 +1269,7 @@ int main( int argc, char *argv[] )
   command.SetAuthor( "CADDLab @ UNC" );
   command.SetDescription( "Perform several filters on an image" );
 
-  command.SetOption( "Write", "w", false, 
+  command.SetOption( "Write", "w", false,
     "writes current image to the designated file" );
   command.AddOptionField( "Write", "filename", MetaCommand::STRING, true,
     "", "output filename", MetaCommand::DATA_OUT );
@@ -1466,84 +1464,83 @@ int main( int argc, char *argv[] )
   itk::ImageIOBase::IOComponentType componentType;
   unsigned int dimension;
 
-  try    
-    {    
-    GetImageInformation( command.GetValueAsString( "infile" ), 
+  try
+    {
+    GetImageInformation( command.GetValueAsString( "infile" ),
                          componentType, dimension );
     if( dimension == 2 )
       {
       switch( componentType )
-        {      
-        case itk::ImageIOBase::UCHAR:        
+        {
+        case itk::ImageIOBase::UCHAR:
           return DoIt<unsigned char, 2>( command );
-        case itk::ImageIOBase::CHAR:        
+        case itk::ImageIOBase::CHAR:
           return DoIt<char, 2>( command );
-        case itk::ImageIOBase::USHORT:        
+        case itk::ImageIOBase::USHORT:
           return DoIt<unsigned short, 2>( command );
-        case itk::ImageIOBase::SHORT:        
+        case itk::ImageIOBase::SHORT:
           return DoIt<short, 2>( command );
-        case itk::ImageIOBase::UINT:        
+        case itk::ImageIOBase::UINT:
           return DoIt<unsigned int, 2>( command );
-        case itk::ImageIOBase::INT:        
+        case itk::ImageIOBase::INT:
           return DoIt<int, 2>( command );
-        case itk::ImageIOBase::ULONG:        
+        case itk::ImageIOBase::ULONG:
           return DoIt<unsigned long, 2>( command );
-        case itk::ImageIOBase::LONG:        
+        case itk::ImageIOBase::LONG:
           return DoIt<long, 2>( command );
-        case itk::ImageIOBase::FLOAT:        
+        case itk::ImageIOBase::FLOAT:
           return DoIt<float, 2>( command );
-        case itk::ImageIOBase::DOUBLE:        
+        case itk::ImageIOBase::DOUBLE:
           return DoIt<double, 2>( command );
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:     
-        default:      
-          std::cout << "unknown component type" << std::endl;   
+        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+        default:
+          std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;
-        }    
-      }  
+        }
+      }
     else if( dimension == 3 )
       {
       switch( componentType )
-        {      
-        case itk::ImageIOBase::UCHAR:        
+        {
+        case itk::ImageIOBase::UCHAR:
           return DoIt<unsigned char, 3>( command );
-        case itk::ImageIOBase::CHAR:        
+        case itk::ImageIOBase::CHAR:
           return DoIt<char, 3>( command );
-        case itk::ImageIOBase::USHORT:        
+        case itk::ImageIOBase::USHORT:
           return DoIt<unsigned short, 3>( command );
-        case itk::ImageIOBase::SHORT:        
-          return DoIt<short, 3>( command );
-        case itk::ImageIOBase::UINT:        
+        case itk::ImageIOBase::SHORT:
+          DoIt<short, 3>( command );
+        case itk::ImageIOBase::UINT:
           return DoIt<unsigned int, 3>( command );
-        case itk::ImageIOBase::INT:        
+        case itk::ImageIOBase::INT:
           return DoIt<int, 3>( command );
-        case itk::ImageIOBase::ULONG:        
+        case itk::ImageIOBase::ULONG:
           return DoIt<unsigned long, 3>( command );
-        case itk::ImageIOBase::LONG:        
+        case itk::ImageIOBase::LONG:
           return DoIt<long, 3>( command );
-        case itk::ImageIOBase::FLOAT:        
+        case itk::ImageIOBase::FLOAT:
           return DoIt<float, 3>( command );
-        case itk::ImageIOBase::DOUBLE:        
+        case itk::ImageIOBase::DOUBLE:
           return DoIt<double, 3>( command );
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:     
-        default:      
-          std::cout << "unknown component type" << std::endl;   
+        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+        default:
+          std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;
-        }    
+        }
       }
-    }  
-  catch( itk::ExceptionObject &excep )   
-    {    
+    }
+  catch( itk::ExceptionObject &excep )
+    {
     std::cerr << argv[0] << ": itk exception caught !" << std::endl;
-    std::cerr << excep << std::endl;    
-    return EXIT_FAILURE;    
-    }  
-  catch( ... )   
-    {    
+    std::cerr << excep << std::endl;
+    return EXIT_FAILURE;
+    }
+  catch( ... )
+    {
     std::cerr << argv[0] << ": exception caught !" << std::endl;
-    return EXIT_FAILURE;    
-    }  
+    return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
 
 }
-
