@@ -33,3 +33,4 @@ itkImageRegionMomentsCalculator.h Namespace Disable
 itkImageRegionMomentsCalculator.txx Namespace Disable
 OtsuThreshold.cxx Namespace Disable
 OrImages.cxx Namespace Disable
+PdPfaScoring.cxx Namespace Disable
