@@ -95,10 +95,10 @@ class Pixel2D
   Pixel2D()  { x = 0; y = 0; }
   ~Pixel2D() {}
 
-  bool operator<( const Pixel2D& rhs ) const {
-    double norm_lhs = vcl_sqrt( x*x + y*y );
-    double norm_rhs = vcl_sqrt( rhs.x*rhs.x + rhs.y*rhs.y );
-
+  bool operator<( const Pixel2D& rhs ) const
+  {
+    double norm_lhs = vcl_sqrt( static_cast<double>( x*x + y*y ) );
+    double norm_rhs = vcl_sqrt( static_cast<double>( rhs.x*rhs.x + rhs.y*rhs.y ) );
     return ( norm_lhs < norm_rhs );
   }
 
