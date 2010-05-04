@@ -165,7 +165,6 @@ void
 PdPfaScorer<pixelT,dimensionT>
 ::ComputeChangeStatistics( typename ImageType::Pointer trueChangeImage,
                            typename ImageType::Pointer foundChangeImage,
-                           typename ImageType::Pointer maskImage,
                            int minPixels,
                            int& totalNumChanges,
                            int& totalNumChangesFound,

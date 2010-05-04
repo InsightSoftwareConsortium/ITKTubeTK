@@ -36,9 +36,8 @@ set( PROJ_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
           ${PROJ_EXE}
-          ${INPUT_DATA}/scoring-test.png
 	  ${INPUT_DATA}/scoring-truth.png
-	  ${INPUT_DATA}/scoring-truth.png )
+          ${INPUT_DATA}/scoring-test.png )
 set_tests_properties( ${PROJECT_NAME}Test1 PROPERTIES PASS_REGULAR_EXPRESSION 
   "Total Changes: 2\nTotal Changes Found: 2\nTotal False Positives: 0" )
 

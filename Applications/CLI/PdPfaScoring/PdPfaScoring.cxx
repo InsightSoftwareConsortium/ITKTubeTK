@@ -75,10 +75,8 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
-  typename ReaderType::Pointer maskReader = ReaderType::New();
-  maskReader->SetFileName( inputPrior.c_str() );
-  typename ReaderType::Pointer modifiedMaskReader = ReaderType::New();
-  modifiedMaskReader->SetFileName( modifiedPrior.c_str() );
+  typename ReaderType::Pointer detectionReader = ReaderType::New();
+  detectionReader->SetFileName( detectionMask.c_str() );
 
   // read the input volume while handling exceptions
   try
@@ -87,20 +85,7 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Reading input volume: Exception caught: " 
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
-  // read the input prior while handling exceptions
-  try
-    {
-    maskReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading prior: Exception caught: " 
+    tube::ErrorMessage( "Reading input volume (truth): Exception caught: " 
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
@@ -109,11 +94,11 @@ int DoIt( int argc, char * argv[] )
   // read the modified prior while handling exceptions
   try
     {
-    modifiedMaskReader->Update();
+    detectionReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Reading modfied prior: Exception caught: " 
+    tube::ErrorMessage( "Reading detectionsr: Exception caught: " 
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
@@ -124,16 +109,15 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  typename ImageType::Pointer input = reader->GetOutput();
-  typename ImageType::Pointer prior = maskReader->GetOutput();
-  typename ImageType::Pointer modPrior = modifiedMaskReader->GetOutput();
+  typename ImageType::Pointer truth = reader->GetOutput();
+  typename ImageType::Pointer detections = detectionReader->GetOutput();
 
   timeCollector.Start( "Compute Change Statistics" );
   int totalNumChanges;
   int totalNumChangesFound;
   int totalNumFalsePositives;
   tube::PdPfaScorer< PixelType, dimensionT > scorer;
-  scorer.ComputeChangeStatistics( input, modPrior, prior, 
+  scorer.ComputeChangeStatistics( truth, detections,
                                   static_cast<int>( featureSize ),
                                   totalNumChanges, totalNumChangesFound,
                                   totalNumFalsePositives );

@@ -20,17 +20,10 @@
       <description>Input volume</description>
     </image>
     <image>
-      <name>inputPrior</name>
-      <label>Input Prior</label>
+      <name>detectionMask</name>
+      <label>Detection Mask</label>
       <channel>input</channel>
       <index>1</index>
-      <description>Input Prior</description>
-    </image>
-    <image>
-      <name>modifiedPrior</name>
-      <label>Modified Prior</label>
-      <channel>input</channel>
-      <index>2</index>
       <description>Modified Prior</description>
     </image>
   </parameters>
