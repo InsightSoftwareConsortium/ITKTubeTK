@@ -43,7 +43,7 @@ class Pixel2D;
 template< class pixelT, unsigned int dimensionT >
 class PdPfaScorer
 {
- public:
+public:
 
   typedef pixelT                                                  PixelType;
   typedef itk::OrientedImage<PixelType,dimensionT>                ImageType;
@@ -74,7 +74,7 @@ class PdPfaScorer
 // UTILITY CLASSES
 class BoundingBox
 {
- public:
+public:
   BoundingBox() {}
   ~BoundingBox() {}
 
@@ -88,17 +88,17 @@ class BoundingBox
 
 class Pixel2D
 {
- public:
+public:
   Pixel2D()  { m_X = 0; m_Y = 0; }
   ~Pixel2D() {}
 
   bool operator<( const Pixel2D& rhs ) const
-  {
+    {
     double norm_lhs = sqrt( static_cast<double>( m_X*m_X + m_Y*m_Y ) );
     double norm_rhs = sqrt( static_cast<double>( rhs.m_X*rhs.m_X + 
                                                  rhs.m_Y*rhs.m_Y ) );
     return ( norm_lhs < norm_rhs );
-  }
+    }
 
   int m_X;
   int m_Y;
