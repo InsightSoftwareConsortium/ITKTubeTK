@@ -18,3 +18,17 @@ SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
     )
     
+SET(CTEST_EXTRA_COVERAGE_GLOB
+   Utilities/*.h
+   Utilities/*.cxx
+   Base/*/*.h
+   Base/*/*.cxx
+   Base/*/*.txx
+   Applications/*/*.h
+   Applications/*/*.cxx
+   Applications/*/*.txx
+   Applications/*/*/*.h
+   Applications/*/*/*.cxx
+   Applications/*/*/*.txx
+   )
+
