@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkAnisotropicEdgeEnhancementDiffusionImageFilter_h
-#define __itkAnisotropicEdgeEnhancementDiffusionImageFilter_h
+#ifndef __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h
+#define __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h
 
 #include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
@@ -33,12 +33,14 @@ limitations under the License.
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 namespace itk {
-/** \class AnisotropicEdgeEnhancementDiffusionImageFilter
- *  This class is an implementation of Edge-enhancing diffusion
- *   INSERT reference here
- * 
- * \sa itkAnisotropicDiffusionTensorImageFilter 
- * \sa itkAnisotropicCoherenceEnhancingDiffusionImageFilter
+/** \class AnisotropicCoherenceEnhancingDiffusionImageFilter
+ *
+ * \brief This class is implementation of Coherence-enhancing diffusion (CED) 
+ *
+ *  INSERT Reference
+ *
+ * \sa AnisotropicDiffusionTensorImageFilter 
+ * \sa AnisotropicEdgeEnhancementDiffusionImageFilter
  *
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
@@ -46,12 +48,12 @@ namespace itk {
 
 
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT AnisotropicEdgeEnhancementDiffusionImageFilter  
+class ITK_EXPORT AnisotropicCoherenceEnhancingDiffusionImageFilter  
   : public AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs */
-  typedef AnisotropicEdgeEnhancementDiffusionImageFilter Self;
+  typedef AnisotropicCoherenceEnhancingDiffusionImageFilter Self;
 
   typedef AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage> 
                                                            Superclass;
@@ -64,7 +66,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods) */
-  itkTypeMacro(AnisotropicEdgeEnhancementDiffusionImageFilter,
+  itkTypeMacro(AnisotropicCoherenceEnhancingDiffusionImageFilter,
                                                 ImageToImageFilter );
   
   /** Convenient typedefs */
@@ -72,13 +74,13 @@ public:
   typedef typename Superclass::OutputImageType OutputImageType;
   typedef typename Superclass::PixelType       PixelType;
 
-  typedef typename Superclass::DiffusionTensorImageType 
+  typedef typename Superclass::DiffusionTensorImageType
                                                 DiffusionTensorImageType;
 
   // Structure tensor type 
   typedef StructureTensorRecursiveGaussianImageFilter < InputImageType >
                                                 StructureTensorFilterType;
-  
+ 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
@@ -109,18 +111,14 @@ public:
                                                DiffusionTensorNeighborhoodType;
 
   /** Set the contrast parameter */
-  void SetContrastParameterLambdaE( double value ); 
+  void SetContrastParameterLambdaC( double value ); 
 
-  /** Set threshold parameter C */
-  void SetThresholdParameterC( double value );
-
-  /** Set the sigma value for structure tensor computation */
-  void SetSigma( double sigma );
-
+  /** Set Alpha */
+  void SetAlpha( double value );
 
 protected:
-  AnisotropicEdgeEnhancementDiffusionImageFilter();
- ~AnisotropicEdgeEnhancementDiffusionImageFilter() {}
+  AnisotropicCoherenceEnhancingDiffusionImageFilter();
+ ~AnisotropicCoherenceEnhancingDiffusionImageFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Update diffusion tensor image */
@@ -128,19 +126,18 @@ protected:
  
 private:
   //purposely not implemented
-  AnisotropicEdgeEnhancementDiffusionImageFilter(const Self&); 
+  AnisotropicCoherenceEnhancingDiffusionImageFilter(const Self&); 
   void operator=(const Self&); //purposely not implemented
 
-  double    m_ContrastParameterLambdaE;
-  double    m_ThresholdParameterC;
-  double    m_Sigma;
+  double     m_ContrastParameterLambdaC;
+  double     m_Alpha;
 };
   
 
 }// end namespace itk
 
 #if ITK_TEMPLATE_TXX
-# include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx"
+# include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx"
 #endif
 
 #endif

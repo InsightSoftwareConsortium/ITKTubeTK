@@ -45,6 +45,7 @@ set( tubeBasePreprocessingFilters_SRCS
        tubeBasePreprocessingFiltersPrintTest.cxx
        itkTubeEnhancingDiffusion2DImageFilterTest.cxx 
        itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
+       itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx
        itkStructureTensorRecursiveGaussianImageFilterTest.cxx
 )
 
@@ -103,6 +104,13 @@ add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
                ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
                ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 0.4 5.0 10 10
                true )
+
+add_test( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest 
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
+               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
+               ${TEMP}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha )
+
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest 
             ${BASE_PREPROCESSING_FILTERS_TESTS}
             itkStructureTensorRecursiveGaussianImageFilterTest

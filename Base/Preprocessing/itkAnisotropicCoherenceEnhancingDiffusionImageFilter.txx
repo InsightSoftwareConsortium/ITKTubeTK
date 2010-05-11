@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkAnisotropicEdgeEnhancementDiffusionImageFilter_txx
-#define __itkAnisotropicEdgeEnhancementDiffusionImageFilter_txx
+#ifndef __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_txx
+#define __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_txx
 
-#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
+#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 #include "itkAnisotropicEdgeEnhancementDiffusionFunction.h"
 
 #include <list>
@@ -31,7 +31,6 @@ limitations under the License.
 #include "itkImageRegionIterator.h"
 #include "itkNumericTraits.h"
 #include "itkNeighborhoodAlgorithm.h"
-#include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
 
 #include "itkImageFileWriter.h"
 #include "itkVector.h"
@@ -45,17 +44,16 @@ namespace itk {
  * Constructor
  */
 template <class TInputImage, class TOutputImage>
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::AnisotropicEdgeEnhancementDiffusionImageFilter()
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
+::AnisotropicCoherenceEnhancingDiffusionImageFilter()
 {
-  m_ThresholdParameterC = 3.31488;
-  m_ContrastParameterLambdaE = 30.0;
-  m_Sigma = 1.0;
+  m_ContrastParameterLambdaC = 15.0;
+  m_Alpha = 0.001;
 }
 
 template <class TInputImage, class TOutputImage>
 void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::UpdateDiffusionTensorImage()
 {
   itkDebugMacro( << "UpdateDiffusionTensorImage() called" ); 
@@ -75,7 +73,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   typename StructureTensorFilterType::Pointer StructureTensorFilter  = StructureTensorFilterType::New();
 
   StructureTensorFilter->SetInput( this->GetOutput() );
-  StructureTensorFilter->SetSigma( m_Sigma );
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigen vectors of the structure tensor 
@@ -112,17 +109,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   eigenAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
   eigenAnalysisFilter->Update();
 
-  /* Compute the gradient magnitude. This is required to set Lambda1 */
-
-  typedef itk::
-    GradientMagnitudeRecursiveGaussianImageFilter<InputImageType> 
-                               GradientMagnitudeFilterType;
-
-  typename GradientMagnitudeFilterType::Pointer gradientMagnitudeFilter = GradientMagnitudeFilterType::New();
-  gradientMagnitudeFilter->SetInput( this->GetInput() );
-  gradientMagnitudeFilter->SetSigma( m_Sigma );
-  gradientMagnitudeFilter->Update();
- 
   /* Step 2: Generate the diffusion tensor matrix 
       D = [v1 v2 v3] [DiagonalMatrixContainingLambdas] [v1 v2 v3]^t
   */
@@ -146,20 +132,12 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
   eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
-      eigenImage, eigenImage->GetRequestedRegion());  
-
-  //Iterator for the gradient magnitude image 
-  typedef typename GradientMagnitudeFilterType::OutputImageType GradientMagnitudeOutputImageType;
-  typename GradientMagnitudeOutputImageType::Pointer gradientMagnitudeOutputImage = gradientMagnitudeFilter->GetOutput();
-
-  itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType> gradientMagnitudeImageIterator;
-  gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>(
-      gradientMagnitudeOutputImage, gradientMagnitudeOutputImage->GetRequestedRegion());  
+      eigenImage, eigenImage->GetRequestedRegion());
+  eigenValueImageIterator.GoToBegin();
 
   it.GoToBegin();
   eigenVectorImageIterator.GoToBegin();
   eigenValueImageIterator.GoToBegin();
-  gradientMagnitudeImageIterator.GoToBegin();
 
   MatrixType  eigenValueMatrix;
   while( !it.IsAtEnd() )
@@ -173,9 +151,10 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     double Lambda3;
   
     // Get the eigen value
+    // Make sure they are sorted
     EigenValueArrayType eigenValue;
     eigenValue = eigenValueImageIterator.Get();
-
+  
     /* Assumption is that eigenvalue1 > eigenvalue2 > eigenvalue3 */
 
     // Find the smallest eigenvalue
@@ -215,31 +194,36 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
         }
       }
 
-    /* std::cout << "EigenValues: " << eigenValue[smallestEigenValueIndex] << "\t"  
+    /*std::cout << "EigenValues: " << eigenValue[smallestEigenValueIndex] << "\t"  
                                  << eigenValue[middleEigenValueIndex]  << "\t"
-                                 << eigenValue[largestEigenValueIndex] << std::endl;*/
- 
-    Lambda2 = 1.0;
-    Lambda3 = 1.0;
+                                 << eigenValue[largestEigenValueIndex] << std::endl; */
+    Lambda1 = m_Alpha; 
+    Lambda2 = m_Alpha;
+  
+    double zeroValueTolerance = 1.0e-20;
+    
+    /* largest > middle > smallest */
 
-    double zerovalueTolerance = 1e-15;
-
-    double gradientMagnitude = gradientMagnitudeImageIterator.Get();
-
-    if ( gradientMagnitude < zerovalueTolerance )
+    if((fabs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
+       (fabs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
       {
-      Lambda1 = 1.0;
-      }
+      Lambda3 = 1.0;
+      }           
     else
       {
-      double gradientMagnitudeSquare = gradientMagnitude * gradientMagnitude;
-      double ratio = (gradientMagnitudeSquare)/(m_ContrastParameterLambdaE*m_ContrastParameterLambdaE);
-      double expVal = exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio, 4.0 )));
-      Lambda1 = 1.0 - expVal;
+      double kappa = vcl_pow( ((float) (eigenValue[middleEigenValueIndex])/( m_Alpha + eigenValue[smallestEigenValueIndex])), 4.0) ;
+      double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC * m_ContrastParameterLambdaC;
+      double expVal = exp((-1.0 * (vcl_log( 2.0) * contrastParameterLambdaCSquare )/kappa )); 
+      Lambda3 = m_Alpha + (1.0 - m_Alpha)*expVal;
+      
+      /* std::cout << "Kappa, contrastSquare, expVal, Lambda3"  << "\t"
+                << kappa << "\t"
+                << contrastParameterLambdaCSquare << "\t"
+                << expVal  << "\t"
+                << Lambda3 << std::endl; */
       }
 
     /* std::cout << "Lambda1,Lambda2, Lambda3\t" << Lambda1 << "\t" << Lambda2 << "\t" << Lambda3 << std::endl; */
-
     eigenValueMatrix(0,0) = Lambda1;
     eigenValueMatrix(1,1) = Lambda2;
     eigenValueMatrix(2,2) = Lambda3;
@@ -274,36 +258,28 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     ++it;
     ++eigenValueImageIterator;
     ++eigenVectorImageIterator;
-    ++gradientMagnitudeImageIterator;
     }
 }
+
 template <class TInputImage, class TOutputImage>
 void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::SetSigma( double sigma)
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
+::SetContrastParameterLambdaC( double value )
 {
-  m_Sigma = sigma;
+  m_ContrastParameterLambdaC = value;
 }
 
 template <class TInputImage, class TOutputImage>
 void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::SetThresholdParameterC( double threshold)
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
+::SetAlpha( double value )
 {
-  m_ThresholdParameterC = threshold;
+  m_Alpha = value;
 }
 
 template <class TInputImage, class TOutputImage>
 void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::SetContrastParameterLambdaE( double contrast)
-{
-  m_ContrastParameterLambdaE = contrast;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
