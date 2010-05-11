@@ -353,7 +353,7 @@ int DoIt( int argc, char * argv[] )
   itk::Array<double> params(4);
   params[0] = alpha;
   params[1] = beta;
-  params[2] = gamma;
+  params[2] = offset;
   params[3] = sigma;
 
   typename BlendCostFunctionType::Pointer costFunc = 

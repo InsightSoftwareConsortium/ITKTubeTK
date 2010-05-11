@@ -68,18 +68,18 @@
     <float>
       <name>beta</name>
       <label>Beta (offset)</label>
-      <description>Offset for bottom volume</description>
+      <description>Weighting for top volume</description>
       <flag>b</flag>
       <longflag>beta</longflag>
       <default>0.1</default>
     </float>
     <float>
-      <name>gamma</name>
-      <label>Gamma (scale)</label>
-      <description>Weighting for top volume</description>
+      <name>offset</name>
+      <label>Offset</label>
+      <description>Offset s.t. v = a*bot + b*top + offset </description>
       <flag>g</flag>
-      <longflag>gamma</longflag>
-      <default>0</default>
+      <longflag>offset</longflag>
+      <default>0.0</default>
     </float>
     <float>
       <name>sigma</name>
