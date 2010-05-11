@@ -42,7 +42,7 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
                ${PROJ_EXE}
-               ${INPUT_DATA}/slice256.png
+               ${INPUT_DATA}/ES0015_Large.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha
                -m 10,10 -M 100,100 )
 
@@ -58,7 +58,7 @@ set_tests_properties( ${PROJECT_NAME}Test1-Compare
 #######
 add_test( ${PROJECT_NAME}Test2
                ${PROJ_EXE}
-               ${INPUT_DATA}/slice256.png
+               ${INPUT_DATA}/ES0015_Large.mha
                ${TEMP}/${PROJECT_NAME}Test2.mha
                -m 10,10 -s 91,91 )
 
@@ -74,7 +74,7 @@ set_tests_properties( ${PROJECT_NAME}Test2-Compare
 #######
 add_test( ${PROJECT_NAME}Test3
                ${PROJ_EXE}
-               ${INPUT_DATA}/slice256.png
+               ${INPUT_DATA}/ES0015_Large.mha
                ${TEMP}/${PROJECT_NAME}Test3.mha
                -m 15,15 -s 81,81 -b 5,5 )
 
@@ -90,7 +90,7 @@ set_tests_properties( ${PROJECT_NAME}Test3-Compare
 #######
 add_test( ${PROJECT_NAME}Test4
                ${PROJ_EXE}
-               ${INPUT_DATA}/slice256.png
+               ${INPUT_DATA}/ES0015_Large.mha
                ${TEMP}/${PROJECT_NAME}Test4
                -S 2,2 -b 5,5 )
 
