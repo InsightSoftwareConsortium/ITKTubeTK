@@ -45,7 +45,7 @@ set( BASELINE ${APPLICATION_PATH}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-file( COPY ${INPUT_DATA}/slice256.png DESTINATION ${TEMP} )
+file( COPY ${INPUT_DATA}/ES0015_Large.mha DESTINATION ${TEMP} )
 file( COPY ${INPUT_DATA}/im0001.crop.mha DESTINATION ${TEMP} )
 
 # Test CLI generation
@@ -102,8 +102,8 @@ add_test( tubeCLIProgressReporterTest
 ## Image Compare
 add_test( ImageCompareCommandTest1
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-    -t ${TEMP}/slice256.png
-    -b ${INPUT_DATA}/slice256.png )
+    -t ${TEMP}/ES0015_Large.mha
+    -b ${INPUT_DATA}/ES0015_Large.mha )
 
 add_test( ImageCompareCommandTest2
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
