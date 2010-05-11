@@ -42,10 +42,10 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
-               ${INPUT_DATA}/1002TP0ES14_Small.mha
-               ${INPUT_DATA}/1002TP0GD15_Small_Match.mha
-               ${INPUT_DATA}/1002TP0ES16_Small.mha
-               ${INPUT_DATA}/1002TP0ES15_Small.mha
+               ${INPUT_DATA}/201002TP0ES14_Small.mha
+               ${INPUT_DATA}/201002TP0GD15_Small_Match.mha
+               ${INPUT_DATA}/201002TP0ES16_Small.mha
+               ${INPUT_DATA}/201002TP0ES15_Small.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
