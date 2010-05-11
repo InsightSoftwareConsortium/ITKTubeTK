@@ -391,9 +391,14 @@ Update( void )
       reg->SetMaxIterations( 500 );
       typename RegistrationMethodType::TransformParametersScalesType scales;
       scales = reg->GetTransformParametersScales();
-      scales[0] = 1.0/0.02;
-      scales[1] = 1.0/5.0;
-      scales[2] = 1.0/5.0;
+      for( unsigned int i=0; i<dimensionT-1; i++)
+        {
+        scales[i] = 1.0/0.02;
+        }
+      for( unsigned int i=0; i<dimensionT; i++)
+        {
+        scales[i + dimensionT-1] = 1.0/5.0;
+        }
       reg->SetTransformParametersScales( scales );
       reg->SetUseEvolutionaryOptimization( true );
       int numSamples = 1;
@@ -414,9 +419,18 @@ Update( void )
                                 m_ProgressStart + 0.2*m_ProgressRange,
                                 true );
         }
-      reg->Update();
-  
-      m_RegistrationTransform = reg->GetTypedTransform();
+
+      try
+        {
+        reg->Update();
+        m_RegistrationTransform = reg->GetTypedTransform();
+        }
+      catch( ... )
+        {
+        m_RegistrationTransform = 
+          RegistrationMethodType::TransformType::New();
+        m_RegistrationTransform->SetIdentity();
+        }
   
       if( m_ProgressReporter )
         {
@@ -838,8 +852,9 @@ Update( void )
     norm2->Update();
     typename ImageType::Pointer image2 = norm2->GetOutput();
   
-    typedef itk::IdentityTransform< double, dimensionT > TransformType;
+    typedef itk::AffineTransform< double, dimensionT > TransformType;
     typename TransformType::Pointer transform = TransformType::New();
+    transform->SetIdentity();
   
     typedef itk::LinearInterpolateImageFunction< ImageType, double > 
       InterpolatorType;
@@ -878,7 +893,12 @@ Update( void )
     metric->SetFixedImageRegion( image1->GetLargestPossibleRegion() );
     metric->SetTransform( transform );
     metric->SetInterpolator( interpolator );
-    metric->SetNumberOfSpatialSamples( size[0]*size[1]*m_SamplingRate );
+    int numSamples = 1;
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      numSamples *= size[i];
+      }
+    metric->SetNumberOfSpatialSamples( numSamples*m_SamplingRate );
     metric->Initialize();
     metric->MultiThreadingInitialize();
   
