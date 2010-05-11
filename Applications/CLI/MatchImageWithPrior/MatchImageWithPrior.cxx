@@ -42,9 +42,6 @@ limitations under the License.
 // Application-specific includes
 #include "tubeCompareCroppedROIs.h"
 
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-
 #include <map>
 
 // Must do a forward declaraction of DoIt before including
