@@ -77,7 +77,7 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterTest
             --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
                       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
             itkTubeEnhancingDiffusion2DImageFilterTest
-               ${INPUT_DATA}/slice256.png
+               ${INPUT_DATA}/ES0015_1.mha
                ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha )
 
 add_test( itkTubeEnhancingDiffusion2DImageFilterRetinaTest 
