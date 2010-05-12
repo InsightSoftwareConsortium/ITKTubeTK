@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved. 
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -74,84 +74,91 @@ int DoIt( int argc, char *argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   tube::CLIProgressReporter reporter( "Resample", CLPProcessInformation );
-  reporter.Start();
+  reporter.Start( );
 
   typename InputImageType::Pointer inIm;
   {
-  timeCollector.Start("LoadData");
-  typename InputReaderType::Pointer reader = InputReaderType::New();
-  reader->SetFileName( inputVolume.c_str() );
-  reader->Update();
-  inIm = reader->GetOutput();
-  timeCollector.Stop("LoadData");
+  timeCollector.Start( "LoadData" );
+  typename InputReaderType::Pointer reader = InputReaderType::New( );
+  reader->SetFileName( inputVolume.c_str( ) );
+  reader->Update( );
+  inIm = reader->GetOutput( );
+  timeCollector.Stop( "LoadData" );
   }
   reporter.Report( 0.1 );
 
-  typename InputImageType::SpacingType     inSpacing = inIm->GetSpacing();
-  typename InputImageType::PointType       inOrigin = inIm->GetOrigin();
+  typename InputImageType::SpacingType     inSpacing = inIm->GetSpacing( );
+  typename InputImageType::PointType       inOrigin = inIm->GetOrigin( );
   typename InputImageType::SizeType        inSize = 
-    inIm->GetLargestPossibleRegion().GetSize();
+    inIm->GetLargestPossibleRegion( ).GetSize( );
   typename InputImageType::DirectionType   inDirection = 
-    inIm->GetDirection();
+    inIm->GetDirection( );
 
   typename OutputImageType::SizeType       outSize;
   typename OutputImageType::SpacingType    outSpacing;
   typename OutputImageType::PointType      outOrigin;
   typename OutputImageType::DirectionType  outDirection;
-  for( unsigned int i=0; i< DimensionI; i++)
+  for( unsigned int i=0; i< DimensionI; i++ )
     {
     outSpacing[i] = inSpacing[i];
     outOrigin[i] = inOrigin[i];
     }
   outDirection = inDirection;
 
-  if(matchImage.size() > 1)
+  if( matchImage.size( ) > 1 )
     {
     typename InputReaderType::Pointer matchImReader =
-      InputReaderType::New();
+      InputReaderType::New( );
     matchImReader->SetFileName( matchImage );
-    matchImReader->Update();
-    outSpacing = matchImReader->GetOutput()->GetSpacing();
-    outOrigin = matchImReader->GetOutput()->GetOrigin();
-    outDirection = matchImReader->GetOutput()->GetDirection();
+    matchImReader->Update( );
+    outSpacing = matchImReader->GetOutput( )->GetSpacing( );
+    outOrigin = matchImReader->GetOutput( )->GetOrigin( );
+    outDirection = matchImReader->GetOutput( )->GetDirection( );
 
     reporter.Report( 0.2 );
     }
 
-  if(spacing.size() > 0)
+  if( spacing.size( ) > 0 )
     {
-    for( unsigned int i=0; i< DimensionI; i++)
+    for( unsigned int i=0; i< DimensionI; i++ )
       {
       outSpacing[i] = spacing[i];
       }
     }
 
-  if(origin.size() > 0)
+  if( origin.size( ) > 0 )
     {
-    for( unsigned int i=0; i< DimensionI; i++)
+    for( unsigned int i=0; i< DimensionI; i++ )
       {
       outOrigin[i] = origin[i];
       }
     }
 
-  if(resampleFactor.size() > 0)
+  if( resampleFactor.size( ) > 0 )
     {
-    for( unsigned int i=0; i< DimensionI; i++)
+    for( unsigned int i=0; i< DimensionI; i++ )
       {
       outSpacing[i] = outSpacing[i] / resampleFactor[i];
       }
     }
 
-  if(makeIsotropic)
+  if( makeIsotropic )
     {
-    double iso = ((outSpacing[0]+outSpacing[1])/2+outSpacing[2])/2;
-    for( unsigned int i=0; i<DimensionI; i++)
+    double iso = outSpacing[0];
+    for( unsigned int i=1; i<DimensionI-1; i++ )
+      {
+      iso += outSpacing[i];
+      }
+    iso /= ( DimensionI-1 );
+    iso += outSpacing[ DimensionI-1 ];
+    iso /= 2;
+    for( unsigned int i=0; i<DimensionI; i++ )
       {
       outSpacing[i] = iso;
       }
     }
 
-  for( unsigned int i=0; i<DimensionI; i++)
+  for( unsigned int i=0; i<DimensionI; i++ )
     {
     if( outSpacing[i]<=0 )
       {
@@ -163,16 +170,16 @@ int DoIt( int argc, char *argv[] )
 
   std::vector< double > outResampleFactor;
   outResampleFactor.resize( DimensionI );
-  for( unsigned int i=0; i< DimensionI; i++)
+  for( unsigned int i=0; i< DimensionI; i++ )
     {
     outResampleFactor[i] = inSpacing[i]/outSpacing[i];
-    outSize[i] = static_cast<unsigned long>(inSize[i] 
-                                            * outResampleFactor[i]);
+    outSize[i] = static_cast<unsigned long>( inSize[i] 
+                                            * outResampleFactor[i] );
     }
   
   typename OutputImageType::Pointer outIm;
   {
-  timeCollector.Start("Resample");
+  timeCollector.Start( "Resample" );
   reporter.Report( 0.25 );
   typedef typename itk::ResampleImageFilter< InputImageType,
           OutputImageType >             ResampleFilterType;
@@ -180,63 +187,63 @@ int DoIt( int argc, char *argv[] )
           double >                      InterpType;
   typename InterpType::Pointer interp;
 
-  if(interpolator == "BSpline")
+  if( interpolator == "BSpline" )
     {
     typedef typename itk::BSplineInterpolateImageFunction< InputImageType,
             double >                    MyInterpType;
-    interp = MyInterpType::New();
+    interp = MyInterpType::New( );
     }
-  else if(interpolator == "NearestNeighbor")
+  else if( interpolator == "NearestNeighbor" )
     {
     typedef typename itk::NearestNeighborInterpolateImageFunction<
             InputImageType, double >    MyInterpType;
-    interp = MyInterpType::New();
+    interp = MyInterpType::New( );
     }
-  else // default = if(interpolator == "Linear")
+  else // default = if( interpolator == "Linear" )
     {
     typedef typename itk::LinearInterpolateImageFunction<
             InputImageType, double >    MyInterpType;
-    interp = MyInterpType::New();
+    interp = MyInterpType::New( );
     }
 
-  typename ResampleFilterType::Pointer filter = ResampleFilterType::New();
+  typename ResampleFilterType::Pointer filter = ResampleFilterType::New( );
   filter->SetInterpolator( interp );
   filter->SetInput( inIm );
   filter->SetSize( outSize );
   filter->SetOutputOrigin( outOrigin );
   filter->SetOutputSpacing( outSpacing );
   filter->SetOutputDirection( outDirection );
-  filter->SetDefaultPixelValue(0);
+  filter->SetDefaultPixelValue( 0 );
   tube::CLIFilterWatcher  watcher( filter,
                                    "Resample Filter",
                                    CLPProcessInformation,
                                    0.7,
                                    0.25,
                                    true );
-  filter->Update();
+  filter->Update( );
 
-  outIm = filter->GetOutput();
+  outIm = filter->GetOutput( );
   }
   reporter.Report( 0.95 );
-  timeCollector.Stop("Resample");
+  timeCollector.Stop( "Resample" );
 
-  timeCollector.Start("Write");
-  typename OutputWriterType::Pointer  writer = OutputWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
+  timeCollector.Start( "Write" );
+  typename OutputWriterType::Pointer  writer = OutputWriterType::New( );
+  writer->SetFileName( outputVolume.c_str( ) );
   writer->SetInput( outIm );
   writer->SetUseCompression( true );
-  writer->Update();
-  timeCollector.Stop("Write");
+  writer->Update( );
+  timeCollector.Stop( "Write" );
 
   /*
-  itk::PluginFilterWatcher watcher1(smoothing, "Smoothing",
-                                    CLPProcessInformation, 0.5, 0.0);
+  itk::PluginFilterWatcher watcher1( smoothing, "Smoothing",
+                                    CLPProcessInformation, 0.5, 0.0 );
 
-  itk::PluginFilterWatcher watcher2(confidenceConnected, "Segmenting",
-                                    CLPProcessInformation, 0.5, 0.5);
+  itk::PluginFilterWatcher watcher2( confidenceConnected, "Segmenting",
+                                    CLPProcessInformation, 0.5, 0.5 );
   */
 
-  timeCollector.Report();
+  timeCollector.Report( );
 
   reporter.End( );
 

@@ -65,7 +65,7 @@ add_test( ${PROJECT_NAME}Test2
             ${PROJ_EXE}
                --interpolator BSpline
                --makeIsotropic
-               ${INPUT_DATA}/CroppedWholeLungCTScan.mha
+               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
                ${TEMP}/${PROJECT_NAME}Test2.mha )
 
 #######
