@@ -24,7 +24,6 @@ limitations under the License.
 #define __itkAnisotropicEdgeEnhancementDiffusionImageFilter_txx
 
 #include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
-#include "itkAnisotropicEdgeEnhancementDiffusionFunction.h"
 
 #include <list>
 #include "itkImageRegionConstIterator.h"
