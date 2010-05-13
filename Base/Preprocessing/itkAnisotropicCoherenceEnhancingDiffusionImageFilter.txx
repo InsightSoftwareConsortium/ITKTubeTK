@@ -37,7 +37,7 @@ limitations under the License.
 
 //#define INTERMEDIATE_OUTPUTS
 
-namespace itk {
+namespace itk{
 
 /**
  * Constructor
@@ -69,7 +69,8 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   //Step 1: Compute the structure tensor and identify the eigen vectors 
   //Step 1.1: Compute the structure tensor
   // Instantiate the structure tensor filter
-  typename StructureTensorFilterType::Pointer StructureTensorFilter  = StructureTensorFilterType::New();
+  typename StructureTensorFilterType::Pointer 
+          StructureTensorFilter  = StructureTensorFilterType::New();
 
   StructureTensorFilter->SetInput( this->GetOutput() );
   StructureTensorFilter->Update();
@@ -125,7 +126,8 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   //Iterator for the diffusion tensor image
   typedef itk::ImageRegionIterator< DiffusionTensorImageType > DiffusionTensorIteratorType;
   DiffusionTensorIteratorType 
-      it( this->GetDiffusionTensorImage(), this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
+    it( this->GetDiffusionTensorImage(),
+        this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
 
   //Iterator for the eigen value image
   typename EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
@@ -207,11 +209,15 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
        (fabs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
       {
       Lambda3 = 1.0;
-      }           
+      }
     else
       {
-      double kappa = vcl_pow( ((float) (eigenValue[middleEigenValueIndex])/( m_Alpha + eigenValue[smallestEigenValueIndex])), 4.0) ;
-      double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC * m_ContrastParameterLambdaC;
+      double kappa = vcl_pow( ((float) (eigenValue[middleEigenValueIndex]) / 
+                          ( m_Alpha + eigenValue[smallestEigenValueIndex])), 4.0);
+
+      double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC * 
+                                                      m_ContrastParameterLambdaC;
+
       double expVal = exp((-1.0 * (vcl_log( 2.0) * contrastParameterLambdaCSquare )/kappa )); 
       Lambda3 = m_Alpha + (1.0 - m_Alpha)*expVal;
       
@@ -222,7 +228,9 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
                 << Lambda3 << std::endl; */
       }
 
-    /* std::cout << "Lambda1,Lambda2, Lambda3\t" << Lambda1 << "\t" << Lambda2 << "\t" << Lambda3 << std::endl; */
+    /* std::cout << "Lambda1,Lambda2, Lambda3\t"
+                 <<  Lambda1 << "\t" << Lambda2 
+                 << "\t" << Lambda3 << std::endl; */
     eigenValueMatrix(0,0) = Lambda1;
     eigenValueMatrix(1,1) = Lambda2;
     eigenValueMatrix(2,2) = Lambda3;

@@ -62,11 +62,11 @@ int DoIt( int argc, char *argv[] )
 {
   PARSE_ARGS;
 
-  typedef PixelT                                           InputPixelType;
-  typedef itk::OrientedImage< InputPixelType, DimensionI >  InputImageType;
+  typedef PixelT                                              InputPixelType;
+  typedef itk::OrientedImage< InputPixelType, DimensionI >    InputImageType;
 
-  typedef InputPixelType                                   OutputPixelType;
-  typedef itk::OrientedImage< OutputPixelType, DimensionI > OutputImageType;
+  typedef InputPixelType                                      OutputPixelType;
+  typedef itk::OrientedImage< OutputPixelType, DimensionI >   OutputImageType;
 
   typedef  itk::ImageFileReader< InputImageType >          InputReaderType;
   typedef  itk::ImageFileWriter< OutputImageType >         OutputWriterType;
@@ -77,14 +77,14 @@ int DoIt( int argc, char *argv[] )
   reporter.Start( );
 
   typename InputImageType::Pointer inIm;
-  {
-  timeCollector.Start( "LoadData" );
-  typename InputReaderType::Pointer reader = InputReaderType::New( );
-  reader->SetFileName( inputVolume.c_str( ) );
-  reader->Update( );
-  inIm = reader->GetOutput( );
-  timeCollector.Stop( "LoadData" );
-  }
+    {
+    timeCollector.Start( "LoadData" );
+    typename InputReaderType::Pointer reader = InputReaderType::New( );
+    reader->SetFileName( inputVolume.c_str( ) );
+    reader->Update( );
+    inIm = reader->GetOutput( );
+    timeCollector.Stop( "LoadData" );
+    }
   reporter.Report( 0.1 );
 
   typename InputImageType::SpacingType     inSpacing = inIm->GetSpacing( );

@@ -44,7 +44,7 @@ class ITK_EXPORT AnisotropicDiffusionTensorFunction
 {
 public:
   /** Standard class typedefs. */
-  typedef AnisotropicDiffusionTensorFunction Self;
+  typedef AnisotropicDiffusionTensorFunction          Self;
   typedef FiniteDifferenceFunction<TImageType>        Superclass;
   typedef SmartPointer<Self>                          Pointer;
   typedef SmartPointer<const Self>                    ConstPointer;

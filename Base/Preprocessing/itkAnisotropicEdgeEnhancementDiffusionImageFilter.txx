@@ -71,7 +71,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   //Step 1: Compute the structure tensor and identify the eigen vectors 
   //Step 1.1: Compute the structure tensor
   // Instantiate the structure tensor filter
-  typename StructureTensorFilterType::Pointer StructureTensorFilter  = StructureTensorFilterType::New();
+  typename StructureTensorFilterType::Pointer 
+          StructureTensorFilter  = StructureTensorFilterType::New();
 
   StructureTensorFilter->SetInput( this->GetOutput() );
   StructureTensorFilter->SetSigma( m_Sigma );
@@ -117,7 +118,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     GradientMagnitudeRecursiveGaussianImageFilter<InputImageType> 
                                GradientMagnitudeFilterType;
 
-  typename GradientMagnitudeFilterType::Pointer gradientMagnitudeFilter = GradientMagnitudeFilterType::New();
+  typename GradientMagnitudeFilterType::Pointer 
+            gradientMagnitudeFilter = GradientMagnitudeFilterType::New();
   gradientMagnitudeFilter->SetInput( this->GetInput() );
   gradientMagnitudeFilter->SetSigma( m_Sigma );
   gradientMagnitudeFilter->Update();
@@ -139,7 +141,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   //Iterator for the diffusion tensor image
   typedef itk::ImageRegionIterator< DiffusionTensorImageType > DiffusionTensorIteratorType;
   DiffusionTensorIteratorType 
-      it( this->GetDiffusionTensorImage(), this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
+      it( this->GetDiffusionTensorImage(), 
+          this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
 
   //Iterator for the eigen value image
   typename EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
@@ -149,7 +152,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
   //Iterator for the gradient magnitude image 
   typedef typename GradientMagnitudeFilterType::OutputImageType GradientMagnitudeOutputImageType;
-  typename GradientMagnitudeOutputImageType::Pointer gradientMagnitudeOutputImage = gradientMagnitudeFilter->GetOutput();
+  typename GradientMagnitudeOutputImageType::Pointer 
+            gradientMagnitudeOutputImage = gradientMagnitudeFilter->GetOutput();
 
   itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType> gradientMagnitudeImageIterator;
   gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>(
@@ -232,12 +236,14 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     else
       {
       double gradientMagnitudeSquare = gradientMagnitude * gradientMagnitude;
-      double ratio = (gradientMagnitudeSquare)/(m_ContrastParameterLambdaE*m_ContrastParameterLambdaE);
+      double ratio = (gradientMagnitudeSquare) / 
+                (m_ContrastParameterLambdaE*m_ContrastParameterLambdaE);
       double expVal = exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio, 4.0 )));
       Lambda1 = 1.0 - expVal;
       }
 
-    /* std::cout << "Lambda1,Lambda2, Lambda3\t" << Lambda1 << "\t" << Lambda2 << "\t" << Lambda3 << std::endl; */
+    /* std::cout << "Lambda1,Lambda2, Lambda3\t" 
+                 << Lambda1 << "\t" << Lambda2 << "\t" << Lambda3 << std::endl; */
 
     eigenValueMatrix(0,0) = Lambda1;
     eigenValueMatrix(1,1) = Lambda2;

@@ -541,7 +541,8 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 } 
  
 template <class TInputImage, class TOutputImage>
-typename AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>::DiffusionTensorImagePointerType
+typename AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
+::DiffusionTensorImagePointerType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::GetDiffusionTensorImage()
 {

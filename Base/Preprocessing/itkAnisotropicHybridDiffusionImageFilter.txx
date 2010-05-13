@@ -74,7 +74,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   //Step 1: Compute the structure tensor and identify the eigen vectors 
   //Step 1.1: Compute the structure tensor
   // Instantiate the structure tensor filter
-  typename StructureTensorFilterType::Pointer StructureTensorFilter  = StructureTensorFilterType::New();
+  typename StructureTensorFilterType::Pointer 
+    StructureTensorFilter  = StructureTensorFilterType::New();
 
   StructureTensorFilter->SetInput( this->GetOutput() );
   StructureTensorFilter->SetSigma( m_Sigma );
@@ -120,7 +121,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     GradientMagnitudeRecursiveGaussianImageFilter<InputImageType> 
                                GradientMagnitudeFilterType;
 
-  typename GradientMagnitudeFilterType::Pointer gradientMagnitudeFilter = GradientMagnitudeFilterType::New();
+  typename GradientMagnitudeFilterType::Pointer 
+          gradientMagnitudeFilter = GradientMagnitudeFilterType::New();
   gradientMagnitudeFilter->SetInput( this->GetInput() );
   gradientMagnitudeFilter->SetSigma( m_Sigma );
   gradientMagnitudeFilter->Update();
@@ -142,7 +144,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   //Iterator for the diffusion tensor image
   typedef itk::ImageRegionIterator< DiffusionTensorImageType > DiffusionTensorIteratorType;
   DiffusionTensorIteratorType 
-      it( this->GetDiffusionTensorImage(), this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
+      it( this->GetDiffusionTensorImage(), 
+          this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
 
   //Iterator for the eigen value image
   typename EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
@@ -152,7 +155,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
   //Iterator for the gradient magnitude image 
   typedef typename GradientMagnitudeFilterType::OutputImageType GradientMagnitudeOutputImageType;
-  typename GradientMagnitudeOutputImageType::Pointer gradientMagnitudeOutputImage = gradientMagnitudeFilter->GetOutput();
+  typename GradientMagnitudeOutputImageType::Pointer 
+           gradientMagnitudeOutputImage = gradientMagnitudeFilter->GetOutput();
 
   itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType> gradientMagnitudeImageIterator;
   gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>(
@@ -238,12 +242,14 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     else
       {
       double gradientMagnitudeSquare = gradientMagnitude * gradientMagnitude;
-      double ratio = (gradientMagnitudeSquare)/(m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED);
+      double ratio = (gradientMagnitudeSquare) / 
+               (m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED);
       double expVal = exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio, 4.0 )));
       LambdaEED1 = 1.0 - expVal;
       }
 
-    /* std::cout << "LambdaEED1,LambdaEED2, LambdaEED3\t" << LambdaEED1 << "\t" << LambdaEED2 << "\t" << LambdaEED3 << std::endl; */
+    /* std::cout << "LambdaEED1,LambdaEED2, LambdaEED3\t" 
+                 << LambdaEED1 << "\t" << LambdaEED2 << "\t" << LambdaEED3 << std::endl; */
 
     /*Next compute Lambda's for CED */
 
@@ -260,11 +266,17 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
        (fabs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
       {
       LambdaCED3 = 1.0;
-      }           
+      }
     else
       {
-      double kappa = vcl_pow( ((float) (eigenValue[middleEigenValueIndex])/( m_Alpha + eigenValue[smallestEigenValueIndex])), 4.0) ;
-      double contrastParameterLambdaCEDSquare = m_ContrastParameterLambdaCED * m_ContrastParameterLambdaCED;
+      double kappa = 
+       vcl_pow( ((float) (eigenValue[middleEigenValueIndex]) /
+                ( m_Alpha + eigenValue[smallestEigenValueIndex])), 
+               4.0);
+
+      double contrastParameterLambdaCEDSquare 
+        = m_ContrastParameterLambdaCED * m_ContrastParameterLambdaCED;
+
       double expVal = exp((-1.0 * (vcl_log( 2.0) * contrastParameterLambdaCEDSquare )/kappa )); 
       LambdaCED3 = m_Alpha + (1.0 - m_Alpha)*expVal;
       }
@@ -274,10 +286,12 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     double Lambda2;
     double Lambda3;
 
-    double xi = (eigenValue[largestEigenValueIndex]/(m_Alpha + eigenValue[middleEigenValueIndex])) - 
-                (eigenValue[middleEigenValueIndex]/(m_Alpha + eigenValue[smallestEigenValueIndex])); 
+    double xi = 
+        (eigenValue[largestEigenValueIndex]/(m_Alpha + eigenValue[middleEigenValueIndex])) - 
+        (eigenValue[middleEigenValueIndex]/(m_Alpha + eigenValue[smallestEigenValueIndex])); 
 
-    double numerator = eigenValue[middleEigenValueIndex] * ( ((m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid ) *
+    double numerator = eigenValue[middleEigenValueIndex] * 
+                       ( ((m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid ) *
                        xi - fabs( xi)) - 2.0 * eigenValue[smallestEigenValueIndex]);
                         
 
