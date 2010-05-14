@@ -114,6 +114,7 @@ ZScoreCalculator<pixelT,dimensionT>
     m_ScoreVector = new BigVectorType(samples);
     }
   double count = 0;
+  unsigned int progCount = 0;
   while( !imageItr.IsAtEnd() && !maskItr.IsAtEnd() )
     {
     typename ImageType::IndexType curIndex = imageItr.GetIndex();
@@ -188,7 +189,12 @@ ZScoreCalculator<pixelT,dimensionT>
       m_SubtractsVolume->SetPixel(curIndex,subVal);
       progress += increment;
       count++;
-      progressReporter.Report( progress );
+      progCount++;
+      if( progCount == 100 )
+        {
+        progressReporter.Report( progress );
+        progCount = 0;
+        }
       }
     ++imageItr;
     ++maskItr;
@@ -213,12 +219,17 @@ ZScoreCalculator<pixelT,dimensionT>
     double fraction = (percentageToKeep/100) * samples;
     upperZScore = (*m_ScoreVector)[static_cast<unsigned int>(fraction)];
     }
+  else
+    {
+    upperZScore = (*m_ScoreVector)[m_ScoreVector->size()];
+    }
   if( scoreThreshold != 0 )
     {
     upperZScore = scoreThreshold;
     }
 
   double progress = start;
+  unsigned int progCount = 0;
   double increment = proportion/samples;
 
   FullItrType imageItr( m_InputVolume, m_Region );
@@ -306,7 +317,12 @@ ZScoreCalculator<pixelT,dimensionT>
         }
       progress += increment;
       count++;
-      progressReporter.Report( progress );
+      progCount++;
+      if( progCount == 100 )
+        {
+        progressReporter.Report( progress );
+        progCount = 0;
+        }
       }
     ++imageItr;
     ++maskItr;
@@ -356,6 +372,7 @@ ZScoreCalculator<pixelT,dimensionT>
                         double samples)
 {
   double progress = start;
+  unsigned int progCount = 0;
   double increment = proportion/samples;
 
   typename HistogramType::Pointer hist;
@@ -433,7 +450,12 @@ ZScoreCalculator<pixelT,dimensionT>
       sumSqrHist = adder->GetOutput();
       
       progress += increment;
-      progressReporter.Report( progress );
+      progCount++;
+      if( progCount == 0 )
+        {
+        progressReporter.Report( progress );
+        progCount = 0;
+        }
       }
     
     ++imageItr;

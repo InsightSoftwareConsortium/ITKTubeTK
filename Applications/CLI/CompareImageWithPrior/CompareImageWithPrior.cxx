@@ -383,11 +383,14 @@ int DoIt( int argc, char * argv[] )
     zCalc.Update( progressReporter, progress, 
                   propFrac, samples );
     progress += propFrac;
-    zCalc.CalculateRobustMeanAndStdev( progressReporter, 
-                                       progress, 
-                                       propFrac, samples, 
-                                       robustPercentage,
-                                       robustZScore );
+    if( robustPercentage != 100 )
+      {
+      zCalc.CalculateRobustMeanAndStdev( progressReporter, 
+                                         progress, 
+                                         propFrac, samples, 
+                                         robustPercentage,
+                                         robustZScore );
+      }
     meanHist = zCalc.GetMeanHistogram();
     stdevHist = zCalc.GetStdevHistogram();
 
