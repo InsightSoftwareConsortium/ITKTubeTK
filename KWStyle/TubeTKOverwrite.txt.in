@@ -42,3 +42,4 @@ OtsuThreshold.cxx Namespace Disable
 OrImages.cxx Namespace Disable
 PdPfaScoring.cxx Namespace Disable
 ImageMath.cxx Namespace Disable
+Resample.cxx Namespace Disable
