@@ -31,13 +31,16 @@ set( BASELINE
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-#add_test( ${PROJECT_NAME}Test1
-#            ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
-#               ${INPUT_DATA}/slice256.png
-#               ${TEMP}/${PROJECT_NAME}Test1.mha )
+add_test( ${PROJECT_NAME}Test1
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME}
+  ${INPUT_DATA}/ES0015_Large.mha
+  ${INPUT_DATA}/GDS0015_Large_match.mha
+  ${TEMP}/${PROJECT_NAME}Test1.mha
+  -r 70 -i 40 )
 
-#add_test( ${PROJECT_NAME}Test1-Compare
-#           ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
-#               -t ${TEMP}/${PROJECT_NAME}Test1.mha 
-#               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
+
+add_test( ${PROJECT_NAME}Test1-Compare
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+  -t ${TEMP}/${PROJECT_NAME}Test1.mha 
+  -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 
