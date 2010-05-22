@@ -123,7 +123,31 @@ NJetImageFunction<TInputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   this->Superclass::PrintSelf(os,indent);
-  os << indent << "calculate NJet value at point:" << std::endl;
+  os << indent << "m_UseProjection = " << m_UseProjection << std::endl;
+  os << indent << "m_UseInputImageMask = " << m_UseInputImageMask 
+     << std::endl;
+  if( m_UseInputImageMask )
+    {
+    os << indent << "m_InputImageMask = " << m_InputImageMask << std::endl;
+    }
+  else
+    {
+    os << indent << "m_InputImageMask = NULL" << std::endl;
+    }
+
+  os << indent << "m_InputImageSpacing = " << m_InputImageSpacing 
+     << std::endl;
+  os << indent << "m_InputImageSpacingSquared = " 
+     << m_InputImageSpacingSquared << std::endl;
+  if( m_InputImage.IsNotNull() )
+    {
+    os << indent << "m_InputImage = " << m_InputImage << std::endl;
+    }
+  else
+    {
+    os << indent << "m_InputImage = NULL" << std::endl;
+    }
+  os << indent << "m_Extent = " << m_Extent << std::endl;
 }
 
 
