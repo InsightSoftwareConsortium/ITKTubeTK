@@ -14,20 +14,6 @@
 
     <label>IO</label>
     <description>Input/output parameters</description>
-    <integer-vector>
-      <name>roiCenter</name>
-      <label>Center of ROI</label>
-      <description>Center of ROI to be processed</description>
-      <flag>C</flag>
-      <longflag>roiCenter</longflag>
-    </integer-vector>
-    <integer-vector>
-      <name>roiSize</name>
-      <label>Size of ROI</label>
-      <description>Size of ROI to be processed</description>
-      <flag>S</flag>
-      <longflag>roiSize</longflag>
-    </integer-vector>
     <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
@@ -43,18 +29,18 @@
       <description>Input mask</description>
     </image>
     <image>
-      <name>outputVolumeROI</name>
-      <label>Output Volume ROI</label>
+      <name>outputVolume</name>
+      <label>Output Volume </label>
       <channel>output</channel>
       <index>2</index>
-      <description>Output volume ROI</description>
+      <description>Output volume </description>
     </image>
     <image>
-      <name>outputMaskROI</name>
-      <label>Output Mask ROI</label>
+      <name>outputMask</name>
+      <label>Output Mask </label>
       <channel>output</channel>
       <index>3</index>
-      <description>Output mask ROI</description>
+      <description>Output mask </description>
     </image>
 
   </parameters>
@@ -105,25 +91,25 @@
       <default>9</default>
     </float>
     <boolean>
-      <name>disableRegisterROIs</name>
-      <label>Disable Register ROIs</label>
+      <name>disableRegister</name>
+      <label>Disable Register </label>
       <flag>r</flag>
-      <description>Turn off the registration of the ROIs</description>
-      <longflag>disableRegisterROIs</longflag>
+      <description>Turn off the registration of the </description>
+      <longflag>disableRegister</longflag>
       <default>false</default>
     </boolean>
     <integer-vector>
-      <name>outputSize</name>
-      <label>Output size</label>
-      <flag>o</flag>
-      <description>Size of the output image</description>
-      <longflag>outputSize</longflag>
+      <name>outputBoundary</name>
+      <label>Output boundary size</label>
+      <description>Size of boundary to be excluded from match computation and then cropped</description>
+      <flag>B</flag>
+      <longflag>outputBoundary</longflag>
     </integer-vector>
     <boolean>
       <name>disableNormalize</name>
-      <label>Disable normalization of output mask roi</label>
+      <label>Disable normalization of output mask</label>
       <flag>n</flag>
-      <description>Disable attempt to match mask ROI intensity range with volume ROI intensity range</description>
+      <description>Disable attempt to match mask intensity range with volume intensity range</description>
       <longflag>disableNormalize</longflag>
       <default>false</default>
     </boolean>

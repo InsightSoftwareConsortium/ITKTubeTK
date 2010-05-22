@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeCompareCroppedROIs_h
-#define __tubeCompareCroppedROIs_h
+#ifndef __tubeCompareImageWithPrior_h
+#define __tubeCompareImageWithPrior_h
 
 #include "itkOrientedImage.h"
 #include "itkRigidImageToImageRegistrationMethod.h"
@@ -33,7 +33,7 @@ namespace tube
 {
 
 template< class pixelT, unsigned int dimensionT >
-class CompareCroppedROIs
+class CompareImageWithPrior
 {
 public:
 
@@ -43,8 +43,8 @@ public:
   typedef itk::RigidImageToImageRegistrationMethod< ImageType >
                                                     RegistrationMethodType;
 
-  CompareCroppedROIs( void );
-  ~CompareCroppedROIs( void );
+  CompareImageWithPrior( void );
+  ~CompareImageWithPrior( void );
 
   void SetVolumeImage( typename ImageType::Pointer volImage );
   typename ImageType::Pointer GetVolumeImage( void );
@@ -70,7 +70,7 @@ public:
   typename RegistrationMethodType::TransformType::Pointer 
     GetRegistrationTransform( void );
 
-  void SetOutputSize( std::vector< int > & outputSize );
+  void SetBoundarySize( std::vector< int > & boundarySize );
 
   void SetUseMeanSquaresMetric( bool useMeanSquaresMetric );
 
@@ -98,7 +98,7 @@ private:
   typename RegistrationMethodType::TransformType::Pointer
                               m_RegistrationTransform;
   bool                        m_Normalize;
-  std::vector< int >          m_OutputSize;
+  std::vector< int >          m_BoundarySize;
   bool                        m_UseMeanSquaresMetric;
   bool                        m_UseCorrelationMetric;
   float                       m_SamplingRate;
@@ -114,6 +114,6 @@ private:
 
 }
 
-#include "tubeCompareCroppedROIs.txx"
+#include "tubeCompareImageWithPrior.txx"
 
 #endif

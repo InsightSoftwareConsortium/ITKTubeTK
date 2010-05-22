@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeCompareCroppedROIs_txx
-#define __tubeCompareCroppedROIs_txx
+#ifndef __tubeCompareImageWithPrior_txx
+#define __tubeCompareImageWithPrior_txx
 
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
@@ -67,8 +67,8 @@ namespace tube
 {
 
 template< class pixelT, unsigned int dimensionT >
-CompareCroppedROIs< pixelT, dimensionT>::
-CompareCroppedROIs( void )
+CompareImageWithPrior< pixelT, dimensionT>::
+CompareImageWithPrior( void )
 {
   m_VolImage = NULL;
   m_MaskImage = NULL;
@@ -82,7 +82,7 @@ CompareCroppedROIs( void )
   m_RegistrationTransform = RegistrationMethodType::TransformType::New();
   m_RegistrationTransform->SetIdentity();
   m_Normalize = true;
-  m_OutputSize.resize(0);
+  m_BoundarySize.resize(0);
   m_UseMeanSquaresMetric = true;
   m_UseCorrelationMetric = false;
   m_SamplingRate = 0.2;
@@ -96,13 +96,13 @@ CompareCroppedROIs( void )
 }
 
 template< class pixelT, unsigned int dimensionT >
-CompareCroppedROIs< pixelT, dimensionT>::
-~CompareCroppedROIs( void )
+CompareImageWithPrior< pixelT, dimensionT>::
+~CompareImageWithPrior( void )
 {
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetVolumeImage( typename ImageType::Pointer volImage )
 {
   m_VolImage = volImage;
@@ -110,14 +110,14 @@ SetVolumeImage( typename ImageType::Pointer volImage )
 
 template< class pixelT, unsigned int dimensionT >
 typename itk::OrientedImage< float, dimensionT >::Pointer 
-CompareCroppedROIs< pixelT, dimensionT>::
+CompareImageWithPrior< pixelT, dimensionT>::
 GetVolumeImage( void )
 {
   return m_VolImage;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetMaskImage( typename ImageType::Pointer maskImage )
 {
   m_MaskImage = maskImage;
@@ -125,14 +125,14 @@ SetMaskImage( typename ImageType::Pointer maskImage )
 
 template< class pixelT, unsigned int dimensionT >
 typename itk::OrientedImage< float, dimensionT >::Pointer 
-CompareCroppedROIs< pixelT, dimensionT>::
+CompareImageWithPrior< pixelT, dimensionT>::
 GetMaskImage( void )
 {
   return m_MaskImage;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetOriginalMaskImage( typename ImageType::Pointer orgMaskImage )
 {
   m_OrgMaskImage = orgMaskImage;
@@ -140,56 +140,56 @@ SetOriginalMaskImage( typename ImageType::Pointer orgMaskImage )
 
 template< class pixelT, unsigned int dimensionT >
 typename itk::OrientedImage< float, dimensionT >::Pointer 
-CompareCroppedROIs< pixelT, dimensionT>::
+CompareImageWithPrior< pixelT, dimensionT>::
 GetOriginalMaskImage( void )
 {
   return m_OrgMaskImage;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetForeground( float foreground )
 {
   m_Foreground = foreground;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetErode( int erode )
 {
   m_Erode = erode;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetDilate( int dilate )
 {
   m_Dilate = dilate;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetGaussianBlur( float gaussianBlur )
 {
   m_GaussianBlur = gaussianBlur;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetUseRegistration( bool reg )
 {
   m_UseRegistration = reg;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetUseRegistrationTransform( bool reg )
 {
   m_UseRegistrationTransform = reg;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetRegistrationTransform( 
   typename itk::RigidImageToImageRegistrationMethod< 
     itk::OrientedImage< float, dimensionT > >::TransformType::Pointer tfm )
@@ -200,39 +200,39 @@ SetRegistrationTransform(
 template< class pixelT, unsigned int dimensionT >
 typename itk::RigidImageToImageRegistrationMethod< 
   itk::OrientedImage< float, dimensionT > >::TransformType::Pointer 
-CompareCroppedROIs< pixelT, dimensionT>::
+CompareImageWithPrior< pixelT, dimensionT>::
 GetRegistrationTransform( void )
 {
   return m_RegistrationTransform;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
-SetOutputSize( std::vector< int > & outputSize )
+void CompareImageWithPrior< pixelT, dimensionT>::
+SetBoundarySize( std::vector< int > & boundarySize )
 {
-  m_OutputSize.resize( outputSize.size() );
-  for(unsigned int i=0; i<outputSize.size(); i++ )
+  m_BoundarySize.resize( boundarySize.size() );
+  for(unsigned int i=0; i<boundarySize.size(); i++ )
     {
-    m_OutputSize[i] = outputSize[i];
+    m_BoundarySize[i] = boundarySize[i];
     }
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetUseMeanSquaresMetric( bool useMeanSquaresMetric )
 {
   m_UseMeanSquaresMetric = useMeanSquaresMetric;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector )
 {
   m_TimeCollector = timeCollector;
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetProgressReporter( tube::CLIProgressReporter * progressReporter,
                      float progressStart, float progressRange )
 {
@@ -242,50 +242,9 @@ SetProgressReporter( tube::CLIProgressReporter * progressReporter,
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareCroppedROIs< pixelT, dimensionT>::
+void CompareImageWithPrior< pixelT, dimensionT>::
 Update( void )
 {
-
-  if( m_Dilate > 0 )
-    {
-    if( m_TimeCollector )
-      {
-      m_TimeCollector->Start("Dilate");
-      }
-    if( m_ProgressReporter )
-      {
-      m_ProgressReporter->Report( m_ProgressStart );
-      }
-
-    typedef itk::BinaryBallStructuringElement< PixelType, dimensionT >  
-      BallType;
-    BallType ball;
-    ball.SetRadius( 1 );
-    ball.CreateStructuringElement();
-
-    typedef itk::BinaryDilateImageFilter< ImageType, ImageType, BallType >
-      DilateFilterType;
-
-    for(int r=0; r<m_Dilate; r++)
-      {
-      typename DilateFilterType::Pointer filter = DilateFilterType::New();
-      filter->SetBackgroundValue( 0 );
-      filter->SetDilateValue( 1 );
-      filter->SetKernel( ball );
-      filter->SetInput( m_MaskImage );
-      filter->Update();
-      m_MaskImage = filter->GetOutput();
-      }
-
-    if( m_TimeCollector )
-      {
-      m_TimeCollector->Stop("Dilate");
-      }
-    if( m_ProgressReporter )
-      {
-      m_ProgressReporter->Report( m_ProgressStart + 0.2*m_ProgressRange );
-      }
-    }
 
   if( m_Erode > 0 )
     {
@@ -325,6 +284,47 @@ Update( void )
     if( m_ProgressReporter )
       {
       m_ProgressReporter->Report( m_ProgressStart + 0.1*m_ProgressRange );
+      }
+    }
+
+  if( m_Dilate > 0 )
+    {
+    if( m_TimeCollector )
+      {
+      m_TimeCollector->Start("Dilate");
+      }
+    if( m_ProgressReporter )
+      {
+      m_ProgressReporter->Report( m_ProgressStart );
+      }
+
+    typedef itk::BinaryBallStructuringElement< PixelType, dimensionT >  
+      BallType;
+    BallType ball;
+    ball.SetRadius( 1 );
+    ball.CreateStructuringElement();
+
+    typedef itk::BinaryDilateImageFilter< ImageType, ImageType, BallType >
+      DilateFilterType;
+
+    for(int r=0; r<m_Dilate; r++)
+      {
+      typename DilateFilterType::Pointer filter = DilateFilterType::New();
+      filter->SetBackgroundValue( 0 );
+      filter->SetDilateValue( 1 );
+      filter->SetKernel( ball );
+      filter->SetInput( m_MaskImage );
+      filter->Update();
+      m_MaskImage = filter->GetOutput();
+      }
+
+    if( m_TimeCollector )
+      {
+      m_TimeCollector->Stop("Dilate");
+      }
+    if( m_ProgressReporter )
+      {
+      m_ProgressReporter->Report( m_ProgressStart + 0.2*m_ProgressRange );
       }
     }
 
@@ -432,6 +432,8 @@ Update( void )
         m_RegistrationTransform->SetIdentity();
         }
   
+      std::cout << "Registration params = " 
+                << m_RegistrationTransform->GetParameters() << std::endl;
       if( m_ProgressReporter )
         {
         m_ProgressReporter->Report( m_ProgressStart + 0.6*m_ProgressRange );
@@ -477,7 +479,7 @@ Update( void )
       }
     }
 
-  if( m_OutputSize.size() > 0 )
+  if( m_BoundarySize.size() > 0 )
     {
     if( m_TimeCollector )
       {
@@ -491,31 +493,23 @@ Update( void )
 
     for( unsigned int i=0; i<dimensionT; i++ )
       {
-      int ti = (roiSize[i])/2 - (m_OutputSize[i]-1)/2;
-      if( ti < 0 )
+      if( m_BoundarySize[i] < 0 )
         {
         lowerCropSize[i] = 0;
+        upperCropSize[i] = 0;
         }
-      else if( ti >= (int)(roiSize[i]) )
+      else if( m_BoundarySize[i] >= (int)(roiSize[i])/2 )
         {
-        lowerCropSize[i] = roiSize[i]-1;
+        lowerCropSize[i] = roiSize[i]/2-1;
+        upperCropSize[i] = roiSize[i]/2-1;
         }
       else
         {
-        lowerCropSize[i] = ti;
+        lowerCropSize[i] = m_BoundarySize[i];
+        upperCropSize[i] = m_BoundarySize[i];
         }
-  
-      ti = roiSize[i] - (int)( lowerCropSize[i] + m_OutputSize[i] );
-      if( ti < 0 )
-        {
-        upperCropSize[i] = 0;
-        }
-      else if( ti >= (int)(roiSize[i]) - (int)(lowerCropSize[i]) )
-        {
-        ti = (int)(roiSize[i]) - (int)(lowerCropSize[i]);
-        }
-      upperCropSize[i] = ti;
       }
+
     typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
     typename CropFilterType::Pointer cropVolumeFilter =
       CropFilterType::New();
@@ -924,7 +918,7 @@ Update( void )
 }
 
 template< class pixelT, unsigned int dimensionT >
-float CompareCroppedROIs< pixelT, dimensionT>::
+float CompareImageWithPrior< pixelT, dimensionT>::
 GetGoodnessOfFit( void )
 {
   return m_GoF;

@@ -40,7 +40,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Application-specific includes
-#include "tubeCompareCroppedROIs.h"
+#include "tubeCompareImageWithPrior.h"
 
 #include <map>
 
@@ -142,69 +142,6 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::SizeType inputSize = curVolume
                                            ->GetLargestPossibleRegion()
                                            .GetSize();
-  typename ImageType::SizeType lowerCropSize;
-  typename ImageType::SizeType upperCropSize;
-
-  /** Crop input images to ROI */
-  timeCollector.Start("Crop");
-  if( roiCenter.size()>0 || roiSize.size()>0 )
-    {
-    if( roiCenter.size() != dimensionT 
-        || roiSize.size() != dimensionT )
-      {
-      tube::ErrorMessage( 
-             "MatchImageWithPrior: roiCenter or roiSize not of image dimension." );
-      return EXIT_FAILURE;
-      }
-    for( unsigned int i=0; i<dimensionT; i++ )
-      {
-      int ti = roiCenter[i] - (roiSize[i]-1)/2;
-      if( ti < 0 )
-        {
-        lowerCropSize[i] = 0;
-        }
-      else if( ti >= (int)(inputSize[i]) )
-        {
-        lowerCropSize[i] = inputSize[i]-1;
-        }
-      else
-        {
-        lowerCropSize[i] = ti;
-        }
-  
-      ti = inputSize[i] - (int)( lowerCropSize[i] + roiSize[i] );
-      if( ti < 0 )
-        {
-        upperCropSize[i] = 0;
-        }
-      else if( ti >= (int)(inputSize[i]) - (int)(lowerCropSize[i]) )
-        {
-        ti = (int)(inputSize[i]) - (int)(lowerCropSize[i]);
-        }
-      upperCropSize[i] = ti;
-      }
-  
-    typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
-    typename CropFilterType::Pointer cropVolumeFilter =
-      CropFilterType::New();
-    typename CropFilterType::Pointer cropMaskFilter =
-      CropFilterType::New();
-  
-    cropVolumeFilter->SetLowerBoundaryCropSize( lowerCropSize );
-    cropVolumeFilter->SetUpperBoundaryCropSize( upperCropSize );
-    cropVolumeFilter->SetInput( curVolume );
-    cropVolumeFilter->Update();
-    curVolume = cropVolumeFilter->GetOutput();
-
-    cropMaskFilter->SetLowerBoundaryCropSize( lowerCropSize );
-    cropMaskFilter->SetUpperBoundaryCropSize( upperCropSize );
-    cropMaskFilter->SetInput( curMask );
-    cropMaskFilter->Update();
-    curMask = cropMaskFilter->GetOutput();
-    }
-  timeCollector.Stop("Crop");
-  progressReporter.Report( 0.2 );
-
   typename ImageType::Pointer orgMask = curMask;
 
   if( foreground != 1 || background != 0 )
@@ -250,13 +187,13 @@ int DoIt( int argc, char * argv[] )
     int dilateBest = dilate;
     float gaussianBlurBest = gaussianBlur;
 
-    typedef tube::CompareCroppedROIs< pixelT, dimensionT > ROIEvalType;  
-    ROIEvalType eval;
+    typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
+    ImageEvalType eval;
     eval.SetVolumeImage( curVolume );
     eval.SetMaskImage( curMask );
     eval.SetOriginalMaskImage( orgMask );
     eval.SetForeground( foreground );
-    eval.SetOutputSize( outputSize );
+    eval.SetBoundarySize( outputBoundary );
     eval.SetTimeCollector( &timeCollector );
     eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
     eval.SetUseRegistration( true );
@@ -266,7 +203,7 @@ int DoIt( int argc, char * argv[] )
     eval.SetGaussianBlur( gaussianBlur );
     eval.Update();
 
-    typedef typename ROIEvalType::RegistrationMethodType::TransformType  
+    typedef typename ImageEvalType::RegistrationMethodType::TransformType  
       TransformType;
     typename TransformType::Pointer regTfm;
     regTfm = eval.GetRegistrationTransform();
@@ -326,6 +263,7 @@ int DoIt( int argc, char * argv[] )
         eval.SetOriginalMaskImage( orgMask );
         eval.SetErode( erode+erodeStep );
         eval.SetDilate( dilate+dilateStep );
+        eval.SetBoundarySize( outputBoundary );
         eval.SetGaussianBlur( gaussianBlur+gaussianBlurStep );
         eval.SetUseRegistration( true );
         eval.SetUseRegistrationTransform( true );
@@ -407,6 +345,7 @@ int DoIt( int argc, char * argv[] )
     eval.SetErode( erodeBest );
     eval.SetDilate( dilateBest );
     eval.SetGaussianBlur( gaussianBlurBest );
+    eval.SetBoundarySize( outputBoundary );
     eval.Update();
     eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
     gof = eval.GetGoodnessOfFit();
@@ -425,10 +364,10 @@ int DoIt( int argc, char * argv[] )
   typename ImageWriterType::Pointer writerVolume = ImageWriterType::New();
   typename ImageWriterType::Pointer writerMask = ImageWriterType::New();
 
-  writerVolume->SetFileName( outputVolumeROI.c_str() );
+  writerVolume->SetFileName( outputVolume.c_str() );
   writerVolume->SetInput( curVolume );
   writerVolume->SetUseCompression( true );
-  writerMask->SetFileName( outputMaskROI.c_str() );
+  writerMask->SetFileName( outputMask.c_str() );
   writerMask->SetInput( curMask );
   writerMask->SetUseCompression( true );
 
