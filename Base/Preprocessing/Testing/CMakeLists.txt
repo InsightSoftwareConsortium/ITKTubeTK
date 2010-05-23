@@ -125,3 +125,10 @@ add_test( itkStructureTensorRecursiveGaussianImageFilterTest
             ${TEMP}/PrimaryEigenVectorImage.mha
             ${TEMP}/PrimaryEigenValueImage.mha
                )
+add_test( itkStructureTensorRecursiveGaussianImageFilterTest2 
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkStructureTensorRecursiveGaussianImageFilterTest
+            ${INPUT_DATA}/CylinderSynthetic.mha
+            ${TEMP}/CylinderPrimaryEigenVectorImage.mha
+            ${TEMP}/CylinderPrimaryEigenValueImage.mha
+         )
