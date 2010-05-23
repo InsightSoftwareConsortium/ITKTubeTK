@@ -63,7 +63,7 @@
       <description>Weighting for bottom volume</description>
       <flag>a</flag>
       <longflag>alpha</longflag>
-      <default>0.1</default>
+      <default>0.2</default>
     </float>
     <float>
       <name>beta</name>
@@ -77,7 +77,7 @@
       <name>offset</name>
       <label>Offset</label>
       <description>Offset s.t. v = a*bot + b*top + offset </description>
-      <flag>g</flag>
+      <flag>o</flag>
       <longflag>offset</longflag>
       <default>0.0</default>
     </float>

@@ -160,7 +160,8 @@ public:
         params[1] * iterBottomB.Get() +
         params[2];
 
-      iterOutput.Set( iterMiddle.Get() - tf );
+      iterOutput.Set( (iterMiddle.Get() + tf) 
+                      / (1 + params[0] + params[1]) );
 
       ++iterMiddle;
       ++iterTopB;
