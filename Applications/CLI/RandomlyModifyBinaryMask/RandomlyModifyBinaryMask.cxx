@@ -43,7 +43,6 @@ limitations under the License.
 // Includes specific to this CLI application
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 #include "itkBinaryBallStructuringElement.h"
-#include "itkBinaryErodeImageFilter.h"
 #include "itkBinaryDilateImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
@@ -94,20 +93,17 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  if( regionSize.size() == 0 )
+  std::vector< int > regionSize;
+  regionSize.resize( dimensionT );
+  for( unsigned int i=0; i<dimensionT; i++ )
     {
-    regionSize.resize( dimensionT );
-    for( unsigned int i=0; i<dimensionT; i++ )
-      {
-      regionSize[i] = 40;
-      }
+    regionSize[i] = maxEffectSize * 2;
     }
 
-  int effectSize = regionSize[0]/4; 
   int minChange = 1;
   for( unsigned int i=0; i<dimensionT; i++ )
     {
-    minChange *= effectSize/2;
+    minChange *= minEffectSize;
     }
 
   typename ImageType::Pointer curImage = reader->GetOutput();
@@ -123,7 +119,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::IndexType regionCenterMax;
   for( unsigned int i=0; i<dimensionT; i++ )
     {
-    bufferSize[i] = effectSize;
+    bufferSize[i] = maxEffectSize/2;
     regionCenterMin[i] = index[i] + regionSize[i]/2 + bufferSize[i] + 1;
     regionCenterMax[i] = index[i] + size[i] - 1 - regionSize[i]/2 
                                   - bufferSize[i] - 1;
@@ -165,23 +161,36 @@ int DoIt( int argc, char * argv[] )
   tmpROIRegion.SetSize( roiSize );
   tmpROIRegion.SetIndex( roiIndex );
 
+  typename ImageType::RegionType addSubRegion;
+  addSubRegion = tmpImage->GetLargestPossibleRegion();
+  typename ImageType::RegionType::SizeType addSubRegionSize;
+  typename ImageType::IndexType addSubRegionIndex;
+  for( unsigned int i=0; i<dimensionT; i++ )
+    {
+    addSubRegionSize[i] = maxEffectSize + 1;
+    addSubRegionIndex[i] = roiIndex[i] + (roiSize[i]/2-maxEffectSize/2);
+    }
+  addSubRegion.SetSize( addSubRegionSize );
+  addSubRegion.SetIndex( addSubRegionIndex );
+
   typename ImageType::IndexType roiCenter;
   typename ImageType::IndexType tmpMin;
   typename ImageType::IndexType tmpROIMin;
+
+  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer 
+    randGen = 
+    itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
+  if( seed != -1 )
+    {
+    randGen->Initialize( seed );
+    }
+  else
+    {
+    randGen->Initialize();
+    }
+
   for( int regionNum=0; regionNum<numberOfRegions; ++regionNum )
     {
-    itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer 
-      randGen = 
-      itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
-    if( seed != -1 )
-      {
-      randGen->Initialize( seed );
-      }
-    else
-      {
-      randGen->Initialize();
-      }
-
     bool foundForegroundPixel = false;
     while( !foundForegroundPixel )
       {
@@ -215,28 +224,42 @@ int DoIt( int argc, char * argv[] )
         curTestIndex = roiCenter;
         typename ImageType::IndexType tmpTestIndex;
         tmpTestIndex = tmpCenter;
-        for( unsigned int i=0; i<dimensionT; i++ )
+        if( mode == 0 )
           {
-          curTestIndex[i] = roiCenter[i] + effectSize/2;
-          if( curImage->GetPixel( curTestIndex ) == background )
+          for( unsigned int i=0; i<dimensionT; i++ )
             {
-            tmpTestIndex[i] = tmpCenter[i] + effectSize/2;
-            tmpImage->SetPixel( tmpTestIndex, foreground );
-            tmpTestIndex[i] = tmpCenter[i];
+            curTestIndex[i] = roiCenter[i] + maxEffectSize/2;
+            if( curImage->GetPixel( curTestIndex ) == background )
+              {
+              tmpTestIndex[i] = tmpCenter[i] + maxEffectSize/2;
+              tmpImage->SetPixel( tmpTestIndex, foreground );
+              tmpTestIndex[i] = tmpCenter[i];
+              }
+            curTestIndex[i] = roiCenter[i] - maxEffectSize/2;
+            if( curImage->GetPixel( curTestIndex ) == background )
+              {
+              tmpTestIndex[i] = tmpCenter[i] - maxEffectSize/2;
+              tmpImage->SetPixel( tmpTestIndex, foreground );
+              tmpTestIndex[i] = tmpCenter[i];
+              }
+            curTestIndex[i] = roiCenter[i];
             }
-          curTestIndex[i] = roiCenter[i] - effectSize/2;
-          if( curImage->GetPixel( curTestIndex ) == background )
-            {
-            tmpTestIndex[i] = tmpCenter[i] - effectSize/2;
-            tmpImage->SetPixel( tmpTestIndex, foreground );
-            tmpTestIndex[i] = tmpCenter[i];
-            }
-          curTestIndex[i] = roiCenter[i];
+          }
+        else
+          {
+          tmpImage->SetPixel( tmpTestIndex, foreground );
           }
         typedef itk::BinaryBallStructuringElement<PixelType, dimensionT >
           BallType;
         BallType ball;
-        ball.SetRadius( effectSize );
+        if( mode == 0 )
+          {
+          ball.SetRadius( maxEffectSize );
+          }
+        else
+          {
+          ball.SetRadius( (maxEffectSize+minEffectSize)/2 - 1 );
+          }
         ball.CreateStructuringElement();
         typedef itk::BinaryDilateImageFilter< ImageType, ImageType, 
           BallType > FilterType;
@@ -257,7 +280,7 @@ int DoIt( int argc, char * argv[] )
         outIter.GoToBegin();
         if( mode == 0 )
           {
-          std::cout << "Constrict : " << roiCenter << std::endl;
+          std::cout << "Divot : " << roiCenter << std::endl;
           while( !curIter.IsAtEnd() )
             {
             if( outIter.Get() == foreground )
@@ -275,7 +298,7 @@ int DoIt( int argc, char * argv[] )
           }
         else
           {
-          std::cout << "Bloat : " << roiCenter << std::endl;
+          std::cout << "Bump : " << roiCenter << std::endl;
           while( !curIter.IsAtEnd() )
             {
             if( outIter.Get() == foreground )
@@ -296,8 +319,20 @@ int DoIt( int argc, char * argv[] )
       case 2:
         {
         std::cout << "Add : " << roiCenter << std::endl;
+        itk::ImageRegionIterator< ImageType > 
+          curIter( curImage, curRegion );
+        itk::ImageRegionIterator< ImageType > 
+          tmpIter( tmpImage, tmpRegion );
+        curIter.GoToBegin();
+        tmpIter.GoToBegin();
+        while( !curIter.IsAtEnd() )
+          {
+          tmpIter.Set( curIter.Get() );
+          ++tmpIter;
+          ++curIter;
+          }
         itk::ImageRegionIterator< ImageType > iter( tmpImage,
-                                                    tmpROIRegion );
+                                                    addSubRegion );
         iter.GoToBegin();
         while( !iter.IsAtEnd() )
           {
@@ -309,8 +344,20 @@ int DoIt( int argc, char * argv[] )
       case 3:
         {
         std::cout << "Subtract : " << roiCenter << std::endl;
+        itk::ImageRegionIterator< ImageType > 
+          curIter( curImage, curRegion );
+        itk::ImageRegionIterator< ImageType > 
+          tmpIter( tmpImage, tmpRegion );
+        curIter.GoToBegin();
+        tmpIter.GoToBegin();
+        while( !curIter.IsAtEnd() )
+          {
+          tmpIter.Set( curIter.Get() );
+          ++tmpIter;
+          ++curIter;
+          }
         itk::ImageRegionIterator< ImageType > iter( tmpImage,
-                                                    tmpROIRegion );
+                                                    addSubRegion );
         iter.GoToBegin();
         while( !iter.IsAtEnd() )
           {
@@ -342,6 +389,11 @@ int DoIt( int argc, char * argv[] )
         {
         ++count;
         }
+      if( changeROIIter.Get() != 0 )
+        {
+        count = 0;
+        break;
+        }
       ++changeROIIter;
       ++curROIIter;
       ++tmpROIIter;
@@ -355,7 +407,6 @@ int DoIt( int argc, char * argv[] )
         {
         if( curROIIter.Get() != tmpROIIter.Get() )
           {
-          ++count;
           curROIIter.Set( tmpROIIter.Get() );
           changeROIIter.Set( mode+1 );
           }
@@ -366,6 +417,8 @@ int DoIt( int argc, char * argv[] )
       }
     else
       {
+      std::cout << "Rejected: change insufficient: " 
+                << count << " < " << minChange << std::endl;
       --regionNum;
       }
     }

@@ -55,13 +55,22 @@
       <flag>n</flag>
       <default>10</default>
     </integer>
-    <integer-vector>
-      <name>regionSize</name>
-      <label>Region size</label>
-      <description>Size of the region for each random operation</description>
-      <longflag>regionSize</longflag>
-      <flag>r</flag>
-    </integer-vector>
+    <integer>
+      <name>minEffectSize</name>
+      <label>Min effect size</label>
+      <description>Min size of the effect for each random operation</description>
+      <longflag>minEffectSize</longflag>
+      <flag>m</flag>
+      <default>6</default>
+    </integer>
+    <integer>
+      <name>maxEffectSize</name>
+      <label>Max effect size</label>
+      <description>Max size of the effect for each random operation</description>
+      <longflag>maxEffectSize</longflag>
+      <flag>M</flag>
+      <default>10</default>
+    </integer>
   </parameters>
   <parameters>
     <label>Testing</label>
