@@ -66,7 +66,6 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
 }
 
-
 /**
  * Set value of Sigma
  */
@@ -107,10 +106,6 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
 }
 
-
-//
-//
-//
 template <typename TInputImage, typename TOutputImage>
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
@@ -126,10 +121,6 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
   image->SetRequestedRegion( this->GetInput()->GetLargestPossibleRegion() );
 }
 
-
-//
-//
-//
 template <typename TInputImage, typename TOutputImage>
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
