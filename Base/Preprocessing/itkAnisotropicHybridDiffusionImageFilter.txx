@@ -384,9 +384,23 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
+::SetAlpha( double alpha)
+{
+  m_Alpha = alpha;
+}
+
+template <class TInputImage, class TOutputImage>
+void
+AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
+
+  os << indent << "CED Contrast parameter "    << m_ContrastParameterLambdaCED << std::endl;
+  os << indent << "EED Contrast parameter "    << m_ContrastParameterLambdaEED << std::endl;
+  os << indent << "Hybrid Contrast parameter"  << m_ContrastParameterLambdaHybrid << std::endl;
+  os << indent << "Alpha " << m_Alpha << std::endl;
+  os << indent << "Sigma " << m_Sigma << std::endl;
 }
 
 }// end namespace itk

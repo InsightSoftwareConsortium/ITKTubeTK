@@ -116,6 +116,9 @@ public:
   /** Set Alpha */
   void SetAlpha( double value );
 
+  /** Set the sigma value */
+  void SetSigma( double value );
+
 protected:
   AnisotropicCoherenceEnhancingDiffusionImageFilter();
  ~AnisotropicCoherenceEnhancingDiffusionImageFilter() {}
@@ -131,6 +134,7 @@ private:
 
   double     m_ContrastParameterLambdaC;
   double     m_Alpha;
+  double     m_Sigma;
 };
   
 

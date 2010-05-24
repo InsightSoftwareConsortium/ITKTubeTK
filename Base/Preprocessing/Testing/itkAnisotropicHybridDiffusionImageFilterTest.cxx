@@ -30,7 +30,10 @@ int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv [] )
     std::cerr << "Missing Parameters: " 
               << argv[0]
               << " Input_Image"
-              << " Edge_Enhanced_Output_Image "<< std::endl; 
+              << " Edge_Enhanced_Output_Image "
+              << " [Sigma] [EED contrast] [CED contrast] [Hybrid contrast] "
+              << " [Alpha] "
+              << std::endl; 
     return EXIT_FAILURE;
     }
  
@@ -73,7 +76,57 @@ int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv [] )
 
   HybridFilter->SetInput( reader->GetOutput() );
 
-  //Set/Get VED parameters
+  //Set/Get hybrid filter parameters
+  
+  //Sigma 
+  if( argc > 3 )
+    {
+    double sigma = atof( argv[3] );
+    HybridFilter->SetSigma( sigma );
+    }
+  
+  //Contrast EED 
+  if( argc > 4 )
+    {
+    double contrastEED = atof( argv[4] );
+    HybridFilter->SetContrastParameterLambdaEED( contrastEED );
+    }
+ 
+  //Contrast CED 
+  if( argc > 5 )
+    {
+    double contrastCED = atof( argv[5] );
+    HybridFilter->SetContrastParameterLambdaCED( contrastCED );
+    }
+ 
+  //Contrast Hybrid 
+  if( argc > 6 )
+    {
+    double contrastHybrid = atof( argv[6] );
+    HybridFilter->SetContrastParameterLambdaHybrid( contrastHybrid );
+    }
+ 
+  //alpha 
+  if( argc > 7 )
+    {
+    double alpha = atof( argv[7] );
+    HybridFilter->SetAlpha( alpha );
+    }
+  
+  // timestep 
+  if( argc > 8 )
+    {
+    double timestep = atof( argv[8] );
+    HybridFilter->SetTimeStep( timestep );
+    }
+
+  // Number Of iterations
+  if( argc > 9 )
+    {
+    int numberOfIterations= atoi( argv[9] );
+    HybridFilter->SetNumberOfIterations( numberOfIterations );
+    }
+
  
   std::cout << "Enhancing .........: " << argv[1] << std::endl;
 

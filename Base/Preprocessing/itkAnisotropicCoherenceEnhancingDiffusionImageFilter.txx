@@ -48,6 +48,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 {
   m_ContrastParameterLambdaC = 15.0;
   m_Alpha = 0.001;
+  m_Sigma = 1.0;
 }
 
 template <class TInputImage, class TOutputImage>
@@ -60,10 +61,9 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   std::cerr << "UpdateDiffusionTensorImage()" << std::endl;
 
   /* IN THIS METHOD, the following items will be implemented
-   - Compute the structure tensor ( Multiscale version structure tensor )
+   - Compute the structure tensor 
    - Compute its eigen vectors
    - Compute eigen values corresponding to the diffusion matrix tensor 
-     ( Here is where all the magic happens for EED, CED and hybrid switch )
   */
 
   //Step 1: Compute the structure tensor and identify the eigen vectors 
@@ -73,6 +73,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
           StructureTensorFilter  = StructureTensorFilterType::New();
 
   StructureTensorFilter->SetInput( this->GetOutput() );
+  StructureTensorFilter->SetSigma ( m_Sigma );
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigen vectors of the structure tensor 
@@ -271,6 +272,14 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
+::SetSigma( double sigma)
+{
+  m_Sigma = sigma;
+}
+
+template <class TInputImage, class TOutputImage>
+void
+AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::SetContrastParameterLambdaC( double value )
 {
   m_ContrastParameterLambdaC = value;
@@ -290,6 +299,10 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
+
+  os << indent << "Contrast parameter LambdaC: " << m_ContrastParameterLambdaC << std::endl;
+  os << indent << "Sigma: " << m_Sigma << std::endl;
+  os << indent << "Alpha: " << m_Alpha << std::endl;
 }
 
 }// end namespace itk

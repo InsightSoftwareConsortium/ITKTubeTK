@@ -30,7 +30,8 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
     std::cerr << "Missing Parameters: " 
               << argv[0]
               << " Input_Image"
-              << " Edge_Enhanced_Output_Image [Alpha] [ContrastParameter]"<< std::endl; 
+              << " Edge_Enhanced_Output_Image [Sigma] [Alpha] [ContrastParameter]"
+              << "[TimeStep] [NumberOfIterations]" << std::endl; 
     return EXIT_FAILURE;
     }
  
@@ -74,8 +75,17 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   CoherenceEnhancingFilter->SetInput( reader->GetOutput() );
 
   //Set/Get Coherence Enhancing Diffusion parameters
-  //Set alpha
+  //
+  //Set sigma
   if( argc > 3 ) 
+    {
+    double sigma = atof( argv[3] );
+    std::cout << "Set sigma parameter value \t" << sigma << std::endl;
+    CoherenceEnhancingFilter->SetSigma( sigma );
+    }
+
+  //set alpha
+  if( argc > 4 ) 
     {
     double alpha = atof( argv[3] );
     std::cout << "Set alpha parameter value \t" << alpha << std::endl;
@@ -83,13 +93,28 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
     }
 
   //Set contrast parameter
-  if( argc > 4 ) 
+  if( argc > 5 ) 
     {
     double contrastParamter = atof( argv[4] );
     std::cout << "Set contrast parameter value \t" << contrastParamter << std::endl;
     CoherenceEnhancingFilter->SetContrastParameterLambdaC( contrastParamter );
     }
 
+  //Set time step
+  if( argc > 5 ) 
+    {
+    double timeStep = atof(argv[5]);
+    CoherenceEnhancingFilter->SetTimeStep( timeStep );
+    } 
+
+  //Set number of iterations
+  if( argc > 6 ) 
+    {
+    double numberOfIterations = atoi(argv[6]);
+    CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
+    } 
+
+  CoherenceEnhancingFilter->Print ( std::cout );
   std::cout << "Enhancing .........: " << argv[1] << std::endl;
 
   try

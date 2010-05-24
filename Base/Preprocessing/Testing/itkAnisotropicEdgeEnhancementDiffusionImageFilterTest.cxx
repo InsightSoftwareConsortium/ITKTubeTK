@@ -30,7 +30,8 @@ int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv [
     std::cerr << "Missing Parameters: " 
               << argv[0]
               << " Input_Image"
-              << " Edge_Enhanced_Output_Image "<< std::endl; 
+              << " Edge_Enhanced_Output_Image [ScaleParameter] [ContrastParameter] "
+              << " [TimeStep] [NumberOfIterations]" << std::endl; 
     return EXIT_FAILURE;
     }
  
@@ -74,8 +75,39 @@ int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv [
   EdgeEnhancementFilter->SetInput( reader->GetOutput() );
 
   //Set/Get VED parameters
+
+  //Set scale/sigma value
+  if( argc > 3 ) 
+  {
+  double scaleParameter = atof(argv[3]);
+  EdgeEnhancementFilter->SetSigma( scaleParameter );
+  }
  
+  //Set contrast parameter
+  if( argc > 4 ) 
+  {
+  double contrastParameter = atof(argv[4]);
+  EdgeEnhancementFilter->SetContrastParameterLambdaE( contrastParameter );
+  }
+  
+  //Set time step 
+  if( argc > 5 ) 
+  {
+  double timeStep = atof(argv[5]);
+  EdgeEnhancementFilter->SetTimeStep( timeStep );
+  } 
+
+
+  //Set number of iterations
+  if( argc > 6 ) 
+  {
+  double numberOfIterations = atoi(argv[6]);
+  EdgeEnhancementFilter->SetNumberOfIterations( numberOfIterations );
+  } 
+
   std::cout << "Enhancing .........: " << argv[1] << std::endl;
+
+  EdgeEnhancementFilter->Print( std::cout );
 
   try
     {

@@ -103,8 +103,8 @@ add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
             ${BASE_PREPROCESSING_FILTERS_TESTS}
             itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
                ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
-               ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 0.4 5.0 10 10
-               true )
+               ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 
+               )
 
 add_test( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest 
             ${BASE_PREPROCESSING_FILTERS_TESTS}

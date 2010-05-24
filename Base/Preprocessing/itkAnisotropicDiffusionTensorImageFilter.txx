@@ -53,7 +53,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
  
   this->SetNumberOfIterations(1);
 
-  m_TimeStep = 10e-3;
+  m_TimeStep = 0.11; 
 
   //set the function
   typename AnisotropicDiffusionTensorFunction<UpdateBufferType>::Pointer q

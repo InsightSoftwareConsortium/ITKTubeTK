@@ -27,14 +27,13 @@ limitations under the License.
 #include "itkAnisotropicDiffusionTensorFunction.h"
 #include "itkMultiThreader.h"
 #include "itkDiffusionTensor3D.h"
-#include "itkHessianRecursiveGaussianImageFilter.h"
 #include "itkSymmetricEigenAnalysisImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 namespace itk {
 /** \class AnisotropicDiffusionTensorImageFilter
- * \brief This is a superclass for filters that iteratively enhance edge in an image by solving
- * non-linear diffusion equation.
+ * \brief This is a superclass for filters that iteratively enhance edge in 
+ *        an image by solving non-linear diffusion equation.
  *
  * 
  * \sa AnisotropicEdgeEnhancementDiffusionImageFilter
@@ -79,9 +78,6 @@ public:
   typedef AnisotropicDiffusionTensorFunction<InputImageType>  
                                                   FiniteDifferenceFunctionType;
   
-  typedef HessianRecursiveGaussianImageFilter< InputImageType >
-                                                HessianFilterType;
-
   typedef itk::Image< double, 3 >               VesselnessOutputImageType;
 
   typedef itk::Matrix<double, ImageDimension, ImageDimension> MatrixType;
@@ -231,7 +227,6 @@ private:
   typename UpdateBufferType::Pointer m_UpdateBuffer;
 
   TimeStepType                                          m_TimeStep;
-  typename HessianFilterType::Pointer                   m_HessianFilter;  
 
 };
   

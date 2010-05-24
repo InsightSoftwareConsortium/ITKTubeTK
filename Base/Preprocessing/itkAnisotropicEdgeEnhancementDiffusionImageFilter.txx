@@ -62,10 +62,9 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   std::cerr << "UpdateDiffusionTensorImage()" << std::endl;
 
   /* IN THIS METHOD, the following items will be implemented
-   - Compute the structure tensor ( Multiscale version structure tensor )
+   - Compute the local structure tensor 
    - Compute its eigen vectors
    - Compute eigen values corresponding to the diffusion matrix tensor 
-     ( Here is where all the magic happens for EED, CED and hybrid switch )
   */
 
   //Step 1: Compute the structure tensor and identify the eigen vectors 
@@ -312,6 +311,10 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
+  
+  os << indent << "Contrast parameter LambdaE: "      << m_ContrastParameterLambdaE  << std::endl;
+  os << indent << "Sigma : "                           << m_Sigma  << std::endl;
+  os << indent << "Threshold parameter C "             << m_ThresholdParameterC  << std::endl;
 }
 
 }// end namespace itk
