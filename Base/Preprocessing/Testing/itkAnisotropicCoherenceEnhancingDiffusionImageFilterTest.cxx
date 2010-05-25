@@ -87,7 +87,7 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   //set alpha
   if( argc > 4 ) 
     {
-    double alpha = atof( argv[3] );
+    double alpha = atof( argv[4] );
     std::cout << "Set alpha parameter value \t" << alpha << std::endl;
     CoherenceEnhancingFilter->SetAlpha( alpha );
     }
@@ -95,22 +95,22 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   //Set contrast parameter
   if( argc > 5 ) 
     {
-    double contrastParamter = atof( argv[4] );
+    double contrastParamter = atof( argv[5] );
     std::cout << "Set contrast parameter value \t" << contrastParamter << std::endl;
     CoherenceEnhancingFilter->SetContrastParameterLambdaC( contrastParamter );
     }
 
   //Set time step
-  if( argc > 5 ) 
+  if( argc > 6 ) 
     {
-    double timeStep = atof(argv[5]);
+    double timeStep = atof(argv[6]);
     CoherenceEnhancingFilter->SetTimeStep( timeStep );
     } 
 
   //Set number of iterations
-  if( argc > 6 ) 
+  if( argc > 7 ) 
     {
-    double numberOfIterations = atoi(argv[6]);
+    double numberOfIterations = atoi(argv[7]);
     CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
     } 
 
