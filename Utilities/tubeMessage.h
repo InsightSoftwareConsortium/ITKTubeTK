@@ -65,6 +65,12 @@ void InfoMessage( const T& str )
 }
 
 template <class T>
+void InformationMessage( const T& str )
+{
+  Message( str, MessageLevel::Information );
+}
+
+template <class T>
 void WarningMessage( const T& str )
 {
   Message( str, MessageLevel::Warning );
