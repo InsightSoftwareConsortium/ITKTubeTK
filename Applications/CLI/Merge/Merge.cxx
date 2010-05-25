@@ -124,6 +124,10 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::SizeType  sizeOut;
   minXOut = minX1Org;
   maxXOut = maxX1Org;
+  for( unsigned int i=0; i<dimensionT; i++ )
+    {
+    sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
+    }
   for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
     {
     timeCollector.Start("Load data");
