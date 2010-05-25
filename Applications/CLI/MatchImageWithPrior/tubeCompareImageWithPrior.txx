@@ -31,7 +31,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include <strstream>
+#include <sstream>
 
 #include "itkOrientedImage.h"
 #include "itkImageFileWriter.h"
@@ -435,7 +435,7 @@ Update( void )
         m_RegistrationTransform->SetIdentity();
         }
 
-      std::strstream str;
+      std::stringstream str;
       str << "Registration params = ";
       for( unsigned int i=0;
            i<m_RegistrationTransform->GetParameters().size();
@@ -443,6 +443,7 @@ Update( void )
         {
         str << m_RegistrationTransform->GetParameters()[i] << " ";
         }
+      str << std::ends;
       tube::InfoMessage( str.str() );
       if( m_ProgressReporter )
         {
