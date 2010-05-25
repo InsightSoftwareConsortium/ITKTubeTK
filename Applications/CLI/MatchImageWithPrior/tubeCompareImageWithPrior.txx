@@ -31,8 +31,9 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
+#include <strstream>
+
 #include "itkOrientedImage.h"
-#include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
 // The following three should be used in every CLI application
@@ -379,11 +380,11 @@ Update( void )
       typename NormFilterType::Pointer norm1 = NormFilterType::New();
       norm1->SetInput( m_VolImage );
       norm1->Update();
-  
+
       typename NormFilterType::Pointer norm2 = NormFilterType::New();
       norm2->SetInput( m_MaskImage );
       norm2->Update();
-  
+
       typename RegistrationMethodType::Pointer reg = 
         RegistrationMethodType::New();
       reg->SetFixedImage( norm1->GetOutput() );
@@ -397,7 +398,7 @@ Update( void )
         }
       for( unsigned int i=0; i<dimensionT; i++)
         {
-        scales[i + dimensionT-1] = 1.0/5.0;
+        scales[i + dimensionT-1] = 1.0/10.0;
         }
       reg->SetTransformParametersScales( scales );
       reg->SetUseEvolutionaryOptimization( true );
@@ -427,13 +428,22 @@ Update( void )
         }
       catch( ... )
         {
+        tube::WarningMessage( 
+          "Exception thrown during registration. Compensating..." );
         m_RegistrationTransform = 
           RegistrationMethodType::TransformType::New();
         m_RegistrationTransform->SetIdentity();
         }
-  
-      std::cout << "Registration params = " 
-                << m_RegistrationTransform->GetParameters() << std::endl;
+
+      std::strstream str;
+      str << "Registration params = ";
+      for( unsigned int i=0;
+           i<m_RegistrationTransform->GetParameters().size();
+           i++)
+        {
+        str << m_RegistrationTransform->GetParameters()[i] << " ";
+        }
+      tube::InfoMessage( str.str() );
       if( m_ProgressReporter )
         {
         m_ProgressReporter->Report( m_ProgressStart + 0.6*m_ProgressRange );
@@ -593,7 +603,6 @@ Update( void )
       ++maskIter;
       }
   
-    double binCount = 0;
     int bin;
     volIter.GoToBegin();
     maskIter.GoToBegin();
@@ -613,16 +622,13 @@ Update( void )
           bin = numBins - 1;
           }
         ++volFgHisto[ bin ];
-        ++binCount;
         if( bin > 0 )
           {
           volFgHisto[ bin-1 ] += 0.5;
-          binCount += 0.5;
           }
         if( bin < numBins - 1 )
           {
           volFgHisto[ bin+1 ] += 0.5;
-          binCount += 0.5;
           }
   
         bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin))
@@ -636,16 +642,13 @@ Update( void )
           bin = numBins - 1;
           }
         ++maskFgHisto[ bin ];
-        ++binCount;
         if( bin > 0 )
           {
           maskFgHisto[ bin-1 ] += 0.5;
-          binCount += 0.5;
           }
         if( bin < numBins - 1 )
           {
           maskFgHisto[ bin+1 ] += 0.5;
-          binCount += 0.5;
           }
         }
       else
@@ -661,16 +664,13 @@ Update( void )
           bin = numBins - 1;
           }
         ++volBgHisto[ bin ];
-        ++binCount;
         if( bin > 0 )
           {
           volBgHisto[ bin-1 ] += 0.5;
-          binCount += 0.5;
           }
         if( bin < numBins - 1 )
           {
           volBgHisto[ bin+1 ] += 0.5;
-          binCount += 0.5;
           }
   
         bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin))
@@ -684,16 +684,13 @@ Update( void )
           bin = numBins - 1;
           }
         ++maskBgHisto[ bin ];
-        ++binCount;
         if( bin > 0 )
           {
           maskBgHisto[ bin-1 ] += 0.5;
-          binCount += 0.5;
           }
         if( bin < numBins - 1 )
           {
           maskBgHisto[ bin+1 ] += 0.5;
-          binCount += 0.5;
           }
         }
   
@@ -701,15 +698,16 @@ Update( void )
       ++maskIter;
       ++orgMaskIter;
       }
-    binCount /= 2;
 
-    /*  Debugguing - printout bins
+    /*  Debug - printout bins */
+    /*
     for( bin=0; bin<numBins; bin++ )
       {
       std::cout << volBgHisto[bin] << " : " << volFgHisto[bin] << " - "
                 << maskBgHisto[bin] << " : " << maskFgHisto[bin]
                 << std::endl;
-      } */
+      }
+    */
   
     float maxVFg = 0;
     int maxVFgI = -1;
@@ -745,6 +743,11 @@ Update( void )
       }
     */
     double clip = 0.05;
+    double binCount = 0;
+    for( int i=0; i<numBins; i++ )
+      {
+      binCount += volBgHisto[i];
+      }
     for( int i=0; i<numBins; i++ )
       {
       maxVBg += volBgHisto[i];
@@ -753,6 +756,11 @@ Update( void )
         maxVBgI = i;
         break;
         }
+      }
+    binCount = 0;
+    for( int i=0; i<numBins; i++ )
+      {
+      binCount += volFgHisto[i];
       }
     for( int i=numBins-1; i>=0; i-- )
       {
@@ -764,6 +772,11 @@ Update( void )
         }
       }
     clip = 0.02;
+    binCount = 0;
+    for( int i=0; i<numBins; i++ )
+      {
+      binCount += maskBgHisto[i];
+      }
     for( int i=0; i<numBins; i++ )
       {
       maxMBg += maskBgHisto[i];
@@ -772,6 +785,11 @@ Update( void )
         maxMBgI = i;
         break;
         }
+      }
+    binCount = 0;
+    for( int i=0; i<numBins; i++ )
+      {
+      binCount += maskFgHisto[i];
       }
     for( int i=numBins-1; i>=0; i-- )
       {
@@ -788,12 +806,12 @@ Update( void )
     maxMFg = (double)(maxMFgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
     maxMBg = (double)(maxMBgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
 
-    /*
+    
     std::cout << "VBg = " << maxVBg <<  " - "
               << "VFg = " << maxVFg << std::endl;
     std::cout << "MBg = " << maxMBg <<  " - "
               << "MFg = " << maxMFg << std::endl;
-              */
+              
    
     if( maxVFgI != -1 &&
         maxVBgI != -1 &&
@@ -825,6 +843,12 @@ Update( void )
       }
     }
 
+      typedef itk::ImageFileWriter< ImageType > WriterType;
+      typename WriterType::Pointer writerMask = WriterType::New();
+      writerMask->SetInput( m_MaskImage );
+      writerMask->SetFileName( "maskNorm.mha" );
+      writerMask->Update();
+  
   /* Compute similarity */
   if( true )
     {
