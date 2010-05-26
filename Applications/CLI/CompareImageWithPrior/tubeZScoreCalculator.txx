@@ -152,31 +152,20 @@ ZScoreCalculator<pixelT,dimensionT>
       stdItr.GoToBegin();
       typename HistogramType::PixelType val = 0;
       typename HistogramType::PixelType tmp = 0;
-      typename HistogramType::PixelType addVal = 0;
-      typename HistogramType::PixelType subVal = 0;
       typename HistogramType::PixelType histCount = 0;
       typename HistogramType::PixelType t = 0;
       typename HistogramType::PixelType m = 0;
       typename HistogramType::PixelType s = 0;
       HistogramType::IndexType histIndex;
-      int halfDim = m_NumberOfBins/2;
       while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
         {
         histIndex = histItr.GetIndex();
         t = histItr.Get();
         m = meanItr.Get();
         s = stdItr.Get();
-        s += 0.001;
+        s += 0.00001;
         tmp = vnl_math_abs((t-m)/s);
         val += tmp;
-        if( histIndex[0] > halfDim && histIndex[1] < halfDim )
-          {
-          addVal += tmp;
-          }
-        else if( histIndex[0] < halfDim && histIndex[1] > halfDim )
-          {
-          subVal += tmp;
-          }
         ++histItr;
         ++meanItr;
         ++stdItr;
@@ -185,8 +174,6 @@ ZScoreCalculator<pixelT,dimensionT>
       val /= histCount;
       (*m_ScoreVector)[count] = val;
       m_OutputVolume->SetPixel(curIndex,val);
-      m_AddsVolume->SetPixel(curIndex,addVal);
-      m_SubtractsVolume->SetPixel(curIndex,subVal);
       progress += increment;
       count++;
       progCount++;
@@ -290,7 +277,7 @@ ZScoreCalculator<pixelT,dimensionT>
         typename HistogramType::PixelType t = histItr.Get();
         typename HistogramType::PixelType m = meanItr.Get();
         typename HistogramType::PixelType s = stdItr.Get();
-        s += 0.0001;
+        s += 0.00001;
         val += vnl_math_abs(t-m)/s;
         ++histItr;
         ++meanItr;
