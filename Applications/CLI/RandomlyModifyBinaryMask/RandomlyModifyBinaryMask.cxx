@@ -408,7 +408,22 @@ int DoIt( int argc, char * argv[] )
         if( curROIIter.Get() != tmpROIIter.Get() )
           {
           curROIIter.Set( tmpROIIter.Get() );
-          changeROIIter.Set( mode+1 );
+          if( mode == 0 )
+            {
+            changeROIIter.Set( 1 );
+            }
+          if( mode == 3 )
+            {
+            changeROIIter.Set( 2 );
+            }
+          if( mode == 1 )
+            {
+            changeROIIter.Set( 3 );
+            }
+          if( mode == 2 )
+            {
+            changeROIIter.Set( 4 );
+            }
           }
         ++changeROIIter;
         ++curROIIter;
