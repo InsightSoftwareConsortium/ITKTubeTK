@@ -41,7 +41,8 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkRecursiveGaussianImageFilter.h"
+#include "itkNJetImageFunction.h"
+#include "itkImageRegionConstIteratorWithIndex.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -65,72 +66,69 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
   
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter( "SampleCLIApplication",
+                                              CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                         PixelType;
-  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
-  typedef itk::ImageFileReader< ImageType >             ReaderType;
-  
-  timeCollector.Start("Load data");
+  // typedefs for data structures
+  typedef float                                             PixelType;
+  typedef itk::OrientedImage<PixelType, dimensionT>         ImageType;
+  typedef itk::ImageFileReader<ImageType>                   ReaderType;
+  typedef itk::ImageFileWriter<ImageType>                   WriterType;
+
+  // typedefs for iterators
+  typedef itk::ImageRegionConstIteratorWithIndex<ImageType> FullItrType;
+  typedef itk::ImageRegionIterator<ImageType>               SelectionMaskIteratorType;
+
+  // Setup the readers to load the input data (image + prior)
+  timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
+  typename ReaderType::Pointer priorReader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
+  priorReader->SetFileName( inputPrior.c_str() );
+
+  // Load the input image with exception handling
   try
     {
     reader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Reading volume: Exception caught: " 
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
+    std::cerr << "ExceptionObject caught while reading the input image!"
+              << std::endl;
+    std::cerr << err << std::endl;
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+
+  // Load the input prior with exception handling
+  try
+    {
+    priorReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject caught while reading the input prior!"
+              << std::endl;
+    std::cerr << err << std::endl;
+    return EXIT_FAILURE;
+    }
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
+  // Store the input images and prepare the target regions
   typename ImageType::Pointer curImage = reader->GetOutput();
+  typename ImageType::Pointer curPrior = priorReader->GetOutput();
 
-  if( gaussianBlurStdDev > 0 )
-    {
-    timeCollector.Start("Gaussian Blur");
-
-    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType > FilterType;
-    typename FilterType::Pointer filter;
-
-    // Progress per iteration
-    double progressFraction = 0.8/dimensionT;
-
-    for(unsigned int i=0; i<dimensionT; i++)
-      {
-      filter = FilterType::New();
-      filter->SetInput( curImage );
-      filter->SetNormalizeAcrossScale( true );
-      filter->SetSigma( gaussianBlurStdDev );
-
-      filter->SetOrder( 
-               itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
-      filter->SetDirection( i );
-      tube::CLIFilterWatcher watcher( filter,
-                                      "Blur Filter 1D",
-                                      CLPProcessInformation,
-                                      progressFraction,
-                                      progress,
-                                      true );
-
-      filter->Update();
-      curImage = filter->GetOutput();
-      }
-
-    timeCollector.Stop("Gaussian Blur");
-    }
-
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+  // Allocate the output image and fill with 0s
+  typename ImageType::Pointer outImage = ImageType::New();
+  outImage->CopyInformation( curImage );
+  outImage->SetRegions( curImage->GetLargestPossibleRegion() );
+  outImage->Allocate();
+  outImage->FillBuffer( 0 );  
 
   timeCollector.Start("Save data");
-  typename ImageWriterType::Pointer writer = ImageWriterType::New();
+  typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( curImage );
   writer->SetUseCompression( true );
@@ -159,7 +157,7 @@ int main( int argc, char **argv )
 {
   PARSE_ARGS;
 
-  // You may need to update this line if, in the project's .xml CLI file,
+  // You May Need To update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
   return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
 }

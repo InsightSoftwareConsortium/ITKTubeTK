@@ -21,10 +21,17 @@
       <description>Input volume</description>
     </image>
     <image>
+      <name>inputPrior</name>
+      <label>Input Prior</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Input prior</description>
+    </image>
+    <image>
       <name>outputVolume</name>
       <label>Output Volume</label>
       <channel>output</channel>
-      <index>1</index>
+      <index>2</index>
       <description>Output Volume</description>
     </image>
   </parameters>
