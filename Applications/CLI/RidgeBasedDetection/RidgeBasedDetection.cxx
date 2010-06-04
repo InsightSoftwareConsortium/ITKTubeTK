@@ -66,7 +66,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
   
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "SampleCLIApplication",
+  tube::CLIProgressReporter progressReporter( "RidgeBasedDetection",
                                               CLPProcessInformation );
   progressReporter.Start();
 
@@ -76,9 +76,12 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader<ImageType>                   ReaderType;
   typedef itk::ImageFileWriter<ImageType>                   WriterType;
 
+  // typedefs for numerics
+  typedef itk::NJetImageFunction<ImageType>                 CalculatorType;
+
   // typedefs for iterators
-  typedef itk::ImageRegionConstIteratorWithIndex<ImageType> FullItrType;
-  typedef itk::ImageRegionIterator<ImageType>               SelectionMaskIteratorType;
+  typedef itk::ImageRegionConstIteratorWithIndex<ImageType> ConstIterType;
+  typedef itk::ImageRegionIteratorWithIndex<ImageType>      IterType;
 
   // Setup the readers to load the input data (image + prior)
   timeCollector.Start( "Load data" );
@@ -127,10 +130,50 @@ int DoIt( int argc, char * argv[] )
   outImage->Allocate();
   outImage->FillBuffer( 0 );  
 
+  // Setup the Calculator
+  typename CalculatorType::Pointer calc = CalculatorType::New();
+  calc->SetInputImage( curImage );
+
+  ConstIterType inputItr( curImage, curImage->GetLargestPossibleRegion() );
+  IterType outputItr( outImage, outImage->GetLargestPossibleRegion() );
+  double samples = 0;
+  inputItr.GoToBegin();
+  while( !inputItr.IsAtEnd() && !outputItr.IsAtEnd() )
+    {
+    ++samples;
+    ++inputItr;
+    }
+  inputItr.GoToBegin();
+  outputItr.GoToBegin();
+  double portion = 0.8;
+  double step = portion/samples;
+  unsigned int count = 0;
+  while( !inputItr.IsAtEnd() && !outputItr.IsAtEnd() )
+    {
+    typename CalculatorType::PointType point;
+    for( unsigned int i = 0; i < dimensionT; ++i )
+      {
+      point[i] = inputItr.GetIndex()[i];
+      }
+    outputItr.Set( calc->Ridgeness( point, scale ) );
+    progress += step;
+    if( count == 1000 )
+      {
+      progressReporter.Report( progress );
+      count = 0;
+      }
+    else
+      {
+      ++count;
+      }
+    ++inputItr;
+    ++outputItr;
+    }
+
   timeCollector.Start("Save data");
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( curImage );
+  writer->SetInput( outImage );
   writer->SetUseCompression( true );
   try
     {

@@ -37,14 +37,14 @@
   </parameters>
 
   <parameters>
-    <label>Blur filter</label>
+    <label>Ridgeness</label>
     <double>
-      <name>gaussianBlurStdDev</name>
-      <label>Gaussian blur std. dev.</label>
-      <description>Standard deviation of the Gaussian kernel used to blur the binary mask</description>
-      <longflag>gaussianBlurStdDev</longflag>
-      <flag>g</flag>
-      <default>4.0</default>
+      <name>scale</name>
+      <label>Ridgness Scale</label>
+      <description>The scale for evaluating ridgeness</description>
+      <longflag>scale</longflag>
+      <flag>s</flag>
+      <default>1.0</default>
     </double>
   </parameters>
 
