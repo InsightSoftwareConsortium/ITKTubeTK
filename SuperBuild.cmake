@@ -127,3 +127,18 @@ ExternalProject_Add(${proj}
   DEPENDS
     "GenerateCLP"
 )
+
+set(proj OpenIGTLink)
+
+ExternalProject_Add(${proj}
+  SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}/OpenIGTLink
+    -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
+    -DBUILD_TESTING:BOOL=OFF
+)
+
+
