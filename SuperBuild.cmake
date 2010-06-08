@@ -100,6 +100,22 @@ ExternalProject_Add(${proj}
     "ModuleDescriptionParser"
 )
 
+set(proj OpenIGTLink)
+
+ExternalProject_Add(${proj}
+  SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
+    -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
+    -DBUILD_TESTING:BOOL=OFF
+)
+
+
+SET( OpenIGTLink_DIR ${CMAKE_BINARY_DIR}/CMakeExternals/Build/OpenIGTLink )
+
 set(proj TubeTK-inner)
 
 ExternalProject_Add(${proj}
@@ -110,6 +126,7 @@ ExternalProject_Add(${proj}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
     -DITK_DIR:PATH=${ITK_DIR}
+    -DOpenIGTLink_DIR:PATH=${OpenIGTLink_DIR}
     -DGenerateCLP_DIR:PATH=${prefix}/lib/GenerateCLP
     -DBUILD_TESTING:BOOL=${BUILD_TESTING}
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
@@ -126,19 +143,7 @@ ExternalProject_Add(${proj}
   BINARY_DIR ${CMAKE_BINARY_DIR}/CMakeExternals/Build/TubeTK-inner
   DEPENDS
     "GenerateCLP"
-)
-
-set(proj OpenIGTLink)
-
-ExternalProject_Add(${proj}
-  SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
-  CMAKE_GENERATOR ${gen}
-  CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX:PATH=${prefix}/OpenIGTLink
-    -DCMAKE_BUILD_TYPE:STRING=${build_type}
-    -DBUILD_EXAMPLES:BOOL=OFF
-    -DBUILD_SHARED_LIBS:BOOL=${shared}
-    -DBUILD_TESTING:BOOL=OFF
+    "OpenIGTLink"
 )
 
 

@@ -36,6 +36,9 @@ add_subdirectory( RandomlyModifyBinaryMask )
 add_subdirectory( Resample )
 add_subdirectory( SampleCLIApplication )
 add_subdirectory( SimulateTomosynthesis )
+add_subdirectory( SendPositionMessageUsingOpenIGTLink )
+add_subdirectory( ReceivePositionMessageUsingOpenIGTLink )
+
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and
