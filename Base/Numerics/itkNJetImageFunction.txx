@@ -49,6 +49,7 @@ NJetImageFunction<TInputImage>
   m_InputImageSpacing.Fill(1);
   m_InputImageSpacingSquared.Fill(1);
   m_UseProjection = true;
+  m_InverseRidgeness = false;
 }
 
 /**
@@ -2291,7 +2292,13 @@ NJetImageFunction<TInputImage>
 
   double cN1 = eigSys.get_eigenvalue(1);
 
+  if( m_InverseRidgeness )
+    {
+    cN1 = -cN1;
+    }
+
   double val;
+  
   if(cN1 >= 0)
     {
     val = 0;

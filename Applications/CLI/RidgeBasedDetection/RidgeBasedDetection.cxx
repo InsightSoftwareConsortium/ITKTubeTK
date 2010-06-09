@@ -133,6 +133,7 @@ int DoIt( int argc, char * argv[] )
   // Setup the Calculator
   typename CalculatorType::Pointer calc = CalculatorType::New();
   calc->SetInputImage( curImage );
+  calc->SetInverseRidgeness( true );
 
   ConstIterType inputItr( curImage, curImage->GetLargestPossibleRegion() );
   IterType outputItr( outImage, outImage->GetLargestPossibleRegion() );
@@ -150,12 +151,7 @@ int DoIt( int argc, char * argv[] )
   unsigned int count = 0;
   while( !inputItr.IsAtEnd() && !outputItr.IsAtEnd() )
     {
-    typename CalculatorType::PointType point;
-    for( unsigned int i = 0; i < dimensionT; ++i )
-      {
-      point[i] = inputItr.GetIndex()[i];
-      }
-    outputItr.Set( calc->Ridgeness( point, scale ) );
+    outputItr.Set( calc->RidgenessAtIndex( inputItr.GetIndex(), scale ) );
     progress += step;
     if( count == 1000 )
       {
