@@ -18,6 +18,7 @@
       <label>Port</label>
       <channel>input</channel>
       <index>0</index>
+      <default>18000</default>
       <description>Port </description>
     </integer>
     <string>

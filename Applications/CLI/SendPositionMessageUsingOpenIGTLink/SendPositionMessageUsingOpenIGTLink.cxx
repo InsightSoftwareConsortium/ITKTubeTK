@@ -61,12 +61,12 @@ int main( int argc, char **argv )
 
   igtl::ServerSocket::Pointer serverSocket;
   serverSocket = igtl::ServerSocket::New();
-  int r = serverSocket->CreateServer(port);
+  int serverCreationStatus = serverSocket->CreateServer(port);
 
-  if (r < 0)
+  if (serverCreationStatus < 0)
     {
     std::cerr << "Cannot create a server socket." << std::endl;
-    exit(1);
+    return EXIT_FAILURE;
     }
 
   igtl::Socket::Pointer socket;
@@ -108,7 +108,7 @@ int main( int argc, char **argv )
   // Close connection 
   socket->CloseSocket();
 
-  return 0; 
+  return EXIT_SUCCESS; 
 }
 
 void GenerateRandomOrientation( double orientation[4]  )

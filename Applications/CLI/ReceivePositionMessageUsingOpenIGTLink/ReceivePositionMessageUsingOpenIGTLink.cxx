@@ -51,9 +51,9 @@ int main( int argc, char **argv )
   //Establish connection
   igtl::ClientSocket::Pointer clientSocket;
   clientSocket = igtl::ClientSocket::New();
-  int r = clientSocket->ConnectToServer(hostname.c_str(),port);
+  int connectionStatus = clientSocket->ConnectToServer(hostname.c_str(),port);
 
-  if (r < 0)
+  if (connectionStatus < 0)
     {
     std::cerr << "Cannot connect to the server." << std::endl;
     exit(1);
@@ -78,13 +78,13 @@ int main( int argc, char **argv )
       headerMessage->InitPack();
       
       // Receive generic header from the socket
-      int r = clientSocket->Receive(headerMessage->GetPackPointer(), headerMessage->GetPackSize());
-      if (r == 0)
+      int receiveReturnValue = clientSocket->Receive(headerMessage->GetPackPointer(), headerMessage->GetPackSize());
+      if (receiveReturnValue == 0)
         {
         clientSocket->CloseSocket();
         exit(0);
         }
-      if (r != headerMessage->GetPackSize())
+      if (receiveReturnValue != headerMessage->GetPackSize())
         {
         continue;
         }
@@ -132,6 +132,8 @@ int main( int argc, char **argv )
   // Close connection 
   
   clientSocket->CloseSocket();
+
+  return EXIT_SUCCESS;
 }
 
 
