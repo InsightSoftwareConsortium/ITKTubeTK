@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>OpenIGTLink</category>
+  <title>Crop</title>
+  <description>Establish socket communication with the server and receive the randomly generated position information.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Andinet Enquobahrie, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>Input</label>
+    <description> Connection Information</description>
+    <integer>
+      <name>port</name>
+      <label>Port</label>
+      <channel>input</channel>
+      <index>0</index>
+      <default>18000</default>
+      <description>Port </description>
+    </integer>
+    <string>
+      <name>hostname</name>
+      <label>hostname</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Host name </description>
+    </string>
+  </parameters>
+
+</executable>
