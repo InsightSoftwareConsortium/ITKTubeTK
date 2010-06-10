@@ -583,6 +583,50 @@ NJetImageFunction<TInputImage>
   return DerivativeAtContinuousIndex(cIndex, scale);
 }
 
+template <class TInputImage>
+typename NJetImageFunction<TInputImage>::VectorType
+NJetImageFunction<TInputImage>
+::Derivative(const PointType& point, const VectorType & v1,
+  double scale) const
+{
+  if( !m_InputImage )
+    {
+    itkWarningMacro(<< "Input image not set");
+    return 0.0;
+    }
+  
+  ContinuousIndexType cIndex;
+  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
+    {
+    //itkWarningMacro(<< "Cannot convert point to continuous index");
+    return 0.0;
+    }
+
+  return DerivativeAtContinuousIndex(cIndex, v1, scale);
+}
+
+template <class TInputImage>
+typename NJetImageFunction<TInputImage>::VectorType
+NJetImageFunction<TInputImage>
+::Derivative(const PointType& point, const VectorType & v1,
+  const VectorType & v2, double scale) const
+{
+  if( !m_InputImage )
+    {
+    itkWarningMacro(<< "Input image not set");
+    return 0.0;
+    }
+  
+  ContinuousIndexType cIndex;
+  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
+    {
+    //itkWarningMacro(<< "Cannot convert point to continuous index");
+    return 0.0;
+    }
+
+  return DerivativeAtContinuousIndex(cIndex, v1, v2, scale);
+}
+
 
 template <class TInputImage>
 typename NJetImageFunction<TInputImage>::VectorType

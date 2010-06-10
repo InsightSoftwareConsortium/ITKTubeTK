@@ -34,11 +34,11 @@ limitations under the License.
 
 int itkNJetImageFunctionTest(int argc, char* argv [] ) 
 {
-  if( argc < 3 )
+  if( argc < 4 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << "  inputImage outputImage" << std::endl;
+    std::cerr << argv[0] << " function inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
     }
   
@@ -61,7 +61,7 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName( argv[2] );
   try
     {
     reader->Update();
@@ -83,6 +83,27 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
   outputImage->SetRegions( inputImage->GetLargestPossibleRegion() );
   outputImage->Allocate();
 
+  bool error = false;
+
+  func->ComputeStatistics();
+  func->UseProjection( false );
+  if( func->GetMin() != 100 )
+    {
+    error = true;
+    std::cerr << "Min = " << func->GetMin() << " != 100" << std::endl;
+    }
+  if( func->GetMax() != 1000 )
+    {
+    error = true;
+    std::cerr << "Max = " << func->GetMax() << " != 1000" << std::endl;
+    }
+
+  FunctionType::VectorType v1, v2;
+  v1[0] = 1;
+  v2[1] = 1;
+
+  int function = atoi( argv[1] );
+
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( outputImage,
     outputImage->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
@@ -90,12 +111,117 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
   while( !outIter.IsAtEnd() )
     {
     inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
-    outIter.Set( func->Evaluate( pnt, 2.0 ) );
+    switch( function )
+      {
+      case 0:
+        {
+        outIter.Set( func->Evaluate( pnt, 2.0 ) );
+        break;
+        }
+      case 1:
+        {
+        outIter.Set( func->Evaluate( pnt, v1, 2.0 ) );
+        break;
+        }
+      case 2:
+        {
+        outIter.Set( func->Evaluate( pnt, v1, v2, 2.0 ) );
+        break;
+        }
+      case 3:
+        {
+        outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(), 2.0 ) );
+        break;
+        }
+      case 4:
+        {
+        outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(), v1, 2.0 ) );
+        break;
+        }
+      case 5:
+        {
+        outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(),
+            v1, v2, 2.0 ) );
+        break;
+        }
+      case 6:
+        {
+        outIter.Set( func->Derivative( pnt, 2.0 )[0] );
+        break;
+        }
+      case 7:
+        {
+        outIter.Set( func->Derivative( pnt, v1, 2.0 )[0] );
+        break;
+        }
+      case 8:
+        {
+        outIter.Set( func->Derivative( pnt, v1, v2, 2.0 )[0] );
+        break;
+        }
+      case 9:
+        {
+        outIter.Set( func->DerivativeAtIndex( outIter.GetIndex(), 2.0 )[0] );
+        break;
+        }
+      case 10:
+        {
+        outIter.Set( func->DerivativeAtIndex( outIter.GetIndex(), v1, 2.0 )[0] );
+        break;
+        }
+      case 11:
+        {
+        outIter.Set( func->DerivativeAtIndex( outIter.GetIndex(), v1, v2, 2.0 )[0] );
+        break;
+        }
+      case 12:
+        {
+        double val;
+        func->ValueAndDerivative(pnt, val, 2.0 );
+        outIter.Set( val );
+        break;
+        }
+      case 13:
+        {
+        double val;
+        func->ValueAndDerivative(pnt, val, v1, 2.0 );
+        outIter.Set( val );
+        break;
+        }
+      case 14:
+        {
+        double val;
+        func->ValueAndDerivative(pnt, val, v1, v2, 2.0 );
+        outIter.Set( val );
+        break;
+        }
+      case 15:
+        {
+        double val;
+        func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val, 2.0 );
+        outIter.Set( val );
+        break;
+        }
+      case 16:
+        {
+        double val;
+        func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val, v1, 2.0 );
+        outIter.Set( val );
+        break;
+        }
+      case 17:
+        {
+        double val;
+        func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val, v1, v2, 2.0 );
+        outIter.Set( val );
+        break;
+        }
+      }
     ++outIter;
     }
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[2] );
+  writer->SetFileName( argv[3] );
   writer->SetInput( outputImage );
   
   try
