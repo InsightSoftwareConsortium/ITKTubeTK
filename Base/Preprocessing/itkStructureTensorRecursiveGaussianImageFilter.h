@@ -147,9 +147,9 @@ private:
   StructureTensorRecursiveGaussianImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   
-  GaussianFilterPointer         m_SmoothingFilters[ImageDimension-1];
-  DerivativeFilterPointer       m_DerivativeFilter;
-  OutputImageAdaptorPointer     m_ImageAdaptor;
+  std::vector<GaussianFilterPointer>         m_SmoothingFilters;
+  DerivativeFilterPointer                    m_DerivativeFilter;
+  OutputImageAdaptorPointer                  m_ImageAdaptor;
 
   /** Normalize the image across scale space */
   bool m_NormalizeAcrossScale; 
