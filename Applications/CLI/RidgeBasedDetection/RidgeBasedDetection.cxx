@@ -43,6 +43,10 @@ limitations under the License.
 // Includes specific to this CLI application
 #include "itkNJetImageFunction.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
+#include "itkDiscreteGaussianImageFilter.h"
+#include "itkDivideImageFilter.h"
+#include "itkSubtractImageFilter.h"
+#include "itkRescaleIntensityImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -71,24 +75,30 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   // typedefs for data structures
-  typedef float                                             PixelType;
-  typedef itk::OrientedImage<PixelType, dimensionT>         ImageType;
-  typedef itk::ImageFileReader<ImageType>                   ReaderType;
-  typedef itk::ImageFileWriter<ImageType>                   WriterType;
+  typedef float                                                 PixelType;
+  typedef itk::OrientedImage<PixelType, dimensionT>             ImageType;
+  typedef itk::ImageFileReader<ImageType>                       ReaderType;
+  typedef itk::ImageFileWriter<ImageType>                       WriterType;
 
   // typedefs for numerics
-  typedef itk::NJetImageFunction<ImageType>                 CalculatorType;
+  typedef itk::NJetImageFunction<ImageType>                     CalculatorType;
+
+  // typedefs for filters
+  typedef itk::RescaleIntensityImageFilter<ImageType,ImageType> RescaleType;
 
   // typedefs for iterators
-  typedef itk::ImageRegionConstIteratorWithIndex<ImageType> ConstIterType;
-  typedef itk::ImageRegionIteratorWithIndex<ImageType>      IterType;
+  typedef itk::ImageRegionConstIteratorWithIndex<ImageType>     IterType;
 
   // Setup the readers to load the input data (image + prior)
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   typename ReaderType::Pointer priorReader = ReaderType::New();
+  typename ReaderType::Pointer defectReader = ReaderType::New();
+  typename ReaderType::Pointer centerlinesReader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   priorReader->SetFileName( inputPrior.c_str() );
+  defectReader->SetFileName( inputDefects.c_str() );
+  centerlinesReader->SetFileName( inputCenterlines.c_str() );
 
   // Load the input image with exception handling
   try
@@ -115,74 +125,157 @@ int DoIt( int argc, char * argv[] )
     std::cerr << err << std::endl;
     return EXIT_FAILURE;
     }
+
+  // Load the input prior with exception handling
+  try
+    {
+    defectReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject caught while reading the input defects!"
+              << std::endl;
+    std::cerr << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  // Load the input prior with exception handling
+  try
+    {
+    centerlinesReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject caught while reading the input centerlines!"
+              << std::endl;
+    std::cerr << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
   timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  // Store the input images and prepare the target regions
-  typename ImageType::Pointer curImage = reader->GetOutput();
-  typename ImageType::Pointer curPrior = priorReader->GetOutput();
+  // Setup the sigmas based on the wire scale
+  PixelType sigmaMedium = (scale/2)*0.6667;
+  PixelType sigmaSmall = 0.6667*sigmaMedium;
+  PixelType sigmaLarge = 1.3333*sigmaMedium;
 
-  // Allocate the output image and fill with 0s
-  typename ImageType::Pointer outImage = ImageType::New();
-  outImage->CopyInformation( curImage );
-  outImage->SetRegions( curImage->GetLargestPossibleRegion() );
-  outImage->Allocate();
-  outImage->FillBuffer( 0 );  
+  // Get the centerlines
+  typename ImageType::Pointer centerlines = centerlinesReader->GetOutput();
+  typename ImageType::Pointer defects = defectReader->GetOutput();
 
-  // Setup the Calculator
-  typename CalculatorType::Pointer calc = CalculatorType::New();
-  calc->SetInputImage( curImage );
-  calc->SetInverseRidgeness( true );
+  // Rescale the input
+  typename RescaleType::Pointer rescale = RescaleType::New();
+  rescale->SetInput( reader->GetOutput() );
+  rescale->SetOutputMinimum( 0 );
+  rescale->SetOutputMaximum( 1 );
+  typename ImageType::Pointer curImage = rescale->GetOutput();
 
-  ConstIterType inputItr( curImage, curImage->GetLargestPossibleRegion() );
-  IterType outputItr( outImage, outImage->GetLargestPossibleRegion() );
+  // Rescale the prior
+  rescale = RescaleType::New();
+  rescale->SetInput( priorReader->GetOutput() );
+  rescale->SetOutputMinimum( 0 );
+  rescale->SetOutputMaximum( 1 );
+  typename ImageType::Pointer curPrior = rescale->GetOutput();
+
+  // Setup the Calculators
+  typename CalculatorType::Pointer inputCalc = CalculatorType::New();
+  inputCalc->SetInputImage( curImage );
+  inputCalc->SetInverseRidgeness( true );
+
+  typename CalculatorType::Pointer priorCalc = CalculatorType::New();
+  priorCalc->SetInputImage( curPrior );
+  priorCalc->SetInverseRidgeness( true );
+
+  typename CalculatorType::Pointer defectCalc = CalculatorType::New();
+  defectCalc->SetInputImage( defects );
+
+  IterType centerlineItr( centerlines, centerlines->GetLargestPossibleRegion() );
   double samples = 0;
-  inputItr.GoToBegin();
-  while( !inputItr.IsAtEnd() && !outputItr.IsAtEnd() )
+  centerlineItr.GoToBegin();
+  while( !centerlineItr.IsAtEnd() )
     {
-    ++samples;
-    ++inputItr;
+    if( centerlineItr.Get() > 0 )
+      {
+      ++samples;
+      }
+    ++centerlineItr;
     }
-  inputItr.GoToBegin();
-  outputItr.GoToBegin();
-  double portion = 0.8;
+
+  // Get the outfile started
+  std::ofstream output( outputFile.c_str() );
+  output << "% Generated by RidgeBasedDetection in TubeTK\n";
+  output << "@RELATION errors\n";
+  output << "\n";
+  output << "@ATTRIBUTE v1g NUMERIC\n";
+  output << "@ATTRIBUTE v2g NUMERIC\n";
+  output << "@ATTRIBUTE v3g NUMERIC\n";
+  output << "@ATTRIBUTE v1e NUMERIC\n";
+  output << "@ATTRIBUTE v2e NUMERIC\n";
+  output << "@ATTRIBUTE v3e NUMERIC\n";
+  output << "@ATTRIBUTE class {good,bad}\n";
+  output << "\n";
+  output << "@DATA\n";
+
+
+  centerlineItr.GoToBegin();
+  double portion = 0.9;
   double step = portion/samples;
   unsigned int count = 0;
-  while( !inputItr.IsAtEnd() && !outputItr.IsAtEnd() )
+  while( !centerlineItr.IsAtEnd() )
     {
-    outputItr.Set( calc->RidgenessAtIndex( inputItr.GetIndex(), scale ) );
+    if( centerlineItr.Get() > 0 )
+      {
+
+      // Set label value
+      std::string label;
+      if( defectCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaMedium ) )
+        {
+        label = "bad";
+        }
+      else
+        {
+        label = "good";
+        }
+
+      PixelType v1g, v2g, v3g, v1e, v2e, v3e;
+
+      v1g = priorCalc->RidgenessAtIndex( centerlineItr.GetIndex(), sigmaMedium );
+      v1e = inputCalc->RidgenessAtIndex( centerlineItr.GetIndex(), sigmaMedium );
+      
+      v2g = ( priorCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaSmall ) -
+              priorCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge ) ) /
+        priorCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge );
+      v2e = ( inputCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaSmall ) -
+              inputCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge ) ) /
+        inputCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge );
+      
+      v3g = priorCalc->EvaluateAtIndex( centerlineItr.GetIndex() );
+      v3e = inputCalc->EvaluateAtIndex( centerlineItr.GetIndex() );
+
+      output << v1g << "," << v2g << "," << v3g << ","
+             << v1e << "," << v2e << "," << v3e << ","
+             << label << "\n";
+
+      if( count == 10 )
+        {
+        progressReporter.Report( progress );
+        count = 0;
+        }
+      else
+        {
+        ++count;
+        }
+
+      }
+
     progress += step;
-    if( count == 1000 )
-      {
-      progressReporter.Report( progress );
-      count = 0;
-      }
-    else
-      {
-      ++count;
-      }
-    ++inputItr;
-    ++outputItr;
+    ++centerlineItr;
     }
 
-  timeCollector.Start("Save data");
-  typename WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( outImage );
-  writer->SetUseCompression( true );
-  try
-    {
-    writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Writing volume: Exception caught: " 
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-  timeCollector.Stop("Save data");
+  output.close();
+
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End( );
