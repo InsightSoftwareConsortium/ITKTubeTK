@@ -86,7 +86,7 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
   bool error = false;
 
   func->ComputeStatistics();
-  func->UseProjection( false );
+  func->SetUseProjection( false );
   if( func->GetMin() != 100 )
     {
     error = true;
