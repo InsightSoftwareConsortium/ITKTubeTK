@@ -38,7 +38,14 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 {
   m_NormalizeAcrossScale = false;
 
-  for( unsigned int i = 0; i<ImageDimension-1; i++ )
+  unsigned int imageDimensionMinus1 = static_cast<int>(ImageDimension)-1;
+  if( ImageDimension > 1)
+    {
+    m_SmoothingFilters.resize(imageDimensionMinus1);
+    }
+
+
+  for( unsigned int i = 0; i<imageDimensionMinus1; i++ )
     {
     m_SmoothingFilters[ i ] = GaussianFilterType::New();
     m_SmoothingFilters[ i ]->SetOrder( GaussianFilterType::ZeroOrder );
@@ -52,9 +59,12 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
   m_DerivativeFilter->SetInput( this->GetInput() );
 
-  m_SmoothingFilters[0]->SetInput( m_DerivativeFilter->GetOutput() );
+  if( ImageDimension > 1 )
+    {
+    m_SmoothingFilters[0]->SetInput( m_DerivativeFilter->GetOutput() );
+    }
 
-  for( unsigned int i = 1; i<ImageDimension-1; i++ )
+  for( unsigned int i = 1; i<imageDimensionMinus1; i++ )
     {
     m_SmoothingFilters[ i ]->SetInput(
       m_SmoothingFilters[i-1]->GetOutput() );
@@ -147,6 +157,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 
+  unsigned int imageDimensionMinus1 = static_cast<int>(ImageDimension)-1;
   // Compute the contribution of each filter to the total progress.
   const double weight = 1.0 / ( ImageDimension * ImageDimension );
 
@@ -179,7 +190,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     {
     unsigned int i=0;
     unsigned int j=0;
-    while(  i< ImageDimension)
+    while(  i< imageDimensionMinus1)
       {
       if( i == dim )
         {
@@ -191,9 +202,19 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
       }
     m_DerivativeFilter->SetDirection( dim );
 
-    GaussianFilterPointer lastFilter = m_SmoothingFilters[ImageDimension-2];
+    GaussianFilterPointer lastFilter;
 
-    lastFilter->Update();
+    if( ImageDimension > 1 ) 
+      {
+      int imageDimensionMinus2 = static_cast<int>(ImageDimension)-2;
+      lastFilter = m_SmoothingFilters[imageDimensionMinus2];
+      lastFilter->Update();
+      }
+    else
+      {
+      m_DerivativeFilter->Update();
+      }
+
 
     progress->ResetFilterProgressAndKeepAccumulatedProgress();
 
