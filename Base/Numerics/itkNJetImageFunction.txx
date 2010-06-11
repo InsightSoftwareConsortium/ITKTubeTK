@@ -1571,14 +1571,16 @@ NJetImageFunction<TInputImage>
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
     //itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
 
   return HessianAtContinuousIndex(cIndex, scale);
@@ -1592,14 +1594,16 @@ NJetImageFunction<TInputImage>
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
     itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
 
   return HessianAtContinuousIndex(cIndex, v1, scale);
@@ -1614,14 +1618,16 @@ NJetImageFunction<TInputImage>
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
     itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
 
   return HessianAtContinuousIndex(cIndex, v1, v2, scale);
@@ -1635,7 +1641,8 @@ NJetImageFunction<TInputImage>
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
   
   ContinuousIndexType cIndex;
@@ -1655,7 +1662,8 @@ NJetImageFunction<TInputImage>
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
   
   ContinuousIndexType cIndex;
@@ -1676,7 +1684,8 @@ NJetImageFunction<TInputImage>
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    MatrixType h;
+    return h;
     }
   
   ContinuousIndexType cIndex;
@@ -1756,6 +1765,7 @@ NJetImageFunction<TInputImage>
       if(physDist <= physKernelRadiusSquared)
         { 
         pixelValue = m_InputImage->GetPixel( xShift );
+        expValue = exp(physGaussFactor*physDist);
   
         for(unsigned int i=0; i< ImageDimension; i++)
           {
