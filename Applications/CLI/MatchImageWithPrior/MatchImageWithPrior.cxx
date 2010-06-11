@@ -32,6 +32,8 @@ limitations under the License.
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
+#include "itkTransformFileReader.h"
+#include "itkTransformFileWriter.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -196,17 +198,47 @@ int DoIt( int argc, char * argv[] )
     eval.SetBoundarySize( outputBoundary );
     eval.SetTimeCollector( &timeCollector );
     eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
-    eval.SetUseRegistration( true );
-    eval.SetUseRegistrationTransform( false );
+
+    typedef typename ImageEvalType::RegistrationMethodType::TransformType  
+      TransformType;
+    typename TransformType::Pointer regTfm;
+    if( loadTransform.size() == 0 )
+      {
+      eval.SetUseRegistration( true );
+      eval.SetUseRegistrationTransform( false );
+      }
+    else
+      {
+      itk::TransformFileReader::Pointer treader = 
+        itk::TransformFileReader::New();
+      treader->SetFileName(loadTransform);
+      treader->Update();  
+      typename TransformType::Pointer transform;
+      transform = static_cast< TransformType * >(
+        treader->GetTransformList()->front().GetPointer() );
+
+      eval.SetUseRegistration( true );
+      eval.SetUseRegistrationTransform( true );
+      eval.SetRegistrationTransform( transform );
+      }
     eval.SetErode( erode );
     eval.SetDilate( dilate );
     eval.SetGaussianBlur( gaussianBlur );
     eval.Update();
 
-    typedef typename ImageEvalType::RegistrationMethodType::TransformType  
-      TransformType;
-    typename TransformType::Pointer regTfm;
-    regTfm = eval.GetRegistrationTransform();
+    if( loadTransform.size() == 0 )
+      {
+      regTfm = eval.GetRegistrationTransform();
+      }
+
+    if( saveTransform.size()>0 )
+      {
+      itk::TransformFileWriter::Pointer twriter = 
+        itk::TransformFileWriter::New();
+      twriter->SetInput(regTfm);
+      twriter->SetFileName(saveTransform);
+      twriter->Update();  
+      }
 
     double gof = eval.GetGoodnessOfFit();
 
