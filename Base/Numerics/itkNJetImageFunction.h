@@ -238,36 +238,14 @@ public:
   double
     Jet( const PointType & point, VectorType & d, MatrixType & h,
          double scale=1 ) const;
-  double
-    Jet( const PointType & point, VectorType & d, MatrixType & h,
-         const VectorType & v1, double scale=1 ) const;
-  double
-    Jet( const PointType & point, VectorType & d, MatrixType & h,
-         const VectorType & v1, const VectorType & v2, double scale=1 ) const;
 
   double
     JetAtIndex( const IndexType & cIndex, VectorType & d, MatrixType & h,
-                double scale=1 ) const;
-  double
-    JetAtIndex( const IndexType & cIndex, VectorType & d, MatrixType & h,
-                const VectorType & v1, double scale=1 ) const;
-  double
-    JetAtIndex( const IndexType & cIndex, VectorType & d, MatrixType & h,
-                const VectorType & v1, const VectorType & v2, 
                 double scale=1 ) const;
 
   double
     JetAtContinuousIndex( const ContinuousIndexType & cIndex,
                           VectorType & d, MatrixType & h,
-                          double scale=1 ) const;
-  double
-    JetAtContinuousIndex( const ContinuousIndexType & cIndex,
-                          VectorType & d, MatrixType & h,
-                          const VectorType & v1, double scale=1 ) const;
-  double
-    JetAtContinuousIndex( const ContinuousIndexType & cIndex,
-                          VectorType & d, MatrixType & h,
-                          const VectorType & v1, const VectorType & v2,
                           double scale=1 ) const;
 
   double
