@@ -47,6 +47,8 @@ limitations under the License.
 #include "itkDivideImageFilter.h"
 #include "itkSubtractImageFilter.h"
 #include "itkRescaleIntensityImageFilter.h"
+#include "vnl/vnl_math.h"
+#include "math.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -170,6 +172,7 @@ int DoIt( int argc, char * argv[] )
   rescale->SetInput( reader->GetOutput() );
   rescale->SetOutputMinimum( 0 );
   rescale->SetOutputMaximum( 1 );
+  rescale->Update();
   typename ImageType::Pointer curImage = rescale->GetOutput();
 
   // Rescale the prior
@@ -177,6 +180,7 @@ int DoIt( int argc, char * argv[] )
   rescale->SetInput( priorReader->GetOutput() );
   rescale->SetOutputMinimum( 0 );
   rescale->SetOutputMaximum( 1 );
+  rescale->Update();
   typename ImageType::Pointer curPrior = rescale->GetOutput();
 
   // Setup the Calculators
@@ -191,6 +195,10 @@ int DoIt( int argc, char * argv[] )
   typename CalculatorType::Pointer defectCalc = CalculatorType::New();
   defectCalc->SetInputImage( defects );
 
+  centerlines->GetLargestPossibleRegion().Print( std::cout );
+  defects->GetLargestPossibleRegion().Print( std::cout );
+  curImage->GetLargestPossibleRegion().Print( std::cout );
+  curPrior->GetLargestPossibleRegion().Print( std::cout );
   IterType centerlineItr( centerlines, centerlines->GetLargestPossibleRegion() );
   double samples = 0;
   centerlineItr.GoToBegin();
@@ -214,6 +222,12 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE v1e NUMERIC\n";
   output << "@ATTRIBUTE v2e NUMERIC\n";
   output << "@ATTRIBUTE v3e NUMERIC\n";
+  output << "@ATTRIBUTE v1g-v1e NUMERIC\n";
+  output << "@ATTRIBUTE v2g-v2e NUMERIC\n";
+  output << "@ATTRIBUTE v3g-v3e NUMERIC\n";
+  output << "@ATTRIBUTE log(abs(v1g-v1e)) NUMERIC\n";
+  output << "@ATTRIBUTE log(abs(v2g-v2e)) NUMERIC\n";
+  output << "@ATTRIBUTE log(abs(v3g-v3e)) NUMERIC\n";
   output << "@ATTRIBUTE class {good,bad}\n";
   output << "\n";
   output << "@DATA\n";
@@ -223,42 +237,61 @@ int DoIt( int argc, char * argv[] )
   double portion = 0.9;
   double step = portion/samples;
   unsigned int count = 0;
+  unsigned int goodCount = 0;
   while( !centerlineItr.IsAtEnd() )
     {
     if( centerlineItr.Get() > 0 )
       {
+      typename CalculatorType::PointType curPoint;
+      centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
+                                                  curPoint );
 
       // Set label value
       std::string label;
-      if( defectCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaMedium ) )
+      if( defectCalc->Evaluate( curPoint, sigmaMedium ) )
         {
         label = "bad";
         }
       else
         {
         label = "good";
+        ++goodCount;
+        if( goodCount != 29 )
+          {
+          progress += step;
+          ++centerlineItr;
+          continue;
+          }
+        else
+          {
+          goodCount = 0;
+          }
         }
 
       PixelType v1g, v2g, v3g, v1e, v2e, v3e;
 
-      v1g = priorCalc->RidgenessAtIndex( centerlineItr.GetIndex(), sigmaMedium );
-      v1e = inputCalc->RidgenessAtIndex( centerlineItr.GetIndex(), sigmaMedium );
-      
-      v2g = ( priorCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaSmall ) -
-              priorCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge ) ) /
-        priorCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge );
-      v2e = ( inputCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaSmall ) -
-              inputCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge ) ) /
-        inputCalc->EvaluateAtIndex( centerlineItr.GetIndex(), sigmaLarge );
-      
-      v3g = priorCalc->EvaluateAtIndex( centerlineItr.GetIndex() );
-      v3e = inputCalc->EvaluateAtIndex( centerlineItr.GetIndex() );
+      v1g = priorCalc->Ridgeness( curPoint, sigmaMedium );
+      v1e = inputCalc->Ridgeness( curPoint, sigmaMedium );
+
+      v2g = ( priorCalc->Evaluate( curPoint, sigmaSmall ) -
+              priorCalc->Evaluate( curPoint, sigmaLarge ) ) /
+        priorCalc->Evaluate( curPoint, sigmaLarge );
+      v2e = ( inputCalc->Evaluate( curPoint, sigmaSmall ) -
+              inputCalc->Evaluate( curPoint, sigmaLarge ) ) /
+        inputCalc->Evaluate( curPoint, sigmaLarge );
+
+      v3g = priorCalc->Evaluate( curPoint );
+      v3e = inputCalc->Evaluate( curPoint );
 
       output << v1g << "," << v2g << "," << v3g << ","
              << v1e << "," << v2e << "," << v3e << ","
+             << v1g-v1e << "," << v2g-v2e << "," << v3g-v3e << ","
+             << log( vnl_math_abs( v1g-v1e ) ) << ","
+             << log( vnl_math_abs( v2g-v2e ) )  << "," 
+             << log( vnl_math_abs( v3g-v3e ) ) << ","
              << label << "\n";
 
-      if( count == 10 )
+      if( count == 1000 )
         {
         progressReporter.Report( progress );
         count = 0;

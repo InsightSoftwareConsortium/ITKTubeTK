@@ -2304,7 +2304,7 @@ NJetImageFunction<TInputImage>
 
   double cN1 = eigSys.get_eigenvalue(1);
 
-  double val;
+  double val = 0;
 
   if( m_InverseRidgeness )
     {
@@ -2312,12 +2312,8 @@ NJetImageFunction<TInputImage>
     cN1 = -cN1;
     std::swap( cN0, cN1 );
     }
-  
-  if(cN1 >= 0)
-    {
-    val = 0;
-    }
-  else
+
+  if( cN0 != 0 )
     {
     val = sqrt(cN0*cN0 + cN1*cN1) * cN1/cN0;
     }
