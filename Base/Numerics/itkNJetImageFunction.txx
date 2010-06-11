@@ -49,6 +49,7 @@ NJetImageFunction<TInputImage>
   m_InputImageSpacing.Fill(1);
   m_InputImageSpacingSquared.Fill(1);
   m_UseProjection = true;
+  m_InverseRidgeness = false;
 }
 
 /**
@@ -2292,6 +2293,14 @@ NJetImageFunction<TInputImage>
   double cN1 = eigSys.get_eigenvalue(1);
 
   double val;
+
+  if( m_InverseRidgeness )
+    {
+    cN0 = -cN0;
+    cN1 = -cN1;
+    std::swap( cN0, cN1 );
+    }
+  
   if(cN1 >= 0)
     {
     val = 0;
@@ -2333,6 +2342,11 @@ NJetImageFunction<TInputImage>
     double cN1 = eigSys.get_eigenvalue(1) 
                    * fabs( dot_product( eigSys.get_eigenvector(1),
                                        v1.GetVnlVector() ) );
+
+    if( m_InverseRidgeness )
+      {
+      cN0 = -cN0;
+      }
 
     if(cN1 >= 0)
       {
@@ -2389,6 +2403,12 @@ NJetImageFunction<TInputImage>
                    * fabs( dot_product( eigSys.get_eigenvector(1),
                                        v2.GetVnlVector() ) );
     double cN1 = cN1V1 + cN1V2;
+
+
+    if( m_InverseRidgeness )
+      {
+      cN0 = -cN0;
+      }
 
     if(cN1 >= 0)
       {
