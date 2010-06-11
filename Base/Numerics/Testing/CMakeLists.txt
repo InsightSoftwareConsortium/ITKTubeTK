@@ -231,3 +231,183 @@ add_test( itkNJetImageFunctionTest17
                ${INPUT_DATA}/GDS0015_1.mha
                ${TEMP}/itkNJetImageFunctionTest17.mha )
 
+add_test( itkNJetImageFunctionTest18
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest18.mha
+                      ${TEMP}/itkNJetImageFunctionTest18.mha
+            itkNJetImageFunctionTest
+               18
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest18.mha )
+
+add_test( itkNJetImageFunctionTest19
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest19.mha
+                      ${TEMP}/itkNJetImageFunctionTest19.mha
+            itkNJetImageFunctionTest
+               19
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest19.mha )
+
+add_test( itkNJetImageFunctionTest20
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest20.mha
+                      ${TEMP}/itkNJetImageFunctionTest20.mha
+            itkNJetImageFunctionTest
+               20
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest20.mha )
+
+add_test( itkNJetImageFunctionTest21
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest21.mha
+                      ${TEMP}/itkNJetImageFunctionTest21.mha
+            itkNJetImageFunctionTest
+               21
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest21.mha )
+
+add_test( itkNJetImageFunctionTest22
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest22.mha
+                      ${TEMP}/itkNJetImageFunctionTest22.mha
+            itkNJetImageFunctionTest
+               22
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest22.mha )
+
+add_test( itkNJetImageFunctionTest23
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest23.mha
+                      ${TEMP}/itkNJetImageFunctionTest23.mha
+            itkNJetImageFunctionTest
+               23
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest23.mha )
+
+add_test( itkNJetImageFunctionTest24
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest24.mha
+                      ${TEMP}/itkNJetImageFunctionTest24.mha
+            itkNJetImageFunctionTest
+               24
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest24.mha )
+
+add_test( itkNJetImageFunctionTest25
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest25.mha
+                      ${TEMP}/itkNJetImageFunctionTest25.mha
+            itkNJetImageFunctionTest
+               25
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest25.mha )
+
+add_test( itkNJetImageFunctionTest26
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest26.mha
+                      ${TEMP}/itkNJetImageFunctionTest26.mha
+            itkNJetImageFunctionTest
+               26
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest26.mha )
+
+add_test( itkNJetImageFunctionTest27
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest27.mha
+                      ${TEMP}/itkNJetImageFunctionTest27.mha
+            itkNJetImageFunctionTest
+               27
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest27.mha )
+
+add_test( itkNJetImageFunctionTest28
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest28.mha
+                      ${TEMP}/itkNJetImageFunctionTest28.mha
+            itkNJetImageFunctionTest
+               28
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest28.mha )
+
+add_test( itkNJetImageFunctionTest29
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest29.mha
+                      ${TEMP}/itkNJetImageFunctionTest29.mha
+            itkNJetImageFunctionTest
+               29
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest29.mha )
+
+add_test( itkNJetImageFunctionTest30
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest30.mha
+                      ${TEMP}/itkNJetImageFunctionTest30.mha
+            itkNJetImageFunctionTest
+               30
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest30.mha )
+
+add_test( itkNJetImageFunctionTest31
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest31.mha
+                      ${TEMP}/itkNJetImageFunctionTest31.mha
+            itkNJetImageFunctionTest
+               31
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest31.mha )
+
+add_test( itkNJetImageFunctionTest32
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest32.mha
+                      ${TEMP}/itkNJetImageFunctionTest32.mha
+            itkNJetImageFunctionTest
+               32
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest32.mha )
+
+add_test( itkNJetImageFunctionTest33
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest33.mha
+                      ${TEMP}/itkNJetImageFunctionTest33.mha
+            itkNJetImageFunctionTest
+               33
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest33.mha )
+
+add_test( itkNJetImageFunctionTest34
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest34.mha
+                      ${TEMP}/itkNJetImageFunctionTest34.mha
+            itkNJetImageFunctionTest
+               34
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest34.mha )
+
+add_test( itkNJetImageFunctionTest35
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest35.mha
+                      ${TEMP}/itkNJetImageFunctionTest35.mha
+            itkNJetImageFunctionTest
+               35
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest35.mha )
+
+add_test( itkNJetImageFunctionTest36
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest36.mha
+                      ${TEMP}/itkNJetImageFunctionTest36.mha
+            itkNJetImageFunctionTest
+               36
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest36.mha )
+
+add_test( itkNJetImageFunctionTest37
+            ${BASE_NUMERICS_TESTS}
+            --compare ${BASELINE}/itkNJetImageFunctionTest37.mha
+                      ${TEMP}/itkNJetImageFunctionTest37.mha
+            itkNJetImageFunctionTest
+               37
+               ${INPUT_DATA}/GDS0015_1.mha
+               ${TEMP}/itkNJetImageFunctionTest37.mha )
+

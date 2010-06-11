@@ -87,20 +87,26 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
 
   func->ComputeStatistics();
   func->SetUseProjection( false );
-  if( func->GetMin() != 100 )
+  double minI = 0;
+  double maxI = 255;
+  if( func->GetMin() != 0 )
     {
     error = true;
-    std::cerr << "Min = " << func->GetMin() << " != 100" << std::endl;
+    std::cerr << "Min = " << func->GetMin() << " != " << minI << std::endl;
     }
-  if( func->GetMax() != 1000 )
+  if( func->GetMax() != maxI )
     {
     error = true;
-    std::cerr << "Max = " << func->GetMax() << " != 1000" << std::endl;
+    std::cerr << "Max = " << func->GetMax() << " != " << maxI << std::endl;
     }
 
-  FunctionType::VectorType v1, v2;
+  double scale = 4.0;
+
+  FunctionType::VectorType v1, v2, d;
+  FunctionType::MatrixType h;
   v1[0] = 1;
   v2[1] = 1;
+  double val;
 
   int function = atoi( argv[1] );
 
@@ -115,105 +121,228 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
       {
       case 0:
         {
-        outIter.Set( func->Evaluate( pnt, 2.0 ) );
+        outIter.Set( func->Evaluate( pnt, scale ) );
         break;
         }
       case 1:
         {
-        outIter.Set( func->Evaluate( pnt, v1, 2.0 ) );
+        outIter.Set( func->Evaluate( pnt, v1, scale ) );
         break;
         }
       case 2:
         {
-        outIter.Set( func->Evaluate( pnt, v1, v2, 2.0 ) );
+        outIter.Set( func->Evaluate( pnt, v1, v2, scale ) );
         break;
         }
       case 3:
         {
-        outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(), 2.0 ) );
+        outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(), scale ) );
         break;
         }
       case 4:
         {
-        outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(), v1, 2.0 ) );
+        outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(), v1, scale ) );
         break;
         }
       case 5:
         {
         outIter.Set( func->EvaluateAtIndex( outIter.GetIndex(),
-            v1, v2, 2.0 ) );
+            v1, v2, scale ) );
         break;
         }
       case 6:
         {
-        outIter.Set( func->Derivative( pnt, 2.0 )[0] );
+        d = func->Derivative( pnt, scale );
+        outIter.Set( d[0]+d[1] );
         break;
         }
       case 7:
         {
-        outIter.Set( func->Derivative( pnt, v1, 2.0 )[0] );
+        d = func->Derivative( pnt, v1, scale );
+        outIter.Set( d[0]+d[1] );
         break;
         }
       case 8:
         {
-        outIter.Set( func->Derivative( pnt, v1, v2, 2.0 )[0] );
+        d = func->Derivative( pnt, v1, v2, scale );
+        outIter.Set( d[0]+d[1] );
         break;
         }
       case 9:
         {
-        outIter.Set( func->DerivativeAtIndex( outIter.GetIndex(), 2.0 )[0] );
+        d = func->DerivativeAtIndex( outIter.GetIndex(), scale );
+        outIter.Set( d[0]+d[1] );
         break;
         }
       case 10:
         {
-        outIter.Set( func->DerivativeAtIndex( outIter.GetIndex(), v1, 2.0 )[0] );
+        d = func->DerivativeAtIndex( outIter.GetIndex(), v1, scale );
+        outIter.Set( d[0]+d[1] );
         break;
         }
       case 11:
         {
-        outIter.Set( func->DerivativeAtIndex( outIter.GetIndex(), v1, v2, 2.0 )[0] );
+        d = func->DerivativeAtIndex( outIter.GetIndex(), v1, v2, scale );
+        outIter.Set( d[0]+d[1] );
         break;
         }
       case 12:
         {
-        double val;
-        func->ValueAndDerivative(pnt, val, 2.0 );
-        outIter.Set( val );
+        d = func->ValueAndDerivative(pnt, val, scale );
+        outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 13:
         {
-        double val;
-        func->ValueAndDerivative(pnt, val, v1, 2.0 );
-        outIter.Set( val );
+        d = func->ValueAndDerivative(pnt, val, v1, scale );
+        outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 14:
         {
-        double val;
-        func->ValueAndDerivative(pnt, val, v1, v2, 2.0 );
-        outIter.Set( val );
+        d = func->ValueAndDerivative(pnt, val, v1, v2, scale );
+        outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 15:
         {
-        double val;
-        func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val, 2.0 );
-        outIter.Set( val );
+        d = func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val,
+          scale );
+        outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 16:
         {
-        double val;
-        func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val, v1, 2.0 );
-        outIter.Set( val );
+        d = func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val,
+          v1, scale );
+        outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 17:
         {
-        double val;
-        func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val, v1, v2, 2.0 );
+        d = func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val,
+          v1, v2, scale );
+        outIter.Set( val+(d[0]+d[1]) );
+        break;
+        }
+      case 18:
+        {
+        val = func->Jet( pnt, d, h, scale );
+        outIter.Set( val+d[0]+d[1]+(h[0][0]+h[1][1]) );
+        break;
+        }
+      case 19:
+        {
+        val = func->JetAtIndex( outIter.GetIndex(), d, h, scale );
+        outIter.Set( val+d[0]+d[1]+(h[0][0]+h[1][1]) );
+        break;
+        }
+      case 20:
+        {
+        val = func->Ridgeness( pnt, scale );
         outIter.Set( val );
+        break;
+        }
+      case 21:
+        {
+        val = func->Ridgeness( pnt, v1, scale );
+        outIter.Set( val );
+        break;
+        }
+      case 22:
+        {
+        val = func->Ridgeness( pnt, v1, v2, scale );
+        outIter.Set( val );
+        break;
+        }
+      case 23:
+        {
+        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
+        outIter.Set( val );
+        break;
+        }
+      case 24:
+        {
+        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, scale );
+        outIter.Set( val );
+        break;
+        }
+      case 25:
+        {
+        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, v2, scale );
+        outIter.Set( val );
+        break;
+        }
+      case 26:
+        {
+        d = func->RidgenessAndDerivative( pnt, val, scale );
+        outIter.Set( val+d[0]+d[1] );
+        break;
+        }
+      case 27:
+        {
+        d = func->RidgenessAndDerivative( pnt, val, v1, scale );
+        outIter.Set( val+d[0]+d[1] );
+        break;
+        }
+      case 28:
+        {
+        d = func->RidgenessAndDerivative( pnt, val, v1, v2, scale );
+        outIter.Set( val+d[0]+d[1] );
+        break;
+        }
+      case 29:
+        {
+        d = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(), val, scale );
+        outIter.Set( val+d[0]+d[1] );
+        break;
+        }
+      case 30:
+        {
+        d = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(), val, v1, scale );
+        outIter.Set( val+d[0]+d[1] );
+        break;
+        }
+      case 31:
+        {
+        d = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(), val, v1, v2, scale );
+        outIter.Set( val+d[0]+d[1] );
+        break;
+        }
+      case 32:
+        {
+        h = func->Hessian( pnt, scale );
+        outIter.Set( h[0][0]+h[1][1] );
+        break;
+        }
+      case 33:
+        {
+        h = func->Hessian( pnt, v1, scale );
+        outIter.Set( h[0][0]+h[1][1] );
+        break;
+        }
+      case 34:
+        {
+        h = func->Hessian( pnt, v1, v2, scale );
+        outIter.Set( h[0][0]+h[1][1] );
+        break;
+        }
+      case 35:
+        {
+        h = func->HessianAtIndex( outIter.GetIndex(), scale );
+        outIter.Set( h[0][0]+h[1][1] );
+        break;
+        }
+      case 36:
+        {
+        h = func->HessianAtIndex( outIter.GetIndex(), v1, scale );
+        outIter.Set( h[0][0]+h[1][1] );
+        break;
+        }
+      case 37:
+        {
+        h = func->HessianAtIndex( outIter.GetIndex(), v1, v2, scale );
+        outIter.Set( h[0][0]+h[1][1] );
         break;
         }
       }
