@@ -64,7 +64,11 @@ public:
   void SetGaussianBlur( float gaussianBlur );
 
   void SetUseRegistration( bool reg );
+  bool GetUseRegistration( );
   void SetUseRegistrationTransform( bool reg );
+  bool GetUseRegistrationTransform( );
+  void SetUseRegistrationOptimization( bool reg );
+  bool GetUseRegistrationOptimization( );
   void SetRegistrationTransform( 
     typename RegistrationMethodType::TransformType::Pointer tfm );
   typename RegistrationMethodType::TransformType::Pointer 
@@ -94,6 +98,7 @@ private:
   int                         m_Dilate;
   float                       m_GaussianBlur;
   bool                        m_UseRegistration;
+  bool                        m_UseRegistrationOptimization;
   bool                        m_UseRegistrationTransform;
   typename RegistrationMethodType::TransformType::Pointer
                               m_RegistrationTransform;

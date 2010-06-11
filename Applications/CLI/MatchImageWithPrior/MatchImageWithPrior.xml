@@ -91,11 +91,11 @@
       <default>9</default>
     </float>
     <boolean>
-      <name>disableRegister</name>
-      <label>Disable Register </label>
-      <flag>r</flag>
-      <description>Turn off the registration of the </description>
-      <longflag>disableRegister</longflag>
+      <name>disableRegistrationOptimization</name>
+      <label>Disable Registration Optimization</label>
+      <flag>o</flag>
+      <description>Turn off the optimization of the registration of the prior to the image </description>
+      <longflag>disableRegistrationOptimization</longflag>
       <default>false</default>
     </boolean>
     <transform fileExtensions=".tfm">
@@ -114,6 +114,14 @@
       <channel>input</channel>
       <default></default>
     </transform>
+    <boolean>
+      <name>disableParameterOptimization</name>
+      <label>Disable Parameter Optimization </label>
+      <flag>r</flag>
+      <description>Turn off the optimization of the erode, dilate, blur parameters</description>
+      <longflag>disableParameterOptimization</longflag>
+      <default>false</default>
+    </boolean>
     <integer-vector>
       <name>outputBoundary</name>
       <label>Output boundary size</label>

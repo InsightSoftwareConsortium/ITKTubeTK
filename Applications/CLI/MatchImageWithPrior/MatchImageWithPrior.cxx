@@ -204,7 +204,6 @@ int DoIt( int argc, char * argv[] )
     typename TransformType::Pointer regTfm;
     if( loadTransform.size() == 0 )
       {
-      eval.SetUseRegistration( true );
       eval.SetUseRegistrationTransform( false );
       }
     else
@@ -217,13 +216,23 @@ int DoIt( int argc, char * argv[] )
       transform = static_cast< TransformType * >(
         treader->GetTransformList()->front().GetPointer() );
 
-      eval.SetUseRegistration( true );
-      eval.SetUseRegistrationTransform( true );
       eval.SetRegistrationTransform( transform );
+      eval.SetUseRegistrationTransform( true );
       }
+
+    if( disableRegistrationOptimization )
+      {
+      eval.SetUseRegistrationOptimization( false );
+      if( !eval.GetUseRegistrationTransform() )
+        {
+        eval.SetUseRegistration( false );
+        }
+      }
+
     eval.SetErode( erode );
     eval.SetDilate( dilate );
     eval.SetGaussianBlur( gaussianBlur );
+
     eval.Update();
 
     if( loadTransform.size() == 0 )
@@ -256,138 +265,139 @@ int DoIt( int argc, char * argv[] )
                              << dilate << ", " 
                              << gaussianBlur
               << "  val = " << gof << std::endl;
-    while( !done )
+    if( !disableParameterOptimization )
       {
-      if( erode+erodeStep < 0 )
+      while( !done )
         {
-        erodeStep = 0;
-        erode = 0;
-        erodeFlip = true;
-        }
-      if( dilate+dilateStep < 0 )
-        {
-        dilateStep = 0;
-        dilate = 0;
-        dilateFlip = true;
-        }
-      if( gaussianBlur+gaussianBlurStep < 0 )
-        {
-        done = true;
-        continue;
-        }
-
-      curTrial.erode = erode+erodeStep;
-      curTrial.dilate = dilate+dilateStep;
-      curTrial.gaussianBlur = gaussianBlur+gaussianBlurStep;
-      typename TrialListType::iterator iter = trials.begin();
-      while( iter != trials.end() )
-        {
-        if( iter->first == curTrial )
-          {
-          break;
-          }
-        ++iter;
-        }
-      if( iter == trials.end() )
-        {
-        eval.SetVolumeImage( curVolume );
-        eval.SetMaskImage( curMask );
-        eval.SetOriginalMaskImage( orgMask );
-        eval.SetErode( erode+erodeStep );
-        eval.SetDilate( dilate+dilateStep );
-        eval.SetBoundarySize( outputBoundary );
-        eval.SetGaussianBlur( gaussianBlur+gaussianBlurStep );
-        eval.SetUseRegistration( true );
-        eval.SetUseRegistrationTransform( true );
-        eval.SetRegistrationTransform( regTfm );
-        eval.Update();
-        gof = eval.GetGoodnessOfFit();
-
-        trials[curTrial] = gof;
-        }
-      else
-        {
-        std::cout << "*** Repeated point ***" << std::endl;
-        gof = iter->second;
-        }
-
-      std::cout << "params = " << erode+erodeStep << ", " 
-                               << dilate+dilateStep << ", " 
-                               << gaussianBlur+gaussianBlurStep
-                << "  val = " << gof << std::endl;
-
-      if( gof > gofBest )
-        {
-        erode += erodeStep;
-        dilate += dilateStep;
-        gaussianBlur += gaussianBlurStep;
-
-        gofBest = gof;
-        erodeBest = erode;
-        dilateBest = dilate;
-        gaussianBlurBest = gaussianBlur;
-
-        erodeFlip = false;
-        if( erodeStep == 0 )
-          {
-          erodeStep = 1;
-          }
-        dilateFlip = false;
-        if( dilateStep == 0 )
-          {
-          dilateStep = 1;
-          }
-        gaussianBlurFlip = false;
-        }
-      else
-        {
-        if( !erodeFlip )
-          {
-          erodeFlip = true;
-          erodeStep *= -1;
-          }
-        else 
+        if( erode+erodeStep < 0 )
           {
           erodeStep = 0;
-          if( !dilateFlip )
+          erode = 0;
+          erodeFlip = true;
+          }
+        if( dilate+dilateStep < 0 )
+          {
+          dilateStep = 0;
+          dilate = 0;
+          dilateFlip = true;
+          }
+        if( gaussianBlur+gaussianBlurStep < 0 )
+          {
+          done = true;
+          continue;
+          }
+  
+        curTrial.erode = erode+erodeStep;
+        curTrial.dilate = dilate+dilateStep;
+        curTrial.gaussianBlur = gaussianBlur+gaussianBlurStep;
+        typename TrialListType::iterator iter = trials.begin();
+        while( iter != trials.end() )
+          {
+          if( iter->first == curTrial )
             {
-            dilateFlip = true;
-            dilateStep *= -1;
+            break;
             }
-          else
+          ++iter;
+          }
+        if( iter == trials.end() )
+          {
+          eval.SetVolumeImage( curVolume );
+          eval.SetMaskImage( curMask );
+          eval.SetOriginalMaskImage( orgMask );
+          eval.SetErode( erode+erodeStep );
+          eval.SetDilate( dilate+dilateStep );
+          eval.SetBoundarySize( outputBoundary );
+          eval.SetGaussianBlur( gaussianBlur+gaussianBlurStep );
+          eval.SetUseRegistrationOptimization( false );
+          eval.Update();
+          gof = eval.GetGoodnessOfFit();
+  
+          trials[curTrial] = gof;
+          }
+        else
+          {
+          std::cout << "*** Repeated point ***" << std::endl;
+          gof = iter->second;
+          }
+  
+        std::cout << "params = " << erode+erodeStep << ", " 
+                                 << dilate+dilateStep << ", " 
+                                 << gaussianBlur+gaussianBlurStep
+                  << "  val = " << gof << std::endl;
+  
+        if( gof > gofBest )
+          {
+          erode += erodeStep;
+          dilate += dilateStep;
+          gaussianBlur += gaussianBlurStep;
+  
+          gofBest = gof;
+          erodeBest = erode;
+          dilateBest = dilate;
+          gaussianBlurBest = gaussianBlur;
+  
+          erodeFlip = false;
+          if( erodeStep == 0 )
             {
-            dilateStep = 0;
-            if( !gaussianBlurFlip )
+            erodeStep = 1;
+            }
+          dilateFlip = false;
+          if( dilateStep == 0 )
+            {
+            dilateStep = 1;
+            }
+          gaussianBlurFlip = false;
+          }
+        else
+          {
+          if( !erodeFlip )
+            {
+            erodeFlip = true;
+            erodeStep *= -1;
+            }
+          else 
+            {
+            erodeStep = 0;
+            if( !dilateFlip )
               {
-              gaussianBlurFlip = true;
-              gaussianBlurStep *= -1;
+              dilateFlip = true;
+              dilateStep *= -1;
               }
             else
               {
-              done = true;
+              dilateStep = 0;
+              if( !gaussianBlurFlip )
+                {
+                gaussianBlurFlip = true;
+                gaussianBlurStep *= -1;
+                }
+              else
+                {
+                done = true;
+                }
               }
             }
           }
         }
+  
+      eval.SetVolumeImage( curVolume );
+      eval.SetMaskImage( curMask );
+      eval.SetOriginalMaskImage( orgMask );
+      eval.SetErode( erodeBest );
+      eval.SetDilate( dilateBest );
+      eval.SetGaussianBlur( gaussianBlurBest );
+      eval.SetBoundarySize( outputBoundary );
+      eval.Update();
+      eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
+      gof = eval.GetGoodnessOfFit();
       }
-
-    eval.SetVolumeImage( curVolume );
-    eval.SetMaskImage( curMask );
-    eval.SetOriginalMaskImage( orgMask );
-    eval.SetErode( erodeBest );
-    eval.SetDilate( dilateBest );
-    eval.SetGaussianBlur( gaussianBlurBest );
-    eval.SetBoundarySize( outputBoundary );
-    eval.Update();
-    eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
-    gof = eval.GetGoodnessOfFit();
 
     curVolume = eval.GetVolumeImage();
     curMask = eval.GetMaskImage();
 
     std::cout << "Best Params = " << erodeBest << ", " 
-                             << dilateBest << ", " 
-                             << gaussianBlurBest
+                                  << dilateBest << ", " 
+                                  << gaussianBlurBest
               << "   Best Value = " << gof << std::endl;
     }
   progressReporter.Report( 0.9 );

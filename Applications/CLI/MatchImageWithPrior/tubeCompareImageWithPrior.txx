@@ -80,6 +80,7 @@ CompareImageWithPrior( void )
   m_Dilate = 2;
   m_GaussianBlur = 10;
   m_UseRegistration = true;
+  m_UseRegistrationOptimization = true;
   m_UseRegistrationTransform = false;
   m_RegistrationTransform = RegistrationMethodType::TransformType::New();
   m_RegistrationTransform->SetIdentity();
@@ -184,10 +185,38 @@ SetUseRegistration( bool reg )
 }
 
 template< class pixelT, unsigned int dimensionT >
+bool CompareImageWithPrior< pixelT, dimensionT>::
+GetUseRegistration( )
+{
+  return m_UseRegistration;
+}
+
+template< class pixelT, unsigned int dimensionT >
 void CompareImageWithPrior< pixelT, dimensionT>::
 SetUseRegistrationTransform( bool reg )
 {
   m_UseRegistrationTransform = reg;
+}
+
+template< class pixelT, unsigned int dimensionT >
+bool CompareImageWithPrior< pixelT, dimensionT>::
+GetUseRegistrationTransform( )
+{
+  return m_UseRegistrationTransform;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void CompareImageWithPrior< pixelT, dimensionT>::
+SetUseRegistrationOptimization( bool reg )
+{
+  m_UseRegistrationOptimization = reg;
+}
+
+template< class pixelT, unsigned int dimensionT >
+bool CompareImageWithPrior< pixelT, dimensionT>::
+GetUseRegistrationOptimization( )
+{
+  return m_UseRegistrationOptimization;
 }
 
 template< class pixelT, unsigned int dimensionT >
@@ -373,7 +402,7 @@ Update( void )
       m_TimeCollector->Start("RegisterROIs");
       }
 
-    if( !m_UseRegistrationTransform )
+    if( m_UseRegistrationOptimization )
       {
       typedef itk::NormalizeImageFilter< ImageType, ImageType > 
         NormFilterType;
@@ -404,6 +433,11 @@ Update( void )
       reg->SetTransformParametersScales( scales );
       reg->SetUseEvolutionaryOptimization( true );
       int numSamples = 1;
+      if( m_UseRegistrationTransform )
+        {
+        reg->SetInitialTransformParameters( 
+          m_RegistrationTransform->GetParameters() );
+        }
       typename ImageType::SizeType imageSize = m_VolImage
                                                ->GetLargestPossibleRegion()
                                                .GetSize();
