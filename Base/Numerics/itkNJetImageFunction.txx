@@ -125,6 +125,8 @@ NJetImageFunction<TInputImage>
 {
   this->Superclass::PrintSelf(os,indent);
   os << indent << "m_UseProjection = " << m_UseProjection << std::endl;
+  os << indent << "m_InverseRidgeness = " << m_InverseRidgeness 
+     << std::endl;
   os << indent << "m_UseInputImageMask = " << m_UseInputImageMask 
      << std::endl;
   if( m_UseInputImageMask )
