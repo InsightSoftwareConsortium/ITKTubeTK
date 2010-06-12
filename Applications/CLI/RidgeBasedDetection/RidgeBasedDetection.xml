@@ -28,24 +28,31 @@
       <description>Input prior</description>
     </image>
     <image>
-      <name>inputDefects</name>
-      <label>Input Defects</label>
+      <name>inputAdditions</name>
+      <label>Input Additions</label>
       <channel>input</channel>
       <index>2</index>
-      <description>Input Defects</description>
+      <description>Input Additions</description>
+    </image>
+    <image>
+      <name>inputSubtractions</name>
+      <label>Input Subtractions</label>
+      <channel>input</channel>
+      <index>3</index>
+      <description>Input Subtractions</description>
     </image>
     <image>
       <name>inputCenterlines</name>
       <label>Input Centerlines</label>
       <channel>input</channel>
-      <index>3</index>
+      <index>4</index>
       <description>Input Centerlines</description>
     </image>
     <string>
       <name>outputFile</name>
       <label>Output ARFF File</label>
       <channel>input</channel>
-      <index>4</index>
+      <index>5</index>
       <description>Output ARFF File for WEKA</description>
     </string>
   </parameters>

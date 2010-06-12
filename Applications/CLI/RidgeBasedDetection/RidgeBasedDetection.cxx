@@ -95,11 +95,13 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   typename ReaderType::Pointer priorReader = ReaderType::New();
-  typename ReaderType::Pointer defectReader = ReaderType::New();
+  typename ReaderType::Pointer additionsReader = ReaderType::New();
+  typename ReaderType::Pointer subtractionsReader = ReaderType::New();
   typename ReaderType::Pointer centerlinesReader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   priorReader->SetFileName( inputPrior.c_str() );
-  defectReader->SetFileName( inputDefects.c_str() );
+  additionsReader->SetFileName( inputAdditions.c_str() );
+  subtractionsReader->SetFileName( inputSubtractions.c_str() );
   centerlinesReader->SetFileName( inputCenterlines.c_str() );
 
   // Load the input image with exception handling
@@ -131,7 +133,20 @@ int DoIt( int argc, char * argv[] )
   // Load the input prior with exception handling
   try
     {
-    defectReader->Update();
+    additionsReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject caught while reading the input defects!"
+              << std::endl;
+    std::cerr << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  // Load the input prior with exception handling
+  try
+    {
+    subtractionsReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -165,7 +180,8 @@ int DoIt( int argc, char * argv[] )
 
   // Get the centerlines
   typename ImageType::Pointer centerlines = centerlinesReader->GetOutput();
-  typename ImageType::Pointer defects = defectReader->GetOutput();
+  typename ImageType::Pointer additions = additionsReader->GetOutput();
+  typename ImageType::Pointer subtractions = subtractionsReader->GetOutput();
 
   // Rescale the input
   typename RescaleType::Pointer rescale = RescaleType::New();
@@ -192,13 +208,12 @@ int DoIt( int argc, char * argv[] )
   priorCalc->SetInputImage( curPrior );
   priorCalc->SetInverseRidgeness( true );
 
-  typename CalculatorType::Pointer defectCalc = CalculatorType::New();
-  defectCalc->SetInputImage( defects );
+  typename CalculatorType::Pointer addCalc = CalculatorType::New();
+  addCalc->SetInputImage( additions );
 
-  centerlines->GetLargestPossibleRegion().Print( std::cout );
-  defects->GetLargestPossibleRegion().Print( std::cout );
-  curImage->GetLargestPossibleRegion().Print( std::cout );
-  curPrior->GetLargestPossibleRegion().Print( std::cout );
+  typename CalculatorType::Pointer subCalc = CalculatorType::New();
+  subCalc->SetInputImage( subtractions );
+
   IterType centerlineItr( centerlines, centerlines->GetLargestPossibleRegion() );
   double samples = 0;
   centerlineItr.GoToBegin();
@@ -228,7 +243,7 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE log(abs(v1g-v1e)) NUMERIC\n";
   output << "@ATTRIBUTE log(abs(v2g-v2e)) NUMERIC\n";
   output << "@ATTRIBUTE log(abs(v3g-v3e)) NUMERIC\n";
-  output << "@ATTRIBUTE class {good,bad}\n";
+  output << "@ATTRIBUTE class {typical,addition,subtraction}\n";
   output << "\n";
   output << "@DATA\n";
 
@@ -248,15 +263,19 @@ int DoIt( int argc, char * argv[] )
 
       // Set label value
       std::string label;
-      if( defectCalc->Evaluate( curPoint, sigmaMedium ) )
+      if( addCalc->Evaluate( curPoint, sigmaMedium ) )
         {
-        label = "bad";
+        label = "addition";
+        }
+      else if( subCalc->Evaluate( curPoint, sigmaMedium ) )
+        {
+        label = "subtraction";
         }
       else
         {
-        label = "good";
+        label = "typical";
         ++goodCount;
-        if( goodCount != 29 )
+        if( goodCount < 30 )
           {
           progress += step;
           ++centerlineItr;
