@@ -40,19 +40,19 @@
       <name>spacing</name>
       <label>Use spacing</label>
       <longflag>spacing</longflag>
-      <description>Spacing to be used. Should be a 3-vector. Overrides matchImage.</description>
+      <description>Spacing to be used. Should be a N-vector. Overrides matchImage.</description>
     </float-vector>
     <float-vector>
       <name>origin</name>
       <label>Use origin</label>
       <longflag>origin</longflag>
-      <description>Origin to be used. Should be a 3-vector. Overrides matchImage.</description>
+      <description>Origin to be used. Should be a N-vector. Overrides matchImage.</description>
     </float-vector>
     <float-vector>
       <name>resampleFactor</name>
       <label>Resample factor</label>
       <longflag>resampleFactor</longflag>
-      <description>Factor to increase size. 2,2,2 doubles size in each dimension. Should be a 3-vector. Overrides matchImage and setSpacing.</description>
+      <description>Factor to increase size. 2,2,2 doubles size in each dimension. Should be a N-vector. Overrides matchImage and setSpacing.</description>
     </float-vector>
     <boolean>
       <name>makeIsotropic</name>
@@ -71,5 +71,13 @@
       <element>BSpline</element>
       <default>Linear</default>
     </string-enumeration>
+     <transform fileExtensions=".tfm">
+      <name>loadTransform</name>
+      <label>Load Transform</label>
+      <description>Load the transform to be applied</description>
+      <longflag>loadTransform</longflag>
+      <channel>input</channel>
+      <default></default>
+    </transform>
   </parameters>
 </executable>
