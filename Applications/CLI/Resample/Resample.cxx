@@ -32,6 +32,7 @@ limitations under the License.
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
+#include "itkTransformFileReader.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -183,10 +184,14 @@ int DoIt( int argc, char *argv[] )
   reporter.Report( 0.25 );
   typedef typename itk::ResampleImageFilter< InputImageType,
           OutputImageType >             ResampleFilterType;
+
+  typename ResampleFilterType::Pointer filter = ResampleFilterType::New( );
+
+  filter->SetInput( inIm );
+
   typedef typename itk::InterpolateImageFunction< InputImageType,
           double >                      InterpType;
   typename InterpType::Pointer interp;
-
   if( interpolator == "BSpline" )
     {
     typedef typename itk::BSplineInterpolateImageFunction< InputImageType,
@@ -205,10 +210,22 @@ int DoIt( int argc, char *argv[] )
             InputImageType, double >    MyInterpType;
     interp = MyInterpType::New( );
     }
-
-  typename ResampleFilterType::Pointer filter = ResampleFilterType::New( );
   filter->SetInterpolator( interp );
-  filter->SetInput( inIm );
+
+  if( loadTransform.size() > 0 )
+    {
+    itk::TransformFileReader::Pointer treader = 
+      itk::TransformFileReader::New();
+    treader->SetFileName(loadTransform);
+    treader->Update();  
+
+    typedef itk::Transform<double, DimensionI, DimensionI> TransformType;
+    typename TransformType::Pointer tfm = static_cast< TransformType * >(
+      treader->GetTransformList()->front().GetPointer() );
+
+    filter->SetTransform( tfm );
+    }
+
   filter->SetSize( outSize );
   filter->SetOutputOrigin( outOrigin );
   filter->SetOutputSpacing( outSpacing );
