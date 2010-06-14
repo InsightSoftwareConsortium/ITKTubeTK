@@ -405,7 +405,8 @@ int DoIt( int argc, char * argv[] )
       tmpROIIter.GoToBegin();
       while( !tmpROIIter.IsAtEnd() )
         {
-        if( curROIIter.Get() != tmpROIIter.Get() )
+        if( curROIIter.Get() != tmpROIIter.Get() ||
+            ( curROIIter.Get() == foreground ) )
           {
           curROIIter.Set( tmpROIIter.Get() );
           if( mode == 0 )
