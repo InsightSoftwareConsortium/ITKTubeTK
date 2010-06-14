@@ -290,7 +290,7 @@ int DoIt( int argc, char * argv[] )
         {
         label = "typical";
         ++goodCount;
-        if( goodCount < 90 )
+        if( goodCount < 30 )
           {
           progress += step;
           ++centerlineItr;
