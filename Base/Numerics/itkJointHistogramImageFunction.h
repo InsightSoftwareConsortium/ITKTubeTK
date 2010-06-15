@@ -70,11 +70,11 @@ public:
   itkGetMacro( FeatureWidth, double );
   itkSetMacro( FeatureWidth, double );
 
+  /** Override the Set for the InputImage */
+  virtual void SetInputImage( const InputImageType * ptr );
+
   /** Set the mask or second image used in the comparison. **/
-  virtual void SetInputMask( const typename InputImageType::Pointer mask )
-  {
-    m_InputMask = mask;
-  }
+  virtual void SetInputMask( const typename InputImageType::Pointer mask );
 
   /** Get the mask or second image used in the comparison. **/
   virtual typename InputImageType::Pointer GetInputMask() const

@@ -23,6 +23,10 @@ limitations under the License.
 #ifndef __itkJointHistogramImageFunction_txx
 #define __itkJointHistogramImageFunction_txx
 
+#include "itkMinimumMaximumImageCalculator.h"
+
+#include "itkJointHistogramImageFunction.h"
+
 namespace itk
 {
 
@@ -67,6 +71,26 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_SumOfSquaresHistogram->FillBuffer( 0 );
 
   m_NumberOfComputedSamples = m_NumberOfSamples = 0;
+}
+
+template <class TInputImage, class TCoordRep>
+void
+JointHistogramImageFunction<TInputImage,TCoordRep>
+::SetInputImage( const InputImageType * ptr )
+{
+  this->Superclass::SetInputImage( ptr );
+
+  typedef itk::MinimumMaximumImageCalculator<InputImageType> MinMaxType;
+  
+  
+}
+
+template <class TInputImage, class TCoordRep>
+void
+JointHistogramImageFunction<TInputImage,TCoordRep>
+::SetInputMask( const typename InputImageType::Pointer mask )
+{
+    m_InputMask = mask;
 }
 
 template <class TInputImage, class TCoordRep>
