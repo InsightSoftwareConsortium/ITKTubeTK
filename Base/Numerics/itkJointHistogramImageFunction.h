@@ -1,241 +1,186 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkImageFunction.h,v $
-  Language:  C++
-  Date:      $Date: 2009-10-29 11:18:33 $
-  Version:   $Revision: 1.50 $
+Library:   TubeTK
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 #ifndef __itkJointHistogramImageFunction_h
 #define __itkJointHistogramImageFunction_h
 
-#include "itkPoint.h"
-#include "itkIndex.h"
-#include "itkContinuousIndex.h"
-#include "itkImageBase.h"
+#include "itkImageFunction.h"
+#include "itkImage.h"
 
 namespace itk
 {
 
-/** \class ImageFunction
- * \brief Evaluates a function of an image at specified position.
+/** \class JointHistogramImageFunction
  *
- * ImageFunction is a baseclass for all objects that evaluates
- * a function of an image at index, continuous index or point.
- * This class is templated over the input image type, the type
- * of the function output and the coordinate representation type
- * (e.g. float or double).
+ *  Using an input image an input mask, this function allows the computation of
+ *  Z-Score values at a given point in the image. This is done by calling the
+ *  Precompute function to build up a mean and standard deviation for each bin in
+ *  a joint-histogram. That mean and standard deviation is used to compute the
+ *  Z-Score at a point when Evaluate is called. The neighboorhood used in the
+ *  computation of the joint histogram is determined by the feature width.
  *
- * The input image is set via method SetInputImage().
- * Methods Evaluate, EvaluateAtIndex and EvaluateAtContinuousIndex
- * respectively evaluates the function at an geometric point,
- * image index and continuous image index.
- *
- * \warning Image BufferedRegion information is cached during
- * in SetInputImage( image ). If the image BufferedRegion has changed
- * one must call SetInputImage( image ) again to update the cache
- * to the current values.
- *
- * \sa Point
- * \sa Index
- * \sa ContinuousIndex
- *
- * \ingroup ImageFunctions
  */
-template <
-class TInputImage,
-class TOutput,
-class TCoordRep = float
->
+template<class TInputImage, class TCoordRep = float>
 class ITK_EXPORT JointHistogramImageFunction :
-    public FunctionBase< Point<TCoordRep,
-                               ::itk::GetImageDimension<TInputImage>::ImageDimension>,
-                       TOutput >
+    public ImageFunction< TInputImage, double, TCoordRep >
 {
 public:
-  /** Dimension underlying input image. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      TInputImage::ImageDimension);
 
-  /** Standard class typedefs. */
-  typedef ImageFunction                                         Self;
-  typedef FunctionBase<
-    Point<TCoordRep, itkGetStaticConstMacro(ImageDimension)>,
-    TOutput >                                                   Superclass;
-  typedef SmartPointer<Self>                                    Pointer;
-  typedef SmartPointer<const Self>                              ConstPointer;
+  /** Class typedefs **/
+  typedef JointHistogramImageFunction                  Self;
+  typedef ImageFunction<TInputImage,double,TCoordRep>  Superclass;
+  typedef SmartPointer<Self>                           Pointer;
+  typedef SmartPointer<const Self>                     ConstPointer;
+  typedef typename Superclass::InputImageType          InputImageType;
+  typedef typename TInputImage::PixelType              PixelType;
+  typedef typename Superclass::PointType               PointType;
+  typedef typename Superclass::IndexType               IndexType;
+  typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
+  typedef itk::Image<float,2>                          HistogramType;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ImageFunction, FunctionBase);
+  itkTypeMacro( JointHistogramImageFunction, ImageFunction );
 
-  /** InputImageType typedef support. */
-  typedef TInputImage InputImageType;
+  /** Standard New Macro. */
+  itkNewMacro( Self );
 
-  /** InputPixel typedef support */
-  typedef typename InputImageType::PixelType InputPixelType;
+  /** Constant for fetching the dimensions of the image. **/
+  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
 
-  /** InputImagePointer typedef support */
-  typedef typename InputImageType::ConstPointer InputImageConstPointer;
+  /** Get/Set the width of a significant feature. */
+  itkGetMacro( FeatureWidth, double );
+  itkSetMacro( FeatureWidth, double );
 
-  /** OutputType typedef support. */
-  typedef TOutput OutputType;
+  /** Set the mask or second image used in the comparison. **/
+  virtual void SetInputMask( const typename InputImageType::Pointer mask )
+  {
+    m_InputMask = mask;
+  }
 
-  /** CoordRepType typedef support. */
-  typedef TCoordRep CoordRepType;
+  /** Get the mask or second image used in the comparison. **/
+  virtual typename InputImageType::Pointer GetInputMask() const
+  {
+    return m_InputMask;
+  }
 
-  /** Index Type. */
-  typedef typename InputImageType::IndexType      IndexType;
-  typedef typename InputImageType::IndexValueType IndexValueType;
+  /** Get the size of the histogram (It will be a size x size image ). */
+  itkGetMacro( HistogramSize, unsigned int );
 
-  /** ContinuousIndex Type. */
-  typedef ContinuousIndex<TCoordRep,itkGetStaticConstMacro(ImageDimension)>
-          ContinuousIndexType;
+  /** 
+   * Set the size of the histogram. This will reset the bins in the 
+   * mean and standard deviation to zero. 
+   */ 
+  virtual void SetHistogramSize( const unsigned int& size );
 
-  /** Point Type. */
-  typedef Point<TCoordRep,itkGetStaticConstMacro(ImageDimension)> PointType;
+  /** Get the Z-score at a given point. */
+  virtual double Evaluate( const PointType& point ) const
+  {
+    IndexType index;
+    this->ConvertPointToNearestIndex( point, index );
+    return ( this->EvaluateAtIndex( index ) );
+  }
 
-  /** Set the input image.
-   * \warning this method caches BufferedRegion information.
-   * If the BufferedRegion has changed, user must call
-   * SetInputImage again to update cached values. */
-  virtual void SetInputImage( const InputImageType * ptr );
+  /** Get the Z-score at a given continuous index. */
+  virtual double EvaluateAtContinuousIndex( const ContinuousIndexType & index ) const
+  {
+    IndexType nindex;
 
-  /** Get the input image. */
-  const InputImageType * GetInputImage() const
-    { return m_Image.GetPointer(); }
+    this->ConvertContinuousIndexToNearestIndex( index, nindex );
+    return this->EvaluateAtIndex( nindex );
+  }
 
-  /** Evaluate the function at specified Point position.
-   * Subclasses must provide this method. */
-  virtual TOutput Evaluate( const PointType& point ) const = 0;
+  /** Get the Z-score at a given index. */
+  virtual double EvaluateAtIndex( const IndexType & index ) const;
 
-  /** Evaluate the function at specified Index position.
-   * Subclasses must provide this method. */
-  virtual TOutput EvaluateAtIndex( const IndexType & index ) const = 0;
+  /** 
+   * Add histograms (based on a given point) to the internals used to 
+   * calculate the mean and standard deviation histograms when needed.
+   */
+  virtual void Precompute( const PointType& point ) const
+  {
+    IndexType index;
+    this->ConvertPointToNearestIndex( point, index );
+    this->PrecomputeAtIndex( index );
+  }
 
-  /** Evaluate the function at specified ContinuousIndex position.
-   * Subclasses must provide this method. */
-  virtual TOutput EvaluateAtContinuousIndex(
-    const ContinuousIndexType & index ) const = 0;
+  /** 
+   * Add histograms (based on a given continuous index) to the internals used 
+   * to calculate the mean and standard deviation histograms when needed.
+   */
+  virtual void PrecomputeAtContinuousIndex( const ContinuousIndexType & index ) const
+  {
+    IndexType nindex;
 
-  /** Check if an index is inside the image buffer.
-   * If ITK_USE_CENTERED_PIXEL_COORDINATES_CONSISTENTLY is on,
-   * we take into account the fact that each voxel has its
-   * center at the integer coordinate and extends half way
-   * to the next integer coordinate.
-   * \warning For efficiency, no validity checking of
-   * the input image is done. */
-  virtual bool IsInsideBuffer( const IndexType & index ) const
-    {
-    for( unsigned int j = 0; j < ImageDimension; j++ )
-      {
-      if( index[j] < m_StartIndex[j] )
-        {
-        return false;
-        }
-      if( index[j] > m_EndIndex[j] )
-        {
-        return false;
-        }
-      }
-    return true;
-    }
+    this->ConvertContinuousIndexToNearestIndex( index, nindex );
+    this->PrecomputeAtIndex( nindex );
+  }
 
-  /** Check if a continuous index is inside the image buffer.
-   * \warning For efficiency, no validity checking of
-   * the input image is done. */
-  virtual bool IsInsideBuffer( const ContinuousIndexType & index ) const
-    {
-    for( unsigned int j = 0; j < ImageDimension; j++ )
-      {
-      if( index[j] < m_StartContinuousIndex[j] )
-        {
-        return false;
-        }
-#ifdef ITK_USE_CENTERED_PIXEL_COORDINATES_CONSISTENTLY
-      if( index[j] >= m_EndContinuousIndex[j] )
-#else
-      if( index[j] > m_EndContinuousIndex[j] )
-#endif
-      {
-        return false;
-        }
-      }
-    return true;
-    }
-
-  /** Check if a point is inside the image buffer.
-   * \warning For efficiency, no validity checking of
-   * the input image pointer is done. */
-  virtual bool IsInsideBuffer( const PointType & point ) const
-    {
-    ContinuousIndexType index;
-    m_Image->TransformPhysicalPointToContinuousIndex( point, index );
-    return this->IsInsideBuffer( index );
-    }
-
-  /** Convert point to nearest index. */
-  void ConvertPointToNearestIndex( const PointType & point,
-    IndexType & index ) const
-    {
-    ContinuousIndexType cindex;
-    m_Image->TransformPhysicalPointToContinuousIndex( point, cindex );
-    this->ConvertContinuousIndexToNearestIndex( cindex, index );
-    }
-
-  /** Convert point to continuous index */
-  void ConvertPointToContinousIndex( const PointType & point,
-    ContinuousIndexType & cindex ) const
-    {
-    itkWarningMacro("Please change your code to use ConvertPointToContinuousIndex "
-      << "rather than ConvertPointToContinousIndex. The latter method name was "
-      << "mispelled and the ITK developers failed to correct it before it was released."
-      << "The mispelled method name is retained in order to maintain backward compatibility.");
-    this->ConvertPointToContinuousIndex( point, cindex );
-    }
-
-  /** Convert point to continuous index */
-  void ConvertPointToContinuousIndex( const PointType & point,
-    ContinuousIndexType & cindex ) const
-    {
-    m_Image->TransformPhysicalPointToContinuousIndex( point, cindex );
-    }
-
-  /** Convert continuous index to nearest index. */
-  inline void ConvertContinuousIndexToNearestIndex( const ContinuousIndexType & cindex,
-    IndexType & index ) const
-    {
-    index.CopyWithRound( cindex );
-    }
-
-  itkGetConstReferenceMacro(StartIndex, IndexType);
-  itkGetConstReferenceMacro(EndIndex, IndexType);
-
-  itkGetConstReferenceMacro(StartContinuousIndex, ContinuousIndexType);
-  itkGetConstReferenceMacro(EndContinuousIndex, ContinuousIndexType);
-
+  /** 
+   * Add histograms (based on a given index) to the internals used to 
+   * calculate the mean and standard deviation histograms when needed.
+   */
+  virtual double PrecomputeAtIndex( const IndexType & index ) const;
+  
 protected:
+  
+  /** Default constructor */
   JointHistogramImageFunction();
+
+  /** Default destructor */
   ~JointHistogramImageFunction() {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+
+  /** Printself function for introspection. **/
+  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  /** 
+   * Compute the mean and standard deviation histograms for use in Z-score
+   * calculation.
+   */
+  void ComputeMeanAndStandardDeviation();
+
+  void ComputeHistogramAtIndex( const IndexType& index,
+                                typename HistogramType::Pointer hist ) const;
+
+  /** Data members **/
+  typename InputImageType::Pointer       m_InputMask;
+  typename HistogramType::Pointer        m_SumHistogram;
+  typename HistogramType::Pointer        m_SumOfSquaresHistogram;
+  typename HistogramType::Pointer        m_MeanHistogram;
+  typename HistogramType::Pointer        m_StandardDeviationHistogram;
+  double                                 m_FeatureWidth;
+  unsigned int                           m_HistogramSize;
+  mutable unsigned int                           m_NumberOfSamples;
+  mutable unsigned int                           m_NumberOfComputedSamples;
 
 private:
-  JointHistogramImageFunction(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  JointHistogramImageFunction( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
-};
+}; // End class JointHistogramImageFunction
 
 }// end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkJointHistogramImageFunction.h"
+# include "itkJointHistogramImageFunction.txx"
 #endif
 
 #endif

@@ -137,6 +137,7 @@ public:
                    const VectorType & v2,
                    double scale=1 ) const;
 
+
   /** Evaluate the function at specified Index position */
   double EvaluateAtIndex( const IndexType & index, double scale=1 ) const;
   double EvaluateAtIndex( const IndexType & index, const VectorType & v1,

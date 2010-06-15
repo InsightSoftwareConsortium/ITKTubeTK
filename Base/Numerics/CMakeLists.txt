@@ -1,9 +1,11 @@
 set(TubeTK_Base_Numerics_H_Files
   itkNJetImageFunction.h
+  itkJointHistogramImageFunction.h
 )
 
 set(TubeTK_Base_Numerics_TXX_Files
   itkNJetImageFunction.txx
+  itkJointHistogramImageFunction.txx
 )
 
 IF( BUILD_TESTING )

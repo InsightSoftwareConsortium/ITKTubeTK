@@ -44,6 +44,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseNumerics_SRCS
        tubeBaseNumericsPrintTest.cxx
        itkNJetImageFunctionTest.cxx 
+       itkJointHistogramImageFunctionTest.cxx 
 )
 
 include_directories( 
@@ -411,3 +412,10 @@ add_test( itkNJetImageFunctionTest37
                ${INPUT_DATA}/GDS0015_1.mha
                ${TEMP}/itkNJetImageFunctionTest37.mha )
 
+add_test( itkJointHistogramImageFunctionTest01
+  ${BASE_NUMERICS_TESTS}
+  --compare ${BASELINE}/itkJointHistogramImageFunctionTest01.mha
+  ${TEMP}/itkJointHistogramImageFunctionTest01.mha
+  itkJointHistogramImageFunctionTest
+  ${INPUT_DATA}/GDS0015_1.mha
+  ${TEMP}/itkJointHistogramImageFunctionTest01.mha )
