@@ -32,5 +32,6 @@ void RegisterTests()
 {
   REGISTER_TEST( tubeBaseNumericsPrintTest );
   REGISTER_TEST( itkNJetImageFunctionTest );
+  REGISTER_TEST( itkJointHistogramImageFunctionTest );
 }
 

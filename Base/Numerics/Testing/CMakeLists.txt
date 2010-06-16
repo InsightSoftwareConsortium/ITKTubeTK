@@ -417,5 +417,6 @@ add_test( itkJointHistogramImageFunctionTest01
   --compare ${BASELINE}/itkJointHistogramImageFunctionTest01.mha
   ${TEMP}/itkJointHistogramImageFunctionTest01.mha
   itkJointHistogramImageFunctionTest
+  ${INPUT_DATA}/ES0015_1.mha
   ${INPUT_DATA}/GDS0015_1.mha
   ${TEMP}/itkJointHistogramImageFunctionTest01.mha )

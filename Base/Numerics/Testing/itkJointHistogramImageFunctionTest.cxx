@@ -35,11 +35,11 @@ limitations under the License.
 
 int itkJointHistogramImageFunctionTest(int argc, char* argv [] ) 
 {
-  if( argc < 3 )
+  if( argc < 4 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " inputImage outputImage" << std::endl;
+    std::cerr << argv[0] << " inputImage maskImage outputImage" << std::endl;
     return EXIT_FAILURE;
     }
   
@@ -69,14 +69,31 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during read:\n"  << e;
+    std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
     }
 
   ImageType::Pointer inputImage = reader->GetOutput();
 
+  // Read the mask
+  reader = ReaderType::New();
+  reader->SetFileName( argv[2] );
+  try
+    {
+    reader->Update();
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during mask read:\n"  << e;
+    return EXIT_FAILURE;
+    }
+
+  ImageType::Pointer maskImage = reader->GetOutput();
+    
+
   FunctionType::Pointer func = FunctionType::New();
   func->SetInputImage( inputImage );
+  func->SetInputMask( maskImage );
 
   ImageType::Pointer outputImage = ImageType::New();
   outputImage->CopyInformation( inputImage );
@@ -86,15 +103,28 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( outputImage,
     outputImage->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
+
+  // Precompute
+  outIter.GoToBegin();
+  while( !outIter.IsAtEnd() )
+    {
+    inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
+    func->Precompute( pnt );
+    ++outIter;
+    }     
+  
+  // Evaluate
   outIter.GoToBegin();
   while( !outIter.IsAtEnd() )
     {
     inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
     outIter.Set( func->Evaluate( pnt ) );
+    ++outIter;
     }     
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[2] );
+  writer->SetFileName( argv[3] );
+  writer->SetUseCompression( true );
   writer->SetInput( outputImage );
   
   try
