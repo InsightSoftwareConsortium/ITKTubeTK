@@ -2,12 +2,12 @@
 <executable>
 
   <category>Filtering</category>
-  <title>Sample CLI Application</title>
-  <description>Demonstration of how to write a CLI application.  Performs blurring.</description>
+  <title>Generate Features for Weka</title>
+  <description>Takes a set of input images and some class masks in order to generate an ARFF file for input into Weka, the data mining tool.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <contributor>Patrick Reynolds, Kitware</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
 
   <parameters>
