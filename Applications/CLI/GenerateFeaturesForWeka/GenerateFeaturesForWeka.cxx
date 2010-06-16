@@ -43,7 +43,6 @@ limitations under the License.
 // Includes specific to this CLI application
 #include "itkNJetImageFunction.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
-#include "itkDiscreteGaussianImageFilter.h"
 #include "itkDivideImageFilter.h"
 #include "itkSubtractImageFilter.h"
 #include "itkRescaleIntensityImageFilter.h"
