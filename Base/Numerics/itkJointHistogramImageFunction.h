@@ -115,7 +115,7 @@ public:
    * Add histograms (based on a given point) to the internals used to 
    * calculate the mean and standard deviation histograms when needed.
    */
-  virtual void Precompute( const PointType& point ) const
+  virtual void Precompute( const PointType& point )
   {
     IndexType index;
     this->ConvertPointToNearestIndex( point, index );
@@ -126,7 +126,7 @@ public:
    * Add histograms (based on a given continuous index) to the internals used 
    * to calculate the mean and standard deviation histograms when needed.
    */
-  virtual void PrecomputeAtContinuousIndex( const ContinuousIndexType & index ) const
+  virtual void PrecomputeAtContinuousIndex( const ContinuousIndexType & index )
   {
     IndexType nindex;
 
@@ -138,7 +138,7 @@ public:
    * Add histograms (based on a given index) to the internals used to 
    * calculate the mean and standard deviation histograms when needed.
    */
-  virtual double PrecomputeAtIndex( const IndexType & index ) const;
+  virtual void PrecomputeAtIndex( const IndexType & index );
   
 protected:
   
@@ -161,15 +161,19 @@ protected:
                                 typename HistogramType::Pointer hist ) const;
 
   /** Data members **/
-  typename InputImageType::Pointer       m_InputMask;
-  typename HistogramType::Pointer        m_SumHistogram;
-  typename HistogramType::Pointer        m_SumOfSquaresHistogram;
-  typename HistogramType::Pointer        m_MeanHistogram;
-  typename HistogramType::Pointer        m_StandardDeviationHistogram;
-  double                                 m_FeatureWidth;
-  unsigned int                           m_HistogramSize;
-  mutable unsigned int                           m_NumberOfSamples;
-  mutable unsigned int                           m_NumberOfComputedSamples;
+  typename InputImageType::Pointer         m_InputMask;
+  typename HistogramType::Pointer          m_SumHistogram;
+  typename HistogramType::Pointer          m_SumOfSquaresHistogram;
+  mutable typename HistogramType::Pointer  m_MeanHistogram;
+  mutable typename HistogramType::Pointer  m_StandardDeviationHistogram;
+  double                                   m_FeatureWidth;
+  unsigned int                             m_HistogramSize;
+  mutable unsigned int                     m_NumberOfSamples;
+  mutable unsigned int                     m_NumberOfComputedSamples;
+  typename InputImageType::PixelType       m_ImageMin;
+  typename InputImageType::PixelType       m_ImageMax;
+  typename InputImageType::PixelType       m_MaskMin;
+  typename InputImageType::PixelType       m_MaskMax;
 
 private:
   JointHistogramImageFunction( const Self& ); //purposely not implemented
