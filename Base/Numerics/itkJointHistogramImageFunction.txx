@@ -25,7 +25,11 @@ limitations under the License.
 
 #include "itkMinimumMaximumImageCalculator.h"
 #include "itkAddImageFilter.h"
+#include "itkSubtractImageFilter.h"
 #include "itkSquareImageFilter.h"
+#include "itkDivideByConstantImageFilter.h"
+#include "itkMultiplyByConstantImageFilter.h"
+#include "itkSqrtImageFilter.h"
 
 #include "itkJointHistogramImageFunction.h"
 
@@ -42,6 +46,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 {
   m_InputMask = 0;
   m_FeatureWidth = 20;
+  m_StdevBase = 0.0001;
   m_SumHistogram = 0;
   m_SumOfSquaresHistogram = 0;
   m_NumberOfSamples = 0;
@@ -115,13 +120,19 @@ double
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::EvaluateAtIndex( const IndexType & index ) const
 {
-  if( m_NumberOfComputedSamples < m_NumberOfSamples )
+  try
     {
-    
-    m_NumberOfComputedSamples = m_NumberOfSamples;
+    if( m_NumberOfComputedSamples < m_NumberOfSamples )
+      {
+      this->ComputeMeanAndStandardDeviation();
+      m_NumberOfComputedSamples = m_NumberOfSamples;
+      }
+    return this->ComputeZScoreAtIndex( index );
     }
-  PixelType value = this->GetInputImage()->GetPixel( index );
-  return static_cast<double>( value );
+  catch( itk::ExceptionObject& e )
+    {
+    return 0;
+    }
 }
 
 template <class TInputImage, class TCoordRep>
@@ -129,41 +140,94 @@ void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::PrecomputeAtIndex( const IndexType & index )
 {
-  typename HistogramType::Pointer hist;
-  this->ComputeHistogramAtIndex( index, hist );
-
-  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-                                                             AdderType;
-  typedef itk::SquareImageFilter< HistogramType, HistogramType >                                          
-                                                             SquareType;  
-
-  typename AdderType::Pointer adder = AdderType::New();
-  typename SquareType::Pointer square = SquareType::New();
-      
-  // Calculate Running Sum
-  adder->SetInput1( m_SumHistogram );
-  adder->SetInput2( hist );
-  adder->Update();
-  m_SumHistogram = adder->GetOutput();
-  
-  // Calculate Running Sum of Squares
-  adder = AdderType::New();
-  square->SetInput( hist );
-  square->Update();
-  adder->SetInput1( m_SumOfSquaresHistogram );
-  adder->SetInput2( square->GetOutput() );
-  adder->Update();
-  m_SumOfSquaresHistogram = adder->GetOutput();
-  
-  ++m_NumberOfSamples;
+  try
+    {
+    typename HistogramType::Pointer hist;
+    this->ComputeHistogramAtIndex( index, hist );
+    
+    typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
+      AdderType;
+    typedef itk::SquareImageFilter< HistogramType, HistogramType >
+      SquareType;  
+    
+    typename AdderType::Pointer adder = AdderType::New();
+    typename SquareType::Pointer square = SquareType::New();
+    
+    // Calculate Running Sum
+    adder->SetInput1( m_SumHistogram );
+    adder->SetInput2( hist );
+    adder->Update();
+    m_SumHistogram = adder->GetOutput();
+    
+    // Calculate Running Sum of Squares
+    adder = AdderType::New();
+    square->SetInput( hist );
+    square->Update();
+    adder->SetInput1( m_SumOfSquaresHistogram );
+    adder->SetInput2( square->GetOutput() );
+    adder->Update();
+    m_SumOfSquaresHistogram = adder->GetOutput();
+    
+    ++m_NumberOfSamples;
+    }
+  catch( itk::ExceptionObject& e )
+    {
+    return;
+    }
 }
 
 template <class TInputImage, class TCoordRep>
 void 
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::ComputeMeanAndStandardDeviation()
+::ComputeMeanAndStandardDeviation() const
 {
+
+  typedef itk::DivideByConstantImageFilter< HistogramType, double,
+    HistogramType >                                          DividerType;
+  typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
+    HistogramType >                                          MultiplierType;
+  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
+                                                             AdderType;
+  typedef itk::SubtractImageFilter< HistogramType, HistogramType,
+    HistogramType>                                           SubtracterType;
+  typedef itk::SquareImageFilter< HistogramType, 
+    HistogramType >                                          SquareType;
+  typedef itk::SqrtImageFilter< HistogramType, 
+    HistogramType >                                          SqrtType;
+
+    // Calculate the mean
+  typename DividerType::Pointer divider = DividerType::New();
+  divider->SetInput( m_SumHistogram );
+  divider->SetConstant( m_NumberOfSamples );
+  divider->Update();
+  m_MeanHistogram = divider->GetOutput();
   
+  // Calculate the standard deviation
+  typename SubtracterType::Pointer subtracter = SubtracterType::New();
+  typename SquareType::Pointer square = SquareType::New();
+  typename MultiplierType::Pointer multiplier = MultiplierType::New();
+  typename SqrtType::Pointer sqrt = SqrtType::New();
+  divider = DividerType::New();
+  typename HistogramType::Pointer meanSquaredDivided;
+  typename HistogramType::Pointer sumSquaresDivided;
+  typename HistogramType::PixelType meanCo = 
+    m_NumberOfSamples / ( m_NumberOfSamples - 1 );
+  square->SetInput( m_MeanHistogram );
+  square->Update();
+  multiplier->SetInput( square->GetOutput() );
+  multiplier->SetConstant( meanCo );
+  multiplier->Update();
+  meanSquaredDivided = multiplier->GetOutput();
+  divider->SetInput( m_SumOfSquaresHistogram );
+  divider->SetConstant( m_NumberOfSamples - 1 );
+  divider->Update();
+  sumSquaresDivided = divider->GetOutput();
+  subtracter->SetInput1( sumSquaresDivided );
+  subtracter->SetInput2( meanSquaredDivided );
+  subtracter->Update();
+  sqrt->SetInput( subtracter->GetOutput() );
+  sqrt->Update();
+  m_StandardDeviationHistogram = sqrt->GetOutput();  
 }
 
 template <class TInputImage, class TCoordRep>
@@ -181,6 +245,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   os << indent << "m_StandardDeviationHistogram = "
      << m_StandardDeviationHistogram << std::endl;
   os << indent << "m_FeatureWidth = " << m_FeatureWidth << std::endl;
+  os << indent << "m_StdevBase = " << m_StdevBase << std::endl;
   os << indent << "m_HistogramSize = " << m_HistogramSize << std::endl;
   os << indent << "m_NumberOfSamples = " << m_NumberOfSamples << std::endl;
   os << indent << "m_NumberOfComputedSamples = "
@@ -190,11 +255,45 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   os << indent << "m_MaskMin = " << m_MaskMin << std::endl;
   os << indent << "m_MaskMax = " << m_MaskMax << std::endl;
 }
+template <class TInputImage, class TCoordRep>
+double 
+JointHistogramImageFunction<TInputImage,TCoordRep>
+::ComputeZScoreAtIndex( const IndexType & index ) const
+{
+  typename HistogramType::Pointer hist;
+  this->ComputeHistogramAtIndex( index, hist );
+  typedef itk::ImageRegionConstIterator<InputImageType> ConstIteratorType;
+  ConstIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
+  ConstIteratorType meanItr( m_MeanHistogram, 
+                             m_MeanHistogram->GetLargestPossibleRegion() );
+  ConstIteratorType stdItr( m_StandardDeviationHistogram, 
+                            m_StandardDeviationHistogram->
+                            GetLargestPossibleRegion() );
+  histItr.GoToBegin();
+  meanItr.GoToBegin();
+  stdItr.GoToBegin();
+  typename HistogramType::PixelType val = 0;
+  typename HistogramType::PixelType histCount = 0;
+  while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+    {
+    typename HistogramType::PixelType t = histItr.Get();
+    typename HistogramType::PixelType m = meanItr.Get();
+    typename HistogramType::PixelType s = stdItr.Get();
+    s += m_StdevBase;
+    val += vnl_math_abs( t - m ) / s;
+    ++histItr;
+    ++meanItr;
+    ++stdItr;
+    ++histCount;
+    }
+
+  return val / histCount;
+}
 
 template <class TInputImage, class TCoordRep>
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::ComputeHistogramAtIndex( const IndexType& index, typename HistogramType::Pointer hist ) const
+::ComputeHistogramAtIndex( const IndexType& index, typename HistogramType::Pointer& hist ) const
 {
   typename InputImageType::PixelType minInput = m_ImageMin;
   typename InputImageType::PixelType maxInput = m_ImageMax;

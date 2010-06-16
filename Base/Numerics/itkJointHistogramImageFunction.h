@@ -70,6 +70,12 @@ public:
   itkGetMacro( FeatureWidth, double );
   itkSetMacro( FeatureWidth, double );
 
+  /** 
+   * Get/Set the factor used to compensate for standard deviations of 0 in
+   * the Z-Score calculation. */
+  itkGetMacro( StdevBase, double );
+  itkSetMacro( StdevBase, double );
+
   /** Override the Set for the InputImage */
   virtual void SetInputImage( const InputImageType * ptr );
 
@@ -155,10 +161,13 @@ protected:
    * Compute the mean and standard deviation histograms for use in Z-score
    * calculation.
    */
-  void ComputeMeanAndStandardDeviation();
+  void ComputeMeanAndStandardDeviation() const;
 
   void ComputeHistogramAtIndex( const IndexType& index,
-                                typename HistogramType::Pointer hist ) const;
+                                typename HistogramType::Pointer& hist ) const;
+
+  /** Get the Z-score at a given index. */
+  double ComputeZScoreAtIndex( const IndexType & index ) const;
 
   /** Data members **/
   typename InputImageType::Pointer         m_InputMask;
@@ -167,6 +176,7 @@ protected:
   mutable typename HistogramType::Pointer  m_MeanHistogram;
   mutable typename HistogramType::Pointer  m_StandardDeviationHistogram;
   double                                   m_FeatureWidth;
+  double                                   m_StdevBase;
   unsigned int                             m_HistogramSize;
   mutable unsigned int                     m_NumberOfSamples;
   mutable unsigned int                     m_NumberOfComputedSamples;
