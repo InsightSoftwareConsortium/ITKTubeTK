@@ -174,11 +174,6 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  // Setup the sigmas based on the wire scale
-  PixelType sigmaMedium = (scale/2)*0.6667;
-  PixelType sigmaSmall = 0.6667*sigmaMedium;
-  PixelType sigmaLarge = 1.3333*sigmaMedium;
-
   // Get the centerlines
   typename ImageType::Pointer centerlines = centerlinesReader->GetOutput();
   typename ImageType::Pointer additions = additionsReader->GetOutput();
@@ -226,7 +221,13 @@ int DoIt( int argc, char * argv[] )
   nomJHCalc->SetInputImage( curImage );
   nomJHCalc->SetInputMask( curPrior );
 
-  IterType centerlineItr( centerlines, centerlines->GetLargestPossibleRegion() );
+  // Setup the sigmas based on the wire scale
+  PixelType sigmaMedium = (scale/2)*0.6667;
+  PixelType sigmaSmall = 0.6667*sigmaMedium;
+  PixelType sigmaLarge = 1.3333*sigmaMedium;
+
+  IterType centerlineItr( centerlines, 
+                          centerlines->GetLargestPossibleRegion() );
   double samples = 0;
   centerlineItr.GoToBegin();
   while( !centerlineItr.IsAtEnd() )
