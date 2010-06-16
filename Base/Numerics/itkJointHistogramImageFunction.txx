@@ -262,11 +262,11 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 {
   typename HistogramType::Pointer hist;
   this->ComputeHistogramAtIndex( index, hist );
-  typedef itk::ImageRegionConstIterator<InputImageType> ConstIteratorType;
-  ConstIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
-  ConstIteratorType meanItr( m_MeanHistogram, 
+  typedef itk::ImageRegionConstIterator<HistogramType>  HistIteratorType;
+  HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
+  HistIteratorType meanItr( m_MeanHistogram, 
                              m_MeanHistogram->GetLargestPossibleRegion() );
-  ConstIteratorType stdItr( m_StandardDeviationHistogram, 
+  HistIteratorType stdItr( m_StandardDeviationHistogram, 
                             m_StandardDeviationHistogram->
                             GetLargestPossibleRegion() );
   histItr.GoToBegin();

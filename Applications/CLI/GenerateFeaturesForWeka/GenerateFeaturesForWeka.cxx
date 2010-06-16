@@ -42,6 +42,7 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "itkNJetImageFunction.h"
+#include "itkJointHistogramImageFunction.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkDivideImageFilter.h"
 #include "itkSubtractImageFilter.h"
@@ -83,6 +84,7 @@ int DoIt( int argc, char * argv[] )
 
   // typedefs for numerics
   typedef itk::NJetImageFunction<ImageType>                     CalculatorType;
+  typedef itk::JointHistogramImageFunction<ImageType>           HistCalcType;
 
   // typedefs for filters
   typedef itk::RescaleIntensityImageFilter<ImageType,ImageType> RescaleType;
@@ -213,6 +215,17 @@ int DoIt( int argc, char * argv[] )
   typename CalculatorType::Pointer subCalc = CalculatorType::New();
   subCalc->SetInputImage( subtractions );
 
+  // Setup the Joint-Histogram Calculators
+  typename HistCalcType::Pointer addJHCalc = HistCalcType::New();
+  addJHCalc->SetInputImage( curImage );
+  addJHCalc->SetInputMask( curPrior );
+  typename HistCalcType::Pointer subJHCalc = HistCalcType::New();
+  subJHCalc->SetInputImage( curImage );
+  subJHCalc->SetInputMask( curPrior );
+  typename HistCalcType::Pointer nomJHCalc = HistCalcType::New();
+  nomJHCalc->SetInputImage( curImage );
+  nomJHCalc->SetInputMask( curPrior );
+
   IterType centerlineItr( centerlines, centerlines->GetLargestPossibleRegion() );
   double samples = 0;
   centerlineItr.GoToBegin();
@@ -220,7 +233,22 @@ int DoIt( int argc, char * argv[] )
     {
     if( centerlineItr.Get() > 0 )
       {
+      typename CalculatorType::PointType curPoint;
+      centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
+                                                  curPoint );
       ++samples;
+      if( addCalc->Evaluate( curPoint, sigmaMedium ) )
+        {
+        addJHCalc->Precompute( curPoint );
+        }
+      else if( subCalc->Evaluate( curPoint, sigmaMedium ) )
+        {
+        subJHCalc->Precompute( curPoint );
+        }
+      else
+        {
+        nomJHCalc->Precompute( curPoint );
+        }
       }
     ++centerlineItr;
     }
@@ -257,6 +285,11 @@ int DoIt( int argc, char * argv[] )
 
   output << "@ATTRIBUTE log(abs(v2g-v2e)) NUMERIC\n";
   output << "@ATTRIBUTE log(abs(v3g-v3e)) NUMERIC\n";
+
+  output << "@ATTRIBUTE Z_add NUMERIC\n";
+  output << "@ATTRIBUTE Z_sub NUMERIC\n";
+  output << "@ATTRIBUTE Z_nom NUMERIC\n";
+
   output << "@ATTRIBUTE class {typical,addition,subtraction}\n";
   output << "\n";
   output << "@DATA\n";
@@ -303,6 +336,8 @@ int DoIt( int argc, char * argv[] )
 
       PixelType v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
 
+      double zAdd, zSub, zNom;
+
       v1sg = priorCalc->Ridgeness( curPoint, sigmaSmall );
       v1mg = priorCalc->Ridgeness( curPoint, sigmaMedium );
       v1lg = priorCalc->Ridgeness( curPoint, sigmaLarge );
@@ -319,6 +354,10 @@ int DoIt( int argc, char * argv[] )
 
       v3g = priorCalc->Evaluate( curPoint );
       v3e = inputCalc->Evaluate( curPoint );
+      
+      zAdd = addJHCalc->Evaluate( curPoint );
+      zSub = subJHCalc->Evaluate( curPoint );
+      zNom = nomJHCalc->Evaluate( curPoint );
 
       output << v1sg << "," << v1mg << "," << v1lg << "," 
              << v2g << "," << v3g << ","
@@ -331,6 +370,7 @@ int DoIt( int argc, char * argv[] )
              << log( vnl_math_abs( v1lg-v1le ) ) << ","
              << log( vnl_math_abs( v2g-v2e ) )  << "," 
              << log( vnl_math_abs( v3g-v3e ) ) << ","
+             << zAdd << "," << zSub << "," << zNom << ","
              << label << "\n";
 
       if( count == 1000 )

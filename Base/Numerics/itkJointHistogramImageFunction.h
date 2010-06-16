@@ -24,7 +24,7 @@ limitations under the License.
 #define __itkJointHistogramImageFunction_h
 
 #include "itkImageFunction.h"
-#include "itkImage.h"
+#include "itkOrientedImage.h"
 
 namespace itk
 {
@@ -55,7 +55,7 @@ public:
   typedef typename Superclass::PointType               PointType;
   typedef typename Superclass::IndexType               IndexType;
   typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
-  typedef itk::Image<float,2>                          HistogramType;
+  typedef itk::OrientedImage<float,2>                  HistogramType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( JointHistogramImageFunction, ImageFunction );
