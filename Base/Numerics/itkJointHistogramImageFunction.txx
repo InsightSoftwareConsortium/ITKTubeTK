@@ -46,7 +46,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 {
   m_InputMask = 0;
   m_FeatureWidth = 20;
-  m_StdevBase = 0.0001;
+  m_StdevBase = 0.01;
   m_SumHistogram = 0;
   m_SumOfSquaresHistogram = 0;
   m_NumberOfSamples = 0;
