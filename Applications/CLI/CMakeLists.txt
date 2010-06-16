@@ -20,8 +20,6 @@
 # limitations under the License.
 # 
 ##############################################################################
-
-add_subdirectory( CompareImageWithPrior )
 add_subdirectory( ComputeImageSimilarity )
 add_subdirectory( Crop )
 add_subdirectory( DeblendImagesUsingPrior )
