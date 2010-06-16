@@ -37,6 +37,7 @@ add_subdirectory( SimulateTomosynthesis )
 add_subdirectory( SendPositionMessageUsingOpenIGTLink )
 add_subdirectory( ReceivePositionMessageUsingOpenIGTLink )
 add_subdirectory( GenerateFeaturesForWeka )
+add_subdirectory( Skeletonize )
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and
