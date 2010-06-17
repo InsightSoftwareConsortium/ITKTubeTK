@@ -229,26 +229,49 @@ int DoIt( int argc, char * argv[] )
   IterType centerlineItr( centerlines, 
                           centerlines->GetLargestPossibleRegion() );
   double samples = 0;
+  unsigned int goodCount = 0;
   centerlineItr.GoToBegin();
   while( !centerlineItr.IsAtEnd() )
     {
     if( centerlineItr.Get() > 0 )
       {
       typename CalculatorType::PointType curPoint;
+      typename ImageType::IndexType curIndex;
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
-      ++samples;
-      if( addCalc->Evaluate( curPoint, sigmaMedium ) )
+      
+      if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) &&
+          addCalc->Evaluate( curPoint, sigmaMedium ) &&
+          curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         addJHCalc->Precompute( curPoint );
+        ++samples;
         }
-      else if( subCalc->Evaluate( curPoint, sigmaMedium ) )
+      else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
+                                                            curIndex ) &&
+               subCalc->Evaluate( curPoint, sigmaMedium ) &&
+               curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         subJHCalc->Precompute( curPoint );
+        ++samples;
+        }
+      else if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
+        {
+        ++goodCount;
+        if( goodCount < 30 )
+          {
+          ++centerlineItr;
+          continue;
+          }
+        else
+          {
+          nomJHCalc->Precompute( curPoint );
+          ++samples;
+          goodCount = 0;
+          }
         }
       else
         {
-        nomJHCalc->Precompute( curPoint );
         }
       }
     ++centerlineItr;
@@ -300,26 +323,32 @@ int DoIt( int argc, char * argv[] )
   double portion = 0.9;
   double step = portion/samples;
   unsigned int count = 0;
-  unsigned int goodCount = 0;
+  goodCount = 0;
   while( !centerlineItr.IsAtEnd() )
     {
     if( centerlineItr.Get() > 0 )
       {
       typename CalculatorType::PointType curPoint;
+      typename ImageType::IndexType curIndex;
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
 
       // Set label value
       std::string label;
-      if( addCalc->Evaluate( curPoint, sigmaMedium ) )
+      if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) &&
+          addCalc->Evaluate( curPoint, sigmaMedium ) &&
+          curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         label = "addition";
         }
-      else if( subCalc->Evaluate( curPoint, sigmaMedium ) )
+      else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
+                                                            curIndex ) &&
+               subCalc->Evaluate( curPoint, sigmaMedium ) &&
+               curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         label = "subtraction";
         }
-      else
+      else if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         label = "typical";
         ++goodCount;
@@ -333,6 +362,12 @@ int DoIt( int argc, char * argv[] )
           {
           goodCount = 0;
           }
+        }
+      else
+        {
+        progress += step;
+        ++centerlineItr;
+        continue;
         }
 
       PixelType v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
