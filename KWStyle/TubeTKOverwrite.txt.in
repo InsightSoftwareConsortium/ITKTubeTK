@@ -19,8 +19,6 @@ SimulateTomosynthesis.cxx Namespace Disable
 Crop.cxx Namespace Disable
 HessianTubeness2D.cxx Namespace Disable
 ComputeImageSimilarity.cxx Namespace Disable
-MatchROIs.cxx Namespace Disable
-CompareImageWithPrior.cxx Namespace Disable
 MatchImageWithPrior.cxx Namespace Disable
 Merge.cxx Namespace Disable
 RandomlyModifyBinaryMask.cxx Namespace Disable
@@ -43,3 +41,7 @@ OrImages.cxx Namespace Disable
 PdPfaScoring.cxx Namespace Disable
 ImageMath.cxx Namespace Disable
 Resample.cxx Namespace Disable
+itkJointHistogramImageFunction.h Namespace Disable
+itkJointHistogramImageFunction.txx Namespace Disable
+GenerateFeaturesForWeka.cxx Namespace Disable
+Skeletonize.cxx Namespace Disable
