@@ -48,6 +48,7 @@ set( tubeBasePreprocessingFilters_SRCS
        itkAnisotropicHybridDiffusionImageFilterTest.cxx
        itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx
        itkStructureTensorRecursiveGaussianImageFilterTest.cxx
+       itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
 )
 
 include_directories( 
@@ -132,3 +133,11 @@ add_test( itkStructureTensorRecursiveGaussianImageFilterTest2
             ${TEMP}/CylinderPrimaryEigenVectorImage.mha
             ${TEMP}/CylinderPrimaryEigenValueImage.mha
          )
+add_test( itkStructureTensorRecursiveGaussianImageFilterTest3 
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkStructureTensorRecursiveGaussianImageFilterTestNew
+            ${INPUT_DATA}/CylinderSynthetic.mha
+            ${TEMP}/CylinderPrimaryEigenVectorImage.mha
+            ${TEMP}/CylinderPrimaryEigenValueImage.mha
+         )
+

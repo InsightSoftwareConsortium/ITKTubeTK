@@ -36,5 +36,6 @@ void RegisterTests()
   REGISTER_TEST( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest );
   REGISTER_TEST( itkAnisotropicHybridDiffusionImageFilterTest );
   REGISTER_TEST( itkStructureTensorRecursiveGaussianImageFilterTest );
+  REGISTER_TEST( itkStructureTensorRecursiveGaussianImageFilterTestNew );
 }
 
