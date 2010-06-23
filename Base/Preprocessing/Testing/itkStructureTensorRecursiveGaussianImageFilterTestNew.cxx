@@ -52,7 +52,13 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   double sigma = 0.1;
   if (argc > 4)
     {
-    sigma = atof( argv[4] );
+    sigma = atof(argv[4] );
+    }
+
+  double threshold = 0.05;
+  if (argc > 5)
+    {
+    threshold = atof(argv[5]);
     }
 
   // Create test image I = f(x)
@@ -94,7 +100,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
     ImageType::IndexType index = it.GetIndex();
     ImageType::PointType point;
     inImage->TransformIndexToPhysicalPoint(index, point);
-    it.Set(static_cast<ImageType::PixelType>(sin(point[0])));
+    it.Set(static_cast<ImageType::PixelType>(sin(point[0]))); //sinx
     }
 
   typedef itk::ImageFileWriter<ImageType>        WriterType;
@@ -110,21 +116,35 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   duplicator->SetInputImage(inImage);
   duplicator->Update();
 
-  // Blur the duplicated image
+  // Compute the outer (diadic) product of the gradient
+  ImageType::Pointer prodImage = duplicator->GetOutput();
+  itk::ImageRegionIteratorWithIndex<ImageType> pt(prodImage, 
+                                           prodImage->GetLargestPossibleRegion());
+  
+  for (pt.GoToBegin(); !pt.IsAtEnd(); ++pt)
+    {
+    ImageType::IndexType index = pt.GetIndex();
+    ImageType::PointType point;
+    prodImage->TransformIndexToPhysicalPoint(index, point);
+    double cosValue = cos(point[0]);
+    pt.Set(static_cast<ImageType::PixelType>(cosValue*cosValue)); //cosx*cosx
+    }
+
+  // Compute reference image as convolution of gaussian and product of gradient
   typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>  
                                                  GaussianFilterType;
-  
-  ImageType::Pointer blurImage = duplicator->GetOutput();
+
+  ImageType::Pointer refImage = prodImage;
   for (unsigned int i = 0; i < Dimension; i++)
     {
     GaussianFilterType::Pointer gaussian = GaussianFilterType::New();
-    gaussian->SetInput(inImage);
+    gaussian->SetInput(refImage);
     gaussian->SetDirection(i);
     gaussian->SetSigma(sigma);
     gaussian->Update();
-    blurImage = gaussian->GetOutput();
+    refImage = gaussian->GetOutput();
     }
-  
+
   // Declare the type for the filter
   typedef itk::StructureTensorRecursiveGaussianImageFilter<ImageType>  
                                                      StructureTensorFilterType;
@@ -149,18 +169,17 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   
   itk::ImageRegionIteratorWithIndex<TensorImageType> ot(outImage, 
                                            outImage->GetLargestPossibleRegion());
-  itk::ImageRegionIteratorWithIndex<ImageType> bt(blurImage, 
-                                           blurImage->GetLargestPossibleRegion());
-  
-  const double eps = 0.051;
-  for (ot.GoToBegin(), bt.GoToBegin(); !ot.IsAtEnd(); ++ot, ++bt)
+  itk::ImageRegionIteratorWithIndex<ImageType> rt(refImage, 
+                                           refImage->GetLargestPossibleRegion());
+
+  for (ot.GoToBegin(), rt.GoToBegin(); !ot.IsAtEnd(); ++ot, ++rt)
     {
     TensorImageType::IndexType index = ot.GetIndex();
 
     bool boundaryPixel = false;
     for (unsigned int i = 0; i < 3; i++)
       {
-      if (index[i] < 20 || index[i] >= 80)
+      if (index[i] < 10 || index[i] >= 90)
         {
         boundaryPixel = true;
         break;
@@ -174,44 +193,30 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
     ImageType::PointType point;
     inImage->TransformIndexToPhysicalPoint(index, point);
 
-    // second x derivative of sin(x) is -sin(x), 
-    // other second derivatives are all zero
-    double minusSinX = -bt.Get();
-    TensorImagePixelType upperMat = ot.Get();
+    TensorImagePixelType tensor = ot.Get();
 
-    if (fabs(upperMat(0,0) - minusSinX) > eps)
+    for (unsigned int i = 0; i < Dimension; i++)
       {
-      std::cout << "The second X derivative of sin(x) image at index [" << 
-        index[0] << " " << index[1] << " " << index[2] << "], point [" << 
-        point[0] << " " << point[1] << " " << point[2] << "] is expected to be " 
-        << minusSinX << " but the result is " << upperMat(0,0) << std::endl;
-      }
-    
-    for (unsigned int i = 1; i < Dimension; i++)
-      {
-      if (upperMat(i, i) > eps || upperMat(i, i) < -eps)
+      for (unsigned int j = i; j < Dimension; j++)
         {
-        std::cout << "Other than the second X derivative, other second derivatives "
-          "of sin(x) image should be zero. This is violated at index [" << 
-          index[0] << " " << index[1] << " " << index[2] << "], point [" << 
-          point[0] << " " << point[1] << " " << point[2] << "]" << std::endl;
-        }
-      }
-    for (unsigned int i = 0; i < Dimension-1; i++)
-      {
-      for (unsigned int j = i+1; j < Dimension; j++)
-        {
-        if (upperMat(i, i) > eps || upperMat(i, i) < -eps)
+        double refValue = 0.0;
+        if (i == 0 && j == 0)
           {
-          std::cout << "Other than the second X derivative, other second derivatives "
-            "of sin(x) image should be zero. This is violated at index [" << 
-            index[0] << " " << index[1] << " " << index[2] << "], point [" << 
-            point[0] << " " << point[1] << " " << point[2] << "]" << std::endl;
+          refValue = rt.Get();
+          }
+        if (tensor(i, j) - refValue > threshold || tensor(i, j) - refValue < -threshold)
+          {
+          std::cout << "Found mismatch at pixel of index[" << index[0] << " " << 
+            index[1] << " " << index[2] << "] or point [" << point[0] << " " << 
+            point[1] << " " << point[2] << "]. Tensor element [" << i << " " <<
+            j << "] is expected to be " << refValue << " but computed value is "
+            << tensor(i,j) << std::endl;
+          return EXIT_FAILURE;
           }
         }
       }
     }
-
+ 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 }

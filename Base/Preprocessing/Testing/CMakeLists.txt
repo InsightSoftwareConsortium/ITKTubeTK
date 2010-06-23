@@ -48,6 +48,9 @@ set( tubeBasePreprocessingFilters_SRCS
        itkAnisotropicHybridDiffusionImageFilterTest.cxx
        itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx
        itkStructureTensorRecursiveGaussianImageFilterTest.cxx
+       itkAnisotropicEdgeEnhancementDiffusionImageFilterTestNew.cxx
+       itkAnisotropicHybridDiffusionImageFilterTestNew.cxx
+       itkAnisotropicCoherenceEnhancingDiffusionImageFilterTestNew.cxx
        itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
 )
 
@@ -124,20 +127,46 @@ add_test( itkStructureTensorRecursiveGaussianImageFilterTest
             itkStructureTensorRecursiveGaussianImageFilterTest
             ${INPUT_DATA}/PrimitiveObjects.mha
             ${TEMP}/PrimaryEigenVectorImage.mha
-            ${TEMP}/PrimaryEigenValueImage.mha
-               )
+            ${TEMP}/PrimaryEigenValueImage.mha )
+
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest2 
             ${BASE_PREPROCESSING_FILTERS_TESTS}
             itkStructureTensorRecursiveGaussianImageFilterTest
             ${INPUT_DATA}/CylinderSynthetic.mha
             ${TEMP}/CylinderPrimaryEigenVectorImage.mha
-            ${TEMP}/CylinderPrimaryEigenValueImage.mha
-         )
+            ${TEMP}/CylinderPrimaryEigenValueImage.mha )
+
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest3 
             ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkStructureTensorRecursiveGaussianImageFilterTestNew
-            ${INPUT_DATA}/CylinderSynthetic.mha
-            ${TEMP}/CylinderPrimaryEigenVectorImage.mha
-            ${TEMP}/CylinderPrimaryEigenValueImage.mha
-         )
+            itkStructureTensorRecursiveGaussianImageFilterTestNew )
+
+add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest2
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkAnisotropicEdgeEnhancementDiffusionImageFilterTestNew
+            ${INPUT_DATA}/SyntheticTubeImage.mha
+            ${TEMP}/SyntheticTubeEEDFilterResultImage.mha )
+
+add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest3
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkAnisotropicEdgeEnhancementDiffusionImageFilterTestNew
+            ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
+            ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha )
+
+add_test( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest2
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkAnisotropicCoherenceEnhancingDiffusionImageFilterTestNew
+            ${INPUT_DATA}/SyntheticSurfaceImage.mha
+            ${TEMP}/SyntheticSurfaceCCDFilterResultImage.mha )
+
+add_test( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest3
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkAnisotropicCoherenceEnhancingDiffusionImageFilterTestNew
+            ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
+            ${TEMP}/SyntheticTubePlusSurfaceCCDFilterResultImage.mha )
+
+add_test( itkAnisotropicHybridDiffusionImageFilterTest2
+            ${BASE_PREPROCESSING_FILTERS_TESTS}
+            itkAnisotropicHybridDiffusionImageFilterTestNew
+            ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
+            ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha )
 
