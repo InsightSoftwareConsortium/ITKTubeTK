@@ -352,6 +352,7 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[3] );
   writer->SetInput( outputImage );
+  writer->SetUseCompression( true );
   
   try
     {
