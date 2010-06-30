@@ -131,6 +131,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     }
   catch( itk::ExceptionObject& e )
     {
+    std::cerr << "Exception thrown: " << e << std::endl;
     return 0;
     }
 }
@@ -172,6 +173,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     }
   catch( itk::ExceptionObject& e )
     {
+    std::cerr << "Exception thrown: " << e << std::endl;
     return;
     }
 }
