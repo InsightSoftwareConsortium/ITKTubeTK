@@ -42,6 +42,7 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
+               -S 1024
                ${INPUT_DATA}/201002TP0ES14_Small.mha
                ${INPUT_DATA}/201002TP0GD15_Small_Match.mha
                ${INPUT_DATA}/201002TP0ES16_Small.mha
