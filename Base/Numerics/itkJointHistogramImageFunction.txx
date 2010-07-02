@@ -394,7 +394,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
           HistogramType > SmootherType;
   SmootherType::Pointer smoother = SmootherType::New();
   smoother->SetInput( hist );
-  smoother->SetVariance( 4 );
+  smoother->SetVariance( 2 );
   smoother->SetUseImageSpacing( false );
   smoother->Update();
   hist = smoother->GetOutput();

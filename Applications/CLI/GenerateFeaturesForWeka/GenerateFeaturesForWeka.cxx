@@ -234,29 +234,36 @@ int DoIt( int argc, char * argv[] )
   double samplesSub = 0;
   while( !centerlineItr.IsAtEnd() )
     {
-    typename CalculatorType::PointType curPoint;
-    typename ImageType::IndexType curIndex;
-
-    centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
-                                                curPoint );
-
-    if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) &&
-        addCalc->Evaluate( curPoint, sigmaSmall ) )
+    if( centerlineItr.Get() > 0 )
       {
-      ++samplesAdd;
-      }
-    else if( subtractions->TransformPhysicalPointToIndex( curPoint,
-                                                          curIndex ) &&
-        subCalc->Evaluate( curPoint, sigmaSmall ) )
-      {
-      ++samplesSub;
-      }
-    else
-      {
-      ++samplesNom;
+      typename CalculatorType::PointType curPoint;
+      typename ImageType::IndexType curIndex;
+  
+      centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
+                                                  curPoint );
+  
+      if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
+        {
+        if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
+            && addCalc->Evaluate( curPoint, sigmaSmall ) )
+          {
+          ++samplesAdd;
+          }
+        else if( subtractions->TransformPhysicalPointToIndex( curPoint,
+                                                              curIndex ) 
+                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
+          {
+          ++samplesSub;
+          }
+        else
+          {
+          ++samplesNom;
+          }
+        }
       }
     ++centerlineItr;
     }
+
   std::cout << "Add = " << samplesAdd << std::endl;
   std::cout << "Sub = " << samplesSub << std::endl;
   std::cout << "Nom = " << samplesNom << std::endl;
@@ -288,37 +295,38 @@ int DoIt( int argc, char * argv[] )
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
       
-      if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) &&
-          addCalc->Evaluate( curPoint, sigmaSmall ) &&
-          curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
+      if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
-        if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
+        if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
+            && addCalc->Evaluate( curPoint, sigmaSmall ) )
           {
-          addJHCalc->Precompute( curPoint );
-          ++samplesTotal;
+          if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
+            {
+            addJHCalc->Precompute( curPoint );
+            ++samplesTotal;
+            }
+          samplesAdd += sampleRateAdd;
           }
-        samplesAdd += sampleRateAdd;
-        }
-      else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
-                                                            curIndex ) &&
-               subCalc->Evaluate( curPoint, sigmaSmall ) &&
-               curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
-        {
-        if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
+        else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
+                                                            curIndex ) 
+                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
           {
-          subJHCalc->Precompute( curPoint );
-          ++samplesTotal;
+          if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
+            {
+            subJHCalc->Precompute( curPoint );
+            ++samplesTotal;
+            }
+          samplesSub += sampleRateSub;
           }
-        samplesSub += sampleRateSub;
-        }
-      else if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
-        {
-        if( (int)(samplesNom) != (int)(samplesNom+sampleRateNom) )
+        else 
           {
-          nomJHCalc->Precompute( curPoint );
-          ++samplesTotal;
+          if( (int)(samplesNom) != (int)(samplesNom+sampleRateNom) )
+            {
+            nomJHCalc->Precompute( curPoint );
+            ++samplesTotal;
+            }
+          samplesNom += sampleRateNom;
           }
-        samplesNom += sampleRateNom;
         }
       }
     ++centerlineItr;
