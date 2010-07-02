@@ -92,17 +92,22 @@ int DoIt( int argc, char *argv[] )
   typename InputImageType::PointType       inOrigin = inIm->GetOrigin( );
   typename InputImageType::SizeType        inSize = 
     inIm->GetLargestPossibleRegion( ).GetSize( );
+  typename InputImageType::IndexType       inIndex = 
+    inIm->GetLargestPossibleRegion( ).GetIndex( );
   typename InputImageType::DirectionType   inDirection = 
     inIm->GetDirection( );
 
   typename OutputImageType::SizeType       outSize;
   typename OutputImageType::SpacingType    outSpacing;
   typename OutputImageType::PointType      outOrigin;
+  typename OutputImageType::IndexType      outIndex;
   typename OutputImageType::DirectionType  outDirection;
   for( unsigned int i=0; i< DimensionI; i++ )
     {
     outSpacing[i] = inSpacing[i];
     outOrigin[i] = inOrigin[i];
+    outIndex[i] = inIndex[i];
+    outSize[i] = inSize[i];
     }
   outDirection = inDirection;
 
@@ -115,6 +120,10 @@ int DoIt( int argc, char *argv[] )
     outSpacing = matchImReader->GetOutput( )->GetSpacing( );
     outOrigin = matchImReader->GetOutput( )->GetOrigin( );
     outDirection = matchImReader->GetOutput( )->GetDirection( );
+    outSize = matchImReader->GetOutput( )->GetLargestPossibleRegion()
+                           .GetSize( );
+    outIndex = matchImReader->GetOutput( )->GetLargestPossibleRegion()
+                           .GetIndex( );
 
     reporter.Report( 0.2 );
     }
@@ -132,6 +141,14 @@ int DoIt( int argc, char *argv[] )
     for( unsigned int i=0; i< DimensionI; i++ )
       {
       outOrigin[i] = origin[i];
+      }
+    }
+
+  if( index.size( ) > 0 )
+    {
+    for( unsigned int i=0; i< DimensionI; i++ )
+      {
+      outIndex[i] = index[i];
       }
     }
 
@@ -169,15 +186,18 @@ int DoIt( int argc, char *argv[] )
       }
     }
 
-  std::vector< double > outResampleFactor;
-  outResampleFactor.resize( DimensionI );
-  for( unsigned int i=0; i< DimensionI; i++ )
+  if( matchImage.size( ) == 0 )
     {
-    outResampleFactor[i] = inSpacing[i]/outSpacing[i];
-    outSize[i] = static_cast<unsigned long>( inSize[i] 
-                                            * outResampleFactor[i] );
+    std::vector< double > outResampleFactor;
+    outResampleFactor.resize( DimensionI );
+    for( unsigned int i=0; i< DimensionI; i++ )
+      {
+      outResampleFactor[i] = inSpacing[i]/outSpacing[i];
+      outSize[i] = static_cast<unsigned long>( inSize[i] 
+                                              * outResampleFactor[i] );
+      }
     }
-  
+    
   typename OutputImageType::Pointer outIm;
   {
   timeCollector.Start( "Resample" );
@@ -227,6 +247,7 @@ int DoIt( int argc, char *argv[] )
     }
 
   filter->SetSize( outSize );
+  filter->SetOutputStartIndex( outIndex );
   filter->SetOutputOrigin( outOrigin );
   filter->SetOutputSpacing( outSpacing );
   filter->SetOutputDirection( outDirection );
