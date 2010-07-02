@@ -30,6 +30,7 @@ limitations under the License.
 #include "itkDivideByConstantImageFilter.h"
 #include "itkMultiplyByConstantImageFilter.h"
 #include "itkSqrtImageFilter.h"
+#include "itkDiscreteGaussianImageFilter.h"
 
 #include "itkJointHistogramImageFunction.h"
 
@@ -295,7 +296,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 template <class TInputImage, class TCoordRep>
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::ComputeHistogramAtIndex( const IndexType& index, typename HistogramType::Pointer& hist ) const
+::ComputeHistogramAtIndex( const IndexType& index,
+  typename HistogramType::Pointer& hist ) const
 {
   typename InputImageType::PixelType minInput = m_ImageMin;
   typename InputImageType::PixelType maxInput = m_ImageMax;
@@ -323,13 +325,36 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   typedef itk::ImageRegionConstIterator<InputImageType> ConstIteratorType;
   typedef itk::ImageRegionIterator<InputImageType>      IteratorType;
 
-  typename InputImageType::SizeType size;
+  typename InputImageType::IndexType minIndex;
+  typename InputImageType::IndexType maxIndex;
+  minIndex = m_InputMask->GetLargestPossibleRegion().GetIndex();
+  maxIndex = minIndex + m_InputMask->GetLargestPossibleRegion().GetSize();
+  for( unsigned int i = 0; i < ImageDimension; ++i )
+    {
+    maxIndex[i] -= 1;
+    }
+
   typename InputImageType::RegionType region;
   IndexType origin;
+  typename InputImageType::SizeType size;
   for( unsigned int i = 0; i < ImageDimension; ++i )
     {
     origin[i] = index[i] - ( m_FeatureWidth * 0.5 );
     size[i] = m_FeatureWidth;
+    if( origin[i] < minIndex[i] )
+      {
+      origin[i] = minIndex[i];
+      size[i] = (maxIndex[i]-minIndex[i]) + 1;
+      }
+    if( origin[i] > maxIndex[i] )
+      {
+      origin[i] = maxIndex[i];
+      size[i] = 1;
+      }
+    if( (int)(origin[i]+size[i]-1) > maxIndex[i] )
+      {
+      size[i] = (maxIndex[i] - origin[i]) + 1;
+      }
     }
   region.SetSize( size );
   region.SetIndex( origin );
@@ -364,7 +389,16 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     ++maskItr;
     }
 
-  this->GetInputImage()->GetPixel( index );
+  //this->GetInputImage()->GetPixel( index );
+  typedef itk::DiscreteGaussianImageFilter< HistogramType,
+          HistogramType > SmootherType;
+  SmootherType::Pointer smoother = SmootherType::New();
+  smoother->SetInput( hist );
+  smoother->SetVariance( 4 );
+  smoother->SetUseImageSpacing( false );
+  smoother->Update();
+  hist = smoother->GetOutput();
+
 }
 
 } // end namespace itk
