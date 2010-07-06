@@ -64,7 +64,8 @@ public:
   itkNewMacro( Self );
 
   /** Constant for fetching the dimensions of the image. **/
-  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                       Superclass::ImageDimension );
 
   /** Get/Set the width of a significant feature. */
   itkGetMacro( FeatureWidth, double );
@@ -84,9 +85,9 @@ public:
 
   /** Get the mask or second image used in the comparison. **/
   virtual typename InputImageType::Pointer GetInputMask() const
-  {
+    {
     return m_InputMask;
-  }
+    }
 
   /** Get the size of the histogram (It will be a size x size image ). */
   itkGetMacro( HistogramSize, unsigned int );
@@ -99,20 +100,21 @@ public:
 
   /** Get the Z-score at a given point. */
   virtual double Evaluate( const PointType& point ) const
-  {
+    {
     IndexType index;
     this->ConvertPointToNearestIndex( point, index );
     return ( this->EvaluateAtIndex( index ) );
-  }
+    }
 
   /** Get the Z-score at a given continuous index. */
-  virtual double EvaluateAtContinuousIndex( const ContinuousIndexType & index ) const
-  {
+  virtual double EvaluateAtContinuousIndex( 
+    const ContinuousIndexType & index ) const
+    {
     IndexType nindex;
 
     this->ConvertContinuousIndexToNearestIndex( index, nindex );
     return this->EvaluateAtIndex( nindex );
-  }
+    }
 
   /** Get the Z-score at a given index. */
   virtual double EvaluateAtIndex( const IndexType & index ) const;
@@ -122,23 +124,28 @@ public:
    * calculate the mean and standard deviation histograms when needed.
    */
   virtual void Precompute( const PointType& point )
-  {
+    {
     IndexType index;
     this->ConvertPointToNearestIndex( point, index );
     this->PrecomputeAtIndex( index );
-  }
+    }
 
   /** 
-   * Add histograms (based on a given continuous index) to the internals used 
-   * to calculate the mean and standard deviation histograms when needed.
+   * Add histograms (based on a given continuous index) to the internals 
+   * used to calculate the mean and standard deviation histograms when
+   * needed.
    */
-  virtual void PrecomputeAtContinuousIndex( const ContinuousIndexType & index )
-  {
+  virtual void PrecomputeAtContinuousIndex( 
+    const ContinuousIndexType & index )
+    {
     IndexType nindex;
 
     this->ConvertContinuousIndexToNearestIndex( index, nindex );
     this->PrecomputeAtIndex( nindex );
-  }
+    }
+
+  itkGetObjectMacro( MeanHistogram, HistogramType );
+  itkGetObjectMacro( StandardDeviationHistogram, HistogramType );
 
   /** 
    * Add histograms (based on a given index) to the internals used to 
@@ -164,7 +171,7 @@ protected:
   void ComputeMeanAndStandardDeviation() const;
 
   void ComputeHistogramAtIndex( const IndexType& index,
-                                typename HistogramType::Pointer& hist ) const;
+    typename HistogramType::Pointer& hist ) const;
 
   /** Get the Z-score at a given index. */
   double ComputeZScoreAtIndex( const IndexType & index ) const;
