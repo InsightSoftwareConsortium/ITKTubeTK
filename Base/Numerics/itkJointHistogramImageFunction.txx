@@ -206,30 +206,40 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MeanHistogram = divider->GetOutput();
   
   // Calculate the standard deviation
+  typename SquareType::Pointer meanSquared = SquareType::New();
+  typename MultiplierType::Pointer meanSquaredMultiplier = MultiplierType::New();
+  typename MultiplierType::Pointer sumSquaresMultiplier = MultiplierType::New();
   typename SubtracterType::Pointer subtracter = SubtracterType::New();
-  typename SquareType::Pointer square = SquareType::New();
-  typename MultiplierType::Pointer multiplier = MultiplierType::New();
   typename SqrtType::Pointer sqrt = SqrtType::New();
-  divider = DividerType::New();
-  typename HistogramType::Pointer meanSquaredDivided;
-  typename HistogramType::Pointer sumSquaresDivided;
-  typename HistogramType::PixelType meanCo = 
-    m_NumberOfSamples / ( m_NumberOfSamples - 1 );
-  square->SetInput( m_MeanHistogram );
-  square->Update();
-  multiplier->SetInput( square->GetOutput() );
-  multiplier->SetConstant( meanCo );
-  multiplier->Update();
-  meanSquaredDivided = multiplier->GetOutput();
-  divider->SetInput( m_SumOfSquaresHistogram );
-  divider->SetConstant( m_NumberOfSamples - 1 );
-  divider->Update();
-  sumSquaresDivided = divider->GetOutput();
-  subtracter->SetInput1( sumSquaresDivided );
-  subtracter->SetInput2( meanSquaredDivided );
+
+  // sqrt( (n/(n-1)) * ( (1/n) sum_i=1..n_(x_i_^2 - x_mean_^2) ) )
+  // Implemented as
+  //   sqrt( (1/(n-1))*(sumSquare - n*mean*mean) )
+  //   = sqrt( (1/(n-1))*sumSquare - (n*(1/(n-1)))*mean*mean )
+  typename HistogramType::PixelType coeff = 
+    1.0 / ( m_NumberOfSamples - 1 );
+
+  // mean * mean
+  meanSquared->SetInput( m_MeanHistogram );
+  meanSquared->Update();
+
+  // n * (1/(n-1)) * mean*mean )
+  meanSquaredMultiplier->SetInput( meanSquared->GetOutput() );
+  meanSquaredMultiplier->SetConstant( m_NumberOfSamples * coeff );
+  meanSquaredMultiplier->Update();
+
+  // (1/(n-1)) * sumSquare
+  sumSquaresMultiplier->SetInput( m_SumOfSquaresHistogram );
+  sumSquaresMultiplier->SetConstant( coeff );
+  sumSquaresMultiplier->Update();
+
+  subtracter->SetInput1( sumSquaresMultiplier->GetOutput() );
+  subtracter->SetInput2( meanSquaredMultiplier->GetOutput() );
   subtracter->Update();
+
   sqrt->SetInput( subtracter->GetOutput() );
   sqrt->Update();
+
   m_StandardDeviationHistogram = sqrt->GetOutput();  
 }
 
@@ -343,8 +353,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     size[i] = m_FeatureWidth;
     if( origin[i] < minIndex[i] )
       {
+      size[i] -= (minIndex[i] - origin[i]);
       origin[i] = minIndex[i];
-      size[i] = (maxIndex[i]-minIndex[i]) + 1;
       }
     if( origin[i] > maxIndex[i] )
       {
@@ -389,7 +399,6 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     ++maskItr;
     }
 
-  //this->GetInputImage()->GetPixel( index );
   typedef itk::DiscreteGaussianImageFilter< HistogramType,
           HistogramType > SmootherType;
   SmootherType::Pointer smoother = SmootherType::New();
