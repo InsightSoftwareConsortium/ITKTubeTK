@@ -60,7 +60,9 @@ add_subdirectory( Doxygen )
 
 #-----------------------------------------------------------------------------
 # KWStyle setup
-OPTION( TubeTK_USE_KWSTYLE "Run KWStyle in order to check for violations of the coding standard." OFF )
+OPTION( TubeTK_USE_KWSTYLE 
+  "Run KWStyle in order to check for violations of the coding standard." 
+  OFF )
 MARK_AS_ADVANCED( TubeTK_USE_KWSTYLE )
 IF( TubeTK_USE_KWSTYLE )
   FIND_PROGRAM( KWSTYLE_EXECUTABLE
