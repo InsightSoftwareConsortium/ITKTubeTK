@@ -39,7 +39,9 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " inputImage maskImage outputImage" << std::endl;
+    std::cerr << argv[0] << 
+      " inputImage maskImage outputImage [meanHisto] [stdDevHisto]"
+      << std::endl;
     return EXIT_FAILURE;
     }
   
@@ -55,10 +57,12 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   // Declare the reader and writer
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
+
   
- 
   // Declare the type for the Filter
   typedef itk::JointHistogramImageFunction< ImageType > FunctionType;
+
+  typedef itk::ImageFileWriter< FunctionType::HistogramType > HistoWriterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -118,7 +122,13 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   while( !outIter.IsAtEnd() )
     {
     inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
-    outIter.Set( func->Evaluate( pnt ) );
+    double tf = func->Evaluate( pnt );
+    if( outIter.GetIndex()[0] == outIter.GetIndex()[1] )
+      {
+      std::cout << "i = " << outIter.GetIndex()[0] 
+                << " : " << tf << std::endl;
+      }
+    outIter.Set( tf );
     ++outIter;
     }     
 
@@ -126,7 +136,6 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   writer->SetFileName( argv[3] );
   writer->SetUseCompression( true );
   writer->SetInput( outputImage );
-  
   try
     {
     writer->Update();
@@ -137,6 +146,40 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  if( argc > 4 )
+    {
+    HistoWriterType::Pointer writerMean = HistoWriterType::New();
+    writerMean->SetFileName( argv[4] );
+    writerMean->SetUseCompression( true );
+    writerMean->SetInput( func->GetMeanHistogram() );
+    try
+      {
+      writerMean->Update();
+      }
+    catch (itk::ExceptionObject& e)
+      {
+      std::cerr << "Exception caught during mean write:\n"  << e;
+      return EXIT_FAILURE;
+      }
+    }
+
+  if( argc > 5 )
+    {
+    HistoWriterType::Pointer writerStdDev = HistoWriterType::New();
+    writerStdDev->SetFileName( argv[5] );
+    writerStdDev->SetUseCompression( true );
+    writerStdDev->SetInput( func->GetStandardDeviationHistogram() );
+    try
+      {
+      writerStdDev->Update();
+      }
+    catch (itk::ExceptionObject& e)
+      {
+      std::cerr << "Exception caught during std. dev. write:\n"  << e;
+      return EXIT_FAILURE;
+      }
+    }
+  
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 }
