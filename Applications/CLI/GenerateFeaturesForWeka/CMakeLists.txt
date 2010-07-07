@@ -65,12 +65,9 @@ set_target_properties( ${PROJECT_NAME}Module
                        PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
 target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} )
 
-add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} )
-
-#add_executable( ${PROJECT_NAME}
-#                ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx# )
-#target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
+add_executable( ${PROJECT_NAME}
+                ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )
+target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
 
 slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
 slicer3_set_plugins_output_path( ${PROJECT_NAME} )

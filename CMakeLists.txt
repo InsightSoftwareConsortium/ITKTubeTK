@@ -60,7 +60,9 @@ add_subdirectory( Doxygen )
 
 #-----------------------------------------------------------------------------
 # KWStyle setup
-OPTION( TubeTK_USE_KWSTYLE "Run KWStyle in order to check for violations of the coding standard." OFF )
+OPTION( TubeTK_USE_KWSTYLE 
+  "Run KWStyle in order to check for violations of the coding standard." 
+  OFF )
 MARK_AS_ADVANCED( TubeTK_USE_KWSTYLE )
 IF( TubeTK_USE_KWSTYLE )
   FIND_PROGRAM( KWSTYLE_EXECUTABLE
@@ -70,9 +72,15 @@ IF( TubeTK_USE_KWSTYLE )
     )
   MARK_AS_ADVANCED( KWSTYLE_EXECUTABLE )
 
-  OPTION( KWSTYLE_USE_VIM_FORMAT "Set KWStyle to generate errors with a VIM-compatible format." OFF )
-  OPTION( KWSTYLE_USE_MSVC_FORMAT "Set KWStyle to generate errors with a VisualStudio-compatible format." OFF )
-  OPTION( KWSTYLE_DASHBOARD_SUBMISSION "Set KWStyle arguments to generate report for dashboard submission." ON )
+  OPTION( KWSTYLE_USE_VIM_FORMAT 
+    "Set KWStyle to generate errors with a VIM-compatible format." 
+    OFF )
+  OPTION( KWSTYLE_USE_MSVC_FORMAT 
+    "Set KWStyle to generate errors with a VisualStudio-compatible format." 
+    OFF )
+  OPTION( KWSTYLE_DASHBOARD_SUBMISSION 
+    "Set KWStyle arguments to generate report for dashboard submission." 
+    ON )
 
   IF( KWSTYLE_DASHBOARD_SUBMISSION )
     SET(KWSTYLE_ARGUMENTS -lesshtml 
@@ -115,7 +123,8 @@ ENDIF( TubeTK_USE_KWSTYLE )
 IF( WIN32 )
   ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS )
   IF( NOT CMAKE_FIRST_PASS_COMPLETED )
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP" CACHE STRING "Flags used by all build types" FORCE )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP" 
+         CACHE STRING "Flags used by all build types" FORCE )
   ENDIF( NOT CMAKE_FIRST_PASS_COMPLETED )
   OPTION( DISABLE_MSVC8_DEPRECATED_WARNINGS 
          "Disable Visual Studio 8 deprecated warnings" ON )
@@ -129,8 +138,10 @@ ENDIF( WIN32 )
 # Mac setup
 IF( APPLE )
   IF( NOT CMAKE_FIRST_PASS_COMPLETED )
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common" CACHE STRING "Flags used by all build types" FORCE )
-    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common" CACHE STRING "Flags used by all build types" FORCE )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common" 
+         CACHE STRING "Flags used by all build types" FORCE )
+    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common" 
+         CACHE STRING "Flags used by all build types" FORCE )
   ENDIF( NOT CMAKE_FIRST_PASS_COMPLETED )
 ENDIF( APPLE )
 
@@ -138,11 +149,15 @@ ENDIF( APPLE )
 # Linux setup
 IF( UNIX )
   IF( NOT CMAKE_FIRST_PASS_COMPLETED )
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing" CACHE STRING "Flags used by all build types" FORCE ) 
-    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing" CACHE STRING "Flags used by all build types" FORCE )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing" 
+         CACHE STRING "Flags used by all build types" FORCE ) 
+    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing" 
+         CACHE STRING "Flags used by all build types" FORCE )
     IF( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
-      SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" CACHE STRING "Flags used by all build types" FORCE )
-      SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" CACHE STRING "Flags used by all build types" FORCE )
+      SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" 
+           CACHE STRING "Flags used by all build types" FORCE )
+      SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC" 
+           CACHE STRING "Flags used by all build types" FORCE )
     ENDIF( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
   ENDIF( NOT CMAKE_FIRST_PASS_COMPLETED )
 ENDIF( UNIX ) 
@@ -150,7 +165,9 @@ ENDIF( UNIX )
 #-----------------------------------------------------------------------------
 # Indicate that this cmakelists.txt file has already been parsed once.
 # Keeps append commands from having an effect every time cmake is run.
-SET( CMAKE_FIRST_PASS_COMPLETED ON CACHE BOOL "Modify the cache vars only on first pass thru cmake file" FORCE )
+SET( CMAKE_FIRST_PASS_COMPLETED ON 
+     CACHE BOOL "Modify the cache vars only on first pass thru cmake file" 
+     FORCE )
 MARK_AS_ADVANCED( CMAKE_FIRST_PASS_COMPLETED )
 
 #-----------------------------------------------------------------------------
@@ -161,7 +178,8 @@ option( TubeTK_USE_SUPERBUILD
 
 if( TubeTK_USE_SUPERBUILD )
 
-  option( USE_SYSTEM_ITK "Exclude ITK from SuperBuild and use an existing build instead." OFF )
+  option( USE_SYSTEM_ITK 
+          "Exclude ITK from SuperBuild and use an existing build instead." OFF )
   if( USE_SYSTEM_ITK )
     find_package( ITK REQUIRED )
     include(${ITK_USE_FILE})
@@ -190,7 +208,8 @@ set(Slicer3_INSTALL_ITKFACTORIES_DIR "${Slicer3_INSTALL_LIB_DIR}/ITKFactories")
 
 set(Slicer3_INSTALL_PLUGINS_BIN_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins")
 set(Slicer3_INSTALL_PLUGINS_LIB_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins")
-set(Slicer3_INSTALL_PLUGINS_INCLUDE_DIR "${Slicer3_INSTALL_INCLUDE_DIR}/Plugins")
+set(Slicer3_INSTALL_PLUGINS_INCLUDE_DIR 
+    "${Slicer3_INSTALL_INCLUDE_DIR}/Plugins")
 set(Slicer3_INSTALL_PLUGINS_SHARE_DIR "${Slicer3_INSTALL_SHARE_DIR}/Plugins")
 set(Slicer3_INSTALL_PLUGINS_CACHE_DIR "${Slicer3_INSTALL_LIB_DIR}/PluginsCache")
 

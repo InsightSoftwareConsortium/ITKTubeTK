@@ -365,8 +365,13 @@ int DoIt( int argc, char * argv[] )
   costFunc->SetMaskMiddle( maskMiddle );
 
   InitialOptimizerType::Pointer initOptimizer = InitialOptimizerType::New();
-  initOptimizer->SetNormalVariateGenerator( 
-    itk::Statistics::NormalVariateGenerator::New() );
+  itk::Statistics::NormalVariateGenerator::Pointer normGen =
+    itk::Statistics::NormalVariateGenerator::New();
+  if( seed != 0 )
+    {
+    normGen->Initialize( seed );
+    }
+  initOptimizer->SetNormalVariateGenerator( normGen );
   initOptimizer->Initialize( 0.1 );
   initOptimizer->SetMetricWorstPossibleValue( 100 );
   initOptimizer->SetMaximumIteration( iterations*0.75 );

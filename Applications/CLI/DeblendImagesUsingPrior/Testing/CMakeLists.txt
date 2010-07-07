@@ -42,6 +42,7 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
+               -S 1024
                ${INPUT_DATA}/201002TP0ES14_Small.mha
                ${INPUT_DATA}/201002TP0GD15_Small_Match.mha
                ${INPUT_DATA}/201002TP0ES16_Small.mha
@@ -53,6 +54,7 @@ add_test( ${PROJECT_NAME}Test1
 #######
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
+               -i 0.1
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare

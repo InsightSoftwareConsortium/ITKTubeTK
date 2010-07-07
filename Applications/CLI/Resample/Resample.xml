@@ -48,6 +48,12 @@
       <longflag>origin</longflag>
       <description>Origin to be used. Should be a N-vector. Overrides matchImage.</description>
     </float-vector>
+    <integer-vector>
+      <name>index</name>
+      <label>Use index</label>
+      <longflag>index</longflag>
+      <description>Index to be used. Should be a N-vector. Overrides matchImage.</description>
+    </integer-vector>
     <float-vector>
       <name>resampleFactor</name>
       <label>Resample factor</label>

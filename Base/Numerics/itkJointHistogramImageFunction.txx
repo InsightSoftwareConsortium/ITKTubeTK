@@ -30,6 +30,7 @@ limitations under the License.
 #include "itkDivideByConstantImageFilter.h"
 #include "itkMultiplyByConstantImageFilter.h"
 #include "itkSqrtImageFilter.h"
+#include "itkDiscreteGaussianImageFilter.h"
 
 #include "itkJointHistogramImageFunction.h"
 
@@ -131,6 +132,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     }
   catch( itk::ExceptionObject& e )
     {
+    std::cerr << "Exception thrown: " << e << std::endl;
     return 0;
     }
 }
@@ -172,6 +174,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     }
   catch( itk::ExceptionObject& e )
     {
+    std::cerr << "Exception thrown: " << e << std::endl;
     return;
     }
 }
@@ -203,30 +206,40 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MeanHistogram = divider->GetOutput();
   
   // Calculate the standard deviation
+  typename SquareType::Pointer meanSquared = SquareType::New();
+  typename MultiplierType::Pointer meanSquaredMultiplier = MultiplierType::New();
+  typename MultiplierType::Pointer sumSquaresMultiplier = MultiplierType::New();
   typename SubtracterType::Pointer subtracter = SubtracterType::New();
-  typename SquareType::Pointer square = SquareType::New();
-  typename MultiplierType::Pointer multiplier = MultiplierType::New();
   typename SqrtType::Pointer sqrt = SqrtType::New();
-  divider = DividerType::New();
-  typename HistogramType::Pointer meanSquaredDivided;
-  typename HistogramType::Pointer sumSquaresDivided;
-  typename HistogramType::PixelType meanCo = 
-    m_NumberOfSamples / ( m_NumberOfSamples - 1 );
-  square->SetInput( m_MeanHistogram );
-  square->Update();
-  multiplier->SetInput( square->GetOutput() );
-  multiplier->SetConstant( meanCo );
-  multiplier->Update();
-  meanSquaredDivided = multiplier->GetOutput();
-  divider->SetInput( m_SumOfSquaresHistogram );
-  divider->SetConstant( m_NumberOfSamples - 1 );
-  divider->Update();
-  sumSquaresDivided = divider->GetOutput();
-  subtracter->SetInput1( sumSquaresDivided );
-  subtracter->SetInput2( meanSquaredDivided );
+
+  // sqrt( (n/(n-1)) * ( (1/n) sum_i=1..n_(x_i_^2 - x_mean_^2) ) )
+  // Implemented as
+  //   sqrt( (1/(n-1))*(sumSquare - n*mean*mean) )
+  //   = sqrt( (1/(n-1))*sumSquare - (n*(1/(n-1)))*mean*mean )
+  typename HistogramType::PixelType coeff = 
+    1.0 / ( m_NumberOfSamples - 1 );
+
+  // mean * mean
+  meanSquared->SetInput( m_MeanHistogram );
+  meanSquared->Update();
+
+  // n * (1/(n-1)) * mean*mean )
+  meanSquaredMultiplier->SetInput( meanSquared->GetOutput() );
+  meanSquaredMultiplier->SetConstant( m_NumberOfSamples * coeff );
+  meanSquaredMultiplier->Update();
+
+  // (1/(n-1)) * sumSquare
+  sumSquaresMultiplier->SetInput( m_SumOfSquaresHistogram );
+  sumSquaresMultiplier->SetConstant( coeff );
+  sumSquaresMultiplier->Update();
+
+  subtracter->SetInput1( sumSquaresMultiplier->GetOutput() );
+  subtracter->SetInput2( meanSquaredMultiplier->GetOutput() );
   subtracter->Update();
+
   sqrt->SetInput( subtracter->GetOutput() );
   sqrt->Update();
+
   m_StandardDeviationHistogram = sqrt->GetOutput();  
 }
 
@@ -293,7 +306,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 template <class TInputImage, class TCoordRep>
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::ComputeHistogramAtIndex( const IndexType& index, typename HistogramType::Pointer& hist ) const
+::ComputeHistogramAtIndex( const IndexType& index,
+  typename HistogramType::Pointer& hist ) const
 {
   typename InputImageType::PixelType minInput = m_ImageMin;
   typename InputImageType::PixelType maxInput = m_ImageMax;
@@ -321,13 +335,36 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   typedef itk::ImageRegionConstIterator<InputImageType> ConstIteratorType;
   typedef itk::ImageRegionIterator<InputImageType>      IteratorType;
 
-  typename InputImageType::SizeType size;
+  typename InputImageType::IndexType minIndex;
+  typename InputImageType::IndexType maxIndex;
+  minIndex = m_InputMask->GetLargestPossibleRegion().GetIndex();
+  maxIndex = minIndex + m_InputMask->GetLargestPossibleRegion().GetSize();
+  for( unsigned int i = 0; i < ImageDimension; ++i )
+    {
+    maxIndex[i] -= 1;
+    }
+
   typename InputImageType::RegionType region;
   IndexType origin;
+  typename InputImageType::SizeType size;
   for( unsigned int i = 0; i < ImageDimension; ++i )
     {
     origin[i] = index[i] - ( m_FeatureWidth * 0.5 );
     size[i] = m_FeatureWidth;
+    if( origin[i] < minIndex[i] )
+      {
+      size[i] -= (minIndex[i] - origin[i]);
+      origin[i] = minIndex[i];
+      }
+    if( origin[i] > maxIndex[i] )
+      {
+      origin[i] = maxIndex[i];
+      size[i] = 1;
+      }
+    if( (int)(origin[i]+size[i]-1) > maxIndex[i] )
+      {
+      size[i] = (maxIndex[i] - origin[i]) + 1;
+      }
     }
   region.SetSize( size );
   region.SetIndex( origin );
@@ -362,7 +399,15 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     ++maskItr;
     }
 
-  this->GetInputImage()->GetPixel( index );
+  typedef itk::DiscreteGaussianImageFilter< HistogramType,
+          HistogramType > SmootherType;
+  SmootherType::Pointer smoother = SmootherType::New();
+  smoother->SetInput( hist );
+  smoother->SetVariance( 2 );
+  smoother->SetUseImageSpacing( false );
+  smoother->Update();
+  hist = smoother->GetOutput();
+
 }
 
 } // end namespace itk
