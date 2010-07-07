@@ -78,7 +78,9 @@ int main( int argc, char **argv )
       headerMessage->InitPack();
       
       // Receive generic header from the socket
-      int receiveReturnValue = clientSocket->Receive(headerMessage->GetPackPointer(), headerMessage->GetPackSize());
+      int receiveReturnValue = clientSocket->Receive(
+                                    headerMessage->GetPackPointer(),
+                                    headerMessage->GetPackSize() );
       if (receiveReturnValue == 0)
         {
         clientSocket->CloseSocket();
@@ -104,7 +106,8 @@ int main( int argc, char **argv )
         positionMessage->AllocatePack();
         
         // Receive position position data from the socket
-        clientSocket->Receive(positionMessage->GetPackBodyPointer(), positionMessage->GetPackBodySize());
+        clientSocket->Receive( positionMessage->GetPackBodyPointer(),
+                               positionMessage->GetPackBodySize() );
         
         // Deserialize the transform data
         // If you want to skip CRC check, call Unpack() without argument.
@@ -119,10 +122,15 @@ int main( int argc, char **argv )
           positionMessage->GetPosition(position);
           positionMessage->GetQuaternion(quaternion);
 
-          std::cerr << "position   = (" << position[0] << ", " << position[1] << ", " << position[2] << ")" << std::endl;
-          std::cerr << "quaternion = (" << quaternion[0] << ", " << quaternion[1] << ", "
-                    << quaternion[2] << ", " << quaternion[3] << ")" << std::endl << std::endl;
-
+          std::cerr << "position   = (" 
+                    << position[0] << ", " 
+                    << position[1] << ", " 
+                    << position[2] << ")" << std::endl;
+          std::cerr << "quaternion = (" 
+                    << quaternion[0] << ", " 
+                    << quaternion[1] << ", "
+                    << quaternion[2] << ", " 
+                    << quaternion[3] << ")" << std::endl << std::endl;
           }
         }
       }

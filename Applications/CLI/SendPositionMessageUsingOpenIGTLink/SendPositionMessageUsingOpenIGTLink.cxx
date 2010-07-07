@@ -89,8 +89,14 @@ int main( int argc, char **argv )
         double quaternion[4];
         GenerateRandomOrientation( quaternion );
 
-        std::cout << "Position\t(" << position[0] << "," << position[1] << "," << position[2] << ")" << std::endl;
-        std::cout << "Orientation\t" << quaternion[0] << "," << quaternion[1] << "," << quaternion[2] << ")" << std::endl;
+        std::cout << "Position\t(" 
+                  << position[0] << "," 
+                  << position[1] << "," 
+                  << position[2] << ")" << std::endl;
+        std::cout << "Orientation\t" 
+                  << quaternion[0] << "," 
+                  << quaternion[1] << "," 
+                  << quaternion[2] << ")" << std::endl;
 
         positionMsg->SetPosition( position[0], position[1], position[2] );
         positionMsg->SetQuaternion( quaternion[0],
@@ -98,7 +104,8 @@ int main( int argc, char **argv )
                                     quaternion[2],
                                     quaternion[3] );
         positionMsg->Pack();
-        socket->Send(positionMsg->GetPackPointer(), positionMsg->GetPackSize());
+        socket->Send( positionMsg->GetPackPointer(),
+                      positionMsg->GetPackSize() );
         igtl::Sleep(interval); // wait
         }
       }
