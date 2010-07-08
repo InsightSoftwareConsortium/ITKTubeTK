@@ -460,7 +460,7 @@ NJetImageFunction<TInputImage>
     
     i = 0;
     xShift[i]++;
-    while( xShift[i]>xMax[i] && !done )
+    while( !done && xShift[i]>xMax[i] )
       {
       xShift[i] = xMin[i];
       i++;
@@ -772,7 +772,7 @@ NJetImageFunction<TInputImage>
     
     xShift[0]++;
     unsigned int i = 0;
-    while( xShift[i]>xMax[i] && !done )
+    while( !done && xShift[i]>xMax[i] )
       {
       xShift[i] = xMin[i];
       i++;
@@ -1110,7 +1110,7 @@ NJetImageFunction<TInputImage>
     
     xShift[0]++;
     unsigned int i = 0;
-    while( xShift[i]>xMax[i] && !done )
+    while( !done && xShift[i]>xMax[i] )
       {
       xShift[i] = xMin[i];
       i++;
@@ -1796,7 +1796,7 @@ NJetImageFunction<TInputImage>
     
     xShift[0]++;
     unsigned int i = 0;
-    while( xShift[i]>xMax[i] && !done )
+    while( !done && xShift[i]>xMax[i] )
       {
       xShift[i] = xMin[i];
       i++;
