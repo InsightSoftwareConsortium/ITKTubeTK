@@ -37,3 +37,20 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
+#######
+# Test1
+#######
+add_test( ${PROJECT_NAME}Test1
+  ${PROJ_EXE}
+  ${INPUT_DATA}/ES0015_Large.mha
+  ${INPUT_DATA}/GDS0015_Large_match.mha
+  ${INPUT_DATA}/GDS0015_Large_Adds.mha
+  ${INPUT_DATA}/GDS0015_Large_Subs.mha
+  ${INPUT_DATA}/GDS0015_Large_Full.mha
+  ${TEMP}/${PROJECT_NAME}Test1.arff )
+
+add_test( ${PROJECT_NAME}Test1-Compare
+  ${CMAKE_COMMAND} -E compare_files 
+  ${TEMP}/${PROJECT_NAME}Test1.arff
+  ${BASELINE}/${PROJECT_NAME}Test1.arff
+  )
