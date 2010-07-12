@@ -49,8 +49,16 @@ add_test( ${PROJECT_NAME}Test1
   ${INPUT_DATA}/GDS0015_Large_Full.mha
   ${TEMP}/${PROJECT_NAME}Test1.arff )
 
-add_test( ${PROJECT_NAME}Test1-Compare
-  ${CMAKE_COMMAND} -E compare_files 
-  ${TEMP}/${PROJECT_NAME}Test1.arff
-  ${BASELINE}/${PROJECT_NAME}Test1.arff
-  )
+if(MSVC)
+  add_test( ${PROJECT_NAME}Test1-Compare
+    ${CMAKE_COMMAND} -E compare_files 
+    ${TEMP}/${PROJECT_NAME}Test1.arff
+    ${BASELINE}/${PROJECT_NAME}Test1_msvc.arff
+    )
+else(MSVC)
+  add_test( ${PROJECT_NAME}Test1-Compare
+    ${CMAKE_COMMAND} -E compare_files 
+    ${TEMP}/${PROJECT_NAME}Test1.arff
+    ${BASELINE}/${PROJECT_NAME}Test1.arff
+    )
+endif(MSVC)
