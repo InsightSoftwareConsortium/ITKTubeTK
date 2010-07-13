@@ -34,7 +34,7 @@ limitations under the License.
 
 namespace itk
 {
-template <class TInputImage, class TOutputImage>
+template < class TInputImage, class TOutputImage=TInputImage >
 class ITK_EXPORT CVTImageFilter :   
   public ImageToImageFilter< TInputImage, TOutputImage >
 {  
