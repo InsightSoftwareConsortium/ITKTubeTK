@@ -27,16 +27,53 @@ limitations under the License.
 
 #include "itkOrientedImage.h"
 
+#include "itkImageRegionMomentsCalculator.h"
+#include "itkJointHistogramImageFunction.h"
 #include "itkNJetImageFunction.h"
+#include "itkVectorImageToListGenerator.h"
+#include "itkVotingResampleImageFunction.h"
 
 int tubeBaseNumericsPrintTest( int, char* [] )
 {
   typedef itk::OrientedImage< float, 2 > ImageType;
+  typedef itk::OrientedImage< itk::Vector<float, 2>, 2 > VectorImageType;
 
-  itk::NJetImageFunction< ImageType >::Pointer njetObject =
+  itk::ImageRegionMomentsCalculator< ImageType >::Pointer 
+    regionMomentsObject =
+    itk::ImageRegionMomentsCalculator< ImageType >::New();
+  std::cout << "-------------itkImageRegionMomentsCalculator" 
+            << regionMomentsObject
+            << std::endl;
+
+  itk::JointHistogramImageFunction< ImageType >::Pointer 
+    jointHistoObject =
+    itk::JointHistogramImageFunction< ImageType >::New();
+  std::cout << "-------------itkJointHistogramImageFunction" 
+            << jointHistoObject
+            << std::endl;
+
+  itk::NJetImageFunction< ImageType >::Pointer 
+    njetObject =
     itk::NJetImageFunction< ImageType >::New();
-  std::cout << "-------------itkNJetImageFunction" << njetObject
-            << std::endl;;
+  std::cout << "-------------itkNJetImageFunction" 
+            << njetObject
+            << std::endl;
+
+  itk::Statistics::VectorImageToListGenerator< VectorImageType,
+      ImageType >::Pointer 
+    vectorImageToListObject =
+    itk::Statistics::VectorImageToListGenerator< VectorImageType,
+      ImageType >::New();
+  std::cout << "-------------itkVectorImageToListGenerator" 
+            << vectorImageToListObject
+            << std::endl;
+
+  itk::VotingResampleImageFunction< ImageType >::Pointer 
+    votingResampleObject =
+    itk::VotingResampleImageFunction< ImageType >::New();
+  std::cout << "-------------itkVotingResampleImageFunction" 
+            << votingResampleObject
+            << std::endl;
 
   return EXIT_SUCCESS;
 }
