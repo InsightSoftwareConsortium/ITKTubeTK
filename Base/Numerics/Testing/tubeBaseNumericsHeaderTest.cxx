@@ -26,7 +26,11 @@ limitations under the License.
 
 #include <iostream>
 
+#include "itkImageRegionMomentsCalculator.h"
+#include "itkJointHistogramImageFunction.h"
 #include "itkNJetImageFunction.h"
+#include "itkVectorImageToListGenerator.h"
+#include "itkVotingResampleImageFunction.h"
 
 int main ( int , char ** )
 {
