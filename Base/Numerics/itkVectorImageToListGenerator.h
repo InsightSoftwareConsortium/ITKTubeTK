@@ -37,12 +37,12 @@ namespace Statistics {
  *  \brief The class takes an image as input and generates a list sample as 
  *  output. 
  *
- *  There are differences between this class and VectorImageToListAdaptor. This 
- *  class is not an adaptor. It creates a new list sample and does not 
+ *  There are differences between this class and VectorImageToListAdaptor. 
+ *  This class is not an adaptor. It creates a new list sample and does not 
  *  provide a pseudo interface to the actual image to make it look like a 
  *  list sample.
  *
- *  The class optionally allows you to specify a mask image as an input. The 
+ *  The class optionally allows you to specify a mask image as an input. The
  *  list sample (if a mask is specified) is constructed from pixels that are
  *  within the mask
  *
@@ -50,13 +50,13 @@ namespace Statistics {
  * In future allow the filter to take a Spatial object as input so a 
  * generic spatial object like an ellipse etc can be used as a mask. 
  * Sure the ImageMaskSpatialObject
- * can represent image masks too, so why not make SpatialObjects the default. I
- * think the ImageMaskSpatialObject is slow in terms of inefficient iteration 
- * through the image.
+ * can represent image masks too, so why not make SpatialObjects the 
+ * default. I think the ImageMaskSpatialObject is slow in terms of
+ * inefficient iteration through the image.
  * 
  * \sa VectorImageToListAdaptor
  */
-template < class TImage, class TMaskImage = TImage > 
+template < class TImage, class TMaskImage > 
 class ITK_EXPORT VectorImageToListGenerator :
   public ProcessObject
 {
