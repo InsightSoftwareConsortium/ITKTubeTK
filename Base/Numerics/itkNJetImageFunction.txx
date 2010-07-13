@@ -419,7 +419,7 @@ NJetImageFunction<TInputImage>
   unsigned int i;
   for(i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int)floor(cIndex[i] 
+    xMin[i] = (int)vnl_math_floor(cIndex[i] 
                           - (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMin[i]<0)
       {
@@ -427,7 +427,7 @@ NJetImageFunction<TInputImage>
       }
     xShift[i] = xMin[i];
  
-    xMax[i] = (int)ceil(cIndex[i] 
+    xMax[i] = (int)vnl_math_ceil(cIndex[i] 
                          + (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMax[i] > (int) m_InputImageSize[i]-1)
       {
@@ -451,9 +451,9 @@ NJetImageFunction<TInputImage>
       if(physDist <= physKernelRadiusSquared)
         { 
         pixelValue = m_InputImage->GetPixel( xShift );
-        expValue = exp(physGaussFactor*physDist);
+        expValue = vcl_exp(physGaussFactor*physDist);
   
-        vTotal += fabs(expValue);
+        vTotal += vnl_math_abs(expValue);
         v += pixelValue * expValue;
         }
       }
@@ -722,21 +722,21 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) floor(cIndex[i] - (scale * m_Extent 
+    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
                                              / m_InputImageSpacing[i]));
     if(xMin[i]<0)
       {
       xMin[i]=0;
       }
     xShift[i] = xMin[i];
-    xRadius = (int) floor(cIndex[i] - xMin[i]);
+    xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
  
-    xMax[i] = (int) ceil(cIndex[i] + xRadius);
+    xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
     if(xMax[i] > (int) m_InputImageSize[i]-1)
       {
       xMax[i]= m_InputImageSize[i]-1;
-      xRadius = (int) floor(xMax[i] - cIndex[i]);
-      xMin[i] = (int) floor(cIndex[i] - xRadius);
+      xRadius = (int) vnl_math_floor(xMax[i] - cIndex[i]);
+      xMin[i] = (int) vnl_math_floor(cIndex[i] - xRadius);
       xShift[i] = xMin[i];
       }
     }
@@ -757,14 +757,14 @@ NJetImageFunction<TInputImage>
       if(physDist <= physKernelRadiusSquared)
         { 
         pixelValue = m_InputImage->GetPixel( xShift );
-        expValue = exp(physGaussFactor*physDist);
+        expValue = vcl_exp(physGaussFactor*physDist);
   
         for(unsigned int i=0; i< ImageDimension; i++)
           {
           expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
                         * physGaussFactor 
                         * expValue;
-          dTotal[i] += fabs(expValueD); 
+          dTotal[i] += vnl_math_abs(expValueD); 
           d[i] += pixelValue * expValueD;
           }
         }
@@ -1057,21 +1057,21 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) floor(cIndex[i] - (scale * m_Extent 
+    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
                                              / m_InputImageSpacing[i]));
     if(xMin[i]<0)
       {
       xMin[i]=0;
       }
     xShift[i] = xMin[i];
-    xRadius = (int) floor(cIndex[i] - xMin[i]);
+    xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
  
-    xMax[i] = (int) ceil(cIndex[i] + xRadius);
+    xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
     if(xMax[i] > (int) m_InputImageSize[i]-1)
       {
       xMax[i]= m_InputImageSize[i]-1;
-      xRadius = (int) floor(xMax[i] - cIndex[i]);
-      xMin[i] = (int) floor(cIndex[i] - xRadius);
+      xRadius = (int) vnl_math_floor(xMax[i] - cIndex[i]);
+      xMin[i] = (int) vnl_math_floor(cIndex[i] - xRadius);
       xShift[i] = xMin[i];
       }
     }
@@ -1092,17 +1092,17 @@ NJetImageFunction<TInputImage>
       if(physDist <= physKernelRadiusSquared)
         { 
         pixelValue = m_InputImage->GetPixel( xShift );
-        expValue = exp(physGaussFactor*physDist);
+        expValue = vcl_exp(physGaussFactor*physDist);
 
         v += pixelValue*expValue;
-        vTotal += fabs(expValue);
+        vTotal += vnl_math_abs(expValue);
   
         for(unsigned int i=0; i< ImageDimension; i++)
           {
           expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
                         * physGaussFactor 
                         * expValue;
-          dTotal[i] += fabs(expValueD); 
+          dTotal[i] += vnl_math_abs(expValueD); 
           d[i] += pixelValue * expValueD;
           }
         }
@@ -1464,11 +1464,11 @@ NJetImageFunction<TInputImage>
       vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
     
       double cN0 = eigSys.get_eigenvalue(0) 
-                     * fabs( dot_product( eigSys.get_eigenvector(0),
+                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
                                          v1.GetVnlVector() ) );
   
       double cN1 = eigSys.get_eigenvalue(1) 
-                     * fabs( dot_product( eigSys.get_eigenvector(1),
+                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
                                          v1.GetVnlVector() ) );
       if(cN1 >= 0)
         {
@@ -1522,18 +1522,18 @@ NJetImageFunction<TInputImage>
       vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
   
       double cN0V1 = eigSys.get_eigenvalue(0) 
-                       * fabs( dot_product( eigSys.get_eigenvector(0),
+                       * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
                                          v1.GetVnlVector() ) );
       double cN0V2 = eigSys.get_eigenvalue(0) 
-                     * fabs( dot_product( eigSys.get_eigenvector(0),
+                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
                                          v2.GetVnlVector() ) );
       double cN0 = cN0V1 + cN0V2;
   
       double cN1V1 = eigSys.get_eigenvalue(1) 
-                     * fabs( dot_product( eigSys.get_eigenvector(1),
+                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
                                          v1.GetVnlVector() ) );
       double cN1V2 = eigSys.get_eigenvalue(1) 
-                     * fabs( dot_product( eigSys.get_eigenvector(1),
+                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
                                          v2.GetVnlVector() ) );
       double cN1 = cN1V1 + cN1V2;
   
@@ -1733,21 +1733,21 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) floor(cIndex[i] - (scale * m_Extent 
+    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
                                              / m_InputImageSpacing[i]));
     if(xMin[i]<0)
       {
       xMin[i]=0;
       }
     xShift[i] = xMin[i];
-    xRadius = (int) floor(cIndex[i] - xMin[i]);
+    xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
  
-    xMax[i] = (int) ceil(cIndex[i] + xRadius);
+    xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
     if(xMax[i] > (int) m_InputImageSize[i]-1)
       {
       xMax[i]= m_InputImageSize[i]-1;
-      xRadius = (int) floor(xMax[i] - cIndex[i]);
-      xMin[i] = (int) floor(cIndex[i] - xRadius);
+      xRadius = (int) vnl_math_floor(xMax[i] - cIndex[i]);
+      xMin[i] = (int) vnl_math_floor(cIndex[i] - xRadius);
       xShift[i] = xMin[i];
       }
     }
@@ -1768,7 +1768,7 @@ NJetImageFunction<TInputImage>
       if(physDist <= physKernelRadiusSquared)
         { 
         pixelValue = m_InputImage->GetPixel( xShift );
-        expValue = exp(physGaussFactor*physDist);
+        expValue = vcl_exp(physGaussFactor*physDist);
   
         for(unsigned int i=0; i< ImageDimension; i++)
           {
@@ -1779,7 +1779,7 @@ NJetImageFunction<TInputImage>
                       * 2 
                       * physGaussFactor 
                       * expValue;
-          hTotal[i][i] += fabs(expValueD);
+          hTotal[i][i] += vnl_math_abs(expValueD);
           h[i][i] += pixelValue * expValueD;
           for(unsigned int j=i+1; j< ImageDimension; j++)
             {
@@ -1787,7 +1787,7 @@ NJetImageFunction<TInputImage>
                           * (cIndex[j]-xShift[j]) * m_InputImageSpacing[j] 
                           * physGaussFactor * physGaussFactor 
                           * expValue;
-            hTotal[i][j] += fabs(expValueD);
+            hTotal[i][j] += vnl_math_abs(expValueD);
             h[i][j] += pixelValue * expValueD;
             }
           }
@@ -2021,7 +2021,7 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) floor(cIndex[i] 
+    xMin[i] = (int) vnl_math_floor(cIndex[i] 
                           - (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMin[i]<0)
       {
@@ -2029,7 +2029,7 @@ NJetImageFunction<TInputImage>
       }
     xShift[i] = xMin[i];
  
-    xMax[i] = (int) ceil(cIndex[i]
+    xMax[i] = (int) vnl_math_ceil(cIndex[i]
                           + (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMax[i] > (int) m_InputImageSize[i]-1)
       {
@@ -2053,10 +2053,10 @@ NJetImageFunction<TInputImage>
       if(physDist <= physKernelRadiusSquared)
         { 
         pixelValue = m_InputImage->GetPixel( xShift );
-        expValue = exp(physGaussFactor*physDist);
+        expValue = vcl_exp(physGaussFactor*physDist);
 
         v += pixelValue*expValue;
-        vTotal += fabs(expValue);
+        vTotal += vnl_math_abs(expValue);
   
         for(unsigned int i=0; i< ImageDimension; i++)
           {
@@ -2064,7 +2064,7 @@ NJetImageFunction<TInputImage>
                         * physGaussFactor 
                         * expValue;
           d[i] += pixelValue * expValueD;
-          dTotal[i] += fabs(expValueD); 
+          dTotal[i] += vnl_math_abs(expValueD); 
 
           expValueD = (2 * (cIndex[i]-xShift[i]) * (xShift[i] - cIndex[i])
                          * m_InputImageSpacingSquared[i] 
@@ -2073,7 +2073,7 @@ NJetImageFunction<TInputImage>
                       * physGaussFactor 
                       * expValue;
           h[i][i] += pixelValue * expValueD;
-          hTotal[i][i] += fabs(expValueD);
+          hTotal[i][i] += vnl_math_abs(expValueD);
           for(unsigned int j=i+1; j< ImageDimension; j++)
             {
             expValueD = 4 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
@@ -2081,7 +2081,7 @@ NJetImageFunction<TInputImage>
                           * physGaussFactor * physGaussFactor 
                           * expValue;
             h[i][j] += pixelValue * expValueD;
-            hTotal[i][j] += fabs(expValueD);
+            hTotal[i][j] += vnl_math_abs(expValueD);
             }
           }
         }
@@ -2344,11 +2344,11 @@ NJetImageFunction<TInputImage>
     vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
   
     double cN0 = eigSys.get_eigenvalue(0) 
-                   * fabs( dot_product( eigSys.get_eigenvector(0),
+                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
                                        v1.GetVnlVector() ) );
 
     double cN1 = eigSys.get_eigenvalue(1) 
-                   * fabs( dot_product( eigSys.get_eigenvector(1),
+                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
                                        v1.GetVnlVector() ) );
 
     if( m_InverseRidgeness )
@@ -2397,18 +2397,18 @@ NJetImageFunction<TInputImage>
     vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
   
     double cN0V1 = eigSys.get_eigenvalue(0) 
-                   * fabs( dot_product( eigSys.get_eigenvector(0),
+                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
                                        v1.GetVnlVector() ) );
     double cN0V2 = eigSys.get_eigenvalue(0) 
-                   * fabs( dot_product( eigSys.get_eigenvector(0),
+                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
                                        v2.GetVnlVector() ) );
     double cN0 = cN0V1 + cN0V2;
 
     double cN1V1 = eigSys.get_eigenvalue(1) 
-                   * fabs( dot_product( eigSys.get_eigenvector(1),
+                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
                                        v1.GetVnlVector() ) );
     double cN1V2 = eigSys.get_eigenvalue(1) 
-                   * fabs( dot_product( eigSys.get_eigenvector(1),
+                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
                                        v2.GetVnlVector() ) );
     double cN1 = cN1V1 + cN1V2;
 
