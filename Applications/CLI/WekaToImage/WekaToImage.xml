@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>WekaToImage</title>
+  <description>This filter takes a Weka-formatted ARFF file and brings the classification back into image space.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Patrick Reynolds, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <string>
+      <name>inputFile</name>
+      <label>Input ARFF</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input ARFF File from Weka</description>
+    </string>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output Volume</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>ARFF Attribute Names</label>
+    <string>
+      <name>xLabel</name>
+      <label>X Label</label>
+      <description>Label for the x axis attribute in the ARFF File</description>
+      <longflag>xlabel</longflag>
+      <flag>x</flag>
+      <default>x</default>
+    </string>
+    <string>
+      <name>yLabel</name>
+      <label>Y Label</label>
+      <description>Label for the y axis attribute in the ARFF File</description>
+      <longflag>ylabel</longflag>
+      <flag>y</flag>
+      <default>y</default>
+    </string>
+    <string>
+      <name>classLabel</name>
+      <label>Class Label</label>
+      <description>Label for the class attribute in the ARFF File</description>
+      <longflag>classlabel</longflag>
+      <flag>c</flag>
+      <default>class</default>
+    </string>
+  </parameters>
+</executable>
