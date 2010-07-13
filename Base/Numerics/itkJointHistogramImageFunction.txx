@@ -286,8 +286,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   os << indent << "m_NumberOfSamples = " << m_NumberOfSamples << std::endl;
   os << indent << "m_NumberOfComputedSamples = "
      << m_NumberOfComputedSamples << std::endl;
-  os << indent << "m_ImageMin = " << m_InputMask << std::endl;
-  os << indent << "m_ImageMax = " << m_InputMask << std::endl;
+  os << indent << "m_ImageMin = " << m_ImageMin << std::endl;
+  os << indent << "m_ImageMax = " << m_ImageMax << std::endl;
   os << indent << "m_MaskMin = " << m_MaskMin << std::endl;
   os << indent << "m_MaskMax = " << m_MaskMax << std::endl;
 }
