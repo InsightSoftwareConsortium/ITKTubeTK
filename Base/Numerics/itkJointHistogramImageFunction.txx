@@ -45,11 +45,11 @@ template <class TInputImage, class TCoordRep>
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::JointHistogramImageFunction()
 {
-  m_InputMask = 0;
+  m_InputMask = NULL;
   m_FeatureWidth = 20;
   m_StdevBase = 0.01;
-  m_SumHistogram = 0;
-  m_SumOfSquaresHistogram = 0;
+  m_SumHistogram = NULL;
+  m_SumOfSquaresHistogram = NULL;
   m_NumberOfSamples = 0;
   m_NumberOfComputedSamples = 0;
   m_ImageMin = 0;
@@ -57,6 +57,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MaskMin = 0;
   m_MaskMax = 0;
   this->SetHistogramSize( 20 );
+  m_MeanHistogram = NULL;
+  m_StandardDeviationHistogram = NULL;
 }
 
 template <class TInputImage, class TCoordRep>
@@ -250,13 +252,34 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 {
   this->Superclass::PrintSelf( os, indent );
 
-  os << indent << "m_InputMask = " << m_InputMask << std::endl;
+  if( m_InputMask.IsNotNull() )
+    {
+    os << indent << "m_InputMask = " << m_InputMask << std::endl;
+    }
+  else
+    {
+    os << indent << "m_InputMask = NULL" << std::endl;
+    }
   os << indent << "m_SumHistogram = " << m_SumHistogram << std::endl;
   os << indent << "m_SumOfSquaresHistogram = "
      << m_SumOfSquaresHistogram << std::endl;
-  os << indent << "m_MeanHistogram = " << m_MeanHistogram << std::endl;
-  os << indent << "m_StandardDeviationHistogram = "
-     << m_StandardDeviationHistogram << std::endl;
+  if( m_MeanHistogram.IsNotNull() )
+    {
+    os << indent << "m_MeanHistogram = " << m_MeanHistogram << std::endl;
+    }
+  else
+    {
+    os << indent << "m_MeanHistogram = NULL" << std::endl;
+    }
+  if( m_StandardDeviationHistogram.IsNotNull() )
+    {
+    os << indent << "m_StandardDeviationHistogram = "
+       << m_StandardDeviationHistogram << std::endl;
+    }
+  else
+    {
+    os << indent << "m_StandardDeviationHistogram = NULL" << std::endl;
+    }
   os << indent << "m_FeatureWidth = " << m_FeatureWidth << std::endl;
   os << indent << "m_StdevBase = " << m_StdevBase << std::endl;
   os << indent << "m_HistogramSize = " << m_HistogramSize << std::endl;
@@ -268,6 +291,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   os << indent << "m_MaskMin = " << m_MaskMin << std::endl;
   os << indent << "m_MaskMax = " << m_MaskMax << std::endl;
 }
+
 template <class TInputImage, class TCoordRep>
 double 
 JointHistogramImageFunction<TInputImage,TCoordRep>
