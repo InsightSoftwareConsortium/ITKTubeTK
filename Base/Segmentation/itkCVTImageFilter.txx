@@ -36,6 +36,8 @@ CVTImageFilter< TInputImage, TOutputImage >
 {
   m_Seed = 1234;
 
+  m_InputImage = NULL;
+
   m_NumberOfCentroids = 100;
   m_InitialSamplingMethod = CVT_RANDOM;
   m_NumberOfSamples = 10000;
@@ -483,17 +485,34 @@ CVTImageFilter< TInputImage, TOutputImage >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  std::cout << "Input image = " << m_InputImage << std::endl;
-  std::cout << "Centroid[0] = " << m_Centroids[0] << std::endl;
+
+  if( m_InputImage.IsNotNull() )
+    {
+    std::cout << "Input image = " << m_InputImage << std::endl;
+    }
+  else
+    {
+    std::cout << "Input image = NULL" << std::endl;
+    }
+  std::cout << "NumberOfCentroids = " << m_NumberOfCentroids << std::endl;
+  if( m_Centroids.size() > 0 )
+    {
+    std::cout << "Centroid[0] = " << m_Centroids[0] << std::endl;
+    }
+  else
+    {
+    std::cout << "Centroid = NULL" << std::endl;
+    }
   std::cout << "InputImageMax = " << m_InputImageMax << std::endl;
   std::cout << "Seed = " << m_Seed << std::endl;
-  std::cout << "NumberOfCentroids = " << m_NumberOfCentroids << std::endl;
   std::cout << "InitialSamplingMethod = " << m_InitialSamplingMethod 
             << std::endl;
   std::cout << "NumberOfSamples = " << m_NumberOfSamples << std::endl;
   std::cout << "NumberOfIterations = " << m_NumberOfIterations << std::endl;
-  std::cout << "BatchSamplingMethod = " << m_BatchSamplingMethod << std::endl;
-  std::cout << "NumberOfIterationsPerBatch = " << m_NumberOfIterationsPerBatch 
+  std::cout << "BatchSamplingMethod = " << m_BatchSamplingMethod 
+            << std::endl;
+  std::cout << "NumberOfIterationsPerBatch = " 
+            << m_NumberOfIterationsPerBatch 
             << std::endl;
   std::cout << "NumberOfSamplesPerBatch = " << m_NumberOfSamplesPerBatch 
             << std::endl;
