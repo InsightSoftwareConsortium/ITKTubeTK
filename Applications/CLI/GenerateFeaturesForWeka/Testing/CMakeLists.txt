@@ -62,3 +62,6 @@ else(MSVC)
     ${BASELINE}/${PROJECT_NAME}Test1.arff
     )
 endif(MSVC)
+
+set_tests_properties( ${PROJECT_NAME}Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
