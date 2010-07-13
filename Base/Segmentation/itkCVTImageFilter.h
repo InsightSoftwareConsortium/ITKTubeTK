@@ -113,6 +113,8 @@ protected:
   CVTImageFilter();
   ~CVTImageFilter() {};
 
+  void PrintSelf(std::ostream& os, Indent indent) const;
+
   void GenerateInputRequestedRegion();
   void EnlargeOutputRequestedRegion(DataObject * output);
   void GenerateData();
@@ -128,8 +130,6 @@ private:
   CVTImageFilter(const Self&);
   void operator=(const Self&);
   
-  void PrintSelf(std::ostream & os, Indent indent) const;
-
   typename OutputImageType::Pointer            m_OutputImage;
 
   typename InputImageType::ConstPointer        m_InputImage;
