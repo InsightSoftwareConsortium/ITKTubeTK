@@ -21,7 +21,20 @@
 # 
 ##############################################################################
 
-add_subdirectory( Numerics )
-add_subdirectory( Preprocessing )
-add_subdirectory( Segmentation )
+set( TubeTK_Base_Segmentation_H_Files
+  itkCVTImageFilter.h
+  )
+
+set(TubeTK_Base_Segmentation_TXX_Files
+  itkCVTImageFilter.txx
+)
+
+IF( BUILD_TESTING )
+  add_subdirectory( Testing )
+ENDIF( BUILD_TESTING )
+
+#install(FILES 
+  #${TubeTK_Base_Segmentation_H_Files}
+  #${TubeTK_Base_Segmentation_TXX_Files}
+  #DESTINATION include)
 
