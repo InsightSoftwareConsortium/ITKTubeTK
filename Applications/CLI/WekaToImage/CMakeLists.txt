@@ -55,6 +55,8 @@ include_directories(
 
 set( PROJECT_SOURCE 
   ${PROJECT_NAME}.cxx
+  tubeARFFParser.h
+  tubeARFFParser.cxx
   )
 
 generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
