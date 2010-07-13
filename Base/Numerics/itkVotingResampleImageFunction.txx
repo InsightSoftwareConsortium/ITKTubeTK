@@ -85,15 +85,16 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
     this->GetInputImage()->GetRequestedRegion() );
   
   IndexType newIndex;
-  for(int i = 0; i < 3; i++)
+  for(int i = 0; i < ImageDimension; i++)
     {
     newIndex[i] = (int)index[i];
     }
   
   it.SetLocation(newIndex);
-  itk::Neighborhood<unsigned short,3> n = it.GetNeighborhood();
-  std::map<unsigned short, int> tally;
-  std::map<unsigned short, int>::const_iterator itr;
+  itk::Neighborhood<typename TInputImage::PixelType, ImageDimension> n =
+    it.GetNeighborhood();
+  std::map<typename TInputImage::PixelType, int> tally;
+  typename std::map<typename TInputImage::PixelType, int>::const_iterator itr;
   for (unsigned int i = 0; i < n.Size(); i++)
     {
     tally[n[i]] = 0;
