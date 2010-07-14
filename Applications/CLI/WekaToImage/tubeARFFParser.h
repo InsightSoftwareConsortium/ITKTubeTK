@@ -25,6 +25,7 @@ limitations under the License.
 
 #include <list>
 #include <string>
+#include <map>
 
 namespace tube
 {
@@ -64,18 +65,32 @@ private:
   /// helper function for populating the x, y, and class indices.
   void determineHeaderParameters( std::ifstream& file );
 
-  std::string       m_Filename;
-  std::string       m_XLabel;
-  std::string       m_YLabel;
-  std::string       m_ClassLabel;
-  unsigned int      m_XIndex;
-  unsigned int      m_YIndex;
-  unsigned int      m_ClassIndex;
-  float             m_MinX;
-  float             m_MinY;
-  float             m_MaxX;
-  float             m_MaxY;
-  std::list<float*> m_ARFFData;
+  /// helper function for getting the attribute name
+  void getAttributeName( const std::string& line, std::string& name ) const;
+
+  /// Get the requisite values from a data line
+  void getValuesFromDataLine( const std::string& line, float* values ) const;
+
+  /// Determine class label correspondence from the attribute line for the
+  /// classification cell
+  void determineClassificationsFromAttributeLine( const std::string& line );
+
+  /// Adjust the Min and Max parameters as necessary based on a data tuple.
+  void adjustMinAndMaxBasedOnNewData( float* values );
+
+  std::string                  m_Filename;
+  std::string                  m_XLabel;
+  std::string                  m_YLabel;
+  std::string                  m_ClassLabel;
+  unsigned int                 m_XIndex;
+  unsigned int                 m_YIndex;
+  unsigned int                 m_ClassIndex;
+  std::map<std::string, float> m_ClassNames;
+  float                        m_MinX;
+  float                        m_MinY;
+  float                        m_MaxX;
+  float                        m_MaxY;
+  std::list<float*>            m_ARFFData;
 
 };
 

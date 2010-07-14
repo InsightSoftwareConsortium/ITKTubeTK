@@ -27,6 +27,7 @@ limitations under the License.
 #include <sstream>
 #include <list>
 #include <string>
+#include <limits>
 
 namespace tube
 {
@@ -40,10 +41,11 @@ ARFFParser
   m_XIndex(0),
   m_YIndex(0),
   m_ClassIndex(0),
-  m_MinX(0),
-  m_MinY(0),
-  m_MaxX(0),
-  m_MaxY(0),
+  m_ClassNames(),
+  m_MinX(std::numeric_limits<float>::max()),
+  m_MinY(std::numeric_limits<float>::max()),
+  m_MaxX(std::numeric_limits<float>::min()),
+  m_MaxY(std::numeric_limits<float>::min()),
   m_ARFFData()
 {
 }
@@ -92,9 +94,13 @@ ARFFParser
 {
   std::ifstream file( m_Filename.c_str() );
   std::string line;
+  this->determineHeaderParameters( file );
   while( std::getline( file, line ) )
     {
-    
+    float* values = new float[3];
+    this->getValuesFromDataLine( line, values );
+    this->adjustMinAndMaxBasedOnNewData( values );
+    m_ARFFData.push_back( values );
     }
   
 }
@@ -111,12 +117,110 @@ ARFFParser
       {
       break;
       }
-    if( line.find( "@ATTRIBUTE" ) != std::string::npos )
+    else if( line.find( "@ATTRIBUTE" ) != std::string::npos )
       {
+      std::string name;
+      this->getAttributeName( line, name );
+      if( name == this->m_XLabel )
+        {
+        m_XIndex = index;
+        }
+      else if( name == this->m_YLabel )
+        {
+        m_YIndex = index;
+        }
+      else if( name == this->m_ClassLabel )
+        {
+        this->determineClassificationsFromAttributeLine( line );
+        m_ClassIndex = index;
+        }
+      else
+        { // do nothing
+        }
       ++index;
       }
-   
+    else
+      { // do nothing
+      }   
    }
+}
+
+void 
+ARFFParser
+::getAttributeName( const std::string& line, std::string& name ) const
+{
+  std::stringstream stringStream( line );
+  std::getline( stringStream, name, ' ' );
+  std::getline( stringStream, name, ' ' );
+}
+
+void 
+ARFFParser
+::getValuesFromDataLine( const std::string& line, float* values ) const
+{
+  std::stringstream stringStream( line );
+  std::string cell;
+  for( unsigned int i = 0; 
+       i <= m_XIndex || i <= m_YIndex || i <= m_ClassIndex; 
+       ++i )
+    {
+    std::getline( stringStream, cell, ',' );
+    std::stringstream cellStream( cell );
+    if( i == m_XIndex )
+      {
+      cellStream >> values[0];
+      }
+    else if( i == m_YIndex )
+      {
+      cellStream >> values[1];
+      }
+    else if( i == m_ClassIndex )
+      {
+      std::string name;
+      cellStream >> name;
+      values[2] = m_ClassNames.find(name)->second;
+      }
+    }
+}
+void
+ARFFParser
+::determineClassificationsFromAttributeLine( const std::string& line )
+{
+  size_t opening = line.find_first_of( '{' );
+  size_t closing = line.find_first_of( '}' );
+  std::stringstream stringStream( line.substr( opening, closing-opening ) );
+  std::string name;
+  float counter = 0;
+  while( std::getline( stringStream, name, ',' ) )
+    {
+    m_ClassNames[name] = counter;
+    counter += 1;
+    }
+}
+
+void 
+ARFFParser
+::adjustMinAndMaxBasedOnNewData( float* values )
+{
+  if( values[0] > m_MaxX )
+    {
+    m_MaxX = values[0];
+    }
+
+  if( values[0] < m_MinX )
+    {
+    m_MinX = values[0];
+    }
+
+  if( values[1] > m_MaxY )
+    {
+    m_MaxY = values[1];
+    }
+
+  if( values[1] < m_MinY )
+    {
+    m_MinY = values[1];
+    }
 }
 
 const std::list<float*>& 
