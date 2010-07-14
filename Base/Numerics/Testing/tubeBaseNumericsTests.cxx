@@ -31,7 +31,8 @@ limitations under the License.
 void RegisterTests()
 {
   REGISTER_TEST( tubeBaseNumericsPrintTest );
-  REGISTER_TEST( itkNJetImageFunctionTest );
+  REGISTER_TEST( itkImageRegionMomentsCalculatorTest );
   REGISTER_TEST( itkJointHistogramImageFunctionTest );
+  REGISTER_TEST( itkNJetImageFunctionTest );
 }
 
