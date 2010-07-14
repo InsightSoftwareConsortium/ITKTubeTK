@@ -88,14 +88,18 @@ public:
   typedef typename TImage::PointType   PointType;
 
   /** Standard vector type within this class. */
-  typedef Vector<ScalarType, itkGetStaticConstMacro(ImageDimension)> VectorType;
+  typedef Vector<ScalarType, itkGetStaticConstMacro(ImageDimension)> 
+                                       VectorType;
 
   /** Spatial Object type within this class. */
-  typedef SpatialObject< itkGetStaticConstMacro(ImageDimension) > SpatialObjectType;
+  typedef SpatialObject< itkGetStaticConstMacro(ImageDimension) > 
+                                       SpatialObjectType;
 
   /** Spatial Object member types used within this class. */
-  typedef typename SpatialObjectType::Pointer             SpatialObjectPointer;
-  typedef typename SpatialObjectType::ConstPointer        SpatialObjectConstPointer;
+  typedef typename SpatialObjectType::Pointer         
+                                       SpatialObjectPointer;
+  typedef typename SpatialObjectType::ConstPointer 
+                                       SpatialObjectConstPointer;
 
   /** Standard matrix type within this class. */
   typedef Matrix<ScalarType,
@@ -110,8 +114,10 @@ public:
   typedef typename ImageType::ConstPointer ImageConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double,itkGetStaticConstMacro(ImageDimension)>   AffineTransformType;
-  typedef typename AffineTransformType::Pointer                            AffineTransformPointer;
+  typedef AffineTransform<double,itkGetStaticConstMacro(ImageDimension)>   
+                                           AffineTransformType;
+  typedef typename AffineTransformType::Pointer
+                                           AffineTransformPointer;
 
   /** Set the input image. */
   virtual void SetImage( const ImageType * image )
@@ -136,13 +142,15 @@ public:
       }
     }
 
-  /** Method for controlling the region of interest that optionally limits the
-   *   spatial extent of the computations */
+  /** Method for controlling the region of interest that optionally limits 
+   *   the spatial extent of the computations */
   itkSetMacro(UseRegionOfInterest, bool);
   itkGetMacro(UseRegionOfInterest, bool);
-  virtual void SetRegionOfInterest( const PointType & point1, const PointType & point2 )
+  virtual void SetRegionOfInterest( const PointType & point1,
+                                    const PointType & point2 )
     {
-    if( m_RegionOfInterestPoint1 != point1 || m_RegionOfInterestPoint2 != point2 )
+    if( m_RegionOfInterestPoint1 != point1 ||
+        m_RegionOfInterestPoint2 != point2 )
       {
       m_RegionOfInterestPoint1 = point1;
       m_RegionOfInterestPoint2 = point2;

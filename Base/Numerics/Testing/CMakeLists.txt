@@ -45,8 +45,9 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseNumerics_SRCS
   tubeBaseNumericsPrintTest.cxx
-  itkNJetImageFunctionTest.cxx 
+  itkImageRegionMomentsCalculatorTest.cxx 
   itkJointHistogramImageFunctionTest.cxx 
+  itkNJetImageFunctionTest.cxx 
   )
 
 include_directories( 
@@ -74,11 +75,13 @@ target_link_libraries( tubeBaseNumericsTests
   )
 
 add_test( tubeBaseNumericsHeaderTest 
-  ${BASE_NUMERICS_HEADER_TEST} )
+  ${BASE_NUMERICS_HEADER_TEST} 
+  )
 
 add_test( tubeBaseNumericsPrintTest 
   ${BASE_NUMERICS_TESTS}
-  tubeBaseNumericsPrintTest )
+  tubeBaseNumericsPrintTest 
+  )
 
 add_test( itkJointHistogramImageFunctionTest01
   ${BASE_NUMERICS_TESTS}
@@ -92,6 +95,12 @@ add_test( itkJointHistogramImageFunctionTest01
       ${TEMP}/itkJointHistogramImageFunctionTest01StdDev.mha 
   )
 
+add_test( itkImageRegionMomentsCalculatorTest
+  ${BASE_NUMERICS_TESTS}
+    itkImageRegionMomentsCalculatorTest
+      ${INPUT_DATA}/scoring-test.png
+  )
+
 foreach( testNum RANGE 0 37 )
   add_test( itkNJetImageFunctionTest${testNum}
     ${BASE_NUMERICS_TESTS}
@@ -103,3 +112,4 @@ foreach( testNum RANGE 0 37 )
         ${TEMP}/itkNJetImageFunctionTest${testNum}.mha 
     )
 endforeach( testNum )
+
