@@ -28,6 +28,7 @@ limitations under the License.
 #include <list>
 #include <string>
 #include <limits>
+#include <iostream>
 
 namespace tube
 {
@@ -180,7 +181,13 @@ ARFFParser
       cellStream >> name;
       values[2] = m_ClassNames.find(name)->second;
       }
+    else
+      { // do nothing
+      }
     }
+
+  std::cout << line << "\n" << values[0] << "," << values[1] << "," 
+            << values[2] << std::endl;
 }
 void
 ARFFParser
@@ -193,6 +200,7 @@ ARFFParser
   float counter = 0;
   while( std::getline( stringStream, name, ',' ) )
     {
+    std::cout << name << std::endl;
     m_ClassNames[name] = counter;
     counter += 1;
     }
@@ -228,6 +236,34 @@ ARFFParser
 ::GetARFFData() const
 {
   return m_ARFFData;
+}
+
+float 
+ARFFParser
+::GetMinX() const
+{
+  return m_MinX;
+}
+
+float 
+ARFFParser
+::GetMinY() const
+{
+  return m_MinY;
+}
+
+float 
+ARFFParser
+::GetMaxX() const
+{
+  return m_MaxX;
+}
+
+float 
+ARFFParser
+::GetMaxY() const
+{
+  return m_MaxY;
 }
 
 } // end namespace tube

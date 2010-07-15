@@ -39,6 +39,9 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
+// Project includes
+#include "tubeARFFParser.h"
+
 // Must include CLP before including tubeCLIHleperFunctions
 #include "WekaToImageCLP.h"
 
@@ -66,10 +69,47 @@ int main( int argc, char **argv )
   double progress = 0.1;
   progressReporter.Report( progress );
 
+  tube::ARFFParser* parser = new tube::ARFFParser();
+  parser->SetFilename( inputFile );
+  parser->Parse();
+  std::cout << "X Range: " << parser->GetMinX() << " , " << parser->GetMaxX()
+            << std::endl;
+  std::cout << "Y Range: " << parser->GetMinY() << " , " << parser->GetMaxY()
+            << std::endl;
+  
+  std::list<float*> data = parser->GetARFFData();
+
+  ImageType::Pointer img = ImageType::New();
+  ImageType::RegionType region;
+  ImageType::SizeType size;
+  ImageType::IndexType index;
+  index[0] = parser->GetMinX();
+  index[1] = parser->GetMinY();
+  size[0] = parser->GetMaxX() - parser->GetMinX() + 1;
+  size[1] = parser->GetMaxY() - parser->GetMinY() + 1;
+  region.SetSize( size );
+  region.SetIndex( index );
+  img->SetRegions( region );
+  img->Allocate();
+  img->FillBuffer( 0 );
+
+
+  for( std::list<float*>::const_iterator itr = data.begin(); 
+       itr != data.end();
+       ++itr )
+    {
+    ImageType::IndexType loc;
+    loc[0] = (*itr)[0];
+    loc[1] = (*itr)[1];
+    img->SetPixel( loc, (*itr)[2] );
+    /**std::cout << (*itr)[0] << " , " << (*itr)[1] << " , " << (*itr)[2]
+       << std::endl;**/
+    }
+
   timeCollector.Start("Save data");
-  /*typename WriterType::Pointer writer = WriterType::New();
+  WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( curImage );
+  writer->SetInput( img );
   writer->SetUseCompression( true );
   try
     {
@@ -81,12 +121,15 @@ int main( int argc, char **argv )
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
-    }*/
+    }
   timeCollector.Stop("Save data");
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End( );
   
   timeCollector.Report();
+
+  delete parser;
+
   return EXIT_SUCCESS;
 }

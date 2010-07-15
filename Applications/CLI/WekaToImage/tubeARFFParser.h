@@ -60,6 +60,18 @@ public:
   /// is an array of three floats (x, y, and classification)
   const std::list<float*>& GetARFFData() const;
 
+  /// Return the minimum X value
+  float GetMinX() const;
+
+  /// Return the minimum Y value
+  float GetMinY() const;
+
+  /// Return the maximum X value
+  float GetMaxX() const;
+
+  /// Return the maximum Y value
+  float GetMaxY() const;
+
 private:
 
   /// helper function for populating the x, y, and class indices.
