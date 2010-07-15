@@ -82,8 +82,8 @@ int main( int argc, char **argv )
   ImageType::IndexType index;
   index[0] = parser->GetMinX();
   index[1] = parser->GetMinY();
-  size[0] = parser->GetMaxX() - parser->GetMinX() + 1;
-  size[1] = parser->GetMaxY() - parser->GetMinY() + 1;
+  size[0] = (parser->GetMaxX() - parser->GetMinX())+1;
+  size[1] = (parser->GetMaxY() - parser->GetMinY())+1;
   region.SetSize( size );
   region.SetIndex( index );
   img->SetRegions( region );

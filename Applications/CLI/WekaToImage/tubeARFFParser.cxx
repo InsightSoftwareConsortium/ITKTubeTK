@@ -99,9 +99,12 @@ ARFFParser
   while( std::getline( file, line ) )
     {
     float* values = new float[3];
-    this->getValuesFromDataLine( line, values );
-    this->adjustMinAndMaxBasedOnNewData( values );
-    m_ARFFData.push_back( values );
+    if( line != "" && line.find( "%" ) == std::string::npos )
+      {
+      this->getValuesFromDataLine( line, values );
+      this->adjustMinAndMaxBasedOnNewData( values );
+      m_ARFFData.push_back( values );
+      }
     }
   
 }
@@ -192,8 +195,9 @@ ARFFParser
 ::determineClassificationsFromAttributeLine( const std::string& line )
 {
   size_t opening = line.find_first_of( '{' );
+  ++opening;
   size_t closing = line.find_first_of( '}' );
-  std::stringstream stringStream( line.substr( opening+1, closing-opening ) );
+  std::stringstream stringStream( line.substr( opening, closing-opening ) );
   std::string name;
   float counter = 0;
   while( std::getline( stringStream, name, ',' ) )
