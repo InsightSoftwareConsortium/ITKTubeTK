@@ -57,7 +57,7 @@ ARFFParser
   std::list<float*>::iterator itr;
   for( itr = m_ARFFData.begin(); itr != m_ARFFData.end(); ++itr )
     {
-    delete *itr;
+    delete [] *itr;
     }
 }
 
