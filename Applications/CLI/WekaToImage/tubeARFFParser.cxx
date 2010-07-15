@@ -185,22 +185,19 @@ ARFFParser
       { // do nothing
       }
     }
-
-  std::cout << line << "\n" << values[0] << "," << values[1] << "," 
-            << values[2] << std::endl;
 }
+
 void
 ARFFParser
 ::determineClassificationsFromAttributeLine( const std::string& line )
 {
   size_t opening = line.find_first_of( '{' );
   size_t closing = line.find_first_of( '}' );
-  std::stringstream stringStream( line.substr( opening, closing-opening ) );
+  std::stringstream stringStream( line.substr( opening+1, closing-opening ) );
   std::string name;
   float counter = 0;
   while( std::getline( stringStream, name, ',' ) )
     {
-    std::cout << name << std::endl;
     m_ClassNames[name] = counter;
     counter += 1;
     }

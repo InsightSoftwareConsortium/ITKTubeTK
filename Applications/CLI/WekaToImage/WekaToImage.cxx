@@ -64,21 +64,18 @@ int main( int argc, char **argv )
   typedef itk::OrientedImage< PixelType,  Dimension >   ImageType;
   typedef itk::ImageFileWriter< ImageType >             WriterType;
   
-  timeCollector.Start("Load data");
-  timeCollector.Stop("Load data");
   double progress = 0.1;
   progressReporter.Report( progress );
 
   tube::ARFFParser* parser = new tube::ARFFParser();
   parser->SetFilename( inputFile );
+  timeCollector.Start("Load data");
   parser->Parse();
-  std::cout << "X Range: " << parser->GetMinX() << " , " << parser->GetMaxX()
-            << std::endl;
-  std::cout << "Y Range: " << parser->GetMinY() << " , " << parser->GetMaxY()
-            << std::endl;
+  timeCollector.Stop("Load data");
   
   std::list<float*> data = parser->GetARFFData();
 
+  timeCollector.Start("Create image");
   ImageType::Pointer img = ImageType::New();
   ImageType::RegionType region;
   ImageType::SizeType size;
@@ -93,7 +90,6 @@ int main( int argc, char **argv )
   img->Allocate();
   img->FillBuffer( 0 );
 
-
   for( std::list<float*>::const_iterator itr = data.begin(); 
        itr != data.end();
        ++itr )
@@ -102,9 +98,10 @@ int main( int argc, char **argv )
     loc[0] = (*itr)[0];
     loc[1] = (*itr)[1];
     img->SetPixel( loc, (*itr)[2] );
-    /**std::cout << (*itr)[0] << " , " << (*itr)[1] << " , " << (*itr)[2]
-       << std::endl;**/
     }
+  progress = 0.5;
+  progressReporter.Report( progress );
+  timeCollector.Stop("Create image");
 
   timeCollector.Start("Save data");
   WriterType::Pointer writer = WriterType::New();
@@ -123,9 +120,12 @@ int main( int argc, char **argv )
     return EXIT_FAILURE;
     }
   timeCollector.Stop("Save data");
+
   progress = 1.0;
   progressReporter.Report( progress );
-  progressReporter.End( );
+  progressReporter.End();
+  
+  std::cout << std::endl;
   
   timeCollector.Report();
 
