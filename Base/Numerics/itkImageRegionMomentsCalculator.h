@@ -96,9 +96,9 @@ public:
                                        SpatialObjectType;
 
   /** Spatial Object member types used within this class. */
-  typedef typename SpatialObjectType::Pointer         
+  typedef typename SpatialObjectType::Pointer
                                        SpatialObjectPointer;
-  typedef typename SpatialObjectType::ConstPointer 
+  typedef typename SpatialObjectType::ConstPointer
                                        SpatialObjectConstPointer;
 
   /** Standard matrix type within this class. */
