@@ -19,9 +19,6 @@
 
 #include "itkBlur3DImageFunction.h"
 
-#include "vRInt.h"
-#include "vErf.h"
-
 #include <cmath>
 #include <algorithm>
 
