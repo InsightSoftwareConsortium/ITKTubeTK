@@ -1,48 +1,93 @@
-#
-# Build ImageCompare: a helper application for comparing tests outputs
-#
-ADD_EXECUTABLE(ImageCompare ImageCompare.cxx) 
-TARGET_LINK_LIBRARIES(ImageCompare ITKIO)
-SET(IMAGE_COMPARE "${EXECUTABLE_OUTPUT_PATH}/ImageCompare" CACHE INTERNAL "ImageCompare path to be used by subprojects")
+##############################################################################
+# 
+# Library:   TubeTK
+# 
+# Copyright 2010 Kitware Inc. 28 Corporate Drive,
+# Clifton Park, NY, 12065, USA.
+# 
+# All rights reserved. 
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+##############################################################################
 
-#
-# Build ImageCompareCommand: a helper application for comparing tests outputs.
-# This is a duplicate application of ImageCompare but with a metaCommand arguments
-# interface. This allows to specify in the command line the tolerance parameters 
-# to be used for comparing the images.
-#
-ADD_EXECUTABLE(ImageCompareCommand ImageCompareCommand.cxx) 
-TARGET_LINK_LIBRARIES(ImageCompareCommand ITKIO)
-SET(IMAGE_COMPARE_COMMAND "${EXECUTABLE_OUTPUT_PATH}/ImageCompareCommand" CACHE INTERNAL "ImageCompare path to be used by subprojects")
+include_regular_expression( "^.*$" )
 
-#
-# Build ImageCopy: a helper application for moving images around
-#
-ADD_EXECUTABLE(ImageCopy ImageCopy.cxx) 
-TARGET_LINK_LIBRARIES(ImageCopy ITKIO)
-SET(IMAGE_COPY "${EXECUTABLE_OUTPUT_PATH}/ImageCopy" CACHE INTERNAL "ImageCopy path to be used by subprojects")
+find_package( Tclsh )
+if( TCL_TCLSH )
+  add_test( PrintSelf-BaseSegmentationVTree ${TCL_TCLSH}
+    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl  
+    ${TubeTK_SOURCE_DIR}/Base/SegmentationVTree 
+    )
+endif( TCL_TCLSH )
 
-SET(TubeExtractorLib_TESTS ${CXX_TEST_PATH}/TubeExtractorLibTests)
-
-SET(TubeExtractorLibTests_SRCS
-  Blur3DTest.cxx
+set( BASE_SEGMENTATION_TESTS 
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationVTreeTests 
   )
 
-SET(TEMP ${TubeExtractorLib_BINARY_DIR}/Temporary)
+set( BASE_SEGMENTATION_HEADER_TEST 
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationVTreeHeaderTest
+  )
 
-ADD_TEST( Blur3DTest ${TubeExtractorLib_TESTS}
-          --compare ${TEMP}/Blur3DTestOutput.mha
-                    ${TubeExtractorLib_SOURCE_DIR}/Testing/Blur3DTestOutput.mha
-          Blur3DTest ${TEMP}/Blur3DTestOutput.mha )
+set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
+set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
+set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree/Testing/Baselines )
+set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-ADD_EXECUTABLE(TubeExtractorLibTests TubeExtractorLibTests.cxx ${TubeExtractorLibTests_SRCS})
-TARGET_LINK_LIBRARIES(TubeExtractorLibTests TubeExtractor ${ITK_LIBRARIES})
+set( tubeBaseSegmentationVTree_SRCS
+  tubeBaseSegmentationVTreePrintTest.cxx
+  itkBlur3DImageFunctionTest.cxx
+  )
 
-IF(ITK_BINARY_DIR)
-  IF(TCL_TCLSH)
-    ADD_TEST(PrintSelf-TubeExtractorLib ${TCL_TCLSH}
-             ${ITK_SOURCE_DIR}/Utilities/Dart/PrintSelfCheck.tcl  
-             ${TubeExtractorLib_SOURCE_DIR})
-  ENDIF(TCL_TCLSH)
-ENDIF(ITK_BINARY_DIR)
+include_directories( 
+  ${TubeTK_SOURCE_DIR}/Utilities 
+  ${TubeTK_SOURCE_DIR}/Base/Numerics 
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
+  )
+
+add_executable( tubeBaseSegmentationVTreeHeaderTest 
+  tubeBaseSegmentationVTreeHeaderTest.cxx 
+  )
+target_link_libraries( tubeBaseSegmentationVTreeHeaderTest
+  ITKIO 
+  ITKNumerics 
+  ITKBasicFilters 
+  )
+
+add_executable( tubeBaseSegmentationVTreeTests
+  tubeBaseSegmentationVTreeTests.cxx 
+  ${tubeBaseSegmentationVTree_SRCS} 
+  )
+target_link_libraries( tubeBaseSegmentationVTreeTests
+  ITKIO 
+  ITKNumerics 
+  ITKBasicFilters 
+  )
+
+add_test( tubeBaseSegmentationVTreeHeaderTest 
+  ${BASE_SEGMENTATION_HEADER_TEST} 
+  )
+
+add_test( tubeBaseSegmentationVTreePrintTest 
+  ${BASE_SEGMENTATION_TESTS}
+  tubeBaseSegmentationVTreePrintTest 
+  )
+
+add_test( itkBlur3DImageFunctionTest
+  ${BASE_SEGMENTATION_TESTS}
+  --compare ${BASELINE}/itkBlur3DImageFunctionTest.mha
+            ${TEMP}/itkBlur3DImageFunctionTest.mha
+  itkBlur3DImageFunctionTest
+    ${TEMP}/itkBlur3DImageFunctionTest.mha 
+  )
 

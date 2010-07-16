@@ -4,12 +4,13 @@
 
 #include "../itkBlur3DImageFunction.h"
 
-int Blur3DTest(int argc, char * argv[])
+int itkBlur3DImageFunctionTest(int argc, char * argv[])
   {
   if(argc != 2)
     {
-    std::cout << "Usage: Blur3DTest <outputFilename>" << std::endl;
-    return 1;
+    std::cout << 
+      "Usage: itkBlur3DImageFunctionTest <outputFilename>" << std::endl;
+    return EXIT_FAILURE;
     }
 
   typedef itk::Image<float, 3>   ImageType;
@@ -48,7 +49,7 @@ int Blur3DTest(int argc, char * argv[])
   imOut->Allocate();
 
   itk::ImageRegionIteratorWithIndex<ImageType> itOut(imOut,
-                                                     imOut->GetLargestPossibleRegion());
+    imOut->GetLargestPossibleRegion());
   itOut.GoToBegin();
   while(!itOut.IsAtEnd())
     {
@@ -62,5 +63,5 @@ int Blur3DTest(int argc, char * argv[])
   imWriter->SetInput(imOut);
   imWriter->Update();
 
-  return 0;
+  return EXIT_SUCCESS;
   }
