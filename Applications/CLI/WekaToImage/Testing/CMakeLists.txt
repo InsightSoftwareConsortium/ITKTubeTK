@@ -41,27 +41,18 @@ set( IMAGECOMPARE_EXE
 # Test1
 #######
 add_test( ${PROJECT_NAME}Test1
-  ${PROJ_EXE}
-  ${INPUT_DATA}/ES0015_Large.mha
-  ${INPUT_DATA}/GDS0015_Large_match.mha
-  ${INPUT_DATA}/GDS0015_Large_Adds.mha
-  ${INPUT_DATA}/GDS0015_Large_Subs.mha
-  ${INPUT_DATA}/GDS0015_Large_Full.mha
-  ${TEMP}/${PROJECT_NAME}Test1.arff )
+            ${PROJ_EXE}
+            ${INPUT_DATA}/sample.arff
+            ${TEMP}/${PROJECT_NAME}Test1.mha )
 
-if(MSVC)
-  add_test( ${PROJECT_NAME}Test1-Compare
-    ${CMAKE_COMMAND} -E compare_files 
-    ${TEMP}/${PROJECT_NAME}Test1.arff
-    ${BASELINE}/${PROJECT_NAME}Test1_msvc.arff
-    )
-else(MSVC)
-  add_test( ${PROJECT_NAME}Test1-Compare
-    ${CMAKE_COMMAND} -E compare_files 
-    ${TEMP}/${PROJECT_NAME}Test1.arff
-    ${BASELINE}/${PROJECT_NAME}Test1.arff
-    )
-endif(MSVC)
-
+#######
+# Test1-Compare
+#######
+add_test( ${PROJECT_NAME}Test1-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test1.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+
+
