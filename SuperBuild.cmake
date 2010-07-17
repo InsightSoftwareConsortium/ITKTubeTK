@@ -10,6 +10,8 @@ if(CMAKE_BUILD_TYPE)
   set(build_type "${CMAKE_BUILD_TYPE}")
 endif() 
 
+set( TubeTK_DEPENDS "" )
+
 ##
 ## Check if sytem ITK or superbuild ITK
 ##
@@ -20,13 +22,15 @@ if(NOT USE_SYSTEM_ITK)
   ##
   set(proj Insight)
   ExternalProject_Add(${proj}
-    CVS_REPOSITORY ":pserver:anonymous:insight@public.kitware.com:/cvsroot/Insight" 
+    CVS_REPOSITORY 
+      ":pserver:anonymous:insight@public.kitware.com:/cvsroot/Insight" 
     CVS_MODULE "Insight"
     SOURCE_DIR Insight
     BINARY_DIR Insight-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
-      -DCMAKE_INSTALL_PREFIX:PATH=${prefix}
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_EXAMPLES:BOOL=OFF
@@ -34,8 +38,8 @@ if(NOT USE_SYSTEM_ITK)
       -DITK_USE_REVIEW:BOOL=ON
       -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
     INSTALL_COMMAND ""
-  )
-  SET( ITK_DIR ${base}/Insight-Build )
+    )
+  set( ITK_DIR ${base}/Insight-Build )
   
 endif(NOT USE_SYSTEM_ITK)
 
@@ -45,18 +49,21 @@ endif(NOT USE_SYSTEM_ITK)
 ##
 set(proj tclap)
 ExternalProject_Add(${proj}
-  SVN_REPOSITORY "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/tclap"
+  SVN_REPOSITORY 
+    "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/tclap"
   SOURCE_DIR tclap
   BINARY_DIR tclap-Build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF
   INSTALL_COMMAND ""
-)
-SET( TCLAP_DIR ${base}/tclap-Build )
+  )
+set( TCLAP_DIR ${base}/tclap-Build )
 
 
 ##
@@ -65,40 +72,28 @@ SET( TCLAP_DIR ${base}/tclap-Build )
 set(proj ModuleDescriptionParser)
 if(NOT USE_SYSTEM_ITK)
   # Depends on ITK if ITK was build using superbuild
-  ExternalProject_Add(${proj}
-    SVN_REPOSITORY 
-      "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
-    SOURCE_DIR ModuleDescriptionParser
-    BINARY_DIR ModuleDescriptionParser-Build
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DITK_DIR:PATH=${ITK_DIR}
-    INSTALL_COMMAND ""
-    DEPENDS
-      "Insight"
-  )
+  set(ModuleDescriptionParser_DEPENDS "Insight")
 else(NOT USE_SYSTEM_ITK)
-  # No dependency on system install of ITK
-  ExternalProject_Add(${proj}
-    SVN_REPOSITORY 
-      "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
-    SOURCE_DIR ModuleDescriptionParser
-    BINARY_DIR ModuleDescriptionParser-Build
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DITK_DIR:PATH=${ITK_DIR}
-    INSTALL_COMMAND ""
-  )
+  set(ModuleDescriptionParser_DEPENDS "")
 endif(NOT USE_SYSTEM_ITK)
-SET( ModuleDescriptionParser_DIR ${base}/ModuleDescriptionParser-Build )
+ExternalProject_Add(${proj}
+  SVN_REPOSITORY 
+    "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
+  SOURCE_DIR ModuleDescriptionParser
+  BINARY_DIR ModuleDescriptionParser-Build
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBUILD_TESTING:BOOL=OFF
+    -DITK_DIR:PATH=${ITK_DIR}
+  INSTALL_COMMAND ""
+  DEPENDS ${ModuleDescriptionParser_DEPENDS}
+  )
+set( ModuleDescriptionParser_DIR ${base}/ModuleDescriptionParser-Build )
 
 
 ##
@@ -112,6 +107,8 @@ ExternalProject_Add(${proj}
   BINARY_DIR GenerateCLP-Build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_EXAMPLES:BOOL=OFF
@@ -123,31 +120,79 @@ ExternalProject_Add(${proj}
   DEPENDS
     "tclap"
     "ModuleDescriptionParser"
-)
-SET( GenerateCLP_DIR ${base}/GenerateCLP-Build )
+  )
+set( GenerateCLP_DIR ${base}/GenerateCLP-Build )
+set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
 
 
 ##
 ## OpenIGTLink 
 ##
-set(proj OpenIGTLink)
-ExternalProject_Add(${proj}
-  SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
-  SOURCE_DIR OpenIGTLink
-  BINARY_DIR OpenIGTLink-Build
-  CMAKE_GENERATOR ${gen}
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE:STRING=${build_type}
-    -DBUILD_SHARED_LIBS:BOOL=${shared}
-    -DBUILD_EXAMPLES:BOOL=OFF
-    -DBUILD_TESTING:BOOL=OFF
-  INSTALL_COMMAND ""
-)
-SET( OpenIGTLink_DIR ${CMAKE_BINARY_DIR}/OpenIGTLink-Build )
+if( TubeTK_USE_OpenIGTLink )
+  set(proj OpenIGTLink)
+  ExternalProject_Add(${proj}
+    SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
+    SOURCE_DIR OpenIGTLink
+    BINARY_DIR OpenIGTLink-Build
+    CMAKE_GENERATOR ${gen}
+    CMAKE_ARGS
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DBUILD_SHARED_LIBS:BOOL=${shared}
+      -DBUILD_EXAMPLES:BOOL=OFF
+      -DBUILD_TESTING:BOOL=OFF
+    INSTALL_COMMAND ""
+    )
+  set( OpenIGTLink_DIR ${CMAKE_BINARY_DIR}/OpenIGTLink-Build )
+  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "OpenIGTLink" )
+else( TubeTK_USE_OpenIGTLink )
+  set( OpenIGTLink_DIR "" )
+endif( TubeTK_USE_OpenIGTLink )
 
 
 ##
-## TubeTK 
+## CTK 
+##
+if( TubeTK_USE_CTK )
+  set( QT_MIN_VERSION "4.6.0" )
+  set( QT_OFFICIAL_VERSION "4.6" )
+  set( QT_REQUIRED TRUE )
+  find_package( Qt4 )
+  if( NOT QT4_FOUND )
+   MESSAGE(SEND_ERROR 
+     "Qt ${QT_MIN_VERSION} or greater not found."
+     "  Please check the QT_QMAKE_EXECUTABLE variable." )
+  endif( NOT QT4_FOUND )
+  set(proj CTK)
+  ExternalProject_Add(${proj}
+    GIT_REPOSITORY "http://github.com/commontk/CTK.git"
+    SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
+    BINARY_DIR ${proj}-Build
+    CMAKE_GENERATOR ${gen}
+    CMAKE_ARGS
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DBUILD_SHARED_LIBS:BOOL=${shared}
+      -DBUILD_EXAMPLES:BOOL=OFF
+      -DBUILD_TESTING:BOOL=OFF
+      -DCTK_USE_GIT_PROTOCOL:BOOL=TRUE
+      -DCTK_LIB_Widgets:BOOL=ON
+      -DCTK_LIB_Visualization/VTK/Widgets:BOOL=OFF
+      -DCTK_LIB_PluginFramework:BOOL=OFF
+      -DCTK_PLUGIN_org.commontk.eventbus:BOOL=OFF
+      -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+    INSTALL_COMMAND ""
+    )
+  set( CTK_DIR ${CMAKE_BINARY_DIR}/${proj}-Build )
+  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
+endif( TubeTK_USE_CTK )
+
+
+##
+## TubeTK - Normal Build
 ##
 set(proj TubeTK)
 ExternalProject_Add(${proj}
@@ -172,11 +217,12 @@ ExternalProject_Add(${proj}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DITK_DIR:PATH=${ITK_DIR}
     -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
+    -DTubeTK_USE_OpenIGTLink:BOOL=${TubeTK_USE_OpenIGTLink}
     -DOpenIGTLink_DIR:PATH=${OpenIGTLink_DIR}
+    -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
+    -DCTK_DIR:PATH=${CTK_DIR}
   INSTALL_COMMAND ""
   DEPENDS
-    "GenerateCLP"
-    "OpenIGTLink"
+    ${TubeTK_DEPENDS}
 )
-
 
