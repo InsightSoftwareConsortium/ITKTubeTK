@@ -416,8 +416,7 @@ NJetImageFunction<TInputImage>
   int xMax[ImageDimension];
   Index<ImageDimension> xShift;
 
-  unsigned int i;
-  for(i=0; i<ImageDimension; i++)
+  for(unsigned int i=0; i<ImageDimension; i++)
     {
     xMin[i] = (int)vnl_math_floor(cIndex[i] 
                           - (scale * m_Extent / m_InputImageSpacing[i]));
@@ -442,7 +441,7 @@ NJetImageFunction<TInputImage>
        || (m_UseInputImageMask && m_InputImageMask->GetPixel(xShift)>0))
       {
       physDist = 0;  
-      for(i=0; i< ImageDimension; i++)
+      for(unsigned int i=0; i< ImageDimension; i++)
         {
         physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i]) 
                                           * m_InputImageSpacingSquared[i];
@@ -458,15 +457,15 @@ NJetImageFunction<TInputImage>
         }
       }
     
-    i = 0;
-    xShift[i]++;
-    while( !done && xShift[i]>xMax[i] )
+    unsigned int dimI = 0;
+    xShift[dimI]++;
+    while( !done && xShift[dimI]>xMax[dimI] )
       {
-      xShift[i] = xMin[i];
-      i++;
-      if( i < ImageDimension )
+      xShift[dimI] = xMin[dimI];
+      dimI++;
+      if( dimI < ImageDimension )
         {
-        xShift[i]++;
+        xShift[dimI]++;
         }
       else
         {
