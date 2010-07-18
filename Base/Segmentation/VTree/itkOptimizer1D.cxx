@@ -1,17 +1,23 @@
 /*=========================================================================
 
-  Program:   itkUNC
-  Module:    $RCSfile: itkOptimizer1D.cxx,v $
-  Language:  C++
-  Date:      $Date: 2005/09/25 15:27:51 $
-  Version:   $Revision: 1.7 $
+Library:   TubeTK
 
-  Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
-  See itkUNCCopyright.txt for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 #include "itkOptimizer1D.h"
@@ -24,14 +30,14 @@ namespace itk
 
 bool 
 Optimizer1D
-::cExtreme(double * itkNotUsed(x), double * itkNotUsed(xVal))
+::cExtreme( double * itkNotUsed(x), double * itkNotUsed(xVal) )
 {
   return false;
 }
 
 
 Optimizer1D
-::Optimizer1D()
+::Optimizer1D( void )
 {
   cSearchForMin = true;
   cTolerance = 0.0001;
@@ -44,7 +50,8 @@ Optimizer1D
 
 
 
-Optimizer1D::Optimizer1D(UserFunc<double, double> *newFuncVal, UserFunc<double, double> *newFuncDeriv)
+Optimizer1D::Optimizer1D( UserFunc< double, double > * newFuncVal,
+  UserFunc< double, double > * newFuncDeriv )
 {
   cSearchForMin = true;
   cTolerance = 0.0001;
@@ -58,11 +65,12 @@ Optimizer1D::Optimizer1D(UserFunc<double, double> *newFuncVal, UserFunc<double, 
 }
 
 
-Optimizer1D::~Optimizer1D()
+Optimizer1D::~Optimizer1D( void )
 {
 }
 
-void Optimizer1D::use(UserFunc<double, double> *newFuncVal, UserFunc<double, double> *newFuncDeriv)
+void Optimizer1D::use( UserFunc< double, double > * newFuncVal,
+  UserFunc< double, double > * newFuncDeriv )
 {
   cFuncVal = newFuncVal;
   cFuncDeriv = newFuncDeriv;
@@ -70,81 +78,81 @@ void Optimizer1D::use(UserFunc<double, double> *newFuncVal, UserFunc<double, dou
 }
 
 
-double Optimizer1D::xMin(void)
+double Optimizer1D::xMin( void )
 {
   return cXMin;
 }
 
 
-void Optimizer1D::xMin(double newXMin)
+void Optimizer1D::xMin( double newXMin )
 {
   cXMin = newXMin;
 }
 
-double Optimizer1D::xMax(void)
+double Optimizer1D::xMax( void )
 {
   return cXMax;
 }
 
 
-void Optimizer1D::xMax(double newXMax)
+void Optimizer1D::xMax( double newXMax )
 {
   cXMax = newXMax;
 }
 
-double Optimizer1D::xStep(void)
+double Optimizer1D::xStep( void )
 {
   return cXStep;
 }
 
 
-void Optimizer1D::xStep(double newXStep)
+void Optimizer1D::xStep( double newXStep )
 {
   cXStep = newXStep;
 }
 
 
-double Optimizer1D::tolerance(void)
+double Optimizer1D::tolerance( void )
 {
   return cTolerance;
 }
 
-void Optimizer1D::tolerance(double newTolerance)
+void Optimizer1D::tolerance( double newTolerance )
 {
   cTolerance = newTolerance;
 }
 
-unsigned int Optimizer1D::maxIterations(void)
+unsigned int Optimizer1D::maxIterations( void )
 {
     return cMaxIterations;
 }
 
-void Optimizer1D::maxIterations(unsigned int newMaxIterations)
+void Optimizer1D::maxIterations( unsigned int newMaxIterations )
 {
   cMaxIterations = newMaxIterations;
 }
 
 
-bool Optimizer1D::searchForMin(void)
+bool Optimizer1D::searchForMin( void )
 {
   return cSearchForMin;
 }
 
 
-void Optimizer1D::searchForMin(bool newSearchForMin)
+void Optimizer1D::searchForMin( bool newSearchForMin )
 {
   cSearchForMin = newSearchForMin;
 }
 
-bool Optimizer1D::extreme(double *x, double *xVal)
+bool Optimizer1D::extreme( double * x, double * xVal )
 {
-  if(!cDefined)
-  {
+  if( !cDefined )
+    {
     return false;
-  }
-  return cExtreme(x, xVal);
+    }
+
+  return cExtreme( x, xVal );
 }
 
 
 } // end namespace itk
-

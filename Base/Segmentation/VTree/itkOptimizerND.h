@@ -38,51 +38,61 @@ public :
   /** Typedef for the matrix type used */
   typedef vnl_matrix<double> MatrixType;
 
-  OptimizerND();
-  OptimizerND(int newNDims, UserFunc<VectorType*, double> * newFuncValND, UserFunc<VectorType*, VectorType &> * newFuncDerivND, Optimizer1D *newOpt1D);
-  virtual ~OptimizerND();
+  OptimizerND( void );
 
-  void use(int newNDims, UserFunc<VectorType*, double> * newFuncValND, UserFunc<VectorType*, VectorType &> * newFuncDerivND, Optimizer1D *newOpt1D);
+  OptimizerND( int newNDims,
+    UserFunc< VectorType *, double > * newFuncValND,
+    UserFunc< VectorType *, VectorType & > * newFuncDerivND,
+    Optimizer1D *newOpt1D );
 
-  VectorType & xMin(void);
-  void    xMin(VectorType & newXMinn);
+  virtual ~OptimizerND( void );
 
-  VectorType & xMax(void);
+  void use( int newNDims,
+    UserFunc< VectorType *, double > * newFuncValND,
+    UserFunc< VectorType *, VectorType & > * newFuncDerivND,
+    Optimizer1D *newOpt1D );
 
-  void    xMax(VectorType & newXMaxx);
-  VectorType & xStep(void);
-  void    xStep(VectorType & newXStepp);
+  VectorType & xMin( void );
+  void         xMin( VectorType & newXMinn );
 
-  double  tolerance();
-  void    tolerance(double newTolerance);
-  unsigned int    maxIterations(void);
-  void    maxIterations(unsigned int newMaxIterations);
-  bool    searchForMin();
-  void    searchForMin(bool newSearchForMin);
-  double  funcVal(double x);
-  double  funcDeriv(double x);
-  bool    extreme(VectorType &x, double *xVal);
-  bool    extreme(VectorType &x, double *xVal, unsigned int n, MatrixType &dirs);
+  VectorType & xMax( void );
+  void         xMax( VectorType & newXMaxx );
+
+  VectorType & xStep( void );
+  void         xStep( VectorType & newXStepp );
+
+  double       tolerance( void );
+  void         tolerance( double newTolerance );
+  unsigned int maxIterations( void );
+  void         maxIterations( unsigned int newMaxIterations );
+  bool         searchForMin( void );
+  void         searchForMin( bool newSearchForMin );
+  double       funcVal( double x );
+  double       funcDeriv( double x );
+  bool         extreme( VectorType &x, double *xVal );
+  bool         extreme( VectorType &x, double *xVal, unsigned int n,
+                        MatrixType &dirs );
 
 protected :
        
-  bool            cDefined;
-  unsigned int            cNDims;
+  bool         cDefined;
+  unsigned int cNDims;
   
-  VectorType *cXMin;
-  VectorType *cXMax;
-  VectorType *cXStep;
-  VectorType *cX0;
-  VectorType *cX0Dir;
-  VectorType *cX0Temp;
-  bool            cSearchForMin;
-  double          cTolerance;
-  unsigned int            cMaxIterations;
-  UserFunc<double, double> * cOpt1DVal;
-  UserFunc<double, double> * cOpt1DDeriv;
-  Optimizer1D *   cOpt1D;
-  UserFunc<VectorType*, double> *      cFuncValND;
-  UserFunc<VectorType*, VectorType &> *      cFuncDerivND;
+  VectorType * cXMin;
+  VectorType * cXMax;
+  VectorType * cXStep;
+  VectorType * cX0;
+  VectorType * cX0Dir;
+  VectorType * cX0Temp;
+  bool         cSearchForMin;
+  double       cTolerance;
+  unsigned int cMaxIterations;
+
+  UserFunc<double, double>            * cOpt1DVal;
+  UserFunc<double, double>            * cOpt1DDeriv;
+  Optimizer1D                         * cOpt1D;
+  UserFunc<VectorType*, double>       * cFuncValND;
+  UserFunc<VectorType*, VectorType &> * cFuncDerivND;
   
 };
 
