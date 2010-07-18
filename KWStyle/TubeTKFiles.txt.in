@@ -7,3 +7,6 @@
 @TubeTK_SOURCE_DIR@/Base/*/*.txx
 @TubeTK_SOURCE_DIR@/Base/*/*.cxx
 @TubeTK_SOURCE_DIR@/Base/*/*.h
+@TubeTK_SOURCE_DIR@/Base/Segmentation/VTree/*.h
+@TubeTK_SOURCE_DIR@/Base/Segmentation/VTree/*.cxx
+@TubeTK_SOURCE_DIR@/Base/Segmentation/VTree/*.txx
