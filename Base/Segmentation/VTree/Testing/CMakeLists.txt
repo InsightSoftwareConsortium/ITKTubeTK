@@ -47,6 +47,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseSegmentationVTree_SRCS
   tubeBaseSegmentationVTreePrintTest.cxx
   itkBlur3DImageFunctionTest.cxx
+  itkMatrixMath.cxx
   )
 
 include_directories( 
@@ -91,3 +92,7 @@ add_test( itkBlur3DImageFunctionTest
     ${TEMP}/itkBlur3DImageFunctionTest.mha 
   )
 
+add_test( itkMatrixMathTest
+  ${BASE_SEGMENTATION_TESTS}
+  itkMatrixMathTest
+  )

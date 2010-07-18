@@ -65,3 +65,4 @@ int itkBlur3DImageFunctionTest(int argc, char * argv[])
 
   return EXIT_SUCCESS;
   }
+
