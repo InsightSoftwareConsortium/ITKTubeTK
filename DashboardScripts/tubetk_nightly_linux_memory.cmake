@@ -51,7 +51,7 @@ set( CTEST_MEMORYCHECK_COMMAND_OPTIONS "${MEMORYCHECK_OPTIONS}" )
 
 message( "Running memory check..." )
 
-ctest_start( Continuous )
+ctest_start( Nightly )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_submit()

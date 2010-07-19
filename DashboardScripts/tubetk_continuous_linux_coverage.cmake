@@ -26,7 +26,7 @@ cmake_minimum_required(VERSION 2.6)
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
 set( CTEST_SITE "${SITE_NAME}" )
-set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}" )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Coverage" )
 set( CTEST_BUILD_CONFIGURATION "${SITE_BUILD_TYPE}" )
 
 set( CTEST_TEST_TIMEOUT 1500 )

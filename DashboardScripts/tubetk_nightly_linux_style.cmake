@@ -44,7 +44,7 @@ set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 
 message( "Running style check..." )
 
-ctest_start( Continuous )
+ctest_start( Nightly )
 
 # force a build if this is the first run and the build dir is empty
 if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )

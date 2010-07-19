@@ -44,14 +44,10 @@ set( CTEST_QMAKE_COMMAND "${SITE_QMAKE_COMMAND}" )
 set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 set( CTEST_COVERAGE_COMMAND "${SITE_COVERAGE_COMMAND}" )
 
-message( "Running coverage check..." )
-
-ctest_start( Continuous )
+ctest_start( Nightly )
 
 # force a build if this is the first run and the build dir is empty
 if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
-
-  message( "Coverage: First time build!" )
 
   file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
     SITE:STRING=${CTEST_SITE}
