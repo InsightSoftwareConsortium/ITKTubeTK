@@ -155,6 +155,7 @@ endif( TubeTK_USE_OpenIGTLink )
 ## CTK 
 ##
 if( TubeTK_USE_CTK )
+  find_package( Git )
   set( QT_MIN_VERSION "4.6.0" )
   set( QT_OFFICIAL_VERSION "4.6" )
   set( QT_REQUIRED TRUE )

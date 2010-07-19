@@ -26,18 +26,18 @@
 # Configure the following variables and move this file to the directory above
 #   the tubetk source directory.
 #
+set( SITE_NAME "Abydos" )
 set( SITE_PLATFORM "Linux" )
 set( SITE_BUILD_TYPE "Release" )
 
-set( SITE_SCRIPT_DIR "/home/aylward/src/scripts" )
-
-set( SITE_MAKE_COMMAND "make -j3" )
+set( SITE_MAKE_COMMAND "make" )
 set( SITE_CMAKE_COMMAND "/usr/local/bin/cmake" )
-set( SITE_QMAKE_COMMAND "/usr/local/bin/qmake" )
+set( SITE_QMAKE_COMMAND "/usr/bin/qmake" )
 set( SITE_CTEST_COMMAND "/usr/local/bin/ctest" )
 set( SITE_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
 set( SITE_COVERAGE_COMMAND "/usr/bin/gcov" )
 set( SITE_STYLE_COMMAND "/usr/local/bin/kwstyle" )
+set( GIT_COMMAND "/usr/bin/git" )
 set( SITE_UPDATE_COMMAND "/usr/bin/git" )
 
 set( SITE_SOURCE_DIR "/home/aylward/src/tubetk" )
@@ -57,8 +57,8 @@ set( SITE_CONTINUOUS_MEMORYCHECK ON )
 # 
 # The following advanced variables should only be changed by experts
 #
-set( SITE_NAME "${HOSTNAME}" )
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
+set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/DashboardScripts" )
 
 set( SITE_CXX_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
 set( SITE_C_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
