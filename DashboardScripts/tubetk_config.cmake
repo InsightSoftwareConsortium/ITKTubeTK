@@ -63,10 +63,16 @@ set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/DashboardScripts" )
 set( SITE_CXX_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
 set( SITE_C_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
 
-set( COVERAGE_OPTIONS "-fprofile-arcs -ftest-coverage -lgcov" )
+set( COVERAGE_FLAGS "-fprofile-arcs -ftest-coverage -lgcov" )
 if( SITE_NIGHTLY_COVERAGE OR SITE_CONTINUOUS_COVERAGE )
-  set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${COVERAGE_OPTIONS}" )
+  set( SITE_C_FLAGS "${SITE_C_FLAGS} ${COVERAGE_FLAGS}" )
+  set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${COVERAGE_FLAGS}" )
 endif( SITE_NIGHTLY_COVERAGE OR SITE_CONTINUOUS_COVERAGE )
 
 set( MEMORYCHECK_OPTIONS "--gen-suppressions=all --trace-children=yes -q --leak-check=yes --show-reachable=yes --num-callers=50" )
+set( MEMORYCHECK_FLAGS "-g -O0 -ggdb" )
+if( SITE_NIGHTLY_MEMORYCHECK OR SITE_CONTINUOUS_MEMORYCHECK )
+  set( SITE_C_FLAGS "${SITE_C_FLAGS} ${MEMORYCHECK_FLAGS}" )
+  set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${MEMORYCHECK_FLAGS}" )
+endif( SITE_NIGHTLY_MEMORYCHECK OR SITE_CONTINUOUS_MEMORYCHECK )
 
