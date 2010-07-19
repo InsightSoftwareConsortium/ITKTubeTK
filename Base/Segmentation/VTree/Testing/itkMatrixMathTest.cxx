@@ -101,7 +101,7 @@ int Test( void )
   return returnStatus;
 }
 
-int itkMatrixMathTest(int argc, char * argv[])
+int itkMatrixMathTest(int itkNotUsed(argc), char * itkNotUsed(argv)[])
 {
 
   if( Test<2>() == EXIT_FAILURE || 
