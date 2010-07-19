@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 2.6)
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
 set( CTEST_SITE "${SITE_NAME}" )
-set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}" )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style" )
 set( CTEST_BUILD_CONFIGURATION "${SITE_BUILD_TYPE}" )
 
 set( CTEST_TEST_TIMEOUT 1500 )
@@ -74,7 +74,6 @@ endif( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
 
 ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-EXECUTE_PROCESS( COMMAND
-   ${SITE_MAKE_COMMAND} -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
+EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
 ctest_submit()
 

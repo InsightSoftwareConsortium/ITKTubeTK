@@ -20,8 +20,7 @@
 # limitations under the License.
 # 
 ##############################################################################
-
-cmake_minimum_required( VERSION 2.6 )
+cmake_minimum_required(VERSION 2.6)
 
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
@@ -34,58 +33,47 @@ set( CTEST_TEST_TIMEOUT 1500 )
 set( CTEST_CMAKE_GENERATOR "Unix Makefiles" )
 set( CTEST_NOTES_FILES "${SITE_SCRIPT_DIR}/${CTEST_SCRIPT_NAME}" )
 set( CTEST_SOURCE_DIRECTORY "${SITE_SOURCE_DIR}" )
-set( CTEST_BINARY_DIRECTORY "${SITE_BINARY_DIR}" )
+set( CTEST_BINARY_DIRECTORY "${SITE_BINARY_DIR}/TubeTK-Build" )
 
 set( ENV{DISPLAY} ":0" )
 
-set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 set( CTEST_BUILD_COMMAND "${SITE_MAKE_COMMAND}" )
 set( CTEST_CMAKE_COMMAND "${SITE_CMAKE_COMMAND}" )
 set( CTEST_QMAKE_COMMAND "${SITE_QMAKE_COMMAND}" )
+set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 
-ctest_start( Continuous )
+message( "Running style check..." )
 
-ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
+ctest_start( Nightly )
 
 # force a build if this is the first run and the build dir is empty
 if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
 
-  message( "HELLO: First time build!" )
-  set( res 1 )
+  message( "Style: First time build!" )
 
-  # Write initial cache.
   file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
-    BUILD_TESTING:BOOL=ON
-    BUILD_SHARED_LIBS:BOOL=ON
-    CMAKE_BUILD_TYPE:STRING=${CTEST_BUILD_CONFIGURATION}
     SITE:STRING=${CTEST_SITE}
     BUILDNAME:STRING=${CTEST_BUILD_NAME}
+    BUILD_TESTING:BOOL=ON
+    BUILD_SHARED_LIBS:BOOL=ON
     MAKECOMMAND:STRING=${CTEST_BUILD_COMMAND}
-    QT_QMAKE_EXECUTABLE:FILEPATH=${CTEST_QMAKE_COMMAND}
+    CMAKE_BUILD_TYPE:STRING=${CTEST_BUILD_CONFIGURATION}
     CMAKE_CXX_FLAGS:STRING=${SITE_CXX_FLAGS}
     CMAKE_C_FLAGS:STRING=${SITE_C_FLAGS}
+    QT_QMAKE_EXECUTABLE:FILEPATH=${CTEST_QMAKE_COMMAND}
+    USE_SYSTEM_ITK:BOOL=ON
+    TubeTK_USE_SUPERBUILD:BOOL=OFF
     TubeTK_USE_KWSTYLE:BOOL=ON
-    " )
+    CTK_DIR:PATH=${SITE_BINARY_DIR}/CTK-Build
+    ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build
+    GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build
+    OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build
+    ")
   
 endif( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
 
-if( res GREATER 0 OR res LESS 0 )
-
-  message( "Welcome back! Found changes!  Running tests..." )
-
-  ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-  ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-  ctest_submit()
-  ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
-  ctest_submit()
-  set( res 0 )
-  set( ENV{TUBETK_CONTINUOUS_UPDATE} 1 )
-
-else()
-
-  message( "Nothing." )
-  set( ENV{TUBETK_CONTINUOUS_UPDATE} 0 )
-
-endif()
+ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
+EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
+ctest_submit()
 

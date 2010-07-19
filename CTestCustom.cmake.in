@@ -6,6 +6,8 @@ SET(CTEST_CUSTOM_WARNING_MATCH
 
 SET(CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
+    "itktiff"
+    "vnl"
     "has no symbols"
     "no public symbols found"
     "warning: jobserver unavailable"
