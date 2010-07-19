@@ -269,13 +269,13 @@ int DoIt( int argc, char * argv[] )
       if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
-            && addCalc->Evaluate( curPoint, sigmaMedium ) )
+            && addCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           ++samplesAdd;
           }
         else if( subtractions->TransformPhysicalPointToIndex( curPoint,
                                                               curIndex ) 
-                 && subCalc->Evaluate( curPoint, sigmaMedium ) )
+                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           ++samplesSub;
           }
@@ -322,7 +322,7 @@ int DoIt( int argc, char * argv[] )
       if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
-            && addCalc->Evaluate( curPoint, sigmaMedium ) )
+            && addCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
             {
@@ -333,7 +333,7 @@ int DoIt( int argc, char * argv[] )
           }
         else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
                                                             curIndex ) 
-                 && subCalc->Evaluate( curPoint, sigmaMedium ) )
+                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
             {
@@ -458,7 +458,7 @@ int DoIt( int argc, char * argv[] )
       bool validPoint = true;
       std::string label;
       if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) &&
-          addCalc->Evaluate( curPoint, sigmaMedium ) &&
+          addCalc->Evaluate( curPoint, sigmaSmall ) &&
           curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
@@ -474,7 +474,7 @@ int DoIt( int argc, char * argv[] )
         }
       else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
                                                             curIndex ) &&
-               subCalc->Evaluate( curPoint, sigmaMedium ) &&
+               subCalc->Evaluate( curPoint, sigmaSmall ) &&
                curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
