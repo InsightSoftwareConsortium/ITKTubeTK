@@ -50,14 +50,20 @@ set( SITE_SOURCE_DIR
 set( SITE_BINARY_DIR 
   "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk-Release" )
 
-set( SITE_NIGHTLY ON )
-set( SITE_NIGHTLY_STYLECHECK OFF )
-set( SITE_NIGHTLY_COVERAGE OFF )
-set( SITE_NIGHTLY_MEMORYCHECK OFF )
-set( SITE_CONTINUOUS ON )
-set( SITE_CONTINUOUS_STYLECHECK OFF )
+set( SITE_EXPERIMENTAL_BUILD_TEST ON )
+set( SITE_EXPERIMENTAL_STYLE OFF )
+set( SITE_EXPERIMENTAL_COVERAGE OFF )
+set( SITE_EXPERIMENTAL_MEMORY OFF )
+
+set( SITE_CONTINUOUS_BUILD_TEST ON ) # Must be ON for any Continuous to run
+set( SITE_CONTINUOUS_STYLE OFF )
 set( SITE_CONTINUOUS_COVERAGE OFF )
-set( SITE_CONTINUOUS_MEMORYCHECK OFF )
+set( SITE_CONTINUOUS_MEMORY OFF )
+
+set( SITE_NIGHTLY_BUILD_TEST ON ) # Must be ON for any Nightly to run
+set( SITE_NIGHTLY_STYLE OFF )
+set( SITE_NIGHTLY_COVERAGE OFF )
+set( SITE_NIGHTLY_MEMORY OFF )
 
 
 ###########################################################################

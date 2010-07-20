@@ -44,7 +44,7 @@ set( CTEST_COVERAGE_COMMAND "${SITE_COVERAGE_COMMAND}" )
 
 message( "Running coverage check..." )
 
-ctest_start( ${RUN_DASHBOARD_MODEL} )
+ctest_start( "${RUN_DASHBOARD_MODEL}" )
 
 # force a build if this is the first run and the build dir is empty
 if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )

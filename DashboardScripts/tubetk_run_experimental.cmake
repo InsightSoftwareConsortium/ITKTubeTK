@@ -25,23 +25,23 @@ include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
 set( RUN_DASHBOARD_MODEL "Experimental" )
 
-ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
+if( SITE_EXPERIMENTAL_BUILD_TEST )
+  ctest_run_script( 
+    "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
+ENDif( SITE_EXPERIMENTAL_BUILD_TEST )
 
-ctest_run_script( 
-  "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
-
-if( SITE_CONTINUOUS_STYLECHECK )
+if( SITE_EXPERIMENTAL_STYLE )
   ctest_run_script( 
     "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
-endif( SITE_CONTINUOUS_STYLECHECK )
+endif( SITE_EXPERIMENTAL_STYLE )
   
-if( SITE_CONTINUOUS_COVERAGE )
+if( SITE_EXPERIMENTAL_COVERAGE )
   ctest_run_script( 
     "${SCRIPT_DIR}/tubetk_coverage.cmake" )
-endif( SITE_CONTINUOUS_COVERAGE )
+endif( SITE_EXPERIMENTAL_COVERAGE )
  
-if( SITE_CONTINUOUS_MEMORYCHECK )
+if( SITE_EXPERIMENTAL_MEMORY )
   ctest_run_script( 
     "${SCRIPT_DIR}/tubetk_memory.cmake" )
-endif( SITE_CONTINUOUS_MEMORYCHECK )
+endif( SITE_EXPERIMENTAL_MEMORY )
 

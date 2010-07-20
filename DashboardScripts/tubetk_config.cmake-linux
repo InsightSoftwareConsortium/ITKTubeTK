@@ -33,7 +33,7 @@ set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
 
 set( ENV{DISPLAY} ":0" )
 
-set( SITE_MAKE_COMMAND "make" )
+set( SITE_MAKE_COMMAND "make -j3" )
 set( SITE_CMAKE_COMMAND "/usr/local/bin/cmake" )
 set( SITE_QMAKE_COMMAND "/usr/bin/qmake" )
 set( SITE_CTEST_COMMAND "/usr/local/bin/ctest" )
@@ -49,14 +49,20 @@ set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 set( SITE_SOURCE_DIR "/home/aylward/src/tubetk" )
 set( SITE_BINARY_DIR "/home/aylward/src/tubetk-Release" )
 
-set( SITE_NIGHTLY ON )
-set( SITE_NIGHTLY_STYLECHECK ON )
-set( SITE_NIGHTLY_COVERAGE ON )
-set( SITE_NIGHTLY_MEMORYCHECK ON )
-set( SITE_CONTINUOUS ON )
-set( SITE_CONTINUOUS_STYLECHECK ON )
+set( SITE_EXPERIMENTAL_BUILD_TEST ON )
+set( SITE_EXPERIMENTAL_STYLE ON )
+set( SITE_EXPERIMENTAL_COVERAGE ON )
+set( SITE_EXPERIMENTAL_MEMORY ON )
+
+set( SITE_CONTINUOUS_BUILD_TEST ON ) # Must be ON for any Continuous to run
+set( SITE_CONTINUOUS_STYLE ON )
 set( SITE_CONTINUOUS_COVERAGE ON )
-set( SITE_CONTINUOUS_MEMORYCHECK ON )
+set( SITE_CONTINUOUS_MEMORY ON )
+
+set( SITE_NIGHTLY_BUILD_TEST ON ) # Must be on for any Nightly to run
+set( SITE_NIGHTLY_STYLE ON )
+set( SITE_NIGHTLY_COVERAGE ON )
+set( SITE_NIGHTLY_MEMORY OFF )
 
 
 ###########################################################################
@@ -78,8 +84,8 @@ endif( SITE_NIGHTLY_COVERAGE OR SITE_CONTINUOUS_COVERAGE )
 
 set( MEMORYCHECK_OPTIONS "--gen-suppressions=all --trace-children=yes -q --leak-check=yes --show-reachable=yes --num-callers=50" )
 set( MEMORYCHECK_FLAGS "-g -O0 -ggdb" )
-if( SITE_NIGHTLY_MEMORYCHECK OR SITE_CONTINUOUS_MEMORYCHECK )
+if( SITE_NIGHTLY_MEMORY OR SITE_CONTINUOUS_MEMORY )
   set( SITE_C_FLAGS "${SITE_C_FLAGS} ${MEMORYCHECK_FLAGS}" )
   set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${MEMORYCHECK_FLAGS}" )
-endif( SITE_NIGHTLY_MEMORYCHECK OR SITE_CONTINUOUS_MEMORYCHECK )
+endif( SITE_NIGHTLY_MEMORY OR SITE_CONTINUOUS_MEMORY )
 

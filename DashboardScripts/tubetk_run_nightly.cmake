@@ -27,21 +27,23 @@ set( RUN_DASHBOARD_MODEL "Nightly" )
 
 ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
 
+if( SITE_NIGHTLY_BUILD_TEST )
 ctest_run_script( 
   "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
+endif( SITE_NIGHTLY_BUILD_TEST )
 
-if( SITE_CONTINUOUS_STYLECHECK )
+if( SITE_NIGHTLY_STYLE )
   ctest_run_script( 
     "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
-endif( SITE_CONTINUOUS_STYLECHECK )
+endif( SITE_NIGHTLY_STYLE )
   
-if( SITE_CONTINUOUS_COVERAGE )
+if( SITE_NIGHTLY_COVERAGE )
   ctest_run_script( 
     "${SCRIPT_DIR}/tubetk_coverage.cmake" )
-endif( SITE_CONTINUOUS_COVERAGE )
+endif( SITE_NIGHTLY_COVERAGE )
  
-if( SITE_CONTINUOUS_MEMORYCHECK )
+if( SITE_NIGHTLY_MEMORY )
   ctest_run_script( 
     "${SCRIPT_DIR}/tubetk_memory.cmake" )
-endif( SITE_CONTINUOUS_MEMORYCHECK )
+endif( SITE_NIGHTLY_MEMORY )
 
