@@ -3,6 +3,8 @@ include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
 set( RUN_DASHBOARD_MODEL "Continuous" )
 
+set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
+
 ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
 
 ###########################################################################
