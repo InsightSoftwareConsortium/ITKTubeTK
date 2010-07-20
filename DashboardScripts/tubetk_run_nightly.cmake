@@ -47,3 +47,5 @@ if( SITE_NIGHTLY_MEMORY )
     "${SCRIPT_DIR}/tubetk_memory.cmake" )
 endif( SITE_NIGHTLY_MEMORY )
 
+set(CTEST_RUN_CURRENT_SCRIPT 0)
+

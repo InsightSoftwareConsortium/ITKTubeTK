@@ -45,3 +45,5 @@ if( SITE_EXPERIMENTAL_MEMORY )
     "${SCRIPT_DIR}/tubetk_memory.cmake" )
 endif( SITE_EXPERIMENTAL_MEMORY )
 
+set(CTEST_RUN_CURRENT_SCRIPT 0)
+
