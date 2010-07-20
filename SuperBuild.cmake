@@ -12,6 +12,8 @@ endif()
 
 set( TubeTK_DEPENDS "" )
 
+set(gen "${CMAKE_GENERATOR}")
+
 ##
 ## Check if sytem ITK or superbuild ITK
 ##
