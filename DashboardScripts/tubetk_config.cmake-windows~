@@ -31,7 +31,7 @@ set( SITE_PLATFORM "WindowsXP-VS2010Exp" )
 set( SITE_BUILD_TYPE "Release" )
 set( SITE_CMAKE_GENERATOR "Visual Studio 10" )
 
-set( SITE_MAKE_COMMAND "${CTEST_BUILD_COMMAND}" )
+set( SITE_MAKE_COMMAND "nmake" )
 set( SITE_CMAKE_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\cmake" )
 set( SITE_QMAKE_COMMAND "C:\\Qt\\4.6.3\\bin\\qmake" )
 set( SITE_CTEST_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\ctest" )
