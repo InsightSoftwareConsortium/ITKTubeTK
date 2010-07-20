@@ -29,16 +29,22 @@
 set( SITE_NAME "Abydos" )
 set( SITE_PLATFORM "Linux" )
 set( SITE_BUILD_TYPE "Release" )
+set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
+
+set( ENV{DISPLAY} ":0" )
 
 set( SITE_MAKE_COMMAND "make" )
 set( SITE_CMAKE_COMMAND "/usr/local/bin/cmake" )
 set( SITE_QMAKE_COMMAND "/usr/bin/qmake" )
 set( SITE_CTEST_COMMAND "/usr/local/bin/ctest" )
+
 set( SITE_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
 set( SITE_COVERAGE_COMMAND "/usr/bin/gcov" )
 set( SITE_STYLE_COMMAND "/usr/local/bin/kwstyle" )
-set( GIT_COMMAND "/usr/bin/git" )
-set( SITE_UPDATE_COMMAND "/usr/bin/git" )
+
+set( SITE_GIT_COMMAND "/usr/bin/git" )
+set( SITE_SVN_COMMAND "/usr/bin/svn" )
+set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 
 set( SITE_SOURCE_DIR "/home/aylward/src/tubetk" )
 set( SITE_BINARY_DIR "/home/aylward/src/tubetk-Release" )
@@ -59,6 +65,7 @@ set( SITE_CONTINUOUS_MEMORYCHECK ON )
 #
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
 set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/DashboardScripts" )
+set( SITE_UPDATE_COMMAND "${GIT_COMMAND}" )
 
 set( SITE_CXX_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
 set( SITE_C_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )

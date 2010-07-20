@@ -20,34 +20,34 @@
 # limitations under the License.
 # 
 ##############################################################################
-
 cmake_minimum_required(VERSION 2.6)
 
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
 set( CTEST_SITE "${SITE_NAME}" )
-set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}" )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style" )
 set( CTEST_BUILD_CONFIGURATION "${SITE_BUILD_TYPE}" )
 
 set( CTEST_TEST_TIMEOUT 1500 )
 
-set( CTEST_CMAKE_GENERATOR "Unix Makefiles" )
+set( CTEST_CMAKE_GENERATOR ${SITE_CMAKE_GENERATOR} )
 set( CTEST_NOTES_FILES "${SITE_SCRIPT_DIR}/${CTEST_SCRIPT_NAME}" )
 set( CTEST_SOURCE_DIRECTORY "${SITE_SOURCE_DIR}" )
 set( CTEST_BINARY_DIRECTORY "${SITE_BINARY_DIR}/TubeTK-Build" )
-
-set( ENV{DISPLAY} ":0" )
 
 set( CTEST_BUILD_COMMAND "${SITE_MAKE_COMMAND}" )
 set( CTEST_CMAKE_COMMAND "${SITE_CMAKE_COMMAND}" )
 set( CTEST_QMAKE_COMMAND "${SITE_QMAKE_COMMAND}" )
 set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
-set( CTEST_COVERAGE_COMMAND "${SITE_COVERAGE_COMMAND}" )
 
-ctest_start( Nightly )
+message( "Running style check..." )
+
+ctest_start( ${RUN_DASHBOARD_MODEL} )
 
 # force a build if this is the first run and the build dir is empty
 if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
+
+  message( "Style: First time build!" )
 
   file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
     SITE:STRING=${CTEST_SITE}
@@ -66,13 +66,12 @@ if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
     ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build
     GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build
     OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build
-    " )
+    ")
   
 endif( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
 
 ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
 ctest_submit()
 

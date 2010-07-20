@@ -35,15 +35,15 @@ set( SITE_MAKE_COMMAND "nmake" )
 set( SITE_CMAKE_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\cmake" )
 set( SITE_QMAKE_COMMAND "C:\\Qt\\4.6.3\\bin\\qmake" )
 set( SITE_CTEST_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\ctest" )
+
 set( SITE_MEMORYCHECK_COMMAND "" )
 set( SITE_COVERAGE_COMMAND "" )
 set( SITE_STYLE_COMMAND "" )
 
-set( GIT_COMMAND 
+set( SITE_GIT_COMMAND 
   "C:\\Program Files\\Git\\bin\\git" )
-set( SVNCOMMAND 
+set( SITE_SVN_COMMAND 
   "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
-set( Subversion_SVN_EXECUTABLE "${SVNCOMMAND}" )
 
 set( SITE_SOURCE_DIR 
   "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk" )
@@ -65,18 +65,13 @@ set( SITE_CONTINUOUS_MEMORYCHECK OFF )
 # The following advanced variables should only be changed by experts
 #
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
-set( SITE_UPDATE_COMMAND "${GIT_COMMAND}" )
 set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/DashboardScripts" )
+set( SITE_UPDATE_COMMAND "${SITE_GIT_COMMAND}" )
 
 set(ENV{PATH} "${SITE_BINARY_DIR}/ModuleDescriptionParser-Build/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/GenerateCLP-Build/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/Insight-Build/bin/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/OpenIGTLink-Build/bin/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/TubeTK-Build/bin/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/TubeTK-Build/lib/TubeTK/Plugins/${SITE_BUILD_TYPE};$ENV{PATH}" )
 
 set( SITE_CXX_FLAGS "" )
 set( SITE_C_FLAGS "" )
-
 set( COVERAGE_OPTIONS "" )
-if( SITE_NIGHTLY_COVERAGE OR SITE_CONTINUOUS_COVERAGE )
-  set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${COVERAGE_OPTIONS}" )
-endif( SITE_NIGHTLY_COVERAGE OR SITE_CONTINUOUS_COVERAGE )
-
 set( MEMORYCHECK_OPTIONS "" )
 
