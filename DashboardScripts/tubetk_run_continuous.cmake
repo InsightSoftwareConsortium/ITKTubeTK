@@ -16,7 +16,7 @@ while(${CTEST_ELAPSED_TIME} LESS 56000)
     ctest_run_script( 
       "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
 
-    if( $ENV{TUBETK_CONTINUOUS_UPDATE} == 1 )
+    if( $ENV{TUBETK_CONTINUOUS_UPDATE} EQUAL 1 )
   
       if( SITE_CONTINUOUS_STYLE )
         ctest_run_script( 
@@ -33,7 +33,7 @@ while(${CTEST_ELAPSED_TIME} LESS 56000)
           "${SCRIPT_DIR}/tubetk_memory.cmake" )
       endif( SITE_CONTINUOUS_MEMORY )
   
-    endif( $ENV{TUBETK_CONTINUOUS_UPDATE} == 1 )
+    endif( $ENV{TUBETK_CONTINUOUS_UPDATE} EQUAL 1 )
 
   endif( SITE_CONTINUOUS_BUILD_TEST )
 
