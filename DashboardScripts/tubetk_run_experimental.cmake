@@ -23,7 +23,12 @@
 
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
-set( RUN_DASHBOARD_MODEL "Experimental" )
+set( RUN_MODEL "Experimental" )
+CONFIGURE_FILE( "${SITE_SCRIPT_DIR}/tubetk_runtime_config.cmake.in"
+  "${SITE_BINARY_DIR}/tubetk_runtime_config.cmake"
+  @ONLY )
+
+set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_EXPERIMENTAL_BUILD_TEST )
   ctest_run_script( 
