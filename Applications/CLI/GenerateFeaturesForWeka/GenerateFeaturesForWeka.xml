@@ -58,7 +58,7 @@
   </parameters>
 
   <parameters>
-    <label>Ridgeness</label>
+    <label>Options</label>
     <double>
       <name>scale</name>
       <label>Ridgness Scale</label>
@@ -67,6 +67,11 @@
       <flag>s</flag>
       <default>1.0</default>
     </double>
+    <boolean>
+      <name>skipNormalizeImage</name>
+      <flag>n</flag>
+      <default>false</default>
+    </boolean>
   </parameters>
 
 </executable>

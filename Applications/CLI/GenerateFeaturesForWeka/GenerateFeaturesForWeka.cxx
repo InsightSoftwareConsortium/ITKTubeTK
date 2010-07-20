@@ -187,20 +187,36 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer subtractions = subtractionsReader->GetOutput();
 
   // Rescale the input
-  typename RescaleType::Pointer rescale = RescaleType::New();
-  rescale->SetInput( reader->GetOutput() );
-  rescale->SetOutputMinimum( 0 );
-  rescale->SetOutputMaximum( 1 );
-  rescale->Update();
-  typename ImageType::Pointer curImage = rescale->GetOutput();
+  typename ImageType::Pointer curImage = NULL;
+  if(!skipNormalizeImage)
+    {
+    typename RescaleType::Pointer rescale = RescaleType::New();
+    rescale->SetInput( reader->GetOutput() );
+    rescale->SetOutputMinimum( 0 );
+    rescale->SetOutputMaximum( 1 );
+    rescale->Update();
+    curImage = rescale->GetOutput();
+    }
+  else
+    {
+    curImage = reader->GetOutput();
+    }
 
   // Rescale the prior
-  rescale = RescaleType::New();
-  rescale->SetInput( priorReader->GetOutput() );
-  rescale->SetOutputMinimum( 0 );
-  rescale->SetOutputMaximum( 1 );
-  rescale->Update();
-  typename ImageType::Pointer curPrior = rescale->GetOutput();
+  typename ImageType::Pointer curPrior = NULL;
+  if(!skipNormalizeImage)
+    {
+    typename RescaleType::Pointer rescale = RescaleType::New();
+    rescale->SetInput( priorReader->GetOutput() );
+    rescale->SetOutputMinimum( 0 );
+    rescale->SetOutputMaximum( 1 );
+    rescale->Update();
+    curPrior = rescale->GetOutput();
+    }
+  else
+    {
+    curPrior = priorReader->GetOutput();
+    }
 
   // Setup the Calculators
   typename CalculatorType::Pointer inputCalc = CalculatorType::New();
