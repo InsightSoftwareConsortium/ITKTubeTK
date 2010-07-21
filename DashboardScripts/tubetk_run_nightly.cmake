@@ -23,29 +23,36 @@
 
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
-set( RUN_DASHBOARD_MODEL "Nightly" )
+set( RUN_MODEL "Nightly" )
+CONFIGURE_FILE( "${SITE_SCRIPT_DIR}/tubetk_runtime_config.cmake.in"
+  "${SITE_BINARY_DIR}/tubetk_runtime_config.cmake"
+  @ONLY )
 
-ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
+set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_NIGHTLY_BUILD_TEST )
-ctest_run_script( 
-  "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
-endif( SITE_NIGHTLY_BUILD_TEST )
 
-if( SITE_NIGHTLY_STYLE )
+  ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
+
   ctest_run_script( 
-    "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
-endif( SITE_NIGHTLY_STYLE )
+    "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
   
-if( SITE_NIGHTLY_COVERAGE )
-  ctest_run_script( 
-    "${SCRIPT_DIR}/tubetk_coverage.cmake" )
-endif( SITE_NIGHTLY_COVERAGE )
- 
-if( SITE_NIGHTLY_MEMORY )
-  ctest_run_script( 
-    "${SCRIPT_DIR}/tubetk_memory.cmake" )
-endif( SITE_NIGHTLY_MEMORY )
+  if( SITE_NIGHTLY_STYLE )
+    ctest_run_script( 
+      "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
+  endif( SITE_NIGHTLY_STYLE )
+    
+  if( SITE_NIGHTLY_COVERAGE )
+    ctest_run_script( 
+      "${SCRIPT_DIR}/tubetk_coverage.cmake" )
+  endif( SITE_NIGHTLY_COVERAGE )
+   
+  if( SITE_NIGHTLY_MEMORY )
+    ctest_run_script( 
+      "${SCRIPT_DIR}/tubetk_memory.cmake" )
+  endif( SITE_NIGHTLY_MEMORY )
+
+endif( SITE_NIGHTLY_BUILD_TEST )
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)
 

@@ -47,8 +47,14 @@ limitations under the License.
 #include "itkDivideImageFilter.h"
 #include "itkSubtractImageFilter.h"
 #include "itkRescaleIntensityImageFilter.h"
+#include "itkNeighborhoodIterator.h"
 #include "vnl/vnl_math.h"
 #include "math.h"
+
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <iterator>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -91,6 +97,7 @@ int DoIt( int argc, char * argv[] )
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType>     IterType;
+  typedef itk::NeighborhoodIterator<ImageType>                  NeighborIterType;
 
   // Setup the readers to load the input data (image + prior)
   timeCollector.Start( "Load data" );
@@ -180,20 +187,36 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer subtractions = subtractionsReader->GetOutput();
 
   // Rescale the input
-  typename RescaleType::Pointer rescale = RescaleType::New();
-  rescale->SetInput( reader->GetOutput() );
-  rescale->SetOutputMinimum( 0 );
-  rescale->SetOutputMaximum( 1 );
-  rescale->Update();
-  typename ImageType::Pointer curImage = rescale->GetOutput();
+  typename ImageType::Pointer curImage = NULL;
+  if(!skipNormalizeImage)
+    {
+    typename RescaleType::Pointer rescale = RescaleType::New();
+    rescale->SetInput( reader->GetOutput() );
+    rescale->SetOutputMinimum( 0 );
+    rescale->SetOutputMaximum( 1 );
+    rescale->Update();
+    curImage = rescale->GetOutput();
+    }
+  else
+    {
+    curImage = reader->GetOutput();
+    }
 
   // Rescale the prior
-  rescale = RescaleType::New();
-  rescale->SetInput( priorReader->GetOutput() );
-  rescale->SetOutputMinimum( 0 );
-  rescale->SetOutputMaximum( 1 );
-  rescale->Update();
-  typename ImageType::Pointer curPrior = rescale->GetOutput();
+  typename ImageType::Pointer curPrior = NULL;
+  if(!skipNormalizeImage)
+    {
+    typename RescaleType::Pointer rescale = RescaleType::New();
+    rescale->SetInput( priorReader->GetOutput() );
+    rescale->SetOutputMinimum( 0 );
+    rescale->SetOutputMaximum( 1 );
+    rescale->Update();
+    curPrior = rescale->GetOutput();
+    }
+  else
+    {
+    curPrior = priorReader->GetOutput();
+    }
 
   // Setup the Calculators
   typename CalculatorType::Pointer inputCalc = CalculatorType::New();
@@ -226,12 +249,13 @@ int DoIt( int argc, char * argv[] )
   PixelType sigmaSmall = 0.6667*sigmaMedium;
   PixelType sigmaLarge = 1.3333*sigmaMedium;
 
-  IterType centerlineItr( centerlines, 
-                          centerlines->GetLargestPossibleRegion() );
-
   double samplesNom = 0;
   double samplesAdd = 0;
   double samplesSub = 0;
+
+  IterType centerlineItr( centerlines, 
+                          centerlines->GetLargestPossibleRegion() );
+
   while( !centerlineItr.IsAtEnd() )
     {
     if( centerlineItr.Get() > 0 )
@@ -245,13 +269,13 @@ int DoIt( int argc, char * argv[] )
       if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
-            && addCalc->Evaluate( curPoint, sigmaMedium ) )
+            && addCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           ++samplesAdd;
           }
         else if( subtractions->TransformPhysicalPointToIndex( curPoint,
                                                               curIndex ) 
-                 && subCalc->Evaluate( curPoint, sigmaMedium ) )
+                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           ++samplesSub;
           }
@@ -298,7 +322,7 @@ int DoIt( int argc, char * argv[] )
       if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
-            && addCalc->Evaluate( curPoint, sigmaMedium ) )
+            && addCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
             {
@@ -309,7 +333,7 @@ int DoIt( int argc, char * argv[] )
           }
         else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
                                                             curIndex ) 
-                 && subCalc->Evaluate( curPoint, sigmaMedium ) )
+                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
           {
           if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
             {
@@ -372,6 +396,30 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE Z_sub NUMERIC\n";
   output << "@ATTRIBUTE Z_nom NUMERIC\n";
 
+  // Patch Based - begin
+
+  output << "@ATTRIBUTE PatchMean NUMERIC\n";
+  output << "@ATTRIBUTE PriorMean NUMERIC\n";
+
+  output << "@ATTRIBUTE PatchStdDev NUMERIC\n";
+  output << "@ATTRIBUTE PriorStdDev NUMERIC\n";
+
+  output << "@ATTRIBUTE PatchCrossCorrelation NUMERIC\n";
+
+  output << "@ATTRIBUTE PatchDifferenceMin NUMERIC\n";
+  output << "@ATTRIBUTE PatchDifferenceP25 NUMERIC\n";
+  output << "@ATTRIBUTE PatchDifferenceP50 NUMERIC\n";
+  output << "@ATTRIBUTE PatchDifferenceP75 NUMERIC\n";
+  output << "@ATTRIBUTE PatchDifferenceP95 NUMERIC\n";
+  output << "@ATTRIBUTE PatchDifferenceMax NUMERIC\n";
+  output << "@ATTRIBUTE PatchDifferenceSum NUMERIC\n";
+  output << "@ATTRIBUTE PatchDifferenceL2Norm NUMERIC\n";
+
+  output << "@ATTRIBUTE NumGreaterThreshold NUMERIC\n";
+  output << "@ATTRIBUTE NumLesserThreshold NUMERIC\n";
+  
+  // Patch Based - END
+
   output << "@ATTRIBUTE class {typical,addition,subtraction}\n";
   output << "\n";
   output << "@DATA\n";
@@ -380,10 +428,23 @@ int DoIt( int argc, char * argv[] )
   samplesNom = 0;
   samplesAdd = 0;
   samplesSub = 0;
-  centerlineItr.GoToBegin();
   double portion = 0.9;
   double step = portion/samplesTotal;
   unsigned int count = 0;
+
+  typename NeighborIterType::SizeType radius  = {{ceil(scale/2),
+                                                  ceil(scale/2)}};
+  NeighborIterType imageItr(radius,
+                            curImage,
+                            curImage->GetLargestPossibleRegion() );
+
+  NeighborIterType priorItr(radius,
+                            curPrior,
+                            curPrior->GetLargestPossibleRegion() );
+
+  centerlineItr.GoToBegin();
+  imageItr.GoToBegin();
+  priorItr.GoToBegin();
   while( !centerlineItr.IsAtEnd() )
     {
     if( centerlineItr.Get() > 0 )
@@ -397,7 +458,7 @@ int DoIt( int argc, char * argv[] )
       bool validPoint = true;
       std::string label;
       if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) &&
-          addCalc->Evaluate( curPoint, sigmaMedium ) &&
+          addCalc->Evaluate( curPoint, sigmaSmall ) &&
           curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
@@ -413,7 +474,7 @@ int DoIt( int argc, char * argv[] )
         }
       else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
                                                             curIndex ) &&
-               subCalc->Evaluate( curPoint, sigmaMedium ) &&
+               subCalc->Evaluate( curPoint, sigmaSmall ) &&
                curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
@@ -518,6 +579,102 @@ int DoIt( int argc, char * argv[] )
         zSub = subJHCalc->Evaluate( curPoint );
         zNom = nomJHCalc->Evaluate( curPoint );
   
+        // begin patch features
+        typename NeighborIterType::NeighborhoodType imageN = imageItr.GetNeighborhood();
+        typename NeighborIterType::NeighborhoodType priorN = priorItr.GetNeighborhood();
+
+        assert(imageN.Size() == priorN.Size());
+        assert(std::distance(imageN.Begin(), imageN.End()) == imageN.Size());
+
+        std::vector<float> normalizedImagePatch(imageN.Size());
+        std::vector<float> normalizedPriorPatch(imageN.Size());
+
+        // compute the mean intensity of the two patches
+        float imageMean = std::accumulate(imageN.Begin(), imageN.End(), 0.0) / imageN.Size();
+        float priorMean = std::accumulate(priorN.Begin(), priorN.End(), 0.0) / imageN.Size();
+      
+        std::transform(imageN.Begin(), imageN.End(),
+                       normalizedImagePatch.begin(),
+                       std::bind2nd(std::minus<float>(), imageMean));
+
+        std::transform(priorN.Begin(), priorN.End(),
+                       normalizedPriorPatch.begin(),
+                       std::bind2nd(std::minus<float>(), priorMean));                    
+      
+        float imageStdDev = std::sqrt(std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
+                                                         normalizedImagePatch.begin(),
+                                                         0.0) /
+                                      (imageN.Size() - 1));
+
+        float priorStdDev = std::sqrt(std::inner_product(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
+                                                         normalizedPriorPatch.begin(),
+                                                         0.0) /
+                                      (priorN.Size() - 1));
+
+        float imageNorm = std::sqrt(std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
+                                                       normalizedImagePatch.begin(), 0.0));
+
+        float priorNorm = std::sqrt(std::inner_product(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
+                                                       normalizedPriorPatch.begin(), 0.0));
+
+        if(imageNorm > 0.0)
+          {
+          std::transform(normalizedImagePatch.begin(), normalizedImagePatch.end(),
+                         normalizedImagePatch.begin(),
+                         std::bind2nd(std::divides<float>(), imageNorm));
+          }
+        
+        if(priorNorm > 0.0)
+          {
+          std::transform(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
+                         normalizedPriorPatch.begin(),
+                         std::bind2nd(std::divides<float>(), priorNorm));
+          }
+
+        float crossCorrelation = std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
+                                                    normalizedPriorPatch.begin(), 0.0);
+
+        std::vector<float> differencePatch(imageN.Size());
+
+        std::transform(imageN.Begin(), imageN.End(),
+                       priorN.Begin(),
+                       differencePatch.begin(),
+                       std::minus<float>());
+
+        float norm = std::inner_product(differencePatch.begin(), differencePatch.end(),
+                                        differencePatch.begin(), 0.0);
+
+        float total = std::accumulate(differencePatch.begin(), differencePatch.end(), 0.0);
+
+        float maxdiff = *std::max_element(differencePatch.begin(),
+                                          differencePatch.end());
+
+        float mindiff = *std::min_element(differencePatch.begin(),
+                                          differencePatch.end());
+
+        size_t q1 = static_cast<size_t>(.25*differencePatch.size());
+        size_t q2 = static_cast<size_t>(.50*differencePatch.size());
+        size_t q3 = static_cast<size_t>(.75*differencePatch.size());
+        size_t q95 = static_cast<size_t>(.95*differencePatch.size());
+
+        std::sort(differencePatch.begin(), differencePatch.end());
+
+        float q1val = differencePatch[q1];
+        float q2val = differencePatch[q2];
+        float q3val = differencePatch[q3];
+        float q95val = differencePatch[q95];
+
+        const float threshold = .3;
+        size_t numGreater = std::distance(std::upper_bound(differencePatch.begin(),
+                                                           differencePatch.end(), threshold),
+                                          differencePatch.end());
+
+        size_t numLesser = std::distance(differencePatch.begin(),
+                                         std::upper_bound(differencePatch.begin(),
+                                                          differencePatch.end(), -threshold));                                                        
+
+        // end patch features
+
         output << curIndex[0] << "," << curIndex[1] << ","
                << v1sg << "," << v1mg << "," << v1lg << "," 
                << v2g << "," << v3g << ","
@@ -528,6 +685,21 @@ int DoIt( int argc, char * argv[] )
                << l1s << "," << l1m << "," << l1l << ","
                << l2  << "," << l3 << ","
                << zAdd << "," << zSub << "," << zNom << ","
+               << imageMean << "," 
+               << priorMean << ","
+               << imageStdDev << ","
+               << priorStdDev << ","
+               << crossCorrelation << ","
+               << mindiff << ","
+               << q1val << ","
+               << q2val << ","
+               << q3val << ","
+               << q95val << ","
+               << maxdiff << ","
+               << total << ","
+               << norm << ","
+               << numGreater << ","
+               << numLesser << ","
                << label << "\n";
   
         if( count == 1000 )
@@ -540,9 +712,11 @@ int DoIt( int argc, char * argv[] )
           ++count;
           }
         }
-      }
+      } // end if centerline is at valid point
     progress += step;
     ++centerlineItr;
+    ++priorItr;
+    ++imageItr;
     }
 
   output.close();
