@@ -26,7 +26,7 @@
 # Configure the following variables and move this file to the directory above
 #   the tubetk source directory.
 #
-set( SITE_NAME "Abydos" )
+set( SITE_NAME "aylward.abydos.kitware" )
 set( SITE_PLATFORM "Linux" )
 set( SITE_BUILD_TYPE "Release" )
 set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
@@ -40,7 +40,7 @@ set( SITE_CTEST_COMMAND "/usr/local/bin/ctest" )
 
 set( SITE_MEMORYCHECK_COMMAND "/usr/bin/valgrind" )
 set( SITE_COVERAGE_COMMAND "/usr/bin/gcov" )
-set( SITE_STYLE_COMMAND "/usr/local/bin/kwstyle" )
+set( SITE_KWSTYLE_DIR "/usr/local/bin" )
 
 set( SITE_GIT_COMMAND "/usr/bin/git" )
 set( SITE_SVN_COMMAND "/usr/bin/svn" )
@@ -72,6 +72,8 @@ set( SITE_NIGHTLY_MEMORY OFF )
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
 set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/DashboardScripts" )
 set( SITE_UPDATE_COMMAND "${GIT_COMMAND}" )
+
+set( ENV{PATH} "$ENV{PATH}:${SITE_KWSTYLE_DIR}" )
 
 set( SITE_CXX_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
 set( SITE_C_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )

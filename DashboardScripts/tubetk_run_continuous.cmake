@@ -7,10 +7,8 @@ if( SITE_CONTINUOUS_BUILD_TEST )
 
   ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
 
-  set( RUN_MODEL "Continuous" )
-  CONFIGURE_FILE( "${SITE_SCRIPT_DIR}/tubetk_runtime_config.cmake.in"
-    "${SITE_BINARY_DIR}/tubetk_runtime_config.cmake"
-    @ONLY )
+  set( ENV{TUBETK_RUN_MODEL} "Continuous" )
+  set( ENV{TUBETK_FORCE_BUILD} "1" )
   
   ###########################################################################
   # run some "inside-the-loop" continuous scripts for a while
@@ -22,8 +20,7 @@ if( SITE_CONTINUOUS_BUILD_TEST )
     ctest_run_script( 
       "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
 
-    set( CHANGED_FILES "$ENV{TUBETK_CONTINUOUS_UPDATE}" )
-    if( CHANGED_FILES STREQUAL "1" )
+    if( "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
   
       if( SITE_CONTINUOUS_STYLE )
         ctest_run_script( 
@@ -40,6 +37,8 @@ if( SITE_CONTINUOUS_BUILD_TEST )
           "${SCRIPT_DIR}/tubetk_memory.cmake" )
       endif( SITE_CONTINUOUS_MEMORY )
   
+      set( ENV{TUBETK_FORCE_BUILD} "0" )
+
     endif()
 
     # loop no faster than once every 5 minutes

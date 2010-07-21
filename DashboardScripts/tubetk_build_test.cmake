@@ -24,7 +24,6 @@
 cmake_minimum_required( VERSION 2.6 )
 
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
-include( ${SITE_BINARY_DIR}/tubetk_runtime_config.cmake )
 
 set( SCRIPT_NAME "BuildTest" )
 set( SCRIPT_BINARY_SUBDIR "" )
@@ -32,9 +31,9 @@ set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
 
 include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
 
-ctest_start( "${RUN_MODEL}" )
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
-if( res GREATER 0 OR res LESS 0 OR RUN_MODEL STREQUAL "Experimental" )
+if( res GREATER 0 OR res LESS 0 OR "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
 
   message( "Changes detected. Rebuilding and testing..." )
 
@@ -44,13 +43,13 @@ if( res GREATER 0 OR res LESS 0 OR RUN_MODEL STREQUAL "Experimental" )
   ctest_submit()
   ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
   ctest_submit()
-  set( res 0 )
-  set( ENV{TUBETK_CONTINUOUS_UPDATE} "1" )
+  set( ENV{TUBETK_FORCE_BUILD} "1" )
 
 else()
 
   message( "No changes detected." )
-  set( ENV{TUBETK_CONTINUOUS_UPDATE} "0" )
+  # set( ENV{TUBETK_FORCE_BUILD} "0" ) # Don't turn off force build.  
+  # Might be forced for another reason.
 
 endif()
 
