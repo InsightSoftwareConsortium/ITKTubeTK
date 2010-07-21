@@ -39,6 +39,8 @@ set( CTEST_MEMORYCHECK_COMMAND_OPTIONS "${MEMORYCHECK_OPTIONS}" )
 
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
+ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}TubeTK-Build" )
 ctest_submit()
 
