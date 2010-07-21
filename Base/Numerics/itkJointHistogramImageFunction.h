@@ -33,11 +33,10 @@ namespace itk
  *
  *  Using an input image an input mask, this function allows the computation of
  *  Z-Score values at a given point in the image. This is done by calling the
- *  Precompute function to build up a mean and standard deviation for each bin in
- *  a joint-histogram. That mean and standard deviation is used to compute the
- *  Z-Score at a point when Evaluate is called. The neighboorhood used in the
- *  computation of the joint histogram is determined by the feature width.
- *
+ *  Precompute function to build up a mean and standard deviation for each bin
+ *  in a joint-histogram. That mean and standard deviation is used to compute 
+ *  the Z-Score at a point when Evaluate is called. The neighboorhood used in
+ *  the computation of the joint histogram is determined by the feature width.
  */
 template<class TInputImage, class TCoordRep = float>
 class ITK_EXPORT JointHistogramImageFunction :
