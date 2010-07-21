@@ -24,7 +24,6 @@
 cmake_minimum_required(VERSION 2.6)
 
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
-include( ${SITE_BINARY_DIR}/tubetk_runtime_config.cmake )
 
 set( SCRIPT_NAME "Memory" )
 set( SCRIPT_BINARY_SUBDIR "" )
