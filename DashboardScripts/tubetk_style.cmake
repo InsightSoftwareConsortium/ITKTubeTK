@@ -33,7 +33,7 @@ include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
 
 set( ENV{PATH} "$ENV{PATH}:/usr/local/bin" )
 
-ctest_start( "${RUN_MODEL}" )
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )

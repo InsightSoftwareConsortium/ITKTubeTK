@@ -23,7 +23,7 @@
 
 set( CTEST_SITE "${SITE_NAME}" )
 set( CTEST_BUILD_NAME 
-  "${SITE_BUILD_NAME}-${SCRIPT_NAME}-${RUN_MODEL}" )
+  "${SITE_BUILD_NAME}-${SCRIPT_NAME}-$ENV{TUBETK_RUN_MODEL}" )
 set( CTEST_BUILD_CONFIGURATION "${SITE_BUILD_TYPE}" )
 
 set( CTEST_TEST_TIMEOUT 1500 )
@@ -67,11 +67,31 @@ if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
     QT_QMAKE_EXECUTABLE:FILEPATH=${CTEST_QMAKE_COMMAND}
     TubeTK_USE_SUPERBUILD:BOOL=${SCRIPT_TubeTK_USE_SUPERBUILD}
     TubeTK_USE_KWSTYLE:BOOL=ON
-    CTK_DIR:PATH=${SITE_BINARY_DIR}/CTK-Build
-    ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build
-    GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build
-    OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build
     " )
+
+  if( EXISTS ${SITE_BINARY_DIR}/Insight-Build )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+      ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build
+      " )
+  endif( EXISTS ${SITE_BINARY_DIR}/Insight-Build )
+
+  if( EXISTS ${SITE_BINARY_DIR}/GenerateCLP-Build )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+      GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build
+      " )
+  endif( EXISTS ${SITE_BINARY_DIR}/GenerateCLP-Build )
+
+  if( EXISTS ${SITE_BINARY_DIR}/OpenIGTLink-Build )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+      OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build
+      " )
+  endif( EXISTS ${SITE_BINARY_DIR}/OpenIGTLink-Build )
+
+  if( EXISTS ${SITE_BINARY_DIR}/CTK-Build )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+      CTK_DIR:PATH=${SITE_BINARY_DIR}/CTK-Build
+      " )
+  endif( EXISTS ${SITE_BINARY_DIR}/CTK-Build )
   
 endif( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
 

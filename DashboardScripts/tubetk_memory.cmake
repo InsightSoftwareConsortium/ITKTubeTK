@@ -37,7 +37,7 @@ set( CTEST_MEMORYCHECK_SUPPRESSIONS_FILE
    "${CTEST_SCRIPT_DIRECTORY}/tubetk_valgrind_supression.txt" )
 set( CTEST_MEMORYCHECK_COMMAND_OPTIONS "${MEMORYCHECK_OPTIONS}" )
 
-ctest_start( "${RUN_MODEL}" )
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_submit()

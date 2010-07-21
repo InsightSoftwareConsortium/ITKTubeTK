@@ -23,16 +23,14 @@
 
 include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
 
-set( RUN_MODEL "Nightly" )
-CONFIGURE_FILE( "${SITE_SCRIPT_DIR}/tubetk_runtime_config.cmake.in"
-  "${SITE_BINARY_DIR}/tubetk_runtime_config.cmake"
-  @ONLY )
-
 set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_NIGHTLY_BUILD_TEST )
 
   ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
+
+  set( ENV{TUBETK_RUN_MODEL} "Nightly" )
+  set( ENV{TUBETK_FORCE_BUILD} "1" )
 
   ctest_run_script( 
     "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
