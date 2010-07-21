@@ -68,7 +68,7 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef unsigned char                                    PixelType;
+  typedef unsigned short                                   PixelType;
   typedef itk::OrientedImage< PixelType, dimensionT >      ImageType;
   typedef itk::ImageFileReader< ImageType >                ReaderType;
   

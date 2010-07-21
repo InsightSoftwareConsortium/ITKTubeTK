@@ -117,11 +117,13 @@ ARFFParser
   unsigned int index = 0;
   while( std::getline( file, line ) )
     {
-    if( line.find( "@DATA" ) != std::string::npos )
+    if( line.find( "@DATA" ) != std::string::npos ||
+        line.find( "@data" ) != std::string::npos )
       {
       break;
       }
-    else if( line.find( "@ATTRIBUTE" ) != std::string::npos )
+    else if( line.find( "@ATTRIBUTE" ) != std::string::npos || 
+             line.find( "@attribute" ) != std::string::npos )
       {
       std::string name;
       this->getAttributeName( line, name );
