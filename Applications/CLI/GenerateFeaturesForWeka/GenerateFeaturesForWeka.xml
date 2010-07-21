@@ -72,6 +72,13 @@
       <flag>n</flag>
       <default>false</default>
     </boolean>
+    <string-vector>
+      <name>otherFeatures</name>
+      <label>Other feature images</label>
+      <description>Used for passing additional images of features. The format is name,filename,name,filename,etc.</description>
+      <longflag>features</longflag>
+      <flag>f</flag>
+      <default></default>
+    </string-vector>
   </parameters>
-
 </executable>

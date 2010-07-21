@@ -41,6 +41,7 @@ endif( TubeTK_USE_OpenIGTLink )
 add_subdirectory( GenerateFeaturesForWeka )
 add_subdirectory( Skeletonize )
 add_subdirectory( WekaToImage )
+add_subdirectory( ComputeZMap )
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and
