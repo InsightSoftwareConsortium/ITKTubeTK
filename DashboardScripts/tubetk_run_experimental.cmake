@@ -40,12 +40,12 @@ endif( SITE_EXPERIMENTAL_STYLE )
   
 if( SITE_EXPERIMENTAL_COVERAGE )
   ctest_run_script( 
-    "${SCRIPT_DIR}/tubetk_coverage.cmake" )
+    "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
 endif( SITE_EXPERIMENTAL_COVERAGE )
  
 if( SITE_EXPERIMENTAL_MEMORY )
   ctest_run_script( 
-    "${SCRIPT_DIR}/tubetk_memory.cmake" )
+    "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
 endif( SITE_EXPERIMENTAL_MEMORY )
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)

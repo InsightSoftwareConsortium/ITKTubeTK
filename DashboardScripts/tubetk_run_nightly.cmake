@@ -42,12 +42,12 @@ if( SITE_NIGHTLY_BUILD_TEST )
     
   if( SITE_NIGHTLY_COVERAGE )
     ctest_run_script( 
-      "${SCRIPT_DIR}/tubetk_coverage.cmake" )
+      "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
   endif( SITE_NIGHTLY_COVERAGE )
    
   if( SITE_NIGHTLY_MEMORY )
     ctest_run_script( 
-      "${SCRIPT_DIR}/tubetk_memory.cmake" )
+      "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
   endif( SITE_NIGHTLY_MEMORY )
 
 endif( SITE_NIGHTLY_BUILD_TEST )

@@ -29,12 +29,12 @@ if( SITE_CONTINUOUS_BUILD_TEST )
     
       if( SITE_CONTINUOUS_COVERAGE )
         ctest_run_script( 
-          "${SCRIPT_DIR}/tubetk_coverage.cmake" )
+          "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
       endif( SITE_CONTINUOUS_COVERAGE )
     
       if( SITE_CONTINUOUS_MEMORY )
         ctest_run_script( 
-          "${SCRIPT_DIR}/tubetk_memory.cmake" )
+          "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
       endif( SITE_CONTINUOUS_MEMORY )
   
       set( ENV{TUBETK_FORCE_BUILD} "0" )
