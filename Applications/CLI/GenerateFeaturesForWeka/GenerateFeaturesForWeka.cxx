@@ -586,8 +586,22 @@ int DoIt( int argc, char * argv[] )
                << v2g-v2e << "," << v3g-v3e << ","
                << l1s << "," << l1m << "," << l1l << ","
                << l2  << "," << l3 << ","
-               << zAdd << "," << zSub << "," << zNom << ",";
-
+               << zAdd << "," << zSub << "," << zNom << ","
+               << imageMean << "," 
+               << priorMean << ","
+               << imageStdDev << ","
+               << priorStdDev << ","
+               << crossCorrelation << ","
+               << mindiff << ","
+               << q1val << ","
+               << q2val << ","
+               << q3val << ","
+               << q95val << ","
+               << maxdiff << ","
+               << total << ","
+               << norm << ","
+               << numGreater << ","
+               << numLesser << ",";
         std::vector<PixelType>::const_iterator extraItr;
         for( extraItr = extras.begin(); 
              extraItr != extras.end(); ++extraItr )
