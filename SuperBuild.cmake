@@ -43,7 +43,7 @@ if(NOT USE_SYSTEM_ITK)
       -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
     INSTALL_COMMAND ""
     )
-  set( ITK_DIR ${base}/Insight-Build )
+  set( ITK_DIR "${base}/Insight-Build" )
   
 endif(NOT USE_SYSTEM_ITK)
 
@@ -69,7 +69,7 @@ ExternalProject_Add(${proj}
     -DBUILD_TESTING:BOOL=OFF
   INSTALL_COMMAND ""
   )
-set( TCLAP_DIR ${base}/tclap-Build )
+set( TCLAP_DIR "${base}/tclap-Build" )
 
 
 ##
@@ -101,7 +101,7 @@ ExternalProject_Add(${proj}
   INSTALL_COMMAND ""
   DEPENDS ${ModuleDescriptionParser_DEPENDS}
   )
-set( ModuleDescriptionParser_DIR ${base}/ModuleDescriptionParser-Build )
+set( ModuleDescriptionParser_DIR "${base}/ModuleDescriptionParser-Build" )
 
 
 ##
@@ -131,7 +131,7 @@ ExternalProject_Add(${proj}
     "tclap"
     "ModuleDescriptionParser"
   )
-set( GenerateCLP_DIR ${base}/GenerateCLP-Build )
+set( GenerateCLP_DIR "${base}/GenerateCLP-Build" )
 set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
 
 
@@ -156,7 +156,7 @@ if( TubeTK_USE_OpenIGTLink )
       -DBUILD_TESTING:BOOL=OFF
     INSTALL_COMMAND ""
     )
-  set( OpenIGTLink_DIR ${CMAKE_BINARY_DIR}/OpenIGTLink-Build )
+  set( OpenIGTLink_DIR "${CMAKE_BINARY_DIR}/OpenIGTLink-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "OpenIGTLink" )
 else( TubeTK_USE_OpenIGTLink )
   set( OpenIGTLink_DIR "" )
@@ -198,7 +198,7 @@ if( TubeTK_USE_CTK )
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     INSTALL_COMMAND ""
     )
-  set( CTK_DIR ${CMAKE_BINARY_DIR}/${proj}-Build )
+  set( CTK_DIR "${CMAKE_BINARY_DIR}/${proj}-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
 endif( TubeTK_USE_CTK )
 
