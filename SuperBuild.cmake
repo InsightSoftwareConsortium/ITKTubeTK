@@ -33,6 +33,8 @@ if(NOT USE_SYSTEM_ITK)
     CMAKE_ARGS
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_EXAMPLES:BOOL=OFF
@@ -41,7 +43,7 @@ if(NOT USE_SYSTEM_ITK)
       -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
     INSTALL_COMMAND ""
     )
-  set( ITK_DIR ${base}/Insight-Build )
+  set( ITK_DIR "${base}/Insight-Build" )
   
 endif(NOT USE_SYSTEM_ITK)
 
@@ -59,13 +61,15 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+    -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF
   INSTALL_COMMAND ""
   )
-set( TCLAP_DIR ${base}/tclap-Build )
+set( TCLAP_DIR "${base}/tclap-Build" )
 
 
 ##
@@ -87,6 +91,8 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+    -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_EXAMPLES:BOOL=OFF
@@ -95,7 +101,7 @@ ExternalProject_Add(${proj}
   INSTALL_COMMAND ""
   DEPENDS ${ModuleDescriptionParser_DEPENDS}
   )
-set( ModuleDescriptionParser_DIR ${base}/ModuleDescriptionParser-Build )
+set( ModuleDescriptionParser_DIR "${base}/ModuleDescriptionParser-Build" )
 
 
 ##
@@ -111,6 +117,8 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+    -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_EXAMPLES:BOOL=OFF
@@ -123,7 +131,7 @@ ExternalProject_Add(${proj}
     "tclap"
     "ModuleDescriptionParser"
   )
-set( GenerateCLP_DIR ${base}/GenerateCLP-Build )
+set( GenerateCLP_DIR "${base}/GenerateCLP-Build" )
 set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
 
 
@@ -140,13 +148,15 @@ if( TubeTK_USE_OpenIGTLink )
     CMAKE_ARGS
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
     INSTALL_COMMAND ""
     )
-  set( OpenIGTLink_DIR ${CMAKE_BINARY_DIR}/OpenIGTLink-Build )
+  set( OpenIGTLink_DIR "${CMAKE_BINARY_DIR}/OpenIGTLink-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "OpenIGTLink" )
 else( TubeTK_USE_OpenIGTLink )
   set( OpenIGTLink_DIR "" )
@@ -164,8 +174,7 @@ if( TubeTK_USE_CTK )
   find_package( Qt4 )
   if( NOT QT4_FOUND )
    MESSAGE(SEND_ERROR 
-     "Qt ${QT_MIN_VERSION} or greater not found."
-     "  Please check the QT_QMAKE_EXECUTABLE variable." )
+     "Qt ${QT_MIN_VERSION} or greater not found. Please check the QT_QMAKE_EXECUTABLE variable." )
   endif( NOT QT4_FOUND )
   set(proj CTK)
   ExternalProject_Add(${proj}
@@ -189,7 +198,7 @@ if( TubeTK_USE_CTK )
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     INSTALL_COMMAND ""
     )
-  set( CTK_DIR ${CMAKE_BINARY_DIR}/${proj}-Build )
+  set( CTK_DIR "${CMAKE_BINARY_DIR}/${proj}-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
 endif( TubeTK_USE_CTK )
 
