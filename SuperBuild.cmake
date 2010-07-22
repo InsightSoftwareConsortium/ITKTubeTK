@@ -179,7 +179,7 @@ if( TubeTK_USE_CTK )
   set(proj CTK)
   ExternalProject_Add(${proj}
     GIT_REPOSITORY "http://github.com/commontk/CTK.git"
-    SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
+    SOURCE_DIR ${proj}
     BINARY_DIR ${proj}-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS

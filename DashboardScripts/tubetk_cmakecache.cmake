@@ -44,6 +44,8 @@ set( SVNCOMMAND "${SITE_SVN_COMMAND}" )
 
 set( CTEST_UPDATE_COMMAND "${SITE_GIT_COMMAND}" )
 
+set( CMAKE_GENERATOR ${SITE_CMAKE_GENERATOR} )
+
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SITE_CXX_FLAGS}" )
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SITE_C_FLAGS}" )
 set( CMAKE_EXE_LINKER_FLAGS 
@@ -63,6 +65,7 @@ if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
     BUILDNAME:STRING=${CTEST_BUILD_NAME}
     BUILD_TESTING:BOOL=ON
     BUILD_SHARED_LIBS:BOOL=ON
+    CMAKE_GENERATOR:STRING=${SITE_CMAKE_GENERATOR}
     CMAKE_BUILD_TYPE:STRING=${CTEST_BUILD_CONFIGURATION}
     CMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     CMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
@@ -78,27 +81,23 @@ if( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
     " )
 
   if( EXISTS ${SITE_BINARY_DIR}/Insight-Build/bin )
-    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
-      ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build
-      " )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+      "ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build" )
   endif()
 
   if( EXISTS ${SITE_BINARY_DIR}/GenerateCLP-Build/GenerateCLP )
-    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
-      GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build
-      " )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+      "GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build" )
   endif()
 
   if( EXISTS ${SITE_BINARY_DIR}/OpenIGTLink-Build/bin )
-    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
-      OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build
-      " )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+      "OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build" )
   endif()
 
   if( EXISTS ${SITE_BINARY_DIR}/CTK-Build/CTK-build )
-    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
-      CTK_DIR:PATH=${SITE_BINARY_DIR}/CTK-Build
-      " )
+    file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+      "CTK_DIR:PATH=${SITE_BINARY_DIR}/CTK-Build" )
   endif()
   
 endif( NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" )
