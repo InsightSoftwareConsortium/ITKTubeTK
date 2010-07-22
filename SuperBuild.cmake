@@ -167,7 +167,6 @@ endif( TubeTK_USE_OpenIGTLink )
 ## CTK 
 ##
 if( TubeTK_USE_CTK )
-  find_package( Git )
   set( QT_MIN_VERSION "4.6.0" )
   set( QT_OFFICIAL_VERSION "4.6" )
   set( QT_REQUIRED TRUE )
@@ -179,12 +178,14 @@ if( TubeTK_USE_CTK )
   set(proj CTK)
   ExternalProject_Add(${proj}
     GIT_REPOSITORY "http://github.com/commontk/CTK.git"
-    SOURCE_DIR ${proj}
-    BINARY_DIR ${proj}-Build
+    SOURCE_DIR CTK
+    BINARY_DIR CTK-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_EXAMPLES:BOOL=OFF
