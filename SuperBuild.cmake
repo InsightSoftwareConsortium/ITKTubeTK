@@ -176,10 +176,10 @@ if( TubeTK_USE_CTK )
      "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
   endif( NOT QT4_FOUND )
   set(proj CTK)
-  ExternalProject_Add(${proj}
-    GIT_REPOSITORY "git://github.com/commontk/CTK.git"
-    SOURCE_DIR CTK
-    BINARY_DIR CTK-Build
+  ExternalProject_Add(CTK
+    GIT_REPOSITORY "http://github.com/commontk/CTK.git"
+    SOURCE_DIR ctk
+    BINARY_DIR ctk-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
@@ -199,7 +199,7 @@ if( TubeTK_USE_CTK )
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     INSTALL_COMMAND ""
     )
-  set( CTK_DIR "${CMAKE_BINARY_DIR}/${proj}-Build" )
+  set( CTK_DIR "${CMAKE_BINARY_DIR}/ctk-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
 endif( TubeTK_USE_CTK )
 
