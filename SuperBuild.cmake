@@ -173,11 +173,11 @@ if( TubeTK_USE_CTK )
   find_package( Qt4 )
   if( NOT QT4_FOUND )
    MESSAGE(SEND_ERROR 
-     "Qt ${QT_MIN_VERSION} or greater not found. Please check the QT_QMAKE_EXECUTABLE variable." )
+     "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
   endif( NOT QT4_FOUND )
   set(proj CTK)
   ExternalProject_Add(${proj}
-    GIT_REPOSITORY "http://github.com/commontk/CTK.git"
+    GIT_REPOSITORY "git://github.com/commontk/CTK.git"
     SOURCE_DIR CTK
     BINARY_DIR CTK-Build
     CMAKE_GENERATOR ${gen}

@@ -32,7 +32,11 @@ set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
 include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
 
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
+if( "$ENV{TUBETK_RUN_MODEL}" STREQUAL "Experimental" )
+  set( res 1 )
+else()
+  ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
+endif()
 if( res GREATER 0 OR res LESS 0 OR "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
 
   message( "Changes detected. Rebuilding and testing..." )
