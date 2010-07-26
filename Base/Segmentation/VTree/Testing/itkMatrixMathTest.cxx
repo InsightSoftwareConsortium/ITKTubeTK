@@ -20,9 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "itkImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageFileWriter.h"
+#include <cstdlib>
 
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 
@@ -31,7 +29,7 @@ limitations under the License.
 template< int dimensionT >
 int Test( void )
 {
-  double epsilon = 0.000001;
+  double epsilon = 0.00001;
 
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
@@ -44,13 +42,13 @@ int Test( void )
     vnl_vector<float> v1(dimensionT);
     for( unsigned int d=0; d<dimensionT; d++ )
       {
-      v1[d] = rndGen->GetVariateWithOpenRange();
+      v1[d] = rndGen->GetNormalVariate( 0.0, 1.0 );
       }
     vnl_vector<float> v2(dimensionT);
     if( dimensionT == 3 )
       {
       v2 = itk::GetOrthogonalVector( v1 );
-      if( dot_product( v1, v2 ) > epsilon )
+      if( vnl_math_abs( dot_product( v1, v2 ) ) > epsilon )
         {
         std::cout << count << " : ";
         std::cout << "FAILURE: GetOrthogonalVector: DotProduct = "
@@ -60,8 +58,8 @@ int Test( void )
         }
     
       vnl_vector<float> v3 = itk::GetCrossVector( v1, v2 );
-      if( dot_product( v1, v3 ) > epsilon ||
-          dot_product( v2, v3 ) > epsilon )
+      if( vnl_math_abs( dot_product( v1, v3 ) ) > epsilon ||
+          vnl_math_abs( dot_product( v2, v3 ) ) > epsilon )
         {
         std::cout << count << " : ";
         std::cout << "FAILURE: GetCrossVector: DotProduct = "
@@ -74,7 +72,7 @@ int Test( void )
       {
       for( unsigned int d=0; d<dimensionT; d++ )
         {
-        v2[d] = rndGen->GetVariateWithOpenRange();
+        v2[d] = rndGen->GetNormalVariate( 0.0, 1.0 );
         }
       }
   
@@ -96,7 +94,7 @@ int Test( void )
       {
       for( unsigned int c=r; c<dimensionT; c++ )
         {
-        m1(r,c) = rndGen->GetVariateWithOpenRange();
+        m1(r,c) = rndGen->GetNormalVariate( 0.0, 1.0 );
         m1(c,r) = m1(r,c);
         }
       }
@@ -107,7 +105,7 @@ int Test( void )
     for( unsigned int d=0; d<dimensionT; d++ )
       {
       v1 = m1 * eVects.get_column(d);
-      if( vnl_math_abs( v1.magnitude() - eVals[d] ) > epsilon )
+      if( vnl_math_abs( v1.magnitude() - vnl_math_abs(eVals[d]) ) > epsilon )
         {
         std::cout << count << " : ";
         std::cout << "FAILURE: Eigen : "
