@@ -39,6 +39,7 @@ set( SITE_CTEST_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\ctest" )
 set( SITE_MEMORYCHECK_COMMAND "" )
 set( SITE_COVERAGE_COMMAND "" )
 set( SITE_STYLE_COMMAND "" )
+set( SITE_CTEST_COMMAND "ctest" )
 
 set( SITE_GIT_COMMAND 
   "C:\\Program Files\\Git\\bin\\git" )
@@ -79,7 +80,10 @@ set(ENV{PATH} "${SITE_BINARY_DIR}/ModuleDescriptionParser-Build/${SITE_BUILD_TYP
 
 set( SITE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /GR /MP /EHsc" )
 set( SITE_C_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /MP" )
+set( SITE_EXE_LINKER_FLAGS "" )
+set( SITE_SHARED_LINKER_FLAGS "" )
 
-set( COVERAGE_OPTIONS "" )
-set( MEMORYCHECK_OPTIONS "" )
+set( SITE_MEMORYCHECK_COMMAND_OPTIONS "" )
+set( SITE_MEMORYCHECK_SUPPRESSIONS_FILE 
+  "${CTEST_SCRIPT_DIRECTORY}/tubetk_valgrind_suppressions.txt" )
 
