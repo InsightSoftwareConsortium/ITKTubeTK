@@ -51,8 +51,7 @@ int main( int argc, char **argv )
 {
   PARSE_ARGS;
 
-  int  interval = (int) (1000.0 / frequency);
-
+  int interval = (int) (1000.0 / frequency);
   std::cout << "Position information generation interval:\t" << interval << std::endl;
 
   igtl::PositionMessage::Pointer positionMsg;
@@ -71,11 +70,13 @@ int main( int argc, char **argv )
 
   igtl::Socket::Pointer socket;
   
-  while (1)
+  int time = 0;
+  while (time < duration || duration < 0)
     {
     // Waiting for Connection
     std::cout << "Waiting for connection..." << std::endl;
     socket = serverSocket->WaitForConnection(1000);
+    time++;
     
     if (socket.IsNotNull()) // if client connected
       {
@@ -110,10 +111,13 @@ int main( int argc, char **argv )
         }
       }
     }
-    
+
   //------------------------------------------------------------
   // Close connection 
-  socket->CloseSocket();
+  if (socket.IsNotNull())
+    {
+    socket->CloseSocket();
+    }
 
   return EXIT_SUCCESS; 
 }
