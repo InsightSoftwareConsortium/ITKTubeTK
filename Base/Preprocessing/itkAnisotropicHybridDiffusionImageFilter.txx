@@ -291,8 +291,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
         (eigenValue[middleEigenValueIndex]/(m_Alpha + eigenValue[smallestEigenValueIndex])); 
 
     double numerator = eigenValue[middleEigenValueIndex] * 
-                       ( ((m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid ) *
-                       xi - fabs( xi)) - 2.0 * eigenValue[smallestEigenValueIndex]);
+                       ( (m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid) *
+                       (xi - fabs(xi)) - 2.0 * eigenValue[smallestEigenValueIndex] );
                         
 
     double denominator = 2.0 * vcl_pow( m_ContrastParameterLambdaHybrid, 4.0 );
