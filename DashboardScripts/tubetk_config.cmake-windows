@@ -38,8 +38,8 @@ set( SITE_CTEST_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\ctest" )
 
 set( SITE_MEMORYCHECK_COMMAND "" )
 set( SITE_COVERAGE_COMMAND "" )
-set( SITE_STYLE_COMMAND "" )
-set( SITE_CTEST_COMMAND "ctest" )
+
+set( SITE_KWSTYLE_DIR "" )
 
 set( SITE_GIT_COMMAND 
   "C:\\Program Files\\Git\\bin\\git" )
@@ -49,7 +49,7 @@ set( SITE_SVN_COMMAND
 set( SITE_SOURCE_DIR 
   "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk" )
 set( SITE_BINARY_DIR 
-  "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk-Release" )
+  "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )
 set( SITE_EXPERIMENTAL_STYLE OFF )
