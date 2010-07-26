@@ -1,17 +1,23 @@
 /*=========================================================================
 
-  Program:   itkUNC
-  Module:    $RCSfile: itkMatrixMath.h,v $
-  Language:  C++
-  Date:      $Date: 2004/02/02 18:59:31 $
-  Version:   $Revision: 1.5 $
+Library:   TubeTK
 
-  Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
-  See itkUNCCopyright.txt for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 #ifndef __itkMatrixMath_h
@@ -28,25 +34,56 @@ namespace itk
  */
 
 /** simple function that return the orthogonal vector to one*/
-template <class T> vnl_vector<T> GetOrthogonalVector(vnl_vector<T> x);
+template <class T> 
+  vnl_vector<T>
+  GetOrthogonalVector(vnl_vector<T> x);
+
 /** simple function that return the cross vector from two vectors*/
-template <class T> vnl_vector<T> GetCrossVector(vnl_vector<T> x);
+template <class T> 
+  vnl_vector<T>
+  GetCrossVector(vnl_vector<T> x);
+
 /** return the new position folowing the vector dir */
-template <class T> vnl_vector<T> ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
+template <class T> 
+  vnl_vector<T> 
+  ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
+
 /** Compute the euclidean distance */
-template <class T> T ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
+template <class T> 
+  T
+  ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
+
 /** Compute eigen values and vectors  */
-template <class T> void Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects,vnl_vector_ref<T> eVals, bool orderByAbs);
+template <class T>
+  void
+  Eigen(vnl_matrix<T> &mat,
+        vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
+        bool orderByAbs);
+
 /** Preform trilinear diagonalisation */
-template <class T> void TriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+template <class T>
+  void
+  TriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+
 /** Preform trilinear diagonalisation in 2D */
-template <class T> void TriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+template <class T> 
+  void
+  TriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+
 /** Preform trilinear diagonalisation in 3D */
-template <class T> void TriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+template <class T>
+  void
+  TriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+
 /**                                          */
-template <class T> void Tqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
+template <class T>
+  void
+  Tqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
+
 /** Compute the euclidean distance for two points */
-template <class PointType> double ComputeEuclideanDistance(PointType x,PointType y);
+template <class PointType>
+  double
+  ComputeEuclideanDistance(PointType x, PointType y);
 
 } // end namespace itk
 

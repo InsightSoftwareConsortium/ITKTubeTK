@@ -23,7 +23,6 @@
 
 //#include "itkOptParabolicFit1D.h"
 #include "itkOptGoldenMean1D.h"
-#include <itkTube.h>
 #include "itkBlurImageFunction.h"
 #include "itkVesselTubeSpatialObject.h"
 

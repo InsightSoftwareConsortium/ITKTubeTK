@@ -43,7 +43,6 @@ namespace tube
 
 const unsigned char                                  BG = 0;
 const unsigned char                                  WIRE = 255;
-const unsigned char                                  NOTWIRE = 128;
 
 template< class pixelT, unsigned int dimensionT >
 void

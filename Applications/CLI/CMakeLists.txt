@@ -34,11 +34,14 @@ add_subdirectory( RandomlyModifyBinaryMask )
 add_subdirectory( Resample )
 add_subdirectory( SampleCLIApplication )
 add_subdirectory( SimulateTomosynthesis )
-add_subdirectory( SendPositionMessageUsingOpenIGTLink )
-add_subdirectory( ReceivePositionMessageUsingOpenIGTLink )
+if( TubeTK_USE_OpenIGTLink )
+  add_subdirectory( SendPositionMessageUsingOpenIGTLink )
+  add_subdirectory( ReceivePositionMessageUsingOpenIGTLink )
+endif( TubeTK_USE_OpenIGTLink )
 add_subdirectory( GenerateFeaturesForWeka )
 add_subdirectory( Skeletonize )
 add_subdirectory( WekaToImage )
+add_subdirectory( ComputeZMap )
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and

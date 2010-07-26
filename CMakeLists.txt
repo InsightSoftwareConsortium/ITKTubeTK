@@ -163,37 +163,57 @@ IF( UNIX )
 ENDIF( UNIX ) 
 
 #-----------------------------------------------------------------------------
+# ITK Setup
+option( USE_SYSTEM_ITK 
+  "Exclude ITK from SuperBuild and use an existing build instead." OFF )
+if( USE_SYSTEM_ITK )
+  find_package( ITK REQUIRED )
+  include(${ITK_USE_FILE})
+endif( USE_SYSTEM_ITK )
+
+#-----------------------------------------------------------------------------
+# OpenIGTLink Setup
+option( TubeTK_USE_OpenIGTLink 
+  "Use OpenIGTLink to provide communications with surgical systems." ON )
+
+#-----------------------------------------------------------------------------
+# CTK Setup
+option( TubeTK_USE_CTK 
+  "Use CTK to provide Qt-based applications and build Slicer loadable modules."
+  ON )
+
+#-----------------------------------------------------------------------------
 # Indicate that this cmakelists.txt file has already been parsed once.
 # Keeps append commands from having an effect every time cmake is run.
 SET( CMAKE_FIRST_PASS_COMPLETED ON 
-     CACHE BOOL "Modify the cache vars only on first pass thru cmake file" 
-     FORCE )
+  CACHE BOOL "Modify the cache vars only on first pass thru cmake file" FORCE )
 MARK_AS_ADVANCED( CMAKE_FIRST_PASS_COMPLETED )
 
 #-----------------------------------------------------------------------------
 # Superbuild setup
 option( TubeTK_USE_SUPERBUILD
-  "Build TubeTK and the projects it depends on via SuperBuild.cmake."
-  ON )
+  "Build TubeTK and the projects it depends on via SuperBuild.cmake." ON )
 
 if( TubeTK_USE_SUPERBUILD )
-
-  option( USE_SYSTEM_ITK 
-          "Exclude ITK from SuperBuild and use an existing build instead." OFF )
-  if( USE_SYSTEM_ITK )
-    find_package( ITK REQUIRED )
-    include(${ITK_USE_FILE})
-  endif( USE_SYSTEM_ITK )
   include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
   return()
-
 else( TubeTK_USE_SUPERBUILD )
 
   find_package( ITK REQUIRED )
-  include(${ITK_USE_FILE})
+  include( ${ITK_USE_FILE} )
 
   find_package( GenerateCLP REQUIRED )
-  include(${GenerateCLP_USE_FILE})
+  include( ${GenerateCLP_USE_FILE} )
+
+  if( TubeTK_USE_OpenIGTLink )
+    find_package( OpenIGTLink REQUIRED )
+    include( ${OpenIGTLink_USE_FILE} )
+  endif( TubeTK_USE_OpenIGTLink )
+
+  if( TubeTK_USE_CTK )
+    find_package( CTK REQUIRED )
+    include( ${CTK_USE_FILE} )
+  endif( TubeTK_USE_CTK )
 
 endif( TubeTK_USE_SUPERBUILD )
 
@@ -209,7 +229,7 @@ set(Slicer3_INSTALL_ITKFACTORIES_DIR "${Slicer3_INSTALL_LIB_DIR}/ITKFactories")
 set(Slicer3_INSTALL_PLUGINS_BIN_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins")
 set(Slicer3_INSTALL_PLUGINS_LIB_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins")
 set(Slicer3_INSTALL_PLUGINS_INCLUDE_DIR 
-    "${Slicer3_INSTALL_INCLUDE_DIR}/Plugins")
+  "${Slicer3_INSTALL_INCLUDE_DIR}/Plugins")
 set(Slicer3_INSTALL_PLUGINS_SHARE_DIR "${Slicer3_INSTALL_SHARE_DIR}/Plugins")
 set(Slicer3_INSTALL_PLUGINS_CACHE_DIR "${Slicer3_INSTALL_LIB_DIR}/PluginsCache")
 
@@ -221,7 +241,6 @@ include( ${TubeTK_SOURCE_DIR}/CMake/Slicer3PluginsMacros.cmake )
 # Misc.
 include(${CMAKE_ROOT}/Modules/TestBigEndian.cmake)
 test_big_endian(CMAKE_WORDS_BIGENDIAN)
-
 
 #-----------------------------------------------------------------------------
 # Build TubeTK
