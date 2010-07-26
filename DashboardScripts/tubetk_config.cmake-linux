@@ -26,7 +26,7 @@
 # Configure the following variables and move this file to the directory above
 #   the tubetk source directory.
 #
-set( SITE_NAME "aylward.abydos.kitware" )
+set( SITE_NAME "aylward@abydos.kitware" )
 set( SITE_PLATFORM "Linux" )
 set( SITE_BUILD_TYPE "Release" )
 set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
@@ -47,21 +47,21 @@ set( SITE_SVN_COMMAND "/usr/bin/svn" )
 set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 
 set( SITE_SOURCE_DIR "/home/aylward/src/tubetk" )
-set( SITE_BINARY_DIR "/home/aylward/src/tubetk-Release" )
+set( SITE_BINARY_DIR "/home/aylward/src/tubetk-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )
 set( SITE_EXPERIMENTAL_STYLE ON )
-set( SITE_EXPERIMENTAL_COVERAGE ON )
-set( SITE_EXPERIMENTAL_MEMORY ON )
+set( SITE_EXPERIMENTAL_COVERAGE OFF )
+set( SITE_EXPERIMENTAL_MEMORY OFF )
 
 set( SITE_CONTINUOUS_BUILD_TEST ON ) # Must be ON for any Continuous to run
 set( SITE_CONTINUOUS_STYLE ON )
-set( SITE_CONTINUOUS_COVERAGE ON )
-set( SITE_CONTINUOUS_MEMORY ON )
+set( SITE_CONTINUOUS_COVERAGE OFF )
+set( SITE_CONTINUOUS_MEMORY OFF )
 
 set( SITE_NIGHTLY_BUILD_TEST ON ) # Must be on for any Nightly to run
-set( SITE_NIGHTLY_STYLE ON )
-set( SITE_NIGHTLY_COVERAGE ON )
+set( SITE_NIGHTLY_STYLE OFF )
+set( SITE_NIGHTLY_COVERAGE OFF )
 set( SITE_NIGHTLY_MEMORY OFF )
 
 
@@ -72,22 +72,38 @@ set( SITE_NIGHTLY_MEMORY OFF )
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
 set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/DashboardScripts" )
 set( SITE_UPDATE_COMMAND "${GIT_COMMAND}" )
+set( GIT_EXECUTABLE "${GIT_COMMAND}" )
 
 set( ENV{PATH} "$ENV{PATH}:${SITE_KWSTYLE_DIR}" )
 
-set( SITE_CXX_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
-set( SITE_C_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
+set( SITE_CXX_FLAGS 
+  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
+set( SITE_C_FLAGS 
+  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
+set( SITE_EXE_LINKER_FLAGS "" )
+set( SITE_SHARED_LINKER_FLAGS "" )
 
 set( COVERAGE_FLAGS "-fprofile-arcs -ftest-coverage -lgcov" )
-if( SITE_NIGHTLY_COVERAGE OR SITE_CONTINUOUS_COVERAGE )
+if( SITE_NIGHTLY_COVERAGE 
+    OR SITE_CONTINUOUS_COVERAGE
+    OR SITE_EXPERIMENTAL_COVERAGE )
   set( SITE_C_FLAGS "${SITE_C_FLAGS} ${COVERAGE_FLAGS}" )
   set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${COVERAGE_FLAGS}" )
-endif( SITE_NIGHTLY_COVERAGE OR SITE_CONTINUOUS_COVERAGE )
+  set( SITE_EXE_LINKER_FLAGS "${SITE_EXE_LINKER_FLAGS} ${COVERAGE_FLAGS}" )
+  set( SITE_SHARED_LINKER_FLAGS 
+    "${SITE_SHARED_LINKER_FLAGS} ${COVERAGE_FLAGS}" )
+endif()
 
-set( MEMORYCHECK_OPTIONS "--gen-suppressions=all --trace-children=yes -q --leak-check=yes --show-reachable=yes --num-callers=50" )
+set( SITE_MEMORYCHECK_COMMAND_OPTIONS 
+  "--gen-suppressions=all --trace-children=yes -q --leak-check=yes --show-reachable=yes --num-callers=50" )
+set( SITE_MEMORYCHECK_SUPPRESSIONS_FILE 
+  "${CTEST_SCRIPT_DIRECTORY}/tubetk_valgrind_suppressions.txt" )
+
 set( MEMORYCHECK_FLAGS "-g -O0 -ggdb" )
-if( SITE_NIGHTLY_MEMORY OR SITE_CONTINUOUS_MEMORY )
+if( SITE_NIGHTLY_MEMORY 
+    OR SITE_CONTINUOUS_MEMORY 
+    OR SITE_EXPERIMENTAL_MEMORY )
   set( SITE_C_FLAGS "${SITE_C_FLAGS} ${MEMORYCHECK_FLAGS}" )
   set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${MEMORYCHECK_FLAGS}" )
-endif( SITE_NIGHTLY_MEMORY OR SITE_CONTINUOUS_MEMORY )
+endif()
 

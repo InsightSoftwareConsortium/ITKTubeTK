@@ -36,5 +36,5 @@ ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
-ctest_submit()
+ctest_submit( )
 

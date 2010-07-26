@@ -31,15 +31,10 @@ set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
 include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
 
-set( CTEST_MEMORYCHECK_COMMAND "${SITE_MEMORYCHECK_COMMAND}" )
-set( CTEST_MEMORYCHECK_SUPPRESSIONS_FILE
-   "${CTEST_SCRIPT_DIRECTORY}/tubetk_valgrind_supression.txt" )
-set( CTEST_MEMORYCHECK_COMMAND_OPTIONS "${MEMORYCHECK_OPTIONS}" )
-
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
 ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}TubeTK-Build" )
 ctest_submit()
 

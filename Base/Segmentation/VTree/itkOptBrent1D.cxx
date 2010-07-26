@@ -46,6 +46,16 @@ OptBrent1D::~OptBrent1D( void )
 }
 
 
+double OptBrent1D::smallDouble( void )
+{
+  return cSmall;
+}
+
+void OptBrent1D::smallDouble( double newSmall )
+{
+  cSmall = newSmall;
+}
+
 void OptBrent1D::use( UserFunc< double, double > * newFuncVal )
 {
   Optimizer1D::use( newFuncVal, NULL );

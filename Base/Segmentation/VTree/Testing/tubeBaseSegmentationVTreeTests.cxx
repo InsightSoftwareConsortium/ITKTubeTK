@@ -33,5 +33,6 @@ void RegisterTests()
   REGISTER_TEST( tubeBaseSegmentationVTreePrintTest );
   REGISTER_TEST( itkBlur3DImageFunctionTest );
   REGISTER_TEST( itkMatrixMathTest );
+  REGISTER_TEST( itkOptBrentTest );
 }
 

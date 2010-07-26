@@ -48,6 +48,7 @@ set( tubeBaseSegmentationVTree_SRCS
   tubeBaseSegmentationVTreePrintTest.cxx
   itkBlur3DImageFunctionTest.cxx
   itkMatrixMathTest.cxx
+  itkOptBrentTest.cxx
   )
 
 include_directories( 
@@ -73,6 +74,7 @@ target_link_libraries( tubeBaseSegmentationVTreeTests
   ITKIO 
   ITKNumerics 
   ITKBasicFilters 
+  VTree3D
   )
 
 add_test( tubeBaseSegmentationVTreeHeaderTest 
@@ -95,4 +97,9 @@ add_test( itkBlur3DImageFunctionTest
 add_test( itkMatrixMathTest
   ${BASE_SEGMENTATION_TESTS}
   itkMatrixMathTest
+  )
+
+add_test( itkOptBrentTest
+  ${BASE_SEGMENTATION_TESTS}
+  itkOptBrentTest
   )

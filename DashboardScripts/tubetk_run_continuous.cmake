@@ -41,8 +41,8 @@ if( SITE_CONTINUOUS_BUILD_TEST )
 
     endif()
 
-    # loop no faster than once every 5 minutes
-    ctest_sleep(${START_TIME} 300 ${CTEST_ELAPSED_TIME})
+    # loop no faster than once every 2 minutes
+    ctest_sleep(${START_TIME} 120 ${CTEST_ELAPSED_TIME})
   
   endwhile(${CTEST_ELAPSED_TIME} LESS 56000)
 
