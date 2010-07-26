@@ -97,7 +97,7 @@ int Test( void )
       for( unsigned int c=r; c<dimensionT; c++ )
         {
         m1(r,c) = rndGen->GetVariateWithOpenRange();
-        m1(r,c) = m1(c,r);
+        m1(c,r) = m1(r,c);
         }
       }
 
