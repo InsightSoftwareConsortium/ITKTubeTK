@@ -1068,9 +1068,9 @@ bool SplineND::extremeConjGrad(VectorType & extX, double * extVal)
   hessian(extX);
 
   //  VectorType eVals(cNDims);
-  VectorRefType eVals(cNDims,NULL);
+  VectorRefType eVals(cNDims, NULL);
   MatrixType eVects(cNDims, cNDims);
-  Eigen(*cH, eVects, eVals,false);
+  Eigen(*cH, eVects, eVals, false);
 
   return cOptND->extreme(extX, extVal, cNDims, eVects);
   }
