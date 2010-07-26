@@ -52,8 +52,8 @@ int Test( void )
       v2 = itk::GetOrthogonalVector( v1 );
       if( dot_product( v1, v2 ) > epsilon )
         {
-        std::cerr << count << " : ";
-        std::cerr << "FAILURE: GetOrthogonalVector: DotProduct = "
+        std::cout << count << " : ";
+        std::cout << "FAILURE: GetOrthogonalVector: DotProduct = "
                   << v1 << " .* " << v2 << " = " 
                   << dot_product( v1, v2 ) << std::endl;
         returnStatus = EXIT_FAILURE;
@@ -63,8 +63,8 @@ int Test( void )
       if( dot_product( v1, v3 ) > epsilon ||
           dot_product( v2, v3 ) > epsilon )
         {
-        std::cerr << count << " : ";
-        std::cerr << "FAILURE: GetCrossVector: DotProduct = "
+        std::cout << count << " : ";
+        std::cout << "FAILURE: GetCrossVector: DotProduct = "
           << dot_product( v1, v3 ) << " and " 
           << dot_product( v2, v3 ) << std::endl;
         returnStatus = EXIT_FAILURE;
@@ -83,10 +83,10 @@ int Test( void )
     if( vnl_math_abs( itk::ComputeEuclideanDistanceVector( v1, v4 ) - 0.5 )
         > epsilon )
       {
-      std::cerr << count << " : ";
-      std::cerr << "FAILURE: ComputeLineStep = "
+      std::cout << count << " : ";
+      std::cout << "FAILURE: ComputeLineStep = "
         << v1 << " + 0.5 * " << v2 << " != " << v4 << std::endl;
-      std::cerr << "FAILURE: ComputeEuclidenDistanceVector = "
+      std::cout << "FAILURE: ComputeEuclidenDistanceVector = "
         << itk::ComputeEuclideanDistanceVector( v1, v4 ) << std::endl;
       returnStatus = EXIT_FAILURE;
       }
@@ -109,8 +109,8 @@ int Test( void )
       v1 = m1 * eVects.get_column(d);
       if( vnl_math_abs( v1.magnitude() - eVals[d] ) > epsilon )
         {
-        std::cerr << count << " : ";
-        std::cerr << "FAILURE: Eigen : "
+        std::cout << count << " : ";
+        std::cout << "FAILURE: Eigen : "
           << " v1 * M1 = " << v1 
           << " and v1 norm = " << v1.magnitude()
           << " != " << eVals[d] 
