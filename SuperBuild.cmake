@@ -24,13 +24,12 @@ if(NOT USE_SYSTEM_ITK)
   ##
   set(proj Insight)
   ExternalProject_Add(${proj}
-    CVS_REPOSITORY 
-      ":pserver:anonymous:insight@public.kitware.com:/cvsroot/Insight" 
-    CVS_MODULE "Insight"
-    SOURCE_DIR Insight
+    GIT_REPOSITORY "http://itk.org/ITK.git"
+    SOURCE_DIR ${CMAKE_BINARY_DIR}/Insight
     BINARY_DIR Insight-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
+      -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
