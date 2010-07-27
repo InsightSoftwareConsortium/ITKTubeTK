@@ -21,6 +21,14 @@
       <default>18000</default>
       <description>Port </description>
     </integer>
+    <integer>
+      <name>duration</name>
+      <label>Duration </label>
+      <channel>input</channel>
+      <index>1</index>
+      <default>-1</default>
+      <description>Duration (in seconds) for keeping sending the coordinates without getting response from the client. A negative value means keep sending without stopping.</description>
+    </integer>
   </parameters>
 
   <parameters>
@@ -33,6 +41,10 @@
       <flag>f</flag>
       <default>10</default>
     </float>
+  </parameters>
+
+  <parameters>
+    <label>Duration parameters </label>
   </parameters>
 
 </executable>

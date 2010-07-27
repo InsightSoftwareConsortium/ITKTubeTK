@@ -129,7 +129,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
     double cosValue = cos(point[0]);
     pt.Set(static_cast<ImageType::PixelType>(cosValue*cosValue)); //cosx*cosx
     }
-
+  
   // Compute reference image as convolution of gaussian and product of gradient
   typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>  
                                                  GaussianFilterType;
@@ -144,6 +144,11 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
     gaussian->Update();
     refImage = gaussian->GetOutput();
     }
+
+  WriterType::Pointer writer1 = WriterType::New();
+  writer1->SetFileName("cos2.mha");
+  writer1->SetInput(refImage);
+  writer1->Update();
 
   // Declare the type for the filter
   typedef itk::StructureTensorRecursiveGaussianImageFilter<ImageType>  
@@ -166,6 +171,12 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   typedef StructureTensorFilterType::OutputPixelType TensorImagePixelType;
   
   TensorImageType::Pointer outImage = filter->GetOutput();
+
+  typedef itk::ImageFileWriter<TensorImageType>     TensorWriterType;
+  TensorWriterType::Pointer writer2 = TensorWriterType::New();
+  writer2->SetFileName("tensor.nrrd");
+  writer2->SetInput(outImage);
+  writer2->Update();
   
   itk::ImageRegionIteratorWithIndex<TensorImageType> ot(outImage, 
                                            outImage->GetLargestPossibleRegion());

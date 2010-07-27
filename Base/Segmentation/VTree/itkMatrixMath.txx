@@ -177,40 +177,28 @@ template <class T>
 void
 Eigen(vnl_matrix<T> &mat,
       vnl_matrix<T> &eVects,
-      vnl_vector<T> &eVals, bool orderByAbs)
+      vnl_vector<T> &eVals, bool orderByAbs )
 {
-  static vnl_vector<T> *subD = NULL;
 
   int n = mat.rows();
 
-  if(subD)
-    {
-    if(subD->size() != mat.rows()) 
-      {
-      delete subD;
-      subD = NULL;
-      }
-    }
-  if(subD == NULL)
-    {
-    subD = new vnl_vector<T>(n);
-    }
-  
+  vnl_vector<T> subD(n);
+
   eVects = mat;
   switch(n) 
     {
     case 2:
-      TriDiag2D(eVects, eVals, *subD);
-      Tqli(eVals, *subD, eVects);
+      TriDiag2D(eVects, eVals, subD);
+      Tqli(eVals, subD, eVects);
       break;
     case 3:
-      TriDiag3D(eVects, eVals, *subD);
-      Tqli(eVals, *subD, eVects);
+      TriDiag3D(eVects, eVals, subD);
+      Tqli(eVals, subD, eVects);
       break;
     default:
       vnl_symmetric_eigensystem< T > eigen( mat );
       eVects = eigen.V;
-      for( unsigned int d=0; d<eVects.size(); d++ )
+      for( unsigned int d=0; d<eVects.columns(); d++ )
         {
         eVals[d] = eigen.get_eigenvalue( d );
         }

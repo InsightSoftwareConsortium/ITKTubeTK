@@ -31,11 +31,11 @@ if( TCL_TCLSH )
     )
 endif( TCL_TCLSH )
 
-set( BASE_SEGMENTATION_TESTS 
+set( BASE_SEGMENTATION_VTREE_TESTS 
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationVTreeTests 
   )
 
-set( BASE_SEGMENTATION_HEADER_TEST 
+set( BASE_SEGMENTATION_HEADER_VTREE_TEST 
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationVTreeHeaderTest
   )
 
@@ -78,16 +78,16 @@ target_link_libraries( tubeBaseSegmentationVTreeTests
   )
 
 add_test( tubeBaseSegmentationVTreeHeaderTest 
-  ${BASE_SEGMENTATION_HEADER_TEST} 
+  ${BASE_SEGMENTATION_HEADER_VTREE_TEST} 
   )
 
 add_test( tubeBaseSegmentationVTreePrintTest 
-  ${BASE_SEGMENTATION_TESTS}
+  ${BASE_SEGMENTATION_VTREE_TESTS}
   tubeBaseSegmentationVTreePrintTest 
   )
 
 add_test( itkBlur3DImageFunctionTest
-  ${BASE_SEGMENTATION_TESTS}
+  ${BASE_SEGMENTATION_VTREE_TESTS}
   --compare ${BASELINE}/itkBlur3DImageFunctionTest.mha
             ${TEMP}/itkBlur3DImageFunctionTest.mha
   itkBlur3DImageFunctionTest
@@ -95,11 +95,11 @@ add_test( itkBlur3DImageFunctionTest
   )
 
 add_test( itkMatrixMathTest
-  ${BASE_SEGMENTATION_TESTS}
+  ${BASE_SEGMENTATION_VTREE_TESTS}
   itkMatrixMathTest
   )
 
 add_test( itkOptBrentTest
-  ${BASE_SEGMENTATION_TESTS}
+  ${BASE_SEGMENTATION_VTREE_TESTS}
   itkOptBrentTest
   )

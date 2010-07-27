@@ -93,7 +93,7 @@ add_test( tubeCLIFilterWatcherTest
 
 add_test( tubeCLIHelperFunctionsTest 
             ${UTILITIES_TESTS}
-            tubeCLIFilterWatcherTest ${INPUT_DATA}/Branch.n010.mha )
+            tubeCLIHelperFunctionsTest ${INPUT_DATA}/Branch.n010.mha )
 
 add_test( tubeCLIProgressReporterTest 
             ${UTILITIES_TESTS}
