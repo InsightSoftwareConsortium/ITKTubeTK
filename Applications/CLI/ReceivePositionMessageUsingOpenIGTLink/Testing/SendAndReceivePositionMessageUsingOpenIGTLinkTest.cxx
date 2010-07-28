@@ -58,7 +58,7 @@ int main( int argc, char **argv )
     command << " ";
     command << port;
     command << " ";
-    command << 2;  // duration
+    command << 10;  // duration
     system( command.str().c_str() );
     command.clear();
     }
