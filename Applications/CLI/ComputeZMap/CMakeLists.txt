@@ -77,7 +77,7 @@ set( TARGETS
      ${PROJECT_NAME} )
 slicer3_install_plugins( ${TARGETS} )
 
-#if( BUILD_TESTING )
-#  add_subdirectory( Testing )
-#endif( BUILD_TESTING )
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
 
