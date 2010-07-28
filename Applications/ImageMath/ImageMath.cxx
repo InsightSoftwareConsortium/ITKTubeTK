@@ -1372,7 +1372,7 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "blurOrder", "direction", MetaCommand::INT,
     true );
 
-  command.SetOption( "vessels", "v", false, 
+  command.SetOption( "vessels", "z", false, 
     "Compute ridgness/vesselness for specified scales" );
   command.AddOptionField( "vessels", "scaleMin", MetaCommand::INT, true );
   command.AddOptionField( "vessels", "scaleMax", MetaCommand::INT, true );
@@ -1441,7 +1441,7 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "SetRandom", "seedValue", MetaCommand::FLOAT,
     true );
 
-  command.SetOption( "Voronoi", "V", false,
+  command.SetOption( "Voronoi", "Z", false,
     "Run centroid voronoi tessellation on the image" );
   command.AddOptionField( "Voronoi", "numCentroids",
     MetaCommand::FLOAT, true );
