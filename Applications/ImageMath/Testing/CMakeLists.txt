@@ -52,7 +52,8 @@ add_test( ${PROJECT_NAME}Test1
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
@@ -71,7 +72,8 @@ add_test( ${PROJECT_NAME}Test2
 add_test( ${PROJECT_NAME}Test2-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test2.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test2.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
 
@@ -109,7 +111,8 @@ set_tests_properties( ${PROJECT_NAME}Test5
 add_test( ${PROJECT_NAME}Test5-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test5.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test5.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test5.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test5-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test5 )
 
@@ -129,7 +132,8 @@ set_tests_properties( ${PROJECT_NAME}Test6
 add_test( ${PROJECT_NAME}Test6-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test6.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test6.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test6.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test6-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test6 )
 
@@ -148,7 +152,8 @@ add_test( ${PROJECT_NAME}Test7
 add_test( ${PROJECT_NAME}Test7-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test7.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test7.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test7.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test7-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test7 )
 
@@ -167,7 +172,8 @@ add_test( ${PROJECT_NAME}Test8
 add_test( ${PROJECT_NAME}Test8-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test8.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test8.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test8.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test8-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test8 )
 
@@ -186,7 +192,8 @@ add_test( ${PROJECT_NAME}Test9
 add_test( ${PROJECT_NAME}Test9-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test9.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test9.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test9.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test9-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test9 )
 
@@ -205,7 +212,8 @@ add_test( ${PROJECT_NAME}Test10
 add_test( ${PROJECT_NAME}Test10-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test10.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test10.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test10.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test10-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test10 )
 
@@ -224,7 +232,8 @@ add_test( ${PROJECT_NAME}Test11
 add_test( ${PROJECT_NAME}Test11-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test11.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test11.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test11.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test11-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test11 )
 
@@ -243,7 +252,8 @@ add_test( ${PROJECT_NAME}Test12
 add_test( ${PROJECT_NAME}Test12-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test12.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test12.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test12.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test12-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test12 )
 
@@ -262,7 +272,8 @@ add_test( ${PROJECT_NAME}Test13
 add_test( ${PROJECT_NAME}Test13-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test13.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test13.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test13.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test13-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test13 )
 
@@ -317,7 +328,8 @@ add_test( ${PROJECT_NAME}Test16
 add_test( ${PROJECT_NAME}Test16-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test16.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test16.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test16.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test16-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test16 )
 
@@ -336,7 +348,8 @@ add_test( ${PROJECT_NAME}Test17
 add_test( ${PROJECT_NAME}Test17-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test17.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test17.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test17.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test17-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test17 )
 
@@ -355,7 +368,8 @@ add_test( ${PROJECT_NAME}Test18
 add_test( ${PROJECT_NAME}Test18-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test18.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test18.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test18.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test18-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test18 )
 
@@ -374,7 +388,8 @@ add_test( ${PROJECT_NAME}Test19
 add_test( ${PROJECT_NAME}Test19-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test19.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test19.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test19.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test19-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test19 )
 
@@ -393,7 +408,8 @@ add_test( ${PROJECT_NAME}Test20
 add_test( ${PROJECT_NAME}Test20-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test20.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test20.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test20.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test20-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test20 )
 
@@ -412,7 +428,8 @@ add_test( ${PROJECT_NAME}Test21
 add_test( ${PROJECT_NAME}Test21-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test21.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test21.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test21.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test21-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test21 )
 
@@ -431,7 +448,8 @@ add_test( ${PROJECT_NAME}Test22
 add_test( ${PROJECT_NAME}Test22-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test22.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test22.mha )
+               -b ${BASELINE}/${PROJECT_NAME}Test22.mha
+               -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test22-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test22 )
 
