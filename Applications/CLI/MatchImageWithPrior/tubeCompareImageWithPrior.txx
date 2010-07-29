@@ -179,6 +179,13 @@ SetGaussianBlur( float gaussianBlur )
 
 template< class pixelT, unsigned int dimensionT >
 void CompareImageWithPrior< pixelT, dimensionT>::
+SetSamplingRate( float samplingRate )
+{
+  m_SamplingRate = samplingRate;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetUseRegistration( bool reg )
 {
   m_UseRegistration = reg;
@@ -445,7 +452,7 @@ Update( void )
         {
         numSamples *= imageSize[i];
         }
-      reg->SetNumberOfSamples( numSamples * 0.2 );
+      reg->SetNumberOfSamples( numSamples * m_SamplingRate );
   
       if( m_ProgressReporter )
         {
@@ -951,7 +958,7 @@ Update( void )
       {
       numSamples *= size[i];
       }
-    metric->SetNumberOfSpatialSamples( numSamples*m_SamplingRate );
+    metric->SetNumberOfSpatialSamples( numSamples * m_SamplingRate );
     metric->Initialize();
     metric->MultiThreadingInitialize();
   
