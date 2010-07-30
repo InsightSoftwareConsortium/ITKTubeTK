@@ -90,6 +90,14 @@
       <longflag>gaussianBlur</longflag>
       <default>9</default>
     </float>
+    <float>
+      <name>samplingRate</name>
+      <label>Image match sampling rate</label>
+      <flag>s</flag>
+      <description>Portion of voxels to use when computing image-match metric</description>
+      <longflag>samplingRate</longflag>
+      <default>0.1</default>
+    </float>
     <boolean>
       <name>disableRegistrationOptimization</name>
       <label>Disable Registration Optimization</label>

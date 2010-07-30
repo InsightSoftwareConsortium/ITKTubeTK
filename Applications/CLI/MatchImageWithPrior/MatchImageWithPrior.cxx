@@ -233,6 +233,8 @@ int DoIt( int argc, char * argv[] )
     eval.SetDilate( dilate );
     eval.SetGaussianBlur( gaussianBlur );
 
+    eval.SetSamplingRate( samplingRate );
+
     eval.Update();
 
     if( loadTransform.size() == 0 )

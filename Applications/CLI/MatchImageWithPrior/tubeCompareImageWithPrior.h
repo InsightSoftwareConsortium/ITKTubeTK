@@ -63,6 +63,8 @@ public:
 
   void SetGaussianBlur( float gaussianBlur );
 
+  void SetSamplingRate( float samplingRate );
+
   void SetUseRegistration( bool reg );
   bool GetUseRegistration( );
   void SetUseRegistrationTransform( bool reg );
