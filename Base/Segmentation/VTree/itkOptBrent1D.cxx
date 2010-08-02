@@ -34,8 +34,9 @@ OptBrent1D::OptBrent1D( void )
   cSmall = 1.0e-20;
 }
 
-OptBrent1D::OptBrent1D( UserFunc< double, double > * newFuncVal )
-: Optimizer1D( newFuncVal, NULL )
+OptBrent1D::OptBrent1D( UserFunc< double, double > * newFuncVal,
+                        UserFunc< double, double > * newFuncDeriv )
+: Optimizer1D( newFuncVal, newFuncDeriv )
 {
   cSmall = 1.0e-20;
 }
@@ -56,9 +57,10 @@ void OptBrent1D::smallDouble( double newSmall )
   cSmall = newSmall;
 }
 
-void OptBrent1D::use( UserFunc< double, double > * newFuncVal )
+void OptBrent1D::use( UserFunc< double, double > * newFuncVal,
+                      UserFunc< double, double > * newFuncDeriv )
 {
-  Optimizer1D::use( newFuncVal, NULL );
+  Optimizer1D::use( newFuncVal, newFuncDeriv );
 }
 
 
@@ -108,16 +110,34 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
     v = x;
     fv = fx;
     x = v+d*cXStep*w;
-    //cout << " x0 = " << x << endl;
     if(x<cXMin || x>cXMax)
       {
-      *extX = v;
-      *extVal = maxSign*fv;
-      return 0;
+      if(x<cXMin)
+        {
+        x = cXMin;
+        }
+      else
+        {
+        x = cXMax;
+        }
+      fx = maxSign*cFuncVal->value(x);
+      if( fx >= fv )
+        {
+        *extX = v;
+        *extVal = maxSign*fv;
+        //std::cout << " limit: x0 = " << x << std::endl;
+        //std::cout << " limit: v = " << v << std::endl;
+        //std::cout << " limit: vVal = " << maxSign*fv << std::endl;
+        return 0;
+        }
       }
-    
-    fx = maxSign*cFuncVal->value(x);
-    w *= 1.1;
+    else
+      {
+      fx = maxSign*cFuncVal->value(x);
+      //std::cout << " x0 = " << x << std::endl;
+      //std::cout << " xVal = " << fx << std::endl;
+      w *= 1.1;
+      }
     }
     
   u = v-d*cXStep;
@@ -132,7 +152,8 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
   for(iter = 0; iter < cMaxIterations; iter++) 
     {
     xm = 0.5 * (a+b);
-    //cout << " x = " << x << endl;
+    //std::cout << "x = " << x << std::endl;
+    //std::cout << "  fx = " << fx << std::endl;
     tol1 = cTolerance * fabs(x) + cSmall;
     tol2 = 2.0 * tol1;
     if(fabs(x-xm) <= (tol2 - 0.5*(b-a)))

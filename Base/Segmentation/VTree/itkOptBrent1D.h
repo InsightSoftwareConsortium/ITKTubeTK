@@ -39,11 +39,13 @@ class OptBrent1D : public Optimizer1D
 public:
 
   OptBrent1D( void );
-  OptBrent1D( UserFunc< double, double > * newFuncVal );
+  OptBrent1D( UserFunc< double, double > * newFuncVal,
+              UserFunc< double, double > * newFuncDeriv );
 
   ~OptBrent1D( void );
 
-  void use( UserFunc< double, double > * newFuncVal );
+  void use( UserFunc< double, double > * newFuncVal,
+            UserFunc< double, double > * newFuncDeriv );
 
   double   smallDouble( void );
   void     smallDouble( double newSmall );

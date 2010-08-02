@@ -45,31 +45,46 @@ class MyFunc:
       };
   };
 
+class MyFuncD:
+  public itk::UserFunc< double, double > 
+  {
+  public:
+    MyFuncD( )
+      {
+      };
+    double value( double x )
+      {
+      return vcl_cos(x);
+      };
+  };
+
 int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
 {
   double epsilon = 0.000001;
 
   MyFunc * myFunc = new MyFunc();
-  itk::OptBrent1D * opt = new itk::OptBrent1D( myFunc );
+  MyFuncD * myFuncD = new MyFuncD();
+  itk::OptBrent1D * opt = new itk::OptBrent1D( myFunc, myFuncD );
 
   opt->smallDouble( epsilon );
 
   MyFunc * myFunc2 = new MyFunc();
-  opt->use( myFunc2 );
+  MyFuncD * myFuncD2 = new MyFuncD();
+  opt->use( myFunc2, myFuncD2 );
 
   delete myFunc;
 
   int returnStatus = EXIT_SUCCESS;
 
-  opt->xMin( -1 );
-  if( opt->xMin() != -1 )
+  opt->xMin( -3.5 );
+  if( opt->xMin() != -3.5 )
     {
     std::cout << "xMin should be -1 and not " << opt->xMin() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->xMax( 1 );
-  if( opt->xMax() != 1 )
+  opt->xMax( 3.5 );
+  if( opt->xMax() != 3.5 )
     {
     std::cout << "xMax should be 1 and not " << opt->xMax() << std::endl;
     returnStatus = EXIT_FAILURE;
@@ -83,24 +98,24 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->tolerance( 0.001 );
-  if( opt->tolerance() != 0.001 )
+  opt->tolerance( 0.000001 );
+  if( opt->tolerance() != 0.000001 )
     {
     std::cout << "tolerance should be 0.001 and not " << opt->tolerance() 
       << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->maxIterations( 100 );
-  if( opt->maxIterations() != 100 )
+  opt->maxIterations( 300 );
+  if( opt->maxIterations() != 300 )
     {
     std::cout << "maxIterations should be 100 and not " 
       << opt->maxIterations() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->searchForMin( false );
-  if( opt->searchForMin() )
+  opt->searchForMin( true );
+  if( !opt->searchForMin() )
     {
     std::cout << "searchForMin should be false and not true." << std::endl;
     returnStatus = EXIT_FAILURE;
@@ -114,10 +129,11 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
     returnStatus = EXIT_FAILURE;
     }
 
-  if( vnl_math_abs( x ) > epsilon )
+  double idealX = vnl_math::pi / 2;
+  if( vnl_math_abs( idealX - x ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  x=" << x 
-      << std::endl;
+      << " diff=" << vnl_math_abs( idealX - x ) << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
