@@ -25,7 +25,8 @@ if(NOT USE_SYSTEM_ITK)
   set(proj Insight)
   ExternalProject_Add(${proj}
     GIT_REPOSITORY "http://itk.org/ITK.git"
-    SOURCE_DIR ${CMAKE_BINARY_DIR}/Insight
+    GIT_TAG v3.20.0
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
     BINARY_DIR Insight-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
@@ -177,7 +178,7 @@ if( TubeTK_USE_CTK )
   set(proj CTK)
   ExternalProject_Add(CTK
     GIT_REPOSITORY "http://github.com/commontk/CTK.git"
-    SOURCE_DIR ${CMAKE_BINARY_DIR}/CTK 
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
     BINARY_DIR CTK-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
@@ -209,7 +210,7 @@ endif( TubeTK_USE_CTK )
 set(proj TubeTK)
 ExternalProject_Add(${proj}
   DOWNLOAD_COMMAND ""
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
   BINARY_DIR TubeTK-Build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
