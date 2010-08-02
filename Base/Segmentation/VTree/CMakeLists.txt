@@ -7,7 +7,7 @@
 # 
 # All rights reserved. 
 # 
-# Licensed under the Apache License, Version 2.0 (the "License");
+# Licensed under the Apache License, Version 2.0 ( the "License" );
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 # 
@@ -21,12 +21,12 @@
 # 
 ##############################################################################
 
-PROJECT(VTree3D)
+PROJECT( VTree3D )
 
-FIND_PACKAGE(ITK REQUIRED)
-INCLUDE(${ITK_USE_FILE})
+FIND_PACKAGE( ITK REQUIRED )
+INCLUDE( ${ITK_USE_FILE} )
  
-SET(VTree3D_SRCS
+SET( VTree3D_SRCS
   itkOptBrent1D.cxx
   itkOptGoldenMean1D.cxx
   itkOptParabolicFit1D.cxx
@@ -37,8 +37,12 @@ SET(VTree3D_SRCS
   itkSplineND.cxx
   )
 
-ADD_LIBRARY(VTree3D ${VTree3D_SRCS})
-TARGET_LINK_LIBRARIES(VTree3D ${ITK_LIBRARIES})
+ADD_LIBRARY( VTree3D SHARED ${VTree3D_SRCS} )
+TARGET_LINK_LIBRARIES( VTree3D ${ITK_LIBRARIES} )
+
+slicer3_set_plugins_output_path( VTree3D )
+set( TARGETS VTree3D )
+slicer3_install_plugins( ${TARGETS} )
 
 IF( BUILD_TESTING )
   add_subdirectory( Testing )
