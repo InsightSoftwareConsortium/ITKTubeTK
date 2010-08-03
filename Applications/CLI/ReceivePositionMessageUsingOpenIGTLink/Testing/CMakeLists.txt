@@ -24,14 +24,23 @@
 include_regular_expression( "^.*$" )
 
 set( TEST_EXE
- SendAndReceivePositionMessageUsingOpenIGTLinkTest )
+  SendAndReceivePositionMessageUsingOpenIGTLinkTest )
 
 set( TEST_SOURCE 
- SendAndReceivePositionMessageUsingOpenIGTLinkTest.cxx
-  )
+  SendAndReceivePositionMessageUsingOpenIGTLinkTest.cxx )
 
 set( TEST_PATH 
- ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR} )
+    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR} )
+
+find_program( SENDER_EXE
+              SendPositionMessageUsingOpenIGTLink
+              PATHS ${TEST_PATH} 
+              PATH_SUFFIXES ${CMAKE_CONFIGURATION_TYPES})
+
+find_program( RECEIVER_EXE
+              ReceivePositionMessageUsingOpenIGTLink
+              PATHS ${TEST_PATH} 
+              PATH_SUFFIXES ${CMAKE_CONFIGURATION_TYPES})
 
 #######
 # Test1
@@ -52,7 +61,7 @@ slicer3_install_plugins( ${TARGETS} )
 
 add_test( ${TEST_EXE}1  
      ${TEST_PATH}/${TEST_EXE} 
-     ${TEST_PATH}/SendPositionMessageUsingOpenIGTLink
-     ${TEST_PATH}/ReceivePositionMessageUsingOpenIGTLink
+     ${SENDER_EXE}
+     ${RECEIVER_EXE}
      18000 
      localhost)
