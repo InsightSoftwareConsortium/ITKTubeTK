@@ -29,14 +29,14 @@
       <default>null</default>
       <description>client executable</description>
     </string>
-    <integer>
+    <string>
       <name>port</name>
       <label>Port</label>
       <channel>input</channel>
       <index>2</index>
       <default>18000</default>
       <description>Port </description>
-    </integer>
+    </string>
     <string>
       <name>hostname</name>
       <label>hostname</label>
