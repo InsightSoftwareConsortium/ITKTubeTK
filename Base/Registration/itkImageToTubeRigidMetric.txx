@@ -141,9 +141,11 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   unsigned int skipped = 0;
   unsigned int tubeSize = 0;
   
-  TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(999999,"Tube");
-  for(TubeIterator=tubeList->begin();TubeIterator!=tubeList->end();TubeIterator++)
-  { 
+  TubeNetType::ChildrenListType* tubeList = 
+    this->m_MovingSpatialObject->GetChildren(999999,"Tube");
+  TubeNetType::ChildrenListType::iterator TubeIterator = tubeList->begin();
+  for(; TubeIterator != tubeList->end(); ++TubeIterator)
+    { 
     //static_cast<TubeSpatialObject<3>*>((*TubeIterator).GetPointer())->RemoveDuplicatePoints();
     static_cast<TubeSpatialObject<3>*>((*TubeIterator).GetPointer())->ComputeTangentAndNormals();
     TubeType::Pointer  newTube = TubeType::New();
@@ -151,14 +153,16 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
     skipped = 0;
     tubeSize = static_cast<TubeSpatialObject<3>*>((*TubeIterator).GetPointer())->GetPoints().size();
     if(tubeSize > sampling)
-    {
+      {
       for(TubePointIterator=static_cast<TubeSpatialObject<3>*>((*TubeIterator).GetPointer())->GetPoints().begin(); \
           TubePointIterator!=static_cast<TubeSpatialObject<3>*>((*TubeIterator).GetPointer())->GetPoints().end();\
           TubePointIterator++)
-      { 
+        { 
         if(sampling != 1)
           {
-          while (skipped++%(sampling/2) != 0 && TubePointIterator!=static_cast<TubeSpatialObject<3>*>((*TubeIterator).GetPointer())->GetPoints().end())
+          while (skipped++%(sampling/2) != 0 && 
+                 TubePointIterator != static_cast<TubeSpatialObject<3>*>
+                 ((*TubeIterator).GetPointer())->GetPoints().end() )
             {
             TubePointIterator++;
             }
@@ -168,7 +172,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
            //&& ((*TubePointIterator).GetRidgeness()>0.2)
            //&& ((*TubePointIterator).GetMedialness()>0.02)
           )
-        {
+          {
           newTube->GetPoints().push_back(*(TubePointIterator));
           double val = -2*(*TubePointIterator).GetRadius(); //-2
           weight = 2/(1+exp(val)); //2/(1+val)-1
@@ -180,23 +184,23 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
           vnl_vector_fixed<double,ImageDimension> v2;
 
           for(unsigned int i=0;i<ImageDimension;i++)
-          {
+            {
             v1(i)=(*TubePointIterator).GetNormal1()[i];
             v2(i)=(*TubePointIterator).GetNormal2()[i];
-          }
+            }
 
           tM = outer_product(v1,v1);
           tM = tM + outer_product(v2,v2);
           m_BiasV = m_BiasV + (weight * tM);
           for(unsigned int i=0 ; i<ImageDimension; i++)
-          {
+            {
             (mC)(i) += weight*((*TubePointIterator).GetPosition())[i]; 
-          }
+            }
           m_SumWeight += weight;
           m_NumberOfPoints++;
 
          
-        }
+          }
 
         if(sampling>1)
           {
@@ -209,8 +213,8 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
             TubePointIterator--;
             }
           }
+        }
       }
-    }
     //newTubeNet->GetTubes().push_back(newTube);
     newTubeNet->AddSpatialObject(newTube);
   }

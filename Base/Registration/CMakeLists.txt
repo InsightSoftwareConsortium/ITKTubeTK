@@ -21,8 +21,24 @@
 # 
 ##############################################################################
 
-add_subdirectory( Numerics )
-add_subdirectory( Preprocessing )
-add_subdirectory( Segmentation )
-add_subdirectory( Registration )
+PROJECT(Registration)
+
+FIND_PACKAGE(ITK REQUIRED)
+INCLUDE(${ITK_USE_FILE})
+ 
+#SET(Registration_SRCS
+#  itkImageToTubeRigidMetric.txx
+#  itkImageToTubeRigidRegistration.txx
+#  itkSpatialObjectToSpatialObjectFilter.txx
+#  itkTubeToTubeTransformFilter.txx
+#  TubeRegistrator.cpp
+#  )
+
+#ADD_LIBRARY(${PROJECT_NAME} ${Registration_SRCS})
+#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+#TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${ITK_LIBRARIES})
+
+IF( BUILD_TESTING )
+  add_subdirectory( Testing )
+ENDIF( BUILD_TESTING )
 

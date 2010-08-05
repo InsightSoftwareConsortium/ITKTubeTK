@@ -21,7 +21,6 @@
 #include "itkImageToSpatialObjectRegistrationMethod.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkImageToTubeRigidMetric.h"
-#include "itkGradientDescentVariableStepOptimizer.h"
 #include "itkGradientDescentOptimizer.h"
 #include "itkImage.h"
 #include "itkLevenbergMarquardtOptimizer.h"

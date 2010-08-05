@@ -21,7 +21,6 @@
 #include "itkPoint.h"
 #include "itkGroupSpatialObject.h"
 #include "itkTubeSpatialObject.h"
-#include "itkTubePoint.h"
 #include "itkMinimumMaximumImageCalculator.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include <time.h>
@@ -138,17 +137,16 @@ public:
   itkSetMacro(Extent,double);
   itkGetMacro(Extent,double);
 
-  /** Set/Get the Transform. */
-  //void SetTransform(TransformPointer transform) {std::cout << "setting trasnsform" << std::endl ; m_Transform = transform;}
-  //itkGetObjectMacro( Transform, TransformType );
+  TransformPointer GetTransform(void) const {
+    return dynamic_cast<TransformType*>(this->m_Transform.GetPointer());}
 
-  TransformPointer GetTransform(void) const {return dynamic_cast<TransformType*>(this->m_Transform.GetPointer());}
+  itkSetObjectMacro(MaskImage, MaskImageType);
 
-  itkSetObjectMacro(MaskImage,MaskImageType);
-
-  void SetVerbose(bool verbose) {m_Verbose = verbose;}
-
-  void SetSampling(unsigned int sample) {m_Sampling = sample;}
+  itkSetObjectMacro(Verbose, bool);
+  itkGetObjectMacro(Verbose, bool);
+  
+  itkSetObjectMacro(Sampling, unsigned int);
+  itkGetObjectMacro(Sampling, unsigned int);
 
 protected:
 
@@ -159,11 +157,6 @@ protected:
 
   void ComputeImageRange(void);
   void GetDeltaAngles(const Point<double,3> &  x,const vnl_vector_fixed<double,3> & dx, double *dA, double *dB, double *dG) const;
-
-  //MeasureType                 m_MatchMeasure;
-  //DerivativeType              m_MatchMeasureDerivatives;
-  //mutable TransformPointer    m_Transform;
-  //InterpolatorPointer         m_Interpolator;
 
 private:
 
