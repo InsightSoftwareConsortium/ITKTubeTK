@@ -29,6 +29,11 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
+#ifdef WIN32
+#include <stdio.h>
+#include <process.h>
+#endif
+
 // The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
@@ -46,10 +51,26 @@ int main( int argc, char **argv )
 {
   PARSE_ARGS;
 
-  pid_t pid;
+#ifdef WIN32
+  char *args[4];
+  args[0] = &serverexecutable[0];
+  args[1] = &port[0];
+  args[2] = "10";
+  args[3] = NULL;
 
-  std::cout << "Starting sender ... " << std::endl;
-  pid = fork();
+  char *args1[4];
+  args1[0] = &clientexecutable[0];
+  args1[1] = &port[0];
+  args1[2] = &hostname[0];
+  args1[3] = NULL;
+
+
+  _spawnv(P_NOWAIT, serverexecutable.c_str(), args);
+  
+  _spawnv(P_NOWAIT, clientexecutable.c_str(), args1);
+
+#else
+  pid_t pid = fork();
   
   if (pid == 0) // parent fork run server sending executable
     {
@@ -64,6 +85,7 @@ int main( int argc, char **argv )
     }
   else // child fork run client receiving executable
     {
+    sleep( 3 );
     std::stringstream command;
     command << clientexecutable;
     command << " ";
@@ -73,6 +95,8 @@ int main( int argc, char **argv )
     system( command.str().c_str() );
     command.clear();
     }
-  
+#endif
+
   return EXIT_SUCCESS;
 }
+
