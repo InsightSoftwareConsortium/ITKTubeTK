@@ -38,8 +38,13 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   m_InputImage = NULL;
   m_InputImageMax = 0;
+  m_InputImageSize.Fill( 0 );
+
+  m_OutputImage = NULL;
 
   m_NumberOfCentroids = 100;
+  m_Centroids.clear();
+
   m_InitialSamplingMethod = CVT_RANDOM;
   m_NumberOfSamples = 10000;
   m_NumberOfIterations = 100;
