@@ -80,7 +80,11 @@ int main( int argc, char **argv )
     command << port;
     command << " ";
     command << 10;  // duration
-    system( command.str().c_str() );
+    int res = system( command.str().c_str() );
+    if( res == EXIT_FAILURE )
+      {
+      return EXIT_FAILURE;
+      }
     command.clear();
     }
   else // child fork run client receiving executable
@@ -92,7 +96,11 @@ int main( int argc, char **argv )
     command << port;
     command << " ";
     command << hostname;
-    system( command.str().c_str() );
+    int res = system( command.str().c_str() );
+    if( res == EXIT_FAILURE )
+      {
+      return EXIT_FAILURE;
+      }
     command.clear();
     }
 #endif
