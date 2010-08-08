@@ -38,7 +38,7 @@ int tubeBaseSegmentationPrintTest( int, char* [] )
     itk::CVTImageFilter< ImageType >::New();
   std::cout << "-------------itkCVTImageFilter" 
             << cvtObject
-            << std::endl;;
+            << std::endl;
 
   return EXIT_SUCCESS;
 }
