@@ -73,6 +73,7 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
   opt->use( myFunc2, myFuncD2 );
 
   delete myFunc;
+  delete myFuncD;
 
   int returnStatus = EXIT_SUCCESS;
 
@@ -129,7 +130,7 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
     returnStatus = EXIT_FAILURE;
     }
 
-  double idealX = vnl_math::pi / 2;
+  double idealX = - vnl_math::pi / 2;
   if( vnl_math_abs( idealX - x ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  x=" << x 
@@ -137,7 +138,7 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
     returnStatus = EXIT_FAILURE;
     }
 
-  if( vnl_math_abs( 1-xVal ) > epsilon )
+  if( vnl_math_abs( -1 - xVal ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  xVal=" << xVal 
       << std::endl;
@@ -146,6 +147,7 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
 
   delete opt;
   delete myFunc2;
+  delete myFuncD2;
 
   return returnStatus;
 }
