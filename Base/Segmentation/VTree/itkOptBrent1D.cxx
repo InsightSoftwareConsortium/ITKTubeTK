@@ -80,11 +80,11 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
   double a, b, d, d1, d2, du, dv, dw, dx, e=0.0;
   double fu, fv, fw, fx, olde, tol1, tol2, u, u1, u2, v, w, x, xm;
 
-  double maxSign = 1;
+  double maxSign = -1;
 
   if( cSearchForMin )
     {
-    maxSign = -1;
+    maxSign = 1;
     }
    
   d = -1;
@@ -125,22 +125,22 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
         {
         *extX = v;
         *extVal = maxSign*fv;
-        //std::cout << " limit: x0 = " << x << std::endl;
-        //std::cout << " limit: v = " << v << std::endl;
-        //std::cout << " limit: vVal = " << maxSign*fv << std::endl;
+        std::cout << " limit: x0 = " << x << std::endl;
+        std::cout << " limit: v = " << v << std::endl;
+        std::cout << " limit: vVal = " << maxSign*fv << std::endl;
         return 0;
         }
       }
     else
       {
       fx = maxSign*cFuncVal->value(x);
-      //std::cout << " x0 = " << x << std::endl;
-      //std::cout << " xVal = " << fx << std::endl;
+      std::cout << " x0 = " << x << std::endl;
+      std::cout << " xVal = " << fx << std::endl;
       w *= 1.1;
       }
     }
     
-  u = v-d*cXStep;
+  u = v-d*cXStep*w;
     
   a = (u < x ? u : x);
   b = (u > x ? u : x);
@@ -152,8 +152,10 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
   for(iter = 0; iter < cMaxIterations; iter++) 
     {
     xm = 0.5 * (a+b);
-    //std::cout << "x = " << x << std::endl;
-    //std::cout << "  fx = " << fx << std::endl;
+    std::cout << "x = " << x << std::endl;
+    std::cout << "  fx = " << fx << std::endl;
+    std::cout << "  a = " << a << std::endl;
+    std::cout << "  b = " << b << std::endl;
     tol1 = cTolerance * fabs(x) + cSmall;
     tol2 = 2.0 * tol1;
     if(fabs(x-xm) <= (tol2 - 0.5*(b-a)))
