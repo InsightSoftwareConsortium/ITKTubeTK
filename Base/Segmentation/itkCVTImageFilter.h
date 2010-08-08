@@ -134,14 +134,13 @@ private:
 
   typename InputImageType::ConstPointer        m_InputImage;
 
+  unsigned int          m_NumberOfCentroids;
   PointArrayType        m_Centroids;
 
   double                m_InputImageMax;
   SizeType              m_InputImageSize;
 
   long int              m_Seed;
-
-  unsigned int          m_NumberOfCentroids;
 
   SamplingMethodEnum    m_InitialSamplingMethod;
 
