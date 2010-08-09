@@ -28,7 +28,7 @@ limitations under the License.
 
 #include "itkMacro.h"
 
-#include "../itkOptBrent1D.h"
+#include "../itkOptGoldenMean1D.h"
 #include "../itkOptimizer1D.h"
 #include "../UserFunc.h"
 
@@ -58,22 +58,19 @@ class MyFuncD:
       };
   };
 
-int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
+int itkOptGoldenMeanTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
 {
   double epsilon = 0.000001;
 
   MyFunc * myFunc = new MyFunc();
-  MyFuncD * myFuncD = new MyFuncD();
-  itk::OptBrent1D * opt = new itk::OptBrent1D( myFunc, myFuncD );
-
-  opt->smallDouble( epsilon );
+  // MyFuncD * myFuncD = new MyFuncD();  
+  itk::OptGoldenMean1D * opt = new itk::OptGoldenMean1D( myFunc );
 
   MyFunc * myFunc2 = new MyFunc();
-  MyFuncD * myFuncD2 = new MyFuncD();
-  opt->use( myFunc2, myFuncD2 );
+  // MyFuncD * myFuncD2 = new MyFuncD();
+  opt->use( myFunc2 );
 
   delete myFunc;
-  delete myFuncD;
 
   int returnStatus = EXIT_SUCCESS;
 
@@ -134,7 +131,8 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
   if( vnl_math_abs( idealX - x ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  x=" << x 
-      << " diff=" << vnl_math_abs( idealX - x ) << std::endl;
+      << " diff=" << vnl_math_abs( idealX - x ) 
+      << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
@@ -147,7 +145,6 @@ int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
 
   delete opt;
   delete myFunc2;
-  delete myFuncD2;
 
   return returnStatus;
 }

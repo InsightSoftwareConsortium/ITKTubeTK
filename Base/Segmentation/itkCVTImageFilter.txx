@@ -37,8 +37,14 @@ CVTImageFilter< TInputImage, TOutputImage >
   m_Seed = 1234;
 
   m_InputImage = NULL;
+  m_InputImageMax = 0;
+  m_InputImageSize.Fill( 0 );
+
+  m_OutputImage = NULL;
 
   m_NumberOfCentroids = 100;
+  m_Centroids.clear();
+
   m_InitialSamplingMethod = CVT_RANDOM;
   m_NumberOfSamples = 10000;
   m_NumberOfIterations = 100;
@@ -494,6 +500,18 @@ CVTImageFilter< TInputImage, TOutputImage >
     {
     std::cout << "Input image = NULL" << std::endl;
     }
+  std::cout << "InputImageMax = " << m_InputImageMax << std::endl;
+  std::cout << "InputImageSize = " << m_InputImageSize << std::endl;
+
+  if( m_OutputImage.IsNotNull() )
+    {
+    std::cout << "Output image = " << m_OutputImage << std::endl;
+    }
+  else
+    {
+    std::cout << "Output image = NULL" << std::endl;
+    }
+
   std::cout << "NumberOfCentroids = " << m_NumberOfCentroids << std::endl;
   if( m_Centroids.size() > 0 )
     {
@@ -503,7 +521,7 @@ CVTImageFilter< TInputImage, TOutputImage >
     {
     std::cout << "Centroid = NULL" << std::endl;
     }
-  std::cout << "InputImageMax = " << m_InputImageMax << std::endl;
+
   std::cout << "Seed = " << m_Seed << std::endl;
   std::cout << "InitialSamplingMethod = " << m_InitialSamplingMethod 
             << std::endl;

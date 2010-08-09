@@ -412,8 +412,8 @@ NJetImageFunction<TInputImage>
   double v = 0;
   double vTotal = 0;
 
-  int xMin[ImageDimension];
-  int xMax[ImageDimension];
+  Index<ImageDimension> xMin;
+  Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
 
   for(unsigned int i=0; i<ImageDimension; i++)
@@ -714,8 +714,8 @@ NJetImageFunction<TInputImage>
     dTotal[i] = 0;
     }
 
-  int xMin[ImageDimension];
-  int xMax[ImageDimension];
+  Index<ImageDimension> xMin;
+  Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
   int xRadius;
 
@@ -1049,8 +1049,8 @@ NJetImageFunction<TInputImage>
   d.Fill(0);
   dTotal.Fill(0);
 
-  int xMin[ImageDimension];
-  int xMax[ImageDimension];
+  Index<ImageDimension> xMin;
+  Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
   int xRadius;
 
@@ -1725,8 +1725,8 @@ NJetImageFunction<TInputImage>
       }
     }
 
-  int xMin[ImageDimension];
-  int xMax[ImageDimension];
+  Index<ImageDimension> xMin;
+  Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
   int xRadius;
 
@@ -2014,8 +2014,8 @@ NJetImageFunction<TInputImage>
   h.Fill(0);
   hTotal.Fill(0);
 
-  int xMin[ImageDimension];
-  int xMax[ImageDimension];
+  Index<ImageDimension> xMin;
+  Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
 
   for(unsigned int i=0; i<ImageDimension; i++)

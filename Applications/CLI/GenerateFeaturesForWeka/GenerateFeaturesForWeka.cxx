@@ -758,7 +758,6 @@ int DoIt( int argc, char * argv[] )
                << total << ","
                << norm << ","
                << numGreater << ","
-               << numLesser << ","
                << numLesser << ",";
         std::vector<PixelType>::const_iterator extraItr;
         for( extraItr = extras.begin(); 

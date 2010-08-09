@@ -49,6 +49,8 @@ set( tubeBaseSegmentationVTree_SRCS
   itkBlur3DImageFunctionTest.cxx
   itkMatrixMathTest.cxx
   itkOptBrentTest.cxx
+  itkOptGoldenMeanTest.cxx
+  itkOptParabolicFitTest.cxx
   )
 
 include_directories( 
@@ -102,4 +104,14 @@ add_test( itkMatrixMathTest
 add_test( itkOptBrentTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
   itkOptBrentTest
+  )
+
+add_test( itkOptGoldenMeanTest
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  itkOptGoldenMeanTest
+  )
+
+add_test( itkOptParabolicFitTest
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  itkOptParabolicFitTest
   )
