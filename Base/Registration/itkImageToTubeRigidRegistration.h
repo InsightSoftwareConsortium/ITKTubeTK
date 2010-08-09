@@ -18,6 +18,7 @@
 #ifndef __itkImageToTubeRigidRegistration_h
 #define __itkImageToTubeRigidRegistration_h
 
+#include "itkTransform.h"
 #include "itkImageToSpatialObjectRegistrationMethod.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkImageToTubeRigidMetric.h"
@@ -30,7 +31,7 @@
 #include "itkImageRegionIterator.h"
 #include "itkVectorContainer.h"
 #include "itkTubeSpatialObject.h"
-#include "itkCommandIterationUpdate.h"
+#include "itkCommand.h"
 
 namespace itk
 {
@@ -82,6 +83,7 @@ public:
 
   /**  Type of the metric. */
   typedef ImageToTubeRigidMetric<FixedImageType,TMovingTube>  MetricType;
+  typedef typename MetricType::Pointer                 MetricPointerType;
 
   /**  Type of the parameters. */
   typedef typename MetricType::TransformParametersType    ParametersType;
@@ -103,14 +105,14 @@ public:
   //typedef OnePlusOneEvolutionaryOptimizer OptimizerType;
  
   /** Typedef for the optimizer observer */
-  typedef itk::CommandIterationUpdate<  
-                                  OptimizerType >    CommandIterationType;
+  typedef typename itk::SimpleMemberCommand<Self>     CommandIterationType;
+  typedef typename CommandIterationType::Pointer      CommandIterationPointerType;
 
   /** Get Center of Rotation */
   itk::Vector<double,3> GetCenterOfRotation(void)
   {
     itk::Vector<double,3> centerOfRotation;
-    typename MetricType::Pointer metric = dynamic_cast<MetricType*>(this->GetMetric());
+    MetricPointerType  metric = dynamic_cast<MetricType*>(this->GetMetric());
     for(unsigned int i=0;i<3;i++)
     {
       centerOfRotation[i]=metric->GetCenterOfRotation()(i);
@@ -165,7 +167,7 @@ private:
 
   MaskImagePointer              m_MaskImage;
   unsigned int                  m_NumberOfIteration;
-  CommandIterationType::Pointer m_IterationCommand;
+  CommandIterationPointerType   m_IterationCommand;
   bool                          m_IsInitialized;
   double                        m_LearningRate;
   ParametersType                m_InitialPosition;

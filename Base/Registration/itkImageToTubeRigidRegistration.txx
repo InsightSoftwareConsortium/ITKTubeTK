@@ -88,7 +88,7 @@ void
 ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 ::Initialize() throw (ExceptionObject)
 {   
-  typename MetricType::Pointer metric = MetricType::New();
+  MetricPointerType metric = MetricType::New();
 
   metric->SetExtent(m_Extent);
   metric->SetKappa(m_Kappa);
@@ -230,7 +230,6 @@ void
 ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 ::StartRegistration( void )
 { 
-
   double c0 = clock();
 
   if(!m_IsInitialized)
@@ -238,11 +237,13 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
     this->Initialize();
   }
 
+/*
   if(m_IterationCommand)
   {
     m_IterationCommand->SetMaximumValue(m_NumberOfIteration);
     m_IterationCommand->SetOptimizer( (OptimizerType*)this->GetOptimizer());
   }
+*/
 
   try
   {

@@ -131,7 +131,7 @@ public:
   void SparseRegistration(ParametersType & parameters);
 
   /** Initialize the metric */
-  void Initialize(void);
+  void Initialize(void) throw (ExceptionObject);
 
   /** Set the extent of the blurring */
   itkSetMacro(Extent,double);
@@ -142,11 +142,11 @@ public:
 
   itkSetObjectMacro(MaskImage, MaskImageType);
 
-  itkSetObjectMacro(Verbose, bool);
-  itkGetObjectMacro(Verbose, bool);
+  itkSetMacro(Verbose, bool);
+  itkGetMacro(Verbose, bool);
   
-  itkSetObjectMacro(Sampling, unsigned int);
-  itkGetObjectMacro(Sampling, unsigned int);
+  itkSetMacro(Sampling, unsigned int);
+  itkGetMacro(Sampling, unsigned int);
 
 protected:
 

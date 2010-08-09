@@ -19,14 +19,14 @@
 #endif
 
 
-//#include "itkImageToTubeRigidRegistration.h"
-#include "itkDefaultDynamicMeshTraits.h"
+#include "itkImageToTubeRigidRegistration.h"
 #include "itkSpatialObjectReader.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
 int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
 {
+/*
   if ( argc < 2 )
     {
     std::cerr << "Missing Parameters: " 
@@ -36,17 +36,53 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
 //              << " [TimeStep] [NumberOfIterations]" << std::endl; 
     return EXIT_FAILURE;
     }
+*/
  
- 
-  typedef itk::DefaultDynamicMeshTraits< float , 3, 3>    MeshTraitType;
-  typedef itk::SpatialObjectReader<3,float,MeshTraitType> SpatialObjectReaderType;
-
-  SpatialObjectReaderType::Pointer vesselReader = SpatialObjectReaderType::New();
-  vesselReader->SetFileName(argv[1]);
+  typedef itk::GroupSpatialObject<3>                  TubeNetType;
+  typedef itk::SpatialObjectReader<3>                 TubeNetReaderType;
+  typedef itk::Image<double, 3>                       ImageType;
+  typedef itk::ImageFileReader<ImageType>             ImageReaderType;
+  typedef itk::ImageToTubeRigidRegistration<ImageType, TubeNetType>  
+                                                      FilterType;
+  
+  TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
+  vesselReader->SetFileName("/home/hyang/Work/tubetk/Data/Branch-truth-new.tre");//argv[1]);
   
   try
     {
     vesselReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  ImageReaderType::Pointer imageReader = ImageReaderType::New();
+  imageReader->SetFileName("/home/hyang/Work/tubetk/Data/Branch.n020.mha");//argv[2]);
+  
+  try
+    {
+    imageReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+
+  FilterType::Pointer  filter = FilterType::New();
+  
+  filter->SetFixedImage( imageReader->GetOutput() );
+  filter->SetMovingSpatialObject( vesselReader->GetGroup() );
+  filter->SetNumberOfIteration( 100 );
+
+
+  try
+    {
+    //filter->Initialize();
+    //filter->Update();
     }
   catch( itk::ExceptionObject & err )
     {

@@ -112,7 +112,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 template < class TFixedImage, class TMovingSpatialObject> 
 void
 ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
-::Initialize(void)
+::Initialize(void) throw ( ExceptionObject )
 {
   //this->SetExtent(3);
   this->SubSampleTube(m_Sampling); //30 //50
@@ -141,8 +141,8 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   unsigned int skipped = 0;
   unsigned int tubeSize = 0;
   
-  TubeNetType::ChildrenListType* tubeList = 
-    this->m_MovingSpatialObject->GetChildren(999999,"Tube");
+  char childName[] = "Tube";
+  TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(999999,childName);
   TubeNetType::ChildrenListType::iterator TubeIterator = tubeList->begin();
   for(; TubeIterator != tubeList->end(); ++TubeIterator)
     { 
@@ -173,6 +173,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
            //&& ((*TubePointIterator).GetMedialness()>0.02)
           )
           {
+          std::cout << "get here " << std::endl;
           newTube->GetPoints().push_back(*(TubePointIterator));
           double val = -2*(*TubePointIterator).GetRadius(); //-2
           weight = 2/(1+exp(val)); //2/(1+val)-1
@@ -319,7 +320,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 ::GetValue( const ParametersType & parameters ) const
 {
 
-  unsigned long c0 = clock();
+//  unsigned long c0 = clock();
 
   if(m_Verbose)
     {
@@ -354,9 +355,9 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
   GroupSpatialObject<3>::ChildrenListType::iterator TubeIterator;
 
-  TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(999999,"Tube");
+  char childName[] = "Tube";
+  TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(999999,childName);
   
-  unsigned int num = 0;
   for(TubeIterator=tubeList->begin();TubeIterator!=tubeList->end();TubeIterator++)
   {
  
@@ -1208,7 +1209,9 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
   unsigned int listindex =0;
   TubeNetType::ChildrenListType::iterator         TubeIterator;
-  TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(99999,"Tube");
+  
+  char childName[] = "Tube";
+  TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(99999,childName);
   for(TubeIterator=tubeList->begin();TubeIterator!=tubeList->end();TubeIterator++)
   {
     for(j=static_cast<TubeSpatialObject<3>*>((*TubeIterator).GetPointer())->GetPoints().begin(); \
