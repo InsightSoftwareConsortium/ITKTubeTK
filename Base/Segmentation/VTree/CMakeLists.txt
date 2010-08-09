@@ -25,7 +25,7 @@ PROJECT( VTree3D )
 
 FIND_PACKAGE( ITK REQUIRED )
 INCLUDE( ${ITK_USE_FILE} )
- 
+
 SET( VTree3D_SRCS
   itkOptBrent1D.cxx
   itkOptGoldenMean1D.cxx
@@ -37,7 +37,7 @@ SET( VTree3D_SRCS
   itkSplineND.cxx
   )
 
-ADD_LIBRARY( VTree3D SHARED ${VTree3D_SRCS} )
+ADD_LIBRARY( VTree3D ${VTree3D_SRCS} )
 TARGET_LINK_LIBRARIES( VTree3D ${ITK_LIBRARIES} )
 
 slicer3_set_plugins_output_path( VTree3D )
@@ -47,4 +47,5 @@ slicer3_install_plugins( ${TARGETS} )
 IF( BUILD_TESTING )
   add_subdirectory( Testing )
 ENDIF( BUILD_TESTING )
+
 

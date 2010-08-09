@@ -20,6 +20,7 @@ macro(slicer3_install_plugins)
   install(TARGETS ${ARGN}
     RUNTIME DESTINATION ${Slicer3_INSTALL_PLUGINS_BIN_DIR} COMPONENT RuntimeLibraries
     LIBRARY DESTINATION ${Slicer3_INSTALL_PLUGINS_LIB_DIR} COMPONENT RuntimeLibraries
+    ARCHIVE DESTINATION ${Slicer3_INSTALL_PLUGINS_LIB_DIR} COMPONENT RuntimeLibraries
     )
 endmacro(slicer3_install_plugins)
 

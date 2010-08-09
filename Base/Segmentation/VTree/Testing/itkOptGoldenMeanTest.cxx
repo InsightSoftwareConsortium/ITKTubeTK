@@ -58,7 +58,7 @@ class MyFuncD:
       };
   };
 
-int itkOptGoldenMeanTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
+int itkOptGoldenMeanTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
 {
   double epsilon = 0.000001;
 

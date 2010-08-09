@@ -58,7 +58,7 @@ class MyFuncD:
       };
   };
 
-int itkOptParabolicFitTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
+int itkOptParabolicFitTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
 {
   double epsilon = 0.000001;
 

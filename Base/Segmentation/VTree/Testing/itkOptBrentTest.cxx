@@ -58,7 +58,7 @@ class MyFuncD:
       };
   };
 
-int itkOptBrentTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
+int itkOptBrentTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
 {
   double epsilon = 0.000001;
 
