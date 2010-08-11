@@ -38,5 +38,6 @@ void RegisterTests()
   REGISTER_TEST( itkOptParabolicFitTest );
   REGISTER_TEST( itkOptBrentNDTest );
   REGISTER_TEST( itkUserFuncTest );
+  REGISTER_TEST( itkSplineApprox1DTest );
 }
 

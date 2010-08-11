@@ -53,6 +53,7 @@ set( tubeBaseSegmentationVTree_SRCS
   itkOptParabolicFitTest.cxx
   itkOptBrentNDTest.cxx
   itkUserFuncTest.cxx
+  itkSplineApprox1DTest.cxx
   )
 
 include_directories( 
@@ -126,5 +127,13 @@ add_test( itkOptBrentNDTest
 add_test( itkUserFuncTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
   itkUserFuncTest
+  )
+
+add_test( itkSplineApprox1DTest
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  --compare ${BASELINE}/itkSplineApprox1DTest.mha
+            ${TEMP}/itkSplineApprox1DTest.mha
+  itkSplineApprox1DTest
+    ${TEMP}/itkSplineApprox1DTest.mha 
   )
 
