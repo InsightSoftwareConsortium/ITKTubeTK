@@ -41,9 +41,9 @@ int itkBlur3DImageFunctionTest(int argc, char * argv[])
 
   ImageType::Pointer im = ImageType::New();
   ImageSizeType imSize;
-  imSize[0] = 100;
-  imSize[1] = 100;
-  imSize[2] = 50;
+  imSize[0] = 20;
+  imSize[1] = 20;
+  imSize[2] = 10;
   im->SetRegions(imSize);
   ImageSpacingType imSpacing;
   imSpacing[0] = 1;
@@ -52,18 +52,19 @@ int itkBlur3DImageFunctionTest(int argc, char * argv[])
   im->SetSpacing(imSpacing);
 
   im->Allocate();
+  im->FillBuffer( 0 );
 
   ImageType::IndexType index;
-  index[0] = 50;
-  index[1] = 50;
-  index[2] = 25;
+  index[0] = 10;
+  index[1] = 10;
+  index[2] = 5;
   im->SetPixel(index, 100);
 
   typedef itk::Blur3DImageFunction<ImageType> ImageOpType;
   ImageOpType::Pointer imOp = ImageOpType::New();
 
   imOp->SetInputImage(im);
-  imOp->SetScale(3);
+  imOp->SetScale(2);
 
   ImageType::Pointer imOut = ImageType::New();
   imOut->SetRegions(imSize);
@@ -72,10 +73,20 @@ int itkBlur3DImageFunctionTest(int argc, char * argv[])
 
   itk::ImageRegionIteratorWithIndex<ImageType> itOut(imOut,
     imOut->GetLargestPossibleRegion());
+  ImageType::PointType pnt;
+  unsigned int count = 0;
   itOut.GoToBegin();
   while(!itOut.IsAtEnd())
     {
-    itOut.Set(imOp->EvaluateAtIndex(itOut.GetIndex()));
+    if( count/2.0 == count/2 )
+      {
+      itOut.Set( imOp->EvaluateAtIndex( itOut.GetIndex() ) );
+      }
+    else
+      {
+      imOut->TransformIndexToPhysicalPoint( itOut.GetIndex(), pnt );
+      itOut.Set( imOp->Evaluate( pnt ) );
+      }
     ++itOut;
     }
 
