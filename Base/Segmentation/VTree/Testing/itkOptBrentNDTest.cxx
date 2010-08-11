@@ -73,7 +73,7 @@ public itk::UserFunc< vnl_vector<double>, vnl_vector<double> >
     vnl_vector<double> cDx;
   };
 
-int itkOptBrentNDTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
+int itkOptBrentNDTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
 {
   double epsilon = 0.000001;
 

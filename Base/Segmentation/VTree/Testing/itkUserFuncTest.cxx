@@ -73,7 +73,7 @@ public itk::UserFunc2
     vnl_vector<double> cVal;
   };
 
-int itkUserFuncTest( int itkNotUsed(argc), char **itkNotUsed(argv) )
+int itkUserFuncTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
 {
   MyFunc2 myFunc;
 
