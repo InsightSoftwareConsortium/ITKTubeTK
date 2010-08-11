@@ -136,7 +136,6 @@ private:
 
   bool                    m_Debug;
 
-  Size<itkGetStaticConstMacro(ImageDimension)>    m_ImageSize;
   bool                    m_UseRelativeSpacing;
   SpacingType             m_Spacing;
   SpacingType             m_OriginalSpacing;
@@ -147,6 +146,9 @@ private:
   IndexType               m_KernelMin;
   IndexType               m_KernelMax;
   double                  m_KernelTotal;
+
+  IndexType               m_ImageIndexMin;
+  IndexType               m_ImageIndexMax;
 };
 
 } // namespace itk

@@ -43,12 +43,13 @@ Blur3DImageFunction<TInputImage>
   m_Debug = false;
 
   this->m_Image = NULL;
-  m_ImageSize.Fill(0);
   m_Spacing.Fill(0);
   m_OriginalSpacing.Fill(0);
   m_UseRelativeSpacing = true;
   m_Scale = 1;
   m_Extent = 3.1;
+  m_ImageIndexMin.Fill(0);
+  m_ImageIndexMax.Fill(0);
 }
 
 /**
@@ -59,8 +60,6 @@ Blur3DImageFunction<TInputImage>
 ::SetInputImage( const InputImageType * ptr )
 {
   this->Superclass::SetInputImage( ptr );
-  m_ImageSize = 
-     this->GetInputImage()->GetLargestPossibleRegion().GetSize();
   m_Spacing  = this->GetInputImage()->GetSpacing();
   m_OriginalSpacing  = this->GetInputImage()->GetSpacing();
   if(m_UseRelativeSpacing)
@@ -69,6 +68,15 @@ Blur3DImageFunction<TInputImage>
       {
       m_Spacing[i] = m_OriginalSpacing[i] / m_OriginalSpacing[0];
       }
+    }
+
+  m_ImageIndexMin = 
+     this->GetInputImage()->GetLargestPossibleRegion().GetIndex();
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    m_ImageIndexMax[i] = m_ImageIndexMin[i]
+      + this->GetInputImage()->GetLargestPossibleRegion().GetSize()[i]
+      - 1;
     }
 
   /* Values by default */
@@ -110,7 +118,22 @@ Blur3DImageFunction<TInputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   this->Superclass::PrintSelf(os,indent);
+
   os << indent << "calculate Blurring value at point:" << std::endl;
+  std::cout << "Debug = " << m_Debug << std::endl;
+  std::cout << "UseRelativeSpacing = " << m_UseRelativeSpacing << std::endl;
+  std::cout << "Spacing = " << m_Spacing << std::endl;
+  std::cout << "OriginalSpacing = " << m_OriginalSpacing << std::endl;
+  std::cout << "Scale = " << m_Scale << std::endl;
+  std::cout << "Extent = " << m_Extent << std::endl;
+  std::cout << "KernelWeights.size = " << m_KernelWeights.size() << std::endl;
+  std::cout << "KernelX.size = " << m_KernelX.size() << std::endl;
+  std::cout << "KernelMin = " << m_KernelMin << std::endl;
+  std::cout << "KernelMax = " << m_KernelMax << std::endl;
+  std::cout << "KernelTotal = " << m_KernelTotal << std::endl;
+
+  std::cout << "ImageIndexMin = " << m_ImageIndexMin << std::endl;
+  std::cout << "ImageIndexMax = " << m_ImageIndexMax << std::endl;
 }
 
 
@@ -256,9 +279,11 @@ Blur3DImageFunction<TInputImage>
   bool boundary = false;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    if(point[i]+m_KernelMin[i]<0 || point[i]+m_KernelMax[i]>=(int)m_ImageSize[i])
+    if(point[i]+m_KernelMin[i]<m_ImageIndexMin[i] 
+       || point[i]+m_KernelMax[i]>m_ImageIndexMax[i])
       {
       boundary = true;
+      break;
       }
     }
 
@@ -300,9 +325,12 @@ Blur3DImageFunction<TInputImage>
       kernelX[0] = point[0] + (*itX)[0];
       kernelX[1] = point[1] + (*itX)[1];
       kernelX[2] = point[2] + (*itX)[2];
-      if(kernelX[0]>=0 && kernelX[0]<(int)m_ImageSize[0] &&
-         kernelX[1]>=0 && kernelX[1]<(int)m_ImageSize[1] &&
-         kernelX[2]>=0 && kernelX[2]<(int)m_ImageSize[2])
+      if( kernelX[0]>=m_ImageIndexMin[0]
+           && kernelX[0]<=(int)m_ImageIndexMax[0] &&
+          kernelX[1]>=m_ImageIndexMin[1]
+           && kernelX[1]<=(int)m_ImageIndexMax[1] &&
+          kernelX[2]>=m_ImageIndexMin[2]
+           && kernelX[2]<=(int)m_ImageIndexMax[2] )
         {
         w = *it;
         res +=  this->m_Image->GetPixel( kernelX ) * w;
@@ -313,7 +341,7 @@ Blur3DImageFunction<TInputImage>
       }
     }
   
-  if(wTotal < 1e-6)
+  if(wTotal < *(m_KernelWeights.begin()) )
     { 
     return 0;
     }
@@ -345,16 +373,18 @@ Blur3DImageFunction<TInputImage>
   double res = 0;
   double wTotal = 0;
   double gfact = -0.5/(m_Scale*m_Scale);
-  //double kernrad = m_Scale*m_Extent*m_Scale*m_Extent;
+  double kernrad = m_Scale*m_Extent*m_Scale*m_Extent;
 
   IndexType kernelX;
 
   bool boundary = false;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    if(point[i]+m_KernelMin[i]<0 || point[i]+m_KernelMax[i]>=m_ImageSize[i])
+    if((int)(point[i])+m_KernelMin[i]<m_ImageIndexMin[i] 
+      || (int)(point[i])+m_KernelMax[i]>m_ImageIndexMax[i])
       {
       boundary = true;
+      break;
       }
     }
 
@@ -375,9 +405,12 @@ Blur3DImageFunction<TInputImage>
           kernelX[0] = (int)(point[0])+x;
           double distX = (kernelX[0]-point[0])*m_Spacing[0];
           double dist = distX * distX + distY;
-          w = exp(gfact*dist);
-          wTotal += w; 
-          res +=  this->m_Image->GetPixel( kernelX ) * w ;     
+          if( dist <= kernrad )
+            {
+            w = exp(gfact*dist);
+            wTotal += w; 
+            res +=  this->m_Image->GetPixel( kernelX ) * w ;     
+            }
           }
         }
       }
@@ -388,16 +421,20 @@ Blur3DImageFunction<TInputImage>
       {
       std::cout << "  Boundary point" << std::endl;
       }
-    int zero = 0;
-    int minZ = vnl_math_min((int)((int)(point[2])+m_KernelMin[2]), zero);
-    int minY = vnl_math_min((int)((int)(point[1])+m_KernelMin[1]), zero);
-    int minX = vnl_math_min((int)((int)(point[0])+m_KernelMin[0]), zero);
+    int minZ = vnl_math_max((int)((int)(point[2])+m_KernelMin[2]), 
+      (int)(m_ImageIndexMin[2]));
+    int minY = vnl_math_max((int)((int)(point[1])+m_KernelMin[1]), 
+      (int)(m_ImageIndexMin[1]));
+    int minX = vnl_math_max((int)((int)(point[0])+m_KernelMin[0]), 
+      (int)(m_ImageIndexMin[0]));
+
     int maxZ = vnl_math_min((int)((int)(point[2])+m_KernelMax[2]),
-                            (int)(m_ImageSize[2]-1));
+                            (int)(m_ImageIndexMax[2]));
     int maxY = vnl_math_min((int)((int)(point[1])+m_KernelMax[1]),
-                            (int)(m_ImageSize[1]-1));
+                            (int)(m_ImageIndexMax[1]));
     int maxX = vnl_math_min((int)((int)(point[0])+m_KernelMax[0]),
-                            (int)(m_ImageSize[0]-1));
+                            (int)(m_ImageIndexMax[0]));
+
     for(kernelX[2] = minZ; kernelX[2]<=maxZ; kernelX[2]++)
       {
       double distZ = (kernelX[2]-point[2])*m_Spacing[2];
@@ -410,15 +447,18 @@ Blur3DImageFunction<TInputImage>
           {
           double distX = (kernelX[0]-point[0])*m_Spacing[0];
           double dist = distX * distX + distY;
-          w = exp(gfact*(dist));
-          wTotal += w; 
-          res +=  this->m_Image->GetPixel( kernelX ) * w ;     
+          if( dist <= kernrad )
+            {
+            w = exp(gfact*(dist));
+            wTotal += w; 
+            res +=  this->m_Image->GetPixel( kernelX ) * w ;     
+            }
           }
         }
       }
     }
   
-  if(wTotal < 1e-6)
+  if(wTotal < *(m_KernelWeights.begin()) )
     { 
     return 0;
     }
@@ -447,23 +487,61 @@ Blur3DImageFunction<TInputImage>
   int xl1 = (int)point[0];
   int xl2 = (int)point[1];
   int xl3 = (int)point[2];
+  if(xl1 < m_ImageIndexMin[0])   
+    {
+    xl1 = m_ImageIndexMin[0];
+    }
+  if(xl2 < m_ImageIndexMin[1])   
+    {
+    xl2 = m_ImageIndexMin[1];
+    }
+  if(xl3 < m_ImageIndexMin[2])   
+    {
+    xl3 = m_ImageIndexMin[2];
+    }
+  if(xl1 > m_ImageIndexMax[0])   
+    {
+    xl1 = m_ImageIndexMax[0];
+    }
+  if(xl2 > m_ImageIndexMax[1])   
+    {
+    xl2 = m_ImageIndexMax[1];
+    }
+  if(xl3 > m_ImageIndexMax[2])   
+    {
+    xl3 = m_ImageIndexMax[2];
+    }
+
   double xr1 = point[0] - xl1;
   double xr2 = point[1] - xl2;
   double xr3 = point[2] - xl3;
+  if(xr1 < m_ImageIndexMin[0])   
+    {
+    xr1 = m_ImageIndexMin[0];
+    }
+  if(xr2 < m_ImageIndexMin[1])   
+    {
+    xr2 = m_ImageIndexMin[1];
+    }
+  if(xr3 < m_ImageIndexMin[2])   
+    {
+    xr3 = m_ImageIndexMin[2];
+    }
+
   int xh1 = xl1+1;
   int xh2 = xl2+1;
   int xh3 = xl3+1;
-  if(xh1 >= m_ImageSize[0])   
+  if(xh1 > m_ImageIndexMax[0])   
     {
-    xh1 = m_ImageSize[0]-1;
+    xh1 = m_ImageIndexMax[0];
     }
-  if(xh2 >= m_ImageSize[1])   
+  if(xh2 > m_ImageIndexMax[1])   
     {
-    xh2 = m_ImageSize[1]-1;
+    xh2 = m_ImageIndexMax[1];
     }
-  if(xh3 >= m_ImageSize[2]) 
+  if(xh3 > m_ImageIndexMax[2])   
     {
-    xh3 = m_ImageSize[2]-1;
+    xh3 = m_ImageIndexMax[2];
     }
 
   IndexType index1;
