@@ -36,5 +36,7 @@ void RegisterTests()
   REGISTER_TEST( itkOptBrentTest );
   REGISTER_TEST( itkOptGoldenMeanTest );
   REGISTER_TEST( itkOptParabolicFitTest );
+  REGISTER_TEST( itkOptBrentNDTest );
+  REGISTER_TEST( itkUserFuncTest );
 }
 

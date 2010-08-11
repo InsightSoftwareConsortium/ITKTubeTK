@@ -51,6 +51,8 @@ set( tubeBaseSegmentationVTree_SRCS
   itkOptBrentTest.cxx
   itkOptGoldenMeanTest.cxx
   itkOptParabolicFitTest.cxx
+  itkOptBrentNDTest.cxx
+  itkUserFuncTest.cxx
   )
 
 include_directories( 
@@ -115,3 +117,14 @@ add_test( itkOptParabolicFitTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
   itkOptParabolicFitTest
   )
+
+add_test( itkOptBrentNDTest
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  itkOptBrentNDTest
+  )
+
+add_test( itkUserFuncTest
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  itkUserFuncTest
+  )
+

@@ -30,31 +30,39 @@ limitations under the License.
 
 #include "../itkOptBrent1D.h"
 #include "../itkOptimizer1D.h"
-#include "../UserFunc.h"
+#include "../itkUserFunc.h"
 
-class MyFunc:
+class MyOBFunc:
   public itk::UserFunc< double, double > 
   {
+  private:
+    double cVal;
   public:
-    MyFunc( )
+    MyOBFunc( )
       {
+      cVal = 0;
       };
-    double value( double x )
+    const double & value( const double & x )
       {
-      return vcl_sin(x);
+      cVal = vcl_sin(x);
+      return cVal;
       };
   };
 
-class MyFuncD:
+class MyOBFuncD:
   public itk::UserFunc< double, double > 
   {
+  private:
+    double cDeriv;
   public:
-    MyFuncD( )
+    MyOBFuncD( )
       {
+      cDeriv = 0;
       };
-    double value( double x )
+    const double & value( const double & x )
       {
-      return vcl_cos(x);
+      cDeriv = vcl_cos(x);
+      return cDeriv;
       };
   };
 
@@ -62,14 +70,14 @@ int itkOptBrentTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
 {
   double epsilon = 0.000001;
 
-  MyFunc * myFunc = new MyFunc();
-  MyFuncD * myFuncD = new MyFuncD();
+  MyOBFunc * myFunc = new MyOBFunc();
+  MyOBFuncD * myFuncD = new MyOBFuncD();
   itk::OptBrent1D * opt = new itk::OptBrent1D( myFunc, myFuncD );
 
   opt->smallDouble( epsilon );
 
-  MyFunc * myFunc2 = new MyFunc();
-  MyFuncD * myFuncD2 = new MyFuncD();
+  MyOBFunc * myFunc2 = new MyOBFunc();
+  MyOBFuncD * myFuncD2 = new MyOBFuncD();
   opt->use( myFunc2, myFuncD2 );
 
   delete myFunc;

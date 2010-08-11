@@ -47,22 +47,18 @@ class SplineND
 public :
    
   /** Typedef for the vector type used */
-  typedef vnl_vector<double> VectorType;
-  typedef vnl_vector_ref<double> VectorRefType; 
+  typedef vnl_vector< double > VectorType;
+  typedef vnl_vector_ref< double > VectorRefType; 
   
   /** Typedef for the vector type used */
-  typedef vnl_vector<int> IntVectorType;
+  typedef vnl_vector< int > IntVectorType;
 
   /** Typedef for the matrix type used */
-  typedef vnl_matrix<double> MatrixType;
+  typedef vnl_matrix< double > MatrixType;
 
   /** Typedef for the multidimensional structure (ie an image) */
-  typedef Image<double,3>   ImageType;
+  typedef Image< double, 4 >   ImageType;
  
-  /**
-  * Standard for the number of dimension */
-  itkStaticConstMacro(ImageDimension, unsigned int, 3);
-
   //! Default constructor: insufficient for using class
   SplineND();
 
@@ -74,7 +70,10 @@ public :
   *  \param newOptND an instance (can be NULL constructed) of OptimizerND that is used to find local extrema
   *  \warning xMin and xMax must be set!
   */
-  SplineND(unsigned int newNDims, UserFunc<IntVectorType*, double> * newFuncVal, Spline1D * newSpline1D, Optimizer1D * newOptND);
+  SplineND(unsigned int newNDims,
+    UserFunc< IntVectorType, double > * newFuncVal,
+    Spline1D * newSpline1D,
+    Optimizer1D * newOptND);
 
  /*! Destructor
   *  This class is not usually derived
@@ -89,39 +88,47 @@ public :
   *  \param newOptND an instance (can be NULL constructed) of OptimizerND that is used to find local extrema
   *  \warning xMin and xMax must be set!
   */
-  void    use(unsigned int newNDims, UserFunc<IntVectorType*, double> * newFuncVal, Spline1D * newSpline1D, Optimizer1D * newOptND);
+  void use(unsigned int newNDims,
+    UserFunc<IntVectorType, double > * newFuncVal,
+    Spline1D * newSpline1D,
+    Optimizer1D * newOptND);
      
   //! Returns the characteristics of spline evaluations near data bounds (xMin and xMax)
  /*! If true, values beyond edges (xMin and xMax) are set to zero.
   *  If false, values beyond edges are faded to 0 as a function of distance from
   *      edge, squeared.
   */
-  bool    clipEdge();
+  bool clipEdge();
+
+  int nDims()
+    {
+    return cNDims;
+    }
 
   //! User specification of characteristics
-  void    clipEdge(bool newClip);
+  void clipEdge(bool newClip);
 
   //! Returns the control points' (integer value locations) lower bound
-  IntVectorType &   xMin();
+  IntVectorType & xMin();
 
   //! User specification of lower bound
-  void            xMin(IntVectorType newXMin);
+  void xMin(IntVectorType newXMin);
 
   //! Sets control points' (integer value locations) upper bound
-  IntVectorType &   xMax();
+  IntVectorType & xMax();
 
   //! User Specification of upper bound
-  void            xMax(IntVectorType newXMax);
+  void xMax(IntVectorType newXMax);
 
   //! Tracks the validity of internally maintained intermediate calculations and data
   /*! Returns true if a new spline instance has been created (e.g., use has been called)
    */
-  bool    newData();
+  bool newData();
 
   //! User sets to true to force recalcuation of internal data
   /*! For example, use to flag that UserFunc has changed externally
    */
-  void    newData(bool newNewData);
+  void newData(bool newNewData);
 
   //! Returns spline interpolated value at x
   /*! Calculates the values at control (integer) points by calling the UserFunc and
@@ -129,7 +136,7 @@ public :
    *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
    *  calculations and control point evaluations are stored to speed subsequent calls
    */
-  double              value(VectorType & x);
+  const double & value(const VectorType & x);
 
  //! Returns spline interpolated first derivative at x projected onto dx
  /*! Calculates the values at control (integer) points by calling the UserFunc and
@@ -137,14 +144,14 @@ public :
   *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
   *  calculations and control point evaluations are stored to speed subsequent calls
   */
-  double              valueD(VectorType & x, IntVectorType & dx);
+  double valueD(const VectorType & x, IntVectorType & dx);
   //! Returns spline interpolated first derivative at x
   /*! Calculates the values at control (integer) points by calling the UserFunc and
    *  returns the interpolated first derivative between those points.   Type of interpolation is
    *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
    *  calculations and control point evaluations are stored to speed subsequent calls
    */
-  VectorType &    valueD(VectorType & x);
+  VectorType & valueD(const VectorType & x);
 
  //! Returns spline interpolated Hessian at x
  /*! Calculates the values at control (integer) points by calling the UserFunc and
@@ -160,7 +167,7 @@ public :
    *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
    *  calculations and control point evaluations are stored to speed subsequent calls
    */
-  double   valueJet(VectorRefType x, VectorRefType d, MatrixType & h);
+  double valueJet(VectorRefType x, VectorRefType d, MatrixType & h);
 
   //! Returns spline interpolated 1st derivatives and 2nd derivatives at x
  /*! Calculates the values at control (integer) points by calling the UserFunc and
@@ -169,13 +176,13 @@ public :
   *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
   *  calculations and control point evaluations are stored to speed subsequent calls
   */
-  double  valueVDD2(VectorType & x, VectorType & d, VectorType & d2);
+  double valueVDD2(VectorType & x, VectorType & d, VectorType & d2);
   //! Calculates the local extreme using the supplied instance of a derivation of OptimizerND
  /*! Function returns true on successful local extreme finding, false otherwise.
   *  \param extX User supplied initial point, On return equals location of extreme local to initial point
   *  \param extVal On return equals the value at the local extreme
   */
-  bool    extreme(VectorRefType extX, double * extVal);
+  bool extreme(VectorRefType extX, double * extVal);
 
   //! Calculates the local extreme in the direction dir using the supplied instance of a derivation of OptimizerND
   /*! Function returns true on successful local extreme finding, false otherwise.
@@ -183,7 +190,7 @@ public :
    *  \param extVal On return equals the value at the local extreme
    *  \param dir Direction to search for local extreme
    */
-  bool    extreme(VectorRefType extX, double * extVal, VectorType &dir);
+  bool extreme(VectorRefType extX, double * extVal, VectorType &dir);
 
  /** Calculates the local extreme in the basis space dirs using the supplied instance of a derivation of OptimizerND
   *  Function returns true on successful local extreme finding, false otherwise.
@@ -192,41 +199,43 @@ public :
   *  \param n number of vectors in dirs to use to define the basis space
   *  \param dirs TNT::Vectors that define the basis space to search for local extreme
   */
-  bool    extreme(VectorRefType extX, double * extVal, unsigned int n, MatrixType &dirs);
+  bool extreme(VectorRefType extX, double * extVal, unsigned int n, MatrixType &dirs);
   
  /** Calculates the local extreme using an approximation to the conjugate gradient descent method
   * Function returns true on successful local extreme finding, false otherwise.
   *  \param extX User supplied initial point, On return equals location of extreme local to initial point
   *  \param extVal On return equals the value at the local extreme
   */
-  bool    extremeConjGrad(VectorType & extX, double * extVal);
+  bool extremeConjGrad(VectorType & extX, double * extVal);
 
 protected : 
   
   /** Used to enable/disable cout of intermediate calculations */
-  bool m_debug;
+  bool           m_debug;
 
-  bool    cDefined;
-  unsigned int    cNDims;
-  UserFunc<IntVectorType*, double> * cFuncVal;
-  bool    cClip;
-  IntVectorType *   cXMin;
-  IntVectorType *   cXMax;
-  bool            cNewData;
-  IntVectorType *   cXi;
-  VectorType *cD;
-  MatrixType *cH;
+  bool           cDefined;
+  unsigned int   cNDims;
+  bool           cClip;
+  IntVectorType  cXMin;
+  IntVectorType  cXMax;
+  bool           cNewData;
+  IntVectorType  cXi;
+  VectorType     cD;
+  MatrixType     cH;
 
   ImageType::Pointer  cData;
   ImageType::Pointer  cDataWS;
-  VectorType*  cData1D;
+  VectorType          cData1D;
 
-  UserFunc<VectorType *, double> * cOptNDVal;
-  UserFunc<VectorType *, VectorType &> * cOptNDDeriv;
+  UserFunc< IntVectorType, double >   * cFuncVal;
 
-  OptimizerND *   cOptND;
-  Spline1D *      cSpline1D;     
-  void    cGetData(VectorType &x);  
+  UserFunc< VectorType, double >      * cOptNDVal;
+  UserFunc< VectorType, VectorType >  * cOptNDDeriv;
+
+  OptimizerND       * cOptND;
+  Spline1D          * cSpline1D;     
+
+  void  cGetData(const VectorType &x);  
 };
 
 

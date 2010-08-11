@@ -18,7 +18,7 @@
 #define itkSplineApproximation1D_h
 
 #include "itkSpline1D.h"
-#include "UserFunc.h"
+#include "itkUserFunc.h"
 #include "itkOptimizer1D.h"
 
 namespace itk 

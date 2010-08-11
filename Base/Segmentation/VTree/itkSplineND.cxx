@@ -25,33 +25,43 @@ PURPOSE.  See the above copyright notices for more information.
 namespace itk
 {
 
-class SplineNDValFunc : public UserFunc<vnl_vector<double> *, double> 
+class SplineNDValFunc :
+  public UserFunc< vnl_vector<double>, double > 
 {
-SplineND * cSpline;
+private:
+  SplineND * cSpline;
+  double cVal;
 public:
-SplineNDValFunc(SplineND * newSpline)
-  {
-  cSpline = newSpline;
-  };
-double value(vnl_vector<double>* x)
-  {
-  return cSpline->value(*x);
-  };
+  SplineNDValFunc(SplineND * newSpline)
+    {
+    cSpline = newSpline;
+    cVal = 0;
+    };
+  const double & value( const vnl_vector<double> & x )
+    {
+    cVal = cSpline->value( x );
+    return cVal;
+    };
 };
 
 
-class SplineNDDerivFunc : public UserFunc< vnl_vector<double>*, vnl_vector<double> & > 
+class SplineNDDerivFunc :
+  public UserFunc< vnl_vector<double>, vnl_vector<double> > 
 {
-SplineND * cSpline;
+private:
+  SplineND * cSpline;
+  vnl_vector<double> cDx;
 public:
-SplineNDDerivFunc(SplineND * newSpline)
-  {
-  cSpline = newSpline;
-  };
-vnl_vector<double> & value(vnl_vector<double>* x)
-  {
-  return cSpline->valueD(*x);
-  }
+  SplineNDDerivFunc(SplineND * newSpline)
+    {
+    cSpline = newSpline;
+    cDx.set_size( cSpline->nDims() );
+    };
+  const vnl_vector<double> & value( const vnl_vector<double> & x )
+    {
+    cDx = cSpline->valueD( x );
+    return cDx;
+    }
 };
 
 
@@ -65,14 +75,17 @@ SplineND::SplineND()
   use(0, NULL, NULL, NULL);
   }
 
-SplineND::SplineND(unsigned int newNDims, UserFunc<IntVectorType*, double> * newFuncVal, Spline1D * newSpline1D, Optimizer1D * newOpt1D)
+SplineND::SplineND( unsigned int newNDims,
+  UserFunc<IntVectorType, double> * newFuncVal,
+  Spline1D * newSpline1D,
+  Optimizer1D * newOpt1D )
   {
   m_debug = false;
   cDefined = false;
   cClip = false;
   cOptNDVal = new SplineNDValFunc(this);
   cOptNDDeriv = new SplineNDDerivFunc(this);
-  use(newNDims, newFuncVal, newSpline1D, newOpt1D);
+  this->use(newNDims, newFuncVal, newSpline1D, newOpt1D);
   }
 
 SplineND::~SplineND()
@@ -80,11 +93,6 @@ SplineND::~SplineND()
   if(cDefined)
     {
     cDefined = false;
-    delete cXMin;
-    delete cXMax;
-    delete cXi;
-    delete cD;
-    delete cH;
     if(cOptND != NULL) 
       {
       delete cOptND;
@@ -93,7 +101,10 @@ SplineND::~SplineND()
   }
 
 
-void SplineND::use(unsigned int newNDims, UserFunc<IntVectorType*, double> * newFuncVal, Spline1D * newSpline1D, Optimizer1D * newOpt1D)
+void SplineND::use( unsigned int newNDims,
+  UserFunc< IntVectorType, double > * newFuncVal,
+  Spline1D * newSpline1D,
+  Optimizer1D * newOpt1D )
   {
   if(m_debug) 
     {
@@ -102,11 +113,6 @@ void SplineND::use(unsigned int newNDims, UserFunc<IntVectorType*, double> * new
   if(cDefined && newNDims != cNDims) 
     {
     cDefined = false;
-    delete cXMin;
-    delete cXMax;
-    delete cXi;
-    delete cD;
-    delete cH;
     if(cOptND != NULL) 
       {
       delete cOptND;
@@ -116,44 +122,35 @@ void SplineND::use(unsigned int newNDims, UserFunc<IntVectorType*, double> * new
   if(!cDefined) 
     {
     cNDims = newNDims;
-    cXMin = new IntVectorType(cNDims,(int)0);
-    cXMax = new IntVectorType(cNDims,(int)1);
-    cXi = new IntVectorType(cNDims);
-    cD = new VectorType(cNDims);
-    cH = new MatrixType(cNDims, cNDims);
+    cXMin.set_size( cNDims );
+    cXMin.fill( (int)0 );
+    cXMax.set_size( cNDims );
+    cXMax.fill( (int)1 );
+    cXi.set_size( cNDims );
+    cD.set_size( cNDims );
+    cH.set_size( cNDims, cNDims );
 
     ImageType::SizeType dimSize;
-    //ImageType::IndexType start;
     for(unsigned int i=0; i<dimSize.GetSizeDimension(); i++)
       {
-      dimSize[i] =1;
+      dimSize[i] = 1;
       }
-    //  for(i=0; i<ImageDimension; i++) // changed by Kurt
     for(unsigned int i=0; i<cNDims; i++)
       {
       dimSize[i] = 4;
-      //start[i]=0;
       }
-    //std::cout<<start[0] <<" " <<start[1]<<" "<<start[2]<<std::endl;
 
     cData   = ImageType::New();
     ImageType::RegionType region;
     region.SetSize(dimSize);
-    //region.SetIndex(start);
     cData->SetRegions(region);
-    //cData->SetLargestPossibleRegion( region );
-    //cData->SetBufferedRegion( region );
-    //cData->SetRequestedRegion( region );  
     cData->Allocate();
 
     cDataWS = ImageType::New();
     cDataWS->SetRegions(region);
-    //cDataWS->SetLargestPossibleRegion( region );
-    //cDataWS->SetBufferedRegion( region );
-    //cDataWS->SetRequestedRegion( region );  
     cDataWS->Allocate();
 
-    cData1D = new VectorType(4);
+    cData1D.set_size(4);
     }
 
   cDefined = true;
@@ -189,7 +186,7 @@ void SplineND::clipEdge(bool newClip)
 //
 SplineND::IntVectorType & SplineND::xMin(void)
   {
-  return *cXMin;
+  return cXMin;
   }
 
 void SplineND::xMin(IntVectorType newXMin)
@@ -200,13 +197,13 @@ void SplineND::xMin(IntVectorType newXMin)
     t(i) = newXMin(i);
     }
   cOptND->xMin(t);
-  (*cXMin) = newXMin;
+  cXMin = newXMin;
   }
 
 
 SplineND::IntVectorType & SplineND::xMax(void)
   {
-  return *cXMax;
+  return cXMax;
   }
 
 void SplineND::xMax(IntVectorType newXMax)
@@ -217,7 +214,7 @@ void SplineND::xMax(IntVectorType newXMax)
     t(i) = newXMax(i);
     }
   cOptND->xMax(t);
-  (*cXMax) = newXMax;
+  cXMax = newXMax;
   }
 
 
@@ -237,7 +234,7 @@ void SplineND::newData(bool newNewData)
 //
 //
 //
-void SplineND::cGetData(VectorType & x)
+void SplineND::cGetData(const VectorType & x)
   {
   if(m_debug)
     {
@@ -255,7 +252,7 @@ void SplineND::cGetData(VectorType & x)
     {
     for(i=0; i<cNDims; i++)
       {
-      if((*cXi)(i) != (int)x(i)) 
+      if(cXi(i) != (int)x(i)) 
         {
         eql = false;
         break;
@@ -265,20 +262,20 @@ void SplineND::cGetData(VectorType & x)
       {
       for(j=i+1; j<cNDims; j++)
         {
-        if((*cXi)(j) != (int)x(j)) 
+        if(cXi(j) != (int)x(j)) 
           {
           eql = false;
           break;
           }
         }
-      if( j>cNDims && abs((*cXi)(i)-(int)x(i))<=1) 
+      if( j>cNDims && abs(cXi(i)-(int)x(i))<=1) 
         {
-        if((*cXi)(i) > (int)x(i)) 
+        if(cXi(i) > (int)x(i)) 
           {
           fixDir = -1;
           fixDim = i;
           }
-        else if((*cXi)(i) < (int)x(i)) 
+        else if(cXi(i) < (int)x(i)) 
           {
           fixDir = 1;
           fixDim = i;
@@ -304,7 +301,7 @@ void SplineND::cGetData(VectorType & x)
       cNewData = false;
       for(i=0; i<cNDims; i++)
         {
-        (*cXi)(i) = (int)x(i);
+        cXi(i) = (int)x(i);
         }
       i = 0;
       j = 0;
@@ -315,37 +312,37 @@ void SplineND::cGetData(VectorType & x)
       double pMult;
       while( i<cNDims ) 
         {
-        p = (*cXi) + xiOffset;
+        p = cXi + xiOffset;
 
         pMult = 1.0;
         for(k=0; k<cNDims; k++)
           {
-          if(p(k)<(*cXMin)(k)) 
+          if(p(k)<cXMin(k)) 
             {
             if(cClip) 
               {
               pMult = 0;
-              break; // p(k) = (*cXMin)(k);
+              break; // p(k) = cXMin(k);
               }
             else 
               {
-              pMult *= 1/(((*cXMin)(k)-p(k)));
-              p(k) = (*cXMin)(k);
+              pMult *= 1/((cXMin(k)-p(k)));
+              p(k) = cXMin(k);
               }
             } 
           else 
             {  
-            if(p(k)>(*cXMax)(k))
+            if(p(k)>cXMax(k))
               {   
               if(cClip) 
                 {
                 pMult = 0;
-                break; // p(k) = (*cXMax)(k);
+                break; // p(k) = cXMax(k);
                 }
               else 
                 {
-                pMult *= 1/((p(k)-(*cXMax)(k)));
-                p(k) = (*cXMax)(k);
+                pMult *= 1/((p(k)-cXMax(k)));
+                p(k) = cXMax(k);
                 }
               }
             }
@@ -353,7 +350,7 @@ void SplineND::cGetData(VectorType & x)
         if(pMult>0)
           {
           j++;
-          it.Set(cFuncVal->value(&p) * pMult);
+          it.Set(cFuncVal->value(p) * pMult);
           ++it;
           }
         else
@@ -383,7 +380,7 @@ void SplineND::cGetData(VectorType & x)
       {
       for(i=0; i<cNDims; i++)
         {
-        (*cXi)(i) = (int)x(i);
+        cXi(i) = (int)x(i);
         }
       if(fixDir>0) 
         {
@@ -407,49 +404,49 @@ void SplineND::cGetData(VectorType & x)
       double pMult;
       while( i<cNDims )
         {
-        p = (*cXi) + xiOffset;
+        p = cXi + xiOffset;
         if((xiOffset(fixDim) + fixDir) < -1 ||
           (xiOffset(fixDim) + fixDir) > 2 ||
-          p(fixDim)+fixDir<(*cXMin)(fixDim) ||
-          p(fixDim)+fixDir>(*cXMax)(fixDim)
+          p(fixDim)+fixDir<cXMin(fixDim) ||
+          p(fixDim)+fixDir>cXMax(fixDim)
         ) 
           {
           pMult = 1.0;
           for(k=0; k<cNDims; k++)
             {
-            if(p(k)<(*cXMin)(k)) 
+            if(p(k)<cXMin(k)) 
               {
               if(cClip) 
                 {
                 pMult = 0;
-                break; // p(k) = (*cXMin)(k);
+                break; // p(k) = cXMin(k);
                 }
               else 
                 {
-                pMult *= 1/(((*cXMin)(k)-p(k)));
-                p(k) = (*cXMin)(k);
+                pMult *= 1/((cXMin(k)-p(k)));
+                p(k) = cXMin(k);
                 }
               }
             else 
               {
-              if(p(k)>(*cXMax)(k))
+              if(p(k)>cXMax(k))
                 {
                 if(cClip) 
                   {
                   pMult = 0;
-                  break; // p(k) = (*cXMax)(k);
+                  break; // p(k) = cXMax(k);
                   }
                 else 
                   {
-                  pMult *= 1/((p(k)-(*cXMax)(k)));
-                  p(k) = (*cXMax)(k);
+                  pMult *= 1/((p(k)-cXMax(k)));
+                  p(k) = cXMax(k);
                   }
                 }
               }
             }
           if(pMult>0)
             {
-            it.Set(cFuncVal->value(&p) * pMult);
+            it.Set(cFuncVal->value(p) * pMult);
             }
           else
             {
@@ -521,7 +518,7 @@ void SplineND::cGetData(VectorType & x)
 //
 //
 // 
-double SplineND::value(VectorType & x)
+const double & SplineND::value(const VectorType & x)
   {
   if(m_debug) 
     {
@@ -530,13 +527,13 @@ double SplineND::value(VectorType & x)
   if(cClip)
     for(unsigned int i=1; i<cNDims; i++)
       {
-      if(x(i)<(*cXMin)(i) || x(i)>(*cXMax)(i))
+      if(x(i)<cXMin(i) || x(i)>cXMax(i))
         {
         return 0;
         }
       }
 
-  cGetData(x);
+  this->cGetData(x);
 
   ImageRegionIterator<ImageType> itData(cData,cData->GetLargestPossibleRegion()); 
   ImageRegionIterator<ImageType> itDataWS(cDataWS,cDataWS->GetLargestPossibleRegion()); 
@@ -564,7 +561,7 @@ double SplineND::value(VectorType & x)
         }
       for(unsigned int ind=0; ind<4; ind++)
         {
-        (*cData1D)(ind)= itDataWS.Get();
+        cData1D(ind)= itDataWS.Get();
         ++itDataWS;
         }
 
@@ -574,7 +571,7 @@ double SplineND::value(VectorType & x)
         ++itDataWS;
         }
 
-      itDataWS.Set(cSpline1D->dataValue(*cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+      itDataWS.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
       }
     }
 
@@ -589,20 +586,20 @@ double SplineND::value(VectorType & x)
 //
 //
 //
-double SplineND::valueD(VectorType & x, IntVectorType & dx)
+double SplineND::valueD(const VectorType & x, IntVectorType & dx)
   {
   if(cClip)
     {
     for(unsigned int i=0; i<(cNDims-1); i++)
       {
-      if(x(i)<(*cXMin)(i) || x(i)>(*cXMax)(i))
+      if(x(i)<cXMin(i) || x(i)>cXMax(i))
         {
         return 0;
         }
       }
     }
 
-  cGetData(x);
+  this->cGetData(x);
 
   ImageRegionIterator<ImageType> itData(cData,cData->GetLargestPossibleRegion());
   ImageRegionIterator<ImageType> itDataWS(cDataWS,cDataWS->GetLargestPossibleRegion());
@@ -634,7 +631,7 @@ double SplineND::valueD(VectorType & x, IntVectorType & dx)
             }
           for(unsigned int ind=0; ind<4; ind++)
             {
-            (*cData1D)(ind)= itDataWS.Get();
+            cData1D(ind)= itDataWS.Get();
             ++itDataWS;
             }
 
@@ -645,7 +642,7 @@ double SplineND::valueD(VectorType & x, IntVectorType & dx)
             ++itDataWS;
             }
 
-          itDataWS.Set(cSpline1D->dataValue(*cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itDataWS.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           }
         break;
       case 1:
@@ -658,7 +655,7 @@ double SplineND::valueD(VectorType & x, IntVectorType & dx)
             }
           for(unsigned int ind=0; ind<4; ind++)
             {
-            (*cData1D)(ind)= itDataWS.Get();
+            cData1D(ind)= itDataWS.Get();
             ++itDataWS;
             }
 
@@ -669,7 +666,7 @@ double SplineND::valueD(VectorType & x, IntVectorType & dx)
             ++itDataWS;
             }
 
-          itDataWS.Set(cSpline1D->dataValueD(*cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itDataWS.Set(cSpline1D->dataValueD(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           }
         break;
       case 2:
@@ -682,7 +679,7 @@ double SplineND::valueD(VectorType & x, IntVectorType & dx)
             }
           for(unsigned int ind=0; ind<4; ind++)
             {
-            (*cData1D)(ind)= itDataWS.Get();
+            cData1D(ind)= itDataWS.Get();
             ++itDataWS;
             }
 
@@ -693,14 +690,14 @@ double SplineND::valueD(VectorType & x, IntVectorType & dx)
             ++itDataWS;
             }
 
-          itDataWS.Set(cSpline1D->dataValueD2(*cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itDataWS.Set(cSpline1D->dataValueD2(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           }
         break;
       }
     }
 
   ImageType::IndexType ind;
-  for(unsigned int k2 =0; k2<ImageDimension; k2++)
+  for(unsigned int k2=0; k2<ImageType::ImageDimension; k2++)
     {
     ind[k2]=0;
     }
@@ -709,18 +706,18 @@ double SplineND::valueD(VectorType & x, IntVectorType & dx)
   }
 
 
-SplineND::VectorType & SplineND::valueD(VectorType & x)
+SplineND::VectorType & SplineND::valueD(const VectorType & x)
   {
   IntVectorType dx(cNDims, 0);
 
   for(unsigned int i=0; i<cNDims; i++) 
     {
     dx(i) = 1;
-    (*cD)(i) = valueD(x, dx);
+    cD(i) = valueD(x, dx);
     dx(i) = 0;
     }
 
-  return *cD;
+  return cD;
   }
 
 //
@@ -736,8 +733,8 @@ SplineND::MatrixType & SplineND::hessian(VectorType & x)
   valueVDD2(x, d, d2);
   for(unsigned int i=0; i<cNDims; i++) 
     {
-    cH->put(i,i,d2(i));
-    (*cD)(i) = d(i);
+    cH.put(i,i,d2(i));
+    cD(i) = d(i);
     }
 
   for(unsigned int i=0; i<cNDims; i++)
@@ -746,13 +743,13 @@ SplineND::MatrixType & SplineND::hessian(VectorType & x)
       {
       dx(i) = 1;
       dx(j) = 1;
-      cH->put(i,j,valueD(x, dx));
-      cH->put(j,i,cH->get(i,j));
+      cH.put(i,j,valueD(x, dx));
+      cH.put(j,i,cH.get(i,j));
       dx(i) = 0;
       dx(j) = 0;
       }
     }
-  return *cH;
+  return cH;
   }
 
 //
@@ -773,8 +770,8 @@ double SplineND::valueJet(VectorRefType x, VectorRefType d, MatrixType & h)
     }
   for(unsigned int i=0; i< cNDims; i++) 
     {
-    cH->put(i,i,lD2(i));
-    (*cD)(i) = lD(i);
+    cH.put(i,i,lD2(i));
+    cD(i) = lD(i);
     }
 
 
@@ -785,8 +782,8 @@ double SplineND::valueJet(VectorRefType x, VectorRefType d, MatrixType & h)
       {
       dx(i) = 1;
       dx(j) = 1;
-      cH->put(i,j,valueD(x, dx));
-      cH->put(j,i,cH->get(i,j));
+      cH.put(i,j,valueD(x, dx));
+      cH.put(j,i,cH.get(i,j));
       dx(i) = 0;
       dx(j) = 0;
       }
@@ -799,10 +796,10 @@ double SplineND::valueJet(VectorRefType x, VectorRefType d, MatrixType & h)
 
   for(unsigned int i=0; i<cNDims; i++)
     { 
-    d(i) = (*cD)(i);
+    d(i) = cD(i);
     } 
 
-  h = *cH;
+  h = cH;
 
   return v;
   }
@@ -822,14 +819,14 @@ double SplineND::valueVDD2(VectorType & x, VectorType & d, VectorType & d2)
     {
     for(unsigned int i=1; i<cNDims; i++)
       {
-      if(x(i)<(*cXMin)(i) || x(i)>(*cXMax)(i))
+      if(x(i)<cXMin(i) || x(i)>cXMax(i))
         {
         return 0;
         }
       }
     }
 
-  cGetData(x);
+  this->cGetData(x);
 
   if(first) 
     {
@@ -943,7 +940,7 @@ double SplineND::valueVDD2(VectorType & x, VectorType & d, VectorType & d2)
         }
       for(unsigned int ind=0; ind<4; ind++)
         {
-        (*cData1D)(ind)= itDataWSX.Get();
+        cData1D(ind)= itDataWSX.Get();
         ++itDataWSX;
         }
 
@@ -953,7 +950,7 @@ double SplineND::valueVDD2(VectorType & x, VectorType & d, VectorType & d2)
         ++itDataWSX;
         }
 
-      itDataWSX.Set(cSpline1D->dataValueJet(*cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1))), &vD, &vD2));
+      itDataWSX.Set(cSpline1D->dataValueJet(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1))), &vD, &vD2));
 
       for(unsigned int l=0; l<cNDims; l++) 
         {
@@ -980,7 +977,7 @@ double SplineND::valueVDD2(VectorType & x, VectorType & d, VectorType & d2)
             }
           for(unsigned int ind=0; ind<4; ind++)
             {
-            (*cData1D)(ind)= itImageWSX2.Get();
+            cData1D(ind)= itImageWSX2.Get();
             ++itImageWSX2;
             }
           itImageWSX2.GoToBegin();
@@ -988,10 +985,10 @@ double SplineND::valueVDD2(VectorType & x, VectorType & d, VectorType & d2)
             {
             ++itImageWSX2;
             }
-          itImageWSX2.Set(cSpline1D->dataValue(*cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itImageWSX2.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           for(unsigned int ind=0; ind<4; ind++)
             {
-            (*cData1D)(ind)= itImageWSXX2.Get();
+            cData1D(ind)= itImageWSXX2.Get();
             ++itImageWSXX2;
             }
 
@@ -1001,7 +998,7 @@ double SplineND::valueVDD2(VectorType & x, VectorType & d, VectorType & d2)
             ++itImageWSXX2;
             }
 
-          itImageWSXX2.Set(cSpline1D->dataValue(*cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itImageWSXX2.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
 
           }
         }
@@ -1021,7 +1018,7 @@ double SplineND::valueVDD2(VectorType & x, VectorType & d, VectorType & d2)
 
 
   ImageType::IndexType ind;
-  for(unsigned int k=0; k<ImageDimension; k++)
+  for(unsigned int k=0; k<ImageType::ImageDimension; k++)
     {
     ind[k]=0;
     }
@@ -1070,7 +1067,7 @@ bool SplineND::extremeConjGrad(VectorType & extX, double * extVal)
   //  VectorType eVals(cNDims);
   VectorRefType eVals(cNDims, NULL);
   MatrixType eVects(cNDims, cNDims);
-  Eigen(*cH, eVects, eVals, false);
+  Eigen(cH, eVects, eVals, false);
 
   return cOptND->extreme(extX, extVal, cNDims, eVects);
   }

@@ -27,7 +27,7 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "UserFunc.h"
+#include "itkUserFunc.h"
 
 /** Solve for local extremes of 1D functions
  *  Must be derived to specify specific optimization method (e.g., OptBrent1D)

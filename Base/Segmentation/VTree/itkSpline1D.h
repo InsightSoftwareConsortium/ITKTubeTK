@@ -17,7 +17,7 @@
 #ifndef itkSpline1D_h
 #define itkSpline1D_h
 
-#include "UserFunc.h"
+#include "itkUserFunc.h"
 #include "itkOptimizer1D.h"
 #include "itkImage.h"
 
@@ -55,7 +55,7 @@ public :
    *          maxs and mins.
    *  \warning Must set xMin and xMax
    */
-  Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D * newOpt1D);
+  Spline1D( UserFunc<int, double> * newFuncVal, Optimizer1D * newOpt1D);
 
   //! Virtual destructor
   virtual ~Spline1D();
@@ -68,7 +68,7 @@ public :
    *          maxs and mins.
    *  \warning Must set xMin and xMax
    */
-   void    use(UserFunc<int, double> *newFuncVal, Optimizer1D * newOpt1D);    
+   void    use( UserFunc<int, double> * newFuncVal, Optimizer1D * newOpt1D);    
 
   /** Returns the characteristics of spline evaluations near data bounds (xMin and xMax)
    * If true, values beyond edges (xMin and xMax) are set to zero.
@@ -187,19 +187,20 @@ public :
     
 protected :
         
-  bool    cDefined;
+  bool                    cDefined;
   UserFunc<int, double> * cFuncVal;
-  bool    cClip;
-  int     cXMin;
-  int     cXMax;
-  bool    cNewData;
+  bool                    cClip;
+  int                     cXMin;
+  int                     cXMax;
 
-  VectorType* cData;
+  bool                    cNewData;
+  VectorType            * cData;
   
-  UserFunc<double, double> *      cOpt1DVal;
-  UserFunc<double, double> *    cOpt1DDeriv;
-  Optimizer1D *       cOpt1D;
-  void    cGetData(double x);
+  UserFunc<double, double> * cOpt1DVal;
+  UserFunc<double, double> * cOpt1DDeriv;
+  Optimizer1D              * cOpt1D;
+
+  void cGetData(double x);
 
 };
 

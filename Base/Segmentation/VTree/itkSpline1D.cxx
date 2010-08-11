@@ -21,29 +21,37 @@
 namespace itk 
 {
 
-class Spline1DValFunc : public UserFunc<double, double> {
-    Spline1D * spline;
+class Spline1DValFunc : public UserFunc<double, double> 
+{
+  Spline1D * spline;
+  double cVal;
 public:
-    Spline1DValFunc(Spline1D * newSpline)
+  Spline1DValFunc(Spline1D * newSpline)
     {
-        spline = newSpline;
+    spline = newSpline;
+    cVal = 0;
     };
-    double value(double x)
+  const double & value(const double & x)
     {
-        return spline->value(x);
+    cVal = spline->value(x);
+    return cVal;
     };
 };
 
-class Spline1DDerivFunc : public UserFunc<double, double> {
-    Spline1D * spline;
+class Spline1DDerivFunc : public UserFunc<double, double> 
+{
+  Spline1D * spline;
+  double cDeriv;
 public:
-    Spline1DDerivFunc(Spline1D * newSpline)
+  Spline1DDerivFunc(Spline1D * newSpline)
     {
-        spline = newSpline;
+    spline = newSpline;
+    cDeriv = 0;
     };
-    double value(double x)
+  const double & value(const double & x)
     {
-        return spline->valueD(x);
+    cDeriv = spline->valueD(x);
+    return cDeriv;
     }
 };
 

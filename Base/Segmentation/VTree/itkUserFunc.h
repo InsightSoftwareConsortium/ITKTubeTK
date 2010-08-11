@@ -20,30 +20,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
+#ifndef USERFUNC_H
+#define USERFUNC_H
 
-#include <iostream>
+#include <vnl/vnl_vector.h>
 
-#include "itkBlur3DImageFunction.h"
-#include "itkMatrixMath.h"
-#include "itkOptBrent1D.h"
-#include "itkOptGoldenMean1D.h"
-#include "itkOptimizer1D.h"
-#include "itkOptimizerND.h"
-#include "itkOptParabolicFit1D.h"
-#include "itkRadiusExtractor.h"
-#include "itkRidgeExtractor.h"
-#include "itkSpline1D.h"
-#include "itkSplineND.h"
-#include "itkSplineApproximation1D.h"
-#include "itkTubeExtractor.h"
-#include "itkTubeNetExtractor.h"
-#include "itkUserFunc.h"
+/*! UserFunc Derivation Examples
+ *  \example TestOptimizerND/testOptimizerND.cpp
+ */
 
-int main ( int , char ** )
+namespace itk {
+
+/*! Derive this class to pass functions to Spline and Optimization Classes
+ * \author Stephen R. Aylward
+ * \date 11/22/99
+ */
+template <class InVarT, class OutVarT>
+class UserFunc
 {
-  return EXIT_SUCCESS;
+public :
+        
+  virtual ~UserFunc() = 0;
+     
+  /** Derive this function */
+  virtual const OutVarT & value( const InVarT & x ) = 0;
+
+};
+
+template <class InVarT, class OutVarT>
+inline UserFunc< InVarT, OutVarT >::~UserFunc() 
+{
 }
+
+}; // namespace itk
+    
+#endif
 

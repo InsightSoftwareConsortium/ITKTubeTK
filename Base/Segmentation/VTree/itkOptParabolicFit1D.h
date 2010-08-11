@@ -18,7 +18,7 @@
 #define __itkOptParabolicFit1D_h
 
 #include "itkOptimizer1D.h"
-#include "UserFunc.h"
+#include "itkUserFunc.h"
 
 namespace itk
 {

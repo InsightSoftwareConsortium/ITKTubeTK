@@ -28,7 +28,7 @@ limitations under the License.
 #endif
 
 #include "itkOptimizer1D.h"
-#include "UserFunc.h"
+#include "itkUserFunc.h"
 
 namespace itk
 {
