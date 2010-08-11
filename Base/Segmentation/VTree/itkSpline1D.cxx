@@ -58,7 +58,8 @@ public:
 //
 //
 //
-Spline1D::Spline1D()
+Spline1D::
+Spline1D()
 {
   cDefined = false;
 
@@ -73,7 +74,8 @@ Spline1D::Spline1D()
   use(NULL, NULL);
 }
 
-Spline1D::Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+Spline1D::
+Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
   cDefined = false;
 
@@ -82,24 +84,21 @@ Spline1D::Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
   cXMin = 0;
   cXMax = 1;
 
+  cData.set_size(4);
+
   cOpt1DVal = new Spline1DValFunc(this);
   cOpt1DDeriv = new Spline1DDerivFunc(this);
 
   use(newFuncVal, newOpt1D);
 }
 
-Spline1D::~Spline1D()
+Spline1D::
+~Spline1D()
 {
   if(cDefined) 
   {
     cDefined = false;
 
-    // Smart pointer should do it for us
-    /*if(cData != NULL)
-    {
-      cData::Delete(); 
-      cData = NULL;
-    }*/
     delete cOpt1DVal;
     delete cOpt1DDeriv;
   }
@@ -108,14 +107,9 @@ Spline1D::~Spline1D()
 //
 //
 //
-void Spline1D::use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+void Spline1D::
+use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
-    if(!cDefined) 
-    {
-      unsigned int dimSize = 4;
-      cData = new VectorType(dimSize); // if I understand well this is just a vector of size 4
-        //new ImageBase<double>(1, &dimSize);
-    }
     cDefined = true;
 
     cFuncVal = newFuncVal;
@@ -130,32 +124,38 @@ void Spline1D::use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 //
 //
 //
-bool Spline1D::clipEdge(void)
+bool Spline1D::
+clipEdge(void)
 {
     return cClip;
 }
 
-void Spline1D::clipEdge(bool newClip)
+void Spline1D::
+clipEdge(bool newClip)
 {
     cClip = newClip;
 }
 
-int Spline1D::xMin(void)
+int Spline1D::
+xMin(void)
 {
     return cXMin;
 }
 
-void Spline1D::xMin(int newXMin)
+void Spline1D::
+xMin(int newXMin)
 {
     cXMin = newXMin;
 }
 
-int Spline1D::xMax(void)
+int Spline1D::
+xMax(void)
 {
     return cXMax;
 }
 
-void Spline1D::xMax(int newXMax)
+void Spline1D::
+xMax(int newXMax)
 {
     cXMax = newXMax;
 }
@@ -163,12 +163,14 @@ void Spline1D::xMax(int newXMax)
 //
 //
 //
-bool Spline1D::newData(void)
+bool Spline1D::
+newData(void)
 {
     return cNewData;
 }
 
-void Spline1D::newData(bool newNewData)
+void Spline1D::
+newData(bool newNewData)
 {
     cNewData = newNewData;
 }
@@ -176,49 +178,72 @@ void Spline1D::newData(bool newNewData)
 //
 //
 //
-void Spline1D::cGetData(double x)
+void Spline1D::
+cGetData(double x)
 {
   static int xi = (int)x;
 
-  int i, j=0;
   if((int)x != xi || cNewData) 
     {
+    int lx = xi;
     xi = (int)x;
-    cNewData = false;
-    for(i=xi-1; i<=xi+2; i++)
+    int offset = xi-lx;
+    if( cNewData )
       {
-      if(i>=cXMin && i<= cXMax)
+      offset = 100;
+      }
+    cNewData = false;
+    vnl_vector<double> tmpData(4);
+    int j=0;
+    for(int i=xi-1; i<=xi+2; i++)
+      {
+      if( j+offset >= 0 && j+offset <= 3 )
         {
-        cData[j++] = cFuncVal->value(i);
+        tmpData[j] = cData[j+offset];
+        //std::cout << "j = " << j << " : reuse i = " << i 
+          //<< " : v = " << tmpData[j] << std::endl;
+        j++;
         }
       else
         {
-        if(i<cXMin)
+        if(i>=cXMin && i<=cXMax)
           {
-          if(cClip)
-            {
-            cData[j++] = 0;
-            }
-          else
-            {
-            cData[j++] = cFuncVal->value(cXMin) / (1+(cXMin-i));
-            }
+          tmpData[j++] = cFuncVal->value(i);
           }
         else
           {
-          if(i>cXMax)
+          if(i<cXMin)
             {
             if(cClip)
               {
-              cData[j++]= 0;
+              tmpData[j++] = 0;
               }
             else
               {
-              cData[j++] = cFuncVal->value(cXMax) / (1+(i-cXMax));
+              tmpData[j++] = cFuncVal->value(cXMin) / (1+(cXMin-i));
+              }
+            }
+          else
+            {
+            if(i>cXMax)
+              {
+              if(cClip)
+                {
+                tmpData[j++]= 0;
+                }
+              else
+                {
+                tmpData[j++] = cFuncVal->value(cXMax) / (1+(i-cXMax));
+                }
               }
             }
           }
         }
+      }
+    for(j=0; j<4; j++)
+      {
+      cData[j] = tmpData[j];
+      //std::cout << "  cData[" << j << "] = " << cData[j] << std::endl;
       }
     }
 }
@@ -226,40 +251,44 @@ void Spline1D::cGetData(double x)
 //
 //
 //
-double Spline1D::value(double x)
+double Spline1D::
+value(double x)
 {
     if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
         return 0;
 
     cGetData(x);
 
-    return dataValue(*cData, x - (int)x);
+    return dataValue(cData, x - (int)x);
 }
 
 
-double Spline1D::valueD(double x)
+double Spline1D::
+valueD(double x)
 {
     if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
         return 0;
 
     cGetData(x);
 
-    return dataValueD(*cData, x - (int)x);
+    return dataValueD(cData, x - (int)x);
 }
 
 
-double Spline1D::valueD2(double x)
+double Spline1D::
+valueD2(double x)
 {
     if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
         return 0;
 
     cGetData(x);
         
-    return dataValueD2(*cData, x - (int)x);
+    return dataValueD2(cData, x - (int)x);
 }
 
 
-double Spline1D::curv(double x)
+double Spline1D::
+curv(double x)
 {        
     if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
         return 0;
@@ -271,7 +300,8 @@ double Spline1D::curv(double x)
     return xpp/pow(1.0+xp*xp, 1.5);
 }
 
-double Spline1D::valueJet(double x, double * d, double * d2)
+double Spline1D::
+valueJet(double x, double * d, double * d2)
 {
   if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
   {
@@ -280,13 +310,14 @@ double Spline1D::valueJet(double x, double * d, double * d2)
   
   cGetData(x);
 
-  return dataValueJet(*cData, x - (int)x, d, d2);
+  return dataValueJet(cData, x - (int)x, d, d2);
 }
 
 //
 //
 //
-bool Spline1D::extreme(double * extX, double * extVal)
+bool Spline1D::
+extreme(double * extX, double * extVal)
 {    
     return cOpt1D->extreme(extX, extVal);
 }

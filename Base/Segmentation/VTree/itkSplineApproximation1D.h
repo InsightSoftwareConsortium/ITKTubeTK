@@ -1,17 +1,23 @@
 /*=========================================================================
 
-  Program:   itkUNC
-  Module:    $RCSfile: itkSplineApproximation1D.h,v $
-  Language:  C++
-  Date:      $Date: 2003/01/13 19:59:26 $
-  Version:   $Revision: 1.3 $
+Library:   TubeTK
 
-  Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
-  See itkUNCCopyright.txt for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 #ifndef itkSplineApproximation1D_h
@@ -30,25 +36,30 @@ class SplineApproximation1D : public Spline1D
 public :
 
   typedef vnl_vector<double> VectorType;
+
   SplineApproximation1D();
-  SplineApproximation1D(UserFunc<int, double> *newFunval, Optimizer1D * newOpt1D);
+  SplineApproximation1D(UserFunc<int, double> *newFunval,
+    Optimizer1D * newOpt1D);
+
   virtual ~SplineApproximation1D();
-  double  dataValue(VectorType y, double x);
-  double  dataValueD(VectorType y, double x);
-  double  dataValueD2(VectorType y, double x);
-  double  dataValueJet(VectorType y, double x, double *d, double *d2);
+
+  double  dataValue(const VectorType & y, double x);
+
+  double  dataValueD(const VectorType & y, double x);
+
+  double  dataValueD2(const VectorType & y, double x);
+
+  double  dataValueJet(const VectorType & y,
+    double x, double *d, double *d2);
 
 protected :
 
   float cSplineApproximation1DMatrixConst;
   float cSplineApproximation1DMatrix[4][4];
 
-
-
 };
 
 }; // end namespace itk
-
 
 #endif
 

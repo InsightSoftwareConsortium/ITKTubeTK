@@ -29,6 +29,7 @@ limitations under the License.
 #include "itkMacro.h"
 #include "itkImage.h"
 #include "itkImageRegionIteratorWithIndex.h"
+#include "itkImageFileWriter.h"
 
 #include "../itkOptBrent1D.h"
 #include "../itkSplineApproximation1D.h"
@@ -47,12 +48,19 @@ class MySA1DFunc:
     const double & value( const int & x )
       {
       cVal = vcl_sin((double)x);
+      //std::cout << "s: x = " << x << " : v = " << cVal << std::endl;
       return cVal;
       };
   };
 
-int itkSplineApprox1DTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
+int itkSplineApprox1DTest( int argc, char *argv[] )
 {
+  if( argc != 2 )
+    {
+    std::cout << "usage: run <outImFile>" << std::endl;
+    return EXIT_FAILURE;
+    }
+
   double epsilon = 0.000001;
 
   MySA1DFunc * myFunc = new MySA1DFunc();
@@ -111,16 +119,20 @@ int itkSplineApprox1DTest( int itkNotUsed(argc), char *itkNotUsed(argv)[] )
     x = pnt[0] + pnt[1]/10;
     if( itIm.GetIndex()[1] / 2 == itIm.GetIndex()[1] / 2.0 )
       {
-      std::cout << "x = " << x << " : v = " << spline.value(x) << std::endl;
       itIm.Set( spline.value(x) );
       }
     else
       {
-      std::cout << "x = " << x << " : d = " << spline.valueD(x) << std::endl;
       itIm.Set( spline.valueD(x) );
       }
     ++itIm;
     }
+
+  typedef itk::ImageFileWriter<ImageType> ImageWriterType;
+  ImageWriterType::Pointer imWriter = ImageWriterType::New( );
+  imWriter->SetFileName( argv[1] );
+  imWriter->SetInput( im );
+  imWriter->Update( );
 
   return returnStatus;
 }
