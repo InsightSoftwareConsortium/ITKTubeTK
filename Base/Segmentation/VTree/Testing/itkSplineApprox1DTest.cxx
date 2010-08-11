@@ -91,14 +91,14 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
   ImageType::Pointer im = ImageType::New( );
   ImageType::RegionType imRegion;
   ImageType::SizeType imSize;
-  imSize[0] = 20;
-  imSize[1] = 20;
-  imSize[2] = 10;
+  imSize[0] = 40;
+  imSize[1] = 40;
+  imSize[2] = 20;
   imRegion.SetSize( imSize );
   ImageType::IndexType index0;
-  index0[0] = 10;
-  index0[1] = 10;
-  index0[2] = 10;
+  index0[0] = -20;
+  index0[1] = -20;
+  index0[2] = -10;
   imRegion.SetIndex( index0 );
   im->SetRegions( imRegion );
   ImageType::SpacingType imSpacing;
@@ -112,19 +112,40 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
     im->GetLargestPossibleRegion( ) );
   ImageType::PointType pnt;
   itIm.GoToBegin();
-  double x;
+  double x, d, d2;
   while( !itIm.IsAtEnd() )
     {
     im->TransformIndexToPhysicalPoint( itIm.GetIndex(), pnt );
-    x = pnt[0] + pnt[1]/10;
-    if( itIm.GetIndex()[1] / 2 == itIm.GetIndex()[1] / 2.0 )
+    x = pnt[0];
+    switch( vnl_math_abs(itIm.GetIndex()[1]) % 5 )
       {
-      itIm.Set( spline.value(x) );
-      }
-    else
-      {
-      itIm.Set( spline.valueD(x) );
-      }
+      default:
+      case 0:
+        {
+        itIm.Set( spline.value(x) );
+        break;
+        }
+      case 1:
+        {
+        itIm.Set( spline.valueD(x) );
+        break;
+        }
+      case 2:
+        {
+        itIm.Set( spline.valueD2(x) );
+        break;
+        }
+      case 3:
+        {
+        itIm.Set( spline.curv(x) );
+        break;
+        }
+      case 4:
+        {
+        itIm.Set( spline.valueJet(x, &d, &d2) );
+        break;
+        }
+      };
     ++itIm;
     }
 
