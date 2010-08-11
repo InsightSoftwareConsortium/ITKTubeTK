@@ -46,7 +46,7 @@ class MySA1DFunc:
       };
     const double & value( const int & x )
       {
-      cVal = vcl_sin(x);
+      cVal = vcl_sin((double)x);
       return cVal;
       };
   };
