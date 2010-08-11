@@ -48,7 +48,6 @@ public :
    
   /** Typedef for the vector type used */
   typedef vnl_vector< double > VectorType;
-  typedef vnl_vector_ref< double > VectorRefType; 
   
   /** Typedef for the vector type used */
   typedef vnl_vector< int > IntVectorType;
@@ -159,7 +158,7 @@ public :
   *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
   *  calculations and control point evaluations are stored to speed subsequent calls
   */
-  MatrixType & hessian(VectorType & x);
+  MatrixType & hessian(const VectorType & x);
 
   //! Returns spline interpolated derivative jet (value, 1st deriv, Hessian) at x
   /*! Calculates the values at control (integer) points by calling the UserFunc and
@@ -167,7 +166,7 @@ public :
    *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
    *  calculations and control point evaluations are stored to speed subsequent calls
    */
-  double valueJet(VectorRefType x, VectorRefType d, MatrixType & h);
+  double valueJet(const VectorType & x, VectorType & d, MatrixType & h);
 
   //! Returns spline interpolated 1st derivatives and 2nd derivatives at x
  /*! Calculates the values at control (integer) points by calling the UserFunc and
@@ -176,13 +175,13 @@ public :
   *  dependent on which spline derivation is used (e.g., SplApprox1D).   Intermediate
   *  calculations and control point evaluations are stored to speed subsequent calls
   */
-  double valueVDD2(VectorType & x, VectorType & d, VectorType & d2);
+  double valueVDD2(const VectorType & x, VectorType & d, VectorType & d2);
   //! Calculates the local extreme using the supplied instance of a derivation of OptimizerND
  /*! Function returns true on successful local extreme finding, false otherwise.
   *  \param extX User supplied initial point, On return equals location of extreme local to initial point
   *  \param extVal On return equals the value at the local extreme
   */
-  bool extreme(VectorRefType extX, double * extVal);
+  bool extreme(VectorType & extX, double * extVal);
 
   //! Calculates the local extreme in the direction dir using the supplied instance of a derivation of OptimizerND
   /*! Function returns true on successful local extreme finding, false otherwise.
@@ -190,7 +189,7 @@ public :
    *  \param extVal On return equals the value at the local extreme
    *  \param dir Direction to search for local extreme
    */
-  bool extreme(VectorRefType extX, double * extVal, VectorType &dir);
+  bool extreme(VectorType & extX, double * extVal, VectorType &dir);
 
  /** Calculates the local extreme in the basis space dirs using the supplied instance of a derivation of OptimizerND
   *  Function returns true on successful local extreme finding, false otherwise.
@@ -199,7 +198,7 @@ public :
   *  \param n number of vectors in dirs to use to define the basis space
   *  \param dirs TNT::Vectors that define the basis space to search for local extreme
   */
-  bool extreme(VectorRefType extX, double * extVal, unsigned int n, MatrixType &dirs);
+  bool extreme(VectorType & extX, double * extVal, unsigned int n, MatrixType &dirs);
   
  /** Calculates the local extreme using an approximation to the conjugate gradient descent method
   * Function returns true on successful local extreme finding, false otherwise.
@@ -220,6 +219,7 @@ protected :
   IntVectorType  cXMax;
   bool           cNewData;
   IntVectorType  cXi;
+  double         cVal;
   VectorType     cD;
   MatrixType     cH;
 
