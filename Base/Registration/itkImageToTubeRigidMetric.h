@@ -20,7 +20,7 @@
 
 #include "itkPoint.h"
 #include "itkGroupSpatialObject.h"
-#include "itkTubeSpatialObject.h"
+#include "itkVesselTubeSpatialObject.h"
 #include "itkMinimumMaximumImageCalculator.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include <time.h>
@@ -50,8 +50,8 @@ public:
   typedef SmartPointer<const Self>  ConstPointer;
 
   /** Type definition for a tube point */
-  typedef TubeSpatialObjectPoint<3>  TubePointType;
-  typedef TubeSpatialObject<3>       TubeType;
+  typedef VesselTubeSpatialObjectPoint<3>  TubePointType;
+  typedef VesselTubeSpatialObject<3>       TubeType;
   typedef TMovingSpatialObject       MovingSpatialObjectType;
   typedef typename MovingSpatialObjectType::ChildrenListType ChildrenListType;
   typedef GroupSpatialObject<3>      TubeNetType;

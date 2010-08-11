@@ -77,12 +77,12 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   filter->SetFixedImage( imageReader->GetOutput() );
   filter->SetMovingSpatialObject( vesselReader->GetGroup() );
   filter->SetNumberOfIteration( 100 );
-
+  //filter->SetVerbose(0);
 
   try
     {
-    //filter->Initialize();
-    //filter->Update();
+    filter->Initialize();
+    filter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
