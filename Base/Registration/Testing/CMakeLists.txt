@@ -51,6 +51,6 @@ add_test( itkImageToTubeRigidRegistrationTest
           ${BASE_REGISTRSTION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
           ${INPUT_DATA}/Branch-truth-new.tre
           ${INPUT_DATA}/Branch.n020.mha
-#          ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 
+#          ${TEMP}/itkImageToTubeRigidRegistrationTest.mha 
           )
 

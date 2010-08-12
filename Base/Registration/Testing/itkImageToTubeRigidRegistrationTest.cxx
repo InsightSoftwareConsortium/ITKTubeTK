@@ -26,17 +26,15 @@
 
 int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
 {
-/*
-  if ( argc < 2 )
+
+  if ( argc < 3 )
     {
     std::cerr << "Missing Parameters: " 
               << argv[0]
-              << " Input_Vessel" << std::endl;
-//              << " Edge_Enhanced_Output_Image [Sigma] [Alpha] [ContrastParameter]"
-//              << " [TimeStep] [NumberOfIterations]" << std::endl; 
+              << " Input_Vessel " << "Input_Image " << std::endl;
     return EXIT_FAILURE;
     }
-*/
+
  
   typedef itk::GroupSpatialObject<3>                  TubeNetType;
   typedef itk::SpatialObjectReader<3>                 TubeNetReaderType;
@@ -46,7 +44,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
                                                       FilterType;
   
   TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
-  vesselReader->SetFileName("/home/hyang/Work/tubetk/Data/Branch-truth-new.tre");//argv[1]);
+  vesselReader->SetFileName(argv[1]);
   
   try
     {
@@ -59,7 +57,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
     }
 
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
-  imageReader->SetFileName("/home/hyang/Work/tubetk/Data/Branch.n020.mha");//argv[2]);
+  imageReader->SetFileName(argv[2]);
   
   try
     {
