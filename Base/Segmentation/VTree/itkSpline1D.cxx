@@ -34,6 +34,7 @@ public:
   const double & value(const double & x)
     {
     cVal = spline->value(x);
+    std::cout << "Spline x = " << x << " : val = " << cVal << std::endl;
     return cVal;
     };
 };
@@ -51,6 +52,7 @@ public:
   const double & value(const double & x)
     {
     cDeriv = spline->valueD(x);
+    std::cout << "Spline x = " << x << " : dx = " << cDeriv << std::endl;
     return cDeriv;
     }
 };
@@ -116,7 +118,9 @@ use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 
     cOpt1D = newOpt1D;
     if(cOpt1D != NULL)
-        cOpt1D->use(cOpt1DVal, cOpt1DDeriv);
+      {
+      cOpt1D->use(cOpt1DVal, cOpt1DDeriv);
+      }
 
     cNewData = true;
 }
@@ -146,6 +150,10 @@ void Spline1D::
 xMin(int newXMin)
 {
     cXMin = newXMin;
+    if(cOpt1D)
+      {
+      cOpt1D->xMin( cXMin );
+      }
 }
 
 int Spline1D::
@@ -158,6 +166,10 @@ void Spline1D::
 xMax(int newXMax)
 {
     cXMax = newXMax;
+    if(cOpt1D)
+      {
+      cOpt1D->xMax( cXMax );
+      }
 }
 
 //
