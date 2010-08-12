@@ -31,5 +31,6 @@ limitations under the License.
 void RegisterTests()
 {
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
+  REGISTER_TEST( itkTubeToTubeTransformFilterTest );
 }
 

@@ -33,6 +33,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
        itkImageToTubeRigidRegistrationTest.cxx
+       itkTubeToTubeTransformFilterTest.cxx
 )
 
 include_directories( 
@@ -46,6 +47,12 @@ add_executable( tubeBaseRegistrationFiltersTests
 target_link_libraries( tubeBaseRegistrationFiltersTests
                        ITKIO ITKNumerics ITKBasicFilters )
 
+
+add_test( itkTubeToTubeTransformFilterTest 
+          ${BASE_REGISTRSTION_FILTERS_TESTS} itkTubeToTubeTransformFilterTest
+          ${INPUT_DATA}/Branch-truth-new.tre
+          ${TEMP}/itkImageToTubeRigidRegistrationTest.tre 
+          )
 
 add_test( itkImageToTubeRigidRegistrationTest 
           ${BASE_REGISTRSTION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
