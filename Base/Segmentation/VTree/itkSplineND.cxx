@@ -1,20 +1,23 @@
 /*=========================================================================
 
-Program:   itkUNC
-Module:    $RCSfile: itkSplineND.cxx,v $
-Language:  C++
+Library:   TubeTK
 
-Date:      $Date: 2005/08/08 18:31:09 $
-Version:   $Revision: 1.15 $
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
+All rights reserved. 
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
-See itkUNCCopyright.txt for details.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-This software is distributed WITHOUT ANY WARRANTY; without even 
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-PURPOSE.  See the above copyright notices for more information.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 #include "itkSplineND.h"
@@ -26,17 +29,21 @@ namespace itk
 {
 
 class SplineNDValFunc :
-  public UserFunc< vnl_vector<double>, double > 
+public UserFunc< vnl_vector<double>, double > 
 {
 private:
+
   SplineND * cSpline;
   double cVal;
+
 public:
+
   SplineNDValFunc(SplineND * newSpline)
     {
     cSpline = newSpline;
     cVal = 0;
     };
+
   const double & value( const vnl_vector<double> & x )
     {
     cVal = cSpline->value( x );
@@ -44,19 +51,22 @@ public:
     };
 };
 
-
 class SplineNDDerivFunc :
-  public UserFunc< vnl_vector<double>, vnl_vector<double> > 
+public UserFunc< vnl_vector<double>, vnl_vector<double> > 
 {
 private:
+
   SplineND * cSpline;
   vnl_vector<double> cDx;
+
 public:
+
   SplineNDDerivFunc(SplineND * newSpline)
     {
     cSpline = newSpline;
     cDx.set_size( cSpline->nDims() );
     };
+
   const vnl_vector<double> & value( const vnl_vector<double> & x )
     {
     cDx = cSpline->valueD( x );
@@ -71,9 +81,11 @@ SplineND::SplineND()
   cDefined = false;
   cVal = 0;
   cClip = false;
+
   cOptNDVal = new SplineNDValFunc(this);
   cOptNDDeriv = new SplineNDDerivFunc(this);
-  use(0, NULL, NULL, NULL);
+
+  this->use(0, NULL, NULL, NULL);
   }
 
 SplineND::SplineND( unsigned int newNDims,
@@ -85,8 +97,10 @@ SplineND::SplineND( unsigned int newNDims,
   cDefined = false;
   cClip = false;
   cVal = 0;
+
   cOptNDVal = new SplineNDValFunc(this);
   cOptNDDeriv = new SplineNDDerivFunc(this);
+
   this->use(newNDims, newFuncVal, newSpline1D, newOpt1D);
   }
 
@@ -95,6 +109,8 @@ SplineND::~SplineND()
   if(cDefined)
     {
     cDefined = false;
+    delete cOptNDVal;
+    delete cOptNDDeriv;
     if(cOptND != NULL) 
       {
       delete cOptND;
@@ -187,12 +203,12 @@ void SplineND::clipEdge(bool newClip)
 //
 //
 //
-SplineND::IntVectorType & SplineND::xMin(void)
+const SplineND::IntVectorType & SplineND::xMin(void)
   {
   return cXMin;
   }
 
-void SplineND::xMin(IntVectorType newXMin)
+void SplineND::xMin(const IntVectorType & newXMin)
   {
   VectorType t(cNDims);
   for(unsigned int i=0; i<cNDims; i++)
@@ -204,12 +220,12 @@ void SplineND::xMin(IntVectorType newXMin)
   }
 
 
-SplineND::IntVectorType & SplineND::xMax(void)
+const SplineND::IntVectorType & SplineND::xMax(void)
   {
   return cXMax;
   }
 
-void SplineND::xMax(IntVectorType newXMax)
+void SplineND::xMax(const IntVectorType & newXMax)
   {
   VectorType t(cNDims);
   for(unsigned int i=0; i<cNDims; i++)
@@ -245,7 +261,8 @@ void SplineND::cGetData(const VectorType & x)
     std::cout<<"cNDims: "<<cNDims<<std::endl;
     }
 
-  ImageRegionIterator<ImageType> it(cData,cData->GetLargestPossibleRegion());
+  ImageRegionIterator<ImageType> it(cData,
+    cData->GetLargestPossibleRegion());
 
   unsigned int i, j, k;
   int fixDir = 1;
@@ -285,7 +302,8 @@ void SplineND::cGetData(const VectorType & x)
           }
         if(m_debug)
           {
-          std::cout << "SplineND: cGetData: dataShift dir = " << fixDir << std::endl;
+          std::cout << "SplineND: cGetData: dataShift dir = " 
+            << fixDir << std::endl;
           } 
         }
       else 
@@ -477,7 +495,10 @@ void SplineND::cGetData(const VectorType & x)
 
           if(m_debug)
             {
-            std::cout << "SplineND: cGetData: " << j << " shifting from " << k << " to " << j << " : " << p(1) << ", " << p(2) << ", " <<" = " << it.Get() << std::endl;
+            std::cout << "SplineND: cGetData: " << j 
+              << " shifting from " << k << " to " << j << " : " 
+              << p(1) << ", " << p(2) << ", " <<" = "
+              << it.Get() << std::endl;
             }
           }
         if(m_debug) 
@@ -539,8 +560,10 @@ const double & SplineND::value(const VectorType & x)
 
   this->cGetData(x);
 
-  ImageRegionIterator<ImageType> itData(cData,cData->GetLargestPossibleRegion()); 
-  ImageRegionIterator<ImageType> itDataWS(cDataWS,cDataWS->GetLargestPossibleRegion()); 
+  ImageRegionIterator<ImageType> itData(cData,
+    cData->GetLargestPossibleRegion()); 
+  ImageRegionIterator<ImageType> itDataWS(cDataWS,
+    cDataWS->GetLargestPossibleRegion()); 
 
   itData.GoToBegin();
   itDataWS.GoToBegin();
@@ -575,14 +598,16 @@ const double & SplineND::value(const VectorType & x)
         ++itDataWS;
         }
 
-      itDataWS.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+      itDataWS.Set( cSpline1D->dataValue(cData1D,
+          ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))) );
       }
     }
 
   itDataWS.GoToBegin();
   if(m_debug)
     {
-    std::cout << "SplineND : value : value at " << x << " = " << itDataWS.Get() << std::endl;
+    std::cout << "SplineND : value : value at " << x << " = " 
+      << itDataWS.Get() << std::endl;
     }
   cVal = itDataWS.Get();
   return cVal;
@@ -607,8 +632,10 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
 
   this->cGetData(x);
 
-  ImageRegionIterator<ImageType> itData(cData,cData->GetLargestPossibleRegion());
-  ImageRegionIterator<ImageType> itDataWS(cDataWS,cDataWS->GetLargestPossibleRegion());
+  ImageRegionIterator<ImageType> itData(cData,
+    cData->GetLargestPossibleRegion());
+  ImageRegionIterator<ImageType> itDataWS(cDataWS,
+    cDataWS->GetLargestPossibleRegion());
 
   itData.GoToBegin();
   itDataWS.GoToBegin();
@@ -617,7 +644,6 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
     itDataWS.Set(itData.Get());
     ++itDataWS;
     ++itData;
-
     }
 
   for(int i=(int)cNDims-1; i>=0; i--) 
@@ -629,7 +655,6 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
       case 0:
         for(unsigned int j=0; j<k; j++) 
           {
-
           itDataWS.GoToBegin();
           for(unsigned int offset=0; offset<j*4; offset++)
             {
@@ -648,7 +673,8 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
             ++itDataWS;
             }
 
-          itDataWS.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itDataWS.Set(cSpline1D->dataValue(cData1D,
+              ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           }
         break;
       case 1:
@@ -665,14 +691,14 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
             ++itDataWS;
             }
 
-          /** May don't need that */
           itDataWS.GoToBegin();
           for(unsigned int offset=0; offset<j; offset++)
             {
             ++itDataWS;
             }
 
-          itDataWS.Set(cSpline1D->dataValueD(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itDataWS.Set(cSpline1D->dataValueD(cData1D,
+              ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           }
         break;
       case 2:
@@ -696,7 +722,8 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
             ++itDataWS;
             }
 
-          itDataWS.Set(cSpline1D->dataValueD2(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itDataWS.Set(cSpline1D->dataValueD2(cData1D,
+              ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           }
         break;
       }
@@ -799,7 +826,8 @@ double SplineND::valueJet(const VectorType & x,
 
   if(m_debug) 
     {
-    std::cout << "SplineND : valueJet : value at " << x << " = " << v << std::endl;
+    std::cout << "SplineND : valueJet : value at " << x 
+      << " = " << v << std::endl;
     }
 
   for(unsigned int i=0; i<cNDims; i++)
@@ -892,8 +920,10 @@ double SplineND::valueVDD2(const VectorType & x,
   VectorImageType::Iterator itWSX  = cDataWSX->Begin();
   VectorImageType::Iterator itWSXX = cDataWSXX->Begin();
 
-  ImageRegionIterator<ImageType> itData(cData,cData->GetLargestPossibleRegion());
-  ImageRegionIterator<ImageType> itDataWS(cDataWS,cDataWS->GetLargestPossibleRegion());
+  ImageRegionIterator<ImageType> itData(cData,
+    cData->GetLargestPossibleRegion());
+  ImageRegionIterator<ImageType> itDataWS(cDataWS,
+    cDataWS->GetLargestPossibleRegion());
 
   /** Could optimize that */
   itDataWS.GoToBegin();
@@ -908,8 +938,10 @@ double SplineND::valueVDD2(const VectorType & x,
   while(itWSX != cDataWSX->End()) 
     {  
     /** Iterators to copy image information */
-    ImageRegionIterator<ImageType> itImageWSX(itWSX->Value(),itWSX->Value()->GetLargestPossibleRegion());
-    ImageRegionIterator<ImageType> itImageWSXX(itWSXX->Value(),itWSXX->Value()->GetLargestPossibleRegion());
+    ImageRegionIterator<ImageType> itImageWSX(itWSX->Value(),
+      itWSX->Value()->GetLargestPossibleRegion());
+    ImageRegionIterator<ImageType> itImageWSXX(itWSXX->Value(),
+      itWSXX->Value()->GetLargestPossibleRegion());
     itData.GoToBegin();
     itImageWSX.GoToBegin();
     itImageWSXX.GoToBegin();
@@ -933,12 +965,15 @@ double SplineND::valueVDD2(const VectorType & x,
     {
     unsigned int k = (unsigned int)pow((float)4, (int)i);
 
-    ImageRegionIterator<ImageType> itImageWSX(itWSX->Value(),itWSX->Value()->GetLargestPossibleRegion());
-    ImageRegionIterator<ImageType> itImageWSXX(itWSXX->Value(),itWSXX->Value()->GetLargestPossibleRegion());
+    ImageRegionIterator<ImageType> itImageWSX(itWSX->Value(),
+      itWSX->Value()->GetLargestPossibleRegion());
+    ImageRegionIterator<ImageType> itImageWSXX(itWSXX->Value(),
+      itWSXX->Value()->GetLargestPossibleRegion());
     itImageWSX.GoToBegin();
     itImageWSXX.GoToBegin();
 
-    ImageRegionIterator<ImageType> itDataWSX(cDataWS,cDataWS->GetLargestPossibleRegion());
+    ImageRegionIterator<ImageType> itDataWSX(cDataWS,
+      cDataWS->GetLargestPossibleRegion());
     itDataWSX.GoToBegin();
 
     for(unsigned int j=0; j<k; j++) 
@@ -960,7 +995,8 @@ double SplineND::valueVDD2(const VectorType & x,
         ++itDataWSX;
         }
 
-      itDataWSX.Set(cSpline1D->dataValueJet(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1))), &vD, &vD2));
+      itDataWSX.Set(cSpline1D->dataValueJet(cData1D,
+        ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1))), &vD, &vD2));
 
       for(unsigned int l=0; l<cNDims; l++) 
         {
@@ -975,8 +1011,10 @@ double SplineND::valueVDD2(const VectorType & x,
             itWSX2++;
             itWSXX2++;
             }
-          ImageRegionIterator<ImageType> itImageWSX2(itWSX2->Value(),itWSX2->Value()->GetLargestPossibleRegion());
-          ImageRegionIterator<ImageType> itImageWSXX2(itWSXX2->Value(),itWSXX2->Value()->GetLargestPossibleRegion());
+          ImageRegionIterator<ImageType> itImageWSX2(itWSX2->Value(),
+            itWSX2->Value()->GetLargestPossibleRegion());
+          ImageRegionIterator<ImageType> itImageWSXX2(itWSXX2->Value(),
+            itWSXX2->Value()->GetLargestPossibleRegion());
           itImageWSX2.GoToBegin();
           itImageWSXX2.GoToBegin();
 
@@ -995,7 +1033,8 @@ double SplineND::valueVDD2(const VectorType & x,
             {
             ++itImageWSX2;
             }
-          itImageWSX2.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          itImageWSX2.Set(cSpline1D->dataValue(cData1D,
+              ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           for(unsigned int ind=0; ind<4; ind++)
             {
             cData1D(ind)= itImageWSXX2.Get();
@@ -1008,8 +1047,8 @@ double SplineND::valueVDD2(const VectorType & x,
             ++itImageWSXX2;
             }
 
-          itImageWSXX2.Set(cSpline1D->dataValue(cData1D, ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
-
+          itImageWSXX2.Set(cSpline1D->dataValue(cData1D,
+            ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
           }
         }
 
@@ -1025,7 +1064,6 @@ double SplineND::valueVDD2(const VectorType & x,
 
   itWSX  = cDataWSX->Begin();
   itWSXX = cDataWSXX->Begin();
-
 
   ImageType::IndexType ind;
   for(unsigned int k=0; k<ImageType::ImageDimension; k++)
@@ -1056,7 +1094,8 @@ bool SplineND::extreme(VectorType & extX, double * extVal)
   return cOptND->extreme(extX, extVal);
   }
 
-bool SplineND::extreme(VectorType & extX, double *extVal, unsigned int n, MatrixType &dirs)
+bool SplineND::extreme(VectorType & extX, double *extVal,
+  unsigned int n, MatrixType &dirs)
   {
   return cOptND->extreme(extX, extVal, n, dirs);
   }
