@@ -48,7 +48,7 @@ class MySA1DFunc:
     const double & value( const int & x )
       {
       cVal = vcl_sin((double)x);
-      //std::cout << "s: x = " << x << " : v = " << cVal << std::endl;
+      std::cout << "s: x = " << x << " : v = " << cVal << std::endl;
       return cVal;
       };
   };
@@ -67,6 +67,9 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
 
   itk::OptBrent1D * opt = new itk::OptBrent1D( );
   opt->smallDouble( epsilon );
+  opt->searchForMin( true );
+  opt->xStep( 0.01 );
+  opt->tolerance( 0.0000001 );
 
   itk::SplineApproximation1D spline( myFunc, opt );
 
@@ -154,6 +157,33 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );
   imWriter->Update( );
+
+  x = 0;
+  double xVal;
+  if( !spline.extreme( &x, &xVal ) )
+    {
+    std::cout << "Spline.Extreme() returned false." << std::endl;
+    std::cout << "                x = " << x << std::endl;
+    std::cout << "                xVal = " << xVal << std::endl;
+    returnStatus = EXIT_FAILURE;
+    }
+  else
+    {
+    if( vnl_math_abs( x - -1.4749 ) > 0.0001 )
+      {
+      std::cout << "Spline.Extreme() solution not ideal: x=" 
+        << x << "!= ideal=" << vnl_math::pi/2 << std::endl;
+      returnStatus = EXIT_FAILURE;
+      }
+    if( vnl_math_abs( xVal - -0.827393 ) > 0.0001 )
+      {
+      std::cout << "Spline.Extreme() output not ideal: val=" 
+        << xVal << " != ideal=1.0" << std::endl;
+      returnStatus = EXIT_FAILURE;
+      }
+    }
+
+
 
   return returnStatus;
 }
