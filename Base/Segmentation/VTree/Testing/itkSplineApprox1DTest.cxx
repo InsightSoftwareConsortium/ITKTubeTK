@@ -183,8 +183,6 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
       }
     }
 
-
-
   return returnStatus;
 }
 
