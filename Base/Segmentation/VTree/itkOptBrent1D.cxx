@@ -128,7 +128,7 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
         //std::cout << " limit: x0 = " << x << std::endl;
         //std::cout << " limit: v = " << v << std::endl;
         //std::cout << " limit: vVal = " << maxSign*fv << std::endl;
-        return 0;
+        return false;
         }
       }
     else
@@ -162,7 +162,7 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
       {
       *extX = x;
       *extVal = maxSign*fx;
-      return 1;
+      return true;
       }
     if(fabs(e) > tol1) 
       {
@@ -237,7 +237,7 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
         {
         *extX = x;
         *extVal = maxSign*fx;
-        return 1;
+        return true;
         }
       }
     du = maxSign*cFuncDeriv->value(u);
@@ -284,9 +284,9 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
   *extX = x;
   *extVal = maxSign*fx;
 
-  std::cout << "Too many iterations in minimization routine" << std::endl;
+  std::cout << "Reached max iterations." << std::endl;
 
-  return 0;
+  return false;
 }
 
 
