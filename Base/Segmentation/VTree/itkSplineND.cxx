@@ -77,7 +77,7 @@ public:
 
 SplineND::SplineND()
   {
-  m_debug = false;
+  m_debug = true;
   cDefined = false;
   cVal = 0;
   cClip = false;
@@ -93,7 +93,7 @@ SplineND::SplineND( unsigned int newNDims,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
   {
-  m_debug = false;
+  m_debug = true;
   cDefined = false;
   cClip = false;
   cVal = 0;
@@ -198,6 +198,7 @@ bool SplineND::clipEdge(void)
 void SplineND::clipEdge(bool newClip)
   {
   cClip = newClip;
+
   }
 
 //
@@ -258,19 +259,12 @@ void SplineND::cGetData(const VectorType & x)
   if(m_debug)
     {
     std::cout << "SplineND: cGetData: " << x << std::endl;
-    std::cout<<"cNDims: "<<cNDims<<std::endl;
     }
 
-  ImageRegionIterator<ImageType> it(cData,
-    cData->GetLargestPossibleRegion());
-
-  unsigned int i, j, k;
-  int fixDir = 1;
-  unsigned int fixDim = cNDims+1;
   bool eql = true;
   if(!cNewData) 
     {
-    for(i=0; i<cNDims; i++)
+    for(unsigned int i=0; i<cNDims; i++)
       {
       if(cXi(i) != (int)x(i)) 
         {
@@ -278,261 +272,204 @@ void SplineND::cGetData(const VectorType & x)
         break;
         }
       }
-    if(!eql) 
-      {
-      for(j=i+1; j<cNDims; j++)
-        {
-        if(cXi(j) != (int)x(j)) 
-          {
-          eql = false;
-          break;
-          }
-        }
-      if( j>cNDims && abs(cXi(i)-(int)x(i))<=1) 
-        {
-        if(cXi(i) > (int)x(i)) 
-          {
-          fixDir = -1;
-          fixDim = i;
-          }
-        else if(cXi(i) < (int)x(i)) 
-          {
-          fixDir = 1;
-          fixDim = i;
-          }
-        if(m_debug)
-          {
-          std::cout << "SplineND: cGetData: dataShift dir = " 
-            << fixDir << std::endl;
-          } 
-        }
-      else 
-        {
-        cNewData = true;
-        eql = true;
-        }
-      }
     }
   if(!eql || cNewData) 
     {
-    IntVectorType p(cNDims);
-    IntVectorType xiOffset(cNDims);
     if(cNewData) 
       {
       cNewData = false;
-      for(i=0; i<cNDims; i++)
+      for(unsigned int i=0; i<cNDims; i++)
         {
         cXi(i) = (int)x(i);
         }
-      i = 0;
-      j = 0;
 
+      ImageRegionIterator<ImageType> it(cData,
+        cData->GetLargestPossibleRegion());
       it.GoToBegin();
 
-      xiOffset = -1;
-      double pMult;
-      while( i<cNDims ) 
+      IntVectorType p(cNDims);
+      IntVectorType xiOffset(cNDims, -1);
+      bool done = false;
+      while( !done )
         {
         p = cXi + xiOffset;
-
-        pMult = 1.0;
-        for(k=0; k<cNDims; k++)
+        for( unsigned int i=0; i<cNDims; i++ )
           {
-          if(p(k)<cXMin(k)) 
+          if( p(i) < cXMin(i) )
             {
-            if(cClip) 
+            if( cClip )
               {
-              pMult = 0;
-              break; // p(k) = cXMin(k);
+              p(i) = cXMin(i);
               }
-            else 
+            else
               {
-              pMult *= 1/((cXMin(k)-p(k)));
-              p(k) = cXMin(k);
-              }
-            } 
-          else 
-            {  
-            if(p(k)>cXMax(k))
-              {   
-              if(cClip) 
+              p(i) = cXMin(i) + ( cXMin(i) - p(i) );
+              if( p(i) > cXMax(i) )
                 {
-                pMult = 0;
-                break; // p(k) = cXMax(k);
-                }
-              else 
-                {
-                pMult *= 1/((p(k)-cXMax(k)));
-                p(k) = cXMax(k);
+                p(i) = cXMax(i);
                 }
               }
             }
-          }       
-        if(pMult>0)
-          {
-          j++;
-          it.Set(cFuncVal->value(p) * pMult);
-          ++it;
+          else if( p(i) > cXMax(i) )
+            {
+            if( cClip )
+              {
+              p(i) = cXMax(i);
+              }
+            else
+              {
+              p(i) = cXMax(i) - ( p(i) - cXMax(i) );
+              if( p(i) < cXMin(i) )
+                {
+                p(i) = cXMin(i);
+                }
+              }
+            }
           }
-        else
-          {
-          j++;
-          it.Set(0);
-          ++it;
-          }
+        it.Set( cFuncVal->value(p) );
         if(m_debug) 
           {
-          for(i=0; i<cNDims; i++)
+          for(unsigned int i=0; i<cNDims; i++)
             {
             std::cout << p(i) << "(" << xiOffset(i) << ")  ";
             }
-          --it;
           std::cout << "SplineND: cGetData: " << it.Get() << std::endl;
-          ++it;
           }
-        i = 0;
-        while( i<cNDims && (++xiOffset(i))>2)
+        ++it;
+        unsigned int dim = 0;
+        while( !done && dim<cNDims && (++xiOffset(dim))>2)
           {
-          xiOffset(i++) = -1;
+          xiOffset(dim++) = -1;
+          if( dim >= cNDims )
+            {
+            done = true;
+            }
           }
         }
       } 
     else 
       {
-      for(i=0; i<cNDims; i++)
+      IntVectorType p(cNDims);
+      IntVectorType pOld(cNDims);
+      IntVectorType xiOffset(cNDims);
+      IntVectorType shift(cNDims, 100.0);
+
+      for(unsigned int i=0; i<cNDims; i++)
+        {
+        shift[i] = (int)x(i) - cXi(i);
+        }
+
+      for(unsigned int i=0; i<cNDims; i++)
         {
         cXi(i) = (int)x(i);
         }
-      if(fixDir>0) 
-        {
-        i = 1;
-        j = 0;
-        it.GoToBegin();
-        xiOffset = -1;
-        }
-      else 
-        {
-        i = cNDims;
-        int si = (int)pow((float)4, (int)cNDims)-1;
-        it.GoToBegin();
-        for(int offset=0; offset<si; offset++)
-          {
-          ++it;
-          }
-        xiOffset = 2;
-        }
 
-      double pMult;
-      while( i<cNDims )
+      ImageRegionIterator<ImageType> it(cDataWS,
+        cDataWS->GetLargestPossibleRegion());
+      it.GoToBegin();
+
+      xiOffset = -1;
+      bool done = false;
+      while( !done )
         {
         p = cXi + xiOffset;
-        if((xiOffset(fixDim) + fixDir) < -1 ||
-          (xiOffset(fixDim) + fixDir) > 2 ||
-          p(fixDim)+fixDir<cXMin(fixDim) ||
-          p(fixDim)+fixDir>cXMax(fixDim)
-        ) 
+        pOld = xiOffset + shift + 1;
+        if( m_debug )
           {
-          pMult = 1.0;
-          for(k=0; k<cNDims; k++)
+          std::cout << "newDataPoint=" << xiOffset+1 
+            << " : oldDataPoint=" << pOld << std::endl;
+          }
+        for(unsigned int i=0; i<cNDims; i++)
+          {
+          if( p(i) < cXMin(i) )
             {
-            if(p(k)<cXMin(k)) 
+            if( cClip )
               {
-              if(cClip) 
-                {
-                pMult = 0;
-                break; // p(k) = cXMin(k);
-                }
-              else 
-                {
-                pMult *= 1/((cXMin(k)-p(k)));
-                p(k) = cXMin(k);
-                }
+              p(i) = cXMin(i);
               }
-            else 
+            else
               {
-              if(p(k)>cXMax(k))
+              p(i) = cXMin(i) + ( cXMin(i) - p(i) );
+              if( p(i) > cXMax(i) )
                 {
-                if(cClip) 
-                  {
-                  pMult = 0;
-                  break; // p(k) = cXMax(k);
-                  }
-                else 
-                  {
-                  pMult *= 1/((p(k)-cXMax(k)));
-                  p(k) = cXMax(k);
-                  }
+                p(i) = cXMax(i);
                 }
               }
             }
-          if(pMult>0)
+          else if( p(i) > cXMax(i) )
             {
-            it.Set(cFuncVal->value(p) * pMult);
-            }
-          else
-            {
-            it.Set(0);
-            }
-          } 
-        else 
-          {
-          int si = j + fixDir*(int)pow((float)4, (int)fixDim-1);
-          /** Can be optimized */
-          it.GoToBegin();
-          for(int offset=0; offset<si; offset++)
-            {
-            ++it;
-            }
-          double val = it.Get();
-
-          it.GoToBegin();
-          for(unsigned int offset=0; offset<j; offset++)
-            {
-            ++it;
-            }
-
-          it.Set(val);
-
-          if(m_debug)
-            {
-            std::cout << "SplineND: cGetData: " << j 
-              << " shifting from " << k << " to " << j << " : " 
-              << p(1) << ", " << p(2) << ", " <<" = "
-              << it.Get() << std::endl;
+            if( cClip )
+              {
+              p(i) = cXMax(i);
+              }
+            else
+              {
+              p(i) = cXMax(i) - ( p(i) - cXMax(i) );
+              if( p(i) < cXMin(i) )
+                {
+                p(i) = cXMin(i);
+                }
+              }
             }
           }
-        if(m_debug) 
+        bool reuse = true;
+        for( unsigned int j=0; j<cNDims; j++ )
           {
-          std::cout << "SplineND: cGetData: " << j << " value at ";
-
-          for(unsigned int c=0; c<cNDims; c++)
+          if( pOld[j] < 0 || pOld[j] > 3 )
             {
-            std::cout << p(c) << "(" << xiOffset(c) << ")  ";
-            }
-
-          std::cout << "SplineND: cGetData: " << it.Get() << std::endl;
-          }
-
-        if(fixDir>0) 
-          {
-          i = 1;
-          j++;
-          ++it;
-          while(i<cNDims && (++xiOffset(i))>2)
-            {
-            xiOffset(i++) = -1;
+            reuse = false;
+            break;
             }
           }
-        else 
+        if( reuse )
           {
-          i = 1;
-          j--;
-          --it;
-          while(i<cNDims && (--xiOffset(i))<-1)
+          if( m_debug )
             {
-            xiOffset(i++) = 2;
-            }  
+            std::cout << "reusing" << std::endl;
+            }
+          ImageType::IndexType indx;
+          indx.Fill( 0 );
+          for( unsigned int i=0; i<cNDims; i++ )
+            {
+            indx[i] = pOld[i];
+            }
+          it.Set( cData->GetPixel( indx ) );
           }
+        else
+          {
+          it.Set( cFuncVal->value( p ) );
+          }
+        ++it;
+        unsigned int dim = 0;
+        while(!done && dim<cNDims && (++xiOffset(dim))>2)
+          {
+          xiOffset(dim++) = -1;
+          if( dim >= cNDims )
+            {
+            done = true;
+            }
+          }
+        }
+
+      if( m_debug )
+        {
+        std::cout << "cData = " << std::endl;
+        }
+      ImageRegionIterator<ImageType> itDest(cData,
+        cData->GetLargestPossibleRegion());
+      it.GoToBegin();
+      itDest.GoToBegin();
+      while( !it.IsAtEnd() )
+        {
+        itDest.Set( it.Get() );
+        std::cout << " " << it.GetIndex() 
+          << " = " << it.Get() << std::endl;
+        ++it;
+        ++itDest;
+        }
+      if( m_debug )
+        {
+        std::cout << "...done" << std::endl;
         }
       }
     }
@@ -548,20 +485,12 @@ const double & SplineND::value(const VectorType & x)
     {
     std::cout << "SplineND::value()" << std::endl;
     }
-  if(cClip)
-    for(unsigned int i=1; i<cNDims; i++)
-      {
-      if(x(i)<cXMin(i) || x(i)>cXMax(i))
-        {
-        cVal = 0;
-        return cVal;
-        }
-      }
 
   this->cGetData(x);
 
   ImageRegionIterator<ImageType> itData(cData,
     cData->GetLargestPossibleRegion()); 
+
   ImageRegionIterator<ImageType> itDataWS(cDataWS,
     cDataWS->GetLargestPossibleRegion()); 
 
@@ -574,32 +503,27 @@ const double & SplineND::value(const VectorType & x)
     ++itData;
     }
 
+  ImageRegionIterator<ImageType> itDataWSColumn(cDataWS,
+    cDataWS->GetLargestPossibleRegion()); 
+  ImageRegionIterator<ImageType> itDataWSDest(cDataWS,
+    cDataWS->GetLargestPossibleRegion()); 
 
   for(int i=(int)cNDims-1; i>=0; i--) 
     {
     unsigned int k = (unsigned int)pow((float)4, (int)i);
+    itDataWSColumn.GoToBegin();
+    itDataWSDest.GoToBegin();
     for(unsigned int j=0; j<k; j++) 
       {
-      itDataWS.GoToBegin();
-
-      for(unsigned int offset=0; offset<j*4; offset++)
-        {
-        ++itDataWS;
-        }
       for(unsigned int ind=0; ind<4; ind++)
         {
-        cData1D(ind)= itDataWS.Get();
-        ++itDataWS;
+        cData1D(ind)= itDataWSColumn.Get();
+        ++itDataWSColumn;
         }
 
-      itDataWS.GoToBegin();
-      for(unsigned int offset=0; offset<j; offset++)
-        {
-        ++itDataWS;
-        }
-
-      itDataWS.Set( cSpline1D->dataValue(cData1D,
+      itDataWSDest.Set( cSpline1D->dataValue(cData1D,
           ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))) );
+      ++itDataWSDest;
       }
     }
 
@@ -618,18 +542,6 @@ const double & SplineND::value(const VectorType & x)
 //
 double SplineND::valueD(const VectorType & x, IntVectorType & dx)
   {
-  if(cClip)
-    {
-    for(unsigned int i=0; i<(cNDims-1); i++)
-      {
-      if(x(i)<cXMin(i) || x(i)>cXMax(i))
-        {
-        cVal = 0;
-        return cVal;
-        }
-      }
-    }
-
   this->cGetData(x);
 
   ImageRegionIterator<ImageType> itData(cData,
@@ -646,8 +558,15 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
     ++itData;
     }
 
+  ImageRegionIterator<ImageType> itDataWSColumn(cDataWS,
+    cDataWS->GetLargestPossibleRegion()); 
+  ImageRegionIterator<ImageType> itDataWSDest(cDataWS,
+    cDataWS->GetLargestPossibleRegion()); 
+
   for(int i=(int)cNDims-1; i>=0; i--) 
     {
+    itDataWSColumn.GoToBegin();
+    itDataWSDest.GoToBegin();
     unsigned int k = (unsigned int)pow((float)4, (int)i);
     switch(dx((int)cNDims-i-1)) 
       {
@@ -655,87 +574,50 @@ double SplineND::valueD(const VectorType & x, IntVectorType & dx)
       case 0:
         for(unsigned int j=0; j<k; j++) 
           {
-          itDataWS.GoToBegin();
-          for(unsigned int offset=0; offset<j*4; offset++)
-            {
-            ++itDataWS;
-            }
           for(unsigned int ind=0; ind<4; ind++)
             {
-            cData1D(ind)= itDataWS.Get();
-            ++itDataWS;
+            cData1D(ind)= itDataWSColumn.Get();
+            ++itDataWSColumn;
             }
 
-          /** May don't need that */
-          itDataWS.GoToBegin();
-          for(unsigned int offset=0; offset<j; offset++)
-            {
-            ++itDataWS;
-            }
-
-          itDataWS.Set(cSpline1D->dataValue(cData1D,
+          itDataWSDest.Set(cSpline1D->dataValue(cData1D,
               ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          ++itDataWSDest;
           }
         break;
       case 1:
         for(unsigned int j=0; j<k; j++) 
           {
-          itDataWS.GoToBegin();
-          for(unsigned int offset=0; offset<j*4; offset++)
-            {
-            ++itDataWS;
-            }
           for(unsigned int ind=0; ind<4; ind++)
             {
-            cData1D(ind)= itDataWS.Get();
-            ++itDataWS;
+            cData1D(ind)= itDataWSColumn.Get();
+            ++itDataWSColumn;
             }
 
-          itDataWS.GoToBegin();
-          for(unsigned int offset=0; offset<j; offset++)
-            {
-            ++itDataWS;
-            }
-
-          itDataWS.Set(cSpline1D->dataValueD(cData1D,
+          itDataWSDest.Set(cSpline1D->dataValueD(cData1D,
               ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          ++itDataWSDest;
           }
         break;
       case 2:
         for(unsigned int j=0; j<k; j++) 
           {
-          itDataWS.GoToBegin();
-          for(unsigned int offset=0; offset<j*4; offset++)
-            {
-            ++itDataWS;
-            }
           for(unsigned int ind=0; ind<4; ind++)
             {
-            cData1D(ind)= itDataWS.Get();
-            ++itDataWS;
+            cData1D(ind)= itDataWSColumn.Get();
+            ++itDataWSColumn;
             }
 
-          /** May don't need that */
-          itDataWS.GoToBegin();
-          for(unsigned int offset=0; offset<j; offset++)
-            {
-            ++itDataWS;
-            }
-
-          itDataWS.Set(cSpline1D->dataValueD2(cData1D,
+          itDataWSDest.Set(cSpline1D->dataValueD2(cData1D,
               ((x((int)cNDims-i-1)-(int)x((int)cNDims-i-1)))));
+          ++itDataWSDest;
           }
         break;
       }
     }
 
-  ImageType::IndexType ind;
-  for(unsigned int k2=0; k2<ImageType::ImageDimension; k2++)
-    {
-    ind[k2]=0;
-    }
-
-  cVal = cDataWS->GetPixel(ind);
+  itDataWS.GoToBegin();
+  cVal = itDataWS.Get();
   return cVal;
   }
 
@@ -851,18 +733,6 @@ double SplineND::valueVDD2(const VectorType & x,
   typedef VectorContainer<unsigned int,ImagePointer> VectorImageType;
   static VectorImageType::Pointer cDataWSX; 
   static VectorImageType::Pointer cDataWSXX;
-
-  if(cClip)
-    {
-    for(unsigned int i=1; i<cNDims; i++)
-      {
-      if(x(i)<cXMin(i) || x(i)>cXMax(i))
-        {
-        cVal = 0;
-        return cVal;
-        }
-      }
-    }
 
   this->cGetData(x);
 

@@ -30,6 +30,7 @@ limitations under the License.
 #include "itkImage.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageFileWriter.h"
+#include "itkMersenneTwisterRandomVariateGenerator.h"
 
 #include "../itkSplineND.h"
 #include "../itkOptBrent1D.h"
@@ -48,11 +49,47 @@ class MySANDFunc:
       };
     const double & value( const vnl_vector<int> & x )
       {
-      cVal = vcl_sin((double)x[0]);
-      cVal += vcl_cos((double)x[1]);
+      cVal = vcl_sin((double)x[0]/2);
+      cVal += vcl_cos((double)x[1]/2);
       std::cout << "s: x = " << x[0] << ", " << x[1] 
         << " : v = " << cVal << std::endl;
       return cVal;
+      };
+  };
+
+class MySANDFuncV:
+  public itk::UserFunc< vnl_vector<double>, double > 
+  {
+  private:
+    double cVal;
+  public:
+    MySANDFuncV( )
+      {
+      cVal = 0;
+      };
+    const double & value( const vnl_vector<double> & x )
+      {
+      cVal = vcl_sin((double)x[0]/2);
+      cVal += vcl_cos((double)x[1]/2);
+      return cVal;
+      };
+  };
+class MySANDFuncD:
+  public itk::UserFunc< vnl_vector<double>, vnl_vector<double> > 
+  {
+  private:
+    vnl_vector<double> cDeriv;
+  public:
+    MySANDFuncD( )
+      {
+      cDeriv.set_size(2);
+      cDeriv.fill( 0 );
+      };
+    const vnl_vector<double> & value( const vnl_vector<double> & x )
+      {
+      cDeriv[0] = vcl_cos((double)x[0]/2);
+      cDeriv[1] = -vcl_sin((double)x[1]/2);
+      return cDeriv;
       };
   };
 
@@ -67,29 +104,36 @@ int itkSplineNDTest( int argc, char *argv[] )
   double epsilon = 0.000001;
 
   MySANDFunc * myFunc = new MySANDFunc();
+  MySANDFuncV * myFuncV = new MySANDFuncV();
+  MySANDFuncD * myFuncD = new MySANDFuncD();
 
   itk::SplineApproximation1D * spline1D = new itk::SplineApproximation1D();
 
   itk::OptBrent1D * opt = new itk::OptBrent1D( );
   opt->smallDouble( epsilon );
+  opt->searchForMin( true );
+  opt->xStep( 0.01 );
+  opt->tolerance( 0.0000001 );
 
   itk::SplineND spline( 2, myFunc, spline1D, opt );
 
   int returnStatus = EXIT_SUCCESS;
 
-  vnl_vector<int> xMin(2, -3);
+  spline.clipEdge( true );
+
+  vnl_vector<int> xMin(2, -6);
   spline.xMin( xMin );
-  if( spline.xMin()[0] != -3 )
+  if( spline.xMin()[0] != -6 )
     {
-    std::cout << "xMin should be -3 and not " << spline.xMin() << std::endl;
+    std::cout << "xMin should be -6 and not " << spline.xMin() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  vnl_vector<int> xMax(2, 3);
+  vnl_vector<int> xMax(2, 6);
   spline.xMax( xMax );
-  if( spline.xMax()[0] != 3 )
+  if( spline.xMax()[0] != 6 )
     {
-    std::cout << "xMax should be 3 and not " << spline.xMax() << std::endl;
+    std::cout << "xMax should be 6 and not " << spline.xMax() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
@@ -98,19 +142,19 @@ int itkSplineNDTest( int argc, char *argv[] )
   ImageType::Pointer im = ImageType::New( );
   ImageType::RegionType imRegion;
   ImageType::SizeType imSize;
-  imSize[0] = 40;
-  imSize[1] = 40;
+  imSize[0] = 60;
+  imSize[1] = 60;
   imSize[2] = 20;
   imRegion.SetSize( imSize );
   ImageType::IndexType index0;
-  index0[0] = -20;
-  index0[1] = -20;
+  index0[0] = -30;
+  index0[1] = -30;
   index0[2] = -10;
   imRegion.SetIndex( index0 );
   im->SetRegions( imRegion );
   ImageType::SpacingType imSpacing;
-  imSpacing[0] = 0.1;
-  imSpacing[1] = 0.1;
+  imSpacing[0] = 0.2;
+  imSpacing[1] = 0.2;
   imSpacing[2] = 0.2;
   im->SetSpacing( imSpacing );
   im->Allocate( );
@@ -131,7 +175,8 @@ int itkSplineNDTest( int argc, char *argv[] )
     im->TransformIndexToPhysicalPoint( itIm.GetIndex(), pnt );
     x[0] = pnt[0];
     x[1] = pnt[1];
-    switch( vnl_math_abs(itIm.GetIndex()[2]) % 5 )
+    std::cout << "img: " << std::flush;
+    switch( (itIm.GetIndex()[2] - index0[2]) % 9 )
       {
       default:
       case 0:
@@ -141,27 +186,43 @@ int itkSplineNDTest( int argc, char *argv[] )
         }
       case 1:
         {
-        itIm.Set( spline.valueD(x, di) );
+        itIm.Set( myFuncV->value(x) );
         break;
         }
       case 2:
+        {
+        itIm.Set( spline.valueD(x, di) );
+        break;
+        }
+      case 3:
+        {
+        itIm.Set( myFuncD->value(x)[1] );
+        break;
+        }
+      case 4:
         {
         d = spline.valueD(x);
         itIm.Set( d[0]*d[0] + d[1]*d[1] );
         break;
         }
-      case 3:
+      case 5:
         {
-        m = spline.hessian(x);
+        d = myFuncD->value(x);
         itIm.Set( d[0]*d[0] + d[1]*d[1] );
         break;
         }
-      case 4:
+      case 6:
+        {
+        m = spline.hessian(x);
+        itIm.Set( m[0][0]*m[0][0] + m[1][1]*m[1][1] );
+        break;
+        }
+      case 7:
         {
         itIm.Set( spline.valueJet(x, d, m) );
         break;
         }
-      case 5:
+      case 8:
         {
         itIm.Set( spline.valueVDD2(x, d, d2) );
         break;
@@ -175,6 +236,52 @@ int itkSplineNDTest( int argc, char *argv[] )
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );
   imWriter->Update( );
+
+  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
+    = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
+  rndGen->Initialize( 1 );
+
+  int failed = 0;
+  for(unsigned int c=0; c<100; c++)
+    {
+    x[0] = rndGen->GetNormalVariate( -1.0, 0.1 );
+    x[1] = rndGen->GetNormalVariate( -1.0, 0.1 );
+    std::cout << "Optimizing from " << x[0] << ", " << x[1] << std::endl;
+    double xVal = 0;
+    if( !spline.extreme( x, &xVal ) )
+      {
+      std::cout << "Spline.extreme failed." << std::endl;
+      std::cout << "  x = " << x[0] << ", " << x[1] << std::endl;
+      std::cout << "  xVal = " << xVal << std::endl;
+      returnStatus = EXIT_FAILURE;
+      ++failed;
+      }
+    else
+      {
+      bool err = false;
+      if( x[0] != -1.5 || x[1] != -1.5 )
+        {
+        std::cout << "Spline.extreme failed." << std::endl;
+        std::cout << "  x=" << x[0] << "," << x[1] 
+          << " != ideal=-1.5,-1.5" << std::endl;
+        returnStatus = EXIT_FAILURE;
+        err = true;
+        }
+      if( xVal != -0.8 ) 
+        {
+        std::cout << "Spline.extreme failed." << std::endl;
+        std::cout << "  xVal=" << xVal << " != -0.8" << std::endl;
+        returnStatus = EXIT_FAILURE;
+        err = true;
+        }
+      if( err )
+        {
+        ++failed;
+        }
+      }
+    }
+
+  std::cout << failed << " out of 100 optimizations failed." << std::endl;
 
   return returnStatus;
 }
