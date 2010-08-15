@@ -192,6 +192,8 @@ public :
   */
   double valueVDD2(const VectorType & x, VectorType & d, VectorType & d2);
 
+  itk::OptimizerND * optimizerND( void );
+
   /** Calculates the local extreme using the supplied instance of a
   * derivation of OptimizerND.  Function returns true on successful local
   * extreme finding, false otherwise.  
@@ -238,7 +240,6 @@ protected :
   /** Used to enable/disable cout of intermediate calculations */
   bool           m_debug;
 
-  bool           cDefined;
   unsigned int   cNDims;
   bool           cClip;
   IntVectorType  cXMin;

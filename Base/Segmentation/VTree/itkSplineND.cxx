@@ -77,13 +77,24 @@ public:
 
 SplineND::SplineND()
   {
-  m_debug = true;
-  cDefined = false;
-  cVal = 0;
+  m_debug = false;
+
+  cNDims = 0;
+
   cClip = false;
+  cNewData = true;
+
+  cVal = 0;
+  cData = NULL;
+  cDataWS = NULL;
+
+  cFuncVal = NULL;
 
   cOptNDVal = new SplineNDValFunc(this);
   cOptNDDeriv = new SplineNDDerivFunc(this);
+
+  cOptND = NULL;
+  cSpline1D = NULL;
 
   this->use(0, NULL, NULL, NULL);
   }
@@ -93,30 +104,37 @@ SplineND::SplineND( unsigned int newNDims,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
   {
-  m_debug = true;
-  cDefined = false;
+  m_debug = false;
+
+  cNDims = 0;
+
   cClip = false;
+  cNewData = true;
+
   cVal = 0;
+  cData = NULL;
+  cDataWS = NULL;
+
+  cFuncVal = NULL;
 
   cOptNDVal = new SplineNDValFunc(this);
   cOptNDDeriv = new SplineNDDerivFunc(this);
+
+  cOptND = NULL;
+  cSpline1D = NULL;
 
   this->use(newNDims, newFuncVal, newSpline1D, newOpt1D);
   }
 
 SplineND::~SplineND()
-  {
-  if(cDefined)
+{
+  delete cOptNDVal;
+  delete cOptNDDeriv;
+  if(cOptND != NULL) 
     {
-    cDefined = false;
-    delete cOptNDVal;
-    delete cOptNDDeriv;
-    if(cOptND != NULL) 
-      {
-      delete cOptND;
-      }
+    delete cOptND;
     }
-  }
+}
 
 
 void SplineND::use( unsigned int newNDims,
@@ -128,62 +146,52 @@ void SplineND::use( unsigned int newNDims,
     {
     std::cout << "Spline::use()" << std::endl; 
     }
-  if(cDefined && newNDims != cNDims) 
+  if(cOptND != NULL) 
     {
-    cDefined = false;
-    if(cOptND != NULL) 
-      {
-      delete cOptND;
-      }
+    delete cOptND;
+    cOptND = NULL;
     }
 
-  if(!cDefined) 
+  cNDims = newNDims;
+  cXMin.set_size( cNDims );
+  cXMin.fill( (int)0 );
+  cXMax.set_size( cNDims );
+  cXMax.fill( (int)1 );
+  cXi.set_size( cNDims );
+  cD.set_size( cNDims );
+  cH.set_size( cNDims, cNDims );
+
+  ImageType::SizeType dimSize;
+  for(unsigned int i=0; i<dimSize.GetSizeDimension(); i++)
     {
-    cNDims = newNDims;
-    cXMin.set_size( cNDims );
-    cXMin.fill( (int)0 );
-    cXMax.set_size( cNDims );
-    cXMax.fill( (int)1 );
-    cXi.set_size( cNDims );
-    cD.set_size( cNDims );
-    cH.set_size( cNDims, cNDims );
-
-    ImageType::SizeType dimSize;
-    for(unsigned int i=0; i<dimSize.GetSizeDimension(); i++)
-      {
-      dimSize[i] = 1;
-      }
-    for(unsigned int i=0; i<cNDims; i++)
-      {
-      dimSize[i] = 4;
-      }
-
-    cData   = ImageType::New();
-    ImageType::RegionType region;
-    region.SetSize(dimSize);
-    cData->SetRegions(region);
-    cData->Allocate();
-
-    cDataWS = ImageType::New();
-    cDataWS->SetRegions(region);
-    cDataWS->Allocate();
-
-    cData1D.set_size(4);
+    dimSize[i] = 1;
+    }
+  for(unsigned int i=0; i<cNDims; i++)
+    {
+    dimSize[i] = 4;
     }
 
-  cDefined = true;
+  cData   = ImageType::New();
+  ImageType::RegionType region;
+  region.SetSize(dimSize);
+  cData->SetRegions(region);
+  cData->Allocate();
+
+  cDataWS = ImageType::New();
+  cDataWS->SetRegions(region);
+  cDataWS->Allocate();
+
+  cData1D.set_size(4);
+
+  cVal = 0;
   cFuncVal = newFuncVal;
   cSpline1D = newSpline1D;
-  cVal = 0;
 
   if(newOpt1D != NULL)
     {
     cOptND = new OptimizerND(cNDims, cOptNDVal, cOptNDDeriv, newOpt1D);
     }
-  else
-    {
-    cOptND = NULL;
-    }
+
   cNewData = true;
   }
 
@@ -327,14 +335,20 @@ void SplineND::cGetData(const VectorType & x)
             }
           }
         it.Set( cFuncVal->value(p) );
-        if(m_debug) 
-          {
-          for(unsigned int i=0; i<cNDims; i++)
-            {
-            std::cout << p(i) << "(" << xiOffset(i) << ")  ";
-            }
-          std::cout << "SplineND: cGetData: " << it.Get() << std::endl;
-          }
+        //if(m_debug) 
+          //{
+          //std::cout << "cData: " << p(0);
+          //for(unsigned int i=1; i<cNDims; i++)
+            //{
+            //std::cout << ", " << p(i);
+            //}
+          //std::cout << " ( " << xiOffset(0);
+          //for(unsigned int i=1; i<cNDims; i++)
+            //{
+            //std::cout << ", " << xiOffset(i);
+            //}
+          //std::cout << " ) = " << it.Get() << std::endl;
+          //}
         ++it;
         unsigned int dim = 0;
         while( !done && dim<cNDims && (++xiOffset(dim))>2)
@@ -374,11 +388,11 @@ void SplineND::cGetData(const VectorType & x)
         {
         p = cXi + xiOffset;
         pOld = xiOffset + shift + 1;
-        if( m_debug )
-          {
-          std::cout << "newDataPoint=" << xiOffset+1 
-            << " : oldDataPoint=" << pOld << std::endl;
-          }
+        //if( m_debug )
+          //{
+          //std::cout << "newDataPoint=" << xiOffset+1 
+            //<< " : oldDataPoint=" << pOld << std::endl;
+          //}
         for(unsigned int i=0; i<cNDims; i++)
           {
           if( p(i) < cXMin(i) )
@@ -438,6 +452,20 @@ void SplineND::cGetData(const VectorType & x)
         else
           {
           it.Set( cFuncVal->value( p ) );
+          //if( m_debug )
+            //{
+            //std::cout << "adding cData: " << p(0);
+            //for(unsigned int i=1; i<cNDims; i++)
+              //{
+              //std::cout << ", " << p(i);
+              //}
+            //std::cout << " ( " << xiOffset(0);
+            //for(unsigned int i=1; i<cNDims; i++)
+              //{
+              //std::cout << ", " << xiOffset(i);
+              //}
+            //std::cout << " ) = " << it.Get() << std::endl;
+            //}
           }
         ++it;
         unsigned int dim = 0;
@@ -462,8 +490,11 @@ void SplineND::cGetData(const VectorType & x)
       while( !it.IsAtEnd() )
         {
         itDest.Set( it.Get() );
-        std::cout << " " << it.GetIndex() 
-          << " = " << it.Get() << std::endl;
+        //if( m_debug )
+          //{
+          //std::cout << " " << it.GetIndex() 
+            //<< " = " << it.Get() << std::endl;
+          //}
         ++it;
         ++itDest;
         }
@@ -955,6 +986,13 @@ double SplineND::valueVDD2(const VectorType & x,
   return cVal;
   }
 
+//
+//
+//
+itk::OptimizerND * SplineND::optimizerND( void )
+  {
+  return cOptND;
+  }
 
 //
 //
