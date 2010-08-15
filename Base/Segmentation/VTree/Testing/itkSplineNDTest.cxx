@@ -34,6 +34,7 @@ limitations under the License.
 
 #include "../itkSplineND.h"
 #include "../itkOptBrent1D.h"
+#include "../itkOptParabolicFit1D.h"
 #include "../itkSplineApproximation1D.h"
 #include "../itkUserFunc.h"
 
@@ -101,19 +102,14 @@ int itkSplineNDTest( int argc, char *argv[] )
     return EXIT_FAILURE;
     }
 
-  double epsilon = 0.000001;
-
   MySANDFunc * myFunc = new MySANDFunc();
   MySANDFuncV * myFuncV = new MySANDFuncV();
   MySANDFuncD * myFuncD = new MySANDFuncD();
 
   itk::SplineApproximation1D * spline1D = new itk::SplineApproximation1D();
 
+  //itk::OptParabolicFit1D * opt = new itk::OptParabolicFit1D( );
   itk::OptBrent1D * opt = new itk::OptBrent1D( );
-  opt->smallDouble( epsilon );
-  opt->searchForMin( true );
-  opt->xStep( 0.01 );
-  opt->tolerance( 0.0000001 );
 
   itk::SplineND spline( 2, myFunc, spline1D, opt );
 
@@ -175,7 +171,6 @@ int itkSplineNDTest( int argc, char *argv[] )
     im->TransformIndexToPhysicalPoint( itIm.GetIndex(), pnt );
     x[0] = pnt[0];
     x[1] = pnt[1];
-    std::cout << "img: " << std::flush;
     switch( (itIm.GetIndex()[2] - index0[2]) % 9 )
       {
       default:
@@ -202,13 +197,13 @@ int itkSplineNDTest( int argc, char *argv[] )
       case 4:
         {
         d = spline.valueD(x);
-        itIm.Set( d[0]*d[0] + d[1]*d[1] );
+        itIm.Set( d[0] + d[1] );
         break;
         }
       case 5:
         {
         d = myFuncD->value(x);
-        itIm.Set( d[0]*d[0] + d[1]*d[1] );
+        itIm.Set( d[0] + d[1] );
         break;
         }
       case 6:
@@ -241,11 +236,33 @@ int itkSplineNDTest( int argc, char *argv[] )
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   rndGen->Initialize( 1 );
 
+  spline.optimizerND()->searchForMin( false );
+  vnl_vector<double> xStep(2, 0.1);
+  spline.optimizerND()->xStep( xStep );
+  spline.optimizerND()->tolerance( 0.0001 );
+  spline.optimizerND()->maxIterations( 1000 );
+  spline.optimizerND()->maxLineSearches( 40 );
+  if( opt->searchForMin() != false )
+    {
+    std::cout << "SearchForMin not preserved." << std::endl;
+    returnStatus = EXIT_FAILURE;
+    }
+  if( opt->tolerance() != 0.0001 )
+    {
+    std::cout << "tolerance not preserved." << std::endl;
+    returnStatus = EXIT_FAILURE;
+    }
+  opt->maxIterations( 1000 );
+  if( opt->maxIterations() != 1000 )
+    {
+    std::cout << "maxIterations not preserved." << std::endl;
+    returnStatus = EXIT_FAILURE;
+    }
   int failed = 0;
   for(unsigned int c=0; c<100; c++)
     {
-    x[0] = rndGen->GetNormalVariate( -1.0, 0.1 );
-    x[1] = rndGen->GetNormalVariate( -1.0, 0.1 );
+    x[0] = rndGen->GetNormalVariate( 3.14, 0.5 );
+    x[1] = rndGen->GetNormalVariate( 0.0, 0.5 );
     std::cout << "Optimizing from " << x[0] << ", " << x[1] << std::endl;
     double xVal = 0;
     if( !spline.extreme( x, &xVal ) )
@@ -259,24 +276,30 @@ int itkSplineNDTest( int argc, char *argv[] )
     else
       {
       bool err = false;
-      if( x[0] != -1.5 || x[1] != -1.5 )
+      if( vnl_math_abs(x[0] - 3.139) > 0.001 
+        || vnl_math_abs(x[1] - 0.0) > 0.001 )
         {
         std::cout << "Spline.extreme failed." << std::endl;
-        std::cout << "  x=" << x[0] << "," << x[1] 
-          << " != ideal=-1.5,-1.5" << std::endl;
+        std::cout << "  x = (" << x[0] << ", " << x[1] 
+          << ") != ideal = (3.1139, 0.0)" << std::endl;
         returnStatus = EXIT_FAILURE;
         err = true;
         }
-      if( xVal != -0.8 ) 
+      if( vnl_math_abs( xVal - 1.918) > 0.001 ) 
         {
         std::cout << "Spline.extreme failed." << std::endl;
-        std::cout << "  xVal=" << xVal << " != -0.8" << std::endl;
+        std::cout << "  xVal=" << xVal << " != 1.918" << std::endl;
         returnStatus = EXIT_FAILURE;
         err = true;
         }
       if( err )
         {
         ++failed;
+        }
+      else
+        {
+        std::cout << "Success: x = " << x << " : xVal = " 
+          << xVal << std::endl;
         }
       }
     }
