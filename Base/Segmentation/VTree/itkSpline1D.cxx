@@ -34,7 +34,6 @@ public:
   const double & value(const double & x)
     {
     cVal = spline->value(x);
-    std::cout << "Spline x = " << x << " : val = " << cVal << std::endl;
     return cVal;
     };
 };
@@ -52,7 +51,6 @@ public:
   const double & value(const double & x)
     {
     cDeriv = spline->valueD(x);
-    std::cout << "Spline x = " << x << " : dx = " << cDeriv << std::endl;
     return cDeriv;
     }
 };
