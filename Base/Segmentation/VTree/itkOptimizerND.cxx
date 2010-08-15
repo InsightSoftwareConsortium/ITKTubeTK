@@ -81,7 +81,18 @@ public:
 
 OptimizerND::OptimizerND( void )
 {
-  cDefined = false;
+  cNDims = 0;
+
+  cSearchForMin = false;
+  cTolerance = 0.0001;
+
+  cMaxIterations = 300;
+  cMaxLineSearches = 10;
+
+  cOpt1D = NULL;
+  cFuncValND = NULL;
+  cFuncDerivND = NULL;
+
   cOpt1DVal = new OptValFuncND( this );
   cOpt1DDeriv = new OptDerivFuncND( this );
 }
@@ -92,7 +103,18 @@ OptimizerND::OptimizerND( int newNDims,
   UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
   Optimizer1D * newOpt1D )
 {
-  cDefined = false;
+  cNDims = 0;
+
+  cSearchForMin = false;
+  cTolerance = 0.0001;
+
+  cMaxIterations = 300;
+  cMaxLineSearches = 10;
+
+  cOpt1D = NULL;
+  cFuncValND = NULL;
+  cFuncDerivND = NULL;
+
   cOpt1DVal = new OptValFuncND( this );
   cOpt1DDeriv = new OptDerivFuncND( this );
 
@@ -111,6 +133,7 @@ void OptimizerND::use( int newNDims,
   Optimizer1D * newOpt1D )
 {
   cNDims = newNDims;
+
   cXMin.set_size( cNDims );
   cXMin.fill( 0.0 );
   cXMax.set_size( cNDims );
@@ -128,9 +151,13 @@ void OptimizerND::use( int newNDims,
   cFuncDerivND = newFuncDerivND;
 
   cOpt1D = newOpt1D;
-  cOpt1D->use( cOpt1DVal, cOpt1DDeriv );
-
-  cDefined = true;
+  if( cOpt1D != NULL )
+    {
+    cOpt1D->use( cOpt1DVal, cOpt1DDeriv );
+    cOpt1D->searchForMin( cSearchForMin );
+    cOpt1D->tolerance( cTolerance );
+    cOpt1D->maxIterations( cMaxIterations );
+    }
 }
 
 
@@ -172,7 +199,10 @@ double OptimizerND::tolerance( void )
 
 void OptimizerND::tolerance( double newTolerance )
 {
-  cOpt1D->tolerance( newTolerance );
+  if( cOpt1D != NULL )
+    {
+    cOpt1D->tolerance( newTolerance );
+    }
   cTolerance = newTolerance;
 }
 
@@ -183,8 +213,21 @@ unsigned int OptimizerND::maxIterations( void )
 
 void OptimizerND::maxIterations( unsigned int newMaxIterations )
 {
-  cOpt1D->maxIterations( newMaxIterations );
+  if( cOpt1D != NULL )
+    {
+    cOpt1D->maxIterations( newMaxIterations );
+    }
   cMaxIterations = newMaxIterations;
+}
+
+unsigned int OptimizerND::maxLineSearches( void )
+{
+  return cMaxLineSearches;
+}
+
+void OptimizerND::maxLineSearches( unsigned int newMaxLineSearches )
+{
+  cMaxLineSearches = newMaxLineSearches;
 }
 
 
@@ -196,7 +239,10 @@ bool OptimizerND::searchForMin( void )
 
 void OptimizerND::searchForMin( bool newSearchForMin )
 {
-  cOpt1D->searchForMin( newSearchForMin );
+  if( cOpt1D != NULL )
+    {
+    cOpt1D->searchForMin( newSearchForMin );
+    }
   cSearchForMin = newSearchForMin;
 }
 
@@ -234,16 +280,39 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
 
     cX0Dir.normalize();
 
-    xmin = dot_product( cXMin - cX0, cX0Dir );
-    xmax = dot_product( cXMax - cX0, cX0Dir );
+    xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
+    xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+    if( xmin > xmax )
+      {
+      double tmp = xmin;
+      xmin = xmax;
+      xmax = tmp;
+      }
+    for( unsigned int i=1; i<cNDims; i++ )
+      {
+      double tmin = (cXMin(i) - cX0(i))/cX0Dir(i);
+      double tmax = (cXMax(i) - cX0(i))/cX0Dir(i);
+      if( tmin > tmax )
+        {
+        double tmp = tmin;
+        tmin = tmax;
+        tmax = tmp;
+        }
+      if( tmin > xmin )
+        {
+        xmin = tmin;
+        }
+      if( tmax < xmax )
+        {
+        xmax = tmax;
+        }
+      }
+    //std::cout << "  x = " << cX0 << std::endl;
+    //std::cout << "  dir = " << cX0Dir << std::endl;
+    //std::cout << "  xmin = " << xmin << std::endl;
+    //std::cout << "  xmax = " << xmax << std::endl;
     
     xstep = fabs( dot_product(cXStep, cX0Dir) );
-    if( xmax < xmin )
-      {
-      a = xmin;
-      xmin = xmax;
-      xmax = a;
-      }
 
     a = 0;
     cOpt1D->xMin( xmin );
@@ -253,7 +322,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
     cOpt1D->extreme( &a, xVal );
 
     cX0 = ComputeLineStep( cX0, a, cX0Dir );
-    if( count++ > 2*cNDims )
+    if( count++ > cMaxLineSearches )
       {
       break;
       }
@@ -271,7 +340,6 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
   return true;
 }
 
-    
 
 bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
   unsigned int n, MatrixType &dirs )
@@ -279,68 +347,44 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
   cX0 = x;
   double a;
   double xmin, xmax, xstep;
-  unsigned int i, j;
-  for( i=0; i<n; i++ )
+  for(unsigned int i=0; i<cMaxLineSearches; i++ )
     {
-    for( j=0; j<x.size(); j++ )
+    for(unsigned int j=0; j<x.size(); j++ )
       {
-      cX0Dir( j ) = dirs.get( j, i );
+      cX0Dir( j ) = dirs.get( j, i%n );
       }
 
     cX0Dir.normalize();
 
-    xmin = 0;
-    xmax = 0;
-    
-    for( j=0; j<x.size(); j++ )
+    xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
+    xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+    if( xmin > xmax )
       {
-      if( cX0Dir(j) > 0 )
-        {
-        if( cXMax(j)-cX0(j) > cXMin(j)-cX0(j) )
-          {
-          xmin += cX0Dir(j) * (cXMin(j)-cX0(j));
-          xmax += cX0Dir(j) * (cXMax(j)-cX0(j));
-          }
-        else
-          {
-          xmin += cX0Dir(j) * (cXMax(j)-cX0(j));
-          xmax += cX0Dir(j) * (cXMin(j)-cX0(j));
-          }
-        }
-      else
-        {
-        if( cXMax(j)-cX0(j) < cXMin(j)-cX0(j) )
-          {
-          xmin += cX0Dir(j) * (cXMin(j)-cX0(j));
-          xmax += cX0Dir(j) * (cXMax(j)-cX0(j));
-          }
-        else
-          {
-          xmin += cX0Dir(j) * (cXMax(j)-cX0(j));
-          xmax += cX0Dir(j) * (cXMin(j)-cX0(j));
-          }
-        }
-      }
-
-    xstep=0;
-    for( j=0; j<x.size(); j++ )
-      {
-      if( cX0Dir(j) > 0 )
-        {        
-        xstep += cXStep(j) * cX0Dir(j);
-        }
-      else
-        {
-        xstep -= cXStep(j) * cX0Dir(j);
-        }
-      }
-
-    if( xmax < xmin )
-      {
-      a = xmin;
+      double tmp = xmin;
       xmin = xmax;
-      xmax = a;
+      xmax = tmp;
       }
+    for( unsigned int k=1; k<cNDims; k++ )
+      {
+      double tmin = (cXMin(k) - cX0(k))/cX0Dir(k);
+      double tmax = (cXMax(k) - cX0(k))/cX0Dir(k);
+      if( tmin > tmax )
+        {
+        double tmp = tmin;
+        tmin = tmax;
+        tmax = tmp;
+        }
+      if( tmin > xmin )
+        {
+        xmin = tmin;
+        }
+      if( tmax < xmax )
+        {
+        xmax = tmax;
+        }
+      }
+    
+    xstep = fabs( dot_product(cXStep, cX0Dir) );
 
     a = 0;
 
@@ -350,7 +394,6 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
 
     cOpt1D->extreme( &a, xVal );
     cX0 = ComputeLineStep( cX0, a, cX0Dir );
-
     }
 
   x = cX0;

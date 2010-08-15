@@ -66,6 +66,9 @@ public :
   unsigned int maxIterations( void );
   void         maxIterations( unsigned int newMaxIterations );
 
+  unsigned int maxLineSearches( void );
+  void         maxLineSearches( unsigned int newMaxLineSearches );
+
   bool         searchForMin( void );
   void         searchForMin( bool newSearchForMin );
 
@@ -78,7 +81,6 @@ public :
 
 protected :
        
-  bool         cDefined;
   unsigned int cNDims;
   
   vnl_vector<double>   cXMin;
@@ -91,6 +93,7 @@ protected :
   bool         cSearchForMin;
   double       cTolerance;
   unsigned int cMaxIterations;
+  unsigned int cMaxLineSearches;
 
   UserFunc< double, double >             * cOpt1DVal;
   UserFunc< double, double >             * cOpt1DDeriv;
