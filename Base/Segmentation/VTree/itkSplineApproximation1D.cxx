@@ -95,18 +95,17 @@ dataValue(const VectorType & y, double x)
   double b,s=0;
 
   for(i=0; i<4; i++)
-  {
+    {
     b = 0;
     for(p=0; p<4; p++)
-    {
+      {
       b += cSplineApproximation1DMatrix[i][p] * u[p];
-    }
+      }
     
     s += y(3-i) * b * (float)(1.0/6.0);
-  }
+    }
 
   return s;
-
 }
 
 
@@ -120,20 +119,20 @@ dataValueD(const VectorType & y, double x)
 
   double b[4];
   for(unsigned int i=0; i<4; i++)
-  {
+    {
     b[i] = 0;
     for(unsigned int p=0; p<3; p++)
-    {
+      {
       b[i] += (3-p)*cSplineApproximation1DMatrix[i][p] * u[p];
+      }
     }
-  }
 
   double s = 0;
 
   for(unsigned int i=0; i<4; i++)
-  {
+    {
     s += y(3-i) * b[i] * (float)(1.0/6.0);
-  }
+    }
 
   return s;
 }  
@@ -150,20 +149,20 @@ dataValueD2(const VectorType & y, double x)
   int i, p;
   double b[4];
   for(i=0; i<4; i++)
-  {
+    {
     b[i] = 0;
     for(p=0; p<2; p++)
-    {
+      {
       b[i] += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p];
+      }
     }
-  }
 
   double s = 0;
 
   for(i=0; i<4; i++)
-  {
+    {
     s += y(3-i) * b[i] * (float)(1.0/6.0);
-  }
+    }
   return s;
 }
 
@@ -181,33 +180,34 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
   unsigned int p;
   double b[4], bD[4], bD2[4];
   for(unsigned int i=0; i<4; i++)
-  {
+    {
     b[i] = 0;
     bD[i] = 0;
     bD2[i] = 0;
     for(p=0; p<4; p++)
-    {
+      {
       b[i] += cSplineApproximation1DMatrix[i][p] * u[p];
-    }
+      }
     for(p=0; p<3; p++)
-    {  
+      {  
       bD[i] += (3-p) * cSplineApproximation1DMatrix[i][p] * u[p+1];
-    }
+      }
     for(p=0; p<2; p++)
-    {  
+      {  
       bD2[i] += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p+2];
+      }
     }
-  }
+
   double s = 0;
   *d = 0;
   *d2 = 0;
 
   for(unsigned int i=0; i<4; i++) 
-  {
+    {
     s += y(3-i) * b[i] * (float)(1.0/6.0);
     *d += y(3-i) * bD[i] * (float)(1.0/6.0);
     *d2 += y(3-i) * bD2[i] * (float)(1.0/6.0);
-  }
+    }
 
   return s;
 }
