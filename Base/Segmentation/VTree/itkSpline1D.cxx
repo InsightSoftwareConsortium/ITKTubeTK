@@ -65,7 +65,7 @@ Spline1D()
 {
   cDefined = false;
 
-  cClip = true;
+  cClip = false;
 
   cXMin = 0;
   cXMax = 1;
@@ -81,7 +81,7 @@ Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
   cDefined = false;
 
-  cClip = true;
+  cClip = false;
 
   cXMin = 0;
   cXMax = 1;
@@ -212,8 +212,6 @@ cGetData(double x)
       if( j+offset >= 0 && j+offset <= 3 )
         {
         tmpData[j] = cData[j+offset];
-        //std::cout << "j = " << j << " : reuse i = " << i 
-          //<< " : v = " << tmpData[j] << std::endl;
         j++;
         }
       else
@@ -228,11 +226,16 @@ cGetData(double x)
             {
             if(cClip)
               {
-              tmpData[j++] = 0;
+              tmpData[j++] = cFuncVal->value(cXMin);
               }
             else
               {
-              tmpData[j++] = cFuncVal->value(cXMin) / (1+(cXMin-i));
+              int tmpI = cXMin + (cXMin-i);
+              if( tmpI > cXMax )
+                {
+                tmpI = cXMax;
+                }
+              tmpData[j++] = cFuncVal->value(tmpI);
               }
             }
           else
@@ -241,11 +244,16 @@ cGetData(double x)
               {
               if(cClip)
                 {
-                tmpData[j++]= 0;
+                tmpData[j++] = cFuncVal->value(cXMax);
                 }
               else
                 {
-                tmpData[j++] = cFuncVal->value(cXMax) / (1+(i-cXMax));
+                int tmpI = cXMax - (i-cXMax);
+                if( tmpI < cXMin )
+                  {
+                  tmpI = cXMin;
+                  }
+                tmpData[j++] = cFuncVal->value(tmpI);
                 }
               }
             }
@@ -266,59 +274,72 @@ cGetData(double x)
 double Spline1D::
 value(double x)
 {
-    if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-        return 0;
+  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  if(!cDefined)
+    {
+    return 0;
+    }
 
-    cGetData(x);
+  cGetData(x);
 
-    return dataValue(cData, x - (int)x);
+  return dataValue(cData, x - (int)x);
 }
 
 
 double Spline1D::
 valueD(double x)
 {
-    if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-        return 0;
+  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  if(!cDefined)
+    {
+    return 0;
+    }
 
-    cGetData(x);
+  cGetData(x);
 
-    return dataValueD(cData, x - (int)x);
+  return dataValueD(cData, x - (int)x);
 }
 
 
 double Spline1D::
 valueD2(double x)
 {
-    if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-        return 0;
+  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  if(!cDefined)
+    {
+    return 0;
+    }
 
-    cGetData(x);
+  cGetData(x);
         
-    return dataValueD2(cData, x - (int)x);
+  return dataValueD2(cData, x - (int)x);
 }
 
 
 double Spline1D::
 curv(double x)
 {        
-    if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-        return 0;
+  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  if(!cDefined)
+    {
+    return 0;
+    }
 
-    double xp = valueD(x);
-        
-    double xpp = valueD2(x);
-        
-    return xpp/pow(1.0+xp*xp, 1.5);
+  double xp = valueD(x);
+
+  double xpp = valueD2(x);
+
+  return xpp/pow(1.0+xp*xp, 1.5);
 }
 
 double Spline1D::
 valueJet(double x, double * d, double * d2)
 {
-  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  {
+  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  if(!cDefined)
+    {
     return 0;
-  }
+    }
   
   cGetData(x);
 

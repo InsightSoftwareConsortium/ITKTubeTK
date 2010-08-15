@@ -30,6 +30,7 @@ limitations under the License.
 #include "itkImage.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageFileWriter.h"
+#include "itkMersenneTwisterRandomVariateGenerator.h"
 
 #include "../itkOptBrent1D.h"
 #include "../itkSplineApproximation1D.h"
@@ -53,6 +54,40 @@ class MySA1DFunc:
       };
   };
 
+class MySA1DFuncV:
+  public itk::UserFunc< double, double > 
+  {
+  private:
+    double cVal;
+  public:
+    MySA1DFuncV( )
+      {
+      cVal = 0;
+      };
+    const double & value( const double & x )
+      {
+      cVal = vcl_sin((double)x);
+      return cVal;
+      };
+  };
+
+class MySA1DFuncD:
+  public itk::UserFunc< double, double > 
+  {
+  private:
+    double cDeriv;
+  public:
+    MySA1DFuncD( )
+      {
+      cDeriv = 0;
+      };
+    const double & value( const double & x )
+      {
+      cDeriv = vcl_cos((double)x);
+      return cDeriv;
+      };
+  };
+
 int itkSplineApprox1DTest( int argc, char *argv[] )
 {
   if( argc != 2 )
@@ -64,6 +99,8 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
   double epsilon = 0.000001;
 
   MySA1DFunc * myFunc = new MySA1DFunc();
+  MySA1DFuncV * myFuncV = new MySA1DFuncV();
+  MySA1DFuncD * myFuncD = new MySA1DFuncD();
 
   itk::OptBrent1D * opt = new itk::OptBrent1D( );
   opt->smallDouble( epsilon );
@@ -74,6 +111,8 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
   itk::SplineApproximation1D spline( myFunc, opt );
 
   int returnStatus = EXIT_SUCCESS;
+
+  spline.clipEdge( true );
 
   spline.xMin( -3 );
   if( spline.xMin() != -3 )
@@ -99,15 +138,15 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
   imSize[2] = 20;
   imRegion.SetSize( imSize );
   ImageType::IndexType index0;
-  index0[0] = -20;
-  index0[1] = -20;
-  index0[2] = -10;
+  index0[0] = -10;
+  index0[1] = -10;
+  index0[2] = -5;
   imRegion.SetIndex( index0 );
   im->SetRegions( imRegion );
   ImageType::SpacingType imSpacing;
-  imSpacing[0] = 0.1;
-  imSpacing[1] = 0.1;
-  imSpacing[2] = 0.2;
+  imSpacing[0] = 0.15;
+  imSpacing[1] = 0.15;
+  imSpacing[2] = 0.3;
   im->SetSpacing( imSpacing );
   im->Allocate( );
 
@@ -119,8 +158,14 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
   while( !itIm.IsAtEnd() )
     {
     im->TransformIndexToPhysicalPoint( itIm.GetIndex(), pnt );
-    x = pnt[0];
-    switch( vnl_math_abs(itIm.GetIndex()[1]) % 5 )
+    x = pnt[0]+pnt[1]*0.2;
+    if( itIm.GetIndex()[0] == itIm.GetIndex()[1] 
+      && itIm.GetIndex()[0] == 0 )
+      {
+      std::cout << "Slice index = " 
+        << (itIm.GetIndex()[2]-index0[2]) % 7 << std::endl;
+      }
+    switch( (itIm.GetIndex()[2]-index0[2]) % 7 )
       {
       default:
       case 0:
@@ -130,20 +175,30 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
         }
       case 1:
         {
-        itIm.Set( spline.valueD(x) );
+        itIm.Set( myFuncV->value(x) );
         break;
         }
       case 2:
         {
-        itIm.Set( spline.valueD2(x) );
+        itIm.Set( spline.valueD(x) );
         break;
         }
       case 3:
         {
-        itIm.Set( spline.curv(x) );
+        itIm.Set( myFuncD->value(x) );
         break;
         }
       case 4:
+        {
+        itIm.Set( spline.valueD2(x) );
+        break;
+        }
+      case 5:
+        {
+        itIm.Set( spline.curv(x) );
+        break;
+        }
+      case 6:
         {
         itIm.Set( spline.valueJet(x, &d, &d2) );
         break;
@@ -158,31 +213,50 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
   imWriter->SetInput( im );
   imWriter->Update( );
 
-  x = 0;
-  double xVal;
-  if( !spline.extreme( &x, &xVal ) )
+  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
+    = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
+  rndGen->Initialize( 1 );
+
+  int failed = 0;
+  for(unsigned int c=0; c<100; c++)
     {
-    std::cout << "Spline.Extreme() returned false." << std::endl;
-    std::cout << "                x = " << x << std::endl;
-    std::cout << "                xVal = " << xVal << std::endl;
-    returnStatus = EXIT_FAILURE;
-    }
-  else
-    {
-    if( vnl_math_abs( x - -1.4749 ) > 0.0001 )
+    x = rndGen->GetNormalVariate( 0.0, 0.5 );
+
+    double xVal = 0;
+    if( !spline.extreme( &x, &xVal ) )
       {
-      std::cout << "Spline.Extreme() solution not ideal: x=" 
-        << x << "!= ideal=" << vnl_math::pi/2 << std::endl;
+      std::cout << "Spline.Extreme() returned false." << std::endl;
+      std::cout << "                x = " << x << std::endl;
+      std::cout << "                xVal = " << xVal << std::endl;
       returnStatus = EXIT_FAILURE;
+      ++failed;
       }
-    if( vnl_math_abs( xVal - -0.827393 ) > 0.0001 )
+    else
       {
-      std::cout << "Spline.Extreme() output not ideal: val=" 
-        << xVal << " != ideal=1.0" << std::endl;
-      returnStatus = EXIT_FAILURE;
+      bool err=false;
+      if( vnl_math_abs( x - -1.4749 ) > 0.0001 )
+        {
+        std::cout << "Spline.Extreme() solution not ideal: x=" 
+          << x << "!= ideal=" << vnl_math::pi/2 << std::endl;
+        returnStatus = EXIT_FAILURE;
+        err = true;
+        }
+      if( vnl_math_abs( xVal - -0.827393 ) > 0.0001 )
+        {
+        std::cout << "Spline.Extreme() output not ideal: val=" 
+          << xVal << " != ideal=1.0" << std::endl;
+        returnStatus = EXIT_FAILURE;
+        err = true;
+        }
+      if( err )
+        {
+        ++failed;
+        }
       }
     }
 
+  std::cout << failed << " out of 100 optimizations failed." << std::endl;
+  
   return returnStatus;
 }
 

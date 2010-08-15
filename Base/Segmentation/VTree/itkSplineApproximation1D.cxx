@@ -91,18 +91,16 @@ dataValue(const VectorType & y, double x)
   u[1] = u[2]*u[2];
   u[0] = u[1]*u[2];
 
-  int i, p;  
-  double b,s=0;
-
-  for(i=0; i<4; i++)
+  double b;
+  double s = 0;
+  for(unsigned int i=0; i<4; i++)
     {
     b = 0;
-    for(p=0; p<4; p++)
+    for(unsigned int p=0; p<4; p++)
       {
       b += cSplineApproximation1DMatrix[i][p] * u[p];
       }
-    
-    s += y(3-i) * b * (float)(1.0/6.0);
+    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
     }
 
   return s;
@@ -117,21 +115,16 @@ dataValueD(const VectorType & y, double x)
   u[1] = x-(int)x;
   u[0] = u[1]*u[1];
 
-  double b[4];
+  double b;
+  double s = 0;
   for(unsigned int i=0; i<4; i++)
     {
-    b[i] = 0;
+    b = 0;
     for(unsigned int p=0; p<3; p++)
       {
-      b[i] += (3-p)*cSplineApproximation1DMatrix[i][p] * u[p];
+      b += (3-p)*cSplineApproximation1DMatrix[i][p] * u[p];
       }
-    }
-
-  double s = 0;
-
-  for(unsigned int i=0; i<4; i++)
-    {
-    s += y(3-i) * b[i] * (float)(1.0/6.0);
+    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
     }
 
   return s;
@@ -146,22 +139,16 @@ dataValueD2(const VectorType & y, double x)
   u[1] = 1.0;
   u[0] = x-(int)x;
 
-  int i, p;
-  double b[4];
-  for(i=0; i<4; i++)
-    {
-    b[i] = 0;
-    for(p=0; p<2; p++)
-      {
-      b[i] += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p];
-      }
-    }
-
+  double b;
   double s = 0;
-
-  for(i=0; i<4; i++)
+  for(unsigned int i=0; i<4; i++)
     {
-    s += y(3-i) * b[i] * (float)(1.0/6.0);
+    b = 0;
+    for(unsigned int p=0; p<2; p++)
+      {
+      b += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p];
+      }
+    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
     }
   return s;
 }
@@ -177,36 +164,32 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
   u[1] = u[2]*u[2];
   u[0] = u[1]*u[2];
 
-  unsigned int p;
-  double b[4], bD[4], bD2[4];
-  for(unsigned int i=0; i<4; i++)
-    {
-    b[i] = 0;
-    bD[i] = 0;
-    bD2[i] = 0;
-    for(p=0; p<4; p++)
-      {
-      b[i] += cSplineApproximation1DMatrix[i][p] * u[p];
-      }
-    for(p=0; p<3; p++)
-      {  
-      bD[i] += (3-p) * cSplineApproximation1DMatrix[i][p] * u[p+1];
-      }
-    for(p=0; p<2; p++)
-      {  
-      bD2[i] += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p+2];
-      }
-    }
-
+  double b;
+  double bD;
+  double bD2;
   double s = 0;
   *d = 0;
   *d2 = 0;
-
-  for(unsigned int i=0; i<4; i++) 
+  for(unsigned int i=0; i<4; i++)
     {
-    s += y(3-i) * b[i] * (float)(1.0/6.0);
-    *d += y(3-i) * bD[i] * (float)(1.0/6.0);
-    *d2 += y(3-i) * bD2[i] * (float)(1.0/6.0);
+    b = 0;
+    bD = 0;
+    bD2 = 0;
+    for(unsigned int p=0; p<4; p++)
+      {
+      b += cSplineApproximation1DMatrix[i][p] * u[p];
+      }
+    for(unsigned int p=0; p<3; p++)
+      {  
+      bD += (3-p) * cSplineApproximation1DMatrix[i][p] * u[p+1];
+      }
+    for(unsigned int p=0; p<2; p++)
+      {  
+      bD2 += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p+2];
+      }
+    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
+    *d += y(3-i) * bD * cSplineApproximation1DMatrixConst;
+    *d2 += y(3-i) * bD2 * cSplineApproximation1DMatrixConst;
     }
 
   return s;
