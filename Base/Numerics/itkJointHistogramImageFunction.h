@@ -146,6 +146,9 @@ public:
   itkGetObjectMacro( MeanHistogram, HistogramType );
   itkGetObjectMacro( StandardDeviationHistogram, HistogramType );
 
+  itkSetObjectMacro( MeanHistogram, HistogramType );
+  itkSetObjectMacro( StandardDeviationHistogram, HistogramType );
+
   // setmeanhistogram
   // setstandardeviationhistogram
 
