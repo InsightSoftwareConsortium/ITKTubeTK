@@ -146,12 +146,21 @@ public:
   itkGetObjectMacro( MeanHistogram, HistogramType );
   itkGetObjectMacro( StandardDeviationHistogram, HistogramType );
 
+  // setmeanhistogram
+  // setstandardeviationhistogram
+
   /** 
    * Add histograms (based on a given index) to the internals used to 
    * calculate the mean and standard deviation histograms when needed.
    */
   virtual void PrecomputeAtIndex( const IndexType & index );
   
+  /** 
+   * Compute the mean and standard deviation histograms for use in Z-score
+   * calculation.
+   */
+  void ComputeMeanAndStandardDeviation() const;
+
 protected:
   
   /** Default constructor */
@@ -162,12 +171,6 @@ protected:
 
   /** Printself function for introspection. **/
   void PrintSelf( std::ostream& os, Indent indent ) const;
-
-  /** 
-   * Compute the mean and standard deviation histograms for use in Z-score
-   * calculation.
-   */
-  void ComputeMeanAndStandardDeviation() const;
 
   void ComputeHistogramAtIndex( const IndexType& index,
     typename HistogramType::Pointer& hist ) const;

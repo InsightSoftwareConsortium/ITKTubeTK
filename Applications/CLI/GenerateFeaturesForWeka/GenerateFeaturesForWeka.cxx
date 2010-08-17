@@ -305,6 +305,7 @@ int DoIt( int argc, char * argv[] )
   double sampleRateSub = sampleMin/samplesSub;
   double sampleRateNom = sampleMin/samplesNom;
 
+  // train joint histograms
   samplesNom = 0;
   samplesAdd = 0;
   samplesSub = 0;
@@ -356,6 +357,38 @@ int DoIt( int argc, char * argv[] )
     ++centerlineItr;
     }
 
+  // write out histogram files
+  typedef typename HistCalcType::HistogramType    HistrogramType;
+  typedef typename itk::ImageFileWriter<HistrogramType> HistogramWriter;
+  typename HistogramWriter::Pointer histWriter = HistogramWriter::New();
+
+  addJHCalc->ComputeMeanAndStandardDeviation();
+  histWriter->SetInput(addJHCalc->GetMeanHistogram());
+  histWriter->SetFileName(addMeans);
+  histWriter->Update();
+
+  histWriter->SetInput(addJHCalc->GetStandardDeviationHistogram());
+  histWriter->SetFileName(addStdDevs);
+  histWriter->Update();
+
+  subJHCalc->ComputeMeanAndStandardDeviation();
+  histWriter->SetInput(subJHCalc->GetMeanHistogram());
+  histWriter->SetFileName(subMeans);
+  histWriter->Update();
+
+  histWriter->SetInput(subJHCalc->GetStandardDeviationHistogram());
+  histWriter->SetFileName(subStdDevs);
+  histWriter->Update();
+
+  nomJHCalc->ComputeMeanAndStandardDeviation();
+  histWriter->SetInput(nomJHCalc->GetMeanHistogram());
+  histWriter->SetFileName(nomMeans);
+  histWriter->Update();
+
+  histWriter->SetInput(nomJHCalc->GetStandardDeviationHistogram());
+  histWriter->SetFileName(nomStdDevs);
+  histWriter->Update();
+  
   // Get the additional features ready
   std::vector<std::string> featureNames;
   std::vector<std::string> featureFilenames;

@@ -55,6 +55,48 @@
       <index>5</index>
       <description>Output ARFF File for WEKA</description>
     </string>
+    <image>
+      <name>addMeans</name>
+      <label>Add means histogram</label>
+      <channel>output</channel>
+      <longflag>addMeans</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>addStdDevs</name>
+      <label>Add standard deviations</label>
+      <channel>output</channel>
+      <longflag>addStdDevs</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>subMeans</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>subMeans</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>subStdDevs</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>subStdDevs</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>nomMeans</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>nomMeans</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>nomStdDevs</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>nomStdDevs</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
   </parameters>
 
   <parameters>
