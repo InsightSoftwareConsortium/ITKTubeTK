@@ -255,6 +255,11 @@ int itkSplineApprox1DTest( int argc, char *argv[] )
       }
     }
 
+  delete myFunc;
+  delete myFuncV;
+  delete myFuncD;
+  delete opt;
+
   std::cout << failed << " out of 100 optimizations failed." << std::endl;
   
   return returnStatus;

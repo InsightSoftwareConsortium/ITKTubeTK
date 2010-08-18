@@ -194,6 +194,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
       }
     }
   delete TubeList;
+  delete [] groupspacing;
 }
 
 

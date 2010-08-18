@@ -105,6 +105,7 @@ ARFFParser
       this->adjustMinAndMaxBasedOnNewData( values );
       m_ARFFData.push_back( values );
       }
+    delete [] values;
     }
   
 }

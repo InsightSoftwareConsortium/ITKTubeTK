@@ -304,6 +304,12 @@ int itkSplineNDTest( int argc, char *argv[] )
       }
     }
 
+  delete myFunc;
+  delete myFuncV;
+  delete myFuncD;
+  delete spline1D;
+  delete opt;
+
   std::cout << failed << " out of 100 optimizations failed." << std::endl;
 
   return returnStatus;
