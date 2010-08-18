@@ -32,7 +32,7 @@ namespace itk
 /** Constructor */
 template < class TFixedImage, class TMovingSpatialObject> 
 ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
-::ImageToTubeRigidMetric():m_BiasV(3,3)
+::ImageToTubeRigidMetric()
 {
   m_MaskImage = 0;
   this->m_FixedImage   = 0; // has to be provided by the user.
@@ -131,11 +131,13 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
     return;
   }
 
+  vnl_matrix<double>                  biasV(3,3,0);
+  biasV.fill(0.0);
+
   TubeNetType::Pointer newTubeNet = TubeNetType::New();
   TubePointType newTubePoint;
   m_NumberOfPoints=0;
   m_Weight.clear();
-  m_BiasV = 0;
   double weight = 0.0;
   m_SumWeight = 0;
   unsigned int skipped = 0;
@@ -143,11 +145,11 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(999999,childName);
-  
-  TubeNetType::ChildrenListType::iterator TubeIterator = tubeList->begin();
-  for(; TubeIterator != tubeList->end(); ++TubeIterator)
+
+  TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
+  for(; tubeIterator != tubeList->end(); ++tubeIterator)
     {
-    TubeType* currTube = static_cast<TubeType*>((*TubeIterator).GetPointer());
+    TubeType* currTube = static_cast<TubeType*>((*tubeIterator).GetPointer());
     
     //currTube->RemoveDuplicatePoints();
     currTube->ComputeTangentAndNormals();
@@ -158,27 +160,27 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
     tubeSize = currTube->GetPoints().size();
     if(tubeSize > sampling)
       {
-      for(TubePointIterator=currTube->GetPoints().begin();
-          TubePointIterator!=currTube->GetPoints().end();
-          TubePointIterator++)
+      typename std::vector<TubePointType>::iterator  tubePointIterator;
+      for(tubePointIterator=currTube->GetPoints().begin();
+          tubePointIterator!=currTube->GetPoints().end();
+          tubePointIterator++)
         { 
         if(sampling != 1)
           {
           while (skipped++%(sampling/2) != 0 && 
-                 TubePointIterator != static_cast<VesselTubeSpatialObject<3>*>
-                 ((*TubeIterator).GetPointer())->GetPoints().end() )
+                 tubePointIterator != currTube->GetPoints().end() )
             {
-            TubePointIterator++;
+            tubePointIterator++;
             }
           }
-        if(TubePointIterator!=currTube->GetPoints().end() 
+        if(tubePointIterator!=currTube->GetPoints().end() 
            && (skipped+10<tubeSize)
-           //&& ((*TubePointIterator).GetRidgeness()>0.2)
-           //&& ((*TubePointIterator).GetMedialness()>0.02)
+           //&& ((*tubePointIterator).GetRidgeness()>0.2)
+           //&& ((*tubePointIterator).GetMedialness()>0.02)
           )
           {
-          newTube->GetPoints().push_back(*(TubePointIterator));
-          double val = -2*(TubePointIterator->GetRadius()); //-2
+          newTube->GetPoints().push_back(*(tubePointIterator));
+          double val = -2*(tubePointIterator->GetRadius()); //-2
           weight = 2.0/(1.0+exp(val)); //2/(1+val)-1
      
           m_Weight.push_back(weight);
@@ -189,16 +191,16 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
           for(unsigned int i=0;i<ImageDimension;i++)
             {
-            v1(i)=(*TubePointIterator).GetNormal1()[i];
-            v2(i)=(*TubePointIterator).GetNormal2()[i];
+            v1(i)=(*tubePointIterator).GetNormal1()[i];
+            v2(i)=(*tubePointIterator).GetNormal2()[i];
             }
 
           tM = outer_product(v1,v1);
           tM = tM + outer_product(v2,v2);
-          m_BiasV = m_BiasV + (weight * tM);
+          biasV = biasV + (weight * tM);
           for(unsigned int i=0 ; i<ImageDimension; i++)
             {
-            (mC)(i) += weight*(TubePointIterator->GetPosition())[i]; 
+            (mC)(i) += weight*(tubePointIterator->GetPosition())[i]; 
             }
           m_SumWeight += weight;
           m_NumberOfPoints++;
@@ -206,13 +208,13 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
         if(sampling>1)
           {
-          while (skipped++%(sampling/2) != 0 && TubePointIterator!=currTube->GetPoints().end())
+          while (skipped++%(sampling/2) != 0 && tubePointIterator!=currTube->GetPoints().end())
             {
-            TubePointIterator++;
+            tubePointIterator++;
             }
-          if(TubePointIterator==currTube->GetPoints().end())
+          if(tubePointIterator==currTube->GetPoints().end())
             {
-            TubePointIterator--;
+            tubePointIterator--;
             }
           }
         }
@@ -223,7 +225,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
   this->SetMovingSpatialObject(newTubeNet);
 
-  m_BiasV = (1.0/m_SumWeight) * m_BiasV;
+  biasV = (1.0/m_SumWeight) * biasV;
   for (unsigned int i = 0; i<ImageDimension; i++)
   {
     (mC)(i)/= m_SumWeight;
@@ -347,21 +349,21 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   vnl_vector<double> T(3);
   vnl_vector<double> N1(3);
 
-  std::list<double>::const_iterator         WeightIterator;
-  WeightIterator = m_Weight.begin();
+  std::list<double>::const_iterator         weightIterator;
+  weightIterator = m_Weight.begin();
 
   SetOffset(parameters[3],parameters[4],parameters[5]);
 
   this->m_Transform->SetParameters(parameters);
 
-  GroupSpatialObject<3>::ChildrenListType::iterator TubeIterator;
+  GroupSpatialObject<3>::ChildrenListType::iterator tubeIterator;
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList = this->m_MovingSpatialObject->GetChildren(999999,childName);
   
-  for(TubeIterator=tubeList->begin();TubeIterator!=tubeList->end();TubeIterator++)
+  for(tubeIterator=tubeList->begin();tubeIterator!=tubeList->end();tubeIterator++)
   {
-  TubeType* currTube = static_cast<TubeType*>((*TubeIterator).GetPointer());
+  TubeType* currTube = static_cast<TubeType*>((*tubeIterator).GetPointer());
 
   for(j=currTube->GetPoints().begin(); j!=currTube->GetPoints().end(); j++)
     {  
@@ -390,7 +392,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
          //&& this->IsInsideMask(index)
         )
       {
-        sumWeight += *WeightIterator;
+        sumWeight += *weightIterator;
         count++;
         opR = (*j).GetRadius();
         if(opR<0.5)
@@ -408,7 +410,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
           v2[i]=(*j).GetNormal1()[i];
         }
 
-        matchMeasure += *WeightIterator * fabs(ComputeLaplacianMagnitude(&v2));
+        matchMeasure += *weightIterator * fabs(ComputeLaplacianMagnitude(&v2));
         //delete dXTV;
 
       }
@@ -418,7 +420,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
         matchMeasure -= m_ImageMax;
         }
 
-      WeightIterator++; 
+      weightIterator++; 
     }
   }
 
@@ -458,20 +460,20 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   double sumWeight = 0;
   double count = 0;
 
-  std::list<double>::const_iterator         WeightIterator;
-  WeightIterator = m_Weight.begin();
+  std::list<double>::const_iterator         weightIterator;
+  weightIterator = m_Weight.begin();
 
   SetOffset(parameters[3],parameters[4],parameters[5]);
 
   m_Transform->SetParameters(parameters);
 
-  GroupSpatialObject<3>::ChildrenListType::iterator TubeIterator;
+  GroupSpatialObject<3>::ChildrenListType::iterator tubeIterator;
 
   TubeNetType::ChildrenListType* tubeList = m_MovingSpatialObject->GetChildren(999999,"Tube");
-  for(TubeIterator=tubeList->begin();TubeIterator!=tubeList->end();TubeIterator++)
+  for(tubeIterator=tubeList->begin();tubeIterator!=tubeList->end();tubeIterator++)
   {
-    for(j=static_cast<TubeSpatialObject<3>*>(*TubeIterator)->GetPoints().begin(); \
-        j!=static_cast<TubeSpatialObject<3>*>(*TubeIterator)->GetPoints().end();\
+    for(j=static_cast<TubeSpatialObject<3>*>(*tubeIterator)->GetPoints().begin(); \
+        j!=static_cast<TubeSpatialObject<3>*>(*tubeIterator)->GetPoints().end();\
         j++)
     {  
 
@@ -498,7 +500,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
          //&& m_FixedImage->GetPixel(index) > m_RegImageThreshold
         )
       {
-        sumWeight += *WeightIterator;
+        sumWeight += *weightIterator;
         count++;
         opR = (*j).GetRadius();
         if(opR<0.5)
@@ -517,7 +519,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
         delete dXTV;
 
       }
-      WeightIterator++;
+      weightIterator++;
     }
   }
 
@@ -959,37 +961,37 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 ::GetDeltaAngles(const Point<double,3> & x,const vnl_vector_fixed<double,3> & dx, double *dA, double *dB, double *dG) const
 {
 
-  static vnl_vector_fixed<double,3> mTempV; 
+  static vnl_vector_fixed<double,3> tempV; 
   static vnl_vector_fixed<double,3> pos;
   pos(0)=x[0];
   pos(1)=x[1];
   pos(2)=x[2];
   
-  mTempV = (pos - (*mO)) - (mC);
+  tempV = (pos - (*mO)) - (mC);
 
-/*  double R = sqrt(dot_product(mTempV, mTempV));
+/*  double R = sqrt(dot_product(tempV, tempV));
   double dR = dot_product(dx, dx);
   double tf;
 
-  (*dA) = -(mTempV)(1) * (dx)(0);
-  (*dA) += (mTempV)(0) * (dx)(1);
-  (*dA) += (mTempV)(2) * (dx)(2);
+  (*dA) = -(tempV)(1) * (dx)(0);
+  (*dA) += (tempV)(0) * (dx)(1);
+  (*dA) += (tempV)(2) * (dx)(2);
   (*dA) = -atan((*dA)/(R*20000))*(R*R);
   tf = (dx)(0) * (dx)(0);
   tf += (dx)(1) * (dx)(1);
   (*dA) *= fabs(tf/(dR));
 
-  (*dB) = (mTempV)(2) * (dx)(0);
-  (*dB) += (mTempV)(1) * (dx)(1);
-  (*dB) += -(mTempV)(0) * (dx)(2);
+  (*dB) = (tempV)(2) * (dx)(0);
+  (*dB) += (tempV)(1) * (dx)(1);
+  (*dB) += -(tempV)(0) * (dx)(2);
   (*dB) = -atan((*dB)/(R*20000))*(R*R);
   tf = (dx)(0) * (dx)(0);
   tf += (dx)(2) * (dx)(2);
   (*dB) *= fabs(tf/(dR));
 
-  (*dG) = (mTempV)(0) * (dx)(0);
-  (*dG) += (mTempV)(2) * (dx)(1);
-  (*dG) += -(mTempV)(1) * (dx)(2);
+  (*dG) = (tempV)(0) * (dx)(0);
+  (*dG) += (tempV)(2) * (dx)(1);
+  (*dG) += -(tempV)(1) * (dx)(2);
   (*dG) = -atan((*dG)/(R*20000))*(R*R);
   tf = (dx)(1) * (dx)(1);
   tf += (dx)(2) * (dx)(2);
@@ -998,38 +1000,38 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
   // Compute the normal
 /*  static vnl_vector_fixed<double,2> nA;
-  nA(0) = -mTempV(1);
-  nA(1) = mTempV(0);
+  nA(0) = -tempV(1);
+  nA(1) = tempV(0);
 
   //Project the gradient on the normal
   (*dA) = (dx)(0)*(nA)(0)+(dx)(1)*(nA)(1);
  
-  nA(0) = -mTempV(2);
-  nA(1) = mTempV(0);
+  nA(0) = -tempV(2);
+  nA(1) = tempV(0);
 
   (*dB) = (dx)(0)*(nA)(0)+(dx)(2)*(nA)(1);
 
-  nA(0) = mTempV(1);
-  nA(1) = -mTempV(2);
+  nA(0) = tempV(1);
+  nA(1) = -tempV(2);
 
 
   (*dG) = (dx)(1)*(nA)(1)+(dx)(2)*(nA)(0);*/
 
 
   // Update as FEBRUARY 2004
-  mTempV.normalize();
+  tempV.normalize();
   static vnl_vector_fixed<double,2> nA;
-  nA(0) = mTempV(1);
-  nA(1) = -mTempV(2);
+  nA(0) = tempV(1);
+  nA(1) = -tempV(2);
   (*dA) = (dx)(1)*(nA)(1)+(dx)(2)*(nA)(0);
  
-  nA(0) = mTempV(2);
-  nA(1) = -mTempV(0);
+  nA(0) = tempV(2);
+  nA(1) = -tempV(0);
   (*dB) = (dx)(0)*(nA)(0)+(dx)(2)*(nA)(1);
 
 
-  nA(0) = -mTempV(1);
-  nA(1) = mTempV(0);
+  nA(0) = -tempV(1);
+  nA(1) = tempV(0);
   (*dG) = (dx)(0)*(nA)(0)+(dx)(1)*(nA)(1);
 
 
@@ -1151,8 +1153,8 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
     {
     std::cout << "**** Get Derivative ****" << std::endl;
     }
-  vnl_matrix<double>                  m_BiasV(3,3,0);
-  vnl_matrix<double>                  m_BiasVI(3,3,0);
+  vnl_matrix<double>                  biasV(3,3,0);
+  vnl_matrix<double>                  biasVI(3,3,0);
 
   derivative = DerivativeType( this->GetNumberOfParameters() );
 
@@ -1163,8 +1165,8 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
   double opR;
 
-  std::list<double>::const_iterator         WeightIterator;
-  WeightIterator = m_Weight.begin();
+  std::list<double>::const_iterator         weightIterator;
+  weightIterator = m_Weight.begin();
 
   unsigned int count = 0;
 
@@ -1175,8 +1177,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   double dB = 0;
   double dG = 0;
 
-  //m_BiasV = 0;
-  m_BiasV.fill(0);
+  biasV.fill(0);
 
   double dXProj1, dXProj2;
 
@@ -1191,8 +1192,8 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
   double sumWeight = 0;
 
-  typedef itk::Vector<double,3> VectorType;
-  typedef std::list<VectorType> ListType;
+  typedef itk::Vector<double,3> ITKVectorType;
+  typedef std::list<ITKVectorType> ListType;
   ListType dXTlist;
 
   //std::list<vnl_vector<double>*>            dXTlist;
@@ -1204,18 +1205,15 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 
   this->m_Transform->SetParameters(parameters);
 
-  Point<double,3> xT;
-//  vnl_vector<double>* tempdxT;
-
   unsigned int listindex =0;
-  TubeNetType::ChildrenListType::iterator         TubeIterator;
+  TubeNetType::ChildrenListType::iterator         tubeIterator;
   
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList = 
     this->m_MovingSpatialObject->GetChildren(99999,childName);
-  for(TubeIterator=tubeList->begin();TubeIterator!=tubeList->end();TubeIterator++)
+  for(tubeIterator=tubeList->begin();tubeIterator!=tubeList->end();tubeIterator++)
   {
-  TubeType* currTube = static_cast<TubeType*>((*TubeIterator).GetPointer());
+  TubeType* currTube = static_cast<TubeType*>((*tubeIterator).GetPointer());
 
     for(j=currTube->GetPoints().begin(); j!=currTube->GetPoints().end(); j++)
     { 
@@ -1246,7 +1244,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
        
         XTlist[listindex++] = point;
 
-        sumWeight += *WeightIterator;
+        sumWeight += *weightIterator;
         count++;
         opR = (*j).GetRadius();
         if(opR<0.5)
@@ -1323,26 +1321,26 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
         tM = outer_product(v1T, v1T);
         tM = tM + outer_product(v2T, v2T);    
         
-        tM = *WeightIterator * tM;
+        tM = *weightIterator * tM;
          
-        m_BiasV = m_BiasV + tM;
+        biasV = biasV + tM;
 
 
         //double val = fabs(ComputeLaplacianMagnitude(&v2));
         //float fact = 10;
         
       
-        dX += *WeightIterator * ( dXT[0] );// * exp(-fact*val) ;
-        dY += *WeightIterator * ( dXT[1] );// * exp(-fact*val) ;
-        dZ += *WeightIterator * ( dXT[2] );// * exp(-fact*val) ;
+        dX += *weightIterator * ( dXT[0] );// * exp(-fact*val) ;
+        dY += *weightIterator * ( dXT[1] );// * exp(-fact*val) ;
+        dZ += *weightIterator * ( dXT[2] );// * exp(-fact*val) ;
 
 
         /*float alpha = 0.0;
         float beta = -1.0;
 
-        dX += *WeightIterator * ( alpha*(*dXT)(0) + beta*(1.0-alpha)*(*dXTThird)(0));
-        dY += *WeightIterator * ( alpha*(*dXT)(1) + beta*(1.0-alpha)*(*dXTThird)(1));
-        dZ += *WeightIterator * ( alpha*(*dXT)(2) + beta*(1.0-alpha)*(*dXTThird)(2));
+        dX += *weightIterator * ( alpha*(*dXT)(0) + beta*(1.0-alpha)*(*dXTThird)(0));
+        dY += *weightIterator * ( alpha*(*dXT)(1) + beta*(1.0-alpha)*(*dXTThird)(1));
+        dZ += *weightIterator * ( alpha*(*dXT)(2) + beta*(1.0-alpha)*(*dXTThird)(2));
 */
 
         //tempdxT = new vnl_vector<double>(3);
@@ -1354,17 +1352,17 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
         dXTlist.push_back(dXT);
         
       }
-      WeightIterator++;
+      weightIterator++;
     }
   }
 
-  m_BiasVI = vnl_matrix_inverse<double>(m_BiasV).inverse();
+  biasVI = vnl_matrix_inverse<double>(biasV).inverse();
   
   tV(0) = dX;
   tV(1) = dY;
   tV(2) = dZ;
 
-  tV = tV * m_BiasVI;
+  tV = tV * biasVI;
   dX = tV(0);
   dY = tV(1);
   dZ = tV(2);
@@ -1372,7 +1370,7 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   
   if(sumWeight == 0)
   {
-    m_BiasV = 0;
+    biasV = 0;
     dA = 0;
     dB = 0;
     dG = 0;
@@ -1391,12 +1389,12 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
   }
   else
   {
-    m_BiasV = 1.0/sumWeight * m_BiasV;
+    biasV = 1.0/sumWeight * biasV;
   }
   
-  m_BiasVI = vnl_matrix_inverse<double>(m_BiasV).inverse();
+  biasVI = vnl_matrix_inverse<double>(biasV).inverse();
   
-  WeightIterator = m_Weight.begin();
+  weightIterator = m_Weight.begin();
   ListType::iterator  dXTIterator = dXTlist.begin();
 
   listindex  = 0;
@@ -1410,13 +1408,13 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
     dXT(1)= (*dXTIterator)[1];
     dXT(2)= (*dXTIterator)[2];
 
-    dXT = dXT * m_BiasVI;
+    dXT = dXT * biasVI;
     const Point<double,3> & xT = XTlist[listindex++];
     GetDeltaAngles(xT, dXT, &tDA, &tDB, &tDG);
-    dA += *WeightIterator * tDA;
-    dB += *WeightIterator * tDB;
-    dG += *WeightIterator * tDG;
-    WeightIterator++;
+    dA += *weightIterator * tDA;
+    dB += *weightIterator * tDB;
+    dG += *weightIterator * tDG;
+    weightIterator++;
     dXTIterator++;
   }
 
@@ -1458,7 +1456,7 @@ template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
 ::GetValueAndDerivative(const ParametersType & parameters, 
-                        MeasureType & Value, DerivativeType  & Derivative) const
+    MeasureType & itkNotUsed(Value), DerivativeType  & Derivative) const
 {
   //std::cout << "GetValueAndDerivative()" << std::endl;
   //Value      = GetValue( parameters );
@@ -1491,9 +1489,9 @@ ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>
     index[2]=(long int)(m_CurrentPoint[2]+dist*(*v)[2]);
     
     itk::Size<3> size = this->m_FixedImage->GetLargestPossibleRegion().GetSize();
-    if((unsigned long)index[0]>=0 && ((unsigned long)index[0]<size[0])
-       && (unsigned long)index[1]>=0 && ((unsigned long)index[1]<size[1])
-       && (unsigned long)index[2]>=0 && ((unsigned long)index[2]<size[2])) 
+    if(index[0]>=0 && ((unsigned long)index[0]<size[0])
+       && index[1]>=0 && ((unsigned long)index[1]<size[1])
+       && index[2]>=0 && ((unsigned long)index[2]<size[2])) 
        {
        double value = this->m_FixedImage->GetPixel(index);
        result += value * wI;

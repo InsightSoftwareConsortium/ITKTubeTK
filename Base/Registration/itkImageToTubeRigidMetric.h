@@ -163,14 +163,9 @@ private:
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
  // typename SecondDerivativeImageFunctionType::Pointer m_SecondDerivativeImageFunction;
   MaskImagePointer                       m_MaskImage;
-  typename ChildrenListType::iterator         TubeIterator;
-  typename std::vector<TubePointType>::iterator  TubePointIterator;
   unsigned int                           m_NumberOfPoints;
   std::list<double>                      m_Weight;
-  typename std::list<double>::iterator   WeightIterator;
   double                                 m_SumWeight;
-  vnl_matrix<double>                     m_BiasV;
-  vnl_matrix<double>                     m_BiasVI;
   double                                 m_ImageMin;
   double                                 m_ImageMax;
   typename RangeCalculatorType::Pointer  m_RangeCalculator;
