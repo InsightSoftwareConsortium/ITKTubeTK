@@ -37,7 +37,7 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   this->m_LastTransformParameters.Fill( 0.0f );
 
   m_NumberOfIteration = 100; //by default
-  m_LearningRate = 0.3;
+  m_LearningRate = 0.1;
   m_IsInitialized = false;
 
   m_InitialPosition.set_size(6);

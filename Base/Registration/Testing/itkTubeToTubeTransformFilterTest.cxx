@@ -24,15 +24,21 @@
 #include "itkSpatialObjectWriter.h"
 #include "itkEuler3DTransform.h"
 #include "itkMath.h"
+#include "itkSpatialObjectToImageFilter.h"
+#include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
 
 int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
 {
 
-  if ( argc < 3 )
+  if ( argc < 12 )
     {
     std::cerr << "Missing Parameters: " 
               << argv[0]
-              << " Input_Vessel " << "Input_Image " << std::endl;
+              << " Input_Vessel " << "Output_Vessel " 
+              << "Example_Image " << "Output_Image " 
+              << "R1 R2 R3 T1 T2 T3 Write_Image_Flag"
+              << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -58,21 +64,21 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
 
   // generate transform
   TransformType::Pointer transform = TransformType::New();
-
-  itk::Vector<double,3> CoR;
-  CoR[0] = 0.0;
-  CoR[1] = 0.0;
-  CoR[2] = 0.0;
-
   itk::Vector<double,3> rotation;
-  rotation[0] = 0;//-0.5/itk::Math::one_over_pi;
-  rotation[1] = 0;//-0.5/itk::Math::one_over_pi;
-  rotation[2] = 0.0;
+  rotation[0] = atof(argv[5]);//-0.5/itk::Math::one_over_pi;
+  rotation[1] = atof(argv[6]);//-0.5/itk::Math::one_over_pi;
+  rotation[2] = atof(argv[7]);//0.0
+
+  std::cout << "input rotation: " << rotation[0] << " " << rotation[1] << " "
+    << rotation[2] << std::endl;
 
   itk::Vector<double,3> translation;
-  translation[0] = 0.0;
-  translation[1] = 0.0;
-  translation[2] = 0.0;
+  translation[0] = atof(argv[8]);
+  translation[1] = atof(argv[9]);
+  translation[2] = atof(argv[10]);
+
+  std::cout << "input translation: " << translation[0] << " " << translation[1] << " "
+    << translation[2] << std::endl;
 
   double ca=cos(rotation[0]);
   double sa=sin(rotation[0]);
@@ -94,16 +100,13 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
 
   transform->SetRotationMatrix(rotationMatrix);
 
+  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
+  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;
+  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1) << " " << rotationMatrix(2,2) << std::endl;
+  
   //transform->SetRotation(rotation[0], rotation[1], rotation[2]);
-  
-  itk::Vector<double,3> rotOffset = -(transform->GetRotationMatrix()*CoR);
 
-  for(unsigned int i=0;i<3;i++)
-    {
-    rotOffset[i] += translation[i]+CoR[i];
-    }
-  
-  transform->SetOffset(rotOffset);
+  transform->Translate(translation);
 
   // create transform filter
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
@@ -134,6 +137,37 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
     {
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
+    }
+
+  if (atoi(argv[11]))
+    {
+    // Write vessel as an image
+    typedef itk::Image<double, 3>                           ImageType;
+    typedef itk::ImageFileReader<ImageType>                 ImageReaderType;
+    typedef itk::ImageFileWriter<ImageType>                 ImageWriterType;
+
+    ImageReaderType::Pointer imageReader = ImageReaderType::New();
+    imageReader->SetFileName(argv[3]);
+    imageReader->Update();
+
+    typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType> 
+                                                SpatialObjectToImageFilterType;
+    SpatialObjectToImageFilterType::Pointer vesselToImageFilter = 
+      SpatialObjectToImageFilterType::New();
+
+    vesselToImageFilter->SetInput(transformFilter->GetOutput());
+    vesselToImageFilter->SetSize(
+      imageReader->GetOutput()->GetLargestPossibleRegion().GetSize());
+    vesselToImageFilter->SetOrigin(imageReader->GetOutput()->GetOrigin());
+    vesselToImageFilter->SetSpacing(imageReader->GetOutput()->GetSpacing());
+    vesselToImageFilter->SetInsideValue(1.0);
+    vesselToImageFilter->SetOutsideValue(0.0);
+    vesselToImageFilter->Update();
+    
+    ImageWriterType::Pointer imageWriter = ImageWriterType::New();
+    imageWriter->SetFileName(argv[4]);
+    imageWriter->SetInput(vesselToImageFilter->GetOutput());
+    imageWriter->Update();
     }
 
   return EXIT_SUCCESS;

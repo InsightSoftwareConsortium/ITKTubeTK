@@ -51,13 +51,19 @@ target_link_libraries( tubeBaseRegistrationFiltersTests
 add_test( itkTubeToTubeTransformFilterTest 
           ${BASE_REGISTRSTION_FILTERS_TESTS} itkTubeToTubeTransformFilterTest
           ${INPUT_DATA}/Branch-truth-new.tre
-          ${TEMP}/itkImageToTubeRigidRegistrationTest.tre 
+          ${TEMP}/itkTubeToTubeTransformFilter.tre
+          ${INPUT_DATA}/Branch.n020.mha
+          ${TEMP}/itkTubeToTubeTransformFilter.mha
+          0.2 0.1 0.1 5 -5 5
+          0
           )
 
 add_test( itkImageToTubeRigidRegistrationTest 
           ${BASE_REGISTRSTION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
-          ${INPUT_DATA}/Branch-truth-new.tre
           ${INPUT_DATA}/Branch.n020.mha
-#          ${TEMP}/itkImageToTubeRigidRegistrationTest.mha 
+          ${TEMP}/itkTubeToTubeTransformFilter.tre
+          ${TEMP}/itkImageToTubeRigidRegistrationTest.mha 
           )
+set_tests_properties( itkImageToTubeRigidRegistrationTest
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
