@@ -177,6 +177,11 @@ option( TubeTK_USE_OpenIGTLink
   "Use OpenIGTLink to provide communications with surgical systems." ON )
 
 #-----------------------------------------------------------------------------
+# OpenIGTLink Setup
+option( TubeTK_USE_FANN
+  "Use fast artificial neural network library (FANN)." OFF )
+
+#-----------------------------------------------------------------------------
 # CTK Setup
 option( TubeTK_USE_CTK 
   "Use CTK to provide Qt-based applications and build Slicer loadable modules."
@@ -209,6 +214,12 @@ else( TubeTK_USE_SUPERBUILD )
     find_package( OpenIGTLink REQUIRED )
     include( ${OpenIGTLink_USE_FILE} )
   endif( TubeTK_USE_OpenIGTLink )
+
+  INCLUDE( ${CMAKE_ROOT}/Modules/FindPkgConfig.cmake )
+  
+  if (TubeTK_USE_FANN )
+    pkg_check_modules(FANN REQUIRED fann)
+  endif()
 
   if( TubeTK_USE_CTK )
     find_package( CTK REQUIRED )

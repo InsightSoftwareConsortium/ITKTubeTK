@@ -2,8 +2,8 @@
 <executable>
 
   <category>Filtering</category>
-  <title>Generate Features for Weka</title>
-  <description>Takes a set of input images and some class masks in order to generate an ARFF file for input into Weka, the data mining tool.</description>
+  <title>FANNClassify</title>
+  <description>This filter takes an image and a FANN model and produces a classification.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
@@ -13,80 +13,73 @@
   <parameters>
     <label>IO</label>
     <description>Input/output parameters</description>
+    <string>
+      <name>inputFile</name>
+      <label>Input FANN</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input FANN File from Weka</description>
+    </string>
     <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
       <channel>input</channel>
-      <index>0</index>
+      <index>1</index>
       <description>Input volume</description>
     </image>
-    <image>
+   <image>
       <name>inputPrior</name>
       <label>Input Prior</label>
       <channel>input</channel>
-      <index>1</index>
-      <description>Input prior</description>
-    </image>
-    <image>
-      <name>inputAdditions</name>
-      <label>Input Additions</label>
-      <channel>input</channel>
       <index>2</index>
-      <description>Input Additions</description>
-    </image>
-    <image>
-      <name>inputSubtractions</name>
-      <label>Input Subtractions</label>
-      <channel>input</channel>
-      <index>3</index>
-      <description>Input Subtractions</description>
+      <description>Input prior</description>
     </image>
     <image>
       <name>inputCenterlines</name>
       <label>Input Centerlines</label>
       <channel>input</channel>
-      <index>4</index>
+      <index>3</index>
       <description>Input Centerlines</description>
     </image>
-    <string>
-      <name>outputFile</name>
-      <label>Output ARFF File</label>
-      <channel>input</channel>
-      <index>5</index>
-      <description>Output ARFF File for WEKA</description>
-    </string>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>4</index>
+      <description>Output Volume</description>
+    </image>
     <image>
       <name>addMeans</name>
       <label>Add means histogram</label>
-      <channel>output</channel>
+      <channel>input</channel>
       <longflag>addMeans</longflag>
       <description>Output ARFF File for WEKA</description>
     </image>
     <image>
       <name>addStdDevs</name>
       <label>Add standard deviations</label>
-      <channel>output</channel>
+      <channel>input</channel>
       <longflag>addStdDevs</longflag>
       <description>Output ARFF File for WEKA</description>
     </image>
     <image>
       <name>subMeans</name>
       <label>Output ARFF File</label>
-      <channel>output</channel>
+      <channel>input</channel>
       <longflag>subMeans</longflag>
       <description>Output ARFF File for WEKA</description>
     </image>
     <image>
       <name>subStdDevs</name>
       <label>Output ARFF File</label>
-      <channel>output</channel>
+      <channel>input</channel>
       <longflag>subStdDevs</longflag>
       <description>Output ARFF File for WEKA</description>
     </image>
     <image>
       <name>nomMeans</name>
       <label>Output ARFF File</label>
-      <channel>output</channel>
+      <channel>input</channel>
       <longflag>nomMeans</longflag>
       <description>Output ARFF File for WEKA</description>
     </image>
@@ -123,4 +116,5 @@
       <default></default>
     </string-vector>
   </parameters>
+
 </executable>
