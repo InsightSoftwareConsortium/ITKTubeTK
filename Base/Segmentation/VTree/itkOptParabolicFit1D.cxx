@@ -52,7 +52,8 @@ double OptParabolicFit1D::cCenter(double x1, double y1,
                                   double x3, double y3)
 {
   double a = (y1 - ((y2-y3)*x1)/(x2-x3) - y3 + ((y2-y3)*x3)/(x2-x3)) /
-             (x1*x1 - x3*x3 + ((x3*x3-x2*x2)*x1)/(x2-x3) - ((x3*x3-x2*x2)*x3)/(x2-x3));
+    (x1*x1 - x3*x3 + ((x3*x3-x2*x2)*x1)/(x2-x3) - 
+     ((x3*x3-x2*x2)*x3)/(x2-x3));
   double b = (y2 - a * x2*x2 - y3 + a * x3*x3) / (x2 - x3);
 
   return -b/(2*a);
@@ -62,9 +63,9 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
 {  
   double minSign = 1;
   if(!cSearchForMin)
-  {
+    {
     minSign = -1;
-  }
+    }
     
   double d, v, fv, x, fx, u, fu, tf, w, fw;
 
@@ -76,37 +77,37 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
   fu = fv;
 
   if(x<cXMin || x>cXMax) 
-  {
+    {
     d *= -1;
     x = v+d*cXStep;
-  }
+    }
  
   fx = minSign*cFuncVal->value(x);
   
   if(fx>=fv) 
-  {
+    {
     u = x;
     fu = fx;
     d *= -1;
     x = v+d*cXStep;
     fx = minSign*cFuncVal->value(x);
-  }
+    }
   w = 1;
   while(fx < fv)
-  {
+    {
     u = v;
     fu = fv;
     v = x;
     fv = fx;
     x = v+d*cXStep*w;
     while((x<cXMin || x>cXMax) && w>cTolerance)
-    {
+      {
       w /= 2;
       x = v+d*cXStep*w;
-    }
+      }
         
     if(x<cXMin || x>cXMax)
-    {
+      {
       x = v-d*cXStep*w;
       fx = minSign*cFuncVal->value(x);
       *extX = x;
@@ -115,31 +116,31 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
       std::cout << "   x = " << x << std::endl;
       std::cout << "   Range = " << cXMin << " - " << cXMax << std::endl;
       return false;
-    }
+      }
      
     fx = minSign*cFuncVal->value(x);
     w *= 1.1;
-  }
+    }
         
     // Bracket = u, v, x;
   if(x<u)
-  {
+    {
     tf = u;
     u = x;
     x = tf;
     tf = fu;
     fu = fx;
     fx = tf;
-  }
+    }
  
   d = (x-u)/2;
 
     
   while(d>cTolerance)
-  {
+    {
     w = cCenter(u, fu, v, fv, x, fx);
     if(w>=x || w<=u)
-    {
+      {
       *extX = v;
       *extVal = minSign*fv;
       std::cout << "w " << w << " ";
@@ -149,78 +150,78 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
       std::cout << "d = " << d << std::endl;
       std::cout << " parabola outside bounds - aborting" << std::endl;
       return false;
-    }
+      }
    
     fw = minSign*cFuncVal->value(w);
       
     if(fw<fv)
-    {
-      if(w>v)
       {
+      if(w>v)
+        {
         u = v;
         fu = fv;
         v = w;
         fv = fw;
         d = (x-u)/2;
-      }
+        }
       else // w<v
-      {
+        {
         x = v;
         fx = fv;
         v = w;
         fv = fw;
         d = (x-u)/2;
+        }
       }
-    }
     else
-    { 
+      { 
       if(w>v)
-      {
+        {
         x = w;
         fx = fw;
         d = (x-u)/2;
-      }
+        }
       else // w<v
-      {
+        {
         u = w;
         fu = fw;
         d = (x-u)/2;
+        }
       }
-    }
        
     if(x-v<cTolerance && d>cTolerance)
-    {
+      {
       x = v;
       fx = fv;
       v = x-(x-u)/3;
       fv = minSign*cFuncVal->value(v);
       d = (x-u)/2;
       while(fv>fx && d>cTolerance)
-      {
+        {
         u = v;
         fu = fv;
         v = x-(x-u)/3;
         fv = minSign*cFuncVal->value(v);
         d = (x-u)/2;
-      }
-    }    
+        }
+      }    
     else if(v-u<cTolerance && d>cTolerance)
-    {
+      {
       u = v;
       fu = fv;
       v = u+(x-u)/3;
       fv = minSign*cFuncVal->value(v);
       d = (x-u)/2;
       while(fv>fu && d>cTolerance)
-      {
+        {
         x = v;
         fx = fv;
         v = u+(x-u)/3;
         fv = minSign*cFuncVal->value(v);
         d = (x-u)/2;
-      }     
+        }     
+      }
     }
-  }
 
   *extX = v;
   *extVal = minSign*fv;
