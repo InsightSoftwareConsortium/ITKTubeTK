@@ -78,7 +78,7 @@ template <class T>
 /**                                          */
 template <class T>
   void
-  Tqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
+  Tqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
 
 /** Compute the euclidean distance for two points */
 template <class PointType>

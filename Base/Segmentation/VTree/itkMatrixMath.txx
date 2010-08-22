@@ -394,7 +394,6 @@ Tqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
     }
 }
 
-
 }; // end namespace itk
 
 #endif
