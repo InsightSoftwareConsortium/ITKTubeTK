@@ -280,8 +280,16 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
 
     cX0Dir.normalize();
 
-    xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
-    xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+    if( cX0Dir(0) != 0 )
+      {
+      xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
+      xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+      }
+    else
+      {
+      xmin = 0;
+      xmax = 0;
+      }
     if( xmin > xmax )
       {
       double tmp = xmin;
@@ -290,8 +298,13 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
       }
     for( unsigned int i=1; i<cNDims; i++ )
       {
-      double tmin = (cXMin(i) - cX0(i))/cX0Dir(i);
-      double tmax = (cXMax(i) - cX0(i))/cX0Dir(i);
+      double tmin = xmin;
+      double tmax = xmax;
+      if( cX0Dir(i) != 0 )
+        {
+        tmin = (cXMin(i) - cX0(i))/cX0Dir(i);
+        tmax = (cXMax(i) - cX0(i))/cX0Dir(i);
+        }
       if( tmin > tmax )
         {
         double tmp = tmin;
@@ -307,11 +320,19 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
         xmax = tmax;
         }
       }
+
     //std::cout << "  x = " << cX0 << std::endl;
     //std::cout << "  dir = " << cX0Dir << std::endl;
     //std::cout << "  xmin = " << xmin << std::endl;
     //std::cout << "  xmax = " << xmax << std::endl;
     
+    if( xmin == xmax )
+      {
+      a = 0;
+      cX0 = ComputeLineStep( cX0, a, cX0Dir );
+      break;
+      }
+
     xstep = fabs( dot_product(cXStep, cX0Dir) );
 
     a = 0;
@@ -356,8 +377,16 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
 
     cX0Dir.normalize();
 
-    xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
-    xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+    if( cX0Dir(0) != 0 )
+      {
+      xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
+      xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+      }
+    else
+      {
+      xmin = 0;
+      xmax = 0;
+      }
     if( xmin > xmax )
       {
       double tmp = xmin;
@@ -366,8 +395,13 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
       }
     for( unsigned int k=1; k<cNDims; k++ )
       {
-      double tmin = (cXMin(k) - cX0(k))/cX0Dir(k);
-      double tmax = (cXMax(k) - cX0(k))/cX0Dir(k);
+      double tmin = xmin;
+      double tmax = xmax;
+      if( cX0Dir(0) != 0 )
+        {
+        tmin = (cXMin(k) - cX0(k))/cX0Dir(k);
+        tmax = (cXMax(k) - cX0(k))/cX0Dir(k);
+        }
       if( tmin > tmax )
         {
         double tmp = tmin;
@@ -384,6 +418,13 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
         }
       }
     
+    if( xmin == xmax )
+      {
+      a = 0;
+      cX0 = ComputeLineStep( cX0, a, cX0Dir );
+      continue;
+      }
+
     xstep = fabs( dot_product(cXStep, cX0Dir) );
 
     a = 0;
