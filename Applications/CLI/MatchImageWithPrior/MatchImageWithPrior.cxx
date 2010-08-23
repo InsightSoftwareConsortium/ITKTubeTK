@@ -146,6 +146,17 @@ int DoIt( int argc, char * argv[] )
                                            .GetSize();
   typename ImageType::Pointer orgMask = curMask;
 
+  typename ImageType::Pointer metricMaskImage = NULL;
+  if( metricMask.size() != 0 )
+    {
+    typedef itk::ImageFileReader< ImageType >   ReaderType;
+    typename ReaderType::Pointer readerMetricMask = ReaderType::New();
+    readerMetricMask->SetFileName( metricMask.c_str() );
+    readerMetricMask->Update();
+    metricMaskImage = readerMetricMask->GetOutput();
+    }
+  progressReporter.Report( 0.2 );
+
   if( foreground != 1 || background != 0 )
     {
     timeCollector.Start("Fg/Bg");
@@ -198,6 +209,11 @@ int DoIt( int argc, char * argv[] )
     eval.SetBoundarySize( outputBoundary );
     eval.SetTimeCollector( &timeCollector );
     eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
+
+    if( metricMaskImage.IsNotNull() )
+      {
+      eval.SetMetricMask( metricMaskImage );
+      }
 
     typedef typename ImageEvalType::RegistrationMethodType::TransformType  
       TransformType;

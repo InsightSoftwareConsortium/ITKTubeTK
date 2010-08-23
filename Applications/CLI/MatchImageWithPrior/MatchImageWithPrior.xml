@@ -66,6 +66,14 @@
       <longflag>background</longflag>
       <default>0</default>
     </float>
+    <image>
+      <name>metricMask</name>
+      <label>Metric Mask</label>
+      <flag>m</flag>
+      <longflag>metricMask</longflag>
+      <channel>input</channel>
+      <description>Points with non-zero values in this mask are used in match computations</description>
+    </image>
     <integer>
       <name>erode</name>
       <label>Erosion radius</label>

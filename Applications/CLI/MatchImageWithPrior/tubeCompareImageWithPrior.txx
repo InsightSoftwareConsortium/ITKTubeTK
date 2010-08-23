@@ -75,6 +75,7 @@ CompareImageWithPrior( void )
   m_VolImage = NULL;
   m_MaskImage = NULL;
   m_OrgMaskImage = NULL;
+  m_MetricMask = NULL;
   m_Foreground = 0;
   m_Erode = 4;
   m_Dilate = 2;
@@ -147,6 +148,21 @@ CompareImageWithPrior< pixelT, dimensionT>::
 GetOriginalMaskImage( void )
 {
   return m_OrgMaskImage;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void CompareImageWithPrior< pixelT, dimensionT>::
+SetMetricMask( typename ImageType::Pointer metricMask )
+{
+  m_MetricMask = metricMask;
+}
+
+template< class pixelT, unsigned int dimensionT >
+typename itk::OrientedImage< float, dimensionT >::Pointer 
+CompareImageWithPrior< pixelT, dimensionT>::
+GetMetricMask( void )
+{
+  return m_MetricMask;
 }
 
 template< class pixelT, unsigned int dimensionT >
@@ -953,6 +969,13 @@ Update( void )
     metric->SetFixedImageRegion( image1->GetLargestPossibleRegion() );
     metric->SetTransform( transform );
     metric->SetInterpolator( interpolator );
+    typedef itk::ImageSpatialObject< ImageType::ImageDimension, PixelType > IgnoreSOType;
+    typename IgnoreSOType::Pointer ignoreSO = IgnoreSOType::New();
+    if( m_MetricMask.IsNotNull() )
+      {
+      ignoreSO->SetImage( m_MetricMask );
+      metric->SetFixedImageMask( ignoreSO );
+      }
     int numSamples = 1;
     for( unsigned int i=0; i<dimensionT; i++ )
       {

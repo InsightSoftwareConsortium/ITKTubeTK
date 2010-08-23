@@ -55,6 +55,9 @@ public:
   void SetOriginalMaskImage( typename ImageType::Pointer orgMaskImage );
   typename ImageType::Pointer GetOriginalMaskImage( void );
 
+  void SetMetricMask( typename ImageType::Pointer metricMask );
+  typename ImageType::Pointer GetMetricMask( void );
+
   void SetForeground( float foreground );
 
   void SetErode( int erode );
@@ -95,6 +98,7 @@ private:
   typename ImageType::Pointer m_VolImage;
   typename ImageType::Pointer m_MaskImage;
   typename ImageType::Pointer m_OrgMaskImage;
+  typename ImageType::Pointer m_MetricMask;
   float                       m_Foreground;
   int                         m_Erode;
   int                         m_Dilate;
