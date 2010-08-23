@@ -1,17 +1,23 @@
 /*=========================================================================
 
-  Program:   itkUNC
-  Module:    $RCSfile: itkRidgeExtractor.h,v $
-  Language:  C++
-  Date:      $Date: 2005/06/02 20:30:55 $
-  Version:   $Revision: 1.11 $
+Library:   TubeTK
 
-  Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
-  See itkUNCCopyright.txt for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 #ifndef __itkRidgeExtractor_h
@@ -22,7 +28,7 @@
 
 #include "itkSplineApproximation1D.h"
 #include "itkSplineND.h"
-#include "itkOptParabolicFit1D.h"
+#include "itkOptBrent1D.h"
 #include "itkRadiusExtractor.h"
 #include "itkBlur3DImageFunction.h"
 
@@ -67,41 +73,33 @@ public:
 
   /**
    * Type definition for the input image. */
-  typedef Image<float, 3>                    MaskType;
-
-  /**
-   * Pointer type for the image */
-  typedef typename TInputImage::Pointer      ImagePointer;
-
-  /**
-   * Const Pointer type for the image */
-  typedef typename TInputImage::ConstPointer ImageConstPointer;
+  typedef Image< float, TInputImage::ImageDimension >     MaskType;
 
   /** Type definition for the input image pixel type. */
-  typedef typename TInputImage::PixelType    PixelType;
+  typedef typename TInputImage::PixelType                 PixelType;
 
   /** Type definition for the input image index type. */
-  typedef typename TInputImage::IndexType    IndexType;
+  typedef typename TInputImage::IndexType                 IndexType;
 
   /** Type definition for the input image index type. */
-  typedef ContinuousIndex<double, 3> ContinuousIndexType;
+  typedef ContinuousIndex< double, TInputImage::ImageDimension >
+                                                ContinuousIndexType;
 
   /** Defines the type of vectors used */
-  typedef Vector<double, 3>                  VectorType;
+  typedef vnl_vector< double >                  VectorType;
   
   /** Defines the type of matrix used */
-  typedef Matrix<double, 3, 3>               MatrixType;
+  typedef vnl_matrix< double >                  MatrixType;
 
-  typedef Matrix<double, 3, 2>               NormalPlaneMatrixType;
-  
   /** Tube SpatialObject typedefs*/
-  typedef VesselTubeSpatialObject<3>         TubeType;
+  typedef VesselTubeSpatialObject< TInputImage::ImageDimension >
+                                             TubeType;
   typedef typename TubeType::Pointer         TubePointer;
   typedef typename TubeType::TubePointType   TubePointType;
 
   /**
    * Set the input image */
-  void SetInputImage(ImagePointer inputImage);
+  void SetInputImage(typename ImageType::Pointer inputImage);
 
   /**
    * Get the input image */
@@ -152,44 +150,53 @@ public:
   itkGetMacro(ThreshX, double);
 
   /**
-   * Set P2Q2 Threshold */
-  itkSetMacro(ThreshP2Q2, double); 
+   * Set Ridgeness Threshold */
+  itkSetMacro(ThreshRidgeness, double); 
 
   /**
-   * Get P2Q2 Threshold */
-  itkGetMacro(ThreshP2Q2, double);
+   * Get Ridgeness Threshold */
+  itkGetMacro(ThreshRidgeness, double);
 
   /**
-   * Set P2Q2 start Threshold */
-  itkSetMacro(ThreshP2Q2Start, double); 
+   * Set Ridgeness start Threshold */
+  itkSetMacro(ThreshRidgenessStart, double); 
 
   /**
-   * Get P2Q2 start Threshold */
-  itkGetMacro(ThreshP2Q2Start, double);
+   * Get Ridgeness start Threshold */
+  itkGetMacro(ThreshRidgenessStart, double);
 
   /**
-   * Set EV  Threshold */
-  itkSetMacro(ThreshEV, double); 
+   * Set Roundness Threshold */
+  itkSetMacro(ThreshRoundness, double); 
 
   /**
-   * Get EV  Threshold */
-  itkGetMacro(ThreshEV, double);
+   * Get Roundness Threshold */
+  itkGetMacro(ThreshRoundness, double);
 
   /**
-   * Set EV ratio Threshold */
-  itkSetMacro(ThreshEVRatio, double); 
+   * Set Roundness start Threshold */
+  itkSetMacro(ThreshRoundnessStart, double); 
 
   /**
-   * Get EV ratio Threshold */
-  itkGetMacro(ThreshEVRatio, double);
+   * Get Roundness start Threshold */
+  itkGetMacro(ThreshRoundnessStart, double);
 
   /**
-   * Set EV ratio start Threshold */
-  itkSetMacro(ThreshEVRatioStart, double); 
+   * Set Curvature  Threshold */
+  itkSetMacro(ThreshCurvature, double); 
 
   /**
-   * Get EV ratio start Threshold */
-  itkGetMacro(ThreshEVRatioStart, double);
+   * Get Curvature  Threshold */
+  itkGetMacro(ThreshCurvature, double);
+
+  /**
+   * Set Curvature  Threshold */
+  itkSetMacro(ThreshCurvatureStart, double); 
+
+  /**
+   * Get Curvature  Threshold */
+  itkGetMacro(ThreshCurvatureStart, double);
+
 
   /**
    * Set Extract Bound Minimum */
@@ -255,16 +262,13 @@ public:
 
   /**
    * Delete a tube */
-  bool DeleteTube(TubeType * tube);
-
-  /**
-   * Add a tube */
-  bool AddTube(TubeType * tube);
+  template <class TDrawMask>
+  bool DeleteTube(TubeType * tube, TDrawMask * drawMask=NULL);
 
   /**
    * Add a tube */
   template <class TDrawMask>
-  void DrawTube(TDrawMask * drawMask, TubeType * tube);
+  bool AddTube(TubeType * tube, TDrawMask * drawMask=NULL);
 
   /**
    * Set the radius Extractor */
@@ -272,17 +276,19 @@ public:
 
   /**
    * Compute the intensity at the point x */
-  double  Intensity(IndexType & x);
+  double  Intensity(const IndexType & x);
 
   /**the ridgness at point x */
-  double  Ridgeness(ContinuousIndexType & x);
+  double  Ridgeness( const ContinuousIndexType & x, double & roundness,
+    double & curvature );
+
   /**
    * Compute the local Ridge */
   bool   LocalRidge(ContinuousIndexType & x);
   /**
    * Traverse the ridge one way */
   TubeType *  TraverseOneWay(ContinuousIndexType & newX, VectorType & newT,
-                             NormalPlaneMatrixType & newN, int dir);
+                             MatrixType & newN, int dir);
   /**
    * Extract */
   TubePointer  Extract(ContinuousIndexType & x, int tubeID);
@@ -291,7 +297,8 @@ public:
   void   IdleCallBack(bool (*idleCallBack)());
   /**
    * Set the status callback */
-  void   StatusCallBack(void (*statusCallBack)(char *, char *, int));
+  void   StatusCallBack(void (*statusCallBack)(const char *, const char *,
+      int));
  
   void SmoothTubeX(TubeType * tube, int h);
 
@@ -306,60 +313,60 @@ protected:
 
 private:
 
-  ImagePointer    m_Image; 
+  typename ImageType::Pointer                      m_Image; 
    
-  bool m_Debug;
-  bool m_Verbose;
+  bool                                             m_Debug;
 
-  typename Blur3DImageFunction<ImageType>::Pointer m_DataOp;
+  typename Blur3DImageFunction<ImageType>::Pointer m_DataFunc;
 
-  MaskType::Pointer  m_DataMask;
+  typename MaskType::Pointer                       m_DataMask;
 
-  bool             m_DynamicScale;
-  double           m_DynamicScaleUsed;
-  RadiusExtractor<TInputImage> * m_RadiusExtractor;
+  bool                                             m_DynamicScale;
+  double                                           m_DynamicScaleUsed;
+  RadiusExtractor<TInputImage>                   * m_RadiusExtractor;
 
-  int              m_RecoveryMax;
+  int                                              m_RecoveryMax;
    
-  double           m_DataMin;
-  double           m_DataMax;
-  double           m_DataRange;
+  double                                           m_DataMin;
+  double                                           m_DataMax;
+  double                                           m_DataRange;
    
-  double           m_StepX;
-  double           m_ThreshT;
-  double           m_ThreshX;
-  double           m_ThreshEV;
+  double                                           m_StepX;
+  double                                           m_ThreshT;
+  double                                           m_ThreshX;
 
-  IndexType        m_ExtractBoundMin;
-  IndexType        m_ExtractBoundMax;
+  IndexType                                        m_ExtractBoundMin;
+  IndexType                                        m_ExtractBoundMax;
    
-  SplineApproximation1D                 m_DataSpline1D;
-  OptParabolicFit1D                     m_DataSplineOpt;
-  SplineND*                             m_DataSpline;
-  UserFunc<vnl_vector<int> *, double> * m_SplineValueFunc;
+  SplineApproximation1D                            m_DataSpline1D;
+  OptBrent1D                                       m_DataSplineOpt;
+  SplineND                                       * m_DataSpline;
+  UserFunc< vnl_vector<int>, double >            * m_SplineValueFunc;
    
-  double           m_ThreshP2Q2;
-  double           m_ThreshP2Q2Start;
-  double           m_ThreshEVRatio;
-  double           m_ThreshEVRatioStart;
+  double                                           m_ThreshRidgeness;
+  double                                           m_ThreshRidgenessStart;
+  double                                           m_ThreshRoundness;
+  double                                           m_ThreshRoundnessStart;
+  double                                           m_ThreshCurvature;
+  double                                           m_ThreshCurvatureStart;
 
-  std::list<TubePointType>               m_TubePointList;
+  std::list< TubePointType >                       m_TubePointList;
   
-  ContinuousIndexType       m_X;
-  double                    m_XP, m_XQ, m_XR;
-  double                    m_XVal;
+  VectorType                                       m_X;
+  VectorType                                       m_XP;
+  double                                           m_XVal;
 
-  VectorType       m_XD;
-  MatrixType       m_XH;
-  VectorType       m_XHEVal;
-  MatrixType       m_XHEVect;
+  VectorType                                       m_XD;
+  MatrixType                                       m_XH;
+  VectorType                                       m_XHEVal;
+  MatrixType                                       m_XHEVect;
    
-  TubePointer      m_Tube;
-  int              m_TubeID;
-  int              m_TubePointCount;
+  TubePointer                                      m_Tube;
+  int                                              m_TubeID;
+  int                                              m_TubePointCount;
   
   bool  (*m_IdleCallBack)();
-  void  (*m_StatusCallBack)(char *, char *, int);
+  void  (*m_StatusCallBack)(const char *, const char *, int);
 
 };
 
@@ -371,5 +378,4 @@ private:
 #endif
 
 #endif /* __itkRidgeExtractor_h */
-
 

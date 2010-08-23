@@ -55,6 +55,7 @@ set( tubeBaseSegmentationVTree_SRCS
   itkUserFuncTest.cxx
   itkSplineApprox1DTest.cxx
   itkSplineNDTest.cxx
+  itkRidgeExtractorTest.cxx
   )
 
 include_directories( 
@@ -144,5 +145,15 @@ add_test( itkSplineNDTest
             ${TEMP}/itkSplineNDTest.mha
   itkSplineNDTest
     ${TEMP}/itkSplineNDTest.mha 
+  )
+
+add_test( itkRidgeExtractorTest
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  --compare ${BASELINE}/itkRidgeExtractorTest.mha
+            ${TEMP}/itkRidgeExtractorTest.mha
+  itkRidgeExtractorTest
+    ${INPUT_DATA}/Branch.n010.mha 
+    ${INPUT_DATA}/Branch-truth.tre 
+    ${TEMP}/itkRidgeExtractorTest.mha 
   )
 

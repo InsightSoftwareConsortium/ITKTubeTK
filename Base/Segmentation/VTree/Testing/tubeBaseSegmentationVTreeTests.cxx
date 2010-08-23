@@ -37,8 +37,9 @@ void RegisterTests()
   REGISTER_TEST( itkOptGoldenMeanTest );
   REGISTER_TEST( itkOptParabolicFitTest );
   REGISTER_TEST( itkOptBrentNDTest );
-  REGISTER_TEST( itkUserFuncTest );
+  REGISTER_TEST( itkRidgeExtractorTest );
   REGISTER_TEST( itkSplineApprox1DTest );
   REGISTER_TEST( itkSplineNDTest );
+  REGISTER_TEST( itkUserFuncTest );
 }
 
