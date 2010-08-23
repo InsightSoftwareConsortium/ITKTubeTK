@@ -32,7 +32,7 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
   if( argc != 4 )
     {
     std::cout 
-      << "Usage: itkRidgeExtractorTest <inputImageName> <targetVessel.tre> <outputImageName>" 
+      << "itkRidgeExtractorTest <inputImage> <vessel.tre> <outputImage>" 
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -50,7 +50,7 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
   RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
 
   ridgeOp->SetInputImage( im );
-  ridgeOp->SetStepX( 0.25 );
+  ridgeOp->SetStepX( 0.75 );
 
   double dataMin = ridgeOp->GetDataMin();
   std::cout << "Data min = " << dataMin << std::endl;
@@ -81,7 +81,7 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
   std::cout << "Extract bound max = " << extractBoundMax << std::endl;
   
   ridgeOp->SetScale( 2.0 );
-  ridgeOp->SetExtent( 2.0 );
+  ridgeOp->SetExtent( 3.0 );
   ridgeOp->SetDynamicScale( true );
 
   double recoveryMax = ridgeOp->GetRecoveryMax();
@@ -102,39 +102,46 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
   itk::ContinuousIndex<double, 3> contIndx;
   ImageType::PointType pnt;
   itOut.GoToBegin();
-  int startIndx = itOut.GetIndex()[2];
+  ImageType::IndexType startIndx = itOut.GetIndex();
   std::cout << "Start..." << std::endl;
+  bool firstSearch = false;
   while( !itOut.IsAtEnd() )
     {
-    switch( (itOut.GetIndex()[2]-startIndx) % 5 )
+    contIndx = itOut.GetIndex();
+    switch( ( itOut.GetIndex()[2] - startIndx[2] ) % 5 )
       {
       default:
       case 0:
-        std::cout << "Intensity" << std::endl;
+        std::cout << "Intensity: " << contIndx << std::endl;
         itOut.Set( ridgeOp->Intensity( itOut.GetIndex() ) );
+        firstSearch = true;
         break;
       case 1:
-        contIndx = itOut.GetIndex();
         std::cout << "Ridgeness: " << contIndx << std::endl;
         itOut.Set( ridgeOp->Ridgeness( contIndx, roundness, curvature ) );
+        firstSearch = true;
         break;
       case 2:
-        contIndx = itOut.GetIndex();
         std::cout << "Roundness: " << contIndx << std::endl;
         ridgeOp->Ridgeness( contIndx, roundness, curvature );
         itOut.Set( roundness );
+        firstSearch = true;
         break;
       case 3:
-        contIndx = itOut.GetIndex();
         std::cout << "Curvature: " << contIndx << std::endl;
         ridgeOp->Ridgeness( contIndx, roundness, curvature );
         itOut.Set( curvature );
+        firstSearch = true;
         break;
       case 4:
+        if( firstSearch )
+          {
+          skip = (int)(contIndx[1]-startIndx[1])%4 * 3;
+          firstSearch = false;
+          }
         if( ++skip > 12 )
           {
-          contIndx = itOut.GetIndex();
-          skip = (int)(contIndx[1])%4 * 3;
+          skip = 0;
           std::cout << "Local ridge: " << contIndx << std::endl;
           if( ridgeOp->LocalRidge( contIndx ) )
             {

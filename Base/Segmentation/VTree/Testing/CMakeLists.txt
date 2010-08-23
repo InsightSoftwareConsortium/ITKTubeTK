@@ -152,7 +152,7 @@ add_test( itkRidgeExtractorTest
   --compare ${BASELINE}/itkRidgeExtractorTest.mha
             ${TEMP}/itkRidgeExtractorTest.mha
   itkRidgeExtractorTest
-    ${INPUT_DATA}/Branch.n010.mha 
+    ${INPUT_DATA}/Branch.n010.sub.mha 
     ${INPUT_DATA}/Branch-truth.tre 
     ${TEMP}/itkRidgeExtractorTest.mha 
   )

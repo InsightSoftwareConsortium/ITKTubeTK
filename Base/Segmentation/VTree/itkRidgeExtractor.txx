@@ -111,11 +111,11 @@ RidgeExtractor<TInputImage>
   m_DataSpline->clipEdge( true );
 
   m_DataSpline->optimizerND()->searchForMin( false );
-  m_DataSpline->optimizerND()->tolerance( 0.05 );        // TMI 0.001
-  m_DataSpline->optimizerND()->maxIterations( 100 );
-  m_DataSpline->optimizerND()->maxLineSearches( 20 );
-  vnl_vector< double > xStep( 3, 0.15 );
-  m_DataSpline->optimizerND()->xStep( xStep );            // TMI 0.15
+  m_DataSpline->optimizerND()->tolerance( 0.1 );
+  m_DataSpline->optimizerND()->maxIterations( 200 );
+  m_DataSpline->optimizerND()->maxLineSearches( 10 );
+  vnl_vector< double > xStep( 3, 0.75 );
+  m_DataSpline->optimizerND()->xStep( xStep );
    
   m_IdleCallBack = NULL;
   m_StatusCallBack = NULL;
