@@ -29,10 +29,10 @@ limitations under the License.
 
 int itkRidgeExtractorTest( int argc, char * argv[] )
   {
-  if( argc != 4 )
+  if( argc != 3 )
     {
     std::cout 
-      << "itkRidgeExtractorTest <inputImage> <vessel.tre> <outputImage>" 
+      << "itkRidgeExtractorTest <inputImage> <outputImage>" 
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -165,7 +165,7 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
 
   typedef itk::ImageFileWriter<ImageType> ImageWriterType;
   ImageWriterType::Pointer imWriter = ImageWriterType::New();
-  imWriter->SetFileName( argv[3] );
+  imWriter->SetFileName( argv[2] );
   imWriter->SetInput( imOut );
   imWriter->Update();
 

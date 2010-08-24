@@ -49,13 +49,14 @@ set( tubeBaseSegmentationVTree_SRCS
   itkBlur3DImageFunctionTest.cxx
   itkMatrixMathTest.cxx
   itkOptBrentTest.cxx
+  itkOptBrentNDTest.cxx
   itkOptGoldenMeanTest.cxx
   itkOptParabolicFitTest.cxx
-  itkOptBrentNDTest.cxx
-  itkUserFuncTest.cxx
+  itkRidgeExtractorTest.cxx
+  itkRidgeExtractorTest2.cxx
   itkSplineApprox1DTest.cxx
   itkSplineNDTest.cxx
-  itkRidgeExtractorTest.cxx
+  itkUserFuncTest.cxx
   )
 
 include_directories( 
@@ -153,7 +154,13 @@ add_test( itkRidgeExtractorTest
             ${TEMP}/itkRidgeExtractorTest.mha
   itkRidgeExtractorTest
     ${INPUT_DATA}/Branch.n010.sub.mha 
-    ${INPUT_DATA}/Branch-truth.tre 
     ${TEMP}/itkRidgeExtractorTest.mha 
+  )
+
+add_test( itkRidgeExtractorTest2
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  itkRidgeExtractorTest2
+    ${INPUT_DATA}/Branch.n010.mha 
+    ${INPUT_DATA}/Branch-truth.tre 
   )
 
