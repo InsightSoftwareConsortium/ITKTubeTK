@@ -25,7 +25,7 @@ if __name__ == '__main__':
         print optarg
         sys.exit(2)
           
-  if len(args) != 1:
+  if len(args) < 1:
     print 'need input'
     sys.exit(1)
 
