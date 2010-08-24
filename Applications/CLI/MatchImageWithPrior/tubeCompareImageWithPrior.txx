@@ -969,12 +969,13 @@ Update( void )
     metric->SetFixedImageRegion( image1->GetLargestPossibleRegion() );
     metric->SetTransform( transform );
     metric->SetInterpolator( interpolator );
-    typedef itk::ImageSpatialObject< ImageType::ImageDimension, PixelType > IgnoreSOType;
-    typename IgnoreSOType::Pointer ignoreSO = IgnoreSOType::New();
+    typedef itk::ImageSpatialObject< ImageType::ImageDimension, PixelType >
+      MaskSOType;
+    typename MaskSOType::Pointer maskSO = MaskSOType::New();
     if( m_MetricMask.IsNotNull() )
       {
-      ignoreSO->SetImage( m_MetricMask );
-      metric->SetFixedImageMask( ignoreSO );
+      maskSO->SetImage( m_MetricMask );
+      metric->SetFixedImageMask( maskSO );
       }
     int numSamples = 1;
     for( unsigned int i=0; i<dimensionT; i++ )
