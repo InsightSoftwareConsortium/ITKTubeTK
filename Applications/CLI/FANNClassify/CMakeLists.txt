@@ -64,11 +64,11 @@ generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
 add_library( ${PROJECT_NAME}Module SHARED ${PROJECT_SOURCE} )
 set_target_properties( ${PROJECT_NAME}Module
                        PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
-target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} ${FANN_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} fann )
 
 add_executable( ${PROJECT_NAME}
                 ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )
-target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
+target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module fann )
 
 slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
 slicer3_set_plugins_output_path( ${PROJECT_NAME} )
