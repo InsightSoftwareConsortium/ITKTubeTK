@@ -30,6 +30,7 @@ limitations under the License.
 #endif
 
 #include "itkOrientedImage.h"
+#include "itkImageSpatialObject.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
@@ -109,6 +110,12 @@ public:
     {
     m_MaskMiddle = _maskMiddle;
     }
+
+  void SetMetricMask( typename ImageType::Pointer _MetricMask )
+    {
+    m_MetricMask = _MetricMask;
+    }
+
   void SetImageOutput( typename ImageType::Pointer _output )
     {
     m_ImageOutput = _output;
@@ -191,6 +198,14 @@ public:
     metric->SetMovingImage( m_ImageOutput );
     metric->SetFixedImageRegion( m_MaskMiddle->
                                  GetLargestPossibleRegion() );
+    typedef itk::ImageSpatialObject< ImageType::ImageDimension, pixelT >
+      IgnoreSOType;
+    typename IgnoreSOType::Pointer ignoreSO = IgnoreSOType::New();
+    if( m_MetricMask.IsNotNull() )
+      {
+      ignoreSO->SetImage( m_MetricMask );
+      metric->SetFixedImageMask( ignoreSO );
+      }
     metric->SetTransform( transform );
     metric->SetInterpolator( interpolator );
     metric->SetNumberOfSpatialSamples( size[0]*size[1]*samplingRate );
@@ -228,6 +243,7 @@ private:
   typename ImageType::Pointer         m_ImageMiddle;
   typename ImageType::Pointer         m_ImageBottom;
   typename ImageType::Pointer         m_MaskMiddle;
+  typename ImageType::Pointer         m_MetricMask;
   mutable typename ImageType::Pointer m_ImageOutput;
 
 };
