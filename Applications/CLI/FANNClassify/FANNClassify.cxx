@@ -235,9 +235,9 @@ int main( int argc, char **argv )
   for(  centerlineItr.GoToBegin(), imageItr.GoToBegin(), priorItr.GoToBegin();
         !centerlineItr.IsAtEnd();
         ++centerlineItr, ++imageItr, ++priorItr, ++stag,
-        progress += (1/numCenterlinePoints)*0.82 )
+        progress += (1/numCenterlinePoints)*0.88 )
     {
-    if( stag == 1000 )
+    if( stag == 10000 )
       {
       progressReporter.Report( progress );
       stag = 0;
@@ -495,8 +495,9 @@ int main( int argc, char **argv )
 
       output->SetPixel(curIndex, label);
 
-      bool done = false;
-      for( int f = 0; f < 30 && !done; ++f )
+      // Subsample by skipping
+      int subSampleFactor = 30;
+      for( int f = 0; f < subSampleFactorsh; ++f )
         {
 
         if( centerlineItr.Get() == 0 )
@@ -504,7 +505,7 @@ int main( int argc, char **argv )
           ++centerlineItr;
           ++imageItr;
           ++priorItr;
-          progress += (1/numCenterlinePoints)*0.82;
+          progress += (1/numCenterlinePoints)*0.88;
           --f;
           }
         else
@@ -512,16 +513,22 @@ int main( int argc, char **argv )
           ++centerlineItr; 
           ++imageItr; 
           ++priorItr;
-          progress += (1/numCenterlinePoints)*0.82;
+          progress += (1/numCenterlinePoints)*0.88;
           }
 
         if( centerlineItr.IsAtEnd() || imageItr.IsAtEnd() || 
             priorItr.IsAtEnd() )
           {
-          done = true;
           break;
           }
 
+        }
+      
+      // This can happen because of the skipping loop above
+      if( centerlineItr.IsAtEnd() || imageItr.IsAtEnd() || 
+          priorItr.IsAtEnd() )
+        {
+        break;
         }
 
       }
