@@ -34,6 +34,8 @@ limitations under the License.
 #include "itkImageFileWriter.h"
 #include "itkImageFileReader.h"
 
+#include "itkMersenneTwisterRandomVariateGenerator.h"
+
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
@@ -106,15 +108,17 @@ int main( int argc, char **argv )
   OutputImageType::Pointer centerlines = centerlinesReader->GetOutput();
 
   // typedefs for numerics
-  typedef itk::NJetImageFunction<InputImageType>                     CalculatorType;
-  typedef itk::JointHistogramImageFunction<InputImageType>           HistCalcType;
+  typedef itk::NJetImageFunction<InputImageType>              CalculatorType;
+  typedef itk::JointHistogramImageFunction<InputImageType>    HistCalcType;
 
   // typedefs for filters
-  typedef itk::RescaleIntensityImageFilter<InputImageType,InputImageType> RescaleType;
+  typedef itk::RescaleIntensityImageFilter<InputImageType,InputImageType> 
+                                                              RescaleType;
 
   // typedefs for iterators
-  typedef itk::ImageRegionConstIteratorWithIndex<OutputImageType>     IterType;
-  typedef itk::NeighborhoodIterator<InputImageType>                  NeighborIterType;
+  typedef itk::ImageRegionConstIteratorWithIndex<OutputImageType>
+                                                              IterType;
+  typedef itk::NeighborhoodIterator<InputImageType>           NeighborIterType;
 
   // Rescale the input
   InputImageType::Pointer curImage = NULL;
@@ -231,20 +235,35 @@ int main( int argc, char **argv )
     ++numCenterlinePoints;
     }
 
+  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer 
+    randGen = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
+  if( seed != -1 )
+    {
+    randGen->Initialize( seed );
+    }
+  else
+    {
+    randGen->Initialize();
+    }
+
   unsigned int stag = 0;
   for(  centerlineItr.GoToBegin(), imageItr.GoToBegin(), priorItr.GoToBegin();
         !centerlineItr.IsAtEnd();
         ++centerlineItr, ++imageItr, ++priorItr, ++stag,
         progress += (1/numCenterlinePoints)*0.88 )
     {
+
+    // Staggered Progress Reporting
     if( stag == 10000 )
       {
       progressReporter.Report( progress );
       stag = 0;
       }
     
-    if( centerlineItr.Get() > 0 )
+    if( centerlineItr.Get() > 0 && 
+        static_cast<int>(randGen->GetUniformVariate( 0, subsampling )) == 0 )
       {
+
       CalculatorType::PointType curPoint;
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
@@ -430,9 +449,10 @@ int main( int argc, char **argv )
         differencePatch.end() );
       
       size_t numLesser = std::distance( differencePatch.begin(),
-                                        std::upper_bound(differencePatch.begin(),
-                                                         differencePatch.end(), 
-                                                         -threshold) );
+                                        std::upper_bound(
+                                                        differencePatch.begin(),
+                                                        differencePatch.end(), 
+                                                        -threshold) );
       
       std::vector<float> features;
       features.push_back(v1sg); 
@@ -488,48 +508,8 @@ int main( int argc, char **argv )
                                                std::max_element( pixeloutput, 
                                                                  pixeloutput + 
                                                                  nOutputs ) );
-      if( output->GetPixel( curIndex ) != 0 )
-        {
-        std::cout << "overriding pixel value in output" << std::endl;
-        }
 
       output->SetPixel(curIndex, label);
-
-      // Subsample by skipping
-      int subSampleFactor = 30;
-      for( int f = 0; f < subSampleFactorsh; ++f )
-        {
-
-        if( centerlineItr.Get() == 0 )
-          {
-          ++centerlineItr;
-          ++imageItr;
-          ++priorItr;
-          progress += (1/numCenterlinePoints)*0.88;
-          --f;
-          }
-        else
-          {
-          ++centerlineItr; 
-          ++imageItr; 
-          ++priorItr;
-          progress += (1/numCenterlinePoints)*0.88;
-          }
-
-        if( centerlineItr.IsAtEnd() || imageItr.IsAtEnd() || 
-            priorItr.IsAtEnd() )
-          {
-          break;
-          }
-
-        }
-      
-      // This can happen because of the skipping loop above
-      if( centerlineItr.IsAtEnd() || imageItr.IsAtEnd() || 
-          priorItr.IsAtEnd() )
-        {
-        break;
-        }
 
       }
     }

@@ -115,6 +115,22 @@
       <flag>f</flag>
       <default></default>
     </string-vector>
+    <integer>
+      <name>seed</name>
+      <label>Seed</label>
+      <description>Specify a seed to make runs repeatable (-1 = rnd seed)</description>
+      <longflag>seed</longflag>
+      <flag>r</flag>
+      <default>-1</default>
+    </integer>
+    <float>
+      <name>subsampling</name>
+      <label>subsampling</label>
+      <description>Specify a n as in n:1 subsampling</description>
+      <longflag>subsampling</longflag>
+      <flag>m</flag>
+      <default>1</default>
+    </float>
   </parameters>
 
 </executable>
