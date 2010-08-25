@@ -42,9 +42,9 @@ add_subdirectory( GenerateFeaturesForWeka )
 add_subdirectory( Skeletonize )
 add_subdirectory( WekaToImage )
 add_subdirectory( ComputeZMap )
-#if( TubeTK_USE_FANN )
-add_subdirectory( FANNClassify )
-#endif()
+if( TubeTK_USE_FANN )
+  add_subdirectory( FANNClassify )
+endif()
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
 #  building, and installing CLI modules that are distributed with Slicer3 and
