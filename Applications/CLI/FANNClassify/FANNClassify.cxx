@@ -209,10 +209,8 @@ int main( int argc, char **argv )
   InputPixelType sigmaSmall = 0.6667*sigmaMedium;
   InputPixelType sigmaLarge = 1.3333*sigmaMedium;
 
-  progress = 1.0;
+  progress = 0.12;
   progressReporter.Report( progress );
-  
-  timeCollector.Report();
 
   NeighborIterType::SizeType radius  = {{ceil(scale/2),
                                                   ceil(scale/2)}};
@@ -227,10 +225,24 @@ int main( int argc, char **argv )
   IterType centerlineItr( centerlines, 
                           centerlines->GetLargestPossibleRegion() );
 
+  double numCenterlinePoints = 0;
+  for( centerlineItr.GoToBegin(); !centerlineItr.IsAtEnd(); ++centerlineItr )
+    {
+    ++numCenterlinePoints;
+    }
+
+  unsigned int stag = 0;
   for(  centerlineItr.GoToBegin(), imageItr.GoToBegin(), priorItr.GoToBegin();
         !centerlineItr.IsAtEnd();
-        ++centerlineItr, ++imageItr, ++priorItr)
+        ++centerlineItr, ++imageItr, ++priorItr, ++stag,
+        progress += (1/numCenterlinePoints)*0.82 )
     {
+    if( stag == 1000 )
+      {
+      progressReporter.Report( progress );
+      stag = 0;
+      }
+    
     if( centerlineItr.Get() > 0 )
       {
       CalculatorType::PointType curPoint;
@@ -322,8 +334,10 @@ int main( int argc, char **argv )
       std::vector<float> normalizedPriorPatch(imageN.Size());
       
       // compute the mean intensity of the two patches
-      float imageMean = std::accumulate(imageN.Begin(), imageN.End(), 0.0) / imageN.Size();
-      float priorMean = std::accumulate(priorN.Begin(), priorN.End(), 0.0) / imageN.Size();
+      float imageMean = std::accumulate(imageN.Begin(), imageN.End(), 0.0) / 
+        imageN.Size();
+      float priorMean = std::accumulate(priorN.Begin(), priorN.End(), 0.0) / 
+        imageN.Size();
       
       std::transform(imageN.Begin(), imageN.End(),
                      normalizedImagePatch.begin(),
@@ -333,21 +347,29 @@ int main( int argc, char **argv )
                        normalizedPriorPatch.begin(),
                      std::bind2nd(std::minus<float>(), priorMean));                    
       
-      float imageStdDev = std::sqrt(std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
-                                                       normalizedImagePatch.begin(),
-                                                       0.0) /
-                                    (imageN.Size() - 1));
+      float imageStdDev = std::sqrt( 
+        std::inner_product( normalizedImagePatch.begin(), 
+                            normalizedImagePatch.end(),
+                            normalizedImagePatch.begin(),
+                            0.0 ) / 
+        ( imageN.Size() - 1 ) );
       
-      float priorStdDev = std::sqrt(std::inner_product(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
-                                                       normalizedPriorPatch.begin(),
-                                                       0.0) /
-                                    (priorN.Size() - 1));
+      float priorStdDev = std::sqrt(
+        std::inner_product( normalizedPriorPatch.begin(), 
+                            normalizedPriorPatch.end(),
+                            normalizedPriorPatch.begin(),
+                            0.0 ) /
+        ( priorN.Size() - 1 ) );
       
-      float imageNorm = std::sqrt(std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
-                                                     normalizedImagePatch.begin(), 0.0));
+      float imageNorm = std::sqrt(
+        std::inner_product( normalizedImagePatch.begin(), 
+                            normalizedImagePatch.end(),
+                            normalizedImagePatch.begin(), 0.0 ) );
       
-      float priorNorm = std::sqrt(std::inner_product(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
-                                                     normalizedPriorPatch.begin(), 0.0));
+      float priorNorm = std::sqrt(
+        std::inner_product( normalizedPriorPatch.begin(), 
+                            normalizedPriorPatch.end(),
+                            normalizedPriorPatch.begin(), 0.0 ) );
       
       if(imageNorm > 0.0)
         {
@@ -363,8 +385,10 @@ int main( int argc, char **argv )
                        std::bind2nd(std::divides<float>(), priorNorm));
         }
       
-      float crossCorrelation = std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
-                                                  normalizedPriorPatch.begin(), 0.0);
+      float crossCorrelation = std::inner_product( normalizedImagePatch.begin(),
+                                                   normalizedImagePatch.end(),
+                                                   normalizedPriorPatch.begin(),
+                                                   0.0 );
       
       std::vector<float> differencePatch(imageN.Size());
       
@@ -373,16 +397,18 @@ int main( int argc, char **argv )
                      differencePatch.begin(),
                      std::minus<float>());
       
-      float norm = std::inner_product(differencePatch.begin(), differencePatch.end(),
-                                      differencePatch.begin(), 0.0);
+      float norm = std::inner_product( differencePatch.begin(), 
+                                       differencePatch.end(),
+                                       differencePatch.begin(), 0.0 );
       
-      float total = std::accumulate(differencePatch.begin(), differencePatch.end(), 0.0);
+      float total = std::accumulate( differencePatch.begin(), 
+                                     differencePatch.end(), 0.0);
       
-      float maxdiff = *std::max_element(differencePatch.begin(),
-                                        differencePatch.end());
+      float maxdiff = *std::max_element( differencePatch.begin(),
+                                         differencePatch.end() );
       
-      float mindiff = *std::min_element(differencePatch.begin(),
-                                        differencePatch.end());
+      float mindiff = *std::min_element( differencePatch.begin(),
+                                         differencePatch.end() );
       
       size_t q1 = static_cast<size_t>(.25*differencePatch.size());
       size_t q2 = static_cast<size_t>(.50*differencePatch.size());
@@ -397,13 +423,16 @@ int main( int argc, char **argv )
       float q95val = differencePatch[q95];
       
       const float threshold = .3;
-      size_t numGreater = std::distance(std::upper_bound(differencePatch.begin(),
-                                                         differencePatch.end(), threshold),
-                                        differencePatch.end());
+      size_t numGreater = std::distance(
+        std::upper_bound( differencePatch.begin(),
+                          differencePatch.end(), 
+                          threshold ) ,
+        differencePatch.end() );
       
-      size_t numLesser = std::distance(differencePatch.begin(),
-                                       std::upper_bound(differencePatch.begin(),
-                                                        differencePatch.end(), -threshold));                                                        
+      size_t numLesser = std::distance( differencePatch.begin(),
+                                        std::upper_bound(differencePatch.begin(),
+                                                         differencePatch.end(), 
+                                                         -threshold) );
       
       std::vector<float> features;
       features.push_back(v1sg); 
@@ -446,34 +475,55 @@ int main( int argc, char **argv )
       features.push_back(numLesser);
       
       float* rawData = &(features[0]);
-      assert(features.size() == fann_get_num_input(network));
-      float* pixeloutput = fann_run(network, rawData);
-      unsigned int nOutputs = fann_get_num_output(network);
-      assert(nOutputs == 3);
+      assert( features.size() == fann_get_num_input( network ) );
+      float* pixeloutput = fann_run( network, rawData );
+      unsigned int nOutputs = fann_get_num_output( network );
+      assert( nOutputs == 3 );
       
       OutputImageType::IndexType curIndex;
       output->TransformPhysicalPointToIndex( curPoint, curIndex);
       
       // bad hard code
-      unsigned char label = 1 + std::distance(pixeloutput, std::max_element(pixeloutput, pixeloutput + nOutputs));
+      unsigned char label = 1 + std::distance( pixeloutput, 
+                                               std::max_element( pixeloutput, 
+                                                                 pixeloutput + 
+                                                                 nOutputs ) );
       if( output->GetPixel( curIndex ) != 0 )
         {
         std::cout << "overriding pixel value in output" << std::endl;
         }
+
       output->SetPixel(curIndex, label);
+
       bool done = false;
-      for( unsigned int f = 0; f < 30 && !done; ++f )
+      for( int f = 0; f < 30 && !done; ++f )
         {
-        while( centerlineItr.Get() == 0 )
+
+        if( centerlineItr.Get() == 0 )
           {
-          ++centerlineItr; ++imageItr; ++priorItr;
-          if( centerlineItr.IsAtEnd() || imageItr.IsAtEnd() || priorItr.IsAtEnd() )
-            {
-            done = true;
-            break;
-            }
+          ++centerlineItr;
+          ++imageItr;
+          ++priorItr;
+          progress += (1/numCenterlinePoints)*0.82;
+          --f;
           }
+        else
+          {
+          ++centerlineItr; 
+          ++imageItr; 
+          ++priorItr;
+          progress += (1/numCenterlinePoints)*0.82;
+          }
+
+        if( centerlineItr.IsAtEnd() || imageItr.IsAtEnd() || 
+            priorItr.IsAtEnd() )
+          {
+          done = true;
+          break;
+          }
+
         }
+
       }
     }
   
@@ -485,6 +535,7 @@ int main( int argc, char **argv )
   fann_destroy(network);
 
   progressReporter.End();
+  timeCollector.Report();
 
   return EXIT_SUCCESS;
 }
