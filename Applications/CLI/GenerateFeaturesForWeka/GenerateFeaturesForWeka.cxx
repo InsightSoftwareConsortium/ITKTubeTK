@@ -328,7 +328,6 @@ int DoIt( int argc, char * argv[] )
           if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
             {
             addJHCalc->Precompute( curPoint );
-            ++samplesTotal;
             }
           samplesAdd += sampleRateAdd;
           }
@@ -339,7 +338,6 @@ int DoIt( int argc, char * argv[] )
           if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
             {
             subJHCalc->Precompute( curPoint );
-            ++samplesTotal;
             }
           samplesSub += sampleRateSub;
           }
@@ -348,12 +346,12 @@ int DoIt( int argc, char * argv[] )
           if( (int)(samplesNom) != (int)(samplesNom+sampleRateNom) )
             {
             nomJHCalc->Precompute( curPoint );
-            ++samplesTotal;
             }
           samplesNom += sampleRateNom;
           }
         }
       }
+    ++samplesTotal;
     ++centerlineItr;
     }
 
