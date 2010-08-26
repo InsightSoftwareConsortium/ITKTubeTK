@@ -565,80 +565,84 @@ NJetImageFunction<TInputImage>
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
-::Derivative(const PointType& point, double scale) const
+::Derivative(const PointType& point, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    return;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
-    //itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
+    itkWarningMacro(<< "Cannot convert point to continuous index");
+    return;
     }
 
-  return DerivativeAtContinuousIndex(cIndex, scale);
+  DerivativeAtContinuousIndex(cIndex, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
 ::Derivative(const PointType& point, const VectorType & v1,
-  double scale) const
+  double scale, typename NJetImageFunction<TInputImage>::VectorType & d
+  ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    return;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
-    //itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
+    itkWarningMacro(<< "Cannot convert point to continuous index");
+    return;
     }
 
-  return DerivativeAtContinuousIndex(cIndex, v1, scale);
+  DerivativeAtContinuousIndex(cIndex, v1, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
 ::Derivative(const PointType& point, const VectorType & v1,
-  const VectorType & v2, double scale) const
+  const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    return;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
-    //itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
+    itkWarningMacro(<< "Cannot convert point to continuous index");
+    return;
     }
 
-  return DerivativeAtContinuousIndex(cIndex, v1, v2, scale);
+  DerivativeAtContinuousIndex(cIndex, v1, v2, scale, d);
 }
 
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
-::DerivativeAtIndex(const IndexType& index, double scale) const
+::DerivativeAtIndex(const IndexType& index, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    return;
     }
   
   ContinuousIndexType cIndex;
@@ -647,18 +651,20 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return DerivativeAtContinuousIndex(cIndex, scale);
+  DerivativeAtContinuousIndex(cIndex, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
-::DerivativeAtIndex(const IndexType& index, const VectorType & v1, double scale) const
+::DerivativeAtIndex(const IndexType& index, const VectorType & v1,
+  double scale, typename NJetImageFunction<TInputImage>::VectorType & d
+  ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    return;
     }
   
   ContinuousIndexType cIndex;
@@ -667,19 +673,20 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return DerivativeAtContinuousIndex(cIndex, v1, scale);
+  DerivativeAtContinuousIndex(cIndex, v1, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
 ::DerivativeAtIndex(const IndexType& index, 
-                    const VectorType & v1, const VectorType & v2, double scale) const
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    return 0.0;
+    return;
     }
   
   ContinuousIndexType cIndex;
@@ -688,14 +695,15 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return DerivativeAtContinuousIndex(cIndex, v1, v2, scale);
+  DerivativeAtContinuousIndex(cIndex, v1, v2, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                              double scale) const
+  double scale, typename NJetImageFunction<TInputImage>::VectorType & d 
+  ) const
 {
   // DERIVATIVE
   double physGaussFactor = -0.5/(scale*scale);
@@ -706,7 +714,6 @@ NJetImageFunction<TInputImage>
   double expValue;
   double expValueD;
 
-  itk::Vector<double, TInputImage::ImageDimension> d;
   itk::Vector<double, TInputImage::ImageDimension> dTotal;
   for(unsigned int i=0; i< ImageDimension; i++)
     {
@@ -793,21 +800,19 @@ NJetImageFunction<TInputImage>
       d[i] = d[i] / dTotal[i];
       }
     }
-
-  return d;
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void 
 NJetImageFunction<TInputImage>
-::DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                              const VectorType & v1, double scale) const
+::DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // DERIVATIVE
-  itk::Vector<double, TInputImage::ImageDimension> d;
   if(m_UseProjection)
     {
-    d = DerivativeAtContinuousIndex(cIndex, scale);
+    DerivativeAtContinuousIndex(cIndex, scale, d);
     double dp = 0;
     for(int i=0; i<ImageDimension; i++)
       {
@@ -835,22 +840,19 @@ NJetImageFunction<TInputImage>
   
     d[0] = (val2-val1)/ 2 / 2;
     }
-
-  return d; 
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+void
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                              const VectorType & v1, const VectorType & v2,
-                              double scale) const
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // DERIVATIVE
-  itk::Vector<double, TInputImage::ImageDimension> d;
   if(m_UseProjection)
     {
-    d = DerivativeAtContinuousIndex(cIndex, scale);
+    DerivativeAtContinuousIndex(cIndex, scale, d);
     double dp0 = 0;
     double dp1 = 0;
     for(int i=0; i<ImageDimension; i++)
@@ -892,14 +894,13 @@ NJetImageFunction<TInputImage>
     d[0] = (val2-val1)/ 2 / 2;
     d[1] = (val4-val3)/ 2 / 2; 
     }
-  
-  return d;
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double 
 NJetImageFunction<TInputImage>
-::ValueAndDerivative(const PointType& point, double & val, double scale) const
+::ValueAndDerivative(const PointType& point, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -914,14 +915,38 @@ NJetImageFunction<TInputImage>
     return 0.0;
     }
 
-  return ValueAndDerivativeAtContinuousIndex(cIndex, val, scale);
+  return ValueAndDerivativeAtContinuousIndex(cIndex, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::ValueAndDerivative(const PointType& point, double & val, 
-                     const VectorType & v1, double scale) const
+::ValueAndDerivative(const PointType& point,
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
+{
+  if( !m_InputImage )
+    {
+    itkWarningMacro(<< "Input image not set");
+    return 0.0;
+    }
+  
+  ContinuousIndexType cIndex;
+  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
+    {
+    itkWarningMacro(<< "Cannot convert point to continuous index");
+    return 0.0;
+    }
+
+  return ValueAndDerivativeAtContinuousIndex(cIndex, v1, scale, d);
+}
+
+template <class TInputImage>
+double
+NJetImageFunction<TInputImage>
+::ValueAndDerivative(const PointType& point, 
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -936,36 +961,15 @@ NJetImageFunction<TInputImage>
     return 0.0;
     }
 
-  return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
+  return ValueAndDerivativeAtContinuousIndex(cIndex, v1, v2, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::ValueAndDerivative(const PointType& point, double & val, 
-                     const VectorType & v1, const VectorType & v2, double scale) const
-{
-  if( !m_InputImage )
-    {
-    itkWarningMacro(<< "Input image not set");
-    return 0.0;
-    }
-  
-  ContinuousIndexType cIndex;
-  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
-    {
-    //itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
-    }
-
-  return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
-}
-
-template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
-NJetImageFunction<TInputImage>
-::ValueAndDerivativeAtIndex(const IndexType& index, double & val,
-                            double scale) const
+::ValueAndDerivativeAtIndex(const IndexType& index,
+  double scale, typename NJetImageFunction<TInputImage>::VectorType & d
+  ) const
 {
   if( !m_InputImage )
     {
@@ -979,14 +983,16 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return ValueAndDerivativeAtContinuousIndex(cIndex, val, scale);
+  return ValueAndDerivativeAtContinuousIndex(cIndex, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::ValueAndDerivativeAtIndex(const IndexType& index, double & val,
-                            const VectorType & v1, double scale) const
+::ValueAndDerivativeAtIndex(const IndexType& index,
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d
+  ) const
 {
   if( !m_InputImage )
     {
@@ -1000,15 +1006,15 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
+  return ValueAndDerivativeAtContinuousIndex(cIndex, v1, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::ValueAndDerivativeAtIndex(const IndexType& index, double & val,
-                            const VectorType & v1, const VectorType & v2, 
-                            double scale) const
+::ValueAndDerivativeAtIndex(const IndexType& index,
+  const VectorType & v1, const VectorType & v2, double scale, 
+  typename NJetImageFunction<TInputImage>::VectorType & d) const
 {
   if( !m_InputImage )
     {
@@ -1022,15 +1028,18 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return ValueAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
+  return ValueAndDerivativeAtContinuousIndex(cIndex, v1, v2, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double 
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                                   double & val, double scale) const
+  double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
+  double val = 0;
+
   // VALUE AND DERIVATIVE
   double physGaussFactor = -0.5/(scale*scale);
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
@@ -1044,7 +1053,6 @@ NJetImageFunction<TInputImage>
   v = 0;
   vTotal = 0;
 
-  itk::Vector<double, TInputImage::ImageDimension> d;
   itk::Vector<double, TInputImage::ImageDimension> dTotal;
   d.Fill(0);
   dTotal.Fill(0);
@@ -1137,22 +1145,21 @@ NJetImageFunction<TInputImage>
     val = v/vTotal;
     }
 
-  return d;
+  return val;
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                                      double & val, 
-                                      const VectorType & v1, double scale) const
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
+  double val = 0;
   // VALUE AND DERIVATIVE
-  itk::Vector<double, TInputImage::ImageDimension> d;
-
   if(m_UseProjection)
     {
-    d = ValueAndDerivativeAtContinuousIndex(cIndex, val, scale);
+    val = ValueAndDerivativeAtContinuousIndex(cIndex, val, scale, d);
     double dp0 = 0;
     for(int i=0; i<ImageDimension; i++)
       {
@@ -1190,24 +1197,22 @@ NJetImageFunction<TInputImage>
     val = (val0 + 0.5455*val1 + 0.5455*val2)/(1+2*0.5455) / 2;
     }
   
-  return d; 
+  return val; 
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                                      double & val, 
-                                      const VectorType & v1,
-                                      const VectorType & v2, 
-                                      double scale) const
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
+  double val = 0;
   // VALUE AND DERIVATIVE
-  itk::Vector<double, TInputImage::ImageDimension> d;
 
   if(m_UseProjection)
     {
-    d = ValueAndDerivativeAtContinuousIndex(cIndex, val, scale);
+    val = ValueAndDerivativeAtContinuousIndex(cIndex, scale, d);
     double dp0 = 0;
     double dp1 = 0;
     for(int i=0; i<ImageDimension; i++)
@@ -1261,14 +1266,37 @@ NJetImageFunction<TInputImage>
     val = (2*val0 + 0.5455*(val1+val2+val3+val4))/(2+0.5455*4) / 2;
     }
 
-  return d;
+  return val;
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
+NJetImageFunction<TInputImage>
+::RidgenessAndDerivative(const PointType& point, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
+{
+  if( !m_InputImage )
+    {
+    itkWarningMacro(<< "Input image not set");
+    return 0.0;
+    }
+  
+  ContinuousIndexType cIndex;
+  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
+    {
+    //itkWarningMacro(<< "Cannot convert point to continuous index");
+    return 0.0;
+    }
+
+  return RidgenessAndDerivativeAtContinuousIndex(cIndex, scale, d);
+}
+
+template <class TInputImage>
+double
 NJetImageFunction<TInputImage>
 ::RidgenessAndDerivative(const PointType& point,
-                         double & val, double scale) const
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -1283,15 +1311,15 @@ NJetImageFunction<TInputImage>
     return 0.0;
     }
 
-  return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
+  return RidgenessAndDerivativeAtContinuousIndex(cIndex, v1, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivative(const PointType& point, double & val,
-                         const VectorType & v1,
-                         double scale) const
+::RidgenessAndDerivative(const PointType& point,
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -1306,39 +1334,15 @@ NJetImageFunction<TInputImage>
     return 0.0;
     }
 
-  return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
-}
-
-template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
-NJetImageFunction<TInputImage>
-::RidgenessAndDerivative(const PointType& point, double & val,
-                         const VectorType & v1,
-                         const VectorType & v2,
-                         double scale) const
-{
-  if( !m_InputImage )
-    {
-    itkWarningMacro(<< "Input image not set");
-    return 0.0;
-    }
-  
-  ContinuousIndexType cIndex;
-  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
-    {
-    //itkWarningMacro(<< "Cannot convert point to continuous index");
-    return 0.0;
-    }
-
-  return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
+  return RidgenessAndDerivativeAtContinuousIndex(cIndex, v1, v2, scale, d);
 }
 
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivativeAtIndex(const IndexType& index, double & val,
-                         double scale) const
+::RidgenessAndDerivativeAtIndex(const IndexType& index, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -1352,15 +1356,15 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
+  return RidgenessAndDerivativeAtContinuousIndex(cIndex, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivativeAtIndex(const IndexType& index, double & val,
-                         const VectorType & v1,
-                         double scale) const
+::RidgenessAndDerivativeAtIndex(const IndexType& index, 
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -1374,16 +1378,15 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, scale);
+  return RidgenessAndDerivativeAtContinuousIndex(cIndex, v1, scale, d);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivativeAtIndex(const IndexType& index, double & val,
-                         const VectorType & v1,
-                         const VectorType & v2,
-                         double scale) const
+::RidgenessAndDerivativeAtIndex(const IndexType& index,
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -1397,92 +1400,138 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return RidgenessAndDerivativeAtContinuousIndex(cIndex, val, v1, v2, scale);
+  return RidgenessAndDerivativeAtContinuousIndex(cIndex, v1, v2, scale, d);
 }
 
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                                      double & val, 
-                                      double scale) const
+::RidgenessAndDerivativeAtContinuousIndex(
+  const ContinuousIndexType & cIndex, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // RIDGENESS AND DERIVATIVE
   double v;
   MatrixType h;
-  VectorType d;
+  VectorType p;
 
   v = JetAtContinuousIndex(cIndex, d, h, scale);
-  if(v == 0)
-    {
-    val = 0;
-    return d;
-    }
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
- 
-  double cN0 = eigSys.get_eigenvalue(0);
 
-  double cN1 = eigSys.get_eigenvalue(1);
-
-  if(cN1 >= 0)
+  if( d.GetNorm() != 0 )
     {
-    val = 0;
+    d.Normalize();
     }
   else
     {
-    val = sqrt(cN0*cN0 + cN1*cN1) * cN1/cN0;
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      d[i] = eigSys.get_eigenvector(ImageDimension-1)[i];
+      }
     }
 
-  return d;
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    p[i] = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    }
+ 
+  double sums = 0;
+  double sumv = 0;
+  int ridge = 1;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
+    {
+    sums += p[i]*p[i];
+    sumv += eigSys.get_eigenvalue(i) * eigSys.get_eigenvalue(i);
+    if( eigSys.get_eigenvalue(i) >= 0 )
+      {
+      ridge = -1;
+      }
+    }
+  sums /= (ImageDimension-1);
+  if( sumv != 0 )
+    {
+    sumv /= (sumv + eigSys.get_eigenvalue(ImageDimension-1) *
+      eigSys.get_eigenvalue(ImageDimension-1) );
+    }
+
+  double val = (1.0 - sums) * sumv * ridge;
+
+  return val;
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                                      double & val, 
-                                      const VectorType & v1,
-                                      double scale) const
+::RidgenessAndDerivativeAtContinuousIndex(
+  const ContinuousIndexType & cIndex,
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // RIDGENESS AND DERIVATIVE
-  itk::Vector<double, TInputImage::ImageDimension> d;
-  if(m_UseProjection)
+  double v;
+  MatrixType h;
+  VectorType p;
+  VectorType vv;
+ 
+  v = JetAtContinuousIndex(cIndex, d, h, scale);
+
+  vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
+  
+  if( d.GetNorm() != 0 )
     {
-    double v;
-    MatrixType h;
-  
-    v = JetAtContinuousIndex(cIndex, d, h, scale);
-    if(v == 0)
-      {
-      val = 0;
-      }
-    else
-      {
-      vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-    
-      double cN0 = eigSys.get_eigenvalue(0) 
-                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
-                                         v1.GetVnlVector() ) );
-  
-      double cN1 = eigSys.get_eigenvalue(1) 
-                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
-                                         v1.GetVnlVector() ) );
-      if(cN1 >= 0)
-        {
-        val = 0;
-        }
-      else
-        {
-        val = sqrt(cN0*cN0 + cN1*cN1) * cN1/cN0;
-        }
-      }
+    d.Normalize();
     }
   else
     {
-    d = RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      d[i] = eigSys.get_eigenvector(ImageDimension-1)[i];
+      }
     }
+
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    p[i] = 0;
+    double dp = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      dp += eigSys.get_eigenvector(i)[j] * v1[j];
+      }
+    dp = vnl_math_abs( dp );
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += dp * eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    vv[i] = dp * eigSys.get_eigenvalue(i);
+    }
+ 
+  double sums = 0;
+  double sumv = 0;
+  int ridge = 1;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
+    {
+    sums += p[i]*p[i];
+    sumv += vv[i]*vv[i];
+    if( vv[i] >= 0 )
+      {
+      ridge = -1;
+      }
+    }
+  sums /= (ImageDimension-1);
+  if( sumv != 0 )
+    {
+    sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
+    }
+ 
+  double val = (1.0 - sums) * sumv * ridge;
 
   double dV1 = 0;
   for(unsigned int i=0; i<ImageDimension; i++)
@@ -1492,64 +1541,85 @@ NJetImageFunction<TInputImage>
   d.Fill(0);
   d[0] = dV1;
 
-  return d;
+  return val;
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::VectorType
+double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-                                      double & val, 
-                                      const VectorType & v1,
-                                      const VectorType & v2, 
-                                      double scale) const
+::RidgenessAndDerivativeAtContinuousIndex(
+  const ContinuousIndexType & cIndex,
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // RIDGENESS AND DERIVATIVE
-  itk::Vector<double, TInputImage::ImageDimension> d;
-  if(m_UseProjection)
+  double v;
+  MatrixType h;
+  VectorType p;
+  VectorType vv;
+ 
+  v = JetAtContinuousIndex(cIndex, d, h, scale);
+
+  vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
+  
+  if( d.GetNorm() != 0 )
     {
-    double v;
-    MatrixType h;
-  
-    v = JetAtContinuousIndex(cIndex, d, h, scale);
-    if(v == 0)
-      {
-      val = 0;
-      }
-    else
-      {
-      vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-  
-      double cN0V1 = eigSys.get_eigenvalue(0) 
-                       * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
-                                         v1.GetVnlVector() ) );
-      double cN0V2 = eigSys.get_eigenvalue(0) 
-                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
-                                         v2.GetVnlVector() ) );
-      double cN0 = cN0V1 + cN0V2;
-  
-      double cN1V1 = eigSys.get_eigenvalue(1) 
-                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
-                                         v1.GetVnlVector() ) );
-      double cN1V2 = eigSys.get_eigenvalue(1) 
-                     * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
-                                         v2.GetVnlVector() ) );
-      double cN1 = cN1V1 + cN1V2;
-  
-      if(cN1 >= 0)
-        {
-        val = 0;
-        }
-      else
-        {
-        val = sqrt(cN0*cN0 + cN1*cN1) * cN1/cN0;
-        }
-      }
+    d.Normalize();
     }
   else
     {
-    d = RidgenessAndDerivativeAtContinuousIndex(cIndex, val, scale);
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      d[i] = eigSys.get_eigenvector(ImageDimension-1)[i];
+      }
     }
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    p[i] = 0;
+    double dp = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      dp += eigSys.get_eigenvector(i)[j] * v1[j];
+      }
+    dp = vnl_math_abs( dp );
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += dp * eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    vv[i] = dp * eigSys.get_eigenvalue(i);
+    dp = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      dp += eigSys.get_eigenvector(i)[j] * v2[j];
+      }
+    dp = vnl_math_abs( dp );
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += dp * eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    vv[i] += dp * eigSys.get_eigenvalue(i);
+    }
+ 
+  double sums = 0;
+  double sumv = 0;
+  int ridge = 1;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
+    {
+    sums += p[i]*p[i];
+    sumv += vv[i] * vv[i];
+    if( vv[i] >= 0 )
+      {
+      ridge = -1;
+      }
+    }
+  sums /= (ImageDimension-1);
+  if( sumv != 0 )
+    {
+    sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
+    }
+ 
+  double val = (1.0 - sums) * sumv * ridge;
 
   double dV1 = 0;
   double dV2 = 0;
@@ -1561,90 +1631,87 @@ NJetImageFunction<TInputImage>
   d.Fill(0);
   d[0] = dV1;
   d[1] = dV2;
-  
-  return d;
+
+  return val;
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void
 NJetImageFunction<TInputImage>
-::Hessian(const PointType& point, double scale) const
+::Hessian(const PointType& point, double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    MatrixType h;
-    return h;
-    }
-  
-  ContinuousIndexType cIndex;
-  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
-    {
-    //itkWarningMacro(<< "Cannot convert point to continuous index");
-    MatrixType h;
-    return h;
-    }
-
-  return HessianAtContinuousIndex(cIndex, scale);
-}
-
-template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
-NJetImageFunction<TInputImage>
-::Hessian(const PointType& point, const VectorType & v1, double scale) const
-{
-  if( !m_InputImage )
-    {
-    itkWarningMacro(<< "Input image not set");
-    MatrixType h;
-    return h;
+    return;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
     itkWarningMacro(<< "Cannot convert point to continuous index");
-    MatrixType h;
-    return h;
+    return;
     }
 
-  return HessianAtContinuousIndex(cIndex, v1, scale);
+  HessianAtContinuousIndex(cIndex, scale, h);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void
+NJetImageFunction<TInputImage>
+::Hessian(const PointType& point, const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & h ) const
+{
+  if( !m_InputImage )
+    {
+    itkWarningMacro(<< "Input image not set");
+    return;
+    }
+  
+  ContinuousIndexType cIndex;
+  if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
+    {
+    itkWarningMacro(<< "Cannot convert point to continuous index");
+    return;
+    }
+
+  HessianAtContinuousIndex(cIndex, v1, scale, h);
+}
+
+template <class TInputImage>
+void
 NJetImageFunction<TInputImage>
 ::Hessian(const PointType& point, 
-          const VectorType & v1, const VectorType & v2, double scale) const
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    MatrixType h;
-    return h;
+    return;
     }
   
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
     itkWarningMacro(<< "Cannot convert point to continuous index");
-    MatrixType h;
-    return h;
+    return;
     }
 
-  return HessianAtContinuousIndex(cIndex, v1, v2, scale);
+  HessianAtContinuousIndex(cIndex, v1, v2, scale, h);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void
 NJetImageFunction<TInputImage>
-::HessianAtIndex(const IndexType& index, double scale) const
+::HessianAtIndex(const IndexType& index, double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    MatrixType h;
-    return h;
+    return;
     }
   
   ContinuousIndexType cIndex;
@@ -1653,19 +1720,20 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return HessianAtContinuousIndex(cIndex, scale);
+  HessianAtContinuousIndex(cIndex, scale, h);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void
 NJetImageFunction<TInputImage>
-::HessianAtIndex(const IndexType& index, const VectorType & v1, double scale) const
+::HessianAtIndex(const IndexType& index, const VectorType & v1,
+  double scale, typename NJetImageFunction<TInputImage>::MatrixType & h
+  ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    MatrixType h;
-    return h;
+    return;
     }
   
   ContinuousIndexType cIndex;
@@ -1674,20 +1742,20 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return HessianAtContinuousIndex(cIndex, v1, scale);
+  HessianAtContinuousIndex(cIndex, v1, scale, h);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void
 NJetImageFunction<TInputImage>
 ::HessianAtIndex(const IndexType& index, 
-                 const VectorType & v1, const VectorType & v2, double scale) const
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
   if( !m_InputImage )
     {
     itkWarningMacro(<< "Input image not set");
-    MatrixType h;
-    return h;
+    return;
     }
   
   ContinuousIndexType cIndex;
@@ -1696,14 +1764,15 @@ NJetImageFunction<TInputImage>
     cIndex[i] = index[i];
     }
 
-  return HessianAtContinuousIndex(cIndex, v1, v2, scale);
+  HessianAtContinuousIndex(cIndex, v1, v2, scale, h);
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void 
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
-                           double scale) const
+  double scale, typename NJetImageFunction<TInputImage>::MatrixType & h
+  ) const
 {
   // HESSIAN
   double physGaussFactor = -0.5/(scale*scale);
@@ -1714,7 +1783,6 @@ NJetImageFunction<TInputImage>
   double expValue;
   double expValueD;
 
-  MatrixType h;
   MatrixType hTotal;
   for(unsigned int i=0; i< ImageDimension; i++)
     {
@@ -1825,23 +1893,20 @@ NJetImageFunction<TInputImage>
         }
       }
     }
-
-  return h;
 }
 
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
-                           const VectorType & v1,
-                           double scale) const
+  const VectorType & v1, double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & m ) const
 {
   // HESSIAN
-  MatrixType m;
   if(m_UseProjection)
     {
-    m = HessianAtContinuousIndex(cIndex, scale);
+    HessianAtContinuousIndex(cIndex, scale, m);
     vnl_symmetric_eigensystem< double > eigSys(m.GetVnlMatrix());
 
     double dp = 0;
@@ -1873,22 +1938,19 @@ NJetImageFunction<TInputImage>
   
     m[0][0] = (0.5*val1+0.5*val2-val3)/2;
     }
-  
-  return m; 
 }
 
 template <class TInputImage>
-typename NJetImageFunction<TInputImage>::MatrixType
+void
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
-                           const VectorType & v1, const VectorType & v2, 
-                           double scale) const
+  const VectorType & v1, const VectorType & v2, double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & m ) const
 {
   // HESSIAN
-  MatrixType m;
   if(m_UseProjection)
     {
-    m = HessianAtContinuousIndex(cIndex, scale);
+    HessianAtContinuousIndex(cIndex, scale, m);
     vnl_symmetric_eigensystem< double > eigSys(m.GetVnlMatrix());
 
     double dp0 = 0;
@@ -1937,8 +1999,6 @@ NJetImageFunction<TInputImage>
   
     m[1][1] = (0.5*val1+0.5*val2-val3)/2;
     }
-  
-  return m; 
 }
 
 template <class TInputImage>
@@ -2146,10 +2206,6 @@ NJetImageFunction<TInputImage>
       }
     }
 
-  //std::cout << "v = " << v << std::endl;
-  //std::cout << "d = " << d << std::endl;
-  //std::cout << "h = " << h << std::endl;
-
   return v;
 }
 
@@ -2290,32 +2346,50 @@ NJetImageFunction<TInputImage>
   double v;
   VectorType d;
   MatrixType h;
+  VectorType p;
  
   v = JetAtContinuousIndex(cIndex, d, h, scale);
-  if(v == 0)
-    {
-    return 0;
-    }
- 
+
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
+
+  if( d.GetNorm() != 0 )
+    {
+    d.Normalize();
+    }
+  else
+    {
+    d.SetVnlVector( eigSys.get_eigenvector(ImageDimension-1) );
+    }
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    p[i] = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    }
  
-  double cN0 = eigSys.get_eigenvalue(0);
-
-  double cN1 = eigSys.get_eigenvalue(1);
-
-  double val = 0;
-
-  if( m_InverseRidgeness )
+  double sums = 0;
+  double sumv = 0;
+  int ridge = 1;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
-    cN0 = -cN0;
-    cN1 = -cN1;
-    std::swap( cN0, cN1 );
+    sums += p[i]*p[i];
+    sumv += eigSys.get_eigenvalue(i) * eigSys.get_eigenvalue(i);
+    if( eigSys.get_eigenvalue(i) >= 0 )
+      {
+      ridge = -1;
+      }
+    }
+  sums /= (ImageDimension-1);
+  if( sumv != 0 )
+    {
+    sumv /= (sumv + eigSys.get_eigenvalue(ImageDimension-1) 
+                    * eigSys.get_eigenvalue(ImageDimension-1));
     }
 
-  if( cN0 != 0 )
-    {
-    val = sqrt(cN0*cN0 + cN1*cN1) * cN1/cN0;
-    }
+  double val = (1.0 - sums) * sumv * ridge;
 
   return val;
 }
@@ -2327,47 +2401,61 @@ NJetImageFunction<TInputImage>
                              const VectorType & v1, double scale) const
 {
   // RIDGENESS
-  double val = 0;
-  if(m_UseProjection)
+  itk::Vector<double, TInputImage::ImageDimension> d;
+
+  double v;
+  MatrixType h;
+  VectorType p;
+  VectorType vv;
+ 
+  v = JetAtContinuousIndex(cIndex, d, h, scale);
+
+  vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
+  
+  if( d.GetNorm() != 0 )
     {
-    double v;
-    VectorType d;
-    MatrixType h;
-  
-    v = JetAtContinuousIndex(cIndex, d, h, scale);
-    if(v == 0)
-      {
-      return 0;
-      }
-  
-    vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-  
-    double cN0 = eigSys.get_eigenvalue(0) 
-                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
-                                       v1.GetVnlVector() ) );
-
-    double cN1 = eigSys.get_eigenvalue(1) 
-                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
-                                       v1.GetVnlVector() ) );
-
-    if( m_InverseRidgeness )
-      {
-      cN0 = -cN0;
-      }
-
-    if(cN1 >= 0)
-      {
-      val = 0;
-      }
-    else
-      {
-      val = sqrt(cN0*cN0 + cN1*cN1) * cN1/cN0;
-      }
+    d.Normalize();
     }
   else
     {
-    val = RidgenessAtContinuousIndex(cIndex, scale);
+    d.SetVnlVector( eigSys.get_eigenvector(ImageDimension-1) );
     }
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    p[i] = 0;
+    double dp = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      dp += eigSys.get_eigenvector(i)[j] * v1[j];
+      }
+    dp = vnl_math_abs( dp );
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += dp * eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    vv[i] = dp * eigSys.get_eigenvalue(i);
+    }
+ 
+  double sums = 0;
+  double sumv = 0;
+  int ridge = 1;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
+    {
+    sums += p[i]*p[i];
+    sumv += vv[i] * vv[i];
+    if( vv[i] >= 0 )
+      {
+      ridge = -1;
+      }
+    }
+  sums /= (ImageDimension-1);
+  if( sumv != 0 )
+    {
+    sumv /= ( sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
+    }
+ 
+  double val = (1.0 - sums) * sumv * ridge;
 
   return val;
 }
@@ -2380,56 +2468,72 @@ NJetImageFunction<TInputImage>
                              double scale) const
 {
   // RIDGENESS
-  double val = 0;
-  if(m_UseProjection)
+  itk::Vector<double, TInputImage::ImageDimension> d;
+
+  double v;
+  MatrixType h;
+  VectorType p;
+  VectorType vv;
+ 
+  v = JetAtContinuousIndex(cIndex, d, h, scale);
+
+  vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
+  
+  if( d.GetNorm() != 0 )
     {
-    double v;
-    VectorType d;
-    MatrixType h;
-  
-    v = JetAtContinuousIndex(cIndex, d, h, scale);
-    if(v == 0)
-      {
-      return 0;
-      }
-  
-    vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-  
-    double cN0V1 = eigSys.get_eigenvalue(0) 
-                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
-                                       v1.GetVnlVector() ) );
-    double cN0V2 = eigSys.get_eigenvalue(0) 
-                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(0),
-                                       v2.GetVnlVector() ) );
-    double cN0 = cN0V1 + cN0V2;
-
-    double cN1V1 = eigSys.get_eigenvalue(1) 
-                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
-                                       v1.GetVnlVector() ) );
-    double cN1V2 = eigSys.get_eigenvalue(1) 
-                   * vnl_math_abs( dot_product( eigSys.get_eigenvector(1),
-                                       v2.GetVnlVector() ) );
-    double cN1 = cN1V1 + cN1V2;
-
-
-    if( m_InverseRidgeness )
-      {
-      cN0 = -cN0;
-      }
-
-    if(cN1 >= 0)
-      {
-      val = 0;
-      }
-    else
-      {
-      val = sqrt(cN0*cN0 + cN1*cN1) * cN1/cN0;
-      }
+    d.Normalize();
     }
   else
     {
-    val = RidgenessAtContinuousIndex(cIndex, scale);
+    d.SetVnlVector( eigSys.get_eigenvector(ImageDimension-1) );
     }
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    p[i] = 0;
+    double dp = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      dp += eigSys.get_eigenvector(i)[j] * v1[j];
+      }
+    dp = vnl_math_abs( dp );
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += dp * eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    vv[i] = dp * eigSys.get_eigenvalue(i);
+    dp = 0;
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      dp += eigSys.get_eigenvector(i)[j] * v2[j];
+      }
+    dp = vnl_math_abs( dp );
+    for( unsigned int j=0; j<ImageDimension; j++ )
+      {
+      p[i] += dp * eigSys.get_eigenvector(i)[j] * d[j];
+      }
+    vv[i] += dp * eigSys.get_eigenvalue(i);
+    }
+ 
+  double sums = 0;
+  double sumv = 0;
+  int ridge = 1;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
+    {
+    sums += p[i]*p[i];
+    sumv += vv[i] * vv[i];
+    if( vv[i] >= 0 )
+      {
+      ridge = -1;
+      }
+    }
+  sums /= (ImageDimension-1);
+  if( sumv != 0 )
+    {
+    sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
+    }
+ 
+  double val = (1.0 - sums) * sumv * ridge;
 
   return val;
 }

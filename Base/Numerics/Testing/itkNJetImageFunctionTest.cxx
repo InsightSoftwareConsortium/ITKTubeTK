@@ -104,6 +104,8 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
 
   FunctionType::VectorType v1, v2, d;
   FunctionType::MatrixType h;
+  v1.Fill(0);
+  v2.Fill(0);
   v1[0] = 1;
   v2[1] = 1;
   double val;
@@ -152,76 +154,76 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 6:
         {
-        d = func->Derivative( pnt, scale );
+        func->Derivative( pnt, scale, d );
         outIter.Set( d[0]+d[1] );
         break;
         }
       case 7:
         {
-        d = func->Derivative( pnt, v1, scale );
+        func->Derivative( pnt, v1, scale, d );
         outIter.Set( d[0]+d[1] );
         break;
         }
       case 8:
         {
-        d = func->Derivative( pnt, v1, v2, scale );
+        func->Derivative( pnt, v1, v2, scale, d );
         outIter.Set( d[0]+d[1] );
         break;
         }
       case 9:
         {
-        d = func->DerivativeAtIndex( outIter.GetIndex(), scale );
+        func->DerivativeAtIndex( outIter.GetIndex(), scale, d );
         outIter.Set( d[0]+d[1] );
         break;
         }
       case 10:
         {
-        d = func->DerivativeAtIndex( outIter.GetIndex(), v1, scale );
+        func->DerivativeAtIndex( outIter.GetIndex(), v1, scale, d );
         outIter.Set( d[0]+d[1] );
         break;
         }
       case 11:
         {
-        d = func->DerivativeAtIndex( outIter.GetIndex(), v1, v2, scale );
+        func->DerivativeAtIndex( outIter.GetIndex(), v1, v2, scale, d );
         outIter.Set( d[0]+d[1] );
         break;
         }
       case 12:
         {
-        d = func->ValueAndDerivative(pnt, val, scale );
+        val = func->ValueAndDerivative(pnt, scale, d );
         outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 13:
         {
-        d = func->ValueAndDerivative(pnt, val, v1, scale );
+        val = func->ValueAndDerivative(pnt, v1, scale, d );
         outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 14:
         {
-        d = func->ValueAndDerivative(pnt, val, v1, v2, scale );
+        val = func->ValueAndDerivative(pnt, v1, v2, scale, d );
         outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 15:
         {
-        d = func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val,
-          scale );
+        val = func->ValueAndDerivativeAtIndex( outIter.GetIndex(), scale,
+          d );
         outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 16:
         {
-        d = func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val,
-          v1, scale );
+        val = func->ValueAndDerivativeAtIndex( outIter.GetIndex(),
+          v1, scale, d );
         outIter.Set( val+(d[0]+d[1]) );
         break;
         }
       case 17:
         {
-        d = func->ValueAndDerivativeAtIndex( outIter.GetIndex(), val,
-          v1, v2, scale );
+        val = func->ValueAndDerivativeAtIndex( outIter.GetIndex(),
+          v1, v2, scale, d );
         outIter.Set( val+(d[0]+d[1]) );
         break;
         }
@@ -275,73 +277,76 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 26:
         {
-        d = func->RidgenessAndDerivative( pnt, val, scale );
-        outIter.Set( val+d[0]+d[1] );
+        val = func->RidgenessAndDerivative( pnt, scale, d );
+        outIter.Set( val );
         break;
         }
       case 27:
         {
-        d = func->RidgenessAndDerivative( pnt, val, v1, scale );
-        outIter.Set( val+d[0]+d[1] );
+        val = func->RidgenessAndDerivative( pnt, v1, scale, d );
+        outIter.Set( val );
         break;
         }
       case 28:
         {
-        d = func->RidgenessAndDerivative( pnt, val, v1, v2, scale );
-        outIter.Set( val+d[0]+d[1] );
+        val = func->RidgenessAndDerivative( pnt, v1, v2, scale, d );
+        outIter.Set( val );
         break;
         }
       case 29:
         {
-        d = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(), val, scale );
+        val = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(), 
+          scale, d );
         outIter.Set( val+d[0]+d[1] );
         break;
         }
       case 30:
         {
-        d = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(), val, v1, scale );
+        val = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(),
+          v1, scale, d );
         outIter.Set( val+d[0]+d[1] );
         break;
         }
       case 31:
         {
-        d = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(), val, v1, v2, scale );
+        val = func->RidgenessAndDerivativeAtIndex( outIter.GetIndex(),
+          v1, v2, scale, d );
         outIter.Set( val+d[0]+d[1] );
         break;
         }
       case 32:
         {
-        h = func->Hessian( pnt, scale );
+        func->Hessian( pnt, scale, h );
         outIter.Set( h[0][0]+h[1][1] );
         break;
         }
       case 33:
         {
-        h = func->Hessian( pnt, v1, scale );
+        func->Hessian( pnt, v1, scale, h );
         outIter.Set( h[0][0]+h[1][1] );
         break;
         }
       case 34:
         {
-        h = func->Hessian( pnt, v1, v2, scale );
+        func->Hessian( pnt, v1, v2, scale, h );
         outIter.Set( h[0][0]+h[1][1] );
         break;
         }
       case 35:
         {
-        h = func->HessianAtIndex( outIter.GetIndex(), scale );
+        func->HessianAtIndex( outIter.GetIndex(), scale, h );
         outIter.Set( h[0][0]+h[1][1] );
         break;
         }
       case 36:
         {
-        h = func->HessianAtIndex( outIter.GetIndex(), v1, scale );
+        func->HessianAtIndex( outIter.GetIndex(), v1, scale, h );
         outIter.Set( h[0][0]+h[1][1] );
         break;
         }
       case 37:
         {
-        h = func->HessianAtIndex( outIter.GetIndex(), v1, v2, scale );
+        func->HessianAtIndex( outIter.GetIndex(), v1, v2, scale, h );
         outIter.Set( h[0][0]+h[1][1] );
         break;
         }

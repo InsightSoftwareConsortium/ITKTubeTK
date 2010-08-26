@@ -132,220 +132,245 @@ public:
   /** Evalulate the function at specified point */
   double Evaluate( const PointType & point, double scale=1 ) const;
   double Evaluate( const PointType & point, const VectorType & v1, 
-                   double scale=1 ) const;
+                      double scale=1 ) const;
   double Evaluate( const PointType & point, const VectorType & v1, 
-                   const VectorType & v2,
-                   double scale=1 ) const;
+                      const VectorType & v2,
+                      double scale=1 ) const;
 
 
   /** Evaluate the function at specified Index position */
   double EvaluateAtIndex( const IndexType & index, double scale=1 ) const;
   double EvaluateAtIndex( const IndexType & index, const VectorType & v1,
-                          double scale=1 ) const;
+                      double scale=1 ) const;
   double EvaluateAtIndex( const IndexType & index, const VectorType & v1,
-                          const VectorType & v2,
-                          double scale=1 ) const;
+                      const VectorType & v2,
+                      double scale=1 ) const;
 
   /** Evaluate the function at specified ContinousIndex position */
   double EvaluateAtContinuousIndex( const ContinuousIndexType & index,
-                                    double scale=1 ) const;
+                      double scale=1 ) const;
   double EvaluateAtContinuousIndex( const ContinuousIndexType & index,
-                                    const VectorType & v1,
-                                    double scale=1 ) const;
+                      const VectorType & v1,
+                      double scale=1 ) const;
   double EvaluateAtContinuousIndex( const ContinuousIndexType & index,
-                                    const VectorType & v1, 
-                                    const VectorType & v2,
-                                    double scale=1 ) const;
+                      const VectorType & v1, 
+                      const VectorType & v2,
+                      double scale=1 ) const;
 
-  VectorType 
-    Derivative( const PointType & point, double scale=1 ) const;
-  VectorType 
-    Derivative( const PointType & point, 
-                const VectorType & v1, 
-                double scale=1 ) const;
-  VectorType 
-    Derivative( const PointType & point, 
-                const VectorType & v1, const VectorType & v2,
-                double scale=1 ) const;
+  
+  void  Derivative( const PointType & point, double scale,
+                       VectorType & d ) const;
+  void  Derivative( const PointType & point, 
+                       const VectorType & v1, 
+                       double scale,
+                       VectorType & d ) const;
+  void Derivative( const PointType & point, 
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
 
-  VectorType 
-    DerivativeAtIndex( const IndexType & index, double scale=1 ) const;
-  VectorType 
+  void 
+    DerivativeAtIndex( const IndexType & index, double scale,
+                       VectorType & d ) const;
+  void 
     DerivativeAtIndex( const IndexType & index, 
                        const VectorType & v1,
-                       double scale=1 ) const;
-  VectorType 
+                       double scale,
+                       VectorType & d ) const;
+  void 
     DerivativeAtIndex( const IndexType & index,
                        const VectorType & v1, const VectorType & v2,
-                       double scale=1 ) const;
+                       double scale,
+                       VectorType & d ) const;
 
-  VectorType
+  void
     DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                 double scale=1 ) const;
-  VectorType
+                       double scale,
+                       VectorType & d ) const;
+  void
     DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                 const VectorType & v1,
-                                 double scale=1 ) const;
-  VectorType
+                       const VectorType & v1,
+                       double scale,
+                       VectorType & d ) const;
+  void
     DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                 const VectorType & v1, const VectorType & v2,
-                                 double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
 
-  VectorType 
+  double 
     ValueAndDerivative( const PointType & point,
-                        double & val,
-                        double scale=1 ) const;
-  VectorType 
+                       double scale,
+                       VectorType & d ) const;
+  double 
     ValueAndDerivative( const PointType & point,
-                        double & val,
-                        const VectorType & v1,
-                        double scale=1 ) const;
-  VectorType 
+                       const VectorType & v1,
+                       double scale,
+                       VectorType & d ) const;
+  double 
     ValueAndDerivative( const PointType & point,
-                        double & val,
-                        const VectorType & v1, const VectorType & v2,
-                        double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
 
-  VectorType 
+  double 
     ValueAndDerivativeAtIndex( const IndexType & index,
-                               double & val,
-                               double scale=1 ) const;
-  VectorType 
+                       double scale,
+                       VectorType & d ) const;
+  double 
     ValueAndDerivativeAtIndex( const IndexType & index,
-                               double & val,
-                               const VectorType & v1,
-                               double scale=1 ) const;
-  VectorType 
+                       const VectorType & v1,
+                       double scale,
+                       VectorType & d ) const;
+  double 
     ValueAndDerivativeAtIndex( const IndexType & index,
-                               double & val,
-                               const VectorType & v1, const VectorType & v2,
-                               double scale=1 ) const;
-  VectorType
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
+  double
     ValueAndDerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                         double & val,
-                                         double scale=1 ) const;
-  VectorType
+                       double scale,
+                       VectorType & d ) const;
+  double
     ValueAndDerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                         double & val,
-                                         const VectorType & v1,
-                                         double scale=1 ) const;
-  VectorType
+                       const VectorType & v1,
+                       double scale,
+                       VectorType & d ) const;
+  double
     ValueAndDerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                         double & val,
-                                         const VectorType & v1, 
-                                         const VectorType & v2,
-                                         double scale=1 ) const;
+                       const VectorType & v1, 
+                       const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
 
   double
     Jet( const PointType & point, VectorType & d, MatrixType & h,
-         double scale=1 ) const;
+                       double scale=1 ) const;
 
   double
     JetAtIndex( const IndexType & cIndex, VectorType & d, MatrixType & h,
-                double scale=1 ) const;
+                       double scale=1 ) const;
 
   double
     JetAtContinuousIndex( const ContinuousIndexType & cIndex,
-                          VectorType & d, MatrixType & h,
-                          double scale=1 ) const;
+                       VectorType & d, MatrixType & h,
+                       double scale=1 ) const;
 
   double
     Ridgeness( const PointType & point, double scale=1 ) const;
   double
     Ridgeness( const PointType & point, 
-               const VectorType & v1, double scale=1 ) const;
+                       const VectorType & v1, double scale=1 ) const;
   double
     Ridgeness( const PointType & point, 
-               const VectorType & v1, const VectorType & v2, 
-               double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2, 
+                       double scale=1 ) const;
 
   double
     RidgenessAtIndex( const IndexType & index, double scale=1 ) const;
   double
     RidgenessAtIndex( const IndexType & index, 
-                      const VectorType & v1, double scale=1 ) const;
+                       const VectorType & v1, double scale=1 ) const;
   double
     RidgenessAtIndex( const IndexType & index, 
-                      const VectorType & v1, const VectorType & v2,
-                      double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2,
+                       double scale=1 ) const;
 
   double
     RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                double scale=1 ) const;
+                       double scale=1 ) const;
   double
     RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                const VectorType & v1, double scale=1 ) const;
+                       const VectorType & v1, double scale=1 ) const;
   double
     RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
-                                const VectorType & v1, const VectorType & v2,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivative(const PointType &point, double & val,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivative(const PointType &point, double & val,
-                                const VectorType & v1, 
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivative(const PointType &point, double & val,
-                                const VectorType & v1, const VectorType & v2,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivativeAtIndex(const IndexType &index, double & val,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivativeAtIndex(const IndexType &index, double & val,
-                                const VectorType & v1,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivativeAtIndex(const IndexType &index, double & val,
-                                const VectorType & v1, const VectorType & v2,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivativeAtContinuousIndex(const ContinuousIndexType &cIndex,
-                                double & val,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivativeAtContinuousIndex(const ContinuousIndexType &cIndex,
-                                double & val,
-                                const VectorType & v1,
-                                double scale=1 ) const;
-  VectorType
-    RidgenessAndDerivativeAtContinuousIndex(const ContinuousIndexType &cIndex,
-                                double & val,
-                                const VectorType & v1, const VectorType & v2,
-                                double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2,
+                       double scale=1 ) const;
+  double
+    RidgenessAndDerivative(const PointType &point,
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivative(const PointType &point,
+                       const VectorType & v1, 
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivative(const PointType &point,
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivativeAtIndex(const IndexType &index,
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivativeAtIndex(const IndexType &index,
+                       const VectorType & v1,
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivativeAtIndex(const IndexType &index,
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivativeAtContinuousIndex(
+                       const ContinuousIndexType &cIndex,
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivativeAtContinuousIndex(
+                       const ContinuousIndexType &cIndex,
+                       const VectorType & v1,
+                       double scale,
+                       VectorType & d ) const;
+  double
+    RidgenessAndDerivativeAtContinuousIndex(
+                       const ContinuousIndexType &cIndex,
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       VectorType & d ) const;
 
-  MatrixType
-    Hessian( const PointType & point, double scale=1 ) const;
-  MatrixType
+  void
+    Hessian( const PointType & point, double scale,
+                       MatrixType & m ) const;
+  void
     Hessian( const PointType & point, 
-             const VectorType & v1, double scale=1 ) const;
-  MatrixType
+                       const VectorType & v1, double scale,
+                       MatrixType & m ) const;
+  void
     Hessian( const PointType & point, 
-             const VectorType & v1, const VectorType & v2, 
-             double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2, 
+                       double scale,
+                       MatrixType & m ) const;
 
-  MatrixType
-    HessianAtIndex( const IndexType & index, double scale=1 ) const;
-  MatrixType
+  void
+    HessianAtIndex( const IndexType & index, double scale,
+                       MatrixType & m ) const;
+  void
     HessianAtIndex( const IndexType & index, 
-                    const VectorType & v1, double scale=1 ) const;
-  MatrixType
+                       const VectorType & v1, double scale,
+                       MatrixType & m ) const;
+  void
     HessianAtIndex( const IndexType & index, 
-                    const VectorType & v1, const VectorType & v2, 
-                    double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2, 
+                       double scale,
+                       MatrixType & m ) const;
 
-  MatrixType
+  void
     HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
-                              double scale=1 ) const;
-  MatrixType
+                       double scale,
+                       MatrixType & m ) const;
+  void
     HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
-                              const VectorType & v1, double scale=1 ) const;
-  MatrixType
+                       const VectorType & v1, double scale,
+                       MatrixType & m ) const;
+  void
     HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
-                              const VectorType & v1, const VectorType & v2,
-                              double scale=1 ) const;
+                       const VectorType & v1, const VectorType & v2,
+                       double scale,
+                       MatrixType & m ) const;
 
   InputImagePointer ScaleSubsample(double factor);
 
