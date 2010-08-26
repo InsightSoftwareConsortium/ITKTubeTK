@@ -393,7 +393,14 @@ RidgeExtractor<TInputImage>
               << std::endl;
     }
   
-  m_XD.normalize();
+  if( m_XD.magnitude() != 0 )
+    {
+    m_XD.normalize();
+    }
+  else
+    {
+    m_XD = m_XHEVect.get_column( ImageDimension-1 );
+    }
 
   if( m_Debug )
     {
@@ -410,18 +417,25 @@ RidgeExtractor<TInputImage>
     }
 
   double sums = 0;
+  double sumv = 0;
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
     sums += m_XP[i]*m_XP[i];
-    if( m_XHEVal[i] > 0 )
+    sumv += m_XHEVal[i]*m_XHEVal[i];
+    if( m_XHEVal[i] >= 0 )
       {
       ridge = -1;
       }
     }
   sums /= (ImageDimension-1);
-  
-  double ridgeness = (1.0 - sums) * ridge;
+  if( sumv != 0 )
+    {
+    sumv /= (sumv + m_XHEVal[ImageDimension-1] *
+                    m_XHEVal[ImageDimension-1] );
+    }
+ 
+  double ridgeness = (1.0 - sums) * sumv * ridge;
 
   if( m_Debug ) 
     {
@@ -533,7 +547,7 @@ RidgeExtractor<TInputImage>
       pnt.SetNormal2( m_XHEVect( 0,1 ), m_XHEVect( 1,1 ), m_XHEVect( 2,1 ) );
       pnt.SetAlpha1( m_XHEVal[0] );
       pnt.SetAlpha2( m_XHEVal[1] );
-      if( m_XHEVal[0]!=0 )
+      if( m_XHEVal[0] != 0 )
         {
         pnt.SetRidgeness( roundness );
         }
@@ -715,7 +729,7 @@ RidgeExtractor<TInputImage>
       }
     j = ( k+1 )%3;
     l = ( k+2 )%3;
-    if( m_XHEVal[j]>m_XHEVal[l] ) 
+    if( m_XHEVal[j] > m_XHEVal[l] ) 
       {
       i = j;
       j = l;

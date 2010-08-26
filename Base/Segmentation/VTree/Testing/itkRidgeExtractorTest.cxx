@@ -46,6 +46,8 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
 
   ImageType::Pointer im = imReader->GetOutput();
 
+  ImageType::SizeType size = im->GetLargestPossibleRegion().GetSize();
+
   typedef itk::RidgeExtractor<ImageType> RidgeOpType;
   RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
 
@@ -143,13 +145,15 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
           {
           skip = 0;
           std::cout << "Local ridge: " << contIndx << std::endl;
+          contIndx[1] = size[1]/2;
           if( ridgeOp->LocalRidge( contIndx ) )
             {
+            std::cout << "   leads to: " << contIndx << std::endl;
             for( unsigned int i=0; i<3; i++ )
               {
               indx[i] = contIndx[i];
               }
-            if( vnl_math_abs( indx[2] - itOut.GetIndex()[2] ) < 1 )
+            if( vnl_math_abs( indx[2] - itOut.GetIndex()[2] ) < 4 )
               {
               indx[2] = itOut.GetIndex()[2];
               int v = imOut->GetPixel( indx );
