@@ -255,6 +255,7 @@ ExternalProject_Add(${proj}
     -DTubeTK_USE_OpenIGTLink:BOOL=${TubeTK_USE_OpenIGTLink}
     -DOpenIGTLink_DIR:PATH=${OpenIGTLink_DIR}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
+    -DTubeTK_USE_FANN:BOOL=${TubeTK_USE_FANN}
     -DCTK_DIR:PATH=${CTK_DIR}
   INSTALL_COMMAND ""
   DEPENDS
