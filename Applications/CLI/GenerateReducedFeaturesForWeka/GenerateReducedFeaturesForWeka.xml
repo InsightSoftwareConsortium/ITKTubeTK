@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Generate Features for Weka</title>
+  <description>Takes a set of input images and some class masks in order to generate an ARFF file for input into Weka, the data mining tool.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Patrick Reynolds, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume</description>
+    </image>
+    <image>
+      <name>inputPrior</name>
+      <label>Input Prior</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Input prior</description>
+    </image>
+    <image>
+      <name>inputAdditions</name>
+      <label>Input Additions</label>
+      <channel>input</channel>
+      <index>2</index>
+      <description>Input Additions</description>
+    </image>
+    <image>
+      <name>inputSubtractions</name>
+      <label>Input Subtractions</label>
+      <channel>input</channel>
+      <index>3</index>
+      <description>Input Subtractions</description>
+    </image>
+    <image>
+      <name>inputCenterlines</name>
+      <label>Input Centerlines</label>
+      <channel>input</channel>
+      <index>4</index>
+      <description>Input Centerlines</description>
+    </image>
+    <string>
+      <name>outputFile</name>
+      <label>Output ARFF File</label>
+      <channel>input</channel>
+      <index>5</index>
+      <description>Output ARFF File for WEKA</description>
+    </string>
+    <image>
+      <name>addMeans</name>
+      <label>Add means histogram</label>
+      <channel>output</channel>
+      <longflag>addMeans</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>addStdDevs</name>
+      <label>Add standard deviations</label>
+      <channel>output</channel>
+      <longflag>addStdDevs</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>subMeans</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>subMeans</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>subStdDevs</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>subStdDevs</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>nomMeans</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>nomMeans</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+    <image>
+      <name>nomStdDevs</name>
+      <label>Output ARFF File</label>
+      <channel>output</channel>
+      <longflag>nomStdDevs</longflag>
+      <description>Output ARFF File for WEKA</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>Options</label>
+    <double>
+      <name>scale</name>
+      <label>Ridgness Scale</label>
+      <description>The scale for evaluating ridgeness</description>
+      <longflag>scale</longflag>
+      <flag>s</flag>
+      <default>1.0</default>
+    </double>
+    <boolean>
+      <name>skipNormalizeImage</name>
+      <flag>n</flag>
+      <default>false</default>
+    </boolean>
+    <string-vector>
+      <name>otherFeatures</name>
+      <label>Other feature images</label>
+      <description>Used for passing additional images of features. The format is name,filename,name,filename,etc.</description>
+      <longflag>features</longflag>
+      <flag>f</flag>
+      <default></default>
+    </string-vector>
+  </parameters>
+</executable>

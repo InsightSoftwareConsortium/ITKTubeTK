@@ -39,11 +39,13 @@ if( TubeTK_USE_OpenIGTLink )
   add_subdirectory( ReceivePositionMessageUsingOpenIGTLink )
 endif( TubeTK_USE_OpenIGTLink )
 add_subdirectory( GenerateFeaturesForWeka )
+add_subdirectory( GenerateReducedFeaturesForWeka )
 add_subdirectory( Skeletonize )
 add_subdirectory( WekaToImage )
 add_subdirectory( ComputeZMap )
 if( TubeTK_USE_FANN )
   add_subdirectory( FANNClassify )
+  add_subdirectory( FANNReducedClassify )
 endif()
 
 # The rest of the CMakeLists.txt file is dedicated to downloading, configuring,
