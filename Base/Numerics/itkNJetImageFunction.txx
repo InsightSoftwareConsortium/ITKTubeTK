@@ -45,11 +45,12 @@ NJetImageFunction<TInputImage>
   m_UseInputImageMask = false;
   m_Extent = 3;
   m_ValidStats = false;
+  m_InputImageMinX.Fill(0);
+  m_InputImageMaxX.Fill(0);
   m_InputImageSize.Fill(0);
   m_InputImageSpacing.Fill(1);
   m_InputImageSpacingSquared.Fill(1);
   m_UseProjection = true;
-  m_InverseRidgeness = false;
 }
 
 /**
@@ -64,7 +65,12 @@ NJetImageFunction<TInputImage>
 
   if(ptr != 0)
     {
+    m_InputImageMinX = m_InputImage->GetLargestPossibleRegion().GetIndex();
     m_InputImageSize = m_InputImage->GetLargestPossibleRegion().GetSize();
+    for( unsigned int i=0; i<ImageDimension; ++i )
+      {
+      m_InputImageMaxX[i] = m_InputImageMinX[i] + m_InputImageSize[i] - 1;
+      }
     m_InputImageSpacing  = m_InputImage->GetSpacing();
   
     int i;
@@ -125,8 +131,6 @@ NJetImageFunction<TInputImage>
 {
   this->Superclass::PrintSelf(os,indent);
   os << indent << "m_UseProjection = " << m_UseProjection << std::endl;
-  os << indent << "m_InverseRidgeness = " << m_InverseRidgeness 
-     << std::endl;
   os << indent << "m_UseInputImageMask = " << m_UseInputImageMask 
      << std::endl;
   if( m_UseInputImageMask )
@@ -138,6 +142,12 @@ NJetImageFunction<TInputImage>
     os << indent << "m_InputImageMask = NULL" << std::endl;
     }
 
+  os << indent << "m_InputImageMinX = " << m_InputImageMinX 
+     << std::endl;
+  os << indent << "m_InputImageMaxX = " << m_InputImageMaxX 
+     << std::endl;
+  os << indent << "m_InputImageSize = " << m_InputImageSize 
+     << std::endl;
   os << indent << "m_InputImageSpacing = " << m_InputImageSpacing 
      << std::endl;
   os << indent << "m_InputImageSpacingSquared = " 
@@ -420,17 +430,17 @@ NJetImageFunction<TInputImage>
     {
     xMin[i] = (int)vnl_math_floor(cIndex[i] 
                           - (scale * m_Extent / m_InputImageSpacing[i]));
-    if(xMin[i]<0)
+    if(xMin[i]<m_InputImageMinX[i])
       {
-      xMin[i]=0;
+      xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
  
     xMax[i] = (int)vnl_math_ceil(cIndex[i] 
                          + (scale * m_Extent / m_InputImageSpacing[i]));
-    if(xMax[i] > (int) m_InputImageSize[i]-1)
+    if(xMax[i] > (int) m_InputImageMaxX[i])
       {
-      xMax[i]= m_InputImageSize[i]-1;
+      xMax[i]= m_InputImageMaxX[i];
       }
     }
 
@@ -730,17 +740,17 @@ NJetImageFunction<TInputImage>
     {
     xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
                                              / m_InputImageSpacing[i]));
-    if(xMin[i]<0)
+    if(xMin[i]<m_InputImageMinX[i])
       {
-      xMin[i]=0;
+      xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
     xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
  
     xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
-    if(xMax[i] > (int) m_InputImageSize[i]-1)
+    if(xMax[i] > (int) m_InputImageMaxX[i])
       {
-      xMax[i]= m_InputImageSize[i]-1;
+      xMax[i]= m_InputImageMaxX[i];
       xRadius = (int) vnl_math_floor(xMax[i] - cIndex[i]);
       xMin[i] = (int) vnl_math_floor(cIndex[i] - xRadius);
       xShift[i] = xMin[i];
@@ -1066,17 +1076,17 @@ NJetImageFunction<TInputImage>
     {
     xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
                                              / m_InputImageSpacing[i]));
-    if(xMin[i]<0)
+    if(xMin[i]<m_InputImageMinX[i])
       {
-      xMin[i]=0;
+      xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
     xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
  
     xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
-    if(xMax[i] > (int) m_InputImageSize[i]-1)
+    if(xMax[i] > (int) m_InputImageMaxX[i])
       {
-      xMax[i]= m_InputImageSize[i]-1;
+      xMax[i]= m_InputImageMaxX[i];
       xRadius = (int) vnl_math_floor(xMax[i] - cIndex[i]);
       xMin[i] = (int) vnl_math_floor(cIndex[i] - xRadius);
       xShift[i] = xMin[i];
@@ -1802,17 +1812,17 @@ NJetImageFunction<TInputImage>
     {
     xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
                                              / m_InputImageSpacing[i]));
-    if(xMin[i]<0)
+    if(xMin[i]<m_InputImageMinX[i])
       {
-      xMin[i]=0;
+      xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
     xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
  
     xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
-    if(xMax[i] > (int) m_InputImageSize[i]-1)
+    if(xMax[i] > (int) m_InputImageMaxX[i])
       {
-      xMax[i]= m_InputImageSize[i]-1;
+      xMax[i]= m_InputImageMaxX[i];
       xRadius = (int) vnl_math_floor(xMax[i] - cIndex[i]);
       xMin[i] = (int) vnl_math_floor(cIndex[i] - xRadius);
       xShift[i] = xMin[i];
@@ -2064,12 +2074,10 @@ NJetImageFunction<TInputImage>
   double v = 0;
   double vTotal = 0;
 
-  //itk::Vector<double, TInputImage::ImageDimension> d;
   itk::Vector<double, TInputImage::ImageDimension> dTotal;
   d.Fill(0);
   dTotal.Fill(0);
 
-  //MatrixType h;
   MatrixType hTotal;
   h.Fill(0);
   hTotal.Fill(0);
@@ -2082,17 +2090,17 @@ NJetImageFunction<TInputImage>
     {
     xMin[i] = (int) vnl_math_floor(cIndex[i] 
                           - (scale * m_Extent / m_InputImageSpacing[i]));
-    if(xMin[i]<0)
+    if(xMin[i]<m_InputImageMinX[i])
       {
-      xMin[i] = 0;
+      xMin[i] = m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
  
     xMax[i] = (int) vnl_math_ceil(cIndex[i]
                           + (scale * m_Extent / m_InputImageSpacing[i]));
-    if(xMax[i] > (int) m_InputImageSize[i]-1)
+    if(xMax[i] > (int) m_InputImageMaxX[i])
       {
-      xMax[i] = m_InputImageSize[i] - 1;
+      xMax[i] = m_InputImageMaxX[i];
       }
     }
     
@@ -2361,6 +2369,25 @@ NJetImageFunction<TInputImage>
     d.SetVnlVector( eigSys.get_eigenvector(ImageDimension-1) );
     }
 
+  typename InputImageType::IndexType order;
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    order[i] = i;
+    }
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    for( unsigned int j=i+1; j<ImageDimension; j++ )
+      {
+      if( vnl_math_abs( eigSys.get_eigenvalue( order[j] ) ) > 
+          vnl_math_abs( eigSys.get_eigenvalue( order[i] ) ) )
+        {
+        int k = order[i];
+        order[i] = order[j];
+        order[j] = k;
+        }
+      }
+    }
+
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     p[i] = 0;
@@ -2375,18 +2402,24 @@ NJetImageFunction<TInputImage>
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
-    sums += p[i]*p[i];
-    sumv += eigSys.get_eigenvalue(i) * eigSys.get_eigenvalue(i);
-    if( eigSys.get_eigenvalue(i) >= 0 )
+    sums += p[order[i]]*p[order[i]];
+    sumv += eigSys.get_eigenvalue(order[i]) 
+            * eigSys.get_eigenvalue(order[i]);
+    if( eigSys.get_eigenvalue(order[i]) >= 0 )
       {
+      std::cout << "pos" << std::endl;
       ridge = -1;
       }
     }
   sums /= (ImageDimension-1);
+  if( eigSys.get_eigenvalue( ImageDimension-1 ) >= 0 )
+    {
+    std::cout << "pos" << std::endl;
+    }
   if( sumv != 0 )
     {
-    sumv /= (sumv + eigSys.get_eigenvalue(ImageDimension-1) 
-                    * eigSys.get_eigenvalue(ImageDimension-1));
+    sumv /= (sumv + eigSys.get_eigenvalue(order[ImageDimension-1]) 
+                    * eigSys.get_eigenvalue(order[ImageDimension-1]));
     }
 
   double val = (1.0 - sums) * sumv * ridge;

@@ -262,8 +262,8 @@ set_tests_properties( ${PROJECT_NAME}Test12-Compare
 #######
 add_test( ${PROJECT_NAME}Test13
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -z 0.5 1 0.5
+               ${INPUT_DATA}/im0001.crop.mha
+               -z 1 2 3
                -w ${TEMP}/${PROJECT_NAME}Test13.mha )
 
 #######

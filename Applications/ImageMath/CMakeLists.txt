@@ -53,6 +53,7 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Preprocessing
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
   )
 
 set( PROJECT_SOURCE 
@@ -72,7 +73,7 @@ set( PROJECT_SOURCE
 #target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
 
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} VTree3D )
 
 #slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
 slicer3_set_plugins_output_path( ${PROJECT_NAME} )

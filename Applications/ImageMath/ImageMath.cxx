@@ -43,10 +43,11 @@ limitations under the License.
 #include "itkBinaryBallStructuringElement.h"
 #include "itkDilateObjectMorphologyImageFilter.h"
 #include "itkConnectedThresholdImageFilter.h"
+#include "itkContinuousIndex.h"
 #include "metaCommand.h"
 
 // tubetk includes
-#include "itkNJetImageFunction.h"
+#include "itkRidgeExtractor.h"
 #include "itkCVTImageFilter.h"
 
 /** Resamples image a to b if they are different, returns resampled_a */
@@ -101,7 +102,6 @@ int DoIt( MetaCommand & command )
   typename gaussGenType::Pointer gaussGen = gaussGenType::New();
 
   typedef itk::ImageFileReader< ImageType >   VolumeReaderType;
-  typedef itk::NJetImageFunction< ImageType > ImageFunctionType;
 
   // Declare a reader
   typename VolumeReaderType::Pointer reader = VolumeReaderType::New();
@@ -763,10 +763,12 @@ int DoIt( MetaCommand & command )
 
       double scaleMin = command.GetValueAsFloat( *it, "scaleMin" );
       double scaleMax = command.GetValueAsFloat( *it, "scaleMax" );
-      double scaleStep = command.GetValueAsFloat( *it, "step" );
+      double numScales = command.GetValueAsFloat( *it, "numScales" );
+      double logScaleStep = (vcl_log(scaleMax) - vcl_log(scaleMin)) 
+        / (numScales-1);
 
-      typename ImageFunctionType::Pointer imFunc = 
-        ImageFunctionType::New();
+      typedef itk::RidgeExtractor< ImageType > RidgeFuncType;
+      typename RidgeFuncType::Pointer imFunc = RidgeFuncType::New();
       imFunc->SetInputImage( imIn );
 
       typename ImageType::Pointer imIn2 = ImageType::New();
@@ -780,38 +782,46 @@ int DoIt( MetaCommand & command )
       itk::ImageRegionIterator< ImageType > it2( imIn2, 
             imIn2->GetLargestPossibleRegion() );
 
-      double tf;
+      double ridgeness = 0;
+      double roundness = 0;
+      double curvature = 0;
       double scale = scaleMin;
+      imFunc->SetScale( scale );
       std::cout << "   Processing scale " << scale << std::endl;
       it1.GoToBegin();
       it2.GoToBegin();
+      typename RidgeFuncType::ContinuousIndexType cIndx;
       while( !it1.IsAtEnd() )
         {
-        tf = imFunc->RidgenessAtContinuousIndex( it1.GetIndex(), 
-                                                        scale );
-        it2.Set( ( PixelType )tf );
+        for( unsigned int d=0; d<ImageType::ImageDimension; ++d )
+          {
+          cIndx[d] = it1.GetIndex()[d];
+          }
+        ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature  );
+        it2.Set( ( PixelType )ridgeness );
         ++it1;
         ++it2;
         }
-      scale += scaleStep;
-      if( scale <= scaleMax )
+      for( unsigned int i=1; i<numScales; i++ )
         {
+        scale = vcl_exp(vcl_log(scaleMin) + i * logScaleStep);
+        imFunc->SetScale( scale );
         std::cout << "   Processing scale " << scale << std::endl;
-        for( scale += scaleStep; scale <= scaleMax; scale += scaleStep )
+        it1.GoToBegin();
+        it2.GoToBegin();
+        while( !it1.IsAtEnd() )
           {
-          it1.GoToBegin();
-          it2.GoToBegin();
-          while( !it1.IsAtEnd() )
+          for( unsigned int d=0; d<ImageType::ImageDimension; ++d )
             {
-            tf = imFunc->RidgenessAtContinuousIndex( it1.GetIndex(), 
-                                                            scale );
-            if( tf > it2.Get() )
-              {
-              it2.Set( ( PixelType )tf );
-              }
-            ++it1;
-            ++it2;
+            cIndx[d] = it1.GetIndex()[d];
             }
+          ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature  );
+          if( ridgeness > it2.Get() )
+            {
+            it2.Set( ( PixelType )ridgeness );
+            }
+          ++it1;
+          ++it2;
           }
         }
       it1.GoToBegin();
@@ -1376,7 +1386,7 @@ int main( int argc, char *argv[] )
     "Compute ridgness/vesselness for specified scales" );
   command.AddOptionField( "vessels", "scaleMin", MetaCommand::INT, true );
   command.AddOptionField( "vessels", "scaleMax", MetaCommand::INT, true );
-  command.AddOptionField( "vessels", "step", MetaCommand::INT, true );
+  command.AddOptionField( "vessels", "numScales", MetaCommand::INT, true );
 
   command.SetOption( "histogram", "l", false,
     "writes the image's histogram to the designated file" );

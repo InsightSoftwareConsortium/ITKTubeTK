@@ -416,6 +416,8 @@ protected:
   typename InputImageType::ConstPointer  m_InputImageMask;
   bool                                   m_UseInputImageMask;
 
+  IndexType               m_InputImageMinX;
+  IndexType               m_InputImageMaxX;
   SizeType                m_InputImageSize;
   SpacingType             m_InputImageSpacing;
   SpacingType             m_InputImageSpacingSquared;
