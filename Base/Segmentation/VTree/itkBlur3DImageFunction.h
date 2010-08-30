@@ -86,10 +86,6 @@ public:
     const ContinuousIndexType & index ) const ;
 
   /**
-   * */
-  double EvaluateLinearInterpolate(const ContinuousIndexType & point) const;
-
-  /**
    * Set the Scale */
   void SetScale(double scale);
 
@@ -131,8 +127,8 @@ private:
   Blur3DImageFunction( const Self& );
   void operator=( const Self& );
 
-  typedef std::list<double>                       KernelWeightsListType;
-  typedef std::list< Index<3> >                   KernelXListType;
+  typedef std::list< double >                        KernelWeightsListType;
+  typedef std::list< typename InputImageType::IndexType >  KernelXListType;
 
   bool                    m_Debug;
 
