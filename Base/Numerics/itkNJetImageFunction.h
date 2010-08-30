@@ -397,12 +397,6 @@ public:
   itkSetMacro( UseProjection, bool);
   itkGetMacro( UseProjection, bool);
 
-  /**
-   * If set to true, ridgeness is calculated in an inverse manner
-   */
-  itkSetMacro( InverseRidgeness, bool);
-  itkGetMacro( InverseRidgeness, bool);
-
 protected:
   NJetImageFunction();
   NJetImageFunction( const Self& ){};
@@ -428,7 +422,6 @@ protected:
   double                  m_StatsMax;
 
   bool                    m_UseProjection;
-  bool                    m_InverseRidgeness;
 
 };
   
