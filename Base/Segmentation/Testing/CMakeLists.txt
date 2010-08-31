@@ -47,6 +47,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itkCVTImageFilterTest.cxx 
+  itkPDFSegmenterTest.cxx 
   )
 
 include_directories( 
@@ -90,5 +91,16 @@ add_test( itkCVTImageFilterTest
   itkCVTImageFilterTest
     ${INPUT_DATA}/ES0015_1.mha
     ${TEMP}/itkCVTImageFilterTest.mha 
+  )
+
+add_test( itkPDFSegmenterTest
+  ${BASE_SEGMENTATION_TESTS}
+  --compare ${BASELINE}/itkPDFSegmenterTest_prob.mha
+            ${TEMP}/itkPDFSegmenterTest_prob.mha
+  itkPDFSegmenterTest
+    ${INPUT_DATA}/ES0015_Large.mha
+    ${INPUT_DATA}/GDS0015_Large.mha
+    ${TEMP}/itkPDFSegmenterTest_prob.mha 
+    ${TEMP}/itkPDFSegmenterTest_mask.mha 
   )
 
