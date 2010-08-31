@@ -652,13 +652,19 @@ int DoIt( int argc, char * argv[] )
 
         curContIndex = curIndex;
   
-        v1sg = priorCalcSmall->Ridgeness( curContIndex, roundness, curvature );
-        v1mg = priorCalcMedium->Ridgeness( curContIndex, roundness, curvature );
-        v1lg = priorCalcLarge->Ridgeness( curContIndex, roundness, curvature );
+        v1sg = priorCalcSmall->Ridgeness( curContIndex, roundness,
+          curvature );
+        v1mg = priorCalcMedium->Ridgeness( curContIndex, roundness,
+          curvature );
+        v1lg = priorCalcLarge->Ridgeness( curContIndex, roundness,
+          curvature );
 
-        v1se = inputCalcSmall->Ridgeness( curContIndex, roundness, curvature );
-        v1me = inputCalcMedium->Ridgeness( curContIndex, roundness, curvature );
-        v1le = inputCalcLarge->Ridgeness( curContIndex, roundness, curvature );
+        v1se = inputCalcSmall->Ridgeness( curContIndex, roundness,
+          curvature );
+        v1me = inputCalcMedium->Ridgeness( curContIndex, roundness,
+          curvature );
+        v1le = inputCalcLarge->Ridgeness( curContIndex, roundness,
+          curvature );
   
         double pS = priorCalcSmall->Intensity( curIndex );
         double pM = priorCalcMedium->Intensity( curIndex );
