@@ -41,8 +41,10 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkNJetImageFunction.h"
+#include "itkRidgeExtractor.h"
 #include "itkJointHistogramImageFunction.h"
+
+// ITK filters used
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkDivideImageFilter.h"
 #include "itkSubtractImageFilter.h"
@@ -83,21 +85,22 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   // typedefs for data structures
-  typedef float                                                 PixelType;
-  typedef itk::OrientedImage<PixelType, dimensionT>             ImageType;
-  typedef itk::ImageFileReader<ImageType>                       ReaderType;
-  typedef itk::ImageFileWriter<ImageType>                       WriterType;
+  typedef float                                            PixelType;
+  typedef itk::OrientedImage<PixelType, dimensionT>        ImageType;
+  typedef itk::ImageFileReader<ImageType>                  ReaderType;
+  typedef itk::ImageFileWriter<ImageType>                  WriterType;
 
   // typedefs for numerics
-  typedef itk::NJetImageFunction<ImageType>                     CalculatorType;
-  typedef itk::JointHistogramImageFunction<ImageType>           HistCalcType;
+  typedef itk::RidgeExtractor< ImageType >                 CalculatorType;
+  typedef itk::JointHistogramImageFunction< ImageType >    HistCalcType;
 
   // typedefs for filters
   typedef itk::RescaleIntensityImageFilter<ImageType,ImageType> RescaleType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType>     IterType;
-  typedef itk::NeighborhoodIterator<ImageType>                  NeighborIterType;
+
+  typedef itk::NeighborhoodIterator<ImageType>             NeighborIterType;
 
   // Setup the readers to load the input data (image + prior)
   timeCollector.Start( "Load data" );
@@ -219,13 +222,39 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Setup the Calculators
-  typename CalculatorType::Pointer inputCalc = CalculatorType::New();
-  inputCalc->SetInputImage( curImage );
-  inputCalc->SetInverseRidgeness( true );
+  typename CalculatorType::Pointer inputCalcSmall = CalculatorType::New();
+  inputCalcSmall->SetInputImage( curImage );
+  double inputDataMin = inputCalcSmall->GetDataMin();
+  double inputDataMax = inputCalcSmall->GetDataMin();
+  inputCalcSmall->SetDataMin( inputDataMax );
+  inputCalcSmall->SetDataMax( inputDataMin );
 
-  typename CalculatorType::Pointer priorCalc = CalculatorType::New();
-  priorCalc->SetInputImage( curPrior );
-  priorCalc->SetInverseRidgeness( true );
+  typename CalculatorType::Pointer inputCalcMedium = CalculatorType::New();
+  inputCalcMedium->SetInputImage( curImage );
+  inputCalcMedium->SetDataMin( inputDataMax );
+  inputCalcMedium->SetDataMax( inputDataMin );
+
+  typename CalculatorType::Pointer inputCalcLarge = CalculatorType::New();
+  inputCalcLarge->SetInputImage( curImage );
+  inputCalcLarge->SetDataMin( inputDataMax );
+  inputCalcLarge->SetDataMax( inputDataMin );
+
+  typename CalculatorType::Pointer priorCalcSmall = CalculatorType::New();
+  priorCalcSmall->SetInputImage( curPrior );
+  double priorDataMin = priorCalcSmall->GetDataMin();
+  double priorDataMax = priorCalcSmall->GetDataMin();
+  priorCalcSmall->SetDataMin( priorDataMax );
+  priorCalcSmall->SetDataMax( priorDataMin );
+
+  typename CalculatorType::Pointer priorCalcMedium = CalculatorType::New();
+  priorCalcMedium->SetInputImage( curPrior );
+  priorCalcMedium->SetDataMin( priorDataMax );
+  priorCalcMedium->SetDataMax( priorDataMin );
+
+  typename CalculatorType::Pointer priorCalcLarge = CalculatorType::New();
+  priorCalcLarge->SetInputImage( curPrior );
+  priorCalcLarge->SetDataMin( priorDataMax );
+  priorCalcLarge->SetDataMax( priorDataMin );
 
   typename CalculatorType::Pointer addCalc = CalculatorType::New();
   addCalc->SetInputImage( additions );
@@ -249,6 +278,28 @@ int DoIt( int argc, char * argv[] )
   PixelType sigmaSmall = 0.6667*sigmaMedium;
   PixelType sigmaLarge = 1.3333*sigmaMedium;
 
+    inputCalcSmall->SetScale( sigmaSmall );
+  inputCalcMedium->SetScale( sigmaMedium );
+  inputCalcLarge->SetScale( sigmaLarge );
+
+  priorCalcSmall->SetScale( sigmaSmall );
+  priorCalcMedium->SetScale( sigmaMedium );
+  priorCalcLarge->SetScale( sigmaLarge );
+
+  addCalc->SetScale( sigmaSmall );
+  subCalc->SetScale( sigmaSmall );
+
+  inputCalcSmall->SetScale( sigmaSmall );
+  inputCalcMedium->SetScale( sigmaMedium );
+  inputCalcLarge->SetScale( sigmaLarge );
+
+  priorCalcSmall->SetScale( sigmaSmall );
+  priorCalcMedium->SetScale( sigmaMedium );
+  priorCalcLarge->SetScale( sigmaLarge );
+
+  addCalc->SetScale( sigmaSmall );
+  subCalc->SetScale( sigmaSmall );
+
   double samplesNom = 0;
   double samplesAdd = 0;
   double samplesSub = 0;
@@ -260,8 +311,9 @@ int DoIt( int argc, char * argv[] )
     {
     if( centerlineItr.Get() > 0 )
       {
-      typename CalculatorType::PointType curPoint;
-      typename ImageType::IndexType curIndex;
+      typename ImageType::PointType curPoint;
+      typename CalculatorType::IndexType curIndex;
+      typename CalculatorType::ContinuousIndexType curContIndex;
   
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
@@ -269,13 +321,13 @@ int DoIt( int argc, char * argv[] )
       if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
-            && addCalc->Evaluate( curPoint, sigmaSmall ) )
+            && addCalc->Intensity( curIndex ) )
           {
           ++samplesAdd;
           }
         else if( subtractions->TransformPhysicalPointToIndex( curPoint,
                                                               curIndex ) 
-                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
+                 && subCalc->Intensity( curIndex ) )
           {
           ++samplesSub;
           }
@@ -315,15 +367,16 @@ int DoIt( int argc, char * argv[] )
     {
     if( centerlineItr.Get() > 0 )
       {
-      typename CalculatorType::PointType curPoint;
-      typename ImageType::IndexType curIndex;
+      typename ImageType::PointType curPoint;
+      typename CalculatorType::IndexType curIndex;
+
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
       
       if( curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) 
-            && addCalc->Evaluate( curPoint, sigmaSmall ) )
+            && addCalc->Intensity( curIndex ) )
           {
           if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
             {
@@ -333,7 +386,7 @@ int DoIt( int argc, char * argv[] )
           }
         else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
                                                             curIndex ) 
-                 && subCalc->Evaluate( curPoint, sigmaSmall ) )
+                 && subCalc->Intensity( curIndex ) )
           {
           if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
             {
@@ -498,8 +551,10 @@ int DoIt( int argc, char * argv[] )
     {
     if( centerlineItr.Get() > 0 )
       {
-      typename CalculatorType::PointType curPoint;
-      typename ImageType::IndexType curIndex;
+      typename ImageType::PointType curPoint;
+      typename CalculatorType::IndexType curIndex;
+      typename CalculatorType::ContinuousIndexType curContIndex;
+
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
 
@@ -507,7 +562,7 @@ int DoIt( int argc, char * argv[] )
       bool validPoint = true;
       std::string label;
       if( additions->TransformPhysicalPointToIndex( curPoint, curIndex ) &&
-          addCalc->Evaluate( curPoint, sigmaSmall ) &&
+          addCalc->Intensity( curIndex ) &&
           curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( (int)(samplesAdd) != (int)(samplesAdd+sampleRateAdd) )
@@ -523,7 +578,7 @@ int DoIt( int argc, char * argv[] )
         }
       else if( subtractions->TransformPhysicalPointToIndex( curPoint, 
                                                             curIndex ) &&
-               subCalc->Evaluate( curPoint, sigmaSmall ) &&
+               subCalc->Intensity( curIndex ) &&
                curImage->TransformPhysicalPointToIndex( curPoint, curIndex ) )
         {
         if( (int)(samplesSub) != (int)(samplesSub+sampleRateSub) )
@@ -555,25 +610,29 @@ int DoIt( int argc, char * argv[] )
         {
         
         // holders for features
-        PixelType v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
+        double v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
+        double roundness = 0;
+        double curvature = 0;
         double zAdd, zSub, zNom;
-        std::vector<PixelType> extras;
-  
-        v1sg = priorCalc->Ridgeness( curPoint, sigmaSmall );
-        v1mg = priorCalc->Ridgeness( curPoint, sigmaMedium );
-        v1lg = priorCalc->Ridgeness( curPoint, sigmaLarge );
+        std::vector<double> extras;
 
-        v1se = inputCalc->Ridgeness( curPoint, sigmaSmall );
-        v1me = inputCalc->Ridgeness( curPoint, sigmaMedium );
-        v1le = inputCalc->Ridgeness( curPoint, sigmaLarge );
+        curContIndex = curIndex;
   
-        double pS = priorCalc->Evaluate( curPoint, sigmaSmall );
-        double pM = priorCalc->Evaluate( curPoint, sigmaMedium );
-        double pL = priorCalc->Evaluate( curPoint, sigmaLarge );
+        v1sg = priorCalcSmall->Ridgeness( curContIndex, roundness, curvature );
+        v1mg = priorCalcMedium->Ridgeness( curContIndex, roundness, curvature );
+        v1lg = priorCalcLarge->Ridgeness( curContIndex, roundness, curvature );
 
-        double iS = inputCalc->Evaluate( curPoint, sigmaSmall );
-        double iM = inputCalc->Evaluate( curPoint, sigmaMedium );
-        double iL = inputCalc->Evaluate( curPoint, sigmaLarge );
+        v1se = inputCalcSmall->Ridgeness( curContIndex, roundness, curvature );
+        v1me = inputCalcMedium->Ridgeness( curContIndex, roundness, curvature );
+        v1le = inputCalcLarge->Ridgeness( curContIndex, roundness, curvature );
+  
+        double pS = priorCalcSmall->Intensity( curIndex );
+        double pM = priorCalcMedium->Intensity( curIndex );
+        double pL = priorCalcLarge->Intensity( curIndex );
+
+        double iS = inputCalcSmall->Intensity( curIndex );
+        double iM = inputCalcMedium->Intensity( curIndex );
+        double iL = inputCalcLarge->Intensity( curIndex );
 
         if( pL != 0 )
           {
@@ -714,7 +773,7 @@ int DoIt( int argc, char * argv[] )
                << maxdiff << ","
                << total << ","
                << norm << ",";
-        std::vector<PixelType>::const_iterator extraItr;
+        std::vector<double>::const_iterator extraItr;
         for( extraItr = extras.begin(); 
              extraItr != extras.end(); ++extraItr )
           {
