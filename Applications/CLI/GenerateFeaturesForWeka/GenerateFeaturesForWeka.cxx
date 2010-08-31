@@ -85,20 +85,21 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   // typedefs for data structures
-  typedef float                                                 PixelType;
-  typedef itk::OrientedImage< float, dimensionT >               ImageType;
-  typedef itk::ImageFileReader< ImageType >                     ReaderType;
-  typedef itk::ImageFileWriter< ImageType >                     WriterType;
+  typedef float                                            PixelType;
+  typedef itk::OrientedImage< float, dimensionT >          ImageType;
+  typedef itk::ImageFileReader< ImageType >                ReaderType;
+  typedef itk::ImageFileWriter< ImageType >                WriterType;
 
   // typedefs for numerics
-  typedef itk::RidgeExtractor<ImageType>                    CalculatorType;
-  typedef itk::JointHistogramImageFunction<ImageType>       HistCalcType;
+  typedef itk::RidgeExtractor<ImageType>                   CalculatorType;
+  typedef itk::JointHistogramImageFunction<ImageType>      HistCalcType;
 
   // typedefs for filters
   typedef itk::RescaleIntensityImageFilter<ImageType,ImageType> RescaleType;
 
   // typedefs for iterators
-  typedef itk::ImageRegionConstIteratorWithIndex<ImageType> IterType;
+  typedef itk::ImageRegionConstIteratorWithIndex<ImageType>     IterType;
+
   typedef itk::NeighborhoodIterator<ImageType>             NeighborIterType;
 
   // Setup the readers to load the input data (image + prior)
