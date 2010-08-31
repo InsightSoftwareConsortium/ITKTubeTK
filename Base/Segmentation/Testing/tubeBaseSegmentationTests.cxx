@@ -32,5 +32,6 @@ void RegisterTests()
 {
   REGISTER_TEST( tubeBaseSegmentationPrintTest );
   REGISTER_TEST( itkCVTImageFilterTest );
+  REGISTER_TEST( itkPDFSegmenterTest );
 }
 

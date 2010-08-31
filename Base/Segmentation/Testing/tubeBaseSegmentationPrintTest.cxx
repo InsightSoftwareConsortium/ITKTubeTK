@@ -28,6 +28,7 @@ limitations under the License.
 #include "itkOrientedImage.h"
 
 #include "itkCVTImageFilter.h"
+#include "itkPDFSegmenter.h"
 
 int tubeBaseSegmentationPrintTest( int, char* [] )
 {
@@ -38,6 +39,13 @@ int tubeBaseSegmentationPrintTest( int, char* [] )
     itk::CVTImageFilter< ImageType >::New();
   std::cout << "-------------itkCVTImageFilter" 
             << cvtObject
+            << std::endl;
+
+  itk::PDFSegmenter< ImageType, 3, ImageType >::Pointer 
+    pdfObject =
+    itk::PDFSegmenter< ImageType, 3, ImageType >::New();
+  std::cout << "-------------itkCVTImageFilter" 
+            << pdfObject
             << std::endl;
 
   return EXIT_SUCCESS;

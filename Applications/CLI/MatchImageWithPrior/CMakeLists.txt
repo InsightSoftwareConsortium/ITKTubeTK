@@ -50,6 +50,8 @@ include( ${GenerateCLP_USE_FILE} )
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   ${TubeTK_SOURCE_DIR}/Base/Preprocessing
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
   ${TubeTK_BINARY_DIR}/Applications/CLI/Slicer3-Src/RegisterImagesModule
   )
 
@@ -63,7 +65,7 @@ generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
 add_library( ${PROJECT_NAME}Module SHARED ${PROJECT_SOURCE} )
 set_target_properties( ${PROJECT_NAME}Module
                        PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
-target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME}Module ${ITK_LIBRARIES} VTree3D )
 
 add_executable( ${PROJECT_NAME}
                 ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )
