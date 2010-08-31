@@ -43,6 +43,9 @@ limitations under the License.
 
 // Application-specific includes
 #include "tubeCompareImageWithPrior.h"
+#include "itkOptBrent1D.h"
+#include "itkSplineApproximation1D.h"
+#include "itkSplineND.h"
 
 #include <map>
 
@@ -51,26 +54,35 @@ limitations under the License.
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-class triple 
-{
-public:
-  int erode;
-  int dilate;
-  float gaussianBlur;
-  bool operator<(const triple &other) const 
-    {
-    return (this->erode < other.erode 
-            && this->dilate < other.dilate 
-            && this->gaussianBlur < other.gaussianBlur);
-    }
-  bool operator==(const triple &other) const 
-    {
-    return (this->erode == other.erode 
-            && this->dilate == other.dilate 
-            && this->gaussianBlur == other.gaussianBlur);
-    }
-};
+template< class pixelT, unsigned int dimensionT >
+class MyMIWPFunc:
+  public itk::UserFunc< vnl_vector<int>, double > 
+  {
+  public:
 
+    typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
+    MyMIWPFunc( ImageEvalType & eval )
+      {
+      cEval = eval;
+      cGof = 0;
+      };
+
+    const double & value( const vnl_vector<int> & x )
+      {
+      cEval.SetErode( x[0] );
+      cEval.SetDilate( x[1] );
+      cEval.SetGaussianBlur( x[2] );
+      cEval.Update();
+      cGof = cEval.GetGoodnessOfFit();
+      return cGof;
+      };
+
+  private:
+
+    ImageEvalType cEval;
+    double cGof;
+
+  };
 
 // Must include CLP before including tubeCLIHleperFunctions
 #include "MatchImageWithPriorCLP.h"
@@ -186,238 +198,113 @@ int DoIt( int argc, char * argv[] )
     }
   progressReporter.Report( 0.3 );
   
-  if( true )
+  int erodeBest = erode;
+  int dilateBest = dilate;
+  float gaussianBlurBest = gaussianBlur;
+
+  typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
+  ImageEvalType eval;
+  eval.SetVolumeImage( curVolume );
+  eval.SetMaskImage( curMask );
+  eval.SetOriginalMaskImage( orgMask );
+  eval.SetForeground( foreground );
+  eval.SetBoundarySize( outputBoundary );
+  eval.SetTimeCollector( &timeCollector );
+  eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
+
+  if( metricMaskImage.IsNotNull() )
     {
-    typedef std::map< triple, float >     TrialListType;
+    eval.SetMetricMask( metricMaskImage );
+    }
 
-    TrialListType trials;
-    triple        curTrial;
+  typedef typename ImageEvalType::RegistrationMethodType::TransformType  
+    TransformType;
+  typename TransformType::Pointer regTfm;
+  if( loadTransform.size() == 0 )
+    {
+    eval.SetUseRegistrationTransform( false );
+    }
+  else
+    {
+    itk::TransformFileReader::Pointer treader = 
+      itk::TransformFileReader::New();
+    treader->SetFileName(loadTransform);
+    treader->Update();  
+    typename TransformType::Pointer transform;
+    transform = static_cast< TransformType * >(
+      treader->GetTransformList()->front().GetPointer() );
 
-    int erodeStep = 1;
-    int dilateStep = 1;
-    float gaussianBlurStep = 1;
-    int erodeBest = erode;
-    int dilateBest = dilate;
-    float gaussianBlurBest = gaussianBlur;
+    eval.SetRegistrationTransform( transform );
+    eval.SetUseRegistrationTransform( true );
+    }
 
-    typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
-    ImageEvalType eval;
+  if( disableRegistrationOptimization )
+    {
+    eval.SetUseRegistrationOptimization( false );
+    if( !eval.GetUseRegistrationTransform() )
+      {
+      eval.SetUseRegistration( false );
+      }
+    }
+
+  eval.SetErode( erode );
+  eval.SetDilate( dilate );
+  eval.SetGaussianBlur( gaussianBlur );
+
+  eval.SetSamplingRate( samplingRate );
+
+  eval.Update();
+
+  if( loadTransform.size() == 0 )
+    {
+    regTfm = eval.GetRegistrationTransform();
+    }
+
+  if( saveTransform.size()>0 )
+    {
+    itk::TransformFileWriter::Pointer twriter = 
+      itk::TransformFileWriter::New();
+    twriter->SetInput(regTfm);
+    twriter->SetFileName(saveTransform);
+    twriter->Update();  
+    }
+
+  double gof = eval.GetGoodnessOfFit();
+
+  double gofBest = gof;
+  if( !disableParameterOptimization )
+    {
     eval.SetVolumeImage( curVolume );
     eval.SetMaskImage( curMask );
     eval.SetOriginalMaskImage( orgMask );
-    eval.SetForeground( foreground );
     eval.SetBoundarySize( outputBoundary );
-    eval.SetTimeCollector( &timeCollector );
-    eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
+    eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
 
-    if( metricMaskImage.IsNotNull() )
-      {
-      eval.SetMetricMask( metricMaskImage );
-      }
+    MyMIWPFunc< pixelT, dimensionT > * myFunc = new 
+      MyMIWPFunc< pixelT, dimensionT >( eval );
+    itk::SplineApproximation1D * spline1D = new 
+      itk::SplineApproximation1D();
+    itk::OptBrent1D * opt = new itk::OptBrent1D( );
+    itk::SplineND spline( 3, myFunc, spline1D, opt );
 
-    typedef typename ImageEvalType::RegistrationMethodType::TransformType  
-      TransformType;
-    typename TransformType::Pointer regTfm;
-    if( loadTransform.size() == 0 )
-      {
-      eval.SetUseRegistrationTransform( false );
-      }
-    else
-      {
-      itk::TransformFileReader::Pointer treader = 
-        itk::TransformFileReader::New();
-      treader->SetFileName(loadTransform);
-      treader->Update();  
-      typename TransformType::Pointer transform;
-      transform = static_cast< TransformType * >(
-        treader->GetTransformList()->front().GetPointer() );
+    vnl_vector< double > x(3);
+    x[0] = erode;
+    x[1] = dilate;
+    x[2] = gaussianBlur;
 
-      eval.SetRegistrationTransform( transform );
-      eval.SetUseRegistrationTransform( true );
-      }
-
-    if( disableRegistrationOptimization )
-      {
-      eval.SetUseRegistrationOptimization( false );
-      if( !eval.GetUseRegistrationTransform() )
-        {
-        eval.SetUseRegistration( false );
-        }
-      }
-
-    eval.SetErode( erode );
-    eval.SetDilate( dilate );
-    eval.SetGaussianBlur( gaussianBlur );
-
-    eval.SetSamplingRate( samplingRate );
-
-    eval.Update();
-
-    if( loadTransform.size() == 0 )
-      {
-      regTfm = eval.GetRegistrationTransform();
-      }
-
-    if( saveTransform.size()>0 )
-      {
-      itk::TransformFileWriter::Pointer twriter = 
-        itk::TransformFileWriter::New();
-      twriter->SetInput(regTfm);
-      twriter->SetFileName(saveTransform);
-      twriter->Update();  
-      }
-
-    double gof = eval.GetGoodnessOfFit();
-
-    curTrial.erode = erode;
-    curTrial.dilate = dilate;
-    curTrial.gaussianBlur = gaussianBlur;
-    trials[curTrial] = gof;
-
-    double gofBest = gof;
-    bool erodeFlip = false;
-    bool dilateFlip = false;
-    bool gaussianBlurFlip = false;
-    bool done = false;
-    std::cout << "params = " << erode << ", " 
-                             << dilate << ", " 
-                             << gaussianBlur
-              << "  val = " << gof << std::endl;
-    if( !disableParameterOptimization )
-      {
-      while( !done )
-        {
-        if( erode+erodeStep < 0 )
-          {
-          erodeStep = 0;
-          erode = 0;
-          erodeFlip = true;
-          }
-        if( dilate+dilateStep < 0 )
-          {
-          dilateStep = 0;
-          dilate = 0;
-          dilateFlip = true;
-          }
-        if( gaussianBlur+gaussianBlurStep < 0 )
-          {
-          done = true;
-          continue;
-          }
-  
-        curTrial.erode = erode+erodeStep;
-        curTrial.dilate = dilate+dilateStep;
-        curTrial.gaussianBlur = gaussianBlur+gaussianBlurStep;
-        typename TrialListType::iterator iter = trials.begin();
-        while( iter != trials.end() )
-          {
-          if( iter->first == curTrial )
-            {
-            break;
-            }
-          ++iter;
-          }
-        if( iter == trials.end() )
-          {
-          eval.SetVolumeImage( curVolume );
-          eval.SetMaskImage( curMask );
-          eval.SetOriginalMaskImage( orgMask );
-          eval.SetErode( erode+erodeStep );
-          eval.SetDilate( dilate+dilateStep );
-          eval.SetBoundarySize( outputBoundary );
-          eval.SetGaussianBlur( gaussianBlur+gaussianBlurStep );
-          eval.SetUseRegistrationOptimization( false );
-          eval.Update();
-          gof = eval.GetGoodnessOfFit();
-  
-          trials[curTrial] = gof;
-          }
-        else
-          {
-          std::cout << "*** Repeated point ***" << std::endl;
-          gof = iter->second;
-          }
-  
-        std::cout << "params = " << erode+erodeStep << ", " 
-                                 << dilate+dilateStep << ", " 
-                                 << gaussianBlur+gaussianBlurStep
-                  << "  val = " << gof << std::endl;
-  
-        if( gof > gofBest )
-          {
-          erode += erodeStep;
-          dilate += dilateStep;
-          gaussianBlur += gaussianBlurStep;
-  
-          gofBest = gof;
-          erodeBest = erode;
-          dilateBest = dilate;
-          gaussianBlurBest = gaussianBlur;
-  
-          erodeFlip = false;
-          if( erodeStep == 0 )
-            {
-            erodeStep = 1;
-            }
-          dilateFlip = false;
-          if( dilateStep == 0 )
-            {
-            dilateStep = 1;
-            }
-          gaussianBlurFlip = false;
-          }
-        else
-          {
-          if( !erodeFlip )
-            {
-            erodeFlip = true;
-            erodeStep *= -1;
-            }
-          else 
-            {
-            erodeStep = 0;
-            if( !dilateFlip )
-              {
-              dilateFlip = true;
-              dilateStep *= -1;
-              }
-            else
-              {
-              dilateStep = 0;
-              if( !gaussianBlurFlip )
-                {
-                gaussianBlurFlip = true;
-                gaussianBlurStep *= -1;
-                }
-              else
-                {
-                done = true;
-                }
-              }
-            }
-          }
-        }
-  
-      eval.SetVolumeImage( curVolume );
-      eval.SetMaskImage( curMask );
-      eval.SetOriginalMaskImage( orgMask );
-      eval.SetErode( erodeBest );
-      eval.SetDilate( dilateBest );
-      eval.SetGaussianBlur( gaussianBlurBest );
-      eval.SetBoundarySize( outputBoundary );
-      eval.Update();
-      eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
-      gof = eval.GetGoodnessOfFit();
-      }
-
-    curVolume = eval.GetVolumeImage();
-    curMask = eval.GetMaskImage();
-
-    std::cout << "Best Params = " << erodeBest << ", " 
-                                  << dilateBest << ", " 
-                                  << gaussianBlurBest
-              << "   Best Value = " << gof << std::endl;
+    spline.extreme( x, &gofBest );
+    erodeBest = x[0];
+    dilateBest = x[1];
+    gaussianBlurBest = x[2];
     }
+
+  curVolume = eval.GetVolumeImage();
+  curMask = eval.GetMaskImage();
+
+  std::cout << "Erode = " << erodeBest << std::endl;
+  std::cout << "Dilate = " << dilateBest << std::endl;
+  std::cout << "Blur = " << gaussianBlurBest << std::endl;
+
   progressReporter.Report( 0.9 );
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
@@ -427,6 +314,7 @@ int DoIt( int argc, char * argv[] )
   writerVolume->SetFileName( outputVolume.c_str() );
   writerVolume->SetInput( curVolume );
   writerVolume->SetUseCompression( true );
+
   writerMask->SetFileName( outputMask.c_str() );
   writerMask->SetInput( curMask );
   writerMask->SetUseCompression( true );
