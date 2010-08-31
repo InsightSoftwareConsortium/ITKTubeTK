@@ -43,8 +43,10 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Project includes
-#include "itkNJetImageFunction.h"
+#include "itkRidgeExtractor.h"
 #include "itkJointHistogramImageFunction.h"
+
+// ITK filters used
 #include "itkImageRegionConstIteratorWithIndex.h"
 #include "itkDivideImageFilter.h"
 #include "itkSubtractImageFilter.h"
@@ -108,17 +110,17 @@ int main( int argc, char **argv )
   OutputImageType::Pointer centerlines = centerlinesReader->GetOutput();
 
   // typedefs for numerics
-  typedef itk::NJetImageFunction<InputImageType>              CalculatorType;
-  typedef itk::JointHistogramImageFunction<InputImageType>    HistCalcType;
+  typedef itk::RidgeExtractor< InputImageType >             CalculatorType;
+  typedef itk::JointHistogramImageFunction<InputImageType>  HistCalcType;
 
   // typedefs for filters
   typedef itk::RescaleIntensityImageFilter<InputImageType,InputImageType> 
-                                                              RescaleType;
+                                                            RescaleType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<OutputImageType>
-                                                              IterType;
-  typedef itk::NeighborhoodIterator<InputImageType>           NeighborIterType;
+                                                            IterType;
+  typedef itk::NeighborhoodIterator<InputImageType>         NeighborIterType;
 
   // Rescale the input
   InputImageType::Pointer curImage = NULL;
@@ -161,15 +163,41 @@ int main( int argc, char **argv )
   timeCollector.Start("calculators");
 
   // Setup the Calculators
-  CalculatorType::Pointer inputCalc = CalculatorType::New();
-  inputCalc->SetInputImage( curImage );
-  inputCalc->SetInverseRidgeness( true );
+    CalculatorType::Pointer inputCalcSmall = CalculatorType::New();
+  inputCalcSmall->SetInputImage( curImage );
+  double inputDataMin = inputCalcSmall->GetDataMin();
+  double inputDataMax = inputCalcSmall->GetDataMin();
+  inputCalcSmall->SetDataMin( inputDataMax );
+  inputCalcSmall->SetDataMax( inputDataMin );
 
-  CalculatorType::Pointer priorCalc = CalculatorType::New();
-  priorCalc->SetInputImage( curPrior );
-  priorCalc->SetInverseRidgeness( true );
+  CalculatorType::Pointer inputCalcMedium = CalculatorType::New();
+  inputCalcMedium->SetInputImage( curImage );
+  inputCalcMedium->SetDataMin( inputDataMax );
+  inputCalcMedium->SetDataMax( inputDataMin );
 
-    // Setup the Joint-Histogram Calculators
+  CalculatorType::Pointer inputCalcLarge = CalculatorType::New();
+  inputCalcLarge->SetInputImage( curImage );
+  inputCalcLarge->SetDataMin( inputDataMax );
+  inputCalcLarge->SetDataMax( inputDataMin );
+
+  CalculatorType::Pointer priorCalcSmall = CalculatorType::New();
+  priorCalcSmall->SetInputImage( curPrior );
+  double priorDataMin = priorCalcSmall->GetDataMin();
+  double priorDataMax = priorCalcSmall->GetDataMin();
+  priorCalcSmall->SetDataMin( priorDataMax );
+  priorCalcSmall->SetDataMax( priorDataMin );
+
+  CalculatorType::Pointer priorCalcMedium = CalculatorType::New();
+  priorCalcMedium->SetInputImage( curPrior );
+  priorCalcMedium->SetDataMin( priorDataMax );
+  priorCalcMedium->SetDataMax( priorDataMin );
+
+  CalculatorType::Pointer priorCalcLarge = CalculatorType::New();
+  priorCalcLarge->SetInputImage( curPrior );
+  priorCalcLarge->SetDataMin( priorDataMax );
+  priorCalcLarge->SetDataMax( priorDataMin );
+
+  // Setup the Joint-Histogram Calculators
   HistCalcType::Pointer addJHCalc = HistCalcType::New();
   addJHCalc->SetInputImage( curImage );
   addJHCalc->SetInputMask( curPrior );
@@ -212,6 +240,14 @@ int main( int argc, char **argv )
   InputPixelType sigmaMedium = (scale/2)*0.6667;
   InputPixelType sigmaSmall = 0.6667*sigmaMedium;
   InputPixelType sigmaLarge = 1.3333*sigmaMedium;
+
+  inputCalcSmall->SetScale( sigmaSmall );
+  inputCalcMedium->SetScale( sigmaMedium );
+  inputCalcLarge->SetScale( sigmaLarge );
+
+  priorCalcSmall->SetScale( sigmaSmall );
+  priorCalcMedium->SetScale( sigmaMedium );
+  priorCalcLarge->SetScale( sigmaLarge );
 
   progress = 0.12;
   progressReporter.Report( progress );
@@ -263,30 +299,43 @@ int main( int argc, char **argv )
     if( centerlineItr.Get() > 0 && 
         static_cast<int>(randGen->GetUniformVariate( 0, subsampling )) == 0 )
       {
+      InputImageType::PointType curPoint;
+      CalculatorType::IndexType curIndex;
+      CalculatorType::ContinuousIndexType curContIndex;
 
-      CalculatorType::PointType curPoint;
+      curIndex = centerlineItr.GetIndex();
+      curContIndex = curIndex;
+
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
       // holders for features
-      InputPixelType v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
+      double v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
+      double roundness = 0;
+      double curvature = 0;
       double zAdd, zSub, zNom;
       
-      v1sg = priorCalc->Ridgeness( curPoint, sigmaSmall );
-      v1mg = priorCalc->Ridgeness( curPoint, sigmaMedium );
-      v1lg = priorCalc->Ridgeness( curPoint, sigmaLarge );
-      
-      v1se = inputCalc->Ridgeness( curPoint, sigmaSmall );
-      v1me = inputCalc->Ridgeness( curPoint, sigmaMedium );
-      v1le = inputCalc->Ridgeness( curPoint, sigmaLarge );
-      
-      double pS = priorCalc->Evaluate( curPoint, sigmaSmall );
-      double pM = priorCalc->Evaluate( curPoint, sigmaMedium );
-      double pL = priorCalc->Evaluate( curPoint, sigmaLarge );
-      
-      double iS = inputCalc->Evaluate( curPoint, sigmaSmall );
-      double iM = inputCalc->Evaluate( curPoint, sigmaMedium );
-      double iL = inputCalc->Evaluate( curPoint, sigmaLarge );
-      
+      v1sg = priorCalcSmall->Ridgeness( curContIndex, roundness,
+        curvature );
+      v1mg = priorCalcMedium->Ridgeness( curContIndex, roundness,
+        curvature );
+      v1lg = priorCalcLarge->Ridgeness( curContIndex, roundness,
+        curvature );
+
+      v1se = inputCalcSmall->Ridgeness( curContIndex, roundness,
+        curvature );
+      v1me = inputCalcMedium->Ridgeness( curContIndex, roundness,
+        curvature );
+      v1le = inputCalcLarge->Ridgeness( curContIndex, roundness,
+        curvature );
+  
+      double pS = priorCalcSmall->Intensity( curIndex );
+      double pM = priorCalcMedium->Intensity( curIndex );
+      double pL = priorCalcLarge->Intensity( curIndex );
+
+      double iS = inputCalcSmall->Intensity( curIndex );
+      double iM = inputCalcMedium->Intensity( curIndex );
+      double iL = inputCalcLarge->Intensity( curIndex );
+
       if( pL != 0 )
         {
         v2g = ( pS - pL ) / pL;
@@ -437,7 +486,6 @@ int main( int argc, char **argv )
       unsigned int nOutputs = fann_get_num_output( network );
       assert( nOutputs == 3 );
       
-      OutputImageType::IndexType curIndex;
       output->TransformPhysicalPointToIndex( curPoint, curIndex);
       
       // bad hard code
