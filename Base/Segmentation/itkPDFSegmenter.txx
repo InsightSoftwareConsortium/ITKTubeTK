@@ -335,10 +335,13 @@ PDFSegmenter< ImageT, N, LabelmapT >
   typedef std::vector< HistoNDType > ClassHistoNDType;
   ClassHistoNDType inImHisto;
   {
-  inImHisto.resize( numClasses );
+  HistoNDType hND;
+  inImHisto.resize( numClasses, hND );
   for( unsigned int c=0; c<numClasses; c++ )
     {
-    inImHisto[c].resize( N );
+    Histo1DType h1D;
+    h1D.Fill(0);
+    inImHisto[c].resize( N, h1D );
     for( unsigned int i=0; i<N; i++ )
       {
       inImHisto[c][i].Fill(0);
