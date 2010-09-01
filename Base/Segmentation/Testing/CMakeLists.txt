@@ -99,8 +99,9 @@ add_test( itkPDFSegmenterTest
             ${TEMP}/itkPDFSegmenterTest_prob.mha
   itkPDFSegmenterTest
     ${INPUT_DATA}/ES0015_Large.mha
-    ${INPUT_DATA}/GDS0015_Large.mha
-    ${TEMP}/itkPDFSegmenterTest_prob.mha 
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+    ${TEMP}/itkPDFSegmenterTest_prob0.mha 
+    ${TEMP}/itkPDFSegmenterTest_prob1.mha 
     ${TEMP}/itkPDFSegmenterTest_mask.mha 
   )
 

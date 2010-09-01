@@ -29,7 +29,7 @@ limitations under the License.
 namespace itk
 {
 
-template< class TImage, unsigned int N, class TLabelmap >
+template< class ImageT, unsigned int N, class LabelmapT >
 class PDFSegmenter : public Object
 {
 
@@ -47,22 +47,23 @@ class PDFSegmenter : public Object
     //
     // Custom Typedefs
     //
-    typedef TImage                                 ImageType;
+    typedef ImageT                                 ImageType;
     typedef typename ImageType::PixelType          PixelType;
 
     itkStaticConstMacro( ImageDimension, unsigned int, 
-                         TImage::ImageDimension );
+                         ImageT::ImageDimension );
 
-    typedef TLabelmap                              MaskImageType;
-    typedef typename MaskImageType::PixelType      MaskPixelType;
+    typedef LabelmapT                            MaskImageType;
+    typedef typename MaskImageType::PixelType    MaskPixelType;
 
-    typedef int                                    ObjectIdType;
-    typedef std::vector< int >                     ObjectIdListType;
+    typedef int                                  ObjectIdType;
+    typedef std::vector< int >                   ObjectIdListType;
 
-    typedef float                                  ProbPixelType;
-    typedef itk::OrientedImage< ProbPixelType,
-                        itkGetStaticConstMacro( ImageDimension ) >
-                                                   ProbabilityImageType;
+    typedef float                                ProbabilityPixelType;
+    typedef itk::OrientedImage< ProbabilityPixelType,
+      ::itk::GetImageDimension< ImageT >::ImageDimension >
+                                                 ProbabilityImageType;
+
 
     //
     // Methods
@@ -96,7 +97,9 @@ class PDFSegmenter : public Object
     itkSetMacro( HoleFillIterations, int );
     itkSetMacro( FprWeight, float );
     itkSetMacro( Draft, bool );
-    itkGetObjectMacro( ProbabilityImage, ProbabilityImageType );
+
+    const typename ProbabilityImageType::Pointer * GetProbabilityImage(
+      unsigned int classNum );
 
     /** Copy the input object mask to the output mask, overwritting the
      *   classification assigned to those voxels. Default is false. */
@@ -120,12 +123,16 @@ class PDFSegmenter : public Object
 
   protected:
 
+    typedef std::vector< typename ProbabilityImageType::Pointer > 
+      ProbabilityImageVectorType;
+
     PDFSegmenter( void );
     virtual ~PDFSegmenter( void );
 
     void PrintSelf( std::ostream & os, Indent indent ) const;
 
-    typename ImageType::Pointer GenerateTextureImage( const ImageType * im );
+    typename ImageType::Pointer GenerateTextureImage( 
+      const ImageType * im );
 
   private:
 
@@ -151,8 +158,7 @@ class PDFSegmenter : public Object
     bool                                  m_ReclassifyNotObjectMask;
     bool                                  m_ForceClassification;
 
-    typename ProbabilityImageType::Pointer
-                                          m_ProbabilityImage;
+    ProbabilityImageVectorType            m_ProbabilityImageVector;
 
     void                                * m_ProgressProcessInfo;
     double                                m_ProgressFraction;

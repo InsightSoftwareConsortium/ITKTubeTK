@@ -35,12 +35,12 @@ limitations under the License.
 
 int itkPDFSegmenterTest(int argc, char* argv [] ) 
 {
-  if( argc != 5 )
+  if( argc != 6 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0] 
-      << " inputImage inputMask outputProbImage outputMask"
+      << " inputImage inputMask outputProbImage0 outputProbImage1 outputMask"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -94,6 +94,8 @@ int itkPDFSegmenterTest(int argc, char* argv [] )
   filter->SetInputVolume1( inputImage );
   filter->SetLabelmap( maskImage );
   filter->SetObjectId( 255 );
+  filter->AddObjectId( 127 );
+  filter->SetVoidId( 0 );
   filter->SetUseTexture( false );
   filter->SetErodeRadius( 1 );
   filter->SetHoleFillIterations( 4 );
@@ -107,7 +109,7 @@ int itkPDFSegmenterTest(int argc, char* argv [] )
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[3] );
   writer->SetUseCompression( true );
-  writer->SetInput( filter->GetProbabilityImage() );
+  writer->SetInput( *(filter->GetProbabilityImage(0)) );
   try
     {
     writer->Update();
@@ -118,8 +120,22 @@ int itkPDFSegmenterTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  WriterType::Pointer writer2 = WriterType::New();
+  writer2->SetFileName( argv[4] );
+  writer2->SetUseCompression( true );
+  writer2->SetInput( *(filter->GetProbabilityImage(1)) );
+  try
+    {
+    writer2->Update();
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during write:\n"  << e;
+    return EXIT_FAILURE;
+    }
+
   WriterType::Pointer maskWriter = WriterType::New();
-  maskWriter->SetFileName( argv[4] );
+  maskWriter->SetFileName( argv[5] );
   maskWriter->SetUseCompression( true );
   maskWriter->SetInput( filter->GetLabelmap() );
   try
