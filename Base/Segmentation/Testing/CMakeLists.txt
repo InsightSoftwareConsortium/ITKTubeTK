@@ -95,8 +95,8 @@ add_test( itkCVTImageFilterTest
 
 add_test( itkPDFSegmenterTest
   ${BASE_SEGMENTATION_TESTS}
-  --compare ${BASELINE}/itkPDFSegmenterTest_prob.mha
-            ${TEMP}/itkPDFSegmenterTest_prob.mha
+  --compare ${BASELINE}/itkPDFSegmenterTest_mask.mha
+            ${TEMP}/itkPDFSegmenterTest_mask.mha
   itkPDFSegmenterTest
     ${INPUT_DATA}/ES0015_Large.mha
     ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
