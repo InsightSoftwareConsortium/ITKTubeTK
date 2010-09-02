@@ -21,8 +21,27 @@
 # 
 ##############################################################################
 
-add_subdirectory( Numerics )
-add_subdirectory( Preprocessing )
-add_subdirectory( Segmentation )
-add_subdirectory( Registration )
-add_subdirectory( Classification )
+set( TubeTK_Base_Classification_H_Files
+  itkFeatureGeneratingImageFunction.h
+  itkStandardFeatureGeneratingImageFunction.h
+  )
+
+set( TubeTK_Base_Classification_TXX_Files
+  itkFeatureGeneratingImageFunction.txx
+  itkStandardFeatureGeneratingImageFunction.txx
+  )
+
+include_directories( 
+  ${TubeTK_SOURCE_DIR}/Utilities 
+  ${TubeTK_SOURCE_DIR}/Base/Numerics 
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
+  )
+
+IF( BUILD_TESTING )
+  add_subdirectory( Testing )
+ENDIF( BUILD_TESTING )
+
+#install(FILES 
+  #${TubeTK_Base_Classification_H_Files}
+  #${TubeTK_Base_Classification_TXX_Files}
+  #DESTINATION include)
