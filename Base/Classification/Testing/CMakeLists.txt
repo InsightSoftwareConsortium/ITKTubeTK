@@ -46,6 +46,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseClassification_SRCS
   tubeBaseClassificationPrintTest.cxx
   itkFeatureGeneratingImageFunctionTest.cxx 
+  itkPatchFeatureGeneratingImageFunctionTest.cxx 
   itkStandardFeatureGeneratingImageFunctionTest.cxx 
   )
 
