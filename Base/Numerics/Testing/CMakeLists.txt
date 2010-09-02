@@ -48,8 +48,6 @@ set( tubeBaseNumerics_SRCS
   itkImageRegionMomentsCalculatorTest.cxx 
   itkJointHistogramImageFunctionTest.cxx 
   itkNJetImageFunctionTest.cxx 
-  itkFeatureGeneratingImageFunctionTest.cxx 
-  itkStandardFeatureGeneratingImageFunctionTest.cxx 
   )
 
 include_directories( 
