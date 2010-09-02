@@ -40,6 +40,7 @@ template <class TInputImage, class TCoordRep>
 PatchFeatureGeneratingImageFunction<TInputImage,TCoordRep>
 ::PatchFeatureGeneratingImageFunction()
 {
+  this->m_Features.clear();
   this->m_Features.push_back("PatchMean-PriorMean");
   this->m_Features.push_back("PatchStdDev-PriorStdDev");
   this->m_Features.push_back("PatchCrossCorrelation");
@@ -65,11 +66,11 @@ PatchFeatureGeneratingImageFunction<TInputImage,TCoordRep>
   NeighborIterType priorItr(patchSize, m_Prior,
                             m_Prior->GetBufferedRegion() );
 
-  typename NeighborIterType::NeighborhoodType imageN = imageItr.GetNeighborhood();
-  typename NeighborIterType::NeighborhoodType priorN = priorItr.GetNeighborhood();
-
   imageItr.SetLocation(index);
   priorItr.SetLocation(index);
+
+  typename NeighborIterType::NeighborhoodType imageN = imageItr.GetNeighborhood();
+  typename NeighborIterType::NeighborhoodType priorN = priorItr.GetNeighborhood();
 
   assert(imageN.Size() == priorN.Size());
 
@@ -86,8 +87,8 @@ PatchFeatureGeneratingImageFunction<TInputImage,TCoordRep>
 
   std::transform(priorN.Begin(), priorN.End(),
                  normalizedPriorPatch.begin(),
-                 std::bind2nd(std::minus<float>(), priorMean));                    
-      
+                 std::bind2nd(std::minus<float>(), priorMean));
+
   float imageStdDev = std::sqrt(std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
                                                    normalizedImagePatch.begin(),
                                                    0.0) /
@@ -150,7 +151,7 @@ PatchFeatureGeneratingImageFunction<TInputImage,TCoordRep>
   float q2val = differencePatch[q2];
   float q3val = differencePatch[q3];
   float q95val = differencePatch[q95];
-  
+
   assert(this->m_Features.size() == 11);
   OutputType out( this->m_Features.size() );
   out[0] = imageMean-priorMean;
