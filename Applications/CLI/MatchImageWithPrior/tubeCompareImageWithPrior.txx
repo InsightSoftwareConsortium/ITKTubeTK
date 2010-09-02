@@ -202,6 +202,13 @@ SetSamplingRate( float samplingRate )
 
 template< class pixelT, unsigned int dimensionT >
 void CompareImageWithPrior< pixelT, dimensionT>::
+SetNormalize( bool normalize )
+{
+  m_Normalize = normalize;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetUseRegistration( bool reg )
 {
   m_UseRegistration = reg;
@@ -302,6 +309,8 @@ Update( void )
 
   if( m_Erode > 0 )
     {
+    std::cout << "Eroding = " << m_Erode << std::endl;
+
     if( m_TimeCollector )
       {
       m_TimeCollector->Start("Erode");
@@ -343,6 +352,8 @@ Update( void )
 
   if( m_Dilate > 0 )
     {
+    std::cout << "Dilating = " << m_Dilate << std::endl;
+
     if( m_TimeCollector )
       {
       m_TimeCollector->Start("Dilate");
@@ -384,6 +395,7 @@ Update( void )
 
   if( m_GaussianBlur > 0 )
     {
+    std::cout << "Blurring = " << m_GaussianBlur << std::endl;
     if( m_TimeCollector )
       {
       m_TimeCollector->Start("Blur");
@@ -397,7 +409,7 @@ Update( void )
       {
       filter = FilterType::New();
       filter->SetInput( m_MaskImage );
-      // filter->SetNormalizeAcrossScale( true );
+      filter->SetNormalizeAcrossScale( true );
       filter->SetSigma( m_GaussianBlur );
 
       filter->SetOrder( 
@@ -420,6 +432,7 @@ Update( void )
 
   if( m_UseRegistration )
     {
+    std::cout << "Registering" << std::endl;
     if( m_TimeCollector )
       {
       m_TimeCollector->Start("RegisterROIs");
@@ -549,6 +562,8 @@ Update( void )
 
   if( m_BoundarySize.size() > 0 )
     {
+    std::cout << "Cropping = " << m_BoundarySize[0] << std::endl;
+
     if( m_TimeCollector )
       {
       m_TimeCollector->Start("Crop2");
@@ -607,6 +622,8 @@ Update( void )
   
   if( m_Normalize )
     {
+    std::cout << "Normalizing" << std::endl;
+
     if( m_TimeCollector )
       {
       m_TimeCollector->Start("Normalize");
@@ -619,49 +636,15 @@ Update( void )
     IterType orgMaskIter( m_OrgMaskImage,
                           m_OrgMaskImage->GetLargestPossibleRegion() );
   
-    int numBins = 50;
-    float volFgHisto[50];
-    float volBgHisto[50];
-    float maskFgHisto[50];
-    float maskBgHisto[50];
-    for( int i=0; i<numBins; i++ )
-      {
-      volFgHisto[i] = 0;
-      volBgHisto[i] = 0;
-      maskFgHisto[i] = 0;
-      maskBgHisto[i] = 0;
-      }
-    volIter.GoToBegin();
-    maskIter.GoToBegin();
-    orgMaskIter.GoToBegin();
-    double volMax = volIter.Get();
-    double maskMax = maskIter.Get();
-    double volMin = volMax;
-    double maskMin = maskMax;
-    while( !volIter.IsAtEnd() )
-      {
-      if( volIter.Get() > volMax )
-        {
-        volMax = volIter.Get();
-        }
-      if( volIter.Get() < volMin )
-        {
-        volMin = volIter.Get();
-        }
-      if( maskIter.Get() > maskMax )
-        {
-        maskMax = maskIter.Get();
-        }
-      if( maskIter.Get() < maskMin )
-        {
-        maskMin = maskIter.Get();
-        }
-  
-      ++volIter;
-      ++maskIter;
-      }
-  
-    int bin;
+    int countVolFg = 0;
+    double meanVolFg = 0;
+    int countVolBg = 0;
+    double meanVolBg = 0;
+    int countMaskFg = 0;
+    double meanMaskFg = 0;
+    int countMaskBg = 0;
+    double meanMaskBg = 0;
+
     volIter.GoToBegin();
     maskIter.GoToBegin();
     orgMaskIter.GoToBegin();
@@ -669,87 +652,17 @@ Update( void )
       {
       if( orgMaskIter.Get() == m_Foreground )
         {
-        bin = (int)( (((double)(volIter.Get())-volMin)/(volMax-volMin)) 
-                               * (numBins-1) );
-        if( bin < 0 )
-          {
-          bin = 0;
-          }
-        else if( bin >= numBins )
-          {
-          bin = numBins - 1;
-          }
-        ++volFgHisto[ bin ];
-        if( bin > 0 )
-          {
-          volFgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          volFgHisto[ bin+1 ] += 0.5;
-          }
-  
-        bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin))
-                               * (numBins-1) );
-        if( bin < 0 )
-          {
-          bin = 0;
-          }
-        else if( bin >= numBins )
-          {
-          bin = numBins - 1;
-          }
-        ++maskFgHisto[ bin ];
-        if( bin > 0 )
-          {
-          maskFgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          maskFgHisto[ bin+1 ] += 0.5;
-          }
+        meanVolFg += volIter.Get();
+        meanMaskFg += maskIter.Get();
+        ++countVolFg;
+        ++countMaskFg;
         }
       else
         {
-        bin = (int)( (((double)(volIter.Get())-volMin)/(volMax-volMin)) 
-                               * (numBins-1) );
-        if( bin < 0 )
-          {
-          bin = 0;
-          }
-        else if( bin >= numBins )
-          {
-          bin = numBins - 1;
-          }
-        ++volBgHisto[ bin ];
-        if( bin > 0 )
-          {
-          volBgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          volBgHisto[ bin+1 ] += 0.5;
-          }
-  
-        bin = (int)( (((double)(maskIter.Get())-maskMin)/(maskMax-maskMin))
-                               * (numBins-1) );
-        if( bin < 0 )
-          {
-          bin = 0;
-          }
-        else if( bin >= numBins )
-          {
-          bin = numBins - 1;
-          }
-        ++maskBgHisto[ bin ];
-        if( bin > 0 )
-          {
-          maskBgHisto[ bin-1 ] += 0.5;
-          }
-        if( bin < numBins - 1 )
-          {
-          maskBgHisto[ bin+1 ] += 0.5;
-          }
+        meanVolBg += volIter.Get();
+        meanMaskBg += maskIter.Get();
+        ++countVolBg;
+        ++countMaskBg;
         }
   
       ++volIter;
@@ -757,139 +670,32 @@ Update( void )
       ++orgMaskIter;
       }
 
-    /*  Debug - printout bins */
-    /*
-    for( bin=0; bin<numBins; bin++ )
-      {
-      std::cout << volBgHisto[bin] << " : " << volFgHisto[bin] << " - "
-                << maskBgHisto[bin] << " : " << maskFgHisto[bin]
-                << std::endl;
-      }
-    */
-  
-    float maxVFg = 0;
-    int maxVFgI = -1;
-    float maxVBg = 0;
-    int maxVBgI = -1;
-    float maxMFg = 0;
-    int maxMFgI = -1;
-    float maxMBg = 0;
-    int maxMBgI = -1;
-    /*
-    for( int i=0; i<numBins; i++ )
-      {
-      if( volFgHisto[i] > maxVFg )
-        {
-        maxVFg = volFgHisto[i];
-        maxVFgI = i;
-        }
-      if( volBgHisto[i] > maxVBg )
-        {
-        maxVBg = volBgHisto[i];
-        maxVBgI = i;
-        }
-      if( maskFgHisto[i] > maxMFg )
-        {
-        maxMFg = maskFgHisto[i];
-        maxMFgI = i;
-        }
-      if( maskBgHisto[i] > maxMBg )
-        {
-        maxMBg = maskBgHisto[i];
-        maxMBgI = i;
-        }
-      }
-    */
-    double clip = 0.05;
-    double binCount = 0;
-    for( int i=0; i<numBins; i++ )
-      {
-      binCount += volBgHisto[i];
-      }
-    for( int i=0; i<numBins; i++ )
-      {
-      maxVBg += volBgHisto[i];
-      if( maxVBg > clip * binCount )
-        {
-        maxVBgI = i;
-        break;
-        }
-      }
-    binCount = 0;
-    for( int i=0; i<numBins; i++ )
-      {
-      binCount += volFgHisto[i];
-      }
-    for( int i=numBins-1; i>=0; i-- )
-      {
-      maxVFg += volFgHisto[i];
-      if( maxVFg > clip * binCount )
-        {
-        maxVFgI = i;
-        break;
-        }
-      }
-    clip = 0.02;
-    binCount = 0;
-    for( int i=0; i<numBins; i++ )
-      {
-      binCount += maskBgHisto[i];
-      }
-    for( int i=0; i<numBins; i++ )
-      {
-      maxMBg += maskBgHisto[i];
-      if( maxMBg > clip * binCount )
-        {
-        maxMBgI = i;
-        break;
-        }
-      }
-    binCount = 0;
-    for( int i=0; i<numBins; i++ )
-      {
-      binCount += maskFgHisto[i];
-      }
-    for( int i=numBins-1; i>=0; i-- )
-      {
-      maxMFg += maskFgHisto[i];
-      if( maxMFg > clip * binCount )
-        {
-        maxMFgI = i;
-        break;
-        }
-      }
-  
-    maxVFg = (double)(maxVFgI)/(numBins-1) * (volMax - volMin) + volMin;
-    maxVBg = (double)(maxVBgI)/(numBins-1) * (volMax - volMin) + volMin;
-    maxMFg = (double)(maxMFgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
-    maxMBg = (double)(maxMBgI)/(numBins-1) * (maskMax - maskMin) + maskMin;
+    meanVolFg /= countVolFg;
+    meanVolBg /= countVolBg;
+    meanMaskFg /= countMaskFg;
+    meanMaskBg /= countMaskBg;
 
-    
-    std::cout << "VBg = " << maxVBg <<  " - "
-              << "VFg = " << maxVFg << std::endl;
-    std::cout << "MBg = " << maxMBg <<  " - "
-              << "MFg = " << maxMFg << std::endl;
+    std::cout << "VBg = " << meanVolBg <<  " - "
+              << "VFg = " << meanVolFg << std::endl;
+    std::cout << "MBg = " << meanMaskBg <<  " - "
+              << "MFg = " << meanMaskFg << std::endl;
               
-   
-    if( maxVFgI != -1 &&
-        maxVBgI != -1 &&
-        maxMFgI != -1 &&
-        maxMBgI != -1 )
-      {
-      typedef itk::ShiftScaleImageFilter< ImageType, ImageType > 
-        FilterType;
-      typename FilterType::Pointer filter = FilterType::New();
-   
-      double scale = (maxVFg - maxVBg) / (maxMFg - maxMBg);
-      double shift = maxVBg/scale - maxMBg;
-      filter = FilterType::New();
-      filter->SetInput( m_MaskImage );
-      filter->SetShift( shift );
-      filter->SetScale( scale );
-   
-      filter->Update();
-      m_MaskImage = filter->GetOutput();
-      }
+    typedef itk::ShiftScaleImageFilter< ImageType, ImageType > 
+      FilterType;
+    typename FilterType::Pointer filter = FilterType::New();
+ 
+    double scale = (meanVolFg - meanVolBg) / (meanMaskFg - meanMaskBg);
+    double shift = meanVolBg/scale - meanMaskBg;
+    filter = FilterType::New();
+    filter->SetInput( m_MaskImage );
+    filter->SetShift( shift );
+    filter->SetScale( scale );
+
+    std::cout << "Scale = " << scale << std::endl;
+    std::cout << "Shift = " << shift << std::endl;
+ 
+    filter->Update();
+    m_MaskImage = filter->GetOutput();
   
     if( m_TimeCollector )
       {
@@ -901,15 +707,17 @@ Update( void )
       }
     }
 
-      typedef itk::ImageFileWriter< ImageType > WriterType;
-      typename WriterType::Pointer writerMask = WriterType::New();
-      writerMask->SetInput( m_MaskImage );
-      writerMask->SetFileName( "maskNorm.mha" );
-      writerMask->Update();
+  typedef itk::ImageFileWriter< ImageType > WriterType;
+  typename WriterType::Pointer writerMask = WriterType::New();
+  writerMask->SetInput( m_MaskImage );
+  writerMask->SetFileName( "maskNorm.mha" );
+  writerMask->Update();
   
   /* Compute similarity */
   if( true )
     {
+    std::cout << "Computing similarity" << std::endl;
+
     if( m_TimeCollector )
       {
       m_TimeCollector->Start("Match metric");
@@ -943,26 +751,29 @@ Update( void )
   
     if( m_UseCorrelationMetric )
       {
+      std::cout << "  Correlation metric" << std::endl;
       typedef itk::NormalizedCorrelationImageToImageMetric< ImageType,
         ImageType > CorMetricType;
       metric = CorMetricType::New();
       }
     else if( m_UseMeanSquaresMetric )
       {
+      std::cout << "  Mean squared metric" << std::endl;
       typedef itk::MeanSquaresImageToImageMetric< ImageType,
         ImageType > MSMetricType;
       metric = MSMetricType::New();
       }
     else
       {
+      std::cout << "  Mutual information metric" << std::endl;
       typedef itk::MutualInformationImageToImageMetric< ImageType,
         ImageType > MIMetricType;
       metric = MIMetricType::New();
       }
   
-    typename ImageType::SizeType size = image1
-                                        ->GetLargestPossibleRegion()
-                                        .GetSize();
+    typename ImageType::SizeType size = image1->GetLargestPossibleRegion()
+      .GetSize();
+    std::cout << "size = " << size << std::endl;
   
     metric->SetFixedImage( image1 );
     metric->SetMovingImage( image2 );
@@ -986,6 +797,8 @@ Update( void )
     metric->Initialize();
     metric->MultiThreadingInitialize();
   
+    std::cout << "Calling metric" << std::endl;
+    std::cout << " Using params = " << transform->GetParameters() << std::endl;
     if( !m_UseCorrelationMetric && !m_UseMeanSquaresMetric )
       {
       m_GoF = metric->GetValue( transform->GetParameters() );
@@ -1000,6 +813,8 @@ Update( void )
       m_TimeCollector->Stop("Match metric");
       }
     }
+
+  std::cout << "gof = " << m_GoF << std::endl;
 
   if( m_ProgressReporter )
     {

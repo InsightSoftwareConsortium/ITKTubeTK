@@ -66,6 +66,8 @@ public:
 
   void SetGaussianBlur( float gaussianBlur );
 
+  void SetNormalize( bool normalize );
+
   void SetSamplingRate( float samplingRate );
 
   void SetUseRegistration( bool reg );

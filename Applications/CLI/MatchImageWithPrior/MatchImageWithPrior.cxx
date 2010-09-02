@@ -274,10 +274,26 @@ int DoIt( int argc, char * argv[] )
   double gofBest = gof;
   if( !disableParameterOptimization )
     {
-    eval.SetVolumeImage( curVolume );
-    eval.SetMaskImage( curMask );
+    double dilateBase = dilate/2;
+    double erodeBase = erode/2;
+    eval.SetDilate( dilateBase );
+    eval.SetErode( erodeBase );
+    eval.SetGaussianBlur( 0 );
+    eval.SetUseRegistrationTransform( true );
+    eval.SetRegistrationTransform( regTfm );
+    eval.SetUseRegistrationOptimization( false );
     eval.SetOriginalMaskImage( orgMask );
     eval.SetBoundarySize( outputBoundary );
+    eval.SetNormalize( false );
+    eval.Update();
+
+    curVolume = eval.GetVolumeImage();
+    curMask = eval.GetMaskImage();
+
+    eval.SetVolumeImage( curVolume );
+    eval.SetMaskImage( curMask );
+
+    eval.SetUseRegistration( false );
     eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
 
     MyMIWPFunc< pixelT, dimensionT > * myFunc = new 
@@ -287,14 +303,22 @@ int DoIt( int argc, char * argv[] )
     itk::OptBrent1D * opt = new itk::OptBrent1D( );
     itk::SplineND spline( 3, myFunc, spline1D, opt );
 
+    vnl_vector< int > xMin(3);
+    xMin.fill( 1 );
+    vnl_vector< int > xMax(3);
+    xMax.fill( 12 );
+    spline.xMin( xMin );
+    spline.xMax( xMax );
+
     vnl_vector< double > x(3);
-    x[0] = erode;
-    x[1] = dilate;
+    x[0] = erodeBase;
+    x[1] = dilateBase;
     x[2] = gaussianBlur;
 
     spline.extreme( x, &gofBest );
-    erodeBest = x[0];
-    dilateBest = x[1];
+
+    erodeBest = x[0] + erodeBase;
+    dilateBest = x[1] + dilateBase;
     gaussianBlurBest = x[2];
     }
 
