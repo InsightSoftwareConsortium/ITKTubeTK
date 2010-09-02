@@ -23,7 +23,8 @@ limitations under the License.
 #ifndef __itkFeatureGeneratingImageFunction_h
 #define __itkFeatureGeneratingImageFunction_h
 
-#include "vnl/vnl_vector.h"
+#include <vector>
+#include <map>
 
 #include "itkImageFunction.h"
 #include "itkOrientedImage.h"
@@ -36,13 +37,13 @@ namespace itk
  */
 template<class TInputImage, class TCoordRep = float>
 class ITK_EXPORT FeatureGeneratingImageFunction :
-  public ImageFunction< TInputImage, vnl_vector<double>, TCoordRep >
+  public ImageFunction< TInputImage, std::vector<double>, TCoordRep >
 {
 public:
 
   /** Class typedefs **/
   typedef FeatureGeneratingImageFunction               Self;
-  typedef ImageFunction<TInputImage,vnl_vector<double>,TCoordRep>  
+  typedef ImageFunction<TInputImage,std::vector<double>,TCoordRep>  
                                                        Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
@@ -51,7 +52,8 @@ public:
   typedef typename Superclass::PointType               PointType;
   typedef typename Superclass::IndexType               IndexType;
   typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
-  typedef vnl_vector<double>                           OutputType;
+  typedef std::vector<double>                          OutputType;
+  typedef std::vector<std::string>                     FeatureListType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( FeatureGeneratingImageFunction, ImageFunction );
@@ -66,7 +68,7 @@ public:
   /** Override the Set for the InputImage */
   virtual void SetInputImage( const InputImageType * ptr );
 
-  /** Get the Z-score at a given point. */
+  /** Get the output vector at a given point. */
   virtual OutputType Evaluate( const PointType& point ) const
     {
     IndexType index;
@@ -74,7 +76,7 @@ public:
     return ( this->EvaluateAtIndex( index ) );
     }
 
-  /** Get the Z-score at a given continuous index. */
+  /** Get the output vector at a given continuous index. */
   virtual OutputType EvaluateAtContinuousIndex( 
     const ContinuousIndexType & index ) const
     {
@@ -87,6 +89,29 @@ public:
   /** Get the feature vector at an index for a given point **/
   virtual OutputType EvaluateAtIndex( const IndexType & index ) const;
 
+  /** Get the output vector at a given point. */
+  virtual std::string EvaluateToString( const PointType& point ) const
+    {
+    IndexType index;
+    this->ConvertPointToNearestIndex( point, index );
+    return ( this->EvaluateToStringAtIndex( index ) );
+    }
+
+  /** Get the output vector at a given continuous index. */
+  virtual std::string EvaluateToStringAtContinuousIndex( 
+    const ContinuousIndexType & index ) const
+    {
+    IndexType nindex;
+
+    this->ConvertContinuousIndexToNearestIndex( index, nindex );
+    return this->EvaluateToStringAtIndex( nindex );
+    }
+
+  /** Get the feature vector at an index for a given point **/
+  std::string EvaluateToStringAtIndex( const IndexType & index ) const;
+
+  virtual const FeatureListType& GetFeatureLabels() const;
+
 protected:
   
   /** Default constructor */
@@ -97,6 +122,8 @@ protected:
 
   /** Printself function for introspection. **/
   void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  FeatureListType m_Features;
 
 private:
   FeatureGeneratingImageFunction( const Self& ); //purposely not implemented

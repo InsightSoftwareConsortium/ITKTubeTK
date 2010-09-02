@@ -33,9 +33,9 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-#include <itkFeatureGeneratingImageFunction.h>
+#include <itkStandardFeatureGeneratingImageFunction.h>
 
-int itkFeatureGeneratingImageFunctionTest(int argc, char* argv [] ) 
+int itkStandardFeatureGeneratingImageFunctionTest(int argc, char* argv [] ) 
 {
   if( argc < 4 )
     {
@@ -60,7 +60,7 @@ int itkFeatureGeneratingImageFunctionTest(int argc, char* argv [] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   
   // Declare the type for the Filter
-  typedef itk::FeatureGeneratingImageFunction< ImageType > FunctionType;
+  typedef itk::StandardFeatureGeneratingImageFunction< ImageType > FunctionType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();

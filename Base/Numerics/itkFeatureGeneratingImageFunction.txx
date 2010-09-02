@@ -23,6 +23,8 @@ limitations under the License.
 #ifndef __itkFeatureGeneratingImageFunction_txx
 #define __itkFeatureGeneratingImageFunction_txx
 
+#include <sstream>
+
 #include "itkFeatureGeneratingImageFunction.h"
 
 namespace itk
@@ -33,8 +35,12 @@ namespace itk
  */
 template <class TInputImage, class TCoordRep>
 FeatureGeneratingImageFunction<TInputImage,TCoordRep>
-::FeatureGeneratingImageFunction()
+::FeatureGeneratingImageFunction() :
+  m_Features()
 {
+  m_Features.push_back("x");
+  m_Features.push_back("y");
+  m_Features.push_back("intensity");
 }
 
 template <class TInputImage, class TCoordRep>
@@ -50,14 +56,46 @@ typename FeatureGeneratingImageFunction<TInputImage,TCoordRep>::OutputType
 FeatureGeneratingImageFunction<TInputImage,TCoordRep>
 ::EvaluateAtIndex( const IndexType & index ) const
 {
-  vnl_vector<double> x(3);
+  OutputType x( m_Features.size() );
   PointType pnt;
-  this->GetInputImage()->TransformIndexToPhysicalPoint( index, 
+  this->GetInputImage()->TransformIndexToPhysicalPoint( index,
                                                         pnt );
   x[0] = pnt[0];
   x[1] = pnt[1];
   x[2] = this->GetInputImage()->GetPixel( index );
   return x;
+}
+
+template <class TInputImage, class TCoordRep>
+std::string
+FeatureGeneratingImageFunction<TInputImage,TCoordRep>
+::EvaluateToStringAtIndex( const IndexType & index ) const
+{
+  OutputType out = this->EvaluateAtIndex( index );
+  std::stringstream ss;
+  typename OutputType::const_iterator itr;
+  typename OutputType::const_iterator itrPlusOne;
+  for( itr = out.begin(), itrPlusOne = out.begin(); itr != out.end(); ++itr )
+    {
+    ++itrPlusOne;
+    if( itrPlusOne != out.end() )
+      {
+      ss << *itr << ",";
+      }
+    else
+      {
+      ss << *itr;
+      }
+    }
+  return ss.str();
+}
+
+template <class TInputImage, class TCoordRep>
+const typename FeatureGeneratingImageFunction<TInputImage,TCoordRep>::FeatureListType&
+FeatureGeneratingImageFunction<TInputImage,TCoordRep>
+::GetFeatureLabels() const
+{
+  return m_Features;
 }
 
 template <class TInputImage, class TCoordRep>

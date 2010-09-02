@@ -49,6 +49,7 @@ set( tubeBaseNumerics_SRCS
   itkJointHistogramImageFunctionTest.cxx 
   itkNJetImageFunctionTest.cxx 
   itkFeatureGeneratingImageFunctionTest.cxx 
+  itkStandardFeatureGeneratingImageFunctionTest.cxx 
   )
 
 include_directories( 
