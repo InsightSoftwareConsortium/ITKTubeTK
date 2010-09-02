@@ -86,13 +86,13 @@ int DoIt( int argc, char * argv[] )
 
   // typedefs for data structures
   typedef float                                            PixelType;
-  typedef itk::OrientedImage< float, dimensionT >          ImageType;
-  typedef itk::ImageFileReader< ImageType >                ReaderType;
-  typedef itk::ImageFileWriter< ImageType >                WriterType;
+  typedef itk::OrientedImage<PixelType, dimensionT>        ImageType;
+  typedef itk::ImageFileReader<ImageType>                  ReaderType;
+  typedef itk::ImageFileWriter<ImageType>                  WriterType;
 
   // typedefs for numerics
-  typedef itk::RidgeExtractor<ImageType>                   CalculatorType;
-  typedef itk::JointHistogramImageFunction<ImageType>      HistCalcType;
+  typedef itk::RidgeExtractor< ImageType >                 CalculatorType;
+  typedef itk::JointHistogramImageFunction< ImageType >    HistCalcType;
 
   // typedefs for filters
   typedef itk::RescaleIntensityImageFilter<ImageType,ImageType> RescaleType;
@@ -274,9 +274,20 @@ int DoIt( int argc, char * argv[] )
   nomJHCalc->SetInputMask( curPrior );
 
   // Setup the sigmas based on the wire scale
-  double sigmaMedium = (scale/2)*0.6667;
-  double sigmaSmall = 0.6667*sigmaMedium;
-  double sigmaLarge = 1.3333*sigmaMedium;
+  PixelType sigmaMedium = (scale/2)*0.6667;
+  PixelType sigmaSmall = 0.6667*sigmaMedium;
+  PixelType sigmaLarge = 1.3333*sigmaMedium;
+
+    inputCalcSmall->SetScale( sigmaSmall );
+  inputCalcMedium->SetScale( sigmaMedium );
+  inputCalcLarge->SetScale( sigmaLarge );
+
+  priorCalcSmall->SetScale( sigmaSmall );
+  priorCalcMedium->SetScale( sigmaMedium );
+  priorCalcLarge->SetScale( sigmaLarge );
+
+  addCalc->SetScale( sigmaSmall );
+  subCalc->SetScale( sigmaSmall );
 
   inputCalcSmall->SetScale( sigmaSmall );
   inputCalcMedium->SetScale( sigmaMedium );
@@ -358,7 +369,6 @@ int DoIt( int argc, char * argv[] )
       {
       typename ImageType::PointType curPoint;
       typename CalculatorType::IndexType curIndex;
-      typename CalculatorType::ContinuousIndexType curContIndex;
 
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
@@ -404,49 +414,31 @@ int DoIt( int argc, char * argv[] )
   typename HistogramWriter::Pointer histWriter = HistogramWriter::New();
 
   addJHCalc->ComputeMeanAndStandardDeviation();
-  if( addMeans.size() > 0 )
-    {
-    histWriter->SetInput(addJHCalc->GetMeanHistogram());
-    histWriter->SetFileName(addMeans);
-    histWriter->Update();
-    }
+  histWriter->SetInput(addJHCalc->GetMeanHistogram());
+  histWriter->SetFileName(addMeans);
+  histWriter->Update();
 
-  if( addStdDevs.size() > 0 )
-    {
-    histWriter->SetInput(addJHCalc->GetStandardDeviationHistogram());
-    histWriter->SetFileName(addStdDevs);
-    histWriter->Update();
-    }
+  histWriter->SetInput(addJHCalc->GetStandardDeviationHistogram());
+  histWriter->SetFileName(addStdDevs);
+  histWriter->Update();
 
   subJHCalc->ComputeMeanAndStandardDeviation();
-  if( subMeans.size() > 0 )
-    {
-    histWriter->SetInput(subJHCalc->GetMeanHistogram());
-    histWriter->SetFileName(subMeans);
-    histWriter->Update();
-    }
+  histWriter->SetInput(subJHCalc->GetMeanHistogram());
+  histWriter->SetFileName(subMeans);
+  histWriter->Update();
 
-  if( subStdDevs.size() > 0 )
-    {
-    histWriter->SetInput(subJHCalc->GetStandardDeviationHistogram());
-    histWriter->SetFileName(subStdDevs);
-    histWriter->Update();
-    }
+  histWriter->SetInput(subJHCalc->GetStandardDeviationHistogram());
+  histWriter->SetFileName(subStdDevs);
+  histWriter->Update();
 
   nomJHCalc->ComputeMeanAndStandardDeviation();
-  if( nomMeans.size() > 0 )
-    {
-    histWriter->SetInput(nomJHCalc->GetMeanHistogram());
-    histWriter->SetFileName(nomMeans);
-    histWriter->Update();
-    }
+  histWriter->SetInput(nomJHCalc->GetMeanHistogram());
+  histWriter->SetFileName(nomMeans);
+  histWriter->Update();
 
-  if( nomStdDevs.size() > 0 )
-    {
-    histWriter->SetInput(nomJHCalc->GetStandardDeviationHistogram());
-    histWriter->SetFileName(nomStdDevs);
-    histWriter->Update();
-    }
+  histWriter->SetInput(nomJHCalc->GetStandardDeviationHistogram());
+  histWriter->SetFileName(nomStdDevs);
+  histWriter->Update();
   
   // Get the additional features ready
   std::vector<std::string> featureNames;
@@ -494,20 +486,6 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE x NUMERIC\n";
   output << "@ATTRIBUTE y NUMERIC\n";
 
-  output << "@ATTRIBUTE v1sg NUMERIC\n";
-  output << "@ATTRIBUTE v1mg NUMERIC\n";
-  output << "@ATTRIBUTE v1lg NUMERIC\n";
-
-  output << "@ATTRIBUTE v2g NUMERIC\n";
-  output << "@ATTRIBUTE v3g NUMERIC\n";
-
-  output << "@ATTRIBUTE v1se NUMERIC\n";
-  output << "@ATTRIBUTE v1me NUMERIC\n";
-  output << "@ATTRIBUTE v1le NUMERIC\n";
-
-  output << "@ATTRIBUTE v2e NUMERIC\n";
-  output << "@ATTRIBUTE v3e NUMERIC\n";
-
   output << "@ATTRIBUTE v1sg-v1se NUMERIC\n";
   output << "@ATTRIBUTE v1mg-v1me NUMERIC\n";
   output << "@ATTRIBUTE v1lg-v1le NUMERIC\n";
@@ -515,24 +493,15 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE v2g-v2e NUMERIC\n";
   output << "@ATTRIBUTE v3g-v3e NUMERIC\n";
 
-  output << "@ATTRIBUTE log(abs(v1sg-v1se)) NUMERIC\n";
-  output << "@ATTRIBUTE log(abs(v1mg-v1me)) NUMERIC\n";
-  output << "@ATTRIBUTE log(abs(v1lg-v1le)) NUMERIC\n";
-
-  output << "@ATTRIBUTE log(abs(v2g-v2e)) NUMERIC\n";
-  output << "@ATTRIBUTE log(abs(v3g-v3e)) NUMERIC\n";
-
   output << "@ATTRIBUTE Z_add NUMERIC\n";
   output << "@ATTRIBUTE Z_sub NUMERIC\n";
   output << "@ATTRIBUTE Z_nom NUMERIC\n";
 
   // Patch Based - begin
 
-  output << "@ATTRIBUTE PatchMean NUMERIC\n";
-  output << "@ATTRIBUTE PriorMean NUMERIC\n";
+  output << "@ATTRIBUTE PatchMean-PriorMean NUMERIC\n";
 
-  output << "@ATTRIBUTE PatchStdDev NUMERIC\n";
-  output << "@ATTRIBUTE PriorStdDev NUMERIC\n";
+  output << "@ATTRIBUTE PatchStdDev-PriorStdDev NUMERIC\n";
 
   output << "@ATTRIBUTE PatchCrossCorrelation NUMERIC\n";
 
@@ -545,9 +514,6 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE PatchDifferenceSum NUMERIC\n";
   output << "@ATTRIBUTE PatchDifferenceL2Norm NUMERIC\n";
 
-  output << "@ATTRIBUTE NumGreaterThreshold NUMERIC\n";
-  output << "@ATTRIBUTE NumLesserThreshold NUMERIC\n";
-  
   // Patch Based - END
 
   for( featureItr = featureNames.begin(); featureItr != featureNames.end();
@@ -652,19 +618,13 @@ int DoIt( int argc, char * argv[] )
 
         curContIndex = curIndex;
   
-        v1sg = priorCalcSmall->Ridgeness( curContIndex, roundness,
-          curvature );
-        v1mg = priorCalcMedium->Ridgeness( curContIndex, roundness,
-          curvature );
-        v1lg = priorCalcLarge->Ridgeness( curContIndex, roundness,
-          curvature );
+        v1sg = priorCalcSmall->Ridgeness( curContIndex, roundness, curvature );
+        v1mg = priorCalcMedium->Ridgeness( curContIndex, roundness, curvature );
+        v1lg = priorCalcLarge->Ridgeness( curContIndex, roundness, curvature );
 
-        v1se = inputCalcSmall->Ridgeness( curContIndex, roundness,
-          curvature );
-        v1me = inputCalcMedium->Ridgeness( curContIndex, roundness,
-          curvature );
-        v1le = inputCalcLarge->Ridgeness( curContIndex, roundness,
-          curvature );
+        v1se = inputCalcSmall->Ridgeness( curContIndex, roundness, curvature );
+        v1me = inputCalcMedium->Ridgeness( curContIndex, roundness, curvature );
+        v1le = inputCalcLarge->Ridgeness( curContIndex, roundness, curvature );
   
         double pS = priorCalcSmall->Intensity( curIndex );
         double pM = priorCalcMedium->Intensity( curIndex );
@@ -693,37 +653,6 @@ int DoIt( int argc, char * argv[] )
   
         v3g = pM;
         v3e = iM;
-        
-        double l1s = 0;
-        double l1m = 0;
-        double l1l = 0;
-        double l2 = 0;
-        double l3 = 0;
-
-        if( v1sg-v1se != 0 )
-          {
-          l1s = log( vnl_math_abs( v1sg-v1se ) );
-          }
-
-        if( v1mg-v1me != 0 )
-          {
-          l1m = log( vnl_math_abs( v1mg-v1me ) );
-          }
-
-        if( v1lg-v1le != 0 )
-          {
-          l1l = log( vnl_math_abs( v1lg-v1le ) );
-          }
-
-        if( v2g-v2e != 0 )
-          {
-          l2 = log( vnl_math_abs( v2g-v2e ) );
-          }
-
-        if( v3g-v3e != 0 )
-          {
-          l3 = log( vnl_math_abs( v3g-v3e ) );
-          }
 
         zAdd = addJHCalc->Evaluate( curPoint );
         zSub = subJHCalc->Evaluate( curPoint );
@@ -738,7 +667,7 @@ int DoIt( int argc, char * argv[] )
           typename ImageType::IndexType featIndex; 
           (*featureImageItr)->TransformPhysicalPointToIndex( curPoint, 
                                                              featIndex );
-          double featPix = (*featureImageItr)->GetPixel( featIndex );
+          PixelType featPix = (*featureImageItr)->GetPixel( featIndex );
           extras.push_back( featPix );
           }
   
@@ -827,31 +756,14 @@ int DoIt( int argc, char * argv[] )
         float q3val = differencePatch[q3];
         float q95val = differencePatch[q95];
 
-        const float threshold = .3;
-        size_t numGreater = std::distance(std::upper_bound(differencePatch.begin(),
-                                                           differencePatch.end(), threshold),
-                                          differencePatch.end());
-
-        size_t numLesser = std::distance(differencePatch.begin(),
-                                         std::upper_bound(differencePatch.begin(),
-                                                          differencePatch.end(), -threshold));                                                        
-
         // end patch features
 
         output << curIndex[0] << "," << curIndex[1] << ","
-               << v1sg << "," << v1mg << "," << v1lg << "," 
-               << v2g << "," << v3g << ","
-               << v1se << "," << v1me << "," << v1le << "," 
-               << v2e << "," << v3e << ","
                << v1sg-v1se << "," << v1mg-v1me << "," << v1lg-v1le << "," 
                << v2g-v2e << "," << v3g-v3e << ","
-               << l1s << "," << l1m << "," << l1l << ","
-               << l2  << "," << l3 << ","
                << zAdd << "," << zSub << "," << zNom << ","
-               << imageMean << "," 
-               << priorMean << ","
-               << imageStdDev << ","
-               << priorStdDev << ","
+               << imageMean-priorMean << "," 
+               << imageStdDev-priorStdDev << ","
                << crossCorrelation << ","
                << mindiff << ","
                << q1val << ","
@@ -860,9 +772,7 @@ int DoIt( int argc, char * argv[] )
                << q95val << ","
                << maxdiff << ","
                << total << ","
-               << norm << ","
-               << numGreater << ","
-               << numLesser << ",";
+               << norm << ",";
         std::vector<double>::const_iterator extraItr;
         for( extraItr = extras.begin(); 
              extraItr != extras.end(); ++extraItr )

@@ -65,7 +65,7 @@ generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
 add_library( ${PROJECT_NAME}Module SHARED ${PROJECT_SOURCE} )
 set_target_properties( ${PROJECT_NAME}Module
                        PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
-target_link_libraries( ${PROJECT_NAME}Module 
+target_link_libraries( ${PROJECT_NAME}Module
                        ${ITK_LIBRARIES} VTree3D ${FANN_LIBRARIES} )
 
 add_executable( ${PROJECT_NAME}
