@@ -31,4 +31,5 @@ limitations under the License.
 void RegisterTests()
 {
   REGISTER_TEST( tubeBaseClassificationPrintTest );
+  REGISTER_TEST( itkPatchFeatureGeneratingImageFunctionTest );
 }

@@ -37,12 +37,12 @@ limitations under the License.
 
 int itkPatchFeatureGeneratingImageFunctionTest(int argc, char* argv [] ) 
 {
-  if( argc < 4 )
+  if( argc < 3 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0] << 
-      " inputImage maskImage outputImage [meanHisto] [stdDevHisto]"
+      " inputImage priorImage"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -75,11 +75,25 @@ int itkPatchFeatureGeneratingImageFunctionTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  ReaderType::Pointer priorReader = ReaderType::New();
+  priorReader->SetFileName( argv[2] );
+  try
+    {
+    priorReader->Update();
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during input read:\n"  << e;
+    return EXIT_FAILURE;
+    }
+
   ImageType::Pointer inputImage = reader->GetOutput();
+  ImageType::Pointer inputPrior = priorReader->GetOutput();
 
   FunctionType::Pointer func = FunctionType::New();
   func->SetInputImage( inputImage );
-  func->SetWidth(20);
+  func->SetPriorImage(inputPrior);
+  func->SetWidth(5);
 
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( inputImage,
     inputImage->GetLargestPossibleRegion() );
@@ -93,8 +107,11 @@ int itkPatchFeatureGeneratingImageFunctionTest(int argc, char* argv [] )
     std::vector<double> tf = func->Evaluate( pnt );
     if( outIter.GetIndex()[0] == outIter.GetIndex()[1] )
       {
-      std::cout << "tf = " << " : " << tf[0] << " " << tf[1] << " " << tf[2] 
-                << std::endl;
+      std::cout << outIter.GetIndex() << std::endl;
+      std::cout << "tf = ";
+      std::copy(tf.begin(), tf.end(),
+                std::ostream_iterator<double>(std::cout, ", "));
+      std::cout << std::endl;
       }
     ++outIter;
     }
