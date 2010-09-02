@@ -2,7 +2,7 @@
 <executable>
 
   <category>Filtering</category>
-  <title>FANNClassify</title>
+  <title>FANNReducedClassify</title>
   <description>This filter takes an image and a FANN model and produces a classification.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

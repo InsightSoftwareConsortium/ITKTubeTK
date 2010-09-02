@@ -40,7 +40,6 @@ FeatureGeneratingImageFunction<TInputImage,TCoordRep>
 {
   m_Features.push_back("x");
   m_Features.push_back("y");
-  m_Features.push_back("intensity");
 }
 
 template <class TInputImage, class TCoordRep>
@@ -62,7 +61,6 @@ FeatureGeneratingImageFunction<TInputImage,TCoordRep>
                                                         pnt );
   x[0] = pnt[0];
   x[1] = pnt[1];
-  x[2] = this->GetInputImage()->GetPixel( index );
   return x;
 }
 

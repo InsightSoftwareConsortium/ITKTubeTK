@@ -110,17 +110,17 @@ int main( int argc, char **argv )
   OutputImageType::Pointer centerlines = centerlinesReader->GetOutput();
 
   // typedefs for numerics
-  typedef itk::RidgeExtractor< InputImageType >            CalculatorType;
-  typedef itk::JointHistogramImageFunction<InputImageType> HistCalcType;
+  typedef itk::RidgeExtractor< InputImageType >             CalculatorType;
+  typedef itk::JointHistogramImageFunction<InputImageType>  HistCalcType;
 
   // typedefs for filters
   typedef itk::RescaleIntensityImageFilter<InputImageType,InputImageType> 
-                                                           RescaleType;
+                                                            RescaleType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<OutputImageType>
-                                                           IterType;
-  typedef itk::NeighborhoodIterator<InputImageType>        NeighborIterType;
+                                                            IterType;
+  typedef itk::NeighborhoodIterator<InputImageType>         NeighborIterType;
 
   // Rescale the input
   InputImageType::Pointer curImage = NULL;
@@ -163,7 +163,7 @@ int main( int argc, char **argv )
   timeCollector.Start("calculators");
 
   // Setup the Calculators
-  CalculatorType::Pointer inputCalcSmall = CalculatorType::New();
+    CalculatorType::Pointer inputCalcSmall = CalculatorType::New();
   inputCalcSmall->SetInputImage( curImage );
   double inputDataMin = inputCalcSmall->GetDataMin();
   double inputDataMax = inputCalcSmall->GetDataMin();
@@ -197,7 +197,7 @@ int main( int argc, char **argv )
   priorCalcLarge->SetDataMin( priorDataMax );
   priorCalcLarge->SetDataMax( priorDataMin );
 
-    // Setup the Joint-Histogram Calculators
+  // Setup the Joint-Histogram Calculators
   HistCalcType::Pointer addJHCalc = HistCalcType::New();
   addJHCalc->SetInputImage( curImage );
   addJHCalc->SetInputMask( curPrior );
@@ -237,9 +237,9 @@ int main( int argc, char **argv )
   timeCollector.Stop("calculators");
   
   // Setup the sigmas based on the wire scale
-  double sigmaMedium = (scale/2)*0.6667;
-  double sigmaSmall = 0.6667*sigmaMedium;
-  double sigmaLarge = 1.3333*sigmaMedium;
+  InputPixelType sigmaMedium = (scale/2)*0.6667;
+  InputPixelType sigmaSmall = 0.6667*sigmaMedium;
+  InputPixelType sigmaLarge = 1.3333*sigmaMedium;
 
   inputCalcSmall->SetScale( sigmaSmall );
   inputCalcMedium->SetScale( sigmaMedium );
@@ -304,10 +304,10 @@ int main( int argc, char **argv )
       CalculatorType::ContinuousIndexType curContIndex;
 
       curIndex = centerlineItr.GetIndex();
+      curContIndex = curIndex;
 
       centerlines->TransformIndexToPhysicalPoint( centerlineItr.GetIndex(),
                                                   curPoint );
-      
       // holders for features
       double v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
       double roundness = 0;
@@ -355,37 +355,6 @@ int main( int argc, char **argv )
       
       v3g = pM;
       v3e = iM;
-      
-      double l1s = 0;
-      double l1m = 0;
-      double l1l = 0;
-      double l2 = 0;
-      double l3 = 0;
-      
-      if( v1sg-v1se != 0 )
-        {
-        l1s = log( vnl_math_abs( v1sg-v1se ) );
-        }
-      
-      if( v1mg-v1me != 0 )
-        {
-        l1m = log( vnl_math_abs( v1mg-v1me ) );
-        }
-      
-      if( v1lg-v1le != 0 )
-        {
-        l1l = log( vnl_math_abs( v1lg-v1le ) );
-        }
-      
-      if( v2g-v2e != 0 )
-        {
-        l2 = log( vnl_math_abs( v2g-v2e ) );
-        }
-      
-      if( v3g-v3e != 0 )
-        {
-        l3 = log( vnl_math_abs( v3g-v3e ) );
-        }
       
       zAdd = addJHCalc->Evaluate( curPoint );
       zSub = subJHCalc->Evaluate( curPoint );
@@ -489,48 +458,18 @@ int main( int argc, char **argv )
       float q2val = differencePatch[q2];
       float q3val = differencePatch[q3];
       float q95val = differencePatch[q95];
-      
-      const float threshold = .3;
-      size_t numGreater = std::distance(
-        std::upper_bound( differencePatch.begin(),
-                          differencePatch.end(), 
-                          threshold ) ,
-        differencePatch.end() );
-      
-      size_t numLesser = std::distance( differencePatch.begin(),
-                                        std::upper_bound(
-                                                        differencePatch.begin(),
-                                                        differencePatch.end(), 
-                                                        -threshold) );
-      
+
       std::vector<float> features;
-      features.push_back(v1sg); 
-      features.push_back(v1mg); 
-      features.push_back(v1lg); 
-      features.push_back(v2g); 
-      features.push_back(v3g);
-      features.push_back(v1se); 
-      features.push_back(v1me); 
-      features.push_back(v1le); 
-      features.push_back(v2e);
-      features.push_back(v3e);
       features.push_back(v1sg-v1se);
       features.push_back(v1mg-v1me);
       features.push_back(v1lg-v1le); 
       features.push_back(v2g-v2e);
       features.push_back(v3g-v3e);
-      features.push_back(l1s);
-      features.push_back(l1m);
-      features.push_back(l1l);
-      features.push_back(l2 );
-      features.push_back(l3);
       features.push_back(zAdd);
       features.push_back(zSub);
       features.push_back(zNom);
-      features.push_back(imageMean); 
-      features.push_back(priorMean);
-      features.push_back(imageStdDev);
-      features.push_back(priorStdDev);
+      features.push_back(imageMean-priorMean);
+      features.push_back(imageStdDev-priorStdDev);
       features.push_back(crossCorrelation);
       features.push_back(mindiff);
       features.push_back(q1val);
@@ -540,8 +479,6 @@ int main( int argc, char **argv )
       features.push_back(maxdiff);
       features.push_back(total);
       features.push_back(norm);
-      features.push_back(numGreater);
-      features.push_back(numLesser);
       
       float* rawData = &(features[0]);
       assert( features.size() == fann_get_num_input( network ) );
