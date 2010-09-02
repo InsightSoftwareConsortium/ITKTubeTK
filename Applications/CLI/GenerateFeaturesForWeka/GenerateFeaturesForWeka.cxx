@@ -278,7 +278,7 @@ int DoIt( int argc, char * argv[] )
   PixelType sigmaSmall = 0.6667*sigmaMedium;
   PixelType sigmaLarge = 1.3333*sigmaMedium;
 
-    inputCalcSmall->SetScale( sigmaSmall );
+  inputCalcSmall->SetScale( sigmaSmall );
   inputCalcMedium->SetScale( sigmaMedium );
   inputCalcLarge->SetScale( sigmaLarge );
 
@@ -339,10 +339,6 @@ int DoIt( int argc, char * argv[] )
       }
     ++centerlineItr;
     }
-
-  std::cout << "Add = " << samplesAdd << std::endl;
-  std::cout << "Sub = " << samplesSub << std::endl;
-  std::cout << "Nom = " << samplesNom << std::endl;
 
   double sampleMin = samplesAdd;
   if( samplesSub < sampleMin )
@@ -497,14 +493,9 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE Z_sub NUMERIC\n";
   output << "@ATTRIBUTE Z_nom NUMERIC\n";
 
-  // Patch Based - begin
-
   output << "@ATTRIBUTE PatchMean-PriorMean NUMERIC\n";
-
   output << "@ATTRIBUTE PatchStdDev-PriorStdDev NUMERIC\n";
-
   output << "@ATTRIBUTE PatchCrossCorrelation NUMERIC\n";
-
   output << "@ATTRIBUTE PatchDifferenceMin NUMERIC\n";
   output << "@ATTRIBUTE PatchDifferenceP25 NUMERIC\n";
   output << "@ATTRIBUTE PatchDifferenceP50 NUMERIC\n";

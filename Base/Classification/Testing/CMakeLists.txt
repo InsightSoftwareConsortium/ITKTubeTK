@@ -58,8 +58,10 @@ add_executable( tubeBaseClassificationHeaderTest
   tubeBaseClassificationHeaderTest.cxx 
   )
 target_link_libraries( tubeBaseClassificationHeaderTest
-  ITKIO 
-  ITKBasicFilters 
+  ITKIO
+  ITKNumerics
+  ITKBasicFilters
+  VTree3D
   )
 
 add_executable( tubeBaseClassificationTests
@@ -67,8 +69,10 @@ add_executable( tubeBaseClassificationTests
   ${tubeBaseClassification_SRCS} 
   )
 target_link_libraries( tubeBaseClassificationTests
-  ITKIO 
-  ITKBasicFilters 
+  ITKIO
+  ITKNumerics
+  ITKBasicFilters
+  VTree3D
   )
 
 add_test( tubeBaseClassificationHeaderTest 
