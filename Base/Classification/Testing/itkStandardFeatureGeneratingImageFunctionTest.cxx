@@ -60,6 +60,8 @@ int itkStandardFeatureGeneratingImageFunctionTest(int argc, char* argv [] )
   
   // Declare the type for the Filter
   typedef itk::StandardFeatureGeneratingImageFunction< ImageType > FunctionType;
+  typedef FunctionType::HistogramType                              HistogramType;
+  typedef itk::ImageFileReader< HistogramType >                    HistReaderType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -88,83 +90,83 @@ int itkStandardFeatureGeneratingImageFunctionTest(int argc, char* argv [] )
     }
   ImageType::Pointer priorImage = reader->GetOutput();
 
-  reader = ReaderType::New();
-  reader->SetFileName( argv[3] );
+  HistReaderType::Pointer histReader = HistReaderType::New();
+  histReader->SetFileName( argv[3] );
   try
     {
-    reader->Update();
+    histReader->Update();
     }
   catch (itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during addMeanHist read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer addMeanHist = reader->GetOutput();
+  HistogramType::Pointer addMeanHist = histReader->GetOutput();
 
-  reader = ReaderType::New();
-  reader->SetFileName( argv[4] );
+  histReader = HistReaderType::New();
+  histReader->SetFileName( argv[4] );
   try
     {
-    reader->Update();
+    histReader->Update();
     }
   catch (itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during addStdevHist read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer addStdevHist = reader->GetOutput();
+  HistogramType::Pointer addStdevHist = histReader->GetOutput();
 
-  reader = ReaderType::New();
-  reader->SetFileName( argv[4] );
+  histReader = HistReaderType::New();
+  histReader->SetFileName( argv[4] );
   try
     {
-    reader->Update();
+    histReader->Update();
     }
   catch (itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during subMeanHist read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer subMeanHist = reader->GetOutput();
+  HistogramType::Pointer subMeanHist = histReader->GetOutput();
 
-  reader = ReaderType::New();
-  reader->SetFileName( argv[5] );
+  histReader = HistReaderType::New();
+  histReader->SetFileName( argv[5] );
   try
     {
-    reader->Update();
+    histReader->Update();
     }
   catch (itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during subStdevHist read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer subStdevHist = reader->GetOutput();
+  HistogramType::Pointer subStdevHist = histReader->GetOutput();
 
-  reader = ReaderType::New();
-  reader->SetFileName( argv[6] );
+  histReader = HistReaderType::New();
+  histReader->SetFileName( argv[6] );
   try
     {
-    reader->Update();
+    histReader->Update();
     }
   catch (itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during nomMeanHist read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer nomMeanHist = reader->GetOutput();
+  HistogramType::Pointer nomMeanHist = histReader->GetOutput();
 
-  reader = ReaderType::New();
-  reader->SetFileName( argv[7] );
+  histReader = HistReaderType::New();
+  histReader->SetFileName( argv[7] );
   try
     {
-    reader->Update();
+    histReader->Update();
     }
   catch (itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during nomStdevHist read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer nomStdevHist = reader->GetOutput();
+  HistogramType::Pointer nomStdevHist = histReader->GetOutput();
 
   FunctionType::Pointer func = FunctionType::New();
   func->SetInputImage( inputImage );
