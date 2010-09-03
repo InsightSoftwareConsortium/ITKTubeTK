@@ -390,11 +390,11 @@ int DoIt( int argc, char * argv[] )
   initOptimizer->SetNormalVariateGenerator( normGen );
   initOptimizer->Initialize( 0.1 );
   initOptimizer->SetMetricWorstPossibleValue( 100 );
-  initOptimizer->SetMaximumIteration( iterations*0.75 );
+  initOptimizer->SetMaximumIteration( iterations*0.25 );
   initOptimizer->SetMaximize( false );
 
   OptimizerType::Pointer optimizer = OptimizerType::New();
-  optimizer->SetMaximumNumberOfIterations( iterations*0.25 );
+  optimizer->SetMaximumNumberOfIterations( iterations*0.75 );
   optimizer->SetMaximize( false );
 
   OptimizerType::ScalesType scales( 4 );
