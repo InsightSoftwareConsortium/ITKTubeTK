@@ -95,7 +95,8 @@ class PDFSegmenter : public Object
     itkSetMacro( UseTexture, bool );
     itkSetMacro( ErodeRadius, int );
     itkSetMacro( HoleFillIterations, int );
-    itkSetMacro( FprWeight, float );
+    itkSetMacro( FprWeight, double );
+    itkSetMacro( ProbabilitySmoothingStandardDeviation, double );
     itkSetMacro( Draft, bool );
 
     const typename ProbabilityImageType::Pointer * GetProbabilityImage(
@@ -149,14 +150,15 @@ class PDFSegmenter : public Object
     ObjectIdListType                      m_ObjectIdList;
     ObjectIdType                          m_VoidId;
 
-    bool                                  m_UseTexture;
-    int                                   m_ErodeRadius;
-    int                                   m_HoleFillIterations;
-    float                                 m_FprWeight;
-    bool                                  m_Draft;
-    bool                                  m_ReclassifyObjectMask;
-    bool                                  m_ReclassifyNotObjectMask;
-    bool                                  m_ForceClassification;
+    bool                           m_UseTexture;
+    int                            m_ErodeRadius;
+    int                            m_HoleFillIterations;
+    double                         m_ProbabilitySmoothingStandardDeviation;
+    double                         m_FprWeight;
+    bool                           m_Draft;
+    bool                           m_ReclassifyObjectMask;
+    bool                           m_ReclassifyNotObjectMask;
+    bool                           m_ForceClassification;
 
     ProbabilityImageVectorType            m_ProbabilityImageVector;
 

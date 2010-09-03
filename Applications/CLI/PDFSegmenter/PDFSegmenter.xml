@@ -90,6 +90,20 @@
       <default>2</default>
       <longflag>holeFillIterations</longflag>
     </integer>
+    <double>
+      <name>fprWeight</name>
+      <description>Relative cost of a FP versus a FN.</description>
+      <label>FPR Weight</label>
+      <default>1.0</default>
+      <longflag>fprWeight</longflag>
+    </double>
+    <double>
+      <name>probSmoothingStdDev</name>
+      <description>Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel</description>
+      <label>Probability smoothing standard deviation</label>
+      <default>3.0</default>
+      <longflag>probSmoothingStdDev</longflag>
+    </double>
     <boolean>
       <name>draft</name>
       <description>Generate draft results</description>

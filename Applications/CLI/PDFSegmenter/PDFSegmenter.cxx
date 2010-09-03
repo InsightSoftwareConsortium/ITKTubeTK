@@ -130,6 +130,9 @@ int DoIt( int argc, char *argv[] )
   pdfSegmenter->SetUseTexture( useTexture );
   pdfSegmenter->SetErodeRadius( erodeRadius );
   pdfSegmenter->SetHoleFillIterations( holeFillIterations );
+  pdfSegmenter->SetFprWeight( fprWeight );
+  pdfSegmenter->SetProbabilitySmoothingStandardDeviation( 
+    probSmoothingStdDev );
   pdfSegmenter->SetDraft( draft );
   pdfSegmenter->SetReclassifyNotObjectMask( reclassifyNotObjectMask );
   pdfSegmenter->SetReclassifyObjectMask( reclassifyObjectMask );

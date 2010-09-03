@@ -74,6 +74,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
   m_HoleFillIterations = 1;
   m_FprWeight = 1.5;
   m_Draft = false;
+  m_ProbabilitySmoothingStandardDeviation = 9;
   m_ReclassifyObjectMask = false;
   m_ReclassifyNotObjectMask = false;
   m_ForceClassification = false;
@@ -792,9 +793,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
   }
   timeCollector.Stop("ProbabilityImage");
 
-  std::cout << "Probability image anisotropic smoothing..." << std::endl;
-  typedef itk::CurvatureAnisotropicDiffusionImageFilter< 
-    ProbabilityImageType, ProbabilityImageType> ProbImageFilterType;
+  std::cout << "Probability image smoothing..." << std::endl;
+  typedef itk::DiscreteGaussianImageFilter< ProbabilityImageType,
+          ProbabilityImageType> ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
 
   timeCollector.Start("ProbabilityImageDiffusion");
@@ -802,14 +803,16 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     probImageFilter = ProbImageFilterType::New();
     probImageFilter->SetInput(m_ProbabilityImageVector[c]);
-    probImageFilter->SetNumberOfIterations(3);
+    probImageFilter->SetVariance( 
+      m_ProbabilitySmoothingStandardDeviation );
     probImageFilter->Update();
     m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
     }
   {
   probImageFilter = ProbImageFilterType::New();
   probImageFilter->SetInput(m_ProbabilityImageVector[numClasses]);
-  probImageFilter->SetNumberOfIterations(3);
+  probImageFilter->SetVariance( 
+    m_ProbabilitySmoothingStandardDeviation );
   probImageFilter->Update();
   m_ProbabilityImageVector[numClasses] = probImageFilter->GetOutput();
   }
@@ -1141,6 +1144,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
   os << indent << "Hole fill iterations = " << m_HoleFillIterations 
     << std::endl;
   os << indent << "Fpr weight = " << m_FprWeight << std::endl;
+  os << indent << "Probability Smoothing Standard Deviation = " 
+    << m_ProbabilitySmoothingStandardDeviation << std::endl;
   os << indent << "Draft = " << m_Draft << std::endl;
   os << indent << "ReclassifyObjectMask = " << m_ReclassifyObjectMask 
     << std::endl;
