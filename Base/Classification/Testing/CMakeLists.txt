@@ -85,9 +85,15 @@ add_test( tubeBaseClassificationPrintTest
   tubeBaseClassificationPrintTest 
   )
 
-add_test( PatchFeatureGeneratingImageFunctionTest
+add_test( itkFeatureGeneratingImageFunctionTest1
+  ${BASE_CLASSIFICATION_TESTS}
+  itkFeatureGeneratingImageFunctionTest
+  ${TubeTK_SOURCE_DIR}/Data/ES0015_1.mha
+  )
+
+add_test( itkPatchFeatureGeneratingImageFunctionTest1
   ${BASE_CLASSIFICATION_TESTS}
   itkPatchFeatureGeneratingImageFunctionTest
   ${TubeTK_SOURCE_DIR}/Data/ES0015_1.mha
   ${TubeTK_SOURCE_DIR}/Data/GDS0015_1_match.mha
-)
+  )

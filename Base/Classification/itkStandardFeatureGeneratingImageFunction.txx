@@ -51,6 +51,8 @@ template <class TInputImage, class TCoordRep>
 StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
 ::StandardFeatureGeneratingImageFunction()
 {
+  this->m_Features.clear();
+
   this->m_Features.push_back("RidgenessDiffSmall");
   this->m_Features.push_back("RidgenessDiffMedium");
   this->m_Features.push_back("RidgenessDiffLarge");
@@ -191,16 +193,14 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
 
   OutputType out( this->m_Features.size() );
 
-  out[0] = curPoint[0];
-  out[1] = curPoint[1];
-  out[2] = v1sg-v1se;
-  out[3] = v1mg-v1me;
-  out[4] = v1lg-v1le; 
-  out[5] = v2g-v2e;
-  out[6] = v3g-v3e;
-  out[7] = zAdd;
-  out[8] = zSub;
-  out[9] = zNom;
+  out[0] = v1sg-v1se;
+  out[1] = v1mg-v1me;
+  out[2] = v1lg-v1le; 
+  out[3] = v2g-v2e;
+  out[4] = v3g-v3e;
+  out[5] = zAdd;
+  out[6] = zSub;
+  out[7] = zNom;
 
   return out;
 }
