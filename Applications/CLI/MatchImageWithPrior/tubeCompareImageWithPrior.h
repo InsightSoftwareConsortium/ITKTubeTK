@@ -60,6 +60,8 @@ public:
 
   void SetForeground( float foreground );
 
+  void SetBackground( float background );
+
   void SetErode( int erode );
 
   void SetDilate( int dilate );
@@ -102,6 +104,7 @@ private:
   typename ImageType::Pointer m_OrgMaskImage;
   typename ImageType::Pointer m_MetricMask;
   float                       m_Foreground;
+  float                       m_Background;
   int                         m_Erode;
   int                         m_Dilate;
   float                       m_GaussianBlur;

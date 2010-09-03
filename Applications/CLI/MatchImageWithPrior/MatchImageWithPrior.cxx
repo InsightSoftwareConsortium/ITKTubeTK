@@ -208,8 +208,10 @@ int DoIt( int argc, char * argv[] )
   eval.SetMaskImage( curMask );
   eval.SetOriginalMaskImage( orgMask );
   eval.SetForeground( foreground );
+  eval.SetBackground( background );
   eval.SetBoundarySize( outputBoundary );
   eval.SetTimeCollector( &timeCollector );
+  eval.SetNormalize( true );
   eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
 
   if( metricMaskImage.IsNotNull() )

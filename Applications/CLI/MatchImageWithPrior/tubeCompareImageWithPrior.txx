@@ -59,6 +59,7 @@ limitations under the License.
 
 #include "itkShiftScaleImageFilter.h"
 
+#include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkMutualInformationImageToImageMetric.h"
 #include "itkNormalizedCorrelationImageToImageMetric.h"
@@ -77,6 +78,7 @@ CompareImageWithPrior( void )
   m_OrgMaskImage = NULL;
   m_MetricMask = NULL;
   m_Foreground = 0;
+  m_Background = 0;
   m_Erode = 4;
   m_Dilate = 2;
   m_GaussianBlur = 10;
@@ -170,6 +172,13 @@ void CompareImageWithPrior< pixelT, dimensionT>::
 SetForeground( float foreground )
 {
   m_Foreground = foreground;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void CompareImageWithPrior< pixelT, dimensionT>::
+SetBackground( float background )
+{
+  m_Background = background;
 }
 
 template< class pixelT, unsigned int dimensionT >
@@ -538,10 +547,12 @@ Update( void )
     resampler->Update();
     m_MaskImage = resampler->GetOutput();
 
+    typedef itk::NearestNeighborInterpolateImageFunction< ImageType,
+      double > NNInterpolatorType;
     typename ResamplerType::Pointer orgResampler =
       ResamplerType::New();
-    typename InterpolatorType::Pointer orgInterpolator =
-      InterpolatorType::New();
+    typename NNInterpolatorType::Pointer orgInterpolator =
+      NNInterpolatorType::New();
     orgInterpolator->SetInputImage( m_OrgMaskImage );
     orgResampler->SetInput( m_OrgMaskImage );
     orgResampler->SetInterpolator( orgInterpolator.GetPointer() );
@@ -657,7 +668,7 @@ Update( void )
         ++countVolFg;
         ++countMaskFg;
         }
-      else
+      else if( orgMaskIter.Get() == m_Background )
         {
         meanVolBg += volIter.Get();
         meanMaskBg += maskIter.Get();
@@ -740,7 +751,7 @@ Update( void )
     typename TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
   
-    typedef itk::LinearInterpolateImageFunction< ImageType, double > 
+    typedef itk::LinearInterpolateImageFunction< ImageType, double >
       InterpolatorType;
     typename InterpolatorType::Pointer interpolator =
       InterpolatorType::New();
