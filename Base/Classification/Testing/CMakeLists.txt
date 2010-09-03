@@ -90,6 +90,18 @@ add_test( itkFeatureGeneratingImageFunctionTest1
   itkFeatureGeneratingImageFunctionTest
   ${TubeTK_SOURCE_DIR}/Data/ES0015_1.mha
   )
+add_test( itkStandardFeatureGeneratingImageFunctionTest1
+  ${BASE_CLASSIFICATION_TESTS}
+  itkStandardFeatureGeneratingImageFunctionTest
+  ${TubeTK_SOURCE_DIR}/Data/ES0015_Large.mha
+  ${TubeTK_SOURCE_DIR}/Data/GDS0015_Large_match.mha
+  ${TubeTK_SOURCE_DIR}/Data/Modified_GDS0015_Large_addMeanHist.mha
+  ${TubeTK_SOURCE_DIR}/Data/Modified_GDS0015_Large_addStdDevHist.mha
+  ${TubeTK_SOURCE_DIR}/Data/Modified_GDS0015_Large_nomMeanHist.mha
+  ${TubeTK_SOURCE_DIR}/Data/Modified_GDS0015_Large_nomStdDevHist.mha
+  ${TubeTK_SOURCE_DIR}/Data/Modified_GDS0015_Large_subMeanHist.mha
+  ${TubeTK_SOURCE_DIR}/Data/Modified_GDS0015_Large_subStdDevHist.mha
+  )
 
 add_test( itkPatchFeatureGeneratingImageFunctionTest1
   ${BASE_CLASSIFICATION_TESTS}

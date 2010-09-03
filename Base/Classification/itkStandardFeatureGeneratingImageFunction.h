@@ -58,7 +58,6 @@ public:
   typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
   typedef typename Superclass::OutputType              OutputType;
   typedef typename Superclass::FeatureListType         FeatureListType;
-  typedef itk::Image<unsigned char, 2>                 MaskType;
   typedef itk::RidgeExtractor< InputImageType >        CalculatorType;
   typedef itk::JointHistogramImageFunction<InputImageType>
                                                        HistCalcType;
@@ -74,11 +73,6 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        Superclass::ImageDimension );
   
-  void SetCenterlineImage( typename MaskType::Pointer clImg )
-  {
-    m_Centerlines = clImg;
-  }
-
   void SetPriorImage( typename InputImageType::Pointer prior )
   {
     m_Prior = prior;
@@ -136,7 +130,6 @@ protected:
   /** Default destructor */
   ~StandardFeatureGeneratingImageFunction() {}
 
-  typename MaskType::Pointer       m_Centerlines;
   typename InputImageType::Pointer m_Prior;
   typename InputImageType::Pointer m_AddMeanHist;
   typename InputImageType::Pointer m_AddStdevHist;

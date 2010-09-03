@@ -71,19 +71,19 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
 ::PrepFilter()
 {
   m_InputCalcSmall = CalculatorType::New();
-  m_InputCalcSmall->SetInputImage( this->GetInputImage() );
+  m_InputCalcSmall->SetInputImage( const_cast<TInputImage*>( this->GetInputImage() ) );
   m_InputDataMin = m_InputCalcSmall->GetDataMin();
   m_InputDataMax = m_InputCalcSmall->GetDataMin();
   m_InputCalcSmall->SetDataMin( m_InputDataMax );
   m_InputCalcSmall->SetDataMax( m_InputDataMin );
 
   m_InputCalcMedium = CalculatorType::New();
-  m_InputCalcMedium->SetInputImage( this->GetInputImage() );
+  m_InputCalcMedium->SetInputImage( const_cast<TInputImage*>( this->GetInputImage() ) );
   m_InputCalcMedium->SetDataMin( m_InputDataMax );
   m_InputCalcMedium->SetDataMax( m_InputDataMin );
 
   m_InputCalcLarge = CalculatorType::New();
-  m_InputCalcLarge->SetInputImage( this->GetInputImage() );
+  m_InputCalcLarge->SetInputImage( const_cast<TInputImage*>( this->GetInputImage() ) );
   m_InputCalcLarge->SetDataMin( m_InputDataMax );
   m_InputCalcLarge->SetDataMax( m_InputDataMin );
 
