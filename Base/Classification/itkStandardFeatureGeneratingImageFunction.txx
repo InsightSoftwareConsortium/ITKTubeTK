@@ -73,7 +73,7 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
   m_InputCalcSmall = CalculatorType::New();
   m_InputCalcSmall->SetInputImage( const_cast<TInputImage*>( this->GetInputImage() ) );
   m_InputDataMin = m_InputCalcSmall->GetDataMin();
-  m_InputDataMax = m_InputCalcSmall->GetDataMin();
+  m_InputDataMax = m_InputCalcSmall->GetDataMax();
   m_InputCalcSmall->SetDataMin( m_InputDataMax );
   m_InputCalcSmall->SetDataMax( m_InputDataMin );
 
