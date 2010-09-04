@@ -37,13 +37,11 @@ limitations under the License.
 
 int itkFeatureGeneratingImageFunctionTest(int argc, char* argv [] ) 
 {
-  if( argc < 4 )
+  if( argc != 2 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << 
-      " inputImage maskImage outputImage [meanHisto] [stdDevHisto]"
-      << std::endl;
+    std::cerr << argv[0] << " inputImage" << std::endl;
     return EXIT_FAILURE;
     }
   
@@ -90,10 +88,9 @@ int itkFeatureGeneratingImageFunctionTest(int argc, char* argv [] )
     {
     inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
     std::vector<double> tf = func->Evaluate( pnt );
-    if( outIter.GetIndex()[0] == outIter.GetIndex()[1] )
+    if( tf[0] != pnt[0] || tf[1] != pnt[1] )
       {
-      std::cout << "tf = " << " : " << tf[0] << " " << tf[1] << " " << tf[2] 
-                << std::endl;
+      return EXIT_FAILURE;
       }
     ++outIter;
     }

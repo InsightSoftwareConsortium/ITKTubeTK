@@ -43,6 +43,8 @@ limitations under the License.
 // Includes specific to this CLI application
 #include "itkRidgeExtractor.h"
 #include "itkJointHistogramImageFunction.h"
+#include "itkStandardFeatureGeneratingImageFunction.h"
+#include "itkPatchFeatureGeneratingImageFunction.h"
 
 // ITK filters used
 #include "itkImageRegionConstIteratorWithIndex.h"
@@ -94,13 +96,17 @@ int DoIt( int argc, char * argv[] )
   typedef itk::RidgeExtractor< ImageType >                 CalculatorType;
   typedef itk::JointHistogramImageFunction< ImageType >    HistCalcType;
 
+  // typedefs for classification
+  typedef itk::StandardFeatureGeneratingImageFunction< ImageType > 
+                                                           StandardFunctionType;
+  typedef itk::PatchFeatureGeneratingImageFunction< ImageType > 
+                                                           PatchFunctionType;
+
   // typedefs for filters
   typedef itk::RescaleIntensityImageFilter<ImageType,ImageType> RescaleType;
 
   // typedefs for iterators
   typedef itk::ImageRegionConstIteratorWithIndex<ImageType>     IterType;
-
-  typedef itk::NeighborhoodIterator<ImageType>             NeighborIterType;
 
   // Setup the readers to load the input data (image + prior)
   timeCollector.Start( "Load data" );
@@ -221,88 +227,33 @@ int DoIt( int argc, char * argv[] )
     curPrior = priorReader->GetOutput();
     }
 
-  // Setup the Calculators
-  typename CalculatorType::Pointer inputCalcSmall = CalculatorType::New();
-  inputCalcSmall->SetInputImage( curImage );
-  double inputDataMin = inputCalcSmall->GetDataMin();
-  double inputDataMax = inputCalcSmall->GetDataMin();
-  inputCalcSmall->SetDataMin( inputDataMax );
-  inputCalcSmall->SetDataMax( inputDataMin );
-
-  typename CalculatorType::Pointer inputCalcMedium = CalculatorType::New();
-  inputCalcMedium->SetInputImage( curImage );
-  inputCalcMedium->SetDataMin( inputDataMax );
-  inputCalcMedium->SetDataMax( inputDataMin );
-
-  typename CalculatorType::Pointer inputCalcLarge = CalculatorType::New();
-  inputCalcLarge->SetInputImage( curImage );
-  inputCalcLarge->SetDataMin( inputDataMax );
-  inputCalcLarge->SetDataMax( inputDataMin );
-
-  typename CalculatorType::Pointer priorCalcSmall = CalculatorType::New();
-  priorCalcSmall->SetInputImage( curPrior );
-  double priorDataMin = priorCalcSmall->GetDataMin();
-  double priorDataMax = priorCalcSmall->GetDataMin();
-  priorCalcSmall->SetDataMin( priorDataMax );
-  priorCalcSmall->SetDataMax( priorDataMin );
-
-  typename CalculatorType::Pointer priorCalcMedium = CalculatorType::New();
-  priorCalcMedium->SetInputImage( curPrior );
-  priorCalcMedium->SetDataMin( priorDataMax );
-  priorCalcMedium->SetDataMax( priorDataMin );
-
-  typename CalculatorType::Pointer priorCalcLarge = CalculatorType::New();
-  priorCalcLarge->SetInputImage( curPrior );
-  priorCalcLarge->SetDataMin( priorDataMax );
-  priorCalcLarge->SetDataMax( priorDataMin );
-
-  typename CalculatorType::Pointer addCalc = CalculatorType::New();
-  addCalc->SetInputImage( additions );
-
-  typename CalculatorType::Pointer subCalc = CalculatorType::New();
-  subCalc->SetInputImage( subtractions );
-
-  // Setup the Joint-Histogram Calculators
-  typename HistCalcType::Pointer addJHCalc = HistCalcType::New();
-  addJHCalc->SetInputImage( curImage );
-  addJHCalc->SetInputMask( curPrior );
-  typename HistCalcType::Pointer subJHCalc = HistCalcType::New();
-  subJHCalc->SetInputImage( curImage );
-  subJHCalc->SetInputMask( curPrior );
-  typename HistCalcType::Pointer nomJHCalc = HistCalcType::New();
-  nomJHCalc->SetInputImage( curImage );
-  nomJHCalc->SetInputMask( curPrior );
-
-  // Setup the sigmas based on the wire scale
-  PixelType sigmaMedium = (scale/2)*0.6667;
-  PixelType sigmaSmall = 0.6667*sigmaMedium;
-  PixelType sigmaLarge = 1.3333*sigmaMedium;
-
-  inputCalcSmall->SetScale( sigmaSmall );
-  inputCalcMedium->SetScale( sigmaMedium );
-  inputCalcLarge->SetScale( sigmaLarge );
-
-  priorCalcSmall->SetScale( sigmaSmall );
-  priorCalcMedium->SetScale( sigmaMedium );
-  priorCalcLarge->SetScale( sigmaLarge );
-
-  addCalc->SetScale( sigmaSmall );
-  subCalc->SetScale( sigmaSmall );
-
-  inputCalcSmall->SetScale( sigmaSmall );
-  inputCalcMedium->SetScale( sigmaMedium );
-  inputCalcLarge->SetScale( sigmaLarge );
-
-  priorCalcSmall->SetScale( sigmaSmall );
-  priorCalcMedium->SetScale( sigmaMedium );
-  priorCalcLarge->SetScale( sigmaLarge );
-
-  addCalc->SetScale( sigmaSmall );
-  subCalc->SetScale( sigmaSmall );
 
   double samplesNom = 0;
   double samplesAdd = 0;
   double samplesSub = 0;
+
+  // Setup the sigmas based on the wire scale
+  PixelType sigmaMedium = (scale/2)*0.6667;
+  PixelType sigmaSmall = 0.6667*sigmaMedium;
+
+  // Init joint histogram calculators for training
+  typename HistCalcType::Pointer addJHCalc = HistCalcType::New();
+  typename HistCalcType::Pointer subJHCalc = HistCalcType::New();
+  typename HistCalcType::Pointer nomJHCalc = HistCalcType::New();
+  addJHCalc->SetInputImage( curImage );
+  addJHCalc->SetInputMask( curPrior );
+  subJHCalc->SetInputImage( curImage );
+  subJHCalc->SetInputMask( curPrior );
+  nomJHCalc->SetInputImage( curImage );
+  nomJHCalc->SetInputMask( curPrior );
+
+  // Init add and sub calc for class checking
+  typename CalculatorType::Pointer addCalc = CalculatorType::New();
+  typename CalculatorType::Pointer subCalc = CalculatorType::New();
+  addCalc->SetInputImage( additions );
+  subCalc->SetInputImage( subtractions );
+  addCalc->SetScale( sigmaSmall );
+  subCalc->SetScale( sigmaSmall );
 
   IterType centerlineItr( centerlines, 
                           centerlines->GetLargestPossibleRegion() );
@@ -405,7 +356,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   // write out histogram files
-  typedef typename HistCalcType::HistogramType    HistrogramType;
+  typedef typename HistCalcType::HistogramType          HistrogramType;
   typedef typename itk::ImageFileWriter<HistrogramType> HistogramWriter;
   typename HistogramWriter::Pointer histWriter = HistogramWriter::New();
 
@@ -436,44 +387,6 @@ int DoIt( int argc, char * argv[] )
   histWriter->SetFileName(nomStdDevs);
   histWriter->Update();
   
-  // Get the additional features ready
-  std::vector<std::string> featureNames;
-  std::vector<std::string> featureFilenames;
-  std::vector<typename ImageType::Pointer> featureImages;
-  std::vector<std::string>::const_iterator featureItr;
-  bool isName = true;
-  unsigned int featureCount = 0;
-  for( featureItr = otherFeatures.begin(); featureItr != otherFeatures.end();
-       ++featureItr )
-    {
-    std::string val = *featureItr;
-    if( isName )
-      {
-      featureNames.push_back( val );
-      }
-    else
-      {
-      featureFilenames.push_back( val );
-      typename ReaderType::Pointer featureReader = ReaderType::New();
-      featureReader->SetFileName( val.c_str() );
-      try
-        {
-        featureReader->Update();
-        }
-      catch( itk::ExceptionObject & err )
-        {
-        std::cerr << "ExceptionObject caught while reading feature "
-                  << featureCount << std::endl;
-        std::cerr << err << std::endl;
-        return EXIT_FAILURE;
-        }
-      featureImages.push_back( featureReader->GetOutput() );
-      ++featureCount;
-      }
-    isName = !isName;
-    }
-
-
   // Get the outfile started
   std::ofstream output( outputFile.c_str() );
   output << "% Generated by GenerateFeaturesForWeka in TubeTK\n";
@@ -482,12 +395,12 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE x NUMERIC\n";
   output << "@ATTRIBUTE y NUMERIC\n";
 
-  output << "@ATTRIBUTE v1sg-v1se NUMERIC\n";
-  output << "@ATTRIBUTE v1mg-v1me NUMERIC\n";
-  output << "@ATTRIBUTE v1lg-v1le NUMERIC\n";
+  output << "@ATTRIBUTE RidgenessDiffSmall NUMERIC\n";
+  output << "@ATTRIBUTE RidgenessDiffMedium NUMERIC\n";
+  output << "@ATTRIBUTE RidgenessDiffLarge NUMERIC\n";
 
-  output << "@ATTRIBUTE v2g-v2e NUMERIC\n";
-  output << "@ATTRIBUTE v3g-v3e NUMERIC\n";
+  output << "@ATTRIBUTE NormalizedScaledIntensityDiff NUMERIC\n";
+  output << "@ATTRIBUTE ScaledIntensityDiff NUMERIC\n";
 
   output << "@ATTRIBUTE Z_add NUMERIC\n";
   output << "@ATTRIBUTE Z_sub NUMERIC\n";
@@ -505,14 +418,6 @@ int DoIt( int argc, char * argv[] )
   output << "@ATTRIBUTE PatchDifferenceSum NUMERIC\n";
   output << "@ATTRIBUTE PatchDifferenceL2Norm NUMERIC\n";
 
-  // Patch Based - END
-
-  for( featureItr = featureNames.begin(); featureItr != featureNames.end();
-       ++featureItr )
-    {
-    output << "@ATTRIBUTE " << *featureItr << " NUMERIC\n";
-    }
-  
   output << "@ATTRIBUTE class {typical,addition,subtraction}\n";
   output << "\n";
   output << "@DATA\n";
@@ -525,19 +430,25 @@ int DoIt( int argc, char * argv[] )
   double step = portion/samplesTotal;
   unsigned int count = 0;
 
-  typename NeighborIterType::SizeType radius  = {{ceil(scale/2),
-                                                  ceil(scale/2)}};
-  NeighborIterType imageItr(radius,
-                            curImage,
-                            curImage->GetLargestPossibleRegion() );
+  typename StandardFunctionType::Pointer standGen = StandardFunctionType::New();
+  typename PatchFunctionType::Pointer patchGen = PatchFunctionType::New();
+  
+  standGen->SetInputImage( curImage );
+  standGen->SetPriorImage( curPrior );
+  standGen->SetMeanAddHistogram( addJHCalc->GetMeanHistogram() );
+  standGen->SetStdevAddHistogram( addJHCalc->GetStandardDeviationHistogram() );
+  standGen->SetMeanSubHistogram( subJHCalc->GetMeanHistogram() );
+  standGen->SetStdevSubHistogram( subJHCalc->GetStandardDeviationHistogram() );
+  standGen->SetMeanNormHistogram( nomJHCalc->GetMeanHistogram() ); 
+  standGen->SetStdevNormHistogram( nomJHCalc->GetStandardDeviationHistogram() );
+  standGen->SetScale( scale );
+  standGen->PrepFilter();
 
-  NeighborIterType priorItr(radius,
-                            curPrior,
-                            curPrior->GetLargestPossibleRegion() );
+  patchGen->SetInputImage( curImage );
+  patchGen->SetPriorImage( curPrior );
+  patchGen->SetWidth( 5 );
 
   centerlineItr.GoToBegin();
-  imageItr.GoToBegin();
-  priorItr.GoToBegin();
   while( !centerlineItr.IsAtEnd() )
     {
     if( centerlineItr.Get() > 0 )
@@ -599,178 +510,19 @@ int DoIt( int argc, char * argv[] )
 
       if( validPoint )
         {
-        
-        // holders for features
-        double v1sg, v1mg, v1lg, v2g, v3g, v1se, v1me, v1le, v2e, v3e;
-        double roundness = 0;
-        double curvature = 0;
-        double zAdd, zSub, zNom;
-        std::vector<double> extras;
-
-        curContIndex = curIndex;
-  
-        v1sg = priorCalcSmall->Ridgeness( curContIndex, roundness, curvature );
-        v1mg = priorCalcMedium->Ridgeness( curContIndex, roundness, curvature );
-        v1lg = priorCalcLarge->Ridgeness( curContIndex, roundness, curvature );
-
-        v1se = inputCalcSmall->Ridgeness( curContIndex, roundness, curvature );
-        v1me = inputCalcMedium->Ridgeness( curContIndex, roundness, curvature );
-        v1le = inputCalcLarge->Ridgeness( curContIndex, roundness, curvature );
-  
-        double pS = priorCalcSmall->Intensity( curIndex );
-        double pM = priorCalcMedium->Intensity( curIndex );
-        double pL = priorCalcLarge->Intensity( curIndex );
-
-        double iS = inputCalcSmall->Intensity( curIndex );
-        double iM = inputCalcMedium->Intensity( curIndex );
-        double iL = inputCalcLarge->Intensity( curIndex );
-
-        if( pL != 0 )
+        std::vector<double>::const_iterator itr;
+        std::vector<double> standFeats = standGen->Evaluate( curPoint );
+        std::vector<double> patchFeats = patchGen->Evaluate( curPoint );
+        output << curIndex[0] << "," 
+               << curIndex[1] << ",";
+        for( itr = standFeats.begin(); itr != standFeats.end(); ++itr )
           {
-          v2g = ( pS - pL ) / pL;
+          output << *itr << ",";
           }
-        else
+        for( itr = patchFeats.begin(); itr != patchFeats.end(); ++itr )
           {
-          v2g = 0;
+          output << *itr << ",";
           }
-        if( iL != 0 )
-          {
-          v2e = ( iS - iL ) / iL;
-          }
-        else
-          {
-          v2e = 0;
-          }
-  
-        v3g = pM;
-        v3e = iM;
-
-        zAdd = addJHCalc->Evaluate( curPoint );
-        zSub = subJHCalc->Evaluate( curPoint );
-        zNom = nomJHCalc->Evaluate( curPoint );
-
-        typename std::vector<typename ImageType::Pointer>::const_iterator 
-          featureImageItr;
-        for( featureImageItr = featureImages.begin(); 
-             featureImageItr != featureImages.end();
-             ++featureImageItr )
-          {
-          typename ImageType::IndexType featIndex; 
-          (*featureImageItr)->TransformPhysicalPointToIndex( curPoint, 
-                                                             featIndex );
-          PixelType featPix = (*featureImageItr)->GetPixel( featIndex );
-          extras.push_back( featPix );
-          }
-  
-        // begin patch features
-        typename NeighborIterType::NeighborhoodType imageN = imageItr.GetNeighborhood();
-        typename NeighborIterType::NeighborhoodType priorN = priorItr.GetNeighborhood();
-
-        assert(imageN.Size() == priorN.Size());
-        assert(std::distance(imageN.Begin(), imageN.End()) == imageN.Size());
-
-        std::vector<float> normalizedImagePatch(imageN.Size());
-        std::vector<float> normalizedPriorPatch(imageN.Size());
-
-        // compute the mean intensity of the two patches
-        float imageMean = std::accumulate(imageN.Begin(), imageN.End(), 0.0) / imageN.Size();
-        float priorMean = std::accumulate(priorN.Begin(), priorN.End(), 0.0) / imageN.Size();
-      
-        std::transform(imageN.Begin(), imageN.End(),
-                       normalizedImagePatch.begin(),
-                       std::bind2nd(std::minus<float>(), imageMean));
-
-        std::transform(priorN.Begin(), priorN.End(),
-                       normalizedPriorPatch.begin(),
-                       std::bind2nd(std::minus<float>(), priorMean));                    
-      
-        float imageStdDev = std::sqrt(std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
-                                                         normalizedImagePatch.begin(),
-                                                         0.0) /
-                                      (imageN.Size() - 1));
-
-        float priorStdDev = std::sqrt(std::inner_product(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
-                                                         normalizedPriorPatch.begin(),
-                                                         0.0) /
-                                      (priorN.Size() - 1));
-
-        float imageNorm = std::sqrt(std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
-                                                       normalizedImagePatch.begin(), 0.0));
-
-        float priorNorm = std::sqrt(std::inner_product(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
-                                                       normalizedPriorPatch.begin(), 0.0));
-
-        if(imageNorm > 0.0)
-          {
-          std::transform(normalizedImagePatch.begin(), normalizedImagePatch.end(),
-                         normalizedImagePatch.begin(),
-                         std::bind2nd(std::divides<float>(), imageNorm));
-          }
-        
-        if(priorNorm > 0.0)
-          {
-          std::transform(normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
-                         normalizedPriorPatch.begin(),
-                         std::bind2nd(std::divides<float>(), priorNorm));
-          }
-
-        float crossCorrelation = std::inner_product(normalizedImagePatch.begin(), normalizedImagePatch.end(),
-                                                    normalizedPriorPatch.begin(), 0.0);
-
-        std::vector<float> differencePatch(imageN.Size());
-
-        std::transform(imageN.Begin(), imageN.End(),
-                       priorN.Begin(),
-                       differencePatch.begin(),
-                       std::minus<float>());
-
-        float norm = std::inner_product(differencePatch.begin(), differencePatch.end(),
-                                        differencePatch.begin(), 0.0);
-
-        float total = std::accumulate(differencePatch.begin(), differencePatch.end(), 0.0);
-
-        float maxdiff = *std::max_element(differencePatch.begin(),
-                                          differencePatch.end());
-
-        float mindiff = *std::min_element(differencePatch.begin(),
-                                          differencePatch.end());
-
-        size_t q1 = static_cast<size_t>(.25*differencePatch.size());
-        size_t q2 = static_cast<size_t>(.50*differencePatch.size());
-        size_t q3 = static_cast<size_t>(.75*differencePatch.size());
-        size_t q95 = static_cast<size_t>(.95*differencePatch.size());
-
-        std::sort(differencePatch.begin(), differencePatch.end());
-
-        float q1val = differencePatch[q1];
-        float q2val = differencePatch[q2];
-        float q3val = differencePatch[q3];
-        float q95val = differencePatch[q95];
-
-        // end patch features
-
-        output << curIndex[0] << "," << curIndex[1] << ","
-               << v1sg-v1se << "," << v1mg-v1me << "," << v1lg-v1le << "," 
-               << v2g-v2e << "," << v3g-v3e << ","
-               << zAdd << "," << zSub << "," << zNom << ","
-               << imageMean-priorMean << "," 
-               << imageStdDev-priorStdDev << ","
-               << crossCorrelation << ","
-               << mindiff << ","
-               << q1val << ","
-               << q2val << ","
-               << q3val << ","
-               << q95val << ","
-               << maxdiff << ","
-               << total << ","
-               << norm << ",";
-        std::vector<double>::const_iterator extraItr;
-        for( extraItr = extras.begin(); 
-             extraItr != extras.end(); ++extraItr )
-          {
-          output << *extraItr << ",";
-          }
-        
         output << label << "\n";
   
         if( count == 1000 )
@@ -786,8 +538,6 @@ int DoIt( int argc, char * argv[] )
       } // end if centerline is at valid point
     progress += step;
     ++centerlineItr;
-    ++priorItr;
-    ++imageItr;
     }
 
   output.close();

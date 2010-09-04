@@ -58,10 +58,10 @@ public:
   typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
   typedef typename Superclass::OutputType              OutputType;
   typedef typename Superclass::FeatureListType         FeatureListType;
-  typedef itk::Image<unsigned char, 2>                 MaskType;
   typedef itk::RidgeExtractor< InputImageType >        CalculatorType;
   typedef itk::JointHistogramImageFunction<InputImageType>
                                                        HistCalcType;
+  typedef typename HistCalcType::HistogramType         HistogramType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( StandardFeatureGeneratingImageFunction, 
@@ -74,42 +74,37 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        Superclass::ImageDimension );
   
-  void SetCenterlineImage( typename MaskType::Pointer clImg )
-  {
-    m_Centerlines = clImg;
-  }
-
   void SetPriorImage( typename InputImageType::Pointer prior )
   {
     m_Prior = prior;
   }
 
-  void SetMeanAddHistogram( typename InputImageType::Pointer addMeanHist )
+  void SetMeanAddHistogram( typename HistogramType::Pointer addMeanHist )
   {
     m_AddMeanHist = addMeanHist;
   }
 
-  void SetStdevAddHistogram( typename InputImageType::Pointer addStdevHist )
+  void SetStdevAddHistogram( typename HistogramType::Pointer addStdevHist )
   {
     m_AddStdevHist = addStdevHist;
   }
 
-  void SetMeanSubHistogram( typename InputImageType::Pointer subMeanHist )
+  void SetMeanSubHistogram( typename HistogramType::Pointer subMeanHist )
   {
     m_SubMeanHist = subMeanHist;
   }
 
-  void SetStdevSubHistogram( typename InputImageType::Pointer subStdevHist )
+  void SetStdevSubHistogram( typename HistogramType::Pointer subStdevHist )
   {
     m_SubStdevHist = subStdevHist;
   }
 
-  void SetMeanNormHistogram( typename InputImageType::Pointer normMeanHist )
+  void SetMeanNormHistogram( typename HistogramType::Pointer normMeanHist )
   {
     m_NormMeanHist = normMeanHist;
   }
 
-  void SetStdevNormHistogram( typename InputImageType::Pointer normStdevHist )
+  void SetStdevNormHistogram( typename HistogramType::Pointer normStdevHist )
   {
     m_NormStdevHist = normStdevHist;
   }
@@ -136,14 +131,13 @@ protected:
   /** Default destructor */
   ~StandardFeatureGeneratingImageFunction() {}
 
-  typename MaskType::Pointer       m_Centerlines;
   typename InputImageType::Pointer m_Prior;
-  typename InputImageType::Pointer m_AddMeanHist;
-  typename InputImageType::Pointer m_AddStdevHist;
-  typename InputImageType::Pointer m_SubMeanHist;
-  typename InputImageType::Pointer m_SubStdevHist;
-  typename InputImageType::Pointer m_NormMeanHist;
-  typename InputImageType::Pointer m_NormStdevHist;
+  typename HistogramType::Pointer m_AddMeanHist;
+  typename HistogramType::Pointer m_AddStdevHist;
+  typename HistogramType::Pointer m_SubMeanHist;
+  typename HistogramType::Pointer m_SubStdevHist;
+  typename HistogramType::Pointer m_NormMeanHist;
+  typename HistogramType::Pointer m_NormStdevHist;
 
   typename CalculatorType::Pointer m_InputCalcSmall;
   typename CalculatorType::Pointer m_InputCalcMedium;
