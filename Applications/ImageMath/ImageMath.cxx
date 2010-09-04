@@ -482,7 +482,117 @@ int DoIt( MetaCommand & command )
         ++it1;
         }
       }
+    else if( ( *it ).name == "Algorithm" )
+      {
+      std::cout << "Algorithm" << std::endl;
 
+      float threshLow = command.GetValueAsFloat( *it, "threshLow" );
+      float threshHigh = command.GetValueAsFloat( *it, "threshHigh" );
+
+      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "maskFile" ).c_str() );
+      typename ImageType::Pointer imIn2 = reader2->GetOutput();
+      try
+        {
+        reader2->Update();
+        }
+      catch( ... )
+        {
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
+        return EXIT_FAILURE;
+        }
+
+      int mode = command.GetValueAsInt( *it, "mode" );
+
+      itk::ImageRegionIterator< ImageType > it1( imIn, 
+            imIn->GetLargestPossibleRegion() );
+      itk::ImageRegionIterator< ImageType > it2( imIn2, 
+            imIn2->GetLargestPossibleRegion() );
+      it1.GoToBegin();
+      it2.GoToBegin();
+      double sum = 0;
+      double sumS = 0;
+      unsigned int count = 0;
+      while( !it1.IsAtEnd() && !it2.IsAtEnd() )
+        {
+        double maskV = it2.Get();
+        if( maskV >= threshLow && maskV <= threshHigh )
+          {
+          sum += it1.Get();
+          sumS += it1.Get() * it1.Get();
+          ++count;
+          }
+        ++it1;
+        ++it2;
+        }
+      double mean = sum/count;
+      if( mode == 0 )
+        {
+        std::cout << "Mean " << mean << std::endl;
+        }
+      else
+        {
+        double stdDev = (sumS - (sum*mean))/(count-1);
+        std::cout << "StdDev " << stdDev << std::endl;
+        }
+      }
+    else if( ( *it ).name == "Process" )
+      {
+      std::cout << "Process binary operation" << std::endl;
+
+      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "file2" ).c_str() );
+      typename ImageType::Pointer imIn2 = reader2->GetOutput();
+      try
+        {
+        reader2->Update();
+        }
+      catch( ... )
+        {
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
+        return EXIT_FAILURE;
+        }
+
+      int mode = command.GetValueAsInt( *it, "mode" );
+
+      itk::ImageRegionIterator< ImageType > it1( imIn, 
+            imIn->GetLargestPossibleRegion() );
+      itk::ImageRegionIterator< ImageType > it2( imIn2, 
+            imIn2->GetLargestPossibleRegion() );
+      it1.GoToBegin();
+      it2.GoToBegin();
+      if( mode == 0 )
+        {
+        while( !it1.IsAtEnd() && !it2.IsAtEnd() )
+          {
+          it1.Set( it1.Get() * it2.Get() );
+          ++it1;
+          ++it2;
+          }
+        }
+      }
+    else if( ( *it ).name == "process" )
+      {
+      std::cout << "Unary process" << std::endl;
+
+      int mode = command.GetValueAsInt( *it, "mode" );
+
+      itk::ImageRegionIterator< ImageType > it1( imIn, 
+            imIn->GetLargestPossibleRegion() );
+      it1.GoToBegin();
+      if( mode == 0 )
+        {
+        while( !it1.IsAtEnd() )
+          {
+          it1.Set( vnl_math_abs( it1.Get() ) );
+          ++it1;
+          }
+        }
+      }
     // Masking
     else if( ( *it ).name == "Masking" )
       {
@@ -603,7 +713,7 @@ int DoIt( MetaCommand & command )
         {
         filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
         filter->SetInput( imIn );
-        // filter->SetNormalizeAcrossScale( true );
+        filter->SetNormalizeAcrossScale( true );
         filter->SetSigma( sigma );
 
         filter->SetOrder( 
@@ -629,7 +739,7 @@ int DoIt( MetaCommand & command )
         filter;
       filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
       filter->SetInput( imIn );
-      // filter->SetNormalizeAcrossScale( true );
+      filter->SetNormalizeAcrossScale( true );
       filter->SetSigma( sigma );
       filter->SetDirection( direction );
       switch( order )
@@ -1339,6 +1449,24 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "Add", "weight2", MetaCommand::FLOAT, true );
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
 
+  command.SetOption( "Algorithm", "A", false,
+    "Return image value within masked region (mode: 0=mean, 1=stdDev)" );
+  command.AddOptionField( "Algorithm", "mode", MetaCommand::INT, true );
+  command.AddOptionField( "Algorithm", "threshLow", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "Algorithm", "threshHigh", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "Algorithm", "maskFile", MetaCommand::STRING, true );
+
+  command.SetOption( "process", "p", false,
+    "Process the image using a unary operation (0=abs)" );
+  command.AddOptionField( "process", "mode", MetaCommand::INT, true );
+
+  command.SetOption( "Process", "P", false,
+    "Process the image using a binary operation (0=multiple)" );
+  command.AddOptionField( "Process", "mode", MetaCommand::INT, true );
+  command.AddOptionField( "Process", "file2", MetaCommand::STRING, true );
+
   command.SetOption( "Threshold", "t", false, 
     "if tLow<=I(x)<=tHigh then I(x)=vTrue else I(x)=vFalse" );
   command.AddOptionField( "Threshold", "threshLow", MetaCommand::FLOAT,
@@ -1519,7 +1647,7 @@ int main( int argc, char *argv[] )
         case itk::ImageIOBase::USHORT:
           return DoIt<unsigned short, 3>( command );
         case itk::ImageIOBase::SHORT:
-          DoIt<short, 3>( command );
+          return DoIt<short, 3>( command );
         case itk::ImageIOBase::UINT:
           return DoIt<unsigned int, 3>( command );
         case itk::ImageIOBase::INT:
