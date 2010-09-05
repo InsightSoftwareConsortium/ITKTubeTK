@@ -45,7 +45,7 @@ add_test( ${PROJECT_NAME}Test1
                ${INPUT_DATA}/SyntheticSurfaceImage.mha
                ${INPUT_DATA}/SyntheticTubeImage.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha
-               -s 1000 )
+               -s 1000 -S 1234 )
 
 add_test( ${PROJECT_NAME}Test1-Compare
              ${IMAGECOMPARE_EXE}

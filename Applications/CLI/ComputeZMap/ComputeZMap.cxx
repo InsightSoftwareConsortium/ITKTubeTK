@@ -122,6 +122,10 @@ int DoIt( int argc, char * argv[] )
 
   RandIterType itr( image1, image1->GetLargestPossibleRegion() );
   itr.SetNumberOfSamples( samples );
+  if( seed > 0 )
+    {
+    itr.ReinitializeSeed( seed );
+    }
   itr.GoToBegin();
   while( !itr.IsAtEnd() )
     {

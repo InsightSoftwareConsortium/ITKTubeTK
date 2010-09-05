@@ -44,7 +44,15 @@
       <description>Number of Samples to use in the random calculation</description>
       <longflag>samples</longflag>
       <flag>s</flag>
-      <default>4194304</default>
+      <default>1000000</default>
+    </integer>
+    <integer>
+      <name>seed</name>
+      <label>Random number seed</label>
+      <description>Seed value to use in the random iterator (-1 means use no seed).</description>
+      <longflag>seed</longflag>
+      <flag>S</flag>
+      <default>-1</default>
     </integer>
   </parameters>
 
