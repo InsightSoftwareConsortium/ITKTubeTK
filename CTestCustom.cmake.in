@@ -6,6 +6,7 @@ SET(CTEST_CUSTOM_WARNING_MATCH
 
 SET(CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
+    "ctk"
     "itktiff"
     "vxl"
     "netlib"
