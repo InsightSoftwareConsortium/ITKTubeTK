@@ -59,11 +59,11 @@ template< class ImageT, unsigned int N, class LabelmapT >
 PDFSegmenter< ImageT, N, LabelmapT >
 ::PDFSegmenter()
 {
-  m_InputVolume1 = 0;
-  m_InputVolume2 = 0;
-  m_InputVolume3 = 0;
+  m_InputVolume1 = NULL;
+  m_InputVolume2 = NULL;
+  m_InputVolume3 = NULL;
 
-  m_Labelmap = 0;
+  m_Labelmap = NULL;
 
   m_ObjectIdList.clear();
   m_ObjectIdList.push_back( 1 );
@@ -1135,10 +1135,38 @@ PDFSegmenter< ImageT, N, LabelmapT >
 {
   Superclass::PrintSelf( os, indent );
 
-  os << indent << "Input volume 1 = " << m_InputVolume1 << std::endl;
-  os << indent << "Input volume 2 = " << m_InputVolume2 << std::endl;
-  os << indent << "Input volume 3 = " << m_InputVolume3 << std::endl;
-  os << indent << "Labelmap = " << m_Labelmap << std::endl;
+  if( m_InputVolume1.IsNotNull() )
+    {
+    os << indent << "Input volume 1 = " << m_InputVolume1 << std::endl;
+    }
+  else
+    {
+    os << indent << "Input volume 1 = NULL" << std::endl;
+    }
+  if( m_InputVolume2.IsNotNull() )
+    {
+    os << indent << "Input volume 2 = " << m_InputVolume2 << std::endl;
+    }
+  else
+    {
+    os << indent << "Input volume 2 = NULL" << std::endl;
+    }
+  if( m_InputVolume3.IsNotNull() )
+    {
+    os << indent << "Input volume 3 = " << m_InputVolume3 << std::endl;
+    }
+  else
+    {
+    os << indent << "Input volume 3 = NULL" << std::endl;
+    }
+  if( m_Labelmap.IsNotNull() )
+    {
+    os << indent << "Input volume 3 = " << m_Labelmap << std::endl;
+    }
+  else
+    {
+    os << indent << "Input volume 3 = NULL" << std::endl;
+    }
   os << indent << "Use texture = " << m_UseTexture << std::endl;
   os << indent << "Erode radius = " << m_ErodeRadius << std::endl;
   os << indent << "Hole fill iterations = " << m_HoleFillIterations 
