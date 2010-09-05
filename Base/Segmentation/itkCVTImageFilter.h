@@ -31,6 +31,7 @@ limitations under the License.
 #include "itkContinuousIndex.h"
 #include "itkImageToImageFilter.h"
 #include "itkImageRegionIterator.h"
+#include "itkMersenneTwisterRandomVariateGenerator.h"
 
 namespace itk
 {
@@ -141,6 +142,8 @@ private:
   SizeType              m_InputImageSize;
 
   long int              m_Seed;
+  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer 
+                        m_RandomGenerator;
 
   SamplingMethodEnum    m_InitialSamplingMethod;
 

@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkCVTImageFilter.h"
 #include "itkDanielssonDistanceMapImageFilter.h"
+#include "itkMersenneTwisterRandomVariateGenerator.h"
 
 namespace itk
 {
@@ -34,7 +35,9 @@ template < class TInputImage, class TOutputImage >
 CVTImageFilter< TInputImage, TOutputImage >
 ::CVTImageFilter()
 {
-  m_Seed = 1234;
+  m_Seed = -1;
+  m_RandomGenerator = 
+    itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
 
   m_InputImage = NULL;
   m_InputImageMax = 0;
@@ -133,7 +136,14 @@ CVTImageFilter< TInputImage, TOutputImage >
   double iterationEnergyDifference = 0.0;
   double iterationEnergy;// = 0.0;
 
-  srand( m_Seed );
+  if( m_Seed != -1 )
+    {
+    m_RandomGenerator->Initialize( m_Seed );
+    }
+  else
+    {
+    m_RandomGenerator->Initialize();
+    }
 
   if(m_InitialSamplingMethod != CVT_USER)
     {
@@ -346,6 +356,7 @@ CVTImageFilter< TInputImage, TOutputImage >
   //std::cout << "    computing sample size = " << sampleSize << std::endl;
   double p1, u;
   IndexType iIndx;
+  iIndx.Fill( 0 );
   ContinuousIndexType indx;
   switch(samplingMethod)
     {
@@ -384,16 +395,8 @@ CVTImageFilter< TInputImage, TOutputImage >
         {
         for ( i = 0; i < ImageDimension; i++ )
           {
-          iIndx[i] = (int)(((double)rand()/(double)RAND_MAX) 
-                           * m_InputImageSize[i]);
-          if(iIndx[i] < 0)
-            {
-            iIndx[i] = 0;
-            }
-          if(iIndx[i] > (int)m_InputImageSize[i]-1)
-            {
-            iIndx[i] = m_InputImageSize[i]-1;
-            }
+          iIndx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
+                           * m_InputImageSize[i]-1 );
           }
         (*sample).push_back(iIndx);
         }
@@ -409,19 +412,12 @@ CVTImageFilter< TInputImage, TOutputImage >
           {
           for ( i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = (((double)rand()/(double)RAND_MAX)*m_InputImageSize[i]);
+            indx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
+                             * m_InputImageSize[i]-1 );
             iIndx[i] = (int)(indx[i]);
-            if(iIndx[i] < 0)
-              {
-              iIndx[i] = 0;
-              }
-            if(iIndx[i] > (int)m_InputImageSize[i]-1)
-              {
-              iIndx[i] = m_InputImageSize[i]-1;
-              }
             }
           p1 = m_InputImage->GetPixel(iIndx) / m_InputImageMax;
-          u = (double)rand()/(double)RAND_MAX;
+          u = (double)m_RandomGenerator->GetUniformVariate( 0, 1 );
           }
         (*sample).push_back(indx);
         }
