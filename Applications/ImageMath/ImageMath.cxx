@@ -713,7 +713,7 @@ int DoIt( MetaCommand & command )
         {
         filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
         filter->SetInput( imIn );
-        filter->SetNormalizeAcrossScale( true );
+        //filter->SetNormalizeAcrossScale( true );
         filter->SetSigma( sigma );
 
         filter->SetOrder( 
@@ -739,7 +739,7 @@ int DoIt( MetaCommand & command )
         filter;
       filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
       filter->SetInput( imIn );
-      filter->SetNormalizeAcrossScale( true );
+      //filter->SetNormalizeAcrossScale( true );
       filter->SetSigma( sigma );
       filter->SetDirection( direction );
       switch( order )
