@@ -43,7 +43,7 @@ set( IMAGECOMPARE_EXE
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
                --objectId 127,255
-               --holeFilIterations 3
+               --holeFillIterations 3
                --erodeRadius 1
                --voidId 0
                --reclassifyNotObjectMask
