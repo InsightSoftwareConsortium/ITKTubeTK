@@ -43,7 +43,7 @@ class ITK_EXPORT PatchFeatureGeneratingImageFunction :
 public:
 
   /** Class typedefs **/
-  typedef PatchFeatureGeneratingImageFunction       Self;
+  typedef PatchFeatureGeneratingImageFunction          Self;
   typedef FeatureGeneratingImageFunction<TInputImage,TCoordRep>  
                                                        Superclass;
   typedef SmartPointer<Self>                           Pointer;
@@ -55,28 +55,29 @@ public:
   typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
   typedef typename Superclass::OutputType              OutputType;
   typedef typename Superclass::FeatureListType         FeatureListType;
-  typedef itk::ConstNeighborhoodIterator<InputImageType>             NeighborIterType;
+
+  typedef itk::ConstNeighborhoodIterator<InputImageType>  NeighborIterType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( PatchFeatureGeneratingImageFunction, 
-                FeatureGeneratingImageFunction );
+    FeatureGeneratingImageFunction );
 
   /** Patch New Macro. */
   itkNewMacro( Self );
 
   /** Constant for fetching the dimensions of the image. **/
   itkStaticConstMacro( ImageDimension, unsigned int,
-                       Superclass::ImageDimension );
+    Superclass::ImageDimension );
   
   void SetPriorImage( typename InputImageType::Pointer prior )
-  {
+    {
     m_Prior = prior;
-  }
+    }
 
   void SetWidth( size_t width )
-  {
+    {
     m_PatchWidth = width;
-  }
+    }
 
   /** Get the feature vector at an index for a given point **/
   virtual OutputType EvaluateAtIndex( const IndexType & index ) const;
