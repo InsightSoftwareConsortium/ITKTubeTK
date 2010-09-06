@@ -18,8 +18,8 @@
 // Description:
 // Get the PixelType and ComponentType from fileName
 void GetImageType (std::string fileName,
-                   itk::ImageIOBase::IOPixelType &pixelType,
-                   itk::ImageIOBase::IOComponentType &componentType)
+  itk::ImageIOBase::IOPixelType &pixelType,
+  itk::ImageIOBase::IOComponentType &componentType)
 {
   typedef itk::Image<short, 3> ImageType;
   itk::ImageFileReader<ImageType>::Pointer imageReader =
@@ -34,8 +34,8 @@ void GetImageType (std::string fileName,
 // Description:
 // Get the PixelTypes and ComponentTypes from fileNames
 void GetImageTypes (std::vector<std::string> fileNames,
-                    std::vector<itk::ImageIOBase::IOPixelType> &pixelTypes,
-                    std::vector<itk::ImageIOBase::IOComponentType> &componentTypes)
+  std::vector<itk::ImageIOBase::IOPixelType> &pixelTypes,
+  std::vector<itk::ImageIOBase::IOComponentType> &componentTypes)
 {
   pixelTypes.clear();
   componentTypes.clear();
@@ -70,8 +70,8 @@ int DoIt( int argc, char *argv[] )
   typedef itk::ImageFileWriter< MaskImageType >    MaskWriterType;
   typedef itk::ImageFileWriter< ProbImageType >    ProbImageWriterType;
 
-  typedef itk::PDFSegmenter< InputImageType, N, MaskImageType >   PDFSegmenterType;
-
+  typedef itk::PDFSegmenter< InputImageType, N, MaskImageType >   
+    PDFSegmenterType;
   typename PDFSegmenterType::Pointer pdfSegmenter = PDFSegmenterType::New();
 
   timeCollector.Start("LoadData");
@@ -285,5 +285,3 @@ int main( int argc, char * argv[] )
     }
   return EXIT_SUCCESS;
 }
-
-
