@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef _itkBlur3DImageFunction_h
-#define _itkBlur3DImageFunction_h
+#ifndef __itkBlur3DImageFunction_h
+#define __itkBlur3DImageFunction_h
 
 #include <itkIndex.h>
 #include <itkImageFunction.h>
@@ -83,8 +83,8 @@ public:
   virtual double EvaluateAtIndex( const IndexType & index ) const;
 
   /** Evaluate the function at specified ContinousIndex position. */
-  virtual double EvaluateAtContinuousIndex( 
-    const ContinuousIndexType & index ) const ;
+  virtual double EvaluateAtContinuousIndex( const ContinuousIndexType &
+    index ) const ;
 
   /**
    * Set the Scale */
@@ -129,7 +129,8 @@ private:
   void operator=( const Self& );
 
   typedef std::list< double >                        KernelWeightsListType;
-  typedef std::list< typename InputImageType::IndexType >  KernelXListType;
+  typedef std::list< typename InputImageType::IndexType >  
+                                                     KernelXListType;
 
   bool                    m_Debug;
 
@@ -155,4 +156,3 @@ private:
 #endif
 
 #endif
-
