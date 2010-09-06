@@ -132,12 +132,12 @@ protected:
   ~StandardFeatureGeneratingImageFunction() {}
 
   typename InputImageType::Pointer m_Prior;
-  typename HistogramType::Pointer m_AddMeanHist;
-  typename HistogramType::Pointer m_AddStdevHist;
-  typename HistogramType::Pointer m_SubMeanHist;
-  typename HistogramType::Pointer m_SubStdevHist;
-  typename HistogramType::Pointer m_NormMeanHist;
-  typename HistogramType::Pointer m_NormStdevHist;
+  typename HistogramType::Pointer  m_AddMeanHist;
+  typename HistogramType::Pointer  m_AddStdevHist;
+  typename HistogramType::Pointer  m_SubMeanHist;
+  typename HistogramType::Pointer  m_SubStdevHist;
+  typename HistogramType::Pointer  m_NormMeanHist;
+  typename HistogramType::Pointer  m_NormStdevHist;
 
   typename CalculatorType::Pointer m_InputCalcSmall;
   typename CalculatorType::Pointer m_InputCalcMedium;
