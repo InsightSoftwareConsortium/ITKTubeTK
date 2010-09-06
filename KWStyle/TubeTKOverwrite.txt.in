@@ -36,6 +36,8 @@ itkNJetImageFunction.h Namespace Disable
 itkNJetImageFunction.txx Namespace Disable
 itkImageRegionMomentsCalculator.h Namespace Disable
 itkImageRegionMomentsCalculator.txx Namespace Disable
+itkStandardFeatureGeneratingImageFunction.txx
+itkPatchFeatureGeneratingImageFunction.txx
 OtsuThreshold.cxx Namespace Disable
 OrImages.cxx Namespace Disable
 PdPfaScoring.cxx Namespace Disable
