@@ -56,33 +56,33 @@ int DoIt( int argc, char * argv[] );
 
 template< class pixelT, unsigned int dimensionT >
 class MyMIWPFunc:
-  public itk::UserFunc< vnl_vector<int>, double > 
+public itk::UserFunc< vnl_vector<int>, double > 
+{
+public:
+
+  typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
+  MyMIWPFunc( ImageEvalType & eval )
   {
-  public:
-
-    typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
-    MyMIWPFunc( ImageEvalType & eval )
-      {
-      cEval = eval;
-      cGof = 0;
-      };
-
-    const double & value( const vnl_vector<int> & x )
-      {
-      cEval.SetErode( x[0] );
-      cEval.SetDilate( x[1] );
-      cEval.SetGaussianBlur( x[2] );
-      cEval.Update();
-      cGof = cEval.GetGoodnessOfFit();
-      return cGof;
-      };
-
-  private:
-
-    ImageEvalType cEval;
-    double cGof;
-
+    cEval = eval;
+    cGof = 0;
   };
+
+  const double & value( const vnl_vector<int> & x )
+  {
+    cEval.SetErode( x[0] );
+    cEval.SetDilate( x[1] );
+    cEval.SetGaussianBlur( x[2] );
+    cEval.Update();
+    cGof = cEval.GetGoodnessOfFit();
+    return cGof;
+  };
+
+private:
+
+  ImageEvalType cEval;
+  double cGof;
+
+};
 
 // Must include CLP before including tubeCLIHleperFunctions
 #include "MatchImageWithPriorCLP.h"
