@@ -35,55 +35,54 @@ namespace itk
 
 /** simple function that return the orthogonal vector to one*/
 template <class T> 
-  vnl_vector<T>
-  GetOrthogonalVector(vnl_vector<T> x);
+vnl_vector<T>
+GetOrthogonalVector(vnl_vector<T> x);
 
 /** simple function that return the cross vector from two vectors*/
 template <class T> 
-  vnl_vector<T>
-  GetCrossVector(vnl_vector<T> x);
+vnl_vector<T>
+GetCrossVector(vnl_vector<T> x);
 
 /** return the new position folowing the vector dir */
 template <class T> 
-  vnl_vector<T> 
-  ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
+vnl_vector<T> 
+ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
 
 /** Compute the euclidean distance */
 template <class T> 
-  T
-  ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
+T
+ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
 
 /** Compute eigen values and vectors  */
 template <class T>
-  void
-  Eigen(vnl_matrix<T> &mat,
-        vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
-        bool orderByAbs);
+void
+Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects,
+  vnl_vector<T> &eVals, bool orderByAbs);
 
 /** Preform trilinear diagonalisation */
 template <class T>
-  void
-  TriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+void
+TriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
 /** Preform trilinear diagonalisation in 2D */
 template <class T> 
-  void
-  TriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+void
+TriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
 /** Preform trilinear diagonalisation in 3D */
 template <class T>
-  void
-  TriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+void
+TriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
 /**                                          */
 template <class T>
-  void
-  Tqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
+void
+Tqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
 
 /** Compute the euclidean distance for two points */
 template <class PointType>
-  double
-  ComputeEuclideanDistance(PointType x, PointType y);
+double
+ComputeEuclideanDistance(PointType x, PointType y);
 
 } // end namespace itk
 
@@ -93,5 +92,3 @@ template <class PointType>
 #endif
 
 #endif /* __itkMatrixMath_h */
-
-
