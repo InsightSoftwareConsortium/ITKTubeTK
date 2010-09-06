@@ -75,47 +75,47 @@ public:
                        Superclass::ImageDimension );
   
   void SetPriorImage( typename InputImageType::Pointer prior )
-  {
+    {
     m_Prior = prior;
-  }
+    }
 
   void SetMeanAddHistogram( typename HistogramType::Pointer addMeanHist )
-  {
+    {
     m_AddMeanHist = addMeanHist;
-  }
+    }
 
   void SetStdevAddHistogram( typename HistogramType::Pointer addStdevHist )
-  {
+    {
     m_AddStdevHist = addStdevHist;
-  }
+    }
 
   void SetMeanSubHistogram( typename HistogramType::Pointer subMeanHist )
-  {
+    {
     m_SubMeanHist = subMeanHist;
-  }
+    }
 
   void SetStdevSubHistogram( typename HistogramType::Pointer subStdevHist )
-  {
+    {
     m_SubStdevHist = subStdevHist;
-  }
+    }
 
   void SetMeanNormHistogram( typename HistogramType::Pointer normMeanHist )
-  {
+    {
     m_NormMeanHist = normMeanHist;
-  }
+    }
 
   void SetStdevNormHistogram( typename HistogramType::Pointer normStdevHist )
-  {
+    {
     m_NormStdevHist = normStdevHist;
-  }
+    }
 
   void SetScale( double scale )
-  {
+    {
     m_Scale = scale;
     m_SigmaMedium = (m_Scale/2)*0.6667;
     m_SigmaSmall = 0.6667*m_SigmaMedium;
     m_SigmaLarge = 1.3333*m_SigmaMedium;
-  }
+    }
 
   /** Prepare the filter to go **/
   void PrepFilter();
