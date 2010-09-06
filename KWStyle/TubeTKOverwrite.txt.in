@@ -46,3 +46,4 @@ itkJointHistogramImageFunction.txx Namespace Disable
 GenerateFeaturesForWeka.cxx Namespace Disable
 Skeletonize.cxx Namespace Disable
 WekaToImage.cxx Namespace Disable
+ComputeZMap.cxx Namespace Disable
