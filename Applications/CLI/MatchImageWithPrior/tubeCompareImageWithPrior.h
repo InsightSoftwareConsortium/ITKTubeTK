@@ -52,8 +52,8 @@ public:
   void SetMaskImage( typename ImageType::Pointer maskImage );
   typename ImageType::Pointer GetMaskImage( void );
 
-  void SetOriginalMaskImage( typename ImageType::Pointer orgMaskImage );
-  typename ImageType::Pointer GetOriginalMaskImage( void );
+  typename ImageType::Pointer GetOutputVolumeImage( void );
+  typename ImageType::Pointer GetOutputMaskImage( void );
 
   void SetMetricMask( typename ImageType::Pointer metricMask );
   typename ImageType::Pointer GetMetricMask( void );
@@ -101,7 +101,9 @@ private:
 
   typename ImageType::Pointer m_VolImage;
   typename ImageType::Pointer m_MaskImage;
-  typename ImageType::Pointer m_OrgMaskImage;
+  typename ImageType::Pointer m_OutputVolImage;
+  typename ImageType::Pointer m_OutputMaskImage;
+
   typename ImageType::Pointer m_MetricMask;
   float                       m_Foreground;
   float                       m_Background;

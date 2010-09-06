@@ -35,7 +35,6 @@ limitations under the License.
 #include <sstream>
 
 #include "itkOrientedImage.h"
-#include "itkImageFileWriter.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -75,7 +74,8 @@ CompareImageWithPrior( void )
 {
   m_VolImage = NULL;
   m_MaskImage = NULL;
-  m_OrgMaskImage = NULL;
+  m_OutputVolImage = NULL;
+  m_OutputMaskImage = NULL;
   m_MetricMask = NULL;
   m_Foreground = 0;
   m_Background = 0;
@@ -138,18 +138,19 @@ GetMaskImage( void )
 }
 
 template< class pixelT, unsigned int dimensionT >
-void CompareImageWithPrior< pixelT, dimensionT>::
-SetOriginalMaskImage( typename ImageType::Pointer orgMaskImage )
+typename itk::OrientedImage< float, dimensionT >::Pointer 
+CompareImageWithPrior< pixelT, dimensionT>::
+GetOutputVolumeImage( void )
 {
-  m_OrgMaskImage = orgMaskImage;
+  return m_OutputVolImage;
 }
 
 template< class pixelT, unsigned int dimensionT >
 typename itk::OrientedImage< float, dimensionT >::Pointer 
 CompareImageWithPrior< pixelT, dimensionT>::
-GetOriginalMaskImage( void )
+GetOutputMaskImage( void )
 {
-  return m_OrgMaskImage;
+  return m_OutputMaskImage;
 }
 
 template< class pixelT, unsigned int dimensionT >
@@ -316,6 +317,10 @@ void CompareImageWithPrior< pixelT, dimensionT>::
 Update( void )
 {
 
+  m_OutputVolImage = m_VolImage;
+  m_OutputMaskImage = m_MaskImage;
+  typename ImageType::Pointer regMaskImage = m_MaskImage;
+
   if( m_Erode > 0 )
     {
     std::cout << "Eroding = " << m_Erode << std::endl;
@@ -341,12 +346,14 @@ Update( void )
     for(int r=0; r<m_Erode; r++)
       {
       typename ErodeFilterType::Pointer filter = ErodeFilterType::New();
-      filter->SetBackgroundValue( 0 );
-      filter->SetErodeValue( 1 );
+      filter->SetBackgroundValue( m_Background );
+      filter->SetErodeValue( m_Foreground );
       filter->SetKernel( ball );
-      filter->SetInput( m_MaskImage );
+      filter->SetInput( m_OutputMaskImage );
       filter->Update();
-      m_MaskImage = filter->GetOutput();
+      m_OutputMaskImage = filter->GetOutput();
+
+      regMaskImage = m_OutputMaskImage;
       }
 
     if( m_TimeCollector )
@@ -384,12 +391,14 @@ Update( void )
     for(int r=0; r<m_Dilate; r++)
       {
       typename DilateFilterType::Pointer filter = DilateFilterType::New();
-      filter->SetBackgroundValue( 0 );
-      filter->SetDilateValue( 1 );
+      filter->SetBackgroundValue( m_Background );
+      filter->SetDilateValue( m_Foreground );
       filter->SetKernel( ball );
-      filter->SetInput( m_MaskImage );
+      filter->SetInput( m_OutputMaskImage );
       filter->Update();
-      m_MaskImage = filter->GetOutput();
+      m_OutputMaskImage = filter->GetOutput();
+
+      regMaskImage = m_OutputMaskImage;
       }
 
     if( m_TimeCollector )
@@ -401,6 +410,7 @@ Update( void )
       m_ProgressReporter->Report( m_ProgressStart + 0.2*m_ProgressRange );
       }
     }
+
 
   if( m_GaussianBlur > 0 )
     {
@@ -417,8 +427,7 @@ Update( void )
     for(unsigned int i=0; i<dimensionT; i++)
       {
       filter = FilterType::New();
-      filter->SetInput( m_MaskImage );
-      filter->SetNormalizeAcrossScale( true );
+      filter->SetInput( m_OutputMaskImage );
       filter->SetSigma( m_GaussianBlur );
 
       filter->SetOrder( 
@@ -426,7 +435,7 @@ Update( void )
       filter->SetDirection( i );
 
       filter->Update();
-      m_MaskImage = filter->GetOutput();
+      m_OutputMaskImage = filter->GetOutput();
       }
 
     if( m_TimeCollector )
@@ -453,11 +462,11 @@ Update( void )
         NormFilterType;
   
       typename NormFilterType::Pointer norm1 = NormFilterType::New();
-      norm1->SetInput( m_VolImage );
+      norm1->SetInput( m_OutputVolImage );
       norm1->Update();
 
       typename NormFilterType::Pointer norm2 = NormFilterType::New();
-      norm2->SetInput( m_MaskImage );
+      norm2->SetInput( m_OutputMaskImage );
       norm2->Update();
 
       typename RegistrationMethodType::Pointer reg = 
@@ -483,7 +492,7 @@ Update( void )
         reg->SetInitialTransformParameters( 
           m_RegistrationTransform->GetParameters() );
         }
-      typename ImageType::SizeType imageSize = m_VolImage
+      typename ImageType::SizeType imageSize = m_OutputVolImage
                                                ->GetLargestPossibleRegion()
                                                .GetSize();
       for( unsigned int i=0; i<dimensionT; i++)
@@ -538,14 +547,14 @@ Update( void )
       InterpolatorType;
     typename InterpolatorType::Pointer interpolator =
       InterpolatorType::New();
-    interpolator->SetInputImage( m_MaskImage );
+    interpolator->SetInputImage( m_OutputMaskImage );
 
-    resampler->SetInput( m_MaskImage );
+    resampler->SetInput( m_OutputMaskImage );
     resampler->SetInterpolator( interpolator.GetPointer() );
-    resampler->SetOutputParametersFromImage( m_VolImage );
+    resampler->SetOutputParametersFromImage( m_OutputVolImage );
     resampler->SetTransform( m_RegistrationTransform );
     resampler->Update();
-    m_MaskImage = resampler->GetOutput();
+    m_OutputMaskImage = resampler->GetOutput();
 
     typedef itk::NearestNeighborInterpolateImageFunction< ImageType,
       double > NNInterpolatorType;
@@ -553,13 +562,13 @@ Update( void )
       ResamplerType::New();
     typename NNInterpolatorType::Pointer orgInterpolator =
       NNInterpolatorType::New();
-    orgInterpolator->SetInputImage( m_OrgMaskImage );
-    orgResampler->SetInput( m_OrgMaskImage );
+    orgInterpolator->SetInputImage( regMaskImage );
+    orgResampler->SetInput( regMaskImage );
     orgResampler->SetInterpolator( orgInterpolator.GetPointer() );
-    orgResampler->SetOutputParametersFromImage( m_OrgMaskImage );
+    orgResampler->SetOutputParametersFromImage( m_OutputVolImage );
     orgResampler->SetTransform( m_RegistrationTransform );
     orgResampler->Update();
-    m_OrgMaskImage = orgResampler->GetOutput();
+    regMaskImage = orgResampler->GetOutput();
 
     if( m_TimeCollector )
       {
@@ -579,7 +588,7 @@ Update( void )
       {
       m_TimeCollector->Start("Crop2");
       }
-    typename ImageType::SizeType roiSize = m_VolImage
+    typename ImageType::SizeType roiSize = m_OutputVolImage
                                              ->GetLargestPossibleRegion()
                                              .GetSize();
     typename ImageType::SizeType lowerCropSize;
@@ -609,18 +618,27 @@ Update( void )
       CropFilterType::New();
     typename CropFilterType::Pointer cropMaskFilter =
       CropFilterType::New();
+    typename CropFilterType::Pointer cropRegMaskFilter =
+      CropFilterType::New();
   
     cropVolumeFilter->SetLowerBoundaryCropSize( lowerCropSize );
     cropVolumeFilter->SetUpperBoundaryCropSize( upperCropSize );
-    cropVolumeFilter->SetInput( m_VolImage );
+    cropVolumeFilter->SetInput( m_OutputVolImage );
     cropVolumeFilter->Update();
-    m_VolImage = cropVolumeFilter->GetOutput();
+    m_OutputVolImage = cropVolumeFilter->GetOutput();
   
     cropMaskFilter->SetLowerBoundaryCropSize( lowerCropSize );
     cropMaskFilter->SetUpperBoundaryCropSize( upperCropSize );
-    cropMaskFilter->SetInput( m_MaskImage );
+    cropMaskFilter->SetInput( m_OutputMaskImage );
     cropMaskFilter->Update();
-    m_MaskImage = cropMaskFilter->GetOutput();
+    m_OutputMaskImage = cropMaskFilter->GetOutput();
+
+    cropRegMaskFilter->SetLowerBoundaryCropSize( lowerCropSize );
+    cropRegMaskFilter->SetUpperBoundaryCropSize( upperCropSize );
+    cropRegMaskFilter->SetInput( regMaskImage );
+    cropRegMaskFilter->Update();
+    regMaskImage = cropRegMaskFilter->GetOutput();
+
     if( m_TimeCollector )
       {
       m_TimeCollector->Stop("Crop2");
@@ -641,11 +659,12 @@ Update( void )
       }
   
     typedef itk::ImageRegionIterator< ImageType > IterType;
-    IterType volIter( m_VolImage, m_VolImage->GetLargestPossibleRegion() );
-    IterType maskIter( m_MaskImage,
-                       m_MaskImage->GetLargestPossibleRegion() );
-    IterType orgMaskIter( m_OrgMaskImage,
-                          m_OrgMaskImage->GetLargestPossibleRegion() );
+    IterType volIter( m_OutputVolImage,
+      m_OutputVolImage->GetLargestPossibleRegion() );
+    IterType maskIter( m_OutputMaskImage,
+      m_OutputMaskImage->GetLargestPossibleRegion() );
+    IterType regMaskIter( regMaskImage,
+      regMaskImage->GetLargestPossibleRegion() );
   
     int countVolFg = 0;
     double meanVolFg = 0;
@@ -658,17 +677,17 @@ Update( void )
 
     volIter.GoToBegin();
     maskIter.GoToBegin();
-    orgMaskIter.GoToBegin();
+    regMaskIter.GoToBegin();
     while( !volIter.IsAtEnd() )
       {
-      if( orgMaskIter.Get() == m_Foreground )
+      if( regMaskIter.Get() == m_Foreground )
         {
         meanVolFg += volIter.Get();
         meanMaskFg += maskIter.Get();
         ++countVolFg;
         ++countMaskFg;
         }
-      else if( orgMaskIter.Get() == m_Background )
+      else if( regMaskIter.Get() == m_Background )
         {
         meanVolBg += volIter.Get();
         meanMaskBg += maskIter.Get();
@@ -678,13 +697,25 @@ Update( void )
   
       ++volIter;
       ++maskIter;
-      ++orgMaskIter;
+      ++regMaskIter;
       }
 
-    meanVolFg /= countVolFg;
-    meanVolBg /= countVolBg;
-    meanMaskFg /= countMaskFg;
-    meanMaskBg /= countMaskBg;
+    if( countVolFg != 0 )
+      {
+      meanVolFg /= countVolFg;
+      }
+    if( countVolBg != 0 )
+      {
+      meanVolBg /= countVolBg;
+      }
+    if( countMaskFg != 0 )
+      {
+      meanMaskFg /= countMaskFg;
+      }
+    if( countMaskBg != 0 )
+      {
+      meanMaskBg /= countMaskBg;
+      }
 
     std::cout << "VBg = " << meanVolBg <<  " - "
               << "VFg = " << meanVolFg << std::endl;
@@ -698,7 +729,7 @@ Update( void )
     double scale = (meanVolFg - meanVolBg) / (meanMaskFg - meanMaskBg);
     double shift = meanVolBg/scale - meanMaskBg;
     filter = FilterType::New();
-    filter->SetInput( m_MaskImage );
+    filter->SetInput( m_OutputMaskImage );
     filter->SetShift( shift );
     filter->SetScale( scale );
 
@@ -706,7 +737,7 @@ Update( void )
     std::cout << "Shift = " << shift << std::endl;
  
     filter->Update();
-    m_MaskImage = filter->GetOutput();
+    m_OutputMaskImage = filter->GetOutput();
   
     if( m_TimeCollector )
       {
@@ -718,12 +749,6 @@ Update( void )
       }
     }
 
-  typedef itk::ImageFileWriter< ImageType > WriterType;
-  typename WriterType::Pointer writerMask = WriterType::New();
-  writerMask->SetInput( m_MaskImage );
-  writerMask->SetFileName( "maskNorm.mha" );
-  writerMask->Update();
-  
   /* Compute similarity */
   if( true )
     {
@@ -738,12 +763,12 @@ Update( void )
       NormFilterType;
   
     typename NormFilterType::Pointer norm1 = NormFilterType::New();
-    norm1->SetInput( m_VolImage );
+    norm1->SetInput( m_OutputVolImage );
     norm1->Update();
     typename ImageType::Pointer image1 = norm1->GetOutput();
   
     typename NormFilterType::Pointer norm2 = NormFilterType::New();
-    norm2->SetInput( m_MaskImage );
+    norm2->SetInput( m_OutputMaskImage );
     norm2->Update();
     typename ImageType::Pointer image2 = norm2->GetOutput();
   

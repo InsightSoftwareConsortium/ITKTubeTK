@@ -108,8 +108,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
   
   /** Read input images */
-  typename ImageType::Pointer curVolume;
-  typename ImageType::Pointer curMask;
+  typename ImageType::Pointer inVolume;
+  typename ImageType::Pointer inMask;
 
   timeCollector.Start("Read");
     {
@@ -146,17 +146,15 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
   
-    curVolume = readerVolume->GetOutput();
-    curMask = readerMask->GetOutput();
+    inVolume = readerVolume->GetOutput();
+    inMask = readerMask->GetOutput();
     }
   progressReporter.Report( 0.1 );
   timeCollector.Stop("Read");
 
-
-  typename ImageType::SizeType inputSize = curVolume
+  typename ImageType::SizeType inputSize = inVolume
                                            ->GetLargestPossibleRegion()
                                            .GetSize();
-  typename ImageType::Pointer orgMask = curMask;
 
   typename ImageType::Pointer metricMaskImage = NULL;
   if( metricMask.size() != 0 )
@@ -169,49 +167,16 @@ int DoIt( int argc, char * argv[] )
     }
   progressReporter.Report( 0.2 );
 
-  if( foreground != 1 || background != 0 )
-    {
-    timeCollector.Start("Fg/Bg");
-
-    typedef itk::BinaryThresholdImageFilter< ImageType, ImageType > 
-      FilterType;
-    typename FilterType::Pointer filter = FilterType::New();
-    filter->SetInput( curMask );
-    if( foreground != 1 )
-      {
-      filter->SetLowerThreshold( foreground );
-      filter->SetUpperThreshold( foreground );
-      filter->SetInsideValue( 1 );
-      filter->SetOutsideValue( 0 );
-      }
-    else
-      {
-      filter->SetLowerThreshold( background );
-      filter->SetUpperThreshold( background );
-      filter->SetInsideValue( 0 );
-      filter->SetOutsideValue( 1 );
-      }
-    filter->Update();
-    curMask = filter->GetOutput();
-
-    timeCollector.Stop("Fg/Bg");
-    }
-  progressReporter.Report( 0.3 );
-  
-  int erodeBest = erode;
-  int dilateBest = dilate;
-  float gaussianBlurBest = gaussianBlur;
-
   typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
   ImageEvalType eval;
-  eval.SetVolumeImage( curVolume );
-  eval.SetMaskImage( curMask );
-  eval.SetOriginalMaskImage( orgMask );
+  eval.SetVolumeImage( inVolume );
+  eval.SetMaskImage( inMask );
   eval.SetForeground( foreground );
   eval.SetBackground( background );
   eval.SetBoundarySize( outputBoundary );
-  eval.SetTimeCollector( &timeCollector );
   eval.SetNormalize( true );
+  eval.SetSamplingRate( samplingRate );
+  eval.SetTimeCollector( &timeCollector );
   eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
 
   if( metricMaskImage.IsNotNull() )
@@ -252,10 +217,14 @@ int DoIt( int argc, char * argv[] )
   eval.SetErode( erode );
   eval.SetDilate( dilate );
   eval.SetGaussianBlur( gaussianBlur );
-
-  eval.SetSamplingRate( samplingRate );
-
   eval.Update();
+
+  int outErode = erode;
+  int outDilate = dilate;
+  double outGaussianBlur = gaussianBlur;
+  double outGoF = eval.GetGoodnessOfFit();
+  typename ImageType::Pointer outVolume = eval.GetOutputVolumeImage();
+  typename ImageType::Pointer outMask = eval.GetOutputMaskImage();
 
   if( loadTransform.size() == 0 )
     {
@@ -271,9 +240,6 @@ int DoIt( int argc, char * argv[] )
     twriter->Update();  
     }
 
-  double gof = eval.GetGoodnessOfFit();
-
-  double gofBest = gof;
   if( !disableParameterOptimization )
     {
     double dilateBase = dilate/2;
@@ -284,19 +250,18 @@ int DoIt( int argc, char * argv[] )
     eval.SetUseRegistrationTransform( true );
     eval.SetRegistrationTransform( regTfm );
     eval.SetUseRegistrationOptimization( false );
-    eval.SetOriginalMaskImage( orgMask );
-    eval.SetBoundarySize( outputBoundary );
     eval.SetNormalize( false );
+    eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
     eval.Update();
 
-    curVolume = eval.GetVolumeImage();
-    curMask = eval.GetMaskImage();
-
-    eval.SetVolumeImage( curVolume );
-    eval.SetMaskImage( curMask );
-
+    typename ImageType::Pointer tmpVolume = eval.GetOutputVolumeImage();
+    typename ImageType::Pointer tmpMask = eval.GetOutputMaskImage();
+    eval.SetVolumeImage( tmpVolume );
+    eval.SetMaskImage( tmpMask );
+    std::vector< int > zeroBoundary( dimensionT, 0 );
+    eval.SetBoundarySize( zeroBoundary );
+    eval.SetNormalize( true );
     eval.SetUseRegistration( false );
-    eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
 
     MyMIWPFunc< pixelT, dimensionT > * myFunc = new 
       MyMIWPFunc< pixelT, dimensionT >( eval );
@@ -317,19 +282,36 @@ int DoIt( int argc, char * argv[] )
     x[1] = dilateBase;
     x[2] = gaussianBlur;
 
-    spline.extreme( x, &gofBest );
+    spline.extreme( x, &outGoF );
 
-    erodeBest = x[0] + erodeBase;
-    dilateBest = x[1] + dilateBase;
-    gaussianBlurBest = x[2];
+    outErode = x[0] + erodeBase;
+    outDilate = x[1] + dilateBase;
+    outGaussianBlur = x[2];
+
+    std::cout << "Opt erode best = " << outErode << std::endl;
+    std::cout << "Opt dilate best = " << outDilate << std::endl;
+    std::cout << "Opt gaussian best = " << outGaussianBlur << std::endl;
+    std::cout << "Opt gof best = " << outGoF << std::endl;
+
+    eval.SetVolumeImage( inVolume );
+    eval.SetMaskImage( inMask );
+    eval.SetForeground( foreground );
+    eval.SetBackground( background );
+    eval.SetBoundarySize( outputBoundary );
+    eval.SetNormalize( true );
+    eval.SetUseRegistration( true );
+    eval.SetErode( outErode );
+    eval.SetDilate( outDilate );
+    eval.SetGaussianBlur( outGaussianBlur );
+    eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
+    eval.Update();
+    outVolume = eval.GetOutputVolumeImage();
+    outMask = eval.GetOutputMaskImage();
     }
 
-  curVolume = eval.GetVolumeImage();
-  curMask = eval.GetMaskImage();
-
-  std::cout << "Erode = " << erodeBest << std::endl;
-  std::cout << "Dilate = " << dilateBest << std::endl;
-  std::cout << "Blur = " << gaussianBlurBest << std::endl;
+  std::cout << "Erode = " << outErode << std::endl;
+  std::cout << "Dilate = " << outDilate << std::endl;
+  std::cout << "Blur = " << outGaussianBlur << std::endl;
 
   progressReporter.Report( 0.9 );
 
@@ -338,11 +320,11 @@ int DoIt( int argc, char * argv[] )
   typename ImageWriterType::Pointer writerMask = ImageWriterType::New();
 
   writerVolume->SetFileName( outputVolume.c_str() );
-  writerVolume->SetInput( curVolume );
+  writerVolume->SetInput( outVolume );
   writerVolume->SetUseCompression( true );
 
   writerMask->SetFileName( outputMask.c_str() );
-  writerMask->SetInput( curMask );
+  writerMask->SetInput( outMask );
   writerMask->SetUseCompression( true );
 
   try
