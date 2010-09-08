@@ -163,18 +163,34 @@ int DoIt( int argc, char *argv[] )
 
   timeCollector.Start("Save");
 
-  if( pdfSegmenter->GetProbabilityImage(0) != NULL )
+  if( pdfSegmenter->GetProbabilityImage(0) != NULL
+    && probabilityVolume0.size() > 2 )
     {
-    if( probabilityVolume.size() > 2 )
-      {
-      ProbImageWriterType::Pointer probImageWriter =
-        ProbImageWriterType::New();
-      probImageWriter->SetFileName( probabilityVolume.c_str() );
-      probImageWriter->SetInput( *(pdfSegmenter->GetProbabilityImage(0)) );
-      probImageWriter->Update();
-      }
+    ProbImageWriterType::Pointer probImageWriter =
+      ProbImageWriterType::New();
+    probImageWriter->SetFileName( probabilityVolume0.c_str() );
+    probImageWriter->SetInput( *(pdfSegmenter->GetProbabilityImage(0)) );
+    probImageWriter->Update();
     }
-  
+  if( objectId.size() > 1 && pdfSegmenter->GetProbabilityImage(1) != NULL
+    && probabilityVolume1.size() > 2 )
+    {
+    ProbImageWriterType::Pointer probImageWriter =
+      ProbImageWriterType::New();
+    probImageWriter->SetFileName( probabilityVolume1.c_str() );
+    probImageWriter->SetInput( *(pdfSegmenter->GetProbabilityImage(1)) );
+    probImageWriter->Update();
+    }
+  if( objectId.size() > 2 && pdfSegmenter->GetProbabilityImage(2) != NULL
+    && probabilityVolume2.size() > 2 )
+    {
+    ProbImageWriterType::Pointer probImageWriter =
+      ProbImageWriterType::New();
+    probImageWriter->SetFileName( probabilityVolume2.c_str() );
+    probImageWriter->SetInput( *(pdfSegmenter->GetProbabilityImage(2)) );
+    probImageWriter->Update();
+    }
+
   MaskWriterType::Pointer writer = MaskWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( pdfSegmenter->GetLabelmap() );

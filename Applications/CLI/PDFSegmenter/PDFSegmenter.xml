@@ -126,10 +126,24 @@
       <default>false</default>
     </boolean>
     <image>
-      <name>probabilityVolume</name>
-      <description>Probability-of-being-object estimate for each voxel</description>
-      <label>Output Probability Volume</label>
-      <longflag>probabilityVolume</longflag>
+      <name>probabilityVolume0</name>
+      <description>Probability-of-being-object #0 estimate for each voxel</description>
+      <label>Output Probability Volume for Object 0</label>
+      <longflag>probabilityVolume0</longflag>
+      <channel>output</channel>
+    </image>
+    <image>
+      <name>probabilityVolume1</name>
+      <description>Probability-of-being-object #1 estimate for each voxel</description>
+      <label>Output Probability Volume for Object 1</label>
+      <longflag>probabilityVolume1</longflag>
+      <channel>output</channel>
+    </image>
+    <image>
+      <name>probabilityVolume2</name>
+      <description>Probability-of-being-object #2 estimate for each voxel</description>
+      <label>Output Probability Volume for Object 2</label>
+      <longflag>probabilityVolume2</longflag>
       <channel>output</channel>
     </image>
   </parameters>
