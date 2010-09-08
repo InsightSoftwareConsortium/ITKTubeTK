@@ -159,6 +159,7 @@ int DoIt( MetaCommand & command )
       switch( type )
         {
         case 0:
+        case 4:
           {
           typedef itk::CastImageFilter< ImageType, ImageTypeUChar> 
             CastFilterType;
@@ -172,11 +173,15 @@ int DoIt( MetaCommand & command )
             VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
           writer->SetInput( castFilter->GetOutput() );
-          writer->SetUseCompression( true );
+          if( type == 0 )
+            {
+            writer->SetUseCompression( true );
+            }
           writer->Write();
           break;
           }
         case 1:
+        case 5:
           {
           typedef itk::CastImageFilter< ImageType, ImageTypeUShort> 
             CastFilterType;
@@ -190,11 +195,15 @@ int DoIt( MetaCommand & command )
             VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
           writer->SetInput( castFilter->GetOutput() );
-          writer->SetUseCompression( true );
+          if( type == 1 )
+            {
+            writer->SetUseCompression( true );
+            }
           writer->Write();
           break;
           }
         case 2:
+        case 6:
           {
           typedef itk::CastImageFilter< ImageType, ImageTypeShort> 
             CastFilterType;
@@ -208,7 +217,10 @@ int DoIt( MetaCommand & command )
             VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
           writer->SetInput( castFilter->GetOutput() );
-          writer->SetUseCompression( true );
+          if( type == 2 )
+            {
+            writer->SetUseCompression( true );
+            }
           writer->Write();
           break;
           }
@@ -243,6 +255,22 @@ int DoIt( MetaCommand & command )
 
           writer->Write();
           break;
+          }
+        case 7:
+          {
+          typedef itk::ImageFileWriter< ImageType > VolumeWriterType;
+          typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
+          writer->SetFileName( outFilename.c_str() );
+          writer->SetInput( imIn );
+          try
+            {
+            writer->Write();
+            }
+          catch( itk::ExceptionObject& err )
+            {
+            std::cout << "WriteImage : " << err << std::endl;
+            return EXIT_FAILURE;  
+            }
           }
         }
       } // end -W
@@ -1395,7 +1423,7 @@ int main( int argc, char *argv[] )
     "", "output filename", MetaCommand::DATA_OUT );
 
   command.SetOption( "WriteType", "W", false, 
-    "writes using 0=uchar 1=ushort 2=short 3=Old-MIDAS" );
+    "writes using 0=uchar 1=ushort 2=short 3=Old-MIDAS 4=uncompressed-uchar 5=uncompressed-ushort 6=uncompressed-short 7=uncompressed-float" );
   command.AddOptionField( "WriteType", "Type", MetaCommand::INT, true );
   command.AddOptionField( "WriteType", "filename", MetaCommand::STRING,
     true, "", "output filename", MetaCommand::DATA_OUT );
