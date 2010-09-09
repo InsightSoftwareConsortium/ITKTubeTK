@@ -9,6 +9,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "ctk"
     "vtkpng"
     "vtktiff"
+    "vtkalglib"
     "itktiff"
     "vxl"
     "netlib"
