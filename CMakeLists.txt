@@ -172,6 +172,22 @@ if( USE_SYSTEM_ITK )
 endif( USE_SYSTEM_ITK )
 
 #-----------------------------------------------------------------------------
+# VTK Setup
+option( TubeTK_USE_VTK 
+  "Use VTK to compile TubeTK, enables additional applications and libraries."
+  ON )
+if( TubeTK_USE_VTK )
+  #-----------------------------------------------------------------------------
+  # VTK Superbuild Setup
+  option( USE_SYSTEM_VTK 
+    "Exclude VTK from SuperBuild and use an existing build instead." OFF )
+  if( USE_SYSTEM_VTK )
+    find_package( VTK REQUIRED )
+    include(${VTK_USE_FILE})
+  endif( USE_SYSTEM_VTK )
+endif( TubeTK_USE_VTK )
+  
+#-----------------------------------------------------------------------------
 # OpenIGTLink Setup
 option( TubeTK_USE_OpenIGTLink 
   "Use OpenIGTLink to provide communications with surgical systems." ON )
@@ -183,9 +199,14 @@ option( TubeTK_USE_FANN
 
 #-----------------------------------------------------------------------------
 # CTK Setup
-option( TubeTK_USE_CTK 
-  "Use CTK to provide Qt-based applications and build Slicer loadable modules."
+option( TubeTK_USE_QT 
+  "Use QT to compile TubeTK, enables additional applications and libraries."
   ON )
+if( TubeTK_USE_QT )
+  option( TubeTK_USE_CTK 
+    "Use CTK to provide Qt-based applications and build Slicer loadable modules."
+    ON )
+endif( TubeTK_USE_QT )
 
 #-----------------------------------------------------------------------------
 # Indicate that this cmakelists.txt file has already been parsed once.

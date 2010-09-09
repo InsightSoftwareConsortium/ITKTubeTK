@@ -67,9 +67,92 @@ if(NOT USE_SYSTEM_ITK)
     )
   set( ITK_DIR "${base}/Insight-Build" )
   
+  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "Insight" )
+
 endif(NOT USE_SYSTEM_ITK)
 
+##
+## VTK
+##
+if( TubeTK_USE_VTK )
 
+  ##
+  ## Check if sytem VTK or superbuild VTK
+  ##
+  if(NOT USE_SYSTEM_VTK)
+
+    if( TubeTK_USE_QT )
+      set( QT_MIN_VERSION "4.6.0" )
+      set( QT_OFFICIAL_VERSION "4.6" )
+      set( QT_REQUIRED TRUE )
+      find_package( Qt4 )
+      if( NOT QT4_FOUND )
+       MESSAGE(SEND_ERROR 
+         "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
+      endif( NOT QT4_FOUND )
+
+      ##
+      ## VTK
+      ##
+      set(proj VTK)
+      ExternalProject_Add(${proj}
+        GIT_REPOSITORY "http://vtk.org/VTK.git"
+        SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
+        BINARY_DIR VTK-Build
+        CMAKE_GENERATOR ${gen}
+        CMAKE_ARGS
+          -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+          -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+          -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+          -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+          -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+          -DCMAKE_BUILD_TYPE:STRING=${build_type}
+          -DBUILD_SHARED_LIBS:BOOL=${shared}
+          -DBUILD_EXAMPLES:BOOL=OFF
+          -DBUILD_TESTING:BOOL=OFF
+          -DVTK_USE_GUISUPPORT:BOOL=ON
+          -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
+          -DVTK_USE_QT:BOOL=ON
+          -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+        INSTALL_COMMAND ""
+        )
+      set( VTK_DIR "${base}/VTK-Build" )
+
+    else( TubeTK_USE_QT )
+
+      ##
+      ## VTK
+      ##
+      set(proj VTK)
+      ExternalProject_Add(${proj}
+        GIT_REPOSITORY "http://vtk.org/VTK.git"
+        SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
+        BINARY_DIR VTK-Build
+        CMAKE_GENERATOR ${gen}
+        CMAKE_ARGS
+          -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+          -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+          -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+          -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+          -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+          -DCMAKE_BUILD_TYPE:STRING=${build_type}
+          -DBUILD_SHARED_LIBS:BOOL=${shared}
+          -DBUILD_EXAMPLES:BOOL=OFF
+          -DBUILD_TESTING:BOOL=OFF
+          -DVTK_USE_GUISUPPORT:BOOL=ON
+        INSTALL_COMMAND ""
+        )
+      set( VTK_DIR "${base}/VTK-Build" )
+
+    endif( TubeTK_USE_QT )
+
+    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "VTK" )
+    
+  endif(NOT USE_SYSTEM_VTK)
+
+endif( TubeTK_USE_VTK )
+  
+  
 ##
 ## TCLAP
 ##
@@ -161,6 +244,7 @@ set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
 ## OpenIGTLink 
 ##
 if( TubeTK_USE_OpenIGTLink )
+
   set(proj OpenIGTLink)
   ExternalProject_Add(${proj}
     SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
@@ -180,50 +264,61 @@ if( TubeTK_USE_OpenIGTLink )
     )
   set( OpenIGTLink_DIR "${CMAKE_BINARY_DIR}/OpenIGTLink-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "OpenIGTLink" )
+
 else( TubeTK_USE_OpenIGTLink )
+
   set( OpenIGTLink_DIR "" )
+
 endif( TubeTK_USE_OpenIGTLink )
 
 
-##
-## CTK 
-##
-if( TubeTK_USE_CTK )
-  set( QT_MIN_VERSION "4.6.0" )
-  set( QT_OFFICIAL_VERSION "4.6" )
-  set( QT_REQUIRED TRUE )
-  find_package( Qt4 )
-  if( NOT QT4_FOUND )
-   MESSAGE(SEND_ERROR 
-     "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
-  endif( NOT QT4_FOUND )
-  set(proj CTK)
-  ExternalProject_Add(CTK
-    GIT_REPOSITORY "http://github.com/commontk/CTK.git"
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
-    BINARY_DIR CTK-Build
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DCTK_USE_GIT_PROTOCOL:BOOL=TRUE
-      -DCTK_LIB_Widgets:BOOL=ON
-      -DCTK_LIB_Visualization/VTK/Widgets:BOOL=OFF
-      -DCTK_LIB_PluginFramework:BOOL=OFF
-      -DCTK_PLUGIN_org.commontk.eventbus:BOOL=OFF
-      -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-    INSTALL_COMMAND ""
-    )
-  set( CTK_DIR "${CMAKE_BINARY_DIR}/CTK-Build" )
-  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
-endif( TubeTK_USE_CTK )
+if( TubeTK_USE_QT )
+
+  ##
+  ## CTK 
+  ##
+  if( TubeTK_USE_CTK )
+
+    set( QT_MIN_VERSION "4.6.0" )
+    set( QT_OFFICIAL_VERSION "4.6" )
+    set( QT_REQUIRED TRUE )
+    find_package( Qt4 )
+    if( NOT QT4_FOUND )
+     MESSAGE(SEND_ERROR 
+       "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
+    endif( NOT QT4_FOUND )
+    set(proj CTK)
+    ExternalProject_Add(CTK
+      GIT_REPOSITORY "http://github.com/commontk/CTK.git"
+      SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
+      BINARY_DIR CTK-Build
+      CMAKE_GENERATOR ${gen}
+      CMAKE_ARGS
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        -DBUILD_SHARED_LIBS:BOOL=${shared}
+        -DBUILD_EXAMPLES:BOOL=OFF
+        -DBUILD_TESTING:BOOL=OFF
+        -DCTK_USE_GIT_PROTOCOL:BOOL=TRUE
+        -DCTK_LIB_Widgets:BOOL=ON
+        -DCTK_LIB_Visualization/VTK/Widgets:BOOL=OFF
+        -DCTK_LIB_PluginFramework:BOOL=OFF
+        -DCTK_PLUGIN_org.commontk.eventbus:BOOL=OFF
+        -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+        -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+        -DVTK_DIR:PATH=${VTK_DIR}
+      INSTALL_COMMAND ""
+      )
+    set( CTK_DIR "${CMAKE_BINARY_DIR}/CTK-Build" )
+
+    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
+
+  endif( TubeTK_USE_CTK )
+
+endif( TubeTK_USE_QT )
 
 
 ##
@@ -251,11 +346,14 @@ ExternalProject_Add(${proj}
     -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DITK_DIR:PATH=${ITK_DIR}
+    -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
+    -DVTK_DIR:PATH=${VTK_DIR}
     -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
     -DTubeTK_USE_OpenIGTLink:BOOL=${TubeTK_USE_OpenIGTLink}
     -DOpenIGTLink_DIR:PATH=${OpenIGTLink_DIR}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_FANN:BOOL=${TubeTK_USE_FANN}
+    -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DCTK_DIR:PATH=${CTK_DIR}
   INSTALL_COMMAND ""
   DEPENDS
