@@ -21,7 +21,5 @@
 # 
 ##############################################################################
 
-add_subdirectory(CLI)
-add_subdirectory(ImageMath)
-add_subdirectory(Qt)
+add_subdirectory(QtImageViewer)
 
