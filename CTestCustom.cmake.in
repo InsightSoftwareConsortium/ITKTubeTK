@@ -8,8 +8,13 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
     "ctk"
     "vtkpng"
+    "vtkexpat"
+    "vtklibproj4"
     "vtktiff"
     "vtkalglib"
+    "qhash"
+    "qlist"
+    "qvector"
     "itktiff"
     "vxl"
     "netlib"
