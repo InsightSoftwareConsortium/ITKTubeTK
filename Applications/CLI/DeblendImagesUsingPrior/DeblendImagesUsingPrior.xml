@@ -63,7 +63,7 @@
       <description>Weighting for bottom volume</description>
       <flag>a</flag>
       <longflag>alpha</longflag>
-      <default>0.2</default>
+      <default>-0.1</default>
     </float>
     <float>
       <name>beta</name>
@@ -71,7 +71,7 @@
       <description>Weighting for top volume</description>
       <flag>b</flag>
       <longflag>beta</longflag>
-      <default>0.1</default>
+      <default>-0.1</default>
     </float>
     <float>
       <name>offset</name>
@@ -87,7 +87,15 @@
       <description>Amount to blur top and bottom layers</description>
       <flag>s</flag>
       <longflag>sigma</longflag>
-      <default>1.0</default>
+      <default>10.0</default>
+    </float>
+    <float>
+      <name>samplingRate</name>
+      <label>Sampling Rate</label>
+      <description>Portion of image to use when computing the metric</description>
+      <flag>r</flag>
+      <longflag>rate</longflag>
+      <default>0.1</default>
     </float>
     <image>
       <name>metricMask</name>
