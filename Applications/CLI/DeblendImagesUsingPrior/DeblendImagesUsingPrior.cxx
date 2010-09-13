@@ -393,10 +393,10 @@ int DoIt( int argc, char * argv[] )
   optimizer->SetMaximize( false );
 
   OptimizerType::ScalesType scales( 6 );
-  scales[0] = 1.0 / 0.5;
-  scales[1] = 1.0 / 0.5;
-  scales[2] = 1.0 / 0.5;
-  scales[3] = 1.0 / 0.5;
+  scales[0] = 1.0 / 0.1;
+  scales[1] = 1.0 / 0.1;
+  scales[2] = 1.0 / 0.1;
+  scales[3] = 1.0 / 0.1;
   scales[4] = 1.0 / 2.0;
   scales[5] = 1.0 / 2.0;
 
