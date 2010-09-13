@@ -9,6 +9,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "ctk"
     "vtkpng"
     "vtkexpat"
+    "vtkfreetype"
     "vtksqlite"
     "vtklibproj4"
     "vtktiff"
