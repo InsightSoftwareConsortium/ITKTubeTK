@@ -50,7 +50,6 @@ limitations under the License.
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkIdentityTransform.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include "itkMeanSquaresImageToImageMetric.h"
 #include "itkNormalizeImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
@@ -86,14 +85,12 @@ public:
   typedef Superclass::DerivativeType              DerivativeType;
   typedef itk::OrientedImage<pixelT, dimensionT>  ImageType;
 
-  typedef itk::MeanSquaresImageToImageMetric< ImageType, ImageType >
-                                                  MetricType;
   typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
                                                   BlurFilterType;
   
   unsigned int GetNumberOfParameters( void ) const
     { 
-    return 5;
+    return 6;
     }
   
   void SetImageTop( typename ImageType::Pointer _top )
@@ -111,9 +108,9 @@ public:
     m_ImageBottom = _bottom;
     }
   
-  void SetMaskMiddle( typename ImageType::Pointer _maskMiddle )
+  void SetImageMiddleTarget( typename ImageType::Pointer _targetMiddle )
     {
-    m_MaskMiddle = _maskMiddle;
+    m_ImageMiddleTarget = _targetMiddle;
     }
 
   void SetMetricMask( typename ImageType::Pointer _MetricMask )
@@ -126,11 +123,6 @@ public:
     m_ImageOutput = _output;
     }
   
-  void SetSamplingRate( double _samplingRate )
-    {
-    m_SamplingRate = _samplingRate;
-    }
-  
   void Initialize( void )
     {
     m_FilterTop = BlurFilterType::New();
@@ -138,32 +130,6 @@ public:
 
     m_FilterBottom = BlurFilterType::New();
     m_FilterBottom->SetInput( m_ImageBottom );
-
-    typedef itk::LinearInterpolateImageFunction< ImageType, double > 
-      InterpolatorType;
-    typename InterpolatorType::Pointer interpolator = 
-      InterpolatorType::New();
-    interpolator->SetInputImage( m_ImageOutput );
-
-    typename ImageType::SizeType size;
-    size = m_ImageMiddle->GetLargestPossibleRegion().GetSize();
-
-    m_Metric = MetricType::New();
-
-    m_Metric->SetFixedImage( m_MaskMiddle );
-    m_Metric->SetMovingImage( m_ImageOutput );
-    m_Metric->SetFixedImageRegion( m_MaskMiddle->
-                                 GetLargestPossibleRegion() );
-    typedef itk::ImageSpatialObject< ImageType::ImageDimension, pixelT >
-      IgnoreSOType;
-    typename IgnoreSOType::Pointer ignoreSO = IgnoreSOType::New();
-    if( m_MetricMask.IsNotNull() )
-      {
-      ignoreSO->SetImage( m_MetricMask );
-      m_Metric->SetFixedImageMask( ignoreSO );
-      }
-    m_Metric->SetInterpolator( interpolator );
-    m_Metric->SetNumberOfSpatialSamples( size[0]*size[1]*m_SamplingRate );
 
     m_CallsToGetValue = 0;
     }
@@ -183,7 +149,7 @@ public:
     typedef itk::ImageRegionIterator< ImageType > 
       ImageIteratorType;
 
-    if( params[4] < 0.2 )
+    if( params[4] < 0.2 || params[5] < 0.2 )
       {
       return 100;
       }
@@ -191,20 +157,32 @@ public:
     m_FilterTop->SetSigma( params[4] );
     m_FilterTop->Update();
 
-    m_FilterBottom->SetSigma( params[4] );
+    m_FilterBottom->SetSigma( params[5] );
     m_FilterBottom->Update();
 
     typename ImageType::Pointer imageTopB = m_FilterTop->GetOutput();
     typename ImageType::Pointer imageBottomB = m_FilterBottom->GetOutput();
   
+    double result = 0;
+
     ConstImageIteratorType iterTopB( imageTopB,
       imageTopB->GetLargestPossibleRegion() );
     ConstImageIteratorType iterBottomB( imageBottomB,
       imageBottomB->GetLargestPossibleRegion() );
     ConstImageIteratorType iterMiddle( m_ImageMiddle,
       m_ImageMiddle->GetLargestPossibleRegion() );
+    ConstImageIteratorType iterMiddleTarget( m_ImageMiddleTarget,
+      m_ImageMiddleTarget->GetLargestPossibleRegion() );
     ImageIteratorType iterOutput( m_ImageOutput,
       m_ImageOutput->GetLargestPossibleRegion() );
+
+    typename ImageType::Pointer tmpMask = m_ImageOutput;
+    if( m_MetricMask.IsNotNull() )
+      {
+      tmpMask = m_MetricMask;
+      }
+    ConstImageIteratorType iterMask( tmpMask,
+      tmpMask->GetLargestPossibleRegion() );
     while( !iterMiddle.IsAtEnd() )
       {
       float tf = ( ( params[0] * iterTopB.Get() +
@@ -215,27 +193,27 @@ public:
 
       iterOutput.Set( tf );
 
+      if( iterMask.Get() )
+        {
+        double diff = iterMiddleTarget.Get() - tf;
+        result += diff * diff;
+        }
+
+      ++iterMask;
       ++iterMiddle;
+      ++iterMiddleTarget;
       ++iterTopB;
       ++iterBottomB;
       ++iterOutput;
       }
-
-    typedef itk::IdentityTransform< double, dimensionT > 
-      TransformType;
-    typename TransformType::Pointer transform = TransformType::New();
-    m_Metric->SetTransform( transform );
-    m_Metric->Initialize();
-    m_Metric->MultiThreadingInitialize();
-
-    double result = m_Metric->GetValue( transform->GetParameters() );
 
     std::cout << ++m_CallsToGetValue << ": "
               << params[0] << ", "
               << params[1] << ", "
               << params[2] << ", "
               << params[3] << ", "
-              << params[4] 
+              << params[4] << ", "
+              << params[5] 
               << " : result =" << result << std::endl;
 
     return result;
@@ -256,15 +234,13 @@ private:
   BlendCostFunction( const Self & );
   void operator=( const Self & );
 
-  double                              m_SamplingRate;
   typename ImageType::Pointer         m_ImageTop;
   typename ImageType::Pointer         m_ImageMiddle;
   typename ImageType::Pointer         m_ImageBottom;
-  typename ImageType::Pointer         m_MaskMiddle;
+  typename ImageType::Pointer         m_ImageMiddleTarget;
   typename ImageType::Pointer         m_MetricMask;
   mutable typename ImageType::Pointer m_ImageOutput;
 
-  typename MetricType::Pointer        m_Metric;
   typename BlurFilterType::Pointer    m_FilterTop;
   typename BlurFilterType::Pointer    m_FilterBottom;
   
@@ -296,7 +272,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer imageTop;
   typename ImageType::Pointer imageMiddle;
   typename ImageType::Pointer imageBottom;
-  typename ImageType::Pointer maskMiddle;
+  typename ImageType::Pointer imageMiddleTarget;
 
   timeCollector.Start("Read");
     {
@@ -305,13 +281,13 @@ int DoIt( int argc, char * argv[] )
     typename ReaderType::Pointer readerTop = ReaderType::New();
     typename ReaderType::Pointer readerMiddle = ReaderType::New();
     typename ReaderType::Pointer readerBottom = ReaderType::New();
-    typename ReaderType::Pointer readerMask = ReaderType::New();
+    typename ReaderType::Pointer readerMiddleTarget = ReaderType::New();
   
     //read input image  
     readerTop->SetFileName( inputTop.c_str() );
     readerMiddle->SetFileName( inputMiddle.c_str() );
     readerBottom->SetFileName( inputBottom.c_str() );
-    readerMask->SetFileName( inputMask.c_str() );
+    readerMiddleTarget->SetFileName( inputMiddleTarget.c_str() );
   
     try
       {
@@ -351,7 +327,7 @@ int DoIt( int argc, char * argv[] )
   
     try
       {
-      readerMask->Update();
+      readerMiddleTarget->Update();
       }
     catch( itk::ExceptionObject & err )
       {
@@ -364,7 +340,7 @@ int DoIt( int argc, char * argv[] )
     imageTop = readerTop->GetOutput();
     imageMiddle = readerMiddle->GetOutput();
     imageBottom = readerBottom->GetOutput();
-    maskMiddle = readerMask->GetOutput();
+    imageMiddleTarget = readerMiddleTarget->GetOutput();
     }
   progressReporter.Report( 0.1 );
   timeCollector.Stop("Read");
@@ -375,21 +351,29 @@ int DoIt( int argc, char * argv[] )
   typedef itk::AmoebaOptimizer                  OptimizerType;
   typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
 
-  itk::Array<double> params(5);
+  itk::Array<double> params(6);
   params[0] = alpha;
   params[1] = beta;
   params[2] = gamma;
   params[3] = offset;
   params[4] = sigma;
+  params[5] = sigma;
 
   typename BlendCostFunctionType::Pointer costFunc = 
     BlendCostFunctionType::New();
   costFunc->SetImageTop( imageTop );
   costFunc->SetImageMiddle( imageMiddle );
   costFunc->SetImageBottom( imageBottom );
-  costFunc->SetMaskMiddle( maskMiddle );
+  costFunc->SetImageMiddleTarget( imageMiddleTarget );
 
-  costFunc->SetSamplingRate( samplingRate );
+  if( metricMask.size() > 0 )
+    {
+    typedef itk::ImageFileReader< ImageType >   ReaderType;
+    typename ReaderType::Pointer readerMask = ReaderType::New();
+    readerMask->SetFileName( metricMask.c_str() );
+    readerMask->Update();
+    costFunc->SetMetricMask( readerMask->GetOutput() );
+    }
 
   InitialOptimizerType::Pointer initOptimizer = InitialOptimizerType::New();
   itk::Statistics::NormalVariateGenerator::Pointer normGen =
@@ -401,27 +385,29 @@ int DoIt( int argc, char * argv[] )
   initOptimizer->SetNormalVariateGenerator( normGen );
   initOptimizer->Initialize( 0.1 );
   initOptimizer->SetMetricWorstPossibleValue( 100 );
-  initOptimizer->SetMaximumIteration( iterations*0.75 );
+  initOptimizer->SetMaximumIteration( iterations*0.5 );
   initOptimizer->SetMaximize( false );
 
   OptimizerType::Pointer optimizer = OptimizerType::New();
-  optimizer->SetMaximumNumberOfIterations( iterations*0.25 );
+  optimizer->SetMaximumNumberOfIterations( iterations*0.5 );
   optimizer->SetMaximize( false );
 
-  OptimizerType::ScalesType scales( 5 );
+  OptimizerType::ScalesType scales( 6 );
   scales[0] = 1.0 / 0.5;
   scales[1] = 1.0 / 0.5;
   scales[2] = 1.0 / 0.5;
   scales[3] = 1.0 / 0.5;
   scales[4] = 1.0 / 2.0;
+  scales[5] = 1.0 / 2.0;
 
 
-  OptimizerType::ScalesType scales2( 5 );
+  OptimizerType::ScalesType scales2( 6 );
   scales2[0] = scales[0] * scales[0];
   scales2[1] = scales[1] * scales[1];
   scales2[2] = scales[2] * scales[2];
   scales2[3] = scales[3] * scales[3];
   scales2[4] = scales[4] * scales[4];
+  scales2[5] = scales[5] * scales[5];
 
   // OnePlusOne should be passed squared-scales
   initOptimizer->SetScales( scales2 );
@@ -445,11 +431,16 @@ int DoIt( int argc, char * argv[] )
   initOptimizer->SetInitialPosition( params );
   initOptimizer->StartOptimization();
 
+  params = initOptimizer->GetCurrentPosition();
+  double result = costFunc->GetValue( params );
+
+  std::cout << "Intermediate params = " << params 
+            << " Result = " << result << std::endl;
   optimizer->SetInitialPosition( initOptimizer->GetCurrentPosition() );
   optimizer->StartOptimization();
 
   params = optimizer->GetCurrentPosition();
-  double result = costFunc->GetValue( params );
+  result = costFunc->GetValue( params );
   std::cout << "Winning params = " << params 
             << " Result = " << result << std::endl;
 

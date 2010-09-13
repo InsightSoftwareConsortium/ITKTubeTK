@@ -36,8 +36,8 @@
       <description>Input volume on one side of the middle</description>
     </image>
     <image>
-      <name>inputMask</name>
-      <label>Input Mask</label>
+      <name>inputMiddleTarget</name>
+      <label>Input Middle Target</label>
       <channel>input</channel>
       <index>3</index>
       <description>Input mask</description>
@@ -63,7 +63,7 @@
       <description>Weighting for bottom volume</description>
       <flag>a</flag>
       <longflag>alpha</longflag>
-      <default>-0.2</default>
+      <default>-0.05</default>
     </float>
     <float>
       <name>beta</name>
@@ -71,7 +71,7 @@
       <description>Weighting for top volume</description>
       <flag>b</flag>
       <longflag>beta</longflag>
-      <default>-0.2</default>
+      <default>-0.05</default>
     </float>
     <float>
       <name>gamma</name>
@@ -96,14 +96,6 @@
       <flag>s</flag>
       <longflag>sigma</longflag>
       <default>5.0</default>
-    </float>
-    <float>
-      <name>samplingRate</name>
-      <label>Sampling Rate</label>
-      <description>Portion of image to use when computing the metric</description>
-      <flag>r</flag>
-      <longflag>rate</longflag>
-      <default>0.1</default>
     </float>
     <image>
       <name>metricMask</name>
