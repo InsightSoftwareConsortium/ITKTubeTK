@@ -68,18 +68,18 @@
     <float>
       <name>beta</name>
       <label>Beta (scale)</label>
-      <description>Weighting for top volume</description>
+      <description>Weighting for middle volume</description>
       <flag>b</flag>
       <longflag>beta</longflag>
-      <default>-0.05</default>
+      <default>1.0</default>
     </float>
     <float>
       <name>gamma</name>
       <label>Gamma (scale)</label>
-      <description>Weighting for middle volume</description>
+      <description>Weighting for top volume</description>
       <flag>g</flag>
       <longflag>gamma</longflag>
-      <default>1.0</default>
+      <default>-0.05</default>
     </float>
     <float>
       <name>offset</name>
