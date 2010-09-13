@@ -88,12 +88,12 @@ public:
 
   typedef itk::MeanSquaresImageToImageMetric< ImageType, ImageType >
                                                   MetricType;
-    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
+  typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
                                                   BlurFilterType;
   
   unsigned int GetNumberOfParameters( void ) const
     { 
-    return 4;
+    return 5;
     }
   
   void SetImageTop( typename ImageType::Pointer _top )
@@ -164,6 +164,8 @@ public:
       }
     m_Metric->SetInterpolator( interpolator );
     m_Metric->SetNumberOfSpatialSamples( size[0]*size[1]*m_SamplingRate );
+
+    m_CallsToGetValue = 0;
     }
 
   void GetDerivative( const ParametersType & params,
@@ -176,39 +178,42 @@ public:
 
   MeasureType GetValue( const ParametersType & params ) const
     {
-    static unsigned int calls = 0;
-    typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
+    typedef itk::ImageRegionConstIterator< ImageType > 
+      ConstImageIteratorType;
+    typedef itk::ImageRegionIterator< ImageType > 
+      ImageIteratorType;
 
-    if( params[3] < 0.2 )
+    if( params[4] < 0.2 )
       {
       return 100;
       }
     
-    m_FilterTop->SetSigma( params[3] );
+    m_FilterTop->SetSigma( params[4] );
     m_FilterTop->Update();
 
-    m_FilterBottom->SetSigma( params[3] );
+    m_FilterBottom->SetSigma( params[4] );
     m_FilterBottom->Update();
 
     typename ImageType::Pointer imageTopB = m_FilterTop->GetOutput();
     typename ImageType::Pointer imageBottomB = m_FilterBottom->GetOutput();
   
-    ImageIteratorType iterTopB( imageTopB,
+    ConstImageIteratorType iterTopB( imageTopB,
       imageTopB->GetLargestPossibleRegion() );
-    ImageIteratorType iterBottomB( imageBottomB,
+    ConstImageIteratorType iterBottomB( imageBottomB,
       imageBottomB->GetLargestPossibleRegion() );
-    ImageIteratorType iterMiddle( m_ImageMiddle,
+    ConstImageIteratorType iterMiddle( m_ImageMiddle,
       m_ImageMiddle->GetLargestPossibleRegion() );
     ImageIteratorType iterOutput( m_ImageOutput,
       m_ImageOutput->GetLargestPossibleRegion() );
     while( !iterMiddle.IsAtEnd() )
       {
-      float tf = params[0] * iterTopB.Get() +
+      float tf = ( ( params[0] * iterTopB.Get() +
         params[1] * iterBottomB.Get() +
-        params[2];
+        params[2] * iterMiddle.Get() ) /
+        ( params[0] + params[1] + params[2] ) ) +
+        params[3];
 
-      iterOutput.Set( (iterMiddle.Get() + tf) 
-                      / (1 + params[0] + params[1]) );
+      iterOutput.Set( tf );
 
       ++iterMiddle;
       ++iterTopB;
@@ -222,13 +227,15 @@ public:
     m_Metric->SetTransform( transform );
     m_Metric->Initialize();
     m_Metric->MultiThreadingInitialize();
+
     double result = m_Metric->GetValue( transform->GetParameters() );
 
-    std::cout << ++calls << ": "
+    std::cout << ++m_CallsToGetValue << ": "
               << params[0] << ", "
               << params[1] << ", "
               << params[2] << ", "
-              << params[3] 
+              << params[3] << ", "
+              << params[4] 
               << " : result =" << result << std::endl;
 
     return result;
@@ -260,6 +267,8 @@ private:
   typename MetricType::Pointer        m_Metric;
   typename BlurFilterType::Pointer    m_FilterTop;
   typename BlurFilterType::Pointer    m_FilterBottom;
+  
+  mutable unsigned int                m_CallsToGetValue;
 
 };
 
@@ -366,11 +375,12 @@ int DoIt( int argc, char * argv[] )
   typedef itk::AmoebaOptimizer                  OptimizerType;
   typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
 
-  itk::Array<double> params(4);
+  itk::Array<double> params(5);
   params[0] = alpha;
   params[1] = beta;
-  params[2] = offset;
-  params[3] = sigma;
+  params[2] = gamma;
+  params[3] = offset;
+  params[4] = sigma;
 
   typename BlendCostFunctionType::Pointer costFunc = 
     BlendCostFunctionType::New();
@@ -398,18 +408,20 @@ int DoIt( int argc, char * argv[] )
   optimizer->SetMaximumNumberOfIterations( iterations*0.25 );
   optimizer->SetMaximize( false );
 
-  OptimizerType::ScalesType scales( 4 );
+  OptimizerType::ScalesType scales( 5 );
   scales[0] = 1.0 / 0.5;
   scales[1] = 1.0 / 0.5;
   scales[2] = 1.0 / 0.5;
-  scales[3] = 1.0 / 2.0;
+  scales[3] = 1.0 / 0.5;
+  scales[4] = 1.0 / 2.0;
 
 
-  OptimizerType::ScalesType scales2( 4 );
+  OptimizerType::ScalesType scales2( 5 );
   scales2[0] = scales[0] * scales[0];
   scales2[1] = scales[1] * scales[1];
   scales2[2] = scales[2] * scales[2];
   scales2[3] = scales[3] * scales[3];
+  scales2[4] = scales[4] * scales[4];
 
   // OnePlusOne should be passed squared-scales
   initOptimizer->SetScales( scales2 );

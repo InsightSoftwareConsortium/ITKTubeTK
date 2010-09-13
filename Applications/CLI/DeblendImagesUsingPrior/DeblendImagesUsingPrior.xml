@@ -63,15 +63,23 @@
       <description>Weighting for bottom volume</description>
       <flag>a</flag>
       <longflag>alpha</longflag>
-      <default>-0.1</default>
+      <default>-0.2</default>
     </float>
     <float>
       <name>beta</name>
-      <label>Beta (offset)</label>
+      <label>Beta (scale)</label>
       <description>Weighting for top volume</description>
       <flag>b</flag>
       <longflag>beta</longflag>
-      <default>-0.1</default>
+      <default>-0.2</default>
+    </float>
+    <float>
+      <name>gamma</name>
+      <label>Gamma (scale)</label>
+      <description>Weighting for middle volume</description>
+      <flag>g</flag>
+      <longflag>gamma</longflag>
+      <default>1.0</default>
     </float>
     <float>
       <name>offset</name>
@@ -87,7 +95,7 @@
       <description>Amount to blur top and bottom layers</description>
       <flag>s</flag>
       <longflag>sigma</longflag>
-      <default>10.0</default>
+      <default>5.0</default>
     </float>
     <float>
       <name>samplingRate</name>
