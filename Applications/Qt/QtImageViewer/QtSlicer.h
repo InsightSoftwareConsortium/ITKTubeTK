@@ -22,7 +22,7 @@
 #include "itkImage.h"
 #include "ui_QtSlicerHelpGUI.h"
 
-class QtSlicer : public Ui::Gui
+class QtSlicer : public QDialog, Ui::Gui
 { 
 public:
     

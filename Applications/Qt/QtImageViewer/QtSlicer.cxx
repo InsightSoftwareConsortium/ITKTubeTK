@@ -9,7 +9,9 @@
  *
  */
 QtSlicer::QtSlicer( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
+:QDialog(parent)
 {
+    setupUi(this);
 }
 
 /**  

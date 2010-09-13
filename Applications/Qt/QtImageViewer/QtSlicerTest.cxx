@@ -54,7 +54,7 @@ int main( int argc, char* argv[] )
   
   try
     {
-    //myGUI.show();
+    myGUI.show();
     myApp.exec();
     }
   catch (itk::ExceptionObject & e)
