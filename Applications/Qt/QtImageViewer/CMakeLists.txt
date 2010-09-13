@@ -41,6 +41,10 @@ SET(QtSlicer_SRCS
   QtSlicer.cxx
 )
 
+SET(QtSlicer_HDRS
+  QtSlicer.h
+)
+
 SET(QtSlicer_MOC_HDRS
   QtGlSliceView.h
 )
@@ -59,6 +63,8 @@ ADD_DEFINITIONS(-DQT_THREAD_SUPPORT)
 ADD_EXECUTABLE(QtSlicer 
   ${QtSlicer_SRCS}
   ${QtSlicer_MOC_SRCS}
+  ${QtSlicer_HDRS}
+  ${QtSlicer_MOC_HDRS}
   ${QtSlicer_UIS_H}
   )
 
