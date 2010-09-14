@@ -47,7 +47,7 @@ limitations under the License.
 #include "itkOnePlusOneEvolutionaryOptimizer.h"
 #include "itkNormalVariateGenerator.h"
 #include "itkImageRegionIterator.h"
-#include "itkRecursiveGaussianImageFilter.h"
+#include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include "itkIdentityTransform.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkNormalizeImageFilter.h"
@@ -292,7 +292,7 @@ public:
   typedef Superclass::DerivativeType              DerivativeType;
   typedef itk::OrientedImage<pixelT, dimensionT>  ImageType;
 
-  typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
+  typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
                                                   BlurFilterType;
   
   unsigned int GetNumberOfParameters( void ) const
