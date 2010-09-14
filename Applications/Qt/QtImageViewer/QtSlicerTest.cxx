@@ -27,6 +27,9 @@ int main( int argc, char* argv[] )
 
   QString filename = QFileDialog::getOpenFileName( 0, caption, directory, filter );
 
+  if (filename.isNull())
+    return 1;
+
   reader->SetFileName( filename.toLatin1() );
   
   try
