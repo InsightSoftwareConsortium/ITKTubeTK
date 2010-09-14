@@ -48,7 +48,7 @@ limitations under the License.
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
+// Must include CLP before including tubeCLIHelperFunctions
 #include "SampleCLIApplicationCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
