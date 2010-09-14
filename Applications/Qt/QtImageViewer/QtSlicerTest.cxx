@@ -9,20 +9,11 @@
 #include "itkMetaImageIOFactory.h"
 #include "itkImageRegionIteratorWithIndex.h"
 
-#include <qwindowsstyle.h>
-#include <qmotifstyle.h>
-#include <qcdestyle.h>
-
 int main( int argc, char* argv[] ) 
 {
-
   QApplication myApp( argc, argv );
 
   QtSlicer myGUI( 0, 0, TRUE );
-
-  myApp.setStyle( new QMotifStyle );
-  QPalette p( QColor( 239, 239, 239 ) );
-  myApp.setPalette( p );
 
   typedef double                            PixelType;
   typedef itk::Image<PixelType, 3>          ImageType;
