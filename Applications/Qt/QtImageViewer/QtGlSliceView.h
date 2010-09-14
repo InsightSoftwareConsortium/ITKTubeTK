@@ -121,13 +121,7 @@ protected:
 
 public:
 
-#if QT_VERSION < 0x040000
-  //! constructor for Qt 3
-  QtGlSliceView(QWidget* parent = NULL, const char* name = NULL, Qt::WFlags f = 0);
-#else
-  //! constructor for Qt 4
   QtGlSliceView(QWidget* parent = NULL, Qt::WFlags f = 0);
-#endif
 
   virtual  ~QtGlSliceView();
 
@@ -184,10 +178,6 @@ public slots:
   void ZoomOut();
   
 signals:
-
-#if QT_VERSION < 0x040000
-  void Position(int, int, int, float);
-#endif
 
 protected:
     

@@ -23,46 +23,6 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
  
-
-#if QT_VERSION < 0x040000
-/*! constructor */
-QtGlSliceView::QtGlSliceView(QWidget* parent, const char* name, Qt::WFlags f)
-#if QT_VERSION < 0x030000
-  : QWidget(parent, name, f | 0x10000000)  // WWinOwnDC
-#else
-  : QWidget(parent, name, f | Qt::WWinOwnDC )
-#endif
-{
-  cValidOverlayData     = false;
-  cViewOverlayData      = false;
-  cViewOverlayCallBack  = NULL;
-  cOverlayOpacity       = 0.0;
-  cWinOverlayData       = NULL;
-  cViewAxisLabel = true;
-  cViewOverlayData = true;
-  cViewDetails = true;
-  cViewCrosshairs = true;
-  cViewValue = true;
-  cClickMode = CM_SELECT;
-  
-  cColorTable = ColorTableType::New();
-  cColorTable->useDiscrete();
-  cW = 0;
-  cH = 0;
-  for(unsigned int i=0;i<3;i++)
-  {
-    cFlipX[i]=false;
-    cFlipY[i]=false;
-    cFlipZ[i]=false;
-  }
-  cWinImData = NULL;
-  cWinZBuffer = NULL;
-}
-#endif
-  
-  
-
-#if QT_VERSION >= 0x040000
 /*! constructor */
 QtGlSliceView::QtGlSliceView(QWidget* p, Qt::WFlags f)
   : QWidget(p, f | Qt::MSWindowsOwnDC)
@@ -92,7 +52,6 @@ QtGlSliceView::QtGlSliceView(QWidget* p, Qt::WFlags f)
   cWinImData = NULL;
   cWinZBuffer = NULL;
 }
-#endif
 
   
 QtGlSliceView::~QtGlSliceView()
@@ -944,7 +903,7 @@ unsigned int QtGlSliceView::sliceNum()
 }
 
 void QtGlSliceView::clickSelect(float newX, float newY, float newZ)
-  {    
+{    
   cClickSelect[0] = newX;
   if(cClickSelect[0]<0)
     cClickSelect[0] = 0;
@@ -969,11 +928,6 @@ void QtGlSliceView::clickSelect(float newX, float newY, float newZ)
   ind[1] = (unsigned long)cClickSelect[1];
   ind[2] = (unsigned long)cClickSelect[2];
   cClickSelectV = cImData->GetPixel(ind);
- 
-#if QT_VERSION < 0x040000
-  emit Position(ind[0],ind[1],ind[2],cClickSelectV);
-#endif
-
 }
 
 void QtGlSliceView::IntensityMax(int value)
