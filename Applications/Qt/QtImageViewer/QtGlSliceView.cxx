@@ -25,7 +25,7 @@
  
 /*! constructor */
 QtGlSliceView::QtGlSliceView(QWidget* p, Qt::WFlags f)
-  : QWidget(p, f | Qt::MSWindowsOwnDC)
+: QGLWidget(p, 0, f | Qt::MSWindowsOwnDC)
 {
   cValidOverlayData     = false;
   cViewOverlayData      = false;

@@ -82,9 +82,7 @@ struct ClickPoint
 * See SliceView.h for details...
   **/
 //  
-class QtGlSliceView : 
-//     public QGLWidget
-    public QWidget
+class QtGlSliceView : public QGLWidget
 {
   Q_OBJECT
 
