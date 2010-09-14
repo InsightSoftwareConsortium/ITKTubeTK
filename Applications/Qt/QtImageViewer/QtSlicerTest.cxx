@@ -21,7 +21,7 @@ int main( int argc, char* argv[] )
 
   ReaderType::Pointer reader = ReaderType::New();
   
-  QString caption = "Chose an image filename";
+  QString caption = "Open";
   QString directory = ".";
   QString filter = "Images (*.*)";
 
