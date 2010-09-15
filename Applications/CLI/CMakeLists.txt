@@ -20,6 +20,7 @@
 # limitations under the License.
 # 
 ##############################################################################
+add_subdirectory( CoherenceEnhancingAnisotropicDiffusion )
 add_subdirectory( ComputeImageSimilarity )
 add_subdirectory( Crop )
 add_subdirectory( DeblendImagesUsingPrior )
