@@ -44,13 +44,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBasePreprocessingFilters_SRCS
        tubeBasePreprocessingFiltersPrintTest.cxx
        itkTubeEnhancingDiffusion2DImageFilterTest.cxx 
-       itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
-       itkAnisotropicHybridDiffusionImageFilterTest.cxx
-       itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx
        itkStructureTensorRecursiveGaussianImageFilterTest.cxx
-       itkAnisotropicEdgeEnhancementDiffusionImageFilterTestNew.cxx
-       itkAnisotropicHybridDiffusionImageFilterTestNew.cxx
-       itkAnisotropicCoherenceEnhancingDiffusionImageFilterTestNew.cxx
        itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
 )
 
@@ -103,25 +97,6 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
                ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
                true )
 
-add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest 
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
-               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
-               ${TEMP}/itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.mha 
-               )
-
-add_test( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest 
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
-               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
-               ${TEMP}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha )
-
-add_test( itkAnisotropicHybridDiffusionImageFilterTest 
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicHybridDiffusionImageFilterTest
-               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
-               ${TEMP}/itkAnisotropicHybridDiffusionImageFilterTest.mha )
-
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest 
             ${BASE_PREPROCESSING_FILTERS_TESTS}
             itkStructureTensorRecursiveGaussianImageFilterTest
@@ -139,34 +114,3 @@ add_test( itkStructureTensorRecursiveGaussianImageFilterTest2
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest3 
             ${BASE_PREPROCESSING_FILTERS_TESTS}
             itkStructureTensorRecursiveGaussianImageFilterTestNew )
-
-add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest2
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicEdgeEnhancementDiffusionImageFilterTestNew
-            ${INPUT_DATA}/SyntheticTubeImage.mha
-            ${TEMP}/SyntheticTubeEEDFilterResultImage.mha )
-
-add_test( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest3
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicEdgeEnhancementDiffusionImageFilterTestNew
-            ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
-            ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha )
-
-add_test( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest2
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicCoherenceEnhancingDiffusionImageFilterTestNew
-            ${INPUT_DATA}/SyntheticSurfaceImage.mha
-            ${TEMP}/SyntheticSurfaceCCDFilterResultImage.mha )
-
-add_test( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest3
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicCoherenceEnhancingDiffusionImageFilterTestNew
-            ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
-            ${TEMP}/SyntheticTubePlusSurfaceCCDFilterResultImage.mha )
-
-add_test( itkAnisotropicHybridDiffusionImageFilterTest2
-            ${BASE_PREPROCESSING_FILTERS_TESTS}
-            itkAnisotropicHybridDiffusionImageFilterTestNew
-            ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
-            ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha )
-
