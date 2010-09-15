@@ -827,7 +827,7 @@ void QtGlSliceView::mouseMoveEvent( QMouseEvent *event )
       this->clickSelect(p[0], p[1], p[2]);
     }
    }
-// FIXME   this->updateGL();
+   this->updateGL();
    this->update();
 }
 
@@ -870,8 +870,8 @@ void QtGlSliceView::mousePressEvent( QMouseEvent *event )
       this->stepTimer->start( this->interactionTime );
    }*/
 
-// FIXME   this->updateGL();
-   this->update();
+  this->updateGL();
+  this->update();
 }
 
 
@@ -933,29 +933,29 @@ void QtGlSliceView::clickSelect(float newX, float newY, float newZ)
 void QtGlSliceView::IntensityMax(int value)
 {
   cIWMax = value;
-// FIXME   this->updateGL();
-   this->update();
+  this->updateGL();
+  this->update();
 }
 
 void QtGlSliceView::IntensityMin(int value)
 {
   cIWMin = value;
-// FIXME   this->updateGL();
-   this->update();
+  this->updateGL();
+  this->update();
 }
  
 void QtGlSliceView::ZoomIn()
 {
   cWinZoom += 1;
-// FIXME   this->updateGL();
-   this->update();
+  this->updateGL();
+  this->update();
 }
  
 void QtGlSliceView::ZoomOut()
 {
   cWinZoom -= 1;
-// FIXME   this->updateGL();
-   this->update();
+  this->updateGL();
+  this->update();
 }
  
 
