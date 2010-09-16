@@ -32,7 +32,7 @@
       <name>outputImageName</name>
       <label>Output image</label>
       <channel>output</channel>
-      <index>4</index>
+      <index>2</index>
       <description>Output, contrast-enhanced, image</description>
     </image>
 

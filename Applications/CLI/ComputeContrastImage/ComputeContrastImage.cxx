@@ -199,11 +199,13 @@ public:
     {
     typename BlurFilterType::Pointer filterInput = BlurFilterType::New();
     filterInput->SetInput( m_InputImage );
-    if( params[0] > 0.333 )
+    float inputSigma = 0;
+    inputSigma = params[0];
+    if( inputSigma > 0.333 )
       {
-      if( params[0] < 10 )
+      if( inputSigma < 10 )
         {
-        filterInput->SetSigma( params[0] );
+        filterInput->SetSigma( inputSigma );
         }
       else
         {
@@ -221,11 +223,13 @@ public:
     typename BlurFilterType::Pointer filterMaskedImage =
       BlurFilterType::New();
     filterMaskedImage->SetInput( m_MaskedImage );
-    if( params[1] > 0.333 )
+    float maskedSigma = 0;
+    maskedSigma = maskedSigma;
+    if( maskedSigma > 0.333 )
       {
-      if( params[1] < 60 )
+      if( maskedSigma < 60 )
         {
-        filterMaskedImage->SetSigma( params[1] );
+        filterMaskedImage->SetSigma( maskedSigma );
         }
       else
         {
@@ -289,15 +293,21 @@ public:
       ++iterOutput;
       }
 
+    double meanObj = 0;
+    double meanBkg = 0;
+    double stdDevObj = 0;
+    double stdDevBkg = 0;
+    double denom = 0;
+
     if( countObj > 0 && countBkg > 0 )
       {
-      double meanObj = sumObj/countObj;
-      double meanBkg = sumBkg/countBkg;
+      meanObj = sumObj/countObj;
+      meanBkg = sumBkg/countBkg;
   
-      double stdDevObj = vcl_sqrt( sumsObj/countObj - meanObj*meanObj );
-      double stdDevBkg = vcl_sqrt( sumsBkg/countBkg - meanBkg*meanBkg );
+      stdDevObj = vcl_sqrt( sumsObj/countObj - meanObj*meanObj );
+      stdDevBkg = vcl_sqrt( sumsBkg/countBkg - meanBkg*meanBkg );
   
-      double denom = stdDevObj * stdDevBkg;
+      denom = stdDevObj * stdDevBkg;
       if( denom > 0 )
         {
         result = - vnl_math_abs(meanObj - meanBkg) 
@@ -310,8 +320,8 @@ public:
       }
 
     std::cout << ++m_CallsToGetValue << " : "
-              << params[0] << ", "
-              << params[1] << ", ";
+              << inputSigma << ", "
+              << maskedSigma << ", ";
     std::cout << " : result = " << result << std::endl;
 
     return result;
@@ -424,7 +434,7 @@ int DoIt( int argc, char * argv[] )
   params[0] = objectScale;
   params[1] = backgroundScale;
 
-  typedef itk::ContrastCostFunction< PixelType, dimensionT >   
+  typedef itk::ContrastCostFunction< PixelType, dimensionT >
                                                 ContrastCostFunctionType;
   typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
   typedef itk::FRPROptimizer                    OptimizerType;
