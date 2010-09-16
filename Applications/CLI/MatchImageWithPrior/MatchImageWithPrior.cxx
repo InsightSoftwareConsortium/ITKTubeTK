@@ -307,6 +307,10 @@ int DoIt( int argc, char * argv[] )
     eval.Update();
     outVolume = eval.GetOutputVolumeImage();
     outMask = eval.GetOutputMaskImage();
+
+    delete myFunc;
+    delete spline1D;
+    delete opt;
     }
 
   std::cout << "Erode = " << outErode << std::endl;
