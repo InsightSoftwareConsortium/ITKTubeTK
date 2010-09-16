@@ -304,6 +304,12 @@ PDFSegmenter< ImageT, N, LabelmapT >
         }
       }
     }
+
+  for( unsigned int i=0; i<N; i++ )
+    {
+    delete itInIm[i];
+    }
+
   timeCollector.Stop("CreateLists");
   }
 
@@ -738,6 +744,11 @@ PDFSegmenter< ImageT, N, LabelmapT >
         }
       ++probIt;
       }
+
+    for( unsigned int i=0; i<N; i++ )
+      {
+      delete itInIm[i];
+      }
     }
   {
   m_ProbabilityImageVector[numClasses] = ProbabilityImageType::New();
@@ -790,6 +801,12 @@ PDFSegmenter< ImageT, N, LabelmapT >
       }
     ++probIt;
     }
+
+  for( unsigned int i=0; i<N; i++ )
+    {
+    delete itInIm[i];
+    }
+
   }
   timeCollector.Stop("ProbabilityImage");
 
