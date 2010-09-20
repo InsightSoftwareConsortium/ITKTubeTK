@@ -33,6 +33,7 @@ limitations under the License.
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
+#include "itkCastImageFilter.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -70,10 +71,15 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   // Define the types and dimension of the images
+  // Use the input image to dictate the type of the image reader/writer, but use double
+  // for the filter to avoid rounding off errors in the filter's floating point operations
   const unsigned int Dimension                = 3;
-  typedef double                              PixelType;
-  typedef itk::Image< PixelType, Dimension >  InputImageType;
-  typedef itk::Image< PixelType, Dimension >  OutputImageType;
+  typedef pixelT                              ImagePixelType;
+  typedef itk::Image< ImagePixelType, Dimension >  InputImageType;
+  typedef itk::Image< ImagePixelType, Dimension >  OutputImageType;
+  typedef double                              FilterPixelType;
+  typedef itk::Image< FilterPixelType, Dimension > FilterInputImageType;
+  typedef itk::Image< FilterPixelType, Dimension > FilterOutputImageType;
 
   // Read the input volume
   timeCollector.Start("Load data");
@@ -95,18 +101,24 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
+  // C-style cast from input image type to type 'double'
+  typedef itk::CastImageFilter< InputImageType, FilterInputImageType > CastInputImageFilterType;
+  typename CastInputImageFilterType::Pointer castInputImageFilter =
+      CastInputImageFilterType::New();
+  castInputImageFilter->SetInput( reader->GetOutput() );
+
   // Perform the coherence enhancing anisotropic diffusion
   timeCollector.Start("Coherence enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion coherence enhancing filter
-  typedef itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< InputImageType,
-                                           OutputImageType>  CoherenceEnhancingFilterType;
+  typedef itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< FilterInputImageType,
+                                     FilterOutputImageType>  CoherenceEnhancingFilterType;
 
   // Create a coherence enhancing filter
   typename CoherenceEnhancingFilterType::Pointer CoherenceEnhancingFilter =
       CoherenceEnhancingFilterType::New();
 
-  CoherenceEnhancingFilter->SetInput( reader->GetOutput() );
+  CoherenceEnhancingFilter->SetInput( castInputImageFilter->GetOutput() );
 
   //Set/Get CED parameters
   CoherenceEnhancingFilter->SetSigma( scaleParameter );
@@ -139,12 +151,19 @@ int DoIt( int argc, char * argv[] )
   progress = 0.9;
   progressReporter.Report( progress );
 
+  // C-style cast from double to output image type
+  typedef itk::CastImageFilter< FilterOutputImageType, OutputImageType >
+      CastOutputImageFilterType;
+  typename CastOutputImageFilterType::Pointer castOutputImageFilter =
+      CastOutputImageFilterType::New();
+  castOutputImageFilter->SetInput( CoherenceEnhancingFilter->GetOutput() );
+
   // Save output data
   timeCollector.Start("Save data");
   typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput ( CoherenceEnhancingFilter->GetOutput() );
+  writer->SetInput( castOutputImageFilter->GetOutput() );
 
   try
     {
