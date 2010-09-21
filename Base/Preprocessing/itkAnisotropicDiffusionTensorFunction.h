@@ -32,9 +32,9 @@ namespace itk {
 
 /** \class AnisotropicDiffusionTensorFunction
  * \brief This class is a function object that is used
- * to create a solver filter for edge enhancment diffusion equation 
+ * to create a solver filter for edge enhancement diffusion equation
  * 
- * \sa AnisotropicDiffusionVesselEnhancementImageFilter 
+ * \sa AnisotropicDiffusionTensorImageFilter
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
@@ -68,16 +68,13 @@ public:
   typedef typename Superclass::NeighborhoodType        NeighborhoodType;
   typedef typename Superclass::FloatOffsetType         FloatOffsetType;
 
-
   typedef itk::Image< DiffusionTensor3D< double> , 3 > 
                                                DiffusionTensorImageType;
-
 
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
   typedef ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>
     DefaultBoundaryConditionType;
-
 
   /** Define diffusion image nbd type */
   typedef ConstNeighborhoodIterator<DiffusionTensorImageType, 

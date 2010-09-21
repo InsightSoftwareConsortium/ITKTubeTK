@@ -34,11 +34,14 @@ limitations under the License.
 
 namespace itk {
 /** \class AnisotropicEdgeEnhancementDiffusionImageFilter
- *  This class is an implementation of Edge-enhancing diffusion
- *   INSERT reference here
+ *  This class is an implementation of Edge-enhancing diffusion:
+ *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
+ *   anisotropic hybrid diffusion with continuous switch. IEEE Transactions on
+ *   Medical Imaging 28(10), pp. 1585-1594, 2009.
  * 
  * \sa itkAnisotropicDiffusionTensorImageFilter 
  * \sa itkAnisotropicCoherenceEnhancingDiffusionImageFilter
+ * \sa itkAnisotropicHybridDiffusionImageFilter
  *
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions

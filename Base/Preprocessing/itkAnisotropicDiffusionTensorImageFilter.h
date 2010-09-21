@@ -33,11 +33,12 @@ limitations under the License.
 namespace itk {
 /** \class AnisotropicDiffusionTensorImageFilter
  * \brief This is a superclass for filters that iteratively enhance edge in 
- *        an image by solving non-linear diffusion equation.
+ *        an image by solving a non-linear diffusion equation.
  *
  * 
  * \sa AnisotropicEdgeEnhancementDiffusionImageFilter
  * \sa AnisotropicCoherenceEnhancingDiffusionImageFilter
+ * \sa AnisotropicHybridDiffusionImageFilter
  *
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
@@ -104,14 +105,13 @@ public:
   /** The container type for the update buffer. */
   typedef OutputImageType UpdateBufferType;
 
-  /** Define diffusion image nbd type */
+  /** Define diffusion image neighborhood type */
   typedef typename FiniteDifferenceFunctionType::DiffusionTensorNeighborhoodType
                                                DiffusionTensorNeighborhoodType;
 
 
-  /** Set/Get Macro for VED parameters */
+  /** Set/Get Macro for diffusion tensor image filter parameters */
   itkSetMacro( TimeStep, double ); 
-
   itkGetMacro( TimeStep, double ); 
 
 #ifdef ITK_USE_CONCEPT_CHECKING
@@ -170,17 +170,19 @@ protected:
   typedef typename DiffusionTensorImageType::RegionType 
                                         ThreadDiffusionTensorImageRegionType;
 
-  typedef typename DiffusionTensorImageType::Pointer DiffusionTensorImagePointerType;
+  typedef typename DiffusionTensorImageType::Pointer
+                                        DiffusionTensorImagePointerType;
 
   /**  Does the actual work of updating the output from the UpdateContainer 
    *   over an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
-   *  \sa ApplyUpdateThreaderCallback */ 
+   *  \sa ApplyUpdateThreaderCallback */
   virtual
   void ThreadedApplyUpdate(
                 TimeStepType dt,
                 const ThreadRegionType &regionToProcess,
-                const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+                const ThreadDiffusionTensorImageRegionType
+                                         &diffusionRegionToProcess,
                 int threadId);
 
   /** Does the actual work of calculating change over a region supplied by
@@ -190,7 +192,8 @@ protected:
   virtual
   TimeStepType ThreadedCalculateChange(
                const ThreadRegionType &regionToProcess,
-               const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+               const ThreadDiffusionTensorImageRegionType
+                                         &diffusionRegionToProcess,
                int threadId);
 
   /** Prepare for the iteration process. */

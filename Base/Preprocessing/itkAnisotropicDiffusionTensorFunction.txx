@@ -46,7 +46,7 @@ AnisotropicDiffusionTensorFunction< TImageType>
   it.SetRadius( r );
   
   // Find the center index of the neighborhood.
-  m_Center =  it.Size() / 2;
+  m_Center = it.Size() / 2;
 
   // Get the stride length for each axis.
   for(unsigned int i = 0; i < ImageDimension; i++)
@@ -73,8 +73,9 @@ AnisotropicDiffusionTensorFunction< TImageType >
                 const FloatOffsetType& offset)
 {
   DiffusionTensorNeighborhoodType diffusionTensor; 
-  return this->ComputeUpdate( it, diffusionTensor,globalData, offset ); 
+  return this->ComputeUpdate( it, diffusionTensor, globalData, offset );
 }
+
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
@@ -168,21 +169,21 @@ AnisotropicDiffusionTensorFunction< TImageType >
 
   ScalarValueType   pdWrtImageIntensity1;
 
-  pdWrtImageIntensity1 = center_Tensor_value(0,0) *  gd->m_dxy[0][0]  + 
-                    center_Tensor_value(0,1) *  gd->m_dxy[0][1] +
-                    center_Tensor_value(0,2) *  gd->m_dxy[0][2];
+  pdWrtImageIntensity1 = center_Tensor_value(0,0) * gd->m_dxy[0][0]  +
+                    center_Tensor_value(0,1) * gd->m_dxy[0][1] +
+                    center_Tensor_value(0,2) * gd->m_dxy[0][2];
   
   ScalarValueType   pdWrtImageIntensity2;
 
-  pdWrtImageIntensity2 = center_Tensor_value(1,0) *  gd->m_dxy[1][0]  + 
-                    center_Tensor_value(1,1) *  gd->m_dxy[1][1] +
-                    center_Tensor_value(1,2) *  gd->m_dxy[1][2];
+  pdWrtImageIntensity2 = center_Tensor_value(1,0) * gd->m_dxy[1][0]  +
+                    center_Tensor_value(1,1) * gd->m_dxy[1][1] +
+                    center_Tensor_value(1,2) * gd->m_dxy[1][2];
  
   ScalarValueType   pdWrtImageIntensity3;
 
-  pdWrtImageIntensity3 = center_Tensor_value(2,0) *  gd->m_dxy[2][0]  + 
-                    center_Tensor_value(2,1) *  gd->m_dxy[2][1] +
-                    center_Tensor_value(2,2) *  gd->m_dxy[2][2];
+  pdWrtImageIntensity3 = center_Tensor_value(2,0) * gd->m_dxy[2][0]  +
+                    center_Tensor_value(2,1) * gd->m_dxy[2][1] +
+                    center_Tensor_value(2,2) * gd->m_dxy[2][2];
  
   ScalarValueType   total;
 
