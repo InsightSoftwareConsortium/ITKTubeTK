@@ -249,6 +249,12 @@ else( TubeTK_USE_SUPERBUILD )
 
 endif( TubeTK_USE_SUPERBUILD )
 
+
+#-----------------------------------------------------------------------------
+# Misc.
+include(${CMAKE_ROOT}/Modules/TestBigEndian.cmake)
+test_big_endian(CMAKE_WORDS_BIGENDIAN)
+
 #-----------------------------------------------------------------------------
 # Define locations for applications and libraries
 #  We use Slicer3 variable names to simplify porting to Slicer3
@@ -269,10 +275,74 @@ set(Slicer3_HOME "${Slicer3_BINARY_DIR}")
 
 include( ${TubeTK_SOURCE_DIR}/CMake/Slicer3PluginsMacros.cmake )
 
+# CLI_SOURCE_DIR is a Slicer3 variable.  Needs to point to the top of
+#   the Slicer3 CLI modules.
+set( CLI_SOURCE_DIR "${TubeTK_BINARY_DIR}/../Slicer3" )
+set( CLI_BINARY_DIR "${TubeTK_BINARY_DIR}/../Slicer3-Build" )
+make_directory( ${CLI_SOURCE_DIR} )
+make_directory( ${CLI_BINARY_DIR} )
+set( Slicer3_SOURCE_DIR ${CLI_SOURCE_DIR} )
+
+# Define MACROs for downloading Slicer3 applications and libs used by TubeTK
+IF( NOT SVNCOMMAND )
+  FIND_PACKAGE( Subversion REQUIRED )
+  SET( SVNCOMMAND ${Subversion_SVN_EXECUTABLE} )
+ENDIF( NOT SVNCOMMAND )
+
+macro( svnGetSlicerCLI FILENAME )
+  set( svnCmd "co" )
+  set( svnSite "http://svn.slicer.org/Slicer3/trunk/Applications/CLI" )
+  execute_process(
+    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${CLI_SOURCE_DIR}/${FILENAME}
+    OUTPUT_VARIABLE svnOutput
+    ERROR_VARIABLE svnError
+    RESULT_VARIABLE svnResult
+    )
+  if( svnError )
+    message( "Error while fetching CLI module from Slicer3 SVN..." )
+    message( "Svn = ${SVNCOMMAND}" )
+    message( "Command = ${svnCmd}" )
+    message( "Site = ${svnSite}" )
+    message( "File = ${FILENAME}" )
+    message( "Dir = ${CLI_SOURCE_DIR}" )
+    message( "Output = ${svnOutput}" )
+    message( FATAL "Result = ${svnResult}" )
+  endif( svnError )
+endmacro( svnGetSlicerCLI FILENAME )
+
+macro( svnGetSlicerBase FILENAME )
+  set( svnCmd "co" )
+  set( svnSite "http://svn.slicer.org/Slicer3/trunk/" )
+  execute_process(
+    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${CLI_SOURCE_DIR}/${FILENAME}
+    OUTPUT_VARIABLE svnOutput
+    ERROR_VARIABLE svnError
+    RESULT_VARIABLE svnResult
+    )
+  if( svnError )
+    message( "Error while fetching module from Slicer3 SVN..." )
+    message( "Svn = ${SVNCOMMAND}" )
+    message( "Command = ${svnCmd}" )
+    message( "Site = ${svnSite}" )
+    message( "File = ${FILENAME}" )
+    message( "Dir = ${CLI_SOURCE_DIR}" )
+    message( "Output = ${svnOutput}" )
+    message( FATAL "Result = ${svnResult}" )
+  endif( svnError )
+endmacro( svnGetSlicerBase FILENAME )
+
 #-----------------------------------------------------------------------------
-# Misc.
-include(${CMAKE_ROOT}/Modules/TestBigEndian.cmake)
-test_big_endian(CMAKE_WORDS_BIGENDIAN)
+# Build Slicer3 cli applications essential to TubeTK
+svnGetSlicerBase( Resources ${CLI_SOURCE_DIR} )
+svnGetSlicerCLI( Templates ${CLI_SOURCE_DIR} )
+svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
+
+set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR} )
+set( LAUNCH_EXE  "" )
+
+set( SUPPORT_2D_IMAGES 1 )
+add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
+                  ${CLI_BINARY_DIR}/RegisterImagesModule )
 
 #-----------------------------------------------------------------------------
 # Build TubeTK
