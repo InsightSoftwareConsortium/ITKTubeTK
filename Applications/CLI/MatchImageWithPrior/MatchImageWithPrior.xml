@@ -153,6 +153,20 @@
       <longflag>disableNormalize</longflag>
       <default>false</default>
     </boolean>
+  </parameters>
+
+  <parameters>
+
+    <label>Misc. Options</label>
+    <description>Specialized options</description>
+
+    <integer>
+      <name>seed</name>
+      <label>Random number seed</label>
+      <description>Seed for random processes in the method.  0 = no seed</description>
+      <flag>S</flag>
+      <longflag>seed</longflag>
+    </integer>
 
   </parameters>
 

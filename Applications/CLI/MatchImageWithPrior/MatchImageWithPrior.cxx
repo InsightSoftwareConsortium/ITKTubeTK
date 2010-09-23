@@ -176,6 +176,10 @@ int DoIt( int argc, char * argv[] )
   eval.SetBoundarySize( outputBoundary );
   eval.SetNormalize( true );
   eval.SetSamplingRate( samplingRate );
+  if( seed > 0 )
+    {
+    eval.SetSeed( seed );
+    }
   eval.SetTimeCollector( &timeCollector );
   eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
 
