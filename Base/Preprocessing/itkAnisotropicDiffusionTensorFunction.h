@@ -57,7 +57,7 @@ public:
                                            FiniteDifferenceFunction );
 
   /** Extract some parameters from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs. */
   typedef double                                       TimeStepType;
