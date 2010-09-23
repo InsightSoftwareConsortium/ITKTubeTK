@@ -277,8 +277,8 @@ include( ${TubeTK_SOURCE_DIR}/CMake/Slicer3PluginsMacros.cmake )
 
 # CLI_SOURCE_DIR is a Slicer3 variable.  Needs to point to the top of
 #   the Slicer3 CLI modules.
-set( CLI_SOURCE_DIR "${TubeTK_BINARY_DIR}/../Slicer3" )
-set( CLI_BINARY_DIR "${TubeTK_BINARY_DIR}/../Slicer3-Build" )
+set( CLI_SOURCE_DIR "${TubeTK_BINARY_DIR}/Slicer3" )
+set( CLI_BINARY_DIR "${TubeTK_BINARY_DIR}/Slicer3-Build" )
 make_directory( ${CLI_SOURCE_DIR} )
 make_directory( ${CLI_BINARY_DIR} )
 set( Slicer3_SOURCE_DIR ${CLI_SOURCE_DIR} )
