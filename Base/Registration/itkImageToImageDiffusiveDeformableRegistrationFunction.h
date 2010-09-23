@@ -33,6 +33,9 @@ namespace itk
  *
  * TODO Insert more description + warnings here
  *
+ * This class is templated over the fixed image type, moving image type and the
+ * deformation field type.
+ *
  * \sa itkImageToImageDiffusiveDeformableRegistrationFilter
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
@@ -58,15 +61,64 @@ public:
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFunction);
+
+  /** Extract useful typedefs from the superclass. */
+  typedef typename Superclass::FixedImageType         FixedImageType;
+  typedef typename Superclass::FixedImagePointer      FixedImagePointer;
+  typedef typename Superclass::MovingImageType        MovingImageType;
+  typedef typename Superclass::MovingImagePointer     MovingImagePointer;
+  typedef typename Superclass::DeformationFieldType   DeformationFieldType;
+  typedef typename Superclass::DeformationFieldTypePointer
+                                                    DeformationFieldTypePointer;
+  typedef typename Superclass::TimeStepType           TimeStepType;
+  typedef typename Superclass::RadiusType             RadiusType;
+  typedef typename Superclass::NeighborhoodType       NeighborhoodType;
+  typedef typename Superclass::PixelType              PixelType;
+  typedef typename Superclass::FloatOffsetType        FloatOffsetType;
+
+  /** Inherit some enums from the superclass. */
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+
+  /** Set the object's state before each iteration. */
+  virtual void InitializeIteration();
+
+  /** This method is called by a finite difference solver image filter at
+   * each pixel that does not lie on a data set boundary */
+  virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
+                                  void *globalData,
+                                  const FloatOffsetType &offset
+                                                        = FloatOffsetType(0.0));
+
+  /** Release memory for global data structure. */
+  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const;
+
+  /** This class uses a constant timestep of 1. */
+  virtual TimeStepType ComputeGlobalTimeStep(void * itkNotUsed( GlobalData ))
+      const
+    {
+    return m_TimeStep;
+    }
   
 protected:
   ImageToImageDiffusiveDeformableRegistrationFunction();
   void PrintSelf(std::ostream& os, Indent indent) const;
 
+  /** A global data type for this class of equations.  Used to store information
+    for computing the metric and other intermediate products, such as
+    derivatives, that may be used by virtual functions called from
+    ComputeUpdate().  Caching these values here allows ComputeUpdate() to be
+    const and thread-safe.*/
+  struct GlobalDataStruct
+    {
+    };
+
 private:
   // Purposely not implemented
   ImageToImageDiffusiveDeformableRegistrationFunction(const Self&);
   void operator=(const Self&); // Purposely not implemented
+
+  /** The global timestep. */
+  TimeStepType              m_TimeStep;
  
 };
 

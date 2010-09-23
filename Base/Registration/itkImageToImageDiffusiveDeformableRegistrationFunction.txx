@@ -37,6 +37,9 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TDeformationField >
 ::ImageToImageDiffusiveDeformableRegistrationFunction()
 {
+  m_TimeStep = 1.0;
+  this->SetMovingImage(0);
+  this->SetFixedImage(0);
 }
 
 /**
@@ -50,7 +53,57 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
+
+  os << indent << "TimeStep: " << m_TimeStep;
 }
+
+/**
+  * Called at the beginning of each iteration
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::InitializeIteration()
+{
+}
+
+/**
+  * Called at the beginning of each iteration
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename ImageToImageDiffusiveDeformableRegistrationFunction
+                                < TFixedImage, TMovingImage, TDeformationField >
+::PixelType
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::ComputeUpdate(const NeighborhoodType &neighborhood,
+                void *gd,
+                const FloatOffsetType& itkNotUsed(offset))
+{
+  // Get the global data structure
+  GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
+}
+
+/**
+  * Release the per-thread-global data
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::ReleaseGlobalDataPointer( void * gd ) const
+{
+  delete ( GlobalDataStruct * ) gd;
+}
+
+
+
+
+
 
 } // end namespace itk
 
