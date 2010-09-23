@@ -23,7 +23,7 @@
 
 include_regular_expression( "^.*$" )
 
-set( BASE_REGISTRSTION_FILTERS_TESTS 
+set( BASE_REGISTRATION_FILTERS_TESTS
       ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests )
 
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
@@ -32,6 +32,7 @@ set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Registration/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
+       itkImageToImageDiffusiveDeformableRegistrationTest.cxx
        itkImageToTubeRigidRegistrationTest.cxx
        itkTubeToTubeTransformFilterTest.cxx
 )
@@ -44,12 +45,12 @@ include_directories(
 add_executable( tubeBaseRegistrationFiltersTests
                 tubeBaseRegistrationFiltersTests.cxx
                 ${tubeBaseRegistrationFilters_SRCS} )
+
 target_link_libraries( tubeBaseRegistrationFiltersTests
                        ITKIO ITKNumerics ITKBasicFilters )
 
-
 add_test( itkTubeToTubeTransformFilterTest 
-          ${BASE_REGISTRSTION_FILTERS_TESTS} itkTubeToTubeTransformFilterTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkTubeToTubeTransformFilterTest
           ${INPUT_DATA}/Branch-truth-new.tre
           ${TEMP}/itkTubeToTubeTransformFilter.tre
           ${INPUT_DATA}/Branch.n020.mha
@@ -59,11 +60,19 @@ add_test( itkTubeToTubeTransformFilterTest
           )
 
 add_test( itkImageToTubeRigidRegistrationTest 
-          ${BASE_REGISTRSTION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
           ${INPUT_DATA}/Branch.n020.mha
           ${TEMP}/itkTubeToTubeTransformFilter.tre
           ${TEMP}/itkImageToTubeRigidRegistrationTest.mha 
           )
+
 set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
+
+add_test( itkImageToImageDiffusiveDeformableRegistrationTest
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationTest
+          )
+
+
 
