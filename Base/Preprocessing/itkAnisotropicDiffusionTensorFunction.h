@@ -76,7 +76,7 @@ public:
   typedef ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>
     DefaultBoundaryConditionType;
 
-  /** Define diffusion image nbd type */
+  /** Define diffusion image neighborhood type */
   typedef ConstNeighborhoodIterator<DiffusionTensorImageType, 
                                     DefaultBoundaryConditionType> 
                                            DiffusionTensorNeighborhoodType;
