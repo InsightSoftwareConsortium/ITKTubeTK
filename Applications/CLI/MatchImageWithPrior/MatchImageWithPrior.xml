@@ -166,6 +166,7 @@
       <description>Seed for random processes in the method.  0 = no seed</description>
       <flag>S</flag>
       <longflag>seed</longflag>
+      <default>0</default>
     </integer>
 
   </parameters>
