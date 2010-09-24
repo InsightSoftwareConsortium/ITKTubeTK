@@ -52,7 +52,7 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Preprocessing
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
   ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
-  ${TubeTK_BINARY_DIR}/Applications/CLI/Slicer3-Src/RegisterImagesModule
+  ${TubeTK_BINARY_DIR}/Slicer3/RegisterImagesModule
   )
 
 set( PROJECT_SOURCE 

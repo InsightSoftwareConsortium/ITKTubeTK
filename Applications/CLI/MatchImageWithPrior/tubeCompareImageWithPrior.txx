@@ -55,15 +55,10 @@ limitations under the License.
 #include "itkNormalizeImageFilter.h"
 #include "itkRigidImageToImageRegistrationMethod.h"
 #include "itkResampleImageFilter.h"
-
-#include "itkShiftScaleImageFilter.h"
-
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include "itkMutualInformationImageToImageMetric.h"
-#include "itkNormalizedCorrelationImageToImageMetric.h"
-#include "itkMeanSquaresImageToImageMetric.h"
-#include "itkNormalizeImageFilter.h"
+
+#include "itkShiftScaleImageFilter.h"
 
 namespace tube
 {
@@ -89,9 +84,8 @@ CompareImageWithPrior( void )
   m_RegistrationTransform->SetIdentity();
   m_Normalize = true;
   m_BoundarySize.resize(0);
-  m_UseMeanSquaresMetric = true;
-  m_UseCorrelationMetric = false;
   m_SamplingRate = 0.2;
+  m_Seed = 0;
 
   m_TimeCollector = NULL;
   m_ProgressReporter = NULL;
@@ -212,6 +206,13 @@ SetSamplingRate( float samplingRate )
 
 template< class pixelT, unsigned int dimensionT >
 void CompareImageWithPrior< pixelT, dimensionT>::
+SetSeed( unsigned int seed )
+{
+  m_Seed = seed;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void CompareImageWithPrior< pixelT, dimensionT>::
 SetNormalize( bool normalize )
 {
   m_Normalize = normalize;
@@ -286,13 +287,6 @@ SetBoundarySize( std::vector< int > & boundarySize )
     {
     m_BoundarySize[i] = boundarySize[i];
     }
-}
-
-template< class pixelT, unsigned int dimensionT >
-void CompareImageWithPrior< pixelT, dimensionT>::
-SetUseMeanSquaresMetric( bool useMeanSquaresMetric )
-{
-  m_UseMeanSquaresMetric = useMeanSquaresMetric;
 }
 
 template< class pixelT, unsigned int dimensionT >
@@ -500,6 +494,10 @@ Update( void )
         numSamples *= imageSize[i];
         }
       reg->SetNumberOfSamples( numSamples * m_SamplingRate );
+      if( m_Seed > 0 )
+        {
+        reg->SetRandomNumberSeed( m_Seed );
+        }
   
       if( m_ProgressReporter )
         {
@@ -750,104 +748,59 @@ Update( void )
     }
 
   /* Compute similarity */
-  if( true )
+  std::cout << "Computing similarity" << std::endl;
+  if( m_TimeCollector )
     {
-    std::cout << "Computing similarity" << std::endl;
+    m_TimeCollector->Start("Match metric");
+    }
 
-    if( m_TimeCollector )
-      {
-      m_TimeCollector->Start("Match metric");
-      }
+  itk::ImageRegionIteratorWithIndex< ImageType > volIter( 
+    m_OutputVolImage, m_OutputVolImage->GetLargestPossibleRegion() );
+  itk::ImageRegionIteratorWithIndex< ImageType > maskIter( 
+    m_OutputMaskImage, m_OutputMaskImage->GetLargestPossibleRegion() );
 
-    typedef itk::NormalizeImageFilter< ImageType, ImageType > 
-      NormFilterType;
-  
-    typename NormFilterType::Pointer norm1 = NormFilterType::New();
-    norm1->SetInput( m_OutputVolImage );
-    norm1->Update();
-    typename ImageType::Pointer image1 = norm1->GetOutput();
-  
-    typename NormFilterType::Pointer norm2 = NormFilterType::New();
-    norm2->SetInput( m_OutputMaskImage );
-    norm2->Update();
-    typename ImageType::Pointer image2 = norm2->GetOutput();
-  
-    typedef itk::AffineTransform< double, dimensionT > TransformType;
-    typename TransformType::Pointer transform = TransformType::New();
-    transform->SetIdentity();
-  
-    typedef itk::LinearInterpolateImageFunction< ImageType, double >
-      InterpolatorType;
-    typename InterpolatorType::Pointer interpolator =
-      InterpolatorType::New();
-    interpolator->SetInputImage( image2 );
-  
-    typedef itk::ImageToImageMetric< ImageType, ImageType >   MetricType;
-    typename MetricType::Pointer metric;
-  
-    if( m_UseCorrelationMetric )
-      {
-      std::cout << "  Correlation metric" << std::endl;
-      typedef itk::NormalizedCorrelationImageToImageMetric< ImageType,
-        ImageType > CorMetricType;
-      metric = CorMetricType::New();
-      }
-    else if( m_UseMeanSquaresMetric )
-      {
-      std::cout << "  Mean squared metric" << std::endl;
-      typedef itk::MeanSquaresImageToImageMetric< ImageType,
-        ImageType > MSMetricType;
-      metric = MSMetricType::New();
-      }
-    else
-      {
-      std::cout << "  Mutual information metric" << std::endl;
-      typedef itk::MutualInformationImageToImageMetric< ImageType,
-        ImageType > MIMetricType;
-      metric = MIMetricType::New();
-      }
-  
-    typename ImageType::SizeType size = image1->GetLargestPossibleRegion()
-      .GetSize();
-    std::cout << "size = " << size << std::endl;
-  
-    metric->SetFixedImage( image1 );
-    metric->SetMovingImage( image2 );
-    metric->SetFixedImageRegion( image1->GetLargestPossibleRegion() );
-    metric->SetTransform( transform );
-    metric->SetInterpolator( interpolator );
-    typedef itk::ImageSpatialObject< ImageType::ImageDimension, PixelType >
-      MaskSOType;
-    typename MaskSOType::Pointer maskSO = MaskSOType::New();
+  m_GoF = 0;
+  unsigned int count = 0;
+  typename ImageType::PointType pnt;
+  typename ImageType::IndexType indx;
+  while( !volIter.IsAtEnd() )
+    {
+    bool valid = true;
     if( m_MetricMask.IsNotNull() )
       {
-      maskSO->SetImage( m_MetricMask );
-      metric->SetFixedImageMask( maskSO );
+      valid = false;
+      m_OutputVolImage->TransformIndexToPhysicalPoint( volIter.GetIndex(),
+        pnt );
+      if( m_MetricMask->TransformPhysicalPointToIndex( pnt, indx ) )
+        {
+        if( m_MetricMask->GetPixel( indx ) != 0 )
+          {
+          valid = true;
+          }
+        }
       }
-    int numSamples = 1;
-    for( unsigned int i=0; i<dimensionT; i++ )
+    if( valid )
       {
-      numSamples *= size[i];
+      double tf = volIter.Get() - maskIter.Get();
+      m_GoF += tf * tf;
+      ++count;
       }
-    metric->SetNumberOfSpatialSamples( numSamples * m_SamplingRate );
-    metric->Initialize();
-    metric->MultiThreadingInitialize();
-  
-    std::cout << "Calling metric" << std::endl;
-    std::cout << " Using params = " << transform->GetParameters() << std::endl;
-    if( !m_UseCorrelationMetric && !m_UseMeanSquaresMetric )
-      {
-      m_GoF = metric->GetValue( transform->GetParameters() );
-      }
-    else
-      {
-      m_GoF = -metric->GetValue( transform->GetParameters() );
-      }
+    ++volIter;
+    ++maskIter;
+    }
 
-    if( m_TimeCollector )
-      {
-      m_TimeCollector->Stop("Match metric");
-      }
+  if( m_GoF>0 && count>0 )
+    {
+    m_GoF = -vcl_sqrt( m_GoF/count );
+    }
+
+  if( m_TimeCollector )
+    {
+    m_TimeCollector->Stop("Match metric");
+    }
+  if( m_ProgressReporter )
+    {
+    m_ProgressReporter->Report( m_ProgressStart + 0.95*m_ProgressRange );
     }
 
   std::cout << "gof = " << m_GoF << std::endl;

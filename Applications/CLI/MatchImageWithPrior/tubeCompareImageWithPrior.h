@@ -72,6 +72,8 @@ public:
 
   void SetSamplingRate( float samplingRate );
 
+  void SetSeed( unsigned int seed );
+
   void SetUseRegistration( bool reg );
   bool GetUseRegistration( );
   void SetUseRegistrationTransform( bool reg );
@@ -84,8 +86,6 @@ public:
     GetRegistrationTransform( void );
 
   void SetBoundarySize( std::vector< int > & boundarySize );
-
-  void SetUseMeanSquaresMetric( bool useMeanSquaresMetric );
 
   void SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector );
 
@@ -117,9 +117,8 @@ private:
                               m_RegistrationTransform;
   bool                        m_Normalize;
   std::vector< int >          m_BoundarySize;
-  bool                        m_UseMeanSquaresMetric;
-  bool                        m_UseCorrelationMetric;
   float                       m_SamplingRate;
+  unsigned int                m_Seed;
 
   itk::TimeProbesCollectorBase * m_TimeCollector;
   CLIProgressReporter          * m_ProgressReporter;
