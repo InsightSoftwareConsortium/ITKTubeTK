@@ -149,6 +149,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
       }
     }
 
+  // Compute the update term
+
   ScalarValueType   pdWrtDiffusion1;
 
   pdWrtDiffusion1 = gd->m_DT_dxy[0][0] * gd->m_dx[0]  
