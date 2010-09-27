@@ -99,6 +99,8 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   func->SetInputImage( inputImage );
   func->SetInputMask( maskImage );
 
+  func->SetForceDiagonalHistogram( true );
+
   ImageType::Pointer outputImage = ImageType::New();
   outputImage->CopyInformation( inputImage );
   outputImage->SetRegions( inputImage->GetLargestPossibleRegion() );
@@ -112,17 +114,19 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   outIter.GoToBegin();
   while( !outIter.IsAtEnd() )
     {
-    inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
-    func->Precompute( pnt );
+    func->PrecomputeAtIndex( outIter.GetIndex() );
     ++outIter;
+    if( !outIter.IsAtEnd() )
+      {
+      ++outIter;
+      }
     }     
   
   // Evaluate
   outIter.GoToBegin();
   while( !outIter.IsAtEnd() )
     {
-    inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
-    double tf = func->Evaluate( pnt );
+    double tf = func->EvaluateAtIndex( outIter.GetIndex() );
     if( outIter.GetIndex()[0] == outIter.GetIndex()[1] )
       {
       std::cout << "i = " << outIter.GetIndex()[0] 

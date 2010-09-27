@@ -48,23 +48,28 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_InputMask = NULL;
   m_FeatureWidth = 20;
   m_StdevBase = 0.01;
+  m_Histogram = NULL;
   m_SumHistogram = NULL;
   m_SumOfSquaresHistogram = NULL;
+  m_MeanHistogram = NULL;
+  m_StandardDeviationHistogram = NULL;
   m_NumberOfSamples = 0;
   m_NumberOfComputedSamples = 0;
   m_ImageMin = 0;
   m_ImageMax = 0;
+  m_ImageStep = 0;
   m_MaskMin = 0;
   m_MaskMax = 0;
+  m_MaskStep = 0;
+  m_ForceDiagonalHistogram = false;
+
   this->SetHistogramSize( 20 );
-  m_MeanHistogram = NULL;
-  m_StandardDeviationHistogram = NULL;
 }
 
 template <class TInputImage, class TCoordRep>
 void 
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::SetHistogramSize( const unsigned int& size )
+::SetHistogramSize( const unsigned int & size )
 {
   m_HistogramSize = size;
   typename HistogramType::IndexType start;
@@ -74,6 +79,11 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   typename HistogramType::RegionType region;
   region.SetIndex( start );
   region.SetSize( histSize );
+
+  m_Histogram = HistogramType::New();
+  m_Histogram->SetRegions( region );
+  m_Histogram->Allocate();
+  m_Histogram->FillBuffer( 0 );
 
   m_SumHistogram = HistogramType::New();
   m_SumHistogram->SetRegions( region );
@@ -85,7 +95,21 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_SumOfSquaresHistogram->Allocate();
   m_SumOfSquaresHistogram->FillBuffer( 0 );
 
+  m_MeanHistogram = HistogramType::New();
+  m_MeanHistogram->SetRegions( region );
+  m_MeanHistogram->Allocate();
+  m_MeanHistogram->FillBuffer( 0 );
+
+  m_StandardDeviationHistogram = HistogramType::New();
+  m_StandardDeviationHistogram->SetRegions( region );
+  m_StandardDeviationHistogram->Allocate();
+  m_StandardDeviationHistogram->FillBuffer( 0 );
+
+
   m_NumberOfComputedSamples = m_NumberOfSamples = 0;
+
+  m_ImageStep = (m_ImageMax - m_ImageMin) / m_HistogramSize;
+  m_MaskStep = (m_MaskMax - m_MaskMin) / m_HistogramSize;
 }
 
 template <class TInputImage, class TCoordRep>
@@ -101,6 +125,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   calculator->Compute();
   m_ImageMin = calculator->GetMinimum();
   m_ImageMax = calculator->GetMaximum();
+
+  m_ImageStep = (m_ImageMax - m_ImageMin) / m_HistogramSize;
 }
 
 template <class TInputImage, class TCoordRep>
@@ -116,6 +142,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   calculator->Compute();
   m_MaskMin = calculator->GetMinimum();
   m_MaskMax = calculator->GetMaximum();
+
+  m_MaskStep = (m_MaskMax - m_MaskMin) / m_HistogramSize;
 }
 
 template <class TInputImage, class TCoordRep>
@@ -132,7 +160,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
       }
     return this->ComputeZScoreAtIndex( index );
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
     std::cerr << "Exception thrown: " << e << std::endl;
     return 0;
@@ -144,41 +172,27 @@ void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::PrecomputeAtIndex( const IndexType & index )
 {
-  try
+  typename HistogramType::Pointer hist;
+  hist = this->ComputeHistogramAtIndex( index, false );
+  
+  itk::ImageRegionIterator< HistogramType > iterHist( hist,
+    hist->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< HistogramType > iterSum( m_SumHistogram,
+    m_SumHistogram->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< HistogramType > iterSumSquare( 
+    m_SumOfSquaresHistogram,
+    m_SumOfSquaresHistogram->GetLargestPossibleRegion() );
+  while( !iterHist.IsAtEnd() )
     {
-    typename HistogramType::Pointer hist;
-    this->ComputeHistogramAtIndex( index, hist );
-    
-    typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-      AdderType;
-    typedef itk::SquareImageFilter< HistogramType, HistogramType >
-      SquareType;  
-    
-    typename AdderType::Pointer adder = AdderType::New();
-    typename SquareType::Pointer square = SquareType::New();
-    
-    // Calculate Running Sum
-    adder->SetInput1( m_SumHistogram );
-    adder->SetInput2( hist );
-    adder->Update();
-    m_SumHistogram = adder->GetOutput();
-    
-    // Calculate Running Sum of Squares
-    adder = AdderType::New();
-    square->SetInput( hist );
-    square->Update();
-    adder->SetInput1( m_SumOfSquaresHistogram );
-    adder->SetInput2( square->GetOutput() );
-    adder->Update();
-    m_SumOfSquaresHistogram = adder->GetOutput();
-    
-    ++m_NumberOfSamples;
+    double tf = iterHist.Get();
+    iterSum.Set( iterSum.Get() + tf );
+    iterSumSquare.Set( iterSumSquare.Get() + tf*tf );
+    ++iterHist;
+    ++iterSum;
+    ++iterSumSquare;
     }
-  catch( itk::ExceptionObject& e )
-    {
-    std::cerr << "Exception thrown: " << e << std::endl;
-    return;
-    }
+
+  ++m_NumberOfSamples;
 }
 
 template <class TInputImage, class TCoordRep>
@@ -186,7 +200,6 @@ void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeMeanAndStandardDeviation() const
 {
-
   typedef itk::DivideByConstantImageFilter< HistogramType, double,
     HistogramType >                                          DividerType;
   typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
@@ -200,55 +213,50 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   typedef itk::SqrtImageFilter< HistogramType, 
     HistogramType >                                          SqrtType;
 
+  typedef itk::DiscreteGaussianImageFilter< HistogramType,
+          HistogramType > SmootherType;
+
+  SmootherType::Pointer sumSmoother = SmootherType::New();
+  sumSmoother->SetInput( m_SumHistogram );
+  sumSmoother->SetVariance( 2 );
+  sumSmoother->SetUseImageSpacing( false );
+  sumSmoother->Update();
+  m_SumHistogram = sumSmoother->GetOutput();
+
+  SmootherType::Pointer sumSquaresSmoother = SmootherType::New();
+  sumSquaresSmoother->SetInput( m_SumOfSquaresHistogram );
+  sumSquaresSmoother->SetVariance( 2 );
+  sumSquaresSmoother->SetUseImageSpacing( false );
+  sumSquaresSmoother->Update();
+  m_SumOfSquaresHistogram = sumSquaresSmoother->GetOutput();
+
     // Calculate the mean
-  typename DividerType::Pointer divider = DividerType::New();
-  divider->SetInput( m_SumHistogram );
-  divider->SetConstant( m_NumberOfSamples );
-  divider->Update();
-  m_MeanHistogram = divider->GetOutput();
-  
-  // Calculate the standard deviation
-  typename SquareType::Pointer meanSquared = SquareType::New();
-  typename MultiplierType::Pointer meanSquaredMultiplier = MultiplierType::New();
-  typename MultiplierType::Pointer sumSquaresMultiplier = MultiplierType::New();
-  typename SubtracterType::Pointer subtracter = SubtracterType::New();
-  typename SqrtType::Pointer sqrt = SqrtType::New();
-
-  // sqrt( (n/(n-1)) * ( (1/n) sum_i=1..n_(x_i_^2 - x_mean_^2) ) )
-  // Implemented as
-  //   sqrt( (1/(n-1))*(sumSquare - n*mean*mean) )
-  //   = sqrt( (1/(n-1))*sumSquare - (n*(1/(n-1)))*mean*mean )
-  typename HistogramType::PixelType coeff = 
-    1.0 / ( m_NumberOfSamples - 1 );
-
-  // mean * mean
-  meanSquared->SetInput( m_MeanHistogram );
-  meanSquared->Update();
-
-  // n * (1/(n-1)) * mean*mean )
-  meanSquaredMultiplier->SetInput( meanSquared->GetOutput() );
-  meanSquaredMultiplier->SetConstant( m_NumberOfSamples * coeff );
-  meanSquaredMultiplier->Update();
-
-  // (1/(n-1)) * sumSquare
-  sumSquaresMultiplier->SetInput( m_SumOfSquaresHistogram );
-  sumSquaresMultiplier->SetConstant( coeff );
-  sumSquaresMultiplier->Update();
-
-  subtracter->SetInput1( sumSquaresMultiplier->GetOutput() );
-  subtracter->SetInput2( meanSquaredMultiplier->GetOutput() );
-  subtracter->Update();
-
-  sqrt->SetInput( subtracter->GetOutput() );
-  sqrt->Update();
-
-  m_StandardDeviationHistogram = sqrt->GetOutput();  
+  typedef itk::ImageRegionIterator<HistogramType>  HistIteratorType;
+  HistIteratorType sumItr( m_SumHistogram, 
+    m_SumHistogram->GetLargestPossibleRegion() );
+  HistIteratorType sumOfSquaresItr( m_SumOfSquaresHistogram, 
+    m_SumOfSquaresHistogram->GetLargestPossibleRegion() );
+  HistIteratorType meanItr( m_MeanHistogram, 
+    m_MeanHistogram->GetLargestPossibleRegion() );
+  HistIteratorType stdItr( m_StandardDeviationHistogram, 
+    m_StandardDeviationHistogram->GetLargestPossibleRegion() );
+  while( !meanItr.IsAtEnd() )
+    {
+    meanItr.Set( sumItr.Get() / m_NumberOfSamples );
+    stdItr.Set( vcl_sqrt( vnl_math_abs( 
+      sumOfSquaresItr.Get() / m_NumberOfSamples -
+      meanItr.Get() * meanItr.Get() ) ) );
+    ++sumItr;
+    ++sumOfSquaresItr;
+    ++meanItr;
+    ++stdItr;
+    }
 }
 
 template <class TInputImage, class TCoordRep>
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::PrintSelf( std::ostream& os, Indent indent ) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
 
@@ -260,26 +268,13 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     {
     os << indent << "m_InputMask = NULL" << std::endl;
     }
+  os << indent << "m_Histogram = " << m_Histogram << std::endl;
   os << indent << "m_SumHistogram = " << m_SumHistogram << std::endl;
   os << indent << "m_SumOfSquaresHistogram = "
      << m_SumOfSquaresHistogram << std::endl;
-  if( m_MeanHistogram.IsNotNull() )
-    {
-    os << indent << "m_MeanHistogram = " << m_MeanHistogram << std::endl;
-    }
-  else
-    {
-    os << indent << "m_MeanHistogram = NULL" << std::endl;
-    }
-  if( m_StandardDeviationHistogram.IsNotNull() )
-    {
-    os << indent << "m_StandardDeviationHistogram = "
-       << m_StandardDeviationHistogram << std::endl;
-    }
-  else
-    {
-    os << indent << "m_StandardDeviationHistogram = NULL" << std::endl;
-    }
+  os << indent << "m_MeanHistogram = " << m_MeanHistogram << std::endl;
+  os << indent << "m_StandardDeviationHistogram = "
+     << m_StandardDeviationHistogram << std::endl;
   os << indent << "m_FeatureWidth = " << m_FeatureWidth << std::endl;
   os << indent << "m_StdevBase = " << m_StdevBase << std::endl;
   os << indent << "m_HistogramSize = " << m_HistogramSize << std::endl;
@@ -288,8 +283,11 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
      << m_NumberOfComputedSamples << std::endl;
   os << indent << "m_ImageMin = " << m_ImageMin << std::endl;
   os << indent << "m_ImageMax = " << m_ImageMax << std::endl;
+  os << indent << "m_ImageStep = " << m_ImageStep << std::endl;
   os << indent << "m_MaskMin = " << m_MaskMin << std::endl;
   os << indent << "m_MaskMax = " << m_MaskMax << std::endl;
+  os << indent << "m_MaskStep = " << m_MaskStep << std::endl;
+  os << indent << "m_ForceDiagonalHistogram = " << m_MaskStep << std::endl;
 }
 
 template <class TInputImage, class TCoordRep>
@@ -298,7 +296,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeZScoreAtIndex( const IndexType & index ) const
 {
   typename HistogramType::Pointer hist;
-  this->ComputeHistogramAtIndex( index, hist );
+  hist = this->ComputeHistogramAtIndex( index, true );
+
   typedef itk::ImageRegionConstIterator<HistogramType>  HistIteratorType;
   HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
   HistIteratorType meanItr( m_MeanHistogram, 
@@ -306,16 +305,13 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   HistIteratorType stdItr( m_StandardDeviationHistogram, 
                             m_StandardDeviationHistogram->
                             GetLargestPossibleRegion() );
-  histItr.GoToBegin();
-  meanItr.GoToBegin();
-  stdItr.GoToBegin();
-  typename HistogramType::PixelType val = 0;
-  typename HistogramType::PixelType histCount = 0;
-  while( !histItr.IsAtEnd() && !meanItr.IsAtEnd() && !stdItr.IsAtEnd() )
+  double val = 0;
+  unsigned int histCount = 0;
+  while( !histItr.IsAtEnd() )
     {
-    typename HistogramType::PixelType t = histItr.Get();
-    typename HistogramType::PixelType m = meanItr.Get();
-    typename HistogramType::PixelType s = stdItr.Get();
+    double t = histItr.Get();
+    double m = meanItr.Get();
+    double s = stdItr.Get();
     s += m_StdevBase;
     val += vnl_math_abs( t - m ) / s;
     ++histItr;
@@ -328,33 +324,11 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 }
 
 template <class TInputImage, class TCoordRep>
-void
+itk::OrientedImage<float,2>::Pointer & 
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::ComputeHistogramAtIndex( const IndexType& index,
-  typename HistogramType::Pointer& hist ) const
+::ComputeHistogramAtIndex( const IndexType & index, bool blur ) const
 {
-  typename InputImageType::PixelType minInput = m_ImageMin;
-  typename InputImageType::PixelType maxInput = m_ImageMax;
-  typename InputImageType::PixelType normInput = 0 - minInput;
-  typename InputImageType::PixelType rangeInput = maxInput - minInput;
-  typename InputImageType::PixelType stepInput = rangeInput / m_HistogramSize;
-  typename InputImageType::PixelType minMask = m_MaskMin;
-  typename InputImageType::PixelType maxMask = m_MaskMax;
-  typename InputImageType::PixelType normMask = 0 - minMask;
-  typename InputImageType::PixelType rangeMask = maxMask - minMask;
-  typename InputImageType::PixelType stepMask = rangeMask / m_HistogramSize;
-
-  typename HistogramType::IndexType histStart;
-  typename HistogramType::SizeType histSize;
-  histStart[0] = histStart[1] = 0;
-  histSize[0] = histSize[1] = m_HistogramSize;
-  typename HistogramType::RegionType histRegion;
-  histRegion.SetIndex( histStart );
-  histRegion.SetSize( histSize );
-  hist = HistogramType::New();
-  hist->SetRegions( histRegion );
-  hist->Allocate();
-  hist->FillBuffer( 0 );
+  m_Histogram->FillBuffer( 0 );
 
   typedef itk::ImageRegionConstIterator<InputImageType> ConstIteratorType;
   typedef itk::ImageRegionIterator<InputImageType>      IteratorType;
@@ -395,11 +369,11 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
   ConstIteratorType inputItr( this->GetInputImage(), region );
   ConstIteratorType maskItr( m_InputMask, region );
-  while( !inputItr.IsAtEnd() && !maskItr.IsAtEnd() )
+  while( !inputItr.IsAtEnd() )
     {
     typename HistogramType::IndexType cur;
-    cur[0] = ( ( inputItr.Get() + normInput ) / stepInput );
-    cur[1] = ( ( maskItr.Get() + normMask ) / stepMask );
+    cur[0] = ( ( inputItr.Get() - m_ImageMin ) / m_ImageStep );
+    cur[1] = ( ( maskItr.Get() - m_MaskMin ) / m_MaskStep );
     if( cur[0] > (int)(m_HistogramSize) - 1 )
       {
       cur[0] = (int)(m_HistogramSize) - 1;
@@ -417,21 +391,83 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
       cur[1] = 0;
       }
 
-    hist->SetPixel(cur, hist->GetPixel(cur) + 1);
+    m_Histogram->SetPixel(cur, m_Histogram->GetPixel(cur) + 1);
     
     ++inputItr;
     ++maskItr;
     }
 
-  typedef itk::DiscreteGaussianImageFilter< HistogramType,
-          HistogramType > SmootherType;
-  SmootherType::Pointer smoother = SmootherType::New();
-  smoother->SetInput( hist );
-  smoother->SetVariance( 2 );
-  smoother->SetUseImageSpacing( false );
-  smoother->Update();
-  hist = smoother->GetOutput();
+  if( blur )
+    {
+    typedef itk::DiscreteGaussianImageFilter< HistogramType,
+            HistogramType > SmootherType;
+    SmootherType::Pointer smoother = SmootherType::New();
+    smoother->SetInput( m_Histogram );
+    smoother->SetVariance( 2 );
+    smoother->SetUseImageSpacing( false );
+    smoother->Update();
+    m_Histogram = smoother->GetOutput();
+    }
 
+  if( m_ForceDiagonalHistogram )
+    {
+    typename HistogramType::IndexType cur;
+    for( unsigned int i=0; i<m_HistogramSize; i++ )
+      {
+      cur[0] = i;
+      unsigned int maxJ = 0;
+      double maxJV = 0;
+      for( unsigned int j=0; j<m_HistogramSize; j++ )
+        {
+        cur[1] = j;
+        if( m_Histogram->GetPixel( cur ) > maxJV )
+          {
+          maxJV = m_Histogram->GetPixel( cur );
+          maxJ = j;
+          }
+        }
+      if((int)m_HistogramSize/2 - (int)maxJ < 0 )
+        {
+        typename HistogramType::IndexType src;
+        cur[1] = 0;
+        src[0] = cur[0];
+        src[1] = cur[1] - ( (int)m_HistogramSize/2 - (int)maxJ );
+        while( src[1] < 0 )
+          {
+          m_Histogram->SetPixel( cur, 0 );
+          ++cur[1];
+          ++src[1];
+          }
+        while( cur[1] < m_HistogramSize )
+          {
+          m_Histogram->SetPixel( cur, m_Histogram->GetPixel( src ) );
+          ++cur[1];
+          ++src[1];
+          }
+        }
+      else
+        {
+        typename HistogramType::IndexType src;
+        cur[1] = m_HistogramSize-1;
+        src[0] = cur[0];
+        src[1] = cur[1] - ( (int)m_HistogramSize/2 - (int)maxJ );
+        while( src[1] >= m_HistogramSize )
+          {
+          m_Histogram->SetPixel( cur, 0 );
+          --cur[1];
+          --src[1];
+          }
+        while( cur[1] >= 0 )
+          {
+          m_Histogram->SetPixel( cur, m_Histogram->GetPixel( src ) );
+          --cur[1];
+          --src[1];
+          }
+        }
+      }
+    }
+
+  return m_Histogram;
 }
 
 } // end namespace itk

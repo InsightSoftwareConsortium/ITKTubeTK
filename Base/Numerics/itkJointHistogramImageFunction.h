@@ -95,10 +95,10 @@ public:
    * Set the size of the histogram. This will reset the bins in the 
    * mean and standard deviation to zero. 
    */ 
-  virtual void SetHistogramSize( const unsigned int& size );
+  virtual void SetHistogramSize( const unsigned int & size );
 
   /** Get the Z-score at a given point. */
-  virtual double Evaluate( const PointType& point ) const
+  virtual double Evaluate( const PointType & point ) const
     {
     IndexType index;
     this->ConvertPointToNearestIndex( point, index );
@@ -122,7 +122,7 @@ public:
    * Add histograms (based on a given point) to the internals used to 
    * calculate the mean and standard deviation histograms when needed.
    */
-  virtual void Precompute( const PointType& point )
+  virtual void Precompute( const PointType & point )
     {
     IndexType index;
     this->ConvertPointToNearestIndex( point, index );
@@ -149,6 +149,9 @@ public:
   itkSetObjectMacro( MeanHistogram, HistogramType );
   itkSetObjectMacro( StandardDeviationHistogram, HistogramType );
 
+  itkSetMacro( ForceDiagonalHistogram, bool );
+  itkGetMacro( ForceDiagonalHistogram, bool );
+
   // setmeanhistogram
   // setstandardeviationhistogram
 
@@ -173,18 +176,19 @@ protected:
   ~JointHistogramImageFunction() {}
 
   /** Printself function for introspection. **/
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  void ComputeHistogramAtIndex( const IndexType& index,
-    typename HistogramType::Pointer& hist ) const;
+  typename HistogramType::Pointer & ComputeHistogramAtIndex( 
+    const IndexType & index, bool blur=true ) const;
 
   /** Get the Z-score at a given index. */
   double ComputeZScoreAtIndex( const IndexType & index ) const;
 
   /** Data members **/
   typename InputImageType::Pointer         m_InputMask;
-  typename HistogramType::Pointer          m_SumHistogram;
-  typename HistogramType::Pointer          m_SumOfSquaresHistogram;
+  mutable typename HistogramType::Pointer  m_Histogram;
+  mutable typename HistogramType::Pointer  m_SumHistogram;
+  mutable typename HistogramType::Pointer  m_SumOfSquaresHistogram;
   mutable typename HistogramType::Pointer  m_MeanHistogram;
   mutable typename HistogramType::Pointer  m_StandardDeviationHistogram;
   double                                   m_FeatureWidth;
@@ -192,14 +196,18 @@ protected:
   unsigned int                             m_HistogramSize;
   mutable unsigned int                     m_NumberOfSamples;
   mutable unsigned int                     m_NumberOfComputedSamples;
-  typename InputImageType::PixelType       m_ImageMin;
-  typename InputImageType::PixelType       m_ImageMax;
-  typename InputImageType::PixelType       m_MaskMin;
-  typename InputImageType::PixelType       m_MaskMax;
+  double m_ImageMin;
+  double m_ImageMax;
+  double m_ImageStep;
+  double m_MaskMin;
+  double m_MaskMax;
+  double m_MaskStep;
+
+  bool                                     m_ForceDiagonalHistogram;
 
 private:
-  JointHistogramImageFunction( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  JointHistogramImageFunction( const Self & ); //purposely not implemented
+  void operator=( const Self & ); //purposely not implemented
 
 }; // End class JointHistogramImageFunction
 
