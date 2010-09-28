@@ -47,6 +47,7 @@ void QtSlicer::Help()
 void QtSlicer::SetInputImage(ImageType * newImData)
 {
   this->OpenGlWindow->SetInputImage(newImData);
+  this->OpenGlWindow->SetFlipY(true);
   
   int maxSlice = newImData->GetLargestPossibleRegion().GetSize()[2]-1;
   this->Slice->setMaximum(maxSlice);

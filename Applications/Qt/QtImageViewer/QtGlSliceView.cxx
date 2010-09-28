@@ -58,6 +58,12 @@ QtGlSliceView::~QtGlSliceView()
 {
 }
 
+void
+QtGlSliceView::
+SetFlipY(bool flipped)
+{
+  cFlipY[cWinOrientation] = flipped;
+}
 
 void 
 QtGlSliceView::
@@ -562,6 +568,8 @@ void QtGlSliceView::size(int w, int h)
 /** Set up the OpenGL view port, matrix mode, etc. */
 void QtGlSliceView::resizeGL( int w, int h )
 {
+  this->cH = h;
+  this->cW = w;
   glViewport( 0, 0, (GLint)w, (GLint)h );
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();

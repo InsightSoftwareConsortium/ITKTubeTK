@@ -162,7 +162,8 @@ public:
   void mousePressEvent( QMouseEvent *event ); 
   
   void mouseMoveEvent( QMouseEvent *event ) ;
-
+  
+  void SetFlipY( bool flipped );
 
   float GetIntensityMin() { return cIWMin;}
   float GetIntensityMax() { return cIWMax;}
@@ -189,90 +190,90 @@ protected:
   void   (* cSliceNumArgCallBack)(void * sliceNumArg);
     
   bool                     cValidImData;
-    bool                     cViewImData;
-    ImagePointer             cImData;
-    unsigned long            cDimSize[3];
-    float                    cSpacing[3];
-    void                    (* cViewImDataCallBack)(void);
-    void                     * cViewImDataArg;
-    void                    (* cViewImDataArgCallBack)(void *viewImDataArg);
-    
-    ClickModeType cClickMode;
-    float         cClickSelect[3];
-    float         cClickSelectV;
-    void          (* cClickSelectCallBack)(float x,float y,float z,
-                                           float v);
-    void           * cClickSelectArg;
-    void          (* cClickSelectArgCallBack)(float x, float y, float z, 
-                                              float v, void *clickSelectArg);
-    
-    float       cBoxMin[3];
-    float       cBoxMax[3];
-    void        (* cClickBoxCallBack)(float minX, float minY, float minZ, 
-                                      float maxX, float maxY, float maxZ);
-    void         * cClickBoxArg;
-    void        (* cClickBoxArgCallBack)(float minX, float minY, float minZ,
-                                         float maxX, float maxY, float maxZ,
-                                         void * clickBoxArg);
-    
-    float       cIWMin;
-    float       cIWMax;
-    IWModeType  cIWModeMin;
-    IWModeType  cIWModeMax;
-    void        (* cIWCallBack)(void);
-    void         * cIWArg;
-    void        (* cIWArgCallBack)(void * iwArg);
-    
-    ImageModeType cImageMode;
-    
-    bool        cFlipX[3];
-    bool        cFlipY[3];
-    bool        cFlipZ[3];
-    bool        cTranspose[3];
-    
-    float               cWinZoom;
-    unsigned int        cWinOrder[3];
-    unsigned int        cWinOrientation;
-    void                (* cWinOrientationCallBack)(void);
-    void                 * cWinOrientationArg;
-    void                (* cWinOrientationArgCallBack)(void * 
-                                                       winOrientationArg);
-    
-    int         cWinCenter[3];
-    void        (* cWinCenterCallBack)(void);
-    void        * cWinCenterArg;
-    void        (* cWinCenterArgCallBack)(void * winCenterArg);
-    
-    bool        cViewAxisLabel;
-    char        cAxisLabelX[3][80];
-    char        cAxisLabelY[3][80];
-    
-    bool        cViewOverlayData;
-    bool        cViewCrosshairs;
-    bool        cViewValue;
-    bool        cViewDetails;
-    
-    int   cWinMinX;
-    int   cWinMaxX;
-    unsigned int   cWinSizeX;
-    int   cWinMinY;
-    int   cWinMaxY;
-    unsigned int   cWinSizeY;
-    int   cWinDataSizeX;
-    int   cWinDataSizeY;
-    unsigned int   inDataSizeX;
-    unsigned int   inDataSizeY;
-    unsigned char  *cWinImData;
-    unsigned short *cWinZBuffer;
-    
-    double cDataMax, cDataMin;
-    
-    /* list of points clicked and maximum no. of points to be stored*/
-    std::list< ClickPoint * > cClickedPoints;
-    unsigned int maxClickPoints;
-    int cX, cY, cW, cH;
-    
-    void clickSelect(float newX, float newY, float newZ);
+  bool                     cViewImData;
+  ImagePointer             cImData;
+  unsigned long            cDimSize[3];
+  float                    cSpacing[3];
+  void                    (* cViewImDataCallBack)(void);
+  void                     * cViewImDataArg;
+  void                    (* cViewImDataArgCallBack)(void *viewImDataArg);
+  
+  ClickModeType cClickMode;
+  float         cClickSelect[3];
+  float         cClickSelectV;
+  void          (* cClickSelectCallBack)(float x,float y,float z,
+                                         float v);
+  void           * cClickSelectArg;
+  void          (* cClickSelectArgCallBack)(float x, float y, float z, 
+                                            float v, void *clickSelectArg);
+  
+  float       cBoxMin[3];
+  float       cBoxMax[3];
+  void        (* cClickBoxCallBack)(float minX, float minY, float minZ, 
+                                    float maxX, float maxY, float maxZ);
+  void         * cClickBoxArg;
+  void        (* cClickBoxArgCallBack)(float minX, float minY, float minZ,
+                                       float maxX, float maxY, float maxZ,
+                                       void * clickBoxArg);
+  
+  float       cIWMin;
+  float       cIWMax;
+  IWModeType  cIWModeMin;
+  IWModeType  cIWModeMax;
+  void        (* cIWCallBack)(void);
+  void         * cIWArg;
+  void        (* cIWArgCallBack)(void * iwArg);
+  
+  ImageModeType cImageMode;
+  
+  bool        cFlipX[3];
+  bool        cFlipY[3];
+  bool        cFlipZ[3];
+  bool        cTranspose[3];
+  
+  float               cWinZoom;
+  unsigned int        cWinOrder[3];
+  unsigned int        cWinOrientation;
+  void                (* cWinOrientationCallBack)(void);
+  void                 * cWinOrientationArg;
+  void                (* cWinOrientationArgCallBack)(void * 
+                                                     winOrientationArg);
+  
+  int         cWinCenter[3];
+  void        (* cWinCenterCallBack)(void);
+  void        * cWinCenterArg;
+  void        (* cWinCenterArgCallBack)(void * winCenterArg);
+  
+  bool        cViewAxisLabel;
+  char        cAxisLabelX[3][80];
+  char        cAxisLabelY[3][80];
+  
+  bool        cViewOverlayData;
+  bool        cViewCrosshairs;
+  bool        cViewValue;
+  bool        cViewDetails;
+  
+  int   cWinMinX;
+  int   cWinMaxX;
+  unsigned int   cWinSizeX;
+  int   cWinMinY;
+  int   cWinMaxY;
+  unsigned int   cWinSizeY;
+  int   cWinDataSizeX;
+  int   cWinDataSizeY;
+  unsigned int   inDataSizeX;
+  unsigned int   inDataSizeY;
+  unsigned char  *cWinImData;
+  unsigned short *cWinZBuffer;
+  
+  double cDataMax, cDataMin;
+  
+  /* list of points clicked and maximum no. of points to be stored*/
+  std::list< ClickPoint * > cClickedPoints;
+  unsigned int maxClickPoints;
+  int cX, cY, cW, cH;
+  
+  void clickSelect(float newX, float newY, float newZ);
 };
   
 
