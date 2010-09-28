@@ -88,7 +88,7 @@ class QtGlSliceView : public QGLWidget
 
 public:
   
-  typedef double                           ImagePixelType;
+  typedef float                            ImagePixelType;
   typedef unsigned char                    OverlayPixelType;
   typedef itk::Image<ImagePixelType,3>     ImageType;
   typedef itk::Image<OverlayPixelType,3>   OverlayType;

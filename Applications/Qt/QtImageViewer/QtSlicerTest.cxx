@@ -15,7 +15,7 @@ int main( int argc, char* argv[] )
 
   QtSlicer myGUI( 0, 0, TRUE );
 
-  typedef double                            PixelType;
+  typedef float                             PixelType;
   typedef itk::Image<PixelType, 3>          ImageType;
   typedef itk::ImageFileReader<ImageType>   ReaderType;
 

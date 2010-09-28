@@ -19,8 +19,8 @@
 #define QtSlicer_h
 
 #include "ui_QtSlicerGUI.h"
-#include "itkImage.h"
 #include "ui_QtSlicerHelpGUI.h"
+#include "itkImage.h"
 
 class QtSlicer : public QDialog, Ui::Gui
 { 
@@ -29,7 +29,7 @@ public:
   QtSlicer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
   ~QtSlicer();
   
-  typedef itk::Image<double,3> ImageType;
+  typedef itk::Image<float,3> ImageType;
 
   void DisplayPosition(int x,int y ,int z,float value);
   void Help();
