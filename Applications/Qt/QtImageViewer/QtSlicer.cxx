@@ -52,7 +52,7 @@ void QtSlicer::SetInputImage(ImageType * newImData)
   this->Slice->setMaximum(maxSlice);
   this->SliceNum->setMaximum(maxSlice);
   
-  this->Slice->setValue(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
+  this->Slice->setValue(0);
 
   this->IntensityMin->setMinimum( static_cast<int>( this->OpenGlWindow->GetIntensityMin() ));
   this->IntensityMin->setMaximum( static_cast<int>( this->OpenGlWindow->GetIntensityMax() ));
