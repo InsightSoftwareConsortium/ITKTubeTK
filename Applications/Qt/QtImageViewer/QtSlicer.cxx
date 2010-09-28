@@ -46,10 +46,9 @@ void QtSlicer::Help()
 void QtSlicer::SetInputImage(ImageType * newImData)
 {
   this->OpenGlWindow->SetInputImage(newImData);
-  this->Slider1->setMaximum(newImData->GetLargestPossibleRegion().GetSize()[2]-1);
-
-  // Set the slice slider at z/2
-  this->Slider1->setValue(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
+  this->Slice->setMaximum(newImData->GetLargestPossibleRegion().GetSize()[2]-1);
+  
+  this->Slice->setValue(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
   this->DisplaySliceNumber(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
 
   this->IntensityMin->setMinimum( static_cast<int>( this->OpenGlWindow->GetIntensityMin() ));

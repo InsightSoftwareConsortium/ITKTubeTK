@@ -878,9 +878,8 @@ void QtGlSliceView::mousePressEvent( QMouseEvent *event )
 void QtGlSliceView::ChangeSlice(int value)
 {
   sliceNum(value);
-  paintGL();
-// FIXME   this->updateGL();
   this->update();
+  this->updateGL();
 }
 
 

@@ -459,7 +459,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="Slider1">
+        <widget class="QSlider" name="Slice">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
          </property>
@@ -3859,14 +3859,14 @@
  <resources/>
  <connections>
   <connection>
-   <sender>Slider1</sender>
-   <signal>sliderMoved(int)</signal>
+   <sender>Slice</sender>
+   <signal>valueChanged(int)</signal>
    <receiver>OpenGlWindow</receiver>
    <slot>ChangeSlice(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>749</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -3881,8 +3881,8 @@
    <slot>IntensityMax(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>169</x>
+     <y>372</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -3897,8 +3897,8 @@
    <slot>IntensityMin(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>169</x>
+     <y>344</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -3913,8 +3913,8 @@
    <slot>ZoomIn()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>640</x>
+     <y>317</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -3929,8 +3929,8 @@
    <slot>ZoomOut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>704</x>
+     <y>317</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
