@@ -927,6 +927,11 @@ void QtGlSliceView::clickSelect(float newX, float newY, float newZ)
   ind[1] = (unsigned long)cClickSelect[1];
   ind[2] = (unsigned long)cClickSelect[2];
   cClickSelectV = cImData->GetPixel(ind);
+  
+  emit XValueChanged(cClickSelect[0]);
+  emit YValueChanged(cClickSelect[1]);
+  emit ZValueChanged(cClickSelect[2]);
+  emit PixelValueChanged(cClickSelectV);
 }
 
 void QtGlSliceView::IntensityMax(int value)

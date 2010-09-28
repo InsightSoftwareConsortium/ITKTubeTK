@@ -177,6 +177,11 @@ public slots:
   
 signals:
 
+  void XValueChanged(double value);
+  void YValueChanged(double value);
+  void ZValueChanged(double value);
+  void PixelValueChanged(double value);
+
 protected:
     
   void   (* cSliceNumCallBack)(void);
