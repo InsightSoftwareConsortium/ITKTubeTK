@@ -46,10 +46,12 @@ void QtSlicer::Help()
 void QtSlicer::SetInputImage(ImageType * newImData)
 {
   this->OpenGlWindow->SetInputImage(newImData);
-  this->Slice->setMaximum(newImData->GetLargestPossibleRegion().GetSize()[2]-1);
+  
+  int maxSlice = newImData->GetLargestPossibleRegion().GetSize()[2]-1;
+  this->Slice->setMaximum(maxSlice);
+  this->SliceNum->setMaximum(maxSlice);
   
   this->Slice->setValue(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
-  this->DisplaySliceNumber(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
 
   this->IntensityMin->setMinimum( static_cast<int>( this->OpenGlWindow->GetIntensityMin() ));
   this->IntensityMin->setMaximum( static_cast<int>( this->OpenGlWindow->GetIntensityMax() ));
@@ -67,14 +69,6 @@ void QtSlicer::SetInputImage(ImageType * newImData)
 
   this->OpenGlWindow->show();
   this->OpenGlWindow->update();
-}
-
-void QtSlicer::DisplaySliceNumber(int number)
-{
-  char* tempchar = new char[20];
-  sprintf(tempchar,"%d",number);
-  this->SliceValue->setText(tempchar);
-  delete tempchar;
 }
 
 void QtSlicer::DisplayIMin(int value)

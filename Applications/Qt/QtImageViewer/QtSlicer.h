@@ -34,7 +34,6 @@ public:
   void DisplayPosition(int x,int y ,int z,float value);
   void Help();
   void SetInputImage(ImageType * newImData);
-  void DisplaySliceNumber(int number);
   void DisplayIMin(int value);
   void DisplayIMax(int value);
 
