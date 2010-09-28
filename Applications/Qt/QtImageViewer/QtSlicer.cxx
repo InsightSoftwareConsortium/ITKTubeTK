@@ -12,6 +12,7 @@ QtSlicer::QtSlicer( QWidget* parent,  const char* name, bool modal, Qt::WFlags f
 :QDialog(parent)
 {
     setupUi(this);
+    this->IntensityMinLabel->setMinimumSize( this->IntensityMaxLabel->sizeHint() );
 }
 
 /**  
@@ -55,34 +56,16 @@ void QtSlicer::SetInputImage(ImageType * newImData)
 
   this->IntensityMin->setMinimum( static_cast<int>( this->OpenGlWindow->GetIntensityMin() ));
   this->IntensityMin->setMaximum( static_cast<int>( this->OpenGlWindow->GetIntensityMax() ));
+  this->IntensityMinDisplay->setMinimum( this->IntensityMin->minimum() );
+  this->IntensityMinDisplay->setMaximum( this->IntensityMin->maximum() );
   this->IntensityMin->setValue( static_cast<int>( this->OpenGlWindow->GetIntensityMin() ));
+  
   this->IntensityMax->setMinimum( static_cast<int>( this->OpenGlWindow->GetIntensityMin() ));
   this->IntensityMax->setMaximum( static_cast<int>( this->OpenGlWindow->GetIntensityMax() ));
+  this->IntensityMaxDisplay->setMinimum( this->IntensityMax->minimum() );
+  this->IntensityMaxDisplay->setMaximum( this->IntensityMax->maximum() );
   this->IntensityMax->setValue( static_cast<int>( this->OpenGlWindow->GetIntensityMax() ));
   
-  char* tempchar = new char[20];
-  sprintf(tempchar,"%.0f",this->OpenGlWindow->GetIntensityMin());
-  this->IntensityMinDisplay->setText(tempchar);
-  sprintf(tempchar,"%.0f",this->OpenGlWindow->GetIntensityMax());
-  this->IntensityMaxDisplay->setText(tempchar);
-  delete tempchar;
-
   this->OpenGlWindow->show();
   this->OpenGlWindow->update();
-}
-
-void QtSlicer::DisplayIMin(int value)
-{
-  char* tempchar = new char[20];
-  sprintf(tempchar,"%d",value);
-  this->IntensityMinDisplay->setText(tempchar);
-  delete tempchar;
-}
-
-void QtSlicer::DisplayIMax(int value)
-{
-  char* tempchar = new char[20];
-  sprintf(tempchar,"%d",value);
-  this->IntensityMaxDisplay->setText(tempchar);
-  delete tempchar;
 }
