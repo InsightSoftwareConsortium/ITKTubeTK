@@ -882,6 +882,9 @@ void QtGlSliceView::mouseMoveEvent( QMouseEvent *event )
  *  timer, which calls the appropriate interaction routine */
 void QtGlSliceView::mousePressEvent( QMouseEvent *event ) 
 {
+   this->mouseMoveEvent( event );
+   return;
+   
    if( event->button() & Qt::LeftButton ) 
    {
       if( event->modifiers() & Qt::ShiftModifier ) 
