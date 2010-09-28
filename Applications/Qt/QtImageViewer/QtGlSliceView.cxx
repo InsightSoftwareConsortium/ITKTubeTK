@@ -570,10 +570,11 @@ void QtGlSliceView::resizeGL( int w, int h )
 {
   this->cH = h;
   this->cW = w;
-  glViewport( 0, 0, (GLint)w, (GLint)h );
+  glViewport( 0, 0, w, h );
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
-  glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 200.0);
+  glOrtho( 0, w, 0, h, -1.0, 1.0 );
+  glMatrixMode( GL_MODELVIEW );
 }
 
 /** Initialize the OpenGL Window */
@@ -594,29 +595,45 @@ void QtGlSliceView::paintGL(void)
   glMatrixMode(GL_MODELVIEW);    //clear previous 3D draw params
   glLoadIdentity();
     
-  glMatrixMode(GL_PROJECTION);
-    
-  GLint v[2];
-  glGetIntegerv(GL_MAX_VIEWPORT_DIMS, v);
-  glLoadIdentity();
-  glViewport(this->width()-v[0], this->height()-v[1], v[0], v[1]);
-  glOrtho(this->width()-v[0], this->width(), this->height()-v[1], this->height(), -1, 1);
-
   if( !cImData ) 
   {
     std::cout << "no cImData !!!" << std::endl;
     return;
   }
 
+  double zoomBase = this->cW / (this->cDimSize[this->cWinOrder[0]]
+                                * (fabs(this->cSpacing[this->cWinOrder[0]])
+                                   / fabs(this->cSpacing[0])));
+  if (zoomBase > this->cH / (this->cDimSize[this->cWinOrder[1]]
+                            * (fabs(this->cSpacing[this->cWinOrder[1]])
+                               / fabs(this->cSpacing[0]))))
+  {
+    zoomBase = this->cH / (this->cDimSize[this->cWinOrder[1]]
+                           * (fabs(this->cSpacing[this->cWinOrder[1]])
+                              / fabs(this->cSpacing[0])));
+  }
 
-  float scale0 = this->width()/(float)cDimSize[0] * cWinZoom
-    * fabs(cSpacing[cWinOrder[0]])/fabs(cSpacing[0]);
-  float scale1 = this->height()/(float)cDimSize[1] * cWinZoom
-     * fabs(cSpacing[cWinOrder[1]])/fabs(cSpacing[0]);
+  double scale0 =  cWinZoom * zoomBase
+                   * fabs(cSpacing[cWinOrder[0]])/fabs(cSpacing[0]);
+  double scale1 =  cWinZoom * zoomBase
+                   * fabs(cSpacing[cWinOrder[1]])/fabs(cSpacing[0]);
     
-   
-  glRasterPos2i((cFlipX[cWinOrientation])?cW:0,
-     (cFlipY[cWinOrientation])?cH:0); 
+  int originX = 0;
+  int originY = 0;
+  if(this->cWinZoom<=1)
+  {
+    if(this->cW-scale0*this->cDimSize[this->cWinOrder[0]]>0)
+    {
+      originX = (int)((this->cW-scale0*this->cDimSize[this->cWinOrder[0]])/2.0);
+    }
+    if(this->cH-scale1*this->cDimSize[this->cWinOrder[1]]>0)
+    {
+      originY = (int)((this->cH-scale1*this->cDimSize[this->cWinOrder[1]])/2.0);
+    }
+  }
+
+  glRasterPos2i((cFlipX[cWinOrientation]) ? cW - originX : originX,
+     (cFlipY[cWinOrientation]) ? cH - originY : originY ); 
     
   glPixelZoom((cFlipX[cWinOrientation])?-scale0:scale0,
      (cFlipY[cWinOrientation])?-scale1:scale1);
@@ -756,20 +773,20 @@ void QtGlSliceView::paintGL(void)
     int x;
     if(cFlipX[cWinOrientation])
     {
-      x = (int)(cW - (cClickSelect[cWinOrder[0]] - cWinMinX) * scale0);
+      x = (int)(cW - (cClickSelect[cWinOrder[0]] - cWinMinX) * scale0 - originX);
     }
     else
     {
-      x = (int)((cClickSelect[cWinOrder[0]] - cWinMinX) * scale0);
+      x = (int)((cClickSelect[cWinOrder[0]] - cWinMinX) * scale0 + originX);
     }
     int y;
     if(cFlipY[cWinOrientation])
     {
-      y = (int)(cH - (cClickSelect[cWinOrder[1]] - cWinMinY) * scale1);
+      y = (int)(cH - (cClickSelect[cWinOrder[1]] - cWinMinY) * scale1 - originY);
     }
     else
     {
-      y = (int)((cClickSelect[cWinOrder[1]] - cWinMinY) * scale1);
+      y = (int)((cClickSelect[cWinOrder[1]] - cWinMinY) * scale1 + originY);
     }
     glBegin(GL_LINES);
     glVertex2d(0, y);
@@ -788,16 +805,37 @@ void QtGlSliceView::paintGL(void)
 
 void QtGlSliceView::mouseMoveEvent( QMouseEvent *event ) 
 {
-  float scale0 = this->width()/(float)cDimSize[0] * cWinZoom
+  double zoomBase = cW/(cDimSize[cWinOrder[0]]*(fabs(cSpacing[cWinOrder[0]])/fabs(cSpacing[0])));
+  if (zoomBase >
+      cH/(cDimSize[cWinOrder[1]]*(fabs(cSpacing[cWinOrder[1]])/fabs(cSpacing[0]))))
+  {
+    zoomBase = cH/(cDimSize[cWinOrder[1]]*(fabs(cSpacing[cWinOrder[1]])/fabs(cSpacing[0])));
+  }
+    
+  double scale0 = zoomBase * cWinZoom
     * fabs(cSpacing[cWinOrder[0]])/fabs(cSpacing[0]);
-  float scale1 = this->height()/(float)cDimSize[1] * cWinZoom
+  double scale1 = zoomBase * cWinZoom
     * fabs(cSpacing[cWinOrder[1]])/fabs(cSpacing[0]);
 
   if(cClickMode == CM_SELECT || cClickMode == CM_BOX) 
   {
+    double originX = 0;
+    double originY = 0;
+    if(cWinZoom<=1)
+    {
+      if(cW-scale0*cDimSize[cWinOrder[0]]>0)
+      {
+        originX = (int)((cW-scale0*cDimSize[cWinOrder[0]])/2.0);
+      }
+      if(cH-scale1*cDimSize[cWinOrder[1]]>0)
+      {
+        originY = (int)((cH-scale1*cDimSize[cWinOrder[1]])/2.0);
+      }
+    }
+  
     float p[3];
-    p[cWinOrder[0]] = cWinMinX + ( (1-cFlipX[cWinOrientation])*(event->x()) 
-                     + (cFlipX[cWinOrientation])*(this->width()-event->x()) ) 
+    p[cWinOrder[0]] = cWinMinX + ( (1-cFlipX[cWinOrientation])*(event->x()-originX) 
+                     + (cFlipX[cWinOrientation])*(this->width()-event->x()-originX) ) 
                      / scale0;
     if(p[cWinOrder[0]]<cWinMinX) 
     {
@@ -807,8 +845,8 @@ void QtGlSliceView::mouseMoveEvent( QMouseEvent *event )
     {
       p[cWinOrder[0]] = cWinMaxX;
     }
-    p[cWinOrder[1]] = cWinMinY + (cFlipY[cWinOrientation]*event->y() 
-                     + (1-cFlipY[cWinOrientation])*(this->height()-event->y())) 
+    p[cWinOrder[1]] = cWinMinY + (cFlipY[cWinOrientation]*(event->y() - originY)
+                     + (1-cFlipY[cWinOrientation])*(this->height()-event->y()-originY)) 
                      / scale1;
     if(p[cWinOrder[1]]<cWinMinY) 
     {
