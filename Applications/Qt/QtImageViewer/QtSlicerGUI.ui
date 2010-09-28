@@ -2590,6 +2590,19 @@
       <number>0</number>
      </property>
      <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>28</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QPushButton" name="buttonHelp">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2677,7 +2690,7 @@
    <slot>IntensityMax(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>88</x>
+     <x>141</x>
      <y>677</y>
     </hint>
     <hint type="destinationlabel">
@@ -2693,7 +2706,7 @@
    <slot>IntensityMin(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>88</x>
+     <x>137</x>
      <y>649</y>
     </hint>
     <hint type="destinationlabel">
@@ -2773,11 +2786,11 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>74</x>
+     <x>127</x>
      <y>691</y>
     </hint>
     <hint type="destinationlabel">
-     <x>44</x>
+     <x>97</x>
      <y>694</y>
     </hint>
    </hints>
@@ -2789,11 +2802,11 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>53</x>
+     <x>106</x>
      <y>685</y>
     </hint>
     <hint type="destinationlabel">
-     <x>68</x>
+     <x>121</x>
      <y>686</y>
     </hint>
    </hints>
@@ -2805,11 +2818,11 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
+     <x>96</x>
      <y>660</y>
     </hint>
     <hint type="destinationlabel">
-     <x>69</x>
+     <x>118</x>
      <y>661</y>
     </hint>
    </hints>
@@ -2821,12 +2834,28 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>67</x>
+     <x>116</x>
      <y>655</y>
     </hint>
     <hint type="destinationlabel">
-     <x>49</x>
+     <x>98</x>
      <y>657</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonOk</sender>
+   <signal>clicked()</signal>
+   <receiver>Gui</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>885</x>
+     <y>720</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>734</x>
+     <y>701</y>
     </hint>
    </hints>
   </connection>
