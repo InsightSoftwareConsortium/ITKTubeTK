@@ -42,20 +42,19 @@ SET(QtSlicer_SRCS
   QtSlicer.cxx
 )
 
-SET(QtSlicer_HDRS
-  QtSlicer.h
-)
-
-SET(QtSlicer_MOC_HDRS
-  QtGlSliceView.h
-)
-
 QT4_WRAP_UI(QtSlicer_UIS_H
   QtSlicerGUI.ui
   QtSlicerHelpGUI.ui
   )
 
-QT4_WRAP_CPP( QtSlicer_MOC_SRCS ${QtSlicer_MOC_HDRS} )
+QT4_WRAP_CPP(QtSlicer_MOC_SRCS
+  QtGlSliceView.h
+  )
+
+source_group("Generated" FILES
+  ${QtSlicer_UIS_H}
+  ${QtSlicer_MOC_SRCS}
+  )
 
 ADD_DEFINITIONS(-DQT_DLL)
 
@@ -63,10 +62,8 @@ ADD_DEFINITIONS(-DQT_THREAD_SUPPORT)
 
 ADD_EXECUTABLE(QtSlicer 
   ${QtSlicer_SRCS}
-  ${QtSlicer_MOC_SRCS}
-  ${QtSlicer_HDRS}
-  ${QtSlicer_MOC_HDRS}
   ${QtSlicer_UIS_H}
+  ${QtSlicer_MOC_SRCS}
   )
 
 TARGET_LINK_LIBRARIES(QtSlicer
