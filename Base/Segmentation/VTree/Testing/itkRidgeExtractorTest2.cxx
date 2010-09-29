@@ -26,6 +26,7 @@ limitations under the License.
 #include "itkSpatialObjectReader.h"
 #include "itkGroupSpatialObject.h"
 #include "itkImageRegionIteratorWithIndex.h"
+#include "itkMersenneTwisterRandomVariateGenerator.h"
 
 #include "../itkRidgeExtractor.h"
 
@@ -57,12 +58,105 @@ int itkRidgeExtractorTest2( int argc, char * argv[] )
   ridgeOp->SetExtent( 3.0 );
   ridgeOp->SetDynamicScale( true );
 
-  typedef itk::SpatialObjectReader<> ReaderType;
+  typedef itk::SpatialObjectReader<>                   ReaderType;
+  typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
+  typedef itk::GroupSpatialObject<>                    GroupType;
+  typedef itk::VesselTubeSpatialObject<>               TubeType;
+  typedef TubeType::PointListType                      PointListType;
+  typedef TubeType::PointType                          PointType;
+  typedef TubeType::TubePointType                      TubePointType;
+
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[2] );
   reader->Update();
-  typedef itk::GroupSpatialObject<> GroupType;
   GroupType::Pointer group = reader->GetGroup();
+
+  std::cout << "Number of children = " << group->GetNumberOfChildren() 
+    << std::endl;
+
+  char tubeName[17];
+  strcpy( tubeName, "Tube" );
+  ObjectListType * tubeList = group->GetChildren( -1, tubeName );
+  
+  unsigned int numTubes = tubeList->size();
+  std::cout << "Number of tubes = " << numTubes << std::endl;
+  
+  typedef itk::Statistics::MersenneTwisterRandomVariateGenerator 
+    RandGenType;
+  RandGenType::Pointer rndGen = RandGenType::New();
+  rndGen->Initialize(); // set seed here
+
+  int failures = 0;
+  for( unsigned int mcRun=0; mcRun<100; mcRun++ )
+    {
+    unsigned int rndTubeNum = rndGen->GetUniformVariate( 0, 1 ) * numTubes;
+    if( rndTubeNum > numTubes-1 )
+      {
+      rndTubeNum = numTubes-1;
+      }
+    ObjectListType::iterator tubeIter = tubeList->begin();
+    for( unsigned int i=0; i<rndTubeNum; i++ )
+      {
+      ++tubeIter;
+      }
+    TubeType::Pointer tube = static_cast< TubeType * >( 
+      tubeIter->GetPointer() );
+    std::cout << "Test tube = " << rndTubeNum << std::endl;
+  
+    PointListType tubePointList = tube->GetPoints();
+    unsigned int numPoints = tubePointList.size();
+    unsigned int rndPointNum = rndGen->GetUniformVariate( 0, 1 ) * numPoints;
+    if( rndPointNum > numPoints-1 )
+      {
+      rndPointNum = numPoints-1;
+      }
+    PointListType::iterator pntIter = tubePointList.begin();
+    for( unsigned int i=0; i<rndPointNum; i++ )
+      {
+      ++pntIter;
+      }
+    TubePointType * pnt = static_cast< TubePointType * >(&(*pntIter));
+    std::cout << "Test point = " << rndPointNum << std::endl;
+  
+    RidgeOpType::ContinuousIndexType x0;
+    for( unsigned int i=0; i<ImageType::ImageDimension; i++)
+      {
+      x0[i] = pnt->GetPosition()[i];
+      }
+    std::cout << "Test index = " << x0 << std::endl;
+  
+    RidgeOpType::ContinuousIndexType x1 = x0;
+    ridgeOp->SetDebug( true );
+    if( !ridgeOp->LocalRidge( x1 ) )
+      {
+      std::cerr << "Local ridge test failed.  No ridge found." << std::endl;
+      std::cerr << "   Source = " << x0 << std::endl;
+      std::cerr << "   Result = " << x1 << std::endl;
+      ++failures;
+      }
+  
+    double diff = 0;
+    for( unsigned int i=0; i<ImageType::ImageDimension; i++)
+      {
+      double tf = x0[i]-x1[i];
+      diff += tf * tf;
+      }
+    diff = vcl_sqrt( diff );
+    if( diff > 2 )
+      {
+      std::cerr << "Local ridge test failed.  Local ridge too far." 
+        << std::endl;
+      std::cerr << "   Source = " << x0 << std::endl;
+      std::cerr << "   Result = " << x1 << std::endl;
+      ++failures;
+      }
+    }
+
+  std::cout << "Number of failures = " << failures << std::endl;
+  if( failures > 10 )
+    {
+    return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
   }
