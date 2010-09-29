@@ -43,9 +43,6 @@ namespace itk
  * This class extract the ridge of a tube given an image
  * 
  * /sa itkRidgeExtractor
- * /todo -Implement the optimizer into itk
- *       -Use blur at a point using image function as soon as Josh give
- *        me the code.
  */
 
 template <class TInputImage>             
@@ -284,21 +281,25 @@ public:
 
   /**
    * Compute the local Ridge */
-  bool   LocalRidge(ContinuousIndexType & x);
+  bool   LocalRidge( ContinuousIndexType & x );
+
   /**
    * Traverse the ridge one way */
-  TubeType *  TraverseOneWay(ContinuousIndexType & newX, VectorType & newT,
-                             MatrixType & newN, int dir);
+  TubeType *  TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
+    MatrixType & newN, int dir );
+
   /**
    * Extract */
-  TubePointer  Extract(ContinuousIndexType & x, int tubeID);
+  TubePointer  Extract( ContinuousIndexType & x, int tubeID );
+
   /**
    * Set the idle callback */
-  void   IdleCallBack(bool (*idleCallBack)());
+  void   IdleCallBack( bool (*idleCallBack)() );
+
   /**
    * Set the status callback */
-  void   StatusCallBack(void (*statusCallBack)(const char *, const char *,
-      int));
+  void   StatusCallBack( void (*statusCallBack)(const char *, const char *,
+      int) );
  
   void SmoothTubeX(TubeType * tube, int h);
 
@@ -315,8 +316,6 @@ private:
 
   typename ImageType::Pointer                      m_Image; 
    
-  bool                                             m_Debug;
-
   typename Blur3DImageFunction<ImageType>::Pointer m_DataFunc;
 
   typename MaskType::Pointer                       m_DataMask;
