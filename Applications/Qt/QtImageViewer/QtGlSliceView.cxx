@@ -280,42 +280,82 @@ QtGlSliceView::update()
   {
     return;
   }
+ 
+  double zoomBase = this->cW / (this->cDimSize[this->cWinOrder[0]]
+                                * (fabs(this->cSpacing[this->cWinOrder[0]])
+                                   /fabs(this->cSpacing[0])));
+  if(zoomBase > this->cH / (this->cDimSize[this->cWinOrder[1]]
+                            * (fabs(this->cSpacing[this->cWinOrder[1]])
+                              / fabs(this->cSpacing[0]))))
+    {
+    zoomBase = this->cH / (this->cDimSize[this->cWinOrder[1]]
+                           * (fabs(this->cSpacing[this->cWinOrder[1]])
+                              / fabs(this->cSpacing[0])));
+    }
+  double scale0 = this->cWinZoom * zoomBase 
+                                 * fabs(this->cSpacing[this->cWinOrder[0]])
+                                 / fabs(this->cSpacing[0]);
+  double scale1 = this->cWinZoom * zoomBase 
+                                 * fabs(this->cSpacing[this->cWinOrder[1]]) 
+                                 / fabs(this->cSpacing[0]);
+
+  if(this->cWinZoom>1)
+    {
+    this->cWinSizeX = (int)( this->cW / scale0 );
+    this->cWinMinX = (int)( (int)this->cWinCenter[ this->cWinOrder[0] ] 
+                            - this->cWinSizeX/2 );
+    this->cWinMaxX = (int)( (int)this->cWinCenter[ this->cWinOrder[0] ] 
+                            + this->cWinSizeX/2 );
+    }
+  else
+    {
+    this->cWinSizeX = (int)(this->cDimSize[ this->cWinOrder[0] ]);
+    this->cWinMinX = 0;
+    this->cWinMaxX = (int)( (int)(this->cDimSize[ this->cWinOrder[0] ]) - 1 );
+    this->cWinCenter[this->cWinOrder[0]] = 
+                     (int)( this->cDimSize[ this->cWinOrder[0] ] / 2);
+    }
+  if( this->cWinMinX <= - (int) this->cDimSize[ this->cWinOrder[0] ] ) 
+    {
+    this->cWinMinX = -(int)this->cDimSize[ this->cWinOrder[0] ] + 1;
+    }
+  else if(this->cWinMinX >= (int)this->cDimSize[ this->cWinOrder[0] ]) 
+    {
+    this->cWinMinX = (int)this->cDimSize[ this->cWinOrder[0] ] - 1;
+    }
+  if( this->cWinMaxX >= (int)( this->cDimSize[ this->cWinOrder[0] ] ) )
+    {
+    this->cWinMaxX = (int)this->cDimSize[ this->cWinOrder[0] ] - 1;
+    }
   
-  int winWidth = (int)( cDimSize[ cWinOrder[0] ] / cWinZoom );
-  cWinSizeX = ( (int) winWidth);
-  int ti = (int)( (int)cWinCenter[ cWinOrder[0] ] - winWidth/2);
-  if( ti <= - (int) cDimSize[ cWinOrder[0] ] ) 
-  {
-    ti = -cDimSize[ cWinOrder[0] ] + 1;
-  }
-  else if( ti >= (int)cDimSize[ cWinOrder[0] ]) 
-  {
-    ti = cDimSize[ cWinOrder[0] ] - 1;
-  }
-  cWinMinX = ti;
-  cWinMaxX = cDimSize[ cWinOrder[0] ] - 1; // here
-  if( cWinMaxX >= static_cast<int>( cDimSize[ cWinOrder[0] ] ) )
-  {
-    cWinMaxX = cDimSize[ cWinOrder[0] ] - 1;
-  }
-  
-  winWidth = static_cast<int>( cDimSize[ cWinOrder[1] ] / cWinZoom );
-  cWinSizeY = ( static_cast<int>( winWidth) );
-  ti = static_cast<int>( static_cast<int>(cWinCenter[ cWinOrder[1] ]) - winWidth/2);
-  if( ti <= - static_cast<int>( cDimSize[ cWinOrder[1] ] ) ) 
-  {
-    ti = -cDimSize[ cWinOrder[1] ] + 1;
-  }
-  else if( ti >= static_cast<int>(cDimSize[ cWinOrder[1] ] ) ) 
-  {
-    ti = cDimSize[ cWinOrder[1] ] - 1;
-  } 
-  cWinMinY = ti;
-  cWinMaxY = cDimSize[ cWinOrder[1] ] - 1; // here
-  if( cWinMaxY >= static_cast<int>( cDimSize[ cWinOrder[1] ] ) ) 
-  {
-    cWinMaxY = cDimSize[ cWinOrder[1] ] - 1;
-  }
+  if(this->cWinZoom>1)
+    {
+    this->cWinSizeY = (int)( this->cH / scale1 );
+    this->cWinMinY = (int)( (int)(this->cWinCenter[ this->cWinOrder[1] ]) 
+                             - this->cWinSizeY/2 );
+    this->cWinMaxY = (int)( (int)(this->cWinCenter[ this->cWinOrder[1] ]) 
+                             + this->cWinSizeY/2 );
+    }
+  else
+    {
+    this->cWinSizeY = (int)(this->cDimSize[ this->cWinOrder[1] ]);
+    this->cWinMinY = 0;
+    this->cWinMaxY = (int)( (int)(this->cDimSize[ this->cWinOrder[1] ]) - 1 );
+    this->cWinCenter[this->cWinOrder[1]] = 
+                     (int)( this->cDimSize[ this->cWinOrder[1] ] / 2);
+    }
+  if( this->cWinMinY <= - (int)( this->cDimSize[ this->cWinOrder[1] ] ) ) 
+    {
+    this->cWinMinY = -(int)this->cDimSize[ this->cWinOrder[1] ] + 1;
+    }
+  else if( this->cWinMinY >= (int)(this->cDimSize[ this->cWinOrder[1] ] ) ) 
+    {
+    this->cWinMinY = this->cDimSize[ this->cWinOrder[1] ] - 1;
+    } 
+  if( this->cWinMaxY >= (int)( this->cDimSize[ this->cWinOrder[1] ] ) ) 
+    {
+    this->cWinMaxY = this->cDimSize[ this->cWinOrder[1] ] - 1;
+    }
   
   memset( cWinImData, 0, cWinDataSizeX*cWinDataSizeY );
   if( cValidOverlayData ) 
@@ -999,14 +1039,14 @@ void QtGlSliceView::IntensityMin(int value)
  
 void QtGlSliceView::ZoomIn()
 {
-  cWinZoom += 1;
+  cWinZoom *= 2.0f;
   this->updateGL();
   this->update();
 }
  
 void QtGlSliceView::ZoomOut()
 {
-  cWinZoom -= 1;
+  cWinZoom *= 0.5f;
   this->updateGL();
   this->update();
 }
