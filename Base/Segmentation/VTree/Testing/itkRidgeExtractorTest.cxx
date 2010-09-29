@@ -82,7 +82,7 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
   itk::Index<3> extractBoundMax = ridgeOp->GetExtractBoundMax();
   std::cout << "Extract bound max = " << extractBoundMax << std::endl;
   
-  ridgeOp->SetScale( 2.0 );
+  ridgeOp->SetScale( 1.0 );
   ridgeOp->SetExtent( 3.0 );
   ridgeOp->SetDynamicScale( true );
 
@@ -102,7 +102,6 @@ int itkRidgeExtractorTest( int argc, char * argv[] )
     imOut->GetLargestPossibleRegion() );
   ImageType::IndexType indx;
   itk::ContinuousIndex<double, 3> contIndx;
-  ImageType::PointType pnt;
   itOut.GoToBegin();
   ImageType::IndexType startIndx = itOut.GetIndex();
   std::cout << "Start..." << std::endl;
