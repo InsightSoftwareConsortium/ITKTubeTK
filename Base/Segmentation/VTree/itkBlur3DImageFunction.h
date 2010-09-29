@@ -132,8 +132,6 @@ private:
   typedef std::list< typename InputImageType::IndexType >  
                                                      KernelXListType;
 
-  bool                    m_Debug;
-
   bool                    m_UseRelativeSpacing;
   SpacingType             m_Spacing;
   SpacingType             m_OriginalSpacing;

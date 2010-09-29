@@ -40,8 +40,6 @@ template <class TInputImage>
 Blur3DImageFunction<TInputImage>
 ::Blur3DImageFunction()
 {
-  m_Debug = false;
-
   this->m_Image = NULL;
   m_Spacing.Fill( 0 );
   m_OriginalSpacing.Fill( 0 );
@@ -120,7 +118,7 @@ Blur3DImageFunction<TInputImage>
   this->Superclass::PrintSelf( os,indent );
 
   os << indent << "calculate Blurring value at point:" << std::endl;
-  std::cout << "Debug = " << m_Debug << std::endl;
+  std::cout << "Debug = " << this->GetDebug() << std::endl;
   std::cout << "UseRelativeSpacing = " << m_UseRelativeSpacing << std::endl;
   std::cout << "Spacing = " << m_Spacing << std::endl;
   std::cout << "OriginalSpacing = " << m_OriginalSpacing << std::endl;
@@ -145,7 +143,7 @@ void
 Blur3DImageFunction<TInputImage>
 ::RecomputeKernel( void )
 {
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "RecomputeKernel" << std::endl;
     }
@@ -160,7 +158,7 @@ Blur3DImageFunction<TInputImage>
       }
     m_KernelMin[i] = -m_KernelMax[i];
     }
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "  Scale = " << m_Scale << std::endl;
     std::cout << "  Extent = " << m_Extent << std::endl;
@@ -251,7 +249,7 @@ double
 Blur3DImageFunction<TInputImage>
 ::Evaluate( const PointType& point ) const
 {
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Blur3DImageFunction::Evaluate" << std::endl;
     }
@@ -269,7 +267,7 @@ Blur3DImageFunction<TInputImage>
     this->m_Image->TransformPhysicalPointToContinuousIndex( point,index );
     }
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "  Calling EvaluateAtContinuousIndex " << std::endl;
     }
@@ -281,7 +279,7 @@ double
 Blur3DImageFunction<TInputImage>
 ::EvaluateAtIndex( const IndexType & point ) const
 {
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Blur3DImageFunction::EvaluateAtIndex" << std::endl;
     std::cout << "  Point = " << point << std::endl;
@@ -330,7 +328,7 @@ Blur3DImageFunction<TInputImage>
     }
   else
     {
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       std::cout << "  Boundary point" << std::endl;
       }
@@ -371,7 +369,7 @@ Blur3DImageFunction<TInputImage>
     return 0;
     }
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "  result = " << res/wTotal << std::endl;
     }
@@ -383,7 +381,7 @@ double
 Blur3DImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex( const ContinuousIndexType & point ) const
 {
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Blur3DImageFunction::EvaluateAtContinuousIndex" 
       << std::endl;
@@ -467,7 +465,7 @@ Blur3DImageFunction<TInputImage>
     }
   else
     {
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       std::cout << "  Boundary point" << std::endl;
       }
@@ -530,7 +528,7 @@ Blur3DImageFunction<TInputImage>
     { 
     return 0;
     }
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "  result = " << res/wTotal << std::endl;
     }
