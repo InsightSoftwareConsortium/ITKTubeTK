@@ -133,37 +133,40 @@ public:
       ConstImageIteratorType;
 
     m_MaskedImage = ImageType::New();
-    m_MaskedImage->SetRegions( 
-      m_InputImage->GetLargestPossibleRegion() );
+    m_MaskedImage->SetRegions( m_InputImage->GetLargestPossibleRegion() );
     m_MaskedImage->CopyInformation( m_InputImage );
     m_MaskedImage->Allocate();
 
     m_InputMeanBkg = 0;
     m_InputStdDevBkg = 0;
-    unsigned int countBkg = 0;
+    double countBkg = 0;
     m_InputMeanObj = 0;
     m_InputStdDevObj = 0;
-    unsigned int countObj = 0;
+    double countObj = 0;
 
     std::cout << "Computing background mean" << std::endl;
 
+    double sumBkg = 0;
+    double sumsBkg = 0;
+    double sumObj = 0;
+    double sumsObj = 0;
     ConstImageIteratorType iterInput( m_InputImage,
       m_InputImage->GetLargestPossibleRegion() );
     ConstImageIteratorType iterMask( m_InputMask,
       m_InputMask->GetLargestPossibleRegion() );
     while( !iterInput.IsAtEnd() )
       {
-      if( iterMask.Get() == m_MaskBackgroundValue )
+      if( iterMask.Get() == m_MaskObjectValue )
         {
-        m_InputMeanBkg += iterInput.Get();
-        m_InputStdDevBkg += iterInput.Get() * iterInput.Get();
-        ++countBkg;
-        }
-      else if( iterMask.Get() == m_MaskObjectValue )
-        {
-        m_InputMeanObj += iterInput.Get();
-        m_InputStdDevObj += iterInput.Get() * iterInput.Get();
+        sumObj += iterInput.Get();
+        sumsObj += iterInput.Get() * iterInput.Get();
         ++countObj;
+        }
+      else if( iterMask.Get() == m_MaskBackgroundValue )
+        {
+        sumBkg += iterInput.Get();
+        sumsBkg += iterInput.Get() * iterInput.Get();
+        ++countBkg;
         }
       ++iterInput;
       ++iterMask;
@@ -171,18 +174,21 @@ public:
 
     if( countBkg > 0 )
       {
-      m_InputMeanBkg /= countBkg;
-      m_InputStdDevBkg = vcl_sqrt( m_InputStdDevBkg/countBkg -
+      m_InputMeanBkg = sumBkg/countBkg;
+      m_InputStdDevBkg = vcl_sqrt( sumsBkg/countBkg -
         m_InputMeanBkg*m_InputMeanBkg );
       }
     if( countObj > 0 )
       {
-      m_InputMeanObj /= countObj;
-      m_InputStdDevObj = vcl_sqrt( m_InputStdDevObj/countObj -
+      m_InputMeanObj = sumObj/countObj;
+      m_InputStdDevObj = vcl_sqrt( sumsObj/countObj -
         m_InputMeanObj*m_InputMeanObj );
       }
 
+    std::cout << "  Object mean = " << m_InputMeanObj << std::endl;
+    std::cout << "  Object StdDev = " << m_InputStdDevObj << std::endl;
     std::cout << "  Background mean = " << m_InputMeanBkg << std::endl;
+    std::cout << "  Background StdDev = " << m_InputStdDevBkg << std::endl;
 
     ImageIteratorType iterMaskedImage( m_MaskedImage,
       m_MaskedImage->GetLargestPossibleRegion() );
@@ -192,18 +198,21 @@ public:
       {
       double tfObj = (iterInput.Get() - m_InputMeanObj)/m_InputStdDevObj;
       double tfBkg = (iterInput.Get() - m_InputMeanBkg)/m_InputStdDevBkg;
-      if( vnl_math_abs(tfObj) > vnl_math_abs(tfBkg) )
+      if( ( vnl_math_abs(tfObj) < vnl_math_abs(tfBkg) &&
+            iterMask.Get() != m_MaskBackgroundValue ) ||
+          ( iterMask.Get() == 0 ) )
         {
-        iterMaskedImage.Set( tfBkg );
+        iterMaskedImage.Set( 0 );
         }
       else
         {
-        iterMaskedImage.Set( tfObj );
+        iterMaskedImage.Set( tfBkg );
         }
       ++iterMaskedImage;
       ++iterMask;
       ++iterInput;
       }
+
     typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
     typename ImageWriterType::Pointer writer = ImageWriterType::New();
     writer->SetFileName( "maskedImage.mha" );
@@ -220,9 +229,9 @@ public:
 
     for( unsigned int i=0; i<this->GetNumberOfParameters(); i++ )
       {
-      tmpP[i] = params[i] - 1.0 / m_Scales[i];
+      tmpP[i] = params[i] - 0.5 / m_Scales[i];
       double tf = this->GetValue( tmpP );
-      tmpP[i] = params[i] + 1.0 / m_Scales[i];
+      tmpP[i] = params[i] + 0.5 / m_Scales[i];
       deriv[i] = this->GetValue( tmpP ) - tf;
       tmpP[i] = params[i];
       }
@@ -234,7 +243,7 @@ public:
     filterInput->SetInput( m_InputImage );
     float inputSigma = 0;
     inputSigma = params[0];
-    if( inputSigma > 0.333 )
+    if( inputSigma > 0.5 )
       {
       if( inputSigma < 10 )
         {
@@ -242,14 +251,16 @@ public:
         }
       else
         {
-        return 0;
+        return 10;
         }
       }
     else
       {
-      return 0;
+      return 10;
       }
     filterInput->Update();
+    typename ImageType::Pointer inputB = 
+      filterInput->GetOutput();
 
     typename BlurFilterType::Pointer filterMaskedImage =
       BlurFilterType::New();
@@ -264,98 +275,78 @@ public:
         }
       else
         {
-        return 0;
+        return 10;
         }
       }
     else
       {
-      return 0;
+      return 10;
       }
     filterMaskedImage->Update();
-
     typename ImageType::Pointer maskedInputB = 
       filterMaskedImage->GetOutput();
-    typename ImageType::Pointer inputB = 
-      filterInput->GetOutput();
 
     typedef itk::ImageRegionConstIterator< ImageType > 
       ConstImageIteratorType;
     typedef itk::ImageRegionIterator< ImageType > 
       ImageIteratorType;
 
-    double result = 0;
-    double sumObj = 0;
-    double sumBkg = 0;
-    double sumsObj = 0;
-    double sumsBkg = 0;
-    unsigned int countObj = 0;
-    unsigned int countBkg = 0;
+    double sumsMetric = 0;
+    unsigned int countMetric = 0;
 
     ConstImageIteratorType iterInput( m_InputImage,
       m_InputImage->GetLargestPossibleRegion() );
     ConstImageIteratorType iterInputB( inputB,
       inputB->GetLargestPossibleRegion() );
-    ConstImageIteratorType iterMaskedImageB( maskedInputB,
-      maskedInputB->GetLargestPossibleRegion() );
     ConstImageIteratorType iterMask( m_InputMask,
       m_InputMask->GetLargestPossibleRegion() );
+    ConstImageIteratorType iterMaskedB( maskedInputB,
+      maskedInputB->GetLargestPossibleRegion() );
     ImageIteratorType iterOutput( m_OutputImage,
       m_OutputImage->GetLargestPossibleRegion() );
     while( !iterInputB.IsAtEnd() )
       {
+      double tf = 0;
       double tfObj = (iterInput.Get() - m_InputMeanObj)/m_InputStdDevObj;
       double tfBkg = (iterInput.Get() - m_InputMeanBkg)/m_InputStdDevBkg;
-      double tf = 0;
-      if( vnl_math_abs(tfObj) > vnl_math_abs(tfBkg) )
-        {
-        tf = iterMaskedImageB.Get() * m_InputStdDevBkg + m_InputMeanBkg;
-        tf = iterInputB.Get() - tf;
-        }
-      else
-        {
-        tf = iterMaskedImageB.Get() * m_InputStdDevObj + m_InputMeanObj;
-        tf = iterInputB.Get() - tf;
-        }
+      //if( vnl_math_abs(tfBkg) < vnl_math_abs(tfObj) )
+        //{
+        tf = iterMaskedB.Get() * m_InputStdDevBkg + m_InputMeanBkg;
+        //}
+      //else
+        //{
+        //tf = iterMaskedB.Get() * m_InputStdDevObj + m_InputMeanObj;
+        //}
+      tf = iterInputB.Get() - tf;
       iterOutput.Set( tf );
-      if( iterMask.Get() == m_MaskObjectValue )
+
+      if( vnl_math_abs(tfBkg) < vnl_math_abs(tfObj) &&
+        iterMask.Get() == m_MaskBackgroundValue )
         {
-        sumObj += tf;
-        sumsObj += tf * tf;
-        ++countObj;
+        tf = (tf - m_InputMeanBkg)/m_InputStdDevBkg;
+        sumsMetric += tf * tf;
+        ++countMetric;
         }
-      else if( iterMask.Get() == m_MaskBackgroundValue )
+      else if( vnl_math_abs(tfObj) < vnl_math_abs(tfBkg) &&
+        iterMask.Get() == m_MaskObjectValue )
         {
-        sumBkg += tf;
-        sumsBkg += tf * tf;
-        ++countBkg;
+        tf = (tf - m_InputMeanObj)/m_InputStdDevObj;
+        sumsMetric += tf * tf;
+        ++countMetric;
         }
 
+      ++iterInput;
       ++iterInputB;
-      ++iterMaskedImageB;
       ++iterMask;
+      ++iterMaskedB;
       ++iterOutput;
       }
 
-    if( countObj > 0 && countBkg > 0 )
+    double result = 0;
+    if( countMetric > 0 )
       {
-      double outputMeanObj = sumObj/countObj;
-      double outputMeanBkg = sumBkg/countBkg;
-  
-      double outputStdDevObj = vcl_sqrt( sumsObj/countObj - 
-        outputMeanObj*outputMeanObj );
-      double outputStdDevBkg = vcl_sqrt( sumsBkg/countBkg - 
-        outputMeanBkg*outputMeanBkg );
-  
-      double denom = outputStdDevObj * outputStdDevBkg;
-      if( denom > 0 )
-        {
-        result = - vnl_math_abs(outputMeanObj - outputMeanBkg) 
-          / vcl_sqrt( denom );
-        }
-      else
-        {
-        std::cout << "Warning: 0 std dev." << std::endl;
-        }
+      double outputSpreadMetric = sumsMetric/countMetric;
+      result = vnl_math_abs( outputSpreadMetric );
       }
 
     std::cout << ++m_CallsToGetValue << " : "
