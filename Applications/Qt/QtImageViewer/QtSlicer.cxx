@@ -13,6 +13,7 @@ QtSlicer::QtSlicer( QWidget* parent,  const char* name, bool modal, Qt::WFlags f
 {
     setupUi(this);
     this->IntensityMinLabel->setMinimumSize( this->IntensityMaxLabel->sizeHint() );
+    this->SliceNum->setMaximumWidth(40);
 }
 
 /**  
