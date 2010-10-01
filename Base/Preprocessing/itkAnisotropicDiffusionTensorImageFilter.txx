@@ -48,21 +48,19 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::AnisotropicDiffusionTensorImageFilter()
 {
   m_UpdateBuffer = UpdateBufferType::New(); 
-
-  m_DiffusionTensorImage  = DiffusionTensorImageType::New();
- 
+  m_DiffusionTensorImage = DiffusionTensorImageType::New();
   this->SetNumberOfIterations(1);
-
   m_TimeStep = 0.11; 
 
-  //set the function
+  //set the finite difference function object
   typename AnisotropicDiffusionTensorFunction<UpdateBufferType>::Pointer q
       = AnisotropicDiffusionTensorFunction<UpdateBufferType>::New();
   this->SetDifferenceFunction(q);
-
 }
 
-/** Prepare for the iteration process. */
+/** Prepare for the iteration process - called at the beginning of each
+ * iteration.
+ */
  template <class TInputImage, class TOutputImage>
  void
  AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
@@ -75,7 +73,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
      dynamic_cast<AnisotropicDiffusionTensorFunction<UpdateBufferType> *>
      (this->GetDifferenceFunction().GetPointer());
 
-  if (! f)
+  if ( !f )
     {
     throw ExceptionObject(__FILE__, __LINE__, 
         "Anisotropic diffusion Vessel Enhancement function is not set.",
@@ -103,7 +101,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     }
 
   double ratio = 
-     minSpacing /vcl_pow(2.0, static_cast<double>(ImageDimension) + 1);
+     minSpacing / vcl_pow( 2.0, static_cast< double >( ImageDimension ) + 1 );
 
   if ( m_TimeStep > ratio ) 
     {
@@ -125,7 +123,8 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     this->UpdateProgress(0);
     }
 
- //Update the Diffusion tensor image
+  // Update the diffusion tensor image: implemented in subclasses, for example
+  // to calculate the structure tensor and its eigenvectors and eigenvalues
   this->UpdateDiffusionTensorImage();
 }
 
@@ -154,12 +153,12 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
       }
     }
   
-  ImageRegionConstIterator<TInputImage>  in(input, output->GetRequestedRegion());
+  ImageRegionConstIterator<TInputImage> in(input, output->GetRequestedRegion());
   ImageRegionIterator<TOutputImage> out(output, output->GetRequestedRegion());
 
   while( ! out.IsAtEnd() )
     {
-    out.Value() =  static_cast<PixelType>(in.Get());  
+    out.Value() = static_cast<PixelType>(in.Get());
     ++in;
     ++out;
     }
@@ -172,7 +171,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {
   itkDebugMacro( << "AllocateUpdateBuffer() called" ); 
 
-  std::cerr << "AllocateUpdaeBuffer() " << std::endl;
+  std::cerr << "AllocateUpdateBuffer() " << std::endl;
 
   /* The update buffer looks just like the output and holds the change in 
    the pixel  */
@@ -195,7 +194,6 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   itkDebugMacro( << "AllocateDiffusionTensorImage() called" ); 
   
   std::cerr << "AllocateDiffusionTensorImage() " << std::endl;
-  
 
   /* The diffusionTensor image has the same size as the output and holds 
      the diffusion tensor matrix for each pixel */
@@ -248,8 +246,8 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 
   str = (DenseFDThreadStruct *)(((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
-  // Execute the actual method with appropriate output region
-  // first find out how many pieces extent can be split into.
+  // Execute the actual method with appropriate output region.
+  // First find out how many pieces the extent can be split into.
   // Using the SplitRequestedRegion method from itk::ImageSource.
   ThreadRegionType splitRegion;
   total = str->Filter->SplitRequestedRegion(threadId, threadCount,
@@ -340,7 +338,9 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   if (threadId < total)
     { 
     str->TimeStepList[threadId]
-      = str->Filter->ThreadedCalculateChange(splitRegion, splitDiffusionimageRegion, threadId);
+      = str->Filter->ThreadedCalculateChange(splitRegion,
+                                             splitDiffusionimageRegion,
+                                             threadId);
     str->ValidTimeStepList[threadId] = true;
     }
 
@@ -363,7 +363,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   while ( !u.IsAtEnd() )
     {
 
-    o.Value() += static_cast<PixelType>(u.Value() * dt);  // no adaptor support here
+    o.Value() += static_cast<PixelType>(u.Value() * dt);  // no adaptor support
 
     ++o;
     ++u;
@@ -412,7 +412,6 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   FaceListType faceList = faceCalculator(output, regionToProcess, radius);
   typename FaceListType::iterator fIt = faceList.begin();
 
-
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<DiffusionTensorImageType>
     DiffusionTensorFaceCalculatorType;
 
@@ -437,7 +436,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // Process the non-boundary region.
   NeighborhoodIteratorType nD(radius, output, *fIt);
   UpdateIteratorType       nU(m_UpdateBuffer,  *fIt);
-  DiffusionTensorNeighborhoodType  dTN(radius,m_DiffusionTensorImage, *dfIt); 
+  DiffusionTensorNeighborhoodType  dTN(radius, m_DiffusionTensorImage, *dfIt);
 
   nD.GoToBegin();
   nU.GoToBegin();

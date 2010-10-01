@@ -27,17 +27,15 @@ limitations under the License.
 #include "itkAnisotropicDiffusionTensorFunction.h"
 #include "itkMultiThreader.h"
 #include "itkDiffusionTensor3D.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
-#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 namespace itk {
 /** \class AnisotropicDiffusionTensorImageFilter
- * \brief This is a superclass for filters that iteratively enhance edge in 
- *        an image by solving non-linear diffusion equation.
+ * \brief This is a superclass for filters that iteratively enhance edges in
+ *        an image by solving a non-linear diffusion equation.
  *
- * 
  * \sa AnisotropicEdgeEnhancementDiffusionImageFilter
  * \sa AnisotropicCoherenceEnhancingDiffusionImageFilter
+ * \sa AnisotropicHybridDiffusionImageFilter
  *
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
@@ -50,15 +48,11 @@ class ITK_EXPORT AnisotropicDiffusionTensorImageFilter
 {
 public:
   /** Standard class typedefs */
-  typedef AnisotropicDiffusionTensorImageFilter Self;
-
-  typedef FiniteDifferenceImageFilter<TInputImage, TOutputImage> 
-                                                           Superclass;
-
-  typedef SmartPointer<Self>                               Pointer;
-  typedef SmartPointer<const Self>                         ConstPointer;
+  typedef AnisotropicDiffusionTensorImageFilter                   Self;
+  typedef FiniteDifferenceImageFilter<TInputImage, TOutputImage>  Superclass;
+  typedef SmartPointer<Self>                                      Pointer;
+  typedef SmartPointer<const Self>                                ConstPointer;
  
-
   /** Run-time type information (and related methods) */
   itkTypeMacro(AnisotropicDiffusionTensorImageFilter,
                                                 ImageToImageFilter );
@@ -73,14 +67,12 @@ public:
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   typedef AnisotropicDiffusionTensorFunction<InputImageType>  
-                                                  FiniteDifferenceFunctionType;
-  
-  typedef itk::Image< double, 3 >               VesselnessOutputImageType;
+                                                FiniteDifferenceFunctionType;
 
-  typedef itk::Matrix<double, ImageDimension, ImageDimension> MatrixType;
+  typedef itk::Matrix< double, ImageDimension, ImageDimension > MatrixType;
 
   // Define image of matrix pixel type 
   typedef itk::Image< MatrixType, ImageDimension>  OutputMatrixImageType;
@@ -91,7 +83,7 @@ public:
   typedef itk::Image< TensorPixelType, ImageDimension>  
                                                          TensorImageType;
 
-   // Define the type for storing the eigen-value
+  // Define the type for storing the eigen-value
   typedef itk::FixedArray< double, ImageDimension >      EigenValueArrayType;
   
   // Declare the types of the output images
@@ -104,14 +96,13 @@ public:
   /** The container type for the update buffer. */
   typedef OutputImageType UpdateBufferType;
 
-  /** Define diffusion image nbd type */
+  /** Define diffusion image neighborhood type */
   typedef typename FiniteDifferenceFunctionType::DiffusionTensorNeighborhoodType
                                                DiffusionTensorNeighborhoodType;
 
 
-  /** Set/Get Macro for VED parameters */
+  /** Set/Get Macro for diffusion tensor image filter parameters */
   itkSetMacro( TimeStep, double ); 
-
   itkGetMacro( TimeStep, double ); 
 
 #ifdef ITK_USE_CONCEPT_CHECKING
@@ -170,17 +161,19 @@ protected:
   typedef typename DiffusionTensorImageType::RegionType 
                                         ThreadDiffusionTensorImageRegionType;
 
-  typedef typename DiffusionTensorImageType::Pointer DiffusionTensorImagePointerType;
+  typedef typename DiffusionTensorImageType::Pointer
+                                        DiffusionTensorImagePointerType;
 
   /**  Does the actual work of updating the output from the UpdateContainer 
    *   over an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
-   *  \sa ApplyUpdateThreaderCallback */ 
+   *  \sa ApplyUpdateThreaderCallback */
   virtual
   void ThreadedApplyUpdate(
                 TimeStepType dt,
                 const ThreadRegionType &regionToProcess,
-                const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+                const ThreadDiffusionTensorImageRegionType
+                                         &diffusionRegionToProcess,
                 int threadId);
 
   /** Does the actual work of calculating change over a region supplied by
@@ -190,7 +183,8 @@ protected:
   virtual
   TimeStepType ThreadedCalculateChange(
                const ThreadRegionType &regionToProcess,
-               const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+               const ThreadDiffusionTensorImageRegionType
+                                         &diffusionRegionToProcess,
                int threadId);
 
   /** Prepare for the iteration process. */
