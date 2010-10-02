@@ -1,8 +1,6 @@
 PROJECT(QtSlicer)
 
 INCLUDE (${CMAKE_ROOT}/Modules/FindOpenGL.cmake)
-INCLUDE (${CMAKE_ROOT}/Modules/FindGLU.cmake)
-
 
 #
 #  Find where ITK was Built or Installed.
@@ -60,16 +58,15 @@ ADD_DEFINITIONS(-DQT_DLL)
 
 ADD_DEFINITIONS(-DQT_THREAD_SUPPORT)
 
-ADD_EXECUTABLE(QtSlicer 
+ADD_EXECUTABLE(${PROJECT_NAME} 
   ${QtSlicer_SRCS}
   ${QtSlicer_UIS_H}
   ${QtSlicer_MOC_SRCS}
   )
 
-TARGET_LINK_LIBRARIES(QtSlicer
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}
   ${QT_LIBRARIES}
   )
 
-INSTALL_TARGETS(/bin QtSlicer)
-
-
+slicer3_set_plugins_output_path( ${PROJECT_NAME} )
+slicer3_install_plugins( ${PROJECT_NAME} )
