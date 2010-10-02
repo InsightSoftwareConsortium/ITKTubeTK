@@ -82,14 +82,6 @@ if( TubeTK_USE_VTK )
   if(NOT USE_SYSTEM_VTK)
 
     if( TubeTK_USE_QT )
-      set( QT_MIN_VERSION "4.6.0" )
-      set( QT_OFFICIAL_VERSION "4.6" )
-      set( QT_REQUIRED TRUE )
-      find_package( Qt4 )
-      if( NOT QT4_FOUND )
-       MESSAGE(SEND_ERROR 
-         "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
-      endif( NOT QT4_FOUND )
 
       ##
       ## VTK
@@ -111,7 +103,7 @@ if( TubeTK_USE_VTK )
           -DBUILD_EXAMPLES:BOOL=OFF
           -DBUILD_TESTING:BOOL=OFF
           -DVTK_USE_GUISUPPORT:BOOL=ON
-          -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
+          -DVTK_USE_QVTK_QTOPENGL:BOOL=${TubeTK_USE_QTOPENGL}
           -DVTK_USE_QT:BOOL=ON
           -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
         INSTALL_COMMAND ""
@@ -279,14 +271,6 @@ if( TubeTK_USE_QT )
   ##
   if( TubeTK_USE_CTK )
 
-    set( QT_MIN_VERSION "4.6.0" )
-    set( QT_OFFICIAL_VERSION "4.6" )
-    set( QT_REQUIRED TRUE )
-    find_package( Qt4 )
-    if( NOT QT4_FOUND )
-     MESSAGE(SEND_ERROR 
-       "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
-    endif( NOT QT4_FOUND )
     set(proj CTK)
     ExternalProject_Add(CTK
       GIT_REPOSITORY "http://github.com/commontk/CTK.git"
@@ -354,6 +338,7 @@ ExternalProject_Add(${proj}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_FANN:BOOL=${TubeTK_USE_FANN}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
+    -DTubeTK_USE_QTOPENGL:BOOL=${TubeTK_USE_QTOPENGL}
     -DCTK_DIR:PATH=${CTK_DIR}
   INSTALL_COMMAND ""
   DEPENDS

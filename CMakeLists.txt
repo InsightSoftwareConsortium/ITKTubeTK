@@ -202,10 +202,26 @@ option( TubeTK_USE_FANN
 option( TubeTK_USE_QT 
   "Use QT to compile TubeTK, enables additional applications and libraries."
   ON )
+
 if( TubeTK_USE_QT )
+
+  set( QT_MIN_VERSION "4.6.0" )
+  set( QT_OFFICIAL_VERSION "4.6" )
+  set( QT_REQUIRED TRUE )
+  find_package( Qt4 )
+  if( NOT QT4_FOUND )
+   MESSAGE(SEND_ERROR 
+     "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
+  endif( NOT QT4_FOUND )
+
+  option( TubeTK_USE_QTOPENGL
+    "Use QtOpenGL."
+    OFF )
+
   option( TubeTK_USE_CTK 
     "Use CTK to provide Qt-based applications and build Slicer loadable modules."
     ON )
+
 endif( TubeTK_USE_QT )
 
 #-----------------------------------------------------------------------------
