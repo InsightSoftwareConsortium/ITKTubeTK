@@ -494,13 +494,12 @@ RidgeExtractor<TInputImage>
   pN = lN;
   pStepDir = lStepDir;
   pSearchDir = lSearchDir;
-  unsigned int i, j, k, l;
   
   VectorType prod( ImageDimension );
   VectorType tV( ImageDimension );
   
   typename ImageType::IndexType indx;
-  for( i=0; i<ImageDimension; i++ )
+  for( unsigned int i=0; i<ImageDimension; i++ )
     {
     indx[i] = ( int )( lX[i]+0.5 );
     if( indx[i]<( m_ExtractBoundMin )[i] ||
@@ -530,7 +529,8 @@ RidgeExtractor<TInputImage>
     }
   else
     {
-    m_DataMask->SetPixel( indx, ( PixelType )( m_TubeID+( m_TubePointCount/10000.0 ) ) );
+    m_DataMask->SetPixel( indx, ( PixelType )( m_TubeID 
+        + ( m_TubePointCount/10000.0 ) ) );
     if( dir == 1 )
       {
       if( this->GetDebug() )
@@ -540,11 +540,30 @@ RidgeExtractor<TInputImage>
       ridgeness = Ridgeness( lX, roundness, curvature );
       TubePointType pnt;
       pnt.SetID( m_TubePointCount );
-      pnt.SetPosition( lX[0], lX[1], lX[2] );
-      pnt.SetNormal1( m_XHEVect( 0,0 ), m_XHEVect( 1,0 ), m_XHEVect( 2,0 ) );
-      pnt.SetNormal2( m_XHEVect( 0,1 ), m_XHEVect( 1,1 ), m_XHEVect( 2,1 ) );
-      pnt.SetAlpha1( m_XHEVal[0] );
-      pnt.SetAlpha2( m_XHEVal[1] );
+      PointType posX;
+      CovariantVectorType vN;
+      for( unsigned int i=0; i<ImageDimension; i++ )
+        {
+        posX[i] = lX[i];
+        if( i < ImageDimension-1 )
+          {
+          for( unsigned int j=0; j<ImageDimension; j++ )
+            {
+            vN[j] = m_XHEVect( i, j );
+            }
+          if( i == 0 )
+            {
+            pnt.SetNormal1( vN );
+            pnt.SetAlpha1( m_XHEVal[0] );
+            }
+          else if( i == 1 )
+            {
+            pnt.SetNormal2( vN );
+            pnt.SetAlpha2( m_XHEVal[1] );
+            }
+          }
+        }
+      pnt.SetPosition( posX );
       if( m_XHEVal[0] != 0 )
         {
         pnt.SetRidgeness( roundness );
@@ -553,7 +572,6 @@ RidgeExtractor<TInputImage>
         {
         pnt.SetRidgeness( 0.0 );
         }
-      //m_Tube->GetPoints().push_back( pnt );
       m_TubePointList.push_front( pnt );
       m_TubePointCount++;
       }
@@ -566,7 +584,6 @@ RidgeExtractor<TInputImage>
   double stepFactor0 = 1;
   double stepFactor = stepFactor0;
   
-  double tf;
   int recovery = 0;
   int prevRecoveryPoint = -( 1.5/m_StepX );
   while( recovery<m_RecoveryMax 
@@ -578,8 +595,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "Attempting recovery : " << recovery;
         std::cout << " : Scale = " << GetScale() << std::endl;
-        std::cout << "   x=" << pX[0] << ", " << pX[1] << ", " << pX[2] 
-          << std::endl;
+        std::cout << "   x = " << pX << std::endl;
         }
       switch( recovery )
         {
@@ -647,31 +663,27 @@ RidgeExtractor<TInputImage>
     
     vnl_vector<double> v = ComputeLineStep( lX, m_StepX*stepFactor,
       lStepDir );
-    lX[0] = v[0];
-    lX[1] = v[1];
-    lX[2] = v[2];
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      lX[i] = v[i];
+      }
     if( this->GetDebug() )
       {
       std::cout << "Ridge: Computed line step = " << v << std::endl;
       std::cout << "Ridge: TraverseOW: lStepDir = " 
-                << lStepDir[0] << ", " << lStepDir[1] << ", " 
-                << lStepDir[2] << std::endl;
+                << lStepDir << std::endl;
       std::cout << "Ridge: TraverseOW: lX0 = " 
-                << lX[0] << ", " << lX[1] << ", " << lX[2] << std::endl;
+                << lX << std::endl;
       std::cout << "Ridge: TraverseOW: lSearchDir1 = " 
-                << lSearchDir[0][0] << ", " << lSearchDir[1][0] << ", " 
-                << lSearchDir[2][0] << std::endl;
-      std::cout << "Ridge: TraverseOW: lSearchDir2 = " 
-                << lSearchDir[0][1] << ", " << lSearchDir[1][1] << ", " 
-                << lSearchDir[2][1] << std::endl;
+                << lSearchDir << std::endl;
       }
     
-    if( !m_DataSpline->extreme( lX, &lVal,
-        2, lSearchDir ) )
+    if( !m_DataSpline->extreme( lX, &lVal, ImageDimension-1, lSearchDir ) )
       {
       if( this->GetDebug() )
         {
-        std::cout << "*** Ridge terminated: Local max not found" << std::endl;
+        std::cout << "*** Ridge terminated: Local max not found" 
+          << std::endl;
         }
       recovery++;
       continue;
@@ -679,112 +691,124 @@ RidgeExtractor<TInputImage>
 
     if( this->GetDebug() )
       {
-      std::cout << "Ridge: TraverseOW: lXExtreme = " 
-                << lX[0] << ", " << lX[1] << ", " << lX[2] << std::endl;
+      std::cout << "Ridge: TraverseOW: lXExtreme = " << lX << std::endl;
       }
 
-    if( ( lX[0] )<( m_ExtractBoundMin )[0] ||
-       ( lX[0]+0.5 )>( m_ExtractBoundMax )[0] ||
-       ( lX[1] )<( m_ExtractBoundMin )[1] ||
-       ( lX[1]+0.5 )>( m_ExtractBoundMax )[1] ||
-       ( lX[2] )<( m_ExtractBoundMin )[2] ||
-       ( lX[2]+0.5 )>( m_ExtractBoundMax )[2] ) 
+    bool inbounds = true;
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      if( this->GetDebug() )
+      if( lX[i] < m_ExtractBoundMin[i] ||
+         (int)(lX[i]+0.5) > m_ExtractBoundMax[i] )
         {
-        std::cout << "*** Ridge term: Exited extraction bounds" << std::endl;
+        inbounds = false;
+        if( this->GetDebug() )
+          {
+          std::cout << "*** Ridge term: Exited extraction bounds" 
+            << std::endl;
+          }
+        break;
         }
-      break;
       }
     
+    if( !inbounds )
+      {
+      break;
+      }
+
     ridgeness = Ridgeness( lX, roundness, curvature );  
     
-    for( i=0; i<3; i++ ) 
+    for( unsigned int i=0; i<ImageDimension; i++ ) 
       {
-      for( j=0; j<3; j++ )
+      for( unsigned int j=0; j<ImageDimension; j++ )
         {
         tV[j] = m_XHEVect( j, i );
         }
       prod[i] = fabs( dot_product( lStepDir, tV ) );
       }
 
-    k = 0;
-    tf = prod[0];
-    for( i=1; i<3; i++ ) 
+    unsigned int closestV = 0;
+    double closestVProd = prod[0];
+    for( unsigned int i=1; i<ImageDimension; i++ ) 
       {
-      if( prod[i]>tf ) 
+      if( prod[i]>closestVProd ) 
         {
-        k = i;
-        tf = prod[i];
+        closestV = i;
+        closestVProd = prod[i];
         }
       }
-    if( k != 2 )
+    if( closestV != ImageDimension-1 )
       {
       if( this->GetDebug() )
         {
-        std::cout << "Mixing things up: Chosen t=evect#" 
-                  << k << " tf=" << tf << std::endl;
+        std::cout << "Mixing things up: Chosen t=evect#" << closestV 
+          << " dotProd = " << closestVProd << std::endl;
+        }
+      double tf = m_XHEVal[closestV];
+      m_XHEVal[closestV] = m_XHEVal[ImageDimension-1];
+      m_XHEVal[ImageDimension-1] = tf;
+      for( unsigned int i=0; i<ImageDimension; i++ )
+        {
+        tf = m_XHEVect( i, closestV );
+        m_XHEVect( i, closestV ) = m_XHEVect( i, ImageDimension-1 );
+        m_XHEVect( i, ImageDimension-1 ) = tf;
         }
       }
-    j = ( k+1 )%3;
-    l = ( k+2 )%3;
-    if( m_XHEVal[j] > m_XHEVal[l] ) 
-      {
-      i = j;
-      j = l;
-      l = i;
-      }
 
-    for( i=0; i<3; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      lN[i][0] = m_XHEVect( i, j );
-      }   
-    lNTEVal[0] = m_XHEVal[j];
-         
-    for( i=0; i<3; i++ )
-      {
-      lN[i][1] = m_XHEVect( i, l );
-      }  
-    lNTEVal[1] = m_XHEVal[l];
+      for( unsigned int j=0; j<ImageDimension; j++ )
+        {
+        lN[j][i] = m_XHEVect( j, i );
+        }
+      lNTEVal[i] = m_XHEVal[i];
+      }
     lSearchDir = lN;
          
-    for( i=0; i<3; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      lT[i] = m_XHEVect( i, k );
+      lT[i] = m_XHEVect( i, ImageDimension-1 );
       } 
-    lNTEVal[2] = m_XHEVal[k];
+    lNTEVal[ImageDimension-1] = m_XHEVal[closestV];
          
-    tf = dot_product( pT, lT );
-    if( tf<0 ) 
+    double dProd = dot_product( pT, lT );
+    if( dProd<0 ) 
       {
-      lT[0] = lT[0] * -1;
-      lT[1] = lT[1] * -1;
-      lT[2] = lT[2] * -1;
+      for( unsigned int i=0; i<ImageDimension; i++ )
+        {
+        lT[i] = lT[i] * -1;
+        }
       }
          
-    lStepDir[0] = ( pStepDir[0] * 0.25 ) + ( lT[0] * 0.75 );
-    lStepDir[1] = ( pStepDir[1] * 0.25 ) + ( lT[1] * 0.75 );
-    lStepDir[2] = ( pStepDir[2] * 0.25 ) + ( lT[2] * 0.75 );
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      lStepDir[i] = ( pStepDir[i] * 0.25 ) + ( lT[i] * 0.75 );
+      }
 
-    tf = dot_product( lStepDir, pStepDir );
-    if( m_ThreshT>0 && fabs( tf )<m_ThreshT ) 
+    dProd = dot_product( lStepDir, pStepDir );
+    if( m_ThreshT>0 && fabs( dProd )<m_ThreshT ) 
       {
       if( this->GetDebug() )
         {
         std::cout << "*** Ridge term: Rapid change in step direction "
-                  << "( " << fabs( tf ) << " )" << std::endl;
+          << "( " << fabs( dProd ) << " )" << std::endl;
+        std::cout << "       Ridgeness = " << ridgeness << std::endl;
+        std::cout << "       Roundness = " << roundness << std::endl;
+        std::cout << "       Curvature = " << curvature << std::endl;
         }
       recovery++;
       continue;
       }
      
-    tf = sqrt( ComputeEuclideanDistanceVector( lX, pX ) );
-    if( m_ThreshX>0 && tf>m_ThreshX + 0.1*recovery ) 
+    double diffX = vcl_sqrt( ComputeEuclideanDistanceVector( lX, pX ) );
+    if( m_ThreshX > 0 && diffX > m_ThreshX + 0.1*recovery ) 
       {
       if( this->GetDebug() )
         {
         std::cout << "*** Ridge term: Rapid change in spatial location "
-                  << "( " << tf << " )" << std::endl;
+          << "( " << diffX << " )" << std::endl;
+        std::cout << "       Ridgeness = " << ridgeness << std::endl;
+        std::cout << "       Roundness = " << roundness << std::endl;
+        std::cout << "       Curvature = " << curvature << std::endl;
         } 
       recovery++;
       continue;
@@ -795,11 +819,10 @@ RidgeExtractor<TInputImage>
       if( this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Local max not a ridge point " 
-                  << "( ridgeness = " << ridgeness << " )" << std::endl;
-        }
-      if( this->GetDebug() )
-        {
+          << "( ridgeness = " << ridgeness << " )" << std::endl;
+        std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
+        std::cout << "       Curvature = " << curvature << std::endl;
         }
       recovery++;
       continue;
@@ -810,8 +833,10 @@ RidgeExtractor<TInputImage>
       if( this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Low curvature "
-                  << "( " << lNTEVal[0] << ", " << lNTEVal[1] << " )" << std::endl;
+          << "( " << curvature << " )" << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
+        std::cout << "       Roundness = " << roundness << std::endl;
+        std::cout << "       Curvature = " << curvature << std::endl;
         }
       if( curvature!=0 && ridgeness != 0 )
         {
@@ -829,8 +854,10 @@ RidgeExtractor<TInputImage>
       if( this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Roundness : Planar point " 
-                  << "( " << tf << " )" << std::endl;
+                  << "( " << roundness << " )" << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
+        std::cout << "       Roundness = " << roundness << std::endl;
+        std::cout << "       Curvature = " << curvature << std::endl;
         }
       if( fabs( lNTEVal[0] )!=0 && ridgeness != 0 )
         {
@@ -843,16 +870,16 @@ RidgeExtractor<TInputImage>
       continue;
       }
  
-    for( i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       indx[i] = ( int )( lX[i]+0.5 );
       }
-    tf = m_DataMask->GetPixel( indx );
+    double maskVal = m_DataMask->GetPixel( indx );
    
-    if( tf != 0 ) 
+    if( maskVal != 0 ) 
       {
-      if( ( int )tf != m_TubeID ||
-         m_TubePointCount-( ( tf-( int )tf )*10000 )>20/m_StepX ) 
+      if( ( int )maskVal != m_TubeID ||
+         m_TubePointCount-( ( maskVal-( int )maskVal )*10000 )>20/m_StepX ) 
         {
         if( this->GetDebug() )
           {
@@ -863,7 +890,8 @@ RidgeExtractor<TInputImage>
       }
     else
       {
-      m_DataMask->SetPixel( indx, ( PixelType )( m_TubeID+( m_TubePointCount/10000.0 ) ) );
+      m_DataMask->SetPixel( indx, ( PixelType )( m_TubeID 
+          + ( m_TubePointCount/10000.0 ) ) );
       }   
 
     /** Show the satus every 50 points */
@@ -878,20 +906,37 @@ RidgeExtractor<TInputImage>
       }      
     if( this->GetDebug() )
       {
-      std::cout << "Ridge: TraverseOW: Adding point " << m_TubePointCount << " = " 
-                << lX[0] << ", " << lX[1] << ", " << lX[2] 
-                << std::endl;
+      std::cout << "Ridge: TraverseOW: Adding point " << m_TubePointCount
+        << " = " << lX << std::endl;
       }
 
     TubePointType pnt;
     pnt.SetID( m_TubePointCount );
-    pnt.SetPosition( lX[0], lX[1], lX[2] );
-    pnt.SetNormal1( lN( 0,0 ), lN( 1,0 ), lN( 2,0 ) );
-    pnt.SetAlpha1( lNTEVal[0] );
-    pnt.SetNormal2( lN( 0,1 ), lN( 1,1 ), lN( 2,1 ) );
-    pnt.SetAlpha2( lNTEVal[1] );
-
-    if( lNTEVal[0] !=0 )
+    PointType posX;
+    CovariantVectorType vN;
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      posX[i] = lX[i];
+      if( i < ImageDimension-1 )
+        {
+        for( unsigned int j=0; j<ImageDimension; j++ )
+          {
+          vN[j] = m_XHEVect( i, j );
+          }
+        if( i == 0 )
+          {
+          pnt.SetNormal1( vN );
+          pnt.SetAlpha1( m_XHEVal[0] );
+          }
+        else if( i == 1 )
+          {
+          pnt.SetNormal2( vN );
+          pnt.SetAlpha2( m_XHEVal[1] );
+          }
+        }
+      }
+    pnt.SetPosition( posX );
+    if( m_XHEVal[0] != 0 )
       {
       pnt.SetRidgeness( roundness );
       }
@@ -899,7 +944,6 @@ RidgeExtractor<TInputImage>
       {
       pnt.SetRidgeness( 0.0 );
       }
-
     if( dir == 1 )
       {   
       m_TubePointList.push_front( pnt );
@@ -908,7 +952,6 @@ RidgeExtractor<TInputImage>
       {   
       m_TubePointList.push_back( pnt );
       } 
-
     m_TubePointCount++;
 
     recovery = 0;
@@ -929,16 +972,19 @@ RidgeExtractor<TInputImage>
         if( m_RadiusExtractor ) 
           {
           TubePointType tmpPoint;
-          pX[0] = ( pX[0]+lX[0] )/2;
-          pX[1] = ( pX[1]+lX[1] )/2;
-          pX[2] = ( pX[2]+lX[2] )/2;
-          tmpPoint.SetPosition( pX[0], pX[1], pX[2] );
-          tmpPoint.SetTangent( lStepDir[0], lStepDir[1], lStepDir[2] );
+          for( unsigned int i=0; i<ImageDimension; i++ )
+            {
+            pX[i] = ( pX[i]+lX[i] )/2;
+            posX[i] = pX[i];
+            }
+          tmpPoint.SetPosition( posX );
+          tmpPoint.SetTangent( lStepDir );
           tmpPoint.SetRadius( m_DynamicScaleUsed );
           m_RadiusExtractor->SetRadius0( m_DynamicScaleUsed );
           if( m_RadiusExtractor->CalcOptimalScale( tmpPoint ) )
             {
-            m_DynamicScaleUsed = ( 2*tmpPoint.GetRadius()+m_DynamicScaleUsed )/3;// use to avg with cDy )/2.0;
+            m_DynamicScaleUsed = ( 2 * tmpPoint.GetRadius()
+              + m_DynamicScaleUsed ) / 3; 
             }
           if( m_DynamicScaleUsed<0.5 )
             {
@@ -953,7 +999,8 @@ RidgeExtractor<TInputImage>
             }
           else if( this->GetDebug() )
             {   
-            std::cout << "Dynamic Scale = " << m_DynamicScaleUsed << std::endl;
+            std::cout << "Dynamic Scale = " << m_DynamicScaleUsed 
+              << std::endl;
             }
           SetScale( m_DynamicScaleUsed );
           m_RadiusExtractor->SetRadius0( m_DynamicScaleUsed );
@@ -965,7 +1012,8 @@ RidgeExtractor<TInputImage>
   if( this->GetDebug() )
     {
     std::cout << "*** Ridge terminated: Cannot recover" << std::endl;
-    std::cout << "    Length = " << m_Tube->GetPoints().size()-pSize << std::endl;
+    std::cout << "    Length = " << m_Tube->GetPoints().size()-pSize 
+      << std::endl;
     }
   SetScale( iScale0 );
 

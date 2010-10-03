@@ -78,12 +78,16 @@ public:
   /** Type definition for the input image index type. */
   typedef typename TInputImage::IndexType                 IndexType;
 
+  /** Type definition for the input image point type. */
+  typedef typename TInputImage::PointType                 PointType;
+
   /** Type definition for the input image index type. */
   typedef ContinuousIndex< double, TInputImage::ImageDimension >
                                                 ContinuousIndexType;
 
   /** Defines the type of vectors used */
   typedef vnl_vector< double >                  VectorType;
+  
   
   /** Defines the type of matrix used */
   typedef vnl_matrix< double >                  MatrixType;
@@ -93,6 +97,10 @@ public:
                                              TubeType;
   typedef typename TubeType::Pointer         TubePointer;
   typedef typename TubeType::TubePointType   TubePointType;
+
+  /** Defines the type of vectors used */
+  typedef typename TubeType::CovariantVectorType
+                                             CovariantVectorType;
 
   /**
    * Set the input image */
