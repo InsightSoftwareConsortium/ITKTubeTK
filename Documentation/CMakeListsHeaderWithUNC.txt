@@ -26,31 +26,3 @@
 # 
 ##############################################################################
 
-PROJECT( VTree3D )
-
-FIND_PACKAGE( ITK REQUIRED )
-INCLUDE( ${ITK_USE_FILE} )
-
-SET( VTree3D_SRCS
-  itkOptBrent1D.cxx
-  itkOptGoldenMean1D.cxx
-  itkOptParabolicFit1D.cxx
-  itkOptimizer1D.cxx
-  itkOptimizerND.cxx
-  itkSpline1D.cxx
-  itkSplineApproximation1D.cxx
-  itkSplineND.cxx
-  )
-
-ADD_LIBRARY( VTree3D STATIC ${VTree3D_SRCS} )
-TARGET_LINK_LIBRARIES( VTree3D ${ITK_LIBRARIES} )
-
-slicer3_set_plugins_output_path( VTree3D )
-set( TARGETS VTree3D )
-slicer3_install_plugins( ${TARGETS} )
-
-IF( BUILD_TESTING )
-  add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
-
-

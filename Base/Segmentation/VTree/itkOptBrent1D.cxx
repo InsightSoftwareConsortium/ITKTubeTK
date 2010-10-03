@@ -1,9 +1,14 @@
 /*=========================================================================
 
-Library:   TubeTK
+Library:   TubeTK/VTree3D
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
+
+Original implementation:
+Copyright University of North Carolina, Chapel Hill, NC, USA.
+
+Revised implementation:
+Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved. 
 
