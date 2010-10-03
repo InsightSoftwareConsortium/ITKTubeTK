@@ -172,6 +172,29 @@ if( USE_SYSTEM_ITK )
 endif( USE_SYSTEM_ITK )
 
 #-----------------------------------------------------------------------------
+# QT Setup
+option( TubeTK_USE_QT 
+  "Use QT to compile TubeTK, enables additional applications and libraries."
+  ON )
+
+if( TubeTK_USE_QT )
+
+  set( QT_MIN_VERSION "4.6.0" )
+  set( QT_OFFICIAL_VERSION "4.6" )
+  set( QT_REQUIRED TRUE )
+  find_package( Qt4 )
+  if( NOT QT4_FOUND )
+   MESSAGE(SEND_ERROR 
+     "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
+  endif( NOT QT4_FOUND )
+
+  option( TubeTK_USE_QTOPENGL
+    "Use QtOpenGL."
+    OFF )
+
+endif( TubeTK_USE_QT )
+
+#-----------------------------------------------------------------------------
 # VTK Setup
 option( TubeTK_USE_VTK 
   "Use VTK to compile TubeTK, enables additional applications and libraries."
@@ -193,30 +216,13 @@ option( TubeTK_USE_OpenIGTLink
   "Use OpenIGTLink to provide communications with surgical systems." ON )
 
 #-----------------------------------------------------------------------------
-# OpenIGTLink Setup
+# FANN Setup
 option( TubeTK_USE_FANN
   "Use fast artificial neural network library (FANN)." OFF )
 
 #-----------------------------------------------------------------------------
 # CTK Setup
-option( TubeTK_USE_QT 
-  "Use QT to compile TubeTK, enables additional applications and libraries."
-  ON )
-
 if( TubeTK_USE_QT )
-
-  set( QT_MIN_VERSION "4.6.0" )
-  set( QT_OFFICIAL_VERSION "4.6" )
-  set( QT_REQUIRED TRUE )
-  find_package( Qt4 )
-  if( NOT QT4_FOUND )
-   MESSAGE(SEND_ERROR 
-     "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
-  endif( NOT QT4_FOUND )
-
-  option( TubeTK_USE_QTOPENGL
-    "Use QtOpenGL."
-    OFF )
 
   option( TubeTK_USE_CTK 
     "Use CTK to provide Qt-based applications and build Slicer loadable modules."
@@ -360,6 +366,8 @@ set( SUPPORT_2D_IMAGES 1 )
 add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
                   ${CLI_BINARY_DIR}/RegisterImagesModule )
 
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 # Build TubeTK
 add_subdirectory( Utilities )
