@@ -442,6 +442,42 @@ int DoIt( MetaCommand & command )
         ++it2;
         }
       }
+
+    else if( ( *it ).name == "Multiply" )
+      {
+      std::cout << "Multiplying" << std::endl;
+      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "Infile" ).c_str() );
+      typename ImageType::Pointer imIn2;
+      imIn2 = reader2->GetOutput();
+      try
+        {
+        reader2->Update();
+        }
+      catch( ... )
+        {
+        std::cout << "Problems reading file format of inFile2." 
+                  << std::endl;
+        return EXIT_FAILURE;
+        }
+      itk::ImageRegionIterator< ImageType > it1( imIn, 
+            imIn->GetLargestPossibleRegion() );
+      itk::ImageRegionIterator< ImageType > it2( imIn2, 
+            imIn2->GetLargestPossibleRegion() );
+      it1.GoToBegin();
+      it2.GoToBegin();
+      while( !it1.IsAtEnd() )
+        {
+        double tf1 = it1.Get();
+        double tf2 = it2.Get();
+        double tf = tf1*tf2;
+        it1.Set( ( PixelType )tf );
+        ++it1;
+        ++it2;
+        }
+      }
+
     // I( x )
     else if( ( *it ).name == "Fuse" )
       {
@@ -1477,6 +1513,11 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "Add", "weight2", MetaCommand::FLOAT, true );
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
 
+  command.SetOption( "Multiply","u",false,
+		     "I( x ) = I( x ) * inFile2( x )" );
+  command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING, true );
+
+
   command.SetOption( "Algorithm", "A", false,
     "Return image value within masked region (mode: 0=mean, 1=stdDev)" );
   command.AddOptionField( "Algorithm", "mode", MetaCommand::INT, true );
@@ -1491,7 +1532,7 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "process", "mode", MetaCommand::INT, true );
 
   command.SetOption( "Process", "P", false,
-    "Process the image using a binary operation (0=multiple)" );
+    "Process the image using a binary operation (0=multiply)" );
   command.AddOptionField( "Process", "mode", MetaCommand::INT, true );
   command.AddOptionField( "Process", "file2", MetaCommand::STRING, true );
 

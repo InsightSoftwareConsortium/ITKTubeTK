@@ -453,3 +453,63 @@ add_test( ${PROJECT_NAME}Test22-Compare
 set_tests_properties( ${PROJECT_NAME}Test22-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test22 )
 
+
+#######
+# Test23
+#######
+add_test( ${PROJECT_NAME}Test23
+            ${PROJ_EXE}
+               ${INPUT_DATA}/ES0015_Large.mha
+               -P 0 ${INPUT_DATA}/ES0015_Large.mha
+               -w ${TEMP}/${PROJECT_NAME}Test23.mha )
+
+#######
+# Test23-Compare
+#######
+add_test( ${PROJECT_NAME}Test23-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test23.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test23.mha
+               -i 0.001 )
+set_tests_properties( ${PROJECT_NAME}Test23-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test23 )
+
+#######
+# Test24
+#######
+add_test( ${PROJECT_NAME}Test24
+            ${PROJ_EXE}
+               ${INPUT_DATA}/ES0015_Large.mha
+               -u ${INPUT_DATA}/ES0015_Large.mha
+               -w ${TEMP}/${PROJECT_NAME}Test24.mha )
+
+#######
+# Test24-Compare
+#######
+add_test( ${PROJECT_NAME}Test24-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test24.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test24.mha
+               -i 0.001 )
+set_tests_properties( ${PROJECT_NAME}Test24-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test24 )
+
+#######
+# Test25
+#######
+add_test( ${PROJECT_NAME}Test25
+            ${PROJ_EXE}
+               ${INPUT_DATA}/ES0015_Large.mha
+               -p 0 ${INPUT_DATA}/ES0015_Large.mha
+               -w ${TEMP}/${PROJECT_NAME}Test25.mha )
+
+#######
+# Test25-Compare
+#######
+add_test( ${PROJECT_NAME}Test25-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test25.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test25.mha
+               -i 0.001 )
+set_tests_properties( ${PROJECT_NAME}Test25-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test25 )
