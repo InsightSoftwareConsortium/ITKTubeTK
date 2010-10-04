@@ -307,8 +307,6 @@ int RegressionTestImage ( const char *testImageFilename,
 
   if( averageIntensityDifference > 0.0 )
     {
-    averageIntensityDifference *= testReader->GetOutput()->
-      GetLargestPossibleRegion().GetNumberOfPixels();
     averageIntensityDifference /= numberOfPixelsWithDifferences;
     if( static_cast<int>( numberOfPixelsWithDifferences ) >
       numberOfPixelsTolerance )
