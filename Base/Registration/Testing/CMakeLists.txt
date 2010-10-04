@@ -72,6 +72,9 @@ set_tests_properties( itkImageToTubeRigidRegistrationTest
 add_test( itkImageToImageDiffusiveDeformableRegistrationTest
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationTest
+          ${TEMP}/MotionField.mhd
+          0.1
+          ${TEMP}/SmoothedMotionField.mhd
           )
 
 
