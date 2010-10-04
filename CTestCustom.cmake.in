@@ -38,6 +38,8 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkPLYReader"
     "vtkPNGReader"
     "vtkSLCReader"
+    "vtkSTLReader"
+    "vtk3DSImporter"
     "QtSql"
     "qhash"
     "qlist"
