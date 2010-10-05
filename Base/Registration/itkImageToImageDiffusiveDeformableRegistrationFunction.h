@@ -24,6 +24,8 @@ limitations under the License.
 #define __itkImageToImageDiffusiveDeformableRegistrationFunction_h
 
 #include "itkPDEDeformableRegistrationFunction.h"
+#include "itkAnisotropicDiffusionTensorFunction.h"
+#include "itkMeanSquareRegistrationFunction.h"
 
 namespace itk
 {
@@ -62,14 +64,26 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFunction);
 
-  /** Extract useful typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType         FixedImageType;
-  typedef typename Superclass::FixedImagePointer      FixedImagePointer;
+  /** MovingImage image type. */
   typedef typename Superclass::MovingImageType        MovingImageType;
   typedef typename Superclass::MovingImagePointer     MovingImagePointer;
-  typedef typename Superclass::DeformationFieldType   DeformationFieldType;
+
+  /** FixedImage image type. */
+  typedef typename Superclass::FixedImageType         FixedImageType;
+  typedef typename Superclass::FixedImagePointer      FixedImagePointer;
+  typedef typename FixedImageType::IndexType          IndexType;
+  typedef typename FixedImageType::SizeType           SizeType;
+  typedef typename FixedImageType::SpacingType        SpacingType;
+
+  /** Deformation field type. */
+  typedef typename Superclass::DeformationFieldType
+                                            DeformationFieldType;
   typedef typename Superclass::DeformationFieldTypePointer
-                                                    DeformationFieldTypePointer;
+                                            DeformationFieldTypePointer;
+  typedef typename Superclass::DeformationFieldType::ConstPointer
+                                            DeformationFieldConstPointer;
+
+  /** Inherit some enums from the superclass. */
   typedef typename Superclass::TimeStepType           TimeStepType;
   typedef typename Superclass::RadiusType             RadiusType;
   typedef typename Superclass::NeighborhoodType       NeighborhoodType;
@@ -78,6 +92,51 @@ public:
 
   /** Inherit some enums from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+
+  /** Typedefs for the deformation field components */
+  // ex. vector < double, 3 >
+  typedef typename DeformationFieldType::PixelType
+                                DeformationFieldVectorType;
+  // ex. double
+  typedef typename DeformationFieldType::PixelType::ValueType
+                                DeformationFieldScalarType;
+  // ex. image of doubles
+  typedef itk::Image< DeformationFieldScalarType, ImageDimension >
+                                DeformationFieldComponentImageType;
+  typedef typename DeformationFieldComponentImageType::ConstPointer
+                                DeformationFieldComponentImageConstPointer;
+
+  typedef ZeroFluxNeumannBoundaryCondition< DeformationFieldComponentImageType >
+                                DeformationFieldComponentBoundaryConditionType;
+  typedef ConstNeighborhoodIterator<DeformationFieldComponentImageType,
+                                DeformationFieldComponentBoundaryConditionType>
+                                DeformationFieldComponentNeighborhoodType;
+  typedef itk::FixedArray< DeformationFieldComponentNeighborhoodType, ImageDimension >
+                                DeformationFieldComponentNeighborhoodArrayType;
+
+  /** Typedefs for the regularization function used by this function */
+  typedef itk::AnisotropicDiffusionTensorFunction
+                                          < DeformationFieldComponentImageType >
+                                          RegularizationFunctionType;
+  typedef typename RegularizationFunctionType::Pointer
+                                          RegularizationFunctionPointer;
+
+  /** Typedefs for the diffusion tensor image */
+  typedef typename RegularizationFunctionType::DiffusionTensorImageType
+                                          DiffusionTensorImageType;
+  typedef typename DiffusionTensorImageType::Pointer
+                                          DiffusionTensorImagePointer;
+  typedef typename RegularizationFunctionType::DefaultBoundaryConditionType
+                                          DefaultBoundaryConditionType;
+  typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
+                                          DiffusionTensorNeighborhoodType;
+
+  /** Typedefs for the FiniteDifferenceFunction intensity-based distance
+    * function used by this function */
+  typedef itk::MeanSquareRegistrationFunction< FixedImageType,
+                                               MovingImageType,
+                                               DeformationFieldType >
+                                               IntensityDifferenceFunctionType;
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
@@ -89,8 +148,14 @@ public:
                                   const FloatOffsetType &offset
                                                         = FloatOffsetType(0.0));
 
-  /** Release memory for global data structure. */
-  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const;
+  /** Compute the equation value. */
+  virtual PixelType ComputeUpdate(
+                     const NeighborhoodType &neighborhood,
+                     const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+                     const DeformationFieldComponentNeighborhoodArrayType
+                                        &neighborhoodDeformationFieldComponents,
+                     void *globalData,
+                     const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** This class uses a constant timestep of 1. */
   virtual TimeStepType ComputeGlobalTimeStep(void * itkNotUsed( GlobalData ))
@@ -98,7 +163,29 @@ public:
     {
     return m_TimeStep;
     }
-  
+
+//  /** Set/Get the time step. For this class of anisotropic diffusion filters,
+//      the time-step is supplied by the user and remains fixed for all
+//      updates. */
+//  void SetTimeStep(const TimeStepType &t)
+//    {
+//    m_TimeStep = t;
+//    m_RegularizationFunction->SetTimeStep(t);
+//    }
+
+  /** This class uses a constant timestep of 1. */
+  const TimeStepType &GetTimeStep() const
+    {
+    return m_TimeStep;
+    }
+
+  /** Returns a pointer to a global data structure that is passed to this
+   * object from the solver at each calculation.*/
+  virtual void *GetGlobalDataPointer() const;
+
+  /** Release the global data structure. */
+  virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
+
 protected:
   ImageToImageDiffusiveDeformableRegistrationFunction();
   void PrintSelf(std::ostream& os, Indent indent) const;
@@ -108,8 +195,11 @@ protected:
     derivatives, that may be used by virtual functions called from
     ComputeUpdate().  Caching these values here allows ComputeUpdate() to be
     const and thread-safe.*/
+  typedef typename RegularizationFunctionType::GlobalDataStruct
+                                              RegularizationGlobalDataStruct;
   struct GlobalDataStruct
     {
+    RegularizationGlobalDataStruct *          m_RegularizationGlobalDataStruct;
     };
 
 private:
@@ -118,7 +208,13 @@ private:
   void operator=(const Self&); // Purposely not implemented
 
   /** The global timestep. */
-  TimeStepType              m_TimeStep;
+  TimeStepType                                  m_TimeStep;
+
+  /** The component functions used to calculate the results of this function. */
+  RegularizationFunctionPointer                 m_RegularizationFunction;
+
+  /** Mutex lock to protect modification to metric. */
+  mutable SimpleFastMutexLock                   m_MetricCalculationLock;
  
 };
 

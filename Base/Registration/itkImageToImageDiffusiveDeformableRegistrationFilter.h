@@ -62,15 +62,191 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFilter);
 
+  /** Inherit types from superclass. */
+  typedef typename Superclass::TimeStepType             TimeStepType;
+
+  /** FixedImage image type. */
+  typedef typename Superclass::FixedImageType           FixedImageType;
+  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
+
+  /** MovingImage image type. */
+  typedef typename Superclass::MovingImageType          MovingImageType;
+  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
+
+  /** Deformation field type. */
+  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
+  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
+
+  /** Inherit some enums from the superclass. */
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+
+  // TODO go through typedefs and pull as many as possible from the function!
+  // TODO may be able to simplify the typedefs here to make them clearer
+
+  // ex. vector < double, 3 >
+  typedef typename Superclass::DeformationFieldType::PixelType
+                                                    DeformationFieldVectorType;
+  // ex. double
+  typedef typename DeformationFieldType::PixelType::ValueType
+                                          DeformationFieldScalarType;
+  // ex. image of doubles
+  typedef itk::Image< DeformationFieldScalarType, ImageDimension >
+                                          DeformationFieldComponentImageType;
+  typedef typename DeformationFieldComponentImageType::Pointer
+                                          DeformationFieldComponentImagePointer;
+
+  /** FiniteDifferenceFunction type. */
+  typedef typename Superclass::FiniteDifferenceFunctionType
+                                                  FiniteDifferenceFunctionType;
+
+  /** ImageToImageDiffusiveDeformableRegistrationFunction type. */
+  typedef ImageToImageDiffusiveDeformableRegistrationFunction
+                                            < FixedImageType,
+                                              MovingImageType,
+                                              DeformationFieldType >
+                                              RegistrationFunctionType;
+  typedef typename RegistrationFunctionType::DiffusionTensorImageType
+                                              DiffusionTensorImageType;
+  typedef typename DiffusionTensorImageType::PixelType
+                                              DiffusionTensorImagePixelType;
+  typedef typename DiffusionTensorImageType::Pointer
+                                              DiffusionTensorImagePointer;
+  typedef typename RegistrationFunctionType::DefaultBoundaryConditionType
+                                              DefaultBoundaryConditionType;
+
+  /** The type of region used for multithreading */
+  typedef typename Superclass::OutputImageType  OutputImageType;
+  typedef OutputImageType                       UpdateBufferType;
+  typedef typename UpdateBufferType::RegionType ThreadRegionType;
+
+  /** The type of region used for multithreading */
+  typedef typename DiffusionTensorImageType::RegionType
+                                ThreadDiffusionTensorImageRegionType;
+  typedef typename DeformationFieldComponentImageType::RegionType
+                                ThreadDeformationFieldComponentImageRegionType;
+
+  /** Define diffusion image neighborhood type */
+  typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
+                                DefaultBoundaryConditionType>
+                                DiffusionTensorNeighborhoodType;
+
+  /** Define deformation field component neighborhood type */
+  typedef typename
+        RegistrationFunctionType::DeformationFieldComponentNeighborhoodType
+                                DeformationFieldComponentNeighborhoodType;
+  typedef typename
+        RegistrationFunctionType::DeformationFieldComponentNeighborhoodArrayType
+                                DeformationFieldComponentNeighborhoodArrayType;
+
+  /** Set the border normal. */
+  // TODO need to calculate this here or input as image of normals.  For now
+  // we're taking only one vector for this test.
+  typedef DeformationFieldVectorType          NormalVectorType;
+  virtual void SetNormals( NormalVectorType& normals );
+  virtual const NormalVectorType& GetNormals() const;
+
+  /** Get the image of tangental diffusion tensors */
+  virtual const DiffusionTensorImagePointer GetTangentalDiffusionTensorImage()
+                                                const;
+
+
 protected:
   ImageToImageDiffusiveDeformableRegistrationFilter();
   void PrintSelf(std::ostream& os, Indent indent) const;
+
+  /** Initialize the state of the filter and equation before each iteration. */
+  virtual void InitializeIteration();
+
+  /** This method populates an update buffer with changes for each pixel in the
+   * output using the ThreadedCalculateChange() method and a multithreading
+   * mechanism. Returns value is a time step to be used for the update. */
+  virtual TimeStepType CalculateChange();
+
+  /** Allocate the deformation field component images */
+  virtual void AllocateDeformationFieldComponentImages();
+
+  /** Allocate the diffusion tensor image. */
+  virtual void AllocateDiffusionTensorImage();
+
+  /** Allocate the update buffer - reimplemented here to also call
+   *  AllocateDiffusionTensorImage. */
+  virtual void AllocateUpdateBuffer();
+
+  /** Update diffusion tensor image */
+  void virtual UpdateDiffusionTensorImage();
+
+  /** This method applies changes from the m_UpdateBuffer to the output using
+   * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
+   * the time step to use for the update of each pixel. */
+  virtual void ApplyUpdate(TimeStepType dt);
+
+  /**  Does the actual work of updating the output from the UpdateContainer over
+   *  an output region supplied by the multithreading mechanism.
+   *  \sa ApplyUpdate
+   *  \sa ApplyUpdateThreaderCallback */
+  virtual
+  void ThreadedApplyUpdate(TimeStepType dt,
+                           const ThreadRegionType &regionToProcess,
+                           const ThreadDiffusionTensorImageRegionType
+                                                  &diffusionTensorImageRegion,
+                           int threadId);
+
+  /** Does the actual work of calculating change over a region supplied by
+   * the multithreading mechanism.
+   * \sa CalculateChange
+   * \sa CalculateChangeThreaderCallback */
+  virtual
+  TimeStepType ThreadedCalculateChange(
+          const ThreadRegionType &regionToProcess,
+          const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+          const ThreadDeformationFieldComponentImageRegionType
+                                                      &componentRegionToProcess,
+          int threadId);
 
 private:
   // Purposely not implemented
   ImageToImageDiffusiveDeformableRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
- 
+
+  /** Structure for passing information into static callback methods.  Used in
+   * the subclasses' threading mechanisms. */
+  struct DenseFDThreadStruct
+    {
+    ImageToImageDiffusiveDeformableRegistrationFilter *Filter;
+    TimeStepType TimeStep;
+    TimeStepType *TimeStepList;
+    bool *ValidTimeStepList;
+    };
+
+  /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
+   * output region that it passes to ThreadedApplyUpdate for processing. */
+  static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
+
+  /** This callback method uses SplitUpdateContainer to acquire a region
+   * which it then passes to ThreadedCalculateChange for processing. */
+  static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
+
+  /** The buffer that holds the updates for an iteration of the algorithm. */
+  typename UpdateBufferType::Pointer m_UpdateBuffer;
+
+  /** The border normals. */
+  NormalVectorType                          m_Normals;
+
+  /** The image of the tangental diffusion tensors (P = I - wnn^T) */
+  DiffusionTensorImagePointer               m_TangentalDiffusionTensorImage;
+
+  /** Extracts the components of the deformation field */
+  typedef itk::VectorIndexSelectionCastImageFilter< DeformationFieldType,
+                                          DeformationFieldComponentImageType >
+                                          SelectionCastImageFilterType;
+  typedef typename SelectionCastImageFilterType::Pointer
+                                          SelectionCastImageFilterPointer;
+  itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
+                                            m_ComponentExtractor;
+
+  itk::FixedArray< DeformationFieldComponentImagePointer, ImageDimension >
+                                            m_DeformationFieldComponents;
+
 };
 
 } // end namespace itk

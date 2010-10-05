@@ -39,6 +39,7 @@ set( tubeBaseRegistrationFilters_SRCS
 
 include_directories( 
   ${TubeTK_SOURCE_DIR}/Utilities 
+  ${TubeTK_SOURCE_DIR}/Base/Preprocessing
   ${TubeTK_SOURCE_DIR}/Base/Registration 
   )
 
@@ -75,6 +76,7 @@ add_test( itkImageToImageDiffusiveDeformableRegistrationTest
           ${TEMP}/MotionField.mhd
           0.1
           ${TEMP}/SmoothedMotionField.mhd
+          20
           )
 
 

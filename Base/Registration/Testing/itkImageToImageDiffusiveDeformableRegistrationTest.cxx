@@ -26,21 +26,21 @@ limitations under the License.
 
 #include "itkImageToImageDiffusiveDeformableRegistrationFilter.h"
 
-#include "itkVectorImage.h"
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageFileWriter.h"
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 
 int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
 {
-  if( argc < 4 )
+  if( argc < 5 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
               << "original motion field image, "
               << "noise variance, "
-              << "smoothed motion field image"
+              << "smoothed motion field image, "
+              << "number of iterations"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -173,25 +173,28 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
                                                       < FixedImageType,
                                                         MovingImageType,
                                                         DeformationFieldType >
-                                                        RegistrationType;
-  RegistrationType::Pointer registrator = RegistrationType::New();
+                                                        RegistrationFilterType;
+  RegistrationFilterType::Pointer registrator = RegistrationFilterType::New();
 
   registrator->SetInitialDeformationField( deformationField );
   registrator->SetMovingImage( movingImage );
   registrator->SetFixedImage( fixedImage );
+  registrator->SetNormals( normal );
+  int numIterations = atoi( argv[4] );
+  registrator->SetNumberOfIterations( numIterations );
 
-//  // Save the smoothed deformation field
-//  writer->SetFileName( argv[3] );
-//  writer->SetInput( registrator->GetOutput() );
-//  try
-//    {
-//    writer->Update();
-//    }
-//  catch( itk::ExceptionObject & err )
-//    {
-//    std::cerr << "Exception caught: " << err << std::endl;
-//    return EXIT_FAILURE;
-//    }
+  // Save the smoothed deformation field
+  writer->SetFileName( argv[3] );
+  writer->SetInput( registrator->GetOutput() );
+  try
+    {
+    writer->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
 
 
 
