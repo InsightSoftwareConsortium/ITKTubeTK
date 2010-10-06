@@ -85,7 +85,7 @@ SetInputImage(ImageType * newImData)
     return;
   }
 
-  SizeType   size   = region.GetSize();
+  SizeType   reg_size   = region.GetSize();
   if( cValidOverlayData )
   {
     RegionType overlay_region = cOverlayData->GetLargestPossibleRegion();
@@ -93,7 +93,7 @@ SetInputImage(ImageType * newImData)
       
     for( int i=0; i<3; i++ )
     {
-      if( size[i] != overlay_size[i] )
+      if( reg_size[i] != overlay_size[i] )
       {
         return;
       }
@@ -101,9 +101,9 @@ SetInputImage(ImageType * newImData)
   } 
 
   cImData = newImData;
-  cDimSize[0]=size[0];
-  cDimSize[1]=size[1];
-  cDimSize[2]=size[2];
+  cDimSize[0]=reg_size[0];
+  cDimSize[1]=reg_size[1];
+  cDimSize[2]=reg_size[2];
   cSpacing[0]=cImData->GetSpacing()[0];
   cSpacing[1]=cImData->GetSpacing()[1];
   cSpacing[2]=cImData->GetSpacing()[2];
@@ -602,7 +602,7 @@ QtGlSliceView::update()
 
 
 
-void QtGlSliceView::size(int w, int h)
+void QtGlSliceView::size( int itkNotUsed(w), int itkNotUsed(h) )
 {
   this->update();
   this->paintGL();
@@ -707,43 +707,43 @@ void QtGlSliceView::paintGL(void)
 
     if( !cFlipX[cWinOrientation] )
     {
-      const int y = static_cast<int>(  this->height()/2-this->height()/2  );
-      glRasterPos2i(this->width(), -y);
+      const int yy = static_cast<int>(  this->height()/2-this->height()/2  );
+      glRasterPos2i(this->width(), -yy);
       glCallLists(strlen(cAxisLabelX[cWinOrientation]), GL_UNSIGNED_BYTE, cAxisLabelX[cWinOrientation]);
       // gl_draw( cAxisLabelX[cWinOrientation],
       //   cW-(gl_width(cAxisLabelX[cWinOrientation])+10), 
-      //   static_cast<float>( y ) );
+      //   static_cast<float>( yy ) );
     }
     else
     {
-      const int y = static_cast<int>( this->height()/2-this->height()/2  );
-      glRasterPos2i(10, -y);
+      const int yy = static_cast<int>( this->height()/2-this->height()/2  );
+      glRasterPos2i(10, -yy);
       glCallLists(strlen(cAxisLabelX[cWinOrientation]), GL_UNSIGNED_BYTE, cAxisLabelX[cWinOrientation]);
 
       //gl_draw( cAxisLabelX[cWinOrientation],
       // (gl_width(cAxisLabelX[cWinOrientation])+10),
-      //  static_cast<float>( y ));
+      //  static_cast<float>( yy ));
     }
       
     if(!cFlipY[cWinOrientation])
     {
-      const int y = static_cast<int>( this->height()-this->height()-10 ) ;
-      glRasterPos2i(this->width()/2, -y);
+      const int yy = static_cast<int>( this->height()-this->height()-10 ) ;
+      glRasterPos2i(this->width()/2, -yy);
       glCallLists(strlen(cAxisLabelY[cWinOrientation]), GL_UNSIGNED_BYTE, cAxisLabelY[cWinOrientation]);
 
       //gl_draw( cAxisLabelY[cWinOrientation],
       //  cW/2-(gl_width(cAxisLabelY[cWinOrientation])/2),
-      //  static_cast<float>(y) );
+      //  static_cast<float>(yy) );
     }
     else
     {
-      const int y = static_cast<int>( this->height()+10 );
-      glRasterPos2i(this->width()/2, -y);
+      const int yy = static_cast<int>( this->height()+10 );
+      glRasterPos2i(this->width()/2, -yy);
       glCallLists(strlen(cAxisLabelY[cWinOrientation]), GL_UNSIGNED_BYTE, cAxisLabelY[cWinOrientation]);
 
       //gl_draw( cAxisLabelY[cWinOrientation], 
       //  cW/2-(gl_width(cAxisLabelY[cWinOrientation])/2),
-      //  static_cast<float>(y));
+      //  static_cast<float>(yy));
     }
     
     glDisable(GL_BLEND);
@@ -815,40 +815,40 @@ void QtGlSliceView::paintGL(void)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.1, 0.64, 0.2, (float)0.75);
-    int x;
+    int xx;
     if(cFlipX[cWinOrientation])
     {
-      x = (int)(cW - (cClickSelect[cWinOrder[0]] - cWinMinX) * scale0 - originX);
+      xx = (int)(cW - (cClickSelect[cWinOrder[0]] - cWinMinX) * scale0 - originX);
     }
     else
     {
-      x = (int)((cClickSelect[cWinOrder[0]] - cWinMinX) * scale0 + originX);
+      xx = (int)((cClickSelect[cWinOrder[0]] - cWinMinX) * scale0 + originX);
     }
-    int y;
+    int yy;
     if(cFlipY[cWinOrientation])
     {
-      y = (int)(cH - (cClickSelect[cWinOrder[1]] - cWinMinY) * scale1 - originY);
+      yy = (int)(cH - (cClickSelect[cWinOrder[1]] - cWinMinY) * scale1 - originY);
     }
     else
     {
-      y = (int)((cClickSelect[cWinOrder[1]] - cWinMinY) * scale1 + originY);
+      yy = (int)((cClickSelect[cWinOrder[1]] - cWinMinY) * scale1 + originY);
     }
     glBegin(GL_LINES);
-    glVertex2d(0, y);
-    glVertex2d(x-2, y);
-    glVertex2d(x+2, y);
-    glVertex2d(this->width()-1, y);
-    glVertex2d(x, 0);
-    glVertex2d(x, y-2);
-    glVertex2d(x, y+2);
-    glVertex2d(x, this->height()-1);
+    glVertex2d(0, yy);
+    glVertex2d(xx-2, yy);
+    glVertex2d(xx+2, yy);
+    glVertex2d(this->width()-1, yy);
+    glVertex2d(xx, 0);
+    glVertex2d(xx, yy-2);
+    glVertex2d(xx, yy+2);
+    glVertex2d(xx, this->height()-1);
     glEnd();
     glDisable(GL_BLEND);
   }
 }
 
 
-void QtGlSliceView::mouseMoveEvent( QMouseEvent *event ) 
+void QtGlSliceView::mouseMoveEvent( QMouseEvent *_event ) 
 {
   double zoomBase = cW/(cDimSize[cWinOrder[0]]*(fabs(cSpacing[cWinOrder[0]])/fabs(cSpacing[0])));
   if (zoomBase >
@@ -879,8 +879,8 @@ void QtGlSliceView::mouseMoveEvent( QMouseEvent *event )
     }
   
     float p[3];
-    p[cWinOrder[0]] = cWinMinX + ( (1-cFlipX[cWinOrientation])*(event->x()-originX) 
-                     + (cFlipX[cWinOrientation])*(this->width()-event->x()-originX) ) 
+    p[cWinOrder[0]] = cWinMinX + ( (1-cFlipX[cWinOrientation])*(_event->x()-originX) 
+                     + (cFlipX[cWinOrientation])*(this->width()-_event->x()-originX) ) 
                      / scale0;
     if(p[cWinOrder[0]]<cWinMinX) 
     {
@@ -890,8 +890,8 @@ void QtGlSliceView::mouseMoveEvent( QMouseEvent *event )
     {
       p[cWinOrder[0]] = cWinMaxX;
     }
-    p[cWinOrder[1]] = cWinMinY + (cFlipY[cWinOrientation]*(event->y() - originY)
-                     + (1-cFlipY[cWinOrientation])*(this->height()-event->y()-originY)) 
+    p[cWinOrder[1]] = cWinMinY + (cFlipY[cWinOrientation]*(_event->y() - originY)
+                     + (1-cFlipY[cWinOrientation])*(this->height()-_event->y()-originY)) 
                      / scale1;
     if(p[cWinOrder[1]]<cWinMinY) 
     {
@@ -925,14 +925,14 @@ void QtGlSliceView::mouseMoveEvent( QMouseEvent *event )
 /** catches the mouse press to react appropriate
  *  Overriden to catch mousePressEvents and to start an internal
  *  timer, which calls the appropriate interaction routine */
-void QtGlSliceView::mousePressEvent( QMouseEvent *event ) 
+void QtGlSliceView::mousePressEvent( QMouseEvent *_event ) 
 {
-   this->mouseMoveEvent( event );
+   this->mouseMoveEvent( _event );
    return;
    
-   if( event->button() & Qt::LeftButton ) 
+   if( _event->button() & Qt::LeftButton ) 
    {
-      if( event->modifiers() & Qt::ShiftModifier ) 
+      if( _event->modifiers() & Qt::ShiftModifier ) 
       {
          // left mouse mouse and shift button
          /*this->mouseEventActive = true;
@@ -940,14 +940,14 @@ void QtGlSliceView::mousePressEvent( QMouseEvent *event )
                            this->shiftLeftButtonFunction );*/
       }
    }
-   else if( event->button() & Qt::MidButton )
+   else if( _event->button() & Qt::MidButton )
    {
       // middle mouse button
       //this->mouseEventActive = true;
       //QObject::connect( this->stepTimer, SIGNAL(timeout()),
       //                  this->middleButtonFunction );
    }
-   else if( event->button() & Qt::RightButton ) 
+   else if( _event->button() & Qt::RightButton ) 
    {
       // right mouse button
       //this->mouseEventActive = true;
@@ -956,10 +956,10 @@ void QtGlSliceView::mousePressEvent( QMouseEvent *event )
    }
 /*
    if( this->mouseEventActive ) {
-      this->currentMousePos[0] = event->x();
-      this->currentMousePos[1] = event->y();
-      this->lastMousePos[0] = event->x();
-      this->lastMousePos[1] = event->y();
+      this->currentMousePos[0] = _event->x();
+      this->currentMousePos[1] = _event->y();
+      this->lastMousePos[0] = _event->x();
+      this->lastMousePos[1] = _event->y();
       this->firstCall = true;
       this->stepTimer->start( this->interactionTime );
    }*/

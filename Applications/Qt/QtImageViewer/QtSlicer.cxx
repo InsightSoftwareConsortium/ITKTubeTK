@@ -30,11 +30,13 @@ limitations under the License.
 /**
  *
  */
-QtSlicer::QtSlicer( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
-:QDialog(parent)
+QtSlicer::QtSlicer( QWidget* _parent,  const char* itkNotUsed(_name),
+  bool itkNotUsed(_modal), Qt::WFlags itkNotUsed(_fl) )
+:QDialog(_parent)
 {
     setupUi(this);
-    this->IntensityMinLabel->setMinimumSize( this->IntensityMaxLabel->sizeHint() );
+    this->IntensityMinLabel->setMinimumSize( 
+      this->IntensityMaxLabel->sizeHint() );
     this->SliceNum->setMaximumWidth(40);
 }
 
@@ -45,14 +47,14 @@ QtSlicer::~QtSlicer()
 {
 }
 
-void QtSlicer::DisplayPosition(int x,int y ,int z,float value)
+void QtSlicer::DisplayPosition(int xx,int yy ,int zz, float value)
 {
   char* tempchar = new char[20];
-  sprintf(tempchar,"%d",x);
+  sprintf(tempchar,"%d",xx);
   PositionX->setText(QString(tempchar));
-  sprintf(tempchar,"%d",y);
+  sprintf(tempchar,"%d",yy);
   PositionY->setText(QString(tempchar));
-  sprintf(tempchar,"%d",z);
+  sprintf(tempchar,"%d",zz);
   PositionZ->setText(QString(tempchar));
   sprintf(tempchar,"%3.1f",value);
   PixelValue->setText(QString(tempchar));
@@ -61,7 +63,7 @@ void QtSlicer::DisplayPosition(int x,int y ,int z,float value)
 
 void QtSlicer::Help()
 {
-  Ui::HelpWindow * helpWindow = new Ui::HelpWindow();
+  //Ui::HelpWindow * helpWindow = new Ui::HelpWindow();
 
   // FIXME: Used in Qt3, not needed in Qt4:
   // helpWindow->show();
