@@ -246,26 +246,11 @@ int DoIt( int argc, char * argv[] )
 
   if( !disableParameterOptimization )
     {
-    double dilateBase = dilate/2;
-    double erodeBase = erode/2;
-    eval.SetDilate( dilateBase );
-    eval.SetErode( erodeBase );
-    eval.SetGaussianBlur( 0 );
     eval.SetUseRegistrationTransform( true );
     eval.SetRegistrationTransform( regTfm );
     eval.SetUseRegistrationOptimization( false );
-    eval.SetNormalize( false );
-    eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
-    eval.Update();
-
-    typename ImageType::Pointer tmpVolume = eval.GetOutputVolumeImage();
-    typename ImageType::Pointer tmpMask = eval.GetOutputMaskImage();
-    eval.SetVolumeImage( tmpVolume );
-    eval.SetMaskImage( tmpMask );
-    std::vector< int > zeroBoundary( dimensionT, 0 );
-    eval.SetBoundarySize( zeroBoundary );
     eval.SetNormalize( true );
-    eval.SetUseRegistration( false );
+    eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
 
     MyMIWPFunc< pixelT, dimensionT > * myFunc = new 
       MyMIWPFunc< pixelT, dimensionT >( eval );
@@ -282,14 +267,14 @@ int DoIt( int argc, char * argv[] )
     spline.xMax( xMax );
 
     vnl_vector< double > x(3);
-    x[0] = erodeBase;
-    x[1] = dilateBase;
+    x[0] = erode;
+    x[1] = dilate;
     x[2] = gaussianBlur;
 
     spline.extreme( x, &outGoF );
 
-    outErode = x[0] + erodeBase;
-    outDilate = x[1] + dilateBase;
+    outErode = x[0];
+    outDilate = x[1];
     outGaussianBlur = x[2];
 
     std::cout << "Opt erode best = " << outErode << std::endl;
