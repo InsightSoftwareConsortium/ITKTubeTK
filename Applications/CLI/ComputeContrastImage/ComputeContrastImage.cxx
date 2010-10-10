@@ -71,7 +71,7 @@ class ContrastCostFunction
 {
 public:
   
-  typedef ContrastCostFunction                       Self;
+  typedef ContrastCostFunction                    Self;
   typedef SingleValuedCostFunction                Superclass;
   typedef SmartPointer< Self >                    Pointer;
   typedef SmartPointer< const Self >              ConstPointer;
