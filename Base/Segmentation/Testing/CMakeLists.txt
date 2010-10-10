@@ -86,10 +86,8 @@ add_test( tubeBaseSegmentationPrintTest
 
 add_test( itkCVTImageFilterTest
   ${BASE_SEGMENTATION_TESTS}
-  --compare ${BASELINE}/itkCVTImageFilterTest.mha
-            ${TEMP}/itkCVTImageFilterTest.mha
   itkCVTImageFilterTest
-    ${INPUT_DATA}/ES0015_1.mha
+    ${INPUT_DATA}/GDS0015_1.mha
     ${TEMP}/itkCVTImageFilterTest.mha 
   )
 

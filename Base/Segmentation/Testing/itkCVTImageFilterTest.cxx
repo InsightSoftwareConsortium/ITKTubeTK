@@ -33,6 +33,8 @@ limitations under the License.
 
 #include <itkCVTImageFilter.h>
 
+#define numCentroids 4
+
 int itkCVTImageFilterTest(int argc, char* argv [] ) 
 {
   if( argc != 3 )
@@ -79,15 +81,55 @@ int itkCVTImageFilterTest(int argc, char* argv [] )
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
-  filter->SetNumberOfCentroids( 100 );
+  filter->SetNumberOfCentroids( numCentroids );
   filter->SetInitialSamplingMethod( FilterType::CVT_GRID );
   filter->SetNumberOfSamples( 10000 );
-  filter->SetNumberOfIterations( 100 );
-  filter->SetNumberOfIterationsPerBatch( 10 );
-  filter->SetNumberOfSamplesPerBatch( 100 );
+  filter->SetNumberOfIterations( 5000 );
+  filter->SetNumberOfIterationsPerBatch( 100 );
+  filter->SetNumberOfSamplesPerBatch( 1000 );
   filter->SetBatchSamplingMethod( FilterType::CVT_RANDOM );
   filter->SetSeed( 1 );
   filter->Update();
+
+  double val[numCentroids];
+  for(unsigned int i=0; i<numCentroids; i++)
+    {
+    val[i] = 0;
+    }
+
+  ImageType::Pointer outImage = filter->GetOutput();
+
+  itk::ImageRegionIterator< ImageType > inItr( inputImage,
+    inputImage->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > outItr( outImage,
+    outImage->GetLargestPossibleRegion() );
+  while( !inItr.IsAtEnd() )
+    {
+    val[ (int)(outItr.Get())-1 ] += inItr.Get();
+    ++inItr;
+    ++outItr;
+    }
+
+  double mean = 0;
+  for(unsigned int i=0; i<numCentroids; i++)
+    {
+    mean += val[i];
+    }
+  mean /= numCentroids;
+  std::cout << "Mean val = " << mean << std::endl;
+
+  bool valid = true;
+  for(unsigned int i=0; i<numCentroids; i++)
+    {
+    double tf = vnl_math_abs( (val[i]-mean)/mean );
+    std::cout << "val[" << i << "] = " << val[i] << " ("
+      << (int)(tf*100) << "% diff from mean)" << std::endl;
+    if( tf > 0.15 )
+      {
+      std::cout << "  Error: not within tolerance of mean." << std::endl;
+      valid = false;
+      }
+    }
 
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[2] );
@@ -104,5 +146,12 @@ int itkCVTImageFilterTest(int argc, char* argv [] )
     }
 
   // All objects should be automatically destroyed at this point
-  return EXIT_SUCCESS;
+  if( valid )
+    {
+    return EXIT_SUCCESS;
+    }
+  else
+    {
+    return EXIT_FAILURE;
+    }
 }
