@@ -71,19 +71,20 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   // Define the types and dimension of the images
-  // Use the input image to dictate the type of the image reader/writer, but use double
-  // for the filter to avoid rounding off errors in the filter's floating point operations
-  const unsigned int Dimension                = 3;
-  typedef pixelT                              ImagePixelType;
+  // Use the input image to dictate the type of the image reader/writer,
+  // but use double for the filter to avoid rounding off errors in the
+  // filter's floating point operations
+  const unsigned int Dimension                     = 3;
+  typedef pixelT                                   ImagePixelType;
   typedef itk::Image< ImagePixelType, Dimension >  InputImageType;
   typedef itk::Image< ImagePixelType, Dimension >  OutputImageType;
-  typedef double                              FilterPixelType;
+  typedef double                                   FilterPixelType;
   typedef itk::Image< FilterPixelType, Dimension > FilterInputImageType;
   typedef itk::Image< FilterPixelType, Dimension > FilterOutputImageType;
 
   // Read the input volume
   timeCollector.Start("Load data");
-  typedef itk::ImageFileReader< InputImageType  >      ImageReaderType;
+  typedef itk::ImageFileReader< InputImageType  >  ImageReaderType;
   typename ImageReaderType::Pointer   reader = ImageReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -102,21 +103,22 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // C-style cast from input image type to type 'double'
-  typedef itk::CastImageFilter< InputImageType, FilterInputImageType > CastInputImageFilterType;
+  typedef itk::CastImageFilter< InputImageType, FilterInputImageType > 
+    CastInputImageFilterType;
   typename CastInputImageFilterType::Pointer castInputImageFilter =
-      CastInputImageFilterType::New();
+    CastInputImageFilterType::New();
   castInputImageFilter->SetInput( reader->GetOutput() );
 
   // Perform the edge enhancing anisotropic diffusion
   timeCollector.Start("Edge enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion edge enhancement filter
-  typedef itk::AnisotropicEdgeEnhancementDiffusionImageFilter< FilterInputImageType,
-                                      FilterOutputImageType>  EdgeEnhancementFilterType;
+  typedef itk::AnisotropicEdgeEnhancementDiffusionImageFilter< 
+    FilterInputImageType, FilterOutputImageType>  EdgeEnhancementFilterType;
 
   // Create a edge enhancement Filter
   typename EdgeEnhancementFilterType::Pointer EdgeEnhancementFilter =
-                                      EdgeEnhancementFilterType::New();
+    EdgeEnhancementFilterType::New();
 
   EdgeEnhancementFilter->SetInput( castInputImageFilter->GetOutput() );
 
@@ -128,11 +130,8 @@ int DoIt( int argc, char * argv[] )
 
   double progressFraction = 0.8;
   tube::CLIFilterWatcher watcher( EdgeEnhancementFilter,
-                                  "Edge enhancement anisotropic diffusion",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
+    "Edge enhancement anisotropic diffusion", CLPProcessInformation,
+    progressFraction, progress, true );
 
   try
     {
@@ -140,8 +139,9 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Edge enhancing anisotropic diffusion: Exception caught: "
-                        + std::string(err.GetDescription()) );
+    tube::ErrorMessage( 
+      "Edge enhancing anisotropic diffusion: Exception caught: " 
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -152,9 +152,9 @@ int DoIt( int argc, char * argv[] )
 
   // C-style cast from double to output image type
   typedef itk::CastImageFilter< FilterOutputImageType, OutputImageType >
-      CastOutputImageFilterType;
+    CastOutputImageFilterType;
   typename CastOutputImageFilterType::Pointer castOutputImageFilter =
-      CastOutputImageFilterType::New();
+    CastOutputImageFilterType::New();
   castOutputImageFilter->SetInput( EdgeEnhancementFilter->GetOutput() );
 
   // Save output data
