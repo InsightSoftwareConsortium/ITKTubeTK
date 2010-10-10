@@ -95,7 +95,7 @@ int main( int argc, char **argv )
   // If a value of intensity tolerance was given in the command line
   if( command.GetOptionWasSet( "toleranceIntensity" ) )
     {
-    toleranceIntensity = command.GetValueAsInt( "toleranceIntensity",
+    toleranceIntensity = command.GetValueAsFloat( "toleranceIntensity",
       "value" );
     }
  
@@ -274,7 +274,7 @@ int RegressionTestImage ( const char *testImageFilename,
     GetSize();
   ImageType::SizeType testSize;
   testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
-  
+
   if ( baselineSize != testSize )
     {
     std::cerr <<
