@@ -29,29 +29,38 @@ if( SITE_CONTINUOUS_BUILD_TEST )
 
   ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
 
+  message("---- Starting continuous loop ----")
   set( ENV{TUBETK_RUN_MODEL} "Continuous" )
+
+  message("---- Forcing rebuild on first loop ----")
   set( ENV{TUBETK_FORCE_BUILD} "1" )
   
   ###########################################################################
   # run some "inside-the-loop" continuous scripts for a while
   #
-  while( ${CTEST_ELAPSED_TIME} LESS 56000 )
+  while( ${CTEST_ELAPSED_TIME} LESS 68400 )
   
     set( START_TIME ${CTEST_ELAPSED_TIME} )
   
+    message("---- Checking for changes ----")
     ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
 
     if( "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
   
+      message("---- Changes found ----")
+
       if( SITE_CONTINUOUS_STYLE )
+        message("---- Style script ----")
         ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
       endif( SITE_CONTINUOUS_STYLE )
     
       if( SITE_CONTINUOUS_COVERAGE )
+        message("---- Coverage script ----")
         ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
       endif( SITE_CONTINUOUS_COVERAGE )
     
       if( SITE_CONTINUOUS_MEMORY )
+        message("---- Memory script ----")
         ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
       endif( SITE_CONTINUOUS_MEMORY )
   
@@ -60,7 +69,7 @@ if( SITE_CONTINUOUS_BUILD_TEST )
     endif()
 
     # loop no faster than once every 2 minutes
-    ctest_sleep( 60 )
+    ctest_sleep( ${START_TIME} 120 ${CTEST_ELAPSED_TIME} )
   
   endwhile()
 
