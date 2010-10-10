@@ -66,7 +66,7 @@ public:
 
   /**
    * Type definition for the input image. */
-  typedef TInputImage                        ImageType;
+  typedef TInputImage                                      ImageType;
 
   /**
    * Standard for the number of dimension */
@@ -99,13 +99,12 @@ public:
 
   /** Tube SpatialObject typedefs*/
   typedef VesselTubeSpatialObject< TInputImage::ImageDimension >
-                                             TubeType;
-  typedef typename TubeType::Pointer         TubePointer;
-  typedef typename TubeType::TubePointType   TubePointType;
+                                                TubeType;
+  typedef typename TubeType::TubePointType      TubePointType;
 
   /** Defines the type of vectors used */
   typedef typename TubeType::CovariantVectorType
-                                             CovariantVectorType;
+                                                CovariantVectorType;
 
   /**
    * Set the input image */
@@ -297,13 +296,8 @@ public:
   bool   LocalRidge( ContinuousIndexType & x );
 
   /**
-   * Traverse the ridge one way */
-  TubeType *  TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
-    MatrixType & newN, int dir );
-
-  /**
    * Extract */
-  TubePointer  Extract( ContinuousIndexType & x, int tubeID );
+  typename TubeType::Pointer  Extract( ContinuousIndexType & x, int tubeID );
 
   /**
    * Set the idle callback */
@@ -324,6 +318,10 @@ protected:
   RidgeExtractor(const Self&) {}
   void operator=(const Self&) {}
 
+  /**
+   * Traverse the ridge one way */
+  bool  TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
+    MatrixType & newN, int dir );
 
 private:
 
@@ -362,8 +360,6 @@ private:
   double                                           m_ThreshCurvature;
   double                                           m_ThreshCurvatureStart;
 
-  std::list< TubePointType >                       m_TubePointList;
-  
   VectorType                                       m_X;
   VectorType                                       m_XP;
   double                                           m_XVal;
@@ -373,9 +369,7 @@ private:
   VectorType                                       m_XHEVal;
   MatrixType                                       m_XHEVect;
    
-  TubePointer                                      m_Tube;
-  int                                              m_TubeID;
-  int                                              m_TubePointCount;
+  typename TubeType::Pointer                                m_Tube;
   
   bool  (*m_IdleCallBack)();
   void  (*m_StatusCallBack)(const char *, const char *, int);

@@ -124,7 +124,6 @@ RidgeExtractor<TInputImage>
   m_StatusCallBack = NULL;
    
   m_Tube = NULL; 
-  m_TubePointList.clear();
 }
 
 /**
@@ -384,16 +383,24 @@ RidgeExtractor<TInputImage>
 
   if( this->GetDebug() )
     {
-    std::cout << "  EVal = " << m_XHEVal << std::endl;
+    std::cout << "   m_XHEVal = " << m_XHEVal << std::endl;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      std::cout << "  m_XHEVect( " << i << " ) = " 
+      std::cout << "   m_XHEVect( " << i << " ) = " 
         << m_XHEVect.get_column( i ) << std::endl;
       }
-    std::cout << "  m_XHEVect( 0 )*m_XHEVect( 1 ) = " 
-              << dot_product( m_XHEVect.get_column( 0 ), 
-                m_XHEVect.get_column( 1 ) )
-              << std::endl;
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      std::cout << "   m_XHEVect( " << i << " ).mag = " 
+        << m_XHEVect.get_column( i ).magnitude() << std::endl;
+      }
+    for( unsigned int i=1; i<ImageDimension; i++ )
+      {
+      std::cout << "   m_XHEVect( 0 )*m_XHEVect( " << i << " ) = " 
+                << dot_product( m_XHEVect.get_column( 0 ), 
+                  m_XHEVect.get_column( i ) )
+                << std::endl;
+      }
     }
   
   if( m_XD.magnitude() != 0 )
@@ -407,7 +414,13 @@ RidgeExtractor<TInputImage>
 
   if( this->GetDebug() )
     {
-    std::cout << "  XD.Norm = " << m_XD << std::endl;
+    std::cout << "   XD.Norm = " << m_XD << std::endl;
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      std::cout << "   m_XHEVect( " << i << " )*m_XD = " 
+                << dot_product( m_XHEVect.get_column( i ), m_XD )
+                << std::endl;
+      }
     }
 
   for( unsigned int i=0; i<ImageDimension; i++ )
@@ -442,8 +455,7 @@ RidgeExtractor<TInputImage>
 
   if( this->GetDebug() ) 
     {
-    std::cout << "  ridgeness = 1.0 - (p^2 + q^2)/2.0 = " << sums 
-      << std::endl;
+    std::cout << "  ridgeness = " << ridgeness << std::endl;
     }
 
   double meanCurv = vnl_math_abs( m_XHEVal[0] );
@@ -461,10 +473,9 @@ RidgeExtractor<TInputImage>
 }
 
 /**
- * Traverse one way
- * Need to be implemented in 2D */
+ * Traverse one way **/
 template<class TInputImage>
-typename RidgeExtractor<TInputImage>::TubeType * 
+bool
 RidgeExtractor<TInputImage>
 ::TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
                   MatrixType & newN, int dir )
@@ -494,7 +505,7 @@ RidgeExtractor<TInputImage>
     {
     lX[i] = newX[i];
     lT[i] = newT[i];
-    for( unsigned int j=0; j<ImageDimension; j++ )
+    for( unsigned int j=0; j<ImageDimension-1; j++ )
       {
       lN[i][j] = newN[i][j];
       lSearchDir[i][j] = newN[i][j];
@@ -507,6 +518,9 @@ RidgeExtractor<TInputImage>
   pN = lN;
   pStepDir = lStepDir;
   pSearchDir = lSearchDir;
+
+  int tubeId = m_Tube->GetId();
+  int tubePointCount = m_Tube->GetPoints().size();
   
   VectorType prod( ImageDimension );
   VectorType tV( ImageDimension );
@@ -522,7 +536,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "Ridge: TraverseOneWay: Exited boundary" << std::endl;
         }
-      return m_Tube;
+      return false;
       }
     }
 
@@ -530,20 +544,23 @@ RidgeExtractor<TInputImage>
   double roundness;
   double curvature;
   
+  std::vector< TubePointType > pnts;
+  pnts.clear();
+
   typename MaskType::PixelType value = m_DataMask->GetPixel( indx );
-  if( value != 0 && ( int )value != m_TubeID )
+  if( value != 0 && ( int )value != tubeId )
     {
     if( this->GetDebug() )
       {
       std::cout << "Ridge: TraverseOneWay: Encountered another tube" 
         << std::endl;
       }
-    return m_Tube;
+    return false;
     }
   else
     {
-    m_DataMask->SetPixel( indx, ( PixelType )( m_TubeID 
-        + ( m_TubePointCount/10000.0 ) ) );
+    m_DataMask->SetPixel( indx, ( PixelType )( tubeId 
+        + ( tubePointCount/10000.0 ) ) );
     if( dir == 1 )
       {
       if( this->GetDebug() )
@@ -559,7 +576,7 @@ RidgeExtractor<TInputImage>
 
       std::cout << "Adding point..." << std::endl;
       TubePointType pnt;
-      pnt.SetID( m_TubePointCount );
+      pnt.SetID( tubePointCount );
       typename TubePointType::PointType tubeX;
       typename TubePointType::CovariantVectorType tubeN;
       for( unsigned int i=0; i<ImageDimension; i++ )
@@ -569,17 +586,25 @@ RidgeExtractor<TInputImage>
           {
           for( unsigned int j=0; j<ImageDimension; j++ )
             {
-            tubeN[j] = m_XHEVect( i, j );
+            tubeN[j] = m_XHEVect( j, i );
             }
           if( i == 0 )
             {
             pnt.SetNormal1( tubeN );
             pnt.SetAlpha1( m_XHEVal[0] );
+            if( this->GetDebug() )
+              {
+              std::cout << " n1 = " << tubeN << std::endl;
+              }
             }
           else if( i == 1 )
             {
             pnt.SetNormal2( tubeN );
             pnt.SetAlpha2( m_XHEVal[1] );
+            if( this->GetDebug() )
+              {
+              std::cout << " n2 = " << tubeN << std::endl;
+              }
             }
           }
         }
@@ -592,8 +617,8 @@ RidgeExtractor<TInputImage>
         {
         pnt.SetRidgeness( 0.0 );
         }
-      m_TubePointList.push_front( pnt );
-      m_TubePointCount++;
+      pnts.push_back( pnt );
+      tubePointCount++;
 
       std::cout << "Ridge: Added initial tube point." << std::endl;
       }
@@ -601,15 +626,13 @@ RidgeExtractor<TInputImage>
      
   double iScale0 = GetScale();
   
-  int pSize = m_TubePointList.size();
-  
   double stepFactor0 = 1;
   double stepFactor = stepFactor0;
   
   int recovery = 0;
-  int prevRecoveryPoint = m_TubePointCount;
+  int prevRecoveryPoint = tubePointCount;
   while( recovery < m_RecoveryMax &&
-    prevRecoveryPoint+(2.0/m_StepX) > m_TubePointCount ) 
+    prevRecoveryPoint+(2.0/m_StepX) > tubePointCount ) 
     {
     if( recovery > 0 ) 
       {
@@ -623,7 +646,7 @@ RidgeExtractor<TInputImage>
         {
         default:
         case 1:
-          prevRecoveryPoint = m_TubePointCount;
+          prevRecoveryPoint = tubePointCount;
           stepFactor = 1.5 * stepFactor0;
           break;
         case 2:
@@ -637,7 +660,7 @@ RidgeExtractor<TInputImage>
         }
       if( this->GetDebug() )
         {
-        std::cout << "   Point = " << m_TubePointCount 
+        std::cout << "   Point = " << tubePointCount 
           << ": Recovery: new scale = " << GetScale() << std::endl;
         }    
       lX = pX;
@@ -698,7 +721,15 @@ RidgeExtractor<TInputImage>
       std::cout << "Ridge: TraverseOW: lX0 = " 
                 << lX << std::endl;
       std::cout << "Ridge: TraverseOW: lSearchDir1 = " 
-                << lSearchDir << std::endl;
+                << lSearchDir.get_column(0) << std::endl;
+      if( ImageDimension > 2 )
+        {
+        std::cout << "Ridge: TraverseOW: lSearchDir2 = " 
+                  << lSearchDir.get_column(1) << std::endl;
+        }
+      std::cout << "Ridge: TraverseOW: lSearchDir1*StepDir = " 
+                << dot_product( lSearchDir.get_column(0), lStepDir )
+                << std::endl;
       }
     
     if( !m_DataSpline->extreme( lX, &lVal, ImageDimension-1, lSearchDir ) )
@@ -781,7 +812,7 @@ RidgeExtractor<TInputImage>
         }
       }
 
-    for( unsigned int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
       for( unsigned int j=0; j<ImageDimension; j++ )
         {
@@ -905,8 +936,8 @@ RidgeExtractor<TInputImage>
    
     if( maskVal != 0 ) 
       {
-      if( ( int )maskVal != m_TubeID ||
-         m_TubePointCount-( ( maskVal-( int )maskVal )*10000 )>20/m_StepX ) 
+      if( ( int )maskVal != tubeId ||
+         tubePointCount-( ( maskVal-( int )maskVal )*10000 )>20/m_StepX ) 
         {
         if( this->GetDebug() )
           {
@@ -917,28 +948,29 @@ RidgeExtractor<TInputImage>
       }
     else
       {
-      m_DataMask->SetPixel( indx, ( PixelType )( m_TubeID 
-          + ( m_TubePointCount/10000.0 ) ) );
+      m_DataMask->SetPixel( indx, ( PixelType )( tubeId 
+          + ( tubePointCount/10000.0 ) ) );
       }   
 
     /** Show the satus every 50 points */
-    if( m_TubePointCount%50==0 )
+    if( tubePointCount%50==0 )
       {
       if( m_StatusCallBack ) 
         {
         char st[80];
-        sprintf( st, "Point #%d", m_TubePointCount );
+        sprintf( st, "Point #%d", tubePointCount );
         m_StatusCallBack( NULL, st, 0 );
         }
       }      
     if( this->GetDebug() )
       {
-      std::cout << "Ridge: TraverseOW: Adding point " << m_TubePointCount
+      std::cout << "Ridge: TraverseOW: Adding point " << tubePointCount
         << " = " << lX << std::endl;
       }
 
+    std::cout << "Adding point..." << std::endl;
     TubePointType pnt;
-    pnt.SetID( m_TubePointCount );
+    pnt.SetID( tubePointCount );
     typename TubePointType::PointType tubeX;
     typename TubePointType::VectorType tubeV;
     typename TubePointType::CovariantVectorType tubeN;
@@ -949,7 +981,7 @@ RidgeExtractor<TInputImage>
         {
         for( unsigned int j=0; j<ImageDimension; j++ )
           {
-          tubeN[j] = m_XHEVect( i, j );
+          tubeN[j] = m_XHEVect( j, i );
           }
         if( i == 0 )
           {
@@ -972,26 +1004,19 @@ RidgeExtractor<TInputImage>
       {
       pnt.SetRidgeness( 0.0 );
       }
-    if( dir == 1 )
-      {   
-      m_TubePointList.push_front( pnt );
-      }   
-    else
-      {   
-      m_TubePointList.push_back( pnt );
-      } 
-    m_TubePointCount++;
+    pnts.push_back( pnt );
+    tubePointCount++;
 
     recovery = 0;
-    prevRecoveryPoint = m_TubePointCount;
+    prevRecoveryPoint = tubePointCount;
 
-    if( m_TubePointCount/25.0 == m_TubePointCount/25 ) 
+    if( tubePointCount/25.0 == tubePointCount/25 ) 
       {
       if( m_IdleCallBack )
         {
         m_IdleCallBack();
         }    
-      if( m_DynamicScale && m_TubePointCount/50.0 == m_TubePointCount/50 )
+      if( m_DynamicScale && tubePointCount/50.0 == tubePointCount/50 )
         {
         if( this->GetDebug() )
           {
@@ -1037,16 +1062,39 @@ RidgeExtractor<TInputImage>
         }
       } 
     } 
+
+  if( dir == 1 )
+    {
+    std::vector< TubePointType > * curPoints = &(m_Tube->GetPoints());
+    for( unsigned int i=0; i<curPoints->size(); i++ )
+      {
+      pnts.push_back( (*curPoints)[i] );
+      }
+    m_Tube->SetPoints( pnts );
+    }
+  else
+    {
+    for( unsigned int i=0; i<pnts.size(); i++ )
+      {
+      m_Tube->GetPoints().push_back( pnts[i] );
+      }
+    }
   
   if( this->GetDebug() )
     {
     std::cout << "*** Ridge terminated: Cannot recover" << std::endl;
-    std::cout << "    Length = " << m_TubePointList.size()-pSize 
-      << std::endl;
+    std::cout << "    Added " << pnts.size() << " points." << std::endl;
     }
   SetScale( iScale0 );
 
-  return m_Tube;
+  if( pnts.size() > 0 )
+    {
+    return true;
+    }
+  else
+    {
+    return false;
+    }
 }
   
 /**
@@ -1321,9 +1369,9 @@ RidgeExtractor<TInputImage>
  * Extract a tube 
  */
 template<class TInputImage>
-typename RidgeExtractor<TInputImage>::TubePointer
+typename RidgeExtractor<TInputImage>::TubeType::Pointer
 RidgeExtractor<TInputImage>
-::Extract( ContinuousIndexType & newX, int tubeID )
+::Extract( ContinuousIndexType & newX, int tubeId )
 {
   ContinuousIndexType lX;
   lX = newX;
@@ -1348,8 +1396,6 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "*** Ridge found at " << lX << std::endl;
     }
-
-  m_TubePointList.clear();
 
   MatrixType lN( ImageDimension, ImageDimension-1 );
   VectorType lT( ImageDimension );
@@ -1417,9 +1463,8 @@ RidgeExtractor<TInputImage>
     }  
 
   m_Tube = TubeType::New();
-  m_TubeID = tubeID;
-  m_Tube->SetId( tubeID );
-  m_TubePointCount = 0;
+  m_Tube->SetId( tubeId );
+  m_Tube->GetPoints().clear();
   
   for( unsigned int i=0; i<ImageDimension; i++ ) 
     {
@@ -1429,7 +1474,9 @@ RidgeExtractor<TInputImage>
       lN[i][j] = m_XHEVect( i, j );
       }
     }
+  std::cout << "Traversing one way" << std::endl;
   TraverseOneWay( lX, lT, lN, 1 );
+  std::cout << "End traversing one way" << std::endl;
 
   if( m_DynamicScale )
     {
@@ -1445,22 +1492,14 @@ RidgeExtractor<TInputImage>
     lT[i] = -1 * lT[i];
     }
 
+  std::cout << "Traversing the other way" << std::endl;
   TraverseOneWay( lX, lT, lN, -1 );
-
-  // Set the list of tubepoints
-  typedef std::list< TubePointType > TubePointListType;
-  typename TubePointListType::const_iterator ptIt;
-  ptIt = m_TubePointList.begin();
-  
-  while( ptIt != m_TubePointList.end() )
-    {
-    m_Tube->GetPoints().push_back( *ptIt );
-    ptIt++;
-    }
+  std::cout << "End traversing the other way" << std::endl;
 
   // return to user defaults
   if( m_DynamicScale )
     {
+    std::cout << "Restoring initial scale" << std::endl;
     SetScale( scaleOriginal );
     if( m_RadiusExtractor )
       {
@@ -1468,14 +1507,16 @@ RidgeExtractor<TInputImage>
       }
     }
      
-  if( m_Tube->GetPoints().size()<10 ) 
+  if( m_Tube->GetPoints().size() < 2.0/m_StepX ) 
     {
+    std::cout << "Ridge too short, deleting." << std::endl;
     if( m_StatusCallBack )
       {
       m_StatusCallBack( "Extract: Ridge", "Too short", 0 );
       }
     DeleteTube< MaskType >( m_Tube );
     m_Tube = NULL;
+    std::cout << "Ridge returning null." << std::endl;
     return m_Tube;
     }
    
@@ -1490,6 +1531,7 @@ RidgeExtractor<TInputImage>
   //
   if( m_Tube && m_Tube->GetPoints().size() > 0 )
     {
+    std::cout << "Calculating tangents." << std::endl;
     typename TubePointType::VectorType tangent;
     tangent.Fill( 0.0 );
     tangent[0] = 1;
@@ -1513,7 +1555,7 @@ RidgeExtractor<TInputImage>
   if( m_StatusCallBack ) 
     {
     char s[80];
-    sprintf( s, "%ld points", m_Tube->GetPoints().size() );
+    sprintf( s, "%d points", (int)(m_Tube->GetPoints().size()) );
     m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
   return m_Tube;
@@ -1593,20 +1635,22 @@ bool
 RidgeExtractor<TInputImage>
 ::DeleteTube( TubeType * tube,  TDrawMask * drawMask )
 {
-  typedef typename TDrawMask::PixelType DrawPixelType;
-
+  typedef typename TDrawMask::PixelType          DrawPixelType;
   typedef itk::NeighborhoodIterator< TDrawMask > NeighborhoodIteratorType;
 
-  VectorType x( ImageDimension );
-  double r;
-
-  typename std::vector< TubePointType >::iterator pnt;
+  if( tube->GetPoints().size() == 0 )
+    {
+    return true;
+    }
 
   if( drawMask == NULL )
     {
     drawMask = m_DataMask;
     }
 
+  typename std::vector< TubePointType >::iterator pnt;
+  VectorType x( ImageDimension );
+  double r;
   for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
     ++pnt )
     {
@@ -1695,8 +1739,8 @@ RidgeExtractor<TInputImage>
 
   typedef itk::NeighborhoodIterator< TDrawMask > NeighborhoodIteratorType;
 
-  m_TubeID = tube->GetId();
-  m_TubePointCount = 0;
+  int tubeId = tube->GetId();
+  int tubePointCount = 0;
 
   if( drawMask == NULL )
     {
@@ -1734,8 +1778,8 @@ RidgeExtractor<TInputImage>
         {
         indx[i] = x[i];
         }
-      drawMask->SetPixel( indx, ( PixelType )( m_TubeID + 
-          ( m_TubePointCount/10000.0 ) ) );
+      drawMask->SetPixel( indx, ( PixelType )( tubeId + 
+          ( tubePointCount/10000.0 ) ) );
       r = ( *pnt ).GetRadius();
       r += 0.5;
       if( r > 1 )
@@ -1773,8 +1817,8 @@ RidgeExtractor<TInputImage>
                 }
               if( dist < rr )
                 {
-                it.SetPixel( i, ( PixelType )( m_TubeID +
-                    ( m_TubePointCount/10000.0 ) ) );
+                it.SetPixel( i, ( PixelType )( tubeId +
+                    ( tubePointCount/10000.0 ) ) );
                 }
               }
             ++it;
@@ -1782,7 +1826,7 @@ RidgeExtractor<TInputImage>
           }
         }
       } 
-    m_TubePointCount++;
+    tubePointCount++;
     }
   return true; 
 }

@@ -87,7 +87,7 @@ int itkRidgeExtractorTest2( int argc, char * argv[] )
   rndGen->Initialize(); // set seed here
 
   int failures = 0;
-  for( unsigned int mcRun=0; mcRun<100; mcRun++ )
+  for( unsigned int mcRun=0; mcRun<10; mcRun++ )
     {
     std::cout << std::endl;
     std::cout << std::endl;
@@ -162,6 +162,7 @@ int itkRidgeExtractorTest2( int argc, char * argv[] )
     std::cout << std::endl;
     std::cout << "***** Beginning tube extraction ***** " << std::endl;
     TubeType::Pointer xTube = ridgeOp->Extract( x1, mcRun );
+    std::cout << "***** Ending tube extraction ***** " << std::endl;
 
     if( xTube.IsNull() )
       {
@@ -170,8 +171,9 @@ int itkRidgeExtractorTest2( int argc, char * argv[] )
       continue;
       }
 
-    xTube = ridgeOp->Extract( x1, 101 );
-    if( xTube.IsNotNull() )
+    TubeType::Pointer xTube2;
+    xTube2 = ridgeOp->Extract( x1, 101 );
+    if( xTube2.IsNotNull() )
       {
       std::cerr << "Ridge extracted twice - test failed" << std::endl;
       ++failures;
