@@ -201,8 +201,8 @@ ARFFParser
 ::determineClassificationsFromAttributeLine( const std::string& line )
 {
   size_t opening = line.find_first_of( '{' );
-  ++opening;
-  size_t closing = line.find_first_of( '}' );
+    ++opening;
+    size_t closing = line.find_first_of( '}' );
   std::stringstream stringStream( line.substr( opening, closing-opening ) );
   std::string name;
   float counter = 0;
