@@ -67,10 +67,10 @@ public:
 
 protected:
 
-  RidgeExtractor<TInputImage> * m_Ridge;
+  RidgeExtractor<TInputImage> *   m_Ridge;
 
   typename TInputImage::IndexType m_XIndx;
-  double m_XVal;
+  double                          m_XVal;
 
 };
 
