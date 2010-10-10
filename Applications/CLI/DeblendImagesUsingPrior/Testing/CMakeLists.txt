@@ -54,8 +54,7 @@ add_test( ${PROJECT_NAME}Test1
 #######
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
-               -i 0.07
-               -n 4000
+               -i 0.001
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
