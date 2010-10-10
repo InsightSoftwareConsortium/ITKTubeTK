@@ -88,11 +88,27 @@ add_test( itkJointHistogramImageFunctionTest01
     --compare ${BASELINE}/itkJointHistogramImageFunctionTest01.mha
               ${TEMP}/itkJointHistogramImageFunctionTest01.mha
     itkJointHistogramImageFunctionTest
-      ${INPUT_DATA}/ES0015_1.mha
       ${INPUT_DATA}/GDS0015_1_match.mha
+      ${INPUT_DATA}/ES0015_1.mha
+      ${INPUT_DATA}/GDS0015_1_match.mask.mha
+      0
       ${TEMP}/itkJointHistogramImageFunctionTest01.mha 
       ${TEMP}/itkJointHistogramImageFunctionTest01Mean.mha 
       ${TEMP}/itkJointHistogramImageFunctionTest01StdDev.mha 
+  )
+
+add_test( itkJointHistogramImageFunctionTest02
+  ${BASE_NUMERICS_TESTS}
+    --compare ${BASELINE}/itkJointHistogramImageFunctionTest02.mha
+              ${TEMP}/itkJointHistogramImageFunctionTest02.mha
+    itkJointHistogramImageFunctionTest
+      ${INPUT_DATA}/GDS0015_1_match.mha
+      ${INPUT_DATA}/ES0015_1.mha
+      ${INPUT_DATA}/GDS0015_1_match.mask.mha
+      1
+      ${TEMP}/itkJointHistogramImageFunctionTest02.mha 
+      ${TEMP}/itkJointHistogramImageFunctionTest02Mean.mha 
+      ${TEMP}/itkJointHistogramImageFunctionTest02StdDev.mha 
   )
 
 add_test( itkImageRegionMomentsCalculatorTest

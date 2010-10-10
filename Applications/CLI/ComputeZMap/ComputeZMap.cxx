@@ -42,7 +42,7 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "itkJointHistogramImageFunction.h"
-#include "itkImageRandomConstIteratorWithIndex.h"
+#include "itkImageRandomIteratorWithIndex.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -70,16 +70,19 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                                 PixelType;
-  typedef itk::OrientedImage<PixelType, dimensionT>             ImageType;
-  typedef itk::ImageFileReader<ImageType>                       ReaderType;
-  typedef itk::ImageFileWriter<ImageType>                       WriterType;
+  typedef float                                             PixelType;
+  typedef itk::OrientedImage<PixelType, dimensionT>         ImageType;
+  typedef itk::ImageFileReader<ImageType>                   ReaderType;
+  typedef itk::ImageFileWriter<ImageType>                   WriterType;
 
-  typedef itk::JointHistogramImageFunction<ImageType>           HistCalcType;
+  typedef itk::JointHistogramImageFunction<ImageType>       HistCalcType;
+  typedef typename HistCalcType::HistogramType              HistType;
+  typedef itk::ImageFileReader<HistType>                    HistReaderType;
+  typedef itk::ImageFileWriter<HistType>                    HistWriterType;
 
   // typedefs for iterators
-  typedef itk::ImageRegionConstIteratorWithIndex<ImageType>     IterType;
-  typedef itk::ImageRandomConstIteratorWithIndex<ImageType>     RandIterType;
+  typedef itk::ImageRegionIteratorWithIndex<ImageType> IterType;
+  typedef itk::ImageRandomIteratorWithIndex<ImageType> RandIterType;
 
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -120,46 +123,159 @@ int DoIt( int argc, char * argv[] )
   calc->SetInputImage( image1 );
   calc->SetInputMask( image2 );
 
-  RandIterType itr( image1, image1->GetLargestPossibleRegion() );
-  itr.SetNumberOfSamples( samples );
-  if( seed > 0 )
+  if( forceLinearHistogram )
     {
-    itr.ReinitializeSeed( seed );
-    }
-  itr.GoToBegin();
-  while( !itr.IsAtEnd() )
-    {
-    typename HistCalcType::PointType curPoint;
-    image1->TransformIndexToPhysicalPoint( itr.GetIndex(), curPoint );
-    calc->Precompute( curPoint );
-    ++itr;
+    calc->SetForceDiagonalHistogram( true );
     }
 
-  typename ImageType::Pointer curImage = ImageType::New();
-  typename ImageType::RegionType region = image1->GetLargestPossibleRegion();  
-  curImage->SetRegions( region );
-  curImage->Allocate();
-  curImage->FillBuffer( 0 );
+  typename ImageType::Pointer outImage = ImageType::New();
+  typename ImageType::RegionType reg = image1->GetLargestPossibleRegion();  
+  outImage->SetRegions( reg );
+  outImage->CopyInformation( image1 );
+  outImage->Allocate();
+  outImage->FillBuffer( 0 );
 
-  itr.GoToBegin();
-  PixelType sum = 0;
-  while( !itr.IsAtEnd() )
+  if( loadMeanVolume.size() > 2 || loadStdDevVolume.size() > 2 )
     {
-    typename HistCalcType::PointType curPoint;
-    image1->TransformIndexToPhysicalPoint( itr.GetIndex(), curPoint );
-    PixelType cur = calc->Evaluate( curPoint );
-    sum += cur;
-    curImage->SetPixel( itr.GetIndex(), cur );
-    ++itr;
+    if( loadMeanVolume.size() > 2 )
+      {
+      typename HistReaderType::Pointer hReader = HistReaderType::New();
+      hReader->SetFileName( loadMeanVolume.c_str() );
+      try
+        {
+        hReader->Update();
+        }
+      catch( itk::ExceptionObject & err )
+        {
+        tube::ErrorMessage( "Reading volume: Exception caught: " 
+                            + std::string(err.GetDescription()) );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+      calc->SetMeanHistogram( hReader->GetOutput() );
+      }
+    else
+      {
+      tube::ErrorMessage( "Must also specify mean histogram for loading." );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+
+    if( loadStdDevVolume.size() > 2 )
+      {
+      typename HistReaderType::Pointer hReader = HistReaderType::New();
+      hReader->SetFileName( loadStdDevVolume.c_str() );
+      try
+        {
+        hReader->Update();
+        }
+      catch( itk::ExceptionObject & err )
+        {
+        tube::ErrorMessage( "Reading volume: Exception caught: " 
+                            + std::string(err.GetDescription()) );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+      calc->SetStandardDeviationHistogram( hReader->GetOutput() );
+      }
+    else
+      {
+      tube::ErrorMessage( "Must also specify mean histogram for loading." );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    }
+  else
+    {
+    if( trainMaskVolume.size() < 2 )
+      {
+      RandIterType itr( image1, image1->GetLargestPossibleRegion() );
+      itr.SetNumberOfSamples( samples );
+      if( seed > 0 )
+        {
+        itr.ReinitializeSeed( seed );
+        }
+      itr.GoToBegin();
+      while( !itr.IsAtEnd() )
+        {
+        calc->PrecomputeAtIndex( itr.GetIndex() );
+        ++itr;
+        }
+      }
+    else
+      {
+      reader = ReaderType::New();
+      reader->SetFileName( trainMaskVolume.c_str() );
+      try
+        {
+        reader->Update();
+        }
+      catch( itk::ExceptionObject & err )
+        {
+        tube::ErrorMessage( "Reading volume: Exception caught: " 
+                            + std::string(err.GetDescription()) );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+      typename ImageType::Pointer trainMask = reader->GetOutput();
+  
+      IterType itr( image1, image1->GetLargestPossibleRegion() );
+      IterType trainMaskItr( trainMask,
+        trainMask->GetLargestPossibleRegion() );
+      while( !itr.IsAtEnd() )
+        {
+        if( trainMaskItr.Get() != 0 )
+          {
+          calc->PrecomputeAtIndex( itr.GetIndex() );
+          }
+        ++itr;
+        ++trainMaskItr;
+        }
+      }
     }
 
-  std::cout << sum / static_cast<float>( samples ) << std::endl;
-
+  if( testMaskVolume.size() < 2 )
+    {
+    IterType outItr( outImage, outImage->GetLargestPossibleRegion() );
+    while( !outItr.IsAtEnd() )
+      {
+      outItr.Set( calc->EvaluateAtIndex( outItr.GetIndex() ) );
+      ++outItr;
+      }
+    }
+  else
+    {
+    reader = ReaderType::New();
+    reader->SetFileName( testMaskVolume.c_str() );
+    try
+      {
+      reader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading volume: Exception caught: " 
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    typename ImageType::Pointer testMask = reader->GetOutput();
+    IterType outItr( outImage, outImage->GetLargestPossibleRegion() );
+    IterType testMaskItr( testMask, testMask->GetLargestPossibleRegion() );
+    while( !outItr.IsAtEnd() )
+      {
+      if( testMaskItr.Get() != 0 )
+        {
+        outItr.Set( calc->EvaluateAtIndex( outItr.GetIndex() ) );
+        }
+      ++outItr;
+      ++testMaskItr;
+      }
+    }
 
   timeCollector.Start("Save data");
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( curImage );
+  writer->SetInput( outImage );
   writer->SetUseCompression( true );
   try
     {
@@ -172,6 +288,45 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+
+  if( saveMeanVolume.size() > 2 )
+    {
+    typename HistWriterType::Pointer hWriter = HistWriterType::New();
+    hWriter->SetFileName( saveMeanVolume.c_str() );
+    hWriter->SetInput( calc->GetMeanHistogram() );
+    hWriter->SetUseCompression( true );
+    try
+      {
+      hWriter->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Writing volume: Exception caught: " 
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    }
+
+  if( saveStdDevVolume.size() > 2 )
+    {
+    typename HistWriterType::Pointer hWriter = HistWriterType::New();
+    hWriter->SetFileName( saveStdDevVolume.c_str() );
+    hWriter->SetInput( calc->GetStandardDeviationHistogram() );
+    hWriter->SetUseCompression( true );
+    try
+      {
+      hWriter->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Writing volume: Exception caught: " 
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    }
+
   timeCollector.Stop("Save data");
   progress = 1.0;
   progressReporter.Report( progress );

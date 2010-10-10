@@ -93,10 +93,10 @@
     <integer>
       <name>seed</name>
       <label>Random seed</label>
-      <description>Random number seed (0 = none)</description>
+      <description>Random number seed (-1 = none)</description>
       <flag>S</flag>
       <longflag>seed</longflag>
-      <default>0</default>
+      <default>-1</default>
     </integer>
 
   </parameters>

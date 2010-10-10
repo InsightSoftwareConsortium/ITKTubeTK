@@ -187,9 +187,9 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
   v3g = pM;
   v3e = iM;
       
-  zAdd = m_AddJHCalc->Evaluate( curPoint );
-  zSub = m_SubJHCalc->Evaluate( curPoint );
-  zNom = m_NomJHCalc->Evaluate( curPoint );
+  zAdd = m_AddJHCalc->EvaluateAtIndex( index );
+  zSub = m_SubJHCalc->EvaluateAtIndex( index );
+  zNom = m_NomJHCalc->EvaluateAtIndex( index );
 
   OutputType out( this->m_Features.size() );
 

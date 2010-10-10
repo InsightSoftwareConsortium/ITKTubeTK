@@ -42,10 +42,14 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
              ${PROJ_EXE}
-               ${INPUT_DATA}/SyntheticSurfaceImage.mha
-               ${INPUT_DATA}/SyntheticTubeImage.mha
+               ${INPUT_DATA}/GDS0015_1_match.mha
+               ${INPUT_DATA}/ES0015_1.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha
-               -s 1000 -S 1234 )
+               --trainMaskVolume ${INPUT_DATA}/GDS0015_1_match.mask.mha
+               --testMaskVolume ${INPUT_DATA}/GDS0015_1_match.mask.mha
+               --saveMeanVolume ${TEMP}/${PROJECT_NAME}Test1.Mean.mha
+               --saveStdDevVolume ${TEMP}/${PROJECT_NAME}Test1.StdDev.mha
+               -s 10000 -S 1234 )
 
 add_test( ${PROJECT_NAME}Test1-Compare
              ${IMAGECOMPARE_EXE}
@@ -54,5 +58,51 @@ add_test( ${PROJECT_NAME}Test1-Compare
                -i 0.1 )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+
+
+#######
+# Test2
+#######
+add_test( ${PROJECT_NAME}Test2
+             ${PROJ_EXE}
+               ${INPUT_DATA}/GDS0015_1_match.mha
+               ${INPUT_DATA}/ES0015_1.mha
+               ${TEMP}/${PROJECT_NAME}Test2.mha
+               --loadMeanVolume ${TEMP}/${PROJECT_NAME}Test1.Mean.mha
+               --loadStdDevVolume ${TEMP}/${PROJECT_NAME}Test1.StdDev.mha
+               --testMaskVolume ${INPUT_DATA}/GDS0015_1_match.mask.mha
+               )
+set_tests_properties( ${PROJECT_NAME}Test2
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+
+add_test( ${PROJECT_NAME}Test2-Compare
+             ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test2.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mha
+               -i 0.1 )
+set_tests_properties( ${PROJECT_NAME}Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
+
+
+
+#######
+# Test3
+#######
+add_test( ${PROJECT_NAME}Test3
+             ${PROJ_EXE}
+               ${INPUT_DATA}/GDS0015_1_match.mha
+               ${INPUT_DATA}/ES0015_1.mha
+               ${TEMP}/${PROJECT_NAME}Test3.mha
+               --testMaskVolume ${INPUT_DATA}/GDS0015_1_match.mask.mha
+               -s 10000 -S 1234
+               )
+
+add_test( ${PROJECT_NAME}Test3-Compare
+             ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test3.mha 
+               -b ${BASELINE}/${PROJECT_NAME}Test3.mha
+               -i 0.1 )
+set_tests_properties( ${PROJECT_NAME}Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
 
 

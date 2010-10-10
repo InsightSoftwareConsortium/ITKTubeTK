@@ -40,7 +40,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0] << 
-      " inputImage maskImage outputImage [meanHisto] [stdDevHisto]"
+      " Image1 Image2 mask <1=linearize> outZImage [meanHist] [stdDevHist]"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -58,11 +58,11 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  
   // Declare the type for the Filter
   typedef itk::JointHistogramImageFunction< ImageType > FunctionType;
 
-  typedef itk::ImageFileWriter< FunctionType::HistogramType > HistoWriterType;
+  typedef itk::ImageFileWriter< FunctionType::HistogramType > 
+                                                        HistoWriterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -77,7 +77,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  ImageType::Pointer inputImage = reader->GetOutput();
+  ImageType::Pointer inputImage1 = reader->GetOutput();
 
   // Read the mask
   reader = ReaderType::New();
@@ -91,69 +91,59 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     std::cerr << "Exception caught during mask read:\n"  << e;
     return EXIT_FAILURE;
     }
-
+  ImageType::Pointer inputImage2 = reader->GetOutput();
+    
+  // Read the mask
+  reader = ReaderType::New();
+  reader->SetFileName( argv[3] );
+  try
+    {
+    reader->Update();
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during mask read:\n"  << e;
+    return EXIT_FAILURE;
+    }
   ImageType::Pointer maskImage = reader->GetOutput();
     
-
   FunctionType::Pointer func = FunctionType::New();
-  func->SetInputImage( inputImage );
-  func->SetInputMask( maskImage );
+  func->SetInputImage( inputImage1 );
+  func->SetInputMask( inputImage2 );
 
-  func->SetForceDiagonalHistogram( true );
+  if( *argv[4] == '1' )
+    {
+    func->SetForceDiagonalHistogram( true );
+    }
 
   ImageType::Pointer outputImage = ImageType::New();
-  outputImage->CopyInformation( inputImage );
-  outputImage->SetRegions( inputImage->GetLargestPossibleRegion() );
+  outputImage->CopyInformation( inputImage1 );
+  outputImage->SetRegions( inputImage1->GetLargestPossibleRegion() );
   outputImage->Allocate();
 
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( outputImage,
     outputImage->GetLargestPossibleRegion() );
+  itk::ImageRegionIteratorWithIndex< ImageType > maskIter( maskImage,
+    maskImage->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
 
   // Precompute
-  outIter.GoToBegin();
   while( !outIter.IsAtEnd() )
     {
-    func->PrecomputeAtIndex( outIter.GetIndex() );
-    ++outIter;
-    if( !outIter.IsAtEnd() )
+    if( maskIter.Get() != 0 )
       {
-      ++outIter;
+      func->PrecomputeAtIndex( outIter.GetIndex() );
       }
+    ++maskIter;
+    ++outIter;
     }     
   
-  // Evaluate
-  outIter.GoToBegin();
-  while( !outIter.IsAtEnd() )
-    {
-    double tf = func->EvaluateAtIndex( outIter.GetIndex() );
-    if( outIter.GetIndex()[0] == outIter.GetIndex()[1] )
-      {
-      std::cout << "i = " << outIter.GetIndex()[0] 
-                << " : " << tf << std::endl;
-      }
-    outIter.Set( tf );
-    ++outIter;
-    }     
-
-  WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[3] );
-  writer->SetUseCompression( true );
-  writer->SetInput( outputImage );
-  try
-    {
-    writer->Update();
-    }
-  catch (itk::ExceptionObject& e)
-    {
-    std::cerr << "Exception caught during write:\n"  << e;
-    return EXIT_FAILURE;
-    }
+  func->ComputeMeanAndStandardDeviation();
 
   if( argc > 4 )
     {
     HistoWriterType::Pointer writerMean = HistoWriterType::New();
-    writerMean->SetFileName( argv[4] );
+    writerMean->SetFileName( argv[6] );
     writerMean->SetUseCompression( true );
     writerMean->SetInput( func->GetMeanHistogram() );
     try
@@ -170,7 +160,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   if( argc > 5 )
     {
     HistoWriterType::Pointer writerStdDev = HistoWriterType::New();
-    writerStdDev->SetFileName( argv[5] );
+    writerStdDev->SetFileName( argv[7] );
     writerStdDev->SetUseCompression( true );
     writerStdDev->SetInput( func->GetStandardDeviationHistogram() );
     try
@@ -183,6 +173,44 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
       return EXIT_FAILURE;
       }
     }
+
+  // Evaluate
+  outIter.GoToBegin();
+  maskIter.GoToBegin();
+  while( !outIter.IsAtEnd() )
+    {
+    if( maskIter.Get() != 0 )
+      {
+      double tf = func->EvaluateAtIndex( outIter.GetIndex() );
+      if( outIter.GetIndex()[0] == outIter.GetIndex()[1] )
+        {
+        std::cout << "i = " << outIter.GetIndex()[0] 
+                  << " : " << tf << std::endl;
+        }
+      outIter.Set( tf );
+      }
+    else
+      {
+      outIter.Set( 0 );
+      }
+    ++maskIter;
+    ++outIter;
+    }     
+
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetFileName( argv[5] );
+  writer->SetUseCompression( true );
+  writer->SetInput( outputImage );
+  try
+    {
+    writer->Update();
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during write:\n"  << e;
+    return EXIT_FAILURE;
+    }
+
   
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

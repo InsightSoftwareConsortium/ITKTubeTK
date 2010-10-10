@@ -54,6 +54,57 @@
       <flag>S</flag>
       <default>-1</default>
     </integer>
+    <image>
+      <name>trainMaskVolume</name>
+      <label>Training mask</label>
+      <description>Binary mask of pixels to be used for training</description>
+      <longflag>trainMaskVolume</longflag>
+      <channel>input</channel>
+    </image>
+    <image>
+      <name>testMaskVolume</name>
+      <label>Testing mask</label>
+      <description>Binary mask of pixels to be used for testing</description>
+      <longflag>testMaskVolume</longflag>
+      <channel>input</channel>
+    </image>
   </parameters>
-
+  <parameters>
+    <label>Histograms</label>
+    <boolean>
+      <name>forceLinearHistogram</name>
+      <label>Force linear histogram</label>
+      <description>Adjust each pixel's histogram to have a linear distribution in the joint-histogram space</description>
+      <longflag>forceLinearHistogram</longflag>
+      <default>false</default>
+    </boolean>
+    <image>
+      <name>loadMeanVolume</name>
+      <label>Mean</label>
+      <description>Mean joint histogram</description>
+      <longflag>loadMeanVolume</longflag>
+      <channel>input</channel>
+    </image>
+    <image>
+      <name>loadStdDevVolume</name>
+      <label>Standard deviation</label>
+      <description>Standard deviation joint histogram</description>
+      <longflag>loadStdDevVolume</longflag>
+      <channel>input</channel>
+    </image>
+    <image>
+      <name>saveMeanVolume</name>
+      <label>Mean</label>
+      <description>Mean joint histogram</description>
+      <longflag>saveMeanVolume</longflag>
+      <channel>output</channel>
+    </image>
+    <image>
+      <name>saveStdDevVolume</name>
+      <label>Standard deviation</label>
+      <description>Standard deviation joint histogram</description>
+      <longflag>saveStdDevVolume</longflag>
+      <channel>output</channel>
+    </image>
+  </parameters>
 </executable>

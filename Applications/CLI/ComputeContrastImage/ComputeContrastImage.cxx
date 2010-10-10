@@ -243,20 +243,13 @@ public:
     filterInput->SetInput( m_InputImage );
     float inputSigma = 0;
     inputSigma = params[0];
-    if( inputSigma > 0.5 )
+    if( inputSigma > 0.3 && inputSigma < 100 )
       {
-      if( inputSigma < 10 )
-        {
-        filterInput->SetSigma( inputSigma );
-        }
-      else
-        {
-        return 10;
-        }
+      filterInput->SetSigma( inputSigma );
       }
     else
       {
-      return 10;
+      return 100;
       }
     filterInput->Update();
     typename ImageType::Pointer inputB = 
@@ -267,20 +260,13 @@ public:
     filterMaskedImage->SetInput( m_MaskedImage );
     float maskedSigma = 0;
     maskedSigma = params[1];
-    if( maskedSigma > 10 )
+    if( maskedSigma > 5 && maskedSigma < 80 )
       {
-      if( maskedSigma < 80 )
-        {
-        filterMaskedImage->SetSigma( maskedSigma );
-        }
-      else
-        {
-        return 10;
-        }
+      filterMaskedImage->SetSigma( maskedSigma );
       }
     else
       {
-      return 10;
+      return 100;
       }
     filterMaskedImage->Update();
     typename ImageType::Pointer maskedInputB = 
@@ -306,17 +292,9 @@ public:
       m_OutputImage->GetLargestPossibleRegion() );
     while( !iterInputB.IsAtEnd() )
       {
-      double tf = 0;
-      double tfObj = (iterInput.Get() - m_InputMeanObj)/m_InputStdDevObj;
-      double tfBkg = (iterInput.Get() - m_InputMeanBkg)/m_InputStdDevBkg;
-      //if( vnl_math_abs(tfBkg) < vnl_math_abs(tfObj) )
-        //{
-        tf = iterMaskedB.Get() * m_InputStdDevBkg + m_InputMeanBkg;
-        //}
-      //else
-        //{
-        //tf = iterMaskedB.Get() * m_InputStdDevObj + m_InputMeanObj;
-        //}
+      double tfObj = (iterInputB.Get() - m_InputMeanObj)/m_InputStdDevObj;
+      double tfBkg = (iterInputB.Get() - m_InputMeanBkg)/m_InputStdDevBkg;
+      double tf = iterMaskedB.Get() * m_InputStdDevBkg + m_InputMeanBkg;
       tf = iterInputB.Get() - tf;
       iterOutput.Set( tf );
 
@@ -487,13 +465,13 @@ int DoIt( int argc, char * argv[] )
     InitialOptimizerType::New();
   itk::Statistics::NormalVariateGenerator::Pointer normGen =
     itk::Statistics::NormalVariateGenerator::New();
-  if( seed != 0 )
+  if( seed > 0 )
     {
     normGen->Initialize( seed );
     }
   initOptimizer->SetNormalVariateGenerator( normGen );
   initOptimizer->Initialize( 1.0 );
-  initOptimizer->SetMetricWorstPossibleValue( 100 );
+  initOptimizer->SetMetricWorstPossibleValue( 101 );
   initOptimizer->SetMaximumIteration( iterations*0.5 );
   initOptimizer->SetMaximize( false );
  
@@ -503,11 +481,11 @@ int DoIt( int argc, char * argv[] )
   optimizer->SetMaximumLineIteration( iterations*0.2 );
   optimizer->SetStepLength( 0.1 );
   optimizer->SetStepTolerance( 0.001 );
-  optimizer->SetValueTolerance( 1 );
+  optimizer->SetValueTolerance( 0.01 );
   optimizer->SetMaximize( false );
  
   OptimizerType::ScalesType scales( 2 );
-  scales[0] = 1.0 / 0.5;
+  scales[0] = 1.0 / 0.1;
   scales[1] = 1.0 / 2.0;
  
   OptimizerType::ScalesType scales2( 2 );

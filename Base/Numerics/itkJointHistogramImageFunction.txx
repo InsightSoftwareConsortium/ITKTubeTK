@@ -46,8 +46,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 ::JointHistogramImageFunction()
 {
   m_InputMask = NULL;
-  m_FeatureWidth = 20;
-  m_StdevBase = 0.01;
+  m_FeatureWidth = 40;
+  m_StdevBase = 0.001;
   m_Histogram = NULL;
   m_SumHistogram = NULL;
   m_SumOfSquaresHistogram = NULL;
@@ -63,7 +63,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MaskStep = 0;
   m_ForceDiagonalHistogram = false;
 
-  this->SetHistogramSize( 20 );
+  this->SetHistogramSize( 40 );
 }
 
 template <class TInputImage, class TCoordRep>
@@ -240,16 +240,19 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     m_MeanHistogram->GetLargestPossibleRegion() );
   HistIteratorType stdItr( m_StandardDeviationHistogram, 
     m_StandardDeviationHistogram->GetLargestPossibleRegion() );
-  while( !meanItr.IsAtEnd() )
+  if( m_NumberOfSamples != 0 )
     {
-    meanItr.Set( sumItr.Get() / m_NumberOfSamples );
-    stdItr.Set( vcl_sqrt( vnl_math_abs( 
-      sumOfSquaresItr.Get() / m_NumberOfSamples -
-      meanItr.Get() * meanItr.Get() ) ) );
-    ++sumItr;
-    ++sumOfSquaresItr;
-    ++meanItr;
-    ++stdItr;
+    while( !meanItr.IsAtEnd() )
+      {
+      meanItr.Set( sumItr.Get() / m_NumberOfSamples );
+      stdItr.Set( vcl_sqrt( vnl_math_abs( 
+        sumOfSquaresItr.Get() / m_NumberOfSamples -
+        meanItr.Get() * meanItr.Get() ) ) );
+      ++sumItr;
+      ++sumOfSquaresItr;
+      ++meanItr;
+      ++stdItr;
+      }
     }
 }
 
@@ -313,14 +316,24 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     double m = meanItr.Get();
     double s = stdItr.Get();
     s += m_StdevBase;
-    val += vnl_math_abs( t - m ) / s;
+    if( s != 0 )
+      {
+      val += vnl_math_abs( t - m ) / s;
+      ++histCount;
+      }
     ++histItr;
     ++meanItr;
     ++stdItr;
-    ++histCount;
     }
 
-  return val / histCount;
+  if( histCount > 0 )
+    {
+    return val / histCount;
+    }
+  else
+    {
+    return 0;
+    }
 }
 
 template <class TInputImage, class TCoordRep>
@@ -426,42 +439,49 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
           maxJ = j;
           }
         }
-      if((int)m_HistogramSize/2 - (int)maxJ < 0 )
+      if( maxJV > 0 )
         {
-        typename HistogramType::IndexType src;
-        cur[1] = 0;
-        src[0] = cur[0];
-        src[1] = cur[1] - ( (int)m_HistogramSize/2 - (int)maxJ );
-        while( src[1] < 0 )
+        if((int)maxJ > (int)m_HistogramSize/2 )
           {
-          m_Histogram->SetPixel( cur, 0 );
-          ++cur[1];
-          ++src[1];
+          typename HistogramType::IndexType src;
+          cur[1] = 0;
+          src[0] = cur[0];
+          src[1] = (int)maxJ - (int)m_HistogramSize/2;
+          src[1] = cur[1] + src[1];
+          while( cur[1] >= 0 && cur[1] < (int)(m_HistogramSize) )
+            {
+            if( src[1] < 0 || src[1] >= m_HistogramSize)
+              {
+              m_Histogram->SetPixel( cur, 0 );
+              }
+            else
+              {
+              m_Histogram->SetPixel( cur, m_Histogram->GetPixel( src ) );
+              }
+            ++cur[1];
+            ++src[1];
+            }
           }
-        while( cur[1] < (int)(m_HistogramSize) )
+        else
           {
-          m_Histogram->SetPixel( cur, m_Histogram->GetPixel( src ) );
-          ++cur[1];
-          ++src[1];
-          }
-        }
-      else
-        {
-        typename HistogramType::IndexType src;
-        cur[1] = m_HistogramSize-1;
-        src[0] = cur[0];
-        src[1] = cur[1] - ( (int)m_HistogramSize/2 - (int)maxJ );
-        while( src[1] >= (int)(m_HistogramSize) )
-          {
-          m_Histogram->SetPixel( cur, 0 );
-          --cur[1];
-          --src[1];
-          }
-        while( cur[1] >= 0 )
-          {
-          m_Histogram->SetPixel( cur, m_Histogram->GetPixel( src ) );
-          --cur[1];
-          --src[1];
+          typename HistogramType::IndexType src;
+          cur[1] = m_HistogramSize-1;
+          src[0] = cur[0];
+          src[1] = (int)maxJ - (int)m_HistogramSize/2;
+          src[1] = cur[1] + src[1];
+          while( cur[1] >= 0 && cur[1] < m_HistogramSize )
+            {
+            if( src[1] < 0 || src[1] >= m_HistogramSize)
+              {
+              m_Histogram->SetPixel( cur, 0 );
+              }
+            else
+              {
+              m_Histogram->SetPixel( cur, m_Histogram->GetPixel( src ) );
+              }
+            --cur[1];
+            --src[1];
+            }
           }
         }
       }

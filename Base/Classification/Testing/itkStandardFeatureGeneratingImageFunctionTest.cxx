@@ -189,22 +189,25 @@ int itkStandardFeatureGeneratingImageFunctionTest(int argc, char* argv [] )
 
   // Create truth set
   double ep = 0.0001;
-  double truth[] = {-0.204853,-0.31364,-0.209311,-6.69886e-05,-0.997691,
-                    18.9597,1.08886,6.41422,-0.00671102,-0.00494839,
-                    -0.00119436,-7.11408e-05,-0.997691,20.3184,1.20397,
-                    7.24889,-0.00373373,-9.6231e-05,-2.376e-09,-6.74754e-05,
-                    -0.997691,20.1709,1.17282,7.0434,0.0737599,0.107649,
-                    0.177815,-7.15384e-05,-0.997691,21.6709,1.29748,7.96332};
+  double truth[] = {
+    0.459082,0.384968,0.213724,0.0103309,0.256258,0.271751,99.1086,
+    24.694,
+    0.735631,0.980133,0.0328008,0.00943892,0.255945,0.272139,99.1066,
+    24.692,
+    0.878761,0.129995,0.000634503,0.00784074,0.256168,0.272067,99.1072,
+    24.6925,
+    0.496005,-0.107331,-0.177035,0.00708768,0.255856,0.272473,99.1052,
+    24.6905,
+    };
+
 
   // Evaluate
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( inputImage, region );
-  ImageType::PointType pnt;
   outIter.GoToBegin();
   unsigned int truthIndex = 0;
   while( !outIter.IsAtEnd() )
     {
-    inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
-    std::vector<double> tf = func->Evaluate( pnt );
+    std::vector<double> tf = func->EvaluateAtIndex( outIter.GetIndex() );
     std::vector<double>::const_iterator itr;
     std::cout << "tf =";
     for( itr = tf.begin(); itr != tf.end(); ++itr )
