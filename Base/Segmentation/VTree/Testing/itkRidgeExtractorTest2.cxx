@@ -237,6 +237,7 @@ int itkRidgeExtractorTest2( int argc, char * argv[] )
       std::cout << "Number of failures = " << failures << std::endl;
       return EXIT_FAILURE;
       }
+    ++maskIt;
     }
 
   std::cout << "Number of failures = " << failures << std::endl;
