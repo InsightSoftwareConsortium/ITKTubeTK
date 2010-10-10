@@ -65,49 +65,49 @@ public:
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( StandardFeatureGeneratingImageFunction, 
-                FeatureGeneratingImageFunction );
+    FeatureGeneratingImageFunction );
 
   /** Standard New Macro. */
   itkNewMacro( Self );
 
   /** Constant for fetching the dimensions of the image. **/
   itkStaticConstMacro( ImageDimension, unsigned int,
-                       Superclass::ImageDimension );
+    Superclass::ImageDimension );
   
   void SetPriorImage( typename InputImageType::Pointer prior )
     {
     m_Prior = prior;
-    }
+    };
 
   void SetMeanAddHistogram( typename HistogramType::Pointer addMeanHist )
     {
     m_AddMeanHist = addMeanHist;
-    }
+    };
 
   void SetStdevAddHistogram( typename HistogramType::Pointer addStdevHist )
     {
     m_AddStdevHist = addStdevHist;
-    }
+    };
 
   void SetMeanSubHistogram( typename HistogramType::Pointer subMeanHist )
     {
     m_SubMeanHist = subMeanHist;
-    }
+    };
 
   void SetStdevSubHistogram( typename HistogramType::Pointer subStdevHist )
     {
     m_SubStdevHist = subStdevHist;
-    }
+    };
 
   void SetMeanNormHistogram( typename HistogramType::Pointer normMeanHist )
     {
     m_NormMeanHist = normMeanHist;
-    }
+    };
 
   void SetStdevNormHistogram( typename HistogramType::Pointer normStdevHist )
     {
     m_NormStdevHist = normStdevHist;
-    }
+    };
 
   void SetScale( double scale )
     {
@@ -115,7 +115,7 @@ public:
     m_SigmaMedium = (m_Scale/2)*0.6667;
     m_SigmaSmall = 0.6667*m_SigmaMedium;
     m_SigmaLarge = 1.3333*m_SigmaMedium;
-    }
+    };
 
   /** Prepare the filter to go **/
   void PrepFilter();
@@ -129,7 +129,7 @@ protected:
   StandardFeatureGeneratingImageFunction();
 
   /** Default destructor */
-  ~StandardFeatureGeneratingImageFunction() {}
+  ~StandardFeatureGeneratingImageFunction() {};
 
   typename InputImageType::Pointer m_Prior;
   typename HistogramType::Pointer  m_AddMeanHist;
