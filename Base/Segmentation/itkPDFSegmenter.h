@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __PDFSegmenter_h
-#define __PDFSegmenter_h
+#ifndef __itkPDFSegmenter_h
+#define __itkPDFSegmenter_h
 
 #include <vector>
 #include "itkOrientedImage.h"
@@ -32,139 +32,140 @@ namespace itk
 template< class ImageT, unsigned int N, class LabelmapT >
 class PDFSegmenter : public Object
 {
+public:
 
-  public:
+  typedef PDFSegmenter                         Self;
+  typedef Object                               Superclass;
+  typedef SmartPointer< Self >                 Pointer;
+  typedef SmartPointer< const Self >           ConstPointer;
 
-    typedef PDFSegmenter                           Self;
-    typedef Object                                 Superclass;
-    typedef SmartPointer< Self >                   Pointer;
-    typedef SmartPointer< const Self >             ConstPointer;
+  itkTypeMacro( PDFSegmenter, Object );
 
-    itkTypeMacro( PDFSegmenter, Object );
+  itkNewMacro( Self );
+ 
+  //
+  // Custom Typedefs
+  //
+  typedef ImageT                               ImageType;
+  typedef typename ImageType::PixelType        PixelType;
 
-    itkNewMacro( Self );
-  
-    //
-    // Custom Typedefs
-    //
-    typedef ImageT                                 ImageType;
-    typedef typename ImageType::PixelType          PixelType;
+  itkStaticConstMacro( ImageDimension, unsigned int, 
+    ImageT::ImageDimension );
 
-    itkStaticConstMacro( ImageDimension, unsigned int, 
-                         ImageT::ImageDimension );
+  typedef LabelmapT                            MaskImageType;
+  typedef typename MaskImageType::PixelType    MaskPixelType;
 
-    typedef LabelmapT                            MaskImageType;
-    typedef typename MaskImageType::PixelType    MaskPixelType;
+  typedef int                                  ObjectIdType;
+  typedef std::vector< int >                   ObjectIdListType;
 
-    typedef int                                  ObjectIdType;
-    typedef std::vector< int >                   ObjectIdListType;
-
-    typedef float                                ProbabilityPixelType;
-    typedef itk::OrientedImage< ProbabilityPixelType,
-      ::itk::GetImageDimension< ImageT >::ImageDimension >
-                                                 ProbabilityImageType;
+  typedef float                                ProbabilityPixelType;
+  typedef itk::OrientedImage< ProbabilityPixelType,
+    ::itk::GetImageDimension< ImageT >::ImageDimension >
+                                               ProbabilityImageType;
 
 
-    //
-    // Methods
-    //
-    itkSetObjectMacro( InputVolume1, ImageType );
-    itkSetObjectMacro( InputVolume2, ImageType );
-    itkSetObjectMacro( InputVolume3, ImageType );
+  //
+  // Methods
+  //
+  itkSetObjectMacro( InputVolume1, ImageType );
+  itkSetObjectMacro( InputVolume2, ImageType );
+  itkSetObjectMacro( InputVolume3, ImageType );
 
-    void SetObjectId( ObjectIdType objectId )
-      {
-      m_ObjectIdList.clear();
-      m_ObjectIdList.push_back( objectId );
-      }
-    void AddObjectId( ObjectIdType objectId )
-      {
-      m_ObjectIdList.push_back( objectId );
-      }
-    ObjectIdType GetObjectId( int num = 0 )
-      {
-      return m_ObjectIdList[ num ];
-      }
+  void SetObjectId( ObjectIdType objectId )
+    {
+    m_ObjectIdList.clear();
+    m_ObjectIdList.push_back( objectId );
+    };
 
-    itkSetMacro( VoidId, ObjectIdType );
-    itkGetMacro( VoidId, ObjectIdType );
+  void AddObjectId( ObjectIdType objectId )
+    {
+    m_ObjectIdList.push_back( objectId );
+    };
 
-    itkSetObjectMacro( Labelmap, MaskImageType );
-    itkGetObjectMacro( Labelmap, MaskImageType );
+  ObjectIdType GetObjectId( int num = 0 )
+    {
+    return m_ObjectIdList[ num ];
+    };
 
-    itkSetMacro( UseTexture, bool );
-    itkSetMacro( ErodeRadius, int );
-    itkSetMacro( HoleFillIterations, int );
-    itkSetMacro( FprWeight, double );
-    itkSetMacro( ProbabilitySmoothingStandardDeviation, double );
-    itkSetMacro( Draft, bool );
+  itkSetMacro( VoidId, ObjectIdType );
+  itkGetMacro( VoidId, ObjectIdType );
 
-    const typename ProbabilityImageType::Pointer * GetProbabilityImage(
-      unsigned int classNum );
+  itkSetObjectMacro( Labelmap, MaskImageType );
+  itkGetObjectMacro( Labelmap, MaskImageType );
 
-    /** Copy the input object mask to the output mask, overwritting the
-     *   classification assigned to those voxels. Default is false. */
-    itkSetMacro( ReclassifyObjectMask, bool );
-    itkGetMacro( ReclassifyObjectMask, bool );
+  itkSetMacro( UseTexture, bool );
+  itkSetMacro( ErodeRadius, int );
+  itkSetMacro( HoleFillIterations, int );
+  itkSetMacro( FprWeight, double );
+  itkSetMacro( ProbabilitySmoothingStandardDeviation, double );
+  itkSetMacro( Draft, bool );
 
-    /** Copy the input not-object mask to the output mask, overwritting the
-     *   classification assigned to those voxels. Default is false. */
-    itkSetMacro( ReclassifyNotObjectMask, bool );
-    itkGetMacro( ReclassifyNotObjectMask, bool );
+  const typename ProbabilityImageType::Pointer * GetProbabilityImage(
+    unsigned int classNum );
 
-    /** All object, void, and notObject pixels are force to being classified
-     * as object or notObject. Default is false. */
-    itkSetMacro( ForceClassification, bool );
-    itkGetMacro( ForceClassification, bool );
+  /** Copy the input object mask to the output mask, overwritting the
+   *   classification assigned to those voxels. Default is false. */
+  itkSetMacro( ReclassifyObjectMask, bool );
+  itkGetMacro( ReclassifyObjectMask, bool );
 
-    void SetProgressProcessInformation( void * processInfo, double fraction,
-      double start );
+  /** Copy the input not-object mask to the output mask, overwritting the
+   *   classification assigned to those voxels. Default is false. */
+  itkSetMacro( ReclassifyNotObjectMask, bool );
+  itkGetMacro( ReclassifyNotObjectMask, bool );
 
-    void Update( void );
+  /** All object, void, and notObject pixels are force to being classified
+   * as object or notObject. Default is false. */
+  itkSetMacro( ForceClassification, bool );
+  itkGetMacro( ForceClassification, bool );
 
-  protected:
+  void SetProgressProcessInformation( void * processInfo, double fraction,
+    double start );
 
-    typedef std::vector< typename ProbabilityImageType::Pointer > 
-      ProbabilityImageVectorType;
+  void Update( void );
 
-    PDFSegmenter( void );
-    virtual ~PDFSegmenter( void );
+protected:
 
-    void PrintSelf( std::ostream & os, Indent indent ) const;
+  typedef std::vector< typename ProbabilityImageType::Pointer > 
+    ProbabilityImageVectorType;
 
-    typename ImageType::Pointer GenerateTextureImage( 
-      const ImageType * im );
+  PDFSegmenter( void );
+  virtual ~PDFSegmenter( void );
 
-  private:
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
-    PDFSegmenter( const Self & );          // Purposely not implemented
-    void operator = ( const Self & );      // Purposely not implemented
+  typename ImageType::Pointer GenerateTextureImage( 
+    const ImageType * im );
 
-    //  Data
-    typename ImageType::Pointer           m_InputVolume1;
-    typename ImageType::Pointer           m_InputVolume2;
-    typename ImageType::Pointer           m_InputVolume3;
+private:
 
-    typename MaskImageType::Pointer       m_Labelmap;
+  PDFSegmenter( const Self & );          // Purposely not implemented
+  void operator = ( const Self & );      // Purposely not implemented
 
-    ObjectIdListType                      m_ObjectIdList;
-    ObjectIdType                          m_VoidId;
+  //  Data
+  typename ImageType::Pointer     m_InputVolume1;
+  typename ImageType::Pointer     m_InputVolume2;
+  typename ImageType::Pointer     m_InputVolume3;
 
-    bool                           m_UseTexture;
-    int                            m_ErodeRadius;
-    int                            m_HoleFillIterations;
-    double                         m_ProbabilitySmoothingStandardDeviation;
-    double                         m_FprWeight;
-    bool                           m_Draft;
-    bool                           m_ReclassifyObjectMask;
-    bool                           m_ReclassifyNotObjectMask;
-    bool                           m_ForceClassification;
+  typename MaskImageType::Pointer m_Labelmap;
 
-    ProbabilityImageVectorType            m_ProbabilityImageVector;
+  ObjectIdListType                m_ObjectIdList;
+  ObjectIdType                    m_VoidId;
 
-    void                                * m_ProgressProcessInfo;
-    double                                m_ProgressFraction;
-    double                                m_ProgressStart;
+  bool                            m_UseTexture;
+  int                             m_ErodeRadius;
+  int                             m_HoleFillIterations;
+  double                          m_ProbabilitySmoothingStandardDeviation;
+  double                          m_FprWeight;
+  bool                            m_Draft;
+  bool                            m_ReclassifyObjectMask;
+  bool                            m_ReclassifyNotObjectMask;
+  bool                            m_ForceClassification;
+
+  ProbabilityImageVectorType      m_ProbabilityImageVector;
+
+  void                          * m_ProgressProcessInfo;
+  double                          m_ProgressFraction;
+  double                          m_ProgressStart;
 
 };
 
@@ -174,6 +175,4 @@ class PDFSegmenter : public Object
 #include "itkPDFSegmenter.txx"
 #endif
 
-
 #endif
-
