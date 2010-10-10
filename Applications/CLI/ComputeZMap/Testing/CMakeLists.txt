@@ -53,9 +53,10 @@ add_test( ${PROJECT_NAME}Test1
 
 add_test( ${PROJECT_NAME}Test1-Compare
              ${IMAGECOMPARE_EXE}
+               -i 0.1 
+               -n 40
                -t ${TEMP}/${PROJECT_NAME}Test1.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mha
-               -i 0.1 )
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
@@ -77,9 +78,10 @@ set_tests_properties( ${PROJECT_NAME}Test2
 
 add_test( ${PROJECT_NAME}Test2-Compare
              ${IMAGECOMPARE_EXE}
+               -i 0.1 
+               -n 40
                -t ${TEMP}/${PROJECT_NAME}Test2.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mha
-               -i 0.1 )
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
 
