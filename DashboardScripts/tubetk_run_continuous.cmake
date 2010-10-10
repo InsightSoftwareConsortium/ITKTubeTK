@@ -60,7 +60,7 @@ if( SITE_CONTINUOUS_BUILD_TEST )
     endif()
 
     # loop no faster than once every 2 minutes
-    ctest_sleep( 120 )
+    ctest_sleep( 60 )
   
   endwhile()
 
