@@ -62,20 +62,20 @@ public:
 
   typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;  
   MyMIWPFunc( ImageEvalType & eval )
-  {
+    {
     cEval = eval;
     cGof = 0;
-  };
+    };
 
   const double & value( const vnl_vector<int> & x )
-  {
+    {
     cEval.SetErode( x[0] );
     cEval.SetDilate( x[1] );
     cEval.SetGaussianBlur( x[2] );
     cEval.Update();
     cGof = cEval.GetGoodnessOfFit();
     return cGof;
-  };
+    };
 
 private:
 
