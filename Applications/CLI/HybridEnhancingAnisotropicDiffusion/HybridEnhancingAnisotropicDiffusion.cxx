@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved. 
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0(the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -22,7 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
+#pragma warning( disable : 4786 )
 #endif
 
 #ifdef __BORLANDC__
@@ -66,24 +66,26 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
   
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "HybridEnhancingAnisotropicDiffusion",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter( 
+    "HybridEnhancingAnisotropicDiffusion",
+    CLPProcessInformation );
   progressReporter.Start();
 
   // Define the types and dimension of the images
-  // Use the input image to dictate the type of the image reader/writer, but use double
-  // for the filter to avoid rounding off errors in the filter's floating point operations
-  const unsigned int Dimension                = 3;
-  typedef pixelT                              ImagePixelType;
+  // Use the input image to dictate the type of the image reader/writer,
+  // but use double for the filter to avoid rounding off errors in the
+  // filter's floating point operations
+  const unsigned int Dimension                     = 3;
+  typedef pixelT                                   ImagePixelType;
   typedef itk::Image< ImagePixelType, Dimension >  InputImageType;
   typedef itk::Image< ImagePixelType, Dimension >  OutputImageType;
-  typedef double                              FilterPixelType;
+  typedef double                                   FilterPixelType;
   typedef itk::Image< FilterPixelType, Dimension > FilterInputImageType;
   typedef itk::Image< FilterPixelType, Dimension > FilterOutputImageType;
 
   // Read the input volume
   timeCollector.Start("Load data");
-  typedef itk::ImageFileReader< InputImageType  >      ImageReaderType;
+  typedef itk::ImageFileReader< InputImageType  >  ImageReaderType;
   typename ImageReaderType::Pointer   reader = ImageReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -102,9 +104,10 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // C-style cast from input image type to type 'double'
-  typedef itk::CastImageFilter< InputImageType, FilterInputImageType > CastInputImageFilterType;
+  typedef itk::CastImageFilter< InputImageType, FilterInputImageType > 
+    CastInputImageFilterType;
   typename CastInputImageFilterType::Pointer castInputImageFilter =
-      CastInputImageFilterType::New();
+    CastInputImageFilterType::New();
   castInputImageFilter->SetInput( reader->GetOutput() );
 
   // Perform the hybrid enhancing anisotropic diffusion
@@ -112,30 +115,30 @@ int DoIt( int argc, char * argv[] )
 
   // Declare the anisotropic diffusion hybrid enhancing filter
   typedef itk::AnisotropicHybridDiffusionImageFilter< FilterInputImageType,
-                                      FilterOutputImageType>  HybridEnhancingFilterType;
+    FilterOutputImageType>  HybridEnhancingFilterType;
 
   // Create a hybrid enhancing Filter
   typename HybridEnhancingFilterType::Pointer HybridEnhancingFilter =
-                                      HybridEnhancingFilterType::New();
+    HybridEnhancingFilterType::New();
 
   HybridEnhancingFilter->SetInput( castInputImageFilter->GetOutput() );
 
   //Set/Get CED parameters
   HybridEnhancingFilter->SetSigma( scaleParameter );
-  HybridEnhancingFilter->SetContrastParameterLambdaEED ( eedContrastParameter );
-  HybridEnhancingFilter->SetContrastParameterLambdaCED ( cedContrastParameter );
+  HybridEnhancingFilter->SetContrastParameterLambdaEED( 
+    eedContrastParameter );
+  HybridEnhancingFilter->SetContrastParameterLambdaCED( 
+    cedContrastParameter );
   HybridEnhancingFilter->SetAlpha( alpha );
-  HybridEnhancingFilter->SetContrastParameterLambdaHybrid( hybridContrastParameter );
+  HybridEnhancingFilter->SetContrastParameterLambdaHybrid( 
+    hybridContrastParameter );
   HybridEnhancingFilter->SetTimeStep( timeStep );
   HybridEnhancingFilter->SetNumberOfIterations( numberOfIterations );
 
   double progressFraction = 0.8;
   tube::CLIFilterWatcher watcher( HybridEnhancingFilter,
-                                  "Hybrid enhancing anisotropic diffusion",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
+    "Hybrid enhancing anisotropic diffusion", CLPProcessInformation, 
+    progressFraction, progress, true );
 
   try
     {
@@ -143,8 +146,9 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Hybrid enhancing anisotropic diffusion: Exception caught: "
-                        + std::string(err.GetDescription()) );
+    tube::ErrorMessage( 
+      "Hybrid enhancing anisotropic diffusion: Exception caught: " 
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -155,9 +159,9 @@ int DoIt( int argc, char * argv[] )
 
   // C-style cast from double to output image type
   typedef itk::CastImageFilter< FilterOutputImageType, OutputImageType >
-      CastOutputImageFilterType;
+    CastOutputImageFilterType;
   typename CastOutputImageFilterType::Pointer castOutputImageFilter =
-      CastOutputImageFilterType::New();
+    CastOutputImageFilterType::New();
   castOutputImageFilter->SetInput( HybridEnhancingFilter->GetOutput() );
 
   // Save output data
@@ -165,7 +169,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput ( castOutputImageFilter->GetOutput() );
+  writer->SetInput( castOutputImageFilter->GetOutput() );
 
   try
     {
