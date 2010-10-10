@@ -1459,7 +1459,7 @@ int main( int argc, char *argv[] )
     "", "output filename", MetaCommand::DATA_OUT );
 
   command.SetOption( "WriteType", "W", false, 
-    "writes using 0=uchar 1=ushort 2=short 3=Old-MIDAS 4=uncompressed-uchar 5=uncompressed-ushort 6=uncompressed-short 7=uncompressed-float" );
+    "writes 0=UC 1=US 2=S 3=Old (4-6 uncomp UC,US,S) 7=uncomp F");
   command.AddOptionField( "WriteType", "Type", MetaCommand::INT, true );
   command.AddOptionField( "WriteType", "filename", MetaCommand::STRING,
     true, "", "output filename", MetaCommand::DATA_OUT );
@@ -1514,9 +1514,9 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
 
   command.SetOption( "Multiply","u",false,
-		     "I( x ) = I( x ) * inFile2( x )" );
-  command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING, true );
-
+    "I( x ) = I( x ) * inFile2( x )" );
+  command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING,
+    true );
 
   command.SetOption( "Algorithm", "A", false,
     "Return image value within masked region (mode: 0=mean, 1=stdDev)" );
@@ -1525,7 +1525,8 @@ int main( int argc, char *argv[] )
     true );
   command.AddOptionField( "Algorithm", "threshHigh", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "Algorithm", "maskFile", MetaCommand::STRING, true );
+  command.AddOptionField( "Algorithm", "maskFile", MetaCommand::STRING,
+    true );
 
   command.SetOption( "process", "p", false,
     "Process the image using a unary operation (0=abs)" );
