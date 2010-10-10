@@ -450,7 +450,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
           src[1] = cur[1] + src[1];
           while( cur[1] >= 0 && cur[1] < (int)(m_HistogramSize) )
             {
-            if( src[1] < 0 || src[1] >= m_HistogramSize)
+            if( src[1] < 0 || src[1] >= (int)(m_HistogramSize) )
               {
               m_Histogram->SetPixel( cur, 0 );
               }
@@ -469,9 +469,9 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
           src[0] = cur[0];
           src[1] = (int)maxJ - (int)m_HistogramSize/2;
           src[1] = cur[1] + src[1];
-          while( cur[1] >= 0 && cur[1] < m_HistogramSize )
+          while( cur[1] >= 0 && cur[1] < (int)(m_HistogramSize) )
             {
-            if( src[1] < 0 || src[1] >= m_HistogramSize)
+            if( src[1] < 0 || src[1] >= (int)(m_HistogramSize) )
               {
               m_Histogram->SetPixel( cur, 0 );
               }
