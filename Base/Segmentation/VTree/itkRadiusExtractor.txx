@@ -98,7 +98,7 @@ template<class TInputImage>
   m_KernN0[0] = 1;
   m_KernN1[1] = 1;
 
-  m_IterPntArray = new std::vector<TubePointType>::iterator[5000]; 
+  m_IterPntArray = new typename std::vector<TubePointType>::iterator[5000]; 
   m_KernPntArray = new TubePointType[5000]; 
   m_ArrayLen = 0;
 
@@ -190,7 +190,7 @@ OptParabolicFit1D &
 template<class TInputImage>
 void
   RadiusExtractor<TInputImage>
-::SetInputImage(ImagePointer inputImage )
+::SetInputImage(typename ImageType::Pointer inputImage )
 {
   m_Image = inputImage;
 
@@ -794,7 +794,7 @@ double
       << std::endl;
     }
 
-  std::list<TubePointType>::iterator pnt;
+  typename std::list<TubePointType>::iterator pnt;
   for(i=0, pnt = tube->begin();
     pnt != tube->end();
     pnt++, i++) 
@@ -914,11 +914,11 @@ void
   RadiusExtractor<TInputImage>
 ::CalcKernArray(TubeType * tube)
 {
-  std::vector<TubePointType>::iterator tubeFromPnt = tube->GetPoints().begin();
-  std::vector<TubePointType>::iterator tubeToPnt = tube->GetPoints().end();
+  typename std::vector<TubePointType>::iterator tubeFromPnt = tube->GetPoints().begin();
+  typename std::vector<TubePointType>::iterator tubeToPnt = tube->GetPoints().end();
   tubeToPnt--;
 
-  std::vector<TubePointType>::iterator iterPnt;
+  typename std::vector<TubePointType>::iterator iterPnt;
 
   iterPnt = tubeFromPnt;
 
@@ -1146,7 +1146,7 @@ void
   double b0 = m_KernPntArray[0].GetBranchness();
 
   std::vector<TubePointType> & pnts = tube->GetPoints();
-  std::vector<TubePointType>::iterator pnt = pnts.begin();
+  typename std::vector<TubePointType>::iterator pnt = pnts.begin();
 
   while(pnt != pnts.end() && pnt!= m_IterPntArray[0])
     {
@@ -1234,7 +1234,7 @@ bool
 
   CalcKernArray(tube);
 
-  std::vector<TubePointType>::iterator pnt;
+  typename std::vector<TubePointType>::iterator pnt;
   pnt = tube->GetPoints().begin();
   while( (*pnt).GetID() != 0 && pnt != tube->GetPoints().end() )
     {
