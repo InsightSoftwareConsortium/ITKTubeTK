@@ -57,7 +57,7 @@ set_tests_properties( ${PROJECT_NAME}Test1-Compare
 
 add_test( ${PROJECT_NAME}Test2-Compare
             ${IMAGECOMPARE_EXE}
-               -i 0.01
+               -i 0.02
                -t ${TEMP}/${PROJECT_NAME}_GDSTest1.mha 
                -b ${BASELINE}/${PROJECT_NAME}_GDSTest1.mha )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
