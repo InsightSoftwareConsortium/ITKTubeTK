@@ -44,6 +44,8 @@ itkFeatureGeneratingImageFunction.h Namespace Disable
 itkFeatureGeneratingImageFunction.txx Namespace Disable
 itkBlur3DImageFunction.h Namespace Disable
 itkBlur3DImageFunction.txx Namespace Disable
+itkPDFSegmenter.h Namespace Disable
+itkPDFSegmenter.txx Namespace Disable
 OtsuThreshold.cxx Namespace Disable
 OrImages.cxx Namespace Disable
 PdPfaScoring.cxx Namespace Disable
@@ -55,3 +57,8 @@ GenerateFeaturesForWeka.cxx Namespace Disable
 Skeletonize.cxx Namespace Disable
 WekaToImage.cxx Namespace Disable
 ComputeZMap.cxx Namespace Disable
+CoherenceEnhancingAnisotropicDiffusion.cxx Namespace Disable
+ComputeContrastImage.cxx Namespace Disable
+EdgeEnhancingAnisotropicDiffusion.cxx Namespace Disable
+HybridEnhancingAnisotropicDiffusion.cxx Namespace Disable
+PDFSegmenter.cxx Namespace Disable
