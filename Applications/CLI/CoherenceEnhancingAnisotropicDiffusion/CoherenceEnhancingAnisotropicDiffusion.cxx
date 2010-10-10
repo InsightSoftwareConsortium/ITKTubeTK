@@ -66,24 +66,25 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
   
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter("CoherenceEnhancingAnisotropicDiffusion",
-                                                CLPProcessInformation );
+  tube::CLIProgressReporter    progressReporter(
+    "CoherenceEnhancingAnisotropicDiffusion", CLPProcessInformation );
   progressReporter.Start();
 
   // Define the types and dimension of the images
-  // Use the input image to dictate the type of the image reader/writer, but use double
-  // for the filter to avoid rounding off errors in the filter's floating point operations
-  const unsigned int Dimension                = 3;
-  typedef pixelT                              ImagePixelType;
+  // Use the input image to dictate the type of the image reader/writer, 
+  // but use double for the filter to avoid rounding off errors in the
+  // filter's floating point operations
+  const unsigned int Dimension                     = 3;
+  typedef pixelT                                   ImagePixelType;
   typedef itk::Image< ImagePixelType, Dimension >  InputImageType;
   typedef itk::Image< ImagePixelType, Dimension >  OutputImageType;
-  typedef double                              FilterPixelType;
+  typedef double                                   FilterPixelType;
   typedef itk::Image< FilterPixelType, Dimension > FilterInputImageType;
   typedef itk::Image< FilterPixelType, Dimension > FilterOutputImageType;
 
   // Read the input volume
   timeCollector.Start("Load data");
-  typedef itk::ImageFileReader< InputImageType  >      ImageReaderType;
+  typedef itk::ImageFileReader< InputImageType  >  ImageReaderType;
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -102,38 +103,38 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // C-style cast from input image type to type 'double'
-  typedef itk::CastImageFilter< InputImageType, FilterInputImageType > CastInputImageFilterType;
+  typedef itk::CastImageFilter< InputImageType, FilterInputImageType > 
+    CastInputImageFilterType;
   typename CastInputImageFilterType::Pointer castInputImageFilter =
-      CastInputImageFilterType::New();
+    CastInputImageFilterType::New();
   castInputImageFilter->SetInput( reader->GetOutput() );
 
   // Perform the coherence enhancing anisotropic diffusion
   timeCollector.Start("Coherence enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion coherence enhancing filter
-  typedef itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< FilterInputImageType,
-                                     FilterOutputImageType>  CoherenceEnhancingFilterType;
+  typedef itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< 
+    FilterInputImageType, FilterOutputImageType>  
+    CoherenceEnhancingFilterType;
 
   // Create a coherence enhancing filter
   typename CoherenceEnhancingFilterType::Pointer CoherenceEnhancingFilter =
-      CoherenceEnhancingFilterType::New();
+    CoherenceEnhancingFilterType::New();
 
   CoherenceEnhancingFilter->SetInput( castInputImageFilter->GetOutput() );
 
   //Set/Get CED parameters
   CoherenceEnhancingFilter->SetSigma( scaleParameter );
   CoherenceEnhancingFilter->SetAlpha( alpha );
-  CoherenceEnhancingFilter->SetContrastParameterLambdaC( cedContrastParameter );
+  CoherenceEnhancingFilter->SetContrastParameterLambdaC( 
+    cedContrastParameter );
   CoherenceEnhancingFilter->SetTimeStep( timeStep );
   CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
 
   double progressFraction = 0.8;
   tube::CLIFilterWatcher watcher( CoherenceEnhancingFilter,
-                                  "Coherence enhancing anisotropic diffusion",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
+    "Coherence enhancing anisotropic diffusion", CLPProcessInformation,
+    progressFraction, progress, true );
 
   try
     {
@@ -141,8 +142,9 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Coherence enhancing anisotropic diffusion: Exception caught: "
-                        + std::string(err.GetDescription()) );
+    tube::ErrorMessage( 
+      "Coherence enhancing anisotropic diffusion: Exception caught: "
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -153,9 +155,9 @@ int DoIt( int argc, char * argv[] )
 
   // C-style cast from double to output image type
   typedef itk::CastImageFilter< FilterOutputImageType, OutputImageType >
-      CastOutputImageFilterType;
+    CastOutputImageFilterType;
   typename CastOutputImageFilterType::Pointer castOutputImageFilter =
-      CastOutputImageFilterType::New();
+    CastOutputImageFilterType::New();
   castOutputImageFilter->SetInput( CoherenceEnhancingFilter->GetOutput() );
 
   // Save output data
