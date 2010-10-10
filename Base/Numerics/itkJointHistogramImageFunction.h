@@ -196,12 +196,12 @@ protected:
   unsigned int                             m_HistogramSize;
   mutable unsigned int                     m_NumberOfSamples;
   mutable unsigned int                     m_NumberOfComputedSamples;
-  double m_ImageMin;
-  double m_ImageMax;
-  double m_ImageStep;
-  double m_MaskMin;
-  double m_MaskMax;
-  double m_MaskStep;
+  double                                   m_ImageMin;
+  double                                   m_ImageMax;
+  double                                   m_ImageStep;
+  double                                   m_MaskMin;
+  double                                   m_MaskMax;
+  double                                   m_MaskStep;
 
   bool                                     m_ForceDiagonalHistogram;
 
