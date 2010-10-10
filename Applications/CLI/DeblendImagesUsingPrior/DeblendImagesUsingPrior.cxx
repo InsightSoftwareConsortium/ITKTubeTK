@@ -278,7 +278,7 @@ class BlendScaleCostFunction
 {
 public:
   
-  typedef BlendScaleCostFunction                       Self;
+  typedef BlendScaleCostFunction                  Self;
   typedef SingleValuedCostFunction                Superclass;
   typedef SmartPointer< Self >                    Pointer;
   typedef SmartPointer< const Self >              ConstPointer;
