@@ -5,10 +5,15 @@ TubeTK is being developed by Kitware, Inc.
 The TubeTK project overview is available on the web:
    http://public.kitware.com/Wiki/TubeTK
 
-This work is distributed under the Apache 2.0 license.  Non-commercial and
+The majority of this work is distributed under the Apache 2.0 license.  Non-commercial and
 commercial use is encouraged.  More information on the Apache 2.0 license
 is available on the web:
   http://www.apache.org/licenses/LICENSE-2.0
+
+Certain directories contain code that is not distributed under the Apache 2.0 license.  Those
+directories will contain Copyright.txt and License.txt files that describe their alternative
+licensing and copyright terms.   Work is underway to convert those code to the Apache 2.0
+license.  We regret the inconvenience and confusion they are causing.
 
 The source code is available on the web:
   http://gitorious.org/tubetk/
