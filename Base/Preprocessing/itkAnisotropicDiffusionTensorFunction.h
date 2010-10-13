@@ -57,7 +57,7 @@ public:
                                            FiniteDifferenceFunction );
 
   /** Extract some parameters from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs. */
   typedef double                                       TimeStepType;
@@ -76,7 +76,7 @@ public:
   typedef ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>
     DefaultBoundaryConditionType;
 
-  /** Define diffusion image nbd type */
+  /** Define diffusion image neighborhood type */
   typedef ConstNeighborhoodIterator<DiffusionTensorImageType, 
                                     DefaultBoundaryConditionType> 
                                            DiffusionTensorNeighborhoodType;
