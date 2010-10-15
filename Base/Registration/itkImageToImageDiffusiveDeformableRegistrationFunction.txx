@@ -191,25 +191,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                 void *gd,
                 const FloatOffsetType& offset)
 {  
-
-  // Assertion to make sure the deformation field components are setup properly
-  // TODO don't do this processing if not in debug mode
-  DeformationFieldConstPointer deformationField
-                                              = neighborhood.GetImagePointer();
-  itk::FixedArray< DeformationFieldComponentImageConstPointer, ImageDimension >
-                               deformationFieldComponentImageArray;
-  typedef Index< ImageDimension > IndexType;
-  const IndexType tempIndex = neighborhood.GetIndex();
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    deformationFieldComponentImageArray[i]
-        = tangentialNeighborhoodDeformationFieldComponents[i].GetImagePointer();
-    assert( deformationField->GetPixel( tempIndex )[i]
-        == deformationFieldComponentImageArray[i]->GetPixel( tempIndex ) );
-    }
-
-  //std::cout << normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index )[2] << std::endl;
-
   // Get the global data structure
   GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
 

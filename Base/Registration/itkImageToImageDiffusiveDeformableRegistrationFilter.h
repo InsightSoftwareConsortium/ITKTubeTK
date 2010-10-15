@@ -87,15 +87,17 @@ public:
 
   // ex. vector < double, 3 >
   typedef typename Superclass::DeformationFieldType::PixelType
-                                                    DeformationFieldVectorType;
+                                    DeformationFieldVectorType;
   // ex. double
   typedef typename DeformationFieldType::PixelType::ValueType
-                                          DeformationFieldScalarType;
+                                    DeformationFieldScalarType;
   // ex. image of doubles
   typedef itk::Image< DeformationFieldScalarType, ImageDimension >
-                                          DeformationFieldComponentImageType;
+                                    DeformationFieldComponentImageType;
   typedef typename DeformationFieldComponentImageType::Pointer
-                                          DeformationFieldComponentImagePointer;
+                                    DeformationFieldComponentImagePointer;
+  typedef itk::ImageRegionIterator< DeformationFieldComponentImageType >
+                                    DeformationFieldComponentImageIteratorType;
 
   /** Normal vector types. */
   typedef DeformationFieldVectorType                     NormalVectorType;
@@ -193,6 +195,9 @@ protected:
   /** Update diffusion tensor image */
   virtual void UpdateDiffusionTensorImage();
 
+  /** Update deformation field component images */
+  virtual void UpdateDeformationFieldComponentImages();
+
   /** This method applies changes from the m_UpdateBuffer to the output using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
    * the time step to use for the update of each pixel. */
@@ -263,14 +268,23 @@ private:
    */
   DiffusionTensorImagePointer           m_NormalDiffusionTensorImage;
 
-  /** Extracts the components of the deformation field */
+  /** Extracts the tangential and normal components of the deformation field */
+  typedef typename OutputImageType::Pointer OutputImagePointer;
+  OutputImagePointer                    m_OutputTangentialImage;
+  OutputImagePointer                    m_OutputNormalImage;
+
+  /** Extracts the x,y,z components of the tangential and normal components of
+   * the deformation field
+   */
   typedef itk::VectorIndexSelectionCastImageFilter< DeformationFieldType,
                                         DeformationFieldComponentImageType >
                                         SelectionCastImageFilterType;
   typedef typename SelectionCastImageFilterType::Pointer
                                         SelectionCastImageFilterPointer;
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
-                                        m_ComponentExtractor;
+                                        m_TangentialComponentExtractor;
+  itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
+                                        m_NormalComponentExtractor;
 
   itk::FixedArray< DeformationFieldComponentImagePointer, ImageDimension >
                                         m_DeformationFieldTangentialComponents;

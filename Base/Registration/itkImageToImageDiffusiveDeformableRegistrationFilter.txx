@@ -44,6 +44,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   m_NormalVectors.Fill( 0 );
   m_NormalVectorImage               = NormalVectorImageType::New();
+  m_OutputTangentialImage           = OutputImageType::New();
+  m_OutputNormalImage               = OutputImageType::New();
   m_TangentialDiffusionTensorImage  = DiffusionTensorImageType::New();
   m_NormalDiffusionTensorImage      = DiffusionTensorImageType::New();
 
@@ -56,22 +58,26 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   // field
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    m_ComponentExtractor[i] = SelectionCastImageFilterType::New();
-    m_ComponentExtractor[i]->SetInput( this->GetOutput() );
-    m_ComponentExtractor[i]->SetIndex( i );
+    m_TangentialComponentExtractor[i] = SelectionCastImageFilterType::New();
+    m_TangentialComponentExtractor[i]->SetInput( m_OutputTangentialImage );
+    m_TangentialComponentExtractor[i]->SetIndex( i );
+
+    m_NormalComponentExtractor[i] = SelectionCastImageFilterType::New();
+    m_NormalComponentExtractor[i]->SetInput( m_OutputNormalImage );
+    m_NormalComponentExtractor[i]->SetIndex( i );
     }
 
   // Setup the deformation field component images
   for (unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_DeformationFieldTangentialComponents[i]
-                                    = DeformationFieldComponentImageType::New();
+                              = DeformationFieldComponentImageType::New();
     m_DeformationFieldTangentialComponents[i]
-                                    = m_ComponentExtractor[i]->GetOutput();
+                              = m_TangentialComponentExtractor[i]->GetOutput();
     m_DeformationFieldNormalComponents[i]
-                                    = DeformationFieldComponentImageType::New();
+                              = DeformationFieldComponentImageType::New();
     m_DeformationFieldNormalComponents[i]
-                                    = m_ComponentExtractor[i]->GetOutput();
+                              = m_NormalComponentExtractor[i]->GetOutput();
     }
 }
 
@@ -254,6 +260,27 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                 deformationField->GetBufferedRegion() );
   m_NormalVectorImage->Allocate();
 
+  // Allocate the output image's tangential and normal images
+  m_OutputTangentialImage->SetOrigin( deformationField->GetOrigin() );
+  m_OutputTangentialImage->SetSpacing( deformationField->GetSpacing() );
+  m_OutputTangentialImage->SetLargestPossibleRegion(
+                                deformationField->GetLargestPossibleRegion() );
+  m_OutputTangentialImage->SetRequestedRegion(
+                                deformationField->GetRequestedRegion() );
+  m_OutputTangentialImage->SetBufferedRegion(
+                                deformationField->GetBufferedRegion() );
+  m_OutputTangentialImage->Allocate();
+
+  m_OutputNormalImage->SetOrigin( deformationField->GetOrigin() );
+  m_OutputNormalImage->SetSpacing( deformationField->GetSpacing() );
+  m_OutputNormalImage->SetLargestPossibleRegion(
+                                deformationField->GetLargestPossibleRegion() );
+  m_OutputNormalImage->SetRequestedRegion(
+                                deformationField->GetRequestedRegion() );
+  m_OutputNormalImage->SetBufferedRegion(
+                                deformationField->GetBufferedRegion() );
+  m_OutputNormalImage->Allocate();
+
   // Allocate the tangential diffusion tensor image
   m_TangentialDiffusionTensorImage->SetOrigin( deformationField->GetOrigin() );
   m_TangentialDiffusionTensorImage->SetSpacing( deformationField->GetSpacing() );
@@ -306,11 +333,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   // Update the diffusion tensor image
   this->UpdateDiffusionTensorImage();
 
-  // Extract the components
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_ComponentExtractor[i]->Update();
-    }
+  // Update the deformation field component images
+  this->UpdateDeformationFieldComponentImages();
 }
 
 /**
@@ -421,18 +445,75 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     normalIt.Set( normalD );
     }
 
-  // TODO test with more complicated n, then take me out
-//    std::cout << "*****" << std::endl;
-//    for (unsigned int i = 0; i < ImageDimension; i++)
-//      {
-//      for (unsigned int j = 0; j < ImageDimension; j++)
-//        {
-//        std::cout << D(i,j) << " ";
-//        }
-//      std::cout << std::endl;
-//      }
-//    std::cout << "*****" << std::endl;
+}
 
+/**
+ * Updates the diffusion tensor image before each iteration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::UpdateDeformationFieldComponentImages()
+{
+  // Get the border normals
+  NormalVectorIteratorType normalVectorIterator( m_NormalVectorImage,
+                              m_NormalVectorImage->GetLargestPossibleRegion() );
+
+  // Get output (the current deformation field)
+  typename OutputImageType::Pointer output = this->GetOutput();
+
+  typedef itk::ImageRegionIterator< OutputImageType > IteratorType;
+  IteratorType outputImageIterator(
+                          output,
+                          output->GetLargestPossibleRegion() );
+
+  // Extract tangential and normal components from output
+  IteratorType outputTangentialImageIterator(
+                          m_OutputTangentialImage,
+                          m_OutputTangentialImage->GetLargestPossibleRegion() );
+  IteratorType outputNormalImageIterator(
+                          m_OutputNormalImage,
+                          m_OutputNormalImage->GetLargestPossibleRegion() );
+
+  // Calculate the tangential and normal components of the deformation field
+  NormalVectorType            n;
+  DeformationFieldVectorType  u;
+  DeformationFieldVectorType  normalU;
+  DeformationFieldVectorType  tangentialU;
+
+  normalVectorIterator.GoToBegin();
+  outputTangentialImageIterator.GoToBegin();
+  outputNormalImageIterator.GoToBegin();
+  for( outputImageIterator.GoToBegin(); !outputImageIterator.IsAtEnd();
+         ++outputImageIterator )
+    {
+    n = normalVectorIterator.Get();
+    u = outputImageIterator.Get();
+
+    // normal component = (u^Tn)n
+    normalU = (u * n) * n;
+    outputNormalImageIterator.Set( normalU );
+
+    // tangential component = u - normal component
+    tangentialU = u - normalU;
+    outputTangentialImageIterator.Set( tangentialU );
+
+    ++normalVectorIterator;
+    ++outputTangentialImageIterator;
+    ++outputNormalImageIterator;
+    }
+
+  // Feed tangential and normal components to the component extractor
+  // Extract the components
+  m_OutputTangentialImage->Modified();
+  m_OutputNormalImage->Modified();
+  for ( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    m_TangentialComponentExtractor[i]->Update();
+    m_NormalComponentExtractor[i]->Update();
+    }
 }
 
 /**
