@@ -114,6 +114,16 @@ public:
   typedef itk::FixedArray< DeformationFieldComponentNeighborhoodType, ImageDimension >
                                 DeformationFieldComponentNeighborhoodArrayType;
 
+  /** Typedefs for normal vector */
+  typedef DeformationFieldVectorType                     NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension > NormalVectorImageType;
+
+  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
+                                NormalVectorImageBoundaryConditionType;
+  typedef ConstNeighborhoodIterator< NormalVectorImageType,
+                                NormalVectorImageBoundaryConditionType >
+                                NormalVectorImageNeighborhoodType;
+
   /** Typedefs for the regularization function used by this function */
   typedef itk::AnisotropicDiffusionTensorFunction
                                           < DeformationFieldComponentImageType >
@@ -151,9 +161,16 @@ public:
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(
                      const NeighborhoodType &neighborhood,
-                     const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+                     const NormalVectorImageNeighborhoodType
+                              &normalVectorImageNeighborhood,
+                     const DiffusionTensorNeighborhoodType
+                              &tangentialNeighborhoodTensor,
                      const DeformationFieldComponentNeighborhoodArrayType
-                                        &neighborhoodDeformationFieldComponents,
+                              &tangentialNeighborhoodDeformationFieldComponents,
+                     const DiffusionTensorNeighborhoodType
+                              &normalNeighborhoodTensor,
+                     const DeformationFieldComponentNeighborhoodArrayType
+                              &normalNeighborhoodDeformationFieldComponents,
                      void *globalData,
                      const FloatOffsetType& = FloatOffsetType(0.0));
 

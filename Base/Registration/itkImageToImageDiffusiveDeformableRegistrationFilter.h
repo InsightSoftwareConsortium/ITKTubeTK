@@ -83,6 +83,8 @@ public:
   // TODO go through typedefs and pull as many as possible from the function!
   // TODO may be able to simplify the typedefs here to make them clearer
 
+  /** Deformation field types. */
+
   // ex. vector < double, 3 >
   typedef typename Superclass::DeformationFieldType::PixelType
                                                     DeformationFieldVectorType;
@@ -94,6 +96,11 @@ public:
                                           DeformationFieldComponentImageType;
   typedef typename DeformationFieldComponentImageType::Pointer
                                           DeformationFieldComponentImagePointer;
+
+  /** Normal vector types. */
+  typedef DeformationFieldVectorType                     NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension > NormalVectorImageType;
+  typedef typename NormalVectorImageType::Pointer        NormalVectorImagePointer;
 
   /** FiniteDifferenceFunction type. */
   typedef typename Superclass::FiniteDifferenceFunctionType
@@ -120,17 +127,21 @@ public:
   typedef typename UpdateBufferType::RegionType ThreadRegionType;
 
   /** The type of region used for multithreading */
+  typedef typename NormalVectorImageType::RegionType
+                                ThreadNormalVectorImageRegionType;
   typedef typename DiffusionTensorImageType::RegionType
                                 ThreadDiffusionTensorImageRegionType;
   typedef typename DeformationFieldComponentImageType::RegionType
                                 ThreadDeformationFieldComponentImageRegionType;
 
-  /** Define diffusion image neighborhood type */
-  typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
-                                DefaultBoundaryConditionType>
+  /** Define neighborhood types */
+  typedef typename RegistrationFunctionType::NormalVectorImageNeighborhoodType
+                                NormalVectorImageNeighborhoodType;
+
+  typedef ConstNeighborhoodIterator< DiffusionTensorImageType,
+                                DefaultBoundaryConditionType >
                                 DiffusionTensorNeighborhoodType;
 
-  /** Define deformation field component neighborhood type */
   typedef typename
         RegistrationFunctionType::DeformationFieldComponentNeighborhoodType
                                 DeformationFieldComponentNeighborhoodType;
@@ -141,14 +152,16 @@ public:
   /** Set the border normal. */
   // TODO need to calculate this here or input as image of normals.  For now
   // we're taking only one vector for this test.
-  typedef DeformationFieldVectorType          NormalVectorType;
-  virtual void SetNormals( NormalVectorType& normals );
-  virtual const NormalVectorType& GetNormals() const;
+  virtual void SetNormalVectors( NormalVectorType& normals );
+  virtual const NormalVectorType& GetNormalVectors() const;
 
-  /** Get the image of tangental diffusion tensors */
-  virtual const DiffusionTensorImagePointer GetTangentalDiffusionTensorImage()
-                                                const;
+  /** Get the image of the tangential diffusion tensors */
+  virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
+                                                                        const;
 
+  /** Get the image of the normal diffusion tensors */
+  virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
+                                                                        const;
 
 protected:
   ImageToImageDiffusiveDeformableRegistrationFilter();
@@ -198,6 +211,7 @@ protected:
   virtual
   TimeStepType ThreadedCalculateChange(
           const ThreadRegionType &regionToProcess,
+          const ThreadNormalVectorImageRegionType &normalVectorRegionToProcess,
           const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
           const ThreadDeformationFieldComponentImageRegionType
                                                       &componentRegionToProcess,
@@ -230,22 +244,34 @@ private:
   typename UpdateBufferType::Pointer m_UpdateBuffer;
 
   /** The border normals. */
-  NormalVectorType                          m_Normals;
+  // TODO take me out
+  NormalVectorType                      m_NormalVectors;
+  NormalVectorImagePointer              m_NormalVectorImage;
 
-  /** The image of the tangental diffusion tensors (P = I - wnn^T) */
-  DiffusionTensorImagePointer               m_TangentalDiffusionTensorImage;
+  /** The image of the tangential diffusion tensors
+   * Calculate div( P^TP gradient(motion field tangential component image) )
+   */
+  DiffusionTensorImagePointer           m_TangentialDiffusionTensorImage;
+
+  /** The image of the normal diffusion tensors
+   * Calculate div( w(n^T gradient(motion field normal component image) ) n )
+   */
+  DiffusionTensorImagePointer           m_NormalDiffusionTensorImage;
 
   /** Extracts the components of the deformation field */
   typedef itk::VectorIndexSelectionCastImageFilter< DeformationFieldType,
-                                          DeformationFieldComponentImageType >
-                                          SelectionCastImageFilterType;
+                                        DeformationFieldComponentImageType >
+                                        SelectionCastImageFilterType;
   typedef typename SelectionCastImageFilterType::Pointer
-                                          SelectionCastImageFilterPointer;
+                                        SelectionCastImageFilterPointer;
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
-                                            m_ComponentExtractor;
+                                        m_ComponentExtractor;
 
   itk::FixedArray< DeformationFieldComponentImagePointer, ImageDimension >
-                                            m_DeformationFieldComponents;
+                                        m_DeformationFieldTangentialComponents;
+
+  itk::FixedArray< DeformationFieldComponentImagePointer, ImageDimension >
+                                        m_DeformationFieldNormalComponents;
 
 };
 

@@ -150,11 +150,19 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                 const FloatOffsetType& offset)
 {
   // TODO this likely won't work, but shouldn't be called anyways
-  DiffusionTensorNeighborhoodType diffusionTensor;
-  DeformationFieldComponentNeighborhoodArrayType deformationFieldComponentArray;
+  NormalVectorImageNeighborhoodType   normalVectorImageNeighborhood;
+  DiffusionTensorNeighborhoodType     tangentialDiffusionTensor;
+  DeformationFieldComponentNeighborhoodArrayType
+                                      tangentialDeformationFieldComponentArray;
+  DiffusionTensorNeighborhoodType     normalDiffusionTensor;
+  DeformationFieldComponentNeighborhoodArrayType
+                                      normalDeformationFieldComponentArray;
   return this->ComputeUpdate( neighborhood,
-                              diffusionTensor,
-                              deformationFieldComponentArray,
+                              normalVectorImageNeighborhood,
+                              tangentialDiffusionTensor,
+                              tangentialDeformationFieldComponentArray,
+                              normalDiffusionTensor,
+                              normalDeformationFieldComponentArray,
                               gd,
                               offset);
 }
@@ -170,9 +178,16 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TMovingImage,
                                                      TDeformationField >
 ::ComputeUpdate(const NeighborhoodType &neighborhood,
-                const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+                const NormalVectorImageNeighborhoodType
+                              &normalVectorImageNeighborhood,
+                const DiffusionTensorNeighborhoodType
+                              &tangentialNeighborhoodTensor,
                 const DeformationFieldComponentNeighborhoodArrayType
-                                        &neighborhoodDeformationFieldComponents,
+                              &tangentialNeighborhoodDeformationFieldComponents,
+                const DiffusionTensorNeighborhoodType
+                              &normalNeighborhoodTensor,
+                const DeformationFieldComponentNeighborhoodArrayType
+                              &normalNeighborhoodDeformationFieldComponents,
                 void *gd,
                 const FloatOffsetType& offset)
 {  
@@ -184,14 +199,16 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   itk::FixedArray< DeformationFieldComponentImageConstPointer, ImageDimension >
                                deformationFieldComponentImageArray;
   typedef Index< ImageDimension > IndexType;
-  const IndexType index = neighborhood.GetIndex();
+  const IndexType tempIndex = neighborhood.GetIndex();
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     deformationFieldComponentImageArray[i]
-                  = neighborhoodDeformationFieldComponents[i].GetImagePointer();
-    assert( deformationField->GetPixel( index )[i]
-                == deformationFieldComponentImageArray[i]->GetPixel( index ) );
+        = tangentialNeighborhoodDeformationFieldComponents[i].GetImagePointer();
+    assert( deformationField->GetPixel( tempIndex )[i]
+        == deformationFieldComponentImageArray[i]->GetPixel( tempIndex ) );
     }
+
+  //std::cout << normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index )[2] << std::endl;
 
   // Get the global data structure
   GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
@@ -200,20 +217,45 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   RegularizationGlobalDataStruct * regularizationGlobalData =
                                   globalData->m_RegularizationGlobalDataStruct;
 
+  // Get the normal at this pixel
+  const IndexType index = normalVectorImageNeighborhood.GetIndex();
+  NormalVectorType normalVector = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
+
   // Iterate over the deformation field components to compute the regularization
   // term
-  PixelType regularizationTerm;
+  PixelType                         tangentialRegularizationTerm;
+  PixelType                         normalRegularizationTerm;
+  DeformationFieldScalarType        intermediateNormalRegularizationComponent;
+  PixelType                         intermediateNormalRegularizationTerm;
+  PixelType                         updateTerm;
+  NormalVectorType                  nln; // n(l)n
+  normalRegularizationTerm.Fill(0);
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    regularizationTerm[i] = m_RegularizationFunction->ComputeUpdate(
-                                    neighborhoodDeformationFieldComponents[i],
-                                    neighborhoodTensor,
-                                    regularizationGlobalData,
-                                    offset );
+    tangentialRegularizationTerm[i]
+                            = m_RegularizationFunction->ComputeUpdate(
+                            tangentialNeighborhoodDeformationFieldComponents[i],
+                            tangentialNeighborhoodTensor,
+                            regularizationGlobalData,
+                            offset );
+
+    intermediateNormalRegularizationComponent
+                            = m_RegularizationFunction->ComputeUpdate(
+                            normalNeighborhoodDeformationFieldComponents[i],
+                            normalNeighborhoodTensor,
+                            regularizationGlobalData,
+                            offset );
+
+    nln = normalVector[i] * normalVector;
+    intermediateNormalRegularizationTerm
+              = intermediateNormalRegularizationComponent * nln;
+    normalRegularizationTerm
+              = normalRegularizationTerm + intermediateNormalRegularizationTerm;
     }
 
   // TODO in future, add result of intensity difference
-  return regularizationTerm;
+  updateTerm = tangentialRegularizationTerm + normalRegularizationTerm;
+  return updateTerm;
 
 }
 

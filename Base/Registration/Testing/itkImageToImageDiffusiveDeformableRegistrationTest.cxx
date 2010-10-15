@@ -179,7 +179,7 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
   registrator->SetInitialDeformationField( deformationField );
   registrator->SetMovingImage( movingImage );
   registrator->SetFixedImage( fixedImage );
-  registrator->SetNormals( normal );
+  registrator->SetNormalVectors( normal );
   int numIterations = atoi( argv[4] );
   registrator->SetNumberOfIterations( numIterations );
 
