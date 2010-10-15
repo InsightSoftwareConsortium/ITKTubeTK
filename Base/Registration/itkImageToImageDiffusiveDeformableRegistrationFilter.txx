@@ -157,8 +157,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 {
   return m_NormalDiffusionTensorImage;
 }
-
-// TODO create superclass with these methods for anisotropic diffusion registration filter
+// TODO create superclass with these methods for anisotropic diffusion
+// registration filter
 
 /**
  * Allocate space for the update buffer, and the diffusion tensor image
@@ -500,6 +500,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     tangentialU = u - normalU;
     outputTangentialImageIterator.Set( tangentialU );
 
+    // We know normalU + tangentialU = u
+    // Assertion to test that the normal and tangential components were computed
+    // corectly - they should be orthogonal
+    assert( normalU * tangentialU == 0 );
+
     ++normalVectorIterator;
     ++outputTangentialImageIterator;
     ++outputNormalImageIterator;
@@ -513,6 +518,20 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     {
     m_TangentialComponentExtractor[i]->Update();
     m_NormalComponentExtractor[i]->Update();
+    }
+
+  // Little test to make sure that the component extractor was setup
+  // properly - because m_DeformationFieldTangentialComponents and
+  // m_DeformationFieldNormalComponents will be the input to the
+  // registration function's ComputeUpdate()
+  typename DeformationFieldComponentImageType::IndexType index;
+  index.Fill(0);
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    assert( m_DeformationFieldTangentialComponents[i]->GetPixel( index )
+        == m_TangentialComponentExtractor[i]->GetOutput()->GetPixel( index ) );
+    assert( m_DeformationFieldNormalComponents[i]->GetPixel( index )
+        == m_NormalComponentExtractor[i]->GetOutput()->GetPixel( index ) );
     }
 }
 

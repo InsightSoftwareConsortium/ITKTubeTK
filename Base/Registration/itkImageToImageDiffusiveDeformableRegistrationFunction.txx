@@ -220,7 +220,7 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                 void *gd,
                 const FloatOffsetType& offset)
 {
-  // TODO this likely won't work, but shouldn't be called anyways
+  // TODO this likely won't work, but this function shouldn't be called anyways
   NormalVectorImageNeighborhoodType   normalVectorImageNeighborhood;
   DiffusionTensorNeighborhoodType     tangentialDiffusionTensor;
   DeformationFieldComponentNeighborhoodArrayType
@@ -267,7 +267,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 
   // Get the normal at this pixel
   const IndexType index = normalVectorImageNeighborhood.GetIndex();
-  NormalVectorType normalVector = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
+  NormalVectorType normalVector
+          = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
 
   // Iterate over the deformation field components to compute the regularization
   // and intensity distance terms
@@ -284,7 +285,7 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
     // TODO compute the intensity distance function
     intensityDistanceTerm[i] = 0;
 
-    // compute the regularization in the tangential plane
+    // Compute the regularization in the tangential plane
     tangentialRegularizationTerm[i]
                             = m_RegularizationFunction->ComputeUpdate(
                             tangentialNeighborhoodDeformationFieldComponents[i],
@@ -292,7 +293,7 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                             globalData->m_RegularizationGlobalDataStruct,
                             offset );
 
-    // compute the regularization in the normal direction
+    // Compute the regularization in the normal direction
     intermediateNormalRegularizationComponent
                             = m_RegularizationFunction->ComputeUpdate(
                             normalNeighborhoodDeformationFieldComponents[i],
@@ -301,13 +302,13 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                             offset );
 
     nln = normalVector[i] * normalVector;
+
     intermediateNormalRegularizationTerm
               = intermediateNormalRegularizationComponent * nln;
     normalRegularizationTerm
               = normalRegularizationTerm + intermediateNormalRegularizationTerm;
     }
 
-  // TODO in future, add result of intensity difference
   updateTerm = intensityDistanceTerm
                       + tangentialRegularizationTerm + normalRegularizationTerm;
   return updateTerm;
