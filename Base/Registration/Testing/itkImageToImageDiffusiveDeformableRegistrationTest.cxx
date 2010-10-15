@@ -32,7 +32,7 @@ limitations under the License.
 
 int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
 {
-  if( argc < 5 )
+  if( argc < 6 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
@@ -41,6 +41,7 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
               << "noise variance, "
               << "smoothed motion field image, "
               << "number of iterations"
+              << "border slope"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -52,8 +53,9 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
   typedef itk::Image< PixelType, Dimension >              MovingImageType;
   typedef itk::Vector< PixelType, Dimension >             VectorType;
   typedef itk::Image< VectorType, Dimension >             DeformationFieldType;
-  typedef itk::ImageLinearIteratorWithIndex< DeformationFieldType >
+  typedef itk::ImageRegionIterator< DeformationFieldType >
                                                           IteratorType;
+  typedef itk::Index< Dimension >                         IndexType;
 
   // Image parameters
   int         startValue = 0;
@@ -88,56 +90,87 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
   // Fill the motion field image:
   // Top half is vectors like \, bottom half is vectors like /,
   // plus noise
-  VectorType pixel;
-  IteratorType it( deformationField, region );
-  it.SetDirection(2);
-  int numLines = 0;
-  int halfway = sizeValue * sizeValue / 2;
 
+  PixelType   borderSlope;
+  VectorType  borderN; // normal to the border
+  VectorType  perpN;   // perpendicular to the border
+
+  borderSlope = atof( argv[5] );
+  if( borderSlope == 0 )
+    {
+    borderN[0] = 0.0;
+    borderN[1] = 1.0;
+    borderN[0] = 0.0;
+    perpN[0] = 1.0;
+    perpN[1] = 0.0;
+    perpN[2] = 0.0;
+    }
+  else
+    {
+    borderN[0] = -1.0;
+    borderN[1] = 1.0 / borderSlope;
+    borderN[2] = 0.0;
+    perpN[0] = -1.0 / borderSlope;
+    perpN[1] = -1.0;
+    perpN[2] = 0.0;
+    }
+
+  VectorType topHalfPixel;
+  VectorType bottomHalfPixel;
+  topHalfPixel = borderN + perpN;
+  bottomHalfPixel = borderN - perpN;
+
+  // The index at the center of the image is on the plane
+  VectorType center;
+  for( unsigned int i = 0; i < Dimension; i++ )
+    {
+    center[i] = deformationField->GetLargestPossibleRegion().GetSize()[i] / 2.0;
+    }
+
+  VectorType    pixel;
+  IteratorType  it( deformationField,
+                    deformationField->GetLargestPossibleRegion() );
+  //it.SetDirection(2);
+  IndexType     index;
+  VectorType    indexAsVector;
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   randGenerator->Initialize( 137593424 );
-  PixelType randX = 0;
-  PixelType randY = 0;
-  PixelType randZ = 0;
-  double mean = 0;
-  double variance = atof(argv[2]);
+  PixelType     randX = 0;
+  PixelType     randY = 0;
+  PixelType     randZ = 0;
+  double        mean = 0;
+  double        variance = atof(argv[2]);
 
-  for( it.GoToBegin(); ! it.IsAtEnd(); it.NextLine() )
+  for( it.GoToBegin(); ! it.IsAtEnd(); ++it )
     {
-    it.GoToBeginOfLine();
-    while ( ! it.IsAtEndOfLine() )
+    index = it.GetIndex();
+
+    for( unsigned int i = 0; i < Dimension; i++ )
       {
-      if (numLines < halfway)
-        {
-        pixel[0] = 0.5;
-        }
-      else
-        {
-        pixel[0] = -0.5;
-        }
-      pixel[1] = 0.5;
-      pixel[2] = 0.0;
-
-      // add random noise
-      randX = randGenerator->GetNormalVariate( mean, variance );
-      randY = randGenerator->GetNormalVariate( mean, variance );
-      randZ = randGenerator->GetNormalVariate( mean, variance );
-      pixel[0] += randX;
-      pixel[1] += randY;
-      pixel[2] += randZ;
-
-      it.Set(pixel);
-      ++it;
+      indexAsVector[i] = index[i];
       }
-    numLines++;
-    }
 
-  // We know the normal since we've created artificial data
-  VectorType normal;
-  normal[0] = 0;
-  normal[1] = 1;
-  normal[2] = 0;
+    // Use definition of a plane to decide which side we are on
+    if ( borderN * ( center - indexAsVector ) < 0 )
+      {
+      pixel = bottomHalfPixel;
+      }
+    else
+      {
+      pixel = topHalfPixel;
+      }
+
+    // Add random noise
+    randX = randGenerator->GetNormalVariate( mean, variance );
+    randY = randGenerator->GetNormalVariate( mean, variance );
+    randZ = randGenerator->GetNormalVariate( mean, variance );
+    pixel[0] += randX;
+    pixel[1] += randY;
+    pixel[2] += randZ;
+
+    it.Set(pixel);
+    }
 
   // Save the motion field image
   typedef itk::ImageFileWriter< DeformationFieldType > WriterType;
@@ -179,7 +212,7 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
   registrator->SetInitialDeformationField( deformationField );
   registrator->SetMovingImage( movingImage );
   registrator->SetFixedImage( fixedImage );
-  registrator->SetNormalVectors( normal );
+  registrator->SetNormalVectors( borderN );
   int numIterations = atoi( argv[4] );
   registrator->SetNumberOfIterations( numIterations );
 

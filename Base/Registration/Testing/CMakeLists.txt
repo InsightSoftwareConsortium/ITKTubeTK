@@ -70,13 +70,44 @@ add_test( itkImageToTubeRigidRegistrationTest
 set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
-add_test( itkImageToImageDiffusiveDeformableRegistrationTest
+add_test( itkImageToImageDiffusiveDeformableRegistrationTestStraightNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationTest
-          ${TEMP}/MotionField.mhd
-          0.1
-          ${TEMP}/SmoothedMotionField.mhd
+          ${TEMP}/MotionField_straight_noNoise.mhd
+          0
+          ${TEMP}/SmoothedMotionField_straight_noNoise.mhd
           20
+          0
+          )
+
+add_test( itkImageToImageDiffusiveDeformableRegistrationTestStraight
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationTest
+          ${TEMP}/MotionField_straight.mhd
+          0.1
+          ${TEMP}/SmoothedMotionField_straight.mhd
+          20
+          0
+          )
+
+add_test( itkImageToImageDiffusiveDeformableRegistrationTestAngledNoNoise
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationTest
+          ${TEMP}/MotionField_angled_noNoise.mhd
+          0
+          ${TEMP}/SmoothedMotionField_angled_noNoise.mhd
+          20
+          0.5
+          )
+
+add_test( itkImageToImageDiffusiveDeformableRegistrationTestAngled
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationTest
+          ${TEMP}/MotionField_angled.mhd
+          0.1
+          ${TEMP}/SmoothedMotionField_angled.mhd
+          20
+          0.5
           )
 
 

@@ -125,7 +125,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::SetNormalVectors( NormalVectorType& normals )
 {
-  m_NormalVectors = normals;
+  m_NormalVectors = normals / normals.GetNorm();
 }
 
 /**
@@ -500,10 +500,17 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     tangentialU = u - normalU;
     outputTangentialImageIterator.Set( tangentialU );
 
+    // TODO take me out
+//    std::cout << "u " << u[0] << " " << u[1] << " " << u[2] << std::endl;
+//    std::cout << "n " << n[0] << " " << n[1] << " " << n[2] << std::endl;
+//    std::cout << "normalU " << normalU[0] << " " << normalU[1] << " " << normalU[2] << std::endl;
+//    std::cout << "tangentialU " << tangentialU[0] << " " << tangentialU[1] << " " << tangentialU[2] << std::endl;
+//    std::cout << normalU * tangentialU << std::endl;
+
     // We know normalU + tangentialU = u
     // Assertion to test that the normal and tangential components were computed
     // corectly - they should be orthogonal
-    assert( normalU * tangentialU == 0 );
+    assert( normalU * tangentialU < 0.000005 );
 
     ++normalVectorIterator;
     ++outputTangentialImageIterator;

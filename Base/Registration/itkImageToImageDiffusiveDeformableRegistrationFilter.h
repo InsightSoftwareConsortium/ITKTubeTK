@@ -153,7 +153,9 @@ public:
         RegistrationFunctionType::DeformationFieldComponentNeighborhoodArrayType
                                 DeformationFieldComponentNeighborhoodArrayType;
 
-  /** Set the border normal. */
+  /** Set the border normal. The magnitude of the vector is internally set
+   *  to one if it isn't already.
+   */
   // TODO need to calculate this here or input as image of normals.  For now
   // we're taking only one vector for this test.
   virtual void SetNormalVectors( NormalVectorType& normals );
