@@ -55,7 +55,7 @@ class RadiusExtractorMedialnessFunc : public UserFunc<double, double>
       m_RadiusExtractor = newRadiusExtractor;
       };
 
-    const double & value( double x )
+    const double & value( const double & x )
       {
       m_Value = m_RadiusExtractor->MedialnessAtKern( m_Tube, x, false );
       return m_Value;
