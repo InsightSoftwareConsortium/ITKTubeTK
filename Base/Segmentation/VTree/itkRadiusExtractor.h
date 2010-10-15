@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree3D
+Library:   TubeTK/VTree
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -33,7 +33,7 @@ limitations under the License.
 #include <itkVesselTubeSpatialObject.h>
 
 #include "itkOptParabolicFit1D.h"
-#include "itkBlur3DImageFunction.h"
+#include "itkBlurImageFunction.h"
 
 namespace itk 
 {
@@ -148,20 +148,20 @@ public:
   itkGetMacro( Radius0, double ); 
 
   /**
-   * Set ThreshWVal */
-  itkSetMacro( ThreshWVal, double );
+   * Set ThreshMedialness */
+  itkSetMacro( ThreshMedialness, double );
 
   /**
-   * Get ThreshWVal */
-  itkGetMacro( ThreshWVal, double ); 
+   * Get ThreshMedialness */
+  itkGetMacro( ThreshMedialness, double ); 
 
   /**
-   * Set ThreshWVal Start */
-  itkSetMacro( ThreshWValStart, double );
+   * Set ThreshMedialness Start */
+  itkSetMacro( ThreshMedialnessStart, double );
 
   /**
-   * Get ThreshWVal Start*/
-  itkGetMacro( ThreshWValStart, double ); 
+   * Get ThreshMedialness Start*/
+  itkGetMacro( ThreshMedialnessStart, double ); 
 
   /**
    * Set Extract Ridge */
@@ -220,7 +220,7 @@ private:
 
   typename ImageType::Pointer             m_Image; 
 
-  typename Blur3DImageFunction<ImageType>::Pointer
+  typename BlurImageFunction<ImageType>::Pointer
                                           m_DataOp;
   OptParabolicFit1D                       m_MedialnessOpt;
   
@@ -240,8 +240,8 @@ private:
   double                                  m_RadiusMin;
   double                                  m_RadiusMax;
        
-  double                                  m_ThreshWVal;
-  double                                  m_ThreshWValStart;
+  double                                  m_ThreshMedialness;
+  double                                  m_ThreshMedialnessStart;
       
   TubePointType                         * m_KernPntArray;
   typename std::vector<TubePointType>::iterator  

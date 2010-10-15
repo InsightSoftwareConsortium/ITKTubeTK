@@ -42,8 +42,8 @@ itkPatchFeatureGeneratingImageFunction.h Namespace Disable
 itkPatchFeatureGeneratingImageFunction.txx Namespace Disable
 itkFeatureGeneratingImageFunction.h Namespace Disable
 itkFeatureGeneratingImageFunction.txx Namespace Disable
-itkBlur3DImageFunction.h Namespace Disable
-itkBlur3DImageFunction.txx Namespace Disable
+itkBlurImageFunction.h Namespace Disable
+itkBlurImageFunction.txx Namespace Disable
 itkPDFSegmenter.h Namespace Disable
 itkPDFSegmenter.txx Namespace Disable
 OtsuThreshold.cxx Namespace Disable

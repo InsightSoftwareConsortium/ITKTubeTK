@@ -27,17 +27,17 @@ limitations under the License.
 
 #include "itkOrientedImage.h"
 
-#include "itkBlur3DImageFunction.h"
+#include "itkBlurImageFunction.h"
 
 int tubeBaseSegmentationVTreePrintTest( int, char* [] )
 {
   typedef itk::OrientedImage< float, 3 > ImageType;
 
-  itk::Blur3DImageFunction< ImageType >::Pointer 
-    blur3DObject =
-    itk::Blur3DImageFunction< ImageType >::New();
-  std::cout << "-------------itkBlur3DImageFunction" 
-            << blur3DObject
+  itk::BlurImageFunction< ImageType >::Pointer 
+    blurObject =
+    itk::BlurImageFunction< ImageType >::New();
+  std::cout << "-------------itkBlurImageFunction" 
+            << blurObject
             << std::endl;
 
   return EXIT_SUCCESS;

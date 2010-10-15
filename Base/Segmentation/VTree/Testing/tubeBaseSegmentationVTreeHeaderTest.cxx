@@ -26,7 +26,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "itkBlur3DImageFunction.h"
+#include "itkBlurImageFunction.h"
 #include "itkMatrixMath.h"
 #include "itkOptBrent1D.h"
 #include "itkOptGoldenMean1D.h"

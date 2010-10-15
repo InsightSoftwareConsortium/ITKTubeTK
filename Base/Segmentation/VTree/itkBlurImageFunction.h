@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree3D
+Library:   TubeTK/VTree
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -25,8 +25,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkBlur3DImageFunction_h
-#define __itkBlur3DImageFunction_h
+#ifndef __itkBlurImageFunction_h
+#define __itkBlurImageFunction_h
 
 #include <itkIndex.h>
 #include <itkImageFunction.h>
@@ -35,25 +35,25 @@ namespace itk
 {
 
 /**
- * \class Blur3DImageFunction
+ * \class BlurImageFunction
  * \brief Calculate the gaussian blurred value at point 
  *        given a scale and extent of the gaussian.
  * This class is templated over the input image type.
  *
  */
 template <class TInputImage>
-class ITK_EXPORT Blur3DImageFunction :
+class ITK_EXPORT BlurImageFunction :
   public ImageFunction< TInputImage, double, double >
 {
 public:
   /**
    * Standard "Self" typedef */
-  typedef Blur3DImageFunction                          Self;
+  typedef BlurImageFunction                          Self;
   typedef ImageFunction<TInputImage, double, double>   Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
 
-  itkTypeMacro(Blur3DImageFunction, ImageFunction);
+  itkTypeMacro(BlurImageFunction, ImageFunction);
 
   itkNewMacro(Self);
 
@@ -121,8 +121,8 @@ public:
  
 protected:
 
-  Blur3DImageFunction();
-  virtual ~Blur3DImageFunction(){};
+  BlurImageFunction();
+  virtual ~BlurImageFunction(){};
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 
@@ -130,7 +130,7 @@ protected:
 
 private:
 
-  Blur3DImageFunction( const Self& );
+  BlurImageFunction( const Self& );
   void operator=( const Self& );
 
   typedef std::list< double >                        KernelWeightsListType;
@@ -155,7 +155,7 @@ private:
 } // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkBlur3DImageFunction.txx"
+#include "itkBlurImageFunction.txx"
 #endif
 
 #endif

@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree3D
+Library:   TubeTK/VTree
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -35,7 +35,7 @@ limitations under the License.
 #include "itkSplineND.h"
 #include "itkOptBrent1D.h"
 #include "itkRadiusExtractor.h"
-#include "itkBlur3DImageFunction.h"
+#include "itkBlurImageFunction.h"
 
 #include "itkContinuousIndex.h"
 #include "itkVesselTubeSpatialObject.h"
@@ -327,7 +327,7 @@ private:
 
   typename ImageType::Pointer                      m_Image; 
    
-  typename Blur3DImageFunction<ImageType>::Pointer m_DataFunc;
+  typename BlurImageFunction<ImageType>::Pointer   m_DataFunc;
 
   typename MaskType::Pointer                       m_DataMask;
 

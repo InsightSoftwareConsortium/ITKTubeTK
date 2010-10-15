@@ -46,7 +46,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseSegmentationVTree_SRCS
   tubeBaseSegmentationVTreePrintTest.cxx
-  itkBlur3DImageFunctionTest.cxx
+  itkBlurImageFunctionTest.cxx
   itkMatrixMathTest.cxx
   itkOptBrentTest.cxx
   itkOptBrentNDTest.cxx
@@ -94,12 +94,12 @@ add_test( tubeBaseSegmentationVTreePrintTest
   tubeBaseSegmentationVTreePrintTest 
   )
 
-add_test( itkBlur3DImageFunctionTest
+add_test( itkBlurImageFunctionTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  --compare ${BASELINE}/itkBlur3DImageFunctionTest.mha
-            ${TEMP}/itkBlur3DImageFunctionTest.mha
-  itkBlur3DImageFunctionTest
-    ${TEMP}/itkBlur3DImageFunctionTest.mha 
+  --compare ${BASELINE}/itkBlurImageFunctionTest.mha
+            ${TEMP}/itkBlurImageFunctionTest.mha
+  itkBlurImageFunctionTest
+    ${TEMP}/itkBlurImageFunctionTest.mha 
   )
 
 add_test( itkMatrixMathTest

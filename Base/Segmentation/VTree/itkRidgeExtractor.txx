@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree3D
+Library:   TubeTK/VTree
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -81,7 +81,7 @@ template<class TInputImage>
 RidgeExtractor<TInputImage>
 ::RidgeExtractor()
 {
-  m_DataFunc = Blur3DImageFunction<ImageType>::New();
+  m_DataFunc = BlurImageFunction<ImageType>::New();
   m_DataFunc->SetScale( 3 ); // 1.5
   m_DataFunc->SetExtent( 3.1 ); // 3
 

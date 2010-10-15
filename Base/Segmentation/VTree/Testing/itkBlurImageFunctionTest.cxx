@@ -24,14 +24,14 @@ limitations under the License.
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageFileWriter.h"
 
-#include "../itkBlur3DImageFunction.h"
+#include "../itkBlurImageFunction.h"
 
-int itkBlur3DImageFunctionTest( int argc, char * argv[] )
+int itkBlurImageFunctionTest( int argc, char * argv[] )
   {
   if( argc != 2 )
     {
     std::cout << 
-      "Usage: itkBlur3DImageFunctionTest <outputFilename>" << std::endl;
+      "Usage: itkBlurImageFunctionTest <outputFilename>" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -72,7 +72,7 @@ int itkBlur3DImageFunctionTest( int argc, char * argv[] )
   index[2] = 15;
   im->SetPixel( index, 100 );
 
-  typedef itk::Blur3DImageFunction<ImageType> ImageOpType;
+  typedef itk::BlurImageFunction<ImageType> ImageOpType;
   ImageOpType::Pointer imOp = ImageOpType::New( );
 
   imOp->SetInputImage( im );

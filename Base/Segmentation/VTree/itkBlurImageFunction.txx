@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree3D
+Library:   TubeTK/VTree
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -25,10 +25,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkBlur3DImageFunction_txx
-#define __itkBlur3DImageFunction_txx
+#ifndef __itkBlurImageFunction_txx
+#define __itkBlurImageFunction_txx
 
-#include "itkBlur3DImageFunction.h"
+#include "itkBlurImageFunction.h"
 
 #include <cmath>
 #include <algorithm>
@@ -42,8 +42,8 @@ namespace itk
 /**
  * Set the input Image */
 template <class TInputImage>
-Blur3DImageFunction<TInputImage>
-::Blur3DImageFunction()
+BlurImageFunction<TInputImage>
+::BlurImageFunction()
 {
   this->m_Image = NULL;
   m_Spacing.Fill( 0 );
@@ -59,7 +59,7 @@ Blur3DImageFunction<TInputImage>
  * Set the input Image */
 template <class TInputImage>
 void
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::SetInputImage( const InputImageType * ptr )
 {
   this->Superclass::SetInputImage( ptr );
@@ -92,7 +92,7 @@ Blur3DImageFunction<TInputImage>
  * Print */
 template<class TInputImage>
 void
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::SetUseRelativeSpacing( bool useRelativeSpacing ) 
 {
   m_UseRelativeSpacing = useRelativeSpacing;
@@ -117,7 +117,7 @@ Blur3DImageFunction<TInputImage>
  * Print */
 template<class TInputImage>
 void
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os,indent );
@@ -145,7 +145,7 @@ Blur3DImageFunction<TInputImage>
  * Pre-compute kernel weights */
 template<class TInputImage>
 void
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::RecomputeKernel( void )
 {
   if( this->GetDebug() )
@@ -222,7 +222,7 @@ Blur3DImageFunction<TInputImage>
  * Pre-compute kernel weights */
 template<class TInputImage>
 void
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::SetScale( double scale )
 {
   if( m_Scale != scale )
@@ -237,7 +237,7 @@ Blur3DImageFunction<TInputImage>
  * Pre-compute kernel weights */
 template<class TInputImage>
 void
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::SetExtent( double extent )
 {
   if( m_Extent != extent )
@@ -251,12 +251,12 @@ Blur3DImageFunction<TInputImage>
  * Evaluate the fonction at the specified point */
 template <class TInputImage>
 double
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::Evaluate( const PointType& point ) const
 {
   if( this->GetDebug() )
     {
-    std::cout << "Blur3DImageFunction::Evaluate" << std::endl;
+    std::cout << "BlurImageFunction::Evaluate" << std::endl;
     }
 
   ContinuousIndexType index;
@@ -281,12 +281,12 @@ Blur3DImageFunction<TInputImage>
 
 template <class TInputImage>
 double
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::EvaluateAtIndex( const IndexType & point ) const
 {
   if( this->GetDebug() )
     {
-    std::cout << "Blur3DImageFunction::EvaluateAtIndex" << std::endl;
+    std::cout << "BlurImageFunction::EvaluateAtIndex" << std::endl;
     std::cout << "  Point = " << point << std::endl;
     }
 
@@ -383,12 +383,12 @@ Blur3DImageFunction<TInputImage>
 
 template <class TInputImage>
 double
-Blur3DImageFunction<TInputImage>
+BlurImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex( const ContinuousIndexType & point ) const
 {
   if( this->GetDebug() )
     {
-    std::cout << "Blur3DImageFunction::EvaluateAtContinuousIndex" 
+    std::cout << "BlurImageFunction::EvaluateAtContinuousIndex" 
       << std::endl;
     std::cout << "  Point = " << point << std::endl;
     }

@@ -31,7 +31,7 @@ limitations under the License.
 void RegisterTests()
 {
   REGISTER_TEST( tubeBaseSegmentationVTreePrintTest );
-  REGISTER_TEST( itkBlur3DImageFunctionTest );
+  REGISTER_TEST( itkBlurImageFunctionTest );
   REGISTER_TEST( itkMatrixMathTest );
   REGISTER_TEST( itkOptBrentTest );
   REGISTER_TEST( itkOptGoldenMeanTest );
