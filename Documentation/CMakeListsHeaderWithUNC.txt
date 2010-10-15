@@ -1,6 +1,6 @@
 ##############################################################################
 # 
-# Library:   TubeTK
+# Library:   TubeTK/VTree
 # 
 # Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 # 
@@ -9,6 +9,11 @@
 # 
 # Revised implementation:
 # Copyright Kitware Inc., Carrboro, NC, USA.
+#
+# Covered, in part, by US Patent Number 6,690,816
+# "Systems and methods for tubular object processing"
+# S. Aylward, E. Bullit, D. Fritsch, S. Pizer, UNC-CH
+# Released under Apache 2.0 license for royalty-free use in July, 2010
 # 
 # All rights reserved. 
 # 
