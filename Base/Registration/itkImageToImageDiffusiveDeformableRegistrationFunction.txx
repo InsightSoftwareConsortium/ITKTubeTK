@@ -45,11 +45,15 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   r.Fill(1);
   this->SetRadius(r);
 
+  m_RegularizationFunction = RegularizationFunctionType::New();
+  m_RegularizationFunction->SetTimeStep( m_TimeStep );
+
+  m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
+  // TODO computes global timestep - is this a problem?
+  //m_IntensityDistanceFunction->SetTimeStep( m_TimeStep );
+
   this->SetMovingImage(0);
   this->SetFixedImage(0);
-
-  m_RegularizationFunction = RegularizationFunctionType::New();
-  m_RegularizationFunction->SetTimeStep(m_TimeStep);
 
 }
 
@@ -72,6 +76,66 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
     os << indent << "RegularizationFunction: " << std::endl;
     m_RegularizationFunction->Print( os, indent );
     }
+  if ( m_IntensityDistanceFunction )
+    {
+    os << indent << "IntensityDistanceFunction: " << std::endl;
+    m_IntensityDistanceFunction->Print( os, indent );
+    }
+}
+
+/**
+ * Sets the fixed image
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::SetFixedImage( const FixedImageType * ptr )
+{
+  Superclass::SetFixedImage( ptr );
+
+  if ( m_IntensityDistanceFunction )
+    {
+    m_IntensityDistanceFunction->SetFixedImage( ptr );
+    }
+}
+
+/**
+ * Sets the moving image
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::SetMovingImage( const MovingImageType * ptr )
+{
+  Superclass::SetMovingImage( ptr );
+
+  if ( m_IntensityDistanceFunction )
+    {
+    m_IntensityDistanceFunction->SetMovingImage( ptr );
+    }
+}
+
+/**
+ * Sets the deformation field
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::SetDeformationField( const DeformationFieldTypePointer ptr )
+{
+  Superclass::SetDeformationField( ptr );
+
+  if ( m_IntensityDistanceFunction )
+    {
+    m_IntensityDistanceFunction->SetDeformationField( ptr );
+    }
+
 }
 
 /**
@@ -87,8 +151,10 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   GlobalDataStruct * ans = new GlobalDataStruct();
 
   // Create the component global data pointers
-  ans->m_RegularizationGlobalDataStruct = ( RegularizationGlobalDataStruct *)
-                              m_RegularizationFunction->GetGlobalDataPointer();
+  ans->m_RegularizationGlobalDataStruct =
+                            m_RegularizationFunction->GetGlobalDataPointer();
+  ans->m_IntensityDistanceGlobalDataStruct =
+                            m_IntensityDistanceFunction->GetGlobalDataPointer();
 
   return ans;
 }
@@ -106,7 +172,10 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   GlobalDataStruct * gd = ( GlobalDataStruct * ) GlobalData;
 
   // Release the component data structures
-  m_RegularizationFunction->ReleaseGlobalDataPointer( gd->m_RegularizationGlobalDataStruct );
+  m_RegularizationFunction->ReleaseGlobalDataPointer(
+                                    gd->m_RegularizationGlobalDataStruct );
+  m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
+                                    gd->m_IntensityDistanceGlobalDataStruct );
 
   delete gd;
 }
@@ -133,6 +202,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 
   // Initialize the component functions
   m_RegularizationFunction->InitializeIteration();
+  // TODO put back
+  //m_IntensityDistanceFunction->InitializeIteration();
 }
 
 /**
@@ -194,37 +265,39 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   // Get the global data structure
   GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
 
-  // Get the global data structure for the regularization
-  RegularizationGlobalDataStruct * regularizationGlobalData =
-                                  globalData->m_RegularizationGlobalDataStruct;
-
   // Get the normal at this pixel
   const IndexType index = normalVectorImageNeighborhood.GetIndex();
   NormalVectorType normalVector = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
 
   // Iterate over the deformation field components to compute the regularization
-  // term
+  // and intensity distance terms
   PixelType                         tangentialRegularizationTerm;
   PixelType                         normalRegularizationTerm;
   DeformationFieldScalarType        intermediateNormalRegularizationComponent;
   PixelType                         intermediateNormalRegularizationTerm;
+  PixelType                         intensityDistanceTerm;
   PixelType                         updateTerm;
   NormalVectorType                  nln; // n(l)n
   normalRegularizationTerm.Fill(0);
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
+    // TODO compute the intensity distance function
+    intensityDistanceTerm[i] = 0;
+
+    // compute the regularization in the tangential plane
     tangentialRegularizationTerm[i]
                             = m_RegularizationFunction->ComputeUpdate(
                             tangentialNeighborhoodDeformationFieldComponents[i],
                             tangentialNeighborhoodTensor,
-                            regularizationGlobalData,
+                            globalData->m_RegularizationGlobalDataStruct,
                             offset );
 
+    // compute the regularization in the normal direction
     intermediateNormalRegularizationComponent
                             = m_RegularizationFunction->ComputeUpdate(
                             normalNeighborhoodDeformationFieldComponents[i],
                             normalNeighborhoodTensor,
-                            regularizationGlobalData,
+                            globalData->m_RegularizationGlobalDataStruct,
                             offset );
 
     nln = normalVector[i] * normalVector;
@@ -235,7 +308,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
     }
 
   // TODO in future, add result of intensity difference
-  updateTerm = tangentialRegularizationTerm + normalRegularizationTerm;
+  updateTerm = intensityDistanceTerm
+                      + tangentialRegularizationTerm + normalRegularizationTerm;
   return updateTerm;
 
 }

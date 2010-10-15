@@ -146,7 +146,15 @@ public:
   typedef itk::MeanSquareRegistrationFunction< FixedImageType,
                                                MovingImageType,
                                                DeformationFieldType >
-                                               IntensityDifferenceFunctionType;
+                                               IntensityDistanceFunctionType;
+  typedef typename IntensityDistanceFunctionType::Pointer
+                                          IntensityDistanceFunctionPointer;
+
+  /** Set the fixed image, moving image and deformation field */
+  virtual void SetFixedImage( const FixedImageType * ptr );
+  virtual void SetMovingImage( const MovingImageType * ptr );
+  virtual void SetDeformationField( DeformationFieldTypePointer ptr );
+  // TODO more set methods that need to be applied to the intensity function too?
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
@@ -212,11 +220,10 @@ protected:
     derivatives, that may be used by virtual functions called from
     ComputeUpdate().  Caching these values here allows ComputeUpdate() to be
     const and thread-safe.*/
-  typedef typename RegularizationFunctionType::GlobalDataStruct
-                                              RegularizationGlobalDataStruct;
   struct GlobalDataStruct
     {
-    RegularizationGlobalDataStruct *          m_RegularizationGlobalDataStruct;
+      void *                            m_RegularizationGlobalDataStruct;
+      void *                            m_IntensityDistanceGlobalDataStruct;
     };
 
 private:
@@ -225,13 +232,14 @@ private:
   void operator=(const Self&); // Purposely not implemented
 
   /** The global timestep. */
-  TimeStepType                                  m_TimeStep;
+  TimeStepType                          m_TimeStep;
 
   /** The component functions used to calculate the results of this function. */
-  RegularizationFunctionPointer                 m_RegularizationFunction;
+  RegularizationFunctionPointer         m_RegularizationFunction;
+  IntensityDistanceFunctionPointer      m_IntensityDistanceFunction;
 
   /** Mutex lock to protect modification to metric. */
-  mutable SimpleFastMutexLock                   m_MetricCalculationLock;
+  mutable SimpleFastMutexLock           m_MetricCalculationLock;
  
 };
 
