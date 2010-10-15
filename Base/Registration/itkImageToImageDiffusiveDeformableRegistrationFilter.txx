@@ -161,6 +161,26 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 // registration filter
 
 /**
+ * Allocate space for an image given a template image
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template < class UnallocatedImageType, class TemplateImageType >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::AllocateSpaceForImage( UnallocatedImageType& inputImage,
+                         const TemplateImageType& templateImage )
+{
+  inputImage->SetSpacing( templateImage->GetSpacing() );
+  inputImage->SetOrigin( templateImage->GetOrigin() );
+  inputImage->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
+  inputImage->SetRequestedRegion( templateImage->GetRequestedRegion() );
+  inputImage->SetBufferedRegion( templateImage->GetBufferedRegion() );
+  inputImage->Allocate();
+}
+
+/**
  * Allocate space for the update buffer, and the diffusion tensor image
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -175,13 +195,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
    the pixel  */
 
   typename OutputImageType::Pointer output = this->GetOutput();
-
-  m_UpdateBuffer->SetSpacing(output->GetSpacing());
-  m_UpdateBuffer->SetOrigin(output->GetOrigin());
-  m_UpdateBuffer->SetLargestPossibleRegion(output->GetLargestPossibleRegion());
-  m_UpdateBuffer->SetRequestedRegion(output->GetRequestedRegion());
-  m_UpdateBuffer->SetBufferedRegion(output->GetBufferedRegion());
-  m_UpdateBuffer->Allocate();
+  this->AllocateSpaceForImage( m_UpdateBuffer, output );
 
   // Allocate the deformation field component images
   // TODO necessary?
@@ -206,30 +220,12 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     DeformationFieldPointer deformationField = this->GetDeformationField();
 
     // Allocate the tangential components
-    m_DeformationFieldTangentialComponents[i]->SetOrigin(
-                                  deformationField->GetOrigin() );
-    m_DeformationFieldTangentialComponents[i]->SetSpacing(
-                                  deformationField->GetSpacing() );
-    m_DeformationFieldTangentialComponents[i]->SetLargestPossibleRegion(
-                                  deformationField->GetLargestPossibleRegion() );
-    m_DeformationFieldTangentialComponents[i]->SetRequestedRegion(
-                                  deformationField->GetRequestedRegion() );
-    m_DeformationFieldTangentialComponents[i]->SetBufferedRegion(
-                                  deformationField->GetBufferedRegion() );
-    m_DeformationFieldTangentialComponents[i]->Allocate();
+    this->AllocateSpaceForImage( m_DeformationFieldTangentialComponents[i],
+                                 deformationField );
 
     // Allocate the normal components
-    m_DeformationFieldNormalComponents[i]->SetOrigin(
-                                  deformationField->GetOrigin() );
-    m_DeformationFieldNormalComponents[i]->SetSpacing(
-                                  deformationField->GetSpacing() );
-    m_DeformationFieldNormalComponents[i]->SetLargestPossibleRegion(
-                                  deformationField->GetLargestPossibleRegion() );
-    m_DeformationFieldNormalComponents[i]->SetRequestedRegion(
-                                  deformationField->GetRequestedRegion() );
-    m_DeformationFieldNormalComponents[i]->SetBufferedRegion(
-                                  deformationField->GetBufferedRegion() );
-    m_DeformationFieldNormalComponents[i]->Allocate();
+    this->AllocateSpaceForImage( m_DeformationFieldNormalComponents[i],
+                                 deformationField );
     }
 }
 
@@ -250,58 +246,20 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   DeformationFieldPointer deformationField = this->GetDeformationField();
 
   // Allocate the image of normals
-  m_NormalVectorImage->SetOrigin( deformationField->GetOrigin() );
-  m_NormalVectorImage->SetSpacing( deformationField->GetSpacing() );
-  m_NormalVectorImage->SetLargestPossibleRegion(
-                                deformationField->GetLargestPossibleRegion() );
-  m_NormalVectorImage->SetRequestedRegion(
-                                deformationField->GetRequestedRegion() );
-  m_NormalVectorImage->SetBufferedRegion(
-                                deformationField->GetBufferedRegion() );
-  m_NormalVectorImage->Allocate();
+  this->AllocateSpaceForImage( m_NormalVectorImage,
+                               deformationField );
 
   // Allocate the output image's tangential and normal images
-  m_OutputTangentialImage->SetOrigin( deformationField->GetOrigin() );
-  m_OutputTangentialImage->SetSpacing( deformationField->GetSpacing() );
-  m_OutputTangentialImage->SetLargestPossibleRegion(
-                                deformationField->GetLargestPossibleRegion() );
-  m_OutputTangentialImage->SetRequestedRegion(
-                                deformationField->GetRequestedRegion() );
-  m_OutputTangentialImage->SetBufferedRegion(
-                                deformationField->GetBufferedRegion() );
-  m_OutputTangentialImage->Allocate();
+  this->AllocateSpaceForImage( m_OutputTangentialImage,
+                               deformationField );
+  this->AllocateSpaceForImage( m_OutputNormalImage,
+                               deformationField );
 
-  m_OutputNormalImage->SetOrigin( deformationField->GetOrigin() );
-  m_OutputNormalImage->SetSpacing( deformationField->GetSpacing() );
-  m_OutputNormalImage->SetLargestPossibleRegion(
-                                deformationField->GetLargestPossibleRegion() );
-  m_OutputNormalImage->SetRequestedRegion(
-                                deformationField->GetRequestedRegion() );
-  m_OutputNormalImage->SetBufferedRegion(
-                                deformationField->GetBufferedRegion() );
-  m_OutputNormalImage->Allocate();
-
-  // Allocate the tangential diffusion tensor image
-  m_TangentialDiffusionTensorImage->SetOrigin( deformationField->GetOrigin() );
-  m_TangentialDiffusionTensorImage->SetSpacing( deformationField->GetSpacing() );
-  m_TangentialDiffusionTensorImage->SetLargestPossibleRegion(
-                                deformationField->GetLargestPossibleRegion() );
-  m_TangentialDiffusionTensorImage->SetRequestedRegion(
-                                deformationField->GetRequestedRegion() );
-  m_TangentialDiffusionTensorImage->SetBufferedRegion(
-                                deformationField->GetBufferedRegion() );
-  m_TangentialDiffusionTensorImage->Allocate();
-
-  // Allocate the normal diffusion tensor image
-  m_NormalDiffusionTensorImage->SetOrigin( deformationField->GetOrigin() );
-  m_NormalDiffusionTensorImage->SetSpacing( deformationField->GetSpacing() );
-  m_NormalDiffusionTensorImage->SetLargestPossibleRegion(
-                                deformationField->GetLargestPossibleRegion() );
-  m_NormalDiffusionTensorImage->SetRequestedRegion(
-                                deformationField->GetRequestedRegion() );
-  m_NormalDiffusionTensorImage->SetBufferedRegion(
-                                deformationField->GetBufferedRegion() );
-  m_NormalDiffusionTensorImage->Allocate();
+  // Allocate the tangential and normal diffusion tensor images
+  this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage,
+                               deformationField );
+  this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
+                               deformationField );
 }
 
 /**

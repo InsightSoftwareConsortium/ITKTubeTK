@@ -191,6 +191,11 @@ protected:
    *  AllocateDiffusionTensorImage. */
   virtual void AllocateUpdateBuffer();
 
+  /** Helper function to allocate an image based on a template */
+  template< class UnallocatedImageType, class TemplateImageType >
+  void AllocateSpaceForImage( UnallocatedImageType& inputImage,
+                              const TemplateImageType& templateImage );
+
   /** Update the normal vector image and weighting factor w */
   virtual void UpdateNormalVectorImage();
 
