@@ -101,6 +101,8 @@ public:
   typedef DeformationFieldVectorType                     NormalVectorType;
   typedef itk::Image< NormalVectorType, ImageDimension > NormalVectorImageType;
   typedef typename NormalVectorImageType::Pointer        NormalVectorImagePointer;
+  typedef itk::ImageRegionIterator< NormalVectorImageType >
+                                                         NormalVectorIteratorType;
 
   /** FiniteDifferenceFunction type. */
   typedef typename Superclass::FiniteDifferenceFunctionType
@@ -185,8 +187,11 @@ protected:
    *  AllocateDiffusionTensorImage. */
   virtual void AllocateUpdateBuffer();
 
+  /** Update the normal vector image and weighting factor w */
+  virtual void UpdateNormalVectorImage();
+
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage();
+  virtual void UpdateDiffusionTensorImage();
 
   /** This method applies changes from the m_UpdateBuffer to the output using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is

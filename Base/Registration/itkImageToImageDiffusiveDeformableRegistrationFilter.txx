@@ -300,6 +300,9 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // TODO checking the timestep for stability as in the anisotropic filter
 
+  // Compute the border normals and the weighting factor w
+  this->UpdateNormalVectorImage();
+
   // Update the diffusion tensor image
   this->UpdateDiffusionTensorImage();
 
@@ -308,6 +311,29 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     {
     m_ComponentExtractor[i]->Update();
     }
+}
+
+/**
+ * Updates the border normals and the weighting factor w
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::UpdateNormalVectorImage()
+{
+  // TODO calculate n here
+  NormalVectorIteratorType normalVectorIt( m_NormalVectorImage,
+                              m_NormalVectorImage->GetLargestPossibleRegion() );
+  NormalVectorType n = this->GetNormalVectors();
+  for( normalVectorIt.GoToBegin(); !normalVectorIt.IsAtEnd(); ++normalVectorIt )
+    {
+    normalVectorIt.Set( n );
+    }
+
+  // TODO calculate w here
+  //DeformationFieldScalarType w = (DeformationFieldScalarType) 1.0;
 }
 
 /**
@@ -322,7 +348,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 {
   typedef itk::Matrix< DeformationFieldScalarType,
                        ImageDimension, ImageDimension > MatrixType;
-
 
   NormalVectorType                n;
   DeformationFieldScalarType      w;
@@ -342,8 +367,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   DiffusionTensorImagePixelType   tangentialD;
   DiffusionTensorImagePixelType   normalD;
 
-  typedef itk::ImageRegionIterator< NormalVectorImageType >
-                              NormalVectorIteratorType;
   NormalVectorIteratorType normalVectorIt( m_NormalVectorImage,
                               m_NormalVectorImage->GetLargestPossibleRegion() );
 
@@ -354,13 +377,12 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   DiffusionTensorIteratorType normalIt( m_NormalDiffusionTensorImage,
                  m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
 
-  for ( normalVectorIt.GoToBegin(), tangentialIt.GoToBegin(), normalIt.GoToBegin();
+  for( normalVectorIt.GoToBegin(), tangentialIt.GoToBegin(), normalIt.GoToBegin();
         !tangentialIt.IsAtEnd(); ++normalVectorIt, ++tangentialIt, ++normalIt )
     {
 
-    // 1.  TODO calculate w and n here
-    n = this->GetNormalVectors();
-    normalVectorIt.Set( n );
+    // 1.  Get the border normal n and the weighting factor w
+    n = normalVectorIt.Get();
     w = (DeformationFieldScalarType) 1.0;
 
     // 2. Compute the tangential and normal diffusion tensor images
