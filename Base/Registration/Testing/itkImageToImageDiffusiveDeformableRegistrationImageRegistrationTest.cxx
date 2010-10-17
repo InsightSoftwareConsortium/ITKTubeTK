@@ -68,17 +68,13 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
                                                   = DeformationFieldType::New();
   DeformationFieldType::IndexType    start;
   start.Fill( startValue );
-
   DeformationFieldType::SizeType     size;
   size.Fill( sizeValue );
-
   DeformationFieldType::RegionType   region;
   region.SetSize( size );
   region.SetIndex( start );
-
   DeformationFieldType::SpacingType  spacing;
   spacing.Fill( spacingValue );
-
   DeformationFieldType::PointType    origin;
   origin.Fill( originValue);
 

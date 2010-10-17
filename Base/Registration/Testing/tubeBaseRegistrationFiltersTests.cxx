@@ -29,7 +29,7 @@ limitations under the License.
 
 void RegisterTests()
 {
-  REGISTER_TEST( itkImageToImageDiffusiveDeformableRegistrationTest );
+  REGISTER_TEST( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest );
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
   REGISTER_TEST( itkTubeToTubeTransformFilterTest );
 }

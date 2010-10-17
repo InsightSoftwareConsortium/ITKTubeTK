@@ -150,12 +150,6 @@ public:
   typedef typename IntensityDistanceFunctionType::Pointer
                                           IntensityDistanceFunctionPointer;
 
-  /** Set the fixed image, moving image and deformation field */
-  virtual void SetFixedImage( const FixedImageType * ptr );
-  virtual void SetMovingImage( const MovingImageType * ptr );
-  virtual void SetDeformationField( DeformationFieldTypePointer ptr );
-  // TODO more set methods that need to be applied to the intensity function too?
-
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 
