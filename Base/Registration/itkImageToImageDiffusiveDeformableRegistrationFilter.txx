@@ -79,6 +79,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     m_DeformationFieldNormalComponents[i]
                               = m_NormalComponentExtractor[i]->GetOutput();
     }
+
+  // By default, compute the intensity distance and regularization terms
+  this->SetComputeIntensityDistanceTerm( true );
+  this->SetComputeRegularizationTerm( true );
 }
 
 /**
@@ -98,6 +102,88 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     {
     std::cout << m_NormalVectors[i] << " ";
     }
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::SetComputeRegularizationTerm( bool compute )
+{
+  typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  df->SetComputeRegularizationTerm( compute );
+
+  // Do not smooth the deformation field with the
+  // PDEDeformableRegistrationFilter method if we are using our own
+  // regularization term
+  if ( compute )
+    {
+    this->SmoothDeformationFieldOff();
+    this->SmoothUpdateFieldOff();
+    }
+  // TODO
+  // Do smooth the deformation field with the default method if we are not
+  // using our own regularization term
+  else
+    {
+    this->SmoothDeformationFieldOff();
+    //this->SmoothDeformationFieldOn();
+    this->SmoothUpdateFieldOff();
+    }
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+bool
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::GetComputeRegularizationTerm() const
+{
+  typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  return df->GetComputeRegularizationTerm();
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::SetComputeIntensityDistanceTerm( bool compute )
+{
+  typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  df->SetComputeIntensityDistanceTerm( compute );
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+bool
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::GetComputeIntensityDistanceTerm() const
+{
+  typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  return df->GetComputeIntensityDistanceTerm();
 }
 
 /**
@@ -239,8 +325,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::AllocateDiffusionTensorImage()
 {
-  std::cout << "AllocatDiffusionTensorImage for FILTER"<< std::endl;
-
   // The diffusion tensor image has the same size as the deformation field and
   // holds the diffusion tensor matrix at each pixel
   DeformationFieldPointer deformationField = this->GetDeformationField();
@@ -272,10 +356,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::InitializeIteration()
 {
-  std::cout << "InitializeIteration for FILTER" << std::endl;
-
-  // Call the superclass implementation
-  Superclass::InitializeIteration();
+  std::cout << "\tInitializeIteration for FILTER" << std::endl;
 
   if ( !this->GetFixedImage() || !this->GetMovingImage()
         || !this->GetDeformationField() )
@@ -293,6 +374,16 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // Update the deformation field component images
   this->UpdateDeformationFieldComponentImages();
+
+  // Update the function's deformation field
+  typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  df->SetDeformationField( this->GetDeformationField() );
+
+  // Call the superclass implementation
+  Superclass::InitializeIteration();
+
 }
 
 /**
@@ -457,13 +548,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     // tangential component = u - normal component
     tangentialU = u - normalU;
     outputTangentialImageIterator.Set( tangentialU );
-
-    // TODO take me out
-//    std::cout << "u " << u[0] << " " << u[1] << " " << u[2] << std::endl;
-//    std::cout << "n " << n[0] << " " << n[1] << " " << n[2] << std::endl;
-//    std::cout << "normalU " << normalU[0] << " " << normalU[1] << " " << normalU[2] << std::endl;
-//    std::cout << "tangentialU " << tangentialU[0] << " " << tangentialU[1] << " " << tangentialU[2] << std::endl;
-//    std::cout << normalU * tangentialU << std::endl;
 
     // We know normalU + tangentialU = u
     // Assertion to test that the normal and tangential components were computed
@@ -965,7 +1049,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   while ( !u.IsAtEnd() )
     {
-
     o.Value() += static_cast<DeformationFieldVectorType>(u.Value() * dt);
                                                     // no adaptor support here
 

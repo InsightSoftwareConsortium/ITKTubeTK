@@ -26,156 +26,239 @@ limitations under the License.
 
 #include "itkImageToImageDiffusiveDeformableRegistrationFilter.h"
 
-#include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageFileWriter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include "itkVectorCastImageFilter.h"
+#include "itkWarpImageFilter.h"
+#include "itkNearestNeighborInterpolateImageFunction.h"
 
-int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
+// Template function to fill in an image with a circle.
+template <class TImage>
+void
+FillWithCircle(
+TImage * image,
+double * center,
+double radius,
+typename TImage::PixelType foregnd,
+typename TImage::PixelType backgnd )
 {
-  if( argc < 6 )
+
+  typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
+  Iterator it( image, image->GetBufferedRegion() );
+  it.Begin();
+
+  typename TImage::IndexType index;
+  double r2 = vnl_math_sqr( radius );
+
+  for( ; !it.IsAtEnd(); ++it )
+    {
+    index = it.GetIndex();
+    double distance = 0;
+    for( unsigned int j = 0; j < TImage::ImageDimension; j++ )
+      {
+      distance += vnl_math_sqr((double) index[j] - center[j]);
+      }
+    if( distance <= r2 ) it.Set( foregnd );
+    else it.Set( backgnd );
+    }
+
+}
+
+int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc, char* argv [] )
+{
+  if( argc < 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-              << "original motion field image, "
-              << "noise variance, "
-              << "smoothed motion field image, "
+              << "original fixed image, "
+              << "original moving image, "
+              << "resulting motion field image, "
+              << "resulting transformed moving image, "
               << "number of iterations"
-              << "border slope"
+              << "compute regularization term"
               << std::endl;
     return EXIT_FAILURE;
     }
 
   // Typedefs
-  const unsigned int                                      Dimension = 3;
+  // TODO try with dimension = 2
+  const unsigned int                                      ImageDimension = 3;
   typedef double                                          PixelType;
-  typedef itk::Image< PixelType, Dimension >              FixedImageType;
-  typedef itk::Image< PixelType, Dimension >              MovingImageType;
-  typedef itk::Vector< PixelType, Dimension >             VectorType;
-  typedef itk::Image< VectorType, Dimension >             DeformationFieldType;
-  typedef itk::ImageRegionIterator< DeformationFieldType >
-                                                          IteratorType;
-  typedef itk::Index< Dimension >                         IndexType;
+  typedef double                                          VectorScalarType;
+  typedef itk::Image< PixelType, ImageDimension >         ImageType;
+  typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
+  typedef itk::Image< VectorType, ImageDimension >        FieldType;
+  typedef ImageType::IndexType                            IndexType;
+  typedef ImageType::SizeType                             SizeType;
+  typedef ImageType::RegionType                           RegionType;
+
+  //--------------------------------------------------------
+  std::cout << "Generate input images and initial deformation field";
+  std::cout << std::endl;
 
   // Image parameters
-  int         startValue = 0;
-  int         sizeValue = 50;
-  double      spacingValue = 1.0;
+  double      sizeValue = 128;
   double      originValue = 0.0;
 
-  // Allocate the motion field image
-  DeformationFieldType::Pointer      deformationField
-                                                  = DeformationFieldType::New();
-  DeformationFieldType::IndexType    start;
-  start.Fill( startValue );
-  DeformationFieldType::SizeType     size;
-  size.Fill( sizeValue );
-  DeformationFieldType::RegionType   region;
-  region.SetSize( size );
-  region.SetIndex( start );
-  DeformationFieldType::SpacingType  spacing;
-  spacing.Fill( spacingValue );
-  DeformationFieldType::PointType    origin;
-  origin.Fill( originValue);
-
-  deformationField->SetRegions( region );
-  deformationField->SetSpacing( spacing );
-  deformationField->SetOrigin( origin );
-  deformationField->Allocate();
-
-  // Fill the motion field image:
-  // Top half is vectors like \, bottom half is vectors like /,
-  // plus noise
-
-  PixelType   borderSlope;
-  VectorType  borderN; // normal to the border
-  VectorType  perpN;   // perpendicular to the border
-
-  borderSlope = atof( argv[5] );
-  if( borderSlope == 0 )
+  ImageType::SizeValueType sizeArray[ImageDimension];
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    borderN[0] = 0.0;
-    borderN[1] = 1.0;
-    borderN[0] = 0.0;
-    perpN[0] = 1.0;
-    perpN[1] = 0.0;
-    perpN[2] = 0.0;
+    sizeArray[i] = sizeValue;
+    }
+  SizeType size;
+  size.SetSize( sizeArray );
+
+  IndexType index;
+  index.Fill( originValue );
+
+  RegionType region;
+  region.SetSize( size );
+  region.SetIndex( index );
+
+  ImageType::Pointer moving = ImageType::New();
+  ImageType::Pointer fixed = ImageType::New();
+  FieldType::Pointer initField = FieldType::New();
+
+  moving->SetLargestPossibleRegion( region );
+  moving->SetBufferedRegion( region );
+  moving->Allocate();
+
+  fixed->SetLargestPossibleRegion( region );
+  fixed->SetBufferedRegion( region );
+  fixed->Allocate();
+
+  initField->SetLargestPossibleRegion( region );
+  initField->SetBufferedRegion( region );
+  initField->Allocate();
+
+  double center[ImageDimension];
+  double radius;
+  PixelType fgnd = 250;
+  PixelType bgnd = 15;
+
+  // fill moving with circle
+  for ( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    center[i] = 64;
+    }
+  radius = 30;
+  FillWithCircle<ImageType>( moving, center, radius, fgnd, bgnd );
+
+  // fill fixed with circle
+  center[0] = 62;
+  for ( unsigned int i = 1; i < ImageDimension; i++ )
+    {
+    center[i] = 64;
+    }
+  radius = 32;
+  FillWithCircle<ImageType>( fixed, center, radius, fgnd, bgnd );
+
+  // fill initial deformation with zero vectors
+  VectorType zeroVec;
+  zeroVec.Fill( 0.0 );
+  initField->FillBuffer( zeroVec );
+
+  // setup the normals
+  // TODO realistic with sphere
+  // TODO what happens if normals are not set to registrator? i.e. normals are
+  // the defaults of 0,0,0
+  VectorType normals;
+  normals[0] = 0;
+  normals[1] = 1;
+  normals[2] = 0;
+
+  // ---------------------------------------------------------
+  std::cout << "Printing the initial fixed and moving images" << std::endl;
+
+  // Save the initial fixed and moving images
+  typedef itk::ImageFileWriter< ImageType > ImageWriterType;
+  ImageWriterType::Pointer imageWriter = ImageWriterType::New();
+  imageWriter->SetFileName( argv[1] );
+  imageWriter->SetInput( fixed );
+  try
+    {
+    imageWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+  imageWriter->SetFileName( argv[2] );
+  imageWriter->SetInput( moving );
+  try
+    {
+    imageWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  typedef itk::VectorCastImageFilter<FieldType,FieldType> CasterType;
+  CasterType::Pointer caster = CasterType::New();
+  caster->SetInput( initField );
+  caster->InPlaceOff();
+
+  //-------------------------------------------------------------
+  std::cout << "Run registration and warp moving" << std::endl;
+
+  typedef itk::ImageToImageDiffusiveDeformableRegistrationFilter< ImageType,
+                                                                  ImageType,
+                                                                  FieldType >
+                                                                  RegistrationType;
+  RegistrationType::Pointer registrator = RegistrationType::New();
+
+  registrator->SetInitialDeformationField( caster->GetOutput() );
+  registrator->SetMovingImage( moving );
+  registrator->SetFixedImage( fixed );
+  registrator->SetNormalVectors( normals );
+  int numberOfIterations = atoi( argv[5] );
+  registrator->SetNumberOfIterations( numberOfIterations );
+
+  // TODO take out
+  int compute = atoi( argv[6] );
+  if (compute)
+    {
+    registrator->SetComputeRegularizationTerm( true );
     }
   else
     {
-    borderN[0] = -1.0;
-    borderN[1] = 1.0 / borderSlope;
-    borderN[2] = 0.0;
-    perpN[0] = -1.0 / borderSlope;
-    perpN[1] = -1.0;
-    perpN[2] = 0.0;
+    registrator->SetComputeRegularizationTerm( false );
     }
 
-  VectorType topHalfPixel;
-  VectorType bottomHalfPixel;
-  topHalfPixel = borderN + perpN;
-  bottomHalfPixel = borderN - perpN;
+  // warp moving image
+  typedef itk::WarpImageFilter<ImageType,ImageType,FieldType> WarperType;
+  WarperType::Pointer warper = WarperType::New();
 
-  // The index at the center of the image is on the plane
-  VectorType center;
-  for( unsigned int i = 0; i < Dimension; i++ )
-    {
-    center[i] = deformationField->GetLargestPossibleRegion().GetSize()[i] / 2.0;
-    }
+  typedef WarperType::CoordRepType CoordRepType;
+  typedef itk::NearestNeighborInterpolateImageFunction<ImageType,CoordRepType>
+    InterpolatorType;
+  InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
-  VectorType    pixel;
-  IteratorType  it( deformationField,
-                    deformationField->GetLargestPossibleRegion() );
-  //it.SetDirection(2);
-  IndexType     index;
-  VectorType    indexAsVector;
-  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
-    = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
-  randGenerator->Initialize( 137593424 );
-  PixelType     randX = 0;
-  PixelType     randY = 0;
-  PixelType     randZ = 0;
-  double        mean = 0;
-  double        variance = atof(argv[2]);
+  warper->SetInput( moving );
+  warper->SetDeformationField( registrator->GetOutput() );
+  warper->SetInterpolator( interpolator );
+  warper->SetOutputSpacing( fixed->GetSpacing() );
+  warper->SetOutputOrigin( fixed->GetOrigin() );
+  warper->SetOutputDirection( fixed->GetDirection() );
+  warper->SetEdgePaddingValue( bgnd );
 
-  for( it.GoToBegin(); ! it.IsAtEnd(); ++it )
-    {
-    index = it.GetIndex();
+  // Update triggers the registration
+  warper->Update();
 
-    for( unsigned int i = 0; i < Dimension; i++ )
-      {
-      indexAsVector[i] = index[i];
-      }
+  // ---------------------------------------------------------
+  std::cout << "Printing the deformation field and transformed moving image"
+            << std::endl;
 
-    // Use definition of a plane to decide which side we are on
-    if ( borderN * ( center - indexAsVector ) < 0 )
-      {
-      pixel = bottomHalfPixel;
-      }
-    else
-      {
-      pixel = topHalfPixel;
-      }
-
-    // Add random noise
-    randX = randGenerator->GetNormalVariate( mean, variance );
-    randY = randGenerator->GetNormalVariate( mean, variance );
-    randZ = randGenerator->GetNormalVariate( mean, variance );
-    pixel[0] += randX;
-    pixel[1] += randY;
-    pixel[2] += randZ;
-
-    it.Set(pixel);
-    }
-
-  // Save the motion field image
-  typedef itk::ImageFileWriter< DeformationFieldType > WriterType;
-  WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[1] );
-  writer->SetInput( deformationField );
+  typedef itk::ImageFileWriter< FieldType > FieldWriterType;
+  FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
+  fieldWriter->SetFileName( argv[3] );
+  fieldWriter->SetInput( registrator->GetOutput() );
   try
     {
-    writer->Update();
+    fieldWriter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -183,41 +266,11 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  // Setup the images to be registered
-  FixedImageType::Pointer fixedImage      = FixedImageType::New();
-  MovingImageType::Pointer movingImage    = MovingImageType::New();
-
-  fixedImage->SetLargestPossibleRegion( region );
-  fixedImage->SetSpacing( spacing );
-  fixedImage->SetOrigin( origin );
-  fixedImage->Allocate();
-
-  movingImage->SetLargestPossibleRegion( region );
-  movingImage->SetSpacing( spacing );
-  movingImage->SetOrigin( origin );
-  movingImage->Allocate();
-
-  // Setup the registrator object
-  typedef itk::ImageToImageDiffusiveDeformableRegistrationFilter
-                                                      < FixedImageType,
-                                                        MovingImageType,
-                                                        DeformationFieldType >
-                                                        RegistrationFilterType;
-  RegistrationFilterType::Pointer registrator = RegistrationFilterType::New();
-
-  registrator->SetInitialDeformationField( deformationField );
-  registrator->SetMovingImage( movingImage );
-  registrator->SetFixedImage( fixedImage );
-  registrator->SetNormalVectors( borderN );
-  int numIterations = atoi( argv[4] );
-  registrator->SetNumberOfIterations( numIterations );
-
-  // Save the smoothed deformation field
-  writer->SetFileName( argv[3] );
-  writer->SetInput( registrator->GetOutput() );
+  imageWriter->SetFileName( argv[4] );
+  imageWriter->SetInput( warper->GetOutput() );
   try
     {
-    writer->Update();
+    imageWriter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -225,18 +278,37 @@ int itkImageToImageDiffusiveDeformableRegistrationTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  // ---------------------------------------------------------
+  std::cout << "Compare warped moving and fixed." << std::endl;
 
+  // compare the warp and fixed images
+  itk::ImageRegionIterator<ImageType> fixedIter( fixed,
+      fixed->GetBufferedRegion() );
+  itk::ImageRegionIterator<ImageType> warpedIter( warper->GetOutput(),
+      fixed->GetBufferedRegion() );
 
+  unsigned int numPixelsDifferent = 0;
+  while( !fixedIter.IsAtEnd() )
+    {
+    if( fixedIter.Get() != warpedIter.Get() )
+      {
+      numPixelsDifferent++;
+      }
+    ++fixedIter;
+    ++warpedIter;
+    }
 
+  std::cout << "Number of pixels different: " << numPixelsDifferent;
+  std::cout << std::endl;
 
+  if( numPixelsDifferent > 10 )
+    {
+    std::cout << "Test failed - too many pixels different." << std::endl;
+    return EXIT_FAILURE;
+    }
 
-
-
-
-
-
-
-
+  // TODO there are some exception handling tests in itkDemonsRegistrationFilterTest
+  // that would be good to put here
 
   return EXIT_SUCCESS;
 

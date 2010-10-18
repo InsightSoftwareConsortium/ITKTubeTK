@@ -50,9 +50,10 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   // Typedefs
   const unsigned int                                      Dimension = 3;
   typedef double                                          PixelType;
+  typedef double                                          VectorScalarType;
   typedef itk::Image< PixelType, Dimension >              FixedImageType;
   typedef itk::Image< PixelType, Dimension >              MovingImageType;
-  typedef itk::Vector< PixelType, Dimension >             VectorType;
+  typedef itk::Vector< VectorScalarType, Dimension >      VectorType;
   typedef itk::Image< VectorType, Dimension >             DeformationFieldType;
   typedef itk::ImageRegionIterator< DeformationFieldType >
                                                           IteratorType;
@@ -127,7 +128,6 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   VectorType    pixel;
   IteratorType  it( deformationField,
                     deformationField->GetLargestPossibleRegion() );
-  //it.SetDirection(2);
   IndexType     index;
   VectorType    indexAsVector;
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator

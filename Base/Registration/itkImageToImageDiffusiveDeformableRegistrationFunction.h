@@ -198,6 +198,16 @@ public:
     return m_TimeStep;
     }
 
+  /** Whether to compute the motion field regularization term (for testing)
+   *  Default: true */
+  void SetComputeRegularizationTerm( bool compute );
+  bool GetComputeRegularizationTerm() const;
+
+  /** Whether to compute the intensity distance term (for testing)
+   *  Default: true */
+  void SetComputeIntensityDistanceTerm( bool compute );
+  bool GetComputeIntensityDistanceTerm() const;
+
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
   virtual void *GetGlobalDataPointer() const;
@@ -234,6 +244,11 @@ private:
 
   /** Mutex lock to protect modification to metric. */
   mutable SimpleFastMutexLock           m_MetricCalculationLock;
+
+  /** Whether or not to compute the intensity distance and motion field
+   * regularization terms */
+  bool                                  m_ComputeRegularizationTerm;
+  bool                                  m_ComputeIntensityDistanceTerm;
  
 };
 

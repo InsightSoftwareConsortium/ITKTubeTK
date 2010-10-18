@@ -45,12 +45,33 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   r.Fill(1);
   this->SetRadius(r);
 
+  m_ComputeRegularizationTerm = true;
+  m_ComputeIntensityDistanceTerm = true;
+
   m_RegularizationFunction = RegularizationFunctionType::New();
   m_RegularizationFunction->SetTimeStep( m_TimeStep );
 
   m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
   // TODO more parameters for the intensity distance function?
-  // TODO computes global timestep - is this a problem?
+  // TODO make these options for this function
+  // TODO NOW
+  // ... inherited for finite
+  //  m_IntensityDistanceFunction->SetScaleCoefficients( vals );
+  // ... inherited from PDE function
+  //  m_IntensityDistanceFunction->SetGradientStep( 0.0 );
+  //  m_IntensityDistanceFunction->SetNormalizeGradient( false );
+
+
+
+
+  // TODO default for now is LinearInterpolateImageFilter - can change later
+  //  m_IntensityDistanceFunction->SetMovingImageInterpolator( interp );
+
+
+  // TODO computes global timestep - will need to change once time step changes
+  //   MeanSquareRegistration uses constant timestep of 1
+  // but maybe ok because we're just calling compute update, which doesn't
+  // use m_TimeStep
   //m_IntensityDistanceFunction->SetTimeStep( m_TimeStep );
 
   this->SetMovingImage(0);
@@ -71,7 +92,10 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   Superclass::PrintSelf(os,indent);
 
   os << indent << "TimeStep: " << m_TimeStep;
-  std::cout << std::endl;
+  os << indent << "ComputeRegularizationTerm: "
+                                << m_ComputeRegularizationTerm << std::endl;
+  os << indent << "ComputeIntensityDistanceTerm: "
+                                << m_ComputeIntensityDistanceTerm << std::endl;
   if ( m_RegularizationFunction )
     {
     os << indent << "RegularizationFunction: " << std::endl;
@@ -82,6 +106,58 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
     os << indent << "IntensityDistanceFunction: " << std::endl;
     m_IntensityDistanceFunction->Print( os, indent );
     }
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::SetComputeRegularizationTerm( bool compute )
+{
+  m_ComputeRegularizationTerm = compute;
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+bool
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::GetComputeRegularizationTerm() const
+{
+  return m_ComputeRegularizationTerm;
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::SetComputeIntensityDistanceTerm( bool compute )
+{
+  m_ComputeIntensityDistanceTerm = compute;
+}
+
+/**
+ * Set/Get whether to compute terms
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+bool
+ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
+                                                     TMovingImage,
+                                                     TDeformationField >
+::GetComputeIntensityDistanceTerm() const
+{
+  return m_ComputeIntensityDistanceTerm;
 }
 
 /**
@@ -137,22 +213,22 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TDeformationField >
 ::InitializeIteration()
 {
-  std::cout << "InitializeIteration for FUNCTION" << std::endl;
+  std::cout << "\tInitializeIteration for FUNCTION" << std::endl;
 
   if( !this->GetMovingImage()
       || !this->GetFixedImage()
-      /*|| !m_MovingImageInterpolator*/ ) // TODO m_TangentalDiffusionTensorImage interpolator
+      /*|| !this->GetDeformationField()*/ ) // TODO put back
     {
-    itkExceptionMacro( << "MovingImage, FixedImage and/or Interpolator not set" );
+    itkExceptionMacro( << "MovingImage, FixedImage and/or deformation field not set" );
     }
 
   // Setup the component functions
+  // TODO moving image and fixed image can be set only once
   // TODO more set methods to be applied to the intensity distance function?
+  // TODO NOW
   m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() ) ;
   m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
   m_IntensityDistanceFunction->SetDeformationField( this->GetDeformationField() );
-
-  std::cout << "THIS DEFORMATION FIELD" << this->GetDeformationField() << std::endl;
 
   // Initialize the component functions
   m_RegularizationFunction->InitializeIteration();
@@ -232,52 +308,73 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   PixelType                         intensityDistanceTerm;
   PixelType                         updateTerm;
   NormalVectorType                  nln; // n(l)n
-  normalRegularizationTerm.Fill(0);
+
+  intensityDistanceTerm.Fill(0);
+  tangentialRegularizationTerm.Fill(0);
+  normalRegularizationTerm.Fill(0); // essential because incremented in loop
 
   // Compute the intensity distance update
   // TODO make sure that there is no normalization in the intensity distance
   // function - check that smooth gradient is off, and that the normalize
   // metric doesn't do anything we don't want
   // TODO weighting between the intensity distance and regularization terms?
-  std::cout << "starting to compute update" << std::endl;
 
-  intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
-                            neighborhood,
-                            globalData->m_IntensityDistanceGlobalDataStruct,
-                            offset );
-
-  std::cout << "intensity distance term: " << intensityDistanceTerm << std::endl;
-
-  // Compute the motion field regularization
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  if ( m_ComputeIntensityDistanceTerm )
     {
-    // Compute the regularization in the tangential plane
-    tangentialRegularizationTerm[i]
-                            = m_RegularizationFunction->ComputeUpdate(
-                            tangentialNeighborhoodDeformationFieldComponents[i],
-                            tangentialNeighborhoodTensor,
-                            globalData->m_RegularizationGlobalDataStruct,
-                            offset );
-
-    // Compute the regularization in the normal direction
-    intermediateNormalRegularizationComponent
-                            = m_RegularizationFunction->ComputeUpdate(
-                            normalNeighborhoodDeformationFieldComponents[i],
-                            normalNeighborhoodTensor,
-                            globalData->m_RegularizationGlobalDataStruct,
-                            offset );
-
-    nln = normalVector[i] * normalVector;
-
-    intermediateNormalRegularizationTerm
-              = intermediateNormalRegularizationComponent * nln;
-    normalRegularizationTerm
-              = normalRegularizationTerm + intermediateNormalRegularizationTerm;
+    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
+                              neighborhood,
+                              globalData->m_IntensityDistanceGlobalDataStruct,
+                              offset );
     }
 
-  // TODO weighting here?
+  // Compute the motion field regularization
+  if (m_ComputeRegularizationTerm )
+    {
+
+    std::cout << "computing regu" << std::endl;
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      // Compute the regularization in the tangential plane
+      tangentialRegularizationTerm[i]
+                              = m_RegularizationFunction->ComputeUpdate(
+                              tangentialNeighborhoodDeformationFieldComponents[i],
+                              tangentialNeighborhoodTensor,
+                              globalData->m_RegularizationGlobalDataStruct,
+                              offset );
+
+      // Compute the regularization in the normal direction
+      intermediateNormalRegularizationComponent
+                              = m_RegularizationFunction->ComputeUpdate(
+                              normalNeighborhoodDeformationFieldComponents[i],
+                              normalNeighborhoodTensor,
+                              globalData->m_RegularizationGlobalDataStruct,
+                              offset );
+
+      nln = normalVector[i] * normalVector;
+
+      intermediateNormalRegularizationTerm
+                = intermediateNormalRegularizationComponent * nln;
+      normalRegularizationTerm
+                = normalRegularizationTerm + intermediateNormalRegularizationTerm;
+      }
+
+    }
+
+
+
+  // TODO weighting here?  Don't worry about weighting if one term is not
+  // computed because of boolean settings
   updateTerm = intensityDistanceTerm
                       + tangentialRegularizationTerm + normalRegularizationTerm;
+
+  // TODO take out
+//  if ( updateTerm[0] != 0 || updateTerm[1] != 0 || updateTerm[2] != 0 )
+//    {
+//    std::cout << "update term " << updateTerm[0] << " "
+//                                << updateTerm[1] << " "
+//                                << updateTerm[2] << std::endl;
+//    }
+
   return updateTerm;
 
 }

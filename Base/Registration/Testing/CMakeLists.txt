@@ -32,6 +32,7 @@ set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Registration/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
+       itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest.cxx
        itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest.cxx
        itkImageToTubeRigidRegistrationTest.cxx
        itkTubeToTubeTransformFilterTest.cxx
@@ -70,14 +71,13 @@ add_test( itkImageToTubeRigidRegistrationTest
 set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
-# TODO put number of iterations back to 20
 add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraightNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest
           ${TEMP}/MotionField_straight_noNoise.mhd
           0
           ${TEMP}/SmoothedMotionField_straight_noNoise.mhd
-          1
+          20
           0
           )
 
@@ -109,6 +109,29 @@ add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizatio
           ${TEMP}/SmoothedMotionField_angled.mhd
           20
           0.5
+          )
+
+# TODO change number of iterations to something larger
+add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithoutRegularization
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
+          ${TEMP}/SlidingOrganRegistrationWithoutRegularization_originalFixedImage.mhd
+          ${TEMP}/SlidingOrganRegistrationWithoutRegularization_originalMovingImage.mhd
+          ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingMotionField.mhd
+          ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingTransformedMovingImage.mhd
+          10
+          0
+          )
+
+add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_originalFixedImage.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_originalMovingImage.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingMotionField.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingTransformedMovingImage.mhd
+          10
+          1
           )
 
 

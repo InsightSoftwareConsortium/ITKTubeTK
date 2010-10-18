@@ -169,6 +169,16 @@ public:
   virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
                                                                         const;
 
+  /** Whether to compute the motion field regularization term (for testing)
+   *  Default: true */
+  void SetComputeRegularizationTerm( bool compute );
+  bool GetComputeRegularizationTerm() const;
+
+  /** Whether to compute the intensity distance term (for testing)
+   *  Default: true */
+  void SetComputeIntensityDistanceTerm( bool compute );
+  bool GetComputeIntensityDistanceTerm() const;
+
 protected:
   ImageToImageDiffusiveDeformableRegistrationFilter();
   void PrintSelf(std::ostream& os, Indent indent) const;
