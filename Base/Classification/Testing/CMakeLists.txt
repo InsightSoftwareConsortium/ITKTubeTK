@@ -62,7 +62,7 @@ target_link_libraries( tubeBaseClassificationHeaderTest
   ITKIO
   ITKNumerics
   ITKBasicFilters
-  VTree3D
+  VTree
   )
 
 add_executable( tubeBaseClassificationTests
@@ -73,7 +73,7 @@ target_link_libraries( tubeBaseClassificationTests
   ITKIO
   ITKNumerics
   ITKBasicFilters
-  VTree3D
+  VTree
   )
 
 add_test( tubeBaseClassificationHeaderTest 

@@ -1,6 +1,6 @@
 ##############################################################################
 # 
-# Library:   TubeTK
+# Library:   TubeTK/VTree
 # 
 # Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 # 
@@ -26,12 +26,12 @@
 # 
 ##############################################################################
 
-PROJECT( VTree3D )
+PROJECT( VTree )
 
 FIND_PACKAGE( ITK REQUIRED )
 INCLUDE( ${ITK_USE_FILE} )
 
-SET( VTree3D_SRCS
+SET( VTree_SRCS
   itkOptBrent1D.cxx
   itkOptGoldenMean1D.cxx
   itkOptParabolicFit1D.cxx
@@ -42,11 +42,11 @@ SET( VTree3D_SRCS
   itkSplineND.cxx
   )
 
-ADD_LIBRARY( VTree3D STATIC ${VTree3D_SRCS} )
-TARGET_LINK_LIBRARIES( VTree3D ${ITK_LIBRARIES} )
+ADD_LIBRARY( VTree STATIC ${VTree_SRCS} )
+TARGET_LINK_LIBRARIES( VTree ${ITK_LIBRARIES} )
 
-slicer3_set_plugins_output_path( VTree3D )
-set( TARGETS VTree3D )
+slicer3_set_plugins_output_path( VTree )
+set( TARGETS VTree )
 slicer3_install_plugins( ${TARGETS} )
 
 IF( BUILD_TESTING )

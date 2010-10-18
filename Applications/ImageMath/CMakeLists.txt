@@ -73,7 +73,7 @@ set( PROJECT_SOURCE
 #target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
 
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} VTree3D )
+target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} VTree )
 
 #slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
 slicer3_set_plugins_output_path( ${PROJECT_NAME} )

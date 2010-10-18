@@ -82,7 +82,7 @@ target_link_libraries( tubeBaseSegmentationVTreeTests
   ITKIO 
   ITKNumerics 
   ITKBasicFilters 
-  VTree3D
+  VTree
   )
 
 add_test( tubeBaseSegmentationVTreeHeaderTest 
