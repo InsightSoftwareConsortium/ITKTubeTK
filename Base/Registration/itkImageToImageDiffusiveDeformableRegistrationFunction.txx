@@ -330,8 +330,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   // Compute the motion field regularization
   if (m_ComputeRegularizationTerm )
     {
-
-    std::cout << "computing regu" << std::endl;
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
       // Compute the regularization in the tangential plane
