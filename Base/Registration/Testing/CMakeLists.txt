@@ -32,24 +32,39 @@ set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Registration/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
-       itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest.cxx
-       itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest.cxx
-       itkImageToTubeRigidRegistrationTest.cxx
-       itkTubeToTubeTransformFilterTest.cxx
-)
+          itkImageToTubeRigidRegistrationTest.cxx
+          itkTubeToTubeTransformFilterTest.cxx
+          )
+if( TubeTK_USE_VTK )
+  set( tubeBaseRegistrationFilters_SRCS
+          ${tubeBaseRegistrationFilters_SRCS}
+          itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest.cxx
+          itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest.cxx
+          )
+endif( TubeTK_USE_VTK )
 
 include_directories( 
-  ${TubeTK_SOURCE_DIR}/Utilities 
-  ${TubeTK_SOURCE_DIR}/Base/Preprocessing
-  ${TubeTK_SOURCE_DIR}/Base/Registration 
-  )
+          ${TubeTK_SOURCE_DIR}/Utilities
+          ${TubeTK_SOURCE_DIR}/Base/Preprocessing
+          ${TubeTK_SOURCE_DIR}/Base/Registration
+          )
 
 add_executable( tubeBaseRegistrationFiltersTests
-                tubeBaseRegistrationFiltersTests.cxx
-                ${tubeBaseRegistrationFilters_SRCS} )
+          tubeBaseRegistrationFiltersTests.cxx
+          ${tubeBaseRegistrationFilters_SRCS}
+          )
 
-target_link_libraries( tubeBaseRegistrationFiltersTests
-                       ITKIO ITKNumerics ITKBasicFilters )
+set( tubeBaseRegistrationFilters_LIBS
+          tubeBaseRegistrationFiltersTests
+          ITKIO ITKNumerics ITKBasicFilters
+          )
+if( TubeTK_USE_VTK )
+  set( tubeBaseRegistrationFilters_LIBS
+          ${tubeBaseRegistrationFilters_LIBS}
+          vtkCommon vtkGraphics
+          )
+endif( TubeTK_USE_VTK )
+target_link_libraries( ${tubeBaseRegistrationFilters_LIBS} )
 
 add_test( itkTubeToTubeTransformFilterTest 
           ${BASE_REGISTRATION_FILTERS_TESTS} itkTubeToTubeTransformFilterTest
@@ -65,13 +80,14 @@ add_test( itkImageToTubeRigidRegistrationTest
           ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
           ${INPUT_DATA}/Branch.n020.mha
           ${TEMP}/itkTubeToTubeTransformFilter.tre
-          ${TEMP}/itkImageToTubeRigidRegistrationTest.mha 
+          ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
           )
 
 set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
-add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraightNoNoise
+if( TubeTK_USE_VTK )
+  add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraightNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest
           ${TEMP}/MotionField_straight_noNoise.mhd
@@ -81,7 +97,7 @@ add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizatio
           0
           )
 
-add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraight
+  add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraight
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest
           ${TEMP}/MotionField_straight.mhd
@@ -91,7 +107,7 @@ add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizatio
           0
           )
 
-add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngledNoNoise
+  add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngledNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest
           ${TEMP}/MotionField_angled_noNoise.mhd
@@ -101,7 +117,7 @@ add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizatio
           0.5
           )
 
-add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled
+  add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest
           ${TEMP}/MotionField_angled.mhd
@@ -111,28 +127,30 @@ add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizatio
           0.5
           )
 
-# TODO change number of iterations to something larger
-add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithoutRegularization
+  # TODO change number of iterations to something larger
+  add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithoutRegularization
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_originalFixedImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_originalMovingImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingMotionField.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingTransformedMovingImage.mhd
-          10
+          1
           0
           )
 
-add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
+  # TODO change number of iterations to something larger
+  add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
           ${TEMP}/SlidingOrganRegistrationWithRegularization_originalFixedImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_originalMovingImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingMotionField.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingTransformedMovingImage.mhd
-          10
+          1
           1
           )
 
+endif( TubeTK_USE_VTK )
 
 

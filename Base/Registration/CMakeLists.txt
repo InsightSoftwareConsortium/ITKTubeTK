@@ -25,6 +25,11 @@ PROJECT(Registration)
 
 FIND_PACKAGE(ITK REQUIRED)
 INCLUDE(${ITK_USE_FILE})
+
+if(TubeTK_USE_VTK)
+  FIND_PACKAGE(VTK REQUIRED)
+  INCLUDE(${VTK_USE_FILE})
+endif(TubeTK_USE_VTK)
  
 #SET(Registration_SRCS
 #  itkImageToTubeRigidMetric.txx
