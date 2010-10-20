@@ -28,6 +28,9 @@ limitations under the License.
 #include "itkVectorIndexSelectionCastImageFilter.h"
 
 #include "vtkPolyDataNormals.h"
+#include "vtkSmartPointer.h"
+#include "vtkDataArray.h"
+#include "vtkPointData.h"
 
 
 namespace itk
@@ -45,11 +48,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   m_UpdateBuffer = UpdateBufferType::New();
 
   // TODO take me out
-  m_DummyNormal[0] = 0;
-  m_DummyNormal[1] = 1;
-  m_DummyNormal[2] = 0;
+  m_DummyVector.Fill(0);
 
   m_BorderSurface                   = 0;
+  m_BorderNormalsSurface            = 0;
   m_NormalVectorImage               = NormalVectorImageType::New();
   m_OutputTangentialImage           = OutputImageType::New();
   m_OutputNormalImage               = OutputImageType::New();
@@ -106,6 +108,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   os << indent << "Border Surface: " << m_BorderSurface;
   //m_BorderSurface->PrintSelf( os, indent )
+  os << indent << "Border Normals Surface: " << m_BorderNormalsSurface;
+  //m_BorderNormalsSurface->PrintSelf( os, indent );
 
 }
 
@@ -217,6 +221,32 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 ::SetBorderSurface( BorderSurfacePointer border )
 {
   m_BorderSurface = border;
+
+  // Update the polydata of border surface normals
+  vtkSmartPointer< vtkPolyDataNormals > normalExtractor
+                                                  = vtkPolyDataNormals::New();
+  normalExtractor->SetInput( m_BorderSurface );
+  //normalExtractor->SetFeatureAngle(30);
+  // NOTE: default settings compute point normals, not cell normals
+  normalExtractor->Update();
+
+  // extract generic(double) point normals
+  m_BorderNormalsSurface = normalExtractor->GetOutput();
+}
+
+/**
+ * Set/Get the border surface
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+const typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+::BorderSurfacePointer
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::GetBorderNormalsSurface() const
+{
+  return m_BorderNormalsSurface;
 }
 
 /**
@@ -364,9 +394,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   std::cout << "\tInitializeIteration for FILTER" << std::endl;
 
   if ( !this->GetFixedImage() || !this->GetMovingImage()
-        || !this->GetDeformationField() || !this->GetBorderSurface() )
+        || !this->GetDeformationField() || !this->GetBorderSurface()
+        || !this->GetBorderNormalsSurface() )
     {
-    itkExceptionMacro( << "FixedImage, MovingImage, DeformationField and/or border surface not set");
+    itkExceptionMacro( << "FixedImage, MovingImage, DeformationField, border "
+                       << "surface and/or border normals surface not set");
     }
 
   // TODO checking the timestep for stability as in the anisotropic filter
@@ -392,29 +424,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 }
 
 /**
- * Compute the normals
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-::NormalVectorType&
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::ComputeNormalVectors() const
-{
-  // TODO assert vs. if?
-  assert( m_BorderSurface );
-
-  // TODO apply current transform to normal image / surface?
-
-  // TODO compute here!!!!  
-
-  // TODO make sure it's normalized (mag = 1)
-  return m_DummyNormal;
-}
-
-/**
  * Updates the border normals and the weighting factor w
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -435,6 +444,39 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // TODO calculate w here
   //DeformationFieldScalarType w = (DeformationFieldScalarType) 1.0;
+}
+
+/**
+ * Compute the normals
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+const typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+::NormalVectorType&
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::ComputeNormalVectors() const
+{
+  // TODO assert vs. if?
+  assert( m_BorderSurface );
+  assert( m_BorderNormalsSurface );
+
+  vtkSmartPointer< vtkDataArray > normalData
+                      = m_BorderNormalsSurface->GetPointData()->GetNormals();
+  double test[3];
+  normalData->GetTuple( 0, test );
+
+  // TODO apply current transform to normal image / surface?
+
+//  // TODO compute here!!!!
+//  m_DummyVector[0] = test[0];
+//  m_DummyVector[1] = test[1];
+//  m_DummyVector[2] = test[2];
+
+  // TODO make sure it's normalized (mag = 1)
+
+  return m_DummyVector;
 }
 
 /**
@@ -616,10 +658,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  * Populates the update buffer
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >::TimeStepType
+typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+
+::TimeStepType
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                    TDeformationField >
@@ -687,7 +729,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   //threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
   threadCount = 1;
 
-  str = (DenseFDThreadStruct *)(((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+  str = (DenseFDThreadStruct *)
+                        (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
@@ -729,11 +772,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  * Does the actual work of calculating change over a region supplied by the
  * multithreading mechanism
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >::TimeStepType
+template < class TFixedImage, class TMovingImage, class TDeformationField >                                               
+typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+::TimeStepType
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                    TDeformationField >
@@ -831,19 +873,19 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     {
     deformationFieldTangentialComponentFaceList[i]
         = deformationFieldTangentialComponentFaceCalculator(
-                                m_DeformationFieldTangentialComponents[i],
-                                deformationComponentRegionToProcess,
-                                radius );
+                        m_DeformationFieldTangentialComponents[i],
+                        deformationComponentRegionToProcess,
+                        radius );
     deformationFieldTangentialComponentFaceListIterator[i] =
-                                  deformationFieldTangentialComponentFaceList[i].begin();
+                        deformationFieldTangentialComponentFaceList[i].begin();
 
     deformationFieldNormalComponentFaceList[i]
         = deformationFieldNormalComponentFaceCalculator(
-                                m_DeformationFieldNormalComponents[i],
-                                deformationComponentRegionToProcess,
-                                radius );
+                        m_DeformationFieldNormalComponents[i],
+                        deformationComponentRegionToProcess,
+                        radius );
     deformationFieldNormalComponentFaceListIterator[i] =
-                                deformationFieldNormalComponentFaceList[i].begin();
+                        deformationFieldNormalComponentFaceList[i].begin();
 
     }
 
@@ -903,14 +945,14 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     tangentialDFC[i] = DeformationFieldComponentNeighborhoodType(
-                                radius,
-                                m_DeformationFieldTangentialComponents[i],
-                                *deformationFieldTangentialComponentFaceListIterator[i]);
+                      radius,
+                      m_DeformationFieldTangentialComponents[i],
+                      *deformationFieldTangentialComponentFaceListIterator[i]);
 
     normalDFC[i] = DeformationFieldComponentNeighborhoodType(
-                                radius,
-                                m_DeformationFieldNormalComponents[i],
-                                *deformationFieldNormalComponentFaceListIterator[i]);
+                      radius,
+                      m_DeformationFieldNormalComponents[i],
+                      *deformationFieldNormalComponentFaceListIterator[i]);
     }
 
   nD.GoToBegin();
@@ -1032,7 +1074,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   //threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
   threadCount = 1;
 
-  str = (DenseFDThreadStruct *)(((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+  str = (DenseFDThreadStruct *)
+                        (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.

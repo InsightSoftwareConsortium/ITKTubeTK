@@ -86,6 +86,8 @@ add_test( itkImageToTubeRigidRegistrationTest
 set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
+# TODO for ALL of these, make number of iterations greater
+
 if( TubeTK_USE_VTK )
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraightNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
@@ -93,7 +95,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionField_straight_noNoise.mhd
           0
           ${TEMP}/SmoothedMotionField_straight_noNoise.mhd
-          20
+          1
           0
           ${TEMP}/NormalVectorField_straight_noNoise.mhd
           )
@@ -104,7 +106,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionField_straight.mhd
           0.1
           ${TEMP}/SmoothedMotionField_straight.mhd
-          20
+          1
           0
           ${TEMP}/NormalVectorField_straight.mhd
           )
@@ -115,7 +117,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionField_angled_noNoise.mhd
           0
           ${TEMP}/SmoothedMotionField_angled_noNoise.mhd
-          20
+          1
           0.5
           ${TEMP}/NormalVectorField_angled_noNoise.mhd
           )
@@ -126,12 +128,11 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionField_angled.mhd
           0.1
           ${TEMP}/SmoothedMotionField_angled.mhd
-          20
+          1
           0.5
           ${TEMP}/NormalVectorField_angled.mhd
           )
 
-  # TODO change number of iterations to something larger
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithoutRegularization
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
@@ -143,7 +144,6 @@ if( TubeTK_USE_VTK )
           0
           )
 
-  # TODO change number of iterations to something larger
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
           ${BASE_REGISTRATION_FILTERS_TESTS}
                               itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest

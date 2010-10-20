@@ -171,6 +171,9 @@ public:
   virtual void SetBorderSurface( BorderSurfacePointer border );
   virtual const BorderSurfacePointer GetBorderSurface() const;
 
+  /** Get the polydata of the border surface normals */
+  virtual const BorderSurfacePointer GetBorderNormalsSurface() const;
+
   /** Get the image of the tangential diffusion tensors */
   virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
                                                                         const;
@@ -286,10 +289,11 @@ private:
   typename UpdateBufferType::Pointer m_UpdateBuffer;
 
   // TODO take me out
-  NormalVectorType                      m_DummyNormal;
+  NormalVectorType                      m_DummyVector;
 
   /** The border surface and derived image of normal vectors. */
   BorderSurfacePointer                  m_BorderSurface;
+  BorderSurfacePointer                  m_BorderNormalsSurface;
   NormalVectorImagePointer              m_NormalVectorImage;
 
   /** The image of the tangential diffusion tensors

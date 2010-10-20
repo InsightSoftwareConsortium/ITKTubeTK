@@ -142,43 +142,6 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   plane->SetNormal( borderN[0], borderN[1], borderN[2] );
   plane->Update();
 
-  ////////////////////////////////////////////////////////////////////////
-
-  // TODO: PUT THIS INTO ACTUAL FILTER!
-  vtkSmartPointer< vtkPolyDataNormals > normalExtractor
-                                                  = vtkPolyDataNormals::New();
-  normalExtractor->SetInput( plane->GetOutput() );
-  //normalExtractor->SetFeatureAngle(30);
-  // NOTE: default settings compute point normals, not cell normals
-  normalExtractor->Update();
-
-  // extract generic(double) point normals
-  vtkPolyData * normalPolyData = normalExtractor->GetOutput();
-  vtkSmartPointer< vtkDataArray > normalData = normalPolyData->GetPointData()->GetNormals();
-
-  // test to make sure the extracted normals match the known normals
-  double ep = 0.00005;
-  double test[3];
-  for( int i = 0; i < normalData->GetNumberOfTuples(); i++ )
-    {
-    normalData->GetTuple( i, test );
-    if( fabs( test[0] - borderN[0] ) > ep
-        || fabs( test[1] - borderN[1] ) > ep
-        || fabs( test[2] - borderN[2] ) > ep )
-      {
-      std::cerr << "index i=" << i << ": extracted normal [" << test[0] << " "
-          << test[1] << " " << test[2] << "]" << std::endl;
-      std::cerr << "does not match known border normal [" << borderN[0] << " "
-          << borderN[1] << " " << borderN[2] << "]" << std::endl;
-      return EXIT_FAILURE;
-      }
-    }
-
-  // normal vector image name = argv[6];
-  ////////////////////////////////////////////////////////////////////////
-
-
-
   VectorType    pixel;
   IteratorType  it( deformationField,
                     deformationField->GetLargestPossibleRegion() );
@@ -267,6 +230,40 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   int numIterations = atoi( argv[4] );
   registrator->SetNumberOfIterations( numIterations );
 
+  // Check to make sure the border normals were calculated correctly by the
+  // registrator
+  vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
+  vtkSmartPointer< vtkDataArray > normalData
+                                = normalPolyData->GetPointData()->GetNormals();
+
+  // test to make sure the extracted normals match the known normals
+  double ep = 0.00005;
+  double test[3];
+  for( int i = 0; i < normalData->GetNumberOfTuples(); i++ )
+    {
+    normalData->GetTuple( i, test );
+    if( fabs( test[0] - borderN[0] ) > ep
+        || fabs( test[1] - borderN[1] ) > ep
+        || fabs( test[2] - borderN[2] ) > ep )
+      {
+      std::cerr << "index i=" << i << ": extracted normal [" << test[0] << " "
+          << test[1] << " " << test[2] << "]" << std::endl;
+      std::cerr << "does not match known border normal [" << borderN[0] << " "
+          << borderN[1] << " " << borderN[2] << "]" << std::endl;
+      return EXIT_FAILURE;
+      }
+    }
+  if( plane->GetOutput()->GetPointData()->GetNumberOfTuples() !=
+      normalPolyData->GetPointData()->GetNumberOfTuples() )
+    {
+    std::cerr << "number of tuples in original plane does not match number of "
+                                    << "tuples in border normal" << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  // TODO
+  // normal vector image name = argv[6];
+
   // Save the smoothed deformation field
   writer->SetFileName( argv[3] );
   writer->SetInput( registrator->GetOutput() );
@@ -279,19 +276,6 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   return EXIT_SUCCESS;
 

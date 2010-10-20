@@ -76,7 +76,8 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
   return sphere->GetOutput();
 }
 
-int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc, char* argv [] )
+int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
+                                                      int argc, char* argv [] )
 {
   if( argc < 7 )
     {
@@ -261,10 +262,6 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc
   warper->SetOutputDirection( fixed->GetDirection() );
   warper->SetEdgePaddingValue( bgnd );
 
-  // TODO take me out
-  return EXIT_SUCCESS;
-
-
   // Update triggers the registration
   warper->Update();
 
@@ -327,8 +324,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc
     return EXIT_FAILURE;
     }
 
-  // TODO there are some exception handling tests in itkDemonsRegistrationFilterTest
-  // that would be good to put here
+  // TODO there are some exception handling tests in
+  // itkDemonsRegistrationFilterTest that would be good to put here
 
   return EXIT_SUCCESS;
 
