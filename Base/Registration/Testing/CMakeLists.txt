@@ -61,7 +61,7 @@ set( tubeBaseRegistrationFilters_LIBS
 if( TubeTK_USE_VTK )
   set( tubeBaseRegistrationFilters_LIBS
           ${tubeBaseRegistrationFilters_LIBS}
-          vtkCommon vtkGraphics
+          vtkCommon vtkGraphics vtkIO
           )
 endif( TubeTK_USE_VTK )
 target_link_libraries( ${tubeBaseRegistrationFilters_LIBS} )
@@ -97,7 +97,6 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_straight_noNoise.mhd
           1
           0
-          ${TEMP}/NormalVectorField_straight_noNoise.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraight
@@ -108,7 +107,6 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_straight.mhd
           1
           0
-          ${TEMP}/NormalVectorField_straight.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngledNoNoise
@@ -119,7 +117,6 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_angled_noNoise.mhd
           1
           0.5
-          ${TEMP}/NormalVectorField_angled_noNoise.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled
@@ -130,7 +127,6 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_angled.mhd
           1
           0.5
-          ${TEMP}/NormalVectorField_angled.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithoutRegularization
@@ -142,6 +138,8 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingTransformedMovingImage.mhd
           1
           0
+          ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalSurfaceBorder.vtk
+          ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalVectorImage.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
@@ -153,6 +151,8 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingTransformedMovingImage.mhd
           1
           1
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_normalSurfaceBorder.vtk
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage.mhd
           )
 
 endif( TubeTK_USE_VTK )

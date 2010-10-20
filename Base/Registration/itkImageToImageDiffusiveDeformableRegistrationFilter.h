@@ -174,6 +174,9 @@ public:
   /** Get the polydata of the border surface normals */
   virtual const BorderSurfacePointer GetBorderNormalsSurface() const;
 
+  /** Get the image of the normal vectors */
+  virtual const NormalVectorImagePointer GetNormalVectorImage() const;
+
   /** Get the image of the tangential diffusion tensors */
   virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
                                                                         const;
@@ -218,11 +221,6 @@ protected:
   template< class UnallocatedImageType, class TemplateImageType >
   void AllocateSpaceForImage( UnallocatedImageType& inputImage,
                               const TemplateImageType& templateImage );
-
-  /** Compute the normal, as determined by the surface border polydata
-   *
-   */
-  virtual const NormalVectorType& ComputeNormalVectors() const;
 
   /** Update the normal vector image and weighting factor w */
   virtual void UpdateNormalVectorImage();

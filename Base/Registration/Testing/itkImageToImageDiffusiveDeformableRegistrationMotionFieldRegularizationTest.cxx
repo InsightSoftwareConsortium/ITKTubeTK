@@ -49,7 +49,6 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
               << "smoothed motion field image, "
               << "number of iterations"
               << "border slope"
-              << "output normal image "
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -176,6 +175,9 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
       }
 
     // Add random noise
+
+    // TODO add noise to the border later?
+
     randX = randGenerator->GetNormalVariate( mean, variance );
     randY = randGenerator->GetNormalVariate( mean, variance );
     randZ = randGenerator->GetNormalVariate( mean, variance );
@@ -260,9 +262,6 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
                                     << "tuples in border normal" << std::endl;
     return EXIT_FAILURE;
     }
-
-  // TODO
-  // normal vector image name = argv[6];
 
   // Save the smoothed deformation field
   writer->SetFileName( argv[3] );

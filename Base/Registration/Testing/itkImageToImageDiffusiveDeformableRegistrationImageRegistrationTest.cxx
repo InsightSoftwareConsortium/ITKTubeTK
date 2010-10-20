@@ -32,6 +32,7 @@ limitations under the License.
 #include "itkNearestNeighborInterpolateImageFunction.h"
 
 #include "vtkSphereSource.h"
+#include "vtkPolyDataWriter.h"
 
 // Template function to fill in an image with a sphere.
 template <class TImage>
@@ -79,7 +80,7 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
 int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 7 )
+  if( argc < 9 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
@@ -88,8 +89,10 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
               << "original moving image, "
               << "resulting motion field image, "
               << "resulting transformed moving image, "
-              << "number of iterations"
-              << "compute regularization term"
+              << "number of iterations, "
+              << "compute regularization term, "
+              << "normal surface border polydata, "
+              << "normal vector image"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -101,6 +104,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   typedef double                                          VectorScalarType;
   typedef itk::Image< PixelType, ImageDimension >         ImageType;
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
+  typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
   typedef itk::Image< VectorType, ImageDimension >        FieldType;
   typedef ImageType::IndexType                            IndexType;
   typedef ImageType::SizeType                             SizeType;
@@ -234,7 +238,6 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   int numberOfIterations = atoi( argv[5] );
   registrator->SetNumberOfIterations( numberOfIterations );
 
-  // TODO take me out
   int compute = atoi( argv[6] );
   if (compute)
     {
@@ -264,6 +267,30 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
 
   // Update triggers the registration
   warper->Update();
+
+  // ---------------------------------------------------------
+  std::cout << "Printing the normal surface border and normal vector image"
+      << std::endl;
+
+  vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
+  vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
+  polyWriter->SetFileName( argv[7] );
+  polyWriter->SetInput( normalPolyData );
+  polyWriter->Write();
+
+//  // TODO take me out
+//  double test[3];
+//  for (int i = 0; i < border->GetPointData()->GetNormals()->GetNumberOfTuples(); i++)
+//    {
+//    normalPolyData->GetPointData()->GetNormals()->GetTuple(i, test);
+//    std::cout << test[0] << " " << test[1] << " " << test[2] << std::endl;
+//    }
+
+  typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
+  VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
+  vectorWriter->SetFileName( argv[8] );
+  vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+  vectorWriter->Write();
 
   // ---------------------------------------------------------
   std::cout << "Printing the deformation field and transformed moving image"

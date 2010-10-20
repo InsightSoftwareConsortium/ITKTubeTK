@@ -31,7 +31,7 @@ limitations under the License.
 #include "vtkSmartPointer.h"
 #include "vtkDataArray.h"
 #include "vtkPointData.h"
-
+#include "vtkPointLocator.h"
 
 namespace itk
 { 
@@ -106,6 +106,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 {
   Superclass::PrintSelf( os, indent );
 
+  // TODO PrintSelf not compiling because of os type mismatch
   os << indent << "Border Surface: " << m_BorderSurface;
   //m_BorderSurface->PrintSelf( os, indent )
   os << indent << "Border Normals Surface: " << m_BorderNormalsSurface;
@@ -235,7 +236,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 }
 
 /**
- * Set/Get the border surface
+ * Get the surface of border normals
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 const typename ImageToImageDiffusiveDeformableRegistrationFilter
@@ -250,7 +251,22 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 }
 
 /**
- * Set/Get the image of tangential diffusion tensors
+ * Get the image of normal vectors
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+const typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+::NormalVectorImagePointer
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::GetNormalVectorImage() const
+{
+  return m_NormalVectorImage;
+}
+
+/**
+ * Get the image of tangential diffusion tensors
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 const typename ImageToImageDiffusiveDeformableRegistrationFilter
@@ -403,6 +419,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // TODO checking the timestep for stability as in the anisotropic filter
 
+  // TODO if normals are constant, then don't need to do this on every iteration!
+
   // Compute the border normals and the weighting factor w
   this->UpdateNormalVectorImage();
 
@@ -433,50 +451,47 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::UpdateNormalVectorImage()
 {
-  // TODO calculate n here
-  NormalVectorIteratorType normalVectorIt( m_NormalVectorImage,
-                              m_NormalVectorImage->GetLargestPossibleRegion() );
-  NormalVectorType n = this->ComputeNormalVectors();
-  for( normalVectorIt.GoToBegin(); !normalVectorIt.IsAtEnd(); ++normalVectorIt )
-    {
-    normalVectorIt.Set( n );
-    }
-
-  // TODO calculate w here
-  //DeformationFieldScalarType w = (DeformationFieldScalarType) 1.0;
-}
-
-/**
- * Compute the normals
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-::NormalVectorType&
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::ComputeNormalVectors() const
-{
   // TODO assert vs. if?
   assert( m_BorderSurface );
   assert( m_BorderNormalsSurface );
 
+  // Get the normals
   vtkSmartPointer< vtkDataArray > normalData
                       = m_BorderNormalsSurface->GetPointData()->GetNormals();
-  double test[3];
-  normalData->GetTuple( 0, test );
 
-  // TODO apply current transform to normal image / surface?
+  // Iterate over the normal vector image and insert the normal of the closest
+  // point
+  NormalVectorIteratorType normalVectorIt( m_NormalVectorImage,
+                              m_NormalVectorImage->GetLargestPossibleRegion() );
 
-//  // TODO compute here!!!!
-//  m_DummyVector[0] = test[0];
-//  m_DummyVector[1] = test[1];
-//  m_DummyVector[2] = test[2];
+  vtkPointLocator * locator = vtkPointLocator::New();
+  locator->SetDataSet( m_BorderNormalsSurface );
 
-  // TODO make sure it's normalized (mag = 1)
+  itk::Index< ImageDimension > index;
+  typename NormalVectorImageType::SpacingType spacing
+                                            = m_NormalVectorImage->GetSpacing();
+  typename NormalVectorImageType::PointType origin
+                                            = m_NormalVectorImage->GetOrigin();
+  double coord[3];
+  vtkIdType id;
 
-  return m_DummyVector;
+  std::cout << "Computing normals... " << std::endl;
+
+  for( normalVectorIt.GoToBegin(); !normalVectorIt.IsAtEnd(); ++normalVectorIt )
+    {
+    index = normalVectorIt.GetIndex();
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      coord[i] = ( index[i] * spacing[i] ) + origin[i];
+      }
+    id = locator->FindClosestPoint(coord);
+    normalVectorIt.Set( normalData->GetTuple( id ) );
+    }
+
+  std::cout << "Finished computing normals." << std::endl;
+
+  // TODO calculate w here
+  //DeformationFieldScalarType w = (DeformationFieldScalarType) 1.0;
 }
 
 /**
