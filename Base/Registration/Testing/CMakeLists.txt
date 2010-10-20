@@ -95,6 +95,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_straight_noNoise.mhd
           20
           0
+          ${TEMP}/NormalVectorField_straight_noNoise.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraight
@@ -105,6 +106,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_straight.mhd
           20
           0
+          ${TEMP}/NormalVectorField_straight.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngledNoNoise
@@ -115,6 +117,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_angled_noNoise.mhd
           20
           0.5
+          ${TEMP}/NormalVectorField_angled_noNoise.mhd
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled
@@ -125,6 +128,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SmoothedMotionField_angled.mhd
           20
           0.5
+          ${TEMP}/NormalVectorField_angled.mhd
           )
 
   # TODO change number of iterations to something larger

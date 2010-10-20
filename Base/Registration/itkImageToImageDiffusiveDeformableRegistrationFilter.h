@@ -26,6 +26,9 @@ limitations under the License.
 #include "itkPDEDeformableRegistrationFilter.h"
 #include "itkImageToImageDiffusiveDeformableRegistrationFunction.h"
 
+#include "vtkPolyData.h"
+#include "vtkSmartPointer.h"
+
 namespace itk
 {
 
@@ -153,13 +156,20 @@ public:
         RegistrationFunctionType::DeformationFieldComponentNeighborhoodArrayType
                                 DeformationFieldComponentNeighborhoodArrayType;
 
-  /** Set the border normal. The magnitude of the vector is internally set
-   *  to one if it isn't already.
-   */
   // TODO need to calculate this here or input as image of normals.  For now
   // we're taking only one vector for this test.
-  virtual void SetNormalVectors( NormalVectorType& normals );
-  virtual const NormalVectorType& GetNormalVectors() const;
+  /** Set the border polydata for the fixed image.  Border normals are computed
+   *  based on this polydata, so it should be "well-behaved" under
+   *  vtkPolyDataNormals.  The border normal must be in the same space as the
+   *  fixed image.
+   */
+  // TODO horrible for dimension-independence... perhaps provide additional /
+  // only option to provide normal image only - then could ensure that it
+  // with the right templates
+  typedef vtkPolyData                           BorderSurfaceType;
+  typedef vtkSmartPointer< BorderSurfaceType >  BorderSurfacePointer;
+  virtual void SetBorderSurface( BorderSurfacePointer border );
+  virtual const BorderSurfacePointer GetBorderSurface() const;
 
   /** Get the image of the tangential diffusion tensors */
   virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
@@ -205,6 +215,11 @@ protected:
   template< class UnallocatedImageType, class TemplateImageType >
   void AllocateSpaceForImage( UnallocatedImageType& inputImage,
                               const TemplateImageType& templateImage );
+
+  /** Compute the normal, as determined by the surface border polydata
+   *
+   */
+  virtual const NormalVectorType& ComputeNormalVectors() const;
 
   /** Update the normal vector image and weighting factor w */
   virtual void UpdateNormalVectorImage();
@@ -270,9 +285,11 @@ private:
   /** The buffer that holds the updates for an iteration of the algorithm. */
   typename UpdateBufferType::Pointer m_UpdateBuffer;
 
-  /** The border normals. */
   // TODO take me out
-  NormalVectorType                      m_NormalVectors;
+  NormalVectorType                      m_DummyNormal;
+
+  /** The border surface and derived image of normal vectors. */
+  BorderSurfacePointer                  m_BorderSurface;
   NormalVectorImagePointer              m_NormalVectorImage;
 
   /** The image of the tangential diffusion tensors

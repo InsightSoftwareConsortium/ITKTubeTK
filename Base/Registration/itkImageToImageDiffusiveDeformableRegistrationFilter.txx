@@ -27,6 +27,8 @@ limitations under the License.
 
 #include "itkVectorIndexSelectionCastImageFilter.h"
 
+#include "vtkPolyDataNormals.h"
+
 
 namespace itk
 { 
@@ -42,7 +44,12 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
-  m_NormalVectors.Fill( 0 );
+  // TODO take me out
+  m_DummyNormal[0] = 0;
+  m_DummyNormal[1] = 1;
+  m_DummyNormal[2] = 0;
+
+  m_BorderSurface                   = 0;
   m_NormalVectorImage               = NormalVectorImageType::New();
   m_OutputTangentialImage           = OutputImageType::New();
   m_OutputNormalImage               = OutputImageType::New();
@@ -95,13 +102,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os, indent );
 
-  os << indent << "NormalVectors: ";
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    std::cout << m_NormalVectors[i] << " ";
-    }
+  os << indent << "Border Surface: " << m_BorderSurface;
+  //m_BorderSurface->PrintSelf( os, indent )
+
 }
 
 /**
@@ -187,31 +192,31 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 }
 
 /**
- * Set/Get the border normals
+ * Set/Get the border surface
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 const typename ImageToImageDiffusiveDeformableRegistrationFilter
                                 < TFixedImage, TMovingImage, TDeformationField >
-::NormalVectorType&
+::BorderSurfacePointer
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                    TDeformationField >
-::GetNormalVectors() const
+::GetBorderSurface() const
 {
-  return m_NormalVectors;
+  return m_BorderSurface;
 }
 
 /**
- * Set/Get the border normals
+ * Set/Get the border surface
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                    TDeformationField >
-::SetNormalVectors( NormalVectorType& normals )
+::SetBorderSurface( BorderSurfacePointer border )
 {
-  m_NormalVectors = normals / normals.GetNorm();
+  m_BorderSurface = border;
 }
 
 /**
@@ -359,9 +364,9 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   std::cout << "\tInitializeIteration for FILTER" << std::endl;
 
   if ( !this->GetFixedImage() || !this->GetMovingImage()
-        || !this->GetDeformationField() )
+        || !this->GetDeformationField() || !this->GetBorderSurface() )
     {
-    itkExceptionMacro( << "FixedImage, MovingImage and/or DeformationField not set");
+    itkExceptionMacro( << "FixedImage, MovingImage, DeformationField and/or border surface not set");
     }
 
   // TODO checking the timestep for stability as in the anisotropic filter
@@ -387,6 +392,29 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 }
 
 /**
+ * Compute the normals
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+const typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+::NormalVectorType&
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::ComputeNormalVectors() const
+{
+  // TODO assert vs. if?
+  assert( m_BorderSurface );
+
+  // TODO apply current transform to normal image / surface?
+
+  // TODO compute here!!!!  
+
+  // TODO make sure it's normalized (mag = 1)
+  return m_DummyNormal;
+}
+
+/**
  * Updates the border normals and the weighting factor w
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -399,7 +427,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   // TODO calculate n here
   NormalVectorIteratorType normalVectorIt( m_NormalVectorImage,
                               m_NormalVectorImage->GetLargestPossibleRegion() );
-  NormalVectorType n = this->GetNormalVectors();
+  NormalVectorType n = this->ComputeNormalVectors();
   for( normalVectorIt.GoToBegin(); !normalVectorIt.IsAtEnd(); ++normalVectorIt )
     {
     normalVectorIt.Set( n );

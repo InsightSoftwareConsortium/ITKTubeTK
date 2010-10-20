@@ -31,10 +31,12 @@ limitations under the License.
 #include "itkWarpImageFilter.h"
 #include "itkNearestNeighborInterpolateImageFunction.h"
 
-// Template function to fill in an image with a circle.
+#include "vtkSphereSource.h"
+
+// Template function to fill in an image with a sphere.
 template <class TImage>
 void
-FillWithCircle(
+FillWithSphere(
 TImage * image,
 double * center,
 double radius,
@@ -60,7 +62,18 @@ typename TImage::PixelType backgnd )
     if( distance <= r2 ) it.Set( foregnd );
     else it.Set( backgnd );
     }
+}
 
+// Function to create the spherical polydata
+vtkPolyData* CreateSpherePolydata( double * center, double radius )
+{
+  vtkSphereSource * sphere = vtkSphereSource::New();
+  sphere->SetRadius( radius );
+  sphere->SetCenter( center );
+  sphere->SetThetaResolution( 18 );
+  sphere->SetPhiResolution( 18 );
+  sphere->Update();
+  return sphere->GetOutput();
 }
 
 int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc, char* argv [] )
@@ -136,22 +149,22 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc
   PixelType fgnd = 250;
   PixelType bgnd = 15;
 
-  // fill moving with circle
+  // fill moving with sphere
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     center[i] = 64;
     }
   radius = 30;
-  FillWithCircle<ImageType>( moving, center, radius, fgnd, bgnd );
+  FillWithSphere<ImageType>( moving, center, radius, fgnd, bgnd );
 
-  // fill fixed with circle
+  // fill fixed with sphere
   center[0] = 62;
   for ( unsigned int i = 1; i < ImageDimension; i++ )
     {
     center[i] = 64;
     }
   radius = 32;
-  FillWithCircle<ImageType>( fixed, center, radius, fgnd, bgnd );
+  FillWithSphere<ImageType>( fixed, center, radius, fgnd, bgnd );
 
   // fill initial deformation with zero vectors
   VectorType zeroVec;
@@ -159,13 +172,15 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc
   initField->FillBuffer( zeroVec );
 
   // setup the normals
-  // TODO realistic with sphere
+  vtkPolyData * border = CreateSpherePolydata( center, radius );
+  if( !border )
+    {
+    std::cerr << "Could not generate sphere surface" << std::endl;
+    return EXIT_FAILURE;
+    }
+
   // TODO what happens if normals are not set to registrator? i.e. normals are
   // the defaults of 0,0,0
-  VectorType normals;
-  normals[0] = 0;
-  normals[1] = 1;
-  normals[2] = 0;
 
   // ---------------------------------------------------------
   std::cout << "Printing the initial fixed and moving images" << std::endl;
@@ -213,11 +228,12 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc
   registrator->SetInitialDeformationField( caster->GetOutput() );
   registrator->SetMovingImage( moving );
   registrator->SetFixedImage( fixed );
-  registrator->SetNormalVectors( normals );
+  registrator->SetBorderSurface( border );
+  //registrator->SetNormalVectors( normals );
   int numberOfIterations = atoi( argv[5] );
   registrator->SetNumberOfIterations( numberOfIterations );
 
-  // TODO take out
+  // TODO take me out
   int compute = atoi( argv[6] );
   if (compute)
     {
@@ -244,6 +260,10 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(int argc
   warper->SetOutputOrigin( fixed->GetOrigin() );
   warper->SetOutputDirection( fixed->GetDirection() );
   warper->SetEdgePaddingValue( bgnd );
+
+  // TODO take me out
+  return EXIT_SUCCESS;
+
 
   // Update triggers the registration
   warper->Update();
