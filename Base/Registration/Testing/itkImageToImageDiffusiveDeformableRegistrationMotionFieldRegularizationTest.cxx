@@ -178,8 +178,6 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
 
     // Add random noise
 
-    // TODO add noise to the border later?
-
     randX = randGenerator->GetNormalVariate( mean, variance );
     randY = randGenerator->GetNormalVariate( mean, variance );
     randZ = randGenerator->GetNormalVariate( mean, variance );

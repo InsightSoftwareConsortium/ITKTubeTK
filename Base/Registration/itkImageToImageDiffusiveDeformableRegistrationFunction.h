@@ -31,9 +31,10 @@ namespace itk
 {
 
 /** \class itkImageToImageDiffusiveDeformableRegistrationFunction
- * \brief TODO
+ * \brief Implements the update function for the
+ * itkImageToImageDiffusiveDeformableRegistrationFilter
  *
- * TODO Insert more description + warnings here
+ * Insert more description + warnings here!!!!
  *
  * This class is templated over the fixed image type, moving image type and the
  * deformation field type.
@@ -153,8 +154,11 @@ public:
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 
-  /** This method is called by a finite difference solver image filter at
-   * each pixel that does not lie on a data set boundary */
+  /** Inherited from superclass - do not call this function!  Call ComputeUpdate
+   * (neighborhood, normalVectorImageNeighborhood, tangentialNeighborhoodTensor,
+   * tangentialNeighborhoodDeformationFieldComponents, normalNeighborhoodTensor,
+   * normalNeighborhoodDeformationFieldComponents, globalData, offset) instead
+   */
   virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
                                   void *globalData,
                                   const FloatOffsetType &offset

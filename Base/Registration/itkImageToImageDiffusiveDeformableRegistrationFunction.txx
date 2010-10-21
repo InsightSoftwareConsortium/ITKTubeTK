@@ -38,7 +38,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TDeformationField >
 ::ImageToImageDiffusiveDeformableRegistrationFunction()
 {
-  // TODO will be computed
   m_TimeStep = 0.05;
 
   RadiusType r;
@@ -52,27 +51,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   m_RegularizationFunction->SetTimeStep( m_TimeStep );
 
   m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
-  // TODO more parameters for the intensity distance function?
-  // TODO make these options for this function
-  // TODO NOW
-  // ... inherited for finite
-  //  m_IntensityDistanceFunction->SetScaleCoefficients( vals );
-  // ... inherited from PDE function
-  //  m_IntensityDistanceFunction->SetGradientStep( 0.0 );
-  //  m_IntensityDistanceFunction->SetNormalizeGradient( false );
-
-
-
-
-  // TODO default for now is LinearInterpolateImageFilter - can change later
-  //  m_IntensityDistanceFunction->SetMovingImageInterpolator( interp );
-
-
-  // TODO computes global timestep - will need to change once time step changes
-  //   MeanSquareRegistration uses constant timestep of 1
-  // but maybe ok because we're just calling compute update, which doesn't
-  // use m_TimeStep
-  //m_IntensityDistanceFunction->SetTimeStep( m_TimeStep );
 
   this->SetMovingImage(0);
   this->SetFixedImage(0);
@@ -202,7 +180,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   delete gd;
 }
 
-
 /**
   * Called at the beginning of each iteration
   */
@@ -217,15 +194,12 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 
   if( !this->GetMovingImage()
       || !this->GetFixedImage()
-      /*|| !this->GetDeformationField()*/ ) // TODO put back
+      || !this->GetDeformationField() )
     {
     itkExceptionMacro( << "MovingImage, FixedImage and/or deformation field not set" );
     }
 
   // Setup the component functions
-  // TODO moving image and fixed image can be set only once
-  // TODO more set methods to be applied to the intensity distance function?
-  // TODO NOW
   m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() ) ;
   m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
   m_IntensityDistanceFunction->SetDeformationField( this->GetDeformationField() );
@@ -249,22 +223,16 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                 void *gd,
                 const FloatOffsetType& offset)
 {
-  // TODO this likely won't work, but this function shouldn't be called anyways
-  NormalVectorImageNeighborhoodType   normalVectorImageNeighborhood;
-  DiffusionTensorNeighborhoodType     tangentialDiffusionTensor;
-  DeformationFieldComponentNeighborhoodArrayType
-                                      tangentialDeformationFieldComponentArray;
-  DiffusionTensorNeighborhoodType     normalDiffusionTensor;
-  DeformationFieldComponentNeighborhoodArrayType
-                                      normalDeformationFieldComponentArray;
-  return this->ComputeUpdate( neighborhood,
-                              normalVectorImageNeighborhood,
-                              tangentialDiffusionTensor,
-                              tangentialDeformationFieldComponentArray,
-                              normalDiffusionTensor,
-                              normalDeformationFieldComponentArray,
-                              gd,
-                              offset);
+  // This function should never be called!
+  itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
+                     << "be called.  Use ComputeUpdate(neighborhood, "
+                     << "normalVectorImageNeighborhood,"
+                     << "tangentialNeighborhoodTensor,"
+                     << "tangentialNeighborhoodDeformationFieldComponents,"
+                     << "normalNeighborhoodTensor,"
+                     << "normalNeighborhoodDeformationFieldComponents,"
+                     << " globalData, offset) instead" );
+
 }
 
 /**
@@ -314,11 +282,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   normalRegularizationTerm.Fill(0); // essential because incremented in loop
 
   // Compute the intensity distance update
-  // TODO make sure that there is no normalization in the intensity distance
-  // function - check that smooth gradient is off, and that the normalize
-  // metric doesn't do anything we don't want
-  // TODO weighting between the intensity distance and regularization terms?
-
   if ( m_ComputeIntensityDistanceTerm )
     {
     intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
@@ -358,20 +321,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 
     }
 
-
-
-  // TODO weighting here?  Don't worry about weighting if one term is not
-  // computed because of boolean settings
   updateTerm = intensityDistanceTerm
                       + tangentialRegularizationTerm + normalRegularizationTerm;
-
-  // TODO take out
-//  if ( updateTerm[0] != 0 || updateTerm[1] != 0 || updateTerm[2] != 0 )
-//    {
-//    std::cout << "update term " << updateTerm[0] << " "
-//                                << updateTerm[1] << " "
-//                                << updateTerm[2] << std::endl;
-//    }
 
   return updateTerm;
 

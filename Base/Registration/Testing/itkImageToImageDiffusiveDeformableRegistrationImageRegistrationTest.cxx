@@ -99,7 +99,6 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     }
 
   // Typedefs
-  // TODO try with dimension = 2
   const unsigned int                                      ImageDimension = 3;
   typedef double                                          PixelType;
   typedef double                                          VectorScalarType;
@@ -184,9 +183,6 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     std::cerr << "Could not generate sphere surface" << std::endl;
     return EXIT_FAILURE;
     }
-
-  // TODO what happens if normals are not set to registrator? i.e. normals are
-  // the defaults of 0,0,0
 
   // ---------------------------------------------------------
   std::cout << "Printing the initial fixed and moving images" << std::endl;
@@ -289,14 +285,6 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   polyWriter->SetInput( normalPolyData );
   polyWriter->Write();
 
-//  // TODO take me out
-//  double test[3];
-//  for (int i = 0; i < border->GetPointData()->GetNormals()->GetNumberOfTuples(); i++)
-//    {
-//    normalPolyData->GetPointData()->GetNormals()->GetTuple(i, test);
-//    std::cout << test[0] << " " << test[1] << " " << test[2] << std::endl;
-//    }
-
   typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
   VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
   vectorWriter->SetFileName( argv[8] );
@@ -361,9 +349,6 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     std::cout << "Test failed - too many pixels different." << std::endl;
     return EXIT_FAILURE;
     }
-
-  // TODO there are some exception handling tests in
-  // itkDemonsRegistrationFilterTest that would be good to put here
 
   return EXIT_SUCCESS;
 

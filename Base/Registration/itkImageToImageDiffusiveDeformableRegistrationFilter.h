@@ -33,9 +33,24 @@ namespace itk
 {
 
 /** \class itkImageToImageDiffusiveDeformableRegistrationFilter
- * \brief TODO
+ * \brief Insert brief description here!!!
  *
- * TODO Insert more description + warnings here
+ * Implements diffusive deformable registration, where the update term
+ * is composed of two parts: an intensity difference term and a regularization
+ * term.  The intensity difference term is computed based on sum of square
+ * differences, with the assumption that this algorithm will be used for
+ * monomodal image registration at the moment.  The regularization term ensures
+ * that the resulting deformation field is realistic, and has been tailored for
+ * the registration of images depicting images that slide relative to each
+ * other.  By specifying the border between the organs (using a vtkPolyData * )
+ * we can ensure that the motion field is smooth in the direction parallel to
+ * the border's normal (to enforce coupling between the organs) but allow
+ * the motion field to be discontinuous in the direction parallel to the border
+ * itself in the vicinity of the border (to allow for sliding motion).
+ *
+ * Insert paper reference here!!!!!!!
+ *
+ * Insert more description + warnings here!!!!!
  *
  * This class is templated over the fixed image type, moving image type and the
  * deformation field type.
@@ -82,9 +97,6 @@ public:
 
   /** Inherit some enums from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
-
-  // TODO go through typedefs and pull as many as possible from the function!
-  // TODO may be able to simplify the typedefs here to make them clearer
 
   /** Deformation field types. */
 
@@ -156,16 +168,11 @@ public:
         RegistrationFunctionType::DeformationFieldComponentNeighborhoodArrayType
                                 DeformationFieldComponentNeighborhoodArrayType;
 
-  // TODO need to calculate this here or input as image of normals.  For now
-  // we're taking only one vector for this test.
   /** Set the border polydata for the fixed image.  Border normals are computed
    *  based on this polydata, so it should be "well-behaved" under
    *  vtkPolyDataNormals.  The border normal must be in the same space as the
    *  fixed image.
    */
-  // TODO horrible for dimension-independence... perhaps provide additional /
-  // only option to provide normal image only - then could ensure that it
-  // with the right templates
   typedef vtkPolyData                           BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >  BorderSurfacePointer;
   virtual void SetBorderSurface( BorderSurfacePointer border );
@@ -293,10 +300,7 @@ private:
   static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
 
   /** The buffer that holds the updates for an iteration of the algorithm. */
-  typename UpdateBufferType::Pointer m_UpdateBuffer;
-
-  // TODO take me out
-  NormalVectorType                      m_DummyVector;
+  typename UpdateBufferType::Pointer    m_UpdateBuffer;
 
   /** Whether or not to use the diffusive regularization. */
   bool                                  m_UseDiffusiveRegularization;
@@ -353,3 +357,120 @@ private:
 #endif
 
 #endif
+
+/** TODO LIST - essential
+
+  // Calculate w in ComputeNormalVectorImage() - but don't bother if
+  // m_UseDiffusiveRegularization == false (do it in the loop with the normals)
+
+  // Get w in ComputeDiffusionTensorImage()
+
+  // checking the timestep for stability as in the anisotropic filter
+
+  // halting criteria?!?!
+
+  // SetUseImageSpacing() to on for this filter?  Would give derivates in physical space, default is off
+
+  // why did Andinet comment out m_UpdateBuffer->Modified() in CalculateChange()
+
+  // boundary faces
+
+  // difference between cell normals and normals - using the correct ones?
+
+  // better way to compute n's?
+
+  // Better (faster?) alternative to point locator
+
+  // Go through PDERegistrationFilter and PDERegistrationFunction classes to
+  // ensure we're not missing any important functions to override / parameters
+  // to set
+
+  // see where you can make it faster - computing anything unnecessarily?
+
+  ======== function =========
+
+  // test to see if andinet's stuff works with a timestep of 1.0
+
+  // compute timestep instead of hard-coding 0.05 in constructor
+
+  // does the intensiy distance function need more parameters in the ctor?
+  // Ex. options for the global filter
+  // ... inherited for finite
+  //  m_IntensityDistanceFunction->SetScaleCoefficients( vals );
+  // ... inherited from PDE function
+  //  m_IntensityDistanceFunction->SetGradientStep( 0.0 );
+  //  m_IntensityDistanceFunction->SetNormalizeGradient( false );
+
+  // In ctor - intensity distance function uses LinearInterpolateImageFilter
+  // by default, can change later using setMovingImageInterpolator()
+
+  // check to make sure it's ok that intensity function uses global timestep
+  // i think it is because we are just calling update(), which does not use
+  // m_TimeStep
+
+  // Better std::cout for what's being done -with iteration number
+
+  // make sure that there is no normalization in the intensity distance
+  // function - check that smooth gradient is off, and that the normalize
+  // metric doesn't do anything we don't want
+
+    // weighting between the intensity distance and regularization terms
+  // in ComputeUpdate?  Don't worry about weighting if one term is not
+  // computed because of boolean settings
+
+
+  */
+
+/** TODO LIST - medium
+
+  // Allocating all of the images ( in Initialize() ) essential?
+
+    ======== function =========
+
+  */
+
+/** TODO LIST - later
+
+  // Better class description at top
+
+  // go through typedefs and pull as many as possible from the function!
+  // may be able to simplify the typedefs here to make them clearer
+
+  // Specification of vtkPolyData introduces dependency on VTK and is
+  // horrible for dimension-independence... perhaps provide additional /
+  // only option to provide normal image only - then could ensure that it
+  // with the right templates
+
+  // printSelf not compiling because of os type mismatch
+
+  // create superclass with these methods for anisotropic diffusion
+  // registration filter
+
+  // assert vs. if?
+
+  // progress object as in demons test
+
+  // pixel type vs. deformation field type?  deformation field type should
+  // always be double?
+
+  // what happens if normals are not set to registrator? i.e. normals are
+  // the defaults of 0,0,0
+
+    ======== function =========
+
+    // Better class description at top
+
+    // ComputeUpdate() won't work, but shouldn't be called anyways
+
+    ====== tests =======
+
+    // try it out with dimension = 2
+
+  // there are some exception handling tests in
+  // itkDemonsRegistrationFilterTest that would be good to put in the image
+    // registration test
+
+   // experiment with adding noise to the border of the motion field
+    // regularization test
+
+  */
