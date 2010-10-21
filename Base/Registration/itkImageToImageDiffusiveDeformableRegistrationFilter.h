@@ -207,26 +207,25 @@ protected:
    * mechanism. Returns value is a time step to be used for the update. */
   virtual TimeStepType CalculateChange();
 
-  /** Allocate the deformation field component images */
-  virtual void AllocateDeformationFieldComponentImages();
-
-  /** Allocate the diffusion tensor image. */
-  virtual void AllocateDiffusionTensorImage();
-
-  /** Allocate the update buffer - reimplemented here to also call
-   *  AllocateDiffusionTensorImage. */
+  /** Allocate the update buffer - reimplented here to also allocate other
+   *  internal images. */
   virtual void AllocateUpdateBuffer();
+
+  /** All other initialization before the registration loop */
+  virtual void Initialize();
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >
   void AllocateSpaceForImage( UnallocatedImageType& inputImage,
                               const TemplateImageType& templateImage );
 
-  /** Update the normal vector image and weighting factor w */
-  virtual void UpdateNormalVectorImage();
+  /** Compute the normal vector image and weighting factor w given the
+   *  surface border polydata.
+   */
+  virtual void ComputeNormalVectorImage();
 
-  /** Update diffusion tensor image */
-  virtual void UpdateDiffusionTensorImage();
+  /** Compute the diffusion tensor image */
+  virtual void ComputeDiffusionTensorImage();
 
   /** Update deformation field component images */
   virtual void UpdateDeformationFieldComponentImages();

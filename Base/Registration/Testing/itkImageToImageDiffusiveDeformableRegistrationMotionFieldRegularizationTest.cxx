@@ -49,6 +49,7 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
               << "smoothed motion field image, "
               << "number of iterations"
               << "border slope"
+              << "normal vector image"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -60,6 +61,7 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   typedef itk::Image< PixelType, Dimension >              FixedImageType;
   typedef itk::Image< PixelType, Dimension >              MovingImageType;
   typedef itk::Vector< VectorScalarType, Dimension >      VectorType;
+  typedef itk::Image< VectorType, Dimension >             VectorImageType;
   typedef itk::Image< VectorType, Dimension >             DeformationFieldType;
   typedef itk::ImageRegionIterator< DeformationFieldType >
                                                           IteratorType;
@@ -231,6 +233,21 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   registrator->SetBorderSurface( plane->GetOutput() );
   int numIterations = atoi( argv[4] );
   registrator->SetNumberOfIterations( numIterations );
+  // because we are just doing motion field regularization in this test
+  registrator->SetComputeIntensityDistanceTerm( false );
+
+  // Save the smoothed deformation field
+  writer->SetFileName( argv[3] );
+  writer->SetInput( registrator->GetOutput() );
+  try
+    {
+    writer->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
 
   // Check to make sure the border normals were calculated correctly by the
   // registrator
@@ -263,18 +280,16 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
     return EXIT_FAILURE;
     }
 
-  // Save the smoothed deformation field
-  writer->SetFileName( argv[3] );
-  writer->SetInput( registrator->GetOutput() );
-  try
-    {
-    writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    std::cerr << "Exception caught: " << err << std::endl;
-    return EXIT_FAILURE;
-    }
+  // Save the normal vector image
+  typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
+  VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
+  vectorWriter->SetFileName( argv[6] );
+  vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+  vectorWriter->Write();
+
+
+
+
 
   return EXIT_SUCCESS;
 

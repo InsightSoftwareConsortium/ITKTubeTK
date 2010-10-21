@@ -298,7 +298,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 // registration filter
 
 /**
- * Allocate space for an image given a template image
+ * Helper function to allocate space for an image given a template image
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 template < class UnallocatedImageType, class TemplateImageType >
@@ -327,75 +327,80 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::AllocateUpdateBuffer()
 {
-
   /* The update buffer looks just like the output and holds the change in
    the pixel  */
-
   typename OutputImageType::Pointer output = this->GetOutput();
   this->AllocateSpaceForImage( m_UpdateBuffer, output );
+}
+
+/**
+ * All other initialization done before the initialize / calculate change /
+ * apply update loop
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::Initialize()
+{
+  Superclass::Initialize();
+
+  typename OutputImageType::Pointer output = this->GetOutput();
 
   // Allocate the deformation field component images
   // TODO necessary?
-  this->AllocateDeformationFieldComponentImages();
-
-  // Also allocate the diffusion tensor image
-  this->AllocateDiffusionTensorImage();
-}
-
-/**
- * Allocate space for the deformation field components
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::AllocateDeformationFieldComponentImages()
-{
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    DeformationFieldPointer deformationField = this->GetDeformationField();
 
     // Allocate the tangential components
     this->AllocateSpaceForImage( m_DeformationFieldTangentialComponents[i],
-                                 deformationField );
+                                 output);
 
     // Allocate the normal components
     this->AllocateSpaceForImage( m_DeformationFieldNormalComponents[i],
-                                 deformationField );
+                                 output );
     }
-}
 
-/**
- * Allocate space for the diffusion tensor image
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::AllocateDiffusionTensorImage()
-{
+  // Also allocate the diffusion tensor image
   // The diffusion tensor image has the same size as the deformation field and
   // holds the diffusion tensor matrix at each pixel
   DeformationFieldPointer deformationField = this->GetDeformationField();
 
   // Allocate the image of normals
   this->AllocateSpaceForImage( m_NormalVectorImage,
-                               deformationField );
+                               output );
 
   // Allocate the output image's tangential and normal images
   this->AllocateSpaceForImage( m_OutputTangentialImage,
-                               deformationField );
+                               output );
   this->AllocateSpaceForImage( m_OutputNormalImage,
-                               deformationField );
+                               output );
 
   // Allocate the tangential and normal diffusion tensor images
   this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage,
-                               deformationField );
+                               output );
   this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
-                               deformationField );
+                               output );
+
+  // We can't fail here if we don't have a border surface, but we will fail
+  // at InitializeIteration();
+  if ( m_BorderNormalsSurface )
+    {
+    // Compute the border normals and the weighting factor w
+    // Normals are dependent on the border geometry in the fixed image so this
+    // only has to be computed once.
+    this->ComputeNormalVectorImage();
+
+    // Compute the diffusion tensor image
+    // The diffusion tensors are dependent on the normals computed in the
+    // previous line, so this only has to be computed once.
+    this->ComputeDiffusionTensorImage();
+    }
 }
+
+// TODO halting criteria?!?!
+// TODO: SetUseImageSpacing() to on for this filter?  Would give derivates in physical space, default is off
 
 /**
  * Initialize the state of the filter and equation before each iteration.
@@ -419,15 +424,9 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // TODO checking the timestep for stability as in the anisotropic filter
 
-  // TODO if normals are constant, then don't need to do this on every iteration!
-
-  // Compute the border normals and the weighting factor w
-  this->UpdateNormalVectorImage();
-
-  // Update the diffusion tensor image
-  this->UpdateDiffusionTensorImage();
-
   // Update the deformation field component images
+  // This depends on the current deformation field u, so it must be computed
+  // on every iteration of the filter.
   this->UpdateDeformationFieldComponentImages();
 
   // Update the function's deformation field
@@ -448,11 +447,10 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
-                                                   TDeformationField >
-::UpdateNormalVectorImage()
+                                                  TDeformationField >
+::ComputeNormalVectorImage()
 {
   // TODO assert vs. if?
-  assert( m_BorderSurface );
   assert( m_BorderNormalsSurface );
 
   // Get the normals
@@ -502,7 +500,7 @@ void
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                    TDeformationField >
-::UpdateDiffusionTensorImage()
+::ComputeDiffusionTensorImage()
 {
   typedef itk::Matrix< DeformationFieldScalarType,
                        ImageDimension, ImageDimension > MatrixType;
@@ -541,6 +539,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
     // 1.  Get the border normal n and the weighting factor w
     n = normalVectorIt.Get();
+    // TODO get w here
     w = (DeformationFieldScalarType) 1.0;
 
     // 2. Compute the tangential and normal diffusion tensor images
@@ -989,6 +988,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                    normalDTN,
                                    normalDFC,
                                    globalData);
+
     ++nD;
     ++nU;
     ++normalVectorN;
