@@ -26,6 +26,7 @@ limitations under the License.
 #include "itkImageToImageDiffusiveDeformableRegistrationFilter.h"
 
 #include "itkVectorIndexSelectionCastImageFilter.h"
+#include "itkSmoothingRecursiveGaussianImageFilter.h"
 
 #include "vtkPolyDataNormals.h"
 #include "vtkSmartPointer.h"
@@ -51,7 +52,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   m_BorderSurface                   = 0;
   m_BorderNormalsSurface            = 0;
   m_NormalVectorImage               = NormalVectorImageType::New();
-  m_OutputTangentialImage           = OutputImageType::New();
+  m_WeightImage                     = WeightImageType::New();
+  m_OutputTangentialImage          = OutputImageType::New();
   m_OutputNormalImage               = OutputImageType::New();
   m_TangentialDiffusionTensorImage  = DiffusionTensorImageType::New();
   m_NormalDiffusionTensorImage      = DiffusionTensorImageType::New();
@@ -60,6 +62,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                 RegistrationFunctionType::New();
   this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
                                           registrationFunction.GetPointer() ) );
+
+
+  // Lambda for exponential decay used to calculate weight from distance.
+  m_lambda = -0.01;
 
   // Setup the component extractor to extract the components from the deformation
   // field
@@ -185,22 +191,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 }
 
 /**
- * Set/Get the border surface
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-::BorderSurfacePointer
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::GetBorderSurface() const
-{
-  return m_BorderSurface;
-}
-
-/**
- * Set/Get the border surface
+ * Set the border surface
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -221,66 +212,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // extract generic(double) point normals
   m_BorderNormalsSurface = normalExtractor->GetOutput();
-}
-
-/**
- * Get the surface of border normals
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-::BorderSurfacePointer
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::GetBorderNormalsSurface() const
-{
-  return m_BorderNormalsSurface;
-}
-
-/**
- * Get the image of normal vectors
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-::NormalVectorImagePointer
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::GetNormalVectorImage() const
-{
-  return m_NormalVectorImage;
-}
-
-/**
- * Get the image of tangential diffusion tensors
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-::DiffusionTensorImagePointer
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::GetTangentialDiffusionTensorImage() const
-{
-  return m_TangentialDiffusionTensorImage;
-}
-
-/**
- * Set/Get the image of tangential diffusion tensors
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-::DiffusionTensorImagePointer
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::GetNormalDiffusionTensorImage() const
-{
-  return m_NormalDiffusionTensorImage;
 }
 
 /**
@@ -352,8 +283,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   // holds the diffusion tensor matrix at each pixel
   DeformationFieldPointer deformationField = this->GetDeformationField();
 
-  // Allocate the image of normals
+  // Allocate the image of normals and weight image
   this->AllocateSpaceForImage( m_NormalVectorImage,
+                               output );
+  this->AllocateSpaceForImage( m_WeightImage,
                                output );
 
   // Allocate the output image's tangential and normal images
@@ -375,7 +308,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     // Compute the border normals and the weighting factor w
     // Normals are dependent on the border geometry in the fixed image so this
     // only has to be computed once.
-    this->ComputeNormalVectorImage();
+    this->ComputeNormalVectorAndWeightImages();
 
     // Compute the diffusion tensor image
     // The diffusion tensors are dependent on the normals computed in the
@@ -428,7 +361,7 @@ void
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                   TDeformationField >
-::ComputeNormalVectorImage()
+::ComputeNormalVectorAndWeightImages()
 {
   assert( m_BorderNormalsSurface );
 
@@ -438,35 +371,105 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // Iterate over the normal vector image and insert the normal of the closest
   // point
-  NormalVectorIteratorType normalVectorIt( m_NormalVectorImage,
+  NormalVectorIteratorType normalVectorIt(
+                              m_NormalVectorImage,
                               m_NormalVectorImage->GetLargestPossibleRegion() );
+  // Iterate over the weight image and compute weight as a function of the
+  // distance to the border
+  WeightIteratorType weightIt( m_WeightImage,
+                               m_WeightImage->GetLargestPossibleRegion() );
 
   vtkPointLocator * locator = vtkPointLocator::New();
   locator->SetDataSet( m_BorderNormalsSurface );
 
-  itk::Index< ImageDimension > index;
+  itk::Index< ImageDimension > imageIndex;
   typename NormalVectorImageType::SpacingType spacing
                                             = m_NormalVectorImage->GetSpacing();
   typename NormalVectorImageType::PointType origin
                                             = m_NormalVectorImage->GetOrigin();
-  double coord[3];
+  itk::Point< double, ImageDimension > imageCoordAsPoint;
+  imageCoordAsPoint.Fill( 0 );
+  double imageCoord[3] = {0, 0, 0};
+  double borderCoord[3] = {0, 0, 0};
   vtkIdType id;
+  WeightType distance;
+  WeightType weight;
 
-  std::cout << "Computing normals... " << std::endl;
+  std::cout << "Computing normals and weights... " << std::endl;
 
-  for( normalVectorIt.GoToBegin(); !normalVectorIt.IsAtEnd(); ++normalVectorIt )
+  // Determine the normals of and the distances to the nearest border
+  for( normalVectorIt.GoToBegin(), weightIt.GoToBegin();
+       !normalVectorIt.IsAtEnd();
+       ++normalVectorIt, ++weightIt )
     {
-    index = normalVectorIt.GetIndex();
+    imageIndex = normalVectorIt.GetIndex();
+
+    m_NormalVectorImage->TransformIndexToPhysicalPoint( imageIndex,
+                                                        imageCoordAsPoint );
+
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      coord[i] = ( index[i] * spacing[i] ) + origin[i];
+      imageCoord[i] = imageCoordAsPoint[i];
       }
-    id = locator->FindClosestPoint(coord);
+
+    id = locator->FindClosestPoint( imageCoord );
+
     normalVectorIt.Set( normalData->GetTuple( id ) );
+
+    // Calculate distance between the current coord and the border surface coord
+    m_BorderNormalsSurface->GetPoint( id, borderCoord );
+    distance = 0.0;
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      distance += pow( imageCoord[i] - borderCoord[i], 2 );
+      }
+    distance = sqrt( distance );
+
+    // For now, put the distance in the weight image
+    weightIt.Set( distance );
     }
 
-  std::cout << "Finished computing normals." << std::endl;
+  // Smooth the distance image to avoid "streaks" from faces of the polydata
+  typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
+                                                      WeightImageType >
+                                                      SmoothingFilterType;
+  typename SmoothingFilterType::Pointer smooth = SmoothingFilterType::New();
+  double sigma = 1.0;
+  smooth->SetInput( m_WeightImage );
+  smooth->SetSigma( sigma );
+  smooth->Update();
+  m_WeightImage = smooth->GetOutput();
 
+  WeightIteratorType weightIt2( m_WeightImage,
+                                m_WeightImage->GetLargestPossibleRegion() );
+
+  // Iterate through the weight image and compute the weight from the distance
+  for( weightIt2.GoToBegin(); !weightIt2.IsAtEnd(); ++weightIt2 )
+    {
+    weight = this->ComputeWeightFromDistance( weightIt2.Get() );
+    weightIt2.Set( weight );
+    }
+
+  std::cout << "Finished computing normals and weights." << std::endl;
+}
+
+/**
+ * Updates the diffusion tensor image before each iteration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+::WeightType
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::ComputeWeightFromDistance( WeightType distance )
+{
+  WeightType weight = exp( m_lambda * distance );
+
+  //std::cout << distance << " " << weight << std::endl;
+
+  return weight;
 }
 
 /**
@@ -483,7 +486,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                        ImageDimension, ImageDimension > MatrixType;
 
   NormalVectorType                n;
-  DeformationFieldScalarType      w;
+  WeightType                      w;
 
   // Used to compute the tangential and normal diffusion tensor images
 
@@ -500,8 +503,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   DiffusionTensorImagePixelType   tangentialD;
   DiffusionTensorImagePixelType   normalD;
 
-  NormalVectorIteratorType normalVectorIt( m_NormalVectorImage,
+  NormalVectorIteratorType normalVectorIt(
+                              m_NormalVectorImage,
                               m_NormalVectorImage->GetLargestPossibleRegion() );
+  WeightIteratorType weightIt( m_WeightImage,
+                               m_WeightImage->GetLargestPossibleRegion() );
 
   typedef itk::ImageRegionIterator< DiffusionTensorImageType >
                                                     DiffusionTensorIteratorType;
@@ -510,8 +516,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   DiffusionTensorIteratorType normalIt( m_NormalDiffusionTensorImage,
                  m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
 
-  for( normalVectorIt.GoToBegin(), tangentialIt.GoToBegin(), normalIt.GoToBegin();
-        !tangentialIt.IsAtEnd(); ++normalVectorIt, ++tangentialIt, ++normalIt )
+  for( normalVectorIt.GoToBegin(), tangentialIt.GoToBegin(),
+       normalIt.GoToBegin(), weightIt.GoToBegin();
+        !tangentialIt.IsAtEnd();
+        ++normalVectorIt, ++tangentialIt, ++normalIt, ++weightIt )
     {
 
     // 1.  Get the border normal n and the weighting factor w
@@ -523,7 +531,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     else
       {
       // Get w here
-      w = (DeformationFieldScalarType) 1.0;
+      w = weightIt.Get();
       }
 
     // 2. Compute the tangential and normal diffusion tensor images

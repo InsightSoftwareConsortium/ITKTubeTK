@@ -80,7 +80,7 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
 int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 10 )
+  if( argc < 11 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
@@ -93,7 +93,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
               << "compute regularization term, "
               << "normal surface border polydata, "
               << "normal vector image, "
-              << "should use diffusive regularization"
+              << "should use diffusive regularization, "
+              << "weight image"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -105,9 +106,11 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   typedef itk::Image< PixelType, ImageDimension >         ImageType;
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
+  typedef itk::Image< double, ImageDimension >            WeightImageType;
   typedef itk::Image< VectorType, ImageDimension >        FieldType;
   typedef ImageType::IndexType                            IndexType;
   typedef ImageType::SizeType                             SizeType;
+  typedef ImageType::SpacingType                          SpacingType;
   typedef ImageType::RegionType                           RegionType;
 
   //--------------------------------------------------------
@@ -117,6 +120,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   // Image parameters
   double      sizeValue = 128;
   double      originValue = 0.0;
+  double      spacingValue = 1.0;
 
   ImageType::SizeValueType sizeArray[ImageDimension];
   for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -129,6 +133,9 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   IndexType index;
   index.Fill( originValue );
 
+  SpacingType spacing;
+  spacing.Fill( spacingValue );
+
   RegionType region;
   region.SetSize( size );
   region.SetIndex( index );
@@ -137,14 +144,17 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   ImageType::Pointer fixed = ImageType::New();
   FieldType::Pointer initField = FieldType::New();
 
+  moving->SetSpacing( spacing );
   moving->SetLargestPossibleRegion( region );
   moving->SetBufferedRegion( region );
   moving->Allocate();
 
+  fixed->SetSpacing( spacing );
   fixed->SetLargestPossibleRegion( region );
   fixed->SetBufferedRegion( region );
   fixed->Allocate();
 
+  initField->SetSpacing( spacing );
   initField->SetLargestPossibleRegion( region );
   initField->SetBufferedRegion( region );
   initField->Allocate();
@@ -276,8 +286,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   warper->Update();
 
   // ---------------------------------------------------------
-  std::cout << "Printing the normal surface border and normal vector image"
-      << std::endl;
+  std::cout << "Printing the normal surface border, normal vector image "
+      << "and weight image" << std::endl;
 
   vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
   vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
@@ -290,6 +300,12 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   vectorWriter->SetFileName( argv[8] );
   vectorWriter->SetInput( registrator->GetNormalVectorImage() );
   vectorWriter->Write();
+
+  typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
+  WeightWriterType::Pointer weightWriter = WeightWriterType::New();
+  weightWriter->SetFileName( argv[10] );
+  weightWriter->SetInput( registrator->GetWeightImage() );
+  weightWriter->Write();
 
   // ---------------------------------------------------------
   std::cout << "Printing the deformation field and transformed moving image"

@@ -121,6 +121,12 @@ public:
   typedef itk::ImageRegionIterator< NormalVectorImageType >
                                                          NormalVectorIteratorType;
 
+  /** Weight image types. */
+  typedef DeformationFieldScalarType                    WeightType;
+  typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
+  typedef typename WeightImageType::Pointer             WeightImagePointer;
+  typedef itk::ImageRegionIterator< WeightImageType >   WeightIteratorType;
+
   /** FiniteDifferenceFunction type. */
   typedef typename Superclass::FiniteDifferenceFunctionType
                                                   FiniteDifferenceFunctionType;
@@ -176,21 +182,30 @@ public:
   typedef vtkPolyData                           BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >  BorderSurfacePointer;
   virtual void SetBorderSurface( BorderSurfacePointer border );
-  virtual const BorderSurfacePointer GetBorderSurface() const;
+  virtual const BorderSurfacePointer GetBorderSurface() const
+    { return m_BorderSurface; }
 
   /** Get the polydata of the border surface normals */
-  virtual const BorderSurfacePointer GetBorderNormalsSurface() const;
+  virtual const BorderSurfacePointer GetBorderNormalsSurface() const
+    { return m_BorderNormalsSurface; }
 
   /** Get the image of the normal vectors */
-  virtual const NormalVectorImagePointer GetNormalVectorImage() const;
+  virtual const NormalVectorImagePointer GetNormalVectorImage() const
+    { return m_NormalVectorImage; }
+
+  /** Get the weighting image */
+  virtual const WeightImagePointer GetWeightImage() const
+    { return m_WeightImage; }
 
   /** Get the image of the tangential diffusion tensors */
   virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
-                                                                        const;
+                                                                        const
+    { return m_TangentialDiffusionTensorImage; }
 
   /** Get the image of the normal diffusion tensors */
   virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
-                                                                        const;
+                                                                        const
+    { return m_NormalDiffusionTensorImage; }
 
   /** Whether to compute the motion field regularization term (for testing)
    *  Default: true
@@ -239,7 +254,14 @@ protected:
   /** Compute the normal vector image and weighting factor w given the
    *  surface border polydata.
    */
-  virtual void ComputeNormalVectorImage();
+  virtual void ComputeNormalVectorAndWeightImages();
+
+  /** Computes the weighting factor w from the distance to the border.  The
+   *  weight should be 1 near the border and 0 away from the border, and
+   *  weights between the diffusive regularization and a more typical Gaussian
+   *  regularization.
+   */
+  virtual WeightType ComputeWeightFromDistance( WeightType distance );
 
   /** Compute the diffusion tensor image */
   virtual void ComputeDiffusionTensorImage();
@@ -310,6 +332,15 @@ private:
   BorderSurfacePointer                  m_BorderNormalsSurface;
   NormalVectorImagePointer              m_NormalVectorImage;
 
+  /** The weighting image between the diffusive and gaussian regularizations */
+  WeightImagePointer                            m_WeightImage;
+
+  /** The lambda factor for computing the weight from distance.  Weight is
+    * modeled as exponential decay: weight = e^(lambda * distance).
+    * (lamba must be negative!)
+    */
+  WeightType                                    m_lambda;
+
   /** The image of the tangential diffusion tensors
    * Calculate div( P^TP gradient(motion field tangential component image) )
    */
@@ -360,7 +391,7 @@ private:
 
 /** TODO LIST - essential
 
-  // Calculate w in ComputeNormalVectorImage() - but don't bother if
+  // Calculate w in ComputeNormalVectorAndWeightImages() - but don't bother if
   // m_UseDiffusiveRegularization == false (do it in the loop with the normals)
 
   // Get w in ComputeDiffusionTensorImage()
