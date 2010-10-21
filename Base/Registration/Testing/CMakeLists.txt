@@ -143,6 +143,7 @@ if( TubeTK_USE_VTK )
           0
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalSurfaceBorder.vtk
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalVectorImage.mhd
+          1
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
@@ -156,6 +157,21 @@ if( TubeTK_USE_VTK )
           1
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalSurfaceBorder.vtk
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage.mhd
+          1
+          )
+
+  add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization_w0
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_originalFixedImage_w0.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_originalMovingImage_w0.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingMotionField_w0.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingTransformedMovingImage_w0.mhd
+          1
+          1
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_normalSurfaceBorder_w0.vtk
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage_w0.mhd
+          0
           )
 
 endif( TubeTK_USE_VTK )

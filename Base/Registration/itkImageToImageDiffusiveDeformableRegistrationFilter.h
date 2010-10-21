@@ -186,14 +186,24 @@ public:
                                                                         const;
 
   /** Whether to compute the motion field regularization term (for testing)
-   *  Default: true */
+   *  Default: true
+   */
   void SetComputeRegularizationTerm( bool compute );
   bool GetComputeRegularizationTerm() const;
 
   /** Whether to compute the intensity distance term (for testing)
-   *  Default: true */
+   *  Default: true
+   */
   void SetComputeIntensityDistanceTerm( bool compute );
   bool GetComputeIntensityDistanceTerm() const;
+
+  /** Whether to use diffusive regularization (if false, w=0 and uses typical
+   *  Gaussian smoothing.  Default: true
+   */
+  void SetUseDiffusiveRegularization( bool diffuse )
+    { m_UseDiffusiveRegularization = diffuse; }
+  bool GetUseDiffusiveRegularization() const
+    { return m_UseDiffusiveRegularization; }
 
 protected:
   ImageToImageDiffusiveDeformableRegistrationFilter();
@@ -287,6 +297,9 @@ private:
 
   // TODO take me out
   NormalVectorType                      m_DummyVector;
+
+  /** Whether or not to use the diffusive regularization. */
+  bool                                  m_UseDiffusiveRegularization;
 
   /** The border surface and derived image of normal vectors. */
   BorderSurfacePointer                  m_BorderSurface;

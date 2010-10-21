@@ -50,6 +50,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   // TODO take me out
   m_DummyVector.Fill(0);
 
+  m_UseDiffusiveRegularization      = true;
   m_BorderSurface                   = 0;
   m_BorderNormalsSurface            = 0;
   m_NormalVectorImage               = NormalVectorImageType::New();
@@ -111,6 +112,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   //m_BorderSurface->PrintSelf( os, indent )
   os << indent << "Border Normals Surface: " << m_BorderNormalsSurface;
   //m_BorderNormalsSurface->PrintSelf( os, indent );
+  os << indent << "UseDiffusiveRegularization: " << m_UseDiffusiveRegularization;
 
 }
 
@@ -490,6 +492,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // TODO calculate w here
   //DeformationFieldScalarType w = (DeformationFieldScalarType) 1.0;
+  // TODO don't compute if m_UseDiffusiveRegularization is false
 }
 
 /**
@@ -539,8 +542,15 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
     // 1.  Get the border normal n and the weighting factor w
     n = normalVectorIt.Get();
-    // TODO get w here
-    w = (DeformationFieldScalarType) 1.0;
+    if ( !m_UseDiffusiveRegularization )
+      {
+      w = ( DeformationFieldScalarType ) 0.0;
+      }
+    else
+      {
+      // TODO get w here
+      w = (DeformationFieldScalarType) 1.0;
+      }
 
     // 2. Compute the tangential and normal diffusion tensor images
 
