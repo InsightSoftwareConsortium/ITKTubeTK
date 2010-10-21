@@ -139,7 +139,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_originalMovingImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingMotionField.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingTransformedMovingImage.mhd
-          1
+          2
           0
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalSurfaceBorder.vtk
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalVectorImage.mhd
@@ -153,7 +153,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_originalMovingImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingMotionField.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingTransformedMovingImage.mhd
-          1
+          2
           1
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalSurfaceBorder.vtk
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage.mhd
@@ -167,7 +167,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_originalMovingImage_w0.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingMotionField_w0.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_resultingTransformedMovingImage_w0.mhd
-          1
+          2
           1
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalSurfaceBorder_w0.vtk
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage_w0.mhd
