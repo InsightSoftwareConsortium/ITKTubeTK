@@ -72,7 +72,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_TangentialComponentExtractor[i] = SelectionCastImageFilterType::New();
-    m_TangentialComponentExtractor[i]->SetInput( m_OutputTangentialImage );
+    m_TangentialComponentExtractor[i]->SetInput( this->GetOutput() );
     m_TangentialComponentExtractor[i]->SetIndex( i );
 
     m_NormalComponentExtractor[i] = SelectionCastImageFilterType::New();
@@ -327,6 +327,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::InitializeIteration()
 {
+  std::cout << "Iteration #" << this->GetElapsedIterations() << std::endl;
   std::cout << "\tInitializeIteration for FILTER" << std::endl;
 
   if ( !this->GetFixedImage() || !this->GetMovingImage()
