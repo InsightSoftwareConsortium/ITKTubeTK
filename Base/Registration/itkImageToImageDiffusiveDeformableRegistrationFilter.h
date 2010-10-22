@@ -28,6 +28,8 @@ limitations under the License.
 
 #include "vtkPolyData.h"
 #include "vtkSmartPointer.h"
+#include "vtkPolyDataNormals.h"
+#include "vtkPointLocator.h"
 
 namespace itk
 {
@@ -251,6 +253,9 @@ protected:
   void AllocateSpaceForImage( UnallocatedImageType& inputImage,
                               const TemplateImageType& templateImage );
 
+  /** Warps the border surface according to the current deformation */
+  virtual void WarpBorderSurface();
+
   /** Compute the normal vector image and weighting factor w given the
    *  surface border polydata.
    */
@@ -355,6 +360,16 @@ private:
   typedef typename OutputImageType::Pointer OutputImagePointer;
   OutputImagePointer                    m_OutputTangentialImage;
   OutputImagePointer                    m_OutputNormalImage;
+
+  /** Extracts the border surface normals from the border surface */
+  typedef vtkPolyDataNormals                    PolyDataNormalsType;
+  typedef vtkSmartPointer< vtkPolyDataNormals > PolyDataNormalsPointer;
+  PolyDataNormalsPointer                        m_PolyDataNormals;
+
+  /** Computes the nearest point on the polydata to a given point */
+  typedef vtkPointLocator                       PointLocatorType;
+  typedef PointLocatorType *                    PointLocatorPointer;
+  PointLocatorPointer                           m_PointLocator;
 
   /** Extracts the x,y,z components of the tangential and normal components of
    * the deformation field

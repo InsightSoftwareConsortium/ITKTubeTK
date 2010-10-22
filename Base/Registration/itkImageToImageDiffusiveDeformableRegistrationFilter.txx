@@ -28,11 +28,8 @@ limitations under the License.
 #include "itkVectorIndexSelectionCastImageFilter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 
-#include "vtkPolyDataNormals.h"
-#include "vtkSmartPointer.h"
 #include "vtkDataArray.h"
 #include "vtkPointData.h"
-#include "vtkPointLocator.h"
 
 namespace itk
 { 
@@ -66,6 +63,15 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // Lambda for exponential decay used to calculate weight from distance.
   m_lambda = -0.01;
+
+  // Setup the vtkPolyDataNormals to extract the normals from the surface
+  m_PolyDataNormals = PolyDataNormalsType::New();
+  //normalExtractor->SetFeatureAngle(30);
+  // NOTE: default settings compute point normals, not cell normals
+  m_BorderNormalsSurface = m_PolyDataNormals->GetOutput();
+
+  // Setup the point locator to find closest point on the surface
+  m_PointLocator = PointLocatorType::New();
 
   // Setup the component extractor to extract the components from the deformation
   // field
@@ -203,15 +209,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   m_BorderSurface = border;
 
   // Update the polydata of border surface normals
-  vtkSmartPointer< vtkPolyDataNormals > normalExtractor
-                                                  = vtkPolyDataNormals::New();
-  normalExtractor->SetInput( m_BorderSurface );
-  //normalExtractor->SetFeatureAngle(30);
-  // NOTE: default settings compute point normals, not cell normals
-  normalExtractor->Update();
-
-  // extract generic(double) point normals
-  m_BorderNormalsSurface = normalExtractor->GetOutput();
+  m_PolyDataNormals->SetInput( m_BorderSurface );
 }
 
 /**
@@ -300,21 +298,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                output );
   this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
                                output );
-
-  // We can't fail here if we don't have a border surface, but we will fail
-  // at InitializeIteration();
-  if ( m_BorderNormalsSurface )
-    {
-    // Compute the border normals and the weighting factor w
-    // Normals are dependent on the border geometry in the fixed image so this
-    // only has to be computed once.
-    this->ComputeNormalVectorAndWeightImages();
-
-    // Compute the diffusion tensor image
-    // The diffusion tensors are dependent on the normals computed in the
-    // previous line, so this only has to be computed once.
-    this->ComputeDiffusionTensorImage();
-    }
 }
 
 /**
@@ -338,6 +321,22 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                        << "surface and/or border normals surface not set");
     }
 
+  // Warp the border according to the current deformation
+  this->WarpBorderSurface();
+
+  // Update the border normals
+  m_PolyDataNormals->Update();
+
+  // Compute the border normals and the weighting factor w
+  // Normals are dependent on the border geometry in the moving image so this
+  // has to be completed on each iteration.
+  this->ComputeNormalVectorAndWeightImages();
+
+  // Compute the diffusion tensor image
+  // The diffusion tensors are dependent on the normals computed in the
+  // previous line, so this has to be completed on each iteration.
+  this->ComputeDiffusionTensorImage();
+
   // Update the deformation field component images
   // This depends on the current deformation field u, so it must be computed
   // on every iteration of the filter.
@@ -351,6 +350,19 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // Call the superclass implementation
   Superclass::InitializeIteration();
+
+}
+
+/**
+ * Updates the border normals and the weighting factor w
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                  TDeformationField >
+::WarpBorderSurface()
+{
 
 }
 
@@ -380,8 +392,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   WeightIteratorType weightIt( m_WeightImage,
                                m_WeightImage->GetLargestPossibleRegion() );
 
-  vtkPointLocator * locator = vtkPointLocator::New();
-  locator->SetDataSet( m_BorderNormalsSurface );
+  m_PointLocator->SetDataSet( m_BorderNormalsSurface );
 
   itk::Index< ImageDimension > imageIndex;
   typename NormalVectorImageType::SpacingType spacing
@@ -413,7 +424,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
       imageCoord[i] = imageCoordAsPoint[i];
       }
 
-    id = locator->FindClosestPoint( imageCoord );
+    id = m_PointLocator->FindClosestPoint( imageCoord );
 
     normalVectorIt.Set( normalData->GetTuple( id ) );
 
@@ -430,16 +441,16 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     weightIt.Set( distance );
     }
 
-  // Smooth the distance image to avoid "streaks" from faces of the polydata
-  typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
-                                                      WeightImageType >
-                                                      SmoothingFilterType;
-  typename SmoothingFilterType::Pointer smooth = SmoothingFilterType::New();
-  double sigma = 1.0;
-  smooth->SetInput( m_WeightImage );
-  smooth->SetSigma( sigma );
-  smooth->Update();
-  m_WeightImage = smooth->GetOutput();
+//  // Smooth the distance image to avoid "streaks" from faces of the polydata
+//  typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
+//                                                      WeightImageType >
+//                                                      SmoothingFilterType;
+//  typename SmoothingFilterType::Pointer smooth = SmoothingFilterType::New();
+//  double sigma = 1.0;
+//  smooth->SetInput( m_WeightImage );
+//  smooth->SetSigma( sigma );
+//  smooth->Update();
+//  m_WeightImage = smooth->GetOutput();
 
   WeightIteratorType weightIt2( m_WeightImage,
                                 m_WeightImage->GetLargestPossibleRegion() );
