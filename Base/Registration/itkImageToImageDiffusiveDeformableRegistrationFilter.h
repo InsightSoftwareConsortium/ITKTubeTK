@@ -174,10 +174,10 @@ public:
         RegistrationFunctionType::DeformationFieldComponentNeighborhoodArrayType
                                 DeformationFieldComponentNeighborhoodArrayType;
 
-  /** Set the border polydata for the fixed image.  Border normals are computed
+  /** Set the border polydata for the MOVING image.  Border normals are computed
    *  based on this polydata, so it should be "well-behaved" under
    *  vtkPolyDataNormals.  The border normal must be in the same space as the
-   *  fixed image.
+   *  moving image.
    */
   typedef vtkPolyData                           BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >  BorderSurfacePointer;

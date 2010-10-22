@@ -159,27 +159,27 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   initField->SetBufferedRegion( region );
   initField->Allocate();
 
-  double center[ImageDimension];
-  double radius;
+  double movingCenter[ImageDimension];
+  double fixedCenter[ImageDimension];
   PixelType fgnd = 250;
   PixelType bgnd = 15;
 
   // fill moving with sphere
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    center[i] = 64;
+    movingCenter[i] = 64;
     }
-  radius = 30;
-  FillWithSphere<ImageType>( moving, center, radius, fgnd, bgnd );
+  double movingRadius = 30;
+  FillWithSphere<ImageType>( moving, movingCenter, movingRadius, fgnd, bgnd );
 
   // fill fixed with sphere
-  center[0] = 62;
+  fixedCenter[0] = 62;
   for ( unsigned int i = 1; i < ImageDimension; i++ )
     {
-    center[i] = 64;
+    fixedCenter[i] = 64;
     }
-  radius = 32;
-  FillWithSphere<ImageType>( fixed, center, radius, fgnd, bgnd );
+  double fixedRadius = 32;
+  FillWithSphere<ImageType>( fixed, fixedCenter, fixedRadius, fgnd, bgnd );
 
   // fill initial deformation with zero vectors
   VectorType zeroVec;
@@ -187,7 +187,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   initField->FillBuffer( zeroVec );
 
   // setup the normals
-  vtkPolyData * border = CreateSpherePolydata( center, radius );
+  vtkPolyData * border = CreateSpherePolydata( movingCenter, movingRadius );
   if( !border )
     {
     std::cerr << "Could not generate sphere surface" << std::endl;
