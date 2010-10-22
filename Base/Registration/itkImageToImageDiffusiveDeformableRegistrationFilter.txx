@@ -53,7 +53,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   m_BorderNormalsSurface            = 0;
   m_NormalVectorImage               = NormalVectorImageType::New();
   m_WeightImage                     = WeightImageType::New();
-  m_OutputTangentialImage          = OutputImageType::New();
+  m_OutputTangentialImage           = OutputImageType::New();
   m_OutputNormalImage               = OutputImageType::New();
   m_TangentialDiffusionTensorImage  = DiffusionTensorImageType::New();
   m_NormalDiffusionTensorImage      = DiffusionTensorImageType::New();
@@ -966,13 +966,13 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     }
   while( !nD.IsAtEnd() )
     {
-    nU.Value() = df->ComputeUpdate(nD,
-                                   normalVectorN,
-                                   tangentialDTN,
-                                   tangentialDFC,
-                                   normalDTN,
-                                   normalDFC,
-                                   globalData);
+    nU.Value() = df->ComputeUpdate(nD,            // output (deformation field)
+                                   normalVectorN, // m_NormalVectorImage
+                                   tangentialDTN, // m_TangentialDiffusionTensorImage
+                                   tangentialDFC, // m_DeformationFieldTangentialComponents
+                                   normalDTN,     // m_NormalDiffusionTensorImage
+                                   normalDFC,     // m_DeformationFieldTangentialComponents
+                                   globalData);   // global data
 
     ++nD;
     ++nU;
