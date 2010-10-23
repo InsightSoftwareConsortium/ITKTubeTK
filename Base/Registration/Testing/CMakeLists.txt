@@ -160,13 +160,13 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_originalMovingImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingMotionField.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_resultingTransformedMovingImage.mhd
-          2
+          4
           0
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalSurfaceBorder.vtk
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalVectorImage.mhd
           1
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_weightImage.mhd
-          0.05
+          1.0
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
