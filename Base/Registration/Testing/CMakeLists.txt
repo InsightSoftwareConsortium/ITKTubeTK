@@ -197,7 +197,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalSurfaceBorder_w0.vtk
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage_w0.mhd
           0
-          ${TEMP}/SlidingOrganRegistrationWithoutRegularization_weightImage_w0.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_weightImage_w0.mhd
           0.05
           )
 
