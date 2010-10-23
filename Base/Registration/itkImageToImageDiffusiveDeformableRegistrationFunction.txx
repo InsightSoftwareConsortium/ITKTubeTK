@@ -38,7 +38,9 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TDeformationField >
 ::ImageToImageDiffusiveDeformableRegistrationFunction()
 {
-  m_TimeStep = 0.05;
+  // TODO figure this out
+  m_TimeStep = 1.0;
+  //m_TimeStep = 0.05;
 
   RadiusType r;
   r.Fill(1);
@@ -320,6 +322,46 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
       }
 
     }
+
+
+
+
+//  // TODO take me out
+//  static double ratio = 0.0;
+//  static int numSamples = 0;
+//  static double average = 0.0;
+//  // start of new iteration
+//  if (index[0] == 1 && index[1] == 1 && index[2] == 1)
+//    {
+//    average = average / numSamples;
+//    std::cout << "average = " << average << std::endl;
+//    ratio = 0.0;
+//    numSamples = 0;
+//    average = 0.0;
+//    }
+//  PixelType temp = tangentialRegularizationTerm + normalRegularizationTerm;
+//  typename PixelType::RealValueType magNorm = temp.GetNorm();
+//  typename PixelType::RealValueType magInt = intensityDistanceTerm.GetNorm();
+//  if (magInt != 0 && magNorm != 0)
+//    {
+//    ratio = (magNorm / magInt);
+//    average += ratio;
+//    numSamples++;
+//    }
+//  if( (temp[0] * intensityDistanceTerm[0] < 0.0 ||
+//      temp[1] * intensityDistanceTerm[1] < 0.0 ||
+//      temp[2] * intensityDistanceTerm[2] < 0.0 ) && ratio > 0.4)
+//    {
+//    std::cout << "conflicting" << std::endl;
+//    std::cout << "temp: " << temp[0] << " " << temp[1] << " " << temp[2] << std::endl;
+//    std::cout << "intensity: " << intensityDistanceTerm[0] << " "
+//        << intensityDistanceTerm[1] << " " << intensityDistanceTerm[2] << std::endl;
+//    }
+
+
+
+
+
 
   updateTerm = intensityDistanceTerm
                       + tangentialRegularizationTerm + normalRegularizationTerm;
