@@ -253,9 +253,6 @@ protected:
   void AllocateSpaceForImage( UnallocatedImageType& inputImage,
                               const TemplateImageType& templateImage );
 
-  /** Warps the border surface according to the current deformation */
-  virtual void WarpBorderSurface();
-
   /** Compute the normal vector image and weighting factor w given the
    *  surface border polydata.
    */

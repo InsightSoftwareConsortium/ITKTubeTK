@@ -298,6 +298,32 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                output );
   this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
                                output );
+
+  // Compute the border normals, weighting factors and diffusion tensors
+  if( !this->GetBorderSurface() )
+    {
+    itkExceptionMacro( << "Cannot perform registration without a border surface"
+                       << std::endl );
+    }
+
+  // Update the border normals
+  m_PolyDataNormals->Update();
+
+  // Make sure we now have the normals
+  if ( !this->GetBorderNormalsSurface() )
+    {
+    itkExceptionMacro( << "Error computing border normals" << std::endl );
+    }
+
+  // Compute the border normals and the weighting factor w
+  // Normals are dependent on the border geometry in the fixed image so this
+  // has to be completed only once.
+  this->ComputeNormalVectorAndWeightImages();
+
+  // Compute the diffusion tensor image
+  // The diffusion tensors are dependent on the normals computed in the
+  // previous line, so this has to be completed only once.
+  this->ComputeDiffusionTensorImage();
 }
 
 /**
@@ -321,22 +347,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                        << "surface and/or border normals surface not set");
     }
 
-  // Warp the border according to the current deformation
-  this->WarpBorderSurface();
-
-  // Update the border normals
-  m_PolyDataNormals->Update();
-
-  // Compute the border normals and the weighting factor w
-  // Normals are dependent on the border geometry in the moving image so this
-  // has to be completed on each iteration.
-  this->ComputeNormalVectorAndWeightImages();
-
-  // Compute the diffusion tensor image
-  // The diffusion tensors are dependent on the normals computed in the
-  // previous line, so this has to be completed on each iteration.
-  this->ComputeDiffusionTensorImage();
-
   // Update the deformation field component images
   // This depends on the current deformation field u, so it must be computed
   // on every iteration of the filter.
@@ -350,19 +360,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // Call the superclass implementation
   Superclass::InitializeIteration();
-
-}
-
-/**
- * Updates the border normals and the weighting factor w
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                  TDeformationField >
-::WarpBorderSurface()
-{
 
 }
 
@@ -441,16 +438,16 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     weightIt.Set( distance );
     }
 
-//  // Smooth the distance image to avoid "streaks" from faces of the polydata
-//  typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
-//                                                      WeightImageType >
-//                                                      SmoothingFilterType;
-//  typename SmoothingFilterType::Pointer smooth = SmoothingFilterType::New();
-//  double sigma = 1.0;
-//  smooth->SetInput( m_WeightImage );
-//  smooth->SetSigma( sigma );
-//  smooth->Update();
-//  m_WeightImage = smooth->GetOutput();
+  // Smooth the distance image to avoid "streaks" from faces of the polydata
+  typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
+                                                      WeightImageType >
+                                                      SmoothingFilterType;
+  typename SmoothingFilterType::Pointer smooth = SmoothingFilterType::New();
+  double sigma = 1.0;
+  smooth->SetInput( m_WeightImage );
+  smooth->SetSigma( sigma );
+  smooth->Update();
+  m_WeightImage = smooth->GetOutput();
 
   WeightIteratorType weightIt2( m_WeightImage,
                                 m_WeightImage->GetLargestPossibleRegion() );
