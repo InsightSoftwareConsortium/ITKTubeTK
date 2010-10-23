@@ -187,7 +187,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   initField->FillBuffer( zeroVec );
 
   // setup the normals
-  vtkPolyData * border = CreateSpherePolydata( movingCenter, movingRadius );
+  vtkPolyData * border = CreateSpherePolydata( fixedCenter, fixedRadius );
   if( !border )
     {
     std::cerr << "Could not generate sphere surface" << std::endl;
