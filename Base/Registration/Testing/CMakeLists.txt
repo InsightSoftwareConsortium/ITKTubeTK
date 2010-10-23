@@ -98,6 +98,7 @@ if( TubeTK_USE_VTK )
           0
           ${TEMP}/MotionFieldRegularization_straight_noNoise_normalVectorImage.mhd
           0.05
+          1
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraight
@@ -110,6 +111,7 @@ if( TubeTK_USE_VTK )
           0
           ${TEMP}/MotionFieldRegularization_straight_normalVectorImage.mhd
           0.05
+          1
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngledNoNoise
@@ -122,6 +124,7 @@ if( TubeTK_USE_VTK )
           0.5
           ${TEMP}/MotionFieldRegularization_angled_noNoise_normalVectorImage.mhd
           0.05
+          1
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled
@@ -134,6 +137,20 @@ if( TubeTK_USE_VTK )
           0.5
           ${TEMP}/MotionFieldRegularization_angled_normalVectorImage.mhd
           0.05
+          1
+          )
+
+  add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled_w0
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest
+          ${TEMP}/MotionFieldRegularization_angled_w0_origMotionField.mhd
+          0.1
+          ${TEMP}/MotionFieldRegularization_angled_w0_smoothedMotionField.mhd
+          20
+          0.5
+          ${TEMP}/MotionFieldRegularization_angled_w0_normalVectorImage.mhd
+          0.05
+          0
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithoutRegularization
@@ -165,7 +182,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage.mhd
           1
           ${TEMP}/SlidingOrganRegistrationWithRegularization_weightImage.mhd
-          0.05
+          1.0
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization_w0

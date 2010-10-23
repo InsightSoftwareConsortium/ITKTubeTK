@@ -39,7 +39,7 @@ limitations under the License.
 int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 8 )
+  if( argc < 9 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
@@ -50,7 +50,8 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
               << "number of iterations, "
               << "border slope, "
               << "normal vector image, "
-              << "time step"
+              << "time step, "
+              << "should use diffusive regularization, "
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -235,6 +236,15 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   // because we are just doing motion field regularization in this test
   registrator->SetComputeIntensityDistanceTerm( false );
   registrator->SetTimeStep( atof( argv[7] ) );
+  int useDiffusive = atoi( argv[8] );
+  if ( useDiffusive )
+    {
+    registrator->SetUseDiffusiveRegularization( true );
+    }
+  else
+    {
+    registrator->SetUseDiffusiveRegularization( false );
+    }
 
   // Save the smoothed deformation field
   writer->SetFileName( argv[3] );

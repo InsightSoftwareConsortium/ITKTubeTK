@@ -702,14 +702,18 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     // We know normalU + tangentialU = u
     // Assertion to test that the normal and tangential components were computed
     // corectly - they should be orthogonal
-    if( normalU * tangentialU > 0.000005 )
+    if( normalU * tangentialU > 0.005 )
       {
       itkExceptionMacro( << "Normal and tangential deformation field components"
                          << " are not orthogonal" << std::endl
+                         << "u = " << u[0] << " " << u[1] << " " << u[2] << std::endl
+                         << "n = " << n[0] << " " << n[1] << " " << n[2] << std::endl
                          << "normal = " << normalU[0] << " " << normalU[1]
-                         << " " << normalU[2] << std::endl << "tangential = "
+                         << " " << normalU[2] << std::endl
+                         << "tangential = "
                          << tangentialU[0] << " " << tangentialU[1] << " "
-                         << tangentialU[2] << " dot product "
+                         << tangentialU[2]
+                         << " dot product "
                          << normalU * tangentialU << std::endl );
       }
 
