@@ -148,6 +148,10 @@ public:
   typedef typename RegistrationFunctionType::DefaultBoundaryConditionType
                                               DefaultBoundaryConditionType;
 
+  /** Convenience function to set the function's timestep from the filter */
+  void SetTimeStep( const TimeStepType &t );
+  const TimeStepType& GetTimeStep() const;
+
   /** The type of region used for multithreading */
   typedef typename Superclass::OutputImageType  OutputImageType;
   typedef OutputImageType                       UpdateBufferType;

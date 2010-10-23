@@ -125,7 +125,41 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   os << indent << "Border Normals Surface: " << m_BorderNormalsSurface;
   //m_BorderNormalsSurface->PrintSelf( os, indent );
   os << indent << "UseDiffusiveRegularization: " << m_UseDiffusiveRegularization;
+}
 
+/**
+ * Set/Get the timestep
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::SetTimeStep( const TimeStepType &t )
+{
+  typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  df->SetTimeStep( t );
+}
+
+/**
+ * Set/Get the timestep
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+const typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+
+::TimeStepType&
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::GetTimeStep() const
+{
+  typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  return df->GetTimeStep();
 }
 
 /**

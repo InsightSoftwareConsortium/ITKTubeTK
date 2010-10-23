@@ -80,7 +80,7 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
 int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 11 )
+  if( argc < 12 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
@@ -94,7 +94,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
               << "normal surface border polydata, "
               << "normal vector image, "
               << "should use diffusive regularization, "
-              << "weight image"
+              << "weight image, "
+              << "time step"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -264,6 +265,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     {
     registrator->SetUseDiffusiveRegularization( false );
     }
+
+  registrator->SetTimeStep( atof( argv[11] ) );
 
   // warp moving image
   typedef itk::WarpImageFilter<ImageType,ImageType,FieldType> WarperType;

@@ -97,6 +97,7 @@ if( TubeTK_USE_VTK )
           20
           0
           ${TEMP}/MotionFieldRegularization_straight_noNoise_normalVectorImage.mhd
+          0.05
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraight
@@ -108,6 +109,7 @@ if( TubeTK_USE_VTK )
           20
           0
           ${TEMP}/MotionFieldRegularization_straight_normalVectorImage.mhd
+          0.05
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngledNoNoise
@@ -119,6 +121,7 @@ if( TubeTK_USE_VTK )
           20
           0.5
           ${TEMP}/MotionFieldRegularization_angled_noNoise_normalVectorImage.mhd
+          0.05
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled
@@ -130,6 +133,7 @@ if( TubeTK_USE_VTK )
           20
           0.5
           ${TEMP}/MotionFieldRegularization_angled_normalVectorImage.mhd
+          0.05
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithoutRegularization
@@ -145,6 +149,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_normalVectorImage.mhd
           1
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_weightImage.mhd
+          0.05
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization
@@ -160,6 +165,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage.mhd
           1
           ${TEMP}/SlidingOrganRegistrationWithRegularization_weightImage.mhd
+          0.05
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization_w0
@@ -175,6 +181,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_normalVectorImage_w0.mhd
           0
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_weightImage_w0.mhd
+          0.05
           )
 
 endif( TubeTK_USE_VTK )

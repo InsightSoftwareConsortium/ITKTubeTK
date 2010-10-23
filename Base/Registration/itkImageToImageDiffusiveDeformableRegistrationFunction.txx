@@ -38,10 +38,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TDeformationField >
 ::ImageToImageDiffusiveDeformableRegistrationFunction()
 {
-  // TODO figure this out
-  m_TimeStep = 1.0;
-  //m_TimeStep = 0.05;
-
   RadiusType r;
   r.Fill(1);
   this->SetRadius(r);
@@ -50,13 +46,12 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   m_ComputeIntensityDistanceTerm = true;
 
   m_RegularizationFunction = RegularizationFunctionType::New();
-  m_RegularizationFunction->SetTimeStep( m_TimeStep );
+  this->SetTimeStep( 1.0 );
 
   m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
 
   this->SetMovingImage(0);
   this->SetFixedImage(0);
-
 }
 
 /**

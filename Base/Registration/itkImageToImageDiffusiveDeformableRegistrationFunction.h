@@ -187,14 +187,16 @@ public:
     return m_TimeStep;
     }
 
-//  /** Set/Get the time step. For this class of anisotropic diffusion filters,
-//      the time-step is supplied by the user and remains fixed for all
-//      updates. */
-//  void SetTimeStep(const TimeStepType &t)
-//    {
-//    m_TimeStep = t;
-//    m_RegularizationFunction->SetTimeStep(t);
-//    }
+  /** Set/Get the time step. For this class of anisotropic diffusion filters,
+      the time-step is supplied by the user and remains fixed for all
+      updates. */
+  void SetTimeStep(const TimeStepType &t)
+    {
+    m_TimeStep = t;
+    m_RegularizationFunction->SetTimeStep(t);
+    // Intensity distance function doesn't have a SetTimeStep(), but it's ok
+    // because we only use ComputeUpdate() from that function
+    }
 
   /** This class uses a constant timestep of 1. */
   const TimeStepType &GetTimeStep() const
