@@ -66,6 +66,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // Setup the vtkPolyDataNormals to extract the normals from the surface
   m_PolyDataNormals = PolyDataNormalsType::New();
+  m_PolyDataNormals->ComputePointNormalsOn();
+  m_PolyDataNormals->ComputeCellNormalsOff();
   //normalExtractor->SetFeatureAngle(30);
   // NOTE: default settings compute point normals, not cell normals
   m_BorderNormalsSurface = m_PolyDataNormals->GetOutput();

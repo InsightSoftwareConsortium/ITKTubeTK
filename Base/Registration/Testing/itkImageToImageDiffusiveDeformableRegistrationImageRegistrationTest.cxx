@@ -30,8 +30,10 @@ limitations under the License.
 #include "itkVectorCastImageFilter.h"
 #include "itkWarpImageFilter.h"
 #include "itkNearestNeighborInterpolateImageFunction.h"
+#include "itkLinearInterpolateImageFunction.h"
 
 #include "vtkSphereSource.h"
+#include "vtkPlaneSource.h"
 #include "vtkPolyDataWriter.h"
 
 // Template function to fill in an image with a sphere.
@@ -44,7 +46,6 @@ double radius,
 typename TImage::PixelType foregnd,
 typename TImage::PixelType backgnd )
 {
-
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
   Iterator it( image, image->GetBufferedRegion() );
   it.Begin();
@@ -65,6 +66,54 @@ typename TImage::PixelType backgnd )
     }
 }
 
+// Template function to fill in an image with two boxes
+template <class TImage>
+void
+FillWithBox(
+TImage * image,
+double * bottomBox,
+double * topBox,
+double * size,
+typename TImage::PixelType backgnd,
+typename TImage::PixelType bottomStart,
+typename TImage::PixelType bottomEnd,
+typename TImage::PixelType topStart,
+typename TImage::PixelType topEnd
+)
+{
+  typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
+  Iterator it( image, image->GetBufferedRegion() );
+  it.Begin();
+
+  typename TImage::IndexType index;
+  typename TImage::PixelType bottomRange = bottomEnd - bottomStart;
+  typename TImage::PixelType topRange = topEnd - topStart;
+  double intensity;
+
+  for( ; !it.IsAtEnd(); ++it )
+    {
+    index = it.GetIndex();
+    if( index[0] > bottomBox[0] && index[0] < bottomBox[0] + size[0]
+        && index[1] >= bottomBox[1] && index[1] < bottomBox[1] + size[1]
+        && index[2] > bottomBox[2] && index[2] < bottomBox[2] + size[2] )
+      {
+      intensity = ( (index[0] - bottomBox[0] ) / size[0] ) * bottomRange + bottomStart;
+      it.Set( intensity ); // or bottomStart for solid blocks
+      }
+    else if( index[0] > topBox[0] && index[0] < topBox[0] + size[0]
+        && index[1] >= topBox[1] && index[1] < topBox[1] + size[1]
+        && index[2] > topBox[2] && index[2] < topBox[2] + size[2] )
+      {
+      intensity = ( (index[0] - topBox[0] ) / size[0] ) * topRange + topStart;
+      it.Set( intensity ); // or topEnd for solid blocks
+      }
+    else
+      {
+      it.Set( backgnd );
+      }
+    }
+}
+
 // Function to create the spherical polydata
 vtkPolyData* CreateSpherePolydata( double * center, double radius )
 {
@@ -77,10 +126,20 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
   return sphere->GetOutput();
 }
 
+// Function to create the planar polydata
+vtkPolyData* CreatePlanePolydata( double * center, double * normal )
+{
+  vtkPlaneSource * plane = vtkPlaneSource::New();
+  plane->SetCenter( center );
+  plane->SetNormal( normal );
+  plane->Update();
+  return plane->GetOutput();
+}
+
 int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 12 )
+  if( argc < 13 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
@@ -95,7 +154,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
               << "normal vector image, "
               << "should use diffusive regularization, "
               << "weight image, "
-              << "time step"
+              << "time step, "
+              << "test type (0 for circles, 1 for squares)"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -118,8 +178,19 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   std::cout << "Generate input images and initial deformation field";
   std::cout << std::endl;
 
+  bool circles = atoi( argv[12] ) == 0;
+
   // Image parameters
-  double      sizeValue = 128;
+  double      sizeValue;
+  if( circles )
+    {
+    sizeValue = 128;
+    }
+  else
+    {
+    sizeValue = 80;
+    }
+
   double      originValue = 0.0;
   double      spacingValue = 1.0;
 
@@ -160,40 +231,92 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   initField->SetBufferedRegion( region );
   initField->Allocate();
 
-  double movingCenter[ImageDimension];
-  double fixedCenter[ImageDimension];
-  PixelType fgnd = 250;
   PixelType bgnd = 15;
+  vtkPolyData * border;
 
-  // fill moving with sphere
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  if ( atoi( argv[12] ) == 0 )
     {
-    movingCenter[i] = 64;
-    }
-  double movingRadius = 30;
-  FillWithSphere<ImageType>( moving, movingCenter, movingRadius, fgnd, bgnd );
+    double movingCenter[ImageDimension];
+    double fixedCenter[ImageDimension];
+    PixelType fgnd = 250;
 
-  // fill fixed with sphere
-  fixedCenter[0] = 62;
-  for ( unsigned int i = 1; i < ImageDimension; i++ )
-    {
-    fixedCenter[i] = 64;
+    // fill moving with sphere
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      movingCenter[i] = 64;
+      }
+    double movingRadius = 30;
+    FillWithSphere<ImageType>( moving, movingCenter, movingRadius, fgnd, bgnd );
+
+    // fill fixed with sphere
+    fixedCenter[0] = 62;
+    for ( unsigned int i = 1; i < ImageDimension; i++ )
+      {
+      fixedCenter[i] = 64;
+      }
+    double fixedRadius = 32;
+    FillWithSphere<ImageType>( fixed, fixedCenter, fixedRadius, fgnd, bgnd );
+
+    // setup the normals
+    border = CreateSpherePolydata( fixedCenter, fixedRadius );
+    if( !border )
+      {
+      std::cerr << "Could not generate sphere surface" << std::endl;
+      return EXIT_FAILURE;
+      }
     }
-  double fixedRadius = 32;
-  FillWithSphere<ImageType>( fixed, fixedCenter, fixedRadius, fgnd, bgnd );
+  else
+    {
+    double boxSize[3] = { 30, 15, 15 };
+    double center[3] = {sizeValue / 2.0, sizeValue / 2.0, sizeValue / 2.0 };
+    double offset = 10;
+    PixelType bottomStart = 120;
+    PixelType bottomEnd = 30;
+    PixelType topStart = 130;
+    PixelType topEnd = 220;
+
+    // Create the two boxes on the fixed image
+    double fixedBottomBox[3] = { center[0] - boxSize[0] + offset,
+                                 center[1] - boxSize[1],
+                                 center[2] - boxSize[2] / 2 };
+    double fixedTopBox[3] = { center[0] - offset,
+                              center[1],
+                              center[2] - boxSize[2] / 2 };
+
+    FillWithBox<ImageType>( fixed, fixedBottomBox, fixedTopBox, boxSize,
+                            bgnd, bottomStart, bottomEnd, topStart, topEnd );
+
+    // Create the two boxes on the moving image
+    double shift = 5;
+    double movingBottomBox[3] = { fixedBottomBox[0] - shift,
+                                  fixedBottomBox[1],
+                                  fixedBottomBox[2] };
+    double movingTopBox[3] = { fixedTopBox[0] + shift,
+                                fixedTopBox[1],
+                                fixedTopBox[2] };
+    FillWithBox<ImageType>( moving, movingBottomBox, movingTopBox, boxSize,
+                            bgnd, bottomStart, bottomEnd, topStart, topEnd );
+
+    std::cout << "fixed bottom box " << fixedBottomBox[0] << " "
+        << fixedBottomBox[1] << " " << fixedBottomBox[2] << std::endl;
+    std::cout << "moving bottom box " << movingBottomBox[0] << " "
+        << movingBottomBox[1] << " " << movingBottomBox[2] << std::endl;
+
+
+    // setup the normals
+    double normal[3] = { 0, 1, 0 };
+    border = CreatePlanePolydata( center, normal );
+    if( !border )
+      {
+      std::cerr << "Could not generate planar surface" << std::endl;
+      return EXIT_FAILURE;
+      }
+    }
 
   // fill initial deformation with zero vectors
   VectorType zeroVec;
   zeroVec.Fill( 0.0 );
   initField->FillBuffer( zeroVec );
-
-  // setup the normals
-  vtkPolyData * border = CreateSpherePolydata( fixedCenter, fixedRadius );
-  if( !border )
-    {
-    std::cerr << "Could not generate sphere surface" << std::endl;
-    return EXIT_FAILURE;
-    }
 
   // ---------------------------------------------------------
   std::cout << "Printing the initial fixed and moving images" << std::endl;
@@ -273,8 +396,10 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
   WarperType::Pointer warper = WarperType::New();
 
   typedef WarperType::CoordRepType CoordRepType;
-  typedef itk::NearestNeighborInterpolateImageFunction<ImageType,CoordRepType>
-    InterpolatorType;
+//  typedef itk::NearestNeighborInterpolateImageFunction<ImageType,CoordRepType>
+//    InterpolatorType;
+  typedef itk::LinearInterpolateImageFunction<ImageType,CoordRepType>
+      InterpolatorType;
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
   warper->SetInput( moving );
