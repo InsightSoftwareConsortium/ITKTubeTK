@@ -127,11 +127,13 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
 }
 
 // Function to create the planar polydata
-vtkPolyData* CreatePlanePolydata( double * center, double * normal )
+vtkPolyData* CreatePlanePolydata( double * origin,
+                                  double * point1, double * point2 )
 {
   vtkPlaneSource * plane = vtkPlaneSource::New();
-  plane->SetCenter( center );
-  plane->SetNormal( normal );
+  plane->SetOrigin( origin );
+  plane->SetPoint1( point1 );
+  plane->SetPoint2( point2 );
   plane->Update();
   return plane->GetOutput();
 }
@@ -297,15 +299,11 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     FillWithBox<ImageType>( moving, movingBottomBox, movingTopBox, boxSize,
                             bgnd, bottomStart, bottomEnd, topStart, topEnd );
 
-    std::cout << "fixed bottom box " << fixedBottomBox[0] << " "
-        << fixedBottomBox[1] << " " << fixedBottomBox[2] << std::endl;
-    std::cout << "moving bottom box " << movingBottomBox[0] << " "
-        << movingBottomBox[1] << " " << movingBottomBox[2] << std::endl;
-
-
     // setup the normals
-    double normal[3] = { 0, 1, 0 };
-    border = CreatePlanePolydata( center, normal );
+    double origin[3] = { 0.0, center[1], 0.0 };
+    double point1[3] = { sizeValue, center[1], 0.0 };
+    double point2[3] = { 0.0, center[1], sizeValue };
+    border = CreatePlanePolydata( origin, point1, point2 );
     if( !border )
       {
       std::cerr << "Could not generate planar surface" << std::endl;
