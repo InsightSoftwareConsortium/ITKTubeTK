@@ -421,6 +421,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     }
 
   registrator->SetTimeStep( atof( argv[11] ) );
+  registrator->SetLambda( -0.1 );
 
   // warp moving image
   typedef itk::WarpImageFilter<ImageType,ImageType,FieldType> WarperType;

@@ -199,6 +199,14 @@ public:
   virtual const NormalVectorImagePointer GetNormalVectorImage() const
     { return m_NormalVectorImage; }
 
+  /** Get the lambda controlling the exponential decay used to calculate the
+   *  weight value w from the distance to the closest border point.  Must be
+   *  negative. */
+  void SetLambda( WeightType l )
+    { m_lambda = l; }
+  const WeightType GetLambda() const
+    { return m_lambda; }
+
   /** Get the weighting image */
   virtual const WeightImagePointer GetWeightImage() const
     { return m_WeightImage; }
