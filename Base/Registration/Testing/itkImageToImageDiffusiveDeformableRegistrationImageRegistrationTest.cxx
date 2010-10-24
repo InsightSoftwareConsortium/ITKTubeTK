@@ -34,7 +34,10 @@ limitations under the License.
 
 #include "vtkSphereSource.h"
 #include "vtkPlaneSource.h"
+#include "vtkCubeSource.h"
 #include "vtkPolyDataWriter.h"
+#include "vtkAppendPolyData.h"
+#include "vtkDensifyPolyData.h"
 
 // Template function to fill in an image with a sphere.
 template <class TImage>
@@ -128,14 +131,46 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
 
 // Function to create the planar polydata
 vtkPolyData* CreatePlanePolydata( double * origin,
-                                  double * point1, double * point2 )
+                                  double * point1, double * point2,
+                                  int resolution )
 {
   vtkPlaneSource * plane = vtkPlaneSource::New();
   plane->SetOrigin( origin );
   plane->SetPoint1( point1 );
   plane->SetPoint2( point2 );
+  plane->SetXResolution( resolution );
+  plane->SetYResolution( resolution );
   plane->Update();
   return plane->GetOutput();
+}
+
+// Function to create the cube polydata
+vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
+                                 double * size )
+{
+  vtkCubeSource * topCube = vtkCubeSource::New();
+  topCube->SetBounds( topBox[0], topBox[0] + size[0],
+                      topBox[1] - 0.5, topBox[1] + size[1] - 0.5,
+                      topBox[2], topBox[2] + size[2]);
+  topCube->Update();
+
+  vtkCubeSource * bottomCube = vtkCubeSource::New();
+  bottomCube->SetBounds( bottomBox[0], bottomBox[0] + size[0],
+                         bottomBox[1] - 0.5, bottomBox[1] + size[1] - 0.5,
+                         bottomBox[2], bottomBox[2] + size[2] );
+  bottomCube->Update();
+
+  vtkAppendPolyData * append = vtkAppendPolyData::New();
+  append->AddInput( topCube->GetOutput() );
+  append->AddInput( bottomCube->GetOutput() );
+  append->Update();
+
+  vtkDensifyPolyData * densify = vtkDensifyPolyData::New();
+  densify->AddInput( append->GetOutput() );
+  densify->SetNumberOfSubdivisions( 6 );
+  densify->Update();
+
+  return densify->GetOutput();
 }
 
 int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
@@ -269,7 +304,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     }
   else
     {
-    double boxSize[3] = { 30, 15, 15 };
+    double boxSize[3] = { 30, 16, 16 };
     double center[3] = {sizeValue / 2.0, sizeValue / 2.0, sizeValue / 2.0 };
     double offset = 10;
     PixelType bottomStart = 120;
@@ -289,7 +324,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
                             bgnd, bottomStart, bottomEnd, topStart, topEnd );
 
     // Create the two boxes on the moving image
-    double shift = 5;
+    double shift = 4;
     double movingBottomBox[3] = { fixedBottomBox[0] - shift,
                                   fixedBottomBox[1],
                                   fixedBottomBox[2] };
@@ -300,10 +335,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
                             bgnd, bottomStart, bottomEnd, topStart, topEnd );
 
     // setup the normals
-    double origin[3] = { 0.0, center[1], 0.0 };
-    double point1[3] = { sizeValue, center[1], 0.0 };
-    double point2[3] = { 0.0, center[1], sizeValue };
-    border = CreatePlanePolydata( origin, point1, point2 );
+    border = CreateCubePolydata( fixedBottomBox, fixedTopBox,
+                                 boxSize );
     if( !border )
       {
       std::cerr << "Could not generate planar surface" << std::endl;
