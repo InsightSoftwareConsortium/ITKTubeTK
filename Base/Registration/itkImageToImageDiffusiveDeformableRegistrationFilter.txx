@@ -506,6 +506,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     }
 
   // Smooth the distance image to avoid "streaks" from faces of the polydata
+  // (because we are choosing the closest point in the polydata)
   typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
                                                       WeightImageType >
                                                       SmoothingFilterType;
@@ -542,9 +543,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 ::ComputeWeightFromDistance( WeightType distance )
 {
   WeightType weight = exp( m_lambda * distance );
-
-  //std::cout << distance << " " << weight << std::endl;
-
   return weight;
 }
 
