@@ -215,13 +215,31 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_boxes_originalMovingImage.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_boxes_resultingMotionField.mhd
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_boxes_resultingTransformedMovingImage.mhd
-          100 # number of iterations
+          500 # number of iterations
           0 # compute regularization term
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_boxes_normalSurfaceBorder.vtk
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_boxes_normalVectorImage.mhd
           1 # use diffusive regularization
           ${TEMP}/SlidingOrganRegistrationWithoutRegularization_boxes_weightImage.mhd
-          0.5 # time step
+          0.125 # time step
+          1
+          )
+
+  # Anisotropic diffusive regularization on sliding boxes
+  add_test( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTestWithRegularization_boxes
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_originalFixedImage.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_originalMovingImage.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_resultingMotionField.mhd
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_resultingTransformedMovingImage.mhd
+          500 # <--- number of iterations
+          1 # compute regularization term
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_normalSurfaceBorder.vtk
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_normalVectorImage.mhd
+          1 # use diffusive regularization
+          ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_weightImage.mhd
+          0.125 # <--- time step
           1
           )
 
@@ -233,13 +251,13 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_originalMovingImage_w0.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_resultingMotionField_w0.mhd
           ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_resultingTransformedMovingImage_w0.mhd
-          100 # <--- number of iterations
+          500 # <--- number of iterations
           1 # compute regularization term
           ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_normalSurfaceBorder_w0.vtk
           ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_normalVectorImage_w0.mhd
           0 # use diffusive regularization
           ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_weightImage_w0.mhd
-          0.05 # <--- time step
+          0.125 # <--- time step
           1
           )
 
