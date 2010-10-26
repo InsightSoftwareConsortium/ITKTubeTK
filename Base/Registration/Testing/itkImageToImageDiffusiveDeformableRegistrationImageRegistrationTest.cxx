@@ -38,6 +38,7 @@ limitations under the License.
 #include "vtkPolyDataWriter.h"
 #include "vtkAppendPolyData.h"
 #include "vtkDensifyPolyData.h"
+#include "vtkSmoothPolyDataFilter.h"
 
 // Template function to fill in an image with a sphere.
 template <class TImage>
@@ -96,12 +97,30 @@ typename TImage::PixelType topEnd
   for( ; !it.IsAtEnd(); ++it )
     {
     index = it.GetIndex();
-    if( index[0] > bottomBox[0] && index[0] < bottomBox[0] + size[0]
+    if( index[0] <= bottomBox[0]
+        && index[1] >= bottomBox[1] && index[1] < bottomBox[1] + size[1]
+        && index[2] > bottomBox[2] && index[2] < bottomBox[2] + size[2] )
+      {
+      it.Set( bottomStart );
+      }
+    else if( index[0] > bottomBox[0] && index[0] < bottomBox[0] + size[0]
         && index[1] >= bottomBox[1] && index[1] < bottomBox[1] + size[1]
         && index[2] > bottomBox[2] && index[2] < bottomBox[2] + size[2] )
       {
       intensity = ( (index[0] - bottomBox[0] ) / size[0] ) * bottomRange + bottomStart;
       it.Set( intensity ); // or bottomStart for solid blocks
+      }
+    else if( index[0] >= bottomBox[0] + size[0]
+        && index[1] >= bottomBox[1] && index[1] < bottomBox[1] + size[1]
+        && index[2] > bottomBox[2] && index[2] < bottomBox[2] + size[2] )
+      {
+      it.Set( bottomEnd );
+      }
+    else if( index[0] <= topBox[0]
+        && index[1] >= topBox[1] && index[1] < topBox[1] + size[1]
+        && index[2] > topBox[2] && index[2] < topBox[2] + size[2] )
+      {
+      it.Set( topStart );
       }
     else if( index[0] > topBox[0] && index[0] < topBox[0] + size[0]
         && index[1] >= topBox[1] && index[1] < topBox[1] + size[1]
@@ -109,6 +128,12 @@ typename TImage::PixelType topEnd
       {
       intensity = ( (index[0] - topBox[0] ) / size[0] ) * topRange + topStart;
       it.Set( intensity ); // or topEnd for solid blocks
+      }
+    else if( index[0] >= topBox[0] + size[0]
+      && index[1] >= topBox[1] && index[1] < topBox[1] + size[1]
+      && index[2] > topBox[2] && index[2] < topBox[2] + size[2] )
+      {
+      it.Set( topEnd );
       }
     else
       {
@@ -307,8 +332,8 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     double boxSize[3] = { 30, 16, 16 };
     double center[3] = {sizeValue / 2.0, sizeValue / 2.0, sizeValue / 2.0 };
     double offset = 10;
-    PixelType bottomStart = 120;
-    PixelType bottomEnd = 30;
+    PixelType bottomStart = 30;
+    PixelType bottomEnd = 120;
     PixelType topStart = 130;
     PixelType topEnd = 220;
 
@@ -334,9 +359,27 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     FillWithBox<ImageType>( moving, movingBottomBox, movingTopBox, boxSize,
                             bgnd, bottomStart, bottomEnd, topStart, topEnd );
 
-    // setup the normals
-    border = CreateCubePolydata( fixedBottomBox, fixedTopBox,
-                                 boxSize );
+    // setup the normals for the cubes
+    double spacer = 10.0;
+    double bottomCubeBorder[3] = { 0.0 - spacer,
+                                   fixedBottomBox[1],
+                                   fixedBottomBox[2] };
+    double topCubeBorder[3] = { 0.0 - spacer,
+                                fixedTopBox[1],
+                                fixedTopBox[2] };
+    double cubeSize[3] = { sizeValue + ( spacer * 2.0 ),
+                           boxSize[1],
+                           boxSize[2] };
+
+    border = CreateCubePolydata( bottomCubeBorder, topCubeBorder, cubeSize );
+
+//    // setup the normals for a plane
+//    double origin[3] = { 0.0, center[1] - 0.5, 0.0 };
+//    double point1[3] = {sizeValue, center[1] - 0.5, 0.0 };
+//    double point2[3] = {0.0, center[1] - 0.5, sizeValue };
+//    int resolution = 30;
+//    border = CreatePlanePolydata( origin, point1, point2, resolution );
+
     if( !border )
       {
       std::cerr << "Could not generate planar surface" << std::endl;
@@ -421,7 +464,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
     }
 
   registrator->SetTimeStep( atof( argv[11] ) );
-  registrator->SetLambda( -0.1 );
+  registrator->SetLambda( -0.05 );
 
   // warp moving image
   typedef itk::WarpImageFilter<ImageType,ImageType,FieldType> WarperType;
