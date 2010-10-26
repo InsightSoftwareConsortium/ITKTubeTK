@@ -349,7 +349,7 @@ int itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest(
                             bgnd, bottomStart, bottomEnd, topStart, topEnd );
 
     // Create the two boxes on the moving image
-    double shift = 4;
+    double shift = 4; // <-- this is the transformation!!!
     double movingBottomBox[3] = { fixedBottomBox[0] - shift,
                                   fixedBottomBox[1],
                                   fixedBottomBox[2] };
