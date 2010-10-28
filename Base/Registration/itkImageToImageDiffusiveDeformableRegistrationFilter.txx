@@ -27,6 +27,7 @@ limitations under the License.
 
 #include "itkVectorIndexSelectionCastImageFilter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
+#include "itkRecursiveGaussianImageFilter.h"
 
 #include "vtkDataArray.h"
 #include "vtkPointData.h"
@@ -471,6 +472,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   vtkIdType id;
   WeightType distance;
   WeightType weight;
+  NormalVectorType normal;
 
   std::cout << "Computing normals and weights... " << std::endl;
 
@@ -491,7 +493,13 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
     id = m_PointLocator->FindClosestPoint( imageCoord );
 
-    normalVectorIt.Set( normalData->GetTuple( id ) );
+    normal = normalData->GetTuple( id );
+//    for( int i = 0; i < ImageDimension; i++ )
+//      {
+//      normal[i] = fabs( normal[i] );
+//      }
+
+    normalVectorIt.Set( normal );
 
     // Calculate distance between the current coord and the border surface coord
     m_BorderNormalsSurface->GetPoint( id, borderCoord );
@@ -506,17 +514,31 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     weightIt.Set( distance );
     }
 
+//  // Smooth the normals to handle corners (because we are choosing the closest
+//  // point in the polydata
+//  typedef itk::RecursiveGaussianImageFilter< NormalVectorImageType,
+//                                                      NormalVectorImageType >
+//                                                      NormalSmoothingFilterType;
+//  typename NormalSmoothingFilterType::Pointer normalSmooth
+//                                            = NormalSmoothingFilterType::New();
+//  normalSmooth->SetInput( m_NormalVectorImage );
+//  double normalSigma = 3.0;
+//  normalSmooth->SetSigma( normalSigma );
+//  normalSmooth->Update();
+//  m_NormalVectorImage = normalSmooth->GetOutput();
+
   // Smooth the distance image to avoid "streaks" from faces of the polydata
   // (because we are choosing the closest point in the polydata)
   typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
                                                       WeightImageType >
-                                                      SmoothingFilterType;
-  typename SmoothingFilterType::Pointer smooth = SmoothingFilterType::New();
-  double sigma = 1.0;
-  smooth->SetInput( m_WeightImage );
-  smooth->SetSigma( sigma );
-  smooth->Update();
-  m_WeightImage = smooth->GetOutput();
+                                                      WeightSmoothingFilterType;
+  typename WeightSmoothingFilterType::Pointer weightSmooth
+                                            = WeightSmoothingFilterType::New();
+  double weightSigma = 1.0;
+  weightSmooth->SetInput( m_WeightImage );
+  weightSmooth->SetSigma( weightSigma );
+  weightSmooth->Update();
+  m_WeightImage = weightSmooth->GetOutput();
 
   WeightIteratorType weightIt2( m_WeightImage,
                                 m_WeightImage->GetLargestPossibleRegion() );
@@ -899,6 +921,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
   // on the output region because input has been copied to output.
+
+  // Setup the boundary faces for the deformation field
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<OutputImageType>
     FaceCalculatorType;
 
@@ -921,9 +945,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                               normalVectorFaceCalculator;
 
   NormalVectorFaceListType    normalVectorFaceList
-                    = normalVectorFaceCalculator( m_NormalVectorImage,
-                                                  normalVectorRegionToProcess,
-                                                  radius );
+                    = normalVectorFaceCalculator(
+                              m_NormalVectorImage,
+                              normalVectorRegionToProcess,
+                              radius );
 
   typename NormalVectorFaceListType::iterator
                   normalVectorFaceListIt = normalVectorFaceList.begin();
@@ -1076,32 +1101,83 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   // Process each of the boundary faces.
 
-//  NeighborhoodIteratorType bD;
-//  DiffusionTensorNeighborhoodType bDD;
-//  UpdateIteratorType   bU;
-//  ++dfIt;
+  NeighborhoodIteratorType bD;
+  UpdateIteratorType   bU;
+  NormalVectorImageNeighborhoodType bNormalVectorN;
+  DiffusionTensorNeighborhoodType bTangentialDTN;
+  DiffusionTensorNeighborhoodType bNormalDTN;
+  DeformationFieldComponentNeighborhoodArrayType bTangentialDFC;
+  DeformationFieldComponentNeighborhoodArrayType bNormalDFC;
 
-//  for (++fIt; fIt != faceList.end(); ++fIt)
-//    {
-//    bD = NeighborhoodIteratorType(radius, output, *fIt);
-//    bDD = DiffusionTensorNeighborhoodType(radius,
-//                                          m_TangentialDiffusionTensorImage,
-//                                          *dfIt);
+  ++normalVectorFaceListIt;
+  ++tangentialDfIt;
+  ++normalDfIt;
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    ++bTangentialDFC[i];
+    ++bNormalDFC[i];
+    }
+  for ( ++fIt; fIt != faceList.end(); ++fIt )
+    {
+    bD = NeighborhoodIteratorType( radius, output, *fIt );
+    bU = UpdateIteratorType( m_UpdateBuffer, *fIt );
+    bNormalVectorN = NormalVectorImageNeighborhoodType( radius, m_NormalVectorImage,
+                                                        *normalVectorFaceListIt );
+    bTangentialDTN = DiffusionTensorNeighborhoodType( radius,
+                                                     m_TangentialDiffusionTensorImage,
+                                                     *tangentialDfIt );
+    bNormalDTN = DiffusionTensorNeighborhoodType( radius,
+                                                  m_NormalDiffusionTensorImage,
+                                                  *normalDfIt);
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      bTangentialDFC[i] = DeformationFieldComponentNeighborhoodType(
+          radius, m_DeformationFieldTangentialComponents[i],
+          *deformationFieldTangentialComponentFaceListIterator[i] );
+      bNormalDFC[i] = DeformationFieldComponentNeighborhoodType(
+          radius, m_DeformationFieldNormalComponents[i],
+          *deformationFieldNormalComponentFaceListIterator[i] );
+      }
 
-//    bU = UpdateIteratorType  (m_UpdateBuffer, *fIt);
-
-//    bD.GoToBegin();
-//    bU.GoToBegin();
-//    bDD.GoToBegin();
-//    while ( !bD.IsAtEnd() )
-//      {
-//      bU.Value() = df->ComputeUpdate(bD, bDD, globalData);
-//      ++bD;
-//      ++bU;
-//      ++bDD;
-//      }
-//    ++dfIt;
-//    }
+    bD.GoToBegin();
+    bU.GoToBegin();
+    bNormalVectorN.GoToBegin();
+    bTangentialDTN.GoToBegin();
+    bNormalDTN.GoToBegin();
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      bTangentialDFC[i].GoToBegin();
+      bNormalDFC[i].GoToBegin();
+      }
+    while ( !bD.IsAtEnd() )
+      {
+      nU.Value() = df->ComputeUpdate(bD,            // output (deformation field)
+                                     bNormalVectorN, // m_NormalVectorImage
+                                     bTangentialDTN, // m_TangentialDiffusionTensorImage
+                                     bTangentialDFC, // m_DeformationFieldTangentialComponents
+                                     bNormalDTN,     // m_NormalDiffusionTensorImage
+                                     bNormalDFC,     // m_DeformationFieldTangentialComponents
+                                     globalData);   // global data
+      ++bD;
+      ++bU;
+      ++bNormalVectorN;
+      ++bTangentialDTN;
+      ++bNormalDTN;
+      for ( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        ++bTangentialDFC[i];
+        ++bNormalDFC[i];
+        }
+      }
+    ++normalVectorFaceListIt;
+    ++tangentialDfIt;
+    ++normalDfIt;
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      ++bTangentialDFC[i];
+      ++bNormalDFC[i];
+      }
+    }
 
   // Ask the finite difference function to compute the time step for
   // this iteration.  We give it the global data pointer to use, then
