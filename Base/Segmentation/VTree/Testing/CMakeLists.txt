@@ -54,6 +54,7 @@ set( tubeBaseSegmentationVTree_SRCS
   itkOptParabolicFitTest.cxx
   itkRidgeExtractorTest.cxx
   itkRidgeExtractorTest2.cxx
+  itkRadiusExtractorTest.cxx
   itkSplineApprox1DTest.cxx
   itkSplineNDTest.cxx
   itkUserFuncTest.cxx
@@ -163,4 +164,12 @@ add_test( itkRidgeExtractorTest2
     ${INPUT_DATA}/Branch.n010.mha 
     ${INPUT_DATA}/Branch-truth.tre 
   )
+
+add_test( itkRadiusExtractorTest
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  itkRadiusExtractorTest
+    ${INPUT_DATA}/Branch.n010.mha 
+    ${INPUT_DATA}/Branch-truth.tre 
+  )
+
 

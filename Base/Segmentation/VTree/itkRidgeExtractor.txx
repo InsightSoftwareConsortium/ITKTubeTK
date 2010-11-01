@@ -1035,7 +1035,9 @@ RidgeExtractor<TInputImage>
           tmpPoint.SetTangent( tubeV );
           tmpPoint.SetRadius( m_DynamicScaleUsed );
           m_RadiusExtractor->SetRadius0( m_DynamicScaleUsed );
-          if( m_RadiusExtractor->CalcOptimalScale( tmpPoint ) )
+          if( !m_RadiusExtractor->ComputeOptimalRadiusAtPoint( tmpPoint,
+            m_DynamicScaleUsed, m_DynamicScaleUsed/4, m_DynamicScaleUsed*2,
+            m_DynamicScaleUsed/8, m_DynamicScaleUsed/16 ) ) 
             {
             m_DynamicScaleUsed = ( 2 * tmpPoint.GetRadius()
               + m_DynamicScaleUsed ) / 3; 
@@ -1414,7 +1416,8 @@ RidgeExtractor<TInputImage>
     tmpPoint.SetPosition( tubeX );
     tmpPoint.SetTangent( tubeV );
     tmpPoint.SetRadius( scale0 );
-    if( !m_RadiusExtractor->CalcOptimalScale( tmpPoint, true ) ) 
+    if( !m_RadiusExtractor->ComputeOptimalRadiusAtPoint( tmpPoint,
+      scale0, scale0/4, scale0*2, scale0/8, scale0/16 ) ) 
       {
       if( this->GetDebug() && m_StatusCallBack )
         {

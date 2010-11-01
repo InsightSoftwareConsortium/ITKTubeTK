@@ -46,7 +46,7 @@ GetOrthogonalVector(vnl_vector<T> x);
 /** simple function that return the cross vector from two vectors*/
 template <class T> 
 vnl_vector<T>
-GetCrossVector(vnl_vector<T> x);
+GetCrossVector(vnl_vector<T> v1, vnl_vector<T> v2);
 
 /** return the new position folowing the vector dir */
 template <class T> 

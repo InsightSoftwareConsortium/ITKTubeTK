@@ -30,6 +30,7 @@ limitations under the License.
 
 #include <vector>
 
+#include <vnl/vnl_vector.h>
 #include <itkVesselTubeSpatialObject.h>
 
 #include "itkOptParabolicFit1D.h"
@@ -59,10 +60,25 @@ public:
   itkTypeMacro( RadiusExtractor, Object );
   itkNewMacro( RadiusExtractor );
 
+  /**
+   * Standard for the number of dimension
+   */
+  itkStaticConstMacro( ImageDimension, unsigned int, 
+    ::itk::GetImageDimension< TInputImage>::ImageDimension );
+
   typedef VesselTubeSpatialObject< TInputImage::ImageDimension > 
                                                              TubeType;
   typedef typename TubeType::TubePointType                   TubePointType;
-  typedef typename TubeType::PointType                       PointType;
+
+  typedef typename TubeType::PointType                       ITKPointType;
+  typedef typename TubeType::VectorType                      ITKVectorType;
+
+  /**
+   * Kernel is a vector of points that sparsely represent a tube
+   */
+  typedef typename std::vector< TubePointType > KernArrayType;
+
+  typedef typename std::vector< unsigned int >  KernArrayTubePointIndexType;
 
   /**
    * Type definition for the input image. */
@@ -75,13 +91,12 @@ public:
   /**
    * Defines the type of vectors used
    */
-  typedef Vector<double, 3>                                  VectorType; 
+  typedef vnl_vector< double >                               VectorType; 
 
   /**
-   * Standard for the number of dimension
+   * Defines the type of matrix used
    */
-  itkStaticConstMacro( ImageDimension, unsigned int, 
-    ::itk::GetImageDimension< TInputImage>::ImageDimension );
+  typedef vnl_matrix< double >                               MatrixType; 
 
   /**
    * Set the input image */
@@ -173,38 +188,29 @@ public:
 
   /**
    * Return the optimizer */
-  OptParabolicFit1D & GetMedialnessOpt( void );
+  OptParabolicFit1D & GetMedialnessOptimizer( void );
 
   /**
-   * Compute Medialness and Branchness */    
-  void ComputeMnessBness( double pntR, double w, 
-    double *kernPos, double *kernPosCnt, 
-    double *kernNeg, double *kernNegCnt, 
-    double *kernBrn, double *kernBrnCnt, 
-    double &mness, double &bness, bool doBNess );
+   *
+   */
+  void ComputeMeasuresAtPoint( TubePointType & pnt, double pntR,
+    double w, double & mness, double & bness, bool doBNess );
 
   /**
-   * Compute the medialness at a point */    
-  double MedialnessAtPoint( TubePointType pnt, double pntR, 
-    bool doBNess=false, bool newKern=true, double w=1 );
+   * Compute medialness at a kernel array */       
+  void ComputeMeasuresInKernelArray( KernArrayType & kernArray,
+    double pntR, double & mness, double & bness, bool doBNess );
 
   /**
-   * Compute the medialness at a kernel */       
-  double MedialnessAtKern( std::list<TubePointType> * tube, double pntR,
-    bool doBNess );
+   * Calculate the optimal scale 
+   */
+  bool ComputeOptimalRadiusAtPoint( TubePointType & pnt, double r0,
+    double rMin, double rMax, double rStep, double rTolerance );
 
   /**
-   * Calculate the optimal scale */    
-  bool CalcOptimalScale( TubePointType pnt, bool firstGuess =false );
-
-  /**
-   * Calculate Radii one way */    
-  bool CalcRadiiOneWay( typename std::vector<TubePointType>::iterator
-    tubePntFrom, typename std::vector<TubePointType>::iterator tubePntTo,
-    bool forward=true );
-  /**
-   * Calculate Radii */    
-  bool CalcRadii( TubeType * tube );
+   * Calculate Radii 
+   */
+  bool ComputeTubeRadii( TubeType & tube );
        
   void SetIdleCallBack( bool ( *idleCallBack )() );
   void SetStatusCallBack( void ( *statusCallBack )( char *, char *, int ) );
@@ -216,22 +222,56 @@ protected:
   RadiusExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
+  void ComputeValuesInSubKernel( TubePointType pnt, double pntR, double w,
+    MatrixType & kernN, VectorType & kern, double & kernCnt );
+
+  void ComputeValuesInKernel( TubePointType pnt, double pntR, double w,
+    MatrixType & kernN, VectorType & kernPos, double & kernPosCnt,
+    VectorType & kernNeg, double & kernNegCnt,
+    VectorType & kernBrn, double & kernBrnCnt, bool doBNess );
+
+  void ComputeValuesInFullKernelArray( TubeType & tube,
+    KernArrayType & kernArray,
+    KernArrayTubePointIndexType & kernArrayTubePointIndex );
+
+  /**
+   * Compute medialness at a kernel */    
+  void ComputeMeasuresInKernel( double pntR, double w, 
+    VectorType & kernPos, double & kernPosCnt, 
+    VectorType & kernNeg, double & kernNegCnt, 
+    VectorType & kernBrn, double & kernBrnCnt, 
+    double & mness, double & bness, bool doBNess );
+
+  /**
+   * Calculate Radii one way */    
+  void ComputeMeasuresInFullKernelArray( KernArrayType & kernArray,
+    unsigned int kernPntStart, unsigned int KernPntEnd );
+
+  void SmoothMeasuresInFullKernelArray( KernArrayType & kernArray );
+
+  void ApplyMeasuresInFullKernelArray( TubeType & tube,
+    KernArrayType & kernArray,
+    KernArrayTubePointIndexType & kernArrayTubePointIndex );
+
+
 private:
 
   typename ImageType::Pointer             m_Image; 
+  typename ImageType::IndexType           m_ImageXMin;
+  typename ImageType::IndexType           m_ImageXMax;
 
   typename BlurImageFunction<ImageType>::Pointer
                                           m_DataOp;
+  double                                  m_DataMin;
+  double                                  m_DataMax;
+
   OptParabolicFit1D                       m_MedialnessOpt;
   
   bool                                    m_Debug;
   bool                                    m_Verbose;
-  
-  double                                  m_DataMin;
-  double                                  m_DataMax;
        
-  int                                     m_NumRadiusPoints;
-  int                                     m_RadiusPointSpacing;
+  unsigned int                            m_NumKernelPoints;
+  unsigned int                            m_KernelPointSpacing;
        
   /** Determine if the algorithm extracts ridge or a valley */
   bool                                    m_ExtractRidge;
@@ -243,42 +283,16 @@ private:
   double                                  m_ThreshMedialness;
   double                                  m_ThreshMedialnessStart;
       
-  TubePointType                         * m_KernPntArray;
-  typename std::vector<TubePointType>::iterator  
-                                        * m_IterPntArray;
-  int                                     m_ArrayLen;
-
-  std::list<TubePointType>                m_Kern;
-  
-  double                                  m_KernMedial;
-  double                                  m_KernBranch;
-  UserFunc<double, double> *              m_MedialnessAtKern;
+  UserFunc<double, double> *              m_MedialnessFunc;
       
-  int                                     m_KernNumT;
-  double                                  m_KernCosT[20];
-  double                                  m_KernSinT[20];
-  double                                  m_KernPos[40];
-  double                                  m_KernNeg[40];
-  double                                  m_KernPosCnt[40];
-  double                                  m_KernNegCnt[40];
-  double                                  m_KernBrn[40];
-  double                                  m_KernBrnCnt[40];
-  VectorType                              m_KernN0;
-  VectorType                              m_KernN1;
-
-  int                                     m_TubePointCount;
-  int                                     m_TubeLength;
+  unsigned int                            m_KernNumDirs;
+  MatrixType                              m_KernX;
 
   double                                  m_Scale;
   double                                  m_Extent;   
 
   bool ( *m_IdleCallBack )();
   void ( *m_StatusCallBack )( char *, char *, int );
-
-  void CalcKernArray( TubeType * tube );
-  void CalcKernRadiiOneWay( int iStart, int iEnd, bool forward );
-  void CalcKernMeasures( void );
-  void ApplyKernMeasures( TubeType * tube );
 
 };
 

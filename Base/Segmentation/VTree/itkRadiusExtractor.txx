@@ -28,8 +28,11 @@ limitations under the License.
 #ifndef __itkRadiusExtractor_txx
 #define __itkRadiusExtractor_txx
 
-#include "itkRadiusExtractor.h"
 #include <itkMinimumMaximumImageFilter.h>
+
+#include "itkMatrixMath.h"
+
+#include "itkRadiusExtractor.h"
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -39,43 +42,50 @@ namespace itk
 {
 
 /** Define the Medialness Function */
-template <class T>
+template < class ImageT >
 class RadiusExtractorMedialnessFunc : public UserFunc<double, double> 
 {
   public:
 
-    typedef itk::VesselTubeSpatialObject<3>    TubeType;
-    typedef typename TubeType::TubePointType   TubePointType;
+    typedef itk::VesselTubeSpatialObject< ImageT::ImageDimension >
+                                                             TubeType;
+    typedef typename TubeType::TubePointType                 TubePointType;
 
 
-    RadiusExtractorMedialnessFunc( RadiusExtractor<T> * newRadiusExtractor,
-      std::list<TubePointType> * newTube )
+    RadiusExtractorMedialnessFunc( 
+      RadiusExtractor< ImageT > * newRadiusExtractor )
       {
-      m_Tube = newTube;
       m_RadiusExtractor = newRadiusExtractor;
+      };
+
+    void SetKernelArray( std::vector<TubePointType> * newKernelArray )
+      {
+      m_KernelArray = newKernelArray;
       };
 
     const double & value( const double & x )
       {
-      m_Value = m_RadiusExtractor->MedialnessAtKern( m_Tube, x, false );
+      double bness = 0;
+      m_RadiusExtractor->ComputeMeasuresInKernelArray( 
+        *m_KernelArray, x, m_Value, bness, false );
       return m_Value;
       };
 
-    std::list< TubePointType > * GetTube( void  )
+    std::vector< TubePointType > * GetKernelArray( void  )
       {
-      return m_Tube;
+      return m_KernelArray;
       };
 
-    RadiusExtractor< T > * GetRadiusExtractor( void  )
+    RadiusExtractor< ImageT > * GetRadiusExtractor( void  )
       {
       return m_RadiusExtractor;
       }
 
   private:
 
-    std::list<TubePointType>               * m_Tube;
+    std::vector<TubePointType>             * m_KernelArray;
 
-    RadiusExtractor< T >                   * m_RadiusExtractor;
+    RadiusExtractor< ImageT >              * m_RadiusExtractor;
 
     double                                   m_Value;
 
@@ -85,45 +95,65 @@ class RadiusExtractorMedialnessFunc : public UserFunc<double, double>
 template<class TInputImage>
 RadiusExtractor<TInputImage>
 ::RadiusExtractor()
-{
+{;
   m_Debug = false; 
   m_Verbose = true; 
+
+  m_Image = NULL;
+  m_ImageXMin.Fill( 0 );
+  m_ImageXMax.Fill( -1 );
 
   m_DataOp = BlurImageFunction<ImageType>::New();
   m_DataOp->SetScale( 1.0 );
   m_DataOp->SetExtent( 1.1 );
+  m_DataMin = 0;
+  m_DataMax = -1;
 
-  m_NumRadiusPoints = 5;
-  m_RadiusPointSpacing = 10;
+  m_NumKernelPoints = 5;
+  m_KernelPointSpacing = 10;
   m_Radius0 = 1.0;
   m_ExtractRidge = true;
 
   m_ThreshMedialness = 0.04;       // 0.015; larger = harder
   m_ThreshMedialnessStart = 0.01;
 
-  m_KernNumT = 0;
-  double theta;
-  for( theta=0; theta<PI-PI/8; theta+=( double )( PI/4 ) ) 
+  if( ImageDimension == 2 )
     {
-    m_KernSinT[m_KernNumT] = sin( theta );
-    m_KernCosT[m_KernNumT] = cos( theta );
-    m_KernNumT++;
+    m_KernNumDirs = 2;
+    m_KernX.set_size(m_KernNumDirs, ImageDimension);
+    m_KernX(0, 0) = 1;
+    m_KernX(1, 0) = 0;
+    m_KernX(0, 1) = -1;
+    m_KernX(1, 1) = 0;
+    }
+  else if( ImageDimension == 3 )
+    {
+    m_KernNumDirs = 8;
+    m_KernX.set_size(m_KernNumDirs, ImageDimension);
+    int dir = 0;
+    for( double theta=0; theta<PI-PI/8; theta+=( double )( PI/4 ) ) 
+      {
+      m_KernX(0, dir) = cos( theta );
+      m_KernX(1, dir) = sin( theta );
+      m_KernX(2, dir) = 0;
+      ++dir;
+      m_KernX(0, dir) = -cos( theta );
+      m_KernX(1, dir) = -sin( theta );
+      m_KernX(2, dir) = 0;
+      ++dir;
+      }
+    }
+  else
+    {
+    std::cerr
+      << "Error: Radius estimation only supports 2 & 3 dimensions."
+      << std::endl;
+    throw "Error: Radius estimation only supports 2 & 3 dimensions.";
     }
 
-  m_KernN0.Fill( 0 );
-  m_KernN1.Fill( 0 );
-  m_KernN0[0] = 1;
-  m_KernN1[1] = 1;
-
-  m_IterPntArray = new typename std::vector<TubePointType>::iterator[5000]; 
-  m_KernPntArray = new TubePointType[5000]; 
-  m_ArrayLen = 0;
-
-  m_Kern.clear();
-
-  m_MedialnessAtKern = new RadiusExtractorMedialnessFunc<TInputImage>(
-    this, & m_Kern );
-  m_MedialnessOpt.use( m_MedialnessAtKern );
+  m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
+    this );
+  m_MedialnessOpt.use( m_MedialnessFunc );
   m_MedialnessOpt.xMin( 0.4 );
   m_MedialnessOpt.xMax( 20.0 );
 
@@ -144,15 +174,11 @@ template<class TInputImage>
 RadiusExtractor<TInputImage>
 ::~RadiusExtractor()
 {
-  if( m_MedialnessAtKern != NULL )
+  if( m_MedialnessFunc != NULL )
     {
-    delete m_MedialnessAtKern;
+    delete m_MedialnessFunc;
     } 
-  m_MedialnessAtKern = NULL;
-
-  m_ArrayLen = 0;
-  delete [] m_IterPntArray;
-  delete [] m_KernPntArray;
+  m_MedialnessFunc = NULL;
 }
 
 
@@ -195,14 +221,14 @@ RadiusExtractor<TInputImage>
 ::SetRadiusMax( double radiusMax )
 {
   this->m_RadiusMax = radiusMax;
-  m_MedialnessOpt.xMax( this->m_RadiusMx );
+  m_MedialnessOpt.xMax( this->m_RadiusMax );
 }
 
 /** Get the medialness operator */
 template<class TInputImage>
 OptParabolicFit1D & 
 RadiusExtractor<TInputImage>
-::GetMedialnessOpt( void )
+::GetMedialnessOptimizer( void )
 {
   return & m_MedialnessOpt;
 }
@@ -226,6 +252,13 @@ RadiusExtractor<TInputImage>
     m_DataMin = minMaxFilter->GetMinimum();
     m_DataMax = minMaxFilter->GetMaximum();
 
+    m_ImageXMin = m_Image->GetLargestPossibleRegion().GetIndex();
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      m_ImageXMax[i] = m_ImageXMin[i] + 
+        m_Image->GetLargestPossibleRegion().GetSize()[i] - 1;
+      }
+
     if( m_Debug )
       {
       std::cout << "RadiusExtractor: SetInputImage: Minimum = " 
@@ -236,24 +269,625 @@ RadiusExtractor<TInputImage>
     }
 }
 
+
+
+/**
+ * Compute the medialness at a point 
+ */
+template<class TInputImage>
+void
+RadiusExtractor<TInputImage>
+::ComputeMeasuresAtPoint( TubePointType & pnt, double pntR, double w,
+  double & mness, double & bness, bool doBNess )
+{
+  if( pntR < m_MedialnessOpt.xMin() )
+    {
+    pntR = m_MedialnessOpt.xMin();
+    }
+
+  if( pntR > m_MedialnessOpt.xMax() )
+    {
+    pntR = m_MedialnessOpt.xMax();
+    }
+
+  MatrixType n( ImageDimension, ImageDimension-1 );
+
+  // Verify the normal directions stored in the point are actually
+  //   normal to the point's tangent direction.
+  double dotP = vnl_math_abs( dot_product( pnt.GetNormal1().GetVnlVector(),
+    pnt.GetTangent().GetVnlVector() ) );
+  if( ImageDimension == 3 )
+    {
+    dotP += vnl_math_abs( dot_product( pnt.GetNormal2().GetVnlVector(),
+      pnt.GetTangent().GetVnlVector() ) );
+    }
+  if( dotP < 0.001 )
+    {
+    n.set_column( 0, pnt.GetNormal1().GetVnlVector() );
+    if( ImageDimension == 3 )
+      {
+      n.set_column( 1, pnt.GetNormal2().GetVnlVector() );
+      }
+    }
+  else
+    {
+    // If the point's normals, aren't normal, then create new normals.
+    //   However, given only one point, we cannot compute the tube's
+    //   local Frenet frame.   Ideally the user should call 
+    //   ComputeTangents on the tube prior to calling this function
+    //   to avoid this situation.  If inconsistent normals are used,
+    //   branchness computations suffer due to normal flipping.
+    std::cout 
+      << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
+      << std::endl;
+    n.set_column( 0,
+      GetOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
+    n.get_column( 0 ).normalize();
+    if( ImageDimension == 3 )
+      {
+      n.set_column( 1,
+        GetCrossVector( pnt.GetTangent().GetVnlVector(),
+          n.get_column( 0 ) )  );
+      n.get_column( 1 ).normalize();
+      }
+    }
+
+  VectorType kernPos( m_KernNumDirs );
+  VectorType kernNeg( m_KernNumDirs );
+  VectorType kernBrn( m_KernNumDirs );
+  kernPos.fill( 0 );
+  kernNeg.fill( 0 );
+  kernBrn.fill( 0 );
+  double kernPosCnt = 0;
+  double kernNegCnt = 0;
+  double kernBrnCnt = 0;
+
+  this->ComputeValuesInKernel( pnt, pntR, w, n, kernPos, kernPosCnt,
+    kernNeg, kernNegCnt, kernBrn, kernBrnCnt, doBNess );
+
+  this->ComputeMeasuresInKernel( pntR, w, kernPos, kernPosCnt, 
+    kernNeg, kernNegCnt, kernBrn, kernBrnCnt, mness, bness, doBNess );
+  pnt.SetMedialness( mness );
+  if( doBNess )
+    {
+    pnt.SetBranchness( bness );
+    }
+}
+
+/** Compute the medialness at a kernel */
+template<class TInputImage>
+void
+RadiusExtractor<TInputImage>
+::ComputeMeasuresInKernelArray( KernArrayType & kernArray,
+  double pntR, double & mness, double & bness, bool doBNess )
+{ 
+  unsigned int len = kernArray.size();
+
+  if( len == 0 )
+    {
+    mness = 0;
+    bness = 0;
+    return;
+    }
+  else if( len == 1 )
+    {
+    this->ComputeMeasuresAtPoint( kernArray[0], pntR, 1, mness, bness,
+      doBNess );
+    }
+
+  unsigned int mid = ( len - 1 ) / 2;
+
+  double wTot = 0;
+  VectorType w( len );
+  for( unsigned int i=0; i<len; i++ )
+    {
+    w[i] = 1.0 - vnl_math_abs( (double)i - (double)mid ) / ( 2.0 * mid );
+    wTot += w[i];
+    }
+  for( unsigned int i=0; i<len; i++ )
+    {
+    w[i] /= wTot;
+    }
+
+  if( pntR < m_MedialnessOpt.xMin() )
+    {
+    pntR = m_MedialnessOpt.xMin();
+    }
+
+  if( pntR > m_MedialnessOpt.xMax() )
+    {
+    pntR = m_MedialnessOpt.xMax();
+    }
+
+  if( m_Debug ) 
+    {   
+    std::cout << "RadiusExtractor: MedialnessInKern: pntR = " 
+      << pntR << " : size = " << kernArray.size() 
+      << std::endl;
+    }
+
+  VectorType kernPosTot( m_KernNumDirs );
+  VectorType kernNegTot( m_KernNumDirs );
+  VectorType kernBrnTot( m_KernNumDirs );
+  kernPosTot.fill( 0 );
+  kernNegTot.fill( 0 );
+  kernBrnTot.fill( 0 );
+  double kernPosCntTot = 0;
+  double kernNegCntTot = 0;
+  double kernBrnCntTot = 0;
+
+  VectorType kernPos( m_KernNumDirs );
+  VectorType kernNeg( m_KernNumDirs );
+  VectorType kernBrn( m_KernNumDirs );
+  kernPos.fill( 0 );
+  kernNeg.fill( 0 );
+  kernBrn.fill( 0 );
+  double kernPosCnt = 0;
+  double kernNegCnt = 0;
+  double kernBrnCnt = 0;
+
+  MatrixType norms( ImageDimension, ImageDimension-1 );
+  norms.set_column(0, kernArray[mid].GetNormal1().GetVnlVector() );
+  if( ImageDimension > 2 )
+    {
+    norms.set_column(1, kernArray[mid].GetNormal2().GetVnlVector() );
+    }
+
+  // With the coordinate frame defined, compute medialness for other points
+  typename std::vector<TubePointType>::iterator pnt = kernArray.begin();
+  for( unsigned int i=0; i<len; ++i ) 
+    {
+    this->ComputeValuesInKernel( *pnt, pntR, w[i], norms, kernPos,
+      kernPosCnt, kernNeg, kernNegCnt, kernBrn, kernBrnCnt,
+      doBNess );
+    for( unsigned int d=0; d<m_KernNumDirs; d++ )
+      {
+      kernPosTot[i] += kernPos[i];
+      kernNegTot[i] += kernNeg[i];
+      kernBrnTot[i] += kernBrn[i];
+      }
+    kernPosCntTot += kernPosCnt;
+    kernNegCntTot += kernNegCnt;
+    kernBrnCntTot += kernBrnCnt;
+    ++pnt;
+    }
+
+  for( unsigned int i = 0; i < m_KernNumDirs; i++ )
+    {
+    if( kernPosCntTot > 0 )
+      {
+      kernPosTot[i] /= kernPosCntTot;
+      }
+    if( kernNegCntTot > 0 )
+      {
+      kernNegTot[i] /= kernNegCntTot;
+      }
+    if( kernBrnCntTot > 0 )
+      {
+      kernBrnTot[i] /= kernBrnCntTot;
+      }
+    }
+
+  mness = 0;
+  bness = 0;
+  // WTF = why 0.5?  HERE
+  this->ComputeMeasuresInKernel( pntR, 0.5, kernPosTot, kernPosCntTot, 
+    kernNegTot, kernNegCntTot, kernBrnTot, kernBrnCntTot, 
+    mness, bness, doBNess );
+}
+
+/** Compute the Optimal scale */
+template<class TInputImage>
+bool
+RadiusExtractor<TInputImage>
+::ComputeOptimalRadiusAtPoint( TubePointType & pnt, double r0,
+  double rMin, double rMax, double rStep, double rTolerance )
+{
+  TubePointType tmpPnt;
+  ITKPointType x; 
+
+  KernArrayType kernArray;
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    x[i] = pnt.GetPosition()[i] - pnt.GetTangent()[i];
+    }
+  tmpPnt.SetPosition( x );
+  tmpPnt.SetTangent( pnt.GetTangent() );
+  kernArray.push_back( tmpPnt );
+
+  ITKPointType x1 = pnt.GetPosition();
+  tmpPnt.SetPosition( x1 );
+  tmpPnt.SetTangent( pnt.GetTangent() );
+  kernArray.push_back( tmpPnt );
+
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    x1[i] = pnt.GetPosition()[i] + pnt.GetTangent()[i];
+    }
+  tmpPnt.SetPosition( x1 );
+  tmpPnt.SetTangent( pnt.GetTangent() );
+  kernArray.push_back( tmpPnt );
+
+  double pntR = r0;
+  double w = 0;
+
+  double tempXMin = m_MedialnessOpt.xMin();
+  m_MedialnessOpt.xMin( rMin );
+
+  double tempXMax = m_MedialnessOpt.xMax();
+  m_MedialnessOpt.xMax( rMax );
+
+  double tempXStep = m_MedialnessOpt.xStep();
+  m_MedialnessOpt.xStep( rStep );
+
+  double tempTol = m_MedialnessOpt.tolerance();
+  m_MedialnessOpt.tolerance( rTolerance );
+
+  static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
+    m_MedialnessFunc )->SetKernelArray( & kernArray );
+  m_MedialnessOpt.extreme( &pntR, &w );
+
+  m_MedialnessOpt.xMin( tempXMin );
+  m_MedialnessOpt.xMax( tempXMax );
+  m_MedialnessOpt.xStep( tempXStep );
+  m_MedialnessOpt.tolerance( tempTol );
+
+  pnt.SetRadius( pntR );
+
+  if( w > m_ThreshMedialness )
+    {
+    return true;
+    }
+  else
+    {
+    std::cout <<
+      "RadiusExtractor: calcOptimalScale: kernel fit insufficient"
+      << std::endl;
+    return false;
+    }
+
+  return true;
+}
+
+
+template<class TInputImage>
+void
+RadiusExtractor<TInputImage>
+::ComputeValuesInSubKernel( TubePointType pnt, double pntR, double w,
+  MatrixType & kernN, VectorType & kern, double & kernCnt )
+{
+  if( pntR < m_MedialnessOpt.xMin() )
+    {
+    pntR = m_MedialnessOpt.xMin();
+    }
+
+  if( pntR > m_MedialnessOpt.xMax() )
+    {
+    pntR = m_MedialnessOpt.xMax();
+    }
+
+  VectorType nodePnt;
+  nodePnt = pnt.GetPosition().GetVnlVector();
+
+  for( unsigned int dir=0; dir<m_KernNumDirs; dir++ )
+    {
+    for(unsigned int i=0; i<ImageDimension-1; i++ )
+      {
+      nodePnt = ComputeLineStep( nodePnt, pntR * m_KernX( i, dir ),
+        kernN.get_column( i ) );
+      }
+
+    bool inBounds = true;
+    for(unsigned int i=0; i<ImageDimension; i++ )
+      {
+      if( nodePnt[i] < m_ImageXMin[i] || nodePnt[i] > m_ImageXMax[i] )
+        {
+        inBounds = false;
+        break;
+        }
+      }
+
+    if( inBounds )
+      {
+      ContinuousIndex<double, ImageDimension> nodeCIndx;
+
+      for( unsigned int i=0; i<ImageDimension; i++ )
+        {
+        nodeCIndx[i] = nodePnt[i];
+        }
+
+      double val = ( m_DataOp->EvaluateAtContinuousIndex( nodeCIndx )
+        - m_DataMin ) / ( m_DataMax - m_DataMin ); 
+
+      if( !m_ExtractRidge )
+        {
+        val = 1 - val;
+        }
+
+      if( val < 0 ) 
+        { 
+        val = 0; 
+        }
+
+      if( val > 1 ) 
+        { 
+        val = 1; 
+        }
+
+      kern[dir] += w * val;
+      kernCnt += w;
+      }
+    }
+}
+
+template<class TInputImage>
+void
+RadiusExtractor<TInputImage>
+::ComputeValuesInKernel( TubePointType pnt, double pntR, double w, 
+  MatrixType & kernN, VectorType & kernPos, double & kernPosCnt,
+  VectorType & kernNeg, double & kernNegCnt,
+  VectorType & kernBrn, double & kernBrnCnt, bool doBNess )
+{
+  if( pntR < m_MedialnessOpt.xMin() )
+    {
+    pntR = m_MedialnessOpt.xMin();
+    }
+
+  if( pntR > m_MedialnessOpt.xMax() )
+    {
+    pntR = m_MedialnessOpt.xMax();
+    }
+
+  MatrixType n( ImageDimension, ImageDimension-1 );
+
+  // Verify the normal directions stored in the point are actually
+  //   normal to the point's tangent direction.
+  double dotP = vnl_math_abs( dot_product( pnt.GetNormal1().GetVnlVector(),
+    pnt.GetTangent().GetVnlVector() ) );
+  if( ImageDimension == 3 )
+    {
+    dotP += vnl_math_abs( dot_product( pnt.GetNormal2().GetVnlVector(),
+      pnt.GetTangent().GetVnlVector() ) );
+    }
+  if( dotP < 0.001 )
+    {
+    n.set_column( 0, pnt.GetNormal1().GetVnlVector() );
+    if( ImageDimension == 3 )
+      {
+      n.set_column( 1, pnt.GetNormal2().GetVnlVector() );
+      }
+    }
+  else
+    {
+    // If the point's normals, aren't normal, then create new normals.
+    //   However, given only one point, we cannot compute the tube's
+    //   local Frenet frame.   Ideally the user should call 
+    //   ComputeTangents on the tube prior to calling this function
+    //   to avoid this situation.  If inconsistent normals are used,
+    //   branchness computations suffer due to normal flipping.
+    std::cout 
+      << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
+      << std::endl;
+    n.set_column( 0,
+      GetOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
+    n.get_column( 0 ).normalize();
+    // Should we set the point's normals?
+    if( ImageDimension == 3 )
+      {
+      n.set_column( 1,
+        GetCrossVector( pnt.GetTangent().GetVnlVector(),
+          n.get_column( 0 ) )  );
+      n.get_column( 1 ).normalize();
+      }
+    }
+
+  VectorType n0( ImageDimension );
+  n0.fill( 0 );
+  for( unsigned int j=0; j<ImageDimension-1; j++ )
+    { 
+    double dp = dot_product( kernN.get_column( 0 ), 
+      n.get_column( j ) );
+    for( unsigned int k=0; k<ImageDimension; k++ )
+      {
+      n0 += dp * kernN(k, 0);
+      }
+    }
+  n0.normalize();
+  n.set_column( 0, n0 );
+  if( ImageDimension == 3 )
+    {
+    n.set_column( 1,
+      GetCrossVector( pnt.GetTangent().GetVnlVector(),
+        n.get_column( 0 ) )  );
+    n.get_column( 1 ).normalize();
+ 
+    double tf = dot_product( kernN.get_column( 1 ),
+      n.get_column( 1 ) ); 
+    if( tf<0 )
+      {
+      n.set_column( 1, n.get_column( 1 ) * -1 );
+      }
+    }
+  
+  kernPos.fill( 0 );
+  kernNeg.fill( 0 );
+  kernBrn.fill( 0 );
+  kernPosCnt = 0; 
+  kernNegCnt = 0;
+  kernBrnCnt = 0;
+
+  double e = 1.1;
+  if( ( pntR / 4.0 ) * e < 0.71 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
+    {  
+    e = 0.71 / ( pntR / 4.0 );     //0.71/( pntR/4 );
+    }
+  if( ( pntR / 4.0 ) * e > 3.1 )
+    {      
+    e = 3.1 / ( pntR / 4.0 );
+    }   
+  m_DataOp->SetScale( pntR / 4.0 ); 
+  m_DataOp->SetExtent( e ); 
+  double r = 3.0 * pntR / 4.0;
+  this->ComputeValuesInSubKernel( pnt, r, w, n, kernPos, kernPosCnt );
+  if( kernPosCnt > 0 )
+    {
+    for( unsigned int i=0; i<m_KernNumDirs; i++ )
+      {
+      kernPos[i] /= kernPosCnt;
+      }
+    }
+
+  r = 5.0 * pntR / 4.0;
+  this->ComputeValuesInSubKernel( pnt, r, w, n, kernNeg, kernNegCnt );
+  if( kernNegCnt > 0 )
+    {
+    for( unsigned int i=0; i<m_KernNumDirs; i++ )
+      {
+      kernNeg[i] /= kernNegCnt;
+      }
+    }
+
+  if( doBNess )
+    {
+    e = 1.0;
+    if( ( pntR / 3.0 ) * e < 1.1 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
+      {
+      e = 1.1 / ( pntR / 3.0 );
+      }
+    if( ( pntR / 3.0 ) * e > 3.1 )
+      {
+      e = 3.1 / ( pntR / 3.0 );
+      }
+    m_DataOp->SetScale( pntR / 3.0 ); // mess with this -  and r
+    m_DataOp->SetExtent( e );
+    r = pntR * 3.0;
+    this->ComputeValuesInSubKernel( pnt, r, w, n, kernBrn, kernBrnCnt );
+    if( kernBrnCnt >= 0 )
+      {
+      for( unsigned int i=0; i<m_KernNumDirs; i++ )
+        {
+        kernBrn[i] /= kernBrnCnt;
+        }
+      }
+    }
+
+  int kernCnt = 0;
+  for( unsigned int i=0; i<m_KernNumDirs; i++ )
+    {
+    if( kernNeg[i]>=w && kernPos[i]>=w )
+      {
+      kernCnt++;
+      }
+    }
+  if( kernCnt < 2 )
+    {
+    std::cout << "Warning: medialness kernel does not intersect image" 
+      << std::endl;
+    }
+}
+
+/** Compute kernel array */
+template<class TInputImage>
+void
+RadiusExtractor<TInputImage>
+::ComputeValuesInFullKernelArray( TubeType & tube,
+  KernArrayType & kernArray,
+  KernArrayTubePointIndexType & kernArrayTubePointIndex )
+{
+  typename KernArrayType::iterator tubeFromPnt = tube.GetPoints().begin();
+  typename KernArrayType::iterator tubeToPnt = tube.GetPoints().end();
+  tubeToPnt--;
+
+  typename KernArrayType::iterator iterPnt;
+  iterPnt = tubeFromPnt;
+
+  kernArray.clear();
+  kernArrayTubePointIndex.clear();
+
+  unsigned int kernPointCount = 0;
+  unsigned int tubePointCount = 0;
+  while( iterPnt != tubeToPnt )
+    {
+    int avgCount = 0;
+    TubePointType kernPnt;
+    for( unsigned int j = 0;
+      iterPnt != tubeToPnt && j < m_KernelPointSpacing;
+      j++ ) 
+      {
+      ITKPointType tmpPoint;
+
+      for( unsigned int id = 0; id < ImageDimension; id++ )
+        {
+        tmpPoint[id] = kernPnt.GetPosition()[id] 
+          + ( *iterPnt ).GetPosition()[id];
+        }
+      kernPnt.SetPosition( tmpPoint );
+
+      double dotP = dot_product( kernPnt.GetTangent().GetVnlVector(),
+        ( *iterPnt ).GetTangent().GetVnlVector() );
+      if( dotP > 0 )
+        {
+        kernPnt.SetTangent( kernPnt.GetTangent() +
+          ( *iterPnt ).GetTangent() );
+        }
+      else
+        {
+        kernPnt.SetTangent( kernPnt.GetTangent() - 
+          ( *iterPnt ).GetTangent() );
+        }
+
+      avgCount++;
+      iterPnt++;
+      tubePointCount++;
+      }
+
+    ITKPointType tmpPoint;
+    for( unsigned int id = 0; id < ImageDimension; id++ )
+      {
+      tmpPoint[id] = kernPnt.GetPosition()[id] / avgCount;
+      }
+    kernPnt.SetPosition( tmpPoint );
+
+    ITKVectorType tempVect = kernPnt.GetTangent();
+    tempVect.Normalize();
+    kernPnt.SetTangent( tempVect );
+
+    kernPnt.SetRadius( 0 );
+
+    if( iterPnt == tubeToPnt )
+      {
+      if( kernPointCount == 0 )
+        {
+        kernArray.push_back( kernPnt );
+        kernArrayTubePointIndex.push_back( tubePointCount );
+        kernPointCount++;
+        }
+      return;
+      }
+
+    kernArray.push_back( kernPnt );
+    kernArrayTubePointIndex.push_back( tubePointCount );
+    kernPointCount++;
+    }
+}
+
+
 /**
  * Compute the medialness and the branchness */
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::ComputeMnessBness( double pntR, double w, 
-  double *kernPos, double *kernPosCnt, 
-  double *kernNeg, double *kernNegCnt, 
-  double *kernBrn, double *kernBrnCnt, 
-  double & mness, double & bness, 
-  bool doBNess )
+::ComputeMeasuresInKernel( double pntR, double w, 
+  VectorType & kernPos, double & itkNotUsed(kernPosCnt), 
+  VectorType & kernNeg, double & itkNotUsed(kernNegCnt), 
+  VectorType & kernBrn, double & itkNotUsed(kernBrnCnt), 
+  double & mness, double & bness, bool doBNess )
 {
-  int i;
-
   int kernAvgCnt = 0;   
-  for( i=0; i<2*m_KernNumT; i++ )
+  for( unsigned int i=0; i<m_KernNumDirs; i++ )
     {    
-    if( kernNegCnt[i]>=w && kernPosCnt[i]>=w )
+    if( kernNeg[i] >= w && kernPos[i] >= w )
       {
       kernAvgCnt++;
       }
@@ -266,31 +900,27 @@ RadiusExtractor<TInputImage>
     return;
     }
 
-  int kernNegMinI, kernNegMaxI;
-  double kernNegMin, kernNegMax;
-  double kernPosMin, kernPosMax;
-  double kernNegAvg, kernPosAvg;
-
-  for( i=0; i<2*m_KernNumT; i++ )
+  int kernNegMinI = -1;
+  for( unsigned int i=0; i<m_KernNumDirs; i++ )
     {
-    if( kernNegCnt[i]>=w && kernPosCnt[i]>=w )
+    if( kernNeg[i] >= w && kernPos[i] >= w )
       {     
+      kernNegMinI = i;
       break;
       }
     }
 
-  kernNegMinI = i;
-  kernNegMaxI = i;
-  kernNegMin = kernNeg[i];
-  kernNegMax = kernNegMin;
-  kernNegAvg = kernNegMin;
-  kernPosMin = kernPos[i];
-  kernPosMax = kernPosMin;
-  kernPosAvg = kernPosMin;
+  int kernNegMaxI = kernNegMinI;
+  double kernNegMin = kernNeg[kernNegMinI];
+  double kernNegMax = kernNegMin;
+  double kernNegAvg = kernNegMin;
+  double kernPosMin = kernPos[kernNegMinI];
+  double kernPosMax = kernPosMin;
+  double kernPosAvg = kernPosMin;
 
-  for( i++; i<2*m_KernNumT; i++ ) 
+  for( unsigned int i = kernNegMinI+1; i < m_KernNumDirs; i++ ) 
     {
-    if( kernNegCnt[i]>=w && kernPosCnt[i]>=w )
+    if( kernNeg[i] >= w && kernPos[i] >= w )
       {
       if( kernNeg[i]>kernNegMax )
         {
@@ -326,54 +956,50 @@ RadiusExtractor<TInputImage>
     kernNegAvg += ( kernNegMin + kernNegAvg / ( kernAvgCnt-1 ) ) 
       / 2;
     int l, m;
-    l = ( kernNegMinI+1 )%( 2*m_KernNumT );
-    m = ( kernNegMinI+2*m_KernNumT-1 )%( 2*m_KernNumT );
-    if( kernNegCnt[l]>=w && kernPosCnt[l]>=w 
-      && kernNeg[l]<kernNeg[m] )
+    l = ( kernNegMinI+1 )%( m_KernNumDirs );
+    m = ( kernNegMinI+m_KernNumDirs-1 )%( m_KernNumDirs );
+    if( kernNeg[l] >= w && kernPos[l] >= w && kernNeg[l] < kernNeg[m] )
       {
       kernPosAvg -= kernPos[l];
       kernNegAvg -= kernNeg[l];
-      kernPosAvg += ( kernPos[l] + kernPosAvg/( kernAvgCnt-1 ) ) / 2;
-      kernNegAvg += ( kernNeg[l] + kernNegAvg/( kernAvgCnt-1 ) ) / 2;
+      kernPosAvg += ( kernPos[l] + kernPosAvg / (kernAvgCnt-1) ) / 2;
+      kernNegAvg += ( kernNeg[l] + kernNegAvg / (kernAvgCnt-1) ) / 2;
       }
-    else if( kernNegCnt[m]>=w && kernPosCnt[m]>=w
-      && kernNeg[l]>=kernNeg[m] )
+    else if( kernNeg[m]>=w && kernPos[m]>=w && kernNeg[l]>=kernNeg[m] )
       {
       kernPosAvg -= kernPos[m];
       kernNegAvg -= kernNeg[m];
-      kernPosAvg += ( kernPos[m]+ kernPosAvg/( kernAvgCnt-1 ) ) / 2;
-      kernNegAvg += ( kernNeg[m]+ kernNegAvg/( kernAvgCnt-1 ) ) / 2;
+      kernPosAvg += ( kernPos[m] + kernPosAvg / (kernAvgCnt-1) ) / 2;
+      kernNegAvg += ( kernNeg[m] + kernNegAvg / (kernAvgCnt-1) ) / 2;
       }
     }
   else if( kernAvgCnt>2 )
     {
     kernPosAvg -= kernPos[kernNegMaxI];
     kernNegAvg -= kernNegMax;
-    kernPosAvg += ( kernPos[kernNegMaxI] + kernPosAvg/( kernAvgCnt-1 ) ) 
+    kernPosAvg += ( kernPos[kernNegMaxI] + kernPosAvg / (kernAvgCnt-1) ) 
       / 2;
-    kernNegAvg += ( kernNegMax + kernNegAvg/( kernAvgCnt-1 ) ) 
+    kernNegAvg += ( kernNegMax + kernNegAvg / (kernAvgCnt-1) ) 
       / 2;
     int l, m;
-    l = ( kernNegMaxI+1 )%( 2*m_KernNumT );
-    m = ( kernNegMaxI+2*m_KernNumT-1 )%( 2*m_KernNumT );
-    if( kernNegCnt[l]>=w && kernPosCnt[l]>=w 
-      && kernNeg[l]>kernNeg[m] )
+    l = ( kernNegMaxI + 1 )%( m_KernNumDirs );
+    m = ( kernNegMaxI + m_KernNumDirs - 1 )%( m_KernNumDirs );
+    if( kernNeg[l] >= w && kernPos[l] >= w && kernNeg[l] > kernNeg[m] )
       {
       kernPosAvg -= kernPos[l];
       kernNegAvg -= kernNeg[l];
-      kernPosAvg += ( kernPos[l] + kernPosAvg / ( kernAvgCnt-1 ) ) / 2;
-      kernNegAvg += ( kernNeg[l] + kernNegAvg / ( kernAvgCnt-1 ) ) / 2;
+      kernPosAvg += ( kernPos[l] + kernPosAvg / (kernAvgCnt-1) ) / 2;
+      kernNegAvg += ( kernNeg[l] + kernNegAvg / (kernAvgCnt-1) ) / 2;
       }
-    else if( kernNegCnt[m]>=w && kernPosCnt[m]>=w
-      && kernNeg[l]<=kernNeg[m] )
+    else if( kernNeg[m]>=w && kernPos[m]>=w && kernNeg[l]<=kernNeg[m] )
       {
       kernPosAvg -= kernPos[m];
       kernNegAvg -= kernNeg[m];
-      kernPosAvg += ( kernPos[m] + kernPosAvg / ( kernAvgCnt-1 ) ) / 2;
-      kernNegAvg += ( kernNeg[m] + kernNegAvg / ( kernAvgCnt-1 ) ) / 2;
+      kernPosAvg += ( kernPos[m] + kernPosAvg / (kernAvgCnt-1) ) / 2;
+      kernNegAvg += ( kernNeg[m] + kernNegAvg / (kernAvgCnt-1) ) / 2;
       }
     }
-  if( kernAvgCnt!=0 )
+  if( kernAvgCnt != 0 )
     {
     kernPosAvg /= kernAvgCnt;
     kernNegAvg /= kernAvgCnt;
@@ -383,32 +1009,34 @@ RadiusExtractor<TInputImage>
     kernPosAvg = 0;
     kernNegAvg = 0;
     }  
-  mness = ( kernPosAvg-kernNegAvg ) / ( pntR/4 );
+  mness = ( kernPosAvg - kernNegAvg ) / ( pntR / 4 );
 
   if( doBNess )
     {
+    unsigned int kernBrnMaxI = m_KernNumDirs;
     double kernBrnMax, kernBrnAvg;
     double kernBrnAvgCnt = 1;
-    for( i=0; i<2*m_KernNumT; i++ )
+    for( unsigned int i=0; i<m_KernNumDirs; i++ )
       {
-      if( kernPosCnt[i]>=w && kernNegCnt[i]>=w && kernBrnCnt[i]>=w )
+      if( kernPos[i]>=w && kernNeg[i]>=w && kernBrn[i]>=w )
         {
+        kernBrnMaxI = i;
         break;
         }
       }
 
-    if( i<2*m_KernNumT )
+    if( kernBrnMaxI < m_KernNumDirs )
       {
-      kernBrnMax = kernBrn[i];
+      kernBrnMax = kernBrn[kernBrnMaxI];
       kernBrnAvg = kernBrnMax;
 
-      for( i++; i<2*m_KernNumT; i++ )
+      for( unsigned int i = kernBrnMaxI+1; i<m_KernNumDirs; i++ )
         {
-        if( kernPosCnt[i]>=w && kernNegCnt[i]>=w && kernBrnCnt[i]>=w )
+        if( kernPos[i]>=w && kernNeg[i]>=w && kernBrn[i]>=w )
           {
           kernBrnAvg += kernBrn[i];
           kernBrnAvgCnt++;
-          if( kernBrn[i]>kernBrnMax )
+          if( kernBrn[i] > kernBrnMax )
             {
             kernBrnMax = kernBrn[i];
             }
@@ -416,7 +1044,7 @@ RadiusExtractor<TInputImage>
         }
 
       kernBrnAvg -= kernBrnMax;
-      if( ( kernBrnAvgCnt-1 )!=0 )
+      if( ( kernBrnAvgCnt-1 ) != 0 )
         {
         kernBrnAvg /= ( kernBrnAvgCnt-1 );
         }
@@ -425,7 +1053,7 @@ RadiusExtractor<TInputImage>
         kernBrnAvg=0;
         }
 
-      if( ( kernPosAvg - kernBrnAvg )!=0 )
+      if( ( kernPosAvg - kernBrnAvg ) != 0 )
         {  
         bness = ( 3 * ( kernBrnMax - kernBrnAvg ) 
           / ( kernPosAvg - kernBrnAvg )
@@ -458,644 +1086,64 @@ RadiusExtractor<TInputImage>
 }
 
 
-/**
- * Compute the medialness at a point 
- */
-template<class TInputImage>
-double
-RadiusExtractor<TInputImage>
-::MedialnessAtPoint( TubePointType pnt, double pntR,
-  bool doBNess, bool newKern, double w )
-{
-  if( pntR < m_MedialnessOpt.xMin() )
-    {
-    pntR = m_MedialnessOpt.xMin();
-    }
-
-  VectorType y( ImageDimension );
-  VectorType n0( ImageDimension );
-  VectorType n1( ImageDimension );
-
-
-  n0.SetVnlVector( GetOrthogonalVector(
-    pnt.GetTangent().GetVnlVector() )  );
-  n0.Normalize();
-
-  n1.SetVnlVector( itk_cross_3d( pnt.GetTangent().GetVnlVector(),
-    n0.GetVnlVector() )  );
-  n1.Normalize();
-
-  if( newKern )
-    {
-    m_KernN0[0] = 1;
-    m_KernN0[1] = 0;
-    m_KernN0[2] = 0;
-    m_KernN1[0] = 0;
-    m_KernN1[1] = 1;
-    m_KernN1[2] = 0;
-    for( int i=0; i<2*this->m_KernNumT; i++ )
-      {
-      m_KernPos[i] = 0;
-      m_KernNeg[i] = 0;
-      m_KernBrn[i] = 0;
-      m_KernPosCnt[i] = 0;
-      m_KernNegCnt[i] = 0;
-      m_KernBrnCnt[i] = 0;
-      }
-    }
-
-  double kn0ProjN0 = dot_product( m_KernN0.GetVnlVector(),
-    n0.GetVnlVector() ); 
-  double kn0ProjN1 = dot_product( m_KernN0.GetVnlVector(),
-    n1.GetVnlVector() );
-  double kn1ProjN0 = dot_product( m_KernN1.GetVnlVector(),
-    n0.GetVnlVector() );
-  double kn1ProjN1 = dot_product( m_KernN1.GetVnlVector(),
-    n1.GetVnlVector() );
-
-  m_KernN0[0] = kn0ProjN0*n0[0] + kn0ProjN1*n1[0];
-  m_KernN0[1] = kn0ProjN0*n0[1] + kn0ProjN1*n1[1];
-  m_KernN0[2] = kn0ProjN0*n0[2] + kn0ProjN1*n1[2];
-
-  m_KernN0.Normalize();
-
-  n0 = m_KernN0;
-
-  m_KernN1[0] = kn1ProjN0*n0[0] + kn1ProjN1*n1[0];
-  m_KernN1[1] = kn1ProjN0*n0[1] + kn1ProjN1*n1[1];
-  m_KernN1[2] = kn1ProjN0*n0[2] + kn1ProjN1*n1[2];
-
-  m_KernN1.Normalize();
-
-  n1.SetVnlVector( itk_cross_3d( pnt.GetTangent().Get_vnl_vector(),
-    n0.GetVnlVector() )  );
-
-  double tf = dot_product( m_KernN1.GetVnlVector(), n1.GetVnlVector() ); 
-  if( tf<0 )
-    {
-    n1[0] = -n1[0];
-    n1[1] = -n1[1];
-    n1[2] = -n1[2];
-    m_KernN1[0] = n1[0];
-    m_KernN1[1] = n1[1];
-    m_KernN1[2] = n1[2];
-    }
-  else
-    {
-    m_KernN1 = n1;
-    }
-
-  double kernPos[40];
-  double kernNeg[40];
-  double kernBrn[40];
-  double kernPosCnt[40];
-  double kernNegCnt[40];
-  double kernBrnCnt[40];
-  for( int i=0; i<2*m_KernNumT; i++ )
-    {
-    kernPos[i] = 0;    
-    kernNeg[i] = 0;
-    kernBrn[i] = 0;
-    kernPosCnt[i] = 0;
-    kernNegCnt[i] = 0;
-    kernBrnCnt[i] = 0;
-    }
-
-  int numC, posCMax, negCMax;
-  numC = 2;
-  if( doBNess )
-    {
-    numC++;
-    }
-  posCMax = 1;
-  negCMax = 2;
-
-  double v, r;
-  for( int c=0; c<numC; c++ ) 
-    {
-    if( c < posCMax ) // inner ( positive ) circle
-      {
-      double e = 1.1;
-      if( ( pntR/4 )*e < 0.71 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
-        {  
-        e = 0.71/( pntR/4 );     //0.71/( pntR/4 );
-        }
-      if( ( pntR/4 )*e > 3.1 )
-        {      
-        e = 3.1 / ( pntR/4 );
-        }   
-      m_DataOp->SetScale( pntR/4 ); 
-      m_DataOp->SetExtent( e ); 
-      r = 3*pntR/4;
-      }
-    else if( c < negCMax ) // outer ( negative ) circle
-      {     
-      r = 5*pntR/4;
-      }
-    else // branchness - wider and futher out
-      {
-      double e = 1;
-      if( ( pntR/3 )*e < 1.1 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
-        {
-        e = 1.1/( pntR/3 );
-        }
-      if( ( pntR/3 )*e > 3.1 )
-        {
-        e = 3.1 / ( pntR/3 );
-        }
-      m_DataOp->SetScale( pntR/3 ); // mess with this -  and r
-      m_DataOp->SetExtent( e );
-      r = pntR * 3;
-      }
-    for( int i=0; i<m_KernNumT; i++ ) 
-      {
-      VectorType tp;
-      tp[0] = pnt.GetPosition()[0];
-      tp[1] = pnt.GetPosition()[1];
-      tp[2] = pnt.GetPosition()[2];
-      y.SetVnlVector( ComputeLineStep( tp.GetVnlVector(),
-        r*m_KernSinT[i], n0.GetVnlVector() )  );
-      y.SetVnlVector( ComputeLineStep( y.GetVnlVector(),
-        r*m_KernCosT[i], n1.GetVnlVector() )  );
-
-      if( y[0] >= 0 &&
-        y[0] < m_Image->GetLargestPossibleRegion().GetSize()[0] &&
-        y[1] >= 0 && 
-        y[1] < m_Image->GetLargestPossibleRegion().GetSize()[1] &&
-        y[2] >= 0 && 
-        y[2] < m_Image->GetLargestPossibleRegion().GetSize()[2] ) 
-        {
-        ContinuousIndex<double, ImageDimension> point;
-
-        for( unsigned int id=0;id<ImageDimension;id++ )
-          {
-          point[id] = y[id];
-          }
-
-        v = ( m_DataOp->EvaluateAtContinuousIndex( point ) - m_DataMin )
-          / ( m_DataMax - m_DataMin ); 
-
-        if( !m_ExtractRidge )
-          {
-          v = 1-v;
-          }
-
-        if( v<0 ) 
-          { 
-          v = 0; 
-          }
-
-        if( v>1 ) 
-          { 
-          v = 1; 
-          }
-
-        if( c < posCMax )
-          {
-          kernPos[i] += w*v;
-          kernPosCnt[i] += w;
-          m_KernPos[i] += w*v;
-          m_KernPosCnt[i] += w;
-          }
-        else if( c < negCMax )
-          {
-          kernNeg[i] += w*v;
-          kernNegCnt[i] += w;
-          m_KernNeg[i] += w*v;
-          m_KernNegCnt[i] += w;
-          } 
-        else
-          {
-          kernBrn[i] += w*v;
-          kernBrnCnt[i] += w;
-          m_KernBrn[i] += w*v;
-          m_KernBrnCnt[i] += w;
-          }
-        }
-
-      tp[0] = pnt.GetPosition()[0];
-      tp[1] = pnt.GetPosition()[1];
-      tp[2] = pnt.GetPosition()[2];
-      y.SetVnlVector( ComputeLineStep( tp.GetVnlVector(),
-        -r*m_KernSinT[i], n0.GetVnlVector() )  );
-      y.SetVnlVector( ComputeLineStep( y.GetVnlVector(),
-        -r*m_KernCosT[i], n1.GetVnlVector() )  );
-      if( y[0] >= 0 &&
-        y[0] < m_Image->GetLargestPossibleRegion().GetSize()[0] &&
-        y[1] >= 0 &&
-        y[1] < m_Image->GetLargestPossibleRegion().GetSize()[1] &&
-        y[2] >= 0 && 
-        y[2] < m_Image->GetLargestPossibleRegion().GetSize()[2] ) 
-        {
-        ContinuousIndex<double, ImageDimension> point;
-
-        for( unsigned int id=0;id<ImageDimension;id++ )
-          {
-          point[id] = y[id];
-          }
-
-        v = ( m_DataOp->EvaluateAtContinuousIndex( point ) - m_DataMin )
-          / ( m_DataMax-m_DataMin ); 
-
-        if( !m_ExtractRidge )
-          {
-          v = 1-v;
-          }
-
-        if( v<0 ) 
-          { 
-          v = 0; 
-          } 
-
-        if( v>1 )  
-          { 
-          v = 1; 
-          }
-
-        if( c < posCMax )
-          {
-          kernPos[m_KernNumT+i] += w*v;
-          kernPosCnt[m_KernNumT+i] += w;
-          m_KernPos[m_KernNumT+i] += w*v;
-          m_KernPosCnt[m_KernNumT+i] += w;
-          }
-        else if( c < negCMax )
-          {
-          kernNeg[m_KernNumT+i] += w*v;
-          kernNegCnt[m_KernNumT+i] += w;
-          m_KernNeg[m_KernNumT+i] += w*v;
-          m_KernNegCnt[m_KernNumT+i] += w;
-          }
-        else
-          {
-          kernBrn[2*m_KernNumT+i] += w*v;
-          kernBrnCnt[2*m_KernNumT+i] += w;
-          m_KernBrn[2*m_KernNumT+i] += w*v;
-          m_KernBrnCnt[2*m_KernNumT+i] += w;
-          }
-        }
-      }
-    }
-
-  int kernAvgCnt = 0;
-  for( int i=0; i<2*m_KernNumT; i++ )
-    {
-    if( kernNegCnt[i] > 0 )
-      {
-      kernNeg[i] /= kernNegCnt[i];
-      }
-
-    if( kernPosCnt[i] > 0 )
-      {
-      kernPos[i] /= kernPosCnt[i];
-      }
-
-    if( kernNegCnt[i]>=w && kernPosCnt[i]>=w )
-      {
-      kernAvgCnt++;
-      }
-    }
-
-  if( kernAvgCnt<2 )
-    {
-    std::cout << "Warning: medialness kernel does not intersect image" 
-      << std::endl;
-    pnt.SetMedialness( 0 );
-    pnt.SetBranchness( 0 );
-    return 0;
-    }
-
-  if( doBNess )
-    {
-    for( int i=0; i<2*m_KernNumT; i++ )
-      {     
-      if( kernBrnCnt[i]>=w )
-        {
-        kernBrn[i] /= kernBrnCnt[i];
-        }
-      }
-    }
-
-  double mness, bness;
-
-  ComputeMnessBness( pntR, w, kernPos, kernPosCnt, 
-    kernNeg, kernNegCnt, kernBrn, kernBrnCnt, mness, bness, doBNess );
-  pnt.SetMedialness( mness );
-  pnt.SetBranchness( bness );
-
-  return mness;
-}
-
-/** Compute the medialness at a kernel */
-
-template<class TInputImage>
-double
-RadiusExtractor<TInputImage>
-::MedialnessAtKern( std::list<TubePointType> * tube, double pntR,
-  bool doBNess )
-{ 
-  //int len = tube->GetPoints().size();
-  int len = tube->size();
-  int mid = ( len-1 )/2;
-  static double w[20];
-  static bool first = true;
-  static int vLen = 0;
-
-  if( first || len != vLen )
-    {
-    vLen = len;
-    first = false;
-    int i;
-    double wTot = 0;
-    if( len>1 )
-      {
-      for( i=0; i<len; i++ )
-        {
-        w[i] = 1.0-fabs( ( double )( i-mid ) )/( 2*mid ); 
-        // was 1.25 why not ?!
-        wTot += w[i];
-        }
-      for( i=0; i<len; i++ )
-        {
-        w[i] /= wTot;
-        }
-      }
-    else
-      {
-      w[0] = 1;
-      wTot = 1;
-      }
-    }
-
-
-  // if( tube->GetPoints().size() == 0 )
-  if( tube->size() == 0 )
-    {
-    return 0;
-    }
-
-  if( pntR<m_MedialnessOpt.xMin() )
-    {
-    pntR = m_MedialnessOpt.xMin();
-    }
-
-  if( pntR>m_MedialnessOpt.xMax() )
-    {
-    pntR = m_MedialnessOpt.xMax();
-    }
-
-  int i;
-  m_KernMedial = 0;
-  m_KernBranch = 0;
-  if( m_Debug ) 
-    {   
-    std::cout << "RadiusExtractor: MedialnessAtKern: pntR = " 
-      << pntR << " : size = " << tube->size() 
-      << std::endl;
-    }
-
-  typename std::list<TubePointType>::iterator pnt;
-  for( i=0, pnt = tube->begin();
-    pnt != tube->end();
-    pnt++, i++ ) 
-    {
-    MedialnessAtPoint( *pnt, pntR, doBNess, ( i==0 )?true:false, w[i] );
-    }
-
-  for( i=0; i<2*m_KernNumT; i++ )
-    {
-    if( m_KernNegCnt[i]>0 )
-      {
-      m_KernNeg[i] /= m_KernNegCnt[i];
-      }
-
-    if( m_KernPosCnt[i]>0 )
-      {
-      m_KernPos[i] /= m_KernPosCnt[i];
-      }
-
-    if( m_KernBrnCnt[i]>0 )
-      {
-      m_KernBrn[i] /= m_KernBrnCnt[i];
-      }
-    }
-  ComputeMnessBness( pntR, 0.5, m_KernPos, m_KernPosCnt, 
-    m_KernNeg, m_KernNegCnt, m_KernBrn, m_KernBrnCnt, 
-    m_KernMedial, m_KernBranch, doBNess );
-                
-  return m_KernMedial;
-}
-
-
-/** Compute the Optimal scale */
-template<class TInputImage>
-bool
-RadiusExtractor<TInputImage>
-::CalcOptimalScale( TubePointType pnt, bool firstGuess )
-{
-  TubePointType tmpPnt;
-  PointType x; 
-
-  m_Kern.clear();
-
-  x[0] = pnt.GetPosition()[0] + pnt.GetTangent()[0];
-  x[1] = pnt.GetPosition()[1] + pnt.GetTangent()[1];
-  x[2] = pnt.GetPosition()[2] + pnt.GetTangent()[2];
-  tmpPnt.SetPosition( x );
-  tmpPnt.SetTangent( pnt.GetTangent() );
-  m_Kern.push_front( tmpPnt );
-
-  PointType x1 = pnt.GetPosition();
-  tmpPnt.SetPosition( x1 );
-  tmpPnt.SetTangent( pnt.GetTangent() );
-  m_Kern.push_front( tmpPnt );
-
-  x1[0] = pnt.GetPosition()[0] + pnt.GetTangent()[0];
-  x1[1] = pnt.GetPosition()[1] + pnt.GetTangent()[1];
-  x1[2] = pnt.GetPosition()[2] + pnt.GetTangent()[2];
-  tmpPnt.SetPosition( x1 );
-  tmpPnt.SetTangent( pnt.GetTangent() );
-  m_Kern.push_front( tmpPnt );
-
-  double pntR = m_Radius0;
-  double w = 0;
-
-  double tempTol = m_MedialnessOpt.tolerance();
-  double tempXStep = m_MedialnessOpt.xStep();
-  m_MedialnessOpt.tolerance( 0.0001 ); // 0.005 - 0.025 // TMI 0.05
-
-  if( firstGuess )
-    {
-    m_MedialnessOpt.xStep( 1.0 ); // 0.05 - 0.25 // TMI 0.25
-    }
-  else
-    {
-    m_MedialnessOpt.xStep( 0.5 ); // 0.05 - 0.25 // TMI 0.25
-    }
-
-  double tempXMin = m_MedialnessOpt.xMin();
-  if( firstGuess )
-    {
-    m_MedialnessOpt.xMin( 0.5 );
-    if( m_Radius0<1.0 )
-      {
-      m_Radius0 = 1.0;
-      }
-    m_MedialnessOpt.xMax( m_Radius0*10 );
-    }
-
-  double tempXMax = m_MedialnessOpt.xMax();
-
-  m_MedialnessOpt.extreme( &pntR, &w );
-
-  m_MedialnessOpt.tolerance( tempTol );
-  m_MedialnessOpt.xStep( tempXStep );
-  m_MedialnessOpt.xMin( tempXMin );
-  m_MedialnessOpt.xMax( tempXMax );
-
-  pnt.SetRadius( pntR );
-
-  if( w>m_ThreshMedialness )
-    {
-    return true;
-    }
-  else
-    {
-    std::cout << "RadiusExtractor: calcOptimalScale: kernel fit insufficient" << std::endl;
-    return false;
-    }
-
-  return true;
-}
-
-
-/** Compute kernel array */
-template<class TInputImage>
-void
-RadiusExtractor<TInputImage>
-::CalcKernArray( TubeType * tube )
-{
-  typename std::vector<TubePointType>::iterator tubeFromPnt = tube->GetPoints().begin();
-  typename std::vector<TubePointType>::iterator tubeToPnt = tube->GetPoints().end();
-  tubeToPnt--;
-
-  typename std::vector<TubePointType>::iterator iterPnt;
-
-  iterPnt = tubeFromPnt;
-
-  int i, j;
-  double wTot;
-  i = 0;
-  while( iterPnt != tubeToPnt )
-    {
-    wTot = 0;
-    TubePointType kernPnt;
-    for( j=0; iterPnt != tubeToPnt && j<m_RadiusPointSpacing; j++ ) 
-      {
-      PointType tmpPoint;
-
-      for( unsigned int id=0;id<ImageDimension;id++ )
-        {
-        tmpPoint[id] = kernPnt.GetPosition()[id] + ( *iterPnt ).GetPosition()[id];
-        }
-
-      kernPnt.SetPosition( tmpPoint );
-      kernPnt.SetTangent( kernPnt.GetTangent()+( *iterPnt ).GetTangent() );
-
-      wTot++;
-      iterPnt++;
-      }
-
-    PointType tmpPoint;
-    for( unsigned int id=0;id<ImageDimension;id++ )
-      {
-      tmpPoint[id] = kernPnt.GetPosition()[id] / wTot;
-      }
-
-    kernPnt.SetPosition( tmpPoint );
-    kernPnt.SetTangent( kernPnt.GetTangent() / wTot );
-
-    VectorType tempVect = kernPnt.GetTangent();
-    tempVect.Normalize();
-    kernPnt.SetTangent( tempVect );
-
-    kernPnt.SetRadius( 0 );
-
-    if( iterPnt == tubeToPnt )
-      {
-      if( i>0 )
-        {
-        //delete kernPnt;
-        }
-      else
-        {
-        m_KernPntArray[i] = kernPnt;
-        m_IterPntArray[i] = iterPnt;
-        i++;
-        }
-      break;
-      }
-
-    m_KernPntArray[i] = kernPnt;
-    m_IterPntArray[i] = iterPnt;
-    i++;
-    }
-  m_ArrayLen = i;
-}
-
 /** Compute Kernel radii one way */
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::CalcKernRadiiOneWay( int iStart, int iEnd, bool forward )
+::ComputeMeasuresInFullKernelArray( KernArrayType & kernArray,
+  unsigned int kernPntStart, unsigned int kernPntEnd )
 {
-  int i, j;
   double pntR = m_Radius0;
   double prevPntR = m_Radius0;
   double w;
-  char s[80];
-  static int count = 0;
-  int kernMid = ( m_NumRadiusPoints-1 )/2;
+  unsigned int kernMid = m_NumKernelPoints / 2;
 
-  if( forward )
+  KernArrayType pntKernArray;
+  int step = 1;
+  if( ! kernPntStart > kernPntEnd )
     {
-    count = 0;
+    step = -1;
     }
-
-  for( i=iStart; ( forward && i<=iEnd ) || ( !forward && i>=iEnd ); ( forward )?i++:i-- )
+  
+  unsigned int count = 0;
+  for( unsigned int kernPnt = kernPntStart; kernPnt != kernPntEnd;
+    kernPnt += step )
     {
-    m_Kern.clear();
-
-    for( j=i-kernMid; j<=i+kernMid; j++ )
+    pntKernArray.clear();
+    for( int j = (int)(kernPnt)-(int)(kernMid);
+      j <= (int)(kernPnt)+(int)(kernMid); j++ )
       {
-      if( ( forward && j>=iStart && j<=iEnd ) ||
-        ( !forward && j<=iStart && j>=iEnd ) )
+      if( ( j - kernPntStart ) * step > 0 && 
+          ( kernPntEnd - j ) * step > 0 )
         {
-        m_Kern.push_front( m_KernPntArray[j] ); // should be push_front
+        pntKernArray.push_back( kernArray[j] );
         }
       else
         {
-        m_Kern.push_front( m_KernPntArray[i] ); // should be push_front
+        pntKernArray.push_back( kernArray[kernPnt] );
         }
       }
 
+    static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
+      m_MedialnessFunc )->SetKernelArray( & pntKernArray );
     m_MedialnessOpt.extreme( &pntR, &w );
 
-    if( w<m_ThreshMedialness ) 
+    if( w < m_ThreshMedialness ) 
       {
       if( m_Debug )
         {
-        std::cout << "Bad wVal( "<<pntR<<" ) = " << w << std::endl;
+        std::cout << "Bad wVal( " << pntR << " ) = " << w << std::endl;
         }
       pntR = prevPntR;
       m_MedialnessOpt.extreme( &pntR, &w );
-      if( w>m_ThreshMedialness ) 
+      if( w >= m_ThreshMedialness ) 
         {
         if( m_Debug )
           {
-          std::cout << "   *** new wVal( "<<pntR<<" ) = " << w << std::endl;
+          std::cout << "   *** new wVal( " << pntR << " ) = " << w 
+            << std::endl;
           }
-        if( w>2*m_ThreshMedialness )
+        if( w > 2 * m_ThreshMedialness )
           { 
           prevPntR = pntR;
           }
@@ -1103,35 +1151,39 @@ RadiusExtractor<TInputImage>
       else 
         {
         pntR = prevPntR;
-        w = ( double )( 2*m_ThreshMedialness );
+        w = 2 * m_ThreshMedialness;
         if( m_Debug )
           {
-          std::cout << "   using old wVal( "<<pntR<<" ) = " << w << std::endl;
+          std::cout << "   using old wVal( " << pntR << " ) = " 
+            << w << std::endl;
           }
         }
       }
     else
       {
-      if( w>2*m_ThreshMedialness )
+      if( w > 2 * m_ThreshMedialness )
         {
         prevPntR = pntR;
         }
       }
 
-    for( j=i-kernMid; j<=i+kernMid; j++ )
+    for( int j = (int)(kernPnt)-(int)(kernMid);
+      j <= (int)(kernPnt)+(int)(kernMid); j++ )
       {   
-      if( ( forward && j>=iStart && j<=iEnd ) ||
-        ( !forward && j<=iStart && j>=iEnd ) )
+      if( ( j - kernPntStart ) * step > 0 && 
+          ( kernPntEnd - j ) * step > 0 )
         {
-        if( m_KernPntArray[j].GetRadius()>0 )
+        if( kernArray[j].GetRadius() > 0 )
           {
-          w = 1-fabs( ( double )( j-i ) )/( double )( kernMid+1 );
-          w = m_KernPntArray[j].GetRadius() + w * ( pntR - m_KernPntArray[j].GetRadius() );
-          m_KernPntArray[j].SetRadius( w );
+          w = 1.0 - vnl_math_abs((double)( j - kernPnt )) 
+            / ( kernMid + 1.0 );
+          w = kernArray[j].GetRadius() 
+            + w * ( pntR - kernArray[j].GetRadius() );
+          kernArray[j].SetRadius( w );
           }
         else
           {
-          m_KernPntArray[j].SetRadius( pntR );
+          kernArray[j].SetRadius( pntR );
           }
         }
       }
@@ -1139,8 +1191,12 @@ RadiusExtractor<TInputImage>
     count++;
     if( count/5 == count/5.0 && m_StatusCallBack )
       {
-      sprintf( s, "Radius at %d = %f", count*m_RadiusPointSpacing, pntR );
-      m_StatusCallBack( NULL, s, 1 );
+      char mesg[80];
+      sprintf( mesg, "Radius at %d = %f", count*m_KernelPointSpacing,
+        pntR );
+      char loc[80];
+      sprintf( loc, "Extract:Widths" );
+      m_StatusCallBack( loc, mesg, 0 );
       }
     }
 }
@@ -1149,47 +1205,52 @@ RadiusExtractor<TInputImage>
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::CalcKernMeasures( void )
+::SmoothMeasuresInFullKernelArray( KernArrayType & kernArray )
 {
-  int i, j;
+  unsigned int len = kernArray.size();
 
-  for( j=0; j<20; j++ )
+  for( unsigned int iter=0; iter<20; iter++ )
     {
-    for( i=0; i<m_ArrayLen-1; i++ )
+    for( unsigned int kernPnt=0; kernPnt<len-1; kernPnt++ )
       {
-      m_KernPntArray[i].SetRadius( ( 1.0 * m_KernPntArray[i].GetRadius()
-                                   + 1.0 * m_KernPntArray[i+1].GetRadius() )/2.0 );
+      kernArray[kernPnt].SetRadius( 
+        ( 1.0 * kernArray[kernPnt].GetRadius()
+        + 1.0 * kernArray[kernPnt+1].GetRadius() ) / 2.0 );
       }
-    for( i=m_ArrayLen-1; i>0; i-- )
+    for( int kernPnt=(int)(len)-1; kernPnt>0; kernPnt-- )
       {
-      m_KernPntArray[i].SetRadius( ( 1.0 * m_KernPntArray[i].GetRadius()
-                                   + 1.0 * m_KernPntArray[i-1].GetRadius() )/2.0 );
+      kernArray[kernPnt].SetRadius( 
+        ( 1.0 * kernArray[kernPnt].GetRadius()
+        + 1.0 * kernArray[kernPnt-1].GetRadius() ) / 2.0 );
       }
     }
 
-  int kernMid = ( m_NumRadiusPoints-1 )/2;
+  unsigned int kernMid = ( m_NumKernelPoints - 1 ) / 2;
 
-  for( i=0; i<m_ArrayLen; i++ )
+  KernArrayType kernTemp;
+  for( unsigned int kernPnt=0; kernPnt<len; kernPnt++ )
     {
-    m_Kern.clear();
-    for( j=i-kernMid; j<=i+kernMid; j++ )
+    kernTemp.clear();
+    for( int j = (int)(kernPnt)-(int)(kernMid);
+      j <= (int)(kernPnt)+(int)(kernMid); j++ )
       {  
-      if( j>=0 && j<m_ArrayLen )
+      if( j >= 0 && j < (int)(len) )
         {
-        m_Kern.push_front( m_KernPntArray[j] );
+        kernTemp.push_back( kernArray[j] );
         }
       else
         {
-        m_Kern.push_front( m_KernPntArray[i] );
+        kernTemp.push_back( kernArray[kernPnt] );
         }
       }
 
-    MedialnessAtKern( &m_Kern, m_KernPntArray[i].GetRadius(), true );
-    m_KernPntArray[i].SetMedialness( m_KernMedial );
-    m_KernPntArray[i].SetBranchness( m_KernBranch );
+    double mness = 0;
+    double bness = 0;
+    this->ComputeMeasuresInKernelArray( kernTemp,
+      kernArray[kernPnt].GetRadius(), mness, bness, true );
+    kernArray[kernPnt].SetMedialness( mness );
+    kernArray[kernPnt].SetBranchness( bness );
     }
-
-  m_Kern.clear();
 }
 
 /**
@@ -1197,129 +1258,134 @@ RadiusExtractor<TInputImage>
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::ApplyKernMeasures( TubeType * tube )
+::ApplyMeasuresInFullKernelArray( TubeType & tube,
+  KernArrayType & kernArray,
+  KernArrayTubePointIndexType & kernArrayTubePointIndex )
 {
 
-  int i, j;
+  unsigned int len = kernArray.size();
 
-  double r0 = m_KernPntArray[0].GetRadius();
-  double m0 = m_KernPntArray[0].GetMedialness();
-  double b0 = m_KernPntArray[0].GetBranchness();
-
-  std::vector<TubePointType> & pnts = tube->GetPoints();
-  typename std::vector<TubePointType>::iterator pnt = pnts.begin();
-
-  while( pnt != pnts.end() && pnt!= m_IterPntArray[0] )
-    {
-    ( *pnt ).SetRadius( r0 );
-    ( *pnt ).SetMedialness( m0 );
-    std::cout<<"Branch= "<<b0<<std::endl;
-    ( *pnt ).SetBranchness( b0 );
-    pnt++;
-    }
-  if( pnt == tube->GetPoints().end() )
+  if( len == 0 )
     {
     return;
     }
+
+  if( kernArrayTubePointIndex[0] >= len )
+    {
+    return;
+    }
+
+  double r0 = kernArray[0].GetRadius();
+  double m0 = kernArray[0].GetMedialness();
+  double b0 = kernArray[0].GetBranchness();
+
+  KernArrayType & pnts = tube.GetPoints();
+  typename KernArrayType::iterator pntIter = pnts.begin();
+
+  for( unsigned int pntCnt = 0; pntCnt < kernArrayTubePointIndex[0];
+    pntCnt++ )
+    {
+    (*pntIter).SetRadius( r0 );
+    (*pntIter).SetMedialness( m0 );
+    (*pntIter).SetBranchness( b0 );
+    pntIter++;
+    }
+
   double w, r, m, b;
 
-  j = 0;
   double r1 = r0;
   double m1 = m0;
   double b1 = b0;
-  while( j<m_ArrayLen-1 )
+  for( unsigned int arrayCnt=0; arrayCnt<len-1; arrayCnt++ )
     {
     r0 = r1;
     m0 = m1;
     b0 = b1;
-    r1 = m_KernPntArray[j+1].GetRadius();
-    m1 = m_KernPntArray[j+1].GetMedialness();
-    b1 = m_KernPntArray[j+1].GetBranchness();
-    i = 0;
-    while( pnt != m_IterPntArray[j+1] )
+    r1 = kernArray[arrayCnt+1].GetRadius();
+    m1 = kernArray[arrayCnt+1].GetMedialness();
+    b1 = kernArray[arrayCnt+1].GetBranchness();
+    for( unsigned int pntCnt = 0;
+      pntCnt < kernArrayTubePointIndex[arrayCnt+1]; pntCnt++ )
       {
-      w = i/( double )m_RadiusPointSpacing;
+      w = pntCnt / (double)m_KernelPointSpacing;
       r = r0 + w * ( r1 - r0 );
       m = m0 + w * ( m1 - m0 );
       b = b0 + w * ( b1 - b0 );
-      ( *pnt ).SetRadius( r );
-      ( *pnt ).SetMedialness( m );
-      ( *pnt ).SetBranchness( b );
-      pnt++;
-      i++;
+      (*pntIter).SetRadius( r );
+      (*pntIter).SetMedialness( m );
+      (*pntIter).SetBranchness( b );
+      pntIter++;
       }
-    j++;
     }
 
-  r0 = m_KernPntArray[j].GetRadius();
-  m0 = m_KernPntArray[j].GetMedialness();
-  b0 = m_KernPntArray[j].GetBranchness();
-  while( pnt != tube->GetPoints().end() )
+  r0 = kernArray[len-1].GetRadius();
+  m0 = kernArray[len-1].GetMedialness();
+  b0 = kernArray[len-1].GetBranchness();
+  while( pntIter != tube.GetPoints().end() )
     {
-    ( *pnt ).SetRadius( r0 );
-    ( *pnt ).SetMedialness( m0 );
-    ( *pnt ).SetBranchness( b0 );
-    pnt++;
+    (*pntIter).SetRadius( r0 );
+    (*pntIter).SetMedialness( m0 );
+    (*pntIter).SetBranchness( b0 );
+    pntIter++;
     }
 
   if( m_StatusCallBack )
     {
-    char s[80];
-    sprintf( s, "%d of %d", m_TubeLength, m_TubeLength );
-    m_StatusCallBack( "Extract:Widths", s, 0 );
+    char mesg[80];
+    sprintf( mesg, "Applied to %ld tube points.",
+      tube.GetPoints().size() );
+    char loc[80];
+    sprintf( loc, "Extract:Widths" );
+    m_StatusCallBack( loc, mesg, 0 );
     }
   else
     {
-    std::cout << m_TubeLength << " of " << m_TubeLength << std::endl;
+    std::cout << "Applied to " << tube.GetPoints().size() << "tube points."
+       << std::endl;
     }
-  for( i=0; i<m_ArrayLen; i++ )
-    {
-    //    delete m_KernPntArray[i];
-    //    m_KernPntArray[i] = NULL;
-    //    m_IterPntArray[i] = ;
-    }
-  return;
 }
 
 /** Compute Radii */
 template<class TInputImage>
 bool
 RadiusExtractor<TInputImage>
-::CalcRadii( TubeType * tube )
+::ComputeTubeRadii( TubeType & tube )
 {
-  if( tube == NULL || tube->GetPoints().size() == 0 )
+  if( tube.GetPoints().size() == 0 )
     {
     return false;
     } 
-  m_TubeLength = tube->GetPoints().size();
 
-  CalcKernArray( tube );
+  KernArrayType               kernArray;
+  KernArrayTubePointIndexType kernArrayTubePointIndex;
+  this->ComputeValuesInFullKernelArray( tube, kernArray,
+    kernArrayTubePointIndex );
 
-  typename std::vector<TubePointType>::iterator pnt;
-  pnt = tube->GetPoints().begin();
-  while( ( *pnt ).GetID() != 0 && pnt != tube->GetPoints().end()  )
+  typename KernArrayType::iterator pntIter;
+  pntIter = tube.GetPoints().begin();
+  while( (*pntIter).GetID() != 0 && pntIter != tube.GetPoints().end() )
     {
-    pnt++;
+    pntIter++;
     }
 
   if( m_Debug )
     {
-    std::cout << "Found point " << ( *pnt ).GetID() << std::endl;
+    std::cout << "Found point " << ( *pntIter ).GetID() << std::endl;
     }
 
-  int i;
-  double tf;
+  unsigned int len = kernArray.size();
+
   int minDistI = 0;
-  double minDist = ComputeEuclideanDistance( m_KernPntArray[0].GetPosition(), ( *pnt ).GetPosition() );
-
-
-  for( i=1; i<m_ArrayLen; i++ )
+  double minDist = ComputeEuclideanDistance( kernArray[0].GetPosition(),
+    (*pntIter).GetPosition() );
+  for( unsigned int kPnt=1; kPnt<len; kPnt++ )
     {
-    tf = ComputeEuclideanDistance( m_KernPntArray[i].GetPosition(), ( *pnt ).GetPosition() );
-    if( tf<minDist )
+    double tf = ComputeEuclideanDistance( kernArray[kPnt].GetPosition(),
+      (*pntIter).GetPosition() );
+    if( tf < minDist )
       {
       minDist = tf;
-      minDistI = i;
+      minDistI = (int)(kPnt);
       }
     }
 
@@ -1327,24 +1393,27 @@ RadiusExtractor<TInputImage>
     {
     std::cout << "Found point i = " << minDistI << std::endl;
     }
-  i = minDistI-1;
-  if( i<0 )
+
+  int kernPnt = minDistI - 1;
+  if( kernPnt < 0 )
     {
-    i = 0;
+    kernPnt = 0;
     }
 
-  CalcKernRadiiOneWay( i, m_ArrayLen-1, true );
+  this->ComputeMeasuresInFullKernelArray( kernArray, kernPnt, len-1 );
 
-  i = minDistI+1;
-  if( i>m_ArrayLen-1 )
+  kernPnt = minDistI + 1;
+  if( kernPnt > (int)(len)-1 )
     {
-    i = m_ArrayLen-1;
+    kernPnt = (int)(len) - 1;
     }
 
-  CalcKernRadiiOneWay( i, 0, false );
-  //CalcKernRadiiOneWay( 0, i, true );
-  CalcKernMeasures();
-  ApplyKernMeasures( tube );
+  this->ComputeMeasuresInFullKernelArray( kernArray, kernPnt, 0 );
+
+  this->SmoothMeasuresInFullKernelArray( kernArray );
+
+  this->ApplyMeasuresInFullKernelArray( tube, kernArray,
+    kernArrayTubePointIndex );
 
   return true;
 }
@@ -1360,7 +1429,7 @@ RadiusExtractor<TInputImage>
 }
 
 /**
- * Satus Call back */
+ * Status Call back */
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>

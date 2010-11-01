@@ -120,7 +120,7 @@ GetOrthogonalVector(vnl_vector<T>  v)
  * could use vnl_cross3D instead        */
 template <class T> 
 vnl_vector<T> 
-GetCrossVector(vnl_vector<T>  v1,vnl_vector<T>  v2)
+GetCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
 {
   vnl_vector<T> dest(v1.size());
   dest(0) = ((v1)(1) * (v2)(2)) - ((v1)(2) * (v2)(1));
@@ -166,10 +166,10 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
  * Compute the Euclidean distance  */
 template <class PointType> 
 double
-ComputeEuclideanDistance(PointType x,PointType y)
+ComputeEuclideanDistance(PointType x, PointType y)
 {
   double s = 0;
-  for(unsigned int i=0; i< PointType::PointDimension; i++)
+  for(unsigned int i=0; i<PointType::PointDimension; i++)
     {
     s += (x[i]-y[i])*(x[i]-y[i]);
     }
