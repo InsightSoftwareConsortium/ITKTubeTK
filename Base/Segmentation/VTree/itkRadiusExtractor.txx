@@ -301,7 +301,8 @@ RadiusExtractor<TInputImage>
     dotP += vnl_math_abs( dot_product( pnt.GetNormal2().GetVnlVector(),
       pnt.GetTangent().GetVnlVector() ) );
     }
-  if( dotP < 0.001 )
+  double len = pnt.GetNormal1().GetNorm();
+  if( dotP < 0.001 && vnl_math_abs( 1 - len ) < 0.01 )
     {
     n.set_column( 0, pnt.GetNormal1().GetVnlVector() );
     if( ImageDimension == 3 )
@@ -319,6 +320,8 @@ RadiusExtractor<TInputImage>
     //   branchness computations suffer due to normal flipping.
     std::cout 
       << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
+      << std::endl;
+    std::cout << "   DotProd = " << dotP << " and Norm = " << len 
       << std::endl;
     n.set_column( 0,
       GetOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
@@ -342,6 +345,7 @@ RadiusExtractor<TInputImage>
   double kernNegCnt = 0;
   double kernBrnCnt = 0;
 
+  std::cout << "Compute values at point" << std::endl;
   this->ComputeValuesInKernel( pnt, pntR, w, n, kernPos, kernPosCnt,
     kernNeg, kernNegCnt, kernBrn, kernBrnCnt, doBNess );
 
@@ -480,7 +484,7 @@ RadiusExtractor<TInputImage>
 template<class TInputImage>
 bool
 RadiusExtractor<TInputImage>
-::ComputeOptimalRadiusAtPoint( TubePointType & pnt, double r0,
+::ComputeOptimalRadiusAtPoint( TubePointType & pnt, double & r0,
   double rMin, double rMax, double rStep, double rTolerance )
 {
   TubePointType tmpPnt;
@@ -493,12 +497,18 @@ RadiusExtractor<TInputImage>
     x[i] = pnt.GetPosition()[i] - pnt.GetTangent()[i];
     }
   tmpPnt.SetPosition( x );
+  tmpPnt.SetRadius( r0 );
   tmpPnt.SetTangent( pnt.GetTangent() );
+  tmpPnt.SetNormal1( pnt.GetNormal1() );
+  tmpPnt.SetNormal2( pnt.GetNormal2() );
   kernArray.push_back( tmpPnt );
 
   ITKPointType x1 = pnt.GetPosition();
   tmpPnt.SetPosition( x1 );
+  tmpPnt.SetRadius( r0 );
   tmpPnt.SetTangent( pnt.GetTangent() );
+  tmpPnt.SetNormal1( pnt.GetNormal1() );
+  tmpPnt.SetNormal2( pnt.GetNormal2() );
   kernArray.push_back( tmpPnt );
 
   for( unsigned int i=0; i<ImageDimension; i++ )
@@ -506,10 +516,12 @@ RadiusExtractor<TInputImage>
     x1[i] = pnt.GetPosition()[i] + pnt.GetTangent()[i];
     }
   tmpPnt.SetPosition( x1 );
+  tmpPnt.SetRadius( r0 );
   tmpPnt.SetTangent( pnt.GetTangent() );
+  tmpPnt.SetNormal1( pnt.GetNormal1() );
+  tmpPnt.SetNormal2( pnt.GetNormal2() );
   kernArray.push_back( tmpPnt );
 
-  double pntR = r0;
   double w = 0;
 
   double tempXMin = m_MedialnessOpt.xMin();
@@ -526,14 +538,14 @@ RadiusExtractor<TInputImage>
 
   static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
     m_MedialnessFunc )->SetKernelArray( & kernArray );
-  m_MedialnessOpt.extreme( &pntR, &w );
+  m_MedialnessOpt.extreme( &r0, &w );
 
   m_MedialnessOpt.xMin( tempXMin );
   m_MedialnessOpt.xMax( tempXMax );
   m_MedialnessOpt.xStep( tempXStep );
   m_MedialnessOpt.tolerance( tempTol );
 
-  pnt.SetRadius( pntR );
+  pnt.SetRadius( r0 );
 
   if( w > m_ThreshMedialness )
     {
@@ -541,9 +553,11 @@ RadiusExtractor<TInputImage>
     }
   else
     {
-    std::cout <<
-      "RadiusExtractor: calcOptimalScale: kernel fit insufficient"
+    std::cout 
+      << "RadiusExtractor: calcOptimalScale: kernel fit insufficient"
       << std::endl;
+    std::cout << "  Medialness = " << w << " < thresh = " 
+      << m_ThreshMedialness << std::endl;
     return false;
     }
 
@@ -650,7 +664,8 @@ RadiusExtractor<TInputImage>
     dotP += vnl_math_abs( dot_product( pnt.GetNormal2().GetVnlVector(),
       pnt.GetTangent().GetVnlVector() ) );
     }
-  if( dotP < 0.001 )
+  double sum = pnt.GetNormal1().GetNorm();
+  if( dotP < 0.001 && vnl_math_abs( 1 - sum ) < 0.01 )
     {
     n.set_column( 0, pnt.GetNormal1().GetVnlVector() );
     if( ImageDimension == 3 )
@@ -669,6 +684,8 @@ RadiusExtractor<TInputImage>
     std::cout 
       << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
       << std::endl;
+    std::cout << "   DotProd = " << dotP << " and Norm = " << sum 
+      << std::endl;
     n.set_column( 0,
       GetOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
     n.get_column( 0 ).normalize();
@@ -682,6 +699,9 @@ RadiusExtractor<TInputImage>
       }
     }
 
+  std::cout << "kernN0 = " << kernN.get_column( 0 ) << std::endl;
+  std::cout << "kernN1 = " << kernN.get_column( 1 ) << std::endl;
+
   VectorType n0( ImageDimension );
   n0.fill( 0 );
   for( unsigned int j=0; j<ImageDimension-1; j++ )
@@ -694,6 +714,7 @@ RadiusExtractor<TInputImage>
       }
     }
   n0.normalize();
+  std::cout << "n0 = " << n0 << std::endl;
   n.set_column( 0, n0 );
   if( ImageDimension == 3 )
     {
@@ -701,6 +722,7 @@ RadiusExtractor<TInputImage>
       GetCrossVector( pnt.GetTangent().GetVnlVector(),
         n.get_column( 0 ) )  );
     n.get_column( 1 ).normalize();
+    std::cout << "n1 = " << n.get_column( 1 ) << std::endl;
  
     double tf = dot_product( kernN.get_column( 1 ),
       n.get_column( 1 ) ); 
@@ -782,8 +804,13 @@ RadiusExtractor<TInputImage>
     }
   if( kernCnt < 2 )
     {
-    std::cout << "Warning: medialness kernel does not intersect image" 
+    std::cout << "Warning: Medialness kernel does not intersect image."
       << std::endl;
+    for( unsigned int i=0; i<m_KernNumDirs; i++ )
+      {
+      std::cout << i << " : " << kernNeg[i] << ", " << kernPos[i] 
+        << ", " << kernBrn[i] << std::endl;
+      }
     }
 }
 

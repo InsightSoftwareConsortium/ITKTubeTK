@@ -204,7 +204,7 @@ public:
   /**
    * Calculate the optimal scale 
    */
-  bool ComputeOptimalRadiusAtPoint( TubePointType & pnt, double r0,
+  bool ComputeOptimalRadiusAtPoint( TubePointType & pnt, double & r0,
     double rMin, double rMax, double rStep, double rTolerance );
 
   /**

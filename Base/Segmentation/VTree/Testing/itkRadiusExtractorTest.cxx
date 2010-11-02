@@ -28,6 +28,7 @@ limitations under the License.
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 
+#include "../itkMatrixMath.h"
 #include "../itkRadiusExtractor.h"
 
 #include "tubeMessage.h"
@@ -161,8 +162,12 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
       {
       ++tubeIter;
       }
+    TubeType * tubep = static_cast< TubeType * >( 
+      tubeIter->GetPointer() );
     TubeType::Pointer tube = static_cast< TubeType * >( 
       tubeIter->GetPointer() );
+    itk::ComputeTubeTangentsAndNormals< TubeType >( tubep );
+
     std::cout << "Test tube = " << rndTubeNum << std::endl;
   
     PointListType tubePointList = tube->GetPoints();
@@ -184,9 +189,14 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
     double r0 = pnt->GetRadius();
     double r1 = r0;
 
+    std::cout << "  r = " << r0 << std::endl;
+    std::cout << "  t = " << pnt->GetTangent() << std::endl;
+    std::cout << "  n1 = " << pnt->GetNormal1() << std::endl;
+    std::cout << "  n2 = " << pnt->GetNormal2() << std::endl;
+
     radiusOp->SetDebug( true );
     if( !radiusOp->ComputeOptimalRadiusAtPoint( *pnt, r1, r1/4, r1*2,
-        r1/8, r1/16 ) )
+      r1/8, r1/16 ) )
       {
       std::cerr << "ComputeOptimalRadius test failed." << std::endl;
       std::cerr << "   Source = " << pnt->GetPosition() 
