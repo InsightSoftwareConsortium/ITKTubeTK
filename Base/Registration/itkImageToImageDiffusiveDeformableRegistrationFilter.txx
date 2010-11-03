@@ -266,6 +266,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   inputImage->SetRequestedRegion( templateImage->GetRequestedRegion() );
   inputImage->SetBufferedRegion( templateImage->GetBufferedRegion() );
   inputImage->Allocate();
+
 }
 
 /**

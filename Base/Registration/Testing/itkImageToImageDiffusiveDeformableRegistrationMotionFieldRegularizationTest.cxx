@@ -35,11 +35,12 @@ limitations under the License.
 #include "vtkSmartPointer.h"
 #include "vtkDataArray.h"
 #include "vtkPointData.h"
+#include "vtkPolyDataWriter.h"
 
 int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 9 )
+  if( argc < 12 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
@@ -52,6 +53,9 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
               << "normal vector image, "
               << "time step, "
               << "should use diffusive regularization, "
+              << "output tangential image, "
+              << "output normal image, "
+              << "normal border surface"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -205,6 +209,12 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
     return EXIT_FAILURE;
     }
 
+  // Save the border polydata
+  vtkPolyDataWriter * polyDataWriter = vtkPolyDataWriter::New();
+  polyDataWriter->SetFileName( argv[11] );
+  polyDataWriter->SetInput( plane->GetOutput() );
+  polyDataWriter->Update();
+
   // Setup the images to be registered
   FixedImageType::Pointer fixedImage      = FixedImageType::New();
   MovingImageType::Pointer movingImage    = MovingImageType::New();
@@ -297,9 +307,29 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   vectorWriter->SetInput( registrator->GetNormalVectorImage() );
   vectorWriter->Write();
 
-
-
-
+  // Save the output deformation field tangential and normal images
+  writer->SetFileName( argv[9] );
+  writer->SetInput( registrator->GetOutputTangentialImage() );
+  try
+    {
+    writer->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+  writer->SetFileName( argv[10] );
+  writer->SetInput( registrator->GetOutputNormalImage() );
+  try
+    {
+    writer->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
 

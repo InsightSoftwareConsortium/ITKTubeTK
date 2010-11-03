@@ -154,6 +154,7 @@ public:
 
   /** The type of region used for multithreading */
   typedef typename Superclass::OutputImageType  OutputImageType;
+  typedef typename OutputImageType::Pointer OutputImagePointer;
   typedef OutputImageType                       UpdateBufferType;
   typedef typename UpdateBufferType::RegionType ThreadRegionType;
 
@@ -220,6 +221,12 @@ public:
   virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
                                                                         const
     { return m_NormalDiffusionTensorImage; }
+
+  /** Get the normal and tangential components of the deformation field */
+  virtual const OutputImagePointer GetOutputTangentialImage() const
+    { return m_OutputTangentialImage; }
+  virtual const OutputImagePointer GetOutputNormalImage() const
+    { return m_OutputNormalImage; }
 
   /** Whether to compute the motion field regularization term (for testing)
    *  Default: true
@@ -366,7 +373,6 @@ private:
   DiffusionTensorImagePointer           m_NormalDiffusionTensorImage;
 
   /** Extracts the tangential and normal components of the deformation field */
-  typedef typename OutputImageType::Pointer OutputImagePointer;
   OutputImagePointer                    m_OutputTangentialImage;
   OutputImagePointer                    m_OutputNormalImage;
 

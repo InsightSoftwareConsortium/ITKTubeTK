@@ -38,6 +38,7 @@ set( tubeBaseRegistrationFilters_SRCS
 if( TubeTK_USE_VTK )
   set( tubeBaseRegistrationFilters_SRCS
           ${tubeBaseRegistrationFilters_SRCS}
+          itkImageToImageDiffusiveDeformableRegistrationExecution.cxx
           itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest.cxx
           itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest.cxx
           )
@@ -99,6 +100,9 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionFieldRegularization_straight_noNoise_normalVectorImage.mhd
           0.05
           1
+          ${TEMP}/MotionFieldRegularization_straight_noNoise_smoothedMotionField_tangential.mhd
+          ${TEMP}/MotionFieldRegularization_straight_noNoise_smoothedMotionField_normal.mhd
+          ${TEMP}/MotionFieldRegularization_straight_noNoise_organBoundary.vtk
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestStraight
@@ -112,6 +116,9 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionFieldRegularization_straight_normalVectorImage.mhd
           0.05
           1
+          ${TEMP}/MotionFieldRegularization_straight_smoothedMotionField_tangential.mhd
+          ${TEMP}/MotionFieldRegularization_straight_smoothedMotionField_normal.mhd
+          ${TEMP}/MotionFieldRegularization_straight_smoothedMotionField_organBoundary.vtk
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngledNoNoise
@@ -125,6 +132,9 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionFieldRegularization_angled_noNoise_normalVectorImage.mhd
           0.05
           1
+          ${TEMP}/MotionFieldRegularization_angled_noNoise_smoothedMotionField_tangential.mhd
+          ${TEMP}/MotionFieldRegularization_angled_noNoise_smoothedMotionField_normal.mhd
+          ${TEMP}/MotionFieldRegularization_angled_noNoise_organBoundary.vtk
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled
@@ -138,6 +148,9 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionFieldRegularization_angled_normalVectorImage.mhd
           0.05
           1
+          ${TEMP}/MotionFieldRegularization_angled_smoothedMotionField_tangential.mhd
+          ${TEMP}/MotionFieldRegularization_angled_smoothedMotionField_normal.mhd
+          ${TEMP}/MotionFieldRegularization_angled_smoothedMotionField_organBoundary.vtk
           )
 
   add_test( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTestAngled_w0
@@ -151,6 +164,8 @@ if( TubeTK_USE_VTK )
           ${TEMP}/MotionFieldRegularization_angled_w0_normalVectorImage.mhd
           0.05
           0
+          ${TEMP}/MotionFieldRegularization_angled_w0_smoothedMotionField_tangential.mhd
+          ${TEMP}/MotionFieldRegularization_angled_w0_smoothedMotionField_normal.mhd
           )
 
   # No regularization at all - just intensity distances
@@ -259,6 +274,42 @@ if( TubeTK_USE_VTK )
           ${TEMP}/SlidingOrganRegistrationWithRegularization_boxes_weightImage_w0.mhd
           0.125 # <--- time step
           1
+          )
+
+  # Anisotropic diffusive regularization on XCAT data
+  add_test( itkImageToImageDiffusiveDeformableRegistrationExecution_xcat
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationExecution
+          ${TEMP}/basic_act2_originalFixedImage_noVessels_clipped_changedIntensities.mhd
+          ${TEMP}/basic_act1_originalMovingImage_noVessels_clipped_changedIntensities.mhd
+          ${TEMP}/xcatAnisotropic_resultingMotionField.mhd
+          ${TEMP}/xcatAnisotropic_resultingTransformedMovingImage.mhd
+          20000 # <--- number of iterations
+          1 # compute regularization term
+          ${TEMP}/filledIn_NEW_smooth20_decimate50_flipped.vtk
+          ${TEMP}/xcatAnisotropic_normalVectorImage.mhd
+          1 # use diffusive regularization
+          ${TEMP}/xcatAnisotropic_weightImage.mhd
+          0.125 # <--- time step
+          ${TEMP}/xcatAnisotropic_filledIn_smooth20_decimate50_flipped_normals.vtk
+          )
+
+  # Gaussian regularization on XCAT data
+  add_test( itkImageToImageDiffusiveDeformableRegistrationExecution_w0_xcat
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+                              itkImageToImageDiffusiveDeformableRegistrationExecution
+          ${TEMP}/basic_act2_originalFixedImage_noVessels_clipped_changedIntensities.mhd
+          ${TEMP}/basic_act1_originalMovingImage_noVessels_clipped_changedIntensities.mhd
+          ${TEMP}/xcatGaussian_resultingMotionField.mhd
+          ${TEMP}/xcatGaussian_resultingTransformedMovingImage.mhd
+          20000 # <--- number of iterations
+          1 # compute regularization term
+          ${TEMP}/filledIn_NEW_smooth20_decimate50_flipped.vtk
+          ${TEMP}/xcatGaussian_normalVectorImage.mhd
+          0 # use diffusive regularization
+           ${TEMP}/xcatGaussian_weightImage.mhd
+          0.125 # <--- time step
+          ${TEMP}/xcatGaussian_filledIn_smooth20_decimate50_flipped_normals.vtk
           )
 
 endif( TubeTK_USE_VTK )
