@@ -101,7 +101,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     }
 
   double ratio = 
-     minSpacing / vcl_pow( 2.0, static_cast< double >( ImageDimension ) + 1 );
+     minSpacing /vcl_pow(2.0, static_cast<double>(ImageDimension) + 1); // plus 1?
 
   if ( m_TimeStep > ratio ) 
     {
