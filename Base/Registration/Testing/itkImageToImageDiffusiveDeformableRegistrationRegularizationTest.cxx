@@ -37,7 +37,7 @@ limitations under the License.
 #include "vtkPointData.h"
 #include "vtkPolyDataWriter.h"
 
-int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
+int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
                                                       int argc, char* argv [] )
 {
   if( argc < 12 )
@@ -46,16 +46,16 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
               << "original motion field image, "
-              << "noise variance, "
               << "smoothed motion field image, "
-              << "number of iterations, "
-              << "border slope, "
+              << "smoothed motion field image (tangential), "
+              << "smoothed motion field image (normal), "
               << "normal vector image, "
+              << "normal border surface, "
+              << "noise variance, "
+              << "border slope, "
+              << "number of iterations, "
               << "time step, "
-              << "should use diffusive regularization, "
-              << "output tangential image, "
-              << "output normal image, "
-              << "normal border surface"
+              << "should use diffusive regularization"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -100,14 +100,14 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   deformationField->Allocate();
 
   // Fill the motion field image:
-  // Top half is vectors like \, bottom half is vectors like /,
-  // plus noise
+  // Top half has vectors like \, bottom half has vectors like /,
+  // with additional noise
 
   PixelType   borderSlope;
   VectorType  borderN; // normal to the border
   VectorType  perpN;   // perpendicular to the border
 
-  borderSlope = atof( argv[5] );
+  borderSlope = atof( argv[8] );
   if( borderSlope == 0 )
     {
     borderN[0] = 0.0;
@@ -161,7 +161,7 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   PixelType     randY = 0;
   PixelType     randZ = 0;
   double        mean = 0;
-  double        variance = atof(argv[2]);
+  double        variance = atof(argv[7]);
 
   for( it.GoToBegin(); ! it.IsAtEnd(); ++it )
     {
@@ -183,7 +183,6 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
       }
 
     // Add random noise
-
     randX = randGenerator->GetNormalVariate( mean, variance );
     randY = randGenerator->GetNormalVariate( mean, variance );
     randZ = randGenerator->GetNormalVariate( mean, variance );
@@ -211,7 +210,7 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
 
   // Save the border polydata
   vtkPolyDataWriter * polyDataWriter = vtkPolyDataWriter::New();
-  polyDataWriter->SetFileName( argv[11] );
+  polyDataWriter->SetFileName( argv[6] );
   polyDataWriter->SetInput( plane->GetOutput() );
   polyDataWriter->Update();
 
@@ -241,12 +240,12 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   registrator->SetMovingImage( movingImage );
   registrator->SetFixedImage( fixedImage );
   registrator->SetBorderSurface( plane->GetOutput() );
-  int numIterations = atoi( argv[4] );
+  int numIterations = atoi( argv[9] );
   registrator->SetNumberOfIterations( numIterations );
-  // because we are just doing motion field regularization in this test
+  // because we are just doing motion field regularization in this test:
   registrator->SetComputeIntensityDistanceTerm( false );
-  registrator->SetTimeStep( atof( argv[7] ) );
-  int useDiffusive = atoi( argv[8] );
+  registrator->SetTimeStep( atof( argv[10] ) );
+  int useDiffusive = atoi( argv[11] );
   if ( useDiffusive )
     {
     registrator->SetUseDiffusiveRegularization( true );
@@ -257,7 +256,7 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
     }
 
   // Save the smoothed deformation field
-  writer->SetFileName( argv[3] );
+  writer->SetFileName( argv[2] );
   writer->SetInput( registrator->GetOutput() );
   try
     {
@@ -303,12 +302,12 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
   // Save the normal vector image
   typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
   VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
-  vectorWriter->SetFileName( argv[6] );
+  vectorWriter->SetFileName( argv[5] );
   vectorWriter->SetInput( registrator->GetNormalVectorImage() );
   vectorWriter->Write();
 
   // Save the output deformation field tangential and normal images
-  writer->SetFileName( argv[9] );
+  writer->SetFileName( argv[3] );
   writer->SetInput( registrator->GetOutputTangentialImage() );
   try
     {
@@ -319,7 +318,7 @@ int itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest(
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
-  writer->SetFileName( argv[10] );
+  writer->SetFileName( argv[4] );
   writer->SetInput( registrator->GetOutputNormalImage() );
   try
     {

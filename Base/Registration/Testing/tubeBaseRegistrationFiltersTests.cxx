@@ -31,7 +31,7 @@ void RegisterTests()
 {
   REGISTER_TEST( itkImageToImageDiffusiveDeformableRegistrationExecution );
   REGISTER_TEST( itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest );
-  REGISTER_TEST( itkImageToImageDiffusiveDeformableRegistrationMotionFieldRegularizationTest );
+  REGISTER_TEST( itkImageToImageDiffusiveDeformableRegistrationRegularizationTest );
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
   REGISTER_TEST( itkTubeToTubeTransformFilterTest );
 }
