@@ -7,7 +7,7 @@
 # 
 # All rights reserved. 
 # 
-# Licensed under the Apache License, Version 2.0 (the "License");
+# Licensed under the Apache License, Version 2.0 ( the "License" );
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 # 
@@ -20,32 +20,32 @@
 # limitations under the License.
 # 
 ##############################################################################
-include(ExternalProject)
+include( ExternalProject )
 
-set(base "${CMAKE_BINARY_DIR}")
-set_property(DIRECTORY PROPERTY EP_BASE ${base})
+set( base "${CMAKE_BINARY_DIR}" )
+set_property( DIRECTORY PROPERTY EP_BASE ${base} )
 
-set(shared ON) # use for BUILD_SHARED_LIBS on all subsequent projects
-set(testing OFF) # use for BUILD_TESTING on all subsequent projects
-set(build_type "Debug")
-if(CMAKE_BUILD_TYPE)
-  set(build_type "${CMAKE_BUILD_TYPE}")
+set( shared ON ) # use for BUILD_SHARED_LIBS on all subsequent projects
+set( testing OFF ) # use for BUILD_TESTING on all subsequent projects
+set( build_type "Debug" )
+if( CMAKE_BUILD_TYPE )
+  set( build_type "${CMAKE_BUILD_TYPE}" )
 endif() 
 
 set( TubeTK_DEPENDS "" )
 
-set(gen "${CMAKE_GENERATOR}")
+set( gen "${CMAKE_GENERATOR}" )
 
 ##
 ## Check if sytem ITK or superbuild ITK
 ##
-if(NOT USE_SYSTEM_ITK)
+if( NOT USE_SYSTEM_ITK )
 
   ##
   ## Insight
   ##
-  set(proj Insight)
-  ExternalProject_Add(${proj}
+  set( proj Insight )
+  ExternalProject_Add( ${proj}
     GIT_REPOSITORY "http://github.com/Slicer/ITK.git"
     GIT_TAG "v3.20.0"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
@@ -69,7 +69,7 @@ if(NOT USE_SYSTEM_ITK)
   
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "Insight" )
 
-endif(NOT USE_SYSTEM_ITK)
+endif( NOT USE_SYSTEM_ITK )
 
 ##
 ## VTK
@@ -79,15 +79,15 @@ if( TubeTK_USE_VTK )
   ##
   ## Check if sytem VTK or superbuild VTK
   ##
-  if(NOT USE_SYSTEM_VTK)
+  if( NOT USE_SYSTEM_VTK )
 
     if( TubeTK_USE_QT )
 
       ##
       ## VTK
       ##
-      set(proj VTK)
-      ExternalProject_Add(${proj}
+      set( proj VTK )
+      ExternalProject_Add( ${proj}
         GIT_REPOSITORY "http://github.com/Slicer/VTK.git"
         GIT_TAG "origin/slicer-4.0"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
@@ -116,8 +116,8 @@ if( TubeTK_USE_VTK )
       ##
       ## VTK
       ##
-      set(proj VTK)
-      ExternalProject_Add(${proj}
+      set( proj VTK )
+      ExternalProject_Add( ${proj}
         GIT_REPOSITORY "http://vtk.org/VTK.git"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
         BINARY_DIR VTK-Build
@@ -141,7 +141,7 @@ if( TubeTK_USE_VTK )
 
     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "VTK" )
     
-  endif(NOT USE_SYSTEM_VTK)
+  endif( NOT USE_SYSTEM_VTK )
 
 endif( TubeTK_USE_VTK )
   
@@ -149,8 +149,8 @@ endif( TubeTK_USE_VTK )
 ##
 ## TCLAP
 ##
-set(proj tclap)
-ExternalProject_Add(${proj}
+set( proj tclap )
+ExternalProject_Add( ${proj}
   SVN_REPOSITORY 
     "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/tclap"
   SOURCE_DIR tclap
@@ -173,14 +173,14 @@ set( TCLAP_DIR "${base}/tclap-Build" )
 ##
 ## ModuleDescriptionParser 
 ##
-set(proj ModuleDescriptionParser)
-if(NOT USE_SYSTEM_ITK)
+set( proj ModuleDescriptionParser )
+if( NOT USE_SYSTEM_ITK )
   # Depends on ITK if ITK was build using superbuild
-  set(ModuleDescriptionParser_DEPENDS "Insight")
-else(NOT USE_SYSTEM_ITK)
-  set(ModuleDescriptionParser_DEPENDS "")
-endif(NOT USE_SYSTEM_ITK)
-ExternalProject_Add(${proj}
+  set( ModuleDescriptionParser_DEPENDS "Insight" )
+else( NOT USE_SYSTEM_ITK )
+  set( ModuleDescriptionParser_DEPENDS "" )
+endif( NOT USE_SYSTEM_ITK )
+ExternalProject_Add( ${proj}
   SVN_REPOSITORY 
     "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
   SOURCE_DIR ModuleDescriptionParser
@@ -205,8 +205,8 @@ set( ModuleDescriptionParser_DIR "${base}/ModuleDescriptionParser-Build" )
 ##
 ## GenerateCLP 
 ##
-set(proj GenerateCLP)
-ExternalProject_Add(${proj}
+set( proj GenerateCLP )
+ExternalProject_Add( ${proj}
   SVN_REPOSITORY 
     "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/GenerateCLP"
   SOURCE_DIR GenerateCLP
@@ -238,8 +238,8 @@ set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
 ##
 if( TubeTK_USE_OpenIGTLink )
 
-  set(proj OpenIGTLink)
-  ExternalProject_Add(${proj}
+  set( proj OpenIGTLink )
+  ExternalProject_Add( ${proj}
     SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
     SOURCE_DIR OpenIGTLink
     BINARY_DIR OpenIGTLink-Build
@@ -272,8 +272,8 @@ if( TubeTK_USE_QT )
   ##
   if( TubeTK_USE_CTK )
 
-    set(proj CTK)
-    ExternalProject_Add(CTK
+    set( proj CTK )
+    ExternalProject_Add( CTK
       GIT_REPOSITORY "http://github.com/commontk/CTK.git"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
       BINARY_DIR CTK-Build
@@ -309,8 +309,8 @@ endif( TubeTK_USE_QT )
 ##
 ## TubeTK - Normal Build
 ##
-set(proj TubeTK)
-ExternalProject_Add(${proj}
+set( proj TubeTK )
+ExternalProject_Add( ${proj}
   DOWNLOAD_COMMAND ""
   SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
   BINARY_DIR TubeTK-Build
@@ -345,5 +345,5 @@ ExternalProject_Add(${proj}
   INSTALL_COMMAND ""
   DEPENDS
     ${TubeTK_DEPENDS}
-)
+ )
 
