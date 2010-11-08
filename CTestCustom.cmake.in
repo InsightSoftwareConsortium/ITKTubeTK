@@ -46,6 +46,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkUTF8TextCodec"
     "vtkUTF16TextCodec"
     "vtkDelimitedTextReader"
+    "vtkColorTransferFunction"
     "QtSql"
     "qhash"
     "qlist"
