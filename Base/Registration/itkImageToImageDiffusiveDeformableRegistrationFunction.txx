@@ -38,7 +38,7 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TDeformationField >
 ::ImageToImageDiffusiveDeformableRegistrationFunction()
 {
-  RadiusType r;
+  typename Superclass::RadiusType r;
   r.Fill(1);
   this->SetRadius(r);
 
@@ -260,7 +260,7 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
 
   // Get the normal at this pixel
-  const IndexType index = normalVectorImageNeighborhood.GetIndex();
+  const typename FixedImageType::IndexType index = normalVectorImageNeighborhood.GetIndex();
   NormalVectorType normalVector
           = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
 

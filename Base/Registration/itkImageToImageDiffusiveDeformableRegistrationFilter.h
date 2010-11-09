@@ -122,12 +122,10 @@ public:
 
   /** Normal vector types - types for the normal vectors and normal vector
    *  images */
-  typedef double                                      NormalVectorComponentType;
-  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
+  typedef typename RegistrationFunctionType::NormalVectorType
       NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension >
+  typedef typename RegistrationFunctionType::NormalVectorImageType
       NormalVectorImageType;
-
   typedef typename NormalVectorImageType::Pointer     NormalVectorImagePointer;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageIteratorType;

@@ -56,8 +56,8 @@ public:
   typedef PDEDeformableRegistrationFunction<TFixedImage,
                                             TMovingImage,
                                             TDeformationField>  Superclass;
-  typedef SmartPointer<Self>                                    Pointer;
-  typedef SmartPointer<const Self>                              ConstPointer;
+  typedef SmartPointer< Self >                                  Pointer;
+  typedef SmartPointer< const Self >                            ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -65,35 +65,35 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFunction);
 
-  /** MovingImage image type. */
+  /** Inherit some enums from the superclass. */
+  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+
+  /** Types for the moving image. */
   typedef typename Superclass::MovingImageType        MovingImageType;
   typedef typename Superclass::MovingImagePointer     MovingImagePointer;
 
-  /** FixedImage image type. */
+  /** Types for the fixed image. */
   typedef typename Superclass::FixedImageType         FixedImageType;
   typedef typename Superclass::FixedImagePointer      FixedImagePointer;
-  typedef typename FixedImageType::IndexType          IndexType;
-  typedef typename FixedImageType::SizeType           SizeType;
-  typedef typename FixedImageType::SpacingType        SpacingType;
 
-  /** Deformation field type. */
-  typedef typename Superclass::DeformationFieldType
-                                            DeformationFieldType;
+  /** Types for the deformation field. */
+  typedef typename Superclass::DeformationFieldType   DeformationFieldType;
   typedef typename Superclass::DeformationFieldTypePointer
-                                            DeformationFieldTypePointer;
-  typedef typename Superclass::DeformationFieldType::ConstPointer
-                                            DeformationFieldConstPointer;
+      DeformationFieldTypePointer;
 
-  /** Inherit some enums from the superclass. */
+  /** Inherit some types from the superclass. */
   typedef typename Superclass::TimeStepType           TimeStepType;
-  typedef typename Superclass::RadiusType             RadiusType;
   typedef typename Superclass::NeighborhoodType       NeighborhoodType;
   typedef typename Superclass::PixelType              PixelType;
   typedef typename Superclass::FloatOffsetType        FloatOffsetType;
 
-  /** Inherit some enums from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
+
+
+
+
+
+//////////////////////////////////////////
   /** Typedefs for the deformation field components */
   // ex. vector < double, 3 >
   typedef typename DeformationFieldType::PixelType
@@ -104,8 +104,42 @@ public:
   // ex. image of doubles
   typedef itk::Image< DeformationFieldScalarType, ImageDimension >
                                 DeformationFieldComponentImageType;
-  typedef typename DeformationFieldComponentImageType::ConstPointer
-                                DeformationFieldComponentImageConstPointer;
+  ////////////////////////////////
+
+
+
+
+
+  /** Normal vector types */
+  typedef double                                   NormalVectorComponentType;
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
+      NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+
+
+
+
+  /** Typedefs for the intensity-based distance function */
+  typedef itk::MeanSquareRegistrationFunction< FixedImageType,
+                                               MovingImageType,
+                                               DeformationFieldType >
+                                               IntensityDistanceFunctionType;
+  typedef typename IntensityDistanceFunctionType::Pointer
+      IntensityDistanceFunctionPointer;
+
+  /** Typedefs for the regularization function */
+  typedef itk::AnisotropicDiffusionTensorFunction
+      < DeformationFieldComponentImageType >
+      RegularizationFunctionType;
+  typedef typename RegularizationFunctionType::Pointer
+      RegularizationFunctionPointer;
+
+
+
+
+
+
 
   typedef ZeroFluxNeumannBoundaryCondition< DeformationFieldComponentImageType >
                                 DeformationFieldComponentBoundaryConditionType;
@@ -115,9 +149,7 @@ public:
   typedef itk::FixedArray< DeformationFieldComponentNeighborhoodType, ImageDimension >
                                 DeformationFieldComponentNeighborhoodArrayType;
 
-  /** Typedefs for normal vector */
-  typedef DeformationFieldVectorType                     NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension > NormalVectorImageType;
+
 
   typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
                                 NormalVectorImageBoundaryConditionType;
@@ -125,12 +157,15 @@ public:
                                 NormalVectorImageBoundaryConditionType >
                                 NormalVectorImageNeighborhoodType;
 
-  /** Typedefs for the regularization function used by this function */
-  typedef itk::AnisotropicDiffusionTensorFunction
-                                          < DeformationFieldComponentImageType >
-                                          RegularizationFunctionType;
-  typedef typename RegularizationFunctionType::Pointer
-                                          RegularizationFunctionPointer;
+
+
+
+
+
+
+
+
+
 
   /** Typedefs for the diffusion tensor image */
   typedef typename RegularizationFunctionType::DiffusionTensorImageType
@@ -142,14 +177,16 @@ public:
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
                                           DiffusionTensorNeighborhoodType;
 
-  /** Typedefs for the FiniteDifferenceFunction intensity-based distance
-    * function used by this function */
-  typedef itk::MeanSquareRegistrationFunction< FixedImageType,
-                                               MovingImageType,
-                                               DeformationFieldType >
-                                               IntensityDistanceFunctionType;
-  typedef typename IntensityDistanceFunctionType::Pointer
-                                          IntensityDistanceFunctionPointer;
+
+
+
+
+
+
+
+
+
+
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
