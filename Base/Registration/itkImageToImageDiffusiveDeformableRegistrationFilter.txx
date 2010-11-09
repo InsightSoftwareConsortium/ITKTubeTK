@@ -51,7 +51,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   m_BorderNormalsSurface            = 0;
   m_NormalVectorImage               = NormalVectorImageType::New();
   m_WeightImage                     = WeightImageType::New();
-  m_TangentialDeformationField           = OutputImageType::New();
   m_NormalDeformationField               = OutputImageType::New();
   m_TangentialDiffusionTensorImage  = DiffusionTensorImageType::New();
   m_NormalDiffusionTensorImage      = DiffusionTensorImageType::New();
@@ -356,9 +355,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   this->AllocateSpaceForImage( m_WeightImage,
                                output );
 
-  // Allocate the output image's tangential and normal images
-  this->AllocateSpaceForImage( m_TangentialDeformationField,
-                               output );
+  // Allocate the output image's normal images
   this->AllocateSpaceForImage( m_NormalDeformationField,
                                output );
 
@@ -695,10 +692,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                           output,
                           output->GetLargestPossibleRegion() );
 
-  // Extract tangential and normal components from output
-  IteratorType outputTangentialImageIterator(
-                          m_TangentialDeformationField,
-                          m_TangentialDeformationField->GetLargestPossibleRegion() );
+  // Extract normal components from output
   IteratorType outputNormalImageIterator(
                           m_NormalDeformationField,
                           m_NormalDeformationField->GetLargestPossibleRegion() );
@@ -710,7 +704,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   DeformationVectorType  tangentialU;
 
   normalVectorIterator.GoToBegin();
-  outputTangentialImageIterator.GoToBegin();
   outputNormalImageIterator.GoToBegin();
   for( outputImageIterator.GoToBegin(); !outputImageIterator.IsAtEnd();
          ++outputImageIterator )
@@ -723,8 +716,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
     outputNormalImageIterator.Set( normalU );
 
     // tangential component = u - normal component
-    tangentialU = u - normalU;
-    outputTangentialImageIterator.Set( tangentialU );
+    // tangentialU = u - normalU;
 
     // We know normalU + tangentialU = u
     // Assertion to test that the normal and tangential components were computed
@@ -745,13 +737,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
       }
 
     ++normalVectorIterator;
-    ++outputTangentialImageIterator;
     ++outputNormalImageIterator;
     }
 
   // Feed tangential and normal components to the component extractor
   // Extract the components
-  m_TangentialDeformationField->Modified();
   m_NormalDeformationField->Modified();
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
@@ -993,9 +983,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   itk::FixedArray< DeformationVectorComponentFaceListType, ImageDimension >
                               deformationFieldTangentialComponentFaceList;
-
-
-
 
   typedef typename DeformationVectorComponentFaceListType::iterator
                               DeformationFieldFaceListIterator;

@@ -95,7 +95,6 @@ if( TubeTK_USE_VTK )
             itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_straight_noNoise_origMotionField.mhd
           ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
-          ${TEMP}/Regularization_straight_noNoise_smoothedMotionField_tangential.mhd
           ${TEMP}/Regularization_straight_noNoise_smoothedMotionField_normal.mhd
           ${TEMP}/Regularization_straight_noNoise_normalVectorImage.mhd
           ${TEMP}/Regularization_straight_noNoise_organBoundary.vtk
@@ -110,7 +109,6 @@ if( TubeTK_USE_VTK )
             itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_straight_origMotionField.mhd
           ${TEMP}/Regularization_straight_smoothedMotionField.mhd
-          ${TEMP}/Regularization_straight_smoothedMotionField_tangential.mhd
           ${TEMP}/Regularization_straight_smoothedMotionField_normal.mhd
           ${TEMP}/Regularization_straight_normalVectorImage.mhd
           ${TEMP}/Regularization_straight_smoothedMotionField_organBoundary.vtk
@@ -125,7 +123,6 @@ if( TubeTK_USE_VTK )
             itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_angled_noNoise_origMotionField.mhd
           ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
-          ${TEMP}/Regularization_angled_noNoise_smoothedMotionField_tangential.mhd
           ${TEMP}/Regularization_angled_noNoise_smoothedMotionField_normal.mhd
           ${TEMP}/Regularization_angled_noNoise_normalVectorImage.mhd
           ${TEMP}/Regularization_angled_noNoise_organBoundary.vtk
@@ -140,7 +137,6 @@ if( TubeTK_USE_VTK )
             itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_angled_origMotionField.mhd
           ${TEMP}/Regularization_angled_smoothedMotionField.mhd
-          ${TEMP}/Regularization_angled_smoothedMotionField_tangential.mhd
           ${TEMP}/Regularization_angled_smoothedMotionField_normal.mhd
           ${TEMP}/Regularization_angled_normalVectorImage.mhd
           ${TEMP}/Regularization_angled_smoothedMotionField_organBoundary.vtk
@@ -155,7 +151,6 @@ if( TubeTK_USE_VTK )
             itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_angled_gaussian_origMotionField.mhd
           ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
-          ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_tangential.mhd
           ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_normal.mhd
           ${TEMP}/Regularization_angled_gaussian_normalVectorImage.mhd
           ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_organBoundary.vtk

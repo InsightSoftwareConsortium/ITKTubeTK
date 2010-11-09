@@ -240,9 +240,7 @@ public:
       const
     { return m_NormalDiffusionTensorImage; }
 
-  /** Get the normal and tangential components of the deformation field */
-  virtual const OutputImagePointer GetTangentialDeformationFieldImage() const
-    { return m_TangentialDeformationField; }
+  /** Get the normal components of the deformation field */
   virtual const OutputImagePointer GetNormalDeformationFieldImage() const
     { return m_NormalDeformationField; }
 
@@ -363,8 +361,7 @@ private:
     */
   WeightType                            m_lambda;
 
-  /** The tangential and normal components of the deformation field */
-  OutputImagePointer                    m_TangentialDeformationField;
+  /** The normal component of the deformation field */
   OutputImagePointer                    m_NormalDeformationField;
 
   /** The components of the tangential and normal deformation vectors */
