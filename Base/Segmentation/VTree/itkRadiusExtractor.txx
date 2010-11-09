@@ -1127,13 +1127,14 @@ RadiusExtractor<TInputImage>
 
   KernArrayType pntKernArray;
   int step = 1;
-  if( ! kernPntStart > kernPntEnd )
+  if( kernPntStart > kernPntEnd )
     {
     step = -1;
     }
   
   unsigned int count = 0;
-  for( unsigned int kernPnt = kernPntStart; kernPnt != kernPntEnd;
+  for( int kernPnt = (int)(kernPntStart);
+    kernPnt != (int)(kernPntEnd)+step;
     kernPnt += step )
     {
     pntKernArray.clear();
