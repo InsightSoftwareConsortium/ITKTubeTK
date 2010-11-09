@@ -296,6 +296,8 @@ if( TubeTK_USE_QT )
         -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
         -DVTK_DIR:PATH=${VTK_DIR}
       INSTALL_COMMAND ""
+      DEPENDS
+        "VTK"
       )
     set( CTK_DIR "${CMAKE_BINARY_DIR}/CTK-Build" )
 
