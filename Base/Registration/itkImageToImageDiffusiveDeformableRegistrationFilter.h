@@ -26,10 +26,10 @@ limitations under the License.
 #include "itkPDEDeformableRegistrationFilter.h"
 #include "itkImageToImageDiffusiveDeformableRegistrationFunction.h"
 
-#include "vtkPolyData.h"
-#include "vtkSmartPointer.h"
-#include "vtkPolyDataNormals.h"
 #include "vtkPointLocator.h"
+#include "vtkPolyData.h"
+#include "vtkPolyDataNormals.h"
+#include "vtkSmartPointer.h"
 
 namespace itk
 {
@@ -82,9 +82,6 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFilter);
 
-  /** Inherit types from superclass. */
-  typedef typename Superclass::TimeStepType             TimeStepType;
-
   /** Inherit some enums from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
@@ -104,6 +101,14 @@ public:
   typedef typename Superclass::DeformationFieldType     DeformationFieldType;
   typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
 
+  /** Inherit types from superclass. */
+  typedef typename Superclass::TimeStepType             TimeStepType;
+
+  /** The registration function type */
+  typedef ImageToImageDiffusiveDeformableRegistrationFunction
+      < FixedImageType, MovingImageType, DeformationFieldType >
+      RegistrationFunctionType;
+
   /** Deformation field types - types for the deformation vectors, deformation
    *  vector components, and vector component images
    */
@@ -115,11 +120,6 @@ public:
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;
 
-  /** The registration function type */
-  typedef ImageToImageDiffusiveDeformableRegistrationFunction
-      < FixedImageType, MovingImageType, DeformationFieldType >
-      RegistrationFunctionType;
-
   /** Normal vector types - types for the normal vectors and normal vector
    *  images */
   typedef double                                      NormalVectorComponentType;
@@ -127,6 +127,7 @@ public:
       NormalVectorType;
   typedef itk::Image< NormalVectorType, ImageDimension >
       NormalVectorImageType;
+
   typedef typename NormalVectorImageType::Pointer     NormalVectorImagePointer;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageIteratorType;
@@ -153,7 +154,7 @@ public:
   /** The diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
-  typedef typename DiffusionTensorImageType::Pointer
+  typedef typename RegistrationFunctionType::DiffusionTensorImagePointer
       DiffusionTensorImagePointer;
 
   /** Typedefs used in multithreading */
@@ -168,7 +169,7 @@ public:
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
   typedef typename DeformationVectorComponentImageType::RegionType
-      ThreadDeformationFieldComponentImageRegionType;
+      ThreadDeformationVectorComponentImageRegionType;
 
   /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
@@ -275,7 +276,7 @@ protected:
           const ThreadRegionType &regionToProcess,
           const ThreadNormalVectorImageRegionType &normalVectorRegionToProcess,
           const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
-          const ThreadDeformationFieldComponentImageRegionType
+          const ThreadDeformationVectorComponentImageRegionType
                                                       &componentRegionToProcess,
           int threadId);
 
