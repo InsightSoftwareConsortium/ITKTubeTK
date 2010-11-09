@@ -10,7 +10,7 @@ Copyright University of North Carolina, Chapel Hill, NC, USA.
 Revised implementation:
 Copyright Kitware Inc., Carrboro, NC, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,23 +34,24 @@ limitations under the License.
 namespace itk
 {
 
-class OptParabolicFit1D : public Optimizer1D 
+class OptParabolicFit1D : public Optimizer1D
 {
 
 public:
 
   OptParabolicFit1D();
-  OptParabolicFit1D(UserFunc<double, double> *newFuncVal);
+  OptParabolicFit1D( UserFunc< double, double > * newFuncVal );
   ~OptParabolicFit1D();
-  
-  void use(UserFunc<double, double> *newFuncVal, UserFunc<double,double>* deriv = NULL);
+
+  void use( UserFunc< double, double > * newFuncVal,
+            UserFunc< double, double > * deriv = NULL );
 
 protected:
 
-  double cCenter(double x1, double y1, 
-                 double x2, double y2, 
-                 double x3, double y3);
-  bool cExtreme(double * x, double * xVal);
+  double cCenter( double x1, double y1,
+                  double x2, double y2,
+                  double x3, double y3 );
+  bool cExtreme( double * x, double * xVal );
 
 
 };
