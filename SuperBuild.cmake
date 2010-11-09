@@ -47,7 +47,7 @@ if( NOT USE_SYSTEM_ITK )
   set( proj Insight )
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY "http://github.com/Slicer/ITK.git"
-    GIT_TAG "v3.20.0"
+    GIT_TAG "origin/slicer-4.0"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
     BINARY_DIR Insight-Build
     CMAKE_GENERATOR ${gen}
@@ -118,7 +118,8 @@ if( TubeTK_USE_VTK )
       ##
       set( proj VTK )
       ExternalProject_Add( ${proj}
-        GIT_REPOSITORY "http://vtk.org/VTK.git"
+        GIT_REPOSITORY "http://github.com/Slicer/VTK.git"
+        GIT_TAG "origin/slicer-4.0"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
         BINARY_DIR VTK-Build
         CMAKE_GENERATOR ${gen}
@@ -275,6 +276,7 @@ if( TubeTK_USE_QT )
     set( proj CTK )
     ExternalProject_Add( CTK
       GIT_REPOSITORY "http://github.com/commontk/CTK.git"
+      GIT_TAG "origin/master"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
       BINARY_DIR CTK-Build
       CMAKE_GENERATOR ${gen}
