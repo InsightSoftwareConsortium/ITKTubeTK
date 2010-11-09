@@ -924,10 +924,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                 DefaultBoundaryConditionType >
                                 DiffusionTensorNeighborhoodType;
   typedef typename
-        RegistrationFunctionType::DeformationFieldComponentNeighborhoodType
+        RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
                                 DeformationVectorComponentNeighborhoodType;
   typedef typename
-        RegistrationFunctionType::DeformationFieldComponentNeighborhoodArrayType
+        RegistrationFunctionType::DeformationVectorComponentNeighborhoodArrayType
                                 DeformationVectorComponentNeighborhoodArrayType;
 
 

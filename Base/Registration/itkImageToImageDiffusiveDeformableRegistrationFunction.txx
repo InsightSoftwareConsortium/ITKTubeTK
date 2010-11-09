@@ -247,11 +247,11 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                               &normalVectorImageNeighborhood,
                 const DiffusionTensorNeighborhoodType
                               &tangentialNeighborhoodTensor,
-                const DeformationFieldComponentNeighborhoodArrayType
+                const DeformationVectorComponentNeighborhoodArrayType
                               &tangentialNeighborhoodDeformationFieldComponents,
                 const DiffusionTensorNeighborhoodType
                               &normalNeighborhoodTensor,
-                const DeformationFieldComponentNeighborhoodArrayType
+                const DeformationVectorComponentNeighborhoodArrayType
                               &normalNeighborhoodDeformationFieldComponents,
                 void *gd,
                 const FloatOffsetType& offset)
@@ -268,7 +268,7 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   // and intensity distance terms
   PixelType                         tangentialRegularizationTerm;
   PixelType                         normalRegularizationTerm;
-  DeformationFieldScalarType        intermediateNormalRegularizationComponent;
+  DeformationVectorComponentType    intermediateNormalRegularizationComponent;
   PixelType                         intermediateNormalRegularizationTerm;
   PixelType                         intensityDistanceTerm;
   PixelType                         updateTerm;

@@ -112,10 +112,11 @@ public:
   /** Deformation field types - types for the deformation vectors, deformation
    *  vector components, and vector component images
    */
-  typedef typename DeformationFieldType::PixelType      DeformationVectorType;
-  typedef typename DeformationVectorType::ValueType
+  typedef typename RegistrationFunctionType::DeformationVectorType
+      DeformationVectorType;
+  typedef typename RegistrationFunctionType::DeformationVectorComponentType
       DeformationVectorComponentType;
-  typedef itk::Image< DeformationVectorComponentType, ImageDimension >
+  typedef typename RegistrationFunctionType::DeformationVectorComponentImageType
       DeformationVectorComponentImageType;
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;

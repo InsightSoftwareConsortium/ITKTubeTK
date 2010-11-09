@@ -87,28 +87,14 @@ public:
   typedef typename Superclass::PixelType              PixelType;
   typedef typename Superclass::FloatOffsetType        FloatOffsetType;
 
-
-
-
-
-
-
-//////////////////////////////////////////
-  /** Typedefs for the deformation field components */
-  // ex. vector < double, 3 >
-  typedef typename DeformationFieldType::PixelType
-                                DeformationFieldVectorType;
-  // ex. double
-  typedef typename DeformationFieldType::PixelType::ValueType
-                                DeformationFieldScalarType;
-  // ex. image of doubles
-  typedef itk::Image< DeformationFieldScalarType, ImageDimension >
-                                DeformationFieldComponentImageType;
-  ////////////////////////////////
-
-
-
-
+  /** Deformation field types - types for the deformation vectors, deformation
+   *  vector components, and vector component images
+   */
+  typedef typename DeformationFieldType::PixelType    DeformationVectorType;
+  typedef typename DeformationVectorType::ValueType
+      DeformationVectorComponentType;
+  typedef itk::Image< DeformationVectorComponentType, ImageDimension >
+      DeformationVectorComponentImageType;
 
   /** Normal vector types */
   typedef double                                   NormalVectorComponentType;
@@ -116,9 +102,6 @@ public:
       NormalVectorType;
   typedef itk::Image< NormalVectorType, ImageDimension >
       NormalVectorImageType;
-
-
-
 
   /** Typedefs for the intensity-based distance function */
   typedef itk::MeanSquareRegistrationFunction< FixedImageType,
@@ -130,52 +113,44 @@ public:
 
   /** Typedefs for the regularization function */
   typedef itk::AnisotropicDiffusionTensorFunction
-      < DeformationFieldComponentImageType >
+      < DeformationVectorComponentImageType >
       RegularizationFunctionType;
   typedef typename RegularizationFunctionType::Pointer
       RegularizationFunctionPointer;
 
-
-
-
-
-
-
-  typedef ZeroFluxNeumannBoundaryCondition< DeformationFieldComponentImageType >
-                                DeformationFieldComponentBoundaryConditionType;
-  typedef ConstNeighborhoodIterator<DeformationFieldComponentImageType,
-                                DeformationFieldComponentBoundaryConditionType>
-                                DeformationFieldComponentNeighborhoodType;
-  typedef itk::FixedArray< DeformationFieldComponentNeighborhoodType, ImageDimension >
-                                DeformationFieldComponentNeighborhoodArrayType;
-
-
-
-  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
-                                NormalVectorImageBoundaryConditionType;
-  typedef ConstNeighborhoodIterator< NormalVectorImageType,
-                                NormalVectorImageBoundaryConditionType >
-                                NormalVectorImageNeighborhoodType;
-
-
-
-
-
-
-
-
-
-
-
   /** Typedefs for the diffusion tensor image */
   typedef typename RegularizationFunctionType::DiffusionTensorImageType
-                                          DiffusionTensorImageType;
+      DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
-                                          DiffusionTensorImagePointer;
+      DiffusionTensorImagePointer;
+
+  /** Boundary condition and neighborhood typedefs used by multithreading */
   typedef typename RegularizationFunctionType::DefaultBoundaryConditionType
-                                          DefaultBoundaryConditionType;
+      DefaultBoundaryConditionType;
+  typedef ZeroFluxNeumannBoundaryCondition< DeformationVectorComponentImageType >
+      DeformationVectorComponentBoundaryConditionType;
+  typedef ConstNeighborhoodIterator
+      < DeformationVectorComponentImageType,
+      DeformationVectorComponentBoundaryConditionType>
+      DeformationVectorComponentNeighborhoodType;
+  typedef itk::FixedArray
+      < DeformationVectorComponentNeighborhoodType, ImageDimension >
+       DeformationVectorComponentNeighborhoodArrayType;
+  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
+      NormalVectorImageBoundaryConditionType;
+  typedef ConstNeighborhoodIterator< NormalVectorImageType,
+      NormalVectorImageBoundaryConditionType >
+      NormalVectorImageNeighborhoodType;
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
-                                          DiffusionTensorNeighborhoodType;
+      DiffusionTensorNeighborhoodType;
+
+
+
+
+
+
+
+
 
 
 
@@ -208,11 +183,11 @@ public:
                               &normalVectorImageNeighborhood,
                      const DiffusionTensorNeighborhoodType
                               &tangentialNeighborhoodTensor,
-                     const DeformationFieldComponentNeighborhoodArrayType
+                     const DeformationVectorComponentNeighborhoodArrayType
                               &tangentialNeighborhoodDeformationFieldComponents,
                      const DiffusionTensorNeighborhoodType
                               &normalNeighborhoodTensor,
-                     const DeformationFieldComponentNeighborhoodArrayType
+                     const DeformationVectorComponentNeighborhoodArrayType
                               &normalNeighborhoodDeformationFieldComponents,
                      void *globalData,
                      const FloatOffsetType& = FloatOffsetType(0.0));
