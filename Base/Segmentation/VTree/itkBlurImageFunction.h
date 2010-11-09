@@ -48,7 +48,7 @@ class ITK_EXPORT BlurImageFunction :
 public:
   /**
    * Standard "Self" typedef */
-  typedef BlurImageFunction                          Self;
+  typedef BlurImageFunction                            Self;
   typedef ImageFunction<TInputImage, double, double>   Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
