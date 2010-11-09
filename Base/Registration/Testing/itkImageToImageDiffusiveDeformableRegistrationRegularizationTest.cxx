@@ -308,7 +308,7 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
 
   // Save the output deformation field tangential and normal images
   writer->SetFileName( argv[3] );
-  writer->SetInput( registrator->GetOutputTangentialImage() );
+  writer->SetInput( registrator->GetTangentialDeformationFieldImage() );
   try
     {
     writer->Update();
@@ -319,7 +319,7 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
     return EXIT_FAILURE;
     }
   writer->SetFileName( argv[4] );
-  writer->SetInput( registrator->GetOutputNormalImage() );
+  writer->SetInput( registrator->GetNormalDeformationFieldImage() );
   try
     {
     writer->Update();

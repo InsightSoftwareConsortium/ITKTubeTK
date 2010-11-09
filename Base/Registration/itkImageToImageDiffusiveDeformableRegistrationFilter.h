@@ -73,8 +73,8 @@ public:
   typedef PDEDeformableRegistrationFilter< TFixedImage,
                                           TMovingImage,
                                           TDeformationField > Superclass;
-  typedef SmartPointer<Self>                                  Pointer;
-  typedef SmartPointer<const Self>                            ConstPointer;
+  typedef SmartPointer< Self >                                Pointer;
+  typedef SmartPointer< const Self >                          ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -85,128 +85,146 @@ public:
   /** Inherit types from superclass. */
   typedef typename Superclass::TimeStepType             TimeStepType;
 
-  /** FixedImage image type. */
-  typedef typename Superclass::FixedImageType           FixedImageType;
-  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
-
-  /** MovingImage image type. */
-  typedef typename Superclass::MovingImageType          MovingImageType;
-  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
-
-  /** Deformation field type. */
-  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
-  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
-
   /** Inherit some enums from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
-  /** Deformation field types. */
+  /** Inherit FiniteDifferenceFunction type from the superclass. */
+  typedef typename Superclass::FiniteDifferenceFunctionType
+      FiniteDifferenceFunctionType;
 
-  // ex. vector < double, 3 >
-  typedef typename Superclass::DeformationFieldType::PixelType
-                                    DeformationFieldVectorType;
-  // ex. double
-  typedef typename DeformationFieldType::PixelType::ValueType
-                                    DeformationFieldScalarType;
-  // ex. image of doubles
-  typedef itk::Image< DeformationFieldScalarType, ImageDimension >
-                                    DeformationFieldComponentImageType;
-  typedef typename DeformationFieldComponentImageType::Pointer
-                                    DeformationFieldComponentImagePointer;
-  typedef itk::ImageRegionIterator< DeformationFieldComponentImageType >
-                                    DeformationFieldComponentImageIteratorType;
+  /** Types for the fixed image. */
+  typedef typename Superclass::FixedImageType           FixedImageType;
+  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
 
-  /** Normal vector types. */
-  typedef DeformationFieldVectorType                     NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension > NormalVectorImageType;
-  typedef typename NormalVectorImageType::Pointer        NormalVectorImagePointer;
+  /** Types for the moving image. */
+  typedef typename Superclass::MovingImageType          MovingImageType;
+  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
+
+  /** Types for the deformation field. */
+  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
+  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
+
+  /** Deformation field types - types for the deformation vectors, deformation
+   *  vector components, and vector component images
+   */
+  typedef typename DeformationFieldType::PixelType      DeformationVectorType;
+  typedef typename DeformationVectorType::ValueType
+      DeformationVectorComponentType;
+  typedef itk::Image< DeformationVectorComponentType, ImageDimension >
+      DeformationVectorComponentImageType;
+  typedef typename DeformationVectorComponentImageType::Pointer
+      DeformationVectorComponentImagePointer;
+
+  /** The registration function type */
+  typedef ImageToImageDiffusiveDeformableRegistrationFunction
+      < FixedImageType, MovingImageType, DeformationFieldType >
+      RegistrationFunctionType;
+
+  /** Normal vector types - types for the normal vectors and normal vector
+   *  images */
+  typedef double                                      NormalVectorComponentType;
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
+      NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+  typedef typename NormalVectorImageType::Pointer     NormalVectorImagePointer;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
-                                                         NormalVectorIteratorType;
+      NormalVectorImageIteratorType;
 
-  /** Weight image types. */
-  typedef DeformationFieldScalarType                    WeightType;
+  /** Weight image types - types for the weightings and weight images.  This
+    * is the weight between the anisotropic diffusive regularization and a
+    * diffusive (Gaussian) regularization.
+    */
+  typedef double                                        WeightType;
   typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
   typedef typename WeightImageType::Pointer             WeightImagePointer;
-  typedef itk::ImageRegionIterator< WeightImageType >   WeightIteratorType;
+  typedef itk::ImageRegionIterator< WeightImageType >   WeightImageIteratorType;
 
-  /** FiniteDifferenceFunction type. */
-  typedef typename Superclass::FiniteDifferenceFunctionType
-                                                  FiniteDifferenceFunctionType;
+  /** Organ boundary surface types - types for the surface and the surface of
+    * normals, and point locator to find points on the surface */
+  typedef vtkSmartPointer< vtkPolyData >              BorderSurfacePointer;
+  typedef vtkPolyDataNormals
+      BorderNormalsSurfaceFilterType;
+  typedef vtkSmartPointer< BorderNormalsSurfaceFilterType >
+      BorderNormalsSurfaceFilterPointer;
+  typedef vtkPointLocator                             PointLocatorType;
+  typedef vtkSmartPointer< PointLocatorType >         PointLocatorPointer;
 
-  /** ImageToImageDiffusiveDeformableRegistrationFunction type. */
-  typedef ImageToImageDiffusiveDeformableRegistrationFunction
-                                            < FixedImageType,
-                                              MovingImageType,
-                                              DeformationFieldType >
-                                              RegistrationFunctionType;
+  /** The diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
-                                              DiffusionTensorImageType;
-  typedef typename DiffusionTensorImageType::PixelType
-                                              DiffusionTensorImagePixelType;
+      DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
-                                              DiffusionTensorImagePointer;
-  typedef typename RegistrationFunctionType::DefaultBoundaryConditionType
-                                              DefaultBoundaryConditionType;
+      DiffusionTensorImagePointer;
 
-  /** Convenience function to set the function's timestep from the filter */
+  /** Typedefs used in multithreading */
+  typedef typename Superclass::OutputImageType          OutputImageType;
+  typedef typename Superclass::OutputImagePointer       OutputImagePointer;
+  typedef typename Superclass::UpdateBufferType         UpdateBufferType;
+
+  /** Region types used in multithreading */
+  typedef typename UpdateBufferType::RegionType         ThreadRegionType;
+  typedef typename NormalVectorImageType::RegionType
+      ThreadNormalVectorImageRegionType;
+  typedef typename DiffusionTensorImageType::RegionType
+      ThreadDiffusionTensorImageRegionType;
+  typedef typename DeformationVectorComponentImageType::RegionType
+      ThreadDeformationFieldComponentImageRegionType;
+
+  /** Types for vector component extractor */
+  typedef itk::VectorIndexSelectionCastImageFilter
+      < DeformationFieldType, DeformationVectorComponentImageType >
+      SelectionCastImageFilterType;
+  typedef typename SelectionCastImageFilterType::Pointer
+      SelectionCastImageFilterPointer;
+
+  /** Convenience function to set the registration function's timestep from the
+   * filter */
   void SetTimeStep( const TimeStepType &t );
   const TimeStepType& GetTimeStep() const;
 
-  /** The type of region used for multithreading */
-  typedef typename Superclass::OutputImageType  OutputImageType;
-  typedef typename OutputImageType::Pointer OutputImagePointer;
-  typedef OutputImageType                       UpdateBufferType;
-  typedef typename UpdateBufferType::RegionType ThreadRegionType;
-
-  /** The type of region used for multithreading */
-  typedef typename NormalVectorImageType::RegionType
-                                ThreadNormalVectorImageRegionType;
-  typedef typename DiffusionTensorImageType::RegionType
-                                ThreadDiffusionTensorImageRegionType;
-  typedef typename DeformationFieldComponentImageType::RegionType
-                                ThreadDeformationFieldComponentImageRegionType;
-
-  /** Define neighborhood types */
-  typedef typename RegistrationFunctionType::NormalVectorImageNeighborhoodType
-                                NormalVectorImageNeighborhoodType;
-
-  typedef ConstNeighborhoodIterator< DiffusionTensorImageType,
-                                DefaultBoundaryConditionType >
-                                DiffusionTensorNeighborhoodType;
-
-  typedef typename
-        RegistrationFunctionType::DeformationFieldComponentNeighborhoodType
-                                DeformationFieldComponentNeighborhoodType;
-  typedef typename
-        RegistrationFunctionType::DeformationFieldComponentNeighborhoodArrayType
-                                DeformationFieldComponentNeighborhoodArrayType;
-
-  /** Set the border polydata for the fixed image.  Border normals are computed
-   *  based on this polydata, so it should be "well-behaved" under
-   *  vtkPolyDataNormals.  The border normal must be in the same space as the
-   *  fixed image.
+  /** Set/get the organ boundary polydata, which must be in the same space as
+   *  the fixed image.  Border normals are computed based on this polydata/
    */
-  typedef vtkPolyData                           BorderSurfaceType;
-  typedef vtkSmartPointer< BorderSurfaceType >  BorderSurfacePointer;
   virtual void SetBorderSurface( BorderSurfacePointer border );
   virtual const BorderSurfacePointer GetBorderSurface() const
     { return m_BorderSurface; }
 
-  /** Get the polydata of the border surface normals */
+  /** Get the polydata containing the border surface normals */
   virtual const BorderSurfacePointer GetBorderNormalsSurface() const
     { return m_BorderNormalsSurface; }
+
+  /** Set/get the lambda that controls the exponential decay used to calculate
+   *  the weight value w as a function of the distance to the closest border
+   *  point.  Must be negative. */
+  void SetLambda( WeightType l )
+    { if ( l < 0 ) { m_lambda = l; } }
+  const WeightType GetLambda() const
+    { return m_lambda; }
+
+  /** Set/get whether to compute the intensity distance term
+   *  Default: true
+   */
+  void SetComputeIntensityDistanceTerm( bool compute );
+  bool GetComputeIntensityDistanceTerm() const;
+
+  /** Set/get whether to compute the motion field regularization term
+   *  Default: true
+   */
+  void SetComputeRegularizationTerm( bool compute );
+  bool GetComputeRegularizationTerm() const;
+
+  /** Set/get whether to use the anisotropic diffusive regularization.  If
+   *  false, the weighting term w=0 and Gaussian regularization is used.
+   *  Default: true
+   */
+  void SetUseDiffusiveRegularization( bool diffuse )
+    { m_UseDiffusiveRegularization = diffuse; }
+  bool GetUseDiffusiveRegularization() const
+    { return m_UseDiffusiveRegularization; }
 
   /** Get the image of the normal vectors */
   virtual const NormalVectorImagePointer GetNormalVectorImage() const
     { return m_NormalVectorImage; }
-
-  /** Get the lambda controlling the exponential decay used to calculate the
-   *  weight value w from the distance to the closest border point.  Must be
-   *  negative. */
-  void SetLambda( WeightType l )
-    { m_lambda = l; }
-  const WeightType GetLambda() const
-    { return m_lambda; }
 
   /** Get the weighting image */
   virtual const WeightImagePointer GetWeightImage() const
@@ -214,97 +232,39 @@ public:
 
   /** Get the image of the tangential diffusion tensors */
   virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
-                                                                        const
+      const
     { return m_TangentialDiffusionTensorImage; }
 
   /** Get the image of the normal diffusion tensors */
   virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
-                                                                        const
+      const
     { return m_NormalDiffusionTensorImage; }
 
   /** Get the normal and tangential components of the deformation field */
-  virtual const OutputImagePointer GetOutputTangentialImage() const
-    { return m_OutputTangentialImage; }
-  virtual const OutputImagePointer GetOutputNormalImage() const
-    { return m_OutputNormalImage; }
-
-  /** Whether to compute the motion field regularization term (for testing)
-   *  Default: true
-   */
-  void SetComputeRegularizationTerm( bool compute );
-  bool GetComputeRegularizationTerm() const;
-
-  /** Whether to compute the intensity distance term (for testing)
-   *  Default: true
-   */
-  void SetComputeIntensityDistanceTerm( bool compute );
-  bool GetComputeIntensityDistanceTerm() const;
-
-  /** Whether to use diffusive regularization (if false, w=0 and uses typical
-   *  Gaussian smoothing.  Default: true
-   */
-  void SetUseDiffusiveRegularization( bool diffuse )
-    { m_UseDiffusiveRegularization = diffuse; }
-  bool GetUseDiffusiveRegularization() const
-    { return m_UseDiffusiveRegularization; }
+  virtual const OutputImagePointer GetTangentialDeformationFieldImage() const
+    { return m_TangentialDeformationField; }
+  virtual const OutputImagePointer GetNormalDeformationFieldImage() const
+    { return m_NormalDeformationField; }
 
 protected:
   ImageToImageDiffusiveDeformableRegistrationFilter();
   void PrintSelf(std::ostream& os, Indent indent) const;
 
+  /** Initialization occuring before the registration loop. */
+  virtual void Initialize();
+
+  /** Allocate the update buffer - reimplented here to also allocate other
+   *  images used in the registration computation. */
+  virtual void AllocateUpdateBuffer();
+
   /** Initialize the state of the filter and equation before each iteration. */
   virtual void InitializeIteration();
 
   /** This method populates an update buffer with changes for each pixel in the
-   * output using the ThreadedCalculateChange() method and a multithreading
-   * mechanism. Returns value is a time step to be used for the update. */
+   * output, using the ThreadedCalculateChange() method and a multithreading
+   * mechanism. Return value is a time step to be used for the update.
+   * \sa ThreadedCalculateChange */
   virtual TimeStepType CalculateChange();
-
-  /** Allocate the update buffer - reimplented here to also allocate other
-   *  internal images. */
-  virtual void AllocateUpdateBuffer();
-
-  /** All other initialization before the registration loop */
-  virtual void Initialize();
-
-  /** Helper function to allocate an image based on a template */
-  template< class UnallocatedImageType, class TemplateImageType >
-  void AllocateSpaceForImage( UnallocatedImageType& inputImage,
-                              const TemplateImageType& templateImage );
-
-  /** Compute the normal vector image and weighting factor w given the
-   *  surface border polydata.
-   */
-  virtual void ComputeNormalVectorAndWeightImages();
-
-  /** Computes the weighting factor w from the distance to the border.  The
-   *  weight should be 1 near the border and 0 away from the border, and
-   *  weights between the diffusive regularization and a more typical Gaussian
-   *  regularization.
-   */
-  virtual WeightType ComputeWeightFromDistance( WeightType distance );
-
-  /** Compute the diffusion tensor image */
-  virtual void ComputeDiffusionTensorImage();
-
-  /** Update deformation field component images */
-  virtual void UpdateDeformationFieldComponentImages();
-
-  /** This method applies changes from the m_UpdateBuffer to the output using
-   * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
-   * the time step to use for the update of each pixel. */
-  virtual void ApplyUpdate(TimeStepType dt);
-
-  /**  Does the actual work of updating the output from the UpdateContainer over
-   *  an output region supplied by the multithreading mechanism.
-   *  \sa ApplyUpdate
-   *  \sa ApplyUpdateThreaderCallback */
-  virtual
-  void ThreadedApplyUpdate(TimeStepType dt,
-                           const ThreadRegionType &regionToProcess,
-                           const ThreadDiffusionTensorImageRegionType
-                                                  &diffusionTensorImageRegion,
-                           int threadId);
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
@@ -318,6 +278,44 @@ protected:
           const ThreadDeformationFieldComponentImageRegionType
                                                       &componentRegionToProcess,
           int threadId);
+
+  /** This method applies changes from the update buffer to the output, using
+   * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
+   * the time step to use for the update of each pixel.
+   * \sa ThreadedApplyUpdate */
+  virtual void ApplyUpdate(TimeStepType dt);
+
+  /**  Does the actual work of updating the output from the UpdateContainer over
+   *  an output region supplied by the multithreading mechanism.
+   *  \sa ApplyUpdate
+   *  \sa ApplyUpdateThreaderCallback */
+  virtual
+  void ThreadedApplyUpdate(TimeStepType dt,
+                           const ThreadRegionType &regionToProcess,
+                           const ThreadDiffusionTensorImageRegionType
+                                                  &diffusionTensorImageRegion,
+                           int threadId);
+
+  /** Computes the normal vector image and weighting factors w given the
+   *  surface border polydata.
+   */
+  virtual void ComputeNormalVectorAndWeightImages();
+
+  /** Computes the weighting factor w from the distance to the border.  The
+   *  weight should be 1 near the border and 0 away from the border.
+   */
+  virtual WeightType ComputeWeightFromDistance( WeightType distance );
+
+  /** Updates the deformation vector component images */
+  virtual void UpdateDeformationVectorComponentImages();
+
+  /** Computes the diffusion tensor image */
+  virtual void ComputeDiffusionTensorImage();
+
+  /** Helper function to allocate an image based on a template */
+  template< class UnallocatedImageType, class TemplateImageType >
+  void AllocateSpaceForImage( UnallocatedImageType& inputImage,
+                              const TemplateImageType& templateImage );
 
 private:
   // Purposely not implemented
@@ -348,62 +346,44 @@ private:
   /** Whether or not to use the diffusive regularization. */
   bool                                  m_UseDiffusiveRegularization;
 
-  /** The border surface and derived image of normal vectors. */
+  /** The organ boundary surface, the surface of border normals, and the derived
+   *  normal vector and weight images */
   BorderSurfacePointer                  m_BorderSurface;
   BorderSurfacePointer                  m_BorderNormalsSurface;
+  BorderNormalsSurfaceFilterPointer     m_BorderNormalsSurfaceFilter;
   NormalVectorImagePointer              m_NormalVectorImage;
+  WeightImagePointer                    m_WeightImage;
 
-  /** The weighting image between the diffusive and gaussian regularizations */
-  WeightImagePointer                            m_WeightImage;
+  /** Computes the nearest point on the polydata to a given point */
+  PointLocatorPointer                           m_PointLocator;
 
   /** The lambda factor for computing the weight from distance.  Weight is
     * modeled as exponential decay: weight = e^(lambda * distance).
-    * (lamba must be negative!)
+    * (lamba must be negative)
     */
-  WeightType                                    m_lambda;
+  WeightType                            m_lambda;
 
-  /** The image of the tangential diffusion tensors
-   * Calculate div( P^TP gradient(motion field tangential component image) )
-   */
-  DiffusionTensorImagePointer           m_TangentialDiffusionTensorImage;
+  /** The tangential and normal components of the deformation field */
+  OutputImagePointer                    m_TangentialDeformationField;
+  OutputImagePointer                    m_NormalDeformationField;
 
-  /** The image of the normal diffusion tensors
-   * Calculate div( w(n^T gradient(motion field normal component image) ) n )
-   */
-  DiffusionTensorImagePointer           m_NormalDiffusionTensorImage;
-
-  /** Extracts the tangential and normal components of the deformation field */
-  OutputImagePointer                    m_OutputTangentialImage;
-  OutputImagePointer                    m_OutputNormalImage;
-
-  /** Extracts the border surface normals from the border surface */
-  typedef vtkPolyDataNormals                    PolyDataNormalsType;
-  typedef vtkSmartPointer< vtkPolyDataNormals > PolyDataNormalsPointer;
-  PolyDataNormalsPointer                        m_PolyDataNormals;
-
-  /** Computes the nearest point on the polydata to a given point */
-  typedef vtkPointLocator                       PointLocatorType;
-  typedef PointLocatorType *                    PointLocatorPointer;
-  PointLocatorPointer                           m_PointLocator;
+  /** The components of the tangential and normal deformation vectors */
+  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
+      m_DeformationVectorTangentialComponents;
+  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
+      m_DeformationVectorNormalComponents;
 
   /** Extracts the x,y,z components of the tangential and normal components of
    * the deformation field
    */
-  typedef itk::VectorIndexSelectionCastImageFilter< DeformationFieldType,
-                                        DeformationFieldComponentImageType >
-                                        SelectionCastImageFilterType;
-  typedef typename SelectionCastImageFilterType::Pointer
-                                        SelectionCastImageFilterPointer;
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
                                         m_TangentialComponentExtractor;
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
                                         m_NormalComponentExtractor;
 
-  itk::FixedArray< DeformationFieldComponentImagePointer, ImageDimension >
-                                        m_DeformationFieldTangentialComponents;
-
-  itk::FixedArray< DeformationFieldComponentImagePointer, ImageDimension >
-                                        m_DeformationFieldNormalComponents;
+  /** The images of the tangential and normal diffusion tensors */
+  DiffusionTensorImagePointer           m_TangentialDiffusionTensorImage;
+  DiffusionTensorImagePointer           m_NormalDiffusionTensorImage;
 
 };
 
