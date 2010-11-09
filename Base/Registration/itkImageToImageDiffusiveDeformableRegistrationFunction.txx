@@ -84,58 +84,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 }
 
 /**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::SetComputeRegularizationTerm( bool compute )
-{
-  m_ComputeRegularizationTerm = compute;
-}
-
-/**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-bool
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::GetComputeRegularizationTerm() const
-{
-  return m_ComputeRegularizationTerm;
-}
-
-/**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::SetComputeIntensityDistanceTerm( bool compute )
-{
-  m_ComputeIntensityDistanceTerm = compute;
-}
-
-/**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-bool
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::GetComputeIntensityDistanceTerm() const
-{
-  return m_ComputeIntensityDistanceTerm;
-}
-
-/**
  * Creates a pointer to the data structure used to manage global values
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >

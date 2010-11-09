@@ -144,39 +144,53 @@ public:
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
 
+  /** Set/Get the time step for an update */
+  void SetTimeStep(const TimeStepType &t)
+    {
+    m_TimeStep = t;
+    m_RegularizationFunction->SetTimeStep(t);
+    // Intensity distance function doesn't have a SetTimeStep(), but it's ok
+    // because we only use ComputeUpdate() for that function
+    }
+  const TimeStepType &GetTimeStep() const
+    { return m_TimeStep; }
+  /** Computes the time step for an update given a global data structure.  For
+   * this class of anisotropic diffusion filters, the time-step is supplied
+   * by the user and is fixed for all updates, so the global data structure
+   * is not used.
+   */
+  virtual TimeStepType ComputeGlobalTimeStep(void * itkNotUsed( GlobalData ))
+      const
+    { return m_TimeStep; }
 
+  /** Set/get whether to compute the motion field regularization term
+   *  Default: true
+   */
+  void SetComputeRegularizationTerm( bool compute )
+    { m_ComputeRegularizationTerm = compute; }
+  bool GetComputeRegularizationTerm() const
+    { return m_ComputeRegularizationTerm; }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /** Set/get whether to compute the intensity distance term
+   *  Default: true
+   */
+  void SetComputeIntensityDistanceTerm( bool compute )
+    { m_ComputeIntensityDistanceTerm = compute; }
+  bool GetComputeIntensityDistanceTerm() const
+    { return m_ComputeIntensityDistanceTerm; }
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 
-  /** Inherited from superclass - do not call this function!  Call ComputeUpdate
-   * (neighborhood, normalVectorImageNeighborhood, tangentialNeighborhoodTensor,
-   * tangentialNeighborhoodDeformationFieldComponents, normalNeighborhoodTensor,
-   * normalNeighborhoodDeformationFieldComponents, globalData, offset) instead
+  /** Inherited from superclass - do not call this function!  Call the other
+   *  ComputeUpdate instead
    */
   virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
                                   void *globalData,
                                   const FloatOffsetType &offset
                                                         = FloatOffsetType(0.0));
 
-  /** Compute the equation value. */
+  /** Compute the update value. */
   virtual PixelType ComputeUpdate(
                      const NeighborhoodType &neighborhood,
                      const NormalVectorImageNeighborhoodType
@@ -191,40 +205,6 @@ public:
                               &normalNeighborhoodDeformationFieldComponents,
                      void *globalData,
                      const FloatOffsetType& = FloatOffsetType(0.0));
-
-  /** This class uses a constant timestep of 1. */
-  virtual TimeStepType ComputeGlobalTimeStep(void * itkNotUsed( GlobalData ))
-      const
-    {
-    return m_TimeStep;
-    }
-
-  /** Set/Get the time step. For this class of anisotropic diffusion filters,
-      the time-step is supplied by the user and remains fixed for all
-      updates. */
-  void SetTimeStep(const TimeStepType &t)
-    {
-    m_TimeStep = t;
-    m_RegularizationFunction->SetTimeStep(t);
-    // Intensity distance function doesn't have a SetTimeStep(), but it's ok
-    // because we only use ComputeUpdate() from that function
-    }
-
-  /** This class uses a constant timestep of 1. */
-  const TimeStepType &GetTimeStep() const
-    {
-    return m_TimeStep;
-    }
-
-  /** Whether to compute the motion field regularization term (for testing)
-   *  Default: true */
-  void SetComputeRegularizationTerm( bool compute );
-  bool GetComputeRegularizationTerm() const;
-
-  /** Whether to compute the intensity distance term (for testing)
-   *  Default: true */
-  void SetComputeIntensityDistanceTerm( bool compute );
-  bool GetComputeIntensityDistanceTerm() const;
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
