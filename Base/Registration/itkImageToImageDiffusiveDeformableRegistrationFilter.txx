@@ -1265,15 +1265,10 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   total = str->Filter->SplitRequestedRegion(threadId, threadCount,
                                             splitRegion);
 
-  ThreadDiffusionTensorImageRegionType splitRegionDiffusionTensorImage;
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                             splitRegionDiffusionTensorImage);
-
   if (threadId < total)
     {
     str->Filter->ThreadedApplyUpdate(str->TimeStep,
                                      splitRegion,
-                                     splitRegionDiffusionTensorImage,
                                      threadId);
     }
 
@@ -1289,8 +1284,8 @@ void
 ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                    TDeformationField >
-::ThreadedApplyUpdate(TimeStepType dt, const ThreadRegionType &regionToProcess,
-                      const ThreadDiffusionTensorImageRegionType &,
+::ThreadedApplyUpdate(TimeStepType dt,
+                      const ThreadRegionType &regionToProcess,
                       int threadId)
 {
   ImageRegionIterator<UpdateBufferType> u(m_UpdateBuffer,    regionToProcess);

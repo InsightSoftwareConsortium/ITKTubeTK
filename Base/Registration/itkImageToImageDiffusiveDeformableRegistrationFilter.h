@@ -290,8 +290,6 @@ protected:
   virtual
   void ThreadedApplyUpdate(TimeStepType dt,
                            const ThreadRegionType &regionToProcess,
-                           const ThreadDiffusionTensorImageRegionType
-                                                  &diffusionTensorImageRegion,
                            int threadId);
 
   /** Computes the normal vector image and weighting factors w given the
