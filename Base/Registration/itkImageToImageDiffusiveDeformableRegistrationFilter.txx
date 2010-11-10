@@ -871,11 +871,26 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   return ITK_THREAD_RETURN_VALUE;
 }
 
-
-
-
-
-
+/**
+ * Does the actual work of calculating change over a region supplied by the
+ * multithreading mechanism
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename ImageToImageDiffusiveDeformableRegistrationFilter
+                                < TFixedImage, TMovingImage, TDeformationField >
+::TimeStepType
+ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
+                                                   TMovingImage,
+                                                   TDeformationField >
+::ThreadedCalculateChange(
+          const ThreadRegionType &regionToProcess,
+          int threadId)
+{
+  // This function should never be called!
+  itkExceptionMacro( << "ThreadedCalculateChange(regionToProcess, threadId) "
+                     << "should never be called.  Use the other "
+                     << "ThreadedCalculateChange function" );
+}
 
 /**
  * Does the actual work of calculating change over a region supplied by the

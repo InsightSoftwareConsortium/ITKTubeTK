@@ -264,6 +264,12 @@ protected:
    * \sa ThreadedCalculateChange */
   virtual TimeStepType CalculateChange();
 
+  /** Inherited from superclass - do not call this function!  Call the other
+   *  ThreadedCalculateChange instead */
+  TimeStepType ThreadedCalculateChange(
+      const ThreadRegionType & itkNotUsed( regionToProcess ),
+      int itkNotUsed( threadId ) );
+
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
    * \sa CalculateChange

@@ -185,10 +185,9 @@ public:
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead
    */
-  virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
-                                  void *globalData,
-                                  const FloatOffsetType &offset
-                                                        = FloatOffsetType(0.0));
+  PixelType ComputeUpdate(const NeighborhoodType & itkNotUsed( neighborhood ),
+                          void * itkNotUsed( globalData ),
+                          const FloatOffsetType & itkNotUsed( offset ) );
 
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
