@@ -909,7 +909,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
           const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
           const ThreadDeformationVectorComponentImageRegionType
                                           &deformationComponentRegionToProcess,
-          int)
+          int threadId)
 {
 
   typedef typename OutputImageType::RegionType        RegionType;

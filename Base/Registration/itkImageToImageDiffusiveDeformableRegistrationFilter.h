@@ -281,7 +281,7 @@ protected:
           const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
           const ThreadDeformationVectorComponentImageRegionType
                                                       &componentRegionToProcess,
-          int threadId);
+          int itkNotUsed (threadId) );
 
   /** This method applies changes from the update buffer to the output, using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
@@ -296,7 +296,7 @@ protected:
   virtual
   void ThreadedApplyUpdate(TimeStepType dt,
                            const ThreadRegionType &regionToProcess,
-                           int threadId);
+                           int itkNotUsed( threadId ) );
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata.
