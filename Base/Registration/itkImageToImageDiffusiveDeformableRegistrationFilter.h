@@ -198,7 +198,7 @@ public:
    *  point.  Must be negative. */
   void SetLambda( WeightType l )
     { if ( l < 0 ) { m_lambda = l; } }
-  const WeightType GetLambda() const
+  WeightType GetLambda() const
     { return m_lambda; }
 
   /** Set/get whether to compute the intensity distance term
