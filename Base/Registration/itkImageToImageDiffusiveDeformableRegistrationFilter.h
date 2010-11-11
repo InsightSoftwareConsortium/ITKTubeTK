@@ -267,8 +267,8 @@ protected:
   /** Inherited from superclass - do not call this function!  Call the other
    *  ThreadedCalculateChange instead */
   TimeStepType ThreadedCalculateChange(
-      const ThreadRegionType & itkNotUsed( regionToProcess ),
-      int itkNotUsed( threadId ) );
+      const ThreadRegionType & regionToProcess,
+      int threadId );
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
@@ -281,7 +281,7 @@ protected:
           const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
           const ThreadDeformationVectorComponentImageRegionType
                                                       &componentRegionToProcess,
-          int itkNotUsed (threadId) );
+          int threadId );
 
   /** This method applies changes from the update buffer to the output, using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
@@ -296,7 +296,7 @@ protected:
   virtual
   void ThreadedApplyUpdate(TimeStepType dt,
                            const ThreadRegionType &regionToProcess,
-                           int itkNotUsed( threadId ) );
+                           int threadId );
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata.

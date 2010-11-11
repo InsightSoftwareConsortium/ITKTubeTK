@@ -159,7 +159,7 @@ public:
    * by the user and is fixed for all updates, so the global data structure
    * is not used.
    */
-  virtual TimeStepType ComputeGlobalTimeStep(void * itkNotUsed( GlobalData ))
+  virtual TimeStepType ComputeGlobalTimeStep(void * itkNotUsed(GlobalData) )
       const
     { return m_TimeStep; }
 
@@ -185,9 +185,9 @@ public:
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead
    */
-  PixelType ComputeUpdate(const NeighborhoodType & itkNotUsed( neighborhood ),
-                          void * itkNotUsed( globalData ),
-                          const FloatOffsetType & itkNotUsed( offset ) );
+  PixelType ComputeUpdate(const NeighborhoodType & neighborhood,
+                          void * globalData,
+                          const FloatOffsetType & offset );
 
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(

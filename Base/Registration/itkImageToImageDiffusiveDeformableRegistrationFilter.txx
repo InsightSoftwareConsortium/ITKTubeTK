@@ -811,7 +811,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   // since ThreadedCalculateChange changes this buffer
   // through iterators which do not increment the
   // update buffer timestamp
-  //this->m_UpdateBuffer->Modified();
+  this->m_UpdateBuffer->Modified();
 
   return  dt;
 }
@@ -883,8 +883,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TMovingImage,
                                                    TDeformationField >
 ::ThreadedCalculateChange(
-          const ThreadRegionType &regionToProcess,
-          int threadId)
+          const ThreadRegionType &,
+          int)
 {
   // This function should never be called!
   itkExceptionMacro( << "ThreadedCalculateChange(regionToProcess, threadId) "
@@ -909,7 +909,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
           const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
           const ThreadDeformationVectorComponentImageRegionType
                                           &deformationComponentRegionToProcess,
-          int threadId)
+          int)
 {
 
   typedef typename OutputImageType::RegionType        RegionType;
@@ -1013,8 +1013,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   itk::FixedArray< DeformationFieldFaceListIterator, ImageDimension >
                               deformationFieldNormalComponentFaceListIterator;
 
-
-
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     deformationFieldTangentialComponentFaceList[i]
@@ -1062,10 +1060,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 
   typename DiffusionTensorFaceListType::iterator normalDfIt
                                     = diffusionTensorNormalFaceList.begin();
-
-
-
-
 
   // Ask the function object for a pointer to a data structure it
   // will use to manage any global values it needs.  We'll pass this
@@ -1301,7 +1295,7 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
                                                    TDeformationField >
 ::ThreadedApplyUpdate(TimeStepType dt,
                       const ThreadRegionType &regionToProcess,
-                      int threadId)
+                      int)
 {
   ImageRegionIterator<UpdateBufferType> u(m_UpdateBuffer,    regionToProcess);
   ImageRegionIterator<OutputImageType>  o(this->GetOutput(), regionToProcess);

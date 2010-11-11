@@ -164,9 +164,9 @@ typename ImageToImageDiffusiveDeformableRegistrationFunction
 ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                                                      TMovingImage,
                                                      TDeformationField >
-::ComputeUpdate(const NeighborhoodType &neighborhood,
-                void *gd,
-                const FloatOffsetType& offset)
+::ComputeUpdate(const NeighborhoodType &,
+                void *,
+                const FloatOffsetType &)
 {
   // This function should never be called!
   itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
@@ -201,8 +201,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                               &normalNeighborhoodTensor,
                 const DeformationVectorComponentNeighborhoodArrayType
                               &normalNeighborhoodDeformationFieldComponents,
-                void *gd,
-                const FloatOffsetType& offset)
+                void * gd,
+                const FloatOffsetType & offset)
 {  
   // Get the global data structure
   GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
