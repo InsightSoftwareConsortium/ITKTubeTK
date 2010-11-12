@@ -125,25 +125,27 @@ public:
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
 
-  /** Boundary condition and neighborhood typedefs used by multithreading */
-  typedef typename RegularizationFunctionType::DefaultBoundaryConditionType
-      DefaultBoundaryConditionType;
+  /** Boundary condition typedefs (defined in RegularizationFunction for
+    * diffusion tensors) */
   typedef ZeroFluxNeumannBoundaryCondition< DeformationVectorComponentImageType >
-      DeformationVectorComponentBoundaryConditionType;
-  typedef ConstNeighborhoodIterator
-      < DeformationVectorComponentImageType,
-      DeformationVectorComponentBoundaryConditionType>
-      DeformationVectorComponentNeighborhoodType;
-  typedef itk::FixedArray
-      < DeformationVectorComponentNeighborhoodType, ImageDimension >
-       DeformationVectorComponentNeighborhoodArrayType;
+      DeformationVectorComponentImageBoundaryConditionType;
   typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
       NormalVectorImageBoundaryConditionType;
-  typedef ConstNeighborhoodIterator< NormalVectorImageType,
-      NormalVectorImageBoundaryConditionType >
-      NormalVectorImageNeighborhoodType;
+
+  /** Neighborhood iterator typedefs */
+  typedef ConstNeighborhoodIterator
+      < DeformationVectorComponentImageType,
+      DeformationVectorComponentImageBoundaryConditionType >
+      DeformationVectorComponentNeighborhoodIteratorType;
+  typedef itk::FixedArray
+      < DeformationVectorComponentNeighborhoodIteratorType, ImageDimension >
+       DeformationVectorComponentNeighborhoodIteratorArrayType;
+  typedef ConstNeighborhoodIterator
+      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
+      NormalVectorImageNeighborhoodIteratorType;
+
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
-      DiffusionTensorNeighborhoodType;
+      DiffusionTensorNeighborhoodIteratorType;
 
   /** Set/Get the time step for an update */
   void SetTimeStep(const TimeStepType &t)
@@ -193,15 +195,15 @@ public:
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
                      const NeighborhoodType &neighborhood,
-                     const NormalVectorImageNeighborhoodType
+                     const NormalVectorImageNeighborhoodIteratorType
                               &normalVectorImageNeighborhood,
-                     const DiffusionTensorNeighborhoodType
+                     const DiffusionTensorNeighborhoodIteratorType
                               &tangentialNeighborhoodTensor,
-                     const DeformationVectorComponentNeighborhoodArrayType
+                     const DeformationVectorComponentNeighborhoodIteratorArrayType
                               &tangentialNeighborhoodDeformationFieldComponents,
-                     const DiffusionTensorNeighborhoodType
+                     const DiffusionTensorNeighborhoodIteratorType
                               &normalNeighborhoodTensor,
-                     const DeformationVectorComponentNeighborhoodArrayType
+                     const DeformationVectorComponentNeighborhoodIteratorArrayType
                               &normalNeighborhoodDeformationFieldComponents,
                      void *globalData,
                      const FloatOffsetType& = FloatOffsetType(0.0));

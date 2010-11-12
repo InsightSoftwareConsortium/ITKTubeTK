@@ -171,7 +171,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
                      << "normalNeighborhoodTensor,"
                      << "normalNeighborhoodDeformationFieldComponents,"
                      << " globalData, offset) instead" );
-
 }
 
 /**
@@ -184,15 +183,15 @@ typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
 ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(const NeighborhoodType &neighborhood,
-                const NormalVectorImageNeighborhoodType
+                const NormalVectorImageNeighborhoodIteratorType
                               &normalVectorImageNeighborhood,
-                const DiffusionTensorNeighborhoodType
+                const DiffusionTensorNeighborhoodIteratorType
                               &tangentialNeighborhoodTensor,
-                const DeformationVectorComponentNeighborhoodArrayType
+                const DeformationVectorComponentNeighborhoodIteratorArrayType
                               &tangentialNeighborhoodDeformationFieldComponents,
-                const DiffusionTensorNeighborhoodType
+                const DiffusionTensorNeighborhoodIteratorType
                               &normalNeighborhoodTensor,
-                const DeformationVectorComponentNeighborhoodArrayType
+                const DeformationVectorComponentNeighborhoodIteratorArrayType
                               &normalNeighborhoodDeformationFieldComponents,
                 void * gd,
                 const FloatOffsetType & offset)
@@ -259,9 +258,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
 
     }
 
-
-
-
 //  // TODO take me out
 //  static double ratio = 0.0;
 //  static int numSamples = 0;
@@ -293,11 +289,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
 //    std::cout << "intensity: " << intensityDistanceTerm[0] << " "
 //        << intensityDistanceTerm[1] << " " << intensityDistanceTerm[2] << std::endl;
 //    }
-
-
-
-
-
 
   updateTerm = intensityDistanceTerm
                       + tangentialRegularizationTerm + normalRegularizationTerm;
