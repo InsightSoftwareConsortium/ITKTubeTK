@@ -1013,11 +1013,11 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   itk::FixedArray< DeformationVectorComponentImageFaceListType, ImageDimension >
       deformationVectorTangentialComponentImageFaceListArray;
   itk::FixedArray< DeformationVectorComponentImageFaceListIterator, ImageDimension >
-      deformationVectorTangentialComponentImagefIt;
+      deformationVectorTangentialComponentImagefItArray;
   itk::FixedArray< DeformationVectorComponentImageFaceListType, ImageDimension >
       deformationVectorNormalComponentImageFaceListArray;
   itk::FixedArray< DeformationVectorComponentImageFaceListIterator, ImageDimension >
-      deformationVectorNormalComponentImagefIt;
+      deformationVectorNormalComponentImagefItArray;
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     deformationVectorTangentialComponentImageFaceListArray[i]
@@ -1025,7 +1025,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
             m_DeformationVectorTangentialComponents[i],
             deformationComponentRegionToProcess,
             radius );
-    deformationVectorTangentialComponentImagefIt
+    deformationVectorTangentialComponentImagefItArray // HERE
         = deformationVectorTangentialComponentImageFaceListArray[i].begin();
 
     deformationVectorNormalComponentImageFaceListArray[i]
@@ -1033,7 +1033,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
             m_DeformationVectorNormalComponents[i],
             deformationComponentRegionToProcess,
             radius );
-    deformationVectorNormalComponentImagefIt
+    deformationVectorNormalComponentImagefItArray // HERE
         = deformationVectorNormalComponentImageFaceListArray[i].begin();
     }
 
@@ -1061,76 +1061,90 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       DeformationVectorComponentNeighborhoodIteratorArrayType
       DeformationVectorComponentNeighborhoodIteratorArrayType;
 
+  // Process the boundary and non-boundary regions
+  NeighborhoodIteratorType                    outputImageNeighborhoodIt;
+  UpdateIteratorType                          updateIt;
+  NormalVectorImageNeighborhoodIteratorType   normalVectorImageNeighborhoodIt;
+  DiffusionTensorNeighborhoodIteratorType
+      tangentialDiffusionTensorImageNeighborhoodIt;
+  DiffusionTensorNeighborhoodIteratorType
+      normalDiffusionTensorImageNeighborhoodIt;
+  DeformationVectorComponentNeighborhoodIteratorArrayType
+      deformationVectorTangentialComponentNeighborhoodItArray;
+  DeformationVectorComponentNeighborhoodIteratorArrayType
+      deformationVectorNormalComponentNeighborhoodItArray;
 
-  // Process each of the boundary and non-boundary faces
-
-  NeighborhoodIteratorType bD;
-  UpdateIteratorType   bU;
-  NormalVectorImageNeighborhoodIteratorType bNormalVectorN;
-  DiffusionTensorNeighborhoodIteratorType bTangentialDTN;
-  DiffusionTensorNeighborhoodIteratorType bNormalDTN;
-  DeformationVectorComponentNeighborhoodIteratorArrayType bTangentialDFC;
-  DeformationVectorComponentNeighborhoodIteratorArrayType bNormalDFC;
-
-    for ( ; outputImagefIt != outputImageFaceList.end(); ++outputImagefIt )
+  for ( ; outputImagefIt != outputImageFaceList.end(); ++outputImagefIt )
     {
-    bD = NeighborhoodIteratorType( radius, output, *outputImagefIt );
-    bU = UpdateIteratorType( m_UpdateBuffer, *outputImagefIt );
-    bNormalVectorN = NormalVectorImageNeighborhoodIteratorType( radius, m_NormalVectorImage,
-                                                        *normalVectorImagefIt );
-    bTangentialDTN = DiffusionTensorNeighborhoodIteratorType( radius,
-                                                     m_TangentialDiffusionTensorImage,
-                                                     *tangentialDiffusionTensorfIt );
-    bNormalDTN = DiffusionTensorNeighborhoodIteratorType( radius,
-                                                  m_NormalDiffusionTensorImage,
-                                                  *normalDiffusionTensorfIt);
+    // Set the neighborhood iterators to the current face
+    outputImageNeighborhoodIt = NeighborhoodIteratorType(
+        radius, output, *outputImagefIt );
+    updateIt = UpdateIteratorType( m_UpdateBuffer, *outputImagefIt );
+    normalVectorImageNeighborhoodIt = NormalVectorImageNeighborhoodIteratorType(
+        radius, m_NormalVectorImage, *normalVectorImagefIt );
+    tangentialDiffusionTensorImageNeighborhoodIt
+        = DiffusionTensorNeighborhoodIteratorType(
+            radius, m_TangentialDiffusionTensorImage,
+            *tangentialDiffusionTensorfIt );
+    normalDiffusionTensorImageNeighborhoodIt
+        = DiffusionTensorNeighborhoodIteratorType(
+            radius, m_NormalDiffusionTensorImage,
+            *normalDiffusionTensorfIt );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      bTangentialDFC[i] = DeformationVectorComponentNeighborhoodIteratorType(
-          radius, m_DeformationVectorTangentialComponents[i],
-          *deformationVectorTangentialComponentImagefIt[i] );
-      bNormalDFC[i] = DeformationVectorComponentNeighborhoodIteratorType(
-          radius, m_DeformationVectorNormalComponents[i],
-          *deformationVectorNormalComponentImagefIt[i] );
+      deformationVectorTangentialComponentNeighborhoodItArray[i]
+          = DeformationVectorComponentNeighborhoodIteratorType(
+              radius, m_DeformationVectorTangentialComponents[i],
+              *deformationVectorTangentialComponentImagefItArray[i] );
+      deformationVectorNormalComponentNeighborhoodItArray[i]
+          = DeformationVectorComponentNeighborhoodIteratorType(
+              radius, m_DeformationVectorNormalComponents[i],
+              *deformationVectorNormalComponentImagefItArray[i] );
       }
 
-    bD.GoToBegin();
-    bU.GoToBegin();
-    bNormalVectorN.GoToBegin();
-    bTangentialDTN.GoToBegin();
-    bNormalDTN.GoToBegin();
+    // Go to the beginning of the neighborhood for this face
+    outputImageNeighborhoodIt.GoToBegin();
+    updateIt.GoToBegin();
+    normalVectorImageNeighborhoodIt.GoToBegin();
+    tangentialDiffusionTensorImageNeighborhoodIt.GoToBegin();
+    normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      bTangentialDFC[i].GoToBegin();
-      bNormalDFC[i].GoToBegin();
+      deformationVectorTangentialComponentNeighborhoodItArray[i].GoToBegin();
+      deformationVectorNormalComponentNeighborhoodItArray[i].GoToBegin();
       }
-    while ( !bD.IsAtEnd() )
+
+    // Iterate through the neighborhood for this face and compute updates
+    while ( !outputImageNeighborhoodIt.IsAtEnd() )
       {
-      bU.Value() = df->ComputeUpdate(bD,            // output (deformation field)
-                                     bNormalVectorN, // m_NormalVectorImage
-                                     bTangentialDTN, // m_TangentialDiffusionTensorImage
-                                     bTangentialDFC, // m_DeformationVectorTangentialComponents
-                                     bNormalDTN,     // m_NormalDiffusionTensorImage
-                                     bNormalDFC,     // m_DeformationVectorTangentialComponents
-                                     globalData);   // global data
-      ++bD;
-      ++bU;
-      ++bNormalVectorN;
-      ++bTangentialDTN;
-      ++bNormalDTN;
+      updateIt.Value() = df->ComputeUpdate(
+          outputImageNeighborhoodIt,
+          normalVectorImageNeighborhoodIt,
+          tangentialDiffusionTensorImageNeighborhoodIt,
+          deformationVectorTangentialComponentNeighborhoodItArray,
+          normalDiffusionTensorImageNeighborhoodIt,
+          deformationVectorNormalComponentNeighborhoodItArray,
+          globalData);
+      ++outputImageNeighborhoodIt;
+      ++updateIt;
+      ++normalVectorImageNeighborhoodIt;
+      ++tangentialDiffusionTensorImageNeighborhoodIt;
+      ++normalDiffusionTensorImageNeighborhoodIt;
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        ++bTangentialDFC[i];
-        ++bNormalDFC[i];
+        ++deformationVectorTangentialComponentNeighborhoodItArray[i];
+        ++deformationVectorNormalComponentNeighborhoodItArray[i];
         }
       }
+
+    // Go to the next face
     ++normalVectorImagefIt;
     ++tangentialDiffusionTensorfIt;
     ++normalDiffusionTensorfIt;
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      ++bTangentialDFC[i];
-      ++bNormalDFC[i];
+      ++deformationVectorTangentialComponentNeighborhoodItArray[i]; // HERE
+      ++deformationVectorNormalComponentNeighborhoodItArray[i]; // HERE
       }
     }
 
