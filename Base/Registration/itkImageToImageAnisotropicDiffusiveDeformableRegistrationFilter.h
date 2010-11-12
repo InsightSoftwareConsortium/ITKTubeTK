@@ -223,11 +223,19 @@ public:
   bool GetUseDiffusiveRegularization() const
     { return m_UseDiffusiveRegularization; }
 
-  /** Get the image of the normal vectors */
+  /** Get/get the image of the normal vectors.  Setting the normal vector image
+    * overrides the border surface polydata if a border surface was also
+    * supplied. */
+  virtual void SetNormalVectorImage( NormalVectorImagePointer normalImage )
+    { m_NormalVectorImage = normalImage; }
   virtual const NormalVectorImagePointer GetNormalVectorImage() const
     { return m_NormalVectorImage; }
 
-  /** Get the weighting image */
+  /** Set/get the weighting image.  Setting the weighting image overrides
+    * the border surface polydata if a border surface was also supplied.
+    */
+  virtual void SetWeightImage( WeightImagePointer weightImage )
+    { m_WeightImage = weightImage; }
   virtual const WeightImagePointer GetWeightImage() const
     { return m_WeightImage; }
 
@@ -302,7 +310,8 @@ protected:
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata.
    */
-  virtual void ComputeNormalVectorAndWeightImages();
+  virtual void ComputeNormalVectorAndWeightImages(
+      bool computeNormalVectorImage, bool computeWeightImage);
 
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border.
@@ -319,6 +328,12 @@ protected:
   template< class UnallocatedImageType, class TemplateImageType >
   void AllocateSpaceForImage( UnallocatedImageType& inputImage,
                               const TemplateImageType& templateImage );
+
+  /** Helper function to check whether the attributes of an image match a
+    * template */
+  template< class CheckedImageType, class TemplateImageType >
+  bool CompareImageAttributes( const CheckedImageType& inputImage,
+                               const TemplateImageType& templateImage);
 
 private:
   // Purposely not implemented

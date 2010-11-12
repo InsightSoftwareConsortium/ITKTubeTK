@@ -213,12 +213,10 @@ if( TubeTK_USE_VTK )
             itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution
           ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
           ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
           ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
           ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_transformedMovingImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_weightImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_normalVectorImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_normalSurfaceBorder.vtk
           5 0.125 0 1
           )
 
@@ -229,12 +227,10 @@ if( TubeTK_USE_VTK )
             itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution
           ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
           ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
           ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
           ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_transformedMovingImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_weightImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_normalVectorImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_normalSurfaceBorder.vtk
           5 0.125 1 1
           )
 
@@ -245,12 +241,10 @@ if( TubeTK_USE_VTK )
             itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution
           ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
           ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
           ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
           ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_transformedMovingImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_weightImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_normalVectorImage.mhd
-          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_normalSurfaceBorder.vtk
           5 0.125 1 0
           )
 

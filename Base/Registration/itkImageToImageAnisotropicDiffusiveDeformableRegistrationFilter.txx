@@ -48,9 +48,9 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   m_UseDiffusiveRegularization      = true;
   m_BorderSurface                   = 0;
   m_BorderNormalsSurface            = 0;
-  m_NormalVectorImage               = NormalVectorImageType::New();
-  m_WeightImage                     = WeightImageType::New();
-  m_NormalDeformationField               = OutputImageType::New();
+  m_NormalVectorImage               = 0;
+  m_WeightImage                     = 0;
+  m_NormalDeformationField          = OutputImageType::New();
   m_TangentialDiffusionTensorImage  = DiffusionTensorImageType::New();
   m_NormalDiffusionTensorImage      = DiffusionTensorImageType::New();
 
@@ -255,8 +255,27 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   inputImage->SetRequestedRegion( templateImage->GetRequestedRegion() );
   inputImage->SetBufferedRegion( templateImage->GetBufferedRegion() );
   inputImage->Allocate();
-
 }
+
+/**
+ * Helper function to check whether the attributes of an image matches a template
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template < class CheckedImageType, class TemplateImageType >
+bool
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CompareImageAttributes( const CheckedImageType& inputImage,
+                          const TemplateImageType& templateImage )
+{
+  return inputImage->GetSpacing() == templateImage->GetSpacing()
+      && inputImage->GetOrigin() == templateImage->GetOrigin()
+      && inputImage->GetLargestPossibleRegion()
+          == templateImage->GetLargestPossibleRegion()
+      && inputImage->GetRequestedRegion() == templateImage->GetRequestedRegion()
+      && inputImage->GetBufferedRegion() == templateImage->GetBufferedRegion();
+}
+
 
 /**
  * Allocate space for the update buffer, and the diffusion tensor image
@@ -336,12 +355,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   // holds the diffusion tensor matrix at each pixel
   DeformationFieldPointer deformationField = this->GetDeformationField();
 
-  // Allocate the image of normals and weight image
-  this->AllocateSpaceForImage( m_NormalVectorImage,
-                               output );
-  this->AllocateSpaceForImage( m_WeightImage,
-                               output );
-
   // Allocate the output image's normal images
   this->AllocateSpaceForImage( m_NormalDeformationField,
                                output );
@@ -352,26 +365,65 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
                                output );
 
-  // Compute the border normals, weighting factors and diffusion tensors
-  if( !this->GetBorderSurface() )
+
+  // Check the normal vector image and the weight image if one was supplied
+  // by the user
+  if( m_NormalVectorImage
+        && !this->CompareImageAttributes( m_NormalVectorImage, output ) )
     {
-    itkExceptionMacro( << "Cannot perform registration without a border surface"
+    itkExceptionMacro( << "Normal vector image does not have the same "
+                       << "attributes as the output deformation field"
                        << std::endl );
     }
-
-  // Update the border normals
-  m_BorderNormalsSurfaceFilter->Update();
-
-  // Make sure we now have the normals
-  if ( !this->GetBorderNormalsSurface() )
+  if( m_WeightImage
+        && !this->CompareImageAttributes( m_WeightImage, output ) )
     {
-    itkExceptionMacro( << "Error computing border normals" << std::endl );
+    itkExceptionMacro( << "Weight image does not have the same attributes as "
+                       << "the output deformation field" << std::endl );
     }
 
-  // Compute the border normals and the weighting factor w
-  // Normals are dependent on the border geometry in the fixed image so this
-  // has to be completed only once.
-  this->ComputeNormalVectorAndWeightImages();
+  // Compute the border normals and/or weighting factors if not supplied by the
+  // user
+  if( !m_NormalVectorImage || !m_WeightImage )
+    {
+    if ( !this->GetBorderSurface() )
+      {
+      itkExceptionMacro( << "Cannot perform registration without a border "
+                         << "surface or a normal vector image and a weight "
+                         << "image" << std::endl );
+      }
+
+    // Update the border normals
+    m_BorderNormalsSurfaceFilter->Update();
+
+    // Make sure we now have the normals
+    if ( !this->GetBorderNormalsSurface() )
+      {
+      itkExceptionMacro( << "Error computing border normals" << std::endl );
+      }
+
+    // Allocate the image of normals and weight image
+    bool computeNormalVectorImage = false;
+    bool computeWeightImage = false;
+    if( !m_NormalVectorImage )
+      {
+      m_NormalVectorImage = NormalVectorImageType::New();
+      this->AllocateSpaceForImage( m_NormalVectorImage, output );
+      computeNormalVectorImage = true;
+      }
+    if( !m_WeightImage )
+      {
+      m_WeightImage = WeightImageType::New();
+      this->AllocateSpaceForImage( m_WeightImage, output );
+      computeWeightImage = true;
+      }
+
+    // Compute the border normals and the weighting factor w
+    // Normals are dependent on the border geometry in the fixed image so this
+    // has to be completed only once.
+    this->ComputeNormalVectorAndWeightImages( computeNormalVectorImage,
+                                              computeWeightImage );
+    }
 
   // Compute the diffusion tensor image
   // The diffusion tensors are dependent on the normals computed in the
@@ -392,11 +444,11 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   std::cout << "\tInitializeIteration for FILTER" << std::endl;
 
   if ( !this->GetFixedImage() || !this->GetMovingImage()
-        || !this->GetDeformationField() || !this->GetBorderSurface()
-        || !this->GetBorderNormalsSurface() )
+    || !this->GetDeformationField() || !this->GetNormalVectorImage()
+    || !this->GetWeightImage() )
     {
-    itkExceptionMacro( << "FixedImage, MovingImage, DeformationField, border "
-                       << "surface and/or border normals surface not set");
+    itkExceptionMacro( << "FixedImage, MovingImage, DeformationField, "
+                       << "NormalVectorImage and/or WeightImage not set");
     }
 
   // Update the deformation field component images
@@ -422,31 +474,32 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeNormalVectorAndWeightImages()
+::ComputeNormalVectorAndWeightImages(
+    bool computeNormalVectorImage, bool computeWeightImage )
 {
   assert( m_BorderNormalsSurface );
 
   // Get the normals
   vtkSmartPointer< vtkDataArray > normalData
-                      = m_BorderNormalsSurface->GetPointData()->GetNormals();
+      = m_BorderNormalsSurface->GetPointData()->GetNormals();
 
   // Iterate over the normal vector image and insert the normal of the closest
   // point
   NormalVectorImageIteratorType normalVectorIt(
-                              m_NormalVectorImage,
-                              m_NormalVectorImage->GetLargestPossibleRegion() );
+      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+
   // Iterate over the weight image and compute weight as a function of the
   // distance to the border
-  WeightImageIteratorType weightIt( m_WeightImage,
-                               m_WeightImage->GetLargestPossibleRegion() );
+  WeightImageIteratorType weightIt(
+      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
 
   m_PointLocator->SetDataSet( m_BorderNormalsSurface );
 
   itk::Index< ImageDimension > imageIndex;
   typename NormalVectorImageType::SpacingType spacing
-                                            = m_NormalVectorImage->GetSpacing();
+      = m_NormalVectorImage->GetSpacing();
   typename NormalVectorImageType::PointType origin
-                                            = m_NormalVectorImage->GetOrigin();
+      = m_NormalVectorImage->GetOrigin();
   itk::Point< double, ImageDimension > imageCoordAsPoint;
   imageCoordAsPoint.Fill( 0 );
   double imageCoord[3] = {0, 0, 0};
@@ -464,24 +517,19 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
        ++normalVectorIt, ++weightIt )
     {
     imageIndex = normalVectorIt.GetIndex();
-
-    m_NormalVectorImage->TransformIndexToPhysicalPoint( imageIndex,
-                                                        imageCoordAsPoint );
-
+    m_NormalVectorImage->TransformIndexToPhysicalPoint(
+        imageIndex, imageCoordAsPoint );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       imageCoord[i] = imageCoordAsPoint[i];
       }
-
     id = m_PointLocator->FindClosestPoint( imageCoord );
-
     normal = normalData->GetTuple( id );
-//    for( int i = 0; i < ImageDimension; i++ )
-//      {
-//      normal[i] = fabs( normal[i] );
-//      }
 
-    normalVectorIt.Set( normal );
+    if( computeNormalVectorImage )
+      {
+      normalVectorIt.Set( normal );
+      }
 
     // Calculate distance between the current coord and the border surface coord
     m_BorderNormalsSurface->GetPoint( id, borderCoord );
@@ -493,43 +541,51 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     distance = sqrt( distance );
 
     // For now, put the distance in the weight image
-    weightIt.Set( distance );
+    if( computeWeightImage )
+      {
+      weightIt.Set( distance );
+      }
     }
 
-//  // Smooth the normals to handle corners (because we are choosing the closest
-//  // point in the polydata
-//  typedef itk::RecursiveGaussianImageFilter< NormalVectorImageType,
-//                                                      NormalVectorImageType >
-//                                                      NormalSmoothingFilterType;
-//  typename NormalSmoothingFilterType::Pointer normalSmooth
-//                                            = NormalSmoothingFilterType::New();
-//  normalSmooth->SetInput( m_NormalVectorImage );
-//  double normalSigma = 3.0;
-//  normalSmooth->SetSigma( normalSigma );
-//  normalSmooth->Update();
-//  m_NormalVectorImage = normalSmooth->GetOutput();
-
-  // Smooth the distance image to avoid "streaks" from faces of the polydata
-  // (because we are choosing the closest point in the polydata)
-  typedef itk::SmoothingRecursiveGaussianImageFilter< WeightImageType,
-                                                      WeightImageType >
-                                                      WeightSmoothingFilterType;
-  typename WeightSmoothingFilterType::Pointer weightSmooth
-                                            = WeightSmoothingFilterType::New();
-  double weightSigma = 1.0;
-  weightSmooth->SetInput( m_WeightImage );
-  weightSmooth->SetSigma( weightSigma );
-  weightSmooth->Update();
-  m_WeightImage = weightSmooth->GetOutput();
-
-  WeightImageIteratorType weightIt2( m_WeightImage,
-                                m_WeightImage->GetLargestPossibleRegion() );
-
-  // Iterate through the weight image and compute the weight from the distance
-  for( weightIt2.GoToBegin(); !weightIt2.IsAtEnd(); ++weightIt2 )
+  if( computeNormalVectorImage )
     {
-    weight = this->ComputeWeightFromDistance( weightIt2.Get() );
-    weightIt2.Set( weight );
+    //  // Smooth the normals to handle corners (because we are choosing the closest
+    //  // point in the polydata
+    //  typedef itk::RecursiveGaussianImageFilter< NormalVectorImageType,
+    //                                                      NormalVectorImageType >
+    //                                                      NormalSmoothingFilterType;
+    //  typename NormalSmoothingFilterType::Pointer normalSmooth
+    //                                            = NormalSmoothingFilterType::New();
+    //  normalSmooth->SetInput( m_NormalVectorImage );
+    //  double normalSigma = 3.0;
+    //  normalSmooth->SetSigma( normalSigma );
+    //  normalSmooth->Update();
+    //  m_NormalVectorImage = normalSmooth->GetOutput();
+    }
+
+  if( computeWeightImage )
+    {
+    // Smooth the distance image to avoid "streaks" from faces of the polydata
+    // (because we are choosing the closest point in the polydata)
+    typedef itk::SmoothingRecursiveGaussianImageFilter
+        < WeightImageType, WeightImageType > WeightSmoothingFilterType;
+    typename WeightSmoothingFilterType::Pointer weightSmooth
+        = WeightSmoothingFilterType::New();
+    double weightSigma = 1.0;
+    weightSmooth->SetInput( m_WeightImage );
+    weightSmooth->SetSigma( weightSigma );
+    weightSmooth->Update();
+    m_WeightImage = weightSmooth->GetOutput();
+
+    WeightImageIteratorType weightIt2(
+        m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
+
+    // Iterate through the weight image and compute the weight from the distance
+    for( weightIt2.GoToBegin(); !weightIt2.IsAtEnd(); ++weightIt2 )
+      {
+      weight = this->ComputeWeightFromDistance( weightIt2.Get() );
+      weightIt2.Set( weight );
+      }
     }
 
   std::cout << "Finished computing normals and weights." << std::endl;
@@ -680,7 +736,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
                           m_NormalDeformationField->GetLargestPossibleRegion() );
 
   // Calculate the tangential and normal components of the deformation field
-  NormalVectorType            n;
+  NormalVectorType       n;
   DeformationVectorType  u;
   DeformationVectorType  normalU;
   DeformationVectorType  tangentialU;
@@ -698,7 +754,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     outputNormalImageIterator.Set( normalU );
 
     // tangential component = u - normal component
-    // tangentialU = u - normalU;
+    tangentialU = u - normalU;
 
     // We know normalU + tangentialU = u
     // Assertion to test that the normal and tangential components were computed
