@@ -1188,7 +1188,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       }
     while ( !bD.IsAtEnd() )
       {
-      nU.Value() = df->ComputeUpdate(bD,            // output (deformation field)
+      bU.Value() = df->ComputeUpdate(bD,            // output (deformation field)
                                      bNormalVectorN, // m_NormalVectorImage
                                      bTangentialDTN, // m_TangentialDiffusionTensorImage
                                      bTangentialDFC, // m_DeformationVectorTangentialComponents
