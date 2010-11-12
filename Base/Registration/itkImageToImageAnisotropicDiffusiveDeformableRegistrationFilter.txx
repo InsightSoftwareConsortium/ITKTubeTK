@@ -1061,82 +1061,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       DeformationVectorComponentNeighborhoodIteratorArrayType
       DeformationVectorComponentNeighborhoodIteratorArrayType;
 
-  // Process the non-boundary region
-  NeighborhoodIteratorType  nbNeighborhoodIterator(radius,
-                                                   output,
-                                                   *outputImagefIt);
-  UpdateIteratorType        nU(m_UpdateBuffer,
-                                             *outputImagefIt);
 
-  NormalVectorImageNeighborhoodIteratorType normalVectorN(radius,
-                                                  m_NormalVectorImage,
-                                                  *normalVectorImagefIt);
-
-  DiffusionTensorNeighborhoodIteratorType tangentialDTN(radius,
-                                                m_TangentialDiffusionTensorImage,
-                                                *tangentialDiffusionTensorfIt);
-  DeformationVectorComponentNeighborhoodIteratorArrayType tangentialDFC;
-
-  DiffusionTensorNeighborhoodIteratorType normalDTN(radius,
-                                            m_NormalDiffusionTensorImage,
-                                            *normalDiffusionTensorfIt);
-  DeformationVectorComponentNeighborhoodIteratorArrayType normalDFC;
-
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    tangentialDFC[i] = DeformationVectorComponentNeighborhoodIteratorType(
-                      radius,
-                      m_DeformationVectorTangentialComponents[i],
-                      *deformationVectorTangentialComponentImagefIt[i]);
-
-    normalDFC[i] = DeformationVectorComponentNeighborhoodIteratorType(
-                      radius,
-                      m_DeformationVectorNormalComponents[i],
-                      *deformationVectorNormalComponentImagefIt[i]);
-    }
-
-  nbNeighborhoodIterator.GoToBegin();
-  nU.GoToBegin();
-  normalVectorN.GoToBegin();
-  tangentialDTN.GoToBegin();
-  normalDTN.GoToBegin();
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    tangentialDFC[i].GoToBegin();
-    normalDFC[i].GoToBegin();
-    }
-    while( !nbNeighborhoodIterator.IsAtEnd() )
-      {
-      nU.Value() = df->ComputeUpdate(nbNeighborhoodIterator,       // output (deformation field)
-                                     normalVectorN, // m_NormalVectorImage
-                                     tangentialDTN, // m_TangentialDiffusionTensorImage
-                                     tangentialDFC, // m_DeformationVectorTangentialComponents
-                                     normalDTN,     // m_NormalDiffusionTensorImage
-                                     normalDFC,     // m_DeformationVectorTangentialComponents
-                                     globalData);   // global data
-
-      ++nbNeighborhoodIterator;
-      ++nU;
-      ++normalVectorN;
-      ++tangentialDTN;
-      ++normalDTN;
-      for ( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        ++tangentialDFC[i];
-        ++normalDFC[i];
-        }
-      }
-
-
-
-
-
-
-
-
-
-
-  // Process each of the boundary faces.
+  // Process each of the boundary and non-boundary faces
 
   NeighborhoodIteratorType bD;
   UpdateIteratorType   bU;
@@ -1146,15 +1072,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   DeformationVectorComponentNeighborhoodIteratorArrayType bTangentialDFC;
   DeformationVectorComponentNeighborhoodIteratorArrayType bNormalDFC;
 
-  ++normalVectorImagefIt;
-  ++tangentialDiffusionTensorfIt;
-  ++normalDiffusionTensorfIt;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    ++bTangentialDFC[i];
-    ++bNormalDFC[i];
-    }
-  for ( ++outputImagefIt; outputImagefIt != outputImageFaceList.end(); ++outputImagefIt )
+    for ( ; outputImagefIt != outputImageFaceList.end(); ++outputImagefIt )
     {
     bD = NeighborhoodIteratorType( radius, output, *outputImagefIt );
     bU = UpdateIteratorType( m_UpdateBuffer, *outputImagefIt );
