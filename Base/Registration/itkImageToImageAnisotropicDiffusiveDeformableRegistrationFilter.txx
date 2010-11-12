@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef _itkImageToImageDiffusiveDeformableRegistrationFilter_txx
-#define _itkImageToImageDiffusiveDeformableRegistrationFilter_txx
+#ifndef _itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter_txx
+#define _itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter_txx
 
-#include "itkImageToImageDiffusiveDeformableRegistrationFilter.h"
+#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.h"
 
 #include "itkVectorIndexSelectionCastImageFilter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
@@ -33,16 +33,15 @@ limitations under the License.
 #include "vtkPointData.h"
 
 namespace itk
-{ 
-    
+{
+
 /**
  * Constructor
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
-::ImageToImageDiffusiveDeformableRegistrationFilter()
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter()
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
@@ -116,9 +115,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -134,9 +132,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::SetTimeStep( const TimeStepType &t )
 {
   typename RegistrationFunctionType::Pointer df
@@ -149,13 +146,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  * Set/Get the timestep
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-const typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-
+const typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType&
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::GetTimeStep() const
 {
   typename RegistrationFunctionType::Pointer df
@@ -169,9 +164,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::SetComputeRegularizationTerm( bool compute )
 {
   typename RegistrationFunctionType::Pointer df
@@ -189,9 +183,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 bool
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::GetComputeRegularizationTerm() const
 {
   typename RegistrationFunctionType::Pointer df
@@ -205,9 +198,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::SetComputeIntensityDistanceTerm( bool compute )
 {
   typename RegistrationFunctionType::Pointer df
@@ -221,9 +213,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 bool
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::GetComputeIntensityDistanceTerm() const
 {
   typename RegistrationFunctionType::Pointer df
@@ -237,9 +228,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::SetBorderSurface( BorderSurfacePointer border )
 {
   m_BorderSurface = border;
@@ -254,9 +244,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 template < class UnallocatedImageType, class TemplateImageType >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateSpaceForImage( UnallocatedImageType& inputImage,
                          const TemplateImageType& templateImage )
 {
@@ -274,9 +263,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateUpdateBuffer()
 {
   /* The update buffer looks just like the output and holds the change in
@@ -291,9 +279,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::Initialize()
 {
   Superclass::Initialize();
@@ -397,9 +384,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeIteration()
 {
   std::cout << "Iteration #" << this->GetElapsedIterations() << std::endl;
@@ -434,9 +420,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                  TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeNormalVectorAndWeightImages()
 {
   assert( m_BorderNormalsSurface );
@@ -554,12 +539,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  * Updates the diffusion tensor image before each iteration
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
+typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::WeightType
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistance( WeightType distance )
 {
   WeightType weight = exp( m_lambda * distance );
@@ -571,9 +555,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDiffusionTensorImage()
 {
   typedef itk::Matrix< DeformationVectorComponentType,
@@ -675,9 +658,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::UpdateDeformationVectorComponentImages()
 {
   // Get the border normals
@@ -768,13 +750,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  * Populates the update buffer
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
-
+typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChange()
 {
   int threadCount;
@@ -821,9 +801,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChangeThreaderCallback( void * arg )
 {
   DenseFDThreadStruct * str;
@@ -876,12 +855,11 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  * multithreading mechanism
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
+typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedCalculateChange(
           const ThreadRegionType &,
           int)
@@ -896,13 +874,12 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  * Does the actual work of calculating change over a region supplied by the
  * multithreading mechanism
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >                                               
-typename ImageToImageDiffusiveDeformableRegistrationFilter
-                                < TFixedImage, TMovingImage, TDeformationField >
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedCalculateChange(
           const ThreadRegionType &regionToProcess,
           const ThreadNormalVectorImageRegionType &normalVectorRegionToProcess,
@@ -934,8 +911,6 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
   typedef typename
         RegistrationFunctionType::DeformationVectorComponentNeighborhoodArrayType
                                 DeformationVectorComponentNeighborhoodArrayType;
-
-
 
   typename OutputImageType::Pointer output = this->GetOutput();
 
@@ -1225,9 +1200,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ApplyUpdate(TimeStepType dt)
 {
   // Set up for multithreaded processing.
@@ -1253,9 +1227,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ApplyUpdateThreaderCallback( void * arg )
 {
   DenseFDThreadStruct * str;
@@ -1290,9 +1263,8 @@ ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedApplyUpdate(TimeStepType dt,
                       const ThreadRegionType &regionToProcess,
                       int)

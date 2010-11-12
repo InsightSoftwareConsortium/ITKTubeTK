@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkImageToImageDiffusiveDeformableRegistrationFunction_h
-#define __itkImageToImageDiffusiveDeformableRegistrationFunction_h
+#ifndef __itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction_h
+#define __itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction_h
 
 #include "itkPDEDeformableRegistrationFunction.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
@@ -30,29 +30,30 @@ limitations under the License.
 namespace itk
 {
 
-/** \class itkImageToImageDiffusiveDeformableRegistrationFunction
+/** \class itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
  * \brief Implements the update function for the
- * itkImageToImageDiffusiveDeformableRegistrationFilter
+ * itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
  *
  * Insert more description + warnings here!!!!
  *
  * This class is templated over the fixed image type, moving image type and the
  * deformation field type.
  *
- * \sa itkImageToImageDiffusiveDeformableRegistrationFilter
+ * \sa itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
 
 template <class TFixedImage, class TMovingImage, class TDeformationField>
-class ITK_EXPORT ImageToImageDiffusiveDeformableRegistrationFunction
+class ITK_EXPORT ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
   : public PDEDeformableRegistrationFunction<TFixedImage,
                                              TMovingImage,
                                              TDeformationField>
 {
 public:
   /** Standard class typedefs. */
-  typedef ImageToImageDiffusiveDeformableRegistrationFunction   Self;
+  typedef ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+      Self;
   typedef PDEDeformableRegistrationFunction<TFixedImage,
                                             TMovingImage,
                                             TDeformationField>  Superclass;
@@ -213,7 +214,7 @@ public:
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
 
 protected:
-  ImageToImageDiffusiveDeformableRegistrationFunction();
+  ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction();
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** A global data type for this class of equations.  Used to store information
@@ -229,7 +230,7 @@ protected:
 
 private:
   // Purposely not implemented
-  ImageToImageDiffusiveDeformableRegistrationFunction(const Self&);
+  ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction(const Self&);
   void operator=(const Self&); // Purposely not implemented
 
   /** The global timestep. */
@@ -246,17 +247,17 @@ private:
    * regularization terms */
   bool                                  m_ComputeRegularizationTerm;
   bool                                  m_ComputeIntensityDistanceTerm;
- 
+
 };
 
 } // end namespace itk
 
 #if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkImageToImageDiffusiveDeformableRegistrationFunction+-.h"
+# include "Templates/itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction+-.h"
 #endif
 
 #if ITK_TEMPLATE_TXX
-# include "itkImageToImageDiffusiveDeformableRegistrationFunction.txx"
+# include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction.txx"
 #endif
 
 #endif

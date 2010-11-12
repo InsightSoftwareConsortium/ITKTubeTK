@@ -38,9 +38,9 @@ set( tubeBaseRegistrationFilters_SRCS
 if( TubeTK_USE_VTK )
   set( tubeBaseRegistrationFilters_SRCS
           ${tubeBaseRegistrationFilters_SRCS}
-          itkImageToImageDiffusiveDeformableRegistrationExecution.cxx
-          itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest.cxx
-          itkImageToImageDiffusiveDeformableRegistrationRegularizationTest.cxx
+          itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution.cxx
+          itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTest.cxx
+          itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest.cxx
           )
 endif( TubeTK_USE_VTK )
 
@@ -88,11 +88,11 @@ set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
 if( TubeTK_USE_VTK )
-  add_test( itkImageToImageDiffusiveDeformableRegistrationRegularizationTest1
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest1
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_straight_noNoise_smoothedMotionField.mhd
                     ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_straight_noNoise_origMotionField.mhd
           ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
           ${TEMP}/Regularization_straight_noNoise_smoothedMotionField_normal.mhd
@@ -102,11 +102,11 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationRegularizationTest2
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest2
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_straight_smoothedMotionField.mhd
                     ${TEMP}/Regularization_straight_smoothedMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_straight_origMotionField.mhd
           ${TEMP}/Regularization_straight_smoothedMotionField.mhd
           ${TEMP}/Regularization_straight_smoothedMotionField_normal.mhd
@@ -116,11 +116,11 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationRegularizationTest3
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest3
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_angled_noNoise_smoothedMotionField.mhd
                     ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_angled_noNoise_origMotionField.mhd
           ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
           ${TEMP}/Regularization_angled_noNoise_smoothedMotionField_normal.mhd
@@ -130,11 +130,11 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationRegularizationTest4
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest4
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_angled_smoothedMotionField.mhd
                     ${TEMP}/Regularization_angled_smoothedMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_angled_origMotionField.mhd
           ${TEMP}/Regularization_angled_smoothedMotionField.mhd
           ${TEMP}/Regularization_angled_smoothedMotionField_normal.mhd
@@ -144,11 +144,11 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationRegularizationTest5
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest5
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_angled_gaussian_smoothedMotionField.mhd
                     ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationRegularizationTest
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest
           ${TEMP}/Regularization_angled_gaussian_origMotionField.mhd
           ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
           ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_normal.mhd
@@ -158,99 +158,99 @@ if( TubeTK_USE_VTK )
           5 0.125 0
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationBoxesTest1
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTest1
           ${BASE_REGISTRATION_FILTERS_TESTS}
-          --compare ${BASELINE}/DiffusiveBoxesRegistration_none_resultingMotionField.mhd
-                    ${TEMP}/DiffusiveBoxesRegistration_none_resultingMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
-          ${TEMP}/DiffusiveBoxesRegistration_none_origFixedImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_none_origMovingImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_none_resultingMotionField.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_none_transformedMovingImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_none_weightImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_none_normalVectorImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_none_normalSurfaceBorder.vtk
+          --compare ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+                    ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTest
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_origFixedImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_origMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_transformedMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_weightImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_normalVectorImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_normalSurfaceBorder.vtk
           1
           5 0.125 0 1
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationBoxesTest2
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTest2
           ${BASE_REGISTRATION_FILTERS_TESTS}
-          --compare ${BASELINE}/DiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
-                    ${TEMP}/DiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
-          ${TEMP}/DiffusiveBoxesRegistration_anisotropic_origFixedImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_anisotropic_origMovingImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_anisotropic_transformedMovingImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_anisotropic_weightImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_anisotropic_normalVectorImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_anisotropic_normalSurfaceBorder.vtk
+          --compare  ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+                    ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTest
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_origFixedImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_origMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_transformedMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_weightImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_normalVectorImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_normalSurfaceBorder.vtk
           1
           5 0.125 1 1
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationBoxesTest3
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTest3
           ${BASE_REGISTRATION_FILTERS_TESTS}
-          --compare ${BASELINE}/DiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
-                    ${TEMP}/DiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationImageRegistrationTest
-          ${TEMP}/DiffusiveBoxesRegistration_gaussian_origFixedImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_gaussian_origMovingImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_gaussian_transformedMovingImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_gaussian_weightImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_gaussian_normalVectorImage.mhd
-          ${TEMP}/DiffusiveBoxesRegistration_gaussian_normalSurfaceBorder.vtk
+          --compare ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+                    ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTest
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_origFixedImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_origMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_transformedMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_weightImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_normalVectorImage.mhd
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_normalSurfaceBorder.vtk
           1
           5 0.125 1 0
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationSphereTest1
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTest1
           ${BASE_REGISTRATION_FILTERS_TESTS}
-          --compare ${BASELINE}/DiffusiveSphereRegistration_none_resultingMotionField.mhd
-                    ${TEMP}/DiffusiveSphereRegistration_none_resultingMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationExecution
-          ${INPUT_DATA}/DiffusiveSphereRegistration_origFixedImage.mhd
-          ${INPUT_DATA}/DiffusiveSphereRegistration_origMovingImage.mhd
-          ${INPUT_DATA}/DiffusiveSphereRegistration_fixedSurfaceBorder.vtk
-          ${TEMP}/DiffusiveSphereRegistration_none_resultingMotionField.mhd
-          ${TEMP}/DiffusiveSphereRegistration_none_transformedMovingImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_none_weightImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_none_normalVectorImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_none_normalSurfaceBorder.vtk
+          --compare ${BASELINE}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
+                    ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_transformedMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_weightImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_normalVectorImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_normalSurfaceBorder.vtk
           5 0.125 0 1
           )
 
-  add_test( itkImageToImageDiffusiveDeformableRegistrationSphereTest2
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTest2
           ${BASE_REGISTRATION_FILTERS_TESTS}
-          --compare ${BASELINE}/DiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
-                    ${TEMP}/DiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationExecution
-          ${INPUT_DATA}/DiffusiveSphereRegistration_origFixedImage.mhd
-          ${INPUT_DATA}/DiffusiveSphereRegistration_origMovingImage.mhd
-          ${INPUT_DATA}/DiffusiveSphereRegistration_fixedSurfaceBorder.vtk
-          ${TEMP}/DiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
-          ${TEMP}/DiffusiveSphereRegistration_anisotropic_transformedMovingImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_anisotropic_weightImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_anisotropic_normalVectorImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_anisotropic_normalSurfaceBorder.vtk
+          --compare ${BASELINE}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+                    ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_transformedMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_weightImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_normalVectorImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_normalSurfaceBorder.vtk
           5 0.125 1 1
           )
 
-  add_test(  itkImageToImageDiffusiveDeformableRegistrationSphereTest3
+  add_test(  itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTest3
           ${BASE_REGISTRATION_FILTERS_TESTS}
-          --compare ${BASELINE}/DiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
-                    ${TEMP}/DiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
-            itkImageToImageDiffusiveDeformableRegistrationExecution
-          ${INPUT_DATA}/DiffusiveSphereRegistration_origFixedImage.mhd
-          ${INPUT_DATA}/DiffusiveSphereRegistration_origMovingImage.mhd
-          ${INPUT_DATA}/DiffusiveSphereRegistration_fixedSurfaceBorder.vtk
-          ${TEMP}/DiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
-          ${TEMP}/DiffusiveSphereRegistration_gaussian_transformedMovingImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_gaussian_weightImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_gaussian_normalVectorImage.mhd
-          ${TEMP}/DiffusiveSphereRegistration_gaussian_normalSurfaceBorder.vtk
+          --compare ${BASELINE}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
+                    ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
+            itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+          ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_transformedMovingImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_weightImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_normalVectorImage.mhd
+          ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_normalSurfaceBorder.vtk
           5 0.125 1 0
           )
 

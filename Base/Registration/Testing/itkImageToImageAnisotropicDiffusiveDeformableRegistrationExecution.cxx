@@ -24,7 +24,7 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkImageToImageDiffusiveDeformableRegistrationFilter.h"
+#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.h"
 
 #include "itkImageFileWriter.h"
 #include "itkVectorCastImageFilter.h"
@@ -37,7 +37,7 @@ limitations under the License.
 #include "vtkPolyDataReader.h"
 #include "vtkPolyDataWriter.h"
 
-int itkImageToImageDiffusiveDeformableRegistrationExecution(
+int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
                                                       int argc, char* argv [] )
 {
   if( argc < 13 )
@@ -116,10 +116,8 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
   //-------------------------------------------------------------
   std::cout << "Run registration and warp moving" << std::endl;
 
-  typedef itk::ImageToImageDiffusiveDeformableRegistrationFilter< ImageType,
-                                                                  ImageType,
-                                                                  FieldType >
-                                                                  RegistrationType;
+  typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+      < ImageType, ImageType, FieldType > RegistrationType;
   RegistrationType::Pointer registrator = RegistrationType::New();
 
   registrator->SetInitialDeformationField( caster->GetOutput() );
@@ -257,4 +255,3 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
   return EXIT_SUCCESS;
 
 }
-
