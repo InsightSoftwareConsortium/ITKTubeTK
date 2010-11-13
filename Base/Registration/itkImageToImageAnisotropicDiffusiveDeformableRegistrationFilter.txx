@@ -1025,7 +1025,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
             m_DeformationVectorTangentialComponents[i],
             deformationComponentRegionToProcess,
             radius );
-    deformationVectorTangentialComponentImagefItArray // HERE
+    deformationVectorTangentialComponentImagefItArray[i]
         = deformationVectorTangentialComponentImageFaceListArray[i].begin();
 
     deformationVectorNormalComponentImageFaceListArray[i]
@@ -1033,7 +1033,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
             m_DeformationVectorNormalComponents[i],
             deformationComponentRegionToProcess,
             radius );
-    deformationVectorNormalComponentImagefItArray // HERE
+    deformationVectorNormalComponentImagefItArray[i]
         = deformationVectorNormalComponentImageFaceListArray[i].begin();
     }
 
@@ -1143,8 +1143,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     ++normalDiffusionTensorfIt;
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      ++deformationVectorTangentialComponentNeighborhoodItArray[i]; // HERE
-      ++deformationVectorNormalComponentNeighborhoodItArray[i]; // HERE
+      ++deformationVectorTangentialComponentImagefItArray[i];
+      ++deformationVectorNormalComponentImagefItArray[i];
       }
     }
 
