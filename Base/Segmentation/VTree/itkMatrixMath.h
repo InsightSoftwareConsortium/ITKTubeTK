@@ -89,10 +89,6 @@ template <class PointType>
 double
 ComputeEuclideanDistance(PointType x, PointType y);
 
-template< class TubeT >
-bool
-ComputeTubeTangentsAndNormals( TubeT * tube );
-
 } // end namespace itk
 
 

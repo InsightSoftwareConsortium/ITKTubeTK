@@ -10,7 +10,7 @@ Copyright University of North Carolina, Chapel Hill, NC, USA.
 Revised implementation:
 Copyright Kitware Inc., Carrboro, NC, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, 
+distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
@@ -30,20 +30,17 @@ limitations under the License.
 
 #include <itkMinimumMaximumImageFilter.h>
 
+#include "itkTubeMath.h"
 #include "itkMatrixMath.h"
 
 #include "itkRadiusExtractor.h"
-
-#ifndef PI
-#define PI 3.14159265358979323846
-#endif
 
 namespace itk
 {
 
 /** Define the Medialness Function */
 template < class ImageT >
-class RadiusExtractorMedialnessFunc : public UserFunc<double, double> 
+class RadiusExtractorMedialnessFunc : public UserFunc<int, double>
 {
   public:
 
@@ -52,10 +49,12 @@ class RadiusExtractorMedialnessFunc : public UserFunc<double, double>
     typedef typename TubeType::TubePointType                 TubePointType;
 
 
-    RadiusExtractorMedialnessFunc( 
-      RadiusExtractor< ImageT > * newRadiusExtractor )
+    RadiusExtractorMedialnessFunc(
+      RadiusExtractor< ImageT > * newRadiusExtractor,
+      double newMedialnessScaleStep )
       {
       m_RadiusExtractor = newRadiusExtractor;
+      m_MedialnessScaleStep = newMedialnessScaleStep;
       };
 
     void SetKernelArray( std::vector<TubePointType> * newKernelArray )
@@ -63,11 +62,20 @@ class RadiusExtractorMedialnessFunc : public UserFunc<double, double>
       m_KernelArray = newKernelArray;
       };
 
-    const double & value( const double & x )
+    void SetMedialnessScaleStep( double newMedialnessScaleStep )
+      {
+      m_MedialnessScaleStep = newMedialnessScaleStep;
+      };
+
+    const double & value( const int & x )
       {
       double bness = 0;
-      m_RadiusExtractor->ComputeMeasuresInKernelArray( 
-        *m_KernelArray, x, m_Value, bness, false );
+
+      m_RadiusExtractor->ComputeMeasuresInKernelArray(
+        *m_KernelArray, x*m_MedialnessScaleStep, m_Value, bness, false );
+      // std::cout << "Optimizer: point = " << x*m_MedialnessScaleStep
+        // << " value = " << m_Value << std::endl;
+
       return m_Value;
       };
 
@@ -89,6 +97,8 @@ class RadiusExtractorMedialnessFunc : public UserFunc<double, double>
 
     double                                   m_Value;
 
+    double                                   m_MedialnessScaleStep;
+
 };
 
 /** Constructor */
@@ -96,8 +106,8 @@ template<class TInputImage>
 RadiusExtractor<TInputImage>
 ::RadiusExtractor()
 {;
-  m_Debug = false; 
-  m_Verbose = true; 
+  m_Debug = false;
+  m_Verbose = true;
 
   m_Image = NULL;
   m_ImageXMin.Fill( 0 );
@@ -120,7 +130,7 @@ RadiusExtractor<TInputImage>
   if( ImageDimension == 2 )
     {
     m_KernNumDirs = 2;
-    m_KernX.set_size(m_KernNumDirs, ImageDimension);
+    m_KernX.set_size( ImageDimension, m_KernNumDirs );
     m_KernX(0, 0) = 1;
     m_KernX(1, 0) = 0;
     m_KernX(0, 1) = -1;
@@ -129,9 +139,10 @@ RadiusExtractor<TInputImage>
   else if( ImageDimension == 3 )
     {
     m_KernNumDirs = 8;
-    m_KernX.set_size(m_KernNumDirs, ImageDimension);
+    m_KernX.set_size( ImageDimension, m_KernNumDirs );
     int dir = 0;
-    for( double theta=0; theta<PI-PI/8; theta+=( double )( PI/4 ) ) 
+    for( double theta=0; theta<vnl_math::pi-vnl_math::pi/8;
+      theta+=( double )( vnl_math::pi/4 ) )
       {
       m_KernX(0, dir) = cos( theta );
       m_KernX(1, dir) = sin( theta );
@@ -151,19 +162,25 @@ RadiusExtractor<TInputImage>
     throw "Error: Radius estimation only supports 2 & 3 dimensions.";
     }
 
-  m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
-    this );
-  m_MedialnessOpt.use( m_MedialnessFunc );
-  m_MedialnessOpt.xMin( 0.4 );
-  m_MedialnessOpt.xMax( 20.0 );
+  m_MedialnessScaleStep = 0.25;
 
-  m_MedialnessOpt.tolerance( 0.001 );
+  m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
+    this, m_MedialnessScaleStep );
+
+  m_MedialnessOpt.tolerance( 0.001 / m_MedialnessScaleStep );
   //TMI:0.001 // 0.005 - 0.025
 
-  m_MedialnessOpt.xStep( 0.25 );
+  m_MedialnessOpt.xStep( 0.25 / m_MedialnessScaleStep );
   // TMI: 0.1 // Org: 0.49; Good: 0.25; NEXT: 1.0
 
   m_MedialnessOpt.searchForMin( false );
+
+  m_MedialnessOptSpline = new SplineApproximation1D( m_MedialnessFunc,
+    &m_MedialnessOpt );
+
+  m_MedialnessOptSpline->xMin( 0.5 / m_MedialnessScaleStep );
+  m_MedialnessOptSpline->xMax( 20 / m_MedialnessScaleStep );
+
 
   m_IdleCallBack = NULL;
   m_StatusCallBack = NULL;
@@ -177,7 +194,7 @@ RadiusExtractor<TInputImage>
   if( m_MedialnessFunc != NULL )
     {
     delete m_MedialnessFunc;
-    } 
+    }
   m_MedialnessFunc = NULL;
 }
 
@@ -210,8 +227,12 @@ void
 RadiusExtractor<TInputImage>
 ::SetRadiusMin( double radiusMin )
 {
+  if( radiusMin < 0.5 )
+    {
+    radiusMin = 0.5;
+    }
   m_RadiusMin = radiusMin;
-  m_MedialnessOpt.xMin( m_RadiusMin );
+  m_MedialnessOptSpline->xMin( m_RadiusMin / m_MedialnessScaleStep );
 }
 
 /** Set Radius Max */
@@ -221,16 +242,25 @@ RadiusExtractor<TInputImage>
 ::SetRadiusMax( double radiusMax )
 {
   this->m_RadiusMax = radiusMax;
-  m_MedialnessOpt.xMax( this->m_RadiusMax );
+  m_MedialnessOptSpline->xMax( this->m_RadiusMax / m_MedialnessScaleStep );
 }
 
 /** Get the medialness operator */
 template<class TInputImage>
-OptParabolicFit1D & 
+OptBrent1D &
 RadiusExtractor<TInputImage>
 ::GetMedialnessOptimizer( void )
 {
   return & m_MedialnessOpt;
+}
+
+/** Get the medialness operator */
+template<class TInputImage>
+SplineApproximation1D &
+RadiusExtractor<TInputImage>
+::GetMedialnessOptimizerSpline( void )
+{
+  return m_MedialnessOptSpline;
 }
 
 /** Set the input image */
@@ -245,7 +275,7 @@ RadiusExtractor<TInputImage>
     {
     m_DataOp->SetInputImage( m_Image );
     typedef MinimumMaximumImageFilter<ImageType> MinMaxFilterType;
-    typename MinMaxFilterType::Pointer minMaxFilter = 
+    typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
     minMaxFilter->SetInput( m_Image );
     minMaxFilter->Update();
@@ -255,15 +285,15 @@ RadiusExtractor<TInputImage>
     m_ImageXMin = m_Image->GetLargestPossibleRegion().GetIndex();
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      m_ImageXMax[i] = m_ImageXMin[i] + 
+      m_ImageXMax[i] = m_ImageXMin[i] +
         m_Image->GetLargestPossibleRegion().GetSize()[i] - 1;
       }
 
     if( m_Debug )
       {
-      std::cout << "RadiusExtractor: SetInputImage: Minimum = " 
+      std::cout << "RadiusExtractor: SetInputImage: Minimum = "
         << m_DataMin << std::endl;
-      std::cout << "RadiusExtractor: SetInputImage: Maximum = " 
+      std::cout << "RadiusExtractor: SetInputImage: Maximum = "
         << m_DataMax << std::endl;
       }
     }
@@ -272,22 +302,22 @@ RadiusExtractor<TInputImage>
 
 
 /**
- * Compute the medialness at a point 
+ * Compute the medialness at a point
  */
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::ComputeMeasuresAtPoint( TubePointType & pnt, double pntR, double w,
+::ComputeMeasuresAtPoint( TubePointType & pnt, double pntR,
   double & mness, double & bness, bool doBNess )
 {
-  if( pntR < m_MedialnessOpt.xMin() )
+  if( pntR < m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMin();
+    pntR = m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep;
     }
 
-  if( pntR > m_MedialnessOpt.xMax() )
+  if( pntR > m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMax();
+    pntR = m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep;
     }
 
   MatrixType n( ImageDimension, ImageDimension-1 );
@@ -314,15 +344,18 @@ RadiusExtractor<TInputImage>
     {
     // If the point's normals, aren't normal, then create new normals.
     //   However, given only one point, we cannot compute the tube's
-    //   local Frenet frame.   Ideally the user should call 
+    //   local Frenet frame.   Ideally the user should call
     //   ComputeTangents on the tube prior to calling this function
     //   to avoid this situation.  If inconsistent normals are used,
     //   branchness computations suffer due to normal flipping.
-    std::cout 
+    std::cout
       << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
       << std::endl;
-    std::cout << "   DotProd = " << dotP << " and Norm = " << len 
-      << std::endl;
+    if( m_Debug )
+      {
+      std::cout << "   DotProd = " << dotP << " and Norm = " << len
+        << std::endl;
+      }
     n.set_column( 0,
       GetOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
     n.get_column( 0 ).normalize();
@@ -345,11 +378,14 @@ RadiusExtractor<TInputImage>
   double kernNegCnt = 0;
   double kernBrnCnt = 0;
 
-  std::cout << "Compute values at point" << std::endl;
-  this->ComputeValuesInKernel( pnt, pntR, w, n, kernPos, kernPosCnt,
+  if( m_Debug )
+    {
+    std::cout << "Compute values at point" << std::endl;
+    }
+  this->ComputeValuesInKernel( pnt, pntR, n, kernPos, kernPosCnt,
     kernNeg, kernNegCnt, kernBrn, kernBrnCnt, doBNess );
 
-  this->ComputeMeasuresInKernel( pntR, w, kernPos, kernPosCnt, 
+  this->ComputeMeasuresInKernel( pntR, kernPos, kernPosCnt,
     kernNeg, kernNegCnt, kernBrn, kernBrnCnt, mness, bness, doBNess );
   pnt.SetMedialness( mness );
   if( doBNess )
@@ -364,7 +400,7 @@ void
 RadiusExtractor<TInputImage>
 ::ComputeMeasuresInKernelArray( KernArrayType & kernArray,
   double pntR, double & mness, double & bness, bool doBNess )
-{ 
+{
   unsigned int len = kernArray.size();
 
   if( len == 0 )
@@ -375,7 +411,7 @@ RadiusExtractor<TInputImage>
     }
   else if( len == 1 )
     {
-    this->ComputeMeasuresAtPoint( kernArray[0], pntR, 1, mness, bness,
+    this->ComputeMeasuresAtPoint( kernArray[0], pntR, mness, bness,
       doBNess );
     }
 
@@ -393,20 +429,20 @@ RadiusExtractor<TInputImage>
     w[i] /= wTot;
     }
 
-  if( pntR < m_MedialnessOpt.xMin() )
+  if( pntR < m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMin();
+    pntR = m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep;
     }
 
-  if( pntR > m_MedialnessOpt.xMax() )
+  if( pntR > m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMax();
+    pntR = m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep;
     }
 
-  if( m_Debug ) 
-    {   
-    std::cout << "RadiusExtractor: MedialnessInKern: pntR = " 
-      << pntR << " : size = " << kernArray.size() 
+  if( m_Debug )
+    {
+    std::cout << "RadiusExtractor: MedialnessInKern: pntR = "
+      << pntR << " : size = " << kernArray.size()
       << std::endl;
     }
 
@@ -439,20 +475,20 @@ RadiusExtractor<TInputImage>
 
   // With the coordinate frame defined, compute medialness for other points
   typename std::vector<TubePointType>::iterator pnt = kernArray.begin();
-  for( unsigned int i=0; i<len; ++i ) 
+  for( unsigned int i=0; i<len; ++i )
     {
-    this->ComputeValuesInKernel( *pnt, pntR, w[i], norms, kernPos,
+    this->ComputeValuesInKernel( *pnt, pntR, norms, kernPos,
       kernPosCnt, kernNeg, kernNegCnt, kernBrn, kernBrnCnt,
       doBNess );
     for( unsigned int d=0; d<m_KernNumDirs; d++ )
       {
-      kernPosTot[i] += kernPos[i];
-      kernNegTot[i] += kernNeg[i];
-      kernBrnTot[i] += kernBrn[i];
+      kernPosTot[d] += w[i] * kernPos[d];
+      kernNegTot[d] += w[i] * kernNeg[d];
+      kernBrnTot[d] += w[i] * kernBrn[d];
       }
-    kernPosCntTot += kernPosCnt;
-    kernNegCntTot += kernNegCnt;
-    kernBrnCntTot += kernBrnCnt;
+    kernPosCntTot += w[i] * kernPosCnt;
+    kernNegCntTot += w[i] * kernNegCnt;
+    kernBrnCntTot += w[i] * kernBrnCnt;
     ++pnt;
     }
 
@@ -474,10 +510,14 @@ RadiusExtractor<TInputImage>
 
   mness = 0;
   bness = 0;
-  // WTF = why 0.5?  HERE
-  this->ComputeMeasuresInKernel( pntR, 0.5, kernPosTot, kernPosCntTot, 
-    kernNegTot, kernNegCntTot, kernBrnTot, kernBrnCntTot, 
+  this->ComputeMeasuresInKernel( pntR, kernPosTot, kernPosCntTot,
+    kernNegTot, kernNegCntTot, kernBrnTot, kernBrnCntTot,
     mness, bness, doBNess );
+  if( m_Debug )
+    {
+    std::cout << "At radius = " << pntR << " medialness = " << mness
+      << std::endl << std::endl;
+    }
 }
 
 /** Compute the Optimal scale */
@@ -488,7 +528,7 @@ RadiusExtractor<TInputImage>
   double rMin, double rMax, double rStep, double rTolerance )
 {
   TubePointType tmpPnt;
-  ITKPointType x; 
+  ITKPointType x;
 
   KernArrayType kernArray;
 
@@ -522,41 +562,54 @@ RadiusExtractor<TInputImage>
   tmpPnt.SetNormal2( pnt.GetNormal2() );
   kernArray.push_back( tmpPnt );
 
-  double w = 0;
+  double mness = 0;
 
-  double tempXMin = m_MedialnessOpt.xMin();
-  m_MedialnessOpt.xMin( rMin );
+  if( rMin < 0.5 )
+    {
+    rMin = 0.5;
+    }
+  double tempXMin = m_MedialnessOptSpline->xMin();
+  m_MedialnessOptSpline->xMin( rMin / m_MedialnessScaleStep );
 
-  double tempXMax = m_MedialnessOpt.xMax();
-  m_MedialnessOpt.xMax( rMax );
+  double tempXMax = m_MedialnessOptSpline->xMax();
+  m_MedialnessOptSpline->xMax( rMax / m_MedialnessScaleStep );
 
   double tempXStep = m_MedialnessOpt.xStep();
-  m_MedialnessOpt.xStep( rStep );
+  m_MedialnessOpt.xStep( rStep / m_MedialnessScaleStep );
 
   double tempTol = m_MedialnessOpt.tolerance();
-  m_MedialnessOpt.tolerance( rTolerance );
+  m_MedialnessOpt.tolerance( rTolerance / m_MedialnessScaleStep );
 
   static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
     m_MedialnessFunc )->SetKernelArray( & kernArray );
-  m_MedialnessOpt.extreme( &r0, &w );
+  m_MedialnessOptSpline->newData( true );
+  r0 /= m_MedialnessScaleStep;
+  m_MedialnessOptSpline->extreme( &r0, &mness );
+  r0 *= m_MedialnessScaleStep;
 
-  m_MedialnessOpt.xMin( tempXMin );
-  m_MedialnessOpt.xMax( tempXMax );
+  if( m_Debug )
+    {
+    std::cout << "Local extreme at radius = " << r0
+      << " with medialness = " << mness << std::endl << std::endl;
+    }
+
+  m_MedialnessOptSpline->xMin( tempXMin );
+  m_MedialnessOptSpline->xMax( tempXMax );
   m_MedialnessOpt.xStep( tempXStep );
   m_MedialnessOpt.tolerance( tempTol );
 
   pnt.SetRadius( r0 );
 
-  if( w > m_ThreshMedialness )
+  if( mness > m_ThreshMedialnessStart )
     {
     return true;
     }
   else
     {
-    std::cout 
+    std::cout
       << "RadiusExtractor: calcOptimalScale: kernel fit insufficient"
       << std::endl;
-    std::cout << "  Medialness = " << w << " < thresh = " 
+    std::cout << "  Medialness = " << mness << " < thresh = "
       << m_ThreshMedialness << std::endl;
     return false;
     }
@@ -568,32 +621,57 @@ RadiusExtractor<TInputImage>
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::ComputeValuesInSubKernel( TubePointType pnt, double pntR, double w,
+::ComputeValuesInSubKernel( TubePointType pnt, double pntR,
   MatrixType & kernN, VectorType & kern, double & kernCnt )
 {
-  if( pntR < m_MedialnessOpt.xMin() )
+  if( pntR < m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMin();
+    pntR = m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep;
     }
 
-  if( pntR > m_MedialnessOpt.xMax() )
+  if( pntR > m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMax();
+    pntR = m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep;
     }
+
+
+  /*
+  std::cout << "Kern pnt = " << pnt.GetPosition() << std::endl;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
+    {
+    std::cout << "Kern N[" << i << "] = " << kernN.get_column( i )
+      << std::endl;
+    }
+  std::cout << "Kern r = " << pntR << std::endl;
+  std::cout << "Kern X = " << m_KernX << std::endl;
+  */
 
   VectorType nodePnt;
-  nodePnt = pnt.GetPosition().GetVnlVector();
-
   for( unsigned int dir=0; dir<m_KernNumDirs; dir++ )
     {
-    for(unsigned int i=0; i<ImageDimension-1; i++ )
+    nodePnt = pnt.GetPosition().GetVnlVector();
+    for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
-      nodePnt = ComputeLineStep( nodePnt, pntR * m_KernX( i, dir ),
-        kernN.get_column( i ) );
+      for( unsigned int d=0; d<ImageDimension; d++ )
+        {
+        nodePnt[d] += pntR * m_KernX( i, dir ) * kernN( d, i );
+        }
       }
 
+    /*
+    VectorType xV = nodePnt - pnt.GetPosition().GetVnlVector();
+    std::cout << "  dirX = " << m_KernX.get_column( dir ) << std::endl;
+    std::cout << "  node pnt = " << nodePnt << std::endl;
+    std::cout << "  dist(kernPnt, nodePnt) = " << xV.magnitude()
+      << std::endl;
+    xV.normalize();
+    double dotP = dot_product( pnt.GetTangent().GetVnlVector(), xV );
+    std::cout << "  dotp(kernPnt.tan, nodePnt.dist) = " << dotP
+      << std::endl;
+      */
+
     bool inBounds = true;
-    for(unsigned int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       if( nodePnt[i] < m_ImageXMin[i] || nodePnt[i] > m_ImageXMax[i] )
         {
@@ -612,25 +690,29 @@ RadiusExtractor<TInputImage>
         }
 
       double val = ( m_DataOp->EvaluateAtContinuousIndex( nodeCIndx )
-        - m_DataMin ) / ( m_DataMax - m_DataMin ); 
+        - m_DataMin ) / ( m_DataMax - m_DataMin );
 
       if( !m_ExtractRidge )
         {
         val = 1 - val;
         }
 
-      if( val < 0 ) 
-        { 
-        val = 0; 
+      if( val < 0 )
+        {
+        val = 0;
         }
 
-      if( val > 1 ) 
-        { 
-        val = 1; 
+      if( val > 1 )
+        {
+        val = 1;
         }
 
-      kern[dir] += w * val;
-      kernCnt += w;
+      kern[dir] += val;
+      ++kernCnt;
+      }
+    else
+      {
+      kern[dir] = 0;
       }
     }
 }
@@ -638,19 +720,19 @@ RadiusExtractor<TInputImage>
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::ComputeValuesInKernel( TubePointType pnt, double pntR, double w, 
+::ComputeValuesInKernel( TubePointType pnt, double pntR,
   MatrixType & kernN, VectorType & kernPos, double & kernPosCnt,
   VectorType & kernNeg, double & kernNegCnt,
   VectorType & kernBrn, double & kernBrnCnt, bool doBNess )
 {
-  if( pntR < m_MedialnessOpt.xMin() )
+  if( pntR < m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMin();
+    pntR = m_MedialnessOptSpline->xMin() * m_MedialnessScaleStep;
     }
 
-  if( pntR > m_MedialnessOpt.xMax() )
+  if( pntR > m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep )
     {
-    pntR = m_MedialnessOpt.xMax();
+    pntR = m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep;
     }
 
   MatrixType n( ImageDimension, ImageDimension-1 );
@@ -677,15 +759,18 @@ RadiusExtractor<TInputImage>
     {
     // If the point's normals, aren't normal, then create new normals.
     //   However, given only one point, we cannot compute the tube's
-    //   local Frenet frame.   Ideally the user should call 
+    //   local Frenet frame.   Ideally the user should call
     //   ComputeTangents on the tube prior to calling this function
     //   to avoid this situation.  If inconsistent normals are used,
     //   branchness computations suffer due to normal flipping.
-    std::cout 
+    std::cout
       << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
       << std::endl;
-    std::cout << "   DotProd = " << dotP << " and Norm = " << sum 
-      << std::endl;
+    if( m_Debug )
+      {
+      std::cout << "   DotProd = " << dotP << " and Norm = " << sum
+        << std::endl;
+      }
     n.set_column( 0,
       GetOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
     n.get_column( 0 ).normalize();
@@ -699,22 +784,25 @@ RadiusExtractor<TInputImage>
       }
     }
 
-  std::cout << "kernN0 = " << kernN.get_column( 0 ) << std::endl;
-  std::cout << "kernN1 = " << kernN.get_column( 1 ) << std::endl;
+  if( m_Debug )
+    {
+    std::cout << "kernN0 = " << kernN.get_column( 0 ) << std::endl;
+    std::cout << "kernN1 = " << kernN.get_column( 1 ) << std::endl;
+    }
 
   VectorType n0( ImageDimension );
   n0.fill( 0 );
   for( unsigned int j=0; j<ImageDimension-1; j++ )
-    { 
-    double dp = dot_product( kernN.get_column( 0 ), 
+    {
+    double dp = dot_product( kernN.get_column( 0 ),
       n.get_column( j ) );
-    for( unsigned int k=0; k<ImageDimension; k++ )
-      {
-      n0 += dp * kernN(k, 0);
-      }
+    n0 += dp * n.get_column( j );
     }
   n0.normalize();
-  std::cout << "n0 = " << n0 << std::endl;
+  if( m_Debug )
+    {
+    std::cout << "n0 = " << n0 << std::endl;
+    }
   n.set_column( 0, n0 );
   if( ImageDimension == 3 )
     {
@@ -722,36 +810,47 @@ RadiusExtractor<TInputImage>
       GetCrossVector( pnt.GetTangent().GetVnlVector(),
         n.get_column( 0 ) )  );
     n.get_column( 1 ).normalize();
-    std::cout << "n1 = " << n.get_column( 1 ) << std::endl;
- 
+    if( m_Debug )
+      {
+      std::cout << "n1 = " << n.get_column( 1 ) << std::endl;
+      }
+
     double tf = dot_product( kernN.get_column( 1 ),
-      n.get_column( 1 ) ); 
-    if( tf<0 )
+      n.get_column( 1 ) );
+    if( tf < 0 )
       {
       n.set_column( 1, n.get_column( 1 ) * -1 );
       }
     }
-  
+
   kernPos.fill( 0 );
   kernNeg.fill( 0 );
   kernBrn.fill( 0 );
-  kernPosCnt = 0; 
+  kernPosCnt = 0;
   kernNegCnt = 0;
   kernBrnCnt = 0;
 
   double e = 1.1;
-  if( ( pntR / 4.0 ) * e < 0.71 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
-    {  
-    e = 0.71 / ( pntR / 4.0 );     //0.71/( pntR/4 );
+  double f = 4.0;
+  if( ( pntR / f ) * e < 0.71 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
+    {
+    f = ( ( pntR * e ) / 0.71 + f ) / 2;
+    e = 0.71 / ( pntR / f );
     }
-  if( ( pntR / 4.0 ) * e > 3.1 )
-    {      
-    e = 3.1 / ( pntR / 4.0 );
-    }   
-  m_DataOp->SetScale( pntR / 4.0 ); 
-  m_DataOp->SetExtent( e ); 
-  double r = 3.0 * pntR / 4.0;
-  this->ComputeValuesInSubKernel( pnt, r, w, n, kernPos, kernPosCnt );
+  if( ( pntR / f ) * e > 3.1 )
+    {
+    f = ( ( pntR * e ) / 3.1 + f ) / 2;
+    e = 3.1 / ( pntR / f );
+    }
+  m_DataOp->SetScale( pntR / f );
+  m_DataOp->SetExtent( e );
+  double r = (f-e)/f * pntR;
+  if( m_Debug )
+    {
+    std::cout << "Pos: opR = " << pntR/f << " opE = " << e
+      << " dist = " << r << std::endl;
+    }
+  this->ComputeValuesInSubKernel( pnt, r, n, kernPos, kernPosCnt );
   if( kernPosCnt > 0 )
     {
     for( unsigned int i=0; i<m_KernNumDirs; i++ )
@@ -760,8 +859,13 @@ RadiusExtractor<TInputImage>
       }
     }
 
-  r = 5.0 * pntR / 4.0;
-  this->ComputeValuesInSubKernel( pnt, r, w, n, kernNeg, kernNegCnt );
+  r = (f+e) * pntR / f;
+  if( m_Debug )
+    {
+    std::cout << "Neg: opR = " << pntR/f << " opE = " << e
+      << " dist = " << r << std::endl;
+    }
+  this->ComputeValuesInSubKernel( pnt, r, n, kernNeg, kernNegCnt );
   if( kernNegCnt > 0 )
     {
     for( unsigned int i=0; i<m_KernNumDirs; i++ )
@@ -772,19 +876,27 @@ RadiusExtractor<TInputImage>
 
   if( doBNess )
     {
-    e = 1.0;
-    if( ( pntR / 3.0 ) * e < 1.1 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
+    e = 1.1;
+    f = 3.0;
+    if( ( pntR / f ) * e < 1.1 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
       {
-      e = 1.1 / ( pntR / 3.0 );
+      f = ( ( pntR * e ) / 1.1 + f ) / 2;
+      e = 1.1 / ( pntR / f );
       }
-    if( ( pntR / 3.0 ) * e > 3.1 )
+    if( ( pntR / f ) * e > 3.1 )
       {
-      e = 3.1 / ( pntR / 3.0 );
+      f = ( ( pntR * e ) / 3.1 + f ) / 2;
+      e = 3.1 / ( pntR / f );
       }
-    m_DataOp->SetScale( pntR / 3.0 ); // mess with this -  and r
+    m_DataOp->SetScale( pntR / f ); // mess with this -  and r
     m_DataOp->SetExtent( e );
-    r = pntR * 3.0;
-    this->ComputeValuesInSubKernel( pnt, r, w, n, kernBrn, kernBrnCnt );
+    r = f * pntR;
+    if( m_Debug )
+      {
+      std::cout << "Brn: opR = " << pntR/f << " opE = " << e
+        << " dist = " << r << std::endl;
+      }
+    this->ComputeValuesInSubKernel( pnt, r, n, kernBrn, kernBrnCnt );
     if( kernBrnCnt >= 0 )
       {
       for( unsigned int i=0; i<m_KernNumDirs; i++ )
@@ -797,7 +909,7 @@ RadiusExtractor<TInputImage>
   int kernCnt = 0;
   for( unsigned int i=0; i<m_KernNumDirs; i++ )
     {
-    if( kernNeg[i]>=w && kernPos[i]>=w )
+    if( kernNeg[i]!=0 && kernPos[i]!=0 )
       {
       kernCnt++;
       }
@@ -806,10 +918,13 @@ RadiusExtractor<TInputImage>
     {
     std::cout << "Warning: Medialness kernel does not intersect image."
       << std::endl;
-    for( unsigned int i=0; i<m_KernNumDirs; i++ )
+    if( m_Debug )
       {
-      std::cout << i << " : " << kernNeg[i] << ", " << kernPos[i] 
-        << ", " << kernBrn[i] << std::endl;
+      for( unsigned int i=0; i<m_KernNumDirs; i++ )
+        {
+        std::cout << i << " : " << kernNeg[i] << ", " << kernPos[i]
+          << ", " << kernBrn[i] << std::endl;
+        }
       }
     }
 }
@@ -840,13 +955,13 @@ RadiusExtractor<TInputImage>
     TubePointType kernPnt;
     for( unsigned int j = 0;
       iterPnt != tubeToPnt && j < m_KernelPointSpacing;
-      j++ ) 
+      j++ )
       {
       ITKPointType tmpPoint;
 
       for( unsigned int id = 0; id < ImageDimension; id++ )
         {
-        tmpPoint[id] = kernPnt.GetPosition()[id] 
+        tmpPoint[id] = kernPnt.GetPosition()[id]
           + ( *iterPnt ).GetPosition()[id];
         }
       kernPnt.SetPosition( tmpPoint );
@@ -860,7 +975,7 @@ RadiusExtractor<TInputImage>
         }
       else
         {
-        kernPnt.SetTangent( kernPnt.GetTangent() - 
+        kernPnt.SetTangent( kernPnt.GetTangent() -
           ( *iterPnt ).GetTangent() );
         }
 
@@ -905,16 +1020,16 @@ RadiusExtractor<TInputImage>
 template<class TInputImage>
 void
 RadiusExtractor<TInputImage>
-::ComputeMeasuresInKernel( double pntR, double w, 
-  VectorType & kernPos, double & itkNotUsed(kernPosCnt), 
-  VectorType & kernNeg, double & itkNotUsed(kernNegCnt), 
-  VectorType & kernBrn, double & itkNotUsed(kernBrnCnt), 
+::ComputeMeasuresInKernel( double pntR,
+  VectorType & kernPos, double & itkNotUsed( kernPosCnt),
+  VectorType & kernNeg, double & itkNotUsed( kernNegCnt),
+  VectorType & kernBrn, double & itkNotUsed( kernBrnCnt),
   double & mness, double & bness, bool doBNess )
 {
-  int kernAvgCnt = 0;   
+  int kernAvgCnt = 0;
   for( unsigned int i=0; i<m_KernNumDirs; i++ )
-    {    
-    if( kernNeg[i] >= w && kernPos[i] >= w )
+    {
+    if( kernNeg[i] != 0 && kernPos[i] != 0 )
       {
       kernAvgCnt++;
       }
@@ -930,8 +1045,8 @@ RadiusExtractor<TInputImage>
   int kernNegMinI = -1;
   for( unsigned int i=0; i<m_KernNumDirs; i++ )
     {
-    if( kernNeg[i] >= w && kernPos[i] >= w )
-      {     
+    if( kernNeg[i] != 0 && kernPos[i] != 0 )
+      {
       kernNegMinI = i;
       break;
       }
@@ -945,9 +1060,9 @@ RadiusExtractor<TInputImage>
   double kernPosMax = kernPosMin;
   double kernPosAvg = kernPosMin;
 
-  for( unsigned int i = kernNegMinI+1; i < m_KernNumDirs; i++ ) 
+  for( unsigned int i = kernNegMinI+1; i < m_KernNumDirs; i++ )
     {
-    if( kernNeg[i] >= w && kernPos[i] >= w )
+    if( kernNeg[i] != 0 && kernPos[i] != 0 )
       {
       if( kernNeg[i]>kernNegMax )
         {
@@ -978,21 +1093,22 @@ RadiusExtractor<TInputImage>
     kernPosAvg -= kernPos[kernNegMinI];
     kernNegAvg -= kernNegMin;
 
-    kernPosAvg += ( kernPos[kernNegMinI] + kernPosAvg / ( kernAvgCnt-1 ) ) 
+    kernPosAvg += ( kernPos[kernNegMinI] + kernPosAvg / ( kernAvgCnt-1 ) )
       / 2;
-    kernNegAvg += ( kernNegMin + kernNegAvg / ( kernAvgCnt-1 ) ) 
+    kernNegAvg += ( kernNegMin + kernNegAvg / ( kernAvgCnt-1 ) )
       / 2;
     int l, m;
     l = ( kernNegMinI+1 )%( m_KernNumDirs );
     m = ( kernNegMinI+m_KernNumDirs-1 )%( m_KernNumDirs );
-    if( kernNeg[l] >= w && kernPos[l] >= w && kernNeg[l] < kernNeg[m] )
+    if( kernNeg[l] != 0 && kernPos[l] != 0 && kernNeg[l] < kernNeg[m] )
       {
       kernPosAvg -= kernPos[l];
       kernNegAvg -= kernNeg[l];
       kernPosAvg += ( kernPos[l] + kernPosAvg / (kernAvgCnt-1) ) / 2;
       kernNegAvg += ( kernNeg[l] + kernNegAvg / (kernAvgCnt-1) ) / 2;
       }
-    else if( kernNeg[m]>=w && kernPos[m]>=w && kernNeg[l]>=kernNeg[m] )
+    else if( kernNeg[m] != 0 && kernPos[m] != 0
+      && kernNeg[l] >= kernNeg[m] )
       {
       kernPosAvg -= kernPos[m];
       kernNegAvg -= kernNeg[m];
@@ -1004,21 +1120,22 @@ RadiusExtractor<TInputImage>
     {
     kernPosAvg -= kernPos[kernNegMaxI];
     kernNegAvg -= kernNegMax;
-    kernPosAvg += ( kernPos[kernNegMaxI] + kernPosAvg / (kernAvgCnt-1) ) 
+    kernPosAvg += ( kernPos[kernNegMaxI] + kernPosAvg / (kernAvgCnt-1) )
       / 2;
-    kernNegAvg += ( kernNegMax + kernNegAvg / (kernAvgCnt-1) ) 
+    kernNegAvg += ( kernNegMax + kernNegAvg / (kernAvgCnt-1) )
       / 2;
     int l, m;
     l = ( kernNegMaxI + 1 )%( m_KernNumDirs );
     m = ( kernNegMaxI + m_KernNumDirs - 1 )%( m_KernNumDirs );
-    if( kernNeg[l] >= w && kernPos[l] >= w && kernNeg[l] > kernNeg[m] )
+    if( kernNeg[l] != 0 && kernPos[l] != 0 && kernNeg[l] > kernNeg[m] )
       {
       kernPosAvg -= kernPos[l];
       kernNegAvg -= kernNeg[l];
       kernPosAvg += ( kernPos[l] + kernPosAvg / (kernAvgCnt-1) ) / 2;
       kernNegAvg += ( kernNeg[l] + kernNegAvg / (kernAvgCnt-1) ) / 2;
       }
-    else if( kernNeg[m]>=w && kernPos[m]>=w && kernNeg[l]<=kernNeg[m] )
+    else if( kernNeg[m] != 0 && kernPos[m] != 0
+      && kernNeg[l] <= kernNeg[m] )
       {
       kernPosAvg -= kernPos[m];
       kernNegAvg -= kernNeg[m];
@@ -1035,7 +1152,7 @@ RadiusExtractor<TInputImage>
     {
     kernPosAvg = 0;
     kernNegAvg = 0;
-    }  
+    }
   mness = ( kernPosAvg - kernNegAvg ) / ( pntR / 4 );
 
   if( doBNess )
@@ -1045,7 +1162,7 @@ RadiusExtractor<TInputImage>
     double kernBrnAvgCnt = 1;
     for( unsigned int i=0; i<m_KernNumDirs; i++ )
       {
-      if( kernPos[i]>=w && kernNeg[i]>=w && kernBrn[i]>=w )
+      if( kernPos[i] != 0 && kernNeg[i] != 0 && kernBrn[i] != 0 )
         {
         kernBrnMaxI = i;
         break;
@@ -1059,7 +1176,7 @@ RadiusExtractor<TInputImage>
 
       for( unsigned int i = kernBrnMaxI+1; i<m_KernNumDirs; i++ )
         {
-        if( kernPos[i]>=w && kernNeg[i]>=w && kernBrn[i]>=w )
+        if( kernPos[i] != 0 && kernNeg[i] != 0 && kernBrn[i] != 0 )
           {
           kernBrnAvg += kernBrn[i];
           kernBrnAvgCnt++;
@@ -1081,10 +1198,10 @@ RadiusExtractor<TInputImage>
         }
 
       if( ( kernPosAvg - kernBrnAvg ) != 0 )
-        {  
-        bness = ( 3 * ( kernBrnMax - kernBrnAvg ) 
+        {
+        bness = ( 3 * ( kernBrnMax - kernBrnAvg )
           / ( kernPosAvg - kernBrnAvg )
-          + ( kernNegMax - kernNegAvg ) 
+          + ( kernNegMax - kernNegAvg )
           / ( kernPosAvg - kernBrnAvg ) ) / 4;
         }
       else
@@ -1122,7 +1239,7 @@ RadiusExtractor<TInputImage>
 {
   double pntR = m_Radius0;
   double prevPntR = m_Radius0;
-  double w;
+  double mness;
   unsigned int kernMid = m_NumKernelPoints / 2;
 
   KernArrayType pntKernArray;
@@ -1131,17 +1248,17 @@ RadiusExtractor<TInputImage>
     {
     step = -1;
     }
-  
+
   unsigned int count = 0;
-  for( int kernPnt = (int)(kernPntStart);
-    kernPnt != (int)(kernPntEnd)+step;
+  for( int kernPnt = (int)( kernPntStart);
+    kernPnt != (int)( kernPntEnd)+step;
     kernPnt += step )
     {
     pntKernArray.clear();
-    for( int j = (int)(kernPnt)-(int)(kernMid);
-      j <= (int)(kernPnt)+(int)(kernMid); j++ )
+    for( int j = (int)( kernPnt)-(int)( kernMid);
+      j <= (int)( kernPnt)+(int)( kernMid); j++ )
       {
-      if( ( j - kernPntStart ) * step > 0 && 
+      if( ( j - kernPntStart ) * step > 0 &&
           ( kernPntEnd - j ) * step > 0 )
         {
         pntKernArray.push_back( kernArray[j] );
@@ -1154,60 +1271,66 @@ RadiusExtractor<TInputImage>
 
     static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
       m_MedialnessFunc )->SetKernelArray( & pntKernArray );
-    m_MedialnessOpt.extreme( &pntR, &w );
+    m_MedialnessOptSpline->newData( true );
+    pntR /= m_MedialnessScaleStep;
+    m_MedialnessOptSpline->extreme( &pntR, &mness );
+    pntR *= m_MedialnessScaleStep;
 
-    if( w < m_ThreshMedialness ) 
+    if( mness < m_ThreshMedialness )
       {
       if( m_Debug )
         {
-        std::cout << "Bad wVal( " << pntR << " ) = " << w << std::endl;
+        std::cout << "Bad mnessVal( " << pntR << " ) = " << mness
+          << std::endl;
         }
       pntR = prevPntR;
-      m_MedialnessOpt.extreme( &pntR, &w );
-      if( w >= m_ThreshMedialness ) 
+      pntR /= m_MedialnessScaleStep;
+      m_MedialnessOptSpline->extreme( &pntR, &mness );
+      pntR *= m_MedialnessScaleStep;
+      if( mness >= m_ThreshMedialness )
         {
         if( m_Debug )
           {
-          std::cout << "   *** new wVal( " << pntR << " ) = " << w 
+          std::cout << "   *** new mnessVal( " << pntR << " ) = " << mness
             << std::endl;
           }
-        if( w > 2 * m_ThreshMedialness )
-          { 
+        if( mness > 2 * m_ThreshMedialness )
+          {
           prevPntR = pntR;
           }
         }
-      else 
+      else
         {
         pntR = prevPntR;
-        w = 2 * m_ThreshMedialness;
+        mness = 2 * m_ThreshMedialness;
         if( m_Debug )
           {
-          std::cout << "   using old wVal( " << pntR << " ) = " 
-            << w << std::endl;
+          std::cout << "   using old mnessVal( " << pntR << " ) = "
+            << mness << std::endl;
           }
         }
       }
     else
       {
-      if( w > 2 * m_ThreshMedialness )
+      if( mness > 2 * m_ThreshMedialness )
         {
         prevPntR = pntR;
         }
       }
 
-    for( int j = (int)(kernPnt)-(int)(kernMid);
-      j <= (int)(kernPnt)+(int)(kernMid); j++ )
-      {   
-      if( ( j - kernPntStart ) * step > 0 && 
+    for( int j = (int)( kernPnt)-(int)( kernMid);
+      j <= (int)( kernPnt)+(int)( kernMid); j++ )
+      {
+      if( ( j - kernPntStart ) * step > 0 &&
           ( kernPntEnd - j ) * step > 0 )
         {
         if( kernArray[j].GetRadius() > 0 )
           {
-          w = 1.0 - vnl_math_abs((double)( j - kernPnt )) 
+          mness = 1.0 - vnl_math_abs( (double)( j - kernPnt ))
             / ( kernMid + 1.0 );
-          w = kernArray[j].GetRadius() 
-            + w * ( pntR - kernArray[j].GetRadius() );
-          kernArray[j].SetRadius( w );
+          mness = kernArray[j].GetRadius()
+            + mness * ( pntR - kernArray[j].GetRadius() );
+          kernArray[j].SetRadius( mness );
           }
         else
           {
@@ -1241,13 +1364,13 @@ RadiusExtractor<TInputImage>
     {
     for( unsigned int kernPnt=0; kernPnt<len-1; kernPnt++ )
       {
-      kernArray[kernPnt].SetRadius( 
+      kernArray[kernPnt].SetRadius(
         ( 1.0 * kernArray[kernPnt].GetRadius()
         + 1.0 * kernArray[kernPnt+1].GetRadius() ) / 2.0 );
       }
-    for( int kernPnt=(int)(len)-1; kernPnt>0; kernPnt-- )
+    for( int kernPnt=(int)( len)-1; kernPnt>0; kernPnt-- )
       {
-      kernArray[kernPnt].SetRadius( 
+      kernArray[kernPnt].SetRadius(
         ( 1.0 * kernArray[kernPnt].GetRadius()
         + 1.0 * kernArray[kernPnt-1].GetRadius() ) / 2.0 );
       }
@@ -1259,10 +1382,10 @@ RadiusExtractor<TInputImage>
   for( unsigned int kernPnt=0; kernPnt<len; kernPnt++ )
     {
     kernTemp.clear();
-    for( int j = (int)(kernPnt)-(int)(kernMid);
-      j <= (int)(kernPnt)+(int)(kernMid); j++ )
-      {  
-      if( j >= 0 && j < (int)(len) )
+    for( int j = (int)( kernPnt)-(int)( kernMid);
+      j <= (int)( kernPnt)+(int)( kernMid); j++ )
+      {
+      if( j >= 0 && j < (int)( len) )
         {
         kernTemp.push_back( kernArray[j] );
         }
@@ -1382,7 +1505,7 @@ RadiusExtractor<TInputImage>
   if( tube.GetPoints().size() == 0 )
     {
     return false;
-    } 
+    }
 
   KernArrayType               kernArray;
   KernArrayTubePointIndexType kernArrayTubePointIndex;
@@ -1413,7 +1536,7 @@ RadiusExtractor<TInputImage>
     if( tf < minDist )
       {
       minDist = tf;
-      minDistI = (int)(kPnt);
+      minDistI = (int)( kPnt);
       }
     }
 
@@ -1431,9 +1554,9 @@ RadiusExtractor<TInputImage>
   this->ComputeMeasuresInFullKernelArray( kernArray, kernPnt, len-1 );
 
   kernPnt = minDistI + 1;
-  if( kernPnt > (int)(len)-1 )
+  if( kernPnt > (int)( len)-1 )
     {
-    kernPnt = (int)(len) - 1;
+    kernPnt = (int)( len) - 1;
     }
 
   this->ComputeMeasuresInFullKernelArray( kernArray, kernPnt, 0 );

@@ -10,7 +10,7 @@ Copyright University of North Carolina, Chapel Hill, NC, USA.
 Revised implementation:
 Copyright Kitware Inc., Carrboro, NC, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, 
+distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
@@ -33,24 +33,25 @@ limitations under the License.
 #include <vnl/vnl_vector.h>
 #include <itkVesselTubeSpatialObject.h>
 
-#include "itkOptParabolicFit1D.h"
+#include "itkOptBrent1D.h"
+#include "itkSplineApproximation1D.h"
 #include "itkBlurImageFunction.h"
 
-namespace itk 
+namespace itk
 {
 
 /**
  * This class extract the radius of a tube given an image
- * 
+ *
  * /sa itkRidgeExtractor
  */
 
-template <class TInputImage>             
-class ITK_EXPORT RadiusExtractor : public Object 
+template <class TInputImage>
+class ITK_EXPORT RadiusExtractor : public Object
 {
 public:
 
-  /** 
+  /**
    * Standard self typedef */
   typedef RadiusExtractor                                    Self;
   typedef Object                                             Superclass;
@@ -63,10 +64,10 @@ public:
   /**
    * Standard for the number of dimension
    */
-  itkStaticConstMacro( ImageDimension, unsigned int, 
+  itkStaticConstMacro( ImageDimension, unsigned int,
     ::itk::GetImageDimension< TInputImage>::ImageDimension );
 
-  typedef VesselTubeSpatialObject< TInputImage::ImageDimension > 
+  typedef VesselTubeSpatialObject< TInputImage::ImageDimension >
                                                              TubeType;
   typedef typename TubeType::TubePointType                   TubePointType;
 
@@ -91,12 +92,12 @@ public:
   /**
    * Defines the type of vectors used
    */
-  typedef vnl_vector< double >                               VectorType; 
+  typedef vnl_vector< double >                               VectorType;
 
   /**
    * Defines the type of matrix used
    */
-  typedef vnl_matrix< double >                               MatrixType; 
+  typedef vnl_matrix< double >                               MatrixType;
 
   /**
    * Set the input image */
@@ -122,17 +123,17 @@ public:
    * Get Extent */
   itkGetMacro( Extent, double );
 
-  /*  
+  /*
    * Set Data Minimum */
-  itkSetMacro( DataMin, double ); 
+  itkSetMacro( DataMin, double );
 
   /**
    * Get Data Minimum */
   itkGetMacro( DataMin, double );
 
-  /*  
+  /*
    * Set Data Maximum */
-  itkSetMacro( DataMax, double ); 
+  itkSetMacro( DataMax, double );
 
   /**
    * Get Data Maximum */
@@ -144,7 +145,7 @@ public:
 
   /**
    * Get Minimum Radius */
-  itkGetMacro( RadiusMin, double );  
+  itkGetMacro( RadiusMin, double );
 
   /**
    * Set Maximum Radius */
@@ -160,7 +161,7 @@ public:
 
   /**
    * Get Radius0 */
-  itkGetMacro( Radius0, double ); 
+  itkGetMacro( Radius0, double );
 
   /**
    * Set ThreshMedialness */
@@ -168,7 +169,7 @@ public:
 
   /**
    * Get ThreshMedialness */
-  itkGetMacro( ThreshMedialness, double ); 
+  itkGetMacro( ThreshMedialness, double );
 
   /**
    * Set ThreshMedialness Start */
@@ -176,7 +177,7 @@ public:
 
   /**
    * Get ThreshMedialness Start*/
-  itkGetMacro( ThreshMedialnessStart, double ); 
+  itkGetMacro( ThreshMedialnessStart, double );
 
   /**
    * Set Extract Ridge */
@@ -184,34 +185,38 @@ public:
 
   /**
    * Get ExtractRidge*/
-  itkGetMacro( ExtractRidge, bool ); 
+  itkGetMacro( ExtractRidge, bool );
 
   /**
    * Return the optimizer */
-  OptParabolicFit1D & GetMedialnessOptimizer( void );
+  OptBrent1D & GetMedialnessOptimizer( void );
+
+  /**
+   * Return the optimizer */
+  SplineApproximation1D & GetMedialnessOptimizerSpline( void );
 
   /**
    *
    */
   void ComputeMeasuresAtPoint( TubePointType & pnt, double pntR,
-    double w, double & mness, double & bness, bool doBNess );
+    double & mness, double & bness, bool doBNess );
 
   /**
-   * Compute medialness at a kernel array */       
+   * Compute medialness at a kernel array */
   void ComputeMeasuresInKernelArray( KernArrayType & kernArray,
     double pntR, double & mness, double & bness, bool doBNess );
 
   /**
-   * Calculate the optimal scale 
+   * Calculate the optimal scale
    */
   bool ComputeOptimalRadiusAtPoint( TubePointType & pnt, double & r0,
     double rMin, double rMax, double rStep, double rTolerance );
 
   /**
-   * Calculate Radii 
+   * Calculate Radii
    */
   bool ComputeTubeRadii( TubeType & tube );
-       
+
   void SetIdleCallBack( bool ( *idleCallBack )() );
   void SetStatusCallBack( void ( *statusCallBack )( char *, char *, int ) );
 
@@ -222,10 +227,10 @@ protected:
   RadiusExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
-  void ComputeValuesInSubKernel( TubePointType pnt, double pntR, double w,
+  void ComputeValuesInSubKernel( TubePointType pnt, double pntR,
     MatrixType & kernN, VectorType & kern, double & kernCnt );
 
-  void ComputeValuesInKernel( TubePointType pnt, double pntR, double w,
+  void ComputeValuesInKernel( TubePointType pnt, double pntR,
     MatrixType & kernN, VectorType & kernPos, double & kernPosCnt,
     VectorType & kernNeg, double & kernNegCnt,
     VectorType & kernBrn, double & kernBrnCnt, bool doBNess );
@@ -235,15 +240,15 @@ protected:
     KernArrayTubePointIndexType & kernArrayTubePointIndex );
 
   /**
-   * Compute medialness at a kernel */    
-  void ComputeMeasuresInKernel( double pntR, double w, 
-    VectorType & kernPos, double & kernPosCnt, 
-    VectorType & kernNeg, double & kernNegCnt, 
-    VectorType & kernBrn, double & kernBrnCnt, 
+   * Compute medialness at a kernel */
+  void ComputeMeasuresInKernel( double pntR,
+    VectorType & kernPos, double & kernPosCnt,
+    VectorType & kernNeg, double & kernNegCnt,
+    VectorType & kernBrn, double & kernBrnCnt,
     double & mness, double & bness, bool doBNess );
 
   /**
-   * Calculate Radii one way */    
+   * Calculate Radii one way */
   void ComputeMeasuresInFullKernelArray( KernArrayType & kernArray,
     unsigned int kernPntStart, unsigned int KernPntEnd );
 
@@ -256,7 +261,7 @@ protected:
 
 private:
 
-  typename ImageType::Pointer             m_Image; 
+  typename ImageType::Pointer             m_Image;
   typename ImageType::IndexType           m_ImageXMin;
   typename ImageType::IndexType           m_ImageXMax;
 
@@ -265,31 +270,33 @@ private:
   double                                  m_DataMin;
   double                                  m_DataMax;
 
-  OptParabolicFit1D                       m_MedialnessOpt;
-  
+  double                                  m_MedialnessScaleStep;
+  OptBrent1D                              m_MedialnessOpt;
+  SplineApproximation1D                 * m_MedialnessOptSpline;
+
   bool                                    m_Debug;
   bool                                    m_Verbose;
-       
+
   unsigned int                            m_NumKernelPoints;
   unsigned int                            m_KernelPointSpacing;
-       
+
   /** Determine if the algorithm extracts ridge or a valley */
   bool                                    m_ExtractRidge;
 
   double                                  m_Radius0;
   double                                  m_RadiusMin;
   double                                  m_RadiusMax;
-       
+
   double                                  m_ThreshMedialness;
   double                                  m_ThreshMedialnessStart;
-      
-  UserFunc<double, double> *              m_MedialnessFunc;
-      
+
+  UserFunc<int, double> *                 m_MedialnessFunc;
+
   unsigned int                            m_KernNumDirs;
   MatrixType                              m_KernX;
 
   double                                  m_Scale;
-  double                                  m_Extent;   
+  double                                  m_Extent;
 
   bool ( *m_IdleCallBack )();
   void ( *m_StatusCallBack )( char *, char *, int );

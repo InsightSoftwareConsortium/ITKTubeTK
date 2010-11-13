@@ -75,10 +75,10 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetRadiusMin( 0.5 );
-  if( radiusOp->GetRadiusMin() != 0.5 )
+  radiusOp->SetRadiusMin( 0.75 );
+  if( radiusOp->GetRadiusMin() != 0.75 )
     {
-    tube::ErrorMessage( "Radius min != 0.5" );
+    tube::ErrorMessage( "Radius min != 0.75" );
     returnStatus = EXIT_FAILURE;
     }
 
@@ -96,17 +96,17 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetThreshMedialness( 0.05 );
-  if( radiusOp->GetThreshMedialness() != 0.05 )
+  radiusOp->SetThreshMedialness( 0.005 );
+  if( radiusOp->GetThreshMedialness() != 0.005 )
     {
-    tube::ErrorMessage( "ThreshMedialness != 0.05" );
+    tube::ErrorMessage( "ThreshMedialness != 0.005" );
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetThreshMedialnessStart( 0.02 );
-  if( radiusOp->GetThreshMedialnessStart() != 0.02 )
+  radiusOp->SetThreshMedialnessStart( 0.002 );
+  if( radiusOp->GetThreshMedialnessStart() != 0.002 )
     {
-    tube::ErrorMessage( "ThreshMedialnessStart != 0.02" );
+    tube::ErrorMessage( "ThreshMedialnessStart != 0.002" );
     returnStatus = EXIT_FAILURE;
     }
 
@@ -146,12 +146,11 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
   rndGen->Initialize(); // set seed here
 
   int failures = 0;
-  for( unsigned int mcRun=0; mcRun<10; mcRun++ )
+  unsigned int numMCRuns = 100;
+  for( unsigned int mcRun=0; mcRun<numMCRuns; mcRun++ )
     {
     std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "***** Beginning tube test ***** " << std::endl;
-    std::cout << "***** Beginning tube test ***** " << std::endl;
+    std::cout << "*** RUN = " << mcRun << std::endl;
     unsigned int rndTubeNum = rndGen->GetUniformVariate( 0, 1 ) * numTubes;
     if( rndTubeNum > numTubes-1 )
       {
@@ -189,53 +188,45 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
     double r0 = pnt->GetRadius();
     double r1 = r0;
 
+    std::cout << "  x = " << pnt->GetPosition() << std::endl;
     std::cout << "  r = " << r0 << std::endl;
     std::cout << "  t = " << pnt->GetTangent() << std::endl;
     std::cout << "  n1 = " << pnt->GetNormal1() << std::endl;
     std::cout << "  n2 = " << pnt->GetNormal2() << std::endl;
 
     radiusOp->SetDebug( true );
-    if( !radiusOp->ComputeOptimalRadiusAtPoint( *pnt, r1, r1/4, r1*2,
-      r1/8, r1/16 ) )
+    double rMin = 0.75;
+    double rMax = 10;
+    double rStep = 0.25;
+    double rTol = 0.1;
+    if( !radiusOp->ComputeOptimalRadiusAtPoint( *pnt, r1, rMin, rMax,
+      rStep, rTol ) )
       {
-      std::cerr << "ComputeOptimalRadius test failed." << std::endl;
-      std::cerr << "   Source = " << pnt->GetPosition() 
+      std::cout << "ComputeOptimalRadius returned false." << std::endl;
+      std::cout << "   Target = " << pnt->GetPosition()
         << " at r = " << r0 << std::endl;
-      std::cerr << "      Result r = " << r1 << std::endl;
+      std::cout << "      Result r = " << r1 << std::endl;
       ++failures;
       continue;
       }
   
     double diff = vnl_math_abs( r1 - r0 );
-    if( diff > 0.5 * r0 )
+    if( diff > 0.2 * r0 && diff > 0.75 )
       {
-      std::cerr << "Radius estimate inaccurate." << std::endl;
-      std::cerr << "   Source = " << r0 << std::endl;
-      std::cerr << "      Result = " << r1 << std::endl;
+      std::cout << "Radius estimate inaccurate." << std::endl;
+      std::cout << "   Target = " << r0 << std::endl;
+      std::cout << "      Result = " << r1 << std::endl;
       ++failures;
       continue;
       }
 
-    std::cout << "Radius estimate a success!" << std::endl;
-    std::cout << std::endl;
-
-    std::cout << "***** Beginning radius estimation for entire tube  ***** "
-      << std::endl;
-    if( ! radiusOp->ComputeTubeRadii( *tube ) )
-      {
-      std::cerr << "Tube radius estimation failed." << std::endl;
-      ++failures;
-      continue;
-      }
-
-    // Check results HERE 
-    //
-
-    std::cout << "***** Ending tube extraction ***** " << std::endl;
+    std::cout << "*** Radius estimate a success! ***" << std::endl;
+    std::cout << "   Target = " << r0 << std::endl;
+    std::cout << "      Result = " << r1 << std::endl;
     }
 
   std::cout << "Number of failures = " << failures << std::endl;
-  if( failures > 10 )
+  if( failures > 0.2 * numMCRuns )
     {
     return EXIT_FAILURE;
     }
