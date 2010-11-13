@@ -88,7 +88,7 @@ set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
 if( TubeTK_USE_VTK )
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest1
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTestStraightNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_straight_noNoise_smoothedMotionField.mhd
                     ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
@@ -102,7 +102,7 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest2
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTestStraight
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_straight_smoothedMotionField.mhd
                     ${TEMP}/Regularization_straight_smoothedMotionField.mhd
@@ -116,7 +116,7 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest3
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTestAngledNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_angled_noNoise_smoothedMotionField.mhd
                     ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
@@ -130,7 +130,7 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest4
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTestAngled
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_angled_smoothedMotionField.mhd
                     ${TEMP}/Regularization_angled_smoothedMotionField.mhd
@@ -144,7 +144,7 @@ if( TubeTK_USE_VTK )
           5 0.125 1
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest5
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTestAngledGaussian
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/Regularization_angled_gaussian_smoothedMotionField.mhd
                     ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
@@ -158,7 +158,7 @@ if( TubeTK_USE_VTK )
           5 0.125 0
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTest1
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTestNoReg
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
                     ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
@@ -174,7 +174,7 @@ if( TubeTK_USE_VTK )
           5 0.125 0 1
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTest2
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTestAnisotropicReg
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare  ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
                     ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
@@ -190,7 +190,7 @@ if( TubeTK_USE_VTK )
           5 0.125 1 1
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTest3
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTestGaussianReg
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
                     ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
@@ -206,7 +206,7 @@ if( TubeTK_USE_VTK )
           5 0.125 1 0
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTest1
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTestNoReg
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
                     ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
@@ -220,7 +220,7 @@ if( TubeTK_USE_VTK )
           5 0.125 0 1
           )
 
-  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTest2
+  add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTestAnisotropicReg
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
                     ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
@@ -234,7 +234,7 @@ if( TubeTK_USE_VTK )
           5 0.125 1 1
           )
 
-  add_test(  itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTest3
+  add_test(  itkImageToImageAnisotropicDiffusiveDeformableRegistrationSphereTestGaussianReg
           ${BASE_REGISTRATION_FILTERS_TESTS}
           --compare ${BASELINE}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
                     ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
