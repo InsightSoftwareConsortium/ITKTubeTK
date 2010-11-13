@@ -21,17 +21,17 @@
 # 
 ##############################################################################
 
-PROJECT(Registration)
+project(Registration)
 
-FIND_PACKAGE(ITK REQUIRED)
-INCLUDE(${ITK_USE_FILE})
+find_package(ITK REQUIRED)
+include(${ITK_USE_FILE})
 
 if(TubeTK_USE_VTK)
-  FIND_PACKAGE(VTK REQUIRED)
-  INCLUDE(${VTK_USE_FILE})
+  find_package(VTK REQUIRED)
+  include(${VTK_USE_FILE})
 endif(TubeTK_USE_VTK)
  
-#SET(Registration_SRCS
+#set(Registration_SRCS
 #  itkImageToTubeRigidMetric.txx
 #  itkImageToTubeRigidRegistration.txx
 #  itkSpatialObjectToSpatialObjectFilter.txx
@@ -39,11 +39,11 @@ endif(TubeTK_USE_VTK)
 #  TubeRegistrator.cpp
 #  )
 
-#ADD_LIBRARY(${PROJECT_NAME} ${Registration_SRCS})
-#SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
-#TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${ITK_LIBRARIES})
+#add_library(${PROJECT_NAME} ${Registration_SRCS})
+#set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+#target_link_libraries(${PROJECT_NAME} ${ITK_LIBRARIES})
 
-IF( BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
+endif( BUILD_TESTING )
 
