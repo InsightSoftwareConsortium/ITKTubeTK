@@ -157,6 +157,18 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
     }
   std::cout << std::endl;
 
+  itk::Matrix<double,3,3> rotationMatrix;
+  itk::Vector<double,3> translation;
+
+  rotationMatrix = outputTransform->GetMatrix();
+  translation = outputTransform->GetTranslation();
+
+  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
+  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;
+  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1) << " " << rotationMatrix(2,2) << std::endl;
+  std::cout << translation[0] << " " << translation[1] << " " << translation[2]
+      << std::endl;
+
   // create transform filter
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput(vesselReader->GetGroup());

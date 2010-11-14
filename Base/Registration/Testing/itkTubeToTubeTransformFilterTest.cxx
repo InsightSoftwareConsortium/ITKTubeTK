@@ -18,7 +18,6 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-
 #include "itkTubeToTubeTransformFilter.h"
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
@@ -107,6 +106,9 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
   //transform->SetRotation(rotation[0], rotation[1], rotation[2]);
 
   transform->Translate(translation);
+
+  std::cout << translation[0] << " " << translation[1] << " " << translation[2]
+      << std::endl;
 
   // create transform filter
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
