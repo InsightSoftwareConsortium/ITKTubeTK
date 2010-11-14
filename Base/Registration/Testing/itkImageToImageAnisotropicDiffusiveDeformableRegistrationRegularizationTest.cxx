@@ -74,7 +74,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
 
   // Image parameters
   int         startValue = 0;
-  int         sizeValue = 50;
+  int         sizeValue = 10;
   double      spacingValue = 1.0;
   double      originValue = 0.0;
 
