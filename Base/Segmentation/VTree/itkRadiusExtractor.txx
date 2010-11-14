@@ -199,28 +199,6 @@ RadiusExtractor<TInputImage>
 }
 
 
-/** Set the scale factor */
-template<class TInputImage>
-void
-RadiusExtractor<TInputImage>
-::SetScale( double scale )
-{
-  m_Scale = scale;
-  m_DataOp->SetScale( scale );
-}
-
-
-/** Set the extent factor */
-template<class TInputImage>
-void
-RadiusExtractor<TInputImage>
-::SetExtent( double extent )
-{
-  m_Extent = extent;
-  m_DataOp->SetExtent( extent );
-}
-
-
 /** Set Radius Min */
 template<class TInputImage>
 void

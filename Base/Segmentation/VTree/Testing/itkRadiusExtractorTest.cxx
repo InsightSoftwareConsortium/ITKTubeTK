@@ -56,8 +56,6 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
   RadiusOpType::Pointer radiusOp = RadiusOpType::New();
 
   radiusOp->SetInputImage( im );
-  radiusOp->SetScale( 2.0 );
-  radiusOp->SetExtent( 3.0 );
 
   bool returnStatus = EXIT_SUCCESS;
 

@@ -107,22 +107,6 @@ public:
    * Get the input image */
   itkGetConstObjectMacro( Image, ImageType );
 
-  /**
-   * Set Scale */
-  void SetScale( double scale );
-
-  /**
-   * Get Scale */
-  itkGetMacro( Scale, double );
-
-  /**
-   * Set Extent */
-  void SetExtent( double extent );
-
-  /**
-   * Get Extent */
-  itkGetMacro( Extent, double );
-
   /*
    * Set Data Minimum */
   itkSetMacro( DataMin, double );
@@ -294,9 +278,6 @@ private:
 
   unsigned int                            m_KernNumDirs;
   MatrixType                              m_KernX;
-
-  double                                  m_Scale;
-  double                                  m_Extent;
 
   bool ( *m_IdleCallBack )();
   void ( *m_StatusCallBack )( char *, char *, int );
