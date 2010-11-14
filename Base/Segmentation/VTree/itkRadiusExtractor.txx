@@ -106,9 +106,6 @@ template<class TInputImage>
 RadiusExtractor<TInputImage>
 ::RadiusExtractor()
 {;
-  m_Debug = false;
-  m_Verbose = true;
-
   m_Image = NULL;
   m_ImageXMin.Fill( 0 );
   m_ImageXMax.Fill( -1 );
@@ -267,7 +264,7 @@ RadiusExtractor<TInputImage>
         m_Image->GetLargestPossibleRegion().GetSize()[i] - 1;
       }
 
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       std::cout << "RadiusExtractor: SetInputImage: Minimum = "
         << m_DataMin << std::endl;
@@ -329,7 +326,7 @@ RadiusExtractor<TInputImage>
     std::cout
       << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
       << std::endl;
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       std::cout << "   DotProd = " << dotP << " and Norm = " << len
         << std::endl;
@@ -356,7 +353,7 @@ RadiusExtractor<TInputImage>
   double kernNegCnt = 0;
   double kernBrnCnt = 0;
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Compute values at point" << std::endl;
     }
@@ -417,7 +414,7 @@ RadiusExtractor<TInputImage>
     pntR = m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep;
     }
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "RadiusExtractor: MedialnessInKern: pntR = "
       << pntR << " : size = " << kernArray.size()
@@ -491,7 +488,7 @@ RadiusExtractor<TInputImage>
   this->ComputeMeasuresInKernel( pntR, kernPosTot, kernPosCntTot,
     kernNegTot, kernNegCntTot, kernBrnTot, kernBrnCntTot,
     mness, bness, doBNess );
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "At radius = " << pntR << " medialness = " << mness
       << std::endl << std::endl;
@@ -565,7 +562,7 @@ RadiusExtractor<TInputImage>
   m_MedialnessOptSpline->extreme( &r0, &mness );
   r0 *= m_MedialnessScaleStep;
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Local extreme at radius = " << r0
       << " with medialness = " << mness << std::endl << std::endl;
@@ -744,7 +741,7 @@ RadiusExtractor<TInputImage>
     std::cout
       << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
       << std::endl;
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       std::cout << "   DotProd = " << dotP << " and Norm = " << sum
         << std::endl;
@@ -762,7 +759,7 @@ RadiusExtractor<TInputImage>
       }
     }
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "kernN0 = " << kernN.get_column( 0 ) << std::endl;
     std::cout << "kernN1 = " << kernN.get_column( 1 ) << std::endl;
@@ -777,7 +774,7 @@ RadiusExtractor<TInputImage>
     n0 += dp * n.get_column( j );
     }
   n0.normalize();
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "n0 = " << n0 << std::endl;
     }
@@ -788,7 +785,7 @@ RadiusExtractor<TInputImage>
       GetCrossVector( pnt.GetTangent().GetVnlVector(),
         n.get_column( 0 ) )  );
     n.get_column( 1 ).normalize();
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       std::cout << "n1 = " << n.get_column( 1 ) << std::endl;
       }
@@ -823,7 +820,7 @@ RadiusExtractor<TInputImage>
   m_DataOp->SetScale( pntR / f );
   m_DataOp->SetExtent( e );
   double r = (f-e)/f * pntR;
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Pos: opR = " << pntR/f << " opE = " << e
       << " dist = " << r << std::endl;
@@ -838,7 +835,7 @@ RadiusExtractor<TInputImage>
     }
 
   r = (f+e) * pntR / f;
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Neg: opR = " << pntR/f << " opE = " << e
       << " dist = " << r << std::endl;
@@ -869,7 +866,7 @@ RadiusExtractor<TInputImage>
     m_DataOp->SetScale( pntR / f ); // mess with this -  and r
     m_DataOp->SetExtent( e );
     r = f * pntR;
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       std::cout << "Brn: opR = " << pntR/f << " opE = " << e
         << " dist = " << r << std::endl;
@@ -896,7 +893,7 @@ RadiusExtractor<TInputImage>
     {
     std::cout << "Warning: Medialness kernel does not intersect image."
       << std::endl;
-    if( m_Debug )
+    if( this->GetDebug() )
       {
       for( unsigned int i=0; i<m_KernNumDirs; i++ )
         {
@@ -1256,7 +1253,7 @@ RadiusExtractor<TInputImage>
 
     if( mness < m_ThreshMedialness )
       {
-      if( m_Debug )
+      if( this->GetDebug() )
         {
         std::cout << "Bad mnessVal( " << pntR << " ) = " << mness
           << std::endl;
@@ -1267,7 +1264,7 @@ RadiusExtractor<TInputImage>
       pntR *= m_MedialnessScaleStep;
       if( mness >= m_ThreshMedialness )
         {
-        if( m_Debug )
+        if( this->GetDebug() )
           {
           std::cout << "   *** new mnessVal( " << pntR << " ) = " << mness
             << std::endl;
@@ -1281,7 +1278,7 @@ RadiusExtractor<TInputImage>
         {
         pntR = prevPntR;
         mness = 2 * m_ThreshMedialness;
-        if( m_Debug )
+        if( this->GetDebug() )
           {
           std::cout << "   using old mnessVal( " << pntR << " ) = "
             << mness << std::endl;
@@ -1497,7 +1494,7 @@ RadiusExtractor<TInputImage>
     pntIter++;
     }
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Found point " << ( *pntIter ).GetID() << std::endl;
     }
@@ -1518,7 +1515,7 @@ RadiusExtractor<TInputImage>
       }
     }
 
-  if( m_Debug )
+  if( this->GetDebug() )
     {
     std::cout << "Found point i = " << minDistI << std::endl;
     }

@@ -258,9 +258,6 @@ private:
   OptBrent1D                              m_MedialnessOpt;
   SplineApproximation1D                 * m_MedialnessOptSpline;
 
-  bool                                    m_Debug;
-  bool                                    m_Verbose;
-
   unsigned int                            m_NumKernelPoints;
   unsigned int                            m_KernelPointSpacing;
 
