@@ -24,7 +24,7 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkImageToImageDiffusiveDeformableRegistrationFilter.h"
+#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.h"
 
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageFileWriter.h"
@@ -37,17 +37,16 @@ limitations under the License.
 #include "vtkPointData.h"
 #include "vtkPolyDataWriter.h"
 
-int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
+int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 12 )
+  if( argc < 11 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
               << "original motion field image, "
               << "smoothed motion field image, "
-              << "smoothed motion field image (tangential), "
               << "smoothed motion field image (normal), "
               << "normal vector image, "
               << "normal border surface, "
@@ -107,7 +106,7 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
   VectorType  borderN; // normal to the border
   VectorType  perpN;   // perpendicular to the border
 
-  borderSlope = atof( argv[8] );
+  borderSlope = atof( argv[7] );
   if( borderSlope == 0 )
     {
     borderN[0] = 0.0;
@@ -161,7 +160,7 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
   PixelType     randY = 0;
   PixelType     randZ = 0;
   double        mean = 0;
-  double        variance = atof(argv[7]);
+  double        variance = atof(argv[6]);
 
   for( it.GoToBegin(); ! it.IsAtEnd(); ++it )
     {
@@ -210,7 +209,7 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
 
   // Save the border polydata
   vtkPolyDataWriter * polyDataWriter = vtkPolyDataWriter::New();
-  polyDataWriter->SetFileName( argv[6] );
+  polyDataWriter->SetFileName( argv[5] );
   polyDataWriter->SetInput( plane->GetOutput() );
   polyDataWriter->Update();
 
@@ -229,23 +228,21 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
   movingImage->Allocate();
 
   // Setup the registrator object
-  typedef itk::ImageToImageDiffusiveDeformableRegistrationFilter
-                                                      < FixedImageType,
-                                                        MovingImageType,
-                                                        DeformationFieldType >
-                                                        RegistrationFilterType;
+  typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+      < FixedImageType, MovingImageType, DeformationFieldType >
+      RegistrationFilterType;
   RegistrationFilterType::Pointer registrator = RegistrationFilterType::New();
 
   registrator->SetInitialDeformationField( deformationField );
   registrator->SetMovingImage( movingImage );
   registrator->SetFixedImage( fixedImage );
   registrator->SetBorderSurface( plane->GetOutput() );
-  int numIterations = atoi( argv[9] );
+  int numIterations = atoi( argv[8] );
   registrator->SetNumberOfIterations( numIterations );
   // because we are just doing motion field regularization in this test:
   registrator->SetComputeIntensityDistanceTerm( false );
-  registrator->SetTimeStep( atof( argv[10] ) );
-  int useDiffusive = atoi( argv[11] );
+  registrator->SetTimeStep( atof( argv[9] ) );
+  int useDiffusive = atoi( argv[10] );
   if ( useDiffusive )
     {
     registrator->SetUseDiffusiveRegularization( true );
@@ -302,24 +299,13 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
   // Save the normal vector image
   typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
   VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
-  vectorWriter->SetFileName( argv[5] );
+  vectorWriter->SetFileName( argv[4] );
   vectorWriter->SetInput( registrator->GetNormalVectorImage() );
   vectorWriter->Write();
 
-  // Save the output deformation field tangential and normal images
+  // Save the output deformation field normal image
   writer->SetFileName( argv[3] );
-  writer->SetInput( registrator->GetOutputTangentialImage() );
-  try
-    {
-    writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    std::cerr << "Exception caught: " << err << std::endl;
-    return EXIT_FAILURE;
-    }
-  writer->SetFileName( argv[4] );
-  writer->SetInput( registrator->GetOutputNormalImage() );
+  writer->SetInput( registrator->GetNormalDeformationFieldImage() );
   try
     {
     writer->Update();
@@ -333,4 +319,3 @@ int itkImageToImageDiffusiveDeformableRegistrationRegularizationTest(
   return EXIT_SUCCESS;
 
 }
-

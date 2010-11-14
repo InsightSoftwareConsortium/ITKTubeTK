@@ -24,8 +24,7 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkImageToImageDiffusiveDeformableRegistrationFilter.h"
-
+#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.h"
 #include "itkImageFileWriter.h"
 #include "itkVectorCastImageFilter.h"
 #include "itkWarpImageFilter.h"
@@ -37,22 +36,20 @@ limitations under the License.
 #include "vtkPolyDataReader.h"
 #include "vtkPolyDataWriter.h"
 
-int itkImageToImageDiffusiveDeformableRegistrationExecution(
+int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
                                                       int argc, char* argv [] )
 {
-  if( argc < 13 )
+  if( argc < 11 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
               << "original fixed image, "
               << "original moving image, "
-              << "surface border polydata, "
+              << "surface border normal vector image, "
+              << "surface border weight image, "
               << "resulting motion field image, "
               << "resulting transformed moving image, "
-              << "weight image, "
-              << "normal vector image, "
-              << "surface normals border polydata, "
               << "number of iterations, "
               << "time step, "
               << "compute regularization term, "
@@ -107,29 +104,39 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
   caster->InPlaceOff();
 
   //--------------------------------------------------------
-  std::cout << "Read the input polydata" << std::endl;
-  vtkPolyDataReader * polyReader = vtkPolyDataReader::New();
-  polyReader->SetFileName( argv[3] );
-  polyReader->Update();
-  vtkPolyData * border = polyReader->GetOutput();
+  std::cout << "Read the input normal vector image and weight image" << std::endl;
+  typedef itk::ImageFileReader< VectorImageType > NormalVectorImageReaderType;
+  NormalVectorImageReaderType::Pointer normalVectorImageReader =
+      NormalVectorImageReaderType::New();
+  normalVectorImageReader->SetFileName( argv[3] );
+  normalVectorImageReader->Update();
+  VectorImageType::Pointer normalVectorImage
+      = normalVectorImageReader->GetOutput();
+
+  typedef itk::ImageFileReader< WeightImageType > WeightImageReaderType;
+  WeightImageReaderType::Pointer weightImageReader
+      = WeightImageReaderType::New();
+  weightImageReader->SetFileName( argv[4] );
+  weightImageReader->Update();
+  WeightImageType::Pointer weightImage = weightImageReader->GetOutput();
 
   //-------------------------------------------------------------
   std::cout << "Run registration and warp moving" << std::endl;
 
-  typedef itk::ImageToImageDiffusiveDeformableRegistrationFilter< ImageType,
-                                                                  ImageType,
-                                                                  FieldType >
-                                                                  RegistrationType;
+  typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+      < ImageType, ImageType, FieldType > RegistrationType;
   RegistrationType::Pointer registrator = RegistrationType::New();
 
   registrator->SetInitialDeformationField( caster->GetOutput() );
   registrator->SetMovingImage( moving );
   registrator->SetFixedImage( fixed );
-  registrator->SetBorderSurface( border );
-  int numberOfIterations = atoi( argv[9] );
+  registrator->SetNormalVectorImage( normalVectorImage );
+  registrator->SetWeightImage( weightImage );
+  //registrator->SetBorderSurface( border );
+  int numberOfIterations = atoi( argv[7] );
   registrator->SetNumberOfIterations( numberOfIterations );
 
-  int compute = atoi( argv[11] );
+  int compute = atoi( argv[9] );
   if (compute)
     {
     registrator->SetComputeRegularizationTerm( true );
@@ -139,7 +146,7 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
     registrator->SetComputeRegularizationTerm( false );
     }
 
-  int useDiffusive = atoi( argv[12] );
+  int useDiffusive = atoi( argv[10] );
   if ( useDiffusive )
     {
     registrator->SetUseDiffusiveRegularization( true );
@@ -149,7 +156,7 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
     registrator->SetUseDiffusiveRegularization( false );
     }
 
-  registrator->SetTimeStep( atof( argv[10] ) );
+  registrator->SetTimeStep( atof( argv[8] ) );
   registrator->SetLambda( -0.1 );
 
   // warp moving image
@@ -173,34 +180,12 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
   warper->Update();
 
   // ---------------------------------------------------------
-  std::cout << "Printing the normal surface border, normal vector image "
-      << "and weight image" << std::endl;
-
-  vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
-  vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
-  polyWriter->SetFileName( argv[8] );
-  polyWriter->SetInput( normalPolyData );
-  polyWriter->Write();
-
-  typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
-  VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
-  vectorWriter->SetFileName( argv[7] );
-  vectorWriter->SetInput( registrator->GetNormalVectorImage() );
-  vectorWriter->Write();
-
-  typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
-  WeightWriterType::Pointer weightWriter = WeightWriterType::New();
-  weightWriter->SetFileName( argv[6] );
-  weightWriter->SetInput( registrator->GetWeightImage() );
-  weightWriter->Write();
-
-  // ---------------------------------------------------------
   std::cout << "Printing the deformation field and transformed moving image"
             << std::endl;
 
   typedef itk::ImageFileWriter< FieldType > FieldWriterType;
   FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
-  fieldWriter->SetFileName( argv[4] );
+  fieldWriter->SetFileName( argv[5] );
   fieldWriter->SetInput( registrator->GetOutput() );
   try
     {
@@ -213,7 +198,7 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
     }
 
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
-  imageWriter->SetFileName( argv[5] );
+  imageWriter->SetFileName( argv[6] );
   imageWriter->SetInput( warper->GetOutput() );
   try
     {
@@ -257,4 +242,3 @@ int itkImageToImageDiffusiveDeformableRegistrationExecution(
   return EXIT_SUCCESS;
 
 }
-

@@ -20,25 +20,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef _itkImageToImageDiffusiveDeformableRegistrationFunction_txx
-#define _itkImageToImageDiffusiveDeformableRegistrationFunction_txx
+#ifndef _itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction_txx
+#define _itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction_txx
 
-#include "itkImageToImageDiffusiveDeformableRegistrationFunction.h"
+#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction.h"
 #include "itkVectorIndexSelectionCastImageFilter.h"
 
 namespace itk
-{ 
-    
+{
+
 /**
  * Constructor
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::ImageToImageDiffusiveDeformableRegistrationFunction()
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction()
 {
-  RadiusType r;
+  typename Superclass::RadiusType r;
   r.Fill(1);
   this->SetRadius(r);
 
@@ -59,9 +58,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
@@ -84,65 +82,12 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 }
 
 /**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::SetComputeRegularizationTerm( bool compute )
-{
-  m_ComputeRegularizationTerm = compute;
-}
-
-/**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-bool
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::GetComputeRegularizationTerm() const
-{
-  return m_ComputeRegularizationTerm;
-}
-
-/**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::SetComputeIntensityDistanceTerm( bool compute )
-{
-  m_ComputeIntensityDistanceTerm = compute;
-}
-
-/**
- * Set/Get whether to compute terms
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-bool
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::GetComputeIntensityDistanceTerm() const
-{
-  return m_ComputeIntensityDistanceTerm;
-}
-
-/**
  * Creates a pointer to the data structure used to manage global values
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void *
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
 ::GetGlobalDataPointer() const
 {
   GlobalDataStruct * ans = new GlobalDataStruct();
@@ -161,9 +106,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ReleaseGlobalDataPointer(void *GlobalData) const
 {
   GlobalDataStruct * gd = ( GlobalDataStruct * ) GlobalData;
@@ -182,9 +126,8 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeIteration()
 {
   std::cout << "\tInitializeIteration for FUNCTION" << std::endl;
@@ -210,15 +153,14 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   * Computes the update term
   */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename ImageToImageDiffusiveDeformableRegistrationFunction
-                                < TFixedImage, TMovingImage, TDeformationField >
+typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
 ::PixelType
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
-::ComputeUpdate(const NeighborhoodType &neighborhood,
-                void *gd,
-                const FloatOffsetType& offset)
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeUpdate(const NeighborhoodType &,
+                void *,
+                const FloatOffsetType &)
 {
   // This function should never be called!
   itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
@@ -229,38 +171,36 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
                      << "normalNeighborhoodTensor,"
                      << "normalNeighborhoodDeformationFieldComponents,"
                      << " globalData, offset) instead" );
-
 }
 
 /**
   * Computes the update term
   */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename ImageToImageDiffusiveDeformableRegistrationFunction
-                                < TFixedImage, TMovingImage, TDeformationField >
+typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
 ::PixelType
-ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
-                                                     TMovingImage,
-                                                     TDeformationField >
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(const NeighborhoodType &neighborhood,
-                const NormalVectorImageNeighborhoodType
+                const NormalVectorImageNeighborhoodIteratorType
                               &normalVectorImageNeighborhood,
-                const DiffusionTensorNeighborhoodType
+                const DiffusionTensorNeighborhoodIteratorType
                               &tangentialNeighborhoodTensor,
-                const DeformationFieldComponentNeighborhoodArrayType
+                const DeformationVectorComponentNeighborhoodIteratorArrayType
                               &tangentialNeighborhoodDeformationFieldComponents,
-                const DiffusionTensorNeighborhoodType
+                const DiffusionTensorNeighborhoodIteratorType
                               &normalNeighborhoodTensor,
-                const DeformationFieldComponentNeighborhoodArrayType
+                const DeformationVectorComponentNeighborhoodIteratorArrayType
                               &normalNeighborhoodDeformationFieldComponents,
-                void *gd,
-                const FloatOffsetType& offset)
-{  
+                void * gd,
+                const FloatOffsetType & offset)
+{
   // Get the global data structure
   GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
 
   // Get the normal at this pixel
-  const IndexType index = normalVectorImageNeighborhood.GetIndex();
+  const typename FixedImageType::IndexType index = normalVectorImageNeighborhood.GetIndex();
   NormalVectorType normalVector
           = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
 
@@ -268,7 +208,7 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
   // and intensity distance terms
   PixelType                         tangentialRegularizationTerm;
   PixelType                         normalRegularizationTerm;
-  DeformationFieldScalarType        intermediateNormalRegularizationComponent;
+  DeformationVectorComponentType    intermediateNormalRegularizationComponent;
   PixelType                         intermediateNormalRegularizationTerm;
   PixelType                         intensityDistanceTerm;
   PixelType                         updateTerm;
@@ -318,9 +258,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 
     }
 
-
-
-
 //  // TODO take me out
 //  static double ratio = 0.0;
 //  static int numSamples = 0;
@@ -352,11 +289,6 @@ ImageToImageDiffusiveDeformableRegistrationFunction< TFixedImage,
 //    std::cout << "intensity: " << intensityDistanceTerm[0] << " "
 //        << intensityDistanceTerm[1] << " " << intensityDistanceTerm[2] << std::endl;
 //    }
-
-
-
-
-
 
   updateTerm = intensityDistanceTerm
                       + tangentialRegularizationTerm + normalRegularizationTerm;
