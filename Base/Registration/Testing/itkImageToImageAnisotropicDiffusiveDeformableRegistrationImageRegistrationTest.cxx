@@ -250,7 +250,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
     }
   else
     {
-    sizeValue = 80;
+    sizeValue = 30;
     }
 
   double      originValue = 0.0;
@@ -261,6 +261,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
     {
     sizeArray[i] = sizeValue;
     }
+
   SizeType size;
   size.SetSize( sizeArray );
 
