@@ -329,9 +329,11 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
     }
   else
     {
-    double boxSize[3] = { 30, 16, 16 };
+    double boxSize[3] = { sizeValue / (8.0/3.0),
+                          sizeValue / 5.0,
+                          sizeValue / 5.0 };
     double center[3] = {sizeValue / 2.0, sizeValue / 2.0, sizeValue / 2.0 };
-    double offset = 10;
+    double offset = sizeValue / 8.0;
     PixelType bottomStart = 30;
     PixelType bottomEnd = 120;
     PixelType topStart = 130;
@@ -349,7 +351,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
                             bgnd, bottomStart, bottomEnd, topStart, topEnd );
 
     // Create the two boxes on the moving image
-    double shift = 4; // <-- this is the transformation!!!
+    double shift = sizeValue / 20.0; // <-- this is the transformation!!!
     double movingBottomBox[3] = { fixedBottomBox[0] - shift,
                                   fixedBottomBox[1],
                                   fixedBottomBox[2] };
@@ -360,7 +362,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
                             bgnd, bottomStart, bottomEnd, topStart, topEnd );
 
     // setup the normals for the cubes
-    double spacer = 10.0;
+    double spacer = sizeValue / 8.0;
     double bottomCubeBorder[3] = { 0.0 - spacer,
                                    fixedBottomBox[1],
                                    fixedBottomBox[2] };
