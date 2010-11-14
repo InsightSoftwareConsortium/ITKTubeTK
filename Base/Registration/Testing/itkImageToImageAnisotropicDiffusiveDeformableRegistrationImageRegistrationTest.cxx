@@ -246,7 +246,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
   double      sizeValue;
   if( circles )
     {
-    sizeValue = 128;
+    sizeValue = 30;
     }
   else
     {
@@ -308,7 +308,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
       {
       movingCenter[i] = sizeValue / 2.0;
       }
-    double movingRadius = ( sizeValue / 4.0 ) - 2.0;
+    double movingRadius = ( sizeValue / 3.0 ) - 2.0;
     FillWithSphere<ImageType>( moving, movingCenter, movingRadius, fgnd, bgnd );
 
     // fill fixed with sphere
@@ -317,7 +317,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
       {
       fixedCenter[i] = sizeValue / 2.0;
       }
-    double fixedRadius = sizeValue / 4.0;;
+    double fixedRadius = sizeValue / 3.0;;
     FillWithSphere<ImageType>( fixed, fixedCenter, fixedRadius, fgnd, bgnd );
 
     // setup the normals
