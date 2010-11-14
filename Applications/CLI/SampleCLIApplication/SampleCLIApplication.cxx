@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ int DoIt( int argc, char * argv[] )
   // The timeCollector is used to perform basic profiling of the components
   //   of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
-  
+
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
   tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
                                                  CLPProcessInformation );
@@ -72,7 +72,7 @@ int DoIt( int argc, char * argv[] )
   typedef float                                         PixelType;
   typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
   typedef itk::ImageFileReader< ImageType >             ReaderType;
-  
+
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
@@ -82,7 +82,7 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Reading volume: Exception caught: " 
+    tube::ErrorMessage( "Reading volume: Exception caught: "
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
@@ -97,7 +97,8 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start("Gaussian Blur");
 
-    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType > FilterType;
+    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
+      FilterType;
     typename FilterType::Pointer filter;
 
     // Progress per iteration
@@ -110,7 +111,7 @@ int DoIt( int argc, char * argv[] )
       filter->SetNormalizeAcrossScale( true );
       filter->SetSigma( gaussianBlurStdDev );
 
-      filter->SetOrder( 
+      filter->SetOrder(
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       filter->SetDirection( i );
       tube::CLIFilterWatcher watcher( filter,
@@ -140,8 +141,8 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Writing volume: Exception caught: " 
-                        + std::string(err.GetDescription()) );
+    tube::ErrorMessage( "Writing volume: Exception caught: "
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -149,7 +150,7 @@ int DoIt( int argc, char * argv[] )
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End( );
-  
+
   timeCollector.Report();
   return EXIT_SUCCESS;
 }
