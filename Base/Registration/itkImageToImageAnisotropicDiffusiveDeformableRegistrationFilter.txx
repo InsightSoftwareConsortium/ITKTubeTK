@@ -809,15 +809,12 @@ typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedCalculateChange(
-          const ThreadRegionType &
-              regionToProcess,
-          const ThreadNormalVectorImageRegionType &
-              normalVectorRegionToProcess,
-          const ThreadDiffusionTensorImageRegionType &
-              diffusionRegionToProcess,
-          const ThreadDeformationVectorComponentImageRegionType &
-              deformationComponentRegionToProcess,
-          int)
+    const ThreadRegionType &                      regionToProcess,
+    const ThreadNormalVectorImageRegionType &     normalVectorRegionToProcess,
+    const ThreadDiffusionTensorImageRegionType &  diffusionRegionToProcess,
+    const ThreadDeformationVectorComponentImageRegionType &
+        deformationComponentRegionToProcess,
+    int)
 {
   typename OutputImageType::Pointer output = this->GetOutput();
   TimeStepType timeStep;
@@ -834,82 +831,97 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   // of boundary conditions, the rest with boundary conditions.  We operate
   // on the output region because input has been copied to output.
 
-  // Setup the boundary faces for the output deformation field
+  // Define the boundary faces typedefs
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
       < OutputImageType > OutputImageFaceCalculatorType;
   typedef typename OutputImageFaceCalculatorType::FaceListType
       OutputImageFaceListType;
-  OutputImageFaceCalculatorType outputImageFaceCalculator;
-  OutputImageFaceListType outputImageFaceList
-      = outputImageFaceCalculator( output, regionToProcess, radius );
-  typename OutputImageFaceListType::iterator outputImagefIt
-      = outputImageFaceList.begin();
-
-  // Setup the boundary faces for the normal vector images
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
       < NormalVectorImageType > NormalVectorImageFaceCalculatorType;
   typedef typename NormalVectorImageFaceCalculatorType::FaceListType
       NormalVectorImageFaceListType;
-  NormalVectorImageFaceCalculatorType normalVectorImageFaceCalculator;
-  NormalVectorImageFaceListType normalVectorImageFaceList
-      = normalVectorImageFaceCalculator(
-          m_NormalVectorImage, normalVectorRegionToProcess, radius );
-  typename NormalVectorImageFaceListType::iterator normalVectorImagefIt
-      = normalVectorImageFaceList.begin();
-
-  // Setup the boundary faces for the diffusion tensor images
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
       < DiffusionTensorImageType > DiffusionTensorImageFaceCalculatorType;
   typedef typename DiffusionTensorImageFaceCalculatorType::FaceListType
       DiffusionTensorImageFaceListType;
-  DiffusionTensorImageFaceCalculatorType diffusionTensorImageFaceCalculator;
-  DiffusionTensorImageFaceListType tangentialDiffusionTensorFaceList
-      = diffusionTensorImageFaceCalculator(
-          m_TangentialDiffusionTensorImage, diffusionRegionToProcess, radius );
-  typename DiffusionTensorImageFaceListType::iterator
-      tangentialDiffusionTensorfIt
-      = tangentialDiffusionTensorFaceList.begin();
-  DiffusionTensorImageFaceListType normalDiffusionTensorFaceList
-      = diffusionTensorImageFaceCalculator(
-          m_NormalDiffusionTensorImage, diffusionRegionToProcess, radius );
-  typename DiffusionTensorImageFaceListType::iterator normalDiffusionTensorfIt
-      = normalDiffusionTensorFaceList.begin();
-
-  // Setup the boundary faces for the deformation field component images
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
       < DeformationVectorComponentImageType >
       DeformationVectorComponentImageFaceCalculatorType;
-  typedef typename DeformationVectorComponentImageFaceCalculatorType::FaceListType
+  typedef typename DeformationVectorComponentImageFaceCalculatorType
+      ::FaceListType
       DeformationVectorComponentImageFaceListType;
   typedef typename DeformationVectorComponentImageFaceListType::iterator
       DeformationVectorComponentImageFaceListIterator;
+
+  // Setup the boundary faces for the output deformation field
+  OutputImageFaceCalculatorType               outputImageFaceCalculator;
+  OutputImageFaceListType                     outputImageFaceList;
+  typename OutputImageFaceListType::iterator  outputImagefIt;
+
+  // Setup the boundary faces for the normal vector images
+  NormalVectorImageFaceCalculatorType
+      normalVectorImageFaceCalculator;
+  NormalVectorImageFaceListType                     normalVectorImageFaceList;
+  typename NormalVectorImageFaceListType::iterator  normalVectorImagefIt;
+
+  // Setup the boundary faces for the diffusion tensor images
+  DiffusionTensorImageFaceCalculatorType    diffusionTensorImageFaceCalculator;
+  DiffusionTensorImageFaceListType          tangentialDiffusionTensorFaceList;
+  DiffusionTensorImageFaceListType          normalDiffusionTensorFaceList;
+  typename DiffusionTensorImageFaceListType::iterator
+      tangentialDiffusionTensorfIt;
+  typename DiffusionTensorImageFaceListType::iterator
+      normalDiffusionTensorfIt;
+
+  // Setup the boundary faces for the deformation field component images
   DeformationVectorComponentImageFaceCalculatorType
       deformationVectorComponentImageFaceCalculator;
-  itk::FixedArray< DeformationVectorComponentImageFaceListType, ImageDimension >
+  itk::FixedArray
+      < DeformationVectorComponentImageFaceListType, ImageDimension >
       deformationVectorTangentialComponentImageFaceListArray;
-  itk::FixedArray< DeformationVectorComponentImageFaceListIterator, ImageDimension >
+  itk::FixedArray
+      < DeformationVectorComponentImageFaceListIterator, ImageDimension >
       deformationVectorTangentialComponentImagefItArray;
-  itk::FixedArray< DeformationVectorComponentImageFaceListType, ImageDimension >
+  itk::FixedArray
+      < DeformationVectorComponentImageFaceListType, ImageDimension >
       deformationVectorNormalComponentImageFaceListArray;
-  itk::FixedArray< DeformationVectorComponentImageFaceListIterator, ImageDimension >
+  itk::FixedArray
+      < DeformationVectorComponentImageFaceListIterator, ImageDimension >
       deformationVectorNormalComponentImagefItArray;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    deformationVectorTangentialComponentImageFaceListArray[i]
-        = deformationVectorComponentImageFaceCalculator(
-            m_DeformationVectorTangentialComponents[i],
-            deformationComponentRegionToProcess,
-            radius );
-    deformationVectorTangentialComponentImagefItArray[i]
-        = deformationVectorTangentialComponentImageFaceListArray[i].begin();
 
-    deformationVectorNormalComponentImageFaceListArray[i]
-        = deformationVectorComponentImageFaceCalculator(
-            m_DeformationVectorNormalComponents[i],
-            deformationComponentRegionToProcess,
-            radius );
-    deformationVectorNormalComponentImagefItArray[i]
-        = deformationVectorNormalComponentImageFaceListArray[i].begin();
+  // Actually initialize the face calculators and face list iterators
+  outputImageFaceList = outputImageFaceCalculator(
+      output, regionToProcess, radius );
+  outputImagefIt = outputImageFaceList.begin();
+  if( computeRegularization )
+    {
+    normalVectorImageFaceList = normalVectorImageFaceCalculator(
+        m_NormalVectorImage, normalVectorRegionToProcess, radius );
+    normalVectorImagefIt = normalVectorImageFaceList.begin();
+    tangentialDiffusionTensorFaceList = diffusionTensorImageFaceCalculator(
+        m_TangentialDiffusionTensorImage, diffusionRegionToProcess, radius );
+    tangentialDiffusionTensorfIt = tangentialDiffusionTensorFaceList.begin();
+    normalDiffusionTensorFaceList = diffusionTensorImageFaceCalculator(
+        m_NormalDiffusionTensorImage, diffusionRegionToProcess, radius );
+    normalDiffusionTensorfIt = normalDiffusionTensorFaceList.begin();
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      deformationVectorTangentialComponentImageFaceListArray[i]
+          = deformationVectorComponentImageFaceCalculator(
+              m_DeformationVectorTangentialComponents[i],
+              deformationComponentRegionToProcess,
+              radius );
+      deformationVectorTangentialComponentImagefItArray[i]
+          = deformationVectorTangentialComponentImageFaceListArray[i].begin();
+
+      deformationVectorNormalComponentImageFaceListArray[i]
+          = deformationVectorComponentImageFaceCalculator(
+              m_DeformationVectorNormalComponents[i],
+              deformationComponentRegionToProcess,
+              radius );
+      deformationVectorNormalComponentImagefItArray[i]
+          = deformationVectorNormalComponentImageFaceListArray[i].begin();
+      }
     }
 
   // Ask the function object for a pointer to a data structure it
@@ -955,27 +967,30 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     outputImageNeighborhoodIt = NeighborhoodIteratorType(
         radius, output, *outputImagefIt );
     updateIt = UpdateIteratorType( m_UpdateBuffer, *outputImagefIt );
-
-    normalVectorImageNeighborhoodIt = NormalVectorImageNeighborhoodIteratorType(
-        radius, m_NormalVectorImage, *normalVectorImagefIt );
-    tangentialDiffusionTensorImageNeighborhoodIt
-        = DiffusionTensorNeighborhoodIteratorType(
-            radius, m_TangentialDiffusionTensorImage,
-            *tangentialDiffusionTensorfIt );
-    normalDiffusionTensorImageNeighborhoodIt
-        = DiffusionTensorNeighborhoodIteratorType(
-            radius, m_NormalDiffusionTensorImage,
-            *normalDiffusionTensorfIt );
-    for( unsigned int i = 0; i < ImageDimension; i++ )
+    if( computeRegularization )
       {
-      deformationVectorTangentialComponentNeighborhoodItArray[i]
-          = DeformationVectorComponentNeighborhoodIteratorType(
-              radius, m_DeformationVectorTangentialComponents[i],
-              *deformationVectorTangentialComponentImagefItArray[i] );
-      deformationVectorNormalComponentNeighborhoodItArray[i]
-          = DeformationVectorComponentNeighborhoodIteratorType(
-              radius, m_DeformationVectorNormalComponents[i],
-              *deformationVectorNormalComponentImagefItArray[i] );
+      normalVectorImageNeighborhoodIt
+          = NormalVectorImageNeighborhoodIteratorType(
+          radius, m_NormalVectorImage, *normalVectorImagefIt );
+      tangentialDiffusionTensorImageNeighborhoodIt
+          = DiffusionTensorNeighborhoodIteratorType(
+              radius, m_TangentialDiffusionTensorImage,
+              *tangentialDiffusionTensorfIt );
+      normalDiffusionTensorImageNeighborhoodIt
+          = DiffusionTensorNeighborhoodIteratorType(
+              radius, m_NormalDiffusionTensorImage,
+              *normalDiffusionTensorfIt );
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        deformationVectorTangentialComponentNeighborhoodItArray[i]
+            = DeformationVectorComponentNeighborhoodIteratorType(
+                radius, m_DeformationVectorTangentialComponents[i],
+                *deformationVectorTangentialComponentImagefItArray[i] );
+        deformationVectorNormalComponentNeighborhoodItArray[i]
+            = DeformationVectorComponentNeighborhoodIteratorType(
+                radius, m_DeformationVectorNormalComponents[i],
+                *deformationVectorNormalComponentImagefItArray[i] );
+        }
       }
 
     // Go to the beginning of the neighborhood for this face
@@ -1011,7 +1026,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
         ++normalVectorImageNeighborhoodIt;
         ++tangentialDiffusionTensorImageNeighborhoodIt;
         ++normalDiffusionTensorImageNeighborhoodIt;
-        for ( unsigned int i = 0; i < ImageDimension; i++ )
+        for( unsigned int i = 0; i < ImageDimension; i++ )
           {
           ++deformationVectorTangentialComponentNeighborhoodItArray[i];
           ++deformationVectorNormalComponentNeighborhoodItArray[i];
