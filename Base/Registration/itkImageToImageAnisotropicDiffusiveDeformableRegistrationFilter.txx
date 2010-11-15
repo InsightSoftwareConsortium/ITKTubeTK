@@ -596,87 +596,80 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   assert( this->GetComputeRegularizationTerm() );
 
-  // Get the border normals
-  NormalVectorImageIteratorType normalVectorIterator( m_NormalVectorImage,
-                              m_NormalVectorImage->GetLargestPossibleRegion() );
-
-  // Get output (the current deformation field)
-  typename OutputImageType::Pointer output = this->GetOutput();
-
-  typedef itk::ImageRegionIterator< OutputImageType > IteratorType;
-  IteratorType outputImageIterator(
-                          output,
-                          output->GetLargestPossibleRegion() );
-
-  // Extract normal components from output
-  IteratorType outputNormalImageIterator(
-                          m_NormalDeformationField,
-                          m_NormalDeformationField->GetLargestPossibleRegion() );
-
-  // Calculate the tangential and normal components of the deformation field
-  NormalVectorType       n;
-  DeformationVectorType  u;
-  DeformationVectorType  normalU;
-  DeformationVectorType  tangentialU;
-
-  normalVectorIterator.GoToBegin();
-  outputNormalImageIterator.GoToBegin();
-  for( outputImageIterator.GoToBegin(); !outputImageIterator.IsAtEnd();
-         ++outputImageIterator )
+  if( m_UseAnisotropicRegularization )
     {
-    n = normalVectorIterator.Get();
-    u = outputImageIterator.Get();
 
-    // normal component = (u^Tn)n
-    normalU = (u * n) * n;
-    outputNormalImageIterator.Set( normalU );
+    // Get the border normals
+    NormalVectorImageIteratorType normalVectorIt(
+        m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
-    // tangential component = u - normal component
-    tangentialU = u - normalU;
+    // Get output (the current deformation field)
+    typename OutputImageType::Pointer output = this->GetOutput();
 
-    // We know normalU + tangentialU = u
-    // Assertion to test that the normal and tangential components were computed
-    // corectly - they should be orthogonal
-    if( normalU * tangentialU > 0.005 )
+    typedef itk::ImageRegionIterator< OutputImageType > OutputImageIteratorType;
+    OutputImageIteratorType outputImageIt(
+        output, output->GetLargestPossibleRegion() );
+
+    // Extract normal components from output
+    OutputImageIteratorType outputNormalImageIt(
+        m_NormalDeformationField,
+        m_NormalDeformationField->GetLargestPossibleRegion() );
+
+    // Calculate the tangential and normal components of the deformation field
+    NormalVectorType       n;
+    DeformationVectorType  u; // deformation vector
+    DeformationVectorType  normalDeformationVector;
+    DeformationVectorType  tangentialDeformationVector;
+
+    for( outputImageIt.GoToBegin(), normalVectorIt.GoToBegin(),
+         outputNormalImageIt.GoToBegin();
+         !outputImageIt.IsAtEnd(); ++outputImageIt )
       {
-      itkExceptionMacro( << "Normal and tangential deformation field components"
-                         << " are not orthogonal" << std::endl
-                         << "u = " << u[0] << " " << u[1] << " " << u[2] << std::endl
-                         << "n = " << n[0] << " " << n[1] << " " << n[2] << std::endl
-                         << "normal = " << normalU[0] << " " << normalU[1]
-                         << " " << normalU[2] << std::endl
-                         << "tangential = "
-                         << tangentialU[0] << " " << tangentialU[1] << " "
-                         << tangentialU[2]
-                         << " dot product "
-                         << normalU * tangentialU << std::endl );
-      }
+      n = normalVectorIt.Get();
+      u = outputImageIt.Get();
 
-    ++normalVectorIterator;
-    ++outputNormalImageIterator;
+      // normal component = (u^Tn)n
+      normalDeformationVector = ( u * n ) * n;
+      outputNormalImageIt.Set( normalDeformationVector );
+
+      // tangential component = u - normal component
+      tangentialDeformationVector = u - normalDeformationVector;
+
+      // Assertion to test that the normal and tangential components were computed
+      // corectly - they should be orthogonal
+      if( normalDeformationVector * tangentialDeformationVector > 0.005 )
+        {
+        itkExceptionMacro( << "Normal and tangential deformation field components"
+                           << " are not orthogonal" << std::endl
+                           << "u = " << u[0] << " " << u[1] << " " << u[2]
+                           << std::endl
+                           << "n = " << n[0] << " " << n[1] << " " << n[2]
+                           << std::endl
+                           << "normal = " << normalDeformationVector[0]
+                           << " " << normalDeformationVector[1] << " "
+                           << normalDeformationVector[2] << std::endl
+                           << "tangential = " << tangentialDeformationVector[0]
+                           << " " << tangentialDeformationVector[1] << " "
+                           << tangentialDeformationVector[2] << std::endl
+                           << " dot product "
+                           << normalDeformationVector*tangentialDeformationVector
+                           << std::endl );
+        }
+
+      ++normalVectorIt;
+      ++outputNormalImageIt;
+      }
+      m_NormalDeformationField->Modified();
     }
 
-  // Feed tangential and normal components to the component extractor
-  // Extract the components
-  m_NormalDeformationField->Modified();
+  // Updated the extracted components
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_TangentialComponentExtractor[i]->Update();
-    m_NormalComponentExtractor[i]->Update();
-    }
-
-  // Little test to make sure that the component extractor was setup
-  // properly - because m_DeformationVectorTangentialComponents and
-  // m_DeformationVectorNormalComponents will be the input to the
-  // registration function's ComputeUpdate()
-  typename DeformationVectorComponentImageType::IndexType index;
-  index.Fill(0);
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    assert( m_DeformationVectorTangentialComponents[i]->GetPixel( index )
-        == m_TangentialComponentExtractor[i]->GetOutput()->GetPixel( index ) );
-    assert( m_DeformationVectorNormalComponents[i]->GetPixel( index )
-        == m_NormalComponentExtractor[i]->GetOutput()->GetPixel( index ) );
+    if( m_UseAnisotropicRegularization )
+      {
+      m_NormalComponentExtractor[i]->Update();
+      }
     }
 }
 
