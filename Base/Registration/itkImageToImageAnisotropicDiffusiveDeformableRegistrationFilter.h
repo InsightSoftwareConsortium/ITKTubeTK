@@ -379,9 +379,6 @@ private:
   /** The buffer that holds the updates for an iteration of the algorithm. */
   typename UpdateBufferType::Pointer    m_UpdateBuffer;
 
-  /** Whether or not to use the diffusive regularization. */
-  bool                                  m_UseAnisotropicRegularization;
-
   /** The organ boundary surface, the surface of border normals, and the derived
    *  normal vector and weight images */
   BorderSurfacePointer                  m_BorderSurface;

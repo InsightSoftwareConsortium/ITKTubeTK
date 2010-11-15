@@ -515,19 +515,26 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   typename DiffusionTensorImageType::PixelType  normalDiffusionTensor;
 
   // Setup iterators
-  NormalVectorImageIteratorType normalVectorIt(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
-  WeightImageIteratorType weightIt(
-      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-
+  NormalVectorImageIteratorType normalVectorIt;
+  WeightImageIteratorType weightIt;
   typedef itk::ImageRegionIterator< DiffusionTensorImageType >
       DiffusionTensorImageIteratorType;
-  DiffusionTensorImageIteratorType tangentialDiffusionTensorIt(
+  DiffusionTensorImageIteratorType tangentialDiffusionTensorIt;
+  DiffusionTensorImageIteratorType normalDiffusionTensorIt;
+
+  tangentialDiffusionTensorIt = DiffusionTensorImageIteratorType(
       m_TangentialDiffusionTensorImage,
       m_TangentialDiffusionTensorImage->GetLargestPossibleRegion() );
-  DiffusionTensorImageIteratorType normalDiffusionTensorIt(
-      m_NormalDiffusionTensorImage,
-      m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
+  if( this->GetUseAnisotropicRegularization() )
+    {
+    normalVectorIt = NormalVectorImageIteratorType(
+        m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+    weightIt = WeightImageIteratorType(
+        m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
+    normalDiffusionTensorIt = DiffusionTensorImageIteratorType(
+        m_NormalDiffusionTensorImage,
+        m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
+    }
 
   for( normalVectorIt.GoToBegin(), weightIt.GoToBegin(),
        tangentialDiffusionTensorIt.GoToBegin(),
@@ -542,7 +549,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       {
         // This is the diffusive (Gaussian) regularization
         tangentialMatrix.SetIdentity();
-        normalMatrix.Fill( (DeformationVectorComponentType) 0.0 );
       }
     else
       {
@@ -575,13 +581,25 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       for ( unsigned int j = 0; j < ImageDimension; j++ )
         {
         tangentialDiffusionTensor( i,j ) = tangentialMatrix( i,j );
-        normalDiffusionTensor( i,j ) = normalMatrix( i,j );
+        }
+      }
+    if( this->GetUseAnisotropicRegularization() )
+      {
+      for ( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        for ( unsigned int j = 0; j < ImageDimension; j++ )
+          {
+          normalDiffusionTensor( i,j ) = normalMatrix( i,j );
+          }
         }
       }
     // Copy the diffusion tensors to m_TangentialDiffusionTensorImage and
     // m_NormalDiffusionTensorImage
     tangentialDiffusionTensorIt.Set( tangentialDiffusionTensor );
-    normalDiffusionTensorIt.Set( normalDiffusionTensor );
+    if( this->GetUseAnisotropicRegularization() )
+      {
+      normalDiffusionTensorIt.Set( normalDiffusionTensor );
+      }
     }
 }
 
