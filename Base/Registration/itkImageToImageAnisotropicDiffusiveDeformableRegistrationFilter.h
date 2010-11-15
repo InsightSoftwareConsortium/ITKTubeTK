@@ -128,7 +128,8 @@ public:
       NormalVectorType;
   typedef typename RegistrationFunctionType::NormalVectorImageType
       NormalVectorImageType;
-  typedef typename NormalVectorImageType::Pointer     NormalVectorImagePointer;
+  typedef typename NormalVectorImageType::Pointer
+      NormalVectorImagePointer;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageIteratorType;
 
@@ -143,13 +144,13 @@ public:
 
   /** Organ boundary surface types - types for the surface and the surface of
     * normals, and point locator to find points on the surface */
-  typedef vtkSmartPointer< vtkPolyData >              BorderSurfacePointer;
+  typedef vtkSmartPointer< vtkPolyData >                BorderSurfacePointer;
   typedef vtkPolyDataNormals
       BorderNormalsSurfaceFilterType;
   typedef vtkSmartPointer< BorderNormalsSurfaceFilterType >
       BorderNormalsSurfaceFilterPointer;
-  typedef vtkPointLocator                             PointLocatorType;
-  typedef vtkSmartPointer< PointLocatorType >         PointLocatorPointer;
+  typedef vtkPointLocator                               PointLocatorType;
+  typedef vtkSmartPointer< PointLocatorType >           PointLocatorPointer;
 
   /** The diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
@@ -186,7 +187,8 @@ public:
   /** Set/get the organ boundary polydata, which must be in the same space as
    *  the fixed image.  Border normals are computed based on this polydata/
    */
-  virtual void SetBorderSurface( BorderSurfacePointer border );
+  virtual void SetBorderSurface( BorderSurfacePointer border )
+    { m_BorderSurface = border; }
   virtual const BorderSurfacePointer GetBorderSurface() const
     { return m_BorderSurface; }
 
@@ -276,8 +278,7 @@ protected:
   /** Inherited from superclass - do not call this function!  Call the other
    *  ThreadedCalculateChange instead */
   TimeStepType ThreadedCalculateChange(
-      const ThreadRegionType & regionToProcess,
-      int threadId );
+      const ThreadRegionType & regionToProcess, int threadId );
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
@@ -286,10 +287,12 @@ protected:
   virtual
   TimeStepType ThreadedCalculateChange(
           const ThreadRegionType &regionToProcess,
-          const ThreadNormalVectorImageRegionType &normalVectorRegionToProcess,
-          const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+          const ThreadNormalVectorImageRegionType
+            &normalVectorRegionToProcess,
+          const ThreadDiffusionTensorImageRegionType
+            &diffusionRegionToProcess,
           const ThreadDeformationVectorComponentImageRegionType
-                                                      &componentRegionToProcess,
+            &componentRegionToProcess,
           int threadId );
 
   /** This method applies changes from the update buffer to the output, using
@@ -303,15 +306,14 @@ protected:
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
   virtual
-  void ThreadedApplyUpdate(TimeStepType dt,
-                           const ThreadRegionType &regionToProcess,
-                           int threadId );
+  void ThreadedApplyUpdate(
+      TimeStepType dt, const ThreadRegionType &regionToProcess, int threadId );
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata.
    */
   virtual void ComputeNormalVectorAndWeightImages(
-      bool computeNormalVectorImage, bool computeWeightImage);
+      bool computeNormalVectorImage, bool computeWeightImage );
 
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border.
@@ -326,14 +328,14 @@ protected:
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >
-  void AllocateSpaceForImage( UnallocatedImageType& inputImage,
-                              const TemplateImageType& templateImage );
+  void AllocateSpaceForImage(
+      UnallocatedImageType& inputImage, const TemplateImageType& templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */
   template< class CheckedImageType, class TemplateImageType >
-  bool CompareImageAttributes( const CheckedImageType& inputImage,
-                               const TemplateImageType& templateImage);
+  bool CompareImageAttributes(
+      const CheckedImageType& inputImage, const TemplateImageType& templateImage);
 
 private:
   // Purposely not implemented
@@ -373,7 +375,7 @@ private:
   WeightImagePointer                    m_WeightImage;
 
   /** Computes the nearest point on the polydata to a given point */
-  PointLocatorPointer                           m_PointLocator;
+  PointLocatorPointer                   m_PointLocator;
 
   /** The lambda factor for computing the weight from distance.  Weight is
     * modeled as exponential decay: weight = e^(lambda * distance).

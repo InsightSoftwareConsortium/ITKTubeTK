@@ -68,8 +68,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   m_BorderNormalsSurfaceFilter->ComputePointNormalsOn();
   m_BorderNormalsSurfaceFilter->ComputeCellNormalsOff();
   //normalExtractor->SetFeatureAngle(30);
-  // NOTE: default settings compute point normals, not cell normals
-  m_BorderNormalsSurface = m_BorderNormalsSurfaceFilter->GetOutput();
 
   // Setup the point locator to find closest point on the surface
   m_PointLocator = PointLocatorType::New();
@@ -224,21 +222,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 }
 
 /**
- * Set the border surface
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::SetBorderSurface( BorderSurfacePointer border )
-{
-  m_BorderSurface = border;
-
-  // Update the polydata of border surface normals
-  m_BorderNormalsSurfaceFilter->SetInput( m_BorderSurface );
-}
-
-/**
  * Helper function to allocate space for an image given a template image
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -304,6 +287,11 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   Superclass::Initialize();
 
+
+
+
+
+
   // Check the timestep for stability
   double minSpacing;
   if ( this->GetUseImageSpacing() )
@@ -335,36 +323,33 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
                     << ratio );
     }
 
+
+
+
+
+
+
+
+
+
+
+
   typename OutputImageType::Pointer output = this->GetOutput();
 
   // Allocate the deformation field component images
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-
-    // Allocate the tangential components
     this->AllocateSpaceForImage( m_DeformationVectorTangentialComponents[i],
                                  output);
-
-    // Allocate the normal components
     this->AllocateSpaceForImage( m_DeformationVectorNormalComponents[i],
                                  output );
     }
 
-  // Also allocate the diffusion tensor image
-  // The diffusion tensor image has the same size as the deformation field and
-  // holds the diffusion tensor matrix at each pixel
-  DeformationFieldPointer deformationField = this->GetDeformationField();
-
-  // Allocate the output image's normal images
-  this->AllocateSpaceForImage( m_NormalDeformationField,
-                               output );
-
-  // Allocate the tangential and normal diffusion tensor images
-  this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage,
-                               output );
-  this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
-                               output );
-
+  // Allocate the output image's normal images, tangential and normal diffusion
+  // tensor images
+  this->AllocateSpaceForImage( m_NormalDeformationField, output );
+  this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
+  this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
 
   // Check the normal vector image and the weight image if one was supplied
   // by the user
@@ -389,12 +374,14 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     if ( !this->GetBorderSurface() )
       {
       itkExceptionMacro( << "Cannot perform registration without a border "
-                         << "surface or a normal vector image and a weight "
+                         << "surface, or a normal vector image and a weight "
                          << "image" << std::endl );
       }
 
     // Update the border normals
+    m_BorderNormalsSurfaceFilter->SetInput( m_BorderSurface );
     m_BorderNormalsSurfaceFilter->Update();
+    m_BorderNormalsSurface = m_BorderNormalsSurfaceFilter->GetOutput();
 
     // Make sure we now have the normals
     if ( !this->GetBorderNormalsSurface() )
