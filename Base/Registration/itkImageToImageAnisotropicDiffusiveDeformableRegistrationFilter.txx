@@ -495,102 +495,98 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   assert( this->GetComputeRegularizationTerm() );
 
-  typedef itk::Matrix< DeformationVectorComponentType,
-                       ImageDimension, ImageDimension > MatrixType;
-
-  NormalVectorType                n;
-  WeightType                      w;
-
   // Used to compute the tangential and normal diffusion tensor images
-
   // tangential:
   // P = I - wnn^T
   // tangentialMatrix = tangentialD = P^TP
-
   // normal:
   // normalMatrix = normalD = wnn^T
 
-  MatrixType                      normalMatrix;
-  MatrixType                      P;
-  MatrixType                      tangentialMatrix;
-  typedef typename DiffusionTensorImageType::PixelType
-                                              DiffusionTensorImagePixelType;
-  DiffusionTensorImagePixelType   tangentialD;
-  DiffusionTensorImagePixelType   normalD;
+  typedef itk::Matrix
+      < DeformationVectorComponentType, ImageDimension, ImageDimension >
+      MatrixType;
 
+  NormalVectorType                              n;
+  WeightType                                    w;
+  MatrixType                                    P;
+  MatrixType                                    normalMatrix;
+  MatrixType                                    tangentialMatrix;
+  typename DiffusionTensorImageType::PixelType  tangentialDiffusionTensor;
+  typename DiffusionTensorImageType::PixelType  normalDiffusionTensor;
 
-
+  // Setup iterators
   NormalVectorImageIteratorType normalVectorIt(
-                              m_NormalVectorImage,
-                              m_NormalVectorImage->GetLargestPossibleRegion() );
-  WeightImageIteratorType weightIt( m_WeightImage,
-                               m_WeightImage->GetLargestPossibleRegion() );
+      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  WeightImageIteratorType weightIt(
+      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
 
   typedef itk::ImageRegionIterator< DiffusionTensorImageType >
-                                                    DiffusionTensorIteratorType;
-  DiffusionTensorIteratorType tangentialIt( m_TangentialDiffusionTensorImage,
-                 m_TangentialDiffusionTensorImage->GetLargestPossibleRegion() );
-  DiffusionTensorIteratorType normalIt( m_NormalDiffusionTensorImage,
-                 m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
+      DiffusionTensorImageIteratorType;
+  DiffusionTensorImageIteratorType tangentialDiffusionTensorIt(
+      m_TangentialDiffusionTensorImage,
+      m_TangentialDiffusionTensorImage->GetLargestPossibleRegion() );
+  DiffusionTensorImageIteratorType normalDiffusionTensorIt(
+      m_NormalDiffusionTensorImage,
+      m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
 
-  for( normalVectorIt.GoToBegin(), tangentialIt.GoToBegin(),
-       normalIt.GoToBegin(), weightIt.GoToBegin();
-        !tangentialIt.IsAtEnd();
-        ++normalVectorIt, ++tangentialIt, ++normalIt, ++weightIt )
+  for( normalVectorIt.GoToBegin(), weightIt.GoToBegin(),
+       tangentialDiffusionTensorIt.GoToBegin(),
+       normalDiffusionTensorIt.GoToBegin();
+      !normalVectorIt.IsAtEnd();
+       ++normalVectorIt, ++weightIt,
+       ++tangentialDiffusionTensorIt, ++normalDiffusionTensorIt )
     {
 
-    // 1.  Get the border normal n and the weighting factor w
-    n = normalVectorIt.Get();
-    if ( !m_UseAnisotropicRegularization )
+    // Compute the tangential and normal diffusion tensor images
+    if( !m_UseAnisotropicRegularization )
       {
-      w = ( DeformationVectorComponentType ) 0.0;
+        // This is the diffusive (Gaussian) regularization
+        tangentialMatrix.SetIdentity();
+        normalMatrix.Fill( (DeformationVectorComponentType) 0.0 );
       }
     else
       {
-      // Get w here
+      n = normalVectorIt.Get();
       w = weightIt.Get();
-      }
 
-    // 2. Compute the tangential and normal diffusion tensor images
-
-    // Create the nMatrix used to calculate nn^T
-    // (The first column is filled with the values of n, the rest are 0s)
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      normalMatrix(i,0) = n[i];
-      for ( unsigned int j = 1; j < ImageDimension; j++ )
+      // Create the normalMatrix used to calculate nn^T
+      // (The first column is filled with the values of n, the rest are 0s)
+      for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        normalMatrix(i,j) = 0;
+        normalMatrix( i,0 ) = n[i];
+        for ( unsigned int j = 1; j < ImageDimension; j++ )
+          {
+          normalMatrix( i,j ) = 0;
+          }
         }
+
+      normalMatrix = normalMatrix * normalMatrix.GetTranspose(); // nn^T
+      normalMatrix = normalMatrix * w; // wnn^T
+      P.SetIdentity();
+      P = P - normalMatrix; // I - wnn^T
+      tangentialMatrix = P.GetTranspose();
+      tangentialMatrix = tangentialMatrix * P; // P^TP
       }
 
-    normalMatrix = normalMatrix * normalMatrix.GetTranspose(); // nn^T
-    normalMatrix = normalMatrix * w; // wnn^T
-    P.SetIdentity();
-    P = P - normalMatrix; // I - wnn^T
-    tangentialMatrix = P.GetTranspose();
-    tangentialMatrix = tangentialMatrix * P; // P^TP
-
-    // Copy the itk::Matrix to the tensor - there should be a better way to do
-    // this
+    // Copy the itk::Matrix to the tensor
+    // TODO there should be a better way to do this
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
       for ( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        tangentialD( i,j ) = tangentialMatrix( i,j );
-        normalD( i,j ) = normalMatrix( i,j );
+        tangentialDiffusionTensor( i,j ) = tangentialMatrix( i,j );
+        normalDiffusionTensor( i,j ) = normalMatrix( i,j );
         }
       }
     // Copy the diffusion tensors to m_TangentialDiffusionTensorImage and
     // m_NormalDiffusionTensorImage
-    tangentialIt.Set( tangentialD );
-    normalIt.Set( normalD );
+    tangentialDiffusionTensorIt.Set( tangentialDiffusionTensor );
+    normalDiffusionTensorIt.Set( normalDiffusionTensor );
     }
-
 }
 
 /**
- * Updates the diffusion tensor image before each iteration
+ * Updates the deformation vector component images before each iteration
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
