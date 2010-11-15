@@ -138,6 +138,11 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   RegistrationFunctionPointer df = dynamic_cast< RegistrationFunctionType * >
        ( this->GetDifferenceFunction().GetPointer() );
+
+  if ( !df )
+    {
+    itkExceptionMacro( << "Registration function pointer NULL" << std::endl );
+    }
   return df;
 }
 
@@ -823,6 +828,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 
   const typename OutputImageType::SizeType radius = df->GetRadius();
 
+  bool computeRegularization = this->GetComputeRegularizationTerm();
+
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
   // on the output region because input has been copied to output.
@@ -942,12 +949,13 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   DeformationVectorComponentNeighborhoodIteratorArrayType
       deformationVectorNormalComponentNeighborhoodItArray;
 
-  for ( ; outputImagefIt != outputImageFaceList.end(); ++outputImagefIt )
+  for( ; outputImagefIt != outputImageFaceList.end(); ++outputImagefIt )
     {
     // Set the neighborhood iterators to the current face
     outputImageNeighborhoodIt = NeighborhoodIteratorType(
         radius, output, *outputImagefIt );
     updateIt = UpdateIteratorType( m_UpdateBuffer, *outputImagefIt );
+
     normalVectorImageNeighborhoodIt = NormalVectorImageNeighborhoodIteratorType(
         radius, m_NormalVectorImage, *normalVectorImagefIt );
     tangentialDiffusionTensorImageNeighborhoodIt
@@ -973,13 +981,16 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     // Go to the beginning of the neighborhood for this face
     outputImageNeighborhoodIt.GoToBegin();
     updateIt.GoToBegin();
-    normalVectorImageNeighborhoodIt.GoToBegin();
-    tangentialDiffusionTensorImageNeighborhoodIt.GoToBegin();
-    normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    if( computeRegularization )
       {
-      deformationVectorTangentialComponentNeighborhoodItArray[i].GoToBegin();
-      deformationVectorNormalComponentNeighborhoodItArray[i].GoToBegin();
+      normalVectorImageNeighborhoodIt.GoToBegin();
+      tangentialDiffusionTensorImageNeighborhoodIt.GoToBegin();
+      normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
+      for ( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        deformationVectorTangentialComponentNeighborhoodItArray[i].GoToBegin();
+        deformationVectorNormalComponentNeighborhoodItArray[i].GoToBegin();
+        }
       }
 
     // Iterate through the neighborhood for this face and compute updates
@@ -995,24 +1006,30 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
           globalData);
       ++outputImageNeighborhoodIt;
       ++updateIt;
-      ++normalVectorImageNeighborhoodIt;
-      ++tangentialDiffusionTensorImageNeighborhoodIt;
-      ++normalDiffusionTensorImageNeighborhoodIt;
-      for ( unsigned int i = 0; i < ImageDimension; i++ )
+      if( computeRegularization )
         {
-        ++deformationVectorTangentialComponentNeighborhoodItArray[i];
-        ++deformationVectorNormalComponentNeighborhoodItArray[i];
+        ++normalVectorImageNeighborhoodIt;
+        ++tangentialDiffusionTensorImageNeighborhoodIt;
+        ++normalDiffusionTensorImageNeighborhoodIt;
+        for ( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          ++deformationVectorTangentialComponentNeighborhoodItArray[i];
+          ++deformationVectorNormalComponentNeighborhoodItArray[i];
+          }
         }
       }
 
     // Go to the next face
-    ++normalVectorImagefIt;
-    ++tangentialDiffusionTensorfIt;
-    ++normalDiffusionTensorfIt;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
+    if( computeRegularization )
       {
-      ++deformationVectorTangentialComponentImagefItArray[i];
-      ++deformationVectorNormalComponentImagefItArray[i];
+      ++normalVectorImagefIt;
+      ++tangentialDiffusionTensorfIt;
+      ++normalDiffusionTensorfIt;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        ++deformationVectorTangentialComponentImagefItArray[i];
+        ++deformationVectorNormalComponentImagefItArray[i];
+        }
       }
     }
 
