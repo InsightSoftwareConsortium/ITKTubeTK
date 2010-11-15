@@ -182,6 +182,13 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
+  /** Utility function to check whether the timestep is stable, optionally based
+    * on the spacing of the given image */
+  template< class TPixel, unsigned int VImageDimension >
+  void CheckTimeStepStability(
+      const itk::Image< TPixel, VImageDimension > * input,
+      bool useImageSpacing );
+
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 

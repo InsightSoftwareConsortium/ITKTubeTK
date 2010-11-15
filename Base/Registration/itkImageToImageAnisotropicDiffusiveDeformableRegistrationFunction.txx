@@ -122,6 +122,20 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
 }
 
 /**
+  * Called before the registration loop
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template < class TPixel, unsigned int VImageDimension >
+void
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+< TFixedImage, TMovingImage, TDeformationField >
+::CheckTimeStepStability( const itk::Image< TPixel, VImageDimension > * input,
+                          bool useImageSpacing )
+{
+  m_RegularizationFunction->CheckTimeStepStability( input, useImageSpacing );
+}
+
+/**
   * Called at the beginning of each iteration
   */
 template < class TFixedImage, class TMovingImage, class TDeformationField >

@@ -287,52 +287,11 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   Superclass::Initialize();
 
-
-
-
-
-
   // Check the timestep for stability
-  double minSpacing;
-  if ( this->GetUseImageSpacing() )
-    {
-    minSpacing = this->GetInput()->GetSpacing()[0];
-    for (unsigned int i = 1; i < ImageDimension; i++)
-      {
-      if (this->GetInput()->GetSpacing()[i] < minSpacing)
-        {
-        minSpacing = this->GetInput()->GetSpacing()[i];
-        }
-      }
-    }
-  else
-    {
-    minSpacing = 1.0;
-    }
-
-  double ratio =
-     minSpacing /vcl_pow(2.0, static_cast<double>(ImageDimension) + 1);
-
-  TimeStepType ts = this->GetTimeStep();
-
-  if ( ts > ratio )
-    {
-    itkWarningMacro(<< std::endl << "Anisotropic diffusion unstable time step:"
-                    << ts << std::endl << "Minimum stable time step "
-                    << "for this image is "
-                    << ratio );
-    }
-
-
-
-
-
-
-
-
-
-
-
+  const typename RegistrationFunctionType::Pointer df
+                              = dynamic_cast< RegistrationFunctionType * >
+                                ( this->GetDifferenceFunction().GetPointer() );
+  df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
 
   typename OutputImageType::Pointer output = this->GetOutput();
 
