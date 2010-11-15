@@ -271,27 +271,30 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       itkExceptionMacro( << "Error computing border normals" << std::endl );
       }
 
-    // Allocate the image of normals and weight image
     bool computeNormalVectorImage = false;
     bool computeWeightImage = false;
-    if( !m_NormalVectorImage )
+
+    if( this->GetComputeRegularizationTerm() )
       {
-      m_NormalVectorImage = NormalVectorImageType::New();
-      this->AllocateSpaceForImage( m_NormalVectorImage, output );
-      computeNormalVectorImage = true;
-      }
-    if( !m_WeightImage )
-      {
-      m_WeightImage = WeightImageType::New();
-      this->AllocateSpaceForImage( m_WeightImage, output );
-      computeWeightImage = true;
+      // Allocate the image of normals and weight image
+      if( !m_NormalVectorImage )
+        {
+        m_NormalVectorImage = NormalVectorImageType::New();
+        this->AllocateSpaceForImage( m_NormalVectorImage, output );
+        computeNormalVectorImage = true;
+        }
+      if( !m_WeightImage )
+        {
+        m_WeightImage = WeightImageType::New();
+        this->AllocateSpaceForImage( m_WeightImage, output );
+        computeWeightImage = true;
+        }
       }
 
     // Compute the border normals and the weighting factor w
     // Normals are dependent on the border geometry in the fixed image so this
     // has to be completed only once.
-    if( this->GetComputeRegularizationTerm()
-      && this->GetUseAnisotropicRegularization() )
+    if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
       {
       this->ComputeNormalVectorAndWeightImages( computeNormalVectorImage,
                                                 computeWeightImage );

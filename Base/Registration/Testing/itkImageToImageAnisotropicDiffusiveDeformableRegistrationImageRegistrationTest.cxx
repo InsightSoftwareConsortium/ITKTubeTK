@@ -444,7 +444,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
   registrator->SetNumberOfIterations( numberOfIterations );
 
   int compute = atoi( argv[11] );
-  if (compute)
+  if ( compute )
     {
     registrator->SetComputeRegularizationTerm( true );
     }
@@ -490,23 +490,26 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTe
   std::cout << "Printing the normal surface border, normal vector image "
       << "and weight image" << std::endl;
 
-  vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
-  vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
-  polyWriter->SetFileName( argv[7] );
-  polyWriter->SetInput( normalPolyData );
-  polyWriter->Write();
+  if( compute && useAnisotropic )
+    {
+    vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
+    vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
+    polyWriter->SetFileName( argv[7] );
+    polyWriter->SetInput( normalPolyData );
+    polyWriter->Write();
 
-  typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
-  VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
-  vectorWriter->SetFileName( argv[6] );
-  vectorWriter->SetInput( registrator->GetNormalVectorImage() );
-  vectorWriter->Write();
+    typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
+    VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
+    vectorWriter->SetFileName( argv[6] );
+    vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+    vectorWriter->Write();
 
-  typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
-  WeightWriterType::Pointer weightWriter = WeightWriterType::New();
-  weightWriter->SetFileName( argv[5] );
-  weightWriter->SetInput( registrator->GetWeightImage() );
-  weightWriter->Write();
+    typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
+    WeightWriterType::Pointer weightWriter = WeightWriterType::New();
+    weightWriter->SetFileName( argv[5] );
+    weightWriter->SetInput( registrator->GetWeightImage() );
+    weightWriter->Write();
+    }
 
   // ---------------------------------------------------------
   std::cout << "Printing the deformation field and transformed moving image"
