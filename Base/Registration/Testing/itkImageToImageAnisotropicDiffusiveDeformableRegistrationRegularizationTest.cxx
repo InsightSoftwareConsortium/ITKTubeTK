@@ -54,7 +54,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
               << "border slope, "
               << "number of iterations, "
               << "time step, "
-              << "should use diffusive regularization"
+              << "should use anisotropic regularization"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -242,14 +242,14 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
   // because we are just doing motion field regularization in this test:
   registrator->SetComputeIntensityDistanceTerm( false );
   registrator->SetTimeStep( atof( argv[9] ) );
-  int useDiffusive = atoi( argv[10] );
-  if ( useDiffusive )
+  int useAnisotropic = atoi( argv[10] );
+  if ( useAnisotropic )
     {
-    registrator->SetUseDiffusiveRegularization( true );
+    registrator->SetUseAnisotropicRegularization( true );
     }
   else
     {
-    registrator->SetUseDiffusiveRegularization( false );
+    registrator->SetUseAnisotropicRegularization( false );
     }
 
   // Save the smoothed deformation field

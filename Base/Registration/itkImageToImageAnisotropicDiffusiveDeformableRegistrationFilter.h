@@ -218,10 +218,10 @@ public:
    *  false, the weighting term w=0 and Gaussian regularization is used.
    *  Default: true
    */
-  void SetUseDiffusiveRegularization( bool diffuse )
-    { m_UseDiffusiveRegularization = diffuse; }
-  bool GetUseDiffusiveRegularization() const
-    { return m_UseDiffusiveRegularization; }
+  void SetUseAnisotropicRegularization( bool diffuse )
+    { m_UseAnisotropicRegularization = diffuse; }
+  bool GetUseAnisotropicRegularization() const
+    { return m_UseAnisotropicRegularization; }
 
   /** Get/get the image of the normal vectors.  Setting the normal vector image
     * overrides the border surface polydata if a border surface was also
@@ -362,7 +362,7 @@ private:
   typename UpdateBufferType::Pointer    m_UpdateBuffer;
 
   /** Whether or not to use the diffusive regularization. */
-  bool                                  m_UseDiffusiveRegularization;
+  bool                                  m_UseAnisotropicRegularization;
 
   /** The organ boundary surface, the surface of border normals, and the derived
    *  normal vector and weight images */
@@ -419,7 +419,7 @@ private:
 /** TODO LIST - essential
 
   // Calculate w in ComputeNormalVectorAndWeightImages() - but don't bother if
-  // m_UseDiffusiveRegularization == false (do it in the loop with the normals)
+  // m_UseAnisotropicRegularization == false (do it in the loop with the normals)
 
   // Get w in ComputeDiffusionTensorImage()
 

@@ -45,7 +45,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
-  m_UseDiffusiveRegularization      = true;
+  m_UseAnisotropicRegularization    = true;
   m_BorderSurface                   = 0;
   m_BorderNormalsSurface            = 0;
   m_NormalVectorImage               = 0;
@@ -124,7 +124,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   //m_BorderSurface->PrintSelf( os, indent )
   os << indent << "Border Normals Surface: " << m_BorderNormalsSurface;
   //m_BorderNormalsSurface->PrintSelf( os, indent );
-  os << indent << "UseDiffusiveRegularization: " << m_UseDiffusiveRegularization;
+  os << indent << "UseAnisotropicRegularization: " << m_UseAnisotropicRegularization;
 }
 
 /**
@@ -661,7 +661,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 
     // 1.  Get the border normal n and the weighting factor w
     n = normalVectorIt.Get();
-    if ( !m_UseDiffusiveRegularization )
+    if ( !m_UseAnisotropicRegularization )
       {
       w = ( DeformationVectorComponentType ) 0.0;
       }

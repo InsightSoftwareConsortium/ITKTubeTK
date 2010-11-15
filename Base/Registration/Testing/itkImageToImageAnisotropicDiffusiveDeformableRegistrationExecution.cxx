@@ -53,7 +53,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
               << "number of iterations, "
               << "time step, "
               << "compute regularization term, "
-              << "should use diffusive regularization"
+              << "should use anisotropic regularization"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -146,14 +146,14 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
     registrator->SetComputeRegularizationTerm( false );
     }
 
-  int useDiffusive = atoi( argv[10] );
-  if ( useDiffusive )
+  int useAnisotropic = atoi( argv[10] );
+  if ( useAnisotropic )
     {
-    registrator->SetUseDiffusiveRegularization( true );
+    registrator->SetUseAnisotropicRegularization( true );
     }
   else
     {
-    registrator->SetUseDiffusiveRegularization( false );
+    registrator->SetUseAnisotropicRegularization( false );
     }
 
   registrator->SetTimeStep( atof( argv[8] ) );
