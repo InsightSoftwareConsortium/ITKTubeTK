@@ -143,6 +143,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     {
     itkExceptionMacro( << "Registration function pointer NULL" << std::endl );
     }
+
   return df;
 }
 
@@ -297,7 +298,10 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   // Compute the diffusion tensor image
   // The diffusion tensors are dependent on the normals computed in the
   // previous line, so this has to be completed only once.
-  this->ComputeDiffusionTensorImage();
+  if( this->GetComputeRegularizationTerm() )
+    {
+    this->ComputeDiffusionTensorImage();
+    }
 }
 
 /**
@@ -319,10 +323,12 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
                        << "not set");
     }
 
-  if( this->GetComputeRegularizationTerm()
-    && ( !this->GetNormalVectorImage() || !this->GetWeightImage() ) )
+  if( this->GetComputeRegularizationTerm() )
     {
-    itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
+    if ( !this->GetNormalVectorImage() || !this->GetWeightImage() )
+      {
+      itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
+      }
     }
 
   // Update the deformation field component images
@@ -487,6 +493,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDiffusionTensorImage()
 {
+  assert( this->GetComputeRegularizationTerm() );
+
   typedef itk::Matrix< DeformationVectorComponentType,
                        ImageDimension, ImageDimension > MatrixType;
 
