@@ -151,7 +151,10 @@ public:
   void SetTimeStep(const TimeStepType &t)
     {
     m_TimeStep = t;
-    m_RegularizationFunction->SetTimeStep(t);
+    if( m_ComputeRegularizationTerm )
+      {
+      m_RegularizationFunction->SetTimeStep(t);
+      }
     // Intensity distance function doesn't have a SetTimeStep(), but it's ok
     // because we only use ComputeUpdate() for that function
     }

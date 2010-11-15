@@ -92,10 +92,16 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
   GlobalDataStruct * ans = new GlobalDataStruct();
 
   // Create the component global data pointers
-  ans->m_RegularizationGlobalDataStruct =
-      m_RegularizationFunction->GetGlobalDataPointer();
-  ans->m_IntensityDistanceGlobalDataStruct =
-      m_IntensityDistanceFunction->GetGlobalDataPointer();
+  if( m_ComputeRegularizationTerm )
+    {
+    ans->m_RegularizationGlobalDataStruct =
+        m_RegularizationFunction->GetGlobalDataPointer();
+    }
+  if( m_ComputeIntensityDistanceTerm )
+    {
+    ans->m_IntensityDistanceGlobalDataStruct =
+        m_IntensityDistanceFunction->GetGlobalDataPointer();
+    }
 
   return ans;
 }
@@ -112,10 +118,16 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
   GlobalDataStruct * gd = ( GlobalDataStruct * ) GlobalData;
 
   // Release the component data structures
-  m_RegularizationFunction->ReleaseGlobalDataPointer(
-      gd->m_RegularizationGlobalDataStruct );
-  m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
-      gd->m_IntensityDistanceGlobalDataStruct );
+  if( m_ComputeRegularizationTerm )
+    {
+    m_RegularizationFunction->ReleaseGlobalDataPointer(
+        gd->m_RegularizationGlobalDataStruct );
+    }
+  if( m_ComputeIntensityDistanceTerm )
+    {
+    m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
+        gd->m_IntensityDistanceGlobalDataStruct );
+    }
 
   delete gd;
 }
@@ -138,15 +150,19 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
                        << "not set" );
     }
 
-  // Setup the component functions
-  m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() ) ;
-  m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
-  m_IntensityDistanceFunction->SetDeformationField(
-      this->GetDeformationField() );
-
-  // Initialize the component functions
-  m_RegularizationFunction->InitializeIteration();
-  m_IntensityDistanceFunction->InitializeIteration();
+  // Setup and initialize the component functions
+  if( m_ComputeIntensityDistanceTerm )
+    {
+    m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() ) ;
+    m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
+    m_IntensityDistanceFunction->SetDeformationField(
+        this->GetDeformationField() );
+    m_IntensityDistanceFunction->InitializeIteration();
+    }
+  if( m_ComputeRegularizationTerm )
+    {
+    m_RegularizationFunction->InitializeIteration();
+    }
 }
 
 /**
