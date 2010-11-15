@@ -154,14 +154,15 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   inputImage->SetSpacing( templateImage->GetSpacing() );
   inputImage->SetOrigin( templateImage->GetOrigin() );
-  inputImage->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
+  inputImage->SetLargestPossibleRegion(
+      templateImage->GetLargestPossibleRegion() );
   inputImage->SetRequestedRegion( templateImage->GetRequestedRegion() );
   inputImage->SetBufferedRegion( templateImage->GetBufferedRegion() );
   inputImage->Allocate();
 }
 
 /**
- * Helper function to check whether the attributes of an image matches a template
+ * Helper function to check whether the attributes of an image matches template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 template < class CheckedImageType, class TemplateImageType >
@@ -803,11 +804,14 @@ typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedCalculateChange(
-          const ThreadRegionType & regionToProcess,
-          const ThreadNormalVectorImageRegionType & normalVectorRegionToProcess,
-          const ThreadDiffusionTensorImageRegionType & diffusionRegionToProcess,
-          const ThreadDeformationVectorComponentImageRegionType
-            & deformationComponentRegionToProcess,
+          const ThreadRegionType &
+              regionToProcess,
+          const ThreadNormalVectorImageRegionType &
+              normalVectorRegionToProcess,
+          const ThreadDiffusionTensorImageRegionType &
+              diffusionRegionToProcess,
+          const ThreadDeformationVectorComponentImageRegionType &
+              deformationComponentRegionToProcess,
           int)
 {
   typename OutputImageType::Pointer output = this->GetOutput();
@@ -1040,9 +1044,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   // Multithread the execution
   this->GetMultiThreader()->SingleMethodExecute();
 
-  // Explicitely call Modified on GetOutput here
-  // since ThreadedApplyUpdate changes this buffer
-  // through iterators which do not increment the
+  // Explicitely call Modified on GetOutput here, since ThreadedApplyUpdate
+  // changes this buffer through iterators which do not increment the
   // output timestamp
   this->GetOutput()->Modified();
 }
@@ -1064,20 +1067,18 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
 
   str = (DenseFDThreadStruct *)
-                        (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+            (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
   // Using the SplitRequestedRegion method from itk::ImageSource.
   ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitRegion);
+  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                            splitRegion );
 
   if (threadId < total)
     {
-    str->Filter->ThreadedApplyUpdate(str->TimeStep,
-                                     splitRegion,
-                                     threadId);
+    str->Filter->ThreadedApplyUpdate(str->TimeStep, splitRegion, threadId );
     }
 
   return ITK_THREAD_RETURN_VALUE;
@@ -1095,15 +1096,15 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
                       const ThreadRegionType &regionToProcess,
                       int)
 {
-  ImageRegionIterator<UpdateBufferType> u(m_UpdateBuffer,    regionToProcess);
-  ImageRegionIterator<OutputImageType>  o(this->GetOutput(), regionToProcess);
+  ImageRegionIterator< UpdateBufferType > u(m_UpdateBuffer,   regionToProcess );
+  ImageRegionIterator< OutputImageType > o(this->GetOutput(), regionToProcess );
 
   u = u.Begin();
   o = o.Begin();
 
   while ( !u.IsAtEnd() )
     {
-    o.Value() += static_cast<DeformationVectorType>(u.Value() * dt);
+    o.Value() += static_cast< DeformationVectorType >( u.Value() * dt );
                                                     // no adaptor support here
 
     ++o;
