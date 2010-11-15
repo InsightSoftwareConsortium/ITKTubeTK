@@ -45,7 +45,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
-  m_UseAnisotropicRegularization    = true;
   m_BorderSurface                   = 0;
   m_BorderNormalsSurface            = 0;
   m_NormalVectorImage               = 0;
@@ -101,6 +100,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   // By default, compute the intensity distance and regularization terms
   this->SetComputeIntensityDistanceTerm( true );
   this->SetComputeRegularizationTerm( true );
+  this->SetUseAnisotropicRegularization( true );
 
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework
@@ -122,7 +122,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   //m_BorderSurface->PrintSelf( os, indent )
   os << indent << "Border Normals Surface: " << m_BorderNormalsSurface;
   //m_BorderNormalsSurface->PrintSelf( os, indent );
-  os << indent << "UseAnisotropicRegularization: " << m_UseAnisotropicRegularization;
 }
 
 /**
@@ -291,10 +290,11 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     // Compute the border normals and the weighting factor w
     // Normals are dependent on the border geometry in the fixed image so this
     // has to be completed only once.
-    if( this->GetComputeRegularizationTerm() && m_UseAnisotropicRegularization )
+    if( this->GetComputeRegularizationTerm()
+      && this->GetUseAnisotropicRegularization() )
       {
       this->ComputeNormalVectorAndWeightImages( computeNormalVectorImage,
-                                              computeWeightImage );
+                                                computeWeightImage );
       }
     }
 
@@ -328,7 +328,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 
   if( this->GetComputeRegularizationTerm() )
     {
-    if ( !this->GetNormalVectorImage() || !this->GetWeightImage() )
+    if ( this->GetUseAnisotropicRegularization()
+         && ( !this->GetNormalVectorImage() || !this->GetWeightImage() ) )
       {
       itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
       }
@@ -359,7 +360,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     bool computeNormalVectorImage, bool computeWeightImage )
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_UseAnisotropicRegularization );
+  assert( this->GetUseAnisotropicRegularization() );
   assert( m_BorderNormalsSurface );
 
   // Get the normals from the polydata
@@ -537,7 +538,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     {
 
     // Compute the tangential and normal diffusion tensor images
-    if( !m_UseAnisotropicRegularization )
+    if( !this->GetUseAnisotropicRegularization() )
       {
         // This is the diffusive (Gaussian) regularization
         tangentialMatrix.SetIdentity();
@@ -595,7 +596,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 {
   assert( this->GetComputeRegularizationTerm() );
 
-  if( m_UseAnisotropicRegularization )
+  if( this->GetUseAnisotropicRegularization() )
     {
 
     // Get the border normals
@@ -666,7 +667,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_TangentialComponentExtractor[i]->Update();
-    if( m_UseAnisotropicRegularization )
+    if( this->GetUseAnisotropicRegularization() )
       {
       m_NormalComponentExtractor[i]->Update();
       }

@@ -186,6 +186,15 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
+  /** Set/get whether to use the anisotropic diffusive regularization.  If
+   *  false, the weighting term w=0 and Gaussian regularization is used.
+   *  Default: true
+   */
+  void SetUseAnisotropicRegularization( bool diffuse )
+    { m_UseAnisotropicRegularization = diffuse; }
+  bool GetUseAnisotropicRegularization() const
+    { return m_UseAnisotropicRegularization; }
+
   /** Utility function to check whether the timestep is stable, optionally based
     * on the spacing of the given image */
   template< class TPixel, unsigned int VImageDimension >
@@ -261,9 +270,11 @@ private:
   mutable SimpleFastMutexLock           m_MetricCalculationLock;
 
   /** Whether or not to compute the intensity distance and motion field
-   * regularization terms */
+   * regularization terms, and whether or not to use the anisotropic
+   * regularization */
   bool                                  m_ComputeRegularizationTerm;
   bool                                  m_ComputeIntensityDistanceTerm;
+  bool                                  m_UseAnisotropicRegularization;
 
 };
 

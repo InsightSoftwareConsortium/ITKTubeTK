@@ -233,9 +233,11 @@ public:
    *  Default: true
    */
   void SetUseAnisotropicRegularization( bool diffuse )
-    { m_UseAnisotropicRegularization = diffuse; }
+    { this->GetRegistrationFunctionPointer()->
+      SetUseAnisotropicRegularization( diffuse ); }
   bool GetUseAnisotropicRegularization() const
-    { return m_UseAnisotropicRegularization; }
+    { return this->GetRegistrationFunctionPointer()->
+      GetUseAnisotropicRegularization(); }
 
   /** Get/get the image of the normal vectors.  Setting the normal vector image
     * overrides the border surface polydata if a border surface was also

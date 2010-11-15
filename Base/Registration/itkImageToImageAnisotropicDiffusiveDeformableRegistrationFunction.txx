@@ -43,6 +43,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
 
   m_ComputeRegularizationTerm = true;
   m_ComputeIntensityDistanceTerm = true;
+  m_UseAnisotropicRegularization = true;
 
   m_RegularizationFunction = RegularizationFunctionType::New();
   this->SetTimeStep( 1.0 );
@@ -68,6 +69,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
       << m_ComputeRegularizationTerm << std::endl;
   os << indent << "ComputeIntensityDistanceTerm: "
       << m_ComputeIntensityDistanceTerm << std::endl;
+  os << indent << "UseAnisotropicRegularization: "
+      << m_UseAnisotropicRegularization << std::endl;
   if ( m_RegularizationFunction )
     {
     os << indent << "RegularizationFunction: " << std::endl;
