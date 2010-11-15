@@ -81,36 +81,10 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     }
    
   f->SetTimeStep(m_TimeStep);
-   
+
   // Check the timestep for stability
-  double minSpacing;
-  if (this->GetUseImageSpacing())
-    {
-    minSpacing = this->GetInput()->GetSpacing()[0];
-    for (unsigned int i = 1; i < ImageDimension; i++)
-      {
-      if (this->GetInput()->GetSpacing()[i] < minSpacing)
-        {
-        minSpacing = this->GetInput()->GetSpacing()[i];
-        }
-      }
-    }
-  else
-    {
-    minSpacing = 1.0;
-    }
+  f->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
 
-  double ratio = 
-     minSpacing /vcl_pow(2.0, static_cast<double>(ImageDimension) + 1); // plus 1?
-
-  if ( m_TimeStep > ratio ) 
-    {
-    itkWarningMacro(<< std::endl << "Anisotropic diffusion unstable time step:" 
-                    << m_TimeStep << std::endl << "Minimum stable time step" 
-                    << "for this image is " 
-                    << ratio ); 
-    }
-   
   f->InitializeIteration();
    
   if (this->GetNumberOfIterations() != 0)

@@ -100,7 +100,6 @@ public:
   typedef typename FiniteDifferenceFunctionType::DiffusionTensorNeighborhoodType
                                                DiffusionTensorNeighborhoodType;
 
-
   /** Set/Get Macro for diffusion tensor image filter parameters */
   itkSetMacro( TimeStep, double ); 
   itkGetMacro( TimeStep, double ); 

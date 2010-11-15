@@ -197,10 +197,46 @@ AnisotropicDiffusionTensorFunction< TImageType >
 
 template <class TImageType>
 void
-AnisotropicDiffusionTensorFunction<TImageType>::
-PrintSelf(std::ostream& os, Indent indent) const
+AnisotropicDiffusionTensorFunction<TImageType>
+::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
+}
+
+template <class TImageType>
+template < class TPixel, unsigned int VImageDimension >
+void
+AnisotropicDiffusionTensorFunction<TImageType>
+::CheckTimeStepStability( const itk::Image< TPixel, VImageDimension > * input,
+                          bool useImageSpacing )
+{
+ double minSpacing;
+ if ( useImageSpacing )
+   {
+   minSpacing = input->GetSpacing()[0];
+   for (unsigned int i = 1; i < ImageDimension; i++)
+     {
+     if (input->GetSpacing()[i] < minSpacing)
+       {
+       minSpacing = input->GetSpacing()[i];
+       }
+     }
+   }
+ else
+   {
+   minSpacing = 1.0;
+   }
+
+ double ratio =
+    minSpacing /vcl_pow(2.0, static_cast<double>(ImageDimension) + 1); // plus 1?
+
+ if ( m_TimeStep > ratio )
+   {
+   itkWarningMacro(<< std::endl << "Anisotropic diffusion unstable time step:"
+                   << m_TimeStep << std::endl << "Minimum stable time step"
+                   << "for this image is "
+                   << ratio );
+   }
 }
 
 

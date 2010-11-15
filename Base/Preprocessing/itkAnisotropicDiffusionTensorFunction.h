@@ -146,6 +146,13 @@ public:
     return m_TimeStep;
     }
 
+  /** Utility function to check whether the timestep is stable, optionally based
+    * on the spacing of the given image */
+  template< class TPixel, unsigned int VImageDimension >
+  void CheckTimeStepStability(
+      const itk::Image< TPixel, VImageDimension > * input,
+      bool useImageSpacing );
+
 protected:
   AnisotropicDiffusionTensorFunction();
 
