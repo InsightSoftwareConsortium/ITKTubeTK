@@ -291,8 +291,11 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     // Compute the border normals and the weighting factor w
     // Normals are dependent on the border geometry in the fixed image so this
     // has to be completed only once.
-    this->ComputeNormalVectorAndWeightImages( computeNormalVectorImage,
+    if( this->GetComputeRegularizationTerm() && m_UseAnisotropicRegularization )
+      {
+      this->ComputeNormalVectorAndWeightImages( computeNormalVectorImage,
                                               computeWeightImage );
+      }
     }
 
   // Compute the diffusion tensor image
@@ -355,11 +358,14 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 ::ComputeNormalVectorAndWeightImages(
     bool computeNormalVectorImage, bool computeWeightImage )
 {
+  assert( this->GetComputeRegularizationTerm() );
+  assert( m_UseAnisotropicRegularization );
   assert( m_BorderNormalsSurface );
 
-  // Get the normals
+  // Get the normals from the polydata
   vtkSmartPointer< vtkDataArray > normalData
       = m_BorderNormalsSurface->GetPointData()->GetNormals();
+  m_PointLocator->SetDataSet( m_BorderNormalsSurface );
 
   // Iterate over the normal vector image and insert the normal of the closest
   // point
@@ -371,21 +377,15 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   WeightImageIteratorType weightIt(
       m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
 
-  m_PointLocator->SetDataSet( m_BorderNormalsSurface );
-
-  itk::Index< ImageDimension > imageIndex;
-  typename NormalVectorImageType::SpacingType spacing
-      = m_NormalVectorImage->GetSpacing();
-  typename NormalVectorImageType::PointType origin
-      = m_NormalVectorImage->GetOrigin();
-  itk::Point< double, ImageDimension > imageCoordAsPoint;
+  itk::Index< ImageDimension >          imageIndex;
+  itk::Point< double, ImageDimension >  imageCoordAsPoint;
   imageCoordAsPoint.Fill( 0 );
-  double imageCoord[3] = {0, 0, 0};
-  double borderCoord[3] = {0, 0, 0};
-  vtkIdType id;
-  WeightType distance;
-  WeightType weight;
-  NormalVectorType normal;
+  double                                imageCoord[3] = {0, 0, 0};
+  double                                borderCoord[3] = {0, 0, 0};
+  vtkIdType                             id;
+  WeightType                            distance;
+  WeightType                            weight;
+  NormalVectorType                      normal;
 
   std::cout << "Computing normals and weights... " << std::endl;
 
@@ -427,13 +427,13 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 
   if( computeNormalVectorImage )
     {
-    //  // Smooth the normals to handle corners (because we are choosing the closest
-    //  // point in the polydata
-    //  typedef itk::RecursiveGaussianImageFilter< NormalVectorImageType,
-    //                                                      NormalVectorImageType >
-    //                                                      NormalSmoothingFilterType;
+    //  // Smooth the normals to handle corners (because we are choosing the
+    //  // closest point in the polydata
+    //  typedef itk::RecursiveGaussianImageFilter
+    //      < NormalVectorImageType, NormalVectorImageType >
+    //      NormalSmoothingFilterType;
     //  typename NormalSmoothingFilterType::Pointer normalSmooth
-    //                                            = NormalSmoothingFilterType::New();
+    //      = NormalSmoothingFilterType::New();
     //  normalSmooth->SetInput( m_NormalVectorImage );
     //  double normalSigma = 3.0;
     //  normalSmooth->SetSigma( normalSigma );
@@ -449,9 +449,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
         < WeightImageType, WeightImageType > WeightSmoothingFilterType;
     typename WeightSmoothingFilterType::Pointer weightSmooth
         = WeightSmoothingFilterType::New();
-    double weightSigma = 1.0;
     weightSmooth->SetInput( m_WeightImage );
-    weightSmooth->SetSigma( weightSigma );
+    weightSmooth->SetSigma( 1.0 );
     weightSmooth->Update();
     m_WeightImage = weightSmooth->GetOutput();
 
@@ -639,8 +638,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       // corectly - they should be orthogonal
       if( normalDeformationVector * tangentialDeformationVector > 0.005 )
         {
-        itkExceptionMacro( << "Normal and tangential deformation field components"
-                           << " are not orthogonal" << std::endl
+        itkExceptionMacro( << "Normal and tangential deformation field "
+                           << "components are not orthogonal" << std::endl
                            << "u = " << u[0] << " " << u[1] << " " << u[2]
                            << std::endl
                            << "n = " << n[0] << " " << n[1] << " " << n[2]
@@ -652,7 +651,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
                            << " " << tangentialDeformationVector[1] << " "
                            << tangentialDeformationVector[2] << std::endl
                            << " dot product "
-                           << normalDeformationVector*tangentialDeformationVector
+                           << normalDeformationVector
+                                  * tangentialDeformationVector
                            << std::endl );
         }
 
