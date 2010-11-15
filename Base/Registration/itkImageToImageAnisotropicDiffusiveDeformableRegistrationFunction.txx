@@ -258,20 +258,23 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
               globalData->m_RegularizationGlobalDataStruct,
               offset );
 
-      // Compute the regularization in the normal direction
-      intermediateNormalRegularizationComponent
-          = m_RegularizationFunction->ComputeUpdate(
-              normalNeighborhoodDeformationFieldComponents[i],
-              normalNeighborhoodTensor,
-              globalData->m_RegularizationGlobalDataStruct,
-              offset );
+      if( m_UseAnisotropicRegularization )
+        {
+        // Compute the regularization in the normal direction
+        intermediateNormalRegularizationComponent
+            = m_RegularizationFunction->ComputeUpdate(
+                normalNeighborhoodDeformationFieldComponents[i],
+                normalNeighborhoodTensor,
+                globalData->m_RegularizationGlobalDataStruct,
+                offset );
 
-      nln = normalVector[i] * normalVector;
+        nln = normalVector[i] * normalVector;
 
-      intermediateNormalRegularizationTerm
-          = intermediateNormalRegularizationComponent * nln;
-      normalRegularizationTerm
-          = normalRegularizationTerm + intermediateNormalRegularizationTerm;
+        intermediateNormalRegularizationTerm
+            = intermediateNormalRegularizationComponent * nln;
+        normalRegularizationTerm
+            = normalRegularizationTerm + intermediateNormalRegularizationTerm;
+        }
       }
 
     }
