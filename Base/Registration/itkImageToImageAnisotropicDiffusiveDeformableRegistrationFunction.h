@@ -70,45 +70,45 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Types for the moving image. */
-  typedef typename Superclass::MovingImageType        MovingImageType;
-  typedef typename Superclass::MovingImagePointer     MovingImagePointer;
+  typedef typename Superclass::MovingImageType          MovingImageType;
+  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
 
   /** Types for the fixed image. */
-  typedef typename Superclass::FixedImageType         FixedImageType;
-  typedef typename Superclass::FixedImagePointer      FixedImagePointer;
+  typedef typename Superclass::FixedImageType           FixedImageType;
+  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
 
   /** Types for the deformation field. */
-  typedef typename Superclass::DeformationFieldType   DeformationFieldType;
+  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
   typedef typename Superclass::DeformationFieldTypePointer
       DeformationFieldTypePointer;
 
   /** Inherit some types from the superclass. */
-  typedef typename Superclass::TimeStepType           TimeStepType;
-  typedef typename Superclass::NeighborhoodType       NeighborhoodType;
-  typedef typename Superclass::PixelType              PixelType;
-  typedef typename Superclass::FloatOffsetType        FloatOffsetType;
+  typedef typename Superclass::TimeStepType             TimeStepType;
+  typedef typename Superclass::NeighborhoodType         NeighborhoodType;
+  typedef typename Superclass::PixelType                PixelType;
+  typedef typename Superclass::FloatOffsetType          FloatOffsetType;
 
   /** Deformation field types - types for the deformation vectors, deformation
    *  vector components, and vector component images
    */
-  typedef typename DeformationFieldType::PixelType    DeformationVectorType;
+  typedef typename DeformationFieldType::PixelType      DeformationVectorType;
   typedef typename DeformationVectorType::ValueType
       DeformationVectorComponentType;
   typedef itk::Image< DeformationVectorComponentType, ImageDimension >
       DeformationVectorComponentImageType;
 
   /** Normal vector types */
-  typedef double                                   NormalVectorComponentType;
+  typedef double
+      NormalVectorComponentType;
   typedef itk::Vector< NormalVectorComponentType, ImageDimension >
       NormalVectorType;
   typedef itk::Image< NormalVectorType, ImageDimension >
       NormalVectorImageType;
 
   /** Typedefs for the intensity-based distance function */
-  typedef itk::MeanSquareRegistrationFunction< FixedImageType,
-                                               MovingImageType,
-                                               DeformationFieldType >
-                                               IntensityDistanceFunctionType;
+  typedef itk::MeanSquareRegistrationFunction
+      < FixedImageType, MovingImageType, DeformationFieldType >
+      IntensityDistanceFunctionType;
   typedef typename IntensityDistanceFunctionType::Pointer
       IntensityDistanceFunctionPointer;
 
@@ -157,6 +157,7 @@ public:
     }
   const TimeStepType &GetTimeStep() const
     { return m_TimeStep; }
+
   /** Computes the time step for an update given a global data structure.  For
    * this class of anisotropic diffusion filters, the time-step is supplied
    * by the user and is fixed for all updates, so the global data structure
@@ -195,25 +196,27 @@ public:
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead
    */
-  PixelType ComputeUpdate(const NeighborhoodType & neighborhood,
-                          void * globalData,
-                          const FloatOffsetType & offset );
+  PixelType ComputeUpdate(
+      const NeighborhoodType & neighborhood,
+      void * globalData,
+      const FloatOffsetType & offset );
 
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
-                     const NeighborhoodType &neighborhood,
-                     const NormalVectorImageNeighborhoodIteratorType
-                              &normalVectorImageNeighborhood,
-                     const DiffusionTensorNeighborhoodIteratorType
-                              &tangentialNeighborhoodTensor,
-                     const DeformationVectorComponentNeighborhoodIteratorArrayType
-                              &tangentialNeighborhoodDeformationFieldComponents,
-                     const DiffusionTensorNeighborhoodIteratorType
-                              &normalNeighborhoodTensor,
-                     const DeformationVectorComponentNeighborhoodIteratorArrayType
-                              &normalNeighborhoodDeformationFieldComponents,
-                     void *globalData,
-                     const FloatOffsetType& = FloatOffsetType(0.0));
+      const NeighborhoodType &
+          neighborhood,
+      const NormalVectorImageNeighborhoodIteratorType
+          &normalVectorImageNeighborhood,
+      const DiffusionTensorNeighborhoodIteratorType
+          &tangentialNeighborhoodTensor,
+      const DeformationVectorComponentNeighborhoodIteratorArrayType
+          &tangentialNeighborhoodDeformationFieldComponents,
+      const DiffusionTensorNeighborhoodIteratorType
+          &normalNeighborhoodTensor,
+      const DeformationVectorComponentNeighborhoodIteratorArrayType
+          &normalNeighborhoodDeformationFieldComponents,
+      void *globalData,
+      const FloatOffsetType& = FloatOffsetType(0.0) );
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/

@@ -317,8 +317,7 @@ protected:
    *  an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
-  virtual
-  void ThreadedApplyUpdate(
+  virtual void ThreadedApplyUpdate(
       TimeStepType dt, const ThreadRegionType &regionToProcess, int threadId );
 
   /** Computes the normal vector image and weighting factors w given the
