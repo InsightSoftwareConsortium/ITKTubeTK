@@ -329,12 +329,12 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       {
       itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
       }
-    }
 
-  // Update the deformation field component images
-  // This depends on the current deformation field u, so it must be computed
-  // on every iteration of the filter.
-  this->UpdateDeformationVectorComponentImages();
+    // Update the deformation field component images
+    // This depends on the current deformation field u, so it must be computed
+    // on every iteration of the filter.
+    this->UpdateDeformationVectorComponentImages();
+    }
 
   // Update the function's deformation field
   this->GetRegistrationFunctionPointer()->SetDeformationField(
@@ -598,6 +598,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::UpdateDeformationVectorComponentImages()
 {
+  assert( this->GetComputeRegularizationTerm() );
+
   // Get the border normals
   NormalVectorImageIteratorType normalVectorIterator( m_NormalVectorImage,
                               m_NormalVectorImage->GetLargestPossibleRegion() );
