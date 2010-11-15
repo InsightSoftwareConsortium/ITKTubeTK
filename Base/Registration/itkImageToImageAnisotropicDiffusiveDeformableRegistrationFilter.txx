@@ -126,6 +126,22 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 }
 
 /**
+ * Get the registration function pointer
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::RegistrationFunctionPointer
+ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::GetRegistrationFunctionPointer()
+{
+  RegistrationFunctionPointer df = dynamic_cast< RegistrationFunctionType * >
+       ( this->GetDifferenceFunction().GetPointer() );
+  return df;
+}
+
+/**
  * Set/Get the timestep
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -134,10 +150,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::SetTimeStep( const TimeStepType &t )
 {
-  typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-  df->SetTimeStep( t );
+  this->GetRegistrationFunctionPointer()->SetTimeStep( t );
 }
 
 /**
@@ -151,10 +164,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::GetTimeStep() const
 {
-  typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-  return df->GetTimeStep();
+  return this->GetRegistrationFunctionPointer()->GetTimeStep();
 }
 
 /**
@@ -166,14 +176,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::SetComputeRegularizationTerm( bool compute )
 {
-  typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-
-  // Do not smooth the deformation field with the
-  // PDEDeformableRegistrationFilter method if we are using our own
-  // regularization term
-  df->SetComputeRegularizationTerm( compute );
+  this->GetRegistrationFunctionPointer()->SetComputeRegularizationTerm( compute );
 }
 
 /**
@@ -185,10 +188,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::GetComputeRegularizationTerm() const
 {
-  typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-  return df->GetComputeRegularizationTerm();
+  return this->GetRegistrationFunctionPointer()->GetComputeRegularizationTerm();
 }
 
 /**
@@ -200,10 +200,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::SetComputeIntensityDistanceTerm( bool compute )
 {
-  typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-  df->SetComputeIntensityDistanceTerm( compute );
+  this->GetRegistrationFunctionPointer()->SetComputeIntensityDistanceTerm( compute );
 }
 
 /**
@@ -215,10 +212,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::GetComputeIntensityDistanceTerm() const
 {
-  typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-  return df->GetComputeIntensityDistanceTerm();
+  return this->GetRegistrationFunctionPointer()->GetComputeIntensityDistanceTerm();
 }
 
 /**
@@ -288,10 +282,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   Superclass::Initialize();
 
   // Check the timestep for stability
-  const typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-  df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
+  this->GetRegistrationFunctionPointer()->CheckTimeStepStability(
+      this->GetInput(), this->GetUseImageSpacing() );
 
   typename OutputImageType::Pointer output = this->GetOutput();
 
@@ -403,10 +395,8 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   this->UpdateDeformationVectorComponentImages();
 
   // Update the function's deformation field
-  typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
-  df->SetDeformationField( this->GetDeformationField() );
+  this->GetRegistrationFunctionPointer()->SetDeformationField(
+      this->GetDeformationField() );
 
   // Call the superclass implementation
   Superclass::InitializeIteration();
@@ -895,9 +885,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   void *globalData;
 
   // Get the FiniteDifferenceFunction to use in calculations.
-  const typename RegistrationFunctionType::Pointer df
-                              = dynamic_cast< RegistrationFunctionType * >
-                                ( this->GetDifferenceFunction().GetPointer() );
+  const RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
 
   const typename OutputImageType::SizeType radius = df->GetRadius();
 

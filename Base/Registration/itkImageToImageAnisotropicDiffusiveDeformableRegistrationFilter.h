@@ -109,6 +109,8 @@ public:
   typedef ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
+  typedef typename RegistrationFunctionType::Pointer
+      RegistrationFunctionPointer;
 
   /** Deformation field types - types for the deformation vectors, deformation
    *  vector components, and vector component images
@@ -336,6 +338,9 @@ protected:
   template< class CheckedImageType, class TemplateImageType >
   bool CompareImageAttributes(
       const CheckedImageType& inputImage, const TemplateImageType& templateImage);
+
+  /** Get the registration function pointer */
+  virtual RegistrationFunctionPointer GetRegistrationFunctionPointer();
 
 private:
   // Purposely not implemented
