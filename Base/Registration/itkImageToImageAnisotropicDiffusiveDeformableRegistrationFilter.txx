@@ -134,7 +134,7 @@ typename ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 ::RegistrationFunctionPointer
 ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::GetRegistrationFunctionPointer()
+::GetRegistrationFunctionPointer() const
 {
   RegistrationFunctionPointer df = dynamic_cast< RegistrationFunctionType * >
        ( this->GetDifferenceFunction().GetPointer() );
@@ -178,7 +178,6 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       && inputImage->GetRequestedRegion() == templateImage->GetRequestedRegion()
       && inputImage->GetBufferedRegion() == templateImage->GetBufferedRegion();
 }
-
 
 /**
  * Allocate space for the update buffer, and the diffusion tensor image
@@ -308,11 +307,16 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   std::cout << "\tInitializeIteration for FILTER" << std::endl;
 
   if ( !this->GetFixedImage() || !this->GetMovingImage()
-    || !this->GetDeformationField() || !this->GetNormalVectorImage()
-    || !this->GetWeightImage() )
+    || !this->GetDeformationField() )
     {
-    itkExceptionMacro( << "FixedImage, MovingImage, DeformationField, "
-                       << "NormalVectorImage and/or WeightImage not set");
+    itkExceptionMacro( << "FixedImage, MovingImage and/or DeformationField "
+                       << "not set");
+    }
+
+  if( this->GetComputeRegularizationTerm()
+    && ( !this->GetNormalVectorImage() || !this->GetWeightImage() ) )
+    {
+    itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
     }
 
   // Update the deformation field component images

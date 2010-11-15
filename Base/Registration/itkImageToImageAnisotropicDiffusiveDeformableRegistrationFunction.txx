@@ -214,19 +214,14 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
   GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
 
   // Get the normal at this pixel
-  const typename FixedImageType::IndexType index = normalVectorImageNeighborhood.GetIndex();
-  NormalVectorType normalVector
-          = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
+  const typename FixedImageType::IndexType index = neighborhood.GetIndex();
 
   // Iterate over the deformation field components to compute the regularization
   // and intensity distance terms
   PixelType                         tangentialRegularizationTerm;
   PixelType                         normalRegularizationTerm;
-  DeformationVectorComponentType    intermediateNormalRegularizationComponent;
-  PixelType                         intermediateNormalRegularizationTerm;
   PixelType                         intensityDistanceTerm;
   PixelType                         updateTerm;
-  NormalVectorType                  nln; // n(l)n
 
   intensityDistanceTerm.Fill(0);
   tangentialRegularizationTerm.Fill(0);
@@ -244,6 +239,13 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
   // Compute the motion field regularization
   if (m_ComputeRegularizationTerm )
     {
+    NormalVectorType normalVector
+        = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
+
+    DeformationVectorComponentType    intermediateNormalRegularizationComponent;
+    PixelType                         intermediateNormalRegularizationTerm;
+    NormalVectorType                  nln; // n(l)n
+
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
       // Compute the regularization in the tangential plane

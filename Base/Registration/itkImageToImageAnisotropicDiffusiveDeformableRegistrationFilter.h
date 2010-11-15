@@ -350,7 +350,7 @@ protected:
       const CheckedImageType& inputImage, const TemplateImageType& templateImage);
 
   /** Get the registration function pointer */
-  virtual RegistrationFunctionPointer GetRegistrationFunctionPointer();
+  virtual RegistrationFunctionPointer GetRegistrationFunctionPointer() const;
 
 private:
   // Purposely not implemented
