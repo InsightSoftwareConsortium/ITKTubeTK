@@ -188,7 +188,8 @@ public:
   template< class TPixel, unsigned int VImageDimension >
   void CheckTimeStepStability(
       const itk::Image< TPixel, VImageDimension > * input,
-      bool useImageSpacing );
+      bool useImageSpacing )
+    { m_RegularizationFunction->CheckTimeStepStability( input, useImageSpacing );
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
