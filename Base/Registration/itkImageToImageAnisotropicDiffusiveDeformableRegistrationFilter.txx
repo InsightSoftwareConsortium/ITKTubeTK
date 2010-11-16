@@ -218,7 +218,13 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 
   typename OutputImageType::Pointer output = this->GetOutput();
 
-  // Allocate the deformation field component images
+
+
+  // Allocate the output image's normal images, tangential and normal diffusion
+  // tensor images, and deformation field component images
+  this->AllocateSpaceForImage( m_NormalDeformationField, output );
+  this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
+  this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     this->AllocateSpaceForImage( m_DeformationVectorTangentialComponents[i],
@@ -227,55 +233,49 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
                                  output );
     }
 
-  // Allocate the output image's normal images, tangential and normal diffusion
-  // tensor images
-  this->AllocateSpaceForImage( m_NormalDeformationField, output );
-  this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
-  this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
-
-  // Check the normal vector image and the weight image if one was supplied
-  // by the user
-  if( m_NormalVectorImage
-        && !this->CompareImageAttributes( m_NormalVectorImage, output ) )
+  if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
     {
-    itkExceptionMacro( << "Normal vector image does not have the same "
-                       << "attributes as the output deformation field"
-                       << std::endl );
-    }
-  if( m_WeightImage
-        && !this->CompareImageAttributes( m_WeightImage, output ) )
-    {
-    itkExceptionMacro( << "Weight image does not have the same attributes as "
-                       << "the output deformation field" << std::endl );
-    }
-
-  // Compute the border normals and/or weighting factors if not supplied by the
-  // user
-  if( !m_NormalVectorImage || !m_WeightImage )
-    {
-    if ( !this->GetBorderSurface() )
+    // Check the normal vector image and the weight image if one was supplied
+    // by the user
+    if( m_NormalVectorImage
+          && !this->CompareImageAttributes( m_NormalVectorImage, output ) )
       {
-      itkExceptionMacro( << "Cannot perform registration without a border "
-                         << "surface, or a normal vector image and a weight "
-                         << "image" << std::endl );
+      itkExceptionMacro( << "Normal vector image does not have the same "
+                         << "attributes as the output deformation field"
+                         << std::endl );
+      }
+    if( m_WeightImage
+          && !this->CompareImageAttributes( m_WeightImage, output ) )
+      {
+      itkExceptionMacro( << "Weight image does not have the same attributes as "
+                         << "the output deformation field" << std::endl );
       }
 
-    // Update the border normals
-    m_BorderNormalsSurfaceFilter->SetInput( m_BorderSurface );
-    m_BorderNormalsSurfaceFilter->Update();
-    m_BorderNormalsSurface = m_BorderNormalsSurfaceFilter->GetOutput();
-
-    // Make sure we now have the normals
-    if ( !this->GetBorderNormalsSurface() )
+    // Compute the border normals and/or weighting factors if not supplied by the
+    // user
+    if( !m_NormalVectorImage || !m_WeightImage )
       {
-      itkExceptionMacro( << "Error computing border normals" << std::endl );
-      }
+      if ( !this->GetBorderSurface() )
+        {
+        itkExceptionMacro( << "Cannot perform registration without a border "
+                           << "surface, or a normal vector image and a weight "
+                           << "image" << std::endl );
+        }
 
-    bool computeNormalVectorImage = false;
-    bool computeWeightImage = false;
+      // Update the border normals
+      m_BorderNormalsSurfaceFilter->SetInput( m_BorderSurface );
+      m_BorderNormalsSurfaceFilter->Update();
+      m_BorderNormalsSurface = m_BorderNormalsSurfaceFilter->GetOutput();
 
-    if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
-      {
+      // Make sure we now have the normals
+      if ( !this->GetBorderNormalsSurface() )
+        {
+        itkExceptionMacro( << "Error computing border normals" << std::endl );
+        }
+
+      bool computeNormalVectorImage = false;
+      bool computeWeightImage = false;
+
       // Allocate the image of normals and weight image
       if( !m_NormalVectorImage )
         {
@@ -289,13 +289,10 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
         this->AllocateSpaceForImage( m_WeightImage, output );
         computeWeightImage = true;
         }
-      }
 
-    // Compute the border normals and the weighting factor w
-    // Normals are dependent on the border geometry in the fixed image so this
-    // has to be completed only once.
-    if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
-      {
+      // Compute the border normals and the weighting factor w
+      // Normals are dependent on the border geometry in the fixed image so this
+      // has to be completed only once.
       this->ComputeNormalVectorAndWeightImages( computeNormalVectorImage,
                                                 computeWeightImage );
       }
