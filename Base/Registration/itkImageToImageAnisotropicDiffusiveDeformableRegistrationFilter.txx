@@ -213,24 +213,34 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   Superclass::Initialize();
 
   // Check the timestep for stability
-  this->GetRegistrationFunctionPointer()->CheckTimeStepStability(
-      this->GetInput(), this->GetUseImageSpacing() );
+  if( this->GetComputeRegularizationTerm() )
+    {
+    this->GetRegistrationFunctionPointer()->CheckTimeStepStability(
+        this->GetInput(), this->GetUseImageSpacing() );
+    }
 
   typename OutputImageType::Pointer output = this->GetOutput();
 
-
-
   // Allocate the output image's normal images, tangential and normal diffusion
   // tensor images, and deformation field component images
-  this->AllocateSpaceForImage( m_NormalDeformationField, output );
-  this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
-  this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  if( this->GetComputeRegularizationTerm() )
     {
-    this->AllocateSpaceForImage( m_DeformationVectorTangentialComponents[i],
-                                 output);
-    this->AllocateSpaceForImage( m_DeformationVectorNormalComponents[i],
-                                 output );
+    this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      this->AllocateSpaceForImage( m_DeformationVectorTangentialComponents[i],
+                                   output);
+      }
+    if( this->GetUseAnisotropicRegularization() )
+      {
+      this->AllocateSpaceForImage( m_NormalDeformationField, output );
+      this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
+      for ( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        this->AllocateSpaceForImage( m_DeformationVectorNormalComponents[i],
+                                     output );
+        }
+      }
     }
 
   if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
