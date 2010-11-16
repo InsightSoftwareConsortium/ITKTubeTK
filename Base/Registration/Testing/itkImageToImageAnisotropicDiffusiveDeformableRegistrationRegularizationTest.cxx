@@ -207,11 +207,15 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
     return EXIT_FAILURE;
     }
 
-  // Save the border polydata
-  vtkPolyDataWriter * polyDataWriter = vtkPolyDataWriter::New();
-  polyDataWriter->SetFileName( argv[5] );
-  polyDataWriter->SetInput( plane->GetOutput() );
-  polyDataWriter->Update();
+  int useAnisotropic = atoi( argv[10] );
+  if( useAnisotropic )
+    {
+    // Save the border polydata
+    vtkPolyDataWriter * polyDataWriter = vtkPolyDataWriter::New();
+    polyDataWriter->SetFileName( argv[5] );
+    polyDataWriter->SetInput( plane->GetOutput() );
+    polyDataWriter->Update();
+    }
 
   // Setup the images to be registered
   FixedImageType::Pointer fixedImage      = FixedImageType::New();
@@ -242,7 +246,6 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
   // because we are just doing motion field regularization in this test:
   registrator->SetComputeIntensityDistanceTerm( false );
   registrator->SetTimeStep( atof( argv[9] ) );
-  int useAnisotropic = atoi( argv[10] );
   if ( useAnisotropic )
     {
     registrator->SetUseAnisotropicRegularization( true );
@@ -267,53 +270,57 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
 
   // Check to make sure the border normals were calculated correctly by the
   // registrator
-  vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
-  vtkSmartPointer< vtkDataArray > normalData
-                                = normalPolyData->GetPointData()->GetNormals();
-
-  // test to make sure the extracted normals match the known normals
-  double ep = 0.00005;
-  double test[3];
-  for( int i = 0; i < normalData->GetNumberOfTuples(); i++ )
+  if( useAnisotropic )
     {
-    normalData->GetTuple( i, test );
-    if( fabs( test[0] - borderN[0] ) > ep
-        || fabs( test[1] - borderN[1] ) > ep
-        || fabs( test[2] - borderN[2] ) > ep )
+    vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
+    vtkSmartPointer< vtkDataArray > normalData
+                                  = normalPolyData->GetPointData()->GetNormals();
+
+    // test to make sure the extracted normals match the known normals
+    double ep = 0.00005;
+    double test[3];
+    for( int i = 0; i < normalData->GetNumberOfTuples(); i++ )
       {
-      std::cerr << "index i=" << i << ": extracted normal [" << test[0] << " "
-          << test[1] << " " << test[2] << "]" << std::endl;
-      std::cerr << "does not match known border normal [" << borderN[0] << " "
-          << borderN[1] << " " << borderN[2] << "]" << std::endl;
+      normalData->GetTuple( i, test );
+      if( fabs( test[0] - borderN[0] ) > ep
+          || fabs( test[1] - borderN[1] ) > ep
+          || fabs( test[2] - borderN[2] ) > ep )
+        {
+        std::cerr << "index i=" << i << ": extracted normal [" << test[0] << " "
+            << test[1] << " " << test[2] << "]" << std::endl;
+        std::cerr << "does not match known border normal [" << borderN[0] << " "
+            << borderN[1] << " " << borderN[2] << "]" << std::endl;
+        return EXIT_FAILURE;
+        }
+      }
+    if( plane->GetOutput()->GetPointData()->GetNumberOfTuples() !=
+        normalPolyData->GetPointData()->GetNumberOfTuples() )
+      {
+      std::cerr << "number of tuples in original plane does not match number of "
+                                      << "tuples in border normal" << std::endl;
       return EXIT_FAILURE;
       }
-    }
-  if( plane->GetOutput()->GetPointData()->GetNumberOfTuples() !=
-      normalPolyData->GetPointData()->GetNumberOfTuples() )
-    {
-    std::cerr << "number of tuples in original plane does not match number of "
-                                    << "tuples in border normal" << std::endl;
-    return EXIT_FAILURE;
-    }
 
-  // Save the normal vector image
-  typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
-  VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
-  vectorWriter->SetFileName( argv[4] );
-  vectorWriter->SetInput( registrator->GetNormalVectorImage() );
-  vectorWriter->Write();
 
-  // Save the output deformation field normal image
-  writer->SetFileName( argv[3] );
-  writer->SetInput( registrator->GetNormalDeformationFieldImage() );
-  try
-    {
-    writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    std::cerr << "Exception caught: " << err << std::endl;
-    return EXIT_FAILURE;
+    // Save the normal vector image
+    typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
+    VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
+    vectorWriter->SetFileName( argv[4] );
+    vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+    vectorWriter->Write();
+
+    // Save the output deformation field normal image
+    writer->SetFileName( argv[3] );
+    writer->SetInput( registrator->GetNormalDeformationFieldImage() );
+    try
+      {
+      writer->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      std::cerr << "Exception caught: " << err << std::endl;
+      return EXIT_FAILURE;
+      }
     }
 
   return EXIT_SUCCESS;

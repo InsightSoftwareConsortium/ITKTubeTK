@@ -274,7 +274,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     bool computeNormalVectorImage = false;
     bool computeWeightImage = false;
 
-    if( this->GetComputeRegularizationTerm() )
+    if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
       {
       // Allocate the image of normals and weight image
       if( !m_NormalVectorImage )
@@ -850,6 +850,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   const typename OutputImageType::SizeType radius = df->GetRadius();
 
   bool computeRegularization = this->GetComputeRegularizationTerm();
+  bool useAnisotropic = this->GetUseAnisotropicRegularization();
 
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
@@ -917,18 +918,13 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   outputImageFaceList = outputImageFaceCalculator(
       output, regionToProcess, radius );
   outputImagefIt = outputImageFaceList.begin();
+
   if( computeRegularization )
     {
-    normalVectorImageFaceList = normalVectorImageFaceCalculator(
-        m_NormalVectorImage, normalVectorRegionToProcess, radius );
-    normalVectorImagefIt = normalVectorImageFaceList.begin();
     tangentialDiffusionTensorFaceList = diffusionTensorImageFaceCalculator(
         m_TangentialDiffusionTensorImage, diffusionRegionToProcess, radius );
     tangentialDiffusionTensorfIt = tangentialDiffusionTensorFaceList.begin();
-    normalDiffusionTensorFaceList = diffusionTensorImageFaceCalculator(
-        m_NormalDiffusionTensorImage, diffusionRegionToProcess, radius );
-    normalDiffusionTensorfIt = normalDiffusionTensorFaceList.begin();
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       deformationVectorTangentialComponentImageFaceListArray[i]
           = deformationVectorComponentImageFaceCalculator(
@@ -937,14 +933,26 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
               radius );
       deformationVectorTangentialComponentImagefItArray[i]
           = deformationVectorTangentialComponentImageFaceListArray[i].begin();
+      }
 
-      deformationVectorNormalComponentImageFaceListArray[i]
-          = deformationVectorComponentImageFaceCalculator(
-              m_DeformationVectorNormalComponents[i],
-              deformationComponentRegionToProcess,
-              radius );
-      deformationVectorNormalComponentImagefItArray[i]
-          = deformationVectorNormalComponentImageFaceListArray[i].begin();
+    if( useAnisotropic )
+      {
+      normalVectorImageFaceList = normalVectorImageFaceCalculator(
+          m_NormalVectorImage, normalVectorRegionToProcess, radius );
+      normalVectorImagefIt = normalVectorImageFaceList.begin();
+      normalDiffusionTensorFaceList = diffusionTensorImageFaceCalculator(
+          m_NormalDiffusionTensorImage, diffusionRegionToProcess, radius );
+      normalDiffusionTensorfIt = normalDiffusionTensorFaceList.begin();
+      for ( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        deformationVectorNormalComponentImageFaceListArray[i]
+            = deformationVectorComponentImageFaceCalculator(
+                m_DeformationVectorNormalComponents[i],
+                deformationComponentRegionToProcess,
+                radius );
+        deformationVectorNormalComponentImagefItArray[i]
+            = deformationVectorNormalComponentImageFaceListArray[i].begin();
+        }
       }
     }
 
@@ -993,27 +1001,34 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     updateIt = UpdateIteratorType( m_UpdateBuffer, *outputImagefIt );
     if( computeRegularization )
       {
-      normalVectorImageNeighborhoodIt
-          = NormalVectorImageNeighborhoodIteratorType(
-          radius, m_NormalVectorImage, *normalVectorImagefIt );
       tangentialDiffusionTensorImageNeighborhoodIt
           = DiffusionTensorNeighborhoodIteratorType(
               radius, m_TangentialDiffusionTensorImage,
               *tangentialDiffusionTensorfIt );
-      normalDiffusionTensorImageNeighborhoodIt
-          = DiffusionTensorNeighborhoodIteratorType(
-              radius, m_NormalDiffusionTensorImage,
-              *normalDiffusionTensorfIt );
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         deformationVectorTangentialComponentNeighborhoodItArray[i]
             = DeformationVectorComponentNeighborhoodIteratorType(
                 radius, m_DeformationVectorTangentialComponents[i],
                 *deformationVectorTangentialComponentImagefItArray[i] );
-        deformationVectorNormalComponentNeighborhoodItArray[i]
-            = DeformationVectorComponentNeighborhoodIteratorType(
-                radius, m_DeformationVectorNormalComponents[i],
-                *deformationVectorNormalComponentImagefItArray[i] );
+        }
+
+      if( useAnisotropic )
+        {
+        normalVectorImageNeighborhoodIt
+            = NormalVectorImageNeighborhoodIteratorType(
+            radius, m_NormalVectorImage, *normalVectorImagefIt );
+        normalDiffusionTensorImageNeighborhoodIt
+            = DiffusionTensorNeighborhoodIteratorType(
+                radius, m_NormalDiffusionTensorImage,
+                *normalDiffusionTensorfIt );
+        for( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          deformationVectorNormalComponentNeighborhoodItArray[i]
+              = DeformationVectorComponentNeighborhoodIteratorType(
+                  radius, m_DeformationVectorNormalComponents[i],
+                  *deformationVectorNormalComponentImagefItArray[i] );
+          }
         }
       }
 
@@ -1022,13 +1037,19 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     updateIt.GoToBegin();
     if( computeRegularization )
       {
-      normalVectorImageNeighborhoodIt.GoToBegin();
       tangentialDiffusionTensorImageNeighborhoodIt.GoToBegin();
-      normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
         deformationVectorTangentialComponentNeighborhoodItArray[i].GoToBegin();
-        deformationVectorNormalComponentNeighborhoodItArray[i].GoToBegin();
+        }
+      if( useAnisotropic )
+        {
+        normalVectorImageNeighborhoodIt.GoToBegin();
+        normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
+        for ( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          deformationVectorNormalComponentNeighborhoodItArray[i].GoToBegin();
+          }
         }
       }
 
@@ -1047,13 +1068,19 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
       ++updateIt;
       if( computeRegularization )
         {
-        ++normalVectorImageNeighborhoodIt;
         ++tangentialDiffusionTensorImageNeighborhoodIt;
-        ++normalDiffusionTensorImageNeighborhoodIt;
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
           ++deformationVectorTangentialComponentNeighborhoodItArray[i];
-          ++deformationVectorNormalComponentNeighborhoodItArray[i];
+          }
+        if( useAnisotropic )
+          {
+          ++normalVectorImageNeighborhoodIt;
+          ++normalDiffusionTensorImageNeighborhoodIt;
+          for( unsigned int i = 0; i < ImageDimension; i++ )
+            {
+            ++deformationVectorNormalComponentNeighborhoodItArray[i];
+            }
           }
         }
       }
@@ -1061,13 +1088,19 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     // Go to the next face
     if( computeRegularization )
       {
-      ++normalVectorImagefIt;
       ++tangentialDiffusionTensorfIt;
-      ++normalDiffusionTensorfIt;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         ++deformationVectorTangentialComponentImagefItArray[i];
-        ++deformationVectorNormalComponentImagefItArray[i];
+        }
+      if( useAnisotropic )
+        {
+        ++normalVectorImagefIt;
+        ++normalDiffusionTensorfIt;
+        for( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          ++deformationVectorNormalComponentImagefItArray[i];
+          }
         }
       }
     }

@@ -241,12 +241,16 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
   // Compute the motion field regularization
   if (m_ComputeRegularizationTerm )
     {
-    NormalVectorType normalVector
-        = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
-
+    NormalVectorType                  normalVector;
     DeformationVectorComponentType    intermediateNormalRegularizationComponent;
     PixelType                         intermediateNormalRegularizationTerm;
     NormalVectorType                  nln; // n(l)n
+
+    if( m_UseAnisotropicRegularization )
+      {
+      normalVector
+          = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
+      }
 
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
