@@ -47,55 +47,28 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
 
   m_BorderSurface                   = 0;
   m_BorderNormalsSurface            = 0;
+  m_BorderNormalsSurfaceFilter      = 0;
+  m_PointLocator                    = 0;
   m_NormalVectorImage               = 0;
   m_WeightImage                     = 0;
-  m_NormalDeformationField          = OutputImageType::New();
-  m_TangentialDiffusionTensorImage  = DiffusionTensorImageType::New();
-  m_NormalDiffusionTensorImage      = DiffusionTensorImageType::New();
+  m_NormalDeformationField          = 0;
+  m_TangentialDiffusionTensorImage  = 0;
+  m_NormalDiffusionTensorImage      = 0;
+  for ( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    m_TangentialComponentExtractor[i]           = 0;
+    m_DeformationVectorTangentialComponents[i]  = 0;
+    m_NormalComponentExtractor[i]               = 0;
+    m_DeformationVectorNormalComponents[i]      = 0;
+    }
 
   typename RegistrationFunctionType::Pointer registrationFunction =
-                                                RegistrationFunctionType::New();
+      RegistrationFunctionType::New();
   this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
-                                          registrationFunction.GetPointer() ) );
-
+      registrationFunction.GetPointer() ) );
 
   // Lambda for exponential decay used to calculate weight from distance.
   m_lambda = -0.01;
-
-  // Setup the vtkPolyDataNormals to extract the normals from the surface
-  m_BorderNormalsSurfaceFilter = BorderNormalsSurfaceFilterType::New();
-  m_BorderNormalsSurfaceFilter->ComputePointNormalsOn();
-  m_BorderNormalsSurfaceFilter->ComputeCellNormalsOff();
-  //normalExtractor->SetFeatureAngle(30);
-
-  // Setup the point locator to find closest point on the surface
-  m_PointLocator = PointLocatorType::New();
-
-  // Setup the component extractor to extract the components from the deformation
-  // field
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_TangentialComponentExtractor[i] = SelectionCastImageFilterType::New();
-    m_TangentialComponentExtractor[i]->SetInput( this->GetOutput() );
-    m_TangentialComponentExtractor[i]->SetIndex( i );
-
-    m_NormalComponentExtractor[i] = SelectionCastImageFilterType::New();
-    m_NormalComponentExtractor[i]->SetInput( m_NormalDeformationField );
-    m_NormalComponentExtractor[i]->SetIndex( i );
-    }
-
-  // Setup the deformation field component images
-  for (unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_DeformationVectorTangentialComponents[i]
-                              = DeformationVectorComponentImageType::New();
-    m_DeformationVectorTangentialComponents[i]
-                              = m_TangentialComponentExtractor[i]->GetOutput();
-    m_DeformationVectorNormalComponents[i]
-                              = DeformationVectorComponentImageType::New();
-    m_DeformationVectorNormalComponents[i]
-                              = m_NormalComponentExtractor[i]->GetOutput();
-    }
 
   // By default, compute the intensity distance and regularization terms
   this->SetComputeIntensityDistanceTerm( true );
@@ -106,6 +79,7 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   // provided by the PDERegistration framework
   this->SmoothDeformationFieldOff();
   this->SmoothUpdateFieldOff();
+
 }
 
 /**
@@ -225,20 +199,29 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
   // tensor images, and deformation field component images
   if( this->GetComputeRegularizationTerm() )
     {
+    m_TangentialDiffusionTensorImage = DiffusionTensorImageType::New();
     this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      this->AllocateSpaceForImage( m_DeformationVectorTangentialComponents[i],
-                                   output);
+      m_TangentialComponentExtractor[i] = SelectionCastImageFilterType::New();
+      m_TangentialComponentExtractor[i]->SetInput( this->GetOutput() );
+      m_TangentialComponentExtractor[i]->SetIndex( i );
+      m_DeformationVectorTangentialComponents[i]
+          = m_TangentialComponentExtractor[i]->GetOutput();
       }
     if( this->GetUseAnisotropicRegularization() )
       {
+      m_NormalDeformationField = OutputImageType::New();
       this->AllocateSpaceForImage( m_NormalDeformationField, output );
+      m_NormalDiffusionTensorImage = DiffusionTensorImageType::New();
       this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        this->AllocateSpaceForImage( m_DeformationVectorNormalComponents[i],
-                                     output );
+        m_NormalComponentExtractor[i] = SelectionCastImageFilterType::New();
+        m_NormalComponentExtractor[i]->SetInput( m_NormalDeformationField );
+        m_NormalComponentExtractor[i]->SetIndex( i );
+        m_DeformationVectorNormalComponents[i]
+            = m_NormalComponentExtractor[i]->GetOutput();
         }
       }
     }
@@ -272,10 +255,17 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
                            << "image" << std::endl );
         }
 
-      // Update the border normals
+      // Setup the vtkPolyDataNormals to extract the normals from the surface
+      m_BorderNormalsSurfaceFilter = BorderNormalsSurfaceFilterType::New();
+      m_BorderNormalsSurfaceFilter->ComputePointNormalsOn();
+      m_BorderNormalsSurfaceFilter->ComputeCellNormalsOff();
+      //m_BorderNormalsSurfaceFilter->SetFeatureAngle(30);
       m_BorderNormalsSurfaceFilter->SetInput( m_BorderSurface );
       m_BorderNormalsSurfaceFilter->Update();
       m_BorderNormalsSurface = m_BorderNormalsSurfaceFilter->GetOutput();
+
+      // Setup the point locator to find closest point on the surface
+      m_PointLocator = PointLocatorType::New();
 
       // Make sure we now have the normals
       if ( !this->GetBorderNormalsSurface() )
