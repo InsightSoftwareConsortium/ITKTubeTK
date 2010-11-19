@@ -89,6 +89,10 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< VectorType, ImageDimension >        FieldType;
 
   //--------------------------------------------------------
+  typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+      < FixedImageType, MovingImageType, FieldType > RegistrationType;
+  typename RegistrationType::Pointer registrator = RegistrationType::New();
+
   timeCollector.Start( "Load data" );
   typedef itk::ImageFileReader< FixedImageType > FixedImageReaderType;
   typename FixedImageReaderType::Pointer fixedImageReader
@@ -106,6 +110,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   typename FixedImageType::Pointer fixed = fixedImageReader->GetOutput();
+  registrator->SetFixedImage( fixed );
 
   typedef itk::ImageFileReader< MovingImageType > MovingImageReaderType;
   typename MovingImageReaderType::Pointer movingImageReader
@@ -123,6 +128,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   typename MovingImageType::Pointer moving = movingImageReader->GetOutput();
+  registrator->SetMovingImage( moving );
 
   FieldType::Pointer initField = FieldType::New();
   initField->SetSpacing( fixed->GetSpacing() );
@@ -137,19 +143,64 @@ int DoIt( int argc, char * argv[] )
   zeroVec.Fill( 0.0 );
   initField->FillBuffer( zeroVec );
 
-  typedef itk::VectorCastImageFilter<FieldType,FieldType> CasterType;
+  typedef itk::VectorCastImageFilter< FieldType, FieldType > CasterType;
   CasterType::Pointer caster = CasterType::New();
   caster->SetInput( initField );
   caster->InPlaceOff();
+  registrator->SetInitialDeformationField( caster->GetOutput() );
 
-  vtkSmartPointer< vtkPolyDataReader > polyDataReader = vtkPolyDataReader::New();
-  polyDataReader->SetFileName( organBoundaryFileName.c_str() );
-  polyDataReader->Update();
-  if( !polyDataReader->GetOutput() )
+  if( organBoundaryFileName != "" )
     {
-    tube::ErrorMessage( "Reading polydata: unsuccessful" );
-    timeCollector.Report();
-    return EXIT_FAILURE;
+    vtkSmartPointer< vtkPolyDataReader > polyDataReader = vtkPolyDataReader::New();
+    polyDataReader->SetFileName( organBoundaryFileName.c_str() );
+    polyDataReader->Update();
+    if( !polyDataReader->GetOutput() )
+      {
+      tube::ErrorMessage( "Reading polydata: unsuccessful" );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    registrator->SetBorderSurface( polyDataReader->GetOutput() );
+    }
+
+  if( normalVectorImageFileName != "" )
+    {
+    typedef itk::ImageFileReader< VectorImageType > VectorImageReaderType;
+    typename VectorImageReaderType::Pointer vectorImageReader
+        = VectorImageReaderType::New();
+    vectorImageReader->SetFileName( normalVectorImageFileName.c_str() );
+    try
+      {
+      vectorImageReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading volume: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    registrator->SetNormalVectorImage( vectorImageReader->GetOutput() );
+    }
+
+  if( weightImageFileName != "" )
+    {
+    typedef itk::ImageFileReader< WeightImageType > WeightImageReaderType;
+    typename WeightImageReaderType::Pointer weightImageReader
+        = WeightImageReaderType::New();
+    weightImageReader->SetFileName( weightImageFileName.c_str() );
+    try
+      {
+      weightImageReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading volume: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    registrator->SetWeightImage( weightImageReader->GetOutput() );
     }
 
   timeCollector.Stop( "Load data" );
@@ -158,26 +209,21 @@ int DoIt( int argc, char * argv[] )
 
   //-------------------------------------------------------------
   timeCollector.Start( "Registration" );
+  registrator->SetNumberOfIterations( numberOfIterations );
+  registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
+  registrator->SetUseAnisotropicRegularization(
+      !doNotUseAnisotropicRegularization );
+
+  std::cout << "compute regularization " << registrator->GetComputeRegularizationTerm() << std::endl;
+  std::cout << "perform aniso " << registrator->GetUseAnisotropicRegularization() << std::endl;
+
+  registrator->SetTimeStep( timeStep );
   if( lambda > 0.0 )
     {
     tube::ErrorMessage( "Lambda must be negative." );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-
-  typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
-      < FixedImageType, MovingImageType, FieldType > RegistrationType;
-  typename RegistrationType::Pointer registrator = RegistrationType::New();
-
-  registrator->SetInitialDeformationField( caster->GetOutput() );
-  registrator->SetMovingImage( moving );
-  registrator->SetFixedImage( fixed );
-  registrator->SetBorderSurface( polyDataReader->GetOutput() );
-  registrator->SetNumberOfIterations( numberOfIterations );
-  registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
-  registrator->SetUseAnisotropicRegularization(
-      !doNotUseAnisotropicRegularization );
-  registrator->SetTimeStep( timeStep );
   registrator->SetLambda( lambda );
 
   // warp moving image

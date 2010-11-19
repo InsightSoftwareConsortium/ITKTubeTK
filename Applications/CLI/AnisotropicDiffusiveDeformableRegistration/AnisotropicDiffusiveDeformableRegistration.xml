@@ -67,7 +67,7 @@
       <name>initialTransform</name>
       <flag>t</flag>
       <longflag>initialTransform</longflag>
-      <description>NOT YET IMPLEMENTED.  Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. This transform should be an affine or rigid transform.  It is used an a bulk transform for the BSpline. Optional.  TODO: init deformation field</description>
+      <description>NOT YET IMPLEMENTED.  Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. This transform should be an affine or rigid transform.  Optional.  TODO: init deformation field</description>
       <label>Initial transform</label>
       <channel>input</channel>
     </transform>
@@ -90,8 +90,24 @@
       <label>Organ Boundary</label>
       <flag>b</flag>
       <longflag>organBoundary</longflag>
-      <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image.  TODO get model instead; option for image of normals and/or weights</description>
+      <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image</description>
     </file>
+    <image>
+      <name>normalVectorImageFileName</name>
+      <label>Normal vector image</label>
+      <flag>n</flag>
+      <longflag>normalVectorImage</longflag>
+      <channel>input</channel>
+      <description>Image specifying the normal vectors.  This should be in the space of the fixed image.  Optional: supply a normal vector image or an organ boundary surface.  If both are provided, the organ boundary surface is used.</description>
+    </image>
+    <image>
+      <name>weightImageFileName</name>
+      <label>Weight image</label>
+      <flag>w</flag>
+      <longflag>weightImage</longflag>
+      <channel>input</channel>
+      <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This should be in the space of the fixed image.  Optional: supply a weight image or an organ boundary surface (and a lambda).  If both are provided, the organ boundary surface is used.</description>
+    </image>
     <image>
       <name>outputDeformationFieldFileName</name>
       <flag>d</flag>

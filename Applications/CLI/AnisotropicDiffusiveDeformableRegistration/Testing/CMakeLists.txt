@@ -44,7 +44,8 @@ add_test( ${PROJECT_NAME}SphereTestNoReg
             ${PROJ_EXE}
                ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
                ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -b ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+               -n ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
                -d ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
                -o ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_transformedMovingImage.mhd
                -i 5
@@ -69,7 +70,8 @@ add_test( ${PROJECT_NAME}SphereTestAnisotropicReg
             ${PROJ_EXE}
                ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
                ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -b ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+               -n ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
                -d ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
                -o ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_transformedMovingImage.mhd
                -i 5
@@ -93,7 +95,8 @@ add_test( ${PROJECT_NAME}SphereTestGaussianReg
             ${PROJ_EXE}
                ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
                ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -b ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+               -n ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
                -d ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
                -o ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_transformedMovingImage.mhd
                -i 5

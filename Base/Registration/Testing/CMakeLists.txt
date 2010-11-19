@@ -176,7 +176,7 @@ if( TubeTK_USE_VTK )
 
   add_test( itkImageToImageAnisotropicDiffusiveDeformableRegistrationBoxesTestAnisotropicReg
           ${BASE_REGISTRATION_FILTERS_TESTS}
-          --compare  ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+          --compare ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
                     ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
             itkImageToImageAnisotropicDiffusiveDeformableRegistrationImageRegistrationTest
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_origFixedImage.mhd
