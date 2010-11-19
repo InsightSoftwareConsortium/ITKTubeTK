@@ -51,5 +51,8 @@ add_subdirectory( ExtractVessels )
 if( TubeTK_USE_FANN )
   add_subdirectory( FANNClassify )
 endif()
+if( TubeTK_USE_VTK )
+  add_subdirectory( AnisotropicDiffusiveDeformableRegistration )
+endif( TubeTK_USE_VTK )
 
 

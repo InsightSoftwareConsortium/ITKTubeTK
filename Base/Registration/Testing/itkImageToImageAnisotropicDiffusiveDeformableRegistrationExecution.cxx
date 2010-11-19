@@ -25,10 +25,9 @@ limitations under the License.
 #endif
 
 #include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.h"
-#include "itkImageFileWriter.h"
+#include "itkOrientedImage.h"
 #include "itkVectorCastImageFilter.h"
 #include "itkWarpImageFilter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
 
 #include "itkImageFileReader.h"
@@ -60,30 +59,34 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
 
   // Typedefs
   const unsigned int                                      ImageDimension = 3;
-  typedef double                                          PixelType;
+  typedef double                                          FixedPixelType;
+  typedef double                                          MovingPixelType;
+  typedef MovingPixelType                                 OutputPixelType;
   typedef double                                          VectorScalarType;
-  typedef itk::Image< PixelType, ImageDimension >         ImageType;
+  typedef itk::Image< FixedPixelType, ImageDimension >    FixedImageType;
+  typedef itk::Image< MovingPixelType, ImageDimension >   MovingImageType;
+  typedef itk::Image< OutputPixelType, ImageDimension >   OutputImageType;
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
   typedef itk::Image< double, ImageDimension >            WeightImageType;
   typedef itk::Image< VectorType, ImageDimension >        FieldType;
-  typedef itk::ImageFileReader<ImageType>                 ImageReaderType;
-  typedef itk::ImageFileWriter<ImageType>                 ImageWriterType;
-  typedef ImageType::IndexType                            IndexType;
 
 
   //--------------------------------------------------------
   std::cout << "Read the input images" << std::endl;
 
-  ImageReaderType::Pointer fixedImageReader = ImageReaderType::New();
+  typedef itk::ImageFileReader< FixedImageType > FixedImageReaderType;
+  FixedImageReaderType::Pointer fixedImageReader = FixedImageReaderType::New();
   fixedImageReader->SetFileName( argv[1] );
   fixedImageReader->Update();
-  ImageType::Pointer fixed = fixedImageReader->GetOutput();
+  FixedImageType::Pointer fixed = fixedImageReader->GetOutput();
 
-  ImageReaderType::Pointer movingImageReader = ImageReaderType::New();
+  typedef itk::ImageFileReader< MovingImageType > MovingImageReaderType;
+  MovingImageReaderType::Pointer movingImageReader
+      = MovingImageReaderType::New();
   movingImageReader->SetFileName( argv[2] );
   movingImageReader->Update();
-  ImageType::Pointer moving = movingImageReader->GetOutput();
+  MovingImageType::Pointer moving = movingImageReader->GetOutput();
 
   FieldType::Pointer initField = FieldType::New();
   initField->SetSpacing( fixed->GetSpacing() );
@@ -124,7 +127,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
   std::cout << "Run registration and warp moving" << std::endl;
 
   typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
-      < ImageType, ImageType, FieldType > RegistrationType;
+      < FixedImageType, MovingImageType, FieldType > RegistrationType;
   RegistrationType::Pointer registrator = RegistrationType::New();
 
   registrator->SetInitialDeformationField( caster->GetOutput() );
@@ -160,11 +163,12 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
   registrator->SetLambda( -0.1 );
 
   // warp moving image
-  typedef itk::WarpImageFilter<ImageType,ImageType,FieldType> WarperType;
+  typedef itk::WarpImageFilter< MovingImageType, MovingImageType, FieldType >
+      WarperType;
   WarperType::Pointer warper = WarperType::New();
 
   typedef WarperType::CoordRepType CoordRepType;
-  typedef itk::LinearInterpolateImageFunction<ImageType,CoordRepType>
+  typedef itk::LinearInterpolateImageFunction<MovingImageType,CoordRepType>
       InterpolatorType;
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
@@ -197,6 +201,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
     return EXIT_FAILURE;
     }
 
+  typedef itk::ImageFileWriter< MovingImageType > ImageWriterType;
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( argv[6] );
   imageWriter->SetInput( warper->GetOutput() );
@@ -214,9 +219,9 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution(
   std::cout << "Compare warped moving and fixed." << std::endl;
 
   // compare the warp and fixed images
-  itk::ImageRegionIterator<ImageType> fixedIter( fixed,
+  itk::ImageRegionIterator<FixedImageType> fixedIter( fixed,
       fixed->GetBufferedRegion() );
-  itk::ImageRegionIterator<ImageType> warpedIter( warper->GetOutput(),
+  itk::ImageRegionIterator<MovingImageType> warpedIter( warper->GetOutput(),
       fixed->GetBufferedRegion() );
 
   unsigned int numPixelsDifferent = 0;
