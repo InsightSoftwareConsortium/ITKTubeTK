@@ -67,6 +67,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "qstringbuilder"
     "qtconcurrentiteratekernel"
     "itktiff"
+    "itkPhilipsPAR"
     "vxl"
     "netlib"
     "is here"
