@@ -71,10 +71,14 @@ class RadiusExtractorMedialnessFunc : public UserFunc<int, double>
       {
       double bness = 0;
 
+      std::cout << "----====>>>> Optimizer: point = "
+        << m_KernelArray->begin()->GetPosition()
+        << std::endl;
       m_RadiusExtractor->ComputeMeasuresInKernelArray(
         *m_KernelArray, x*m_MedialnessScaleStep, m_Value, bness, false );
-      // std::cout << "Optimizer: point = " << x*m_MedialnessScaleStep
-        // << " value = " << m_Value << std::endl;
+      std::cout << "----====>>>> Optimizer: point = "
+        << x*m_MedialnessScaleStep
+        << " value = " << m_Value << std::endl << std::endl;
 
       return m_Value;
       };
@@ -357,6 +361,7 @@ RadiusExtractor<TInputImage>
     {
     std::cout << "Compute values at point" << std::endl;
     }
+  std::cout << "***___ Kern isolated point ___***" << std::endl;
   this->ComputeValuesInKernel( pnt, pntR, n, kernPos, kernPosCnt,
     kernNeg, kernNegCnt, kernBrn, kernBrnCnt, doBNess );
 
@@ -452,6 +457,7 @@ RadiusExtractor<TInputImage>
   typename std::vector<TubePointType>::iterator pnt = kernArray.begin();
   for( unsigned int i=0; i<len; ++i )
     {
+    std::cout << "***___ Kern point = " << i << " ___***" << std::endl;
     this->ComputeValuesInKernel( *pnt, pntR, norms, kernPos,
       kernPosCnt, kernNeg, kernNegCnt, kernBrn, kernBrnCnt,
       doBNess );
@@ -555,6 +561,8 @@ RadiusExtractor<TInputImage>
   double tempTol = m_MedialnessOpt.tolerance();
   m_MedialnessOpt.tolerance( rTolerance / m_MedialnessScaleStep );
 
+  std::cout << "kern pnt = " << kernArray.begin()->GetPosition()
+    << std::endl;
   static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
     m_MedialnessFunc )->SetKernelArray( & kernArray );
   m_MedialnessOptSpline->newData( true );
@@ -745,6 +753,13 @@ RadiusExtractor<TInputImage>
       {
       std::cout << "   DotProd = " << dotP << " and Norm = " << sum
         << std::endl;
+      std::cout << "   pos = " << pnt.GetPosition() << std::endl;
+      std::cout << "   t = " << pnt.GetTangent() << std::endl;
+      std::cout << "   n1 = " << pnt.GetNormal1() << std::endl;
+      if( ImageDimension == 3 )
+        {
+        std::cout << "   n2 = " << pnt.GetNormal2() << std::endl;
+        }
       }
     n.set_column( 0,
       GetOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
@@ -895,10 +910,13 @@ RadiusExtractor<TInputImage>
       << std::endl;
     if( this->GetDebug() )
       {
+      std::cout << "   Warn pos = " << pnt.GetPosition() << std::endl;
+      std::cout << "   Warn tan = " << pnt.GetTangent() << std::endl;
+      std::cout << "   Warn kern = " << std::endl;
       for( unsigned int i=0; i<m_KernNumDirs; i++ )
         {
-        std::cout << i << " : " << kernNeg[i] << ", " << kernPos[i]
-          << ", " << kernBrn[i] << std::endl;
+        std::cout << "    " << i << " : " << kernPos[i] << ", "
+          << kernNeg[i] << ", " << kernBrn[i] << std::endl;
         }
       }
     }
@@ -914,7 +932,6 @@ RadiusExtractor<TInputImage>
 {
   typename KernArrayType::iterator tubeFromPnt = tube.GetPoints().begin();
   typename KernArrayType::iterator tubeToPnt = tube.GetPoints().end();
-  tubeToPnt--;
 
   typename KernArrayType::iterator iterPnt;
   iterPnt = tubeFromPnt;
@@ -1224,28 +1241,28 @@ RadiusExtractor<TInputImage>
     step = -1;
     }
 
+  unsigned int kernArraySize = kernArray.size();
   unsigned int count = 0;
-  for( int kernPnt = (int)( kernPntStart);
-    kernPnt != (int)( kernPntEnd)+step;
+  for( int kernPnt = (int)(kernPntStart);
+    kernPnt != (int)(kernPntEnd)+step;
     kernPnt += step )
     {
     pntKernArray.clear();
-    for( int j = (int)( kernPnt)-(int)( kernMid);
-      j <= (int)( kernPnt)+(int)( kernMid); j++ )
+    std::cout << "kernArray.clear()" << std::endl;
+    for( int j = (int)(kernPnt) - (int)(kernMid);
+      j <= (int)(kernPnt) + (int)(kernMid); j++ )
       {
-      if( ( j - kernPntStart ) * step > 0 &&
-          ( kernPntEnd - j ) * step > 0 )
+      if( j >= 0 && j < (int)(kernArraySize) )
         {
+        std::cout << "kernArray = " << j << std::endl;
         pntKernArray.push_back( kernArray[j] );
-        }
-      else
-        {
-        pntKernArray.push_back( kernArray[kernPnt] );
         }
       }
 
     static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
       m_MedialnessFunc )->SetKernelArray( & pntKernArray );
+    std::cout << "*** Kern pnt = " << pntKernArray.begin()->GetPosition()
+      << std::endl;
     m_MedialnessOptSpline->newData( true );
     pntR /= m_MedialnessScaleStep;
     m_MedialnessOptSpline->extreme( &pntR, &mness );
@@ -1407,15 +1424,18 @@ RadiusExtractor<TInputImage>
 
   KernArrayType & pnts = tube.GetPoints();
   typename KernArrayType::iterator pntIter = pnts.begin();
+  unsigned int pntCnt = 0;
 
-  for( unsigned int pntCnt = 0; pntCnt < kernArrayTubePointIndex[0];
-    pntCnt++ )
+  std::cout << "Apply begin" << std::endl;
+  while( pntCnt < kernArrayTubePointIndex[0] )
     {
     (*pntIter).SetRadius( r0 );
     (*pntIter).SetMedialness( m0 );
     (*pntIter).SetBranchness( b0 );
-    pntIter++;
+    ++pntIter;
+    ++pntCnt;
     }
+  std::cout << "Tube points to first Kern point set" << std::endl;
 
   double w, r, m, b;
 
@@ -1430,8 +1450,7 @@ RadiusExtractor<TInputImage>
     r1 = kernArray[arrayCnt+1].GetRadius();
     m1 = kernArray[arrayCnt+1].GetMedialness();
     b1 = kernArray[arrayCnt+1].GetBranchness();
-    for( unsigned int pntCnt = 0;
-      pntCnt < kernArrayTubePointIndex[arrayCnt+1]; pntCnt++ )
+    while( pntCnt < kernArrayTubePointIndex[arrayCnt+1] )
       {
       w = pntCnt / (double)m_KernelPointSpacing;
       r = r0 + w * ( r1 - r0 );
@@ -1440,7 +1459,8 @@ RadiusExtractor<TInputImage>
       (*pntIter).SetRadius( r );
       (*pntIter).SetMedialness( m );
       (*pntIter).SetBranchness( b );
-      pntIter++;
+      ++pntIter;
+      ++pntCnt;
       }
     }
 
@@ -1452,7 +1472,8 @@ RadiusExtractor<TInputImage>
     (*pntIter).SetRadius( r0 );
     (*pntIter).SetMedialness( m0 );
     (*pntIter).SetBranchness( b0 );
-    pntIter++;
+    ++pntIter;
+    ++pntCnt;
     }
 
   if( m_StatusCallBack )
@@ -1466,8 +1487,8 @@ RadiusExtractor<TInputImage>
     }
   else
     {
-    std::cout << "Applied to " << tube.GetPoints().size() << "tube points."
-       << std::endl;
+    std::cout << "Applied to " << tube.GetPoints().size()
+      << " tube points." << std::endl;
     }
 }
 
@@ -1486,6 +1507,15 @@ RadiusExtractor<TInputImage>
   KernArrayTubePointIndexType kernArrayTubePointIndex;
   this->ComputeValuesInFullKernelArray( tube, kernArray,
     kernArrayTubePointIndex );
+  std::cout << "Computing tangents and normals..." << std::endl;
+  ComputeVectorTangentsAndNormals< TubePointType >( kernArray );
+  std::cout << "kernArray[0] = " << std::endl;
+  std::cout << "   pos = " << kernArray.begin()->GetPosition()
+    << std::endl;
+  std::cout << "   t = " << kernArray.begin()->GetTangent()
+    << std::endl;
+  std::cout << "   n1 = " << kernArray.begin()->GetNormal1()
+    << std::endl;
 
   typename KernArrayType::iterator pntIter;
   pntIter = tube.GetPoints().begin();

@@ -1,24 +1,24 @@
 ##############################################################################
-# 
+#
 # Library:   TubeTK
-# 
+#
 # Copyright 2010 Kitware Inc. 28 Corporate Drive,
 # Clifton Park, NY, 12065, USA.
-# 
-# All rights reserved. 
-# 
+#
+# All rights reserved.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #       http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#
 ##############################################################################
 
 include_regular_expression( "^.*$" )
@@ -26,16 +26,16 @@ include_regular_expression( "^.*$" )
 find_package( Tclsh )
 if( TCL_TCLSH )
   add_test( PrintSelf-BaseSegmentationVTree ${TCL_TCLSH}
-    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl  
-    ${TubeTK_SOURCE_DIR}/Base/SegmentationVTree 
+    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl
+    ${TubeTK_SOURCE_DIR}/Base/SegmentationVTree
     )
 endif( TCL_TCLSH )
 
-set( BASE_SEGMENTATION_VTREE_TESTS 
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationVTreeTests 
+set( BASE_SEGMENTATION_VTREE_TESTS
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationVTreeTests
   )
 
-set( BASE_SEGMENTATION_HEADER_VTREE_TEST 
+set( BASE_SEGMENTATION_HEADER_VTREE_TEST
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationVTreeHeaderTest
   )
 
@@ -55,44 +55,45 @@ set( tubeBaseSegmentationVTree_SRCS
   itkRidgeExtractorTest.cxx
   itkRidgeExtractorTest2.cxx
   itkRadiusExtractorTest.cxx
+  itkRadiusExtractorTest2.cxx
   itkSplineApprox1DTest.cxx
   itkSplineNDTest.cxx
   itkUserFuncTest.cxx
   )
 
-include_directories( 
-  ${TubeTK_SOURCE_DIR}/Utilities 
-  ${TubeTK_SOURCE_DIR}/Base/Numerics 
+include_directories(
+  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
   )
 
-add_executable( tubeBaseSegmentationVTreeHeaderTest 
-  tubeBaseSegmentationVTreeHeaderTest.cxx 
+add_executable( tubeBaseSegmentationVTreeHeaderTest
+  tubeBaseSegmentationVTreeHeaderTest.cxx
   )
 target_link_libraries( tubeBaseSegmentationVTreeHeaderTest
-  ITKIO 
-  ITKNumerics 
-  ITKBasicFilters 
+  ITKIO
+  ITKNumerics
+  ITKBasicFilters
   )
 
 add_executable( tubeBaseSegmentationVTreeTests
-  tubeBaseSegmentationVTreeTests.cxx 
-  ${tubeBaseSegmentationVTree_SRCS} 
+  tubeBaseSegmentationVTreeTests.cxx
+  ${tubeBaseSegmentationVTree_SRCS}
   )
 target_link_libraries( tubeBaseSegmentationVTreeTests
-  ITKIO 
-  ITKNumerics 
-  ITKBasicFilters 
+  ITKIO
+  ITKNumerics
+  ITKBasicFilters
   VTree
   )
 
-add_test( tubeBaseSegmentationVTreeHeaderTest 
-  ${BASE_SEGMENTATION_HEADER_VTREE_TEST} 
+add_test( tubeBaseSegmentationVTreeHeaderTest
+  ${BASE_SEGMENTATION_HEADER_VTREE_TEST}
   )
 
-add_test( tubeBaseSegmentationVTreePrintTest 
+add_test( tubeBaseSegmentationVTreePrintTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  tubeBaseSegmentationVTreePrintTest 
+  tubeBaseSegmentationVTreePrintTest
   )
 
 add_test( itkBlurImageFunctionTest
@@ -100,7 +101,7 @@ add_test( itkBlurImageFunctionTest
   --compare ${BASELINE}/itkBlurImageFunctionTest.mha
             ${TEMP}/itkBlurImageFunctionTest.mha
   itkBlurImageFunctionTest
-    ${TEMP}/itkBlurImageFunctionTest.mha 
+    ${TEMP}/itkBlurImageFunctionTest.mha
   )
 
 add_test( itkMatrixMathTest
@@ -138,7 +139,7 @@ add_test( itkSplineApprox1DTest
   --compare ${BASELINE}/itkSplineApprox1DTest.mha
             ${TEMP}/itkSplineApprox1DTest.mha
   itkSplineApprox1DTest
-    ${TEMP}/itkSplineApprox1DTest.mha 
+    ${TEMP}/itkSplineApprox1DTest.mha
   )
 
 add_test( itkSplineNDTest
@@ -146,7 +147,7 @@ add_test( itkSplineNDTest
   --compare ${BASELINE}/itkSplineNDTest.mha
             ${TEMP}/itkSplineNDTest.mha
   itkSplineNDTest
-    ${TEMP}/itkSplineNDTest.mha 
+    ${TEMP}/itkSplineNDTest.mha
   )
 
 add_test( itkRidgeExtractorTest
@@ -154,22 +155,28 @@ add_test( itkRidgeExtractorTest
   --compare ${BASELINE}/itkRidgeExtractorTest.mha
             ${TEMP}/itkRidgeExtractorTest.mha
   itkRidgeExtractorTest
-    ${INPUT_DATA}/Branch.n010.sub.mha 
-    ${TEMP}/itkRidgeExtractorTest.mha 
+    ${INPUT_DATA}/Branch.n010.sub.mha
+    ${TEMP}/itkRidgeExtractorTest.mha
   )
 
 add_test( itkRidgeExtractorTest2
   ${BASE_SEGMENTATION_VTREE_TESTS}
   itkRidgeExtractorTest2
-    ${INPUT_DATA}/Branch.n010.mha 
-    ${INPUT_DATA}/Branch-truth.tre 
+    ${INPUT_DATA}/Branch.n010.mha
+    ${INPUT_DATA}/Branch-truth.tre
   )
 
 add_test( itkRadiusExtractorTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
   itkRadiusExtractorTest
-    ${INPUT_DATA}/Branch.n010.mha 
-    ${INPUT_DATA}/Branch-truth.tre 
+    ${INPUT_DATA}/Branch.n010.mha
+    ${INPUT_DATA}/Branch-truth.tre
   )
 
+add_test( itkRadiusExtractorTest2
+  ${BASE_SEGMENTATION_VTREE_TESTS}
+  itkRadiusExtractorTest2
+    ${INPUT_DATA}/Branch.n010.mha
+    ${INPUT_DATA}/Branch-truth.tre
+  )
 

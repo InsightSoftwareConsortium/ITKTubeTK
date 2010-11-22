@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ limitations under the License.
 
 #include "tubeMessage.h"
 
-int itkRadiusExtractorTest( int argc, char * argv[] )
+int itkRadiusExtractorTest2( int argc, char * argv[] )
   {
   if( argc != 3 )
     {
-    std::cout 
-      << "itkRadiusExtractorTest <inputImage> <vessel.tre>" 
+    std::cout
+      << "itkRadiusExtractorTest2 <inputImage> <vessel.tre>"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -58,41 +58,6 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
   radiusOp->SetInputImage( im );
 
   bool returnStatus = EXIT_SUCCESS;
-
-  double dataMin = radiusOp->GetDataMin();
-  if( dataMin != 54 )
-    {
-    tube::ErrorMessage( "Data min != 54" );
-    returnStatus = EXIT_FAILURE;
-    }
-
-  double dataMax = radiusOp->GetDataMax();
-  if( dataMax != 230 )
-    {
-    tube::ErrorMessage( "Data max != 230" );
-    returnStatus = EXIT_FAILURE;
-    }
-
-  radiusOp->SetRadiusMin( 0.75 );
-  if( radiusOp->GetRadiusMin() != 0.75 )
-    {
-    tube::ErrorMessage( "Radius min != 0.75" );
-    returnStatus = EXIT_FAILURE;
-    }
-
-  radiusOp->SetRadiusMax( 10.0 );
-  if( radiusOp->GetRadiusMax() != 10.0 )
-    {
-    tube::ErrorMessage( "Radius max != 10.0" );
-    returnStatus = EXIT_FAILURE;
-    }
-
-  radiusOp->SetRadius0( 2.0 );
-  if( radiusOp->GetRadius0() != 2.0 )
-    {
-    tube::ErrorMessage( "Radius 0 != 2.0" );
-    returnStatus = EXIT_FAILURE;
-    }
 
   radiusOp->SetThreshMedialness( 0.005 );
   if( radiusOp->GetThreshMedialness() != 0.005 )
@@ -128,17 +93,17 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
   reader->Update();
   GroupType::Pointer group = reader->GetGroup();
 
-  std::cout << "Number of children = " << group->GetNumberOfChildren() 
+  std::cout << "Number of children = " << group->GetNumberOfChildren()
     << std::endl;
 
   char tubeName[17];
   strcpy( tubeName, "Tube" );
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
-  
+
   unsigned int numTubes = tubeList->size();
   std::cout << "Number of tubes = " << numTubes << std::endl;
-  
-  typedef itk::Statistics::MersenneTwisterRandomVariateGenerator 
+
+  typedef itk::Statistics::MersenneTwisterRandomVariateGenerator
     RandGenType;
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
@@ -159,67 +124,102 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
       {
       ++tubeIter;
       }
-    TubeType * tubep = static_cast< TubeType * >( 
-      tubeIter->GetPointer() );
-    TubeType::Pointer tube = static_cast< TubeType * >( 
-      tubeIter->GetPointer() );
-    itk::ComputeTubeTangentsAndNormals< TubeType >( tubep );
 
     std::cout << "Test tube = " << rndTubeNum << std::endl;
-  
+
+    TubeType * tubep = static_cast< TubeType * >(
+      tubeIter->GetPointer() );
+    TubeType::Pointer tube = static_cast< TubeType * >(
+      tubeIter->GetPointer() );
+
+    itk::ComputeTubeTangentsAndNormals< TubeType >( tubep );
+
+    std::vector< double > idealR;
     PointListType tubePointList = tube->GetPoints();
     unsigned int numPoints = tubePointList.size();
-    unsigned int rndPointNum = rndGen->GetUniformVariate( 0, 1 ) 
-      * numPoints;
-    if( rndPointNum > numPoints-1 )
-      {
-      rndPointNum = numPoints-1;
-      }
     PointListType::iterator pntIter = tubePointList.begin();
-    for( unsigned int i=0; i<rndPointNum; i++ )
+    for( unsigned int i=0; i<numPoints; i++ )
       {
+      if( vnl_math_abs( pntIter->GetTangent().GetVnlVector().magnitude()-1 )
+        > 0.01 )
+        {
+        std::cout << "Point: " << i << ": Tangent not of unit length."
+          << std::endl;
+        ++failures;
+        }
+      if( vnl_math_abs( pntIter->GetNormal1().GetVnlVector().magnitude()-1 )
+        > 0.01 )
+        {
+        std::cout << "Point: " << i << ": Normal1 not of unit length."
+          << std::endl;
+        ++failures;
+        }
+      if( vnl_math_abs( pntIter->GetNormal2().GetVnlVector().magnitude()-1 )
+        > 0.01 )
+        {
+        std::cout << "Point: " << i << ": Normal2 not of unit length."
+          << std::endl;
+        ++failures;
+        }
+      if( vnl_math_abs( dot_product( pntIter->GetTangent().GetVnlVector(),
+        pntIter->GetNormal1().GetVnlVector() ) ) > 0.001 )
+        {
+        std::cout << "Point: " << i
+          << ": dot_product( Tangent, Normal1 ) != 0." << std::endl;
+        ++failures;
+        }
+      if( vnl_math_abs( dot_product( pntIter->GetTangent().GetVnlVector(),
+        pntIter->GetNormal2().GetVnlVector() ) ) > 0.001 )
+        {
+        std::cout << "Point: " << i
+          << ": dot_product( Tangent, Normal2 ) != 0." << std::endl;
+        ++failures;
+        }
+      if( vnl_math_abs( dot_product( pntIter->GetNormal1().GetVnlVector(),
+        pntIter->GetNormal2().GetVnlVector() ) ) > 0.001 )
+        {
+        std::cout << "Point: " << i
+          << ": dot_product( Normal1, Normal2 ) != 0." << std::endl;
+        ++failures;
+        }
+
+      idealR.push_back( pntIter->GetRadius() );
+      if( pntIter->GetRadius() < 0 )
+        {
+        std::cout << "Point: " << i << ": radius < 0." << std::endl;
+        ++failures;
+        }
+      else
+        {
+        std::cout << "    Point = " << i << " : Radius = "
+          << pntIter->GetRadius() << " : Pos = "
+          << pntIter->GetPosition() << std::endl;
+        }
+
       ++pntIter;
       }
-    TubePointType * pnt = static_cast< TubePointType * >(&(*pntIter));
-    std::cout << "Test point = " << rndPointNum << std::endl;
-  
-    double r0 = pnt->GetRadius();
-    double r1 = r0;
 
-    std::cout << "  x = " << pnt->GetPosition() << std::endl;
-    std::cout << "  r = " << r0 << std::endl;
-    std::cout << "  t = " << pnt->GetTangent() << std::endl;
-    std::cout << "  n1 = " << pnt->GetNormal1() << std::endl;
-    std::cout << "  n2 = " << pnt->GetNormal2() << std::endl;
+    radiusOp->SetDebug( true );
+    radiusOp->ComputeTubeRadii( *tubep );
 
-    double rMin = 0.75;
-    double rMax = 10;
-    double rStep = 0.25;
-    double rTol = 0.1;
-    if( !radiusOp->ComputeOptimalRadiusAtPoint( *pnt, r1, rMin, rMax,
-      rStep, rTol ) )
+    pntIter = tubePointList.begin();
+    for( unsigned int i=0; i<numPoints; i++ )
       {
-      std::cout << "ComputeOptimalRadius returned false." << std::endl;
-      std::cout << "   Target = " << pnt->GetPosition()
-        << " at r = " << r0 << std::endl;
-      std::cout << "      Result r = " << r1 << std::endl;
-      ++failures;
-      continue;
+      if( vnl_math_abs( pntIter->GetRadius() - idealR[i] ) > 1 )
+        {
+        std::cout << "Point: " << i
+          << ": estimatedR - idealR != 0." << std::endl;
+        std::cout << "  idealR = " << idealR[i] << std::endl;
+        std::cout << "  estimatedR = " << pntIter->GetRadius() << std::endl;
+        ++failures;
+        }
+      else
+        {
+        std::cout << "Point: " << i << "  idealR = " << idealR[i]
+          << "  estimatedR = " << pntIter->GetRadius() << std::endl;
+        }
+      ++pntIter;
       }
-  
-    double diff = vnl_math_abs( r1 - r0 );
-    if( diff > 0.2 * r0 && diff > 0.75 )
-      {
-      std::cout << "Radius estimate inaccurate." << std::endl;
-      std::cout << "   Target = " << r0 << std::endl;
-      std::cout << "      Result = " << r1 << std::endl;
-      ++failures;
-      continue;
-      }
-
-    std::cout << "*** Radius estimate a success! ***" << std::endl;
-    std::cout << "   Target = " << r0 << std::endl;
-    std::cout << "      Result = " << r1 << std::endl;
     }
 
   std::cout << "Number of failures = " << failures << std::endl;
@@ -230,4 +230,3 @@ int itkRadiusExtractorTest( int argc, char * argv[] )
 
   return EXIT_SUCCESS;
   }
-

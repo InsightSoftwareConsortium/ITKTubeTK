@@ -40,6 +40,7 @@ void RegisterTests()
   REGISTER_TEST( itkRidgeExtractorTest );
   REGISTER_TEST( itkRidgeExtractorTest2 );
   REGISTER_TEST( itkRadiusExtractorTest );
+  REGISTER_TEST( itkRadiusExtractorTest2 );
   REGISTER_TEST( itkSplineApprox1DTest );
   REGISTER_TEST( itkSplineNDTest );
   REGISTER_TEST( itkUserFuncTest );

@@ -35,6 +35,10 @@ template< class TubeT >
 bool
 ComputeTubeTangentsAndNormals( TubeT * tube );
 
+template< class TubePointT >
+bool
+ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tube );
+
 } // end namespace itk
 
 
