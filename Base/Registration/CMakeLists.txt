@@ -32,10 +32,6 @@ if(TubeTK_USE_VTK)
 endif(TubeTK_USE_VTK)
  
 #set(Registration_SRCS
-#  itkImageToTubeRigidMetric.txx
-#  itkImageToTubeRigidRegistration.txx
-#  itkSpatialObjectToSpatialObjectFilter.txx
-#  itkTubeToTubeTransformFilter.txx
 #  TubeRegistrator.cpp
 #  )
 
