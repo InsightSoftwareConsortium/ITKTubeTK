@@ -87,7 +87,7 @@ if( TubeTK_USE_VTK )
       ## VTK
       ##
       set( proj VTK )
-      ExternalProject_Add( ${proj}
+      ExternalProject_Add( VTK
         GIT_REPOSITORY "http://github.com/Slicer/VTK.git"
         GIT_TAG "origin/slicer-4.0"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
@@ -117,7 +117,7 @@ if( TubeTK_USE_VTK )
       ## VTK
       ##
       set( proj VTK )
-      ExternalProject_Add( ${proj}
+      ExternalProject_Add( VTK
         GIT_REPOSITORY "http://github.com/Slicer/VTK.git"
         GIT_TAG "origin/slicer-4.0"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
@@ -175,12 +175,14 @@ set( TCLAP_DIR "${base}/tclap-Build" )
 ## ModuleDescriptionParser 
 ##
 set( proj ModuleDescriptionParser )
+
 if( NOT USE_SYSTEM_ITK )
   # Depends on ITK if ITK was build using superbuild
   set( ModuleDescriptionParser_DEPENDS "Insight" )
 else( NOT USE_SYSTEM_ITK )
   set( ModuleDescriptionParser_DEPENDS "" )
 endif( NOT USE_SYSTEM_ITK )
+
 ExternalProject_Add( ${proj}
   SVN_REPOSITORY 
     "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
@@ -273,6 +275,14 @@ if( TubeTK_USE_QT )
   ##
   if( TubeTK_USE_CTK )
 
+    if( TubeTK_USE_VTK )
+      if( NOT USE_SYSTEM_VTK )
+        set( CTK_DEPENDS "VTK" )
+      endif( NOT USE_SYSTEM_VTK )
+    else( TubeTK_USE_VTK )
+      set( CTK_DEPENDS "" )
+    endif( TubeTK_USE_VTK )
+
     set( proj CTK )
     ExternalProject_Add( CTK
       GIT_REPOSITORY "http://github.com/commontk/CTK.git"
@@ -300,7 +310,7 @@ if( TubeTK_USE_QT )
         -DVTK_DIR:PATH=${VTK_DIR}
       INSTALL_COMMAND ""
       DEPENDS
-        "VTK"
+        ${CTK_DEPENDS}
       )
     set( CTK_DIR "${CMAKE_BINARY_DIR}/CTK-Build" )
 
@@ -334,8 +344,8 @@ ExternalProject_Add( ${proj}
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
     -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
-    -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
+    -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_FANN:BOOL=${TubeTK_USE_FANN}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
