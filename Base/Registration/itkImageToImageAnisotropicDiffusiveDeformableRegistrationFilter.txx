@@ -536,14 +536,17 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
         m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
     }
 
-  for( normalVectorIt.GoToBegin(), weightIt.GoToBegin(),
-       tangentialDiffusionTensorIt.GoToBegin(),
-       normalDiffusionTensorIt.GoToBegin();
-      !normalVectorIt.IsAtEnd();
-       ++normalVectorIt, ++weightIt,
-       ++tangentialDiffusionTensorIt, ++normalDiffusionTensorIt )
+  if( this->GetUseAnisotropicRegularization() )
     {
+    normalVectorIt.GoToBegin();
+    weightIt.GoToBegin();
+    normalDiffusionTensorIt.GoToBegin();
+    }
 
+  for( tangentialDiffusionTensorIt.GoToBegin();
+      !tangentialDiffusionTensorIt.IsAtEnd();
+      ++ tangentialDiffusionTensorIt )
+    {
     // Compute the tangential and normal diffusion tensor images
     if( !this->GetUseAnisotropicRegularization() )
       {
@@ -599,6 +602,13 @@ ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
     if( this->GetUseAnisotropicRegularization() )
       {
       normalDiffusionTensorIt.Set( normalDiffusionTensor );
+      }
+
+    if( this->GetUseAnisotropicRegularization() )
+      {
+      ++normalVectorIt;
+      ++weightIt;
+      ++normalDiffusionTensorIt;
       }
     }
 }

@@ -68,8 +68,8 @@ public:
   typedef typename Superclass::NeighborhoodType        NeighborhoodType;
   typedef typename Superclass::FloatOffsetType         FloatOffsetType;
 
-  typedef itk::Image< DiffusionTensor3D< double> , 3 > 
-                                               DiffusionTensorImageType;
+  typedef DiffusionTensor3D< double >                  DiffusionTensorType;
+  typedef itk::Image< DiffusionTensorType, 3 >         DiffusionTensorImageType;
 
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
