@@ -120,6 +120,8 @@ public:
       RegularizationFunctionPointer;
 
   /** Typedefs for the diffusion tensor image */
+  typedef typename RegularizationFunctionType::DiffusionTensorType
+      DiffusionTensorType;
   typedef typename RegularizationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
