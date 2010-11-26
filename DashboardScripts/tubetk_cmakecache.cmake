@@ -1,28 +1,28 @@
 ##############################################################################
-# 
+#
 # Library:   TubeTK
-# 
+#
 # Copyright 2010 Kitware Inc. 28 Corporate Drive,
 # Clifton Park, NY, 12065, USA.
-# 
-# All rights reserved. 
-# 
+#
+# All rights reserved.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #       http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#
 ##############################################################################
 
 set( CTEST_SITE "${SITE_NAME}" )
-set( CTEST_BUILD_NAME 
+set( CTEST_BUILD_NAME
   "${SITE_BUILD_NAME}-${SCRIPT_NAME}-$ENV{TUBETK_RUN_MODEL}" )
 set( CTEST_BUILD_CONFIGURATION "${SITE_BUILD_TYPE}" )
 
@@ -49,17 +49,17 @@ set( CMAKE_GENERATOR ${SITE_CMAKE_GENERATOR} )
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SITE_CXX_FLAGS}" )
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SITE_C_FLAGS}" )
-set( CMAKE_EXE_LINKER_FLAGS 
+set( CMAKE_EXE_LINKER_FLAGS
   "${CMAKE_EXE_LINKER_FLAGS} ${SITE_EXE_LINKER_FLAGS}" )
-set( CMAKE_SHARED_LINKER_FLAGS 
+set( CMAKE_SHARED_LINKER_FLAGS
   "${CMAKE_SHARED_LINKER_FLAGS} ${SITE_SHARED_LINKER_FLAGS}" )
 
 set( CTEST_COVERAGE_COMMAND "${SITE_COVERAGE_COMMAND}" )
 
 set( CTEST_MEMORYCHECK_COMMAND "${SITE_MEMORYCHECK_COMMAND}" )
-set( CTEST_MEMORYCHECK_COMMAND_OPTIONS 
+set( CTEST_MEMORYCHECK_COMMAND_OPTIONS
   "${SITE_MEMORYCHECK_COMMAND_OPTIONS}" )
-set( CTEST_MEMORYCHECK_SUPPRESSIONS_FILE 
+set( CTEST_MEMORYCHECK_SUPPRESSIONS_FILE
   "${SITE_MEMORYCHECK_SUPPRESSIONS_FILE}" )
 
 message( "Running ${SCRIPT_NAME} script..." )
@@ -86,30 +86,37 @@ file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
   " )
 
 if( EXISTS ${SITE_BINARY_DIR}/Insight-Build/CMakeCache.txt )
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
     ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build
     " )
 endif()
 
 if( EXISTS ${SITE_BINARY_DIR}/GenerateCLP-Build/CMakeCache.txt)
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
     GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build
     " )
 endif()
 
 if( EXISTS ${SITE_BINARY_DIR}/OpenIGTLink-Build/CMakeCache.txt )
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
     OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build
     " )
 endif()
 
 if( EXISTS ${SITE_BINARY_DIR}/CTK-Build/CMakeCache.txt )
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
     CTK_DIR:PATH=${SITE_BINARY_DIR}/CTK-Build
+    " )
+endif()
+
+if( EXISTS ${SITE_BINARY_DIR}/VTK-Build/CMakeCache.txt )
+  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
+    "
+    VTK_DIR:PATH=${SITE_BINARY_DIR}/VTK-Build
     " )
 endif()
 
