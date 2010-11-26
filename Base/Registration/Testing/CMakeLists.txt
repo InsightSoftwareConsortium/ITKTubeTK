@@ -23,6 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
 set( BASE_REGISTRATION_FILTERS_TESTS
       ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests )
 
@@ -38,7 +41,11 @@ set( tubeBaseRegistrationFilters_SRCS
           itkImageToTubeRigidRegistrationTest.cxx
           itkTubeToTubeTransformFilterTest.cxx
           )
+
 if( TubeTK_USE_VTK )
+  find_package( VTK REQUIRED )
+  include( ${VTK_USE_FILE} )
+
   set( tubeBaseRegistrationFilters_SRCS
           ${tubeBaseRegistrationFilters_SRCS}
           itkImageToImageAnisotropicDiffusiveDeformableRegistrationExecution.cxx

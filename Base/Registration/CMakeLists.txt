@@ -23,22 +23,6 @@
 
 project(Registration)
 
-find_package(ITK REQUIRED)
-include(${ITK_USE_FILE})
-
-if(TubeTK_USE_VTK)
-  find_package(VTK REQUIRED)
-  include(${VTK_USE_FILE})
-endif(TubeTK_USE_VTK)
- 
-#set(Registration_SRCS
-#  TubeRegistrator.cpp
-#  )
-
-#add_library(${PROJECT_NAME} ${Registration_SRCS})
-#set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
-#target_link_libraries(${PROJECT_NAME} ${ITK_LIBRARIES})
-
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
