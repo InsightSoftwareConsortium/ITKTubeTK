@@ -283,8 +283,8 @@ cGetData(double x)
 double Spline1D::
 value(double x)
 {
-  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  if(!cDefined)
+  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  //if(!cDefined)
     {
     return 0;
     }
@@ -298,8 +298,8 @@ value(double x)
 double Spline1D::
 valueD(double x)
 {
-  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  if(!cDefined)
+  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  //if(!cDefined)
     {
     return 0;
     }
@@ -313,8 +313,8 @@ valueD(double x)
 double Spline1D::
 valueD2(double x)
 {
-  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  if(!cDefined)
+  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  //if(!cDefined)
     {
     return 0;
     }
@@ -328,8 +328,8 @@ valueD2(double x)
 double Spline1D::
 curv(double x)
 {        
-  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  if(!cDefined)
+  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  //if(!cDefined)
     {
     return 0;
     }
@@ -344,8 +344,8 @@ curv(double x)
 double Spline1D::
 valueJet(double x, double * d, double * d2)
 {
-  //if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  if(!cDefined)
+  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
+  //if(!cDefined)
     {
     return 0;
     }

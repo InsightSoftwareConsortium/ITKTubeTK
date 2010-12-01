@@ -350,8 +350,6 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
             << std::endl;
           }
         }
-      std::cout << "  t = " << t << std::endl;
-      std::cout << "  tt = " << tt << std::endl;
 
       vnl_vector< double > vv = GetCrossVector( t.GetVnlVector(),
         tt.GetVnlVector() );
@@ -359,7 +357,6 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
       n2[1] = vv[1];
       n2[2] = vv[2];
       n2.Normalize();
-      std::cout << "  n2 = " << n2 << std::endl;
       if( vnl_math_abs(n2.GetNorm() - 1) > 0.0001 )
         {
         std::cout << "Warning: Normal direction no unit."
@@ -372,7 +369,6 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
       n1[1] = vv[1];
       n1[2] = vv[2];
       n1.Normalize();
-      std::cout << "  n1 = " << n1 << std::endl;
       if( vnl_math_abs(n1.GetNorm() - 1) > 0.0001 )
         {
         std::cout << "Warning: Normal direction no unit."

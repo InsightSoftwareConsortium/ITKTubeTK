@@ -115,7 +115,7 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
     std::cout << std::endl;
     std::cout << "*** RUN = " << mcRun << std::endl;
     unsigned int rndTubeNum = rndGen->GetUniformVariate( 0, 1 ) * numTubes;
-    if( rndTubeNum > numTubes-1 )
+    if( rndTubeNum >= numTubes )
       {
       rndTubeNum = numTubes-1;
       }
@@ -135,9 +135,9 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
     itk::ComputeTubeTangentsAndNormals< TubeType >( tubep );
 
     std::vector< double > idealR;
-    PointListType tubePointList = tube->GetPoints();
-    unsigned int numPoints = tubePointList.size();
-    PointListType::iterator pntIter = tubePointList.begin();
+    idealR.clear();
+    unsigned int numPoints = tube->GetPoints().size();
+    PointListType::iterator pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
       if( vnl_math_abs( pntIter->GetTangent().GetVnlVector().magnitude()-1 )
@@ -186,23 +186,21 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
       idealR.push_back( pntIter->GetRadius() );
       if( pntIter->GetRadius() < 0 )
         {
-        std::cout << "Point: " << i << ": radius < 0." << std::endl;
+        std::cout << "Point: " << i << ": radius < 0. ("
+          << pntIter->GetRadius() << ")" << std::endl;
         ++failures;
-        }
-      else
-        {
-        std::cout << "    Point = " << i << " : Radius = "
-          << pntIter->GetRadius() << " : Pos = "
-          << pntIter->GetPosition() << std::endl;
         }
 
       ++pntIter;
       }
 
-    radiusOp->SetDebug( true );
+    double radius0 = rndGen->GetUniformVariate( 0, 1 ) * 2 + 1;
+    radiusOp->SetRadius0( radius0 );
+
+    //radiusOp->SetDebug( true );
     radiusOp->ComputeTubeRadii( *tubep );
 
-    pntIter = tubePointList.begin();
+    pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
       if( vnl_math_abs( pntIter->GetRadius() - idealR[i] ) > 1 )
@@ -218,6 +216,8 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
         std::cout << "Point: " << i << "  idealR = " << idealR[i]
           << "  estimatedR = " << pntIter->GetRadius() << std::endl;
         }
+      // reset radius for re-testing
+      pntIter->SetRadius( idealR[i] );
       ++pntIter;
       }
     }

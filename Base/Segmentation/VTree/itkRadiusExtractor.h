@@ -215,9 +215,8 @@ protected:
     MatrixType & kernN, VectorType & kern, double & kernCnt );
 
   void ComputeValuesInKernel( TubePointType pnt, double pntR,
-    MatrixType & kernN, VectorType & kernPos, double & kernPosCnt,
-    VectorType & kernNeg, double & kernNegCnt,
-    VectorType & kernBrn, double & kernBrnCnt, bool doBNess );
+    MatrixType & kernN, VectorType & kernPos, VectorType & kernNeg,
+    VectorType & kernBrn, bool doBNess );
 
   void ComputeValuesInFullKernelArray( TubeType & tube,
     KernArrayType & kernArray,
@@ -226,9 +225,7 @@ protected:
   /**
    * Compute medialness at a kernel */
   void ComputeMeasuresInKernel( double pntR,
-    VectorType & kernPos, double & kernPosCnt,
-    VectorType & kernNeg, double & kernNegCnt,
-    VectorType & kernBrn, double & kernBrnCnt,
+    VectorType & kernPos, VectorType & kernNeg, VectorType & kernBrn,
     double & mness, double & bness, bool doBNess );
 
   /**
