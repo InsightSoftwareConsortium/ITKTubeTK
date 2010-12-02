@@ -2,8 +2,8 @@
 <executable>
 
   <category>Filtering</category>
-  <title>MatchImageWithPrior</title>
-  <description>Given an image and a mask, process the mask to match the image.</description>
+  <title>Deblend Images Using Prior</title>
+  <description>Deblends images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url></documentation-url>
   <license></license>

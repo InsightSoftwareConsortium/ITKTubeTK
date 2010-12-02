@@ -2,8 +2,8 @@
 <executable>
 
   <category>Filtering</category>
-  <title>Skeletonize</title>
-  <description>Generate a Skeleton from a binary mask.</description>
+  <title>Compute Z-map</title>
+  <description>Computes Z-map.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
