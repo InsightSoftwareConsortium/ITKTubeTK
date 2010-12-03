@@ -41,7 +41,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.h"
+#include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkVectorCastImageFilter.h"
 #include "itkWarpImageFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
@@ -89,7 +89,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< VectorType, ImageDimension >        FieldType;
 
   //--------------------------------------------------------
-  typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  typedef itk::AnisotropicDiffusiveRegistrationFilter
       < FixedImageType, MovingImageType, FieldType > RegistrationType;
   typename RegistrationType::Pointer registrator = RegistrationType::New();
 

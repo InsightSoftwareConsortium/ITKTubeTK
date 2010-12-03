@@ -24,7 +24,7 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.h"
+#include "itkAnisotropicDiffusiveRegistrationFilter.h"
 
 #include "itkImageLinearIteratorWithIndex.h"
 #include "itkImageFileWriter.h"
@@ -37,7 +37,7 @@ limitations under the License.
 #include "vtkPointData.h"
 #include "vtkPolyDataWriter.h"
 
-int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
+int itkAnisotropicDiffusiveRegistrationRegularizationTest(
                                                       int argc, char* argv [] )
 {
   if( argc < 11 )
@@ -232,7 +232,7 @@ int itkImageToImageAnisotropicDiffusiveDeformableRegistrationRegularizationTest(
   movingImage->Allocate();
 
   // Setup the registrator object
-  typedef itk::ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+  typedef itk::AnisotropicDiffusiveRegistrationFilter
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFilterType;
   RegistrationFilterType::Pointer registrator = RegistrationFilterType::New();

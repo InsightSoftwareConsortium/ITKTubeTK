@@ -20,11 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter_h
-#define __itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter_h
+#ifndef __itkAnisotropicDiffusiveRegistrationFilter_h
+#define __itkAnisotropicDiffusiveRegistrationFilter_h
 
 #include "itkPDEDeformableRegistrationFilter.h"
-#include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction.h"
+#include "itkAnisotropicDiffusiveRegistrationFunction.h"
 
 #include "vtkPointLocator.h"
 #include "vtkPolyData.h"
@@ -34,10 +34,10 @@ limitations under the License.
 namespace itk
 {
 
-/** \class itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+/** \class itkAnisotropicDiffusiveRegistrationFilter
  * \brief Insert brief description here!!!
  *
- * Implements diffusive deformable registration, where the update term
+ * Implements diffusive  registration, where the update term
  * is composed of two parts: an intensity difference term and a regularization
  * term.  The intensity difference term is computed based on sum of square
  * differences, with the assumption that this algorithm will be used for
@@ -57,20 +57,19 @@ namespace itk
  * This class is templated over the fixed image type, moving image type and the
  * deformation field type.
  *
- * \sa itkImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+ * \sa itkAnisotropicDiffusiveRegistrationFunction
  * \ingroup DeformableImageRegistration MultiThreaded
  */
 
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-class ITK_EXPORT ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
+class ITK_EXPORT AnisotropicDiffusiveRegistrationFilter
   : public PDEDeformableRegistrationFilter< TFixedImage,
                                            TMovingImage,
                                            TDeformationField >
 {
 public:
   /** Standard class typedefs. */
-  typedef ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter
-        Self;
+  typedef AnisotropicDiffusiveRegistrationFilter    Self;
   typedef PDEDeformableRegistrationFilter< TFixedImage,
                                           TMovingImage,
                                           TDeformationField > Superclass;
@@ -106,7 +105,7 @@ public:
   typedef typename Superclass::TimeStepType             TimeStepType;
 
   /** The registration function type */
-  typedef ImageToImageAnisotropicDiffusiveDeformableRegistrationFunction
+  typedef AnisotropicDiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
   typedef typename RegistrationFunctionType::Pointer
@@ -270,7 +269,7 @@ public:
     { return m_NormalDeformationField; }
 
 protected:
-  ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter();
+  AnisotropicDiffusiveRegistrationFilter();
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Initialization occuring before the registration loop. */
@@ -355,14 +354,14 @@ protected:
 
 private:
   // Purposely not implemented
-  ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter(const Self&);
+  AnisotropicDiffusiveRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
    * the subclasses' threading mechanisms. */
   struct DenseFDThreadStruct
     {
-    ImageToImageAnisotropicDiffusiveDeformableRegistrationFilter *Filter;
+    AnisotropicDiffusiveRegistrationFilter *Filter;
     TimeStepType TimeStep;
     TimeStepType *TimeStepList;
     bool *ValidTimeStepList;
@@ -422,11 +421,11 @@ private:
 } // end namespace itk
 
 #if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter+-.h"
+# include "Templates/itkAnisotropicDiffusiveRegistrationFilter+-.h"
 #endif
 
 #if ITK_TEMPLATE_TXX
-# include "itkImageToImageAnisotropicDiffusiveDeformableRegistrationFilter.txx"
+# include "itkAnisotropicDiffusiveRegistrationFilter.txx"
 #endif
 
 #endif
