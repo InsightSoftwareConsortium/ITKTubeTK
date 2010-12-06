@@ -69,7 +69,7 @@ class ITK_EXPORT AnisotropicDiffusiveRegistrationFilter
 {
 public:
   /** Standard class typedefs. */
-  typedef AnisotropicDiffusiveRegistrationFilter    Self;
+  typedef AnisotropicDiffusiveRegistrationFilter              Self;
   typedef PDEDeformableRegistrationFilter< TFixedImage,
                                           TMovingImage,
                                           TDeformationField > Superclass;
