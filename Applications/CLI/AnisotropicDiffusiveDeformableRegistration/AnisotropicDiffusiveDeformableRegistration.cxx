@@ -66,7 +66,7 @@ int DoIt( int argc, char * argv[] )
   PARSE_ARGS;
 
   // The timeCollector is used to perform basic profiling of the components
-  //   of your algorithm.
+  // of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
@@ -93,7 +93,7 @@ int DoIt( int argc, char * argv[] )
       < FixedImageType, MovingImageType, FieldType > RegistrationType;
   typename RegistrationType::Pointer registrator = RegistrationType::New();
 
-  timeCollector.Start( "Load data" );
+  timeCollector.Start( "Loading input data" );
   typedef itk::ImageFileReader< FixedImageType > FixedImageReaderType;
   typename FixedImageReaderType::Pointer fixedImageReader
       = FixedImageReaderType::New();
@@ -203,7 +203,7 @@ int DoIt( int argc, char * argv[] )
     registrator->SetWeightImage( weightImageReader->GetOutput() );
     }
 
-  timeCollector.Stop( "Load data" );
+  timeCollector.Stop( "Loading input data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
@@ -214,9 +214,6 @@ int DoIt( int argc, char * argv[] )
   registrator->SetUseAnisotropicRegularization(
       !doNotUseAnisotropicRegularization );
 
-  std::cout << "compute regularization " << registrator->GetComputeRegularizationTerm() << std::endl;
-  std::cout << "perform aniso " << registrator->GetUseAnisotropicRegularization() << std::endl;
-
   registrator->SetTimeStep( timeStep );
   if( lambda > 0.0 )
     {
@@ -225,6 +222,12 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   registrator->SetLambda( lambda );
+
+  tube::CLIFilterWatcher watchRegistration(registrator,
+                                           "Anisotropic Diffusive Registration",
+                                           CLPProcessInformation,
+                                           0.8,
+                                           progress );
 
   // warp moving image
   typedef itk::WarpImageFilter< MovingImageType, MovingImageType, FieldType >
