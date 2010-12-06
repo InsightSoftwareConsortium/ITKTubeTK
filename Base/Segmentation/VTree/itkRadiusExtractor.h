@@ -34,6 +34,7 @@ limitations under the License.
 #include <itkVesselTubeSpatialObject.h>
 
 #include "itkOptBrent1D.h"
+#include "itkOptParabolicFit1D.h"
 #include "itkSplineApproximation1D.h"
 #include "itkBlurImageFunction.h"
 
@@ -57,6 +58,8 @@ public:
   typedef Object                                             Superclass;
   typedef SmartPointer<Self>                                 Pointer;
   typedef SmartPointer<const Self>                           ConstPointer;
+
+  typedef OptParabolicFit1D                                  OptimizerType;
 
   itkTypeMacro( RadiusExtractor, Object );
   itkNewMacro( RadiusExtractor );
@@ -173,7 +176,7 @@ public:
 
   /**
    * Return the optimizer */
-  OptBrent1D & GetMedialnessOptimizer( void );
+  OptimizerType & GetMedialnessOptimizer( void );
 
   /**
    * Return the optimizer */
@@ -252,7 +255,7 @@ private:
   double                                  m_DataMax;
 
   double                                  m_MedialnessScaleStep;
-  OptBrent1D                              m_MedialnessOpt;
+  OptimizerType                           m_MedialnessOpt;
   SplineApproximation1D                 * m_MedialnessOptSpline;
 
   unsigned int                            m_NumKernelPoints;

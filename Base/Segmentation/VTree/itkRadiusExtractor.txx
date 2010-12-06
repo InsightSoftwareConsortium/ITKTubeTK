@@ -162,11 +162,9 @@ RadiusExtractor<TInputImage>
   m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
     this, m_MedialnessScaleStep );
 
-  m_MedialnessOpt.tolerance( 0.1 / m_MedialnessScaleStep );
-  //TMI:0.001 // 0.005 - 0.025
+  m_MedialnessOpt.tolerance( 0.01 / m_MedialnessScaleStep );
 
-  m_MedialnessOpt.xStep( 0.25 / m_MedialnessScaleStep );
-  // TMI: 0.1 // Org: 0.49; Good: 0.25; NEXT: 1.0
+  m_MedialnessOpt.xStep( 1.5 / m_MedialnessScaleStep );
 
   m_MedialnessOpt.searchForMin( false );
 
@@ -221,7 +219,7 @@ RadiusExtractor<TInputImage>
 
 /** Get the medialness operator */
 template<class TInputImage>
-OptBrent1D &
+typename RadiusExtractor<TInputImage>::OptimizerType &
 RadiusExtractor<TInputImage>
 ::GetMedialnessOptimizer( void )
 {
@@ -536,6 +534,14 @@ RadiusExtractor<TInputImage>
   double oldR0 = r0;
   r0 /= m_MedialnessScaleStep;
   m_MedialnessOptSpline->extreme( &r0, &mness );
+  std::cout << " cmp: " << r0-0.1/m_MedialnessScaleStep << " - "
+    << m_MedialnessOptSpline->value( r0-0.1/m_MedialnessScaleStep )
+    << std::endl;
+  std::cout << " cmp: " << r0 << " - "
+    << m_MedialnessOptSpline->value( r0 ) << std::endl;
+  std::cout << " cmp: " << r0+0.1/m_MedialnessScaleStep << " - "
+    << m_MedialnessOptSpline->value( r0+0.1/m_MedialnessScaleStep )
+    << std::endl;
   r0 *= m_MedialnessScaleStep;
 
   if( this->GetDebug() )
@@ -1183,7 +1189,7 @@ RadiusExtractor<TInputImage>
 {
   double pntR = m_Radius0;
   double prevPntR = m_Radius0;
-  double mness;
+  double mness = 0;
   unsigned int kernMid = ( m_NumKernelPoints - 1 ) / 2;
 
   KernArrayType pntKernArray;
@@ -1214,7 +1220,17 @@ RadiusExtractor<TInputImage>
     m_MedialnessOptSpline->newData( true );
     double oldPntR = pntR;
     pntR /= m_MedialnessScaleStep;
+    pntR = (int)pntR;
     m_MedialnessOptSpline->extreme( &pntR, &mness );
+    std::cout << " cmp: " << pntR-0.1/m_MedialnessScaleStep << " - "
+      << m_MedialnessOptSpline->value( pntR-0.1/m_MedialnessScaleStep )
+      << std::endl;
+    std::cout << " cmp: " << pntR << " - "
+      << m_MedialnessOptSpline->value( pntR )
+      << std::endl;
+    std::cout << " cmp: " << pntR+0.1/m_MedialnessScaleStep << " - "
+      << m_MedialnessOptSpline->value( pntR+0.1/m_MedialnessScaleStep )
+      << std::endl;
     pntR *= m_MedialnessScaleStep;
 
     if( this->GetDebug() )
@@ -1235,7 +1251,17 @@ RadiusExtractor<TInputImage>
       pntR = prevPntR;
       oldPntR = pntR;
       pntR /= m_MedialnessScaleStep;
+      pntR = (int)pntR;
       m_MedialnessOptSpline->extreme( &pntR, &mness );
+      std::cout << " cmp: " << pntR-0.1/m_MedialnessScaleStep << " - "
+        << m_MedialnessOptSpline->value( pntR-0.1/m_MedialnessScaleStep )
+        << std::endl;
+      std::cout << " cmp: " << pntR << " - "
+        << m_MedialnessOptSpline->value( pntR )
+        << std::endl;
+      std::cout << " cmp: " << pntR+0.1/m_MedialnessScaleStep << " - "
+        << m_MedialnessOptSpline->value( pntR+0.1/m_MedialnessScaleStep )
+        << std::endl;
       pntR *= m_MedialnessScaleStep;
       if( this->GetDebug() )
         {
@@ -1455,7 +1481,7 @@ RadiusExtractor<TInputImage>
     {
     char mesg[80];
     sprintf( mesg, "Applied to %ld tube points.",
-      tube.GetPoints().size() );
+      (long int)(tube.GetPoints().size()) );
     char loc[80];
     sprintf( loc, "Extract:Widths" );
     m_StatusCallBack( loc, mesg, 0 );
@@ -1536,19 +1562,23 @@ RadiusExtractor<TInputImage>
     std::cout << "Found point i = " << minDistI << std::endl;
     }
 
-  int kernPnt = minDistI - 1;
+  int kernPnt = minDistI;
+
+  /*
+  kernPnt = minDistI - 1;
   if( kernPnt < 0 )
     {
     kernPnt = 0;
-    }
+    } */
 
   this->ComputeMeasuresInFullKernelArray( kernArray, kernPnt, len-1 );
 
+  /*
   kernPnt = minDistI + 1;
   if( kernPnt > (int)(len)-1 )
     {
     kernPnt = (int)(len) - 1;
-    }
+    } */
 
   this->ComputeMeasuresInFullKernelArray( kernArray, kernPnt, 0 );
 

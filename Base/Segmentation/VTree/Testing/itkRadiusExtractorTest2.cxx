@@ -108,7 +108,9 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
 
-  int failures = 0;
+  double avgFailures = 0;
+  double avgAvgDiff = 0;
+  double avgMaxDiff = 0;
   unsigned int numMCRuns = 100;
   for( unsigned int mcRun=0; mcRun<numMCRuns; mcRun++ )
     {
@@ -134,12 +136,28 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
 
     itk::ComputeTubeTangentsAndNormals< TubeType >( tubep );
 
+    unsigned int numPoints = tube->GetPoints().size();
+
+    unsigned int startPoint = rndGen->GetUniformVariate( 0, 1 )
+      * (numPoints-10) + 5;
+    double radius0 = rndGen->GetUniformVariate( 0, 1 ) * 2 + 1;
+
+    double failures = 0;
     std::vector< double > idealR;
     idealR.clear();
-    unsigned int numPoints = tube->GetPoints().size();
     PointListType::iterator pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
+      if( i == startPoint )
+        {
+        pntIter->SetID( 0 );
+        radius0 = (radius0 + pntIter->GetRadius() ) / 2;
+        }
+      else
+        {
+        pntIter->SetID( i+1 );
+        }
+
       if( vnl_math_abs( pntIter->GetTangent().GetVnlVector().magnitude()-1 )
         > 0.01 )
         {
@@ -194,16 +212,24 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
       ++pntIter;
       }
 
-    double radius0 = rndGen->GetUniformVariate( 0, 1 ) * 2 + 1;
     radiusOp->SetRadius0( radius0 );
 
     //radiusOp->SetDebug( true );
     radiusOp->ComputeTubeRadii( *tubep );
 
+    double diff;
+    double avgDiff = 0;
+    double maxDiff = 0;
     pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
-      if( vnl_math_abs( pntIter->GetRadius() - idealR[i] ) > 1 )
+      diff = vnl_math_abs( pntIter->GetRadius() - idealR[i] );
+      avgDiff += diff;
+      if( diff > maxDiff )
+        {
+        maxDiff = diff;
+        }
+      if( diff > 1 )
         {
         std::cout << "Point: " << i
           << ": estimatedR - idealR != 0." << std::endl;
@@ -220,10 +246,24 @@ int itkRadiusExtractorTest2( int argc, char * argv[] )
       pntIter->SetRadius( idealR[i] );
       ++pntIter;
       }
+    avgDiff /= numPoints;
+    failures = failures / numPoints;
+    std::cout << "Failures = " << failures << std::endl;
+    std::cout << "Averge diff = " << avgDiff << std::endl;
+    std::cout << "Max diff = " << maxDiff << std::endl;
+    avgAvgDiff += avgDiff;
+    avgMaxDiff += maxDiff;
+    avgFailures += failures;
     }
 
-  std::cout << "Number of failures = " << failures << std::endl;
-  if( failures > 0.2 * numMCRuns )
+  avgFailures /= numMCRuns;
+  avgAvgDiff /= numMCRuns;
+  avgMaxDiff /= numMCRuns;
+  std::cout << "Average Failures = " << avgFailures << std::endl;
+  std::cout << "Average Averge diff = " << avgAvgDiff << std::endl;
+  std::cout << "Average Max diff = " << avgMaxDiff << std::endl;
+
+  if( avgFailures > 0.15 )
     {
     return EXIT_FAILURE;
     }
