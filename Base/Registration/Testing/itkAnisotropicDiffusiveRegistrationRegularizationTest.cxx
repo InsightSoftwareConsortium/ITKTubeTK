@@ -103,7 +103,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   // with additional noise
 
   PixelType   borderSlope;
-  VectorType  borderN; // normal to the border
+  VectorType  borderN( 0.0 ); // normal to the border
   VectorType  perpN;   // perpendicular to the border
 
   borderSlope = atof( argv[7] );
