@@ -73,6 +73,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "is here"
     "has no symbols"
     "no public symbols found"
+    "not define any previously undefined public symbols"
     "warning: jobserver unavailable"
     )
 
