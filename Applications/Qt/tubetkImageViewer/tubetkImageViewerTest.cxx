@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ limitations under the License.
 =========================================================================*/
 #include <qapplication.h>
 #include "QtGlSliceView.h"
-#include "QtSlicer.h"
+#include "tubetkImageViewer.h"
 #include <qfiledialog.h>
 #include <qslider.h>
 
@@ -31,18 +31,18 @@ limitations under the License.
 #include "itkMetaImageIOFactory.h"
 #include "itkImageRegionIteratorWithIndex.h"
 
-int main( int argc, char* argv[] ) 
+int main( int argc, char* argv[] )
 {
   QApplication myApp( argc, argv );
 
-  QtSlicer myGUI( 0, 0, TRUE );
+  tubetkImageViewer myGUI( 0, 0, TRUE );
 
   typedef float                             PixelType;
   typedef itk::Image<PixelType, 3>          ImageType;
   typedef itk::ImageFileReader<ImageType>   ReaderType;
 
   ReaderType::Pointer reader = ReaderType::New();
-  
+
   QString caption = "Open";
   QString directory = ".";
   QString filter = "Images (*.*)";
@@ -53,7 +53,7 @@ int main( int argc, char* argv[] )
     return 1;
 
   reader->SetFileName( filename.toLatin1() );
-  
+
   try
     {
     reader->Update();
@@ -64,10 +64,10 @@ int main( int argc, char* argv[] )
     std::cerr << e << std::endl;
     return EXIT_FAILURE;
     }
- 
+
   std::cout << "Done!" << std::endl;
   myGUI.SetInputImage( reader->GetOutput() );
-  
+
   try
     {
     myGUI.show();
@@ -79,8 +79,7 @@ int main( int argc, char* argv[] )
     std::cerr << e << std::endl;
     return EXIT_FAILURE;
     }
- 
+
   return 0;
 
 }
-

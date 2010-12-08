@@ -21,4 +21,4 @@
 # 
 ##############################################################################
 
-add_subdirectory(QtImageViewer)
+add_subdirectory(tubetkImageViewer)

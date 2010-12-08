@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,20 +20,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef QtSlicer_h
-#define QtSlicer_h
+#ifndef tubetkImageViewer_h
+#define tubetkImageViewer_h
 
-#include "ui_QtSlicerGUI.h"
-#include "ui_QtSlicerHelpGUI.h"
+#include "ui_tubetkImageViewerGUI.h"
+#include "ui_tubetkImageViewerHelpGUI.h"
 #include "itkImage.h"
 
-class QtSlicer : public QDialog, Ui::Gui
-{ 
+class tubetkImageViewer : public QDialog, Ui::Gui
+{
 public:
-    
-  QtSlicer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
-  ~QtSlicer();
-  
+
+  tubetkImageViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
+  ~tubetkImageViewer();
+
   typedef itk::Image<float,3> ImageType;
 
   void DisplayPosition(int x,int y ,int z,float value);

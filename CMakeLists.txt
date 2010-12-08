@@ -185,8 +185,6 @@ if( TubeTK_USE_QT )
     message( SEND_ERROR
       "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
   endif( NOT QT4_FOUND )
-
-  option( TubeTK_USE_QTOPENGL "Use QtOpenGL." OFF )
 endif( TubeTK_USE_QT )
 
 #-----------------------------------------------------------------------------
