@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category>Segmentation</category>
+  <category>Developer Tools</category>
   <title>PDF Region Growing</title>
   <description>Given multiple, registered images and foreground and background masks, computes multivariate PDFs for inside and outside classes, and then performs competitive region growing.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
