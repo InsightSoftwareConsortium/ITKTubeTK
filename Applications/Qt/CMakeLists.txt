@@ -21,6 +21,4 @@
 # 
 ##############################################################################
 
-if( TubeTK_USE_QTOPENGL )
-  add_subdirectory(QtImageViewer)
-endif( TubeTK_USE_QTOPENGL )
+add_subdirectory(QtImageViewer)
