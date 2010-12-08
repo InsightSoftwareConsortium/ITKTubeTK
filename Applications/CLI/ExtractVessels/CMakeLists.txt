@@ -1,24 +1,24 @@
 ##############################################################################
-# 
+#
 # Library:   TubeTK
-# 
+#
 # Copyright 2010 Kitware Inc. 28 Corporate Drive,
 # Clifton Park, NY, 12065, USA.
-# 
-# All rights reserved. 
-# 
+#
+# All rights reserved.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #       http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#
 ##############################################################################
 
 # If you follow the SampleCLIApplication format, you only need to change the
@@ -32,8 +32,9 @@ endif( COMMAND CMAKE_POLICY )
 
 # Disable MSVC 8 warnings
 if( WIN32 )
-  option( DISABLE_MSVC8_DEPRECATED_WARNINGS "Disable Visual Studio 8 deprecated warnings" ON )
-  mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )  
+  option( DISABLE_MSVC8_DEPRECATED_WARNINGS
+    "Disable Visual Studio 8 deprecated warnings" ON )
+  mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )
   if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
   endif( DISABLE_MSVC8_DEPRECATED_WARNINGS )
@@ -55,7 +56,7 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
   )
 
-set( PROJECT_SOURCE 
+set( PROJECT_SOURCE
   ${PROJECT_NAME}.cxx
   )
 
@@ -73,8 +74,8 @@ target_link_libraries( ${PROJECT_NAME} ${PROJECT_NAME}Module )
 
 slicer3_set_plugins_output_path( ${PROJECT_NAME}Module )
 slicer3_set_plugins_output_path( ${PROJECT_NAME} )
-set( TARGETS 
-     ${PROJECT_NAME}Module 
+set( TARGETS
+     ${PROJECT_NAME}Module
      ${PROJECT_NAME} )
 slicer3_install_plugins( ${TARGETS} )
 
