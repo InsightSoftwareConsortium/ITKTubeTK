@@ -27,7 +27,6 @@ limitations under the License.
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
 
 #include "vtkPolyData.h"
-#include "vtkPolyDataNormals.h"
 #include "vtkSmartPointer.h"
 
 namespace itk
@@ -142,13 +141,8 @@ public:
   typedef typename WeightImageType::Pointer             WeightImagePointer;
   typedef itk::ImageRegionIterator< WeightImageType >   WeightImageIteratorType;
 
-  /** Organ boundary surface types - types for the surface and the surface of
-    * normals, and point locator to find points on the surface */
+  /** Organ boundary surface types */
   typedef vtkSmartPointer< vtkPolyData >                BorderSurfacePointer;
-  typedef vtkPolyDataNormals
-      BorderNormalsSurfaceFilterType;
-  typedef vtkSmartPointer< BorderNormalsSurfaceFilterType >
-      BorderNormalsSurfaceFilterPointer;
 
   /** The diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
@@ -379,7 +373,6 @@ private:
    *  normal vector and weight images */
   BorderSurfacePointer                  m_BorderSurface;
   BorderSurfacePointer                  m_BorderNormalsSurface;
-  BorderNormalsSurfaceFilterPointer     m_BorderNormalsSurfaceFilter;
   NormalVectorImagePointer              m_NormalVectorImage;
   WeightImagePointer                    m_WeightImage;
 
