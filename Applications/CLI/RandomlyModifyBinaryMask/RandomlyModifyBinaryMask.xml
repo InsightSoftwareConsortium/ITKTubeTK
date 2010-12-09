@@ -2,7 +2,7 @@
 <executable>
 
   <category>Filtering</category>
-  <title>Randomly Modify Binary Mask</title>
+  <title>Randomly Modify Binary Mask (TubeTK)</title>
   <description>Randomly apply erosion, dilation, removal, and insertion to random regions of a binary mask</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

@@ -2,7 +2,7 @@
 <executable>
 
   <category>Filtering</category>
-  <title>Generate Features for Weka</title>
+  <title>Generate Features for Weka (TubeTK)</title>
   <description>Takes a set of input images and some class masks in order to generate an ARFF file for input into Weka, the data mining tool.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

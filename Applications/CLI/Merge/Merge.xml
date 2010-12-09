@@ -2,7 +2,7 @@
 <executable>
 
   <category>Filtering</category>
-  <title>Merge</title>
+  <title>Merge (TubeTK)</title>
   <description>Merge the second image into the space of the first</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

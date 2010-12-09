@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
   <category>Filter</category>
-  <title>Resample Images</title>
+  <title>Resample Images (TubeTK)</title>
   <description>Resamples an image to match another image (origin, orientation, and spacing), to be isotropic, or to have a specific spacing</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

@@ -2,7 +2,7 @@
 <executable>
 
   <category>Filtering</category>
-  <title>Or Images</title>
+  <title>Or Images (TubeTK)</title>
   <description></description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

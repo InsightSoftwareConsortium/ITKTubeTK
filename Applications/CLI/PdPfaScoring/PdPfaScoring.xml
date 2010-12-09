@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
   <category>Scoring</category>
-  <title>Pd Pfa Scoring</title>
+  <title>Pd Pfa Scoring (TubeTK)</title>
   <description>Return probability of detection and probability of false alarms based on a prior and known modifications to a prior.</description>
   <version>0.1.0</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

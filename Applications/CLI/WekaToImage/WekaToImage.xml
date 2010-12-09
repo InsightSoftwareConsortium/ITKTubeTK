@@ -2,7 +2,7 @@
 <executable>
 
   <category>Filtering</category>
-  <title>WekaToImage</title>
+  <title>WekaToImage (TubeTK)</title>
   <description>This filter takes a Weka-formatted ARFF file and brings the classification back into image space.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

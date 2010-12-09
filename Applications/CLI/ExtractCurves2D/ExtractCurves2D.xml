@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
   <category>Filtering</category>
-  <title>Extract Curves 2D</title>
+  <title>Extract Curves 2D (TubeTK)</title>
   <description>Extract the center-lines of tubular objects in an entire image for a given sigma.</description>
   <version>0.1.0</version>
   <documentation-url></documentation-url>
