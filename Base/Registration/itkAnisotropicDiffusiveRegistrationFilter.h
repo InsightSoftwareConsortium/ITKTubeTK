@@ -26,7 +26,6 @@ limitations under the License.
 #include "itkPDEDeformableRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
 
-#include "vtkPointLocator.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataNormals.h"
 #include "vtkSmartPointer.h"
@@ -150,8 +149,6 @@ public:
       BorderNormalsSurfaceFilterType;
   typedef vtkSmartPointer< BorderNormalsSurfaceFilterType >
       BorderNormalsSurfaceFilterPointer;
-  typedef vtkPointLocator                               PointLocatorType;
-  typedef vtkSmartPointer< PointLocatorType >           PointLocatorPointer;
 
   /** The diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
@@ -385,9 +382,6 @@ private:
   BorderNormalsSurfaceFilterPointer     m_BorderNormalsSurfaceFilter;
   NormalVectorImagePointer              m_NormalVectorImage;
   WeightImagePointer                    m_WeightImage;
-
-  /** Computes the nearest point on the polydata to a given point */
-  PointLocatorPointer                   m_PointLocator;
 
   /** The lambda factor for computing the weight from distance.  Weight is
     * modeled as exponential decay: weight = e^(lambda * distance).
