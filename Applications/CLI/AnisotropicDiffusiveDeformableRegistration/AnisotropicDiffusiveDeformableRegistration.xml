@@ -31,6 +31,15 @@
       <description>Time step duration.</description>
       <default>0.125</default>
     </double>
+    <double>
+      <name>lambda</name>
+      <flag>l</flag>
+      <longflag>lambda</longflag>
+      <label>Lambda</label>
+      <channel>input</channel>
+      <description>Controls the exponential decay used to calculate the weight value as a function of the distance to the closest organ border point.  Must be negative (for exponential decay).</description>
+      <default>-0.1</default>
+    </double>
     <boolean>
       <name>doNotPerformRegularization</name>
       <flag>r</flag>
@@ -49,15 +58,35 @@
       <description>Whether or not to use the anisotropic diffusive regularization (if true, uses the diffusive regularization (i.e. Gaussian smoothing)</description>
       <default>false</default>
     </boolean>
-    <double>
-      <name>lambda</name>
-      <flag>l</flag>
-      <longflag>lambda</longflag>
-      <label>Lambda</label>
+  </parameters>
+
+  <parameters>
+    <label>Organ Boundaries and Weights</label>
+    <description>Parameters specifying organ boundaries and weighting terms</description>
+    <geometry type="model">
+      <name>organBoundaryFileName</name>
       <channel>input</channel>
-      <description>Controls the exponential decay used to calculate the weight value as a function of the distance to the closest organ border point.  Must be negative (for exponential decay).</description>
-      <default>-0.1</default>
-    </double>
+      <label>Organ Boundary</label>
+      <flag>b</flag>
+      <longflag>organBoundary</longflag>
+      <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image</description>
+    </geometry>
+    <image>
+      <name>normalVectorImageFileName</name>
+      <label>Normal vector image</label>
+      <flag>n</flag>
+      <longflag>normalVectorImage</longflag>
+      <channel>input</channel>
+      <description>Image specifying the normal vectors.  This should be in the space of the fixed image.  Optional: supply a normal vector image or an organ boundary surface.  If both are provided, the organ boundary surface is used.</description>
+    </image>
+    <image>
+      <name>weightImageFileName</name>
+      <label>Weight image</label>
+      <flag>w</flag>
+      <longflag>weightImage</longflag>
+      <channel>input</channel>
+      <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This should be in the space of the fixed image.  Optional: supply a weight image or an organ boundary surface (and a lambda).  If both are provided, the organ boundary surface is used.</description>
+    </image>
   </parameters>
 
   <parameters>
@@ -85,29 +114,6 @@
       <index>1</index>
       <description>Moving image</description>
     </image>
-    <file>
-      <name>organBoundaryFileName</name>
-      <label>Organ Boundary</label>
-      <flag>b</flag>
-      <longflag>organBoundary</longflag>
-      <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image</description>
-    </file>
-    <image>
-      <name>normalVectorImageFileName</name>
-      <label>Normal vector image</label>
-      <flag>n</flag>
-      <longflag>normalVectorImage</longflag>
-      <channel>input</channel>
-      <description>Image specifying the normal vectors.  This should be in the space of the fixed image.  Optional: supply a normal vector image or an organ boundary surface.  If both are provided, the organ boundary surface is used.</description>
-    </image>
-    <image>
-      <name>weightImageFileName</name>
-      <label>Weight image</label>
-      <flag>w</flag>
-      <longflag>weightImage</longflag>
-      <channel>input</channel>
-      <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This should be in the space of the fixed image.  Optional: supply a weight image or an organ boundary surface (and a lambda).  If both are provided, the organ boundary surface is used.</description>
-    </image>
     <image>
       <name>outputDeformationFieldFileName</name>
       <flag>d</flag>
@@ -125,9 +131,5 @@
       <description>Resampled moving image to fixed image coordinate frame. Optional (specify an output deformation field or an output volume or both).</description>
     </image>
   </parameters>
-
-
-
-
 
 </executable>

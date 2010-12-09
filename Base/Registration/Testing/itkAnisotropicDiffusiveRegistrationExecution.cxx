@@ -35,8 +35,7 @@ limitations under the License.
 #include "vtkPolyDataReader.h"
 #include "vtkPolyDataWriter.h"
 
-int itkAnisotropicDiffusiveRegistrationExecution(
-                                                      int argc, char* argv [] )
+int itkAnisotropicDiffusiveRegistrationExecution( int argc, char* argv [] )
 {
   if( argc < 11 )
     {
