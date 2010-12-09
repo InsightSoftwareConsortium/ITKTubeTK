@@ -103,7 +103,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   // with additional noise
 
   PixelType   borderSlope;
-  VectorType  borderN; // normal to the border
+  VectorType  borderN( 0.0 ); // normal to the border
   VectorType  perpN;   // perpendicular to the border
 
   borderSlope = atof( argv[7] );
@@ -215,6 +215,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     polyDataWriter->SetFileName( argv[5] );
     polyDataWriter->SetInput( plane->GetOutput() );
     polyDataWriter->Update();
+    polyDataWriter->Delete();
     }
 
   // Setup the images to be registered
@@ -322,6 +323,9 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
       return EXIT_FAILURE;
       }
     }
+
+  // Clean up memory
+  plane->Delete();
 
   return EXIT_SUCCESS;
 

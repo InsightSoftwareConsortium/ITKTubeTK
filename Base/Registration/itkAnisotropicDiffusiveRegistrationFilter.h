@@ -26,9 +26,7 @@ limitations under the License.
 #include "itkPDEDeformableRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
 
-#include "vtkPointLocator.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataNormals.h"
 #include "vtkSmartPointer.h"
 
 namespace itk
@@ -69,7 +67,7 @@ class ITK_EXPORT AnisotropicDiffusiveRegistrationFilter
 {
 public:
   /** Standard class typedefs. */
-  typedef AnisotropicDiffusiveRegistrationFilter    Self;
+  typedef AnisotropicDiffusiveRegistrationFilter              Self;
   typedef PDEDeformableRegistrationFilter< TFixedImage,
                                           TMovingImage,
                                           TDeformationField > Superclass;
@@ -143,15 +141,8 @@ public:
   typedef typename WeightImageType::Pointer             WeightImagePointer;
   typedef itk::ImageRegionIterator< WeightImageType >   WeightImageIteratorType;
 
-  /** Organ boundary surface types - types for the surface and the surface of
-    * normals, and point locator to find points on the surface */
+  /** Organ boundary surface types */
   typedef vtkSmartPointer< vtkPolyData >                BorderSurfacePointer;
-  typedef vtkPolyDataNormals
-      BorderNormalsSurfaceFilterType;
-  typedef vtkSmartPointer< BorderNormalsSurfaceFilterType >
-      BorderNormalsSurfaceFilterPointer;
-  typedef vtkPointLocator                               PointLocatorType;
-  typedef vtkSmartPointer< PointLocatorType >           PointLocatorPointer;
 
   /** The diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
@@ -382,12 +373,8 @@ private:
    *  normal vector and weight images */
   BorderSurfacePointer                  m_BorderSurface;
   BorderSurfacePointer                  m_BorderNormalsSurface;
-  BorderNormalsSurfaceFilterPointer     m_BorderNormalsSurfaceFilter;
   NormalVectorImagePointer              m_NormalVectorImage;
   WeightImagePointer                    m_WeightImage;
-
-  /** Computes the nearest point on the polydata to a given point */
-  PointLocatorPointer                   m_PointLocator;
 
   /** The lambda factor for computing the weight from distance.  Weight is
     * modeled as exponential decay: weight = e^(lambda * distance).

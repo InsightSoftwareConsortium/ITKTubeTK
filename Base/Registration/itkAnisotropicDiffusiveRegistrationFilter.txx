@@ -31,6 +31,8 @@ limitations under the License.
 
 #include "vtkDataArray.h"
 #include "vtkPointData.h"
+#include "vtkPointLocator.h"
+#include "vtkPolyDataNormals.h"
 
 namespace itk
 {
@@ -47,8 +49,6 @@ AnisotropicDiffusiveRegistrationFilter
 
   m_BorderSurface                   = 0;
   m_BorderNormalsSurface            = 0;
-  m_BorderNormalsSurfaceFilter      = 0;
-  m_PointLocator                    = 0;
   m_NormalVectorImage               = 0;
   m_WeightImage                     = 0;
   m_NormalDeformationField          = 0;
@@ -256,16 +256,14 @@ AnisotropicDiffusiveRegistrationFilter
         }
 
       // Setup the vtkPolyDataNormals to extract the normals from the surface
-      m_BorderNormalsSurfaceFilter = BorderNormalsSurfaceFilterType::New();
-      m_BorderNormalsSurfaceFilter->ComputePointNormalsOn();
-      m_BorderNormalsSurfaceFilter->ComputeCellNormalsOff();
-      //m_BorderNormalsSurfaceFilter->SetFeatureAngle(30);
-      m_BorderNormalsSurfaceFilter->SetInput( m_BorderSurface );
-      m_BorderNormalsSurfaceFilter->Update();
-      m_BorderNormalsSurface = m_BorderNormalsSurfaceFilter->GetOutput();
-
-      // Setup the point locator to find closest point on the surface
-      m_PointLocator = PointLocatorType::New();
+      vtkPolyDataNormals * normalsSurfaceFilter = vtkPolyDataNormals::New();
+      normalsSurfaceFilter->ComputePointNormalsOn();
+      normalsSurfaceFilter->ComputeCellNormalsOff();
+      //normalsSurfaceFilter->SetFeatureAngle(30);
+      normalsSurfaceFilter->SetInput( m_BorderSurface );
+      normalsSurfaceFilter->Update();
+      m_BorderNormalsSurface = normalsSurfaceFilter->GetOutput();
+      normalsSurfaceFilter->Delete();
 
       // Make sure we now have the normals
       if ( !this->GetBorderNormalsSurface() )
@@ -366,7 +364,8 @@ AnisotropicDiffusiveRegistrationFilter
   // Get the normals from the polydata
   vtkSmartPointer< vtkDataArray > normalData
       = m_BorderNormalsSurface->GetPointData()->GetNormals();
-  m_PointLocator->SetDataSet( m_BorderNormalsSurface );
+  vtkPointLocator * pointLocator = vtkPointLocator::New();
+  pointLocator->SetDataSet( m_BorderNormalsSurface );
 
   // Iterate over the normal vector image and insert the normal of the closest
   // point
@@ -402,7 +401,7 @@ AnisotropicDiffusiveRegistrationFilter
       {
       imageCoord[i] = imageCoordAsPoint[i];
       }
-    id = m_PointLocator->FindClosestPoint( imageCoord );
+    id = pointLocator->FindClosestPoint( imageCoord );
     normal = normalData->GetTuple( id );
 
     if( computeNormalVectorImage )
@@ -425,6 +424,9 @@ AnisotropicDiffusiveRegistrationFilter
       weightIt.Set( distance );
       }
     }
+
+  // Clean up memory
+  pointLocator->Delete();
 
   if( computeNormalVectorImage )
     {
