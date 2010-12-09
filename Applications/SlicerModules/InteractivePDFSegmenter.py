@@ -443,8 +443,6 @@ class InteractivePDFSegmenterWidget:
         self.holeFillIterations = newHoleFillIterations # TODO sketchy
         self.holeFillSpinBox.setValue(newHoleFillIterations)
 
-  def computeNumberOfConnectedComponents
-
   def setErosionRadius(self, newErosionRadius):
     if (self.erosionRadius != newErosionRadius):
       self.erosionRadius = newErosionRadius
