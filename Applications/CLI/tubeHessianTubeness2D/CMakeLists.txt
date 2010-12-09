@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 ##############################################################################
-project( HessianTubeness2D )
+project( tubeHessianTubeness2D )
 
 cmake_minimum_required( VERSION 2.8 )
 if( COMMAND CMAKE_POLICY )

@@ -43,7 +43,7 @@ limitations under the License.
 #include "tubeARFFParser.h"
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "WekaToImageCLP.h"
+#include "tubeWekaToImageCLP.h"
 
 // No need for the DoIt nonsense (we arent' templated over input type)
 int main( int argc, char **argv )

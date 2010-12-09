@@ -64,7 +64,7 @@ limitations under the License.
 #include <cassert>
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "FANNClassifyCLP.h"
+#include "tubeFANNClassifyCLP.h"
 
 // No need for the DoIt nonsense (we arent' templated over input type)
 int main( int argc, char **argv )

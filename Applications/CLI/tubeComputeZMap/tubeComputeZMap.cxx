@@ -50,7 +50,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "ComputeZMapCLP.h"
+#include "tubeComputeZMapCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"

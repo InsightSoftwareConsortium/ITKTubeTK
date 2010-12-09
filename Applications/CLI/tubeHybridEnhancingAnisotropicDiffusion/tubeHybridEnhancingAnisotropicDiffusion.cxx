@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0(the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -22,7 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
+#pragma warning( disable : 4786 )
 #endif
 
 #ifdef __BORLANDC__
@@ -42,7 +42,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
+#include "itkAnisotropicHybridDiffusionImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -50,7 +50,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "EdgeEnhancingAnisotropicDiffusionCLP.h"
+#include "tubeHybridEnhancingAnisotropicDiffusionCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -66,8 +66,9 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "EdgeEnhancingAnisotropicDiffusion",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter(
+    "HybridEnhancingAnisotropicDiffusion",
+    CLPProcessInformation );
   progressReporter.Start();
 
   // Define the types and dimension of the images
@@ -109,44 +110,50 @@ int DoIt( int argc, char * argv[] )
     CastInputImageFilterType::New();
   castInputImageFilter->SetInput( reader->GetOutput() );
 
-  // Perform the edge enhancing anisotropic diffusion
-  timeCollector.Start("Edge enhancing anisotropic diffusion");
+  // Perform the hybrid enhancing anisotropic diffusion
+  timeCollector.Start("Hybrid enhancing anisotropic diffusion");
 
-  // Declare the anisotropic diffusion edge enhancement filter
-  typedef itk::AnisotropicEdgeEnhancementDiffusionImageFilter<
-    FilterInputImageType, FilterOutputImageType>  EdgeEnhancementFilterType;
+  // Declare the anisotropic diffusion hybrid enhancing filter
+  typedef itk::AnisotropicHybridDiffusionImageFilter< FilterInputImageType,
+    FilterOutputImageType>  HybridEnhancingFilterType;
 
-  // Create a edge enhancement Filter
-  typename EdgeEnhancementFilterType::Pointer EdgeEnhancementFilter =
-    EdgeEnhancementFilterType::New();
+  // Create a hybrid enhancing Filter
+  typename HybridEnhancingFilterType::Pointer HybridEnhancingFilter =
+    HybridEnhancingFilterType::New();
 
-  EdgeEnhancementFilter->SetInput( castInputImageFilter->GetOutput() );
+  HybridEnhancingFilter->SetInput( castInputImageFilter->GetOutput() );
 
-  //Set/Get EED parameters
-  EdgeEnhancementFilter->SetSigma( scaleParameter );
-  EdgeEnhancementFilter->SetContrastParameterLambdaE( eedContrastParameter );
-  EdgeEnhancementFilter->SetTimeStep( timeStep );
-  EdgeEnhancementFilter->SetNumberOfIterations( numberOfIterations );
+  //Set/Get CED parameters
+  HybridEnhancingFilter->SetSigma( scaleParameter );
+  HybridEnhancingFilter->SetContrastParameterLambdaEED(
+    eedContrastParameter );
+  HybridEnhancingFilter->SetContrastParameterLambdaCED(
+    cedContrastParameter );
+  HybridEnhancingFilter->SetAlpha( alpha );
+  HybridEnhancingFilter->SetContrastParameterLambdaHybrid(
+    hybridContrastParameter );
+  HybridEnhancingFilter->SetTimeStep( timeStep );
+  HybridEnhancingFilter->SetNumberOfIterations( numberOfIterations );
 
   double progressFraction = 0.8;
-  tube::CLIFilterWatcher watcher( EdgeEnhancementFilter,
-    "Edge enhancement anisotropic diffusion", CLPProcessInformation,
+  tube::CLIFilterWatcher watcher( HybridEnhancingFilter,
+    "Hybrid enhancing anisotropic diffusion", CLPProcessInformation,
     progressFraction, progress, true );
 
   try
     {
-    EdgeEnhancementFilter->Update();
+    HybridEnhancingFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage(
-      "Edge enhancing anisotropic diffusion: Exception caught: "
+      "Hybrid enhancing anisotropic diffusion: Exception caught: "
       + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Edge enhancing anisotropic diffusion");
+  timeCollector.Stop("Hybrid enhancing anisotropic diffusion");
   progress = 0.9;
   progressReporter.Report( progress );
 
@@ -155,14 +162,14 @@ int DoIt( int argc, char * argv[] )
     CastOutputImageFilterType;
   typename CastOutputImageFilterType::Pointer castOutputImageFilter =
     CastOutputImageFilterType::New();
-  castOutputImageFilter->SetInput( EdgeEnhancementFilter->GetOutput() );
+  castOutputImageFilter->SetInput( HybridEnhancingFilter->GetOutput() );
 
   // Save output data
   timeCollector.Start("Save data");
   typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput ( castOutputImageFilter->GetOutput() );
+  writer->SetInput( castOutputImageFilter->GetOutput() );
 
   try
     {

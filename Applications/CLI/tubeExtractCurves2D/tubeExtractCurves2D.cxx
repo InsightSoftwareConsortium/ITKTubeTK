@@ -58,7 +58,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "ExtractCurves2DCLP.h"
+#include "tubeExtractCurves2DCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"

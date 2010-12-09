@@ -32,6 +32,7 @@ limitations under the License.
 // It is important to use OrientedImages
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -40,7 +41,9 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "tubePdPfaScorer.h"
+#include "itkBinaryThinningImageFilter.h"
+#include "itkBinaryBallStructuringElement.h"
+#include "itkBinaryDilateImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -48,7 +51,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "PdPfaScoringCLP.h"
+#include "tubeSkeletonizeCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -64,82 +67,91 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
+  tube::CLIProgressReporter    progressReporter( "Skeletonize",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef unsigned short                                   PixelType;
-  typedef itk::OrientedImage< PixelType, dimensionT >      ImageType;
-  typedef itk::ImageFileReader< ImageType >                ReaderType;
+  typedef unsigned char                                 PixelType;
+  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
+  typedef itk::ImageFileReader< ImageType >             ReaderType;
 
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
-  typename ReaderType::Pointer detectionReader = ReaderType::New();
-  detectionReader->SetFileName( detectionMask.c_str() );
-
-  // read the input volume while handling exceptions
   try
     {
     reader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Reading input volume (truth): Exception caught: "
+    tube::ErrorMessage( "Reading volume: Exception caught: "
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-
-  // read the modified prior while handling exceptions
-  try
-    {
-    detectionReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading detectionsr: Exception caught: "
-                        + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
   timeCollector.Stop("Load data");
-
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  typename ImageType::Pointer truth = reader->GetOutput();
-  typename ImageType::Pointer detections = detectionReader->GetOutput();
+  typename ImageType::Pointer curImage = reader->GetOutput();
 
-  timeCollector.Start( "Compute Change Statistics" );
-  int totalNumChanges;
-  int totalNumChangesFound;
-  int totalNumFalsePositives;
-  tube::PdPfaScorer< PixelType, dimensionT > scorer;
-  scorer.ComputeChangeStatistics( truth, detections,
-                                  static_cast<int>( featureSize ),
-                                  totalNumChanges, totalNumChangesFound,
-                                  totalNumFalsePositives );
+  timeCollector.Start("Binary Thinning");
 
-  timeCollector.Stop( "Compute Change Statistics" );
+  typedef itk::BinaryThinningImageFilter< ImageType, ImageType >    FilterType;
+  typedef itk::BinaryBallStructuringElement< PixelType, dimensionT> SEType;
+  typedef itk::BinaryDilateImageFilter< ImageType, ImageType, SEType >
+                                                                    DilateType;
+  typename FilterType::Pointer filter;
+  typename DilateType::Pointer dilator;
 
+  // Progress per iteration
+  double progressFraction = 0.8/dimensionT;
+
+  filter = FilterType::New();
+  filter->SetInput( curImage );
+  tube::CLIFilterWatcher watcher( filter,
+                                  "Binary Thinning",
+                                  CLPProcessInformation,
+                                  progressFraction,
+                                  progress,
+                                  true );
+  filter->Update();
+  curImage = filter->GetOutput();
+  timeCollector.Stop("Binary Thinning");
+
+  SEType binaryBall;
+  binaryBall.SetRadius( radius );
+  binaryBall.CreateStructuringElement();
+  dilator = DilateType::New();
+  dilator->SetInput( curImage );
+  dilator->SetForegroundValue( 1 );
+  dilator->SetKernel( binaryBall );
+  dilator->Update();
+
+  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+
+  timeCollector.Start("Save data");
+  typename ImageWriterType::Pointer writer = ImageWriterType::New();
+  writer->SetFileName( outputVolume.c_str() );
+  writer->SetInput( dilator->GetOutput() );
+  writer->SetUseCompression( true );
+  try
+    {
+    writer->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Writing volume: Exception caught: "
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+  timeCollector.Stop("Save data");
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End( );
 
   timeCollector.Report();
-
-  // Print at the very end
-  std::cout << std::endl;
-  std::cout << "***RESULTS***" << std::endl;
-  std::cout << "Total Changes: " << totalNumChanges
-            << std::endl;
-  std::cout << "Total Changes Found: " << totalNumChangesFound
-            << std::endl;
-  std::cout << "Total False Positives: " << totalNumFalsePositives
-            << std::endl;
-
   return EXIT_SUCCESS;
 }
 

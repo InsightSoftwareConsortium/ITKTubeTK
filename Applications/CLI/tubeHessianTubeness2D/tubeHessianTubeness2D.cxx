@@ -34,7 +34,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char **argv );
 
 // Must include CLP file before tubeCLIHelperFunctions
-#include "HessianTubeness2DCLP.h"
+#include "tubeHessianTubeness2DCLP.h"
 
 #include "tubeCLIHelperFunctions.h"
 

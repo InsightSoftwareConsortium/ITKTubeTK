@@ -41,15 +41,15 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkOtsuThresholdImageFilter.h"
+#include "itkRecursiveGaussianImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "OtsuThresholdCLP.h"
+// Must include CLP before including tubeCLIHelperFunctions
+#include "tubeSampleCLIApplicationCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -65,17 +65,13 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "OtsuThreshold",
+  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                                   PixelType;
-  typedef unsigned char                                           OutPixType;
-  typedef itk::OrientedImage< PixelType, dimensionT >             ImageType;
-  typedef itk::OrientedImage< OutPixType, dimensionT >            OutputType;
-  typedef itk::ImageFileReader< ImageType >                       ReaderType;
-  typedef itk::ImageFileWriter< OutputType  >                     WriterType;
-  typedef itk::OtsuThresholdImageFilter< ImageType, OutputType >  FilterType;
+  typedef float                                         PixelType;
+  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
+  typedef itk::ImageFileReader< ImageType >             ReaderType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -97,32 +93,47 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::Pointer curImage = reader->GetOutput();
 
-  timeCollector.Start("Gaussian Blur");
+  if( gaussianBlurStdDev > 0 )
+    {
+    timeCollector.Start("Gaussian Blur");
 
-  typename OutputType::Pointer outImage;
-  typename FilterType::Pointer filter;
+    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
+      FilterType;
+    typename FilterType::Pointer filter;
 
-  // Progress per iteration
-  double progressFraction = 0.8/dimensionT;
+    // Progress per iteration
+    double progressFraction = 0.8/dimensionT;
 
-  filter = FilterType::New();
-  filter->SetInput( curImage );
+    for(unsigned int i=0; i<dimensionT; i++)
+      {
+      filter = FilterType::New();
+      filter->SetInput( curImage );
+      filter->SetNormalizeAcrossScale( true );
+      filter->SetSigma( gaussianBlurStdDev );
 
-  tube::CLIFilterWatcher watcher( filter,
-                                  "OtsuThreshold",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
-  filter->Update();
-  outImage = filter->GetOutput();
+      filter->SetOrder(
+               itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+      filter->SetDirection( i );
+      tube::CLIFilterWatcher watcher( filter,
+                                      "Blur Filter 1D",
+                                      CLPProcessInformation,
+                                      progressFraction,
+                                      progress,
+                                      true );
 
-  timeCollector.Stop("Gaussian Blur");
+      filter->Update();
+      curImage = filter->GetOutput();
+      }
+
+    timeCollector.Stop("Gaussian Blur");
+    }
+
+  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
   timeCollector.Start("Save data");
-  typename WriterType::Pointer writer = WriterType::New();
+  typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( outImage );
+  writer->SetInput( curImage );
   writer->SetUseCompression( true );
   try
     {
@@ -131,7 +142,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }

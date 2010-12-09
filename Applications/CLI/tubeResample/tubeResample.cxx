@@ -52,7 +52,7 @@ template< class PixelT, unsigned int DimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "ResampleCLP.h"
+#include "tubeResampleCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
