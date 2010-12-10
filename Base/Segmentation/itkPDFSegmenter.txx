@@ -364,6 +364,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
       }
   
     unsigned int totalIn = 0;
+    itk::Array<unsigned int> totalInClass( numClasses );
+    totalInClass.Fill( 0 );
     typename ListSampleType::ConstIterator inListIt;
     typename ListSampleType::ConstIterator inListItEnd;
     for( unsigned int c=0; c<numClasses; c++ )
@@ -388,15 +390,16 @@ PDFSegmenter< ImageT, N, LabelmapT >
           ++( ( inImHisto[c][i] )[( int )v] );
           }
         ++totalIn;
+        ++totalInClass[c];
         ++inListIt;
         }
       }
     
     double outlierRejectPercent = 0.01;
-    double totalReject = totalIn * outlierRejectPercent;
     unsigned int count;
     for( unsigned int c=0; c<numClasses; c++ )
       {
+      double totalReject = totalInClass[c] * outlierRejectPercent;
       for( unsigned int i=0; i<N; i++ )
         {
         count = 0;
