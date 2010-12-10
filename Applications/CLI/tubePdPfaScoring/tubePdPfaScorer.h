@@ -1,0 +1,111 @@
+/*=========================================================================
+
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
+#ifndef __tubePdPfaScorer_h
+#define __tubePdPfaScorer_h
+
+#include <map>
+#include <vector>
+#include <list>
+#include <string>
+#include <cmath>
+
+#include "itkOrientedImage.h"
+#include "itkConnectedComponentImageFilter.h"
+#include "itkRelabelComponentImageFilter.h"
+
+namespace tube
+{
+
+// Internal datatypes
+class BoundingBox;
+class Pixel2D;
+
+template< class pixelT, unsigned int dimensionT >
+class PdPfaScorer
+{
+public:
+
+  typedef pixelT                                                  PixelType;
+  typedef itk::OrientedImage<PixelType,dimensionT>                ImageType;
+  typedef itk::ConnectedComponentImageFilter<ImageType,ImageType> SegmentFilter;
+  typedef itk::RelabelComponentImageFilter<ImageType,ImageType>   RelabelFilter;
+  typedef itk::ImageRegionConstIterator<ImageType>                ConstIteratorType;
+  typedef std::map<Pixel2D,int>                                   ChangeMapType;
+  typedef std::multimap<int,Pixel2D>                              LabelMMapType;
+  typedef std::list<BoundingBox>                                  BBoxListType;
+
+  void SegmentChanges( typename ImageType::Pointer changeImage,
+                       ChangeMapType& changes,
+                       LabelMMapType& changesByLabel );
+
+  void ComputeBoundingBoxes( typename ImageType::Pointer im,
+                             typename ImageType::Pointer labeledMaskImage,
+                             BBoxListType& BBList );
+
+  void ComputeChangeStatistics( typename ImageType::Pointer trueChangeImage,
+                                typename ImageType::Pointer foundChangeImage,
+                                int minPixels,
+                                int& totalNumChanges,
+                                int& totalNumChangesFound,
+                                int& totalNumFalsePositives );
+
+};
+
+// UTILITY CLASSES
+class BoundingBox
+{
+public:
+  BoundingBox() {}
+  ~BoundingBox() {}
+
+  int m_StartPixelX;
+  int m_EndPixelX;
+  int m_StartPixelY;
+  int m_EndPixelY;
+
+  int m_NumPixels;
+};
+
+class Pixel2D
+{
+public:
+  Pixel2D()  { m_X = 0; m_Y = 0; }
+  ~Pixel2D() {}
+
+  bool operator<( const Pixel2D& rhs ) const
+    {
+    double norm_lhs = sqrt( static_cast<double>( m_X*m_X + m_Y*m_Y ) );
+    double norm_rhs = sqrt( static_cast<double>( rhs.m_X*rhs.m_X +
+                                                 rhs.m_Y*rhs.m_Y ) );
+    return ( norm_lhs < norm_rhs );
+    }
+
+  int m_X;
+  int m_Y;
+};
+
+}  // End namespace tube
+
+#include "tubePdPfaScorer.txx"
+
+#endif
