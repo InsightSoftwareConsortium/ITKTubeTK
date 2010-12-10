@@ -681,17 +681,21 @@ int DoIt( int argc, char * argv[] )
     costFunc->Initialize();
   
     initOptimizer->SetInitialPosition( blendParams );
-    initOptimizer->StartOptimization();
-  
-    blendParams = initOptimizer->GetCurrentPosition();
+    if( iterations > 1 )
+      {
+      initOptimizer->StartOptimization();
+      blendParams = initOptimizer->GetCurrentPosition();
+      }
     double result = costFunc->GetValue( blendParams );
     std::cout << "Intermediate blendParams = " << blendParams 
               << " Result = " << result << std::endl;
   
     optimizer->SetInitialPosition( blendParams );
-    optimizer->StartOptimization();
-  
-    blendParams = optimizer->GetCurrentPosition();
+    if( iterations > 1 )
+      {
+      optimizer->StartOptimization();
+      blendParams = optimizer->GetCurrentPosition();
+      }
     result = costFunc->GetValue( blendParams );
     std::cout << "Winning blendParams = " << blendParams 
               << " Result = " << result << std::endl;
@@ -783,9 +787,11 @@ int DoIt( int argc, char * argv[] )
               << " Result = " << result << std::endl;
   
     optimizer->SetInitialPosition( blendScaleParams );
-    optimizer->StartOptimization();
-  
-    blendScaleParams = optimizer->GetCurrentPosition();
+    if( iterations > 1 )
+      {
+      optimizer->StartOptimization();
+      blendScaleParams = optimizer->GetCurrentPosition();
+      }
     result = costFunc->GetValue( blendScaleParams );
     std::cout << "Winning blendScaleParams = " << blendScaleParams 
               << " Result = " << result << std::endl;
