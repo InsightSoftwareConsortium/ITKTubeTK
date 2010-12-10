@@ -42,12 +42,12 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}SphereTestNoReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
-               -d ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
-               -o ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_transformedMovingImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_weightImage.mhd
+               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_none_transformedMovingImage.mhd
                -i 5
                -s 0.125
                -l -0.1
@@ -58,8 +58,8 @@ add_test( ${PROJECT_NAME}SphereTestNoReg
 #######
 add_test( ${PROJECT_NAME}SphereTestNoReg-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
-               -b ${BASELINE}/AnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd )
+               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd )
 set_tests_properties( ${PROJECT_NAME}SphereTestNoReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestNoReg )
 
@@ -68,12 +68,12 @@ set_tests_properties( ${PROJECT_NAME}SphereTestNoReg-Compare
 #######
 add_test( ${PROJECT_NAME}SphereTestAnisotropicReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
-               -d ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
-               -o ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_transformedMovingImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_weightImage.mhd
+               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_transformedMovingImage.mhd
                -i 5
                -s 0.125
                -l -0.1 )
@@ -83,8 +83,8 @@ add_test( ${PROJECT_NAME}SphereTestAnisotropicReg
 #######
 add_test( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
-               -b ${BASELINE}/AnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd )
+               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd )
 set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicReg )
 
@@ -93,12 +93,12 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
 #######
 add_test( ${PROJECT_NAME}SphereTestGaussianReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/AnisotropicDiffusiveSphereRegistration_weightImage.mhd
-               -d ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
-               -o ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_transformedMovingImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_weightImage.mhd
+               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_transformedMovingImage.mhd
                -i 5
                -s 0.125
                -l -0.1
@@ -109,7 +109,7 @@ add_test( ${PROJECT_NAME}SphereTestGaussianReg
 #######
 add_test( ${PROJECT_NAME}SphereTestGaussianReg-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
-               -b ${BASELINE}/AnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd )
+               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd )
 set_tests_properties( ${PROJECT_NAME}SphereTestGaussianReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestGaussianReg )
