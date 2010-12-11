@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,14 +20,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkCVTImageFilter_txx
-#define __itkCVTImageFilter_txx
+#ifndef __itkTubeCVTImageFilter_txx
+#define __itkTubeCVTImageFilter_txx
 
-#include "itkCVTImageFilter.h"
+#include "itkTubeCVTImageFilter.h"
 #include "itkDanielssonDistanceMapImageFilter.h"
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 /** Constructor */
@@ -36,7 +39,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 ::CVTImageFilter()
 {
   m_Seed = -1;
-  m_RandomGenerator = 
+  m_RandomGenerator =
     itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
 
   m_InputImage = NULL;
@@ -83,7 +86,7 @@ CVTImageFilter< TInputImage, TOutputImage >
   Superclass::GenerateInputRequestedRegion();
   if ( this->GetInput() )
     {
-    typename InputImageType::Pointer inpt = 
+    typename InputImageType::Pointer inpt =
           const_cast< TInputImage * >( this->GetInput() );
     inpt->SetRequestedRegionToLargestPossibleRegion();
     }
@@ -161,7 +164,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   for(int j=0; j<(int)m_NumberOfCentroids; j++)
     {
-    std::cout << "Initial Centroid [" << j << "] = " << m_Centroids[j] 
+    std::cout << "Initial Centroid [" << j << "] = " << m_Centroids[j]
               << std::endl;
     }
 
@@ -171,8 +174,8 @@ CVTImageFilter< TInputImage, TOutputImage >
 
     iterationEnergy = this->ComputeIteration(iterationEnergyDifference);
 
-    std::cout << "Iteration = " << iteration 
-              << " : E = " << iterationEnergy 
+    std::cout << "Iteration = " << iteration
+              << " : E = " << iterationEnergy
               << " : EDiff = " << iterationEnergyDifference << std::endl;
     ContinuousIndexType indx;
     indx.Fill(0);
@@ -207,10 +210,10 @@ CVTImageFilter< TInputImage, TOutputImage >
         }
       }
     m_OutputImage->SetPixel(iIndx, j+1);
-    std::cout << " Final Centroid [" << j << "] = " << m_Centroids[j] 
+    std::cout << " Final Centroid [" << j << "] = " << m_Centroids[j]
               << std::endl;
     }
-  
+
   typedef DanielssonDistanceMapImageFilter<OutputImageType, OutputImageType>
           DDFilterType;
   typename DDFilterType::Pointer ddFilter = DDFilterType::New();
@@ -315,7 +318,7 @@ CVTImageFilter< TInputImage, TOutputImage >
     term = 0.0;
     for ( i = 0; i < ImageDimension; i++ )
       {
-      term += ( centroids2[j][i] - m_Centroids[j][i] ) 
+      term += ( centroids2[j][i] - m_Centroids[j][i] )
               * ( centroids2[j][i] - m_Centroids[j][i] );
       m_Centroids[j][i] = centroids2[j][i];
       }
@@ -466,7 +469,7 @@ CVTImageFilter< TInputImage, TOutputImage >
       dist = 0.0;
       for ( i = 0; i < ImageDimension; i++ )
         {
-        dist += ( sample[js][i] - centroids[jc][i] ) 
+        dist += ( sample[js][i] - centroids[jc][i] )
                  * ( sample[js][i] - centroids[jc][i] );
         }
 
@@ -519,18 +522,21 @@ CVTImageFilter< TInputImage, TOutputImage >
     }
 
   std::cout << "Seed = " << m_Seed << std::endl;
-  std::cout << "InitialSamplingMethod = " << m_InitialSamplingMethod 
+  std::cout << "InitialSamplingMethod = " << m_InitialSamplingMethod
             << std::endl;
   std::cout << "NumberOfSamples = " << m_NumberOfSamples << std::endl;
   std::cout << "NumberOfIterations = " << m_NumberOfIterations << std::endl;
-  std::cout << "BatchSamplingMethod = " << m_BatchSamplingMethod 
+  std::cout << "BatchSamplingMethod = " << m_BatchSamplingMethod
             << std::endl;
-  std::cout << "NumberOfIterationsPerBatch = " 
-            << m_NumberOfIterationsPerBatch 
+  std::cout << "NumberOfIterationsPerBatch = "
+            << m_NumberOfIterationsPerBatch
             << std::endl;
-  std::cout << "NumberOfSamplesPerBatch = " << m_NumberOfSamplesPerBatch 
+  std::cout << "NumberOfSamplesPerBatch = " << m_NumberOfSamplesPerBatch
             << std::endl;
 }
 
+} // namespace tube
+
 } // namespace itk
+
 #endif

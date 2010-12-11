@@ -26,8 +26,8 @@ limitations under the License.
 
 #include <iostream>
 
-#include "itkCVTImageFilter.h"
-#include "itkPDFSegmenter.h"
+#include "itkTubeCVTImageFilter.h"
+#include "itkTubePDFSegmenter.h"
 
 int main ( int , char ** )
 {

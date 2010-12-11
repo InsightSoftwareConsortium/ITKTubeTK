@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,13 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkPDFSegmenter_h
-#define __itkPDFSegmenter_h
+#ifndef __itkTubePDFSegmenter_h
+#define __itkTubePDFSegmenter_h
 
 #include <vector>
 #include "itkOrientedImage.h"
 
 namespace itk
+{
+
+namespace tube
 {
 
 template< class ImageT, unsigned int N, class LabelmapT >
@@ -42,14 +45,14 @@ public:
   itkTypeMacro( PDFSegmenter, Object );
 
   itkNewMacro( Self );
- 
+
   //
   // Custom Typedefs
   //
   typedef ImageT                               ImageType;
   typedef typename ImageType::PixelType        PixelType;
 
-  itkStaticConstMacro( ImageDimension, unsigned int, 
+  itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
   typedef LabelmapT                            MaskImageType;
@@ -125,7 +128,7 @@ public:
 
 protected:
 
-  typedef std::vector< typename ProbabilityImageType::Pointer > 
+  typedef std::vector< typename ProbabilityImageType::Pointer >
     ProbabilityImageVectorType;
 
   PDFSegmenter( void );
@@ -133,7 +136,7 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  typename ImageType::Pointer GenerateTextureImage( 
+  typename ImageType::Pointer GenerateTextureImage(
     const ImageType * im );
 
 private:
@@ -171,8 +174,10 @@ private:
 
 }
 
+}
+
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkPDFSegmenter.txx"
+#include "itkTubePDFSegmenter.txx"
 #endif
 
 #endif

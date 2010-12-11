@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,26 +31,26 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-#include <itkPDFSegmenter.h>
+#include <itkTubePDFSegmenter.h>
 
-int itkPDFSegmenterTest(int argc, char* argv [] ) 
+int itkTubePDFSegmenterTest(int argc, char* argv [] )
 {
   if( argc != 6 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] 
+    std::cerr << argv[0]
       << " inputImage inputMask outputProbImage0 outputProbImage1 outputMask"
       << std::endl;
     return EXIT_FAILURE;
     }
-  
+
   // Define the dimension of the images
   const unsigned int Dimension = 2;
 
   // Define the pixel type
   typedef float PixelType;
-  
+
   // Declare the types of the images
   typedef itk::Image<PixelType, Dimension>  ImageType;
 
@@ -58,9 +58,9 @@ int itkPDFSegmenterTest(int argc, char* argv [] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  
+
   // Declare the type for the Filter
-  typedef itk::PDFSegmenter< ImageType, 1, ImageType > FilterType;
+  typedef itk::tube::PDFSegmenter< ImageType, 1, ImageType > FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();

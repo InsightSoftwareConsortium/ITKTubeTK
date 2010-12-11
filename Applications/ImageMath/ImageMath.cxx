@@ -48,7 +48,7 @@ limitations under the License.
 
 // tubetk includes
 #include "itkRidgeExtractor.h"
-#include "itkCVTImageFilter.h"
+#include "itkTubeCVTImageFilter.h"
 
 /** Resamples image a to b if they are different, returns resampled_a */
 template< class pixelT, unsigned int dimensionT >
@@ -1282,7 +1282,7 @@ int DoIt( MetaCommand & command )
         ( unsigned int )command.GetValueAsInt( *it, "numSamples" );
       std::string filename = 
         command.GetValueAsString( *it, "centroidOutFile" );
-      typedef itk::CVTImageFilter<ImageType, ImageType> FilterType;
+      typedef itk::tube::CVTImageFilter<ImageType, ImageType> FilterType;
       typename FilterType::Pointer filter = FilterType::New();
       filter->SetInput( imIn );
       filter->SetNumberOfSamples( numberOfSamples );

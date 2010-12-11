@@ -2,10 +2,10 @@
 
 Library:   TubeTK
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive, 
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, 
+distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkPDFSegmenter_txx
-#define __itkPDFSegmenter_txx
+#ifndef __itkTubePDFSegmenter_txx
+#define __itkTubePDFSegmenter_txx
 
-#include "itkPDFSegmenter.h"
+#include "itkTubePDFSegmenter.h"
 
 #include "itkVectorImageToListGenerator.h"
 
@@ -53,6 +53,9 @@ limitations under the License.
 #define nBins1D 200
 
 namespace itk
+{
+
+namespace tube
 {
 
 template< class ImageT, unsigned int N, class LabelmapT >
@@ -93,7 +96,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 }
 
 template< class ImageT, unsigned int N, class LabelmapT >
-typename ImageT::Pointer 
+typename ImageT::Pointer
 PDFSegmenter< ImageT, N, LabelmapT >
 ::GenerateTextureImage( const ImageT * im )
 {
@@ -152,7 +155,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
-::SetProgressProcessInformation( void * processInfo, double fraction, 
+::SetProgressProcessInformation( void * processInfo, double fraction,
   double start )
 {
   m_ProgressProcessInfo = processInfo;
@@ -161,7 +164,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 }
 
 template < class ImageT, unsigned int N, class LabelmapT >
-const typename itk::OrientedImage< float, 
+const typename itk::OrientedImage< float,
   ::itk::GetImageDimension< ImageT >::ImageDimension >::Pointer *
 PDFSegmenter< ImageT, N, LabelmapT >
 ::GetProbabilityImage( unsigned int classNum )
@@ -211,13 +214,13 @@ PDFSegmenter< ImageT, N, LabelmapT >
   //
   //  Convert in/out images to statistical list using masks
   //
-  typedef itk::Vector< PixelType, N+ImageDimension >     
+  typedef itk::Vector< PixelType, N+ImageDimension >
     ListVectorType;
   typedef itk::Statistics::ListSample< ListVectorType >
     ListSampleType;
-  typedef std::vector< typename ListSampleType::Pointer > 
+  typedef std::vector< typename ListSampleType::Pointer >
     ClassListSampleType;
-  typedef itk::Vector< double, N > 
+  typedef itk::Vector< double, N >
     ListDoubleType;
 
   ClassListSampleType inList;
@@ -236,20 +239,20 @@ PDFSegmenter< ImageT, N, LabelmapT >
   if( true ) // creating a local context to limit memory footprint
     {
     timeCollector.Start( "CreateLists" );
-  
-    typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >  
+
+    typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
       ConstMaskImageIteratorType;
-    typedef itk::ImageRegionConstIteratorWithIndex< ImageType >  
+    typedef itk::ImageRegionConstIteratorWithIndex< ImageType >
       ConstImageIteratorType;
-  
-    ConstMaskImageIteratorType itInMask( m_Labelmap, 
+
+    ConstMaskImageIteratorType itInMask( m_Labelmap,
       m_Labelmap->GetLargestPossibleRegion() );
     itInMask.GoToBegin();
-  
+
     ConstImageIteratorType * itInIm[N];
     for( unsigned int i=0; i<N; i++ )
       {
-      itInIm[i] = new ConstImageIteratorType( inIm[i], 
+      itInIm[i] = new ConstImageIteratorType( inIm[i],
         inIm[i]->GetLargestPossibleRegion() );
       itInIm[i]->GoToBegin();
       imMin[i] = itInIm[i]->Get();
@@ -307,12 +310,12 @@ PDFSegmenter< ImageT, N, LabelmapT >
           }
         }
       }
-  
+
     for( unsigned int i=0; i<N; i++ )
       {
       delete itInIm[i];
       }
-  
+
     timeCollector.Stop( "CreateLists" );
     }
 
@@ -324,27 +327,27 @@ PDFSegmenter< ImageT, N, LabelmapT >
 
   std::cout << "ObjectId[0] = " << m_ObjectIdList[0] << std::endl;
   std::cout << "VoidId = " << m_VoidId << std::endl;
-  std::cout << "Inside list ObjectId[0] size = " << inList[0]->Size() 
+  std::cout << "Inside list ObjectId[0] size = " << inList[0]->Size()
     << std::endl;
   for( unsigned int i=0; i<N; i++ )
     {
-    std::cout << "  Image" << i << ": " << imMin[i] << " - " << imMax[i] 
+    std::cout << "  Image" << i << ": " << imMin[i] << " - " << imMax[i]
       << std::endl;
     }
   std::cout << "Outside list size = " << outList->Size() << std::endl;
 
   //
-  // Convert lists to histograms that have the same span ( using range 
+  // Convert lists to histograms that have the same span ( using range
   //   defined above )
   //
 
   timeCollector.Start( "ListsToHistograms" );
   // Inside
-  typedef itk::Vector< float, nBinsND > 
+  typedef itk::Vector< float, nBinsND >
     Histo1DType;
-  typedef std::vector< Histo1DType > 
+  typedef std::vector< Histo1DType >
     HistoNDType;
-  typedef std::vector< HistoNDType > 
+  typedef std::vector< HistoNDType >
     ClassHistoNDType;
 
   ClassHistoNDType inImHisto;
@@ -362,7 +365,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
         inImHisto[c][i].Fill( 0 );
         }
       }
-  
+
     unsigned int totalIn = 0;
     itk::Array<unsigned int> totalInClass( numClasses );
     totalInClass.Fill( 0 );
@@ -394,7 +397,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
         ++inListIt;
         }
       }
-    
+
     double outlierRejectPercent = 0.01;
     unsigned int count;
     for( unsigned int c=0; c<numClasses; c++ )
@@ -435,7 +438,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
         }
       }
     }
-    
+
   // Outside
   itk::Vector<float, nBinsND> outImHisto[N];
   if( true ) // creating a local context to limit memory footprint
@@ -444,7 +447,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
       {
       outImHisto[i].Fill( 0 );
       }
-  
+
     // Create Histogram
     unsigned int totalOut = 0;
     typename ListSampleType::ConstIterator outListIt;
@@ -471,7 +474,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
       ++totalOut;
       ++outListIt;
       }
-  
+
     // Clip Histograms
     double outlierRejectPercent = 0.01;
     double totalReject = totalOut * outlierRejectPercent;
@@ -517,10 +520,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
   //
   timeCollector.Start( "JoinHistogram" );
   typedef itk::Image<float, N> HistogramType;
-  typedef std::vector< typename HistogramType::Pointer > 
+  typedef std::vector< typename HistogramType::Pointer >
     ClassHistogramType;
 
-  typedef itk::ImageRegionIteratorWithIndex< HistogramType >  
+  typedef itk::ImageRegionIteratorWithIndex< HistogramType >
     HistogramIteratorType;
   typename HistogramType::SizeType size;
   size.Fill( nBinsND );
@@ -611,17 +614,17 @@ PDFSegmenter< ImageT, N, LabelmapT >
     for( unsigned int c=0; c<numClasses; c++ )
       {
       double inPTotal = 0;
-  
-      typedef itk::DiscreteGaussianImageFilter< HistogramType, 
+
+      typedef itk::DiscreteGaussianImageFilter< HistogramType,
         HistogramType > HistoBlurGenType;
-      typename HistoBlurGenType::Pointer inHistoBlurGen = 
+      typename HistoBlurGenType::Pointer inHistoBlurGen =
         HistoBlurGenType::New();
       inHistoBlurGen->SetInput( inHisto[c] );
       inHistoBlurGen->SetVariance( 100 );
       inHistoBlurGen->Update();
       inHisto[c] = inHistoBlurGen->GetOutput();
-  
-      itk::ImageRegionIterator<HistogramType> inHistoIt( inHisto[c], 
+
+      itk::ImageRegionIterator<HistogramType> inHistoIt( inHisto[c],
         inHisto[c]->GetLargestPossibleRegion() );
       inHistoIt.GoToBegin();
       while( !inHistoIt.IsAtEnd() )
@@ -631,7 +634,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
         ++inHistoIt;
         }
       std::cout << "inHistoTotalP = " << inPTotal << std::endl;
-    
+
       inHistoIt.GoToBegin();
       while( !inHistoIt.IsAtEnd() )
         {
@@ -640,21 +643,21 @@ PDFSegmenter< ImageT, N, LabelmapT >
         ++inHistoIt;
         }
       }
-  
+
     std::cout << "Outside histogram image smoothing..." << std::endl;
 
     typedef itk::DiscreteGaussianImageFilter< HistogramType,
       HistogramType > HistoBlurGenType;
 
-    typename HistoBlurGenType::Pointer outHistoBlurGen = 
+    typename HistoBlurGenType::Pointer outHistoBlurGen =
       HistoBlurGenType::New();
     outHistoBlurGen->SetInput( outHisto );
     outHistoBlurGen->SetVariance( 100 );
     outHistoBlurGen->Update();
     outHisto = outHistoBlurGen->GetOutput();
-  
+
     double outPTotal = 0;
-    itk::ImageRegionIterator<HistogramType> outHistoIt( outHisto, 
+    itk::ImageRegionIterator<HistogramType> outHistoIt( outHisto,
       outHisto->GetLargestPossibleRegion() );
     outHistoIt.GoToBegin();
     while( !outHistoIt.IsAtEnd() )
@@ -674,7 +677,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
       }
     }
   timeCollector.Stop( "HistogramToPDF" );
-  
+
   //
   // Save PDFs
   //
@@ -699,7 +702,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
   outsideHistoImageWriter->Update();
   */
 
-  // 
+  //
   //  Compute the probability at each pixel for input images
   //
   std::cout << "Compute probability image..." << std::endl;
@@ -710,26 +713,26 @@ PDFSegmenter< ImageT, N, LabelmapT >
   for( unsigned int c=0; c<numClasses; c++ )
     {
     m_ProbabilityImageVector[c] = ProbabilityImageType::New();
-    m_ProbabilityImageVector[c]->SetRegions( 
+    m_ProbabilityImageVector[c]->SetRegions(
       inIm[0]->GetLargestPossibleRegion() );
     m_ProbabilityImageVector[c]->CopyInformation( inIm[0] );
     m_ProbabilityImageVector[c]->Allocate();
-   
-    itk::ImageRegionIterator<ProbabilityImageType> probIt( 
-      m_ProbabilityImageVector[c], 
+
+    itk::ImageRegionIterator<ProbabilityImageType> probIt(
+      m_ProbabilityImageVector[c],
       m_ProbabilityImageVector[c]->GetLargestPossibleRegion() );
     probIt.GoToBegin();
 
-    typedef itk::ImageRegionConstIteratorWithIndex< ImageType >  
+    typedef itk::ImageRegionConstIteratorWithIndex< ImageType >
       ConstImageIteratorType;
     ConstImageIteratorType * itInIm[N];
     for( unsigned int i=0; i<N; i++ )
       {
-      itInIm[i] = new ConstImageIteratorType( inIm[i], 
+      itInIm[i] = new ConstImageIteratorType( inIm[i],
         inIm[i]->GetLargestPossibleRegion() );
       itInIm[i]->GoToBegin();
       }
- 
+
     typename HistogramType::IndexType binIndex;
     while( !probIt.IsAtEnd() )
       {
@@ -770,25 +773,25 @@ PDFSegmenter< ImageT, N, LabelmapT >
   if( true ) // creating a local context to limit memory footprint
     {
     m_ProbabilityImageVector[numClasses] = ProbabilityImageType::New();
-    m_ProbabilityImageVector[numClasses]->SetRegions( 
+    m_ProbabilityImageVector[numClasses]->SetRegions(
       inIm[0]->GetLargestPossibleRegion() );
     m_ProbabilityImageVector[numClasses]->CopyInformation( inIm[0] );
     m_ProbabilityImageVector[numClasses]->Allocate();
-    itk::ImageRegionIterator<ProbabilityImageType> probIt( 
-      m_ProbabilityImageVector[ numClasses ], 
+    itk::ImageRegionIterator<ProbabilityImageType> probIt(
+      m_ProbabilityImageVector[ numClasses ],
       m_ProbabilityImageVector[ numClasses ]->GetLargestPossibleRegion() );
     probIt.GoToBegin();
-  
-    typedef itk::ImageRegionConstIteratorWithIndex< ImageType >  
+
+    typedef itk::ImageRegionConstIteratorWithIndex< ImageType >
                                                    ConstImageIteratorType;
     ConstImageIteratorType * itInIm[N];
     for( unsigned int i=0; i<N; i++ )
       {
-      itInIm[i] = new ConstImageIteratorType( inIm[i], 
+      itInIm[i] = new ConstImageIteratorType( inIm[i],
         inIm[i]->GetLargestPossibleRegion() );
       itInIm[i]->GoToBegin();
       }
-   
+
     typename HistogramType::IndexType binIndex;
     while( !probIt.IsAtEnd() )
       {
@@ -819,7 +822,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
         }
       ++probIt;
       }
-  
+
     for( unsigned int i=0; i<N; i++ )
       {
       delete itInIm[i];
@@ -828,7 +831,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
   timeCollector.Stop( "ProbabilityImage" );
 
   std::cout << "Probability image smoothing..." << std::endl;
-  typedef itk::DiscreteGaussianImageFilter< ProbabilityImageType, 
+  typedef itk::DiscreteGaussianImageFilter< ProbabilityImageType,
           ProbabilityImageType> ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
 
@@ -837,7 +840,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     probImageFilter = ProbImageFilterType::New();
     probImageFilter->SetInput( m_ProbabilityImageVector[c] );
-    probImageFilter->SetVariance( 
+    probImageFilter->SetVariance(
       m_ProbabilitySmoothingStandardDeviation );
     probImageFilter->Update();
     m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
@@ -847,7 +850,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     probImageFilter = ProbImageFilterType::New();
     probImageFilter->SetInput( m_ProbabilityImageVector[numClasses] );
-    probImageFilter->SetVariance( 
+    probImageFilter->SetVariance(
       m_ProbabilitySmoothingStandardDeviation );
     probImageFilter->Update();
     m_ProbabilityImageVector[numClasses] = probImageFilter->GetOutput();
@@ -870,19 +873,19 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     timeCollector.Start( "Connectivity" );
 
-    itk::ImageRegionIteratorWithIndex<MaskImageType> labelIt( 
+    itk::ImageRegionIteratorWithIndex<MaskImageType> labelIt(
       tmpLabelImage, tmpLabelImage->GetLargestPossibleRegion() );
     labelIt.GoToBegin();
     while( !labelIt.IsAtEnd() )
       {
       labelImageIndex = labelIt.GetIndex();
       bool maxPC = true;
-      double maxP = m_ProbabilityImageVector[c]->GetPixel( 
+      double maxP = m_ProbabilityImageVector[c]->GetPixel(
         labelImageIndex );
       for( unsigned int oc=0; oc<numClasses+1; oc++ )
         {
         if( oc != c &&
-            m_ProbabilityImageVector[oc]->GetPixel( labelImageIndex ) 
+            m_ProbabilityImageVector[oc]->GetPixel( labelImageIndex )
             > maxP )
           {
           maxPC = false;
@@ -900,10 +903,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
       ++labelIt;
       }
 
-    typedef itk::ConnectedThresholdImageFilter<MaskImageType, 
+    typedef itk::ConnectedThresholdImageFilter<MaskImageType,
       MaskImageType> ConnectedFilterType;
-  
-    typename ConnectedFilterType::Pointer insideConnecter = 
+
+    typename ConnectedFilterType::Pointer insideConnecter =
       ConnectedFilterType::New();
     insideConnecter->SetInput( tmpLabelImage );
     insideConnecter->SetLower( 64 );
@@ -918,7 +921,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
       {
       for( unsigned int i=0; i<ImageDimension; i++ )
         {
-        indx[i] = static_cast<long int>( 
+        indx[i] = static_cast<long int>(
           inListIt.GetMeasurementVector()[N+i] );
         }
       insideConnecter->AddSeed( indx );
@@ -930,7 +933,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
       }
     insideConnecter->Update();
     tmpLabelImage = insideConnecter->GetOutput();
-  
+
     timeCollector.Stop( "Connectivity" );
 
     if( !m_ReclassifyObjectMask )
@@ -948,7 +951,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
             {
             for( unsigned int i=0; i<ImageDimension; i++ )
               {
-              indx[i] = static_cast<long int>( 
+              indx[i] = static_cast<long int>(
                 inListIt.GetMeasurementVector()[N+i] );
               }
             tmpLabelImage->SetPixel( indx, 0 );
@@ -969,7 +972,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
         {
         for( unsigned int i=0; i<ImageDimension; i++ )
           {
-          indx[i] = static_cast<long int>( 
+          indx[i] = static_cast<long int>(
             outListIt.GetMeasurementVector()[N+i] );
           }
         tmpLabelImage->SetPixel( indx, 0 );
@@ -982,14 +985,14 @@ PDFSegmenter< ImageT, N, LabelmapT >
     //
     if( holeFillIterations > 0 )
       {
-      typedef itk::VotingBinaryIterativeHoleFillingImageFilter< 
+      typedef itk::VotingBinaryIterativeHoleFillingImageFilter<
         MaskImageType > HoleFillingFilterType;
-    
+
       std::cout << "Fill holes..." << std::endl;
-    
+
       timeCollector.Start( "HoleFiller" );
-    
-      typename HoleFillingFilterType::Pointer holeFiller = 
+
+      typename HoleFillingFilterType::Pointer holeFiller =
         HoleFillingFilterType::New();
       typename MaskImageType::SizeType holeRadius;
       holeRadius.Fill( 1 );
@@ -1001,61 +1004,61 @@ PDFSegmenter< ImageT, N, LabelmapT >
       holeFiller->SetMaximumNumberOfIterations( holeFillIterations );
       holeFiller->Update();
       tmpLabelImage = holeFiller->GetOutput();
-  
+
       timeCollector.Stop( "HoleFiller" );
       }
 
     //
-    // Erode 
+    // Erode
     //
-    typedef itk::BinaryBallStructuringElement< MaskPixelType, 
+    typedef itk::BinaryBallStructuringElement< MaskPixelType,
       ::itk::GetImageDimension<ImageType>::ImageDimension >
         StructuringElementType;
-    typedef itk::BinaryErodeImageFilter< MaskImageType, MaskImageType, 
-      StructuringElementType > 
+    typedef itk::BinaryErodeImageFilter< MaskImageType, MaskImageType,
+      StructuringElementType >
         ErodeFilterType;
-  
+
     StructuringElementType sphereOp;
     if( erodeRadius > 0 )
       {
       std::cout << "Inside erode..." << std::endl;
-  
+
       timeCollector.Start( "Erode" );
-  
+
       sphereOp.SetRadius( erodeRadius );
       sphereOp.CreateStructuringElement();
-    
-      typename ErodeFilterType::Pointer insideMaskErodeFilter = 
+
+      typename ErodeFilterType::Pointer insideMaskErodeFilter =
         ErodeFilterType::New();
       insideMaskErodeFilter->SetKernel( sphereOp );
       insideMaskErodeFilter->SetErodeValue( 255 );
       insideMaskErodeFilter->SetInput( tmpLabelImage );
       insideMaskErodeFilter->Update();
       tmpLabelImage = insideMaskErodeFilter->GetOutput();
-  
+
       timeCollector.Stop( "Erode" );
       }
-   
+
     //
     // Re-do connectivity
     //
     if( true ) // creating a local context to limit memory footprint
       {
-      typedef itk::ConnectedThresholdImageFilter<MaskImageType, 
+      typedef itk::ConnectedThresholdImageFilter<MaskImageType,
         MaskImageType> ConnectedMaskFilterType;
-    
+
       std::cout << "Inside connectivity pass 2..." << std::endl;
-    
+
       timeCollector.Start( "Connectivity2" );
-    
+
       typename ConnectedMaskFilterType::Pointer insideConnectedMaskFilter =
         ConnectedMaskFilterType::New();
       insideConnectedMaskFilter->SetInput( tmpLabelImage );
       insideConnectedMaskFilter->SetLower( 194 );
       insideConnectedMaskFilter->SetUpper( 255 );
       insideConnectedMaskFilter->SetReplaceValue( 255 );
-    
-      // Use inside mask to set seed points.  Also draw inside mask in 
+
+      // Use inside mask to set seed points.  Also draw inside mask in
       // label image to ensure those points are considered object points
       inListIt = inList[c]->Begin();
       inListItEnd = inList[c]->End();
@@ -1063,10 +1066,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
         {
         for( unsigned int i=0; i<ImageDimension; i++ )
           {
-          indx[i] = static_cast<long int>( 
+          indx[i] = static_cast<long int>(
             inListIt.GetMeasurementVector()[N+i] );
           }
-  
+
         insideConnectedMaskFilter->AddSeed( indx );
         if( !m_ReclassifyObjectMask )
           {
@@ -1074,44 +1077,44 @@ PDFSegmenter< ImageT, N, LabelmapT >
           }
         ++inListIt;
         }
-    
+
       insideConnectedMaskFilter->Update();
       tmpLabelImage = insideConnectedMaskFilter->GetOutput();
-    
+
       timeCollector.Stop( "Connectivity2" );
       }
 
     //
     // Dilate back to original size
     //
-    typedef itk::BinaryDilateImageFilter< MaskImageType, 
+    typedef itk::BinaryDilateImageFilter< MaskImageType,
       MaskImageType, StructuringElementType >            DilateFilterType;
-  
+
     if( erodeRadius > 0 )
       {
       std::cout << "Inside eroded-connected dilate..." << std::endl;
-  
+
       timeCollector.Start( "Dilate" );
-  
-      typename DilateFilterType::Pointer insideMaskDilateFilter = 
+
+      typename DilateFilterType::Pointer insideMaskDilateFilter =
         DilateFilterType::New();
       insideMaskDilateFilter->SetKernel( sphereOp );
       insideMaskDilateFilter->SetDilateValue( 255 );
       insideMaskDilateFilter->SetInput( tmpLabelImage );
       insideMaskDilateFilter->Update();
       tmpLabelImage = insideMaskDilateFilter->GetOutput();
-  
+
       timeCollector.Stop( "Dilate" );
       }
 
     // Merge with input mask
-    typedef itk::ImageRegionIterator< MaskImageType >  
+    typedef itk::ImageRegionIterator< MaskImageType >
       MaskImageIteratorType;
-    MaskImageIteratorType itInMask( m_Labelmap, 
+    MaskImageIteratorType itInMask( m_Labelmap,
       m_Labelmap->GetLargestPossibleRegion() );
     itInMask.GoToBegin();
 
-    MaskImageIteratorType itLabel( tmpLabelImage, 
+    MaskImageIteratorType itLabel( tmpLabelImage,
       tmpLabelImage->GetLargestPossibleRegion() );
     itLabel.GoToBegin();
 
@@ -1119,12 +1122,12 @@ PDFSegmenter< ImageT, N, LabelmapT >
       {
       if( itLabel.Get() == 255 )
         {
-        if( itInMask.Get() == m_VoidId 
+        if( itInMask.Get() == m_VoidId
             || ( m_ReclassifyObjectMask && m_ReclassifyNotObjectMask ) )
           {
           itInMask.Set( m_ObjectIdList[c] );
           }
-        else 
+        else
           {
           if( m_ReclassifyObjectMask || m_ReclassifyNotObjectMask )
             {
@@ -1166,7 +1169,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 }
 
 template <class ImageT, unsigned int N, class LabelmapT >
-void 
+void
 PDFSegmenter< ImageT, N, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
@@ -1206,20 +1209,22 @@ PDFSegmenter< ImageT, N, LabelmapT >
     }
   os << indent << "Use texture = " << m_UseTexture << std::endl;
   os << indent << "Erode radius = " << m_ErodeRadius << std::endl;
-  os << indent << "Hole fill iterations = " << m_HoleFillIterations 
+  os << indent << "Hole fill iterations = " << m_HoleFillIterations
     << std::endl;
   os << indent << "Fpr weight = " << m_FprWeight << std::endl;
-  os << indent << "Probability Smoothing Standard Deviation = " 
+  os << indent << "Probability Smoothing Standard Deviation = "
     << m_ProbabilitySmoothingStandardDeviation << std::endl;
   os << indent << "Draft = " << m_Draft << std::endl;
-  os << indent << "ReclassifyObjectMask = " << m_ReclassifyObjectMask 
+  os << indent << "ReclassifyObjectMask = " << m_ReclassifyObjectMask
     << std::endl;
   os << indent << "ReclassifyNotObjectMask = " << m_ReclassifyNotObjectMask
     << std::endl;
-  os << indent << "Number of probability images = " 
+  os << indent << "Number of probability images = "
     << m_ProbabilityImageVector.size() << std::endl;
 }
 
 }
 
-#endif //PDFSegmenter_h
+}
+
+#endif //PDFSegmenter_txx

@@ -28,7 +28,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkPDFSegmenter.h"
+#include "itkTubePDFSegmenter.h"
 
 #include "tubePDFSegmenterCLP.h"
 
@@ -92,7 +92,7 @@ int DoIt( int argc, char *argv[] )
   typedef itk::ImageFileWriter< MaskImageType >    MaskWriterType;
   typedef itk::ImageFileWriter< ProbImageType >    ProbImageWriterType;
 
-  typedef itk::PDFSegmenter< InputImageType, N, MaskImageType >
+  typedef itk::tube::PDFSegmenter< InputImageType, N, MaskImageType >
     PDFSegmenterType;
   typename PDFSegmenterType::Pointer pdfSegmenter = PDFSegmenterType::New();
 

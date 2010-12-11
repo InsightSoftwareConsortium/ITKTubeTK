@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,28 +31,28 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-#include <itkCVTImageFilter.h>
+#include <itkTubeCVTImageFilter.h>
 
 #define numCentroids 4
 
-int itkCVTImageFilterTest(int argc, char* argv [] ) 
+int itkTubeCVTImageFilterTest(int argc, char* argv [] )
 {
   if( argc != 3 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] 
+    std::cerr << argv[0]
       << " inputImage outputImage"
       << std::endl;
     return EXIT_FAILURE;
     }
-  
+
   // Define the dimension of the images
   const unsigned int Dimension = 2;
 
   // Define the pixel type
   typedef float PixelType;
-  
+
   // Declare the types of the images
   typedef itk::Image<PixelType, Dimension>  ImageType;
 
@@ -60,9 +60,9 @@ int itkCVTImageFilterTest(int argc, char* argv [] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  
+
   // Declare the type for the Filter
-  typedef itk::CVTImageFilter< ImageType > FilterType;
+  typedef itk::tube::CVTImageFilter< ImageType > FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();

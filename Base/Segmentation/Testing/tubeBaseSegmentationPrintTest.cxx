@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,24 +27,24 @@ limitations under the License.
 
 #include "itkOrientedImage.h"
 
-#include "itkCVTImageFilter.h"
-#include "itkPDFSegmenter.h"
+#include "itkTubeCVTImageFilter.h"
+#include "itkTubePDFSegmenter.h"
 
 int tubeBaseSegmentationPrintTest( int, char* [] )
 {
   typedef itk::OrientedImage< float, 2 > ImageType;
 
-  itk::CVTImageFilter< ImageType >::Pointer 
+  itk::tube::CVTImageFilter< ImageType >::Pointer
     cvtObject =
-    itk::CVTImageFilter< ImageType >::New();
-  std::cout << "-------------itkCVTImageFilter" 
+    itk::tube::CVTImageFilter< ImageType >::New();
+  std::cout << "-------------itkTubeCVTImageFilter"
             << cvtObject
             << std::endl;
 
-  itk::PDFSegmenter< ImageType, 3, ImageType >::Pointer 
+  itk::tube::PDFSegmenter< ImageType, 3, ImageType >::Pointer
     pdfObject =
-    itk::PDFSegmenter< ImageType, 3, ImageType >::New();
-  std::cout << "-------------itkCVTImageFilter" 
+    itk::tube::PDFSegmenter< ImageType, 3, ImageType >::New();
+  std::cout << "-------------itkTubePDFImageFilter"
             << pdfObject
             << std::endl;
 

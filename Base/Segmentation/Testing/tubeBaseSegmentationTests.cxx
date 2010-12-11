@@ -31,7 +31,7 @@ limitations under the License.
 void RegisterTests()
 {
   REGISTER_TEST( tubeBaseSegmentationPrintTest );
-  REGISTER_TEST( itkCVTImageFilterTest );
-  REGISTER_TEST( itkPDFSegmenterTest );
+  REGISTER_TEST( itkTubeCVTImageFilterTest );
+  REGISTER_TEST( itkTubePDFSegmenterTest );
 }
 
