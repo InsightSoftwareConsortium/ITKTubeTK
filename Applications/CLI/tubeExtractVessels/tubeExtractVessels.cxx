@@ -41,7 +41,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkRidgeExtractor.h"
+#include "itkTubeRidgeExtractor.h"
 #include "itkSpatialObjectReader.h"
 #include "itkGroupSpatialObject.h"
 #include "itkTubeSpatialObjectPoint.h"
@@ -128,7 +128,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Ridge Extractor");
 
-  typedef itk::RidgeExtractor< ImageType > RidgeOpType;
+  typedef itk::tube::RidgeExtractor< ImageType > RidgeOpType;
   typename RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
 
   ridgeOp->SetInputImage( inputImage );

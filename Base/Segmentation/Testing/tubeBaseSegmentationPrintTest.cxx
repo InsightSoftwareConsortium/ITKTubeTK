@@ -50,4 +50,3 @@ int tubeBaseSegmentationPrintTest( int, char* [] )
 
   return EXIT_SUCCESS;
 }
-

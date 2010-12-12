@@ -41,7 +41,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkRidgeExtractor.h"
+#include "itkTubeRidgeExtractor.h"
 #include "itkJointHistogramImageFunction.h"
 #include "itkStandardFeatureGeneratingImageFunction.h"
 #include "itkPatchFeatureGeneratingImageFunction.h"
@@ -93,7 +93,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter<ImageType>                  WriterType;
 
   // typedefs for numerics
-  typedef itk::RidgeExtractor< ImageType >                 CalculatorType;
+  typedef itk::tube::RidgeExtractor< ImageType >           CalculatorType;
   typedef itk::JointHistogramImageFunction< ImageType >    HistCalcType;
 
   // typedefs for classification

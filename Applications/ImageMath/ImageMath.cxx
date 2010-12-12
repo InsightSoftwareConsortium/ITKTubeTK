@@ -47,7 +47,7 @@ limitations under the License.
 #include "metaCommand.h"
 
 // tubetk includes
-#include "itkRidgeExtractor.h"
+#include "itkTubeRidgeExtractor.h"
 #include "itkTubeCVTImageFilter.h"
 
 /** Resamples image a to b if they are different, returns resampled_a */
@@ -941,7 +941,7 @@ int DoIt( MetaCommand & command )
       double logScaleStep = (vcl_log(scaleMax) - vcl_log(scaleMin)) 
         / (numScales-1);
 
-      typedef itk::RidgeExtractor< ImageType > RidgeFuncType;
+      typedef itk::tube::RidgeExtractor< ImageType > RidgeFuncType;
       typename RidgeFuncType::Pointer imFunc = RidgeFuncType::New();
       imFunc->SetInputImage( imIn );
 

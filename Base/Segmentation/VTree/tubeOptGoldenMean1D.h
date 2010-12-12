@@ -1,9 +1,14 @@
 /*=========================================================================
 
-Library:   TubeTK
+Library:   TubeTK/VTree
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
+
+Original implementation:
+Copyright University of North Carolina, Chapel Hill, NC, USA.
+
+Revised implementation:
+Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
@@ -20,31 +25,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
+#ifndef __tubeOptGoldenMean1D_h
+#define __tubeOptGoldenMean1D_h
 
-#include <iostream>
-
-#include "itkTubeBlurImageFunction.h"
-
-#include "itkTubeRadiusExtractor.h"
-#include "itkTubeRidgeExtractor.h"
-#include "itkTubeTubeExtractor.h"
-#include "itkTubeTubeNetExtractor.h"
-
-#include "tubeMatrixMath.h"
-#include "tubeOptBrent1D.h"
-#include "tubeOptGoldenMean1D.h"
 #include "tubeOptimizer1D.h"
-#include "tubeOptimizerND.h"
-#include "tubeOptParabolicFit1D.h"
-#include "tubeSpline1D.h"
-#include "tubeSplineND.h"
-#include "tubeSplineApproximation1D.h"
 #include "tubeUserFunc.h"
 
-int main ( int , char ** )
+namespace tube
 {
-  return EXIT_SUCCESS;
-}
+
+class OptGoldenMean1D : public Optimizer1D
+{
+
+public:
+
+  OptGoldenMean1D();
+  OptGoldenMean1D(UserFunc<double, double> *newFuncVal);
+  ~OptGoldenMean1D();
+
+  void use(UserFunc<double, double> *newFuncVal);
+
+protected:
+
+  bool cExtreme(double * x, double * xVal);
+
+
+};
+
+}; // end namespace tube
+
+#endif

@@ -25,7 +25,6 @@ limitations under the License.
 
 #include "itkStandardFeatureGeneratingImageFunction.h"
 
-#include "itkRidgeExtractor.h"
 #include "itkJointHistogramImageFunction.h"
 
 #include "itkImageRegionConstIteratorWithIndex.h"

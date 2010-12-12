@@ -28,7 +28,7 @@ limitations under the License.
 #include "itkImageFunction.h"
 #include "itkOrientedImage.h"
 
-#include "itkRidgeExtractor.h"
+#include "itkTubeRidgeExtractor.h"
 #include "itkJointHistogramImageFunction.h"
 
 #include "itkFeatureGeneratingImageFunction.h"
@@ -58,7 +58,7 @@ public:
   typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
   typedef typename Superclass::OutputType              OutputType;
   typedef typename Superclass::FeatureListType         FeatureListType;
-  typedef itk::RidgeExtractor< InputImageType >        CalculatorType;
+  typedef itk::tube::RidgeExtractor< InputImageType >  CalculatorType;
   typedef itk::JointHistogramImageFunction<InputImageType>
                                                        HistCalcType;
   typedef typename HistCalcType::HistogramType         HistogramType;

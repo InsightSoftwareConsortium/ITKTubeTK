@@ -43,9 +43,9 @@ limitations under the License.
 
 // Application-specific includes
 #include "tubeCompareImageWithPrior.h"
-#include "itkOptBrent1D.h"
-#include "itkSplineApproximation1D.h"
-#include "itkSplineND.h"
+#include "tubeOptBrent1D.h"
+#include "tubeSplineApproximation1D.h"
+#include "tubeSplineND.h"
 
 #include <map>
 
@@ -56,7 +56,7 @@ int DoIt( int argc, char * argv[] );
 
 template< class pixelT, unsigned int dimensionT >
 class MyMIWPFunc:
-public itk::UserFunc< vnl_vector<int>, double >
+public tube::UserFunc< vnl_vector<int>, double >
 {
 public:
 
@@ -254,10 +254,10 @@ int DoIt( int argc, char * argv[] )
 
     MyMIWPFunc< pixelT, dimensionT > * myFunc = new
       MyMIWPFunc< pixelT, dimensionT >( eval );
-    itk::SplineApproximation1D * spline1D = new
-      itk::SplineApproximation1D();
-    itk::OptBrent1D * opt = new itk::OptBrent1D( );
-    itk::SplineND spline( 3, myFunc, spline1D, opt );
+    tube::SplineApproximation1D * spline1D = new
+      tube::SplineApproximation1D();
+    tube::OptBrent1D * opt = new tube::OptBrent1D( );
+    tube::SplineND spline( 3, myFunc, spline1D, opt );
 
     vnl_vector< int > xMin(3);
     xMin.fill( 1 );

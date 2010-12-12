@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,23 +26,23 @@ limitations under the License.
 
 #include <iostream>
 
-#include "itkTestMain.h" 
+#include "itkTestMain.h"
 
 void RegisterTests()
 {
-  REGISTER_TEST( tubeBaseSegmentationVTreePrintTest );
-  REGISTER_TEST( itkBlurImageFunctionTest );
-  REGISTER_TEST( itkMatrixMathTest );
-  REGISTER_TEST( itkOptBrentTest );
-  REGISTER_TEST( itkOptGoldenMeanTest );
-  REGISTER_TEST( itkOptParabolicFitTest );
-  REGISTER_TEST( itkOptBrentNDTest );
-  REGISTER_TEST( itkRidgeExtractorTest );
-  REGISTER_TEST( itkRidgeExtractorTest2 );
-  REGISTER_TEST( itkRadiusExtractorTest );
-  REGISTER_TEST( itkRadiusExtractorTest2 );
-  REGISTER_TEST( itkSplineApprox1DTest );
-  REGISTER_TEST( itkSplineNDTest );
-  REGISTER_TEST( itkUserFuncTest );
-}
+  REGISTER_TEST( itkTubeBlurImageFunctionTest );
+  REGISTER_TEST( itkTubeRidgeExtractorTest );
+  REGISTER_TEST( itkTubeRidgeExtractorTest2 );
+  REGISTER_TEST( itkTubeRadiusExtractorTest );
+  REGISTER_TEST( itkTubeRadiusExtractorTest2 );
 
+  REGISTER_TEST( tubeBaseSegmentationVTreePrintTest );
+  REGISTER_TEST( tubeMatrixMathTest );
+  REGISTER_TEST( tubeOptBrentTest );
+  REGISTER_TEST( tubeOptGoldenMeanTest );
+  REGISTER_TEST( tubeOptParabolicFitTest );
+  REGISTER_TEST( tubeOptBrentNDTest );
+  REGISTER_TEST( tubeSplineApprox1DTest );
+  REGISTER_TEST( tubeSplineNDTest );
+  REGISTER_TEST( tubeUserFuncTest );
+}

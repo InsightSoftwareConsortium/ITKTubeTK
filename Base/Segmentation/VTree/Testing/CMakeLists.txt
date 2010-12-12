@@ -46,19 +46,19 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseSegmentationVTree_SRCS
   tubeBaseSegmentationVTreePrintTest.cxx
-  itkBlurImageFunctionTest.cxx
-  itkMatrixMathTest.cxx
-  itkOptBrentTest.cxx
-  itkOptBrentNDTest.cxx
-  itkOptGoldenMeanTest.cxx
-  itkOptParabolicFitTest.cxx
-  itkRidgeExtractorTest.cxx
-  itkRidgeExtractorTest2.cxx
-  itkRadiusExtractorTest.cxx
-  itkRadiusExtractorTest2.cxx
-  itkSplineApprox1DTest.cxx
-  itkSplineNDTest.cxx
-  itkUserFuncTest.cxx
+  itkTubeBlurImageFunctionTest.cxx
+  tubeMatrixMathTest.cxx
+  tubeOptBrentTest.cxx
+  tubeOptBrentNDTest.cxx
+  tubeOptGoldenMeanTest.cxx
+  tubeOptParabolicFitTest.cxx
+  itkTubeRidgeExtractorTest.cxx
+  itkTubeRidgeExtractorTest2.cxx
+  itkTubeRadiusExtractorTest.cxx
+  itkTubeRadiusExtractorTest2.cxx
+  tubeSplineApprox1DTest.cxx
+  tubeSplineNDTest.cxx
+  tubeUserFuncTest.cxx
   )
 
 include_directories(
@@ -96,87 +96,86 @@ add_test( tubeBaseSegmentationVTreePrintTest
   tubeBaseSegmentationVTreePrintTest
   )
 
-add_test( itkBlurImageFunctionTest
+add_test( itkTubeBlurImageFunctionTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  --compare ${BASELINE}/itkBlurImageFunctionTest.mha
-            ${TEMP}/itkBlurImageFunctionTest.mha
-  itkBlurImageFunctionTest
-    ${TEMP}/itkBlurImageFunctionTest.mha
+  --compare ${BASELINE}/itkTubeBlurImageFunctionTest.mha
+            ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  itkTubeBlurImageFunctionTest
+    ${TEMP}/itkTubeBlurImageFunctionTest.mha
   )
 
-add_test( itkMatrixMathTest
+add_test( tubeMatrixMathTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkMatrixMathTest
+  tubeMatrixMathTest
   )
 
-add_test( itkOptBrentTest
+add_test( tubeOptBrentTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkOptBrentTest
+  tubeOptBrentTest
   )
 
-add_test( itkOptGoldenMeanTest
+add_test( tubeOptGoldenMeanTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkOptGoldenMeanTest
+  tubeOptGoldenMeanTest
   )
 
-add_test( itkOptParabolicFitTest
+add_test( tubeOptParabolicFitTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkOptParabolicFitTest
+  tubeOptParabolicFitTest
   )
 
-add_test( itkOptBrentNDTest
+add_test( tubeOptBrentNDTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkOptBrentNDTest
+  tubeOptBrentNDTest
   )
 
-add_test( itkUserFuncTest
+add_test( tubeUserFuncTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkUserFuncTest
+  tubeUserFuncTest
   )
 
-add_test( itkSplineApprox1DTest
+add_test( tubeSplineApprox1DTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  --compare ${BASELINE}/itkSplineApprox1DTest.mha
-            ${TEMP}/itkSplineApprox1DTest.mha
-  itkSplineApprox1DTest
-    ${TEMP}/itkSplineApprox1DTest.mha
+  --compare ${BASELINE}/tubeSplineApprox1DTest.mha
+            ${TEMP}/tubeSplineApprox1DTest.mha
+  tubeSplineApprox1DTest
+    ${TEMP}/tubeSplineApprox1DTest.mha
   )
 
-add_test( itkSplineNDTest
+add_test( tubeSplineNDTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  --compare ${BASELINE}/itkSplineNDTest.mha
-            ${TEMP}/itkSplineNDTest.mha
-  itkSplineNDTest
-    ${TEMP}/itkSplineNDTest.mha
+  --compare ${BASELINE}/tubeSplineNDTest.mha
+            ${TEMP}/tubeSplineNDTest.mha
+  tubeSplineNDTest
+    ${TEMP}/tubeSplineNDTest.mha
   )
 
-add_test( itkRidgeExtractorTest
+add_test( itkTubeRidgeExtractorTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  --compare ${BASELINE}/itkRidgeExtractorTest.mha
-            ${TEMP}/itkRidgeExtractorTest.mha
-  itkRidgeExtractorTest
+  --compare ${BASELINE}/itkTubeRidgeExtractorTest.mha
+            ${TEMP}/itkTubeRidgeExtractorTest.mha
+  itkTubeRidgeExtractorTest
     ${INPUT_DATA}/Branch.n010.sub.mha
-    ${TEMP}/itkRidgeExtractorTest.mha
+    ${TEMP}/itkTubeRidgeExtractorTest.mha
   )
 
-add_test( itkRidgeExtractorTest2
+add_test( itkTubeRidgeExtractorTest2
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkRidgeExtractorTest2
+  itkTubeRidgeExtractorTest2
     ${INPUT_DATA}/Branch.n010.mha
     ${INPUT_DATA}/Branch-truth.tre
   )
 
-add_test( itkRadiusExtractorTest
+add_test( itkTubeRadiusExtractorTest
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkRadiusExtractorTest
+  itkTubeRadiusExtractorTest
     ${INPUT_DATA}/Branch.n010.mha
     ${INPUT_DATA}/Branch-truth.tre
   )
 
-add_test( itkRadiusExtractorTest2
+add_test( itkTubeRadiusExtractorTest2
   ${BASE_SEGMENTATION_VTREE_TESTS}
-  itkRadiusExtractorTest2
+  itkTubeRadiusExtractorTest2
     ${INPUT_DATA}/Branch.n010.mha
     ${INPUT_DATA}/Branch-truth.tre
   )
-

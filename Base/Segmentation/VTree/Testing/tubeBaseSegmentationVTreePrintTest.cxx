@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,19 +27,34 @@ limitations under the License.
 
 #include "itkOrientedImage.h"
 
-#include "itkBlurImageFunction.h"
+#include "itkTubeBlurImageFunction.h"
+#include "itkTubeRadiusExtractor.h"
+#include "itkTubeRidgeExtractor.h"
 
 int tubeBaseSegmentationVTreePrintTest( int, char* [] )
 {
   typedef itk::OrientedImage< float, 3 > ImageType;
 
-  itk::BlurImageFunction< ImageType >::Pointer 
+  itk::tube::BlurImageFunction< ImageType >::Pointer
     blurObject =
-    itk::BlurImageFunction< ImageType >::New();
-  std::cout << "-------------itkBlurImageFunction" 
+    itk::tube::BlurImageFunction< ImageType >::New();
+  std::cout << "-------------itkTubeBlurImageFunction"
             << blurObject
+            << std::endl;
+
+  itk::tube::RadiusExtractor< ImageType >::Pointer
+    radiusObject =
+    itk::tube::RadiusExtractor< ImageType >::New();
+  std::cout << "-------------itkTubeRadiusExtractor"
+            << radiusObject
+            << std::endl;
+
+  itk::tube::RidgeExtractor< ImageType >::Pointer
+    ridgeObject =
+    itk::tube::RidgeExtractor< ImageType >::New();
+  std::cout << "-------------itkTubeRidgeExtractor"
+            << ridgeObject
             << std::endl;
 
   return EXIT_SUCCESS;
 }
-

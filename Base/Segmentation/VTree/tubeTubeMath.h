@@ -1,11 +1,16 @@
 /*=========================================================================
 
-Library:   TubeTK
+Library:   TubeTK/VTree
 
-Copyright 2010 Kitware Inc. 28 Corporate Drive,
-Clifton Park, NY, 12065, USA.
+Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
-All rights reserved. 
+Original implementation:
+Copyright University of North Carolina, Chapel Hill, NC, USA.
+
+Revised implementation:
+Copyright Kitware Inc., Carrboro, NC, USA.
+
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,16 +25,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
+#ifndef __tubeTubeMath_h
+#define __tubeTubeMath_h
 
-#include <iostream>
-
-#include "itkTubeCVTImageFilter.h"
-#include "itkTubePDFSegmenter.h"
-
-int main ( int , char ** )
+namespace tube
 {
-  return EXIT_SUCCESS;
-}
+
+template< class TubeT >
+bool
+ComputeTubeTangentsAndNormals( TubeT * tube );
+
+template< class TubePointT >
+bool
+ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tube );
+
+} // end namespace tube
+
+
+#include "tubeTubeMath.txx"
+
+#endif /* __tubeTubeMath_h */

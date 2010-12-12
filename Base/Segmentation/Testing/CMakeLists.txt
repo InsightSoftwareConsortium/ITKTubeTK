@@ -102,4 +102,3 @@ add_test( itkTubePDFSegmenterTest
     ${TEMP}/itkTubePDFSegmenterTest_prob1.mha
     ${TEMP}/itkTubePDFSegmenterTest_mask.mha
   )
-

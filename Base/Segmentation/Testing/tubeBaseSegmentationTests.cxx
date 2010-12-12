@@ -34,4 +34,3 @@ void RegisterTests()
   REGISTER_TEST( itkTubeCVTImageFilterTest );
   REGISTER_TEST( itkTubePDFSegmenterTest );
 }
-
