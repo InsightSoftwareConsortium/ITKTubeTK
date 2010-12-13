@@ -34,5 +34,13 @@ void RegisterTests()
   REGISTER_TEST( itkImageRegionMomentsCalculatorTest );
   REGISTER_TEST( itkJointHistogramImageFunctionTest );
   REGISTER_TEST( itkNJetImageFunctionTest );
+  REGISTER_TEST( tubeMatrixMathTest );
+  REGISTER_TEST( tubeOptBrentNDTest );
+  REGISTER_TEST( tubeOptBrentTest );
+  REGISTER_TEST( tubeOptGoldenMeanTest );
+  REGISTER_TEST( tubeOptParabolicFitTest );
+  REGISTER_TEST( tubeSplineApprox1DTest );
+  REGISTER_TEST( tubeSplineNDTest );
+  REGISTER_TEST( tubeUserFuncTest );
 }
 
