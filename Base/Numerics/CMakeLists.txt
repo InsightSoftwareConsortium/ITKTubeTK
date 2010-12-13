@@ -21,15 +21,55 @@
 # 
 ##############################################################################
 
+project( TubeFiltering )
+
+FIND_PACKAGE( ITK REQUIRED )
+INCLUDE( ${ITK_USE_FILE} )
+
 set( TubeTK_Base_Numerics_H_Files
   itkNJetImageFunction.h
   itkJointHistogramImageFunction.h
+  tubeMatrixMath.h
+  tubeOptParabolicFit1D.h
+  tubeSpline1D.h
+  tubeOptBrent1D.h
+  tubeSplineApproximation1D.h
+  tubeOptGoldenMean1D.h
+  tubeSplineND.h
+  tubeOptimizer1D.h
+  tubeTubeMath.h
+  tubeOptimizerND.h
+  tubeUserFunc.h
   )
 
 set( TubeTK_Base_Numerics_TXX_Files
   itkNJetImageFunction.txx
   itkJointHistogramImageFunction.txx
+  tubeTubeMath.txx
+  tubeMatrixMath.txx
   )
+
+include_directories(
+  ${TubeTK_SOURCE_DIR}/Utilities
+  )
+
+SET( TubeTK_Base_Numerics_SRCS
+  tubeOptBrent1D.cxx
+  tubeOptGoldenMean1D.cxx
+  tubeOptParabolicFit1D.cxx
+  tubeOptimizer1D.cxx
+  tubeOptimizerND.cxx
+  tubeSpline1D.cxx
+  tubeSplineApproximation1D.cxx
+  tubeSplineND.cxx
+  )
+
+ADD_LIBRARY( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
+TARGET_LINK_LIBRARIES( TubeNumerics ${ITK_LIBRARIES} )
+
+slicer3_set_plugins_output_path( TubeNumerics )
+set( TARGETS TubeNumerics )
+slicer3_install_plugins( ${TARGETS} )
 
 IF( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -22,7 +22,7 @@
 ##############################################################################
 
 add_subdirectory( Numerics )
-add_subdirectory( Preprocessing )
+add_subdirectory( Filtering )
 add_subdirectory( Segmentation )
 add_subdirectory( Registration )
 add_subdirectory( Classification )

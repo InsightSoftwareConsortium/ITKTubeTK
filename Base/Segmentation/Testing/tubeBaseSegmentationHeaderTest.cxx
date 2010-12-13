@@ -28,6 +28,10 @@ limitations under the License.
 
 #include "itkTubeCVTImageFilter.h"
 #include "itkTubePDFSegmenter.h"
+#include "itkTubeRadiusExtractor.h"
+#include "itkTubeRidgeExtractor.h"
+#include "itkTubeTubeExtractor.h"
+#include "itkTubeTubeNetExtractor.h"
 
 int main ( int , char ** )
 {

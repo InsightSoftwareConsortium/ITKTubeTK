@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ limitations under the License.
 
 #include <itkTubeEnhancingDiffusion2DImageFilter.h>
 
-int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] ) 
+int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
 {
   if( argc < 3 )
     {
@@ -41,21 +41,21 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
     std::cerr << argv[0] << "  inputImage outputImage [UseParameterSet2]" << std::endl;
     return EXIT_FAILURE;
     }
-  
+
   // Define the dimension of the images
   const unsigned int Dimension = 2;
 
   // Define the pixel type
   typedef float PixelType;
-  
+
   // Declare the types of the images
   typedef itk::Image<PixelType, Dimension>  ImageType;
 
   // Declare the reader and writer
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
-  
- 
+
+
   // Declare the type for the Filter
   typedef itk::TubeEnhancingDiffusion2DImageFilter<
                            PixelType, Dimension > FilterType;
@@ -63,7 +63,7 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
   WriterType::Pointer writer = WriterType::New();
-  
+
   reader->SetFileName( argv[1] );
   writer->SetFileName( argv[2] );
 
@@ -72,7 +72,7 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
     {
     useParameterSet2 = true;
     }
-  
+
   FilterType::Pointer filter = FilterType::New();
   FilterWatcher watcher(filter, "filter");
 
@@ -110,7 +110,7 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
   filter->SetVerbose( true );
 
   writer->SetInput( filter->GetOutput() );
-  
+
   // Execute the filter
   try
     {
@@ -126,4 +126,3 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
   return EXIT_SUCCESS;
 
 }
-

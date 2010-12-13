@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,13 +20,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeBasePreprocessing_h
-#define __tubeBasePreprocessing_h
-
-#if defined(_WIN32) || defined(WIN32)
-# define tubeBasePreprocessing_EXPORT __declspec(dllexport)
-#else
-# define tubeBasePreprocessing_EXPORT
+#if defined(_MSC_VER)
+#pragma warning ( disable : 4786 )
 #endif
 
-#endif
+#include <iostream>
+
+#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
+#include "itkAnisotropicDiffusionTensorFunction.h"
+#include "itkAnisotropicDiffusionTensorImageFilter.h"
+#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
+#include "itkAnisotropicHybridDiffusionImageFilter.h"
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
+#include "itkTubeBlurImageFunction.h"
+#include "itkTubeEnhancingDiffusion2DImageFilter.h"
+
+int main ( int , char ** )
+{
+
+  return EXIT_SUCCESS;
+}

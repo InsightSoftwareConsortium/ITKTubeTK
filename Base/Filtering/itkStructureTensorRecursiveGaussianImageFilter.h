@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,17 +35,17 @@ namespace itk
 
 /** \class StructureTensorRecursiveGaussianImageFilter
  *
- * \brief Computes the structure tensor of a multidimensional image 
- * 
- * 
- * \ingroup GradientFilters   
+ * \brief Computes the structure tensor of a multidimensional image
+ *
+ *
+ * \ingroup GradientFilters
  * \ingroup Singlethreaded
  */
-// NOTE that the ITK_TYPENAME macro has to be used here in lieu 
-// of "typename" because VC++ doesn't like the typename keyword 
+// NOTE that the ITK_TYPENAME macro has to be used here in lieu
+// of "typename" because VC++ doesn't like the typename keyword
 // on the defaults of template parameters
-template <typename TInputImage, 
-          typename TOutputImage= Image< SymmetricSecondRankTensor< 
+template <typename TInputImage,
+          typename TOutputImage= Image< SymmetricSecondRankTensor<
   ITK_TYPENAME NumericTraits< ITK_TYPENAME TInputImage::PixelType>::RealType,
   ::itk::GetImageDimension<TInputImage>::ImageDimension >,
                                         ::itk::GetImageDimension<TInputImage>::ImageDimension > >
@@ -58,8 +58,8 @@ public:
   typedef ImageToImageFilter<TInputImage,TOutputImage> Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
-  
-  
+
+
   /** Pixel Type of the input image */
   typedef TInputImage                                    InputImageType;
   typedef typename TInputImage::PixelType                PixelType;
@@ -70,17 +70,17 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int,
                       TInputImage::ImageDimension);
 
-  /** Define the image type for internal computations 
-      RealType is usually 'double' in NumericTraits. 
+  /** Define the image type for internal computations
+      RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory.  */
 
   typedef float                                            InternalRealType;
-  typedef Image<InternalRealType, 
+  typedef Image<InternalRealType,
                 itkGetStaticConstMacro(ImageDimension) >   RealImageType;
 
   /**  Output Image Nth Element Adaptor
-   *  This adaptor allows to use conventional scalar 
-   *  smoothing filters to compute each one of the 
+   *  This adaptor allows to use conventional scalar
+   *  smoothing filters to compute each one of the
    *  components of the gradient image pixels. */
   typedef NthElementImageAdaptor< TOutputImage,
                                   InternalRealType >  OutputImageAdaptorType;
@@ -136,7 +136,7 @@ protected:
   StructureTensorRecursiveGaussianImageFilter();
   virtual ~StructureTensorRecursiveGaussianImageFilter() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
-  
+
   /** Generate Data */
   void GenerateData( void );
 
@@ -146,13 +146,13 @@ protected:
 private:
   StructureTensorRecursiveGaussianImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
-  
+
   std::vector<GaussianFilterPointer>         m_SmoothingFilters;
   DerivativeFilterPointer                    m_DerivativeFilter;
   OutputImageAdaptorPointer                  m_ImageAdaptor;
 
   /** Normalize the image across scale space */
-  bool m_NormalizeAcrossScale; 
+  bool m_NormalizeAcrossScale;
 
 };
 

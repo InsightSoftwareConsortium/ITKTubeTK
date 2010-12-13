@@ -508,11 +508,11 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 
   if(m_Verbose)
     {
-    std::cout << "min/max             \t" << minmax->GetMinimum() 
+    std::cout << "min/max             \t" << minmax->GetMinimum()
               << " " << minmax->GetMaximum() << std::endl;
-    std::cout << "iterations/timestep \t" << m_Iterations 
+    std::cout << "iterations/timestep \t" << m_Iterations
               << " " << m_TimeStep << std::endl;
-    std::cout << "recalc v            \t" << m_RecalculateTubeness 
+    std::cout << "recalc v            \t" << m_RecalculateTubeness
               << std::endl;
     std::cout << "scales              \t";
     for (unsigned int i=0; i<m_Scales.size(); ++i)
@@ -520,7 +520,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
       std::cout << m_Scales[i] << " ";
       }
     std::cout << std::endl;
-    std::cout << "eps/omega/sens      \t" << m_Epsilon 
+    std::cout << "eps/omega/sens      \t" << m_Epsilon
               <<  " " << m_Omega << " " << m_Sensitivity << std::endl;
     }
 
@@ -557,9 +557,9 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
   if( m_Verbose )
     {
     std::cout << std::endl;
-    std::cout << "min/max             \t" << mm->GetMinimum() 
+    std::cout << "min/max             \t" << mm->GetMinimum()
               << " " << mm->GetMaximum() << std::endl;
-    std::cout << "end vesselenhancingdiffusion2Dimagefilter" 
+    std::cout << "end vesselenhancingdiffusion2Dimagefilter"
               << std::endl;
     }
 

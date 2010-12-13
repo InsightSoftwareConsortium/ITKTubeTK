@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ namespace itk {
 
 
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT AnisotropicDiffusionTensorImageFilter  
+class ITK_EXPORT AnisotropicDiffusionTensorImageFilter
   : public FiniteDifferenceImageFilter<TInputImage, TOutputImage>
 {
 public:
@@ -52,44 +52,44 @@ public:
   typedef FiniteDifferenceImageFilter<TInputImage, TOutputImage>  Superclass;
   typedef SmartPointer<Self>                                      Pointer;
   typedef SmartPointer<const Self>                                ConstPointer;
- 
+
   /** Run-time type information (and related methods) */
   itkTypeMacro(AnisotropicDiffusionTensorImageFilter,
                                                 ImageToImageFilter );
-  
+
   /** Convenient typedefs */
   typedef typename Superclass::InputImageType  InputImageType;
   typedef typename Superclass::OutputImageType OutputImageType;
   typedef typename Superclass::PixelType       PixelType;
 
-  typedef itk::Image< DiffusionTensor3D< double > , 3 > 
+  typedef itk::Image< DiffusionTensor3D< double > , 3 >
                                                 DiffusionTensorImageType;
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
-  typedef AnisotropicDiffusionTensorFunction<InputImageType>  
+  typedef AnisotropicDiffusionTensorFunction<InputImageType>
                                                 FiniteDifferenceFunctionType;
 
   typedef itk::Matrix< double, ImageDimension, ImageDimension > MatrixType;
 
-  // Define image of matrix pixel type 
+  // Define image of matrix pixel type
   typedef itk::Image< MatrixType, ImageDimension>  OutputMatrixImageType;
 
   // Define the symmetric tensor pixel type
-  typedef itk::SymmetricSecondRankTensor< double, ImageDimension> 
+  typedef itk::SymmetricSecondRankTensor< double, ImageDimension>
                                                          TensorPixelType;
-  typedef itk::Image< TensorPixelType, ImageDimension>  
+  typedef itk::Image< TensorPixelType, ImageDimension>
                                                          TensorImageType;
 
   // Define the type for storing the eigen-value
   typedef itk::FixedArray< double, ImageDimension >      EigenValueArrayType;
-  
+
   // Declare the types of the output images
-  typedef itk::Image< EigenValueArrayType, ImageDimension >  
+  typedef itk::Image< EigenValueArrayType, ImageDimension >
                                                   EigenAnalysisOutputImageType;
-  
+
   /** The value type of a time step.  Inherited from the superclass. */
   typedef typename Superclass::TimeStepType TimeStepType;
 
@@ -101,8 +101,8 @@ public:
                                                DiffusionTensorNeighborhoodType;
 
   /** Set/Get Macro for diffusion tensor image filter parameters */
-  itkSetMacro( TimeStep, double ); 
-  itkGetMacro( TimeStep, double ); 
+  itkSetMacro( TimeStep, double );
+  itkGetMacro( TimeStep, double );
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
@@ -121,7 +121,7 @@ protected:
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /* overloaded GenerateData method */
-  virtual void GenerateData(); 
+  virtual void GenerateData();
 
   /** A simple method to copy the data from the input to the output. ( Supports
    * "read-only" image adaptors in the case where the input image type converts
@@ -149,21 +149,21 @@ protected:
 
   /** This method allocates storage for the diffusion tensor image */
   void AllocateDiffusionTensorImage();
- 
+
   /** Update diffusion tensor image */
   void virtual UpdateDiffusionTensorImage() = 0;
- 
+
   /** The type of region used for multithreading */
   typedef typename UpdateBufferType::RegionType ThreadRegionType;
 
   /** The type of region used for multithreading */
-  typedef typename DiffusionTensorImageType::RegionType 
+  typedef typename DiffusionTensorImageType::RegionType
                                         ThreadDiffusionTensorImageRegionType;
 
   typedef typename DiffusionTensorImageType::Pointer
                                         DiffusionTensorImagePointerType;
 
-  /**  Does the actual work of updating the output from the UpdateContainer 
+  /**  Does the actual work of updating the output from the UpdateContainer
    *   over an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
@@ -193,7 +193,7 @@ protected:
 
 private:
   //purposely not implemented
-  AnisotropicDiffusionTensorImageFilter(const Self&); 
+  AnisotropicDiffusionTensorImageFilter(const Self&);
   void operator=(const Self&); //purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
@@ -205,15 +205,15 @@ private:
     TimeStepType *TimeStepList;
     bool *ValidTimeStepList;
     };
-    
+
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
   static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
-  
+
   /** This callback method uses SplitUpdateContainer to acquire a region
    * which it then passes to ThreadedCalculateChange for processing. */
   static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
- 
+
   typename DiffusionTensorImageType::Pointer            m_DiffusionTensorImage;
 
   /** The buffer that holds the updates for an iteration of the algorithm. */
@@ -222,7 +222,7 @@ private:
   TimeStepType                                          m_TimeStep;
 
 };
-  
+
 
 }// end namespace itk
 

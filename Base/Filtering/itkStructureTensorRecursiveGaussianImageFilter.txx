@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -204,7 +204,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
     GaussianFilterPointer lastFilter;
 
-    if( ImageDimension > 1 ) 
+    if( ImageDimension > 1 )
       {
       int imageDimensionMinus2 = static_cast<int>(ImageDimension)-2;
       lastFilter = m_SmoothingFilters[imageDimensionMinus2];
