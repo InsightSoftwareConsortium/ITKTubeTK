@@ -37,6 +37,14 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
+# expect image comparison perfection on 64-bit machines
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0 )
+# ... and give a bit of tolerance for 32-bit machines
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0.000001 )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 #######
 # Test1
 #######
@@ -59,7 +67,8 @@ add_test( ${PROJECT_NAME}SphereTestNoReg
 add_test( ${PROJECT_NAME}SphereTestNoReg-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
-               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd )
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}SphereTestNoReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestNoReg )
 
@@ -84,7 +93,8 @@ add_test( ${PROJECT_NAME}SphereTestAnisotropicReg
 add_test( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
-               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd )
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicReg )
 
@@ -110,6 +120,7 @@ add_test( ${PROJECT_NAME}SphereTestGaussianReg
 add_test( ${PROJECT_NAME}SphereTestGaussianReg-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
-               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd )
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}SphereTestGaussianReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestGaussianReg )
