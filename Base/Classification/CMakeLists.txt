@@ -31,12 +31,6 @@ set( TubeTK_Base_Classification_TXX_Files
   itkStandardFeatureGeneratingImageFunction.txx
   )
 
-include_directories( 
-  ${TubeTK_SOURCE_DIR}/Utilities 
-  ${TubeTK_SOURCE_DIR}/Base/Numerics 
-  ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
-  )
-
 IF( BUILD_TESTING )
   add_subdirectory( Testing )
 ENDIF( BUILD_TESTING )

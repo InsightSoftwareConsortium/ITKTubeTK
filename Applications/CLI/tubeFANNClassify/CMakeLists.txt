@@ -51,7 +51,8 @@ include( ${GenerateCLP_USE_FILE} )
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/Segmentation/VTree
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation
   ${TubeTK_SOURCE_DIR}/Base/Classification
   ${FANN_INCLUDE_DIRS}
   )
@@ -67,7 +68,7 @@ add_library( ${PROJECT_NAME}Module SHARED ${PROJECT_SOURCE} )
 set_target_properties( ${PROJECT_NAME}Module
                        PROPERTIES COMPILE_FLAGS "-Dmain=ModuleEntryPoint" )
 target_link_libraries( ${PROJECT_NAME}Module
-                       ${ITK_LIBRARIES} VTree ${FANN_LIBRARIES} )
+                       ${ITK_LIBRARIES} TubeNumerics ${FANN_LIBRARIES} )
 
 add_executable( ${PROJECT_NAME}
                 ${TubeTK_SOURCE_DIR}/Utilities/tubeCLISharedLibraryWrapper.cxx )

@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ limitations under the License.
 #include <itkImageDuplicator.h>
 #include <itkRecursiveGaussianImageFilter.h>
 
-int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv []  ) 
+int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv []  )
 {
   // Define image
   const unsigned int Dimension = 3;
@@ -71,30 +71,30 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   size[0] = 100;
   size[1] = 100;
   size[2] = 100;
-  
+
   ImageType::RegionType region;
   region.SetSize(size);
   region.SetIndex(start);
-  
+
   ImageType::SpacingType spacing;
   spacing[0] = 0.1;
   spacing[1] = 0.1;
   spacing[2] = 0.1;
-  
+
   ImageType::PointType origin;
   origin[0] = -5.0;
   origin[1] = -5.0;
   origin[2] = -5.0;
-  
+
   ImageType::Pointer inImage = ImageType::New();
   inImage->SetRegions(region);
   inImage->SetSpacing(spacing);
   inImage->SetOrigin(origin);
   inImage->Allocate();
-  
-  itk::ImageRegionIteratorWithIndex<ImageType> it(inImage, 
+
+  itk::ImageRegionIteratorWithIndex<ImageType> it(inImage,
                                            inImage->GetLargestPossibleRegion());
-  
+
   for (it.GoToBegin(); !it.IsAtEnd(); ++it)
     {
     ImageType::IndexType index = it.GetIndex();
@@ -108,7 +108,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   writer->SetFileName("sin.mha");
   writer->SetInput(inImage);
   writer->Update();
-  
+
   // Create a copy of the image
   typedef itk::ImageDuplicator<ImageType>        ImageDuplicatorType;
 
@@ -118,9 +118,9 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
 
   // Compute the outer (diadic) product of the gradient
   ImageType::Pointer prodImage = duplicator->GetOutput();
-  itk::ImageRegionIteratorWithIndex<ImageType> pt(prodImage, 
+  itk::ImageRegionIteratorWithIndex<ImageType> pt(prodImage,
                                            prodImage->GetLargestPossibleRegion());
-  
+
   for (pt.GoToBegin(); !pt.IsAtEnd(); ++pt)
     {
     ImageType::IndexType index = pt.GetIndex();
@@ -129,9 +129,9 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
     double cosValue = cos(point[0]);
     pt.Set(static_cast<ImageType::PixelType>(cosValue*cosValue)); //cosx*cosx
     }
-  
+
   // Compute reference image as convolution of gaussian and product of gradient
-  typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>  
+  typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
                                                  GaussianFilterType;
 
   ImageType::Pointer refImage = prodImage;
@@ -151,25 +151,25 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   writer1->Update();
 
   // Declare the type for the filter
-  typedef itk::StructureTensorRecursiveGaussianImageFilter<ImageType>  
+  typedef itk::StructureTensorRecursiveGaussianImageFilter<ImageType>
                                                      StructureTensorFilterType;
-            
-  // Create a  Filter                                
+
+  // Create a  Filter
   StructureTensorFilterType::Pointer filter = StructureTensorFilterType::New();
 
   // Connect the input images
-  filter->SetInput(inImage); 
+  filter->SetInput(inImage);
 
   // set sigma
-  filter->SetSigma(sigma); 
-  
+  filter->SetSigma(sigma);
+
   // Execute the filter
   filter->Update();
 
   // Define output type
   typedef StructureTensorFilterType::OutputImageType TensorImageType;
   typedef StructureTensorFilterType::OutputPixelType TensorImagePixelType;
-  
+
   TensorImageType::Pointer outImage = filter->GetOutput();
 
   typedef itk::ImageFileWriter<TensorImageType>     TensorWriterType;
@@ -177,10 +177,10 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   writer2->SetFileName("tensor.nrrd");
   writer2->SetInput(outImage);
   writer2->Update();
-  
-  itk::ImageRegionIteratorWithIndex<TensorImageType> ot(outImage, 
+
+  itk::ImageRegionIteratorWithIndex<TensorImageType> ot(outImage,
                                            outImage->GetLargestPossibleRegion());
-  itk::ImageRegionIteratorWithIndex<ImageType> rt(refImage, 
+  itk::ImageRegionIteratorWithIndex<ImageType> rt(refImage,
                                            refImage->GetLargestPossibleRegion());
 
   for (ot.GoToBegin(), rt.GoToBegin(); !ot.IsAtEnd(); ++ot, ++rt)
@@ -217,8 +217,8 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
           }
         if (tensor(i, j) - refValue > threshold || tensor(i, j) - refValue < -threshold)
           {
-          std::cout << "Found mismatch at pixel of index[" << index[0] << " " << 
-            index[1] << " " << index[2] << "] or point [" << point[0] << " " << 
+          std::cout << "Found mismatch at pixel of index[" << index[0] << " " <<
+            index[1] << " " << index[2] << "] or point [" << point[0] << " " <<
             point[1] << " " << point[2] << "]. Tensor element [" << i << " " <<
             j << "] is expected to be " << refValue << " but computed value is "
             << tensor(i,j) << std::endl;
@@ -227,11 +227,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
         }
       }
     }
- 
+
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 }
-
-
-
-

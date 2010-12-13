@@ -22,16 +22,22 @@
 ##############################################################################
 
 set( TubeTK_Base_Segmentation_H_Files
-  itkCVTImageFilter.h
-  itkPDFSegmenter.h
+  itkTubeCVTImageFilter.h
+  itkTubePDFSegmenter.h
+  itkTubeRadiusExtractor.h
+  itkTubeRidgeExtractor.h
+  itkTubeTubeExtractor.h
+  itkTubeTubeNetExtractor.h
   )
 
 set(TubeTK_Base_Segmentation_TXX_Files
   itkCVTImageFilter.txx
   itkPDFSegmenter.txx
+  itkTubeRadiusExtractor.txx
+  itkTubeRidgeExtractor.txx
+  itkTubeTubeExtractor.txx
+  itkTubeTubeNetExtractor.txx
   )
-
-add_subdirectory( VTree )
 
 IF( BUILD_TESTING )
   add_subdirectory( Testing )

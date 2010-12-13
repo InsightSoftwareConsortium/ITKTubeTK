@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace itk {
 /** \class AnisotropicDiffusionTensorFunction
  * \brief This class is a function object that is used
  * to create a solver filter for edge enhancement diffusion equation
- * 
+ *
  * \sa AnisotropicDiffusionTensorImageFilter
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
@@ -53,7 +53,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods) */
-  itkTypeMacro( AnisotropicDiffusionTensorFunction, 
+  itkTypeMacro( AnisotropicDiffusionTensorFunction,
                                            FiniteDifferenceFunction );
 
   /** Extract some parameters from the superclass. */
@@ -77,12 +77,12 @@ public:
     DefaultBoundaryConditionType;
 
   /** Define diffusion image neighborhood type */
-  typedef ConstNeighborhoodIterator<DiffusionTensorImageType, 
-                                    DefaultBoundaryConditionType> 
+  typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
+                                    DefaultBoundaryConditionType>
                                            DiffusionTensorNeighborhoodType;
 
   /** Tensor pixel type */
-  typedef itk::SymmetricSecondRankTensor< double >  TensorPixelType; 
+  typedef itk::SymmetricSecondRankTensor< double >  TensorPixelType;
 
   /** A global data type for this class of equations.  Used to store
    * values that are needed in calculating the time step and other intermediate
@@ -100,10 +100,10 @@ public:
     vnl_matrix_fixed<ScalarValueType,
                      itkGetStaticConstMacro(ImageDimension),
                      itkGetStaticConstMacro(ImageDimension)> m_DT_dxy;
-    
+
     /** Array of first derivatives*/
     ScalarValueType m_dx[itkGetStaticConstMacro(ImageDimension)];
-    
+
     ScalarValueType m_GradMagSqr;
     };
 
@@ -111,7 +111,7 @@ public:
   virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
                                 void *globalData,
                                 const FloatOffsetType& = FloatOffsetType(0.0));
-  
+
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(
                      const NeighborhoodType &neighborhood,
@@ -127,7 +127,7 @@ public:
   virtual void *GetGlobalDataPointer() const
     {
     GlobalDataStruct *ans = new GlobalDataStruct();
-    return ans; 
+    return ans;
     }
 
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const
@@ -137,12 +137,12 @@ public:
       the time-step is supplied by the user and remains fixed for all
       updates. */
   void SetTimeStep(const TimeStepType &t)
-    { 
-    m_TimeStep = t; 
+    {
+    m_TimeStep = t;
     }
 
   const TimeStepType &GetTimeStep() const
-    { 
+    {
     return m_TimeStep;
     }
 
@@ -158,7 +158,7 @@ protected:
 
   virtual ~AnisotropicDiffusionTensorFunction() {}
   void PrintSelf(std::ostream &s, Indent indent) const;
-  
+
   /** Slices for the ND neighborhood. */
   std::slice x_slice[itkGetStaticConstMacro(ImageDimension)];
 
@@ -170,7 +170,7 @@ protected:
 
 private:
   //purposely not implemented
-  AnisotropicDiffusionTensorFunction(const Self&); 
+  AnisotropicDiffusionTensorFunction(const Self&);
   void operator=(const Self&);   //purposely not implemented
 
   TimeStepType    m_TimeStep;

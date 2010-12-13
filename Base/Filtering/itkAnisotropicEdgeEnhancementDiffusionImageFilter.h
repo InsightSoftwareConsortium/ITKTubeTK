@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,8 +38,8 @@ namespace itk {
  *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
  *   anisotropic hybrid diffusion with continuous switch. IEEE Transactions on
  *   Medical Imaging 28(10), pp. 1585-1594, 2009.
- * 
- * \sa itkAnisotropicDiffusionTensorImageFilter 
+ *
+ * \sa itkAnisotropicDiffusionTensorImageFilter
  * \sa itkAnisotropicCoherenceEnhancingDiffusionImageFilter
  * \sa itkAnisotropicHybridDiffusionImageFilter
  *
@@ -49,19 +49,19 @@ namespace itk {
 
 
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT AnisotropicEdgeEnhancementDiffusionImageFilter  
+class ITK_EXPORT AnisotropicEdgeEnhancementDiffusionImageFilter
   : public AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs */
   typedef AnisotropicEdgeEnhancementDiffusionImageFilter Self;
 
-  typedef AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage> 
+  typedef AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
                                                            Superclass;
 
   typedef SmartPointer<Self>                               Pointer;
   typedef SmartPointer<const Self>                         ConstPointer;
- 
+
 
   /** Method for creation through the object factory */
   itkNewMacro( Self );
@@ -69,41 +69,41 @@ public:
   /** Run-time type information (and related methods) */
   itkTypeMacro(AnisotropicEdgeEnhancementDiffusionImageFilter,
                                                 ImageToImageFilter );
-  
+
   /** Convenient typedefs */
   typedef typename Superclass::InputImageType  InputImageType;
   typedef typename Superclass::OutputImageType OutputImageType;
   typedef typename Superclass::PixelType       PixelType;
 
-  typedef typename Superclass::DiffusionTensorImageType 
+  typedef typename Superclass::DiffusionTensorImageType
                                                 DiffusionTensorImageType;
 
-  // Structure tensor type 
+  // Structure tensor type
   typedef StructureTensorRecursiveGaussianImageFilter < InputImageType >
                                                 StructureTensorFilterType;
-  
+
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
 
   typedef itk::Matrix<double, ImageDimension, ImageDimension> MatrixType;
 
-  // Define image of matrix pixel type 
+  // Define image of matrix pixel type
   typedef itk::Image< MatrixType, ImageDimension>  OutputMatrixImageType;
 
   // Define the symmetric tensor pixel type
-  typedef itk::SymmetricSecondRankTensor< double, ImageDimension> 
+  typedef itk::SymmetricSecondRankTensor< double, ImageDimension>
                                                          TensorPixelType;
-  typedef itk::Image< TensorPixelType, ImageDimension>  
+  typedef itk::Image< TensorPixelType, ImageDimension>
                                                          TensorImageType;
 
    // Define the type for storing the eigen-value
   typedef itk::FixedArray< double, ImageDimension >      EigenValueArrayType;
-  
+
   // Declare the types of the output images
-  typedef itk::Image< EigenValueArrayType, ImageDimension >  
+  typedef itk::Image< EigenValueArrayType, ImageDimension >
                                                   EigenAnalysisOutputImageType;
-  
+
   /** The container type for the update buffer. */
   typedef OutputImageType UpdateBufferType;
 
@@ -112,7 +112,7 @@ public:
                                                DiffusionTensorNeighborhoodType;
 
   /** Set the contrast parameter */
-  void SetContrastParameterLambdaE( double value ); 
+  void SetContrastParameterLambdaE( double value );
 
   /** Set threshold parameter C */
   void SetThresholdParameterC( double value );
@@ -128,17 +128,17 @@ protected:
 
   /** Update diffusion tensor image */
   void virtual UpdateDiffusionTensorImage();
- 
+
 private:
   //purposely not implemented
-  AnisotropicEdgeEnhancementDiffusionImageFilter(const Self&); 
+  AnisotropicEdgeEnhancementDiffusionImageFilter(const Self&);
   void operator=(const Self&); //purposely not implemented
 
   double    m_ContrastParameterLambdaE;
   double    m_ThresholdParameterC;
   double    m_Sigma;
 };
-  
+
 
 }// end namespace itk
 

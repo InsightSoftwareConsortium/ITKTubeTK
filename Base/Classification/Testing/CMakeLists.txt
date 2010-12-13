@@ -52,6 +52,9 @@ set( tubeBaseClassification_SRCS
 
 include_directories( 
   ${TubeTK_SOURCE_DIR}/Utilities 
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation
   ${TubeTK_SOURCE_DIR}/Base/Classification
   )
 
@@ -59,10 +62,10 @@ add_executable( tubeBaseClassificationHeaderTest
   tubeBaseClassificationHeaderTest.cxx 
   )
 target_link_libraries( tubeBaseClassificationHeaderTest
+  TubeNumerics
   ITKIO
   ITKNumerics
   ITKBasicFilters
-  VTree
   )
 
 add_executable( tubeBaseClassificationTests
@@ -70,10 +73,10 @@ add_executable( tubeBaseClassificationTests
   ${tubeBaseClassification_SRCS} 
   )
 target_link_libraries( tubeBaseClassificationTests
+  TubeNumerics
   ITKIO
   ITKNumerics
   ITKBasicFilters
-  VTree
   )
 
 add_test( tubeBaseClassificationHeaderTest 

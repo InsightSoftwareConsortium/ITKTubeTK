@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 
 
-int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  ) 
+int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  )
 {
   if( argc < 4 )
     {
@@ -47,46 +47,46 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     std::cerr << argv[0] << "  inputImage primaryEigenVectorOutputImage primaryEigenValueOutputImage [Sigma]"<< std::endl;
     return EXIT_FAILURE;
     }
- 
+
   // Define the dimension of the images
   const unsigned int Dimension = 3;
 
   // Define the pixel type
   typedef short PixelType;
-  
+
   // Declare the types of the images
   typedef itk::Image<PixelType, Dimension>  InputImageType;
 
-  // Declare the reader 
+  // Declare the reader
   typedef itk::ImageFileReader< InputImageType > ReaderType;
-  
+
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
 
-  // Declare the type for the 
-  typedef itk::StructureTensorRecursiveGaussianImageFilter < 
+  // Declare the type for the
+  typedef itk::StructureTensorRecursiveGaussianImageFilter <
                                             InputImageType >  StructureTensorFilterType;
-            
+
   typedef StructureTensorFilterType::OutputImageType myTensorImageType;
 
-  // Create a  Filter                                
+  // Create a  Filter
   StructureTensorFilterType::Pointer filter = StructureTensorFilterType::New();
 
   // Connect the input images
-  filter->SetInput( reader->GetOutput() ); 
+  filter->SetInput( reader->GetOutput() );
 
   // Set the value of sigma if specificed in command line
   if ( argc > 4 )
     {
     double sigma = atof( argv[4] );
-    filter->SetSigma( sigma ); 
+    filter->SetSigma( sigma );
     }
 
   // Execute the filter
   filter->Update();
 
-  // Compute the eigenvectors and eigenvalues of the structure tensor matrix 
+  // Compute the eigenvectors and eigenvalues of the structure tensor matrix
   typedef  itk::FixedArray< double, Dimension>    EigenValueArrayType;
   typedef  itk::Image< EigenValueArrayType, Dimension> EigenValueImageType;
 
@@ -97,9 +97,9 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
 
   EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
-  eigenAnalysisFilter->OrderEigenValuesBy( 
+  eigenAnalysisFilter->OrderEigenValuesBy(
       EigenAnalysisFilterType::FunctorType::OrderByValue );
-  
+
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
   eigenAnalysisFilter->Update();
 
@@ -112,18 +112,18 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
 
   EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
+  eigenVectorAnalysisFilter->OrderEigenValuesBy(
       EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
-  
+
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
   eigenVectorAnalysisFilter->Update();
 
-  //Generate an image with eigen vector pixel that correspond to the largest eigen value 
-  EigenVectorImageType::ConstPointer eigenVectorImage = 
+  //Generate an image with eigen vector pixel that correspond to the largest eigen value
+  EigenVectorImageType::ConstPointer eigenVectorImage =
                     eigenVectorAnalysisFilter->GetOutput();
- 
-  typedef itk::VectorImage< double, 3 >    VectorImageType;  
-  VectorImageType::Pointer primaryEigenVectorImage = VectorImageType::New(); 
+
+  typedef itk::VectorImage< double, 3 >    VectorImageType;
+  VectorImageType::Pointer primaryEigenVectorImage = VectorImageType::New();
 
   unsigned int vectorLength = 3; // Eigenvector length
   primaryEigenVectorImage->SetVectorLength ( vectorLength );
@@ -145,8 +145,8 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
   primaryEigenVectorImage->FillBuffer( nullVector );
 
   //Generate an image containing the largest eigen values
-  typedef itk::Image< double, 3 >    PrimaryEigenValueImageType;  
-  PrimaryEigenValueImageType::Pointer primaryEigenValueImage = PrimaryEigenValueImageType::New(); 
+  typedef itk::Image< double, 3 >    PrimaryEigenValueImageType;
+  PrimaryEigenValueImageType::Pointer primaryEigenValueImage = PrimaryEigenValueImageType::New();
 
   PrimaryEigenValueImageType::RegionType eigenValueImageRegion;
   eigenValueImageRegion.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
@@ -166,19 +166,19 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
       eigenVectorImage, eigenVectorImage->GetRequestedRegion());
   eigenVectorImageIterator.GoToBegin();
 
-  //Iterator for the output image with the largest eigenvector 
+  //Iterator for the output image with the largest eigenvector
   itk::ImageRegionIterator<VectorImageType> primaryEigenVectorImageIterator;
   primaryEigenVectorImageIterator = itk::ImageRegionIterator<VectorImageType>(
       primaryEigenVectorImage, primaryEigenVectorImage->GetRequestedRegion());
   primaryEigenVectorImageIterator.GoToBegin();
 
-  //Iterator for the output image with the largest eigenvalue 
+  //Iterator for the output image with the largest eigenvalue
   itk::ImageRegionIterator<PrimaryEigenValueImageType> primaryEigenValueImageIterator;
   primaryEigenValueImageIterator = itk::ImageRegionIterator<PrimaryEigenValueImageType>(
       primaryEigenValueImage, primaryEigenValueImage->GetRequestedRegion());
   primaryEigenValueImageIterator.GoToBegin();
 
- 
+
   //Iterator for the eigen value image
   EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
@@ -186,7 +186,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
       eigenImage, eigenImage->GetRequestedRegion());
   eigenValueImageIterator.GoToBegin();
 
-  //Iterator for the structure tensor 
+  //Iterator for the structure tensor
   typedef StructureTensorFilterType::OutputImageType TensorImageType;
   TensorImageType::ConstPointer tensorImage = filter->GetOutput();
   itk::ImageRegionConstIterator<TensorImageType> tensorImageIterator;
@@ -207,7 +207,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     double smallest = vnl_math_abs( eigenValue[0] );
     double Lambda1 = eigenValue[0];
     unsigned int smallestEigenValueIndex=0;
- 
+
     for ( unsigned int i=1; i <=2; i++ )
       {
       if ( vnl_math_abs( eigenValue[i] ) < smallest )
@@ -222,7 +222,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     double largest = vnl_math_abs( eigenValue[0] );
     double Lambda3 = eigenValue[0];
     unsigned int largestEigenValueIndex=0;
- 
+
     for ( unsigned int i=1; i <=2; i++ )
       {
       if (  vnl_math_abs( eigenValue[i] > largest ) )
@@ -261,9 +261,9 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     //Tensor pixelType
     TensorImageType::PixelType tensorPixel;
     tensorPixel = tensorImageIterator.Get();
- 
-    /* 
-    std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]" 
+
+    /*
+    std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]"
               << "\t" << eigenValue[0] << "\t" << eigenValue[1] << "\t"  << eigenValue[2] << std::endl;
     std::cout << "[Smallest,Largest]" << "\t" << smallest << "\t" << largest << std::endl;
     std::cout <<"Eigen Vector" << std::endl;
@@ -294,7 +294,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     ++primaryEigenVectorImageIterator;
     ++primaryEigenValueImageIterator;
     ++tensorImageIterator;
- 
+
     }
 
   typedef itk::ImageFileWriter< VectorImageType > WriterType;
@@ -314,7 +314,3 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
   return EXIT_SUCCESS;
 
 }
-
-
-
-

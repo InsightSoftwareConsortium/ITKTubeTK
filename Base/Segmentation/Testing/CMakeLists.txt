@@ -48,11 +48,16 @@ set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itkTubeCVTImageFilterTest.cxx
   itkTubePDFSegmenterTest.cxx
+  itkTubeRadiusExtractorTest.cxx
+  itkTubeRadiusExtractorTest2.cxx
+  itkTubeRidgeExtractorTest.cxx
+  itkTubeRidgeExtractorTest2.cxx
   )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   ${TubeTK_SOURCE_DIR}/Base/Numerics
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
   )
 
@@ -60,6 +65,7 @@ add_executable( tubeBaseSegmentationHeaderTest
   tubeBaseSegmentationHeaderTest.cxx
   )
 target_link_libraries( tubeBaseSegmentationHeaderTest
+  TubeNumerics
   ITKIO
   ITKNumerics
   ITKBasicFilters
@@ -70,6 +76,7 @@ add_executable( tubeBaseSegmentationTests
   ${tubeBaseSegmentation_SRCS}
   )
 target_link_libraries( tubeBaseSegmentationTests
+  TubeNumerics
   ITKIO
   ITKNumerics
   ITKBasicFilters

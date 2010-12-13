@@ -56,7 +56,7 @@ endif( TubeTK_USE_VTK )
 
 include_directories( 
           ${TubeTK_SOURCE_DIR}/Utilities
-          ${TubeTK_SOURCE_DIR}/Base/Preprocessing
+          ${TubeTK_SOURCE_DIR}/Base/Filtering
           ${TubeTK_SOURCE_DIR}/Base/Registration
           )
 
