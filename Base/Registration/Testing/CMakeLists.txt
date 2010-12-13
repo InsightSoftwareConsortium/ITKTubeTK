@@ -42,6 +42,14 @@ set( tubeBaseRegistrationFilters_SRCS
           itkTubeToTubeTransformFilterTest.cxx
           )
 
+# expect image comparison perfection on 64-bit machines
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0 )
+# ... and give a bit of tolerance for 32-bit machines
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0.000001 )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   include( ${VTK_USE_FILE} )
@@ -112,6 +120,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
             -b ${BASELINE}/Regularization_straight_noNoise_smoothedMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise-Compare
                         PROPERTIES DEPENDS
@@ -132,6 +141,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/Regularization_straight_smoothedMotionField.mhd
             -b ${BASELINE}/Regularization_straight_smoothedMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationRegularizationTestStraight-Compare
                         PROPERTIES DEPENDS
@@ -152,6 +162,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
             -b ${BASELINE}/Regularization_angled_noNoise_smoothedMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise-Compare
                         PROPERTIES DEPENDS
@@ -172,6 +183,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/Regularization_angled_smoothedMotionField.mhd
             -b ${BASELINE}/Regularization_angled_smoothedMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationRegularizationTestAngled-Compare
                         PROPERTIES DEPENDS
@@ -192,6 +204,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
             -b ${BASELINE}/Regularization_angled_gaussian_smoothedMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian-Compare
                         PROPERTIES DEPENDS
@@ -214,6 +227,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
             -b ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationBoxesTestNoReg-Compare
                         PROPERTIES DEPENDS
@@ -236,6 +250,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
             -b ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationBoxesTestAnisotropicReg-Compare
                         PROPERTIES DEPENDS
@@ -258,6 +273,7 @@ if( TubeTK_USE_VTK )
           ${IMAGECOMPARE_EXE}
             -t ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
             -b ${BASELINE}/AnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+            -i ${imageCompareTolerance}
           )
   set_tests_properties( AnisotropicDiffusiveRegistrationBoxesTestGaussianReg-Compare
                         PROPERTIES DEPENDS
