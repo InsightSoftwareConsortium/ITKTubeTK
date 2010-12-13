@@ -201,9 +201,7 @@ void SplineND::use( unsigned int newNDims,
   while( itWSX != cDataWSX->End() )
     {
     itWSX->Value() = ImageType::New();
-    ImageType::RegionType region;
 
-    region.SetSize( dimSize );
     itWSX->Value()->SetLargestPossibleRegion( region );
     itWSX->Value()->SetBufferedRegion( region );
     itWSX->Value()->SetRequestedRegion( region );
