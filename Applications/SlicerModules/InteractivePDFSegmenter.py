@@ -5,7 +5,7 @@
 
 class InteractivePDFSegmenter:
   def __init__(self, parent):
-    parent.title = "Interactive PDF Segmenter"
+    parent.title = "Interactive PDF Segmenter (TubeTK)"
     parent.category = "Segmentation"
     parent.contributor = ""
     parent.helpText = """
@@ -60,6 +60,120 @@ class InteractivePDFSegmenterWidget:
     self.CLINode = None
 
   def setup(self):
+
+    # IO COLLAPSIBLE BUTTON
+    ioCollapsibleButton = ctk.ctkCollapsibleButton()
+    ioCollapsibleButton.text = "IO"
+    self.layout.addWidget(ioCollapsibleButton)
+
+    # Layout within the io collapsible button
+    ioFormLayout = qt.QFormLayout(ioCollapsibleButton)
+
+    # inputVolume node selector 1
+    inputNodeSelector1 = slicer.qMRMLNodeComboBox()
+    inputNodeSelector1.objectName = 'inputNodeSelector1'
+    inputNodeSelector1.toolTip = "Select the 1st input volume to be segmented."
+    inputNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
+    inputNodeSelector1.noneEnabled = False
+    inputNodeSelector1.addEnabled = False
+    inputNodeSelector1.removeEnabled = False
+    inputNodeSelector1.editEnabled = True
+    inputNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode1)
+    ioFormLayout.addRow("Input Volume 1:", inputNodeSelector1)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        inputNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
+    self.inputNodeSelector1 = inputNodeSelector1
+
+    # inputVolume node selector 2
+    inputNodeSelector2 = slicer.qMRMLNodeComboBox()
+    inputNodeSelector2.objectName = 'inputNodeSelector2'
+    inputNodeSelector2.toolTip = "Select the 2nd input volume to be segmented."
+    inputNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
+    inputNodeSelector2.noneEnabled = True
+    inputNodeSelector2.addEnabled = False
+    inputNodeSelector2.removeEnabled = False
+    inputNodeSelector2.editEnabled = True
+    inputNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode2)
+    ioFormLayout.addRow("Input Volume 2 (optional):", inputNodeSelector2)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        inputNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
+    self.inputNodeSelector2 = inputNodeSelector2
+
+    # inputVolume node selector 3
+    inputNodeSelector3 = slicer.qMRMLNodeComboBox()
+    inputNodeSelector3.objectName = 'inputNodeSelector3'
+    inputNodeSelector3.toolTip = "Select the 3rd input volume to be segmented."
+    inputNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
+    inputNodeSelector3.noneEnabled = True
+    inputNodeSelector3.addEnabled = False
+    inputNodeSelector3.removeEnabled = False
+    inputNodeSelector3.editEnabled = True
+    inputNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode3)
+    ioFormLayout.addRow("Input Volume 3 (optional):", inputNodeSelector3)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        inputNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
+    self.inputNodeSelector3 = inputNodeSelector3
+
+    # outputVolume node selector
+    outputNodeSelector = slicer.qMRMLNodeComboBox()
+    outputNodeSelector.objectName = 'outputNodeSelector'
+    outputNodeSelector.toolTip = "Select the output volume to be segmented."
+    outputNodeSelector.nodeTypes = ['vtkMRMLVolumeNode']
+    outputNodeSelector.noneEnabled = False
+    outputNodeSelector.addEnabled = True
+    outputNodeSelector.removeEnabled = False
+    outputNodeSelector.editEnabled = True
+    outputNodeSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputNode)
+    ioFormLayout.addRow("Output Volume:", outputNodeSelector)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputNodeSelector = outputNodeSelector
+
+    # outputProbabilityVolume1 node selector
+    outputProbabilityNodeSelector1 = slicer.qMRMLNodeComboBox()
+    outputProbabilityNodeSelector1.objectName = 'outputProbabilityNodeSelector1'
+    outputProbabilityNodeSelector1.toolTip = "Probability-of-being-1st-object estimate for each voxel"
+    outputProbabilityNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
+    outputProbabilityNodeSelector1.noneEnabled = True
+    outputProbabilityNodeSelector1.addEnabled = True
+    outputProbabilityNodeSelector1.removeEnabled = False
+    outputProbabilityNodeSelector1.editEnabled = True
+    outputProbabilityNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode1)
+    ioFormLayout.addRow("Probability Map for Object 1 (optional):", outputProbabilityNodeSelector1)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputProbabilityNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputProbabilityNodeSelector1 = outputProbabilityNodeSelector1
+
+    # outputProbabilityVolume2 node selector
+    outputProbabilityNodeSelector2 = slicer.qMRMLNodeComboBox()
+    outputProbabilityNodeSelector2.objectName = 'outputProbabilityNodeSelector2'
+    outputProbabilityNodeSelector2.toolTip = "Probability-of-being-2st-object estimate for each voxel"
+    outputProbabilityNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
+    outputProbabilityNodeSelector2.noneEnabled = True
+    outputProbabilityNodeSelector2.addEnabled = True
+    outputProbabilityNodeSelector2.removeEnabled = False
+    outputProbabilityNodeSelector2.editEnabled = True
+    outputProbabilityNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode2)
+    ioFormLayout.addRow("Probability Map for Object 2 (optional):", outputProbabilityNodeSelector2)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputProbabilityNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputProbabilityNodeSelector2 = outputProbabilityNodeSelector2
+
+    # outputProbabilityVolume3 node selector
+    outputProbabilityNodeSelector3 = slicer.qMRMLNodeComboBox()
+    outputProbabilityNodeSelector3.objectName = 'outputProbabilityNodeSelector3'
+    outputProbabilityNodeSelector3.toolTip = "Probability-of-being-3st-object estimate for each voxel"
+    outputProbabilityNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
+    outputProbabilityNodeSelector3.noneEnabled = True
+    outputProbabilityNodeSelector3.addEnabled = True
+    outputProbabilityNodeSelector3.removeEnabled = False
+    outputProbabilityNodeSelector3.editEnabled = True
+    outputProbabilityNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode3)
+    ioFormLayout.addRow("Probability Map for Object 3 (optional):", outputProbabilityNodeSelector3)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputProbabilityNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputProbabilityNodeSelector3 = outputProbabilityNodeSelector3
+
     # LABEL MAP COLLAPSIBLE BUTTON
     labelMapCollapsibleButton = ctk.ctkCollapsibleButton()
     labelMapCollapsibleButton.text = "Label Maps"
@@ -76,7 +190,7 @@ class InteractivePDFSegmenterWidget:
     labelMapNodeSelector.objectName = 'labelMapNodeSelector'
     labelMapNodeSelector.toolTip = "Select the label map roughly outlining the structure to be segmented and its background."
     labelMapNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    # TODO select label maps only, using addAttribute (but not wrapped)
+    labelMapNodeSelector.addAttribute("vtkMRMLScalarVolumeNode", "LabelMap", True);
     labelMapNodeSelector.noneEnabled = False
     labelMapNodeSelector.addEnabled = False
     labelMapNodeSelector.removeEnabled = False
@@ -213,123 +327,18 @@ class InteractivePDFSegmenterWidget:
     advancedFormLayout.addRow("Reclassify Not Object Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
-    # IO COLLAPSIBLE BUTTON
-    ioCollapsibleButton = ctk.ctkCollapsibleButton()
-    ioCollapsibleButton.text = "IO"
-    self.layout.addWidget(ioCollapsibleButton)
-
-    # Layout within the io collapsible button
-    ioFormLayout = qt.QFormLayout(ioCollapsibleButton)
-
-    # inputVolume node selector 1
-    inputNodeSelector1 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector1.objectName = 'inputNodeSelector1'
-    inputNodeSelector1.toolTip = "Select the 1st input volume to be segmented."
-    inputNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
-    inputNodeSelector1.noneEnabled = False
-    inputNodeSelector1.addEnabled = False
-    inputNodeSelector1.removeEnabled = False
-    inputNodeSelector1.editEnabled = True
-    inputNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode1)
-    ioFormLayout.addRow("Input Volume 1:", inputNodeSelector1)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        inputNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
-    self.inputNodeSelector1 = inputNodeSelector1
-
-    # inputVolume node selector 2
-    inputNodeSelector2 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector2.objectName = 'inputNodeSelector2'
-    inputNodeSelector2.toolTip = "Select the 2nd input volume to be segmented."
-    inputNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
-    inputNodeSelector2.noneEnabled = True
-    inputNodeSelector2.addEnabled = False
-    inputNodeSelector2.removeEnabled = False
-    inputNodeSelector2.editEnabled = True
-    inputNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode2)
-    ioFormLayout.addRow("Input Volume 2 (optional):", inputNodeSelector2)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        inputNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
-    self.inputNodeSelector2 = inputNodeSelector2
-
-    # inputVolume node selector 3
-    inputNodeSelector3 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector3.objectName = 'inputNodeSelector3'
-    inputNodeSelector3.toolTip = "Select the 3rd input volume to be segmented."
-    inputNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
-    inputNodeSelector3.noneEnabled = True
-    inputNodeSelector3.addEnabled = False
-    inputNodeSelector3.removeEnabled = False
-    inputNodeSelector3.editEnabled = True
-    inputNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode3)
-    ioFormLayout.addRow("Input Volume 3 (optional):", inputNodeSelector3)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        inputNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
-    self.inputNodeSelector3 = inputNodeSelector3
-
-    # outputVolume node selector
-    outputNodeSelector = slicer.qMRMLNodeComboBox()
-    outputNodeSelector.objectName = 'outputNodeSelector'
-    outputNodeSelector.toolTip = "Select the output volume to be segmented."
-    outputNodeSelector.nodeTypes = ['vtkMRMLVolumeNode']
-    outputNodeSelector.noneEnabled = False
-    outputNodeSelector.addEnabled = True
-    outputNodeSelector.removeEnabled = False
-    outputNodeSelector.editEnabled = True
-    outputNodeSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputNode)
-    ioFormLayout.addRow("Output Volume:", outputNodeSelector)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputNodeSelector = outputNodeSelector
-
-    # outputProbabilityVolume1 node selector
-    outputProbabilityNodeSelector1 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector1.objectName = 'outputProbabilityNodeSelector1'
-    outputProbabilityNodeSelector1.toolTip = "Probability-of-being-1st-object estimate for each voxel"
-    outputProbabilityNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
-    outputProbabilityNodeSelector1.noneEnabled = True
-    outputProbabilityNodeSelector1.addEnabled = True
-    outputProbabilityNodeSelector1.removeEnabled = False
-    outputProbabilityNodeSelector1.editEnabled = True
-    outputProbabilityNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode1)
-    ioFormLayout.addRow("Probability Map for Object 1 (optional):", outputProbabilityNodeSelector1)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector1 = outputProbabilityNodeSelector1
-
-    # outputProbabilityVolume2 node selector
-    outputProbabilityNodeSelector2 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector2.objectName = 'outputProbabilityNodeSelector2'
-    outputProbabilityNodeSelector2.toolTip = "Probability-of-being-2st-object estimate for each voxel"
-    outputProbabilityNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
-    outputProbabilityNodeSelector2.noneEnabled = True
-    outputProbabilityNodeSelector2.addEnabled = True
-    outputProbabilityNodeSelector2.removeEnabled = False
-    outputProbabilityNodeSelector2.editEnabled = True
-    outputProbabilityNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode2)
-    ioFormLayout.addRow("Probability Map for Object 2 (optional):", outputProbabilityNodeSelector2)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector2 = outputProbabilityNodeSelector2
-
-    # outputProbabilityVolume3 node selector
-    outputProbabilityNodeSelector3 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector3.objectName = 'outputProbabilityNodeSelector3'
-    outputProbabilityNodeSelector3.toolTip = "Probability-of-being-3st-object estimate for each voxel"
-    outputProbabilityNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
-    outputProbabilityNodeSelector3.noneEnabled = True
-    outputProbabilityNodeSelector3.addEnabled = True
-    outputProbabilityNodeSelector3.removeEnabled = False
-    outputProbabilityNodeSelector3.editEnabled = True
-    outputProbabilityNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode3)
-    ioFormLayout.addRow("Probability Map for Object 3 (optional):", outputProbabilityNodeSelector3)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector3 = outputProbabilityNodeSelector3
-
     # SEGMENTATION BUTTON
+    segmentCollapsibleButton = ctk.ctkCollapsibleButton()
+    segmentCollapsibleButton.text = "Run Segmentation"
+    self.layout.addWidget(segmentCollapsibleButton)
+
+    # Layout within the parameters collapsible button
+    segmentFormLayout = qt.QFormLayout(segmentCollapsibleButton)
+
+    # segmentation button
     segmentationButton = qt.QPushButton("Segment")
     segmentationButton.toolTip = "Perform PDF Segmentation."
-    ioFormLayout.addRow(segmentationButton)
+    segmentFormLayout.addRow(segmentationButton)
     segmentationButton.connect('clicked()', self.onSegmentationButtonClicked)
 
     # Now that we've created all UI elements, apply the default goal segmentation type
