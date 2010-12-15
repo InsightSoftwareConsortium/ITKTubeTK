@@ -1,3 +1,5 @@
+import __main__
+import qt
 
 #
 # InteractivePDFSegmenter
@@ -23,41 +25,42 @@ class InteractivePDFSegmenter:
 #
 
 class InteractivePDFSegmenterWidget:
-  def __init__(self, parent):
-    self.parent = parent
-    self.layout = parent.layout()
+  def __init__(self, parent=None):
 
     self.labelMapNode = None
     self.labelMap = None
 
     self.goalSegmentation = None
 
-    # TODO don't save anything as attributes unless it is needed
     self.inputNode1 = None
-    self.inputVolume1 = None
     self.inputNode2 = None
-    self.inputVolume2 = None
     self.inputNode3 = None
-    self.inputVolume3 = None
     self.outputNode = None
-    self.outputVolume = None
     self.outputProbabilityNode1 = None
-    self.outputProbabilityVolume1 = None
     self.outputProbabilityNode2 = None
-    self.outputProbabilityVolume2 = None
     self.outputProbabilityNode3 = None
-    self.outputProbabilityVolume3 = None
-
     self.goalButtonTexts = ["J", "S/J", "S", "U"]
     self.goalButtonDefault = 2
     self.goalButtonUserDefined = 3
-    self.precomputedErosionRadii = [1, 3, 5] # TODO do actual computation
-    self.precomputedHoleFillIterations = [2, 4, 6] # TODO do actual computation
+    self.precomputedErosionRadii = [1, 3, 5] #->> TODO do actual computation
+    self.precomputedHoleFillIterations = [2, 4, 6] #->> TODO do actual computation
 
     self.erosionRadius = 0
     self.holeFillIterations = 0
 
     self.CLINode = None
+
+    self.editorEffects = ["DefaultTool", "EraseLabel", "Paint", "Threshold"]
+    self.editorWidget = None
+
+    if not parent:
+      self.parent = qt.QFrame()
+      self.parent.setLayout( qt.QVBoxLayout() )
+      self.layout = self.parent.layout()
+      self.parent.show()
+    else:
+      self.parent = parent
+      self.layout = parent.layout()
 
   def setup(self):
 
@@ -83,6 +86,8 @@ class InteractivePDFSegmenterWidget:
     self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
                         inputNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
     self.inputNodeSelector1 = inputNodeSelector1
+
+    #->> for all parameters, provide slots to set them, and use internal values to eventually pass them into the PDF segmenter - for using the interactive PDF segmenter somewhere else, ex in editor module
 
     # inputVolume node selector 2
     inputNodeSelector2 = slicer.qMRMLNodeComboBox()
@@ -175,6 +180,7 @@ class InteractivePDFSegmenterWidget:
     self.outputProbabilityNodeSelector3 = outputProbabilityNodeSelector3
 
     # LABEL MAP COLLAPSIBLE BUTTON
+
     labelMapCollapsibleButton = ctk.ctkCollapsibleButton()
     labelMapCollapsibleButton.text = "Label Maps"
     self.layout.addWidget(labelMapCollapsibleButton)
@@ -182,8 +188,16 @@ class InteractivePDFSegmenterWidget:
     # Layout within the labelMap collapsible button
     labelMapFormLayout = qt.QFormLayout(labelMapCollapsibleButton)
 
-    # TODO integrate Steve Pieper's editor here
-    #    insideLabelComboBox = slicer.qMRMLLabelComboBox() # TODO maybe?
+    # Create frame editor widget
+    editorFrame = qt.QFrame()
+    editorFrame.setLayout(qt.QHBoxLayout())
+    self.layout.addWidget(editorFrame)
+    self.editorFrame = editorFrame
+
+    # initialize editor widget: using parent frame, embedded is true and list of effects
+    self.editorWidget = __main__.EditorWidget(parent=editorFrame, embedded=True, suppliedEffects=self.editorEffects, showVolumesFrame=False)
+
+    #->> create another selector that picks colors from filled in label maps, to set background color (others will represent objects)
 
     # labelMap node selector
     labelMapNodeSelector = slicer.qMRMLNodeComboBox()
@@ -200,24 +214,6 @@ class InteractivePDFSegmenterWidget:
     self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
                         labelMapNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
     self.labelMapNodeSelector = labelMapNodeSelector
-
-    # inside label spin box # TODO should be list instead
-    insideLabelSpinBox = qt.QSpinBox()
-    insideLabelSpinBox.objectName = 'insideLabelSpinBox'
-    insideLabelSpinBox.toolTip = "Set the label for the structure to be segmented."
-    insideLabelSpinBox.setMinimum(0)
-    insideLabelSpinBox.setMaximum(1000)
-    labelMapFormLayout.addRow("Inside Label:", insideLabelSpinBox)
-    self.insideLabelSpinBox = insideLabelSpinBox
-
-    # outside label spin box # TODO should be list instead
-    outsideLabelSpinBox = qt.QSpinBox()
-    outsideLabelSpinBox.objectName = 'outsideLabelSpinBox'
-    outsideLabelSpinBox.toolTip = "Set the label for the structure to be segmented."
-    outsideLabelSpinBox.setMinimum(0)
-    outsideLabelSpinBox.setMaximum(1000)
-    labelMapFormLayout.addRow("Outside Label:", outsideLabelSpinBox)
-    self.outsideLabelSpinBox = outsideLabelSpinBox
 
     # SEGMENTATION PARAMETERS COLLAPSIBLE BUTTON
     segmentationCollapsibleButton = ctk.ctkCollapsibleButton()
@@ -237,7 +233,7 @@ class InteractivePDFSegmenterWidget:
 
     for i in range(0, len(self.goalButtonTexts)):
       button = qt.QToolButton()
-      button.setText(self.goalButtonTexts[i]) # TODO replace with icons
+      button.setText(self.goalButtonTexts[i]) #->>TODO replace with icons
       button.setCheckable(True)
       goalButtonGroup.addButton(button, i)
       goalGroupBoxLayout.addWidget(button)
@@ -344,7 +340,12 @@ class InteractivePDFSegmenterWidget:
     # Now that we've created all UI elements, apply the default goal segmentation type
     self.setGoalSegmentationType(self.goalButtonDefault)
 
-    print "DONE"
+  def getAllCompositeNodes(self):
+    nodes = []
+    count = slicer.mrmlScene.GetNumberOfNodesByClass('vtkMRMLSliceCompositeNode')
+    for n in xrange(count):
+      nodes.append(slicer.mrmlScene.GetNthNodeByClass(n, 'vtkMRMLSliceCompositeNode'))
+    return nodes
 
   def setLabelMapNode(self, newLabelMapNode):
     """Sets the current node for the 'labelMap' label map
@@ -354,6 +355,15 @@ class InteractivePDFSegmenterWidget:
     if newLabelMapNode:
       newLabelMap = newLabelMapNode.GetImageData()
 
+      # the editor widget pulls the label map from the red slice's composite node,
+      # so set the slice label maps to the new label map node
+      #->> problem when adding a new volume, and it automatically switches
+      #->> problem when toggling between two label maps, colors don't match
+      if self.editorWidget:
+        compositeNodes = self.getAllCompositeNodes()
+        for node in compositeNodes:
+          node.SetReferenceLabelVolumeID(newLabelMapNode.GetID())
+
     self.labelMapNode = newLabelMapNode
     self.labelMap = newLabelMap
 
@@ -361,78 +371,52 @@ class InteractivePDFSegmenterWidget:
     """Sets the current node for the 1st input volume
     Connected to signal 'currentNodeChanged()' emitted from the inputNodeSelector1."""
 
-    newInputVolume1 = None
     if newInputNode1:
-      newInputVolume1 = newInputNode1.GetImageData()
+      # the editor widget pulls the "master node" from the red slice's composite node,
+      # so set the slice  background volumes to the new input node 1
+      #->> problem when adding a new volume, and it automatically switches
+      if self.editorWidget:
+        compositeNodes = self.getAllCompositeNodes()
+        for node in compositeNodes:
+          node.SetReferenceBackgroundVolumeID(newInputNode1.GetID())
 
     self.inputNode1 = newInputNode1
-    self.inputVolume1 = newInputVolume1
 
   def setInputNode2(self, newInputNode2):
     """Sets the current node for the 2nd input volume
     Connected to signal 'currentNodeChanged()' emitted from the inputNodeSelector2."""
 
-    newInputVolume2 = None
-    if newInputNode2:
-      newInputVolume2 = newInputNode2.GetImageData()
-
     self.inputNode2 = newInputNode2
-    self.inputVolume2 = newInputVolume2
 
   def setInputNode3(self, newInputNode3):
     """Sets the current node for the 3rd input volume
     Connected to signal 'currentNodeChanged()' emitted from the inputNodeSelector3."""
 
-    newInputVolume3 = None
-    if newInputNode3:
-      newInputVolume3 = newInputNode3.GetImageData()
-
     self.inputNode3 = newInputNode3
-    self.inputVolume3 = newInputVolume3
 
   def setOutputNode(self, newOutputNode):
     """Sets the current node for the output volume
     Connected to signal 'currentNodeChanged()' emitted from the outputNodeSelector."""
 
-    newOutputVolume = None
-    if newOutputNode:
-      newOutputVolume = newOutputNode.GetImageData()
-
     self.outputNode = newOutputNode
-    self.outputVolume = newOutputVolume
 
   def setOutputProbabilityNode1(self, newOutputProbabilityNode1):
     """Sets the current node for the 1st output probability node
     Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector1."""
 
-    newOutputProbabilityVolume1 = None
-    if newOutputProbabilityNode1:
-      newOutputProbabilityVolume1 = newOutputProbabilityNode1.GetImageData()
-
     self.outputProbabilityNode1 = newOutputProbabilityNode1
-    self.outputProbabilityVolume1 = newOutputProbabilityVolume1
 
   def setOutputProbabilityNode2(self, newOutputProbabilityNode2):
     """Sets the current node for the 2nd output probability node
     Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector2."""
 
-    newOutputProbabilityVolume2 = None
-    if newOutputProbabilityNode2:
-      newOutputProbabilityVolume2 = newOutputProbabilityNode2.GetImageData()
-
     self.outputProbabilityNode2 = newOutputProbabilityNode2
-    self.outputProbabilityVolume2 = newOutputProbabilityVolume2
 
   def setOutputProbabilityNode3(self, newOutputProbabilityNode3):
     """Sets the current node for the 3rd output probability node
     Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector3."""
 
-    newOutputProbabilityVolume3 = None
-    if newOutputProbabilityNode3:
-      newOutputProbabilityVolume3 = newOutputProbabilityNode3.GetImageData()
-
     self.outputProbabilityNode3 = newOutputProbabilityNode3
-    self.outputProbabilityVolume3 = newOutputProbabilityVolume3
 
   def setGoalSegmentationType(self, goalId):
     """Sets the goal segmentation 'type': jagged, semi-jagged, smooth or user defined
@@ -445,11 +429,11 @@ class InteractivePDFSegmenterWidget:
     """Actually computes the appropriate values for the erosion radius and hole fill iterations"""
     if (goalId < len(self.precomputedErosionRadii)):
         newErosionRadius = self.precomputedErosionRadii[goalId]
-        self.erosionRadius = newErosionRadius # TODO sketchy
+        self.erosionRadius = newErosionRadius
         self.erosionSpinBox.setValue(newErosionRadius)
     if (goalId < len(self.precomputedHoleFillIterations)):
         newHoleFillIterations = self.precomputedHoleFillIterations[goalId]
-        self.holeFillIterations = newHoleFillIterations # TODO sketchy
+        self.holeFillIterations = newHoleFillIterations
         self.holeFillSpinBox.setValue(newHoleFillIterations)
 
   def setErosionRadius(self, newErosionRadius):
@@ -469,8 +453,12 @@ class InteractivePDFSegmenterWidget:
     parameters['inputVolume1'] = self.inputNode1
     parameters['inputVolume2'] = self.inputNode2
     parameters['inputVolume3'] = self.inputNode3
-    parameters['objectId'] = self.insideLabelSpinBox.value
-    parameters['voidId'] = self.outsideLabelSpinBox.value
+
+    #->> voidID pulled from selector widget (to be added)
+    #->> objectID all other labels in merge volume that are not the voidID
+    parameters['objectId'] = 0
+    parameters['voidId'] = 10
+
     parameters['labelmap'] = self.labelMapNode
     parameters['outputVolume'] = self.outputNode
     parameters['useTexture'] = self.useTextureCheckBox.checked
@@ -488,4 +476,6 @@ class InteractivePDFSegmenterWidget:
     pdfSegmenter = slicer.modules.pdfsegmenter
     self.CLINode = slicer.cli.run(pdfSegmenter, self.CLINode, parameters)
 
-    print "SEGMENTED"
+  def getLabelsFromLabelMap(self, labelMapNode):
+    if not labelMapNode:
+      return
