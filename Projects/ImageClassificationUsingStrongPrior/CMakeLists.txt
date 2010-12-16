@@ -21,21 +21,6 @@
 # 
 ##############################################################################
 
-set( TubeTK_Base_Classification_H_Files
-  itkFeatureGeneratingImageFunction.h
-  itkStandardFeatureGeneratingImageFunction.h
-  )
+add_subdirectory( Applications )
+add_subdirectory( Base )
 
-set( TubeTK_Base_Classification_TXX_Files
-  itkFeatureGeneratingImageFunction.txx
-  itkStandardFeatureGeneratingImageFunction.txx
-  )
-
-IF( BUILD_TESTING )
-  add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
-
-#install(FILES 
-  #${TubeTK_Base_Classification_H_Files}
-  #${TubeTK_Base_Classification_TXX_Files}
-  #DESTINATION include)

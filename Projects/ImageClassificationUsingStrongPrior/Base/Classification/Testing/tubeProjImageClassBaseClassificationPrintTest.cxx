@@ -23,15 +23,12 @@ limitations under the License.
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
 #endif
+#define ITK_LEAN_AND_MEAN
 
-#include <iostream>
-#include "itkTestMain.h" 
+#include "itkOrientedImage.h"
 
-
-void RegisterTests()
+int tubeProjImageClassBaseClassificationPrintTest( int, char* [] )
 {
-  REGISTER_TEST( tubeBaseClassificationPrintTest );
-  REGISTER_TEST( itkFeatureGeneratingImageFunctionTest );
-  REGISTER_TEST( itkStandardFeatureGeneratingImageFunctionTest );
-  REGISTER_TEST( itkPatchFeatureGeneratingImageFunctionTest );
+  return EXIT_SUCCESS;
 }
+

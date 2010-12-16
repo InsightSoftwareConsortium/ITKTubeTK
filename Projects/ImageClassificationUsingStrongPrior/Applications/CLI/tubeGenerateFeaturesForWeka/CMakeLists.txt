@@ -53,7 +53,7 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
-  ${TubeTK_SOURCE_DIR}/Base/Classification
+  ${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Base/Classification
   )
 
 set( PROJECT_SOURCE
