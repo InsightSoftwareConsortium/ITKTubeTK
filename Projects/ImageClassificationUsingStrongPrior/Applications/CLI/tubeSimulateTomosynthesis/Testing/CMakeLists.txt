@@ -27,7 +27,7 @@ set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
 set( BASELINE
-       ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
+  ${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

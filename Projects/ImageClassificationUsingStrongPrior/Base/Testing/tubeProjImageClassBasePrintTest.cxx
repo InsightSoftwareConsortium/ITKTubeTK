@@ -27,7 +27,7 @@ limitations under the License.
 
 #include "itkOrientedImage.h"
 
-int tubeProjImageClassBaseClassificationPrintTest( int, char* [] )
+int tubeProjImageClassBasePrintTest( int, char* [] )
 {
   return EXIT_SUCCESS;
 }

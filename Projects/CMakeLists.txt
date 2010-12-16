@@ -21,5 +21,9 @@
 # 
 ##############################################################################
 
-add_subdirectory( ImageClassificationUsingStrongPrior )
+option( TubeTK_BUILD_Project_ImageClass
+  "Build the ImageClassificationUsingStrongPrior project" ON )
+if( TubeTK_BUILD_Project_ImageClass )
+  add_subdirectory( ImageClassificationUsingStrongPrior )
+endif( TubeTK_BUILD_Project_ImageClass )
 

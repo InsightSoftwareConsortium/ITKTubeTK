@@ -25,27 +25,27 @@ include_regular_expression( "^.*$" )
 
 find_package( Tclsh )
 if( TCL_TCLSH )
-  add_test( PrintSelf-tubeProjImageClassBaseClassification ${TCL_TCLSH}
+  add_test( PrintSelf-tubeProjImageClassBase ${TCL_TCLSH}
     ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl  
-    ${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Base/Classification )
+    ${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Base )
 endif( TCL_TCLSH )
 
 set( BASE_CLASSIFICATION_TESTS 
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeProjImageClassBaseClassificationTests 
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeProjImageClassBaseTests 
   )
 
 set( BASE_CLASSIFICATION_HEADER_TEST 
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeProjImageClassBaseClassificationHeaderTest
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeProjImageClassBaseHeaderTest
   )
 
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 set( BASELINE
-${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Base/Classification/Testing/Baselines )
+${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Base/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-set( tubeProjImageClassBaseClassification_SRCS
-  tubeProjImageClassBaseClassificationPrintTest.cxx
+set( tubeProjImageClassBase_SRCS
+  tubeProjImageClassBasePrintTest.cxx
   itkFeatureGeneratingImageFunctionTest.cxx 
   itkPatchFeatureGeneratingImageFunctionTest.cxx 
   itkStandardFeatureGeneratingImageFunctionTest.cxx 
@@ -56,37 +56,37 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
-  ${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Base/Classification
+  ${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Base
   )
 
-add_executable( tubeProjImageClassBaseClassificationHeaderTest 
-  tubeProjImageClassBaseClassificationHeaderTest.cxx 
+add_executable( tubeProjImageClassBaseHeaderTest 
+  tubeProjImageClassBaseHeaderTest.cxx 
   )
-target_link_libraries( tubeProjImageClassBaseClassificationHeaderTest
+target_link_libraries( tubeProjImageClassBaseHeaderTest
   TubeNumerics
   ITKIO
   ITKNumerics
   ITKBasicFilters
   )
 
-add_executable( tubeProjImageClassBaseClassificationTests
-  tubeProjImageClassBaseClassificationTests.cxx
-  ${tubeProjImageClassBaseClassification_SRCS} 
+add_executable( tubeProjImageClassBaseTests
+  tubeProjImageClassBaseTests.cxx
+  ${tubeProjImageClassBase_SRCS} 
   )
-target_link_libraries( tubeProjImageClassBaseClassificationTests
+target_link_libraries( tubeProjImageClassBaseTests
   TubeNumerics
   ITKIO
   ITKNumerics
   ITKBasicFilters
   )
 
-add_test( tubeProjImageClassBaseClassificationHeaderTest 
+add_test( tubeProjImageClassBaseHeaderTest 
   ${BASE_CLASSIFICATION_HEADER_TEST} 
   )
 
-add_test( tubeProjImageClassBaseClassificationPrintTest 
+add_test( tubeProjImageClassBasePrintTest 
   ${BASE_CLASSIFICATION_TESTS}
-  tubeProjImageClassBaseClassificationPrintTest 
+  tubeProjImageClassBasePrintTest 
   )
 
 add_test( itkFeatureGeneratingImageFunctionTest1

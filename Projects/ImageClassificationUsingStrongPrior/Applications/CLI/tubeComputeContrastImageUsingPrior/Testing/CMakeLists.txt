@@ -27,7 +27,7 @@ set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
 set( BASELINE
-  ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
+  ${TubeTK_SOURCE_DIR}/Projects/ImageClassificationUsingStrongPrior/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -62,4 +62,4 @@ add_test( ${PROJECT_NAME}Test1-Compare
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+  PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )

@@ -21,6 +21,16 @@
 # 
 ##############################################################################
 
+#-----------------------------------------------------------------------------
+# FANN Setup
+option( TubeTK_USE_FANN
+  "Use fast artificial neural network library ( FANN )." OFF )
+
+include( ${CMAKE_ROOT}/Modules/FindPkgConfig.cmake )
+if( TubeTK_USE_FANN )
+  pkg_check_modules( FANN REQUIRED fann )
+endif( TubeTK_USE_FANN )
+
 add_subdirectory( Applications )
 add_subdirectory( Base )
 
