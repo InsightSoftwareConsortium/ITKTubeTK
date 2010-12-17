@@ -99,13 +99,6 @@ if( EXISTS ${SITE_BINARY_DIR}/GenerateCLP-Build/CMakeCache.txt)
     " )
 endif()
 
-if( EXISTS ${SITE_BINARY_DIR}/OpenIGTLink-Build/CMakeCache.txt )
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
-    "
-    OpenIGTLink_DIR:PATH=${SITE_BINARY_DIR}/OpenIGTLink-Build
-    " )
-endif()
-
 if( EXISTS ${SITE_BINARY_DIR}/CTK-Build/CMakeCache.txt )
   file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "

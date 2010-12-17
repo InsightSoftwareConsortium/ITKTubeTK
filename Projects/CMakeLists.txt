@@ -21,7 +21,9 @@
 # 
 ##############################################################################
 
-add_subdirectory( Numerics )
-add_subdirectory( Filtering )
-add_subdirectory( Segmentation )
-add_subdirectory( Registration )
+option( TubeTK_BUILD_Project_ImageClass
+  "Build the ImageClassificationUsingStrongPrior project" ON )
+if( TubeTK_BUILD_Project_ImageClass )
+  add_subdirectory( ImageClassificationUsingStrongPrior )
+endif( TubeTK_BUILD_Project_ImageClass )
+

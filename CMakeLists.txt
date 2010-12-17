@@ -204,16 +204,6 @@ if( TubeTK_USE_VTK )
 endif( TubeTK_USE_VTK )
 
 #-----------------------------------------------------------------------------
-# OpenIGTLink Setup
-option( TubeTK_USE_OpenIGTLink
-  "Use OpenIGTLink to provide communications with surgical systems." ON )
-
-#-----------------------------------------------------------------------------
-# FANN Setup
-option( TubeTK_USE_FANN
-  "Use fast artificial neural network library ( FANN )." OFF )
-
-#-----------------------------------------------------------------------------
 # CTK Setup
 if( TubeTK_USE_QT )
   option( TubeTK_USE_CTK
@@ -250,17 +240,6 @@ else( TubeTK_USE_SUPERBUILD )
 
   find_package( GenerateCLP REQUIRED )
   include( ${GenerateCLP_USE_FILE} )
-
-  if( TubeTK_USE_OpenIGTLink )
-    find_package( OpenIGTLink REQUIRED )
-    include( ${OpenIGTLink_USE_FILE} )
-  endif( TubeTK_USE_OpenIGTLink )
-
-  include( ${CMAKE_ROOT}/Modules/FindPkgConfig.cmake )
-
-  if ( TubeTK_USE_FANN )
-    pkg_check_modules( FANN REQUIRED fann )
-  endif ( TubeTK_USE_FANN )
 
   if( TubeTK_USE_CTK )
     find_package( CTK REQUIRED )
@@ -371,6 +350,7 @@ add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
 add_subdirectory( Utilities )
 add_subdirectory( Base )
 add_subdirectory( Applications )
+add_subdirectory( Projects )
 
 #-----------------------------------------------------------------------------
 # Create the directory where tests store temp results

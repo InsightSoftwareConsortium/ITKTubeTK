@@ -236,38 +236,6 @@ set( GenerateCLP_DIR "${base}/GenerateCLP-Build" )
 set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
 
 
-##
-## OpenIGTLink 
-##
-if( TubeTK_USE_OpenIGTLink )
-
-  set( proj OpenIGTLink )
-  ExternalProject_Add( ${proj}
-    SVN_REPOSITORY "http://svn.na-mic.org/NAMICSandBox/trunk/OpenIGTLink"
-    SOURCE_DIR OpenIGTLink
-    BINARY_DIR OpenIGTLink-Build
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-    INSTALL_COMMAND ""
-    )
-  set( OpenIGTLink_DIR "${CMAKE_BINARY_DIR}/OpenIGTLink-Build" )
-  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "OpenIGTLink" )
-
-else( TubeTK_USE_OpenIGTLink )
-
-  set( OpenIGTLink_DIR "" )
-
-endif( TubeTK_USE_OpenIGTLink )
-
-
 if( TubeTK_USE_QT )
 
   ##
@@ -347,13 +315,12 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
-    -DTubeTK_USE_FANN:BOOL=${TubeTK_USE_FANN}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
-    -DTubeTK_USE_OpenIGTLink:BOOL=${TubeTK_USE_OpenIGTLink}
+    -DTubeTK_BUILD_Project_ImageClass:BOOL=${TubeTK_BUILD_Project_ImageClass}
+    -DTubeTK_USE_FANN:BOOL=${TubeTK_USE_FANN}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
-    -DOpenIGTLink_DIR:PATH=${OpenIGTLink_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
   INSTALL_COMMAND ""

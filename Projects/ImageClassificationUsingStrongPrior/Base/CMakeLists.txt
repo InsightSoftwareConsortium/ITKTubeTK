@@ -21,7 +21,21 @@
 # 
 ##############################################################################
 
-add_subdirectory( Numerics )
-add_subdirectory( Filtering )
-add_subdirectory( Segmentation )
-add_subdirectory( Registration )
+set( TubeTK_Projects_ImageClassification_Base_H_Files
+  itkFeatureGeneratingImageFunction.h
+  itkStandardFeatureGeneratingImageFunction.h
+  )
+
+set( TubeTK_Projects_ImageClassification_Base_TXX_Files
+  itkFeatureGeneratingImageFunction.txx
+  itkStandardFeatureGeneratingImageFunction.txx
+  )
+
+IF( BUILD_TESTING )
+  add_subdirectory( Testing )
+ENDIF( BUILD_TESTING )
+
+#install(FILES 
+  #${TubeTK_Projects_ImageClassification_Base_H_Files}
+  #${TubeTK_Projects_ImageClassification_Base_TXX_Files}
+  #DESTINATION include)
