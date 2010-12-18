@@ -92,5 +92,7 @@ SET(CTEST_EXTRA_COVERAGE_GLOB
    Base/*.txx
    Applications/*.cxx
    Applications/*.txx
+   Projects/*.cxx
+   Projects/*.txx
    )
 
