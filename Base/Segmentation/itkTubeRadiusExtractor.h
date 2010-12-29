@@ -149,7 +149,7 @@ public:
 
   /**
    * Set Radius0 */
-  itkSetMacro( Radius0, double );
+  void SetRadius0( double radius0 );
 
   /**
    * Get Radius0 */
