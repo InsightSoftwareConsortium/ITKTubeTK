@@ -219,6 +219,8 @@ protected:
   RadiusExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
+  void PrintSelf( std::ostream & os, Indent indent ) const;
+
   void ComputeValuesInSubKernel( TubePointType pnt, double pntR,
     MatrixType & kernN, VectorType & kern, double & kernCnt );
 

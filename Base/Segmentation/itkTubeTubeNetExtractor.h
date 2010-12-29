@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -55,25 +55,17 @@ public:
   typedef SmartPointer<Self>        Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
 
-  itkTypeMacro(Self, Object);
+  itkTypeMacro( Self, Object );
 
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /**
    * Type definition for the input image. */
-  typedef TInputImage  ImageType;
+  typedef TInputImage                      ImageType;
 
   /**
    * Type definition for the input mask. */
   typedef TInputMask                       MaskType;
-
-  /**
-   * Pointer type for the image */
-  typedef typename ImageType::Pointer      ImagePointer;
-
-  /**
-   * Pointer type for the mask */
-  typedef typename MaskType::Pointer       MaskPointer;
 
   /**
    * Input image pixel type. */
@@ -83,104 +75,106 @@ public:
    * Input image index type. */
   typedef typename TInputImage::IndexType  IndexType;
 
+  /**
+   * Standard for the number of dimension
+   */
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    ::itk::GetImageDimension< TInputImage>::ImageDimension );
+
   /** Typedef for TubeSpatialObject */
-  typedef VesselTubeSpatialObject<3>             TubeType;
-  typedef typename TubeType::Pointer       TubePointer;
+  typedef VesselTubeSpatialObject< ImageDimension >    TubeType;
 
   /**
    * Defines the type of vectors used
    */
-  typedef Vector<double, 3>                VectorType;
-
-  /**
-   * Standard for the number of dimension
-   */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      ::itk::GetImageDimension< TInputImage>::ImageDimension);
+  typedef Vector<double, ImageDimension>               VectorType;
 
   /**
    * Set the input image */
-  void SetInputImage(ImagePointer inputImage);
+  void SetInputImage( typename ImageType::Pointer inputImage );
 
   /**
    * Get the input image */
-  itkGetConstObjectMacro(Image, ImageType);
+  itkGetConstObjectMacro( Image, ImageType );
 
   /**
    * Extract a 3D tube */
-  bool ExtractTube(float x, float y, float z);
+  bool ExtractTube( float x, float y, float z );
 
   /**
    * Delete a tube */
-  bool DeleteTube(TubeType * newTube);
+  bool DeleteTube( TubeType * newTube );
 
   /**
    * Get the tube Net */
-  TubeType::Pointer GetTubeNet(void);
+  typename TubeType::Pointer GetTubeNet( void );
 
   /**
    * Set use mask */
-  itkSetMacro(AEUseMask,bool);
+  itkSetMacro( AEUseMask,bool );
 
   /**
    * Get use mask */
-  itkGetMacro(AEUseMask,bool);
+  itkGetMacro( AEUseMask,bool );
 
   /**
    * Set the mask  */
-  void SetAutoExtractMask(MaskPointer autoExtractMask);
+  void SetAutoExtractMask( typename MaskType::Pointer autoExtractMask );
 
   /**
    * Get the mask  */
-  itkGetConstObjectMacro(AEMask, MaskType);
+  itkGetConstObjectMacro( AEMask, MaskType );
 
   /**
    * Auto extract tubes using a mask */
-  double  AutoExtractThresh(void);
+  double  AutoExtractThresh( void );
 
   /**
    * Auto extract tubes using a mask */
-  void   AutoExtractThresh(double newAEThresh);
+  void   AutoExtractThresh( double newAEThresh );
 
   /**
    * Auto extract tubes using a mask */
-  void   AutoExtractAutoThresh(double alpha=0.002);
+  void   AutoExtractAutoThresh( double alpha=0.002 );
 
   /**
    * AutoExtract tubes */
-  bool   AutoExtract(int zMin, int zMax);
+  bool   AutoExtract( int zMin, int zMax );
 
   /**
    * Generate output mask */
-  void   DrawVesselMask(MaskType * maskImage);
+  void   DrawVesselMask( MaskType * maskImage );
 
   /**
    * Save a tube net */
-  //bool   Save(char *fname);
+  //bool   Save( char *fname );
 
   /**
    * Load a tube net*/
-  //bool   Load(char *fname);
+  //bool   Load( char *fname );
 
   /**
    * Set the tube callback */
-  void   NewTubeCallBack(void (*newTubeCallBack)(TubeType *));
+  void   NewTubeCallBack( void ( *newTubeCallBack )( TubeType * ) );
 
 protected:
+
   TubeNetExtractor();
   virtual ~TubeNetExtractor();
-  TubeNetExtractor(const Self&) {}
-  void operator=(const Self&) {}
+  TubeNetExtractor( const Self& ) {}
+  void operator=( const Self& ) {}
+
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  ImagePointer      m_Image;
-  TubePointer       m_TubeNet;
-  int               m_TubeNum;
+  typename ImageType::Pointer      m_Image;
+  typename TubeType::Pointer       m_TubeNet;
+  int                              m_TubeNum;
 
-  bool              m_AEUseMask;
-  MaskPointer       m_AEMask;
-  float             m_AEThresh;
+  bool                             m_AEUseMask;
+  typename MaskType::Pointer       m_AEMask;
+  float                            m_AEThresh;
 
 };
 

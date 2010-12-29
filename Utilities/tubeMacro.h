@@ -48,12 +48,13 @@ limitations under the License.
 #  include <strstream.h>
 #endif
 
+/** A convenience macro marks variables as not being used by a method,
+ * avoiding compile-time warnings. */
+#define tubeNotUsed(x)
+
 namespace tube
 {
 } // end namespace tube - this is here for documentation purposes
 
-/** A convenience macro marks variables as not being used by a method,
- * avoiding compile-time warnings. */
-#define tubeNotUsed(x)
 
 #endif //end of tubeMacro.h

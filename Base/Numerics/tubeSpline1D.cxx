@@ -361,7 +361,54 @@ valueJet(double x, double * d, double * d2)
 bool Spline1D::
 extreme(double * extX, double * extVal)
 {
-    return cOpt1D->extreme(extX, extVal);
+  return cOpt1D->extreme(extX, extVal);
+}
+
+//
+//
+//
+void Spline1D::
+PrintSelf( std::ostream & os ) const
+{
+  if( cDefined )
+    {
+    os << "cDefined = True" << std::endl;
+    }
+  else
+    {
+    os << "cDefined = False" << std::endl;
+    }
+  os << "cFuncVal = " << cFuncVal << std::endl;
+  if( cClip )
+    {
+    os << "cClip = True" << std::endl;
+    }
+  else
+    {
+    os << "cClip = False" << std::endl;
+    }
+  os << "cXMin = " << cXMin << std::endl;
+  os << "cXMax = " << cXMax << std::endl;
+  if( cNewData )
+    {
+    os << "cNewData = True" << std::endl;
+    }
+  else
+    {
+    os << "cNewData = False" << std::endl;
+    }
+  os << "cData = " << cData << std::endl;
+  os << "cOpt1DVal = " << cOpt1DVal << std::endl;
+  os << "cOpt1DDeriv = " << cOpt1DDeriv << std::endl;
+  if( cOpt1D != NULL )
+    {
+    os << "cOpt1D = " << std::endl;
+    cOpt1D->PrintSelf( os );
+    }
+  else
+    {
+    os << "cOpt1D = NULL" << std::endl;
+    }
 }
 
 }; // namespace
