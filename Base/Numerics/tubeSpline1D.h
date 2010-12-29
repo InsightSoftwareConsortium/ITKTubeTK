@@ -218,6 +218,8 @@ public :
   */
   bool    extreme(double *extX, double *extVal);
 
+  void PrintSelf( std::ostream & os ) const;
+
 protected :
 
   bool                    cDefined;

@@ -620,6 +620,69 @@ RadiusExtractor<TInputImage>
   return true;
 }
 
+template<class TInputImage>
+void
+RadiusExtractor<TInputImage>
+::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  Superclass::PrintSelf( os, indent );
+
+  if( m_Image.IsNotNull() )
+    {
+    os << indent << "Image = " << m_Image << std::endl;
+    }
+  else
+    {
+    os << indent << "Image = NULL" << std::endl;
+    }
+  os << indent << "ImageXMin = " << m_ImageXMin << std::endl;
+  os << indent << "ImageXMax = " << m_ImageXMax << std::endl;
+  if( m_DataOp.IsNotNull() )
+    {
+    os << indent << "DataOp = " << m_DataOp << std::endl;
+    }
+  else
+    {
+    os << indent << "DataOp = NULL" << std::endl;
+    }
+  os << indent << "MedialnessScaleStep = " << m_MedialnessScaleStep 
+    << std::endl;
+  os << indent << "MedialnessOpt = " << std::endl;
+  m_MedialnessOpt.PrintSelf( os );
+  if( m_MedialnessOptSpline != NULL )
+    {
+    os << indent << "MedialnessOptSpline = " << std::endl;
+    m_MedialnessOptSpline->PrintSelf( os );
+    }
+  else
+    {
+    os << indent << "MedialnessOptSpline = NULL" << std::endl;
+    }
+  os << indent << "NumKernelPoints = " << m_NumKernelPoints << std::endl;
+  os << indent << "KernelPointSpacing = " << m_KernelPointSpacing 
+    << std::endl;
+  if( m_ExtractRidge )
+    {
+    os << indent << "ExtractRidge = True" << std::endl;
+    }
+  else
+    {
+    os << indent << "ExtractRidge = False" << std::endl;
+    }
+  os << indent << "DataMin = " << m_DataMin << std::endl;
+  os << indent << "DataMax = " << m_DataMax << std::endl;
+  os << indent << "Radius0 = " << m_Radius0 << std::endl;
+  os << indent << "RadiusMin = " << m_RadiusMin << std::endl;
+  os << indent << "RadiusMax = " << m_RadiusMax << std::endl;
+  os << indent << "ThreshMedialness = " << m_ThreshMedialness << std::endl;
+  os << indent << "ThreshMedialnessStart = " << m_ThreshMedialnessStart
+    << std::endl;
+  os << indent << "MedialnessFunc = " << m_MedialnessFunc << std::endl;
+  os << indent << "KernNumDirs = " << m_KernNumDirs << std::endl;
+  os << indent << "KernX = " << m_KernX << std::endl;
+  os << indent << "IdleCallBack = " << m_IdleCallBack << std::endl;
+  os << indent << "StatusCallBack = " << m_StatusCallBack << std::endl;
+}
 
 template<class TInputImage>
 void

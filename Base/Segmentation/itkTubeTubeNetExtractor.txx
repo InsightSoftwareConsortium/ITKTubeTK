@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -61,25 +61,25 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetExtractor<TInputImage, TInputMask>
-::SetInputImage(ImagePointer inputImage )
+::SetInputImage( typename ImageType::Pointer inputImage )
 {
   m_Image = inputImage;
   m_TubeNum = 0;
 
   //m_TubeNet->GetTubes()->clear();
-  //m_TubeNet->SetNumDimensions(3);
+  //m_TubeNet->SetNumDimensions( 3 );
   /*
-     vnl_vector<unsigned int> size_(3);
+     vnl_vector<unsigned int> size_( 3 );
      ImageType::SizeType imageSize = m_Image->GetLargestPossibleRegion().GetSize();
 
-     for(unsigned int i=0;i<ImageDimension;i++)
+     for( unsigned int i=0;i<ImageDimension;i++ )
      {
-     size_(i) = imageSize[i];
+     size_( i ) = imageSize[i];
      }
 
-     m_TubeNet->SetDimSize(size_);
+     m_TubeNet->SetDimSize( size_ );
    */
-  TubeExtractor<TInputImage>::SetInputImage(m_Image);
+  TubeExtractor<TInputImage>::SetInputImage( m_Image );
 
 
   m_AEThresh = 0;
@@ -90,10 +90,10 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetExtractor<TInputImage, TInputMask>
-::NewTubeCallBack(void (*newTubeCallBack)(TubeType* ))
+::NewTubeCallBack( void ( *newTubeCallBack )( TubeType* ) )
 {
-  //m_TubeNet.newTubeCallBack(newNewTubeCallBack);
-  TubeExtractor<TInputImage>::NewTubeCallBack(newTubeCallBack);
+  //m_TubeNet.newTubeCallBack( newNewTubeCallBack );
+  TubeExtractor<TInputImage>::NewTubeCallBack( newTubeCallBack );
 }
 
 /**
@@ -101,16 +101,16 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 bool
 TubeNetExtractor<TInputImage, TInputMask>
-::ExtractTube(float x, float y, float z)
+::ExtractTube( float x, float y, float z )
 {
-  /*if(TubeExtractor<TInputImage>::ExtractTube(x, y, z, m_TubeNum))
+  /*if( TubeExtractor<TInputImage>::ExtractTube( x, y, z, m_TubeNum ) )
     {
-    if(!m_Tube)
+    if( !m_Tube )
       {
       std::cout << "Extract Tube: TubeExtractor returns no tube !" << std::endl;
       return false;
       }
-    m_TubeNet->AddSpatialObject(m_Tube);
+    m_TubeNet->AddSpatialObject( m_Tube );
     m_TubeNum++;
     return true;
     }*/
@@ -122,10 +122,10 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 bool
 TubeNetExtractor<TInputImage, TInputMask>
-::DeleteTube(TubeType * newTube)
+::DeleteTube( TubeType * newTube )
 {
-  //TubeExtractor<TInputImage>::DeleteTube(newTube);
-  //return m_TubeNet->DeleteTube(newTube);
+  //TubeExtractor<TInputImage>::DeleteTube( newTube );
+  //return m_TubeNet->DeleteTube( newTube );
   return false;
 }
 
@@ -133,9 +133,9 @@ TubeNetExtractor<TInputImage, TInputMask>
 /**
  * Get the tube net */
 template<class TInputImage, class TInputMask>
-typename TubeNetExtractor<TInputImage, TInputMask>::TubePointer
+typename TubeNetExtractor<TInputImage, TInputMask>::TubeType::Pointer
 TubeNetExtractor<TInputImage, TInputMask>
-::GetTubeNet(void)
+::GetTubeNet( void )
 {
   return m_TubeNet;
 }
@@ -145,7 +145,7 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetExtractor<TInputImage, TInputMask>
-::SetAutoExtractMask(MaskPointer autoExtractMask)
+::SetAutoExtractMask( typename MaskType::Pointer autoExtractMask )
 {
   m_AEMask = autoExtractMask;
 }
@@ -155,7 +155,7 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 double
 TubeNetExtractor<TInputImage, TInputMask>
-::AutoExtractThresh(void)
+::AutoExtractThresh( void )
 {
   return m_AEThresh;
 }
@@ -165,7 +165,7 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetExtractor<TInputImage, TInputMask>
-::AutoExtractThresh(double newAEThresh)
+::AutoExtractThresh( double newAEThresh )
 {
   m_AEThresh = newAEThresh;
 }
@@ -175,38 +175,38 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetExtractor<TInputImage, TInputMask>
-::AutoExtractAutoThresh(double alpha)
+::AutoExtractAutoThresh( double alpha )
 {
-/*  vnl_vector<int> bin(256,0.0);
+/*  vnl_vector<int> bin( 256,0.0 );
   int i, j, k, l;
   long n;
   int bnd, tot;
   unsigned int size[ImageDimension];
-  for(unsigned int i=0;i<ImageDimension;i++)
+  for( unsigned int i=0;i<ImageDimension;i++ )
     {
     size[i]=m_Image->GetLargestPossibleRegion().GetSize()[i];
     }
   bin = 0.0;
   n = 0;
-  for(i=0; i<size[2]; i++)
+  for( i=0; i<size[2]; i++ )
     {
-    for(j=0; j<size[1]; j++)
+    for( j=0; j<size[1]; j++ )
       {
-      for(k=0; k<size[0]; k++)
+      for( k=0; k<size[0]; k++ )
         {
         ImageType::IndexType index;
         index[0]=k;
         index[1]=j;
         index[2]=i;
-        if(!m_AEUseMask || m_AEMask->GetPixel(index)>0)
+        if( !m_AEUseMask || m_AEMask->GetPixel( index )>0 )
           {
-          l = (m_Image->GetPixel(index)-m_RidgeOp->GetDataMin())
-              / (m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin())*255;
-          if(l<0)
+          l = ( m_Image->GetPixel( index )-m_RidgeOp->GetDataMin() )
+              / ( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )*255;
+          if( l<0 )
             {
             l = 0;
             }
-          if(l>255)
+          if( l>255 )
             {
             l = 255;
             }
@@ -216,17 +216,17 @@ TubeNetExtractor<TInputImage, TInputMask>
         }
       }
     }
-  bnd = (int)(alpha*n);
-  if(n > 0)
+  bnd = ( int )( alpha*n );
+  if( n > 0 )
     {
     tot=0;
-    for(l=255; l>=0; l--)
+    for( l=255; l>=0; l-- )
       {
       tot += bin[l];
-      if(tot>bnd)
+      if( tot>bnd )
         break;
       }
-    m_AEThresh = (l+0.5)/256.0*(m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin())+m_RidgeOp->GetDataMin();
+    m_AEThresh = ( l+0.5 )/256.0*( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )+m_RidgeOp->GetDataMin();
     }
   else
     {
@@ -241,45 +241,45 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 bool
 TubeNetExtractor<TInputImage, TInputMask>
-::AutoExtract(int , int ) // zMin, int zMax)
+::AutoExtract( int , int ) // zMin, int zMax )
 {
 /*  itk::Size<3> size;
   size = m_Image->GetLargestPossibleRegion().GetSize();
 
   int i, j, k;
-  for(i=zMin; i<zMax; i++)
+  for( i=zMin; i<zMax; i++ )
     {
-    for(j=5; j<size[1]-5; j++)
+    for( j=5; j<size[1]-5; j++ )
       {
-      for(k=5; k<size[0]-5; k++)
+      for( k=5; k<size[0]-5; k++ )
         {
         Index<3> index;
         index[0]=k;
         index[1]=j;
         index[2]=i;
-        if( (!m_AEUseMask || m_AEMask->GetPixel(index)>0)
-            && m_Image->GetPixel(index) > m_AEThresh
-            && m_RidgeOp->GetDataMask()->GetPixel(index) == 0 )
+        if( ( !m_AEUseMask || m_AEMask->GetPixel( index )>0 )
+            && m_Image->GetPixel( index ) > m_AEThresh
+            && m_RidgeOp->GetDataMask()->GetPixel( index ) == 0 )
           {
-          ExtractTube(k, j, i);
+          ExtractTube( k, j, i );
           }
         }
 
-      if(j/10 == j/10.0 && m_StatusCallBack)
+      if( j/10 == j/10.0 && m_StatusCallBack )
         {
         char s[80];
-        sprintf(s, "%d.%d of %d.%d", i, j, size[2]-1,size[1]-1);
-        m_StatusCallBack("Auto Extract", s, 0);
-        if(m_IdleCallBack)
+        sprintf( s, "%d.%d of %d.%d", i, j, size[2]-1,size[1]-1 );
+        m_StatusCallBack( "Auto Extract", s, 0 );
+        if( m_IdleCallBack )
           {
           m_IdleCallBack();
           }
         }
       }
     }
-  if(m_StatusCallBack)
+  if( m_StatusCallBack )
     {
-    m_StatusCallBack("Auto Extract", "Done!", 1);
+    m_StatusCallBack( "Auto Extract", "Done!", 1 );
     }
 */
   return true;
@@ -290,20 +290,67 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetExtractor<TInputImage, TInputMask>
-::DrawVesselMask(MaskType * ) // mask)
+::DrawVesselMask( MaskType * ) // mask )
 {
  /* // Needs to iterate
-  TubeType::ChildrenListType * tubeList = m_TubeNet->GetChildren(0, "Tube");
+  TubeType::ChildrenListType * tubeList = m_TubeNet->GetChildren( 0, "Tube" );
   TubeType::ChildrenListType::iterator tubeIt;
 
   tubeIt = tubeList->begin();
-  while(tubeIt != tubeList->end())
+  while( tubeIt != tubeList->end() )
     {
-    m_RidgeOp->DrawTube<MaskType>(mask, dynamic_cast<TubeType *>((*tubeIt).GetPointer()));
+    m_RidgeOp->DrawTube<MaskType>( mask, dynamic_cast<TubeType *>( ( *tubeIt ).GetPointer() ) );
     ++tubeIt;
     }
   tubeList->clear();
 */
+}
+
+
+/**
+ * PrintSelf */
+template<class TInputImage, class TInputMask>
+void
+TubeNetExtractor<TInputImage, TInputMask>
+::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  Superclass::PrintSelf( os, indent );
+
+  if( m_Image.IsNotNull() )
+    {
+    os << indent << "Image = " << m_Image << std::endl;
+    }
+  else
+    {
+    os << indent << "Image = NULL" << std::endl;
+    }
+  os << indent << "TubeNum = " << m_TubeNum << std::endl;
+  if( m_TubeNet.IsNotNull() )
+    {
+    os << indent << "TubeNet = " << m_TubeNet << std::endl;
+    }
+  else
+    {
+    os << indent << "TubeNet = NULL" << std::endl;
+    }
+  if( m_AEUseMask )
+    {
+    os << indent << "AEUseMask = True" << std::endl;
+    }
+  else
+    {
+    os << indent << "AEUseMask = False" << std::endl;
+    }
+  if( m_AEMask.IsNotNull() )
+    {
+    os << indent << "AEMask = " << m_AEMask << std::endl;
+    }
+  else
+    {
+    os << indent << "AEMask = NULL" << std::endl;
+    }
+  os << indent << "AEThresh = " << m_AEThresh << std::endl;
+
 }
 
 }; // end namespace tube

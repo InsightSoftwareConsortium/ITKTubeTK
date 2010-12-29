@@ -42,7 +42,6 @@ template<class TInputImage>
 TubeExtractor<TInputImage>
 ::TubeExtractor()
 {
-  m_Debug = true;
   m_IdleCallBack = NULL;
   m_StatusCallBack = NULL;
   m_NewTubeCallBack = NULL;
@@ -63,7 +62,7 @@ TubeExtractor<TInputImage>
 template<class TInputImage>
 void
 TubeExtractor<TInputImage>
-::SetInputImage(ImagePointer inputImage )
+::SetInputImage(typename ImageType::Pointer inputImage )
 {
   m_Image = inputImage;
 
@@ -217,13 +216,16 @@ TubeExtractor<TInputImage>
 
   if(!m_Tube)
     {
-    if(m_Debug) std::cout << "m_RidgeOp->Extract() fails !" << std::endl;
+    if( this->Debug() )
+      {
+      std::cout << "m_RidgeOp->Extract() fails !" << std::endl;
+      }
     return false;
     }
 
   // Set the Spacing of the tube as the same spacing of the image
-  double spacing[3];
-  for(unsigned int i=0;i<3;i++)
+  typename ImageType::SpacingType spacing;
+  for(unsigned int i=0; i<ImageDimension; i++)
     {
     spacing[i] = m_Image->GetSpacing()[i];
     }
@@ -286,7 +288,7 @@ bool
 /**
  * Get the last tube extracted */
 template<class TInputImage>
-typename TubeExtractor<TInputImage>::TubePointer
+typename TubeExtractor<TInputImage>::TubeType::Pointer
   TubeExtractor<TInputImage>
 ::GetLastTube(void)
 {
@@ -298,9 +300,12 @@ typename TubeExtractor<TInputImage>::TubePointer
 template<class TInputImage>
 void
   TubeExtractor<TInputImage>
-::SetColor(float* color)
+::SetColor(float color[4])
 {
-  m_Color = color;
+  for( unsigned int i=0; i<4; i++ )
+    {
+    m_Color[i] = color[i];
+    }
 }
 
 
@@ -354,6 +359,30 @@ void
 ::AbortProcess(bool (*abortProcess)())
 {
   m_AbortProcess = abortProcess;
+}
+
+/**
+ * PrintSelf */
+template<class TInputImage>
+void TubeExtractor<TInputImage>
+::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  Superclass::PrintSelf( os, indent );
+
+  if( m_Image.IsNotNull() )
+    {
+    os << indent << "Image = " << m_Image << std::endl;
+    }
+  else
+    {
+    os << indent << "Image = NULL" << std::endl;
+    }
+
+  os << indent << "X = " << m_X << std::endl;
+  os << indent << "Color.r = " << m_Color[0] << std::endl;
+  os << indent << "Color.g = " << m_Color[1] << std::endl;
+  os << indent << "Color.b = " << m_Color[2] << std::endl;
+  os << indent << "Color.a = " << m_Color[3] << std::endl;
 }
 
 }; // end namespace tube

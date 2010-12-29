@@ -159,5 +159,32 @@ bool Optimizer1D::extreme( double * x, double * xVal )
   return cExtreme( x, xVal );
 }
 
+void Optimizer1D::PrintSelf( std::ostream & os ) const
+{
+  if( cDefined )
+    {
+    os << "cDefined = True" << std::endl;
+    }
+  else
+    {
+    os << "cDefined = False" << std::endl;
+    }
+  os << "cXMin = " << cXMin << std::endl;
+  os << "cXMax = " << cXMax << std::endl;
+  os << "cXStep = " << cXStep << std::endl;
+  if( cSearchForMin )
+    {
+    os << "cSearchForMin = True" << std::endl;
+    }
+  else
+    {
+    os << "cSearchForMin = False" << std::endl;
+    }
+  os << "cTolerance = " << cTolerance << std::endl;
+  os << "cMaxIterations = " << cMaxIterations << std::endl;
+  os << "cFuncVal = " << cFuncVal << std::endl;
+  os << "cFuncDeriv = " << cFuncDeriv << std::endl;
+}
+
 
 } // end namespace tube

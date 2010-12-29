@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -56,163 +56,158 @@ public:
   typedef SmartPointer<const Self>  ConstPointer;
 
   /**
-   * Run-time type information (and related methods). */
-  itkTypeMacro(TubeExtractor, Object);
+   * Run-time type information ( and related methods ). */
+  itkTypeMacro( TubeExtractor, Object );
 
-  itkNewMacro(TubeExtractor);
+  itkNewMacro( TubeExtractor );
 
   /**
    * Type definition for the input image. */
   typedef TInputImage                        ImageType;
 
   /**
-   * Pointer type for the image */
-  typedef typename ImageType::Pointer      ImagePointer;
-
-  /**
-   * Const Pointer type for the image */
-  typedef typename ImageType::ConstPointer ImageConstPointer;
+   * Standard for the number of dimension
+   */
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    ::itk::GetImageDimension<TInputImage>::ImageDimension );
 
   /**
    * Type definition for the input image pixel type. */
-  typedef typename ImageType::PixelType    PixelType;
+  typedef typename ImageType::PixelType                 PixelType;
 
   /**  Type definition for TubeSpatialObjec*/
-  typedef VesselTubeSpatialObject<3>         TubeType;
-  typedef typename TubeType::Pointer         TubePointer;
-  typedef typename TubeType::TubePointType   TubePointType;
+  typedef VesselTubeSpatialObject< ImageDimension >     TubeType;
+  typedef typename TubeType::TubePointType              TubePointType;
 
   /**
    * Type definition for the input image pixel type. */
-  typedef ContinuousIndex<double, 3>  ContinuousIndexType;
+  typedef ContinuousIndex<double,  ImageDimension >     ContinuousIndexType;
 
   /**
    * Defines the type of vectors used */
-  typedef itk::Vector<double, 3>                     VectorType;
+  typedef itk::Vector<double,  ImageDimension >         VectorType;
 
-  /**
-   * Standard for the number of dimension
-   */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      ::itk::GetImageDimension<TInputImage>::ImageDimension);
 
   /**
    * Set the input image */
-  void SetInputImage(ImagePointer inputImage);
+  void SetInputImage( typename ImageType::Pointer inputImage );
 
   /**
    * Get the input image */
-  itkGetConstObjectMacro(Image,ImageType);
+  itkGetConstObjectMacro( Image, ImageType );
 
   /**
    * Set Data Minimum */
-  void SetDataMin(double dataMin);
+  void SetDataMin( double dataMin );
 
   /**
    * Get Data Minimum */
-  double GetDataMin(void);
+  double GetDataMin( void );
 
   /**
    * Set Data Maximum */
-  void SetDataMax(double dataMax);
+  void SetDataMax( double dataMax );
 
   /**
    * Get Data Maximum */
-  double GetDataMax(void);
+  double GetDataMax( void );
 
   /**
    * Set the radius */
-  void SetRadius(double radius);
+  void SetRadius( double radius );
 
   /**
    * Get the radius */
-  double GetRadius(void);
+  double GetRadius( void );
 
   /**
    * Set Extract Ridge */
-  void ExtractRidge(bool extractRidge);
+  void ExtractRidge( bool extractRidge );
 
   /**
    * Get Extract Ridge */
-  bool ExtractRidge(void);
+  bool ExtractRidge( void );
 
   /**
    * Set Extract Valley */
-  void ExtractValley(bool extractValley);
+  void ExtractValley( bool extractValley );
 
   /**
    * Get Extract Valley */
-  bool ExtractValley(void);
+  bool ExtractValley( void );
 
   /**
    * Get the ridge extractor */
-  typename RidgeExtractor<ImageType>::Pointer GetRidgeOp(void);
+  typename RidgeExtractor<ImageType>::Pointer GetRidgeOp( void );
 
   /**
    * Get the radius extractor */
-  typename RadiusExtractor<ImageType>::Pointer GetRadiusOp(void);
+  typename RadiusExtractor<ImageType>::Pointer GetRadiusOp( void );
 
   /**
-   * Extract the 3D tube given the position of the first point
+   * Extract the ND tube given the position of the first point
    * and the tube ID */
-  bool ExtractTube(float x, float y, float z, unsigned int tubeID);
+  bool ExtractTube( float x, float y, float z, unsigned int tubeID );
 
   /**
    * Delete a tube */
-  bool DeleteTube(TubeType* tube);
+  bool DeleteTube( TubeType* tube );
 
   /**
    * Get the last tube extracted */
-  TubePointer GetLastTube(void);
+  typename TubeType::Pointer GetLastTube( void );
 
   /**
    * Get the last position */
-  ContinuousIndexType   GetLastPosition(void);
+  ContinuousIndexType   GetLastPosition( void );
 
   /**
    * Set the tube color */
-  void SetColor(float* color);
+  void SetColor( float color[4] );
 
   /**
    * Get the tube color */
-  itkGetMacro(Color,float*);
+  itkGetMacro( Color, float * );
 
   /**
    * Set the idle callback */
-  void   IdleCallBack(bool (*idleCallBack)());
+  void   IdleCallBack( bool ( *idleCallBack )() );
 
   /**
    * Set the status callback */
-  void   StatusCallBack(void (*statusCallBack)(char *, char *, int));
+  void   StatusCallBack( void ( *statusCallBack )( char *, char *, int ) );
 
   /**
    * Set the tube callback */
-  void   NewTubeCallBack(void (*newTubeCallBack)(TubeType *));
+  void   NewTubeCallBack( void ( *newTubeCallBack )( TubeType * ) );
 
   /**
    * Set the status callback */
-  void   AbortProcess(bool (*abortProcess)());
+  void   AbortProcess( bool ( *abortProcess )() );
 
 protected:
+
   TubeExtractor();
   virtual ~TubeExtractor();
-  TubeExtractor(const Self&) {}
-  void operator=(const Self&) {}
+  TubeExtractor( const Self& ) {}
+  void operator=( const Self& ) {}
+
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   typename RidgeExtractor<ImageType>::Pointer  m_RidgeOp;
   typename RadiusExtractor<ImageType>::Pointer m_RadiusOp;
-  TubePointer                                  m_Tube;
-  bool (*m_IdleCallBack)();
-  void (*m_StatusCallBack)(char *, char *, int);
-  void (*m_NewTubeCallBack)(TubeType *);
-  bool (*m_AbortProcess)();
+  typename TubeType::Pointer                   m_Tube;
+
+  bool ( *m_IdleCallBack )();
+  void ( *m_StatusCallBack )( char *, char *, int );
+  void ( *m_NewTubeCallBack )( TubeType * );
+  bool ( *m_AbortProcess )();
 
 private:
 
-  bool                     m_Debug;
-  ImagePointer             m_Image;
-  ContinuousIndexType      m_X;
-  float *                  m_Color;
+  typename ImageType::Pointer  m_Image;
+  ContinuousIndexType          m_X;
+  float                        m_Color[4];
 
 };
 

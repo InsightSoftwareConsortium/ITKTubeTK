@@ -322,6 +322,8 @@ protected:
   RidgeExtractor(const Self&) {}
   void operator=(const Self&) {}
 
+  void PrintSelf( std::ostream & os, Indent indent ) const;
+
   /**
    * Traverse the ridge one way */
   bool  TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
@@ -373,7 +375,7 @@ private:
   VectorType                                       m_XHEVal;
   MatrixType                                       m_XHEVect;
 
-  typename TubeType::Pointer                                m_Tube;
+  typename TubeType::Pointer                       m_Tube;
 
   bool  (*m_IdleCallBack)();
   void  (*m_StatusCallBack)(const char *, const char *, int);

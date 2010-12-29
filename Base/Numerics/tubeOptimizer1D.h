@@ -47,6 +47,7 @@ namespace tube
 class Optimizer1D
 {
 protected :
+
   bool         cDefined;
   double       cXMin;
   double       cXMax;
@@ -103,6 +104,8 @@ public :
   void     searchForMin( bool newSearchForMin );
 
   bool     extreme( double * x, double * xVal );
+
+  void     PrintSelf( std::ostream & os ) const;
 
 };
 

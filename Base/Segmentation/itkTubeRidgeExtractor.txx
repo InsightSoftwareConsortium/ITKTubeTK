@@ -476,6 +476,100 @@ RidgeExtractor<TInputImage>
 }
 
 /**
+ * PrintSelf
+ */
+template<class TInputImage>
+void
+RidgeExtractor<TInputImage>
+::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  Superclass::PrintSelf( os, indent );
+
+  if( m_Image.IsNotNull() )
+    {
+    os << indent << "Image = " << m_Image << std::endl;
+    }
+  else
+    {
+    os << indent << "Image = NULL" << std::endl;
+    }
+  if( m_DataMask.IsNotNull() )
+    {
+    os << indent << "DataMask = " << m_DataMask << std::endl;
+    }
+  else
+    {
+    os << indent << "DataMask = NULL" << std::endl;
+    }
+  if( m_DataFunc.IsNotNull() )
+    {
+    os << indent << "DataFunc = " << m_DataFunc << std::endl;
+    }
+  else
+    {
+    os << indent << "DataFunc = NULL" << std::endl;
+    }
+  os << std::endl;
+
+  if( m_DynamicScale )
+    {
+    os << indent << "DynamicScale = True" << std::endl;
+    }
+  else
+    {
+    os << indent << "DynamicScale = False" << std::endl;
+    }
+  os << indent << "DynamicScaleUsed = " << m_DynamicScaleUsed << std::endl;
+  os << indent << "RadiusExtractor = " << m_RadiusExtractor << std::endl;
+  os << indent << "RecoveryMax = " << m_RecoveryMax << std::endl;
+  os << indent << "DataMin = " << m_DataMin << std::endl;
+  os << indent << "DataMax = " << m_DataMax << std::endl;
+  os << indent << "DataRange = " << m_DataRange << std::endl;
+  os << indent << "StepX = " << m_StepX << std::endl;
+  os << indent << "ThreshT = " << m_ThreshT << std::endl;
+  os << indent << "ThreshX = " << m_ThreshX << std::endl;
+  os << indent << "ExtractBoundMin = " << m_ExtractBoundMin << std::endl;
+  os << indent << "ExtractBoundMax = " << m_ExtractBoundMax << std::endl;
+  os << indent << "DataSpline1D = " << std::endl;
+  m_DataSpline1D.PrintSelf( os );
+  os << indent << "DataSplineOpt = " << std::endl;
+  m_DataSplineOpt.PrintSelf( os );
+  os << indent << "DataSpline = " << m_DataSpline << std::endl;
+  os << indent << "SplineValueFunc = " << m_SplineValueFunc << std::endl;
+  os << indent << "ThreshRidgeness = " << m_ThreshRidgeness << std::endl;
+  os << indent << "ThreshRidgenessStart = " << m_ThreshRidgenessStart 
+    << std::endl;
+  os << indent << "ThreshRoundness = " << m_ThreshRoundness << std::endl;
+  os << indent << "ThreshRoundnessStart = " << m_ThreshRoundnessStart 
+    << std::endl;
+  os << indent << "ThreshCurvature = " << m_ThreshCurvature << std::endl;
+  os << indent << "ThreshCurvatureStart = " << m_ThreshCurvatureStart 
+    << std::endl;
+  os << std::endl;
+
+  os << indent << "X = " << m_X << std::endl;
+  os << indent << "XP = " << m_XP << std::endl;
+  os << indent << "XVal = " << m_XVal << std::endl;
+  os << indent << "XD = " << m_XD << std::endl;
+  os << indent << "XH = " << m_XH << std::endl;
+  os << indent << "XHEVal = " << m_XHEVal << std::endl;
+  os << indent << "XHEVect = " << m_XHEVect << std::endl;
+  os << std::endl;
+
+  if( m_Tube.IsNotNull() )
+    {
+    os << indent << "Tube = " << m_Tube << std::endl;
+    }
+  else
+    {
+    os << indent << "Tube = NULL" << std::endl;
+    }
+
+  os << indent << "IdleCallBack = " << m_IdleCallBack << std::endl;
+  os << indent << "StatusCallBack = " << m_StatusCallBack << std::endl;
+}
+
+/**
  * Traverse one way **/
 template<class TInputImage>
 bool
