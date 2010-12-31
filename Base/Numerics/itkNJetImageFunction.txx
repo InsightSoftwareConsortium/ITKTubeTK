@@ -2407,15 +2407,10 @@ NJetImageFunction<TInputImage>
             * eigSys.get_eigenvalue(order[i]);
     if( eigSys.get_eigenvalue(order[i]) >= 0 )
       {
-      std::cout << "pos" << std::endl;
       ridge = -1;
       }
     }
   sums /= (ImageDimension-1);
-  if( eigSys.get_eigenvalue( ImageDimension-1 ) >= 0 )
-    {
-    std::cout << "pos" << std::endl;
-    }
   if( sumv != 0 )
     {
     sumv /= (sumv + eigSys.get_eigenvalue(order[ImageDimension-1]) 
