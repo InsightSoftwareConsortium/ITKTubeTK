@@ -361,3 +361,13 @@ install(
   DESTINATION doc
   )
 
+#-----------------------------------------------------------------------------
+# Configure a launcher for running tubetk methods from the cmdline in windows
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.bat.in
+                ${TubeTK_BINARY_DIR}/tubeLauncher.bat @ONLY )
+
+#-----------------------------------------------------------------------------
+# Configure a launcher for running tubetk methods from the cmdline in linux
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.sh.in
+                ${TubeTK_BINARY_DIR}/tubeLauncher.sh @ONLY )
+
