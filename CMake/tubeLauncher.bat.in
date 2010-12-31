@@ -1,30 +1,30 @@
-::#############################################################################
-::
-:: Library:   TubeTK
-::
-:: Copyright 2010 Kitware Inc. 28 Corporate Drive,
-:: Clifton Park, NY, 12065, USA.
-::
-:: All rights reserved.
-::
-:: Licensed under the Apache License, Version 2.0 (the "License");
-:: you may not use this file except in compliance with the License.
-:: You may obtain a copy of the License at
-::
-::       http://www.apache.org/licenses/LICENSE-2.0
-::
-:: Unless required by applicable law or agreed to in writing, software
-:: distributed under the License is distributed on an "AS IS" BASIS,
-:: WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-:: See the License for the specific language governing permissions and
-:: limitations under the License.
-::
-::#############################################################################
+REM ###########################################################################
+REM
+REM  Library:   TubeTK
+REM
+REM  Copyright 2010 Kitware Inc. 28 Corporate Drive,
+REM  Clifton Park, NY, 12065, USA.
+REM
+REM  All rights reserved.
+REM
+REM  Licensed under the Apache License, Version 2.0 (the "License");
+REM  you may not use this file except in compliance with the License.
+REM  You may obtain a copy of the License at
+REM
+REM        http://www.apache.org/licenses/LICENSE-2.0
+REM
+REM  Unless required by applicable law or agreed to in writing, software
+REM  distributed under the License is distributed on an "AS IS" BASIS,
+REM  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+REM  See the License for the specific language governing permissions and
+REM  limitations under the License.
+REM
+REM ###########################################################################
 
 set OLD_PATH=%PATH%
 
-set PATH="@TubeTK_BINARY_DIR@/ModuleDescriptionParser-Build/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/GenerateCLP-Build/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/Insight-Build/bin/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/VTK-Build/bin/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/TubeTK-Build/bin/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/TubeTK-Build/lib/TubeTK/Plugins/@CMAKE_BUILD_TYPE@;%PATH%"
+set PATH="@GenerateCLP-DIR@/@CMAKE_BUILD_TYPE@;@ITK_DIR@/bin/@CMAKE_BUILD_TYPE@;@VTK_DIR@/bin/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/bin/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/lib/TubeTK/Plugins/@CMAKE_BUILD_TYPE@;%PATH%"
 
-start %*
+%*
 
 set PATH=%OLD_PATH%
