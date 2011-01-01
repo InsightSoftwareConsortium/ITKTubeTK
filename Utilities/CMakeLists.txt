@@ -47,13 +47,18 @@ include( ${USE_ITK_FILE} )
 find_package( GenerateCLP REQUIRED )
 include( ${GenerateCLP_USE_FILE} )
 
-add_executable( ImageCompareCommand
-                ImageCompareCommand.cxx )
-target_link_libraries( ImageCompareCommand
-                         ${ITK_LIBRARIES} )
+add_executable( ImageCompareCommand ImageCompareCommand.cxx )
+target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
 
-slicer3_set_plugins_output_path( ImageCompareCommand )
-slicer3_install_plugins( ImageCompareCommand )
+add_executable( TextCompareCommand TextCompareCommand.cxx )
+target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} )
+
+slicer3_set_plugins_output_path( 
+  ImageCompareCommand 
+  TextCompareCommand )
+slicer3_install_plugins( 
+  ImageCompareCommand
+  TextCompareCommand )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

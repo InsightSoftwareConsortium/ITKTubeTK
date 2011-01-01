@@ -37,6 +37,9 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
+set( TEXTCOMPARE_EXE
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/TextCompareCommand )
+
 #######
 # Test1
 #######
@@ -290,9 +293,9 @@ add_test( ${PROJECT_NAME}Test14
 # Test14-Compare
 #######
 add_test( ${PROJECT_NAME}Test14-Compare
-            cmake -E compare_files 
-            ${TEMP}/${PROJECT_NAME}Test14.txt
-            ${BASELINE}/${PROJECT_NAME}Test14.txt )
+            ${TEXTCOMPARE_EXE}
+            -t ${TEMP}/${PROJECT_NAME}Test14.txt
+            -b ${BASELINE}/${PROJECT_NAME}Test14.txt )
 set_tests_properties( ${PROJECT_NAME}Test14-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test14 )
 
@@ -308,9 +311,9 @@ add_test( ${PROJECT_NAME}Test15
 # Test15-Compare
 #######
 add_test( ${PROJECT_NAME}Test15-Compare
-            cmake -E compare_files 
-            ${TEMP}/${PROJECT_NAME}Test15.txt
-            ${BASELINE}/${PROJECT_NAME}Test15.txt )
+            ${TEXTCOMPARE_EXE}
+            -t ${TEMP}/${PROJECT_NAME}Test15.txt
+            -b ${BASELINE}/${PROJECT_NAME}Test15.txt )
 set_tests_properties( ${PROJECT_NAME}Test15-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test15 )
 
