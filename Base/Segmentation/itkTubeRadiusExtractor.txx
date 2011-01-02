@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -42,64 +42,67 @@ namespace itk
 namespace tube
 {
 
-/** Define the Medialness Function */
+/** Define the Medialness Function
+ * \class RadiusExtractorMedialnessFunc
+ */
 template < class ImageT >
-class RadiusExtractorMedialnessFunc : public ::tube::UserFunc<int, double>
+class RadiusExtractorMedialnessFunc
+: public ::tube::UserFunc<int, double>
 {
-  public:
+public:
 
-    typedef itk::VesselTubeSpatialObject< ImageT::ImageDimension >
-                                                             TubeType;
-    typedef typename TubeType::TubePointType                 TubePointType;
+  typedef itk::VesselTubeSpatialObject< ImageT::ImageDimension >
+    TubeType;
+  typedef typename TubeType::TubePointType
+    TubePointType;
 
+  RadiusExtractorMedialnessFunc( RadiusExtractor< ImageT > *
+    newRadiusExtractor,
+    double newMedialnessScaleStep )
+    {
+    m_RadiusExtractor = newRadiusExtractor;
+    m_MedialnessScaleStep = newMedialnessScaleStep;
+    }
 
-    RadiusExtractorMedialnessFunc(
-      RadiusExtractor< ImageT > * newRadiusExtractor,
-      double newMedialnessScaleStep )
-      {
-      m_RadiusExtractor = newRadiusExtractor;
-      m_MedialnessScaleStep = newMedialnessScaleStep;
-      };
+  void SetKernelArray( std::vector<TubePointType> * newKernelArray )
+    {
+    m_KernelArray = newKernelArray;
+    }
 
-    void SetKernelArray( std::vector<TubePointType> * newKernelArray )
-      {
-      m_KernelArray = newKernelArray;
-      };
+  void SetMedialnessScaleStep( double newMedialnessScaleStep )
+    {
+    m_MedialnessScaleStep = newMedialnessScaleStep;
+    }
 
-    void SetMedialnessScaleStep( double newMedialnessScaleStep )
-      {
-      m_MedialnessScaleStep = newMedialnessScaleStep;
-      };
+  const double & value( const int & x )
+    {
+    double bness = 0;
 
-    const double & value( const int & x )
-      {
-      double bness = 0;
+    m_RadiusExtractor->ComputeMeasuresInKernelArray(
+      *m_KernelArray, x*m_MedialnessScaleStep, m_Value, bness, false );
 
-      m_RadiusExtractor->ComputeMeasuresInKernelArray(
-        *m_KernelArray, x*m_MedialnessScaleStep, m_Value, bness, false );
+    return m_Value;
+    }
 
-      return m_Value;
-      };
+  std::vector< TubePointType > * GetKernelArray( void  )
+    {
+    return m_KernelArray;
+    }
 
-    std::vector< TubePointType > * GetKernelArray( void  )
-      {
-      return m_KernelArray;
-      };
+  RadiusExtractor< ImageT > * GetRadiusExtractor( void  )
+    {
+    return m_RadiusExtractor;
+    }
 
-    RadiusExtractor< ImageT > * GetRadiusExtractor( void  )
-      {
-      return m_RadiusExtractor;
-      }
+private:
 
-  private:
+  std::vector<TubePointType>             * m_KernelArray;
 
-    std::vector<TubePointType>             * m_KernelArray;
+  RadiusExtractor< ImageT >              * m_RadiusExtractor;
 
-    RadiusExtractor< ImageT >              * m_RadiusExtractor;
+  double                                   m_Value;
 
-    double                                   m_Value;
-
-    double                                   m_MedialnessScaleStep;
+  double                                   m_MedialnessScaleStep;
 
 };
 
@@ -107,7 +110,7 @@ class RadiusExtractorMedialnessFunc : public ::tube::UserFunc<int, double>
 template<class TInputImage>
 RadiusExtractor<TInputImage>
 ::RadiusExtractor()
-{;
+{
   m_Image = NULL;
   m_ImageXMin.Fill( 0 );
   m_ImageXMax.Fill( -1 );
@@ -120,7 +123,11 @@ RadiusExtractor<TInputImage>
 
   m_NumKernelPoints = 5;
   m_KernelPointSpacing = 10;
+
   m_Radius0 = 1.0;
+  m_RadiusMin = 0.3;
+  m_RadiusMax = 10.0;
+
   m_ExtractRidge = true;
 
   m_ThreshMedialness = 0.04;       // 0.015; larger = harder
@@ -302,8 +309,6 @@ RadiusExtractor<TInputImage>
       }
     }
 }
-
-
 
 /**
  * Compute the medialness at a point
@@ -645,7 +650,7 @@ RadiusExtractor<TInputImage>
     {
     os << indent << "DataOp = NULL" << std::endl;
     }
-  os << indent << "MedialnessScaleStep = " << m_MedialnessScaleStep 
+  os << indent << "MedialnessScaleStep = " << m_MedialnessScaleStep
     << std::endl;
   os << indent << "MedialnessOpt = " << std::endl;
   m_MedialnessOpt.PrintSelf( os );
@@ -659,7 +664,7 @@ RadiusExtractor<TInputImage>
     os << indent << "MedialnessOptSpline = NULL" << std::endl;
     }
   os << indent << "NumKernelPoints = " << m_NumKernelPoints << std::endl;
-  os << indent << "KernelPointSpacing = " << m_KernelPointSpacing 
+  os << indent << "KernelPointSpacing = " << m_KernelPointSpacing
     << std::endl;
   if( m_ExtractRidge )
     {
@@ -1137,10 +1142,10 @@ RadiusExtractor<TInputImage>
   if( kernAvgCnt > 2 )
     {
     /* do the following code twice - once to remove the most-positive
-     * of the negative kernel values and once to remove the most-negative
-     * of the positive kernel values.   This increases the spread and
-     * provide insensitivity to local bumps/divots in the vessel boundary
-     */
+    * of the negative kernel values and once to remove the most-negative
+    * of the positive kernel values.   This increases the spread and
+    * provide insensitivity to local bumps/divots in the vessel boundary
+    */
     int iter = 0;
     while( iter < 2 )
       {
@@ -1297,6 +1302,7 @@ RadiusExtractor<TInputImage>
   double pntR = m_Radius0;
   double prevPntR = m_Radius0;
   double mness = 0;
+
   unsigned int kernMid = ( m_NumKernelPoints - 1 ) / 2;
 
   KernArrayType pntKernArray;
@@ -1735,8 +1741,8 @@ RadiusExtractor<TInputImage>
 }
 
 
-}; // end namespace tube
+} // end namespace tube
 
-}; // end namespace itk
+} // end namespace itk
 
 #endif

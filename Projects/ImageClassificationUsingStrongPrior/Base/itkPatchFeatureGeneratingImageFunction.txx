@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ PatchFeatureGeneratingImageFunction< TInputImage, TCoordRep >
     / imageN.Size();
   float priorMean = std::accumulate( priorN.Begin(), priorN.End(), 0.0 )
     / imageN.Size();
-      
+
   std::transform( imageN.Begin(), imageN.End(),
                  normalizedImagePatch.begin(),
                  std::bind2nd( std::minus<float>(), imageMean ) );
@@ -102,7 +102,7 @@ PatchFeatureGeneratingImageFunction< TInputImage, TCoordRep >
     normalizedPriorPatch.begin(), normalizedPriorPatch.end(),
     normalizedPriorPatch.begin(), 0.0 ) / ( priorN.Size() - 1 ) );
 
-  float imageNorm = std::sqrt( std::inner_product( 
+  float imageNorm = std::sqrt( std::inner_product(
     normalizedImagePatch.begin(), normalizedImagePatch.end(),
     normalizedImagePatch.begin(), 0.0 ) );
 
@@ -116,7 +116,7 @@ PatchFeatureGeneratingImageFunction< TInputImage, TCoordRep >
       normalizedImagePatch.end(), normalizedImagePatch.begin(),
       std::bind2nd( std::divides<float>(), imageNorm ) );
     }
-        
+
   if( priorNorm > 0.0 )
     {
     std::transform( normalizedPriorPatch.begin(),

@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 

@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -118,7 +118,7 @@ TubeExtractor<TInputImage>
 }
 
 /**
- * Set Radius*/
+ * Set Radius */
 template<class TInputImage>
 void
 TubeExtractor<TInputImage>
@@ -129,7 +129,7 @@ TubeExtractor<TInputImage>
 }
 
 /**
- * Get Radius*/
+ * Get Radius */
 template<class TInputImage>
 double
 TubeExtractor<TInputImage>
@@ -385,8 +385,8 @@ void TubeExtractor<TInputImage>
   os << indent << "Color.a = " << m_Color[3] << std::endl;
 }
 
-}; // end namespace tube
+} // end namespace tube
 
-}; // end namespace itk
+} // end namespace itk
 
 #endif

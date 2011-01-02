@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -104,19 +104,19 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
   m_PriorCalcLarge->SetDataMax( m_PriorDataMin );
 
   m_AddJHCalc = HistCalcType::New();
-  m_AddJHCalc->SetInputImage( this->GetInputImage() ); 
+  m_AddJHCalc->SetInputImage( this->GetInputImage() );
   m_AddJHCalc->SetInputMask( m_Prior );
   m_AddJHCalc->SetMeanHistogram( m_AddMeanHist );
   m_AddJHCalc->SetStandardDeviationHistogram( m_AddStdevHist );
 
   m_SubJHCalc = HistCalcType::New();
-  m_SubJHCalc->SetInputImage( this->GetInputImage() ); 
+  m_SubJHCalc->SetInputImage( this->GetInputImage() );
   m_SubJHCalc->SetInputMask( m_Prior );
   m_SubJHCalc->SetMeanHistogram( m_SubMeanHist );
   m_SubJHCalc->SetStandardDeviationHistogram( m_SubStdevHist );
 
   m_NomJHCalc = HistCalcType::New();
-  m_NomJHCalc->SetInputImage( this->GetInputImage() ); 
+  m_NomJHCalc->SetInputImage( this->GetInputImage() );
   m_NomJHCalc->SetInputMask( m_Prior );
   m_NomJHCalc->SetMeanHistogram( m_NormMeanHist );
   m_NomJHCalc->SetStandardDeviationHistogram( m_NormStdevHist );
@@ -143,7 +143,7 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
   double roundness = 0;
   double curvature = 0;
   double zAdd, zSub, zNom;
-      
+
   v1sg = m_PriorCalcSmall->Ridgeness( index, roundness,
                                     curvature );
   v1mg = m_PriorCalcMedium->Ridgeness( index, roundness,
@@ -157,7 +157,7 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
                                      curvature );
   v1le = m_InputCalcLarge->Ridgeness( index, roundness,
                                     curvature );
-  
+
   double pS = m_PriorCalcSmall->Intensity( index );
   double pM = m_PriorCalcMedium->Intensity( index );
   double pL = m_PriorCalcLarge->Intensity( index );
@@ -182,10 +182,10 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
     {
     v2e = 0;
     }
-      
+
   v3g = pM;
   v3e = iM;
-      
+
   zAdd = m_AddJHCalc->EvaluateAtIndex( index );
   zSub = m_SubJHCalc->EvaluateAtIndex( index );
   zNom = m_NomJHCalc->EvaluateAtIndex( index );
@@ -194,7 +194,7 @@ StandardFeatureGeneratingImageFunction<TInputImage,TCoordRep>
 
   out[0] = v1sg-v1se;
   out[1] = v1mg-v1me;
-  out[2] = v1lg-v1le; 
+  out[2] = v1lg-v1le;
   out[3] = v2g-v2e;
   out[4] = v3g-v3e;
   out[5] = zAdd;

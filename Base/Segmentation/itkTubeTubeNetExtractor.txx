@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -66,21 +66,22 @@ TubeNetExtractor<TInputImage, TInputMask>
   m_Image = inputImage;
   m_TubeNum = 0;
 
-  //m_TubeNet->GetTubes()->clear();
-  //m_TubeNet->SetNumDimensions( 3 );
   /*
-     vnl_vector<unsigned int> size_( 3 );
-     ImageType::SizeType imageSize = m_Image->GetLargestPossibleRegion().GetSize();
+  m_TubeNet->GetTubes()->clear();
+  m_TubeNet->SetNumDimensions( 3 );
+  vnl_vector<unsigned int> size_( 3 );
+  ImageType::SizeType imageSize =
+  m_Image->GetLargestPossibleRegion().GetSize();
 
-     for( unsigned int i=0;i<ImageDimension;i++ )
-     {
-     size_( i ) = imageSize[i];
-     }
+  for( unsigned int i=0;i<ImageDimension;i++ )
+    {
+    size_( i ) = imageSize[i];
+    }
 
-     m_TubeNet->SetDimSize( size_ );
-   */
+  m_TubeNet->SetDimSize( size_ );
+  */
+
   TubeExtractor<TInputImage>::SetInputImage( m_Image );
-
 
   m_AEThresh = 0;
 }
@@ -107,7 +108,8 @@ TubeNetExtractor<TInputImage, TInputMask>
     {
     if( !m_Tube )
       {
-      std::cout << "Extract Tube: TubeExtractor returns no tube !" << std::endl;
+      std::cout << "Extract Tube: TubeExtractor returns no tube !"
+        << std::endl;
       return false;
       }
     m_TubeNet->AddSpatialObject( m_Tube );
@@ -224,9 +226,13 @@ TubeNetExtractor<TInputImage, TInputMask>
       {
       tot += bin[l];
       if( tot>bnd )
+        {
         break;
+        }
       }
-    m_AEThresh = ( l+0.5 )/256.0*( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )+m_RidgeOp->GetDataMin();
+    m_AEThresh = ( l + 0.5 ) / 256.0 *
+      ( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )
+      + m_RidgeOp->GetDataMin();
     }
   else
     {
@@ -292,18 +298,21 @@ void
 TubeNetExtractor<TInputImage, TInputMask>
 ::DrawVesselMask( MaskType * ) // mask )
 {
- /* // Needs to iterate
-  TubeType::ChildrenListType * tubeList = m_TubeNet->GetChildren( 0, "Tube" );
+  /* // Needs to iterate
+  TubeType::ChildrenListType * tubeList =
+    m_TubeNet->GetChildren( 0, "Tube" );
   TubeType::ChildrenListType::iterator tubeIt;
 
   tubeIt = tubeList->begin();
   while( tubeIt != tubeList->end() )
     {
-    m_RidgeOp->DrawTube<MaskType>( mask, dynamic_cast<TubeType *>( ( *tubeIt ).GetPointer() ) );
+    m_RidgeOp->DrawTube<MaskType>( mask,
+      dynamic_cast<TubeType *>( ( *tubeIt ).GetPointer() ) );
     ++tubeIt;
     }
+
   tubeList->clear();
-*/
+  */
 }
 
 
@@ -353,8 +362,8 @@ TubeNetExtractor<TInputImage, TInputMask>
 
 }
 
-}; // end namespace tube
+} // end namespace tube
 
-}; // end namespace itk
+} // end namespace itk
 
 #endif
