@@ -47,7 +47,8 @@ if( res GREATER 0 OR res LESS 0 OR "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
   ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
   ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
   ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-  ctest_submit( PARTS Notes Start Update Configure Build Test )
+  ctest_submit()
+
   set( ENV{TUBETK_FORCE_BUILD} "1" )
 
 else()

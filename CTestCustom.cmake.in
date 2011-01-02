@@ -60,6 +60,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkFixedPointVolumeRayCastCompositeShadeHelper"
     "vtkFixedPointVolumeRay"
     "vtkSeedRepresentation"
+    "vtkGeoAdaptiveArcs"
     "QtSql"
     "qhash"
     "qlist"

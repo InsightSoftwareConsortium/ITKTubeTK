@@ -316,7 +316,6 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
-    -DTubeTK_BUILD_Project_ImageClass:BOOL=${TubeTK_BUILD_Project_ImageClass}
     -DTubeTK_USE_FANN:BOOL=${TubeTK_USE_FANN}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
