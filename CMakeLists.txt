@@ -65,7 +65,7 @@ option( TubeTK_USE_KWSTYLE
   OFF )
 mark_as_advanced( TubeTK_USE_KWSTYLE )
 if( TubeTK_USE_KWSTYLE )
-  find_program( kWSTYLE_EXECUTABLE
+  find_program( KWSTYLE_EXECUTABLE
     NAMES KWStyle
     PATHS /usr/local/bin
     )
