@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -55,7 +55,7 @@ public:
     m_Ridge = newRidgeExtractor;
     m_XVal = 0;
     m_XIndx.Fill( 0 );
-    };
+    }
 
   const double & value( const vnl_vector<int> & x )
     {
@@ -67,7 +67,7 @@ public:
     m_XVal = m_Ridge->Intensity( m_XIndx );
 
     return m_XVal;
-    };
+    }
 
 protected:
 
@@ -288,7 +288,7 @@ RidgeExtractor<TInputImage>
 }
 
 /**
- * Get the data spline 1D*/
+ * Get the data spline 1D */
 template<class TInputImage>
 ::tube::Spline1D *
 RidgeExtractor<TInputImage>
@@ -298,7 +298,7 @@ RidgeExtractor<TInputImage>
 }
 
 /**
- * Get the data spline optimizer*/
+ * Get the data spline optimizer */
 template<class TInputImage>
 ::tube::Optimizer1D *
 RidgeExtractor<TInputImage>
@@ -537,13 +537,13 @@ RidgeExtractor<TInputImage>
   os << indent << "DataSpline = " << m_DataSpline << std::endl;
   os << indent << "SplineValueFunc = " << m_SplineValueFunc << std::endl;
   os << indent << "ThreshRidgeness = " << m_ThreshRidgeness << std::endl;
-  os << indent << "ThreshRidgenessStart = " << m_ThreshRidgenessStart 
+  os << indent << "ThreshRidgenessStart = " << m_ThreshRidgenessStart
     << std::endl;
   os << indent << "ThreshRoundness = " << m_ThreshRoundness << std::endl;
-  os << indent << "ThreshRoundnessStart = " << m_ThreshRoundnessStart 
+  os << indent << "ThreshRoundnessStart = " << m_ThreshRoundnessStart
     << std::endl;
   os << indent << "ThreshCurvature = " << m_ThreshCurvature << std::endl;
-  os << indent << "ThreshCurvatureStart = " << m_ThreshCurvatureStart 
+  os << indent << "ThreshCurvatureStart = " << m_ThreshCurvatureStart
     << std::endl;
   os << std::endl;
 
@@ -1015,7 +1015,7 @@ RidgeExtractor<TInputImage>
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
         }
-      if( fabs( lNTEVal[0] )!=0 && ridgeness != 0 )
+      if( fabs( lNTEVal[0] ) != 0 && ridgeness != 0 )
         {
         recovery++;
         }
@@ -1736,8 +1736,8 @@ bool
 RidgeExtractor<TInputImage>
 ::DeleteTube( TubeType * tube,  TDrawMask * drawMask )
 {
-  typedef typename TDrawMask::PixelType          DrawPixelType;
-  typedef NeighborhoodIterator< TDrawMask > NeighborhoodIteratorType;
+  typedef typename TDrawMask::PixelType      DrawPixelType;
+  typedef NeighborhoodIterator< TDrawMask >  NeighborhoodIteratorType;
 
   if( tube->GetPoints().size() == 0 )
     {
@@ -1952,8 +1952,8 @@ RidgeExtractor<TInputImage>
 }
 
 
-}; // end namespace tube
+} // end namespace tube
 
-}; // end namespace itk
+} // end namespace itk
 
 #endif

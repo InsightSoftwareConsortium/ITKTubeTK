@@ -10,7 +10,7 @@ Copyright University of North Carolina, Chapel Hill, NC, USA.
 Revised implementation:
 Copyright Kitware Inc., Carrboro, NC, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

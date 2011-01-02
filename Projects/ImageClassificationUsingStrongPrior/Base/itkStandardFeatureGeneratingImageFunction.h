@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public:
 
   /** Class typedefs **/
   typedef StandardFeatureGeneratingImageFunction       Self;
-  typedef FeatureGeneratingImageFunction<TInputImage,TCoordRep>  
+  typedef FeatureGeneratingImageFunction<TInputImage,TCoordRep>
                                                        Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
@@ -64,7 +64,7 @@ public:
   typedef typename HistCalcType::HistogramType         HistogramType;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( StandardFeatureGeneratingImageFunction, 
+  itkTypeMacro( StandardFeatureGeneratingImageFunction,
     FeatureGeneratingImageFunction );
 
   /** Standard New Macro. */
@@ -73,41 +73,41 @@ public:
   /** Constant for fetching the dimensions of the image. **/
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::ImageDimension );
-  
+
   void SetPriorImage( typename InputImageType::Pointer prior )
     {
     m_Prior = prior;
-    };
+    }
 
   void SetMeanAddHistogram( typename HistogramType::Pointer addMeanHist )
     {
     m_AddMeanHist = addMeanHist;
-    };
+    }
 
   void SetStdevAddHistogram( typename HistogramType::Pointer addStdevHist )
     {
     m_AddStdevHist = addStdevHist;
-    };
+    }
 
   void SetMeanSubHistogram( typename HistogramType::Pointer subMeanHist )
     {
     m_SubMeanHist = subMeanHist;
-    };
+    }
 
   void SetStdevSubHistogram( typename HistogramType::Pointer subStdevHist )
     {
     m_SubStdevHist = subStdevHist;
-    };
+    }
 
   void SetMeanNormHistogram( typename HistogramType::Pointer normMeanHist )
     {
     m_NormMeanHist = normMeanHist;
-    };
+    }
 
   void SetStdevNormHistogram( typename HistogramType::Pointer normStdevHist )
     {
     m_NormStdevHist = normStdevHist;
-    };
+    }
 
   void SetScale( double scale )
     {
@@ -115,16 +115,16 @@ public:
     m_SigmaMedium = (m_Scale/2)*0.6667;
     m_SigmaSmall = 0.6667*m_SigmaMedium;
     m_SigmaLarge = 1.3333*m_SigmaMedium;
-    };
+    }
 
-  /** Prepare the filter to go **/
-  void PrepFilter();
-  
-  /** Get the feature vector at an index for a given point **/
+  /* Prepare the filter to go */
+  void PrepFilter( void );
+
+  /* Get the feature vector at an index for a given point */
   virtual OutputType EvaluateAtIndex( const IndexType & index ) const;
 
 protected:
-  
+
   /** Default constructor */
   StandardFeatureGeneratingImageFunction();
 

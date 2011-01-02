@@ -78,17 +78,17 @@ public:
     {
     m_ObjectIdList.clear();
     m_ObjectIdList.push_back( objectId );
-    };
+    }
 
   void AddObjectId( ObjectIdType objectId )
     {
     m_ObjectIdList.push_back( objectId );
-    };
+    }
 
   ObjectIdType GetObjectId( int num = 0 )
     {
     return m_ObjectIdList[ num ];
-    };
+    }
 
   itkSetMacro( VoidId, ObjectIdType );
   itkGetMacro( VoidId, ObjectIdType );

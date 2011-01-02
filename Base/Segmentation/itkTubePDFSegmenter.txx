@@ -519,9 +519,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
   //  Create joint histograms
   //
   timeCollector.Start( "JoinHistogram" );
-  typedef itk::Image<float, N> HistogramType;
-  typedef std::vector< typename HistogramType::Pointer >
-    ClassHistogramType;
+
+  typedef itk::Image<float, N>                           HistogramType;
+  typedef std::vector< typename HistogramType::Pointer > ClassHistogramType;
 
   typedef itk::ImageRegionIteratorWithIndex< HistogramType >
     HistogramIteratorType;

@@ -34,6 +34,7 @@ namespace tube
 
 class Spline1DValFunc : public UserFunc<double, double>
 {
+protected:
   Spline1D * spline;
   double cVal;
 public:
@@ -51,6 +52,7 @@ public:
 
 class Spline1DDerivFunc : public UserFunc<double, double>
 {
+protected:
   Spline1D * spline;
   double cDeriv;
 public:

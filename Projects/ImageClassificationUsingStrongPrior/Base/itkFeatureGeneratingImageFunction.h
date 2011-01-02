@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public:
 
   /** Class typedefs **/
   typedef FeatureGeneratingImageFunction               Self;
-  typedef ImageFunction<TInputImage,std::vector<double>,TCoordRep>  
+  typedef ImageFunction<TInputImage,std::vector<double>,TCoordRep>
                                                        Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
@@ -77,7 +77,7 @@ public:
     }
 
   /** Get the output vector at a given continuous index. */
-  virtual OutputType EvaluateAtContinuousIndex( 
+  virtual OutputType EvaluateAtContinuousIndex(
     const ContinuousIndexType & index ) const
     {
     IndexType nindex;
@@ -98,7 +98,7 @@ public:
     }
 
   /** Get the output vector at a given continuous index. */
-  virtual std::string EvaluateToStringAtContinuousIndex( 
+  virtual std::string EvaluateToStringAtContinuousIndex(
     const ContinuousIndexType & index ) const
     {
     IndexType nindex;
@@ -113,7 +113,7 @@ public:
   virtual const FeatureListType& GetFeatureLabels() const;
 
 protected:
-  
+
   /** Default constructor */
   FeatureGeneratingImageFunction();
 

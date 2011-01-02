@@ -1,18 +1,23 @@
 /*=========================================================================
 
-  Program:   itkUNC
-  Module:    $RCSfile: itkSpatialObjectToSpatialObjectFilter.h,v $
-  Language:  C++
-  Date:      $Date: 2006/06/12 18:34:27 $
-  Version:   $Revision: 1.1 $
-  Author:    Julien Jomier
+Library:   TubeTK
 
-  Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
-  See itkUNCCopyright.txt for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 #ifndef __itkSpatialObjectToSpatialObjectFilter_h
@@ -23,38 +28,38 @@
 
 namespace itk
 {
-  
+
 /** \class SpatialObjectToSpatialObjectFilter
- * \brief Base class for filters that take an image as input and produce an image as output.
- *
+ * \brief Base class for filters that take an image as input and
+ * produce an image as output.
  */
 template <class TInputSpatialObject, class TOutputSpatialObject>
-class ITK_EXPORT SpatialObjectToSpatialObjectFilter : 
+class ITK_EXPORT SpatialObjectToSpatialObjectFilter :
 public ProcessObject
 {
 public:
 
   /** Standard class typedefs. */
   typedef SpatialObjectToSpatialObjectFilter<TInputSpatialObject,
-                                             TOutputSpatialObject>  Self;
-  typedef ProcessObject  Superclass;
-  typedef SmartPointer<Self>  Pointer;
-  typedef SmartPointer<const Self>  ConstPointer;
-  
+    TOutputSpatialObject>                                  Self;
+  typedef ProcessObject                                    Superclass;
+  typedef SmartPointer<Self>                               Pointer;
+  typedef SmartPointer<const Self>                         ConstPointer;
+
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
-  
+
   /** Run-time type information (and related methods). */
   itkTypeMacro(SpatialObjectToSpatialObjectFilter,ProcessObject);
 
   /** Some convenient typedefs. */
   typedef TInputSpatialObject    InputSpatialObjectType;
   typedef TOutputSpatialObject   OutputSpatialObjectType;
-  typedef typename InputSpatialObjectType::Pointer   
+  typedef typename InputSpatialObjectType::Pointer
                                  InputSpatialObjectPointer;
-  typedef typename InputSpatialObjectType::ConstPointer   
+  typedef typename InputSpatialObjectType::ConstPointer
                                  InputSpatialObjectConstPointer;
-  
+
   /** ImageDimension constants */
   itkStaticConstMacro(InputSpatialObjectDimension, unsigned int,
                       InputSpatialObjectType::ObjectDimension);

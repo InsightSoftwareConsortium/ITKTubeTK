@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public:
 
   /** Class typedefs **/
   typedef PatchFeatureGeneratingImageFunction          Self;
-  typedef FeatureGeneratingImageFunction<TInputImage,TCoordRep>  
+  typedef FeatureGeneratingImageFunction<TInputImage,TCoordRep>
                                                        Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
@@ -59,7 +59,7 @@ public:
   typedef itk::ConstNeighborhoodIterator<InputImageType>  NeighborIterType;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( PatchFeatureGeneratingImageFunction, 
+  itkTypeMacro( PatchFeatureGeneratingImageFunction,
     FeatureGeneratingImageFunction );
 
   /** Patch New Macro. */
@@ -68,7 +68,7 @@ public:
   /** Constant for fetching the dimensions of the image. **/
   itkStaticConstMacro( ImageDimension, unsigned int,
     Superclass::ImageDimension );
-  
+
   void SetPriorImage( typename InputImageType::Pointer prior )
     {
     m_Prior = prior;
@@ -83,7 +83,7 @@ public:
   virtual OutputType EvaluateAtIndex( const IndexType & index ) const;
 
 protected:
-  
+
   /** Default constructor */
   PatchFeatureGeneratingImageFunction();
 
