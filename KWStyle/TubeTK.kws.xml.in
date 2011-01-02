@@ -20,4 +20,5 @@
 <EmptyLines>2</EmptyLines>
 <Template>[TNV]</Template>
 <Operator>1,1</Operator>
+<LessHTML>1</LessHTML>
 </Description>
