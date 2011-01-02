@@ -23,7 +23,7 @@
 
 
 int RegressionTestFile ( const char *testFilename,
-  const char *baselineFilename, int reportErrors,
+  const char *baselineFilename, bool reportErrors,
   bool createDifferenceFile, double valueTolerance, 
   int numberOfDifferenceTolerance );
 
@@ -132,12 +132,11 @@ int main( int argc, char **argv )
       bestBaselineStatus = 
         RegressionTestFile( 
             testFilename.c_str(), baselineFilename.c_str(), 
-            0, false, toleranceValue, toleranceNumberOfDifferences );
+            false, false, toleranceValue, toleranceNumberOfDifferences );
       bestBaselineFilename = baselineFilename;
       }
     else
       {
-
       typedef std::list< std::string >::const_iterator  nameIterator;
       nameIterator baselineFileItr = baselineFilenames.begin();
       while( baselineFileItr != baselineFilenames.end() )
@@ -145,7 +144,7 @@ int main( int argc, char **argv )
         const int currentStatus =
           RegressionTestFile( 
               testFilename.c_str(), baselineFileItr->c_str(), 
-              0, false, toleranceValue, toleranceNumberOfDifferences );
+              false, false, toleranceValue, toleranceNumberOfDifferences );
         if( currentStatus < bestBaselineStatus )
           {
           bestBaselineStatus = currentStatus;
@@ -162,15 +161,14 @@ int main( int argc, char **argv )
     if( bestBaselineStatus == 0 )
       {
       RegressionTestFile( 
-        testFilename.c_str(), 
-        bestBaselineFilename.c_str(), 1, false, 
+        testFilename.c_str(), bestBaselineFilename.c_str(), true, false, 
         toleranceValue, toleranceNumberOfDifferences );
       }
     else
       {
       RegressionTestFile( 
         testFilename.c_str(), 
-        bestBaselineFilename.c_str(), 1, true, 
+        bestBaselineFilename.c_str(), true, true, 
         toleranceValue, toleranceNumberOfDifferences );
       }
     
@@ -206,7 +204,7 @@ int main( int argc, char **argv )
 
 // Regression Testing Code
 int RegressionTestFile ( const char *testFilename,
-  const char *baselineFilename, int reportErrors,
+  const char *baselineFilename, bool reportErrors,
   bool createDifferenceFile, double valueTolerance, 
   int numberOfDifferenceTolerance )
 {
@@ -254,9 +252,12 @@ int RegressionTestFile ( const char *testFilename,
         {
         if( fabs( testVal - baselineVal ) > valueTolerance )
           {
-          if( createDifferenceFile )
+          if( reportErrors )
             {
             std::cout << testVal << " != " << baselineVal << std::endl;
+            }
+          if( createDifferenceFile )
+            {
             diffFout << testVal << " != " << baselineVal << std::endl;
             }
           ++differences;
@@ -264,9 +265,12 @@ int RegressionTestFile ( const char *testFilename,
         }
       else
         {
-        if( createDifferenceFile )
+        if( reportErrors )
           {
           std::cout << testStr << " != " << baselineStr << std::endl;
+          }
+        if( createDifferenceFile )
+          {
           diffFout << testStr << " != " << baselineStr << std::endl;
           }
         ++differences;
