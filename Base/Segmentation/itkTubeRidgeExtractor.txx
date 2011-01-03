@@ -101,6 +101,9 @@ RidgeExtractor<TInputImage>
   m_DynamicScaleUsed = 3;
   m_RadiusExtractor = NULL;
 
+  m_ExtractBoundMin.Fill( 0 );
+  m_ExtractBoundMax.Fill( 0 );
+
   m_ThreshT = 0.75;
   m_ThreshX = 2.0;
   m_ThreshRidgeness = 0.85;    // near 1 = harder

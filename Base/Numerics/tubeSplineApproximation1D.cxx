@@ -30,22 +30,22 @@ SplineApproximation1D()
 : Spline1D()
 {
   m_SplineApproximation1DMatrixConst = (float)(1.0/6.0);
-  m_SplineApproximation1DMatrix[0][0] = 1;
-  m_SplineApproximation1DMatrix[0][1] = 0;
-  m_SplineApproximation1DMatrix[0][2] = 0;
-  m_SplineApproximation1DMatrix[0][3] = 0;
-  m_SplineApproximation1DMatrix[1][0] = -3;
-  m_SplineApproximation1DMatrix[1][1] = 3;
-  m_SplineApproximation1DMatrix[1][2] = 3;
-  m_SplineApproximation1DMatrix[1][3] = 1;
-  m_SplineApproximation1DMatrix[2][0] = 3;
-  m_SplineApproximation1DMatrix[2][1] = -6;
-  m_SplineApproximation1DMatrix[2][2] = 0;
-  m_SplineApproximation1DMatrix[2][3] = 4;
-  m_SplineApproximation1DMatrix[3][0] = -1;
-  m_SplineApproximation1DMatrix[3][1] = 3;
-  m_SplineApproximation1DMatrix[3][2] = -3;
-  m_SplineApproximation1DMatrix[3][3] = 1;
+  m_SplineApproximation1DMatrix(0, 0) = 1;
+  m_SplineApproximation1DMatrix(0, 1) = 0;
+  m_SplineApproximation1DMatrix(0, 2) = 0;
+  m_SplineApproximation1DMatrix(0, 3) = 0;
+  m_SplineApproximation1DMatrix(1, 0) = -3;
+  m_SplineApproximation1DMatrix(1, 1) = 3;
+  m_SplineApproximation1DMatrix(1, 2) = 3;
+  m_SplineApproximation1DMatrix(1, 3) = 1;
+  m_SplineApproximation1DMatrix(2, 0) = 3;
+  m_SplineApproximation1DMatrix(2, 1) = -6;
+  m_SplineApproximation1DMatrix(2, 2) = 0;
+  m_SplineApproximation1DMatrix(2, 3) = 4;
+  m_SplineApproximation1DMatrix(3, 0) = -1;
+  m_SplineApproximation1DMatrix(3, 1) = 3;
+  m_SplineApproximation1DMatrix(3, 2) = -3;
+  m_SplineApproximation1DMatrix(3, 3) = 1;
 }
 
 
@@ -55,22 +55,22 @@ SplineApproximation1D( UserFunc<int, double> *newFunval,
 : Spline1D(newFunval, newOpt1D)
 {
   m_SplineApproximation1DMatrixConst = (float)(1.0/6.0);
-  m_SplineApproximation1DMatrix[0][0] = 1;
-  m_SplineApproximation1DMatrix[0][1] = 0;
-  m_SplineApproximation1DMatrix[0][2] = 0;
-  m_SplineApproximation1DMatrix[0][3] = 0;
-  m_SplineApproximation1DMatrix[1][0] = -3;
-  m_SplineApproximation1DMatrix[1][1] = 3;
-  m_SplineApproximation1DMatrix[1][2] = 3;
-  m_SplineApproximation1DMatrix[1][3] = 1;
-  m_SplineApproximation1DMatrix[2][0] = 3;
-  m_SplineApproximation1DMatrix[2][1] = -6;
-  m_SplineApproximation1DMatrix[2][2] = 0;
-  m_SplineApproximation1DMatrix[2][3] = 4;
-  m_SplineApproximation1DMatrix[3][0] = -1;
-  m_SplineApproximation1DMatrix[3][1] = 3;
-  m_SplineApproximation1DMatrix[3][2] = -3;
-  m_SplineApproximation1DMatrix[3][3] = 1;
+  m_SplineApproximation1DMatrix(0, 0) = 1;
+  m_SplineApproximation1DMatrix(0, 1) = 0;
+  m_SplineApproximation1DMatrix(0, 2) = 0;
+  m_SplineApproximation1DMatrix(0, 3) = 0;
+  m_SplineApproximation1DMatrix(1, 0) = -3;
+  m_SplineApproximation1DMatrix(1, 1) = 3;
+  m_SplineApproximation1DMatrix(1, 2) = 3;
+  m_SplineApproximation1DMatrix(1, 3) = 1;
+  m_SplineApproximation1DMatrix(2, 0) = 3;
+  m_SplineApproximation1DMatrix(2, 1) = -6;
+  m_SplineApproximation1DMatrix(2, 2) = 0;
+  m_SplineApproximation1DMatrix(2, 3) = 4;
+  m_SplineApproximation1DMatrix(3, 0) = -1;
+  m_SplineApproximation1DMatrix(3, 1) = 3;
+  m_SplineApproximation1DMatrix(3, 2) = -3;
+  m_SplineApproximation1DMatrix(3, 3) = 1;
 }
 
 
@@ -96,7 +96,7 @@ dataValue(const VectorType & y, double x)
     b = 0;
     for(unsigned int p=0; p<4; p++)
       {
-      b += m_SplineApproximation1DMatrix[i][p] * u[p];
+      b += m_SplineApproximation1DMatrix(i, p) * u[p];
       }
     s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
     }
@@ -120,7 +120,7 @@ dataValueD(const VectorType & y, double x)
     b = 0;
     for(unsigned int p=0; p<3; p++)
       {
-      b += (3-p)*m_SplineApproximation1DMatrix[i][p] * u[p];
+      b += (3-p)*m_SplineApproximation1DMatrix(i, p) * u[p];
       }
     s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
     }
@@ -143,7 +143,7 @@ dataValueD2(const VectorType & y, double x)
     b = 0;
     for(unsigned int p=0; p<2; p++)
       {
-      b += (2-p) * m_SplineApproximation1DMatrix[i][p] * u[p];
+      b += (2-p) * m_SplineApproximation1DMatrix(i, p) * u[p];
       }
     s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
     }
@@ -174,15 +174,15 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
     bD2 = 0;
     for(unsigned int p=0; p<4; p++)
       {
-      b += m_SplineApproximation1DMatrix[i][p] * u[p];
+      b += m_SplineApproximation1DMatrix(i, p) * u[p];
       }
     for(unsigned int p=0; p<3; p++)
       {
-      bD += (3-p) * m_SplineApproximation1DMatrix[i][p] * u[p+1];
+      bD += (3-p) * m_SplineApproximation1DMatrix(i, p) * u[p+1];
       }
     for(unsigned int p=0; p<2; p++)
       {
-      bD2 += (2-p) * m_SplineApproximation1DMatrix[i][p] * u[p+2];
+      bD2 += (2-p) * m_SplineApproximation1DMatrix(i, p) * u[p+2];
       }
     s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
     *d += y(3-i) * bD * m_SplineApproximation1DMatrixConst;

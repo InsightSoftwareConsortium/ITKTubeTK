@@ -31,6 +31,8 @@ set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
 include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
 
+SET( CTEST_TEST_TIMEOUT 5000 )
+
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )

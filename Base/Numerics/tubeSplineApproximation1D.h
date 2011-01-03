@@ -23,6 +23,9 @@ limitations under the License.
 #ifndef __tubeSplineApproximation1D_h
 #define __tubeSplineApproximation1D_h
 
+#include "vnl/vnl_vector.h"
+#include "vnl/vnl_matrix_fixed.h"
+
 #include "tubeSpline1D.h"
 #include "tubeUserFunc.h"
 #include "tubeOptimizer1D.h"
@@ -53,8 +56,11 @@ public:
 
 protected:
 
-  float m_SplineApproximation1DMatrixConst;
-  float m_SplineApproximation1DMatrix[4][4];
+  typedef vnl_matrix_fixed<double, 4, 4> MatrixType;
+
+  float      m_SplineApproximation1DMatrixConst;
+
+  MatrixType m_SplineApproximation1DMatrix;
 
 };
 
