@@ -223,6 +223,8 @@ int itkTubeRadiusExtractorTest( int argc, char * argv[] )
     std::cout << "      Result = " << r1 << std::endl;
     }
 
+  delete tubeList;
+
   std::cout << "Number of failures = " << failures << std::endl;
   if( failures > 0.2 * numMCRuns )
     {

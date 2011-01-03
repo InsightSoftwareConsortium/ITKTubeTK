@@ -45,11 +45,20 @@ BlurImageFunction<TInputImage>
 ::BlurImageFunction()
 {
   this->m_Image = NULL;
+
   m_Spacing.Fill( 0 );
   m_OriginalSpacing.Fill( 0 );
   m_UseRelativeSpacing = true;
+
   m_Scale = 1;
   m_Extent = 3.1;
+
+  m_KernelTotal = 0;
+  m_KernelMin.Fill( 0 );
+  m_KernelMax.Fill( 0 );
+  m_KernelX.clear();
+  m_KernelWeights.clear();
+
   m_ImageIndexMin.Fill( 0 );
   m_ImageIndexMax.Fill( 0 );
 }
@@ -122,20 +131,22 @@ BlurImageFunction<TInputImage>
   this->Superclass::PrintSelf( os,indent );
 
   os << indent << "calculate Blurring value at point:" << std::endl;
-  std::cout << "Debug = " << this->GetDebug() << std::endl;
-  std::cout << "UseRelativeSpacing = " << m_UseRelativeSpacing << std::endl;
-  std::cout << "Spacing = " << m_Spacing << std::endl;
-  std::cout << "OriginalSpacing = " << m_OriginalSpacing << std::endl;
-  std::cout << "Scale = " << m_Scale << std::endl;
-  std::cout << "Extent = " << m_Extent << std::endl;
-  std::cout << "KernelWeights.size = " << m_KernelWeights.size() << std::endl;
-  std::cout << "KernelX.size = " << m_KernelX.size() << std::endl;
-  std::cout << "KernelMin = " << m_KernelMin << std::endl;
-  std::cout << "KernelMax = " << m_KernelMax << std::endl;
-  std::cout << "KernelTotal = " << m_KernelTotal << std::endl;
+  os << indent << "UseRelativeSpacing = " << m_UseRelativeSpacing
+    << std::endl;
+  os << indent << "Spacing = " << m_Spacing << std::endl;
+  os << indent << "OriginalSpacing = " << m_OriginalSpacing << std::endl;
+  os << indent << "Scale = " << m_Scale << std::endl;
+  os << indent << "Extent = " << m_Extent << std::endl;
 
-  std::cout << "ImageIndexMin = " << m_ImageIndexMin << std::endl;
-  std::cout << "ImageIndexMax = " << m_ImageIndexMax << std::endl;
+  os << indent << "KernelWeights.size = " << m_KernelWeights.size()
+    << std::endl;
+  os << indent << "KernelX.size = " << m_KernelX.size() << std::endl;
+  os << indent << "KernelMin = " << m_KernelMin << std::endl;
+  os << indent << "KernelMax = " << m_KernelMax << std::endl;
+  os << indent << "KernelTotal = " << m_KernelTotal << std::endl;
+
+  os << indent << "ImageIndexMin = " << m_ImageIndexMin << std::endl;
+  os << indent << "ImageIndexMax = " << m_ImageIndexMax << std::endl;
 }
 
 

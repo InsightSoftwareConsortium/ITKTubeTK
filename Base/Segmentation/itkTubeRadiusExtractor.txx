@@ -201,6 +201,12 @@ RadiusExtractor<TInputImage>
     delete m_MedialnessFunc;
     }
   m_MedialnessFunc = NULL;
+
+  if( m_MedialnessOptSpline != NULL )
+    {
+    delete m_MedialnessOptSpline;
+    }
+  m_MedialnessOptSpline = NULL;
 }
 
 

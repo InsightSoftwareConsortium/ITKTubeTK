@@ -81,6 +81,8 @@ Spline1D()
 {
   m_Defined = false;
 
+  m_NewData = true;
+
   m_Clip = false;
 
   m_XMin = 0;
@@ -96,6 +98,8 @@ Spline1D::
 Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
   m_Defined = false;
+
+  m_NewData = true;
 
   m_Clip = false;
 
