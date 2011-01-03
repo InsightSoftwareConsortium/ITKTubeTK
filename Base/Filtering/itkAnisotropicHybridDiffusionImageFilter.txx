@@ -82,47 +82,51 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigen vectors of the structure tensor
-  typedef  Matrix< double, 3, 3>                            EigenVectorMatrixType;
-  typedef  Image< EigenVectorMatrixType, 3>                 EigenVectorImageType;
-  typedef  typename itk::Image< EigenValueArrayType, 3>     EigenValueImageType;
+  typedef  Matrix< double, 3, 3>
+    EigenVectorMatrixType;
+  typedef  Image< EigenVectorMatrixType, 3>
+    EigenVectorImageType;
+  typedef  typename itk::Image< EigenValueArrayType, 3>
+    EigenValueImageType;
 
-  typedef  typename StructureTensorFilterType::OutputImageType  SymmetricSecondRankTensorImageType;
-  typedef  typename itk::
-   SymmetricEigenVectorAnalysisImageFilter<SymmetricSecondRankTensorImageType,
-                                           EigenValueImageType, EigenVectorImageType>
-                    EigenVectorAnalysisFilterType;
+  typedef  typename StructureTensorFilterType::OutputImageType
+    SymmetricSecondRankTensorImageType;
+  typedef  typename itk::SymmetricEigenVectorAnalysisImageFilter<
+    SymmetricSecondRankTensorImageType, EigenValueImageType,
+    EigenVectorImageType>
+    EigenVectorAnalysisFilterType;
 
-  typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter =
-                                  EigenVectorAnalysisFilterType::New();
+  typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter
+    = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
-      EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+    EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
   eigenVectorAnalysisFilter->Modified();
   eigenVectorAnalysisFilter->Update();
 
   //Step 1.3: Compute the eigen values
-  typedef itk::
-    SymmetricEigenAnalysisImageFilter<SymmetricSecondRankTensorImageType, EigenValueImageType>
-                               EigenAnalysisFilterType;
+  typedef itk::SymmetricEigenAnalysisImageFilter<
+    SymmetricSecondRankTensorImageType, EigenValueImageType>
+    EigenAnalysisFilterType;
 
-  typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter = EigenAnalysisFilterType::New();
+  typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter
+    = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
   eigenAnalysisFilter->OrderEigenValuesBy(
-      EigenAnalysisFilterType::FunctorType::OrderByValue );
+    EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
   eigenAnalysisFilter->Update();
 
   /* Compute the gradient magnitude. This is required to set Lambda1 */
 
-  typedef itk::
-    GradientMagnitudeRecursiveGaussianImageFilter<InputImageType>
-                               GradientMagnitudeFilterType;
+  typedef itk::GradientMagnitudeRecursiveGaussianImageFilter<InputImageType>
+    GradientMagnitudeFilterType;
 
-  typename GradientMagnitudeFilterType::Pointer
-          gradientMagnitudeFilter = GradientMagnitudeFilterType::New();
+  typename GradientMagnitudeFilterType::Pointer gradientMagnitudeFilter
+    = GradientMagnitudeFilterType::New();
   gradientMagnitudeFilter->SetInput( this->GetInput() );
   gradientMagnitudeFilter->SetSigma( m_Sigma );
   gradientMagnitudeFilter->Update();
@@ -135,32 +139,40 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   //
   //Iterator for the eigenvector matrix image
   EigenVectorImageType::ConstPointer eigenVectorImage =
-                    eigenVectorAnalysisFilter->GetOutput();
-  itk::ImageRegionConstIterator<EigenVectorImageType> eigenVectorImageIterator;
-  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorImageType>(
-      eigenVectorImage, eigenVectorImage->GetRequestedRegion());
+    eigenVectorAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenVectorImageType>
+    eigenVectorImageIterator;
+  eigenVectorImageIterator
+    = itk::ImageRegionConstIterator<EigenVectorImageType>(
+    eigenVectorImage, eigenVectorImage->GetRequestedRegion());
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the diffusion tensor image
-  typedef itk::ImageRegionIterator< DiffusionTensorImageType > DiffusionTensorIteratorType;
-  DiffusionTensorIteratorType
-      it( this->GetDiffusionTensorImage(),
-          this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
+  typedef itk::ImageRegionIterator< DiffusionTensorImageType >
+    DiffusionTensorIteratorType;
+  DiffusionTensorIteratorType it( this->GetDiffusionTensorImage(),
+    this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
 
   //Iterator for the eigen value image
-  typename EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
-  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
-  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
-      eigenImage, eigenImage->GetRequestedRegion());
+  typename EigenValueImageType::ConstPointer eigenImage
+    = eigenAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenValueImageType>
+    eigenValueImageIterator;
+  eigenValueImageIterator = itk::ImageRegionConstIterator<
+    EigenValueImageType>( eigenImage, eigenImage->GetRequestedRegion() );
 
   //Iterator for the gradient magnitude image
-  typedef typename GradientMagnitudeFilterType::OutputImageType GradientMagnitudeOutputImageType;
+  typedef typename GradientMagnitudeFilterType::OutputImageType
+    GradientMagnitudeOutputImageType;
   typename GradientMagnitudeOutputImageType::Pointer
-           gradientMagnitudeOutputImage = gradientMagnitudeFilter->GetOutput();
+    gradientMagnitudeOutputImage = gradientMagnitudeFilter->GetOutput();
 
-  itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType> gradientMagnitudeImageIterator;
-  gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>(
-      gradientMagnitudeOutputImage, gradientMagnitudeOutputImage->GetRequestedRegion());
+  itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>
+    gradientMagnitudeImageIterator;
+  gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<
+    GradientMagnitudeOutputImageType>(
+    gradientMagnitudeOutputImage,
+    gradientMagnitudeOutputImage->GetRequestedRegion() );
 
   it.GoToBegin();
   eigenVectorImageIterator.GoToBegin();
@@ -215,9 +227,9 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
         }
       }
 
-    /* std::cout << "EigenValues: " << eigenValue[smallestEigenValueIndex] << "\t"
-                                 << eigenValue[middleEigenValueIndex]  << "\t"
-                                 << eigenValue[largestEigenValueIndex] << std::endl;*/
+    /* std::cout << "EigenValues: " << eigenValue[smallestEigenValueIndex]
+       << "\t" << eigenValue[middleEigenValueIndex]  << "\t"
+       << eigenValue[largestEigenValueIndex] << std::endl; */
 
     //Set the lambda's appropriately.
 
@@ -240,15 +252,18 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
       }
     else
       {
-      double gradientMagnitudeSquare = gradientMagnitude * gradientMagnitude;
+      double gradientMagnitudeSquare = gradientMagnitude
+        * gradientMagnitude;
       double ratio = (gradientMagnitudeSquare) /
                (m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED);
-      double expVal = exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio, 4.0 )));
+      double expVal = exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio,
+        4.0 )));
       LambdaEED1 = 1.0 - expVal;
       }
 
     /* std::cout << "LambdaEED1,LambdaEED2, LambdaEED3\t"
-                 << LambdaEED1 << "\t" << LambdaEED2 << "\t" << LambdaEED3 << std::endl; */
+         << LambdaEED1 << "\t" << LambdaEED2 << "\t" << LambdaEED3
+         << std::endl; */
 
     /*Next compute Lambda's for CED */
 
@@ -276,7 +291,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
       double contrastParameterLambdaCEDSquare
         = m_ContrastParameterLambdaCED * m_ContrastParameterLambdaCED;
 
-      double expVal = exp((-1.0 * (vcl_log( 2.0) * contrastParameterLambdaCEDSquare )/kappa ));
+      double expVal = exp((-1.0 * (vcl_log( 2.0)
+        * contrastParameterLambdaCEDSquare )/kappa ));
       LambdaCED3 = m_Alpha + (1.0 - m_Alpha)*expVal;
       }
 
@@ -285,16 +301,18 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     double Lambda2;
     double Lambda3;
 
-    double xi =
-        (eigenValue[largestEigenValueIndex]/(m_Alpha + eigenValue[middleEigenValueIndex])) -
-        (eigenValue[middleEigenValueIndex]/(m_Alpha + eigenValue[smallestEigenValueIndex]));
+    double xi = (eigenValue[largestEigenValueIndex]
+      /(m_Alpha + eigenValue[middleEigenValueIndex])) -
+      (eigenValue[middleEigenValueIndex]
+      /(m_Alpha + eigenValue[smallestEigenValueIndex]));
 
     double numerator = eigenValue[middleEigenValueIndex] *
-                       ( (m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid) *
-                       (xi - fabs(xi)) - 2.0 * eigenValue[smallestEigenValueIndex] );
+      ( (m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid)
+      * (xi - fabs(xi)) - 2.0 * eigenValue[smallestEigenValueIndex] );
 
 
-    double denominator = 2.0 * vcl_pow( m_ContrastParameterLambdaHybrid, 4.0 );
+    double denominator = 2.0 * vcl_pow( m_ContrastParameterLambdaHybrid,
+      4.0 );
 
     double epsilon = exp(numerator/denominator);
 
@@ -315,9 +333,11 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     // Generate the tensor matrix
     EigenVectorMatrixType  productMatrix;
-    productMatrix = eigenVectorMatrix * eigenValueMatrix * eigenVectorMatrixTranspose;
+    productMatrix = eigenVectorMatrix * eigenValueMatrix
+      * eigenVectorMatrixTranspose;
 
-    //Copy the ITK::Matrix to the tensor...there should be a better way of doing this TODO
+    //Copy the ITK::Matrix to the tensor...there should be a better way of
+    //doing this TODO
     typename DiffusionTensorImageType::PixelType        tensor;
 
     tensor(0,0) = productMatrix(0,0);
@@ -395,13 +415,16 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "CED Contrast parameter "    << m_ContrastParameterLambdaCED << std::endl;
-  os << indent << "EED Contrast parameter "    << m_ContrastParameterLambdaEED << std::endl;
-  os << indent << "Hybrid Contrast parameter"  << m_ContrastParameterLambdaHybrid << std::endl;
+  os << indent << "CED Contrast parameter "
+    << m_ContrastParameterLambdaCED << std::endl;
+  os << indent << "EED Contrast parameter "
+    << m_ContrastParameterLambdaEED << std::endl;
+  os << indent << "Hybrid Contrast parameter"
+    << m_ContrastParameterLambdaHybrid << std::endl;
   os << indent << "Alpha " << m_Alpha << std::endl;
   os << indent << "Sigma " << m_Sigma << std::endl;
 }
 
-}// end namespace itk
+} // end namespace itk
 
 #endif

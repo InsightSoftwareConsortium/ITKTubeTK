@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -72,11 +72,11 @@ NJetImageFunction<TInputImage>
       m_InputImageMaxX[i] = m_InputImageMinX[i] + m_InputImageSize[i] - 1;
       }
     m_InputImageSpacing  = m_InputImage->GetSpacing();
-  
+
     int i;
     for(i=0; i<ImageDimension; i++)
       {
-      m_InputImageSpacingSquared[i] = m_InputImageSpacing[i] 
+      m_InputImageSpacingSquared[i] = m_InputImageSpacing[i]
                                       * m_InputImageSpacing[i];
       }
     }
@@ -104,13 +104,13 @@ NJetImageFunction<TInputImage>
       {
       if(ptr->GetLargestPossibleRegion().GetSize()[i] != m_InputImageSize[i])
         {
-        std::cout << "NJetImageFunction: ImageSize and MaskSize do not match!" 
-                  << std::endl 
+        std::cout << "NJetImageFunction: ImageSize and MaskSize do not match!"
+                  << std::endl
                   << "   Warning - InputImageMask not used!" << std::endl;
         return;
         }
       }
-  
+
     m_UseInputImageMask = true;
     }
   else
@@ -131,7 +131,7 @@ NJetImageFunction<TInputImage>
 {
   this->Superclass::PrintSelf(os,indent);
   os << indent << "m_UseProjection = " << m_UseProjection << std::endl;
-  os << indent << "m_UseInputImageMask = " << m_UseInputImageMask 
+  os << indent << "m_UseInputImageMask = " << m_UseInputImageMask
      << std::endl;
   if( m_UseInputImageMask )
     {
@@ -142,15 +142,15 @@ NJetImageFunction<TInputImage>
     os << indent << "m_InputImageMask = NULL" << std::endl;
     }
 
-  os << indent << "m_InputImageMinX = " << m_InputImageMinX 
+  os << indent << "m_InputImageMinX = " << m_InputImageMinX
      << std::endl;
-  os << indent << "m_InputImageMaxX = " << m_InputImageMaxX 
+  os << indent << "m_InputImageMaxX = " << m_InputImageMaxX
      << std::endl;
-  os << indent << "m_InputImageSize = " << m_InputImageSize 
+  os << indent << "m_InputImageSize = " << m_InputImageSize
      << std::endl;
-  os << indent << "m_InputImageSpacing = " << m_InputImageSpacing 
+  os << indent << "m_InputImageSpacing = " << m_InputImageSpacing
      << std::endl;
-  os << indent << "m_InputImageSpacingSquared = " 
+  os << indent << "m_InputImageSpacingSquared = "
      << m_InputImageSpacingSquared << std::endl;
   if( m_InputImage.IsNotNull() )
     {
@@ -180,7 +180,7 @@ NJetImageFunction<TInputImage>
 
     if(m_UseInputImageMask)
       {
-      ImageRegionConstIterator<InputImageType> 
+      ImageRegionConstIterator<InputImageType>
       maskIt(m_InputImageMask,
                  m_InputImageMask->GetLargestPossibleRegion());
 
@@ -271,7 +271,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -295,7 +295,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -320,7 +320,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -344,7 +344,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -367,7 +367,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -392,7 +392,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -403,7 +403,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point 
+ * Evaluate the fonction at the specified point
  */
 template <class TInputImage>
 double
@@ -428,15 +428,15 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int)vnl_math_floor(cIndex[i] 
+    xMin[i] = (int)vnl_math_floor(cIndex[i]
                           - (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMin[i]<m_InputImageMinX[i])
       {
       xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
- 
-    xMax[i] = (int)vnl_math_ceil(cIndex[i] 
+
+    xMax[i] = (int)vnl_math_ceil(cIndex[i]
                          + (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMax[i] > (int) m_InputImageMaxX[i])
       {
@@ -447,26 +447,26 @@ NJetImageFunction<TInputImage>
   bool done = false;
   while(!done)
     {
-    if(!m_UseInputImageMask 
+    if(!m_UseInputImageMask
        || (m_UseInputImageMask && m_InputImageMask->GetPixel(xShift)>0))
       {
-      physDist = 0;  
+      physDist = 0;
       for(unsigned int i=0; i< ImageDimension; i++)
         {
-        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i]) 
+        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i])
                                           * m_InputImageSpacingSquared[i];
         }
-  
+
       if(physDist <= physKernelRadiusSquared)
-        { 
+        {
         pixelValue = m_InputImage->GetPixel( xShift );
         expValue = vcl_exp(physGaussFactor*physDist);
-  
+
         vTotal += vnl_math_abs(expValue);
         v += pixelValue * expValue;
         }
       }
-    
+
     unsigned int dimI = 0;
     xShift[dimI]++;
     while( !done && xShift[dimI]>xMax[dimI] )
@@ -485,7 +485,7 @@ NJetImageFunction<TInputImage>
     }
 
   if(vTotal == 0)
-    { 
+    {
     //itkWarningMacro(<< "wTotal = 0 : only zero-value pixels encountered");
     return 0.0;
     }
@@ -508,9 +508,9 @@ NJetImageFunction<TInputImage>
   else
     {
     scale = scale / 2;
-  
+
     double val0 = this->EvaluateAtContinuousIndex(cIndex, scale);
-  
+
     double step = 2.0673*scale;
     ContinuousIndexType tempI;
     for(int i=0; i<ImageDimension; i++)
@@ -523,8 +523,8 @@ NJetImageFunction<TInputImage>
       tempI[i] = cIndex[i] + step*v1[i];
       }
     double val2 = this->EvaluateAtContinuousIndex(tempI, scale);
-  
-    return (val0 + 0.5455*val1 + 0.5455*val2) / (1+2*0.5455) / 2; 
+
+    return (val0 + 0.5455*val1 + 0.5455*val2) / (1+2*0.5455) / 2;
     }
 }
 
@@ -546,7 +546,7 @@ NJetImageFunction<TInputImage>
     scale = scale / 2;
 
     double val0 = this->EvaluateAtContinuousIndex(cIndex, scale);
-  
+
     double step = 2.0673*scale;
     ContinuousIndexType tempI;
     for(int i=0; i<ImageDimension; i++)
@@ -569,8 +569,8 @@ NJetImageFunction<TInputImage>
       tempI[i] = cIndex[i] + step*v2[i];
       }
     double val4 = this->EvaluateAtContinuousIndex(tempI, scale);
-  
-    return (2*val0 + 0.5455*(val1+val2+val3+val4))/(2+4*0.5455) / 2; 
+
+    return (2*val0 + 0.5455*(val1+val2+val3+val4))/(2+4*0.5455) / 2;
     }
 }
 
@@ -585,7 +585,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -608,7 +608,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -631,7 +631,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -654,7 +654,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -676,7 +676,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -689,7 +689,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
-::DerivativeAtIndex(const IndexType& index, 
+::DerivativeAtIndex(const IndexType& index,
   const VectorType & v1, const VectorType & v2, double scale,
   typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
@@ -698,7 +698,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -712,7 +712,7 @@ template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
-  double scale, typename NJetImageFunction<TInputImage>::VectorType & d 
+  double scale, typename NJetImageFunction<TInputImage>::VectorType & d
   ) const
 {
   // DERIVATIVE
@@ -738,7 +738,7 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
+    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent
                                              / m_InputImageSpacing[i]));
     if(xMin[i]<m_InputImageMinX[i])
       {
@@ -746,7 +746,7 @@ NJetImageFunction<TInputImage>
       }
     xShift[i] = xMin[i];
     xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
- 
+
     xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
     if(xMax[i] > (int) m_InputImageMaxX[i])
       {
@@ -756,36 +756,36 @@ NJetImageFunction<TInputImage>
       xShift[i] = xMin[i];
       }
     }
-    
+
   bool done = false;
   while(!done)
     {
-    if(!m_UseInputImageMask 
+    if(!m_UseInputImageMask
        || (m_UseInputImageMask && m_InputImageMask->GetPixel(xShift)>0))
       {
-      physDist = 0;  
+      physDist = 0;
       for(unsigned int i=0; i< ImageDimension; i++)
         {
-        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i]) 
+        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i])
                                           * m_InputImageSpacingSquared[i];
         }
-  
+
       if(physDist <= physKernelRadiusSquared)
-        { 
+        {
         pixelValue = m_InputImage->GetPixel( xShift );
         expValue = vcl_exp(physGaussFactor*physDist);
-  
+
         for(unsigned int i=0; i< ImageDimension; i++)
           {
-          expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
-                        * physGaussFactor 
+          expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i]
+                        * physGaussFactor
                         * expValue;
-          dTotal[i] += vnl_math_abs(expValueD); 
+          dTotal[i] += vnl_math_abs(expValueD);
           d[i] += pixelValue * expValueD;
           }
         }
       }
-    
+
     xShift[0]++;
     unsigned int i = 0;
     while( !done && xShift[i]>xMax[i] )
@@ -813,7 +813,7 @@ NJetImageFunction<TInputImage>
 }
 
 template <class TInputImage>
-void 
+void
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
   const VectorType & v1, double scale,
@@ -847,7 +847,7 @@ NJetImageFunction<TInputImage>
       tempI[i] = cIndex[i] + step*v1[i];
       }
     double val2 = this->EvaluateAtContinuousIndex(tempI, scale);
-  
+
     d[0] = (val2-val1)/ 2 / 2;
     }
 }
@@ -900,14 +900,14 @@ NJetImageFunction<TInputImage>
       tempI[i] = cIndex[i] + step*v2[i];
       }
     double val4 = this->EvaluateAtContinuousIndex(tempI, scale);
-  
+
     d[0] = (val2-val1)/ 2 / 2;
-    d[1] = (val4-val3)/ 2 / 2; 
+    d[1] = (val4-val3)/ 2 / 2;
     }
 }
 
 template <class TInputImage>
-double 
+double
 NJetImageFunction<TInputImage>
 ::ValueAndDerivative(const PointType& point, double scale,
   typename NJetImageFunction<TInputImage>::VectorType & d ) const
@@ -917,7 +917,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -940,7 +940,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -954,7 +954,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
-::ValueAndDerivative(const PointType& point, 
+::ValueAndDerivative(const PointType& point,
   const VectorType & v1, const VectorType & v2, double scale,
   typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
@@ -963,7 +963,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -986,7 +986,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1009,7 +1009,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1023,7 +1023,7 @@ template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtIndex(const IndexType& index,
-  const VectorType & v1, const VectorType & v2, double scale, 
+  const VectorType & v1, const VectorType & v2, double scale,
   typename NJetImageFunction<TInputImage>::VectorType & d) const
 {
   if( !m_InputImage )
@@ -1031,7 +1031,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1042,7 +1042,7 @@ NJetImageFunction<TInputImage>
 }
 
 template <class TInputImage>
-double 
+double
 NJetImageFunction<TInputImage>
 ::ValueAndDerivativeAtContinuousIndex(const ContinuousIndexType & cIndex,
   double scale,
@@ -1074,7 +1074,7 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
+    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent
                                              / m_InputImageSpacing[i]));
     if(xMin[i]<m_InputImageMinX[i])
       {
@@ -1082,7 +1082,7 @@ NJetImageFunction<TInputImage>
       }
     xShift[i] = xMin[i];
     xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
- 
+
     xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
     if(xMax[i] > (int) m_InputImageMaxX[i])
       {
@@ -1092,39 +1092,39 @@ NJetImageFunction<TInputImage>
       xShift[i] = xMin[i];
       }
     }
-    
+
   bool done = false;
   while(!done)
     {
-    if(!m_UseInputImageMask 
+    if(!m_UseInputImageMask
        || (m_UseInputImageMask && m_InputImageMask->GetPixel(xShift)>0))
       {
-      physDist = 0;  
+      physDist = 0;
       for(unsigned int i=0; i< ImageDimension; i++)
         {
-        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i]) 
+        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i])
                                           * m_InputImageSpacingSquared[i];
         }
-  
+
       if(physDist <= physKernelRadiusSquared)
-        { 
+        {
         pixelValue = m_InputImage->GetPixel( xShift );
         expValue = vcl_exp(physGaussFactor*physDist);
 
         v += pixelValue*expValue;
         vTotal += vnl_math_abs(expValue);
-  
+
         for(unsigned int i=0; i< ImageDimension; i++)
           {
-          expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
-                        * physGaussFactor 
+          expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i]
+                        * physGaussFactor
                         * expValue;
-          dTotal[i] += vnl_math_abs(expValueD); 
+          dTotal[i] += vnl_math_abs(expValueD);
           d[i] += pixelValue * expValueD;
           }
         }
       }
-    
+
     xShift[0]++;
     unsigned int i = 0;
     while( !done && xShift[i]>xMax[i] )
@@ -1149,7 +1149,7 @@ NJetImageFunction<TInputImage>
       d[i] = d[i] / dTotal[i];
       }
     }
-  
+
   if(vTotal > 0)
     {
     val = v/vTotal;
@@ -1183,11 +1183,11 @@ NJetImageFunction<TInputImage>
     double val0;
     double val1;
     double val2;
-  
+
     scale = scale / 2;
-  
+
     val0 = this->EvaluateAtContinuousIndex(cIndex, scale);
-  
+
     double step = 2.0673 * scale;
     ContinuousIndexType tempI;
     for(int i=0; i<ImageDimension; i++)
@@ -1201,13 +1201,13 @@ NJetImageFunction<TInputImage>
       tempI[i] = cIndex[i] + step*v1[i];
       }
     val2 = this->EvaluateAtContinuousIndex(tempI, scale);
-  
+
     d[0] = (val2-val1)/ 2 / 2;
-  
+
     val = (val0 + 0.5455*val1 + 0.5455*val2)/(1+2*0.5455) / 2;
     }
-  
-  return val; 
+
+  return val;
 }
 
 template <class TInputImage>
@@ -1241,11 +1241,11 @@ NJetImageFunction<TInputImage>
     double val2;
     double val3;
     double val4;
-  
+
     scale = scale / 2;
-  
+
     val0 = this->EvaluateAtContinuousIndex(cIndex, scale);
-  
+
     double step = 2.0673 * scale;
     ContinuousIndexType tempI;
     for(int i=0; i<ImageDimension; i++)
@@ -1269,10 +1269,10 @@ NJetImageFunction<TInputImage>
       tempI[i] = cIndex[i] + step*v2[i];
       }
     val4 = this->EvaluateAtContinuousIndex(tempI, scale);
-  
+
     d[0] = (val2-val1)/ 2 / 2;
     d[1] = (val4-val3)/ 2 / 2;
-  
+
     val = (2*val0 + 0.5455*(val1+val2+val3+val4))/(2+0.5455*4) / 2;
     }
 
@@ -1290,7 +1290,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -1313,7 +1313,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -1336,7 +1336,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -1359,7 +1359,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1372,7 +1372,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
-::RidgenessAndDerivativeAtIndex(const IndexType& index, 
+::RidgenessAndDerivativeAtIndex(const IndexType& index,
   const VectorType & v1, double scale,
   typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
@@ -1381,7 +1381,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1403,7 +1403,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1451,7 +1451,7 @@ NJetImageFunction<TInputImage>
       p[i] += eigSys.get_eigenvector(i)[j] * d[j];
       }
     }
- 
+
   double sums = 0;
   double sumv = 0;
   int ridge = 1;
@@ -1489,11 +1489,11 @@ NJetImageFunction<TInputImage>
   MatrixType h;
   VectorType p;
   VectorType vv;
- 
+
   v = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-  
+
   if( d.GetNorm() != 0 )
     {
     d.Normalize();
@@ -1522,7 +1522,7 @@ NJetImageFunction<TInputImage>
       }
     vv[i] = dp * eigSys.get_eigenvalue(i);
     }
- 
+
   double sums = 0;
   double sumv = 0;
   int ridge = 1;
@@ -1540,7 +1540,7 @@ NJetImageFunction<TInputImage>
     {
     sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
- 
+
   double val = (1.0 - sums) * sumv * ridge;
 
   double dV1 = 0;
@@ -1567,11 +1567,11 @@ NJetImageFunction<TInputImage>
   MatrixType h;
   VectorType p;
   VectorType vv;
- 
+
   v = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-  
+
   if( d.GetNorm() != 0 )
     {
     d.Normalize();
@@ -1610,7 +1610,7 @@ NJetImageFunction<TInputImage>
       }
     vv[i] += dp * eigSys.get_eigenvalue(i);
     }
- 
+
   double sums = 0;
   double sumv = 0;
   int ridge = 1;
@@ -1628,7 +1628,7 @@ NJetImageFunction<TInputImage>
     {
     sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
- 
+
   double val = (1.0 - sums) * sumv * ridge;
 
   double dV1 = 0;
@@ -1656,7 +1656,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -1678,7 +1678,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -1692,7 +1692,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
-::Hessian(const PointType& point, 
+::Hessian(const PointType& point,
   const VectorType & v1, const VectorType & v2, double scale,
   typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
@@ -1701,7 +1701,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -1723,7 +1723,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1745,7 +1745,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1758,7 +1758,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
-::HessianAtIndex(const IndexType& index, 
+::HessianAtIndex(const IndexType& index,
   const VectorType & v1, const VectorType & v2, double scale,
   typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
@@ -1767,7 +1767,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1778,7 +1778,7 @@ NJetImageFunction<TInputImage>
 }
 
 template <class TInputImage>
-void 
+void
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex(const ContinuousIndexType & cIndex,
   double scale, typename NJetImageFunction<TInputImage>::MatrixType & h
@@ -1810,7 +1810,7 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent 
+    xMin[i] = (int) vnl_math_floor(cIndex[i] - (scale * m_Extent
                                              / m_InputImageSpacing[i]));
     if(xMin[i]<m_InputImageMinX[i])
       {
@@ -1818,7 +1818,7 @@ NJetImageFunction<TInputImage>
       }
     xShift[i] = xMin[i];
     xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
- 
+
     xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
     if(xMax[i] > (int) m_InputImageMaxX[i])
       {
@@ -1828,41 +1828,41 @@ NJetImageFunction<TInputImage>
       xShift[i] = xMin[i];
       }
     }
-    
+
   bool done = false;
   while(!done)
     {
-    if(!m_UseInputImageMask 
+    if(!m_UseInputImageMask
        || (m_UseInputImageMask && m_InputImageMask->GetPixel(xShift)>0))
       {
-      physDist = 0;  
+      physDist = 0;
       for(unsigned int i=0; i< ImageDimension; i++)
         {
-        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i]) 
+        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i])
                                           * m_InputImageSpacingSquared[i];
         }
-  
+
       if(physDist <= physKernelRadiusSquared)
-        { 
+        {
         pixelValue = m_InputImage->GetPixel( xShift );
         expValue = vcl_exp(physGaussFactor*physDist);
-  
+
         for(unsigned int i=0; i< ImageDimension; i++)
           {
           expValueD = (2 * (cIndex[i]-xShift[i]) * (xShift[i] - cIndex[i])
-                         * m_InputImageSpacingSquared[i] 
-                         * physGaussFactor 
+                         * m_InputImageSpacingSquared[i]
+                         * physGaussFactor
                        + 1)
-                      * 2 
-                      * physGaussFactor 
+                      * 2
+                      * physGaussFactor
                       * expValue;
           hTotal[i][i] += vnl_math_abs(expValueD);
           h[i][i] += pixelValue * expValueD;
           for(unsigned int j=i+1; j< ImageDimension; j++)
             {
-            expValueD = 4 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
-                          * (cIndex[j]-xShift[j]) * m_InputImageSpacing[j] 
-                          * physGaussFactor * physGaussFactor 
+            expValueD = 4 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i]
+                          * (cIndex[j]-xShift[j]) * m_InputImageSpacing[j]
+                          * physGaussFactor * physGaussFactor
                           * expValue;
             hTotal[i][j] += vnl_math_abs(expValueD);
             h[i][j] += pixelValue * expValueD;
@@ -1870,7 +1870,7 @@ NJetImageFunction<TInputImage>
           }
         }
       }
-    
+
     xShift[0]++;
     unsigned int i = 0;
     while( !done && xShift[i]>xMax[i] )
@@ -1945,7 +1945,7 @@ NJetImageFunction<TInputImage>
       }
     double val2 = this->EvaluateAtContinuousIndex(tempI, scale);
     double val3 = this->EvaluateAtContinuousIndex(cIndex, scale);
-  
+
     m[0][0] = (0.5*val1+0.5*val2-val3)/2;
     }
 }
@@ -1993,9 +1993,9 @@ NJetImageFunction<TInputImage>
       }
     double val2 = this->EvaluateAtContinuousIndex(tempI, scale);
     double val3 = this->EvaluateAtContinuousIndex(cIndex, scale);
-  
+
     m[0][0] = (0.5*val1+0.5*val2-val3)/2;
-  
+
     for(int i=0; i<ImageDimension; i++)
       {
       tempI[i] = cIndex[i] - step*v2[i];
@@ -2006,7 +2006,7 @@ NJetImageFunction<TInputImage>
       tempI[i] = cIndex[i] + step*v2[i];
       }
     val2 = this->EvaluateAtContinuousIndex(tempI, scale);
-  
+
     m[1][1] = (0.5*val1+0.5*val2-val3)/2;
     }
 }
@@ -2022,7 +2022,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -2044,7 +2044,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -2088,14 +2088,14 @@ NJetImageFunction<TInputImage>
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
-    xMin[i] = (int) vnl_math_floor(cIndex[i] 
+    xMin[i] = (int) vnl_math_floor(cIndex[i]
                           - (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMin[i]<m_InputImageMinX[i])
       {
       xMin[i] = m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
- 
+
     xMax[i] = (int) vnl_math_ceil(cIndex[i]
                           + (scale * m_Extent / m_InputImageSpacing[i]));
     if(xMax[i] > (int) m_InputImageMaxX[i])
@@ -2103,49 +2103,49 @@ NJetImageFunction<TInputImage>
       xMax[i] = m_InputImageMaxX[i];
       }
     }
-    
+
   bool done = false;
   while(!done)
     {
-    if(!m_UseInputImageMask 
+    if(!m_UseInputImageMask
        || (m_UseInputImageMask && m_InputImageMask->GetPixel(xShift)>0))
       {
-      physDist = 0;  
+      physDist = 0;
       for(unsigned int i=0; i< ImageDimension; i++)
         {
-        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i]) 
+        physDist += (cIndex[i]-xShift[i]) * (cIndex[i]-xShift[i])
                                           * m_InputImageSpacingSquared[i];
         }
-  
+
       if(physDist <= physKernelRadiusSquared)
-        { 
+        {
         pixelValue = m_InputImage->GetPixel( xShift );
         expValue = vcl_exp(physGaussFactor*physDist);
 
         v += pixelValue*expValue;
         vTotal += vnl_math_abs(expValue);
-  
+
         for(unsigned int i=0; i< ImageDimension; i++)
           {
-          expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
-                        * physGaussFactor 
+          expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i]
+                        * physGaussFactor
                         * expValue;
           d[i] += pixelValue * expValueD;
-          dTotal[i] += vnl_math_abs(expValueD); 
+          dTotal[i] += vnl_math_abs(expValueD);
 
           expValueD = (2 * (cIndex[i]-xShift[i]) * (xShift[i] - cIndex[i])
-                         * m_InputImageSpacingSquared[i] 
-                         * physGaussFactor 
-                         + 1) * 2 
-                      * physGaussFactor 
+                         * m_InputImageSpacingSquared[i]
+                         * physGaussFactor
+                         + 1) * 2
+                      * physGaussFactor
                       * expValue;
           h[i][i] += pixelValue * expValueD;
           hTotal[i][i] += vnl_math_abs(expValueD);
           for(unsigned int j=i+1; j< ImageDimension; j++)
             {
-            expValueD = 4 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i] 
-                          * (cIndex[j]-xShift[j]) * m_InputImageSpacing[j] 
-                          * physGaussFactor * physGaussFactor 
+            expValueD = 4 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i]
+                          * (cIndex[j]-xShift[j]) * m_InputImageSpacing[j]
+                          * physGaussFactor * physGaussFactor
                           * expValue;
             h[i][j] += pixelValue * expValueD;
             hTotal[i][j] += vnl_math_abs(expValueD);
@@ -2153,7 +2153,7 @@ NJetImageFunction<TInputImage>
           }
         }
       }
-    
+
     unsigned int i = 0;
     xShift[i]++;
     while( !done && xShift[i]>xMax[i] )
@@ -2227,7 +2227,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -2248,7 +2248,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -2262,7 +2262,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
-::Ridgeness(const PointType& point, 
+::Ridgeness(const PointType& point,
             const VectorType & v1, const VectorType & v2, double scale) const
 {
   if( !m_InputImage )
@@ -2270,7 +2270,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   if(!m_InputImage->TransformPhysicalPointToContinuousIndex(point, cIndex))
     {
@@ -2291,7 +2291,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -2312,7 +2312,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -2334,7 +2334,7 @@ NJetImageFunction<TInputImage>
     itkWarningMacro(<< "Input image not set");
     return 0.0;
     }
-  
+
   ContinuousIndexType cIndex;
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -2355,7 +2355,7 @@ NJetImageFunction<TInputImage>
   VectorType d;
   MatrixType h;
   VectorType p;
- 
+
   v = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
@@ -2378,7 +2378,7 @@ NJetImageFunction<TInputImage>
     {
     for( unsigned int j=i+1; j<ImageDimension; j++ )
       {
-      if( vnl_math_abs( eigSys.get_eigenvalue( order[j] ) ) > 
+      if( vnl_math_abs( eigSys.get_eigenvalue( order[j] ) ) >
           vnl_math_abs( eigSys.get_eigenvalue( order[i] ) ) )
         {
         int k = order[i];
@@ -2396,14 +2396,14 @@ NJetImageFunction<TInputImage>
       p[i] += eigSys.get_eigenvector(i)[j] * d[j];
       }
     }
- 
+
   double sums = 0;
   double sumv = 0;
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
     sums += p[order[i]]*p[order[i]];
-    sumv += eigSys.get_eigenvalue(order[i]) 
+    sumv += eigSys.get_eigenvalue(order[i])
             * eigSys.get_eigenvalue(order[i]);
     if( eigSys.get_eigenvalue(order[i]) >= 0 )
       {
@@ -2413,7 +2413,7 @@ NJetImageFunction<TInputImage>
   sums /= (ImageDimension-1);
   if( sumv != 0 )
     {
-    sumv /= (sumv + eigSys.get_eigenvalue(order[ImageDimension-1]) 
+    sumv /= (sumv + eigSys.get_eigenvalue(order[ImageDimension-1])
                     * eigSys.get_eigenvalue(order[ImageDimension-1]));
     }
 
@@ -2435,11 +2435,11 @@ NJetImageFunction<TInputImage>
   MatrixType h;
   VectorType p;
   VectorType vv;
- 
+
   v = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-  
+
   if( d.GetNorm() != 0 )
     {
     d.Normalize();
@@ -2464,7 +2464,7 @@ NJetImageFunction<TInputImage>
       }
     vv[i] = dp * eigSys.get_eigenvalue(i);
     }
- 
+
   double sums = 0;
   double sumv = 0;
   int ridge = 1;
@@ -2482,7 +2482,7 @@ NJetImageFunction<TInputImage>
     {
     sumv /= ( sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
- 
+
   double val = (1.0 - sums) * sumv * ridge;
 
   return val;
@@ -2502,11 +2502,11 @@ NJetImageFunction<TInputImage>
   MatrixType h;
   VectorType p;
   VectorType vv;
- 
+
   v = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
-  
+
   if( d.GetNorm() != 0 )
     {
     d.Normalize();
@@ -2542,7 +2542,7 @@ NJetImageFunction<TInputImage>
       }
     vv[i] += dp * eigSys.get_eigenvalue(i);
     }
- 
+
   double sums = 0;
   double sumv = 0;
   int ridge = 1;
@@ -2560,7 +2560,7 @@ NJetImageFunction<TInputImage>
     {
     sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
- 
+
   double val = (1.0 - sums) * sumv * ridge;
 
   return val;
@@ -2593,7 +2593,7 @@ NJetImageFunction<TInputImage>
     newImage->Allocate();
 
     typedef ImageRegionIteratorWithIndex<InputImageType> IteratorType;
-    IteratorType 
+    IteratorType
         imageIt(newImage,
                 newImage->GetLargestPossibleRegion());
 

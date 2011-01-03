@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,8 +40,8 @@ OptParabolicFit1D::OptParabolicFit1D()
 {
 }
 
-OptParabolicFit1D::OptParabolicFit1D(UserFunc<double, double> *newFuncVal)
-: Optimizer1D(newFuncVal, NULL)
+OptParabolicFit1D::OptParabolicFit1D( UserFunc<double, double> *newFuncVal )
+: Optimizer1D( newFuncVal, NULL )
 {
 }
 
@@ -51,29 +51,28 @@ OptParabolicFit1D::~OptParabolicFit1D()
 }
 
 
-void OptParabolicFit1D::use(UserFunc<double, double> * newFuncVal,
-                            UserFunc<double,double> * tubeNotUsed(derivative))
+void OptParabolicFit1D::use( UserFunc<double, double> * newFuncVal,
+  UserFunc<double,double> * tubeNotUsed( derivative ) )
 {
-    Optimizer1D::use(newFuncVal, NULL);
+  Optimizer1D::use( newFuncVal, NULL );
 }
 
 
-double OptParabolicFit1D::cCenter(double x1, double y1,
-                                  double x2, double y2,
-                                  double x3, double y3)
+double OptParabolicFit1D:: m_Center( double x1, double y1,
+  double x2, double y2, double x3, double y3 )
 {
-  double a = (y1 - ((y2-y3)*x1)/(x2-x3) - y3 + ((y2-y3)*x3)/(x2-x3)) /
-    (x1*x1 - x3*x3 + ((x3*x3-x2*x2)*x1)/(x2-x3) -
-     ((x3*x3-x2*x2)*x3)/(x2-x3));
-  double b = (y2 - a * x2*x2 - y3 + a * x3*x3) / (x2 - x3);
+  double a = ( y1 - ( ( y2-y3 )*x1 )/( x2-x3 ) - y3 + ( ( y2-y3 )*x3 )/( x2-x3 ) ) /
+    ( x1*x1 - x3*x3 + ( ( x3*x3-x2*x2 )*x1 )/( x2-x3 ) -
+     ( ( x3*x3-x2*x2 )*x3 )/( x2-x3 ) );
+  double b = ( y2 - a * x2*x2 - y3 + a * x3*x3 ) / ( x2 - x3 );
 
-  return -b/(2*a);
+  return -b/( 2*a );
 }
 
-bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
+bool OptParabolicFit1D::m_Extreme( double *extX, double *extVal )
 {
   double minSign = 1;
-  if(!cSearchForMin)
+  if( !m_SearchForMin )
     {
     minSign = -1;
     }
@@ -81,60 +80,60 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
   double d, v, fv, x, fx, u, fu, tf, w, fw;
 
   d = -1;
-  v = (*extX);
-  fv = minSign*cFuncVal->value(v);
-  x = v+d*cXStep;
+  v = ( *extX );
+  fv = minSign * m_FuncVal->value( v );
+  x = v + d * m_XStep;
   u = v;
   fu = fv;
 
-  if(x<cXMin || x>cXMax)
+  if( x < m_XMin || x > m_XMax )
     {
     d *= -1;
-    x = v+d*cXStep;
+    x = v + d * m_XStep;
     }
 
-  fx = minSign*cFuncVal->value(x);
+  fx = minSign * m_FuncVal->value( x );
 
-  if(fx>=fv)
+  if( fx>=fv )
     {
     u = x;
     fu = fx;
     d *= -1;
-    x = v+d*cXStep;
-    fx = minSign*cFuncVal->value(x);
+    x = v + d * m_XStep;
+    fx = minSign * m_FuncVal->value( x );
     }
   w = 1;
-  while(fx < fv)
+  while( fx < fv )
     {
     u = v;
     fu = fv;
     v = x;
     fv = fx;
-    x = v+d*cXStep*w;
-    while((x<cXMin || x>cXMax) && w>cTolerance)
+    x = v + d * m_XStep*w;
+    while( ( x < m_XMin || x > m_XMax ) && w > m_Tolerance )
       {
       w /= 2;
-      x = v+d*cXStep*w;
+      x = v + d * m_XStep*w;
       }
 
-    if(x<cXMin || x>cXMax)
+    if( x < m_XMin || x > m_XMax )
       {
-      x = v-d*cXStep*w;
-      fx = minSign*cFuncVal->value(x);
+      x = v - d * m_XStep * w;
+      fx = minSign * m_FuncVal->value( x );
       *extX = x;
       *extVal = minSign * fx;
       std::cout << " Exiting legal parameter space - aborting" << std::endl;
       std::cout << "   x = " << x << std::endl;
-      std::cout << "   Range = " << cXMin << " - " << cXMax << std::endl;
+      std::cout << "   Range = " << m_XMin << " - " << m_XMax << std::endl;
       return false;
       }
 
-    fx = minSign*cFuncVal->value(x);
+    fx = minSign * m_FuncVal->value( x );
     w *= 1.1;
     }
 
     // Bracket = u, v, x;
-  if(x<u)
+  if( x<u )
     {
     tf = u;
     u = x;
@@ -144,13 +143,13 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
     fx = tf;
     }
 
-  d = (x-u)/2;
+  d = ( x-u )/2;
 
 
-  while(d>cTolerance)
+  while( d > m_Tolerance )
     {
-    w = cCenter(u, fu, v, fv, x, fx);
-    if(w>=x || w<=u)
+    w = m_Center( u, fu, v, fv, x, fx );
+    if( w>=x || w<=u )
       {
       *extX = v;
       *extVal = minSign*fv;
@@ -163,17 +162,17 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
       return false;
       }
 
-    fw = minSign*cFuncVal->value(w);
+    fw = minSign * m_FuncVal->value( w );
 
-    if(fw<fv)
+    if( fw<fv )
       {
-      if(w>v)
+      if( w>v )
         {
         u = v;
         fu = fv;
         v = w;
         fv = fw;
-        d = (x-u)/2;
+        d = ( x-u )/2;
         }
       else // w<v
         {
@@ -181,55 +180,55 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
         fx = fv;
         v = w;
         fv = fw;
-        d = (x-u)/2;
+        d = ( x-u )/2;
         }
       }
     else
       {
-      if(w>v)
+      if( w>v )
         {
         x = w;
         fx = fw;
-        d = (x-u)/2;
+        d = ( x-u )/2;
         }
       else // w<v
         {
         u = w;
         fu = fw;
-        d = (x-u)/2;
+        d = ( x-u )/2;
         }
       }
 
-    if(x-v<cTolerance && d>cTolerance)
+    if( x - v < m_Tolerance && d > m_Tolerance )
       {
       x = v;
       fx = fv;
-      v = x-(x-u)/3;
-      fv = minSign*cFuncVal->value(v);
-      d = (x-u)/2;
-      while(fv>fx && d>cTolerance)
+      v = x-( x-u )/3;
+      fv = minSign * m_FuncVal->value( v );
+      d = ( x-u )/2;
+      while( fv > fx && d > m_Tolerance )
         {
         u = v;
         fu = fv;
-        v = x-(x-u)/3;
-        fv = minSign*cFuncVal->value(v);
-        d = (x-u)/2;
+        v = x-( x-u )/3;
+        fv = minSign * m_FuncVal->value( v );
+        d = ( x-u )/2;
         }
       }
-    else if(v-u<cTolerance && d>cTolerance)
+    else if( v-u < m_Tolerance && d > m_Tolerance )
       {
       u = v;
       fu = fv;
-      v = u+(x-u)/3;
-      fv = minSign*cFuncVal->value(v);
-      d = (x-u)/2;
-      while(fv>fu && d>cTolerance)
+      v = u+( x-u )/3;
+      fv = minSign * m_FuncVal->value( v );
+      d = ( x-u )/2;
+      while( fv > fu && d > m_Tolerance )
         {
         x = v;
         fx = fv;
-        v = u+(x-u)/3;
-        fv = minSign*cFuncVal->value(v);
-        d = (x-u)/2;
+        v = u+( x-u )/3;
+        fv = minSign * m_FuncVal->value( v );
+        d = ( x-u )/2;
         }
       }
     }
@@ -241,4 +240,4 @@ bool OptParabolicFit1D::cExtreme(double *extX, double *extVal)
 }
 
 
-}; // namespace tube
+} // namespace tube

@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 }
 
 template <class TInputImage, class TCoordRep>
-void 
+void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::SetHistogramSize( const unsigned int & size )
 {
@@ -147,7 +147,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 }
 
 template <class TInputImage, class TCoordRep>
-double 
+double
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::EvaluateAtIndex( const IndexType & index ) const
 {
@@ -168,18 +168,18 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 }
 
 template <class TInputImage, class TCoordRep>
-void 
+void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::PrecomputeAtIndex( const IndexType & index )
 {
   typename HistogramType::Pointer hist;
   hist = this->ComputeHistogramAtIndex( index, false );
-  
+
   itk::ImageRegionIterator< HistogramType > iterHist( hist,
     hist->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< HistogramType > iterSum( m_SumHistogram,
     m_SumHistogram->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< HistogramType > iterSumSquare( 
+  itk::ImageRegionIterator< HistogramType > iterSumSquare(
     m_SumOfSquaresHistogram,
     m_SumOfSquaresHistogram->GetLargestPossibleRegion() );
   while( !iterHist.IsAtEnd() )
@@ -196,7 +196,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 }
 
 template <class TInputImage, class TCoordRep>
-void 
+void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeMeanAndStandardDeviation() const
 {
@@ -208,9 +208,9 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
                                                              AdderType;
   typedef itk::SubtractImageFilter< HistogramType, HistogramType,
     HistogramType>                                           SubtracterType;
-  typedef itk::SquareImageFilter< HistogramType, 
+  typedef itk::SquareImageFilter< HistogramType,
     HistogramType >                                          SquareType;
-  typedef itk::SqrtImageFilter< HistogramType, 
+  typedef itk::SqrtImageFilter< HistogramType,
     HistogramType >                                          SqrtType;
 
   typedef itk::DiscreteGaussianImageFilter< HistogramType,
@@ -232,20 +232,20 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
     // Calculate the mean
   typedef itk::ImageRegionIterator<HistogramType>  HistIteratorType;
-  HistIteratorType sumItr( m_SumHistogram, 
+  HistIteratorType sumItr( m_SumHistogram,
     m_SumHistogram->GetLargestPossibleRegion() );
-  HistIteratorType sumOfSquaresItr( m_SumOfSquaresHistogram, 
+  HistIteratorType sumOfSquaresItr( m_SumOfSquaresHistogram,
     m_SumOfSquaresHistogram->GetLargestPossibleRegion() );
-  HistIteratorType meanItr( m_MeanHistogram, 
+  HistIteratorType meanItr( m_MeanHistogram,
     m_MeanHistogram->GetLargestPossibleRegion() );
-  HistIteratorType stdItr( m_StandardDeviationHistogram, 
+  HistIteratorType stdItr( m_StandardDeviationHistogram,
     m_StandardDeviationHistogram->GetLargestPossibleRegion() );
   if( m_NumberOfSamples != 0 )
     {
     while( !meanItr.IsAtEnd() )
       {
       meanItr.Set( sumItr.Get() / m_NumberOfSamples );
-      stdItr.Set( vcl_sqrt( vnl_math_abs( 
+      stdItr.Set( vcl_sqrt( vnl_math_abs(
         sumOfSquaresItr.Get() / m_NumberOfSamples -
         meanItr.Get() * meanItr.Get() ) ) );
       ++sumItr;
@@ -294,7 +294,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 }
 
 template <class TInputImage, class TCoordRep>
-double 
+double
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeZScoreAtIndex( const IndexType & index ) const
 {
@@ -303,9 +303,9 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
   typedef itk::ImageRegionConstIterator<HistogramType>  HistIteratorType;
   HistIteratorType histItr( hist, hist->GetLargestPossibleRegion() );
-  HistIteratorType meanItr( m_MeanHistogram, 
+  HistIteratorType meanItr( m_MeanHistogram,
                              m_MeanHistogram->GetLargestPossibleRegion() );
-  HistIteratorType stdItr( m_StandardDeviationHistogram, 
+  HistIteratorType stdItr( m_StandardDeviationHistogram,
                             m_StandardDeviationHistogram->
                             GetLargestPossibleRegion() );
   double val = 0;
@@ -337,7 +337,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 }
 
 template <class TInputImage, class TCoordRep>
-itk::OrientedImage<float,2>::Pointer & 
+itk::OrientedImage<float,2>::Pointer &
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeHistogramAtIndex( const IndexType & index, bool blur ) const
 {
@@ -405,7 +405,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
       }
 
     m_Histogram->SetPixel(cur, m_Histogram->GetPixel(cur) + 1);
-    
+
     ++inputItr;
     ++maskItr;
     }

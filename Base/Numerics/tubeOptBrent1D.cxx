@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -36,14 +36,14 @@ namespace tube
 OptBrent1D::OptBrent1D( void )
 : Optimizer1D()
 {
-  cSmall = 1.0e-20;
+  m_Small = 1.0e-20;
 }
 
 OptBrent1D::OptBrent1D( UserFunc< double, double > * newFuncVal,
                         UserFunc< double, double > * newFuncDeriv )
 : Optimizer1D( newFuncVal, newFuncDeriv )
 {
-  cSmall = 1.0e-20;
+  m_Small = 1.0e-20;
 }
 
 
@@ -54,12 +54,12 @@ OptBrent1D::~OptBrent1D( void )
 
 double OptBrent1D::smallDouble( void )
 {
-  return cSmall;
+  return m_Small;
 }
 
 void OptBrent1D::smallDouble( double newSmall )
 {
-  cSmall = newSmall;
+  m_Small = newSmall;
 }
 
 void OptBrent1D::use( UserFunc< double, double > * newFuncVal,
@@ -69,15 +69,15 @@ void OptBrent1D::use( UserFunc< double, double > * newFuncVal,
 }
 
 
-void OptBrent1D::cMove( double & a, double & b, double & c,
+void OptBrent1D::m_Move( double & a, double & b, double & c,
   double d, double e, double f )
 {
-   a = d;
-   b = e;
-   c = f;
+  a = d;
+  b = e;
+  c = f;
 }
 
-bool OptBrent1D::cExtreme( double *extX, double *extVal )
+bool OptBrent1D::m_Extreme( double *extX, double *extVal )
 {
   unsigned int iter;
 
@@ -87,26 +87,26 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
 
   double maxSign = -1;
 
-  if( cSearchForMin )
+  if( m_SearchForMin )
     {
     maxSign = 1;
     }
 
   d = -1;
   v = *extX;
-  fv = maxSign*cFuncVal->value(v);
-  x = v+d*cXStep;
-  if(x<cXMin || x>cXMax)
+  fv = maxSign * m_FuncVal->value(v);
+  x = v+d * m_XStep;
+  if(x < m_XMin || x > m_XMax)
     {
     d *= -1;
-    x = v+d*cXStep;
+    x = v + d * m_XStep;
     }
-  fx = maxSign*cFuncVal->value(x);
+  fx = maxSign * m_FuncVal->value(x);
   if(fx>fv)
     {
     d *= -1;
-    x = v+d*cXStep;
-    fx = maxSign*cFuncVal->value(x);
+    x = v + d * m_XStep;
+    fx = maxSign * m_FuncVal->value(x);
     }
   w = 1;
 
@@ -114,22 +114,22 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
     {
     v = x;
     fv = fx;
-    x = v+d*cXStep*w;
-    if(x<cXMin || x>cXMax)
+    x = v + d * m_XStep*w;
+    if(x < m_XMin || x > m_XMax)
       {
-      if(x<cXMin)
+      if(x < m_XMin)
         {
-        x = cXMin;
+        x = m_XMin;
         }
       else
         {
-        x = cXMax;
+        x = m_XMax;
         }
-      fx = maxSign*cFuncVal->value(x);
+      fx = maxSign * m_FuncVal->value(x);
       if( fx >= fv )
         {
         *extX = v;
-        *extVal = maxSign*fv;
+        *extVal = maxSign * fv;
         //std::cout << " limit: x0 = " << x << std::endl;
         //std::cout << " limit: v = " << v << std::endl;
         //std::cout << " limit: vVal = " << maxSign*fv << std::endl;
@@ -138,30 +138,30 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
       }
     else
       {
-      fx = maxSign*cFuncVal->value(x);
+      fx = maxSign * m_FuncVal->value(x);
       //std::cout << " x0 = " << x << std::endl;
       //std::cout << " xVal = " << fx << std::endl;
       w *= 1.1;
       }
     }
 
-  u = v-d*cXStep*w;
+  u = v - d * m_XStep * w;
 
   a = (u < x ? u : x);
   b = (u > x ? u : x);
 
   w = x = v;
-  fw = fv = fx = maxSign*cFuncVal->value(v);
-  dw = dv = dx = maxSign*cFuncDeriv->value(v);
+  fw = fv = fx = maxSign * m_FuncVal->value(v);
+  dw = dv = dx = maxSign * m_FuncDeriv->value(v);
 
-  for(iter = 0; iter < cMaxIterations; iter++)
+  for(iter = 0; iter < m_MaxIterations; iter++)
     {
     xm = 0.5 * (a+b);
     //std::cout << "x = " << x << std::endl;
     //std::cout << "  fx = " << fx << std::endl;
     //std::cout << "  a = " << a << std::endl;
     //std::cout << "  b = " << b << std::endl;
-    tol1 = cTolerance * fabs(x) + cSmall;
+    tol1 = m_Tolerance * fabs(x) + m_Small;
     tol2 = 2.0 * tol1;
     if(fabs(x-xm) <= (tol2 - 0.5*(b-a)))
       {
@@ -232,12 +232,12 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
     if(fabs(d) >= tol1)
       {
       u = x + d;
-      fu = maxSign*cFuncVal->value(u);
+      fu = maxSign * m_FuncVal->value(u);
       }
     else
       {
       u = x + tol1 * vnl_math_sgn(d);
-      fu = maxSign*cFuncVal->value(u);
+      fu = maxSign * m_FuncVal->value(u);
       if(fu > fx)
         {
         *extX = x;
@@ -245,7 +245,7 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
         return true;
         }
       }
-    du = maxSign*cFuncDeriv->value(u);
+    du = maxSign * m_FuncDeriv->value(u);
     if(fu <= fx)
       {
       if(u >= x)
@@ -257,9 +257,9 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
         b = x;
         }
 
-      cMove(v,fv,dv, w,fw,dw);
-      cMove(w,fw,dw, x,fx,dx);
-      cMove(x,fx,dx, u,fu,du);
+      m_Move(v,fv,dv, w,fw,dw);
+      m_Move(w,fw,dw, x,fx,dx);
+      m_Move(x,fx,dx, u,fu,du);
       }
     else
       {
@@ -274,14 +274,14 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
 
       if(fu <= fw || w == x)
         {
-        cMove(v,fv,dv, w,fw,dw);
-        cMove(w,fw,dw, u,fu,du);
+        m_Move(v,fv,dv, w,fw,dw);
+        m_Move(w,fw,dw, u,fu,du);
         }
       else
         {
         if(fu < fv || v == x || v == w)
           {
-          cMove(v,fv,dv, u,fu,du);
+          m_Move(v,fv,dv, u,fu,du);
           }
         }
       }
@@ -295,4 +295,4 @@ bool OptBrent1D::cExtreme( double *extX, double *extVal )
 }
 
 
-}; // namespace tube
+} // namespace tube

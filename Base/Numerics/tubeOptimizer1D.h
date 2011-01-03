@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -34,43 +34,30 @@ limitations under the License.
 
 #include "tubeUserFunc.h"
 
-/** Solve for local extremes of 1D functions
- *  Must be derived to specify specific optimization method (e.g., OptBrent1D)
- *  \author Stephen R. Aylward
- *  \rewritten Julien Jomier
- *  \date 11/22/99
- *  \todo Transform this to ITK optimizer
- */
 namespace tube
 {
 
+/** Solve for local extremes of 1D functions
+ *  Must be derived to specify specific optimization method (e.g., OptBrent1D)
+ *  \class Optimizer1D
+ *  \author Stephen R. Aylward
+ *  \rewritten Julien Jomier
+ *  \rewritten Stephen R. Aylward
+ *  \date 11/22/99
+ *  \todo Transform this to ITK optimizer */
 class Optimizer1D
 {
-protected :
+public:
 
-  bool         cDefined;
-  double       cXMin;
-  double       cXMax;
-  double       cXStep;
-  bool         cSearchForMin;
-  double       cTolerance;
-  unsigned int cMaxIterations;
-
-  UserFunc< double, double > * cFuncVal;
-  UserFunc< double, double > * cFuncDeriv;
-
-  virtual  bool cExtreme( double * x, double * xVal );
-
-public :
-
-  /** Null constructor - insufficient to define class; use "use" function */
+  /**
+   * Null constructor - insufficient to define class; use "use" function */
   Optimizer1D( void );
 
   /** Constructor
-   *   \param newFuncVal User derivation of UserFunc to define
-   *   function to be optimized
-   *   \param newFuncDeriv User derivation of UserFunc to define
-   *   derivative of function to be optimized */
+   * \param newFuncVal User derivation of UserFunc to define
+   * function to be optimized
+   * \param newFuncDeriv User derivation of UserFunc to define
+   * derivative of function to be optimized */
   Optimizer1D( UserFunc< double, double > * newFuncVal,
     UserFunc< double, double > * newFuncDeriv );
 
@@ -78,10 +65,10 @@ public :
   virtual ~Optimizer1D();
 
   /** Specify new functions to be optimized
-   *   \param newFuncVal User derivation of UserFunc to define
-   *   function to be optimized
-   *   \param newFuncDeriv User derivation of UserFunc to define
-   *   derivative of function to be optimized */
+  * \param newFuncVal User derivation of UserFunc to define
+  * function to be optimized
+  * \param newFuncDeriv User derivation of UserFunc to define
+  * derivative of function to be optimized */
   void     use( UserFunc< double, double > * newFuncVal,
     UserFunc< double, double > * newFuncDeriv );
 
@@ -107,9 +94,23 @@ public :
 
   void     PrintSelf( std::ostream & os ) const;
 
+protected:
+
+  bool         m_Defined;
+  double       m_XMin;
+  double       m_XMax;
+  double       m_XStep;
+  bool         m_SearchForMin;
+  double       m_Tolerance;
+  unsigned int m_MaxIterations;
+
+  UserFunc< double, double > * m_FuncVal;
+  UserFunc< double, double > * m_FuncDeriv;
+
+  virtual  bool m_Extreme( double * x, double * xVal );
 };
 
 
-}; // end namespace tube
+} // end namespace tube
 
 #endif

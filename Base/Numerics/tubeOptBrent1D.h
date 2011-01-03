@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -58,15 +58,15 @@ public:
 
 protected:
 
-  void cMove( double & a, double & b, double & c,
+  void m_Move( double & a, double & b, double & c,
               double d, double e, double f );
 
-  bool cExtreme( double * x, double * xVal );
+  bool m_Extreme( double * x, double * xVal );
 
-  double cSmall;
+  double m_Small;
 
 };
 
-}; // end namespace tube
+} // end namespace tube
 
 #endif

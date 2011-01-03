@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -356,6 +351,6 @@ Tqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
     }
 }
 
-}; // end namespace tube
+} // end namespace tube
 
 #endif

@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ limitations under the License.
 #include "itkVectorImageToListGenerator.h"
 #include "itkImageRegionConstIterator.h"
 
-namespace itk { 
+namespace itk {
 namespace Statistics {
 
 template < class TImage, class TMaskImage >
@@ -37,7 +37,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
   m_MaskValue = 1;
   this->SetNumberOfRequiredInputs(1);
   this->SetNumberOfRequiredOutputs(1);
-  typename ListSampleOutputType::Pointer listSampleDecorator = 
+  typename ListSampleOutputType::Pointer listSampleDecorator =
     static_cast< ListSampleOutputType * >( this->MakeOutput(0).GetPointer() );
   this->ProcessObject::SetNthOutput(0, listSampleDecorator.GetPointer());
 }
@@ -65,28 +65,28 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::SetInput(const ImageType* image) 
-{ 
+::SetInput(const ImageType* image)
+{
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(0, 
+  this->ProcessObject::SetNthInput(0,
                                    const_cast< ImageType* >( image ) );
 }
 
 template < class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::SetMaskImage(const MaskImageType* image) 
-{ 
+::SetMaskImage(const MaskImageType* image)
+{
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(1, 
+  this->ProcessObject::SetNthInput(1,
                                    const_cast< MaskImageType* >( image ) );
 }
 
 template < class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::SetMaskValue(const MaskPixelType maskValue) 
-{ 
+::SetMaskValue(const MaskPixelType maskValue)
+{
   m_MaskValue = maskValue;
   m_UseSingleMaskValue = true;
   this->Modified();
@@ -101,10 +101,10 @@ VectorImageToListGenerator< TImage, TMaskImage >
     {
     return 0;
     }
-  
+
   return static_cast<const ImageType * >
     (this->ProcessObject::GetInput(0) );
-}  
+}
 
 template < class TImage, class TMaskImage >
 const TMaskImage*
@@ -115,10 +115,10 @@ VectorImageToListGenerator< TImage, TMaskImage >
     {
     return 0;
     }
-  
+
   return static_cast<const MaskImageType * >
     (this->ProcessObject::GetInput(1) );
-}  
+}
 
 template < class TImage, class TMaskImage >
 typename VectorImageToListGenerator< TImage, TMaskImage >::DataObjectPointer
@@ -145,7 +145,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 
   const ImageType *input = this->GetInput();
   MaskImageType *maskImage = NULL;
-  
+
   output->Clear();
 
   if (this->GetNumberOfInputs() > 1)
@@ -153,10 +153,10 @@ VectorImageToListGenerator< TImage, TMaskImage >
     maskImage = const_cast< MaskImageType * >(this->GetMaskImage());
     }
 
-  typedef ImageRegionConstIterator< ImageType >     IteratorType; 
+  typedef ImageRegionConstIterator< ImageType >     IteratorType;
   IteratorType it( input, input->GetBufferedRegion() );
   it.GoToBegin();
-  
+
   if (maskImage) // mask specified
     {
     if(m_UseSingleMaskValue)
@@ -216,9 +216,9 @@ VectorImageToListGenerator< TImage, TMaskImage >
   ListSampleOutputType * decoratedOutput =
     static_cast< ListSampleOutputType * >(
       this->ProcessObject::GetOutput(0));
-  ListSampleType *output = 
+  ListSampleType *output =
    const_cast< ListSampleType *>( decoratedOutput->Get() );
-  output->SetMeasurementVectorSize( 
+  output->SetMeasurementVectorSize(
     itkGetStaticConstMacro( MeasurementVectorSize ));
 }
 
@@ -231,12 +231,12 @@ VectorImageToListGenerator< TImage, TMaskImage >
   // copy the output requested region to the input requested region
   Superclass::GenerateInputRequestedRegion();
 
-  // Make sure that the mask's requested region, if specified is at least 
-  // as large as the input image's buffered region. If not funny things can 
-  // happen such as the mask iterator going out of bounds etc.. 
-  // 
+  // Make sure that the mask's requested region, if specified is at least
+  // as large as the input image's buffered region. If not funny things can
+  // happen such as the mask iterator going out of bounds etc..
+  //
   // TODO: Why don't most other ITK filters that take multiple inputs check
-  // for this ? 
+  // for this ?
   //
   if (this->GetNumberOfInputs() > 1)
     {
@@ -262,7 +262,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
   return decoratedOutput->Get();
 }
 
-} // end of namespace Statistics 
+} // end of namespace Statistics
 } // end of namespace itk
 
 #endif

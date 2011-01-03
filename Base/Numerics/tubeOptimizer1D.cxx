@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -35,7 +35,7 @@ namespace tube
 
 bool
 Optimizer1D
-::cExtreme( double * tubeNotUsed(x), double * tubeNotUsed(xVal) )
+::m_Extreme( double * tubeNotUsed(x), double * tubeNotUsed(xVal) )
 {
   return false;
 }
@@ -44,29 +44,28 @@ Optimizer1D
 Optimizer1D
 ::Optimizer1D( void )
 {
-  cSearchForMin = true;
-  cTolerance = 0.0001;
-  cMaxIterations = 300;
-  cXMin = 0;
-  cXMax = 1;
-  cXStep = 0.01;
-  cDefined = false;
+  m_SearchForMin = true;
+  m_Tolerance = 0.0001;
+  m_MaxIterations = 300;
+  m_XMin = 0;
+  m_XMax = 1;
+  m_XStep = 0.01;
+  m_Defined = false;
 }
-
 
 
 Optimizer1D::Optimizer1D( UserFunc< double, double > * newFuncVal,
   UserFunc< double, double > * newFuncDeriv )
 {
-  cSearchForMin = true;
-  cTolerance = 0.0001;
-  cMaxIterations = 300;
-  cXMin = 0;
-  cXMax = 1;
-  cXStep = 0.01;
-  cFuncVal = newFuncVal;
-  cFuncDeriv = newFuncDeriv;
-  cDefined = true;
+  m_SearchForMin = true;
+  m_Tolerance = 0.0001;
+  m_MaxIterations = 300;
+  m_XMin = 0;
+  m_XMax = 1;
+  m_XStep = 0.01;
+  m_FuncVal = newFuncVal;
+  m_FuncDeriv = newFuncDeriv;
+  m_Defined = true;
 }
 
 
@@ -77,113 +76,113 @@ Optimizer1D::~Optimizer1D( void )
 void Optimizer1D::use( UserFunc< double, double > * newFuncVal,
   UserFunc< double, double > * newFuncDeriv )
 {
-  cFuncVal = newFuncVal;
-  cFuncDeriv = newFuncDeriv;
-  cDefined = true;
+  m_FuncVal = newFuncVal;
+  m_FuncDeriv = newFuncDeriv;
+  m_Defined = true;
 }
 
 
 double Optimizer1D::xMin( void )
 {
-  return cXMin;
+  return m_XMin;
 }
 
 
 void Optimizer1D::xMin( double newXMin )
 {
-  cXMin = newXMin;
+  m_XMin = newXMin;
 }
 
 double Optimizer1D::xMax( void )
 {
-  return cXMax;
+  return m_XMax;
 }
 
 
 void Optimizer1D::xMax( double newXMax )
 {
-  cXMax = newXMax;
+  m_XMax = newXMax;
 }
 
 double Optimizer1D::xStep( void )
 {
-  return cXStep;
+  return m_XStep;
 }
 
 
 void Optimizer1D::xStep( double newXStep )
 {
-  cXStep = newXStep;
+  m_XStep = newXStep;
 }
 
 
 double Optimizer1D::tolerance( void )
 {
-  return cTolerance;
+  return m_Tolerance;
 }
 
 void Optimizer1D::tolerance( double newTolerance )
 {
-  cTolerance = newTolerance;
+  m_Tolerance = newTolerance;
 }
 
 unsigned int Optimizer1D::maxIterations( void )
 {
-    return cMaxIterations;
+  return m_MaxIterations;
 }
 
 void Optimizer1D::maxIterations( unsigned int newMaxIterations )
 {
-  cMaxIterations = newMaxIterations;
+  m_MaxIterations = newMaxIterations;
 }
 
 
 bool Optimizer1D::searchForMin( void )
 {
-  return cSearchForMin;
+  return m_SearchForMin;
 }
 
 
 void Optimizer1D::searchForMin( bool newSearchForMin )
 {
-  cSearchForMin = newSearchForMin;
+  m_SearchForMin = newSearchForMin;
 }
 
 bool Optimizer1D::extreme( double * x, double * xVal )
 {
-  if( !cDefined )
+  if( !m_Defined )
     {
     return false;
     }
 
-  return cExtreme( x, xVal );
+  return m_Extreme( x, xVal );
 }
 
 void Optimizer1D::PrintSelf( std::ostream & os ) const
 {
-  if( cDefined )
+  if( m_Defined )
     {
-    os << "cDefined = True" << std::endl;
+    os << "m_Defined = True" << std::endl;
     }
   else
     {
-    os << "cDefined = False" << std::endl;
+    os << "m_Defined = False" << std::endl;
     }
-  os << "cXMin = " << cXMin << std::endl;
-  os << "cXMax = " << cXMax << std::endl;
-  os << "cXStep = " << cXStep << std::endl;
-  if( cSearchForMin )
+  os << "m_XMin = " << m_XMin << std::endl;
+  os << "m_XMax = " << m_XMax << std::endl;
+  os << "m_XStep = " << m_XStep << std::endl;
+  if( m_SearchForMin )
     {
-    os << "cSearchForMin = True" << std::endl;
+    os << "m_SearchForMin = True" << std::endl;
     }
   else
     {
-    os << "cSearchForMin = False" << std::endl;
+    os << "m_SearchForMin = False" << std::endl;
     }
-  os << "cTolerance = " << cTolerance << std::endl;
-  os << "cMaxIterations = " << cMaxIterations << std::endl;
-  os << "cFuncVal = " << cFuncVal << std::endl;
-  os << "cFuncDeriv = " << cFuncDeriv << std::endl;
+  os << "m_Tolerance = " << m_Tolerance << std::endl;
+  os << "m_MaxIterations = " << m_MaxIterations << std::endl;
+  os << "m_FuncVal = " << m_FuncVal << std::endl;
+  os << "m_FuncDeriv = " << m_FuncDeriv << std::endl;
 }
 
 

@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -92,7 +87,7 @@ public:
 
   /** Evaluate the function at specified ContinousIndex position. */
   virtual double EvaluateAtContinuousIndex( const ContinuousIndexType &
-    index ) const ;
+    index ) const;
 
   /**
    * Set the Scale */
@@ -100,7 +95,7 @@ public:
 
   /**
    * Get the Scale */
-   itkGetMacro( Scale, double);
+  itkGetMacro( Scale, double);
 
   /**
    * Set the Extent */
@@ -136,9 +131,9 @@ private:
   BlurImageFunction( const Self& );
   void operator=( const Self& );
 
-  typedef std::list< double >                        KernelWeightsListType;
-  typedef std::list< typename InputImageType::IndexType >
-                                                     KernelXListType;
+  typedef std::list< double > KernelWeightsListType;
+
+  typedef std::list< typename InputImageType::IndexType > KernelXListType;
 
   bool                    m_UseRelativeSpacing;
   SpacingType             m_Spacing;
@@ -153,6 +148,7 @@ private:
 
   IndexType               m_ImageIndexMin;
   IndexType               m_ImageIndexMax;
+
 };
 
 } // namespace tube

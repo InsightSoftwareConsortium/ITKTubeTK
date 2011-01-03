@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ namespace itk
  *  Using an input image an input mask, this function allows the computation of
  *  Z-Score values at a given point in the image. This is done by calling the
  *  Precompute function to build up a mean and standard deviation for each bin
- *  in a joint-histogram. That mean and standard deviation is used to compute 
+ *  in a joint-histogram. That mean and standard deviation is used to compute
  *  the Z-Score at a point when Evaluate is called. The neighboorhood used in
  *  the computation of the joint histogram is determined by the feature width.
  */
@@ -70,7 +70,7 @@ public:
   itkGetMacro( FeatureWidth, double );
   itkSetMacro( FeatureWidth, double );
 
-  /** 
+  /**
    * Get/Set the factor used to compensate for standard deviations of 0 in
    * the Z-Score calculation. */
   itkGetMacro( StdevBase, double );
@@ -91,10 +91,10 @@ public:
   /** Get the size of the histogram (It will be a size x size image ). */
   itkGetMacro( HistogramSize, unsigned int );
 
-  /** 
-   * Set the size of the histogram. This will reset the bins in the 
-   * mean and standard deviation to zero. 
-   */ 
+  /**
+   * Set the size of the histogram. This will reset the bins in the
+   * mean and standard deviation to zero.
+   */
   virtual void SetHistogramSize( const unsigned int & size );
 
   /** Get the Z-score at a given point. */
@@ -106,7 +106,7 @@ public:
     }
 
   /** Get the Z-score at a given continuous index. */
-  virtual double EvaluateAtContinuousIndex( 
+  virtual double EvaluateAtContinuousIndex(
     const ContinuousIndexType & index ) const
     {
     IndexType nindex;
@@ -118,8 +118,8 @@ public:
   /** Get the Z-score at a given index. */
   virtual double EvaluateAtIndex( const IndexType & index ) const;
 
-  /** 
-   * Add histograms (based on a given point) to the internals used to 
+  /**
+   * Add histograms (based on a given point) to the internals used to
    * calculate the mean and standard deviation histograms when needed.
    */
   virtual void Precompute( const PointType & point )
@@ -129,12 +129,12 @@ public:
     this->PrecomputeAtIndex( index );
     }
 
-  /** 
-   * Add histograms (based on a given continuous index) to the internals 
+  /**
+   * Add histograms (based on a given continuous index) to the internals
    * used to calculate the mean and standard deviation histograms when
    * needed.
    */
-  virtual void PrecomputeAtContinuousIndex( 
+  virtual void PrecomputeAtContinuousIndex(
     const ContinuousIndexType & index )
     {
     IndexType nindex;
@@ -155,20 +155,20 @@ public:
   // setmeanhistogram
   // setstandardeviationhistogram
 
-  /** 
-   * Add histograms (based on a given index) to the internals used to 
+  /**
+   * Add histograms (based on a given index) to the internals used to
    * calculate the mean and standard deviation histograms when needed.
    */
   virtual void PrecomputeAtIndex( const IndexType & index );
-  
-  /** 
+
+  /**
    * Compute the mean and standard deviation histograms for use in Z-score
    * calculation.
    */
   void ComputeMeanAndStandardDeviation() const;
 
 protected:
-  
+
   /** Default constructor */
   JointHistogramImageFunction();
 
@@ -178,7 +178,7 @@ protected:
   /** Printself function for introspection. **/
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  typename HistogramType::Pointer & ComputeHistogramAtIndex( 
+  typename HistogramType::Pointer & ComputeHistogramAtIndex(
     const IndexType & index, bool blur=true ) const;
 
   /** Get the Z-score at a given index. */

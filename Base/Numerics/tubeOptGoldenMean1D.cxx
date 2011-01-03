@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -50,25 +50,24 @@ OptGoldenMean1D::~OptGoldenMean1D( )
 
 void OptGoldenMean1D::use( UserFunc<double, double> * newFuncVal )
 {
-    Optimizer1D::use( newFuncVal, NULL );
+  Optimizer1D::use( newFuncVal, NULL );
 }
 
 
-
-bool OptGoldenMean1D::cExtreme( double *extX, double *extVal )
+bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
 {
   double maxSign = 1;
-  if( cSearchForMin )
+  if( m_SearchForMin )
     {
     maxSign = -1;
     }
 
   double v;
-  double prevV = cFuncVal->value( *extX );
-  double xstep = cXStep;
+  double prevV = m_FuncVal->value( *extX );
+  double xstep = m_XStep;
   int dir = 1;
-  double v1 = maxSign*cFuncVal->value( *extX+dir*xstep );
-  double v2 = maxSign*cFuncVal->value( *extX-dir*xstep );
+  double v1 = maxSign * m_FuncVal->value( *extX+dir*xstep );
+  double v2 = maxSign * m_FuncVal->value( *extX-dir*xstep );
 
   if( v2>v1 )
     {
@@ -82,10 +81,10 @@ bool OptGoldenMean1D::cExtreme( double *extX, double *extVal )
 
   unsigned int iter = 0;
   int dirInit = dir;
-  while( v<prevV && xstep>2*cTolerance && iter<cMaxIterations )
+  while( v < prevV && xstep > 2 * m_Tolerance && iter < m_MaxIterations )
     {
     dir *= -1;
-    v = maxSign*cFuncVal->value( *extX+dir*xstep );
+    v = maxSign * m_FuncVal->value( *extX+dir*xstep );
     if( v<prevV && dir == dirInit )
       {
       xstep /= 1.618;
@@ -97,43 +96,43 @@ bool OptGoldenMean1D::cExtreme( double *extX, double *extVal )
 
   *extX += dir*xstep;
 
-  if( *extX>cXMax )
+  if( *extX > m_XMax )
     {
-    *extX = cXMax;
+    *extX = m_XMax;
     *extVal = prevV;
     return false;
     }
 
-  if( *extX<cXMin )
+  if( *extX < m_XMin )
     {
-    *extX = cXMin;
+    *extX = m_XMin;
     *extVal = prevV;
     return false;
     }
 
   dirInit = dir;
-  while( xstep>cTolerance && iter<cMaxIterations )
+  while( xstep > m_Tolerance && iter < m_MaxIterations )
     {
-    v = maxSign*cFuncVal->value( *extX+dir*xstep );
-    while( v>prevV && iter<cMaxIterations )
+    v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+    while( v > prevV && iter < m_MaxIterations )
       {
       dirInit = dir;
       prevV = v;
       *extX += dir*xstep;
-      if( *extX>cXMax )
+      if( *extX > m_XMax )
         {
-        *extX = cXMax;
+        *extX = m_XMax;
         *extVal = prevV;
         return false;
         }
 
-      if( *extX<cXMin )
+      if( *extX < m_XMin )
         {
-        *extX = cXMin;
+        *extX = m_XMin;
         *extVal = prevV;
         return false;
         }
-      v = maxSign*cFuncVal->value( *extX+dir*xstep );
+      v = maxSign * m_FuncVal->value( *extX+dir*xstep );
       ++iter;
       }
     if( dir == dirInit )
@@ -148,4 +147,4 @@ bool OptGoldenMean1D::cExtreme( double *extX, double *extVal )
 }
 
 
-}; // namespace tube
+} // namespace tube

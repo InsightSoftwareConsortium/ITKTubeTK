@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -25,25 +20,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef USERFUNC_H
-#define USERFUNC_H
+#ifndef __tubeUserFunc_h
+#define __tubeUserFunc_h
 
 #include <vnl/vnl_vector.h>
 
-/*! UserFunc Derivation Examples
+/** UserFunc Derivation Examples
  *  \example TestOptimizerND/testOptimizerND.cpp
  */
 
 namespace tube {
 
-/*! Derive this class to pass functions to Spline and Optimization Classes
+/** Derive this class to pass functions to Spline and Optimization Classes
+ * \class UserFunc
  * \author Stephen R. Aylward
  * \date 11/22/99
  */
 template <class InVarT, class OutVarT>
 class UserFunc
 {
-public :
+public:
 
   virtual ~UserFunc() = 0;
 
@@ -57,6 +53,6 @@ inline UserFunc< InVarT, OutVarT >::~UserFunc()
 {
 }
 
-}; // namespace tube
+} // namespace tube
 
 #endif

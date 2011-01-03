@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef _itkAnisotropicDiffusiveRegistrationFunction_txx
-#define _itkAnisotropicDiffusiveRegistrationFunction_txx
+#ifndef __itkAnisotropicDiffusiveRegistrationFunction_txx
+#define __itkAnisotropicDiffusiveRegistrationFunction_txx
 
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
 #include "itkVectorIndexSelectionCastImageFilter.h"
@@ -110,8 +110,8 @@ AnisotropicDiffusiveRegistrationFunction
 }
 
 /**
-  * Deletes the global data structure
-  */
+ * Deletes the global data structure
+ */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFunction
@@ -136,8 +136,8 @@ AnisotropicDiffusiveRegistrationFunction
 }
 
 /**
-  * Called at the beginning of each iteration
-  */
+ * Called at the beginning of each iteration
+ */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFunction
@@ -156,7 +156,7 @@ AnisotropicDiffusiveRegistrationFunction
   // Setup and initialize the component functions
   if( m_ComputeIntensityDistanceTerm )
     {
-    m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() ) ;
+    m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() );
     m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
     m_IntensityDistanceFunction->SetDeformationField(
         this->GetDeformationField() );
@@ -169,8 +169,8 @@ AnisotropicDiffusiveRegistrationFunction
 }
 
 /**
-  * Computes the update term
-  */
+ * Computes the update term
+ */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >

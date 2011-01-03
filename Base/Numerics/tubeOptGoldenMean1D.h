@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK/VTree3D
 
 Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
 
@@ -47,11 +47,11 @@ public:
 
 protected:
 
-  bool cExtreme(double * x, double * xVal);
+  bool m_Extreme(double * x, double * xVal);
 
 
 };
 
-}; // end namespace tube
+} // end namespace tube
 
 #endif

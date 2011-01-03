@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ namespace itk
 /**
  * \class NJetImageFunction
  * \brief Calculate the gaussian blurred value, 1st derivatives, and
- *        second derivatives at point 
+ *        second derivatives at point
  *        given a scale and extent of the gaussian.
  * This class is templated over the input image type.
  *
@@ -83,28 +83,28 @@ public:
   itkStaticConstMacro(ImageDimension,
                       unsigned int,
                       TInputImage::ImageDimension);
-  
+
   typedef TInputImage                                 InputImageType;
   typedef typename InputImageType::Pointer            InputImagePointer;
 
   typedef Point<double, itkGetStaticConstMacro(ImageDimension) >
                                                       PointType;
 
-  typedef Vector< double, itkGetStaticConstMacro(ImageDimension) > 
+  typedef Vector< double, itkGetStaticConstMacro(ImageDimension) >
                                                       VectorType;
 
   typedef Matrix< double, itkGetStaticConstMacro(ImageDimension),
-                  itkGetStaticConstMacro(ImageDimension) >  
+                  itkGetStaticConstMacro(ImageDimension) >
                                                       MatrixType;
 
   typedef typename InputImageType::IndexType          IndexType;
 
-  typedef ContinuousIndex<double, itkGetStaticConstMacro(ImageDimension) > 
+  typedef ContinuousIndex<double, itkGetStaticConstMacro(ImageDimension) >
                                                       ContinuousIndexType;
 
   typedef typename InputImageType::SpacingType              SpacingType;
 
-  typedef Size<itkGetStaticConstMacro(ImageDimension)>      SizeType; 
+  typedef Size<itkGetStaticConstMacro(ImageDimension)>      SizeType;
 
   typedef Array< VectorType >                               ArrayVectorType;
 
@@ -113,7 +113,7 @@ public:
    */
   void SetInputImage( const InputImageType * ptr );
   itkGetConstObjectMacro( InputImage, InputImageType );
-  
+
   void SetInputImageMask( const InputImageType * ptr );
   itkGetConstObjectMacro( InputImageMask, InputImageType );
   itkSetMacro( UseInputImageMask, bool );
@@ -131,9 +131,9 @@ public:
 
   /** Evalulate the function at specified point */
   double Evaluate( const PointType & point, double scale=1 ) const;
-  double Evaluate( const PointType & point, const VectorType & v1, 
+  double Evaluate( const PointType & point, const VectorType & v1,
                       double scale=1 ) const;
-  double Evaluate( const PointType & point, const VectorType & v1, 
+  double Evaluate( const PointType & point, const VectorType & v1,
                       const VectorType & v2,
                       double scale=1 ) const;
 
@@ -153,31 +153,31 @@ public:
                       const VectorType & v1,
                       double scale=1 ) const;
   double EvaluateAtContinuousIndex( const ContinuousIndexType & index,
-                      const VectorType & v1, 
+                      const VectorType & v1,
                       const VectorType & v2,
                       double scale=1 ) const;
 
-  
+
   void  Derivative( const PointType & point, double scale,
                        VectorType & d ) const;
-  void  Derivative( const PointType & point, 
-                       const VectorType & v1, 
+  void  Derivative( const PointType & point,
+                       const VectorType & v1,
                        double scale,
                        VectorType & d ) const;
-  void Derivative( const PointType & point, 
+  void Derivative( const PointType & point,
                        const VectorType & v1, const VectorType & v2,
                        double scale,
                        VectorType & d ) const;
 
-  void 
+  void
     DerivativeAtIndex( const IndexType & index, double scale,
                        VectorType & d ) const;
-  void 
-    DerivativeAtIndex( const IndexType & index, 
+  void
+    DerivativeAtIndex( const IndexType & index,
                        const VectorType & v1,
                        double scale,
                        VectorType & d ) const;
-  void 
+  void
     DerivativeAtIndex( const IndexType & index,
                        const VectorType & v1, const VectorType & v2,
                        double scale,
@@ -198,31 +198,31 @@ public:
                        double scale,
                        VectorType & d ) const;
 
-  double 
+  double
     ValueAndDerivative( const PointType & point,
                        double scale,
                        VectorType & d ) const;
-  double 
+  double
     ValueAndDerivative( const PointType & point,
                        const VectorType & v1,
                        double scale,
                        VectorType & d ) const;
-  double 
+  double
     ValueAndDerivative( const PointType & point,
                        const VectorType & v1, const VectorType & v2,
                        double scale,
                        VectorType & d ) const;
 
-  double 
+  double
     ValueAndDerivativeAtIndex( const IndexType & index,
                        double scale,
                        VectorType & d ) const;
-  double 
+  double
     ValueAndDerivativeAtIndex( const IndexType & index,
                        const VectorType & v1,
                        double scale,
                        VectorType & d ) const;
-  double 
+  double
     ValueAndDerivativeAtIndex( const IndexType & index,
                        const VectorType & v1, const VectorType & v2,
                        double scale,
@@ -238,7 +238,7 @@ public:
                        VectorType & d ) const;
   double
     ValueAndDerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
-                       const VectorType & v1, 
+                       const VectorType & v1,
                        const VectorType & v2,
                        double scale,
                        VectorType & d ) const;
@@ -259,20 +259,20 @@ public:
   double
     Ridgeness( const PointType & point, double scale=1 ) const;
   double
-    Ridgeness( const PointType & point, 
+    Ridgeness( const PointType & point,
                        const VectorType & v1, double scale=1 ) const;
   double
-    Ridgeness( const PointType & point, 
-                       const VectorType & v1, const VectorType & v2, 
+    Ridgeness( const PointType & point,
+                       const VectorType & v1, const VectorType & v2,
                        double scale=1 ) const;
 
   double
     RidgenessAtIndex( const IndexType & index, double scale=1 ) const;
   double
-    RidgenessAtIndex( const IndexType & index, 
+    RidgenessAtIndex( const IndexType & index,
                        const VectorType & v1, double scale=1 ) const;
   double
-    RidgenessAtIndex( const IndexType & index, 
+    RidgenessAtIndex( const IndexType & index,
                        const VectorType & v1, const VectorType & v2,
                        double scale=1 ) const;
 
@@ -292,7 +292,7 @@ public:
                        VectorType & d ) const;
   double
     RidgenessAndDerivative(const PointType &point,
-                       const VectorType & v1, 
+                       const VectorType & v1,
                        double scale,
                        VectorType & d ) const;
   double
@@ -336,12 +336,12 @@ public:
     Hessian( const PointType & point, double scale,
                        MatrixType & m ) const;
   void
-    Hessian( const PointType & point, 
+    Hessian( const PointType & point,
                        const VectorType & v1, double scale,
                        MatrixType & m ) const;
   void
-    Hessian( const PointType & point, 
-                       const VectorType & v1, const VectorType & v2, 
+    Hessian( const PointType & point,
+                       const VectorType & v1, const VectorType & v2,
                        double scale,
                        MatrixType & m ) const;
 
@@ -349,12 +349,12 @@ public:
     HessianAtIndex( const IndexType & index, double scale,
                        MatrixType & m ) const;
   void
-    HessianAtIndex( const IndexType & index, 
+    HessianAtIndex( const IndexType & index,
                        const VectorType & v1, double scale,
                        MatrixType & m ) const;
   void
-    HessianAtIndex( const IndexType & index, 
-                       const VectorType & v1, const VectorType & v2, 
+    HessianAtIndex( const IndexType & index,
+                       const VectorType & v1, const VectorType & v2,
                        double scale,
                        MatrixType & m ) const;
 
@@ -424,11 +424,11 @@ protected:
   bool                    m_UseProjection;
 
 };
-  
+
 } // namespace itk
-  
+
 #ifndef ITK_MANUAL_INSTANTIATION
   #include "itkNJetImageFunction.txx"
 #endif
-  
+
 #endif

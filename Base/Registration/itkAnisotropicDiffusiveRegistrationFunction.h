@@ -52,7 +52,7 @@ class ITK_EXPORT AnisotropicDiffusiveRegistrationFunction
 {
 public:
   /** Standard class typedefs. */
-  typedef AnisotropicDiffusiveRegistrationFunction Self;
+  typedef AnisotropicDiffusiveRegistrationFunction              Self;
   typedef PDEDeformableRegistrationFunction<TFixedImage,
                                             TMovingImage,
                                             TDeformationField>  Superclass;
@@ -251,8 +251,8 @@ protected:
     const and thread-safe.*/
   struct GlobalDataStruct
     {
-      void *                            m_RegularizationGlobalDataStruct;
-      void *                            m_IntensityDistanceGlobalDataStruct;
+    void *                            m_RegularizationGlobalDataStruct;
+    void *                            m_IntensityDistanceGlobalDataStruct;
     };
 
 private:

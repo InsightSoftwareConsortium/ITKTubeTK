@@ -376,8 +376,9 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
   // on the output region because input has been copied to output.
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<OutputImageType>
-                                                        FaceCalculatorType;
+  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    OutputImageType>
+    FaceCalculatorType;
 
   typedef typename FaceCalculatorType::FaceListType FaceListType;
 
@@ -386,7 +387,8 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   FaceListType faceList = faceCalculator(output, regionToProcess, radius);
   typename FaceListType::iterator fIt = faceList.begin();
 
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<DiffusionTensorImageType>
+  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    DiffusionTensorImageType>
     DiffusionTensorFaceCalculatorType;
 
   typedef typename DiffusionTensorFaceCalculatorType::FaceListType
@@ -395,9 +397,11 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   DiffusionTensorFaceCalculatorType diffusionTensorFaceCalculator;
 
   DiffusionTensorFaceListType diffusionTensorFaceList =
-     diffusionTensorFaceCalculator(m_DiffusionTensorImage, diffusionRegionToProcess, radius);
+   diffusionTensorFaceCalculator(m_DiffusionTensorImage,
+   diffusionRegionToProcess, radius);
 
-  typename DiffusionTensorFaceListType::iterator dfIt = diffusionTensorFaceList.begin();
+  typename DiffusionTensorFaceListType::iterator dfIt =
+    diffusionTensorFaceList.begin();
 
 
   // Ask the function object for a pointer to a data structure it

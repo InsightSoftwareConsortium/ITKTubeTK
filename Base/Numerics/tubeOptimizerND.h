@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -39,13 +34,15 @@ limitations under the License.
 namespace tube
 {
 
-
+/** Base class for Optimization in ND
+ * \class OptimizerND
+ */
 class OptimizerND
 {
+public:
 
-public :
-
-  /** Typedef for the matrix type used */
+  /**
+   * Typedef for the matrix type used */
   typedef vnl_matrix<double> MatrixType;
 
   OptimizerND( void );
@@ -90,36 +87,32 @@ public :
   bool         extreme( vnl_vector<double> &x, double *xVal, unsigned int n,
                         MatrixType &dirs );
 
-protected :
+protected:
 
-  unsigned int cNDims;
+  unsigned int         m_NDims;
 
-  vnl_vector<double>   cXMin;
-  vnl_vector<double>   cXMax;
-  vnl_vector<double>   cXStep;
-  vnl_vector<double>   cX0;
-  vnl_vector<double>   cX0Dir;
-  vnl_vector<double>   cX0Temp;
+  vnl_vector<double>   m_XMin;
+  vnl_vector<double>   m_XMax;
+  vnl_vector<double>   m_XStep;
+  vnl_vector<double>   m_X0;
+  vnl_vector<double>   m_X0Dir;
+  vnl_vector<double>   m_X0Temp;
 
-  bool         cSearchForMin;
-  double       cTolerance;
-  unsigned int cMaxIterations;
-  unsigned int cMaxLineSearches;
+  bool                 m_SearchForMin;
+  double               m_Tolerance;
+  unsigned int         m_MaxIterations;
+  unsigned int         m_MaxLineSearches;
 
-  UserFunc< double, double >             * cOpt1DVal;
-  UserFunc< double, double >             * cOpt1DDeriv;
+  UserFunc< double, double >             * m_Opt1DVal;
+  UserFunc< double, double >             * m_Opt1DDeriv;
 
-  Optimizer1D                            * cOpt1D;
+  Optimizer1D                            * m_Opt1D;
 
-  UserFunc< vnl_vector<double>, double >               * cFuncValND;
-  UserFunc< vnl_vector<double>, vnl_vector<double> > * cFuncDerivND;
+  UserFunc< vnl_vector<double>, double >               * m_FuncValND;
+  UserFunc< vnl_vector<double>, vnl_vector<double> >   * m_FuncDerivND;
 
 };
 
-
-
-}; // end namespace tube
-
-
+} // end namespace tube
 
 #endif

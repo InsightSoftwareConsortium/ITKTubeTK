@@ -46,9 +46,10 @@ namespace itk
 // on the defaults of template parameters
 template <typename TInputImage,
           typename TOutputImage= Image< SymmetricSecondRankTensor<
-  ITK_TYPENAME NumericTraits< ITK_TYPENAME TInputImage::PixelType>::RealType,
+  ITK_TYPENAME NumericTraits< ITK_TYPENAME TInputImage::PixelType>
+  ::RealType,
   ::itk::GetImageDimension<TInputImage>::ImageDimension >,
-                                        ::itk::GetImageDimension<TInputImage>::ImageDimension > >
+  ::itk::GetImageDimension<TInputImage>::ImageDimension > >
 class ITK_EXPORT StructureTensorRecursiveGaussianImageFilter:
     public ImageToImageFilter<TInputImage,TOutputImage>
 {
