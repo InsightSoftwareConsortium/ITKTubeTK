@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -25,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef tubeSplineND_h
-#define tubeSplineND_h
+#ifndef __tubeSplineND_h
+#define __tubeSplineND_h
 
 #include "itkImage.h"
 #include "itkVectorContainer.h"
@@ -50,8 +45,7 @@ namespace tube
 
 class SplineND
 {
-
-public :
+public:
 
   /** Typedef for the vector type used */
   typedef vnl_vector< double > VectorType;
@@ -118,7 +112,7 @@ public :
   void clipEdge(bool newClip);
 
   /** Returns the number of dimensions of the problem's domain.  */
-  int nDims() { return cNDims; };
+  int nDims() { return m_NDims; }
 
   /** User specification of lower bound */
   void xMin(const IntVectorType & newXMin);
@@ -133,148 +127,149 @@ public :
   const IntVectorType & xMax();
 
   /** Tracks the validity of internally maintained intermediate
-  * calculations and data. Returns true if a new spline instance has been
-  * created (e.g., use has been called)
-  */
+   * calculations and data. Returns true if a new spline instance has been
+   * created (e.g., use has been called)
+   */
   bool newData();
 
   /** User sets to true to force recalcuation of internal data.
-  * For example, use to flag that UserFunc has changed externally
-  */
+   * For example, use to flag that UserFunc has changed externally
+   */
   void newData(bool newNewData);
 
   /** Returns spline interpolated value at x.
-  * Calculates the values at control (integer) points by calling the
-  * UserFunc and returns the interpolated value between those points.
-  * Type of interpolation is dependent on which spline derivation is used
-  * (e.g., SplApprox1D).   Intermediate calculations and control point
-  * evaluations are stored to speed subsequent calls.
-  */
+   * Calculates the values at control (integer) points by calling the
+   * UserFunc and returns the interpolated value between those points.
+   * Type of interpolation is dependent on which spline derivation is used
+   * (e.g., SplApprox1D).   Intermediate calculations and control point
+   * evaluations are stored to speed subsequent calls.
+   */
   const double & value(const VectorType & x);
 
   /** Returns spline interpolated first derivative at x projected onto dx.
-  *  Calculates the values at control (integer) points by calling the
-  *  UserFunc and returns the interpolated first derivative between those
-  *  points.  Type of interpolation is dependent on which spline derivation
-  *  is used (e.g., SplApprox1D).   Intermediate calculations and control
-  *  point evaluations are stored to speed subsequent calls.
-  */
+   *  Calculates the values at control (integer) points by calling the
+   *  UserFunc and returns the interpolated first derivative between those
+   *  points.  Type of interpolation is dependent on which spline derivation
+   *  is used (e.g., SplApprox1D).   Intermediate calculations and control
+   *  point evaluations are stored to speed subsequent calls.
+   */
   double valueD(const VectorType & x, IntVectorType & dx);
 
   /** Returns spline interpolated first derivative at x.
-  * Calculates the values at control (integer) points by calling the
-  * UserFunc and returns the interpolated first derivative between those
-  * points.  Type of interpolation is dependent on which spline derivation
-  * is used (e.g., SplApprox1D).  Intermediate calculations and control
-  * point evaluations are stored to speed subsequent calls.
+   * Calculates the values at control (integer) points by calling the
+   * UserFunc and returns the interpolated first derivative between those
+   * points.  Type of interpolation is dependent on which spline derivation
+   * is used (e.g., SplApprox1D).  Intermediate calculations and control
+   * point evaluations are stored to speed subsequent calls.
    */
   VectorType & valueD(const VectorType & x);
 
   /** Returns spline interpolated Hessian at x.
-  * Calculates the values at control (integer) points by calling the
-  * UserFunc and returns the interpolated Hessian between those points.
-  * Type of interpolation is dependent on which spline derivation is used
-  * (e.g., SplApprox1D).  Intermediate calculations and control point
-  * evaluations are stored to speed subsequent calls
-  */
+   * Calculates the values at control (integer) points by calling the
+   * UserFunc and returns the interpolated Hessian between those points.
+   * Type of interpolation is dependent on which spline derivation is used
+   * (e.g., SplApprox1D).  Intermediate calculations and control point
+   * evaluations are stored to speed subsequent calls
+   */
   MatrixType & hessian(const VectorType & x);
 
   /** Returns spline interpolated derivative jet (value, 1st deriv,
-  * Hessian) at x. Calculates the values at control (integer) points by
-  * calling the UserFunc and returns the interpolated derivative jet
-  * between those points.   Type of interpolation is dependent on which
-  * spline derivation is used (e.g., SplApprox1D).   Intermediate
-  * calculations and control point evaluations are stored to speed
-  * subsequent calls.
-  */
+   * Hessian) at x. Calculates the values at control (integer) points by
+   * calling the UserFunc and returns the interpolated derivative jet
+   * between those points.   Type of interpolation is dependent on which
+   * spline derivation is used (e.g., SplApprox1D).   Intermediate
+   * calculations and control point evaluations are stored to speed
+   * subsequent calls.
+   */
   double valueJet(const VectorType & x, VectorType & d, MatrixType & h);
 
   /** Returns spline interpolated 1st derivatives and 2nd derivatives at x
-  * Calculates the values at control (integer) points by calling the
-  * UserFunc and returns the interpolated 1st derivatives and 2nd
-  * derivatives between those points.  Type of interpolation is dependent
-  * on which spline derivation is used (e.g., SplApprox1D). Intermediate
-  * calculations and control point evaluations are stored to speed
-  * subsequent calls
-  */
+   * Calculates the values at control (integer) points by calling the
+   * UserFunc and returns the interpolated 1st derivatives and 2nd
+   * derivatives between those points.  Type of interpolation is dependent
+   * on which spline derivation is used (e.g., SplApprox1D). Intermediate
+   * calculations and control point evaluations are stored to speed
+   * subsequent calls
+   */
   double valueVDD2(const VectorType & x, VectorType & d, VectorType & d2);
 
   OptimizerND * optimizerND( void );
 
   /** Calculates the local extreme using the supplied instance of a
-  * derivation of OptimizerND.  Function returns true on successful local
-  * extreme finding, false otherwise.
-  *  \param extX User supplied initial point, On return equals location
-  *         of extreme local to initial point
-  *  \param extVal On return equals the value at the local extreme
-  */
+   * derivation of OptimizerND.  Function returns true on successful local
+   * extreme finding, false otherwise.
+   *  \param extX User supplied initial point, On return equals location
+   *         of extreme local to initial point
+   *  \param extVal On return equals the value at the local extreme
+   */
   bool extreme(VectorType & extX, double * extVal);
 
   /** Calculates the local extreme in the direction dir using the supplied
-  * instance of a derivation of OptimizerND. Function returns true on
-  * successful local extreme finding, false otherwise.
-  *  \param extX User supplied initial point, On return equals location of
-  *         extreme local to initial point
-  *  \param extVal On return equals the value at the local extreme
-  *  \param dir Direction to search for local extreme
-  */
+   * instance of a derivation of OptimizerND. Function returns true on
+   * successful local extreme finding, false otherwise.
+   *  \param extX User supplied initial point, On return equals location of
+   *         extreme local to initial point
+   *  \param extVal On return equals the value at the local extreme
+   *  \param dir Direction to search for local extreme
+   */
   bool extreme(VectorType & extX, double * extVal, VectorType &dir);
 
   /** Calculates the local extreme in the basis space dirs using the
-  * supplied instance of a derivation of OptimizerND. Function returns
-  * true on successful local extreme finding, false otherwise.
-  *  \param extX User supplied initial point, On return equals location
-  *         of extreme local to initial point
-  *  \param extVal On return equals the value at the local extreme
-  *  \param n number of vectors in dirs to use to define the basis space
-  *  \param dirs TNT::Vectors that define the basis space to search for
-  *         local extreme
-  */
+   * supplied instance of a derivation of OptimizerND. Function returns
+   * true on successful local extreme finding, false otherwise.
+   *  \param extX User supplied initial point, On return equals location
+   *         of extreme local to initial point
+   *  \param extVal On return equals the value at the local extreme
+   *  \param n number of vectors in dirs to use to define the basis space
+   *  \param dirs TNT::Vectors that define the basis space to search for
+   *         local extreme
+   */
   bool extreme(VectorType & extX, double * extVal, unsigned int n,
     MatrixType &dirs);
 
   /** Calculates the local extreme using an approximation to the conjugate
-  * gradient descent method. Function returns true on successful local
-  * extreme finding, false otherwise.
-  *  \param extX User supplied initial point, On return equals location of
-  *         extreme local to initial point
-  *  \param extVal On return equals the value at the local extreme
-  */
+   * gradient descent method. Function returns true on successful local
+   * extreme finding, false otherwise.
+   *  \param extX User supplied initial point, On return equals location of
+   *         extreme local to initial point
+   *  \param extVal On return equals the value at the local extreme
+   */
   bool extremeConjGrad(VectorType & extX, double * extVal);
 
-protected :
+protected:
+
   typedef itk::VectorContainer< unsigned int, ImageType::Pointer >
     VectorImageType;
 
   /** Used to enable/disable cout of intermediate calculations */
-  bool           m_debug;
+  bool           m_Debug;
 
-  unsigned int   cNDims;
-  bool           cClip;
-  IntVectorType  cXMin;
-  IntVectorType  cXMax;
-  bool           cNewData;
-  IntVectorType  cXi;
-  double         cVal;
-  VectorType     cD;
-  MatrixType     cH;
+  unsigned int   m_NDims;
+  bool           m_Clip;
+  IntVectorType  m_XMin;
+  IntVectorType  m_XMax;
+  bool           m_NewData;
+  IntVectorType  m_Xi;
+  double         m_Val;
+  VectorType     m_D;
+  MatrixType     m_H;
 
-  ImageType::Pointer  cData;
-  ImageType::Pointer  cDataWS;
-  VectorType          cData1D;
+  ImageType::Pointer  m_Data;
+  ImageType::Pointer  m_DataWS;
+  VectorType          m_Data1D;
 
-  VectorImageType::Pointer cDataWSX;
-  VectorImageType::Pointer cDataWSXX;
+  VectorImageType::Pointer m_DataWSX;
+  VectorImageType::Pointer m_DataWSXX;
 
-  UserFunc< IntVectorType, double >   * cFuncVal;
+  UserFunc< IntVectorType, double >   * m_FuncVal;
 
-  UserFunc< VectorType, double >      * cOptNDVal;
-  UserFunc< VectorType, VectorType >  * cOptNDDeriv;
+  UserFunc< VectorType, double >      * m_OptNDVal;
+  UserFunc< VectorType, VectorType >  * m_OptNDDeriv;
 
-  OptimizerND       * cOptND;
-  Spline1D          * cSpline1D;
+  OptimizerND       * m_OptND;
+  Spline1D          * m_Spline1D;
 
-  void  cGetData(const VectorType &x);
+  void  m_GetData(const VectorType &x);
 
 };
 

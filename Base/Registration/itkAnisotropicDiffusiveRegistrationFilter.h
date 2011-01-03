@@ -44,7 +44,7 @@ namespace itk
  * the registration of images depicting images that slide relative to each
  * other.  By specifying the border between the organs (using a vtkPolyData * )
  * we can ensure that the motion field is smooth in the direction parallel to
- * the border's normal (to enforce coupling between the organs) but allow
+ * the borders normal (to enforce coupling between the organs) but allow
  * the motion field to be discontinuous in the direction parallel to the border
  * itself in the vicinity of the border (to allow for sliding motion).
  *
@@ -171,7 +171,7 @@ public:
   typedef typename SelectionCastImageFilterType::Pointer
       SelectionCastImageFilterPointer;
 
-  /** Convenience function to set the registration function's timestep from the
+  /** Convenience function to set the registration functions timestep from the
    * filter */
   void SetTimeStep( const TimeStepType &t )
     { this->GetRegistrationFunctionPointer()->SetTimeStep( t ); }
@@ -229,30 +229,29 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetUseAnisotropicRegularization(); }
 
-  /** Get/get the image of the normal vectors.  Setting the normal vector image
-    * overrides the border surface polydata if a border surface was also
-    * supplied. */
+  /** Get/get the image of the normal vectors.  Setting the normal vector
+   * image overrides the border surface polydata if a border surface was
+   * also supplied. */
   virtual void SetNormalVectorImage( NormalVectorImagePointer normalImage )
     { m_NormalVectorImage = normalImage; }
   virtual const NormalVectorImagePointer GetNormalVectorImage() const
     { return m_NormalVectorImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
-    * the border surface polydata if a border surface was also supplied.
-    */
+   * the border surface polydata if a border surface was also supplied.  */
   virtual void SetWeightImage( WeightImagePointer weightImage )
     { m_WeightImage = weightImage; }
   virtual const WeightImagePointer GetWeightImage() const
     { return m_WeightImage; }
 
   /** Get the image of the tangential diffusion tensors */
-  virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
-      const
+  virtual const DiffusionTensorImagePointer
+    GetTangentialDiffusionTensorImage() const
     { return m_TangentialDiffusionTensorImage; }
 
   /** Get the image of the normal diffusion tensors */
   virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
-      const
+    const
     { return m_NormalDiffusionTensorImage; }
 
   /** Get the normal components of the deformation field */
@@ -349,7 +348,7 @@ private:
   void operator=(const Self&); // Purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
-   * the subclasses' threading mechanisms. */
+   * the subclasses threading mechanisms. */
   struct DenseFDThreadStruct
     {
     AnisotropicDiffusiveRegistrationFilter *Filter;
@@ -363,23 +362,22 @@ private:
   static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
-   * which it then passes to ThreadedCalculateChange for processing. */
+  * which it then passes to ThreadedCalculateChange for processing. */
   static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
 
-  /** The buffer that holds the updates for an iteration of the algorithm. */
+  /** The buffer that holds the updates for an iteration of algorithm. */
   typename UpdateBufferType::Pointer    m_UpdateBuffer;
 
-  /** The organ boundary surface, the surface of border normals, and the derived
-   *  normal vector and weight images */
+  /** The organ boundary surface, the surface of border normals, and the
+  * derived normal vector and weight images */
   BorderSurfacePointer                  m_BorderSurface;
   BorderSurfacePointer                  m_BorderNormalsSurface;
   NormalVectorImagePointer              m_NormalVectorImage;
   WeightImagePointer                    m_WeightImage;
 
   /** The lambda factor for computing the weight from distance.  Weight is
-    * modeled as exponential decay: weight = e^(lambda * distance).
-    * (lamba must be negative)
-    */
+  * modeled as exponential decay: weight = e^(lambda * distance).
+  * (lamba must be negative) */
   WeightType                            m_lambda;
 
   /** The normal component of the deformation field */
@@ -391,9 +389,8 @@ private:
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
       m_DeformationVectorNormalComponents;
 
-  /** Extracts the x,y,z components of the tangential and normal components of
-   * the deformation field
-   */
+  /** Extracts the x,y,z components of the tangential and normal
+  * components of the deformation field */
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
                                         m_TangentialComponentExtractor;
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
@@ -419,117 +416,116 @@ private:
 
 /** TODO LIST - essential
 
-  // Calculate w in ComputeNormalVectorAndWeightImages() - but don't bother if
-  // m_UseAnisotropicRegularization == false (do it in the loop with the normals)
+// Calculate w in ComputeNormalVectorAndWeightImages()
+//   - but dont bother if m_UseAnisotropicRegularization == false
+//   (do it in the loop with the normals)
 
-  // Get w in ComputeDiffusionTensorImage()
+// Get w in ComputeDiffusionTensorImage()
 
-  // checking the timestep for stability as in the anisotropic filter
+// checking the timestep for stability as in the anisotropic filter
 
-  // halting criteria?!?!
+// halting criteria?!?!
 
-  // SetUseImageSpacing() to on for this filter?  Would give derivates in physical space, default is off
+// SetUseImageSpacing() to on for this filter?  Would give derivates in
+// physical space, default is off
 
-  // why did Andinet comment out m_UpdateBuffer->Modified() in CalculateChange()
+// why did Andinet comment out m_UpdateBuffer->Modified() in
+// CalculateChange()
 
-  // boundary faces
+// boundary faces
 
-  // difference between cell normals and normals - using the correct ones?
+// difference between cell normals and normals - using the correct ones?
 
-  // better way to compute n's?
+// better way to compute ns
 
-  // Better (faster?) alternative to point locator
+// Better (faster) alternative to point locator
 
-  // Go through PDERegistrationFilter and PDERegistrationFunction classes to
-  // ensure we're not missing any important functions to override / parameters
-  // to set
+// Go through PDERegistrationFilter and PDERegistrationFunction classes to
+// ensure we are not missing any important functions to override /
+// parameters to set
 
-  // see where you can make it faster - computing anything unnecessarily?
+// see where you can make it faster - computing anything unnecessarily
 
-  ======== function =========
+// ======== function =========
 
-  // test to see if andinet's stuff works with a timestep of 1.0
+// test to see if andinets stuff works with a timestep of 1.0
 
-  // compute timestep instead of hard-coding 0.05 in constructor
+// compute timestep instead of hard-coding 0.05 in constructor
 
-  // does the intensiy distance function need more parameters in the ctor?
-  // Ex. options for the global filter
-  // ... inherited for finite
-  //  m_IntensityDistanceFunction->SetScaleCoefficients( vals );
-  // ... inherited from PDE function
-  //  m_IntensityDistanceFunction->SetGradientStep( 0.0 );
-  //  m_IntensityDistanceFunction->SetNormalizeGradient( false );
+// does the intensiy distance function need more parameters in the ctor
+// Ex. options for the global filter
+// inherited for finite
+// m_IntensityDistanceFunction->SetScaleCoefficients( vals );
+// inherited from PDE function
+// m_IntensityDistanceFunction->SetGradientStep( 0.0 );
+// m_IntensityDistanceFunction->SetNormalizeGradient( false );
 
-  // In ctor - intensity distance function uses LinearInterpolateImageFilter
-  // by default, can change later using setMovingImageInterpolator()
+// In ctor - intensity distance function uses LinearInterpolateImageFilter
+// by default, can change later using setMovingImageInterpolator()
 
-  // check to make sure it's ok that intensity function uses global timestep
-  // i think it is because we are just calling update(), which does not use
-  // m_TimeStep
+// check to make sure its ok that intensity function uses global timestep
+// i think it is because we are just calling update(), which does not use
+// m_TimeStep
 
-  // Better std::cout for what's being done -with iteration number
+// Better std::cout for whats being done -with iteration number
 
-  // make sure that there is no normalization in the intensity distance
-  // function - check that smooth gradient is off, and that the normalize
-  // metric doesn't do anything we don't want
+// make sure that there is no normalization in the intensity distance
+// function - check that smooth gradient is off, and that the normalize
+// metric doesnt do anything we dont want
 
-    // weighting between the intensity distance and regularization terms
-  // in ComputeUpdate?  Don't worry about weighting if one term is not
-  // computed because of boolean settings
+// weighting between the intensity distance and regularization terms
+// in ComputeUpdate?  Dont worry about weighting if one term is not
+// computed because of boolean settings
 
-
-  */
+== done */
 
 /** TODO LIST - medium
+// Allocating all of the images ( in Initialize() ) essential?
 
-  // Allocating all of the images ( in Initialize() ) essential?
-
-    ======== function =========
-
-  */
+== done */
 
 /** TODO LIST - later
 
-  // Better class description at top
+// Better class description at top
 
-  // go through typedefs and pull as many as possible from the function!
-  // may be able to simplify the typedefs here to make them clearer
+// go through typedefs and pull as many as possible from the function!
+// may be able to simplify the typedefs here to make them clearer
 
-  // Specification of vtkPolyData introduces dependency on VTK and is
-  // horrible for dimension-independence... perhaps provide additional /
-  // only option to provide normal image only - then could ensure that it
-  // with the right templates
+// Specification of vtkPolyData introduces dependency on VTK and is
+// horrible for dimension-independence... perhaps provide additional /
+// only option to provide normal image only - then could ensure that it
+// with the right templates
 
-  // printSelf not compiling because of os type mismatch
+// printSelf not compiling because of os type mismatch
 
-  // create superclass with these methods for anisotropic diffusion
-  // registration filter
+// create superclass with these methods for anisotropic diffusion
+// registration filter
 
-  // assert vs. if?
+// assert vs. if?
 
-  // progress object as in demons test
+// progress object as in demons test
 
-  // pixel type vs. deformation field type?  deformation field type should
-  // always be double?
+// pixel type vs. deformation field type?  deformation field type should
+// always be double?
 
-  // what happens if normals are not set to registrator? i.e. normals are
-  // the defaults of 0,0,0
+// what happens if normals are not set to registrator? i.e. normals are
+// the defaults of 0,0,0
 
-    ======== function =========
+======== function =========
 
-    // Better class description at top
+// Better class description at top
 
-    // ComputeUpdate() won't work, but shouldn't be called anyways
+// ComputeUpdate() wont work, but shouldnt be called anyways
 
-    ====== tests =======
+====== tests =======
 
-    // try it out with dimension = 2
+// try it out with dimension = 2
 
-  // there are some exception handling tests in
-  // itkDemonsRegistrationFilterTest that would be good to put in the image
-    // registration test
+// there are some exception handling tests in
+// itkDemonsRegistrationFilterTest that would be good to put in the image
+// registration test
 
-   // experiment with adding noise to the border of the motion field
-    // regularization test
+// experiment with adding noise to the border of the motion field
+// regularization test
 
-  */
+== Done */

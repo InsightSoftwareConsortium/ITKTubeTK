@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef _itkImageToTubeRigidRegistration_txx
-#define _itkImageToTubeRigidRegistration_txx
+#ifndef __itkImageToTubeRigidRegistration_txx
+#define __itkImageToTubeRigidRegistration_txx
 
 #include "itkImageToTubeRigidRegistration.h"
 #include <itkNormalVariateGenerator.h>
@@ -172,17 +172,17 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   this->SetInitialTransformParameters( m_InitialPosition );
 
   try
-  {
+    {
     // initialize the interconnects between components
     Superclass::Initialize();
-  }
+    }
   catch( ExceptionObject& err )
-  {
+    {
     this->m_LastTransformParameters = ParametersType( 1 );
     this->m_LastTransformParameters.Fill( 0.0f );
     // pass exception to caller
     throw err;
-  }
+    }
   this->GetOptimizer()->SetCostFunction( this->GetMetric() );
 
   m_IsInitialized = true;
@@ -237,9 +237,9 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   double c0 = clock();
 
   if( !m_IsInitialized )
-  {
+    {
     this->Initialize();
-  }
+    }
 
   /*
   if( m_IterationCommand )
@@ -265,7 +265,7 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
     throw err;
     }
 
-  std::cout << "The Solution is : " ;
+  std::cout << "The Solution is : ";
   this->m_LastTransformParameters = this->GetOptimizer()
     ->GetCurrentPosition();
   // give the result to the superclass

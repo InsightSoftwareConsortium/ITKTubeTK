@@ -107,72 +107,81 @@ int DoIt( int argc, char * argv[] )
   typedef   itk::AddImageFilter< ImageType, ImageType, ImageType >
                                                      AddFilterType;
 
-  typedef   itk::BinaryMagnitudeImageFilter< ImageType, ImageType, ImageType >
-                                                     ModulusFilterType;
+  typedef   itk::BinaryMagnitudeImageFilter< ImageType, ImageType,
+    ImageType >                                      ModulusFilterType;
 
-  typedef   itk::EigenAnalysis2DImageFilter< ImageType, ImageType, VectorImageType >
-                                                     EigenFilterType;
+  typedef   itk::EigenAnalysis2DImageFilter< ImageType, ImageType,
+    VectorImageType >                                EigenFilterType;
 
-  typedef   itk::GradientRecursiveGaussianImageFilter< ImageType, CovariantVectorImageType >
-                                                     GradientFilterType;
+  typedef   itk::GradientRecursiveGaussianImageFilter< ImageType,
+    CovariantVectorImageType >                       GradientFilterType;
 
-  typedef   itk::MultiplyImageFilter< VectorImageType, VectorImageType, ImageType >
-                                                     ScalarProductFilterType;
+  typedef   itk::MultiplyImageFilter< VectorImageType, VectorImageType,
+    ImageType >                               ScalarProductFilterType;
 
   typedef   itk::ImageToParametricSpaceFilter< ImageType, MeshType >
-                                                     ParametricSpaceFilterType;
+    ParametricSpaceFilterType;
 
   typedef   itk::JoinImageFilter< ImageType, ImageType >
-                                                     JoinFilterType;
+    JoinFilterType;
 
   typedef   itk::RescaleIntensityImageFilter< ImageType, ImageType >
-                                                     RescaleIntensityFilterType;
+    RescaleIntensityFilterType;
 
   typedef   itk::FrustumSpatialFunction< MeshType::PointDimension,
-                                         MeshType::PointType >
-                                                     FrustumSpatialFunctionType;
+    MeshType::PointType >
+    FrustumSpatialFunctionType;
 
-  typedef   FrustumSpatialFunctionType               SpatialFunctionType;
+  typedef   FrustumSpatialFunctionType
+    SpatialFunctionType;
 
-  typedef   itk::InteriorExteriorMeshFilter< MeshType, MeshType, SpatialFunctionType >
-                                                     SpatialFunctionFilterType;
+  typedef   itk::InteriorExteriorMeshFilter< MeshType, MeshType,
+    SpatialFunctionType >
+    SpatialFunctionFilterType;
 
-  typedef   itk::ParametricSpaceToImageSpaceMeshFilter< MeshType, ImageSpaceMeshType >
-                                                     InverseParametricFilterType;
+  typedef   itk::ParametricSpaceToImageSpaceMeshFilter< MeshType,
+    ImageSpaceMeshType >
+    InverseParametricFilterType;
 
   typedef typename GaussianFilterType::RealType      RealType;
 
   typedef typename ImageSpaceMeshType::PointsContainer
-                                                     OutputPointsContainer;
+    OutputPointsContainer;
   typedef typename OutputPointsContainer::ConstPointer
-                                                     OutputPointsContainerConstPointer;
+    OutputPointsContainerConstPointer;
   typedef typename OutputPointsContainer::ConstIterator
-                                                     OutputPointsConstIterator;
+    OutputPointsConstIterator;
   typedef itk::MinimumMaximumImageCalculator< ImageType >
-                                                     CalculatorType;
-  typedef itk::ImageRegionConstIterator< ImageType > InputIterator;
+    CalculatorType;
+  typedef itk::ImageRegionConstIterator< ImageType >
+    InputIterator;
   typedef itk::ImageRegionIterator< OutputImageType >
-                                                     OutputIterator;
+    OutputIterator;
 
-  typename ReaderType::Pointer                       reader;
-  typename WriterType::Pointer                       writer;
-  typename GaussianFilterType::Pointer               hx;
-  typename GaussianFilterType::Pointer               hy;
-  typename GaussianFilterType::Pointer               hxy;
-  typename GaussianFilterType::Pointer               h1xy;
-  typename GaussianFilterType::Pointer               h1x;
-  typename GaussianFilterType::Pointer               h1y;
-  typename GaussianFilterType::Pointer               h2x;
-  typename GaussianFilterType::Pointer               h2y;
-  typename AddFilterType::Pointer                    add;
-  typename ModulusFilterType::Pointer                modulus;
-  typename EigenFilterType::Pointer                  eigen;
-  typename GradientFilterType::Pointer               gradient;
-  typename ScalarProductFilterType::Pointer          scalarProduct;
-  typename JoinFilterType::Pointer                   join;
-  typename RescaleIntensityFilterType::Pointer       rescaleIntensitySmoothed;
-  typename RescaleIntensityFilterType::Pointer       rescaleIntensityMaxEigen;
-  typename RescaleIntensityFilterType::Pointer       rescaleIntensityMedialness;
+  typename ReaderType::Pointer                         reader;
+  typename WriterType::Pointer                         writer;
+  typename GaussianFilterType::Pointer                 hx;
+  typename GaussianFilterType::Pointer                 hy;
+  typename GaussianFilterType::Pointer                 hxy;
+  typename GaussianFilterType::Pointer                 h1xy;
+  typename GaussianFilterType::Pointer                 h1x;
+  typename GaussianFilterType::Pointer                 h1y;
+  typename GaussianFilterType::Pointer                 h2x;
+  typename GaussianFilterType::Pointer                 h2y;
+  typename AddFilterType::Pointer                      add;
+  typename ModulusFilterType::Pointer                  modulus;
+  typename EigenFilterType::Pointer                    eigen;
+  typename GradientFilterType::Pointer                 gradient;
+  typename ScalarProductFilterType::Pointer            scalarProduct;
+  typename JoinFilterType::Pointer                     join;
+
+  typename RescaleIntensityFilterType::Pointer
+    rescaleIntensitySmoothed;
+  typename RescaleIntensityFilterType::Pointer
+    rescaleIntensityMaxEigen;
+  typename RescaleIntensityFilterType::Pointer
+    rescaleIntensityMedialness;
+
   typename ParametricSpaceFilterType::Pointer        parametricSpace;
   typename SpatialFunctionFilterType::Pointer        spatialFunctionFilter;
   typename InverseParametricFilterType::Pointer      inverseParametricFilter;

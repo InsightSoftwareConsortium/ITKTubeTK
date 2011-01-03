@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -34,38 +29,48 @@ namespace tube
 
 class Spline1DValFunc : public UserFunc<double, double>
 {
-protected:
-  Spline1D * spline;
-  double cVal;
 public:
+
   Spline1DValFunc(Spline1D * newSpline)
     {
-    spline = newSpline;
-    cVal = 0;
-    };
+    m_Spline = newSpline;
+    m_Val = 0;
+    }
+
   const double & value(const double & x)
     {
-    cVal = spline->value(x);
-    return cVal;
-    };
+    m_Val = m_Spline->value(x);
+    return m_Val;
+    }
+
+protected:
+
+  Spline1D * m_Spline;
+  double     m_Val;
+
 };
 
 class Spline1DDerivFunc : public UserFunc<double, double>
 {
-protected:
-  Spline1D * spline;
-  double cDeriv;
 public:
+
   Spline1DDerivFunc(Spline1D * newSpline)
     {
-    spline = newSpline;
-    cDeriv = 0;
-    };
+    m_Spline = newSpline;
+    m_Deriv = 0;
+    }
+
   const double & value(const double & x)
     {
-    cDeriv = spline->valueD(x);
-    return cDeriv;
+    m_Deriv = m_Spline->valueD(x);
+    return m_Deriv;
     }
+
+protected:
+
+  Spline1D * m_Spline;
+  double m_Deriv;
+
 };
 
 //
@@ -74,15 +79,15 @@ public:
 Spline1D::
 Spline1D()
 {
-  cDefined = false;
+  m_Defined = false;
 
-  cClip = false;
+  m_Clip = false;
 
-  cXMin = 0;
-  cXMax = 1;
+  m_XMin = 0;
+  m_XMax = 1;
 
-  cOpt1DVal = new Spline1DValFunc(this);
-  cOpt1DDeriv = new Spline1DDerivFunc(this);
+  m_Opt1DVal = new Spline1DValFunc(this);
+  m_Opt1DDeriv = new Spline1DDerivFunc(this);
 
   use(NULL, NULL);
 }
@@ -90,17 +95,17 @@ Spline1D()
 Spline1D::
 Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
-  cDefined = false;
+  m_Defined = false;
 
-  cClip = false;
+  m_Clip = false;
 
-  cXMin = 0;
-  cXMax = 1;
+  m_XMin = 0;
+  m_XMax = 1;
 
-  cData.set_size(4);
+  m_Data.set_size(4);
 
-  cOpt1DVal = new Spline1DValFunc(this);
-  cOpt1DDeriv = new Spline1DDerivFunc(this);
+  m_Opt1DVal = new Spline1DValFunc(this);
+  m_Opt1DDeriv = new Spline1DDerivFunc(this);
 
   use(newFuncVal, newOpt1D);
 }
@@ -108,13 +113,13 @@ Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 Spline1D::
 ~Spline1D()
 {
-  if(cDefined)
-  {
-    cDefined = false;
+  if(m_Defined)
+    {
+    m_Defined = false;
 
-    delete cOpt1DVal;
-    delete cOpt1DDeriv;
-  }
+    delete m_Opt1DVal;
+    delete m_Opt1DDeriv;
+    }
 }
 
 //
@@ -123,17 +128,17 @@ Spline1D::
 void Spline1D::
 use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
-    cDefined = true;
+  m_Defined = true;
 
-    cFuncVal = newFuncVal;
+  m_FuncVal = newFuncVal;
 
-    cOpt1D = newOpt1D;
-    if(cOpt1D != NULL)
-      {
-      cOpt1D->use(cOpt1DVal, cOpt1DDeriv);
-      }
+  m_Opt1D = newOpt1D;
+  if(m_Opt1D != NULL)
+    {
+    m_Opt1D->use(m_Opt1DVal, m_Opt1DDeriv);
+    }
 
-    cNewData = true;
+  m_NewData = true;
 }
 
 //
@@ -142,45 +147,45 @@ use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 bool Spline1D::
 clipEdge(void)
 {
-    return cClip;
+  return m_Clip;
 }
 
 void Spline1D::
 clipEdge(bool newClip)
 {
-    cClip = newClip;
+  m_Clip = newClip;
 }
 
 int Spline1D::
 xMin(void)
 {
-    return cXMin;
+  return m_XMin;
 }
 
 void Spline1D::
 xMin(int newXMin)
 {
-    cXMin = newXMin;
-    if(cOpt1D)
-      {
-      cOpt1D->xMin( cXMin );
-      }
+  m_XMin = newXMin;
+  if(m_Opt1D)
+    {
+    m_Opt1D->xMin( m_XMin );
+    }
 }
 
 int Spline1D::
 xMax(void)
 {
-    return cXMax;
+  return m_XMax;
 }
 
 void Spline1D::
 xMax(int newXMax)
 {
-    cXMax = newXMax;
-    if(cOpt1D)
-      {
-      cOpt1D->xMax( cXMax );
-      }
+  m_XMax = newXMax;
+  if(m_Opt1D)
+    {
+    m_Opt1D->xMax( m_XMax );
+    }
 }
 
 //
@@ -189,82 +194,82 @@ xMax(int newXMax)
 bool Spline1D::
 newData(void)
 {
-    return cNewData;
+  return m_NewData;
 }
 
 void Spline1D::
 newData(bool newNewData)
 {
-    cNewData = newNewData;
+  m_NewData = newNewData;
 }
 
 //
 //
 //
 void Spline1D::
-cGetData(double x)
+m_GetData(double x)
 {
   static int xi = (int)x;
 
-  if((int)x != xi || cNewData)
+  if((int)x != xi || m_NewData)
     {
     int lx = xi;
     xi = (int)x;
     int offset = xi-lx;
-    if( cNewData )
+    if( m_NewData )
       {
       offset = 100;
       }
-    cNewData = false;
+    m_NewData = false;
     vnl_vector<double> tmpData(4);
     int j=0;
     for(int i=xi-1; i<=xi+2; i++)
       {
       if( j+offset >= 0 && j+offset <= 3 )
         {
-        tmpData[j] = cData[j+offset];
+        tmpData[j] = m_Data[j+offset];
         j++;
         }
       else
         {
-        if(i>=cXMin && i<=cXMax)
+        if(i>=m_XMin && i<=m_XMax)
           {
-          tmpData[j++] = cFuncVal->value(i);
+          tmpData[j++] = m_FuncVal->value(i);
           }
         else
           {
-          if(i<cXMin)
+          if(i<m_XMin)
             {
-            if(cClip)
+            if(m_Clip)
               {
-              tmpData[j++] = cFuncVal->value(cXMin);
+              tmpData[j++] = m_FuncVal->value(m_XMin);
               }
             else
               {
-              int tmpI = cXMin + (cXMin-i);
-              if( tmpI > cXMax )
+              int tmpI = m_XMin + (m_XMin-i);
+              if( tmpI > m_XMax )
                 {
-                tmpI = cXMax;
+                tmpI = m_XMax;
                 }
-              tmpData[j++] = cFuncVal->value(tmpI);
+              tmpData[j++] = m_FuncVal->value(tmpI);
               }
             }
           else
             {
-            if(i>cXMax)
+            if(i>m_XMax)
               {
-              if(cClip)
+              if(m_Clip)
                 {
-                tmpData[j++] = cFuncVal->value(cXMax);
+                tmpData[j++] = m_FuncVal->value(m_XMax);
                 }
               else
                 {
-                int tmpI = cXMax - (i-cXMax);
-                if( tmpI < cXMin )
+                int tmpI = m_XMax - (i-m_XMax);
+                if( tmpI < m_XMin )
                   {
-                  tmpI = cXMin;
+                  tmpI = m_XMin;
                   }
-                tmpData[j++] = cFuncVal->value(tmpI);
+                tmpData[j++] = m_FuncVal->value(tmpI);
                 }
               }
             }
@@ -273,8 +278,8 @@ cGetData(double x)
       }
     for(j=0; j<4; j++)
       {
-      cData[j] = tmpData[j];
-      //std::cout << "  cData[" << j << "] = " << cData[j] << std::endl;
+      m_Data[j] = tmpData[j];
+      //std::cout << "  m_Data[" << j << "] = " << m_Data[j] << std::endl;
       }
     }
 }
@@ -285,53 +290,53 @@ cGetData(double x)
 double Spline1D::
 value(double x)
 {
-  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  //if(!cDefined)
+  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  //if(!m_Defined)
     {
     return 0;
     }
 
-  cGetData(x);
+  m_GetData(x);
 
-  return dataValue(cData, x - (int)x);
+  return dataValue(m_Data, x - (int)x);
 }
 
 
 double Spline1D::
 valueD(double x)
 {
-  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  //if(!cDefined)
+  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  //if(!m_Defined)
     {
     return 0;
     }
 
-  cGetData(x);
+  m_GetData(x);
 
-  return dataValueD(cData, x - (int)x);
+  return dataValueD(m_Data, x - (int)x);
 }
 
 
 double Spline1D::
 valueD2(double x)
 {
-  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  //if(!cDefined)
+  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  //if(!m_Defined)
     {
     return 0;
     }
 
-  cGetData(x);
+  m_GetData(x);
 
-  return dataValueD2(cData, x - (int)x);
+  return dataValueD2(m_Data, x - (int)x);
 }
 
 
 double Spline1D::
 curv(double x)
 {
-  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  //if(!cDefined)
+  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  //if(!m_Defined)
     {
     return 0;
     }
@@ -346,15 +351,15 @@ curv(double x)
 double Spline1D::
 valueJet(double x, double * d, double * d2)
 {
-  if(!cDefined || (cClip && ((int)x<cXMin || (int)x>cXMax)))
-  //if(!cDefined)
+  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  //if(!m_Defined)
     {
     return 0;
     }
 
-  cGetData(x);
+  m_GetData(x);
 
-  return dataValueJet(cData, x - (int)x, d, d2);
+  return dataValueJet(m_Data, x - (int)x, d, d2);
 }
 
 //
@@ -363,7 +368,7 @@ valueJet(double x, double * d, double * d2)
 bool Spline1D::
 extreme(double * extX, double * extVal)
 {
-  return cOpt1D->extreme(extX, extVal);
+  return m_Opt1D->extreme(extX, extVal);
 }
 
 //
@@ -372,45 +377,45 @@ extreme(double * extX, double * extVal)
 void Spline1D::
 PrintSelf( std::ostream & os ) const
 {
-  if( cDefined )
+  if( m_Defined )
     {
-    os << "cDefined = True" << std::endl;
+    os << "m_Defined = True" << std::endl;
     }
   else
     {
-    os << "cDefined = False" << std::endl;
+    os << "m_Defined = False" << std::endl;
     }
-  os << "cFuncVal = " << cFuncVal << std::endl;
-  if( cClip )
+  os << "m_FuncVal = " << m_FuncVal << std::endl;
+  if( m_Clip )
     {
-    os << "cClip = True" << std::endl;
-    }
-  else
-    {
-    os << "cClip = False" << std::endl;
-    }
-  os << "cXMin = " << cXMin << std::endl;
-  os << "cXMax = " << cXMax << std::endl;
-  if( cNewData )
-    {
-    os << "cNewData = True" << std::endl;
+    os << "m_Clip = True" << std::endl;
     }
   else
     {
-    os << "cNewData = False" << std::endl;
+    os << "m_Clip = False" << std::endl;
     }
-  os << "cData = " << cData << std::endl;
-  os << "cOpt1DVal = " << cOpt1DVal << std::endl;
-  os << "cOpt1DDeriv = " << cOpt1DDeriv << std::endl;
-  if( cOpt1D != NULL )
+  os << "m_XMin = " << m_XMin << std::endl;
+  os << "m_XMax = " << m_XMax << std::endl;
+  if( m_NewData )
     {
-    os << "cOpt1D = " << std::endl;
-    cOpt1D->PrintSelf( os );
+    os << "m_NewData = True" << std::endl;
     }
   else
     {
-    os << "cOpt1D = NULL" << std::endl;
+    os << "m_NewData = False" << std::endl;
+    }
+  os << "m_Data = " << m_Data << std::endl;
+  os << "m_Opt1DVal = " << m_Opt1DVal << std::endl;
+  os << "m_Opt1DDeriv = " << m_Opt1DDeriv << std::endl;
+  if( m_Opt1D != NULL )
+    {
+    os << "m_Opt1D = " << std::endl;
+    m_Opt1D->PrintSelf( os );
+    }
+  else
+    {
+    os << "m_Opt1D = NULL" << std::endl;
     }
 }
 
-}; // namespace
+} // namespace

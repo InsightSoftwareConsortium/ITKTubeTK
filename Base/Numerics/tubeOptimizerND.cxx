@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -37,69 +32,67 @@ namespace tube
 
 class OptValFuncND : public UserFunc<double, double>
 {
-
-private:
-
-  OptimizerND * cOpt;
-  double cVal;
-
 public:
 
   OptValFuncND( OptimizerND * newOpt )
-  {
-    cOpt = newOpt;
-    cVal = 0;
-  };
+    {
+    m_Opt = newOpt;
+    m_Val = 0;
+    }
 
   const double & value( const double & x )
-  {
-    cVal = cOpt->funcVal( x );
-    return cVal;
-  };
+    {
+    m_Val = m_Opt->funcVal( x );
+    return m_Val;
+    }
+
+private:
+
+  OptimizerND * m_Opt;
+  double        m_Val;
 
 };
 
 class OptDerivFuncND : public UserFunc<double, double>
 {
-
-private:
-
-  OptimizerND * cOpt;
-  double cDeriv;
-
 public:
 
   OptDerivFuncND( OptimizerND * newOpt )
-  {
-    cOpt = newOpt;
-    cDeriv = 0;
-  };
+    {
+    m_Opt = newOpt;
+    m_Deriv = 0;
+    }
 
   const double & value( const double & x )
-  {
-    cDeriv = cOpt->funcDeriv( x );
-    return cDeriv;
-  };
+    {
+    m_Deriv = m_Opt->funcDeriv( x );
+    return m_Deriv;
+    }
+
+private:
+
+  OptimizerND * m_Opt;
+  double m_Deriv;
 
 };
 
 
 OptimizerND::OptimizerND( void )
 {
-  cNDims = 0;
+  m_NDims = 0;
 
-  cSearchForMin = false;
-  cTolerance = 0.0001;
+  m_SearchForMin = false;
+  m_Tolerance = 0.0001;
 
-  cMaxIterations = 300;
-  cMaxLineSearches = 10;
+  m_MaxIterations = 300;
+  m_MaxLineSearches = 10;
 
-  cOpt1D = NULL;
-  cFuncValND = NULL;
-  cFuncDerivND = NULL;
+  m_Opt1D = NULL;
+  m_FuncValND = NULL;
+  m_FuncDerivND = NULL;
 
-  cOpt1DVal = new OptValFuncND( this );
-  cOpt1DDeriv = new OptDerivFuncND( this );
+  m_Opt1DVal = new OptValFuncND( this );
+  m_Opt1DDeriv = new OptDerivFuncND( this );
 }
 
 
@@ -108,28 +101,28 @@ OptimizerND::OptimizerND( int newNDims,
   UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
   Optimizer1D * newOpt1D )
 {
-  cNDims = 0;
+  m_NDims = 0;
 
-  cSearchForMin = false;
-  cTolerance = 0.0001;
+  m_SearchForMin = false;
+  m_Tolerance = 0.0001;
 
-  cMaxIterations = 300;
-  cMaxLineSearches = 10;
+  m_MaxIterations = 300;
+  m_MaxLineSearches = 10;
 
-  cOpt1D = NULL;
-  cFuncValND = NULL;
-  cFuncDerivND = NULL;
+  m_Opt1D = NULL;
+  m_FuncValND = NULL;
+  m_FuncDerivND = NULL;
 
-  cOpt1DVal = new OptValFuncND( this );
-  cOpt1DDeriv = new OptDerivFuncND( this );
+  m_Opt1DVal = new OptValFuncND( this );
+  m_Opt1DDeriv = new OptDerivFuncND( this );
 
   this->use( newNDims, newFuncValND, newFuncDerivND, newOpt1D );
 }
 
 OptimizerND::~OptimizerND( void )
 {
-  delete cOpt1DVal;
-  delete cOpt1DDeriv;
+  delete m_Opt1DVal;
+  delete m_Opt1DDeriv;
 }
 
 void OptimizerND::use( int newNDims,
@@ -137,158 +130,158 @@ void OptimizerND::use( int newNDims,
   UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
   Optimizer1D * newOpt1D )
 {
-  cNDims = newNDims;
+  m_NDims = newNDims;
 
-  cXMin.set_size( cNDims );
-  cXMin.fill( 0.0 );
-  cXMax.set_size( cNDims );
-  cXMax.fill( 1.0 );
-  cXStep.set_size( cNDims );
-  cXStep.fill( 0.01 );
-  cX0.set_size( cNDims );
-  cX0.fill( 0.0 );
-  cX0Dir.set_size( cNDims );
-  cX0Dir.fill( 1.0/vcl_sqrt((float)cNDims) );
-  cX0Temp.set_size( cNDims );
-  cX0Temp.fill( 0.0 );
+  m_XMin.set_size( m_NDims );
+  m_XMin.fill( 0.0 );
+  m_XMax.set_size( m_NDims );
+  m_XMax.fill( 1.0 );
+  m_XStep.set_size( m_NDims );
+  m_XStep.fill( 0.01 );
+  m_X0.set_size( m_NDims );
+  m_X0.fill( 0.0 );
+  m_X0Dir.set_size( m_NDims );
+  m_X0Dir.fill( 1.0/vcl_sqrt((float)m_NDims) );
+  m_X0Temp.set_size( m_NDims );
+  m_X0Temp.fill( 0.0 );
 
-  cFuncValND = newFuncValND;
-  cFuncDerivND = newFuncDerivND;
+  m_FuncValND = newFuncValND;
+  m_FuncDerivND = newFuncDerivND;
 
-  cOpt1D = newOpt1D;
-  if( cOpt1D != NULL )
+  m_Opt1D = newOpt1D;
+  if( m_Opt1D != NULL )
     {
-    cOpt1D->use( cOpt1DVal, cOpt1DDeriv );
-    cOpt1D->searchForMin( cSearchForMin );
-    cOpt1D->tolerance( cTolerance );
-    cOpt1D->maxIterations( cMaxIterations );
+    m_Opt1D->use( m_Opt1DVal, m_Opt1DDeriv );
+    m_Opt1D->searchForMin( m_SearchForMin );
+    m_Opt1D->tolerance( m_Tolerance );
+    m_Opt1D->maxIterations( m_MaxIterations );
     }
 }
 
 
 vnl_vector<double> & OptimizerND::xMin( void )
 {
-  return cXMin;
+  return m_XMin;
 }
 
 void OptimizerND::xMin( vnl_vector<double> & newXMinn )
 {
-   cXMin = newXMinn;
+  m_XMin = newXMinn;
 }
 
 vnl_vector<double> & OptimizerND::xMax( void )
 {
-  return cXMax;
+  return m_XMax;
 }
 
 void OptimizerND::xMax( vnl_vector<double> & newXMaxx )
 {
-  cXMax = newXMaxx;
+  m_XMax = newXMaxx;
 }
 
 vnl_vector<double> & OptimizerND::xStep( void )
 {
-  return cXStep;
+  return m_XStep;
 }
 
 void OptimizerND::xStep( vnl_vector<double> & newXStepp )
 {
-  cXStep = newXStepp;
+  m_XStep = newXStepp;
 }
 
 double OptimizerND::tolerance( void )
 {
-  return cTolerance;
+  return m_Tolerance;
 }
 
 
 void OptimizerND::tolerance( double newTolerance )
 {
-  if( cOpt1D != NULL )
+  if( m_Opt1D != NULL )
     {
-    cOpt1D->tolerance( newTolerance );
+    m_Opt1D->tolerance( newTolerance );
     }
-  cTolerance = newTolerance;
+  m_Tolerance = newTolerance;
 }
 
 unsigned int OptimizerND::maxIterations( void )
 {
-  return cMaxIterations;
+  return m_MaxIterations;
 }
 
 void OptimizerND::maxIterations( unsigned int newMaxIterations )
 {
-  if( cOpt1D != NULL )
+  if( m_Opt1D != NULL )
     {
-    cOpt1D->maxIterations( newMaxIterations );
+    m_Opt1D->maxIterations( newMaxIterations );
     }
-  cMaxIterations = newMaxIterations;
+  m_MaxIterations = newMaxIterations;
 }
 
 unsigned int OptimizerND::maxLineSearches( void )
 {
-  return cMaxLineSearches;
+  return m_MaxLineSearches;
 }
 
 void OptimizerND::maxLineSearches( unsigned int newMaxLineSearches )
 {
-  cMaxLineSearches = newMaxLineSearches;
+  m_MaxLineSearches = newMaxLineSearches;
 }
 
 
 bool OptimizerND::searchForMin( void )
 {
-  return cSearchForMin;
+  return m_SearchForMin;
 }
 
 
 void OptimizerND::searchForMin( bool newSearchForMin )
 {
-  if( cOpt1D != NULL )
+  if( m_Opt1D != NULL )
     {
-    cOpt1D->searchForMin( newSearchForMin );
+    m_Opt1D->searchForMin( newSearchForMin );
     }
-  cSearchForMin = newSearchForMin;
+  m_SearchForMin = newSearchForMin;
 }
 
 
 double OptimizerND::funcVal(double a )
 {
-  cX0Temp = ComputeLineStep( cX0, a, cX0Dir );
+  m_X0Temp = ComputeLineStep( m_X0, a, m_X0Dir );
 
-  return cFuncValND->value( cX0Temp );
+  return m_FuncValND->value( m_X0Temp );
 }
 
 
 double OptimizerND::funcDeriv( double a )
 {
-  cX0Temp = ComputeLineStep( cX0, a, cX0Dir );
+  m_X0Temp = ComputeLineStep( m_X0, a, m_X0Dir );
 
-  return dot_product( cFuncDerivND->value( cX0Temp ), cX0Dir );
+  return dot_product( m_FuncDerivND->value( m_X0Temp ), m_X0Dir );
 }
 
 
 bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
 {
-  cX0 = x;
+  m_X0 = x;
   double a = 1;
   double xmin, xmax, xstep;
   unsigned int count = 0;
-  while( fabs(a) > cTolerance )
+  while( fabs(a) > m_Tolerance )
     {
-    cX0Dir = cFuncDerivND->value( cX0 );
-    if( cX0Dir.magnitude() < cTolerance*cTolerance )
+    m_X0Dir = m_FuncDerivND->value( m_X0 );
+    if( m_X0Dir.magnitude() < m_Tolerance * m_Tolerance )
       {
       a = 0;
       break;
       }
 
-    cX0Dir.normalize();
+    m_X0Dir.normalize();
 
-    if( cX0Dir(0) != 0 )
+    if( m_X0Dir(0) != 0 )
       {
-      xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
-      xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+      xmin = (m_XMin(0) - m_X0(0)) / m_X0Dir(0);
+      xmax = (m_XMax(0) - m_X0(0)) / m_X0Dir(0);
       }
     else
       {
@@ -301,14 +294,14 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
       xmin = xmax;
       xmax = tmp;
       }
-    for( unsigned int i=1; i<cNDims; i++ )
+    for( unsigned int i=1; i<m_NDims; i++ )
       {
       double tmin = xmin;
       double tmax = xmax;
-      if( cX0Dir(i) != 0 )
+      if( m_X0Dir(i) != 0 )
         {
-        tmin = (cXMin(i) - cX0(i))/cX0Dir(i);
-        tmax = (cXMax(i) - cX0(i))/cX0Dir(i);
+        tmin = (m_XMin(i) - m_X0(i))/m_X0Dir(i);
+        tmax = (m_XMax(i) - m_X0(i))/m_X0Dir(i);
         }
       if( tmin > tmax )
         {
@@ -326,37 +319,37 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
         }
       }
 
-    //std::cout << "  x = " << cX0 << std::endl;
-    //std::cout << "  dir = " << cX0Dir << std::endl;
+    //std::cout << "  x = " << m_X0 << std::endl;
+    //std::cout << "  dir = " << m_X0Dir << std::endl;
     //std::cout << "  xmin = " << xmin << std::endl;
     //std::cout << "  xmax = " << xmax << std::endl;
 
     if( xmin == xmax )
       {
       a = 0;
-      cX0 = ComputeLineStep( cX0, a, cX0Dir );
+      m_X0 = ComputeLineStep( m_X0, a, m_X0Dir );
       break;
       }
 
-    xstep = fabs( dot_product(cXStep, cX0Dir) );
+    xstep = fabs( dot_product(m_XStep, m_X0Dir) );
 
     a = 0;
-    cOpt1D->xMin( xmin );
-    cOpt1D->xMax( xmax );
-    cOpt1D->xStep( xstep );
+    m_Opt1D->xMin( xmin );
+    m_Opt1D->xMax( xmax );
+    m_Opt1D->xStep( xstep );
 
-    cOpt1D->extreme( &a, xVal );
+    m_Opt1D->extreme( &a, xVal );
 
-    cX0 = ComputeLineStep( cX0, a, cX0Dir );
-    if( count++ > cMaxLineSearches )
+    m_X0 = ComputeLineStep( m_X0, a, m_X0Dir );
+    if( count++ > m_MaxLineSearches )
       {
       break;
       }
     }
 
-  x = cX0;
+  x = m_X0;
 
-  if( fabs(a) > cTolerance )
+  if( fabs(a) > m_Tolerance )
     {
     std::cout << "Scanned " << count
       << " directions without convergence - aborting" << std::endl;
@@ -370,22 +363,22 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
 bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
   unsigned int n, MatrixType &dirs )
 {
-  cX0 = x;
+  m_X0 = x;
   double a;
   double xmin, xmax, xstep;
-  for(unsigned int i=0; i<cMaxLineSearches; i++ )
+  for(unsigned int i=0; i<m_MaxLineSearches; i++ )
     {
     for(unsigned int j=0; j<x.size(); j++ )
       {
-      cX0Dir( j ) = dirs.get( j, i%n );
+      m_X0Dir( j ) = dirs.get( j, i%n );
       }
 
-    cX0Dir.normalize();
+    m_X0Dir.normalize();
 
-    if( cX0Dir(0) != 0 )
+    if( m_X0Dir(0) != 0 )
       {
-      xmin = (cXMin(0) - cX0(0)) / cX0Dir(0);
-      xmax = (cXMax(0) - cX0(0)) / cX0Dir(0);
+      xmin = (m_XMin(0) - m_X0(0)) / m_X0Dir(0);
+      xmax = (m_XMax(0) - m_X0(0)) / m_X0Dir(0);
       }
     else
       {
@@ -398,14 +391,14 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
       xmin = xmax;
       xmax = tmp;
       }
-    for( unsigned int k=1; k<cNDims; k++ )
+    for( unsigned int k=1; k<m_NDims; k++ )
       {
       double tmin = xmin;
       double tmax = xmax;
-      if( cX0Dir(0) != 0 )
+      if( m_X0Dir(0) != 0 )
         {
-        tmin = (cXMin(k) - cX0(k))/cX0Dir(k);
-        tmax = (cXMax(k) - cX0(k))/cX0Dir(k);
+        tmin = (m_XMin(k) - m_X0(k))/m_X0Dir(k);
+        tmax = (m_XMax(k) - m_X0(k))/m_X0Dir(k);
         }
       if( tmin > tmax )
         {
@@ -426,25 +419,25 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
     if( xmin == xmax )
       {
       a = 0;
-      cX0 = ComputeLineStep( cX0, a, cX0Dir );
+      m_X0 = ComputeLineStep( m_X0, a, m_X0Dir );
       continue;
       }
 
-    xstep = fabs( dot_product(cXStep, cX0Dir) );
+    xstep = fabs( dot_product( m_XStep, m_X0Dir) );
 
     a = 0;
 
-    cOpt1D->xMin( xmin );
-    cOpt1D->xMax( xmax );
-    cOpt1D->xStep( xstep );
+    m_Opt1D->xMin( xmin );
+    m_Opt1D->xMax( xmax );
+    m_Opt1D->xStep( xstep );
 
-    cOpt1D->extreme( &a, xVal );
-    cX0 = ComputeLineStep( cX0, a, cX0Dir );
+    m_Opt1D->extreme( &a, xVal );
+    m_X0 = ComputeLineStep( m_X0, a, m_X0Dir );
     }
 
-  x = cX0;
+  x = m_X0;
 
   return true;
 }
 
-}; // namespace tube
+} // namespace tube

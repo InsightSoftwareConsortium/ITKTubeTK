@@ -1,18 +1,13 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -25,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef tubeSplineApproximation1D_h
-#define tubeSplineApproximation1D_h
+#ifndef __tubeSplineApproximation1D_h
+#define __tubeSplineApproximation1D_h
 
 #include "tubeSpline1D.h"
 #include "tubeUserFunc.h"
@@ -37,33 +32,32 @@ namespace tube
 
 class SplineApproximation1D : public Spline1D
 {
-
-public :
+public:
 
   typedef vnl_vector<double> VectorType;
 
   SplineApproximation1D();
-  SplineApproximation1D(UserFunc<int, double> *newFunval,
-    Optimizer1D * newOpt1D);
+  SplineApproximation1D( UserFunc<int, double> *newFunval,
+    Optimizer1D * newOpt1D );
 
   virtual ~SplineApproximation1D();
 
-  double  dataValue(const VectorType & y, double x);
+  double  dataValue( const VectorType & y, double x );
 
-  double  dataValueD(const VectorType & y, double x);
+  double  dataValueD( const VectorType & y, double x );
 
-  double  dataValueD2(const VectorType & y, double x);
+  double  dataValueD2( const VectorType & y, double x );
 
-  double  dataValueJet(const VectorType & y,
-    double x, double *d, double *d2);
+  double  dataValueJet( const VectorType & y,
+    double x, double *d, double *d2 );
 
-protected :
+protected:
 
-  float cSplineApproximation1DMatrixConst;
-  float cSplineApproximation1DMatrix[4][4];
+  float m_SplineApproximation1DMatrixConst;
+  float m_SplineApproximation1DMatrix[4][4];
 
 };
 
-}; // end namespace tube
+} // end namespace tube
 
 #endif

@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -76,20 +76,20 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
 ::EvaluateAtContinuousIndex(
   const ContinuousIndexType& index) const
 {
-  typedef itk::ConstNeighborhoodIterator< TInputImage > 
+  typedef itk::ConstNeighborhoodIterator< TInputImage >
     NeighborhoodIteratorType;
 
   typename NeighborhoodIteratorType::RadiusType radius;
   radius.Fill(1);
-  NeighborhoodIteratorType it( radius, this->GetInputImage(), 
+  NeighborhoodIteratorType it( radius, this->GetInputImage(),
     this->GetInputImage()->GetRequestedRegion() );
-  
+
   IndexType newIndex;
   for(int i = 0; i < ImageDimension; i++)
     {
     newIndex[i] = (int)index[i];
     }
-  
+
   it.SetLocation(newIndex);
   itk::Neighborhood<typename TInputImage::PixelType, ImageDimension> n =
     it.GetNeighborhood();
@@ -115,7 +115,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
       ret = itr->first;
       }
     }
-  return ret;  
+  return ret;
 }
 
 } // end namespace itk

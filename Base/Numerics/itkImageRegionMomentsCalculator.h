@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ namespace itk
  * compute the moments only on explicit request, and save their values
  * (in an ImageRegionMomentsCalculator object) for later retrieval by the user.
  *
- * The non-central moments computed by this class are not really 
+ * The non-central moments computed by this class are not really
  * intended for general use and are therefore in index coordinates;
  * that is, we pretend that the index that selects a particular
  * pixel also equals its physical coordinates.  The center of gravity,
@@ -88,11 +88,11 @@ public:
   typedef typename TImage::PointType   PointType;
 
   /** Standard vector type within this class. */
-  typedef Vector<ScalarType, itkGetStaticConstMacro(ImageDimension)> 
+  typedef Vector<ScalarType, itkGetStaticConstMacro(ImageDimension)>
                                        VectorType;
 
   /** Spatial Object type within this class. */
-  typedef SpatialObject< itkGetStaticConstMacro(ImageDimension) > 
+  typedef SpatialObject< itkGetStaticConstMacro(ImageDimension) >
                                        SpatialObjectType;
 
   /** Spatial Object member types used within this class. */
@@ -114,7 +114,7 @@ public:
   typedef typename ImageType::ConstPointer ImageConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double,itkGetStaticConstMacro(ImageDimension)>   
+  typedef AffineTransform<double,itkGetStaticConstMacro(ImageDimension)>
                                            AffineTransformType;
   typedef typename AffineTransformType::Pointer
                                            AffineTransformPointer;
@@ -131,7 +131,7 @@ public:
     }
 
   /** Set the spatial object mask. */
-  virtual void SetSpatialObjectMask( 
+  virtual void SetSpatialObjectMask(
      const SpatialObject< itkGetStaticConstMacro( ImageDimension ) > * so )
     {
     if ( m_SpatialObjectMask != so )
@@ -142,7 +142,7 @@ public:
       }
     }
 
-  /** Method for controlling the region of interest that optionally limits 
+  /** Method for controlling the region of interest that optionally limits
    *   the spatial extent of the computations */
   itkSetMacro(UseRegionOfInterest, bool);
   itkGetMacro(UseRegionOfInterest, bool);

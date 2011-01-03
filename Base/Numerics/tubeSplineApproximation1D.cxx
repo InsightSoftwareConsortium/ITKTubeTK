@@ -1,14 +1,9 @@
 /*=========================================================================
 
-Library:   TubeTK/VTree
+Library:   TubeTK
 
-Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-
-Original implementation:
-Copyright University of North Carolina, Chapel Hill, NC, USA.
-
-Revised implementation:
-Copyright Kitware Inc., Carrboro, NC, USA.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
@@ -34,25 +29,24 @@ SplineApproximation1D::
 SplineApproximation1D()
 : Spline1D()
 {
-  cSplineApproximation1DMatrixConst = (float)(1.0/6.0);
-  cSplineApproximation1DMatrix[0][0] = 1;
-  cSplineApproximation1DMatrix[0][1] = 0;
-  cSplineApproximation1DMatrix[0][2] = 0;
-  cSplineApproximation1DMatrix[0][3] = 0;
-  cSplineApproximation1DMatrix[1][0] = -3;
-  cSplineApproximation1DMatrix[1][1] = 3;
-  cSplineApproximation1DMatrix[1][2] = 3;
-  cSplineApproximation1DMatrix[1][3] = 1;
-  cSplineApproximation1DMatrix[2][0] = 3;
-  cSplineApproximation1DMatrix[2][1] = -6;
-  cSplineApproximation1DMatrix[2][2] = 0;
-  cSplineApproximation1DMatrix[2][3] = 4;
-  cSplineApproximation1DMatrix[3][0] = -1;
-  cSplineApproximation1DMatrix[3][1] = 3;
-  cSplineApproximation1DMatrix[3][2] = -3;
-  cSplineApproximation1DMatrix[3][3] = 1;
+  m_SplineApproximation1DMatrixConst = (float)(1.0/6.0);
+  m_SplineApproximation1DMatrix[0][0] = 1;
+  m_SplineApproximation1DMatrix[0][1] = 0;
+  m_SplineApproximation1DMatrix[0][2] = 0;
+  m_SplineApproximation1DMatrix[0][3] = 0;
+  m_SplineApproximation1DMatrix[1][0] = -3;
+  m_SplineApproximation1DMatrix[1][1] = 3;
+  m_SplineApproximation1DMatrix[1][2] = 3;
+  m_SplineApproximation1DMatrix[1][3] = 1;
+  m_SplineApproximation1DMatrix[2][0] = 3;
+  m_SplineApproximation1DMatrix[2][1] = -6;
+  m_SplineApproximation1DMatrix[2][2] = 0;
+  m_SplineApproximation1DMatrix[2][3] = 4;
+  m_SplineApproximation1DMatrix[3][0] = -1;
+  m_SplineApproximation1DMatrix[3][1] = 3;
+  m_SplineApproximation1DMatrix[3][2] = -3;
+  m_SplineApproximation1DMatrix[3][3] = 1;
 }
-
 
 
 SplineApproximation1D::
@@ -60,25 +54,24 @@ SplineApproximation1D( UserFunc<int, double> *newFunval,
   Optimizer1D *newOpt1D )
 : Spline1D(newFunval, newOpt1D)
 {
-  cSplineApproximation1DMatrixConst = (float)(1.0/6.0);
-  cSplineApproximation1DMatrix[0][0] = 1;
-  cSplineApproximation1DMatrix[0][1] = 0;
-  cSplineApproximation1DMatrix[0][2] = 0;
-  cSplineApproximation1DMatrix[0][3] = 0;
-  cSplineApproximation1DMatrix[1][0] = -3;
-  cSplineApproximation1DMatrix[1][1] = 3;
-  cSplineApproximation1DMatrix[1][2] = 3;
-  cSplineApproximation1DMatrix[1][3] = 1;
-  cSplineApproximation1DMatrix[2][0] = 3;
-  cSplineApproximation1DMatrix[2][1] = -6;
-  cSplineApproximation1DMatrix[2][2] = 0;
-  cSplineApproximation1DMatrix[2][3] = 4;
-  cSplineApproximation1DMatrix[3][0] = -1;
-  cSplineApproximation1DMatrix[3][1] = 3;
-  cSplineApproximation1DMatrix[3][2] = -3;
-  cSplineApproximation1DMatrix[3][3] = 1;
+  m_SplineApproximation1DMatrixConst = (float)(1.0/6.0);
+  m_SplineApproximation1DMatrix[0][0] = 1;
+  m_SplineApproximation1DMatrix[0][1] = 0;
+  m_SplineApproximation1DMatrix[0][2] = 0;
+  m_SplineApproximation1DMatrix[0][3] = 0;
+  m_SplineApproximation1DMatrix[1][0] = -3;
+  m_SplineApproximation1DMatrix[1][1] = 3;
+  m_SplineApproximation1DMatrix[1][2] = 3;
+  m_SplineApproximation1DMatrix[1][3] = 1;
+  m_SplineApproximation1DMatrix[2][0] = 3;
+  m_SplineApproximation1DMatrix[2][1] = -6;
+  m_SplineApproximation1DMatrix[2][2] = 0;
+  m_SplineApproximation1DMatrix[2][3] = 4;
+  m_SplineApproximation1DMatrix[3][0] = -1;
+  m_SplineApproximation1DMatrix[3][1] = 3;
+  m_SplineApproximation1DMatrix[3][2] = -3;
+  m_SplineApproximation1DMatrix[3][3] = 1;
 }
-
 
 
 SplineApproximation1D::
@@ -103,9 +96,9 @@ dataValue(const VectorType & y, double x)
     b = 0;
     for(unsigned int p=0; p<4; p++)
       {
-      b += cSplineApproximation1DMatrix[i][p] * u[p];
+      b += m_SplineApproximation1DMatrix[i][p] * u[p];
       }
-    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
+    s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
     }
 
   return s;
@@ -127,14 +120,13 @@ dataValueD(const VectorType & y, double x)
     b = 0;
     for(unsigned int p=0; p<3; p++)
       {
-      b += (3-p)*cSplineApproximation1DMatrix[i][p] * u[p];
+      b += (3-p)*m_SplineApproximation1DMatrix[i][p] * u[p];
       }
-    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
+    s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
     }
 
   return s;
 }
-
 
 
 double SplineApproximation1D::
@@ -151,9 +143,9 @@ dataValueD2(const VectorType & y, double x)
     b = 0;
     for(unsigned int p=0; p<2; p++)
       {
-      b += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p];
+      b += (2-p) * m_SplineApproximation1DMatrix[i][p] * u[p];
       }
-    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
+    s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
     }
   return s;
 }
@@ -182,23 +174,22 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
     bD2 = 0;
     for(unsigned int p=0; p<4; p++)
       {
-      b += cSplineApproximation1DMatrix[i][p] * u[p];
+      b += m_SplineApproximation1DMatrix[i][p] * u[p];
       }
     for(unsigned int p=0; p<3; p++)
       {
-      bD += (3-p) * cSplineApproximation1DMatrix[i][p] * u[p+1];
+      bD += (3-p) * m_SplineApproximation1DMatrix[i][p] * u[p+1];
       }
     for(unsigned int p=0; p<2; p++)
       {
-      bD2 += (2-p) * cSplineApproximation1DMatrix[i][p] * u[p+2];
+      bD2 += (2-p) * m_SplineApproximation1DMatrix[i][p] * u[p+2];
       }
-    s += y(3-i) * b * cSplineApproximation1DMatrixConst;
-    *d += y(3-i) * bD * cSplineApproximation1DMatrixConst;
-    *d2 += y(3-i) * bD2 * cSplineApproximation1DMatrixConst;
+    s += y(3-i) * b * m_SplineApproximation1DMatrixConst;
+    *d += y(3-i) * bD * m_SplineApproximation1DMatrixConst;
+    *d2 += y(3-i) * bD2 * m_SplineApproximation1DMatrixConst;
     }
 
   return s;
 }
 
-
-}; // end namespace tube
+} // end namespace tube
