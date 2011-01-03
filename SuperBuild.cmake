@@ -45,6 +45,15 @@ if( NOT USE_SYSTEM_ITK )
     find_package( Git REQUIRED )
   endif( NOT GIT_EXECUTABLE )
 
+  option( GIT_PROTOCOL_HTTP 
+    "Use HTTP for git access (useful if behind a firewall)" OFF )
+  if( GIT_PROTOCOL_HTTP )
+    set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+  else( GIT_PROTOCOL_HTTP )
+    set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+  endif( GIT_PROTOCOL_HTTP )
+  mark_as_advanced( GIT_PROTOCOL )
+
   ##
   ## Insight
   ##
@@ -88,6 +97,15 @@ if( TubeTK_USE_VTK )
     if( NOT GIT_EXECUTABLE )
       find_package( Git REQUIRED )
     endif( NOT GIT_EXECUTABLE )
+
+    option( GIT_PROTOCOL_HTTP 
+      "Use HTTP for git access (useful if behind a firewall)" OFF )
+    if( GIT_PROTOCOL_HTTP )
+      set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+    else( GIT_PROTOCOL_HTTP )
+      set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+    endif( GIT_PROTOCOL_HTTP )
+    mark_as_advanced( GIT_PROTOCOL )
 
     if( TubeTK_USE_QT )
 
@@ -254,6 +272,15 @@ if( TubeTK_USE_QT )
     if( NOT GIT_EXECUTABLE )
       find_package( Git REQUIRED )
     endif( NOT GIT_EXECUTABLE )
+
+    option( GIT_PROTOCOL_HTTP 
+      "Use HTTP for git access (useful if behind a firewall)" OFF )
+    if( GIT_PROTOCOL_HTTP )
+      set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+    else( GIT_PROTOCOL_HTTP )
+      set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+    endif( GIT_PROTOCOL_HTTP )
+    mark_as_advanced( GIT_PROTOCOL )
 
     if( TubeTK_USE_VTK )
       if( NOT USE_SYSTEM_VTK )
