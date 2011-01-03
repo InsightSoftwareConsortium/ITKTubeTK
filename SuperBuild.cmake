@@ -1,24 +1,24 @@
 ##############################################################################
-# 
+#
 # Library:   TubeTK
-# 
+#
 # Copyright 2010 Kitware Inc. 28 Corporate Drive,
 # Clifton Park, NY, 12065, USA.
-# 
-# All rights reserved. 
-# 
+#
+# All rights reserved.
+#
 # Licensed under the Apache License, Version 2.0 ( the "License" );
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #       http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#
 ##############################################################################
 include( ExternalProject )
 
@@ -30,7 +30,7 @@ set( testing OFF ) # use for BUILD_TESTING on all subsequent projects
 set( build_type "Debug" )
 if( CMAKE_BUILD_TYPE )
   set( build_type "${CMAKE_BUILD_TYPE}" )
-endif() 
+endif()
 
 set( TubeTK_DEPENDS "" )
 
@@ -41,12 +41,16 @@ set( gen "${CMAKE_GENERATOR}" )
 ##
 if( NOT USE_SYSTEM_ITK )
 
+  if( NOT GIT_EXECUTABLE )
+    find_package( Git REQUIRED )
+  endif( NOT GIT_EXECUTABLE )
+
   ##
   ## Insight
   ##
   set( proj Insight )
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY "http://github.com/Slicer/ITK.git"
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/ITK.git"
     GIT_TAG "origin/slicer-4.0"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
     BINARY_DIR Insight-Build
@@ -66,7 +70,7 @@ if( NOT USE_SYSTEM_ITK )
     INSTALL_COMMAND ""
     )
   set( ITK_DIR "${base}/Insight-Build" )
-  
+
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "Insight" )
 
 endif( NOT USE_SYSTEM_ITK )
@@ -81,6 +85,10 @@ if( TubeTK_USE_VTK )
   ##
   if( NOT USE_SYSTEM_VTK )
 
+    if( NOT GIT_EXECUTABLE )
+      find_package( Git REQUIRED )
+    endif( NOT GIT_EXECUTABLE )
+
     if( TubeTK_USE_QT )
 
       ##
@@ -88,7 +96,7 @@ if( TubeTK_USE_VTK )
       ##
       set( proj VTK )
       ExternalProject_Add( VTK
-        GIT_REPOSITORY "http://github.com/Slicer/VTK.git"
+        GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/VTK.git"
         GIT_TAG "origin/slicer-4.0"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
         BINARY_DIR VTK-Build
@@ -118,7 +126,7 @@ if( TubeTK_USE_VTK )
       ##
       set( proj VTK )
       ExternalProject_Add( VTK
-        GIT_REPOSITORY "http://github.com/Slicer/VTK.git"
+        GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/VTK.git"
         GIT_TAG "origin/slicer-4.0"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
         BINARY_DIR VTK-Build
@@ -141,18 +149,18 @@ if( TubeTK_USE_VTK )
     endif( TubeTK_USE_QT )
 
     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "VTK" )
-    
+
   endif( NOT USE_SYSTEM_VTK )
 
 endif( TubeTK_USE_VTK )
-  
-  
+
+
 ##
 ## TCLAP
 ##
 set( proj tclap )
 ExternalProject_Add( ${proj}
-  SVN_REPOSITORY 
+  SVN_REPOSITORY
     "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/tclap"
   SOURCE_DIR tclap
   BINARY_DIR tclap-Build
@@ -172,7 +180,7 @@ set( TCLAP_DIR "${base}/tclap-Build" )
 
 
 ##
-## ModuleDescriptionParser 
+## ModuleDescriptionParser
 ##
 set( proj ModuleDescriptionParser )
 
@@ -184,7 +192,7 @@ else( NOT USE_SYSTEM_ITK )
 endif( NOT USE_SYSTEM_ITK )
 
 ExternalProject_Add( ${proj}
-  SVN_REPOSITORY 
+  SVN_REPOSITORY
     "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
   SOURCE_DIR ModuleDescriptionParser
   BINARY_DIR ModuleDescriptionParser-Build
@@ -206,11 +214,11 @@ set( ModuleDescriptionParser_DIR "${base}/ModuleDescriptionParser-Build" )
 
 
 ##
-## GenerateCLP 
+## GenerateCLP
 ##
 set( proj GenerateCLP )
 ExternalProject_Add( ${proj}
-  SVN_REPOSITORY 
+  SVN_REPOSITORY
     "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/GenerateCLP"
   SOURCE_DIR GenerateCLP
   BINARY_DIR GenerateCLP-Build
@@ -239,9 +247,13 @@ set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
 if( TubeTK_USE_QT )
 
   ##
-  ## CTK 
+  ## CTK
   ##
   if( TubeTK_USE_CTK )
+
+    if( NOT GIT_EXECUTABLE )
+      find_package( Git REQUIRED )
+    endif( NOT GIT_EXECUTABLE )
 
     if( TubeTK_USE_VTK )
       if( NOT USE_SYSTEM_VTK )
@@ -253,7 +265,7 @@ if( TubeTK_USE_QT )
 
     set( proj CTK )
     ExternalProject_Add( CTK
-      GIT_REPOSITORY "http://github.com/commontk/CTK.git"
+      GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
       GIT_TAG "origin/master"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
       BINARY_DIR CTK-Build
