@@ -26,7 +26,7 @@ include_regular_expression( "^.*$" )
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 
 set( BASELINE
-  ${TubeTK_SOURCE_DIR}/Projects/ImageClassWithPrior/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
+  ${TubeTK_SOURCE_DIR}/Projects/ImageClassWithPrior/Apps/CLI/${PROJECT_NAME}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
