@@ -460,8 +460,8 @@ class InteractivePDFSegmenterWidget:
 
     #->> voidID pulled from selector widget (to be added)
     #->> objectID all other labels in merge volume that are not the voidID
-    parameters['objectId'] = 0
-    parameters['voidId'] = 10
+    parameters['objectId'] = [127, 255]
+    parameters['voidId'] = 0
 
     parameters['labelmap'] = self.labelMapNode
     parameters['outputVolume'] = self.outputNode
