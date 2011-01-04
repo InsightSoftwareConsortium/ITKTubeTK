@@ -62,6 +62,10 @@ class InteractivePDFSegmenterWidget:
       self.parent = parent
       self.layout = parent.layout()
 
+  def exit(self):
+    if self.editorWidget:
+      self.editorWidget.pauseEffect()
+
   def setup(self):
 
     # IO COLLAPSIBLE BUTTON
