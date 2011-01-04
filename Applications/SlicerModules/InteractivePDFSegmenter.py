@@ -477,8 +477,8 @@ class InteractivePDFSegmenterWidget:
     parameters['probabilityVolume1'] = self.outputProbabilityNode2
     parameters['probabilityVolume2'] = self.outputProbabilityNode3
 
-    pdfSegmenter = slicer.modules.pdfsegmenter
-    self.CLINode = slicer.cli.run(pdfSegmenter, self.CLINode, parameters)
+    tubepdfSegmenter = slicer.modules.tubepdfsegmenter
+    self.CLINode = slicer.cli.run(tubepdfSegmenter, self.CLINode, parameters)
 
   def getLabelsFromLabelMap(self, labelMapNode):
     if not labelMapNode:
