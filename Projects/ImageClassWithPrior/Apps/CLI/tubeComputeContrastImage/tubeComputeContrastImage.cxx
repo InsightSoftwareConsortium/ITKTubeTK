@@ -58,7 +58,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "tubeComputeContrastImageUsingPriorCLP.h"
+#include "tubeComputeContrastImageCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -382,7 +382,7 @@ int DoIt( int argc, char * argv[] )
 
   // CLIProgressReporter is used to communicate progress with Slicer GUI
   tube::CLIProgressReporter    progressReporter(
-    "ComputeContrastImageUsingPrior", CLPProcessInformation );
+    "ComputeContrastImage", CLPProcessInformation );
   progressReporter.Start();
 
   typedef float                                         PixelType;

@@ -58,7 +58,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "tubeDeblendImagesUsingPriorCLP.h"
+#include "tubeDeblendImagesCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -512,7 +512,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "DeblendImagesUsingPrior",
+  tube::CLIProgressReporter    progressReporter( "DeblendImages",
                                                  CLPProcessInformation );
   progressReporter.Start();
 

@@ -20,9 +20,9 @@
 # limitations under the License.
 #
 ##############################################################################
-add_subdirectory( tubeComputeContrastImageUsingPrior )
+add_subdirectory( tubeComputeContrastImage )
 add_subdirectory( tubeComputeZMap )
-add_subdirectory( tubeDeblendImagesUsingPrior )
+add_subdirectory( tubeDeblendImages )
 if( TubeTK_USE_FANN )
   add_subdirectory( tubeFANNClassify )
 endif()
