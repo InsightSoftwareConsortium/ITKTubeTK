@@ -80,7 +80,7 @@ class InteractivePDFSegmenterWidget:
     inputNodeSelector1 = slicer.qMRMLNodeComboBox()
     inputNodeSelector1.objectName = 'inputNodeSelector1'
     inputNodeSelector1.toolTip = "Select the 1st input volume to be segmented."
-    inputNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
+    inputNodeSelector1.nodeTypes = ['vtkMRMLScalarVolumeNode']
     inputNodeSelector1.noneEnabled = False
     inputNodeSelector1.addEnabled = False
     inputNodeSelector1.removeEnabled = False
@@ -97,7 +97,7 @@ class InteractivePDFSegmenterWidget:
     inputNodeSelector2 = slicer.qMRMLNodeComboBox()
     inputNodeSelector2.objectName = 'inputNodeSelector2'
     inputNodeSelector2.toolTip = "Select the 2nd input volume to be segmented."
-    inputNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
+    inputNodeSelector2.nodeTypes = ['vtkMRMLScalarVolumeNode']
     inputNodeSelector2.noneEnabled = True
     inputNodeSelector2.addEnabled = False
     inputNodeSelector2.removeEnabled = False
@@ -112,7 +112,7 @@ class InteractivePDFSegmenterWidget:
     inputNodeSelector3 = slicer.qMRMLNodeComboBox()
     inputNodeSelector3.objectName = 'inputNodeSelector3'
     inputNodeSelector3.toolTip = "Select the 3rd input volume to be segmented."
-    inputNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
+    inputNodeSelector3.nodeTypes = ['vtkMRMLScalarVolumeNode']
     inputNodeSelector3.noneEnabled = True
     inputNodeSelector3.addEnabled = False
     inputNodeSelector3.removeEnabled = False
@@ -127,7 +127,7 @@ class InteractivePDFSegmenterWidget:
     outputNodeSelector = slicer.qMRMLNodeComboBox()
     outputNodeSelector.objectName = 'outputNodeSelector'
     outputNodeSelector.toolTip = "Select the output volume to be segmented."
-    outputNodeSelector.nodeTypes = ['vtkMRMLVolumeNode']
+    outputNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
     outputNodeSelector.noneEnabled = False
     outputNodeSelector.addEnabled = True
     outputNodeSelector.removeEnabled = False
@@ -142,7 +142,7 @@ class InteractivePDFSegmenterWidget:
     outputProbabilityNodeSelector1 = slicer.qMRMLNodeComboBox()
     outputProbabilityNodeSelector1.objectName = 'outputProbabilityNodeSelector1'
     outputProbabilityNodeSelector1.toolTip = "Probability-of-being-1st-object estimate for each voxel"
-    outputProbabilityNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
+    outputProbabilityNodeSelector1.nodeTypes = ['vtkMRMLScalarVolumeNode']
     outputProbabilityNodeSelector1.noneEnabled = True
     outputProbabilityNodeSelector1.addEnabled = True
     outputProbabilityNodeSelector1.removeEnabled = False
@@ -157,7 +157,7 @@ class InteractivePDFSegmenterWidget:
     outputProbabilityNodeSelector2 = slicer.qMRMLNodeComboBox()
     outputProbabilityNodeSelector2.objectName = 'outputProbabilityNodeSelector2'
     outputProbabilityNodeSelector2.toolTip = "Probability-of-being-2st-object estimate for each voxel"
-    outputProbabilityNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
+    outputProbabilityNodeSelector2.nodeTypes = ['vtkMRMLScalarVolumeNode']
     outputProbabilityNodeSelector2.noneEnabled = True
     outputProbabilityNodeSelector2.addEnabled = True
     outputProbabilityNodeSelector2.removeEnabled = False
@@ -172,7 +172,7 @@ class InteractivePDFSegmenterWidget:
     outputProbabilityNodeSelector3 = slicer.qMRMLNodeComboBox()
     outputProbabilityNodeSelector3.objectName = 'outputProbabilityNodeSelector3'
     outputProbabilityNodeSelector3.toolTip = "Probability-of-being-3st-object estimate for each voxel"
-    outputProbabilityNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
+    outputProbabilityNodeSelector3.nodeTypes = ['vtkMRMLScalarVolumeNode']
     outputProbabilityNodeSelector3.noneEnabled = True
     outputProbabilityNodeSelector3.addEnabled = True
     outputProbabilityNodeSelector3.removeEnabled = False
