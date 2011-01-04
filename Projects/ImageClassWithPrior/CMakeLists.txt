@@ -31,5 +31,5 @@ if( TubeTK_USE_FANN )
   pkg_check_modules( FANN REQUIRED fann )
 endif( TubeTK_USE_FANN )
 
-add_subdirectory( Applications )
+add_subdirectory( Apps )
 add_subdirectory( Base )
