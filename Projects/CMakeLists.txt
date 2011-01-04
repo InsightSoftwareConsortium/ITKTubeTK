@@ -23,7 +23,7 @@
 
 option( TubeTK_BUILD_Project_ImageClassWithPrior
   "Build the ImageClassWithPrior project" ON )
-if( TubeTK_BUILD_Project_ImageClass )
+if( TubeTK_BUILD_Project_ImageClassWithPrior )
   add_subdirectory( ImageClassWithPrior )
 endif( TubeTK_BUILD_Project_ImageClassWithPrior )
 
