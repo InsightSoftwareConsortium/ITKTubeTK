@@ -69,13 +69,6 @@
   <parameters advanced="true">
     <label>PDF Parameters</label>
     <description>Parameters that determine how the PDF is generated</description>
-    <boolean>
-      <name>useTexture</name>
-      <description>Consider image texture during segmentation</description>
-      <label>Use texture</label>
-      <default>false</default>
-      <longflag>useTexture</longflag>
-    </boolean>
     <integer>
       <name>erodeRadius</name>
       <description>Radius of noise to clip from edges</description>
@@ -87,7 +80,7 @@
       <name>holeFillIterations</name>
       <description>Number of iterations for hole filling</description>
       <label>Hole fille iterations</label>
-      <default>2</default>
+      <default>1</default>
       <longflag>holeFillIterations</longflag>
     </integer>
     <double>
@@ -125,26 +118,23 @@
       <longflag>reclassifyNotObjectMask</longflag>
       <default>false</default>
     </boolean>
-    <image>
-      <name>probabilityVolume0</name>
-      <description>Probability-of-being-object #0 estimate for each voxel</description>
-      <label>Output Probability Volume for Object 0</label>
-      <longflag>probabilityVolume0</longflag>
-      <channel>output</channel>
-    </image>
-    <image>
-      <name>probabilityVolume1</name>
-      <description>Probability-of-being-object #1 estimate for each voxel</description>
-      <label>Output Probability Volume for Object 1</label>
-      <longflag>probabilityVolume1</longflag>
-      <channel>output</channel>
-    </image>
-    <image>
-      <name>probabilityVolume2</name>
-      <description>Probability-of-being-object #2 estimate for each voxel</description>
+    <string>
+      <name>saveClassProbabilityVolumeBase</name>
+      <description>Save images where each represents the probability of being a particular object at each voxel.  Image files create = base.classNum.mha</description>
+      <label>Output class probability images base filename</label>
+      <longflag>saveClassProbabilityVolumeBase</longflag>
+    </string>
+    <string>
+      <name>loadClassPDFBase</name>
+      <description>Load an image and adjunct file that represent feature space with assigned class labels</description>
+      <label>Load PDF basename</label>
+      <longflag>loadClassPDFBase</longflag>
+    </string>
+    <string>
+      <name>saveClassPDFBase</name>
+      <description>Save an image and adjunct file that represent feature space with assigned class labels</description>
       <label>Output Probability Volume for Object 2</label>
-      <longflag>probabilityVolume2</longflag>
-      <channel>output</channel>
-    </image>
+      <longflag>saveClassPDFBase</longflag>
+    </string>
   </parameters>
 </executable>

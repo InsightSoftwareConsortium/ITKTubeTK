@@ -24,13 +24,17 @@ limitations under the License.
 #define __itkTubePDFSegmenter_h
 
 #include <vector>
+
 #include "itkOrientedImage.h"
+#include "itkListSample.h"
 
 namespace itk
 {
 
 namespace tube
 {
+
+#define MAX_NUMBER_OF_FEATURES 3
 
 template< class ImageT, unsigned int N, class LabelmapT >
 class PDFSegmenter : public Object
@@ -59,13 +63,18 @@ public:
   typedef typename MaskImageType::PixelType    MaskPixelType;
 
   typedef int                                  ObjectIdType;
-  typedef std::vector< int >                   ObjectIdListType;
+  typedef std::vector< ObjectIdType >          ObjectIdListType;
+  typedef itk::OrientedImage< ObjectIdType, MAX_NUMBER_OF_FEATURES >
+                                               LabeledFeatureSpaceImageType;
 
   typedef float                                ProbabilityPixelType;
   typedef itk::OrientedImage< ProbabilityPixelType,
     ::itk::GetImageDimension< ImageT >::ImageDimension >
                                                ProbabilityImageType;
 
+  typedef itk::Image<float, N>                 HistogramImageType;
+  typedef HistogramImageType                   PDFImageType;
+  typedef itk::Vector<double, N>               ListDoubleType;
 
   //
   // Methods
@@ -96,14 +105,20 @@ public:
   itkSetObjectMacro( Labelmap, MaskImageType );
   itkGetObjectMacro( Labelmap, MaskImageType );
 
-  itkSetMacro( UseTexture, bool );
   itkSetMacro( ErodeRadius, int );
   itkSetMacro( HoleFillIterations, int );
   itkSetMacro( FprWeight, double );
   itkSetMacro( ProbabilitySmoothingStandardDeviation, double );
   itkSetMacro( Draft, bool );
 
-  const typename ProbabilityImageType::Pointer * GetProbabilityImage(
+  int GetNumberOfClasses( void );
+
+  int GetClassId( unsigned int classNum );
+
+  const typename ProbabilityImageType::Pointer GetClassProbabilityVolume(
+    unsigned int classNum );
+
+  const typename PDFImageType::Pointer GetClassPDFImage( 
     unsigned int classNum );
 
   /** Copy the input object mask to the output mask, overwritting the
@@ -128,22 +143,44 @@ public:
 
 protected:
 
-  typedef std::vector< typename ProbabilityImageType::Pointer >
-    ProbabilityImageVectorType;
-
   PDFSegmenter( void );
   virtual ~PDFSegmenter( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void GenerateSample( void );
+  void GeneratePDFs( void );
+  void ApplyPDFs( void );
 
-  typename ImageType::Pointer GenerateTextureImage(
-    const ImageType * im );
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
   PDFSegmenter( const Self & );          // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
+  typedef std::vector< typename ProbabilityImageType::Pointer > 
+    ProbabilityImageVectorType;
+
+  typedef std::vector< typename HistogramImageType::Pointer > 
+    ClassHistogramImageType;
+
+  typedef itk::Vector< PixelType, N+ImageDimension >
+    ListVectorType;
+  typedef itk::Statistics::ListSample< ListVectorType >
+    ListSampleType;
+  typedef std::vector< typename ListSampleType::Pointer >
+    ClassListSampleType;
+
+  ClassListSampleType                      m_InClassList;
+  typename ListSampleType::Pointer         m_OutList;
+
+  ClassHistogramImageType                  m_InClassHisto;
+  typename HistogramImageType::Pointer     m_OutHisto;
+  ListDoubleType                           m_HistoBinMin;
+  ListDoubleType                           m_HistoBinMax;
+  ListDoubleType                           m_HistoBinScale;
+  unsigned int                             m_HistoNumBinsND;
+  unsigned int                             m_HistoNumBins1D;
+  
   //  Data
   typename ImageType::Pointer     m_InputVolume1;
   typename ImageType::Pointer     m_InputVolume2;
@@ -154,7 +191,6 @@ private:
   ObjectIdListType                m_ObjectIdList;
   ObjectIdType                    m_VoidId;
 
-  bool                            m_UseTexture;
   int                             m_ErodeRadius;
   int                             m_HoleFillIterations;
   double                          m_ProbabilitySmoothingStandardDeviation;
