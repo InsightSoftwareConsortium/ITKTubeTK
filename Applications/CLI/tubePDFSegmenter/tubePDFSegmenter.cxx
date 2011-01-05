@@ -86,11 +86,13 @@ int DoIt( int argc, char *argv[] )
   typedef itk::OrientedImage< InputPixelType, 3 >  InputImageType;
   typedef itk::OrientedImage< unsigned short, 3 >  MaskImageType;
   typedef itk::OrientedImage< float, 3 >           ProbImageType;
+  typedef itk::Image< float, N >                   PDFImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
   typedef itk::ImageFileWriter< MaskImageType >    MaskWriterType;
   typedef itk::ImageFileWriter< ProbImageType >    ProbImageWriterType;
+  typedef itk::ImageFileWriter< PDFImageType >     PDFImageWriterType;
 
   typedef itk::tube::PDFSegmenter< InputImageType, N, MaskImageType >
     PDFSegmenterType;
@@ -99,12 +101,7 @@ int DoIt( int argc, char *argv[] )
   timeCollector.Start("LoadData");
 
   typename ImageReaderType::Pointer reader;
-  int j = N;
-  if( useTexture )
-    {
-    --j;
-    }
-  for(int i=0; i<j; i++)
+  for(unsigned int i=0; i<N; i++)
     {
     reader = ImageReaderType::New();
     if(i == 0)
@@ -149,7 +146,6 @@ int DoIt( int argc, char *argv[] )
       }
     }
   pdfSegmenter->SetVoidId( voidId );
-  pdfSegmenter->SetUseTexture( useTexture );
   pdfSegmenter->SetErodeRadius( erodeRadius );
   pdfSegmenter->SetHoleFillIterations( holeFillIterations );
   pdfSegmenter->SetFprWeight( fprWeight );
@@ -163,32 +159,38 @@ int DoIt( int argc, char *argv[] )
 
   timeCollector.Start("Save");
 
-  if( pdfSegmenter->GetProbabilityImage(0) != NULL
-    && probabilityVolume0.size() > 2 )
+  if( saveClassProbabilityVolumeBase.size() > 2 )
     {
-    ProbImageWriterType::Pointer probImageWriter =
-      ProbImageWriterType::New();
-    probImageWriter->SetFileName( probabilityVolume0.c_str() );
-    probImageWriter->SetInput( *(pdfSegmenter->GetProbabilityImage(0)) );
-    probImageWriter->Update();
+    unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
+    for( unsigned int i=0; i<numClasses; i++ )
+      {
+      std::string fname = saveClassProbabilityVolumeBase;
+      char c[80];
+      sprintf(c, ".c%d.mha", i );
+      fname += std::string( c );
+      ProbImageWriterType::Pointer probImageWriter =
+        ProbImageWriterType::New();
+      probImageWriter->SetFileName( fname.c_str() );
+      probImageWriter->SetInput( pdfSegmenter->GetClassProbabilityVolume(i) );
+      probImageWriter->Update();
+      }
     }
-  if( objectId.size() > 1 && pdfSegmenter->GetProbabilityImage(1) != NULL
-    && probabilityVolume1.size() > 2 )
+
+  if( saveClassPDFBase.size() > 2 )
     {
-    ProbImageWriterType::Pointer probImageWriter =
-      ProbImageWriterType::New();
-    probImageWriter->SetFileName( probabilityVolume1.c_str() );
-    probImageWriter->SetInput( *(pdfSegmenter->GetProbabilityImage(1)) );
-    probImageWriter->Update();
-    }
-  if( objectId.size() > 2 && pdfSegmenter->GetProbabilityImage(2) != NULL
-    && probabilityVolume2.size() > 2 )
-    {
-    ProbImageWriterType::Pointer probImageWriter =
-      ProbImageWriterType::New();
-    probImageWriter->SetFileName( probabilityVolume2.c_str() );
-    probImageWriter->SetInput( *(pdfSegmenter->GetProbabilityImage(2)) );
-    probImageWriter->Update();
+    unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
+    for( unsigned int i=0; i<numClasses; i++ )
+      {
+      std::string fname = saveClassPDFBase;
+      char c[80];
+      sprintf(c, ".c%d.mha", i );
+      fname += std::string( c );
+      typename PDFImageWriterType::Pointer pdfImageWriter =
+        PDFImageWriterType::New();
+      pdfImageWriter->SetFileName( fname.c_str() );
+      pdfImageWriter->SetInput( pdfSegmenter->GetClassPDFImage(i) );
+      pdfImageWriter->Update();
+      }
     }
 
   MaskWriterType::Pointer writer = MaskWriterType::New();
@@ -223,10 +225,6 @@ int main( int argc, char * argv[] )
         ++N;
         }
       }
-    if(useTexture)
-      {
-      ++N;
-      }
 
     switch (componentType)
       {
@@ -239,13 +237,9 @@ int main( int argc, char * argv[] )
           {
           return DoIt<unsigned char, 2>( argc, argv );
           }
-        else if(N == 3)
+        else 
           {
           return DoIt<unsigned char, 3>( argc, argv );
-          }
-        else
-          {
-          return DoIt<unsigned char, 4>( argc, argv );
           }
         break;
       case itk::ImageIOBase::USHORT:
@@ -257,13 +251,9 @@ int main( int argc, char * argv[] )
           {
           return DoIt<unsigned short, 2>( argc, argv );
           }
-        else if(N == 3)
-          {
-          return DoIt<unsigned short, 3>( argc, argv );
-          }
         else
           {
-          return DoIt<unsigned short, 4>( argc, argv );
+          return DoIt<unsigned short, 3>( argc, argv );
           }
         break;
       case itk::ImageIOBase::CHAR:
@@ -276,13 +266,9 @@ int main( int argc, char * argv[] )
           {
           return DoIt<short, 2>( argc, argv );
           }
-        else if(N == 3)
-          {
-          return DoIt<short, 3>( argc, argv );
-          }
         else
           {
-          return DoIt<short, 4>( argc, argv );
+          return DoIt<short, 3>( argc, argv );
           }
         break;
       case itk::ImageIOBase::UINT:
@@ -299,13 +285,9 @@ int main( int argc, char * argv[] )
           {
           return DoIt<float, 2>( argc, argv );
           }
-        else if(N == 3)
-          {
-          return DoIt<float, 3>( argc, argv );
-          }
         else
           {
-          return DoIt<float, 4>( argc, argv );
+          return DoIt<float, 3>( argc, argv );
           }
         break;
       case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:

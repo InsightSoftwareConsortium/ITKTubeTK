@@ -96,9 +96,9 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
-  filter->SetUseTexture( false );
   filter->SetErodeRadius( 1 );
   filter->SetHoleFillIterations( 4 );
+  filter->SetProbabilitySmoothingStandardDeviation( 1 );
   filter->SetFprWeight( 1.0 );
   filter->SetDraft( false );
   filter->SetReclassifyObjectMask( true );
@@ -109,7 +109,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[3] );
   writer->SetUseCompression( true );
-  writer->SetInput( *(filter->GetProbabilityImage(0)) );
+  writer->SetInput( filter->GetClassProbabilityVolume(0) );
   try
     {
     writer->Update();
@@ -123,7 +123,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
   WriterType::Pointer writer2 = WriterType::New();
   writer2->SetFileName( argv[4] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( *(filter->GetProbabilityImage(1)) );
+  writer2->SetInput( filter->GetClassProbabilityVolume(1) );
   try
     {
     writer2->Update();
