@@ -28,7 +28,6 @@ class InteractivePDFSegmenterWidget:
   def __init__(self, parent=None):
 
     self.labelMapNode = None
-    self.labelMap = None
 
     self.goalSegmentation = None
 
@@ -53,6 +52,7 @@ class InteractivePDFSegmenterWidget:
     self.editorEffects = ["DefaultTool", "EraseLabel", "Paint", "Threshold"]
     self.editorWidget = None
 
+    self.labelMapNodeSelector = None
     if not parent:
       self.parent = qt.QFrame()
       self.parent.setLayout( qt.QVBoxLayout() )
@@ -192,17 +192,6 @@ class InteractivePDFSegmenterWidget:
     # Layout within the labelMap collapsible button
     labelMapFormLayout = qt.QFormLayout(labelMapCollapsibleButton)
 
-    # Create frame editor widget
-    editorFrame = qt.QFrame()
-    editorFrame.setLayout(qt.QHBoxLayout())
-    self.layout.addWidget(editorFrame)
-    self.editorFrame = editorFrame
-
-    # initialize editor widget: using parent frame, embedded is true and list of effects
-    self.editorWidget = __main__.EditorWidget(parent=editorFrame, embedded=True, suppliedEffects=self.editorEffects, showVolumesFrame=False)
-
-    #->> create another selector that picks colors from filled in label maps, to set background color (others will represent objects)
-
     # labelMap node selector
     labelMapNodeSelector = slicer.qMRMLNodeComboBox()
     labelMapNodeSelector.objectName = 'labelMapNodeSelector'
@@ -213,11 +202,23 @@ class InteractivePDFSegmenterWidget:
     labelMapNodeSelector.addEnabled = False
     labelMapNodeSelector.removeEnabled = False
     labelMapNodeSelector.editEnabled = True
+    #->> TODO use signal nodeAddedByUser instead? reduce dependency on display node
     labelMapNodeSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.setLabelMapNode)
     labelMapFormLayout.addRow("Label Map:", labelMapNodeSelector)
     self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
                         labelMapNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
     self.labelMapNodeSelector = labelMapNodeSelector
+
+    # Create frame editor widget
+    editorFrame = qt.QFrame()
+    editorFrame.setLayout(qt.QHBoxLayout())
+    labelMapFormLayout.addRow(editorFrame)
+    self.editorFrame = editorFrame
+
+    # initialize editor widget: using parent frame, embedded is true and list of effects
+    self.editorWidget = __main__.EditorWidget(parent=self.editorFrame, embedded=True, suppliedEffects=self.editorEffects, showVolumesFrame=False)
+
+    #->> create another selector that picks colors from filled in label maps, to set background color (others will represent objects)
 
     # SEGMENTATION PARAMETERS COLLAPSIBLE BUTTON
     segmentationCollapsibleButton = ctk.ctkCollapsibleButton()
@@ -355,13 +356,13 @@ class InteractivePDFSegmenterWidget:
     """Sets the current node for the 'labelMap' label map
     Connected to signal 'currentNodeChanged()' emitted from the labelMapNodeSelector."""
 
-    newLabelMap = None
     if newLabelMapNode:
-      newLabelMap = newLabelMapNode.GetImageData()
+      # if we don't have a display node (i.e. creating node), add one here
+      if (not newLabelMapNode.GetDisplayNode()):
+        self.onLabelMapAddedByUser(newLabelMapNode)
 
       # the editor widget pulls the label map from the red slice's composite node,
       # so set the slice label maps to the new label map node
-      #->> problem when adding a new volume, and it automatically switches
       #->> problem when toggling between two label maps, colors don't match
       if self.editorWidget:
         compositeNodes = self.getAllCompositeNodes()
@@ -369,7 +370,12 @@ class InteractivePDFSegmenterWidget:
           node.SetReferenceLabelVolumeID(newLabelMapNode.GetID())
 
     self.labelMapNode = newLabelMapNode
-    self.labelMap = newLabelMap
+
+  def onLabelMapAddedByUser(self, newLabelMapNode):
+    """Creating a new label map volume does not instantiate the image data, so we will
+    do that here"""
+    volumesLogic = slicer.vtkSlicerVolumesLogic()
+    volumesLogic.CreateLabelVolume(slicer.mrmlScene, self.inputNode1, None, newLabelMapNode)
 
   def setInputNode1(self, newInputNode1):
     """Sets the current node for the 1st input volume
@@ -385,6 +391,13 @@ class InteractivePDFSegmenterWidget:
           node.SetReferenceBackgroundVolumeID(newInputNode1.GetID())
 
     self.inputNode1 = newInputNode1
+
+    # toggle the status of the label map node selector on whether or not there is an
+    # inputNode1 - necessary because we use inputNode1 as the template to create the
+    # label map
+    if self.labelMapNodeSelector:
+      if (self.labelMapNodeSelector.addEnabled == (not newInputNode1)):
+        self.labelMapNodeSelector.addEnabled = not self.labelMapNodeSelector.addEnabled
 
   def setInputNode2(self, newInputNode2):
     """Sets the current node for the 2nd input volume
