@@ -208,7 +208,6 @@ class InteractivePDFSegmenterWidget:
     labelMapNodeSelector.addEnabled = False
     labelMapNodeSelector.removeEnabled = False
     labelMapNodeSelector.editEnabled = True
-    #->> TODO use signal nodeAddedByUser instead? reduce dependency on display node
     labelMapNodeSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.setLabelMapNode)
     labelMapFormLayout.addRow("Label Map:", labelMapNodeSelector)
     self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
@@ -425,6 +424,9 @@ class InteractivePDFSegmenterWidget:
 
     if newLabelMapNode:
 
+      if self.labelMapNode == newLabelMapNode:
+        return
+
       # if we don't have a display node (i.e. creating node), add one here
       if (not newLabelMapNode.GetDisplayNode()):
         self.onLabelMapAddedByUser(newLabelMapNode)
@@ -447,6 +449,10 @@ class InteractivePDFSegmenterWidget:
         ## image = newLabelMapNode.GetImageData()
 
     self.labelMapNode = newLabelMapNode
+
+    if self.labelMapNodeSelector:
+      if self.labelMapNodeSelector.currentNode() != newLabelMapNode:
+        self.labelMapNodeSelector.setCurrentNode(newLabelMapNode)
 
   def onLabelMapAddedByUser(self, newLabelMapNode):
     """Creating a new label map volume does not instantiate the image data, so we will
