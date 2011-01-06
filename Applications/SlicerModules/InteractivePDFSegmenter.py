@@ -329,6 +329,7 @@ class InteractivePDFSegmenterWidget:
     reclassifyObjectMaskCheckBox = qt.QCheckBox()
     reclassifyObjectMaskCheckBox.objectName = 'reclassifyObjectMaskCheckBox'
     reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the object mask?"
+    reclassifyObjectMaskCheckBox.setChecked(True)
     advancedFormLayout.addRow("Reclassify Object Mask:", reclassifyObjectMaskCheckBox)
     self.reclassifyObjectMaskCheckBox = reclassifyObjectMaskCheckBox
 
@@ -336,6 +337,7 @@ class InteractivePDFSegmenterWidget:
     reclassifyNotObjectMaskCheckBox = qt.QCheckBox()
     reclassifyNotObjectMaskCheckBox.objectName = 'reclassifyNotObjectMaskCheckBox'
     reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on all non-void voxels?"
+    reclassifyNotObjectMaskCheckBox.setChecked(True)
     advancedFormLayout.addRow("Reclassify Not Object Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
