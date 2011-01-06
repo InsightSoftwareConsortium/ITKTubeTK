@@ -511,6 +511,7 @@ class InteractivePDFSegmenterWidget:
     #->> calculate values for erosion radius and hole fill iterations, based on goal
     # segmentation type and image properties
 
+    # get the pdf segmenter module and run the cli
     tubepdfSegmenter = slicer.modules.tubepdfsegmenter
     self.CLINode = slicer.cli.run(tubepdfSegmenter, self.CLINode, parameters)
 
