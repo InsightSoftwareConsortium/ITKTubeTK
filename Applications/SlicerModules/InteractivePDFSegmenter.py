@@ -1,3 +1,6 @@
+import __main__
+import qt, vtk
+import volumesLogic
 
 #
 # InteractivePDFSegmenter
@@ -5,7 +8,7 @@
 
 class InteractivePDFSegmenter:
   def __init__(self, parent):
-    parent.title = "Interactive PDF Segmenter"
+    parent.title = "Interactive PDF Segmenter (TubeTK)"
     parent.category = "Segmentation"
     parent.contributor = ""
     parent.helpText = """
@@ -23,44 +26,171 @@ class InteractivePDFSegmenter:
 #
 
 class InteractivePDFSegmenterWidget:
-  def __init__(self, parent):
-    self.parent = parent
-    self.layout = parent.layout()
+  def __init__(self, parent=None):
 
     self.labelMapNode = None
-    self.labelMap = None
 
     self.goalSegmentation = None
 
-    # TODO don't save anything as attributes unless it is needed
     self.inputNode1 = None
-    self.inputVolume1 = None
     self.inputNode2 = None
-    self.inputVolume2 = None
     self.inputNode3 = None
-    self.inputVolume3 = None
     self.outputNode = None
-    self.outputVolume = None
     self.outputProbabilityNode1 = None
-    self.outputProbabilityVolume1 = None
     self.outputProbabilityNode2 = None
-    self.outputProbabilityVolume2 = None
     self.outputProbabilityNode3 = None
-    self.outputProbabilityVolume3 = None
-
-    self.goalButtonTexts = ["J", "S/J", "S", "U"]
+    self.goalButtonTexts = ["Jagged", "Intermediate", "Smooth", "Custom"]
     self.goalButtonDefault = 2
     self.goalButtonUserDefined = 3
-    self.precomputedErosionRadii = [1, 3, 5] # TODO do actual computation
-    self.precomputedHoleFillIterations = [2, 4, 6] # TODO do actual computation
+    self.precomputedErosionRadii = [1, 3, 5] #->> TODO do actual computation
+    self.precomputedHoleFillIterations = [2, 4, 6] #->> TODO do actual computation
 
     self.erosionRadius = 0
     self.holeFillIterations = 0
 
     self.CLINode = None
 
+    self.editorEffects = ["DefaultTool", "EraseLabel", "Paint", "Threshold"]
+    self.editorWidget = None
+
+    self.labelMapNodeSelector = None
+    self.voidLabelSpinBox = None
+##    self.labelsColorNode = None
+
+    if not parent:
+      self.parent = qt.QFrame()
+      self.parent.setLayout( qt.QVBoxLayout() )
+      self.layout = self.parent.layout()
+      self.parent.show()
+    else:
+      self.parent = parent
+      self.layout = parent.layout()
+
+  def exit(self):
+    if self.editorWidget:
+      self.editorWidget.pauseEffect()
+
   def setup(self):
+
+    #->> TODO could also specify with Qt Designer instead in future (QtUiTools)
+
+    # IO COLLAPSIBLE BUTTON
+    ioCollapsibleButton = ctk.ctkCollapsibleButton()
+    ioCollapsibleButton.text = "IO"
+    self.layout.addWidget(ioCollapsibleButton)
+
+    # Layout within the io collapsible button
+    ioFormLayout = qt.QFormLayout(ioCollapsibleButton)
+
+    # inputVolume node selector 1
+    inputNodeSelector1 = slicer.qMRMLNodeComboBox()
+    inputNodeSelector1.objectName = 'inputNodeSelector1'
+    inputNodeSelector1.toolTip = "Select the 1st input volume to be segmented."
+    inputNodeSelector1.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    inputNodeSelector1.noneEnabled = False
+    inputNodeSelector1.addEnabled = False
+    inputNodeSelector1.removeEnabled = False
+    inputNodeSelector1.editEnabled = True
+    inputNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode1)
+    ioFormLayout.addRow("Input Volume 1:", inputNodeSelector1)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        inputNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
+    self.inputNodeSelector1 = inputNodeSelector1
+
+    #->> TODO for all parameters, provide slots to set them, and use internal values to eventually pass them into the PDF segmenter - for using the interactive PDF segmenter somewhere else, ex in editor module
+
+    # inputVolume node selector 2
+    inputNodeSelector2 = slicer.qMRMLNodeComboBox()
+    inputNodeSelector2.objectName = 'inputNodeSelector2'
+    inputNodeSelector2.toolTip = "Select the 2nd input volume to be segmented."
+    inputNodeSelector2.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    inputNodeSelector2.noneEnabled = True
+    inputNodeSelector2.addEnabled = False
+    inputNodeSelector2.removeEnabled = False
+    inputNodeSelector2.editEnabled = True
+    inputNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode2)
+    ioFormLayout.addRow("Input Volume 2 (optional):", inputNodeSelector2)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        inputNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
+    self.inputNodeSelector2 = inputNodeSelector2
+
+    # inputVolume node selector 3
+    inputNodeSelector3 = slicer.qMRMLNodeComboBox()
+    inputNodeSelector3.objectName = 'inputNodeSelector3'
+    inputNodeSelector3.toolTip = "Select the 3rd input volume to be segmented."
+    inputNodeSelector3.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    inputNodeSelector3.noneEnabled = True
+    inputNodeSelector3.addEnabled = False
+    inputNodeSelector3.removeEnabled = False
+    inputNodeSelector3.editEnabled = True
+    inputNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode3)
+    ioFormLayout.addRow("Input Volume 3 (optional):", inputNodeSelector3)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        inputNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
+    self.inputNodeSelector3 = inputNodeSelector3
+
+    # outputVolume node selector
+    outputNodeSelector = slicer.qMRMLNodeComboBox()
+    outputNodeSelector.objectName = 'outputNodeSelector'
+    outputNodeSelector.toolTip = "Select the output volume to be segmented."
+    outputNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    outputNodeSelector.noneEnabled = False
+    outputNodeSelector.addEnabled = True
+    outputNodeSelector.removeEnabled = False
+    outputNodeSelector.editEnabled = True
+    outputNodeSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputNode)
+    ioFormLayout.addRow("Output Volume:", outputNodeSelector)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputNodeSelector = outputNodeSelector
+
+    # outputProbabilityVolume1 node selector
+    outputProbabilityNodeSelector1 = slicer.qMRMLNodeComboBox()
+    outputProbabilityNodeSelector1.objectName = 'outputProbabilityNodeSelector1'
+    outputProbabilityNodeSelector1.toolTip = "Probability-of-being-1st-object estimate for each voxel"
+    outputProbabilityNodeSelector1.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    outputProbabilityNodeSelector1.noneEnabled = True
+    outputProbabilityNodeSelector1.addEnabled = True
+    outputProbabilityNodeSelector1.removeEnabled = False
+    outputProbabilityNodeSelector1.editEnabled = True
+    outputProbabilityNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode1)
+    ioFormLayout.addRow("Probability Map for Object 1 (optional):", outputProbabilityNodeSelector1)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputProbabilityNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputProbabilityNodeSelector1 = outputProbabilityNodeSelector1
+
+    # outputProbabilityVolume2 node selector
+    outputProbabilityNodeSelector2 = slicer.qMRMLNodeComboBox()
+    outputProbabilityNodeSelector2.objectName = 'outputProbabilityNodeSelector2'
+    outputProbabilityNodeSelector2.toolTip = "Probability-of-being-2st-object estimate for each voxel"
+    outputProbabilityNodeSelector2.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    outputProbabilityNodeSelector2.noneEnabled = True
+    outputProbabilityNodeSelector2.addEnabled = True
+    outputProbabilityNodeSelector2.removeEnabled = False
+    outputProbabilityNodeSelector2.editEnabled = True
+    outputProbabilityNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode2)
+    ioFormLayout.addRow("Probability Map for Object 2 (optional):", outputProbabilityNodeSelector2)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputProbabilityNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputProbabilityNodeSelector2 = outputProbabilityNodeSelector2
+
+    # outputProbabilityVolume3 node selector
+    outputProbabilityNodeSelector3 = slicer.qMRMLNodeComboBox()
+    outputProbabilityNodeSelector3.objectName = 'outputProbabilityNodeSelector3'
+    outputProbabilityNodeSelector3.toolTip = "Probability-of-being-3st-object estimate for each voxel"
+    outputProbabilityNodeSelector3.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    outputProbabilityNodeSelector3.noneEnabled = True
+    outputProbabilityNodeSelector3.addEnabled = True
+    outputProbabilityNodeSelector3.removeEnabled = False
+    outputProbabilityNodeSelector3.editEnabled = True
+    outputProbabilityNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode3)
+    ioFormLayout.addRow("Probability Map for Object 3 (optional):", outputProbabilityNodeSelector3)
+    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+                        outputProbabilityNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
+    self.outputProbabilityNodeSelector3 = outputProbabilityNodeSelector3
+
     # LABEL MAP COLLAPSIBLE BUTTON
+
     labelMapCollapsibleButton = ctk.ctkCollapsibleButton()
     labelMapCollapsibleButton.text = "Label Maps"
     self.layout.addWidget(labelMapCollapsibleButton)
@@ -68,15 +198,12 @@ class InteractivePDFSegmenterWidget:
     # Layout within the labelMap collapsible button
     labelMapFormLayout = qt.QFormLayout(labelMapCollapsibleButton)
 
-    # TODO integrate Steve Pieper's editor here
-    #    insideLabelComboBox = slicer.qMRMLLabelComboBox() # TODO maybe?
-
     # labelMap node selector
     labelMapNodeSelector = slicer.qMRMLNodeComboBox()
     labelMapNodeSelector.objectName = 'labelMapNodeSelector'
     labelMapNodeSelector.toolTip = "Select the label map roughly outlining the structure to be segmented and its background."
     labelMapNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    # TODO select label maps only, using addAttribute (but not wrapped)
+    labelMapNodeSelector.addAttribute("vtkMRMLScalarVolumeNode", "LabelMap", True);
     labelMapNodeSelector.noneEnabled = False
     labelMapNodeSelector.addEnabled = False
     labelMapNodeSelector.removeEnabled = False
@@ -87,23 +214,77 @@ class InteractivePDFSegmenterWidget:
                         labelMapNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
     self.labelMapNodeSelector = labelMapNodeSelector
 
-    # inside label spin box # TODO should be list instead
-    insideLabelSpinBox = qt.QSpinBox()
-    insideLabelSpinBox.objectName = 'insideLabelSpinBox'
-    insideLabelSpinBox.toolTip = "Set the label for the structure to be segmented."
-    insideLabelSpinBox.setMinimum(0)
-    insideLabelSpinBox.setMaximum(1000)
-    labelMapFormLayout.addRow("Inside Label:", insideLabelSpinBox)
-    self.insideLabelSpinBox = insideLabelSpinBox
+    # Create frame editor widget
+    editorFrame = qt.QFrame()
+    editorFrame.setLayout(qt.QVBoxLayout())
+    palette = editorFrame.palette
+    bgColor = 240
+    palette.setColor(qt.QPalette.Background, qt.QColor(bgColor, bgColor, bgColor))
+    editorFrame.setPalette(palette)
+    editorFrame.setAutoFillBackground(True);
+    labelMapFormLayout.addRow(editorFrame)
+    self.editorFrame = editorFrame
 
-    # outside label spin box # TODO should be list instead
-    outsideLabelSpinBox = qt.QSpinBox()
-    outsideLabelSpinBox.objectName = 'outsideLabelSpinBox'
-    outsideLabelSpinBox.toolTip = "Set the label for the structure to be segmented."
-    outsideLabelSpinBox.setMinimum(0)
-    outsideLabelSpinBox.setMaximum(1000)
-    labelMapFormLayout.addRow("Outside Label:", outsideLabelSpinBox)
-    self.outsideLabelSpinBox = outsideLabelSpinBox
+    # initialize editor widget: using parent frame, embedded is true and list of effects
+    self.editorWidget = __main__.EditorWidget(parent=self.editorFrame, embedded=True, suppliedEffects=self.editorEffects, showVolumesFrame=False)
+
+    # voidLabel selector
+    # The voidLabel selector selects which label corresponds to the void label
+    # All other labels in the label map will be extracted and set to object labels
+    voidLabelSpinBox = qt.QSpinBox()
+    voidLabelSpinBox.objectName = 'voidLabelSpinBox'
+    voidLabelSpinBox.toolTip = "Value that represents nothing in the label map.  All other labels represent objects."
+    voidLabelSpinBox.setMinimum(0)
+    voidLabelSpinBox.setMaximum(255) # temporary value to start
+    voidLabelSpinBox.enabled = False
+    labelMapFormLayout.addRow("Void Id:", voidLabelSpinBox)
+    self.voidLabelSpinBox = voidLabelSpinBox
+
+    #->> TODO: later on, would like a label combo box that shows only those labels
+    # that are included in the label map
+    # The following code starts in that direction, but does not work
+
+    # BEGIN hacking
+   ##  voidLabelSelector = slicer.qMRMLLabelComboBox()
+   ##  voidLabelSelector.maximumColorCount = 256 #->> TODO
+   ##  labelMapFormLayout.addRow("Void Label:", voidLabelSelector)
+   ##  self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
+   ##                      voidLabelSelector, 'setMRMLScene(vtkMRMLScene*)')
+   ##  # create a new vtkMRMLColorTableNode to hold the labels in the label map
+   ##  colorLogic = slicer.vtkSlicerColorLogic()
+   ##  defaultID = colorLogic.GetDefaultEditorColorNodeID()
+   ##  defaultNode = slicer.mrmlScene.GetNodeByID(defaultID)
+   ##  if defaultNode:
+   ##    # create the node based on the default editor color node
+   ##    self.labelsColorNode = slicer.vtkMRMLColorTableNode()
+   ##    self.labelsColorNode.Copy(defaultNode)
+   ##    # substitute in a new lookup table that we will manipulate
+   ##    lookupTable = vtk.vtkLookupTable()
+   ##    lookupTable.DeepCopy(defaultNode.GetLookupTable())
+   ##    defaultLookupTable = defaultNode.GetLookupTable()
+   ##    list = [3,5,7,9]
+   ##    lookupTable.SetNumberOfTableValues(len(list))
+   ##    for i in range(0, len(list)):
+   ##      orig = []
+   ##      defaultLookupTable.GetTableValue(list[i], orig)
+   ##      lookupTable.SetTableValue(i, defaultNode.GetLookupTable().
+   ##    self.labelsColorNode.SetLookupTable(lookupTable)
+   ##    # set the new color node to the selector
+   ##    # voidLabelSelector.setMRMLColorNode(self.labelsColorNode)
+   ##    print "lut:", self.labelsColorNode.GetLookupTable()
+   ## self.voidLabelSelector = voidLabelSelector
+    # END hacking
+
+    #->> TODO: another alternative is to use an EditColor - but it is heavily coupled
+    # to the editor logic, using an editor parameter node that ties it with the editor
+    # widget's EditColor
+    # Create a frame to give the EditColor a suitable parent
+    ## voidLabelFrame = qt.QFrame()
+    ## voidLabelFrame.setLayout(qt.QHBoxLayout())
+    ## voidLabelFrame.toolTip = "Value that represents nothing in the label map.  All labels not equal to the void id represent objects."
+    ## voidLabelSelector = EditorLib.EditColor(parent=voidLabelFrame)
+    ## labelMapFormLayout.addRow("Void Id", voidLabelFrame)
+    ## self.voidLabelSelector = voidLabelSelector
 
     # SEGMENTATION PARAMETERS COLLAPSIBLE BUTTON
     segmentationCollapsibleButton = ctk.ctkCollapsibleButton()
@@ -123,7 +304,7 @@ class InteractivePDFSegmenterWidget:
 
     for i in range(0, len(self.goalButtonTexts)):
       button = qt.QToolButton()
-      button.setText(self.goalButtonTexts[i]) # TODO replace with icons
+      button.setText(self.goalButtonTexts[i])
       button.setCheckable(True)
       goalButtonGroup.addButton(button, i)
       goalGroupBoxLayout.addWidget(button)
@@ -213,217 +394,130 @@ class InteractivePDFSegmenterWidget:
     advancedFormLayout.addRow("Reclassify Not Object Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
-    # IO COLLAPSIBLE BUTTON
-    ioCollapsibleButton = ctk.ctkCollapsibleButton()
-    ioCollapsibleButton.text = "IO"
-    self.layout.addWidget(ioCollapsibleButton)
-
-    # Layout within the io collapsible button
-    ioFormLayout = qt.QFormLayout(ioCollapsibleButton)
-
-    # inputVolume node selector 1
-    inputNodeSelector1 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector1.objectName = 'inputNodeSelector1'
-    inputNodeSelector1.toolTip = "Select the 1st input volume to be segmented."
-    inputNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
-    inputNodeSelector1.noneEnabled = False
-    inputNodeSelector1.addEnabled = False
-    inputNodeSelector1.removeEnabled = False
-    inputNodeSelector1.editEnabled = True
-    inputNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode1)
-    ioFormLayout.addRow("Input Volume 1:", inputNodeSelector1)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        inputNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
-    self.inputNodeSelector1 = inputNodeSelector1
-
-    # inputVolume node selector 2
-    inputNodeSelector2 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector2.objectName = 'inputNodeSelector2'
-    inputNodeSelector2.toolTip = "Select the 2nd input volume to be segmented."
-    inputNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
-    inputNodeSelector2.noneEnabled = True
-    inputNodeSelector2.addEnabled = False
-    inputNodeSelector2.removeEnabled = False
-    inputNodeSelector2.editEnabled = True
-    inputNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode2)
-    ioFormLayout.addRow("Input Volume 2 (optional):", inputNodeSelector2)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        inputNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
-    self.inputNodeSelector2 = inputNodeSelector2
-
-    # inputVolume node selector 3
-    inputNodeSelector3 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector3.objectName = 'inputNodeSelector3'
-    inputNodeSelector3.toolTip = "Select the 3rd input volume to be segmented."
-    inputNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
-    inputNodeSelector3.noneEnabled = True
-    inputNodeSelector3.addEnabled = False
-    inputNodeSelector3.removeEnabled = False
-    inputNodeSelector3.editEnabled = True
-    inputNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setInputNode3)
-    ioFormLayout.addRow("Input Volume 3 (optional):", inputNodeSelector3)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        inputNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
-    self.inputNodeSelector3 = inputNodeSelector3
-
-    # outputVolume node selector
-    outputNodeSelector = slicer.qMRMLNodeComboBox()
-    outputNodeSelector.objectName = 'outputNodeSelector'
-    outputNodeSelector.toolTip = "Select the output volume to be segmented."
-    outputNodeSelector.nodeTypes = ['vtkMRMLVolumeNode']
-    outputNodeSelector.noneEnabled = False
-    outputNodeSelector.addEnabled = True
-    outputNodeSelector.removeEnabled = False
-    outputNodeSelector.editEnabled = True
-    outputNodeSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputNode)
-    ioFormLayout.addRow("Output Volume:", outputNodeSelector)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputNodeSelector = outputNodeSelector
-
-    # outputProbabilityVolume1 node selector
-    outputProbabilityNodeSelector1 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector1.objectName = 'outputProbabilityNodeSelector1'
-    outputProbabilityNodeSelector1.toolTip = "Probability-of-being-1st-object estimate for each voxel"
-    outputProbabilityNodeSelector1.nodeTypes = ['vtkMRMLVolumeNode']
-    outputProbabilityNodeSelector1.noneEnabled = True
-    outputProbabilityNodeSelector1.addEnabled = True
-    outputProbabilityNodeSelector1.removeEnabled = False
-    outputProbabilityNodeSelector1.editEnabled = True
-    outputProbabilityNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode1)
-    ioFormLayout.addRow("Probability Map for Object 1 (optional):", outputProbabilityNodeSelector1)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector1 = outputProbabilityNodeSelector1
-
-    # outputProbabilityVolume2 node selector
-    outputProbabilityNodeSelector2 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector2.objectName = 'outputProbabilityNodeSelector2'
-    outputProbabilityNodeSelector2.toolTip = "Probability-of-being-2st-object estimate for each voxel"
-    outputProbabilityNodeSelector2.nodeTypes = ['vtkMRMLVolumeNode']
-    outputProbabilityNodeSelector2.noneEnabled = True
-    outputProbabilityNodeSelector2.addEnabled = True
-    outputProbabilityNodeSelector2.removeEnabled = False
-    outputProbabilityNodeSelector2.editEnabled = True
-    outputProbabilityNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode2)
-    ioFormLayout.addRow("Probability Map for Object 2 (optional):", outputProbabilityNodeSelector2)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector2 = outputProbabilityNodeSelector2
-
-    # outputProbabilityVolume3 node selector
-    outputProbabilityNodeSelector3 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector3.objectName = 'outputProbabilityNodeSelector3'
-    outputProbabilityNodeSelector3.toolTip = "Probability-of-being-3st-object estimate for each voxel"
-    outputProbabilityNodeSelector3.nodeTypes = ['vtkMRMLVolumeNode']
-    outputProbabilityNodeSelector3.noneEnabled = True
-    outputProbabilityNodeSelector3.addEnabled = True
-    outputProbabilityNodeSelector3.removeEnabled = False
-    outputProbabilityNodeSelector3.editEnabled = True
-    outputProbabilityNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode3)
-    ioFormLayout.addRow("Probability Map for Object 3 (optional):", outputProbabilityNodeSelector3)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector3 = outputProbabilityNodeSelector3
-
     # SEGMENTATION BUTTON
+    segmentCollapsibleButton = ctk.ctkCollapsibleButton()
+    segmentCollapsibleButton.text = "Run Segmentation"
+    self.layout.addWidget(segmentCollapsibleButton)
+
+    # Layout within the parameters collapsible button
+    segmentFormLayout = qt.QFormLayout(segmentCollapsibleButton)
+
+    # segmentation button
     segmentationButton = qt.QPushButton("Segment")
     segmentationButton.toolTip = "Perform PDF Segmentation."
-    ioFormLayout.addRow(segmentationButton)
+    segmentFormLayout.addRow(segmentationButton)
     segmentationButton.connect('clicked()', self.onSegmentationButtonClicked)
 
     # Now that we've created all UI elements, apply the default goal segmentation type
     self.setGoalSegmentationType(self.goalButtonDefault)
 
-    print "DONE"
+  def getAllCompositeNodes(self):
+    nodes = []
+    count = slicer.mrmlScene.GetNumberOfNodesByClass('vtkMRMLSliceCompositeNode')
+    for n in xrange(count):
+      nodes.append(slicer.mrmlScene.GetNthNodeByClass(n, 'vtkMRMLSliceCompositeNode'))
+    return nodes
 
   def setLabelMapNode(self, newLabelMapNode):
     """Sets the current node for the 'labelMap' label map
     Connected to signal 'currentNodeChanged()' emitted from the labelMapNodeSelector."""
 
-    newLabelMap = None
     if newLabelMapNode:
-      newLabelMap = newLabelMapNode.GetImageData()
+
+      if self.labelMapNode == newLabelMapNode:
+        return
+
+      # if we don't have a display node (i.e. creating node), add one here
+      if (not newLabelMapNode.GetDisplayNode()):
+        self.onLabelMapAddedByUser(newLabelMapNode)
+
+      # the editor widget pulls the label map from the red slice's composite node,
+      # so set the slice label maps to the new label map node
+      #->> problem when toggling between two label maps, colors don't match
+      if self.editorWidget:
+        compositeNodes = self.getAllCompositeNodes()
+        for node in compositeNodes:
+          node.SetReferenceLabelVolumeID(newLabelMapNode.GetID())
+
+      # enable the void label spin box only when there is a label map, and set its range
+      # to the extent of the label image
+      if self.voidLabelSpinBox:
+        if (self.voidLabelSpinBox.enabled == (not newLabelMapNode)):
+          self.voidLabelSpinBox.enabled = not self.voidLabelSpinBox.enabled
+        #->> TODO change limits depending on the values in the image, but must be updated
+        # whenever the user adds a new label with the editor
+        ## image = newLabelMapNode.GetImageData()
 
     self.labelMapNode = newLabelMapNode
-    self.labelMap = newLabelMap
+
+    if self.labelMapNodeSelector:
+      if self.labelMapNodeSelector.currentNode() != newLabelMapNode:
+        self.labelMapNodeSelector.setCurrentNode(newLabelMapNode)
+
+  def onLabelMapAddedByUser(self, newLabelMapNode):
+    """Creating a new label map volume does not instantiate the image data, so we will
+    do that here"""
+    logic = volumesLogic.vtkSlicerVolumesLogic()
+    logic.SetMRMLScene(slicer.mrmlScene)
+    logic.FillLabelVolumeFromTemplate(slicer.mrmlScene, newLabelMapNode, self.inputNode1)
 
   def setInputNode1(self, newInputNode1):
     """Sets the current node for the 1st input volume
     Connected to signal 'currentNodeChanged()' emitted from the inputNodeSelector1."""
 
-    newInputVolume1 = None
     if newInputNode1:
-      newInputVolume1 = newInputNode1.GetImageData()
+      # the editor widget pulls the "master node" from the red slice's composite node,
+      # so set the slice  background volumes to the new input node 1
+      #->> problem when adding a new volume, and it automatically switches
+      if self.editorWidget:
+        compositeNodes = self.getAllCompositeNodes()
+        for node in compositeNodes:
+          node.SetReferenceBackgroundVolumeID(newInputNode1.GetID())
+
+      # toggle the status of the label map node selector on whether or not there is an
+      # inputNode1 - necessary because we use inputNode1 as the template to create the
+      # label map
+      if self.labelMapNodeSelector:
+        if (self.labelMapNodeSelector.addEnabled == (not newInputNode1)):
+          self.labelMapNodeSelector.addEnabled = not self.labelMapNodeSelector.addEnabled
 
     self.inputNode1 = newInputNode1
-    self.inputVolume1 = newInputVolume1
 
   def setInputNode2(self, newInputNode2):
     """Sets the current node for the 2nd input volume
     Connected to signal 'currentNodeChanged()' emitted from the inputNodeSelector2."""
 
-    newInputVolume2 = None
-    if newInputNode2:
-      newInputVolume2 = newInputNode2.GetImageData()
-
     self.inputNode2 = newInputNode2
-    self.inputVolume2 = newInputVolume2
 
   def setInputNode3(self, newInputNode3):
     """Sets the current node for the 3rd input volume
     Connected to signal 'currentNodeChanged()' emitted from the inputNodeSelector3."""
 
-    newInputVolume3 = None
-    if newInputNode3:
-      newInputVolume3 = newInputNode3.GetImageData()
-
     self.inputNode3 = newInputNode3
-    self.inputVolume3 = newInputVolume3
 
   def setOutputNode(self, newOutputNode):
     """Sets the current node for the output volume
     Connected to signal 'currentNodeChanged()' emitted from the outputNodeSelector."""
 
-    newOutputVolume = None
-    if newOutputNode:
-      newOutputVolume = newOutputNode.GetImageData()
-
     self.outputNode = newOutputNode
-    self.outputVolume = newOutputVolume
 
   def setOutputProbabilityNode1(self, newOutputProbabilityNode1):
     """Sets the current node for the 1st output probability node
     Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector1."""
 
-    newOutputProbabilityVolume1 = None
-    if newOutputProbabilityNode1:
-      newOutputProbabilityVolume1 = newOutputProbabilityNode1.GetImageData()
-
     self.outputProbabilityNode1 = newOutputProbabilityNode1
-    self.outputProbabilityVolume1 = newOutputProbabilityVolume1
 
   def setOutputProbabilityNode2(self, newOutputProbabilityNode2):
     """Sets the current node for the 2nd output probability node
     Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector2."""
 
-    newOutputProbabilityVolume2 = None
-    if newOutputProbabilityNode2:
-      newOutputProbabilityVolume2 = newOutputProbabilityNode2.GetImageData()
-
     self.outputProbabilityNode2 = newOutputProbabilityNode2
-    self.outputProbabilityVolume2 = newOutputProbabilityVolume2
 
   def setOutputProbabilityNode3(self, newOutputProbabilityNode3):
     """Sets the current node for the 3rd output probability node
     Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector3."""
 
-    newOutputProbabilityVolume3 = None
-    if newOutputProbabilityNode3:
-      newOutputProbabilityVolume3 = newOutputProbabilityNode3.GetImageData()
-
     self.outputProbabilityNode3 = newOutputProbabilityNode3
-    self.outputProbabilityVolume3 = newOutputProbabilityVolume3
 
   def setGoalSegmentationType(self, goalId):
     """Sets the goal segmentation 'type': jagged, semi-jagged, smooth or user defined
@@ -436,11 +530,11 @@ class InteractivePDFSegmenterWidget:
     """Actually computes the appropriate values for the erosion radius and hole fill iterations"""
     if (goalId < len(self.precomputedErosionRadii)):
         newErosionRadius = self.precomputedErosionRadii[goalId]
-        self.erosionRadius = newErosionRadius # TODO sketchy
+        self.erosionRadius = newErosionRadius
         self.erosionSpinBox.setValue(newErosionRadius)
     if (goalId < len(self.precomputedHoleFillIterations)):
         newHoleFillIterations = self.precomputedHoleFillIterations[goalId]
-        self.holeFillIterations = newHoleFillIterations # TODO sketchy
+        self.holeFillIterations = newHoleFillIterations
         self.holeFillSpinBox.setValue(newHoleFillIterations)
 
   def setErosionRadius(self, newErosionRadius):
@@ -460,8 +554,18 @@ class InteractivePDFSegmenterWidget:
     parameters['inputVolume1'] = self.inputNode1
     parameters['inputVolume2'] = self.inputNode2
     parameters['inputVolume3'] = self.inputNode3
-    parameters['objectId'] = self.insideLabelSpinBox.value
-    parameters['voidId'] = self.outsideLabelSpinBox.value
+
+    # Calculate the void ID and the object IDs
+    # The void ID is provided by the voidLabelSpinBox (for now) and the object IDs
+    # are any other labels in the label map that are not the void ID
+    voidId = self.voidLabelSpinBox.value
+    objectIds = self.getObjectIds(self.labelMapNode, voidId)
+    if len(objectIds) == 0:
+      print "Error - no valid object Ids"
+      return
+    parameters['voidId'] = voidId
+    parameters['objectId'] = objectIds
+
     parameters['labelmap'] = self.labelMapNode
     parameters['outputVolume'] = self.outputNode
     parameters['useTexture'] = self.useTextureCheckBox.checked
@@ -476,7 +580,41 @@ class InteractivePDFSegmenterWidget:
     parameters['probabilityVolume1'] = self.outputProbabilityNode2
     parameters['probabilityVolume2'] = self.outputProbabilityNode3
 
-    pdfSegmenter = slicer.modules.pdfsegmenter
-    self.CLINode = slicer.cli.run(pdfSegmenter, self.CLINode, parameters)
+    #->> TODO additional processing here
+    #->> cropping
+    #->> calculate values for erosion radius and hole fill iterations, based on goal
+    # segmentation type and image properties
 
-    print "SEGMENTED"
+    tubepdfSegmenter = slicer.modules.tubepdfsegmenter
+    self.CLINode = slicer.cli.run(tubepdfSegmenter, self.CLINode, parameters)
+
+  def getObjectIds(self, labelMapNode, voidId):
+    if not labelMapNode:
+      return []
+    nonZeroLabels = self.getLabelsFromLabelMap(labelMapNode)
+    if len(nonZeroLabels) == 0:
+      print "Error - no labels within the label map"
+      return []
+    if not voidId in nonZeroLabels:
+      print "Error - void Id is not represented in the label map"
+      print "voidID: ", voidId
+      print "label map labels: ", nonZeroLabels
+      return []
+    nonZeroLabels.remove(voidId)
+    return nonZeroLabels
+
+  def getLabelsFromLabelMap(self, labelMapNode):
+    if not labelMapNode:
+      return
+    accum = vtk.vtkImageAccumulate()
+    accum.SetInput(labelMapNode.GetImageData())
+    accum.UpdateWholeExtent()
+    data = accum.GetOutput()
+    data.Update()
+    numBins = accum.GetComponentExtent()[1]
+    nonZeroLabels = []
+    for i in range(0, numBins + 1):
+      numVoxels = data.GetScalarComponentAsDouble(i,0,0,0)
+      if (numVoxels != 0):
+        nonZeroLabels.append(i)
+    return nonZeroLabels
