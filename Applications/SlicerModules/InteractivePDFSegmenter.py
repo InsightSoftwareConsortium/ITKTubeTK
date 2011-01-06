@@ -329,6 +329,7 @@ class InteractivePDFSegmenterWidget:
     reclassifyObjectMaskCheckBox = qt.QCheckBox()
     reclassifyObjectMaskCheckBox.objectName = 'reclassifyObjectMaskCheckBox'
     reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the object mask?"
+    reclassifyObjectMaskCheckBox.setChecked(True)
     advancedFormLayout.addRow("Reclassify Object Mask:", reclassifyObjectMaskCheckBox)
     self.reclassifyObjectMaskCheckBox = reclassifyObjectMaskCheckBox
 
@@ -336,6 +337,7 @@ class InteractivePDFSegmenterWidget:
     reclassifyNotObjectMaskCheckBox = qt.QCheckBox()
     reclassifyNotObjectMaskCheckBox.objectName = 'reclassifyNotObjectMaskCheckBox'
     reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on all non-void voxels?"
+    reclassifyNotObjectMaskCheckBox.setChecked(True)
     advancedFormLayout.addRow("Reclassify Not Object Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
@@ -363,6 +365,11 @@ class InteractivePDFSegmenterWidget:
       nodes.append(slicer.mrmlScene.GetNthNodeByClass(n, 'vtkMRMLSliceCompositeNode'))
     return nodes
 
+  def setSliceLabelMaps(self, newLabelMapNode):
+    compositeNodes = self.getAllCompositeNodes()
+    for node in compositeNodes:
+      node.SetReferenceLabelVolumeID(newLabelMapNode.GetID())
+
   def setLabelMapNode(self, newLabelMapNode):
     """Sets the current node for the 'labelMap' label map
     Connected to signal 'currentNodeChanged()' emitted from the labelMapNodeSelector."""
@@ -380,9 +387,7 @@ class InteractivePDFSegmenterWidget:
       # so set the slice label maps to the new label map node
       #->> problem when toggling between two label maps, colors don't match
       if self.editorWidget:
-        compositeNodes = self.getAllCompositeNodes()
-        for node in compositeNodes:
-          node.SetReferenceLabelVolumeID(newLabelMapNode.GetID())
+        self.setSliceLabelMaps(newLabelMapNode)
 
       # enable the void label spin box only when there is a label map, and set its range
       # to the extent of the label image
@@ -477,10 +482,6 @@ class InteractivePDFSegmenterWidget:
     print self.holeFillIterations
 
   def onSegmentationButtonClicked(self):
-    parameters = {}
-    parameters['inputVolume1'] = self.inputNode1
-    parameters['inputVolume2'] = self.inputNode2
-    parameters['inputVolume3'] = self.inputNode3
 
     # Calculate the void ID and the object IDs
     # The void ID is provided by the voidLabelSpinBox (for now) and the object IDs
@@ -490,9 +491,13 @@ class InteractivePDFSegmenterWidget:
     if len(objectIds) == 0:
       print "Error - no valid object Ids"
       return
+
+    parameters = {}
+    parameters['inputVolume1'] = self.inputNode1
+    parameters['inputVolume2'] = self.inputNode2
+    parameters['inputVolume3'] = self.inputNode3
     parameters['voidId'] = voidId
     parameters['objectId'] = objectIds
-
     parameters['labelmap'] = self.labelMapNode
     parameters['outputVolume'] = self.outputNode
     parameters['erodeRadius'] = self.erosionRadius
@@ -508,8 +513,24 @@ class InteractivePDFSegmenterWidget:
     #->> calculate values for erosion radius and hole fill iterations, based on goal
     # segmentation type and image properties
 
+    # get the pdf segmenter module and run the cli
     tubepdfSegmenter = slicer.modules.tubepdfsegmenter
     self.CLINode = slicer.cli.run(tubepdfSegmenter, self.CLINode, parameters)
+
+    # For a nice display in Slicer, make the output node a label map with the same
+    # coloring as the input label map
+    if self.outputNode:
+      self.outputNode.LabelMapOn()
+      if self.labelMapNode:
+        #->>TODO Setting the slice label maps is a hack to get a display node
+        # We will need to set the slice label maps back to the label map node so that
+        # the user can keep editing on it - keeps synchrony with the label map selector
+        self.setSliceLabelMaps(self.outputNode)
+        labelMapDisplayNode = self.labelMapNode.GetDisplayNode()
+        outputDisplayNode = self.outputNode.GetDisplayNode()
+        if labelMapDisplayNode and outputDisplayNode:
+          outputDisplayNode.SetAndObserveColorNodeID(labelMapDisplayNode.GetColorNodeID())
+        self.setSliceLabelMaps(self.labelMapNode)
 
   def getObjectIds(self, labelMapNode, voidId):
     if not labelMapNode:
