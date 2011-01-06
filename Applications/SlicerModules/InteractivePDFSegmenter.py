@@ -515,6 +515,21 @@ class InteractivePDFSegmenterWidget:
     tubepdfSegmenter = slicer.modules.tubepdfsegmenter
     self.CLINode = slicer.cli.run(tubepdfSegmenter, self.CLINode, parameters)
 
+    # For a nice display in Slicer, make the output node a label map with the same
+    # coloring as the input label map
+    if self.outputNode:
+      self.outputNode.LabelMapOn()
+      if self.labelMapNode:
+        #->>TODO Setting the slice label maps is a hack to get a display node
+        # We will need to set the slice label maps back to the label map node so that
+        # the user can keep editing on it - keeps synchrony with the label map selector
+        self.setSliceLabelMaps(self.outputNode)
+        labelMapDisplayNode = self.labelMapNode.GetDisplayNode()
+        outputDisplayNode = self.outputNode.GetDisplayNode()
+        if labelMapDisplayNode and outputDisplayNode:
+          outputDisplayNode.SetAndObserveColorNodeID(labelMapDisplayNode.GetColorNodeID())
+        self.setSliceLabelMaps(self.labelMapNode)
+
   def getObjectIds(self, labelMapNode, voidId):
     if not labelMapNode:
       return []
