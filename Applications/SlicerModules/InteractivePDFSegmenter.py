@@ -363,6 +363,11 @@ class InteractivePDFSegmenterWidget:
       nodes.append(slicer.mrmlScene.GetNthNodeByClass(n, 'vtkMRMLSliceCompositeNode'))
     return nodes
 
+  def setSliceLabelMaps(self, newLabelMapNode):
+    compositeNodes = self.getAllCompositeNodes()
+    for node in compositeNodes:
+      node.SetReferenceLabelVolumeID(newLabelMapNode.GetID())
+
   def setLabelMapNode(self, newLabelMapNode):
     """Sets the current node for the 'labelMap' label map
     Connected to signal 'currentNodeChanged()' emitted from the labelMapNodeSelector."""
@@ -380,9 +385,7 @@ class InteractivePDFSegmenterWidget:
       # so set the slice label maps to the new label map node
       #->> problem when toggling between two label maps, colors don't match
       if self.editorWidget:
-        compositeNodes = self.getAllCompositeNodes()
-        for node in compositeNodes:
-          node.SetReferenceLabelVolumeID(newLabelMapNode.GetID())
+        self.setSliceLabelMaps(newLabelMapNode)
 
       # enable the void label spin box only when there is a label map, and set its range
       # to the extent of the label image
