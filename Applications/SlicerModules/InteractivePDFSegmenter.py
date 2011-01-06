@@ -36,9 +36,6 @@ class InteractivePDFSegmenterWidget:
     self.inputNode2 = None
     self.inputNode3 = None
     self.outputNode = None
-    self.outputProbabilityNode1 = None
-    self.outputProbabilityNode2 = None
-    self.outputProbabilityNode3 = None
     self.goalButtonTexts = ["Jagged", "Intermediate", "Smooth", "Custom"]
     self.goalButtonDefault = 2
     self.goalButtonUserDefined = 3
@@ -143,51 +140,6 @@ class InteractivePDFSegmenterWidget:
     self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
                         outputNodeSelector, 'setMRMLScene(vtkMRMLScene*)')
     self.outputNodeSelector = outputNodeSelector
-
-    # outputProbabilityVolume1 node selector
-    outputProbabilityNodeSelector1 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector1.objectName = 'outputProbabilityNodeSelector1'
-    outputProbabilityNodeSelector1.toolTip = "Probability-of-being-1st-object estimate for each voxel"
-    outputProbabilityNodeSelector1.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    outputProbabilityNodeSelector1.noneEnabled = True
-    outputProbabilityNodeSelector1.addEnabled = True
-    outputProbabilityNodeSelector1.removeEnabled = False
-    outputProbabilityNodeSelector1.editEnabled = True
-    outputProbabilityNodeSelector1.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode1)
-    ioFormLayout.addRow("Probability Map for Object 1 (optional):", outputProbabilityNodeSelector1)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector1, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector1 = outputProbabilityNodeSelector1
-
-    # outputProbabilityVolume2 node selector
-    outputProbabilityNodeSelector2 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector2.objectName = 'outputProbabilityNodeSelector2'
-    outputProbabilityNodeSelector2.toolTip = "Probability-of-being-2st-object estimate for each voxel"
-    outputProbabilityNodeSelector2.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    outputProbabilityNodeSelector2.noneEnabled = True
-    outputProbabilityNodeSelector2.addEnabled = True
-    outputProbabilityNodeSelector2.removeEnabled = False
-    outputProbabilityNodeSelector2.editEnabled = True
-    outputProbabilityNodeSelector2.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode2)
-    ioFormLayout.addRow("Probability Map for Object 2 (optional):", outputProbabilityNodeSelector2)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector2, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector2 = outputProbabilityNodeSelector2
-
-    # outputProbabilityVolume3 node selector
-    outputProbabilityNodeSelector3 = slicer.qMRMLNodeComboBox()
-    outputProbabilityNodeSelector3.objectName = 'outputProbabilityNodeSelector3'
-    outputProbabilityNodeSelector3.toolTip = "Probability-of-being-3st-object estimate for each voxel"
-    outputProbabilityNodeSelector3.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    outputProbabilityNodeSelector3.noneEnabled = True
-    outputProbabilityNodeSelector3.addEnabled = True
-    outputProbabilityNodeSelector3.removeEnabled = False
-    outputProbabilityNodeSelector3.editEnabled = True
-    outputProbabilityNodeSelector3.connect('currentNodeChanged(vtkMRMLNode*)', self.setOutputProbabilityNode3)
-    ioFormLayout.addRow("Probability Map for Object 3 (optional):", outputProbabilityNodeSelector3)
-    self.parent.connect('mrmlSceneChanged(vtkMRMLScene*)',
-                        outputProbabilityNodeSelector3, 'setMRMLScene(vtkMRMLScene*)')
-    self.outputProbabilityNodeSelector3 = outputProbabilityNodeSelector3
 
     # LABEL MAP COLLAPSIBLE BUTTON
 
@@ -346,13 +298,6 @@ class InteractivePDFSegmenterWidget:
     advancedFormLayout.addRow("Hole Fill Iterations:", holeFillSpinBox)
     self.holeFillSpinBox = holeFillSpinBox
 
-    # useTexture check box
-    useTextureCheckBox = qt.QCheckBox()
-    useTextureCheckBox.objectName = 'useTextureCheckBox'
-    useTextureCheckBox.toolTip = "Consider image texture during segmentation?"
-    advancedFormLayout.addRow("Use Texture:", useTextureCheckBox)
-    self.useTextureCheckBox = useTextureCheckBox
-
     # falsePositiveRatio spin box
     falsePositiveRatioSpinBox = qt.QDoubleSpinBox()
     falsePositiveRatioSpinBox.objectName = 'falsePositiveRatioSpinBox'
@@ -501,24 +446,6 @@ class InteractivePDFSegmenterWidget:
 
     self.outputNode = newOutputNode
 
-  def setOutputProbabilityNode1(self, newOutputProbabilityNode1):
-    """Sets the current node for the 1st output probability node
-    Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector1."""
-
-    self.outputProbabilityNode1 = newOutputProbabilityNode1
-
-  def setOutputProbabilityNode2(self, newOutputProbabilityNode2):
-    """Sets the current node for the 2nd output probability node
-    Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector2."""
-
-    self.outputProbabilityNode2 = newOutputProbabilityNode2
-
-  def setOutputProbabilityNode3(self, newOutputProbabilityNode3):
-    """Sets the current node for the 3rd output probability node
-    Connected to signal 'currentNodeChanged()' emitted from the outputProbabilityNodeSelector3."""
-
-    self.outputProbabilityNode3 = newOutputProbabilityNode3
-
   def setGoalSegmentationType(self, goalId):
     """Sets the goal segmentation 'type': jagged, semi-jagged, smooth or user defined
     Connected to signal 'buttonClicked()' emitted from the goalButtonGroup.
@@ -568,7 +495,6 @@ class InteractivePDFSegmenterWidget:
 
     parameters['labelmap'] = self.labelMapNode
     parameters['outputVolume'] = self.outputNode
-    parameters['useTexture'] = self.useTextureCheckBox.checked
     parameters['erodeRadius'] = self.erosionRadius
     parameters['holeFillIterations'] = self.holeFillIterations
     parameters['fprWeight'] = self.falsePositiveRatioSpinBox.value
@@ -576,9 +502,6 @@ class InteractivePDFSegmenterWidget:
     parameters['draft'] = self.draftCheckBox.checked
     parameters['reclassifyObjectMask'] = self.reclassifyObjectMaskCheckBox.checked
     parameters['reclassifyNotObjectMask'] = self.reclassifyNotObjectMaskCheckBox.checked
-    parameters['probabilityVolume0'] = self.outputProbabilityNode1
-    parameters['probabilityVolume1'] = self.outputProbabilityNode2
-    parameters['probabilityVolume2'] = self.outputProbabilityNode3
 
     #->> TODO additional processing here
     #->> cropping
