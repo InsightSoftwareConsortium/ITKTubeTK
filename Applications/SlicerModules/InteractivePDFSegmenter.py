@@ -480,10 +480,6 @@ class InteractivePDFSegmenterWidget:
     print self.holeFillIterations
 
   def onSegmentationButtonClicked(self):
-    parameters = {}
-    parameters['inputVolume1'] = self.inputNode1
-    parameters['inputVolume2'] = self.inputNode2
-    parameters['inputVolume3'] = self.inputNode3
 
     # Calculate the void ID and the object IDs
     # The void ID is provided by the voidLabelSpinBox (for now) and the object IDs
@@ -493,9 +489,13 @@ class InteractivePDFSegmenterWidget:
     if len(objectIds) == 0:
       print "Error - no valid object Ids"
       return
+
+    parameters = {}
+    parameters['inputVolume1'] = self.inputNode1
+    parameters['inputVolume2'] = self.inputNode2
+    parameters['inputVolume3'] = self.inputNode3
     parameters['voidId'] = voidId
     parameters['objectId'] = objectIds
-
     parameters['labelmap'] = self.labelMapNode
     parameters['outputVolume'] = self.outputNode
     parameters['erodeRadius'] = self.erosionRadius
