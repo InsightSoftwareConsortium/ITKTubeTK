@@ -1,6 +1,5 @@
 import __main__
 import qt, vtk
-import volumesLogic
 
 #
 # InteractivePDFSegmenter
@@ -407,7 +406,7 @@ class InteractivePDFSegmenterWidget:
   def onLabelMapAddedByUser(self, newLabelMapNode):
     """Creating a new label map volume does not instantiate the image data, so we will
     do that here"""
-    logic = volumesLogic.vtkSlicerVolumesLogic()
+    logic = slicer.modules.volumes.logic()
     logic.SetMRMLScene(slicer.mrmlScene)
     logic.FillLabelVolumeFromTemplate(slicer.mrmlScene, newLabelMapNode, self.inputNode1)
 
