@@ -234,25 +234,30 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     int val = itInMask.Get();
     indx = itInMask.GetIndex();
-    for( unsigned int i=0; i<N; i++ )
-      {
-      v[i] = static_cast< PixelType >( itInIm[i]->Get() );
-      }
     bool found = false;
     for( unsigned int c=0; c<numClasses; c++ )
       {
       if( val == m_ObjectIdList[c] )
         {
         found = true;
+        for( unsigned int i=0; i<N; i++ )
+          {
+          v[i] = static_cast< PixelType >( itInIm[i]->Get() );
+          }
         for( unsigned int i=0; i<ImageDimension; i++ )
           {
           v[N+i] = indx[i];
           }
         m_InClassList[c]->PushBack( v );
+        break;
         }
       }
     if( !found && itInMask.Get() != m_VoidId )
       {
+      for( unsigned int i=0; i<N; i++ )
+        {
+        v[i] = static_cast< PixelType >( itInIm[i]->Get() );
+        }
       for( unsigned int i=0; i<ImageDimension; i++ )
         {
         v[N+i] = indx[i];
