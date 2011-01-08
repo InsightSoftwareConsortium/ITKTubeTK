@@ -99,6 +99,31 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicReg )
 
 #######
+# Test2-Using surface model instead of normal vector + weight images
+#######
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface
+            ${PROJ_EXE}
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
+               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_transformedMovingImage.mhd
+               -i 5
+               -s 0.125
+               -l -0.1 )
+
+#######
+# Test2-Compare-Using surface model
+#######
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface )
+
+#######
 # Test3
 #######
 add_test( ${PROJECT_NAME}SphereTestGaussianReg
