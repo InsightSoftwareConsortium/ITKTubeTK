@@ -39,6 +39,9 @@
       <channel>input</channel>
       <description>Controls the exponential decay used to calculate the weight value as a function of the distance to the closest organ border point.  Must be negative (for exponential decay).</description>
       <default>-0.1</default>
+      <minimum>-10.0</minimum>
+      <maximum>0.0</maximum>
+      <step>0.01</step>
     </double>
     <boolean>
       <name>doNotPerformRegularization</name>
