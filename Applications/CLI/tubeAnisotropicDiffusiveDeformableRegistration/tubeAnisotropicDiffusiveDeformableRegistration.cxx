@@ -47,6 +47,7 @@ limitations under the License.
 #include "itkLinearInterpolateImageFunction.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyDataReader.h"
+#include "vtkXMLPolyDataReader.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -151,16 +152,39 @@ int DoIt( int argc, char * argv[] )
 
   if( organBoundaryFileName != "" )
     {
-    vtkSmartPointer< vtkPolyDataReader > polyDataReader = vtkPolyDataReader::New();
-    polyDataReader->SetFileName( organBoundaryFileName.c_str() );
-    polyDataReader->Update();
-    if( !polyDataReader->GetOutput() )
+    // do we have .vtk or .vtp models?
+    std::string::size_type loc = organBoundaryFileName.find_last_of(".");
+    if( loc == std::string::npos )
+      {
+      tube::ErrorMessage( "Failed to find an extension for organ boundary" );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    std::string extension = organBoundaryFileName.substr(loc);
+    typename RegistrationType::BorderSurfacePointer borderSurface = NULL;
+    if ( extension == std::string(".vtk") )
+      {
+      vtkSmartPointer< vtkPolyDataReader > polyDataReader
+          = vtkPolyDataReader::New();
+      polyDataReader->SetFileName( organBoundaryFileName.c_str() );
+      polyDataReader->Update();
+      borderSurface = polyDataReader->GetOutput();
+      }
+    else if ( extension == std::string(".vtp") )
+      {
+      vtkSmartPointer< vtkXMLPolyDataReader > polyDataReader
+          = vtkXMLPolyDataReader::New();
+      polyDataReader->SetFileName( organBoundaryFileName.c_str() );
+      polyDataReader->Update();
+      borderSurface = polyDataReader->GetOutput();
+      }
+    if( !borderSurface )
       {
       tube::ErrorMessage( "Reading polydata: unsuccessful" );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    registrator->SetBorderSurface( polyDataReader->GetOutput() );
+    registrator->SetBorderSurface( borderSurface );
     }
 
   if( normalVectorImageFileName != "" )
