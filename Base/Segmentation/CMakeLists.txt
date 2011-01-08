@@ -23,6 +23,7 @@
 
 set( TubeTK_Base_Segmentation_H_Files
   itkTubeCVTImageFilter.h
+  itkTubeGenerateLDA.h
   itkTubePDFSegmenter.h
   itkTubeRadiusExtractor.h
   itkTubeRidgeExtractor.h
@@ -31,8 +32,9 @@ set( TubeTK_Base_Segmentation_H_Files
   )
 
 set(TubeTK_Base_Segmentation_TXX_Files
-  itkCVTImageFilter.txx
-  itkPDFSegmenter.txx
+  itkTubeCVTImageFilter.txx
+  itkTubeGenerateLDA.txx
+  itkTubePDFSegmenter.txx
   itkTubeRadiusExtractor.txx
   itkTubeRidgeExtractor.txx
   itkTubeTubeExtractor.txx

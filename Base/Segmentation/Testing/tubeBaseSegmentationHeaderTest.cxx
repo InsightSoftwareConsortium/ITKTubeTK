@@ -27,6 +27,7 @@ limitations under the License.
 #include <iostream>
 
 #include "itkTubeCVTImageFilter.h"
+#include "itkTubeLDAGenerator.h"
 #include "itkTubePDFSegmenter.h"
 #include "itkTubeRadiusExtractor.h"
 #include "itkTubeRidgeExtractor.h"
