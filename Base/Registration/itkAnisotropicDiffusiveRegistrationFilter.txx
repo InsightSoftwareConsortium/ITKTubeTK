@@ -268,7 +268,18 @@ AnisotropicDiffusiveRegistrationFilter
       // Make sure we now have the normals
       if ( !this->GetBorderNormalsSurface() )
         {
-        itkExceptionMacro( << "Error computing border normals" << std::endl );
+        itkExceptionMacro( << "Error computing border normals surface"
+                           << std::endl );
+        }
+      if ( !this->GetBorderNormalsSurface()->GetPointData() )
+        {
+        itkExceptionMacro( << "Computed border normals surface does not contain "
+                           << "point data" << std::endl );
+        }
+      if ( !this->GetBorderNormalsSurface()->GetPointData()->GetNormals() )
+        {
+        itkExceptionMacro( << "Compute border normals surface does not contain "
+                           << "point data normals" << std::endl );
         }
 
       bool computeNormalVectorImage = false;
@@ -360,6 +371,8 @@ AnisotropicDiffusiveRegistrationFilter
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetUseAnisotropicRegularization() );
   assert( m_BorderNormalsSurface );
+  assert (m_BorderNormalsSurface->GetPointData() );
+  assert (m_BorderNormalsSurface->GetPointData()->GetNormals() );
 
   // Get the normals from the polydata
   vtkSmartPointer< vtkDataArray > normalData
