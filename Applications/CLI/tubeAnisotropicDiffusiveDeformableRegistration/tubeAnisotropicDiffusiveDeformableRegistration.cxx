@@ -187,12 +187,12 @@ int DoIt( int argc, char * argv[] )
     registrator->SetBorderSurface( borderSurface );
     }
 
-  if( normalVectorImageFileName != "" )
+  if( inputNormalVectorImageFileName != "" )
     {
     typedef itk::ImageFileReader< VectorImageType > VectorImageReaderType;
     typename VectorImageReaderType::Pointer vectorImageReader
         = VectorImageReaderType::New();
-    vectorImageReader->SetFileName( normalVectorImageFileName.c_str() );
+    vectorImageReader->SetFileName( inputNormalVectorImageFileName.c_str() );
     try
       {
       vectorImageReader->Update();
@@ -207,12 +207,12 @@ int DoIt( int argc, char * argv[] )
     registrator->SetNormalVectorImage( vectorImageReader->GetOutput() );
     }
 
-  if( weightImageFileName != "" )
+  if( inputWeightImageFileName != "" )
     {
     typedef itk::ImageFileReader< WeightImageType > WeightImageReaderType;
     typename WeightImageReaderType::Pointer weightImageReader
         = WeightImageReaderType::New();
-    weightImageReader->SetFileName( weightImageFileName.c_str() );
+    weightImageReader->SetFileName( inputWeightImageFileName.c_str() );
     try
       {
       weightImageReader->Update();
@@ -309,6 +309,44 @@ int DoIt( int argc, char * argv[] )
     try
       {
       imageWriter->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Writing volume: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    }
+
+  if( outputNormalVectorImageFileName != "" )
+    {
+    typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
+    typename VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
+    vectorWriter->SetFileName( outputNormalVectorImageFileName );
+    vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+    try
+      {
+      vectorWriter->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Writing volume: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    }
+
+  if( outputWeightImageFileName != "" )
+    {
+    typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
+    typename WeightWriterType::Pointer weightWriter = WeightWriterType::New();
+    weightWriter->SetFileName( outputWeightImageFileName );
+    weightWriter->SetInput( registrator->GetWeightImage() );
+    try
+      {
+      weightWriter->Update();
       }
     catch( itk::ExceptionObject & err )
       {

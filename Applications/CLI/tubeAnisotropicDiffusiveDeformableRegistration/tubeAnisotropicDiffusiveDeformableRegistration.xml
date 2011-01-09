@@ -26,7 +26,7 @@
       <name>timeStep</name>
       <flag>s</flag>
       <longflag>timestep</longflag>
-      <label>Time step</label>
+      <label>Time Step</label>
       <channel>input</channel>
       <description>Time step duration.</description>
       <default>0.125</default>
@@ -69,24 +69,24 @@
     <geometry type="model">
       <name>organBoundaryFileName</name>
       <channel>input</channel>
-      <label>Organ Boundary</label>
+      <label>Input Organ Boundary</label>
       <flag>b</flag>
       <longflag>organBoundary</longflag>
       <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image</description>
     </geometry>
     <image>
-      <name>normalVectorImageFileName</name>
-      <label>Normal vector image</label>
+      <name>inputNormalVectorImageFileName</name>
+      <label>Input Normal Vector Image</label>
       <flag>n</flag>
-      <longflag>normalVectorImage</longflag>
+      <longflag>inputNormalVectorImage</longflag>
       <channel>input</channel>
       <description>Image specifying the normal vectors.  This should be in the space of the fixed image.  Optional: supply a normal vector image or an organ boundary surface.  If both are provided, the organ boundary surface is used.</description>
     </image>
     <image>
-      <name>weightImageFileName</name>
-      <label>Weight image</label>
+      <name>inputWeightImageFileName</name>
+      <label>Input Weight Image</label>
       <flag>w</flag>
-      <longflag>weightImage</longflag>
+      <longflag>inputWeightImage</longflag>
       <channel>input</channel>
       <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This should be in the space of the fixed image.  Optional: supply a weight image or an organ boundary surface (and a lambda).  If both are provided, the organ boundary surface is used.</description>
     </image>
@@ -100,19 +100,19 @@
       <flag>t</flag>
       <longflag>initialTransform</longflag>
       <description>NOT YET IMPLEMENTED.  Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. This transform should be an affine or rigid transform.  Optional.  TODO: init deformation field</description>
-      <label>Initial transform</label>
+      <label>Initial Transform</label>
       <channel>input</channel>
     </transform>
     <image>
       <name>fixedImageFileName</name>
-      <label>Fixed Image</label>
+      <label>Input Fixed Image</label>
       <channel>input</channel>
       <index>0</index>
       <description>Fixed image to which to register</description>
     </image>
     <image>
       <name>movingImageFileName</name>
-      <label>Moving Image</label>
+      <label>Input Moving Image</label>
       <channel>input</channel>
       <index>1</index>
       <description>Moving image</description>
@@ -122,7 +122,7 @@
       <flag>d</flag>
       <longflag>outputDeformationField</longflag>
       <description>Deformation field calculated that aligns the fixed and moving image.  Maps positions from the fixed coordinate frame to the moving coordinate frame.  Optional (specify an output deformation field or an output volume or both).</description>
-      <label>Output deformation field</label>
+      <label>Output Deformation Field</label>
       <channel>output</channel>
     </image>
     <image>
@@ -132,6 +132,22 @@
       <label>Output Volume</label>
       <channel>output</channel>
       <description>Resampled moving image to fixed image coordinate frame. Optional (specify an output deformation field or an output volume or both).</description>
+    </image>
+    <image>
+      <name>outputNormalVectorImageFileName</name>
+      <label>Output Normal Vector Image</label>
+      <flag>v</flag>
+      <longflag>outputNormalVectorImage</longflag>
+      <channel>output</channel>
+      <description>Image specifying the normal vectors.  This is in the space of the fixed image.  Optional: allows you to save the normal vector image when providing an organ boundary surface.  On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated.</description>
+    </image>
+    <image>
+      <name>outputWeightImageFileName</name>
+      <label>Output Weight Image</label>
+      <flag>x</flag>
+      <longflag>outputWeightImage</longflag>
+      <channel>output</channel>
+      <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This is in the space of the fixed image.  Optional: allows you to save the weight image when providing an organ boundary surface. On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated.</description>
     </image>
   </parameters>
 
