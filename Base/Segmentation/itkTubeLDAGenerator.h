@@ -76,10 +76,8 @@ public:
   typedef vnl_vector< double >                 LDAType;
   typedef vnl_matrix< double >                 LDAMatrixType;
 
-  typedef itk::ImageType< float, ImageDimension >
-                                               LDAImageType;
-  typedef std::vector< typename LDAImageType::Pointer >
-                                               LDAImageListType;
+  typedef itk::OrientedImage< float, ImageDimension >   LDAImageType;
+  typedef std::vector< typename LDAImageType::Pointer > LDAImageListType;
 
   //
   // Methods
@@ -90,11 +88,11 @@ public:
 
   void             SetObjectId( ObjectIdType objectId );
   void             AddObjectId( ObjectIdType objectId );
-  ObjectIdType     GetNumberOfObjects( void );
+  unsigned int     GetNumberOfObjects( void );
   ObjectIdType     GetObjectId( int num = 0 );
 
   ObjectMeanType       * GetObjectMean( ObjectIdType objectId );
-  ObjectCovarianceType * GetObjectCovariance( objectIdType objectId );
+  ObjectCovarianceType * GetObjectCovariance( ObjectIdType objectId );
 
   ObjectMeanType       * GetGlobalMean( void );
   ObjectCovarianceType * GetGlobalCovariance( void );
@@ -102,15 +100,15 @@ public:
   itkSetObjectMacro( Labelmap, MaskImageType );
   itkGetObjectMacro( Labelmap, MaskImageType );
 
-  void GetNumberOfLDA( void );
+  unsigned int    GetNumberOfLDA( void );
 
-  LDAType       * GetLDAVector( int ldaNum );
-  double          GetLDAValue( int ldaNum );
+  LDAType         GetLDAVector( unsigned int ldaNum );
+  double          GetLDAValue( unsigned int ldaNum );
   LDAMatrixType * GetLDAMatrix( void );
   LDAType       * GetLDAValues( void );
   void            SetLDAMatrix( const LDAMatrixType & mat );
 
-  LDAImageType    GetLDAImage( int ldaNum );
+  const typename LDAImageType::Pointer GetLDAImage( unsigned int ldaNum );
 
   itkSetMacro( PerformLDA, bool );
   itkGetMacro( PerformLDA, bool );
@@ -146,7 +144,7 @@ private:
   bool                            m_PerformPCA;
 
   //  Data
-  typename ImageListType          m_FeatureImageList;
+  ImageListType                   m_FeatureImageList;
 
   typename MaskImageType::Pointer m_Labelmap;
 

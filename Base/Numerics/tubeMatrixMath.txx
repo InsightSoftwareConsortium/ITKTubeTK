@@ -132,9 +132,8 @@ ComputeEuclideanDistance(PointType x, PointType y)
  * Compute eigen values and vectors  */
 template <class T>
 void
-Eigen(vnl_matrix<T> &mat,
-      vnl_matrix<T> &eVects,
-      vnl_vector<T> &eVals, bool orderByAbs )
+Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
+  bool orderByAbs, bool minToMax )
 {
 
   int n = mat.rows();
@@ -144,6 +143,12 @@ Eigen(vnl_matrix<T> &mat,
   eVects = mat;
   switch(n)
     {
+    case 1:
+      eVects.set_size(1,1);
+      eVects.fill( 1 );
+      eVals.set_size(1);
+      eVals.fill( mat[0][0] );
+      break;
     case 2:
       TriDiag2D(eVects, eVals, subD);
       Tqli(eVals, subD, eVects);
@@ -155,6 +160,7 @@ Eigen(vnl_matrix<T> &mat,
     default:
       vnl_symmetric_eigensystem< T > eigen( mat );
       eVects = eigen.V;
+      eVals.set_size( eVects.columns() );
       for( unsigned int d=0; d<eVects.columns(); d++ )
         {
         eVals[d] = eigen.get_eigenvalue( d );
@@ -170,7 +176,8 @@ Eigen(vnl_matrix<T> &mat,
       {
       for(j=i+1; j<n; j++)
         {
-        if(fabs(eVals(j))<fabs(eVals(i)))
+        if( ( fabs(eVals(j))>fabs(eVals(i)) && !minToMax )
+          || ( fabs(eVals(j))<fabs(eVals(i)) && minToMax ) )
           {
           tf = eVals(j);
           eVals(j) = eVals(i);
@@ -191,7 +198,8 @@ Eigen(vnl_matrix<T> &mat,
       {
       for(j=i+1; j<n; j++)
         {
-        if(eVals(j)<eVals(i))
+        if( ( eVals(j)>eVals(i) && !minToMax )
+          || ( eVals(j)<eVals(i) && minToMax ) )
           {
           tf = eVals(j);
           eVals(j) = eVals(i);

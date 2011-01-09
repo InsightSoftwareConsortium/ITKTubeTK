@@ -57,7 +57,7 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
 template <class T>
 void
 Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects,
-  vnl_vector<T> &eVals, bool orderByAbs);
+  vnl_vector<T> &eVals, bool orderByAbs, bool minToMax = true);
 
 /** Preform trilinear diagonalisation */
 template <class T>

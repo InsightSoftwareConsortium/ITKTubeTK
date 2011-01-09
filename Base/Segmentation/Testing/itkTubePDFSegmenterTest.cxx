@@ -35,12 +35,12 @@ limitations under the License.
 
 int itkTubePDFSegmenterTest(int argc, char* argv [] )
 {
-  if( argc != 6 )
+  if( argc != 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage inputMask outputProbImage0 outputProbImage1 outputMask"
+      << " inputImage inputMask force outputProbImage0 outputProbImage1 outputMask"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -78,7 +78,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
 
   // Create the reader and writer
   ReaderType::Pointer maskReader = ReaderType::New();
-  maskReader->SetFileName( argv[2] );
+  maskReader->SetFileName( argv[3] );
   try
     {
     maskReader->Update();
@@ -103,11 +103,18 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
   filter->SetDraft( false );
   filter->SetReclassifyObjectMask( true );
   filter->SetReclassifyNotObjectMask( true );
-  filter->SetForceClassification( true );
+  if( argv[2][0] == 't' || argv[2][0] == 'T' || argv[2][0] == '1' )
+    {
+    filter->SetForceClassification( true );
+    }
+  else
+    {
+    filter->SetForceClassification( false );
+    }
   filter->Update();
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[3] );
+  writer->SetFileName( argv[4] );
   writer->SetUseCompression( true );
   writer->SetInput( filter->GetClassProbabilityVolume(0) );
   try
@@ -121,7 +128,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
     }
 
   WriterType::Pointer writer2 = WriterType::New();
-  writer2->SetFileName( argv[4] );
+  writer2->SetFileName( argv[5] );
   writer2->SetUseCompression( true );
   writer2->SetInput( filter->GetClassProbabilityVolume(1) );
   try
@@ -135,7 +142,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
     }
 
   WriterType::Pointer maskWriter = WriterType::New();
-  maskWriter->SetFileName( argv[5] );
+  maskWriter->SetFileName( argv[6] );
   maskWriter->SetUseCompression( true );
   maskWriter->SetInput( filter->GetLabelmap() );
   try

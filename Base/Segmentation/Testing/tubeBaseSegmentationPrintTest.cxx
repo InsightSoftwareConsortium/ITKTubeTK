@@ -43,8 +43,8 @@ int tubeBaseSegmentationPrintTest( int, char* [] )
     << std::endl;
 
   itk::tube::LDAGenerator< ImageType, ImageType >::Pointer
-    pdfObject = itk::tube::LDAGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------itkTubeLDAGenerator" << pdfObject
+    ldaObject = itk::tube::LDAGenerator< ImageType, ImageType >::New();
+  std::cout << "-------------itkTubeLDAGenerator" << ldaObject
     << std::endl;
 
   itk::tube::PDFSegmenter< ImageType, 3, ImageType >::Pointer

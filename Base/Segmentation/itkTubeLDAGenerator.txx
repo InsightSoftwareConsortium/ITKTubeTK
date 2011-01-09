@@ -34,8 +34,7 @@ limitations under the License.
 #include "itkImageFileWriter.h"
 #include "itkDiscreteGaussianImageFilter.h"
 
-//#include "itkPluginFilterWatcher.h"
-
+#include "tubeMatrixMath.h"
 
 namespace itk
 {
@@ -126,7 +125,7 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-ObjectIdType
+unsigned int
 LDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfObjects( void )
 {
@@ -134,9 +133,9 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-ObjectIdType 
+typename LDAGenerator< ImageT, LabelmapT >::ObjectIdType 
 LDAGenerator< ImageT, LabelmapT >
-::GetObjectId( int num = 0 )
+::GetObjectId( int num )
 {
   if( num < m_ObjectIdList.size() )
     {
@@ -150,9 +149,9 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-ObjectMeanType *
+typename LDAGenerator< ImageT, LabelmapT >::ObjectMeanType *
 LDAGenerator< ImageT, LabelmapT >
-::GetObjectMean( int num = 0 )
+::GetObjectMean( int num )
 {
   if( num < m_ObjectIdList.size() )
     {
@@ -166,9 +165,9 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-ObjectCovarianceType *
+typename LDAGenerator< ImageT, LabelmapT >::ObjectCovarianceType *
 LDAGenerator< ImageT, LabelmapT >
-::GetObjectMean( int num = 0 )
+::GetObjectCovariance( int num )
 {
   if( num < m_ObjectIdList.size() )
     {
@@ -182,7 +181,7 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-ObjectIdType
+unsigned int
 LDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfLDA( void )
 {
@@ -197,24 +196,26 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-LDAType *
+typename LDAGenerator< ImageT, LabelmapT >::LDAType
 LDAGenerator< ImageT, LabelmapT >
-::GetLDAVector( int ldaNum )
+::GetLDAVector( unsigned int ldaNum )
 {
   if( m_LDAUpToDate && ldaNum < m_NumberOfLDA )
     {
-    return & m_LDAMatrix.get_column( ldaNum );
+    return m_LDAMatrix.get_column( ldaNum );
     }
   else
     {
-    return NULL;
+    LDAType zero( m_NumberOfLDA );
+    zero.fill( 0 );
+    return zero;
     }
 }
 
 template < class ImageT, class LabelmapT >
 double
 LDAGenerator< ImageT, LabelmapT >
-::GetLDAValue( int ldaNum )
+::GetLDAValue( unsigned int ldaNum )
 {
   if( m_LDAUpToDate && ldaNum < m_NumberOfLDA )
     {
@@ -227,7 +228,7 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-LDAMatrixType *
+typename LDAGenerator< ImageT, LabelmapT >::LDAMatrixType *
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAMatrix( void )
 {
@@ -242,7 +243,7 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-LDAType *
+typename LDAGenerator< ImageT, LabelmapT >::LDAType *
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAValues( void )
 {
@@ -265,10 +266,9 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-const typename itk::OrientedImage< float,
-  ::itk::GetImageDimension< ImageT >::ImageDimension >::Pointer
+const typename LDAGenerator< ImageT, LabelmapT >::LDAImageType::Pointer
 LDAGenerator< ImageT, LabelmapT >
-::GetLDAImage( int ldaNum )
+::GetLDAImage( unsigned int ldaNum )
 {
   if( !m_LDAImageListUpToDate || !m_LDAUpToDate )
     {
@@ -329,20 +329,19 @@ LDAGenerator< ImageT, LabelmapT >
     itInIm[i]->GoToBegin();
     }
 
-  m_ObjectMeanList.resize( numClassses );
+  m_ObjectMeanList.resize( numClasses );
   m_ObjectCovarianceList.resize( numClasses );
   std::vector< unsigned int > countList( numClasses );
   ObjectMeanListType sumList( numClasses );
-  ObjectCovarianceListType sumofSquaresList( numClasses );
+  ObjectCovarianceListType sumOfSquaresList( numClasses );
   for( unsigned int i=0; i<numClasses; i++ )
     {
     m_ObjectMeanList[i].set_size( numFeatures );
     m_ObjectCovarianceList[i].set_size( numFeatures, numFeatures );
-    countList[i].set_size( numFeatures );
-    countList[i].fill( 0 );
+    countList[i] = 0;
     sumList[i].set_size( numFeatures );
     sumList[i].fill( 0 );
-    sumofSquaresList[i].set_size( numFeatures, numFeatures );
+    sumOfSquaresList[i].set_size( numFeatures, numFeatures );
     sumOfSquaresList[i].fill( 0 );
     }
 
@@ -406,7 +405,7 @@ LDAGenerator< ImageT, LabelmapT >
       globalSum[i] += sumList[c][i];
       for( unsigned int j=0; j<numFeatures; j++ )
         {
-        globalSumOfSquares[i][j] += sumOfSquares[c][i][j];
+        globalSumOfSquares[i][j] += sumOfSquaresList[c][i][j];
         }
       }
     for( unsigned int i=0; i<numFeatures; i++ )
@@ -467,7 +466,7 @@ LDAGenerator< ImageT, LabelmapT >
         for( unsigned int j=0; j<numFeatures; j++ )
           {
           covOfMeans[i][j] += ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
-            * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] )
+            * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
           meanCov[i][j] += m_ObjectCovarianceList[c][i][j];
           }
         }
@@ -483,15 +482,16 @@ LDAGenerator< ImageT, LabelmapT >
       }
   
     ObjectCovarianceType H;
-    H = meanCov.inverse() * covOfMeans;
+    H = vnl_matrix_inverse<double>(meanCov) * covOfMeans;
   
     // true = re-order by abs(eval) - zeros will be at end
-    Eigen( H, m_LDAMatrix, m_LDAValues, true );
+    ::tube::Eigen<double>( H, m_LDAMatrix, m_LDAValues, true, false );
     }
   else if( m_PerformPCA )
     {
     // true = re-order by abs(eval) - zeros will be at end
-    Eigen( m_GlobalCovariance, m_LDAMatrix, m_LDAValues, true );
+    ::tube::Eigen<double>( m_GlobalCovariance, m_LDAMatrix, m_LDAValues,
+      true, false );
     }
   else
     {
@@ -504,7 +504,7 @@ LDAGenerator< ImageT, LabelmapT >
         for( unsigned int j=0; j<numFeatures; j++ )
           {
           covOfMeans[i][j] += ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
-            * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] )
+            * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
           }
         }
       }
@@ -518,7 +518,8 @@ LDAGenerator< ImageT, LabelmapT >
       }
   
     // true = re-order by abs(eval) - zeros will be at end
-    Eigen( covOfMeans, m_LDAMatrix, m_LDAValues, true );
+    ::tube::Eigen<double>( covOfMeans, m_LDAMatrix, m_LDAValues, true,
+      false );
     }
   
   m_NumberOfLDA = m_LDAValues.size();
@@ -544,7 +545,7 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::GenerateLDAImages()
 {
-  if( !m_LDAUpdatToDate )
+  if( !m_LDAUpToDate )
     {
     this->Update();
     }
@@ -555,8 +556,9 @@ LDAGenerator< ImageT, LabelmapT >
 
   typedef itk::ImageRegionConstIterator< ImageType >
     ConstImageIteratorType;
+  typedef itk::ImageRegionIterator< LDAImageType >
+    ImageIteratorType;
 
-  unsigned int numClasses = m_ObjectIdList.size();
   unsigned int numFeatures = m_FeatureImageList.size();
 
   std::vector< ConstImageIteratorType * > itInIm( numFeatures );
@@ -567,7 +569,7 @@ LDAGenerator< ImageT, LabelmapT >
     itInIm[i]->GoToBegin();
     }
 
-  LDAImageType::RegionType region;
+  typename LDAImageType::RegionType region;
   region = m_FeatureImageList[0]->GetLargestPossibleRegion();
   m_LDAImageList.resize( m_NumberOfLDA );
   for( unsigned int i=0; i<m_NumberOfLDA; i++ )
@@ -588,7 +590,7 @@ LDAGenerator< ImageT, LabelmapT >
 
   FeatureVectorType v( numFeatures );
   FeatureVectorType vLDA( numFeatures );
-  while( !itInMask.IsAtEnd() )
+  while( !itInIm[0]->IsAtEnd() )
     {
     for( unsigned int i=0; i<numFeatures; i++ )
       {
