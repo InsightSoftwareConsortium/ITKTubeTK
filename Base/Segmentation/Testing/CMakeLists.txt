@@ -47,6 +47,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itkTubeCVTImageFilterTest.cxx
+  itkTubeLDAGeneratorTest.cxx
   itkTubePDFSegmenterTest.cxx
   itkTubeRadiusExtractorTest.cxx
   itkTubeRadiusExtractorTest2.cxx
@@ -98,16 +99,41 @@ add_test( itkTubeCVTImageFilterTest
     ${TEMP}/itkTubeCVTImageFilterTest.mha
   )
 
+add_test( itkTubeLDAGeneratorTest
+  ${BASE_SEGMENTATION_TESTS}
+  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
+            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+  itkTubeLDAGeneratorTest
+    ${INPUT_DATA}/ES0015_Large.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
+  )
+
 add_test( itkTubePDFSegmenterTest
   ${BASE_SEGMENTATION_TESTS}
   --compare ${BASELINE}/itkTubePDFSegmenterTest_mask.mha
             ${TEMP}/itkTubePDFSegmenterTest_mask.mha
   itkTubePDFSegmenterTest
     ${INPUT_DATA}/ES0015_Large.mha
+    false
     ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
     ${TEMP}/itkTubePDFSegmenterTest_prob0.mha
     ${TEMP}/itkTubePDFSegmenterTest_prob1.mha
     ${TEMP}/itkTubePDFSegmenterTest_mask.mha
+  )
+
+add_test( itkTubePDFSegmenterTest2
+  ${BASE_SEGMENTATION_TESTS}
+  --compare ${BASELINE}/itkTubePDFSegmenterTest2_mask.mha
+            ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
+  itkTubePDFSegmenterTest
+    ${INPUT_DATA}/ES0015_Large.mha
+    true
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+    ${TEMP}/itkTubePDFSegmenterTest2_prob0.mha
+    ${TEMP}/itkTubePDFSegmenterTest2_prob1.mha
+    ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
   )
 
 add_test( itkTubeRidgeExtractorTest

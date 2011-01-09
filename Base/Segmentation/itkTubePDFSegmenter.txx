@@ -234,25 +234,30 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     int val = itInMask.Get();
     indx = itInMask.GetIndex();
-    for( unsigned int i=0; i<N; i++ )
-      {
-      v[i] = static_cast< PixelType >( itInIm[i]->Get() );
-      }
     bool found = false;
     for( unsigned int c=0; c<numClasses; c++ )
       {
       if( val == m_ObjectIdList[c] )
         {
         found = true;
+        for( unsigned int i=0; i<N; i++ )
+          {
+          v[i] = static_cast< PixelType >( itInIm[i]->Get() );
+          }
         for( unsigned int i=0; i<ImageDimension; i++ )
           {
           v[N+i] = indx[i];
           }
         m_InClassList[c]->PushBack( v );
+        break;
         }
       }
     if( !found && itInMask.Get() != m_VoidId )
       {
+      for( unsigned int i=0; i<N; i++ )
+        {
+        v[i] = static_cast< PixelType >( itInIm[i]->Get() );
+        }
       for( unsigned int i=0; i<ImageDimension; i++ )
         {
         v[N+i] = indx[i];
@@ -918,6 +923,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
   timeCollector.Stop( "ProbabilityImageDiffusion" );
 
   std::cout << "Inside connectivity..." << std::endl;
+
   //
   //  Create label image
   //
@@ -929,199 +935,56 @@ PDFSegmenter< ImageT, N, LabelmapT >
   tmpLabelImage->CopyInformation( inIm[0] );
   tmpLabelImage->Allocate();
 
-  for( unsigned int c=0; c<numClasses; c++ )
+  if( !m_ForceClassification )
     {
-    timeCollector.Start( "Connectivity" );
-
-    itk::ImageRegionIteratorWithIndex<MaskImageType> labelIt(
-      tmpLabelImage, tmpLabelImage->GetLargestPossibleRegion() );
-    labelIt.GoToBegin();
-    while( !labelIt.IsAtEnd() )
+    for( unsigned int c=0; c<numClasses; c++ )
       {
-      labelImageIndex = labelIt.GetIndex();
-      bool maxPC = true;
-      double maxP = m_ProbabilityImageVector[c]->GetPixel(
-        labelImageIndex );
-      for( unsigned int oc=0; oc<numClasses+1; oc++ )
+      timeCollector.Start( "Connectivity" );
+  
+      itk::ImageRegionIteratorWithIndex<MaskImageType> labelIt(
+        tmpLabelImage, tmpLabelImage->GetLargestPossibleRegion() );
+      labelIt.GoToBegin();
+      while( !labelIt.IsAtEnd() )
         {
-        if( oc != c &&
-            m_ProbabilityImageVector[oc]->GetPixel( labelImageIndex )
-            > maxP )
+        labelImageIndex = labelIt.GetIndex();
+        bool maxPC = true;
+        double maxP = m_ProbabilityImageVector[c]->GetPixel(
+          labelImageIndex );
+        for( unsigned int oc=0; oc<numClasses+1; oc++ )
           {
-          maxPC = false;
-          break;
-          }
-        }
-      if( maxPC )
-        {
-        labelIt.Set( 128 );
-        }
-      else
-        {
-        labelIt.Set( 0 );
-        }
-      ++labelIt;
-      }
-
-    typedef itk::ConnectedThresholdImageFilter<MaskImageType,
-      MaskImageType> ConnectedFilterType;
-
-    typename ConnectedFilterType::Pointer insideConnecter =
-      ConnectedFilterType::New();
-    insideConnecter->SetInput( tmpLabelImage );
-    insideConnecter->SetLower( 64 );
-    insideConnecter->SetUpper( 194 );
-    insideConnecter->SetReplaceValue( 255 );
-    typename ListSampleType::ConstIterator inClassListIt;
-    typename ListSampleType::ConstIterator inClassListItEnd;
-    inClassListIt = m_InClassList[c]->Begin();
-    inClassListItEnd = m_InClassList[c]->End();
-    typename ImageType::IndexType indx;
-    while( inClassListIt != inClassListItEnd )
-      {
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        indx[i] = static_cast<long int>(
-          inClassListIt.GetMeasurementVector()[N+i] );
-        }
-      insideConnecter->AddSeed( indx );
-      if( !m_ReclassifyObjectMask )
-        {
-        tmpLabelImage->SetPixel( indx, 255 );
-        }
-      ++inClassListIt;
-      }
-    insideConnecter->Update();
-    tmpLabelImage = insideConnecter->GetOutput();
-
-    timeCollector.Stop( "Connectivity" );
-
-    if( !m_ReclassifyObjectMask )
-      {
-      // Use inside mask to set seed points.  Also draw inside mask in
-      // label image to ensure those points are considered object points.
-      // Erase other mask from label image
-      for( unsigned int oc=0; oc<numClasses; oc++ )
-        {
-        if( oc != c )
-          {
-          inClassListIt = m_InClassList[oc]->Begin();
-          inClassListItEnd = m_InClassList[oc]->End();
-          while( inClassListIt != inClassListItEnd )
+          if( oc != c &&
+              m_ProbabilityImageVector[oc]->GetPixel( labelImageIndex )
+              > maxP )
             {
-            for( unsigned int i=0; i<ImageDimension; i++ )
-              {
-              indx[i] = static_cast<long int>(
-                inClassListIt.GetMeasurementVector()[N+i] );
-              }
-            tmpLabelImage->SetPixel( indx, 0 );
-            ++inClassListIt;
+            maxPC = false;
+            break;
             }
           }
-        }
-      }
-
-    // Erase outside mask from label image
-    if( !m_ReclassifyNotObjectMask )
-      {
-      typename ListSampleType::ConstIterator outListIt;
-      typename ListSampleType::ConstIterator outListItEnd;
-      outListIt = m_OutList->Begin();
-      outListItEnd = m_OutList->End();
-      while( outListIt != outListItEnd )
-        {
-        for( unsigned int i=0; i<ImageDimension; i++ )
+        if( maxPC )
           {
-          indx[i] = static_cast<long int>(
-            outListIt.GetMeasurementVector()[N+i] );
+          labelIt.Set( 128 );
           }
-        tmpLabelImage->SetPixel( indx, 0 );
-        ++outListIt;
+        else
+          {
+          labelIt.Set( 0 );
+          }
+        ++labelIt;
         }
-      }
-
-    //
-    // Fill holes
-    //
-    if( holeFillIterations > 0 )
-      {
-      typedef itk::VotingBinaryIterativeHoleFillingImageFilter<
-        MaskImageType > HoleFillingFilterType;
-
-      std::cout << "Fill holes..." << std::endl;
-
-      timeCollector.Start( "HoleFiller" );
-
-      typename HoleFillingFilterType::Pointer holeFiller =
-        HoleFillingFilterType::New();
-      typename MaskImageType::SizeType holeRadius;
-      holeRadius.Fill( 1 );
-      holeFiller->SetInput( tmpLabelImage );
-      holeFiller->SetRadius( holeRadius );
-      holeFiller->SetBackgroundValue( 0 );
-      holeFiller->SetForegroundValue( 255 );
-      holeFiller->SetMajorityThreshold( 2 );
-      holeFiller->SetMaximumNumberOfIterations( holeFillIterations );
-      holeFiller->Update();
-      tmpLabelImage = holeFiller->GetOutput();
-
-      timeCollector.Stop( "HoleFiller" );
-      }
-
-    //
-    // Erode
-    //
-    typedef itk::BinaryBallStructuringElement< MaskPixelType,
-      ::itk::GetImageDimension<ImageType>::ImageDimension >
-        StructuringElementType;
-    typedef itk::BinaryErodeImageFilter< MaskImageType, MaskImageType,
-      StructuringElementType >
-        ErodeFilterType;
-
-    StructuringElementType sphereOp;
-    if( erodeRadius > 0 )
-      {
-      std::cout << "Inside erode..." << std::endl;
-
-      timeCollector.Start( "Erode" );
-
-      sphereOp.SetRadius( erodeRadius );
-      sphereOp.CreateStructuringElement();
-
-      typename ErodeFilterType::Pointer insideMaskErodeFilter =
-        ErodeFilterType::New();
-      insideMaskErodeFilter->SetKernel( sphereOp );
-      insideMaskErodeFilter->SetErodeValue( 255 );
-      insideMaskErodeFilter->SetInput( tmpLabelImage );
-      insideMaskErodeFilter->Update();
-      tmpLabelImage = insideMaskErodeFilter->GetOutput();
-
-      timeCollector.Stop( "Erode" );
-      }
-
-    //
-    // Re-do connectivity
-    //
-    if( true ) // creating a local context to limit memory footprint
-      {
+  
       typedef itk::ConnectedThresholdImageFilter<MaskImageType,
-        MaskImageType> ConnectedMaskFilterType;
-
-      std::cout << "Inside connectivity pass 2..." << std::endl;
-
-      timeCollector.Start( "Connectivity2" );
-
-      typename ConnectedMaskFilterType::Pointer insideConnectedMaskFilter =
-        ConnectedMaskFilterType::New();
-      insideConnectedMaskFilter->SetInput( tmpLabelImage );
-      insideConnectedMaskFilter->SetLower( 194 );
-      insideConnectedMaskFilter->SetUpper( 255 );
-      insideConnectedMaskFilter->SetReplaceValue( 255 );
-
-      // Use inside mask to set seed points.  Also draw inside mask in
-      // label image to ensure those points are considered object points
+        MaskImageType> ConnectedFilterType;
+  
+      typename ConnectedFilterType::Pointer insideConnecter =
+        ConnectedFilterType::New();
+      insideConnecter->SetInput( tmpLabelImage );
+      insideConnecter->SetLower( 64 );
+      insideConnecter->SetUpper( 194 );
+      insideConnecter->SetReplaceValue( 255 );
+      typename ListSampleType::ConstIterator inClassListIt;
+      typename ListSampleType::ConstIterator inClassListItEnd;
       inClassListIt = m_InClassList[c]->Begin();
       inClassListItEnd = m_InClassList[c]->End();
+      typename ImageType::IndexType indx;
       while( inClassListIt != inClassListItEnd )
         {
         for( unsigned int i=0; i<ImageDimension; i++ )
@@ -1129,100 +992,301 @@ PDFSegmenter< ImageT, N, LabelmapT >
           indx[i] = static_cast<long int>(
             inClassListIt.GetMeasurementVector()[N+i] );
           }
-
-        insideConnectedMaskFilter->AddSeed( indx );
+        insideConnecter->AddSeed( indx );
         if( !m_ReclassifyObjectMask )
           {
           tmpLabelImage->SetPixel( indx, 255 );
           }
         ++inClassListIt;
         }
-
-      insideConnectedMaskFilter->Update();
-      tmpLabelImage = insideConnectedMaskFilter->GetOutput();
-
-      timeCollector.Stop( "Connectivity2" );
-      }
-
-    //
-    // Dilate back to original size
-    //
-    typedef itk::BinaryDilateImageFilter< MaskImageType,
-      MaskImageType, StructuringElementType >            DilateFilterType;
-
-    if( erodeRadius > 0 )
-      {
-      std::cout << "Inside eroded-connected dilate..." << std::endl;
-
-      timeCollector.Start( "Dilate" );
-
-      typename DilateFilterType::Pointer insideMaskDilateFilter =
-        DilateFilterType::New();
-      insideMaskDilateFilter->SetKernel( sphereOp );
-      insideMaskDilateFilter->SetDilateValue( 255 );
-      insideMaskDilateFilter->SetInput( tmpLabelImage );
-      insideMaskDilateFilter->Update();
-      tmpLabelImage = insideMaskDilateFilter->GetOutput();
-
-      timeCollector.Stop( "Dilate" );
-      }
-
-    // Merge with input mask
-    typedef itk::ImageRegionIterator< MaskImageType >
-      MaskImageIteratorType;
-    MaskImageIteratorType itInMask( m_Labelmap,
-      m_Labelmap->GetLargestPossibleRegion() );
-    itInMask.GoToBegin();
-
-    MaskImageIteratorType itLabel( tmpLabelImage,
-      tmpLabelImage->GetLargestPossibleRegion() );
-    itLabel.GoToBegin();
-
-    while( !itInMask.IsAtEnd() )
-      {
-      if( itLabel.Get() == 255 )
+      insideConnecter->Update();
+      tmpLabelImage = insideConnecter->GetOutput();
+  
+      timeCollector.Stop( "Connectivity" );
+  
+      if( !m_ReclassifyObjectMask )
         {
-        if( itInMask.Get() == m_VoidId
-            || ( m_ReclassifyObjectMask && m_ReclassifyNotObjectMask ) )
+        // Use inside mask to set seed points.  Also draw inside mask in
+        // label image to ensure those points are considered object points.
+        // Erase other mask from label image
+        for( unsigned int oc=0; oc<numClasses; oc++ )
           {
-          itInMask.Set( m_ObjectIdList[c] );
-          }
-        else
-          {
-          if( m_ReclassifyObjectMask || m_ReclassifyNotObjectMask )
+          if( oc != c )
             {
-            bool isObjectId = false;
-            for( unsigned int oc=0; oc<numClasses; oc++ )
+            inClassListIt = m_InClassList[oc]->Begin();
+            inClassListItEnd = m_InClassList[oc]->End();
+            while( inClassListIt != inClassListItEnd )
               {
-              if( itInMask.Get() == m_ObjectIdList[ oc ] )
+              for( unsigned int i=0; i<ImageDimension; i++ )
                 {
-                isObjectId = true;
-                break;
+                indx[i] = static_cast<long int>(
+                  inClassListIt.GetMeasurementVector()[N+i] );
                 }
-              }
-            if( ( isObjectId && m_ReclassifyObjectMask ) ||
-                ( !isObjectId && m_ReclassifyNotObjectMask ) )
-              {
-              itInMask.Set( m_ObjectIdList[c] );
+              tmpLabelImage->SetPixel( indx, 0 );
+              ++inClassListIt;
               }
             }
           }
         }
+  
+      // Erase outside mask from label image
+      if( !m_ReclassifyNotObjectMask )
+        {
+        typename ListSampleType::ConstIterator outListIt;
+        typename ListSampleType::ConstIterator outListItEnd;
+        outListIt = m_OutList->Begin();
+        outListItEnd = m_OutList->End();
+        while( outListIt != outListItEnd )
+          {
+          for( unsigned int i=0; i<ImageDimension; i++ )
+            {
+            indx[i] = static_cast<long int>(
+              outListIt.GetMeasurementVector()[N+i] );
+            }
+          tmpLabelImage->SetPixel( indx, 0 );
+          ++outListIt;
+          }
+        }
+  
+      //
+      // Fill holes
+      //
+      if( holeFillIterations > 0 )
+        {
+        typedef itk::VotingBinaryIterativeHoleFillingImageFilter<
+          MaskImageType > HoleFillingFilterType;
+  
+        std::cout << "Fill holes..." << std::endl;
+  
+        timeCollector.Start( "HoleFiller" );
+  
+        typename HoleFillingFilterType::Pointer holeFiller =
+          HoleFillingFilterType::New();
+        typename MaskImageType::SizeType holeRadius;
+        holeRadius.Fill( 1 );
+        holeFiller->SetInput( tmpLabelImage );
+        holeFiller->SetRadius( holeRadius );
+        holeFiller->SetBackgroundValue( 0 );
+        holeFiller->SetForegroundValue( 255 );
+        holeFiller->SetMajorityThreshold( 2 );
+        holeFiller->SetMaximumNumberOfIterations( holeFillIterations );
+        holeFiller->Update();
+        tmpLabelImage = holeFiller->GetOutput();
+  
+        timeCollector.Stop( "HoleFiller" );
+        }
+  
+      //
+      // Erode
+      //
+      typedef itk::BinaryBallStructuringElement< MaskPixelType,
+        ::itk::GetImageDimension<ImageType>::ImageDimension >
+          StructuringElementType;
+      typedef itk::BinaryErodeImageFilter< MaskImageType, MaskImageType,
+        StructuringElementType >
+          ErodeFilterType;
+  
+      StructuringElementType sphereOp;
+      if( erodeRadius > 0 )
+        {
+        std::cout << "Inside erode..." << std::endl;
+  
+        timeCollector.Start( "Erode" );
+  
+        sphereOp.SetRadius( erodeRadius );
+        sphereOp.CreateStructuringElement();
+  
+        typename ErodeFilterType::Pointer insideMaskErodeFilter =
+          ErodeFilterType::New();
+        insideMaskErodeFilter->SetKernel( sphereOp );
+        insideMaskErodeFilter->SetErodeValue( 255 );
+        insideMaskErodeFilter->SetInput( tmpLabelImage );
+        insideMaskErodeFilter->Update();
+        tmpLabelImage = insideMaskErodeFilter->GetOutput();
+  
+        timeCollector.Stop( "Erode" );
+        }
+  
+      //
+      // Re-do connectivity
+      //
+      if( true ) // creating a local context to limit memory footprint
+        {
+        typedef itk::ConnectedThresholdImageFilter<MaskImageType,
+          MaskImageType> ConnectedMaskFilterType;
+  
+        std::cout << "Inside connectivity pass 2..." << std::endl;
+  
+        timeCollector.Start( "Connectivity2" );
+  
+        typename ConnectedMaskFilterType::Pointer insideConnectedMaskFilter =
+          ConnectedMaskFilterType::New();
+        insideConnectedMaskFilter->SetInput( tmpLabelImage );
+        insideConnectedMaskFilter->SetLower( 194 );
+        insideConnectedMaskFilter->SetUpper( 255 );
+        insideConnectedMaskFilter->SetReplaceValue( 255 );
+  
+        // Use inside mask to set seed points.  Also draw inside mask in
+        // label image to ensure those points are considered object points
+        inClassListIt = m_InClassList[c]->Begin();
+        inClassListItEnd = m_InClassList[c]->End();
+        while( inClassListIt != inClassListItEnd )
+          {
+          for( unsigned int i=0; i<ImageDimension; i++ )
+            {
+            indx[i] = static_cast<long int>(
+              inClassListIt.GetMeasurementVector()[N+i] );
+            }
+  
+          insideConnectedMaskFilter->AddSeed( indx );
+          if( !m_ReclassifyObjectMask )
+            {
+            tmpLabelImage->SetPixel( indx, 255 );
+            }
+          ++inClassListIt;
+          }
+  
+        insideConnectedMaskFilter->Update();
+        tmpLabelImage = insideConnectedMaskFilter->GetOutput();
+  
+        timeCollector.Stop( "Connectivity2" );
+        }
+  
+      //
+      // Dilate back to original size
+      //
+      typedef itk::BinaryDilateImageFilter< MaskImageType,
+        MaskImageType, StructuringElementType >            DilateFilterType;
+  
+      if( erodeRadius > 0 )
+        {
+        std::cout << "Inside eroded-connected dilate..." << std::endl;
+  
+        timeCollector.Start( "Dilate" );
+  
+        typename DilateFilterType::Pointer insideMaskDilateFilter =
+          DilateFilterType::New();
+        insideMaskDilateFilter->SetKernel( sphereOp );
+        insideMaskDilateFilter->SetDilateValue( 255 );
+        insideMaskDilateFilter->SetInput( tmpLabelImage );
+        insideMaskDilateFilter->Update();
+        tmpLabelImage = insideMaskDilateFilter->GetOutput();
+  
+        timeCollector.Stop( "Dilate" );
+        }
+  
+      // Merge with input mask
+      typedef itk::ImageRegionIterator< MaskImageType >
+        MaskImageIteratorType;
+      MaskImageIteratorType itInMask( m_Labelmap,
+        m_Labelmap->GetLargestPossibleRegion() );
+      itInMask.GoToBegin();
+  
+      MaskImageIteratorType itLabel( tmpLabelImage,
+        tmpLabelImage->GetLargestPossibleRegion() );
+      itLabel.GoToBegin();
+  
+      while( !itInMask.IsAtEnd() )
+        {
+        if( itLabel.Get() == 255 )
+          {
+          if( itInMask.Get() == m_VoidId
+              || ( m_ReclassifyObjectMask && m_ReclassifyNotObjectMask ) )
+            {
+            itInMask.Set( m_ObjectIdList[c] );
+            }
+          else
+            {
+            if( m_ReclassifyObjectMask || m_ReclassifyNotObjectMask )
+              {
+              bool isObjectId = false;
+              for( unsigned int oc=0; oc<numClasses; oc++ )
+                {
+                if( itInMask.Get() == m_ObjectIdList[ oc ] )
+                  {
+                  isObjectId = true;
+                  break;
+                  }
+                }
+              if( ( isObjectId && m_ReclassifyObjectMask ) ||
+                  ( !isObjectId && m_ReclassifyNotObjectMask ) )
+                {
+                itInMask.Set( m_ObjectIdList[c] );
+                }
+              }
+            }
+          }
+        else
+          {
+          if( itInMask.Get() == m_ObjectIdList[ c ] )
+            {
+            if( m_ReclassifyObjectMask )
+              {
+              itInMask.Set( m_VoidId );
+              }
+            }
+          }
+        ++itInMask;
+        ++itLabel;
+        }
+      }
+    }
+  else
+    {
+    timeCollector.Start( "ForceClassification" );
+
+    // Merge with input mask
+    typedef itk::ImageRegionIteratorWithIndex< MaskImageType >
+      MaskImageIteratorType;
+    MaskImageIteratorType itInMask( m_Labelmap,
+      m_Labelmap->GetLargestPossibleRegion() );
+    itInMask.GoToBegin();
+  
+    while( !itInMask.IsAtEnd() )
+      {
+      labelImageIndex = itInMask.GetIndex();
+      unsigned int maxPC = 0;
+      double maxP = m_ProbabilityImageVector[0]->GetPixel(
+        labelImageIndex );
+      for( unsigned int c=1; c<numClasses; c++ )
+        {
+        double p = m_ProbabilityImageVector[c]->GetPixel(
+          labelImageIndex );
+        if( p > maxP )
+          {
+          maxP = p;
+          maxPC = c;
+          }
+        }
+      if( itInMask.Get() == m_VoidId
+        || ( m_ReclassifyObjectMask && m_ReclassifyNotObjectMask ) )
+        {
+        itInMask.Set( m_ObjectIdList[maxPC] );
+        }
       else
         {
-        if( itInMask.Get() == m_ObjectIdList[ c ] )
+        if( m_ReclassifyObjectMask || m_ReclassifyNotObjectMask )
           {
-          itInMask.Set( m_VoidId );
+          bool isObjectId = false;
+          for( unsigned int oc=0; oc<numClasses; oc++ )
+            {
+            if( itInMask.Get() == m_ObjectIdList[ oc ] )
+              {
+              isObjectId = true;
+              break;
+              }
+            }
+          if( ( isObjectId && m_ReclassifyObjectMask ) ||
+              ( !isObjectId && m_ReclassifyNotObjectMask ) )
+            {
+            itInMask.Set( m_ObjectIdList[maxPC] );
+            }
           }
         }
       ++itInMask;
-      ++itLabel;
       }
-    }
 
-  if( m_ForceClassification )
-    {
-    // Fix VoidId's here
+    timeCollector.Stop( "ForceClassification" );
     }
 
   timeCollector.Report();

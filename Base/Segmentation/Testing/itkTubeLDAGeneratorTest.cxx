@@ -31,16 +31,18 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-#include <itkTubePDFSegmenter.h>
+#include "itkRecursiveGaussianImageFilter.h"
 
-int itkTubePDFSegmenterTest(int argc, char* argv [] )
+#include "itkTubeLDAGenerator.h"
+
+int itkTubeLDAGeneratorTest(int argc, char* argv [] )
 {
-  if( argc != 7 )
+  if( argc != 5 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage inputMask force outputProbImage0 outputProbImage1 outputMask"
+      << " inputImage inputMask outputLDA0Image outputLDA1Image"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -60,7 +62,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
 
 
   // Declare the type for the Filter
-  typedef itk::tube::PDFSegmenter< ImageType, 1, ImageType > FilterType;
+  typedef itk::tube::LDAGenerator< ImageType, ImageType > FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -78,7 +80,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
 
   // Create the reader and writer
   ReaderType::Pointer maskReader = ReaderType::New();
-  maskReader->SetFileName( argv[3] );
+  maskReader->SetFileName( argv[2] );
   try
     {
     maskReader->Update();
@@ -90,33 +92,63 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
     }
   ImageType::Pointer maskImage = maskReader->GetOutput();
 
+  typedef itk::RecursiveGaussianImageFilter< ImageType > BlurFilterType;
+
+  BlurFilterType::Pointer blur0 = BlurFilterType::New();
+  blur0->SetInput( inputImage );
+  blur0->SetSigma( 2.0 );
+  blur0->SetOrder( 
+    itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
+  blur0->SetDirection( 0 );
+  blur0->Update();
+
+  BlurFilterType::Pointer blur1 = BlurFilterType::New();
+  blur1->SetInput( inputImage );
+  blur1->SetSigma( 2.0 );
+  blur1->SetOrder( 
+    itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
+  blur1->SetDirection( 1 );
+  blur1->Update();
+
+  BlurFilterType::Pointer blur2 = BlurFilterType::New();
+  blur2->SetInput( inputImage );
+  blur2->SetSigma( 4.0 );
+  blur2->SetOrder( 
+    itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+  blur2->SetDirection( 0 );
+  blur2->Update();
+
+  BlurFilterType::Pointer blur3 = BlurFilterType::New();
+  blur3->SetInput( inputImage );
+  blur3->SetSigma( 4.0 );
+  blur3->SetOrder( 
+    itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+  blur3->SetDirection( 1 );
+  blur3->Update();
+
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputVolume1( inputImage );
+  filter->SetFeatureImage( inputImage );
+  filter->AddFeatureImage( blur0->GetOutput() );
+  filter->AddFeatureImage( blur1->GetOutput() );
+  filter->AddFeatureImage( blur2->GetOutput() );
+  filter->AddFeatureImage( blur3->GetOutput() );
   filter->SetLabelmap( maskImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
-  filter->SetVoidId( 0 );
-  filter->SetErodeRadius( 1 );
-  filter->SetHoleFillIterations( 4 );
-  filter->SetProbabilitySmoothingStandardDeviation( 1 );
-  filter->SetFprWeight( 1.0 );
-  filter->SetDraft( false );
-  filter->SetReclassifyObjectMask( true );
-  filter->SetReclassifyNotObjectMask( true );
-  if( argv[2][0] == 't' || argv[2][0] == 'T' || argv[2][0] == '1' )
-    {
-    filter->SetForceClassification( true );
-    }
-  else
-    {
-    filter->SetForceClassification( false );
-    }
   filter->Update();
+  filter->UpdateLDAImages();
+
+  std::cout << "Number of LDA = " << filter->GetNumberOfLDA() << std::endl;
+  for( unsigned int i=0; i<filter->GetNumberOfLDA(); i++ )
+    {
+    std::cout << "LDA" << i << " = " << filter->GetLDAValue(i) << " : " 
+      << filter->GetLDAVector(i) << std::endl;
+    }
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[4] );
+  writer->SetFileName( argv[3] );
   writer->SetUseCompression( true );
-  writer->SetInput( filter->GetClassProbabilityVolume(0) );
+  writer->SetInput( filter->GetLDAImage(0) );
   try
     {
     writer->Update();
@@ -128,26 +160,12 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
     }
 
   WriterType::Pointer writer2 = WriterType::New();
-  writer2->SetFileName( argv[5] );
+  writer2->SetFileName( argv[4] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetClassProbabilityVolume(1) );
+  writer2->SetInput( filter->GetLDAImage(1) );
   try
     {
     writer2->Update();
-    }
-  catch (itk::ExceptionObject& e)
-    {
-    std::cerr << "Exception caught during write:\n"  << e;
-    return EXIT_FAILURE;
-    }
-
-  WriterType::Pointer maskWriter = WriterType::New();
-  maskWriter->SetFileName( argv[6] );
-  maskWriter->SetUseCompression( true );
-  maskWriter->SetInput( filter->GetLabelmap() );
-  try
-    {
-    maskWriter->Update();
     }
   catch (itk::ExceptionObject& e)
     {
