@@ -241,10 +241,12 @@ else( TubeTK_USE_SUPERBUILD )
   find_package( GenerateCLP REQUIRED )
   include( ${GenerateCLP_USE_FILE} )
 
-  if( TubeTK_USE_CTK )
-    find_package( CTK REQUIRED )
-    include( ${CTK_USE_FILE} )
-  endif( TubeTK_USE_CTK )
+  if( TubeTK_USE_QT )
+    if( TubeTK_USE_CTK )
+      find_package( CTK REQUIRED )
+      include( ${CTK_USE_FILE} )
+    endif( TubeTK_USE_CTK )
+  endif( TubeTK_USE_QT )
 
 endif( TubeTK_USE_SUPERBUILD )
 
