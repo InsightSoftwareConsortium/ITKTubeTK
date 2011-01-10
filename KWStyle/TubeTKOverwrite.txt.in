@@ -15,6 +15,8 @@ itkTubeBlurImageFunction.h Namespace Disable
 itkTubeBlurImageFunction.txx Namespace Disable
 itkTubeEnhancingDiffusion2DImageFilter.h Namespace Disable
 itkTubeEnhancingDiffusion2DImageFilter.txx Namespace Disable
+itkTubeLDAGenerator.h Namespace Disable
+itkTubeLDAGenerator.txx Namespace Disable
 itkImageRegionMomentsCalculator.h Namespace Disable
 itkImageRegionMomentsCalculator.txx Namespace Disable
 itkJointHistogramImageFunction.h Namespace Disable
@@ -61,6 +63,7 @@ tubeExtractCurves2D.cxx Namespace Disable
 tubeExtractVessels.cxx Namespace Disable
 tubeHessianTubeness2D.cxx Namespace Disable
 tubeHybridEnhancingAnisotropicDiffusion.cxx Namespace Disable
+tubeLDAGenerator.cxx Namespace Disable
 tubeMaskToStats.cxx Namespace Disable
 tubeMerge.cxx Namespace Disable
 tubeOrImages.cxx Namespace Disable
