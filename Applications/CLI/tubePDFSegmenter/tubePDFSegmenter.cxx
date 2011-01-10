@@ -154,6 +154,10 @@ int DoIt( int argc, char *argv[] )
   pdfSegmenter->SetDraft( draft );
   pdfSegmenter->SetReclassifyNotObjectMask( reclassifyNotObjectMask );
   pdfSegmenter->SetReclassifyObjectMask( reclassifyObjectMask );
+  if( forceClassification )
+    {
+    pdfSegmenter->SetForceClassification( true );
+    }
 
   pdfSegmenter->Update();
 

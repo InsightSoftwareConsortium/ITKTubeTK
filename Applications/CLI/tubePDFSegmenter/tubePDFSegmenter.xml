@@ -118,6 +118,13 @@
       <longflag>reclassifyNotObjectMask</longflag>
       <default>false</default>
     </boolean>
+    <boolean>
+      <name>forceClassification</name>
+      <description>Force classification using simple maximum likelihood</description>
+      <label>Force Classification</label>
+      <longflag>forceClassification</longflag>
+      <default>false</default>
+    </boolean>
     <string>
       <name>saveClassProbabilityVolumeBase</name>
       <description>Save images where each represents the probability of being a particular object at each voxel.  Image files create = base.classNum.mha</description>
