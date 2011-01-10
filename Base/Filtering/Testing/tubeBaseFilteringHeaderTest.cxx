@@ -35,9 +35,9 @@ limitations under the License.
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
+#include "itkTubeLDAGenerator.h"
 
 int main ( int , char ** )
 {
-
   return EXIT_SUCCESS;
 }

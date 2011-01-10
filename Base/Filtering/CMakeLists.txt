@@ -8,6 +8,7 @@ set(TubeTK_Base_Filtering_H_Files
   itkSymmetricEigenVectorAnalysisImageFilter.h
   itkTubeBlurImageFunction.h
   itkTubeEnhancingDiffusion2DImageFilter.h
+  itkTubeLDAGenerator.h
 )
 
 set(TubeTK_Base_Filtering_TXX_Files
@@ -20,6 +21,7 @@ set(TubeTK_Base_Filtering_TXX_Files
   itkAnisotropicDiffusionTensorFunction.txx
   itkTubeBlurImageFunction.txx
   itkTubeEnhancingDiffusion2DImageFilter.txx
+  itkTubeLDAGenerator.txx
 )
 
 IF( BUILD_TESTING )
