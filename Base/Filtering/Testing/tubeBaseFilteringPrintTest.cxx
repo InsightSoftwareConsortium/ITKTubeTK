@@ -37,6 +37,7 @@ limitations under the License.
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
+#include "itkTubeLDAGenerator.h"
 
 
 int tubeBaseFilteringPrintTest( int, char* [] )
@@ -94,6 +95,12 @@ int tubeBaseFilteringPrintTest( int, char* [] )
     itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
   std::cout << "-------------TubeEnhancingDiffusion2DImageFilter"
     << vesselEnahncingObj << std::endl;
+
+  itk::tube::LDAGenerator< ImageType, ImageType >::Pointer
+    ldaGenerator =
+    itk::tube::LDAGenerator< ImageType, ImageType >::New();
+  std::cout << "-------------LDAGenerator"
+    << ldaGenerator << std::endl;
 
   return EXIT_SUCCESS;
 }

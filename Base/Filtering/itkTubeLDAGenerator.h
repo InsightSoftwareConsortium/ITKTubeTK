@@ -73,7 +73,8 @@ public:
   typedef vnl_matrix< double >                 ObjectCovarianceType;
   typedef std::vector< ObjectCovarianceType >  ObjectCovarianceListType;
 
-  typedef vnl_vector< double >                 LDAType;
+  typedef vnl_vector< double >                 LDAValuesType;
+  typedef vnl_vector< double >                 LDAVectorType;
   typedef vnl_matrix< double >                 LDAMatrixType;
 
   typedef itk::OrientedImage< float, ImageDimension >   LDAImageType;
@@ -102,11 +103,12 @@ public:
 
   unsigned int    GetNumberOfLDA( void );
 
-  LDAType         GetLDAVector( unsigned int ldaNum );
+  LDAVectorType   GetLDAVector( unsigned int ldaNum );
   double          GetLDAValue( unsigned int ldaNum );
   LDAMatrixType * GetLDAMatrix( void );
-  LDAType       * GetLDAValues( void );
+  LDAValuesType * GetLDAValues( void );
   void            SetLDAMatrix( const LDAMatrixType & mat );
+  void            SetLDAValues( const LDAValuesType & values );
 
   const typename LDAImageType::Pointer GetLDAImage( unsigned int ldaNum );
 
@@ -157,7 +159,7 @@ private:
 
   unsigned int                    m_NumberOfLDA;
   LDAMatrixType                   m_LDAMatrix;
-  LDAType                         m_LDAValues;
+  LDAValuesType                   m_LDAValues;
 
   LDAImageListType                m_LDAImageList;
 

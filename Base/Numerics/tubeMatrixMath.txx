@@ -141,6 +141,7 @@ Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   vnl_vector<T> subD(n);
 
   eVects = mat;
+  eVals.set_size( n );
   switch(n)
     {
     case 1:

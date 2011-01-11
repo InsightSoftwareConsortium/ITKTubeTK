@@ -43,13 +43,15 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseFilteringTests_SRCS
   tubeBaseFilteringPrintTest.cxx
-  itkTubeEnhancingDiffusion2DImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
-  itkTubeBlurImageFunctionTest.cxx )
+  itkTubeBlurImageFunctionTest.cxx 
+  itkTubeEnhancingDiffusion2DImageFilterTest.cxx
+  itkTubeLDAGeneratorTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 add_executable( tubeBaseFilteringHeaderTest
@@ -69,6 +71,32 @@ add_test( tubeBaseFilteringHeaderTest
 add_test( tubeBaseFilteringPrintTest
   ${BASE_FILTERING_TESTS}
   tubeBaseFilteringPrintTest )
+
+add_test( itkStructureTensorRecursiveGaussianImageFilterTest
+  ${BASE_FILTERING_TESTS}
+    itkStructureTensorRecursiveGaussianImageFilterTest
+      ${INPUT_DATA}/PrimitiveObjects.mha
+      ${TEMP}/PrimaryEigenVectorImage.mha
+      ${TEMP}/PrimaryEigenValueImage.mha )
+
+add_test( itkStructureTensorRecursiveGaussianImageFilterTest2
+  ${BASE_FILTERING_TESTS}
+    itkStructureTensorRecursiveGaussianImageFilterTest
+      ${INPUT_DATA}/CylinderSynthetic.mha
+      ${TEMP}/CylinderPrimaryEigenVectorImage.mha
+      ${TEMP}/CylinderPrimaryEigenValueImage.mha )
+
+add_test( itkStructureTensorRecursiveGaussianImageFilterTest3
+  ${BASE_FILTERING_TESTS}
+    itkStructureTensorRecursiveGaussianImageFilterTestNew )
+
+add_test( itkTubeBlurImageFunctionTest
+  ${BASE_FILTERING_TESTS}
+  --compare ${BASELINE}/itkTubeBlurImageFunctionTest.mha
+            ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  itkTubeBlurImageFunctionTest
+    ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  )
 
 add_test( itkTubeEnhancingDiffusion2DImageFilterTest
   ${BASE_FILTERING_TESTS}
@@ -96,28 +124,13 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
 
-add_test( itkStructureTensorRecursiveGaussianImageFilterTest
+add_test( itkTubeLDAGeneratorTest
   ${BASE_FILTERING_TESTS}
-    itkStructureTensorRecursiveGaussianImageFilterTest
-      ${INPUT_DATA}/PrimitiveObjects.mha
-      ${TEMP}/PrimaryEigenVectorImage.mha
-      ${TEMP}/PrimaryEigenValueImage.mha )
-
-add_test( itkStructureTensorRecursiveGaussianImageFilterTest2
-  ${BASE_FILTERING_TESTS}
-    itkStructureTensorRecursiveGaussianImageFilterTest
-      ${INPUT_DATA}/CylinderSynthetic.mha
-      ${TEMP}/CylinderPrimaryEigenVectorImage.mha
-      ${TEMP}/CylinderPrimaryEigenValueImage.mha )
-
-add_test( itkStructureTensorRecursiveGaussianImageFilterTest3
-  ${BASE_FILTERING_TESTS}
-    itkStructureTensorRecursiveGaussianImageFilterTestNew )
-
-add_test( itkTubeBlurImageFunctionTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeBlurImageFunctionTest.mha
-            ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  itkTubeBlurImageFunctionTest
-    ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
+            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+  itkTubeLDAGeneratorTest
+    ${INPUT_DATA}/ES0015_Large.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
   )
