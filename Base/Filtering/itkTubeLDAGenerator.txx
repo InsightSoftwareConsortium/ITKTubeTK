@@ -348,7 +348,9 @@ LDAGenerator< ImageT, LabelmapT >
   for( unsigned int i=0; i<numClasses; i++ )
     {
     m_ObjectMeanList[i].set_size( numFeatures );
+    m_ObjectMeanList[i].fill( 0 );
     m_ObjectCovarianceList[i].set_size( numFeatures, numFeatures );
+    m_ObjectCovarianceList[i].fill( 0 );
     countList[i] = 0;
     sumList[i].set_size( numFeatures );
     sumList[i].fill( 0 );
@@ -387,6 +389,9 @@ LDAGenerator< ImageT, LabelmapT >
       for( unsigned int i=0; i<numFeatures; i++ )
         {
         v[i] = static_cast< FeatureType >( itInIm[i]->Get() );
+        }
+      for( unsigned int i=0; i<numFeatures; i++ )
+        {
         sumList[valC][i] += v[i];
         for( unsigned int j=0; j<numFeatures; j++ )
           {
@@ -419,17 +424,32 @@ LDAGenerator< ImageT, LabelmapT >
         globalSumOfSquares[i][j] += sumOfSquaresList[c][i][j];
         }
       }
-    for( unsigned int i=0; i<numFeatures; i++ )
+    if( countList[c] > 0 )
       {
-      m_ObjectMeanList[c][i] = sumList[c][i] / countList[c];
-      }
-    for( unsigned int i=0; i<numFeatures; i++ )
-      {
-      for( unsigned int j=0; j<numFeatures; j++ )
+      for( unsigned int i=0; i<numFeatures; i++ )
         {
-        m_ObjectCovarianceList[c][i][j] = ( sumOfSquaresList[c][i][j] 
-          / countList[c] ) - ( m_ObjectMeanList[c][i] 
-          * m_ObjectMeanList[c][j] );
+        m_ObjectMeanList[c][i] = sumList[c][i] / countList[c];
+        }
+      for( unsigned int i=0; i<numFeatures; i++ )
+        {
+        for( unsigned int j=0; j<numFeatures; j++ )
+          {
+          m_ObjectCovarianceList[c][i][j] = ( sumOfSquaresList[c][i][j] 
+            / countList[c] ) - ( m_ObjectMeanList[c][i] 
+            * m_ObjectMeanList[c][j] );
+          if( std::isnan(m_ObjectCovarianceList[c][i][j]) )
+            {
+            std::cout << "Cov NAN @ " << c << " : " << i << ", " << j
+              << std::endl;
+            std::cout << "   ss = " << sumOfSquaresList[c][i][j] 
+              << std::endl;
+            std::cout << "   count = " << countList[c] << std::endl;
+            std::cout << "   mean-i = " << m_ObjectMeanList[c][i] 
+              << std::endl;
+            std::cout << "   mean-j = " << m_ObjectMeanList[c][j] 
+              << std::endl;
+            }
+          }
         }
       }
     }
@@ -492,6 +512,10 @@ LDAGenerator< ImageT, LabelmapT >
         }
       }
   
+    std::cout << "Mean cov = " << meanCov << std::endl;
+    std::cout << "Cov of means = " << covOfMeans << std::endl;
+    std::cout << "Inverse mean cov = " << vnl_matrix_inverse< double >( covOfMeans ) << std::endl;
+
     ObjectCovarianceType H;
     H = vnl_matrix_inverse<double>(meanCov) * covOfMeans;
   
