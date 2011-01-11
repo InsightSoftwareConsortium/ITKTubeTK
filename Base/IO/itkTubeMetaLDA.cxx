@@ -434,26 +434,16 @@ M_SetupWriteFields( void )
   MET_InitWriteField( mF, "NDims", MET_INT, m_LDAValues.size() );
   m_Fields.push_back( mF );
 
-  unsigned int nDims = m_LDAValues.size();
-  float v[nDims];
-  for( unsigned int i=0; i<nDims; i++ )
-    {
-    v[i] = m_LDAValues[i];
-    }
+  int nDims = m_LDAValues.size();
+
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "Values", MET_FLOAT_ARRAY, nDims, v );
+  MET_InitWriteField( mF, "Values", MET_FLOAT_ARRAY, nDims,
+    m_LDAValues.data_block() );
   m_Fields.push_back( mF );
 
-  float m[nDims*nDims];
-  for( unsigned int i=0; i<nDims; i++ )
-    {
-    for( unsigned int j=0; j<nDims; j++ )
-      {
-      m[i*nDims + j] = m_LDAMatrix[i][j];
-      }
-    }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "Matrix", MET_FLOAT_MATRIX, nDims, m );
+  MET_InitWriteField( mF, "Matrix", MET_FLOAT_MATRIX, nDims, 
+    m_LDAMatrix.data_block() );
   m_Fields.push_back( mF );
 }
 
