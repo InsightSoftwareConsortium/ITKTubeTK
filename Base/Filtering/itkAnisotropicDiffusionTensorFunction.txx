@@ -104,11 +104,12 @@ AnisotropicDiffusionTensorFunction< TImageType >
     const unsigned int positionB =
       static_cast<unsigned int>( m_Center - m_xStride[i]);
 
-    gd->m_dx[i] = 0.5 * (it.GetPixel( positionA ) -
-                     it.GetPixel( positionB )    );
+    const ScalarValueType it_positionA = it.GetPixel( positionA );
+    const ScalarValueType it_positionB = it.GetPixel( positionB );
 
-    gd->m_dxy[i][i] = it.GetPixel( positionA )
-      + it.GetPixel( positionB ) - 2.0 * center_value;
+    gd->m_dx[i] = 0.5 * ( it_positionA - it_positionB );
+
+    gd->m_dxy[i][i] = it_positionA + it_positionB - 2.0 * center_value;
 
     for( unsigned int j = i+1; j < ImageDimension; j++ )
       {
