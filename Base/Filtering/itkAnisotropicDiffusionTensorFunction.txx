@@ -46,11 +46,26 @@ AnisotropicDiffusionTensorFunction< TImageType>
   it.SetRadius( r );
 
   // Find the center index of the neighborhood.
-  m_Center = it.Size() / 2;
+  m_Center = static_cast<unsigned int>( it.Size() / 2 );
 
   // Get the stride length for each axis.
-  for(unsigned int i = 0; i < ImageDimension; i++)
-    {  m_xStride[i] = it.GetStride(i); }
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {  m_xStride[i] = static_cast<unsigned int>( it.GetStride(i) ); }
+
+  // Calculate the required indexes surrounding the center position once.
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    m_positionA[i] = m_Center + m_xStride[i];
+    m_positionB[i] = m_Center - m_xStride[i];
+    for( unsigned int j = i+1; j < ImageDimension; j++ )
+      {
+      m_positionAa[i][j] = m_Center - m_xStride[i] - m_xStride[j];
+      m_positionBa[i][j] = m_Center - m_xStride[i] + m_xStride[j];
+      m_positionCa[i][j] = m_Center + m_xStride[i] - m_xStride[j];
+      m_positionDa[i][j] = m_Center + m_xStride[i] + m_xStride[j];
+      }
+
+    }
 }
 
 template< class TImageType >
@@ -86,8 +101,6 @@ AnisotropicDiffusionTensorFunction< TImageType >
 {
   const ScalarValueType center_value  = it.GetCenterPixel();
 
-  FloatOffsetType offsetCum = offset;
-
   // Global data structure
   GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
 
@@ -99,13 +112,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
   gd->m_GradMagSqr = 1.0e-6;
   for( unsigned int i = 0; i < ImageDimension; i++)
     {
-    const unsigned int positionA =
-      static_cast<unsigned int>( m_Center + m_xStride[i]);
-    const unsigned int positionB =
-      static_cast<unsigned int>( m_Center - m_xStride[i]);
-
-    const ScalarValueType it_positionA = it.GetPixel( positionA );
-    const ScalarValueType it_positionB = it.GetPixel( positionB );
+    const ScalarValueType it_positionA = it.GetPixel( m_positionA[i] );
+    const ScalarValueType it_positionB = it.GetPixel( m_positionB[i] );
 
     gd->m_dx[i] = 0.5 * ( it_positionA - it_positionB );
 
@@ -113,35 +121,22 @@ AnisotropicDiffusionTensorFunction< TImageType >
 
     for( unsigned int j = i+1; j < ImageDimension; j++ )
       {
-      const unsigned int positionAa = static_cast<unsigned int>(
-        m_Center - m_xStride[i] - m_xStride[j] );
-      const unsigned int positionBa = static_cast<unsigned int>(
-        m_Center - m_xStride[i] + m_xStride[j] );
-      const unsigned int positionCa = static_cast<unsigned int>(
-        m_Center + m_xStride[i] - m_xStride[j] );
-      const unsigned int positionDa = static_cast<unsigned int>(
-        m_Center + m_xStride[i] + m_xStride[j] );
-
-      gd->m_dxy[i][j] = gd->m_dxy[j][i] = 0.25 *( it.GetPixel( positionAa )
-                                          - it.GetPixel( positionBa )
-                                          - it.GetPixel( positionCa )
-                                          + it.GetPixel( positionDa )
+      gd->m_dxy[i][j] = gd->m_dxy[j][i] = 0.25 *
+                                          ( it.GetPixel( m_positionAa[i][j] )
+                                          - it.GetPixel( m_positionBa[i][j] )
+                                          - it.GetPixel( m_positionCa[i][j] )
+                                          + it.GetPixel( m_positionDa[i][j] )
         );
       }
     }
 
   // Compute the diffusion tensor matrix first derivatives
-  TensorPixelType center_Tensor_value  = gt.GetCenterPixel();
+  TensorPixelType center_Tensor_value = gt.GetCenterPixel();
 
   for( unsigned i = 0; i < ImageDimension; i++)
     {
-    const unsigned int positionA =
-      static_cast<unsigned int>( m_Center + m_xStride[i]);
-    const unsigned int positionB =
-      static_cast<unsigned int>( m_Center - m_xStride[i]);
-
-    TensorPixelType positionA_Tensor_value = gt.GetPixel( positionA );
-    TensorPixelType positionB_Tensor_value = gt.GetPixel( positionB );
+    TensorPixelType positionA_Tensor_value = gt.GetPixel( m_positionA[i] );
+    TensorPixelType positionB_Tensor_value = gt.GetPixel( m_positionB[i] );
 
     for( unsigned int j = 0; j < ImageDimension; j++)
       {

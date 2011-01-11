@@ -163,10 +163,23 @@ protected:
   std::slice x_slice[itkGetStaticConstMacro(ImageDimension)];
 
   /** The offset of the center pixel in the neighborhood. */
-  ::size_t m_Center;
+  unsigned int m_Center;
 
   /** Stride length along the y-dimension. */
-  ::size_t m_xStride[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_xStride[itkGetStaticConstMacro(ImageDimension)];
+
+  /** Defines various positions surrounding the center pixel in an image
+    iterator. */
+  unsigned int m_positionA[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionB[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionAa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionBa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionCa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionDa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
 
 private:
   //purposely not implemented
