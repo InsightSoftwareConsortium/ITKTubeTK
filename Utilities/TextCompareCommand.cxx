@@ -36,7 +36,7 @@ int main( int argc, char **argv )
 
   // Option for setting the tolerable difference in intensity values
   // between the two images.
-  command.SetOption( "toleranceValue", "v", false, 
+  command.SetOption( "toleranceValue", "d", false, 
     "Acceptable differences in numeric values in the files" );
   command.AddOptionField( "toleranceValue", "value", MetaCommand::FLOAT,
     true );
