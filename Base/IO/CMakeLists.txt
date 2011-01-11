@@ -21,8 +21,39 @@
 # 
 ##############################################################################
 
-add_subdirectory( Numerics )
-add_subdirectory( Filtering )
-add_subdirectory( Segmentation )
-add_subdirectory( Registration )
-add_subdirectory( IO )
+project( TubeIO )
+
+FIND_PACKAGE( ITK REQUIRED )
+INCLUDE( ${ITK_USE_FILE} )
+
+set( TubeTK_Base_IO_H_Files
+  itkTubeMetaLDA.h
+  )
+
+set( TubeTK_Base_IO_TXX_Files
+  )
+
+include_directories(
+  ${TubeTK_SOURCE_DIR}/Utilities
+  )
+
+SET( TubeTK_Base_IO_SRCS
+  itkTubeMetaLDA.cxx
+  )
+
+ADD_LIBRARY( TubeIO STATIC ${TubeTK_Base_IO_SRCS} )
+TARGET_LINK_LIBRARIES( TubeIO ${ITK_LIBRARIES} )
+
+slicer3_set_plugins_output_path( TubeIO )
+set( TARGETS TubeIO )
+slicer3_install_plugins( ${TARGETS} )
+
+#IF( BUILD_TESTING )
+  #add_subdirectory( Testing )
+#ENDIF( BUILD_TESTING )
+
+#install(FILES 
+  #${TubeTK_Base_Numerics_H_Files}
+  #${TubeTK_Base_Numerics_TXX_Files}
+  #DESTINATION include)
+

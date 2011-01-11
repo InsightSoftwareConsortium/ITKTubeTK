@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Developer Tools</category>
+  <title>Linear Discriminant Analysis (TubeTK)</title>
+  <description>Given multiple, registered images and foreground and background masks, computes a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>Stephen R. Aylward</contributor>
+  <acknowledgements></acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <string>
+      <name>inputVolumesString</name>
+      <label>Input volume list</label>
+      <index>0</index>
+      <description>Input volume list</description>
+      <default></default>
+    </string>
+    <image>
+      <name>labelmap</name>
+      <label>Label map</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Labelmap that designates the object of interest and "other"</description>
+      <default></default>
+    </image>
+    <string>
+      <name>outputBase</name>
+      <label>Output base name</label>
+      <index>2</index>
+      <description>Basename for output LDA images</description>
+      <default></default>
+    </string>
+    <integer-vector>
+      <name>objectId</name>
+      <label>Object Id</label>
+      <longflag>objectId</longflag>
+      <description>List of values that represent the objects in the label map</description>
+      <default></default>
+    </integer-vector>
+  </parameters>
+  <parameters advanced="true">
+    <label>LDA Parameters</label>
+    <description>Parameters that determine how the LDA is generated</description>
+    <boolean>
+      <name>usePCA</name>
+      <description>Use PCA instead of LDA</description>
+      <label>Use pca</label>
+      <default>false</default>
+      <longflag>usePCA</longflag>
+    </boolean>
+    <integer>
+      <name>useNumberOfLDA</name>
+      <description>Maximum number of linear discriminants to compute (0=all)</description>
+      <label>Number of LDA</label>
+      <default>0</default>
+      <longflag>useNumberOfLDA</longflag>
+    </integer>
+    <string>
+      <name>saveLDAInfo</name>
+      <description>Save LDA info to a file</description>
+      <label>Save LDA Info</label>
+      <longflag>saveLDAInfo</longflag>
+    </string>
+    <string>
+      <name>loadLDAInfo</name>
+      <description>Load LDA info from a file</description>
+      <label>Load LDA Info</label>
+      <longflag>loadLDAInfo</longflag>
+    </string>
+  </parameters>
+</executable>

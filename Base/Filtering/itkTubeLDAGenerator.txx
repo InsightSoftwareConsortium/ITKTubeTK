@@ -62,8 +62,8 @@ LDAGenerator< ImageT, LabelmapT >
   m_ObjectCovarianceList.clear();
 
   m_NumberOfLDA = 0;
-  m_LDAMatrix.fill( 0 );
-  m_LDAValues.fill( 0 );
+  m_LDAValues.set_size( 0 );
+  m_LDAMatrix.set_size( 0, 0 );
 
   m_LDAImageList.clear();
 
@@ -263,6 +263,17 @@ LDAGenerator< ImageT, LabelmapT >
 ::SetLDAMatrix( const LDAMatrixType & mat )
 {
   m_LDAMatrix = mat;
+  m_LDAUpToDate = true;
+  m_LDAImageListUpToDate = false;
+  m_NumberOfLDA = m_LDAMatrix.columns();
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::SetLDAValues( const LDAValuesType & values )
+{
+  m_LDAValues = values;
 }
 
 template < class ImageT, class LabelmapT >

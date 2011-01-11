@@ -108,6 +108,7 @@ public:
   LDAMatrixType * GetLDAMatrix( void );
   LDAValuesType * GetLDAValues( void );
   void            SetLDAMatrix( const LDAMatrixType & mat );
+  void            SetLDAValues( const LDAValuesType & values );
 
   const typename LDAImageType::Pointer GetLDAImage( unsigned int ldaNum );
 
