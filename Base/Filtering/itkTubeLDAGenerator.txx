@@ -437,18 +437,6 @@ LDAGenerator< ImageT, LabelmapT >
           m_ObjectCovarianceList[c][i][j] = ( sumOfSquaresList[c][i][j] 
             / countList[c] ) - ( m_ObjectMeanList[c][i] 
             * m_ObjectMeanList[c][j] );
-          if( std::isnan(m_ObjectCovarianceList[c][i][j]) )
-            {
-            std::cout << "Cov NAN @ " << c << " : " << i << ", " << j
-              << std::endl;
-            std::cout << "   ss = " << sumOfSquaresList[c][i][j] 
-              << std::endl;
-            std::cout << "   count = " << countList[c] << std::endl;
-            std::cout << "   mean-i = " << m_ObjectMeanList[c][i] 
-              << std::endl;
-            std::cout << "   mean-j = " << m_ObjectMeanList[c][j] 
-              << std::endl;
-            }
           }
         }
       }
@@ -512,10 +500,6 @@ LDAGenerator< ImageT, LabelmapT >
         }
       }
   
-    std::cout << "Mean cov = " << meanCov << std::endl;
-    std::cout << "Cov of means = " << covOfMeans << std::endl;
-    std::cout << "Inverse mean cov = " << vnl_matrix_inverse< double >( covOfMeans ) << std::endl;
-
     ObjectCovarianceType H;
     H = vnl_matrix_inverse<double>(meanCov) * covOfMeans;
   
