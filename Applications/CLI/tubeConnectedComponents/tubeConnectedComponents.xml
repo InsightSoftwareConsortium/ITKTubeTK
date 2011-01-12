@@ -28,5 +28,16 @@
       <description>Output mask of labeled connected components</description>
     </image>
   </parameters>
+  <parameters>
+    <label>Advanced</label>
+    <description>Optional parameters</description>
+    <integer>
+      <name>minSize</name>
+      <label>Minimum size</label>
+      <description>Any connected component who size is less than this is ignored</description>
+      <longflag>minSize</longflag>
+      <default>0</default>
+    </integer>
+  </parameters>
 
 </executable>
