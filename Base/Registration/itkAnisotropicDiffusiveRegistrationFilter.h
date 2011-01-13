@@ -328,6 +328,8 @@ protected:
   /** Computes the diffusion tensor images */
   virtual void ComputeDiffusionTensorImages();
 
+  /** Computes the first derivatives of the diffusion tensor images */
+  virtual void ComputeDiffusionTensorImageDerivatives();
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >

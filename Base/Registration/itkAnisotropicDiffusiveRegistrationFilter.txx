@@ -321,6 +321,7 @@ AnisotropicDiffusiveRegistrationFilter
   if( this->GetComputeRegularizationTerm() )
     {
     this->ComputeDiffusionTensorImages();
+    this->ComputeDiffusionTensorImageDerivatives();
     }
 }
 
@@ -489,6 +490,8 @@ AnisotropicDiffusiveRegistrationFilter
       }
     }
 
+
+
   std::cout << "Finished computing normals and weights." << std::endl;
 }
 
@@ -634,6 +637,177 @@ AnisotropicDiffusiveRegistrationFilter
       ++normalDiffusionTensorIt;
       }
     }
+
+}
+
+/**
+ * Updates the diffusion tensor image derivatives before each run of the
+ * registration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDiffusionTensorImageDerivatives()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( m_TangentialDiffusionTensorImage );
+  assert( m_TangentialDiffusionTensorDerivativeImage );
+  assert( this->GetRegistrationFunctionPointer() );
+  assert( this->GetRegistrationFunctionPointer()
+          ->GetRegularizationFunctionPointer() );
+
+  // Get the FiniteDifferenceFunction and radius to use in calculations.
+  const RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
+  assert( df );
+  const typename OutputImageType::SizeType radius = df->GetRadius();
+
+  // Setup typedefs for the diffusion tensor images
+  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
+      < DiffusionTensorImageType > DiffusionTensorImageFaceCalculatorType;
+  typedef typename DiffusionTensorImageFaceCalculatorType::FaceListType
+      DiffusionTensorImageFaceListType;
+  typedef typename
+      RegistrationFunctionType::DiffusionTensorNeighborhoodIteratorType
+      DiffusionTensorNeighborhoodIteratorType;
+  // Setup additional typedefs for the diffusion tensor derivative images
+  typedef typename
+      RegistrationFunctionType::DiffusionTensorImageRegionIteratorType
+      DiffusionTensorImageRegionIteratorType;
+
+  // Setup the boundary faces and iterators for the tangential diffusion tensor
+  // image
+  DiffusionTensorImageFaceCalculatorType diffusionTensorImageFaceCalculator;
+  DiffusionTensorImageFaceListType tangentialDiffusionTensorFaceList
+      = diffusionTensorImageFaceCalculator(
+          m_TangentialDiffusionTensorImage,
+          m_TangentialDiffusionTensorImage->GetLargestPossibleRegion(),
+          radius );
+  typename DiffusionTensorImageFaceListType::iterator
+      tangentialDiffusionTensorfIt = tangentialDiffusionTensorFaceList.begin();
+  DiffusionTensorNeighborhoodIteratorType
+      tangentialDiffusionTensorImageNeighborhoodIt;
+
+  // Setup the boundary faces and iterators for the tangential diffusion tensor
+  // derivative image
+  DiffusionTensorImageFaceCalculatorType
+      diffusionTensorDerivativeImageFaceCalculator;
+  typename DiffusionTensorImageFaceCalculatorType::FaceListType
+      tangentialDiffusionTensorDerivativeFaceList
+      = diffusionTensorDerivativeImageFaceCalculator(
+          m_TangentialDiffusionTensorDerivativeImage,
+          m_TangentialDiffusionTensorDerivativeImage->GetLargestPossibleRegion(),
+          radius );
+  typename DiffusionTensorImageFaceListType::iterator
+      tangentialDiffusionTensorDerivativefIt
+      = tangentialDiffusionTensorDerivativeFaceList.begin();
+  DiffusionTensorImageRegionIteratorType
+      tangentialDiffusionTensorDerivativeImageRegionIt;
+
+  for(; tangentialDiffusionTensorDerivativefIt
+      != tangentialDiffusionTensorDerivativeFaceList.end();
+      ++tangentialDiffusionTensorDerivativefIt )
+    {
+    // Set the neighborhood iterators to the current face
+    tangentialDiffusionTensorImageNeighborhoodIt
+        = DiffusionTensorNeighborhoodIteratorType(
+            radius, m_TangentialDiffusionTensorImage,
+            *tangentialDiffusionTensorfIt );
+    tangentialDiffusionTensorDerivativeImageRegionIt
+        = DiffusionTensorImageRegionIteratorType(
+            m_TangentialDiffusionTensorDerivativeImage,
+            *tangentialDiffusionTensorDerivativefIt );
+
+    // Go to the beginning of the neighborhood for this face
+    tangentialDiffusionTensorImageNeighborhoodIt.GoToBegin();
+    tangentialDiffusionTensorDerivativeImageRegionIt.GoToBegin();
+
+    // Iterate through the neighborhood for this face and compute derivatives
+    while( !tangentialDiffusionTensorImageNeighborhoodIt.IsAtEnd() )
+      {
+      // compute derivatives here
+      this->GetRegistrationFunctionPointer()->GetRegularizationFunctionPointer()
+          ->ComputeDiffusionFirstDerivative(
+              tangentialDiffusionTensorImageNeighborhoodIt,
+              tangentialDiffusionTensorDerivativeImageRegionIt );
+
+      ++tangentialDiffusionTensorImageNeighborhoodIt;
+      ++tangentialDiffusionTensorDerivativeImageRegionIt;
+      }
+
+    // Go to the next face
+    ++tangentialDiffusionTensorfIt;
+    }
+
+  // Compute the diffusion tensor image derivative for the normal image
+  if( this->GetUseAnisotropicRegularization() )
+    {
+    assert( m_NormalDiffusionTensorImage );
+    assert( m_NormalDiffusionTensorDerivativeImage );
+
+    // Setup the boundary faces and iterators for the tangential diffusion tensor
+    // image
+    DiffusionTensorImageFaceListType normalDiffusionTensorFaceList
+        = diffusionTensorImageFaceCalculator(
+            m_NormalDiffusionTensorImage,
+            m_NormalDiffusionTensorImage->GetLargestPossibleRegion(),
+            radius );
+    typename DiffusionTensorImageFaceListType::iterator
+        normalDiffusionTensorfIt = normalDiffusionTensorFaceList.begin();
+    DiffusionTensorNeighborhoodIteratorType
+        normalDiffusionTensorImageNeighborhoodIt;
+
+    // Setup the boundary faces and iterators for the tangential diffusion tensor
+    // derivative image
+    typename DiffusionTensorImageFaceCalculatorType::FaceListType
+        normalDiffusionTensorDerivativeFaceList
+        = diffusionTensorDerivativeImageFaceCalculator(
+            m_NormalDiffusionTensorDerivativeImage,
+            m_NormalDiffusionTensorDerivativeImage->GetLargestPossibleRegion(),
+            radius );
+    typename DiffusionTensorImageFaceListType::iterator
+        normalDiffusionTensorDerivativefIt
+        = normalDiffusionTensorDerivativeFaceList.begin();
+    DiffusionTensorImageRegionIteratorType
+        normalDiffusionTensorDerivativeImageRegionIt;
+
+    for(; normalDiffusionTensorDerivativefIt
+        != normalDiffusionTensorDerivativeFaceList.end();
+        ++normalDiffusionTensorDerivativefIt )
+      {
+      // Set the neighborhood iterators to the current face
+      normalDiffusionTensorImageNeighborhoodIt
+          = DiffusionTensorNeighborhoodIteratorType(
+              radius, m_NormalDiffusionTensorImage,
+              *normalDiffusionTensorfIt );
+      normalDiffusionTensorDerivativeImageRegionIt
+          = DiffusionTensorImageRegionIteratorType(
+              m_NormalDiffusionTensorDerivativeImage,
+              *normalDiffusionTensorDerivativefIt );
+
+      // Go to the beginning of the neighborhood for this face
+      normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
+      normalDiffusionTensorDerivativeImageRegionIt.GoToBegin();
+
+      // Iterate through the neighborhood for this face and compute derivatives
+      while( !normalDiffusionTensorImageNeighborhoodIt.IsAtEnd() )
+        {
+        // compute derivatives here
+        this->GetRegistrationFunctionPointer()->GetRegularizationFunctionPointer()
+            ->ComputeDiffusionFirstDerivative(
+                normalDiffusionTensorImageNeighborhoodIt,
+                normalDiffusionTensorDerivativeImageRegionIt );
+
+        ++normalDiffusionTensorImageNeighborhoodIt;
+        ++normalDiffusionTensorDerivativeImageRegionIt;
+        }
+
+      // Go to the next face
+      ++normalDiffusionTensorfIt;
+      }
+
+    }
+
 }
 
 /**
