@@ -1404,8 +1404,7 @@ AnisotropicDiffusiveRegistrationFilter
   int total, threadId, threadCount;
 
   threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
-  threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))
-    ->NumberOfThreads;
+  threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
 
   str = (DenseFDThreadStruct *)
             (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
