@@ -47,13 +47,15 @@ AnisotropicDiffusiveRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
-  m_BorderSurface                   = 0;
-  m_BorderNormalsSurface            = 0;
-  m_NormalVectorImage               = 0;
-  m_WeightImage                     = 0;
-  m_NormalDeformationField          = 0;
-  m_TangentialDiffusionTensorImage  = 0;
-  m_NormalDiffusionTensorImage      = 0;
+  m_BorderSurface                               = 0;
+  m_BorderNormalsSurface                        = 0;
+  m_NormalVectorImage                           = 0;
+  m_WeightImage                                 = 0;
+  m_NormalDeformationField                      = 0;
+  m_TangentialDiffusionTensorImage              = 0;
+  m_NormalDiffusionTensorImage                  = 0;
+  m_TangentialDiffusionTensorDerivativeImage    = 0;
+  m_NormalDiffusionTensorDerivativeImage        = 0;
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_TangentialComponentExtractor[i]           = 0;
@@ -196,11 +198,14 @@ AnisotropicDiffusiveRegistrationFilter
   typename OutputImageType::Pointer output = this->GetOutput();
 
   // Allocate the output image's normal images, tangential and normal diffusion
-  // tensor images, and deformation field component images
+  // tensor images and their derivatives, and deformation field component images
   if( this->GetComputeRegularizationTerm() )
     {
     m_TangentialDiffusionTensorImage = DiffusionTensorImageType::New();
     this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
+    m_TangentialDiffusionTensorDerivativeImage = DiffusionTensorImageType::New();
+    this->AllocateSpaceForImage( m_TangentialDiffusionTensorDerivativeImage,
+                                 output );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       m_TangentialComponentExtractor[i] = SelectionCastImageFilterType::New();
@@ -215,6 +220,9 @@ AnisotropicDiffusiveRegistrationFilter
       this->AllocateSpaceForImage( m_NormalDeformationField, output );
       m_NormalDiffusionTensorImage = DiffusionTensorImageType::New();
       this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
+      m_NormalDiffusionTensorDerivativeImage = DiffusionTensorImageType::New();
+      this->AllocateSpaceForImage( m_NormalDiffusionTensorDerivativeImage,
+                                   output );
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
         m_NormalComponentExtractor[i] = SelectionCastImageFilterType::New();

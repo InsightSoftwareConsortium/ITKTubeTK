@@ -367,22 +367,22 @@ private:
   static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
 
   /** The buffer that holds the updates for an iteration of algorithm. */
-  typename UpdateBufferType::Pointer    m_UpdateBuffer;
+  typename UpdateBufferType::Pointer  m_UpdateBuffer;
 
   /** The organ boundary surface, the surface of border normals, and the
   * derived normal vector and weight images */
-  BorderSurfacePointer                  m_BorderSurface;
-  BorderSurfacePointer                  m_BorderNormalsSurface;
-  NormalVectorImagePointer              m_NormalVectorImage;
-  WeightImagePointer                    m_WeightImage;
+  BorderSurfacePointer                m_BorderSurface;
+  BorderSurfacePointer                m_BorderNormalsSurface;
+  NormalVectorImagePointer            m_NormalVectorImage;
+  WeightImagePointer                  m_WeightImage;
 
   /** The lambda factor for computing the weight from distance.  Weight is
   * modeled as exponential decay: weight = e^(lambda * distance).
   * (lamba must be negative) */
-  WeightType                            m_lambda;
+  WeightType                          m_lambda;
 
   /** The normal component of the deformation field */
-  OutputImagePointer                    m_NormalDeformationField;
+  OutputImagePointer                  m_NormalDeformationField;
 
   /** The components of the tangential and normal deformation vectors */
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
@@ -393,13 +393,17 @@ private:
   /** Extracts the x,y,z components of the tangential and normal
   * components of the deformation field */
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
-                                        m_TangentialComponentExtractor;
+      m_TangentialComponentExtractor;
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
-                                        m_NormalComponentExtractor;
+      m_NormalComponentExtractor;
 
   /** The images of the tangential and normal diffusion tensors */
-  DiffusionTensorImagePointer           m_TangentialDiffusionTensorImage;
-  DiffusionTensorImagePointer           m_NormalDiffusionTensorImage;
+  DiffusionTensorImagePointer         m_TangentialDiffusionTensorImage;
+  DiffusionTensorImagePointer         m_NormalDiffusionTensorImage;
+
+  /** The precomputed diffusion tensor first derivatives */
+  DiffusionTensorImagePointer         m_TangentialDiffusionTensorDerivativeImage;
+  DiffusionTensorImagePointer         m_NormalDiffusionTensorDerivativeImage;
 
 };
 
