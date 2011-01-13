@@ -76,10 +76,12 @@ public:
   typedef ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>
     DefaultBoundaryConditionType;
 
-  /** Define diffusion image neighborhood type */
+  /** Define diffusion image iterator/neighborhood types */
   typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
                                     DefaultBoundaryConditionType>
                                            DiffusionTensorNeighborhoodType;
+  typedef ImageRegionIterator<DiffusionTensorImageType>
+      DiffusionTensorImageRegionType;
 
   /** Tensor pixel type */
   typedef itk::SymmetricSecondRankTensor< double >  TensorPixelType;

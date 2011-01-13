@@ -147,6 +147,8 @@ public:
 
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodIteratorType;
+  typedef typename RegularizationFunctionType::DiffusionTensorImageRegionType
+      DiffusionTensorImageRegionIteratorType;
 
   /** Set/Get the time step for an update */
   void SetTimeStep(const TimeStepType &t)
