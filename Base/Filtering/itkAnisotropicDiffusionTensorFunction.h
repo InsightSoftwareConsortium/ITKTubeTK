@@ -121,6 +121,15 @@ public:
                      void *globalData,
                      const FloatOffsetType& = FloatOffsetType(0.0));
 
+  /** Compute the equation value, using precomputed first derivatives for the
+      diffusion tensor. */
+  virtual PixelType ComputeUpdate(
+                     const NeighborhoodType &neighborhood,
+                     const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+                     const DiffusionTensorImageRegionType &tensorDerivative,
+                     void *globalData,
+                     const FloatOffsetType& = FloatOffsetType(0.0));
+
   /** Computes the time step for an update given a global data structure. */
   virtual TimeStepType ComputeGlobalTimeStep(void *GlobalData) const;
 
@@ -203,6 +212,11 @@ protected:
   PixelType ComputeFinalUpdateTerm(
       const DiffusionTensorNeighborhoodType &neighborhoodTensor,
       const GlobalDataStruct* globalData ) const;
+
+  /** Copies a diffusion tensor derivative into a globalDataStruct's diffusion
+    tensor first derivative field */
+  void CopyTensorToGlobalData( const DiffusionTensorImageRegionType &tensor,
+                               GlobalDataStruct* globalData ) const;
 
 private:
   //purposely not implemented
