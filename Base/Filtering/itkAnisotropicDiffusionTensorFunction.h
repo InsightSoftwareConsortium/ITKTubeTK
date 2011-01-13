@@ -111,8 +111,8 @@ public:
 
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
-                                void *globalData,
-                                const FloatOffsetType& = FloatOffsetType(0.0));
+                                  void *globalData,
+                                  const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(
