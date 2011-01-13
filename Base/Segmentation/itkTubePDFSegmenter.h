@@ -34,7 +34,7 @@ namespace itk
 namespace tube
 {
 
-#define MAX_NUMBER_OF_FEATURES 3
+#define MAX_NUMBER_OF_FEATURES 4
 
 template< class ImageT, unsigned int N, class LabelmapT >
 class PDFSegmenter : public Object
@@ -64,8 +64,6 @@ public:
 
   typedef int                                  ObjectIdType;
   typedef std::vector< ObjectIdType >          ObjectIdListType;
-  typedef itk::OrientedImage< ObjectIdType, MAX_NUMBER_OF_FEATURES >
-                                               LabeledFeatureSpaceImageType;
 
   typedef float                                ProbabilityPixelType;
   typedef itk::OrientedImage< ProbabilityPixelType,
@@ -82,6 +80,7 @@ public:
   itkSetObjectMacro( InputVolume1, ImageType );
   itkSetObjectMacro( InputVolume2, ImageType );
   itkSetObjectMacro( InputVolume3, ImageType );
+  itkSetObjectMacro( InputVolume4, ImageType );
 
   void SetObjectId( ObjectIdType objectId )
     {
@@ -120,6 +119,13 @@ public:
 
   const typename PDFImageType::Pointer GetClassPDFImage( 
     unsigned int classNum );
+  void SetClassPDFImage( unsigned int classNum, 
+    typename PDFImageType::Pointer classPDF );
+
+  double GetPDFBinMin( unsigned int featureNum );
+  void   SetPDFBinMin( unsigned int featureNum, double val );
+  double GetPDFBinScale( unsigned int featureNum );
+  void   SetPDFBinScale( unsigned int featureNum, double val );
 
   /** Copy the input object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
@@ -140,6 +146,8 @@ public:
     double start );
 
   void Update( void );
+  void ClassifyImages( void );
+  void GenerateLabeledFeatureSpace( void );
 
 protected:
 
@@ -170,6 +178,10 @@ private:
   typedef std::vector< typename ListSampleType::Pointer >
     ClassListSampleType;
 
+  bool                                     m_SampleUpToDate;
+  bool                                     m_PDFsUpToDate;
+  bool                                     m_ImagesUpToDate;
+
   ClassListSampleType                      m_InClassList;
   typename ListSampleType::Pointer         m_OutList;
 
@@ -185,6 +197,7 @@ private:
   typename ImageType::Pointer     m_InputVolume1;
   typename ImageType::Pointer     m_InputVolume2;
   typename ImageType::Pointer     m_InputVolume3;
+  typename ImageType::Pointer     m_InputVolume4;
 
   typename MaskImageType::Pointer m_Labelmap;
 

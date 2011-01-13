@@ -35,6 +35,14 @@
       <description>Input volume 3</description>
       <default></default>
     </image>
+    <image>
+      <name>inputVolume4</name>
+      <label>Input Volume 4</label>
+      <longflag>inputVolume4</longflag>
+      <channel>input</channel>
+      <description>Input volume 4</description>
+      <default></default>
+    </image>
     <integer-vector>
       <name>objectId</name>
       <label>Object Id</label>
@@ -133,13 +141,13 @@
     </string>
     <string>
       <name>loadClassPDFBase</name>
-      <description>Load an image and adjunct file that represent feature space with assigned class labels</description>
+      <description>Load images that represent probability density functions</description>
       <label>Load PDF basename</label>
       <longflag>loadClassPDFBase</longflag>
     </string>
     <string>
       <name>saveClassPDFBase</name>
-      <description>Save an image and adjunct file that represent feature space with assigned class labels</description>
+      <description>Save images that represent probability density functions</description>
       <label>Output Probability Volume for Object 2</label>
       <longflag>saveClassPDFBase</longflag>
     </string>

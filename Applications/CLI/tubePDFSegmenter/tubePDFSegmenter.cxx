@@ -93,6 +93,7 @@ int DoIt( int argc, char *argv[] )
   typedef itk::ImageFileWriter< MaskImageType >    MaskWriterType;
   typedef itk::ImageFileWriter< ProbImageType >    ProbImageWriterType;
   typedef itk::ImageFileWriter< PDFImageType >     PDFImageWriterType;
+  typedef itk::ImageFileReader< PDFImageType >     PDFImageReaderType;
 
   typedef itk::tube::PDFSegmenter< InputImageType, N, MaskImageType >
     PDFSegmenterType;
@@ -122,10 +123,16 @@ int DoIt( int argc, char *argv[] )
       reader->Update();
       pdfSegmenter->SetInputVolume3( reader->GetOutput() );
       }
+    else if(i == 3)
+      {
+      reader->SetFileName( inputVolume4.c_str() );
+      reader->Update();
+      pdfSegmenter->SetInputVolume4( reader->GetOutput() );
+      }
     else
       {
       std::cout << "ERROR: current command line xml file limits"
-                << " this filter to 3 input images" << std::endl;
+                << " this filter to 4 input images" << std::endl;
       return 1;
       }
     }
@@ -159,11 +166,48 @@ int DoIt( int argc, char *argv[] )
     pdfSegmenter->SetForceClassification( true );
     }
 
-  pdfSegmenter->Update();
+  if( loadClassPDFBase.size() > 0 )
+    {
+    unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
+    std::cout << "loading classes" << std::endl;
+    for( unsigned int i=0; i<numClasses; i++ )
+      {
+      std::string fname = loadClassPDFBase;
+      char c[80];
+      sprintf(c, ".c%d.mha", i );
+      fname += std::string( c );
+      typename PDFImageReaderType::Pointer pdfImageReader =
+        PDFImageReaderType::New();
+      pdfImageReader->SetFileName( fname.c_str() );
+      pdfImageReader->Update();
+      typename PDFImageType::Pointer img = pdfImageReader->GetOutput();
+      typename PDFImageType::PointType origin = img->GetOrigin();
+      typename PDFImageType::SpacingType spacing = img->GetSpacing();
+      for( unsigned int d=0; d<N; d++ )
+        {
+        if( i == 0 )
+          {
+          pdfSegmenter->SetPDFBinMin( d, origin[d] );
+          pdfSegmenter->SetPDFBinScale( d, spacing[d] );
+          }
+        origin[d] = 0;
+        spacing[d] = 1;
+        }
+      img->SetOrigin( origin );
+      img->SetSpacing( spacing );
+      pdfSegmenter->SetClassPDFImage(i, img );
+      }
+    pdfSegmenter->ClassifyImages();
+    }
+  else
+    {
+    pdfSegmenter->Update();
+    pdfSegmenter->ClassifyImages();
+    }
 
   timeCollector.Start("Save");
 
-  if( saveClassProbabilityVolumeBase.size() > 2 )
+  if( saveClassProbabilityVolumeBase.size() > 0 )
     {
     unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
     for( unsigned int i=0; i<numClasses; i++ )
@@ -180,11 +224,18 @@ int DoIt( int argc, char *argv[] )
       }
     }
 
-  if( saveClassPDFBase.size() > 2 )
+  MaskWriterType::Pointer writer = MaskWriterType::New();
+  writer->SetFileName( outputVolume.c_str() );
+  writer->SetInput( pdfSegmenter->GetLabelmap() );
+  writer->Update();
+
+  if( saveClassPDFBase.size() > 0 )
     {
     unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
     for( unsigned int i=0; i<numClasses; i++ )
       {
+      itk::Index< PDFImageType::ImageDimension > indx;
+      indx.Fill( 100 );
       std::string fname = saveClassPDFBase;
       char c[80];
       sprintf(c, ".c%d.mha", i );
@@ -192,15 +243,27 @@ int DoIt( int argc, char *argv[] )
       typename PDFImageWriterType::Pointer pdfImageWriter =
         PDFImageWriterType::New();
       pdfImageWriter->SetFileName( fname.c_str() );
-      pdfImageWriter->SetInput( pdfSegmenter->GetClassPDFImage(i) );
+      typename PDFImageType::PointType origin;
+      typename PDFImageType::SpacingType spacing;
+      for( unsigned int d=0; d<N; d++ )
+        {
+        origin[d] = pdfSegmenter->GetPDFBinMin( d );
+        spacing[d] = pdfSegmenter->GetPDFBinScale( d );
+        }
+      typename PDFImageType::PointType originOrg;
+      typename PDFImageType::SpacingType spacingOrg;
+      typename PDFImageType::Pointer img = 
+        pdfSegmenter->GetClassPDFImage( i );
+      originOrg = img->GetOrigin();
+      spacingOrg = img->GetSpacing();
+      img->SetOrigin( origin );
+      img->SetSpacing( spacing );
+      pdfImageWriter->SetInput( img );
       pdfImageWriter->Update();
+      img->SetOrigin( originOrg );
+      img->SetSpacing( spacingOrg );
       }
     }
-
-  MaskWriterType::Pointer writer = MaskWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( pdfSegmenter->GetLabelmap() );
-  writer->Update();
 
   timeCollector.Stop("Save");
 
@@ -227,6 +290,10 @@ int main( int argc, char * argv[] )
       if(inputVolume3.length() > 1)
         {
         ++N;
+        if(inputVolume4.length() > 1)
+          {
+          ++N;
+          }
         }
       }
 
@@ -241,9 +308,13 @@ int main( int argc, char * argv[] )
           {
           return DoIt<unsigned char, 2>( argc, argv );
           }
-        else 
+        else if(N == 3)
           {
           return DoIt<unsigned char, 3>( argc, argv );
+          }
+        else 
+          {
+          return DoIt<unsigned char, 4>( argc, argv );
           }
         break;
       case itk::ImageIOBase::USHORT:
@@ -255,9 +326,13 @@ int main( int argc, char * argv[] )
           {
           return DoIt<unsigned short, 2>( argc, argv );
           }
-        else
+        else if(N == 3)
           {
           return DoIt<unsigned short, 3>( argc, argv );
+          }
+        else
+          {
+          return DoIt<unsigned short, 4>( argc, argv );
           }
         break;
       case itk::ImageIOBase::CHAR:
@@ -270,9 +345,13 @@ int main( int argc, char * argv[] )
           {
           return DoIt<short, 2>( argc, argv );
           }
-        else
+        else if(N == 3)
           {
           return DoIt<short, 3>( argc, argv );
+          }
+        else
+          {
+          return DoIt<short, 4>( argc, argv );
           }
         break;
       case itk::ImageIOBase::UINT:
@@ -289,9 +368,13 @@ int main( int argc, char * argv[] )
           {
           return DoIt<float, 2>( argc, argv );
           }
-        else
+        else if(N == 3)
           {
           return DoIt<float, 3>( argc, argv );
+          }
+        else
+          {
+          return DoIt<float, 4>( argc, argv );
           }
         break;
       case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
