@@ -155,6 +155,11 @@ public:
       const itk::Image< TPixel, VImageDimension > * input,
       bool useImageSpacing );
 
+  /** Computes the first derivative of a diffusion tensor image. */
+  void ComputeDiffusionFirstDerivative(
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      DiffusionTensorImageRegionType &derivativeTensor ) const;
+
 protected:
   AnisotropicDiffusionTensorFunction();
 
@@ -182,6 +187,22 @@ protected:
       [itkGetStaticConstMacro(ImageDimension)];
   unsigned int m_positionDa[itkGetStaticConstMacro(ImageDimension)]
       [itkGetStaticConstMacro(ImageDimension)];
+
+  /** Computes the first and second derivatives of an intensity image. */
+  void ComputeIntensityFirstAndSecondDerivatives(
+      const NeighborhoodType &neighborhoodIntensity,
+      GlobalDataStruct *globalData ) const;
+
+  /** Compute the first derivative of a diffusion image */
+  TensorPixelType ComputeDiffusionFirstDerivative(
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      GlobalDataStruct *globalData ) const;
+
+  /** Computes the final update term based on the results of the first and
+    * second derivative computations */
+  PixelType ComputeFinalUpdateTerm(
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      const GlobalDataStruct* globalData ) const;
 
 private:
   //purposely not implemented
