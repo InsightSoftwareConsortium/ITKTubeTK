@@ -240,6 +240,13 @@ public:
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
 
+  /** Returns the pointers to the regularization function and the intensity
+    difference function */
+  RegularizationFunctionPointer GetRegularizationFunctionPointer() const
+    { return m_RegularizationFunction; }
+  IntensityDistanceFunctionPointer GetIntensityDistanceFunctionPointer() const
+    { return m_IntensityDistanceFunction; }
+
 protected:
   AnisotropicDiffusiveRegistrationFunction();
   void PrintSelf(std::ostream& os, Indent indent) const;
