@@ -1095,11 +1095,19 @@ AnisotropicDiffusiveRegistrationFilter
   // Setup the boundary faces for the diffusion tensor images
   DiffusionTensorImageFaceCalculatorType    diffusionTensorImageFaceCalculator;
   DiffusionTensorImageFaceListType          tangentialDiffusionTensorFaceList;
+  DiffusionTensorImageFaceListType
+      tangentialDiffusionTensorDerivativeFaceList;
   DiffusionTensorImageFaceListType          normalDiffusionTensorFaceList;
+  DiffusionTensorImageFaceListType
+      normalDiffusionTensorDerivativeFaceList;
   typename DiffusionTensorImageFaceListType::iterator
       tangentialDiffusionTensorfIt;
   typename DiffusionTensorImageFaceListType::iterator
+      tangentialDiffusionTensorDerivativefIt;
+  typename DiffusionTensorImageFaceListType::iterator
       normalDiffusionTensorfIt;
+  typename DiffusionTensorImageFaceListType::iterator
+      normalDiffusionTensorDerivativefIt;
 
   // Setup the boundary faces for the deformation field component images
   DeformationVectorComponentImageFaceCalculatorType
@@ -1127,6 +1135,13 @@ AnisotropicDiffusiveRegistrationFilter
     tangentialDiffusionTensorFaceList = diffusionTensorImageFaceCalculator(
         m_TangentialDiffusionTensorImage, diffusionRegionToProcess, radius );
     tangentialDiffusionTensorfIt = tangentialDiffusionTensorFaceList.begin();
+    tangentialDiffusionTensorDerivativeFaceList
+        = diffusionTensorImageFaceCalculator(
+            m_TangentialDiffusionTensorDerivativeImage,
+            diffusionRegionToProcess,
+            radius );
+    tangentialDiffusionTensorDerivativefIt
+        = tangentialDiffusionTensorDerivativeFaceList.begin();
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       deformationVectorTangentialComponentImageFaceListArray[i]
@@ -1146,6 +1161,13 @@ AnisotropicDiffusiveRegistrationFilter
       normalDiffusionTensorFaceList = diffusionTensorImageFaceCalculator(
           m_NormalDiffusionTensorImage, diffusionRegionToProcess, radius );
       normalDiffusionTensorfIt = normalDiffusionTensorFaceList.begin();
+      normalDiffusionTensorDerivativeFaceList
+          = diffusionTensorImageFaceCalculator(
+              m_NormalDiffusionTensorDerivativeImage,
+              diffusionRegionToProcess,
+              radius );
+      normalDiffusionTensorDerivativefIt
+          = normalDiffusionTensorDerivativeFaceList.begin();
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
         deformationVectorNormalComponentImageFaceListArray[i]
@@ -1178,6 +1200,9 @@ AnisotropicDiffusiveRegistrationFilter
     DiffusionTensorNeighborhoodIteratorType
     DiffusionTensorNeighborhoodIteratorType;
   typedef typename RegistrationFunctionType::
+    DiffusionTensorImageRegionIteratorType
+    DiffusionTensorImageRegionIteratorType;
+  typedef typename RegistrationFunctionType::
     DeformationVectorComponentNeighborhoodIteratorType
     DeformationVectorComponentNeighborhoodIteratorType;
   typedef typename RegistrationFunctionType::
@@ -1190,8 +1215,12 @@ AnisotropicDiffusiveRegistrationFilter
   NormalVectorImageNeighborhoodIteratorType normalVectorImageNeighborhoodIt;
   DiffusionTensorNeighborhoodIteratorType
     tangentialDiffusionTensorImageNeighborhoodIt;
+  DiffusionTensorImageRegionIteratorType
+    tangentialDiffusionTensorImageDerivativeNeighborhoodIt;
   DiffusionTensorNeighborhoodIteratorType
     normalDiffusionTensorImageNeighborhoodIt;
+  DiffusionTensorImageRegionIteratorType
+    normalDiffusionTensorImageDerivativeNeighborhoodIt;
   DeformationVectorComponentNeighborhoodIteratorArrayType
     deformationVectorTangentialComponentNeighborhoodItArray;
   DeformationVectorComponentNeighborhoodIteratorArrayType
@@ -1209,6 +1238,10 @@ AnisotropicDiffusiveRegistrationFilter
         = DiffusionTensorNeighborhoodIteratorType(
           radius, m_TangentialDiffusionTensorImage,
           *tangentialDiffusionTensorfIt );
+      tangentialDiffusionTensorImageDerivativeNeighborhoodIt
+        = DiffusionTensorImageRegionIteratorType(
+          m_TangentialDiffusionTensorDerivativeImage,
+          *tangentialDiffusionTensorDerivativefIt );
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         deformationVectorTangentialComponentNeighborhoodItArray[i]
@@ -1225,7 +1258,11 @@ AnisotropicDiffusiveRegistrationFilter
         normalDiffusionTensorImageNeighborhoodIt
           = DiffusionTensorNeighborhoodIteratorType(
           radius, m_NormalDiffusionTensorImage,
-          * normalDiffusionTensorfIt );
+          *normalDiffusionTensorfIt );
+        normalDiffusionTensorImageDerivativeNeighborhoodIt
+          = DiffusionTensorImageRegionIteratorType(
+          m_NormalDiffusionTensorDerivativeImage,
+          *normalDiffusionTensorDerivativefIt );
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
           deformationVectorNormalComponentNeighborhoodItArray[i]
@@ -1242,6 +1279,7 @@ AnisotropicDiffusiveRegistrationFilter
     if( computeRegularization )
       {
       tangentialDiffusionTensorImageNeighborhoodIt.GoToBegin();
+      tangentialDiffusionTensorImageDerivativeNeighborhoodIt.GoToBegin();
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
         deformationVectorTangentialComponentNeighborhoodItArray[i].
@@ -1251,6 +1289,7 @@ AnisotropicDiffusiveRegistrationFilter
         {
         normalVectorImageNeighborhoodIt.GoToBegin();
         normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
+        normalDiffusionTensorImageDerivativeNeighborhoodIt.GoToBegin();
         for ( unsigned int i = 0; i < ImageDimension; i++ )
           {
           deformationVectorNormalComponentNeighborhoodItArray[i].
@@ -1275,6 +1314,7 @@ AnisotropicDiffusiveRegistrationFilter
       if( computeRegularization )
         {
         ++tangentialDiffusionTensorImageNeighborhoodIt;
+        ++tangentialDiffusionTensorImageDerivativeNeighborhoodIt;
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
           ++deformationVectorTangentialComponentNeighborhoodItArray[i];
@@ -1283,6 +1323,7 @@ AnisotropicDiffusiveRegistrationFilter
           {
           ++normalVectorImageNeighborhoodIt;
           ++normalDiffusionTensorImageNeighborhoodIt;
+          ++normalDiffusionTensorImageDerivativeNeighborhoodIt;
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
             ++deformationVectorNormalComponentNeighborhoodItArray[i];
@@ -1295,6 +1336,7 @@ AnisotropicDiffusiveRegistrationFilter
     if( computeRegularization )
       {
       ++tangentialDiffusionTensorfIt;
+      ++tangentialDiffusionTensorDerivativefIt;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         ++deformationVectorTangentialComponentImagefItArray[i];
@@ -1303,6 +1345,7 @@ AnisotropicDiffusiveRegistrationFilter
         {
         ++normalVectorImagefIt;
         ++normalDiffusionTensorfIt;
+        ++normalDiffusionTensorDerivativefIt;
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
           ++deformationVectorNormalComponentImagefItArray[i];
