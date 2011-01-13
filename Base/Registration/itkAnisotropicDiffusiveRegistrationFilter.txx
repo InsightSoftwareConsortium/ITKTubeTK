@@ -312,7 +312,7 @@ AnisotropicDiffusiveRegistrationFilter
   // previous line, so this has to be completed only once.
   if( this->GetComputeRegularizationTerm() )
     {
-    this->ComputeDiffusionTensorImage();
+    this->ComputeDiffusionTensorImages();
     }
 }
 
@@ -500,13 +500,13 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
- * Updates the diffusion tensor image before each iteration
+ * Updates the diffusion tensor image before each run of the registration
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorImage()
+::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
 

@@ -325,8 +325,9 @@ protected:
   /** Updates the deformation vector component images */
   virtual void UpdateDeformationVectorComponentImages();
 
-  /** Computes the diffusion tensor image */
-  virtual void ComputeDiffusionTensorImage();
+  /** Computes the diffusion tensor images */
+  virtual void ComputeDiffusionTensorImages();
+
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >
