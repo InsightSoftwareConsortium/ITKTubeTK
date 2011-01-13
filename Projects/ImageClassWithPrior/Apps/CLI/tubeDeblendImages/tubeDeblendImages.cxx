@@ -87,7 +87,7 @@ public:
 
   unsigned int GetNumberOfParameters( void ) const
     {
-    return 4;
+    return 3;
     }
 
   void SetImageTop( typename ImageType::Pointer _top )
@@ -182,9 +182,9 @@ public:
     while( !iterMiddle.IsAtEnd() )
       {
       float tf = ( params[0] * iterBottomB.Get() +
-        params[1] * iterMiddle.Get() +
-        params[2] * iterTopB.Get() )
-        + params[3];
+        iterMiddle.Get() +
+        params[1] * iterTopB.Get() )
+        + params[2];
 
       iterOutput.Set( tf );
 
@@ -234,8 +234,7 @@ public:
     std::cout << ++m_CallsToGetValue << " : "
               << params[0] << ", "
               << params[1] << ", "
-              << params[2] << ", "
-              << params[3] << ", ";
+              << params[2] << ", ";
     std::cout << " : result = " << result << std::endl;
 
     return result;
@@ -296,7 +295,7 @@ public:
 
   unsigned int GetNumberOfParameters( void ) const
     {
-    return 5;
+    return 4;
     }
 
   void SetImageTop( typename ImageType::Pointer _top )
@@ -366,10 +365,10 @@ public:
     filterBottom->SetInput( m_ImageBottom );
     typename BlurFilterType::Pointer filterTop = BlurFilterType::New();
     filterTop->SetInput( m_ImageTop );
-    if( params[4] > 0.333 )
+    if( params[3] > 0.333 )
       {
-      filterBottom->SetSigma( params[4] );
-      filterTop->SetSigma( params[4] );
+      filterBottom->SetSigma( params[3] );
+      filterTop->SetSigma( params[3] );
       }
     else
       {
@@ -410,9 +409,9 @@ public:
     while( !iterMiddle.IsAtEnd() )
       {
       float tf = ( params[0] * iterBottomB.Get() +
-        params[1] * iterMiddle.Get() +
-        params[2] * iterTopB.Get() )
-        + params[3];
+        iterMiddle.Get() +
+        params[1] * iterTopB.Get() )
+        + params[2];
 
       iterOutput.Set( tf );
 
@@ -463,8 +462,7 @@ public:
               << params[0] << ", "
               << params[1] << ", "
               << params[2] << ", "
-              << params[3] << ", "
-              << params[4];
+              << params[3];
     std::cout << " : result = " << result << std::endl;
 
     return result;
@@ -604,11 +602,10 @@ int DoIt( int argc, char * argv[] )
   imageOutput->SetRegions( imageMiddle->GetLargestPossibleRegion() );
   imageOutput->Allocate();
 
-  itk::Array<double> blendParams(4);
+  itk::Array<double> blendParams(3);
   blendParams[0] = alpha;
-  blendParams[1] = beta;
-  blendParams[2] = gamma;
-  blendParams[3] = offset;
+  blendParams[1] = gamma;
+  blendParams[2] = offset;
   if( 1 )
     {
     typedef itk::BlendCostFunction< PixelType, dimensionT >
@@ -655,17 +652,15 @@ int DoIt( int argc, char * argv[] )
     optimizer->SetValueTolerance( 1 );
     optimizer->SetMaximize( false );
 
-    OptimizerType::ScalesType blendScales( 4 );
+    OptimizerType::ScalesType blendScales( 3 );
     blendScales[0] = 1.0 / 0.1;
     blendScales[1] = 1.0 / 0.1;
     blendScales[2] = 1.0 / 0.1;
-    blendScales[3] = 1.0 / 0.1;
 
-    OptimizerType::ScalesType blendScales2( 4 );
+    OptimizerType::ScalesType blendScales2( 3 );
     blendScales2[0] = blendScales[0] * blendScales[0];
     blendScales2[1] = blendScales[1] * blendScales[1];
     blendScales2[2] = blendScales[2] * blendScales[2];
-    blendScales2[3] = blendScales[3] * blendScales[3];
 
     // OnePlusOne should be passed squared-scales
     initOptimizer->SetScales( blendScales2 );
@@ -699,12 +694,11 @@ int DoIt( int argc, char * argv[] )
               << " Result = " << result << std::endl;
     }
 
-  itk::Array<double> blendScaleParams(5);
+  itk::Array<double> blendScaleParams(4);
   blendScaleParams[0] = blendParams[0];
   blendScaleParams[1] = blendParams[1];
   blendScaleParams[2] = blendParams[2];
-  blendScaleParams[3] = blendParams[3];
-  blendScaleParams[4] = sigma;
+  blendScaleParams[3] = sigma;
   if( 1 )
     {
     typedef itk::BlendScaleCostFunction< PixelType, dimensionT >
@@ -751,19 +745,17 @@ int DoIt( int argc, char * argv[] )
     optimizer->SetValueTolerance( 1 );
     optimizer->SetMaximize( false );
 
-    OptimizerType::ScalesType blendScaleScales( 5 );
+    OptimizerType::ScalesType blendScaleScales( 4 );
     blendScaleScales[0] = 1.0 / 0.01;
     blendScaleScales[1] = 1.0 / 0.01;
     blendScaleScales[2] = 1.0 / 0.01;
-    blendScaleScales[3] = 1.0 / 0.01;
-    blendScaleScales[4] = 1.0 / 0.5;
+    blendScaleScales[3] = 1.0 / 0.5;
 
-    OptimizerType::ScalesType blendScaleScales2( 5 );
+    OptimizerType::ScalesType blendScaleScales2( 4 );
     blendScaleScales2[0] = blendScaleScales[0] * blendScaleScales[0];
     blendScaleScales2[1] = blendScaleScales[1] * blendScaleScales[1];
     blendScaleScales2[2] = blendScaleScales[2] * blendScaleScales[2];
     blendScaleScales2[3] = blendScaleScales[3] * blendScaleScales[3];
-    blendScaleScales2[4] = blendScaleScales[4] * blendScaleScales[4];
 
     // OnePlusOne should be passed squared-scales
     initOptimizer->SetScales( blendScaleScales2 );
