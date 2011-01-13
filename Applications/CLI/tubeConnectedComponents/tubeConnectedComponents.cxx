@@ -121,6 +121,42 @@ int DoIt( int argc, char * argv[] )
 
   typename ConnCompType::Pointer curConnComp = filter->GetOutput();
 
+  itk::ImageRegionIterator< ConnCompType > iter( curConnComp,
+    curConnComp->GetLargestPossibleRegion() );
+  iter.GoToBegin();
+
+  if( minSize > 0 )
+    {
+    unsigned int numObjects = filter->GetObjectCount()+1;
+    std::vector< unsigned int > cSize( numObjects, 0 );
+    while( !iter.IsAtEnd() )
+      {
+      unsigned int c = iter.Get();
+      if( c < numObjects )
+        {
+        ++cSize[ c ];
+        }
+      ++iter;
+      }
+    iter.GoToBegin();
+    while( !iter.IsAtEnd() )
+      {
+      unsigned int c = iter.Get();
+      if( c < numObjects )
+        {
+        if( cSize[c] < (unsigned int)minSize )
+          {
+          iter.Set( 0 );
+          }
+        else
+          {
+          iter.Set( c+1 );
+          }
+        }
+      ++iter;
+      }
+    }
+  
   timeCollector.Stop("Connected Components");
 
   typedef itk::ImageFileWriter< ConnCompType  >   ImageWriterType;

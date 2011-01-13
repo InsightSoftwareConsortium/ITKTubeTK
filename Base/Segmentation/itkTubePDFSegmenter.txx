@@ -62,6 +62,10 @@ template< class ImageT, unsigned int N, class LabelmapT >
 PDFSegmenter< ImageT, N, LabelmapT >
 ::PDFSegmenter()
 {
+  m_SampleUpToDate = false;
+  m_PDFsUpToDate = false;
+  m_ImagesUpToDate = false;
+
   m_InClassList.clear();
   m_OutList = NULL;
 
@@ -70,12 +74,13 @@ PDFSegmenter< ImageT, N, LabelmapT >
   m_HistoBinMin.Fill( 0 );
   m_HistoBinMax.Fill( 0 );
   m_HistoBinScale.Fill( 0 );
-  m_HistoNumBinsND = 200;
+  m_HistoNumBinsND = 100;
   m_HistoNumBins1D = 200;
 
   m_InputVolume1 = NULL;
   m_InputVolume2 = NULL;
   m_InputVolume3 = NULL;
+  m_InputVolume4 = NULL;
 
   m_Labelmap = NULL;
 
@@ -121,7 +126,7 @@ int
 PDFSegmenter< ImageT, N, LabelmapT >
 ::GetNumberOfClasses( void )
 {
-  return m_ProbabilityImageVector.size() + 1;
+  return m_ProbabilityImageVector.size();
 }
 
 template < class ImageT, unsigned int N, class LabelmapT >
@@ -182,8 +187,82 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
+::SetClassPDFImage( unsigned int classNum,
+  typename PDFImageType::Pointer classPDF )
+{
+  if( classNum < m_InClassHisto.size() )
+    {
+    m_InClassHisto[classNum] = classPDF;
+    }
+  else if( classNum == m_InClassHisto.size() )
+    {
+    m_OutHisto = classPDF;
+    }
+  m_SampleUpToDate = false;
+  m_PDFsUpToDate = true;
+  m_ImagesUpToDate = false;
+}
+
+template < class ImageT, unsigned int N, class LabelmapT >
+double
+PDFSegmenter< ImageT, N, LabelmapT >
+::GetPDFBinMin( unsigned int featureNum )
+{
+  if( featureNum < N )
+    {
+    return m_HistoBinMin[featureNum];
+    }
+  else
+    {
+    return 0;
+    }
+}
+
+template < class ImageT, unsigned int N, class LabelmapT >
+void
+PDFSegmenter< ImageT, N, LabelmapT >
+::SetPDFBinMin( unsigned int featureNum, double val )
+{
+  if( featureNum < N )
+    {
+    m_HistoBinMin[featureNum] = val;
+    }
+}
+
+template < class ImageT, unsigned int N, class LabelmapT >
+double
+PDFSegmenter< ImageT, N, LabelmapT >
+::GetPDFBinScale( unsigned int featureNum )
+{
+  if( featureNum < N )
+    {
+    return m_HistoBinScale[featureNum];
+    }
+  else
+    {
+    return 0;
+    }
+}
+
+template < class ImageT, unsigned int N, class LabelmapT >
+void
+PDFSegmenter< ImageT, N, LabelmapT >
+::SetPDFBinScale( unsigned int featureNum, double val )
+{
+  if( featureNum < N )
+    {
+    m_HistoBinScale[featureNum] = val;
+    }
+}
+
+
+template < class ImageT, unsigned int N, class LabelmapT >
+void
+PDFSegmenter< ImageT, N, LabelmapT >
 ::GenerateSample()
 {
+  m_SampleUpToDate = true;
+
   typename ImageType::Pointer     inIm[N];
 
   inIm[0] = m_InputVolume1;
@@ -194,6 +273,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
   if( N > 2 )
     {
     inIm[2] = m_InputVolume3;
+    }
+  if( N > 3 )
+    {
+    inIm[3] = m_InputVolume4;
     }
 
   unsigned int numClasses = m_ObjectIdList.size();
@@ -298,6 +381,12 @@ void
 PDFSegmenter< ImageT, N, LabelmapT >
 ::GeneratePDFs()
 {
+  if( !m_SampleUpToDate )
+    {
+    this->GenerateSample();
+    }
+  m_PDFsUpToDate = true;
+
   itk::TimeProbesCollectorBase timeCollector;
 
   typename ImageType::Pointer     inIm[N];
@@ -310,6 +399,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
   if( N > 2 )
     {
     inIm[2] = m_InputVolume3;
+    }
+  if( N > 3 )
+    {
+    inIm[3] = m_InputVolume4;
     }
 
   unsigned int numClasses = m_ObjectIdList.size();
@@ -665,12 +758,15 @@ PDFSegmenter< ImageT, N, LabelmapT >
         }
       std::cout << "m_InClassHistoTotalP = " << inPTotal << std::endl;
 
-      m_InClassHistoIt.GoToBegin();
-      while( !m_InClassHistoIt.IsAtEnd() )
+      if( inPTotal > 0 )
         {
-        double tf = m_InClassHistoIt.Get();
-        m_InClassHistoIt.Set( tf / inPTotal );
-        ++m_InClassHistoIt;
+        m_InClassHistoIt.GoToBegin();
+        while( !m_InClassHistoIt.IsAtEnd() )
+          {
+          double tf = m_InClassHistoIt.Get();
+          m_InClassHistoIt.Set( tf / inPTotal );
+          ++m_InClassHistoIt;
+          }
         }
       }
 
@@ -700,42 +796,21 @@ PDFSegmenter< ImageT, N, LabelmapT >
         }
       std::cout << "m_OutHistoTotalP = " << outPTotal << std::endl;
 
-      m_OutHistoIt.GoToBegin();
-      while( !m_OutHistoIt.IsAtEnd() )
+      if( outPTotal > 0 )
         {
-        double tf = m_OutHistoIt.Get();
-        m_OutHistoIt.Set( tf / outPTotal );
-        ++m_OutHistoIt;
+        m_OutHistoIt.GoToBegin();
+        while( !m_OutHistoIt.IsAtEnd() )
+          {
+          double tf = m_OutHistoIt.Get();
+          m_OutHistoIt.Set( tf / outPTotal );
+          ++m_OutHistoIt;
+          }
         }
       }
     }
   timeCollector.Stop( "HistogramToPDF" );
 
   timeCollector.Report();
-
-  //
-  // Save PDFs
-  //
-  /*
-  std::string fileName;
-  typedef itk::ImageFileWriter<HistogramImageType>  HistoImageWriterType;
-
-  std::cout << "Inside PDF saving..." << std::endl;
-  typename HistoImageWriterType::Pointer insideHistoImageWriter =
-                                               HistoImageWriterType::New();
-  fileName = "insideHistoImage.mha";
-  insideHistoImageWriter->SetFileName( fileName );
-  insideHistoImageWriter->SetInput( m_InClassHisto );
-  insideHistoImageWriter->Update();
-
-  std::cout << "Outside PDF saving..." << std::endl;
-  typename HistoImageWriterType::Pointer outsideHistoImageWriter =
-                                               HistoImageWriterType::New();
-  fileName = "outsideHistoImage.mha";
-  outsideHistoImageWriter->SetFileName( fileName );
-  outsideHistoImageWriter->SetInput( m_OutHisto );
-  outsideHistoImageWriter->Update();
-  */
 }
 
 template < class ImageT, unsigned int N, class LabelmapT >
@@ -743,6 +818,16 @@ void
 PDFSegmenter< ImageT, N, LabelmapT >
 ::ApplyPDFs()
 {
+  if( !m_SampleUpToDate )
+    {
+    this->GenerateSample();
+    }
+  if( !m_PDFsUpToDate )
+    {
+    this->GeneratePDFs();
+    }
+  m_ImagesUpToDate = true;
+
   typename ImageType::Pointer     inIm[N];
 
   inIm[0] = m_InputVolume1;
@@ -753,6 +838,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
   if( N > 2 )
     {
     inIm[2] = m_InputVolume3;
+    }
+  if( N > 3 )
+    {
+    inIm[3] = m_InputVolume4;
     }
 
   int erodeRadius = m_ErodeRadius;
@@ -1290,6 +1379,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
     }
 
   timeCollector.Report();
+  m_ImagesUpToDate = true;
 }
 
 template < class ImageT, unsigned int N, class LabelmapT >
@@ -1299,6 +1389,13 @@ PDFSegmenter< ImageT, N, LabelmapT >
 {
   this->GenerateSample();
   this->GeneratePDFs();
+}
+
+template < class ImageT, unsigned int N, class LabelmapT >
+void
+PDFSegmenter< ImageT, N, LabelmapT >
+::ClassifyImages()
+{
   this->ApplyPDFs();
 }
 
@@ -1308,6 +1405,33 @@ PDFSegmenter< ImageT, N, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
+
+  if( m_SampleUpToDate )
+    {
+    os << indent << "SampleUpToDate = true" << std::endl;
+    }
+  else
+    {
+    os << indent << "SampleUpToDate = false" << std::endl;
+    }
+
+  if( m_PDFsUpToDate )
+    {
+    os << indent << "PDFsUpToDate = true" << std::endl;
+    }
+  else
+    {
+    os << indent << "PDFsUpToDate = false" << std::endl;
+    }
+
+  if( m_ImagesUpToDate )
+    {
+    os << indent << "ImagesUpToDate = true" << std::endl;
+    }
+  else
+    {
+    os << indent << "ImagesUpToDate = false" << std::endl;
+    }
 
   if( m_InputVolume1.IsNotNull() )
     {
@@ -1333,13 +1457,21 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     os << indent << "Input volume 3 = NULL" << std::endl;
     }
-  if( m_Labelmap.IsNotNull() )
+  if( m_InputVolume4.IsNotNull() )
     {
-    os << indent << "Input volume 3 = " << m_Labelmap << std::endl;
+    os << indent << "Input volume 4 = " << m_InputVolume4 << std::endl;
     }
   else
     {
-    os << indent << "Input volume 3 = NULL" << std::endl;
+    os << indent << "Input volume 4 = NULL" << std::endl;
+    }
+  if( m_Labelmap.IsNotNull() )
+    {
+    os << indent << "Labelmap = " << m_Labelmap << std::endl;
+    }
+  else
+    {
+    os << indent << "Labelmap = NULL" << std::endl;
     }
   os << indent << "Erode radius = " << m_ErodeRadius << std::endl;
   os << indent << "Hole fill iterations = " << m_HoleFillIterations

@@ -764,6 +764,38 @@ int DoIt( MetaCommand & command )
         }
       }
 
+    else if( ( *it ).name == "overwrite" )
+      {
+      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+      reader2->SetFileName( command.GetValueAsString( *it,
+          "mask" ).c_str() );
+      reader2->Update();
+      typename ImageType::Pointer maskIm = reader2->GetOutput();
+
+      float maskKeyVal = command.GetValueAsFloat( *it, "maskKeyVal" );
+      float imageKeyVal = command.GetValueAsFloat( *it, "imageKeyVal" );
+      float newImageVal = command.GetValueAsFloat( *it, "newImageVal" );
+
+      itk::ImageRegionIterator< ImageType > itIm( imIn,
+            imIn->GetLargestPossibleRegion() );
+      itk::ImageRegionIterator< ImageType > itMask( maskIm,
+            maskIm->GetLargestPossibleRegion() );
+      while( !itIm.IsAtEnd() )
+        {
+        if( itMask.Get() == maskKeyVal )
+          {
+          if( itIm.Get() == imageKeyVal )
+            {
+            itIm.Set( newImageVal );
+            }
+          }
+        ++itIm;
+        ++itMask;
+        }
+
+      std::cout << "Overwrite" << std::endl;
+      }
+
     // blur
     else if( ( *it ).name == "blur" )
       {
@@ -1522,21 +1554,11 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "UniformNoise", "noiseRange",
     MetaCommand::FLOAT, true );
 
-  command.SetOption( "Fuse", "f", false,
-    "fuse two images by max, applying offset to second image" );
-  command.AddOptionField( "Fuse", "Offset2", MetaCommand::FLOAT, true );
-  command.AddOptionField( "Fuse", "Infile2", MetaCommand::STRING, true );
-
   command.SetOption( "Add", "a", false,
     "I( x ) = weight1*I( x ) + weight2*inFile2( x )" );
   command.AddOptionField( "Add", "weight1", MetaCommand::FLOAT, true );
   command.AddOptionField( "Add", "weight2", MetaCommand::FLOAT, true );
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
-
-  command.SetOption( "Multiply","u",false,
-    "I( x ) = I( x ) * inFile2( x )" );
-  command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING,
-    true );
 
   command.SetOption( "Algorithm", "A", false,
     "Return image value within masked region (mode: 0=mean, 1=stdDev)" );
@@ -1548,25 +1570,52 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "Algorithm", "maskFile", MetaCommand::STRING,
     true );
 
-  command.SetOption( "process", "p", false,
-    "Process the image using a unary operation (0=abs)" );
-  command.AddOptionField( "process", "mode", MetaCommand::INT, true );
+  command.SetOption( "blur", "b", false,
+    "gaussian blur the image using the given sigma" );
+  command.AddOptionField( "blur", "sigma", MetaCommand::FLOAT, true );
 
-  command.SetOption( "Process", "P", false,
-    "Process the image using a binary operation (0=multiply)" );
-  command.AddOptionField( "Process", "mode", MetaCommand::INT, true );
-  command.AddOptionField( "Process", "file2", MetaCommand::STRING, true );
+  command.SetOption( "blurOrder", "B", false,
+    "gaussian blur the image using the given sigma and the order." );
+  command.AddOptionField( "blurOrder", "sigma", MetaCommand::FLOAT, true );
+  command.AddOptionField( "blurOrder", "order", MetaCommand::INT, true );
+  command.AddOptionField( "blurOrder", "direction", MetaCommand::INT,
+    true );
 
-  command.SetOption( "Threshold", "t", false,
-    "if tLow<=I(x)<=tHigh then I(x)=vTrue else I(x)=vFalse" );
-  command.AddOptionField( "Threshold", "threshLow", MetaCommand::FLOAT,
+  command.SetOption( "CorrectionSlice", "c", false,
+    "Correct intensity slice-by-slice using HistogramMatchingFilter" );
+  command.AddOptionField( "CorrectionSlice", "nBins", MetaCommand::INT,
     true );
-  command.AddOptionField( "Threshold", "threshHigh", MetaCommand::FLOAT,
+  command.AddOptionField( "CorrectionSlice", "nMatchPoints",
+    MetaCommand::INT, true );
+
+  command.SetOption( "Correction", "C", false,
+    "Match intensity to another volume using HistogramMatchingFilter" );
+  command.AddOptionField( "Correction", "nBins", MetaCommand::INT, true );
+  command.AddOptionField( "Correction", "nMatchPoints", MetaCommand::INT,
     true );
-  command.AddOptionField( "Threshold", "valTrue", MetaCommand::FLOAT,
+  command.AddOptionField(
+    "Correction", "referenceVolume", MetaCommand::STRING, true );
+
+  command.SetOption( "Fuse", "f", false,
+    "fuse two images by max, applying offset to second image" );
+  command.AddOptionField( "Fuse", "Offset2", MetaCommand::FLOAT, true );
+  command.AddOptionField( "Fuse", "Infile2", MetaCommand::STRING, true );
+
+  command.SetOption( "histogram", "l", false,
+    "writes the image's histogram to the designated file" );
+  command.AddOptionField( "histogram", "nBins", MetaCommand::INT, true );
+  command.AddOptionField( "histogram", "histOutputFile",
+    MetaCommand::STRING, true );
+
+  command.SetOption( "histogram2", "L", false,
+    "writes the image's histogram to the designated file" );
+  command.AddOptionField( "histogram2", "nBins", MetaCommand::INT, true );
+  command.AddOptionField( "histogram2", "binMin", MetaCommand::FLOAT,
     true );
-  command.AddOptionField( "Threshold", "valFalse", MetaCommand::FLOAT,
+  command.AddOptionField( "histogram2", "binSIZE", MetaCommand::FLOAT,
     true );
+  command.AddOptionField( "histogram2", "histOutputFile",
+    MetaCommand::STRING, true );
 
   command.SetOption( "Masking", "m", false,
     "if tLow<=inFile2(x)<=tHigh then I(x)=I(x) else I(x)=vFalse" );
@@ -1589,53 +1638,30 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "Morphology", "backgroundValue",
     MetaCommand::FLOAT, true );
 
-  command.SetOption( "blur", "b", false,
-    "gaussian blur the image using the given sigma" );
-  command.AddOptionField( "blur", "sigma", MetaCommand::FLOAT, true );
-
-  command.SetOption( "blurOrder", "B", false,
-    "gaussian blur the image using the given sigma and the order." );
-  command.AddOptionField( "blurOrder", "sigma", MetaCommand::FLOAT, true );
-  command.AddOptionField( "blurOrder", "order", MetaCommand::INT, true );
-  command.AddOptionField( "blurOrder", "direction", MetaCommand::INT,
+  command.SetOption( "overwrite", "o", false,
+    "Replace values within the image, with a mask" );
+  command.AddOptionField( "overwrite", "mask", MetaCommand::STRING, true );
+  command.AddOptionField( "overwrite", "maskKeyVal", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "overwrite", "imageKeyVal", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "overwrite", "newImageVal", MetaCommand::FLOAT,
     true );
 
-  command.SetOption( "vessels", "z", false,
-    "Compute ridgness/vesselness for specified scales" );
-  command.AddOptionField( "vessels", "scaleMin", MetaCommand::INT, true );
-  command.AddOptionField( "vessels", "scaleMax", MetaCommand::INT, true );
-  command.AddOptionField( "vessels", "numScales", MetaCommand::INT, true );
+  command.SetOption( "offset", "O", false,
+    "Set a new offset for the image" );
+  command.AddOptionField( "offset", "offsetX", MetaCommand::FLOAT, true );
+  command.AddOptionField( "offset", "offsetY", MetaCommand::FLOAT, true );
+  command.AddOptionField( "offset", "offsetZ", MetaCommand::FLOAT, true );
 
-  command.SetOption( "histogram", "l", false,
-    "writes the image's histogram to the designated file" );
-  command.AddOptionField( "histogram", "nBins", MetaCommand::INT, true );
-  command.AddOptionField( "histogram", "histOutputFile",
-    MetaCommand::STRING, true );
+  command.SetOption( "process", "p", false,
+    "Process the image using a unary operation (0=abs)" );
+  command.AddOptionField( "process", "mode", MetaCommand::INT, true );
 
-  command.SetOption( "histogram2", "L", false,
-    "writes the image's histogram to the designated file" );
-  command.AddOptionField( "histogram2", "nBins", MetaCommand::INT, true );
-  command.AddOptionField( "histogram2", "binMin", MetaCommand::FLOAT,
-    true );
-  command.AddOptionField( "histogram2", "binSIZE", MetaCommand::FLOAT,
-    true );
-  command.AddOptionField( "histogram2", "histOutputFile",
-    MetaCommand::STRING, true );
-
-  command.SetOption( "CorrectionSlice", "c", false,
-    "Correct intensity slice-by-slice using HistogramMatchingFilter" );
-  command.AddOptionField( "CorrectionSlice", "nBins", MetaCommand::INT,
-    true );
-  command.AddOptionField( "CorrectionSlice", "nMatchPoints",
-    MetaCommand::INT, true );
-
-  command.SetOption( "Correction", "C", false,
-    "Match intensity to another volume using HistogramMatchingFilter" );
-  command.AddOptionField( "Correction", "nBins", MetaCommand::INT, true );
-  command.AddOptionField( "Correction", "nMatchPoints", MetaCommand::INT,
-    true );
-  command.AddOptionField(
-    "Correction", "referenceVolume", MetaCommand::STRING, true );
+  command.SetOption( "Process", "P", false,
+    "Process the image using a binary operation (0=multiply)" );
+  command.AddOptionField( "Process", "mode", MetaCommand::INT, true );
+  command.AddOptionField( "Process", "file2", MetaCommand::STRING, true );
 
   command.SetOption( "resize", "r", false,
     "Resample to reduce by a factor (factor==0 means make isotropic)" );
@@ -1658,16 +1684,32 @@ int main( int argc, char *argv[] )
   command.AddOptionField( "segment", "y", MetaCommand::FLOAT, true );
   command.AddOptionField( "segment", "z", MetaCommand::FLOAT, true );
 
-  command.SetOption( "offset", "O", false,
-    "Set a new offset for the image" );
-  command.AddOptionField( "offset", "offsetX", MetaCommand::FLOAT, true );
-  command.AddOptionField( "offset", "offsetY", MetaCommand::FLOAT, true );
-  command.AddOptionField( "offset", "offsetZ", MetaCommand::FLOAT, true );
-
   command.SetOption( "SetRandom", "S", false,
     "Sets the random number seed - to repeat experiments" );
   command.AddOptionField( "SetRandom", "seedValue", MetaCommand::FLOAT,
     true );
+
+  command.SetOption( "Threshold", "t", false,
+    "if tLow<=I(x)<=tHigh then I(x)=vTrue else I(x)=vFalse" );
+  command.AddOptionField( "Threshold", "threshLow", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "Threshold", "threshHigh", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "Threshold", "valTrue", MetaCommand::FLOAT,
+    true );
+  command.AddOptionField( "Threshold", "valFalse", MetaCommand::FLOAT,
+    true );
+
+  command.SetOption( "Multiply","u",false,
+    "I( x ) = I( x ) * inFile2( x )" );
+  command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING,
+    true );
+
+  command.SetOption( "vessels", "z", false,
+    "Compute ridgness/vesselness for specified scales" );
+  command.AddOptionField( "vessels", "scaleMin", MetaCommand::INT, true );
+  command.AddOptionField( "vessels", "scaleMax", MetaCommand::INT, true );
+  command.AddOptionField( "vessels", "numScales", MetaCommand::INT, true );
 
   command.SetOption( "Voronoi", "Z", false,
     "Run centroid voronoi tessellation on the image" );
