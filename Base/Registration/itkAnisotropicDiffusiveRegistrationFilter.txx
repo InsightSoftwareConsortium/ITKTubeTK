@@ -1305,8 +1305,10 @@ AnisotropicDiffusiveRegistrationFilter
         outputImageNeighborhoodIt,
         normalVectorImageNeighborhoodIt,
         tangentialDiffusionTensorImageNeighborhoodIt,
+        tangentialDiffusionTensorImageDerivativeNeighborhoodIt,
         deformationVectorTangentialComponentNeighborhoodItArray,
         normalDiffusionTensorImageNeighborhoodIt,
+        normalDiffusionTensorImageDerivativeNeighborhoodIt,
         deformationVectorNormalComponentNeighborhoodItArray,
         globalData);
       ++outputImageNeighborhoodIt;

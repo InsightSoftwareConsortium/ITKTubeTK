@@ -205,10 +205,14 @@ AnisotropicDiffusiveRegistrationFunction
         normalVectorImageNeighborhood,
     const DiffusionTensorNeighborhoodIteratorType &
         tangentialNeighborhoodTensor,
+    const DiffusionTensorImageRegionIteratorType &
+        tangentialNeighborhoodTensorDerivative,
     const DeformationVectorComponentNeighborhoodIteratorArrayType &
         tangentialNeighborhoodDeformationFieldComponents,
     const DiffusionTensorNeighborhoodIteratorType &
         normalNeighborhoodTensor,
+    const DiffusionTensorImageRegionIteratorType &
+        normalNeighborhoodTensorDerivative,
     const DeformationVectorComponentNeighborhoodIteratorArrayType &
         normalNeighborhoodDeformationFieldComponents,
     void * gd,
@@ -259,6 +263,7 @@ AnisotropicDiffusiveRegistrationFunction
           = m_RegularizationFunction->ComputeUpdate(
               tangentialNeighborhoodDeformationFieldComponents[i],
               tangentialNeighborhoodTensor,
+              tangentialNeighborhoodTensorDerivative,
               globalData->m_RegularizationGlobalDataStruct,
               offset );
 
@@ -269,6 +274,7 @@ AnisotropicDiffusiveRegistrationFunction
             = m_RegularizationFunction->ComputeUpdate(
                 normalNeighborhoodDeformationFieldComponents[i],
                 normalNeighborhoodTensor,
+                normalNeighborhoodTensorDerivative,
                 globalData->m_RegularizationGlobalDataStruct,
                 offset );
 

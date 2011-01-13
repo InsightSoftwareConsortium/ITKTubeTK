@@ -226,10 +226,14 @@ public:
           &normalVectorImageNeighborhood,
       const DiffusionTensorNeighborhoodIteratorType
           &tangentialNeighborhoodTensor,
+      const DiffusionTensorImageRegionIteratorType
+          &tangentialNeighborhoodTensorDerivative,
       const DeformationVectorComponentNeighborhoodIteratorArrayType
           &tangentialNeighborhoodDeformationFieldComponents,
       const DiffusionTensorNeighborhoodIteratorType
           &normalNeighborhoodTensor,
+      const DiffusionTensorImageRegionIteratorType
+          &normalNeighborhoodTensorDerivative,
       const DeformationVectorComponentNeighborhoodIteratorArrayType
           &normalNeighborhoodDeformationFieldComponents,
       void *globalData,
