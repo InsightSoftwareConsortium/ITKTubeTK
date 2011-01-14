@@ -166,18 +166,18 @@ AnisotropicDiffusionTensorFunction< TImageType >
 {
   TensorPixelType derivativePixel;
 
-  for( unsigned i = 0; i < ImageDimension; i++)
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     TensorPixelType positionA_Tensor_value = gt.GetPixel( m_positionA[i] );
     TensorPixelType positionB_Tensor_value = gt.GetPixel( m_positionB[i] );
 
-    for( unsigned int j = 0; j < ImageDimension; j++)
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
-      derivativePixel(i, j) = 0.5 *
+      derivativePixel(i,j) = 0.5 *
                 ( positionA_Tensor_value(i,j) - positionB_Tensor_value(i,j) );
       if( gd )
         {
-        gd->m_DT_dxy[i][j] = derivativePixel(i, j);
+        gd->m_DT_dxy[i][j] = derivativePixel(i,j);
         }
       }
     }
