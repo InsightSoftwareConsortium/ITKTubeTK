@@ -60,29 +60,37 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs. */
-  typedef double                                       TimeStepType;
-  typedef typename Superclass::ImageType               ImageType;
-  typedef typename Superclass::PixelType               PixelType;
-  typedef double                                       ScalarValueType;
-  typedef typename Superclass::RadiusType              RadiusType;
-  typedef typename Superclass::NeighborhoodType        NeighborhoodType;
-  typedef typename Superclass::FloatOffsetType         FloatOffsetType;
+  typedef double                                      TimeStepType;
+  typedef typename Superclass::ImageType              ImageType;
+  typedef typename Superclass::PixelType              PixelType;
+  typedef double                                      ScalarValueType;
+  typedef typename Superclass::RadiusType             RadiusType;
+  typedef typename Superclass::NeighborhoodType       NeighborhoodType;
+  typedef typename Superclass::FloatOffsetType        FloatOffsetType;
 
-  typedef DiffusionTensor3D< double >                  DiffusionTensorType;
-  typedef itk::Image< DiffusionTensorType, 3 >         DiffusionTensorImageType;
+  typedef DiffusionTensor3D< double >                 DiffusionTensorType;
+  typedef itk::Image< DiffusionTensorType, 3 >        DiffusionTensorImageType;
+
+  typedef vnl_matrix_fixed< ScalarValueType,
+                            itkGetStaticConstMacro(ImageDimension),
+                            itkGetStaticConstMacro(ImageDimension)>
+                                                      DerivativeMatrixType;
+  typedef itk::Image< DerivativeMatrixType, 3 >       DerivativeMatrixImageType;
 
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
   typedef ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>
     DefaultBoundaryConditionType;
 
-  /** Define diffusion image neighborhood type */
+  /** Define diffusion image iterator/neighborhood types */
   typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
                                     DefaultBoundaryConditionType>
                                            DiffusionTensorNeighborhoodType;
+  typedef ImageRegionIterator<DerivativeMatrixImageType>
+      DerivativeMatrixImageRegionType;
 
   /** Tensor pixel type */
-  typedef itk::SymmetricSecondRankTensor< double >  TensorPixelType;
+  typedef itk::SymmetricSecondRankTensor< double >    TensorPixelType;
 
   /** A global data type for this class of equations.  Used to store
    * values that are needed in calculating the time step and other intermediate
@@ -92,30 +100,35 @@ public:
   struct GlobalDataStruct
     {
     /** Hessian matrix */
-    vnl_matrix_fixed<ScalarValueType,
-                     itkGetStaticConstMacro(ImageDimension),
-                     itkGetStaticConstMacro(ImageDimension)> m_dxy;
+    DerivativeMatrixType  m_dxy;
 
     /** diffusion tensor first derivative matrix */
-    vnl_matrix_fixed<ScalarValueType,
-                     itkGetStaticConstMacro(ImageDimension),
-                     itkGetStaticConstMacro(ImageDimension)> m_DT_dxy;
+    DerivativeMatrixType  m_DT_dxy;
 
     /** Array of first derivatives*/
-    ScalarValueType m_dx[itkGetStaticConstMacro(ImageDimension)];
+    ScalarValueType       m_dx[itkGetStaticConstMacro(ImageDimension)];
 
-    ScalarValueType m_GradMagSqr;
+    ScalarValueType       m_GradMagSqr;
     };
 
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
-                                void *globalData,
-                                const FloatOffsetType& = FloatOffsetType(0.0));
+                                  void *globalData,
+                                  const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(
                      const NeighborhoodType &neighborhood,
                      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+                     void *globalData,
+                     const FloatOffsetType& = FloatOffsetType(0.0));
+
+  /** Compute the equation value, using precomputed first derivatives for the
+      diffusion tensor. */
+  virtual PixelType ComputeUpdate(
+                     const NeighborhoodType &neighborhood,
+                     const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+                     const DerivativeMatrixImageRegionType &tensorDerivative,
                      void *globalData,
                      const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -153,6 +166,11 @@ public:
       const itk::Image< TPixel, VImageDimension > * input,
       bool useImageSpacing );
 
+  /** Computes the first derivative of a diffusion tensor image. */
+  void ComputeDiffusionFirstDerivative(
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      DerivativeMatrixImageRegionType &derivativeTensor ) const;
+
 protected:
   AnisotropicDiffusionTensorFunction();
 
@@ -163,10 +181,45 @@ protected:
   std::slice x_slice[itkGetStaticConstMacro(ImageDimension)];
 
   /** The offset of the center pixel in the neighborhood. */
-  ::size_t m_Center;
+  unsigned int m_Center;
 
   /** Stride length along the y-dimension. */
-  ::size_t m_xStride[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_xStride[itkGetStaticConstMacro(ImageDimension)];
+
+  /** Defines various positions surrounding the center pixel in an image
+    iterator. */
+  unsigned int m_positionA[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionB[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionAa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionBa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionCa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionDa[itkGetStaticConstMacro(ImageDimension)]
+      [itkGetStaticConstMacro(ImageDimension)];
+
+  /** Computes the first and second derivatives of an intensity image. */
+  void ComputeIntensityFirstAndSecondDerivatives(
+      const NeighborhoodType &neighborhoodIntensity,
+      GlobalDataStruct *globalData ) const;
+
+  /** Compute the first derivative of a diffusion image */
+  DerivativeMatrixType ComputeDiffusionFirstDerivative(
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      GlobalDataStruct *globalData ) const;
+
+  /** Computes the final update term based on the results of the first and
+    * second derivative computations */
+  PixelType ComputeFinalUpdateTerm(
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      const GlobalDataStruct* globalData ) const;
+
+  /** Copies a diffusion tensor derivative into a globalDataStruct's diffusion
+    tensor first derivative field */
+  void CopyDerivativeMatrixToGlobalData(
+      const DerivativeMatrixImageRegionType &tensorDerivative,
+      GlobalDataStruct* globalData ) const;
 
 private:
   //purposely not implemented

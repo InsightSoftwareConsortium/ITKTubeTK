@@ -126,6 +126,14 @@ public:
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
 
+  /** Typedefs for the matrices of derivatives */
+  typedef typename RegularizationFunctionType::DerivativeMatrixType
+      DerivativeMatrixType;
+  typedef typename RegularizationFunctionType::DerivativeMatrixImageType
+      DerivativeMatrixImageType;
+  typedef typename DerivativeMatrixImageType::Pointer
+      DerivativeMatrixImagePointer;
+
   /** Boundary condition typedefs (defined in RegularizationFunction for
     * diffusion tensors) */
   typedef ZeroFluxNeumannBoundaryCondition< DeformationVectorComponentImageType >
@@ -147,6 +155,8 @@ public:
 
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodIteratorType;
+  typedef typename RegularizationFunctionType::DerivativeMatrixImageRegionType
+      DerivativeMatrixImageRegionIteratorType;
 
   /** Set/Get the time step for an update */
   void SetTimeStep(const TimeStepType &t)
@@ -224,10 +234,14 @@ public:
           &normalVectorImageNeighborhood,
       const DiffusionTensorNeighborhoodIteratorType
           &tangentialNeighborhoodTensor,
+      const DerivativeMatrixImageRegionIteratorType
+          &tangentialNeighborhoodTensorDerivative,
       const DeformationVectorComponentNeighborhoodIteratorArrayType
           &tangentialNeighborhoodDeformationFieldComponents,
       const DiffusionTensorNeighborhoodIteratorType
           &normalNeighborhoodTensor,
+      const DerivativeMatrixImageRegionIteratorType
+          &normalNeighborhoodTensorDerivative,
       const DeformationVectorComponentNeighborhoodIteratorArrayType
           &normalNeighborhoodDeformationFieldComponents,
       void *globalData,
@@ -239,6 +253,13 @@ public:
 
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
+
+  /** Returns the pointers to the regularization function and the intensity
+    difference function */
+  RegularizationFunctionPointer GetRegularizationFunctionPointer() const
+    { return m_RegularizationFunction; }
+  IntensityDistanceFunctionPointer GetIntensityDistanceFunctionPointer() const
+    { return m_IntensityDistanceFunction; }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();

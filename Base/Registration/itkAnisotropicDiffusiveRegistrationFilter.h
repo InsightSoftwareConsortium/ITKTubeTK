@@ -150,6 +150,12 @@ public:
   typedef typename RegistrationFunctionType::DiffusionTensorImagePointer
       DiffusionTensorImagePointer;
 
+  /** The derivative matrix types */
+  typedef typename RegistrationFunctionType::DerivativeMatrixImageType
+      DerivativeMatrixImageType;
+  typedef typename RegistrationFunctionType::DerivativeMatrixImagePointer
+      DerivativeMatrixImagePointer;
+
   /** Typedefs used in multithreading */
   typedef typename Superclass::OutputImageType          OutputImageType;
   typedef typename Superclass::OutputImagePointer       OutputImagePointer;
@@ -161,6 +167,8 @@ public:
       ThreadNormalVectorImageRegionType;
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
+  typedef typename DerivativeMatrixImageType::RegionType
+      ThreadDerivativeMatrixImageRegionType;
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
 
@@ -294,6 +302,8 @@ protected:
             &normalVectorRegionToProcess,
           const ThreadDiffusionTensorImageRegionType
             &diffusionRegionToProcess,
+          const ThreadDerivativeMatrixImageRegionType
+            &derivativeMatrixRegionToProcess,
           const ThreadDeformationVectorComponentImageRegionType
             &componentRegionToProcess,
           int threadId );
@@ -325,8 +335,11 @@ protected:
   /** Updates the deformation vector component images */
   virtual void UpdateDeformationVectorComponentImages();
 
-  /** Computes the diffusion tensor image */
-  virtual void ComputeDiffusionTensorImage();
+  /** Computes the diffusion tensor images */
+  virtual void ComputeDiffusionTensorImages();
+
+  /** Computes the first derivatives of the diffusion tensor images */
+  virtual void ComputeDiffusionTensorImageDerivatives();
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >
@@ -366,22 +379,22 @@ private:
   static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
 
   /** The buffer that holds the updates for an iteration of algorithm. */
-  typename UpdateBufferType::Pointer    m_UpdateBuffer;
+  typename UpdateBufferType::Pointer  m_UpdateBuffer;
 
   /** The organ boundary surface, the surface of border normals, and the
   * derived normal vector and weight images */
-  BorderSurfacePointer                  m_BorderSurface;
-  BorderSurfacePointer                  m_BorderNormalsSurface;
-  NormalVectorImagePointer              m_NormalVectorImage;
-  WeightImagePointer                    m_WeightImage;
+  BorderSurfacePointer                m_BorderSurface;
+  BorderSurfacePointer                m_BorderNormalsSurface;
+  NormalVectorImagePointer            m_NormalVectorImage;
+  WeightImagePointer                  m_WeightImage;
 
   /** The lambda factor for computing the weight from distance.  Weight is
   * modeled as exponential decay: weight = e^(lambda * distance).
   * (lamba must be negative) */
-  WeightType                            m_lambda;
+  WeightType                          m_lambda;
 
   /** The normal component of the deformation field */
-  OutputImagePointer                    m_NormalDeformationField;
+  OutputImagePointer                  m_NormalDeformationField;
 
   /** The components of the tangential and normal deformation vectors */
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
@@ -392,13 +405,17 @@ private:
   /** Extracts the x,y,z components of the tangential and normal
   * components of the deformation field */
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
-                                        m_TangentialComponentExtractor;
+      m_TangentialComponentExtractor;
   itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
-                                        m_NormalComponentExtractor;
+      m_NormalComponentExtractor;
 
   /** The images of the tangential and normal diffusion tensors */
-  DiffusionTensorImagePointer           m_TangentialDiffusionTensorImage;
-  DiffusionTensorImagePointer           m_NormalDiffusionTensorImage;
+  DiffusionTensorImagePointer         m_TangentialDiffusionTensorImage;
+  DiffusionTensorImagePointer         m_NormalDiffusionTensorImage;
+
+  /** The precomputed diffusion tensor first derivatives */
+  DerivativeMatrixImagePointer        m_TangentialDiffusionTensorDerivativeImage;
+  DerivativeMatrixImagePointer        m_NormalDiffusionTensorDerivativeImage;
 
 };
 
