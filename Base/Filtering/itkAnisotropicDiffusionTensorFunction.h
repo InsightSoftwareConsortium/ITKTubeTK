@@ -71,6 +71,11 @@ public:
   typedef DiffusionTensor3D< double >                  DiffusionTensorType;
   typedef itk::Image< DiffusionTensorType, 3 >         DiffusionTensorImageType;
 
+  typedef vnl_matrix_fixed< ScalarValueType,
+                            itkGetStaticConstMacro(ImageDimension),
+                            itkGetStaticConstMacro(ImageDimension)>
+                                                       DerivativeMatrixType;
+
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
   typedef ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>
@@ -94,19 +99,15 @@ public:
   struct GlobalDataStruct
     {
     /** Hessian matrix */
-    vnl_matrix_fixed<ScalarValueType,
-                     itkGetStaticConstMacro(ImageDimension),
-                     itkGetStaticConstMacro(ImageDimension)> m_dxy;
+    DerivativeMatrixType  m_dxy;
 
     /** diffusion tensor first derivative matrix */
-    vnl_matrix_fixed<ScalarValueType,
-                     itkGetStaticConstMacro(ImageDimension),
-                     itkGetStaticConstMacro(ImageDimension)> m_DT_dxy;
+    DerivativeMatrixType  m_DT_dxy;
 
     /** Array of first derivatives*/
-    ScalarValueType m_dx[itkGetStaticConstMacro(ImageDimension)];
+    ScalarValueType       m_dx[itkGetStaticConstMacro(ImageDimension)];
 
-    ScalarValueType m_GradMagSqr;
+    ScalarValueType       m_GradMagSqr;
     };
 
   /** Compute the equation value. */
