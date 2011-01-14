@@ -86,7 +86,7 @@ public:
   typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
                                     DefaultBoundaryConditionType>
                                            DiffusionTensorNeighborhoodType;
-  typedef ImageRegionIterator<DerivativeMatrixType>
+  typedef ImageRegionIterator<DerivativeMatrixImageType>
       DerivativeMatrixImageRegionType;
 
   /** Tensor pixel type */
@@ -128,7 +128,7 @@ public:
   virtual PixelType ComputeUpdate(
                      const NeighborhoodType &neighborhood,
                      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-                     const DiffusionTensorImageRegionType &tensorDerivative,
+                     const DerivativeMatrixImageRegionType &tensorDerivative,
                      void *globalData,
                      const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -169,7 +169,7 @@ public:
   /** Computes the first derivative of a diffusion tensor image. */
   void ComputeDiffusionFirstDerivative(
       const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-      DiffusionTensorImageRegionType &derivativeTensor ) const;
+      DerivativeMatrixImageRegionType &derivativeTensor ) const;
 
 protected:
   AnisotropicDiffusionTensorFunction();
@@ -205,7 +205,7 @@ protected:
       GlobalDataStruct *globalData ) const;
 
   /** Compute the first derivative of a diffusion image */
-  TensorPixelType ComputeDiffusionFirstDerivative(
+  DerivativeMatrixType ComputeDiffusionFirstDerivative(
       const DiffusionTensorNeighborhoodType &neighborhoodTensor,
       GlobalDataStruct *globalData ) const;
 
@@ -217,8 +217,9 @@ protected:
 
   /** Copies a diffusion tensor derivative into a globalDataStruct's diffusion
     tensor first derivative field */
-  void CopyTensorToGlobalData( const DiffusionTensorImageRegionType &tensor,
-                               GlobalDataStruct* globalData ) const;
+  void CopyDerivativeMatrixToGlobalData(
+      const DerivativeMatrixImageRegionType &tensorDerivative,
+      GlobalDataStruct* globalData ) const;
 
 private:
   //purposely not implemented

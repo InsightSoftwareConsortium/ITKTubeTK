@@ -150,6 +150,12 @@ public:
   typedef typename RegistrationFunctionType::DiffusionTensorImagePointer
       DiffusionTensorImagePointer;
 
+  /** The derivative matrix types */
+  typedef typename RegistrationFunctionType::DerivativeMatrixImageType
+      DerivativeMatrixImageType;
+  typedef typename RegistrationFunctionType::DerivativeMatrixImagePointer
+      DerivativeMatrixImagePointer;
+
   /** Typedefs used in multithreading */
   typedef typename Superclass::OutputImageType          OutputImageType;
   typedef typename Superclass::OutputImagePointer       OutputImagePointer;
@@ -161,6 +167,8 @@ public:
       ThreadNormalVectorImageRegionType;
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
+  typedef typename DerivativeMatrixImageType::RegionType
+      ThreadDerivativeMatrixImageRegionType;
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
 
@@ -294,6 +302,8 @@ protected:
             &normalVectorRegionToProcess,
           const ThreadDiffusionTensorImageRegionType
             &diffusionRegionToProcess,
+          const ThreadDerivativeMatrixImageRegionType
+            &derivativeMatrixRegionToProcess,
           const ThreadDeformationVectorComponentImageRegionType
             &componentRegionToProcess,
           int threadId );
@@ -404,8 +414,8 @@ private:
   DiffusionTensorImagePointer         m_NormalDiffusionTensorImage;
 
   /** The precomputed diffusion tensor first derivatives */
-  DiffusionTensorImagePointer         m_TangentialDiffusionTensorDerivativeImage;
-  DiffusionTensorImagePointer         m_NormalDiffusionTensorDerivativeImage;
+  DerivativeMatrixImagePointer        m_TangentialDiffusionTensorDerivativeImage;
+  DerivativeMatrixImagePointer        m_NormalDiffusionTensorDerivativeImage;
 
 };
 

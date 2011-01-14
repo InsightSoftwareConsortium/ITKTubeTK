@@ -120,7 +120,7 @@ typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeUpdate(const NeighborhoodType &it,
                 const DiffusionTensorNeighborhoodType &gt,
-                const DiffusionTensorImageRegionType &tensorDerivative,
+                const DerivativeMatrixImageRegionType &tensorDerivative,
                 void *globalData,
                 const FloatOffsetType& offset)
 {
@@ -135,7 +135,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 
   // We are provided the diffusion tensor matrix first derivatives, so
   // copy them into the global data struct
-  this->CopyTensorToGlobalData( tensorDerivative, gd );
+  this->CopyDerivativeMatrixToGlobalData( tensorDerivative, gd );
 
   // Compute the update term
   return this->ComputeFinalUpdateTerm( gt, gd );
@@ -144,11 +144,12 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
-::CopyTensorToGlobalData(const DiffusionTensorImageRegionType &tensor,
-                         GlobalDataStruct *gd) const
+::CopyDerivativeMatrixToGlobalData(
+    const DerivativeMatrixImageRegionType &derivative,
+     GlobalDataStruct *gd) const
 {
   assert( gd );
-  TensorPixelType derivativePixel = tensor.Get();
+  DerivativeMatrixType derivativePixel = derivative.Get();
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     for( unsigned int j = 0; j < ImageDimension; j++ )
@@ -159,12 +160,12 @@ AnisotropicDiffusionTensorFunction< TImageType >
 }
 
 template< class TImageType >
-typename AnisotropicDiffusionTensorFunction< TImageType >::TensorPixelType
+typename AnisotropicDiffusionTensorFunction< TImageType >::DerivativeMatrixType
 AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeDiffusionFirstDerivative(const DiffusionTensorNeighborhoodType &gt,
                                   GlobalDataStruct *gd) const
 {
-  TensorPixelType derivativePixel;
+  DerivativeMatrixType derivativePixel;
 
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
@@ -188,7 +189,7 @@ template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeDiffusionFirstDerivative(const DiffusionTensorNeighborhoodType &gt,
-                                  DiffusionTensorImageRegionType &output ) const
+                                  DerivativeMatrixImageRegionType &output ) const
 {
   output.Set( this->ComputeDiffusionFirstDerivative( gt, NULL ) );
 }

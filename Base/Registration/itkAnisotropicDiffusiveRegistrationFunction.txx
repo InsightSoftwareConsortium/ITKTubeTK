@@ -205,13 +205,13 @@ AnisotropicDiffusiveRegistrationFunction
         normalVectorImageNeighborhood,
     const DiffusionTensorNeighborhoodIteratorType &
         tangentialNeighborhoodTensor,
-    const DiffusionTensorImageRegionIteratorType &
+    const DerivativeMatrixImageRegionIteratorType &
         tangentialNeighborhoodTensorDerivative,
     const DeformationVectorComponentNeighborhoodIteratorArrayType &
         tangentialNeighborhoodDeformationFieldComponents,
     const DiffusionTensorNeighborhoodIteratorType &
         normalNeighborhoodTensor,
-    const DiffusionTensorImageRegionIteratorType &
+    const DerivativeMatrixImageRegionIteratorType &
         normalNeighborhoodTensorDerivative,
     const DeformationVectorComponentNeighborhoodIteratorArrayType &
         normalNeighborhoodDeformationFieldComponents,
