@@ -60,21 +60,22 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs. */
-  typedef double                                       TimeStepType;
-  typedef typename Superclass::ImageType               ImageType;
-  typedef typename Superclass::PixelType               PixelType;
-  typedef double                                       ScalarValueType;
-  typedef typename Superclass::RadiusType              RadiusType;
-  typedef typename Superclass::NeighborhoodType        NeighborhoodType;
-  typedef typename Superclass::FloatOffsetType         FloatOffsetType;
+  typedef double                                      TimeStepType;
+  typedef typename Superclass::ImageType              ImageType;
+  typedef typename Superclass::PixelType              PixelType;
+  typedef double                                      ScalarValueType;
+  typedef typename Superclass::RadiusType             RadiusType;
+  typedef typename Superclass::NeighborhoodType       NeighborhoodType;
+  typedef typename Superclass::FloatOffsetType        FloatOffsetType;
 
-  typedef DiffusionTensor3D< double >                  DiffusionTensorType;
-  typedef itk::Image< DiffusionTensorType, 3 >         DiffusionTensorImageType;
+  typedef DiffusionTensor3D< double >                 DiffusionTensorType;
+  typedef itk::Image< DiffusionTensorType, 3 >        DiffusionTensorImageType;
 
   typedef vnl_matrix_fixed< ScalarValueType,
                             itkGetStaticConstMacro(ImageDimension),
                             itkGetStaticConstMacro(ImageDimension)>
-                                                       DerivativeMatrixType;
+                                                      DerivativeMatrixType;
+  typedef itk::Image< DerivativeMatrixType, 3 >       DerivativeMatrixImageType;
 
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
@@ -85,11 +86,11 @@ public:
   typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
                                     DefaultBoundaryConditionType>
                                            DiffusionTensorNeighborhoodType;
-  typedef ImageRegionIterator<DiffusionTensorImageType>
-      DiffusionTensorImageRegionType;
+  typedef ImageRegionIterator<DerivativeMatrixType>
+      DerivativeMatrixImageRegionType;
 
   /** Tensor pixel type */
-  typedef itk::SymmetricSecondRankTensor< double >  TensorPixelType;
+  typedef itk::SymmetricSecondRankTensor< double >    TensorPixelType;
 
   /** A global data type for this class of equations.  Used to store
    * values that are needed in calculating the time step and other intermediate
