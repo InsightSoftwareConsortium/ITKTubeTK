@@ -352,7 +352,6 @@ add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
 add_subdirectory( Utilities )
 add_subdirectory( Base )
 add_subdirectory( Applications )
-add_subdirectory( Projects )
 
 #-----------------------------------------------------------------------------
 # Create the directory where tests store temp results
