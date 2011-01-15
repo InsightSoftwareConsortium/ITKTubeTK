@@ -112,6 +112,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
     filter->SetForceClassification( false );
     }
   filter->Update();
+  filter->ClassifyImages();
 
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[4] );
