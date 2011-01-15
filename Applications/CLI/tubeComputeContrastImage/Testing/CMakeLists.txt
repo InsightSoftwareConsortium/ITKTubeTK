@@ -27,7 +27,7 @@ set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
 set( BASELINE
-  ${TubeTK_SOURCE_DIR}/Projects/ImageClassWithPrior/Apps/CLI/${PROJECT_NAME}/Testing/Baselines )
+  ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -42,10 +42,14 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
-               -m 10
-               -M 20
-               -s 10
-               ${INPUT_DATA}/GDS0015_Large.mha
+               -S 1024
+               -o 255
+               -n 127
+               -s 0.5
+               -b 20
+               -i 1000
+               ${INPUT_DATA}/im0001.mha
+               ${INPUT_DATA}/im0001.vk.mask.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
@@ -53,7 +57,9 @@ add_test( ${PROJECT_NAME}Test1
 #######
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
+               -i 0.01
+               -n 5
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+  PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
