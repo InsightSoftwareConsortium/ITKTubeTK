@@ -45,7 +45,7 @@ if( NOT USE_SYSTEM_ITK )
     find_package( Git REQUIRED )
   endif( NOT GIT_EXECUTABLE )
 
-  option( GIT_PROTOCOL_HTTP 
+  option( GIT_PROTOCOL_HTTP
     "Use HTTP for git access (useful if behind a firewall)" OFF )
   if( GIT_PROTOCOL_HTTP )
     set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
@@ -98,7 +98,7 @@ if( TubeTK_USE_VTK )
       find_package( Git REQUIRED )
     endif( NOT GIT_EXECUTABLE )
 
-    option( GIT_PROTOCOL_HTTP 
+    option( GIT_PROTOCOL_HTTP
       "Use HTTP for git access (useful if behind a firewall)" OFF )
     if( GIT_PROTOCOL_HTTP )
       set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
@@ -273,7 +273,7 @@ if( TubeTK_USE_QT )
       find_package( Git REQUIRED )
     endif( NOT GIT_EXECUTABLE )
 
-    option( GIT_PROTOCOL_HTTP 
+    option( GIT_PROTOCOL_HTTP
       "Use HTTP for git access (useful if behind a firewall)" OFF )
     if( GIT_PROTOCOL_HTTP )
       set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
@@ -364,4 +364,3 @@ ExternalProject_Add( ${proj}
   DEPENDS
     ${TubeTK_DEPENDS}
  )
-

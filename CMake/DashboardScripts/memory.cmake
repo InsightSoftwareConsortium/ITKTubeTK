@@ -1,19 +1,9 @@
 ##############################################################################
 #
-# Library:   TubeTK/VTree
+# Library:   TubeTK
 #
-# Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
-#
-# Original implementation:
-# Copyright University of North Carolina, Chapel Hill, NC, USA.
-#
-# Revised implementation:
-# Copyright Kitware Inc., Carrboro, NC, USA.
-#
-# Covered, in part, by US Patent Number 6,690,816
-# "Systems and methods for tubular object processing"
-# S. Aylward, E. Bullit, D. Fritsch, S. Pizer, UNC-CH
-# Released under Apache 2.0 license for royalty-free use in July, 2010
+# Copyright 2010 Kitware Inc. 28 Corporate Drive,
+# Clifton Park, NY, 12065, USA.
 #
 # All rights reserved.
 #
@@ -31,3 +21,19 @@
 #
 ##############################################################################
 
+cmake_minimum_required(VERSION 2.8)
+
+set( SCRIPT_NAME "Memory" )
+set( SCRIPT_BINARY_SUBDIR "" )
+set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+
+include( ${SITE_SCRIPT_DIR}/cmakecache.cmake )
+
+SET( CTEST_TEST_TIMEOUT 5000 )
+
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
+ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
+ctest_submit( PARTS MemCheck )

@@ -34,7 +34,7 @@ IMAGE_PATH           = "@TubeTK_SOURCE_DIR@/Doxygen"
 OUTPUT_DIRECTORY     = "@TubeTK_BINARY_DIR@/Doxygen/doc"
 
 INPUT                = "@TubeTK_SOURCE_DIR@/Base" \
-                       "@TubeTK_SOURCE_DIR@/Applications" 
+                       "@TubeTK_SOURCE_DIR@/Applications"
 
 EXTRACT_ALL          = YES
 EXTRACT_PRIVATE      = NO

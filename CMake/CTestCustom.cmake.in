@@ -86,7 +86,7 @@ SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
     "Slicer3-Build"
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
     )
-    
+
 # GLOB automatically recurses in subdirs
 SET(CTEST_EXTRA_COVERAGE_GLOB
    Utilities/*.cxx
@@ -94,7 +94,4 @@ SET(CTEST_EXTRA_COVERAGE_GLOB
    Base/*.txx
    Applications/*.cxx
    Applications/*.txx
-   Projects/*.cxx
-   Projects/*.txx
    )
-

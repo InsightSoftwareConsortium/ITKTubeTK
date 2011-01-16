@@ -21,21 +21,25 @@
 #
 ##############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+MESSAGE( "HERE: _${SITE_EXPERIMENTAL_BUILD_TEST}_" )
 
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
+set( ENV{TUBETK_RUN_MODEL} "Experimental" )
+set( ENV{TUBETK_FORCE_BUILD} "1" )
 
-set( SCRIPT_NAME "Memory" )
-set( SCRIPT_BINARY_SUBDIR "" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+if( SITE_EXPERIMENTAL_BUILD_TEST )
+  include( "${SITE_SCRIPT_DIR}/build_test.cmake" )
+ENDif( SITE_EXPERIMENTAL_BUILD_TEST )
 
-include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
+if( SITE_EXPERIMENTAL_STYLE )
+  include( "${SITE_SCRIPT_DIR}/style.cmake" )
+endif( SITE_EXPERIMENTAL_STYLE )
 
-SET( CTEST_TEST_TIMEOUT 5000 )
+if( SITE_EXPERIMENTAL_COVERAGE )
+  include( "${SITE_SCRIPT_DIR}/coverage.cmake" )
+endif( SITE_EXPERIMENTAL_COVERAGE )
 
-ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
-ctest_submit( PARTS MemCheck )
+if( SITE_EXPERIMENTAL_MEMORY )
+  include( "${SITE_SCRIPT_DIR}/memory.cmake" )
+endif( SITE_EXPERIMENTAL_MEMORY )
+
+set(CTEST_RUN_CURRENT_SCRIPT 0)
