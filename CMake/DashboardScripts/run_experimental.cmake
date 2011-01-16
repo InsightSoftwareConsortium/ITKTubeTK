@@ -21,8 +21,6 @@
 #
 ##############################################################################
 
-MESSAGE( "HERE: _${SITE_EXPERIMENTAL_BUILD_TEST}_" )
-
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
 set( ENV{TUBETK_FORCE_BUILD} "1" )
 
