@@ -1049,9 +1049,10 @@ AnisotropicDiffusiveRegistrationFilter
     const ThreadRegionType &                      regionToProcess,
     const ThreadNormalVectorImageRegionType &     normalVectorRegionToProcess,
     const ThreadDiffusionTensorImageRegionType &  diffusionRegionToProcess,
-    const ThreadDerivativeMatrixImageRegionType & derivativeRegionToProcess,
+    const ThreadDerivativeMatrixImageRegionType &
+      itkNotUsed(derivativeRegionToProcess),
     const ThreadDeformationVectorComponentImageRegionType &
-        deformationComponentRegionToProcess,
+      deformationComponentRegionToProcess,
     int)
 {
   typename OutputImageType::Pointer output = this->GetOutput();

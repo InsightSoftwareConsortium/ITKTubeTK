@@ -20,22 +20,3 @@
 # limitations under the License.
 #
 ##############################################################################
-
-cmake_minimum_required(VERSION 2.8)
-
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
-
-set( SCRIPT_NAME "Memory" )
-set( SCRIPT_BINARY_SUBDIR "" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
-
-include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
-
-SET( CTEST_TEST_TIMEOUT 5000 )
-
-ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
-ctest_submit( PARTS MemCheck )

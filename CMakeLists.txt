@@ -50,13 +50,13 @@ endif( BUILD_TESTING )
 set( BUILD_WARNING_REPORT_LIMIT -1 )
 set( BUILD_ERROR_REPORT_LIMIT -1 )
 include( "CTestConfig.cmake" )
-configure_file( ${TubeTK_SOURCE_DIR}/CTestCustom.cmake.in
-                ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
+  ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
 
 
 #-----------------------------------------------------------------------------
 # Doxygen setup
-add_subdirectory( Doxygen )
+add_subdirectory( CMake/Doxygen )
 
 #-----------------------------------------------------------------------------
 # KWStyle setup
@@ -83,14 +83,14 @@ if( TubeTK_USE_KWSTYLE )
 
   if( KWSTYLE_DASHBOARD_SUBMISSION )
     set( KWSTYLE_ARGUMENTS -lesshtml
-                        -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml
-                        -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt
-                        -dart ${TubeTK_BINARY_DIR} -1 1
-                         -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt )
+      -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml
+      -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Overwrite.txt
+      -dart ${TubeTK_BINARY_DIR} -1 1
+      -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Files.txt )
   else( KWSTYLE_DASHBOARD_SUBMISSION )
     set( KWSTYLE_ARGUMENTS -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml
-                        -v -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt
-                         -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt )
+      -v -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Overwrite.txt
+      -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Files.txt )
   endif( KWSTYLE_DASHBOARD_SUBMISSION )
 
 
@@ -102,14 +102,14 @@ if( TubeTK_USE_KWSTYLE )
     set( KWSTYLE_ARGUMENTS -msvc ${KWSTYLE_ARGUMENTS} )
   endif( KWSTYLE_USE_MSVC_FORMAT )
 
-  configure_file( ${TubeTK_SOURCE_DIR}/KWStyle/TubeTK.kws.xml.in
-                  ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml )
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/TubeTK.kws.xml.in
+    ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml )
 
-  configure_file( ${TubeTK_SOURCE_DIR}/KWStyle/TubeTKFiles.txt.in
-                  ${TubeTK_BINARY_DIR}/KWStyle-TubeTKFiles.txt )
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/TubeTK.Files.txt.in
+    ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Files.txt )
 
-  configure_file( ${TubeTK_SOURCE_DIR}/KWStyle/TubeTKOverwrite.txt.in
-                  ${TubeTK_BINARY_DIR}/KWStyle-TubeTKOverwrite.txt )
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/TubeTK.Overwrite.txt.in
+    ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Overwrite.txt )
 
   add_custom_target( StyleCheck
     COMMAND ${KWSTYLE_EXECUTABLE} ${KWSTYLE_ARGUMENTS}
@@ -225,7 +225,7 @@ option( TubeTK_USE_SUPERBUILD
 
 if( TubeTK_USE_SUPERBUILD )
 
-  include( "${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake" )
+  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild.cmake" )
   return()
 
 else( TubeTK_USE_SUPERBUILD )
@@ -365,10 +365,10 @@ install(
 #-----------------------------------------------------------------------------
 # Configure a launcher for running tubetk methods from the cmdline in windows
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.bat.in
-                ${TubeTK_BINARY_DIR}/tubeLauncher.bat @ONLY )
+  ${TubeTK_BINARY_DIR}/tubeLauncher.bat @ONLY )
 
 #-----------------------------------------------------------------------------
 # Configure a launcher for running tubetk methods from the cmdline in linux
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.sh.in
-                ${TubeTK_BINARY_DIR}/tubeLauncher.sh @ONLY )
+  ${TubeTK_BINARY_DIR}/tubeLauncher.sh @ONLY )
 

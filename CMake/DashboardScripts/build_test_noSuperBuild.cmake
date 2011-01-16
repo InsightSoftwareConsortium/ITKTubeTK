@@ -23,13 +23,11 @@
 
 cmake_minimum_required( VERSION 2.6 )
 
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
-
 set( SCRIPT_NAME "BuildTest-NoSuperbuild" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
 set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
-include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
+include( ${SITE_SCRIPT_DIR}/cmakecache.cmake )
 
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 

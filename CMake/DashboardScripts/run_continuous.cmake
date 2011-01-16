@@ -21,8 +21,6 @@
 #
 ##############################################################################
 
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
-
 set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_CONTINUOUS_BUILD_TEST )
@@ -43,7 +41,7 @@ if( SITE_CONTINUOUS_BUILD_TEST )
     set( START_TIME ${CTEST_ELAPSED_TIME} )
 
     message("---- Checking for changes ----")
-    ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
+    include( "${SITE_SCRIPT_DIR}/build_test.cmake" )
 
     if( "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
 
@@ -51,17 +49,17 @@ if( SITE_CONTINUOUS_BUILD_TEST )
 
       if( SITE_CONTINUOUS_STYLE )
         message("---- Style script ----")
-        ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
+        include( "${SITE_SCRIPT_DIR}/style.cmake" )
       endif( SITE_CONTINUOUS_STYLE )
 
       if( SITE_CONTINUOUS_COVERAGE )
         message("---- Coverage script ----")
-        ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
+        include( "${SITE_SCRIPT_DIR}/coverage.cmake" )
       endif( SITE_CONTINUOUS_COVERAGE )
 
       if( SITE_CONTINUOUS_MEMORY )
         message("---- Memory script ----")
-        ctest_run_script( "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
+        include( "${SITE_SCRIPT_DIR}/memory.cmake" )
       endif( SITE_CONTINUOUS_MEMORY )
 
       set( ENV{TUBETK_FORCE_BUILD} "0" )

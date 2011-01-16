@@ -97,7 +97,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeUpdate(const NeighborhoodType &it,
                 const DiffusionTensorNeighborhoodType &gt,
                 void *globalData,
-                const FloatOffsetType& offset)
+                const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
   // m_dx -> Intensity first derivative
@@ -122,7 +122,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
                 const DiffusionTensorNeighborhoodType &gt,
                 const DerivativeMatrixImageRegionType &tensorDerivative,
                 void *globalData,
-                const FloatOffsetType& offset)
+                const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
   // m_dx -> Intensity first derivative

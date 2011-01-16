@@ -21,3 +21,23 @@
 #
 ##############################################################################
 
+set( ENV{TUBETK_RUN_MODEL} "Experimental" )
+set( ENV{TUBETK_FORCE_BUILD} "1" )
+
+if( SITE_EXPERIMENTAL_BUILD_TEST )
+  include( "${SITE_SCRIPT_DIR}/build_test.cmake" )
+ENDif( SITE_EXPERIMENTAL_BUILD_TEST )
+
+if( SITE_EXPERIMENTAL_STYLE )
+  include( "${SITE_SCRIPT_DIR}/style.cmake" )
+endif( SITE_EXPERIMENTAL_STYLE )
+
+if( SITE_EXPERIMENTAL_COVERAGE )
+  include( "${SITE_SCRIPT_DIR}/coverage.cmake" )
+endif( SITE_EXPERIMENTAL_COVERAGE )
+
+if( SITE_EXPERIMENTAL_MEMORY )
+  include( "${SITE_SCRIPT_DIR}/memory.cmake" )
+endif( SITE_EXPERIMENTAL_MEMORY )
+
+set(CTEST_RUN_CURRENT_SCRIPT 0)

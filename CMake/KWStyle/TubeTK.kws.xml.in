@@ -12,7 +12,7 @@
 <Tabs>1</Tabs>
 <Spaces>0</Spaces>
 <Comments>/**, *, */,true</Comments>
-<Header>"@TubeTK_SOURCE_DIR@/KWStyle/Headers",false,false</Header>
+<Header>"@TubeTK_SOURCE_DIR@/CMake/KWStyle/Headers",false,false</Header>
 <Indent>SPACE,2,true,true</Indent>
 <Namespace>tube</Namespace>
 <NameOfClass>[NameOfClass],tube</NameOfClass>

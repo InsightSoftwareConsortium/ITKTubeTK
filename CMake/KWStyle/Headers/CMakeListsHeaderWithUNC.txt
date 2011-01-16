@@ -1,9 +1,19 @@
 ##############################################################################
 #
-# Library:   TubeTK
+# Library:   TubeTK/VTree
 #
-# Copyright 2010 Kitware Inc. 28 Corporate Drive,
-# Clifton Park, NY, 12065, USA.
+# Authors: Stephen Aylward, Julien Jomier, and Elizabeth Bullitt
+#
+# Original implementation:
+# Copyright University of North Carolina, Chapel Hill, NC, USA.
+#
+# Revised implementation:
+# Copyright Kitware Inc., Carrboro, NC, USA.
+#
+# Covered, in part, by US Patent Number 6,690,816
+# "Systems and methods for tubular object processing"
+# S. Aylward, E. Bullit, D. Fritsch, S. Pizer, UNC-CH
+# Released under Apache 2.0 license for royalty-free use in July, 2010
 #
 # All rights reserved.
 #
@@ -20,21 +30,3 @@
 # limitations under the License.
 #
 ##############################################################################
-
-cmake_minimum_required(VERSION 2.8)
-
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
-
-set( SCRIPT_NAME "Coverage" )
-set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
-
-include( ${CTEST_SCRIPT_DIRECTORY}/tubetk_cmakecache.cmake )
-
-ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_submit( PARTS Coverage )

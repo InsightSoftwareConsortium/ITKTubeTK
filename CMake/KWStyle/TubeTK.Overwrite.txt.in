@@ -78,9 +78,3 @@ tubeSkeletonize.cxx Namespace Disable
 tubeVesselsRegistration.h Namespace Disable
 tubeUSVesselsRegistration.h Namespace Disable
 ImageMath.cxx Namespace Disable
-itkFeatureGeneratingImageFunction.h Namespace Disable
-itkFeatureGeneratingImageFunction.txx Namespace Disable
-itkPatchFeatureGeneratingImageFunction.h Namespace Disable
-itkPatchFeatureGeneratingImageFunction.txx Namespace Disable
-itkStandardFeatureGeneratingImageFunction.h Namespace Disable
-itkStandardFeatureGeneratingImageFunction.txx Namespace Disable

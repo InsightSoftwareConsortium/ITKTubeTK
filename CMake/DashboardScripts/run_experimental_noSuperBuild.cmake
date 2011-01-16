@@ -21,31 +21,25 @@
 #
 ##############################################################################
 
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
-
 set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
 set( ENV{TUBETK_FORCE_BUILD} "0" )
 
 if( SITE_EXPERIMENTAL_BUILD_TEST )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_build_test_noSuperBuild.cmake" )
+  include( "${SITE_SCRIPT_DIR}/build_test_noSuperBuild.cmake" )
 ENDif( SITE_EXPERIMENTAL_BUILD_TEST )
 
 if( SITE_EXPERIMENTAL_STYLE )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
+  include( "${SITE_SCRIPT_DIR}/style.cmake" )
 endif( SITE_EXPERIMENTAL_STYLE )
 
 if( SITE_EXPERIMENTAL_COVERAGE )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
+  include( "${SITE_SCRIPT_DIR}/coverage.cmake" )
 endif( SITE_EXPERIMENTAL_COVERAGE )
 
 if( SITE_EXPERIMENTAL_MEMORY )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
+  include( "${SITE_SCRIPT_DIR}/memory.cmake" )
 endif( SITE_EXPERIMENTAL_MEMORY )
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)

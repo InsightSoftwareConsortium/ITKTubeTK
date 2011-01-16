@@ -21,35 +21,18 @@
 #
 ##############################################################################
 
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
+cmake_minimum_required(VERSION 2.8)
 
-set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
+set( SCRIPT_NAME "Style" )
+set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
+set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
-if( SITE_NIGHTLY_BUILD_TEST )
+include( ${SITE_SCRIPT_DIR}/cmakecache.cmake )
 
-  ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
+set( ENV{PATH} "$ENV{PATH}:/usr/local/bin" )
 
-  set( ENV{TUBETK_RUN_MODEL} "Nightly" )
-  set( ENV{TUBETK_FORCE_BUILD} "1" )
-
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
-
-  if( SITE_NIGHTLY_STYLE )
-    ctest_run_script(
-      "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
-  endif( SITE_NIGHTLY_STYLE )
-
-  if( SITE_NIGHTLY_COVERAGE )
-    ctest_run_script(
-      "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
-  endif( SITE_NIGHTLY_COVERAGE )
-
-  if( SITE_NIGHTLY_MEMORY )
-    ctest_run_script(
-      "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
-  endif( SITE_NIGHTLY_MEMORY )
-
-endif( SITE_NIGHTLY_BUILD_TEST )
-
-set(CTEST_RUN_CURRENT_SCRIPT 0)
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
+EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
+ctest_submit()

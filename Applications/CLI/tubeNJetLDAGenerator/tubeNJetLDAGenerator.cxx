@@ -103,16 +103,16 @@ int DoIt( int argc, char * argv[] )
   unsigned int fCount = 0;
   std::vector< std::string > featureName;
   typename ImageReaderType::Pointer reader;
-  for( unsigned int i=0; i<inputVolumesList.size(); i++ )
+  for( unsigned int vNum=0; vNum<inputVolumesList.size(); vNum++ )
     {
     reader = ImageReaderType::New();
-    reader->SetFileName( inputVolumesList[i].c_str() );
+    reader->SetFileName( inputVolumesList[vNum].c_str() );
     std::string featureBaseName = outputBase;
     char s[80];
-    sprintf(s, ".img%02d", i );
+    sprintf(s, ".img%02d", vNum );
     featureBaseName += std::string( s );
     reader->Update();
-    if( i == 0 )
+    if( vNum == 0 )
       {
       ldaGenerator->SetFeatureImage( reader->GetOutput() );
       sprintf(s, ".f%02d.org", fCount);

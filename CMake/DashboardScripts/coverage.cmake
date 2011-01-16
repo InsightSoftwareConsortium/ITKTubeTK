@@ -21,31 +21,18 @@
 #
 ##############################################################################
 
-include( ${CTEST_SCRIPT_DIRECTORY}/../../tubetk_config.cmake )
+cmake_minimum_required(VERSION 2.8)
 
-set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
+set( SCRIPT_NAME "Coverage" )
+set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
+set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
-set( ENV{TUBETK_RUN_MODEL} "Experimental" )
-set( ENV{TUBETK_FORCE_BUILD} "1" )
+include( ${SITE_SCRIPT_DIR}/cmakecache.cmake )
 
-if( SITE_EXPERIMENTAL_BUILD_TEST )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_build_test.cmake" )
-ENDif( SITE_EXPERIMENTAL_BUILD_TEST )
-
-if( SITE_EXPERIMENTAL_STYLE )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_style.cmake" )
-endif( SITE_EXPERIMENTAL_STYLE )
-
-if( SITE_EXPERIMENTAL_COVERAGE )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_coverage.cmake" )
-endif( SITE_EXPERIMENTAL_COVERAGE )
-
-if( SITE_EXPERIMENTAL_MEMORY )
-  ctest_run_script(
-    "${SITE_SCRIPT_DIR}/tubetk_memory.cmake" )
-endif( SITE_EXPERIMENTAL_MEMORY )
-
-set(CTEST_RUN_CURRENT_SCRIPT 0)
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
+ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_submit( PARTS Coverage )
