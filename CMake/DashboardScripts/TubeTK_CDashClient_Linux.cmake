@@ -104,7 +104,7 @@ endif()
 set( SITE_MEMORYCHECK_COMMAND_OPTIONS
   "--gen-suppressions=all --trace-children=yes -q --leak-check=yes --show-reachable=yes --num-callers=50" )
 set( SITE_MEMORYCHECK_SUPPRESSIONS_FILE
-  "${CTEST_SCRIPT_DIRECTORY}/valgrind_suppressions.txt" )
+  "${SITE_SCRIPT_DIR}/valgrind_suppressions.txt" )
 
 set( MEMORYCHECK_FLAGS "-g -O0 -ggdb" )
 if( SITE_NIGHTLY_MEMORY
