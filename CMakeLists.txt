@@ -181,15 +181,18 @@ option( TubeTK_USE_QT
   ON )
 
 if( TubeTK_USE_QT )
-  set( QT_MIN_VERSION "4.6.0" )
-  set( QT_OFFICIAL_VERSION "4.6" )
-  set( QT_REQUIRED TRUE )
   find_package( Qt4 )
-  if( NOT QT4_FOUND )
-    message( SEND_ERROR
-      "QT_QMAKE_EXECUTABLE must be qmake version 4.6.0 or greater." )
-  endif( NOT QT4_FOUND )
-endif( TubeTK_USE_QT )
+  set( minimum_required_qt_version "4.6" )
+  if( QT4_FOUND )
+    if( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}"
+        VERSION_LESS "${minimum_required_qt_version}" )
+      message( FATAL_ERROR "Error: TubeTK requires Qt >= 4.6" )
+    endif()
+    include( ${QT_USE_FILE} )
+  else()
+    message( SEND_ERROR "Error: Qt not found." )
+  endif()
+endif()
 
 #-----------------------------------------------------------------------------
 # VTK Setup
@@ -312,11 +315,28 @@ set( TubeTK_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
   ${TubeTK_SOURCE_DIR}/Base/Registration )
 
-set( TubeTK_EXECUTABLE_DIRS
-  ${TubeTK_RUNTIME_PATH} )
+if( WIN32 )
+ set( TubeTK_EXECUTABLE_DIRS
+   ${GenerateCLP_DIR}/${CMAKE_BUILD_TYPE}
+   ${ITK_DIR}/bin/${CMAKE_BUILD_TYPE}
+   ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE}
+   ${TubeTK_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}
+   ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins/${CMAKE_BUILD_TYPE} )
+else()
+ set( TubeTK_EXECUTABLE_DIRS
+   ${GenerateCLP_DIR}
+   ${ITK_DIR}/bin
+   ${VTK_DIR}/bin
+   ${TubeTK_BINARY_DIR}/bin
+   ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins )
+endif()
 
 set( TubeTK_LIBRARY_DIRS
-  ${TubeTK_RUNTIME_PATH} )
+  ${TubeTK_EXECUTABLE_DIRS} )
+
+set( TubeTK_LIBRARIES
+  TubeIO
+  TubeNumerics )
 
 set( TubeTK_CMAKE_EXTENSIONS_DIR
   ${TubeTK_SOURCE_DIR}/CMake )
