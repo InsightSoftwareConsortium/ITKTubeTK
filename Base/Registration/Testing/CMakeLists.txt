@@ -56,7 +56,6 @@ if( TubeTK_USE_VTK )
 
   set( tubeBaseRegistrationFilters_SRCS
           ${tubeBaseRegistrationFilters_SRCS}
-          itkAnisotropicDiffusiveRegistrationExecution.cxx
           itkAnisotropicDiffusiveRegistrationImageRegistrationTest.cxx
           itkAnisotropicDiffusiveRegistrationRegularizationTest.cxx
           )
