@@ -29,7 +29,6 @@ limitations under the License.
 
 void RegisterTests()
 {
-  REGISTER_TEST( itkAnisotropicDiffusiveRegistrationExecution );
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationImageRegistrationTest );
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTest );
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
