@@ -80,8 +80,8 @@ set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/CMake/DashboardScripts" )
 set( SITE_UPDATE_COMMAND "${GIT_COMMAND}" )
 set( GIT_EXECUTABLE "${GIT_COMMAND}" )
 
-set( TubeTK_RUNTIME_PATH "${SITE_KWSTYLE_DIR}" )
-set( ENV{PATH} "${TubeTK_RUNTIME_PATH}:$ENV{PATH}" )
+set( SITE_EXECUTABLE_DIRS "${SITE_KWSTYLE_DIR}" )
+set( ENV{PATH} "${SITE_EXECUTABLE_DIRS}:$ENV{PATH}" )
 
 set( SITE_CXX_FLAGS
   "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )

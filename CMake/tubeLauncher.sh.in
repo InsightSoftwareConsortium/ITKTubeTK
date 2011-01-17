@@ -23,7 +23,7 @@
 
 export OLD_PATH=$PATH
 
-export PATH="@GenerateCLP_DIR@;@ITK_DIR@/bin;@VTK_DIR@/bin;@TubeTK_BINARY_DIR@/bin;@TubeTK_BINARY_DIR@/lib/TubeTK/Plugins;${PATH}"
+export PATH="@TubeTK_EXECUTABLE_DIRS@;${PATH}"
 
 $*
 

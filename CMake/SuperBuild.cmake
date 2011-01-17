@@ -269,59 +269,63 @@ if( TubeTK_USE_QT )
   ##
   if( TubeTK_USE_CTK )
 
-    if( NOT GIT_EXECUTABLE )
-      find_package( Git REQUIRED )
-    endif( NOT GIT_EXECUTABLE )
+    if( NOT USE_SYSTEM_CTK )
 
-    option( GIT_PROTOCOL_HTTP
-      "Use HTTP for git access (useful if behind a firewall)" OFF )
-    if( GIT_PROTOCOL_HTTP )
-      set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
-    else( GIT_PROTOCOL_HTTP )
-      set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
-    endif( GIT_PROTOCOL_HTTP )
-    mark_as_advanced( GIT_PROTOCOL )
+      if( NOT GIT_EXECUTABLE )
+        find_package( Git REQUIRED )
+      endif( NOT GIT_EXECUTABLE )
 
-    if( TubeTK_USE_VTK )
-      if( NOT USE_SYSTEM_VTK )
-        set( CTK_DEPENDS "VTK" )
-      endif( NOT USE_SYSTEM_VTK )
-    else( TubeTK_USE_VTK )
-      set( CTK_DEPENDS "" )
-    endif( TubeTK_USE_VTK )
+      option( GIT_PROTOCOL_HTTP
+        "Use HTTP for git access (useful if behind a firewall)" OFF )
+      if( GIT_PROTOCOL_HTTP )
+        set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+      else( GIT_PROTOCOL_HTTP )
+        set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+      endif( GIT_PROTOCOL_HTTP )
+      mark_as_advanced( GIT_PROTOCOL )
 
-    set( proj CTK )
-    ExternalProject_Add( CTK
-      GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
-      GIT_TAG "origin/master"
-      SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
-      BINARY_DIR CTK-Build
-      CMAKE_GENERATOR ${gen}
-      CMAKE_ARGS
-        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-        -DCMAKE_BUILD_TYPE:STRING=${build_type}
-        -DBUILD_SHARED_LIBS:BOOL=${shared}
-        -DBUILD_EXAMPLES:BOOL=OFF
-        -DBUILD_TESTING:BOOL=OFF
-        -DCTK_USE_GIT_PROTOCOL:BOOL=TRUE
-        -DCTK_LIB_Widgets:BOOL=ON
-        -DCTK_LIB_Visualization/VTK/Widgets:BOOL=OFF
-        -DCTK_LIB_PluginFramework:BOOL=OFF
-        -DCTK_PLUGIN_org.commontk.eventbus:BOOL=OFF
-        -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
-        -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
-        -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-        -DVTK_DIR:PATH=${VTK_DIR}
-      INSTALL_COMMAND ""
-      DEPENDS
-        ${CTK_DEPENDS}
-      )
-    set( CTK_DIR "${CMAKE_BINARY_DIR}/CTK-Build" )
+      if( TubeTK_USE_VTK )
+        if( NOT USE_SYSTEM_VTK )
+          set( CTK_DEPENDS "VTK" )
+        endif( NOT USE_SYSTEM_VTK )
+      else( TubeTK_USE_VTK )
+        set( CTK_DEPENDS "" )
+      endif( TubeTK_USE_VTK )
 
-    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
+      set( proj CTK )
+      ExternalProject_Add( CTK
+        GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
+        GIT_TAG "origin/master"
+        SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
+        BINARY_DIR CTK-Build
+        CMAKE_GENERATOR ${gen}
+        CMAKE_ARGS
+          -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+          -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+          -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+          -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+          -DCMAKE_BUILD_TYPE:STRING=${build_type}
+          -DBUILD_SHARED_LIBS:BOOL=${shared}
+          -DBUILD_EXAMPLES:BOOL=OFF
+          -DBUILD_TESTING:BOOL=OFF
+          -DCTK_USE_GIT_PROTOCOL:BOOL=TRUE
+          -DCTK_LIB_Widgets:BOOL=ON
+          -DCTK_LIB_Visualization/VTK/Widgets:BOOL=OFF
+          -DCTK_LIB_PluginFramework:BOOL=OFF
+          -DCTK_PLUGIN_org.commontk.eventbus:BOOL=OFF
+          -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+          -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+          -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+          -DVTK_DIR:PATH=${VTK_DIR}
+        INSTALL_COMMAND ""
+        DEPENDS
+          ${CTK_DEPENDS}
+        )
+      set( CTK_DIR "${CMAKE_BINARY_DIR}/CTK-Build" )
+
+      set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
+
+    endif( NOT USE_SYSTEM_CTK )
 
   endif( TubeTK_USE_CTK )
 
@@ -355,6 +359,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
+    -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}

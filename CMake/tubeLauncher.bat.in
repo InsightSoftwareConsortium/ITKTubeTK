@@ -23,7 +23,7 @@ REM ###########################################################################
 
 set OLD_PATH=%PATH%
 
-set PATH="@GenerateCLP-DIR@/@CMAKE_BUILD_TYPE@;@ITK_DIR@/bin/@CMAKE_BUILD_TYPE@;@VTK_DIR@/bin/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/bin/@CMAKE_BUILD_TYPE@;@TubeTK_BINARY_DIR@/lib/TubeTK/Plugins/@CMAKE_BUILD_TYPE@;%PATH%"
+set PATH="@TubeTK_EXECUTABLE_DIRS@;%PATH%"
 
 %*
 
