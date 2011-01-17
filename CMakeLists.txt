@@ -31,7 +31,11 @@ cmake_minimum_required( VERSION 2.8 )
 #  Set TubeTK
 set( TubeTK_VERSION_MAJOR "0" )
 set( TubeTK_VERSION_MINOR "9" )
-set( TubeTK_VERSION "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}" )
+include( CMake/kwsysDateStamp.cmake )
+set( TubeTK_VERSION_BUILD
+  ${KWSYS_DATE_STAMP_YEAR}${KWSYS_DATE_STAMP_MONTH}${KWSYS_DATE_STAMP_DAY} )
+set( TubeTK_VERSION
+  "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_BUILD}" )
 
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
@@ -83,14 +87,14 @@ if( TubeTK_USE_KWSTYLE )
 
   if( KWSTYLE_DASHBOARD_SUBMISSION )
     set( KWSTYLE_ARGUMENTS -lesshtml
-      -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml
-      -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Overwrite.txt
+      -xml ${TubeTK_BINARY_DIR}/KWStyle.kws.xml
+      -o ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt
       -dart ${TubeTK_BINARY_DIR} -1 1
-      -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Files.txt )
+      -D ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
   else( KWSTYLE_DASHBOARD_SUBMISSION )
-    set( KWSTYLE_ARGUMENTS -xml ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml
-      -v -o ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Overwrite.txt
-      -D ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Files.txt )
+    set( KWSTYLE_ARGUMENTS -xml ${TubeTK_BINARY_DIR}/KWStyle.kws.xml
+      -v -o ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt
+      -D ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
   endif( KWSTYLE_DASHBOARD_SUBMISSION )
 
 
@@ -102,14 +106,14 @@ if( TubeTK_USE_KWSTYLE )
     set( KWSTYLE_ARGUMENTS -msvc ${KWSTYLE_ARGUMENTS} )
   endif( KWSTYLE_USE_MSVC_FORMAT )
 
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/TubeTK.kws.xml.in
-    ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.kws.xml )
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.kws.xml.in
+    ${TubeTK_BINARY_DIR}/KWStyle.kws.xml )
 
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/TubeTK.Files.txt.in
-    ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Files.txt )
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Files.txt.in
+    ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
 
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/TubeTK.Overwrite.txt.in
-    ${TubeTK_BINARY_DIR}/KWStyle-TubeTK.Overwrite.txt )
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Overwrite.txt.in
+    ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt )
 
   add_custom_target( StyleCheck
     COMMAND ${KWSTYLE_EXECUTABLE} ${KWSTYLE_ARGUMENTS}
@@ -194,7 +198,7 @@ option( TubeTK_USE_VTK
   ON )
 if( TubeTK_USE_VTK )
   #-----------------------------------------------------------------------------
-  # VTK Superbuild Setup
+  # VTK Superbuild or System
   option( USE_SYSTEM_VTK
     "Exclude VTK from SuperBuild and use an existing build instead." OFF )
   if( USE_SYSTEM_VTK )
@@ -209,6 +213,14 @@ if( TubeTK_USE_QT )
   option( TubeTK_USE_CTK
     "Use CTK to provide Qt-based applications and build Slicer loadable modules."
     ON )
+  #-----------------------------------------------------------------------------
+  # CTK Superbuild or System
+  option( USE_SYSTEM_CTK
+    "Exclude CTK from SuperBuild and use an existing build instead." OFF )
+  if( USE_SYSTEM_CTK )
+    find_package( CTK REQUIRED )
+    include( ${CTK_USE_FILE} )
+  endif( USE_SYSTEM_CTK )
 endif( TubeTK_USE_QT )
 
 #-----------------------------------------------------------------------------
@@ -257,80 +269,8 @@ include( ${CMAKE_ROOT}/Modules/TestBigEndian.cmake )
 test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 #-----------------------------------------------------------------------------
-# Define locations for applications and libraries
-#  We use Slicer3 variable names to simplify porting to Slicer3
-set( Slicer3_INSTALL_BIN_DIR "bin" )
-set( Slicer3_INSTALL_LIB_DIR "lib/TubeTK" )
-set( Slicer3_INSTALL_INCLUDE_DIR "include/TubeTK" )
-set( Slicer3_INSTALL_SHARE_DIR "share/TubeTK" )
-set( Slicer3_INSTALL_ITKFACTORIES_DIR "${Slicer3_INSTALL_LIB_DIR}/ITKFactories" )
-
-set( Slicer3_INSTALL_PLUGINS_BIN_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins" )
-set( Slicer3_INSTALL_PLUGINS_LIB_DIR "${Slicer3_INSTALL_LIB_DIR}/Plugins" )
-set( Slicer3_INSTALL_PLUGINS_INCLUDE_DIR
-  "${Slicer3_INSTALL_INCLUDE_DIR}/Plugins" )
-set( Slicer3_INSTALL_PLUGINS_SHARE_DIR "${Slicer3_INSTALL_SHARE_DIR}/Plugins" )
-set( Slicer3_INSTALL_PLUGINS_CACHE_DIR "${Slicer3_INSTALL_LIB_DIR}/PluginsCache" )
-
-set( Slicer3_HOME "${Slicer3_BINARY_DIR}" )
-
-include( ${TubeTK_SOURCE_DIR}/CMake/Slicer3PluginsMacros.cmake )
-
-# CLI_SOURCE_DIR is a Slicer3 variable.  Needs to point to the top of
-#   the Slicer3 CLI modules.
-set( CLI_SOURCE_DIR "${TubeTK_BINARY_DIR}/Slicer3" )
-set( CLI_BINARY_DIR "${TubeTK_BINARY_DIR}/Slicer3-Build" )
-make_directory( ${CLI_SOURCE_DIR} )
-make_directory( ${CLI_BINARY_DIR} )
-set( Slicer3_SOURCE_DIR ${CLI_SOURCE_DIR} )
-
-# Define MACROs for downloading Slicer3 applications and libs used by TubeTK
-if( NOT SVNCOMMAND )
-  find_package( Subversion REQUIRED )
-  set( SVNCOMMAND ${Subversion_SVN_EXECUTABLE} )
-endif( NOT SVNCOMMAND )
-
-macro( svnGetSlicerCLI FILENAME )
-  set( svnCmd "co" )
-  set( svnSite "http://svn.slicer.org/Slicer3/trunk/Applications/CLI" )
-  execute_process(
-    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${CLI_SOURCE_DIR}/${FILENAME}
-    OUTPUT_VARIABLE svnOutput
-    ERROR_VARIABLE svnError
-    RESULT_VARIABLE svnResult
-    )
-  if( svnError )
-    message( "Error while fetching CLI module from Slicer3 SVN..." )
-    message( "Svn = ${SVNCOMMAND}" )
-    message( "Command = ${svnCmd}" )
-    message( "Site = ${svnSite}" )
-    message( "File = ${FILENAME}" )
-    message( "Dir = ${CLI_SOURCE_DIR}" )
-    message( "Output = ${svnOutput}" )
-    message( FATAL "Result = ${svnResult}" )
-  endif( svnError )
-endmacro( svnGetSlicerCLI FILENAME )
-
-macro( svnGetSlicerBase FILENAME )
-  set( svnCmd "co" )
-  set( svnSite "http://svn.slicer.org/Slicer3/trunk/" )
-  execute_process(
-    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${CLI_SOURCE_DIR}/${FILENAME}
-    OUTPUT_VARIABLE svnOutput
-    ERROR_VARIABLE svnError
-    RESULT_VARIABLE svnResult
-    )
-  if( svnError )
-    message( "Error while fetching module from Slicer3 SVN..." )
-    message( "Svn = ${SVNCOMMAND}" )
-    message( "Command = ${svnCmd}" )
-    message( "Site = ${svnSite}" )
-    message( "File = ${FILENAME}" )
-    message( "Dir = ${CLI_SOURCE_DIR}" )
-    message( "Output = ${svnOutput}" )
-    message( FATAL "Result = ${svnResult}" )
-  endif( svnError )
-endmacro( svnGetSlicerBase FILENAME )
+# Setup to conform to Slicer3 paths and define plugin copying macros
+include( CMake/Slicer3Config.cmake )
 
 #-----------------------------------------------------------------------------
 # Build Slicer3 cli applications essential to TubeTK
@@ -343,7 +283,7 @@ set( LAUNCH_EXE  "" )
 
 set( SUPPORT_2D_IMAGES ON )
 add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
-                  ${CLI_BINARY_DIR}/RegisterImagesModule )
+  ${CLI_BINARY_DIR}/RegisterImagesModule )
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -363,6 +303,38 @@ install(
   )
 
 #-----------------------------------------------------------------------------
+# Configure vars to export
+
+set( TubeTK_INCLUDE_DIRS
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/IO
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  ${TubeTK_SOURCE_DIR}/Base/Registration )
+
+set( TubeTK_EXECUTABLE_DIRS
+  ${TubeTK_RUNTIME_PATH} )
+
+set( TubeTK_LIBRARY_DIRS
+  ${TubeTK_RUNTIME_PATH} )
+
+set( TubeTK_CMAKE_EXTENSIONS_DIR
+  ${TubeTK_SOURCE_DIR}/CMake )
+
+set( TubeTK_USE_FILE
+  ${TubeTK_BINARY_DIR}/UseTubeTK.cmake )
+
+#-----------------------------------------------------------------------------
+# Configure TubeTKConfig.cmake
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKConfig.cmake.in
+  ${TubeTK_BINARY_DIR}/TubeTKConfig.cmake @ONLY )
+
+#-----------------------------------------------------------------------------
+# Configure UseTubeTK.cmake
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/UseTubeTK.cmake.in
+  ${TubeTK_BINARY_DIR}/UseTubeTK.cmake @ONLY )
+
+#-----------------------------------------------------------------------------
 # Configure a launcher for running tubetk methods from the cmdline in windows
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.bat.in
   ${TubeTK_BINARY_DIR}/tubeLauncher.bat @ONLY )
@@ -371,4 +343,3 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.bat.in
 # Configure a launcher for running tubetk methods from the cmdline in linux
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.sh.in
   ${TubeTK_BINARY_DIR}/tubeLauncher.sh @ONLY )
-
