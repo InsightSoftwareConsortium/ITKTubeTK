@@ -110,7 +110,7 @@ add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface
                -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_transformedMovingImage.mhd
                -i 5
                -s 0.125
-               -l -0.1 )
+               -l -0.05 )
 
 #######
 # Test2-Compare-Using surface model
@@ -118,7 +118,7 @@ add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface
 add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
-               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface )
