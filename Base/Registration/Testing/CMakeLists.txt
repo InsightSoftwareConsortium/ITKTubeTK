@@ -27,7 +27,7 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( BASE_REGISTRATION_FILTERS_TESTS
-      ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests )
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests )
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
@@ -38,9 +38,8 @@ set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Registration/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
-          itkImageToTubeRigidRegistrationTest.cxx
-          itkTubeToTubeTransformFilterTest.cxx
-          )
+  itkImageToTubeRigidRegistrationTest.cxx
+  itkTubeToTubeTransformFilterTest.cxx )
 
 # expect image comparison perfection on 64-bit machines
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -71,6 +70,9 @@ add_executable( tubeBaseRegistrationFiltersTests
           tubeBaseRegistrationFiltersTests.cxx
           ${tubeBaseRegistrationFilters_SRCS}
           )
+if( TubeTK_USE_VTK )
+  add_definitions( -DTubeTK_USE_VTK )
+endif()
 
 set( tubeBaseRegistrationFilters_LIBS
           tubeBaseRegistrationFiltersTests
