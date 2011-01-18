@@ -244,8 +244,6 @@ CanRead( const char *_headerName ) const
 bool MetaLDA::
 Read( const char *_headerName )
 {
-  std::cout << "read:m_ReadStream = " << m_ReadStream << std::endl;
-
   if( _headerName != NULL && strlen( _headerName ) > 1 )
     {
     FileName( _headerName );
@@ -270,8 +268,6 @@ Read( const char *_headerName )
 
   delete tmpStream;
 
-  std::cout << "read done" << std::endl;
-
   return result;
 }
 
@@ -290,7 +286,6 @@ CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 bool MetaLDA::
 ReadStream( METAIO_STREAM::ifstream * _stream )
 {
-  std::cout << "readstream:readstream = " << m_ReadStream << std::endl;
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA: ReadStream" << METAIO_STREAM::endl;
@@ -322,8 +317,6 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   m_ReadStream = NULL;
 
   InitializeEssential( m_LDAValues, m_LDAMatrix );
-
-  std::cout << "ReadStream done" << std::endl;
 
   return true;
 }
@@ -395,7 +388,6 @@ M_Destroy( void )
 void MetaLDA::
 M_SetupReadFields( void )
 {
-  std::cout << "setup:m_ReadStream = " << m_ReadStream << std::endl;
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA: M_SetupReadFields" 
@@ -419,7 +411,6 @@ M_SetupReadFields( void )
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "Matrix", MET_FLOAT_MATRIX, true, nDimsRecNum );
   m_Fields.push_back( mF );
-  std::cout << "M_SetupRead done" << std::endl;
 }
 
 void MetaLDA::
@@ -451,7 +442,6 @@ M_SetupWriteFields( void )
 bool MetaLDA::
 M_Read( void )
 {
-  std::cout << "m_read:m_ReadStream = " << m_ReadStream << std::endl;
   if( META_DEBUG ) 
     {
     METAIO_STREAM::cout << "MetaLDA: M_Read: Loading Header" 
@@ -463,7 +453,6 @@ M_Read( void )
                         << METAIO_STREAM::endl;
     return false;
     }
-  std::cout << "m_read2:m_ReadStream = " << m_ReadStream << std::endl;
 
   if( META_DEBUG ) 
     {
@@ -522,7 +511,6 @@ M_Read( void )
     return false;
     }
 
-  std::cout << "M_Read done" << std::endl;
   return true;
 }
 

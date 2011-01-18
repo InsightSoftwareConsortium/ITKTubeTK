@@ -280,12 +280,15 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Stop( "LoadData" );
 
-  ldaGenerator->SetObjectId( objectId[0] );
-  if( objectId.size() > 1 )
+  if( objectId.size() > 0 )
     {
-    for( unsigned int o=1; o<objectId.size(); o++ )
+    ldaGenerator->SetObjectId( objectId[0] );
+    if( objectId.size() > 1 )
       {
-      ldaGenerator->AddObjectId( objectId[o] );
+      for( unsigned int o=1; o<objectId.size(); o++ )
+        {
+        ldaGenerator->AddObjectId( objectId[o] );
+        }
       }
     }
 
