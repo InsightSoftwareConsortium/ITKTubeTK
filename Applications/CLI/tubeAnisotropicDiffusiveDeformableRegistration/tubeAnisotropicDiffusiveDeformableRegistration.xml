@@ -119,7 +119,7 @@
       <index>1</index>
       <description>Moving image</description>
     </image>
-    <image>
+    <image type="vector">
       <name>outputDeformationFieldFileName</name>
       <flag>d</flag>
       <longflag>outputDeformationField</longflag>
@@ -135,7 +135,7 @@
       <channel>output</channel>
       <description>Resampled moving image to fixed image coordinate frame. Optional (specify an output deformation field or an output volume or both).</description>
     </image>
-    <image>
+    <image type="vector">
       <name>outputNormalVectorImageFileName</name>
       <label>Output Normal Vector Image</label>
       <flag>v</flag>
