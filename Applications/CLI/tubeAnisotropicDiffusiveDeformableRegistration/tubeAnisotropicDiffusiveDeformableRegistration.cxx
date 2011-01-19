@@ -87,11 +87,10 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
   typedef itk::Image< double, ImageDimension >            WeightImageType;
-  typedef itk::Image< VectorType, ImageDimension >        FieldType;
 
   //--------------------------------------------------------
   typedef itk::AnisotropicDiffusiveRegistrationFilter
-      < FixedImageType, MovingImageType, FieldType > RegistrationType;
+      < FixedImageType, MovingImageType, VectorImageType > RegistrationType;
   typename RegistrationType::Pointer registrator = RegistrationType::New();
 
   timeCollector.Start( "Loading input data" );
@@ -131,7 +130,7 @@ int DoIt( int argc, char * argv[] )
   typename MovingImageType::Pointer moving = movingImageReader->GetOutput();
   registrator->SetMovingImage( moving );
 
-  FieldType::Pointer initField = FieldType::New();
+  VectorImageType::Pointer initField = VectorImageType::New();
   initField->SetSpacing( fixed->GetSpacing() );
   initField->SetOrigin( fixed->GetOrigin() );
   initField->SetLargestPossibleRegion( fixed->GetLargestPossibleRegion() );
@@ -144,7 +143,8 @@ int DoIt( int argc, char * argv[] )
   zeroVec.Fill( 0.0 );
   initField->FillBuffer( zeroVec );
 
-  typedef itk::VectorCastImageFilter< FieldType, FieldType > CasterType;
+  typedef itk::VectorCastImageFilter< VectorImageType, VectorImageType >
+      CasterType;
   CasterType::Pointer caster = CasterType::New();
   caster->SetInput( initField );
   caster->InPlaceOff();
@@ -254,7 +254,8 @@ int DoIt( int argc, char * argv[] )
                                            progress );
 
   // warp moving image
-  typedef itk::WarpImageFilter< MovingImageType, MovingImageType, FieldType >
+  typedef
+      itk::WarpImageFilter< MovingImageType, MovingImageType, VectorImageType >
       WarperType;
   typename WarperType::Pointer warper = WarperType::New();
 
@@ -283,7 +284,7 @@ int DoIt( int argc, char * argv[] )
 
   if( outputDeformationFieldFileName != "" )
     {
-    typedef itk::ImageFileWriter< FieldType > FieldWriterType;
+    typedef itk::ImageFileWriter< VectorImageType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetFileName( outputDeformationFieldFileName );
     fieldWriter->SetInput( registrator->GetOutput() );
