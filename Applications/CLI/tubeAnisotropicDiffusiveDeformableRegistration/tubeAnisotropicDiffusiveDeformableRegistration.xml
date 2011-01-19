@@ -156,6 +156,17 @@
       <description>Whether or not to use the anisotropic diffusive regularization (if true, uses the diffusive regularization (i.e. Gaussian smoothing)</description>
       <default>false</default>
     </boolean>
+    <string-enumeration>
+      <name>worldCoordinateSystem</name>
+      <flag>c</flag>
+      <longflag>worldCoordinateSystem</longflag>
+      <label>World Coordinate System</label>
+      <channel>input</channel>
+      <element>RAS</element>
+      <element>LPS</element>
+      <description>The world coordinate system.  RAS if the images and model are aligned when visualized in 3D Slicer, LPS if the images and model are aligned when visualized in Paraview.</description>
+      <default>RAS</default>
+    </string-enumeration>
   </parameters>
 
 </executable>
