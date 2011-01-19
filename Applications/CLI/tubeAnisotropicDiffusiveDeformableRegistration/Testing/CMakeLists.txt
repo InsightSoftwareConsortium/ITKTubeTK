@@ -99,29 +99,55 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicReg )
 
 #######
-# Test2-Using surface model instead of normal vector + weight images
+# Test2-Using surface model (in RAS space) instead of normal vector + weight images
 #######
-add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRAS
             ${PROJ_EXE}
                ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
                ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorder.vtk
-               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
-               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_transformedMovingImage.mhd
+               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorderRAS.vtk
+               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_transformedMovingImage.mhd
                -i 5
                -s 0.125
                -l -0.05 )
 
 #######
-# Test2-Compare-Using surface model
+# Test2-Compare-Using surface model (in RAS space - i.e. image and model are aligned in 3D Slicer)
 #######
-add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface-Compare
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRAS-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
+               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_resultingMotionField.mhd
                -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurface )
+set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRAS-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRAS )
+
+#######
+# Test2-Using surface model (in LPS space) instead of normal vector + weight images
+#######
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS
+            ${PROJ_EXE}
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorderLPS.vtk
+               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceLPS_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceLPS_transformedMovingImage.mhd
+               -i 5
+               -s 0.125
+               -l -0.05
+               -c LPS )
+
+#######
+# Test2-Compare-Using surface model (in LPS space - i.e. image and model are aligned in Paraview)
+#######
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceLPS_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS )
 
 #######
 # Test3

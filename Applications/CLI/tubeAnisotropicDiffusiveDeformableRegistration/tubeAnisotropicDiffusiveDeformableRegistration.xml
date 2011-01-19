@@ -31,38 +31,6 @@
       <description>Time step duration.</description>
       <default>0.125</default>
     </double>
-    <double>
-      <name>lambda</name>
-      <flag>l</flag>
-      <longflag>lambda</longflag>
-      <label>Lambda</label>
-      <channel>input</channel>
-      <description>Controls the exponential decay used to calculate the weight value as a function of the distance to the closest organ border point.  Must be negative (for exponential decay).</description>
-      <default>-0.1</default>
-      <constraints>
-        <minimum>-10.0</minimum>
-        <maximum>0.0</maximum>
-        <step>0.01</step>
-      </constraints>
-    </double>
-    <boolean>
-      <name>doNotPerformRegularization</name>
-      <flag>r</flag>
-      <longflag>doNotPerformRegularization</longflag>
-      <label>Do not perform regularization</label>
-      <channel>input</channel>
-      <description>Whether or not to perform motion field regularization</description>
-      <default>false</default>
-    </boolean>
-    <boolean>
-      <name>doNotUseAnisotropicRegularization</name>
-      <flag>a</flag>
-      <longflag>doNotUseAnisotropicRegularization</longflag>
-      <label>Do not use anisotropic regularization</label>
-      <channel>input</channel>
-      <description>Whether or not to use the anisotropic diffusive regularization (if true, uses the diffusive regularization (i.e. Gaussian smoothing)</description>
-      <default>false</default>
-    </boolean>
   </parameters>
 
   <parameters>
@@ -119,7 +87,7 @@
       <index>1</index>
       <description>Moving image</description>
     </image>
-    <image>
+    <image type="vector">
       <name>outputDeformationFieldFileName</name>
       <flag>d</flag>
       <longflag>outputDeformationField</longflag>
@@ -135,7 +103,7 @@
       <channel>output</channel>
       <description>Resampled moving image to fixed image coordinate frame. Optional (specify an output deformation field or an output volume or both).</description>
     </image>
-    <image>
+    <image type="vector">
       <name>outputNormalVectorImageFileName</name>
       <label>Output Normal Vector Image</label>
       <flag>v</flag>
@@ -151,6 +119,54 @@
       <channel>output</channel>
       <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This is in the space of the fixed image.  Optional: allows you to save the weight image when providing an organ boundary surface. On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated.</description>
     </image>
+  </parameters>
+
+  <parameters advanced="true">
+    <label>Advanced Parameters</label>
+    <description>Advanced parameters</description>
+    <double>
+      <name>lambda</name>
+      <flag>l</flag>
+      <longflag>lambda</longflag>
+      <label>Lambda</label>
+      <channel>input</channel>
+      <description>Controls the exponential decay used to calculate the weight value as a function of the distance to the closest organ border point.  Must be negative (for exponential decay).</description>
+      <default>-0.1</default>
+      <constraints>
+        <minimum>-10.0</minimum>
+        <maximum>0.0</maximum>
+        <step>0.01</step>
+      </constraints>
+    </double>
+    <boolean>
+      <name>doNotPerformRegularization</name>
+      <flag>r</flag>
+      <longflag>doNotPerformRegularization</longflag>
+      <label>Do not perform regularization</label>
+      <channel>input</channel>
+      <description>Whether or not to perform motion field regularization</description>
+      <default>false</default>
+    </boolean>
+    <boolean>
+      <name>doNotUseAnisotropicRegularization</name>
+      <flag>a</flag>
+      <longflag>doNotUseAnisotropicRegularization</longflag>
+      <label>Do not use anisotropic regularization</label>
+      <channel>input</channel>
+      <description>Whether or not to use the anisotropic diffusive regularization (if true, uses the diffusive regularization (i.e. Gaussian smoothing)</description>
+      <default>false</default>
+    </boolean>
+    <string-enumeration>
+      <name>worldCoordinateSystem</name>
+      <flag>c</flag>
+      <longflag>worldCoordinateSystem</longflag>
+      <label>World Coordinate System</label>
+      <channel>input</channel>
+      <element>RAS</element>
+      <element>LPS</element>
+      <description>The world coordinate system.  RAS if the images and model are aligned when visualized in 3D Slicer, LPS if the images and model are aligned when visualized in Paraview.</description>
+      <default>RAS</default>
+    </string-enumeration>
   </parameters>
 
 </executable>

@@ -48,6 +48,8 @@ limitations under the License.
 #include "vtkSmartPointer.h"
 #include "vtkPolyDataReader.h"
 #include "vtkXMLPolyDataReader.h"
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -87,11 +89,10 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
   typedef itk::Image< double, ImageDimension >            WeightImageType;
-  typedef itk::Image< VectorType, ImageDimension >        FieldType;
 
   //--------------------------------------------------------
   typedef itk::AnisotropicDiffusiveRegistrationFilter
-      < FixedImageType, MovingImageType, FieldType > RegistrationType;
+      < FixedImageType, MovingImageType, VectorImageType > RegistrationType;
   typename RegistrationType::Pointer registrator = RegistrationType::New();
 
   timeCollector.Start( "Loading input data" );
@@ -131,7 +132,7 @@ int DoIt( int argc, char * argv[] )
   typename MovingImageType::Pointer moving = movingImageReader->GetOutput();
   registrator->SetMovingImage( moving );
 
-  FieldType::Pointer initField = FieldType::New();
+  VectorImageType::Pointer initField = VectorImageType::New();
   initField->SetSpacing( fixed->GetSpacing() );
   initField->SetOrigin( fixed->GetOrigin() );
   initField->SetLargestPossibleRegion( fixed->GetLargestPossibleRegion() );
@@ -144,7 +145,8 @@ int DoIt( int argc, char * argv[] )
   zeroVec.Fill( 0.0 );
   initField->FillBuffer( zeroVec );
 
-  typedef itk::VectorCastImageFilter< FieldType, FieldType > CasterType;
+  typedef itk::VectorCastImageFilter< VectorImageType, VectorImageType >
+      CasterType;
   CasterType::Pointer caster = CasterType::New();
   caster->SetInput( initField );
   caster->InPlaceOff();
@@ -161,7 +163,9 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     std::string extension = organBoundaryFileName.substr(loc);
+
     typename RegistrationType::BorderSurfacePointer borderSurface = NULL;
+
     if ( extension == std::string(".vtk") )
       {
       vtkSmartPointer< vtkPolyDataReader > polyDataReader
@@ -184,6 +188,29 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
+
+    // If the world coordinate system is RAS (i.e. called from 3D Slicer)
+    // then the model will be in RAS space while the images will be in LPS
+    // space.  It's easiest to transform the model to LPS space.
+    if ( worldCoordinateSystem == "RAS" )
+      {
+      vtkSmartPointer< vtkTransform > RAStoLPS = vtkTransform::New();
+      RAStoLPS->RotateX(180); // flip in right-left
+      RAStoLPS->RotateY(180); // flip in anterior-posterior
+      vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
+          = vtkTransformPolyDataFilter::New();
+      transformPolyDataFilter->SetInput( borderSurface );
+      transformPolyDataFilter->SetTransform( RAStoLPS );
+      transformPolyDataFilter->Update();
+      borderSurface = transformPolyDataFilter->GetOutput();
+      if( !borderSurface )
+        {
+        tube::ErrorMessage( "Transforming polydata: unsuccessful" );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+    }
+
     registrator->SetBorderSurface( borderSurface );
     }
 
@@ -254,7 +281,8 @@ int DoIt( int argc, char * argv[] )
                                            progress );
 
   // warp moving image
-  typedef itk::WarpImageFilter< MovingImageType, MovingImageType, FieldType >
+  typedef
+      itk::WarpImageFilter< MovingImageType, MovingImageType, VectorImageType >
       WarperType;
   typename WarperType::Pointer warper = WarperType::New();
 
@@ -283,7 +311,7 @@ int DoIt( int argc, char * argv[] )
 
   if( outputDeformationFieldFileName != "" )
     {
-    typedef itk::ImageFileWriter< FieldType > FieldWriterType;
+    typedef itk::ImageFileWriter< VectorImageType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetFileName( outputDeformationFieldFileName );
     fieldWriter->SetInput( registrator->GetOutput() );
