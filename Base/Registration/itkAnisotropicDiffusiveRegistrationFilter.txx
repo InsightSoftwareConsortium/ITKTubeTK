@@ -381,8 +381,8 @@ AnisotropicDiffusiveRegistrationFilter
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetUseAnisotropicRegularization() );
   assert( m_BorderNormalsSurface );
-  assert (m_BorderNormalsSurface->GetPointData() );
-  assert (m_BorderNormalsSurface->GetPointData()->GetNormals() );
+  assert( m_BorderNormalsSurface->GetPointData() );
+  assert( m_BorderNormalsSurface->GetPointData()->GetNormals() );
 
   // Get the normals from the polydata
   vtkSmartPointer< vtkDataArray > normalData
@@ -490,8 +490,6 @@ AnisotropicDiffusiveRegistrationFilter
       weightIt2.Set( weight );
       }
     }
-
-
 
   std::cout << "Finished computing normals and weights." << std::endl;
 }
