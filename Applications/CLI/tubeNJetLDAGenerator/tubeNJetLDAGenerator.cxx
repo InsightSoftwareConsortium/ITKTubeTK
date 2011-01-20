@@ -101,9 +101,9 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "LoadData" );
 
   unsigned int fCount = 0;
-  std::vector< int > featureSymmetry;
+  std::vector< unsigned int > featureSymmetry;
   std::vector< std::string > featureName;
-  std::vector< int > zeroOrderFeatures;
+  std::vector< unsigned int > zeroOrderFeatures;
   typename ImageReaderType::Pointer reader;
   for( unsigned int vNum=0; vNum<inputVolumesList.size(); vNum++ )
     {
