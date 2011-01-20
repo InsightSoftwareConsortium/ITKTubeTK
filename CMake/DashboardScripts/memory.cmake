@@ -24,7 +24,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 set( SCRIPT_NAME "Memory" )
-set( SCRIPT_BINARY_SUBDIR "" )
+set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
 set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
 include( ${SITE_SCRIPT_DIR}/cmakecache.cmake )
@@ -35,5 +35,5 @@ ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
+ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
 ctest_submit( PARTS MemCheck )
