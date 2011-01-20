@@ -271,6 +271,19 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
+::SetLDAVector( unsigned int ldaNum, const LDAVectorType & vec )
+{
+  if( ldaNum < m_NumberOfLDA )
+    {
+    m_LDAMatrix.set_column( ldaNum, vec );
+    m_LDAUpToDate = true;
+    m_LDAImageListUpToDate = false;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
 ::SetLDAValues( const LDAValuesType & values )
 {
   m_LDAValues = values;

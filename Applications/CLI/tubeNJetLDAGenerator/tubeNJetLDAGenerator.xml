@@ -51,6 +51,20 @@
       <default>false</default>
       <longflag>usePCA</longflag>
     </boolean>
+    <boolean>
+      <name>forceSymmetry</name>
+      <description>Post-process the eigenvectors so that x/y directions are weighted equally</description>
+      <label>Force x/y symmetry</label>
+      <default>false</default>
+      <longflag>forceSymmetry</longflag>
+    </boolean>
+    <boolean>
+      <name>forceSign</name>
+      <description>Post-process the eigenvectors so that intensity weights are positive</description>
+      <label>Force x/y symmetry</label>
+      <default>false</default>
+      <longflag>forceSign</longflag>
+    </boolean>
     <float-vector>
       <name>zeroScales</name>
       <description>Scales at which 0th-order features are computed</description>
@@ -79,6 +93,12 @@
       <default>0</default>
       <longflag>useNumberOfLDA</longflag>
     </integer>
+    <string>
+      <name>saveKernelImages</name>
+      <description>Save kernel images that represent each eigenvector</description>
+      <label>Save kernel images</label>
+      <longflag>saveKernelImages</longflag>
+    </string>
     <string>
       <name>saveFeatureImages</name>
       <description>Save intermediate feature images to a file</description>
