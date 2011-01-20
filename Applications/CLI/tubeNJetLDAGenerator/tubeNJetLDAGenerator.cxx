@@ -101,7 +101,9 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "LoadData" );
 
   unsigned int fCount = 0;
+  std::vector< int > featureSymmetry;
   std::vector< std::string > featureName;
+  std::vector< int > zeroOrderFeatures;
   typename ImageReaderType::Pointer reader;
   for( unsigned int vNum=0; vNum<inputVolumesList.size(); vNum++ )
     {
@@ -117,6 +119,8 @@ int DoIt( int argc, char * argv[] )
       ldaGenerator->SetFeatureImage( reader->GetOutput() );
       sprintf(s, ".f%02d.org", fCount);
       featureName.push_back( featureBaseName + std::string( s ) );
+      featureSymmetry.push_back( 0 );
+      zeroOrderFeatures.push_back( fCount );
       if( saveFeatureImages.size() > 0 )
         {
         WriteLDA< LDAImageType >( reader->GetOutput(), saveFeatureImages,
@@ -129,6 +133,8 @@ int DoIt( int argc, char * argv[] )
       ldaGenerator->AddFeatureImage( reader->GetOutput() );
       sprintf(s, ".f%02d.org", fCount);
       featureName.push_back( featureBaseName + std::string( s ) );
+      featureSymmetry.push_back( 0 );
+      zeroOrderFeatures.push_back( fCount );
       if( saveFeatureImages.size() > 0 )
         {
         WriteLDA< LDAImageType >( reader->GetOutput(), saveFeatureImages,
@@ -147,6 +153,8 @@ int DoIt( int argc, char * argv[] )
       ldaGenerator->AddFeatureImage( filter->GetOutput() );
       sprintf(s, ".f%02d.b-%02d", fCount, (int)zeroScales[i]);
       featureName.push_back( featureBaseName + std::string( s ) );
+      featureSymmetry.push_back( 0 );
+      zeroOrderFeatures.push_back( fCount );
       if( saveFeatureImages.size() > 0 )
         {
         WriteLDA< LDAImageType >( filter->GetOutput(), saveFeatureImages,
@@ -156,6 +164,7 @@ int DoIt( int argc, char * argv[] )
       }
     for( unsigned int i=0; i<firstScales.size(); i++ )
       {
+      int symmetryBase = fCount;
       for( unsigned int d=0; d<dimensionT; d++ )
         {
         typename LDAImageType::Pointer curImage = reader->GetOutput();
@@ -183,6 +192,7 @@ int DoIt( int argc, char * argv[] )
         sprintf(s, ".f%02d.d1-%02d-%01d", fCount, (int)firstScales[i],
           d );
         featureName.push_back( featureBaseName + std::string( s ) );
+        featureSymmetry.push_back( symmetryBase );
         if( saveFeatureImages.size() > 0 )
           {
           WriteLDA< LDAImageType >( curImage, saveFeatureImages,
@@ -206,6 +216,7 @@ int DoIt( int argc, char * argv[] )
       ldaGenerator->AddFeatureImage( curImage );
       sprintf(s, ".f%02d.d1-%02d-a", fCount, (int)firstScales[i] );
       featureName.push_back( featureBaseName + std::string( s ) );
+      featureSymmetry.push_back( 0 );
       if( saveFeatureImages.size() > 0 )
         {
         WriteLDA< LDAImageType >( curImage, saveFeatureImages,
@@ -215,6 +226,7 @@ int DoIt( int argc, char * argv[] )
       }
     for( unsigned int i=0; i<secondScales.size(); i++ )
       {
+      int symmetryBase = fCount;
       for( unsigned int d=0; d<dimensionT; d++ )
         {
         typename LDAImageType::Pointer curImage = reader->GetOutput();
@@ -241,6 +253,7 @@ int DoIt( int argc, char * argv[] )
         ldaGenerator->AddFeatureImage( curImage );
         sprintf(s, ".f%02d.d2-%02d-%01d", fCount, (int)secondScales[i], d );
         featureName.push_back( featureBaseName + std::string( s ) );
+        featureSymmetry.push_back( symmetryBase );
         if( saveFeatureImages.size() > 0 )
           {
           WriteLDA< LDAImageType >( curImage, saveFeatureImages,
@@ -264,6 +277,7 @@ int DoIt( int argc, char * argv[] )
       ldaGenerator->AddFeatureImage( curImage );
       sprintf(s, ".f%02d.d2-%02d-a", fCount, (int)secondScales[i] );
       featureName.push_back( featureBaseName + std::string( s ) );
+      featureSymmetry.push_back( 0 );
       if( saveFeatureImages.size() > 0 )
         {
         WriteLDA< LDAImageType >( curImage, saveFeatureImages,
@@ -331,6 +345,67 @@ int DoIt( int argc, char * argv[] )
     for( unsigned int f=0; f<fCount; f++ )
       {
       fVal[f] += vnl_math_abs( ldaGenerator->GetLDAValue( f ) );
+      }
+    }
+
+  if( forceSymmetry )
+    {
+    for( unsigned int i=0; i<numLDA; i++ )
+      {
+      typename LDAGeneratorType::LDAVectorType v;
+      v = ldaGenerator->GetLDAVector( i );
+      for( unsigned int f=0; f<fCount; f++ )
+        {
+        if( featureSymmetry[f] != 0 )
+          {
+          double fSumS = 0;
+          unsigned int fStart = f;
+          while( featureSymmetry[f] == fStart )
+            {
+            fSumS += v[f]*v[f];
+            ++f;
+            }
+          double symVal = vcl_sqrt( fSumS / (f-fStart) );
+          if( fSumS > 0 )
+            {
+            f = fStart;
+            while( featureSymmetry[f] == fStart )
+              {
+              std::cout << "sym: f = " << f << " : "
+                << v[f] << " -> " << symVal << std::endl;
+              v[f] = symVal;
+              ++f;
+              }
+            }
+          --f;
+          }
+        }
+      ldaGenerator->SetLDAVector( i, v );
+      }
+    }
+
+  if( forceSign )
+    {
+    for( unsigned int i=0; i<numLDA; i++ )
+      {
+      typename LDAGeneratorType::LDAVectorType v;
+      v = ldaGenerator->GetLDAVector( i );
+      unsigned int numFeatures = zeroOrderFeatures.size();
+      double sum = 0;
+      for( unsigned int j=0; j<numFeatures; j++ )
+        {
+        int f = zeroOrderFeatures[j];
+        sum += v[f];
+        }
+      if( sum < 0 )
+        {
+        std::cout << "Sign: eVect = " << i << std::endl;
+        for( unsigned int f=0; f<fCount; f++ )
+          {
+          v[f] *= -1;
+          }
+        ldaGenerator->SetLDAVector( i, v );
+        }
       }
     }
 
