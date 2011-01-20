@@ -225,7 +225,8 @@ AnisotropicDiffusiveRegistrationFunction
   const typename FixedImageType::IndexType index = neighborhood.GetIndex();
 
   // Iterate over the deformation field components to compute the regularization
-  // and intensity distance terms
+  // and intensity distance terms - note that PixelType corresponds to a
+  // deformation vector
   PixelType                         tangentialRegularizationTerm;
   PixelType                         normalRegularizationTerm;
   PixelType                         intensityDistanceTerm;
