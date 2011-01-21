@@ -53,8 +53,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods) */
-  itkTypeMacro( AnisotropicDiffusionTensorFunction,
-                                           FiniteDifferenceFunction );
+  itkTypeMacro( AnisotropicDiffusionTensorFunction, FiniteDifferenceFunction );
 
   /** Extract some parameters from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
@@ -68,26 +67,29 @@ public:
   typedef typename Superclass::NeighborhoodType       NeighborhoodType;
   typedef typename Superclass::FloatOffsetType        FloatOffsetType;
 
+  /** Diffusion tensor typedefs. */
   typedef DiffusionTensor3D< double >                 DiffusionTensorType;
   typedef itk::Image< DiffusionTensorType, 3 >        DiffusionTensorImageType;
+  /** The default boundary condition for finite difference
+   * functions that is used unless overridden in the Evaluate() method. */
+  typedef ZeroFluxNeumannBoundaryCondition< DiffusionTensorImageType >
+      DefaultBoundaryConditionType;
+  typedef ConstNeighborhoodIterator< DiffusionTensorImageType,
+                                     DefaultBoundaryConditionType>
+      DiffusionTensorNeighborhoodType;
 
+  /** Derivative matrix typedefs. */
   typedef vnl_matrix_fixed< ScalarValueType,
                             itkGetStaticConstMacro(ImageDimension),
                             itkGetStaticConstMacro(ImageDimension)>
                                                       DerivativeMatrixType;
   typedef itk::Image< DerivativeMatrixType, 3 >       DerivativeMatrixImageType;
-
-  /** The default boundary condition for finite difference
-   * functions that is used unless overridden in the Evaluate() method. */
-  typedef ZeroFluxNeumannBoundaryCondition<DiffusionTensorImageType>
-    DefaultBoundaryConditionType;
-
-  /** Define diffusion image iterator/neighborhood types */
-  typedef ConstNeighborhoodIterator<DiffusionTensorImageType,
-                                    DefaultBoundaryConditionType>
-                                           DiffusionTensorNeighborhoodType;
-  typedef ImageRegionIterator<DerivativeMatrixImageType>
+  typedef ImageRegionIterator< DerivativeMatrixImageType >
       DerivativeMatrixImageRegionType;
+
+
+
+
 
   /** Tensor pixel type */
   typedef itk::SymmetricSecondRankTensor< double >    TensorPixelType;
@@ -111,53 +113,39 @@ public:
     ScalarValueType       m_GradMagSqr;
     };
 
-  /** Compute the equation value. */
+  /** Compute the equation value.  Inherited from the superclass: call
+   *  one of the other two ComputeUpdate() functions instead. */
   virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
                                   void *globalData,
                                   const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(
-                     const NeighborhoodType &neighborhood,
-                     const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-                     void *globalData,
-                     const FloatOffsetType& = FloatOffsetType(0.0));
+      const NeighborhoodType &neighborhood,
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      void *globalData,
+      const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value, using precomputed first derivatives for the
       diffusion tensor. */
   virtual PixelType ComputeUpdate(
-                     const NeighborhoodType &neighborhood,
-                     const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-                     const DerivativeMatrixImageRegionType &tensorDerivative,
-                     void *globalData,
-                     const FloatOffsetType& = FloatOffsetType(0.0));
+      const NeighborhoodType &neighborhood,
+      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      const DerivativeMatrixImageRegionType &tensorDerivative,
+      void *globalData,
+      const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Computes the time step for an update given a global data structure. */
   virtual TimeStepType ComputeGlobalTimeStep(void *GlobalData) const;
-
-  /** Returns a pointer to a global data structure that is passed to this
-   * object from the solver at each calculation.*/
-  virtual void *GetGlobalDataPointer() const
-    {
-    GlobalDataStruct *ans = new GlobalDataStruct();
-    return ans;
-    }
-
-  virtual void ReleaseGlobalDataPointer(void *GlobalData) const
-    { delete (GlobalDataStruct *) GlobalData; }
 
   /** Set/Get the time step. For this class of anisotropic diffusion filters,
       the time-step is supplied by the user and remains fixed for all
       updates. */
   void SetTimeStep(const TimeStepType &t)
-    {
-    m_TimeStep = t;
-    }
+    { m_TimeStep = t; }
 
   const TimeStepType &GetTimeStep() const
-    {
-    return m_TimeStep;
-    }
+    { return m_TimeStep; }
 
   /** Utility function to check whether the timestep is stable, optionally based
     * on the spacing of the given image */
@@ -171,14 +159,21 @@ public:
       const DiffusionTensorNeighborhoodType &neighborhoodTensor,
       DerivativeMatrixImageRegionType &derivativeTensor ) const;
 
+  /** Returns a pointer to a global data structure that is passed to this
+   * object from the solver at each calculation.*/
+  virtual void *GetGlobalDataPointer() const
+    {
+    GlobalDataStruct *ans = new GlobalDataStruct();
+    return ans;
+    }
+
+  virtual void ReleaseGlobalDataPointer(void *GlobalData) const
+    { delete (GlobalDataStruct *) GlobalData; }
+
 protected:
   AnisotropicDiffusionTensorFunction();
-
   virtual ~AnisotropicDiffusionTensorFunction() {}
   void PrintSelf(std::ostream &s, Indent indent) const;
-
-  /** Slices for the ND neighborhood. */
-  std::slice x_slice[itkGetStaticConstMacro(ImageDimension)];
 
   /** The offset of the center pixel in the neighborhood. */
   unsigned int m_Center;
