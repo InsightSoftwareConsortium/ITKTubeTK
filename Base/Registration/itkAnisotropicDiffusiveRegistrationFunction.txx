@@ -182,7 +182,7 @@ AnisotropicDiffusiveRegistrationFunction
   // This function should never be called!
   itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
                      << "be called.  Use ComputeUpdate(neighborhood, "
-                     << "normalVectorImageNeighborhood,"
+                     << "normalVectorNeighborhood,"
                      << "tangentialNeighborhoodTensor,"
                      << "tangentialNeighborhoodDeformationFieldComponents,"
                      << "normalNeighborhoodTensor,"
@@ -200,26 +200,26 @@ typename AnisotropicDiffusiveRegistrationFunction
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(
-    const NeighborhoodType & neighborhood,
-    const NormalVectorImageNeighborhoodType &
-        normalVectorImageNeighborhood,
-    const DiffusionTensorNeighborhoodType &
-        tangentialNeighborhoodTensor,
-    const DerivativeMatrixImageRegionType &
-        tangentialNeighborhoodTensorDerivative,
-    const DeformationVectorComponentNeighborhoodArrayType &
-        tangentialNeighborhoodDeformationFieldComponents,
-    const DiffusionTensorNeighborhoodType &
-        normalNeighborhoodTensor,
-    const DerivativeMatrixImageRegionType &
-        normalNeighborhoodTensorDerivative,
-    const DeformationVectorComponentNeighborhoodArrayType &
-        normalNeighborhoodDeformationFieldComponents,
-    void * gd,
-    const FloatOffsetType & offset)
+    const NeighborhoodType &neighborhood,
+    const NormalVectorImageNeighborhoodType
+        &normalVectorNeighborhood,
+    const DiffusionTensorNeighborhoodType
+        &tangentialTensorNeighborhood,
+    const DerivativeMatrixImageRegionType
+        &tangentialTensorDerivativeRegion,
+    const DeformationVectorComponentNeighborhoodArrayType
+        &tangentialDeformationComponentRegions,
+    const DiffusionTensorNeighborhoodType
+        &normalTensorNeighborhood,
+    const DerivativeMatrixImageRegionType
+        &normalTensorDerivativeRegion,
+    const DeformationVectorComponentNeighborhoodArrayType
+        &normalDeformationComponentRegions,
+    void *globalData,
+    const FloatOffsetType &offset )
 {
   // Get the global data structure
-  GlobalDataStruct * globalData = ( GlobalDataStruct * ) gd;
+  GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
 
   // Get the normal at this pixel
   const typename FixedImageType::IndexType index = neighborhood.GetIndex();
@@ -240,7 +240,7 @@ AnisotropicDiffusiveRegistrationFunction
   if ( m_ComputeIntensityDistanceTerm )
     {
     intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
-        neighborhood, globalData->m_IntensityDistanceGlobalDataStruct, offset );
+        neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
     }
 
   // Compute the motion field regularization
@@ -254,7 +254,7 @@ AnisotropicDiffusiveRegistrationFunction
     if( m_UseAnisotropicRegularization )
       {
       normalVector
-          = normalVectorImageNeighborhood.GetImagePointer()->GetPixel( index );
+          = normalVectorNeighborhood.GetImagePointer()->GetPixel( index );
       }
 
     for ( unsigned int i = 0; i < ImageDimension; i++ )
@@ -262,10 +262,10 @@ AnisotropicDiffusiveRegistrationFunction
       // Compute the regularization in the tangential plane
       tangentialRegularizationTerm[i]
           = m_RegularizationFunction->ComputeUpdate(
-              tangentialNeighborhoodDeformationFieldComponents[i],
-              tangentialNeighborhoodTensor,
-              tangentialNeighborhoodTensorDerivative,
-              globalData->m_RegularizationGlobalDataStruct,
+              tangentialDeformationComponentRegions[i],
+              tangentialTensorNeighborhood,
+              tangentialTensorDerivativeRegion,
+              gd->m_RegularizationGlobalDataStruct,
               offset );
 
       if( m_UseAnisotropicRegularization )
@@ -273,10 +273,10 @@ AnisotropicDiffusiveRegistrationFunction
         // Compute the regularization in the normal direction
         intermediateNormalRegularizationComponent
             = m_RegularizationFunction->ComputeUpdate(
-                normalNeighborhoodDeformationFieldComponents[i],
-                normalNeighborhoodTensor,
-                normalNeighborhoodTensorDerivative,
-                globalData->m_RegularizationGlobalDataStruct,
+                normalDeformationComponentRegions[i],
+                normalTensorNeighborhood,
+                normalTensorDerivativeRegion,
+                gd->m_RegularizationGlobalDataStruct,
                 offset );
 
         nln = normalVector[i] * normalVector;

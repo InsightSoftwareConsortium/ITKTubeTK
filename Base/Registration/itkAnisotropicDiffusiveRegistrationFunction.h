@@ -141,13 +141,15 @@ public:
   typedef typename RegularizationFunctionType::DerivativeMatrixImageRegionType
       DerivativeMatrixImageRegionType;
 
+  /** Computes the time step for an update given a global data structure.
+   *  Returns the time step supplied by the user. We don't need
+   *  to use the global data supplied since we are returning a fixed value. */
+  virtual TimeStepType ComputeGlobalTimeStep(void *itkNotUsed(GlobalData)) const
+    { return this->GetTimeStep(); }
 
-
-
-
-
-
-  /** Set/Get the time step for an update */
+  /** Set/Get the time step. For this class of anisotropic diffusion filters,
+      the time-step is supplied by the user and remains fixed for all
+      updates. */
   void SetTimeStep(const TimeStepType &t)
     {
     m_TimeStep = t;
@@ -156,44 +158,11 @@ public:
       m_RegularizationFunction->SetTimeStep(t);
       }
     // Intensity distance function doesn't have a SetTimeStep(), but it's ok
-    // because we only use ComputeUpdate() for that function
+    // because we only use ComputeUpdate() for it.
     }
+
   const TimeStepType &GetTimeStep() const
     { return m_TimeStep; }
-
-  /** Computes the time step for an update given a global data structure.  For
-   * this class of anisotropic diffusion filters, the time-step is supplied
-   * by the user and is fixed for all updates, so the global data structure
-   * is not used.
-   */
-  virtual TimeStepType ComputeGlobalTimeStep(void * itkNotUsed(GlobalData) )
-      const
-    { return m_TimeStep; }
-
-  /** Set/get whether to compute the motion field regularization term
-   *  Default: true
-   */
-  void SetComputeRegularizationTerm( bool compute )
-    { m_ComputeRegularizationTerm = compute; }
-  bool GetComputeRegularizationTerm() const
-    { return m_ComputeRegularizationTerm; }
-
-  /** Set/get whether to compute the intensity distance term
-   *  Default: true
-   */
-  void SetComputeIntensityDistanceTerm( bool compute )
-    { m_ComputeIntensityDistanceTerm = compute; }
-  bool GetComputeIntensityDistanceTerm() const
-    { return m_ComputeIntensityDistanceTerm; }
-
-  /** Set/get whether to use the anisotropic diffusive regularization.  If
-   *  false, the weighting term w=0 and Gaussian regularization is used.
-   *  Default: true
-   */
-  void SetUseAnisotropicRegularization( bool diffuse )
-    { m_UseAnisotropicRegularization = diffuse; }
-  bool GetUseAnisotropicRegularization() const
-    { return m_UseAnisotropicRegularization; }
 
   /** Utility function to check whether the timestep is stable, optionally based
     * on the spacing of the given image */
@@ -201,8 +170,37 @@ public:
   void CheckTimeStepStability(
       const itk::Image< TPixel, VImageDimension > * input,
       bool useImageSpacing )
-    { m_RegularizationFunction->CheckTimeStepStability(
-        input, useImageSpacing ); }
+    { m_RegularizationFunction->CheckTimeStepStability(input,
+                                                       useImageSpacing ); }
+
+  /** Set/get whether to compute the motion field regularization term
+   *  Default: true */
+  void SetComputeRegularizationTerm( bool compute )
+    { m_ComputeRegularizationTerm = compute; }
+  bool GetComputeRegularizationTerm() const
+    { return m_ComputeRegularizationTerm; }
+
+  /** Set/get whether to compute the intensity distance term
+   *  Default: true */
+  void SetComputeIntensityDistanceTerm( bool compute )
+    { m_ComputeIntensityDistanceTerm = compute; }
+  bool GetComputeIntensityDistanceTerm() const
+    { return m_ComputeIntensityDistanceTerm; }
+
+  /** Set/get whether to use the anisotropic diffusive regularization.  If
+   *  false, the weighting term w=0 and Gaussian regularization is used.
+   *  Default: true */
+  void SetUseAnisotropicRegularization( bool diffuse )
+    { m_UseAnisotropicRegularization = diffuse; }
+  bool GetUseAnisotropicRegularization() const
+    { return m_UseAnisotropicRegularization; }
+
+  /** Returns the pointers to the regularization function and the intensity
+    difference function */
+  RegularizationFunctionPointer GetRegularizationFunctionPointer() const
+    { return m_RegularizationFunction; }
+  IntensityDistanceFunctionPointer GetIntensityDistanceFunctionPointer() const
+    { return m_IntensityDistanceFunction; }
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
@@ -210,29 +208,27 @@ public:
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead
    */
-  PixelType ComputeUpdate(
-      const NeighborhoodType & neighborhood,
-      void * globalData,
-      const FloatOffsetType & offset );
+  PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
+                          void *globalData,
+                          const FloatOffsetType &offset = FloatOffsetType(0.0));
 
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
-      const NeighborhoodType &
-          neighborhood,
+      const NeighborhoodType &neighborhood,
       const NormalVectorImageNeighborhoodType
-          &normalVectorImageNeighborhood,
+          &normalVectorNeighborhood,
       const DiffusionTensorNeighborhoodType
-          &tangentialNeighborhoodTensor,
+          &tangentialTensorNeighborhood,
       const DerivativeMatrixImageRegionType
-          &tangentialNeighborhoodTensorDerivative,
+          &tangentialTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
-          &tangentialNeighborhoodDeformationFieldComponents,
+          &tangentialDeformationComponentRegions,
       const DiffusionTensorNeighborhoodType
-          &normalNeighborhoodTensor,
+          &normalTensorNeighborhood,
       const DerivativeMatrixImageRegionType
-          &normalNeighborhoodTensorDerivative,
+          &normalTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
-          &normalNeighborhoodDeformationFieldComponents,
+          &normalDeformationComponentRegions,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
 
@@ -242,13 +238,6 @@ public:
 
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
-
-  /** Returns the pointers to the regularization function and the intensity
-    difference function */
-  RegularizationFunctionPointer GetRegularizationFunctionPointer() const
-    { return m_RegularizationFunction; }
-  IntensityDistanceFunctionPointer GetIntensityDistanceFunctionPointer() const
-    { return m_IntensityDistanceFunction; }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();
@@ -261,8 +250,8 @@ protected:
     const and thread-safe.*/
   struct GlobalDataStruct
     {
-    void *                            m_RegularizationGlobalDataStruct;
-    void *                            m_IntensityDistanceGlobalDataStruct;
+    void *                              m_RegularizationGlobalDataStruct;
+    void *                              m_IntensityDistanceGlobalDataStruct;
     };
 
 private:
@@ -276,9 +265,6 @@ private:
   /** The component functions used to calculate the results of this function. */
   RegularizationFunctionPointer         m_RegularizationFunction;
   IntensityDistanceFunctionPointer      m_IntensityDistanceFunction;
-
-  /** Mutex lock to protect modification to metric. */
-  mutable SimpleFastMutexLock           m_MetricCalculationLock;
 
   /** Whether or not to compute the intensity distance and motion field
    * regularization terms, and whether or not to use the anisotropic

@@ -128,11 +128,9 @@ public:
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
-   * to use the global data supplied since we are returning a fixed value. */
-  virtual TimeStepType ComputeGlobalTimeStep(void *GlobalData) const
-    {
-    return this->GetTimeStep();
-    }
+   *  to use the global data supplied since we are returning a fixed value. */
+  virtual TimeStepType ComputeGlobalTimeStep(void *itkNotUsed(GlobalData)) const
+    { return this->GetTimeStep(); }
 
   /** Set/Get the time step. For this class of anisotropic diffusion filters,
       the time-step is supplied by the user and remains fixed for all
