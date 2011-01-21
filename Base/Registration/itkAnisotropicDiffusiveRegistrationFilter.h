@@ -147,13 +147,12 @@ public:
   /** The diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
-  typedef typename RegistrationFunctionType::DiffusionTensorImagePointer
+  typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
-
   /** The derivative matrix types */
   typedef typename RegistrationFunctionType::DerivativeMatrixImageType
       DerivativeMatrixImageType;
-  typedef typename RegistrationFunctionType::DerivativeMatrixImagePointer
+  typedef typename DerivativeMatrixImageType::Pointer
       DerivativeMatrixImagePointer;
 
   /** Typedefs used in multithreading */

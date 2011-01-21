@@ -82,7 +82,8 @@ public:
   typedef typename Superclass::FloatOffsetType          FloatOffsetType;
 
   /** Deformation field types */
-  typedef typename DeformationFieldType::PixelType      DeformationVectorType;
+  typedef typename DeformationFieldType::PixelType
+      DeformationVectorType;
   typedef typename DeformationVectorType::ValueType
       DeformationVectorComponentType;
   typedef itk::Image< DeformationVectorComponentType, ImageDimension >
@@ -92,10 +93,10 @@ public:
   typedef ConstNeighborhoodIterator
       < DeformationVectorComponentImageType,
       DeformationVectorComponentImageBoundaryConditionType >
-      DeformationVectorComponentNeighborhoodIteratorType;
+      DeformationVectorComponentNeighborhoodType;
   typedef itk::FixedArray
-      < DeformationVectorComponentNeighborhoodIteratorType, ImageDimension >
-       DeformationVectorComponentNeighborhoodIteratorArrayType;
+      < DeformationVectorComponentNeighborhoodType, ImageDimension >
+       DeformationVectorComponentNeighborhoodArrayType;
 
   /** Typedefs for the intensity-based distance function */
   typedef itk::MeanSquareRegistrationFunction
@@ -122,27 +123,23 @@ public:
       NormalVectorImageBoundaryConditionType;
   typedef ConstNeighborhoodIterator
       < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
-      NormalVectorImageNeighborhoodIteratorType;
+      NormalVectorImageNeighborhoodType;
 
   /** Typedefs for the diffusion tensor image */
   typedef typename RegularizationFunctionType::DiffusionTensorType
       DiffusionTensorType;
   typedef typename RegularizationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
-  typedef typename DiffusionTensorImageType::Pointer
-      DiffusionTensorImagePointer;
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
-      DiffusionTensorNeighborhoodIteratorType;
+      DiffusionTensorNeighborhoodType;
 
   /** Typedefs for the matrices of derivatives */
   typedef typename RegularizationFunctionType::DerivativeMatrixType
       DerivativeMatrixType;
   typedef typename RegularizationFunctionType::DerivativeMatrixImageType
       DerivativeMatrixImageType;
-  typedef typename DerivativeMatrixImageType::Pointer
-      DerivativeMatrixImagePointer;
   typedef typename RegularizationFunctionType::DerivativeMatrixImageRegionType
-      DerivativeMatrixImageRegionIteratorType;
+      DerivativeMatrixImageRegionType;
 
 
 
@@ -222,19 +219,19 @@ public:
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &
           neighborhood,
-      const NormalVectorImageNeighborhoodIteratorType
+      const NormalVectorImageNeighborhoodType
           &normalVectorImageNeighborhood,
-      const DiffusionTensorNeighborhoodIteratorType
+      const DiffusionTensorNeighborhoodType
           &tangentialNeighborhoodTensor,
-      const DerivativeMatrixImageRegionIteratorType
+      const DerivativeMatrixImageRegionType
           &tangentialNeighborhoodTensorDerivative,
-      const DeformationVectorComponentNeighborhoodIteratorArrayType
+      const DeformationVectorComponentNeighborhoodArrayType
           &tangentialNeighborhoodDeformationFieldComponents,
-      const DiffusionTensorNeighborhoodIteratorType
+      const DiffusionTensorNeighborhoodType
           &normalNeighborhoodTensor,
-      const DerivativeMatrixImageRegionIteratorType
+      const DerivativeMatrixImageRegionType
           &normalNeighborhoodTensorDerivative,
-      const DeformationVectorComponentNeighborhoodIteratorArrayType
+      const DeformationVectorComponentNeighborhoodArrayType
           &normalNeighborhoodDeformationFieldComponents,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
