@@ -66,11 +66,11 @@ AnisotropicDiffusiveRegistrationFunction
 
   os << indent << "TimeStep: " << m_TimeStep;
   os << indent << "ComputeRegularizationTerm: "
-      << m_ComputeRegularizationTerm << std::endl;
+      << this->GetComputeRegularizationTerm() << std::endl;
   os << indent << "ComputeIntensityDistanceTerm: "
-      << m_ComputeIntensityDistanceTerm << std::endl;
+      << this->GetComputeIntensityDistanceTerm() << std::endl;
   os << indent << "UseAnisotropicRegularization: "
-      << m_UseAnisotropicRegularization << std::endl;
+      << this->GetUseAnisotropicRegularization() << std::endl;
   if ( m_RegularizationFunction )
     {
     os << indent << "RegularizationFunction: " << std::endl;
@@ -95,12 +95,12 @@ AnisotropicDiffusiveRegistrationFunction
   GlobalDataStruct * ans = new GlobalDataStruct();
 
   // Create the component global data pointers
-  if( m_ComputeRegularizationTerm )
+  if( this->GetComputeRegularizationTerm() )
     {
     ans->m_RegularizationGlobalDataStruct =
         m_RegularizationFunction->GetGlobalDataPointer();
     }
-  if( m_ComputeIntensityDistanceTerm )
+  if( this->GetComputeIntensityDistanceTerm() )
     {
     ans->m_IntensityDistanceGlobalDataStruct =
         m_IntensityDistanceFunction->GetGlobalDataPointer();
@@ -121,12 +121,12 @@ AnisotropicDiffusiveRegistrationFunction
   GlobalDataStruct * gd = ( GlobalDataStruct * ) GlobalData;
 
   // Release the component data structures
-  if( m_ComputeRegularizationTerm )
+  if( this->GetComputeRegularizationTerm() )
     {
     m_RegularizationFunction->ReleaseGlobalDataPointer(
         gd->m_RegularizationGlobalDataStruct );
     }
-  if( m_ComputeIntensityDistanceTerm )
+  if( this->GetComputeIntensityDistanceTerm() )
     {
     m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
         gd->m_IntensityDistanceGlobalDataStruct );
@@ -154,7 +154,7 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   // Setup and initialize the component functions
-  if( m_ComputeIntensityDistanceTerm )
+  if( this->GetComputeIntensityDistanceTerm() )
     {
     m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() );
     m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
@@ -162,7 +162,7 @@ AnisotropicDiffusiveRegistrationFunction
         this->GetDeformationField() );
     m_IntensityDistanceFunction->InitializeIteration();
     }
-  if( m_ComputeRegularizationTerm )
+  if( this->GetComputeRegularizationTerm() )
     {
     m_RegularizationFunction->InitializeIteration();
     }
@@ -237,21 +237,21 @@ AnisotropicDiffusiveRegistrationFunction
   normalRegularizationTerm.Fill(0); // essential because incremented in loop
 
   // Compute the intensity distance update
-  if ( m_ComputeIntensityDistanceTerm )
+  if (this->GetComputeIntensityDistanceTerm() )
     {
     intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
         neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
     }
 
   // Compute the motion field regularization
-  if (m_ComputeRegularizationTerm )
+  if ( this->GetComputeRegularizationTerm() )
     {
     NormalVectorType                  normalVector;
     DeformationVectorComponentType    intermediateNormalRegularizationComponent;
     PixelType                         intermediateNormalRegularizationTerm;
     NormalVectorType                  nln; // n(l)n
 
-    if( m_UseAnisotropicRegularization )
+    if( this->GetUseAnisotropicRegularization() )
       {
       normalVector
           = normalVectorNeighborhood.GetImagePointer()->GetPixel( index );
@@ -268,7 +268,7 @@ AnisotropicDiffusiveRegistrationFunction
               gd->m_RegularizationGlobalDataStruct,
               offset );
 
-      if( m_UseAnisotropicRegularization )
+      if( this->GetUseAnisotropicRegularization() )
         {
         // Compute the regularization in the normal direction
         intermediateNormalRegularizationComponent
