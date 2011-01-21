@@ -113,7 +113,7 @@ public:
   /** Compute the equation value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
-      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
+      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -121,8 +121,8 @@ public:
       diffusion tensor. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
-      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-      const DerivativeMatrixImageRegionType &tensorDerivative,
+      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+      const DerivativeMatrixImageRegionType &tensorDerivativeRegion,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -147,8 +147,8 @@ public:
 
   /** Computes the first derivative of a diffusion tensor image. */
   void ComputeDiffusionFirstDerivative(
-      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-      DerivativeMatrixImageRegionType &derivativeTensor ) const;
+      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+      DerivativeMatrixImageRegionType &tensorDerivativeRegion ) const;
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
@@ -187,25 +187,25 @@ protected:
 
   /** Computes the first and second derivatives of an intensity image. */
   void ComputeIntensityFirstAndSecondDerivatives(
-      const NeighborhoodType &neighborhoodIntensity,
-      GlobalDataStruct *globalData ) const;
+      const NeighborhoodType &neighborhood,
+      GlobalDataStruct *gd ) const;
 
   /** Compute the first derivative of a diffusion image */
   DerivativeMatrixType ComputeDiffusionFirstDerivative(
-      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-      GlobalDataStruct *globalData ) const;
+      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+      GlobalDataStruct *gd ) const;
 
   /** Computes the final update term based on the results of the first and
     * second derivative computations */
   PixelType ComputeFinalUpdateTerm(
-      const DiffusionTensorNeighborhoodType &neighborhoodTensor,
-      const GlobalDataStruct* globalData ) const;
+      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+      const GlobalDataStruct* gd ) const;
 
   /** Copies a diffusion tensor derivative into a globalDataStruct's diffusion
     tensor first derivative field */
   void CopyDerivativeMatrixToGlobalData(
-      const DerivativeMatrixImageRegionType &tensorDerivative,
-      GlobalDataStruct* globalData ) const;
+      const DerivativeMatrixImageRegionType &tensorDerivativeRegion,
+      GlobalDataStruct* gd ) const;
 
 private:
   //purposely not implemented

@@ -84,72 +84,70 @@ AnisotropicDiffusionTensorFunction<TImageType>
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeUpdate(const NeighborhoodType &it, void *globalData,
+::ComputeUpdate(const NeighborhoodType &neighborhood,
+                void *globalData,
                 const FloatOffsetType& offset)
 {
-  DiffusionTensorNeighborhoodType diffusionTensor;
-  return this->ComputeUpdate( it, diffusionTensor, globalData, offset );
+  DiffusionTensorNeighborhoodType tensorNeighborhood;
+  return this->ComputeUpdate( neighborhood,
+                              tensorNeighborhood,
+                              globalData,
+                              offset );
 }
 
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeUpdate(const NeighborhoodType &it,
-                const DiffusionTensorNeighborhoodType &gt,
+::ComputeUpdate(const NeighborhoodType &neighborhood,
+                const DiffusionTensorNeighborhoodType &tensorNeighborhood,
                 void *globalData,
                 const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
-  // m_dx -> Intensity first derivative
-  // m_dxy -> Intensity second derivative
-  // m_DT_dxy -> Diffusion tensor first derivative
   GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
 
   // Compute the first and 2nd derivative for the intensity images
-  this->ComputeIntensityFirstAndSecondDerivatives( it, gd );
+  this->ComputeIntensityFirstAndSecondDerivatives( neighborhood, gd );
 
   // Compute the diffusion tensor matrix first derivatives if not provided
-  this->ComputeDiffusionFirstDerivative( gt, gd );
+  this->ComputeDiffusionFirstDerivative( tensorNeighborhood, gd );
 
   // Compute the update term
-  return this->ComputeFinalUpdateTerm( gt, gd );
+  return this->ComputeFinalUpdateTerm( tensorNeighborhood, gd );
 }
 
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeUpdate(const NeighborhoodType &it,
-                const DiffusionTensorNeighborhoodType &gt,
-                const DerivativeMatrixImageRegionType &tensorDerivative,
+::ComputeUpdate(const NeighborhoodType &neighborhood,
+                const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+                const DerivativeMatrixImageRegionType &tensorDerivativeRegion,
                 void *globalData,
                 const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
-  // m_dx -> Intensity first derivative
-  // m_dxy -> Intensity second derivative
-  // m_DT_dxy -> Diffusion tensor first derivative
   GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
 
   // Compute the first and 2nd derivative for the intensity images
-  this->ComputeIntensityFirstAndSecondDerivatives( it, gd );
+  this->ComputeIntensityFirstAndSecondDerivatives( neighborhood, gd );
 
   // We are provided the diffusion tensor matrix first derivatives, so
   // copy them into the global data struct
-  this->CopyDerivativeMatrixToGlobalData( tensorDerivative, gd );
+  this->CopyDerivativeMatrixToGlobalData( tensorDerivativeRegion, gd );
 
   // Compute the update term
-  return this->ComputeFinalUpdateTerm( gt, gd );
+  return this->ComputeFinalUpdateTerm( tensorNeighborhood, gd );
 }
 
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
 ::CopyDerivativeMatrixToGlobalData(
-    const DerivativeMatrixImageRegionType &derivative,
+    const DerivativeMatrixImageRegionType &tensorDerivativeRegion,
      GlobalDataStruct *gd) const
 {
   assert( gd );
-  DerivativeMatrixType derivativePixel = derivative.Get();
+  DerivativeMatrixType derivativePixel = tensorDerivativeRegion.Get();
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     for( unsigned int j = 0; j < ImageDimension; j++ )
@@ -162,15 +160,18 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::DerivativeMatrixType
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeDiffusionFirstDerivative(const DiffusionTensorNeighborhoodType &gt,
-                                  GlobalDataStruct *gd) const
+::ComputeDiffusionFirstDerivative(
+    const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+    GlobalDataStruct *gd) const
 {
   DerivativeMatrixType derivativePixel;
 
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    DiffusionTensorType positionA_Tensor_value = gt.GetPixel( m_positionA[i] );
-    DiffusionTensorType positionB_Tensor_value = gt.GetPixel( m_positionB[i] );
+    DiffusionTensorType positionA_Tensor_value
+        = tensorNeighborhood.GetPixel( m_positionA[i] );
+    DiffusionTensorType positionB_Tensor_value
+        = tensorNeighborhood.GetPixel( m_positionB[i] );
 
     for( unsigned int j = 0; j < ImageDimension; j++ )
       {
@@ -188,25 +189,28 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeDiffusionFirstDerivative(const DiffusionTensorNeighborhoodType &gt,
-                                  DerivativeMatrixImageRegionType &output ) const
+::ComputeDiffusionFirstDerivative(
+    const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+     DerivativeMatrixImageRegionType &tensorDerivativeRegion ) const
 {
-  output.Set( this->ComputeDiffusionFirstDerivative( gt, NULL ) );
+  tensorDerivativeRegion.Set(
+      this->ComputeDiffusionFirstDerivative( tensorNeighborhood, NULL ) );
 }
 
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeIntensityFirstAndSecondDerivatives(const NeighborhoodType &it,
-                                            GlobalDataStruct *gd) const
+::ComputeIntensityFirstAndSecondDerivatives(
+    const NeighborhoodType &neighborhood,
+    GlobalDataStruct *gd) const
 {
   assert( gd );
   gd->m_GradMagSqr = 1.0e-6;
-  const ScalarValueType center_value  = it.GetCenterPixel();
+  const ScalarValueType center_value  = neighborhood.GetCenterPixel();
   for( unsigned int i = 0; i < ImageDimension; i++)
     {
-    const ScalarValueType it_positionA = it.GetPixel( m_positionA[i] );
-    const ScalarValueType it_positionB = it.GetPixel( m_positionB[i] );
+    const ScalarValueType it_positionA = neighborhood.GetPixel( m_positionA[i] );
+    const ScalarValueType it_positionB = neighborhood.GetPixel( m_positionB[i] );
 
     gd->m_dx[i] = 0.5 * ( it_positionA - it_positionB );
 
@@ -215,10 +219,10 @@ AnisotropicDiffusionTensorFunction< TImageType >
     for( unsigned int j = i+1; j < ImageDimension; j++ )
       {
       gd->m_dxy[i][j] = gd->m_dxy[j][i] = 0.25 *
-                                          ( it.GetPixel( m_positionAa[i][j] )
-                                          - it.GetPixel( m_positionBa[i][j] )
-                                          - it.GetPixel( m_positionCa[i][j] )
-                                          + it.GetPixel( m_positionDa[i][j] )
+                                          ( neighborhood.GetPixel( m_positionAa[i][j] )
+                                          - neighborhood.GetPixel( m_positionBa[i][j] )
+                                          - neighborhood.GetPixel( m_positionCa[i][j] )
+                                          + neighborhood.GetPixel( m_positionDa[i][j] )
         );
       }
     }
@@ -227,10 +231,11 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeFinalUpdateTerm(const DiffusionTensorNeighborhoodType &gt,
-                         const GlobalDataStruct *gd) const
+::ComputeFinalUpdateTerm(
+    const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+    const GlobalDataStruct *gd) const
 {
-  DiffusionTensorType center_Tensor_value = gt.GetCenterPixel();
+  DiffusionTensorType center_Tensor_value = tensorNeighborhood.GetCenterPixel();
 
   ScalarValueType   pdWrtDiffusion1;
 
