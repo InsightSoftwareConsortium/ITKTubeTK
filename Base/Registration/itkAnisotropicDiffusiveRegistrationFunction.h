@@ -65,44 +65,37 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFunction);
 
-  /** Inherit some enums from the superclass. */
+  /** Inherit some parameters from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
-  /** Types for the moving image. */
+  /** Conventient typedefs from the superclass. */
   typedef typename Superclass::MovingImageType          MovingImageType;
   typedef typename Superclass::MovingImagePointer       MovingImagePointer;
-
-  /** Types for the fixed image. */
   typedef typename Superclass::FixedImageType           FixedImageType;
   typedef typename Superclass::FixedImagePointer        FixedImagePointer;
-
-  /** Types for the deformation field. */
   typedef typename Superclass::DeformationFieldType     DeformationFieldType;
   typedef typename Superclass::DeformationFieldTypePointer
       DeformationFieldTypePointer;
-
-  /** Inherit some types from the superclass. */
   typedef typename Superclass::TimeStepType             TimeStepType;
   typedef typename Superclass::NeighborhoodType         NeighborhoodType;
   typedef typename Superclass::PixelType                PixelType;
   typedef typename Superclass::FloatOffsetType          FloatOffsetType;
 
-  /** Deformation field types - types for the deformation vectors, deformation
-   *  vector components, and vector component images
-   */
+  /** Deformation field types */
   typedef typename DeformationFieldType::PixelType      DeformationVectorType;
   typedef typename DeformationVectorType::ValueType
       DeformationVectorComponentType;
   typedef itk::Image< DeformationVectorComponentType, ImageDimension >
       DeformationVectorComponentImageType;
-
-  /** Normal vector types */
-  typedef double
-      NormalVectorComponentType;
-  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
-      NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension >
-      NormalVectorImageType;
+  typedef ZeroFluxNeumannBoundaryCondition< DeformationVectorComponentImageType >
+      DeformationVectorComponentImageBoundaryConditionType;
+  typedef ConstNeighborhoodIterator
+      < DeformationVectorComponentImageType,
+      DeformationVectorComponentImageBoundaryConditionType >
+      DeformationVectorComponentNeighborhoodIteratorType;
+  typedef itk::FixedArray
+      < DeformationVectorComponentNeighborhoodIteratorType, ImageDimension >
+       DeformationVectorComponentNeighborhoodIteratorArrayType;
 
   /** Typedefs for the intensity-based distance function */
   typedef itk::MeanSquareRegistrationFunction
@@ -118,6 +111,19 @@ public:
   typedef typename RegularizationFunctionType::Pointer
       RegularizationFunctionPointer;
 
+  /** Normal vector types */
+  typedef double
+      NormalVectorComponentType;
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
+      NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
+      NormalVectorImageBoundaryConditionType;
+  typedef ConstNeighborhoodIterator
+      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
+      NormalVectorImageNeighborhoodIteratorType;
+
   /** Typedefs for the diffusion tensor image */
   typedef typename RegularizationFunctionType::DiffusionTensorType
       DiffusionTensorType;
@@ -125,6 +131,8 @@ public:
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
+  typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
+      DiffusionTensorNeighborhoodIteratorType;
 
   /** Typedefs for the matrices of derivatives */
   typedef typename RegularizationFunctionType::DerivativeMatrixType
@@ -133,30 +141,14 @@ public:
       DerivativeMatrixImageType;
   typedef typename DerivativeMatrixImageType::Pointer
       DerivativeMatrixImagePointer;
-
-  /** Boundary condition typedefs (defined in RegularizationFunction for
-    * diffusion tensors) */
-  typedef ZeroFluxNeumannBoundaryCondition< DeformationVectorComponentImageType >
-      DeformationVectorComponentImageBoundaryConditionType;
-  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
-      NormalVectorImageBoundaryConditionType;
-
-  /** Neighborhood iterator typedefs */
-  typedef ConstNeighborhoodIterator
-      < DeformationVectorComponentImageType,
-      DeformationVectorComponentImageBoundaryConditionType >
-      DeformationVectorComponentNeighborhoodIteratorType;
-  typedef itk::FixedArray
-      < DeformationVectorComponentNeighborhoodIteratorType, ImageDimension >
-       DeformationVectorComponentNeighborhoodIteratorArrayType;
-  typedef ConstNeighborhoodIterator
-      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
-      NormalVectorImageNeighborhoodIteratorType;
-
-  typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
-      DiffusionTensorNeighborhoodIteratorType;
   typedef typename RegularizationFunctionType::DerivativeMatrixImageRegionType
       DerivativeMatrixImageRegionIteratorType;
+
+
+
+
+
+
 
   /** Set/Get the time step for an update */
   void SetTimeStep(const TimeStepType &t)
