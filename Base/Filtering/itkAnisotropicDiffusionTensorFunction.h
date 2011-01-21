@@ -126,8 +126,13 @@ public:
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
-  /** Computes the time step for an update given a global data structure. */
-  virtual TimeStepType ComputeGlobalTimeStep(void *GlobalData) const;
+  /** Computes the time step for an update given a global data structure.
+   *  Returns the time step supplied by the user. We don't need
+   * to use the global data supplied since we are returning a fixed value. */
+  virtual TimeStepType ComputeGlobalTimeStep(void *GlobalData) const
+    {
+    return this->GetTimeStep();
+    }
 
   /** Set/Get the time step. For this class of anisotropic diffusion filters,
       the time-step is supplied by the user and remains fixed for all
@@ -146,7 +151,7 @@ public:
       bool useImageSpacing );
 
   /** Computes the first derivative of a diffusion tensor image. */
-  void ComputeDiffusionFirstDerivative(
+  void ComputeDiffusionTensorFirstDerivative(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       DerivativeMatrixImageRegionType &tensorDerivativeRegion ) const;
 
@@ -191,7 +196,7 @@ protected:
       GlobalDataStruct *gd ) const;
 
   /** Compute the first derivative of a diffusion image */
-  DerivativeMatrixType ComputeDiffusionFirstDerivative(
+  DerivativeMatrixType ComputeDiffusionTensorFirstDerivative(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       GlobalDataStruct *gd ) const;
 

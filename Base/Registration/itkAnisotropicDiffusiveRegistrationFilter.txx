@@ -730,7 +730,7 @@ AnisotropicDiffusiveRegistrationFilter
       {
       // compute derivatives here
       this->GetRegistrationFunctionPointer()->GetRegularizationFunctionPointer()
-          ->ComputeDiffusionFirstDerivative(
+          ->ComputeDiffusionTensorFirstDerivative(
               tangentialDiffusionTensorImageNeighborhoodIt,
               tangentialDiffusionTensorDerivativeImageRegionIt );
 
@@ -797,7 +797,7 @@ AnisotropicDiffusiveRegistrationFilter
         {
         // compute derivatives here
         this->GetRegistrationFunctionPointer()->GetRegularizationFunctionPointer()
-            ->ComputeDiffusionFirstDerivative(
+            ->ComputeDiffusionTensorFirstDerivative(
                 normalDiffusionTensorImageNeighborhoodIt,
                 normalDiffusionTensorDerivativeImageRegionIt );
 
