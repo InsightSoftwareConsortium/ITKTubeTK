@@ -59,11 +59,9 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs. */
-  typedef double                                      TimeStepType;
-  typedef typename Superclass::ImageType              ImageType;
+  typedef typename Superclass::TimeStepType           TimeStepType;
   typedef typename Superclass::PixelType              PixelType;
   typedef double                                      ScalarValueType;
-  typedef typename Superclass::RadiusType             RadiusType;
   typedef typename Superclass::NeighborhoodType       NeighborhoodType;
   typedef typename Superclass::FloatOffsetType        FloatOffsetType;
 
@@ -86,13 +84,6 @@ public:
   typedef itk::Image< DerivativeMatrixType, 3 >       DerivativeMatrixImageType;
   typedef ImageRegionIterator< DerivativeMatrixImageType >
       DerivativeMatrixImageRegionType;
-
-
-
-
-
-  /** Tensor pixel type */
-  typedef itk::SymmetricSecondRankTensor< double >    TensorPixelType;
 
   /** A global data type for this class of equations.  Used to store
    * values that are needed in calculating the time step and other intermediate

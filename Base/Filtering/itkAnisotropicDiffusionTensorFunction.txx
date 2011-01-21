@@ -32,7 +32,7 @@ template< class TImageType >
 AnisotropicDiffusionTensorFunction< TImageType>
 ::AnisotropicDiffusionTensorFunction()
 {
-  RadiusType r;
+  typename Superclass::RadiusType r;
 
   for( unsigned int i=0; i < ImageDimension; i++ )
     {
@@ -169,8 +169,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
 
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    TensorPixelType positionA_Tensor_value = gt.GetPixel( m_positionA[i] );
-    TensorPixelType positionB_Tensor_value = gt.GetPixel( m_positionB[i] );
+    DiffusionTensorType positionA_Tensor_value = gt.GetPixel( m_positionA[i] );
+    DiffusionTensorType positionB_Tensor_value = gt.GetPixel( m_positionB[i] );
 
     for( unsigned int j = 0; j < ImageDimension; j++ )
       {
@@ -230,7 +230,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeFinalUpdateTerm(const DiffusionTensorNeighborhoodType &gt,
                          const GlobalDataStruct *gd) const
 {
-  TensorPixelType center_Tensor_value = gt.GetCenterPixel();
+  DiffusionTensorType center_Tensor_value = gt.GetCenterPixel();
 
   ScalarValueType   pdWrtDiffusion1;
 
