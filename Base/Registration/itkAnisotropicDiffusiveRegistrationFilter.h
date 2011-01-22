@@ -33,30 +33,33 @@ namespace itk
 {
 
 /** \class itkAnisotropicDiffusiveRegistrationFilter
- * \brief Insert brief description here!!!
+ * \brief Algorithm for registration of images depicting sliding organs, using
+ * an anisotropic diffusive regularization term.
  *
- * Implements diffusive  registration, where the update term
- * is composed of two parts: an intensity difference term and a regularization
- * term.  The intensity difference term is computed based on sum of square
- * differences, with the assumption that this algorithm will be used for
- * monomodal image registration at the moment.  The regularization term ensures
- * that the resulting deformation field is realistic, and has been tailored for
- * the registration of images depicting images that slide relative to each
- * other.  By specifying the border between the organs (using a vtkPolyData * )
- * we can ensure that the motion field is smooth in the direction parallel to
- * the borders normal (to enforce coupling between the organs) but allow
- * the motion field to be discontinuous in the direction parallel to the border
- * itself in the vicinity of the border (to allow for sliding motion).
+ * Traditional deformable image registration imposes a uniform
+ * smoothness constraint on the deformation field. This
+ * is not appropriate when registering images visualizing organs
+ * that slide relative to each other, and therefore leads to registration
+ * inaccuracies.
  *
- * Insert paper reference here!!!!!!!
+ * This algorithm includes a deformation field regularization term that is
+ * based on anisotropic diffusion and accommodates the deformation field
+ * discontinuities that are expected when considering sliding motion.
  *
- * Insert more description + warnings here!!!!!
+ * The update term is composed of two parts: an intensity distance term and a
+ * regularization term.  The intensity distance term uses the sum of square
+ * difference metric, so this registration algorithm is appropriate for
+ * monomodal image registration term only.  The regularization term uses a
+ * specified border between the organs (stored as a vtkPolyData *) and enforces
+ * coupling between the organs while allowing the motion field to exhibit
+ * sliding motion at the organ interface.
  *
- * This class is templated over the fixed image type, moving image type and the
- * deformation field type.
+ * See: D. Pace et al., Deformable image registration of sliding organs using
+ * anisotropic diffusive regularization, ISBI 2011.
  *
  * \sa itkAnisotropicDiffusiveRegistrationFunction
- * \ingroup DeformableImageRegistration MultiThreaded
+ * \ingroup DeformableImageRegistration
+ * \ingroup MultiThreaded
  */
 
 template < class TFixedImage, class TMovingImage, class TDeformationField >
