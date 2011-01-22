@@ -251,7 +251,8 @@ AnisotropicDiffusiveRegistrationFunction
 
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      // Compute the regularization in the tangential plane
+      // Compute the regularization in the tangential plane (this will be in the
+      // entire 3D space if we are using the Gaussian regularization)
       tangentialRegularizationTerm[i]
           = m_RegularizationFunction->ComputeUpdate(
               tangentialDeformationComponentNeighborhoods[i],
