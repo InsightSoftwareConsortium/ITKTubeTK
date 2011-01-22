@@ -162,7 +162,7 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
- * Allocate space for the update buffer, and the diffusion tensor image
+ * Allocate space for the update buffer
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -209,7 +209,7 @@ AnisotropicDiffusiveRegistrationFilter
                                  output );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      m_TangentialComponentExtractor[i] = SelectionCastImageFilterType::New();
+      m_TangentialComponentExtractor[i] = VectorIndexSelectionFilterType::New();
       m_TangentialComponentExtractor[i]->SetInput( this->GetOutput() );
       m_TangentialComponentExtractor[i]->SetIndex( i );
       m_DeformationVectorTangentialComponents[i]
@@ -226,7 +226,7 @@ AnisotropicDiffusiveRegistrationFilter
                                    output );
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        m_NormalComponentExtractor[i] = SelectionCastImageFilterType::New();
+        m_NormalComponentExtractor[i] = VectorIndexSelectionFilterType::New();
         m_NormalComponentExtractor[i]->SetInput( m_NormalDeformationField );
         m_NormalComponentExtractor[i]->SetIndex( i );
         m_DeformationVectorNormalComponents[i]
@@ -392,12 +392,12 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Iterate over the normal vector image and insert the normal of the closest
   // point
-  NormalVectorImageIteratorType normalVectorIt(
+  NormalVectorImageRegionType normalVectorIt(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
   // Iterate over the weight image and compute weight as a function of the
   // distance to the border
-  WeightImageIteratorType weightIt(
+  WeightImageRegionType weightIt(
       m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
 
   itk::Index< ImageDimension >          imageIndex;
@@ -480,7 +480,7 @@ AnisotropicDiffusiveRegistrationFilter
     weightSmooth->Update();
     m_WeightImage = weightSmooth->GetOutput();
 
-    WeightImageIteratorType weightIt2(
+    WeightImageRegionType weightIt2(
         m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
 
     // Iterate through the weight image and compute the weight from the distance
@@ -540,8 +540,8 @@ AnisotropicDiffusiveRegistrationFilter
   typename DiffusionTensorImageType::PixelType  normalDiffusionTensor;
 
   // Setup iterators
-  NormalVectorImageIteratorType normalVectorIt;
-  WeightImageIteratorType weightIt;
+  NormalVectorImageRegionType normalVectorIt;
+  WeightImageRegionType weightIt;
   typedef itk::ImageRegionIterator< DiffusionTensorImageType >
       DiffusionTensorImageIteratorType;
   DiffusionTensorImageIteratorType tangentialDiffusionTensorIt;
@@ -552,9 +552,9 @@ AnisotropicDiffusiveRegistrationFilter
       m_TangentialDiffusionTensorImage->GetLargestPossibleRegion() );
   if( this->GetUseAnisotropicRegularization() )
     {
-    normalVectorIt = NormalVectorImageIteratorType(
+    normalVectorIt = NormalVectorImageRegionType(
         m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
-    weightIt = WeightImageIteratorType(
+    weightIt = WeightImageRegionType(
         m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
     normalDiffusionTensorIt = DiffusionTensorImageIteratorType(
         m_NormalDiffusionTensorImage,
@@ -828,7 +828,7 @@ AnisotropicDiffusiveRegistrationFilter
     {
 
     // Get the border normals
-    NormalVectorImageIteratorType normalVectorIt(
+    NormalVectorImageRegionType normalVectorIt(
         m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
     // Get output (the current deformation field)
