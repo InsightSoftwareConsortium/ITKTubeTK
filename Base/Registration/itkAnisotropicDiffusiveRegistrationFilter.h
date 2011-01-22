@@ -33,30 +33,33 @@ namespace itk
 {
 
 /** \class itkAnisotropicDiffusiveRegistrationFilter
- * \brief Insert brief description here!!!
+ * \brief Algorithm for registration of images depicting sliding organs, using
+ * an anisotropic diffusive regularization term.
  *
- * Implements diffusive  registration, where the update term
- * is composed of two parts: an intensity difference term and a regularization
- * term.  The intensity difference term is computed based on sum of square
- * differences, with the assumption that this algorithm will be used for
- * monomodal image registration at the moment.  The regularization term ensures
- * that the resulting deformation field is realistic, and has been tailored for
- * the registration of images depicting images that slide relative to each
- * other.  By specifying the border between the organs (using a vtkPolyData * )
- * we can ensure that the motion field is smooth in the direction parallel to
- * the borders normal (to enforce coupling between the organs) but allow
- * the motion field to be discontinuous in the direction parallel to the border
- * itself in the vicinity of the border (to allow for sliding motion).
+ * Traditional deformable image registration imposes a uniform
+ * smoothness constraint on the deformation field. This
+ * is not appropriate when registering images visualizing organs
+ * that slide relative to each other, and therefore leads to registration
+ * inaccuracies.
  *
- * Insert paper reference here!!!!!!!
+ * This algorithm includes a deformation field regularization term that is
+ * based on anisotropic diffusion and accommodates the deformation field
+ * discontinuities that are expected when considering sliding motion.
  *
- * Insert more description + warnings here!!!!!
+ * The update term is composed of two parts: an intensity distance term and a
+ * regularization term.  The intensity distance term uses the sum of square
+ * difference metric, so this registration algorithm is appropriate for
+ * monomodal image registration term only.  The regularization term uses a
+ * specified border between the organs (stored as a vtkPolyData *) and enforces
+ * coupling between the organs while allowing the motion field to exhibit
+ * sliding motion at the organ interface.
  *
- * This class is templated over the fixed image type, moving image type and the
- * deformation field type.
+ * See: D.F. Pace et al., Deformable image registration of sliding organs using
+ * anisotropic diffusive regularization, ISBI 2011.
  *
  * \sa itkAnisotropicDiffusiveRegistrationFunction
- * \ingroup DeformableImageRegistration MultiThreaded
+ * \ingroup DeformableImageRegistration
+ * \ingroup MultiThreaded
  */
 
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -80,27 +83,25 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFilter);
 
-  /** Inherit some enums from the superclass. */
+  /** Inherit some parameters from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
-  /** Inherit FiniteDifferenceFunction type from the superclass. */
+  /** Convenient typedefs from the superclass. */
+  typedef typename Superclass::FixedImageType           FixedImageType;
+  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
+  typedef typename Superclass::MovingImageType          MovingImageType;
+  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
+  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
+  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
+  typedef typename Superclass::TimeStepType             TimeStepType;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;
 
-  /** Types for the fixed image. */
-  typedef typename Superclass::FixedImageType           FixedImageType;
-  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
-
-  /** Types for the moving image. */
-  typedef typename Superclass::MovingImageType          MovingImageType;
-  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
-
-  /** Types for the deformation field. */
-  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
-  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
-
-  /** Inherit types from superclass. */
-  typedef typename Superclass::TimeStepType             TimeStepType;
+  /** Typedefs used in multithreading */
+  typedef typename Superclass::OutputImageType          OutputImageType;
+  typedef typename Superclass::OutputImagePointer       OutputImagePointer;
+  typedef typename Superclass::UpdateBufferType         UpdateBufferType;
+  typedef typename UpdateBufferType::RegionType         ThreadRegionType;
 
   /** The registration function type */
   typedef AnisotropicDiffusiveRegistrationFunction
@@ -109,9 +110,7 @@ public:
   typedef typename RegistrationFunctionType::Pointer
       RegistrationFunctionPointer;
 
-  /** Deformation field types - types for the deformation vectors, deformation
-   *  vector components, and vector component images
-   */
+  /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
       DeformationVectorType;
   typedef typename RegistrationFunctionType::DeformationVectorComponentType
@@ -120,9 +119,10 @@ public:
       DeformationVectorComponentImageType;
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;
+  typedef typename DeformationVectorComponentImageType::RegionType
+      ThreadDeformationVectorComponentImageRegionType;
 
-  /** Normal vector types - types for the normal vectors and normal vector
-   *  images */
+  /** Normal vector types */
   typedef typename RegistrationFunctionType::NormalVectorType
       NormalVectorType;
   typedef typename RegistrationFunctionType::NormalVectorImageType
@@ -130,65 +130,79 @@ public:
   typedef typename NormalVectorImageType::Pointer
       NormalVectorImagePointer;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
-      NormalVectorImageIteratorType;
+      NormalVectorImageRegionType;
+  typedef typename NormalVectorImageType::RegionType
+      ThreadNormalVectorImageRegionType;
 
-  /** Weight image types - types for the weightings and weight images.  This
-    * is the weight between the anisotropic diffusive regularization and a
-    * diffusive (Gaussian) regularization.
-    */
-  typedef double                                        WeightType;
-  typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
-  typedef typename WeightImageType::Pointer             WeightImagePointer;
-  typedef itk::ImageRegionIterator< WeightImageType >   WeightImageIteratorType;
-
-  /** Organ boundary surface types */
-  typedef vtkSmartPointer< vtkPolyData >                BorderSurfacePointer;
-
-  /** The diffusion tensor types */
+  /** Diffusion tensor types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
-  typedef typename RegistrationFunctionType::DiffusionTensorImagePointer
+  typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
+  typedef typename DiffusionTensorImageType::RegionType
+      ThreadDiffusionTensorImageRegionType;
 
   /** The derivative matrix types */
   typedef typename RegistrationFunctionType::DerivativeMatrixImageType
       DerivativeMatrixImageType;
-  typedef typename RegistrationFunctionType::DerivativeMatrixImagePointer
+  typedef typename DerivativeMatrixImageType::Pointer
       DerivativeMatrixImagePointer;
-
-  /** Typedefs used in multithreading */
-  typedef typename Superclass::OutputImageType          OutputImageType;
-  typedef typename Superclass::OutputImagePointer       OutputImagePointer;
-  typedef typename Superclass::UpdateBufferType         UpdateBufferType;
-
-  /** Region types used in multithreading */
-  typedef typename UpdateBufferType::RegionType         ThreadRegionType;
-  typedef typename NormalVectorImageType::RegionType
-      ThreadNormalVectorImageRegionType;
-  typedef typename DiffusionTensorImageType::RegionType
-      ThreadDiffusionTensorImageRegionType;
   typedef typename DerivativeMatrixImageType::RegionType
       ThreadDerivativeMatrixImageRegionType;
-  typedef typename DeformationVectorComponentImageType::RegionType
-      ThreadDeformationVectorComponentImageRegionType;
+
+  /** Types for weighting between the anisotropic and diffusive (Gaussian)
+    * regularization */
+  typedef double                                        WeightType;
+  typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
+  typedef typename WeightImageType::Pointer             WeightImagePointer;
+  typedef itk::ImageRegionIterator< WeightImageType >   WeightImageRegionType;
+
+  /** Organ boundary surface types */
+  typedef vtkSmartPointer< vtkPolyData >                BorderSurfacePointer;
 
   /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
       < DeformationFieldType, DeformationVectorComponentImageType >
-      SelectionCastImageFilterType;
-  typedef typename SelectionCastImageFilterType::Pointer
-      SelectionCastImageFilterPointer;
+      VectorIndexSelectionFilterType;
+  typedef typename VectorIndexSelectionFilterType::Pointer
+      VectorIndexSelectionFilterPointer;
 
-  /** Convenience function to set the registration functions timestep from the
-   * filter */
+  /** Convenience functions to set/get the registration functions timestep. */
   void SetTimeStep( const TimeStepType &t )
     { this->GetRegistrationFunctionPointer()->SetTimeStep( t ); }
   const TimeStepType& GetTimeStep() const
     { return this->GetRegistrationFunctionPointer()->GetTimeStep(); }
 
+  /** Set/get whether to compute the motion field regularization term
+   *  Default: true */
+  void SetComputeRegularizationTerm( bool compute )
+    { this->GetRegistrationFunctionPointer()->
+      SetComputeRegularizationTerm( compute ); }
+  bool GetComputeRegularizationTerm() const
+    { return this->GetRegistrationFunctionPointer()->
+      GetComputeRegularizationTerm(); }
+
+  /** Set/get whether to compute the intensity distance term
+   *  Default: true */
+  void SetComputeIntensityDistanceTerm( bool compute )
+    { this->GetRegistrationFunctionPointer()->
+      SetComputeIntensityDistanceTerm( compute ); }
+  bool GetComputeIntensityDistanceTerm() const
+    { return this->GetRegistrationFunctionPointer()->
+      GetComputeIntensityDistanceTerm(); }
+
+  /** Set/get whether to use the anisotropic diffusive regularization.  If
+   *  false, the weighting term w=0 and Gaussian regularization is used.
+   *  Default: true */
+  void SetUseAnisotropicRegularization( bool diffuse )
+    { this->GetRegistrationFunctionPointer()->
+      SetUseAnisotropicRegularization( diffuse ); }
+  bool GetUseAnisotropicRegularization() const
+    { return this->GetRegistrationFunctionPointer()->
+      GetUseAnisotropicRegularization(); }
+
   /** Set/get the organ boundary polydata, which must be in the same space as
-   *  the fixed image.  Border normals are computed based on this polydata/
-   */
+   *  the fixed image.  Border normals are computed based on this polydata. */
   virtual void SetBorderSurface( BorderSurfacePointer border )
     { m_BorderSurface = border; }
   virtual const BorderSurfacePointer GetBorderSurface() const
@@ -206,38 +220,7 @@ public:
   WeightType GetLambda() const
     { return m_lambda; }
 
-  /** Set/get whether to compute the intensity distance term
-   *  Default: true
-   */
-  void SetComputeIntensityDistanceTerm( bool compute )
-    { this->GetRegistrationFunctionPointer()->
-      SetComputeIntensityDistanceTerm( compute ); }
-  bool GetComputeIntensityDistanceTerm() const
-    { return this->GetRegistrationFunctionPointer()->
-      GetComputeIntensityDistanceTerm(); }
-
-  /** Set/get whether to compute the motion field regularization term
-   *  Default: true
-   */
-  void SetComputeRegularizationTerm( bool compute )
-    { this->GetRegistrationFunctionPointer()->
-      SetComputeRegularizationTerm( compute ); }
-  bool GetComputeRegularizationTerm() const
-    { return this->GetRegistrationFunctionPointer()->
-      GetComputeRegularizationTerm(); }
-
-  /** Set/get whether to use the anisotropic diffusive regularization.  If
-   *  false, the weighting term w=0 and Gaussian regularization is used.
-   *  Default: true
-   */
-  void SetUseAnisotropicRegularization( bool diffuse )
-    { this->GetRegistrationFunctionPointer()->
-      SetUseAnisotropicRegularization( diffuse ); }
-  bool GetUseAnisotropicRegularization() const
-    { return this->GetRegistrationFunctionPointer()->
-      GetUseAnisotropicRegularization(); }
-
-  /** Get/get the image of the normal vectors.  Setting the normal vector
+  /** Set/get the image of the normal vectors.  Setting the normal vector
    * image overrides the border surface polydata if a border surface was
    * also supplied. */
   virtual void SetNormalVectorImage( NormalVectorImagePointer normalImage )
@@ -246,7 +229,8 @@ public:
     { return m_NormalVectorImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
-   * the border surface polydata if a border surface was also supplied.  */
+   * the border surface polydata and lambda if a border surface was also
+   * supplied.  */
   virtual void SetWeightImage( WeightImagePointer weightImage )
     { m_WeightImage = weightImage; }
   virtual const WeightImagePointer GetWeightImage() const
@@ -273,12 +257,11 @@ protected:
   /** Initialization occuring before the registration loop. */
   virtual void Initialize();
 
-  /** Allocate the update buffer - reimplented here to also allocate other
-   *  images used in the registration computation. */
-  virtual void AllocateUpdateBuffer();
-
   /** Initialize the state of the filter and equation before each iteration. */
   virtual void InitializeIteration();
+
+  /** Allocate the update buffer. */
+  virtual void AllocateUpdateBuffer();
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -404,9 +387,9 @@ private:
 
   /** Extracts the x,y,z components of the tangential and normal
   * components of the deformation field */
-  itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
+  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
       m_TangentialComponentExtractor;
-  itk::FixedArray< SelectionCastImageFilterPointer, ImageDimension >
+  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
       m_NormalComponentExtractor;
 
   /** The images of the tangential and normal diffusion tensors */
@@ -430,119 +413,3 @@ private:
 #endif
 
 #endif
-
-/** TODO LIST - essential
-
-// Calculate w in ComputeNormalVectorAndWeightImages()
-//   - but dont bother if m_UseAnisotropicRegularization == false
-//   (do it in the loop with the normals)
-
-// Get w in ComputeDiffusionTensorImage()
-
-// checking the timestep for stability as in the anisotropic filter
-
-// halting criteria?!?!
-
-// SetUseImageSpacing() to on for this filter?  Would give derivates in
-// physical space, default is off
-
-// why did Andinet comment out m_UpdateBuffer->Modified() in
-// CalculateChange()
-
-// boundary faces
-
-// difference between cell normals and normals - using the correct ones?
-
-// better way to compute ns
-
-// Better (faster) alternative to point locator
-
-// Go through PDERegistrationFilter and PDERegistrationFunction classes to
-// ensure we are not missing any important functions to override /
-// parameters to set
-
-// see where you can make it faster - computing anything unnecessarily
-
-// ======== function =========
-
-// test to see if andinets stuff works with a timestep of 1.0
-
-// compute timestep instead of hard-coding 0.05 in constructor
-
-// does the intensiy distance function need more parameters in the ctor
-// Ex. options for the global filter
-// inherited for finite
-// m_IntensityDistanceFunction->SetScaleCoefficients( vals );
-// inherited from PDE function
-// m_IntensityDistanceFunction->SetGradientStep( 0.0 );
-// m_IntensityDistanceFunction->SetNormalizeGradient( false );
-
-// In ctor - intensity distance function uses LinearInterpolateImageFilter
-// by default, can change later using setMovingImageInterpolator()
-
-// check to make sure its ok that intensity function uses global timestep
-// i think it is because we are just calling update(), which does not use
-// m_TimeStep
-
-// Better std::cout for whats being done -with iteration number
-
-// make sure that there is no normalization in the intensity distance
-// function - check that smooth gradient is off, and that the normalize
-// metric doesnt do anything we dont want
-
-// weighting between the intensity distance and regularization terms
-// in ComputeUpdate?  Dont worry about weighting if one term is not
-// computed because of boolean settings
-
-== done */
-
-/** TODO LIST - medium
-// Allocating all of the images ( in Initialize() ) essential?
-
-== done */
-
-/** TODO LIST - later
-
-// Better class description at top
-
-// go through typedefs and pull as many as possible from the function!
-// may be able to simplify the typedefs here to make them clearer
-
-// Specification of vtkPolyData introduces dependency on VTK and is
-// horrible for dimension-independence... perhaps provide additional /
-// only option to provide normal image only - then could ensure that it
-// with the right templates
-
-// printSelf not compiling because of os type mismatch
-
-// create superclass with these methods for anisotropic diffusion
-// registration filter
-
-// assert vs. if?
-
-// progress object as in demons test
-
-// pixel type vs. deformation field type?  deformation field type should
-// always be double?
-
-// what happens if normals are not set to registrator? i.e. normals are
-// the defaults of 0,0,0
-
-======== function =========
-
-// Better class description at top
-
-// ComputeUpdate() wont work, but shouldnt be called anyways
-
-====== tests =======
-
-// try it out with dimension = 2
-
-// there are some exception handling tests in
-// itkDemonsRegistrationFilterTest that would be good to put in the image
-// registration test
-
-// experiment with adding noise to the border of the motion field
-// regularization test
-
-== Done */
