@@ -222,13 +222,13 @@ public:
       const DerivativeMatrixImageRegionType
           &tangentialTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
-          &tangentialDeformationComponentRegions,
+          &tangentialDeformationComponentNeighborhoods,
       const DiffusionTensorNeighborhoodType
           &normalTensorNeighborhood,
       const DerivativeMatrixImageRegionType
           &normalTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
-          &normalDeformationComponentRegions,
+          &normalDeformationComponentNeighborhoods,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
 

@@ -46,8 +46,8 @@ AnisotropicDiffusiveRegistrationFunction
   m_UseAnisotropicRegularization = true;
 
   m_RegularizationFunction = RegularizationFunctionType::New();
-  this->SetTimeStep( 1.0 );
   m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
+  this->SetTimeStep( 1.0 );
 
   this->SetMovingImage(0);
   this->SetFixedImage(0);
@@ -97,13 +97,13 @@ AnisotropicDiffusiveRegistrationFunction
   // Create the component global data pointers
   if( this->GetComputeRegularizationTerm() )
     {
-    ans->m_RegularizationGlobalDataStruct =
-        m_RegularizationFunction->GetGlobalDataPointer();
+    ans->m_RegularizationGlobalDataStruct
+        = m_RegularizationFunction->GetGlobalDataPointer();
     }
   if( this->GetComputeIntensityDistanceTerm() )
     {
-    ans->m_IntensityDistanceGlobalDataStruct =
-        m_IntensityDistanceFunction->GetGlobalDataPointer();
+    ans->m_IntensityDistanceGlobalDataStruct
+        = m_IntensityDistanceFunction->GetGlobalDataPointer();
     }
 
   return ans;
@@ -144,8 +144,6 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeIteration()
 {
-  std::cout << "\tInitializeIteration for FUNCTION" << std::endl;
-
   if( !this->GetMovingImage() || !this->GetFixedImage()
     || !this->GetDeformationField() )
     {
@@ -181,13 +179,8 @@ AnisotropicDiffusiveRegistrationFunction
 {
   // This function should never be called!
   itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
-                     << "be called.  Use ComputeUpdate(neighborhood, "
-                     << "normalVectorNeighborhood,"
-                     << "tangentialNeighborhoodTensor,"
-                     << "tangentialNeighborhoodDeformationFieldComponents,"
-                     << "normalNeighborhoodTensor,"
-                     << "normalNeighborhoodDeformationFieldComponents,"
-                     << " globalData, offset) instead" );
+                     << "be called.  Use another ComputeUpdate() defined in"
+                     << "itkAnisotropicDiffusiveRegistrationFunction instead" );
 }
 
 /**
@@ -208,42 +201,39 @@ AnisotropicDiffusiveRegistrationFunction
     const DerivativeMatrixImageRegionType
         &tangentialTensorDerivativeRegion,
     const DeformationVectorComponentNeighborhoodArrayType
-        &tangentialDeformationComponentRegions,
+        &tangentialDeformationComponentNeighborhoods,
     const DiffusionTensorNeighborhoodType
         &normalTensorNeighborhood,
     const DerivativeMatrixImageRegionType
         &normalTensorDerivativeRegion,
     const DeformationVectorComponentNeighborhoodArrayType
-        &normalDeformationComponentRegions,
+        &normalDeformationComponentNeighborhoods,
     void *globalData,
     const FloatOffsetType &offset )
 {
   // Get the global data structure
   GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
 
-  // Get the normal at this pixel
-  const typename FixedImageType::IndexType index = neighborhood.GetIndex();
-
   // Iterate over the deformation field components to compute the regularization
   // and intensity distance terms - note that PixelType corresponds to a
   // deformation vector
   PixelType                         tangentialRegularizationTerm;
-  PixelType                         normalRegularizationTerm;
-  PixelType                         intensityDistanceTerm;
-  PixelType                         updateTerm;
-
-  intensityDistanceTerm.Fill(0);
   tangentialRegularizationTerm.Fill(0);
-  normalRegularizationTerm.Fill(0); // essential because incremented in loop
+  PixelType                         normalRegularizationTerm;
+  normalRegularizationTerm.Fill(0);
+  PixelType                         intensityDistanceTerm;
+  intensityDistanceTerm.Fill(0);
+  PixelType                         updateTerm;
+  updateTerm.Fill(0);
 
-  // Compute the intensity distance update
+  // Compute the intensity distance update update term
   if (this->GetComputeIntensityDistanceTerm() )
     {
     intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
         neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
     }
 
-  // Compute the motion field regularization
+  // Compute the motion field regularization update term
   if ( this->GetComputeRegularizationTerm() )
     {
     NormalVectorType                  normalVector;
@@ -251,8 +241,10 @@ AnisotropicDiffusiveRegistrationFunction
     PixelType                         intermediateNormalRegularizationTerm;
     NormalVectorType                  nln; // n(l)n
 
+    // Get the normal at this pixel once
     if( this->GetUseAnisotropicRegularization() )
       {
+      const typename FixedImageType::IndexType index = neighborhood.GetIndex();
       normalVector
           = normalVectorNeighborhood.GetImagePointer()->GetPixel( index );
       }
@@ -262,7 +254,7 @@ AnisotropicDiffusiveRegistrationFunction
       // Compute the regularization in the tangential plane
       tangentialRegularizationTerm[i]
           = m_RegularizationFunction->ComputeUpdate(
-              tangentialDeformationComponentRegions[i],
+              tangentialDeformationComponentNeighborhoods[i],
               tangentialTensorNeighborhood,
               tangentialTensorDerivativeRegion,
               gd->m_RegularizationGlobalDataStruct,
@@ -273,7 +265,7 @@ AnisotropicDiffusiveRegistrationFunction
         // Compute the regularization in the normal direction
         intermediateNormalRegularizationComponent
             = m_RegularizationFunction->ComputeUpdate(
-                normalDeformationComponentRegions[i],
+                normalDeformationComponentNeighborhoods[i],
                 normalTensorNeighborhood,
                 normalTensorDerivativeRegion,
                 gd->m_RegularizationGlobalDataStruct,
@@ -287,14 +279,11 @@ AnisotropicDiffusiveRegistrationFunction
             = normalRegularizationTerm + intermediateNormalRegularizationTerm;
         }
       }
-
     }
 
   updateTerm = intensityDistanceTerm
                + tangentialRegularizationTerm + normalRegularizationTerm;
-
   return updateTerm;
-
 }
 
 } // end namespace itk
