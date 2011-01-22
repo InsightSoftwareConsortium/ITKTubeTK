@@ -133,8 +133,9 @@ AnisotropicDiffusiveRegistrationFilter
 ::AllocateSpaceForImage( UnallocatedImageType& inputImage,
                          const TemplateImageType& templateImage )
 {
-  inputImage->SetSpacing( templateImage->GetSpacing() );
   inputImage->SetOrigin( templateImage->GetOrigin() );
+  inputImage->SetSpacing( templateImage->GetSpacing() );
+  inputImage->SetDirection( templateImage->GetDirection() );
   inputImage->SetLargestPossibleRegion(
       templateImage->GetLargestPossibleRegion() );
   inputImage->SetRequestedRegion( templateImage->GetRequestedRegion() );
