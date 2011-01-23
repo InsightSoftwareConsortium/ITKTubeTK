@@ -28,6 +28,7 @@ limitations under the License.
 #include "itkOrientedImage.h"
 
 #include "itkTubeCVTImageFilter.h"
+#include "itkTubeOtsuThresholdMaskedImageFilter.h"
 #include "itkTubePDFSegmenter.h"
 #include "itkTubeRadiusExtractor.h"
 #include "itkTubeRidgeExtractor.h"
@@ -40,6 +41,12 @@ int tubeBaseSegmentationPrintTest( int, char* [] )
     cvtObject = itk::tube::CVTImageFilter< ImageType >::New();
   std::cout << "-------------itkTubeCVTImageFilter" << cvtObject
     << std::endl;
+
+  itk::tube::OtsuThresholdMaskedImageFilter< ImageType, ImageType >::Pointer
+    otsuObject = itk::tube::OtsuThresholdMaskedImageFilter< ImageType,
+      ImageType >::New();
+  std::cout << "-------------itkTubeOtsuThresholdMaskedImageFilter"
+    << otsuObject << std::endl;
 
   itk::tube::PDFSegmenter< ImageType, 3, ImageType >::Pointer
     pdfObject = itk::tube::PDFSegmenter< ImageType, 3, ImageType >::New();

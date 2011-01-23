@@ -47,6 +47,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itkTubeCVTImageFilterTest.cxx
+  itkTubeOtsuThresholdMaskedImageFilterTest.cxx
   itkTubePDFSegmenterTest.cxx
   itkTubeRadiusExtractorTest.cxx
   itkTubeRadiusExtractorTest2.cxx
@@ -96,6 +97,16 @@ add_test( itkTubeCVTImageFilterTest
   itkTubeCVTImageFilterTest
     ${INPUT_DATA}/GDS0015_1.mha
     ${TEMP}/itkTubeCVTImageFilterTest.mha
+  )
+
+add_test( itkTubeOtsuThresholdMaskedImageFilterTest
+  ${BASE_SEGMENTATION_TESTS}
+  --compare ${BASELINE}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
+            ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
+  itkTubeOtsuThresholdMaskedImageFilterTest
+    ${INPUT_DATA}/ES0015_1.mha
+    ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest1.mha
+    ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
   )
 
 add_test( itkTubePDFSegmenterTest
