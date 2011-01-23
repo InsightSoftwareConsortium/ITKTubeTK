@@ -80,10 +80,10 @@ public:
   typedef vnl_matrix_fixed< ScalarValueType,
                             itkGetStaticConstMacro(ImageDimension),
                             itkGetStaticConstMacro(ImageDimension)>
-                                                      DerivativeMatrixType;
-  typedef itk::Image< DerivativeMatrixType, 3 >       DerivativeMatrixImageType;
-  typedef ImageRegionIterator< DerivativeMatrixImageType >
-      DerivativeMatrixImageRegionType;
+                                                      TensorDerivativeType;
+  typedef itk::Image< TensorDerivativeType, 3 >       TensorDerivativeImageType;
+  typedef ImageRegionIterator< TensorDerivativeImageType >
+      TensorDerivativeImageRegionType;
 
   /** A global data type for this class of equations.  Used to store
    * values that are needed in calculating the time step and other intermediate
@@ -93,10 +93,10 @@ public:
   struct GlobalDataStruct
     {
     /** Hessian matrix */
-    DerivativeMatrixType  m_dxy;
+    TensorDerivativeType  m_dxy;
 
     /** diffusion tensor first derivative matrix */
-    DerivativeMatrixType  m_DT_dxy;
+    TensorDerivativeType  m_DT_dxy;
 
     /** Array of first derivatives*/
     ScalarValueType       m_dx[itkGetStaticConstMacro(ImageDimension)];
@@ -122,7 +122,7 @@ public:
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      const DerivativeMatrixImageRegionType &tensorDerivativeRegion,
+      const TensorDerivativeImageRegionType &tensorDerivativeRegion,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -151,7 +151,7 @@ public:
   /** Computes the first derivative of a diffusion tensor image. */
   void ComputeDiffusionTensorFirstDerivative(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      DerivativeMatrixImageRegionType &tensorDerivativeRegion ) const;
+      TensorDerivativeImageRegionType &tensorDerivativeRegion ) const;
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
@@ -194,7 +194,7 @@ protected:
       GlobalDataStruct *gd ) const;
 
   /** Compute the first derivative of a diffusion image */
-  DerivativeMatrixType ComputeDiffusionTensorFirstDerivative(
+  TensorDerivativeType ComputeDiffusionTensorFirstDerivative(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       GlobalDataStruct *gd ) const;
 
@@ -206,8 +206,8 @@ protected:
 
   /** Copies a diffusion tensor derivative into a globalDataStruct's diffusion
     tensor first derivative field */
-  void CopyDerivativeMatrixToGlobalData(
-      const DerivativeMatrixImageRegionType &tensorDerivativeRegion,
+  void CopyTensorDerivativeToGlobalData(
+      const TensorDerivativeImageRegionType &tensorDerivativeRegion,
       GlobalDataStruct* gd ) const;
 
 private:

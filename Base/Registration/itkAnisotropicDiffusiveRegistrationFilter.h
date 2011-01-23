@@ -143,12 +143,12 @@ public:
       ThreadDiffusionTensorImageRegionType;
 
   /** The derivative matrix types */
-  typedef typename RegistrationFunctionType::DerivativeMatrixImageType
-      DerivativeMatrixImageType;
-  typedef typename DerivativeMatrixImageType::Pointer
-      DerivativeMatrixImagePointer;
-  typedef typename DerivativeMatrixImageType::RegionType
-      ThreadDerivativeMatrixImageRegionType;
+  typedef typename RegistrationFunctionType::TensorDerivativeImageType
+      TensorDerivativeImageType;
+  typedef typename TensorDerivativeImageType::Pointer
+      TensorDerivativeImagePointer;
+  typedef typename TensorDerivativeImageType::RegionType
+      ThreadTensorDerivativeImageRegionType;
 
   /** Types for weighting between the anisotropic and diffusive (Gaussian)
     * regularization */
@@ -252,16 +252,35 @@ public:
 
 protected:
   AnisotropicDiffusiveRegistrationFilter();
+  virtual ~AnisotropicDiffusiveRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  /** Initialization occuring before the registration loop. */
+  /** Initialization occuring before the registration iterations. */
   virtual void Initialize();
+
+  /** Computes the normal vector image and weighting factors w given the
+   *  surface border polydata. */
+  virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
+                                                   bool computeWeights );
+
+  /** Computes the weighting factor w from the distance to the border.  The
+   *  weight should be 1 near the border and 0 away from the border. */
+  virtual WeightType ComputeWeightFromDistance( WeightType distance );
+
+  /** Computes the diffusion tensor images */
+  virtual void ComputeDiffusionTensorImages();
+
+  /** Computes the first derivatives of the diffusion tensor images */
+  virtual void ComputeDiffusionTensorDerivativeImages();
+
+  /** Allocate the update buffer. */
+  virtual void AllocateUpdateBuffer();
 
   /** Initialize the state of the filter and equation before each iteration. */
   virtual void InitializeIteration();
 
-  /** Allocate the update buffer. */
-  virtual void AllocateUpdateBuffer();
+  /** Updates the deformation vector component images */
+  virtual void UpdateDeformationVectorComponentImages();
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -270,70 +289,48 @@ protected:
   virtual TimeStepType CalculateChange();
 
   /** Inherited from superclass - do not call this function!  Call the other
-   *  ThreadedCalculateChange instead */
-  TimeStepType ThreadedCalculateChange(
-      const ThreadRegionType & regionToProcess, int threadId );
+   *  ThreadedCalculateChange function instead */
+  TimeStepType ThreadedCalculateChange( const ThreadRegionType &regionToProcess,
+                                       int threadId );
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
    * \sa CalculateChange
    * \sa CalculateChangeThreaderCallback */
-  virtual
-  TimeStepType ThreadedCalculateChange(
-          const ThreadRegionType &regionToProcess,
-          const ThreadNormalVectorImageRegionType
-            &normalVectorRegionToProcess,
-          const ThreadDiffusionTensorImageRegionType
-            &diffusionRegionToProcess,
-          const ThreadDerivativeMatrixImageRegionType
-            &derivativeMatrixRegionToProcess,
-          const ThreadDeformationVectorComponentImageRegionType
-            &componentRegionToProcess,
-          int threadId );
+  virtual TimeStepType ThreadedCalculateChange(
+      const ThreadRegionType &regionToProcess,
+      const ThreadNormalVectorImageRegionType &normalVectorRegionToProcess,
+      const ThreadDiffusionTensorImageRegionType &tensorRegionToProcess,
+      const ThreadTensorDerivativeImageRegionType
+        &tensorDerivativeRegionToProcess,
+      const ThreadDeformationVectorComponentImageRegionType
+        &deformationComponentRegionToProcess,
+      int threadId );
 
   /** This method applies changes from the update buffer to the output, using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
    * the time step to use for the update of each pixel.
    * \sa ThreadedApplyUpdate */
-  virtual void ApplyUpdate(TimeStepType dt);
+  virtual void ApplyUpdate( TimeStepType dt );
 
   /**  Does the actual work of updating the output from the UpdateContainer over
    *  an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
-  virtual void ThreadedApplyUpdate(
-      TimeStepType dt, const ThreadRegionType &regionToProcess, int threadId );
-
-  /** Computes the normal vector image and weighting factors w given the
-   *  surface border polydata.
-   */
-  virtual void ComputeNormalVectorAndWeightImages(
-      bool computeNormalVectorImage, bool computeWeightImage );
-
-  /** Computes the weighting factor w from the distance to the border.  The
-   *  weight should be 1 near the border and 0 away from the border.
-   */
-  virtual WeightType ComputeWeightFromDistance( WeightType distance );
-
-  /** Updates the deformation vector component images */
-  virtual void UpdateDeformationVectorComponentImages();
-
-  /** Computes the diffusion tensor images */
-  virtual void ComputeDiffusionTensorImages();
-
-  /** Computes the first derivatives of the diffusion tensor images */
-  virtual void ComputeDiffusionTensorImageDerivatives();
+  virtual void ThreadedApplyUpdate( TimeStepType dt,
+                                    const ThreadRegionType &regionToProcess,
+                                    int threadId );
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >
-  void AllocateSpaceForImage(
-      UnallocatedImageType& inputImage, const TemplateImageType& templateImage );
+  void AllocateSpaceForImage( UnallocatedImageType & inputImage,
+                             const TemplateImageType & templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */
   template< class CheckedImageType, class TemplateImageType >
-  bool CompareImageAttributes(
-      const CheckedImageType& inputImage, const TemplateImageType& templateImage);
+  bool CompareImageAttributes( const CheckedImageType & inputImage,
+                               const TemplateImageType & templateImage );
 
   /** Get the registration function pointer */
   virtual RegistrationFunctionPointer GetRegistrationFunctionPointer() const;
@@ -364,19 +361,30 @@ private:
   /** The buffer that holds the updates for an iteration of algorithm. */
   typename UpdateBufferType::Pointer  m_UpdateBuffer;
 
-  /** The organ boundary surface, the surface of border normals, and the
-  * derived normal vector and weight images */
+  /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
   BorderSurfacePointer                m_BorderNormalsSurface;
-  NormalVectorImagePointer            m_NormalVectorImage;
-  WeightImagePointer                  m_WeightImage;
+
+  /** Image storing information we will need for each voxel on every
+   *  registration iteration */
+  NormalVectorImagePointer          m_NormalVectorImage;
+  WeightImagePointer                m_WeightImage;
+  DiffusionTensorImagePointer       m_TangentialDiffusionTensorImage;
+  DiffusionTensorImagePointer       m_NormalDiffusionTensorImage;
+  TensorDerivativeImagePointer      m_TangentialDiffusionTensorDerivativeImage;
+  TensorDerivativeImagePointer      m_NormalDiffusionTensorDerivativeImage;
+
+
+
+
+
 
   /** The lambda factor for computing the weight from distance.  Weight is
   * modeled as exponential decay: weight = e^(lambda * distance).
   * (lamba must be negative) */
   WeightType                          m_lambda;
 
-  /** The normal component of the deformation field */
+
   OutputImagePointer                  m_NormalDeformationField;
 
   /** The components of the tangential and normal deformation vectors */
@@ -392,13 +400,7 @@ private:
   itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
       m_NormalComponentExtractor;
 
-  /** The images of the tangential and normal diffusion tensors */
-  DiffusionTensorImagePointer         m_TangentialDiffusionTensorImage;
-  DiffusionTensorImagePointer         m_NormalDiffusionTensorImage;
 
-  /** The precomputed diffusion tensor first derivatives */
-  DerivativeMatrixImagePointer        m_TangentialDiffusionTensorDerivativeImage;
-  DerivativeMatrixImagePointer        m_NormalDiffusionTensorDerivativeImage;
 
 };
 
