@@ -202,15 +202,12 @@ public:
       GetUseAnisotropicRegularization(); }
 
   /** Set/get the organ boundary polydata, which must be in the same space as
-   *  the fixed image.  Border normals are computed based on this polydata. */
+   *  the fixed image.  Border normals are computed on this polydata, so it
+   *  may be changed over the course of the registration. */
   virtual void SetBorderSurface( BorderSurfacePointer border )
     { m_BorderSurface = border; }
   virtual const BorderSurfacePointer GetBorderSurface() const
     { return m_BorderSurface; }
-
-  /** Get the polydata containing the border surface normals */
-  virtual const BorderSurfacePointer GetBorderNormalsSurface() const
-    { return m_BorderNormalsSurface; }
 
   /** Set/get the lambda that controls the exponential decay used to calculate
    *  the weight value w as a function of the distance to the closest border
@@ -363,7 +360,6 @@ private:
 
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
-  BorderSurfacePointer                m_BorderNormalsSurface;
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */

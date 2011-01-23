@@ -49,7 +49,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
               << "smoothed motion field image, "
               << "smoothed motion field image (normal), "
               << "normal vector image, "
-              << "normal border surface, "
+              << "border surface, "
               << "noise variance, "
               << "border slope, "
               << "number of iterations, "
@@ -273,7 +273,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   // registrator
   if( useAnisotropic )
     {
-    vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
+    vtkPolyData * normalPolyData = registrator->GetBorderSurface();
     vtkSmartPointer< vtkDataArray > normalData
                                   = normalPolyData->GetPointData()->GetNormals();
 

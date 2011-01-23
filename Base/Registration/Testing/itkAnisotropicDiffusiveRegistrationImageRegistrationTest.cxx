@@ -212,7 +212,7 @@ int itkAnisotropicDiffusiveRegistrationImageRegistrationTest(
               << "resulting transformed moving image, "
               << "weight image, "
               << "normal vector image, "
-              << "normal surface border polydata, "
+              << "surface border polydata, "
               << "test type (0 for circles, 1 for squares), "
               << "number of iterations, "
               << "time step, "
@@ -492,7 +492,7 @@ int itkAnisotropicDiffusiveRegistrationImageRegistrationTest(
 
   if( compute && useAnisotropic )
     {
-    vtkPolyData * normalPolyData = registrator->GetBorderNormalsSurface();
+    vtkPolyData * normalPolyData = registrator->GetBorderSurface();
     vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
     polyWriter->SetFileName( argv[7] );
     polyWriter->SetInput( normalPolyData );

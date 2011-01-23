@@ -48,7 +48,6 @@ AnisotropicDiffusiveRegistrationFilter
   m_UpdateBuffer = UpdateBufferType::New();
 
   m_BorderSurface                               = 0;
-  m_BorderNormalsSurface                        = 0;
   m_NormalVectorImage                           = 0;
   m_WeightImage                                 = 0;
   m_NormalDeformationField                      = 0;
@@ -96,8 +95,6 @@ AnisotropicDiffusiveRegistrationFilter
   Superclass::PrintSelf( os, indent );
   os << indent << "Border Surface: " << m_BorderSurface;
   //m_BorderSurface->PrintSelf( os, indent )
-  os << indent << "Border Normals Surface: " << m_BorderNormalsSurface;
-  //m_BorderNormalsSurface->PrintSelf( os, indent );
 }
 
 /**
@@ -266,27 +263,28 @@ AnisotropicDiffusiveRegistrationFilter
         }
 
       // Setup the vtkPolyDataNormals to extract the normals from the surface
+      // TODO do this only if we don't have normals
       vtkPolyDataNormals * normalsSurfaceFilter = vtkPolyDataNormals::New();
       normalsSurfaceFilter->ComputePointNormalsOn();
       normalsSurfaceFilter->ComputeCellNormalsOff();
       //normalsSurfaceFilter->SetFeatureAngle(30);
       normalsSurfaceFilter->SetInput( m_BorderSurface );
       normalsSurfaceFilter->Update();
-      m_BorderNormalsSurface = normalsSurfaceFilter->GetOutput();
+      m_BorderSurface = normalsSurfaceFilter->GetOutput();
       normalsSurfaceFilter->Delete();
 
       // Make sure we now have the normals
-      if ( !this->GetBorderNormalsSurface() )
+      if ( !this->GetBorderSurface() )
         {
         itkExceptionMacro( << "Error computing border normals surface"
                            << std::endl );
         }
-      if ( !this->GetBorderNormalsSurface()->GetPointData() )
+      if ( !this->GetBorderSurface()->GetPointData() )
         {
         itkExceptionMacro( << "Computed border normals surface does not contain "
                            << "point data" << std::endl );
         }
-      if ( !this->GetBorderNormalsSurface()->GetPointData()->GetNormals() )
+      if ( !this->GetBorderSurface()->GetPointData()->GetNormals() )
         {
         itkExceptionMacro( << "Compute border normals surface does not contain "
                            << "point data normals" << std::endl );
@@ -380,15 +378,15 @@ AnisotropicDiffusiveRegistrationFilter
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetUseAnisotropicRegularization() );
-  assert( m_BorderNormalsSurface );
-  assert( m_BorderNormalsSurface->GetPointData() );
-  assert( m_BorderNormalsSurface->GetPointData()->GetNormals() );
+  assert( m_BorderSurface );
+  assert( m_BorderSurface->GetPointData() );
+  assert( m_BorderSurface->GetPointData()->GetNormals() );
 
   // Get the normals from the polydata
   vtkSmartPointer< vtkDataArray > normalData
-      = m_BorderNormalsSurface->GetPointData()->GetNormals();
+      = m_BorderSurface->GetPointData()->GetNormals();
   vtkPointLocator * pointLocator = vtkPointLocator::New();
-  pointLocator->SetDataSet( m_BorderNormalsSurface );
+  pointLocator->SetDataSet( m_BorderSurface );
 
   // Iterate over the normal vector image and insert the normal of the closest
   // point
@@ -433,7 +431,7 @@ AnisotropicDiffusiveRegistrationFilter
       }
 
     // Calculate distance between the current coord and the border surface coord
-    m_BorderNormalsSurface->GetPoint( id, borderCoord );
+    m_BorderSurface->GetPoint( id, borderCoord );
     distance = 0.0;
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {

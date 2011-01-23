@@ -220,7 +220,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_transformedMovingImage.mhd
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_weightImage.mhd
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_normalVectorImage.mhd
-          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_normalSurfaceBorder.vtk
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_none_surfaceBorder.vtk
           1
           5 0.125 0 1
           )
@@ -243,7 +243,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_transformedMovingImage.mhd
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_weightImage.mhd
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_normalVectorImage.mhd
-          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_normalSurfaceBorder.vtk
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_anisotropic_surfaceBorder.vtk
           1
           5 0.125 1 1
           )
@@ -266,7 +266,7 @@ if( TubeTK_USE_VTK )
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_transformedMovingImage.mhd
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_weightImage.mhd
           ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_normalVectorImage.mhd
-          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_normalSurfaceBorder.vtk
+          ${TEMP}/AnisotropicDiffusiveBoxesRegistration_gaussian_surfaceBorder.vtk
           1
           5 0.125 1 0
           )
