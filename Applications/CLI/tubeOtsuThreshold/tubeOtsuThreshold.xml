@@ -14,6 +14,13 @@
     <label>IO</label>
     <description>Input/output parameters</description>
     <image>
+      <name>maskVolume</name>
+      <label>Mask Volume</label>
+      <channel>input</channel>
+      <description>Mask volume</description>
+      <longflag>mask</longflag>
+    </image>
+    <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
       <channel>input</channel>

@@ -41,7 +41,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkOtsuThresholdImageFilter.h"
+#include "itkTubeOtsuThresholdMaskedImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -75,7 +75,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::OrientedImage< OutPixType, dimensionT >            OutputType;
   typedef itk::ImageFileReader< ImageType >                       ReaderType;
   typedef itk::ImageFileWriter< OutputType  >                     WriterType;
-  typedef itk::OtsuThresholdImageFilter< ImageType, OutputType >  FilterType;
+  typedef itk::tube::OtsuThresholdMaskedImageFilter< ImageType, OutputType >
+                                                                  FilterType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -91,11 +92,30 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+  typename ImageType::Pointer inputImage = reader->GetOutput();
+
+  typename ImageType::Pointer maskImage = NULL;
+  if( maskVolume.size() > 0 )
+    {
+    typename ReaderType::Pointer maskReader = ReaderType::New();
+    maskReader->SetFileName( maskVolume.c_str() );
+    try
+      {
+      maskReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading volume: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    maskImage = maskReader->GetOutput();
+    }
+
   timeCollector.Stop("Load data");
   double progress = 0.1;
   progressReporter.Report( progress );
-
-  typename ImageType::Pointer curImage = reader->GetOutput();
 
   timeCollector.Start("Gaussian Blur");
 
@@ -106,7 +126,11 @@ int DoIt( int argc, char * argv[] )
   double progressFraction = 0.8/dimensionT;
 
   filter = FilterType::New();
-  filter->SetInput( curImage );
+  filter->SetInput( inputImage );
+  if( maskImage.IsNotNull() )
+    {
+    filter->SetMaskImage( maskImage );
+    }
 
   tube::CLIFilterWatcher watcher( filter,
                                   "OtsuThreshold",

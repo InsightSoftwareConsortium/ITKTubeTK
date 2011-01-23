@@ -54,3 +54,21 @@ add_test( ${PROJECT_NAME}Test1-Compare
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+#######
+# Test2
+#######
+add_test( ${PROJECT_NAME}Test2
+            ${PROJ_EXE}
+               --mask ${INPUT_DATA}/GDS0015_1_match.mask.mha
+               ${INPUT_DATA}/ES0015_1.mha
+               ${TEMP}/${PROJECT_NAME}Test2.mha )
+
+#######
+# Test2-Compare
+#######
+add_test( ${PROJECT_NAME}Test2-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test2.mha
+               -b ${BASELINE}/${PROJECT_NAME}Test2.mha )
+set_tests_properties( ${PROJECT_NAME}Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
