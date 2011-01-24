@@ -178,11 +178,21 @@ AnisotropicDiffusiveRegistrationFilter
 {
   Superclass::Initialize();
 
+  // Ensure we have a fixed image, moving image and deformation field
+  if ( !this->GetFixedImage() || !this->GetMovingImage() )
+    {
+    itkExceptionMacro( << "Fixed image and/or moving image not set" );
+    }
+
   // Check the timestep for stability if we are using the diffusive or
   // anisotropic diffusive regularization terms
   RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
   assert( df );
   df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
+
+  // Update the registration function's deformation field
+  assert( this->GetDeformationField() );
+  df->SetDeformationField( this->GetDeformationField() );
 
   // If we're not computing the regularization term, we're done
   if( !this->GetComputeRegularizationTerm() )
@@ -341,6 +351,11 @@ AnisotropicDiffusiveRegistrationFilter
     }
 }
 
+
+
+
+
+
 /**
  * Initialize the state of the filter and equation before each iteration.
  */
@@ -350,27 +365,15 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeIteration()
 {
-  if ( !this->GetFixedImage() || !this->GetMovingImage() )
-    {
-    itkExceptionMacro( << "Fixed image and/or moving image not set" );
-    }
-  assert( this->GetDeformationField() );
-
-  if( this->GetComputeRegularizationTerm() )
-    {
-    // Update the deformation field component images
-    // This depends on the current deformation field u, so it must be computed
-    // on every iteration of the filter.
-    this->UpdateDeformationVectorComponentImages();
-    }
-
-  // Update the function's deformation field
-  this->GetRegistrationFunctionPointer()->SetDeformationField(
-      this->GetDeformationField() );
-
-  // Call the superclass implementation
   Superclass::InitializeIteration();
 
+  // Update the deformation field component images
+  // Since the components depend on the current tangential and normal
+  // deformation fields, they must be computed on every registration iteration
+  if( this->GetComputeRegularizationTerm() )
+    {
+    this->UpdateDeformationVectorComponentImages();
+    }
 }
 
 /**
