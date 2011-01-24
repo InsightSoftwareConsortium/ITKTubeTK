@@ -57,10 +57,10 @@ AnisotropicDiffusiveRegistrationFilter
   m_NormalDiffusionTensorDerivativeImage        = 0;
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    m_TangentialComponentExtractor[i]           = 0;
-    m_DeformationVectorTangentialComponents[i]  = 0;
-    m_NormalComponentExtractor[i]               = 0;
-    m_DeformationVectorNormalComponents[i]      = 0;
+    m_TangentialDeformationComponentExtractors[i]           = 0;
+    m_TangentialDeformationComponentImages[i]  = 0;
+    m_NormalDeformationComponentExtractors[i]               = 0;
+    m_NormalDeformationComponentImages[i]      = 0;
     }
 
   typename RegistrationFunctionType::Pointer registrationFunction =
@@ -207,11 +207,11 @@ AnisotropicDiffusiveRegistrationFilter
                                  output );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      m_TangentialComponentExtractor[i] = VectorIndexSelectionFilterType::New();
-      m_TangentialComponentExtractor[i]->SetInput( this->GetOutput() );
-      m_TangentialComponentExtractor[i]->SetIndex( i );
-      m_DeformationVectorTangentialComponents[i]
-          = m_TangentialComponentExtractor[i]->GetOutput();
+      m_TangentialDeformationComponentExtractors[i] = VectorIndexSelectionFilterType::New();
+      m_TangentialDeformationComponentExtractors[i]->SetInput( this->GetOutput() );
+      m_TangentialDeformationComponentExtractors[i]->SetIndex( i );
+      m_TangentialDeformationComponentImages[i]
+          = m_TangentialDeformationComponentExtractors[i]->GetOutput();
       }
     if( this->GetUseAnisotropicRegularization() )
       {
@@ -224,11 +224,11 @@ AnisotropicDiffusiveRegistrationFilter
                                    output );
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        m_NormalComponentExtractor[i] = VectorIndexSelectionFilterType::New();
-        m_NormalComponentExtractor[i]->SetInput( m_NormalDeformationField );
-        m_NormalComponentExtractor[i]->SetIndex( i );
-        m_DeformationVectorNormalComponents[i]
-            = m_NormalComponentExtractor[i]->GetOutput();
+        m_NormalDeformationComponentExtractors[i] = VectorIndexSelectionFilterType::New();
+        m_NormalDeformationComponentExtractors[i]->SetInput( m_NormalDeformationField );
+        m_NormalDeformationComponentExtractors[i]->SetIndex( i );
+        m_NormalDeformationComponentImages[i]
+            = m_NormalDeformationComponentExtractors[i]->GetOutput();
         }
       }
     }
@@ -892,10 +892,10 @@ AnisotropicDiffusiveRegistrationFilter
   // Updated the extracted components
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    m_TangentialComponentExtractor[i]->Update();
+    m_TangentialDeformationComponentExtractors[i]->Update();
     if( this->GetUseAnisotropicRegularization() )
       {
-      m_NormalComponentExtractor[i]->Update();
+      m_NormalDeformationComponentExtractors[i]->Update();
       }
     }
 }
@@ -1158,7 +1158,7 @@ AnisotropicDiffusiveRegistrationFilter
       {
       deformationVectorTangentialComponentImageFaceListArray[i]
           = deformationVectorComponentImageFaceCalculator(
-              m_DeformationVectorTangentialComponents[i],
+              m_TangentialDeformationComponentImages[i],
               deformationComponentRegionToProcess,
               radius );
       deformationVectorTangentialComponentImagefItArray[i]
@@ -1184,7 +1184,7 @@ AnisotropicDiffusiveRegistrationFilter
         {
         deformationVectorNormalComponentImageFaceListArray[i]
             = deformationVectorComponentImageFaceCalculator(
-                m_DeformationVectorNormalComponents[i],
+                m_NormalDeformationComponentImages[i],
                 deformationComponentRegionToProcess,
                 radius );
         deformationVectorNormalComponentImagefItArray[i]
@@ -1258,7 +1258,7 @@ AnisotropicDiffusiveRegistrationFilter
         {
         deformationVectorTangentialComponentNeighborhoodItArray[i]
           = DeformationVectorComponentNeighborhoodType(
-            radius, m_DeformationVectorTangentialComponents[i],
+            radius, m_TangentialDeformationComponentImages[i],
             * deformationVectorTangentialComponentImagefItArray[i] );
         }
 
@@ -1279,7 +1279,7 @@ AnisotropicDiffusiveRegistrationFilter
           {
           deformationVectorNormalComponentNeighborhoodItArray[i]
             = DeformationVectorComponentNeighborhoodType(
-            radius, m_DeformationVectorNormalComponents[i],
+            radius, m_NormalDeformationComponentImages[i],
             * deformationVectorNormalComponentImagefItArray[i] );
           }
         }

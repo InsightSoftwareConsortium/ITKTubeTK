@@ -369,6 +369,19 @@ private:
   DiffusionTensorImagePointer       m_NormalDiffusionTensorImage;
   TensorDerivativeImagePointer      m_TangentialDiffusionTensorDerivativeImage;
   TensorDerivativeImagePointer      m_NormalDiffusionTensorDerivativeImage;
+  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
+      m_TangentialDeformationComponentImages;
+  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
+      m_NormalDeformationComponentImages;
+
+  /** Extracts the x,y,z components of the tangential and normal deformation
+   * field components */
+  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
+      m_TangentialDeformationComponentExtractors;
+  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
+      m_NormalDeformationComponentExtractors;
+
+
 
 
 
@@ -376,25 +389,20 @@ private:
 
 
   /** The lambda factor for computing the weight from distance.  Weight is
-  * modeled as exponential decay: weight = e^(lambda * distance).
-  * (lamba must be negative) */
+   * modeled as exponential decay: weight = e^(lambda * distance).
+   * (lamba must be negative) */
   WeightType                          m_lambda;
 
 
   OutputImagePointer                  m_NormalDeformationField;
 
-  /** The components of the tangential and normal deformation vectors */
-  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
-      m_DeformationVectorTangentialComponents;
-  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
-      m_DeformationVectorNormalComponents;
 
-  /** Extracts the x,y,z components of the tangential and normal
-  * components of the deformation field */
-  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
-      m_TangentialComponentExtractor;
-  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
-      m_NormalComponentExtractor;
+
+
+
+
+
+
 
 
 
