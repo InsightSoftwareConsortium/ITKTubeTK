@@ -339,6 +339,38 @@ protected:
   /** Get the registration function pointer */
   virtual RegistrationFunctionPointer GetRegistrationFunctionPointer() const;
 
+  /** Struct to simply get the face list and an iterator over the face list
+   *  when processing an image */
+  template< class ImageType >
+  struct FaceStruct
+    {
+    FaceStruct( ImageType& image, typename OutputImageType::SizeType radius )
+      {
+      faceList = faceCalculator( image,
+                                 image->GetLargestPossibleRegion(),
+                                 radius );
+      }
+
+    void begin()
+      {
+      faceListIt = faceList.begin();
+      }
+
+    bool IsAtEnd()
+      {
+      return faceListIt == faceList.end();
+      }
+
+    typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
+        < typename ImageType::ObjectType > FaceCalculatorType;
+    typedef typename FaceCalculatorType::FaceListType FaceListType;
+    typedef typename FaceListType::iterator FaceListIteratorType;
+
+    FaceCalculatorType      faceCalculator;
+    FaceListType            faceList;
+    FaceListIteratorType    faceListIt;
+    };
+
 private:
   // Purposely not implemented
   AnisotropicDiffusiveRegistrationFilter(const Self&);
