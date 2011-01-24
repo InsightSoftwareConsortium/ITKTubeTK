@@ -113,6 +113,10 @@ public:
   typedef typename RegistrationFunctionType::RegularizationFunctionPointer
       RegularizationFunctionPointer;
 
+  /** Output image and update buffer types */
+  typedef itk::ImageRegionIterator< OutputImageType > OutputImageRegionType;
+  typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
+
   /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
       DeformationVectorType;
@@ -417,6 +421,7 @@ private:
   DiffusionTensorImagePointer       m_NormalDiffusionTensorImage;
   TensorDerivativeImagePointer      m_TangentialDiffusionTensorDerivativeImage;
   TensorDerivativeImagePointer      m_NormalDiffusionTensorDerivativeImage;
+  OutputImagePointer                m_NormalDeformationField;
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
       m_TangentialDeformationComponentImages;
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
@@ -426,27 +431,6 @@ private:
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
   WeightType                          m_lambda;
-
-
-
-
-
-
-
-
-
-
-  OutputImagePointer                  m_NormalDeformationField;
-
-
-
-
-
-
-
-
-
-
 
 };
 

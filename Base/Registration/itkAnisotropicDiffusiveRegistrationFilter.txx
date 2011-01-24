@@ -739,25 +739,18 @@ AnisotropicDiffusiveRegistrationFilter
 
   if( this->GetUseAnisotropicRegularization() )
     {
+    assert( this->GetNormalVectorImage() );
+    assert( this->GetWeightImage() );
 
-    if ( !this->GetNormalVectorImage() || !this->GetWeightImage() )
-      {
-      itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
-      }
-
-    // Get the border normals
-    NormalVectorImageRegionType normalVectorIt(
+    // Setup iterators
+    NormalVectorImageRegionType normalVectorNeighborhood(
         m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
-    // Get output (the current deformation field)
     typename OutputImageType::Pointer output = this->GetOutput();
+    OutputImageRegionType outputRegion(output,
+                                       output->GetLargestPossibleRegion() );
 
-    typedef itk::ImageRegionIterator< OutputImageType > OutputImageIteratorType;
-    OutputImageIteratorType outputImageIt(
-        output, output->GetLargestPossibleRegion() );
-
-    // Extract normal components from output
-    OutputImageIteratorType outputNormalImageIt(
+    OutputImageRegionType normalDeformationRegion(
         m_NormalDeformationField,
         m_NormalDeformationField->GetLargestPossibleRegion() );
 
@@ -767,54 +760,41 @@ AnisotropicDiffusiveRegistrationFilter
     DeformationVectorType  normalDeformationVector;
     DeformationVectorType  tangentialDeformationVector;
 
-    for( outputImageIt.GoToBegin(), normalVectorIt.GoToBegin(),
-         outputNormalImageIt.GoToBegin();
-         !outputImageIt.IsAtEnd(); ++outputImageIt )
+    for( normalVectorNeighborhood.GoToBegin(), outputRegion.GoToBegin(),
+         normalDeformationRegion.GoToBegin();
+         !outputRegion.IsAtEnd();
+         ++normalVectorNeighborhood, ++outputRegion, ++normalDeformationRegion )
       {
-      n = normalVectorIt.Get();
-      u = outputImageIt.Get();
+      n = normalVectorNeighborhood.Get();
+      u = outputRegion.Get();
 
       // normal component = (u^Tn)n
       normalDeformationVector = ( u * n ) * n;
-      outputNormalImageIt.Set( normalDeformationVector );
+      normalDeformationRegion.Set( normalDeformationVector );
+
+      // Test that the normal and tangential components were computed corectly
+      // (they should be orthogonal)
 
       // tangential component = u - normal component
       tangentialDeformationVector = u - normalDeformationVector;
 
-      // Assertion to test that the normal and tangential components were computed
-      // corectly - they should be orthogonal
       if( normalDeformationVector * tangentialDeformationVector > 0.005 )
         {
         itkExceptionMacro( << "Normal and tangential deformation field "
-                           << "components are not orthogonal" << std::endl
-                           << "u = " << u[0] << " " << u[1] << " " << u[2]
-                           << std::endl
-                           << "n = " << n[0] << " " << n[1] << " " << n[2]
-                           << std::endl
-                           << "normal = " << normalDeformationVector[0]
-                           << " " << normalDeformationVector[1] << " "
-                           << normalDeformationVector[2] << std::endl
-                           << "tangential = " << tangentialDeformationVector[0]
-                           << " " << tangentialDeformationVector[1] << " "
-                           << tangentialDeformationVector[2] << std::endl
-                           << " dot product "
-                           << normalDeformationVector
-                                  * tangentialDeformationVector
-                           << std::endl );
+                           << "components are not orthogonal" );
         }
-
-      ++normalVectorIt;
-      ++outputNormalImageIt;
       }
       m_NormalDeformationField->Modified();
     }
 
-  // Updated the extracted components
+  // Update the extracted components
   this->ExtractXYZFromDeformationComponents(
       true, this->GetUseAnisotropicRegularization() );
-
-
 }
+
+
+
+
 
 /**
  * Populates the update buffer
@@ -1363,10 +1343,8 @@ AnisotropicDiffusiveRegistrationFilter
 ::ThreadedApplyUpdate(TimeStepType dt,
   const ThreadRegionType &regionToProcess, int )
 {
-  ImageRegionIterator< UpdateBufferType > u(m_UpdateBuffer,
-    regionToProcess );
-  ImageRegionIterator< OutputImageType > o(this->GetOutput(),
-    regionToProcess );
+  UpdateBufferRegionType  u(m_UpdateBuffer, regionToProcess );
+  OutputImageRegionType   o(this->GetOutput(), regionToProcess );
 
   u = u.Begin();
   o = o.Begin();
