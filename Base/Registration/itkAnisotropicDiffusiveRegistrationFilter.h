@@ -104,6 +104,12 @@ public:
   typedef typename Superclass::UpdateBufferType         UpdateBufferType;
   typedef typename UpdateBufferType::RegionType         ThreadRegionType;
 
+  /** Output image and update buffer types */
+  typedef itk::ImageRegionIterator< OutputImageType > OutputImageRegionType;
+  typedef typename FiniteDifferenceFunctionType::NeighborhoodType
+      NeighborhoodType;
+  typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
+
   /** The registration function type */
   typedef AnisotropicDiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
@@ -112,10 +118,6 @@ public:
       RegistrationFunctionPointer;
   typedef typename RegistrationFunctionType::RegularizationFunctionPointer
       RegularizationFunctionPointer;
-
-  /** Output image and update buffer types */
-  typedef itk::ImageRegionIterator< OutputImageType > OutputImageRegionType;
-  typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
 
   /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
@@ -126,6 +128,12 @@ public:
       DeformationVectorComponentImageType;
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
+      DeformationVectorComponentNeighborhoodType;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorComponentNeighborhoodArrayType
+      DeformationVectorComponentNeighborhoodArrayType;
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
 
@@ -136,6 +144,8 @@ public:
       NormalVectorImageType;
   typedef typename NormalVectorImageType::Pointer
       NormalVectorImagePointer;
+  typedef typename RegistrationFunctionType::NormalVectorNeighborhoodType
+      NormalVectorNeighborhoodType;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageRegionType;
   typedef typename NormalVectorImageType::RegionType
@@ -357,11 +367,24 @@ protected:
   template< class ImageType >
   struct FaceStruct
     {
+    FaceStruct() {}
     FaceStruct( ImageType& image, typename OutputImageType::SizeType radius )
       {
-      faceList = faceCalculator( image,
-                                 image->GetLargestPossibleRegion(),
-                                 radius );
+      if( image )
+        {
+        faceList = faceCalculator( image,
+                                   image->GetLargestPossibleRegion(),
+                                   radius );
+        }
+      }
+    FaceStruct( ImageType& image,
+                typename ImageType::ObjectType::RegionType region,
+                typename OutputImageType::SizeType radius )
+      {
+      if( image )
+        {
+        faceList = faceCalculator( image, region, radius );
+        }
       }
 
     void begin()
