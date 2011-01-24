@@ -104,12 +104,20 @@ public:
   typedef typename Superclass::UpdateBufferType         UpdateBufferType;
   typedef typename UpdateBufferType::RegionType         ThreadRegionType;
 
+  /** Output image and update buffer types */
+  typedef itk::ImageRegionIterator< OutputImageType > OutputImageRegionType;
+  typedef typename FiniteDifferenceFunctionType::NeighborhoodType
+      NeighborhoodType;
+  typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
+
   /** The registration function type */
   typedef AnisotropicDiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
   typedef typename RegistrationFunctionType::Pointer
       RegistrationFunctionPointer;
+  typedef typename RegistrationFunctionType::RegularizationFunctionPointer
+      RegularizationFunctionPointer;
 
   /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
@@ -120,6 +128,12 @@ public:
       DeformationVectorComponentImageType;
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
+      DeformationVectorComponentNeighborhoodType;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorComponentNeighborhoodArrayType
+      DeformationVectorComponentNeighborhoodArrayType;
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
 
@@ -130,6 +144,8 @@ public:
       NormalVectorImageType;
   typedef typename NormalVectorImageType::Pointer
       NormalVectorImagePointer;
+  typedef typename RegistrationFunctionType::NormalVectorNeighborhoodType
+      NormalVectorNeighborhoodType;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageRegionType;
   typedef typename NormalVectorImageType::RegionType
@@ -140,6 +156,8 @@ public:
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
+  typedef typename RegistrationFunctionType::DiffusionTensorNeighborhoodType
+      DiffusionTensorNeighborhoodType;
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
 
@@ -148,6 +166,8 @@ public:
       TensorDerivativeImageType;
   typedef typename TensorDerivativeImageType::Pointer
       TensorDerivativeImagePointer;
+  typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
+      TensorDerivativeImageRegionType;
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
@@ -271,6 +291,9 @@ protected:
 
   /** Computes the first derivatives of the diffusion tensor images */
   virtual void ComputeDiffusionTensorDerivativeImages();
+  virtual void ComputeDiffusionTensorDerivativeImage(
+      DiffusionTensorImagePointer tensorImage,
+      TensorDerivativeImagePointer tensorDerivativeImage );
 
   /** Allocate the update buffer. */
   virtual void AllocateUpdateBuffer();
@@ -339,6 +362,51 @@ protected:
   /** Get the registration function pointer */
   virtual RegistrationFunctionPointer GetRegistrationFunctionPointer() const;
 
+  /** Struct to simply get the face list and an iterator over the face list
+   *  when processing an image */
+  template< class ImageType >
+  struct FaceStruct
+    {
+    FaceStruct() {}
+    FaceStruct( ImageType& image, typename OutputImageType::SizeType radius )
+      {
+      if( image )
+        {
+        faceList = faceCalculator( image,
+                                   image->GetLargestPossibleRegion(),
+                                   radius );
+        }
+      }
+    FaceStruct( ImageType& image,
+                typename ImageType::ObjectType::RegionType region,
+                typename OutputImageType::SizeType radius )
+      {
+      if( image )
+        {
+        faceList = faceCalculator( image, region, radius );
+        }
+      }
+
+    void begin()
+      {
+      faceListIt = faceList.begin();
+      }
+
+    bool IsAtEnd()
+      {
+      return faceListIt == faceList.end();
+      }
+
+    typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
+        < typename ImageType::ObjectType > FaceCalculatorType;
+    typedef typename FaceCalculatorType::FaceListType FaceListType;
+    typedef typename FaceListType::iterator FaceListIteratorType;
+
+    FaceCalculatorType      faceCalculator;
+    FaceListType            faceList;
+    FaceListIteratorType    faceListIt;
+    };
+
 private:
   // Purposely not implemented
   AnisotropicDiffusiveRegistrationFilter(const Self&);
@@ -376,6 +444,7 @@ private:
   DiffusionTensorImagePointer       m_NormalDiffusionTensorImage;
   TensorDerivativeImagePointer      m_TangentialDiffusionTensorDerivativeImage;
   TensorDerivativeImagePointer      m_NormalDiffusionTensorDerivativeImage;
+  OutputImagePointer                m_NormalDeformationField;
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
       m_TangentialDeformationComponentImages;
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
@@ -385,27 +454,6 @@ private:
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
   WeightType                          m_lambda;
-
-
-
-
-
-
-
-
-
-
-  OutputImagePointer                  m_NormalDeformationField;
-
-
-
-
-
-
-
-
-
-
 
 };
 
