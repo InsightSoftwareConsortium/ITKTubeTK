@@ -352,26 +352,6 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
- * Initialize the state of the filter and equation before each iteration.
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-AnisotropicDiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::InitializeIteration()
-{
-  Superclass::InitializeIteration();
-
-  // Update the deformation field component images
-  // Since the components depend on the current tangential and normal
-  // deformation fields, they must be computed on every registration iteration
-  if( this->GetComputeRegularizationTerm() )
-    {
-    this->UpdateDeformationVectorComponentImages();
-    }
-}
-
-/**
  * Updates the border normals and the weighting factor w
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -712,7 +692,25 @@ AnisotropicDiffusiveRegistrationFilter
     }
 }
 
+/**
+ * Initialize the state of the filter and equation before each iteration.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::InitializeIteration()
+{
+  Superclass::InitializeIteration();
 
+  // Update the deformation field component images
+  // Since the components depend on the current tangential and normal
+  // deformation fields, they must be computed on every registration iteration
+  if( this->GetComputeRegularizationTerm() )
+    {
+    this->UpdateDeformationVectorComponentImages();
+    }
+}
 
 
 
