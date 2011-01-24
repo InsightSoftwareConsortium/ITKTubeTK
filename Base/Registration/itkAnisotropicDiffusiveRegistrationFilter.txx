@@ -178,134 +178,126 @@ AnisotropicDiffusiveRegistrationFilter
 {
   Superclass::Initialize();
 
-  RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
-  assert( df );
-
   // Check the timestep for stability if we are using the diffusive or
   // anisotropic diffusive regularization terms
-  if( this->GetComputeRegularizationTerm() )
+  RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
+  assert( df );
+  df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
+
+  // If we're not computing the regularization term, we're done
+  if( !this->GetComputeRegularizationTerm() )
     {
-    df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
+    return;
     }
 
+  // The output will be used as the template to allocate the images we will
+  // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
 
-  // Allocate the output image's normal images, tangential and normal diffusion
-  // tensor images and their derivatives, and deformation field component images
-  if( this->GetComputeRegularizationTerm() )
+  // Allocate the tangential diffusion tensor image and its derivative
+  m_TangentialDiffusionTensorImage = DiffusionTensorImageType::New();
+  this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage,
+                               output );
+
+  m_TangentialDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
+  this->AllocateSpaceForImage( m_TangentialDiffusionTensorDerivativeImage,
+                               output );
+
+  // Allocate the images needed when using the anisotropic diffusive
+  // regularization
+  if( this->GetUseAnisotropicRegularization() )
     {
-    m_TangentialDiffusionTensorImage = DiffusionTensorImageType::New();
-    this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
-    m_TangentialDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
-    this->AllocateSpaceForImage( m_TangentialDiffusionTensorDerivativeImage,
+    m_NormalDeformationField = OutputImageType::New();
+    this->AllocateSpaceForImage( m_NormalDeformationField,
                                  output );
 
-
-
-
-
-
-    }
-
-  if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
-    {
-
-    m_NormalDeformationField = OutputImageType::New();
-    this->AllocateSpaceForImage( m_NormalDeformationField, output );
     m_NormalDiffusionTensorImage = DiffusionTensorImageType::New();
-    this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
+    this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
+                                 output );
+
     m_NormalDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
     this->AllocateSpaceForImage( m_NormalDiffusionTensorDerivativeImage,
                                  output );
 
-
-    // Check the normal vector image and the weight image if one was supplied
-    // by the user
-    if( m_NormalVectorImage
-          && !this->CompareImageAttributes( m_NormalVectorImage, output ) )
+    // If a normal vector image or weight image was supplied by the user, check
+    // that it matches the output
+    if( ( m_NormalVectorImage
+        && !this->CompareImageAttributes( m_NormalVectorImage, output ) )
+      || ( m_WeightImage
+          && !this->CompareImageAttributes( m_WeightImage, output ) ) )
       {
-      itkExceptionMacro( << "Normal vector image does not have the same "
-                         << "attributes as the output deformation field"
-                         << std::endl );
-      }
-    if( m_WeightImage
-          && !this->CompareImageAttributes( m_WeightImage, output ) )
-      {
-      itkExceptionMacro( << "Weight image does not have the same attributes as "
-                         << "the output deformation field" << std::endl );
+      itkExceptionMacro( << "Normal vector image and/or weight image must have "
+                         << "the same attributes as the output deformation "
+                         << "field" );
       }
 
-    // Compute the border normals and/or weighting factors if not supplied by the
-    // user
-    if( !m_NormalVectorImage || !m_WeightImage )
+    // Whether or not we must compute the normal vector and/or weight images
+    bool computeNormals = !m_NormalVectorImage;
+    bool computeWeights = !m_WeightImage;
+
+    // Compute the normal vector and/or weight images if required
+    if( computeNormals || computeWeights )
       {
-      if ( !this->GetBorderSurface() )
+      // Ensure we have a border surface to work with
+      if( !this->GetBorderSurface() )
         {
-        itkExceptionMacro( << "Cannot perform registration without a border "
-                           << "surface, or a normal vector image and a weight "
-                           << "image" << std::endl );
+        itkExceptionMacro( << "You must provide a border surface, or both a "
+                           << "normal vector image and a weight image" );
         }
 
-      // Setup the vtkPolyDataNormals to extract the normals from the surface
-      // TODO do this only if we don't have normals
-      vtkPolyDataNormals * normalsSurfaceFilter = vtkPolyDataNormals::New();
-      normalsSurfaceFilter->ComputePointNormalsOn();
-      normalsSurfaceFilter->ComputeCellNormalsOff();
-      //normalsSurfaceFilter->SetFeatureAngle(30);
-      normalsSurfaceFilter->SetInput( m_BorderSurface );
-      normalsSurfaceFilter->Update();
-      m_BorderSurface = normalsSurfaceFilter->GetOutput();
-      normalsSurfaceFilter->Delete();
+      // Compute the normals for the surface
+      this->ComputeBorderSurfaceNormals();
 
-      // Make sure we now have the normals
-      if ( !this->GetBorderSurface() )
-        {
-        itkExceptionMacro( << "Error computing border normals surface"
-                           << std::endl );
-        }
-      if ( !this->GetBorderSurface()->GetPointData() )
-        {
-        itkExceptionMacro( << "Computed border normals surface does not contain "
-                           << "point data" << std::endl );
-        }
-      if ( !this->GetBorderSurface()->GetPointData()->GetNormals() )
-        {
-        itkExceptionMacro( << "Compute border normals surface does not contain "
-                           << "point data normals" << std::endl );
-        }
-
-      bool computeNormalVectorImage = false;
-      bool computeWeightImage = false;
-
-      // Allocate the image of normals and weight image
-      if( !m_NormalVectorImage )
+      // Allocate the normal vector and/or weight images
+      if( computeNormals )
         {
         m_NormalVectorImage = NormalVectorImageType::New();
         this->AllocateSpaceForImage( m_NormalVectorImage, output );
-        computeNormalVectorImage = true;
         }
-      if( !m_WeightImage )
+      if( computeWeights )
         {
         m_WeightImage = WeightImageType::New();
         this->AllocateSpaceForImage( m_WeightImage, output );
-        computeWeightImage = true;
         }
 
-      // Compute the border normals and the weighting factor w
-      // Normals are dependent on the border geometry in the fixed image so this
-      // has to be completed only once.
-      this->ComputeNormalVectorAndWeightImages( computeNormalVectorImage,
-                                                computeWeightImage );
+      // Actually compute the normal vectors and/or weights
+      this->ComputeNormalVectorAndWeightImages( computeNormals,
+                                                computeWeights );
       }
     }
 
-  // Compute the diffusion tensor image
-  // The diffusion tensors are dependent on the normals computed in the
-  // previous line, so this has to be completed only once.
-  if( this->GetComputeRegularizationTerm() )
+  // Compute the diffusion tensors and their derivatives
+  this->ComputeDiffusionTensorImages();
+  this->ComputeDiffusionTensorDerivativeImages();
+}
+
+/**
+ * Compute the normals for the border surface
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeBorderSurfaceNormals()
+{
+  assert( m_BorderSurface );
+  vtkPolyDataNormals * normalsFilter = vtkPolyDataNormals::New();
+  normalsFilter->ComputePointNormalsOn();
+  normalsFilter->ComputeCellNormalsOff();
+  //normalsFilter->SetFeatureAngle(30); // TODO
+  normalsFilter->SetInput( m_BorderSurface );
+  normalsFilter->Update();
+  m_BorderSurface = normalsFilter->GetOutput();
+  normalsFilter->Delete();
+
+  // Make sure we now have the normals
+  if ( !m_BorderSurface->GetPointData() )
     {
-    this->ComputeDiffusionTensorImages();
-    this->ComputeDiffusionTensorDerivativeImages();
+    itkExceptionMacro( << "Border surface does not contain point data" );
+    }
+  else if ( !m_BorderSurface->GetPointData()->GetNormals() )
+    {
+    itkExceptionMacro( << "Border surface point data does not have normals" );
     }
 }
 

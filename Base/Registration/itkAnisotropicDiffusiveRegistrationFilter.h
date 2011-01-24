@@ -254,6 +254,9 @@ protected:
   /** Initialization occuring before the registration iterations. */
   virtual void Initialize();
 
+  /** Compute the normals for the border surface. */
+  void ComputeBorderSurfaceNormals();
+
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
   virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
