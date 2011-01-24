@@ -38,6 +38,7 @@ limitations under the License.
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
 #include "itkTubeLDAGenerator.h"
+#include "itkTubeNJetLDAGenerator.h"
 
 
 int tubeBaseFilteringPrintTest( int, char* [] )
@@ -101,6 +102,12 @@ int tubeBaseFilteringPrintTest( int, char* [] )
     itk::tube::LDAGenerator< ImageType, ImageType >::New();
   std::cout << "-------------LDAGenerator"
     << ldaGenerator << std::endl;
+
+  itk::tube::NJetLDAGenerator< ImageType, ImageType >::Pointer
+    njetLDAGenerator =
+    itk::tube::NJetLDAGenerator< ImageType, ImageType >::New();
+  std::cout << "-------------LDANJetGenerator"
+    << njetLDAGenerator << std::endl;
 
   return EXIT_SUCCESS;
 }

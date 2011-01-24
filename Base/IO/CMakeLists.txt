@@ -28,6 +28,7 @@ INCLUDE( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_IO_H_Files
   itkTubeMetaLDA.h
+  itkTubeMetaNJetLDA.h
   )
 
 set( TubeTK_Base_IO_TXX_Files
@@ -39,6 +40,7 @@ include_directories(
 
 SET( TubeTK_Base_IO_SRCS
   itkTubeMetaLDA.cxx
+  itkTubeMetaNJetLDA.cxx
   )
 
 ADD_LIBRARY( TubeIO STATIC ${TubeTK_Base_IO_SRCS} )

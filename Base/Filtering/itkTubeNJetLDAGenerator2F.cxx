@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,25 +20,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
+#ifndef __itkTubeNJetLDAGenerator2F_cxx
+#define __itkTubeNJetLDAGenerator2F_cxx
 
-#include <iostream>
-
-#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
-#include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkAnisotropicDiffusionTensorImageFilter.h"
-#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
-#include "itkAnisotropicHybridDiffusionImageFilter.h"
-#include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include "itkTubeBlurImageFunction.h"
-#include "itkTubeEnhancingDiffusion2DImageFilter.h"
-#include "itkTubeLDAGenerator.h"
 #include "itkTubeNJetLDAGenerator.h"
+#include "itkTubeNJetLDAGenerator2F.h"
 
-int main ( int , char ** )
+namespace itk
 {
-  return EXIT_SUCCESS;
+
+namespace tube
+{
+
+NJetLDAGenerator2F
+::NJetLDAGenerator2F()
+{
 }
+
+NJetLDAGenerator2F
+::~NJetLDAGenerator2F()
+{
+}
+
+void
+NJetLDAGenerator2F
+::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  Superclass::PrintSelf( os, indent );
+}
+
+}
+
+}
+
+#endif //NJetLDAGenerator2F_cxx

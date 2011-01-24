@@ -85,12 +85,16 @@ public:
   //
   void SetFeatureImage( typename ImageType::Pointer img );
   void AddFeatureImage( typename ImageType::Pointer img );
-  int GetNumberOfFeatureImages( void );
+  typename ImageType::Pointer GetFeatureImage( unsigned int num );
+  virtual unsigned int GetNumberOfFeatureImages( void );
+
+  virtual unsigned int GetNumberOfFeatures( void );
 
   void             SetObjectId( ObjectIdType objectId );
   void             AddObjectId( ObjectIdType objectId );
-  unsigned int     GetNumberOfObjects( void );
   ObjectIdType     GetObjectId( int num = 0 );
+
+  unsigned int     GetNumberOfObjects( void );
 
   ObjectMeanType       * GetObjectMean( ObjectIdType objectId );
   ObjectCovarianceType * GetObjectCovariance( ObjectIdType objectId );
@@ -121,7 +125,7 @@ public:
 
   void SetProgressProcessInformation( void * processInfo, double fraction,
     double start );
-  
+
   void Update( void );
   void UpdateLDAImages( void );
 
@@ -130,9 +134,14 @@ protected:
   LDAGenerator( void );
   virtual ~LDAGenerator( void );
 
-  void GenerateStatistics( void );
-  void GenerateLDA( void );
-  void GenerateLDAImages( void );
+  typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
+
+  virtual LDAValuesType GetFeatureVector( const ContinuousIndexType &
+    indx );
+
+  virtual void GenerateStatistics( void );
+  virtual void GenerateLDA( void );
+  virtual void GenerateLDAImages( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 

@@ -36,4 +36,5 @@ void RegisterTests()
   REGISTER_TEST( itkTubeBlurImageFunctionTest );
   REGISTER_TEST( itkTubeEnhancingDiffusion2DImageFilterTest );
   REGISTER_TEST( itkTubeLDAGeneratorTest );
+  REGISTER_TEST( itkTubeNJetLDAGeneratorTest );
 }
