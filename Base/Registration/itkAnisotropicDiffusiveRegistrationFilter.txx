@@ -518,18 +518,6 @@ AnisotropicDiffusiveRegistrationFilter
   return weight;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Updates the diffusion tensor image before each run of the registration
  */
@@ -540,13 +528,42 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
+  assert( m_TangentialDiffusionTensorImage );
+
+  // If we are not using the anisotropic diffusive regularization, then we only
+  // need to set the tangential diffusion tensors to the identity
+  typename DiffusionTensorImageType::PixelType tangentialDiffusionTensor;
+  typedef itk::ImageRegionIterator< DiffusionTensorImageType >
+      DiffusionTensorImageRegionType;
+  DiffusionTensorImageRegionType tangentialTensorIt
+      = DiffusionTensorImageRegionType(
+          m_TangentialDiffusionTensorImage,
+          m_TangentialDiffusionTensorImage->GetLargestPossibleRegion() );
+
+  if( !this->GetUseAnisotropicRegularization() )
+    {
+    for( tangentialTensorIt.GoToBegin();
+        !tangentialTensorIt.IsAtEnd();
+        ++tangentialTensorIt )
+          {
+      tangentialDiffusionTensor.SetIdentity();
+      tangentialTensorIt.Set( tangentialDiffusionTensor );
+      }
+    return;
+    }
+
+  // If we are using the anisotropic diffusive regularization, then we need
+  // to setup the tangential diffusion tensors and the normal diffusion tensors
+  assert( m_NormalVectorImage );
+  assert( m_WeightImage );
+  assert( m_NormalDiffusionTensorImage );
 
   // Used to compute the tangential and normal diffusion tensor images
   // tangential:
   // P = I - wnn^T
-  // tangentialMatrix = tangentialD = P^TP
+  // tangentialMatrix = tangentialDiffusionTensor = P^TP
   // normal:
-  // normalMatrix = normalD = wnn^T
+  // normalMatrix = normalDiffusionTensor = wnn^T
 
   typedef itk::Matrix
       < DeformationVectorComponentType, ImageDimension, ImageDimension >
@@ -557,108 +574,77 @@ AnisotropicDiffusiveRegistrationFilter
   MatrixType                                    P;
   MatrixType                                    normalMatrix;
   MatrixType                                    tangentialMatrix;
-  typename DiffusionTensorImageType::PixelType  tangentialDiffusionTensor;
   typename DiffusionTensorImageType::PixelType  normalDiffusionTensor;
 
   // Setup iterators
-  NormalVectorImageRegionType normalVectorIt;
-  WeightImageRegionType weightIt;
-  typedef itk::ImageRegionIterator< DiffusionTensorImageType >
-      DiffusionTensorImageIteratorType;
-  DiffusionTensorImageIteratorType tangentialDiffusionTensorIt;
-  DiffusionTensorImageIteratorType normalDiffusionTensorIt;
+  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
+      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  WeightImageRegionType weightIt = WeightImageRegionType(
+      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType normalTensorIt
+      = DiffusionTensorImageRegionType(
+          m_NormalDiffusionTensorImage,
+          m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
 
-  tangentialDiffusionTensorIt = DiffusionTensorImageIteratorType(
-      m_TangentialDiffusionTensorImage,
-      m_TangentialDiffusionTensorImage->GetLargestPossibleRegion() );
-  if( this->GetUseAnisotropicRegularization() )
+  for( normalIt.GoToBegin(), weightIt.GoToBegin(),
+       tangentialTensorIt.GoToBegin(), normalTensorIt.GoToBegin();
+       !tangentialTensorIt.IsAtEnd();
+       ++normalIt, ++weightIt, ++tangentialTensorIt, ++normalTensorIt )
     {
-    normalVectorIt = NormalVectorImageRegionType(
-        m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
-    weightIt = WeightImageRegionType(
-        m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-    normalDiffusionTensorIt = DiffusionTensorImageIteratorType(
-        m_NormalDiffusionTensorImage,
-        m_NormalDiffusionTensorImage->GetLargestPossibleRegion() );
-    }
+    n = normalIt.Get();
+    w = weightIt.Get();
 
-  if( this->GetUseAnisotropicRegularization() )
-    {
-    normalVectorIt.GoToBegin();
-    weightIt.GoToBegin();
-    normalDiffusionTensorIt.GoToBegin();
-    }
+    // The matrices are used for calculations, and will be copied to the
+    // diffusion tensors afterwards.  The matrices are guaranteed to be
+    // symmetric.
 
-  for( tangentialDiffusionTensorIt.GoToBegin();
-      !tangentialDiffusionTensorIt.IsAtEnd();
-      ++ tangentialDiffusionTensorIt )
-    {
-    // Compute the tangential and normal diffusion tensor images
-    if( !this->GetUseAnisotropicRegularization() )
+    // Create the normalMatrix used to calculate nn^T
+    // (The first column is filled with the values of n, the rest are 0s)
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      // This is the diffusive (Gaussian) regularization
-      tangentialMatrix.SetIdentity();
-      }
-    else
-      {
-      n = normalVectorIt.Get();
-      w = weightIt.Get();
-
-      // Create the normalMatrix used to calculate nn^T
-      // (The first column is filled with the values of n, the rest are 0s)
-      for ( unsigned int i = 0; i < ImageDimension; i++ )
+      normalMatrix( i, 0 ) = n[i];
+      for ( unsigned int j = 1; j < ImageDimension; j++ )
         {
-        normalMatrix( i,0 ) = n[i];
-        for ( unsigned int j = 1; j < ImageDimension; j++ )
-          {
-          normalMatrix( i,j ) = 0;
-          }
+        normalMatrix( i, j ) = 0;
         }
-
-      normalMatrix = normalMatrix * normalMatrix.GetTranspose(); // nn^T
-      normalMatrix = normalMatrix * w; // wnn^T
-      P.SetIdentity();
-      P = P - normalMatrix; // I - wnn^T
-      tangentialMatrix = P.GetTranspose();
-      tangentialMatrix = tangentialMatrix * P; // P^TP
       }
 
-    // Copy the itk::Matrix to the tensor
-    // TODO there should be a better way to do this
+    // Calculate the normal and tangential diffusion tensors
+    normalMatrix = normalMatrix * normalMatrix.GetTranspose(); // nn^T
+    normalMatrix = normalMatrix * w; // wnn^T
+    P.SetIdentity();
+    P = P - normalMatrix; // I - wnn^T
+    tangentialMatrix = P.GetTranspose();
+    tangentialMatrix = tangentialMatrix * P; // P^TP
+
+    // Copy the matrices to the diffusion tensor
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
       for ( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        tangentialDiffusionTensor( i,j ) = tangentialMatrix( i,j );
+        tangentialDiffusionTensor( i, j ) = tangentialMatrix( i, j );
+        normalDiffusionTensor( i, j ) = normalMatrix( i, j );
         }
-      }
-    if( this->GetUseAnisotropicRegularization() )
-      {
-      for ( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        for ( unsigned int j = 0; j < ImageDimension; j++ )
-          {
-          normalDiffusionTensor( i,j ) = normalMatrix( i,j );
-          }
-        }
-      }
-    // Copy the diffusion tensors to m_TangentialDiffusionTensorImage and
-    // m_NormalDiffusionTensorImage
-    tangentialDiffusionTensorIt.Set( tangentialDiffusionTensor );
-    if( this->GetUseAnisotropicRegularization() )
-      {
-      normalDiffusionTensorIt.Set( normalDiffusionTensor );
       }
 
-    if( this->GetUseAnisotropicRegularization() )
-      {
-      ++normalVectorIt;
-      ++weightIt;
-      ++normalDiffusionTensorIt;
-      }
+    // Copy the diffusion tensors to their images
+    tangentialTensorIt.Set( tangentialDiffusionTensor );
+    normalTensorIt.Set( normalDiffusionTensor );
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Updates the diffusion tensor image derivatives before each run of the
