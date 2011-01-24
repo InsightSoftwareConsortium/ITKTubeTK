@@ -123,7 +123,7 @@ public:
       NormalVectorImageBoundaryConditionType;
   typedef ConstNeighborhoodIterator
       < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
-      NormalVectorImageNeighborhoodType;
+      NormalVectorNeighborhoodType;
 
   /** Typedefs for the diffusion tensor image */
   typedef typename RegularizationFunctionType::DiffusionTensorType
@@ -134,12 +134,12 @@ public:
       DiffusionTensorNeighborhoodType;
 
   /** Typedefs for the matrices of derivatives */
-  typedef typename RegularizationFunctionType::DerivativeMatrixType
-      DerivativeMatrixType;
-  typedef typename RegularizationFunctionType::DerivativeMatrixImageType
-      DerivativeMatrixImageType;
-  typedef typename RegularizationFunctionType::DerivativeMatrixImageRegionType
-      DerivativeMatrixImageRegionType;
+  typedef typename RegularizationFunctionType::TensorDerivativeType
+      TensorDerivativeType;
+  typedef typename RegularizationFunctionType::TensorDerivativeImageType
+      TensorDerivativeImageType;
+  typedef typename RegularizationFunctionType::TensorDerivativeImageRegionType
+      TensorDerivativeImageRegionType;
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
@@ -215,17 +215,17 @@ public:
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
-      const NormalVectorImageNeighborhoodType
+      const NormalVectorNeighborhoodType
           &normalVectorNeighborhood,
       const DiffusionTensorNeighborhoodType
           &tangentialTensorNeighborhood,
-      const DerivativeMatrixImageRegionType
+      const TensorDerivativeImageRegionType
           &tangentialTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
           &tangentialDeformationComponentNeighborhoods,
       const DiffusionTensorNeighborhoodType
           &normalTensorNeighborhood,
-      const DerivativeMatrixImageRegionType
+      const TensorDerivativeImageRegionType
           &normalTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
           &normalDeformationComponentNeighborhoods,
@@ -241,6 +241,7 @@ public:
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();
+  virtual ~AnisotropicDiffusiveRegistrationFunction() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** A global data type for this class of equations.  Used to store information

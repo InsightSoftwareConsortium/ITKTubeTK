@@ -24,7 +24,6 @@ limitations under the License.
 #define __itkAnisotropicDiffusiveRegistrationFunction_txx
 
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
-#include "itkVectorIndexSelectionCastImageFilter.h"
 
 namespace itk
 {
@@ -194,17 +193,17 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(
     const NeighborhoodType &neighborhood,
-    const NormalVectorImageNeighborhoodType
+    const NormalVectorNeighborhoodType
         &normalVectorNeighborhood,
     const DiffusionTensorNeighborhoodType
         &tangentialTensorNeighborhood,
-    const DerivativeMatrixImageRegionType
+    const TensorDerivativeImageRegionType
         &tangentialTensorDerivativeRegion,
     const DeformationVectorComponentNeighborhoodArrayType
         &tangentialDeformationComponentNeighborhoods,
     const DiffusionTensorNeighborhoodType
         &normalTensorNeighborhood,
-    const DerivativeMatrixImageRegionType
+    const TensorDerivativeImageRegionType
         &normalTensorDerivativeRegion,
     const DeformationVectorComponentNeighborhoodArrayType
         &normalDeformationComponentNeighborhoods,
