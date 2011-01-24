@@ -28,6 +28,7 @@ limitations under the License.
 
 #include "vtkPolyData.h"
 #include "vtkSmartPointer.h"
+#include "itkVectorIndexSelectionCastImageFilter.h"
 
 namespace itk
 {
@@ -377,19 +378,18 @@ private:
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
       m_NormalDeformationComponentImages;
 
-
-
-
-
-
-
-
-
-
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
   WeightType                          m_lambda;
+
+
+
+
+
+
+
+
 
 
   OutputImagePointer                  m_NormalDeformationField;

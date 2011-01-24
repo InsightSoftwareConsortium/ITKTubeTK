@@ -24,7 +24,6 @@ limitations under the License.
 #define __itkAnisotropicDiffusiveRegistrationFunction_txx
 
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
-#include "itkVectorIndexSelectionCastImageFilter.h"
 
 namespace itk
 {
