@@ -351,11 +351,6 @@ AnisotropicDiffusiveRegistrationFilter
     }
 }
 
-
-
-
-
-
 /**
  * Initialize the state of the filter and equation before each iteration.
  */
@@ -387,59 +382,65 @@ AnisotropicDiffusiveRegistrationFilter
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetUseAnisotropicRegularization() );
-  assert( m_BorderSurface );
-  assert( m_BorderSurface->GetPointData() );
   assert( m_BorderSurface->GetPointData()->GetNormals() );
-
-  // Get the normals from the polydata
-  vtkSmartPointer< vtkDataArray > normalData
-      = m_BorderSurface->GetPointData()->GetNormals();
-  vtkPointLocator * pointLocator = vtkPointLocator::New();
-  pointLocator->SetDataSet( m_BorderSurface );
-
-  // Iterate over the normal vector image and insert the normal of the closest
-  // point
-  NormalVectorImageRegionType normalVectorIt(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
-
-  // Iterate over the weight image and compute weight as a function of the
-  // distance to the border
-  WeightImageRegionType weightIt(
-      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-
-  itk::Index< ImageDimension >          imageIndex;
-  itk::Point< double, ImageDimension >  imageCoordAsPoint;
-  imageCoordAsPoint.Fill( 0 );
-  double                                imageCoord[3] = {0, 0, 0};
-  double                                borderCoord[3] = {0, 0, 0};
-  vtkIdType                             id;
-  WeightType                            distance;
-  WeightType                            weight;
-  NormalVectorType                      normal;
+  assert( m_NormalVectorImage );
+  assert( m_WeightImage );
 
   std::cout << "Computing normals and weights... " << std::endl;
 
-  // Determine the normals of and the distances to the nearest border
-  for( normalVectorIt.GoToBegin(), weightIt.GoToBegin();
-       !normalVectorIt.IsAtEnd();
-       ++normalVectorIt, ++weightIt )
+  // Setup iterators over the normal vector and weight images
+  NormalVectorImageRegionType normalIt(
+      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  WeightImageRegionType weightIt(m_WeightImage,
+                                 m_WeightImage->GetLargestPossibleRegion() );
+
+  // Get the normals from the polydata
+  vtkPointLocator * pointLocator = vtkPointLocator::New();
+  pointLocator->SetDataSet( m_BorderSurface );
+  vtkSmartPointer< vtkDataArray > normalData
+      = m_BorderSurface->GetPointData()->GetNormals();
+
+  // The normal vector image will hold the normal of the closest point of the
+  // surface polydata, and the weight image will be a function of the distance
+  // between the voxel and this closest point
+
+  itk::Point< double, ImageDimension >  imageCoordAsPoint;
+  imageCoordAsPoint.Fill( 0 );
+  double                                imageCoord[ImageDimension];
+  double                                borderCoord[ImageDimension];
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    imageIndex = normalVectorIt.GetIndex();
-    m_NormalVectorImage->TransformIndexToPhysicalPoint(
-        imageIndex, imageCoordAsPoint );
+    imageCoord[i] = 0;
+    borderCoord[i] = 0;
+    }
+  vtkIdType                             id = 0;
+  WeightType                            distance = 0;
+  NormalVectorType                      normal;
+  normal.Fill(0);
+  WeightType                            weight = 0;
+
+  // Determine the normals of and the distances to the nearest border
+  for( normalIt.GoToBegin(), weightIt.GoToBegin();
+       !normalIt.IsAtEnd();
+       ++normalIt, ++weightIt )
+    {
+
+    // Find the normal of the surface point that is closest to the current voxel
+    m_NormalVectorImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
+                                                        imageCoordAsPoint );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       imageCoord[i] = imageCoordAsPoint[i];
       }
     id = pointLocator->FindClosestPoint( imageCoord );
     normal = normalData->GetTuple( id );
-
     if( computeNormals )
       {
-      normalVectorIt.Set( normal );
+      normalIt.Set( normal );
       }
 
-    // Calculate distance between the current coord and the border surface coord
+    // Calculate distance between the current coordinate and the border surface
+    // coordinate
     m_BorderSurface->GetPoint( id, borderCoord );
     distance = 0.0;
     for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -448,7 +449,7 @@ AnisotropicDiffusiveRegistrationFilter
       }
     distance = sqrt( distance );
 
-    // For now, put the distance in the weight image
+    // The weight image will temporarily store distances
     if( computeWeights )
       {
       weightIt.Set( distance );
@@ -458,10 +459,10 @@ AnisotropicDiffusiveRegistrationFilter
   // Clean up memory
   pointLocator->Delete();
 
+  // Smooth the normals to handle corners (because we are choosing the
+  // closest point in the polydata
   if( computeNormals )
     {
-    //  // Smooth the normals to handle corners (because we are choosing the
-    //  // closest point in the polydata
     //  typedef itk::RecursiveGaussianImageFilter
     //      < NormalVectorImageType, NormalVectorImageType >
     //      NormalSmoothingFilterType;
@@ -474,27 +475,27 @@ AnisotropicDiffusiveRegistrationFilter
     //  m_NormalVectorImage = normalSmooth->GetOutput();
     }
 
+  // Smooth the distance image to avoid "streaks" from faces of the polydata
+  // (because we are choosing the closest point in the polydata)
   if( computeWeights )
     {
-    // Smooth the distance image to avoid "streaks" from faces of the polydata
-    // (because we are choosing the closest point in the polydata)
+    double weightSmoothingSigma = 1.0;
     typedef itk::SmoothingRecursiveGaussianImageFilter
         < WeightImageType, WeightImageType > WeightSmoothingFilterType;
     typename WeightSmoothingFilterType::Pointer weightSmooth
         = WeightSmoothingFilterType::New();
     weightSmooth->SetInput( m_WeightImage );
-    weightSmooth->SetSigma( 1.0 );
+    weightSmooth->SetSigma( weightSmoothingSigma );
     weightSmooth->Update();
     m_WeightImage = weightSmooth->GetOutput();
 
-    WeightImageRegionType weightIt2(
+    // Iterate through the weight image and compute the weight from the
+    WeightImageRegionType weightIt(
         m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-
-    // Iterate through the weight image and compute the weight from the distance
-    for( weightIt2.GoToBegin(); !weightIt2.IsAtEnd(); ++weightIt2 )
+    for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
       {
-      weight = this->ComputeWeightFromDistance( weightIt2.Get() );
-      weightIt2.Set( weight );
+      weight = this->ComputeWeightFromDistance( weightIt.Get() );
+      weightIt.Set( weight );
       }
     }
 
@@ -502,7 +503,8 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
- * Updates the diffusion tensor image before each iteration
+ * Calculates the weighting between the anisotropic diffusive and diffusive
+ * regularizations, based on a given distance from a voxel to the border
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFilter
@@ -515,6 +517,18 @@ AnisotropicDiffusiveRegistrationFilter
   WeightType weight = exp( m_lambda * distance );
   return weight;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Updates the diffusion tensor image before each run of the registration
