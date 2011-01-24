@@ -407,7 +407,6 @@ LDAGenerator< ImageT, LabelmapT >
   ObjectCovarianceType globalSumOfSquares( numFeatures, numFeatures );
   globalSumOfSquares.fill( 0 );
 
-  FeatureVectorType v( numFeatures );
   while( !itInMask.IsAtEnd() )
     {
     ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
