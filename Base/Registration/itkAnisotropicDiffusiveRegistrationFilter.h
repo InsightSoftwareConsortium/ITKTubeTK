@@ -164,8 +164,6 @@ public:
   typedef itk::VectorIndexSelectionCastImageFilter
       < DeformationFieldType, DeformationVectorComponentImageType >
       VectorIndexSelectionFilterType;
-  typedef typename VectorIndexSelectionFilterType::Pointer
-      VectorIndexSelectionFilterPointer;
 
   /** Convenience functions to set/get the registration functions timestep. */
   void SetTimeStep( const TimeStepType &t )
@@ -279,6 +277,11 @@ protected:
   /** Updates the deformation vector component images */
   virtual void UpdateDeformationVectorComponentImages();
 
+  /** Extracts the x, y, z components of the tangential and/or normal
+   *  deformation field components. */
+  void ExtractXYZFromDeformationComponents( bool extractTangentialComponents,
+                                            bool extractNormalComponents );
+
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
    * mechanism. Return value is a time step to be used for the update.
@@ -374,12 +377,7 @@ private:
   itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
       m_NormalDeformationComponentImages;
 
-  /** Extracts the x,y,z components of the tangential and normal deformation
-   * field components */
-  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
-      m_TangentialDeformationComponentExtractors;
-  itk::FixedArray< VectorIndexSelectionFilterPointer, ImageDimension >
-      m_NormalDeformationComponentExtractors;
+
 
 
 

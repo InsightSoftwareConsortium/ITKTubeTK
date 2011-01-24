@@ -57,9 +57,7 @@ AnisotropicDiffusiveRegistrationFilter
   m_NormalDiffusionTensorDerivativeImage        = 0;
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    m_TangentialDeformationComponentExtractors[i]           = 0;
     m_TangentialDeformationComponentImages[i]  = 0;
-    m_NormalDeformationComponentExtractors[i]               = 0;
     m_NormalDeformationComponentImages[i]      = 0;
     }
 
@@ -205,14 +203,11 @@ AnisotropicDiffusiveRegistrationFilter
         = TensorDerivativeImageType::New();
     this->AllocateSpaceForImage( m_TangentialDiffusionTensorDerivativeImage,
                                  output );
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      m_TangentialDeformationComponentExtractors[i] = VectorIndexSelectionFilterType::New();
-      m_TangentialDeformationComponentExtractors[i]->SetInput( this->GetOutput() );
-      m_TangentialDeformationComponentExtractors[i]->SetIndex( i );
-      m_TangentialDeformationComponentImages[i]
-          = m_TangentialDeformationComponentExtractors[i]->GetOutput();
-      }
+
+
+
+
+
     if( this->GetUseAnisotropicRegularization() )
       {
       m_NormalDeformationField = OutputImageType::New();
@@ -222,14 +217,7 @@ AnisotropicDiffusiveRegistrationFilter
       m_NormalDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
       this->AllocateSpaceForImage( m_NormalDiffusionTensorDerivativeImage,
                                    output );
-      for ( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        m_NormalDeformationComponentExtractors[i] = VectorIndexSelectionFilterType::New();
-        m_NormalDeformationComponentExtractors[i]->SetInput( m_NormalDeformationField );
-        m_NormalDeformationComponentExtractors[i]->SetIndex( i );
-        m_NormalDeformationComponentImages[i]
-            = m_NormalDeformationComponentExtractors[i]->GetOutput();
-        }
+
       }
     }
 
@@ -322,6 +310,46 @@ AnisotropicDiffusiveRegistrationFilter
     {
     this->ComputeDiffusionTensorImages();
     this->ComputeDiffusionTensorDerivativeImages();
+    }
+}
+
+/**
+ * Update x, y, z components of the tangential and/or normal deformation field
+ * components
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ExtractXYZFromDeformationComponents( bool extractTangentialComponents,
+                                       bool extractNormalComponents )
+{
+  typename VectorIndexSelectionFilterType::Pointer indexSelector;
+
+  if( extractTangentialComponents )
+    {
+    assert( this->GetOutput() );
+
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      indexSelector = VectorIndexSelectionFilterType::New();
+      indexSelector->SetInput( this->GetOutput() );
+      indexSelector->SetIndex( i );
+      m_TangentialDeformationComponentImages[i] = indexSelector->GetOutput();
+      indexSelector->Update();
+      }
+    }
+  if( extractNormalComponents )
+    {
+    assert( m_NormalDeformationField );
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      indexSelector = VectorIndexSelectionFilterType::New();
+      indexSelector->SetInput( m_NormalDeformationField );
+      indexSelector->SetIndex( i );
+      m_NormalDeformationComponentImages[i] = indexSelector->GetOutput();
+      indexSelector->Update();
+      }
     }
 }
 
@@ -890,14 +918,10 @@ AnisotropicDiffusiveRegistrationFilter
     }
 
   // Updated the extracted components
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_TangentialDeformationComponentExtractors[i]->Update();
-    if( this->GetUseAnisotropicRegularization() )
-      {
-      m_NormalDeformationComponentExtractors[i]->Update();
-      }
-    }
+  this->ExtractXYZFromDeformationComponents(
+      true, this->GetUseAnisotropicRegularization() );
+
+
 }
 
 /**
