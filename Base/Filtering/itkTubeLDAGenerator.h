@@ -109,8 +109,8 @@ public:
 
   LDAVectorType   GetLDAVector( unsigned int ldaNum );
   double          GetLDAValue( unsigned int ldaNum );
-  LDAMatrixType * GetLDAMatrix( void );
-  LDAValuesType * GetLDAValues( void );
+  LDAMatrixType & GetLDAMatrix( void );
+  LDAValuesType & GetLDAValues( void );
   void            SetLDAMatrix( const LDAMatrixType & mat );
   void            SetLDAVector( unsigned int ldaNum,
                     const LDAVectorType & vec );

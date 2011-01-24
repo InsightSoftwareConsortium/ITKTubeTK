@@ -31,6 +31,7 @@ limitations under the License.
 #include "itkOrientedImage.h"
 
 #include "itkTubeLDAGenerator.h"
+#include "itkTubeNJetLDAGenerator.h"
 
 namespace itk
 {

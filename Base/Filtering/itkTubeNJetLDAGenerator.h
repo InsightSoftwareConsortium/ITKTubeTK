@@ -89,10 +89,15 @@ public:
   //
   unsigned int GetNumberOfFeatures( void );
 
-  void SetZeroScales( NJetScalesType & scales );
-  void SetFirstScales( NJetScalesType & scales );
-  void SetSecondScales( NJetScalesType & scales );
-  void SetRidgeScales( NJetScalesType & scales );
+  void SetZeroScales( const NJetScalesType & scales );
+  void SetFirstScales( const NJetScalesType & scales );
+  void SetSecondScales( const NJetScalesType & scales );
+  void SetRidgeScales( const NJetScalesType & scales );
+
+  NJetScalesType & GetZeroScales( void );
+  NJetScalesType & GetFirstScales( void );
+  NJetScalesType & GetSecondScales( void );
+  NJetScalesType & GetRidgeScales( void );
 
 protected:
 

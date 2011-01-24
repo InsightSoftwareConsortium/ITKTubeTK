@@ -120,12 +120,6 @@ class METAIO_EXPORT MetaNJetLDA
     void  SetRidgeScales( const NJetScalesType & _ridgeScales );
     const NJetScalesType & GetRidgeScales( void ) const;
 
-    void  SetLDAValues( const LDAValuesType & _ldaValues );
-    const LDAValuesType & GetLDAValues( void ) const;
-
-    void  SetLDAMatrix( const LDAMatrixType & _ldaMatrix );
-    const LDAMatrixType & GetLDAMatrix( void ) const;
-
     //
     //
     //

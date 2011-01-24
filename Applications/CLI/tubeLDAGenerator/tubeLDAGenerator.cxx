@@ -170,8 +170,8 @@ int DoIt( int argc, char * argv[] )
   if( saveLDAInfo.size() > 0 )
     {
     timeCollector.Start( "SaveLDA" );
-    itk::tube::MetaLDA ldaWriter( *(ldaGenerator->GetLDAValues()),
-      *(ldaGenerator->GetLDAMatrix()) );
+    itk::tube::MetaLDA ldaWriter( ldaGenerator->GetLDAValues(),
+      ldaGenerator->GetLDAMatrix() );
     ldaWriter.Write( saveLDAInfo.c_str() );
     timeCollector.Stop( "SaveLDA" );
     }

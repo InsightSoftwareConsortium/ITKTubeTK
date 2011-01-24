@@ -78,7 +78,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
-::SetZeroScales( NJetScalesType & scales )
+::SetZeroScales( const NJetScalesType & scales )
   {
   m_ZeroScales = scales;
   }
@@ -86,7 +86,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
-::SetFirstScales( NJetScalesType & scales )
+::SetFirstScales( const NJetScalesType & scales )
   {
   m_FirstScales = scales;
   }
@@ -94,7 +94,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
-::SetSecondScales( NJetScalesType & scales )
+::SetSecondScales( const NJetScalesType & scales )
   {
   m_SecondScales = scales;
   }
@@ -102,9 +102,41 @@ NJetLDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
-::SetRidgeScales( NJetScalesType & scales )
+::SetRidgeScales( const NJetScalesType & scales )
   {
   m_RidgeScales = scales;
+  }
+
+template < class ImageT, class LabelmapT >
+std::vector< double > &
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetZeroScales( void )
+  {
+  return m_ZeroScales;
+  }
+
+template < class ImageT, class LabelmapT >
+std::vector< double > &
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetFirstScales( void )
+  {
+  return m_FirstScales;
+  }
+
+template < class ImageT, class LabelmapT >
+std::vector< double > &
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetSecondScales( void )
+  {
+  return m_SecondScales;
+  }
+
+template < class ImageT, class LabelmapT >
+std::vector< double > &
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetRidgeScales( void )
+  {
+  return m_RidgeScales;
   }
 
 template < class ImageT, class LabelmapT >
