@@ -51,6 +51,9 @@ NJetLDAGenerator< ImageT, LabelmapT >
   m_FirstScales.resize( 0 );
   m_SecondScales.resize( 0 );
   m_RidgeScales.resize( 0 );
+
+  m_ForceIntensityConsistency = true;
+  m_ForceOrientationInsensitivity = true;
 }
 
 template< class ImageT, class LabelmapT >
@@ -79,65 +82,97 @@ template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::SetZeroScales( const NJetScalesType & scales )
-  {
+{
   m_ZeroScales = scales;
-  }
+}
 
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::SetFirstScales( const NJetScalesType & scales )
-  {
+{
   m_FirstScales = scales;
-  }
+}
 
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::SetSecondScales( const NJetScalesType & scales )
-  {
+{
   m_SecondScales = scales;
-  }
+}
 
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::SetRidgeScales( const NJetScalesType & scales )
-  {
+{
   m_RidgeScales = scales;
-  }
+}
 
 template < class ImageT, class LabelmapT >
 std::vector< double > &
 NJetLDAGenerator< ImageT, LabelmapT >
 ::GetZeroScales( void )
-  {
+{
   return m_ZeroScales;
-  }
+}
 
 template < class ImageT, class LabelmapT >
 std::vector< double > &
 NJetLDAGenerator< ImageT, LabelmapT >
 ::GetFirstScales( void )
-  {
+{
   return m_FirstScales;
-  }
+}
 
 template < class ImageT, class LabelmapT >
 std::vector< double > &
 NJetLDAGenerator< ImageT, LabelmapT >
 ::GetSecondScales( void )
-  {
+{
   return m_SecondScales;
-  }
+}
 
 template < class ImageT, class LabelmapT >
 std::vector< double > &
 NJetLDAGenerator< ImageT, LabelmapT >
 ::GetRidgeScales( void )
-  {
+{
   return m_RidgeScales;
-  }
+}
+
+template < class ImageT, class LabelmapT >
+void
+NJetLDAGenerator< ImageT, LabelmapT >
+::SetForceIntensityConsistency( bool _forceIntensity )
+{
+  m_ForceIntensityConsistency = _forceIntensity;
+}
+
+template < class ImageT, class LabelmapT >
+bool
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetForceIntensityConsistency( void )
+{
+  return m_ForceIntensityConsistency;
+}
+
+template < class ImageT, class LabelmapT >
+void
+NJetLDAGenerator< ImageT, LabelmapT >
+::SetForceOrientationInsensitivity( bool _forceOrientationInsensitivity )
+{
+  m_ForceOrientationInsensitivity = _forceOrientationInsensitivity;
+}
+
+template < class ImageT, class LabelmapT >
+bool
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetForceOrientationInsensitivity( void )
+{
+  return m_ForceOrientationInsensitivity;
+}
 
 template < class ImageT, class LabelmapT >
 vnl_vector< double >
@@ -201,6 +236,110 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
   return v;
 }
+
+template < class ImageT, class LabelmapT >
+void
+NJetLDAGenerator< ImageT, LabelmapT >
+::GenerateLDA()
+{
+  Superclass::GenerateLDA();
+
+  if( m_ForceIntensityConsistency || m_ForceOrientationInsensitivity )
+    {
+    unsigned int vCount = 0;
+    std::vector< int > intensityNum( this->GetNumberOfFeatures(), 0 );
+    std::vector< int > orientationNum( this->GetNumberOfFeatures(), 0 );
+    for( unsigned int i=0; i<this->GetNumberOfFeatureImages(); i++ )
+      {
+      intensityNum[ vCount ] = 1;
+      orientationNum[ vCount ] = -1;
+      vCount++;
+      int orientationBase = vCount;
+      for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
+        {
+        intensityNum[ vCount ] = 1;
+        orientationNum[ vCount ] = -1;
+        vCount++;
+        }
+      orientationBase = vCount;
+      for( unsigned int s=0; s<m_FirstScales.size(); s++ )
+        {
+        intensityNum[ vCount ] = 0;
+        orientationNum[ vCount ] = orientationBase;
+        vCount++;
+        }
+      orientationBase = vCount;
+      for( unsigned int s=0; s<m_SecondScales.size(); s++ )
+        {
+        intensityNum[ vCount ] = 0;
+        orientationNum[ vCount ] = orientationBase;
+        vCount++;
+        }
+      for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
+        {
+        intensityNum[ vCount ] = 0;
+        orientationNum[ vCount ] = -1;
+        vCount++;
+        }
+      }
+
+    for( unsigned int i=0; i<this->GetNumberOfLDA(); i++ )
+      {
+      LDAVectorType v;
+
+      v = this->GetLDAVector( i );
+
+      if( m_ForceIntensityConsistency )
+        {
+        double iSum = 0;
+        for( unsigned int f=0; f<this->GetNumberOfFeatures(); f++ )
+          {
+          if( intensityNum[f] == 1 )
+            {
+            iSum += v[f];
+            }
+          }
+        if( iSum < 0 )
+          {
+          for( unsigned int f=0; f<this->GetNumberOfFeatures(); f++ )
+            {
+            v[f] *= -1;
+            }
+          }
+        }
+
+      if( m_ForceOrientationInsensitivity )
+        {
+        for( unsigned int f=0; f<this->GetNumberOfFeatures(); f++ )
+          {
+          if( orientationNum[f] != 0 )
+            {
+            double fSumS = 0;
+            int fStart = f;
+            while( orientationNum[f] == fStart )
+              {
+              fSumS += v[f] * v[f];
+              ++f;
+              }
+            double orientVal = vcl_sqrt( fSumS / (f-fStart) );
+            if( fSumS > 0 )
+              {
+              f = fStart;
+              while( orientationNum[f] == fStart )
+                {
+                v[f] = orientVal;
+                ++f;
+                }
+              }
+            --f;
+            }
+          }
+        }
+      this->SetLDAVector( i, v );
+      }
+    }
+}
+
 
 template <class ImageT, class LabelmapT >
 void

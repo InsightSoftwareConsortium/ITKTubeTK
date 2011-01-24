@@ -99,6 +99,12 @@ public:
   NJetScalesType & GetSecondScales( void );
   NJetScalesType & GetRidgeScales( void );
 
+  void SetForceIntensityConsistency( bool _forceIntensity );
+  bool GetForceIntensityConsistency( void );
+  void SetForceOrientationInsensitivity( bool _forceOrientation );
+  bool GetForceOrientationInsensitivity( void );
+
+
 protected:
 
   NJetLDAGenerator( void );
@@ -107,6 +113,8 @@ protected:
   typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
 
   LDAValuesType GetFeatureVector( const ContinuousIndexType & indx );
+
+  virtual void GenerateLDA( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -119,6 +127,9 @@ private:
   NJetScalesType m_FirstScales;
   NJetScalesType m_SecondScales;
   NJetScalesType m_RidgeScales;
+
+  bool m_ForceIntensityConsistency;
+  bool m_ForceOrientationInsensitivity;
 
 };
 
