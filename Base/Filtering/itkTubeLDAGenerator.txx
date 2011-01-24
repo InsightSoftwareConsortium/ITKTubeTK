@@ -33,6 +33,8 @@ limitations under the License.
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkDiscreteGaussianImageFilter.h"
+#include "itkImageRegionIteratorWithIndex.h"
+#include "itkImageRegionConstIteratorWithIndex.h"
 
 #include "tubeMatrixMath.h"
 
@@ -101,6 +103,14 @@ template < class ImageT, class LabelmapT >
 int
 LDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfFeatureImages( void )
+{
+  return m_FeatureImageList.size();
+}
+
+template < class ImageT, class LabelmapT >
+int
+LDAGenerator< ImageT, LabelmapT >
+::GetNumberOfFeatures( void )
 {
   return m_FeatureImageList.size();
 }
@@ -324,6 +334,35 @@ LDAGenerator< ImageT, LabelmapT >
   m_ProgressStart = start;
 }
 
+
+template < class ImageT, class LabelmapT >
+vnl_vector< double >
+LDAGenerator< ImageT, LabelmapT >
+::GetFeatureVector( ContinuousIndexType indx )
+{
+  unsigned int numFeatureImages = this->GetNumberOfFeatureImages();
+
+  LDAVectorType v( numFeatureImages );
+
+  unsigned int vCount = 0;
+  typename ImageType::IndexType indxI;
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    indxI[i] = static_cast<int>( indx[i] );
+    }
+  for( unsigned int i=0; i<numFeatureImages; i++ )
+    {
+    v[vCount++] = static_cast< FeatureType >( m_FeatureImageList[i]
+      ->GetPixel( indxI ) );
+    }
+
+  std::cout << "vCount = " << vCount << std::endl;
+  std::cout << "numFeatures = " << numFeatureImages << std::endl;
+
+  return v;
+}
+
+
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
@@ -333,25 +372,14 @@ LDAGenerator< ImageT, LabelmapT >
 
   timeCollector.Start( "GenerateStatistics" );
 
-  typedef itk::ImageRegionConstIterator< MaskImageType >
+  typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
     ConstMaskImageIteratorType;
-  typedef itk::ImageRegionConstIterator< ImageType >
-    ConstImageIteratorType;
-
   ConstMaskImageIteratorType itInMask( m_Labelmap,
     m_Labelmap->GetLargestPossibleRegion() );
   itInMask.GoToBegin();
 
-  unsigned int numClasses = m_ObjectIdList.size();
-  unsigned int numFeatures = m_FeatureImageList.size();
-
-  std::vector< ConstImageIteratorType * > itInIm( numFeatures );
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    itInIm[i] = new ConstImageIteratorType( m_FeatureImageList[i],
-      m_FeatureImageList[i]->GetLargestPossibleRegion() );
-    itInIm[i]->GoToBegin();
-    }
+  unsigned int numClasses = this->GetNumberOfObjects();
+  unsigned int numFeatures = this->GetNumberOfFeatures();
 
   m_ObjectMeanList.resize( numClasses );
   m_ObjectCovarianceList.resize( numClasses );
@@ -399,10 +427,8 @@ LDAGenerator< ImageT, LabelmapT >
 
     if( found )
       {
-      for( unsigned int i=0; i<numFeatures; i++ )
-        {
-        v[i] = static_cast< FeatureType >( itInIm[i]->Get() );
-        }
+      ContinuousIndexType indx = itInMask.GetIndex();
+      LDAValuesType v = this->GetFeatureVector( indx );
       for( unsigned int i=0; i<numFeatures; i++ )
         {
         sumList[valC][i] += v[i];
@@ -415,15 +441,6 @@ LDAGenerator< ImageT, LabelmapT >
       }
 
     ++itInMask;
-    for( unsigned int i=0; i<numFeatures; i++ )
-      {
-      ++( *( itInIm[i] ) );
-      }
-    }
-
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    delete itInIm[i];
     }
 
   for( unsigned int c=0; c<numClasses; c++ )
@@ -482,8 +499,8 @@ LDAGenerator< ImageT, LabelmapT >
 
   timeCollector.Start( "GenerateLDA" );
 
-  unsigned int numClasses = m_ObjectIdList.size();
-  unsigned int numFeatures = m_FeatureImageList.size();
+  unsigned int numClasses = this->GetNumberOfObjects();
+  unsigned int numFeatures = this->GetNumberOfFeatures();
 
   if( m_PerformLDA )
     {
@@ -586,20 +603,10 @@ LDAGenerator< ImageT, LabelmapT >
 
   timeCollector.Start( "GenerateLDAImages" );
 
-  typedef itk::ImageRegionConstIterator< ImageType >
-    ConstImageIteratorType;
-  typedef itk::ImageRegionIterator< LDAImageType >
+  typedef itk::ImageRegionIteratorWithIndex< LDAImageType >
     ImageIteratorType;
 
-  unsigned int numFeatures = m_FeatureImageList.size();
-
-  std::vector< ConstImageIteratorType * > itInIm( numFeatures );
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    itInIm[i] = new ConstImageIteratorType( m_FeatureImageList[i],
-      m_FeatureImageList[i]->GetLargestPossibleRegion() );
-    itInIm[i]->GoToBegin();
-    }
+  unsigned int numFeatures = this->GetNumberOfFeatures();
 
   typename LDAImageType::RegionType region;
   region = m_FeatureImageList[0]->GetLargestPossibleRegion();
@@ -622,13 +629,10 @@ LDAGenerator< ImageT, LabelmapT >
 
   FeatureVectorType v( numFeatures );
   FeatureVectorType vLDA( numFeatures );
-  while( !itInIm[0]->IsAtEnd() )
+  while( !itLDAIm[0]->IsAtEnd() )
     {
-    for( unsigned int i=0; i<numFeatures; i++ )
-      {
-      v[i] = static_cast< FeatureType >( itInIm[i]->Get() );
-      ++( *( itInIm[i] ) );
-      }
+    ContinuousIndexType indx = itLDAIm[0]->GetIndex();
+    v = this->GetFeatureVector( indx );
 
     vLDA = v * m_LDAMatrix; 
 
@@ -639,10 +643,6 @@ LDAGenerator< ImageT, LabelmapT >
       }
     }
 
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    delete itInIm[i];
-    }
   for( unsigned int i=0; i<m_NumberOfLDA; i++ )
     {
     delete itLDAIm[i];
