@@ -44,6 +44,7 @@ AnisotropicDiffusiveRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
+  // Initialize attributes to NULL
   m_BorderSurface                               = 0;
   m_NormalVectorImage                           = 0;
   m_WeightImage                                 = 0;
@@ -54,28 +55,28 @@ AnisotropicDiffusiveRegistrationFilter
   m_NormalDiffusionTensorDerivativeImage        = 0;
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    m_TangentialDeformationComponentImages[i]  = 0;
-    m_NormalDeformationComponentImages[i]      = 0;
+    m_TangentialDeformationComponentImages[i]   = 0;
+    m_NormalDeformationComponentImages[i]       = 0;
     }
 
+  // Create the registration function
   typename RegistrationFunctionType::Pointer registrationFunction =
       RegistrationFunctionType::New();
   this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
       registrationFunction.GetPointer() ) );
 
-  // Lambda for exponential decay used to calculate weight from distance.
+  // Lambda for exponential decay used to calculate weight from distance
   m_lambda = -0.01;
 
   // By default, compute the intensity distance and regularization terms
-  this->SetComputeIntensityDistanceTerm( true );
   this->SetComputeRegularizationTerm( true );
+  this->SetComputeIntensityDistanceTerm( true );
   this->SetUseAnisotropicRegularization( true );
 
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework
   this->SmoothDeformationFieldOff();
   this->SmoothUpdateFieldOff();
-
 }
 
 /**
@@ -88,8 +89,6 @@ AnisotropicDiffusiveRegistrationFilter
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-  os << indent << "Border Surface: " << m_BorderSurface;
-  //m_BorderSurface->PrintSelf( os, indent )
 }
 
 /**
@@ -105,12 +104,6 @@ AnisotropicDiffusiveRegistrationFilter
 {
   RegistrationFunctionPointer df = dynamic_cast< RegistrationFunctionType * >
        ( this->GetDifferenceFunction().GetPointer() );
-
-  if ( !df )
-    {
-    itkExceptionMacro( << "Registration function pointer NULL" << std::endl );
-    }
-
   return df;
 }
 
@@ -122,17 +115,18 @@ template < class UnallocatedImageType, class TemplateImageType >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateSpaceForImage( UnallocatedImageType& inputImage,
+::AllocateSpaceForImage( UnallocatedImageType& image,
                          const TemplateImageType& templateImage )
 {
-  inputImage->SetOrigin( templateImage->GetOrigin() );
-  inputImage->SetSpacing( templateImage->GetSpacing() );
-  inputImage->SetDirection( templateImage->GetDirection() );
-  inputImage->SetLargestPossibleRegion(
-      templateImage->GetLargestPossibleRegion() );
-  inputImage->SetRequestedRegion( templateImage->GetRequestedRegion() );
-  inputImage->SetBufferedRegion( templateImage->GetBufferedRegion() );
-  inputImage->Allocate();
+  assert( image );
+  assert( templateImage );
+  image->SetOrigin( templateImage->GetOrigin() );
+  image->SetSpacing( templateImage->GetSpacing() );
+  image->SetDirection( templateImage->GetDirection() );
+  image->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
+  image->SetRequestedRegion( templateImage->GetRequestedRegion() );
+  image->SetBufferedRegion( templateImage->GetBufferedRegion() );
+  image->Allocate();
 }
 
 /**
@@ -143,15 +137,18 @@ template < class CheckedImageType, class TemplateImageType >
 bool
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CompareImageAttributes( const CheckedImageType& inputImage,
+::CompareImageAttributes( const CheckedImageType& image,
                           const TemplateImageType& templateImage )
 {
-  return inputImage->GetSpacing() == templateImage->GetSpacing()
-      && inputImage->GetOrigin() == templateImage->GetOrigin()
-      && inputImage->GetLargestPossibleRegion()
+  assert( image );
+  assert( templateImage );
+  return image->GetOrigin() == templateImage->GetOrigin()
+      && image->GetSpacing() == templateImage->GetSpacing()
+      && image->GetDirection() == templateImage->GetDirection()
+      && image->GetLargestPossibleRegion()
           == templateImage->GetLargestPossibleRegion()
-      && inputImage->GetRequestedRegion() == templateImage->GetRequestedRegion()
-      && inputImage->GetBufferedRegion() == templateImage->GetBufferedRegion();
+      && image->GetRequestedRegion() == templateImage->GetRequestedRegion()
+      && image->GetBufferedRegion() == templateImage->GetBufferedRegion();
 }
 
 /**
@@ -163,9 +160,9 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateUpdateBuffer()
 {
-  /* The update buffer looks just like the output and holds the change in
-   the pixel  */
+  /* The update buffer looks just like the output and holds the voxel changes */
   typename OutputImageType::Pointer output = this->GetOutput();
+  assert( output );
   this->AllocateSpaceForImage( m_UpdateBuffer, output );
 }
 
@@ -181,11 +178,14 @@ AnisotropicDiffusiveRegistrationFilter
 {
   Superclass::Initialize();
 
-  // Check the timestep for stability
+  RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
+  assert( df );
+
+  // Check the timestep for stability if we are using the diffusive or
+  // anisotropic diffusive regularization terms
   if( this->GetComputeRegularizationTerm() )
     {
-    this->GetRegistrationFunctionPointer()->CheckTimeStepStability(
-        this->GetInput(), this->GetUseImageSpacing() );
+    df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
     }
 
   typename OutputImageType::Pointer output = this->GetOutput();
@@ -196,8 +196,7 @@ AnisotropicDiffusiveRegistrationFilter
     {
     m_TangentialDiffusionTensorImage = DiffusionTensorImageType::New();
     this->AllocateSpaceForImage( m_TangentialDiffusionTensorImage, output );
-    m_TangentialDiffusionTensorDerivativeImage
-        = TensorDerivativeImageType::New();
+    m_TangentialDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
     this->AllocateSpaceForImage( m_TangentialDiffusionTensorDerivativeImage,
                                  output );
 
@@ -205,21 +204,21 @@ AnisotropicDiffusiveRegistrationFilter
 
 
 
-    if( this->GetUseAnisotropicRegularization() )
-      {
-      m_NormalDeformationField = OutputImageType::New();
-      this->AllocateSpaceForImage( m_NormalDeformationField, output );
-      m_NormalDiffusionTensorImage = DiffusionTensorImageType::New();
-      this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
-      m_NormalDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
-      this->AllocateSpaceForImage( m_NormalDiffusionTensorDerivativeImage,
-                                   output );
 
-      }
     }
 
   if( this->GetComputeRegularizationTerm() && this->GetUseAnisotropicRegularization() )
     {
+
+    m_NormalDeformationField = OutputImageType::New();
+    this->AllocateSpaceForImage( m_NormalDeformationField, output );
+    m_NormalDiffusionTensorImage = DiffusionTensorImageType::New();
+    this->AllocateSpaceForImage( m_NormalDiffusionTensorImage, output );
+    m_NormalDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
+    this->AllocateSpaceForImage( m_NormalDiffusionTensorDerivativeImage,
+                                 output );
+
+
     // Check the normal vector image and the weight image if one was supplied
     // by the user
     if( m_NormalVectorImage
@@ -359,24 +358,14 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeIteration()
 {
-  std::cout << "Iteration #" << this->GetElapsedIterations() << std::endl;
-  std::cout << "\tInitializeIteration for FILTER" << std::endl;
-
-  if ( !this->GetFixedImage() || !this->GetMovingImage()
-    || !this->GetDeformationField() )
+  if ( !this->GetFixedImage() || !this->GetMovingImage() )
     {
-    itkExceptionMacro( << "FixedImage, MovingImage and/or DeformationField "
-                       << "not set");
+    itkExceptionMacro( << "Fixed image and/or moving image not set" );
     }
+  assert( this->GetDeformationField() );
 
   if( this->GetComputeRegularizationTerm() )
     {
-    if ( this->GetUseAnisotropicRegularization()
-         && ( !this->GetNormalVectorImage() || !this->GetWeightImage() ) )
-      {
-      itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
-      }
-
     // Update the deformation field component images
     // This depends on the current deformation field u, so it must be computed
     // on every iteration of the filter.
@@ -850,6 +839,11 @@ AnisotropicDiffusiveRegistrationFilter
   if( this->GetUseAnisotropicRegularization() )
     {
 
+    if ( !this->GetNormalVectorImage() || !this->GetWeightImage() )
+      {
+      itkExceptionMacro( << "NormalVector image and/or WeightImage not set");
+      }
+
     // Get the border normals
     NormalVectorImageRegionType normalVectorIt(
         m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
@@ -1077,6 +1071,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Get the FiniteDifferenceFunction to use in calculations.
   const RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
+  assert( df );
 
   const typename OutputImageType::SizeType radius = df->GetRadius();
 

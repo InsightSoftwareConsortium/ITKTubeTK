@@ -324,13 +324,13 @@ protected:
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >
-  void AllocateSpaceForImage( UnallocatedImageType & inputImage,
+  void AllocateSpaceForImage( UnallocatedImageType & image,
                              const TemplateImageType & templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */
   template< class CheckedImageType, class TemplateImageType >
-  bool CompareImageAttributes( const CheckedImageType & inputImage,
+  bool CompareImageAttributes( const CheckedImageType & image,
                                const TemplateImageType & templateImage );
 
   /** Get the registration function pointer */
