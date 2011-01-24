@@ -1894,6 +1894,9 @@ NJetImageFunction<TInputImage>
       {
       h[i][i] = h[i][i] / hTotal[i][i];
       }
+    }
+  for(unsigned int i=0; i<ImageDimension-1; i++)
+    {
     for(unsigned int j=i+1; j<ImageDimension; j++)
       {
       if(hTotal[i][j] > 0)
@@ -2360,26 +2363,17 @@ NJetImageFunction<TInputImage>
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
-  if( d.GetNorm() != 0 )
-    {
-    d.Normalize();
-    }
-  else
-    {
-    d.SetVnlVector( eigSys.get_eigenvector(ImageDimension-1) );
-    }
-
   typename InputImageType::IndexType order;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     order[i] = i;
     }
-  for( unsigned int i=0; i<ImageDimension; i++ )
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
     for( unsigned int j=i+1; j<ImageDimension; j++ )
       {
-      if( vnl_math_abs( eigSys.get_eigenvalue( order[j] ) ) >
-          vnl_math_abs( eigSys.get_eigenvalue( order[i] ) ) )
+      if( eigSys.get_eigenvalue( order[j] ) >
+          eigSys.get_eigenvalue( order[i] ) )
         {
         int k = order[i];
         order[i] = order[j];
@@ -2388,12 +2382,21 @@ NJetImageFunction<TInputImage>
       }
     }
 
+  if( d.GetNorm() != 0 )
+    {
+    d.Normalize();
+    }
+  else
+    {
+    d.SetVnlVector( eigSys.get_eigenvector( order[ImageDimension-1] ) );
+    }
+
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     p[i] = 0;
     for( unsigned int j=0; j<ImageDimension; j++ )
       {
-      p[i] += eigSys.get_eigenvector(i)[j] * d[j];
+      p[i] += eigSys.get_eigenvector(order[i])[j] * d[j];
       }
     }
 
@@ -2402,7 +2405,7 @@ NJetImageFunction<TInputImage>
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
-    sums += p[order[i]]*p[order[i]];
+    sums += p[i]*p[i];
     sumv += eigSys.get_eigenvalue(order[i])
             * eigSys.get_eigenvalue(order[i]);
     if( eigSys.get_eigenvalue(order[i]) >= 0 )

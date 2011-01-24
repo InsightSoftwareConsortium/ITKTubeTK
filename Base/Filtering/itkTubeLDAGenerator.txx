@@ -100,7 +100,22 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-int
+typename ImageT::Pointer
+LDAGenerator< ImageT, LabelmapT >
+::GetFeatureImage( unsigned int num )
+{
+  if( num < m_FeatureImageList.size() )
+    {
+    return m_FeatureImageList[num];
+    }
+  else
+    {
+    return NULL;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+unsigned int
 LDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfFeatureImages( void )
 {
@@ -108,7 +123,7 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-int
+unsigned int
 LDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfFeatures( void )
 {
@@ -338,7 +353,7 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 vnl_vector< double >
 LDAGenerator< ImageT, LabelmapT >
-::GetFeatureVector( ContinuousIndexType indx )
+::GetFeatureVector( const ContinuousIndexType & indx )
 {
   unsigned int numFeatureImages = this->GetNumberOfFeatureImages();
 
@@ -355,9 +370,6 @@ LDAGenerator< ImageT, LabelmapT >
     v[vCount++] = static_cast< FeatureType >( m_FeatureImageList[i]
       ->GetPixel( indxI ) );
     }
-
-  std::cout << "vCount = " << vCount << std::endl;
-  std::cout << "numFeatures = " << numFeatureImages << std::endl;
 
   return v;
 }

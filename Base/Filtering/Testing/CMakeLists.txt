@@ -45,9 +45,10 @@ set( tubeBaseFilteringTests_SRCS
   tubeBaseFilteringPrintTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
-  itkTubeBlurImageFunctionTest.cxx 
+  itkTubeBlurImageFunctionTest.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
-  itkTubeLDAGeneratorTest.cxx )
+  itkTubeLDAGeneratorTest.cxx
+  itkTubeNJetLDAGeneratorTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
@@ -133,4 +134,15 @@ add_test( itkTubeLDAGeneratorTest
     ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
     ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
     ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
+  )
+
+add_test( itkTubeNJetLDAGeneratorTest
+  ${BASE_FILTERING_TESTS}
+  --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
+            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+  itkTubeNJetLDAGeneratorTest
+    ${INPUT_DATA}/ES0015_Large.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
   )
