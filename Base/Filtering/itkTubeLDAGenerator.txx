@@ -253,33 +253,19 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-typename LDAGenerator< ImageT, LabelmapT >::LDAMatrixType *
+typename LDAGenerator< ImageT, LabelmapT >::LDAMatrixType &
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAMatrix( void )
 {
-  if( m_LDAUpToDate )
-    {
-    return & m_LDAMatrix;
-    }
-  else
-    {
-    return NULL;
-    }
+  return m_LDAMatrix;
 }
 
 template < class ImageT, class LabelmapT >
-typename LDAGenerator< ImageT, LabelmapT >::LDAValuesType *
+typename LDAGenerator< ImageT, LabelmapT >::LDAValuesType &
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAValues( void )
 {
-  if( m_LDAUpToDate )
-    {
-    return & m_LDAValues;
-    }
-  else
-    {
-    return NULL;
-    }
+  return m_LDAValues;
 }
 
 template < class ImageT, class LabelmapT >
