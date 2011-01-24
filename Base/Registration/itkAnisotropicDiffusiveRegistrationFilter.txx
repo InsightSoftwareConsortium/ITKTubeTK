@@ -633,19 +633,6 @@ AnisotropicDiffusiveRegistrationFilter
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Updates the diffusion tensor image derivatives before each run of the
  * registration
@@ -657,129 +644,89 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeDiffusionTensorDerivativeImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_TangentialDiffusionTensorImage );
-  assert( m_TangentialDiffusionTensorDerivativeImage );
+
+  // Compute the diffusion tensor derivative image for the tangential image
+  this->ComputeDiffusionTensorDerivativeImage(
+      m_TangentialDiffusionTensorImage,
+      m_TangentialDiffusionTensorDerivativeImage );
+
+  // Compute the diffusion tensor derivative image for the normal plane
+  if( this->GetUseAnisotropicRegularization() )
+    {
+    this->ComputeDiffusionTensorDerivativeImage(
+        m_NormalDiffusionTensorImage, m_NormalDiffusionTensorDerivativeImage );
+    }
+}
+
+/**
+ * Actually computes the diffusion tensor derivative images
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDiffusionTensorDerivativeImage(
+    DiffusionTensorImagePointer tensorImage,
+    TensorDerivativeImagePointer tensorDerivativeImage )
+{
+  assert( tensorImage );
+  assert( tensorDerivativeImage );
 
   // Get the FiniteDifferenceFunction and radius to use in calculations.
   const RegistrationFunctionPointer df = this->GetRegistrationFunctionPointer();
   assert( df );
-  assert( df->GetRegularizationFunctionPointer() );
+  const RegularizationFunctionPointer reg
+      = df->GetRegularizationFunctionPointer();
+  assert( reg );
 
   // Get the radius
   const typename OutputImageType::SizeType radius = df->GetRadius();
 
   // Setup the structs for the face calculations and their iterators
-  FaceStruct< DiffusionTensorImagePointer > tangentialTensorStruct(
-      m_TangentialDiffusionTensorImage, radius );
-  FaceStruct< TensorDerivativeImagePointer > tangentialTensorDerivativeStruct(
-      m_TangentialDiffusionTensorDerivativeImage, radius );
+  FaceStruct< DiffusionTensorImagePointer > tensorStruct( tensorImage, radius );
+  FaceStruct< TensorDerivativeImagePointer > tensorDerivativeStruct(
+      tensorDerivativeImage, radius );
 
+  // Iterator over the current face
+  DiffusionTensorNeighborhoodType tensorNeighborhood;
+  TensorDerivativeImageRegionType tensorDerivativeRegion;
 
-  typedef typename
-      RegistrationFunctionType::DiffusionTensorNeighborhoodType
-      DiffusionTensorNeighborhoodType;
-  typedef typename
-      RegistrationFunctionType::TensorDerivativeImageRegionType
-      TensorDerivativeImageRegionType;
-
-  DiffusionTensorNeighborhoodType
-      tangentialDiffusionTensorImageNeighborhoodIt;
-  TensorDerivativeImageRegionType
-      tangentialDiffusionTensorDerivativeImageRegionIt;
-
-  for(tangentialTensorStruct.begin(), tangentialTensorDerivativeStruct.begin();
-      !tangentialTensorDerivativeStruct.IsAtEnd();
-      ++tangentialTensorStruct.faceListIt,
-      ++tangentialTensorDerivativeStruct.faceListIt )
-
-
+  for(tensorStruct.begin(), tensorDerivativeStruct.begin();
+      !tensorDerivativeStruct.IsAtEnd();
+      ++tensorStruct.faceListIt, ++tensorDerivativeStruct.faceListIt )
     {
     // Set the neighborhood iterators to the current face
-    tangentialDiffusionTensorImageNeighborhoodIt
-        = DiffusionTensorNeighborhoodType(
-            radius, m_TangentialDiffusionTensorImage,
-            *tangentialTensorStruct.faceListIt );
-    tangentialDiffusionTensorDerivativeImageRegionIt
-        = TensorDerivativeImageRegionType(
-            m_TangentialDiffusionTensorDerivativeImage,
-            *tangentialTensorDerivativeStruct.faceListIt );
-
-
-    // Go to the beginning of the neighborhood for this face
-    tangentialDiffusionTensorImageNeighborhoodIt.GoToBegin();
-    tangentialDiffusionTensorDerivativeImageRegionIt.GoToBegin();
+    tensorNeighborhood = DiffusionTensorNeighborhoodType(
+        radius, tensorImage, *tensorStruct.faceListIt );
+    tensorDerivativeRegion = TensorDerivativeImageRegionType(
+        tensorDerivativeImage, *tensorDerivativeStruct.faceListIt );
 
     // Iterate through the neighborhood for this face and compute derivatives
-    while( !tangentialDiffusionTensorImageNeighborhoodIt.IsAtEnd() )
-      {
-      // compute derivatives here
-      this->GetRegistrationFunctionPointer()->GetRegularizationFunctionPointer()
-          ->ComputeDiffusionTensorFirstDerivative(
-              tangentialDiffusionTensorImageNeighborhoodIt,
-              tangentialDiffusionTensorDerivativeImageRegionIt );
-
-      ++tangentialDiffusionTensorImageNeighborhoodIt;
-      ++tangentialDiffusionTensorDerivativeImageRegionIt;
+    for( tensorNeighborhood.GoToBegin(), tensorDerivativeRegion.GoToBegin();
+         !tensorNeighborhood.IsAtEnd();
+         ++tensorNeighborhood, ++tensorDerivativeRegion )
+           {
+      reg->ComputeDiffusionTensorFirstDerivative(tensorNeighborhood,
+                                                 tensorDerivativeRegion );
       }
     }
-
-  // Compute the diffusion tensor image derivative for the normal image
-  if( this->GetUseAnisotropicRegularization() )
-    {
-    assert( m_NormalDiffusionTensorImage );
-    assert( m_NormalDiffusionTensorDerivativeImage );
-
-    // Setup the boundary faces and iterators for the tangential diffusion tensor
-    // image
-    FaceStruct< DiffusionTensorImagePointer > normalTensorStruct(
-        m_NormalDiffusionTensorImage, radius );
-    FaceStruct< TensorDerivativeImagePointer > normalTensorDerivativeStruct(
-        m_NormalDiffusionTensorDerivativeImage, radius );
-
-    DiffusionTensorNeighborhoodType
-        normalDiffusionTensorImageNeighborhoodIt;
-    TensorDerivativeImageRegionType
-        normalDiffusionTensorDerivativeImageRegionIt;
-
-
-
-
-    for(normalTensorStruct.begin(), normalTensorDerivativeStruct.begin();
-        !normalTensorDerivativeStruct.IsAtEnd();
-        ++normalTensorStruct.faceListIt,
-        ++normalTensorDerivativeStruct.faceListIt )
-      {
-      // Set the neighborhood iterators to the current face
-      normalDiffusionTensorImageNeighborhoodIt
-          = DiffusionTensorNeighborhoodType(
-              radius, m_NormalDiffusionTensorImage,
-              *normalTensorStruct.faceListIt );
-      normalDiffusionTensorDerivativeImageRegionIt
-          = TensorDerivativeImageRegionType(
-              m_NormalDiffusionTensorDerivativeImage,
-              *normalTensorDerivativeStruct.faceListIt );
-
-      // Go to the beginning of the neighborhood for this face
-      normalDiffusionTensorImageNeighborhoodIt.GoToBegin();
-      normalDiffusionTensorDerivativeImageRegionIt.GoToBegin();
-
-      // Iterate through the neighborhood for this face and compute derivatives
-      while( !normalDiffusionTensorImageNeighborhoodIt.IsAtEnd() )
-        {
-        // compute derivatives here
-        this->GetRegistrationFunctionPointer()->GetRegularizationFunctionPointer()
-            ->ComputeDiffusionTensorFirstDerivative(
-                normalDiffusionTensorImageNeighborhoodIt,
-                normalDiffusionTensorDerivativeImageRegionIt );
-
-        ++normalDiffusionTensorImageNeighborhoodIt;
-        ++normalDiffusionTensorDerivativeImageRegionIt;
-        }
-      }
-
-    }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Updates the deformation vector component images before each iteration
@@ -1180,9 +1127,7 @@ AnisotropicDiffusiveRegistrationFilter
   typedef typename RegistrationFunctionType::
     NormalVectorNeighborhoodType
     NormalVectorNeighborhoodType;
-  typedef typename RegistrationFunctionType::
-    DiffusionTensorNeighborhoodType
-    DiffusionTensorNeighborhoodType;
+
   typedef typename RegistrationFunctionType::
     TensorDerivativeImageRegionType
     TensorDerivativeImageRegionType;

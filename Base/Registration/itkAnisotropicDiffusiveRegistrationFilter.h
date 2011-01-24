@@ -110,6 +110,8 @@ public:
       RegistrationFunctionType;
   typedef typename RegistrationFunctionType::Pointer
       RegistrationFunctionPointer;
+  typedef typename RegistrationFunctionType::RegularizationFunctionPointer
+      RegularizationFunctionPointer;
 
   /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
@@ -140,6 +142,8 @@ public:
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
+  typedef typename RegistrationFunctionType::DiffusionTensorNeighborhoodType
+      DiffusionTensorNeighborhoodType;
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
 
@@ -148,6 +152,8 @@ public:
       TensorDerivativeImageType;
   typedef typename TensorDerivativeImageType::Pointer
       TensorDerivativeImagePointer;
+  typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
+      TensorDerivativeImageRegionType;
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
@@ -271,6 +277,9 @@ protected:
 
   /** Computes the first derivatives of the diffusion tensor images */
   virtual void ComputeDiffusionTensorDerivativeImages();
+  virtual void ComputeDiffusionTensorDerivativeImage(
+      DiffusionTensorImagePointer tensorImage,
+      TensorDerivativeImagePointer tensorDerivativeImage );
 
   /** Allocate the update buffer. */
   virtual void AllocateUpdateBuffer();
