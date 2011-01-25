@@ -93,13 +93,14 @@ public:
    * function to be const and thread safe.*/
   struct GlobalDataStruct
     {
-    /** Hessian matrix */
+    /** Hessian matrix
+     * (Second order partial derivatives of the intensity image) */
     TensorDerivativeType  m_dxy;
 
-    /** diffusion tensor first derivative matrix */
+    /** First order partial derivatives of the tensors */
     TensorDerivativeType  m_DT_dxy;
 
-    /** Array of first derivatives*/
+    /** First order partial derivatives of the intensity image */
     ScalarValueType       m_dx[itkGetStaticConstMacro(ImageDimension)];
 
     ScalarValueType       m_GradMagSqr;
@@ -152,7 +153,7 @@ public:
       bool useImageSpacing );
 
   /** Computes the first derivative of a diffusion tensor image. */
-  void ComputeDiffusionTensorFirstDerivative(
+  void ComputeDiffusionTensorFirstOrderPartialDerivatives(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       TensorDerivativeImageRegionType &tensorDerivativeRegion,
       const SpacingType &spacing ) const;
@@ -193,13 +194,13 @@ protected:
       [itkGetStaticConstMacro(ImageDimension)];
 
   /** Computes the first and second derivatives of an intensity image. */
-  void ComputeIntensityFirstAndSecondDerivatives(
+  void ComputeIntensityFirstAndSecondOrderPartialDerivatives(
       const NeighborhoodType &neighborhood,
       const SpacingType &spacing,
       GlobalDataStruct *gd ) const;
 
   /** Compute the first derivative of a diffusion image */
-  TensorDerivativeType ComputeDiffusionTensorFirstDerivative(
+  TensorDerivativeType ComputeDiffusionTensorFirstOrderPartialDerivatives(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const SpacingType &spacing,
       GlobalDataStruct *gd ) const;

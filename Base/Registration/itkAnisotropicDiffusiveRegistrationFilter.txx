@@ -689,9 +689,8 @@ AnisotropicDiffusiveRegistrationFilter
          !tensorNeighborhood.IsAtEnd();
          ++tensorNeighborhood, ++tensorDerivativeRegion )
            {
-      reg->ComputeDiffusionTensorFirstDerivative(tensorNeighborhood,
-                                                 tensorDerivativeRegion,
-                                                 spacing );
+      reg->ComputeDiffusionTensorFirstOrderPartialDerivatives(
+          tensorNeighborhood, tensorDerivativeRegion, spacing );
       }
     }
 }
