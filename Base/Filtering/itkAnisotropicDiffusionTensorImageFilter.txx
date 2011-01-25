@@ -363,6 +363,8 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   typedef ImageRegionIterator<UpdateBufferType> UpdateIteratorType;
 
   typename OutputImageType::Pointer output = this->GetOutput();
+  typename FiniteDifferenceFunctionType::SpacingType
+      spacing = output->GetSpacing();
   TimeStepType timeStep;
   void *globalData;
 
@@ -421,7 +423,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   dTN.GoToBegin();
   while( !nD.IsAtEnd() )
     {
-    nU.Value() = df->ComputeUpdate(nD, dTN, globalData);
+    nU.Value() = df->ComputeUpdate(nD, dTN, spacing, globalData);
     ++nD;
     ++nU;
     ++dTN;
@@ -443,7 +445,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     bDD.GoToBegin();
     while ( !bD.IsAtEnd() )
       {
-      bU.Value() = df->ComputeUpdate(bD,bDD,globalData);
+      bU.Value() = df->ComputeUpdate(bD,bDD,spacing,globalData);
       ++bD;
       ++bU;
       ++bDD;

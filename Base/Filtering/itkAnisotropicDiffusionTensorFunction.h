@@ -64,6 +64,7 @@ public:
   typedef double                                      ScalarValueType;
   typedef typename Superclass::NeighborhoodType       NeighborhoodType;
   typedef typename Superclass::FloatOffsetType        FloatOffsetType;
+  typedef typename Superclass::ImageType::SpacingType SpacingType;
 
   /** Diffusion tensor typedefs. */
   typedef DiffusionTensor3D< double >                 DiffusionTensorType;
@@ -114,6 +115,7 @@ public:
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+      const SpacingType &spacing,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -123,6 +125,7 @@ public:
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const TensorDerivativeImageRegionType &tensorDerivativeRegion,
+      const SpacingType &spacing,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -151,7 +154,8 @@ public:
   /** Computes the first derivative of a diffusion tensor image. */
   void ComputeDiffusionTensorFirstDerivative(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      TensorDerivativeImageRegionType &tensorDerivativeRegion ) const;
+      TensorDerivativeImageRegionType &tensorDerivativeRegion,
+      const SpacingType &spacing ) const;
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
@@ -191,11 +195,13 @@ protected:
   /** Computes the first and second derivatives of an intensity image. */
   void ComputeIntensityFirstAndSecondDerivatives(
       const NeighborhoodType &neighborhood,
+      const SpacingType &spacing,
       GlobalDataStruct *gd ) const;
 
   /** Compute the first derivative of a diffusion image */
   TensorDerivativeType ComputeDiffusionTensorFirstDerivative(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+      const SpacingType &spacing,
       GlobalDataStruct *gd ) const;
 
   /** Computes the final update term based on the results of the first and

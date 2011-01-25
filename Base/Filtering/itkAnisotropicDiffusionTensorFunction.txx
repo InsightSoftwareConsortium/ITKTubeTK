@@ -80,8 +80,10 @@ AnisotropicDiffusionTensorFunction< TImageType >
                 const FloatOffsetType& offset)
 {
   DiffusionTensorNeighborhoodType tensorNeighborhood;
+  SpacingType                     spacing;
   return this->ComputeUpdate( neighborhood,
                               tensorNeighborhood,
+                              spacing,
                               globalData,
                               offset );
 }
@@ -91,6 +93,7 @@ typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeUpdate(const NeighborhoodType &neighborhood,
                 const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+                const SpacingType &spacing,
                 void *globalData,
                 const FloatOffsetType& itkNotUsed(offset) )
 {
@@ -98,10 +101,12 @@ AnisotropicDiffusionTensorFunction< TImageType >
   GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
 
   // Compute the first and 2nd derivative for the intensity images
-  this->ComputeIntensityFirstAndSecondDerivatives( neighborhood, gd );
+  this->ComputeIntensityFirstAndSecondDerivatives( neighborhood, spacing, gd );
 
   // Compute the diffusion tensor matrix first derivatives if not provided
-  this->ComputeDiffusionTensorFirstDerivative( tensorNeighborhood, gd );
+  this->ComputeDiffusionTensorFirstDerivative( tensorNeighborhood,
+                                               spacing,
+                                               gd );
 
   // Compute the update term
   return this->ComputeFinalUpdateTerm( tensorNeighborhood, gd );
@@ -113,6 +118,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeUpdate(const NeighborhoodType &neighborhood,
                 const DiffusionTensorNeighborhoodType &tensorNeighborhood,
                 const TensorDerivativeImageRegionType &tensorDerivativeRegion,
+                const SpacingType &spacing,
                 void *globalData,
                 const FloatOffsetType& itkNotUsed(offset) )
 {
@@ -120,7 +126,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
   GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
 
   // Compute the first and 2nd derivative for the intensity images
-  this->ComputeIntensityFirstAndSecondDerivatives( neighborhood, gd );
+  this->ComputeIntensityFirstAndSecondDerivatives( neighborhood, spacing, gd );
 
   // We are provided the diffusion tensor matrix first derivatives, so
   // copy them into the global data struct
@@ -153,6 +159,7 @@ typename AnisotropicDiffusionTensorFunction< TImageType >::TensorDerivativeType
 AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeDiffusionTensorFirstDerivative(
     const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+    const SpacingType &spacing,
     GlobalDataStruct *gd) const
 {
   TensorDerivativeType TensorDerivative;
@@ -182,10 +189,13 @@ void
 AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeDiffusionTensorFirstDerivative(
     const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-    TensorDerivativeImageRegionType &tensorDerivativeRegion ) const
+    TensorDerivativeImageRegionType &tensorDerivativeRegion,
+    const SpacingType &spacing ) const
 {
   tensorDerivativeRegion.Set(
-      this->ComputeDiffusionTensorFirstDerivative( tensorNeighborhood, NULL ) );
+      this->ComputeDiffusionTensorFirstDerivative( tensorNeighborhood,
+                                                   spacing,
+                                                   NULL ) );
 }
 
 template< class TImageType >
@@ -193,6 +203,7 @@ void
 AnisotropicDiffusionTensorFunction< TImageType >
 ::ComputeIntensityFirstAndSecondDerivatives(
     const NeighborhoodType &neighborhood,
+    const SpacingType &spacing,
     GlobalDataStruct *gd) const
 {
   assert( gd );

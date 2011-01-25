@@ -662,6 +662,9 @@ AnisotropicDiffusiveRegistrationFilter
   // Get the radius
   const typename OutputImageType::SizeType radius = df->GetRadius();
 
+  // Get the spacing
+  SpacingType spacing = tensorImage->GetSpacing();
+
   // Setup the structs for the face calculations, the face iterators, and the
   // iterators over the current face
   FaceStruct< DiffusionTensorImagePointer > tensorStruct( tensorImage, radius );
@@ -687,7 +690,8 @@ AnisotropicDiffusiveRegistrationFilter
          ++tensorNeighborhood, ++tensorDerivativeRegion )
            {
       reg->ComputeDiffusionTensorFirstDerivative(tensorNeighborhood,
-                                                 tensorDerivativeRegion );
+                                                 tensorDerivativeRegion,
+                                                 spacing );
       }
     }
 }
@@ -933,6 +937,7 @@ AnisotropicDiffusiveRegistrationFilter
   // Get the radius and output
   const typename OutputImageType::SizeType radius = df->GetRadius();
   OutputImagePointer output = this->GetOutput();
+  SpacingType spacing = output->GetSpacing();
 
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
@@ -1099,6 +1104,7 @@ AnisotropicDiffusiveRegistrationFilter
           normalTensorNeighborhood,
           normalTensorDerivativeRegion,
           normalDeformationComponentNeighborhoods,
+          spacing,
           globalData );
 
       // Go to the next neighborhood

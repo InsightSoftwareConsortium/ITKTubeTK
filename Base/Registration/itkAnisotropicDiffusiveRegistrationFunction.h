@@ -111,6 +111,7 @@ public:
       RegularizationFunctionType;
   typedef typename RegularizationFunctionType::Pointer
       RegularizationFunctionPointer;
+  typedef typename RegularizationFunctionType::SpacingType SpacingType;
 
   /** Normal vector types */
   typedef double
@@ -229,6 +230,7 @@ public:
           &normalTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
           &normalDeformationComponentNeighborhoods,
+      const SpacingType &spacing,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
 
