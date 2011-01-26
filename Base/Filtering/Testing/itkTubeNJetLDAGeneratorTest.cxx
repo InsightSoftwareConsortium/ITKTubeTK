@@ -24,7 +24,7 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include <itkImage.h>
+#include <itkOrientedImage.h>
 #include <itkFilterWatcher.h>
 #include <itkExceptionObject.h>
 #include <itkImageFileReader.h>
@@ -54,7 +54,7 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
   typedef float PixelType;
 
   // Declare the types of the images
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  typedef itk::OrientedImage<PixelType, Dimension>  ImageType;
 
   // Declare the reader and writer
   typedef itk::ImageFileReader< ImageType > ReaderType;
@@ -106,6 +106,7 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );
   filter->SetRidgeScales( scales2 );
+  std::cout << filter << std::endl;
   filter->Update();
   filter->UpdateLDAImages();
 

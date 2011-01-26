@@ -104,6 +104,15 @@ public:
   void SetForceOrientationInsensitivity( bool _forceOrientation );
   bool GetForceOrientationInsensitivity( void );
 
+  const typename LDAImageType::Pointer & GetNJetFeatureImage(
+    unsigned int num );
+
+  const typename LDAImageType::Pointer & GetNJetKernelImage(
+    unsigned int num );
+
+  void Update();
+
+  void UpdateLDAImages();
 
 protected:
 
@@ -111,6 +120,8 @@ protected:
   virtual ~NJetLDAGenerator( void );
 
   typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
+
+  void GenerateNJetFeatureImages( void );
 
   LDAValuesType GetFeatureVector( const ContinuousIndexType & indx );
 
@@ -130,6 +141,11 @@ private:
 
   bool m_ForceIntensityConsistency;
   bool m_ForceOrientationInsensitivity;
+
+  typename LDAImageType::Pointer m_NJetKernelImage;
+
+  bool             m_NJetFeatureImagesUpToDate;
+  LDAImageListType m_NJetFeatureImageList;
 
 };
 

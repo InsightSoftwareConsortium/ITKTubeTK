@@ -65,27 +65,34 @@
       <default>false</default>
       <longflag>forceSign</longflag>
     </boolean>
-    <float-vector>
+    <double-vector>
       <name>zeroScales</name>
       <description>Scales at which 0th-order features are computed</description>
       <label>Zero-order scales</label>
       <default></default>
       <longflag>zeroScales</longflag>
-    </float-vector>
-    <float-vector>
+    </double-vector>
+    <double-vector>
       <name>firstScales</name>
       <description>Scales at which 1st-order features are computed</description>
       <label>First-order scales</label>
       <default></default>
       <longflag>firstScales</longflag>
-    </float-vector>
-    <float-vector>
+    </double-vector>
+    <double-vector>
       <name>secondScales</name>
       <description>Scales at which 2nd-order features are computed</description>
       <label>Second-order scales</label>
       <default></default>
       <longflag>secondScales</longflag>
-    </float-vector>
+    </double-vector>
+    <double-vector>
+      <name>ridgeScales</name>
+      <description>Scales at which Ridge features are computed</description>
+      <label>Ridge scales</label>
+      <default></default>
+      <longflag>ridgeScales</longflag>
+    </double-vector>
     <integer>
       <name>useNumberOfLDA</name>
       <description>Maximum number of linear discriminants to compute (0=all)</description>

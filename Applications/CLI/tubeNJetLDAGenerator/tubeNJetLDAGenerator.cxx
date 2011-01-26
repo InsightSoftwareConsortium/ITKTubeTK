@@ -25,7 +25,7 @@ limitations under the License.
 #endif
 
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
@@ -37,10 +37,8 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"
-#include "itkTubeLDAGenerator.h"
-#include "itkTubeMetaLDA.h"
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkDiscreteGaussianImageFilter.h"
+#include "itkTubeNJetLDAGenerator.h"
+#include "itkTubeMetaNJetLDA.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -54,7 +52,7 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template < class imageT >
-void WriteLDA( typename imageT::Pointer img,
+void WriteLDA( const typename imageT::Pointer & img,
   std::string base, std::string ext, int num )
 {
   typedef itk::ImageFileWriter< imageT >     LDAImageWriterType;
@@ -94,196 +92,25 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
   typedef itk::ImageFileWriter< LDAImageType >     LDAImageWriterType;
 
-  typedef itk::tube::LDAGenerator< LDAImageType, MaskImageType >
+  typedef itk::tube::NJetLDAGenerator< LDAImageType, MaskImageType >
     LDAGeneratorType;
   typename LDAGeneratorType::Pointer ldaGenerator = LDAGeneratorType::New();
 
   timeCollector.Start( "LoadData" );
 
-  unsigned int fCount = 0;
-  std::vector< unsigned int > featureSymmetry;
-  std::vector< std::string > featureName;
-  std::vector< unsigned int > zeroOrderFeatures;
   typename ImageReaderType::Pointer reader;
   for( unsigned int vNum=0; vNum<inputVolumesList.size(); vNum++ )
     {
     reader = ImageReaderType::New();
     reader->SetFileName( inputVolumesList[vNum].c_str() );
-    std::string featureBaseName = outputBase;
-    char s[80];
-    sprintf(s, ".img%02d", vNum );
-    featureBaseName += std::string( s );
     reader->Update();
     if( vNum == 0 )
       {
       ldaGenerator->SetFeatureImage( reader->GetOutput() );
-      sprintf(s, ".f%02d.org", fCount);
-      featureName.push_back( featureBaseName + std::string( s ) );
-      featureSymmetry.push_back( 0 );
-      zeroOrderFeatures.push_back( fCount );
-      if( saveFeatureImages.size() > 0 )
-        {
-        WriteLDA< LDAImageType >( reader->GetOutput(), saveFeatureImages,
-          ".f%02d.mha", fCount );
-        }
-      ++fCount;
       }
     else
       {
       ldaGenerator->AddFeatureImage( reader->GetOutput() );
-      sprintf(s, ".f%02d.org", fCount);
-      featureName.push_back( featureBaseName + std::string( s ) );
-      featureSymmetry.push_back( 0 );
-      zeroOrderFeatures.push_back( fCount );
-      if( saveFeatureImages.size() > 0 )
-        {
-        WriteLDA< LDAImageType >( reader->GetOutput(), saveFeatureImages,
-          ".f%02d.mha", fCount );
-        }
-      ++fCount;
-      }
-    for( unsigned int i=0; i<zeroScales.size(); i++ )
-      {
-      typedef itk::DiscreteGaussianImageFilter< LDAImageType,
-        LDAImageType > FType;
-      typename FType::Pointer filter = FType::New();
-      filter->SetInput( reader->GetOutput() );
-      filter->SetVariance( zeroScales[i]*zeroScales[i] );
-      filter->Update();
-      ldaGenerator->AddFeatureImage( filter->GetOutput() );
-      sprintf(s, ".f%02d.b-%02d", fCount, (int)zeroScales[i]);
-      featureName.push_back( featureBaseName + std::string( s ) );
-      featureSymmetry.push_back( 0 );
-      zeroOrderFeatures.push_back( fCount );
-      if( saveFeatureImages.size() > 0 )
-        {
-        WriteLDA< LDAImageType >( filter->GetOutput(), saveFeatureImages,
-          ".f%02d-0.mha", fCount );
-        }
-      ++fCount;
-      }
-    for( unsigned int i=0; i<firstScales.size(); i++ )
-      {
-      int symmetryBase = fCount;
-      for( unsigned int d=0; d<dimensionT; d++ )
-        {
-        typename LDAImageType::Pointer curImage = reader->GetOutput();
-        for( unsigned int d2=0; d2<dimensionT; d2++ )
-          {
-          typedef itk::RecursiveGaussianImageFilter< LDAImageType,
-            LDAImageType > FType;
-          typename FType::Pointer filter = FType::New();
-          filter->SetInput( curImage );
-          filter->SetDirection( d2 );
-          if( d == d2 )
-            {
-            filter->SetSigma( firstScales[i] );
-            filter->SetOrder( FType::FirstOrder );
-            }
-          else
-            {
-            filter->SetSigma( firstScales[i]/2.0 );
-            filter->SetOrder( FType::ZeroOrder );
-            }
-          filter->Update();
-          curImage = filter->GetOutput();
-          }
-        ldaGenerator->AddFeatureImage( curImage );
-        sprintf(s, ".f%02d.d1-%02d-%01d", fCount, (int)firstScales[i],
-          d );
-        featureName.push_back( featureBaseName + std::string( s ) );
-        featureSymmetry.push_back( symmetryBase );
-        if( saveFeatureImages.size() > 0 )
-          {
-          WriteLDA< LDAImageType >( curImage, saveFeatureImages,
-            ".f%02d-1.mha", fCount );
-          }
-        ++fCount;
-        }
-      typename LDAImageType::Pointer curImage = reader->GetOutput();
-      for( unsigned int d=0; d<dimensionT; d++ )
-        {
-        typedef itk::RecursiveGaussianImageFilter< LDAImageType,
-          LDAImageType > FType;
-        typename FType::Pointer filter = FType::New();
-        filter->SetInput( curImage );
-        filter->SetDirection( d );
-        filter->SetSigma( firstScales[i] );
-        filter->SetOrder( FType::FirstOrder );
-        filter->Update();
-        curImage = filter->GetOutput();
-        }
-      ldaGenerator->AddFeatureImage( curImage );
-      sprintf(s, ".f%02d.d1-%02d-a", fCount, (int)firstScales[i] );
-      featureName.push_back( featureBaseName + std::string( s ) );
-      featureSymmetry.push_back( 0 );
-      if( saveFeatureImages.size() > 0 )
-        {
-        WriteLDA< LDAImageType >( curImage, saveFeatureImages,
-          ".f%02d-1a.mha", fCount );
-        }
-      ++fCount;
-      }
-    for( unsigned int i=0; i<secondScales.size(); i++ )
-      {
-      int symmetryBase = fCount;
-      for( unsigned int d=0; d<dimensionT; d++ )
-        {
-        typename LDAImageType::Pointer curImage = reader->GetOutput();
-        for( unsigned int d2=0; d2<dimensionT; d2++ )
-          {
-          typedef itk::RecursiveGaussianImageFilter< LDAImageType,
-            LDAImageType > FType;
-          typename FType::Pointer filter = FType::New();
-          filter->SetInput( curImage );
-          filter->SetDirection( d2 );
-          if( d == d2 )
-            {
-            filter->SetSigma( secondScales[i] );
-            filter->SetOrder( FType::SecondOrder );
-            }
-          else
-            {
-            filter->SetSigma( secondScales[i]/2.0 );
-            filter->SetOrder( FType::ZeroOrder );
-            }
-          filter->Update();
-          curImage = filter->GetOutput();
-          }
-        ldaGenerator->AddFeatureImage( curImage );
-        sprintf(s, ".f%02d.d2-%02d-%01d", fCount, (int)secondScales[i], d );
-        featureName.push_back( featureBaseName + std::string( s ) );
-        featureSymmetry.push_back( symmetryBase );
-        if( saveFeatureImages.size() > 0 )
-          {
-          WriteLDA< LDAImageType >( curImage, saveFeatureImages,
-            ".f%02d-2.mha", fCount );
-          }
-        ++fCount;
-        }
-      typename LDAImageType::Pointer curImage = reader->GetOutput();
-      for( unsigned int d=0; d<dimensionT; d++ )
-        {
-        typedef itk::RecursiveGaussianImageFilter< LDAImageType,
-          LDAImageType > FType;
-        typename FType::Pointer filter = FType::New();
-        filter->SetInput( curImage );
-        filter->SetDirection( d );
-        filter->SetSigma( secondScales[i] );
-        filter->SetOrder( FType::SecondOrder );
-        filter->Update();
-        curImage = filter->GetOutput();
-        }
-      ldaGenerator->AddFeatureImage( curImage );
-      sprintf(s, ".f%02d.d2-%02d-a", fCount, (int)secondScales[i] );
-      featureName.push_back( featureBaseName + std::string( s ) );
-      featureSymmetry.push_back( 0 );
-      if( saveFeatureImages.size() > 0 )
-        {
-        WriteLDA< LDAImageType >( curImage, saveFeatureImages,
-          ".f%02d-2a.mha", fCount );
-        }
-      ++fCount;
       }
     }
 
@@ -315,17 +142,29 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "LoadLDA" );
 
-    itk::tube::MetaLDA ldaReader( loadLDAInfo.c_str() );
+    itk::tube::MetaNJetLDA ldaReader( loadLDAInfo.c_str() );
     ldaReader.Read();
 
     ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
     ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
+    ldaGenerator->SetZeroScales( ldaReader.GetZeroScales() );
+    ldaGenerator->SetFirstScales( ldaReader.GetFirstScales() );
+    ldaGenerator->SetSecondScales( ldaReader.GetSecondScales() );
+    ldaGenerator->SetRidgeScales( ldaReader.GetRidgeScales() );
 
     timeCollector.Stop( "LoadLDA" );
     }
   else
     {
     timeCollector.Start( "Update" );
+
+    ldaGenerator->SetZeroScales( zeroScales );
+    ldaGenerator->SetFirstScales( firstScales );
+    ldaGenerator->SetSecondScales( secondScales );
+    ldaGenerator->SetRidgeScales( ridgeScales );
+
+    ldaGenerator->SetForceIntensityConsistency( forceSign );
+    ldaGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
     ldaGenerator->Update();
 
@@ -336,82 +175,6 @@ int DoIt( int argc, char * argv[] )
   if( useNumberOfLDA>0 && useNumberOfLDA < (int)numLDA )
     {
     numLDA = useNumberOfLDA;
-    }
-
-  vnl_vector< double > fVal( fCount );
-  fVal.fill( 0 );
-  for( unsigned int i=0; i<numLDA; i++ )
-    {
-    for( unsigned int f=0; f<fCount; f++ )
-      {
-      fVal[f] += vnl_math_abs( ldaGenerator->GetLDAValue( f ) );
-      }
-    }
-
-  if( forceSymmetry )
-    {
-    for( unsigned int i=0; i<numLDA; i++ )
-      {
-      typename LDAGeneratorType::LDAVectorType v;
-      v = ldaGenerator->GetLDAVector( i );
-      for( unsigned int f=0; f<fCount; f++ )
-        {
-        if( featureSymmetry[f] != 0 )
-          {
-          double fSumS = 0;
-          unsigned int fStart = f;
-          while( featureSymmetry[f] == fStart )
-            {
-            fSumS += v[f]*v[f];
-            ++f;
-            }
-          double symVal = vcl_sqrt( fSumS / (f-fStart) );
-          if( fSumS > 0 )
-            {
-            f = fStart;
-            while( featureSymmetry[f] == fStart )
-              {
-              std::cout << "sym: f = " << f << " : "
-                << v[f] << " -> " << symVal << std::endl;
-              v[f] = symVal;
-              ++f;
-              }
-            }
-          --f;
-          }
-        }
-      ldaGenerator->SetLDAVector( i, v );
-      }
-    }
-
-  if( forceSign )
-    {
-    for( unsigned int i=0; i<numLDA; i++ )
-      {
-      typename LDAGeneratorType::LDAVectorType v;
-      v = ldaGenerator->GetLDAVector( i );
-      unsigned int numFeatures = zeroOrderFeatures.size();
-      double sum = 0;
-      for( unsigned int j=0; j<numFeatures; j++ )
-        {
-        int f = zeroOrderFeatures[j];
-        sum += v[f];
-        }
-      if( sum < 0 )
-        {
-        std::cout << "Sign: eVect = " << i << std::endl;
-        for( unsigned int f=0; f<fCount; f++ )
-          {
-          v[f] *= -1;
-          }
-        ldaGenerator->SetLDAVector( i, v );
-        }
-      }
-    }
-
-  for( unsigned int f=0; f<fCount; f++ )
-    {
-    std::cout << featureName[f] << " : " << fVal[f] << std::endl;
     }
 
   if( outputBase.size() > 0 )
@@ -438,10 +201,34 @@ int DoIt( int argc, char * argv[] )
   if( saveLDAInfo.size() > 0 )
     {
     timeCollector.Start( "SaveLDA" );
-    itk::tube::MetaLDA ldaWriter( ldaGenerator->GetLDAValues(),
+    itk::tube::MetaNJetLDA ldaWriter(
+      ldaGenerator->GetZeroScales(),
+      ldaGenerator->GetFirstScales(),
+      ldaGenerator->GetSecondScales(),
+      ldaGenerator->GetRidgeScales(),
+      ldaGenerator->GetLDAValues(),
       ldaGenerator->GetLDAMatrix() );
     ldaWriter.Write( saveLDAInfo.c_str() );
     timeCollector.Stop( "SaveLDA" );
+    }
+
+  if( saveFeatureImages.size() > 0 )
+    {
+    unsigned int numFeatures = ldaGenerator->GetNumberOfFeatures();
+    for( unsigned int i=0; i<numFeatures; i++ )
+      {
+      WriteLDA< LDAImageType >( ldaGenerator->GetNJetFeatureImage( i ),
+        saveFeatureImages, ".f%02d.mha", i );
+      }
+    }
+
+  if( saveKernelImages.size() > 0 )
+    {
+    for( unsigned int i=0; i<numLDA; i++ )
+      {
+      WriteLDA< LDAImageType >( ldaGenerator->GetNJetKernelImage( i ),
+        saveKernelImages, ".k%02d.mha", i );
+      }
     }
 
   timeCollector.Report();
