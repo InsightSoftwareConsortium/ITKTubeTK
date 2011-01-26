@@ -32,7 +32,6 @@ limitations under the License.
 #include "itkOrientedImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
-#include "itkDiscreteGaussianImageFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
 
@@ -298,6 +297,15 @@ LDAGenerator< ImageT, LabelmapT >
 ::SetLDAValues( const LDAValuesType & values )
 {
   m_LDAValues = values;
+  m_NumberOfLDA = values.size();
+  for( unsigned int i=0; i<m_LDAValues.size(); i++ )
+    {
+    if( m_LDAValues[i] == 0 )
+      {
+      m_NumberOfLDA = i;
+      break;
+      }
+    }
 }
 
 template < class ImageT, class LabelmapT >

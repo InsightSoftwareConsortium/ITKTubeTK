@@ -126,8 +126,8 @@ public:
   void SetProgressProcessInformation( void * processInfo, double fraction,
     double start );
 
-  void Update( void );
-  void UpdateLDAImages( void );
+  virtual void Update( void );
+  virtual void UpdateLDAImages( void );
 
 protected:
 

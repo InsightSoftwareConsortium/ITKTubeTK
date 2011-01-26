@@ -484,38 +484,38 @@ M_SetupReadFields( void )
   MET_FieldRecordType * mF;
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "NZeroScales", MET_INT, true );
+  MET_InitReadField( mF, "NZeroScales", MET_INT, false );
   m_Fields.push_back( mF );
   int nScalesRecNum = MET_GetFieldRecordNumber( "NZeroScales", &m_Fields );
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "ZeroScales", MET_FLOAT_ARRAY, true,
+  MET_InitReadField( mF, "ZeroScales", MET_FLOAT_ARRAY, false,
     nScalesRecNum );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "NFirstScales", MET_INT, true );
+  MET_InitReadField( mF, "NFirstScales", MET_INT, false );
   m_Fields.push_back( mF );
   nScalesRecNum = MET_GetFieldRecordNumber( "NFirstScales", &m_Fields );
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "FirstScales", MET_FLOAT_ARRAY, true,
+  MET_InitReadField( mF, "FirstScales", MET_FLOAT_ARRAY, false,
     nScalesRecNum );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "NSecondScales", MET_INT, true );
+  MET_InitReadField( mF, "NSecondScales", MET_INT, false );
   m_Fields.push_back( mF );
   nScalesRecNum = MET_GetFieldRecordNumber( "NSecondScales", &m_Fields );
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "SecondScales", MET_FLOAT_ARRAY, true,
+  MET_InitReadField( mF, "SecondScales", MET_FLOAT_ARRAY, false,
     nScalesRecNum );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "NRidgeScales", MET_INT, true );
+  MET_InitReadField( mF, "NRidgeScales", MET_INT, false );
   m_Fields.push_back( mF );
   nScalesRecNum = MET_GetFieldRecordNumber( "NRidgeScales", &m_Fields );
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "RidgeScales", MET_FLOAT_ARRAY, true,
+  MET_InitReadField( mF, "RidgeScales", MET_FLOAT_ARRAY, false,
     nScalesRecNum );
   m_Fields.push_back( mF );
 }
@@ -528,60 +528,76 @@ M_SetupWriteFields( void )
 
   MET_FieldRecordType * mF;
 
-  for( unsigned int i=0; i<m_ZeroScales.size(); i++ )
+  if( m_ZeroScales.size() > 0 )
     {
-    m_ZeroScalesTmp[i] = m_ZeroScales[i];
+    m_ZeroScalesTmp.set_size( m_ZeroScales.size() );
+    for( unsigned int i=0; i<m_ZeroScales.size(); i++ )
+      {
+      m_ZeroScalesTmp[i] = m_ZeroScales[i];
+      }
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "NZeroScales", MET_INT, m_ZeroScales.size() );
+    m_Fields.push_back( mF );
+    int nZeroScales = m_ZeroScales.size();
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "ZeroScales", MET_FLOAT_ARRAY, nZeroScales,
+      m_ZeroScalesTmp.data_block() );
+    m_Fields.push_back( mF );
     }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "NZeroScales", MET_INT, m_ZeroScales.size() );
-  m_Fields.push_back( mF );
-  int nZeroScales = m_ZeroScales.size();
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ZeroScales", MET_FLOAT_ARRAY, nZeroScales,
-    m_ZeroScalesTmp.data_block() );
-  m_Fields.push_back( mF );
 
-  for( unsigned int i=0; i<m_FirstScales.size(); i++ )
+  if( m_FirstScales.size() > 0 )
     {
-    m_FirstScalesTmp[i] = m_FirstScales[i];
+    m_FirstScalesTmp.set_size( m_FirstScales.size() );
+    for( unsigned int i=0; i<m_FirstScales.size(); i++ )
+      {
+      m_FirstScalesTmp[i] = m_FirstScales[i];
+      }
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "NFirstScales", MET_INT, m_FirstScales.size() );
+    m_Fields.push_back( mF );
+    int nFirstScales = m_FirstScales.size();
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "FirstScales", MET_FLOAT_ARRAY, nFirstScales,
+      m_FirstScalesTmp.data_block() );
+    m_Fields.push_back( mF );
     }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "NFirstScales", MET_INT, m_FirstScales.size() );
-  m_Fields.push_back( mF );
-  int nFirstScales = m_FirstScales.size();
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "FirstScales", MET_FLOAT_ARRAY, nFirstScales,
-    m_FirstScalesTmp.data_block() );
-  m_Fields.push_back( mF );
 
-  for( unsigned int i=0; i<m_SecondScales.size(); i++ )
+  if( m_SecondScales.size() > 0 )
     {
-    m_SecondScalesTmp[i] = m_SecondScales[i];
+    m_SecondScalesTmp.set_size( m_SecondScales.size() );
+    for( unsigned int i=0; i<m_SecondScales.size(); i++ )
+      {
+      m_SecondScalesTmp[i] = m_SecondScales[i];
+      }
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "NSecondScales", MET_INT,
+      m_SecondScales.size() );
+    m_Fields.push_back( mF );
+    int nSecondScales = m_SecondScales.size();
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "SecondScales", MET_FLOAT_ARRAY, nSecondScales,
+      m_SecondScalesTmp.data_block() );
+    m_Fields.push_back( mF );
     }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "NSecondScales", MET_INT, m_SecondScales.size() );
-  m_Fields.push_back( mF );
-  int nSecondScales = m_SecondScales.size();
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "SecondScales", MET_FLOAT_ARRAY, nSecondScales,
-    m_SecondScalesTmp.data_block() );
-  m_Fields.push_back( mF );
 
-  for( unsigned int i=0; i<m_RidgeScales.size(); i++ )
+  if( m_RidgeScales.size() > 0 )
     {
-    m_RidgeScalesTmp[i] = m_RidgeScales[i];
+    m_RidgeScalesTmp.set_size( m_RidgeScales.size() );
+    for( unsigned int i=0; i<m_RidgeScales.size(); i++ )
+      {
+      m_RidgeScalesTmp[i] = m_RidgeScales[i];
+      }
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "NRidgeScales", MET_INT, m_RidgeScales.size() );
+    m_Fields.push_back( mF );
+    int nRidgeScales = m_RidgeScales.size();
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "RidgeScales", MET_FLOAT_ARRAY, nRidgeScales,
+      m_RidgeScalesTmp.data_block() );
+    m_Fields.push_back( mF );
     }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "NRidgeScales", MET_INT, m_RidgeScales.size() );
-  m_Fields.push_back( mF );
-  int nRidgeScales = m_RidgeScales.size();
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "RidgeScales", MET_FLOAT_ARRAY, nRidgeScales,
-    m_RidgeScalesTmp.data_block() );
-  m_Fields.push_back( mF );
 
 }
-
 
 bool MetaNJetLDA::
 M_Read( void )
@@ -591,7 +607,7 @@ M_Read( void )
     METAIO_STREAM::cout << "MetaNJetLDA: M_Read: Loading Header"
                         << METAIO_STREAM::endl;
     }
-  if( !MetaForm::M_Read() )
+  if( !MetaLDA::M_Read() )
     {
     METAIO_STREAM::cout << "MetaNJetLDA: M_Read: Error parsing file"
                         << METAIO_STREAM::endl;
@@ -611,28 +627,18 @@ M_Read( void )
     {
     nZeroScales = ( unsigned int )mF->value[0];
     m_ZeroScales.resize( nZeroScales, 0 );
-    }
-  else
-    {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: NZeroScales required"
-      << METAIO_STREAM::endl;
-    return false;
-    }
-  mF = MET_GetFieldRecord( "ZeroScales", &m_Fields );
-  if( mF && mF->defined )
-    {
-    for( unsigned int i=0; i<nZeroScales; i++ )
+    mF = MET_GetFieldRecord( "ZeroScales", &m_Fields );
+    if( mF && mF->defined )
       {
-      m_ZeroScales[i] = ( double )mF->value[i];
+      for( unsigned int i=0; i<nZeroScales; i++ )
+        {
+        m_ZeroScales[i] = ( double )mF->value[i];
+        }
       }
     }
   else
     {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: ZeroScales required"
-      << METAIO_STREAM::endl;
-    return false;
+    m_ZeroScales.clear();
     }
 
   unsigned int nFirstScales = 0;
@@ -641,28 +647,18 @@ M_Read( void )
     {
     nFirstScales = ( unsigned int )mF->value[0];
     m_FirstScales.resize( nFirstScales, 0 );
-    }
-  else
-    {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: NFirstScales required"
-      << METAIO_STREAM::endl;
-    return false;
-    }
-  mF = MET_GetFieldRecord( "FirstScales", &m_Fields );
-  if( mF && mF->defined )
-    {
-    for( unsigned int i=0; i<nFirstScales; i++ )
+    mF = MET_GetFieldRecord( "FirstScales", &m_Fields );
+    if( mF && mF->defined )
       {
-      m_FirstScales[i] = ( double )mF->value[i];
+      for( unsigned int i=0; i<nFirstScales; i++ )
+        {
+        m_FirstScales[i] = ( double )mF->value[i];
+        }
       }
     }
   else
     {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: FirstScales required"
-      << METAIO_STREAM::endl;
-    return false;
+    m_FirstScales.clear();
     }
 
   unsigned int nSecondScales = 0;
@@ -671,28 +667,18 @@ M_Read( void )
     {
     nSecondScales = ( unsigned int )mF->value[0];
     m_SecondScales.resize( nSecondScales, 0 );
-    }
-  else
-    {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: NSecondScales required"
-      << METAIO_STREAM::endl;
-    return false;
-    }
-  mF = MET_GetFieldRecord( "SecondScales", &m_Fields );
-  if( mF && mF->defined )
-    {
-    for( unsigned int i=0; i<nSecondScales; i++ )
+    mF = MET_GetFieldRecord( "SecondScales", &m_Fields );
+    if( mF && mF->defined )
       {
-      m_SecondScales[i] = ( double )mF->value[i];
+      for( unsigned int i=0; i<nSecondScales; i++ )
+        {
+        m_SecondScales[i] = ( double )mF->value[i];
+        }
       }
     }
   else
     {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: SecondScales required"
-      << METAIO_STREAM::endl;
-    return false;
+    m_SecondScales.clear();
     }
 
   unsigned int nRidgeScales = 0;
@@ -701,28 +687,18 @@ M_Read( void )
     {
     nRidgeScales = ( unsigned int )mF->value[0];
     m_RidgeScales.resize( nRidgeScales, 0 );
-    }
-  else
-    {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: NRidgeScales required"
-      << METAIO_STREAM::endl;
-    return false;
-    }
-  mF = MET_GetFieldRecord( "RidgeScales", &m_Fields );
-  if( mF && mF->defined )
-    {
-    for( unsigned int i=0; i<nRidgeScales; i++ )
+    mF = MET_GetFieldRecord( "RidgeScales", &m_Fields );
+    if( mF && mF->defined )
       {
-      m_RidgeScales[i] = ( double )mF->value[i];
+      for( unsigned int i=0; i<nRidgeScales; i++ )
+        {
+        m_RidgeScales[i] = ( double )mF->value[i];
+        }
       }
     }
   else
     {
-    METAIO_STREAM::cout
-      << "MetaNJetLDA: M_Read: Error: RidgeScales required"
-      << METAIO_STREAM::endl;
-    return false;
+    m_RidgeScales.clear();
     }
 
   return true;
