@@ -167,6 +167,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
     GlobalDataStruct *gd) const
 {
   TensorDerivativeType TensorDerivative;
+  typename SpacingType::ComponentType space_i;
 
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
@@ -174,11 +175,13 @@ AnisotropicDiffusionTensorFunction< TImageType >
         = tensorNeighborhood.GetPixel( m_positionA[i] );
     DiffusionTensorType positionB_Tensor_value
         = tensorNeighborhood.GetPixel( m_positionB[i] );
+    space_i = 0.5 / spacing[i];
 
     for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       TensorDerivative(i,j)
-          = 0.5 * ( positionA_Tensor_value(i,j) - positionB_Tensor_value(i,j) );
+          = space_i * ( positionA_Tensor_value(i,j)
+                        - positionB_Tensor_value(i,j) );
       if( gd )
         {
         gd->m_DT_dxy[i][j] = TensorDerivative(i,j);
@@ -212,25 +215,35 @@ AnisotropicDiffusionTensorFunction< TImageType >
   assert( gd );
   gd->m_GradMagSqr = 1.0e-6;
   const ScalarValueType center_value = neighborhood.GetCenterPixel();
+  typename SpacingType::ComponentType space_i;
+  typename SpacingType::ComponentType space_j;
+  typename SpacingType::ComponentType spacing_i_Squared;
+
   for( unsigned int i = 0; i < ImageDimension; i++)
     {
     const ScalarValueType it_positionA
         = neighborhood.GetPixel( m_positionA[i] );
     const ScalarValueType it_positionB
         = neighborhood.GetPixel( m_positionB[i] );
+    space_i = 0.5 / spacing[i];
+    spacing_i_Squared = 1.0 / ( spacing[i] * spacing[i] );
 
-    gd->m_dx[i] = 0.5 * ( it_positionA - it_positionB );
+    // First order partial derivatives
+    gd->m_dx[i] = space_i * ( it_positionA - it_positionB );
 
-    gd->m_dxy[i][i] = it_positionA + it_positionB - 2.0 * center_value;
+    // Second order partial derivatives
+    gd->m_dxy[i][i] = ( it_positionA + it_positionB - 2.0 * center_value )
+                      * spacing_i_Squared;
 
     for( unsigned int j = i+1; j < ImageDimension; j++ )
       {
+      space_j = 0.5 / spacing[j];
       gd->m_dxy[i][j] = gd->m_dxy[j][i]
-            = 0.25 * ( neighborhood.GetPixel( m_positionAa[i][j] )
-                       - neighborhood.GetPixel( m_positionBa[i][j] )
-                       - neighborhood.GetPixel( m_positionCa[i][j] )
-                       + neighborhood.GetPixel( m_positionDa[i][j] )
-                       );
+            = ( neighborhood.GetPixel( m_positionAa[i][j] )
+                - neighborhood.GetPixel( m_positionBa[i][j] )
+                - neighborhood.GetPixel( m_positionCa[i][j] )
+                + neighborhood.GetPixel( m_positionDa[i][j] ) )
+              * ( space_i * space_j );
       }
     }
 }
