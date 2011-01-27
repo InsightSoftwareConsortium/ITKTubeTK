@@ -46,6 +46,16 @@ add_test( ${PROJECT_NAME}Test1
                ${TEMP}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha )
 
 #######
+# Test1-Compare
+#######
+add_test( ${PROJECT_NAME}Test1-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha
+               -b ${BASELINE}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha )
+set_tests_properties( ${PROJECT_NAME}Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+
+#######
 # Test2
 #######
 add_test( ${PROJECT_NAME}Test2
@@ -54,9 +64,29 @@ add_test( ${PROJECT_NAME}Test2
                ${TEMP}/SyntheticTubeEEDFilterResultImage.mha )
 
 #######
+# Test2-Compare
+#######
+add_test( ${PROJECT_NAME}Test2-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubeEEDFilterResultImage.mha
+               -b ${BASELINE}/SyntheticTubeEEDFilterResultImage.mha )
+set_tests_properties( ${PROJECT_NAME}Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
+
+#######
 # Test3
 #######
 add_test( ${PROJECT_NAME}Test3
             ${PROJ_EXE}
                ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
                ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha )
+
+#######
+# Test3-Compare
+#######
+add_test( ${PROJECT_NAME}Test3-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha
+               -b ${BASELINE}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha )
+set_tests_properties( ${PROJECT_NAME}Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )

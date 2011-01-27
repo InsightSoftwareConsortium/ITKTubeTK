@@ -46,9 +46,29 @@ add_test( ${PROJECT_NAME}Test1
                ${TEMP}/itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha )
 
 #######
+# Test1-Compare
+#######
+add_test( ${PROJECT_NAME}Test1-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha
+               -b ${BASELINE}/itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha )
+set_tests_properties( ${PROJECT_NAME}Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+
+#######
 # Test2
 #######
 add_test( ${PROJECT_NAME}Test2
             ${PROJ_EXE}
                ${INPUT_DATA}/SyntheticTubePlusSurfaceImage.mha
                ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha )
+
+#######
+# Test1-Compare
+#######
+add_test( ${PROJECT_NAME}Test2-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha
+               -b ${BASELINE}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha )
+set_tests_properties( ${PROJECT_NAME}Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
