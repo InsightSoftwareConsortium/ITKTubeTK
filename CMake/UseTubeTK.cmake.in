@@ -38,14 +38,14 @@ set( TubeTK_BINARY_DIR "@TubeTK_BINARY_DIR@" )
 
 # Includes
 set( TubeTK_INCLUDE_DIRS "@TubeTK_INCLUDE_DIRS@" )
-include_directories( BEFORE "${TubeTK_INCLUDE_DIRS}" )
+include_directories( BEFORE ${TubeTK_INCLUDE_DIRS} )
 
 # Executables
 set( TubeTK_EXECUTABLE_DIRS "@TubeTK_EXECUTABLE_DIRS@" )
 
 # Libraries
 set( TubeTK_LIBRARY_DIRS "@TubeTK_LIBRARY_DIRS@" )
-link_directories( "${TubeTK_LIBRARY_DIRS}" )
+link_directories( ${TubeTK_LIBRARY_DIRS} )
 
 set( TubeTK_LIBRARIES "@TubeTK_LIBRARIES@" )
 
