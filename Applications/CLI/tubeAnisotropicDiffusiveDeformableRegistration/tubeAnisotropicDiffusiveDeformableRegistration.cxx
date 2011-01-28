@@ -132,6 +132,7 @@ int DoIt( int argc, char * argv[] )
   typename MovingImageType::Pointer moving = movingImageReader->GetOutput();
   registrator->SetMovingImage( moving );
 
+  // Setup the initial deformation field
   VectorImageType::Pointer initField = VectorImageType::New();
   initField->SetSpacing( fixed->GetSpacing() );
   initField->SetOrigin( fixed->GetOrigin() );
@@ -140,18 +141,13 @@ int DoIt( int argc, char * argv[] )
   initField->SetBufferedRegion( fixed->GetBufferedRegion() );
   initField->Allocate();
 
-  // fill initial deformation with zero vectors
+  // Fill initial deformation with zero vectors
   VectorType zeroVec;
   zeroVec.Fill( 0.0 );
   initField->FillBuffer( zeroVec );
+  registrator->SetInitialDeformationField( initField );
 
-  typedef itk::VectorCastImageFilter< VectorImageType, VectorImageType >
-      CasterType;
-  CasterType::Pointer caster = CasterType::New();
-  caster->SetInput( initField );
-  caster->InPlaceOff();
-  registrator->SetInitialDeformationField( caster->GetOutput() );
-
+  // Read the organ boundary
   if( organBoundaryFileName != "" )
     {
     // do we have .vtk or .vtp models?
