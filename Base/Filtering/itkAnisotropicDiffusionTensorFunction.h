@@ -204,12 +204,6 @@ protected:
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const GlobalDataStruct* gd ) const;
 
-  /** Copies a diffusion tensor derivative into a globalDataStruct's diffusion
-    tensor first derivative field */
-  void CopyTensorDerivativeToGlobalData(
-      const TensorDerivativeImageRegionType &tensorDerivativeRegion,
-      GlobalDataStruct* gd ) const;
-
 private:
   //purposely not implemented
   AnisotropicDiffusionTensorFunction(const Self&);

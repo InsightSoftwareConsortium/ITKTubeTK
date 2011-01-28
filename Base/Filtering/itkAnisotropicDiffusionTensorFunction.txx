@@ -118,34 +118,17 @@ AnisotropicDiffusionTensorFunction< TImageType >
 {
   // Global data structure
   GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
+  assert( gd );
 
   // Compute the first and 2nd derivative for the intensity images
   this->ComputeIntensityFirstAndSecondDerivatives( neighborhood, gd );
 
   // We are provided the diffusion tensor matrix first derivatives, so
   // copy them into the global data struct
-  this->CopyTensorDerivativeToGlobalData( tensorDerivativeRegion, gd );
+  gd->m_DT_dxy = tensorDerivativeRegion.Get();
 
   // Compute the update term
   return this->ComputeFinalUpdateTerm( tensorNeighborhood, gd );
-}
-
-template< class TImageType >
-void
-AnisotropicDiffusionTensorFunction< TImageType >
-::CopyTensorDerivativeToGlobalData(
-    const TensorDerivativeImageRegionType &tensorDerivativeRegion,
-    GlobalDataStruct *gd) const
-{
-  assert( gd );
-  TensorDerivativeType derivativePixel = tensorDerivativeRegion.Get();
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    for( unsigned int j = 0; j < ImageDimension; j++ )
-      {
-      gd->m_DT_dxy[i][j] = derivativePixel(i, j);
-      }
-    }
 }
 
 template< class TImageType >
