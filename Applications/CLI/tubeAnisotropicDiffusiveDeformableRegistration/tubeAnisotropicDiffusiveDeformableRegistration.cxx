@@ -328,6 +328,25 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
+//  if( outputTransformFileName != "" )
+//    {
+//    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
+//    GridWriterType::Pointer gridWriter = GridWriterType::New();
+//    gridWriter->SetFileName( outputTransformFileName );
+//    gridWriter->SetInput( registrator->GetOutput() );
+//    try
+//      {
+//      gridWriter->Update();
+//      }
+//    catch( itk::ExceptionObject & err )
+//      {
+//      tube::ErrorMessage( "Writing volume: Exception caught: "
+//                          + std::string(err.GetDescription()) );
+//      timeCollector.Report();
+//      return EXIT_FAILURE;
+//      }
+//    }
+
   if( outputResampledImageFileName != "" )
     {
     typedef itk::ImageFileWriter< MovingImageType > ImageWriterType;

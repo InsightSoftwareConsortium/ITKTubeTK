@@ -95,6 +95,16 @@
       <label>Output Deformation Field</label>
       <channel>output</channel>
     </image>
+    <!--
+    <transform fileExtensions=".nrrd" type="nonlinear" reference="movingImageFileName">
+      <name>outputTransformFileName</name>
+      <flag>y</flag>
+      <longflag>outputTransform</longflag>
+      <description>Deformation field calculated that aligns the fixed and moving image.  Maps positions from the fixed coordinate frame to the moving coordinate frame.  Optional (specify an output deformation field or an output volume or both).</description>
+      <label>Output Transform</label>
+      <channel>output</channel>
+    </transform>
+    -->
     <image>
       <name>outputResampledImageFileName</name>
       <flag>o</flag>
