@@ -50,7 +50,7 @@ add_test( ${PROJECT_NAME}Test1
                --zeroScales 1,3
                --firstScales 3,5
                --secondScales 10
-               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mlda 
+               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                ${INPUT_DATA}/ES0015_Large.mha
                ${INPUT_DATA}/GDS0015_Large.mha
                ${TEMP}/${PROJECT_NAME}Test1 )
@@ -102,8 +102,8 @@ add_test( ${PROJECT_NAME}Test3
                --zeroScales 1,3
                --firstScales 3,5
                --secondScales 10
-               --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mlda 
-               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test3.mlda 
+               --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
+               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test3.mnda
                ${INPUT_DATA}/ES0015_Large.mha
                ${INPUT_DATA}/GDS0015_Large.mha
                ${TEMP}/${PROJECT_NAME}Test3 )
@@ -127,7 +127,7 @@ set_tests_properties( ${PROJECT_NAME}Test3-Compare
 add_test( ${PROJECT_NAME}Test3-Compare2
             ${TEXTCOMPARE_EXE}
                -d 0.01
-               -t ${TEMP}/${PROJECT_NAME}Test3.mlda
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mlda )
+               -t ${TEMP}/${PROJECT_NAME}Test3.mnda
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mnda )
 set_tests_properties( ${PROJECT_NAME}Test3-Compare2
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
