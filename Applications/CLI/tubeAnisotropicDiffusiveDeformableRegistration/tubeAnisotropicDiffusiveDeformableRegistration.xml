@@ -44,7 +44,7 @@
       <longflag>organBoundary</longflag>
       <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image</description>
     </geometry>
-    <image>
+    <image type="vector">
       <name>inputNormalVectorImageFileName</name>
       <label>Input Normal Vector Image</label>
       <flag>n</flag>
