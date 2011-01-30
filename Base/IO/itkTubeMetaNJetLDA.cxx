@@ -56,7 +56,6 @@ MetaNJetLDA( const char *_headerName )
     }
 
   Clear();
-  m_ReadStream = NULL;
 
   MetaNJetLDA::Read( _headerName );
 }
@@ -138,10 +137,10 @@ Clear( void )
     METAIO_STREAM::cout << "MetaNJetLDA: Clear" << METAIO_STREAM::endl;
     }
 
-  m_ZeroScales.resize( 0 );
-  m_FirstScales.resize( 0 );
-  m_SecondScales.resize( 0 );
-  m_RidgeScales.resize( 0 );
+  m_ZeroScales.clear();
+  m_FirstScales.clear();
+  m_SecondScales.clear();
+  m_RidgeScales.clear();
 
   MetaLDA::Clear();
 }
@@ -180,6 +179,13 @@ SetZeroScales( const NJetScalesType & _ZeroScales )
     {
     METAIO_STREAM::cout << "MetaNJetLDA: SetZeroScales"
       << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "  Size = " << _ZeroScales.size()
+        << METAIO_STREAM::endl;
+    for( unsigned int i=0; i<_ZeroScales.size(); i++ )
+      {
+      METAIO_STREAM::cout << "  Scale " << i << " = " << _ZeroScales[i]
+        << METAIO_STREAM::endl;
+      }
     }
 
   m_ZeroScales = _ZeroScales;
@@ -467,6 +473,12 @@ WriteStream( METAIO_STREAM::ofstream * _stream )
 void MetaNJetLDA::
 M_Destroy( void )
 {
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaNJetLDA: M_Destroy"
+                        << METAIO_STREAM::endl;
+    }
+
   MetaLDA::M_Destroy();
 }
 
@@ -487,6 +499,11 @@ M_SetupReadFields( void )
   MET_InitReadField( mF, "NZeroScales", MET_INT, false );
   m_Fields.push_back( mF );
   int nScalesRecNum = MET_GetFieldRecordNumber( "NZeroScales", &m_Fields );
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "  nZeroScalesRecNum = " << nScalesRecNum
+                        << METAIO_STREAM::endl;
+    }
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "ZeroScales", MET_FLOAT_ARRAY, false,
     nScalesRecNum );
@@ -621,11 +638,28 @@ M_Read( void )
     }
   MET_FieldRecordType * mF;
 
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaNJetLDA: M_Read: num fields = "
+      << m_Fields.size() << METAIO_STREAM::endl;
+    for( unsigned int i=0; i<m_Fields.size(); i++ )
+      {
+      METAIO_STREAM::cout << "  Field " << i << " = "
+        << m_Fields[i]->name << METAIO_STREAM::endl;
+      }
+    }
   unsigned int nZeroScales = 0;
   mF = MET_GetFieldRecord( "NZeroScales", &m_Fields );
   if( mF && mF->defined )
     {
     nZeroScales = ( unsigned int )mF->value[0];
+    if( META_DEBUG )
+      {
+      METAIO_STREAM::cout << "MetaNJetLDA: M_Read: ZeroScales"
+                          << METAIO_STREAM::endl;
+      METAIO_STREAM::cout << "  size = " << nZeroScales
+                          << METAIO_STREAM::endl;
+      }
     m_ZeroScales.resize( nZeroScales, 0 );
     mF = MET_GetFieldRecord( "ZeroScales", &m_Fields );
     if( mF && mF->defined )

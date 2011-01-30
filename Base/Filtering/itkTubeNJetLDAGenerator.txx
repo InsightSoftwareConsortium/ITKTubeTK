@@ -445,10 +445,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
         vCount++;
         }
       }
-    for( unsigned int i=0; i<this->GetNumberOfFeatures(); i++ )
-      {
-      std::cout << i << " : " << orientationNum[i] << std::endl;
-      }
 
     for( unsigned int i=0; i<this->GetNumberOfLDA(); i++ )
       {
@@ -523,8 +519,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
 ::UpdateLDAImages( void )
 {
   this->GenerateNJetFeatureImages();
-
-  this->PrintSelf( std::cout, 0 );
 
   Superclass::UpdateLDAImages();
 }
