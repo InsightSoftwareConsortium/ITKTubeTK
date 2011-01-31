@@ -88,7 +88,6 @@ int DoIt( int argc, char * argv[] )
   typedef MovingPixelType                                 OutputPixelType;
   typedef itk::Image< FixedPixelType, ImageDimension >    FixedImageType;
   typedef itk::Image< MovingPixelType, ImageDimension >   MovingImageType;
-  typedef itk::Image< OutputPixelType, ImageDimension >   OutputImageType;
   typedef double                                          VectorScalarType;
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
