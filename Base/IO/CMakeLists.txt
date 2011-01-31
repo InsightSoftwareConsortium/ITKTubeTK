@@ -50,9 +50,9 @@ slicer3_set_plugins_output_path( TubeIO )
 set( TARGETS TubeIO )
 slicer3_install_plugins( ${TARGETS} )
 
-#IF( BUILD_TESTING )
-  #add_subdirectory( Testing )
-#ENDIF( BUILD_TESTING )
+IF( BUILD_TESTING )
+  add_subdirectory( Testing )
+ENDIF( BUILD_TESTING )
 
 #install(FILES 
   #${TubeTK_Base_Numerics_H_Files}

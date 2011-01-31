@@ -126,7 +126,7 @@ CopyInfo( const MetaNJetLDA & _lda )
   SetZeroScales( _lda.GetZeroScales() );
   SetFirstScales( _lda.GetFirstScales() );
   SetSecondScales( _lda.GetSecondScales() );
-  SetRidgeScales( _lda.GetSecondScales() );
+  SetRidgeScales( _lda.GetRidgeScales() );
 }
 
 void MetaNJetLDA::
