@@ -262,6 +262,16 @@ public:
     const
     { return m_NormalDiffusionTensorImage; }
 
+  /** Get the image of the tangential diffusion tensor derivatives */
+  virtual const TensorDerivativeImagePointer
+      GetTangentialDiffusionTensorDerivativeImage() const
+    { return m_TangentialDiffusionTensorDerivativeImage; }
+
+  /** Get the image of the normal diffusion tensor derivatives */
+  virtual const TensorDerivativeImagePointer
+      GetNormalDiffusionTensorDerivativeImage() const
+    { return m_NormalDiffusionTensorDerivativeImage; }
+
   /** Get the normal components of the deformation field */
   virtual const OutputImagePointer GetNormalDeformationFieldImage() const
     { return m_NormalDeformationField; }
