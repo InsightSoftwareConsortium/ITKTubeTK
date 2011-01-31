@@ -440,9 +440,7 @@ int DoIt( int argc, char * argv[] )
   warper->SetInput( movingImageReader->GetOutput() );
   warper->SetDeformationField( registrator->GetOutput() );
   warper->SetInterpolator( interpolator );
-  warper->SetOutputSpacing( fixedImageReader->GetOutput()->GetSpacing() );
-  warper->SetOutputOrigin( fixedImageReader->GetOutput()->GetOrigin() );
-  warper->SetOutputDirection( fixedImageReader->GetOutput()->GetDirection() );
+  warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( 0 );
 
   // Update triggers the registration and the warping
@@ -453,7 +451,7 @@ int DoIt( int argc, char * argv[] )
   progress = 0.9;
   progressReporter.Report( progress );
 
-  // Write the deformatin field
+  // Write the deformation field
   if( outputDeformationFieldFileName != "" )
     {
     timeCollector.Start( "Write deformation field" );
