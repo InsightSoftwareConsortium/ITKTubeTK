@@ -69,7 +69,7 @@
       <name>initialTransform</name>
       <flag>t</flag>
       <longflag>initialTransform</longflag>
-      <description>NOT YET IMPLEMENTED.  Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. This transform should be an affine or rigid transform.  Optional.  TODO: init deformation field</description>
+      <description>Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. Optional.</description>
       <label>Initial Transform</label>
       <channel>input</channel>
     </transform>
