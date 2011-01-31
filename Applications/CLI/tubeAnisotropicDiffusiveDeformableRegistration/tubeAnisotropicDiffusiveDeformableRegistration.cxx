@@ -247,7 +247,7 @@ int DoIt( int argc, char * argv[] )
   typename FixedOrientFilterType::Pointer orientFixed
       = FixedOrientFilterType::New();
   orientFixed->UseImageDirectionOn();
-  orientFixed->SetDesiredCoordinateOrientationToAxial();
+  orientFixed->SetDesiredCoordinateOrientationToSagittal();
   orientFixed->SetInput( fixedImageReader->GetOutput() );
   orientFixed->Update();
   timeCollector.Stop( "Orient fixed image" );
@@ -258,7 +258,7 @@ int DoIt( int argc, char * argv[] )
   typename MovingOrientFilterType::Pointer orientMoving
       = MovingOrientFilterType::New();
   orientMoving->UseImageDirectionOn();
-  orientMoving->SetDesiredCoordinateOrientationToAxial();
+  orientMoving->SetDesiredCoordinateOrientationToSagittal();
   orientMoving->SetInput( movingImageReader->GetOutput() );
   orientMoving->Update();
   timeCollector.Stop( "Orient moving image" );
@@ -269,7 +269,7 @@ int DoIt( int argc, char * argv[] )
   typename VectorOrientFilterType::Pointer orientVector
       = VectorOrientFilterType::New();
   orientVector->UseImageDirectionOn();
-  orientVector->SetDesiredCoordinateOrientationToAxial();
+  orientVector->SetDesiredCoordinateOrientationToSagittal();
   orientVector->SetInput( initField );
   orientVector->Update();
   timeCollector.Stop( "Orient initial deformation field" );
@@ -357,7 +357,7 @@ int DoIt( int argc, char * argv[] )
     typename VectorOrientFilterType::Pointer orientNormals
         = VectorOrientFilterType::New();
     orientNormals->UseImageDirectionOn();
-    orientNormals->SetDesiredCoordinateOrientationToAxial();
+    orientNormals->SetDesiredCoordinateOrientationToSagittal();
     orientNormals->SetInput( vectorImageReader->GetOutput() );
     orientNormals->Update();
     registrator->SetNormalVectorImage( orientNormals->GetOutput() );
@@ -365,6 +365,8 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Read weight image
+  typedef itk::OrientImageFilter< WeightImageType, WeightImageType >
+      WeightOrientFilterType;
   if( inputWeightImageFileName != "" )
     {
     timeCollector.Start( "Loading weight image" );
@@ -383,12 +385,10 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    typedef itk::OrientImageFilter< WeightImageType, WeightImageType >
-        WeightOrientFilterType;
     typename WeightOrientFilterType::Pointer orientWeight
         = WeightOrientFilterType::New();
     orientWeight->UseImageDirectionOn();
-    orientWeight->SetDesiredCoordinateOrientationToAxial();
+    orientWeight->SetDesiredCoordinateOrientationToSagittal();
     orientWeight->SetInput( weightImageReader->GetOutput() );
     orientWeight->Update();
     registrator->SetWeightImage( orientWeight->GetOutput() );
@@ -431,13 +431,21 @@ int DoIt( int argc, char * argv[] )
                                 MovingImageType,
                                 VectorImageType > WarperType;
   typename WarperType::Pointer warper = WarperType::New();
+
+  typename VectorOrientFilterType::Pointer orientOutput
+      = VectorOrientFilterType::New();
+  orientOutput->UseImageDirectionOn();
+  orientOutput->SetDesiredCoordinateOrientationToAxial(); // TODO save whatever was in fixed/moving
+  orientOutput->SetInput( registrator->GetOutput() );
+  orientOutput->Update();
+
   typedef typename WarperType::CoordRepType CoordRepType;
   typedef itk::LinearInterpolateImageFunction< MovingImageType, CoordRepType >
       InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
   warper->SetInput( movingImageReader->GetOutput() );
-  warper->SetDeformationField( registrator->GetOutput() );
+  warper->SetDeformationField( orientOutput->GetOutput() );
   warper->SetInterpolator( interpolator );
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( 0 );
@@ -457,7 +465,7 @@ int DoIt( int argc, char * argv[] )
     typedef itk::ImageFileWriter< VectorImageType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetFileName( outputDeformationFieldFileName );
-    fieldWriter->SetInput( registrator->GetOutput() );
+    fieldWriter->SetInput( orientOutput->GetOutput() );
     try
       {
       fieldWriter->Update();
@@ -480,7 +488,7 @@ int DoIt( int argc, char * argv[] )
 //    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
 //    GridWriterType::Pointer gridWriter = GridWriterType::New();
 //    gridWriter->SetFileName( outputTransformFileName );
-//    gridWriter->SetInput( registrator->GetOutput() );
+//    gridWriter->SetInput( orientOutput->GetOutput() );
 //    try
 //      {
 //      gridWriter->Update();
@@ -521,10 +529,16 @@ int DoIt( int argc, char * argv[] )
   if( outputNormalVectorImageFileName != "" )
     {
     timeCollector.Start( "Write normal vector image" );
+    typename VectorOrientFilterType::Pointer orientNormals
+        = VectorOrientFilterType::New();
+    orientNormals->UseImageDirectionOn();
+    orientNormals->SetDesiredCoordinateOrientationToAxial(); // TODO or whatever it was originally
+    orientNormals->SetInput( registrator->GetNormalVectorImage() );
+    orientNormals->Update();
     typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
     typename VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
     vectorWriter->SetFileName( outputNormalVectorImageFileName );
-    vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+    vectorWriter->SetInput( orientNormals->GetOutput() );
     try
       {
       vectorWriter->Update();
@@ -543,10 +557,16 @@ int DoIt( int argc, char * argv[] )
   if( outputWeightImageFileName != "" )
     {
     timeCollector.Start( "Write weight image" );
+    typename WeightOrientFilterType::Pointer orientWeight
+        = WeightOrientFilterType::New();
+    orientWeight->UseImageDirectionOn();
+    orientWeight->SetDesiredCoordinateOrientationToAxial(); // TODO or whatever it was originally
+    orientWeight->SetInput( registrator->GetWeightImage() );
+    orientWeight->Update();
     typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
     typename WeightWriterType::Pointer weightWriter = WeightWriterType::New();
     weightWriter->SetFileName( outputWeightImageFileName );
-    weightWriter->SetInput( registrator->GetWeightImage() );
+    weightWriter->SetInput( orientWeight->GetOutput() );
     try
       {
       weightWriter->Update();
