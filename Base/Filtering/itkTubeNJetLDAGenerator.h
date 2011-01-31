@@ -144,7 +144,6 @@ private:
 
   typename LDAImageType::Pointer m_NJetKernelImage;
 
-  bool             m_NJetFeatureImagesUpToDate;
   LDAImageListType m_NJetFeatureImageList;
 
 };

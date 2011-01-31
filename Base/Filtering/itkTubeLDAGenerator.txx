@@ -50,9 +50,6 @@ LDAGenerator< ImageT, LabelmapT >
   m_PerformLDA = true;
   m_PerformPCA = false;
 
-  m_LDAUpToDate = false;
-  m_LDAImageListUpToDate = false;
-
   m_FeatureImageList.clear();
 
   m_Labelmap = NULL;
@@ -84,7 +81,6 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::SetFeatureImage( typename ImageType::Pointer img )
 {
-  m_LDAUpToDate = false;
   m_FeatureImageList.clear();
   m_FeatureImageList.push_back( img );
 }
@@ -94,7 +90,6 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::AddFeatureImage( typename ImageType::Pointer img )
 {
-  m_LDAUpToDate = false;
   m_FeatureImageList.push_back( img );
 }
 
@@ -134,7 +129,6 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::SetObjectId( ObjectIdType objectId )
 {
-  m_LDAUpToDate = false;
   m_ObjectIdList.clear();
   m_ObjectIdList.push_back( objectId );
 }
@@ -144,7 +138,6 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::AddObjectId( ObjectIdType objectId )
 {
-  m_LDAUpToDate = false;
   m_ObjectIdList.push_back( objectId );
 }
 
@@ -209,14 +202,7 @@ unsigned int
 LDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfLDA( void )
 {
-  if( m_LDAUpToDate )
-    {
-    return m_NumberOfLDA;
-    }
-  else
-    {
-    return 0;
-    }
+  return m_NumberOfLDA;
 }
 
 template < class ImageT, class LabelmapT >
@@ -224,7 +210,7 @@ typename LDAGenerator< ImageT, LabelmapT >::LDAVectorType
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAVector( unsigned int ldaNum )
 {
-  if( m_LDAUpToDate && ldaNum < m_NumberOfLDA )
+  if( ldaNum < m_NumberOfLDA )
     {
     return m_LDAMatrix.get_column( ldaNum );
     }
@@ -241,7 +227,7 @@ double
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAValue( unsigned int ldaNum )
 {
-  if( m_LDAUpToDate && ldaNum < m_NumberOfLDA )
+  if( ldaNum < m_NumberOfLDA )
     {
     return m_LDAValues[ ldaNum ];
     }
@@ -273,8 +259,6 @@ LDAGenerator< ImageT, LabelmapT >
 ::SetLDAMatrix( const LDAMatrixType & mat )
 {
   m_LDAMatrix = mat;
-  m_LDAUpToDate = true;
-  m_LDAImageListUpToDate = false;
   m_NumberOfLDA = m_LDAMatrix.columns();
 }
 
@@ -286,8 +270,6 @@ LDAGenerator< ImageT, LabelmapT >
   if( ldaNum < m_NumberOfLDA )
     {
     m_LDAMatrix.set_column( ldaNum, vec );
-    m_LDAUpToDate = true;
-    m_LDAImageListUpToDate = false;
     }
 }
 
@@ -313,15 +295,6 @@ const typename LDAGenerator< ImageT, LabelmapT >::LDAImageType::Pointer
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAImage( unsigned int ldaNum )
 {
-  if( !m_LDAImageListUpToDate || !m_LDAUpToDate )
-    {
-    if( !m_LDAUpToDate )
-      {
-      this->Update();
-      }
-    this->GenerateLDAImages();
-    }
-
   if( ldaNum < m_LDAImageList.size()  )
     {
     return m_LDAImageList[ ldaNum ];
@@ -586,9 +559,6 @@ LDAGenerator< ImageT, LabelmapT >
       }
     }
 
-  m_LDAUpToDate = true;
-  m_LDAImageListUpToDate = false;
-
   timeCollector.Stop( "GenerateLDA" );
 
   timeCollector.Report();
@@ -599,11 +569,6 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::GenerateLDAImages()
 {
-  if( !m_LDAUpToDate )
-    {
-    this->Update();
-    }
-
   itk::TimeProbesCollectorBase timeCollector;
 
   timeCollector.Start( "GenerateLDAImages" );
@@ -655,8 +620,6 @@ LDAGenerator< ImageT, LabelmapT >
 
   timeCollector.Stop( "GenerateLDAImages" );
 
-  m_LDAImageListUpToDate = true;
-
   timeCollector.Report();
 }
 
@@ -674,11 +637,6 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::UpdateLDAImages()
 {
-  if( !m_LDAUpToDate )
-    {
-    this->Update();
-    }
-
   this->GenerateLDAImages();
 }
 
@@ -688,23 +646,6 @@ LDAGenerator< ImageT, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-
-  if( m_LDAUpToDate )
-    {
-    os << indent << "LDAUpToDate = true" << std::endl;
-    }
-  else
-    {
-    os << indent << "LDAUpToDate = false" << std::endl;
-    }
-  if( m_LDAImageListUpToDate )
-    {
-    os << indent << "LDAImageListUpToDate = true" << std::endl;
-    }
-  else
-    {
-    os << indent << "LDAImageListUpToDate = false" << std::endl;
-    }
 
   if( m_PerformLDA )
     {

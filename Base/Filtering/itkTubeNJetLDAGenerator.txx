@@ -56,7 +56,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
   m_ForceIntensityConsistency = true;
   m_ForceOrientationInsensitivity = true;
 
-  m_NJetFeatureImagesUpToDate = false;
   m_NJetFeatureImageList.clear();
   m_NJetKernelImage = NULL;
 }
@@ -258,7 +257,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
       vCount++;
       }
     }
-  m_NJetFeatureImagesUpToDate = true;
 }
 
 template < class ImageT, class LabelmapT >
@@ -556,15 +554,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
     << std::endl;
   os << indent << "RidgeScales.size() = " << m_RidgeScales.size()
     << std::endl;
-
-  if( m_NJetFeatureImagesUpToDate )
-    {
-    os << indent << "NJetFeatureImagesUpToDate = true" << std::endl;
-    }
-  else
-    {
-    os << indent << "NJetFeatureImagesUpToDate = false" << std::endl;
-    }
 
   os << indent << "NJetFeatureImageList.size() = "
     << m_NJetFeatureImageList.size() << std::endl;

@@ -150,9 +150,6 @@ private:
   LDAGenerator( const Self & );          // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-  bool                            m_LDAUpToDate;
-  bool                            m_LDAImageListUpToDate;
-
   bool                            m_PerformLDA;
   bool                            m_PerformPCA;
 
