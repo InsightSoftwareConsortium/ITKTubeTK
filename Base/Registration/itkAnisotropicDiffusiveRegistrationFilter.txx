@@ -89,6 +89,71 @@ AnisotropicDiffusiveRegistrationFilter
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
+
+  if( m_BorderSurface )
+    {
+    os << indent << "Border surface:" << std::endl;
+    m_BorderSurface->Print( os );
+    }
+  if( m_NormalVectorImage )
+    {
+    os << indent << "Normal vector image:" << std::endl;
+    m_NormalVectorImage->Print( os, indent );
+    }
+  if( m_WeightImage )
+    {
+    os << indent << "Weight image:" << std::endl;
+    m_WeightImage->Print( os, indent );
+    }
+  if( m_TangentialDiffusionTensorImage )
+    {
+    os << indent << "Tangential diffusion tensor image:" << std::endl;
+    m_TangentialDiffusionTensorImage->Print( os, indent );
+    }
+  if( m_NormalDiffusionTensorImage )
+    {
+    os << indent << "Normal diffusion tensor image:" << std::endl;
+    m_NormalDiffusionTensorImage->Print( os, indent );
+    }
+  if( m_TangentialDiffusionTensorDerivativeImage )
+    {
+    os << indent << "Tangential diffusion tensor derivative image:"
+        << std::endl;
+    m_TangentialDiffusionTensorDerivativeImage->Print( os, indent );
+    }
+  if( m_NormalDiffusionTensorDerivativeImage )
+    {
+    os << indent << "Normal diffusion tensor derivative image:" << std::endl;
+    m_NormalDiffusionTensorDerivativeImage->Print( os, indent  );
+    }
+  if( m_NormalDeformationField )
+    {
+    os << indent << "Normal deformation field:" << std::endl;
+    m_NormalDeformationField->Print( os, indent );
+    }
+  if( m_TangentialDeformationComponentImages.Length != 0 )
+    {
+    os << indent << "Tangential deformation component images:" << std::endl;
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      if( m_TangentialDeformationComponentImages[i] )
+        {
+        m_TangentialDeformationComponentImages[i]->Print( os, indent );
+        }
+      }
+    }
+  if( m_NormalDeformationComponentImages.Length != 0 )
+    {
+    os << indent << "Normal deformation component images:" << std::endl;
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      if( m_NormalDeformationComponentImages[i] )
+        {
+        m_NormalDeformationComponentImages[i]->Print( os, indent );
+        }
+      }
+    }
+  os << indent << "lambda: " << m_lambda << std::endl;
 }
 
 /**

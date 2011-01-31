@@ -63,21 +63,21 @@ AnisotropicDiffusiveRegistrationFunction
 {
   Superclass::PrintSelf(os,indent);
 
-  os << indent << "TimeStep: " << m_TimeStep;
-  os << indent << "ComputeRegularizationTerm: "
-      << this->GetComputeRegularizationTerm() << std::endl;
-  os << indent << "ComputeIntensityDistanceTerm: "
-      << this->GetComputeIntensityDistanceTerm() << std::endl;
-  os << indent << "UseAnisotropicRegularization: "
-      << this->GetUseAnisotropicRegularization() << std::endl;
+  os << indent << "Time step: " << m_TimeStep << std::endl;
+  os << indent << "Compute regularization term: "
+     << ( m_ComputeRegularizationTerm ? "on" : "off" ) << std::endl;
+  os << indent << "Compute intensity distance term: "
+     << ( m_ComputeIntensityDistanceTerm ? "on" : "off" ) << std::endl;
+  os << indent << "Use anisotropic regularization: "
+     << ( m_UseAnisotropicRegularization ? "on" : "off" ) << std::endl;
   if ( m_RegularizationFunction )
     {
-    os << indent << "RegularizationFunction: " << std::endl;
+    os << indent << "Regularization function: " << std::endl;
     m_RegularizationFunction->Print( os, indent );
     }
   if ( m_IntensityDistanceFunction )
     {
-    os << indent << "IntensityDistanceFunction: " << std::endl;
+    os << indent << "Intensity distance function: " << std::endl;
     m_IntensityDistanceFunction->Print( os, indent );
     }
 }
