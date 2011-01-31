@@ -191,8 +191,7 @@ int DoIt( int argc, char * argv[] )
     if ( worldCoordinateSystem == "RAS" )
       {
       vtkSmartPointer< vtkTransform > RAStoLPS = vtkTransform::New();
-      RAStoLPS->RotateX(180); // flip in right-left
-      RAStoLPS->RotateY(180); // flip in anterior-posterior
+      RAStoLPS->RotateZ(180); // flip in superior-inferior
       vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
           = vtkTransformPolyDataFilter::New();
       transformPolyDataFilter->SetInput( borderSurface );
@@ -205,7 +204,7 @@ int DoIt( int argc, char * argv[] )
         timeCollector.Report();
         return EXIT_FAILURE;
         }
-    }
+      }
 
     registrator->SetBorderSurface( borderSurface );
     }
