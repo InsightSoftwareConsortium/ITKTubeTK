@@ -29,8 +29,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-// It is important to use OrientedImages
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkOrImageFilter.h"
@@ -70,8 +69,8 @@ int DoIt( int argc, char * argv[] )
 
   typedef bool                                               PixelType;
   typedef unsigned char                                      OutputPixelType;
-  typedef itk::OrientedImage< PixelType,  dimensionT >       ImageType;
-  typedef itk::OrientedImage< OutputPixelType, dimensionT >  OutputImageType;
+  typedef itk::Image< PixelType,  dimensionT >               ImageType;
+  typedef itk::Image< OutputPixelType, dimensionT >          OutputImageType;
   typedef itk::ImageFileReader< ImageType >                  ReaderType;
   typedef itk::ImageFileWriter< OutputImageType  >           OutputWriterType;
   typedef itk::OrImageFilter< ImageType >                    FilterType;

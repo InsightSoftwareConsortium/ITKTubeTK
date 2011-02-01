@@ -32,8 +32,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-// It is important to use OrientedImages
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
@@ -56,7 +55,7 @@ class CropROI
 public:
 
   typedef pixelT                                       PixelType;
-  typedef itk::OrientedImage< PixelType, dimensionT>   ImageType;
+  typedef itk::Image< PixelType, dimensionT>           ImageType;
   typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
 
   CropROI( void );

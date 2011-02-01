@@ -23,8 +23,7 @@ limitations under the License.
 #ifndef __tubeCropROI_txx
 #define __tubeCropROI_txx
 
-// It is important to use OrientedImages
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
@@ -327,7 +326,7 @@ Update( void )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::OrientedImage< pixelT, dimensionT >::Pointer
+typename itk::Image< pixelT, dimensionT >::Pointer
 CropROI< pixelT, dimensionT>::
 GetOutput( void )
 {

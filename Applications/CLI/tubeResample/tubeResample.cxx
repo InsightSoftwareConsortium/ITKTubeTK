@@ -29,7 +29,7 @@ limitations under the License.
 #endif
 
 // ITK Includes
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTransformFileReader.h"
@@ -63,14 +63,14 @@ int DoIt( int argc, char *argv[] )
 {
   PARSE_ARGS;
 
-  typedef PixelT                                              InputPixelType;
-  typedef itk::OrientedImage< InputPixelType, DimensionI >    InputImageType;
+  typedef PixelT                                      InputPixelType;
+  typedef itk::Image< InputPixelType, DimensionI >    InputImageType;
 
-  typedef InputPixelType                                      OutputPixelType;
-  typedef itk::OrientedImage< OutputPixelType, DimensionI >   OutputImageType;
+  typedef InputPixelType                              OutputPixelType;
+  typedef itk::Image< OutputPixelType, DimensionI >   OutputImageType;
 
-  typedef  itk::ImageFileReader< InputImageType >          InputReaderType;
-  typedef  itk::ImageFileWriter< OutputImageType >         OutputWriterType;
+  typedef  itk::ImageFileReader< InputImageType >     InputReaderType;
+  typedef  itk::ImageFileWriter< OutputImageType >    OutputWriterType;
 
   itk::TimeProbesCollectorBase timeCollector;
 

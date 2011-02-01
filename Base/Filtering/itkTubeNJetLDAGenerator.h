@@ -28,7 +28,7 @@ limitations under the License.
 #include "vnl/vnl_vector.h"
 #include "vnl/vnl_matrix.h"
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 
 #include "itkTubeLDAGenerator.h"
 
@@ -81,7 +81,7 @@ public:
 
   typedef std::vector< double >                NJetScalesType;
 
-  typedef itk::OrientedImage< float, ImageDimension >   LDAImageType;
+  typedef itk::Image< float, ImageDimension >           LDAImageType;
   typedef std::vector< typename LDAImageType::Pointer > LDAImageListType;
 
   //

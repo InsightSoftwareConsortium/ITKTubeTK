@@ -29,8 +29,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-// It is important to use OrientedImages
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
@@ -70,11 +69,11 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::OrientedImage< pixelT,  dimensionT >        MaskType;
-  typedef itk::OrientedImage< unsigned int,  dimensionT >  ConnCompType;
-  typedef itk::OrientedImage< float,  dimensionT >         VolumeType;
-  typedef itk::ImageFileReader< VolumeType >               VolumeReaderType;
-  typedef itk::ImageFileReader< MaskType >                 MaskReaderType;
+  typedef itk::Image< pixelT,  dimensionT >        MaskType;
+  typedef itk::Image< unsigned int,  dimensionT >  ConnCompType;
+  typedef itk::Image< float,  dimensionT >         VolumeType;
+  typedef itk::ImageFileReader< VolumeType >       VolumeReaderType;
+  typedef itk::ImageFileReader< MaskType >         MaskReaderType;
 
   //
   //

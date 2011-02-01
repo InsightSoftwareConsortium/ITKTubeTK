@@ -28,7 +28,7 @@ limitations under the License.
 #include "vnl/vnl_vector.h"
 #include "vnl/vnl_matrix.h"
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 
 #include "itkTubeLDAGenerator.h"
 #include "itkTubeNJetLDAGenerator.h"
@@ -40,14 +40,14 @@ namespace tube
 {
 
 class NJetLDAGenerator2F
-: public NJetLDAGenerator< OrientedImage< float, 2 >,
-  OrientedImage< unsigned char, 2 > >
+: public NJetLDAGenerator< Image< float, 2 >,
+  Image< unsigned char, 2 > >
 {
 public:
 
   typedef NJetLDAGenerator2F                   Self;
-  typedef NJetLDAGenerator< OrientedImage< float, 2 >,
-    OrientedImage< unsigned char, 2 > >        Superclass;
+  typedef NJetLDAGenerator< Image< float, 2 >,
+    Image< unsigned char, 2 > >        Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
@@ -58,14 +58,14 @@ public:
   //
   // Custom Typedefs
   //
-  typedef OrientedImage< float, 2 >                     ImageT;
+  typedef Image< float, 2 >                     ImageT;
   typedef ImageT                                        ImageType;
   typedef std::vector< ImageType::Pointer >             ImageListType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef OrientedImage< unsigned char, 2 >    LabelmapT;
+  typedef Image< unsigned char, 2 >    LabelmapT;
   typedef LabelmapT                            MaskImageType;
 
   typedef double                               FeatureType;
@@ -86,8 +86,8 @@ public:
 
   typedef std::vector< double >                NJetScalesType;
 
-  typedef itk::OrientedImage< float, ImageDimension >   LDAImageType;
-  typedef std::vector< LDAImageType::Pointer >          LDAImageListType;
+  typedef itk::Image< float, ImageDimension >  LDAImageType;
+  typedef std::vector< LDAImageType::Pointer > LDAImageListType;
 
 protected:
 

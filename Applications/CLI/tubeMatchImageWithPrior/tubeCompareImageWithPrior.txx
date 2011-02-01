@@ -33,7 +33,7 @@ limitations under the License.
 
 #include <sstream>
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -108,7 +108,7 @@ SetVolumeImage( typename ImageType::Pointer volImage )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::OrientedImage< float, dimensionT >::Pointer
+typename itk::Image< float, dimensionT >::Pointer
 CompareImageWithPrior< pixelT, dimensionT>::
 GetVolumeImage( void )
 {
@@ -123,7 +123,7 @@ SetMaskImage( typename ImageType::Pointer maskImage )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::OrientedImage< float, dimensionT >::Pointer
+typename itk::Image< float, dimensionT >::Pointer
 CompareImageWithPrior< pixelT, dimensionT>::
 GetMaskImage( void )
 {
@@ -131,7 +131,7 @@ GetMaskImage( void )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::OrientedImage< float, dimensionT >::Pointer
+typename itk::Image< float, dimensionT >::Pointer
 CompareImageWithPrior< pixelT, dimensionT>::
 GetOutputVolumeImage( void )
 {
@@ -139,7 +139,7 @@ GetOutputVolumeImage( void )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::OrientedImage< float, dimensionT >::Pointer
+typename itk::Image< float, dimensionT >::Pointer
 CompareImageWithPrior< pixelT, dimensionT>::
 GetOutputMaskImage( void )
 {
@@ -154,7 +154,7 @@ SetMetricMask( typename ImageType::Pointer metricMask )
 }
 
 template< class pixelT, unsigned int dimensionT >
-typename itk::OrientedImage< float, dimensionT >::Pointer
+typename itk::Image< float, dimensionT >::Pointer
 CompareImageWithPrior< pixelT, dimensionT>::
 GetMetricMask( void )
 {
@@ -263,14 +263,14 @@ template< class pixelT, unsigned int dimensionT >
 void CompareImageWithPrior< pixelT, dimensionT>::
 SetRegistrationTransform(
   typename itk::RigidImageToImageRegistrationMethod<
-    itk::OrientedImage< float, dimensionT > >::TransformType::Pointer tfm )
+    itk::Image< float, dimensionT > >::TransformType::Pointer tfm )
 {
   m_RegistrationTransform = tfm;
 }
 
 template< class pixelT, unsigned int dimensionT >
 typename itk::RigidImageToImageRegistrationMethod<
-  itk::OrientedImage< float, dimensionT > >::TransformType::Pointer
+  itk::Image< float, dimensionT > >::TransformType::Pointer
 CompareImageWithPrior< pixelT, dimensionT>::
 GetRegistrationTransform( void )
 {

@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <vector>
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkListSample.h"
 
 namespace itk
@@ -66,7 +66,7 @@ public:
   typedef std::vector< ObjectIdType >          ObjectIdListType;
 
   typedef float                                ProbabilityPixelType;
-  typedef itk::OrientedImage< ProbabilityPixelType,
+  typedef itk::Image< ProbabilityPixelType,
     ::itk::GetImageDimension< ImageT >::ImageDimension >
                                                ProbabilityImageType;
 

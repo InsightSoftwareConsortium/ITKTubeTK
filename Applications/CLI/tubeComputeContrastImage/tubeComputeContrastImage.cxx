@@ -29,7 +29,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageSpatialObject.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
@@ -80,10 +80,10 @@ public:
 
   itkNewMacro( Self );
 
-  typedef Superclass::MeasureType                 MeasureType;
-  typedef Superclass::ParametersType              ParametersType;
-  typedef Superclass::DerivativeType              DerivativeType;
-  typedef itk::OrientedImage<pixelT, dimensionT>  ImageType;
+  typedef Superclass::MeasureType         MeasureType;
+  typedef Superclass::ParametersType      ParametersType;
+  typedef Superclass::DerivativeType      DerivativeType;
+  typedef itk::Image<pixelT, dimensionT>  ImageType;
 
   typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
                                                   BlurFilterType;
@@ -385,8 +385,8 @@ int DoIt( int argc, char * argv[] )
     "ComputeContrastImage", CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                         PixelType;
-  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
+  typedef float                                 PixelType;
+  typedef itk::Image< PixelType,  dimensionT >  ImageType;
 
   /** Read input images */
   typename ImageType::Pointer inputImage;

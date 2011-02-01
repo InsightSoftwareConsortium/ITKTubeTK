@@ -29,8 +29,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-// It is important to use OrientedImages
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
@@ -69,9 +68,9 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                         PixelType;
-  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
-  typedef itk::ImageFileReader< ImageType >             ReaderType;
+  typedef float                                 PixelType;
+  typedef itk::Image< PixelType,  dimensionT >  ImageType;
+  typedef itk::ImageFileReader< ImageType >     ReaderType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();

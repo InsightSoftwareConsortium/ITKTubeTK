@@ -25,7 +25,7 @@ limitations under the License.
 #endif
 #define ITK_LEAN_AND_MEAN
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkMatrix.h"
 
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
@@ -43,8 +43,8 @@ limitations under the License.
 
 int tubeBaseFilteringPrintTest( int, char* [] )
 {
-  typedef itk::OrientedImage< float, 3 > ImageType;
-  typedef itk::Matrix< float, 3 >        MatrixType;
+  typedef itk::Image< float, 3 >  ImageType;
+  typedef itk::Matrix< float, 3 > MatrixType;
 
   itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType, ImageType >
     ::Pointer acedif =

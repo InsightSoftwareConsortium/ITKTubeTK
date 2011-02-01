@@ -25,7 +25,6 @@ limitations under the License.
 #include <iostream>
 
 #include "itkImage.h"
-#include "itkOrientedImage.h"
 #include "itkImageIOBase.h"
 #include "itkImageIOFactory.h"
 #include "itkImageFileWriter.h"
@@ -52,12 +51,12 @@ limitations under the License.
 
 /** Resamples image a to b if they are different, returns resampled_a */
 template< class pixelT, unsigned int dimensionT >
-typename itk::OrientedImage< pixelT, dimensionT >::Pointer
+typename itk::Image< pixelT, dimensionT >::Pointer
 ResampleImage(
-  typename itk::OrientedImage< pixelT, dimensionT >::Pointer a,
-  typename itk::OrientedImage< pixelT, dimensionT >::Pointer b )
+  typename itk::Image< pixelT, dimensionT >::Pointer a,
+  typename itk::Image< pixelT, dimensionT >::Pointer b )
 {
-  typedef itk::OrientedImage< pixelT, dimensionT >      ImageType;
+  typedef itk::Image< pixelT, dimensionT >      ImageType;
 
   typename ImageType::Pointer output = a;
 
@@ -90,11 +89,11 @@ ResampleImage(
 template< class pixelT, unsigned int dimensionT >
 int DoIt( MetaCommand & command )
 {
-  typedef float                                            PixelType;
-  typedef itk::OrientedImage< PixelType, dimensionT >      ImageType;
-  typedef itk::OrientedImage< unsigned char, dimensionT >  ImageTypeUChar;
-  typedef itk::OrientedImage< unsigned short, dimensionT > ImageTypeUShort;
-  typedef itk::OrientedImage< short, dimensionT >          ImageTypeShort;
+  typedef float                                    PixelType;
+  typedef itk::Image< PixelType, dimensionT >      ImageType;
+  typedef itk::Image< unsigned char, dimensionT >  ImageTypeUChar;
+  typedef itk::Image< unsigned short, dimensionT > ImageTypeUShort;
+  typedef itk::Image< short, dimensionT >          ImageTypeShort;
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 

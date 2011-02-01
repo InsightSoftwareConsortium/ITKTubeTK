@@ -38,7 +38,7 @@ int DoIt( int argc, char **argv );
 
 #include "tubeCLIHelperFunctions.h"
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"

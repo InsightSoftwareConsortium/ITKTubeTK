@@ -25,7 +25,7 @@ limitations under the License.
 #endif
 #define ITK_LEAN_AND_MEAN
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 
 #include "itkTubeCVTImageFilter.h"
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
@@ -35,7 +35,7 @@ limitations under the License.
 
 int tubeBaseSegmentationPrintTest( int, char* [] )
 {
-  typedef itk::OrientedImage< float, 2 > ImageType;
+  typedef itk::Image< float, 2 > ImageType;
 
   itk::tube::CVTImageFilter< ImageType >::Pointer
     cvtObject = itk::tube::CVTImageFilter< ImageType >::New();

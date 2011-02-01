@@ -23,7 +23,7 @@ limitations under the License.
 #ifndef __tubeCompareImageWithPrior_h
 #define __tubeCompareImageWithPrior_h
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkRigidImageToImageRegistrationMethod.h"
 #include "itkTimeProbesCollectorBase.h"
 
@@ -37,8 +37,8 @@ class CompareImageWithPrior
 {
 public:
 
-  typedef float                                         PixelType;
-  typedef itk::OrientedImage< PixelType,  dimensionT >  ImageType;
+  typedef float                                 PixelType;
+  typedef itk::Image< PixelType,  dimensionT >  ImageType;
 
   typedef itk::RigidImageToImageRegistrationMethod< ImageType >
                                                     RegistrationMethodType;
