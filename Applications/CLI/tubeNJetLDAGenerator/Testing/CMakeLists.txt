@@ -122,7 +122,7 @@ set_tests_properties( ${PROJECT_NAME}Test3-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
 
 #######
-# Test4-Compare
+# Test3-Compare2
 #######
 add_test( ${PROJECT_NAME}Test3-Compare2
             ${TEXTCOMPARE_EXE}
@@ -131,3 +131,32 @@ add_test( ${PROJECT_NAME}Test3-Compare2
                -b ${BASELINE}/${PROJECT_NAME}Test1.mnda )
 set_tests_properties( ${PROJECT_NAME}Test3-Compare2
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
+
+#######
+# Test4
+#######
+add_test( ${PROJECT_NAME}Test4
+            ${PROJ_EXE}
+               --useNumberOfLDA 1
+               --objectId 127,255
+               --zeroScales 1,3
+               --firstScales 3,5
+               --secondScales 10
+               --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
+               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test4.mnda
+               ${INPUT_DATA}/im0001_n05.crop.mha
+               ${INPUT_DATA}/im0001.vk.crop.mha
+               ${TEMP}/${PROJECT_NAME}Test4 )
+set_tests_properties( ${PROJECT_NAME}Test4
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+
+#######
+# Test3-Compare2
+#######
+add_test( ${PROJECT_NAME}Test4-Compare
+            ${TEXTCOMPARE_EXE}
+               -d 0.01
+               -t ${TEMP}/${PROJECT_NAME}Test4.mnda
+               -b ${BASELINE}/${PROJECT_NAME}Test1.mnda )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
