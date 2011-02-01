@@ -32,7 +32,7 @@ limitations under the License.
 
 #include "tubePDFSegmenterCLP.h"
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTimeProbesCollectorBase.h"
@@ -82,11 +82,11 @@ int DoIt( int argc, char *argv[] )
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef T                                        InputPixelType;
-  typedef itk::OrientedImage< InputPixelType, 3 >  InputImageType;
-  typedef itk::OrientedImage< unsigned short, 3 >  MaskImageType;
-  typedef itk::OrientedImage< float, 3 >           ProbImageType;
-  typedef itk::Image< float, N >                   PDFImageType;
+  typedef T                                InputPixelType;
+  typedef itk::Image< InputPixelType, 3 >  InputImageType;
+  typedef itk::Image< unsigned short, 3 >  MaskImageType;
+  typedef itk::Image< float, 3 >           ProbImageType;
+  typedef itk::Image< float, N >           PDFImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;

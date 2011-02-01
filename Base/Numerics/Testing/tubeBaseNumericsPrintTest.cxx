@@ -25,7 +25,7 @@ limitations under the License.
 #endif
 #define ITK_LEAN_AND_MEAN
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
@@ -35,8 +35,8 @@ limitations under the License.
 
 int tubeBaseNumericsPrintTest( int, char* [] )
 {
-  typedef itk::OrientedImage< float, 2 > ImageType;
-  typedef itk::OrientedImage< itk::Vector<float, 2>, 2 > VectorImageType;
+  typedef itk::Image< float, 2 >                 ImageType;
+  typedef itk::Image< itk::Vector<float, 2>, 2 > VectorImageType;
 
   itk::ImageRegionMomentsCalculator< ImageType >::Pointer 
     regionMomentsObject =

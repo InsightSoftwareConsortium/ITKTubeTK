@@ -29,7 +29,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkIdentityTransform.h"
 #include "itkLinearInterpolateImageFunction.h"

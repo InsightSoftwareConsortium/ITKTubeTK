@@ -28,7 +28,7 @@ limitations under the License.
 #include "vnl/vnl_vector.h"
 #include "vnl/vnl_matrix.h"
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 
 namespace itk
 {
@@ -77,7 +77,7 @@ public:
   typedef vnl_vector< double >                 LDAVectorType;
   typedef vnl_matrix< double >                 LDAMatrixType;
 
-  typedef itk::OrientedImage< float, ImageDimension >   LDAImageType;
+  typedef itk::Image< float, ImageDimension >           LDAImageType;
   typedef std::vector< typename LDAImageType::Pointer > LDAImageListType;
 
   //

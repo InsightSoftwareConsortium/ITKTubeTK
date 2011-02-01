@@ -33,7 +33,7 @@ limitations under the License.
 
 #include "itkTimeProbesCollectorBase.h"
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkHistogram.h"
@@ -149,7 +149,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 }
 
 template < class ImageT, unsigned int N, class LabelmapT >
-const typename itk::OrientedImage< float,
+const typename itk::Image< float,
   ::itk::GetImageDimension< ImageT >::ImageDimension >::Pointer
 PDFSegmenter< ImageT, N, LabelmapT >
 ::GetClassProbabilityVolume( unsigned int classNum )

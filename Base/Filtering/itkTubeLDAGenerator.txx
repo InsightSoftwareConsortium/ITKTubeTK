@@ -29,7 +29,7 @@ limitations under the License.
 
 #include "itkTimeProbesCollectorBase.h"
 
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkImageRegionIteratorWithIndex.h"
