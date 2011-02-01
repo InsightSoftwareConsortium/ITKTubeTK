@@ -34,7 +34,13 @@ namespace itk
  * \brief Implements the update function for the
  * itkAnisotropicDiffusiveRegistrationFilter
  *
- * Insert more description + warnings here!!!!
+ * Uses the MeanSquareRegistrationFunction as the similarity metric between
+ * images.  Takes advantage of the implementation in
+ * itkAnisotropicDiffusionTensorFunction to calculate the update term for the
+ * regularization.
+ *
+ * See: D.F. Pace et al., Deformable image registration of sliding organs using
+ * anisotropic diffusive regularization, ISBI 2011.
  *
  * This class is templated over the fixed image type, moving image type and the
  * deformation field type.

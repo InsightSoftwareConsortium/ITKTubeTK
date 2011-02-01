@@ -58,6 +58,9 @@ namespace itk
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
  *
+ * This class is templated over the type of the fixed image, the type of the
+ * moving image and the type of the deformation field.
+ *
  * \sa itkAnisotropicDiffusiveRegistrationFunction
  * \ingroup DeformableImageRegistration
  * \ingroup MultiThreaded
