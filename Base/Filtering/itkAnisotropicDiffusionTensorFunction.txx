@@ -24,7 +24,6 @@ limitations under the License.
 #define __itkAnisotropicDiffusionTensorFunction_txx
 
 #include "itkAnisotropicDiffusionTensorFunction.h"
-//#include "vnl/algo/vnl_symmetric_eigensystem.h"
 
 namespace itk {
 
@@ -62,6 +61,11 @@ AnisotropicDiffusionTensorFunction< TImageType>
       m_positionDa[i][j] = m_Center + m_xStride[i] + m_xStride[j];
       }
     }
+
+  // Whether or not to use the image spacing and direction when computing the
+  // derivatives
+  this->m_UseImageSpacing = true;
+  this->m_UseImageDirection = true;
 }
 
 template <class TImageType>
