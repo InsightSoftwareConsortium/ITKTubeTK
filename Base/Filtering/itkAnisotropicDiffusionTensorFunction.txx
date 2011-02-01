@@ -183,9 +183,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
 
     for( unsigned int j = 0; j < ImageDimension; j++ )
       {
-      TensorDerivative(i,j)
-          = space_i * ( positionA_Tensor_value(i,j)
-                        - positionB_Tensor_value(i,j) );
+      TensorDerivative(i,j) = 0.5 * ( positionA_Tensor_value(i,j)
+                                      - positionB_Tensor_value(i,j) );
       if( gd )
         {
         gd->m_DT_dxy[i][j] = TensorDerivative(i,j);
