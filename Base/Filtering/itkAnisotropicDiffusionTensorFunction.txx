@@ -249,7 +249,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
 
     for( unsigned int j = i+1; j < ImageDimension; j++ )
       {
-      gd->m_dxy[i][j] = gd->m_dxy[j][i]
+      gd->m_dxy[i][j]
+          = gd->m_dxy[j][i] // Guaranteed symmetric
             = 0.25 * ( neighborhood.GetPixel( m_positionAa[i][j] )
                 - neighborhood.GetPixel( m_positionBa[i][j] )
                 - neighborhood.GetPixel( m_positionCa[i][j] )
@@ -266,7 +267,9 @@ AnisotropicDiffusionTensorFunction< TImageType >
       gd->m_dxy[i][i] /= ( spacing[i] * spacing[i] );
       for( unsigned int j = i+1; j < ImageDimension; j++ )
         {
-        gd->m_dxy[i][j] /= ( spacing[i] * spacing[j] );
+        gd->m_dxy[i][j]
+            = gd->m_dxy[j][i] // Guaranteed symmetric
+              /= ( spacing[i] * spacing[j] );
         }
       }
     }
