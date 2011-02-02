@@ -59,16 +59,18 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs. */
-  typedef typename Superclass::TimeStepType           TimeStepType;
-  typedef typename Superclass::PixelType              PixelType;
-  typedef double                                      ScalarValueType;
-  typedef typename Superclass::NeighborhoodType       NeighborhoodType;
-  typedef typename Superclass::FloatOffsetType        FloatOffsetType;
-  typedef typename Superclass::ImageType::SpacingType SpacingType;
+  typedef typename Superclass::TimeStepType               TimeStepType;
+  typedef typename Superclass::PixelType                  PixelType;
+  typedef double                                          ScalarValueType;
+  typedef typename Superclass::NeighborhoodType           NeighborhoodType;
+  typedef typename Superclass::FloatOffsetType            FloatOffsetType;
+  typedef typename Superclass::ImageType::SpacingType     SpacingType;
+  typedef typename Superclass::ImageType::DirectionType   DirectionType;
 
   /** Diffusion tensor typedefs. */
-  typedef DiffusionTensor3D< double >                 DiffusionTensorType;
-  typedef itk::Image< DiffusionTensorType, 3 >        DiffusionTensorImageType;
+  typedef DiffusionTensor3D< double >                     DiffusionTensorType;
+  typedef itk::Image< DiffusionTensorType, 3 >
+      DiffusionTensorImageType;
   /** The default boundary condition for finite difference
    * functions that is used unless overridden in the Evaluate() method. */
   typedef ZeroFluxNeumannBoundaryCondition< DiffusionTensorImageType >
@@ -117,6 +119,7 @@ public:
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const SpacingType &spacing,
+      const DirectionType &direction,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -127,6 +130,7 @@ public:
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const TensorDerivativeImageRegionType &tensorDerivativeRegion,
       const SpacingType &spacing,
+      const DirectionType &direction,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -156,7 +160,8 @@ public:
   void ComputeDiffusionTensorFirstOrderPartialDerivatives(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       TensorDerivativeImageRegionType &tensorDerivativeRegion,
-      const SpacingType &spacing ) const;
+      const SpacingType &spacing,
+      const DirectionType &direction ) const;
 
   /** Determines whether to use the image spacing information in calculations.
    *  Set the flag to ON if you want derivatives in physical space, or OFF if
@@ -215,12 +220,14 @@ protected:
   void ComputeIntensityFirstAndSecondOrderPartialDerivatives(
       const NeighborhoodType &neighborhood,
       const SpacingType &spacing,
+      const DirectionType &direction,
       GlobalDataStruct *gd ) const;
 
   /** Compute the first derivative of a diffusion image */
   TensorDerivativeType ComputeDiffusionTensorFirstOrderPartialDerivatives(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const SpacingType &spacing,
+      const DirectionType &direction,
       GlobalDataStruct *gd ) const;
 
   /** Computes the final update term based on the results of the first and

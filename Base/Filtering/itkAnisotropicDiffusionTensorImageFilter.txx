@@ -363,8 +363,11 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   typedef ImageRegionIterator<UpdateBufferType> UpdateIteratorType;
 
   typename OutputImageType::Pointer output = this->GetOutput();
-  typename FiniteDifferenceFunctionType::SpacingType
-      spacing = output->GetSpacing();
+  typename FiniteDifferenceFunctionType::SpacingType spacing
+      = output->GetSpacing();
+  typename FiniteDifferenceFunctionType::DirectionType direction
+      = output->GetDirection();
+
   TimeStepType timeStep;
   void *globalData;
 
@@ -405,7 +408,6 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   typename DiffusionTensorFaceListType::iterator dfIt =
     diffusionTensorFaceList.begin();
 
-
   // Ask the function object for a pointer to a data structure it
   // will use to manage any global values it needs.  We'll pass this
   // back to the function object at each calculation and then
@@ -423,7 +425,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   dTN.GoToBegin();
   while( !nD.IsAtEnd() )
     {
-    nU.Value() = df->ComputeUpdate(nD, dTN, spacing, globalData);
+    nU.Value() = df->ComputeUpdate(nD, dTN, spacing, direction, globalData);
     ++nD;
     ++nU;
     ++dTN;
@@ -445,7 +447,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     bDD.GoToBegin();
     while ( !bD.IsAtEnd() )
       {
-      bU.Value() = df->ComputeUpdate(bD,bDD,spacing,globalData);
+      bU.Value() = df->ComputeUpdate(bD,bDD,spacing,direction,globalData);
       ++bD;
       ++bU;
       ++bDD;
