@@ -264,12 +264,9 @@ AnisotropicDiffusionTensorFunction< TImageType >
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       gd->m_dx[i] /= spacing[i];
-      gd->m_dxy[i][i] /= ( spacing[i] * spacing[i] );
-      for( unsigned int j = i+1; j < ImageDimension; j++ )
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        gd->m_dxy[i][j]
-            = gd->m_dxy[j][i] // Guaranteed symmetric
-              /= ( spacing[i] * spacing[j] );
+        gd->m_dxy[i][j] /= ( spacing[i] * spacing[j] );
         }
       }
     }
