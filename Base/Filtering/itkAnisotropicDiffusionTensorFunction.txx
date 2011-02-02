@@ -270,6 +270,20 @@ AnisotropicDiffusionTensorFunction< TImageType >
         }
       }
     }
+  if( m_UseImageDirection )
+    {
+    // Multiply the first order partial derivative vector by the direction
+    // matrix
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      ScalarValueType sum = NumericTraits< ScalarValueType >::Zero;
+      for( unsigned int j = 0; j < ImageDimension; j++ )
+        {
+        sum += direction[i][j] * gd->m_dx[j];
+        }
+      gd->m_dx[i] = sum;
+      }
+    }
 }
 
 template< class TImageType >
