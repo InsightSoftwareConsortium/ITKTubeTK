@@ -272,6 +272,13 @@ AnisotropicDiffusionTensorFunction< TImageType >
     }
   if( m_UseImageDirection )
     {
+    // Store the current values (unfortunately a copy is impossible to avoid )
+    ScalarValueType temp_m_dx[itkGetStaticConstMacro(ImageDimension)];
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      temp_m_dx[i] = gd->m_dx[i];
+      }
+
     // Multiply the first order partial derivative vector by the direction
     // matrix
     for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -279,7 +286,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
       ScalarValueType sum = NumericTraits< ScalarValueType >::Zero;
       for( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        sum += direction[i][j] * gd->m_dx[j];
+        sum += direction[i][j] * temp_m_dx[j];
         }
       gd->m_dx[i] = sum;
       }
