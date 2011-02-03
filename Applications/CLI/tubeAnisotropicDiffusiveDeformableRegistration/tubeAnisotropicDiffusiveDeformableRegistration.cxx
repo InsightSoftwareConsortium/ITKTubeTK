@@ -43,7 +43,6 @@ limitations under the License.
 // Includes specific to this CLI application
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include "itkOrientImageFilter.h"
 #include "itkTransform.h"
 #include "itkTransformFileReader.h"
 #include "itkWarpImageFilter.h"
@@ -115,6 +114,8 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+  typename FixedImageType::Pointer fixed = fixedImageReader->GetOutput();
+  registrator->SetFixedImage( fixed );
   timeCollector.Stop( "Loading fixed image" );
 
   // Load the moving image
@@ -134,20 +135,19 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+  typename MovingImageType::Pointer moving = movingImageReader->GetOutput();
+  registrator->SetMovingImage( moving );
   timeCollector.Stop( "Loading moving image" );
 
   // Setup the initial deformation field
   timeCollector.Start( "Setup initial deformation field" );
   VectorImageType::Pointer initField = VectorImageType::New();
-  typename FixedImageType::Pointer templateImage
-      = fixedImageReader->GetOutput();
-  initField->SetOrigin( templateImage->GetOrigin() );
-  initField->SetSpacing( templateImage->GetSpacing() );
-  initField->SetDirection( templateImage->GetDirection() );
-  initField->SetLargestPossibleRegion(
-      templateImage->GetLargestPossibleRegion() );
-  initField->SetRequestedRegion( templateImage->GetRequestedRegion() );
-  initField->SetBufferedRegion( templateImage->GetBufferedRegion() );
+  initField->SetOrigin( fixed->GetOrigin() );
+  initField->SetSpacing( fixed->GetSpacing() );
+  initField->SetDirection( fixed->GetDirection() );
+  initField->SetLargestPossibleRegion( fixed->GetLargestPossibleRegion() );
+  initField->SetRequestedRegion( fixed->GetRequestedRegion() );
+  initField->SetBufferedRegion( fixed->GetBufferedRegion() );
   initField->Allocate();
 
   // Use the initial transform if given
@@ -223,56 +223,9 @@ int DoIt( int argc, char * argv[] )
     zeroVector.Fill( 0.0 );
     initField->FillBuffer( zeroVector );
     }
+  // Set the initial field to the registrator
+  registrator->SetInitialDeformationField( initField );
   timeCollector.Stop( "Setup initial deformation field" );
-
-  // Reorient to axials to avoid issues with registration metrics not
-  // transforming image gradients with the image orientation in
-  // calculating the derivative of metric wrt transformation
-  // parameters.
-  //
-  // Forcing image to be axials avoids this problem. Note, that
-  // reorientation only affects the internal mapping from index to
-  // physical coordinates.  The reoriented data spans the same
-  // physical space as the original data.  Thus, the registration
-  // transform calculated on the reoriented data is also the
-  // transform for the original un-reoriented data.
-  //
-  // We have to wait to orient the fixed, moving and initial transform images
-  // until after we have made the initial transform image, because the
-  // reorientation affects the internal mapping from index to physical
-  // coordinates.
-  timeCollector.Start( "Orient fixed image" );
-  typedef itk::OrientImageFilter< FixedImageType, FixedImageType >
-      FixedOrientFilterType;
-  typename FixedOrientFilterType::Pointer orientFixed
-      = FixedOrientFilterType::New();
-  orientFixed->UseImageDirectionOn();
-  orientFixed->SetDesiredCoordinateOrientationToSagittal();
-  orientFixed->SetInput( fixedImageReader->GetOutput() );
-  orientFixed->Update();
-  timeCollector.Stop( "Orient fixed image" );
-
-  timeCollector.Start( "Orient moving image" );
-  typedef itk::OrientImageFilter< MovingImageType, MovingImageType >
-      MovingOrientFilterType;
-  typename MovingOrientFilterType::Pointer orientMoving
-      = MovingOrientFilterType::New();
-  orientMoving->UseImageDirectionOn();
-  orientMoving->SetDesiredCoordinateOrientationToSagittal();
-  orientMoving->SetInput( movingImageReader->GetOutput() );
-  orientMoving->Update();
-  timeCollector.Stop( "Orient moving image" );
-
-  timeCollector.Start( "Orient initial deformation field" );
-  typedef itk::OrientImageFilter< VectorImageType, VectorImageType >
-      VectorOrientFilterType;
-  typename VectorOrientFilterType::Pointer orientVector
-      = VectorOrientFilterType::New();
-  orientVector->UseImageDirectionOn();
-  orientVector->SetDesiredCoordinateOrientationToSagittal();
-  orientVector->SetInput( initField );
-  orientVector->Update();
-  timeCollector.Stop( "Orient initial deformation field" );
 
   // Read the organ boundary
   if( organBoundaryFileName != "" )
@@ -288,7 +241,7 @@ int DoIt( int argc, char * argv[] )
       }
     std::string extension = organBoundaryFileName.substr(loc);
     typename RegistrationType::BorderSurfacePointer borderSurface = NULL;
-    if ( extension == std::string(".vtk") )
+    if( extension == std::string(".vtk") )
       {
       vtkSmartPointer< vtkPolyDataReader > polyDataReader
           = vtkPolyDataReader::New();
@@ -296,7 +249,7 @@ int DoIt( int argc, char * argv[] )
       polyDataReader->Update();
       borderSurface = polyDataReader->GetOutput();
       }
-    else if ( extension == std::string(".vtp") )
+    else if( extension == std::string(".vtp") )
       {
       vtkSmartPointer< vtkXMLPolyDataReader > polyDataReader
           = vtkXMLPolyDataReader::New();
@@ -314,7 +267,7 @@ int DoIt( int argc, char * argv[] )
     // If the world coordinate system is RAS (i.e. called from 3D Slicer)
     // then the model will be in RAS space while the images will be in LPS
     // space.  It's easiest to transform the model to LPS space.
-    if ( worldCoordinateSystem == "RAS" )
+    if( worldCoordinateSystem == "RAS" )
       {
       vtkSmartPointer< vtkTransform > RAStoLPS = vtkTransform::New();
       RAStoLPS->RotateZ(180); // flip in superior-inferior
@@ -354,19 +307,11 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    typename VectorOrientFilterType::Pointer orientNormals
-        = VectorOrientFilterType::New();
-    orientNormals->UseImageDirectionOn();
-    orientNormals->SetDesiredCoordinateOrientationToSagittal();
-    orientNormals->SetInput( vectorImageReader->GetOutput() );
-    orientNormals->Update();
-    registrator->SetNormalVectorImage( orientNormals->GetOutput() );
+    registrator->SetNormalVectorImage( vectorImageReader->GetOutput() );
     timeCollector.Stop( "Loading normal vector image" );
     }
 
   // Read weight image
-  typedef itk::OrientImageFilter< WeightImageType, WeightImageType >
-      WeightOrientFilterType;
   if( inputWeightImageFileName != "" )
     {
     timeCollector.Start( "Loading weight image" );
@@ -385,13 +330,7 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    typename WeightOrientFilterType::Pointer orientWeight
-        = WeightOrientFilterType::New();
-    orientWeight->UseImageDirectionOn();
-    orientWeight->SetDesiredCoordinateOrientationToSagittal();
-    orientWeight->SetInput( weightImageReader->GetOutput() );
-    orientWeight->Update();
-    registrator->SetWeightImage( orientWeight->GetOutput() );
+    registrator->SetWeightImage( weightImageReader->GetOutput() );
     timeCollector.Stop( "Loading weight image" );
     }
 
@@ -409,9 +348,6 @@ int DoIt( int argc, char * argv[] )
 
   // Setup the registration
   timeCollector.Start( "Register" );
-  registrator->SetFixedImage( orientFixed->GetOutput() );
-  registrator->SetMovingImage( orientMoving->GetOutput() );
-  registrator->SetInitialDeformationField( orientVector->GetOutput() );
   registrator->SetNumberOfIterations( numberOfIterations );
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
@@ -425,29 +361,20 @@ int DoIt( int argc, char * argv[] )
                                            0.8,
                                            progress );
 
-  // Setup the warper (resample the original coordinate frame, not the
-  // reoriented axial coordinate frame)
+  // Setup the warper
   typedef itk::WarpImageFilter< MovingImageType,
                                 MovingImageType,
                                 VectorImageType > WarperType;
   typename WarperType::Pointer warper = WarperType::New();
 
-  typename VectorOrientFilterType::Pointer orientOutput
-      = VectorOrientFilterType::New();
-  orientOutput->UseImageDirectionOn();
-  orientOutput->SetDesiredCoordinateOrientationToAxial(); // TODO save whatever was in fixed/moving
-  orientOutput->SetInput( registrator->GetOutput() );
-  orientOutput->Update();
-
-  typedef typename WarperType::CoordRepType CoordRepType;
-  typedef itk::LinearInterpolateImageFunction< MovingImageType, CoordRepType >
-      InterpolatorType;
+  typedef itk::LinearInterpolateImageFunction
+      < MovingImageType, typename WarperType::CoordRepType > InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
-  warper->SetInput( movingImageReader->GetOutput() );
-  warper->SetDeformationField( orientOutput->GetOutput() );
+  warper->SetInput( moving );
+  warper->SetDeformationField( registrator->GetOutput() );
   warper->SetInterpolator( interpolator );
-  warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
+  warper->SetOutputParametersFromImage( fixed );
   warper->SetEdgePaddingValue( 0 );
 
   // Update triggers the registration and the warping
@@ -465,7 +392,7 @@ int DoIt( int argc, char * argv[] )
     typedef itk::ImageFileWriter< VectorImageType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetFileName( outputDeformationFieldFileName );
-    fieldWriter->SetInput( orientOutput->GetOutput() );
+    fieldWriter->SetInput( registrator->GetOutput() );
     try
       {
       fieldWriter->Update();
@@ -488,7 +415,7 @@ int DoIt( int argc, char * argv[] )
 //    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
 //    GridWriterType::Pointer gridWriter = GridWriterType::New();
 //    gridWriter->SetFileName( outputTransformFileName );
-//    gridWriter->SetInput( orientOutput->GetOutput() );
+//    gridWriter->SetInput( registrator->GetOutput() );
 //    try
 //      {
 //      gridWriter->Update();
@@ -529,16 +456,10 @@ int DoIt( int argc, char * argv[] )
   if( outputNormalVectorImageFileName != "" )
     {
     timeCollector.Start( "Write normal vector image" );
-    typename VectorOrientFilterType::Pointer orientNormals
-        = VectorOrientFilterType::New();
-    orientNormals->UseImageDirectionOn();
-    orientNormals->SetDesiredCoordinateOrientationToAxial(); // TODO or whatever it was originally
-    orientNormals->SetInput( registrator->GetNormalVectorImage() );
-    orientNormals->Update();
     typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
     typename VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
     vectorWriter->SetFileName( outputNormalVectorImageFileName );
-    vectorWriter->SetInput( orientNormals->GetOutput() );
+    vectorWriter->SetInput( registrator->GetNormalVectorImage() );
     try
       {
       vectorWriter->Update();
@@ -557,16 +478,10 @@ int DoIt( int argc, char * argv[] )
   if( outputWeightImageFileName != "" )
     {
     timeCollector.Start( "Write weight image" );
-    typename WeightOrientFilterType::Pointer orientWeight
-        = WeightOrientFilterType::New();
-    orientWeight->UseImageDirectionOn();
-    orientWeight->SetDesiredCoordinateOrientationToAxial(); // TODO or whatever it was originally
-    orientWeight->SetInput( registrator->GetWeightImage() );
-    orientWeight->Update();
     typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
     typename WeightWriterType::Pointer weightWriter = WeightWriterType::New();
     weightWriter->SetFileName( outputWeightImageFileName );
-    weightWriter->SetInput( orientWeight->GetOutput() );
+    weightWriter->SetInput( registrator->GetWeightImage() );
     try
       {
       weightWriter->Update();
