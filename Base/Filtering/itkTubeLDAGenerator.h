@@ -85,7 +85,7 @@ public:
   //
   void SetFeatureImage( typename ImageType::Pointer img );
   void AddFeatureImage( typename ImageType::Pointer img );
-  typename ImageType::Pointer GetFeatureImage( unsigned int num );
+  virtual typename ImageType::Pointer GetFeatureImage( unsigned int num );
   virtual unsigned int GetNumberOfFeatureImages( void );
 
   virtual unsigned int GetNumberOfFeatures( void );
@@ -145,6 +145,8 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
+  FeatureVectorType               m_FeatureVector;
+
 private:
 
   LDAGenerator( const Self & );          // Purposely not implemented
@@ -174,6 +176,7 @@ private:
   void                          * m_ProgressProcessInfo;
   double                          m_ProgressFraction;
   double                          m_ProgressStart;
+
 
 };
 

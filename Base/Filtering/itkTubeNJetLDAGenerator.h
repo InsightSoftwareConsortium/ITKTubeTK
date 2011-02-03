@@ -123,7 +123,7 @@ protected:
 
   void GenerateNJetFeatureImages( void );
 
-  LDAValuesType GetFeatureVector( const ContinuousIndexType & indx );
+  virtual LDAValuesType GetFeatureVector( const ContinuousIndexType & indx );
 
   virtual void GenerateLDA( void );
 
@@ -146,6 +146,7 @@ private:
 
   LDAImageListType m_NJetFeatureImageList;
 
+  FeatureVectorType m_NJetFeatureVector;
 };
 
 }
