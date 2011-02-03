@@ -154,6 +154,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 
   m_UpdateBuffer->SetSpacing(output->GetSpacing());
   m_UpdateBuffer->SetOrigin(output->GetOrigin());
+  m_UpdateBuffer->SetDirection(output->GetDirection());
   m_UpdateBuffer->SetLargestPossibleRegion(output->GetLargestPossibleRegion());
   m_UpdateBuffer->SetRequestedRegion(output->GetRequestedRegion());
   m_UpdateBuffer->SetBufferedRegion(output->GetBufferedRegion());
@@ -176,6 +177,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 
   m_DiffusionTensorImage->SetSpacing(output->GetSpacing());
   m_DiffusionTensorImage->SetOrigin(output->GetOrigin());
+  m_DiffusionTensorImage->SetDirection(output->GetDirection());
   m_DiffusionTensorImage->SetLargestPossibleRegion(output->GetLargestPossibleRegion());
   m_DiffusionTensorImage->SetRequestedRegion(output->GetRequestedRegion());
   m_DiffusionTensorImage->SetBufferedRegion(output->GetBufferedRegion());
