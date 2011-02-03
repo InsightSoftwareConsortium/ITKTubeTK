@@ -181,8 +181,9 @@ int DoIt( int argc, char * argv[] )
       // For each voxel, find the displacement invoked by the given initial
       // transform.  This should work for all types of transforms (linear,
       // nonlinear, B-spline, etc) because itk::Transform is the base for each.
-      // Slicer saves transforms in LPS space, so we don't need to modify
-      // the initial transform depending on the worldCoordinateSystem
+      // Slicer saves transforms in LPS space (see Slicer's
+      // vtkMRMLTransformStorageNode::WriteData()), so we don't need to modify
+      // the initial transform according to the worldCoordinateSystem
       // variable (unlike the surface model).
       if( transform )
         {
@@ -190,6 +191,7 @@ int DoIt( int argc, char * argv[] )
         physicalPoint.Fill( 0 );
         typename TransformType::OutputPointType transformedPoint;
         transformedPoint.Fill( 0 );
+        // Initial displacement vector
         VectorType initVector;
         initVector.Fill( 0 );
         typedef itk::ImageRegionIterator< VectorImageType >
