@@ -114,7 +114,8 @@ public:
                                   void *globalData,
                                   const FloatOffsetType& = FloatOffsetType(0.0));
 
-  /** Compute the equation value. */
+  /** Compute the equation value. The two images giving rise to the neighborhood
+   *  and the tensorNeighborhood should have the same spacing and direction. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
@@ -124,7 +125,9 @@ public:
       const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value, using precomputed first derivatives for the
-      diffusion tensor. */
+      diffusion tensor. The three images giving rise to the neighborhood,
+   *  tensorNeighborhood and tensorDerivativeRegion should have the same
+   *  spacing and direction. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
