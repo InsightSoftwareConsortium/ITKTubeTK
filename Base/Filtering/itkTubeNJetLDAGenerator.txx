@@ -370,7 +370,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
 {
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  LDAValuesType v( numFeatures );
+  m_NJetFeatureVector.set_size( numFeatures );
 
   typename ImageType::IndexType indxI;
   for( unsigned int i=0; i<ImageDimension; i++ )
@@ -379,10 +379,10 @@ NJetLDAGenerator< ImageT, LabelmapT >
     }
   for( unsigned int i=0; i<numFeatures; i++ )
     {
-    v[i] = m_NJetFeatureImageList[i]->GetPixel( indxI );
+    m_NJetFeatureVector[i] = m_NJetFeatureImageList[i]->GetPixel( indxI );
     }
 
-  return v;
+  return m_NJetFeatureVector;
 }
 
 template < class ImageT, class LabelmapT >
