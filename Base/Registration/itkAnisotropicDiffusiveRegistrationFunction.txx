@@ -208,7 +208,6 @@ AnisotropicDiffusiveRegistrationFunction
     const DeformationVectorComponentNeighborhoodArrayType
         &normalDeformationComponentNeighborhoods,
     const SpacingType &spacing,
-    const DirectionType &direction,
     void *globalData,
     const FloatOffsetType &offset )
 {
@@ -260,7 +259,6 @@ AnisotropicDiffusiveRegistrationFunction
               tangentialTensorNeighborhood,
               tangentialTensorDerivativeRegion,
               spacing,
-              direction,
               gd->m_RegularizationGlobalDataStruct,
               offset );
 
@@ -273,7 +271,6 @@ AnisotropicDiffusiveRegistrationFunction
                 normalTensorNeighborhood,
                 normalTensorDerivativeRegion,
                 spacing,
-                direction,
                 gd->m_RegularizationGlobalDataStruct,
                 offset );
 

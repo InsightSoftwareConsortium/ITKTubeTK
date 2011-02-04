@@ -68,7 +68,6 @@ public:
   typedef typename Superclass::NeighborhoodType           NeighborhoodType;
   typedef typename Superclass::FloatOffsetType            FloatOffsetType;
   typedef typename Superclass::ImageType::SpacingType     SpacingType;
-  typedef typename Superclass::ImageType::DirectionType   DirectionType;
 
   /** Diffusion tensor typedefs. */
   typedef DiffusionTensor3D< double >                     DiffusionTensorType;
@@ -118,25 +117,23 @@ public:
                                   const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value. The two images giving rise to the neighborhood
-   *  and the tensorNeighborhood should have the same spacing and direction. */
+   *  and the tensorNeighborhood should have the same spacing. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const SpacingType &spacing,
-      const DirectionType &direction,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value, using precomputed first derivatives for the
       diffusion tensor. The three images giving rise to the neighborhood,
    *  tensorNeighborhood and tensorDerivativeRegion should have the same
-   *  spacing and direction. */
+   *  spacing. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const TensorDerivativeImageRegionType &tensorDerivativeRegion,
       const SpacingType &spacing,
-      const DirectionType &direction,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0));
 
@@ -166,8 +163,7 @@ public:
   void ComputeDiffusionTensorFirstOrderPartialDerivatives(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       TensorDerivativeImageRegionType &tensorDerivativeRegion,
-      const SpacingType &spacing,
-      const DirectionType &direction ) const;
+      const SpacingType &spacing ) const;
 
   /** Determines whether to use the image spacing information in calculations.
    *  Set the flag to ON if you want derivatives in physical space, or OFF if
@@ -216,14 +212,12 @@ protected:
   void ComputeIntensityFirstAndSecondOrderPartialDerivatives(
       const NeighborhoodType &neighborhood,
       const SpacingType &spacing,
-      const DirectionType &direction,
       GlobalDataStruct *gd ) const;
 
   /** Compute the first derivative of a diffusion image */
   TensorDerivativeType ComputeDiffusionTensorFirstOrderPartialDerivatives(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const SpacingType &spacing,
-      const DirectionType &direction,
       GlobalDataStruct *gd ) const;
 
   /** Computes the final update term based on the results of the first and

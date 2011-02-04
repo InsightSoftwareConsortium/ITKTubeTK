@@ -119,7 +119,6 @@ public:
   typedef typename RegistrationFunctionType::RegularizationFunctionPointer
       RegularizationFunctionPointer;
   typedef typename RegistrationFunctionType::SpacingType    SpacingType;
-  typedef typename RegistrationFunctionType::DirectionType  DirectionType;
 
   /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
