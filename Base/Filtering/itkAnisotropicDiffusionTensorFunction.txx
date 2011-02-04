@@ -65,7 +65,6 @@ AnisotropicDiffusionTensorFunction< TImageType>
   // Whether or not to use the image spacing and direction when computing the
   // derivatives
   this->m_UseImageSpacing = true;
-  this->m_UseImageDirection = true;
 }
 
 template <class TImageType>
@@ -197,37 +196,6 @@ AnisotropicDiffusionTensorFunction< TImageType >
         {
         tensorDerivative(i,j) /= spacing[i];
         }
-      if( m_UseImageDirection )
-        {
-        // Store the current values (unfortunately a copy is impossible to
-        // avoid)
-        TensorDerivativeType temp_tensorDerivative;
-        for( unsigned int i = 0; i < ImageDimension; i++ )
-          {
-          for( unsigned int j = 0; j < ImageDimension; j++ )
-            {
-            temp_tensorDerivative(i,j) = tensorDerivative(i,j);
-            }
-          }
-        // Multiply the first order partial derivative matrix by the direction
-        // matrix
-        for( unsigned int i = 0; i < ImageDimension; i++ )
-          {
-          std::vector< ScalarValueType > sums(
-              ImageDimension, NumericTraits< ScalarValueType >::Zero );
-          for( unsigned int j = 0; j < ImageDimension; j++ )
-            {
-            for( unsigned int vdim = 0; vdim < ImageDimension; vdim++ )
-              {
-              sums[vdim] += direction[i][j] * temp_tensorDerivative(j, vdim);
-              }
-            }
-          for( unsigned int vdim = 0; vdim < ImageDimension; vdim++ )
-            {
-            tensorDerivative(i,vdim) = sums[vdim];
-            }
-          }
-        }
 
       if( gd )
         {
@@ -298,51 +266,6 @@ AnisotropicDiffusionTensorFunction< TImageType >
       for( unsigned int j = 0; j < ImageDimension; j++ )
         {
         gd->m_dxy[i][j] /= ( spacing[i] * spacing[j] );
-        }
-      }
-    }
-  if( m_UseImageDirection )
-    {
-    // Store the current values (unfortunately a copy is impossible to avoid )
-    ScalarValueType temp_m_dx[itkGetStaticConstMacro(ImageDimension)];
-    TensorDerivativeType temp_m_dxy;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      temp_m_dx[i] = gd->m_dx[i];
-      for( unsigned int j = 0; j < ImageDimension; j++ )
-        {
-        temp_m_dxy[i][j] = gd->m_dxy[i][j];
-        }
-      }
-
-    // Multiply the first order partial derivative vector by the direction
-    // matrix
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      ScalarValueType sum = NumericTraits< ScalarValueType >::Zero;
-      for( unsigned int j = 0; j < ImageDimension; j++ )
-        {
-        sum += direction[i][j] * temp_m_dx[j];
-        }
-      gd->m_dx[i] = sum;
-      }
-
-    // Multiply the second order partial derivative matrix by the direction
-    // matrix
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      std::vector< ScalarValueType > sums(
-          ImageDimension, NumericTraits< ScalarValueType >::Zero );
-      for( unsigned int j = 0; j < ImageDimension; j++ )
-        {
-        for( unsigned int vdim = 0; vdim < ImageDimension; vdim++ )
-          {
-          sums[vdim] += direction[i][j] * temp_m_dxy[j][vdim];
-          }
-        }
-      for( unsigned int vdim = 0; vdim < ImageDimension; vdim++ )
-        {
-        gd->m_dxy[i][vdim] = sums[vdim];
         }
       }
     }

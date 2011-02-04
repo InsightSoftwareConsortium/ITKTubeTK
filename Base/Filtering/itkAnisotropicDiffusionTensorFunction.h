@@ -177,16 +177,6 @@ public:
   bool GetUseImageSpacing() const
     { return m_UseImageSpacing; }
 
-  /** Determines whether to use the image direction information in calculations.
-   *  Set the flag to ON if you want derivatives in physical space, or OFF if
-   *  you want derivatives in isotropic pixel space.  The flag ON will result
-   *  in an extra matrix multiplication compared to the computation performed
-   *  when the flag is off.  Default is ON. */
-  void SetUseImageDirection( bool newUseImageDirection )
-    { m_UseImageDirection = newUseImageDirection; }
-  bool GetUseImageDirection() const
-    { return m_UseImageDirection; }
-
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
   virtual void *GetGlobalDataPointer() const
@@ -255,7 +245,6 @@ private:
 
   TimeStepType    m_TimeStep;
   bool            m_UseImageSpacing;
-  bool            m_UseImageDirection;
 };
 
 } // namespace itk
