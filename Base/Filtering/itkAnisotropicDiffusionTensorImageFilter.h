@@ -32,6 +32,9 @@ namespace itk {
  * \brief This is a superclass for filters that iteratively enhance edges in
  *        an image by solving a non-linear diffusion equation.
  *
+ * \warning Does not handle image directions.  Re-orient images to axial
+ * (direction cosines = identity matrix) before using this function.
+ *
  * \sa AnisotropicEdgeEnhancementDiffusionImageFilter
  * \sa AnisotropicCoherenceEnhancingDiffusionImageFilter
  * \sa AnisotropicHybridDiffusionImageFilter

@@ -39,6 +39,9 @@ namespace itk {
  *   anisotropic hybrid diffusion with continuous switch. IEEE Transactions on
  *   Medical Imaging 28(10), pp. 1585-1594, 2009.
  *
+ * \warning Does not handle image directions.  Re-orient images to axial
+ * (direction cosines = identity matrix) before using this function.
+ *
  * \sa itkAnisotropicDiffusionTensorImageFilter
  * \sa itkAnisotropicCoherenceEnhancingDiffusionImageFilter
  * \sa itkAnisotropicHybridDiffusionImageFilter

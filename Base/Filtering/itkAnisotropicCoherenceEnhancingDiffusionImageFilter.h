@@ -35,9 +35,13 @@ limitations under the License.
 namespace itk {
 /** \class AnisotropicCoherenceEnhancingDiffusionImageFilter
  *
- * \brief This class is implementation of Coherence-enhancing diffusion (CED)
+ * \brief This class is implementation of Coherence-enhancing diffusion (CED):
+ *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
+ *   anisotropic hybrid diffusion with continuous switch. IEEE Transactions on
+ *   Medical Imaging 28(10), pp. 1585-1594, 2009.
  *
- *  INSERT Reference
+ * \warning Does not handle image directions.  Re-orient images to axial
+ * (direction cosines = identity matrix) before using this function.
  *
  * \sa AnisotropicDiffusionTensorImageFilter
  * \sa AnisotropicEdgeEnhancementDiffusionImageFilter

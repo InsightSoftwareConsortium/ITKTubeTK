@@ -37,6 +37,8 @@ namespace itk
  *
  * \brief Computes the structure tensor of a multidimensional image
  *
+ * \warning Does not handle image directions.  Re-orient images to axial
+ * (direction cosines = identity matrix) before using this function.
  *
  * \ingroup GradientFilters
  * \ingroup Singlethreaded

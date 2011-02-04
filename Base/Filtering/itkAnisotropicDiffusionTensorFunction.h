@@ -34,6 +34,9 @@ namespace itk {
  * \brief This class is a function object that is used
  * to create a solver filter for edge enhancement diffusion equation
  *
+ * \warning Does not handle image directions.  Re-orient images to axial
+ * (direction cosines = identity matrix) before using this function.
+ *
  * \sa AnisotropicDiffusionTensorImageFilter
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
