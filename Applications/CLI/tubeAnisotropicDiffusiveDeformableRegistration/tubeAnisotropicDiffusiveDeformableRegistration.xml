@@ -65,7 +65,7 @@
   <parameters>
     <label>IO</label>
     <description>Input/output parameters</description>
-    <transform fileExtensions=".txt" type="linear">
+    <transform fileExtensions=".txt">
       <name>initialTransform</name>
       <flag>t</flag>
       <longflag>initialTransform</longflag>
