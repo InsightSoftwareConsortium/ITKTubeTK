@@ -41,14 +41,16 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
-#include "itkVectorCastImageFilter.h"
-#include "itkWarpImageFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include "vtkSmartPointer.h"
+#include "itkTransform.h"
+#include "itkTransformFileReader.h"
+#include "itkWarpImageFilter.h"
+
 #include "vtkPolyDataReader.h"
-#include "vtkXMLPolyDataReader.h"
+#include "vtkSmartPointer.h"
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
+#include "vtkXMLPolyDataReader.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -72,29 +74,30 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter(
+  tube::CLIProgressReporter progressReporter(
       "AnisotropicDiffusiveDeformableRegistration", CLPProcessInformation );
   progressReporter.Start();
 
-  // Typedefs
+  // Typedefs seeding definition of the anisotropic diffusive registration
+  // filter
   const unsigned int                                      ImageDimension = 3;
   typedef pixelT                                          FixedPixelType;
   typedef pixelT                                          MovingPixelType;
   typedef MovingPixelType                                 OutputPixelType;
-  typedef double                                          VectorScalarType;
   typedef itk::Image< FixedPixelType, ImageDimension >    FixedImageType;
   typedef itk::Image< MovingPixelType, ImageDimension >   MovingImageType;
-  typedef itk::Image< OutputPixelType, ImageDimension >   OutputImageType;
+  typedef double                                          VectorScalarType;
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
-  typedef itk::Image< double, ImageDimension >            WeightImageType;
 
-  //--------------------------------------------------------
+  // Initialize anisotropic diffusive registration filter
   typedef itk::AnisotropicDiffusiveRegistrationFilter
       < FixedImageType, MovingImageType, VectorImageType > RegistrationType;
   typename RegistrationType::Pointer registrator = RegistrationType::New();
+  typedef typename RegistrationType::WeightImageType      WeightImageType;
 
-  timeCollector.Start( "Loading input data" );
+  // Load the fixed image
+  timeCollector.Start( "Loading fixed image" );
   typedef itk::ImageFileReader< FixedImageType > FixedImageReaderType;
   typename FixedImageReaderType::Pointer fixedImageReader
       = FixedImageReaderType::New();
@@ -112,7 +115,10 @@ int DoIt( int argc, char * argv[] )
     }
   typename FixedImageType::Pointer fixed = fixedImageReader->GetOutput();
   registrator->SetFixedImage( fixed );
+  timeCollector.Stop( "Loading fixed image" );
 
+  // Load the moving image
+  timeCollector.Start( "Loading moving image" );
   typedef itk::ImageFileReader< MovingImageType > MovingImageReaderType;
   typename MovingImageReaderType::Pointer movingImageReader
       = MovingImageReaderType::New();
@@ -130,30 +136,103 @@ int DoIt( int argc, char * argv[] )
     }
   typename MovingImageType::Pointer moving = movingImageReader->GetOutput();
   registrator->SetMovingImage( moving );
+  timeCollector.Stop( "Loading moving image" );
 
+  // Setup the initial deformation field
+  timeCollector.Start( "Setup initial deformation field" );
   VectorImageType::Pointer initField = VectorImageType::New();
-  initField->SetSpacing( fixed->GetSpacing() );
   initField->SetOrigin( fixed->GetOrigin() );
+  initField->SetSpacing( fixed->GetSpacing() );
+  initField->SetDirection( fixed->GetDirection() );
   initField->SetLargestPossibleRegion( fixed->GetLargestPossibleRegion() );
   initField->SetRequestedRegion( fixed->GetRequestedRegion() );
   initField->SetBufferedRegion( fixed->GetBufferedRegion() );
   initField->Allocate();
 
-  // fill initial deformation with zero vectors
-  VectorType zeroVec;
-  zeroVec.Fill( 0.0 );
-  initField->FillBuffer( zeroVec );
+  // Use the initial transform if given
+  if( initialTransform != "" )
+    {
+    typedef itk::TransformFileReader TransformReaderType;
+    TransformReaderType::Pointer transformReader = TransformReaderType::New();
+    transformReader->SetFileName( initialTransform );
+    try
+      {
+      transformReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading initial transform: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    if( transformReader->GetTransformList()->size() != 0 )
+      {
+      TransformReaderType::TransformType::Pointer initial
+          = *( transformReader->GetTransformList()->begin() );
 
-  typedef itk::VectorCastImageFilter< VectorImageType, VectorImageType >
-      CasterType;
-  CasterType::Pointer caster = CasterType::New();
-  caster->SetInput( initField );
-  caster->InPlaceOff();
-  registrator->SetInitialDeformationField( caster->GetOutput() );
+      // Cast to transform pointer, so that we can use TransformPoint()
+      typedef itk::Transform< double, ImageDimension, ImageDimension >
+          TransformType;
+      typename TransformType::Pointer transform
+          = dynamic_cast< TransformType* >( initial.GetPointer() );
 
+      // For each voxel, find the displacement invoked by the given initial
+      // transform.  This should work for all types of transforms (linear,
+      // nonlinear, B-spline, etc) because itk::Transform is the base for each.
+      // Slicer saves transforms in LPS space (see Slicer's
+      // vtkMRMLTransformStorageNode::WriteData()), so we don't need to modify
+      // the initial transform according to the worldCoordinateSystem
+      // variable (unlike the surface model).
+      if( transform )
+        {
+        typename TransformType::InputPointType physicalPoint;
+        physicalPoint.Fill( 0 );
+        typename TransformType::OutputPointType transformedPoint;
+        transformedPoint.Fill( 0 );
+        // Initial displacement vector
+        VectorType initVector;
+        initVector.Fill( 0 );
+        typedef itk::ImageRegionIterator< VectorImageType >
+            VectorImageRegionType;
+        VectorImageRegionType initIt = VectorImageRegionType(
+            initField, initField->GetLargestPossibleRegion() );
+        for( initIt.GoToBegin(); !initIt.IsAtEnd(); ++initIt )
+          {
+          initField->TransformIndexToPhysicalPoint( initIt.GetIndex(),
+                                                    physicalPoint );
+          transformedPoint = transform->TransformPoint( physicalPoint );
+          for( unsigned int i = 0; i < ImageDimension; i++ )
+            {
+            initVector[i] = transformedPoint[i] - physicalPoint[i];
+            }
+          initIt.Set( initVector );
+          }
+        }
+      else
+        {
+        tube::ErrorMessage( "Initial transform is an unsupported type" );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+      }
+    }
+  // If no initial transform is given, fill the initial field with zero vectors
+  else
+    {
+    VectorType zeroVector;
+    zeroVector.Fill( 0.0 );
+    initField->FillBuffer( zeroVector );
+    }
+  // Set the initial field to the registrator
+  registrator->SetInitialDeformationField( initField );
+  timeCollector.Stop( "Setup initial deformation field" );
+
+  // Read the organ boundary
   if( organBoundaryFileName != "" )
     {
-    // do we have .vtk or .vtp models?
+    timeCollector.Start( "Loading organ boundary" );
+    // Do we have .vtk or .vtp models?
     std::string::size_type loc = organBoundaryFileName.find_last_of(".");
     if( loc == std::string::npos )
       {
@@ -162,10 +241,8 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     std::string extension = organBoundaryFileName.substr(loc);
-
     typename RegistrationType::BorderSurfacePointer borderSurface = NULL;
-
-    if ( extension == std::string(".vtk") )
+    if( extension == std::string(".vtk") )
       {
       vtkSmartPointer< vtkPolyDataReader > polyDataReader
           = vtkPolyDataReader::New();
@@ -173,7 +250,7 @@ int DoIt( int argc, char * argv[] )
       polyDataReader->Update();
       borderSurface = polyDataReader->GetOutput();
       }
-    else if ( extension == std::string(".vtp") )
+    else if( extension == std::string(".vtp") )
       {
       vtkSmartPointer< vtkXMLPolyDataReader > polyDataReader
           = vtkXMLPolyDataReader::New();
@@ -191,11 +268,10 @@ int DoIt( int argc, char * argv[] )
     // If the world coordinate system is RAS (i.e. called from 3D Slicer)
     // then the model will be in RAS space while the images will be in LPS
     // space.  It's easiest to transform the model to LPS space.
-    if ( worldCoordinateSystem == "RAS" )
+    if( worldCoordinateSystem == "RAS" )
       {
       vtkSmartPointer< vtkTransform > RAStoLPS = vtkTransform::New();
-      RAStoLPS->RotateX(180); // flip in right-left
-      RAStoLPS->RotateY(180); // flip in anterior-posterior
+      RAStoLPS->RotateZ(180); // flip in superior-inferior
       vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
           = vtkTransformPolyDataFilter::New();
       transformPolyDataFilter->SetInput( borderSurface );
@@ -208,13 +284,15 @@ int DoIt( int argc, char * argv[] )
         timeCollector.Report();
         return EXIT_FAILURE;
         }
-    }
-
+      }
     registrator->SetBorderSurface( borderSurface );
+    timeCollector.Stop( "Loading organ boundary" );
     }
 
+  // Read normal vector image
   if( inputNormalVectorImageFileName != "" )
     {
+    timeCollector.Start( "Loading normal vector image" );
     typedef itk::ImageFileReader< VectorImageType > VectorImageReaderType;
     typename VectorImageReaderType::Pointer vectorImageReader
         = VectorImageReaderType::New();
@@ -231,10 +309,13 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     registrator->SetNormalVectorImage( vectorImageReader->GetOutput() );
+    timeCollector.Stop( "Loading normal vector image" );
     }
 
+  // Read weight image
   if( inputWeightImageFileName != "" )
     {
+    timeCollector.Start( "Loading weight image" );
     typedef itk::ImageFileReader< WeightImageType > WeightImageReaderType;
     typename WeightImageReaderType::Pointer weightImageReader
         = WeightImageReaderType::New();
@@ -251,26 +332,28 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     registrator->SetWeightImage( weightImageReader->GetOutput() );
+    timeCollector.Stop( "Loading weight image" );
     }
 
-  timeCollector.Stop( "Loading input data" );
-  double progress = 0.1;
-  progressReporter.Report( progress );
-
-  //-------------------------------------------------------------
-  timeCollector.Start( "Registration" );
-  registrator->SetNumberOfIterations( numberOfIterations );
-  registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
-  registrator->SetUseAnisotropicRegularization(
-      !doNotUseAnisotropicRegularization );
-
-  registrator->SetTimeStep( timeStep );
+  // Error checking on lambda
   if( lambda > 0.0 )
     {
     tube::ErrorMessage( "Lambda must be negative." );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+
+  // Report progress from reading input data
+  double progress = 0.1;
+  progressReporter.Report( progress );
+
+  // Setup the registration
+  timeCollector.Start( "Register" );
+  registrator->SetNumberOfIterations( numberOfIterations );
+  registrator->SetTimeStep( timeStep );
+  registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
+  registrator->SetUseAnisotropicRegularization(
+      !doNotUseAnisotropicRegularization );
   registrator->SetLambda( lambda );
 
   tube::CLIFilterWatcher watchRegistration(registrator,
@@ -279,37 +362,34 @@ int DoIt( int argc, char * argv[] )
                                            0.8,
                                            progress );
 
-  // warp moving image
-  typedef
-      itk::WarpImageFilter< MovingImageType, MovingImageType, VectorImageType >
-      WarperType;
+  // Setup the warper
+  typedef itk::WarpImageFilter< MovingImageType,
+                                MovingImageType,
+                                VectorImageType > WarperType;
   typename WarperType::Pointer warper = WarperType::New();
 
-  typedef typename WarperType::CoordRepType CoordRepType;
-  typedef itk::LinearInterpolateImageFunction<MovingImageType,CoordRepType>
-      InterpolatorType;
+  typedef itk::LinearInterpolateImageFunction
+      < MovingImageType, typename WarperType::CoordRepType > InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
   warper->SetInput( moving );
   warper->SetDeformationField( registrator->GetOutput() );
   warper->SetInterpolator( interpolator );
-  warper->SetOutputSpacing( fixed->GetSpacing() );
-  warper->SetOutputOrigin( fixed->GetOrigin() );
-  warper->SetOutputDirection( fixed->GetDirection() );
+  warper->SetOutputParametersFromImage( fixed );
   warper->SetEdgePaddingValue( 0 );
 
-  // Update triggers the registration
+  // Update triggers the registration and the warping
   warper->Update();
+  timeCollector.Stop( "Register" );
 
-  timeCollector.Stop( "Registration" );
+  // Report progress from doing the registration
   progress = 0.9;
   progressReporter.Report( progress );
 
-  // ---------------------------------------------------------
-  timeCollector.Start( "Write outputs" );
-
+  // Write the deformation field
   if( outputDeformationFieldFileName != "" )
     {
+    timeCollector.Start( "Write deformation field" );
     typedef itk::ImageFileWriter< VectorImageType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetFileName( outputDeformationFieldFileName );
@@ -325,10 +405,14 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
+    timeCollector.Stop( "Write deformation field" );
     }
 
+  // Output the transformation gridTransform (commented out for now, as not yet
+  // supported in 3D Slicer)
 //  if( outputTransformFileName != "" )
 //    {
+//    timeCollector.Start( "Write output transform" );
 //    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
 //    GridWriterType::Pointer gridWriter = GridWriterType::New();
 //    gridWriter->SetFileName( outputTransformFileName );
@@ -344,10 +428,13 @@ int DoIt( int argc, char * argv[] )
 //      timeCollector.Report();
 //      return EXIT_FAILURE;
 //      }
+//    timeCollector.Stop( "Write output transform" );
 //    }
 
+  // Write the resampled moving image
   if( outputResampledImageFileName != "" )
     {
+    timeCollector.Start( "Write resampled moving image" );
     typedef itk::ImageFileWriter< MovingImageType > ImageWriterType;
     typename ImageWriterType::Pointer imageWriter = ImageWriterType::New();
     imageWriter->SetFileName( outputResampledImageFileName );
@@ -363,10 +450,13 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
+    timeCollector.Stop( "Write resampled moving image" );
     }
 
+  // Write the normal vector image
   if( outputNormalVectorImageFileName != "" )
     {
+    timeCollector.Start( "Write normal vector image" );
     typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
     typename VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
     vectorWriter->SetFileName( outputNormalVectorImageFileName );
@@ -382,10 +472,13 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
+    timeCollector.Stop( "Write normal vector image" );
     }
 
+  // Write the weight image
   if( outputWeightImageFileName != "" )
     {
+    timeCollector.Start( "Write weight image" );
     typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
     typename WeightWriterType::Pointer weightWriter = WeightWriterType::New();
     weightWriter->SetFileName( outputWeightImageFileName );
@@ -401,12 +494,14 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
+    timeCollector.Stop( "Write weight image" );
     }
 
-  timeCollector.Stop( "Write outputs" );
+  // Report progress from writing the outputs
   progress = 1.0;
   progressReporter.Report( progress );
 
+  // Clean up, we're done
   progressReporter.End( );
   timeCollector.Report();
   return EXIT_SUCCESS;

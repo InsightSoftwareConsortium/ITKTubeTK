@@ -44,7 +44,7 @@
       <longflag>organBoundary</longflag>
       <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image</description>
     </geometry>
-    <image>
+    <image type="vector">
       <name>inputNormalVectorImageFileName</name>
       <label>Input Normal Vector Image</label>
       <flag>n</flag>
@@ -65,11 +65,11 @@
   <parameters>
     <label>IO</label>
     <description>Input/output parameters</description>
-    <transform fileExtensions=".txt" type="linear">
+    <transform fileExtensions=".txt">
       <name>initialTransform</name>
       <flag>t</flag>
       <longflag>initialTransform</longflag>
-      <description>NOT YET IMPLEMENTED.  Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. This transform should be an affine or rigid transform.  Optional.  TODO: init deformation field</description>
+      <description>Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. Optional.</description>
       <label>Initial Transform</label>
       <channel>input</channel>
     </transform>
