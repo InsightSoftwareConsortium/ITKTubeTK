@@ -33,6 +33,7 @@ limitations under the License.
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkCastImageFilter.h"
+#include "itkOrientImageFilter.h"
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
@@ -108,6 +109,16 @@ int DoIt( int argc, char * argv[] )
     CastInputImageFilterType::New();
   castInputImageFilter->SetInput( reader->GetOutput() );
 
+  // Reorient to axial because the anisotropic diffusion tensor function does
+  // not handle direction
+  typedef itk::OrientImageFilter< FilterInputImageType, FilterInputImageType >
+      OrientInputFilterType;
+  typename OrientInputFilterType::Pointer orientInputFilter
+      = OrientInputFilterType::New();
+  orientInputFilter->UseImageDirectionOn();
+  orientInputFilter->SetDesiredCoordinateOrientationToAxial();
+  orientInputFilter->SetInput( castInputImageFilter->GetOutput() );
+
   // Perform the coherence enhancing anisotropic diffusion
   timeCollector.Start("Coherence enhancing anisotropic diffusion");
 
@@ -120,7 +131,7 @@ int DoIt( int argc, char * argv[] )
   typename CoherenceEnhancingFilterType::Pointer CoherenceEnhancingFilter =
     CoherenceEnhancingFilterType::New();
 
-  CoherenceEnhancingFilter->SetInput( castInputImageFilter->GetOutput() );
+  CoherenceEnhancingFilter->SetInput( orientInputFilter->GetOutput() );
 
   //Set/Get CED parameters
   CoherenceEnhancingFilter->SetSigma( scaleParameter );
@@ -159,12 +170,22 @@ int DoIt( int argc, char * argv[] )
     CastOutputImageFilterType::New();
   castOutputImageFilter->SetInput( CoherenceEnhancingFilter->GetOutput() );
 
+  // Reorient back from axial to whatever direction we had before
+  typedef itk::OrientImageFilter< OutputImageType, OutputImageType >
+      OrientOutputFilterType;
+  typename OrientOutputFilterType::Pointer orientOutputFilter
+      = OrientOutputFilterType::New();
+  orientOutputFilter->UseImageDirectionOn();
+  orientOutputFilter->SetDesiredCoordinateDirection(
+      reader->GetOutput()->GetDirection() );
+  orientOutputFilter->SetInput( castOutputImageFilter->GetOutput() );
+
   // Save output data
   timeCollector.Start("Save data");
   typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( castOutputImageFilter->GetOutput() );
+  writer->SetInput( orientOutputFilter->GetOutput() );
 
   try
     {

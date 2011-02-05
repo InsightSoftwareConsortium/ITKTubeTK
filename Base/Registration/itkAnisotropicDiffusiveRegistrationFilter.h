@@ -121,6 +121,7 @@ public:
       RegistrationFunctionPointer;
   typedef typename RegistrationFunctionType::RegularizationFunctionPointer
       RegularizationFunctionPointer;
+  typedef typename RegistrationFunctionType::SpacingType    SpacingType;
 
   /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
@@ -381,6 +382,7 @@ protected:
   struct FaceStruct
     {
     FaceStruct() {}
+
     FaceStruct( ImageType& image, typename OutputImageType::SizeType radius )
       {
       if( image )
@@ -390,6 +392,7 @@ protected:
                                    radius );
         }
       }
+
     FaceStruct( ImageType& image,
                 typename ImageType::ObjectType::RegionType region,
                 typename OutputImageType::SizeType radius )

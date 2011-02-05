@@ -154,6 +154,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 
   m_UpdateBuffer->SetSpacing(output->GetSpacing());
   m_UpdateBuffer->SetOrigin(output->GetOrigin());
+  m_UpdateBuffer->SetDirection(output->GetDirection());
   m_UpdateBuffer->SetLargestPossibleRegion(output->GetLargestPossibleRegion());
   m_UpdateBuffer->SetRequestedRegion(output->GetRequestedRegion());
   m_UpdateBuffer->SetBufferedRegion(output->GetBufferedRegion());
@@ -176,6 +177,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 
   m_DiffusionTensorImage->SetSpacing(output->GetSpacing());
   m_DiffusionTensorImage->SetOrigin(output->GetOrigin());
+  m_DiffusionTensorImage->SetDirection(output->GetDirection());
   m_DiffusionTensorImage->SetLargestPossibleRegion(output->GetLargestPossibleRegion());
   m_DiffusionTensorImage->SetRequestedRegion(output->GetRequestedRegion());
   m_DiffusionTensorImage->SetBufferedRegion(output->GetBufferedRegion());
@@ -363,6 +365,9 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   typedef ImageRegionIterator<UpdateBufferType> UpdateIteratorType;
 
   typename OutputImageType::Pointer output = this->GetOutput();
+  typename FiniteDifferenceFunctionType::SpacingType spacing
+      = output->GetSpacing();
+
   TimeStepType timeStep;
   void *globalData;
 
@@ -403,7 +408,6 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   typename DiffusionTensorFaceListType::iterator dfIt =
     diffusionTensorFaceList.begin();
 
-
   // Ask the function object for a pointer to a data structure it
   // will use to manage any global values it needs.  We'll pass this
   // back to the function object at each calculation and then
@@ -421,7 +425,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   dTN.GoToBegin();
   while( !nD.IsAtEnd() )
     {
-    nU.Value() = df->ComputeUpdate(nD, dTN, globalData);
+    nU.Value() = df->ComputeUpdate(nD, dTN, spacing, globalData);
     ++nD;
     ++nU;
     ++dTN;
@@ -443,7 +447,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     bDD.GoToBegin();
     while ( !bD.IsAtEnd() )
       {
-      bU.Value() = df->ComputeUpdate(bD,bDD,globalData);
+      bU.Value() = df->ComputeUpdate(bD,bDD,spacing,globalData);
       ++bD;
       ++bU;
       ++bDD;
