@@ -37,6 +37,14 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
+# expect image comparison perfection on 64-bit machines
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0 )
+# ... and give a bit of tolerance for 32-bit machines
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0.000001 )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 #######
 # Test1
 #######
@@ -51,7 +59,8 @@ add_test( ${PROJECT_NAME}Test1
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha
-               -b ${BASELINE}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha )
+               -b ${BASELINE}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
@@ -69,7 +78,8 @@ add_test( ${PROJECT_NAME}Test2
 add_test( ${PROJECT_NAME}Test2-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticTubeEEDFilterResultImage.mha
-               -b ${BASELINE}/SyntheticTubeEEDFilterResultImage.mha )
+               -b ${BASELINE}/SyntheticTubeEEDFilterResultImage.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
 
@@ -87,6 +97,7 @@ add_test( ${PROJECT_NAME}Test3
 add_test( ${PROJECT_NAME}Test3-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha
-               -b ${BASELINE}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha )
+               -b ${BASELINE}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test3-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
