@@ -241,9 +241,16 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
         std::cout << "Point: " << i << "  idealR = " << idealR[i]
           << "  estimatedR = " << pntIter->GetRadius() << std::endl;
         }
+
       // reset radius for re-testing
       pntIter->SetRadius( idealR[i] );
       ++pntIter;
+      if( i < numPoints-1 )
+        {
+        pntIter->SetRadius( idealR[i] );
+        ++pntIter;
+        ++i;
+        }
       }
     avgDiff /= numPoints;
     failures = failures / numPoints;
@@ -254,6 +261,8 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     avgMaxDiff += maxDiff;
     avgFailures += failures;
     }
+
+  delete tubeList;
 
   avgFailures /= numMCRuns;
   avgAvgDiff /= numMCRuns;

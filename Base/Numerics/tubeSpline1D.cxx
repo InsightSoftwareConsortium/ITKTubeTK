@@ -88,6 +88,8 @@ Spline1D()
   m_XMin = 0;
   m_XMax = 1;
 
+  m_Data.set_size(4);
+
   m_Opt1DVal = new Spline1DValFunc(this);
   m_Opt1DDeriv = new Spline1DDerivFunc(this);
 
