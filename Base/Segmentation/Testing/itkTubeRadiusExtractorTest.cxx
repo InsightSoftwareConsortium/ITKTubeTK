@@ -145,7 +145,7 @@ int itkTubeRadiusExtractorTest( int argc, char * argv[] )
   rndGen->Initialize(); // set seed here
 
   int failures = 0;
-  unsigned int numMCRuns = 100;
+  unsigned int numMCRuns = 20;
   for( unsigned int mcRun=0; mcRun<numMCRuns; mcRun++ )
     {
     std::cout << std::endl;

@@ -47,7 +47,7 @@ add_test( ${PROJECT_NAME}Test1
                -n 127
                -s 0.5
                -b 20
-               -i 1000
+               -i 100
                ${INPUT_DATA}/im0001.mha
                ${INPUT_DATA}/im0001.vk.mask.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha )

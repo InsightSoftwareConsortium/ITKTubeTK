@@ -87,7 +87,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
   rndGen->Initialize(); // set seed here
 
   int failures = 0;
-  for( unsigned int mcRun=0; mcRun<4; mcRun++ )
+  for( unsigned int mcRun=0; mcRun<2; mcRun++ )
     {
     std::cout << std::endl;
     std::cout << std::endl;
