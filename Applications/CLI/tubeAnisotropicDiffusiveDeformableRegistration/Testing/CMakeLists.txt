@@ -175,3 +175,78 @@ add_test( ${PROJECT_NAME}SphereTestGaussianReg-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}SphereTestGaussianReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestGaussianReg )
+
+#######
+# Test4
+#######
+add_test( ${PROJECT_NAME}BoxesTestNoReg
+            ${PROJ_EXE}
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origMovingImage.mhd
+               -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_transformedMovingImage.mhd
+               -i 5
+               -s 0.125
+               -r )
+
+#######
+# Test4-Compare
+#######
+add_test( ${PROJECT_NAME}BoxesTestNoReg-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}BoxesTestNoReg-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}BoxesTestNoReg )
+
+#######
+# Test5
+#######
+add_test( ${PROJECT_NAME}BoxesTestAnisotropicReg
+            ${PROJ_EXE}
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origMovingImage.mhd
+               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_weightImage.mhd
+               -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_transformedMovingImage.mhd
+               -i 5
+               -s 0.125 )
+
+#######
+# Test5-Compare
+#######
+add_test( ${PROJECT_NAME}BoxesTestAnisotropicReg-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}BoxesTestAnisotropicReg-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}BoxesTestAnisotropicReg )
+
+#######
+# Test6
+#######
+add_test( ${PROJECT_NAME}BoxesTestGaussianReg
+            ${PROJ_EXE}
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origFixedImage.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origMovingImage.mhd
+               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_normalVectorImage.mhd
+               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_weightImage.mhd
+               -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_transformedMovingImage.mhd
+               -i 5
+               -s 0.125
+               -a )
+
+#######
+# Test6-Compare
+#######
+add_test( ${PROJECT_NAME}BoxesTestGaussianReg-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}BoxesTestGaussianReg-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}BoxesTestGaussianReg )
