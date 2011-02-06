@@ -150,6 +150,31 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS-Com
                       PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS )
 
 #######
+# Test2-Using surface model (in RAS space) and downsampled fixed image
+#######
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRASDownsampled
+            ${PROJ_EXE}
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage_downsampled.mhd
+               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
+               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorderRAS.vtk
+               -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_resultingMotionField_downsampled.mhd
+               -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_transformedMovingImage_downsampled.mhd
+               -i 5
+               -s 0.125
+               -l -0.05 )
+
+#######
+# Test2-Compare-Using surface model (in RAS space) and downsampled fixed image
+#######
+add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRASDownsampled-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_resultingMotionField_downsampled.mhd
+               -b ${BASELINE}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurface_resultingMotionField_downsampled.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRASDownsampled-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRASDownsampled )
+
+#######
 # Test3
 #######
 add_test( ${PROJECT_NAME}SphereTestGaussianReg
