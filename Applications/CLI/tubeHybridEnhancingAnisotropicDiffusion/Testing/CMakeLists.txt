@@ -73,7 +73,7 @@ add_test( ${PROJECT_NAME}Test2
                ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha )
 
 #######
-# Test1-Compare
+# Test2-Compare
 #######
 add_test( ${PROJECT_NAME}Test2-Compare
             ${IMAGECOMPARE_EXE}
@@ -82,3 +82,22 @@ add_test( ${PROJECT_NAME}Test2-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
+
+#######
+# Test3
+#######
+add_test( ${PROJECT_NAME}Test3
+            ${PROJ_EXE}
+               ${INPUT_DATA}/SyntheticTubePlusSurfaceImage_oriented.mha
+               ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha )
+
+#######
+# Test3-Compare
+#######
+add_test( ${PROJECT_NAME}Test3-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha
+               -b ${BASELINE}/SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )

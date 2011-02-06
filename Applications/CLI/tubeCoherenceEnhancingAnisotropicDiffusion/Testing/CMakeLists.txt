@@ -101,3 +101,22 @@ add_test( ${PROJECT_NAME}Test3-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test3-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
+
+#######
+# Test4
+#######
+add_test( ${PROJECT_NAME}Test4
+            ${PROJ_EXE}
+               ${INPUT_DATA}/SyntheticTubePlusSurfaceImage_oriented.mha
+               ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha )
+
+#######
+# Test4-Compare
+#######
+add_test( ${PROJECT_NAME}Test4-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha
+               -b ${BASELINE}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
