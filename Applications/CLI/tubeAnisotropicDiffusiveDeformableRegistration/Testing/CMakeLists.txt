@@ -208,8 +208,8 @@ add_test( ${PROJECT_NAME}BoxesTestNoReg
             ${PROJ_EXE}
                ${INPUT_DATA}/Boxes_fixed.mhd
                ${INPUT_DATA}/Boxes_moving.mhd
-               -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
-               -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_transformedMovingImage.mhd
+               -d ${TEMP}/Boxes_noReg_motionField.mhd
+               -o ${TEMP}/Boxes_noReg_transformedMoving.mhd
                -i 5
                -s 0.125
                -r )
@@ -219,8 +219,8 @@ add_test( ${PROJECT_NAME}BoxesTestNoReg
 #######
 add_test( ${PROJECT_NAME}BoxesTestNoReg-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
-               -b ${BASELINE}/tubeAnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
+               -t ${TEMP}/Boxes_noReg_motionField.mhd
+               -b ${BASELINE}/Boxes_noReg_motionField.mhd
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}BoxesTestNoReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}BoxesTestNoReg )
@@ -234,8 +234,8 @@ add_test( ${PROJECT_NAME}BoxesTestAnisotropicReg
                ${INPUT_DATA}/Boxes_moving.mhd
                -n ${INPUT_DATA}/Boxes_normals.mhd
                -w ${INPUT_DATA}/Boxes_weights.mhd
-               -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
-               -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_transformedMovingImage.mhd
+               -d ${TEMP}/Boxes_anisotropic_motionField.mhd
+               -o ${TEMP}/Boxes_anisotropic_transformedMoving.mhd
                -i 5
                -s 0.125 )
 
@@ -244,8 +244,8 @@ add_test( ${PROJECT_NAME}BoxesTestAnisotropicReg
 #######
 add_test( ${PROJECT_NAME}BoxesTestAnisotropicReg-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
-               -b ${BASELINE}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
+               -t ${TEMP}/Boxes_anisotropic_motionField.mhd
+               -b ${BASELINE}/Boxes_anisotropic_motionField.mhd
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}BoxesTestAnisotropicReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}BoxesTestAnisotropicReg )
@@ -259,8 +259,8 @@ add_test( ${PROJECT_NAME}BoxesTestGaussianReg
                ${INPUT_DATA}/Boxes_moving.mhd
                -n ${INPUT_DATA}/Boxes_normals.mhd
                -w ${INPUT_DATA}/Boxes_weights.mhd
-               -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
-               -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_transformedMovingImage.mhd
+               -d ${TEMP}/Boxes_gaussian_motionField.mhd
+               -o ${TEMP}/Boxes_gaussian_transformedMoving.mhd
                -i 5
                -s 0.125
                -a )
@@ -270,8 +270,8 @@ add_test( ${PROJECT_NAME}BoxesTestGaussianReg
 #######
 add_test( ${PROJECT_NAME}BoxesTestGaussianReg-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
-               -b ${BASELINE}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
+               -t ${TEMP}/Boxes_gaussian_motionField.mhd
+               -b ${BASELINE}/Boxes_gaussian_motionField.mhd
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}BoxesTestGaussianReg-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}BoxesTestGaussianReg )
