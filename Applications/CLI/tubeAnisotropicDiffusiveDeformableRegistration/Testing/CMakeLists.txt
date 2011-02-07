@@ -50,10 +50,10 @@ endif( CMAKE_SIZEOF_VOID_P EQUAL 8)
 #######
 add_test( ${PROJECT_NAME}SphereTestNoReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_weightImage.mhd
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -n ${INPUT_DATA}/Sphere_normals.mhd
+               -w ${INPUT_DATA}/Sphere_weights.mhd
                -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_none_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_none_transformedMovingImage.mhd
                -i 5
@@ -77,10 +77,10 @@ set_tests_properties( ${PROJECT_NAME}SphereTestNoReg-Compare
 #######
 add_test( ${PROJECT_NAME}SphereTestAnisotropicReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_weightImage.mhd
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -n ${INPUT_DATA}/Sphere_normals.mhd
+               -w ${INPUT_DATA}/Sphere_weights.mhd
                -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_transformedMovingImage.mhd
                -i 5
@@ -103,9 +103,9 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicReg-Compare
 #######
 add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRAS
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorderRAS.vtk
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -b ${INPUT_DATA}/Sphere_surfaceBorderRAS.vtk
                -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_transformedMovingImage.mhd
                -i 5
@@ -128,9 +128,9 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRAS-Com
 #######
 add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorderLPS.vtk
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -b ${INPUT_DATA}/Sphere_surfaceBorderLPS.vtk
                -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceLPS_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceLPS_transformedMovingImage.mhd
                -i 5
@@ -154,9 +154,9 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceLPS-Com
 #######
 add_test( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRASDownsampled
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage_downsampled.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -b ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_fixedSurfaceBorderRAS.vtk
+               ${INPUT_DATA}/Sphere_fixedDownsampled.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -b ${INPUT_DATA}/Sphere_surfaceBorderRAS.vtk
                -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_resultingMotionField_downsampled.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_anisotropic_usingSurfaceRAS_transformedMovingImage_downsampled.mhd
                -i 5
@@ -179,10 +179,10 @@ set_tests_properties( ${PROJECT_NAME}SphereTestAnisotropicRegUsingSurfaceRASDown
 #######
 add_test( ${PROJECT_NAME}SphereTestGaussianReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveSphereRegistration_weightImage.mhd
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -n ${INPUT_DATA}/Sphere_normals.mhd
+               -w ${INPUT_DATA}/Sphere_weights.mhd
                -d ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveSphereRegistration_gaussian_transformedMovingImage.mhd
                -i 5
