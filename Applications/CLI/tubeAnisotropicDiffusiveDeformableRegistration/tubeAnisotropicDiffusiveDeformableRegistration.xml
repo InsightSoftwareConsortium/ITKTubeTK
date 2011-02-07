@@ -69,7 +69,7 @@
       <name>initialTransform</name>
       <flag>t</flag>
       <longflag>initialTransform</longflag>
-      <description>Initial transform for aligning the fixed and moving image. Maps positions in the fixed coordinate frame to positions in the moving coordinate frame. Optional.</description>
+      <description>Initial transform for aligning the fixed and moving image. When applied to the moving image, should make it look closer to the fixed image. Optional.</description>
       <label>Initial Transform</label>
       <channel>input</channel>
     </transform>

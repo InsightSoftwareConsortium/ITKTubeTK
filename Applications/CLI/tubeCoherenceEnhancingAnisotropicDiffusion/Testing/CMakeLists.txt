@@ -37,6 +37,14 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
+# expect image comparison perfection on 64-bit machines
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0 )
+# ... and give a bit of tolerance for 32-bit machines
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0.000001 )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 #######
 # Test1
 #######
@@ -51,7 +59,8 @@ add_test( ${PROJECT_NAME}Test1
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha
-               -b ${BASELINE}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha )
+               -b ${BASELINE}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
@@ -69,7 +78,8 @@ add_test( ${PROJECT_NAME}Test2
 add_test( ${PROJECT_NAME}Test2-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticSurfaceCEDFilterResultImage.mha
-               -b ${BASELINE}/SyntheticSurfaceCEDFilterResultImage.mha )
+               -b ${BASELINE}/SyntheticSurfaceCEDFilterResultImage.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
 
@@ -87,6 +97,26 @@ add_test( ${PROJECT_NAME}Test3
 add_test( ${PROJECT_NAME}Test3-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage.mha
-               -b ${BASELINE}/SyntheticTubePlusSurfaceCEDFilterResultImage.mha )
+               -b ${BASELINE}/SyntheticTubePlusSurfaceCEDFilterResultImage.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test3-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
+
+#######
+# Test4
+#######
+add_test( ${PROJECT_NAME}Test4
+            ${PROJ_EXE}
+               ${INPUT_DATA}/SyntheticTubePlusSurfaceImage_oriented.mha
+               ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha )
+
+#######
+# Test4-Compare
+#######
+add_test( ${PROJECT_NAME}Test4-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha
+               -b ${BASELINE}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )

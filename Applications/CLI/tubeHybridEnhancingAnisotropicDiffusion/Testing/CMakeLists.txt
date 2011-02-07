@@ -37,6 +37,14 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
 
+# expect image comparison perfection on 64-bit machines
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0 )
+# ... and give a bit of tolerance for 32-bit machines
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( imageCompareTolerance 0.000001 )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8)
+
 #######
 # Test1
 #######
@@ -51,7 +59,8 @@ add_test( ${PROJECT_NAME}Test1
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha
-               -b ${BASELINE}/itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha )
+               -b ${BASELINE}/itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
@@ -64,11 +73,31 @@ add_test( ${PROJECT_NAME}Test2
                ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha )
 
 #######
-# Test1-Compare
+# Test2-Compare
 #######
 add_test( ${PROJECT_NAME}Test2-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha
-               -b ${BASELINE}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha )
+               -b ${BASELINE}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha
+               -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
+
+#######
+# Test3
+#######
+add_test( ${PROJECT_NAME}Test3
+            ${PROJ_EXE}
+               ${INPUT_DATA}/SyntheticTubePlusSurfaceImage_oriented.mha
+               ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha )
+
+#######
+# Test3-Compare
+#######
+add_test( ${PROJECT_NAME}Test3-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha
+               -b ${BASELINE}/SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )

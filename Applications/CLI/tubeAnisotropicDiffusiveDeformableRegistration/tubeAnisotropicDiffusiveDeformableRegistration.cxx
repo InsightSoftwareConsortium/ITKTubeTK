@@ -42,6 +42,7 @@ limitations under the License.
 // Includes specific to this CLI application
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
+#include "itkOrientImageFilter.h"
 #include "itkTransform.h"
 #include "itkTransformFileReader.h"
 #include "itkWarpImageFilter.h"
@@ -113,8 +114,6 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  typename FixedImageType::Pointer fixed = fixedImageReader->GetOutput();
-  registrator->SetFixedImage( fixed );
   timeCollector.Stop( "Loading fixed image" );
 
   // Load the moving image
@@ -134,19 +133,20 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  typename MovingImageType::Pointer moving = movingImageReader->GetOutput();
-  registrator->SetMovingImage( moving );
   timeCollector.Stop( "Loading moving image" );
 
-  // Setup the initial deformation field
+  // Setup the initial deformation field: the initial deformation field should
+  // be in the space of the fixed image
   timeCollector.Start( "Setup initial deformation field" );
   VectorImageType::Pointer initField = VectorImageType::New();
-  initField->SetOrigin( fixed->GetOrigin() );
-  initField->SetSpacing( fixed->GetSpacing() );
-  initField->SetDirection( fixed->GetDirection() );
-  initField->SetLargestPossibleRegion( fixed->GetLargestPossibleRegion() );
-  initField->SetRequestedRegion( fixed->GetRequestedRegion() );
-  initField->SetBufferedRegion( fixed->GetBufferedRegion() );
+  typename FixedImageType::Pointer templateImage
+      = fixedImageReader->GetOutput();
+  initField->SetOrigin( templateImage->GetOrigin() );
+  initField->SetSpacing( templateImage->GetSpacing() );
+  initField->SetDirection( templateImage->GetDirection() );
+  initField->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
+  initField->SetRequestedRegion( templateImage->GetRequestedRegion() );
+  initField->SetBufferedRegion( templateImage->GetBufferedRegion() );
   initField->Allocate();
 
   // Use the initial transform if given
@@ -224,9 +224,54 @@ int DoIt( int argc, char * argv[] )
     zeroVector.Fill( 0.0 );
     initField->FillBuffer( zeroVector );
     }
-  // Set the initial field to the registrator
-  registrator->SetInitialDeformationField( initField );
   timeCollector.Stop( "Setup initial deformation field" );
+
+  // Orient to axials to avoid issue with the anisotropic diffusive registration
+  // function not taking image direction into account.
+  //
+  // Forcing image to be axials avoids this problem. Note, that
+  // reorientation only affects the internal mapping from index to
+  // physical coordinates.  The reoriented data spans the same
+  // physical space as the original data.  Thus, the registration
+  // transform calculated on the reoriented data is also the
+  // transform for the original un-reoriented data.
+  //
+  // We wait to orient the fixed, moving and initial transform images
+  // until after we have made the initial transform image because the
+  // reorientation affects the internal mapping from index to physical
+  // coordinates.
+  timeCollector.Start( "Orient fixed image" );
+  typedef itk::OrientImageFilter< FixedImageType, FixedImageType >
+      FixedOrientFilterType;
+  typename FixedOrientFilterType::Pointer orientFixed
+      = FixedOrientFilterType::New();
+  orientFixed->UseImageDirectionOn();
+  orientFixed->SetDesiredCoordinateOrientationToAxial();
+  orientFixed->SetInput( fixedImageReader->GetOutput() );
+  orientFixed->Update();
+  timeCollector.Stop( "Orient fixed image" );
+
+  timeCollector.Start( "Orient moving image" );
+  typedef itk::OrientImageFilter< MovingImageType, MovingImageType >
+      MovingOrientFilterType;
+  typename MovingOrientFilterType::Pointer orientMoving
+      = MovingOrientFilterType::New();
+  orientMoving->UseImageDirectionOn();
+  orientMoving->SetDesiredCoordinateOrientationToAxial();
+  orientMoving->SetInput( movingImageReader->GetOutput() );
+  orientMoving->Update();
+  timeCollector.Stop( "Orient moving image" );
+
+  timeCollector.Start( "Orient initial deformation field" );
+  typedef itk::OrientImageFilter< VectorImageType, VectorImageType >
+      VectorOrientFilterType;
+  typename VectorOrientFilterType::Pointer orientInitField
+      = VectorOrientFilterType::New();
+  orientInitField->UseImageDirectionOn();
+  orientInitField->SetDesiredCoordinateOrientationToAxial();
+  orientInitField->SetInput( initField );
+  orientInitField->Update();
+  timeCollector.Stop( "Orient initial deformation field" );
 
   // Read the organ boundary
   if( organBoundaryFileName != "" )
@@ -308,11 +353,19 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    registrator->SetNormalVectorImage( vectorImageReader->GetOutput() );
+    typename VectorOrientFilterType::Pointer orientNormals
+        = VectorOrientFilterType::New();
+    orientNormals->UseImageDirectionOn();
+    orientNormals->SetDesiredCoordinateOrientationToAxial();
+    orientNormals->SetInput( vectorImageReader->GetOutput() );
+    orientNormals->Update();
+    registrator->SetNormalVectorImage( orientNormals->GetOutput() );
     timeCollector.Stop( "Loading normal vector image" );
     }
 
   // Read weight image
+  typedef itk::OrientImageFilter< WeightImageType, WeightImageType >
+      WeightOrientFilterType;
   if( inputWeightImageFileName != "" )
     {
     timeCollector.Start( "Loading weight image" );
@@ -331,7 +384,13 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    registrator->SetWeightImage( weightImageReader->GetOutput() );
+    typename WeightOrientFilterType::Pointer orientWeight
+        = WeightOrientFilterType::New();
+    orientWeight->UseImageDirectionOn();
+    orientWeight->SetDesiredCoordinateOrientationToAxial();
+    orientWeight->SetInput( weightImageReader->GetOutput() );
+    orientWeight->Update();
+    registrator->SetWeightImage( orientWeight->GetOutput() );
     timeCollector.Stop( "Loading weight image" );
     }
 
@@ -349,6 +408,9 @@ int DoIt( int argc, char * argv[] )
 
   // Setup the registration
   timeCollector.Start( "Register" );
+  registrator->SetFixedImage( orientFixed->GetOutput() );
+  registrator->SetMovingImage( orientMoving->GetOutput() );
+  registrator->SetInitialDeformationField( orientInitField->GetOutput() );
   registrator->SetNumberOfIterations( numberOfIterations );
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
@@ -356,26 +418,29 @@ int DoIt( int argc, char * argv[] )
       !doNotUseAnisotropicRegularization );
   registrator->SetLambda( lambda );
 
+  // Watch the registration's progress
   tube::CLIFilterWatcher watchRegistration(registrator,
                                            "Anisotropic Diffusive Registration",
                                            CLPProcessInformation,
                                            0.8,
                                            progress );
 
-  // Setup the warper
+  // Setup the warper: output parameters are derived from the fixed image
+  // because the warped moving image should look like the fixed image
+  // (ex. consider when the fixed image is outside of the extent of the moving
+  // image - the transformed moving image must be in the space of the fixed
+  // image)
   typedef itk::WarpImageFilter< MovingImageType,
                                 MovingImageType,
                                 VectorImageType > WarperType;
   typename WarperType::Pointer warper = WarperType::New();
-
   typedef itk::LinearInterpolateImageFunction
       < MovingImageType, typename WarperType::CoordRepType > InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
-
-  warper->SetInput( moving );
+  warper->SetInput( movingImageReader->GetOutput() );
   warper->SetDeformationField( registrator->GetOutput() );
   warper->SetInterpolator( interpolator );
-  warper->SetOutputParametersFromImage( fixed );
+  warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( 0 );
 
   // Update triggers the registration and the warping
@@ -386,6 +451,15 @@ int DoIt( int argc, char * argv[] )
   progress = 0.9;
   progressReporter.Report( progress );
 
+  // Reorient the registration's output deformation field: deformation field
+  // is in the space of the fixed image
+  typename VectorOrientFilterType::Pointer orientOutput
+      = VectorOrientFilterType::New();
+  orientOutput->UseImageDirectionOn();
+  orientOutput->SetDesiredCoordinateDirection(
+      fixedImageReader->GetOutput()->GetDirection() );
+  orientOutput->SetInput( registrator->GetOutput() );
+
   // Write the deformation field
   if( outputDeformationFieldFileName != "" )
     {
@@ -393,7 +467,7 @@ int DoIt( int argc, char * argv[] )
     typedef itk::ImageFileWriter< VectorImageType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetFileName( outputDeformationFieldFileName );
-    fieldWriter->SetInput( registrator->GetOutput() );
+    fieldWriter->SetInput( orientOutput->GetOutput() );
     try
       {
       fieldWriter->Update();
@@ -416,7 +490,7 @@ int DoIt( int argc, char * argv[] )
 //    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
 //    GridWriterType::Pointer gridWriter = GridWriterType::New();
 //    gridWriter->SetFileName( outputTransformFileName );
-//    gridWriter->SetInput( registrator->GetOutput() );
+//    gridWriter->SetInput( orientOutput->GetOutput() );
 //    try
 //      {
 //      gridWriter->Update();
@@ -431,7 +505,7 @@ int DoIt( int argc, char * argv[] )
 //    timeCollector.Stop( "Write output transform" );
 //    }
 
-  // Write the resampled moving image
+  // Write the resampled moving image (in the space of the fixed image)
   if( outputResampledImageFileName != "" )
     {
     timeCollector.Start( "Write resampled moving image" );
@@ -453,14 +527,21 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write resampled moving image" );
     }
 
-  // Write the normal vector image
+  // Write the normal vector image: in the space of the fixed image
   if( outputNormalVectorImageFileName != "" )
     {
     timeCollector.Start( "Write normal vector image" );
+    typename VectorOrientFilterType::Pointer orientNormals
+        = VectorOrientFilterType::New();
+    orientNormals->UseImageDirectionOn();
+    orientNormals->SetDesiredCoordinateDirection(
+        fixedImageReader->GetOutput()->GetDirection() );
+    orientNormals->SetInput( registrator->GetNormalVectorImage() );
+    orientNormals->Update();
     typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
     typename VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
     vectorWriter->SetFileName( outputNormalVectorImageFileName );
-    vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+    vectorWriter->SetInput( orientNormals->GetOutput() );
     try
       {
       vectorWriter->Update();
@@ -475,14 +556,21 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write normal vector image" );
     }
 
-  // Write the weight image
+  // Write the weight image: in the space of the fixed image
   if( outputWeightImageFileName != "" )
     {
     timeCollector.Start( "Write weight image" );
+    typename WeightOrientFilterType::Pointer orientWeight
+        = WeightOrientFilterType::New();
+    orientWeight->UseImageDirectionOn();
+    orientWeight->SetDesiredCoordinateDirection(
+        fixedImageReader->GetOutput()->GetDirection() );
+    orientWeight->SetInput( registrator->GetWeightImage() );
+    orientWeight->Update();
     typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
     typename WeightWriterType::Pointer weightWriter = WeightWriterType::New();
     weightWriter->SetFileName( outputWeightImageFileName );
-    weightWriter->SetInput( registrator->GetWeightImage() );
+    weightWriter->SetInput( orientWeight->GetOutput() );
     try
       {
       weightWriter->Update();
