@@ -206,8 +206,8 @@ set_tests_properties( ${PROJECT_NAME}SphereTestGaussianReg-Compare
 #######
 add_test( ${PROJECT_NAME}BoxesTestNoReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origMovingImage.mhd
+               ${INPUT_DATA}/Boxes_fixed.mhd
+               ${INPUT_DATA}/Boxes_moving.mhd
                -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_none_transformedMovingImage.mhd
                -i 5
@@ -230,10 +230,10 @@ set_tests_properties( ${PROJECT_NAME}BoxesTestNoReg-Compare
 #######
 add_test( ${PROJECT_NAME}BoxesTestAnisotropicReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_weightImage.mhd
+               ${INPUT_DATA}/Boxes_fixed.mhd
+               ${INPUT_DATA}/Boxes_moving.mhd
+               -n ${INPUT_DATA}/Boxes_normals.mhd
+               -w ${INPUT_DATA}/Boxes_weights.mhd
                -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_anisotropic_transformedMovingImage.mhd
                -i 5
@@ -255,10 +255,10 @@ set_tests_properties( ${PROJECT_NAME}BoxesTestAnisotropicReg-Compare
 #######
 add_test( ${PROJECT_NAME}BoxesTestGaussianReg
             ${PROJ_EXE}
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origFixedImage.mhd
-               ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_origMovingImage.mhd
-               -n ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_normalVectorImage.mhd
-               -w ${INPUT_DATA}/tubeAnisotropicDiffusiveBoxesRegistration_weightImage.mhd
+               ${INPUT_DATA}/Boxes_fixed.mhd
+               ${INPUT_DATA}/Boxes_moving.mhd
+               -n ${INPUT_DATA}/Boxes_normals.mhd
+               -w ${INPUT_DATA}/Boxes_weights.mhd
                -d ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_resultingMotionField.mhd
                -o ${TEMP}/tubeAnisotropicDiffusiveBoxesRegistration_gaussian_transformedMovingImage.mhd
                -i 5
