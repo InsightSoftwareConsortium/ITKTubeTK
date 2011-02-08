@@ -255,6 +255,17 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
+::SetLDAValue( unsigned int ldaNum, double value )
+{
+  if( ldaNum < m_LDAValues.size() )
+    {
+    m_LDAValues[ ldaNum ] = value;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
 ::SetLDAMatrix( const LDAMatrixType & mat )
 {
   m_LDAMatrix = mat;
@@ -344,7 +355,6 @@ LDAGenerator< ImageT, LabelmapT >
     ConstMaskImageIteratorType;
   ConstMaskImageIteratorType itInMask( m_Labelmap,
     m_Labelmap->GetLargestPossibleRegion() );
-  itInMask.GoToBegin();
 
   unsigned int numClasses = this->GetNumberOfObjects();
   unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -377,6 +387,53 @@ LDAGenerator< ImageT, LabelmapT >
   ObjectCovarianceType globalSumOfSquares( numFeatures, numFeatures );
   globalSumOfSquares.fill( 0 );
 
+  itInMask.GoToBegin();
+  while( !itInMask.IsAtEnd() )
+    {
+    ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+    unsigned int valC = 0;
+    bool found = false;
+    for( unsigned int c=0; c<numClasses; c++ )
+      {
+      if( val == m_ObjectIdList[c] )
+        {
+        valC = c;
+        found = true;
+        break;
+        }
+      }
+
+    if( found )
+      {
+      ContinuousIndexType indx = itInMask.GetIndex();
+      LDAValuesType v = this->GetFeatureVector( indx );
+      ++globalCount;
+      for( unsigned int i=0; i<numFeatures; i++ )
+        {
+        globalSum[i] += v[i];
+        for( unsigned int j=0; j<numFeatures; j++ )
+          {
+          globalSumOfSquares[i][j] += v[i] * v[j];
+          }
+        }
+      }
+    ++itInMask;
+    }
+
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    m_GlobalMean[i] = globalSum[i] / globalCount;
+    }
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    for( unsigned int j=0; j<numFeatures; j++ )
+      {
+      m_GlobalCovariance[i][j] = ( globalSumOfSquares[i][j]
+        / globalCount ) - ( m_GlobalMean[i] * m_GlobalMean[j] );
+      }
+    }
+
+  itInMask.GoToBegin();
   while( !itInMask.IsAtEnd() )
     {
     ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
@@ -412,15 +469,6 @@ LDAGenerator< ImageT, LabelmapT >
 
   for( unsigned int c=0; c<numClasses; c++ )
     {
-    globalCount += countList[c];
-    for( unsigned int i=0; i<numFeatures; i++ )
-      {
-      globalSum[i] += sumList[c][i];
-      for( unsigned int j=0; j<numFeatures; j++ )
-        {
-        globalSumOfSquares[i][j] += sumOfSquaresList[c][i][j];
-        }
-      }
     if( countList[c] > 0 )
       {
       for( unsigned int i=0; i<numFeatures; i++ )
@@ -436,19 +484,6 @@ LDAGenerator< ImageT, LabelmapT >
             * m_ObjectMeanList[c][j] );
           }
         }
-      }
-    }
-
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    m_GlobalMean[i] = globalSum[i] / globalCount;
-    }
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    for( unsigned int j=0; j<numFeatures; j++ )
-      {
-      m_GlobalCovariance[i][j] = ( globalSumOfSquares[i][j]
-        / globalCount ) - ( m_GlobalMean[i] * m_GlobalMean[j] );
       }
     }
 

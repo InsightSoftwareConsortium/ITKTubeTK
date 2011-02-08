@@ -394,18 +394,17 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
   if( m_ForceIntensityConsistency || m_ForceOrientationInsensitivity )
     {
+    this->GenerateLDAImages();
+
     unsigned int vCount = 0;
-    std::vector< int > intensityNum( this->GetNumberOfFeatures(), 0 );
     std::vector< int > orientationNum( this->GetNumberOfFeatures(), 0 );
     for( unsigned int i=0; i<this->GetNumberOfFeatureImages(); i++ )
       {
-      intensityNum[ vCount ] = 1;
       orientationNum[ vCount ] = -1;
       vCount++;
       int orientationBase = vCount;
       for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
         {
-        intensityNum[ vCount ] = 1;
         orientationNum[ vCount ] = -1;
         vCount++;
         }
@@ -414,11 +413,9 @@ NJetLDAGenerator< ImageT, LabelmapT >
         orientationBase = vCount;
         for( unsigned int d=0; d<ImageDimension; d++ )
           {
-          intensityNum[ vCount ] = 0;
           orientationNum[ vCount ] = orientationBase;
           vCount++;
           }
-        intensityNum[ vCount ] = 1;
         orientationNum[ vCount ] = -1;
         vCount++;
         }
@@ -428,17 +425,14 @@ NJetLDAGenerator< ImageT, LabelmapT >
         orientationBase = vCount;
         for( unsigned int d=0; d<ImageDimension; d++ )
           {
-          intensityNum[ vCount ] = 0;
           orientationNum[ vCount ] = orientationBase;
           vCount++;
           }
-        intensityNum[ vCount ] = 1;
         orientationNum[ vCount ] = -1;
         vCount++;
         }
       for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
         {
-        intensityNum[ vCount ] = 0;
         orientationNum[ vCount ] = -1;
         vCount++;
         }
@@ -452,15 +446,51 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
       if( m_ForceIntensityConsistency )
         {
-        double iSum = 0;
-        for( unsigned int f=0; f<this->GetNumberOfFeatures(); f++ )
+        itk::ImageRegionIterator< LDAImageType > iterF(
+          this->GetFeatureImage(0),
+          this->GetFeatureImage(0)->GetLargestPossibleRegion() );
+        itk::ImageRegionIterator< LDAImageType > iterM(
+          this->GetLDAImage(i),
+          this->GetLDAImage(i)->GetLargestPossibleRegion() );
+        double fVal;
+        double mVal;
+        double sff = 0;
+        double smm = 0;
+        double sfm = 0;
+        double fMean = 0;
+        double mMean = 0;
+        unsigned int count = 0;
+        while( !iterF.IsAtEnd() )
           {
-          if( intensityNum[f] == 1 )
-            {
-            iSum += v[f];
-            }
+          fVal = iterF.Get();
+          mVal = iterM.Get();
+          fMean += fVal;
+          mMean += mVal;
+          ++count;
+          ++iterF;
+          ++iterM;
           }
-        if( iSum < 0 )
+        fMean /= count;
+        mMean /= count;
+        iterF.GoToBegin();
+        iterM.GoToBegin();
+        while( !iterF.IsAtEnd() )
+          {
+          fVal = iterF.Get() - fMean;
+          mVal = iterM.Get() - mMean;
+          sff += fVal * fVal;
+          smm += mVal * mVal;
+          sfm += fVal * mVal;
+          ++iterF;
+          ++iterM;
+          }
+        double denom = 1.0 * vcl_sqrt( sff * smm );
+        double measure = 0;
+        if( denom != 0 )
+          {
+          measure = sfm / denom;
+          }
+        if( measure < 0 )
           {
           for( unsigned int f=0; f<this->GetNumberOfFeatures(); f++ )
             {

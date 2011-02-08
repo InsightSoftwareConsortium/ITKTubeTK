@@ -111,9 +111,10 @@ public:
   double          GetLDAValue( unsigned int ldaNum );
   LDAMatrixType & GetLDAMatrix( void );
   LDAValuesType & GetLDAValues( void );
-  void            SetLDAMatrix( const LDAMatrixType & mat );
   void            SetLDAVector( unsigned int ldaNum,
                     const LDAVectorType & vec );
+  void            SetLDAValue( unsigned int ldaNum, double value );
+  void            SetLDAMatrix( const LDAMatrixType & mat );
   void            SetLDAValues( const LDAValuesType & values );
 
   const typename LDAImageType::Pointer GetLDAImage( unsigned int ldaNum );
