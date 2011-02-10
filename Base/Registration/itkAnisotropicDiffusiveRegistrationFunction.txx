@@ -253,6 +253,7 @@ AnisotropicDiffusiveRegistrationFunction
       {
       // Compute the regularization in the tangential plane (this will be in the
       // entire 3D space if we are using the Gaussian regularization)
+      // Compute div(P^P \grad(u_l))(e_l)
       tangentialRegularizationTerm[i]
           = m_RegularizationFunction->ComputeUpdate(
               tangentialDeformationComponentNeighborhoods[i],
@@ -265,6 +266,7 @@ AnisotropicDiffusiveRegistrationFunction
       if( this->GetUseAnisotropicRegularization() )
         {
         // Compute the regularization in the normal direction
+        // Compute div(w^2nn^T grad(u_l^\perp))
         intermediateNormalRegularizationComponent
             = m_RegularizationFunction->ComputeUpdate(
                 normalDeformationComponentNeighborhoods[i],
@@ -274,8 +276,9 @@ AnisotropicDiffusiveRegistrationFunction
                 gd->m_RegularizationGlobalDataStruct,
                 offset );
 
+        // The actual update term for the normal component is
+        // div(w^2nn^T grad(u_l^\perp))n_ln
         nln = normalVector[i] * normalVector;
-
         intermediateNormalRegularizationTerm
             = intermediateNormalRegularizationComponent * nln;
         normalRegularizationTerm

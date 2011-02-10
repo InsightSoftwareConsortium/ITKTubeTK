@@ -604,11 +604,9 @@ AnisotropicDiffusiveRegistrationFilter
   assert( m_NormalDiffusionTensorImage );
 
   // Used to compute the tangential and normal diffusion tensor images
-  // tangential:
   // P = I - wnn^T
   // tangentialMatrix = tangentialDiffusionTensor = P^TP
-  // normal:
-  // normalMatrix = normalDiffusionTensor = wnn^T
+  // normalMatrix = normalDiffusionTensor = w^2nn^T
 
   typedef itk::Matrix
       < DeformationVectorComponentType, ImageDimension, ImageDimension >
@@ -661,6 +659,7 @@ AnisotropicDiffusiveRegistrationFilter
     P = P - normalMatrix; // I - wnn^T
     tangentialMatrix = P.GetTranspose();
     tangentialMatrix = tangentialMatrix * P; // P^TP
+    normalMatrix = normalMatrix * w; // w^2nn^T
 
     // Copy the matrices to the diffusion tensor
     for ( unsigned int i = 0; i < ImageDimension; i++ )
