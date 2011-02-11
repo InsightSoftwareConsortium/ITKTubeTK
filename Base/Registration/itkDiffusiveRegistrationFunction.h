@@ -39,6 +39,8 @@ namespace itk
  * itkAnisotropicDiffusionTensorFunction to calculate the update term for the
  * regularization.
  *
+ * This base class uses the diffusive (Gaussian) regularizer.
+ *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
  *
@@ -46,6 +48,7 @@ namespace itk
  * deformation field type.
  *
  * \sa itkDiffusiveRegistrationFilter
+ * \sa itkAnisotropicDiffusiveRegistrationFunction
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
@@ -119,19 +122,6 @@ public:
       RegularizationFunctionPointer;
   typedef typename RegularizationFunctionType::SpacingType    SpacingType;
 
-  /** Normal vector types */
-  typedef double
-      NormalVectorComponentType;
-  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
-      NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension >
-      NormalVectorImageType;
-  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
-      NormalVectorImageBoundaryConditionType;
-  typedef ConstNeighborhoodIterator
-      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
-      NormalVectorNeighborhoodType;
-
   /** Typedefs for the diffusion tensor image */
   typedef typename RegularizationFunctionType::DiffusionTensorType
       DiffusionTensorType;
@@ -194,14 +184,6 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
-  /** Set/get whether to use the anisotropic diffusive regularization.  If
-   *  false, the weighting term w=0 and Gaussian regularization is used.
-   *  Default: true */
-  void SetUseAnisotropicRegularization( bool diffuse )
-    { m_UseAnisotropicRegularization = diffuse; }
-  bool GetUseAnisotropicRegularization() const
-    { return m_UseAnisotropicRegularization; }
-
   /** Returns the pointers to the regularization function and the intensity
     difference function */
   RegularizationFunctionPointer GetRegularizationFunctionPointer() const
@@ -213,8 +195,7 @@ public:
   virtual void InitializeIteration();
 
   /** Inherited from superclass - do not call this function!  Call the other
-   *  ComputeUpdate instead
-   */
+   *  ComputeUpdate instead */
   PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
                           void *globalData,
                           const FloatOffsetType &offset = FloatOffsetType(0.0));
@@ -222,20 +203,12 @@ public:
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
-      const NormalVectorNeighborhoodType
-          &normalVectorNeighborhood,
       const DiffusionTensorNeighborhoodType
-          &tangentialTensorNeighborhood,
+          &tensorNeighborhood,
       const TensorDerivativeImageRegionType
-          &tangentialTensorDerivativeRegion,
+          &tensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
-          &tangentialDeformationComponentNeighborhoods,
-      const DiffusionTensorNeighborhoodType
-          &normalTensorNeighborhood,
-      const TensorDerivativeImageRegionType
-          &normalTensorDerivativeRegion,
-      const DeformationVectorComponentNeighborhoodArrayType
-          &normalDeformationComponentNeighborhoods,
+          &deformationComponentNeighborhoods,
       const SpacingType &spacing,
       void *globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
@@ -276,12 +249,9 @@ private:
   IntensityDistanceFunctionPointer      m_IntensityDistanceFunction;
 
   /** Whether or not to compute the intensity distance and motion field
-   * regularization terms, and whether or not to use the anisotropic
-   * regularization */
+   * regularization terms */
   bool                                  m_ComputeRegularizationTerm;
   bool                                  m_ComputeIntensityDistanceTerm;
-  bool                                  m_UseAnisotropicRegularization;
-
 };
 
 } // end namespace itk

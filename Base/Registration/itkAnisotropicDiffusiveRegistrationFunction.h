@@ -37,6 +37,9 @@ namespace itk
  * itkAnisotropicDiffusionTensorFunction to calculate the update term for the
  * regularization.
  *
+ * This class uses an anisotropic diffusive regularizer for registration of
+ * images depicting sliding organs.
+ *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
  *
@@ -44,6 +47,7 @@ namespace itk
  * deformation field type.
  *
  * \sa itkAnisotropicDiffusiveRegistrationFilter
+ * \sa itkDiffusiveRegistrationFunction
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
@@ -113,13 +117,16 @@ public:
   typedef typename Superclass::SpacingType              SpacingType;
 
   /** Normal vector types */
-  typedef typename Superclass::NormalVectorComponentType
+  typedef double
       NormalVectorComponentType;
-  typedef typename Superclass::NormalVectorType         NormalVectorType;
-  typedef typename Superclass::NormalVectorImageType    NormalVectorImageType;
-  typedef typename Superclass::NormalVectorImageBoundaryConditionType
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
+      NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
       NormalVectorImageBoundaryConditionType;
-  typedef typename Superclass::NormalVectorNeighborhoodType
+  typedef ConstNeighborhoodIterator
+      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
       NormalVectorNeighborhoodType;
 
   /** Typedefs for the diffusion tensor image */
@@ -136,20 +143,28 @@ public:
   typedef typename Superclass::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
 
-  /** Set the object's state before each iteration. */
-  virtual void InitializeIteration();
+  /** Typedef for the global data type for this class of equations */
+  typedef typename Superclass::GlobalDataStruct         GlobalDataStruct;
+
+  /** Set/get whether to use the anisotropic diffusive regularization.  If
+   *  false, the weighting term w=0 and Gaussian regularization is used.
+   *  Default: true */
+  void SetUseAnisotropicRegularization( bool diffuse )
+    { m_UseAnisotropicRegularization = diffuse; }
+  bool GetUseAnisotropicRegularization() const
+    { return m_UseAnisotropicRegularization; }
 
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
-      const NormalVectorNeighborhoodType
-          &normalVectorNeighborhood,
       const DiffusionTensorNeighborhoodType
           &tangentialTensorNeighborhood,
       const TensorDerivativeImageRegionType
           &tangentialTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
           &tangentialDeformationComponentNeighborhoods,
+      const NormalVectorNeighborhoodType
+              &normalVectorNeighborhood,
       const DiffusionTensorNeighborhoodType
           &normalTensorNeighborhood,
       const TensorDerivativeImageRegionType
@@ -165,13 +180,33 @@ protected:
   virtual ~AnisotropicDiffusiveRegistrationFunction() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
+  // We don't want this function to be made public any longer, but we are
+  // allowed to use it internally
+  PixelType ComputeUpdate(
+      const NeighborhoodType &neighborhood,
+      const DiffusionTensorNeighborhoodType
+          &tensorNeighborhood,
+      const TensorDerivativeImageRegionType
+          &tensorDerivativeRegion,
+      const DeformationVectorComponentNeighborhoodArrayType
+          &deformationComponentNeighborhoods,
+      const SpacingType &spacing,
+      void *globalData,
+      const FloatOffsetType& = FloatOffsetType(0.0) )
+    { return Superclass::ComputeUpdate( neighborhood,
+                                        tensorNeighborhood,
+                                        tensorDerivativeRegion,
+                                        deformationComponentNeighborhoods,
+                                        spacing,
+                                        globalData ); }
+
 private:
   // Purposely not implemented
   AnisotropicDiffusiveRegistrationFunction(const Self&);
   void operator=(const Self&); // Purposely not implemented
 
-  /** The global timestep. */
-  TimeStepType                          m_TimeStep;
+  /* Whether or not to use the anisotropic regularization */
+  bool                                  m_UseAnisotropicRegularization;
 };
 
 } // end namespace itk

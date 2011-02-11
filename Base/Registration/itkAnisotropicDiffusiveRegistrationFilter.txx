@@ -1160,10 +1160,10 @@ AnisotropicDiffusiveRegistrationFilter
       {
       updateRegion.Value() = df->ComputeUpdate(
           outputNeighborhood,
-          normalVectorNeighborhood,
           tangentialTensorNeighborhood,
           tangentialTensorDerivativeRegion,
           tangentialDeformationComponentNeighborhoods,
+          normalVectorNeighborhood,
           normalTensorNeighborhood,
           normalTensorDerivativeRegion,
           normalDeformationComponentNeighborhoods,

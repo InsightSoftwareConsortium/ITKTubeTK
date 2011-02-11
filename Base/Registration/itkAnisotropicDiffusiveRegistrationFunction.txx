@@ -36,6 +36,7 @@ AnisotropicDiffusiveRegistrationFunction
  < TFixedImage, TMovingImage, TDeformationField >
 ::AnisotropicDiffusiveRegistrationFunction()
 {
+  m_UseAnisotropicRegularization = true;
 }
 
 /**
@@ -48,18 +49,9 @@ AnisotropicDiffusiveRegistrationFunction
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
-}
 
-/**
- * Called at the beginning of each iteration
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-AnisotropicDiffusiveRegistrationFunction
-  < TFixedImage, TMovingImage, TDeformationField >
-::InitializeIteration()
-{
-  Superclass::InitializeIteration();
+  os << indent << "Use anisotropic regularization: "
+     << ( m_UseAnisotropicRegularization ? "on" : "off" ) << std::endl;
 }
 
 /**
@@ -73,14 +65,14 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(
     const NeighborhoodType &neighborhood,
-    const NormalVectorNeighborhoodType
-        &normalVectorNeighborhood,
     const DiffusionTensorNeighborhoodType
         &tangentialTensorNeighborhood,
     const TensorDerivativeImageRegionType
         &tangentialTensorDerivativeRegion,
     const DeformationVectorComponentNeighborhoodArrayType
         &tangentialDeformationComponentNeighborhoods,
+    const NormalVectorNeighborhoodType
+        &normalVectorNeighborhood,
     const DiffusionTensorNeighborhoodType
         &normalTensorNeighborhood,
     const TensorDerivativeImageRegionType
@@ -91,17 +83,67 @@ AnisotropicDiffusiveRegistrationFunction
     void *globalData,
     const FloatOffsetType &offset )
 {
-  return Superclass::ComputeUpdate( neighborhood,
-                                    normalVectorNeighborhood,
-                                    tangentialTensorNeighborhood,
-                                    tangentialTensorDerivativeRegion,
-                                    tangentialDeformationComponentNeighborhoods,
-                                    normalTensorNeighborhood,
-                                    normalTensorDerivativeRegion,
-                                    normalDeformationComponentNeighborhoods,
-                                    spacing,
-                                    globalData,
-                                    offset );
+  // Get the global data structure
+  GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
+
+  // The superclass computes the intensity term and regularization in the
+  // tangential plane ( i.e. div(P^P \grad(u_l))(e_l) )
+  PixelType intensityTermPlusTangentialRegularizationTerm
+      = Superclass::ComputeUpdate(neighborhood,
+                                  tangentialTensorNeighborhood,
+                                  tangentialTensorDerivativeRegion,
+                                  tangentialDeformationComponentNeighborhoods,
+                                  spacing,
+                                  globalData,
+                                  offset );
+
+  // Compute the normal component of the regularization update term
+  PixelType normalRegularizationTerm;
+  normalRegularizationTerm.Fill(0);
+  if( this->GetComputeRegularizationTerm()
+    && this->GetUseAnisotropicRegularization() )
+    {
+    NormalVectorType                  normalVector;
+    DeformationVectorComponentType    intermediateNormalRegularizationComponent;
+    PixelType                         intermediateNormalRegularizationTerm;
+    NormalVectorType                  nln; // n(l)n
+
+    // Get the normal at this pixel once
+    const typename FixedImageType::IndexType index = neighborhood.GetIndex();
+    normalVector
+        = normalVectorNeighborhood.GetImagePointer()->GetPixel( index );
+
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      // Compute the regularization in the normal direction
+      // Compute div(w^2nn^T grad(u_l^\perp))
+      intermediateNormalRegularizationComponent
+          = this->GetRegularizationFunctionPointer()->ComputeUpdate(
+              normalDeformationComponentNeighborhoods[i],
+              normalTensorNeighborhood,
+              normalTensorDerivativeRegion,
+              spacing,
+              gd->m_RegularizationGlobalDataStruct,
+              offset );
+
+      // The actual update term for the normal component is
+      // div(w^2nn^T grad(u_l^\perp))n_ln
+      nln = normalVector[i] * normalVector;
+      intermediateNormalRegularizationTerm
+          = intermediateNormalRegularizationComponent * nln;
+      normalRegularizationTerm
+          = normalRegularizationTerm + intermediateNormalRegularizationTerm;
+      }
+    }
+
+  // Will hold the final update term, including the regularization and intensity
+  // distance terms
+  PixelType updateTerm;
+  updateTerm.Fill(0);
+  updateTerm = intensityTermPlusTangentialRegularizationTerm
+               + normalRegularizationTerm;
+  return updateTerm;
+
 }
 
 } // end namespace itk
