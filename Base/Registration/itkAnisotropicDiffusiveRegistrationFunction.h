@@ -116,19 +116,6 @@ public:
       RegularizationFunctionPointer;
   typedef typename Superclass::SpacingType              SpacingType;
 
-  /** Normal vector types */
-  typedef double
-      NormalVectorComponentType;
-  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
-      NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension >
-      NormalVectorImageType;
-  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
-      NormalVectorImageBoundaryConditionType;
-  typedef ConstNeighborhoodIterator
-      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
-      NormalVectorNeighborhoodType;
-
   /** Typedefs for the diffusion tensor image */
   typedef typename Superclass::DiffusionTensorType      DiffusionTensorType;
   typedef typename Superclass::DiffusionTensorImageType
@@ -143,8 +130,18 @@ public:
   typedef typename Superclass::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
 
-  /** Typedef for the global data type for this class of equations */
-  typedef typename Superclass::GlobalDataStruct         GlobalDataStruct;
+  /** Normal vector types */
+  typedef double
+      NormalVectorComponentType;
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
+      NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
+      NormalVectorImageBoundaryConditionType;
+  typedef ConstNeighborhoodIterator
+      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
+      NormalVectorNeighborhoodType;
 
   /** Set/get whether to use the anisotropic diffusive regularization.  If
    *  false, the weighting term w=0 and Gaussian regularization is used.
@@ -179,6 +176,9 @@ protected:
   AnisotropicDiffusiveRegistrationFunction();
   virtual ~AnisotropicDiffusiveRegistrationFunction() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
+
+  /** Typedef for the global data type for this class of equations */
+  typedef typename Superclass::GlobalDataStruct         GlobalDataStruct;
 
   // We don't want this function to be made public any longer, but we are
   // allowed to use it internally
