@@ -102,7 +102,7 @@ int DoIt( int argc, char * argv[] )
   typename DiffusiveRegistrationFilterType::Pointer registrator = 0;
   typename AnisotropicDiffusiveRegistrationFilterType::Pointer
       anisotropicRegistrator = 0;
-  if( doNotUseAnisotropicRegularization )
+  if( doNotPerformRegularization || doNotUseAnisotropicRegularization )
     {
     registrator = DiffusiveRegistrationFilterType::New();
     }
