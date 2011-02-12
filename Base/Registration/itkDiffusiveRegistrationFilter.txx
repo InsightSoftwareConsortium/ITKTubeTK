@@ -240,7 +240,7 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ExtractXYZComponentsFromDeformationField(
     OutputImagePointer deformationField,
-    DeformationComponentImageArrayType deformationComponentImages )
+    DeformationComponentImageArrayType& deformationComponentImages )
 {
   typename VectorIndexSelectionFilterType::Pointer indexSelector;
   assert( deformationField );

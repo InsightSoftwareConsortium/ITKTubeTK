@@ -258,7 +258,7 @@ protected:
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
       OutputImagePointer deformationField,
-      DeformationComponentImageArrayType deformationComponentImages );
+      DeformationComponentImageArrayType& deformationComponentImages );
 
   /** Get the array of tangential deformation component images. */
   DeformationComponentImageArrayType GetTangentialDeformationComponentImages()
