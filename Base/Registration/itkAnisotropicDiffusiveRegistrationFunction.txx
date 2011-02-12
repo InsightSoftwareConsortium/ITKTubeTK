@@ -36,6 +36,19 @@ AnisotropicDiffusiveRegistrationFunction
  < TFixedImage, TMovingImage, TDeformationField >
 ::AnisotropicDiffusiveRegistrationFunction()
 {
+  typename Superclass::RadiusType r;
+  r.Fill(1);
+  this->SetRadius(r);
+
+  m_ComputeRegularizationTerm = true;
+  m_ComputeIntensityDistanceTerm = true;
+
+  m_RegularizationFunction = RegularizationFunctionType::New();
+  m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
+  this->SetTimeStep( 1.0 );
+
+  this->SetMovingImage(0);
+  this->SetFixedImage(0);
 }
 
 /**
@@ -48,6 +61,182 @@ AnisotropicDiffusiveRegistrationFunction
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
+
+  os << indent << "Time step: " << m_TimeStep << std::endl;
+  os << indent << "Compute regularization term: "
+     << ( m_ComputeRegularizationTerm ? "on" : "off" ) << std::endl;
+  os << indent << "Compute intensity distance term: "
+     << ( m_ComputeIntensityDistanceTerm ? "on" : "off" ) << std::endl;
+  if ( m_RegularizationFunction )
+    {
+    os << indent << "Regularization function: " << std::endl;
+    m_RegularizationFunction->Print( os, indent );
+    }
+  if ( m_IntensityDistanceFunction )
+    {
+    os << indent << "Intensity distance function: " << std::endl;
+    m_IntensityDistanceFunction->Print( os, indent );
+    }
+}
+
+/**
+ * Creates a pointer to the data structure used to manage global values
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void *
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::GetGlobalDataPointer() const
+{
+  GlobalDataStruct * ans = new GlobalDataStruct();
+
+  // Create the component global data pointers
+  if( this->GetComputeRegularizationTerm() )
+    {
+    ans->m_RegularizationGlobalDataStruct
+        = m_RegularizationFunction->GetGlobalDataPointer();
+    }
+  if( this->GetComputeIntensityDistanceTerm() )
+    {
+    ans->m_IntensityDistanceGlobalDataStruct
+        = m_IntensityDistanceFunction->GetGlobalDataPointer();
+    }
+
+  return ans;
+}
+
+/**
+ * Deletes the global data structure
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::ReleaseGlobalDataPointer(void *GlobalData) const
+{
+  GlobalDataStruct * gd = ( GlobalDataStruct * ) GlobalData;
+
+  // Release the component data structures
+  if( this->GetComputeRegularizationTerm() )
+    {
+    m_RegularizationFunction->ReleaseGlobalDataPointer(
+        gd->m_RegularizationGlobalDataStruct );
+    }
+  if( this->GetComputeIntensityDistanceTerm() )
+    {
+    m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
+        gd->m_IntensityDistanceGlobalDataStruct );
+    }
+
+  delete gd;
+}
+
+/**
+ * Called at the beginning of each iteration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::InitializeIteration()
+{
+  if( !this->GetMovingImage() || !this->GetFixedImage()
+    || !this->GetDeformationField() )
+    {
+    itkExceptionMacro( << "MovingImage, FixedImage and/or deformation field "
+                       << "not set" );
+    }
+
+  // Setup and initialize the component functions
+  if( this->GetComputeIntensityDistanceTerm() )
+    {
+    m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() );
+    m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
+    m_IntensityDistanceFunction->SetDeformationField(
+        this->GetDeformationField() );
+    m_IntensityDistanceFunction->InitializeIteration();
+    }
+  if( this->GetComputeRegularizationTerm() )
+    {
+    m_RegularizationFunction->InitializeIteration();
+    }
+}
+
+/**
+ * Computes the update term
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::PixelType
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeUpdate(const NeighborhoodType &, void *, const FloatOffsetType & )
+{
+  // This function should never be called!
+  itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
+                     << "be called.  Use another ComputeUpdate() defined in"
+                     << "itkAnisotropicDiffusiveRegistrationFunction instead" );
+}
+
+/**
+  * Computes the update term
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::PixelType
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeUpdate(
+    const NeighborhoodType &neighborhood,
+    const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+    const TensorDerivativeImageRegionType &tensorDerivativeRegion,
+    const DeformationVectorComponentNeighborhoodArrayType
+        &deformationComponentNeighborhoods,
+    const SpacingType &spacing,
+    void *globalData,
+    const FloatOffsetType &offset )
+{
+  // Get the global data structure
+  GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
+
+  // Iterate over the deformation field components to compute the regularization
+  // and intensity distance terms - note that PixelType corresponds to a
+  // deformation vector
+
+  // Compute the intensity distance update update term
+  PixelType intensityDistanceTerm;
+  intensityDistanceTerm.Fill(0);
+  if (this->GetComputeIntensityDistanceTerm() )
+    {
+    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
+        neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
+    }
+
+  // Compute the motion field regularization update term
+  PixelType regularizationTerm;
+  regularizationTerm.Fill(0);
+  if ( this->GetComputeRegularizationTerm() )
+    {
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      // Compute the regularization
+      // Compute div(tensor \grad(u_l))(e_l)
+      regularizationTerm[i] = m_RegularizationFunction->ComputeUpdate(
+          deformationComponentNeighborhoods[i],
+          tensorNeighborhood,
+          spacing,
+          gd->m_RegularizationGlobalDataStruct,
+          tensorDerivativeRegion,
+          offset );
+      }
+    }
+
+  PixelType updateTerm;
+  updateTerm.Fill(0);
+  updateTerm = intensityDistanceTerm + regularizationTerm;
+  return updateTerm;
 }
 
 /**
@@ -85,13 +274,13 @@ AnisotropicDiffusiveRegistrationFunction
   // The superclass computes the intensity term and regularization in the
   // tangential plane ( i.e. div(P^P \grad(u_l))(e_l) )
   PixelType intensityTermPlusTangentialRegularizationTerm
-      = Superclass::ComputeUpdate(neighborhood,
-                                  tangentialTensorNeighborhood,
-                                  tangentialTensorDerivativeRegion,
-                                  tangentialDeformationComponentNeighborhoods,
-                                  spacing,
-                                  globalData,
-                                  offset );
+      = this->ComputeUpdate(neighborhood,
+                            tangentialTensorNeighborhood,
+                            tangentialTensorDerivativeRegion,
+                            tangentialDeformationComponentNeighborhoods,
+                            spacing,
+                            globalData,
+                            offset );
 
   // Compute the normal component of the regularization update term
   PixelType normalRegularizationTerm;

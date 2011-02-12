@@ -28,25 +28,6 @@ limitations under the License.
 
 #include "itkVectorIndexSelectionCastImageFilter.h"
 
-#define itkDiffusiveRegistrationFilterNewMacro(x)              \
-  static Pointer New(void)                                     \
-    {                                                          \
-    Pointer smartPtr = ::itk::ObjectFactory< x >::Create();    \
-    if ( smartPtr.GetPointer() == NULL )                       \
-      {                                                        \
-      smartPtr = new x;                                        \
-      }                                                        \
-    smartPtr->UnRegister();                                    \
-    smartPtr->CreateRegistrationFunction();                    \
-    return smartPtr;                                           \
-    }                                                          \
-  virtual::itk::LightObject::Pointer CreateAnother(void) const \
-    {                                                          \
-    ::itk::LightObject::Pointer smartPtr;                      \
-    smartPtr = x::New().GetPointer();                          \
-    return smartPtr;                                           \
-    }
-
 namespace itk
 {
 
@@ -103,7 +84,7 @@ public:
     * type of this object.  Can't call the overridden function
     * CreateRegistrationFunction() from the base class constructor, so we'll
     * call it here. Derived classes should use this instead of itkNewMacro().*/
-  itkDiffusiveRegistrationFilterNewMacro(Self);
+  itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFilter);
@@ -135,7 +116,7 @@ public:
   typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
 
   /** The registration function type */
-  typedef DiffusiveRegistrationFunction
+  typedef AnisotropicDiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
   typedef typename RegistrationFunctionType::Pointer

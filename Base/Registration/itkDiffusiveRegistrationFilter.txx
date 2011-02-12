@@ -50,6 +50,9 @@ DiffusiveRegistrationFilter
   // provided by the PDERegistration framework
   this->SmoothDeformationFieldOff();
   this->SmoothUpdateFieldOff();
+
+  // Create the registration function
+  this->CreateRegistrationFunction();
 }
 
 /**

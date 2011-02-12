@@ -80,7 +80,7 @@ public:
   typedef SmartPointer< const Self >                        ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkDiffusiveRegistrationFilterNewMacro(Self);
+  itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, DiffusiveRegistrationFilter);
@@ -111,14 +111,13 @@ public:
   typedef typename Superclass::UpdateBufferRegionType   UpdateBufferRegionType;
 
   /** The registration function type */
-  typedef AnisotropicDiffusiveRegistrationFunction
-      < FixedImageType, MovingImageType, DeformationFieldType >
+  typedef typename Superclass::RegistrationFunctionType
       RegistrationFunctionType;
-  typedef typename RegistrationFunctionType::Pointer
+  typedef typename Superclass::RegistrationFunctionPointer
       RegistrationFunctionPointer;
-  typedef typename RegistrationFunctionType::RegularizationFunctionPointer
+  typedef typename Superclass::RegularizationFunctionPointer
       RegularizationFunctionPointer;
-  typedef typename RegistrationFunctionType::SpacingType    SpacingType;
+  typedef typename Superclass::SpacingType                  SpacingType;
 
   /** Deformation field types. */
   typedef typename RegistrationFunctionType::DeformationVectorType
@@ -321,10 +320,6 @@ protected:
       const ThreadDeformationVectorComponentImageRegionType
         &deformationComponentRegionToProcess,
       int threadId );
-
-  /** Create the registration function, with default parameters for
-    * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
-  virtual void CreateRegistrationFunction();
 
   /** Get the registration function pointer */
   virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;

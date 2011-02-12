@@ -113,23 +113,6 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
- * Create the registration function
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-AnisotropicDiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::CreateRegistrationFunction()
-{
-  typename RegistrationFunctionType::Pointer registrationFunction =
-      RegistrationFunctionType::New();
-  registrationFunction->SetComputeRegularizationTerm( true );
-  registrationFunction->SetComputeIntensityDistanceTerm( true );
-  this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
-      registrationFunction.GetPointer() ) );
-}
-
-/**
  * Get the registration function pointer
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
