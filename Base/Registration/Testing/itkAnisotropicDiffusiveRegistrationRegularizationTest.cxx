@@ -233,27 +233,37 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   movingImage->Allocate();
 
   // Setup the registrator object
+  typedef itk::DiffusiveRegistrationFilter
+      < FixedImageType, MovingImageType, DeformationFieldType >
+      DiffusiveRegistrationFilterType;
   typedef itk::AnisotropicDiffusiveRegistrationFilter
       < FixedImageType, MovingImageType, DeformationFieldType >
-      RegistrationFilterType;
-  RegistrationFilterType::Pointer registrator = RegistrationFilterType::New();
+      AnisotropicDiffusiveRegistrationFilterType;
 
-  registrator->SetInitialDeformationField( deformationField );
-  registrator->SetMovingImage( movingImage );
-  registrator->SetFixedImage( fixedImage );
-  registrator->SetBorderSurface( plane->GetOutput() );
-  int numIterations = atoi( argv[8] );
-  registrator->SetNumberOfIterations( numIterations );
-  // because we are just doing motion field regularization in this test:
-  registrator->SetComputeIntensityDistanceTerm( false );
-  registrator->SetTimeStep( atof( argv[9] ) );
-  if ( useAnisotropic )
+  DiffusiveRegistrationFilterType::Pointer registrator = 0;
+  AnisotropicDiffusiveRegistrationFilterType::Pointer anisotropicRegistrator
+      = 0;
+  if( useAnisotropic )
     {
-    registrator->SetUseAnisotropicRegularization( true );
+    registrator = AnisotropicDiffusiveRegistrationFilterType::New();
+    anisotropicRegistrator
+        = dynamic_cast < AnisotropicDiffusiveRegistrationFilterType * >(
+            registrator.GetPointer() );
     }
   else
     {
-    registrator->SetUseAnisotropicRegularization( false );
+    registrator = DiffusiveRegistrationFilterType::New();
+    }
+  registrator->SetInitialDeformationField( deformationField );
+  registrator->SetMovingImage( movingImage );
+  registrator->SetFixedImage( fixedImage );
+  // because we are just doing motion field regularization in this test:
+  registrator->SetComputeIntensityDistanceTerm( false );
+  registrator->SetTimeStep( atof( argv[9] ) );
+  registrator->SetNumberOfIterations( atoi( argv[8] ) );
+  if( anisotropicRegistrator )
+    {
+    anisotropicRegistrator->SetBorderSurface( plane->GetOutput() );
     }
 
   // Save the smoothed deformation field
@@ -271,9 +281,9 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
 
   // Check to make sure the border normals were calculated correctly by the
   // registrator
-  if( useAnisotropic )
+  if( anisotropicRegistrator )
     {
-    vtkPolyData * normalPolyData = registrator->GetBorderSurface();
+    vtkPolyData * normalPolyData = anisotropicRegistrator->GetBorderSurface();
     vtkSmartPointer< vtkDataArray > normalData
                                   = normalPolyData->GetPointData()->GetNormals();
 
@@ -302,17 +312,16 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
       return EXIT_FAILURE;
       }
 
-
     // Save the normal vector image
     typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
     VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
     vectorWriter->SetFileName( argv[4] );
-    vectorWriter->SetInput( registrator->GetNormalVectorImage() );
+    vectorWriter->SetInput( anisotropicRegistrator->GetNormalVectorImage() );
     vectorWriter->Write();
 
     // Save the output deformation field normal image
     writer->SetFileName( argv[3] );
-    writer->SetInput( registrator->GetNormalDeformationFieldImage() );
+    writer->SetInput( anisotropicRegistrator->GetNormalDeformationFieldImage() );
     try
       {
       writer->Update();

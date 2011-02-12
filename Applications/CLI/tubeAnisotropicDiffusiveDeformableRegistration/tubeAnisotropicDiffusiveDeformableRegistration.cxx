@@ -91,11 +91,28 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Vector< VectorScalarType, ImageDimension > VectorType;
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
 
-  // Initialize anisotropic diffusive registration filter
+  // Initialize the registration filter
+  typedef itk::DiffusiveRegistrationFilter
+      < FixedImageType, MovingImageType, VectorImageType >
+      DiffusiveRegistrationFilterType;
   typedef itk::AnisotropicDiffusiveRegistrationFilter
-      < FixedImageType, MovingImageType, VectorImageType > RegistrationType;
-  typename RegistrationType::Pointer registrator = RegistrationType::New();
-  typedef typename RegistrationType::WeightImageType      WeightImageType;
+      < FixedImageType, MovingImageType, VectorImageType >
+      AnisotropicDiffusiveRegistrationFilterType;
+
+  typename DiffusiveRegistrationFilterType::Pointer registrator = 0;
+  typename AnisotropicDiffusiveRegistrationFilterType::Pointer
+      anisotropicRegistrator = 0;
+  if( doNotPerformRegularization || doNotUseAnisotropicRegularization )
+    {
+    registrator = DiffusiveRegistrationFilterType::New();
+    }
+  else
+    {
+    registrator = AnisotropicDiffusiveRegistrationFilterType::New();
+    anisotropicRegistrator
+        = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >(
+            registrator.GetPointer() );
+    }
 
   // Load the fixed image
   timeCollector.Start( "Loading fixed image" );
@@ -273,8 +290,8 @@ int DoIt( int argc, char * argv[] )
   orientInitField->Update();
   timeCollector.Stop( "Orient initial deformation field" );
 
-  // Read the organ boundary
-  if( organBoundaryFileName != "" )
+  // Read the organ boundary if we are using the anisotropic regularizer
+  if( anisotropicRegistrator && organBoundaryFileName != "" )
     {
     timeCollector.Start( "Loading organ boundary" );
     // Do we have .vtk or .vtp models?
@@ -286,7 +303,8 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     std::string extension = organBoundaryFileName.substr(loc);
-    typename RegistrationType::BorderSurfacePointer borderSurface = NULL;
+    typename AnisotropicDiffusiveRegistrationFilterType::BorderSurfacePointer
+        borderSurface = NULL;
     if( extension == std::string(".vtk") )
       {
       vtkSmartPointer< vtkPolyDataReader > polyDataReader
@@ -330,12 +348,12 @@ int DoIt( int argc, char * argv[] )
         return EXIT_FAILURE;
         }
       }
-    registrator->SetBorderSurface( borderSurface );
+    anisotropicRegistrator->SetBorderSurface( borderSurface );
     timeCollector.Stop( "Loading organ boundary" );
     }
 
-  // Read normal vector image
-  if( inputNormalVectorImageFileName != "" )
+  // Read normal vector image if we are using the anisotropic regularizer
+  if( anisotropicRegistrator && inputNormalVectorImageFileName != "" )
     {
     timeCollector.Start( "Loading normal vector image" );
     typedef itk::ImageFileReader< VectorImageType > VectorImageReaderType;
@@ -359,14 +377,16 @@ int DoIt( int argc, char * argv[] )
     orientNormals->SetDesiredCoordinateOrientationToAxial();
     orientNormals->SetInput( vectorImageReader->GetOutput() );
     orientNormals->Update();
-    registrator->SetNormalVectorImage( orientNormals->GetOutput() );
+    anisotropicRegistrator->SetNormalVectorImage( orientNormals->GetOutput() );
     timeCollector.Stop( "Loading normal vector image" );
     }
 
-  // Read weight image
+  // Read weight image if we are using the anisotropic registrator
+  typedef typename AnisotropicDiffusiveRegistrationFilterType::WeightImageType
+      WeightImageType;
   typedef itk::OrientImageFilter< WeightImageType, WeightImageType >
       WeightOrientFilterType;
-  if( inputWeightImageFileName != "" )
+  if( anisotropicRegistrator && inputWeightImageFileName != "" )
     {
     timeCollector.Start( "Loading weight image" );
     typedef itk::ImageFileReader< WeightImageType > WeightImageReaderType;
@@ -390,7 +410,7 @@ int DoIt( int argc, char * argv[] )
     orientWeight->SetDesiredCoordinateOrientationToAxial();
     orientWeight->SetInput( weightImageReader->GetOutput() );
     orientWeight->Update();
-    registrator->SetWeightImage( orientWeight->GetOutput() );
+    anisotropicRegistrator->SetWeightImage( orientWeight->GetOutput() );
     timeCollector.Stop( "Loading weight image" );
     }
 
@@ -414,9 +434,10 @@ int DoIt( int argc, char * argv[] )
   registrator->SetNumberOfIterations( numberOfIterations );
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
-  registrator->SetUseAnisotropicRegularization(
-      !doNotUseAnisotropicRegularization );
-  registrator->SetLambda( lambda );
+  if( anisotropicRegistrator )
+    {
+    anisotropicRegistrator->SetLambda( lambda );
+    }
 
   // Watch the registration's progress
   tube::CLIFilterWatcher watchRegistration(registrator,
@@ -527,8 +548,9 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write resampled moving image" );
     }
 
-  // Write the normal vector image: in the space of the fixed image
-  if( outputNormalVectorImageFileName != "" )
+  // Write the normal vector image (in the space of the fixed image) if we are
+  // using the anisotropic regularization
+  if( anisotropicRegistrator && outputNormalVectorImageFileName != "" )
     {
     timeCollector.Start( "Write normal vector image" );
     typename VectorOrientFilterType::Pointer orientNormals
@@ -536,7 +558,7 @@ int DoIt( int argc, char * argv[] )
     orientNormals->UseImageDirectionOn();
     orientNormals->SetDesiredCoordinateDirection(
         fixedImageReader->GetOutput()->GetDirection() );
-    orientNormals->SetInput( registrator->GetNormalVectorImage() );
+    orientNormals->SetInput( anisotropicRegistrator->GetNormalVectorImage() );
     orientNormals->Update();
     typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
     typename VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
@@ -556,8 +578,9 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write normal vector image" );
     }
 
-  // Write the weight image: in the space of the fixed image
-  if( outputWeightImageFileName != "" )
+  // Write the weight image (in the space of the fixed image) if we are using
+  // the anisotropic regularization
+  if( anisotropicRegistrator && outputWeightImageFileName != "" )
     {
     timeCollector.Start( "Write weight image" );
     typename WeightOrientFilterType::Pointer orientWeight
@@ -565,7 +588,7 @@ int DoIt( int argc, char * argv[] )
     orientWeight->UseImageDirectionOn();
     orientWeight->SetDesiredCoordinateDirection(
         fixedImageReader->GetOutput()->GetDirection() );
-    orientWeight->SetInput( registrator->GetWeightImage() );
+    orientWeight->SetInput( anisotropicRegistrator->GetWeightImage() );
     orientWeight->Update();
     typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
     typename WeightWriterType::Pointer weightWriter = WeightWriterType::New();
