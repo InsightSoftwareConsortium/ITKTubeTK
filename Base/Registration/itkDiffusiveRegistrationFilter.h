@@ -251,6 +251,10 @@ protected:
   /** Allocate the update buffer. */
   virtual void AllocateUpdateBuffer();
 
+  /** Get the update buffer. */
+  virtual UpdateBufferType * GetUpdateBuffer()
+    { return m_UpdateBuffer; }
+
   /** Initialize the state of the filter and equation before each iteration. */
   virtual void InitializeIteration();
 
