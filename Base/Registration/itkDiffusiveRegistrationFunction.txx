@@ -226,9 +226,9 @@ DiffusiveRegistrationFunction
       regularizationTerm[i] = m_RegularizationFunction->ComputeUpdate(
           deformationComponentNeighborhoods[i],
           tensorNeighborhood,
-          tensorDerivativeRegion,
           spacing,
           gd->m_RegularizationGlobalDataStruct,
+          tensorDerivativeRegion,
           offset );
       }
     }

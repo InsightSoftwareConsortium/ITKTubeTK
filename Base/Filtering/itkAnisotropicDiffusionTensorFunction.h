@@ -116,25 +116,16 @@ public:
                                   void *globalData,
                                   const FloatOffsetType& = FloatOffsetType(0.0));
 
-  /** Compute the equation value. The two images giving rise to the neighborhood
-   *  and the tensorNeighborhood should have the same spacing. */
+  /** Compute the equation value, optionally using precomputed first derivatives
+   *  for the diffusion tensor. The neighborhood, tensorNeighborhood
+   *  and tensorDerivativeRegion should have the same spacing as that given. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const SpacingType &spacing,
       void *globalData,
-      const FloatOffsetType& = FloatOffsetType(0.0));
-
-  /** Compute the equation value, using precomputed first derivatives for the
-      diffusion tensor. The three images giving rise to the neighborhood,
-   *  tensorNeighborhood and tensorDerivativeRegion should have the same
-   *  spacing. */
-  virtual PixelType ComputeUpdate(
-      const NeighborhoodType &neighborhood,
-      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      const TensorDerivativeImageRegionType &tensorDerivativeRegion,
-      const SpacingType &spacing,
-      void *globalData,
+      const TensorDerivativeImageRegionType &tensorDerivativeRegion
+          = TensorDerivativeImageRegionType(),
       const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Computes the time step for an update given a global data structure.

@@ -116,9 +116,9 @@ AnisotropicDiffusiveRegistrationFunction
           = this->GetRegularizationFunctionPointer()->ComputeUpdate(
               normalDeformationComponentNeighborhoods[i],
               normalTensorNeighborhood,
-              normalTensorDerivativeRegion,
               spacing,
               gd->m_RegularizationGlobalDataStruct,
+              normalTensorDerivativeRegion,
               offset );
 
       // The actual update term for the normal component is

@@ -86,8 +86,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
   return this->ComputeUpdate( neighborhood,
                               tensorNeighborhood,
                               spacing,
-                              globalData,
-                              offset );
+                              globalData );
 }
 
 template< class TImageType >
@@ -97,33 +96,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
                 const DiffusionTensorNeighborhoodType &tensorNeighborhood,
                 const SpacingType &spacing,
                 void *globalData,
-                const FloatOffsetType& itkNotUsed(offset) )
-{
-  // Global data structure
-  GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
-
-  // Compute the first and 2nd derivative for the intensity images
-  this->ComputeIntensityFirstAndSecondOrderPartialDerivatives( neighborhood,
-                                                               spacing,
-                                                               gd );
-
-  // Compute the diffusion tensor matrix first derivatives if not provided
-  this->ComputeDiffusionTensorFirstOrderPartialDerivatives( tensorNeighborhood,
-                                                            spacing,
-                                                            gd );
-
-  // Compute the update term
-  return this->ComputeFinalUpdateTerm( tensorNeighborhood, gd );
-}
-
-template< class TImageType >
-typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
-AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeUpdate(const NeighborhoodType &neighborhood,
-                const DiffusionTensorNeighborhoodType &tensorNeighborhood,
                 const TensorDerivativeImageRegionType &tensorDerivativeRegion,
-                const SpacingType &spacing,
-                void *globalData,
                 const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
@@ -135,9 +108,18 @@ AnisotropicDiffusionTensorFunction< TImageType >
                                                                spacing,
                                                                gd );
 
-  // We are provided the diffusion tensor matrix first derivatives, so
+  // If we are provided the diffusion tensor matrix first derivatives,
   // copy them into the global data struct
-  gd->m_DT_dxy = tensorDerivativeRegion.Get();
+  if( tensorDerivativeRegion.GetImage() )
+    {
+    gd->m_DT_dxy = tensorDerivativeRegion.Get();
+    }
+  // Compute the diffusion tensor matrix first derivatives if not provided
+  else
+    {
+    this->ComputeDiffusionTensorFirstOrderPartialDerivatives(
+        tensorNeighborhood, spacing, gd );
+    }
 
   // Compute the update term
   return this->ComputeFinalUpdateTerm( tensorNeighborhood, gd );
