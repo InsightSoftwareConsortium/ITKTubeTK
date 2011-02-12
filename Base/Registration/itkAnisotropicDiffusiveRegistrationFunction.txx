@@ -36,7 +36,6 @@ AnisotropicDiffusiveRegistrationFunction
  < TFixedImage, TMovingImage, TDeformationField >
 ::AnisotropicDiffusiveRegistrationFunction()
 {
-  m_UseAnisotropicRegularization = true;
 }
 
 /**
@@ -49,9 +48,6 @@ AnisotropicDiffusiveRegistrationFunction
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
-
-  os << indent << "Use anisotropic regularization: "
-     << ( m_UseAnisotropicRegularization ? "on" : "off" ) << std::endl;
 }
 
 /**
@@ -100,8 +96,7 @@ AnisotropicDiffusiveRegistrationFunction
   // Compute the normal component of the regularization update term
   PixelType normalRegularizationTerm;
   normalRegularizationTerm.Fill(0);
-  if( this->GetComputeRegularizationTerm()
-    && this->GetUseAnisotropicRegularization() )
+  if( this->GetComputeRegularizationTerm() )
     {
     NormalVectorType                  normalVector;
     DeformationVectorComponentType    intermediateNormalRegularizationComponent;

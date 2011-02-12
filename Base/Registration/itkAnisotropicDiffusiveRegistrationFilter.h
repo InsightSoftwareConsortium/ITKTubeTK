@@ -192,16 +192,6 @@ public:
   /** Organ boundary surface types */
   typedef vtkSmartPointer< vtkPolyData >                BorderSurfacePointer;
 
-  /** Set/get whether to use the anisotropic diffusive regularization.  If
-   *  false, the weighting term w=0 and Gaussian regularization is used.
-   *  Default: true */
-  void SetUseAnisotropicRegularization( bool diffuse )
-    { this->GetRegistrationFunctionPointer()->
-      SetUseAnisotropicRegularization( diffuse ); }
-  bool GetUseAnisotropicRegularization() const
-    { return this->GetRegistrationFunctionPointer()->
-      GetUseAnisotropicRegularization(); }
-
   /** Set/get the organ boundary polydata, which must be in the same space as
    *  the fixed image.  Border normals are computed on this polydata, so it
    *  may be changed over the course of the registration. */

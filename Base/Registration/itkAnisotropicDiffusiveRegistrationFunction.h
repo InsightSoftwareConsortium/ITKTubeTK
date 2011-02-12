@@ -143,14 +143,6 @@ public:
       < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
       NormalVectorNeighborhoodType;
 
-  /** Set/get whether to use the anisotropic diffusive regularization.  If
-   *  false, the weighting term w=0 and Gaussian regularization is used.
-   *  Default: true */
-  void SetUseAnisotropicRegularization( bool diffuse )
-    { m_UseAnisotropicRegularization = diffuse; }
-  bool GetUseAnisotropicRegularization() const
-    { return m_UseAnisotropicRegularization; }
-
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
@@ -204,9 +196,6 @@ private:
   // Purposely not implemented
   AnisotropicDiffusiveRegistrationFunction(const Self&);
   void operator=(const Self&); // Purposely not implemented
-
-  /* Whether or not to use the anisotropic regularization */
-  bool                                  m_UseAnisotropicRegularization;
 };
 
 } // end namespace itk

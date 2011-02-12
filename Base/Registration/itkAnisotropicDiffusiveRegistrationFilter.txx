@@ -125,7 +125,6 @@ AnisotropicDiffusiveRegistrationFilter
       RegistrationFunctionType::New();
   registrationFunction->SetComputeRegularizationTerm( true );
   registrationFunction->SetComputeIntensityDistanceTerm( true );
-  registrationFunction->SetUseAnisotropicRegularization( true );
   this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
       registrationFunction.GetPointer() ) );
 }
@@ -164,65 +163,63 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Allocate the images needed when using the anisotropic diffusive
   // regularization
-  if( this->GetUseAnisotropicRegularization() )
-    {
-    m_NormalDeformationField = OutputImageType::New();
-    this->AllocateSpaceForImage( m_NormalDeformationField,
-                                 output );
 
-    m_NormalDiffusionTensorImage = DiffusionTensorImageType::New();
-    this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
-                                 output );
+  m_NormalDeformationField = OutputImageType::New();
+  this->AllocateSpaceForImage( m_NormalDeformationField,
+                               output );
 
-    m_NormalDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
-    this->AllocateSpaceForImage( m_NormalDiffusionTensorDerivativeImage,
-                                 output );
+  m_NormalDiffusionTensorImage = DiffusionTensorImageType::New();
+  this->AllocateSpaceForImage( m_NormalDiffusionTensorImage,
+                               output );
 
-    // If a normal vector image or weight image was supplied by the user, check
-    // that it matches the output
-    if( ( m_NormalVectorImage
+  m_NormalDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
+  this->AllocateSpaceForImage( m_NormalDiffusionTensorDerivativeImage,
+                               output );
+
+  // If a normal vector image or weight image was supplied by the user, check
+  // that it matches the output
+  if( ( m_NormalVectorImage
         && !this->CompareImageAttributes( m_NormalVectorImage, output ) )
-      || ( m_WeightImage
-          && !this->CompareImageAttributes( m_WeightImage, output ) ) )
+    || ( m_WeightImage
+         && !this->CompareImageAttributes( m_WeightImage, output ) ) )
       {
-      itkExceptionMacro( << "Normal vector image and/or weight image must have "
-                         << "the same attributes as the output deformation "
-                         << "field" );
+    itkExceptionMacro( << "Normal vector image and/or weight image must have "
+                       << "the same attributes as the output deformation "
+                       << "field" );
+    }
+
+  // Whether or not we must compute the normal vector and/or weight images
+  bool computeNormals = !m_NormalVectorImage;
+  bool computeWeights = !m_WeightImage;
+
+  // Compute the normal vector and/or weight images if required
+  if( computeNormals || computeWeights )
+    {
+    // Ensure we have a border surface to work with
+    if( !this->GetBorderSurface() )
+      {
+      itkExceptionMacro( << "You must provide a border surface, or both a "
+                         << "normal vector image and a weight image" );
       }
 
-    // Whether or not we must compute the normal vector and/or weight images
-    bool computeNormals = !m_NormalVectorImage;
-    bool computeWeights = !m_WeightImage;
+    // Compute the normals for the surface
+    this->ComputeBorderSurfaceNormals();
 
-    // Compute the normal vector and/or weight images if required
-    if( computeNormals || computeWeights )
+    // Allocate the normal vector and/or weight images
+    if( computeNormals )
       {
-      // Ensure we have a border surface to work with
-      if( !this->GetBorderSurface() )
-        {
-        itkExceptionMacro( << "You must provide a border surface, or both a "
-                           << "normal vector image and a weight image" );
-        }
-
-      // Compute the normals for the surface
-      this->ComputeBorderSurfaceNormals();
-
-      // Allocate the normal vector and/or weight images
-      if( computeNormals )
-        {
-        m_NormalVectorImage = NormalVectorImageType::New();
-        this->AllocateSpaceForImage( m_NormalVectorImage, output );
-        }
-      if( computeWeights )
-        {
-        m_WeightImage = WeightImageType::New();
-        this->AllocateSpaceForImage( m_WeightImage, output );
-        }
-
-      // Actually compute the normal vectors and/or weights
-      this->ComputeNormalVectorAndWeightImages( computeNormals,
-                                                computeWeights );
+      m_NormalVectorImage = NormalVectorImageType::New();
+      this->AllocateSpaceForImage( m_NormalVectorImage, output );
       }
+    if( computeWeights )
+      {
+      m_WeightImage = WeightImageType::New();
+      this->AllocateSpaceForImage( m_WeightImage, output );
+      }
+
+    // Actually compute the normal vectors and/or weights
+    this->ComputeNormalVectorAndWeightImages( computeNormals,
+                                              computeWeights );
     }
 }
 
@@ -265,7 +262,6 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeNormalVectorAndWeightImages( bool computeNormals, bool computeWeights )
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( this->GetUseAnisotropicRegularization() );
   assert( m_BorderSurface->GetPointData()->GetNormals() );
   assert( m_NormalVectorImage );
   assert( m_WeightImage );
@@ -515,11 +511,8 @@ AnisotropicDiffusiveRegistrationFilter
   Superclass::ComputeDiffusionTensorDerivativeImages();
 
   // Compute the diffusion tensor derivative image for the normal plane
-  if( this->GetUseAnisotropicRegularization() )
-    {
-    this->ComputeDiffusionTensorDerivativeImageHelper(
-        m_NormalDiffusionTensorImage, m_NormalDiffusionTensorDerivativeImage );
-    }
+  this->ComputeDiffusionTensorDerivativeImageHelper(
+      m_NormalDiffusionTensorImage, m_NormalDiffusionTensorDerivativeImage );
 }
 
 /**
@@ -532,66 +525,59 @@ AnisotropicDiffusiveRegistrationFilter
 ::UpdateDeformationVectorComponentImages()
 {
   assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetNormalVectorImage() );
+  assert( this->GetWeightImage() );
 
-  if( this->GetUseAnisotropicRegularization() )
+  // Setup iterators
+  NormalVectorImageRegionType normalVectorNeighborhood(
+      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+
+  typename OutputImageType::Pointer output = this->GetOutput();
+  OutputImageRegionType outputRegion(output,
+                                     output->GetLargestPossibleRegion() );
+
+  OutputImageRegionType normalDeformationRegion(
+      m_NormalDeformationField,
+      m_NormalDeformationField->GetLargestPossibleRegion() );
+
+  // Calculate the tangential and normal components of the deformation field
+  NormalVectorType       n;
+  DeformationVectorType  u; // deformation vector
+  DeformationVectorType  normalDeformationVector;
+  DeformationVectorType  tangentialDeformationVector;
+
+  for( normalVectorNeighborhood.GoToBegin(), outputRegion.GoToBegin(),
+       normalDeformationRegion.GoToBegin();
+  !outputRegion.IsAtEnd();
+  ++normalVectorNeighborhood, ++outputRegion, ++normalDeformationRegion )
     {
-    assert( this->GetNormalVectorImage() );
-    assert( this->GetWeightImage() );
+    n = normalVectorNeighborhood.Get();
+    u = outputRegion.Get();
 
-    // Setup iterators
-    NormalVectorImageRegionType normalVectorNeighborhood(
-        m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+    // normal component = (u^Tn)n
+    normalDeformationVector = ( u * n ) * n;
+    normalDeformationRegion.Set( normalDeformationVector );
 
-    typename OutputImageType::Pointer output = this->GetOutput();
-    OutputImageRegionType outputRegion(output,
-                                       output->GetLargestPossibleRegion() );
+    // Test that the normal and tangential components were computed corectly
+    // (they should be orthogonal)
 
-    OutputImageRegionType normalDeformationRegion(
-        m_NormalDeformationField,
-        m_NormalDeformationField->GetLargestPossibleRegion() );
+    // tangential component = u - normal component
+    tangentialDeformationVector = u - normalDeformationVector;
 
-    // Calculate the tangential and normal components of the deformation field
-    NormalVectorType       n;
-    DeformationVectorType  u; // deformation vector
-    DeformationVectorType  normalDeformationVector;
-    DeformationVectorType  tangentialDeformationVector;
-
-    for( normalVectorNeighborhood.GoToBegin(), outputRegion.GoToBegin(),
-         normalDeformationRegion.GoToBegin();
-         !outputRegion.IsAtEnd();
-         ++normalVectorNeighborhood, ++outputRegion, ++normalDeformationRegion )
+    if( normalDeformationVector * tangentialDeformationVector > 0.005 )
       {
-      n = normalVectorNeighborhood.Get();
-      u = outputRegion.Get();
-
-      // normal component = (u^Tn)n
-      normalDeformationVector = ( u * n ) * n;
-      normalDeformationRegion.Set( normalDeformationVector );
-
-      // Test that the normal and tangential components were computed corectly
-      // (they should be orthogonal)
-
-      // tangential component = u - normal component
-      tangentialDeformationVector = u - normalDeformationVector;
-
-      if( normalDeformationVector * tangentialDeformationVector > 0.005 )
-        {
-        itkExceptionMacro( << "Normal and tangential deformation field "
-                           << "components are not orthogonal" );
-        }
+      itkExceptionMacro( << "Normal and tangential deformation field "
+                         << "components are not orthogonal" );
       }
-      m_NormalDeformationField->Modified();
     }
+  m_NormalDeformationField->Modified();
 
   // Update the tangential extracted components
   Superclass::UpdateDeformationVectorComponentImages();
 
   // Update the normal extracted components
-  if( this->GetUseAnisotropicRegularization() )
-    {
-    this->ExtractXYZComponentsFromDeformationField(
-        m_NormalDeformationField, m_NormalDeformationComponentImages );
-    }
+  this->ExtractXYZComponentsFromDeformationField(
+      m_NormalDeformationField, m_NormalDeformationComponentImages );
 }
 
 /**
@@ -825,7 +811,6 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
-  bool useAnisotropic = this->GetUseAnisotropicRegularization();
 
   // Go to the first face
   outputStruct.begin();
@@ -837,15 +822,12 @@ AnisotropicDiffusiveRegistrationFilter
       {
       tangentialDeformationComponentStructs[i].begin();
       }
-    if( useAnisotropic )
+    normalVectorStruct.begin();
+    normalTensorStruct.begin();
+    normalTensorDerivativeStruct.begin();
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      normalVectorStruct.begin();
-      normalTensorStruct.begin();
-      normalTensorDerivativeStruct.begin();
-      for( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        normalDeformationComponentStructs[i].begin();
-        }
+      normalDeformationComponentStructs[i].begin();
       }
     } // end going to first face
 
@@ -876,25 +858,22 @@ AnisotropicDiffusiveRegistrationFilter
                 tangentialDeformationComponentImages[i],
                 *tangentialDeformationComponentStructs[i].faceListIt );
         }
-      if( useAnisotropic )
+      normalVectorNeighborhood = NormalVectorNeighborhoodType(
+          radius, m_NormalVectorImage, *normalVectorStruct.faceListIt );
+      normalTensorNeighborhood = DiffusionTensorNeighborhoodType(
+          radius,
+          m_NormalDiffusionTensorImage,
+          *normalTensorStruct.faceListIt );
+      normalTensorDerivativeRegion = TensorDerivativeImageRegionType(
+          m_NormalDiffusionTensorDerivativeImage,
+          *normalTensorDerivativeStruct.faceListIt );
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        normalVectorNeighborhood = NormalVectorNeighborhoodType(
-            radius, m_NormalVectorImage, *normalVectorStruct.faceListIt );
-        normalTensorNeighborhood = DiffusionTensorNeighborhoodType(
-            radius,
-            m_NormalDiffusionTensorImage,
-            *normalTensorStruct.faceListIt );
-        normalTensorDerivativeRegion = TensorDerivativeImageRegionType(
-            m_NormalDiffusionTensorDerivativeImage,
-            *normalTensorDerivativeStruct.faceListIt );
-        for( unsigned int i = 0; i < ImageDimension; i++ )
-          {
-          normalDeformationComponentNeighborhoods[i]
-              = DeformationVectorComponentNeighborhoodType(
-                  radius,
-                  m_NormalDeformationComponentImages[i],
-                  *normalDeformationComponentStructs[i].faceListIt );
-          }
+        normalDeformationComponentNeighborhoods[i]
+            = DeformationVectorComponentNeighborhoodType(
+                radius,
+                m_NormalDeformationComponentImages[i],
+                *normalDeformationComponentStructs[i].faceListIt );
         }
       } // end setting neighborhood iterators to the current face
 
@@ -909,15 +888,12 @@ AnisotropicDiffusiveRegistrationFilter
         {
         tangentialDeformationComponentNeighborhoods[i].GoToBegin();
         }
-      if( useAnisotropic )
+      normalVectorNeighborhood.GoToBegin();
+      normalTensorNeighborhood.GoToBegin();
+      normalTensorDerivativeRegion.GoToBegin();
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        normalVectorNeighborhood.GoToBegin();
-        normalTensorNeighborhood.GoToBegin();
-        normalTensorDerivativeRegion.GoToBegin();
-        for( unsigned int i = 0; i < ImageDimension; i++ )
-          {
-          normalDeformationComponentNeighborhoods[i].GoToBegin();
-          }
+        normalDeformationComponentNeighborhoods[i].GoToBegin();
         }
       } // end going to the beginning of the neighborhood for this face
 
@@ -947,15 +923,12 @@ AnisotropicDiffusiveRegistrationFilter
           {
           ++tangentialDeformationComponentNeighborhoods[i];
           }
-        if( useAnisotropic )
+        ++normalVectorNeighborhood;
+        ++normalTensorNeighborhood;
+        ++normalTensorDerivativeRegion;
+        for( unsigned int i = 0; i < ImageDimension; i++ )
           {
-          ++normalVectorNeighborhood;
-          ++normalTensorNeighborhood;
-          ++normalTensorDerivativeRegion;
-          for( unsigned int i = 0; i < ImageDimension; i++ )
-            {
-            ++normalDeformationComponentNeighborhoods[i];
-            }
+          ++normalDeformationComponentNeighborhoods[i];
           }
         } // end going to the next neighborhood
       } // end iterating through the neighborhood for this face
@@ -970,15 +943,12 @@ AnisotropicDiffusiveRegistrationFilter
         {
         ++tangentialDeformationComponentStructs[i].faceListIt;
         }
-      if( useAnisotropic )
+      ++normalVectorStruct.faceListIt;
+      ++normalTensorStruct.faceListIt;
+      ++normalTensorDerivativeStruct.faceListIt;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        ++normalVectorStruct.faceListIt;
-        ++normalTensorStruct.faceListIt;
-        ++normalTensorDerivativeStruct.faceListIt;
-        for( unsigned int i = 0; i < ImageDimension; i++ )
-          {
-          ++normalDeformationComponentStructs[i].faceListIt;
-          }
+        ++normalDeformationComponentStructs[i].faceListIt;
         }
       }
     } // end iterating over each face
