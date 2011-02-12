@@ -154,15 +154,9 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::Initialize()
+::AllocateImages()
 {
-  Superclass::Initialize();
-
-  // If we're not computing the regularization term, we're done
-  if( !this->GetComputeRegularizationTerm() )
-    {
-    return;
-    }
+  Superclass::AllocateImages();
 
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration

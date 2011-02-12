@@ -213,6 +213,25 @@ DiffusiveRegistrationFilter
     return;
     }
 
+  // Allocate the images we will use to store data computed during the
+  // registration
+  this->AllocateImages();
+
+  // Compute the diffusion tensors and their derivatives
+  this->ComputeDiffusionTensorImages();
+  this->ComputeDiffusionTensorDerivativeImages();
+}
+
+/**
+ * Allocate the images we will use to store data computed during the
+ * registration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::AllocateImages()
+{
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
@@ -225,10 +244,6 @@ DiffusiveRegistrationFilter
   m_TangentialDiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
   this->AllocateSpaceForImage( m_TangentialDiffusionTensorDerivativeImage,
                                output );
-
-  // Compute the diffusion tensors and their derivatives
-  this->ComputeDiffusionTensorImages();
-  this->ComputeDiffusionTensorDerivativeImages();
 }
 
 /**

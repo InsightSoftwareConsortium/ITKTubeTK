@@ -253,8 +253,8 @@ protected:
   virtual ~AnisotropicDiffusiveRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  /** Initialization occuring before the registration iterations. */
-  virtual void Initialize();
+  /** Allocate images used during the registration. */
+  virtual void AllocateImages();
 
   /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();

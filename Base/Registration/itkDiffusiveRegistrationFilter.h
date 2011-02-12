@@ -234,6 +234,9 @@ protected:
   /** Initialization occuring before the registration iterations. */
   virtual void Initialize();
 
+  /** Allocate images used during the registration. */
+  virtual void AllocateImages();
+
   /** Computes the diffusion tensor images */
   virtual void ComputeDiffusionTensorImages();
 
