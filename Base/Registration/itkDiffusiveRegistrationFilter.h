@@ -79,8 +79,32 @@ public:
   typedef SmartPointer< Self >                                Pointer;
   typedef SmartPointer< const Self >                          ConstPointer;
 
-  /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  /** Method for creation through the object factory.  Usually defined with
+    * itkNewMacro(), but the type of the registration function depends on the
+    * type of this object.  Can't call the overridden function
+    * CreateRegistrationFunction() from the base class constructor, so we'll
+    * call it here. */
+  static Pointer New()
+    {
+    Pointer smartPtr = ::itk::ObjectFactory< Self >::Create();
+    if ( smartPtr.GetPointer() == NULL )
+      {
+      smartPtr = new Self;
+      }
+    smartPtr->UnRegister();
+
+    smartPtr->CreateRegistrationFunction();
+
+    return smartPtr;
+    }
+
+  /** Usually defined with itkNewMacro, we'll copy it here */
+  virtual::itk::LightObject::Pointer CreateAnother(void) const
+    {
+    ::itk::LightObject::Pointer smartPtr;
+    smartPtr = Self::New().GetPointer();
+    return smartPtr;
+    }
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFilter);
@@ -288,6 +312,10 @@ protected:
   template< class CheckedImageType, class TemplateImageType >
   bool CompareImageAttributes( const CheckedImageType & image,
                                const TemplateImageType & templateImage );
+
+  /** Create the registration function, with default parameters for
+    * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
+  virtual void CreateRegistrationFunction();
 
   /** Get the registration function pointer */
   virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;

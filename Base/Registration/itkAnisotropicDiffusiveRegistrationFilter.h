@@ -308,6 +308,10 @@ protected:
         &deformationComponentRegionToProcess,
       int threadId );
 
+  /** Create the registration function, with default parameters for
+    * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
+  virtual void CreateRegistrationFunction();
+
   /** Get the registration function pointer */
   virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;
 

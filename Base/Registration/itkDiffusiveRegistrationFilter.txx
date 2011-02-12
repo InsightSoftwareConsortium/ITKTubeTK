@@ -46,16 +46,6 @@ DiffusiveRegistrationFilter
     m_TangentialDeformationComponentImages[i]   = 0;
     }
 
-  // Create the registration function
-  typename RegistrationFunctionType::Pointer registrationFunction =
-      RegistrationFunctionType::New();
-  this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
-      registrationFunction.GetPointer() ) );
-
-  // By default, compute the intensity distance and regularization terms
-  this->SetComputeRegularizationTerm( true );
-  this->SetComputeIntensityDistanceTerm( true );
-
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework
   this->SmoothDeformationFieldOff();
@@ -95,6 +85,23 @@ DiffusiveRegistrationFilter
         }
       }
     }
+}
+
+/**
+ * Create the registration function
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CreateRegistrationFunction()
+{
+  typename RegistrationFunctionType::Pointer registrationFunction =
+      RegistrationFunctionType::New();
+  registrationFunction->SetComputeRegularizationTerm( true );
+  registrationFunction->SetComputeIntensityDistanceTerm( true );
+  this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
+      registrationFunction.GetPointer() ) );
 }
 
 /**

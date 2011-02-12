@@ -56,9 +56,6 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Lambda for exponential decay used to calculate weight from distance
   m_lambda = -0.01;
-
-  // By default, compute the anisotropic regularization terms
-  this->SetUseAnisotropicRegularization( true );
 }
 
 /**
@@ -113,6 +110,24 @@ AnisotropicDiffusiveRegistrationFilter
       }
     }
   os << indent << "lambda: " << m_lambda << std::endl;
+}
+
+/**
+ * Create the registration function
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CreateRegistrationFunction()
+{
+  typename RegistrationFunctionType::Pointer registrationFunction =
+      RegistrationFunctionType::New();
+  registrationFunction->SetComputeRegularizationTerm( true );
+  registrationFunction->SetComputeIntensityDistanceTerm( true );
+  registrationFunction->SetUseAnisotropicRegularization( true );
+  this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
+      registrationFunction.GetPointer() ) );
 }
 
 /**
