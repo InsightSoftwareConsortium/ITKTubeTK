@@ -283,21 +283,9 @@ DiffusiveRegistrationFilter
 
   // For the Gaussian regularization, we only need to set the tangential
   // diffusion tensors to the identity
-  typename DiffusionTensorImageType::PixelType tangentialDiffusionTensor;
-  typedef itk::ImageRegionIterator< DiffusionTensorImageType >
-      DiffusionTensorImageRegionType;
-  DiffusionTensorImageRegionType tangentialTensorIt
-      = DiffusionTensorImageRegionType(
-          m_TangentialDiffusionTensorImage,
-          m_TangentialDiffusionTensorImage->GetLargestPossibleRegion() );
-
-  for( tangentialTensorIt.GoToBegin();
-  !tangentialTensorIt.IsAtEnd();
-  ++tangentialTensorIt )
-    {
-    tangentialDiffusionTensor.SetIdentity();
-    tangentialTensorIt.Set( tangentialDiffusionTensor );
-    }
+  typename DiffusionTensorImageType::PixelType identityTensor;
+  identityTensor.SetIdentity();
+  m_TangentialDiffusionTensorImage->FillBuffer( identityTensor );
 }
 
 /**
