@@ -216,15 +216,14 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
-  /** Get the image of the tangential diffusion tensors */
-  virtual const DiffusionTensorImagePointer
-    GetTangentialDiffusionTensorImage() const
-    { return m_TangentialDiffusionTensorImage; }
+  /** Get the image of the diffusion tensor */
+  virtual const DiffusionTensorImagePointer GetDiffusionTensorImage() const
+    { return m_DiffusionTensorImage; }
 
-  /** Get the image of the tangential diffusion tensor derivatives */
-  virtual const TensorDerivativeImagePointer
-      GetTangentialDiffusionTensorDerivativeImage() const
-    { return m_TangentialDiffusionTensorDerivativeImage; }
+  /** Get the image of the diffusion tensor derivatives */
+  virtual const TensorDerivativeImagePointer GetDiffusionTensorDerivativeImage()
+      const
+    { return m_DiffusionTensorDerivativeImage; }
 
 protected:
   DiffusiveRegistrationFilter();
@@ -266,9 +265,9 @@ protected:
       OutputImagePointer deformationField,
       DeformationComponentImageArrayType& deformationComponentImages );
 
-  /** Get the array of tangential deformation component images. */
-  DeformationComponentImageArrayType GetTangentialDeformationComponentImages()
-    { return m_TangentialDeformationComponentImages; }
+  /** Get the array of deformation component images. */
+  DeformationComponentImageArrayType GetDeformationComponentImages()
+    { return m_DeformationComponentImages; }
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -354,10 +353,9 @@ private:
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
-  DiffusionTensorImagePointer         m_TangentialDiffusionTensorImage;
-  TensorDerivativeImagePointer
-      m_TangentialDiffusionTensorDerivativeImage;
-  DeformationComponentImageArrayType  m_TangentialDeformationComponentImages;
+  DiffusionTensorImagePointer         m_DiffusionTensorImage;
+  TensorDerivativeImagePointer        m_DiffusionTensorDerivativeImage;
+  DeformationComponentImageArrayType  m_DeformationComponentImages;
 };
 
 /** Struct to simply get the face list and an iterator over the face list

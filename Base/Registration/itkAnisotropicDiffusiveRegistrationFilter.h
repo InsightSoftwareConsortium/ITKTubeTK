@@ -224,6 +224,30 @@ public:
   virtual const WeightImagePointer GetWeightImage() const
     { return m_WeightImage; }
 
+  /** We now have two diffusion tensor images (normal and tangential), so these
+   *  function calls don't make sense */
+  virtual const DiffusionTensorImagePointer GetDiffusionTensorImage() const
+    { return 0; }
+  virtual const TensorDerivativeImagePointer GetDiffusionTensorDerivativeImage()
+      const
+    { return 0; }
+  DeformationComponentImageArrayType GetDeformationComponentImages()
+    { return 0; }
+
+  /** Get the image of the tangential diffusion tensors */
+  virtual const DiffusionTensorImagePointer GetTangentialDiffusionTensorImage()
+    const
+    { return Superclass::GetDiffusionTensorImage(); }
+
+  /** Get the image of the tangential diffusion tensor derivatives */
+  virtual const TensorDerivativeImagePointer
+      GetTangentialDiffusionTensorDerivativeImage() const
+    { return Superclass::GetDiffusionTensorDerivativeImage(); }
+
+  /** Get the array of tangential deformation component images. */
+  DeformationComponentImageArrayType GetTangentialDeformationComponentImages()
+    { return Superclass::GetDeformationComponentImages(); }
+
   /** Get the image of the normal diffusion tensors */
   virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
     const
