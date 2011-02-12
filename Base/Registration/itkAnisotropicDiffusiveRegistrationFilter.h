@@ -80,7 +80,7 @@ public:
   typedef SmartPointer< const Self >                        ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkDiffusiveRegistrationFilterNewMacro(Self);
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, DiffusiveRegistrationFilter);
