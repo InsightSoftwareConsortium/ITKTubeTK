@@ -26,8 +26,6 @@ limitations under the License.
 #include "itkPDEDeformableRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
 
-#include "vtkPolyData.h"
-#include "vtkSmartPointer.h"
 #include "itkVectorIndexSelectionCastImageFilter.h"
 
 namespace itk
@@ -114,7 +112,7 @@ public:
   typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
 
   /** The registration function type */
-  typedef AnisotropicDiffusiveRegistrationFunction
+  typedef DiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
   typedef typename RegistrationFunctionType::Pointer
@@ -141,21 +139,7 @@ public:
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
 
-  /** Normal vector types */
-  typedef typename RegistrationFunctionType::NormalVectorType
-      NormalVectorType;
-  typedef typename RegistrationFunctionType::NormalVectorImageType
-      NormalVectorImageType;
-  typedef typename NormalVectorImageType::Pointer
-      NormalVectorImagePointer;
-  typedef typename RegistrationFunctionType::NormalVectorNeighborhoodType
-      NormalVectorNeighborhoodType;
-  typedef itk::ImageRegionIterator< NormalVectorImageType >
-      NormalVectorImageRegionType;
-  typedef typename NormalVectorImageType::RegionType
-      ThreadNormalVectorImageRegionType;
-
-  /** Diffusion tensor types */
+  /** Diffusion tensor image types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
@@ -165,7 +149,7 @@ public:
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
 
-  /** The derivative matrix types */
+  /** Tensor derivative matrix image types */
   typedef typename RegistrationFunctionType::TensorDerivativeImageType
       TensorDerivativeImageType;
   typedef typename TensorDerivativeImageType::Pointer
@@ -175,15 +159,10 @@ public:
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
-  /** Types for weighting between the anisotropic and diffusive (Gaussian)
-    * regularization */
-  typedef double                                        WeightType;
-  typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
-  typedef typename WeightImageType::Pointer             WeightImagePointer;
-  typedef itk::ImageRegionIterator< WeightImageType >   WeightImageRegionType;
-
-  /** Organ boundary surface types */
-  typedef vtkSmartPointer< vtkPolyData >                BorderSurfacePointer;
+  /** Deformation component image array types */
+  typedef typename
+      itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
+      DeformationComponentImageArrayType;
 
   /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
@@ -214,71 +193,15 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
-  /** Set/get whether to use the anisotropic diffusive regularization.  If
-   *  false, the weighting term w=0 and Gaussian regularization is used.
-   *  Default: true */
-  void SetUseAnisotropicRegularization( bool diffuse )
-    { this->GetRegistrationFunctionPointer()->
-      SetUseAnisotropicRegularization( diffuse ); }
-  bool GetUseAnisotropicRegularization() const
-    { return this->GetRegistrationFunctionPointer()->
-      GetUseAnisotropicRegularization(); }
-
-  /** Set/get the organ boundary polydata, which must be in the same space as
-   *  the fixed image.  Border normals are computed on this polydata, so it
-   *  may be changed over the course of the registration. */
-  virtual void SetBorderSurface( BorderSurfacePointer border )
-    { m_BorderSurface = border; }
-  virtual const BorderSurfacePointer GetBorderSurface() const
-    { return m_BorderSurface; }
-
-  /** Set/get the lambda that controls the exponential decay used to calculate
-   *  the weight value w as a function of the distance to the closest border
-   *  point.  Must be negative. */
-  void SetLambda( WeightType l )
-    { if ( l < 0 ) { m_lambda = l; } }
-  WeightType GetLambda() const
-    { return m_lambda; }
-
-  /** Set/get the image of the normal vectors.  Setting the normal vector
-   * image overrides the border surface polydata if a border surface was
-   * also supplied. */
-  virtual void SetNormalVectorImage( NormalVectorImagePointer normalImage )
-    { m_NormalVectorImage = normalImage; }
-  virtual const NormalVectorImagePointer GetNormalVectorImage() const
-    { return m_NormalVectorImage; }
-
-  /** Set/get the weighting image.  Setting the weighting image overrides
-   * the border surface polydata and lambda if a border surface was also
-   * supplied.  */
-  virtual void SetWeightImage( WeightImagePointer weightImage )
-    { m_WeightImage = weightImage; }
-  virtual const WeightImagePointer GetWeightImage() const
-    { return m_WeightImage; }
-
   /** Get the image of the tangential diffusion tensors */
   virtual const DiffusionTensorImagePointer
     GetTangentialDiffusionTensorImage() const
     { return m_TangentialDiffusionTensorImage; }
 
-  /** Get the image of the normal diffusion tensors */
-  virtual const DiffusionTensorImagePointer GetNormalDiffusionTensorImage()
-    const
-    { return m_NormalDiffusionTensorImage; }
-
   /** Get the image of the tangential diffusion tensor derivatives */
   virtual const TensorDerivativeImagePointer
       GetTangentialDiffusionTensorDerivativeImage() const
     { return m_TangentialDiffusionTensorDerivativeImage; }
-
-  /** Get the image of the normal diffusion tensor derivatives */
-  virtual const TensorDerivativeImagePointer
-      GetNormalDiffusionTensorDerivativeImage() const
-    { return m_NormalDiffusionTensorDerivativeImage; }
-
-  /** Get the normal components of the deformation field */
-  virtual const OutputImagePointer GetNormalDeformationFieldImage() const
-    { return m_NormalDeformationField; }
 
 protected:
   DiffusiveRegistrationFilter();
@@ -288,24 +211,14 @@ protected:
   /** Initialization occuring before the registration iterations. */
   virtual void Initialize();
 
-  /** Compute the normals for the border surface. */
-  void ComputeBorderSurfaceNormals();
-
-  /** Computes the normal vector image and weighting factors w given the
-   *  surface border polydata. */
-  virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
-                                                   bool computeWeights );
-
-  /** Computes the weighting factor w from the distance to the border.  The
-   *  weight should be 1 near the border and 0 away from the border. */
-  virtual WeightType ComputeWeightFromDistance( WeightType distance );
-
   /** Computes the diffusion tensor images */
   virtual void ComputeDiffusionTensorImages();
 
   /** Computes the first derivatives of the diffusion tensor images */
   virtual void ComputeDiffusionTensorDerivativeImages();
-  virtual void ComputeDiffusionTensorDerivativeImage(
+
+  /** Helper to compute the first derivatives of the diffusion tensor images */
+  virtual void ComputeDiffusionTensorDerivativeImageHelper(
       DiffusionTensorImagePointer tensorImage,
       TensorDerivativeImagePointer tensorDerivativeImage );
 
@@ -318,10 +231,14 @@ protected:
   /** Updates the deformation vector component images */
   virtual void UpdateDeformationVectorComponentImages();
 
-  /** Extracts the x, y, z components of the tangential and/or normal
-   *  deformation field components. */
-  void ExtractXYZFromDeformationComponents( bool extractTangentialComponents,
-                                            bool extractNormalComponents );
+  /** Extracts the x, y, z components of a deformation field. */
+  void ExtractXYZComponentsFromDeformationField(
+      OutputImagePointer deformationField,
+      DeformationComponentImageArrayType deformationComponentImages );
+
+  /** Get the array of tangential deformation component images. */
+  DeformationComponentImageArrayType GetTangentialDeformationComponentImages()
+    { return m_TangentialDeformationComponentImages; }
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -340,7 +257,6 @@ protected:
    * \sa CalculateChangeThreaderCallback */
   virtual TimeStepType ThreadedCalculateChange(
       const ThreadRegionType &regionToProcess,
-      const ThreadNormalVectorImageRegionType &normalVectorRegionToProcess,
       const ThreadDiffusionTensorImageRegionType &tensorRegionToProcess,
       const ThreadTensorDerivativeImageRegionType
         &tensorDerivativeRegionToProcess,
@@ -374,54 +290,7 @@ protected:
                                const TemplateImageType & templateImage );
 
   /** Get the registration function pointer */
-  virtual RegistrationFunctionPointer GetRegistrationFunctionPointer() const;
-
-  /** Struct to simply get the face list and an iterator over the face list
-   *  when processing an image */
-  template< class ImageType >
-  struct FaceStruct
-    {
-    FaceStruct() {}
-
-    FaceStruct( ImageType& image, typename OutputImageType::SizeType radius )
-      {
-      if( image )
-        {
-        faceList = faceCalculator( image,
-                                   image->GetLargestPossibleRegion(),
-                                   radius );
-        }
-      }
-
-    FaceStruct( ImageType& image,
-                typename ImageType::ObjectType::RegionType region,
-                typename OutputImageType::SizeType radius )
-      {
-      if( image )
-        {
-        faceList = faceCalculator( image, region, radius );
-        }
-      }
-
-    void begin()
-      {
-      faceListIt = faceList.begin();
-      }
-
-    bool IsAtEnd()
-      {
-      return faceListIt == faceList.end();
-      }
-
-    typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-        < typename ImageType::ObjectType > FaceCalculatorType;
-    typedef typename FaceCalculatorType::FaceListType FaceListType;
-    typedef typename FaceListType::iterator FaceListIteratorType;
-
-    FaceCalculatorType      faceCalculator;
-    FaceListType            faceList;
-    FaceListIteratorType    faceListIt;
-    };
+  virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;
 
 private:
   // Purposely not implemented
@@ -449,29 +318,61 @@ private:
   /** The buffer that holds the updates for an iteration of algorithm. */
   typename UpdateBufferType::Pointer  m_UpdateBuffer;
 
-  /** Organ boundary surface and surface of border normals */
-  BorderSurfacePointer                m_BorderSurface;
-
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
-  NormalVectorImagePointer          m_NormalVectorImage;
-  WeightImagePointer                m_WeightImage;
-  DiffusionTensorImagePointer       m_TangentialDiffusionTensorImage;
-  DiffusionTensorImagePointer       m_NormalDiffusionTensorImage;
-  TensorDerivativeImagePointer      m_TangentialDiffusionTensorDerivativeImage;
-  TensorDerivativeImagePointer      m_NormalDiffusionTensorDerivativeImage;
-  OutputImagePointer                m_NormalDeformationField;
-  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
-      m_TangentialDeformationComponentImages;
-  itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
-      m_NormalDeformationComponentImages;
-
-  /** The lambda factor for computing the weight from distance.  Weight is
-   * modeled as exponential decay: weight = e^(lambda * distance).
-   * (lamba must be negative) */
-  WeightType                          m_lambda;
-
+  DiffusionTensorImagePointer         m_TangentialDiffusionTensorImage;
+  TensorDerivativeImagePointer
+      m_TangentialDiffusionTensorDerivativeImage;
+  DeformationComponentImageArrayType  m_TangentialDeformationComponentImages;
 };
+
+/** Struct to simply get the face list and an iterator over the face list
+ *  when processing an image */
+template< class ImageType >
+struct FaceStruct
+  {
+  FaceStruct() {}
+
+  FaceStruct( ImageType& image,
+              typename ImageType::ObjectType::SizeType radius )
+    {
+    if( image )
+      {
+      faceList = faceCalculator( image,
+                                 image->GetLargestPossibleRegion(),
+                                 radius );
+      }
+    }
+
+  FaceStruct( ImageType& image,
+              typename ImageType::ObjectType::RegionType region,
+              typename ImageType::ObjectType::SizeType radius )
+    {
+    if( image )
+      {
+      faceList = faceCalculator( image, region, radius );
+      }
+    }
+
+  void begin()
+    {
+    faceListIt = faceList.begin();
+    }
+
+  bool IsAtEnd()
+    {
+    return faceListIt == faceList.end();
+    }
+
+  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
+      < typename ImageType::ObjectType > FaceCalculatorType;
+  typedef typename FaceCalculatorType::FaceListType FaceListType;
+  typedef typename FaceListType::iterator FaceListIteratorType;
+
+  FaceCalculatorType      faceCalculator;
+  FaceListType            faceList;
+  FaceListIteratorType    faceListIt;
+  };
 
 } // end namespace itk
 
