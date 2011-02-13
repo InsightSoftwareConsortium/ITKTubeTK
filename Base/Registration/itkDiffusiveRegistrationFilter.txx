@@ -600,11 +600,15 @@ DiffusiveRegistrationFilter
   TensorDerivativeImageRegionArrayType tensorDerivativeRegions;
 
   FaceStruct< DeformationVectorComponentImagePointer >
-      deformationComponentStruct( m_DeformationComponentImageArrays[0],
+      deformationComponentStruct( m_DeformationComponentImageArrays,
                                   deformationComponentRegionToProcess,
                                   radius );
-  DeformationVectorComponentNeighborhoodArrayType
-      deformationComponentNeighborhoods;
+  DeformationVectorComponentNeighborhoodArrayArrayType
+      deformationComponentNeighborhoodArrays;
+
+  // TODO won't pass all tests because this not filled in
+  MultiplicationVectorImageRegionArrayArrayType
+      multiplicationVectorRegionArrays;
 
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
@@ -631,8 +635,8 @@ DiffusiveRegistrationFilter
       tensorDerivativeStruct.SetIteratorToCurrentFace(
           tensorDerivativeRegions, m_DiffusionTensorDerivativeImages );
       deformationComponentStruct.SetIteratorToCurrentFace(
-          deformationComponentNeighborhoods,
-          m_DeformationComponentImageArrays[0],
+          deformationComponentNeighborhoodArrays,
+          m_DeformationComponentImageArrays,
           radius );
       }
 
@@ -645,10 +649,10 @@ DiffusiveRegistrationFilter
         {
         tensorNeighborhoods[i].GoToBegin();
         tensorDerivativeRegions[i].GoToBegin();
-        }
-      for( unsigned int j = 0; j < ImageDimension; j++ )
-        {
-        deformationComponentNeighborhoods[j].GoToBegin();
+        for( unsigned int j = 0; j < ImageDimension; j++ )
+          {
+          deformationComponentNeighborhoodArrays[i][j].GoToBegin();
+          }
         }
       }
 
@@ -660,7 +664,8 @@ DiffusiveRegistrationFilter
           outputNeighborhood,
           tensorNeighborhoods,
           tensorDerivativeRegions,
-          deformationComponentNeighborhoods,
+          deformationComponentNeighborhoodArrays,
+          multiplicationVectorRegionArrays,
           spacing,
           globalData );
 
@@ -673,10 +678,10 @@ DiffusiveRegistrationFilter
           {
           ++tensorNeighborhoods[i];
           ++tensorDerivativeRegions[i];
-          }
-        for( unsigned int j = 0; j < ImageDimension; j++ )
-          {
-          ++deformationComponentNeighborhoods[j];
+          for( unsigned int j = 0; j < ImageDimension; j++ )
+            {
+            ++deformationComponentNeighborhoodArrays[i][j];
+            }
           }
         }
       }

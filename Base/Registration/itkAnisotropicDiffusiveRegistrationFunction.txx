@@ -190,43 +190,6 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(
     const NeighborhoodType &neighborhood,
-    const DiffusionTensorNeighborhoodArrayType &tensorNeighborhoods,
-    const TensorDerivativeImageRegionArrayType &tensorDerivativeRegions,
-    const DeformationVectorComponentNeighborhoodArrayType
-        &deformationComponentNeighborhoods,
-    const SpacingType &spacing,
-    void *globalData,
-    const FloatOffsetType &offset )
-{
-  DeformationVectorComponentNeighborhoodArrayArrayType
-      deformationComponentNeighborhoodArrays;
-  deformationComponentNeighborhoodArrays.push_back(
-      deformationComponentNeighborhoods );
-
-  MultiplicationVectorImageRegionArrayArrayType
-      multiplicationVectorRegionArrays;
-
-  return this->ComputeUpdate( neighborhood,
-                              tensorNeighborhoods,
-                              tensorDerivativeRegions,
-                              deformationComponentNeighborhoodArrays,
-                              multiplicationVectorRegionArrays,
-                              spacing,
-                              globalData,
-                              offset );
-}
-
-/**
-  * Computes the update term
-  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename AnisotropicDiffusiveRegistrationFunction
-  < TFixedImage, TMovingImage, TDeformationField >
-::PixelType
-AnisotropicDiffusiveRegistrationFunction
-  < TFixedImage, TMovingImage, TDeformationField >
-::ComputeUpdate(
-    const NeighborhoodType &neighborhood,
     const DiffusionTensorNeighborhoodType
         &tangentialTensorNeighborhood,
     const TensorDerivativeImageRegionType
@@ -320,8 +283,10 @@ AnisotropicDiffusiveRegistrationFunction
   if ( this->GetComputeRegularizationTerm() )
     {
     int numTerms = tensorNeighborhoods.size();
-    assert( (int)tensorDerivativeRegions.size() == numTerms );
-    assert( (int)deformationComponentNeighborhoodArrays.size() == numTerms );
+    assert( (int) tensorDerivativeRegions.size() == numTerms );
+    assert( (int) deformationComponentNeighborhoodArrays.size() == numTerms );
+    assert( (int) deformationComponentNeighborhoodArrays[0].Size() ==
+            ImageDimension );
 
     for ( int term = 0; term < numTerms; term++ )
       {

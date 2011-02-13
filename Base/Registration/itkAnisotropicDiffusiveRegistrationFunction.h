@@ -248,19 +248,6 @@ public:
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
-      const DiffusionTensorNeighborhoodArrayType
-          &tensorNeighborhoods,
-      const TensorDerivativeImageRegionArrayType
-          &tensorDerivativeRegions,
-      const DeformationVectorComponentNeighborhoodArrayType
-          &deformationComponentNeighborhoods,
-      const SpacingType &spacing,
-      void *globalData,
-      const FloatOffsetType& = FloatOffsetType(0.0) );
-
-  /** Compute the update value. */
-  virtual PixelType ComputeUpdate(
-      const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType
           &tangentialTensorNeighborhood,
       const TensorDerivativeImageRegionType

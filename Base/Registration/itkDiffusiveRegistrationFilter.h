@@ -135,6 +135,12 @@ public:
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;
   typedef typename
+      itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
+      DeformationComponentImageArrayType;
+  typedef typename
+      std::vector< DeformationComponentImageArrayType >
+      DeformationComponentImageArrayArrayType;
+  typedef typename
       RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
       DeformationVectorComponentNeighborhoodType;
   typedef typename
@@ -176,13 +182,10 @@ public:
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
-  /** Deformation component image array types */
+  /** Vector multiplier imgae types */
   typedef typename
-      itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
-      DeformationComponentImageArrayType;
-  typedef typename
-      std::vector< DeformationComponentImageArrayType >
-      DeformationComponentImageArrayArrayType;
+      RegistrationFunctionType::MultiplicationVectorImageRegionArrayArrayType
+      MultiplicationVectorImageRegionArrayArrayType;
 
   /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
@@ -430,6 +433,25 @@ struct FaceStruct
       }
     }
 
+  template< unsigned int VLength >
+  FaceStruct( std::vector< itk::FixedArray< ImageType, VLength > > &images,
+              typename ImageType::ObjectType::RegionType region,
+              typename ImageType::ObjectType::SizeType radius )
+    {
+    numberOfTerms = 0;
+    for( int i = 0; i < (int) images.size(); i++)
+      {
+      for( unsigned int j = 0; j < images[i].Size(); j++ )
+        {
+        if( images[i][j].GetPointer() )
+          {
+          faceLists.push_back( faceCalculator( images[i][j], region, radius ) );
+          numberOfTerms++;
+          }
+        }
+      }
+    }
+
   void GoToBegin()
     {
     if( (int) faceListIts.size() != numberOfTerms )
@@ -557,6 +579,77 @@ struct FaceStruct
       iterators[i] = IteratorType( images[i], *faceListIts[i] );
       }
     }
+
+  template< class IteratorType, unsigned int VLength >
+  void SetIteratorToCurrentFace(
+      std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
+      std::vector< itk::FixedArray< ImageType, VLength > > & images,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    assert( (int) images.size() * (int) images[0].Size() == numberOfTerms );
+    int c = 0;
+    if( (int) iterators.size() != (int) images.size() )
+      {
+      for( int i = 0; i < (int) images.size(); i++ )
+        {
+        itk::FixedArray< IteratorType, VLength > fixedArray;
+        for( int j = 0; j < (int) images[i].Size(); j++ )
+          {
+          fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
+          c++;
+          }
+        iterators.push_back( fixedArray );
+        }
+      }
+    else
+      {
+      for( int i = 0; i < (int) images.size(); i++ )
+        {
+        itk::FixedArray< IteratorType, VLength > fixedArray;
+        for( int j = 0; j < (int) images[i].Size(); j++ )
+          {
+          fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
+          c++;
+          }
+        iterators[i] = fixedArray;
+        }
+      }
+    }
+
+    template< class IteratorType, unsigned int VLength >
+    void SetIteratorToCurrentFace(
+        std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
+        std::vector< itk::FixedArray< ImageType, VLength > > & images )
+      {
+      assert( (int) images.size() * (int) images[0].Size() == numberOfTerms );
+      int c = 0;
+      if( (int) iterators.size() != (int) images.size() )
+        {
+        for( int i = 0; i < (int) images.size(); i++ )
+          {
+          itk::FixedArray< IteratorType, VLength > fixedArray;
+          for( int j = 0; j < (int) images[i].Size(); j++ )
+            {
+            fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+            c++;
+            }
+          iterators.push_back( fixedArray );
+          }
+        }
+      else
+        {
+        for( int i = 0; i < (int) images.size(); i++ )
+          {
+          itk::FixedArray< IteratorType, VLength > fixedArray;
+          for( int j = 0; j < (int) images[i].Size(); j++ )
+            {
+            fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+            c++;
+            }
+          iterators[i] = fixedArray;
+          }
+        }
+      }
 
   FaceCalculatorType                     faceCalculator;
   std::vector< FaceListType >            faceLists;
