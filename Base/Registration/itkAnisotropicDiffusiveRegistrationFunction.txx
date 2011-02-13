@@ -318,10 +318,6 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   // Compute the motion field regularization update term
-  int numTerms = tensorNeighborhoods.size();
-  assert( (int)tensorDerivativeRegions.size() == numTerms );
-  assert( (int)deformationComponentNeighborhoodArrays.size() == numTerms );
-
   PixelType regularizationTerm;
   regularizationTerm.Fill(0);
   DeformationVectorComponentType intermediateComponent = 0;
@@ -329,6 +325,10 @@ AnisotropicDiffusiveRegistrationFunction
   intermediateVector.Fill(0);
   if ( this->GetComputeRegularizationTerm() )
     {
+    int numTerms = tensorNeighborhoods.size();
+    assert( (int)tensorDerivativeRegions.size() == numTerms );
+    assert( (int)deformationComponentNeighborhoodArrays.size() == numTerms );
+
     for ( int term = 0; term < numTerms; term++ )
       {
       assert( tensorNeighborhoods[term].GetImagePointer() );

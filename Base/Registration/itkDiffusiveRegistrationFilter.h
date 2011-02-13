@@ -148,8 +148,13 @@ public:
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
+  typedef std::vector< DiffusionTensorImagePointer >
+      DiffusionTensorImagePointerArrayType;
   typedef typename RegistrationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
+  typedef typename
+      RegistrationFunctionType::DiffusionTensorNeighborhoodArrayType
+      DiffusionTensorNeighborhoodArrayType;
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
 
@@ -158,6 +163,8 @@ public:
       TensorDerivativeImageType;
   typedef typename TensorDerivativeImageType::Pointer
       TensorDerivativeImagePointer;
+  typedef std::vector< TensorDerivativeImagePointer >
+      TensorDerivativeImagePointerArrayType;
   typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
   typedef typename TensorDerivativeImageType::RegionType
@@ -197,14 +204,18 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
-  /** Get the image of the diffusion tensor */
-  virtual const DiffusionTensorImagePointer GetDiffusionTensorImage() const
-    { return m_DiffusionTensorImage; }
+  /** The number of div(Tensor \grad u)v terms we sum for the regularizer. */
+  virtual int GetNumberOfTerms() const
+    { return 1; }
 
-  /** Get the image of the diffusion tensor derivatives */
+  /** Get the image of the diffusion tensor */ // TODO make return array
+  virtual const DiffusionTensorImagePointer GetDiffusionTensorImage() const
+    { return m_DiffusionTensorImages[0]; }
+
+  /** Get the image of the diffusion tensor derivatives */ // TODO return array
   virtual const TensorDerivativeImagePointer GetDiffusionTensorDerivativeImage()
       const
-    { return m_DiffusionTensorDerivativeImage; }
+    { return m_DiffusionTensorDerivativeImages[0]; }
 
 protected:
   DiffusiveRegistrationFilter();
@@ -214,8 +225,8 @@ protected:
   /** Initialization occuring before the registration iterations. */
   virtual void Initialize();
 
-  /** Allocate images used during the registration. */
-  virtual void AllocateImages();
+  /** Initialize images used during the registration. */
+  virtual void InitializeImageArrays();
 
   /** Computes the diffusion tensor images */
   virtual void ComputeDiffusionTensorImages();
@@ -334,26 +345,36 @@ private:
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
-  DiffusionTensorImagePointer         m_DiffusionTensorImage;
-  TensorDerivativeImagePointer        m_DiffusionTensorDerivativeImage;
-  DeformationComponentImageArrayType  m_DeformationComponentImages;
+  DiffusionTensorImagePointerArrayType    m_DiffusionTensorImages;
+  TensorDerivativeImagePointerArrayType   m_DiffusionTensorDerivativeImages;
+  DeformationComponentImageArrayType      m_DeformationComponentImages;
 };
 
 /** Struct to simply get the face list and an iterator over the face list
- *  when processing an image */
+ *  when processing an image.  Designed for use with SmartPointers. */
 template< class ImageType >
 struct FaceStruct
   {
-  FaceStruct() {}
+  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
+      < typename ImageType::ObjectType > FaceCalculatorType;
+  typedef typename FaceCalculatorType::FaceListType FaceListType;
+  typedef typename FaceListType::iterator FaceListIteratorType;
+
+  FaceStruct()
+    {
+    numberOfTerms = 0;
+    }
 
   FaceStruct( ImageType& image,
               typename ImageType::ObjectType::SizeType radius )
     {
-    if( image )
+    numberOfTerms = 0;
+    if( image.GetPointer() )
       {
-      faceList = faceCalculator( image,
-                                 image->GetLargestPossibleRegion(),
-                                 radius );
+      faceLists.push_back( faceCalculator( image,
+                                           image->GetLargestPossibleRegion(),
+                                           radius ) );
+      numberOfTerms = 1;
       }
     }
 
@@ -361,30 +382,177 @@ struct FaceStruct
               typename ImageType::ObjectType::RegionType region,
               typename ImageType::ObjectType::SizeType radius )
     {
-    if( image )
+    numberOfTerms = 0;
+    if( image.GetPointer() )
       {
-      faceList = faceCalculator( image, region, radius );
+      faceLists.push_back( faceCalculator( image, region, radius ) );
+      numberOfTerms = 1;
       }
     }
 
-  void begin()
+  FaceStruct( std::vector< ImageType >& images,
+              typename ImageType::ObjectType::RegionType region,
+              typename ImageType::ObjectType::SizeType radius )
     {
-    faceListIt = faceList.begin();
+    numberOfTerms = 0;
+    for( int i = 0; i < (int) images.size(); i++ )
+      {
+      if( images[i].GetPointer() )
+        {
+        faceLists.push_back( faceCalculator( images[i], region, radius ) );
+        numberOfTerms++;
+        }
+      }
+    }
+
+  template< unsigned int VLength >
+  FaceStruct( itk::FixedArray< ImageType, VLength >& images,
+              typename ImageType::ObjectType::RegionType region,
+              typename ImageType::ObjectType::SizeType radius )
+    {
+    numberOfTerms = 0;
+    for( int i = 0; i < (int) images.Size(); i++ )
+      {
+      if( images[i].GetPointer() )
+        {
+        faceLists.push_back( faceCalculator( images[i], region, radius ) );
+        numberOfTerms++;
+        }
+      }
+    }
+
+  void GoToBegin()
+    {
+    if( (int) faceListIts.size() != numberOfTerms )
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        faceListIts.push_back( faceLists[i].begin() );
+        }
+      }
+    else
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        faceListIts[i] = faceLists[i].begin();
+        }
+      }
     }
 
   bool IsAtEnd()
     {
-    return faceListIt == faceList.end();
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      if( faceListIts[i] == faceLists[i].end() )
+        {
+        return true;
+        }
+      }
+    return false;
     }
 
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-      < typename ImageType::ObjectType > FaceCalculatorType;
-  typedef typename FaceCalculatorType::FaceListType FaceListType;
-  typedef typename FaceListType::iterator FaceListIteratorType;
+  void Increment()
+    {
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      ++faceListIts[i];
+      }
+    }
 
-  FaceCalculatorType      faceCalculator;
-  FaceListType            faceList;
-  FaceListIteratorType    faceListIt;
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      IteratorType& iterator,
+      ImageType& image,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    iterator = IteratorType( radius, image, *faceListIts[0] );
+    }
+
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      IteratorType& iterator,
+      ImageType& image )
+    {
+    iterator = IteratorType( image, *faceListIts[0] );
+    }
+
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      std::vector< IteratorType >& iterators,
+      std::vector< ImageType >& images,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    assert( (int) images.size() == numberOfTerms );
+    if( (int) iterators.size() != numberOfTerms )
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        iterators.push_back(
+            IteratorType( radius, images[i], *faceListIts[i] ) );
+        }
+      }
+    else
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+        }
+      }
+    }
+
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      std::vector< IteratorType >& iterators,
+      std::vector< ImageType >& images )
+    {
+    assert( (int) images.size() == numberOfTerms );
+    if( (int) iterators.size() != numberOfTerms )
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        iterators.push_back( IteratorType( images[i], *faceListIts[i] ) );
+        }
+      }
+    else
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        iterators[i] = IteratorType( images[i], *faceListIts[i] );
+        }
+      }
+    }
+
+  template< class IteratorType, unsigned int VLength >
+  void SetIteratorToCurrentFace(
+      itk::FixedArray< IteratorType, VLength >& iterators,
+      itk::FixedArray< ImageType >& images,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    assert( (int) images.Size() == numberOfTerms );
+    assert( (int) iterators.Size() == numberOfTerms );
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+      }
+    }
+
+  template< class IteratorType, unsigned int VLength >
+  void SetIteratorToCurrentFace(
+      itk::FixedArray< IteratorType, VLength >& iterators,
+      itk::FixedArray< ImageType >& images )
+    {
+    assert( (int) images.Size() == numberOfTerms );
+    assert( (int) iterators.Size() == numberOfTerms );
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      iterators[i] = IteratorType( images[i], *faceListIts[i] );
+      }
+    }
+
+  FaceCalculatorType                     faceCalculator;
+  std::vector< FaceListType >            faceLists;
+  std::vector< FaceListIteratorType >    faceListIts;
+  int                                    numberOfTerms;
   };
 
 } // end namespace itk
