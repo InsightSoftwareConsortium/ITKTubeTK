@@ -248,10 +248,10 @@ public:
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
-      const DiffusionTensorNeighborhoodType
-          &tensorNeighborhood,
-      const TensorDerivativeImageRegionType
-          &tensorDerivativeRegion,
+      const DiffusionTensorNeighborhoodArrayType
+          &tensorNeighborhoods,
+      const TensorDerivativeImageRegionArrayType
+          &tensorDerivativeRegions,
       const DeformationVectorComponentNeighborhoodArrayType
           &deformationComponentNeighborhoods,
       const SpacingType &spacing,

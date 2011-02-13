@@ -170,6 +170,9 @@ public:
       TensorDerivativeImagePointerArrayType;
   typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
+  typedef typename
+      RegistrationFunctionType::TensorDerivativeImageRegionArrayType
+      TensorDerivativeImageRegionArrayType;
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 

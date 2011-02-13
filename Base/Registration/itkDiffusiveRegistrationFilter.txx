@@ -592,12 +592,12 @@ DiffusiveRegistrationFilter
   UpdateBufferRegionType updateRegion;
 
   FaceStruct< DiffusionTensorImagePointer > tensorStruct(
-      m_DiffusionTensorImages[0], tensorRegionToProcess, radius );
-  DiffusionTensorNeighborhoodType tensorNeighborhood;
+      m_DiffusionTensorImages, tensorRegionToProcess, radius );
+  DiffusionTensorNeighborhoodArrayType tensorNeighborhoods;
 
   FaceStruct< TensorDerivativeImagePointer > tensorDerivativeStruct(
-      m_DiffusionTensorDerivativeImages[0], derivativeRegionToProcess, radius );
-  TensorDerivativeImageRegionType tensorDerivativeRegion;
+      m_DiffusionTensorDerivativeImages, derivativeRegionToProcess, radius );
+  TensorDerivativeImageRegionArrayType tensorDerivativeRegions;
 
   FaceStruct< DeformationVectorComponentImagePointer >
       deformationComponentStruct( m_DeformationComponentImageArrays[0],
@@ -627,9 +627,9 @@ DiffusiveRegistrationFilter
     if( computeRegularization )
       {
       tensorStruct.SetIteratorToCurrentFace(
-          tensorNeighborhood, m_DiffusionTensorImages[0], radius );
+          tensorNeighborhoods, m_DiffusionTensorImages, radius );
       tensorDerivativeStruct.SetIteratorToCurrentFace(
-          tensorDerivativeRegion, m_DiffusionTensorDerivativeImages[0] );
+          tensorDerivativeRegions, m_DiffusionTensorDerivativeImages );
       deformationComponentStruct.SetIteratorToCurrentFace(
           deformationComponentNeighborhoods,
           m_DeformationComponentImageArrays[0],
@@ -641,11 +641,14 @@ DiffusiveRegistrationFilter
     updateRegion.GoToBegin();
     if( computeRegularization )
       {
-      tensorNeighborhood.GoToBegin();
-      tensorDerivativeRegion.GoToBegin();
-      for( unsigned int i = 0; i < ImageDimension; i++ )
+      for( int i = 0; i < this->GetNumberOfTerms(); i++ )
         {
-        deformationComponentNeighborhoods[i].GoToBegin();
+        tensorNeighborhoods[i].GoToBegin();
+        tensorDerivativeRegions[i].GoToBegin();
+        }
+      for( unsigned int j = 0; j < ImageDimension; j++ )
+        {
+        deformationComponentNeighborhoods[j].GoToBegin();
         }
       }
 
@@ -655,8 +658,8 @@ DiffusiveRegistrationFilter
       // Compute updates
       updateRegion.Value() = df->ComputeUpdate(
           outputNeighborhood,
-          tensorNeighborhood,
-          tensorDerivativeRegion,
+          tensorNeighborhoods,
+          tensorDerivativeRegions,
           deformationComponentNeighborhoods,
           spacing,
           globalData );
@@ -666,11 +669,14 @@ DiffusiveRegistrationFilter
       ++updateRegion;
       if( computeRegularization )
         {
-        ++tensorNeighborhood;
-        ++tensorDerivativeRegion;
-        for( unsigned int i = 0; i < ImageDimension; i++ )
+        for( int i = 0; i < this->GetNumberOfTerms(); i++ )
           {
-          ++deformationComponentNeighborhoods[i];
+          ++tensorNeighborhoods[i];
+          ++tensorDerivativeRegions[i];
+          }
+        for( unsigned int j = 0; j < ImageDimension; j++ )
+          {
+          ++deformationComponentNeighborhoods[j];
           }
         }
       }
