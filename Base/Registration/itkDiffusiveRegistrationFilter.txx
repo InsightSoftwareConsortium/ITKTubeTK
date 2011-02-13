@@ -38,11 +38,6 @@ DiffusiveRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_DeformationComponentImages[i] = 0;
-    }
-
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework
   this->SmoothDeformationFieldOff();
@@ -79,14 +74,17 @@ DiffusiveRegistrationFilter
       m_DiffusionTensorDerivativeImages[i]->Print( os, indent );
       }
     }
-  if( m_DeformationComponentImages.Length != 0 )
+  os << indent << "Deformation component images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    os << indent << "Deformation component images:" << std::endl;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
+    if( m_DeformationComponentImageArrays[i].Length != 0 )
       {
-      if( m_DeformationComponentImages[i] )
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        m_DeformationComponentImages[i]->Print( os, indent );
+        if( m_DeformationComponentImageArrays[i][j] )
+          {
+          m_DeformationComponentImageArrays[i][j]->Print( os, indent );
+          }
         }
       }
     }
@@ -263,6 +261,17 @@ DiffusiveRegistrationFilter
       m_DiffusionTensorDerivativeImages.push_back( 0 );
       }
     }
+
+  // Initialize array of pointers to deformation components
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    DeformationComponentImageArrayType deformationComponentArray;
+    for( int j = 0; j < ImageDimension; j++ )
+      {
+      deformationComponentArray[j] = 0;
+      }
+    m_DeformationComponentImageArrays.push_back( deformationComponentArray );
+    }
 }
 
 /**
@@ -418,7 +427,7 @@ DiffusiveRegistrationFilter
 
   // Update the extracted components
   this->ExtractXYZComponentsFromDeformationField(
-      this->GetOutput(), m_DeformationComponentImages );
+      this->GetOutput(), m_DeformationComponentImageArrays[0] );
 }
 
 /**
@@ -591,7 +600,7 @@ DiffusiveRegistrationFilter
   TensorDerivativeImageRegionType tensorDerivativeRegion;
 
   FaceStruct< DeformationVectorComponentImagePointer >
-      deformationComponentStruct( m_DeformationComponentImages,
+      deformationComponentStruct( m_DeformationComponentImageArrays[0],
                                   deformationComponentRegionToProcess,
                                   radius );
   DeformationVectorComponentNeighborhoodArrayType
@@ -623,7 +632,7 @@ DiffusiveRegistrationFilter
           tensorDerivativeRegion, m_DiffusionTensorDerivativeImages[0] );
       deformationComponentStruct.SetIteratorToCurrentFace(
           deformationComponentNeighborhoods,
-          m_DeformationComponentImages,
+          m_DeformationComponentImageArrays[0],
           radius );
       }
 

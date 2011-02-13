@@ -142,6 +142,9 @@ public:
       DeformationVectorComponentNeighborhoodArrayType;
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
+  typedef typename RegistrationFunctionType
+      ::DeformationVectorComponentNeighborhoodArrayArrayType
+      DeformationVectorComponentNeighborhoodArrayArrayType;
 
   /** Diffusion tensor image types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
@@ -174,6 +177,9 @@ public:
   typedef typename
       itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
       DeformationComponentImageArrayType;
+  typedef typename
+      std::vector< DeformationComponentImageArrayType >
+      DeformationComponentImageArrayArrayType;
 
   /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
@@ -259,7 +265,7 @@ protected:
 
   /** Get the array of deformation component images. */
   DeformationComponentImageArrayType GetDeformationComponentImages()
-    { return m_DeformationComponentImages; }
+    { return m_DeformationComponentImageArrays[0]; } // TODO return array
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -345,9 +351,9 @@ private:
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
-  DiffusionTensorImagePointerArrayType    m_DiffusionTensorImages;
-  TensorDerivativeImagePointerArrayType   m_DiffusionTensorDerivativeImages;
-  DeformationComponentImageArrayType      m_DeformationComponentImages;
+  DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
+  TensorDerivativeImagePointerArrayType     m_DiffusionTensorDerivativeImages;
+  DeformationComponentImageArrayArrayType   m_DeformationComponentImageArrays;
 };
 
 /** Struct to simply get the face list and an iterator over the face list
@@ -525,7 +531,7 @@ struct FaceStruct
   template< class IteratorType, unsigned int VLength >
   void SetIteratorToCurrentFace(
       itk::FixedArray< IteratorType, VLength >& iterators,
-      itk::FixedArray< ImageType >& images,
+      itk::FixedArray< ImageType, VLength >& images,
       typename ImageType::ObjectType::SizeType radius )
     {
     assert( (int) images.Size() == numberOfTerms );
@@ -539,7 +545,7 @@ struct FaceStruct
   template< class IteratorType, unsigned int VLength >
   void SetIteratorToCurrentFace(
       itk::FixedArray< IteratorType, VLength >& iterators,
-      itk::FixedArray< ImageType >& images )
+      itk::FixedArray< ImageType, VLength >& images )
     {
     assert( (int) images.Size() == numberOfTerms );
     assert( (int) iterators.Size() == numberOfTerms );
