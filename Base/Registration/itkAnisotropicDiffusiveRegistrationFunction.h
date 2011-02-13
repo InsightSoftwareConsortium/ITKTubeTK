@@ -24,8 +24,10 @@ limitations under the License.
 #define __itkAnisotropicDiffusiveRegistrationFunction_h
 
 #include "itkPDEDeformableRegistrationFunction.h"
+
 #include "itkAnisotropicDiffusionTensorFunction.h"
 #include "itkMeanSquareRegistrationFunction.h"
+#include <vector>
 
 namespace itk
 {
@@ -107,6 +109,8 @@ public:
   typedef itk::FixedArray
       < DeformationVectorComponentNeighborhoodType, ImageDimension >
        DeformationVectorComponentNeighborhoodArrayType;
+  typedef std::vector< DeformationVectorComponentNeighborhoodArrayType >
+      DeformationVectorComponentNeighborhoodArrayArrayType;
 
   /** Typedefs for the intensity-based distance function */
   typedef itk::MeanSquareRegistrationFunction
@@ -130,26 +134,54 @@ public:
       DiffusionTensorImageType;
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
+  typedef std::vector< DiffusionTensorNeighborhoodType >
+      DiffusionTensorNeighborhoodArrayType;
 
-  /** Typedefs for the matrices of derivatives */
+  /** Typedefs for the derivatives */
+  typedef typename RegularizationFunctionType::ScalarDerivativeType
+      ScalarDerivativeType;
+  typedef typename RegularizationFunctionType::ScalarDerivativeImageType
+      ScalarDerivativeImageType;
+  typedef typename RegularizationFunctionType::ScalarDerivativeImageRegionType
+      ScalarDerivativeImageRegionType;
+  typedef std::vector< ScalarDerivativeImageRegionType >
+      ScalarDerivativeImageRegionArrayType;
+
   typedef typename RegularizationFunctionType::TensorDerivativeType
       TensorDerivativeType;
   typedef typename RegularizationFunctionType::TensorDerivativeImageType
       TensorDerivativeImageType;
   typedef typename RegularizationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
+  typedef std::vector< TensorDerivativeImageRegionType >
+      TensorDerivativeImageRegionArrayType;
 
-  /** Normal vector types */
-  typedef double NormalVectorComponentType;
-  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
-      NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension >
-      NormalVectorImageType;
-  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
-      NormalVectorImageBoundaryConditionType;
+  /** Types for vectors to be multiplied by div(Tensor \grad u ) scalars */
+  typedef double MultiplicationVectorComponentType;
+  typedef itk::Vector< MultiplicationVectorComponentType, ImageDimension >
+      MultiplicationVectorType;
+  typedef itk::Image< MultiplicationVectorType, ImageDimension >
+      MultiplicationVectorImageType;
+  typedef typename MultiplicationVectorImageType::Pointer
+      MultiplicationVectorImagePointer;
+  typedef typename
+      itk::FixedArray< MultiplicationVectorImagePointer, ImageDimension >
+      MultiplicationVectorImageArrayType;
+  typedef ImageRegionIterator< MultiplicationVectorImageType >
+      MultiplicationVectorImageRegionType;
+  typedef itk::FixedArray
+      < MultiplicationVectorImageRegionType, ImageDimension >
+      MultiplicationVectorImageRegionArrayType;
+  typedef std::vector< MultiplicationVectorImageRegionArrayType >
+      MultiplicationVectorImageRegionArrayArrayType;
+
+  // TODO take me out
+  typedef ZeroFluxNeumannBoundaryCondition< MultiplicationVectorImageType >
+      MultiplicationVectorImageBoundaryConditionType;
   typedef ConstNeighborhoodIterator
-      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
-      NormalVectorNeighborhoodType;
+      < MultiplicationVectorImageType,
+      MultiplicationVectorImageBoundaryConditionType >
+      MultiplicationVectorNeighborhoodType;
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
@@ -235,8 +267,8 @@ public:
           &tangentialTensorDerivativeRegion,
       const DeformationVectorComponentNeighborhoodArrayType
           &tangentialDeformationComponentNeighborhoods,
-      const NormalVectorNeighborhoodType
-              &normalVectorNeighborhood,
+      const MultiplicationVectorNeighborhoodType
+              &multiplicationVectorNeighborhood,
       const DiffusionTensorNeighborhoodType
           &normalTensorNeighborhood,
       const TensorDerivativeImageRegionType
@@ -245,6 +277,19 @@ public:
           &normalDeformationComponentNeighborhoods,
       const SpacingType &spacing,
       void *globalData,
+      const FloatOffsetType& = FloatOffsetType(0.0) );
+
+  /** Compute the update value. */
+  virtual PixelType ComputeUpdate(
+      const NeighborhoodType & neighborhood,
+      const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
+      const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
+      DeformationVectorComponentNeighborhoodArrayArrayType
+          & deformationComponentNeighborhoodArrays,
+      const MultiplicationVectorImageRegionArrayArrayType
+          & multiplicationVectorRegionArrays,
+      const SpacingType & spacing,
+      void * globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
 
   /** Returns a pointer to a global data structure that is passed to this

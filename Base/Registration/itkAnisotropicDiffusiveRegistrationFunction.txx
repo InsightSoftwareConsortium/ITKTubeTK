@@ -198,45 +198,28 @@ AnisotropicDiffusiveRegistrationFunction
     void *globalData,
     const FloatOffsetType &offset )
 {
-  // Get the global data structure
-  GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
+  DiffusionTensorNeighborhoodArrayType tensorNeighborhoods;
+  tensorNeighborhoods.push_back( tensorNeighborhood );
 
-  // Iterate over the deformation field components to compute the regularization
-  // and intensity distance terms - note that PixelType corresponds to a
-  // deformation vector
+  TensorDerivativeImageRegionArrayType tensorDerivativeRegions;
+  tensorDerivativeRegions.push_back( tensorDerivativeRegion );
 
-  // Compute the intensity distance update update term
-  PixelType intensityDistanceTerm;
-  intensityDistanceTerm.Fill(0);
-  if (this->GetComputeIntensityDistanceTerm() )
-    {
-    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
-        neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
-    }
+  DeformationVectorComponentNeighborhoodArrayArrayType
+      deformationComponentNeighborhoodArrays;
+  deformationComponentNeighborhoodArrays.push_back(
+      deformationComponentNeighborhoods );
 
-  // Compute the motion field regularization update term
-  PixelType regularizationTerm;
-  regularizationTerm.Fill(0);
-  if ( this->GetComputeRegularizationTerm() )
-    {
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      // Compute the regularization
-      // Compute div(tensor \grad(u_l))(e_l)
-      regularizationTerm[i] = m_RegularizationFunction->ComputeUpdate(
-          deformationComponentNeighborhoods[i],
-          tensorNeighborhood,
-          spacing,
-          gd->m_RegularizationGlobalDataStruct,
-          tensorDerivativeRegion,
-          offset );
-      }
-    }
+  MultiplicationVectorImageRegionArrayArrayType
+      multiplicationVectorRegionArrays;
 
-  PixelType updateTerm;
-  updateTerm.Fill(0);
-  updateTerm = intensityDistanceTerm + regularizationTerm;
-  return updateTerm;
+  return this->ComputeUpdate( neighborhood,
+                              tensorNeighborhoods,
+                              tensorDerivativeRegions,
+                              deformationComponentNeighborhoodArrays,
+                              multiplicationVectorRegionArrays,
+                              spacing,
+                              globalData,
+                              offset );
 }
 
 /**
@@ -256,8 +239,8 @@ AnisotropicDiffusiveRegistrationFunction
         &tangentialTensorDerivativeRegion,
     const DeformationVectorComponentNeighborhoodArrayType
         &tangentialDeformationComponentNeighborhoods,
-    const NormalVectorNeighborhoodType
-        &normalVectorNeighborhood,
+    const MultiplicationVectorNeighborhoodType
+        &multiplicationVectorNeighborhood,
     const DiffusionTensorNeighborhoodType
         &normalTensorNeighborhood,
     const TensorDerivativeImageRegionType
@@ -268,66 +251,125 @@ AnisotropicDiffusiveRegistrationFunction
     void *globalData,
     const FloatOffsetType &offset )
 {
+  DiffusionTensorNeighborhoodArrayType tensorNeighborhoods;
+  tensorNeighborhoods.push_back( normalTensorNeighborhood );
+  tensorNeighborhoods.push_back( tangentialTensorNeighborhood );
+
+  TensorDerivativeImageRegionArrayType tensorDerivativeRegions;
+  tensorDerivativeRegions.push_back( normalTensorDerivativeRegion );
+  tensorDerivativeRegions.push_back( tangentialTensorDerivativeRegion );
+
+  DeformationVectorComponentNeighborhoodArrayArrayType
+      deformationComponentNeighborhoodArrays;
+  deformationComponentNeighborhoodArrays.push_back(
+      normalDeformationComponentNeighborhoods );
+  deformationComponentNeighborhoodArrays.push_back(
+      tangentialDeformationComponentNeighborhoods );
+
+  // TODO won't pass all tests because this not filled in
+  MultiplicationVectorImageRegionArrayArrayType
+      multiplicationVectorRegionArrays;
+
+  return this->ComputeUpdate( neighborhood,
+                              tensorNeighborhoods,
+                              tensorDerivativeRegions,
+                              deformationComponentNeighborhoodArrays,
+                              multiplicationVectorRegionArrays,
+                              spacing,
+                              globalData,
+                              offset );
+}
+
+/**
+  * Computes the update term
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::PixelType
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeUpdate(
+    const NeighborhoodType &neighborhood,
+    const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
+    const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
+    DeformationVectorComponentNeighborhoodArrayArrayType &
+        deformationComponentNeighborhoodArrays,
+    const MultiplicationVectorImageRegionArrayArrayType
+        & multiplicationVectorRegionArrays,
+    const SpacingType & spacing,
+    void * globalData,
+    const FloatOffsetType & offset)
+{
   // Get the global data structure
   GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
 
-  // The superclass computes the intensity term and regularization in the
-  // tangential plane ( i.e. div(P^P \grad(u_l))(e_l) )
-  PixelType intensityTermPlusTangentialRegularizationTerm
-      = this->ComputeUpdate(neighborhood,
-                            tangentialTensorNeighborhood,
-                            tangentialTensorDerivativeRegion,
-                            tangentialDeformationComponentNeighborhoods,
-                            spacing,
-                            globalData,
-                            offset );
+  // Iterate over the deformation field components to compute the regularization
+  // and intensity distance terms - note that PixelType corresponds to a
+  // deformation vector
 
-  // Compute the normal component of the regularization update term
-  PixelType normalRegularizationTerm;
-  normalRegularizationTerm.Fill(0);
-  if( this->GetComputeRegularizationTerm() )
+  // Compute the intensity distance update update term
+  PixelType intensityDistanceTerm;
+  intensityDistanceTerm.Fill(0);
+  if (this->GetComputeIntensityDistanceTerm() )
     {
-    NormalVectorType                  normalVector;
-    DeformationVectorComponentType    intermediateNormalRegularizationComponent;
-    PixelType                         intermediateNormalRegularizationTerm;
-    NormalVectorType                  nln; // n(l)n
+    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
+        neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
+    }
 
-    // Get the normal at this pixel once
-    const typename FixedImageType::IndexType index = neighborhood.GetIndex();
-    normalVector
-        = normalVectorNeighborhood.GetImagePointer()->GetPixel( index );
+  // Compute the motion field regularization update term
+  int numTerms = tensorNeighborhoods.size();
+  assert( (int)tensorDerivativeRegions.size() == numTerms );
+  assert( (int)deformationComponentNeighborhoodArrays.size() == numTerms );
 
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+  PixelType regularizationTerm;
+  regularizationTerm.Fill(0);
+  DeformationVectorComponentType intermediateComponent = 0;
+  PixelType intermediateVector;
+  intermediateVector.Fill(0);
+  if ( this->GetComputeRegularizationTerm() )
+    {
+    for ( int term = 0; term < numTerms; term++ )
       {
-      // Compute the regularization in the normal direction
-      // Compute div(w^2nn^T grad(u_l^\perp))
-      intermediateNormalRegularizationComponent
-          = this->GetRegularizationFunctionPointer()->ComputeUpdate(
-              normalDeformationComponentNeighborhoods[i],
-              normalTensorNeighborhood,
-              spacing,
-              gd->m_RegularizationGlobalDataStruct,
-              normalTensorDerivativeRegion,
-              offset );
+      assert( tensorNeighborhoods[term].GetImagePointer() );
+      assert( tensorDerivativeRegions[term].GetImage() );
+      // we don't necessarily have vectors to multiply
 
-      // The actual update term for the normal component is
-      // div(w^2nn^T grad(u_l^\perp))n_ln
-      nln = normalVector[i] * normalVector;
-      intermediateNormalRegularizationTerm
-          = intermediateNormalRegularizationComponent * nln;
-      normalRegularizationTerm
-          = normalRegularizationTerm + intermediateNormalRegularizationTerm;
+      for ( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        assert(deformationComponentNeighborhoodArrays[term][i].
+               GetImagePointer() );
+
+        intermediateVector.Fill(0);
+        intermediateComponent = m_RegularizationFunction->ComputeUpdate(
+            deformationComponentNeighborhoodArrays[term][i],
+            tensorNeighborhoods[term],
+            spacing,
+            gd->m_RegularizationGlobalDataStruct,
+            tensorDerivativeRegions[term],
+            offset );
+
+        // Multiply by the vector, if given
+        if( (int) multiplicationVectorRegionArrays.size() > term )
+          {
+          assert( multiplicationVectorRegionArrays[term][i].GetImage() );
+          intermediateVector = intermediateComponent
+            * multiplicationVectorRegionArrays[term][i].Get();
+          }
+        else
+          {
+          intermediateVector[i] = intermediateComponent;
+          }
+        regularizationTerm += intermediateVector;
+        }
       }
     }
 
-  // Will hold the final update term, including the regularization and intensity
-  // distance terms
   PixelType updateTerm;
   updateTerm.Fill(0);
-  updateTerm = intensityTermPlusTangentialRegularizationTerm
-               + normalRegularizationTerm;
-  return updateTerm;
+  updateTerm = intensityDistanceTerm + regularizationTerm;
 
+  return updateTerm;
 }
 
 } // end namespace itk

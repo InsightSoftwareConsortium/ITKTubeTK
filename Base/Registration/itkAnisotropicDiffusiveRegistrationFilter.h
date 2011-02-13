@@ -168,13 +168,17 @@ public:
       VectorIndexSelectionFilterType;
 
   /** Normal vector types */
-  typedef typename RegistrationFunctionType::NormalVectorType
+  typedef double NormalVectorComponentType;
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
       NormalVectorType;
-  typedef typename RegistrationFunctionType::NormalVectorImageType
+  typedef itk::Image< NormalVectorType, ImageDimension >
       NormalVectorImageType;
   typedef typename NormalVectorImageType::Pointer
       NormalVectorImagePointer;
-  typedef typename RegistrationFunctionType::NormalVectorNeighborhoodType
+  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
+      NormalVectorImageBoundaryConditionType;
+  typedef ConstNeighborhoodIterator
+      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
       NormalVectorNeighborhoodType;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageRegionType;
