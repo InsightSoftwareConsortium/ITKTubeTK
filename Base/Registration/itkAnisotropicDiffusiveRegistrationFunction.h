@@ -231,10 +231,10 @@ public:
 
   /** Returns the pointers to the regularization function and the intensity
     difference function */
-  RegularizationFunctionPointer GetRegularizationFunctionPointer() const
-    { return m_RegularizationFunction; }
-  IntensityDistanceFunctionPointer GetIntensityDistanceFunctionPointer() const
-    { return m_IntensityDistanceFunction; }
+  RegularizationFunctionType * GetRegularizationFunctionPointer() const
+    { return m_RegularizationFunction.GetPointer(); }
+  IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer() const
+    { return m_IntensityDistanceFunction.GetPointer(); }
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
@@ -244,27 +244,6 @@ public:
   PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
                           void *globalData,
                           const FloatOffsetType &offset = FloatOffsetType(0.0));
-
-  /** Compute the update value. */
-  virtual PixelType ComputeUpdate(
-      const NeighborhoodType &neighborhood,
-      const DiffusionTensorNeighborhoodType
-          &tangentialTensorNeighborhood,
-      const TensorDerivativeImageRegionType
-          &tangentialTensorDerivativeRegion,
-      const DeformationVectorComponentNeighborhoodArrayType
-          &tangentialDeformationComponentNeighborhoods,
-      const MultiplicationVectorNeighborhoodType
-              &multiplicationVectorNeighborhood,
-      const DiffusionTensorNeighborhoodType
-          &normalTensorNeighborhood,
-      const TensorDerivativeImageRegionType
-          &normalTensorDerivativeRegion,
-      const DeformationVectorComponentNeighborhoodArrayType
-          &normalDeformationComponentNeighborhoods,
-      const SpacingType &spacing,
-      void *globalData,
-      const FloatOffsetType& = FloatOffsetType(0.0) );
 
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(

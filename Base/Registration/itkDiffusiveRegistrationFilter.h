@@ -182,12 +182,12 @@ public:
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
-  /** Vector multiplier imgae types */
+  /** Vector multiplier image types */
   typedef typename
       RegistrationFunctionType::MultiplicationVectorImageRegionArrayArrayType
       MultiplicationVectorImageRegionArrayArrayType;
 
-  /** Types for vector component extractor */
+  /** Types for vector component ractor */
   typedef itk::VectorIndexSelectionCastImageFilter
       < DeformationFieldType, DeformationVectorComponentImageType >
       VectorIndexSelectionFilterType;
@@ -216,23 +216,27 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
-  /** The number of div(Tensor \grad u)v terms we sum for the regularizer. */
+  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
+   *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
     { return 1; }
 
-  /** Get the image of the diffusion tensor */ // TODO make return array
-  virtual const DiffusionTensorImagePointer GetDiffusionTensorImage() const
-    { return m_DiffusionTensorImages[0]; }
-
-  /** Get the image of the diffusion tensor derivatives */ // TODO return array
-  virtual const TensorDerivativeImagePointer GetDiffusionTensorDerivativeImage()
+  /** Get the array of images of the diffusion tensors */
+  virtual const DiffusionTensorImagePointerArrayType& GetDiffusionTensorImages()
       const
-    { return m_DiffusionTensorDerivativeImages[0]; }
+    { return this->m_DiffusionTensorImages; }
+
+  /** Get the image of the diffusion tensor derivatives */
+  virtual const TensorDerivativeImagePointerArrayType&
+      GetDiffusionTensorDerivativeImage() const
+    { return this->m_DiffusionTensorDerivativeImages; }
 
 protected:
   DiffusiveRegistrationFilter();
   virtual ~DiffusiveRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
+
+  enum DivTerm { GAUSSIAN };
 
   /** Initialization occuring before the registration iterations. */
   virtual void Initialize();
@@ -248,14 +252,37 @@ protected:
 
   /** Helper to compute the first derivatives of the diffusion tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
-      DiffusionTensorImagePointer tensorImage,
+      const DiffusionTensorImagePointer tensorImage,
       TensorDerivativeImagePointer tensorDerivativeImage );
+
+  /** Get a specific diffusion tensor image */
+  DiffusionTensorImageType * GetDiffusionTensorImage( int index ) const
+    {
+    assert( index < this->GetNumberOfTerms() );
+    return this->m_DiffusionTensorImages[index];
+    }
+
+  /** Get the image of the diffusion tensor derivatives */
+  TensorDerivativeImageType * GetDiffusionTensorDerivativeImage( int index )
+      const
+    {
+    assert( index < this->GetNumberOfTerms() );
+    return this->m_DiffusionTensorDerivativeImages[index];
+    }
+
+  /** Get the array of deformation component images. */
+  DeformationComponentImageArrayType&
+      GetDeformationComponentImageArray( int index )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    return this->m_DeformationComponentImageArrays[index];
+    }
 
   /** Allocate the update buffer. */
   virtual void AllocateUpdateBuffer();
 
   /** Get the update buffer. */
-  virtual UpdateBufferType * GetUpdateBuffer()
+  virtual UpdateBufferType * GetUpdateBuffer() const
     { return m_UpdateBuffer; }
 
   /** Initialize the state of the filter and equation before each iteration. */
@@ -266,12 +293,8 @@ protected:
 
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
-      OutputImagePointer deformationField,
+      const OutputImageType * deformationField,
       DeformationComponentImageArrayType& deformationComponentImages );
-
-  /** Get the array of deformation component images. */
-  DeformationComponentImageArrayType GetDeformationComponentImages()
-    { return m_DeformationComponentImageArrays[0]; } // TODO return array
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -314,7 +337,7 @@ protected:
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImageType, class TemplateImageType >
   void AllocateSpaceForImage( UnallocatedImageType & image,
-                             const TemplateImageType & templateImage );
+                              const TemplateImageType & templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */

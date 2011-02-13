@@ -190,64 +190,6 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(
     const NeighborhoodType &neighborhood,
-    const DiffusionTensorNeighborhoodType
-        &tangentialTensorNeighborhood,
-    const TensorDerivativeImageRegionType
-        &tangentialTensorDerivativeRegion,
-    const DeformationVectorComponentNeighborhoodArrayType
-        &tangentialDeformationComponentNeighborhoods,
-    const MultiplicationVectorNeighborhoodType
-        &multiplicationVectorNeighborhood,
-    const DiffusionTensorNeighborhoodType
-        &normalTensorNeighborhood,
-    const TensorDerivativeImageRegionType
-        &normalTensorDerivativeRegion,
-    const DeformationVectorComponentNeighborhoodArrayType
-        &normalDeformationComponentNeighborhoods,
-    const SpacingType &spacing,
-    void *globalData,
-    const FloatOffsetType &offset )
-{
-  DiffusionTensorNeighborhoodArrayType tensorNeighborhoods;
-  tensorNeighborhoods.push_back( normalTensorNeighborhood );
-  tensorNeighborhoods.push_back( tangentialTensorNeighborhood );
-
-  TensorDerivativeImageRegionArrayType tensorDerivativeRegions;
-  tensorDerivativeRegions.push_back( normalTensorDerivativeRegion );
-  tensorDerivativeRegions.push_back( tangentialTensorDerivativeRegion );
-
-  DeformationVectorComponentNeighborhoodArrayArrayType
-      deformationComponentNeighborhoodArrays;
-  deformationComponentNeighborhoodArrays.push_back(
-      normalDeformationComponentNeighborhoods );
-  deformationComponentNeighborhoodArrays.push_back(
-      tangentialDeformationComponentNeighborhoods );
-
-  // TODO won't pass all tests because this not filled in
-  MultiplicationVectorImageRegionArrayArrayType
-      multiplicationVectorRegionArrays;
-
-  return this->ComputeUpdate( neighborhood,
-                              tensorNeighborhoods,
-                              tensorDerivativeRegions,
-                              deformationComponentNeighborhoodArrays,
-                              multiplicationVectorRegionArrays,
-                              spacing,
-                              globalData,
-                              offset );
-}
-
-/**
-  * Computes the update term
-  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename AnisotropicDiffusiveRegistrationFunction
-  < TFixedImage, TMovingImage, TDeformationField >
-::PixelType
-AnisotropicDiffusiveRegistrationFunction
-  < TFixedImage, TMovingImage, TDeformationField >
-::ComputeUpdate(
-    const NeighborhoodType &neighborhood,
     const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
     const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
     DeformationVectorComponentNeighborhoodArrayArrayType &
