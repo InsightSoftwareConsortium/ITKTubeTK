@@ -306,14 +306,17 @@ protected:
   virtual void ComputeDiffusionTensorImages();
 
   /** Computes the first-order partial derivatives of the diffusion tensor
-   *  images */
+   *  images.  Override in derived classes if the diffusion tensor image
+   *  pointers are not unique, to avoid computing the derivatives multiple
+   *  times. */
   virtual void ComputeDiffusionTensorDerivativeImages();
 
   /** Helper to compute the first-order partial derivatives of the diffusion
    *  tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
       const DiffusionTensorImagePointer tensorImage,
-      TensorDerivativeImagePointer tensorDerivativeImage );
+      TensorDerivativeImagePointer tensorDerivativeImage,
+      const SpacingType & spacing ) const;
 
   /** Allocate and populate the images of multiplication vectors that the
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
@@ -384,7 +387,7 @@ protected:
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
       const OutputImageType * deformationField,
-      DeformationComponentImageArrayType& deformationComponentImages );
+      DeformationComponentImageArrayType& deformationComponentImages ) const;
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading

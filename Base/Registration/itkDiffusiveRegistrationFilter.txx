@@ -379,12 +379,17 @@ DiffusiveRegistrationFilter
 ::ComputeDiffusionTensorDerivativeImages()
 {
   assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetOutput() );
+
+  SpacingType spacing = this->GetOutput()->GetSpacing();
 
   // Compute the diffusion tensor derivative images
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     this->ComputeDiffusionTensorDerivativeImageHelper(
-        m_DiffusionTensorImages[i], m_DiffusionTensorDerivativeImages[i] );
+        m_DiffusionTensorImages[i],
+        m_DiffusionTensorDerivativeImages[i],
+        spacing );
     }
 }
 
@@ -397,7 +402,8 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDiffusionTensorDerivativeImageHelper(
     DiffusionTensorImagePointer tensorImage,
-    TensorDerivativeImagePointer tensorDerivativeImage )
+    TensorDerivativeImagePointer tensorDerivativeImage,
+    const SpacingType & spacing ) const
 {
   assert( tensorImage );
   assert( tensorDerivativeImage );
@@ -411,9 +417,6 @@ DiffusiveRegistrationFilter
 
   // Get the radius
   const typename OutputImageType::SizeType radius = df->GetRadius();
-
-  // Get the spacing
-  SpacingType spacing = tensorImage->GetSpacing();
 
   // Setup the structs for the face calculations, the face iterators, and the
   // iterators over the current face
@@ -454,10 +457,11 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ExtractXYZComponentsFromDeformationField(
     const OutputImageType * deformationField,
-    DeformationComponentImageArrayType& deformationComponentImages )
+    DeformationComponentImageArrayType& deformationComponentImages ) const
 {
-  typename VectorIndexSelectionFilterType::Pointer indexSelector;
   assert( deformationField );
+
+  typename VectorIndexSelectionFilterType::Pointer indexSelector;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     indexSelector = VectorIndexSelectionFilterType::New();
