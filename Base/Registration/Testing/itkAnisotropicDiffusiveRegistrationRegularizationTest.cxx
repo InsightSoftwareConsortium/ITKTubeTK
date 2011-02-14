@@ -321,7 +321,8 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
 
     // Save the output deformation field normal image
     writer->SetFileName( argv[3] );
-    writer->SetInput( anisotropicRegistrator->GetNormalDeformationFieldImage() );
+    writer->SetInput(
+        anisotropicRegistrator->GetNormalDeformationComponentImage() );
     try
       {
       writer->Update();

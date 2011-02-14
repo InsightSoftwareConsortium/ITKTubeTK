@@ -225,9 +225,9 @@ public:
     { return 2; }
 
   /** Get the normal components of the deformation field. */
-  virtual DeformationFieldType * GetNormalDeformationFieldImage() const
+  virtual DeformationFieldType * GetNormalDeformationComponentImage() const
     {
-    return this->GetDeformationFieldComponentImage( NORMAL );
+    return this->GetDeformationComponentImage( NORMAL );
     }
 
 protected:
@@ -257,7 +257,7 @@ protected:
   virtual void ComputeDiffusionTensorImages();
 
   /** Updates the deformation field component images */
-  virtual void UpdateDeformationFieldComponentImages();
+  virtual void UpdateDeformationComponentImages();
 
 private:
   // Purposely not implemented

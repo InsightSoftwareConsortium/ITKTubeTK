@@ -103,10 +103,10 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Allocate the images needed when using the anisotropic diffusive
   // regularization
-  this->SetDeformationFieldComponentImage( TANGENTIAL, this->GetOutput() );
+  this->SetDeformationComponentImage( TANGENTIAL, this->GetOutput() );
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
   this->AllocateSpaceForImage( normalDeformationField, output );
-  this->SetDeformationFieldComponentImage( NORMAL, normalDeformationField );
+  this->SetDeformationComponentImage( NORMAL, normalDeformationField );
 
   // If a normal vector image or weight image was supplied by the user, check
   // that it matches the output
@@ -436,7 +436,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::UpdateDeformationFieldComponentImages()
+::UpdateDeformationComponentImages()
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetNormalVectorImage() );
@@ -451,7 +451,7 @@ AnisotropicDiffusiveRegistrationFilter
                                      output->GetLargestPossibleRegion() );
 
   DeformationFieldPointer normalDeformationField
-      = this->GetDeformationFieldComponentImage( NORMAL );
+      = this->GetDeformationComponentImage( NORMAL );
   OutputImageRegionType normalDeformationRegion(
       normalDeformationField,
       normalDeformationField->GetLargestPossibleRegion() );

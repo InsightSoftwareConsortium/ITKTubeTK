@@ -77,9 +77,9 @@ DiffusiveRegistrationFilter
   os << indent << "Deformation field component images:" << std::endl;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    if( m_DeformationFieldComponentImages[i] )
+    if( m_DeformationComponentImages[i] )
       {
-      m_DeformationFieldComponentImages[i]->Print( os, indent );
+      m_DeformationComponentImages[i]->Print( os, indent );
       }
     }
   os << indent << "Deformation component images:" << std::endl;
@@ -275,7 +275,7 @@ DiffusiveRegistrationFilter
   // be allocated by individual filters)
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    m_DeformationFieldComponentImages.push_back( 0 );
+    m_DeformationComponentImages.push_back( 0 );
     }
   // Initialize array of pointers to deformation components
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
@@ -325,7 +325,7 @@ DiffusiveRegistrationFilter
   assert( this->GetOutput() );
   if( this->GetComputeRegularizationTerm() )
     {
-    m_DeformationFieldComponentImages[0] = this->GetOutput();
+    m_DeformationComponentImages[0] = this->GetOutput();
     }
 }
 
@@ -442,12 +442,12 @@ DiffusiveRegistrationFilter
   // computed on every registration iteration
   if( this->GetComputeRegularizationTerm() )
     {
-    this->UpdateDeformationFieldComponentImages();
+    this->UpdateDeformationComponentImages();
 
     for( int i = 0; i < this->GetNumberOfTerms(); i++ )
       {
       this->ExtractXYZComponentsFromDeformationField(
-          m_DeformationFieldComponentImages[i],
+          m_DeformationComponentImages[i],
           m_DeformationComponentImageArrays[i] );
       }
     }

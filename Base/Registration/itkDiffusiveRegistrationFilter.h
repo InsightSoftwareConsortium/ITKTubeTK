@@ -281,18 +281,17 @@ protected:
     }
 
   /** Get the image of the deformation field components */
-  DeformationFieldType * GetDeformationFieldComponentImage( int index ) const
+  DeformationFieldType * GetDeformationComponentImage( int index ) const
     {
     assert( index < this->GetNumberOfTerms() );
-    return this->m_DeformationFieldComponentImages[index];
+    return this->m_DeformationComponentImages[index];
     }
   /** Set the image of the deformation field components */
-  void SetDeformationFieldComponentImage(int index,
-                                         DeformationFieldType * comp )
+  void SetDeformationComponentImage(int index, DeformationFieldType * comp )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( comp );
-    this->m_DeformationFieldComponentImages[index] = comp;
+    this->m_DeformationComponentImages[index] = comp;
     }
 
   /** Allocate the update buffer. */
@@ -306,7 +305,7 @@ protected:
   virtual void InitializeIteration();
 
   /** Updates the deformation vector component images */
-  virtual void UpdateDeformationFieldComponentImages() {};
+  virtual void UpdateDeformationComponentImages() {};
 
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
@@ -399,8 +398,9 @@ private:
    *  registration iteration */
   DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
   TensorDerivativeImagePointerArrayType     m_DiffusionTensorDerivativeImages;
-  DeformationFieldPointerArrayType          m_DeformationFieldComponentImages;
+  DeformationFieldPointerArrayType          m_DeformationComponentImages;
   DeformationComponentImageArrayArrayType   m_DeformationComponentImageArrays;
+
 };
 
 /** Struct to simply get the face list and an iterator over the face list
