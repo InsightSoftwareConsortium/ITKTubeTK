@@ -125,8 +125,8 @@ public:
                                   const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Compute the equation value, optionally using precomputed first derivatives
-   *  for the diffusion tensor. The neighborhood, tensorNeighborhood
-   *  and tensorDerivativeRegion should have the same spacing as that given. */
+   *  for the diffusion tensor. The spacing of the images associated with the
+   *  given neighborhoods and regions should be the same as that given. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
