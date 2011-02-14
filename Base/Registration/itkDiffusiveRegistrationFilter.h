@@ -185,6 +185,10 @@ public:
       ThreadTensorDerivativeImageRegionType;
 
   /** Typedefs for the multiplication vectors */
+  typedef typename itk::FixedArray< DeformationFieldPointer >
+      DeformationVectorImageArrayType;
+  typedef std::vector< DeformationVectorImageArrayType >
+      DeformationVectorImageArrayArrayType;
   typedef typename RegistrationFunctionType::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
   typedef typename
@@ -260,6 +264,11 @@ protected:
   /** Computes the first derivatives of the diffusion tensor images */
   virtual void ComputeDiffusionTensorDerivativeImages();
 
+  /** Computes the multiplication vectors that the div(Tensor /grad u) values
+   *  are multiplied by.  Default to e_l if not specified, where e_l is the
+   *  lth canonical unit vector. */
+  virtual void ComputeMultiplicationVectorImages() {};
+
   /** Helper to compute the first derivatives of the diffusion tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
       const DiffusionTensorImagePointer tensorImage,
@@ -294,11 +303,19 @@ protected:
     }
 
   /** Set the image of the deformation field components */
-  void SetDeformationComponentImage(int index, DeformationFieldType * comp )
+  void SetDeformationComponentImage( int index, DeformationFieldType * comp )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( comp );
     this->m_DeformationComponentImages[index] = comp;
+    }
+
+  /** Set the image of the multiplication vectors */
+  void SetMultiplicationVectorImage( int index,
+                                     DeformationVectorImageArrayType & mult )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    this->m_MultiplicationVectorImageArrays[index] = mult;
     }
 
   /** Extracts the x, y, z components of a deformation field. */
@@ -401,7 +418,7 @@ private:
   TensorDerivativeImagePointerArrayType     m_DiffusionTensorDerivativeImages;
   DeformationFieldPointerArrayType          m_DeformationComponentImages;
   DeformationComponentImageArrayArrayType   m_DeformationComponentImageArrays;
-
+  DeformationVectorImageArrayArrayType      m_MultiplicationVectorImageArrays;
 };
 
 /** Struct to simply get the face list and an iterator over the face list
@@ -538,7 +555,14 @@ struct FaceStruct
       ImageType& image,
       typename ImageType::ObjectType::SizeType radius )
     {
-    iterator = IteratorType( radius, image, *faceListIts[0] );
+    if( image.GetPointer() )
+      {
+      iterator = IteratorType( radius, image, *faceListIts[0] );
+      }
+    else
+      {
+      iterator = IteratorType();
+      }
     }
 
   template< class IteratorType >
@@ -546,7 +570,14 @@ struct FaceStruct
       IteratorType& iterator,
       ImageType& image )
     {
-    iterator = IteratorType( image, *faceListIts[0] );
+    if( image.GetPointer() )
+      {
+      iterator = IteratorType( image, *faceListIts[0] );
+      }
+    else
+      {
+      iterator = IteratorType();
+      }
     }
 
   template< class IteratorType >
@@ -555,20 +586,33 @@ struct FaceStruct
       std::vector< ImageType >& images,
       typename ImageType::ObjectType::SizeType radius )
     {
-    assert( (int) images.size() == numberOfTerms );
     if( (int) iterators.size() != numberOfTerms )
       {
       for( int i = 0; i < numberOfTerms; i++ )
         {
-        iterators.push_back(
-            IteratorType( radius, images[i], *faceListIts[i] ) );
+        if( images[i].GetPointer() )
+          {
+          iterators.push_back(
+              IteratorType( radius, images[i], *faceListIts[i] ) );
+          }
+        else
+          {
+          iterators.push_back( IteratorType() );
+          }
         }
       }
     else
       {
       for( int i = 0; i < numberOfTerms; i++ )
         {
-        iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+        if( images[i].GetPointer() )
+          {
+          iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+          }
+        else
+          {
+          iterators[i] = IteratorType();
+          }
         }
       }
     }
@@ -578,19 +622,32 @@ struct FaceStruct
       std::vector< IteratorType >& iterators,
       std::vector< ImageType >& images )
     {
-    assert( (int) images.size() == numberOfTerms );
     if( (int) iterators.size() != numberOfTerms )
       {
       for( int i = 0; i < numberOfTerms; i++ )
         {
-        iterators.push_back( IteratorType( images[i], *faceListIts[i] ) );
+        if( images[i].GetPointer() )
+          {
+          iterators.push_back( IteratorType( images[i], *faceListIts[i] ) );
+          }
+        else
+          {
+          iterators.push_back( IteratorType() );
+          }
         }
       }
     else
       {
       for( int i = 0; i < numberOfTerms; i++ )
         {
-        iterators[i] = IteratorType( images[i], *faceListIts[i] );
+        if( images[i].GetPointer() )
+          {
+          iterators[i] = IteratorType( images[i], *faceListIts[i] );
+          }
+        else
+          {
+          iterators[i] = IteratorType();
+          }
         }
       }
     }
@@ -601,11 +658,17 @@ struct FaceStruct
       itk::FixedArray< ImageType, VLength >& images,
       typename ImageType::ObjectType::SizeType radius )
     {
-    assert( (int) images.Size() == numberOfTerms );
     assert( (int) iterators.Size() == numberOfTerms );
     for( int i = 0; i < numberOfTerms; i++ )
       {
-      iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+      if( images[i].GetPointer() )
+        {
+        iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+        }
+      else
+        {
+        iterators[i] = IteratorType();
+        }
       }
     }
 
@@ -614,11 +677,17 @@ struct FaceStruct
       itk::FixedArray< IteratorType, VLength >& iterators,
       itk::FixedArray< ImageType, VLength >& images )
     {
-    assert( (int) images.Size() == numberOfTerms );
     assert( (int) iterators.Size() == numberOfTerms );
     for( int i = 0; i < numberOfTerms; i++ )
       {
-      iterators[i] = IteratorType( images[i], *faceListIts[i] );
+      if( images[i].GetPointer() )
+        {
+        iterators[i] = IteratorType( images[i], *faceListIts[i] );
+        }
+      else
+        {
+        iterators[i] = IteratorType();
+        }
       }
     }
 
@@ -628,7 +697,6 @@ struct FaceStruct
       std::vector< itk::FixedArray< ImageType, VLength > > & images,
       typename ImageType::ObjectType::SizeType radius )
     {
-    assert( (int) images.size() * (int) images[0].Size() == numberOfTerms );
     int c = 0;
     if( (int) iterators.size() != (int) images.size() )
       {
@@ -637,8 +705,15 @@ struct FaceStruct
         itk::FixedArray< IteratorType, VLength > fixedArray;
         for( int j = 0; j < (int) images[i].Size(); j++ )
           {
-          fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
-          c++;
+          if( images[i][j].GetPointer() )
+            {
+            fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
+            c++;
+            }
+          else
+            {
+            fixedArray[j] = IteratorType();
+            }
           }
         iterators.push_back( fixedArray );
         }
@@ -650,8 +725,15 @@ struct FaceStruct
         itk::FixedArray< IteratorType, VLength > fixedArray;
         for( int j = 0; j < (int) images[i].Size(); j++ )
           {
-          fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
-          c++;
+          if( images[i][j].GetPointer() )
+            {
+            fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
+            c++;
+            }
+          else
+            {
+            fixedArray[j] = IteratorType();
+            }
           }
         iterators[i] = fixedArray;
         }
@@ -663,7 +745,6 @@ struct FaceStruct
         std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
         std::vector< itk::FixedArray< ImageType, VLength > > & images )
       {
-      assert( (int) images.size() * (int) images[0].Size() == numberOfTerms );
       int c = 0;
       if( (int) iterators.size() != (int) images.size() )
         {
@@ -672,8 +753,15 @@ struct FaceStruct
           itk::FixedArray< IteratorType, VLength > fixedArray;
           for( int j = 0; j < (int) images[i].Size(); j++ )
             {
-            fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
-            c++;
+            if( images[i][j] )
+              {
+              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+              c++;
+              }
+            else
+              {
+              fixedArray[j] = IteratorType();
+              }
             }
           iterators.push_back( fixedArray );
           }
@@ -685,8 +773,15 @@ struct FaceStruct
           itk::FixedArray< IteratorType, VLength > fixedArray;
           for( int j = 0; j < (int) images[i].Size(); j++ )
             {
-            fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
-            c++;
+            if( images[i][j].GetPointer() )
+              {
+              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+              c++;
+              }
+            else
+              {
+              fixedArray[j] = IteratorType();
+              }
             }
           iterators[i] = fixedArray;
           }

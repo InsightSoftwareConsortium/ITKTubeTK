@@ -251,11 +251,10 @@ AnisotropicDiffusiveRegistrationFunction
             offset );
 
         // Multiply by the vector, if given
-        if( (int) multiplicationVectorRegionArrays.size() > term )
+        if( multiplicationVectorRegionArrays[term][i].GetImage() )
           {
-          assert( multiplicationVectorRegionArrays[term][i].GetImage() );
-          intermediateVector = intermediateComponent
-            * multiplicationVectorRegionArrays[term][i].Get();
+          intermediateVector = intermediateComponent *
+                               multiplicationVectorRegionArrays[term][i].Get();
           }
         else
           {

@@ -442,6 +442,62 @@ AnisotropicDiffusiveRegistrationFilter
     }
 }
 
+/** Computes the multiplication vectors that the div(Tensor /grad u) values
+ *  are multiplied by.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeMultiplicationVectorImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetOutput() );
+  assert( this->GetNormalVectorImage() );
+
+  // The output will be used as the template to allocate the images we will
+  // use to store data computed before/during the registration
+  typename OutputImageType::Pointer output = this->GetOutput();
+
+  // Allocate the images needed when using the anisotropic diffusive
+  // regularization
+  // There is no multiplication vector for the tangential term, and the
+  // superclass will init it to zeros for us.
+  // The normal multiplication vector is n_l*n
+
+  // Iterate over the normal vector image
+  typedef itk::ImageRegionConstIterator< NormalVectorImageType >
+    NormalVectorImageConstRegionType;
+  NormalVectorImageConstRegionType normalIt = NormalVectorImageConstRegionType(
+      this->GetNormalVectorImage(),
+      this->GetNormalVectorImage()->GetLargestPossibleRegion() );
+
+  DeformationVectorImageArrayType normalMultsArray;
+  DeformationVectorType multVector;
+  multVector.Fill( 0.0 );
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    // Create the multiplication vector image
+    DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
+    this->AllocateSpaceForImage( normalMultsImage, output );
+
+    // Calculate n_l*n
+    DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
+        normalMultsImage, normalMultsImage->GetLargestPossibleRegion() );
+    for( normalIt.GoToBegin(), multIt.GoToBegin();
+         !multIt.IsAtEnd();
+         ++normalIt, ++multIt )
+           {
+      multVector = multIt.Get();
+      multIt.Set( multVector[i] * multVector );
+      }
+
+    // Set the multiplication vector image to the array
+    normalMultsArray[i] = normalMultsImage;
+    }
+  this->SetMultiplicationVectorImage( NORMAL, normalMultsArray );
+}
+
 /**
  * Updates the deformation vector component images before each iteration
  */
@@ -456,7 +512,7 @@ AnisotropicDiffusiveRegistrationFilter
   assert( this->GetWeightImage() );
 
   // Setup iterators
-  NormalVectorImageRegionType normalVectorNeighborhood(
+  NormalVectorImageRegionType normalVectorRegion(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
   typename OutputImageType::Pointer output = this->GetOutput();
@@ -475,12 +531,12 @@ AnisotropicDiffusiveRegistrationFilter
   DeformationVectorType  normalDeformationVector;
   DeformationVectorType  tangentialDeformationVector;
 
-  for( normalVectorNeighborhood.GoToBegin(), outputRegion.GoToBegin(),
+  for( normalVectorRegion.GoToBegin(), outputRegion.GoToBegin(),
        normalDeformationRegion.GoToBegin();
   !outputRegion.IsAtEnd();
-  ++normalVectorNeighborhood, ++outputRegion, ++normalDeformationRegion )
+  ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
     {
-    n = normalVectorNeighborhood.Get();
+    n = normalVectorRegion.Get();
     u = outputRegion.Get();
 
     // normal component = (u^Tn)n

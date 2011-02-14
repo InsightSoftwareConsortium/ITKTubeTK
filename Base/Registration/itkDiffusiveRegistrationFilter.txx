@@ -96,6 +96,20 @@ DiffusiveRegistrationFilter
         }
       }
     }
+  os << indent << "Multiplication vector images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( m_MultiplicationVectorImageArrays[i].Length != 0 )
+      {
+      for( unsigned int j = 0; j < ImageDimension; j++ )
+        {
+        if( m_MultiplicationVectorImageArrays[i][j] )
+          {
+          m_MultiplicationVectorImageArrays[i][j]->Print( os, indent );
+          }
+        }
+      }
+    }
 }
 
 /**
@@ -228,6 +242,7 @@ DiffusiveRegistrationFilter
     this->InitializeDeformationComponentImages();
     this->ComputeDiffusionTensorImages();
     this->ComputeDiffusionTensorDerivativeImages();
+    this->ComputeMultiplicationVectorImages();
     }
 }
 
@@ -277,11 +292,14 @@ DiffusiveRegistrationFilter
     {
     m_DeformationComponentImages.push_back( 0 );
     DeformationComponentImageArrayType deformationComponentArray;
+    DeformationVectorImageArrayType multiplicationVectorArray;
     for( int j = 0; j < ImageDimension; j++ )
       {
       deformationComponentArray[j] = 0;
+      multiplicationVectorArray[i] = 0;
       }
     m_DeformationComponentImageArrays.push_back( deformationComponentArray );
+    m_MultiplicationVectorImageArrays.push_back( multiplicationVectorArray );
     }
 }
 
@@ -623,9 +641,9 @@ DiffusiveRegistrationFilter
   DeformationVectorComponentNeighborhoodArrayArrayType
       deformationComponentNeighborhoodArrays;
 
-  // TODO won't pass all tests because this not filled in
-  DeformationVectorImageRegionArrayArrayType
-      multiplicationVectorRegionArrays;
+  FaceStruct< DeformationFieldPointer > multiplicationVectorStruct(
+      m_MultiplicationVectorImageArrays, regionToProcess, radius );
+  DeformationVectorImageRegionArrayArrayType multiplicationVectorRegionArrays;
 
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
@@ -637,6 +655,7 @@ DiffusiveRegistrationFilter
     tensorStruct.GoToBegin();
     tensorDerivativeStruct.GoToBegin();
     deformationComponentStruct.GoToBegin();
+    multiplicationVectorStruct.GoToBegin();
     }
 
   // Iterate over each face
@@ -655,6 +674,9 @@ DiffusiveRegistrationFilter
           deformationComponentNeighborhoodArrays,
           m_DeformationComponentImageArrays,
           radius );
+      multiplicationVectorStruct.SetIteratorToCurrentFace(
+          multiplicationVectorRegionArrays,
+          m_MultiplicationVectorImageArrays );
       }
 
     // Go to the beginning of the neighborhood for this face
@@ -669,6 +691,7 @@ DiffusiveRegistrationFilter
         for( unsigned int j = 0; j < ImageDimension; j++ )
           {
           deformationComponentNeighborhoodArrays[i][j].GoToBegin();
+          multiplicationVectorRegionArrays[i][j].GoToBegin();
           }
         }
       }
@@ -698,6 +721,10 @@ DiffusiveRegistrationFilter
           for( unsigned int j = 0; j < ImageDimension; j++ )
             {
             ++deformationComponentNeighborhoodArrays[i][j];
+            if( multiplicationVectorRegionArrays[i][j].GetImage() )
+              {
+              ++multiplicationVectorRegionArrays[i][j];
+              }
             }
           }
         }
@@ -710,6 +737,7 @@ DiffusiveRegistrationFilter
       tensorStruct.Increment();
       tensorDerivativeStruct.Increment();
       deformationComponentStruct.Increment();
+      multiplicationVectorStruct.Increment();
       }
     }
 

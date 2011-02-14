@@ -119,6 +119,8 @@ public:
   typedef typename Superclass::SpacingType              SpacingType;
 
   /** Deformation field types. */
+  typedef typename Superclass::DeformationFieldPointerArrayType
+      DeformationFieldPointerArrayType;
   typedef typename Superclass::DeformationVectorType
       DeformationVectorType;
   typedef typename Superclass::DeformationVectorComponentType
@@ -151,13 +153,15 @@ public:
       TensorDerivativeImageRegionType;
 
   /** Typedefs for the multiplication vectors */
-  typedef typename RegistrationFunctionType::DeformationVectorImageRegionType
+  typedef typename Superclass::DeformationVectorImageArrayType
+      DeformationVectorImageArrayType;
+  typedef typename Superclass::DeformationVectorImageArrayArrayType
+      DeformationVectorImageArrayArrayType;
+  typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
-  typedef typename
-      RegistrationFunctionType::DeformationVectorImageRegionArrayType
+  typedef typename Superclass::DeformationVectorImageRegionArrayType
       DeformationVectorImageRegionArrayType;
-  typedef typename
-      RegistrationFunctionType::DeformationVectorImageRegionArrayArrayType
+  typedef typename Superclass::DeformationVectorImageRegionArrayArrayType
       DeformationVectorImageRegionArrayArrayType;
 
   /** Normal vector types */
@@ -261,6 +265,11 @@ protected:
 
   /** Updates the deformation field component images */
   virtual void UpdateDeformationComponentImages();
+
+  /** Computes the multiplication vectors that the div(Tensor /grad u) values
+   *  are multiplied by.  Default to e_l if not specified, where e_l is the
+   *  lth canonical unit vector. */
+  virtual void ComputeMultiplicationVectorImages();
 
 private:
   // Purposely not implemented
