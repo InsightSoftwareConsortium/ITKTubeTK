@@ -234,14 +234,12 @@ AnisotropicDiffusiveRegistrationFunction
       {
       assert( tensorNeighborhoods[term].GetImagePointer() );
       assert( tensorDerivativeRegions[term].GetImage() );
-      // we don't necessarily have vectors to multiply
+      // we don't necessarily have vectors to multiply, so no assert here
 
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
         assert(deformationComponentNeighborhoodArrays[term][i].
                GetImagePointer() );
-
-        intermediateVector.Fill(0);
         intermediateComponent = m_RegularizationFunction->ComputeUpdate(
             deformationComponentNeighborhoodArrays[term][i],
             tensorNeighborhoods[term],
@@ -251,6 +249,7 @@ AnisotropicDiffusiveRegistrationFunction
             offset );
 
         // Multiply by the vector, if given
+        intermediateVector.Fill(0);
         if( multiplicationVectorRegionArrays[term][i].GetImage() )
           {
           intermediateVector = intermediateComponent *
