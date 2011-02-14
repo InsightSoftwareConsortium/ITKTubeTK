@@ -422,11 +422,14 @@ DiffusiveRegistrationFilter
 
   // Setup the structs for the face calculations, the face iterators, and the
   // iterators over the current face
-  FaceStruct< DiffusionTensorImagePointer > tensorStruct( tensorImage, radius );
+  FaceStruct< DiffusionTensorImagePointer > tensorStruct(
+      tensorImage, tensorImage->GetLargestPossibleRegion(), radius );
   DiffusionTensorNeighborhoodType tensorNeighborhood;
 
   FaceStruct< TensorDerivativeImagePointer > tensorDerivativeStruct(
-      tensorDerivativeImage, radius );
+      tensorDerivativeImage,
+      tensorDerivativeImage->GetLargestPossibleRegion(),
+      radius );
   TensorDerivativeImageRegionType tensorDerivativeRegion;
 
   for( tensorStruct.GoToBegin(), tensorDerivativeStruct.GoToBegin();
