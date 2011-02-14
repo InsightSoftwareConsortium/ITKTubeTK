@@ -141,13 +141,43 @@ public:
   typedef typename Superclass::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
 
+  /** Scalar derivative image types */
+  typedef typename Superclass::ScalarDerivativeType
+      ScalarDerivativeType;
+  typedef typename Superclass::ScalarDerivativeImageType
+      ScalarDerivativeImageType;
+  typedef typename Superclass::ScalarDerivativeImagePointer
+      ScalarDerivativeImagePointer;
+  typedef typename Superclass::ScalarDerivativeImageArrayType
+      ScalarDerivativeImageArrayType;
+  typedef typename Superclass::ScalarDerivativeImageArrayVectorType
+      ScalarDerivativeImageArrayVectorType;
+  typedef typename Superclass::ScalarDerivativeImageRegionType
+      ScalarDerivativeImageRegionType;
+  typedef typename Superclass::ScalarDerivativeImageRegionArrayType
+      ScalarDerivativeImageRegionArrayType;
+  typedef typename Superclass::ScalarDerivativeImageRegionArrayVectorType
+      ScalarDerivativeImageRegionArrayVectorType;
+
   /** Tensor derivative matrix image types */
   typedef typename Superclass::TensorDerivativeImageType
       TensorDerivativeImageType;
   typedef typename Superclass::TensorDerivativeImagePointer
       TensorDerivativeImagePointer;
+  typedef typename Superclass::TensorDerivativeImagePointerVectorType
+      TensorDerivativeImagePointerVectorType;
+  typedef typename Superclass::TensorDerivativeImagePointerArrayType
+      TensorDerivativeImagePointerArrayType;
+  typedef typename Superclass::TensorDerivativeImagePointerArrayVectorType
+      TensorDerivativeImagePointerArrayVectorType;
   typedef typename Superclass::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
+  typedef typename Superclass::TensorDerivativeImageRegionVectorType
+      TensorDerivativeImageRegionVectorType;
+  typedef typename Superclass::TensorDerivativeImageRegionArrayType
+      TensorDerivativeImageRegionArrayType;
+  typedef typename Superclass::TensorDerivativeImageRegionArrayVectorType
+      TensorDerivativeImageRegionArrayVectorType;
 
   /** Typedefs for the multiplication vectors */
   typedef typename Superclass::DeformationVectorImageArrayType
@@ -239,9 +269,10 @@ protected:
   /** Handy for array indexing. */
   enum DivTerm { TANGENTIAL, NORMAL };
 
-  /** Allocate the deformation component images (which may be updated throughout
-   *  the registration. Reimplement in derived classes. */
-  virtual void InitializeDeformationComponentImages();
+  /** Allocate the deformation component images and their derivative images.
+   *  (which may be updated throughout the registration). Reimplement in derived
+   *  classes. */
+  virtual void InitializeDeformationComponentAndDerivativeImages();
 
   /** Allocate and populate the diffusion tensor images.
    *  Reimplement in derived classes. */

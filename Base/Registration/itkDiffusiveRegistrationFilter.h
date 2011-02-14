@@ -66,7 +66,8 @@ namespace itk
  * following functions:
  * - GetNumberOfTerms(): returns the number of div(T*\grad(u))v terms
  * - ComputeDiffusionTensorImages(): allocate and populate the T images
- * - InitializeDeformationComponentImages(): allocate the u images
+ * - InitializeDeformationComponentAndDerivativeImages(): allocate the u images
+ * and their derivatives
  * - ComputeMultiplicationVectorImages(): allocate and populate the v images
  * - UpdateDeformationComponentImages(): update the u images at each iteration
  * See itkAnisotropicDiffusiveRegistrationFilter for an example derived filter.
@@ -295,9 +296,10 @@ protected:
   /** Allocate images used during the registration. */
   virtual void AllocateImageArrays();
 
-  /** Allocate the deformation component images (which may be updated throughout
-   *  the registration. Reimplement in derived classes. */
-  virtual void InitializeDeformationComponentImages();
+  /** Allocate the deformation component images and their derivative images.
+   *  (which may be updated throughout the registration). Reimplement in derived
+   *  classes. */
+  virtual void InitializeDeformationComponentAndDerivativeImages();
 
   /** Allocate and populate the diffusion tensor images.
    *  Reimplement in derived classes. */
@@ -361,6 +363,22 @@ protected:
     {
     assert( index < this->GetNumberOfTerms() );
     this->m_MultiplicationVectorImageArrays[index] = mult;
+    }
+
+  /** Set an array of the first-order deformation component derivatives. */
+  void SetDeformationComponentFirstOrderDerivativeArray(
+      int index, ScalarDerivativeImageArrayType & deriv )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    this->m_DeformationComponentFirstOrderDerivativeArrays[index] = deriv;
+    }
+
+  /** Set an array of the second-order deformation component derivatives. */
+  void SetDeformationComponentSecondOrderDerivativeArray(
+      int index, TensorDerivativeImagePointerArrayType & deriv )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    this->m_DeformationComponentSecondOrderDerivativeArrays[index] = deriv;
     }
 
   /** Extracts the x, y, z components of a deformation field. */

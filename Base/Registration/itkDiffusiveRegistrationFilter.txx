@@ -239,7 +239,7 @@ DiffusiveRegistrationFilter
   // Compute the diffusion tensors and their derivatives
   if( this->GetComputeRegularizationTerm() )
     {
-    this->InitializeDeformationComponentImages();
+    this->InitializeDeformationComponentAndDerivativeImages();
     this->ComputeDiffusionTensorImages();
     this->ComputeDiffusionTensorDerivativeImages();
     this->ComputeMultiplicationVectorImages();
@@ -256,6 +256,8 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateImageArrays()
 {
+  assert( this->GetOutput() );
+
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
@@ -287,34 +289,64 @@ DiffusiveRegistrationFilter
     }
 
   // Initialize image pointers that may or may not be allocated by individual
-  // filters later on, namely deformation components and multiplication vectors
+  // filters later on, namely deformation derivatives and multiplication vectors
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     m_DeformationComponentImages.push_back( 0 );
+
     DeformationComponentImageArrayType deformationComponentArray;
+    ScalarDerivativeImageArrayType deformationComponentFirstArray;
+    TensorDerivativeImagePointerArrayType deformationComponentSecondArray;
     DeformationVectorImageArrayType multiplicationVectorArray;
     for( int j = 0; j < ImageDimension; j++ )
       {
       deformationComponentArray[j] = 0;
+      deformationComponentFirstArray[j] = 0;
+      deformationComponentSecondArray[j] = 0;
       multiplicationVectorArray[i] = 0;
       }
     m_DeformationComponentImageArrays.push_back( deformationComponentArray );
+    m_DeformationComponentFirstOrderDerivativeArrays.push_back(
+        deformationComponentFirstArray );
+    m_DeformationComponentSecondOrderDerivativeArrays.push_back(
+        deformationComponentSecondArray );
     m_MultiplicationVectorImageArrays.push_back( multiplicationVectorArray );
     }
 }
 
 /**
- * Initialize the deformation component images
+ * Initialize the deformation component images and their derivatives
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeDeformationComponentImages()
+::InitializeDeformationComponentAndDerivativeImages()
 {
   assert( this->GetOutput() );
   assert( this->GetComputeRegularizationTerm() );
-  m_DeformationComponentImages[0] = this->GetOutput();
+
+  // The output will be used as the template to allocate the images we will
+  // use to store data computed before/during the registration
+  typename OutputImageType::Pointer output = this->GetOutput();
+
+  // Setup pointer to the deformation component image - we have only one
+  // component, which is the entire deformation field
+  m_DeformationComponentImages[0] = output;
+
+  // Setup the first and second order deformation component images
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    m_DeformationComponentFirstOrderDerivativeArrays[0][i]
+        = ScalarDerivativeImageType::New();
+    this->AllocateSpaceForImage(
+        m_DeformationComponentFirstOrderDerivativeArrays[0][i], output );
+
+    m_DeformationComponentSecondOrderDerivativeArrays[0][i]
+        = TensorDerivativeImageType::New();
+    this->AllocateSpaceForImage(
+        m_DeformationComponentSecondOrderDerivativeArrays[0][i], output );
+    }
 }
 
 /**

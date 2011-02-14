@@ -86,7 +86,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeDeformationComponentImages()
+::InitializeDeformationComponentAndDerivativeImages()
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -95,13 +95,35 @@ AnisotropicDiffusiveRegistrationFilter
   // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
 
-  // Allocate the images needed when using the anisotropic diffusive
-  // regularization
+  // Setup pointers to the deformation component images - we have the
+  // TANGENTIAL component, which is the entire deformation field, and the
+  // NORMAL component, which is the deformation vectors projected onto their
+  // normals
   this->SetDeformationComponentImage( TANGENTIAL, this->GetOutput() );
 
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
   this->AllocateSpaceForImage( normalDeformationField, output );
   this->SetDeformationComponentImage( NORMAL, normalDeformationField );
+
+  // Setup the first and second order deformation component images - we need
+  // to allocate images for both the TANGENTIAL and NORMAL components, so
+  // we'll just loop over the number of terms
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    ScalarDerivativeImageArrayType firstOrderArray;
+    TensorDerivativeImagePointerArrayType secondOrderArray;
+    for( int j = 0; j < ImageDimension; j++ )
+      {
+      firstOrderArray[j] = ScalarDerivativeImageType::New();
+      this->AllocateSpaceForImage( firstOrderArray[j], output );
+      secondOrderArray[j] = TensorDerivativeImageType::New();
+      this->AllocateSpaceForImage( secondOrderArray[j], output );
+      }
+    this->SetDeformationComponentFirstOrderDerivativeArray( i,
+                                                            firstOrderArray );
+    this->SetDeformationComponentSecondOrderDerivativeArray( i,
+                                                             secondOrderArray );
+    }
 }
 
 /**
