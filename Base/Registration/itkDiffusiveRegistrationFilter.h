@@ -314,9 +314,10 @@ protected:
   /** Helper to compute the first-order partial derivatives of the diffusion
    *  tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
-      const DiffusionTensorImagePointer tensorImage,
-      TensorDerivativeImagePointer tensorDerivativeImage,
-      const SpacingType & spacing ) const;
+      const DiffusionTensorImagePointer & tensorImage,
+      TensorDerivativeImagePointer & tensorDerivativeImage,
+      const SpacingType & spacing,
+      const typename OutputImageType::SizeType & radius ) const;
 
   /** Allocate and populate the images of multiplication vectors that the
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
@@ -508,7 +509,7 @@ struct FaceStruct
     numberOfTerms = 0;
     }
 
-  FaceStruct( ImageType& image,
+  FaceStruct( const ImageType& image,
               typename ImageType::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
@@ -521,7 +522,7 @@ struct FaceStruct
       }
     }
 
-  FaceStruct( ImageType& image,
+  FaceStruct( const ImageType& image,
               typename ImageType::ObjectType::RegionType region,
               typename ImageType::ObjectType::SizeType radius )
     {
@@ -533,7 +534,7 @@ struct FaceStruct
       }
     }
 
-  FaceStruct( std::vector< ImageType >& images,
+  FaceStruct( const std::vector< ImageType >& images,
               typename ImageType::ObjectType::RegionType region,
               typename ImageType::ObjectType::SizeType radius )
     {
@@ -549,7 +550,7 @@ struct FaceStruct
     }
 
   template< unsigned int VLength >
-  FaceStruct( itk::FixedArray< ImageType, VLength >& images,
+  FaceStruct( const itk::FixedArray< ImageType, VLength >& images,
               typename ImageType::ObjectType::RegionType region,
               typename ImageType::ObjectType::SizeType radius )
     {
@@ -565,7 +566,8 @@ struct FaceStruct
     }
 
   template< unsigned int VLength >
-  FaceStruct( std::vector< itk::FixedArray< ImageType, VLength > > &images,
+  FaceStruct( const
+              std::vector< itk::FixedArray< ImageType, VLength > > &images,
               typename ImageType::ObjectType::RegionType region,
               typename ImageType::ObjectType::SizeType radius )
     {
@@ -624,7 +626,7 @@ struct FaceStruct
   template< class IteratorType >
   void SetIteratorToCurrentFace(
       IteratorType& iterator,
-      ImageType& image,
+      const ImageType& image,
       typename ImageType::ObjectType::SizeType radius )
     {
     if( image.GetPointer() )
@@ -640,7 +642,7 @@ struct FaceStruct
   template< class IteratorType >
   void SetIteratorToCurrentFace(
       IteratorType& iterator,
-      ImageType& image )
+      const ImageType& image )
     {
     if( image.GetPointer() )
       {
@@ -655,7 +657,7 @@ struct FaceStruct
   template< class IteratorType >
   void SetIteratorToCurrentFace(
       std::vector< IteratorType >& iterators,
-      std::vector< ImageType >& images,
+      const std::vector< ImageType >& images,
       typename ImageType::ObjectType::SizeType radius )
     {
     if( (int) iterators.size() != numberOfTerms )
@@ -692,7 +694,7 @@ struct FaceStruct
   template< class IteratorType >
   void SetIteratorToCurrentFace(
       std::vector< IteratorType >& iterators,
-      std::vector< ImageType >& images )
+      const std::vector< ImageType >& images )
     {
     if( (int) iterators.size() != numberOfTerms )
       {
@@ -727,7 +729,7 @@ struct FaceStruct
   template< class IteratorType, unsigned int VLength >
   void SetIteratorToCurrentFace(
       itk::FixedArray< IteratorType, VLength >& iterators,
-      itk::FixedArray< ImageType, VLength >& images,
+      const itk::FixedArray< ImageType, VLength >& images,
       typename ImageType::ObjectType::SizeType radius )
     {
     assert( (int) iterators.Size() == numberOfTerms );
@@ -747,7 +749,7 @@ struct FaceStruct
   template< class IteratorType, unsigned int VLength >
   void SetIteratorToCurrentFace(
       itk::FixedArray< IteratorType, VLength >& iterators,
-      itk::FixedArray< ImageType, VLength >& images )
+      const itk::FixedArray< ImageType, VLength >& images )
     {
     assert( (int) iterators.Size() == numberOfTerms );
     for( int i = 0; i < numberOfTerms; i++ )
@@ -766,7 +768,7 @@ struct FaceStruct
   template< class IteratorType, unsigned int VLength >
   void SetIteratorToCurrentFace(
       std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
-      std::vector< itk::FixedArray< ImageType, VLength > > & images,
+      const std::vector< itk::FixedArray< ImageType, VLength > > & images,
       typename ImageType::ObjectType::SizeType radius )
     {
     int c = 0;
@@ -815,7 +817,7 @@ struct FaceStruct
     template< class IteratorType, unsigned int VLength >
     void SetIteratorToCurrentFace(
         std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
-        std::vector< itk::FixedArray< ImageType, VLength > > & images )
+        const std::vector< itk::FixedArray< ImageType, VLength > > & images )
       {
       int c = 0;
       if( (int) iterators.size() != (int) images.size() )

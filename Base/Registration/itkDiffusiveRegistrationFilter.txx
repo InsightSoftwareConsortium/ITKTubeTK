@@ -381,7 +381,10 @@ DiffusiveRegistrationFilter
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
 
+  // Get the spacing and radius
   SpacingType spacing = this->GetOutput()->GetSpacing();
+  const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  const typename OutputImageType::SizeType radius = df->GetRadius();
 
   // Compute the diffusion tensor derivative images
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
@@ -389,7 +392,8 @@ DiffusiveRegistrationFilter
     this->ComputeDiffusionTensorDerivativeImageHelper(
         m_DiffusionTensorImages[i],
         m_DiffusionTensorDerivativeImages[i],
-        spacing );
+        spacing,
+        radius );
     }
 }
 
@@ -401,9 +405,10 @@ void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDiffusionTensorDerivativeImageHelper(
-    DiffusionTensorImagePointer tensorImage,
-    TensorDerivativeImagePointer tensorDerivativeImage,
-    const SpacingType & spacing ) const
+    const DiffusionTensorImagePointer & tensorImage,
+    TensorDerivativeImagePointer & tensorDerivativeImage,
+    const SpacingType & spacing,
+    const typename OutputImageType::SizeType & radius ) const
 {
   assert( tensorImage );
   assert( tensorDerivativeImage );
@@ -414,9 +419,6 @@ DiffusiveRegistrationFilter
   const RegularizationFunctionPointer reg
       = df->GetRegularizationFunctionPointer();
   assert( reg );
-
-  // Get the radius
-  const typename OutputImageType::SizeType radius = df->GetRadius();
 
   // Setup the structs for the face calculations, the face iterators, and the
   // iterators over the current face
