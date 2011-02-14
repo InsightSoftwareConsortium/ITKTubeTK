@@ -125,7 +125,9 @@ public:
       RegularizationFunctionPointer;
   typedef typename RegistrationFunctionType::SpacingType    SpacingType;
 
-  /** Deformation field types. */
+  /** Deformation vector component types */
+  typedef std::vector< DeformationFieldPointer >
+      DeformationFieldPointerArrayType;
   typedef typename RegistrationFunctionType::DeformationVectorType
       DeformationVectorType;
   typedef typename RegistrationFunctionType::DeformationVectorComponentType
@@ -241,6 +243,9 @@ protected:
   /** Initialization occuring before the registration iterations. */
   virtual void Initialize();
 
+  /** Allocate images used during the registration. */
+  virtual void AllocateImageArrays();
+
   /** Initialize images used during the registration. */
   virtual void InitializeImageArrays();
 
@@ -270,12 +275,19 @@ protected:
     return this->m_DiffusionTensorDerivativeImages[index];
     }
 
-  /** Get the array of deformation component images. */
-  DeformationComponentImageArrayType&
-      GetDeformationComponentImageArray( int index )
+  /** Get the image of the deformation field components */
+  DeformationFieldType * GetDeformationFieldComponentImage( int index ) const
     {
     assert( index < this->GetNumberOfTerms() );
-    return this->m_DeformationComponentImageArrays[index];
+    return this->m_DeformationFieldComponentImages[index];
+    }
+  /** Set the image of the deformation field components */
+  void SetDeformationFieldComponentImage(int index,
+                                         DeformationFieldType * comp )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    assert( comp );
+    this->m_DeformationFieldComponentImages[index] = comp;
     }
 
   /** Allocate the update buffer. */
@@ -289,7 +301,7 @@ protected:
   virtual void InitializeIteration();
 
   /** Updates the deformation vector component images */
-  virtual void UpdateDeformationVectorComponentImages();
+  virtual void UpdateDeformationFieldComponentImages() {};
 
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
@@ -335,9 +347,9 @@ protected:
                                     int threadId );
 
   /** Helper function to allocate an image based on a template */
-  template< class UnallocatedImageType, class TemplateImageType >
-  void AllocateSpaceForImage( UnallocatedImageType & image,
-                              const TemplateImageType & templateImage );
+  template< class UnallocatedImagePointer, class TemplateImagePointer >
+  void AllocateSpaceForImage( UnallocatedImagePointer& image,
+                              const TemplateImagePointer& templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */
@@ -382,6 +394,7 @@ private:
    *  registration iteration */
   DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
   TensorDerivativeImagePointerArrayType     m_DiffusionTensorDerivativeImages;
+  DeformationFieldPointerArrayType          m_DeformationFieldComponentImages;
   DeformationComponentImageArrayArrayType   m_DeformationComponentImageArrays;
 };
 

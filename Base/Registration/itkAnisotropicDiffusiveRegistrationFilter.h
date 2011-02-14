@@ -214,9 +214,11 @@ public:
   virtual int GetNumberOfTerms() const
     { return 2; }
 
-  /** Get the normal components of the deformation field */
-  virtual const OutputImageType * GetNormalDeformationFieldImage() const
-    { return m_NormalDeformationField; }
+  /** Get the normal components of the deformation field. */
+  virtual DeformationFieldType * GetNormalDeformationFieldImage() const
+    {
+    return this->GetDeformationFieldComponentImage( NORMAL );
+    }
 
 protected:
   AnisotropicDiffusiveRegistrationFilter();
@@ -244,8 +246,8 @@ protected:
   /** Computes the diffusion tensor images */
   virtual void ComputeDiffusionTensorImages();
 
-  /** Updates the deformation vector component images */
-  virtual void UpdateDeformationVectorComponentImages();
+  /** Updates the deformation field component images */
+  virtual void UpdateDeformationFieldComponentImages();
 
 private:
   // Purposely not implemented
@@ -269,7 +271,6 @@ private:
    *  registration iteration */
   NormalVectorImagePointer            m_NormalVectorImage;
   WeightImagePointer                  m_WeightImage;
-  OutputImagePointer                  m_NormalDeformationField;
 
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).

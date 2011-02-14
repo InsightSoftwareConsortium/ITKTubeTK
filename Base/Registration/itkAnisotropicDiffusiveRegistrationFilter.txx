@@ -46,7 +46,6 @@ AnisotropicDiffusiveRegistrationFilter
   m_BorderSurface                               = 0;
   m_NormalVectorImage                           = 0;
   m_WeightImage                                 = 0;
-  m_NormalDeformationField                      = 0;
 
   // Lambda for exponential decay used to calculate weight from distance
   m_lambda = -0.01;
@@ -77,11 +76,6 @@ AnisotropicDiffusiveRegistrationFilter
     os << indent << "Weight image:" << std::endl;
     m_WeightImage->Print( os, indent );
     }
-  if( m_NormalDeformationField )
-    {
-    os << indent << "Normal deformation field:" << std::endl;
-    m_NormalDeformationField->Print( os, indent );
-    }
   os << indent << "lambda: " << m_lambda << std::endl;
 }
 
@@ -95,7 +89,7 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeImageArrays()
 {
-  Superclass::InitializeImageArrays();
+  assert( this->GetOutput() );
 
   // We're done if we're not computing the regularization
   if( !this->GetComputeRegularizationTerm() )
@@ -109,9 +103,10 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Allocate the images needed when using the anisotropic diffusive
   // regularization
-
-  m_NormalDeformationField = OutputImageType::New();
-  this->AllocateSpaceForImage( m_NormalDeformationField, output );
+  this->SetDeformationFieldComponentImage( TANGENTIAL, this->GetOutput() );
+  DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
+  this->AllocateSpaceForImage( normalDeformationField, output );
+  this->SetDeformationFieldComponentImage( NORMAL, normalDeformationField );
 
   // If a normal vector image or weight image was supplied by the user, check
   // that it matches the output
@@ -441,7 +436,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::UpdateDeformationVectorComponentImages()
+::UpdateDeformationFieldComponentImages()
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetNormalVectorImage() );
@@ -455,9 +450,11 @@ AnisotropicDiffusiveRegistrationFilter
   OutputImageRegionType outputRegion(output,
                                      output->GetLargestPossibleRegion() );
 
+  DeformationFieldPointer normalDeformationField
+      = this->GetDeformationFieldComponentImage( NORMAL );
   OutputImageRegionType normalDeformationRegion(
-      m_NormalDeformationField,
-      m_NormalDeformationField->GetLargestPossibleRegion() );
+      normalDeformationField,
+      normalDeformationField->GetLargestPossibleRegion() );
 
   // Calculate the tangential and normal components of the deformation field
   NormalVectorType       n;
@@ -489,15 +486,7 @@ AnisotropicDiffusiveRegistrationFilter
                          << "components are not orthogonal" );
       }
     }
-  m_NormalDeformationField->Modified();
-
-  // Update the normal extracted components
-  this->ExtractXYZComponentsFromDeformationField(
-      this->GetOutput(),
-      this->GetDeformationComponentImageArray( TANGENTIAL ) );
-  this->ExtractXYZComponentsFromDeformationField(
-      m_NormalDeformationField,
-      this->GetDeformationComponentImageArray( NORMAL ) );
+  normalDeformationField->Modified();
 }
 
 } // end namespace itk

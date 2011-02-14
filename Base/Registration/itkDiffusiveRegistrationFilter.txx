@@ -74,6 +74,14 @@ DiffusiveRegistrationFilter
       m_DiffusionTensorDerivativeImages[i]->Print( os, indent );
       }
     }
+  os << indent << "Deformation field component images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( m_DeformationFieldComponentImages[i] )
+      {
+      m_DeformationFieldComponentImages[i]->Print( os, indent );
+      }
+    }
   os << indent << "Deformation component images:" << std::endl;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
@@ -127,12 +135,12 @@ DiffusiveRegistrationFilter
  * Helper function to allocate space for an image given a template image
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class UnallocatedImageType, class TemplateImageType >
+template < class UnallocatedImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateSpaceForImage( UnallocatedImageType& image,
-                         const TemplateImageType& templateImage )
+::AllocateSpaceForImage( UnallocatedImagePointer& image,
+                         const TemplateImagePointer& templateImage )
 {
   assert( image );
   assert( templateImage );
@@ -210,8 +218,9 @@ DiffusiveRegistrationFilter
   assert( this->GetDeformationField() );
   df->SetDeformationField( this->GetDeformationField() );
 
-  // Allocate the images we will use to store data computed during the
-  // registration (or set pointers to 0 if they are not being used).
+  // Allocate and initialize the images we will use to store data computed
+  // during the registration (or set pointers to 0 if they are not being used).
+  this->AllocateImageArrays();
   this->InitializeImageArrays();
 
   // Compute the diffusion tensors and their derivatives
@@ -230,7 +239,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeImageArrays()
+::AllocateImageArrays()
 {
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
@@ -262,6 +271,12 @@ DiffusiveRegistrationFilter
       }
     }
 
+  // Initialize array of pointers to deformation components (may or may not
+  // be allocated by individual filters)
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    m_DeformationFieldComponentImages.push_back( 0 );
+    }
   // Initialize array of pointers to deformation components
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
@@ -294,6 +309,23 @@ DiffusiveRegistrationFilter
     indexSelector->SetIndex( i );
     deformationComponentImages[i] = indexSelector->GetOutput();
     indexSelector->Update();
+    }
+}
+
+/**
+ * Initialize the images we will use to store data computed during the
+ * registration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::InitializeImageArrays()
+{
+  assert( this->GetOutput() );
+  if( this->GetComputeRegularizationTerm() )
+    {
+    m_DeformationFieldComponentImages[0] = this->GetOutput();
     }
 }
 
@@ -410,24 +442,15 @@ DiffusiveRegistrationFilter
   // computed on every registration iteration
   if( this->GetComputeRegularizationTerm() )
     {
-    this->UpdateDeformationVectorComponentImages();
+    this->UpdateDeformationFieldComponentImages();
+
+    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+      {
+      this->ExtractXYZComponentsFromDeformationField(
+          m_DeformationFieldComponentImages[i],
+          m_DeformationComponentImageArrays[i] );
+      }
     }
-}
-
-/**
- * Updates the deformation vector component images before each iteration
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::UpdateDeformationVectorComponentImages()
-{
-  assert( this->GetComputeRegularizationTerm() );
-
-  // Update the extracted components
-  this->ExtractXYZComponentsFromDeformationField(
-      this->GetOutput(), m_DeformationComponentImageArrays[0] );
 }
 
 /**
