@@ -38,18 +38,13 @@ DiffusiveRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
-  // Initialize attributes to NULL
-  m_DiffusionTensorImage              = 0;
-  m_DiffusionTensorDerivativeImage    = 0;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    m_DeformationComponentImages[i]   = 0;
-    }
-
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework
   this->SmoothDeformationFieldOff();
   this->SmoothUpdateFieldOff();
+
+  // Create the registration function
+  this->CreateRegistrationFunction();
 }
 
 /**
@@ -63,25 +58,55 @@ DiffusiveRegistrationFilter
 {
   Superclass::PrintSelf( os, indent );
 
-  if( m_DiffusionTensorImage )
+  os << indent << "Diffusion tensor images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    os << indent << "Diffusion tensor image:" << std::endl;
-    m_DiffusionTensorImage->Print( os, indent );
-    }
-  if( m_DiffusionTensorDerivativeImage )
-    {
-    os << indent << "Diffusion tensor derivative image:"
-        << std::endl;
-    m_DiffusionTensorDerivativeImage->Print( os, indent );
-    }
-  if( m_DeformationComponentImages.Length != 0 )
-    {
-    os << indent << "Deformation component images:" << std::endl;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
+    if( m_DiffusionTensorImages[i] )
       {
-      if( m_DeformationComponentImages[i] )
+      m_DiffusionTensorImages[i]->Print( os, indent );
+      }
+    }
+  os << indent << "Diffusion tensor derivative images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( m_DiffusionTensorDerivativeImages[i] )
+      {
+      m_DiffusionTensorDerivativeImages[i]->Print( os, indent );
+      }
+    }
+  os << indent << "Deformation field component images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( m_DeformationComponentImages[i] )
+      {
+      m_DeformationComponentImages[i]->Print( os, indent );
+      }
+    }
+  os << indent << "Deformation component images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( m_DeformationComponentImageArrays[i].Length != 0 )
+      {
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        m_DeformationComponentImages[i]->Print( os, indent );
+        if( m_DeformationComponentImageArrays[i][j] )
+          {
+          m_DeformationComponentImageArrays[i][j]->Print( os, indent );
+          }
+        }
+      }
+    }
+  os << indent << "Multiplication vector images:" << std::endl;
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( m_MultiplicationVectorImageArrays[i].Length != 0 )
+      {
+      for( unsigned int j = 0; j < ImageDimension; j++ )
+        {
+        if( m_MultiplicationVectorImageArrays[i][j] )
+          {
+          m_MultiplicationVectorImageArrays[i][j]->Print( os, indent );
+          }
         }
       }
     }
@@ -124,12 +149,12 @@ DiffusiveRegistrationFilter
  * Helper function to allocate space for an image given a template image
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class UnallocatedImageType, class TemplateImageType >
+template < class UnallocatedImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateSpaceForImage( UnallocatedImageType& image,
-                         const TemplateImageType& templateImage )
+::AllocateSpaceForImage( UnallocatedImagePointer& image,
+                         const TemplateImagePointer& templateImage )
 {
   assert( image );
   assert( templateImage );
@@ -173,15 +198,15 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateUpdateBuffer()
 {
-  /* The update buffer looks just like the output and holds the voxel changes */
+  // The update buffer looks just like the output and holds the voxel changes
   typename OutputImageType::Pointer output = this->GetOutput();
   assert( output );
   this->AllocateSpaceForImage( m_UpdateBuffer, output );
 }
 
 /**
- * All other initialization done before the initialize / calculate change /
- * apply update loop
+ * All other initialization done before the initialize iteration / calculate
+ * change / apply update loop
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -207,19 +232,18 @@ DiffusiveRegistrationFilter
   assert( this->GetDeformationField() );
   df->SetDeformationField( this->GetDeformationField() );
 
-  // If we're not computing the regularization term, we're done
-  if( !this->GetComputeRegularizationTerm() )
-    {
-    return;
-    }
-
-  // Allocate the images we will use to store data computed during the
-  // registration
-  this->AllocateImages();
+  // Allocate and initialize the images we will use to store data computed
+  // during the registration (or set pointers to 0 if they are not being used).
+  this->AllocateImageArrays();
 
   // Compute the diffusion tensors and their derivatives
-  this->ComputeDiffusionTensorImages();
-  this->ComputeDiffusionTensorDerivativeImages();
+  if( this->GetComputeRegularizationTerm() )
+    {
+    this->InitializeDeformationComponentImages();
+    this->ComputeDiffusionTensorImages();
+    this->ComputeDiffusionTensorDerivativeImages();
+    this->ComputeMultiplicationVectorImages();
+    }
 }
 
 /**
@@ -230,41 +254,67 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateImages()
+::AllocateImageArrays()
 {
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
 
-  // Allocate the diffusion tensor image and its derivative
-  m_DiffusionTensorImage = DiffusionTensorImageType::New();
-  this->AllocateSpaceForImage( m_DiffusionTensorImage, output );
+  // Allocate the diffusion tensor images and their derivatives
+  if( this->GetComputeRegularizationTerm() )
+    {
+    DiffusionTensorImagePointer diffusionTensorPointer = 0;
+    TensorDerivativeImagePointer tensorDerivativePointer = 0;
+    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+      {
+      diffusionTensorPointer = DiffusionTensorImageType::New();
+      this->AllocateSpaceForImage( diffusionTensorPointer, output );
+      m_DiffusionTensorImages.push_back( diffusionTensorPointer );
 
-  m_DiffusionTensorDerivativeImage = TensorDerivativeImageType::New();
-  this->AllocateSpaceForImage( m_DiffusionTensorDerivativeImage, output );
+      tensorDerivativePointer = TensorDerivativeImageType::New();
+      this->AllocateSpaceForImage( tensorDerivativePointer, output );
+      m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
+      }
+    }
+  // Fill the arrays with NULL pointers for items not being used
+  else
+    {
+    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+      {
+      m_DiffusionTensorImages.push_back( 0 );
+      m_DiffusionTensorDerivativeImages.push_back( 0 );
+      }
+    }
+
+  // Initialize image pointers that may or may not be allocated by individual
+  // filters later on, namely deformation components and multiplication vectors
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    m_DeformationComponentImages.push_back( 0 );
+    DeformationComponentImageArrayType deformationComponentArray;
+    DeformationVectorImageArrayType multiplicationVectorArray;
+    for( int j = 0; j < ImageDimension; j++ )
+      {
+      deformationComponentArray[j] = 0;
+      multiplicationVectorArray[i] = 0;
+      }
+    m_DeformationComponentImageArrays.push_back( deformationComponentArray );
+    m_MultiplicationVectorImageArrays.push_back( multiplicationVectorArray );
+    }
 }
 
 /**
- * Update x, y, z components of a deformation field
+ * Initialize the deformation component images
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ExtractXYZComponentsFromDeformationField(
-    OutputImagePointer deformationField,
-    DeformationComponentImageArrayType& deformationComponentImages )
+::InitializeDeformationComponentImages()
 {
-  typename VectorIndexSelectionFilterType::Pointer indexSelector;
-  assert( deformationField );
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    indexSelector = VectorIndexSelectionFilterType::New();
-    indexSelector->SetInput( deformationField );
-    indexSelector->SetIndex( i );
-    deformationComponentImages[i] = indexSelector->GetOutput();
-    indexSelector->Update();
-    }
+  assert( this->GetOutput() );
+  assert( this->GetComputeRegularizationTerm() );
+  m_DeformationComponentImages[0] = this->GetOutput();
 }
 
 /**
@@ -277,13 +327,13 @@ DiffusiveRegistrationFilter
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_DiffusionTensorImage );
+  assert( m_DiffusionTensorImages[0] );
 
   // For the Gaussian regularization, we only need to set the
   // diffusion tensors to the identity
   typename DiffusionTensorImageType::PixelType identityTensor;
   identityTensor.SetIdentity();
-  m_DiffusionTensorImage->FillBuffer( identityTensor );
+  m_DiffusionTensorImages[0]->FillBuffer( identityTensor );
 }
 
 /**
@@ -298,9 +348,12 @@ DiffusiveRegistrationFilter
 {
   assert( this->GetComputeRegularizationTerm() );
 
-  // Compute the diffusion tensor derivative image
-  this->ComputeDiffusionTensorDerivativeImageHelper(
-      m_DiffusionTensorImage, m_DiffusionTensorDerivativeImage );
+  // Compute the diffusion tensor derivative images
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    this->ComputeDiffusionTensorDerivativeImageHelper(
+        m_DiffusionTensorImages[i], m_DiffusionTensorDerivativeImages[i] );
+    }
 }
 
 /**
@@ -339,15 +392,15 @@ DiffusiveRegistrationFilter
       tensorDerivativeImage, radius );
   TensorDerivativeImageRegionType tensorDerivativeRegion;
 
-  for(tensorStruct.begin(), tensorDerivativeStruct.begin();
-      !tensorDerivativeStruct.IsAtEnd();
-      ++tensorStruct.faceListIt, ++tensorDerivativeStruct.faceListIt )
+  for( tensorStruct.GoToBegin(), tensorDerivativeStruct.GoToBegin();
+       !tensorDerivativeStruct.IsAtEnd();
+       tensorStruct.Increment(), tensorDerivativeStruct.Increment() )
     {
     // Set the neighborhood iterators to the current face
-    tensorNeighborhood = DiffusionTensorNeighborhoodType(
-        radius, tensorImage, *tensorStruct.faceListIt );
-    tensorDerivativeRegion = TensorDerivativeImageRegionType(
-        tensorDerivativeImage, *tensorDerivativeStruct.faceListIt );
+    tensorStruct.SetIteratorToCurrentFace(
+        tensorNeighborhood, tensorImage, radius );
+    tensorDerivativeStruct.SetIteratorToCurrentFace(
+        tensorDerivativeRegion, tensorDerivativeImage );
 
     // Iterate through the neighborhood for this face and compute derivatives
     for( tensorNeighborhood.GoToBegin(), tensorDerivativeRegion.GoToBegin();
@@ -361,6 +414,29 @@ DiffusiveRegistrationFilter
 }
 
 /**
+ * Update x, y, z components of a deformation field
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ExtractXYZComponentsFromDeformationField(
+    const OutputImageType * deformationField,
+    DeformationComponentImageArrayType& deformationComponentImages )
+{
+  typename VectorIndexSelectionFilterType::Pointer indexSelector;
+  assert( deformationField );
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    indexSelector = VectorIndexSelectionFilterType::New();
+    indexSelector->SetInput( deformationField );
+    indexSelector->SetIndex( i );
+    deformationComponentImages[i] = indexSelector->GetOutput();
+    indexSelector->Update();
+    }
+}
+
+/**
  * Initialize the state of the filter and equation before each iteration.
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -369,6 +445,7 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeIteration()
 {
+  assert( this->GetOutput() );
   Superclass::InitializeIteration();
 
   // Update the deformation field component images
@@ -376,24 +453,15 @@ DiffusiveRegistrationFilter
   // computed on every registration iteration
   if( this->GetComputeRegularizationTerm() )
     {
-    this->UpdateDeformationVectorComponentImages();
+    this->UpdateDeformationComponentImages();
+
+    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+      {
+      this->ExtractXYZComponentsFromDeformationField(
+          m_DeformationComponentImages[i],
+          m_DeformationComponentImageArrays[i] );
+      }
     }
-}
-
-/**
- * Updates the deformation vector component images before each iteration
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::UpdateDeformationVectorComponentImages()
-{
-  assert( this->GetComputeRegularizationTerm() );
-
-  // Update the extracted components
-  this->ExtractXYZComponentsFromDeformationField(
-      this->GetOutput(), m_DeformationComponentImages );
 }
 
 /**
@@ -555,96 +623,89 @@ DiffusiveRegistrationFilter
   FaceStruct< OutputImagePointer > outputStruct(
       output, regionToProcess, radius );
   NeighborhoodType outputNeighborhood;
+
   UpdateBufferRegionType updateRegion;
 
   FaceStruct< DiffusionTensorImagePointer > tensorStruct(
-      m_DiffusionTensorImage, tensorRegionToProcess, radius );
-  DiffusionTensorNeighborhoodType tensorNeighborhood;
+      m_DiffusionTensorImages, tensorRegionToProcess, radius );
+  DiffusionTensorNeighborhoodArrayType tensorNeighborhoods;
 
   FaceStruct< TensorDerivativeImagePointer > tensorDerivativeStruct(
-      m_DiffusionTensorDerivativeImage,
-      derivativeRegionToProcess,
-      radius );
-  TensorDerivativeImageRegionType tensorDerivativeRegion;
+      m_DiffusionTensorDerivativeImages, derivativeRegionToProcess, radius );
+  TensorDerivativeImageRegionArrayType tensorDerivativeRegions;
 
-  typedef FaceStruct< DeformationVectorComponentImagePointer >
-      DeformationComponentStructType;
-  typedef itk::FixedArray< DeformationComponentStructType, ImageDimension >
-      DeformationComponentStructArrayType;
-  DeformationComponentStructArrayType deformationComponentStructs;
-  DeformationVectorComponentNeighborhoodArrayType
-      deformationComponentNeighborhoods;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    deformationComponentStructs[i] = DeformationComponentStructType(
-        m_DeformationComponentImages[i],
-        deformationComponentRegionToProcess,
-        radius );
-    }
+  FaceStruct< DeformationVectorComponentImagePointer >
+      deformationComponentStruct( m_DeformationComponentImageArrays,
+                                  deformationComponentRegionToProcess,
+                                  radius );
+  DeformationVectorComponentNeighborhoodArrayArrayType
+      deformationComponentNeighborhoodArrays;
+
+  FaceStruct< DeformationFieldPointer > multiplicationVectorStruct(
+      m_MultiplicationVectorImageArrays, regionToProcess, radius );
+  DeformationVectorImageRegionArrayArrayType multiplicationVectorRegionArrays;
 
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
 
   // Go to the first face
-  outputStruct.begin();
+  outputStruct.GoToBegin();
   if( computeRegularization )
     {
-    tensorStruct.begin();
-    tensorDerivativeStruct.begin();
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      deformationComponentStructs[i].begin();
-      }
-    } // end going to first face
+    tensorStruct.GoToBegin();
+    tensorDerivativeStruct.GoToBegin();
+    deformationComponentStruct.GoToBegin();
+    multiplicationVectorStruct.GoToBegin();
+    }
 
   // Iterate over each face
   while( !outputStruct.IsAtEnd() )
     {
-
     // Set the neighborhood iterators to the current face
-    outputNeighborhood = NeighborhoodType( radius,
-                                           output,
-                                           *outputStruct.faceListIt );
-    updateRegion = UpdateBufferRegionType( m_UpdateBuffer,
-                                           *outputStruct.faceListIt );
+    outputStruct.SetIteratorToCurrentFace( outputNeighborhood, output, radius );
+    outputStruct.SetIteratorToCurrentFace( updateRegion, m_UpdateBuffer );
     if( computeRegularization )
       {
-      tensorNeighborhood = DiffusionTensorNeighborhoodType(
-          radius, m_DiffusionTensorImage, *tensorStruct.faceListIt );
-      tensorDerivativeRegion = TensorDerivativeImageRegionType(
-          m_DiffusionTensorDerivativeImage,
-          *tensorDerivativeStruct.faceListIt );
-      for( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        deformationComponentNeighborhoods[i]
-            = DeformationVectorComponentNeighborhoodType(
-                radius,
-                m_DeformationComponentImages[i],
-                *deformationComponentStructs[i].faceListIt );
-        }
-      } // end setting neighborhood iterators to the current face
+      tensorStruct.SetIteratorToCurrentFace(
+          tensorNeighborhoods, m_DiffusionTensorImages, radius );
+      tensorDerivativeStruct.SetIteratorToCurrentFace(
+          tensorDerivativeRegions, m_DiffusionTensorDerivativeImages );
+      deformationComponentStruct.SetIteratorToCurrentFace(
+          deformationComponentNeighborhoodArrays,
+          m_DeformationComponentImageArrays,
+          radius );
+      multiplicationVectorStruct.SetIteratorToCurrentFace(
+          multiplicationVectorRegionArrays,
+          m_MultiplicationVectorImageArrays );
+      }
 
     // Go to the beginning of the neighborhood for this face
     outputNeighborhood.GoToBegin();
     updateRegion.GoToBegin();
     if( computeRegularization )
       {
-      tensorNeighborhood.GoToBegin();
-      tensorDerivativeRegion.GoToBegin();
-      for( unsigned int i = 0; i < ImageDimension; i++ )
+      for( int i = 0; i < this->GetNumberOfTerms(); i++ )
         {
-        deformationComponentNeighborhoods[i].GoToBegin();
+        tensorNeighborhoods[i].GoToBegin();
+        tensorDerivativeRegions[i].GoToBegin();
+        for( unsigned int j = 0; j < ImageDimension; j++ )
+          {
+          deformationComponentNeighborhoodArrays[i][j].GoToBegin();
+          multiplicationVectorRegionArrays[i][j].GoToBegin();
+          }
         }
-      } // end going to the beginning of the neighborhood for this face
+      }
 
     // Iterate through the neighborhood for this face and compute updates
     while( !outputNeighborhood.IsAtEnd() )
       {
+      // Compute updates
       updateRegion.Value() = df->ComputeUpdate(
           outputNeighborhood,
-          tensorNeighborhood,
-          tensorDerivativeRegion,
-          deformationComponentNeighborhoods,
+          tensorNeighborhoods,
+          tensorDerivativeRegions,
+          deformationComponentNeighborhoodArrays,
+          multiplicationVectorRegionArrays,
           spacing,
           globalData );
 
@@ -653,27 +714,32 @@ DiffusiveRegistrationFilter
       ++updateRegion;
       if( computeRegularization )
         {
-        ++tensorNeighborhood;
-        ++tensorDerivativeRegion;
-        for( unsigned int i = 0; i < ImageDimension; i++ )
+        for( int i = 0; i < this->GetNumberOfTerms(); i++ )
           {
-          ++deformationComponentNeighborhoods[i];
+          ++tensorNeighborhoods[i];
+          ++tensorDerivativeRegions[i];
+          for( unsigned int j = 0; j < ImageDimension; j++ )
+            {
+            ++deformationComponentNeighborhoodArrays[i][j];
+            if( multiplicationVectorRegionArrays[i][j].GetImage() )
+              {
+              ++multiplicationVectorRegionArrays[i][j];
+              }
+            }
           }
-        } // end going to the next neighborhood
-      } // end iterating through the neighborhood for this face
-
-    // Go to the next face
-    ++outputStruct.faceListIt;
-    if( computeRegularization )
-      {
-      ++tensorStruct.faceListIt;
-      ++tensorDerivativeStruct.faceListIt;
-      for( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        ++deformationComponentStructs[i].faceListIt;
         }
       }
-    } // end iterating over each face
+
+    // Go to the next face
+    outputStruct.Increment();
+    if( computeRegularization )
+      {
+      tensorStruct.Increment();
+      tensorDerivativeStruct.Increment();
+      deformationComponentStruct.Increment();
+      multiplicationVectorStruct.Increment();
+      }
+    }
 
   // Ask the finite difference function to compute the time step for
   // this iteration.  We give it the global data pointer to use, then

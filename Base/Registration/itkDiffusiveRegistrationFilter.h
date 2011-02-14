@@ -28,31 +28,12 @@ limitations under the License.
 
 #include "itkVectorIndexSelectionCastImageFilter.h"
 
-#define itkDiffusiveRegistrationFilterNewMacro(x)              \
-  static Pointer New(void)                                     \
-    {                                                          \
-    Pointer smartPtr = ::itk::ObjectFactory< x >::Create();    \
-    if ( smartPtr.GetPointer() == NULL )                       \
-      {                                                        \
-      smartPtr = new x;                                        \
-      }                                                        \
-    smartPtr->UnRegister();                                    \
-    smartPtr->CreateRegistrationFunction();                    \
-    return smartPtr;                                           \
-    }                                                          \
-  virtual::itk::LightObject::Pointer CreateAnother(void) const \
-    {                                                          \
-    ::itk::LightObject::Pointer smartPtr;                      \
-    smartPtr = x::New().GetPointer();                          \
-    return smartPtr;                                           \
-    }
-
 namespace itk
 {
 
 /** \class itkDiffusiveRegistrationFilter
- * \brief Algorithm for registration of images depicting sliding organs, using
- * an anisotropic diffusive regularization term.
+ * \brief Registration filter for registrations using anisotropic diffusive
+ * regularizers, for example for sliding organ registration.
  *
  * Traditional deformable image registration imposes a uniform
  * smoothness constraint on the deformation field. This
@@ -60,17 +41,35 @@ namespace itk
  * that slide relative to each other, and therefore leads to registration
  * inaccuracies.
  *
- * This algorithm includes a deformation field regularization term that is
- * based on anisotropic diffusion and accommodates the deformation field
- * discontinuities that are expected when considering sliding motion.
+ * This filter is a base class for non-parametric deformable registration
+ * algorithms with regularization terms based on anisotropic diffusion.  For
+ * example, these regularizers can accomodate deformation field discontinuities
+ * that are expected when considering sliding motion.
  *
  * The update term is composed of two parts: an intensity distance term and a
  * regularization term.  The intensity distance term uses the sum of square
  * difference metric, so this registration algorithm is appropriate for
- * monomodal image registration term only.  The regularization term uses a
- * specified border between the organs (stored as a vtkPolyData *) and enforces
- * coupling between the organs while allowing the motion field to exhibit
- * sliding motion at the organ interface.
+ * monomodal image registration term only.
+ *
+ * The update term for the regularization will be of the form:
+ * div(T1*\grad(u1))v1 + div(T2*\grad(u2))v2 + ... + div(TN*\grad(uN))vN
+ * where the types are:
+ * - T1..TN are diffusion tensors
+ * - u1..uN are deformation vectors
+ * - v1..vN are deformation vectors
+ * It is assumed that T's and v's are constant throughout the registration, and
+ * so can be precomputed once, while u's must be updated on each registration
+ * iteration.
+ *
+ * This base class implements the diffusive regularization.  Algorithms
+ * implementing anisotropic regularization should derive it and override the
+ * following functions:
+ * - GetNumberOfTerms(): returns the number of div(T*\grad(u))v terms
+ * - ComputeDiffusionTensorImages(): allocate and populate the T images
+ * - InitializeDeformationComponentImages(): allocate the u images
+ * - ComputeMultiplicationVectorImages(): allocate and populate the v images
+ * - UpdateDeformationComponentImages(): update the u images at each iteration
+ * See itkAnisotropicDiffusiveRegistrationFilter for an example derived filter.
  *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
@@ -79,6 +78,7 @@ namespace itk
  * moving image and the type of the deformation field.
  *
  * \sa itkAnisotropicDiffusiveRegistrationFunction
+ * \sa itkAnisotropicDiffusiveRegistrationFilter
  * \ingroup DeformableImageRegistration
  * \ingroup MultiThreaded
  */
@@ -103,7 +103,7 @@ public:
     * type of this object.  Can't call the overridden function
     * CreateRegistrationFunction() from the base class constructor, so we'll
     * call it here. Derived classes should use this instead of itkNewMacro().*/
-  itkDiffusiveRegistrationFilterNewMacro(Self);
+  itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(Self, PDEDeformableRegistrationFilter);
@@ -135,7 +135,7 @@ public:
   typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
 
   /** The registration function type */
-  typedef DiffusiveRegistrationFunction
+  typedef AnisotropicDiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
   typedef typename RegistrationFunctionType::Pointer
@@ -144,7 +144,9 @@ public:
       RegularizationFunctionPointer;
   typedef typename RegistrationFunctionType::SpacingType    SpacingType;
 
-  /** Deformation field types. */
+  /** Deformation vector component types */
+  typedef std::vector< DeformationFieldPointer >
+      DeformationFieldPointerArrayType;
   typedef typename RegistrationFunctionType::DeformationVectorType
       DeformationVectorType;
   typedef typename RegistrationFunctionType::DeformationVectorComponentType
@@ -154,6 +156,12 @@ public:
   typedef typename DeformationVectorComponentImageType::Pointer
       DeformationVectorComponentImagePointer;
   typedef typename
+      itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
+      DeformationComponentImageArrayType;
+  typedef typename
+      std::vector< DeformationComponentImageArrayType >
+      DeformationComponentImageArrayArrayType;
+  typedef typename
       RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
       DeformationVectorComponentNeighborhoodType;
   typedef typename
@@ -161,14 +169,22 @@ public:
       DeformationVectorComponentNeighborhoodArrayType;
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
+  typedef typename RegistrationFunctionType
+      ::DeformationVectorComponentNeighborhoodArrayArrayType
+      DeformationVectorComponentNeighborhoodArrayArrayType;
 
   /** Diffusion tensor image types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
+  typedef std::vector< DiffusionTensorImagePointer >
+      DiffusionTensorImagePointerArrayType;
   typedef typename RegistrationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
+  typedef typename
+      RegistrationFunctionType::DiffusionTensorNeighborhoodArrayType
+      DiffusionTensorNeighborhoodArrayType;
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
 
@@ -177,15 +193,29 @@ public:
       TensorDerivativeImageType;
   typedef typename TensorDerivativeImageType::Pointer
       TensorDerivativeImagePointer;
+  typedef std::vector< TensorDerivativeImagePointer >
+      TensorDerivativeImagePointerArrayType;
   typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
+  typedef typename
+      RegistrationFunctionType::TensorDerivativeImageRegionArrayType
+      TensorDerivativeImageRegionArrayType;
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
-  /** Deformation component image array types */
+  /** Typedefs for the multiplication vectors */
+  typedef typename itk::FixedArray< DeformationFieldPointer >
+      DeformationVectorImageArrayType;
+  typedef std::vector< DeformationVectorImageArrayType >
+      DeformationVectorImageArrayArrayType;
+  typedef typename RegistrationFunctionType::DeformationVectorImageRegionType
+      DeformationVectorImageRegionType;
   typedef typename
-      itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
-      DeformationComponentImageArrayType;
+      RegistrationFunctionType::DeformationVectorImageRegionArrayType
+      DeformationVectorImageRegionArrayType;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorImageRegionArrayArrayType
+      DeformationVectorImageRegionArrayArrayType;
 
   /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
@@ -216,58 +246,97 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
-  /** Get the image of the diffusion tensor */
-  virtual const DiffusionTensorImagePointer GetDiffusionTensorImage() const
-    { return m_DiffusionTensorImage; }
-
-  /** Get the image of the diffusion tensor derivatives */
-  virtual const TensorDerivativeImagePointer GetDiffusionTensorDerivativeImage()
-      const
-    { return m_DiffusionTensorDerivativeImage; }
+  /** The number of div(T\grad(u))v terms we sum for the regularizer.
+   *  Reimplement in derived classes. */
+  virtual int GetNumberOfTerms() const
+    { return 1; }
 
 protected:
   DiffusiveRegistrationFilter();
   virtual ~DiffusiveRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  /** Initialization occuring before the registration iterations. */
+  /** Handy for array indexing. */
+  enum DivTerm { GAUSSIAN };
+
+  /** Initialization occuring before the registration iterations begin. */
   virtual void Initialize();
 
   /** Allocate images used during the registration. */
-  virtual void AllocateImages();
+  virtual void AllocateImageArrays();
 
-  /** Computes the diffusion tensor images */
+  /** Allocate the deformation component images (which may be updated throughout
+   *  the registration. Reimplement in derived classes. */
+  virtual void InitializeDeformationComponentImages();
+
+  /** Allocate and populate the diffusion tensor images.
+   *  Reimplement in derived classes. */
   virtual void ComputeDiffusionTensorImages();
 
-  /** Computes the first derivatives of the diffusion tensor images */
+  /** Computes the first-order partial derivatives of the diffusion tensor
+   *  images */
   virtual void ComputeDiffusionTensorDerivativeImages();
 
-  /** Helper to compute the first derivatives of the diffusion tensor images */
+  /** Helper to compute the first-order partial derivatives of the diffusion
+   *  tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
-      DiffusionTensorImagePointer tensorImage,
+      const DiffusionTensorImagePointer tensorImage,
       TensorDerivativeImagePointer tensorDerivativeImage );
 
-  /** Allocate the update buffer. */
-  virtual void AllocateUpdateBuffer();
+  /** Allocate and populate the images of multiplication vectors that the
+   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
+   *  some of the multiplication vector images in derived classes.  Otherwise,
+   *  default to e_l, where e_l is the lth canonical unit vector. */
+  virtual void ComputeMultiplicationVectorImages() {};
 
-  /** Get the update buffer. */
-  virtual UpdateBufferType * GetUpdateBuffer()
-    { return m_UpdateBuffer; }
-
-  /** Initialize the state of the filter and equation before each iteration. */
+  /** Initialize the state of the filter before each iteration. */
   virtual void InitializeIteration();
 
-  /** Updates the deformation vector component images */
-  virtual void UpdateDeformationVectorComponentImages();
+  /** Updates the deformation vector component images on each iteration. */
+  virtual void UpdateDeformationComponentImages() {};
+
+  /** Get a diffusion tensor image */
+  DiffusionTensorImageType * GetDiffusionTensorImage( int index ) const
+    {
+    assert( index < this->GetNumberOfTerms() );
+    return this->m_DiffusionTensorImages[index];
+    }
+
+  /** Get an image of the diffusion tensor derivatives */
+  TensorDerivativeImageType * GetDiffusionTensorDerivativeImage( int index )
+      const
+    {
+    assert( index < this->GetNumberOfTerms() );
+    return this->m_DiffusionTensorDerivativeImages[index];
+    }
+
+  /** Get an image of the deformation field components */
+  DeformationFieldType * GetDeformationComponentImage( int index ) const
+    {
+    assert( index < this->GetNumberOfTerms() );
+    return this->m_DeformationComponentImages[index];
+    }
+
+  /** Set an image of the deformation field components */
+  void SetDeformationComponentImage( int index, DeformationFieldType * comp )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    assert( comp );
+    this->m_DeformationComponentImages[index] = comp;
+    }
+
+  /** Set an array of the multiplication vectors images. */
+  void SetMultiplicationVectorImage( int index,
+                                     DeformationVectorImageArrayType & mult )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    this->m_MultiplicationVectorImageArrays[index] = mult;
+    }
 
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
-      OutputImagePointer deformationField,
+      const OutputImageType * deformationField,
       DeformationComponentImageArrayType& deformationComponentImages );
-
-  /** Get the array of deformation component images. */
-  DeformationComponentImageArrayType GetDeformationComponentImages()
-    { return m_DeformationComponentImages; }
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -307,23 +376,30 @@ protected:
                                     const ThreadRegionType &regionToProcess,
                                     int threadId );
 
-  /** Helper function to allocate an image based on a template */
-  template< class UnallocatedImageType, class TemplateImageType >
-  void AllocateSpaceForImage( UnallocatedImageType & image,
-                             const TemplateImageType & templateImage );
-
-  /** Helper function to check whether the attributes of an image match a
-    * template */
-  template< class CheckedImageType, class TemplateImageType >
-  bool CompareImageAttributes( const CheckedImageType & image,
-                               const TemplateImageType & templateImage );
-
   /** Create the registration function, with default parameters for
     * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
   virtual void CreateRegistrationFunction();
 
   /** Get the registration function pointer */
   virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;
+
+  /** Allocate the update buffer. */
+  virtual void AllocateUpdateBuffer();
+
+  /** Get the update buffer. */
+  virtual UpdateBufferType * GetUpdateBuffer() const
+    { return m_UpdateBuffer; }
+
+  /** Helper function to allocate an image based on a template */
+  template< class UnallocatedImagePointer, class TemplateImagePointer >
+  void AllocateSpaceForImage( UnallocatedImagePointer& image,
+                              const TemplateImagePointer& templateImage );
+
+  /** Helper function to check whether the attributes of an image match a
+    * template */
+  template< class CheckedImageType, class TemplateImageType >
+  bool CompareImageAttributes( const CheckedImageType & image,
+                               const TemplateImageType & templateImage );
 
 private:
   // Purposely not implemented
@@ -351,28 +427,40 @@ private:
   /** The buffer that holds the updates for an iteration of algorithm. */
   typename UpdateBufferType::Pointer  m_UpdateBuffer;
 
-  /** Image storing information we will need for each voxel on every
+  /** Images storing information we will need for each voxel on every
    *  registration iteration */
-  DiffusionTensorImagePointer         m_DiffusionTensorImage;
-  TensorDerivativeImagePointer        m_DiffusionTensorDerivativeImage;
-  DeformationComponentImageArrayType  m_DeformationComponentImages;
+  DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
+  TensorDerivativeImagePointerArrayType     m_DiffusionTensorDerivativeImages;
+  DeformationFieldPointerArrayType          m_DeformationComponentImages;
+  DeformationComponentImageArrayArrayType   m_DeformationComponentImageArrays;
+  DeformationVectorImageArrayArrayType      m_MultiplicationVectorImageArrays;
 };
 
 /** Struct to simply get the face list and an iterator over the face list
- *  when processing an image */
+ *  when processing an image.  Designed for use with SmartPointers. */
 template< class ImageType >
 struct FaceStruct
   {
-  FaceStruct() {}
+  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
+      < typename ImageType::ObjectType > FaceCalculatorType;
+  typedef typename FaceCalculatorType::FaceListType FaceListType;
+  typedef typename FaceListType::iterator FaceListIteratorType;
+
+  FaceStruct()
+    {
+    numberOfTerms = 0;
+    }
 
   FaceStruct( ImageType& image,
               typename ImageType::ObjectType::SizeType radius )
     {
-    if( image )
+    numberOfTerms = 0;
+    if( image.GetPointer() )
       {
-      faceList = faceCalculator( image,
-                                 image->GetLargestPossibleRegion(),
-                                 radius );
+      faceLists.push_back( faceCalculator( image,
+                                           image->GetLargestPossibleRegion(),
+                                           radius ) );
+      numberOfTerms = 1;
       }
     }
 
@@ -380,30 +468,345 @@ struct FaceStruct
               typename ImageType::ObjectType::RegionType region,
               typename ImageType::ObjectType::SizeType radius )
     {
-    if( image )
+    numberOfTerms = 0;
+    if( image.GetPointer() )
       {
-      faceList = faceCalculator( image, region, radius );
+      faceLists.push_back( faceCalculator( image, region, radius ) );
+      numberOfTerms = 1;
       }
     }
 
-  void begin()
+  FaceStruct( std::vector< ImageType >& images,
+              typename ImageType::ObjectType::RegionType region,
+              typename ImageType::ObjectType::SizeType radius )
     {
-    faceListIt = faceList.begin();
+    numberOfTerms = 0;
+    for( int i = 0; i < (int) images.size(); i++ )
+      {
+      if( images[i].GetPointer() )
+        {
+        faceLists.push_back( faceCalculator( images[i], region, radius ) );
+        numberOfTerms++;
+        }
+      }
+    }
+
+  template< unsigned int VLength >
+  FaceStruct( itk::FixedArray< ImageType, VLength >& images,
+              typename ImageType::ObjectType::RegionType region,
+              typename ImageType::ObjectType::SizeType radius )
+    {
+    numberOfTerms = 0;
+    for( int i = 0; i < (int) images.Size(); i++ )
+      {
+      if( images[i].GetPointer() )
+        {
+        faceLists.push_back( faceCalculator( images[i], region, radius ) );
+        numberOfTerms++;
+        }
+      }
+    }
+
+  template< unsigned int VLength >
+  FaceStruct( std::vector< itk::FixedArray< ImageType, VLength > > &images,
+              typename ImageType::ObjectType::RegionType region,
+              typename ImageType::ObjectType::SizeType radius )
+    {
+    numberOfTerms = 0;
+    for( int i = 0; i < (int) images.size(); i++)
+      {
+      for( unsigned int j = 0; j < images[i].Size(); j++ )
+        {
+        if( images[i][j].GetPointer() )
+          {
+          faceLists.push_back( faceCalculator( images[i][j], region, radius ) );
+          numberOfTerms++;
+          }
+        }
+      }
+    }
+
+  void GoToBegin()
+    {
+    if( (int) faceListIts.size() != numberOfTerms )
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        faceListIts.push_back( faceLists[i].begin() );
+        }
+      }
+    else
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        faceListIts[i] = faceLists[i].begin();
+        }
+      }
     }
 
   bool IsAtEnd()
     {
-    return faceListIt == faceList.end();
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      if( faceListIts[i] == faceLists[i].end() )
+        {
+        return true;
+        }
+      }
+    return false;
     }
 
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-      < typename ImageType::ObjectType > FaceCalculatorType;
-  typedef typename FaceCalculatorType::FaceListType FaceListType;
-  typedef typename FaceListType::iterator FaceListIteratorType;
+  void Increment()
+    {
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      ++faceListIts[i];
+      }
+    }
 
-  FaceCalculatorType      faceCalculator;
-  FaceListType            faceList;
-  FaceListIteratorType    faceListIt;
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      IteratorType& iterator,
+      ImageType& image,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    if( image.GetPointer() )
+      {
+      iterator = IteratorType( radius, image, *faceListIts[0] );
+      }
+    else
+      {
+      iterator = IteratorType();
+      }
+    }
+
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      IteratorType& iterator,
+      ImageType& image )
+    {
+    if( image.GetPointer() )
+      {
+      iterator = IteratorType( image, *faceListIts[0] );
+      }
+    else
+      {
+      iterator = IteratorType();
+      }
+    }
+
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      std::vector< IteratorType >& iterators,
+      std::vector< ImageType >& images,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    if( (int) iterators.size() != numberOfTerms )
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        if( images[i].GetPointer() )
+          {
+          iterators.push_back(
+              IteratorType( radius, images[i], *faceListIts[i] ) );
+          }
+        else
+          {
+          iterators.push_back( IteratorType() );
+          }
+        }
+      }
+    else
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        if( images[i].GetPointer() )
+          {
+          iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+          }
+        else
+          {
+          iterators[i] = IteratorType();
+          }
+        }
+      }
+    }
+
+  template< class IteratorType >
+  void SetIteratorToCurrentFace(
+      std::vector< IteratorType >& iterators,
+      std::vector< ImageType >& images )
+    {
+    if( (int) iterators.size() != numberOfTerms )
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        if( images[i].GetPointer() )
+          {
+          iterators.push_back( IteratorType( images[i], *faceListIts[i] ) );
+          }
+        else
+          {
+          iterators.push_back( IteratorType() );
+          }
+        }
+      }
+    else
+      {
+      for( int i = 0; i < numberOfTerms; i++ )
+        {
+        if( images[i].GetPointer() )
+          {
+          iterators[i] = IteratorType( images[i], *faceListIts[i] );
+          }
+        else
+          {
+          iterators[i] = IteratorType();
+          }
+        }
+      }
+    }
+
+  template< class IteratorType, unsigned int VLength >
+  void SetIteratorToCurrentFace(
+      itk::FixedArray< IteratorType, VLength >& iterators,
+      itk::FixedArray< ImageType, VLength >& images,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    assert( (int) iterators.Size() == numberOfTerms );
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      if( images[i].GetPointer() )
+        {
+        iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+        }
+      else
+        {
+        iterators[i] = IteratorType();
+        }
+      }
+    }
+
+  template< class IteratorType, unsigned int VLength >
+  void SetIteratorToCurrentFace(
+      itk::FixedArray< IteratorType, VLength >& iterators,
+      itk::FixedArray< ImageType, VLength >& images )
+    {
+    assert( (int) iterators.Size() == numberOfTerms );
+    for( int i = 0; i < numberOfTerms; i++ )
+      {
+      if( images[i].GetPointer() )
+        {
+        iterators[i] = IteratorType( images[i], *faceListIts[i] );
+        }
+      else
+        {
+        iterators[i] = IteratorType();
+        }
+      }
+    }
+
+  template< class IteratorType, unsigned int VLength >
+  void SetIteratorToCurrentFace(
+      std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
+      std::vector< itk::FixedArray< ImageType, VLength > > & images,
+      typename ImageType::ObjectType::SizeType radius )
+    {
+    int c = 0;
+    if( (int) iterators.size() != (int) images.size() )
+      {
+      for( int i = 0; i < (int) images.size(); i++ )
+        {
+        itk::FixedArray< IteratorType, VLength > fixedArray;
+        for( int j = 0; j < (int) images[i].Size(); j++ )
+          {
+          if( images[i][j].GetPointer() )
+            {
+            fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
+            c++;
+            }
+          else
+            {
+            fixedArray[j] = IteratorType();
+            }
+          }
+        iterators.push_back( fixedArray );
+        }
+      }
+    else
+      {
+      for( int i = 0; i < (int) images.size(); i++ )
+        {
+        itk::FixedArray< IteratorType, VLength > fixedArray;
+        for( int j = 0; j < (int) images[i].Size(); j++ )
+          {
+          if( images[i][j].GetPointer() )
+            {
+            fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
+            c++;
+            }
+          else
+            {
+            fixedArray[j] = IteratorType();
+            }
+          }
+        iterators[i] = fixedArray;
+        }
+      }
+    }
+
+    template< class IteratorType, unsigned int VLength >
+    void SetIteratorToCurrentFace(
+        std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
+        std::vector< itk::FixedArray< ImageType, VLength > > & images )
+      {
+      int c = 0;
+      if( (int) iterators.size() != (int) images.size() )
+        {
+        for( int i = 0; i < (int) images.size(); i++ )
+          {
+          itk::FixedArray< IteratorType, VLength > fixedArray;
+          for( int j = 0; j < (int) images[i].Size(); j++ )
+            {
+            if( images[i][j] )
+              {
+              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+              c++;
+              }
+            else
+              {
+              fixedArray[j] = IteratorType();
+              }
+            }
+          iterators.push_back( fixedArray );
+          }
+        }
+      else
+        {
+        for( int i = 0; i < (int) images.size(); i++ )
+          {
+          itk::FixedArray< IteratorType, VLength > fixedArray;
+          for( int j = 0; j < (int) images[i].Size(); j++ )
+            {
+            if( images[i][j].GetPointer() )
+              {
+              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+              c++;
+              }
+            else
+              {
+              fixedArray[j] = IteratorType();
+              }
+            }
+          iterators[i] = fixedArray;
+          }
+        }
+      }
+
+  FaceCalculatorType                     faceCalculator;
+  std::vector< FaceListType >            faceLists;
+  std::vector< FaceListIteratorType >    faceListIts;
+  int                                    numberOfTerms;
   };
 
 } // end namespace itk
