@@ -160,7 +160,7 @@ public:
       DeformationComponentImageArrayType;
   typedef typename
       std::vector< DeformationComponentImageArrayType >
-      DeformationComponentImageArrayArrayType;
+      DeformationComponentImageArrayVectorType;
   typedef typename
       RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
       DeformationVectorComponentNeighborhoodType;
@@ -170,8 +170,8 @@ public:
   typedef typename DeformationVectorComponentImageType::RegionType
       ThreadDeformationVectorComponentImageRegionType;
   typedef typename RegistrationFunctionType
-      ::DeformationVectorComponentNeighborhoodArrayArrayType
-      DeformationVectorComponentNeighborhoodArrayArrayType;
+      ::DeformationVectorComponentNeighborhoodArrayVectorType
+      DeformationVectorComponentNeighborhoodArrayVectorType;
 
   /** Diffusion tensor image types */
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
@@ -183,8 +183,8 @@ public:
   typedef typename RegistrationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
   typedef typename
-      RegistrationFunctionType::DiffusionTensorNeighborhoodArrayType
-      DiffusionTensorNeighborhoodArrayType;
+      RegistrationFunctionType::DiffusionTensorNeighborhoodVectorType
+      DiffusionTensorNeighborhoodVectorType;
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
 
@@ -194,12 +194,12 @@ public:
   typedef typename TensorDerivativeImageType::Pointer
       TensorDerivativeImagePointer;
   typedef std::vector< TensorDerivativeImagePointer >
-      TensorDerivativeImagePointerArrayType;
+      TensorDerivativeImagePointerVectorType;
   typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
   typedef typename
-      RegistrationFunctionType::TensorDerivativeImageRegionArrayType
-      TensorDerivativeImageRegionArrayType;
+      RegistrationFunctionType::TensorDerivativeImageRegionVectorType
+      TensorDerivativeImageRegionVectorType;
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
@@ -207,15 +207,15 @@ public:
   typedef typename itk::FixedArray< DeformationFieldPointer >
       DeformationVectorImageArrayType;
   typedef std::vector< DeformationVectorImageArrayType >
-      DeformationVectorImageArrayArrayType;
+      DeformationVectorImageArrayVectorType;
   typedef typename RegistrationFunctionType::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
   typedef typename
       RegistrationFunctionType::DeformationVectorImageRegionArrayType
       DeformationVectorImageRegionArrayType;
   typedef typename
-      RegistrationFunctionType::DeformationVectorImageRegionArrayArrayType
-      DeformationVectorImageRegionArrayArrayType;
+      RegistrationFunctionType::DeformationVectorImageRegionArrayVectorType
+      DeformationVectorImageRegionArrayVectorType;
 
   /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
@@ -326,8 +326,8 @@ protected:
     }
 
   /** Set an array of the multiplication vectors images. */
-  void SetMultiplicationVectorImage( int index,
-                                     DeformationVectorImageArrayType & mult )
+  void SetMultiplicationVectorImageArray(
+      int index, DeformationVectorImageArrayType & mult )
     {
     assert( index < this->GetNumberOfTerms() );
     this->m_MultiplicationVectorImageArrays[index] = mult;
@@ -430,10 +430,12 @@ private:
   /** Images storing information we will need for each voxel on every
    *  registration iteration */
   DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
-  TensorDerivativeImagePointerArrayType     m_DiffusionTensorDerivativeImages;
+  TensorDerivativeImagePointerVectorType     m_DiffusionTensorDerivativeImages;
   DeformationFieldPointerArrayType          m_DeformationComponentImages;
-  DeformationComponentImageArrayArrayType   m_DeformationComponentImageArrays;
-  DeformationVectorImageArrayArrayType      m_MultiplicationVectorImageArrays;
+
+  DeformationComponentImageArrayVectorType  m_DeformationComponentImageArrays; // TODO remove me
+
+  DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
 };
 
 /** Struct to simply get the face list and an iterator over the face list

@@ -495,7 +495,7 @@ AnisotropicDiffusiveRegistrationFilter
     // Set the multiplication vector image to the array
     normalMultsArray[i] = normalMultsImage;
     }
-  this->SetMultiplicationVectorImage( NORMAL, normalMultsArray );
+  this->SetMultiplicationVectorImageArray( NORMAL, normalMultsArray );
 }
 
 /**

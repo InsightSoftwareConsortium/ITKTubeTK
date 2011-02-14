@@ -116,7 +116,7 @@ public:
       < DeformationVectorComponentNeighborhoodType, ImageDimension >
        DeformationVectorComponentNeighborhoodArrayType;
   typedef std::vector< DeformationVectorComponentNeighborhoodArrayType >
-      DeformationVectorComponentNeighborhoodArrayArrayType;
+      DeformationVectorComponentNeighborhoodArrayVectorType;
 
   /** Typedefs for the intensity-based distance function */
   typedef itk::MeanSquareRegistrationFunction
@@ -141,7 +141,7 @@ public:
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
   typedef std::vector< DiffusionTensorNeighborhoodType >
-      DiffusionTensorNeighborhoodArrayType;
+      DiffusionTensorNeighborhoodVectorType;
 
   /** Typedefs for the derivatives */
   typedef typename RegularizationFunctionType::ScalarDerivativeType
@@ -151,7 +151,7 @@ public:
   typedef typename RegularizationFunctionType::ScalarDerivativeImageRegionType
       ScalarDerivativeImageRegionType;
   typedef std::vector< ScalarDerivativeImageRegionType >
-      ScalarDerivativeImageRegionArrayType;
+      ScalarDerivativeImageRegionVectorType;
   typedef typename RegularizationFunctionType::TensorDerivativeType
       TensorDerivativeType;
   typedef typename RegularizationFunctionType::TensorDerivativeImageType
@@ -159,7 +159,7 @@ public:
   typedef typename RegularizationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
   typedef std::vector< TensorDerivativeImageRegionType >
-      TensorDerivativeImageRegionArrayType;
+      TensorDerivativeImageRegionVectorType;
 
   /** Typedefs for the multiplication vectors */
   typedef ImageRegionIterator< DeformationFieldType >
@@ -167,7 +167,7 @@ public:
   typedef itk::FixedArray < DeformationVectorImageRegionType, ImageDimension >
       DeformationVectorImageRegionArrayType;
   typedef std::vector< DeformationVectorImageRegionArrayType >
-      DeformationVectorImageRegionArrayArrayType;
+      DeformationVectorImageRegionArrayVectorType;
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
@@ -233,11 +233,11 @@ public:
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType & neighborhood,
-      const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
-      const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
-      const DeformationVectorComponentNeighborhoodArrayArrayType
+      const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+      const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+      const DeformationVectorComponentNeighborhoodArrayVectorType
           & deformationComponentNeighborhoodArrays,
-      const DeformationVectorImageRegionArrayArrayType
+      const DeformationVectorImageRegionArrayVectorType
           & multiplicationVectorRegionArrays,
       const SpacingType & spacing,
       void * globalData,

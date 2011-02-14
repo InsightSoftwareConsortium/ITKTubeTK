@@ -152,14 +152,14 @@ public:
   /** Typedefs for the multiplication vectors */
   typedef typename Superclass::DeformationVectorImageArrayType
       DeformationVectorImageArrayType;
-  typedef typename Superclass::DeformationVectorImageArrayArrayType
-      DeformationVectorImageArrayArrayType;
+  typedef typename Superclass::DeformationVectorImageArrayVectorType
+      DeformationVectorImageArrayVectorType;
   typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
   typedef typename Superclass::DeformationVectorImageRegionArrayType
       DeformationVectorImageRegionArrayType;
-  typedef typename Superclass::DeformationVectorImageRegionArrayArrayType
-      DeformationVectorImageRegionArrayArrayType;
+  typedef typename Superclass::DeformationVectorImageRegionArrayVectorType
+      DeformationVectorImageRegionArrayVectorType;
 
   /** Normal vector types */
   typedef double NormalVectorComponentType;

@@ -628,22 +628,22 @@ DiffusiveRegistrationFilter
 
   FaceStruct< DiffusionTensorImagePointer > tensorStruct(
       m_DiffusionTensorImages, tensorRegionToProcess, radius );
-  DiffusionTensorNeighborhoodArrayType tensorNeighborhoods;
+  DiffusionTensorNeighborhoodVectorType tensorNeighborhoods;
 
   FaceStruct< TensorDerivativeImagePointer > tensorDerivativeStruct(
       m_DiffusionTensorDerivativeImages, derivativeRegionToProcess, radius );
-  TensorDerivativeImageRegionArrayType tensorDerivativeRegions;
+  TensorDerivativeImageRegionVectorType tensorDerivativeRegions;
 
   FaceStruct< DeformationVectorComponentImagePointer >
       deformationComponentStruct( m_DeformationComponentImageArrays,
                                   deformationComponentRegionToProcess,
                                   radius );
-  DeformationVectorComponentNeighborhoodArrayArrayType
+  DeformationVectorComponentNeighborhoodArrayVectorType
       deformationComponentNeighborhoodArrays;
 
   FaceStruct< DeformationFieldPointer > multiplicationVectorStruct(
       m_MultiplicationVectorImageArrays, regionToProcess, radius );
-  DeformationVectorImageRegionArrayArrayType multiplicationVectorRegionArrays;
+  DeformationVectorImageRegionArrayVectorType multiplicationVectorRegionArrays;
 
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();

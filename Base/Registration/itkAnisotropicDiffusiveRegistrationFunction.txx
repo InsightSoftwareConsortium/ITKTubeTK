@@ -190,11 +190,11 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(
     const NeighborhoodType &neighborhood,
-    const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
-    const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
-    const DeformationVectorComponentNeighborhoodArrayArrayType &
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+    const DeformationVectorComponentNeighborhoodArrayVectorType &
         deformationComponentNeighborhoodArrays,
-    const DeformationVectorImageRegionArrayArrayType
+    const DeformationVectorImageRegionArrayVectorType
         & multiplicationVectorRegionArrays,
     const SpacingType & spacing,
     void * globalData,
