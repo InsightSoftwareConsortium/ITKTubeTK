@@ -251,8 +251,8 @@ protected:
   /** Allocate images used during the registration. */
   virtual void AllocateImageArrays();
 
-  /** Initialize images used during the registration. */
-  virtual void InitializeImageArrays();
+  /** Initializes the deformation component images. */
+  virtual void InitializeDeformationComponentImages();
 
   /** Computes the diffusion tensor images */
   virtual void ComputeDiffusionTensorImages();
@@ -264,6 +264,12 @@ protected:
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
       const DiffusionTensorImagePointer tensorImage,
       TensorDerivativeImagePointer tensorDerivativeImage );
+
+  /** Initialize the state of the filter and equation before each iteration. */
+  virtual void InitializeIteration();
+
+  /** Updates the deformation vector component images */
+  virtual void UpdateDeformationComponentImages() {};
 
   /** Get a specific diffusion tensor image */
   DiffusionTensorImageType * GetDiffusionTensorImage( int index ) const
@@ -286,6 +292,7 @@ protected:
     assert( index < this->GetNumberOfTerms() );
     return this->m_DeformationComponentImages[index];
     }
+
   /** Set the image of the deformation field components */
   void SetDeformationComponentImage(int index, DeformationFieldType * comp )
     {
@@ -293,19 +300,6 @@ protected:
     assert( comp );
     this->m_DeformationComponentImages[index] = comp;
     }
-
-  /** Allocate the update buffer. */
-  virtual void AllocateUpdateBuffer();
-
-  /** Get the update buffer. */
-  virtual UpdateBufferType * GetUpdateBuffer() const
-    { return m_UpdateBuffer; }
-
-  /** Initialize the state of the filter and equation before each iteration. */
-  virtual void InitializeIteration();
-
-  /** Updates the deformation vector component images */
-  virtual void UpdateDeformationComponentImages() {};
 
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
@@ -349,6 +343,13 @@ protected:
   virtual void ThreadedApplyUpdate( TimeStepType dt,
                                     const ThreadRegionType &regionToProcess,
                                     int threadId );
+
+  /** Allocate the update buffer. */
+  virtual void AllocateUpdateBuffer();
+
+  /** Get the update buffer. */
+  virtual UpdateBufferType * GetUpdateBuffer() const
+    { return m_UpdateBuffer; }
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImagePointer, class TemplateImagePointer >

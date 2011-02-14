@@ -237,16 +237,19 @@ protected:
 
   enum DivTerm { TANGENTIAL, NORMAL };
 
-  /** Initialize images used during the registration. */
-  virtual void InitializeImageArrays();
+  /** Initializes the deformation component images. */
+  void InitializeDeformationComponentImages();
 
-  /** Compute the normals for the border surface. */
+  /** If required, allocates and computes the normal vector and weight images */
+  virtual void SetupNormalVectorAndWeightImages();
+
+  /** Compute the normals for the border surface  */
   void ComputeBorderSurfaceNormals();
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
-  virtual void InitializeNormalVectorAndWeightImages( bool computeNormals,
-                                                      bool computeWeights );
+  virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
+                                                   bool computeWeights );
 
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border. */

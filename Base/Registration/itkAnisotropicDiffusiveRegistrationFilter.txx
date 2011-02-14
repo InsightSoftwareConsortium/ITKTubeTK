@@ -80,22 +80,16 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
- * All other initialization done before the initialize / calculate change /
- * apply update loop
+ * Setup the pointers for the deformation component images
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeImageArrays()
+::InitializeDeformationComponentImages()
 {
+  assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
-
-  // We're done if we're not computing the regularization
-  if( !this->GetComputeRegularizationTerm() )
-    {
-    return;
-    }
 
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
@@ -107,6 +101,24 @@ AnisotropicDiffusiveRegistrationFilter
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
   this->AllocateSpaceForImage( normalDeformationField, output );
   this->SetDeformationComponentImage( NORMAL, normalDeformationField );
+}
+
+/**
+ * All other initialization done before the initialize / calculate change /
+ * apply update loop
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::SetupNormalVectorAndWeightImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetOutput() );
+
+  // The output will be used as the template to allocate the images we will
+  // use to store data computed before/during the registration
+  typename OutputImageType::Pointer output = this->GetOutput();
 
   // If a normal vector image or weight image was supplied by the user, check
   // that it matches the output
@@ -150,8 +162,7 @@ AnisotropicDiffusiveRegistrationFilter
       }
 
     // Actually compute the normal vectors and/or weights
-    this->InitializeNormalVectorAndWeightImages( computeNormals,
-                                                 computeWeights );
+    this->ComputeNormalVectorAndWeightImages( computeNormals, computeWeights );
     }
 }
 
@@ -191,8 +202,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeNormalVectorAndWeightImages( bool computeNormals,
-                                         bool computeWeights )
+::ComputeNormalVectorAndWeightImages( bool computeNormals, bool computeWeights )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_BorderSurface->GetPointData()->GetNormals() );
@@ -341,6 +351,9 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
+
+  // If required, allocate and compute the normal vector and weight images
+  this->SetupNormalVectorAndWeightImages();
   assert( m_NormalVectorImage );
   assert( m_WeightImage );
 

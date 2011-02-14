@@ -221,11 +221,11 @@ DiffusiveRegistrationFilter
   // Allocate and initialize the images we will use to store data computed
   // during the registration (or set pointers to 0 if they are not being used).
   this->AllocateImageArrays();
-  this->InitializeImageArrays();
 
   // Compute the diffusion tensors and their derivatives
   if( this->GetComputeRegularizationTerm() )
     {
+    this->InitializeDeformationComponentImages();
     this->ComputeDiffusionTensorImages();
     this->ComputeDiffusionTensorDerivativeImages();
     }
@@ -245,7 +245,7 @@ DiffusiveRegistrationFilter
   // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
 
-  // Allocate the diffusion tensor image and its derivative
+  // Allocate the diffusion tensor images and their derivatives
   if( this->GetComputeRegularizationTerm() )
     {
     DiffusionTensorImagePointer diffusionTensorPointer = 0;
@@ -271,44 +271,17 @@ DiffusiveRegistrationFilter
       }
     }
 
-  // Initialize array of pointers to deformation components (may or may not
-  // be allocated by individual filters)
+  // Initialize image pointers that may or may not be allocated by individual
+  // filters later on, namely deformation components and multiplication vectors
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     m_DeformationComponentImages.push_back( 0 );
-    }
-  // Initialize array of pointers to deformation components
-  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
-    {
     DeformationComponentImageArrayType deformationComponentArray;
     for( int j = 0; j < ImageDimension; j++ )
       {
       deformationComponentArray[j] = 0;
       }
     m_DeformationComponentImageArrays.push_back( deformationComponentArray );
-    }
-}
-
-/**
- * Update x, y, z components of a deformation field
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ExtractXYZComponentsFromDeformationField(
-    const OutputImageType * deformationField,
-    DeformationComponentImageArrayType& deformationComponentImages )
-{
-  typename VectorIndexSelectionFilterType::Pointer indexSelector;
-  assert( deformationField );
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    indexSelector = VectorIndexSelectionFilterType::New();
-    indexSelector->SetInput( deformationField );
-    indexSelector->SetIndex( i );
-    deformationComponentImages[i] = indexSelector->GetOutput();
-    indexSelector->Update();
     }
 }
 
@@ -320,13 +293,11 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeImageArrays()
+::InitializeDeformationComponentImages()
 {
   assert( this->GetOutput() );
-  if( this->GetComputeRegularizationTerm() )
-    {
-    m_DeformationComponentImages[0] = this->GetOutput();
-    }
+  assert( this->GetComputeRegularizationTerm() );
+  m_DeformationComponentImages[0] = this->GetOutput();
 }
 
 /**
@@ -422,6 +393,29 @@ DiffusiveRegistrationFilter
       reg->ComputeDiffusionTensorFirstOrderPartialDerivatives(
           tensorNeighborhood, tensorDerivativeRegion, spacing );
       }
+    }
+}
+
+/**
+ * Update x, y, z components of a deformation field
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ExtractXYZComponentsFromDeformationField(
+    const OutputImageType * deformationField,
+    DeformationComponentImageArrayType& deformationComponentImages )
+{
+  typename VectorIndexSelectionFilterType::Pointer indexSelector;
+  assert( deformationField );
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    indexSelector = VectorIndexSelectionFilterType::New();
+    indexSelector->SetInput( deformationField );
+    indexSelector->SetIndex( i );
+    deformationComponentImages[i] = indexSelector->GetOutput();
+    indexSelector->Update();
     }
 }
 
