@@ -175,7 +175,7 @@ AnisotropicDiffusiveRegistrationFunction
 {
   // This function should never be called!
   itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
-                     << "be called.  Use another ComputeUpdate() defined in"
+                     << "be called.  Use the other ComputeUpdate() defined in"
                      << "itkAnisotropicDiffusiveRegistrationFunction instead" );
 }
 
@@ -219,27 +219,30 @@ AnisotropicDiffusiveRegistrationFunction
   // Compute the motion field regularization update term
   PixelType regularizationTerm;
   regularizationTerm.Fill(0);
-  DeformationVectorComponentType intermediateComponent = 0;
-  PixelType intermediateVector;
-  intermediateVector.Fill(0);
   if ( this->GetComputeRegularizationTerm() )
     {
     int numTerms = tensorNeighborhoods.size();
     assert( (int) tensorDerivativeRegions.size() == numTerms );
     assert( (int) deformationComponentNeighborhoodArrays.size() == numTerms );
-    assert( (int) deformationComponentNeighborhoodArrays[0].Size() ==
-            ImageDimension );
 
+    DeformationVectorComponentType intermediateComponent = 0;
+    PixelType intermediateVector;
+    intermediateVector.Fill(0);
+
+    // Iterate over each div(T \grad(u))v term
     for ( int term = 0; term < numTerms; term++ )
       {
       assert( tensorNeighborhoods[term].GetImagePointer() );
       assert( tensorDerivativeRegions[term].GetImage() );
-      // we don't necessarily have vectors to multiply, so no assert here
+      // we don't necessarily have vectors to multiply, so no assert required
 
+      // Iterate over each dimension
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
         assert(deformationComponentNeighborhoodArrays[term][i].
                GetImagePointer() );
+
+        // Compute div(T \grad(u))
         intermediateComponent = m_RegularizationFunction->ComputeUpdate(
             deformationComponentNeighborhoodArrays[term][i],
             tensorNeighborhoods[term],
@@ -264,10 +267,10 @@ AnisotropicDiffusiveRegistrationFunction
       }
     }
 
+  // Compute the final update term
   PixelType updateTerm;
   updateTerm.Fill(0);
   updateTerm = intensityDistanceTerm + regularizationTerm;
-
   return updateTerm;
 }
 

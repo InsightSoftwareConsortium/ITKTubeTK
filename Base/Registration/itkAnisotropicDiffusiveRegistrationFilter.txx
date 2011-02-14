@@ -98,6 +98,7 @@ AnisotropicDiffusiveRegistrationFilter
   // Allocate the images needed when using the anisotropic diffusive
   // regularization
   this->SetDeformationComponentImage( TANGENTIAL, this->GetOutput() );
+
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
   this->AllocateSpaceForImage( normalDeformationField, output );
   this->SetDeformationComponentImage( NORMAL, normalDeformationField );
@@ -337,8 +338,7 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistance( const WeightType distance ) const
 {
-  WeightType weight = exp( m_lambda * distance );
-  return weight;
+  return exp( m_lambda * distance );
 }
 
 /**

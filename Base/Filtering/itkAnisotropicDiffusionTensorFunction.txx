@@ -179,7 +179,6 @@ AnisotropicDiffusionTensorFunction< TImageType >
       tensorNeighborhood, firstOrderResult.Value(), spacing );
 }
 
-
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
@@ -244,7 +243,6 @@ AnisotropicDiffusionTensorFunction< TImageType >
      secondOrderResult.Value(),
      spacing );
 }
-
 
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
@@ -314,7 +312,7 @@ AnisotropicDiffusionTensorFunction<TImageType>
     minSpacing = 1.0;
     }
 
-  // plus 1?
+  // TODO plus 1?
   double ratio
       = minSpacing / vcl_pow(2.0, static_cast<double>(ImageDimension) + 1);
 

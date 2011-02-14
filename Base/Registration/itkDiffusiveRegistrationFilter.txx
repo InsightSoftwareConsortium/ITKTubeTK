@@ -198,15 +198,15 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateUpdateBuffer()
 {
-  /* The update buffer looks just like the output and holds the voxel changes */
+  // The update buffer looks just like the output and holds the voxel changes
   typename OutputImageType::Pointer output = this->GetOutput();
   assert( output );
   this->AllocateSpaceForImage( m_UpdateBuffer, output );
 }
 
 /**
- * All other initialization done before the initialize / calculate change /
- * apply update loop
+ * All other initialization done before the initialize iteration / calculate
+ * change / apply update loop
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -304,8 +304,7 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Initialize the images we will use to store data computed during the
- * registration
+ * Initialize the deformation component images
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -624,6 +623,7 @@ DiffusiveRegistrationFilter
   FaceStruct< OutputImagePointer > outputStruct(
       output, regionToProcess, radius );
   NeighborhoodType outputNeighborhood;
+
   UpdateBufferRegionType updateRegion;
 
   FaceStruct< DiffusionTensorImagePointer > tensorStruct(
