@@ -32,8 +32,8 @@ namespace itk
 {
 
 /** \class itkDiffusiveRegistrationFilter
- * \brief Algorithm for registration of images depicting sliding organs, using
- * an anisotropic diffusive regularization term.
+ * \brief Registration filter for registrations using anisotropic diffusive
+ * regularizers, for example for sliding organ registration.
  *
  * Traditional deformable image registration imposes a uniform
  * smoothness constraint on the deformation field. This
@@ -41,17 +41,35 @@ namespace itk
  * that slide relative to each other, and therefore leads to registration
  * inaccuracies.
  *
- * This algorithm includes a deformation field regularization term that is
- * based on anisotropic diffusion and accommodates the deformation field
- * discontinuities that are expected when considering sliding motion.
+ * This filter is a base class for non-parametric deformable registration
+ * algorithms with regularization terms based on anisotropic diffusion.  For
+ * example, these regularizers can accomodate deformation field discontinuities
+ * that are expected when considering sliding motion.
  *
  * The update term is composed of two parts: an intensity distance term and a
  * regularization term.  The intensity distance term uses the sum of square
  * difference metric, so this registration algorithm is appropriate for
- * monomodal image registration term only.  The regularization term uses a
- * specified border between the organs (stored as a vtkPolyData *) and enforces
- * coupling between the organs while allowing the motion field to exhibit
- * sliding motion at the organ interface.
+ * monomodal image registration term only.
+ *
+ * The update term for the regularization will be of the form:
+ * div(T1*\grad(u1))v1 + div(T2*\grad(u2))v2 + ... + div(TN*\grad(uN))vN
+ * where the types are:
+ * - T1..TN are diffusion tensors
+ * - u1..uN are deformation vectors
+ * - v1..vN are deformation vectors
+ * It is assumed that T's and v's are constant throughout the registration, and
+ * so can be precomputed once, while u's must be updated on each registration
+ * iteration.
+ *
+ * This base class implements the diffusive regularization.  Algorithms
+ * implementing anisotropic regularization should derive it and override the
+ * following functions:
+ * - GetNumberOfTerms(): returns the number of div(T*\grad(u))v terms
+ * - ComputeDiffusionTensorImages(): allocate and populate the T images
+ * - InitializeDeformationComponentImages(): allocate the u images
+ * - ComputeMultiplicationVectorImages(): allocate and populate the v images
+ * - UpdateDeformationComponentImages(): update the u images at each iteration
+ * See itkAnisotropicDiffusiveRegistrationFilter for an example derived filter.
  *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
@@ -60,6 +78,7 @@ namespace itk
  * moving image and the type of the deformation field.
  *
  * \sa itkAnisotropicDiffusiveRegistrationFunction
+ * \sa itkAnisotropicDiffusiveRegistrationFilter
  * \ingroup DeformableImageRegistration
  * \ingroup MultiThreaded
  */
@@ -227,67 +246,63 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
-  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
+  /** The number of div(T\grad(u))v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
     { return 1; }
-
-  /** Get the array of images of the diffusion tensors */
-  virtual const DiffusionTensorImagePointerArrayType& GetDiffusionTensorImages()
-      const
-    { return this->m_DiffusionTensorImages; }
-
-  /** Get the image of the diffusion tensor derivatives */
-  virtual const TensorDerivativeImagePointerArrayType&
-      GetDiffusionTensorDerivativeImage() const
-    { return this->m_DiffusionTensorDerivativeImages; }
 
 protected:
   DiffusiveRegistrationFilter();
   virtual ~DiffusiveRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
+  /** Handy for array indexing. */
   enum DivTerm { GAUSSIAN };
 
-  /** Initialization occuring before the registration iterations. */
+  /** Initialization occuring before the registration iterations begin. */
   virtual void Initialize();
 
   /** Allocate images used during the registration. */
   virtual void AllocateImageArrays();
 
-  /** Initializes the deformation component images. */
+  /** Allocate the deformation component images (which may be updated throughout
+   *  the registration. Reimplement in derived classes. */
   virtual void InitializeDeformationComponentImages();
 
-  /** Computes the diffusion tensor images */
+  /** Allocate and populate the diffusion tensor images.
+   *  Reimplement in derived classes. */
   virtual void ComputeDiffusionTensorImages();
 
-  /** Computes the first derivatives of the diffusion tensor images */
+  /** Computes the first-order partial derivatives of the diffusion tensor
+   *  images */
   virtual void ComputeDiffusionTensorDerivativeImages();
 
-  /** Computes the multiplication vectors that the div(Tensor /grad u) values
-   *  are multiplied by.  Default to e_l if not specified, where e_l is the
-   *  lth canonical unit vector. */
-  virtual void ComputeMultiplicationVectorImages() {};
-
-  /** Helper to compute the first derivatives of the diffusion tensor images */
+  /** Helper to compute the first-order partial derivatives of the diffusion
+   *  tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
       const DiffusionTensorImagePointer tensorImage,
       TensorDerivativeImagePointer tensorDerivativeImage );
 
-  /** Initialize the state of the filter and equation before each iteration. */
+  /** Allocate and populate the images of multiplication vectors that the
+   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
+   *  some of the multiplication vector images in derived classes.  Otherwise,
+   *  default to e_l, where e_l is the lth canonical unit vector. */
+  virtual void ComputeMultiplicationVectorImages() {};
+
+  /** Initialize the state of the filter before each iteration. */
   virtual void InitializeIteration();
 
-  /** Updates the deformation vector component images */
+  /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages() {};
 
-  /** Get a specific diffusion tensor image */
+  /** Get a diffusion tensor image */
   DiffusionTensorImageType * GetDiffusionTensorImage( int index ) const
     {
     assert( index < this->GetNumberOfTerms() );
     return this->m_DiffusionTensorImages[index];
     }
 
-  /** Get the image of the diffusion tensor derivatives */
+  /** Get an image of the diffusion tensor derivatives */
   TensorDerivativeImageType * GetDiffusionTensorDerivativeImage( int index )
       const
     {
@@ -295,14 +310,14 @@ protected:
     return this->m_DiffusionTensorDerivativeImages[index];
     }
 
-  /** Get the image of the deformation field components */
+  /** Get an image of the deformation field components */
   DeformationFieldType * GetDeformationComponentImage( int index ) const
     {
     assert( index < this->GetNumberOfTerms() );
     return this->m_DeformationComponentImages[index];
     }
 
-  /** Set the image of the deformation field components */
+  /** Set an image of the deformation field components */
   void SetDeformationComponentImage( int index, DeformationFieldType * comp )
     {
     assert( index < this->GetNumberOfTerms() );
@@ -310,7 +325,7 @@ protected:
     this->m_DeformationComponentImages[index] = comp;
     }
 
-  /** Set the image of the multiplication vectors */
+  /** Set an array of the multiplication vectors images. */
   void SetMultiplicationVectorImage( int index,
                                      DeformationVectorImageArrayType & mult )
     {
@@ -361,6 +376,13 @@ protected:
                                     const ThreadRegionType &regionToProcess,
                                     int threadId );
 
+  /** Create the registration function, with default parameters for
+    * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
+  virtual void CreateRegistrationFunction();
+
+  /** Get the registration function pointer */
+  virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;
+
   /** Allocate the update buffer. */
   virtual void AllocateUpdateBuffer();
 
@@ -378,13 +400,6 @@ protected:
   template< class CheckedImageType, class TemplateImageType >
   bool CompareImageAttributes( const CheckedImageType & image,
                                const TemplateImageType & templateImage );
-
-  /** Create the registration function, with default parameters for
-    * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
-  virtual void CreateRegistrationFunction();
-
-  /** Get the registration function pointer */
-  virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;
 
 private:
   // Purposely not implemented
@@ -412,7 +427,7 @@ private:
   /** The buffer that holds the updates for an iteration of algorithm. */
   typename UpdateBufferType::Pointer  m_UpdateBuffer;
 
-  /** Image storing information we will need for each voxel on every
+  /** Images storing information we will need for each voxel on every
    *  registration iteration */
   DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
   TensorDerivativeImagePointerArrayType     m_DiffusionTensorDerivativeImages;

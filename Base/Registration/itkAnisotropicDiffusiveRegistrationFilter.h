@@ -32,8 +32,8 @@ namespace itk
 {
 
 /** \class itkAnisotropicDiffusiveRegistrationFilter
- * \brief Algorithm for registration of images depicting sliding organs, using
- * an anisotropic diffusive regularization term.
+ * \brief Registration filter for registrations using anisotropic diffusive
+ * regularizers, for example for sliding organ registration.
  *
  * Traditional deformable image registration imposes a uniform
  * smoothness constraint on the deformation field. This
@@ -41,17 +41,13 @@ namespace itk
  * that slide relative to each other, and therefore leads to registration
  * inaccuracies.
  *
- * This algorithm includes a deformation field regularization term that is
- * based on anisotropic diffusion and accommodates the deformation field
- * discontinuities that are expected when considering sliding motion.
+ * This filter includes a regularization term based on anisotropic diffusion
+ * that accomodates deformation field discontinuities that are expected when
+ * considering sliding motion.
  *
- * The update term is composed of two parts: an intensity distance term and a
- * regularization term.  The intensity distance term uses the sum of square
- * difference metric, so this registration algorithm is appropriate for
- * monomodal image registration term only.  The regularization term uses a
- * specified border between the organs (stored as a vtkPolyData *) and enforces
- * coupling between the organs while allowing the motion field to exhibit
- * sliding motion at the organ interface.
+ * The regularization term uses a specified border between the organs
+ * (stored as a vtkPolyData *) and enforces coupling between the organs while
+ * allowing the motion field to exhibit sliding motion at the organ interface.
  *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
@@ -59,6 +55,7 @@ namespace itk
  * This class is templated over the type of the fixed image, the type of the
  * moving image and the type of the deformation field.
  *
+ * \sa itkDiffusiveRegistrationFilter
  * \sa itkAnisotropicDiffusiveRegistrationFunction
  * \ingroup DeformableImageRegistration
  * \ingroup MultiThreaded
@@ -191,6 +188,11 @@ public:
   typedef vtkPolyData                                   BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
 
+  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
+   *  Reimplement in derived classes. */
+  virtual int GetNumberOfTerms() const
+    { return 2; }
+
   /** Set/get the organ boundary polydata, which must be in the same space as
    *  the fixed image.  Border normals are computed on this polydata, so it
    *  may be changed over the course of the registration. */
@@ -223,11 +225,6 @@ public:
   virtual const WeightImageType * GetWeightImage() const
     { return m_WeightImage; }
 
-  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
-   *  Reimplement in derived classes. */
-  virtual int GetNumberOfTerms() const
-    { return 2; }
-
   /** Get the normal components of the deformation field. */
   virtual DeformationFieldType * GetNormalDeformationComponentImage() const
     {
@@ -239,15 +236,30 @@ protected:
   virtual ~AnisotropicDiffusiveRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
+  /** Handy for array indexing. */
   enum DivTerm { TANGENTIAL, NORMAL };
 
-  /** Initializes the deformation component images. */
-  void InitializeDeformationComponentImages();
+  /** Allocate the deformation component images (which may be updated throughout
+   *  the registration. Reimplement in derived classes. */
+  virtual void InitializeDeformationComponentImages();
 
-  /** If required, allocates and computes the normal vector and weight images */
+  /** Allocate and populate the diffusion tensor images.
+   *  Reimplement in derived classes. */
+  virtual void ComputeDiffusionTensorImages();
+
+  /** Allocate and populate the images of multiplication vectors that the
+   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
+   *  some of the multiplication vector images in derived classes.  Otherwise,
+   *  default to e_l, where e_l is the lth canonical unit vector. */
+  virtual void ComputeMultiplicationVectorImages();
+
+  /** Updates the deformation vector component images on each iteration. */
+  virtual void UpdateDeformationComponentImages();
+
+  /** If needed, allocates and computes the normal vector and weight images. */
   virtual void SetupNormalVectorAndWeightImages();
 
-  /** Compute the normals for the border surface  */
+  /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();
 
   /** Computes the normal vector image and weighting factors w given the
@@ -260,31 +272,10 @@ protected:
   virtual WeightType ComputeWeightFromDistance( const WeightType distance )
       const;
 
-  /** Computes the diffusion tensor images */
-  virtual void ComputeDiffusionTensorImages();
-
-  /** Updates the deformation field component images */
-  virtual void UpdateDeformationComponentImages();
-
-  /** Computes the multiplication vectors that the div(Tensor /grad u) values
-   *  are multiplied by.  Default to e_l if not specified, where e_l is the
-   *  lth canonical unit vector. */
-  virtual void ComputeMultiplicationVectorImages();
-
 private:
   // Purposely not implemented
   AnisotropicDiffusiveRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
-
-  /** Structure for passing information into static callback methods.  Used in
-   * the subclasses threading mechanisms. */
-  struct DenseFDThreadStruct
-    {
-    AnisotropicDiffusiveRegistrationFilter *Filter;
-    TimeStepType TimeStep;
-    TimeStepType *TimeStepList;
-    bool *ValidTimeStepList;
-    };
 
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;

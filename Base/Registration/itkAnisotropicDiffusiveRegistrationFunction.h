@@ -36,13 +36,19 @@ namespace itk
  * \brief Implements the update function for the
  * itkAnisotropicDiffusiveRegistrationFilter
  *
- * Uses the MeanSquareRegistrationFunction as the similarity metric between
- * images.  Takes advantage of the implementation in
- * itkAnisotropicDiffusionTensorFunction to calculate the update term for the
- * regularization.
+ * Registration function for registrations using anisotropic diffusive
+ * regularizers.  Registration update terms are of the form:
+ * Cost = intensityUpdate + div(T1*\grad(u1))v1 + div(T2*\grad(u2))v2 + ...
+ * where the types are:
+ * - T1..TN are diffusion tensors
+ * - u1..uN are deformation vectors
+ * - v1..vN are deformation vectors
+ * One can specify as many div(T*\grad(u))v regularization terms as you'd like,
+ * by passing vectors into ComputeUpdate().
  *
- * This class uses an anisotropic diffusive regularizer for registration of
- * images depicting sliding organs.
+ * Uses the MeanSquareRegistrationFunction as the similarity metric between
+ * images.  Uses the implementation in itkAnisotropicDiffusionTensorFunction
+ * to calculate the regularization update terms.
  *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
@@ -50,8 +56,8 @@ namespace itk
  * This class is templated over the fixed image type, moving image type and the
  * deformation field type.
  *
- * \sa itkAnisotropicDiffusiveRegistrationFilter
  * \sa itkDiffusiveRegistrationFilter
+ * \sa itkAnisotropicDiffusiveRegistrationFilter
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
@@ -182,7 +188,6 @@ public:
     // Intensity distance function doesn't have a SetTimeStep(), but it's ok
     // because we only use ComputeUpdate() for it.
     }
-
   const TimeStepType &GetTimeStep() const
     { return m_TimeStep; }
 
@@ -240,7 +245,7 @@ public:
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
-  virtual void *GetGlobalDataPointer() const;
+  virtual void * GetGlobalDataPointer() const;
 
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
