@@ -150,6 +150,16 @@ public:
   typedef typename Superclass::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
 
+  /** Typedefs for the multiplication vectors */
+  typedef typename RegistrationFunctionType::DeformationVectorImageRegionType
+      DeformationVectorImageRegionType;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorImageRegionArrayType
+      DeformationVectorImageRegionArrayType;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorImageRegionArrayArrayType
+      DeformationVectorImageRegionArrayArrayType;
+
   /** Normal vector types */
   typedef double NormalVectorComponentType;
   typedef itk::Vector< NormalVectorComponentType, ImageDimension >

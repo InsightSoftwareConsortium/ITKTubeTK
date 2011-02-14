@@ -184,12 +184,17 @@ public:
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
-  /** Vector multiplier image types */
+  /** Typedefs for the multiplication vectors */
+  typedef typename RegistrationFunctionType::DeformationVectorImageRegionType
+      DeformationVectorImageRegionType;
   typedef typename
-      RegistrationFunctionType::MultiplicationVectorImageRegionArrayArrayType
-      MultiplicationVectorImageRegionArrayArrayType;
+      RegistrationFunctionType::DeformationVectorImageRegionArrayType
+      DeformationVectorImageRegionArrayType;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorImageRegionArrayArrayType
+      DeformationVectorImageRegionArrayArrayType;
 
-  /** Types for vector component ractor */
+  /** Types for vector component extractor */
   typedef itk::VectorIndexSelectionCastImageFilter
       < DeformationFieldType, DeformationVectorComponentImageType >
       VectorIndexSelectionFilterType;

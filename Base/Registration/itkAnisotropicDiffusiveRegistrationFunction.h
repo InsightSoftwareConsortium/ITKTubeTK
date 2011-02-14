@@ -146,7 +146,6 @@ public:
       ScalarDerivativeImageRegionType;
   typedef std::vector< ScalarDerivativeImageRegionType >
       ScalarDerivativeImageRegionArrayType;
-
   typedef typename RegularizationFunctionType::TensorDerivativeType
       TensorDerivativeType;
   typedef typename RegularizationFunctionType::TensorDerivativeImageType
@@ -156,32 +155,13 @@ public:
   typedef std::vector< TensorDerivativeImageRegionType >
       TensorDerivativeImageRegionArrayType;
 
-  /** Types for vectors to be multiplied by div(Tensor \grad u ) scalars */
-  typedef double MultiplicationVectorComponentType;
-  typedef itk::Vector< MultiplicationVectorComponentType, ImageDimension >
-      MultiplicationVectorType;
-  typedef itk::Image< MultiplicationVectorType, ImageDimension >
-      MultiplicationVectorImageType;
-  typedef typename MultiplicationVectorImageType::Pointer
-      MultiplicationVectorImagePointer;
-  typedef typename
-      itk::FixedArray< MultiplicationVectorImagePointer, ImageDimension >
-      MultiplicationVectorImageArrayType;
-  typedef ImageRegionIterator< MultiplicationVectorImageType >
-      MultiplicationVectorImageRegionType;
-  typedef itk::FixedArray
-      < MultiplicationVectorImageRegionType, ImageDimension >
-      MultiplicationVectorImageRegionArrayType;
-  typedef std::vector< MultiplicationVectorImageRegionArrayType >
-      MultiplicationVectorImageRegionArrayArrayType;
-
-  // TODO take me out
-  typedef ZeroFluxNeumannBoundaryCondition< MultiplicationVectorImageType >
-      MultiplicationVectorImageBoundaryConditionType;
-  typedef ConstNeighborhoodIterator
-      < MultiplicationVectorImageType,
-      MultiplicationVectorImageBoundaryConditionType >
-      MultiplicationVectorNeighborhoodType;
+  /** Typedefs for the multiplication vectors */
+  typedef ImageRegionIterator< DeformationFieldType >
+      DeformationVectorImageRegionType;
+  typedef itk::FixedArray < DeformationVectorImageRegionType, ImageDimension >
+      DeformationVectorImageRegionArrayType;
+  typedef std::vector< DeformationVectorImageRegionArrayType >
+      DeformationVectorImageRegionArrayArrayType;
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
@@ -250,9 +230,9 @@ public:
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
       const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
-      DeformationVectorComponentNeighborhoodArrayArrayType
+      const DeformationVectorComponentNeighborhoodArrayArrayType
           & deformationComponentNeighborhoodArrays,
-      const MultiplicationVectorImageRegionArrayArrayType
+      const DeformationVectorImageRegionArrayArrayType
           & multiplicationVectorRegionArrays,
       const SpacingType & spacing,
       void * globalData,

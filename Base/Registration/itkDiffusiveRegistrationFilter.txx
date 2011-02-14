@@ -630,7 +630,7 @@ DiffusiveRegistrationFilter
       deformationComponentNeighborhoodArrays;
 
   // TODO won't pass all tests because this not filled in
-  MultiplicationVectorImageRegionArrayArrayType
+  DeformationVectorImageRegionArrayArrayType
       multiplicationVectorRegionArrays;
 
   // Get the type of registration

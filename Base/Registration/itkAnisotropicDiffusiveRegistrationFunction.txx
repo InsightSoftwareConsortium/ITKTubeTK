@@ -192,9 +192,9 @@ AnisotropicDiffusiveRegistrationFunction
     const NeighborhoodType &neighborhood,
     const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
     const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
-    DeformationVectorComponentNeighborhoodArrayArrayType &
+    const DeformationVectorComponentNeighborhoodArrayArrayType &
         deformationComponentNeighborhoodArrays,
-    const MultiplicationVectorImageRegionArrayArrayType
+    const DeformationVectorImageRegionArrayArrayType
         & multiplicationVectorRegionArrays,
     const SpacingType & spacing,
     void * globalData,
