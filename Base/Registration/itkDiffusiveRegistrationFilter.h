@@ -331,6 +331,21 @@ protected:
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages() {};
 
+  /** Computes the first- and second-order partial derivatives of the
+   *  deformation component images on each iteration.  Override in derived
+   *  classes if the deformation components image pointers are not unique, to
+   *  avoid computing the same derivatives multiple times. */
+  virtual void ComputeDeformationComponentDerivativeImages();
+
+  /** Helper to compute the first- and second-order partial derivatives of the
+   *  deformation component images */
+  virtual void ComputeDeformationComponentDerivativeImageHelper(
+      const DeformationVectorComponentImagePointer & deformationComponentImage,
+      ScalarDerivativeImagePointer & firstOrderDerivativeImage,
+      TensorDerivativeImagePointer & secondOrderDerivativeImage,
+      const SpacingType & spacing,
+      const typename OutputImageType::SizeType & radius ) const;
+
   /** Get a diffusion tensor image */
   DiffusionTensorImageType * GetDiffusionTensorImage( int index ) const
     {

@@ -478,6 +478,120 @@ DiffusiveRegistrationFilter
 }
 
 /**
+ * Calculates the derivatives of the deformation vector derivatives after
+ * each iteration.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDeformationComponentDerivativeImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetOutput() );
+
+  // Get the spacing and the radius
+  SpacingType spacing = this->GetOutput()->GetSpacing();
+  const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  const typename OutputImageType::SizeType radius = df->GetRadius();
+
+  // By default, calculate the derivatives for each of the deformation
+  // components
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    this->ExtractXYZComponentsFromDeformationField(
+        m_DeformationComponentImages[i],
+        m_DeformationComponentImageArrays[i] );
+
+    for( int j = 0; j < ImageDimension; j++ )
+      {
+      this->ComputeDeformationComponentDerivativeImageHelper(
+          m_DeformationComponentImageArrays[i][j],
+          m_DeformationComponentFirstOrderDerivativeArrays[i][j],
+          m_DeformationComponentSecondOrderDerivativeArrays[i][j],
+          spacing,
+          radius );
+      }
+    }
+}
+
+/**
+ * Actually computes the deformation component image derivatives.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDeformationComponentDerivativeImageHelper(
+    const DeformationVectorComponentImagePointer & deformationComponentImage,
+    ScalarDerivativeImagePointer & firstOrderDerivativeImage,
+    TensorDerivativeImagePointer & secondOrderDerivativeImage,
+    const SpacingType & spacing,
+    const typename OutputImageType::SizeType & radius ) const
+{
+  assert( deformationComponentImage );
+  assert( firstOrderDerivativeImage );
+  assert( secondOrderDerivativeImage );
+
+  // Get the FiniteDifferenceFunction to use in calculations.
+  const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  assert( df );
+  const RegularizationFunctionPointer reg
+      = df->GetRegularizationFunctionPointer();
+  assert( reg );
+
+  // Setup the structs for the face calculations, the face iterators, and the
+  // iterators over the current face
+  FaceStruct< DeformationVectorComponentImagePointer >
+      deformationComponentStruct (
+          deformationComponentImage,
+          deformationComponentImage->GetLargestPossibleRegion(),
+          radius );
+  DeformationVectorComponentNeighborhoodType deformationComponentNeighborhood;
+
+  FaceStruct< ScalarDerivativeImagePointer > firstOrderStruct (
+      firstOrderDerivativeImage,
+      firstOrderDerivativeImage->GetLargestPossibleRegion(),
+      radius );
+  ScalarDerivativeImageRegionType firstOrderRegion;
+
+  FaceStruct< TensorDerivativeImagePointer > secondOrderStruct (
+      secondOrderDerivativeImage,
+      secondOrderDerivativeImage->GetLargestPossibleRegion(),
+      radius );
+  TensorDerivativeImageRegionType secondOrderRegion;
+
+  for( deformationComponentStruct.GoToBegin(), firstOrderStruct.GoToBegin(),
+       secondOrderStruct.GoToBegin();
+       !deformationComponentStruct.IsAtEnd();
+       deformationComponentStruct.Increment(), firstOrderStruct.Increment(),
+       secondOrderStruct.Increment() )
+         {
+    // Set the neighborhood iterators to the current face
+    deformationComponentStruct.SetIteratorToCurrentFace(
+        deformationComponentNeighborhood, deformationComponentImage, radius );
+    firstOrderStruct.SetIteratorToCurrentFace(
+        firstOrderRegion, firstOrderDerivativeImage );
+    secondOrderStruct.SetIteratorToCurrentFace(
+        secondOrderRegion, secondOrderDerivativeImage );
+
+    // Iterate through the neighborhood for this face and compute derivatives
+    for( deformationComponentNeighborhood.GoToBegin(),
+         firstOrderRegion.GoToBegin(), secondOrderRegion.GoToBegin();
+         !deformationComponentNeighborhood.IsAtEnd();
+         ++deformationComponentNeighborhood, ++firstOrderRegion,
+         ++secondOrderRegion )
+           {
+      reg->ComputeIntensityFirstAndSecondOrderPartialDerivatives(
+          deformationComponentNeighborhood,
+          firstOrderRegion,
+          secondOrderRegion,
+          spacing );
+      }
+    }
+}
+
+/**
  * Initialize the state of the filter and equation before each iteration.
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -495,13 +609,7 @@ DiffusiveRegistrationFilter
   if( this->GetComputeRegularizationTerm() )
     {
     this->UpdateDeformationComponentImages();
-
-    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
-      {
-      this->ExtractXYZComponentsFromDeformationField(
-          m_DeformationComponentImages[i],
-          m_DeformationComponentImageArrays[i] );
-      }
+    this->ComputeDeformationComponentDerivativeImages();
     }
 }
 
