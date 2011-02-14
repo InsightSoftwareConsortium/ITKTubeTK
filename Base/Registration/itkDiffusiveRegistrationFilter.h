@@ -208,6 +208,8 @@ public:
   typedef typename
       RegistrationFunctionType::ScalarDerivativeImageRegionArrayVectorType
       ScalarDerivativeImageRegionArrayVectorType;
+  typedef typename ScalarDerivativeImageType::RegionType
+      ThreadScalarDerivativeImageRegionType;
 
   /** Tensor derivative matrix image types */
   typedef typename RegistrationFunctionType::TensorDerivativeImageType
@@ -425,6 +427,8 @@ protected:
       const ThreadDiffusionTensorImageRegionType &tensorRegionToProcess,
       const ThreadTensorDerivativeImageRegionType
         &tensorDerivativeRegionToProcess,
+      const ThreadScalarDerivativeImageRegionType
+        &scalarDerivativeRegionToProcess,
       const ThreadDeformationVectorComponentImageRegionType
         &deformationComponentRegionToProcess,
       int threadId );
