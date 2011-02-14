@@ -143,15 +143,19 @@ public:
   typedef std::vector< DiffusionTensorNeighborhoodType >
       DiffusionTensorNeighborhoodVectorType;
 
-  /** Typedefs for the derivatives */
+  /** Typedefs for the scalar derivatives */
   typedef typename RegularizationFunctionType::ScalarDerivativeType
       ScalarDerivativeType;
   typedef typename RegularizationFunctionType::ScalarDerivativeImageType
       ScalarDerivativeImageType;
   typedef typename RegularizationFunctionType::ScalarDerivativeImageRegionType
       ScalarDerivativeImageRegionType;
-  typedef std::vector< ScalarDerivativeImageRegionType >
-      ScalarDerivativeImageRegionVectorType;
+  typedef itk::FixedArray < ScalarDerivativeImageRegionType, ImageDimension >
+      ScalarDerivativeImageRegionArrayType;
+  typedef std::vector < ScalarDerivativeImageRegionArrayType >
+      ScalarDerivativeImageRegionArrayVectorType;
+
+  /** Typedefs for the tensor derivatives */
   typedef typename RegularizationFunctionType::TensorDerivativeType
       TensorDerivativeType;
   typedef typename RegularizationFunctionType::TensorDerivativeImageType
@@ -160,6 +164,10 @@ public:
       TensorDerivativeImageRegionType;
   typedef std::vector< TensorDerivativeImageRegionType >
       TensorDerivativeImageRegionVectorType;
+  typedef itk::FixedArray < TensorDerivativeImageRegionType, ImageDimension >
+      TensorDerivativeImageRegionArrayType;
+  typedef std::vector< TensorDerivativeImageRegionArrayType >
+      TensorDerivativeImageRegionArrayVectorType;
 
   /** Typedefs for the multiplication vectors */
   typedef ImageRegionIterator< DeformationFieldType >

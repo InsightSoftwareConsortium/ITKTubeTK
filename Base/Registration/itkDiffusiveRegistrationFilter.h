@@ -188,6 +188,26 @@ public:
   typedef typename DiffusionTensorImageType::RegionType
       ThreadDiffusionTensorImageRegionType;
 
+  /** Scalar derivative image types */
+  typedef typename RegistrationFunctionType::ScalarDerivativeType
+      ScalarDerivativeType;
+  typedef typename RegistrationFunctionType::ScalarDerivativeImageType
+      ScalarDerivativeImageType;
+  typedef typename ScalarDerivativeImageType::Pointer
+      ScalarDerivativeImagePointer;
+  typedef typename itk::FixedArray< ScalarDerivativeImagePointer >
+      ScalarDerivativeImageArrayType;
+  typedef std::vector< ScalarDerivativeImageArrayType >
+      ScalarDerivativeImageArrayVectorType;
+  typedef typename RegistrationFunctionType::ScalarDerivativeImageRegionType
+      ScalarDerivativeImageRegionType;
+  typedef typename
+      RegistrationFunctionType::ScalarDerivativeImageRegionArrayType
+      ScalarDerivativeImageRegionArrayType;
+  typedef typename
+      RegistrationFunctionType::ScalarDerivativeImageRegionArrayVectorType
+      ScalarDerivativeImageRegionArrayVectorType;
+
   /** Tensor derivative matrix image types */
   typedef typename RegistrationFunctionType::TensorDerivativeImageType
       TensorDerivativeImageType;
@@ -195,11 +215,21 @@ public:
       TensorDerivativeImagePointer;
   typedef std::vector< TensorDerivativeImagePointer >
       TensorDerivativeImagePointerVectorType;
+  typedef typename itk::FixedArray< TensorDerivativeImagePointer >
+      TensorDerivativeImagePointerArrayType;
+  typedef std::vector< TensorDerivativeImagePointerArrayType >
+      TensorDerivativeImagePointerArrayVectorType;
   typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
   typedef typename
       RegistrationFunctionType::TensorDerivativeImageRegionVectorType
       TensorDerivativeImageRegionVectorType;
+  typedef typename
+      RegistrationFunctionType::TensorDerivativeImageRegionArrayType
+      TensorDerivativeImageRegionArrayType;
+  typedef typename
+      RegistrationFunctionType::TensorDerivativeImageRegionArrayVectorType
+      TensorDerivativeImageRegionArrayVectorType;
   typedef typename TensorDerivativeImageType::RegionType
       ThreadTensorDerivativeImageRegionType;
 
@@ -430,11 +460,15 @@ private:
   /** Images storing information we will need for each voxel on every
    *  registration iteration */
   DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
-  TensorDerivativeImagePointerVectorType     m_DiffusionTensorDerivativeImages;
+  TensorDerivativeImagePointerVectorType    m_DiffusionTensorDerivativeImages;
   DeformationFieldPointerArrayType          m_DeformationComponentImages;
 
   DeformationComponentImageArrayVectorType  m_DeformationComponentImageArrays; // TODO remove me
 
+  ScalarDerivativeImageArrayVectorType
+      m_DeformationComponentFirstOrderDerivativeArrays;
+  TensorDerivativeImagePointerArrayVectorType
+      m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
 };
 
