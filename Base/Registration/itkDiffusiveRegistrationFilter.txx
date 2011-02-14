@@ -121,8 +121,8 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CreateRegistrationFunction()
 {
-  typename RegistrationFunctionType::Pointer registrationFunction =
-      RegistrationFunctionType::New();
+  typename RegistrationFunctionType::Pointer registrationFunction
+      = RegistrationFunctionType::New();
   registrationFunction->SetComputeRegularizationTerm( true );
   registrationFunction->SetComputeIntensityDistanceTerm( true );
   this->SetDifferenceFunction( static_cast<FiniteDifferenceFunctionType *>(
