@@ -507,19 +507,6 @@ struct FaceStruct
     }
 
   FaceStruct( const ImageType& image,
-              typename ImageType::ObjectType::SizeType radius )
-    {
-    numberOfTerms = 0;
-    if( image.GetPointer() )
-      {
-      faceLists.push_back( faceCalculator( image,
-                                           image->GetLargestPossibleRegion(),
-                                           radius ) );
-      numberOfTerms = 1;
-      }
-    }
-
-  FaceStruct( const ImageType& image,
               typename ImageType::ObjectType::RegionType region,
               typename ImageType::ObjectType::SizeType radius )
     {
@@ -719,94 +706,6 @@ struct FaceStruct
           {
           iterators[i] = IteratorType();
           }
-        }
-      }
-    }
-
-  template< class IteratorType, unsigned int VLength >
-  void SetIteratorToCurrentFace(
-      itk::FixedArray< IteratorType, VLength >& iterators,
-      const itk::FixedArray< ImageType, VLength >& images,
-      typename ImageType::ObjectType::SizeType radius )
-    {
-    assert( (int) iterators.Size() == numberOfTerms );
-    for( int i = 0; i < numberOfTerms; i++ )
-      {
-      if( images[i].GetPointer() )
-        {
-        iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
-        }
-      else
-        {
-        iterators[i] = IteratorType();
-        }
-      }
-    }
-
-  template< class IteratorType, unsigned int VLength >
-  void SetIteratorToCurrentFace(
-      itk::FixedArray< IteratorType, VLength >& iterators,
-      const itk::FixedArray< ImageType, VLength >& images )
-    {
-    assert( (int) iterators.Size() == numberOfTerms );
-    for( int i = 0; i < numberOfTerms; i++ )
-      {
-      if( images[i].GetPointer() )
-        {
-        iterators[i] = IteratorType( images[i], *faceListIts[i] );
-        }
-      else
-        {
-        iterators[i] = IteratorType();
-        }
-      }
-    }
-
-  template< class IteratorType, unsigned int VLength >
-  void SetIteratorToCurrentFace(
-      std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
-      const std::vector< itk::FixedArray< ImageType, VLength > > & images,
-      typename ImageType::ObjectType::SizeType radius )
-    {
-    int c = 0;
-    if( (int) iterators.size() != (int) images.size() )
-      {
-      for( int i = 0; i < (int) images.size(); i++ )
-        {
-        itk::FixedArray< IteratorType, VLength > fixedArray;
-        for( int j = 0; j < (int) images[i].Size(); j++ )
-          {
-          if( images[i][j].GetPointer() )
-            {
-            fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
-            c++;
-            }
-          else
-            {
-            fixedArray[j] = IteratorType();
-            }
-          }
-        iterators.push_back( fixedArray );
-        }
-      }
-    else
-      {
-      for( int i = 0; i < (int) images.size(); i++ )
-        {
-        itk::FixedArray< IteratorType, VLength > fixedArray;
-        for( int j = 0; j < (int) images[i].Size(); j++ )
-          {
-          if( images[i][j].GetPointer() )
-            {
-            fixedArray[j] = IteratorType( radius, images[i][j], *faceListIts[c] );
-            c++;
-            }
-          else
-            {
-            fixedArray[j] = IteratorType();
-            }
-          }
-        iterators[i] = fixedArray;
         }
       }
     }
