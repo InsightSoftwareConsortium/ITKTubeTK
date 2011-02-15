@@ -124,21 +124,26 @@ public:
                                   void *globalData,
                                   const FloatOffsetType& = FloatOffsetType(0.0));
 
-  /** Compute the equation value, optionally using precomputed first derivatives
-   *  for the diffusion tensor. The spacing of the images associated with the
+  /** Compute the equation value. The spacing of the images associated with the
    *  given neighborhoods and regions should be the same as that given. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType &neighborhood,
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const SpacingType &spacing,
       void *globalData,
-      const TensorDerivativeImageRegionType &tensorFirstDerivatives
-          = TensorDerivativeImageRegionType(),
-      const FloatOffsetType& = FloatOffsetType(0.0),
-      const ScalarDerivativeImageRegionType &intensityFirstDerivatives
-          = ScalarDerivativeImageRegionType(),
-      const TensorDerivativeImageRegionType &intensitySecondDerivatives
-          = TensorDerivativeImageRegionType());
+      const FloatOffsetType& = FloatOffsetType(0.0) );
+
+  /** Compute the equation value using pre-computed derivatives. The spacing of
+   *  the images associated with thegiven neighborhoods and regions should be
+   *  the same as that given. */
+  virtual PixelType ComputeUpdate(
+      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
+      const ScalarDerivativeImageRegionType &intensityFirstDerivatives,
+      const TensorDerivativeImageRegionType &intensitySecondDerivatives,
+      const TensorDerivativeImageRegionType &tensorFirstDerivatives,
+      const SpacingType &spacing,
+      void *globalData,
+      const FloatOffsetType& = FloatOffsetType(0.0));
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need

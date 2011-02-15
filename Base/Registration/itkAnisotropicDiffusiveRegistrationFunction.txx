@@ -252,14 +252,13 @@ AnisotropicDiffusiveRegistrationFunction
 
         // Compute div(T \grad(u))
         intermediateComponent = m_RegularizationFunction->ComputeUpdate(
-            deformationComponentNeighborhoodArrays[term][i],
             tensorNeighborhoods[term],
+            deformationComponentFirstOrderDerivativeRegions[term][i],
+            deformationComponentSecondOrderDerivativeRegions[term][i],
+            tensorDerivativeRegions[term],
             spacing,
             gd->m_RegularizationGlobalDataStruct,
-            tensorDerivativeRegions[term],
-            offset,
-            deformationComponentFirstOrderDerivativeRegions[term][i],
-            deformationComponentSecondOrderDerivativeRegions[term][i] );
+            offset );
 
         // Multiply by the vector, if given
         intermediateVector.Fill(0);
