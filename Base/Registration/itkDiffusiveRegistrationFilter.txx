@@ -303,7 +303,7 @@ DiffusiveRegistrationFilter
       deformationComponentArray[j] = 0;
       deformationComponentFirstArray[j] = 0;
       deformationComponentSecondArray[j] = 0;
-      multiplicationVectorArray[i] = 0;
+      multiplicationVectorArray[j] = 0;
       }
     m_DeformationComponentImageArrays.push_back( deformationComponentArray );
     m_DeformationComponentFirstOrderDerivativeArrays.push_back(
