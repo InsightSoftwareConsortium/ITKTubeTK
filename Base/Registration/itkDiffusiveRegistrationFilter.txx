@@ -892,7 +892,9 @@ DiffusiveRegistrationFilter
           deformationComponentNeighborhoodArrays,
           multiplicationVectorRegionArrays,
           spacing,
-          globalData );
+          globalData,
+          deformationComponentFirstOrderRegionArrays,
+          deformationComponentSecondOrderRegionArrays );
 
       // Go to the next neighborhood
       ++outputNeighborhood;

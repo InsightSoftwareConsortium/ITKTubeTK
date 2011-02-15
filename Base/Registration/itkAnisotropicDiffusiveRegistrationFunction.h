@@ -249,6 +249,12 @@ public:
           & multiplicationVectorRegionArrays,
       const SpacingType & spacing,
       void * globalData,
+      const ScalarDerivativeImageRegionArrayVectorType
+          & intensityFirstDerivatives
+          = ScalarDerivativeImageRegionArrayVectorType(),
+      const TensorDerivativeImageRegionArrayVectorType
+          & intensitySecondDerivatives
+          = TensorDerivativeImageRegionArrayVectorType(),
       const FloatOffsetType& = FloatOffsetType(0.0) );
 
   /** Returns a pointer to a global data structure that is passed to this
