@@ -191,17 +191,15 @@ AnisotropicDiffusiveRegistrationFunction
 ::ComputeUpdate(
     const NeighborhoodType &neighborhood,
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
-    const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
-    const DeformationVectorComponentNeighborhoodArrayVectorType &
-        deformationComponentNeighborhoodArrays,
-    const DeformationVectorImageRegionArrayVectorType
-        & multiplicationVectorRegionArrays,
-    const SpacingType & spacing,
-    void * globalData,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions,
     const TensorDerivativeImageRegionArrayVectorType
         & deformationComponentSecondOrderDerivativeRegions,
+    const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+    const DeformationVectorImageRegionArrayVectorType
+        & multiplicationVectorRegionArrays,
+    const SpacingType & spacing,
+    void * globalData,
     const FloatOffsetType & offset )
 {
   // Get the global data structure
@@ -227,7 +225,6 @@ AnisotropicDiffusiveRegistrationFunction
     {
     int numTerms = tensorNeighborhoods.size();
     assert( (int) tensorDerivativeRegions.size() == numTerms );
-    assert( (int) deformationComponentNeighborhoodArrays.size() == numTerms );
 
     DeformationVectorComponentType intermediateComponent = 0;
     PixelType intermediateVector;
@@ -247,8 +244,6 @@ AnisotropicDiffusiveRegistrationFunction
                 GetImage() );
         assert( deformationComponentSecondOrderDerivativeRegions[term][i].
                 GetImage() );
-        assert( deformationComponentNeighborhoodArrays[term][i].
-                GetImagePointer() );
 
         // Compute div(T \grad(u))
         intermediateComponent = m_RegularizationFunction->ComputeUpdate(

@@ -82,20 +82,6 @@ DiffusiveRegistrationFilter
       m_DeformationComponentImages[i]->Print( os, indent );
       }
     }
-  os << indent << "Deformation component images:" << std::endl;
-  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
-    {
-    if( m_DeformationComponentImageArrays[i].Length != 0 )
-      {
-      for( unsigned int j = 0; j < ImageDimension; j++ )
-        {
-        if( m_DeformationComponentImageArrays[i][j] )
-          {
-          m_DeformationComponentImageArrays[i][j]->Print( os, indent );
-          }
-        }
-      }
-    }
   os << indent << "Multiplication vector images:" << std::endl;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
@@ -294,18 +280,15 @@ DiffusiveRegistrationFilter
     {
     m_DeformationComponentImages.push_back( 0 );
 
-    DeformationComponentImageArrayType deformationComponentArray;
     ScalarDerivativeImageArrayType deformationComponentFirstArray;
     TensorDerivativeImagePointerArrayType deformationComponentSecondArray;
     DeformationVectorImageArrayType multiplicationVectorArray;
     for( int j = 0; j < ImageDimension; j++ )
       {
-      deformationComponentArray[j] = 0;
       deformationComponentFirstArray[j] = 0;
       deformationComponentSecondArray[j] = 0;
       multiplicationVectorArray[j] = 0;
       }
-    m_DeformationComponentImageArrays.push_back( deformationComponentArray );
     m_DeformationComponentFirstOrderDerivativeArrays.push_back(
         deformationComponentFirstArray );
     m_DeformationComponentSecondOrderDerivativeArrays.push_back(
@@ -497,16 +480,19 @@ DiffusiveRegistrationFilter
 
   // By default, calculate the derivatives for each of the deformation
   // components
+  DeformationComponentImageArrayType deformationComponentImageArray;
+  // TODO init to zero
+
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     this->ExtractXYZComponentsFromDeformationField(
         m_DeformationComponentImages[i],
-        m_DeformationComponentImageArrays[i] );
+        deformationComponentImageArray );
 
     for( int j = 0; j < ImageDimension; j++ )
       {
       this->ComputeDeformationComponentDerivativeImageHelper(
-          m_DeformationComponentImageArrays[i][j],
+          deformationComponentImageArray[j],
           m_DeformationComponentFirstOrderDerivativeArrays[i][j],
           m_DeformationComponentSecondOrderDerivativeArrays[i][j],
           spacing,
@@ -698,11 +684,6 @@ DiffusiveRegistrationFilter
   total = str->Filter->SplitRequestedRegion( threadId, threadCount,
                                              splitScalarDerivativeRegion );
 
-  ThreadDeformationVectorComponentImageRegionType
-      splitDeformationComponentRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitDeformationComponentRegion );
-
   if (threadId < total)
     {
     str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChange(
@@ -710,7 +691,6 @@ DiffusiveRegistrationFilter
       splitTensorRegion,
       splitTensorDerivativeRegion,
       splitScalarDerivativeRegion,
-      splitDeformationComponentRegion,
       threadId);
     str->ValidTimeStepList[threadId] = true;
     }
@@ -752,8 +732,6 @@ DiffusiveRegistrationFilter
       tensorDerivativeRegionToProcess,
     const ThreadScalarDerivativeImageRegionType &
       scalarDerivativeRegionToProcess,
-    const ThreadDeformationVectorComponentImageRegionType &
-      deformationComponentRegionToProcess,
     int)
 {
   // Get the FiniteDifferenceFunction to use in calculations.
@@ -787,12 +765,6 @@ DiffusiveRegistrationFilter
       m_DiffusionTensorImages, tensorRegionToProcess, radius );
   DiffusionTensorNeighborhoodVectorType tensorNeighborhoods;
 
-  FaceStruct< TensorDerivativeImagePointer > tensorDerivativeStruct(
-      m_DiffusionTensorDerivativeImages,
-      tensorDerivativeRegionToProcess,
-      radius );
-  TensorDerivativeImageRegionVectorType tensorDerivativeRegions;
-
   FaceStruct< ScalarDerivativeImagePointer >
       deformationComponentFirstOrderStruct(
           m_DeformationComponentFirstOrderDerivativeArrays,
@@ -809,12 +781,11 @@ DiffusiveRegistrationFilter
   TensorDerivativeImageRegionArrayVectorType
       deformationComponentSecondOrderRegionArrays;
 
-  FaceStruct< DeformationVectorComponentImagePointer >
-      deformationComponentStruct( m_DeformationComponentImageArrays,
-                                  deformationComponentRegionToProcess,
-                                  radius );
-  DeformationVectorComponentNeighborhoodArrayVectorType
-      deformationComponentNeighborhoodArrays;
+  FaceStruct< TensorDerivativeImagePointer > tensorDerivativeStruct(
+      m_DiffusionTensorDerivativeImages,
+      tensorDerivativeRegionToProcess,
+      radius );
+  TensorDerivativeImageRegionVectorType tensorDerivativeRegions;
 
   FaceStruct< DeformationFieldPointer > multiplicationVectorStruct(
       m_MultiplicationVectorImageArrays, regionToProcess, radius );
@@ -828,10 +799,9 @@ DiffusiveRegistrationFilter
   if( computeRegularization )
     {
     tensorStruct.GoToBegin();
+    deformationComponentFirstOrderStruct.GoToBegin();
+    deformationComponentSecondOrderStruct.GoToBegin();
     tensorDerivativeStruct.GoToBegin();
-    deformationComponentFirstOrderStruct.GoToBegin(),
-    deformationComponentSecondOrderStruct.GoToBegin(),
-    deformationComponentStruct.GoToBegin();
     multiplicationVectorStruct.GoToBegin();
     }
 
@@ -845,18 +815,14 @@ DiffusiveRegistrationFilter
       {
       tensorStruct.SetIteratorToCurrentFace(
           tensorNeighborhoods, m_DiffusionTensorImages, radius );
-      tensorDerivativeStruct.SetIteratorToCurrentFace(
-          tensorDerivativeRegions, m_DiffusionTensorDerivativeImages );
       deformationComponentFirstOrderStruct.SetIteratorToCurrentFace(
           deformationComponentFirstOrderRegionArrays,
           m_DeformationComponentFirstOrderDerivativeArrays );
       deformationComponentSecondOrderStruct.SetIteratorToCurrentFace(
           deformationComponentSecondOrderRegionArrays,
           m_DeformationComponentSecondOrderDerivativeArrays );
-      deformationComponentStruct.SetIteratorToCurrentFace(
-          deformationComponentNeighborhoodArrays,
-          m_DeformationComponentImageArrays,
-          radius );
+      tensorDerivativeStruct.SetIteratorToCurrentFace(
+          tensorDerivativeRegions, m_DiffusionTensorDerivativeImages );
       multiplicationVectorStruct.SetIteratorToCurrentFace(
           multiplicationVectorRegionArrays,
           m_MultiplicationVectorImageArrays );
@@ -875,7 +841,6 @@ DiffusiveRegistrationFilter
           {
           deformationComponentFirstOrderRegionArrays[i][j].GoToBegin();
           deformationComponentSecondOrderRegionArrays[i][j].GoToBegin();
-          deformationComponentNeighborhoodArrays[i][j].GoToBegin();
           multiplicationVectorRegionArrays[i][j].GoToBegin();
           }
         }
@@ -888,13 +853,12 @@ DiffusiveRegistrationFilter
       updateRegion.Value() = df->ComputeUpdate(
           outputNeighborhood,
           tensorNeighborhoods,
+          deformationComponentFirstOrderRegionArrays,
+          deformationComponentSecondOrderRegionArrays,
           tensorDerivativeRegions,
-          deformationComponentNeighborhoodArrays,
           multiplicationVectorRegionArrays,
           spacing,
-          globalData,
-          deformationComponentFirstOrderRegionArrays,
-          deformationComponentSecondOrderRegionArrays );
+          globalData );
 
       // Go to the next neighborhood
       ++outputNeighborhood;
@@ -909,7 +873,6 @@ DiffusiveRegistrationFilter
             {
             ++deformationComponentFirstOrderRegionArrays[i][j];
             ++deformationComponentSecondOrderRegionArrays[i][j];
-            ++deformationComponentNeighborhoodArrays[i][j];
             if( multiplicationVectorRegionArrays[i][j].GetImage() )
               {
               ++multiplicationVectorRegionArrays[i][j];
@@ -927,7 +890,6 @@ DiffusiveRegistrationFilter
       tensorDerivativeStruct.Increment();
       deformationComponentFirstOrderStruct.Increment();
       deformationComponentSecondOrderStruct.Increment();
-      deformationComponentStruct.Increment();
       multiplicationVectorStruct.Increment();
       }
     }

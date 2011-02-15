@@ -429,8 +429,6 @@ protected:
         &tensorDerivativeRegionToProcess,
       const ThreadScalarDerivativeImageRegionType
         &scalarDerivativeRegionToProcess,
-      const ThreadDeformationVectorComponentImageRegionType
-        &deformationComponentRegionToProcess,
       int threadId );
 
   /** This method applies changes from the update buffer to the output, using
@@ -503,9 +501,6 @@ private:
   DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
   TensorDerivativeImagePointerVectorType    m_DiffusionTensorDerivativeImages;
   DeformationFieldPointerArrayType          m_DeformationComponentImages;
-
-  DeformationComponentImageArrayVectorType  m_DeformationComponentImageArrays; // TODO remove me
-
   ScalarDerivativeImageArrayVectorType
       m_DeformationComponentFirstOrderDerivativeArrays;
   TensorDerivativeImagePointerArrayVectorType

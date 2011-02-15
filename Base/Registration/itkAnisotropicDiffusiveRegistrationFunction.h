@@ -242,19 +242,15 @@ public:
   virtual PixelType ComputeUpdate(
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+      const ScalarDerivativeImageRegionArrayVectorType
+          & intensityFirstDerivatives,
+      const TensorDerivativeImageRegionArrayVectorType
+          & intensitySecondDerivatives,
       const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
-      const DeformationVectorComponentNeighborhoodArrayVectorType
-          & deformationComponentNeighborhoodArrays,
       const DeformationVectorImageRegionArrayVectorType
           & multiplicationVectorRegionArrays,
       const SpacingType & spacing,
       void * globalData,
-      const ScalarDerivativeImageRegionArrayVectorType
-          & intensityFirstDerivatives
-          = ScalarDerivativeImageRegionArrayVectorType(),
-      const TensorDerivativeImageRegionArrayVectorType
-          & intensitySecondDerivatives
-          = TensorDerivativeImageRegionArrayVectorType(),
       const FloatOffsetType& = FloatOffsetType(0.0) );
 
   /** Returns a pointer to a global data structure that is passed to this
