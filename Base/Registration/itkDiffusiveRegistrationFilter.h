@@ -130,26 +130,27 @@ public:
   typedef typename UpdateBufferType::RegionType         ThreadRegionType;
 
   /** Output image and update buffer types */
-  typedef itk::ImageRegionIterator< OutputImageType > OutputImageRegionType;
+  typedef itk::ImageRegionIterator< OutputImageType >   OutputImageRegionType;
   typedef typename FiniteDifferenceFunctionType::NeighborhoodType
       NeighborhoodType;
-  typedef itk::ImageRegionIterator< UpdateBufferType > UpdateBufferRegionType;
+  typedef itk::ImageRegionIterator< UpdateBufferType >  UpdateBufferRegionType;
 
   /** The registration function type */
   typedef AnisotropicDiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
-  typedef typename RegistrationFunctionType::Pointer
-      RegistrationFunctionPointer;
   typedef typename RegistrationFunctionType::RegularizationFunctionPointer
       RegularizationFunctionPointer;
-  typedef typename RegistrationFunctionType::SpacingType    SpacingType;
+  typedef typename RegistrationFunctionType::SpacingType SpacingType;
 
-  /** Deformation vector component types */
+  /** Deformation component types (i.e. component of a deformation field,
+   *  still a vector */
   typedef std::vector< DeformationFieldPointer >
-      DeformationFieldPointerArrayType;
+      DeformationFieldArrayType;
   typedef typename RegistrationFunctionType::DeformationVectorType
       DeformationVectorType;
+
+  /** Deformation vector component types (i.e. scalar within a vector) */
   typedef typename RegistrationFunctionType::DeformationVectorComponentType
       DeformationVectorComponentType;
   typedef typename RegistrationFunctionType::DeformationVectorComponentImageType
@@ -160,27 +161,18 @@ public:
       itk::FixedArray< DeformationVectorComponentImagePointer, ImageDimension >
       DeformationComponentImageArrayType;
   typedef typename
-      std::vector< DeformationComponentImageArrayType >
-      DeformationComponentImageArrayVectorType;
-  typedef typename
       RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
       DeformationVectorComponentNeighborhoodType;
-  typedef typename
-      RegistrationFunctionType::DeformationVectorComponentNeighborhoodArrayType
-      DeformationVectorComponentNeighborhoodArrayType;
-  typedef typename DeformationVectorComponentImageType::RegionType
-      ThreadDeformationVectorComponentImageRegionType;
-  typedef typename RegistrationFunctionType
-      ::DeformationVectorComponentNeighborhoodArrayVectorType
-      DeformationVectorComponentNeighborhoodArrayVectorType;
 
   /** Diffusion tensor image types */
+  typedef typename RegistrationFunctionType::DiffusionTensorType
+      DiffusionTensorType;
   typedef typename RegistrationFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
   typedef typename DiffusionTensorImageType::Pointer
       DiffusionTensorImagePointer;
   typedef std::vector< DiffusionTensorImagePointer >
-      DiffusionTensorImagePointerArrayType;
+      DiffusionTensorImageArrayType;
   typedef typename RegistrationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
   typedef typename
@@ -190,8 +182,6 @@ public:
       ThreadDiffusionTensorImageRegionType;
 
   /** Scalar derivative image types */
-  typedef typename RegistrationFunctionType::ScalarDerivativeType
-      ScalarDerivativeType;
   typedef typename RegistrationFunctionType::ScalarDerivativeImageType
       ScalarDerivativeImageType;
   typedef typename ScalarDerivativeImageType::Pointer
@@ -202,9 +192,6 @@ public:
       ScalarDerivativeImageArrayVectorType;
   typedef typename RegistrationFunctionType::ScalarDerivativeImageRegionType
       ScalarDerivativeImageRegionType;
-  typedef typename
-      RegistrationFunctionType::ScalarDerivativeImageRegionArrayType
-      ScalarDerivativeImageRegionArrayType;
   typedef typename
       RegistrationFunctionType::ScalarDerivativeImageRegionArrayVectorType
       ScalarDerivativeImageRegionArrayVectorType;
@@ -217,19 +204,16 @@ public:
   typedef typename TensorDerivativeImageType::Pointer
       TensorDerivativeImagePointer;
   typedef std::vector< TensorDerivativeImagePointer >
-      TensorDerivativeImagePointerVectorType;
+      TensorDerivativeImageVectorType;
   typedef typename itk::FixedArray< TensorDerivativeImagePointer >
-      TensorDerivativeImagePointerArrayType;
-  typedef std::vector< TensorDerivativeImagePointerArrayType >
-      TensorDerivativeImagePointerArrayVectorType;
+      TensorDerivativeImageArrayType;
+  typedef std::vector< TensorDerivativeImageArrayType >
+      TensorDerivativeImageArrayVectorType;
   typedef typename RegistrationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
   typedef typename
       RegistrationFunctionType::TensorDerivativeImageRegionVectorType
       TensorDerivativeImageRegionVectorType;
-  typedef typename
-      RegistrationFunctionType::TensorDerivativeImageRegionArrayType
-      TensorDerivativeImageRegionArrayType;
   typedef typename
       RegistrationFunctionType::TensorDerivativeImageRegionArrayVectorType
       TensorDerivativeImageRegionArrayVectorType;
@@ -243,9 +227,6 @@ public:
       DeformationVectorImageArrayVectorType;
   typedef typename RegistrationFunctionType::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
-  typedef typename
-      RegistrationFunctionType::DeformationVectorImageRegionArrayType
-      DeformationVectorImageRegionArrayType;
   typedef typename
       RegistrationFunctionType::DeformationVectorImageRegionArrayVectorType
       DeformationVectorImageRegionArrayVectorType;
@@ -396,7 +377,7 @@ protected:
 
   /** Set an array of the second-order deformation component derivatives. */
   void SetDeformationComponentSecondOrderDerivativeArray(
-      int index, TensorDerivativeImagePointerArrayType & deriv )
+      int index, TensorDerivativeImageArrayType & deriv )
     {
     assert( index < this->GetNumberOfTerms() );
     this->m_DeformationComponentSecondOrderDerivativeArrays[index] = deriv;
@@ -498,12 +479,12 @@ private:
 
   /** Images storing information we will need for each voxel on every
    *  registration iteration */
-  DiffusionTensorImagePointerArrayType      m_DiffusionTensorImages;
-  TensorDerivativeImagePointerVectorType    m_DiffusionTensorDerivativeImages;
-  DeformationFieldPointerArrayType          m_DeformationComponentImages;
+  DiffusionTensorImageArrayType             m_DiffusionTensorImages;
+  TensorDerivativeImageVectorType           m_DiffusionTensorDerivativeImages;
+  DeformationFieldArrayType                 m_DeformationComponentImages;
   ScalarDerivativeImageArrayVectorType
       m_DeformationComponentFirstOrderDerivativeArrays;
-  TensorDerivativeImagePointerArrayVectorType
+  TensorDerivativeImageArrayVectorType
       m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
 };

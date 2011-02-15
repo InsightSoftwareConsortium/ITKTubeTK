@@ -93,7 +93,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
-  typename OutputImageType::Pointer output = this->GetOutput();
+  OutputImagePointer output = this->GetOutput();
 
   // Setup pointers to the deformation component images - we have the
   // TANGENTIAL component, which is the entire deformation field, and the
@@ -111,7 +111,7 @@ AnisotropicDiffusiveRegistrationFilter
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     ScalarDerivativeImageArrayType firstOrderArray;
-    TensorDerivativeImagePointerArrayType secondOrderArray;
+    TensorDerivativeImageArrayType secondOrderArray;
     for( int j = 0; j < ImageDimension; j++ )
       {
       firstOrderArray[j] = ScalarDerivativeImageType::New();
@@ -141,7 +141,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
-  typename OutputImageType::Pointer output = this->GetOutput();
+  OutputImagePointer output = this->GetOutput();
 
   // If a normal vector image or weight image was supplied by the user, check
   // that it matches the output
@@ -393,13 +393,13 @@ AnisotropicDiffusiveRegistrationFilter
       < DeformationVectorComponentType, ImageDimension, ImageDimension >
       MatrixType;
 
-  NormalVectorType                              n;
-  WeightType                                    w;
-  MatrixType                                    P;
-  MatrixType                                    normalMatrix;
-  MatrixType                                    tangentialMatrix;
-  typename DiffusionTensorImageType::PixelType  tangentialDiffusionTensor;
-  typename DiffusionTensorImageType::PixelType  normalDiffusionTensor;
+  NormalVectorType       n;
+  WeightType             w;
+  MatrixType             P;
+  MatrixType             normalMatrix;
+  MatrixType             tangentialMatrix;
+  DiffusionTensorType    tangentialDiffusionTensor;
+  DiffusionTensorType    normalDiffusionTensor;
 
   // Setup iterators
   NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
@@ -479,7 +479,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
-  typename OutputImageType::Pointer output = this->GetOutput();
+  OutputImagePointer output = this->GetOutput();
 
   // Allocate the images needed when using the anisotropic diffusive
   // regularization
@@ -495,7 +495,7 @@ AnisotropicDiffusiveRegistrationFilter
       this->GetNormalVectorImage()->GetLargestPossibleRegion() );
 
   DeformationVectorImageArrayType normalMultsArray;
-  DeformationVectorType normalVector;
+  NormalVectorType normalVector;
   normalVector.Fill( 0.0 );
   for( int i = 0; i < ImageDimension; i++ )
     {
@@ -537,7 +537,7 @@ AnisotropicDiffusiveRegistrationFilter
   NormalVectorImageRegionType normalVectorRegion(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
-  typename OutputImageType::Pointer output = this->GetOutput();
+  OutputImagePointer output = this->GetOutput();
   OutputImageRegionType outputRegion(output,
                                      output->GetLargestPossibleRegion() );
 

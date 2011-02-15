@@ -281,7 +281,7 @@ DiffusiveRegistrationFilter
     m_DeformationComponentImages.push_back( 0 );
 
     ScalarDerivativeImageArrayType deformationComponentFirstArray;
-    TensorDerivativeImagePointerArrayType deformationComponentSecondArray;
+    TensorDerivativeImageArrayType deformationComponentSecondArray;
     DeformationVectorImageArrayType multiplicationVectorArray;
     for( int j = 0; j < ImageDimension; j++ )
       {

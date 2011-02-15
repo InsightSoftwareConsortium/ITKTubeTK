@@ -82,7 +82,7 @@ public:
                                      DefaultBoundaryConditionType>
       DiffusionTensorNeighborhoodType;
 
-  /** Derivative typedefs. */
+  /** Scalar derivative typedefs. */
   typedef vnl_vector_fixed< ScalarValueType,
                             itkGetStaticConstMacro(ImageDimension)>
                                 ScalarDerivativeType;
@@ -90,6 +90,7 @@ public:
   typedef ImageRegionIterator< ScalarDerivativeImageType >
       ScalarDerivativeImageRegionType;
 
+  /** Tensor derivative typedefs. */
   typedef vnl_matrix_fixed< ScalarValueType,
                             itkGetStaticConstMacro(ImageDimension),
                             itkGetStaticConstMacro(ImageDimension)>
@@ -156,7 +157,6 @@ public:
       updates. */
   void SetTimeStep(const TimeStepType &t)
     { m_TimeStep = t; }
-
   const TimeStepType &GetTimeStep() const
     { return m_TimeStep; }
 
