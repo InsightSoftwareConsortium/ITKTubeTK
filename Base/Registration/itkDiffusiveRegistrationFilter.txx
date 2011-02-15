@@ -399,7 +399,7 @@ DiffusiveRegistrationFilter
   // Get the FiniteDifferenceFunction to use in calculations.
   const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
   assert( df );
-  const RegularizationFunctionPointer reg
+  typename RegularizationFunctionType::ConstPointer reg
       = df->GetRegularizationFunctionPointer();
   assert( reg );
 
@@ -522,7 +522,7 @@ DiffusiveRegistrationFilter
   // Get the FiniteDifferenceFunction to use in calculations.
   const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
   assert( df );
-  const RegularizationFunctionPointer reg
+  typename RegularizationFunctionType::ConstPointer reg
       = df->GetRegularizationFunctionPointer();
   assert( reg );
 

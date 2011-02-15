@@ -139,6 +139,8 @@ public:
   typedef AnisotropicDiffusiveRegistrationFunction
       < FixedImageType, MovingImageType, DeformationFieldType >
       RegistrationFunctionType;
+  typedef typename RegistrationFunctionType::RegularizationFunctionType
+      RegularizationFunctionType;
   typedef typename RegistrationFunctionType::RegularizationFunctionPointer
       RegularizationFunctionPointer;
   typedef typename RegistrationFunctionType::SpacingType SpacingType;

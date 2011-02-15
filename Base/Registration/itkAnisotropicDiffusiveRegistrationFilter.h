@@ -189,7 +189,8 @@ public:
     { return m_WeightImage; }
 
   /** Get the normal components of the deformation field. */
-  virtual DeformationFieldType * GetNormalDeformationComponentImage() const
+  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
+      const
     {
     return this->GetDeformationComponentImage( NORMAL );
     }

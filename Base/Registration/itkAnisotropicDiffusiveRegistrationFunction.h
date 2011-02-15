@@ -222,13 +222,6 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
-  /** Returns the pointers to the regularization function and the intensity
-    difference function */
-  RegularizationFunctionType * GetRegularizationFunctionPointer() const
-    { return m_RegularizationFunction.GetPointer(); }
-  IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer() const
-    { return m_IntensityDistanceFunction.GetPointer(); }
-
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 
@@ -259,6 +252,13 @@ public:
 
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
+
+  /** Returns the pointers to the regularization function and the intensity
+    difference function */
+  const RegularizationFunctionType * GetRegularizationFunctionPointer() const
+    { return m_RegularizationFunction.GetPointer(); }
+  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer() const
+    { return m_IntensityDistanceFunction.GetPointer(); }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();
