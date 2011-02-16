@@ -97,11 +97,8 @@ set_tests_properties( ${PROJECT_NAME}Test2-Compare
 #######
 add_test( ${PROJECT_NAME}Test3
             ${PROJ_EXE}
-               --useNumberOfLDA 1
+               --useNumberOfLDA 4
                --objectId 0,255
-               --zeroScales 1,3
-               --firstScales 3,5
-               --secondScales 10
                --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test3.mnda
                ${INPUT_DATA}/ES0015_Large.mha
