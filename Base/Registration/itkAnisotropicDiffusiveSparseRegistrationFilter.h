@@ -127,6 +127,8 @@ public:
    *  stored in a matrix.  If the normals are based on the structure tensor,
    *  then the matrix will be symmetric, but we won't enforce that. */
   typedef double NormalVectorComponentType;
+  typedef typename itk::Vector< NormalVectorComponentType, ImageDimension >
+      NormalVectorType;
   typedef typename itk::Matrix< NormalVectorComponentType,
                                 ImageDimension,
                                 ImageDimension >          NormalMatrixType;
@@ -227,21 +229,21 @@ protected:
 //  /** Updates the deformation vector component images on each iteration. */
 //  virtual void UpdateDeformationComponentImages();
 
-//  /** If needed, allocates and computes the normal vector and weight images. */
-//  virtual void SetupNormalVectorAndWeightImages();
+  /** If needed, allocates and computes the normal vector and weight images. */
+  virtual void SetupNormalMatrixAndWeightImages();
 
-//  /** Compute the normals for the border surface. */
-//  void ComputeBorderSurfaceNormals();
+  /** Compute the normals for the border surface. */
+  void ComputeBorderSurfaceNormals();
 
-//  /** Computes the normal vector image and weighting factors w given the
-//   *  surface border polydata. */
-//  virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
-//                                                   bool computeWeights );
+  /** Computes the normal vector image and weighting factors w given the
+   *  surface border polydata. */
+  virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
+                                                   bool computeWeights );
 
-//  /** Computes the weighting factor w from the distance to the border.  The
-//   *  weight should be 1 near the border and 0 away from the border. */
-//  virtual WeightType ComputeWeightFromDistance( const WeightType distance )
-//      const;
+  /** Computes the weighting factor w from the distance to the border.  The
+   *  weight should be 1 near the border and 0 away from the border. */
+  virtual WeightComponentType ComputeWeightFromDistance(
+      const WeightComponentType distance ) const;
 
 private:
   // Purposely not implemented
