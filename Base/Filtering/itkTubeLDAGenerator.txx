@@ -618,6 +618,15 @@ LDAGenerator< ImageT, LabelmapT >
     ContinuousIndexType indx = itLDAIm[0]->GetIndex();
     v = this->GetFeatureVector( indx );
 
+    if( v.size() != m_LDAMatrix.columns() ||
+      v.size() != m_LDAMatrix.rows() )
+      {
+      std::cout << "LDA ERROR: " << std::endl;
+      std::cout << " v.size() = " << v.size() << std::endl;
+      std::cout << " m.cols() = " << m_LDAMatrix.columns() << std::endl;
+      std::cout << " m.rows() = " << m_LDAMatrix.rows() << std::endl;
+      }
+
     vLDA = v * m_LDAMatrix;
 
     for( unsigned int i=0; i<m_LDAValues.size(); i++ )
