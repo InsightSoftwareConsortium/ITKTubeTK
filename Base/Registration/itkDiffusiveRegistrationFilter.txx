@@ -481,7 +481,7 @@ DiffusiveRegistrationFilter
   // By default, calculate the derivatives for each of the deformation
   // components
   DeformationComponentImageArrayType deformationComponentImageArray;
-  // TODO init to zero
+  deformationComponentImageArray.Fill( 0 );
 
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
