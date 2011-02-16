@@ -77,15 +77,12 @@ PDFSegmenter< ImageT, N, LabelmapT >
   m_HistoNumBinsND = 100;
   m_HistoNumBins1D = 200;
 
-  m_InputVolume1 = NULL;
-  m_InputVolume2 = NULL;
-  m_InputVolume3 = NULL;
-  m_InputVolume4 = NULL;
+  m_InputVolumeList.clear();
+  m_InputVolumeList.resize( N, NULL );
 
   m_Labelmap = NULL;
 
   m_ObjectIdList.clear();
-  m_ObjectIdList.push_back( 1 );
   m_VoidId = std::numeric_limits< MaskPixelType >::max();
 
   m_ErodeRadius = 1;
@@ -247,6 +244,18 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
+::SetInputVolume( unsigned int featureNum,
+  typename ImageType::Pointer vol )
+{
+  if( featureNum < N )
+    {
+    m_InputVolumeList[featureNum] = vol;
+    }
+}
+
+template < class ImageT, unsigned int N, class LabelmapT >
+void
+PDFSegmenter< ImageT, N, LabelmapT >
 ::SetPDFBinScale( unsigned int featureNum, double val )
 {
   if( featureNum < N )
@@ -262,22 +271,6 @@ PDFSegmenter< ImageT, N, LabelmapT >
 ::GenerateSample()
 {
   m_SampleUpToDate = true;
-
-  typename ImageType::Pointer     inIm[N];
-
-  inIm[0] = m_InputVolume1;
-  if( N > 1 )
-    {
-    inIm[1] = m_InputVolume2;
-    }
-  if( N > 2 )
-    {
-    inIm[2] = m_InputVolume3;
-    }
-  if( N > 3 )
-    {
-    inIm[3] = m_InputVolume4;
-    }
 
   unsigned int numClasses = m_ObjectIdList.size();
 
@@ -307,8 +300,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
   ConstImageIteratorType * itInIm[N];
   for( unsigned int i=0; i<N; i++ )
     {
-    itInIm[i] = new ConstImageIteratorType( inIm[i],
-      inIm[i]->GetLargestPossibleRegion() );
+    itInIm[i] = new ConstImageIteratorType( m_InputVolumeList[i],
+      m_InputVolumeList[i]->GetLargestPossibleRegion() );
     itInIm[i]->GoToBegin();
     }
   ListVectorType v;
@@ -389,22 +382,6 @@ PDFSegmenter< ImageT, N, LabelmapT >
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  typename ImageType::Pointer     inIm[N];
-
-  inIm[0] = m_InputVolume1;
-  if( N > 1 )
-    {
-    inIm[1] = m_InputVolume2;
-    }
-  if( N > 2 )
-    {
-    inIm[2] = m_InputVolume3;
-    }
-  if( N > 3 )
-    {
-    inIm[3] = m_InputVolume4;
-    }
-
   unsigned int numClasses = m_ObjectIdList.size();
 
   timeCollector.Start( "HistogramMinMax" );
@@ -421,8 +398,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
   ConstImageIteratorType * itInIm[N];
   for( unsigned int i=0; i<N; i++ )
     {
-    itInIm[i] = new ConstImageIteratorType( inIm[i],
-      inIm[i]->GetLargestPossibleRegion() );
+    itInIm[i] = new ConstImageIteratorType( m_InputVolumeList[i],
+      m_InputVolumeList[i]->GetLargestPossibleRegion() );
     itInIm[i]->GoToBegin();
     m_HistoBinMin[i] = itInIm[i]->Get();
     m_HistoBinMax[i] = itInIm[i]->Get();
@@ -834,22 +811,6 @@ PDFSegmenter< ImageT, N, LabelmapT >
     }
   m_ImagesUpToDate = true;
 
-  typename ImageType::Pointer     inIm[N];
-
-  inIm[0] = m_InputVolume1;
-  if( N > 1 )
-    {
-    inIm[1] = m_InputVolume2;
-    }
-  if( N > 2 )
-    {
-    inIm[2] = m_InputVolume3;
-    }
-  if( N > 3 )
-    {
-    inIm[3] = m_InputVolume4;
-    }
-
   int erodeRadius = m_ErodeRadius;
   int holeFillIterations = m_HoleFillIterations;
   if( m_Draft )
@@ -874,8 +835,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     m_ProbabilityImageVector[c] = ProbabilityImageType::New();
     m_ProbabilityImageVector[c]->SetRegions(
-      inIm[0]->GetLargestPossibleRegion() );
-    m_ProbabilityImageVector[c]->CopyInformation( inIm[0] );
+      m_InputVolumeList[0]->GetLargestPossibleRegion() );
+    m_ProbabilityImageVector[c]->CopyInformation( m_InputVolumeList[0] );
     m_ProbabilityImageVector[c]->Allocate();
 
     itk::ImageRegionIterator<ProbabilityImageType> probIt(
@@ -888,8 +849,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
     std::vector< ConstImageIteratorType * > itInIm(N);
     for( unsigned int i=0; i<N; i++ )
       {
-      itInIm[i] = new ConstImageIteratorType( inIm[i],
-        inIm[i]->GetLargestPossibleRegion() );
+      itInIm[i] = new ConstImageIteratorType( m_InputVolumeList[i],
+        m_InputVolumeList[i]->GetLargestPossibleRegion() );
       itInIm[i]->GoToBegin();
       }
 
@@ -935,8 +896,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     m_ProbabilityImageVector[numClasses] = ProbabilityImageType::New();
     m_ProbabilityImageVector[numClasses]->SetRegions(
-      inIm[0]->GetLargestPossibleRegion() );
-    m_ProbabilityImageVector[numClasses]->CopyInformation( inIm[0] );
+      m_InputVolumeList[0]->GetLargestPossibleRegion() );
+    m_ProbabilityImageVector[numClasses]->CopyInformation(
+      m_InputVolumeList[0] );
     m_ProbabilityImageVector[numClasses]->Allocate();
     itk::ImageRegionIterator<ProbabilityImageType> probIt(
       m_ProbabilityImageVector[numClasses],
@@ -948,8 +910,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
     std::vector< ConstImageIteratorType * > itInIm(N);
     for( unsigned int i=0; i<N; i++ )
       {
-      itInIm[i] = new ConstImageIteratorType( inIm[i],
-        inIm[i]->GetLargestPossibleRegion() );
+      itInIm[i] = new ConstImageIteratorType( m_InputVolumeList[i],
+        m_InputVolumeList[i]->GetLargestPossibleRegion() );
       itInIm[i]->GoToBegin();
       }
 
@@ -1028,8 +990,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
   typename MaskImageType::IndexType labelImageIndex;
 
   typename MaskImageType::Pointer tmpLabelImage = MaskImageType::New();
-  tmpLabelImage->SetRegions( inIm[0]->GetLargestPossibleRegion() );
-  tmpLabelImage->CopyInformation( inIm[0] );
+  tmpLabelImage->SetRegions( m_InputVolumeList[0]
+    ->GetLargestPossibleRegion() );
+  tmpLabelImage->CopyInformation( m_InputVolumeList[0] );
   tmpLabelImage->Allocate();
 
   if( !m_ForceClassification )
@@ -1441,38 +1404,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
     os << indent << "ImagesUpToDate = false" << std::endl;
     }
 
-  if( m_InputVolume1.IsNotNull() )
-    {
-    os << indent << "Input volume 1 = " << m_InputVolume1 << std::endl;
-    }
-  else
-    {
-    os << indent << "Input volume 1 = NULL" << std::endl;
-    }
-  if( m_InputVolume2.IsNotNull() )
-    {
-    os << indent << "Input volume 2 = " << m_InputVolume2 << std::endl;
-    }
-  else
-    {
-    os << indent << "Input volume 2 = NULL" << std::endl;
-    }
-  if( m_InputVolume3.IsNotNull() )
-    {
-    os << indent << "Input volume 3 = " << m_InputVolume3 << std::endl;
-    }
-  else
-    {
-    os << indent << "Input volume 3 = NULL" << std::endl;
-    }
-  if( m_InputVolume4.IsNotNull() )
-    {
-    os << indent << "Input volume 4 = " << m_InputVolume4 << std::endl;
-    }
-  else
-    {
-    os << indent << "Input volume 4 = NULL" << std::endl;
-    }
+  os << indent << "Input volume list size = " << m_InputVolumeList.size()
+    << std::endl;
+
   if( m_Labelmap.IsNotNull() )
     {
     os << indent << "Labelmap = " << m_Labelmap << std::endl;
