@@ -150,10 +150,46 @@ public:
   typedef typename Superclass::WeightImagePointer       WeightImagePointer;
   typedef typename Superclass::WeightImageRegionType    WeightImageRegionType;
 
+  /** Organ boundary surface types */
+  typedef vtkPolyData                                   BorderSurfaceType;
+  typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
+
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
     { return 4; }
+
+  /** Set/get the organ boundary polydata, which must be in the same space as
+   *  the fixed image.  Border normals are computed on this polydata, so it
+   *  may be changed over the course of the registration. */
+  virtual void SetBorderSurface( BorderSurfaceType * border )
+    { m_BorderSurface = border; }
+  virtual BorderSurfaceType * GetBorderSurface() const
+    { return m_BorderSurface; }
+
+  /** Set/get the lambda that controls the exponential decay used to calculate
+   *  the weight value w as a function of the distance to the closest border
+   *  point.  Must be negative. */
+  void SetLambda( WeightType l )
+    { if ( l < 0 ) { m_lambda = l; } }
+  WeightType GetLambda() const
+    { return m_lambda; }
+
+  /** Set/get the image of the normal vectors.  Setting the normal vector
+   * image overrides the border surface polydata if a border surface was
+   * also supplied. */
+  virtual void SetNormalMatrixImage( NormalMatrixImageType * normalImage )
+    { m_NormalMatrixImage = normalImage; }
+  virtual const NormalMatrixImageType * GetMatrixVectorImage() const
+    { return m_NormalMatrixImage; }
+
+  /** Set/get the weighting image.  Setting the weighting image overrides
+   * the border surface polydata and lambda if a border surface was also
+   * supplied.  */
+  virtual void SetWeightImage( WeightImageType * weightImage )
+    { m_WeightImage = weightImage; }
+  virtual const WeightImageType * GetWeightImage() const
+    { return m_WeightImage; }
 
 //  /** Get the normal components of the deformation field. */
 //  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
@@ -211,6 +247,19 @@ private:
   // Purposely not implemented
   AnisotropicDiffusiveSparseRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
+
+  /** Organ boundary surface and surface of border normals */
+  BorderSurfacePointer                m_BorderSurface;
+
+  /** Image storing information we will need for each voxel on every
+   *  registration iteration */
+  NormalMatrixImagePointer            m_NormalMatrixImage;
+  WeightImagePointer                  m_WeightImage;
+
+  /** The lambda factor for computing the weight from distance.  Weight is
+   * modeled as exponential decay: weight = e^(lambda * distance).
+   * (lamba must be negative) */
+  WeightType                          m_lambda;
 
 };
 

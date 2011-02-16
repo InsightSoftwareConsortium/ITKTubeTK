@@ -36,6 +36,13 @@ AnisotropicDiffusiveSparseRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
 ::AnisotropicDiffusiveSparseRegistrationFilter()
 {
+  // Initialize attributes to NULL
+  m_BorderSurface                               = 0;
+  m_NormalMatrixImage                           = 0;
+  m_WeightImage                                 = 0;
+
+  // Lambda for exponential decay used to calculate weight from distance
+  m_lambda = -0.01;
 }
 
 /**
@@ -48,6 +55,22 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
+  if( m_BorderSurface )
+    {
+    os << indent << "Border surface:" << std::endl;
+    m_BorderSurface->Print( os );
+    }
+  if( m_NormalMatrixImage )
+    {
+    os << indent << "Normal vector image:" << std::endl;
+    m_NormalMatrixImage->Print( os, indent );
+    }
+  if( m_WeightImage )
+    {
+    os << indent << "Weight image:" << std::endl;
+    m_WeightImage->Print( os, indent );
+    }
+  os << indent << "lambda: " << m_lambda << std::endl;
 }
 
 /**

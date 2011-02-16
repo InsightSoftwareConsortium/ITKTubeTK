@@ -218,6 +218,7 @@ AnisotropicDiffusiveRegistrationFilter
     itkExceptionMacro( << "Border surface point data does not have normals" );
     }
 }
+
 /**
  * Updates the border normals and the weighting factor w
  */
