@@ -91,9 +91,9 @@ int itkTubePDFSegmenterTest(int argc, char* argv [] )
   ImageType::Pointer maskImage = maskReader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputVolume1( inputImage );
+  filter->SetInputVolume( 0, inputImage );
   filter->SetLabelmap( maskImage );
-  filter->SetObjectId( 255 );
+  filter->AddObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
   filter->SetErodeRadius( 1 );

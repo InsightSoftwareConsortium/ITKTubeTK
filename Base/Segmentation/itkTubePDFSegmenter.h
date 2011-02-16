@@ -77,15 +77,12 @@ public:
   //
   // Methods
   //
-  itkSetObjectMacro( InputVolume1, ImageType );
-  itkSetObjectMacro( InputVolume2, ImageType );
-  itkSetObjectMacro( InputVolume3, ImageType );
-  itkSetObjectMacro( InputVolume4, ImageType );
+  void SetInputVolume( unsigned int featureNumber,
+    typename ImageType::Pointer vol );
 
-  void SetObjectId( ObjectIdType objectId )
+  void ClearObjectIds()
     {
     m_ObjectIdList.clear();
-    m_ObjectIdList.push_back( objectId );
     }
 
   void AddObjectId( ObjectIdType objectId )
@@ -194,10 +191,7 @@ private:
   unsigned int                             m_HistoNumBins1D;
   
   //  Data
-  typename ImageType::Pointer     m_InputVolume1;
-  typename ImageType::Pointer     m_InputVolume2;
-  typename ImageType::Pointer     m_InputVolume3;
-  typename ImageType::Pointer     m_InputVolume4;
+  std::vector< typename ImageType::Pointer > m_InputVolumeList;
 
   typename MaskImageType::Pointer m_Labelmap;
 

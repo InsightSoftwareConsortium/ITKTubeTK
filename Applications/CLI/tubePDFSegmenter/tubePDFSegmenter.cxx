@@ -108,26 +108,18 @@ int DoIt( int argc, char *argv[] )
     if(i == 0)
       {
       reader->SetFileName( inputVolume1.c_str() );
-      reader->Update();
-      pdfSegmenter->SetInputVolume1( reader->GetOutput() );
       }
     else if(i == 1)
       {
       reader->SetFileName( inputVolume2.c_str() );
-      reader->Update();
-      pdfSegmenter->SetInputVolume2( reader->GetOutput() );
       }
     else if(i == 2)
       {
       reader->SetFileName( inputVolume3.c_str() );
-      reader->Update();
-      pdfSegmenter->SetInputVolume3( reader->GetOutput() );
       }
     else if(i == 3)
       {
       reader->SetFileName( inputVolume4.c_str() );
-      reader->Update();
-      pdfSegmenter->SetInputVolume4( reader->GetOutput() );
       }
     else
       {
@@ -135,6 +127,8 @@ int DoIt( int argc, char *argv[] )
                 << " this filter to 4 input images" << std::endl;
       return 1;
       }
+    reader->Update();
+    pdfSegmenter->SetInputVolume( i, reader->GetOutput() );
     }
 
   MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
@@ -144,13 +138,9 @@ int DoIt( int argc, char *argv[] )
 
   timeCollector.Stop("LoadData");
 
-  pdfSegmenter->SetObjectId( objectId[0] );
-  if( objectId.size() > 1 )
+  for( unsigned int o=0; o<objectId.size(); o++ )
     {
-    for( unsigned int o=1; o<objectId.size(); o++ )
-      {
-      pdfSegmenter->AddObjectId( objectId[o] );
-      }
+    pdfSegmenter->AddObjectId( objectId[o] );
     }
   pdfSegmenter->SetVoidId( voidId );
   pdfSegmenter->SetErodeRadius( erodeRadius );
