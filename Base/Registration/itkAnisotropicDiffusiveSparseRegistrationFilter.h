@@ -216,9 +216,9 @@ protected:
    *  classes. */
   virtual void InitializeDeformationComponentAndDerivativeImages();
 
-//  /** Allocate and populate the diffusion tensor images.
-//   *  Reimplement in derived classes. */
-//  virtual void ComputeDiffusionTensorImages();
+  /** Allocate and populate the diffusion tensor images.
+   *  Reimplement in derived classes. */
+  virtual void ComputeDiffusionTensorImages();
 
 //  /** Allocate and populate the images of multiplication vectors that the
 //   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or

@@ -387,6 +387,123 @@ AnisotropicDiffusiveSparseRegistrationFilter
   return exp( m_lambda * distance );
 }
 
+/**
+ * Updates the diffusion tensor image before each run of the registration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDiffusionTensorImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+
+  // If required, allocate and compute the normal vector and weight images
+  this->SetupNormalMatrixAndWeightImages();
+  assert( m_NormalMatrixImage );
+  assert( m_WeightImage );
+
+  // For the anisotropic diffusive regularization, we need to setup the
+  // tangential diffusion tensors and the normal diffusion tensors
+
+  // Used to compute the tangential and normal diffusion tensor images:
+  // P = I - wnn^T
+  // tangentialMatrix = tangentialDiffusionTensor = P^TP
+  // normalMatrix = normalDiffusionTensor = w^2nn^T
+
+  typedef itk::ImageRegionIterator< DiffusionTensorImageType >
+      DiffusionTensorImageRegionType;
+  typedef itk::Matrix
+      < DeformationVectorComponentType, ImageDimension, ImageDimension >
+      MatrixType;
+
+  NormalMatrixType        N;
+  WeightType              A;
+  WeightComponentType     w;
+  MatrixType              P;
+  MatrixType              wP;   // wP
+  MatrixType              I_wP; // I-wP
+
+  MatrixType              smoothTangentialMatrix;  // (I-wP)^T * (I-wP)
+  MatrixType              smoothNormalMatrix;      // (I-wP)^T * wP
+  MatrixType              propTangentialMatrix;    // (wP)^T * (I-wP)
+  MatrixType              propNormalMatrix;        // (wP)^T * wP
+
+  DiffusionTensorType     smoothTangentialDiffusionTensor;
+  DiffusionTensorType     smoothNormalDiffusionTensor;
+  DiffusionTensorType     propTangentialDiffusionTensor;
+  DiffusionTensorType     propNormalDiffusionTensor;
+
+  // Setup iterators
+  NormalMatrixImageRegionType normalIt = NormalMatrixImageRegionType(
+      m_NormalMatrixImage, m_NormalMatrixImage->GetLargestPossibleRegion() );
+  WeightImageRegionType weightIt = WeightImageRegionType(
+      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType smoothTangentialTensorIt
+      = DiffusionTensorImageRegionType(
+          this->GetDiffusionTensorImage( SMOOTH_TANGENTIAL ),
+          this->GetDiffusionTensorImage( SMOOTH_TANGENTIAL )
+          ->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType smoothNormalTensorIt
+      = DiffusionTensorImageRegionType(
+          this->GetDiffusionTensorImage( SMOOTH_NORMAL ),
+          this->GetDiffusionTensorImage( SMOOTH_NORMAL )
+          ->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType propTangentialTensorIt
+      = DiffusionTensorImageRegionType(
+          this->GetDiffusionTensorImage( PROP_TANGENTIAL ),
+          this->GetDiffusionTensorImage( PROP_TANGENTIAL )
+          ->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType propNormalTensorIt
+      = DiffusionTensorImageRegionType(
+          this->GetDiffusionTensorImage( PROP_NORMAL ),
+          this->GetDiffusionTensorImage( PROP_NORMAL )
+          ->GetLargestPossibleRegion() );
+
+  for( normalIt.GoToBegin(), weightIt.GoToBegin(),
+       smoothTangentialTensorIt.GoToBegin(), smoothNormalTensorIt.GoToBegin(),
+       propTangentialTensorIt.GoToBegin(), propNormalTensorIt.GoToBegin();
+       !smoothTangentialTensorIt.IsAtEnd();
+       ++normalIt, ++weightIt,
+       ++smoothTangentialTensorIt, ++smoothNormalTensorIt,
+       ++propTangentialTensorIt, ++propNormalTensorIt )
+    {
+    N = normalIt.Get();
+    A = weightIt.Get();
+    w = A(0,0);
+
+    // The matrices are used for calculations, and will be copied to the
+    // diffusion tensors afterwards.  The matrices are guaranteed to be
+    // symmetric.
+    P = N * A * N->Transpose();
+    wP = w * P;
+    I_wP.SetIdentity();
+    I_wP = I_wP - wP;
+    smoothTangentialMatrix = I_wP->Transpose() * I_wP;
+    smoothNormalMatrix = I_wP->Transpose() * wP;
+    propTangentialMatrix = wP->Transpose() * I_wP;
+    propNormalMatrix = wP->Transpose() * wP;
+
+    // Copy the matrices to the diffusion tensor
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      for ( unsigned int j = 0; j < ImageDimension; j++ )
+        {
+        smoothTangentialDiffusionTensor(i,j) = smoothTangentialMatrix(i,j);
+        smoothNormalDiffusionTensor(i,j) = smoothNormalMatrix(i,j);
+        propTangentialDiffusionTensor(i,j) = propTangentialMatrix(i,j);
+        propNormalDiffusionTensor(i,j) = propNormalMatrix(i,j);
+        }
+      }
+
+    // Copy the diffusion tensors to their images
+    smoothTangentialTensorIt.Set( smoothTangentialDiffusionTensor );
+    smoothNormalTensorIt.Set( smoothNormalDiffusionTensor );
+    propTangentialTensorIt.Set( propTangentialDiffusionTensor );
+    propNormalTensorIt.Set( propNormalDiffusionTensor );
+    }
+}
+
 
 } // end namespace itk
 
