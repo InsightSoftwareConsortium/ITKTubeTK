@@ -300,7 +300,7 @@ protected:
    *  tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
       const DiffusionTensorImagePointer & tensorImage,
-      TensorDerivativeImagePointer & tensorDerivativeImage,
+      int term,
       const SpacingType & spacing,
       const typename OutputImageType::SizeType & radius ) const;
 
@@ -326,8 +326,8 @@ protected:
    *  deformation component images */
   virtual void ComputeDeformationComponentDerivativeImageHelper(
       const DeformationVectorComponentImagePointer & deformationComponentImage,
-      ScalarDerivativeImagePointer & firstOrderDerivativeImage,
-      TensorDerivativeImagePointer & secondOrderDerivativeImage,
+      int term,
+      int dimension,
       const SpacingType & spacing,
       const typename OutputImageType::SizeType & radius ) const;
 
