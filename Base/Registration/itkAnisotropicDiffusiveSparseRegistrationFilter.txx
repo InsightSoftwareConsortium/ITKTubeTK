@@ -660,6 +660,48 @@ AnisotropicDiffusiveSparseRegistrationFilter
   normalDeformationField->Modified();
 }
 
+/**
+ * Calculates the derivatives of the deformation vector derivatives after
+ * each iteration.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDeformationComponentDerivativeImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetOutput() );
+
+  // Get the spacing and the radius
+  SpacingType spacing = this->GetOutput()->GetSpacing();
+  const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  const typename OutputImageType::SizeType radius = df->GetRadius();
+
+  // Calculate first and second order deformation component image derivatives.
+  // The two TANGENTIAL and two NORMAL components share images.  We will
+  // calculate derivatives only for the SMOOTH terms, and the PROP terms
+  // will be automatically updated since they point to the same image data.
+  DeformationComponentImageArrayType deformationComponentImageArray;
+  deformationComponentImageArray.Fill( 0 );
+
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( i == SMOOTH_TANGENTIAL || i == SMOOTH_NORMAL )
+      {
+      this->ExtractXYZComponentsFromDeformationField(
+          this->GetDeformationComponentImage(i),
+          deformationComponentImageArray );
+
+      for( int j = 0; j < ImageDimension; j++ )
+        {
+        this->ComputeDeformationComponentDerivativeImageHelper(
+            deformationComponentImageArray[j], i, j, spacing, radius );
+        }
+      }
+    }
+}
+
 
 } // end namespace itk
 

@@ -99,6 +99,10 @@ public:
   typedef typename Superclass::OutputImagePointer       OutputImagePointer;
   typedef typename Superclass::OutputImageRegionType    OutputImageRegionType;
 
+  /** The registration function type */
+  typedef typename Superclass::RegistrationFunctionType
+      RegistrationFunctionType;
+
   /** Deformation field types. */
   typedef typename Superclass::DeformationVectorType    DeformationVectorType;
   typedef typename Superclass::DeformationVectorComponentType

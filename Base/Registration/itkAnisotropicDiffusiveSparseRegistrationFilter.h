@@ -95,10 +95,17 @@ public:
   typedef typename Superclass::OutputImagePointer       OutputImagePointer;
   typedef typename Superclass::OutputImageRegionType    OutputImageRegionType;
 
+  /** The registration function type */
+  typedef typename Superclass::RegistrationFunctionType
+      RegistrationFunctionType;
+  typedef typename Superclass::SpacingType              SpacingType;
+
   /** Deformation field types. */
   typedef typename Superclass::DeformationVectorType    DeformationVectorType;
   typedef typename Superclass::DeformationVectorComponentType
       DeformationVectorComponentType;
+  typedef typename Superclass::DeformationComponentImageArrayType
+      DeformationComponentImageArrayType;
 
   /** Diffusion tensor image types */
   typedef typename Superclass::DiffusionTensorType      DiffusionTensorType;
@@ -127,8 +134,7 @@ public:
   typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
   typedef typename
-      Superclass::RegistrationFunctionType
-      ::DeformationVectorImageRegionArrayType
+      RegistrationFunctionType::DeformationVectorImageRegionArrayType
       DeformationVectorImageRegionArrayType;
 
   /** Normal vector types.  There are three normals at each voxel, which are
@@ -238,6 +244,12 @@ protected:
 
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages();
+
+  /** Computes the first- and second-order partial derivatives of the
+   *  deformation component images on each iteration.  Override in derived
+   *  classes if the deformation components image pointers are not unique, to
+   *  avoid computing the same derivatives multiple times. */
+  virtual void ComputeDeformationComponentDerivativeImages();
 
   /** If needed, allocates and computes the normal vector and weight images. */
   virtual void SetupNormalMatrixAndWeightImages();
