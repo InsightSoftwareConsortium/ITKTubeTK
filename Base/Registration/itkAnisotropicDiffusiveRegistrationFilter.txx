@@ -489,11 +489,8 @@ AnisotropicDiffusiveRegistrationFilter
   // The normal multiplication vector is n_l*n
 
   // Iterate over the normal vector image
-  typedef itk::ImageRegionConstIterator< NormalVectorImageType >
-    NormalVectorImageConstRegionType;
-  NormalVectorImageConstRegionType normalIt = NormalVectorImageConstRegionType(
-      this->GetNormalVectorImage(),
-      this->GetNormalVectorImage()->GetLargestPossibleRegion() );
+  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
+      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
   DeformationVectorImageArrayType normalMultsArray;
   NormalVectorType normalVector;

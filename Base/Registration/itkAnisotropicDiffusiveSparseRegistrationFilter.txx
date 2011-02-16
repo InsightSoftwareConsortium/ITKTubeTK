@@ -504,6 +504,81 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 }
 
+/** Computes the multiplication vectors that the div(Tensor /grad u) values
+ *  are multiplied by.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeMultiplicationVectorImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetOutput() );
+  assert( this->GetNormalVectorImage() );
+
+  // The output will be used as the template to allocate the images we will
+  // use to store data computed before/during the registration
+  OutputImagePointer output = this->GetOutput();
+
+  // Allocate the images needed when using the anisotropic diffusive
+  // regularization
+  // There are no multiplication vectors for the smooth terms, and the
+  // superclass will init them to zeros for us.
+  // The prop multiplication vector is NAN_l
+
+  // Iterate over the normal matrix and weight images
+  NormalMatrixImageRegionType normalIt = NormalMatrixImageRegionType(
+      m_NormalMatrixImage, m_NormalMatrixImage->GetLargestPossibleRegion() );
+  WeightImageRegionType weightIt = WeightImageRegionType(
+      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
+
+  DeformationVectorType multVector;
+  multVector.Fill( 0.0 );
+  NormalMatrixType N;
+  N.Fill( 0.0 );
+  WeightType A;
+  A.Fill( 0.0 );
+  DeformationVectorType N_l;
+  N_l.Fill( 0.0 );
+
+  DeformationVectorImageArrayType propTangentialMultsArray;
+  DeformationVectorImageArrayType propNormalMultsArray;
+
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    // Create the multiplication vector image
+    DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
+    this->AllocateSpaceForImage( normalMultsImage, output );
+
+    // Calculate NAN_l
+    DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
+        normalMultsImage, normalMultsImage->GetLargestPossibleRegion() );
+    for( normalIt.GoToBegin(), weightIt.GoToBegin(), multIt.GoToBegin();
+         !multIt.IsAtEnd();
+         ++normalIt, ++weightIt, ++multIt )
+           {
+      multVector.Fill( 0.0 );
+      N = normalIt.Get();
+      A = weightIt.Get();
+      for( int j = 0; j < ImageDimension; j++ )
+        {
+        N_l[j] = N[i][j];
+        }
+      multVector = N * A * N_l;
+      multIt.Set( multVector );
+      }
+
+    // Set the multiplication vector image to the array
+    propTangentialMultsArray[i] = normalMultsImage;
+    propNormalMultsArray[i] = normalMultsImage;
+    }
+  this->SetMultiplicationVectorImageArray( PROP_TANGENTIAL,
+                                           propTangentialMultsArray );
+  this->SetMultiplicationVectorImageArray( PROP_NORMAL,
+                                           propNormalMultsArray );
+}
+
 
 } // end namespace itk
 

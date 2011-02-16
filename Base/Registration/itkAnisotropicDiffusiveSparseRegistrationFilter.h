@@ -220,11 +220,11 @@ protected:
    *  Reimplement in derived classes. */
   virtual void ComputeDiffusionTensorImages();
 
-//  /** Allocate and populate the images of multiplication vectors that the
-//   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
-//   *  some of the multiplication vector images in derived classes.  Otherwise,
-//   *  default to e_l, where e_l is the lth canonical unit vector. */
-//  virtual void ComputeMultiplicationVectorImages();
+  /** Allocate and populate the images of multiplication vectors that the
+   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
+   *  some of the multiplication vector images in derived classes.  Otherwise,
+   *  default to e_l, where e_l is the lth canonical unit vector. */
+  virtual void ComputeMultiplicationVectorImages();
 
 //  /** Updates the deformation vector component images on each iteration. */
 //  virtual void UpdateDeformationComponentImages();
