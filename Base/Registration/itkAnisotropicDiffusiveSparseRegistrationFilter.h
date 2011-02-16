@@ -138,10 +138,10 @@ public:
   typedef typename Superclass::WeightImagePointer       WeightImagePointer;
   typedef typename Superclass::WeigthImageRegionType    WeightImageRegionType;
 
-  //  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
-  //   *  Reimplement in derived classes. */
-  //  virtual int GetNumberOfTerms() const
-  //    { return 2; }
+  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
+   *  Reimplement in derived classes. */
+  virtual int GetNumberOfTerms() const
+    { return 4; }
 
 //  /** Get the normal components of the deformation field. */
 //  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
@@ -155,13 +155,16 @@ protected:
   virtual ~AnisotropicDiffusiveSparseRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-//  /** Handy for array indexing. */
-//  enum DivTerm { TANGENTIAL, NORMAL };
+  /** Handy for array indexing. */
+  enum DivTerm { SMOOTH_TANGENTIAL,
+                 SMOOTH_NORMAL,
+                 PROP_TANGENTIAL,
+                 PROP_NORMAL };
 
-//  /** Allocate the deformation component images and their derivative images.
-//   *  (which may be updated throughout the registration). Reimplement in derived
-//   *  classes. */
-//  virtual void InitializeDeformationComponentAndDerivativeImages();
+  /** Allocate the deformation component images and their derivative images.
+   *  (which may be updated throughout the registration). Reimplement in derived
+   *  classes. */
+  virtual void InitializeDeformationComponentAndDerivativeImages();
 
 //  /** Allocate and populate the diffusion tensor images.
 //   *  Reimplement in derived classes. */
