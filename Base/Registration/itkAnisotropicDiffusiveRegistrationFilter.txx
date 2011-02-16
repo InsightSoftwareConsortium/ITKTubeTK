@@ -108,21 +108,19 @@ AnisotropicDiffusiveRegistrationFilter
   // Setup the first and second order deformation component images - we need
   // to allocate images for both the TANGENTIAL and NORMAL components, so
   // we'll just loop over the number of terms
+  ScalarDerivativeImagePointer firstOrder;
+  TensorDerivativeImagePointer secondOrder;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    ScalarDerivativeImageArrayType firstOrderArray;
-    TensorDerivativeImageArrayType secondOrderArray;
     for( int j = 0; j < ImageDimension; j++ )
       {
-      firstOrderArray[j] = ScalarDerivativeImageType::New();
-      this->AllocateSpaceForImage( firstOrderArray[j], output );
-      secondOrderArray[j] = TensorDerivativeImageType::New();
-      this->AllocateSpaceForImage( secondOrderArray[j], output );
+      firstOrder = ScalarDerivativeImageType::New();
+      this->AllocateSpaceForImage( firstOrder, output );
+      secondOrder = TensorDerivativeImageType::New();
+      this->AllocateSpaceForImage( secondOrder, output );
+      this->SetDeformationComponentFirstOrderDerivative( i, j, firstOrder );
+      this->SetDeformationComponentSecondOrderDerivative( i, j, secondOrder );
       }
-    this->SetDeformationComponentFirstOrderDerivativeArray( i,
-                                                            firstOrderArray );
-    this->SetDeformationComponentSecondOrderDerivativeArray( i,
-                                                             secondOrderArray );
     }
 }
 

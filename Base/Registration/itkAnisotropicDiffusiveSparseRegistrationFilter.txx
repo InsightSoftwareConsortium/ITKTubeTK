@@ -102,37 +102,30 @@ AnisotropicDiffusiveSparseRegistrationFilter
   this->SetDeformationComponentImage( SMOOTH_NORMAL, normalDeformationField );
   this->SetDeformationComponentImage( PROP_NORMAL, normalDeformationField );
 
-  // Setup the first and second order deformation component images
-  // The two TANGENTIAL and two NORMAL components share images, so we allocate
-  // images only for the SMOOTH terms and set the pointers for the PROP terms
-  // to zero.  They will be pointed to the correct images when the images are
-  // actually filled in.
+  // Setup the first and second order deformation component image derivatives
+  // The two TANGENTIAL and two NORMAL components share images.
+  int termOrder[4] = { SMOOTH_TANGENTIAL,
+                       PROP_TANGENTIAL,
+                       SMOOTH_NORMAL,
+                       PROP_NORMAL };
+  int t = 0;
+  ScalarDerivativeImagePointer firstOrder = 0;
+  TensorDerivativeImagePointer secondOrder = 0;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    ScalarDerivativeImageArrayType firstOrderArray;
-    TensorDerivativeImageArrayType secondOrderArray;
-    if( i % 2 == 0 )
+    for( int j = 0; j < ImageDimension; j++ )
       {
-      for( int j = 0; j < ImageDimension; j++ )
+      t = termOrder[i];
+      if( t == SMOOTH_TANGENTIAL || t == SMOOTH_NORMAL )
         {
-        firstOrderArray[j] = ScalarDerivativeImageType::New();
-        this->AllocateSpaceForImage( firstOrderArray[j], output );
-        secondOrderArray[j] = TensorDerivativeImageType::New();
-        this->AllocateSpaceForImage( secondOrderArray[j], output );
+        firstOrder = ScalarDerivativeImageType::New();
+        this->AllocateSpaceForImage( firstOrder, output );
+        secondOrder = TensorDerivativeImageType::New();
+        this->AllocateSpaceForImage( secondOrder, output );
         }
+      this->SetDeformationComponentFirstOrderDerivative( t, j, firstOrder );
+      this->SetDeformationComponentSecondOrderDerivative( t, j, secondOrder );
       }
-    else
-      {
-      for( int j = 0; j < ImageDimension; j++ )
-        {
-        firstOrderArray[j] = 0;
-        secondOrderArray[j] = 0;
-        }
-      }
-    this->SetDeformationComponentFirstOrderDerivativeArray( i,
-                                                            firstOrderArray );
-    this->SetDeformationComponentSecondOrderDerivativeArray( i,
-                                                             secondOrderArray );
     }
 }
 

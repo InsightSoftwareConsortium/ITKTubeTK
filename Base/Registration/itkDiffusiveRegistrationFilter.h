@@ -377,20 +377,24 @@ protected:
     mult = this->m_MultiplicationVectorImageArrays[index];
     }
 
-  /** Set an array of the first-order deformation component derivatives. */
-  void SetDeformationComponentFirstOrderDerivativeArray(
-      int index, ScalarDerivativeImageArrayType & deriv )
+  /** Set a first-order deformation component derivative. */
+  void SetDeformationComponentFirstOrderDerivative(
+      int index, int dimension, ScalarDerivativeImageType * deriv )
     {
     assert( index < this->GetNumberOfTerms() );
-    this->m_DeformationComponentFirstOrderDerivativeArrays[index] = deriv;
+    assert( dimension < ImageDimension );
+    this->m_DeformationComponentFirstOrderDerivativeArrays[index][dimension]
+        = deriv;
     }
 
-  /** Set an array of the second-order deformation component derivatives. */
-  void SetDeformationComponentSecondOrderDerivativeArray(
-      int index, TensorDerivativeImageArrayType & deriv )
+  /** Set a second-order deformation component derivative. */
+  void SetDeformationComponentSecondOrderDerivative(
+      int index, int dimension, TensorDerivativeImageType * deriv )
     {
     assert( index < this->GetNumberOfTerms() );
-    this->m_DeformationComponentSecondOrderDerivativeArrays[index] = deriv;
+    assert( dimension < ImageDimension );
+    this->m_DeformationComponentSecondOrderDerivativeArrays[index][dimension]
+        = deriv;
     }
 
   /** Extracts the x, y, z components of a deformation field. */

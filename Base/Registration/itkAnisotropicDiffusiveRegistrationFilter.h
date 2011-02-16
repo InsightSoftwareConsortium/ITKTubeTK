@@ -112,12 +112,16 @@ public:
   /** Scalar derivative image types */
   typedef typename Superclass::ScalarDerivativeImageType
       ScalarDerivativeImageType;
+  typedef typename Superclass::ScalarDerivativeImagePointer
+      ScalarDerivativeImagePointer;
   typedef typename Superclass::ScalarDerivativeImageArrayType
       ScalarDerivativeImageArrayType;
 
   /** Tensor derivative matrix image types */
   typedef typename Superclass::TensorDerivativeImageType
       TensorDerivativeImageType;
+  typedef typename Superclass::TensorDerivativeImagePointer
+      TensorDerivativeImagePointer;
   typedef typename Superclass::TensorDerivativeImageArrayType
       TensorDerivativeImageArrayType;
 
