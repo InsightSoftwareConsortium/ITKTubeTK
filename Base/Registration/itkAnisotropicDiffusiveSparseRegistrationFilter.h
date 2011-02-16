@@ -123,22 +123,32 @@ public:
   typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
 
-//  /** Normal vector types */
-//  typedef typename Superclass::NormalVectorComponentType
-//      NormalVectorComponentType;
-//  typedef typename Superclass::NormalVectorType         NormalVectorType;
-//  typedef typename Superclass::NormalVectorImageType    NormalVectorImageType;
-//  typedef typename Superclass::NormalVectorImagePointer
-//      NormalVectorImagePointer;
-//  typedef typename Superclass::NormalVectorImageRegionType
-//      NormalVectorImageRegionType;
+  /** Normal vector types.  There are three normals at each voxel, which are
+   *  stored in a matrix.  If the normals are based on the structure tensor,
+   *  then the matrix will be symmetric, but we won't enforce that. */
+  typedef double NormalVectorComponentType;
+  typedef typename itk::Matrix< NormalVectorComponentType,
+                                ImageDimension,
+                                ImageDimension >          NormalMatrixType;
+  typedef itk::Image< NormalMatrixType, ImageDimension >
+      NormalMatrixImageType;
+  typedef typename NormalMatrixImageType::Pointer
+      NormalMatrixImagePointer;
+  typedef ZeroFluxNeumannBoundaryCondition< NormalMatrixImageType >
+      NormalMatrixImageBoundaryConditionType;
+  typedef itk::ImageRegionIterator< NormalMatrixImageType >
+      NormalMatrixImageRegionType;
 
-//  /** Types for weighting between the anisotropic and diffusive (Gaussian)
-//    * regularization */
-//  typedef typename Superclass::WeightType               WeightType;
-//  typedef typename Superclass::WeightImageType          WeightImageType;
-//  typedef typename Superclass::WeightImagePointer       WeightImagePointer;
-//  typedef typename Superclass::WeightImageRegionType    WeightImageRegionType;
+  /** Types for weighting between the anisotropic and diffusive (Gaussian)
+    * regularization - also a matrix, likely symmetric but we won't enforce
+    * that here. */
+  typedef typename Superclass::WeightType               WeightComponentType;
+  typedef typename itk::Matrix< WeightComponentType,
+                                ImageDimension,
+                                ImageDimension >        WeightType;
+  typedef typename Superclass::WeightImageType          WeightImageType;
+  typedef typename Superclass::WeightImagePointer       WeightImagePointer;
+  typedef typename Superclass::WeightImageRegionType    WeightImageRegionType;
 
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
