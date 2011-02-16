@@ -239,7 +239,7 @@ public:
       VectorIndexSelectionFilterType;
 
   /** Convenience functions to set/get the registration functions timestep. */
-  void SetTimeStep( const TimeStepType &t )
+  void SetTimeStep( const TimeStepType & t )
     { this->GetRegistrationFunctionPointer()->SetTimeStep( t ); }
   const TimeStepType& GetTimeStep() const
     { return this->GetRegistrationFunctionPointer()->GetTimeStep(); }
@@ -388,7 +388,7 @@ protected:
   /** Extracts the x, y, z components of a deformation field. */
   void ExtractXYZComponentsFromDeformationField(
       const OutputImageType * deformationField,
-      DeformationComponentImageArrayType& deformationComponentImages ) const;
+      DeformationComponentImageArrayType & deformationComponentImages ) const;
 
   /** This method populates an update buffer with changes for each pixel in the
    * output, using the ThreadedCalculateChange() method and a multithreading
@@ -398,20 +398,20 @@ protected:
 
   /** Inherited from superclass - do not call this function!  Call the other
    *  ThreadedCalculateChange function instead */
-  TimeStepType ThreadedCalculateChange( const ThreadRegionType &regionToProcess,
-                                       int threadId );
+  TimeStepType ThreadedCalculateChange(
+      const ThreadRegionType & regionToProcess, int threadId );
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
    * \sa CalculateChange
    * \sa CalculateChangeThreaderCallback */
   virtual TimeStepType ThreadedCalculateChange(
-      const ThreadRegionType &regionToProcess,
-      const ThreadDiffusionTensorImageRegionType &tensorRegionToProcess,
+      const ThreadRegionType & regionToProcess,
+      const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
       const ThreadTensorDerivativeImageRegionType
-        &tensorDerivativeRegionToProcess,
+        & tensorDerivativeRegionToProcess,
       const ThreadScalarDerivativeImageRegionType
-        &scalarDerivativeRegionToProcess,
+        & scalarDerivativeRegionToProcess,
       int threadId );
 
   /** This method applies changes from the update buffer to the output, using
@@ -425,7 +425,7 @@ protected:
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
   virtual void ThreadedApplyUpdate( TimeStepType dt,
-                                    const ThreadRegionType &regionToProcess,
+                                    const ThreadRegionType & regionToProcess,
                                     int threadId );
 
   /** Create the registration function, with default parameters for
@@ -444,8 +444,8 @@ protected:
 
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImagePointer, class TemplateImagePointer >
-  void AllocateSpaceForImage( UnallocatedImagePointer& image,
-                              const TemplateImagePointer& templateImage );
+  void AllocateSpaceForImage( UnallocatedImagePointer & image,
+                              const TemplateImagePointer & templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */

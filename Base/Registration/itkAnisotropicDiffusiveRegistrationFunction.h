@@ -257,7 +257,8 @@ public:
     difference function */
   const RegularizationFunctionType * GetRegularizationFunctionPointer() const
     { return m_RegularizationFunction.GetPointer(); }
-  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer() const
+  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer()
+      const
     { return m_IntensityDistanceFunction.GetPointer(); }
 
 protected:
