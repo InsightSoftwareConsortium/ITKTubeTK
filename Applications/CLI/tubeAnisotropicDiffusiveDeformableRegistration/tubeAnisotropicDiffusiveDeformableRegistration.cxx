@@ -41,6 +41,8 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
+#include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
+#include "itkDiffusiveRegistrationFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkOrientImageFilter.h"
 #include "itkTransform.h"
