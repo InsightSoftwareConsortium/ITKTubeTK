@@ -579,6 +579,94 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                            propNormalMultsArray );
 }
 
+/**
+ * Updates the deformation vector component images before each iteration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::UpdateDeformationComponentImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetDeformationComponentImage( SMOOTH_NORMAL )
+          == this->GetDeformationComponentImage( PROP_NORMAL ) );
+
+  // The normal component of u_l is (NAN_l)^T * u
+  // Conveniently, (NAN_l) is the prop multiplication vector, so we don't need
+  // to compute it again here
+  DeformationVectorImageArrayType propTangentialMultImageArray;
+  this->GetMultiplicationVectorImageArray( PROP_TANGENTIAL,
+                                           propTangentialMultImageArray );
+  DeformationVectorImageRegionArrayType NAN_lRegionArray;
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    assert( propTangentialMultImageArray[i] );
+    NAN_lRegionArray[i] = DeformationVectorImageRegionType(
+        propTangentialMultImageArray[i],
+        propTangentialMultImageArray[i]->GetLargestPossibleRegion() );
+    }
+
+  // Setup the iterators for the deformation field
+  OutputImagePointer output = this->GetOutput();
+  OutputImageRegionType outputRegion(output,
+                                     output->GetLargestPossibleRegion() );
+
+  // We want to update the deformation component images for both SMOOTH_NORMAL
+  // and PROP_NORMAL, but they point to the same image, so we will grab the
+  // pointer from the first one to update both
+  DeformationFieldPointer normalDeformationField
+      = this->GetDeformationComponentImage( SMOOTH_NORMAL );
+  OutputImageRegionType normalDeformationRegion(
+      normalDeformationField,
+      normalDeformationField->GetLargestPossibleRegion() );
+
+  // Iterate over the deformation field and calculate the new normal components
+  DeformationVectorType  u; // deformation vector
+  u.Fill( 0.0 );
+  DeformationVectorType  normalDeformationVector;
+  normalDeformationVector.Fill( 0.0 );
+  DeformationVectorType  tangentialDeformationVector;
+  tangentialDeformationVector.Fill( 0.0 );
+
+  outputRegion.GoToBegin();
+  normalDeformationRegion.GoToBegin();
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    NAN_lRegionArray[i].GoToBegin();
+    }
+
+  while(!outputRegion.IsAtEnd() )
+    {
+    u = outputRegion.Get();
+    for( int i = 0; i < ImageDimension; i++ )
+      {
+      normalDeformationVector[i] = NAN_lRegionArray[i].Get() * u;
+      }
+    normalDeformationVector.Set( normalDeformationVector );
+
+    // Test that the normal and tangential components were computed corectly
+    // (they should be orthogonal)
+
+    // tangential component = u - normal component
+    tangentialDeformationVector = u - normalDeformationVector;
+
+    if( normalDeformationVector * tangentialDeformationVector > 0.005 )
+      {
+      itkExceptionMacro( << "Normal and tangential deformation field "
+                         << "components are not orthogonal" );
+      }
+
+    ++outputRegion;
+    ++normalDeformationRegion;
+    for( int i = 0; i < ImageDimension; i++ )
+      {
+      ++NAN_lRegionArray[i];
+      }
+    }
+  normalDeformationField->Modified();
+}
+
 
 } // end namespace itk
 

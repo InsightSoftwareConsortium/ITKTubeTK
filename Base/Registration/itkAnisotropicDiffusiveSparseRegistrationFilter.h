@@ -122,6 +122,10 @@ public:
       DeformationVectorImageArrayType;
   typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
+  typedef typename
+      Superclass::RegistrationFunctionType
+      ::DeformationVectorImageRegionArrayType
+      DeformationVectorImageRegionArrayType;
 
   /** Normal vector types.  There are three normals at each voxel, which are
    *  stored in a matrix.  If the normals are based on the structure tensor,
@@ -193,12 +197,14 @@ public:
   virtual const WeightImageType * GetWeightImage() const
     { return m_WeightImage; }
 
-//  /** Get the normal components of the deformation field. */
-//  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
-//      const
-//    {
-//    return this->GetDeformationComponentImage( NORMAL );
-//    }
+  /** Get the normal components of the deformation field.  The normal
+   *  deformation field component images are the same for both the SMOOTH_NORMAL
+   *  and PROP_NORMAL terms, so we will return one arbitrarily. */
+  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
+      const
+    {
+    return this->GetDeformationComponentImage( SMOOTH_NORMAL );
+    }
 
 protected:
   AnisotropicDiffusiveSparseRegistrationFilter();
@@ -226,8 +232,8 @@ protected:
    *  default to e_l, where e_l is the lth canonical unit vector. */
   virtual void ComputeMultiplicationVectorImages();
 
-//  /** Updates the deformation vector component images on each iteration. */
-//  virtual void UpdateDeformationComponentImages();
+  /** Updates the deformation vector component images on each iteration. */
+  virtual void UpdateDeformationComponentImages();
 
   /** If needed, allocates and computes the normal vector and weight images. */
   virtual void SetupNormalMatrixAndWeightImages();

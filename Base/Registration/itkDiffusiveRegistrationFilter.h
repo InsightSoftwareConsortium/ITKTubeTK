@@ -369,6 +369,14 @@ protected:
     this->m_MultiplicationVectorImageArrays[index] = mult;
     }
 
+  /** Get an array of the multiplication vectors images. */
+  void GetMultiplicationVectorImageArray(
+      int index, DeformationVectorImageArrayType & mult )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    mult = this->m_MultiplicationVectorImageArrays[index];
+    }
+
   /** Set an array of the first-order deformation component derivatives. */
   void SetDeformationComponentFirstOrderDerivativeArray(
       int index, ScalarDerivativeImageArrayType & deriv )
