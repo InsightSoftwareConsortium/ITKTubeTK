@@ -23,7 +23,7 @@ limitations under the License.
 #ifndef __itkAnisotropicDiffusiveSparseRegistrationFilter_h
 #define __itkAnisotropicDiffusiveSparseRegistrationFilter_h
 
-#include "itkAnisotropicDiffusiveRegistrationFilter.h"
+#include "itkDiffusiveRegistrationFilter.h"
 
 namespace itk
 {
@@ -50,6 +50,7 @@ namespace itk
  * This class is templated over the type of the fixed image, the type of the
  * moving image and the type of the deformation field.
  *
+ * \sa itkDiffusiveRegistrationFilter
  * \sa itkAnisotropicDiffusiveRegistrationFilter
  * \sa itkAnisotropicDiffusiveRegistrationFunction
  * \ingroup DeformableImageRegistration
@@ -58,15 +59,16 @@ namespace itk
 
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 class ITK_EXPORT AnisotropicDiffusiveSparseRegistrationFilter
-  : public AnisotropicDiffusiveRegistrationFilter< TFixedImage,
-                                                   TMovingImage,
-                                                   TDeformationField >
+  : public DiffusiveRegistrationFilter< TFixedImage,
+                                        TMovingImage,
+                                        TDeformationField >
 {
 public:
   /** Standard class typedefs. */
   typedef AnisotropicDiffusiveSparseRegistrationFilter      Self;
-  typedef AnisotropicDiffusiveRegistrationFilter<
-      TFixedImage, TMovingImage, TDeformationField >        Superclass;
+  typedef DiffusiveRegistrationFilter< TFixedImage,
+                                       TMovingImage,
+                                       TDeformationField >  Superclass;
   typedef SmartPointer< Self >                              Pointer;
   typedef SmartPointer< const Self >                        ConstPointer;
 
@@ -74,7 +76,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(Self, AnisotropicDiffusiveRegistrationFilter);
+  itkTypeMacro(Self, DiffusiveRegistrationFilter);
 
   /** Inherit some parameters from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
@@ -121,22 +123,22 @@ public:
   typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
 
-  /** Normal vector types */
-  typedef typename Superclass::NormalVectorComponentType
-      NormalVectorComponentType;
-  typedef typename Superclass::NormalVectorType         NormalVectorType;
-  typedef typename Superclass::NormalVectorImageType    NormalVectorImageType;
-  typedef typename Superclass::NormalVectorImagePointer
-      NormalVectorImagePointer;
-  typedef typename Superclass::NormalVectorImageRegionType
-      NormalVectorImageRegionType;
+//  /** Normal vector types */
+//  typedef typename Superclass::NormalVectorComponentType
+//      NormalVectorComponentType;
+//  typedef typename Superclass::NormalVectorType         NormalVectorType;
+//  typedef typename Superclass::NormalVectorImageType    NormalVectorImageType;
+//  typedef typename Superclass::NormalVectorImagePointer
+//      NormalVectorImagePointer;
+//  typedef typename Superclass::NormalVectorImageRegionType
+//      NormalVectorImageRegionType;
 
-  /** Types for weighting between the anisotropic and diffusive (Gaussian)
-    * regularization */
-  typedef typename Superclass::WeightType               WeightType;
-  typedef typename Superclass::WeightImageType          WeightImageType;
-  typedef typename Superclass::WeightImagePointer       WeightImagePointer;
-  typedef typename Superclass::WeigthImageRegionType    WeightImageRegionType;
+//  /** Types for weighting between the anisotropic and diffusive (Gaussian)
+//    * regularization */
+//  typedef typename Superclass::WeightType               WeightType;
+//  typedef typename Superclass::WeightImageType          WeightImageType;
+//  typedef typename Superclass::WeightImagePointer       WeightImagePointer;
+//  typedef typename Superclass::WeightImageRegionType    WeightImageRegionType;
 
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
