@@ -190,15 +190,17 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeUpdate(
     const NeighborhoodType &neighborhood,
-    const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
-    const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
-    const DeformationVectorComponentNeighborhoodArrayArrayType &
-        deformationComponentNeighborhoodArrays,
-    const DeformationVectorImageRegionArrayArrayType
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const ScalarDerivativeImageRegionArrayVectorType
+        & deformationComponentFirstOrderDerivativeRegions,
+    const TensorDerivativeImageRegionArrayVectorType
+        & deformationComponentSecondOrderDerivativeRegions,
+    const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+    const DeformationVectorImageRegionArrayVectorType
         & multiplicationVectorRegionArrays,
     const SpacingType & spacing,
     void * globalData,
-    const FloatOffsetType & offset)
+    const FloatOffsetType & offset )
 {
   // Get the global data structure
   GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
@@ -210,7 +212,7 @@ AnisotropicDiffusiveRegistrationFunction
   // Compute the intensity distance update update term
   PixelType intensityDistanceTerm;
   intensityDistanceTerm.Fill(0);
-  if (this->GetComputeIntensityDistanceTerm() )
+  if ( this->GetComputeIntensityDistanceTerm() )
     {
     intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
         neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
@@ -223,7 +225,6 @@ AnisotropicDiffusiveRegistrationFunction
     {
     int numTerms = tensorNeighborhoods.size();
     assert( (int) tensorDerivativeRegions.size() == numTerms );
-    assert( (int) deformationComponentNeighborhoodArrays.size() == numTerms );
 
     DeformationVectorComponentType intermediateComponent = 0;
     PixelType intermediateVector;
@@ -239,16 +240,19 @@ AnisotropicDiffusiveRegistrationFunction
       // Iterate over each dimension
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        assert(deformationComponentNeighborhoodArrays[term][i].
-               GetImagePointer() );
+        assert( deformationComponentFirstOrderDerivativeRegions[term][i].
+                GetImage() );
+        assert( deformationComponentSecondOrderDerivativeRegions[term][i].
+                GetImage() );
 
         // Compute div(T \grad(u))
         intermediateComponent = m_RegularizationFunction->ComputeUpdate(
-            deformationComponentNeighborhoodArrays[term][i],
             tensorNeighborhoods[term],
+            deformationComponentFirstOrderDerivativeRegions[term][i],
+            deformationComponentSecondOrderDerivativeRegions[term][i],
+            tensorDerivativeRegions[term],
             spacing,
             gd->m_RegularizationGlobalDataStruct,
-            tensorDerivativeRegions[term],
             offset );
 
         // Multiply by the vector, if given

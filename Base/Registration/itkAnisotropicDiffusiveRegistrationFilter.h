@@ -95,71 +95,37 @@ public:
   typedef typename Superclass::TimeStepType             TimeStepType;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;
-
-  /** Typedefs used in multithreading */
   typedef typename Superclass::OutputImageType          OutputImageType;
   typedef typename Superclass::OutputImagePointer       OutputImagePointer;
-  typedef typename Superclass::UpdateBufferType         UpdateBufferType;
-
-  /** Output image and update buffer types */
   typedef typename Superclass::OutputImageRegionType    OutputImageRegionType;
-  typedef typename Superclass::NeighborhoodType         NeighborhoodType;
-  typedef typename Superclass::UpdateBufferRegionType   UpdateBufferRegionType;
-
-  /** The registration function type */
-  typedef typename Superclass::RegistrationFunctionType
-      RegistrationFunctionType;
-  typedef typename Superclass::RegistrationFunctionPointer
-      RegistrationFunctionPointer;
-  typedef typename Superclass::RegularizationFunctionPointer
-      RegularizationFunctionPointer;
-  typedef typename Superclass::SpacingType              SpacingType;
 
   /** Deformation field types. */
-  typedef typename Superclass::DeformationFieldPointerArrayType
-      DeformationFieldPointerArrayType;
-  typedef typename Superclass::DeformationVectorType
-      DeformationVectorType;
+  typedef typename Superclass::DeformationVectorType    DeformationVectorType;
   typedef typename Superclass::DeformationVectorComponentType
       DeformationVectorComponentType;
-  typedef typename Superclass::DeformationVectorComponentImageType
-      DeformationVectorComponentImageType;
-  typedef typename Superclass::DeformationVectorComponentImagePointer
-      DeformationVectorComponentImagePointer;
-  typedef typename Superclass::DeformationComponentImageArrayType
-      DeformationComponentImageArrayType;
-  typedef typename Superclass::DeformationVectorComponentNeighborhoodType
-      DeformationVectorComponentNeighborhoodType;
-  typedef typename Superclass::DeformationVectorComponentNeighborhoodArrayType
-      DeformationVectorComponentNeighborhoodArrayType;
 
   /** Diffusion tensor image types */
+  typedef typename Superclass::DiffusionTensorType       DiffusionTensorType;
   typedef typename Superclass::DiffusionTensorImageType
       DiffusionTensorImageType;
-  typedef typename Superclass::DiffusionTensorImagePointer
-      DiffusionTensorImagePointer;
-  typedef typename Superclass::DiffusionTensorNeighborhoodType
-      DiffusionTensorNeighborhoodType;
+
+  /** Scalar derivative image types */
+  typedef typename Superclass::ScalarDerivativeImageType
+      ScalarDerivativeImageType;
+  typedef typename Superclass::ScalarDerivativeImageArrayType
+      ScalarDerivativeImageArrayType;
 
   /** Tensor derivative matrix image types */
   typedef typename Superclass::TensorDerivativeImageType
       TensorDerivativeImageType;
-  typedef typename Superclass::TensorDerivativeImagePointer
-      TensorDerivativeImagePointer;
-  typedef typename Superclass::TensorDerivativeImageRegionType
-      TensorDerivativeImageRegionType;
+  typedef typename Superclass::TensorDerivativeImageArrayType
+      TensorDerivativeImageArrayType;
 
   /** Typedefs for the multiplication vectors */
   typedef typename Superclass::DeformationVectorImageArrayType
       DeformationVectorImageArrayType;
-  typedef typename Superclass::DeformationVectorImageArrayArrayType
-      DeformationVectorImageArrayArrayType;
   typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
-  typedef typename Superclass::DeformationVectorImageRegionArrayType
-      DeformationVectorImageRegionArrayType;
-  typedef typename Superclass::DeformationVectorImageRegionArrayArrayType
-      DeformationVectorImageRegionArrayArrayType;
 
   /** Normal vector types */
   typedef double NormalVectorComponentType;
@@ -171,9 +137,6 @@ public:
       NormalVectorImagePointer;
   typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
       NormalVectorImageBoundaryConditionType;
-  typedef ConstNeighborhoodIterator
-      < NormalVectorImageType, NormalVectorImageBoundaryConditionType >
-      NormalVectorNeighborhoodType;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageRegionType;
 
@@ -226,7 +189,8 @@ public:
     { return m_WeightImage; }
 
   /** Get the normal components of the deformation field. */
-  virtual DeformationFieldType * GetNormalDeformationComponentImage() const
+  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
+      const
     {
     return this->GetDeformationComponentImage( NORMAL );
     }
@@ -239,9 +203,10 @@ protected:
   /** Handy for array indexing. */
   enum DivTerm { TANGENTIAL, NORMAL };
 
-  /** Allocate the deformation component images (which may be updated throughout
-   *  the registration. Reimplement in derived classes. */
-  virtual void InitializeDeformationComponentImages();
+  /** Allocate the deformation component images and their derivative images.
+   *  (which may be updated throughout the registration). Reimplement in derived
+   *  classes. */
+  virtual void InitializeDeformationComponentAndDerivativeImages();
 
   /** Allocate and populate the diffusion tensor images.
    *  Reimplement in derived classes. */

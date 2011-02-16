@@ -116,7 +116,7 @@ public:
       < DeformationVectorComponentNeighborhoodType, ImageDimension >
        DeformationVectorComponentNeighborhoodArrayType;
   typedef std::vector< DeformationVectorComponentNeighborhoodArrayType >
-      DeformationVectorComponentNeighborhoodArrayArrayType;
+      DeformationVectorComponentNeighborhoodArrayVectorType;
 
   /** Typedefs for the intensity-based distance function */
   typedef itk::MeanSquareRegistrationFunction
@@ -141,17 +141,21 @@ public:
   typedef typename RegularizationFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
   typedef std::vector< DiffusionTensorNeighborhoodType >
-      DiffusionTensorNeighborhoodArrayType;
+      DiffusionTensorNeighborhoodVectorType;
 
-  /** Typedefs for the derivatives */
+  /** Typedefs for the scalar derivatives */
   typedef typename RegularizationFunctionType::ScalarDerivativeType
       ScalarDerivativeType;
   typedef typename RegularizationFunctionType::ScalarDerivativeImageType
       ScalarDerivativeImageType;
   typedef typename RegularizationFunctionType::ScalarDerivativeImageRegionType
       ScalarDerivativeImageRegionType;
-  typedef std::vector< ScalarDerivativeImageRegionType >
+  typedef itk::FixedArray < ScalarDerivativeImageRegionType, ImageDimension >
       ScalarDerivativeImageRegionArrayType;
+  typedef std::vector < ScalarDerivativeImageRegionArrayType >
+      ScalarDerivativeImageRegionArrayVectorType;
+
+  /** Typedefs for the tensor derivatives */
   typedef typename RegularizationFunctionType::TensorDerivativeType
       TensorDerivativeType;
   typedef typename RegularizationFunctionType::TensorDerivativeImageType
@@ -159,7 +163,11 @@ public:
   typedef typename RegularizationFunctionType::TensorDerivativeImageRegionType
       TensorDerivativeImageRegionType;
   typedef std::vector< TensorDerivativeImageRegionType >
+      TensorDerivativeImageRegionVectorType;
+  typedef itk::FixedArray < TensorDerivativeImageRegionType, ImageDimension >
       TensorDerivativeImageRegionArrayType;
+  typedef std::vector< TensorDerivativeImageRegionArrayType >
+      TensorDerivativeImageRegionArrayVectorType;
 
   /** Typedefs for the multiplication vectors */
   typedef ImageRegionIterator< DeformationFieldType >
@@ -167,7 +175,7 @@ public:
   typedef itk::FixedArray < DeformationVectorImageRegionType, ImageDimension >
       DeformationVectorImageRegionArrayType;
   typedef std::vector< DeformationVectorImageRegionArrayType >
-      DeformationVectorImageRegionArrayArrayType;
+      DeformationVectorImageRegionArrayVectorType;
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
@@ -214,13 +222,6 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
-  /** Returns the pointers to the regularization function and the intensity
-    difference function */
-  RegularizationFunctionType * GetRegularizationFunctionPointer() const
-    { return m_RegularizationFunction.GetPointer(); }
-  IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer() const
-    { return m_IntensityDistanceFunction.GetPointer(); }
-
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 
@@ -233,11 +234,13 @@ public:
   /** Compute the update value. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType & neighborhood,
-      const DiffusionTensorNeighborhoodArrayType & tensorNeighborhoods,
-      const TensorDerivativeImageRegionArrayType & tensorDerivativeRegions,
-      const DeformationVectorComponentNeighborhoodArrayArrayType
-          & deformationComponentNeighborhoodArrays,
-      const DeformationVectorImageRegionArrayArrayType
+      const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+      const ScalarDerivativeImageRegionArrayVectorType
+          & intensityFirstDerivatives,
+      const TensorDerivativeImageRegionArrayVectorType
+          & intensitySecondDerivatives,
+      const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+      const DeformationVectorImageRegionArrayVectorType
           & multiplicationVectorRegionArrays,
       const SpacingType & spacing,
       void * globalData,
@@ -249,6 +252,14 @@ public:
 
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
+
+  /** Returns the pointers to the regularization function and the intensity
+    difference function */
+  const RegularizationFunctionType * GetRegularizationFunctionPointer() const
+    { return m_RegularizationFunction.GetPointer(); }
+  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer()
+      const
+    { return m_IntensityDistanceFunction.GetPointer(); }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();

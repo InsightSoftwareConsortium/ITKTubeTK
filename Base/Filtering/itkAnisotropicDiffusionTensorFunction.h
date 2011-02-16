@@ -82,7 +82,7 @@ public:
                                      DefaultBoundaryConditionType>
       DiffusionTensorNeighborhoodType;
 
-  /** Derivative typedefs. */
+  /** Scalar derivative typedefs. */
   typedef vnl_vector_fixed< ScalarValueType,
                             itkGetStaticConstMacro(ImageDimension)>
                                 ScalarDerivativeType;
@@ -90,6 +90,7 @@ public:
   typedef ImageRegionIterator< ScalarDerivativeImageType >
       ScalarDerivativeImageRegionType;
 
+  /** Tensor derivative typedefs. */
   typedef vnl_matrix_fixed< ScalarValueType,
                             itkGetStaticConstMacro(ImageDimension),
                             itkGetStaticConstMacro(ImageDimension)>
@@ -120,25 +121,30 @@ public:
 
   /** Compute the equation value.  Inherited from the superclass: call
    *  one of the other two ComputeUpdate() functions instead. */
-  virtual PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
+  virtual PixelType ComputeUpdate(const NeighborhoodType & neighborhood,
                                   void *globalData,
                                   const FloatOffsetType& = FloatOffsetType(0.0));
 
-  /** Compute the equation value, optionally using precomputed first derivatives
-   *  for the diffusion tensor. The neighborhood, tensorNeighborhood
-   *  and tensorDerivativeRegion should have the same spacing as that given. */
+  /** Compute the equation value. The spacing of the images associated with the
+   *  given neighborhoods and regions should be the same as that given. */
   virtual PixelType ComputeUpdate(
-      const NeighborhoodType &neighborhood,
-      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      const SpacingType &spacing,
-      void *globalData,
-      const TensorDerivativeImageRegionType &tensorFirstDerivatives
-          = TensorDerivativeImageRegionType(),
-      const FloatOffsetType& = FloatOffsetType(0.0),
-      const ScalarDerivativeImageRegionType &intensityFirstDerivatives
-          = ScalarDerivativeImageRegionType(),
-      const TensorDerivativeImageRegionType &intensitySecondDerivatives
-          = TensorDerivativeImageRegionType());
+      const NeighborhoodType & neighborhood,
+      const DiffusionTensorNeighborhoodType & tensorNeighborhood,
+      const SpacingType & spacing,
+      void * globalData,
+      const FloatOffsetType & = FloatOffsetType(0.0) );
+
+  /** Compute the equation value using pre-computed derivatives. The spacing of
+   *  the images associated with thegiven neighborhoods and regions should be
+   *  the same as that given. */
+  virtual PixelType ComputeUpdate(
+      const DiffusionTensorNeighborhoodType & tensorNeighborhood,
+      const ScalarDerivativeImageRegionType & intensityFirstDerivatives,
+      const TensorDerivativeImageRegionType & intensitySecondDerivatives,
+      const TensorDerivativeImageRegionType & tensorFirstDerivatives,
+      const SpacingType & spacing,
+      void * globalData,
+      const FloatOffsetType & = FloatOffsetType(0.0));
 
   /** Computes the time step for an update given a global data structure.
    *  Returns the time step supplied by the user. We don't need
@@ -149,10 +155,9 @@ public:
   /** Set/Get the time step. For this class of anisotropic diffusion filters,
       the time-step is supplied by the user and remains fixed for all
       updates. */
-  void SetTimeStep(const TimeStepType &t)
+  void SetTimeStep(const TimeStepType & t)
     { m_TimeStep = t; }
-
-  const TimeStepType &GetTimeStep() const
+  const TimeStepType & GetTimeStep() const
     { return m_TimeStep; }
 
   /** Utility function to check whether the timestep is stable, optionally based
@@ -165,17 +170,17 @@ public:
   /** Computes the first and second order partial derivatives of an intensity
    *  image. */
   void ComputeIntensityFirstAndSecondOrderPartialDerivatives(
-      const NeighborhoodType &neighborhood,
-      ScalarDerivativeImageRegionType &firstOrderResult,
-      TensorDerivativeImageRegionType &secondOrderResult,
-      const SpacingType &spacing ) const;
+      const NeighborhoodType & neighborhood,
+      ScalarDerivativeImageRegionType & firstOrderResult,
+      TensorDerivativeImageRegionType & secondOrderResult,
+      const SpacingType & spacing ) const;
 
   /** Computes the first order partial derivative of a diffusion tensor
    *  image. */
   void ComputeDiffusionTensorFirstOrderPartialDerivatives(
-      const DiffusionTensorNeighborhoodType &tensorNeighborhood,
-      TensorDerivativeImageRegionType &firstOrderResult,
-      const SpacingType &spacing ) const;
+      const DiffusionTensorNeighborhoodType & tensorNeighborhood,
+      TensorDerivativeImageRegionType & firstOrderResult,
+      const SpacingType & spacing ) const;
 
   /** Determines whether to use the image spacing information in calculations.
    *  Set the flag to ON if you want derivatives in physical space, or OFF if
@@ -187,13 +192,13 @@ public:
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation.*/
-  virtual void *GetGlobalDataPointer() const
+  virtual void * GetGlobalDataPointer() const
     {
     GlobalDataStruct *ans = new GlobalDataStruct();
     return ans;
     }
 
-  virtual void ReleaseGlobalDataPointer(void *GlobalData) const
+  virtual void ReleaseGlobalDataPointer(void * GlobalData) const
     { delete (GlobalDataStruct *) GlobalData; }
 
 protected:
