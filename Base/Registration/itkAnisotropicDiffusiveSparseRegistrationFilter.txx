@@ -111,11 +111,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   int t = 0;
   ScalarDerivativeImagePointer firstOrder = 0;
   TensorDerivativeImagePointer secondOrder = 0;
-  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+  for( int i = 0; i < ImageDimension; i++ )
     {
-    for( int j = 0; j < ImageDimension; j++ )
+    for( int j = 0; j < this->GetNumberOfTerms(); j++ )
       {
-      t = termOrder[i];
+      t = termOrder[j];
       if( t == SMOOTH_TANGENTIAL || t == SMOOTH_NORMAL )
         {
         firstOrder = ScalarDerivativeImageType::New();
@@ -123,8 +123,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
         secondOrder = TensorDerivativeImageType::New();
         this->AllocateSpaceForImage( secondOrder, output );
         }
-      this->SetDeformationComponentFirstOrderDerivative( t, j, firstOrder );
-      this->SetDeformationComponentSecondOrderDerivative( t, j, secondOrder );
+      this->SetDeformationComponentFirstOrderDerivative( t, i, firstOrder );
+      this->SetDeformationComponentSecondOrderDerivative( t, i, secondOrder );
       }
     }
 }
