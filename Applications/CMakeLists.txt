@@ -21,9 +21,7 @@
 # 
 ##############################################################################
 
-add_subdirectory(CLI)
-add_subdirectory(ImageMath)
+add_subdirectory( CLI )
+add_subdirectory( ImageMath )
 
-if( TubeTK_USE_QT )
-  add_subdirectory(Qt)
-endif( TubeTK_USE_QT )
+add_subdirectory( MetaImageImporter )
