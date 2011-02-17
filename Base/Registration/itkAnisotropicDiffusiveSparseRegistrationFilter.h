@@ -187,9 +187,9 @@ public:
    *  the weight value w as a function of the distance to the closest border
    *  point.  Must be negative. */
   void SetLambda( WeightType l )
-    { if ( l < 0 ) { m_lambda = l; } }
+    { if ( l < 0 ) { m_Lambda = l; } }
   WeightType GetLambda() const
-    { return m_lambda; }
+    { return m_Lambda; }
 
   /** Set/get the image of the normal vectors.  Setting the normal vector
    * image overrides the border surface polydata if a border surface was
@@ -283,7 +283,9 @@ private:
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
-  WeightComponentType                 m_lambda;
+  WeightComponentType                 m_Lambda;
+
+  /** Sigma used to calculate the structure tensor from the fixed image */
 
 };
 
