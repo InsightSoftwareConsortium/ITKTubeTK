@@ -297,7 +297,7 @@ add_test( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS
 add_test( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_sparseAnisotropicSurfaceRAS_motionField.mhd
-               -b ${BASELINE}/Sphere_anisotropicSurface_motionField.mhd
+               -b ${BASELINE}/Sphere_sparseAnisotropicSurface_motionField.mhd
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS )
