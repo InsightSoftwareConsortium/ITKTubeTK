@@ -540,12 +540,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   DeformationVectorType N_l;
   N_l.Fill( 0.0 );
 
-  DeformationVectorImageArrayType propTangentialMultsArray;
-  DeformationVectorImageArrayType propNormalMultsArray;
-
   for( int i = 0; i < ImageDimension; i++ )
     {
-    // Create the multiplication vector image
+    // Create the multiplication vector image that is shared between the PROPs
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
     this->AllocateSpaceForImage( normalMultsImage, output );
 
@@ -567,14 +564,10 @@ AnisotropicDiffusiveSparseRegistrationFilter
       multIt.Set( multVector );
       }
 
-    // Set the multiplication vector image to the array
-    propTangentialMultsArray[i] = normalMultsImage;
-    propNormalMultsArray[i] = normalMultsImage;
+    // Set the multiplication vector image
+    this->SetMultiplicationVectorImage( PROP_TANGENTIAL, i, normalMultsImage );
+    this->SetMultiplicationVectorImage( PROP_NORMAL, i, normalMultsImage );
     }
-  this->SetMultiplicationVectorImageArray( PROP_TANGENTIAL,
-                                           propTangentialMultsArray );
-  this->SetMultiplicationVectorImageArray( PROP_NORMAL,
-                                           propNormalMultsArray );
 }
 
 /**
@@ -591,18 +584,16 @@ AnisotropicDiffusiveSparseRegistrationFilter
           == this->GetDeformationComponentImage( PROP_NORMAL ) );
 
   // The normal component of u_l is (NAN_l)^T * u
-  // Conveniently, (NAN_l) is the prop multiplication vector, so we don't need
-  // to compute it again here
-  DeformationVectorImageArrayType propTangentialMultImageArray;
-  this->GetMultiplicationVectorImageArray( PROP_TANGENTIAL,
-                                           propTangentialMultImageArray );
+  // Conveniently, (NAN_l) is the prop multiplication vector (for both SMOOTH
+  // and PROP), so we don't need to compute it again here
   DeformationVectorImageRegionArrayType NAN_lRegionArray;
   for( int i = 0; i < ImageDimension; i++ )
     {
-    assert( propTangentialMultImageArray[i] );
+    DeformationFieldPointer propMultImage
+        = this->GetMultiplicationVectorImage( PROP_TANGENTIAL, i );
+    assert( propMultImage );
     NAN_lRegionArray[i] = DeformationVectorImageRegionType(
-        propTangentialMultImageArray[i],
-        propTangentialMultImageArray[i]->GetLargestPossibleRegion() );
+        propMultImage, propMultImage->GetLargestPossibleRegion() );
     }
 
   // Setup the iterators for the deformation field

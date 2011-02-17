@@ -490,7 +490,6 @@ AnisotropicDiffusiveRegistrationFilter
   NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
-  DeformationVectorImageArrayType normalMultsArray;
   NormalVectorType normalVector;
   normalVector.Fill( 0.0 );
   for( int i = 0; i < ImageDimension; i++ )
@@ -510,10 +509,9 @@ AnisotropicDiffusiveRegistrationFilter
       multIt.Set( normalVector[i] * normalVector );
       }
 
-    // Set the multiplication vector image to the array
-    normalMultsArray[i] = normalMultsImage;
+    // Set the multiplication vector image
+    this->SetMultiplicationVectorImage( NORMAL, i, normalMultsImage );
     }
-  this->SetMultiplicationVectorImageArray( NORMAL, normalMultsArray );
 }
 
 /**
