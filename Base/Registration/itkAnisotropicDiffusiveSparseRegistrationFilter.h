@@ -158,13 +158,13 @@ public:
   /** Types for weighting between the anisotropic and diffusive (Gaussian)
     * regularization - also a matrix, likely symmetric but we won't enforce
     * that here. */
-  typedef typename Superclass::WeightType               WeightComponentType;
+  typedef double                                        WeightComponentType;
   typedef typename itk::Matrix< WeightComponentType,
                                 ImageDimension,
                                 ImageDimension >        WeightType;
-  typedef typename Superclass::WeightImageType          WeightImageType;
-  typedef typename Superclass::WeightImagePointer       WeightImagePointer;
-  typedef typename Superclass::WeightImageRegionType    WeightImageRegionType;
+  typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
+  typedef typename WeightImageType::Pointer             WeightImagePointer;
+  typedef itk::ImageRegionIterator< WeightImageType >   WeightImageRegionType;
 
   /** Organ boundary surface types */
   typedef vtkPolyData                                   BorderSurfaceType;
@@ -196,7 +196,7 @@ public:
    * also supplied. */
   virtual void SetNormalMatrixImage( NormalMatrixImageType * normalImage )
     { m_NormalMatrixImage = normalImage; }
-  virtual const NormalMatrixImageType * GetMatrixVectorImage() const
+  virtual const NormalMatrixImageType * GetNormalMatrixImage() const
     { return m_NormalMatrixImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
@@ -259,7 +259,7 @@ protected:
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
-  virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
+  virtual void ComputeNormalMatrixAndWeightImages( bool computeNormals,
                                                    bool computeWeights );
 
   /** Computes the weighting factor w from the distance to the border.  The
@@ -283,7 +283,7 @@ private:
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
-  WeightType                          m_lambda;
+  WeightComponentType                 m_lambda;
 
 };
 

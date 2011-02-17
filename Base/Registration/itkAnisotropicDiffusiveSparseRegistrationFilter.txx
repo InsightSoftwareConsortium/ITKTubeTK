@@ -229,7 +229,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeNormalVectorAndWeightImages( bool computeNormals, bool computeWeights )
+::ComputeNormalMatrixAndWeightImages( bool computeNormals, bool computeWeights )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_BorderSurface->GetPointData()->GetNormals() );
@@ -264,7 +264,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     borderCoord[i] = 0;
     }
   vtkIdType                             id = 0;
-  WeightType                            distance = 0;
+  WeightComponentType                   distance = 0;
   NormalVectorType                      normalVector;
   normalVector.Fill(0);
   NormalMatrixType                      normalMatrix;
@@ -411,11 +411,14 @@ AnisotropicDiffusiveSparseRegistrationFilter
       MatrixType;
 
   NormalMatrixType        N;
+  NormalMatrixType        N_transpose;
   WeightType              A;
   WeightComponentType     w;
   MatrixType              P;
   MatrixType              wP;   // wP
+  MatrixType              wP_transpose;
   MatrixType              I_wP; // I-wP
+  MatrixType              I_wP_transpose;
 
   MatrixType              smoothTangentialMatrix;  // (I-wP)^T * (I-wP)
   MatrixType              smoothNormalMatrix;      // (I-wP)^T * wP
@@ -468,14 +471,16 @@ AnisotropicDiffusiveSparseRegistrationFilter
     // The matrices are used for calculations, and will be copied to the
     // diffusion tensors afterwards.  The matrices are guaranteed to be
     // symmetric.
-    P = N * A * N->Transpose();
-    wP = w * P;
+    P = N * A * N.GetTranspose();
+    wP = P * w;
     I_wP.SetIdentity();
     I_wP = I_wP - wP;
-    smoothTangentialMatrix = I_wP->Transpose() * I_wP;
-    smoothNormalMatrix = I_wP->Transpose() * wP;
-    propTangentialMatrix = wP->Transpose() * I_wP;
-    propNormalMatrix = wP->Transpose() * wP;
+    I_wP_transpose = I_wP.GetTranspose();
+    smoothTangentialMatrix = I_wP_transpose * I_wP;
+    smoothNormalMatrix = I_wP_transpose * wP;
+    wP_transpose = wP.GetTranspose();
+    propTangentialMatrix = wP_transpose * I_wP;
+    propNormalMatrix = wP_transpose * wP;
 
     // Copy the matrices to the diffusion tensor
     for ( unsigned int i = 0; i < ImageDimension; i++ )
@@ -508,7 +513,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
-  assert( this->GetNormalVectorImage() );
+  assert( this->GetNormalMatrixImage() );
 
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
@@ -636,7 +641,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
       {
       normalDeformationVector[i] = NAN_lRegionArray[i].Get() * u;
       }
-    normalDeformationVector.Set( normalDeformationVector );
+    normalDeformationRegion.Set( normalDeformationVector );
 
     // Test that the normal and tangential components were computed corectly
     // (they should be orthogonal)
