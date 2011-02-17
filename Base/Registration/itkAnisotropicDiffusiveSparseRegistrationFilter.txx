@@ -568,6 +568,14 @@ AnisotropicDiffusiveSparseRegistrationFilter
     this->SetMultiplicationVectorImage( PROP_TANGENTIAL, i, normalMultsImage );
     this->SetMultiplicationVectorImage( PROP_NORMAL, i, normalMultsImage );
     }
+
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    assert( this->GetMultiplicationVectorImage( SMOOTH_TANGENTIAL, i )
+            == this->GetMultiplicationVectorImage( SMOOTH_NORMAL, i ) );
+    assert( this->GetMultiplicationVectorImage( PROP_TANGENTIAL, i )
+            == this->GetMultiplicationVectorImage( PROP_NORMAL, i ) );
+    }
 }
 
 /**
@@ -580,8 +588,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::UpdateDeformationComponentImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( this->GetDeformationComponentImage( SMOOTH_NORMAL )
-          == this->GetDeformationComponentImage( PROP_NORMAL ) );
 
   // The normal component of u_l is (NAN_l)^T * u
   // Conveniently, (NAN_l) is the prop multiplication vector (for both SMOOTH
@@ -654,6 +660,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
       }
     }
   normalDeformationField->Modified();
+
+  assert( this->GetDeformationComponentImage( SMOOTH_TANGENTIAL )
+          == this->GetDeformationComponentImage( PROP_TANGENTIAL ) );
+  assert( this->GetDeformationComponentImage( SMOOTH_NORMAL )
+          == this->GetDeformationComponentImage( PROP_NORMAL ) );
 }
 
 /**
@@ -680,7 +691,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // will be automatically updated since they point to the same image data.
   DeformationComponentImageArrayType deformationComponentImageArray;
   deformationComponentImageArray.Fill( 0 );
-
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     if( i == SMOOTH_TANGENTIAL || i == SMOOTH_NORMAL )
@@ -695,6 +705,27 @@ AnisotropicDiffusiveSparseRegistrationFilter
             deformationComponentImageArray[j], i, j, spacing, radius );
         }
       }
+    }
+
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    assert( this->GetDeformationComponentFirstOrderDerivative(
+        SMOOTH_TANGENTIAL, i )
+          == this->GetDeformationComponentFirstOrderDerivative(
+              PROP_TANGENTIAL, i ) );
+    assert( this->GetDeformationComponentFirstOrderDerivative(
+        SMOOTH_NORMAL, i )
+          == this->GetDeformationComponentFirstOrderDerivative(
+              PROP_NORMAL, i ) );
+
+    assert( this->GetDeformationComponentSecondOrderDerivative(
+        SMOOTH_TANGENTIAL, i )
+          == this->GetDeformationComponentSecondOrderDerivative(
+              PROP_TANGENTIAL, i ) );
+    assert( this->GetDeformationComponentSecondOrderDerivative(
+        SMOOTH_NORMAL, i )
+          == this->GetDeformationComponentSecondOrderDerivative(
+              PROP_NORMAL, i ) );
     }
 }
 
