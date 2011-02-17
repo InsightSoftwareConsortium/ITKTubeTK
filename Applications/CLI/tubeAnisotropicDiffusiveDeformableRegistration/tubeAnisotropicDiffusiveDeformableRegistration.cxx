@@ -66,6 +66,73 @@ int DoIt( int argc, char * argv[] );
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
 
+// Read and orient an image
+template< class ImageType >
+bool ReadAndOrientImageAxial( ImageType & outputImage, std::string fileName )
+{
+  typedef typename ImageType::ObjectType ObjectType;
+
+  typedef itk::ImageFileReader< ObjectType > FileReaderType;
+  typename FileReaderType::Pointer imageReader = FileReaderType::New();
+  imageReader->SetFileName( fileName.c_str() );
+  try
+    {
+    imageReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Reading volume: Exception caught: "
+                        + std::string(err.GetDescription()) );
+    return false;
+    }
+
+  typedef itk::OrientImageFilter< ObjectType, ObjectType > OrientFilterType;
+  typename OrientFilterType::Pointer orient = OrientFilterType::New();
+  orient->UseImageDirectionOn();
+  orient->SetDesiredCoordinateOrientationToAxial();
+  orient->SetInput( imageReader->GetOutput() );
+  orient->Update();
+  outputImage = orient->GetOutput();
+  if( outputImage )
+    {
+    return true;
+    }
+  else
+    {
+    return false;
+    }
+}
+
+// Reorient and write an image
+template< class ImageType >
+bool ReorientAndWriteImage( ImageType * inputImage,
+                            typename ImageType::DirectionType dir,
+                            std::string fileName )
+{
+  typedef itk::OrientImageFilter< ImageType, ImageType > OrientFilterType;
+  typename OrientFilterType::Pointer orient = OrientFilterType::New();
+  orient->UseImageDirectionOn();
+  orient->SetDesiredCoordinateDirection( dir );
+  orient->SetInput( inputImage );
+  orient->Update();
+
+  typedef itk::ImageFileWriter< ImageType > FileWriterType;
+  typename FileWriterType::Pointer imageWriter = FileWriterType::New();
+  imageWriter->SetFileName( fileName );
+  imageWriter->SetInput( orient->GetOutput() );
+  try
+    {
+    imageWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Writing volume: Exception caught: "
+                        + std::string(err.GetDescription()) );
+    return false;
+    }
+  return true;
+}
+
 // Your code should be within the DoIt function...
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )
@@ -109,12 +176,14 @@ int DoIt( int argc, char * argv[] )
       anisotropicRegistrator = 0;
   typename AnisotropicDiffusiveSparseRegistrationFilterType::Pointer
       sparseAnisotropicRegistrator = 0;
+  bool haveAnisotropicRegistrator = false;
   if( doNotPerformRegularization || doNotUseAnisotropicRegularization )
     {
     registrator = DiffusiveRegistrationFilterType::New();
     }
   else
     {
+    haveAnisotropicRegistrator = true;
     if( anisotropicRegistrationType == "Sliding Organ" )
       {
       registrator = AnisotropicDiffusiveRegistrationFilterType::New();
@@ -308,7 +377,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Orient initial deformation field" );
 
   // Read the organ boundary if we are using the anisotropic regularizer
-  if( anisotropicRegistrator && organBoundaryFileName != "" )
+  if( haveAnisotropicRegistrator && organBoundaryFileName != "" )
     {
     timeCollector.Start( "Loading organ boundary" );
     // Do we have .vtk or .vtp models?
@@ -365,69 +434,86 @@ int DoIt( int argc, char * argv[] )
         return EXIT_FAILURE;
         }
       }
-    anisotropicRegistrator->SetBorderSurface( borderSurface );
+    if( anisotropicRegistrator )
+      {
+      anisotropicRegistrator->SetBorderSurface( borderSurface );
+      }
+    else if( sparseAnisotropicRegistrator )
+      {
+      sparseAnisotropicRegistrator->SetBorderSurface( borderSurface );
+      }
     timeCollector.Stop( "Loading organ boundary" );
     }
 
   // Read normal vector image if we are using the anisotropic regularizer
-  if( anisotropicRegistrator && inputNormalVectorImageFileName != "" )
+  if( haveAnisotropicRegistrator && inputNormalVectorImageFileName != "" )
     {
     timeCollector.Start( "Loading normal vector image" );
-    typedef itk::ImageFileReader< VectorImageType > VectorImageReaderType;
-    typename VectorImageReaderType::Pointer vectorImageReader
-        = VectorImageReaderType::New();
-    vectorImageReader->SetFileName( inputNormalVectorImageFileName.c_str() );
-    try
+    if( anisotropicRegistrator )
       {
-      vectorImageReader->Update();
+      typename AnisotropicDiffusiveRegistrationFilterType::NormalVectorImageType
+          ::Pointer normalImage = 0;
+      if( ReadAndOrientImageAxial( normalImage,
+                                   inputNormalVectorImageFileName ) )
+        {
+        anisotropicRegistrator->SetNormalVectorImage( normalImage );
+        }
+      else
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
-    catch( itk::ExceptionObject & err )
+    else if( sparseAnisotropicRegistrator )
       {
-      tube::ErrorMessage( "Reading volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
-      timeCollector.Report();
-      return EXIT_FAILURE;
+      typename AnisotropicDiffusiveSparseRegistrationFilterType
+          ::NormalMatrixImageType::Pointer normalImage = 0;
+      if( ReadAndOrientImageAxial( normalImage,
+                                   inputNormalVectorImageFileName ) )
+        {
+        sparseAnisotropicRegistrator->SetNormalMatrixImage( normalImage );
+        }
+      else
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
-    typename VectorOrientFilterType::Pointer orientNormals
-        = VectorOrientFilterType::New();
-    orientNormals->UseImageDirectionOn();
-    orientNormals->SetDesiredCoordinateOrientationToAxial();
-    orientNormals->SetInput( vectorImageReader->GetOutput() );
-    orientNormals->Update();
-    anisotropicRegistrator->SetNormalVectorImage( orientNormals->GetOutput() );
     timeCollector.Stop( "Loading normal vector image" );
     }
 
   // Read weight image if we are using the anisotropic registrator
-  typedef typename AnisotropicDiffusiveRegistrationFilterType::WeightImageType
-      WeightImageType;
-  typedef itk::OrientImageFilter< WeightImageType, WeightImageType >
-      WeightOrientFilterType;
-  if( anisotropicRegistrator && inputWeightImageFileName != "" )
+  if( haveAnisotropicRegistrator && inputWeightImageFileName != "" )
     {
     timeCollector.Start( "Loading weight image" );
-    typedef itk::ImageFileReader< WeightImageType > WeightImageReaderType;
-    typename WeightImageReaderType::Pointer weightImageReader
-        = WeightImageReaderType::New();
-    weightImageReader->SetFileName( inputWeightImageFileName.c_str() );
-    try
+    if( anisotropicRegistrator )
       {
-      weightImageReader->Update();
+      typename AnisotropicDiffusiveRegistrationFilterType::WeightImageType
+          ::Pointer weightImage = 0;
+      if( ReadAndOrientImageAxial( weightImage, inputWeightImageFileName ) )
+        {
+        anisotropicRegistrator->SetWeightImage( weightImage );
+        }
+      else
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
-    catch( itk::ExceptionObject & err )
+    else if( sparseAnisotropicRegistrator )
       {
-      tube::ErrorMessage( "Reading volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
-      timeCollector.Report();
-      return EXIT_FAILURE;
+      typename AnisotropicDiffusiveSparseRegistrationFilterType::WeightImageType
+          ::Pointer weightImage = 0;
+      if( ReadAndOrientImageAxial( weightImage, inputWeightImageFileName ) )
+        {
+        sparseAnisotropicRegistrator->SetWeightImage( weightImage );
+        }
+      else
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
-    typename WeightOrientFilterType::Pointer orientWeight
-        = WeightOrientFilterType::New();
-    orientWeight->UseImageDirectionOn();
-    orientWeight->SetDesiredCoordinateOrientationToAxial();
-    orientWeight->SetInput( weightImageReader->GetOutput() );
-    orientWeight->Update();
-    anisotropicRegistrator->SetWeightImage( orientWeight->GetOutput() );
     timeCollector.Stop( "Loading weight image" );
     }
 
@@ -520,8 +606,8 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write deformation field" );
     }
 
-  // Output the transformation gridTransform (commented out for now, as not yet
-  // supported in 3D Slicer)
+//  // Output the transformation gridTransform (commented out for now, as not yet
+//  // supported in 3D Slicer)
 //  if( outputTransformFileName != "" )
 //    {
 //    timeCollector.Start( "Write output transform" );
@@ -567,60 +653,67 @@ int DoIt( int argc, char * argv[] )
 
   // Write the normal vector image (in the space of the fixed image) if we are
   // using the anisotropic regularization
-  if( anisotropicRegistrator && outputNormalVectorImageFileName != "" )
+  if( haveAnisotropicRegistrator && outputNormalVectorImageFileName != "" )
     {
     timeCollector.Start( "Write normal vector image" );
-    typename VectorOrientFilterType::Pointer orientNormals
-        = VectorOrientFilterType::New();
-    orientNormals->UseImageDirectionOn();
-    orientNormals->SetDesiredCoordinateDirection(
-        fixedImageReader->GetOutput()->GetDirection() );
-    orientNormals->SetInput( anisotropicRegistrator->GetNormalVectorImage() );
-    orientNormals->Update();
-    typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
-    typename VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
-    vectorWriter->SetFileName( outputNormalVectorImageFileName );
-    vectorWriter->SetInput( orientNormals->GetOutput() );
-    try
+    if( anisotropicRegistrator )
       {
-      vectorWriter->Update();
+      typename AnisotropicDiffusiveRegistrationFilterType::NormalVectorImageType
+          ::Pointer normalImage = 0;
+      if( !ReorientAndWriteImage(
+          anisotropicRegistrator->GetNormalVectorImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputNormalVectorImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
-    catch( itk::ExceptionObject & err )
+    else if( sparseAnisotropicRegistrator )
       {
-      tube::ErrorMessage( "Writing volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
-      timeCollector.Report();
-      return EXIT_FAILURE;
+      typename AnisotropicDiffusiveSparseRegistrationFilterType
+          ::NormalMatrixImageType::Pointer normalImage = 0;
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator->GetNormalMatrixImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputNormalVectorImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
     timeCollector.Stop( "Write normal vector image" );
     }
 
   // Write the weight image (in the space of the fixed image) if we are using
   // the anisotropic regularization
-  if( anisotropicRegistrator && outputWeightImageFileName != "" )
+  if( haveAnisotropicRegistrator && outputWeightImageFileName != "" )
     {
     timeCollector.Start( "Write weight image" );
-    typename WeightOrientFilterType::Pointer orientWeight
-        = WeightOrientFilterType::New();
-    orientWeight->UseImageDirectionOn();
-    orientWeight->SetDesiredCoordinateDirection(
-        fixedImageReader->GetOutput()->GetDirection() );
-    orientWeight->SetInput( anisotropicRegistrator->GetWeightImage() );
-    orientWeight->Update();
-    typedef itk::ImageFileWriter< WeightImageType > WeightWriterType;
-    typename WeightWriterType::Pointer weightWriter = WeightWriterType::New();
-    weightWriter->SetFileName( outputWeightImageFileName );
-    weightWriter->SetInput( orientWeight->GetOutput() );
-    try
+    if( anisotropicRegistrator )
       {
-      weightWriter->Update();
+      typename AnisotropicDiffusiveRegistrationFilterType::WeightImageType
+          ::Pointer weightImage = 0;
+      if( !ReorientAndWriteImage( anisotropicRegistrator->GetWeightImage(),
+                                  fixedImageReader->GetOutput()->GetDirection(),
+                                  outputWeightImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
-    catch( itk::ExceptionObject & err )
+    else if( sparseAnisotropicRegistrator )
       {
-      tube::ErrorMessage( "Writing volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
-      timeCollector.Report();
-      return EXIT_FAILURE;
+      typename AnisotropicDiffusiveSparseRegistrationFilterType::WeightImageType
+          ::Pointer weightImage = 0;
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator->GetWeightImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputWeightImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
     timeCollector.Stop( "Write weight image" );
     }

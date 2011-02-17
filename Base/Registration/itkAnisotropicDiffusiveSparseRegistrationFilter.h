@@ -196,7 +196,7 @@ public:
    * also supplied. */
   virtual void SetNormalMatrixImage( NormalMatrixImageType * normalImage )
     { m_NormalMatrixImage = normalImage; }
-  virtual const NormalMatrixImageType * GetNormalMatrixImage() const
+  virtual NormalMatrixImageType * GetNormalMatrixImage() const
     { return m_NormalMatrixImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
@@ -204,7 +204,7 @@ public:
    * supplied.  */
   virtual void SetWeightImage( WeightImageType * weightImage )
     { m_WeightImage = weightImage; }
-  virtual const WeightImageType * GetWeightImage() const
+  virtual WeightImageType * GetWeightImage() const
     { return m_WeightImage; }
 
   /** Get the normal components of the deformation field.  The normal
