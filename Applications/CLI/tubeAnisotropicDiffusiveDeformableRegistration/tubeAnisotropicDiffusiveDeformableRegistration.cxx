@@ -100,20 +100,35 @@ int DoIt( int argc, char * argv[] )
   typedef itk::AnisotropicDiffusiveRegistrationFilter
       < FixedImageType, MovingImageType, VectorImageType >
       AnisotropicDiffusiveRegistrationFilterType;
+  typedef itk::AnisotropicDiffusiveSparseRegistrationFilter
+      < FixedImageType, MovingImageType, VectorImageType >
+      AnisotropicDiffusiveSparseRegistrationFilterType;
 
   typename DiffusiveRegistrationFilterType::Pointer registrator = 0;
   typename AnisotropicDiffusiveRegistrationFilterType::Pointer
       anisotropicRegistrator = 0;
+  typename AnisotropicDiffusiveSparseRegistrationFilterType::Pointer
+      sparseAnisotropicRegistrator = 0;
   if( doNotPerformRegularization || doNotUseAnisotropicRegularization )
     {
     registrator = DiffusiveRegistrationFilterType::New();
     }
   else
     {
-    registrator = AnisotropicDiffusiveRegistrationFilterType::New();
-    anisotropicRegistrator
-        = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >(
-            registrator.GetPointer() );
+    if( anisotropicRegistrationType == "Sliding Organ" )
+      {
+      registrator = AnisotropicDiffusiveRegistrationFilterType::New();
+      anisotropicRegistrator
+          = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >(
+              registrator.GetPointer() );
+      }
+    else if( anisotropicRegistrationType == "Sparse Sliding Organ" )
+      {
+      registrator = AnisotropicDiffusiveSparseRegistrationFilterType::New();
+      sparseAnisotropicRegistrator
+          = dynamic_cast< AnisotropicDiffusiveSparseRegistrationFilterType * >(
+              registrator.GetPointer() );
+      }
     }
 
   // Load the fixed image
