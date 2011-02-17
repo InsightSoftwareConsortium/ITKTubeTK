@@ -184,19 +184,26 @@ int DoIt( int argc, char * argv[] )
   else
     {
     haveAnisotropicRegistrator = true;
-    if( anisotropicRegistrationType == "Sliding Organ" )
+    if( anisotropicRegistrationType == "SlidingOrgan" )
       {
       registrator = AnisotropicDiffusiveRegistrationFilterType::New();
       anisotropicRegistrator
           = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >(
               registrator.GetPointer() );
       }
-    else if( anisotropicRegistrationType == "Sparse Sliding Organ" )
+    else if( anisotropicRegistrationType == "SparseSlidingOrgan" )
       {
       registrator = AnisotropicDiffusiveSparseRegistrationFilterType::New();
       sparseAnisotropicRegistrator
           = dynamic_cast< AnisotropicDiffusiveSparseRegistrationFilterType * >(
               registrator.GetPointer() );
+      }
+    else
+      {
+      tube::ErrorMessage( "Unknown registration type: "
+                          + anisotropicRegistrationType );
+      timeCollector.Report();
+      return EXIT_FAILURE;
       }
     }
 
