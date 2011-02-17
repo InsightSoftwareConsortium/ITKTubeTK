@@ -20,16 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkAnisotropicDiffusiveRegistrationFilter_txx
-#define __itkAnisotropicDiffusiveRegistrationFilter_txx
+#ifndef __itkAnisotropicDiffusiveSparseRegistrationFilter_txx
+#define __itkAnisotropicDiffusiveSparseRegistrationFilter_txx
 
-#include "itkAnisotropicDiffusiveRegistrationFilter.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-
-#include "vtkDataArray.h"
-#include "vtkPointData.h"
-#include "vtkPointLocator.h"
-#include "vtkPolyDataNormals.h"
+#include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 
 namespace itk
 {
@@ -38,13 +32,13 @@ namespace itk
  * Constructor
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::AnisotropicDiffusiveRegistrationFilter()
+::AnisotropicDiffusiveSparseRegistrationFilter()
 {
   // Initialize attributes to NULL
   m_BorderSurface                               = 0;
-  m_NormalVectorImage                           = 0;
+  m_NormalMatrixImage                           = 0;
   m_WeightImage                                 = 0;
 
   // Lambda for exponential decay used to calculate weight from distance
@@ -56,7 +50,7 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
@@ -66,10 +60,10 @@ AnisotropicDiffusiveRegistrationFilter
     os << indent << "Border surface:" << std::endl;
     m_BorderSurface->Print( os );
     }
-  if( m_NormalVectorImage )
+  if( m_NormalMatrixImage )
     {
     os << indent << "Normal vector image:" << std::endl;
-    m_NormalVectorImage->Print( os, indent );
+    m_NormalMatrixImage->Print( os, indent );
     }
   if( m_WeightImage )
     {
@@ -84,7 +78,7 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::InitializeDeformationComponentAndDerivativeImages()
 {
@@ -99,27 +93,38 @@ AnisotropicDiffusiveRegistrationFilter
   // TANGENTIAL component, which is the entire deformation field, and the
   // NORMAL component, which is the deformation vectors projected onto their
   // normals
-  this->SetDeformationComponentImage( TANGENTIAL, this->GetOutput() );
+  // There are four terms that share these two deformation component images
+  this->SetDeformationComponentImage( SMOOTH_TANGENTIAL, this->GetOutput() );
+  this->SetDeformationComponentImage( PROP_TANGENTIAL, this->GetOutput() );
 
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
   this->AllocateSpaceForImage( normalDeformationField, output );
-  this->SetDeformationComponentImage( NORMAL, normalDeformationField );
+  this->SetDeformationComponentImage( SMOOTH_NORMAL, normalDeformationField );
+  this->SetDeformationComponentImage( PROP_NORMAL, normalDeformationField );
 
-  // Setup the first and second order deformation component images - we need
-  // to allocate images for both the TANGENTIAL and NORMAL components, so
-  // we'll just loop over the number of terms
-  ScalarDerivativeImagePointer firstOrder;
-  TensorDerivativeImagePointer secondOrder;
+  // Setup the first and second order deformation component image derivatives
+  // The two TANGENTIAL and two NORMAL components share images.
+  int termOrder[4] = { SMOOTH_TANGENTIAL,
+                       PROP_TANGENTIAL,
+                       SMOOTH_NORMAL,
+                       PROP_NORMAL };
+  int t = 0;
+  ScalarDerivativeImagePointer firstOrder = 0;
+  TensorDerivativeImagePointer secondOrder = 0;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     for( int j = 0; j < ImageDimension; j++ )
       {
-      firstOrder = ScalarDerivativeImageType::New();
-      this->AllocateSpaceForImage( firstOrder, output );
-      secondOrder = TensorDerivativeImageType::New();
-      this->AllocateSpaceForImage( secondOrder, output );
-      this->SetDeformationComponentFirstOrderDerivative( i, j, firstOrder );
-      this->SetDeformationComponentSecondOrderDerivative( i, j, secondOrder );
+      t = termOrder[i];
+      if( t == SMOOTH_TANGENTIAL || t == SMOOTH_NORMAL )
+        {
+        firstOrder = ScalarDerivativeImageType::New();
+        this->AllocateSpaceForImage( firstOrder, output );
+        secondOrder = TensorDerivativeImageType::New();
+        this->AllocateSpaceForImage( secondOrder, output );
+        }
+      this->SetDeformationComponentFirstOrderDerivative( t, j, firstOrder );
+      this->SetDeformationComponentSecondOrderDerivative( t, j, secondOrder );
       }
     }
 }
@@ -130,9 +135,9 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::SetupNormalVectorAndWeightImages()
+::SetupNormalMatrixAndWeightImages()
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -143,18 +148,18 @@ AnisotropicDiffusiveRegistrationFilter
 
   // If a normal vector image or weight image was supplied by the user, check
   // that it matches the output
-  if( ( m_NormalVectorImage
-        && !this->CompareImageAttributes( m_NormalVectorImage, output ) )
+  if( ( m_NormalMatrixImage
+        && !this->CompareImageAttributes( m_NormalMatrixImage, output ) )
     || ( m_WeightImage
          && !this->CompareImageAttributes( m_WeightImage, output ) ) )
       {
-    itkExceptionMacro( << "Normal vector image and/or weight image must have "
+    itkExceptionMacro( << "Normal matrix image and/or weight image must have "
                        << "the same attributes as the output deformation "
                        << "field" );
     }
 
   // Whether or not we must compute the normal vector and/or weight images
-  bool computeNormals = !m_NormalVectorImage;
+  bool computeNormals = !m_NormalMatrixImage;
   bool computeWeights = !m_WeightImage;
 
   // Compute the normal vector and/or weight images if required
@@ -164,7 +169,7 @@ AnisotropicDiffusiveRegistrationFilter
     if( !this->GetBorderSurface() )
       {
       itkExceptionMacro( << "You must provide a border surface, or both a "
-                         << "normal vector image and a weight image" );
+                         << "normal matrix image and a weight image" );
       }
 
     // Compute the normals for the surface
@@ -173,8 +178,8 @@ AnisotropicDiffusiveRegistrationFilter
     // Allocate the normal vector and/or weight images
     if( computeNormals )
       {
-      m_NormalVectorImage = NormalVectorImageType::New();
-      this->AllocateSpaceForImage( m_NormalVectorImage, output );
+      m_NormalMatrixImage = NormalMatrixImageType::New();
+      this->AllocateSpaceForImage( m_NormalMatrixImage, output );
       }
     if( computeWeights )
       {
@@ -183,7 +188,7 @@ AnisotropicDiffusiveRegistrationFilter
       }
 
     // Actually compute the normal vectors and/or weights
-    this->ComputeNormalVectorAndWeightImages( computeNormals, computeWeights );
+    this->ComputeNormalMatrixAndWeightImages( computeNormals, computeWeights );
     }
 }
 
@@ -192,7 +197,7 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeBorderSurfaceNormals()
 {
@@ -222,20 +227,20 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeNormalVectorAndWeightImages( bool computeNormals, bool computeWeights )
+::ComputeNormalMatrixAndWeightImages( bool computeNormals, bool computeWeights )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_BorderSurface->GetPointData()->GetNormals() );
-  assert( m_NormalVectorImage );
+  assert( m_NormalMatrixImage );
   assert( m_WeightImage );
 
   std::cout << "Computing normals and weights... " << std::endl;
 
   // Setup iterators over the normal vector and weight images
-  NormalVectorImageRegionType normalIt(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  NormalMatrixImageRegionType normalIt(
+      m_NormalMatrixImage, m_NormalMatrixImage->GetLargestPossibleRegion() );
   WeightImageRegionType weightIt(m_WeightImage,
                                  m_WeightImage->GetLargestPossibleRegion() );
 
@@ -259,29 +264,39 @@ AnisotropicDiffusiveRegistrationFilter
     borderCoord[i] = 0;
     }
   vtkIdType                             id = 0;
-  WeightType                            distance = 0;
-  NormalVectorType                      normal;
-  normal.Fill(0);
-  WeightType                            weight = 0;
+  WeightComponentType                   distance = 0;
+  NormalVectorType                      normalVector;
+  normalVector.Fill(0);
+  NormalMatrixType                      normalMatrix;
+  normalMatrix.Fill(0);
+  WeightComponentType                   weight = 0;
+  WeightType                            weightMatrix;
+  weightMatrix.Fill(0);
 
   // Determine the normals of and the distances to the nearest border
   for( normalIt.GoToBegin(), weightIt.GoToBegin();
        !normalIt.IsAtEnd();
        ++normalIt, ++weightIt )
     {
+    normalMatrix.Fill(0);
+    weightMatrix.Fill(0);
 
     // Find the normal of the surface point that is closest to the current voxel
-    m_NormalVectorImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
+    m_NormalMatrixImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
                                                         imageCoordAsPoint );
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       imageCoord[i] = imageCoordAsPoint[i];
       }
     id = pointLocator->FindClosestPoint( imageCoord );
-    normal = normalData->GetTuple( id );
+    normalVector = normalData->GetTuple( id );
     if( computeNormals )
       {
-      normalIt.Set( normal );
+      for( int i = 0; i < ImageDimension; i++ )
+        {
+        normalMatrix(i,0) = normalVector[i];
+        }
+      normalIt.Set( normalMatrix );
       }
 
     // Calculate distance between the current coordinate and the border surface
@@ -297,7 +312,8 @@ AnisotropicDiffusiveRegistrationFilter
     // The weight image will temporarily store distances
     if( computeWeights )
       {
-      weightIt.Set( distance );
+      weightMatrix(0,0) = distance;
+      weightIt.Set( weightMatrix );
       }
     }
 
@@ -324,23 +340,25 @@ AnisotropicDiffusiveRegistrationFilter
   // (because we are choosing the closest point in the polydata)
   if( computeWeights )
     {
-    double weightSmoothingSigma = 1.0;
-    typedef itk::SmoothingRecursiveGaussianImageFilter
-        < WeightImageType, WeightImageType > WeightSmoothingFilterType;
-    typename WeightSmoothingFilterType::Pointer weightSmooth
-        = WeightSmoothingFilterType::New();
-    weightSmooth->SetInput( m_WeightImage );
-    weightSmooth->SetSigma( weightSmoothingSigma );
-    weightSmooth->Update();
-    m_WeightImage = weightSmooth->GetOutput();
+//    double weightSmoothingSigma = 1.0;
+//    typedef itk::SmoothingRecursiveGaussianImageFilter
+//        < WeightImageType, WeightImageType > WeightSmoothingFilterType;
+//    typename WeightSmoothingFilterType::Pointer weightSmooth
+//        = WeightSmoothingFilterType::New();
+//    weightSmooth->SetInput( m_WeightImage );
+//    weightSmooth->SetSigma( weightSmoothingSigma );
+//    weightSmooth->Update();
+//    m_WeightImage = weightSmooth->GetOutput();
 
     // Iterate through the weight image and compute the weight from the
     WeightImageRegionType weightIt(
         m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
     for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
       {
-      weight = this->ComputeWeightFromDistance( weightIt.Get() );
-      weightIt.Set( weight );
+      weightMatrix = weightIt.Get();
+      weight = this->ComputeWeightFromDistance( weightMatrix(0,0) );
+      weightMatrix(0,0) = weight;
+      weightIt.Set( weightMatrix );
       }
     }
 
@@ -352,12 +370,12 @@ AnisotropicDiffusiveRegistrationFilter
  * regularizations, based on a given distance from a voxel to the border
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename AnisotropicDiffusiveRegistrationFilter
+typename AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::WeightType
-AnisotropicDiffusiveRegistrationFilter
+::WeightComponentType
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeWeightFromDistance( const WeightType distance ) const
+::ComputeWeightFromDistance( const WeightComponentType distance ) const
 {
   return exp( m_lambda * distance );
 }
@@ -367,15 +385,15 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
 
   // If required, allocate and compute the normal vector and weight images
-  this->SetupNormalVectorAndWeightImages();
-  assert( m_NormalVectorImage );
+  this->SetupNormalMatrixAndWeightImages();
+  assert( m_NormalMatrixImage );
   assert( m_WeightImage );
 
   // For the anisotropic diffusive regularization, we need to setup the
@@ -392,74 +410,95 @@ AnisotropicDiffusiveRegistrationFilter
       < DeformationVectorComponentType, ImageDimension, ImageDimension >
       MatrixType;
 
-  NormalVectorType       n;
-  WeightType             w;
-  MatrixType             P;
-  MatrixType             normalMatrix;
-  MatrixType             tangentialMatrix;
-  DiffusionTensorType    tangentialDiffusionTensor;
-  DiffusionTensorType    normalDiffusionTensor;
+  NormalMatrixType        N;
+  NormalMatrixType        N_transpose;
+  WeightType              A;
+  WeightComponentType     w;
+  MatrixType              P;
+  MatrixType              wP;   // wP
+  MatrixType              wP_transpose;
+  MatrixType              I_wP; // I-wP
+  MatrixType              I_wP_transpose;
+
+  MatrixType              smoothTangentialMatrix;  // (I-wP)^T * (I-wP)
+  MatrixType              smoothNormalMatrix;      // (I-wP)^T * wP
+  MatrixType              propTangentialMatrix;    // (wP)^T * (I-wP)
+  MatrixType              propNormalMatrix;        // (wP)^T * wP
+
+  DiffusionTensorType     smoothTangentialDiffusionTensor;
+  DiffusionTensorType     smoothNormalDiffusionTensor;
+  DiffusionTensorType     propTangentialDiffusionTensor;
+  DiffusionTensorType     propNormalDiffusionTensor;
 
   // Setup iterators
-  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  NormalMatrixImageRegionType normalIt = NormalMatrixImageRegionType(
+      m_NormalMatrixImage, m_NormalMatrixImage->GetLargestPossibleRegion() );
   WeightImageRegionType weightIt = WeightImageRegionType(
       m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-  DiffusionTensorImageRegionType tangentialTensorIt
+  DiffusionTensorImageRegionType smoothTangentialTensorIt
       = DiffusionTensorImageRegionType(
-          this->GetDiffusionTensorImage( TANGENTIAL ),
-          this->GetDiffusionTensorImage( TANGENTIAL )
+          this->GetDiffusionTensorImage( SMOOTH_TANGENTIAL ),
+          this->GetDiffusionTensorImage( SMOOTH_TANGENTIAL )
           ->GetLargestPossibleRegion() );
-  DiffusionTensorImageRegionType normalTensorIt
+  DiffusionTensorImageRegionType smoothNormalTensorIt
       = DiffusionTensorImageRegionType(
-          this->GetDiffusionTensorImage( NORMAL ),
-          this->GetDiffusionTensorImage( NORMAL )->GetLargestPossibleRegion() );
+          this->GetDiffusionTensorImage( SMOOTH_NORMAL ),
+          this->GetDiffusionTensorImage( SMOOTH_NORMAL )
+          ->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType propTangentialTensorIt
+      = DiffusionTensorImageRegionType(
+          this->GetDiffusionTensorImage( PROP_TANGENTIAL ),
+          this->GetDiffusionTensorImage( PROP_TANGENTIAL )
+          ->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType propNormalTensorIt
+      = DiffusionTensorImageRegionType(
+          this->GetDiffusionTensorImage( PROP_NORMAL ),
+          this->GetDiffusionTensorImage( PROP_NORMAL )
+          ->GetLargestPossibleRegion() );
 
   for( normalIt.GoToBegin(), weightIt.GoToBegin(),
-       tangentialTensorIt.GoToBegin(), normalTensorIt.GoToBegin();
-       !tangentialTensorIt.IsAtEnd();
-       ++normalIt, ++weightIt, ++tangentialTensorIt, ++normalTensorIt )
+       smoothTangentialTensorIt.GoToBegin(), smoothNormalTensorIt.GoToBegin(),
+       propTangentialTensorIt.GoToBegin(), propNormalTensorIt.GoToBegin();
+       !smoothTangentialTensorIt.IsAtEnd();
+       ++normalIt, ++weightIt,
+       ++smoothTangentialTensorIt, ++smoothNormalTensorIt,
+       ++propTangentialTensorIt, ++propNormalTensorIt )
     {
-    n = normalIt.Get();
-    w = weightIt.Get();
+    N = normalIt.Get();
+    A = weightIt.Get();
+    w = A(0,0);
 
     // The matrices are used for calculations, and will be copied to the
     // diffusion tensors afterwards.  The matrices are guaranteed to be
     // symmetric.
-
-    // Create the normalMatrix used to calculate nn^T
-    // (The first column is filled with the values of n, the rest are 0s)
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      normalMatrix( i, 0 ) = n[i];
-      for ( unsigned int j = 1; j < ImageDimension; j++ )
-        {
-        normalMatrix( i, j ) = 0;
-        }
-      }
-
-    // Calculate the normal and tangential diffusion tensors
-    normalMatrix = normalMatrix * normalMatrix.GetTranspose(); // nn^T
-    normalMatrix = normalMatrix * w; // wnn^T
-    P.SetIdentity();
-    P = P - normalMatrix; // I - wnn^T
-    tangentialMatrix = P.GetTranspose();
-    tangentialMatrix = tangentialMatrix * P; // P^TP
-    normalMatrix = normalMatrix * w; // w^2nn^T
+    P = N * A * N.GetTranspose();
+    wP = P * w;
+    I_wP.SetIdentity();
+    I_wP = I_wP - wP;
+    I_wP_transpose = I_wP.GetTranspose();
+    smoothTangentialMatrix = I_wP_transpose * I_wP;
+    smoothNormalMatrix = I_wP_transpose * wP;
+    wP_transpose = wP.GetTranspose();
+    propTangentialMatrix = wP_transpose * I_wP;
+    propNormalMatrix = wP_transpose * wP;
 
     // Copy the matrices to the diffusion tensor
     for ( unsigned int i = 0; i < ImageDimension; i++ )
       {
       for ( unsigned int j = 0; j < ImageDimension; j++ )
         {
-        tangentialDiffusionTensor( i, j ) = tangentialMatrix( i, j );
-        normalDiffusionTensor( i, j ) = normalMatrix( i, j );
+        smoothTangentialDiffusionTensor(i,j) = smoothTangentialMatrix(i,j);
+        smoothNormalDiffusionTensor(i,j) = smoothNormalMatrix(i,j);
+        propTangentialDiffusionTensor(i,j) = propTangentialMatrix(i,j);
+        propNormalDiffusionTensor(i,j) = propNormalMatrix(i,j);
         }
       }
 
     // Copy the diffusion tensors to their images
-    tangentialTensorIt.Set( tangentialDiffusionTensor );
-    normalTensorIt.Set( normalDiffusionTensor );
+    smoothTangentialTensorIt.Set( smoothTangentialDiffusionTensor );
+    smoothNormalTensorIt.Set( smoothNormalDiffusionTensor );
+    propTangentialTensorIt.Set( propTangentialDiffusionTensor );
+    propNormalTensorIt.Set( propNormalDiffusionTensor );
     }
 }
 
@@ -468,13 +507,13 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeMultiplicationVectorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
-  assert( this->GetNormalVectorImage() );
+  assert( this->GetNormalMatrixImage() );
 
   // The output will be used as the template to allocate the images we will
   // use to store data computed before/during the registration
@@ -482,38 +521,60 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Allocate the images needed when using the anisotropic diffusive
   // regularization
-  // There is no multiplication vector for the tangential term, and the
-  // superclass will init it to zeros for us.
-  // The normal multiplication vector is n_l*n
+  // There are no multiplication vectors for the smooth terms, and the
+  // superclass will init them to zeros for us.
+  // The prop multiplication vector is NAN_l
 
-  // Iterate over the normal vector image
-  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  // Iterate over the normal matrix and weight images
+  NormalMatrixImageRegionType normalIt = NormalMatrixImageRegionType(
+      m_NormalMatrixImage, m_NormalMatrixImage->GetLargestPossibleRegion() );
+  WeightImageRegionType weightIt = WeightImageRegionType(
+      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
 
-  DeformationVectorImageArrayType normalMultsArray;
-  NormalVectorType normalVector;
-  normalVector.Fill( 0.0 );
+  DeformationVectorType multVector;
+  multVector.Fill( 0.0 );
+  NormalMatrixType N;
+  N.Fill( 0.0 );
+  WeightType A;
+  A.Fill( 0.0 );
+  DeformationVectorType N_l;
+  N_l.Fill( 0.0 );
+
+  DeformationVectorImageArrayType propTangentialMultsArray;
+  DeformationVectorImageArrayType propNormalMultsArray;
+
   for( int i = 0; i < ImageDimension; i++ )
     {
     // Create the multiplication vector image
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
     this->AllocateSpaceForImage( normalMultsImage, output );
 
-    // Calculate n_l*n
+    // Calculate NAN_l
     DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
         normalMultsImage, normalMultsImage->GetLargestPossibleRegion() );
-    for( normalIt.GoToBegin(), multIt.GoToBegin();
+    for( normalIt.GoToBegin(), weightIt.GoToBegin(), multIt.GoToBegin();
          !multIt.IsAtEnd();
-         ++normalIt, ++multIt )
+         ++normalIt, ++weightIt, ++multIt )
            {
-      normalVector = normalIt.Get();
-      multIt.Set( normalVector[i] * normalVector );
+      multVector.Fill( 0.0 );
+      N = normalIt.Get();
+      A = weightIt.Get();
+      for( int j = 0; j < ImageDimension; j++ )
+        {
+        N_l[j] = N[i][j];
+        }
+      multVector = N * A * N_l;
+      multIt.Set( multVector );
       }
 
     // Set the multiplication vector image to the array
-    normalMultsArray[i] = normalMultsImage;
+    propTangentialMultsArray[i] = normalMultsImage;
+    propNormalMultsArray[i] = normalMultsImage;
     }
-  this->SetMultiplicationVectorImageArray( NORMAL, normalMultsArray );
+  this->SetMultiplicationVectorImageArray( PROP_TANGENTIAL,
+                                           propTangentialMultsArray );
+  this->SetMultiplicationVectorImageArray( PROP_NORMAL,
+                                           propNormalMultsArray );
 }
 
 /**
@@ -521,44 +582,65 @@ AnisotropicDiffusiveRegistrationFilter
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
-AnisotropicDiffusiveRegistrationFilter
+AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::UpdateDeformationComponentImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( this->GetNormalVectorImage() );
-  assert( this->GetWeightImage() );
+  assert( this->GetDeformationComponentImage( SMOOTH_NORMAL )
+          == this->GetDeformationComponentImage( PROP_NORMAL ) );
 
-  // Setup iterators
-  NormalVectorImageRegionType normalVectorRegion(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  // The normal component of u_l is (NAN_l)^T * u
+  // Conveniently, (NAN_l) is the prop multiplication vector, so we don't need
+  // to compute it again here
+  DeformationVectorImageArrayType propTangentialMultImageArray;
+  this->GetMultiplicationVectorImageArray( PROP_TANGENTIAL,
+                                           propTangentialMultImageArray );
+  DeformationVectorImageRegionArrayType NAN_lRegionArray;
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    assert( propTangentialMultImageArray[i] );
+    NAN_lRegionArray[i] = DeformationVectorImageRegionType(
+        propTangentialMultImageArray[i],
+        propTangentialMultImageArray[i]->GetLargestPossibleRegion() );
+    }
 
+  // Setup the iterators for the deformation field
   OutputImagePointer output = this->GetOutput();
   OutputImageRegionType outputRegion(output,
                                      output->GetLargestPossibleRegion() );
 
+  // We want to update the deformation component images for both SMOOTH_NORMAL
+  // and PROP_NORMAL, but they point to the same image, so we will grab the
+  // pointer from the first one to update both
   DeformationFieldPointer normalDeformationField
-      = this->GetDeformationComponentImage( NORMAL );
+      = this->GetDeformationComponentImage( SMOOTH_NORMAL );
   OutputImageRegionType normalDeformationRegion(
       normalDeformationField,
       normalDeformationField->GetLargestPossibleRegion() );
 
-  // Calculate the tangential and normal components of the deformation field
-  NormalVectorType       n;
+  // Iterate over the deformation field and calculate the new normal components
   DeformationVectorType  u; // deformation vector
+  u.Fill( 0.0 );
   DeformationVectorType  normalDeformationVector;
+  normalDeformationVector.Fill( 0.0 );
   DeformationVectorType  tangentialDeformationVector;
+  tangentialDeformationVector.Fill( 0.0 );
 
-  for( normalVectorRegion.GoToBegin(), outputRegion.GoToBegin(),
-       normalDeformationRegion.GoToBegin();
-  !outputRegion.IsAtEnd();
-  ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
+  outputRegion.GoToBegin();
+  normalDeformationRegion.GoToBegin();
+  for( int i = 0; i < ImageDimension; i++ )
     {
-    n = normalVectorRegion.Get();
-    u = outputRegion.Get();
+    NAN_lRegionArray[i].GoToBegin();
+    }
 
-    // normal component = (u^Tn)n
-    normalDeformationVector = ( u * n ) * n;
+  while(!outputRegion.IsAtEnd() )
+    {
+    u = outputRegion.Get();
+    for( int i = 0; i < ImageDimension; i++ )
+      {
+      normalDeformationVector[i] = NAN_lRegionArray[i].Get() * u;
+      }
     normalDeformationRegion.Set( normalDeformationVector );
 
     // Test that the normal and tangential components were computed corectly
@@ -572,9 +654,59 @@ AnisotropicDiffusiveRegistrationFilter
       itkExceptionMacro( << "Normal and tangential deformation field "
                          << "components are not orthogonal" );
       }
+
+    ++outputRegion;
+    ++normalDeformationRegion;
+    for( int i = 0; i < ImageDimension; i++ )
+      {
+      ++NAN_lRegionArray[i];
+      }
     }
   normalDeformationField->Modified();
 }
+
+/**
+ * Calculates the derivatives of the deformation vector derivatives after
+ * each iteration.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDeformationComponentDerivativeImages()
+{
+  assert( this->GetComputeRegularizationTerm() );
+  assert( this->GetOutput() );
+
+  // Get the spacing and the radius
+  SpacingType spacing = this->GetOutput()->GetSpacing();
+  const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  const typename OutputImageType::SizeType radius = df->GetRadius();
+
+  // Calculate first and second order deformation component image derivatives.
+  // The two TANGENTIAL and two NORMAL components share images.  We will
+  // calculate derivatives only for the SMOOTH terms, and the PROP terms
+  // will be automatically updated since they point to the same image data.
+  DeformationComponentImageArrayType deformationComponentImageArray;
+  deformationComponentImageArray.Fill( 0 );
+
+  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    {
+    if( i == SMOOTH_TANGENTIAL || i == SMOOTH_NORMAL )
+      {
+      this->ExtractXYZComponentsFromDeformationField(
+          this->GetDeformationComponentImage(i),
+          deformationComponentImageArray );
+
+      for( int j = 0; j < ImageDimension; j++ )
+        {
+        this->ComputeDeformationComponentDerivativeImageHelper(
+            deformationComponentImageArray[j], i, j, spacing, radius );
+        }
+      }
+    }
+}
+
 
 } // end namespace itk
 

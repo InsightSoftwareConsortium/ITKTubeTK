@@ -300,7 +300,7 @@ protected:
    *  tensor images */
   virtual void ComputeDiffusionTensorDerivativeImageHelper(
       const DiffusionTensorImagePointer & tensorImage,
-      TensorDerivativeImagePointer & tensorDerivativeImage,
+      int term,
       const SpacingType & spacing,
       const typename OutputImageType::SizeType & radius ) const;
 
@@ -326,8 +326,8 @@ protected:
    *  deformation component images */
   virtual void ComputeDeformationComponentDerivativeImageHelper(
       const DeformationVectorComponentImagePointer & deformationComponentImage,
-      ScalarDerivativeImagePointer & firstOrderDerivativeImage,
-      TensorDerivativeImagePointer & secondOrderDerivativeImage,
+      int term,
+      int dimension,
       const SpacingType & spacing,
       const typename OutputImageType::SizeType & radius ) const;
 
@@ -369,20 +369,32 @@ protected:
     this->m_MultiplicationVectorImageArrays[index] = mult;
     }
 
-  /** Set an array of the first-order deformation component derivatives. */
-  void SetDeformationComponentFirstOrderDerivativeArray(
-      int index, ScalarDerivativeImageArrayType & deriv )
+  /** Get an array of the multiplication vectors images. */
+  void GetMultiplicationVectorImageArray(
+      int index, DeformationVectorImageArrayType & mult )
     {
     assert( index < this->GetNumberOfTerms() );
-    this->m_DeformationComponentFirstOrderDerivativeArrays[index] = deriv;
+    mult = this->m_MultiplicationVectorImageArrays[index];
     }
 
-  /** Set an array of the second-order deformation component derivatives. */
-  void SetDeformationComponentSecondOrderDerivativeArray(
-      int index, TensorDerivativeImageArrayType & deriv )
+  /** Set a first-order deformation component derivative. */
+  void SetDeformationComponentFirstOrderDerivative(
+      int index, int dimension, ScalarDerivativeImageType * deriv )
     {
     assert( index < this->GetNumberOfTerms() );
-    this->m_DeformationComponentSecondOrderDerivativeArrays[index] = deriv;
+    assert( dimension < ImageDimension );
+    this->m_DeformationComponentFirstOrderDerivativeArrays[index][dimension]
+        = deriv;
+    }
+
+  /** Set a second-order deformation component derivative. */
+  void SetDeformationComponentSecondOrderDerivative(
+      int index, int dimension, TensorDerivativeImageType * deriv )
+    {
+    assert( index < this->GetNumberOfTerms() );
+    assert( dimension < ImageDimension );
+    this->m_DeformationComponentSecondOrderDerivativeArrays[index][dimension]
+        = deriv;
     }
 
   /** Extracts the x, y, z components of a deformation field. */

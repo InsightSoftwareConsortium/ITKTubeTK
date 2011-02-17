@@ -275,3 +275,29 @@ add_test( ${PROJECT_NAME}TestBoxesGaussian-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}TestBoxesGaussian-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}TestGaussian )
+
+#######
+# Test10
+#######
+add_test( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS
+            ${PROJ_EXE}
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -b ${INPUT_DATA}/Sphere_surfaceBorderRAS.vtk
+               -d ${TEMP}/Sphere_sparseAnisotropicSurfaceRAS_motionField.mhd
+               -o ${TEMP}/Sphere_sparseAnisotropicSurfaceRAS_transformedMoving.mhd
+               -i 5
+               -s 0.125
+               -l -0.05
+               -u SparseSlidingOrgan )
+
+#######
+# Test10-Compare
+#######
+add_test( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/Sphere_sparseAnisotropicSurfaceRAS_motionField.mhd
+               -b ${BASELINE}/Sphere_anisotropicSurface_motionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS )

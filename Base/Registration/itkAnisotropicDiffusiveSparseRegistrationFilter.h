@@ -20,18 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkAnisotropicDiffusiveRegistrationFilter_h
-#define __itkAnisotropicDiffusiveRegistrationFilter_h
+#ifndef __itkAnisotropicDiffusiveSparseRegistrationFilter_h
+#define __itkAnisotropicDiffusiveSparseRegistrationFilter_h
 
 #include "itkDiffusiveRegistrationFilter.h"
-
-#include "vtkPolyData.h"
-#include "vtkSmartPointer.h"
 
 namespace itk
 {
 
-/** \class itkAnisotropicDiffusiveRegistrationFilter
+/** \class itkAnisotropicDiffusiveSparseRegistrationFilter
  * \brief Registration filter for registrations using anisotropic diffusive
  * regularizers, for example for sliding organ registration.
  *
@@ -45,9 +42,7 @@ namespace itk
  * that accomodates deformation field discontinuities that are expected when
  * considering sliding motion.
  *
- * The regularization term uses a specified border between the organs
- * (stored as a vtkPolyData *) and enforces coupling between the organs while
- * allowing the motion field to exhibit sliding motion at the organ interface.
+ * TODO
  *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
  * anisotropic diffusive regularization, ISBI 2011.
@@ -56,20 +51,21 @@ namespace itk
  * moving image and the type of the deformation field.
  *
  * \sa itkDiffusiveRegistrationFilter
+ * \sa itkAnisotropicDiffusiveRegistrationFilter
  * \sa itkAnisotropicDiffusiveRegistrationFunction
  * \ingroup DeformableImageRegistration
  * \ingroup MultiThreaded
  */
 
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-class ITK_EXPORT AnisotropicDiffusiveRegistrationFilter
+class ITK_EXPORT AnisotropicDiffusiveSparseRegistrationFilter
   : public DiffusiveRegistrationFilter< TFixedImage,
                                         TMovingImage,
                                         TDeformationField >
 {
 public:
   /** Standard class typedefs. */
-  typedef AnisotropicDiffusiveRegistrationFilter            Self;
+  typedef AnisotropicDiffusiveSparseRegistrationFilter      Self;
   typedef DiffusiveRegistrationFilter< TFixedImage,
                                        TMovingImage,
                                        TDeformationField >  Superclass;
@@ -102,14 +98,17 @@ public:
   /** The registration function type */
   typedef typename Superclass::RegistrationFunctionType
       RegistrationFunctionType;
+  typedef typename Superclass::SpacingType              SpacingType;
 
   /** Deformation field types. */
   typedef typename Superclass::DeformationVectorType    DeformationVectorType;
   typedef typename Superclass::DeformationVectorComponentType
       DeformationVectorComponentType;
+  typedef typename Superclass::DeformationComponentImageArrayType
+      DeformationComponentImageArrayType;
 
   /** Diffusion tensor image types */
-  typedef typename Superclass::DiffusionTensorType       DiffusionTensorType;
+  typedef typename Superclass::DiffusionTensorType      DiffusionTensorType;
   typedef typename Superclass::DiffusionTensorImageType
       DiffusionTensorImageType;
 
@@ -134,23 +133,35 @@ public:
       DeformationVectorImageArrayType;
   typedef typename Superclass::DeformationVectorImageRegionType
       DeformationVectorImageRegionType;
+  typedef typename
+      RegistrationFunctionType::DeformationVectorImageRegionArrayType
+      DeformationVectorImageRegionArrayType;
 
-  /** Normal vector types */
+  /** Normal vector types.  There are three normals at each voxel, which are
+   *  stored in a matrix.  If the normals are based on the structure tensor,
+   *  then the matrix will be symmetric, but we won't enforce that. */
   typedef double NormalVectorComponentType;
-  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
+  typedef typename itk::Vector< NormalVectorComponentType, ImageDimension >
       NormalVectorType;
-  typedef itk::Image< NormalVectorType, ImageDimension >
-      NormalVectorImageType;
-  typedef typename NormalVectorImageType::Pointer
-      NormalVectorImagePointer;
-  typedef ZeroFluxNeumannBoundaryCondition< NormalVectorImageType >
-      NormalVectorImageBoundaryConditionType;
-  typedef itk::ImageRegionIterator< NormalVectorImageType >
-      NormalVectorImageRegionType;
+  typedef typename itk::Matrix< NormalVectorComponentType,
+                                ImageDimension,
+                                ImageDimension >          NormalMatrixType;
+  typedef itk::Image< NormalMatrixType, ImageDimension >
+      NormalMatrixImageType;
+  typedef typename NormalMatrixImageType::Pointer
+      NormalMatrixImagePointer;
+  typedef ZeroFluxNeumannBoundaryCondition< NormalMatrixImageType >
+      NormalMatrixImageBoundaryConditionType;
+  typedef itk::ImageRegionIterator< NormalMatrixImageType >
+      NormalMatrixImageRegionType;
 
   /** Types for weighting between the anisotropic and diffusive (Gaussian)
-    * regularization */
-  typedef double                                        WeightType;
+    * regularization - also a matrix, likely symmetric but we won't enforce
+    * that here. */
+  typedef double                                        WeightComponentType;
+  typedef typename itk::Matrix< WeightComponentType,
+                                ImageDimension,
+                                ImageDimension >        WeightType;
   typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
   typedef typename WeightImageType::Pointer             WeightImagePointer;
   typedef itk::ImageRegionIterator< WeightImageType >   WeightImageRegionType;
@@ -162,7 +173,7 @@ public:
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
-    { return 2; }
+    { return 4; }
 
   /** Set/get the organ boundary polydata, which must be in the same space as
    *  the fixed image.  Border normals are computed on this polydata, so it
@@ -183,10 +194,10 @@ public:
   /** Set/get the image of the normal vectors.  Setting the normal vector
    * image overrides the border surface polydata if a border surface was
    * also supplied. */
-  virtual void SetNormalVectorImage( NormalVectorImageType * normalImage )
-    { m_NormalVectorImage = normalImage; }
-  virtual NormalVectorImageType * GetNormalVectorImage() const
-    { return m_NormalVectorImage; }
+  virtual void SetNormalMatrixImage( NormalMatrixImageType * normalImage )
+    { m_NormalMatrixImage = normalImage; }
+  virtual NormalMatrixImageType * GetNormalMatrixImage() const
+    { return m_NormalMatrixImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
    * the border surface polydata and lambda if a border surface was also
@@ -196,20 +207,25 @@ public:
   virtual WeightImageType * GetWeightImage() const
     { return m_WeightImage; }
 
-  /** Get the normal components of the deformation field. */
+  /** Get the normal components of the deformation field.  The normal
+   *  deformation field component images are the same for both the SMOOTH_NORMAL
+   *  and PROP_NORMAL terms, so we will return one arbitrarily. */
   virtual const DeformationFieldType * GetNormalDeformationComponentImage()
       const
     {
-    return this->GetDeformationComponentImage( NORMAL );
+    return this->GetDeformationComponentImage( SMOOTH_NORMAL );
     }
 
 protected:
-  AnisotropicDiffusiveRegistrationFilter();
-  virtual ~AnisotropicDiffusiveRegistrationFilter() {}
+  AnisotropicDiffusiveSparseRegistrationFilter();
+  virtual ~AnisotropicDiffusiveSparseRegistrationFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Handy for array indexing. */
-  enum DivTerm { TANGENTIAL, NORMAL };
+  enum DivTerm { SMOOTH_TANGENTIAL,
+                 SMOOTH_NORMAL,
+                 PROP_TANGENTIAL,
+                 PROP_NORMAL };
 
   /** Allocate the deformation component images and their derivative images.
    *  (which may be updated throughout the registration). Reimplement in derived
@@ -229,25 +245,31 @@ protected:
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages();
 
+  /** Computes the first- and second-order partial derivatives of the
+   *  deformation component images on each iteration.  Override in derived
+   *  classes if the deformation components image pointers are not unique, to
+   *  avoid computing the same derivatives multiple times. */
+  virtual void ComputeDeformationComponentDerivativeImages();
+
   /** If needed, allocates and computes the normal vector and weight images. */
-  virtual void SetupNormalVectorAndWeightImages();
+  virtual void SetupNormalMatrixAndWeightImages();
 
   /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
-  virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
+  virtual void ComputeNormalMatrixAndWeightImages( bool computeNormals,
                                                    bool computeWeights );
 
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border. */
-  virtual WeightType ComputeWeightFromDistance( const WeightType distance )
-      const;
+  virtual WeightComponentType ComputeWeightFromDistance(
+      const WeightComponentType distance ) const;
 
 private:
   // Purposely not implemented
-  AnisotropicDiffusiveRegistrationFilter(const Self&);
+  AnisotropicDiffusiveSparseRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
 
   /** Organ boundary surface and surface of border normals */
@@ -255,24 +277,24 @@ private:
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
-  NormalVectorImagePointer            m_NormalVectorImage;
+  NormalMatrixImagePointer            m_NormalMatrixImage;
   WeightImagePointer                  m_WeightImage;
 
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
-  WeightType                          m_lambda;
+  WeightComponentType                 m_lambda;
 
 };
 
 } // end namespace itk
 
 #if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkAnisotropicDiffusiveRegistrationFilter+-.h"
+# include "Templates/itkAnisotropicDiffusiveSparseRegistrationFilter+-.h"
 #endif
 
 #if ITK_TEMPLATE_TXX
-# include "itkAnisotropicDiffusiveRegistrationFilter.txx"
+# include "itkAnisotropicDiffusiveSparseRegistrationFilter.txx"
 #endif
 
 #endif

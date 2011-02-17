@@ -167,6 +167,17 @@
       <default>false</default>
     </boolean>
     <string-enumeration>
+      <name>anisotropicRegistrationType</name>
+      <flag>u</flag>
+      <longflag>anisotropicRegistrationType</longflag>
+      <label>Anisotropic Registration Type</label>
+      <channel>input</channel>
+      <element>SlidingOrgan</element>
+      <element>SparseSlidingOrgan</element>
+      <description>The type of the anisotropic registration.  Each voxel has one normal in the "Sliding Organ" type, and three normals in the "Sparse Sliding Organ" type.  "Sparse Sliding Organ" is under development and not recommended.</description>
+      <default>SlidingOrgan</default>
+    </string-enumeration>
+    <string-enumeration>
       <name>worldCoordinateSystem</name>
       <flag>c</flag>
       <longflag>worldCoordinateSystem</longflag>

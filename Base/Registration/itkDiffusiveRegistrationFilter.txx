@@ -373,10 +373,7 @@ DiffusiveRegistrationFilter
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     this->ComputeDiffusionTensorDerivativeImageHelper(
-        m_DiffusionTensorImages[i],
-        m_DiffusionTensorDerivativeImages[i],
-        spacing,
-        radius );
+        m_DiffusionTensorImages[i], i, spacing, radius );
     }
 }
 
@@ -389,11 +386,14 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDiffusionTensorDerivativeImageHelper(
     const DiffusionTensorImagePointer & tensorImage,
-    TensorDerivativeImagePointer & tensorDerivativeImage,
+    int term,
     const SpacingType & spacing,
     const typename OutputImageType::SizeType & radius ) const
 {
   assert( tensorImage );
+
+  TensorDerivativeImagePointer tensorDerivativeImage
+      = m_DiffusionTensorDerivativeImages[term];
   assert( tensorDerivativeImage );
 
   // Get the FiniteDifferenceFunction to use in calculations.
@@ -486,17 +486,12 @@ DiffusiveRegistrationFilter
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     this->ExtractXYZComponentsFromDeformationField(
-        m_DeformationComponentImages[i],
-        deformationComponentImageArray );
+        m_DeformationComponentImages[i], deformationComponentImageArray );
 
     for( int j = 0; j < ImageDimension; j++ )
       {
       this->ComputeDeformationComponentDerivativeImageHelper(
-          deformationComponentImageArray[j],
-          m_DeformationComponentFirstOrderDerivativeArrays[i][j],
-          m_DeformationComponentSecondOrderDerivativeArrays[i][j],
-          spacing,
-          radius );
+          deformationComponentImageArray[j], i, j, spacing, radius );
       }
     }
 }
@@ -510,13 +505,18 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDeformationComponentDerivativeImageHelper(
     const DeformationVectorComponentImagePointer & deformationComponentImage,
-    ScalarDerivativeImagePointer & firstOrderDerivativeImage,
-    TensorDerivativeImagePointer & secondOrderDerivativeImage,
+    int term,
+    int dimension,
     const SpacingType & spacing,
     const typename OutputImageType::SizeType & radius ) const
 {
   assert( deformationComponentImage );
+
+  ScalarDerivativeImagePointer firstOrderDerivativeImage
+      = m_DeformationComponentFirstOrderDerivativeArrays[term][dimension];
   assert( firstOrderDerivativeImage );
+  TensorDerivativeImagePointer secondOrderDerivativeImage
+      = m_DeformationComponentSecondOrderDerivativeArrays[term][dimension];
   assert( secondOrderDerivativeImage );
 
   // Get the FiniteDifferenceFunction to use in calculations.
