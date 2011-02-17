@@ -625,7 +625,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     NAN_lRegionArray[i].GoToBegin();
     }
 
-  while(!outputRegion.IsAtEnd() )
+  while( !outputRegion.IsAtEnd() )
     {
     u = outputRegion.Get();
     for( int i = 0; i < ImageDimension; i++ )
