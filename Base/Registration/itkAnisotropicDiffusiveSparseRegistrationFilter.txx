@@ -111,11 +111,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   int t = 0;
   ScalarDerivativeImagePointer firstOrder = 0;
   TensorDerivativeImagePointer secondOrder = 0;
-  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+  for( int i = 0; i < ImageDimension; i++ )
     {
-    for( int j = 0; j < ImageDimension; j++ )
+    for( int j = 0; j < this->GetNumberOfTerms(); j++ )
       {
-      t = termOrder[i];
+      t = termOrder[j];
       if( t == SMOOTH_TANGENTIAL || t == SMOOTH_NORMAL )
         {
         firstOrder = ScalarDerivativeImageType::New();
@@ -123,8 +123,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
         secondOrder = TensorDerivativeImageType::New();
         this->AllocateSpaceForImage( secondOrder, output );
         }
-      this->SetDeformationComponentFirstOrderDerivative( t, j, firstOrder );
-      this->SetDeformationComponentSecondOrderDerivative( t, j, secondOrder );
+      this->SetDeformationComponentFirstOrderDerivative( t, i, firstOrder );
+      this->SetDeformationComponentSecondOrderDerivative( t, i, secondOrder );
       }
     }
 }
@@ -540,12 +540,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   DeformationVectorType N_l;
   N_l.Fill( 0.0 );
 
-  DeformationVectorImageArrayType propTangentialMultsArray;
-  DeformationVectorImageArrayType propNormalMultsArray;
-
   for( int i = 0; i < ImageDimension; i++ )
     {
-    // Create the multiplication vector image
+    // Create the multiplication vector image that is shared between the PROPs
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
     this->AllocateSpaceForImage( normalMultsImage, output );
 
@@ -567,14 +564,18 @@ AnisotropicDiffusiveSparseRegistrationFilter
       multIt.Set( multVector );
       }
 
-    // Set the multiplication vector image to the array
-    propTangentialMultsArray[i] = normalMultsImage;
-    propNormalMultsArray[i] = normalMultsImage;
+    // Set the multiplication vector image
+    this->SetMultiplicationVectorImage( PROP_TANGENTIAL, i, normalMultsImage );
+    this->SetMultiplicationVectorImage( PROP_NORMAL, i, normalMultsImage );
     }
-  this->SetMultiplicationVectorImageArray( PROP_TANGENTIAL,
-                                           propTangentialMultsArray );
-  this->SetMultiplicationVectorImageArray( PROP_NORMAL,
-                                           propNormalMultsArray );
+
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    assert( this->GetMultiplicationVectorImage( SMOOTH_TANGENTIAL, i )
+            == this->GetMultiplicationVectorImage( SMOOTH_NORMAL, i ) );
+    assert( this->GetMultiplicationVectorImage( PROP_TANGENTIAL, i )
+            == this->GetMultiplicationVectorImage( PROP_NORMAL, i ) );
+    }
 }
 
 /**
@@ -587,22 +588,18 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::UpdateDeformationComponentImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( this->GetDeformationComponentImage( SMOOTH_NORMAL )
-          == this->GetDeformationComponentImage( PROP_NORMAL ) );
 
   // The normal component of u_l is (NAN_l)^T * u
-  // Conveniently, (NAN_l) is the prop multiplication vector, so we don't need
-  // to compute it again here
-  DeformationVectorImageArrayType propTangentialMultImageArray;
-  this->GetMultiplicationVectorImageArray( PROP_TANGENTIAL,
-                                           propTangentialMultImageArray );
+  // Conveniently, (NAN_l) is the prop multiplication vector (for both SMOOTH
+  // and PROP), so we don't need to compute it again here
   DeformationVectorImageRegionArrayType NAN_lRegionArray;
   for( int i = 0; i < ImageDimension; i++ )
     {
-    assert( propTangentialMultImageArray[i] );
+    DeformationFieldPointer propMultImage
+        = this->GetMultiplicationVectorImage( PROP_TANGENTIAL, i );
+    assert( propMultImage );
     NAN_lRegionArray[i] = DeformationVectorImageRegionType(
-        propTangentialMultImageArray[i],
-        propTangentialMultImageArray[i]->GetLargestPossibleRegion() );
+        propMultImage, propMultImage->GetLargestPossibleRegion() );
     }
 
   // Setup the iterators for the deformation field
@@ -634,7 +631,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     NAN_lRegionArray[i].GoToBegin();
     }
 
-  while(!outputRegion.IsAtEnd() )
+  while( !outputRegion.IsAtEnd() )
     {
     u = outputRegion.Get();
     for( int i = 0; i < ImageDimension; i++ )
@@ -663,6 +660,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
       }
     }
   normalDeformationField->Modified();
+
+  assert( this->GetDeformationComponentImage( SMOOTH_TANGENTIAL )
+          == this->GetDeformationComponentImage( PROP_TANGENTIAL ) );
+  assert( this->GetDeformationComponentImage( SMOOTH_NORMAL )
+          == this->GetDeformationComponentImage( PROP_NORMAL ) );
 }
 
 /**
@@ -689,7 +691,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // will be automatically updated since they point to the same image data.
   DeformationComponentImageArrayType deformationComponentImageArray;
   deformationComponentImageArray.Fill( 0 );
-
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     if( i == SMOOTH_TANGENTIAL || i == SMOOTH_NORMAL )
@@ -704,6 +705,27 @@ AnisotropicDiffusiveSparseRegistrationFilter
             deformationComponentImageArray[j], i, j, spacing, radius );
         }
       }
+    }
+
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    assert( this->GetDeformationComponentFirstOrderDerivative(
+        SMOOTH_TANGENTIAL, i )
+          == this->GetDeformationComponentFirstOrderDerivative(
+              PROP_TANGENTIAL, i ) );
+    assert( this->GetDeformationComponentFirstOrderDerivative(
+        SMOOTH_NORMAL, i )
+          == this->GetDeformationComponentFirstOrderDerivative(
+              PROP_NORMAL, i ) );
+
+    assert( this->GetDeformationComponentSecondOrderDerivative(
+        SMOOTH_TANGENTIAL, i )
+          == this->GetDeformationComponentSecondOrderDerivative(
+              PROP_TANGENTIAL, i ) );
+    assert( this->GetDeformationComponentSecondOrderDerivative(
+        SMOOTH_NORMAL, i )
+          == this->GetDeformationComponentSecondOrderDerivative(
+              PROP_NORMAL, i ) );
     }
 }
 
