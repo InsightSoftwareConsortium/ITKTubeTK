@@ -45,6 +45,7 @@ limitations under the License.
 #include "itkDiffusiveRegistrationFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkOrientImageFilter.h"
+#include "itkMultiResolutionPDEDeformableRegistration.h"
 #include "itkTransform.h"
 #include "itkTransformFileReader.h"
 #include "itkWarpImageFilter.h"
@@ -561,18 +562,32 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  // Setup the registration
+  // Start the registration
   timeCollector.Start( "Register" );
-  registrator->SetFixedImage( orientFixed->GetOutput() );
-  registrator->SetMovingImage( orientMoving->GetOutput() );
-  registrator->SetInitialDeformationField( orientInitField->GetOutput() );
-  registrator->SetNumberOfIterations( numberOfIterations );
+
+  // Setup the anisotropic registrator
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetLambda( lambda );
     }
+
+  // Setup the multiresolution PDE filter
+  typedef itk::MultiResolutionPDEDeformableRegistration
+      < FixedImageType, MovingImageType, VectorImageType, pixelT >
+      MultiResolutionRegistrationFilterType;
+  typename MultiResolutionRegistrationFilterType::Pointer multires
+      = MultiResolutionRegistrationFilterType::New();
+  multires->SetRegistrationFilter( registrator );
+  multires->SetFixedImage( orientFixed->GetOutput() );
+  multires->SetMovingImage( orientMoving->GetOutput() );
+  multires->SetArbitraryInitialDeformationField( orientInitField->GetOutput() );
+  int numberOfLevels = numberOfIterations.size();
+  multires->SetNumberOfLevels( numberOfLevels );
+  unsigned int * iterations = new unsigned int [ numberOfLevels ];
+  copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
+  multires->SetNumberOfIterations( iterations );
 
   // Watch the registration's progress
   tube::CLIFilterWatcher watchRegistration(registrator,
@@ -594,7 +609,7 @@ int DoIt( int argc, char * argv[] )
       < MovingImageType, typename WarperType::CoordRepType > InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
   warper->SetInput( movingImageReader->GetOutput() );
-  warper->SetDeformationField( registrator->GetOutput() );
+  warper->SetDeformationField( multires->GetOutput() );
   warper->SetInterpolator( interpolator );
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( 0 );
@@ -614,7 +629,7 @@ int DoIt( int argc, char * argv[] )
   orientOutput->UseImageDirectionOn();
   orientOutput->SetDesiredCoordinateDirection(
       fixedImageReader->GetOutput()->GetDirection() );
-  orientOutput->SetInput( registrator->GetOutput() );
+  orientOutput->SetInput( multires->GetOutput() );
 
   // Write the deformation field
   if( outputDeformationFieldFileName != "" )
@@ -775,6 +790,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // Clean up, we're done
+  delete [] iterations;
   progressReporter.End( );
   timeCollector.Report();
   return EXIT_SUCCESS;
