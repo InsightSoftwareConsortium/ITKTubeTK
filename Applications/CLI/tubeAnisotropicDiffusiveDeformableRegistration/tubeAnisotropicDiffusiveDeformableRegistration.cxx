@@ -509,17 +509,17 @@ int DoIt( int argc, char * argv[] )
       }
     else if( sparseAnisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveSparseRegistrationFilterType::WeightImageType
-          ::Pointer weightImage = 0;
-      if( ReadAndOrientImageAxial( weightImage, inputWeightImageFileName ) )
-        {
-        sparseAnisotropicRegistrator->SetWeightImage( weightImage );
-        }
-      else
-        {
-        timeCollector.Report();
-        return EXIT_FAILURE;
-        }
+//      typename AnisotropicDiffusiveSparseRegistrationFilterType::WeightImageType
+//          ::Pointer weightImage = 0;
+//      if( ReadAndOrientImageAxial( weightImage, inputWeightImageFileName ) )
+//        {
+//        sparseAnisotropicRegistrator->SetWeightImage( weightImage );
+//        }
+//      else
+//        {
+//        timeCollector.Report();
+//        return EXIT_FAILURE;
+//        }
       }
     timeCollector.Stop( "Loading weight image" );
     }
@@ -711,16 +711,16 @@ int DoIt( int argc, char * argv[] )
       }
     else if( sparseAnisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveSparseRegistrationFilterType::WeightImageType
-          ::Pointer weightImage = 0;
-      if( !ReorientAndWriteImage(
-          sparseAnisotropicRegistrator->GetWeightImage(),
-          fixedImageReader->GetOutput()->GetDirection(),
-          outputWeightImageFileName ) )
-        {
-        timeCollector.Report();
-        return EXIT_FAILURE;
-        }
+//      typename AnisotropicDiffusiveSparseRegistrationFilterType::WeightImageType
+//          ::Pointer weightImage = 0;
+//      if( !ReorientAndWriteImage(
+//          sparseAnisotropicRegistrator->GetWeightImage(),
+//          fixedImageReader->GetOutput()->GetDirection(),
+//          outputWeightImageFileName ) )
+//        {
+//        timeCollector.Report();
+//        return EXIT_FAILURE;
+//        }
       }
     timeCollector.Stop( "Write weight image" );
     }
