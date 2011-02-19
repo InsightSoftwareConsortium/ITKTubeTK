@@ -145,7 +145,7 @@ public:
       NormalVectorType;
   typedef typename itk::Matrix< NormalVectorComponentType,
                                 ImageDimension,
-                                ImageDimension >          NormalMatrixType;
+                                ImageDimension >        NormalMatrixType;
   typedef itk::Image< NormalMatrixType, ImageDimension >
       NormalMatrixImageType;
   typedef typename NormalMatrixImageType::Pointer
@@ -155,16 +155,28 @@ public:
   typedef itk::ImageRegionIterator< NormalMatrixImageType >
       NormalMatrixImageRegionType;
 
-  /** Types for weighting between the anisotropic and diffusive (Gaussian)
-    * regularization - also a matrix, likely symmetric but we won't enforce
+  /** Types for weighting between the plane/tube/point states of the
+    * regularization - a matrix A, likely symmetric but we won't enforce
     * that here. */
   typedef double                                        WeightComponentType;
   typedef typename itk::Matrix< WeightComponentType,
                                 ImageDimension,
-                                ImageDimension >        WeightType;
-  typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
-  typedef typename WeightImageType::Pointer             WeightImagePointer;
-  typedef itk::ImageRegionIterator< WeightImageType >   WeightImageRegionType;
+                                ImageDimension >        WeightMatrixType;
+  typedef itk::Image< WeightMatrixType, ImageDimension >
+      WeightMatrixImageType;
+  typedef typename WeightMatrixImageType::Pointer
+      WeightMatrixImagePointer;
+  typedef itk::ImageRegionIterator< WeightMatrixImageType >
+      WeightMatrixImageRegionType;
+
+  /** We also need a weighting w between the diffusive regularization and the
+    * anisotropic regularization, which is a scalar. */
+  typedef itk::Image< WeightComponentType, ImageDimension >
+      WeightComponentImageType;
+  typedef typename WeightComponentImageType::Pointer
+      WeightComponentImagePointer;
+  typedef itk::ImageRegionIterator< WeightComponentImageType >
+      WeightComponentImageRegionType;
 
   /** Organ boundary surface types */
   typedef vtkPolyData                                   BorderSurfaceType;
@@ -186,10 +198,10 @@ public:
   /** Set/get the lambda that controls the exponential decay used to calculate
    *  the weight value w as a function of the distance to the closest border
    *  point.  Must be negative. */
-  void SetLambda( WeightType l )
-    { if ( l < 0 ) { m_lambda = l; } }
-  WeightType GetLambda() const
-    { return m_lambda; }
+  void SetLambda( WeightComponentType l )
+    { if ( l < 0 ) { m_Lambda = l; } }
+  WeightComponentType GetLambda() const
+    { return m_Lambda; }
 
   /** Set/get the image of the normal vectors.  Setting the normal vector
    * image overrides the border surface polydata if a border surface was
@@ -199,13 +211,21 @@ public:
   virtual NormalMatrixImageType * GetNormalMatrixImage() const
     { return m_NormalMatrixImage; }
 
-  /** Set/get the weighting image.  Setting the weighting image overrides
-   * the border surface polydata and lambda if a border surface was also
-   * supplied.  */
-  virtual void SetWeightImage( WeightImageType * weightImage )
-    { m_WeightImage = weightImage; }
-  virtual WeightImageType * GetWeightImage() const
-    { return m_WeightImage; }
+  /** Set/get the weighting matrix A image.  Setting the weighting matrix image
+   * overrides the structure tensor eigen analysis. */
+  virtual void SetWeightStructuresImage( WeightMatrixImageType * weightImage )
+    { m_WeightStructuresImage = weightImage; }
+  virtual WeightMatrixImageType * GetWeightStructuresImage() const
+    { return m_WeightStructuresImage; }
+
+  /** Set/get the weighting value w image.  Setting the weighting component
+    * image overrides the border surface polydata and lambda if the border
+    * surface was also supplied. */
+  virtual void SetWeightRegularizationsImage(
+      WeightComponentImageType * weightImage )
+    { m_WeightRegularizationsImage = weightImage; }
+  virtual WeightComponentImageType * GetWeightRegularizationsImage() const
+    { return m_WeightRegularizationsImage; }
 
   /** Get the normal components of the deformation field.  The normal
    *  deformation field component images are the same for both the SMOOTH_NORMAL
@@ -256,11 +276,12 @@ protected:
 
   /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();
-
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
-  virtual void ComputeNormalMatrixAndWeightImages( bool computeNormals,
-                                                   bool computeWeights );
+  virtual void ComputeNormalMatrixAndWeightImages(
+      bool computeNormals,
+      bool computeWeightStructures,
+      bool computeWeightRegularizations );
 
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border. */
@@ -278,12 +299,15 @@ private:
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
   NormalMatrixImagePointer            m_NormalMatrixImage;
-  WeightImagePointer                  m_WeightImage;
+  WeightMatrixImagePointer            m_WeightStructuresImage;
+  WeightComponentImagePointer         m_WeightRegularizationsImage;
 
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
-  WeightComponentType                 m_lambda;
+  WeightComponentType                 m_Lambda;
+
+  /** Sigma used to calculate the structure tensor from the fixed image */
 
 };
 

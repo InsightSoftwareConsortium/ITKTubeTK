@@ -53,12 +53,20 @@
       <description>Image specifying the normal vectors.  This should be in the space of the fixed image.  Optional: supply a normal vector image or an organ boundary surface.  If both are provided, the organ boundary surface is used.</description>
     </image>
     <image>
-      <name>inputWeightImageFileName</name>
-      <label>Input Weight Image</label>
+      <name>inputWeightRegularizationsImageFileName</name>
+      <label>Input Regularization Weight Image</label>
       <flag>w</flag>
-      <longflag>inputWeightImage</longflag>
+      <longflag>inputWeightRegularizationsImage</longflag>
       <channel>input</channel>
       <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This should be in the space of the fixed image.  Optional: supply a weight image or an organ boundary surface (and a lambda).  If both are provided, the organ boundary surface is used.</description>
+    </image>
+    <image>
+      <name>inputWeightStructuresImageFileName</name>
+      <label>Input Structure Weight Image</label>
+      <flag>e</flag>
+      <longflag>inputWeightStructuresImage</longflag>
+      <channel>input</channel>
+      <description>Image specifying the the matrices weighting between plane, tube and point-like structures.  This is applicable for sparse sliding organ registration only.  This image should be in the space of the fixed image.  Optional: supply a weight image or an organ boundary surface (and a lambda).  If both are provided, the organ boundary surface is used.</description>
     </image>
   </parameters>
 
@@ -122,12 +130,20 @@
       <description>Image specifying the normal vectors.  This is in the space of the fixed image.  Optional: allows you to save the normal vector image when providing an organ boundary surface.  On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated.</description>
     </image>
     <image>
-      <name>outputWeightImageFileName</name>
-      <label>Output Weight Image</label>
+      <name>outputWeightRegularizationsImageFileName</name>
+      <label>Output Weight Regularizations Image</label>
       <flag>x</flag>
-      <longflag>outputWeightImage</longflag>
+      <longflag>outputWeightRegularizationsImage</longflag>
       <channel>output</channel>
       <description>Image specifying the weights between the anisotropic diffusive regularization and the diffusive regularization, typically a function of distance to the organ boundary.  This is in the space of the fixed image.  Optional: allows you to save the weight image when providing an organ boundary surface. On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated.</description>
+    </image>
+    <image>
+      <name>outputWeightStructuresImageFileName</name>
+      <label>Output Weight Structures Image</label>
+      <flag>z</flag>
+      <longflag>outputWeightStructuresImage</longflag>
+      <channel>output</channel>
+      <description>Image specifying the the matrices weighting between plane, tube and point-like structures.  This is applicable for sparse sliding organ registration only.  This is in the space of the fixed image.  Optional: allows you to save the weight image when providing an organ boundary surface. On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated..</description>
     </image>
   </parameters>
 
