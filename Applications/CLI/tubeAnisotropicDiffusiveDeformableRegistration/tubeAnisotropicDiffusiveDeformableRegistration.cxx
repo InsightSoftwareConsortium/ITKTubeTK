@@ -46,6 +46,7 @@ limitations under the License.
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkOrientImageFilter.h"
 #include "itkMultiResolutionPDEDeformableRegistration.h"
+#include "itkRecursiveMultiResolutionPyramidImageFilter.h"
 #include "itkTransform.h"
 #include "itkTransformFileReader.h"
 #include "itkWarpImageFilter.h"
@@ -573,20 +574,52 @@ int DoIt( int argc, char * argv[] )
     anisotropicRegistrator->SetLambda( lambda );
     }
 
-  // Setup the multiresolution PDE filter
+  // Setup the multiresolution PDE filter - we use the recursive pyramid because
+  // we don't want the deformation field to undergo Gaussian smoothing, which
+  // undermines the efforts we are making with anisotropic diffusion
+
+  // Setup the levels, iterations and max error of Gaussian kernel
+  int numberOfLevels = numberOfIterations.size();
+  unsigned int * iterations = new unsigned int [ numberOfLevels ];
+  copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
+  double maximumError = 0.01;
+
+  // Setup the multiresolution pyramids
+  typedef pixelT MultiResolutionRealType;
+  typedef itk::Image< MultiResolutionRealType, ImageDimension >
+      MultiResolutionRealImageType;
+  typedef itk::RecursiveMultiResolutionPyramidImageFilter
+      < FixedImageType, MultiResolutionRealImageType > FixedImagePyramidType;
+  typename FixedImagePyramidType::Pointer fixedImagePyramid =
+      FixedImagePyramidType::New();
+  fixedImagePyramid->SetNumberOfLevels( numberOfLevels );
+  fixedImagePyramid->SetMaximumError( maximumError );
+
+  typedef itk::RecursiveMultiResolutionPyramidImageFilter
+      < MovingImageType, MultiResolutionRealImageType > MovingImagePyramidType;
+  typename MovingImagePyramidType::Pointer movingImagePyramid
+      = MovingImagePyramidType::New();
+  movingImagePyramid->SetNumberOfLevels( numberOfLevels );
+  movingImagePyramid->SetMaximumError( maximumError );
+
+  // Setup the diffusion filter to work with multiresolution registration
+  registrator->SetHighResolutionTemplate( orientFixed->GetOutput() );
+
+  // Setup the multiresolution registrator
   typedef itk::MultiResolutionPDEDeformableRegistration
-      < FixedImageType, MovingImageType, VectorImageType, pixelT >
-      MultiResolutionRegistrationFilterType;
+      < FixedImageType,
+      MovingImageType,
+      VectorImageType,
+      MultiResolutionRealType > MultiResolutionRegistrationFilterType;
   typename MultiResolutionRegistrationFilterType::Pointer multires
       = MultiResolutionRegistrationFilterType::New();
   multires->SetRegistrationFilter( registrator );
   multires->SetFixedImage( orientFixed->GetOutput() );
   multires->SetMovingImage( orientMoving->GetOutput() );
   multires->SetArbitraryInitialDeformationField( orientInitField->GetOutput() );
-  int numberOfLevels = numberOfIterations.size();
+  multires->SetFixedImagePyramid( fixedImagePyramid );
+  multires->SetMovingImagePyramid( movingImagePyramid );
   multires->SetNumberOfLevels( numberOfLevels );
-  unsigned int * iterations = new unsigned int [ numberOfLevels ];
-  copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
   multires->SetNumberOfIterations( iterations );
 
   // Watch the registration's progress
@@ -613,6 +646,7 @@ int DoIt( int argc, char * argv[] )
   warper->SetInterpolator( interpolator );
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( 0 );
+
 
   // Update triggers the registration and the warping
   warper->Update();
