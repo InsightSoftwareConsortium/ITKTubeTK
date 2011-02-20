@@ -302,13 +302,21 @@ private:
   WeightMatrixImagePointer            m_WeightStructuresImage;
   WeightComponentImagePointer         m_WeightRegularizationsImage;
 
+  /** Highest resolution versions of the normal and weight images, useful
+   *  to calculate once (setting m_ImageAttributeImage) at the highest
+   *  resolution during multiresolution registration, and then resampling on
+   *  each scale.  The normal matrix image and weight structures image are
+   *  resampled using nearest neighbor, while the weight regularizations image
+   *  are resampled using a linear interpolation */
+  NormalMatrixImagePointer            m_HighResolutionNormalMatrixImage;
+  WeightMatrixImagePointer            m_HighResolutionWeightStructuresImage;
+  WeightComponentImagePointer
+      m_HighResolutionWeightRegularizationsImage;
+
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
   WeightComponentType                 m_Lambda;
-
-  /** Sigma used to calculate the structure tensor from the fixed image */
-
 };
 
 } // end namespace itk
