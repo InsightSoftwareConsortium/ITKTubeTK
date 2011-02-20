@@ -316,37 +316,74 @@ DiffusiveRegistrationFilter
   // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
 
+  int numTerms = this->GetNumberOfTerms();
+
   // Allocate the diffusion tensor images and their derivatives
   if( this->GetComputeRegularizationTerm() )
     {
     DiffusionTensorImagePointer diffusionTensorPointer = 0;
     TensorDerivativeImagePointer tensorDerivativePointer = 0;
-    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    for( int i = 0; i < numTerms; i++ )
       {
       diffusionTensorPointer = DiffusionTensorImageType::New();
       this->AllocateSpaceForImage( diffusionTensorPointer, output );
-      m_DiffusionTensorImages.push_back( diffusionTensorPointer );
+      if( (int) m_DiffusionTensorImages.size() < numTerms )
+        {
+        m_DiffusionTensorImages.push_back( diffusionTensorPointer );
+        }
+      else
+        {
+        m_DiffusionTensorImages[i] = diffusionTensorPointer;
+        }
 
       tensorDerivativePointer = TensorDerivativeImageType::New();
       this->AllocateSpaceForImage( tensorDerivativePointer, output );
-      m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
+      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
+        {
+        m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
+        }
+      else
+        {
+        m_DiffusionTensorDerivativeImages[i] = tensorDerivativePointer;
+        }
       }
     }
   // Fill the arrays with NULL pointers for items not being used
   else
     {
-    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    for( int i = 0; i < numTerms; i++ )
       {
-      m_DiffusionTensorImages.push_back( 0 );
-      m_DiffusionTensorDerivativeImages.push_back( 0 );
+      if( (int) m_DiffusionTensorImages.size() < numTerms )
+        {
+        m_DiffusionTensorImages.push_back( 0 );
+        }
+      else
+        {
+        m_DiffusionTensorImages[i] = 0;
+        }
+      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
+        {
+        m_DiffusionTensorDerivativeImages.push_back( 0 );
+        }
+      else
+        {
+        m_DiffusionTensorDerivativeImages[i] = 0;
+        }
       }
     }
 
   // Initialize image pointers that may or may not be allocated by individual
   // filters later on, namely deformation derivatives and multiplication vectors
-  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+  for( int i = 0; i < numTerms; i++ )
     {
-    m_DeformationComponentImages.push_back( 0 );
+    if( (int) m_DeformationComponentImages.size() < numTerms )
+      {
+      m_DeformationComponentImages.push_back( 0 );
+      }
+    else
+      {
+      m_DeformationComponentImages[i] = 0;
+      }
 
     ScalarDerivativeImageArrayType deformationComponentFirstArray;
     TensorDerivativeImageArrayType deformationComponentSecondArray;
@@ -357,11 +394,36 @@ DiffusiveRegistrationFilter
       deformationComponentSecondArray[j] = 0;
       multiplicationVectorArray[j] = 0;
       }
-    m_DeformationComponentFirstOrderDerivativeArrays.push_back(
-        deformationComponentFirstArray );
-    m_DeformationComponentSecondOrderDerivativeArrays.push_back(
-        deformationComponentSecondArray );
-    m_MultiplicationVectorImageArrays.push_back( multiplicationVectorArray );
+    if( (int) m_DeformationComponentFirstOrderDerivativeArrays.size()
+      < numTerms )
+      {
+      m_DeformationComponentFirstOrderDerivativeArrays.push_back(
+          deformationComponentFirstArray );
+      }
+    else
+      {
+      m_DeformationComponentFirstOrderDerivativeArrays[i]
+          = deformationComponentFirstArray;
+      }
+    if( (int) m_DeformationComponentSecondOrderDerivativeArrays.size()
+      < numTerms )
+      {
+      m_DeformationComponentSecondOrderDerivativeArrays.push_back(
+          deformationComponentSecondArray );
+      }
+    else
+      {
+      m_DeformationComponentSecondOrderDerivativeArrays[i]
+          = deformationComponentSecondArray;
+      }
+    if( (int) m_MultiplicationVectorImageArrays.size() < numTerms )
+      {
+      m_MultiplicationVectorImageArrays.push_back( multiplicationVectorArray );
+      }
+    else
+      {
+      m_MultiplicationVectorImageArrays[i] = multiplicationVectorArray;
+      }
     }
 }
 
