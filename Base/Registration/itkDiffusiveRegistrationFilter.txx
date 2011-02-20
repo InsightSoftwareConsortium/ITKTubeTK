@@ -24,6 +24,7 @@ limitations under the License.
 #define __itkDiffusiveRegistrationFilter_txx
 
 #include "itkDiffusiveRegistrationFilter.h"
+#include "itkResampleImageFilter.h"
 
 namespace itk
 {
@@ -140,7 +141,7 @@ void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateSpaceForImage( UnallocatedImagePointer& image,
-                         const TemplateImagePointer& templateImage )
+                         const TemplateImagePointer& templateImage ) const
 {
   assert( image );
   assert( templateImage );
@@ -173,6 +174,73 @@ DiffusiveRegistrationFilter
           == templateImage->GetLargestPossibleRegion()
       && image->GetRequestedRegion() == templateImage->GetRequestedRegion()
       && image->GetBufferedRegion() == templateImage->GetBufferedRegion();
+}
+
+/**
+ * Resample an image to match a template
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class ResampleImageType, class TemplateImageType  >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ResampleImageNearestNeighbor( const ResampleImageType * highResolutionImage,
+                                const TemplateImageType * templateImage,
+                                ResampleImageType * resampledImage ) const
+{
+  // We have to implement nearest neighbors by hand, since we are dealing with
+  // pixel types that do not have Numeric Traits
+
+  // Create the resized resampled image
+  if( !resampledImage )
+    {
+    resampledImage = ResampleImageType::New();
+    }
+  this->AllocateSpaceForImage( resampledImage, templateImage );
+
+  // Do NN interpolation
+  typedef itk::ImageRegionIteratorWithIndex< ResampleImageType >
+      ResampleImageRegionType;
+  ResampleImageRegionType resampledImageIt = ResampleImageRegionType(
+      resampledImage, resampledImage->GetLargestPossibleRegion() );
+
+  typename ResampleImageType::PointType physicalPoint;
+  physicalPoint.Fill( 0.0 );
+  typename ResampleImageType::IndexType highResolutionIndex;
+  highResolutionIndex.Fill( 0.0 );
+  typename ResampleImageType::PixelType pixelValue;
+
+  for( resampledImageIt.GoToBegin();
+  !resampledImageIt.IsAtEnd();
+  ++resampledImageIt )
+    {
+    resampledImage->TransformIndexToPhysicalPoint(
+        resampledImageIt.GetIndex(), physicalPoint );
+    highResolutionImage->TransformPhysicalPointToIndex(
+        physicalPoint, highResolutionIndex );
+    resampledImageIt.Set( pixelValue );
+    }
+}
+
+/**
+ * Resample an image to match a template
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class ResampleImageType, class TemplateImageType  >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ResampleImageLinear( const ResampleImageType * highResolutionImage,
+                       const TemplateImageType * templateImage,
+                       ResampleImageType * resampledImage ) const
+{
+  typedef itk::ResampleImageFilter< ResampleImageType, ResampleImageType >
+      ResampleFilterType;
+  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+  resampler->SetInput( highResolutionImage );
+  resampler->SetOutputParametersFromImage( templateImage );
+  resampler->Update();
+  resampledImage = resampler->GetOutput();
 }
 
 /**

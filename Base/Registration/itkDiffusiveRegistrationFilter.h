@@ -471,13 +471,28 @@ protected:
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImagePointer, class TemplateImagePointer >
   void AllocateSpaceForImage( UnallocatedImagePointer & image,
-                              const TemplateImagePointer & templateImage );
+                              const TemplateImagePointer & templateImage )
+  const;
 
   /** Helper function to check whether the attributes of an image match a
     * template */
   template< class CheckedImagePointer, class TemplateImagePointer >
   bool CompareImageAttributes( const CheckedImagePointer & image,
                                const TemplateImagePointer & templateImage );
+
+  /** Resamples an image to a template using nearest neighbor interpolation */
+  template< class ResampleImageType, class TemplateImageType  >
+  void ResampleImageNearestNeighbor(
+      const ResampleImageType * highResolutionImage,
+      const TemplateImageType * templateImage,
+      ResampleImageType * resampledImage ) const;
+
+  /** Resamples an image to a template using linear interpolation */
+  template< class ResampleImageType, class TemplateImageType  >
+  void ResampleImageLinear(
+      const ResampleImageType * highResolutionImage,
+      const TemplateImageType * templateImage,
+      ResampleImageType * resampledImage ) const;
 
 private:
   // Purposely not implemented
