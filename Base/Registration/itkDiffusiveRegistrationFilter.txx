@@ -46,6 +46,8 @@ DiffusiveRegistrationFilter
 
   // Create the registration function
   this->CreateRegistrationFunction();
+
+  m_HighResolutionTemplate                      = 0;
 }
 
 /**
@@ -96,6 +98,11 @@ DiffusiveRegistrationFilter
           }
         }
       }
+    }
+  if( m_HighResolutionTemplate )
+    {
+    os << indent << "Image attribute template:" << std::endl;
+    m_HighResolutionTemplate->Print( os, indent );
     }
 }
 

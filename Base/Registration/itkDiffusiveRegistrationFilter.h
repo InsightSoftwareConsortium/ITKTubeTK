@@ -267,6 +267,16 @@ public:
   virtual int GetNumberOfTerms() const
     { return 1; }
 
+  /** Set/get a pointer to an image that is to be used for the template when
+   *  computing member images.  This is usually the original fixed image.  The
+   *  attributes of this filter's output are used if the high resolution
+   *  template is not set.  For proper behavior, you must set this if using a
+   *  multiresolution registration. */
+  virtual void SetHighResolutionTemplate( FixedImageType * templateImage )
+    { m_HighResolutionTemplate = templateImage; }
+  virtual FixedImageType * GetHighResolutionTemplate()
+    { return m_HighResolutionTemplate; }
+
 protected:
   DiffusiveRegistrationFilter();
   virtual ~DiffusiveRegistrationFilter() {}
@@ -530,6 +540,9 @@ private:
   TensorDerivativeImageArrayVectorType
       m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
+
+  /** Template used to calculate member images */
+  FixedImagePointer                         m_HighResolutionTemplate;
 };
 
 /** Struct to simply get the face list and an iterator over the face list
