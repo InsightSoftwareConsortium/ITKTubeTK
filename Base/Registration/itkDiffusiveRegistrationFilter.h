@@ -279,7 +279,7 @@ protected:
   virtual void Initialize();
 
   /** Allocate images used during the registration. */
-  virtual void AllocateImageArrays();
+  virtual void AllocateImageMembers();
 
   /** Allocate the deformation component images and their derivative images.
    *  (which may be updated throughout the registration). Reimplement in derived
@@ -475,9 +475,9 @@ protected:
 
   /** Helper function to check whether the attributes of an image match a
     * template */
-  template< class CheckedImageType, class TemplateImageType >
-  bool CompareImageAttributes( const CheckedImageType & image,
-                               const TemplateImageType & templateImage );
+  template< class CheckedImagePointer, class TemplateImagePointer >
+  bool CompareImageAttributes( const CheckedImagePointer & image,
+                               const TemplateImagePointer & templateImage );
 
 private:
   // Purposely not implemented

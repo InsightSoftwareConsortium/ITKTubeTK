@@ -161,8 +161,8 @@ template < class CheckedImageType, class TemplateImageType >
 bool
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CompareImageAttributes( const CheckedImageType& image,
-                          const TemplateImageType& templateImage )
+::CompareImageAttributes( const CheckedImagePointer & image,
+                          const TemplateImagePointer & templateImage )
 {
   assert( image );
   assert( templateImage );
@@ -220,7 +220,7 @@ DiffusiveRegistrationFilter
 
   // Allocate and initialize the images we will use to store data computed
   // during the registration (or set pointers to 0 if they are not being used).
-  this->AllocateImageArrays();
+  this->AllocateImageMembers();
 
   // Compute the diffusion tensors and their derivatives
   if( this->GetComputeRegularizationTerm() )
@@ -240,7 +240,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateImageArrays()
+::AllocateImageMembers()
 {
   assert( this->GetOutput() );
 
