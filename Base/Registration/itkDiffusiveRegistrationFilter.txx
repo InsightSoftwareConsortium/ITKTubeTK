@@ -157,7 +157,7 @@ DiffusiveRegistrationFilter
  * Helper function to check whether the attributes of an image matches template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class CheckedImageType, class TemplateImageType >
+template < class CheckedImagePointer, class TemplateImagePointer >
 bool
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >

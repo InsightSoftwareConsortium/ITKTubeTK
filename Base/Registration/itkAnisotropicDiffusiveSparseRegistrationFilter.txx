@@ -133,6 +133,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
       this->SetDeformationComponentSecondOrderDerivative( t, i, secondOrder );
       }
     }
+
+  // If required, allocate and compute the normal vector and weight images
+  this->SetupNormalMatrixAndWeightImages();
 }
 
 /**
@@ -423,9 +426,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-
-  // If required, allocate and compute the normal vector and weight images
-  this->SetupNormalMatrixAndWeightImages();
   assert( m_NormalMatrixImage );
   assert( m_WeightStructuresImage );
   assert( m_WeightRegularizationsImage );
