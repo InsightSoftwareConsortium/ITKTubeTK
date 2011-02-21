@@ -394,8 +394,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
   if( m_ForceIntensityConsistency || m_ForceOrientationInsensitivity )
     {
-    this->GenerateLDAImages();
-
     unsigned int vCount = 0;
     std::vector< int > orientationNum( this->GetNumberOfFeatures(), 0 );
     for( unsigned int i=0; i<this->GetNumberOfFeatureImages(); i++ )

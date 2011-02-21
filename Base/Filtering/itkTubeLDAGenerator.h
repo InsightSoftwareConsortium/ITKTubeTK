@@ -77,8 +77,7 @@ public:
   typedef vnl_vector< double >                 LDAVectorType;
   typedef vnl_matrix< double >                 LDAMatrixType;
 
-  typedef itk::Image< float, ImageDimension >           LDAImageType;
-  typedef std::vector< typename LDAImageType::Pointer > LDAImageListType;
+  typedef itk::Image< float, ImageDimension >  LDAImageType;
 
   //
   // Methods
@@ -117,7 +116,7 @@ public:
   void            SetLDAMatrix( const LDAMatrixType & mat );
   void            SetLDAValues( const LDAValuesType & values );
 
-  const typename LDAImageType::Pointer GetLDAImage( unsigned int ldaNum );
+  typename LDAImageType::Pointer GetLDAImage( unsigned int ldaNum );
 
   itkSetMacro( PerformLDA, bool );
   itkGetMacro( PerformLDA, bool );
@@ -142,7 +141,6 @@ protected:
 
   virtual void GenerateStatistics( void );
   virtual void GenerateLDA( void );
-  virtual void GenerateLDAImages( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -172,7 +170,7 @@ private:
   LDAMatrixType                   m_LDAMatrix;
   LDAValuesType                   m_LDAValues;
 
-  LDAImageListType                m_LDAImageList;
+  typename LDAImageType::Pointer  m_LDAImage;
 
   void                          * m_ProgressProcessInfo;
   double                          m_ProgressFraction;
