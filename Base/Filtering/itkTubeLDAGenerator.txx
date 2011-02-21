@@ -62,7 +62,7 @@ LDAGenerator< ImageT, LabelmapT >
   m_LDAValues.set_size( 0 );
   m_LDAMatrix.set_size( 0, 0 );
 
-  m_LDAImageList.clear();
+  m_LDAImage = NULL;
 
   m_ProgressProcessInfo = NULL;
   m_ProgressFraction = 1.0;
@@ -291,13 +291,49 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-const typename LDAGenerator< ImageT, LabelmapT >::LDAImageType::Pointer
+typename LDAGenerator< ImageT, LabelmapT >::LDAImageType::Pointer
 LDAGenerator< ImageT, LabelmapT >
 ::GetLDAImage( unsigned int ldaNum )
 {
-  if( ldaNum < m_LDAImageList.size()  )
+  if( ldaNum < m_LDAValues.size()  )
     {
-    return m_LDAImageList[ ldaNum ];
+    itk::TimeProbesCollectorBase timeCollector;
+
+    timeCollector.Start( "GenerateLDAImage" );
+
+    typedef itk::ImageRegionIteratorWithIndex< LDAImageType >
+      ImageIteratorType;
+
+    unsigned int numFeatures = this->GetNumberOfFeatures();
+
+    typename LDAImageType::RegionType region;
+    region = m_FeatureImageList[0]->GetLargestPossibleRegion();
+
+    m_LDAImage = LDAImageType::New();
+    m_LDAImage->SetRegions( region );
+    m_LDAImage->CopyInformation( m_FeatureImageList[0] );
+    m_LDAImage->Allocate();
+
+    ImageIteratorType itLDAIm( m_LDAImage,
+      m_LDAImage->GetLargestPossibleRegion() );
+
+    FeatureVectorType v( numFeatures );
+    FeatureVectorType vLDA( numFeatures );
+    while( !itLDAIm.IsAtEnd() )
+      {
+      ContinuousIndexType indx = itLDAIm.GetIndex();
+      v = this->GetFeatureVector( indx );
+
+      vLDA = v * m_LDAMatrix;
+
+      itLDAIm.Set( vLDA[ ldaNum ] );
+      ++itLDAIm;
+      }
+
+    timeCollector.Stop( "GenerateLDAImage" );
+    timeCollector.Report();
+
+    return m_LDAImage;
     }
   else
     {
@@ -581,74 +617,6 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
-::GenerateLDAImages()
-{
-  itk::TimeProbesCollectorBase timeCollector;
-
-  timeCollector.Start( "GenerateLDAImages" );
-
-  typedef itk::ImageRegionIteratorWithIndex< LDAImageType >
-    ImageIteratorType;
-
-  unsigned int numFeatures = this->GetNumberOfFeatures();
-
-  typename LDAImageType::RegionType region;
-  region = m_FeatureImageList[0]->GetLargestPossibleRegion();
-  m_LDAImageList.resize( m_LDAValues.size() );
-  for( unsigned int i=0; i<m_LDAValues.size(); i++ )
-    {
-    m_LDAImageList[i] = LDAImageType::New();
-    m_LDAImageList[i]->SetRegions( region );
-    m_LDAImageList[i]->CopyInformation( m_FeatureImageList[0] );
-    m_LDAImageList[i]->Allocate();
-    }
-
-  std::vector< ImageIteratorType * > itLDAIm( m_LDAValues.size() );
-  for( unsigned int i=0; i<m_LDAValues.size(); i++ )
-    {
-    itLDAIm[i] = new ImageIteratorType( m_LDAImageList[i],
-      m_LDAImageList[i]->GetLargestPossibleRegion() );
-    itLDAIm[i]->GoToBegin();
-    }
-
-  FeatureVectorType v( numFeatures );
-  FeatureVectorType vLDA( numFeatures );
-  while( !itLDAIm[0]->IsAtEnd() )
-    {
-    ContinuousIndexType indx = itLDAIm[0]->GetIndex();
-    v = this->GetFeatureVector( indx );
-
-    if( v.size() != m_LDAMatrix.columns() ||
-      v.size() != m_LDAMatrix.rows() )
-      {
-      std::cout << "LDA ERROR: " << std::endl;
-      std::cout << " v.size() = " << v.size() << std::endl;
-      std::cout << " m.cols() = " << m_LDAMatrix.columns() << std::endl;
-      std::cout << " m.rows() = " << m_LDAMatrix.rows() << std::endl;
-      }
-
-    vLDA = v * m_LDAMatrix;
-
-    for( unsigned int i=0; i<m_LDAValues.size(); i++ )
-      {
-      itLDAIm[i]->Set( vLDA[i] );
-      ++( *( itLDAIm[i] ) );
-      }
-    }
-
-  for( unsigned int i=0; i<m_LDAValues.size(); i++ )
-    {
-    delete itLDAIm[i];
-    }
-
-  timeCollector.Stop( "GenerateLDAImages" );
-
-  timeCollector.Report();
-}
-
-template < class ImageT, class LabelmapT >
-void
-LDAGenerator< ImageT, LabelmapT >
 ::Update()
 {
   this->GenerateStatistics();
@@ -660,7 +628,6 @@ void
 LDAGenerator< ImageT, LabelmapT >
 ::UpdateLDAImages()
 {
-  this->GenerateLDAImages();
 }
 
 template <class ImageT, class LabelmapT >
@@ -706,8 +673,14 @@ LDAGenerator< ImageT, LabelmapT >
   os << indent << "GlobalCovariance = " << m_GlobalCovariance << std::endl;
   os << indent << "LDAMatrix = " << m_LDAMatrix << std::endl;
   os << indent << "LDAValues = " << m_LDAValues << std::endl;
-  os << indent << "LDAImageList.size = " << m_LDAImageList.size()
-    << std::endl;
+  if( m_LDAImage.IsNotNull() )
+    {
+    os << indent << "LDAImage = " << m_LDAImage << std::endl;
+    }
+  else
+    {
+    os << indent << "LDAImage = NULL" << std::endl;
+    }
   if( m_ProgressProcessInfo != NULL )
     {
     os << indent << "ProgressProcessInfo = Set" << std::endl;
