@@ -21,7 +21,11 @@
 # 
 ##############################################################################
 
-add_subdirectory( CLI )
-add_subdirectory( ImageMath )
-
+# Don't go to anything except ImageMath if using itkV4
+if( NOT TubeTK_USE_ITKV4 )
+add_subdirectory(CLI)
 add_subdirectory( MetaImageImporter )
+endif( NOT TubeTK_USE_ITKV4 )
+
+add_subdirectory(ImageMath)
+

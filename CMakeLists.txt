@@ -175,6 +175,13 @@ if( USE_SYSTEM_ITK )
 endif( USE_SYSTEM_ITK )
 
 #-----------------------------------------------------------------------------
+# ITKv4 Switch
+option( TubeTK_USE_ITKV4
+  "Compile with ITKv4. Only supported applications will be built."
+  OFF )
+mark_as_advanced( TubeTK_USE_ITKV4 )
+
+#-----------------------------------------------------------------------------
 # QT Setup
 option( TubeTK_USE_QT
   "Use QT to compile TubeTK, enables additional applications and libraries."
@@ -273,6 +280,7 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 #-----------------------------------------------------------------------------
 # Setup to conform to Slicer3 paths and define plugin copying macros
+if( NOT TubeTK_USE_ITKV4 )
 include( CMake/Slicer3Config.cmake )
 
 #-----------------------------------------------------------------------------
@@ -287,13 +295,16 @@ set( LAUNCH_EXE  "" )
 set( SUPPORT_2D_IMAGES ON )
 add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
   ${CLI_BINARY_DIR}/RegisterImagesModule )
+endif( NOT TubeTK_USE_ITKV4 )
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 # Build TubeTK
-add_subdirectory( Utilities )
-add_subdirectory( Base )
+if( NOT TubeTK_USE_ITKV4 )
+  add_subdirectory( Utilities )
+  add_subdirectory( Base )
+endif( NOT TubeTK_USE_ITKV4 )
 add_subdirectory( Applications )
 
 #-----------------------------------------------------------------------------

@@ -37,7 +37,7 @@ set( TubeTK_DEPENDS "" )
 set( gen "${CMAKE_GENERATOR}" )
 
 ##
-## Check if sytem ITK or superbuild ITK
+## Check if sytem ITK or superbuild ITK (or ITKv4)
 ##
 if( NOT USE_SYSTEM_ITK )
 
@@ -57,27 +57,85 @@ if( NOT USE_SYSTEM_ITK )
   ##
   ## Insight
   ##
-  set( proj Insight )
-  ExternalProject_Add( ${proj}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/ITK.git"
-    GIT_TAG "origin/slicer-4.0"
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
-    BINARY_DIR Insight-Build
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DITK_USE_REVIEW:BOOL=ON
-      -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
-    INSTALL_COMMAND ""
-    )
+  if( TubeTK_USE_ITKV4 )
+    set( proj Insight )
+    ExternalProject_Add( ${proj}
+      GIT_REPOSITORY "${GIT_PROTOCOL}://itk.org/ITK.git"
+      GIT_TAG "origin/master"
+      SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
+      BINARY_DIR Insight-Build
+      CMAKE_GENERATOR ${gen}
+      CMAKE_ARGS
+        -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        -DBUILD_SHARED_LIBS:BOOL=${shared}
+        -DBUILD_EXAMPLES:BOOL=OFF
+        -DBUILD_TESTING:BOOL=OFF
+        -DITK_USE_REVIEW:BOOL=ON
+        -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
+      INSTALL_COMMAND ""
+      )
+
+    # Also get SimpleITK
+    set( proj SimpleITK )
+    ExternalProject_Add( ${proj}
+      GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/SimpleITK/SimpleITK.git"
+      GIT_TAG "origin/master"
+      SOURCE_DIR "${CMAKE_BINARY_DIR}/SimpleITK"
+      BINARY_DIR "SimpleITK-Build"
+      CMAKE_GENERATOR ${gen}
+      CMAKE_ARGS
+        -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        -DITK_DIR:STRING=${CMAKE_BINARY_DIR}/Insight-Build
+        -DBUILD_SHARED_LIBS:BOOL=${shared}
+        -DBUILD_EXAMPLES:BOOL=OFF
+        -DBUILD_TESTING:BOOL=OFF
+        -DUSE_TESTING:BOOL=OFF
+        -DWRAP_JAVA:BOOL=OFF
+        -DWRAP_PYTHON:BOOL=OFF
+        -DWRAP_LUA:BOOL=OFF
+        -DWRAP_CSHARP:BOOL=OFF
+        -DWRAP_TCL:BOOL=OFF
+        -DWRAP_R:BOOL=OFF
+        -DWRAP_RUBY:BOOL=OFF
+        -DUSE_SYSTEM_LUA:BOOL=OFF
+      INSTALL_COMMAND ""
+      DEPENDS
+        "Insight"
+      )
+      set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SimpleITK" )
+  else( TubeTK_USE_ITKV4 )
+    set( proj Insight )
+    ExternalProject_Add( ${proj}
+      GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/ITK.git"
+      GIT_TAG "origin/slicer-4.0"
+      SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
+      BINARY_DIR Insight-Build
+      CMAKE_GENERATOR ${gen}
+      CMAKE_ARGS
+        -Dgit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        -DBUILD_SHARED_LIBS:BOOL=${shared}
+        -DBUILD_EXAMPLES:BOOL=OFF
+        -DBUILD_TESTING:BOOL=OFF
+        -DITK_USE_REVIEW:BOOL=ON
+        -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
+      INSTALL_COMMAND ""
+      )
+  endif( TubeTK_USE_ITKV4 )
   set( ITK_DIR "${base}/Insight-Build" )
 
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "Insight" )
@@ -359,6 +417,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
+    -DTubeTK_USE_ITKV4:BOOL=${TubeTK_USE_ITKV4}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
