@@ -74,4 +74,6 @@ endif( BUILD_TESTING )
 # If building with ITKv4, build with new code
 else( NOT TubeTK_USE_ITKV4 )
 
+include(ImageMathSimpleITK.cmake)
+
 endif( NOT TubeTK_USE_ITKV4 )
