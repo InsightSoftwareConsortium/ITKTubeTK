@@ -210,6 +210,8 @@ public:
     { m_NormalMatrixImage = normalImage; }
   virtual NormalMatrixImageType * GetNormalMatrixImage() const
     { return m_NormalMatrixImage; }
+  virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage() const
+    { return m_HighResolutionNormalMatrixImage; }
 
   /** Set/get the weighting matrix A image.  Setting the weighting matrix image
    * overrides the structure tensor eigen analysis. */
@@ -217,6 +219,8 @@ public:
     { m_WeightStructuresImage = weightImage; }
   virtual WeightMatrixImageType * GetWeightStructuresImage() const
     { return m_WeightStructuresImage; }
+  virtual WeightMatrixImageType * GetHighResolutionWeightStructuresImage() const
+    { return m_HighResolutionWeightStructuresImage; }
 
   /** Set/get the weighting value w image.  Setting the weighting component
     * image overrides the border surface polydata and lambda if the border
@@ -226,6 +230,9 @@ public:
     { m_WeightRegularizationsImage = weightImage; }
   virtual WeightComponentImageType * GetWeightRegularizationsImage() const
     { return m_WeightRegularizationsImage; }
+  virtual WeightComponentImageType *
+      GetHighResolutionWeightRegularizationsImage() const
+    { return m_HighResolutionWeightRegularizationsImage; }
 
   /** Get the normal components of the deformation field.  The normal
    *  deformation field component images are the same for both the SMOOTH_NORMAL

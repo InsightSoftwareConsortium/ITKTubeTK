@@ -187,6 +187,8 @@ public:
     { m_NormalVectorImage = normalImage; }
   virtual NormalVectorImageType * GetNormalVectorImage() const
     { return m_NormalVectorImage; }
+  virtual NormalVectorImageType * GetHighResolutionNormalVectorImage() const
+    { return m_HighResolutionNormalVectorImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
    * the border surface polydata and lambda if a border surface was also
@@ -195,6 +197,8 @@ public:
     { m_WeightImage = weightImage; }
   virtual WeightImageType * GetWeightImage() const
     { return m_WeightImage; }
+  virtual WeightImageType * GetHighResolutionWeightImage() const
+    { return m_HighResolutionWeightImage; }
 
   /** Get the normal components of the deformation field. */
   virtual const DeformationFieldType * GetNormalDeformationComponentImage()

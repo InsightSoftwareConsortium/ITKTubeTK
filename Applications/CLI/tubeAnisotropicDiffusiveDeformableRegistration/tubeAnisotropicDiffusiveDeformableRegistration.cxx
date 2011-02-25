@@ -647,7 +647,6 @@ int DoIt( int argc, char * argv[] )
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( 0 );
 
-
   // Update triggers the registration and the warping
   warper->Update();
   timeCollector.Stop( "Register" );
@@ -739,28 +738,52 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Write normal vector image" );
     if( anisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveRegistrationFilterType::NormalVectorImageType
-          ::Pointer normalImage = 0;
-      if( !ReorientAndWriteImage(
-          anisotropicRegistrator->GetNormalVectorImage(),
-          fixedImageReader->GetOutput()->GetDirection(),
-          outputNormalVectorImageFileName ) )
+      if( anisotropicRegistrator->GetHighResolutionNormalVectorImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetHighResolutionNormalVectorImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetNormalVectorImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     else if( sparseAnisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveSparseRegistrationFilterType
-          ::NormalMatrixImageType::Pointer normalImage = 0;
-      if( !ReorientAndWriteImage(
-          sparseAnisotropicRegistrator->GetNormalMatrixImage(),
-          fixedImageReader->GetOutput()->GetDirection(),
-          outputNormalVectorImageFileName ) )
+      if( sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator->GetNormalMatrixImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     timeCollector.Stop( "Write normal vector image" );
@@ -774,27 +797,54 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Write weight regularizations image" );
     if( anisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveRegistrationFilterType::WeightImageType
-          ::Pointer weightImage = 0;
-      if( !ReorientAndWriteImage( anisotropicRegistrator->GetWeightImage(),
-                                  fixedImageReader->GetOutput()->GetDirection(),
-                                  outputWeightRegularizationsImageFileName ) )
+      if( anisotropicRegistrator->GetHighResolutionWeightImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetHighResolutionWeightImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetWeightImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     else if( sparseAnisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveSparseRegistrationFilterType
-          ::WeightComponentImageType::Pointer weightImage = 0;
-      if( !ReorientAndWriteImage(
-          sparseAnisotropicRegistrator->GetWeightRegularizationsImage(),
-          fixedImageReader->GetOutput()->GetDirection(),
-          outputWeightRegularizationsImageFileName ) )
+      if( sparseAnisotropicRegistrator
+            ->GetHighResolutionWeightRegularizationsImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator
+              ->GetHighResolutionWeightRegularizationsImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator->GetWeightRegularizationsImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     timeCollector.Stop( "Write weight regularizations image" );
@@ -806,15 +856,28 @@ int DoIt( int argc, char * argv[] )
       && outputWeightStructuresImageFileName != "" )
     {
     timeCollector.Start( "Write weight structures image" );
-    typename AnisotropicDiffusiveSparseRegistrationFilterType
-        ::WeightMatrixImageType::Pointer weightImage = 0;
-    if( !ReorientAndWriteImage(
-        sparseAnisotropicRegistrator->GetWeightStructuresImage(),
-        fixedImageReader->GetOutput()->GetDirection(),
-        outputWeightStructuresImageFileName ) )
+    if( sparseAnisotropicRegistrator->GetHighResolutionWeightStructuresImage() )
       {
-      timeCollector.Report();
-      return EXIT_FAILURE;
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator
+            ->GetHighResolutionWeightStructuresImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputWeightStructuresImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+      }
+    else
+      {
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator->GetWeightStructuresImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputWeightStructuresImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
     timeCollector.Stop( "Write weight structures image" );
     }
