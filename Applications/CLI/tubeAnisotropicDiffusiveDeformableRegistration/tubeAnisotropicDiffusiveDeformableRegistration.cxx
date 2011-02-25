@@ -583,8 +583,9 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
-  // we don't want the deformation field to undergo Gaussian smoothing, which
-  // undermines the efforts we are making with anisotropic diffusion
+  // we don't want the deformation field to undergo Gaussian smoothing on the
+  // last iteration, which undermines the efforts we are making with anisotropic
+  // diffusion
 
   // Setup the levels, iterations and max error of Gaussian kernel
   int numberOfLevels = numberOfIterations.size();
@@ -602,6 +603,7 @@ int DoIt( int argc, char * argv[] )
       FixedImagePyramidType::New();
   fixedImagePyramid->SetNumberOfLevels( numberOfLevels );
   fixedImagePyramid->SetMaximumError( maximumError );
+  fixedImagePyramid->UseShrinkImageFilterOff();
 
   typedef itk::RecursiveMultiResolutionPyramidImageFilter
       < MovingImageType, MultiResolutionRealImageType > MovingImagePyramidType;
@@ -609,6 +611,7 @@ int DoIt( int argc, char * argv[] )
       = MovingImagePyramidType::New();
   movingImagePyramid->SetNumberOfLevels( numberOfLevels );
   movingImagePyramid->SetMaximumError( maximumError );
+  movingImagePyramid->UseShrinkImageFilterOff();
 
   // Setup the diffusion filter to work with multiresolution registration
   registrator->SetHighResolutionTemplate( orientFixed->GetOutput() );
