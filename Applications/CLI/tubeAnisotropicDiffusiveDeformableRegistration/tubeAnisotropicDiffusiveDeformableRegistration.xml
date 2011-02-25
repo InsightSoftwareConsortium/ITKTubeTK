@@ -13,15 +13,14 @@
   <parameters>
     <label>Registration Parameters</label>
     <description>Parameters used for registration</description>
-    <integer>
+    <integer-vector>
       <name>numberOfIterations</name>
       <flag>i</flag>
       <longflag>iterations</longflag>
+      <description>Comma separated list of iterations. The number of iterations specified dictates the number of levels of the multiresolution registration.  The multiresolution shrink factors are halved in all three directions on each of the multiresolution levels. </description>
       <label>Iterations</label>
-      <channel>input</channel>
-      <description>Number of iterations.</description>
       <default>20</default>
-    </integer>
+    </integer-vector>
     <double>
       <name>timeStep</name>
       <flag>s</flag>

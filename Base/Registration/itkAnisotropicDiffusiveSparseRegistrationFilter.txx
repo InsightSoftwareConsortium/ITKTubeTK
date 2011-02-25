@@ -41,6 +41,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   m_NormalMatrixImage                           = 0;
   m_WeightStructuresImage                       = 0;
   m_WeightRegularizationsImage                  = 0;
+  m_HighResolutionNormalMatrixImage             = 0;
+  m_HighResolutionWeightStructuresImage         = 0;
+  m_HighResolutionWeightRegularizationsImage    = 0;
 
   // Lambda for exponential decay used to calculate weight from distance
   m_Lambda = -0.01;
@@ -77,6 +80,22 @@ AnisotropicDiffusiveSparseRegistrationFilter
     m_WeightRegularizationsImage->Print( os, indent );
     }
   os << indent << "lambda: " << m_Lambda << std::endl;
+  if( m_HighResolutionNormalMatrixImage )
+    {
+    os << indent << "High resolution normal vector image:" << std::endl;
+    m_HighResolutionNormalMatrixImage->Print( os, indent );
+    }
+  if( m_HighResolutionWeightStructuresImage )
+    {
+    os << indent << "High resolution weight structures image:" << std::endl;
+    m_HighResolutionWeightStructuresImage->Print( os, indent );
+    }
+  if( m_HighResolutionWeightRegularizationsImage )
+    {
+    os << indent << "High resolution weight regularizations image:"
+        << std::endl;
+    m_HighResolutionWeightRegularizationsImage->Print( os, indent );
+    }
 }
 
 /**
@@ -133,6 +152,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
       this->SetDeformationComponentSecondOrderDerivative( t, i, secondOrder );
       }
     }
+
+  // If required, allocate and compute the normal matrix and weight images
+  this->SetupNormalMatrixAndWeightImages();
 }
 
 /**
@@ -148,33 +170,25 @@ AnisotropicDiffusiveSparseRegistrationFilter
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
 
-  // The output will be used as the template to allocate the images we will
-  // use to store data computed before/during the registration
-  OutputImagePointer output = this->GetOutput();
-
-  // If a normal vector image or weight image was supplied by the user, check
-  // that it matches the output
-  if( ( m_NormalMatrixImage
-        && !this->CompareImageAttributes( m_NormalMatrixImage, output ) )
-    || ( m_WeightStructuresImage
-         && !this->CompareImageAttributes( m_WeightStructuresImage, output ) )
-    || ( m_WeightRegularizationsImage
-         && !this->CompareImageAttributes( m_WeightRegularizationsImage,
-                                           output ) ) )
-      {
-    itkExceptionMacro( << "Normal matrix image and/or weight images must have "
-                       << "the same attributes as the output deformation "
-                       << "field" );
-    }
-
   // Whether or not we must compute the normal vector and/or weight images
   bool computeNormals = !m_NormalMatrixImage;
   bool computeWeightStructures = !m_WeightStructuresImage;
   bool computeWeightRegularizations = !m_WeightRegularizationsImage;
 
+  // If we have a template for image attributes, use it.  The normal and weight
+  // images will be stored at their full resolution.  The diffusion tensor,
+  // deformation component, derivative and multiplication vector images are
+  // recalculated every time iterate() is called to regenerate them at the
+  // correct resolution.
+  FixedImagePointer highResolutionTemplate = this->GetHighResolutionTemplate();
+
+  // If we don't have a template:
+  // The output will be used as the template to allocate the images we will
+  // use to store data computed before/during the registration
+  OutputImagePointer output = this->GetOutput();
+
   // Compute the normal vector and/or weight images if required
-  if( computeNormals
-      || computeWeightStructures
+  if( computeNormals || computeWeightStructures
       || computeWeightRegularizations )
     {
     // Ensure we have a border surface to work with
@@ -191,23 +205,88 @@ AnisotropicDiffusiveSparseRegistrationFilter
     if( computeNormals )
       {
       m_NormalMatrixImage = NormalMatrixImageType::New();
-      this->AllocateSpaceForImage( m_NormalMatrixImage, output );
+      if( highResolutionTemplate )
+        {
+        this->AllocateSpaceForImage( m_NormalMatrixImage,
+                                     highResolutionTemplate );
+        }
+      else
+        {
+        this->AllocateSpaceForImage( m_NormalMatrixImage, output );
+        }
       }
     if( computeWeightStructures )
       {
       m_WeightStructuresImage = WeightMatrixImageType::New();
-      this->AllocateSpaceForImage( m_WeightStructuresImage, output );
+      if( highResolutionTemplate )
+        {
+        this->AllocateSpaceForImage( m_WeightStructuresImage,
+                                     highResolutionTemplate );
+        }
+      else
+        {
+        this->AllocateSpaceForImage( m_WeightStructuresImage, output );
+        }
       }
     if( computeWeightRegularizations )
       {
       m_WeightRegularizationsImage = WeightComponentImageType::New();
-      this->AllocateSpaceForImage( m_WeightRegularizationsImage, output );
+      if( highResolutionTemplate )
+        {
+        this->AllocateSpaceForImage( m_WeightRegularizationsImage,
+                                     highResolutionTemplate );
+        }
+      else
+        {
+        this->AllocateSpaceForImage( m_WeightRegularizationsImage, output );
+        }
       }
 
     // Actually compute the normal vectors and/or weights
     this->ComputeNormalMatrixAndWeightImages( computeNormals,
                                               computeWeightStructures,
                                               computeWeightRegularizations );
+    }
+
+  // If we are using a template or getting an image from the user, we need to
+  // make sure that the attributes of the member images match those of the
+  // current output, so that they can be used to calclulate the diffusion
+  // tensors, deformation components, etc
+  if( !this->CompareImageAttributes( m_NormalMatrixImage, output ) )
+    {
+    // Set the high resolution image only once
+    if( !m_HighResolutionNormalMatrixImage )
+      {
+      m_HighResolutionNormalMatrixImage = m_NormalMatrixImage;
+      }
+    this->ResampleImageNearestNeighbor(
+        m_HighResolutionNormalMatrixImage.GetPointer(),
+        output.GetPointer(),
+        m_NormalMatrixImage.GetPointer() );
+    }
+  if( !this->CompareImageAttributes( m_WeightStructuresImage, output ) )
+    {
+    // Set the high resolution image only once
+    if( !m_HighResolutionWeightStructuresImage )
+      {
+      m_HighResolutionWeightStructuresImage = m_WeightStructuresImage;
+      }
+    this->ResampleImageNearestNeighbor(
+        m_HighResolutionWeightStructuresImage.GetPointer(),
+        output.GetPointer(),
+        m_WeightStructuresImage.GetPointer() );
+    }
+  if( !this->CompareImageAttributes( m_WeightRegularizationsImage, output ) )
+    {
+    // Set the high resolution image only once
+    if( !m_HighResolutionWeightRegularizationsImage )
+      {
+      m_HighResolutionWeightRegularizationsImage = m_WeightRegularizationsImage;
+      }
+    this->ResampleImageLinear(
+        m_HighResolutionWeightRegularizationsImage.GetPointer(),
+        output.GetPointer(),
+        m_WeightRegularizationsImage.GetPointer() );
     }
 }
 
@@ -423,9 +502,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-
-  // If required, allocate and compute the normal vector and weight images
-  this->SetupNormalMatrixAndWeightImages();
   assert( m_NormalMatrixImage );
   assert( m_WeightStructuresImage );
   assert( m_WeightRegularizationsImage );

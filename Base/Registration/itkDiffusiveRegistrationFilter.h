@@ -267,6 +267,16 @@ public:
   virtual int GetNumberOfTerms() const
     { return 1; }
 
+  /** Set/get a pointer to an image that is to be used for the template when
+   *  computing member images.  This is usually the original fixed image.  The
+   *  attributes of this filter's output are used if the high resolution
+   *  template is not set.  For proper behavior, you must set this if using a
+   *  multiresolution registration. */
+  virtual void SetHighResolutionTemplate( FixedImageType * templateImage )
+    { m_HighResolutionTemplate = templateImage; }
+  virtual FixedImageType * GetHighResolutionTemplate()
+    { return m_HighResolutionTemplate; }
+
 protected:
   DiffusiveRegistrationFilter();
   virtual ~DiffusiveRegistrationFilter() {}
@@ -279,7 +289,7 @@ protected:
   virtual void Initialize();
 
   /** Allocate images used during the registration. */
-  virtual void AllocateImageArrays();
+  virtual void AllocateImageMembers();
 
   /** Allocate the deformation component images and their derivative images.
    *  (which may be updated throughout the registration). Reimplement in derived
@@ -471,13 +481,28 @@ protected:
   /** Helper function to allocate an image based on a template */
   template< class UnallocatedImagePointer, class TemplateImagePointer >
   void AllocateSpaceForImage( UnallocatedImagePointer & image,
-                              const TemplateImagePointer & templateImage );
+                              const TemplateImagePointer & templateImage )
+  const;
 
   /** Helper function to check whether the attributes of an image match a
     * template */
-  template< class CheckedImageType, class TemplateImageType >
-  bool CompareImageAttributes( const CheckedImageType & image,
-                               const TemplateImageType & templateImage );
+  template< class CheckedImagePointer, class TemplateImagePointer >
+  bool CompareImageAttributes( const CheckedImagePointer & image,
+                               const TemplateImagePointer & templateImage );
+
+  /** Resamples an image to a template using nearest neighbor interpolation */
+  template< class ResampleImageType, class TemplateImageType  >
+  void ResampleImageNearestNeighbor(
+      const ResampleImageType * highResolutionImage,
+      const TemplateImageType * templateImage,
+      ResampleImageType * resampledImage ) const;
+
+  /** Resamples an image to a template using linear interpolation */
+  template< class ResampleImageType, class TemplateImageType  >
+  void ResampleImageLinear(
+      const ResampleImageType * highResolutionImage,
+      const TemplateImageType * templateImage,
+      ResampleImageType * resampledImage ) const;
 
 private:
   // Purposely not implemented
@@ -515,6 +540,9 @@ private:
   TensorDerivativeImageArrayVectorType
       m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
+
+  /** Template used to calculate member images */
+  FixedImagePointer                         m_HighResolutionTemplate;
 };
 
 /** Struct to simply get the face list and an iterator over the face list

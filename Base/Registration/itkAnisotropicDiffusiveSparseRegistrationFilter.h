@@ -210,6 +210,8 @@ public:
     { m_NormalMatrixImage = normalImage; }
   virtual NormalMatrixImageType * GetNormalMatrixImage() const
     { return m_NormalMatrixImage; }
+  virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage() const
+    { return m_HighResolutionNormalMatrixImage; }
 
   /** Set/get the weighting matrix A image.  Setting the weighting matrix image
    * overrides the structure tensor eigen analysis. */
@@ -217,6 +219,8 @@ public:
     { m_WeightStructuresImage = weightImage; }
   virtual WeightMatrixImageType * GetWeightStructuresImage() const
     { return m_WeightStructuresImage; }
+  virtual WeightMatrixImageType * GetHighResolutionWeightStructuresImage() const
+    { return m_HighResolutionWeightStructuresImage; }
 
   /** Set/get the weighting value w image.  Setting the weighting component
     * image overrides the border surface polydata and lambda if the border
@@ -226,6 +230,9 @@ public:
     { m_WeightRegularizationsImage = weightImage; }
   virtual WeightComponentImageType * GetWeightRegularizationsImage() const
     { return m_WeightRegularizationsImage; }
+  virtual WeightComponentImageType *
+      GetHighResolutionWeightRegularizationsImage() const
+    { return m_HighResolutionWeightRegularizationsImage; }
 
   /** Get the normal components of the deformation field.  The normal
    *  deformation field component images are the same for both the SMOOTH_NORMAL
@@ -302,13 +309,21 @@ private:
   WeightMatrixImagePointer            m_WeightStructuresImage;
   WeightComponentImagePointer         m_WeightRegularizationsImage;
 
+  /** Highest resolution versions of the normal and weight images, useful
+   *  to calculate once (setting m_ImageAttributeImage) at the highest
+   *  resolution during multiresolution registration, and then resampling on
+   *  each scale.  The normal matrix image and weight structures image are
+   *  resampled using nearest neighbor, while the weight regularizations image
+   *  are resampled using a linear interpolation */
+  NormalMatrixImagePointer            m_HighResolutionNormalMatrixImage;
+  WeightMatrixImagePointer            m_HighResolutionWeightStructuresImage;
+  WeightComponentImagePointer
+      m_HighResolutionWeightRegularizationsImage;
+
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).
    * (lamba must be negative) */
   WeightComponentType                 m_Lambda;
-
-  /** Sigma used to calculate the structure tensor from the fixed image */
-
 };
 
 } // end namespace itk

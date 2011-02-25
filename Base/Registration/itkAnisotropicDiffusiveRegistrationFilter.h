@@ -187,6 +187,8 @@ public:
     { m_NormalVectorImage = normalImage; }
   virtual NormalVectorImageType * GetNormalVectorImage() const
     { return m_NormalVectorImage; }
+  virtual NormalVectorImageType * GetHighResolutionNormalVectorImage() const
+    { return m_HighResolutionNormalVectorImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
    * the border surface polydata and lambda if a border surface was also
@@ -195,6 +197,8 @@ public:
     { m_WeightImage = weightImage; }
   virtual WeightImageType * GetWeightImage() const
     { return m_WeightImage; }
+  virtual WeightImageType * GetHighResolutionWeightImage() const
+    { return m_HighResolutionWeightImage; }
 
   /** Get the normal components of the deformation field. */
   virtual const DeformationFieldType * GetNormalDeformationComponentImage()
@@ -257,6 +261,15 @@ private:
    *  registration iteration */
   NormalVectorImagePointer            m_NormalVectorImage;
   WeightImagePointer                  m_WeightImage;
+
+  /** Highest resolution versions of the normal and weight images, useful
+   *  to calculate once (setting m_ImageAttributeImage) at the highest
+   *  resolution during multiresolution registration, and then resampling on
+   *  each scale.  The normal matrix image and weight structures image are
+   *  resampled using nearest neighbor, while the weight regularizations image
+   *  are resampled using a linear interpolation */
+  NormalVectorImagePointer            m_HighResolutionNormalVectorImage;
+  WeightImagePointer                  m_HighResolutionWeightImage;
 
   /** The lambda factor for computing the weight from distance.  Weight is
    * modeled as exponential decay: weight = e^(lambda * distance).

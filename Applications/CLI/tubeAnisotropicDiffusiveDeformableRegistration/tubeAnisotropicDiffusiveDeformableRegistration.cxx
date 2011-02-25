@@ -45,6 +45,8 @@ limitations under the License.
 #include "itkDiffusiveRegistrationFilter.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkOrientImageFilter.h"
+#include "itkMultiResolutionPDEDeformableRegistration.h"
+#include "itkRecursiveMultiResolutionPyramidImageFilter.h"
 #include "itkTransform.h"
 #include "itkTransformFileReader.h"
 #include "itkWarpImageFilter.h"
@@ -557,22 +559,79 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  // Error checking on number of iterations
+  if( numberOfIterations.size() <= 0 )
+    {
+    tube::ErrorMessage( "You must provide a list of number of iterations." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
   // Report progress from reading input data
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  // Setup the registration
+  // Start the registration
   timeCollector.Start( "Register" );
-  registrator->SetFixedImage( orientFixed->GetOutput() );
-  registrator->SetMovingImage( orientMoving->GetOutput() );
-  registrator->SetInitialDeformationField( orientInitField->GetOutput() );
-  registrator->SetNumberOfIterations( numberOfIterations );
+
+  // Setup the anisotropic registrator
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetLambda( lambda );
     }
+
+  // Setup the multiresolution PDE filter - we use the recursive pyramid because
+  // we don't want the deformation field to undergo Gaussian smoothing on the
+  // last iteration, which undermines the efforts we are making with anisotropic
+  // diffusion
+
+  // Setup the levels, iterations and max error of Gaussian kernel
+  int numberOfLevels = numberOfIterations.size();
+  unsigned int * iterations = new unsigned int [ numberOfLevels ];
+  std::copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
+  double maximumError = 0.01;
+
+  // Setup the multiresolution pyramids
+  typedef pixelT MultiResolutionRealType;
+  typedef itk::Image< MultiResolutionRealType, ImageDimension >
+      MultiResolutionRealImageType;
+  typedef itk::RecursiveMultiResolutionPyramidImageFilter
+      < FixedImageType, MultiResolutionRealImageType > FixedImagePyramidType;
+  typename FixedImagePyramidType::Pointer fixedImagePyramid =
+      FixedImagePyramidType::New();
+  fixedImagePyramid->SetNumberOfLevels( numberOfLevels );
+  fixedImagePyramid->SetMaximumError( maximumError );
+  fixedImagePyramid->UseShrinkImageFilterOff();
+
+  typedef itk::RecursiveMultiResolutionPyramidImageFilter
+      < MovingImageType, MultiResolutionRealImageType > MovingImagePyramidType;
+  typename MovingImagePyramidType::Pointer movingImagePyramid
+      = MovingImagePyramidType::New();
+  movingImagePyramid->SetNumberOfLevels( numberOfLevels );
+  movingImagePyramid->SetMaximumError( maximumError );
+  movingImagePyramid->UseShrinkImageFilterOff();
+
+  // Setup the diffusion filter to work with multiresolution registration
+  registrator->SetHighResolutionTemplate( orientFixed->GetOutput() );
+
+  // Setup the multiresolution registrator
+  typedef itk::MultiResolutionPDEDeformableRegistration
+      < FixedImageType,
+      MovingImageType,
+      VectorImageType,
+      MultiResolutionRealType > MultiResolutionRegistrationFilterType;
+  typename MultiResolutionRegistrationFilterType::Pointer multires
+      = MultiResolutionRegistrationFilterType::New();
+  multires->SetRegistrationFilter( registrator );
+  multires->SetFixedImage( orientFixed->GetOutput() );
+  multires->SetMovingImage( orientMoving->GetOutput() );
+  multires->SetArbitraryInitialDeformationField( orientInitField->GetOutput() );
+  multires->SetFixedImagePyramid( fixedImagePyramid );
+  multires->SetMovingImagePyramid( movingImagePyramid );
+  multires->SetNumberOfLevels( numberOfLevels );
+  multires->SetNumberOfIterations( iterations );
 
   // Watch the registration's progress
   tube::CLIFilterWatcher watchRegistration(registrator,
@@ -594,7 +653,7 @@ int DoIt( int argc, char * argv[] )
       < MovingImageType, typename WarperType::CoordRepType > InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
   warper->SetInput( movingImageReader->GetOutput() );
-  warper->SetDeformationField( registrator->GetOutput() );
+  warper->SetDeformationField( multires->GetOutput() );
   warper->SetInterpolator( interpolator );
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( 0 );
@@ -614,7 +673,7 @@ int DoIt( int argc, char * argv[] )
   orientOutput->UseImageDirectionOn();
   orientOutput->SetDesiredCoordinateDirection(
       fixedImageReader->GetOutput()->GetDirection() );
-  orientOutput->SetInput( registrator->GetOutput() );
+  orientOutput->SetInput( multires->GetOutput() );
 
   // Write the deformation field
   if( outputDeformationFieldFileName != "" )
@@ -690,28 +749,52 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Write normal vector image" );
     if( anisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveRegistrationFilterType::NormalVectorImageType
-          ::Pointer normalImage = 0;
-      if( !ReorientAndWriteImage(
-          anisotropicRegistrator->GetNormalVectorImage(),
-          fixedImageReader->GetOutput()->GetDirection(),
-          outputNormalVectorImageFileName ) )
+      if( anisotropicRegistrator->GetHighResolutionNormalVectorImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetHighResolutionNormalVectorImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetNormalVectorImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     else if( sparseAnisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveSparseRegistrationFilterType
-          ::NormalMatrixImageType::Pointer normalImage = 0;
-      if( !ReorientAndWriteImage(
-          sparseAnisotropicRegistrator->GetNormalMatrixImage(),
-          fixedImageReader->GetOutput()->GetDirection(),
-          outputNormalVectorImageFileName ) )
+      if( sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator->GetNormalMatrixImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputNormalVectorImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     timeCollector.Stop( "Write normal vector image" );
@@ -725,27 +808,54 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Write weight regularizations image" );
     if( anisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveRegistrationFilterType::WeightImageType
-          ::Pointer weightImage = 0;
-      if( !ReorientAndWriteImage( anisotropicRegistrator->GetWeightImage(),
-                                  fixedImageReader->GetOutput()->GetDirection(),
-                                  outputWeightRegularizationsImageFileName ) )
+      if( anisotropicRegistrator->GetHighResolutionWeightImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetHighResolutionWeightImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            anisotropicRegistrator->GetWeightImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     else if( sparseAnisotropicRegistrator )
       {
-      typename AnisotropicDiffusiveSparseRegistrationFilterType
-          ::WeightComponentImageType::Pointer weightImage = 0;
-      if( !ReorientAndWriteImage(
-          sparseAnisotropicRegistrator->GetWeightRegularizationsImage(),
-          fixedImageReader->GetOutput()->GetDirection(),
-          outputWeightRegularizationsImageFileName ) )
+      if( sparseAnisotropicRegistrator
+            ->GetHighResolutionWeightRegularizationsImage() )
         {
-        timeCollector.Report();
-        return EXIT_FAILURE;
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator
+              ->GetHighResolutionWeightRegularizationsImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
+      else
+        {
+        if( !ReorientAndWriteImage(
+            sparseAnisotropicRegistrator->GetWeightRegularizationsImage(),
+            fixedImageReader->GetOutput()->GetDirection(),
+            outputWeightRegularizationsImageFileName ) )
+          {
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
         }
       }
     timeCollector.Stop( "Write weight regularizations image" );
@@ -757,15 +867,28 @@ int DoIt( int argc, char * argv[] )
       && outputWeightStructuresImageFileName != "" )
     {
     timeCollector.Start( "Write weight structures image" );
-    typename AnisotropicDiffusiveSparseRegistrationFilterType
-        ::WeightMatrixImageType::Pointer weightImage = 0;
-    if( !ReorientAndWriteImage(
-        sparseAnisotropicRegistrator->GetWeightStructuresImage(),
-        fixedImageReader->GetOutput()->GetDirection(),
-        outputWeightStructuresImageFileName ) )
+    if( sparseAnisotropicRegistrator->GetHighResolutionWeightStructuresImage() )
       {
-      timeCollector.Report();
-      return EXIT_FAILURE;
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator
+            ->GetHighResolutionWeightStructuresImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputWeightStructuresImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+      }
+    else
+      {
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator->GetWeightStructuresImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputWeightStructuresImageFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
       }
     timeCollector.Stop( "Write weight structures image" );
     }
@@ -775,6 +898,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // Clean up, we're done
+  delete [] iterations;
   progressReporter.End( );
   timeCollector.Report();
   return EXIT_SUCCESS;

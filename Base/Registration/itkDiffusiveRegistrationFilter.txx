@@ -24,6 +24,7 @@ limitations under the License.
 #define __itkDiffusiveRegistrationFilter_txx
 
 #include "itkDiffusiveRegistrationFilter.h"
+#include "itkResampleImageFilter.h"
 
 namespace itk
 {
@@ -45,6 +46,8 @@ DiffusiveRegistrationFilter
 
   // Create the registration function
   this->CreateRegistrationFunction();
+
+  m_HighResolutionTemplate                      = 0;
 }
 
 /**
@@ -96,6 +99,11 @@ DiffusiveRegistrationFilter
         }
       }
     }
+  if( m_HighResolutionTemplate )
+    {
+    os << indent << "Image attribute template:" << std::endl;
+    m_HighResolutionTemplate->Print( os, indent );
+    }
 }
 
 /**
@@ -140,7 +148,7 @@ void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::AllocateSpaceForImage( UnallocatedImagePointer& image,
-                         const TemplateImagePointer& templateImage )
+                         const TemplateImagePointer& templateImage ) const
 {
   assert( image );
   assert( templateImage );
@@ -157,12 +165,12 @@ DiffusiveRegistrationFilter
  * Helper function to check whether the attributes of an image matches template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class CheckedImageType, class TemplateImageType >
+template < class CheckedImagePointer, class TemplateImagePointer >
 bool
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CompareImageAttributes( const CheckedImageType& image,
-                          const TemplateImageType& templateImage )
+::CompareImageAttributes( const CheckedImagePointer & image,
+                          const TemplateImagePointer & templateImage )
 {
   assert( image );
   assert( templateImage );
@@ -173,6 +181,73 @@ DiffusiveRegistrationFilter
           == templateImage->GetLargestPossibleRegion()
       && image->GetRequestedRegion() == templateImage->GetRequestedRegion()
       && image->GetBufferedRegion() == templateImage->GetBufferedRegion();
+}
+
+/**
+ * Resample an image to match a template
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class ResampleImageType, class TemplateImageType  >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ResampleImageNearestNeighbor( const ResampleImageType * highResolutionImage,
+                                const TemplateImageType * templateImage,
+                                ResampleImageType * resampledImage ) const
+{
+  // We have to implement nearest neighbors by hand, since we are dealing with
+  // pixel types that do not have Numeric Traits
+
+  // Create the resized resampled image
+  if( !resampledImage )
+    {
+    resampledImage = ResampleImageType::New();
+    }
+  this->AllocateSpaceForImage( resampledImage, templateImage );
+
+  // Do NN interpolation
+  typedef itk::ImageRegionIteratorWithIndex< ResampleImageType >
+      ResampleImageRegionType;
+  ResampleImageRegionType resampledImageIt = ResampleImageRegionType(
+      resampledImage, resampledImage->GetLargestPossibleRegion() );
+
+  typename ResampleImageType::PointType physicalPoint;
+  physicalPoint.Fill( 0.0 );
+  typename ResampleImageType::IndexType highResolutionIndex;
+  highResolutionIndex.Fill( 0.0 );
+  typename ResampleImageType::PixelType pixelValue;
+
+  for( resampledImageIt.GoToBegin();
+  !resampledImageIt.IsAtEnd();
+  ++resampledImageIt )
+    {
+    resampledImage->TransformIndexToPhysicalPoint(
+        resampledImageIt.GetIndex(), physicalPoint );
+    highResolutionImage->TransformPhysicalPointToIndex(
+        physicalPoint, highResolutionIndex );
+    resampledImageIt.Set( pixelValue );
+    }
+}
+
+/**
+ * Resample an image to match a template
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class ResampleImageType, class TemplateImageType  >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ResampleImageLinear( const ResampleImageType * highResolutionImage,
+                       const TemplateImageType * templateImage,
+                       ResampleImageType * resampledImage ) const
+{
+  typedef itk::ResampleImageFilter< ResampleImageType, ResampleImageType >
+      ResampleFilterType;
+  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+  resampler->SetInput( highResolutionImage );
+  resampler->SetOutputParametersFromImage( templateImage );
+  resampler->Update();
+  resampledImage = resampler->GetOutput();
 }
 
 /**
@@ -220,7 +295,7 @@ DiffusiveRegistrationFilter
 
   // Allocate and initialize the images we will use to store data computed
   // during the registration (or set pointers to 0 if they are not being used).
-  this->AllocateImageArrays();
+  this->AllocateImageMembers();
 
   // Compute the diffusion tensors and their derivatives
   if( this->GetComputeRegularizationTerm() )
@@ -240,7 +315,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateImageArrays()
+::AllocateImageMembers()
 {
   assert( this->GetOutput() );
 
@@ -248,37 +323,74 @@ DiffusiveRegistrationFilter
   // use to store data computed before/during the registration
   typename OutputImageType::Pointer output = this->GetOutput();
 
+  int numTerms = this->GetNumberOfTerms();
+
   // Allocate the diffusion tensor images and their derivatives
   if( this->GetComputeRegularizationTerm() )
     {
     DiffusionTensorImagePointer diffusionTensorPointer = 0;
     TensorDerivativeImagePointer tensorDerivativePointer = 0;
-    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    for( int i = 0; i < numTerms; i++ )
       {
       diffusionTensorPointer = DiffusionTensorImageType::New();
       this->AllocateSpaceForImage( diffusionTensorPointer, output );
-      m_DiffusionTensorImages.push_back( diffusionTensorPointer );
+      if( (int) m_DiffusionTensorImages.size() < numTerms )
+        {
+        m_DiffusionTensorImages.push_back( diffusionTensorPointer );
+        }
+      else
+        {
+        m_DiffusionTensorImages[i] = diffusionTensorPointer;
+        }
 
       tensorDerivativePointer = TensorDerivativeImageType::New();
       this->AllocateSpaceForImage( tensorDerivativePointer, output );
-      m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
+      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
+        {
+        m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
+        }
+      else
+        {
+        m_DiffusionTensorDerivativeImages[i] = tensorDerivativePointer;
+        }
       }
     }
   // Fill the arrays with NULL pointers for items not being used
   else
     {
-    for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+    for( int i = 0; i < numTerms; i++ )
       {
-      m_DiffusionTensorImages.push_back( 0 );
-      m_DiffusionTensorDerivativeImages.push_back( 0 );
+      if( (int) m_DiffusionTensorImages.size() < numTerms )
+        {
+        m_DiffusionTensorImages.push_back( 0 );
+        }
+      else
+        {
+        m_DiffusionTensorImages[i] = 0;
+        }
+      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
+        {
+        m_DiffusionTensorDerivativeImages.push_back( 0 );
+        }
+      else
+        {
+        m_DiffusionTensorDerivativeImages[i] = 0;
+        }
       }
     }
 
   // Initialize image pointers that may or may not be allocated by individual
   // filters later on, namely deformation derivatives and multiplication vectors
-  for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+  for( int i = 0; i < numTerms; i++ )
     {
-    m_DeformationComponentImages.push_back( 0 );
+    if( (int) m_DeformationComponentImages.size() < numTerms )
+      {
+      m_DeformationComponentImages.push_back( 0 );
+      }
+    else
+      {
+      m_DeformationComponentImages[i] = 0;
+      }
 
     ScalarDerivativeImageArrayType deformationComponentFirstArray;
     TensorDerivativeImageArrayType deformationComponentSecondArray;
@@ -289,11 +401,36 @@ DiffusiveRegistrationFilter
       deformationComponentSecondArray[j] = 0;
       multiplicationVectorArray[j] = 0;
       }
-    m_DeformationComponentFirstOrderDerivativeArrays.push_back(
-        deformationComponentFirstArray );
-    m_DeformationComponentSecondOrderDerivativeArrays.push_back(
-        deformationComponentSecondArray );
-    m_MultiplicationVectorImageArrays.push_back( multiplicationVectorArray );
+    if( (int) m_DeformationComponentFirstOrderDerivativeArrays.size()
+      < numTerms )
+      {
+      m_DeformationComponentFirstOrderDerivativeArrays.push_back(
+          deformationComponentFirstArray );
+      }
+    else
+      {
+      m_DeformationComponentFirstOrderDerivativeArrays[i]
+          = deformationComponentFirstArray;
+      }
+    if( (int) m_DeformationComponentSecondOrderDerivativeArrays.size()
+      < numTerms )
+      {
+      m_DeformationComponentSecondOrderDerivativeArrays.push_back(
+          deformationComponentSecondArray );
+      }
+    else
+      {
+      m_DeformationComponentSecondOrderDerivativeArrays[i]
+          = deformationComponentSecondArray;
+      }
+    if( (int) m_MultiplicationVectorImageArrays.size() < numTerms )
+      {
+      m_MultiplicationVectorImageArrays.push_back( multiplicationVectorArray );
+      }
+    else
+      {
+      m_MultiplicationVectorImageArrays[i] = multiplicationVectorArray;
+      }
     }
 }
 
