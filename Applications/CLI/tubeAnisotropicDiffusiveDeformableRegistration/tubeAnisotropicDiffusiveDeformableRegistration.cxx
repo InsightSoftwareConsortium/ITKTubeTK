@@ -559,6 +559,14 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  // Error checking on number of iterations
+  if( numberOfIterations.size() <= 0 )
+    {
+    tube::ErrorMessage( "You must provide a list of number of iterations." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
   // Report progress from reading input data
   double progress = 0.1;
   progressReporter.Report( progress );
@@ -581,7 +589,7 @@ int DoIt( int argc, char * argv[] )
   // Setup the levels, iterations and max error of Gaussian kernel
   int numberOfLevels = numberOfIterations.size();
   unsigned int * iterations = new unsigned int [ numberOfLevels ];
-  copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
+  std::copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
   double maximumError = 0.01;
 
   // Setup the multiresolution pyramids
