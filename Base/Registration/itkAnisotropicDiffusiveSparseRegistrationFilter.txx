@@ -352,6 +352,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
     // Get the normals from the polydata, used to calculate the weight image
     vtkPointLocator * pointLocator = vtkPointLocator::New();
     pointLocator->SetDataSet( m_BorderSurface );
+    pointLocator->Initialize();
+    pointLocator->BuildLocator();
     vtkSmartPointer< vtkDataArray > normalData
         = m_BorderSurface->GetPointData()->GetNormals();
 

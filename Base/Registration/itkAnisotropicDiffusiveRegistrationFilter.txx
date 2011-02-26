@@ -296,6 +296,8 @@ AnisotropicDiffusiveRegistrationFilter
   // Get the normals from the polydata
   vtkPointLocator * pointLocator = vtkPointLocator::New();
   pointLocator->SetDataSet( m_BorderSurface );
+  pointLocator->Initialize();
+  pointLocator->BuildLocator();
   vtkSmartPointer< vtkDataArray > normalData
       = m_BorderSurface->GetPointData()->GetNormals();
 
