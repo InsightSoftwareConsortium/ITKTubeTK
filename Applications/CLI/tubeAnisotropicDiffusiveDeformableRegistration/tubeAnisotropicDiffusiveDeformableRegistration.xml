@@ -17,10 +17,24 @@
       <name>numberOfIterations</name>
       <flag>i</flag>
       <longflag>iterations</longflag>
-      <description>Comma separated list of iterations. The number of iterations specified dictates the number of levels of the multiresolution registration.  The multiresolution shrink factors are halved in all three directions on each of the multiresolution levels. </description>
+      <description>Comma separated list of iterations. The number of iterations specified dictates the number of levels of the multiresolution registration.  The multiresolution shrink factors are halved in all three directions on each of the multiresolution levels. The registration will stop when either the maximum RMS error condition or the number of iterations condition is reached. </description>
       <label>Iterations</label>
       <default>20</default>
     </integer-vector>
+    <double>
+      <name>maximumRMSError</name>
+      <flag>m</flag>
+      <longflag>maximumRMSError</longflag>
+      <label>Maximum RMS error</label>
+      <channel>input</channel>
+      <description>If the RMS change in a registration iteration is less than the maximum RMS error threshold, the registration will be halted.  Specify a larger value to halt faster.  If using a multiresolution registration, the maximum RMS error condition will be tested at every level (i.e. will run at least one registration on each iteration).  The registration will stop when either the maximum RMS error condition or the number of iterations condition is reached. </description>
+      <default>0.0</default>
+      <constraints>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <step>0.01</step>
+      </constraints>
+    </double>
     <double>
       <name>timeStep</name>
       <flag>s</flag>
