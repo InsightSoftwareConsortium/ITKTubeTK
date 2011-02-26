@@ -244,6 +244,14 @@ protected:
   virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
                                                    bool computeWeights );
 
+  /** Computes the normal vectors and distances to the closest point given
+   *  an initialized vtkPointLocator and the surface border normals */
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
+      vtkPointLocator * pointLocator,
+      vtkDoubleArray * normalData,
+      bool computeNormals,
+      bool computeWeights );
+
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border. */
   virtual WeightType ComputeWeightFromDistance( const WeightType distance )
