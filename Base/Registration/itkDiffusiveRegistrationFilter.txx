@@ -807,7 +807,7 @@ DiffusiveRegistrationFilter
   int total;
   ThreadRegionType splitRegion;
   total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitRegion );;
+                                             splitRegion );
 
   ThreadDiffusionTensorImageRegionType splitTensorRegion;
   total = str->Filter->SplitRequestedRegion( threadId, threadCount,
