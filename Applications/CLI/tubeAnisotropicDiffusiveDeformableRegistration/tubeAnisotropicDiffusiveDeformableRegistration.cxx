@@ -581,6 +581,7 @@ int DoIt( int argc, char * argv[] )
     {
     anisotropicRegistrator->SetLambda( lambda );
     }
+  registrator->SetMaximumRMSError( maximumRMSError );
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
   // we don't want the deformation field to undergo Gaussian smoothing on the

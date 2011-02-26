@@ -49,6 +49,10 @@ AnisotropicDiffusiveRegistrationFunction
 
   this->SetMovingImage(0);
   this->SetFixedImage(0);
+
+  m_SumOfSquaredChange = 0.0;
+  m_NumberOfPixelsProcessed = 0L;
+  m_RMSChange = NumericTraits< double >::max();
 }
 
 /**
@@ -77,6 +81,11 @@ AnisotropicDiffusiveRegistrationFunction
     os << indent << "Intensity distance function: " << std::endl;
     m_IntensityDistanceFunction->Print( os, indent );
     }
+  os << indent << "Sum of squared change: " << m_SumOfSquaredChange
+      << std::endl;
+  os << indent << "Number of pixels processed: " << m_NumberOfPixelsProcessed
+      << std::endl;
+  os << indent << "RMS change: " << m_RMSChange << std::endl;
 }
 
 /**
@@ -102,6 +111,9 @@ AnisotropicDiffusiveRegistrationFunction
         = m_IntensityDistanceFunction->GetGlobalDataPointer();
     }
 
+  ans->m_SumOfSquaredChange = 0;
+  ans->m_NumberOfPixelsProcessed = 0L;
+
   return ans;
 }
 
@@ -126,6 +138,16 @@ AnisotropicDiffusiveRegistrationFunction
     {
     m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
         gd->m_IntensityDistanceGlobalDataStruct );
+    }
+
+  // Update the variables used to calculate RMS change
+  m_SumOfSquaredChange += gd->m_SumOfSquaredChange;
+  m_NumberOfPixelsProcessed += gd->m_NumberOfPixelsProcessed;
+  if( m_NumberOfPixelsProcessed )
+    {
+    m_RMSChange
+        = vcl_sqrt( m_SumOfSquaredChange
+                    / static_cast< double >( m_NumberOfPixelsProcessed ) );
     }
 
   delete gd;
@@ -160,6 +182,10 @@ AnisotropicDiffusiveRegistrationFunction
     {
     m_RegularizationFunction->InitializeIteration();
     }
+
+  // initialize RMS calculation variables
+  m_SumOfSquaredChange = 0.0;
+  m_NumberOfPixelsProcessed = 0L;
 }
 
 /**
@@ -204,6 +230,7 @@ AnisotropicDiffusiveRegistrationFunction
 {
   // Get the global data structure
   GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
+  assert( gd );
 
   // Iterate over the deformation field components to compute the regularization
   // and intensity distance terms - note that PixelType corresponds to a
@@ -275,6 +302,14 @@ AnisotropicDiffusiveRegistrationFunction
   PixelType updateTerm;
   updateTerm.Fill(0);
   updateTerm = intensityDistanceTerm + regularizationTerm;
+
+  // Update the variables used to calculate RMS change
+  gd->m_NumberOfPixelsProcessed += 1;
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    gd->m_SumOfSquaredChange += vnl_math_sqr( updateTerm[i] );
+    }
+
   return updateTerm;
 }
 

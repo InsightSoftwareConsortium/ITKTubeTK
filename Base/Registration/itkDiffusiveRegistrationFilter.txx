@@ -1063,6 +1063,10 @@ DiffusiveRegistrationFilter
   // changes this buffer through iterators which do not increment the
   // output timestamp
   this->GetOutput()->Modified();
+
+  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  assert( df );
+  this->SetRMSChange( df->GetRMSChange() );
 }
 
 /**
