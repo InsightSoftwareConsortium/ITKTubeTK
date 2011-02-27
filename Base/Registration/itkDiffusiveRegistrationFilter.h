@@ -475,7 +475,7 @@ protected:
   virtual void AllocateUpdateBuffer();
 
   /** Get the update buffer. */
-  virtual UpdateBufferType * GetUpdateBuffer() const
+  virtual UpdateBufferType * GetUpdateBuffer()
     { return m_UpdateBuffer; }
 
   /** Helper function to allocate an image based on a template */
