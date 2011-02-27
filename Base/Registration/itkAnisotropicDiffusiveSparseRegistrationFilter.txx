@@ -353,6 +353,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   str.Filter = this;
   str.PointLocator = pointLocator;
   str.NormalData = normalData;
+  str.ComputeNormals = computeNormals;
   str.ComputeWeightStructures = computeWeightStructures;
   str.ComputeWeightRegularizations = computeWeightRegularizations;
 
