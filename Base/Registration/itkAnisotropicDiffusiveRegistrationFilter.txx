@@ -24,8 +24,8 @@ limitations under the License.
 #define __itkAnisotropicDiffusiveRegistrationFilter_txx
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
 
+#include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include "vtkFloatArray.h"
 #include "vtkPointData.h"
 #include "vtkPointLocator.h"
