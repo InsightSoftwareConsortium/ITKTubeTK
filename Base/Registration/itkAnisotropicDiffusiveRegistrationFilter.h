@@ -25,8 +25,10 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
-#include "vtkPolyData.h"
 #include "vtkSmartPointer.h"
+class vtkFloatArray;
+class vtkPointLocator;
+class vtkPolyData;
 
 namespace itk
 {
@@ -147,6 +149,8 @@ public:
       NormalVectorImageBoundaryConditionType;
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageRegionType;
+  typedef typename NormalVectorImageType::RegionType
+      ThreadNormalVectorImageRegionType;
 
   /** Types for weighting between the anisotropic and diffusive (Gaussian)
     * regularization */
@@ -154,6 +158,8 @@ public:
   typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
   typedef typename WeightImageType::Pointer             WeightImagePointer;
   typedef itk::ImageRegionIterator< WeightImageType >   WeightImageRegionType;
+  typedef typename WeightImageType::RegionType
+      ThreadWeightImageRegionType;
 
   /** Organ boundary surface types */
   typedef vtkPolyData                                   BorderSurfaceType;
@@ -244,6 +250,24 @@ protected:
   virtual void ComputeNormalVectorAndWeightImages( bool computeNormals,
                                                    bool computeWeights );
 
+  /** Computes the normal vectors and distances to the closest point given
+   *  an initialized vtkPointLocator and the surface border normals */
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
+      bool computeNormals, bool computeWeights );
+
+  /** Does the actual work of updating the output over an output region supplied
+   *  by the multithreading mechanism.
+   *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
+   *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
+  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+      vtkPointLocator * pointLocator,
+      vtkFloatArray * normalData,
+      ThreadNormalVectorImageRegionType & normalRegionToProcess,
+      ThreadWeightImageRegionType & weightRegionToProcess,
+      bool computeNormals,
+      bool computeWeights,
+      int threadId );
+
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border. */
   virtual WeightType ComputeWeightFromDistance( const WeightType distance )
@@ -253,6 +277,24 @@ private:
   // Purposely not implemented
   AnisotropicDiffusiveRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
+
+  /** Structure for passing information into static callback methods.  Used in
+   * the subclasses threading mechanisms. */
+  struct AnisotropicDiffusiveRegistrationFilterThreadStruct
+    {
+    AnisotropicDiffusiveRegistrationFilter * Filter;
+    vtkPointLocator * PointLocator;
+    vtkFloatArray * NormalData;
+    bool ComputeNormals;
+    bool ComputeWeights;
+    };
+
+  /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
+   * output region that it passes to
+   * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
+  static ITK_THREAD_RETURN_TYPE
+      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
+          void * arg );
 
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
