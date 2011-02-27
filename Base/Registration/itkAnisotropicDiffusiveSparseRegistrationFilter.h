@@ -25,6 +25,11 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
+#include "vtkSmartPointer.h"
+class vtkFloatArray;
+class vtkPointLocator;
+class vtkPolyData;
+
 namespace itk
 {
 
@@ -154,6 +159,8 @@ public:
       NormalMatrixImageBoundaryConditionType;
   typedef itk::ImageRegionIterator< NormalMatrixImageType >
       NormalMatrixImageRegionType;
+  typedef typename NormalMatrixImageType::RegionType
+      ThreadNormalMatrixImageRegionType;
 
   /** Types for weighting between the plane/tube/point states of the
     * regularization - a matrix A, likely symmetric but we won't enforce
@@ -168,6 +175,8 @@ public:
       WeightMatrixImagePointer;
   typedef itk::ImageRegionIterator< WeightMatrixImageType >
       WeightMatrixImageRegionType;
+  typedef typename WeightMatrixImageType::RegionType
+      ThreadWeightMatrixImageRegionType;
 
   /** We also need a weighting w between the diffusive regularization and the
     * anisotropic regularization, which is a scalar. */
@@ -177,6 +186,8 @@ public:
       WeightComponentImagePointer;
   typedef itk::ImageRegionIterator< WeightComponentImageType >
       WeightComponentImageRegionType;
+  typedef typename WeightComponentImageType::RegionType
+      ThreadWeightComponentImageRegionType;
 
   /** Organ boundary surface types */
   typedef vtkPolyData                                   BorderSurfaceType;
@@ -283,12 +294,35 @@ protected:
 
   /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();
+
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
   virtual void ComputeNormalMatrixAndWeightImages(
       bool computeNormals,
       bool computeWeightStructures,
       bool computeWeightRegularizations );
+
+  /** Computes the normal vectors and distances to the closest point given
+   *  an initialized vtkPointLocator and the surface border normals */
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
+      bool computeNormals,
+      bool computeWeightStructures,
+      bool computeWeightRegularizations );
+
+  /** Does the actual work of updating the output over an output region supplied
+   *  by the multithreading mechanism.
+   *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
+   *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
+  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+      vtkPointLocator * pointLocator,
+      vtkFloatArray * normalData,
+      ThreadNormalMatrixImageRegionType & normalRegionToProcess,
+      ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
+      ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
+      bool computeNormals,
+      bool computeWeightStructures,
+      bool computeWeightRegularizations,
+      int threadId );
 
   /** Computes the weighting factor w from the distance to the border.  The
    *  weight should be 1 near the border and 0 away from the border. */
@@ -299,6 +333,25 @@ private:
   // Purposely not implemented
   AnisotropicDiffusiveSparseRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
+
+  /** Structure for passing information into static callback methods.  Used in
+   * the subclasses threading mechanisms. */
+  struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
+    {
+    AnisotropicDiffusiveSparseRegistrationFilter * Filter;
+    vtkPointLocator * PointLocator;
+    vtkFloatArray * NormalData;
+    bool ComputeNormals;
+    bool ComputeWeightStructures;
+    bool ComputeWeightRegularizations;
+    };
+
+  /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
+   * output region that it passes to
+   * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
+  static ITK_THREAD_RETURN_TYPE
+      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
+          void * arg );
 
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
