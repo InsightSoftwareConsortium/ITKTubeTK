@@ -26,9 +26,10 @@ limitations under the License.
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 
-#include "vtkDoubleArray.h"
+#include "vtkFloatArray.h"
 #include "vtkPointData.h"
 #include "vtkPointLocator.h"
+#include "vtkPolyData.h"
 #include "vtkPolyDataNormals.h"
 
 namespace itk
@@ -272,36 +273,125 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
- * Computes the normal vectors and distances to the closest point given
- * an initialized vtkPointLocator and the surface border normals
+ * Computes the normal vectors and distances to the closest point
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::GetNormalsAndDistancesFromClosestSurfacePoint(
+::GetNormalsAndDistancesFromClosestSurfacePoint( bool computeNormals,
+                                                 bool computeWeights )
+{
+  // Setup the point locator and get the normals from the polydata
+  vtkPointLocator * pointLocator = vtkPointLocator::New();
+  pointLocator->SetDataSet( m_BorderSurface );
+  pointLocator->Initialize();
+  pointLocator->BuildLocator();
+  vtkFloatArray * normalData
+      = static_cast< vtkFloatArray * >
+        (m_BorderSurface->GetPointData()->GetNormals() );
+
+  // Set up struct for multithreaded processing.
+  AnisotropicDiffusiveRegistrationFilterThreadStruct str;
+  str.Filter = this;
+  str.PointLocator = pointLocator;
+  str.NormalData = normalData;
+  str.ComputeNormals = computeNormals;
+  str.ComputeWeights = computeWeights;
+
+  // Multithread the execution
+  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetSingleMethod(
+      this->GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback,
+      & str );
+  this->GetMultiThreader()->SingleMethodExecute();
+
+  // Explicitly call Modified on the normal and weight images here, since
+  // ThreadedGetNormalsAndDistancesFromClosestSurfacePoint changes these buffers
+  // through iterators which do not increment the update buffer timestamp
+  this->m_NormalVectorImage->Modified();
+  this->m_WeightImage->Modified();
+
+  // Clean up memory
+  pointLocator->Delete();
+}
+
+/**
+ * Calls ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+ITK_THREAD_RETURN_TYPE
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback( void * arg )
+{
+  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+
+  AnisotropicDiffusiveRegistrationFilterThreadStruct * str
+      = (AnisotropicDiffusiveRegistrationFilterThreadStruct *)
+            (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+
+  // Execute the actual method with appropriate output region
+  // first find out how many pieces extent can be split into.
+  // Using the SplitRequestedRegion method from itk::ImageSource.
+  int total;
+  ThreadNormalVectorImageRegionType splitNormalRegion;
+  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                             splitNormalRegion );
+
+  ThreadWeightImageRegionType splitWeightRegion;
+  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                             splitWeightRegion );
+
+  if( threadId < total )
+    {
+    str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+        str->PointLocator,
+        str->NormalData,
+        splitNormalRegion,
+        splitWeightRegion,
+        str->ComputeNormals,
+        str->ComputeWeights,
+        threadId );
+    }
+
+  return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Does the actual work of computing the normal vectors and distances to the
+ * closest point given an initialized vtkPointLocator and the surface border
+ * normals
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
     vtkPointLocator * pointLocator,
-    vtkDoubleArray * normalData,
+    vtkFloatArray * normalData,
+    ThreadNormalVectorImageRegionType & normalRegionToProcess,
+    ThreadWeightImageRegionType & weightRegionToProcess,
     bool computeNormals,
-    bool computeWeights )
+    bool computeWeights,
+    int )
 {
   // Setup iterators over the normal vector and weight images
-  NormalVectorImageRegionType normalIt(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+  NormalVectorImageRegionType normalIt( m_NormalVectorImage,
+                                        normalRegionToProcess );
   WeightImageRegionType weightIt(m_WeightImage,
-                                 m_WeightImage->GetLargestPossibleRegion() );
+                                 weightRegionToProcess );
 
   // The normal vector image will hold the normal of the closest point of the
   // surface polydata, and the weight image will be a function of the distance
   // between the voxel and this closest point
 
-  itk::Point< double, ImageDimension >  imageCoordAsPoint;
-  imageCoordAsPoint.Fill( 0 );
-  double                                imageCoord[ImageDimension];
+  itk::Point< double, ImageDimension >  imageCoord;
+  imageCoord.Fill( 0 );
   double                                borderCoord[ImageDimension];
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    imageCoord[i] = 0.0;
     borderCoord[i] = 0.0;
     }
   vtkIdType                             id = 0;
@@ -314,34 +404,33 @@ AnisotropicDiffusiveRegistrationFilter
        !normalIt.IsAtEnd();
        ++normalIt, ++weightIt )
     {
+    // Find the id of the closest surface point to the current voxel
+    m_NormalVectorImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
+                                                        imageCoord );
+    id = pointLocator->FindClosestPoint( imageCoord.GetDataPointer() );
 
     // Find the normal of the surface point that is closest to the current voxel
-    m_NormalVectorImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
-                                                        imageCoordAsPoint );
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      imageCoord[i] = imageCoordAsPoint[i];
-      }
-    id = pointLocator->FindClosestPoint( imageCoord );
-    normal = normalData->GetTuple( id );
     if( computeNormals )
       {
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        normal[i] = normalData->GetValue( id * ImageDimension + i );
+        }
       normalIt.Set( normal );
       }
 
     // Calculate distance between the current coordinate and the border surface
     // coordinate
-    m_BorderSurface->GetPoint( id, borderCoord );
-    distance = 0.0;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      distance += pow( imageCoord[i] - borderCoord[i], 2 );
-      }
-    distance = sqrt( distance );
-
-    // The weight image will temporarily store distances
     if( computeWeights )
       {
+      m_BorderSurface->GetPoint( id, borderCoord );
+      distance = 0.0;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        distance += pow( imageCoord[i] - borderCoord[i], 2 );
+        }
+      distance = sqrt( distance );
+      // The weight image will temporarily store distances
       weightIt.Set( distance );
       }
     }
@@ -363,23 +452,11 @@ AnisotropicDiffusiveRegistrationFilter
 
   std::cout << "Computing normals and weights... " << std::endl;
 
-  // Setup the point loator and get the normals from the polydata
-  vtkPointLocator * pointLocator = vtkPointLocator::New();
-  pointLocator->SetDataSet( m_BorderSurface );
-  pointLocator->Initialize();
-  pointLocator->BuildLocator();
-  vtkDoubleArray * normalData
-      = static_cast< vtkDoubleArray * >
-        (m_BorderSurface->GetPointData()->GetNormals() );
-
   // The normal vector image will hold the normal of the closest point of the
   // surface polydata, and the weight image will be a function of the distance
   // between the voxel and this closest point
-  this->GetNormalsAndDistancesFromClosestSurfacePoint(
-      pointLocator, normalData, computeNormals, computeWeights );
-
-  // Clean up memory
-  pointLocator->Delete();
+  this->GetNormalsAndDistancesFromClosestSurfacePoint( computeNormals,
+                                                       computeWeights );
 
   // Smooth the normals to handle corners (because we are choosing the
   // closest point in the polydata
