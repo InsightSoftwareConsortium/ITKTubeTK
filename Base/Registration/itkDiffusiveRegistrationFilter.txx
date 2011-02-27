@@ -225,6 +225,7 @@ DiffusiveRegistrationFilter
         resampledImageIt.GetIndex(), physicalPoint );
     highResolutionImage->TransformPhysicalPointToIndex(
         physicalPoint, highResolutionIndex );
+    pixelValue = highResolutionImage->GetPixel( highResolutionIndex );
     resampledImageIt.Set( pixelValue );
     }
 }
