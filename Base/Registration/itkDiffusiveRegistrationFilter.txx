@@ -218,13 +218,14 @@ DiffusiveRegistrationFilter
   typename ResampleImageType::PixelType pixelValue;
 
   for( resampledImageIt.GoToBegin();
-  !resampledImageIt.IsAtEnd();
-  ++resampledImageIt )
+       !resampledImageIt.IsAtEnd();
+       ++resampledImageIt )
     {
     resampledImage->TransformIndexToPhysicalPoint(
         resampledImageIt.GetIndex(), physicalPoint );
     highResolutionImage->TransformPhysicalPointToIndex(
         physicalPoint, highResolutionIndex );
+    pixelValue = highResolutionImage->GetPixel( highResolutionIndex );
     resampledImageIt.Set( pixelValue );
     }
 }
