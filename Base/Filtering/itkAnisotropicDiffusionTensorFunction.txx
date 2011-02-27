@@ -86,7 +86,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
   return this->ComputeUpdate( neighborhood,
                               tensorNeighborhood,
                               spacing,
-                              globalData );
+                              globalData,
+                              offset );
 }
 
 template< class TImageType >
@@ -123,7 +124,6 @@ AnisotropicDiffusionTensorFunction< TImageType >
     const ScalarDerivativeImageRegionType &intensityFirstDerivatives,
     const TensorDerivativeImageRegionType &intensitySecondDerivatives,
     const TensorDerivativeImageRegionType &tensorFirstDerivatives,
-    const SpacingType &spacing,
     void *globalData,
     const FloatOffsetType& itkNotUsed(offset) )
 {

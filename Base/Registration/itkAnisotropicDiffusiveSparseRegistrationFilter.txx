@@ -353,6 +353,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   str.Filter = this;
   str.PointLocator = pointLocator;
   str.NormalData = normalData;
+  str.ComputeNormals = computeNormals;
   str.ComputeWeightStructures = computeWeightStructures;
   str.ComputeWeightRegularizations = computeWeightRegularizations;
 
@@ -436,7 +437,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     vtkPointLocator * pointLocator,
     vtkFloatArray * normalData,
     ThreadNormalMatrixImageRegionType & normalRegionToProcess,
-    ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
+    ThreadWeightMatrixImageRegionType & itkNotUsed(weightMatrixRegionToProcess),
     ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
     bool computeNormals,
     bool computeWeightStructures,
