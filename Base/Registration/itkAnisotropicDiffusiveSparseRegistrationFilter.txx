@@ -437,7 +437,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     vtkPointLocator * pointLocator,
     vtkFloatArray * normalData,
     ThreadNormalMatrixImageRegionType & normalRegionToProcess,
-    ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
+    ThreadWeightMatrixImageRegionType & itkNotUsed(weightMatrixRegionToProcess),
     ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
     bool computeNormals,
     bool computeWeightStructures,
