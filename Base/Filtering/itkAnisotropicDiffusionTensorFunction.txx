@@ -86,7 +86,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
   return this->ComputeUpdate( neighborhood,
                               tensorNeighborhood,
                               spacing,
-                              globalData );
+                              globalData,
+                              offset );
 }
 
 template< class TImageType >
