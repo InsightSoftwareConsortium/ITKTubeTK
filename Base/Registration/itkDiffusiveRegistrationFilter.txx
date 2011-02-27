@@ -218,8 +218,8 @@ DiffusiveRegistrationFilter
   typename ResampleImageType::PixelType pixelValue;
 
   for( resampledImageIt.GoToBegin();
-  !resampledImageIt.IsAtEnd();
-  ++resampledImageIt )
+       !resampledImageIt.IsAtEnd();
+       ++resampledImageIt )
     {
     resampledImage->TransformIndexToPhysicalPoint(
         resampledImageIt.GetIndex(), physicalPoint );
