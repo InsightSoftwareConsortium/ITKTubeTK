@@ -885,7 +885,6 @@ DiffusiveRegistrationFilter
   // Get the radius and output
   const typename OutputImageType::SizeType radius = df->GetRadius();
   OutputImagePointer output = this->GetOutput();
-  SpacingType spacing = output->GetSpacing();
 
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
@@ -995,7 +994,6 @@ DiffusiveRegistrationFilter
           deformationComponentSecondOrderRegionArrays,
           tensorDerivativeRegions,
           multiplicationVectorRegionArrays,
-          spacing,
           globalData );
 
       // Go to the next neighborhood

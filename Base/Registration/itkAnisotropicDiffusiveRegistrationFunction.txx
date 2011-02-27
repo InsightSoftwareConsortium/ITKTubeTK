@@ -224,7 +224,6 @@ AnisotropicDiffusiveRegistrationFunction
     const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
     const DeformationVectorImageRegionArrayVectorType
         & multiplicationVectorRegionArrays,
-    const SpacingType & spacing,
     void * globalData,
     const FloatOffsetType & offset )
 {
@@ -278,7 +277,6 @@ AnisotropicDiffusiveRegistrationFunction
             deformationComponentFirstOrderDerivativeRegions[term][i],
             deformationComponentSecondOrderDerivativeRegions[term][i],
             tensorDerivativeRegions[term],
-            spacing,
             gd->m_RegularizationGlobalDataStruct,
             offset );
 

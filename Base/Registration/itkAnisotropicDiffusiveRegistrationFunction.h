@@ -242,7 +242,6 @@ public:
       const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
       const DeformationVectorImageRegionArrayVectorType
           & multiplicationVectorRegionArrays,
-      const SpacingType & spacing,
       void * globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
 

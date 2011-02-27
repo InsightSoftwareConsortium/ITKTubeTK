@@ -124,7 +124,6 @@ AnisotropicDiffusionTensorFunction< TImageType >
     const ScalarDerivativeImageRegionType &intensityFirstDerivatives,
     const TensorDerivativeImageRegionType &intensitySecondDerivatives,
     const TensorDerivativeImageRegionType &tensorFirstDerivatives,
-    const SpacingType &spacing,
     void *globalData,
     const FloatOffsetType& itkNotUsed(offset) )
 {
