@@ -230,19 +230,18 @@ AnisotropicDiffusiveRegistrationFilter
   if( !this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
                                      output.GetPointer() ) )
     {
-    this->VectorResampleImageLinear(
-        m_HighResolutionNormalVectorImage.GetPointer(),
-        output.GetPointer(),
-        m_NormalVectorImage.GetPointer() );
+    this->VectorResampleImageLinear( m_HighResolutionNormalVectorImage,
+                                     output,
+                                     m_NormalVectorImage );
     assert( this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
                                           output.GetPointer() ) );
     }
   if( !this->CompareImageAttributes( m_WeightImage.GetPointer(),
                                      output.GetPointer() ) )
     {
-    this->ResampleImageLinear( m_HighResolutionWeightImage.GetPointer(),
-                               output.GetPointer(),
-                               m_WeightImage.GetPointer() );
+    this->ResampleImageLinear( m_HighResolutionWeightImage,
+                               output,
+                               m_WeightImage );
     assert( this->CompareImageAttributes( m_WeightImage.GetPointer(),
                                           output.GetPointer() ) );
     }

@@ -191,16 +191,18 @@ DiffusiveRegistrationFilter
  * Resample an image to match a template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImageType, class TemplateImageType >
+template< class ResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageNearestNeighbor( const ResampleImageType * highResolutionImage,
-                                const TemplateImageType * templateImage,
-                                ResampleImageType * resampledImage ) const
+::ResampleImageNearestNeighbor(
+    const ResampleImagePointer & highResolutionImage,
+    const TemplateImagePointer & templateImage,
+    ResampleImagePointer & resampledImage ) const
 {
   // We have to implement nearest neighbors by hand, since we are dealing with
   // pixel types that do not have Numeric Traits
+  typedef typename ResampleImagePointer::ObjectType ResampleImageType;
 
   // Create the resized resampled image
   if( !resampledImage )
@@ -238,17 +240,18 @@ DiffusiveRegistrationFilter
  * Resample an image to match a template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImageType, class TemplateImageType >
+template< class ResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageLinear( const ResampleImageType * highResolutionImage,
-                       const TemplateImageType * templateImage,
-                       ResampleImageType * resampledImage ) const
+::ResampleImageLinear( const ResampleImagePointer & highResolutionImage,
+                       const TemplateImagePointer & templateImage,
+                       ResampleImagePointer & resampledImage ) const
 {
   // Do linear interpolation
-  typedef itk::ResampleImageFilter< ResampleImageType, ResampleImageType >
-      ResampleFilterType;
+  typedef itk::ResampleImageFilter
+      < typename ResampleImagePointer::ObjectType,
+        typename ResampleImagePointer::ObjectType > ResampleFilterType;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputParametersFromImage( templateImage );
@@ -265,14 +268,14 @@ void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::VectorResampleImageLinear(
-    const VectorResampleImageType * highResolutionImage,
-    const TemplateImageType * templateImage,
-    VectorResampleImageType * resampledImage ) const
+    const VectorResampleImagePointer & highResolutionImage,
+    const TemplateImagePointer & templateImage,
+    VectorResampleImagePointer & resampledImage ) const
 {
   // Do linear interpolation
-  typedef itk::VectorResampleImageFilter< VectorResampleImageType,
-                                          VectorResampleImageType >
-      ResampleFilterType;
+  typedef itk::VectorResampleImageFilter
+      < typename VectorResampleImagePointer::ObjectType,
+        typename VectorResampleImagePointer::ObjectType > ResampleFilterType;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputOrigin( templateImage->GetOrigin() );

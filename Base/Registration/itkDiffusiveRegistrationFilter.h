@@ -492,25 +492,25 @@ protected:
   const;
 
   /** Resamples an image to a template using nearest neighbor interpolation */
-  template< class ResampleImageType, class TemplateImageType >
+  template< class ResampleImagePointer, class TemplateImagePointer >
   void ResampleImageNearestNeighbor(
-      const ResampleImageType * highResolutionImage,
-      const TemplateImageType * templateImage,
-      ResampleImageType * resampledImage ) const;
+      const ResampleImagePointer & highResolutionImage,
+      const TemplateImagePointer & templateImage,
+      ResampleImagePointer & resampledImage ) const;
 
   /** Resamples an image to a template using linear interpolation */
-  template< class ResampleImageType, class TemplateImageType >
+  template< class ResampleImagePointer, class TemplateImagePointer >
   void ResampleImageLinear(
-      const ResampleImageType * highResolutionImage,
-      const TemplateImageType * templateImage,
-      ResampleImageType * resampledImage ) const;
+      const ResampleImagePointer & highResolutionImage,
+      const TemplateImagePointer & templateImage,
+      ResampleImagePointer & resampledImage ) const;
 
   /** Resamples a vector image to a template using linear interpolation */
-  template< class VectorResampleImageType, class TemplateImageType >
+  template< class VectorResampleImagePointer, class TemplateImagePointer >
   void VectorResampleImageLinear(
-      const VectorResampleImageType * highResolutionImage,
-      const TemplateImageType * templateImage,
-      VectorResampleImageType * resampledImage ) const;
+      const VectorResampleImagePointer & highResolutionImage,
+      const TemplateImagePointer & templateImage,
+      VectorResampleImagePointer & resampledImage ) const;
 
 private:
   // Purposely not implemented

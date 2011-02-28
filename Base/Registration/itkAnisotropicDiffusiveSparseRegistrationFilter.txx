@@ -276,30 +276,27 @@ AnisotropicDiffusiveSparseRegistrationFilter
   if( !this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
                                      output.GetPointer() ) )
     {
-    this->ResampleImageNearestNeighbor(
-        m_HighResolutionNormalMatrixImage.GetPointer(),
-        output.GetPointer(),
-        m_NormalMatrixImage.GetPointer() );
+    this->ResampleImageNearestNeighbor( m_HighResolutionNormalMatrixImage,
+                                        output,
+                                        m_NormalMatrixImage );
     assert( this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
                                           output.GetPointer() ) );
     }
   if( !this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
                                      output.GetPointer() ) )
     {
-    this->ResampleImageNearestNeighbor(
-        m_HighResolutionWeightStructuresImage.GetPointer(),
-        output.GetPointer(),
-        m_WeightStructuresImage.GetPointer() );
+    this->ResampleImageNearestNeighbor( m_HighResolutionWeightStructuresImage,
+                                        output,
+                                        m_WeightStructuresImage );
     assert( this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
                                           output.GetPointer() ) );
     }
   if( !this->CompareImageAttributes( m_WeightRegularizationsImage.GetPointer(),
                                      output.GetPointer() ) )
     {
-    this->ResampleImageLinear(
-        m_HighResolutionWeightRegularizationsImage.GetPointer(),
-        output.GetPointer(),
-        m_WeightRegularizationsImage.GetPointer() );
+    this->ResampleImageLinear( m_HighResolutionWeightRegularizationsImage,
+                               output,
+                               m_WeightRegularizationsImage );
     assert( this->CompareImageAttributes(
         m_WeightRegularizationsImage.GetPointer(), output.GetPointer() ) );
     }
