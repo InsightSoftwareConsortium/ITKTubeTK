@@ -705,8 +705,8 @@ AnisotropicDiffusiveRegistrationFilter
 
   for( normalVectorRegion.GoToBegin(), outputRegion.GoToBegin(),
        normalDeformationRegion.GoToBegin();
-  !outputRegion.IsAtEnd();
-  ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
+      !outputRegion.IsAtEnd();
+      ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
     {
     n = normalVectorRegion.Get();
     u = outputRegion.Get();
