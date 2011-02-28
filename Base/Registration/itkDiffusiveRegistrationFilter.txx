@@ -1066,7 +1066,8 @@ DiffusiveRegistrationFilter
   // Using the SplitRequestedRegion method from itk::ImageSource.
   int total;
   ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+  total = str->Filter->SplitRequestedRegion( threadId,
+                                             threadCount,
                                              splitRegion );
 
   if (threadId < total)
