@@ -335,16 +335,20 @@ AnisotropicDiffusiveRegistrationFilter
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
   // Using the SplitRequestedRegion method from itk::ImageSource.
-  int total;
   ThreadNormalVectorImageRegionType splitNormalRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitNormalRegion );
+  int normalTotal = str->Filter->SplitRequestedRegion( threadId,
+                                                       threadCount,
+                                                       splitNormalRegion );
 
   ThreadWeightImageRegionType splitWeightRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitWeightRegion );
+  int weightTotal = str->Filter->SplitRequestedRegion( threadId,
+                                                       threadCount,
+                                                       splitWeightRegion );
 
-  if( threadId < total )
+  // Assert we could split all of the images equally
+  assert( normalTotal == weightTotal );
+
+  if( threadId < normalTotal )
     {
     str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
         str->PointLocator,
