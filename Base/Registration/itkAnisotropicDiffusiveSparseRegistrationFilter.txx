@@ -702,16 +702,16 @@ AnisotropicDiffusiveSparseRegistrationFilter
     // The matrices are used for calculations, and will be copied to the
     // diffusion tensors afterwards.  The matrices are guaranteed to be
     // symmetric.
-    P = N * A * N.GetTranspose();
-    wP = P * w;
+    P = N * A * N.GetTranspose(); // NAN^T
+    wP = P * w; // wP
     I_wP.SetIdentity();
-    I_wP = I_wP - wP;
-    I_wP_transpose = I_wP.GetTranspose();
-    smoothTangentialMatrix = I_wP_transpose * I_wP;
-    smoothNormalMatrix = I_wP_transpose * wP;
-    wP_transpose = wP.GetTranspose();
-    propTangentialMatrix = wP_transpose * I_wP;
-    propNormalMatrix = wP_transpose * wP;
+    I_wP = I_wP - wP; // I-wP
+    I_wP_transpose = I_wP.GetTranspose(); // (I-wP)^T
+    smoothTangentialMatrix = I_wP_transpose * I_wP; // (I-wP)^T * (I-wP)
+    smoothNormalMatrix = I_wP_transpose * wP; // (I-wP)^T * wP
+    wP_transpose = wP.GetTranspose(); // (wP)^T
+    propTangentialMatrix = wP_transpose * I_wP; // (wP)^T * (I-wP)
+    propNormalMatrix = wP_transpose * wP; // (wP)^T * wP
 
     // Copy the matrices to the diffusion tensor
     for ( unsigned int i = 0; i < ImageDimension; i++ )
@@ -823,7 +823,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   assert( this->GetComputeRegularizationTerm() );
 
   // The normal component of u_l is (NAN_l)^T * u
-  // Conveniently, (NAN_l) is the prop multiplication vector (for both SMOOTH
+  // Conveniently, (NAN_l) is the PROP multiplication vector (for both SMOOTH
   // and PROP), so we don't need to compute it again here
   DeformationVectorImageRegionArrayType NAN_lRegionArray;
   for( int i = 0; i < ImageDimension; i++ )
@@ -842,7 +842,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 
   // We want to update the deformation component images for both SMOOTH_NORMAL
   // and PROP_NORMAL, but they point to the same image, so we will grab the
-  // pointer from the first one to update both
+  // pointer from SMOOTH_NORMAL to update both
   DeformationFieldPointer normalDeformationField
       = this->GetDeformationComponentImage( SMOOTH_NORMAL );
   OutputImageRegionType normalDeformationRegion(
