@@ -183,8 +183,10 @@ DiffusiveRegistrationFilter
       && image->GetDirection() == templateImage->GetDirection()
       && image->GetLargestPossibleRegion()
           == templateImage->GetLargestPossibleRegion()
-      && image->GetRequestedRegion() == templateImage->GetRequestedRegion()
-      && image->GetBufferedRegion() == templateImage->GetBufferedRegion();
+      && image->GetLargestPossibleRegion().GetIndex()
+          == templateImage->GetLargestPossibleRegion().GetIndex()
+      && image->GetLargestPossibleRegion().GetSize()
+          == templateImage->GetLargestPossibleRegion().GetSize();
 }
 
 /**
