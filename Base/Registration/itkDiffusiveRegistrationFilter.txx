@@ -782,22 +782,28 @@ DiffusiveRegistrationFilter
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
   // Using the SplitRequestedRegion method from itk::ImageSource.
-  int total;
   ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitRegion );
+  int total = str->Filter->SplitRequestedRegion( threadId,
+                                                 threadCount,
+                                                 splitRegion );
 
   ThreadDiffusionTensorImageRegionType splitTensorRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitTensorRegion );
+  int tensorTotal = str->Filter->SplitRequestedRegion( threadId,
+                                                       threadCount,
+                                                       splitTensorRegion );
 
   ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitTensorDerivativeRegion );
+  int tensorDerivativeTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitTensorDerivativeRegion );
 
   ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitScalarDerivativeRegion );
+  int scalarDerivativeTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitScalarDerivativeRegion );
+
+  // Make sure we could split all of the images equally
+  assert( total == tensorTotal );
+  assert( total == tensorDerivativeTotal );
+  assert( total == scalarDerivativeTotal );
 
   if (threadId < total)
     {
