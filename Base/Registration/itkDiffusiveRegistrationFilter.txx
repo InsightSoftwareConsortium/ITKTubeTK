@@ -429,20 +429,21 @@ DiffusiveRegistrationFilter
 
   // Setup pointer to the deformation component image - we have only one
   // component, which is the entire deformation field
-  m_DeformationComponentImages[0] = output;
+  m_DeformationComponentImages[GAUSSIAN] = output;
 
   // Setup the first and second order deformation component images
   for( int i = 0; i < ImageDimension; i++ )
     {
-    m_DeformationComponentFirstOrderDerivativeArrays[0][i]
+    m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i]
         = ScalarDerivativeImageType::New();
     this->AllocateSpaceForImage(
-        m_DeformationComponentFirstOrderDerivativeArrays[0][i], output );
+        m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i], output );
 
-    m_DeformationComponentSecondOrderDerivativeArrays[0][i]
+    m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i]
         = TensorDerivativeImageType::New();
     this->AllocateSpaceForImage(
-        m_DeformationComponentSecondOrderDerivativeArrays[0][i], output );
+        m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i],
+        output );
     }
 }
 
@@ -456,13 +457,13 @@ DiffusiveRegistrationFilter
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_DiffusionTensorImages[0] );
+  assert( m_DiffusionTensorImages[GAUSSIAN] );
 
   // For the Gaussian regularization, we only need to set the
   // diffusion tensors to the identity
   typename DiffusionTensorImageType::PixelType identityTensor;
   identityTensor.SetIdentity();
-  m_DiffusionTensorImages[0]->FillBuffer( identityTensor );
+  m_DiffusionTensorImages[GAUSSIAN]->FillBuffer( identityTensor );
 }
 
 /**
