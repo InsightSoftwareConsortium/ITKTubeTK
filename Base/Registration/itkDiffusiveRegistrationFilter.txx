@@ -172,7 +172,7 @@ bool
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CompareImageAttributes( const CheckedImagePointer & image,
-                          const TemplateImagePointer & templateImage )
+                          const TemplateImagePointer & templateImage ) const
 {
   assert( image );
   assert( templateImage );
@@ -252,6 +252,7 @@ DiffusiveRegistrationFilter
   resampler->SetOutputParametersFromImage( templateImage );
   resampler->Update();
   resampledImage = resampler->GetOutput();
+  assert( this->CompareImageAttributes( resampledImage, templateImage ) );
 }
 
 /**

@@ -488,7 +488,8 @@ protected:
     * template */
   template< class CheckedImagePointer, class TemplateImagePointer >
   bool CompareImageAttributes( const CheckedImagePointer & image,
-                               const TemplateImagePointer & templateImage );
+                               const TemplateImagePointer & templateImage )
+  const;
 
   /** Resamples an image to a template using nearest neighbor interpolation */
   template< class ResampleImageType, class TemplateImageType  >
