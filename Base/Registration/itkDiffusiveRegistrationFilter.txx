@@ -40,9 +40,11 @@ DiffusiveRegistrationFilter
   m_UpdateBuffer = UpdateBufferType::New();
 
   // We are using our own regularization, so don't use the implementation
-  // provided by the PDERegistration framework
+  // provided by the PDERegistration framework.  We also want to use the image
+  // spacing to calculate derivatives in physical space
   this->SmoothDeformationFieldOff();
   this->SmoothUpdateFieldOff();
+  this->UseImageSpacingOn();
 
   // Create the registration function
   this->CreateRegistrationFunction();
