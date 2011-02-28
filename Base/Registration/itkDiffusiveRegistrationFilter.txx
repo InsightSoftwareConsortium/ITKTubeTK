@@ -242,6 +242,7 @@ DiffusiveRegistrationFilter
                        const TemplateImageType * templateImage,
                        ResampleImageType * resampledImage ) const
 {
+  // Do linear interpolation
   typedef itk::ResampleImageFilter< ResampleImageType, ResampleImageType >
       ResampleFilterType;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
