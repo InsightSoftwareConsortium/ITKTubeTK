@@ -254,7 +254,6 @@ DiffusiveRegistrationFilter
   resampler->SetOutputParametersFromImage( templateImage );
   resampler->Update();
   resampledImage = resampler->GetOutput();
-  assert( this->CompareImageAttributes( resampledImage, templateImage ) );
 }
 
 /**
@@ -284,7 +283,6 @@ DiffusiveRegistrationFilter
   resampler->SetSize( templateImage->GetLargestPossibleRegion().GetSize() );
   resampler->Update();
   resampledImage = resampler->GetOutput();
-  assert( this->CompareImageAttributes( resampledImage, templateImage ) );
 }
 
 /**

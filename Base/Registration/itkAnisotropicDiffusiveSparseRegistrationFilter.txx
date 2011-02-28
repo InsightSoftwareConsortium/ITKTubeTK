@@ -279,6 +279,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
         m_HighResolutionNormalMatrixImage.GetPointer(),
         output.GetPointer(),
         m_NormalMatrixImage.GetPointer() );
+    assert( this->CompareImageAttributes( m_NormalMatrixImage, output ) );
     }
   if( !this->CompareImageAttributes( m_WeightStructuresImage, output ) )
     {
@@ -286,6 +287,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
         m_HighResolutionWeightStructuresImage.GetPointer(),
         output.GetPointer(),
         m_WeightStructuresImage.GetPointer() );
+    assert( this->CompareImageAttributes( m_WeightStructuresImage, output ) );
     }
   if( !this->CompareImageAttributes( m_WeightRegularizationsImage, output ) )
     {
@@ -293,6 +295,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
         m_HighResolutionWeightRegularizationsImage.GetPointer(),
         output.GetPointer(),
         m_WeightRegularizationsImage.GetPointer() );
+    assert( this->CompareImageAttributes( m_WeightRegularizationsImage,
+                                          output ) );
     }
 }
 
