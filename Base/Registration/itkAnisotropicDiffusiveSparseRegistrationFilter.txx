@@ -255,17 +255,26 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                               computeWeightRegularizations );
     }
 
+  // Set the high resolution images only once
+  if( !m_HighResolutionNormalMatrixImage )
+    {
+    m_HighResolutionNormalMatrixImage = m_NormalMatrixImage;
+    }
+  if( !m_HighResolutionWeightStructuresImage )
+    {
+    m_HighResolutionWeightStructuresImage = m_WeightStructuresImage;
+    }
+  if( !m_HighResolutionWeightRegularizationsImage )
+    {
+    m_HighResolutionWeightRegularizationsImage = m_WeightRegularizationsImage;
+    }
+
   // If we are using a template or getting an image from the user, we need to
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
   if( !this->CompareImageAttributes( m_NormalMatrixImage, output ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionNormalMatrixImage )
-      {
-      m_HighResolutionNormalMatrixImage = m_NormalMatrixImage;
-      }
     this->ResampleImageNearestNeighbor(
         m_HighResolutionNormalMatrixImage.GetPointer(),
         output.GetPointer(),
@@ -273,11 +282,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
   if( !this->CompareImageAttributes( m_WeightStructuresImage, output ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionWeightStructuresImage )
-      {
-      m_HighResolutionWeightStructuresImage = m_WeightStructuresImage;
-      }
     this->ResampleImageNearestNeighbor(
         m_HighResolutionWeightStructuresImage.GetPointer(),
         output.GetPointer(),
@@ -285,11 +289,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
   if( !this->CompareImageAttributes( m_WeightRegularizationsImage, output ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionWeightRegularizationsImage )
-      {
-      m_HighResolutionWeightRegularizationsImage = m_WeightRegularizationsImage;
-      }
     this->ResampleImageLinear(
         m_HighResolutionWeightRegularizationsImage.GetPointer(),
         output.GetPointer(),

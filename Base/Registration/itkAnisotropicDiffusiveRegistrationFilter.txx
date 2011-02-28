@@ -213,17 +213,22 @@ AnisotropicDiffusiveRegistrationFilter
     this->ComputeNormalVectorAndWeightImages( computeNormals, computeWeights );
     }
 
+  // Set the high resolution images only once
+  if( !m_HighResolutionNormalVectorImage )
+    {
+    m_HighResolutionNormalVectorImage = m_NormalVectorImage;
+    }
+  if( !m_HighResolutionWeightImage )
+    {
+    m_HighResolutionWeightImage = m_WeightImage;
+    }
+
   // If we are using a template or getting an image from the user, we need to
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
   if( !this->CompareImageAttributes( m_NormalVectorImage, output ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionNormalVectorImage )
-      {
-      m_HighResolutionNormalVectorImage = m_NormalVectorImage;
-      }
     this->ResampleImageNearestNeighbor(
         m_HighResolutionNormalVectorImage.GetPointer(),
         output.GetPointer(),
@@ -231,11 +236,6 @@ AnisotropicDiffusiveRegistrationFilter
     }
   if( !this->CompareImageAttributes( m_WeightImage, output ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionWeightImage )
-      {
-      m_HighResolutionWeightImage = m_WeightImage;
-      }
     this->ResampleImageLinear( m_HighResolutionWeightImage.GetPointer(),
                                output.GetPointer(),
                                m_WeightImage.GetPointer() );
