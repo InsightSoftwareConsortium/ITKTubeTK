@@ -331,56 +331,28 @@ DiffusiveRegistrationFilter
   int numTerms = this->GetNumberOfTerms();
 
   // Allocate the diffusion tensor images and their derivatives
-  if( this->GetComputeRegularizationTerm() )
+  // If we are not computing a regularization term, the image arrays will be
+  // filled with '0' pointers
+  DiffusionTensorImagePointer diffusionTensorPointer = 0;
+  TensorDerivativeImagePointer tensorDerivativePointer = 0;
+  for( int i = 0; i < numTerms; i++ )
     {
-    DiffusionTensorImagePointer diffusionTensorPointer = 0;
-    TensorDerivativeImagePointer tensorDerivativePointer = 0;
-    for( int i = 0; i < numTerms; i++ )
+    if( this->GetComputeRegularizationTerm() )
       {
       diffusionTensorPointer = DiffusionTensorImageType::New();
       this->AllocateSpaceForImage( diffusionTensorPointer, output );
-      if( (int) m_DiffusionTensorImages.size() < numTerms )
-        {
-        m_DiffusionTensorImages.push_back( diffusionTensorPointer );
-        }
-      else
-        {
-        m_DiffusionTensorImages[i] = diffusionTensorPointer;
-        }
-
       tensorDerivativePointer = TensorDerivativeImageType::New();
       this->AllocateSpaceForImage( tensorDerivativePointer, output );
-      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
-        {
-        m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
-        }
-      else
-        {
-        m_DiffusionTensorDerivativeImages[i] = tensorDerivativePointer;
-        }
       }
-    }
-  // Fill the arrays with NULL pointers for items not being used
-  else
-    {
-    for( int i = 0; i < numTerms; i++ )
+    if( (int) m_DiffusionTensorImages.size() < numTerms )
       {
-      if( (int) m_DiffusionTensorImages.size() < numTerms )
-        {
-        m_DiffusionTensorImages.push_back( 0 );
-        }
-      else
-        {
-        m_DiffusionTensorImages[i] = 0;
-        }
-      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
-        {
-        m_DiffusionTensorDerivativeImages.push_back( 0 );
-        }
-      else
-        {
-        m_DiffusionTensorDerivativeImages[i] = 0;
-        }
+      m_DiffusionTensorImages.push_back( diffusionTensorPointer );
+      m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
+      }
+    else
+      {
+      m_DiffusionTensorImages[i] = diffusionTensorPointer;
+      m_DiffusionTensorDerivativeImages[i] = tensorDerivativePointer;
       }
     }
 
