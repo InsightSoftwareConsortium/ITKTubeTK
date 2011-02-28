@@ -229,7 +229,7 @@ AnisotropicDiffusiveRegistrationFilter
   // tensors, deformation components, etc
   if( !this->CompareImageAttributes( m_NormalVectorImage, output ) )
     {
-    this->ResampleImageNearestNeighbor(
+    this->VectorResampleImageLinear(
         m_HighResolutionNormalVectorImage.GetPointer(),
         output.GetPointer(),
         m_NormalVectorImage.GetPointer() );

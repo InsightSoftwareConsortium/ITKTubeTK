@@ -505,6 +505,13 @@ protected:
       const TemplateImageType * templateImage,
       ResampleImageType * resampledImage ) const;
 
+  /** Resamples a vector image to a template using linear interpolation */
+  template< class VectorResampleImageType, class TemplateImageType  >
+  void VectorResampleImageLinear(
+      const VectorResampleImageType * highResolutionImage,
+      const TemplateImageType * templateImage,
+      VectorResampleImageType * resampledImage ) const;
+
 private:
   // Purposely not implemented
   DiffusiveRegistrationFilter(const Self&);

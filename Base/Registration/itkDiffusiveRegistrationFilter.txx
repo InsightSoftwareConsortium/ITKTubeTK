@@ -24,7 +24,9 @@ limitations under the License.
 #define __itkDiffusiveRegistrationFilter_txx
 
 #include "itkDiffusiveRegistrationFilter.h"
+
 #include "itkResampleImageFilter.h"
+#include "itkVectorResampleImageFilter.h"
 
 namespace itk
 {
@@ -250,6 +252,36 @@ DiffusiveRegistrationFilter
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputParametersFromImage( templateImage );
+  resampler->Update();
+  resampledImage = resampler->GetOutput();
+  assert( this->CompareImageAttributes( resampledImage, templateImage ) );
+}
+
+/**
+ * Resample a vector image to match a template
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class VectorResampleImageType, class TemplateImageType  >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::VectorResampleImageLinear(
+    const VectorResampleImageType * highResolutionImage,
+    const TemplateImageType * templateImage,
+    VectorResampleImageType * resampledImage ) const
+{
+  // Do linear interpolation
+  typedef itk::VectorResampleImageFilter< VectorResampleImageType,
+                                          VectorResampleImageType >
+      ResampleFilterType;
+  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+  resampler->SetInput( highResolutionImage );
+  resampler->SetOutputOrigin( templateImage->GetOrigin() );
+  resampler->SetOutputSpacing( templateImage->GetSpacing() );
+  resampler->SetOutputDirection( templateImage->GetDirection() );
+  resampler->SetOutputStartIndex(
+      templateImage->GetLargestPossibleRegion().GetIndex() );
+  resampler->SetSize( templateImage->GetLargestPossibleRegion().GetSize() );
   resampler->Update();
   resampledImage = resampler->GetOutput();
   assert( this->CompareImageAttributes( resampledImage, templateImage ) );
