@@ -273,30 +273,35 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
-  if( !this->CompareImageAttributes( m_NormalMatrixImage, output ) )
+  if( !this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
     this->ResampleImageNearestNeighbor(
         m_HighResolutionNormalMatrixImage.GetPointer(),
         output.GetPointer(),
         m_NormalMatrixImage.GetPointer() );
-    assert( this->CompareImageAttributes( m_NormalMatrixImage, output ) );
+    assert( this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightStructuresImage, output ) )
+  if( !this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
     this->ResampleImageNearestNeighbor(
         m_HighResolutionWeightStructuresImage.GetPointer(),
         output.GetPointer(),
         m_WeightStructuresImage.GetPointer() );
-    assert( this->CompareImageAttributes( m_WeightStructuresImage, output ) );
+    assert( this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightRegularizationsImage, output ) )
+  if( !this->CompareImageAttributes( m_WeightRegularizationsImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
     this->ResampleImageLinear(
         m_HighResolutionWeightRegularizationsImage.GetPointer(),
         output.GetPointer(),
         m_WeightRegularizationsImage.GetPointer() );
-    assert( this->CompareImageAttributes( m_WeightRegularizationsImage,
-                                          output ) );
+    assert( this->CompareImageAttributes(
+        m_WeightRegularizationsImage.GetPointer(), output.GetPointer() ) );
     }
 }
 

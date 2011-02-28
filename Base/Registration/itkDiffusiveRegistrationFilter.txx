@@ -169,12 +169,12 @@ DiffusiveRegistrationFilter
  * Helper function to check whether the attributes of an image matches template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class CheckedImagePointer, class TemplateImagePointer >
+template < class CheckedImageType, class TemplateImageType >
 bool
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CompareImageAttributes( const CheckedImagePointer & image,
-                          const TemplateImagePointer & templateImage ) const
+::CompareImageAttributes( const CheckedImageType * image,
+                          const TemplateImageType * templateImage ) const
 {
   assert( image );
   assert( templateImage );
@@ -191,7 +191,7 @@ DiffusiveRegistrationFilter
  * Resample an image to match a template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImageType, class TemplateImageType  >
+template< class ResampleImageType, class TemplateImageType >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -238,7 +238,7 @@ DiffusiveRegistrationFilter
  * Resample an image to match a template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImageType, class TemplateImageType  >
+template< class ResampleImageType, class TemplateImageType >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -260,7 +260,7 @@ DiffusiveRegistrationFilter
  * Resample a vector image to match a template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class VectorResampleImageType, class TemplateImageType  >
+template< class VectorResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >

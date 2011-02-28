@@ -227,20 +227,24 @@ AnisotropicDiffusiveRegistrationFilter
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
-  if( !this->CompareImageAttributes( m_NormalVectorImage, output ) )
+  if( !this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
     this->VectorResampleImageLinear(
         m_HighResolutionNormalVectorImage.GetPointer(),
         output.GetPointer(),
         m_NormalVectorImage.GetPointer() );
-    assert( this->CompareImageAttributes( m_NormalVectorImage, output ) );
+    assert( this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightImage, output ) )
+  if( !this->CompareImageAttributes( m_WeightImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
     this->ResampleImageLinear( m_HighResolutionWeightImage.GetPointer(),
                                output.GetPointer(),
                                m_WeightImage.GetPointer() );
-    assert( this->CompareImageAttributes( m_WeightImage, output ) );
+    assert( this->CompareImageAttributes( m_WeightImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
 }
 

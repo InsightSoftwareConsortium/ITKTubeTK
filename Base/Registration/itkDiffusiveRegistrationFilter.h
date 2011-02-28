@@ -486,27 +486,27 @@ protected:
 
   /** Helper function to check whether the attributes of an image match a
     * template */
-  template< class CheckedImagePointer, class TemplateImagePointer >
-  bool CompareImageAttributes( const CheckedImagePointer & image,
-                               const TemplateImagePointer & templateImage )
+  template< class CheckedImageType, class TemplateImageType >
+  bool CompareImageAttributes( const CheckedImageType * image,
+                               const TemplateImageType * templateImage )
   const;
 
   /** Resamples an image to a template using nearest neighbor interpolation */
-  template< class ResampleImageType, class TemplateImageType  >
+  template< class ResampleImageType, class TemplateImageType >
   void ResampleImageNearestNeighbor(
       const ResampleImageType * highResolutionImage,
       const TemplateImageType * templateImage,
       ResampleImageType * resampledImage ) const;
 
   /** Resamples an image to a template using linear interpolation */
-  template< class ResampleImageType, class TemplateImageType  >
+  template< class ResampleImageType, class TemplateImageType >
   void ResampleImageLinear(
       const ResampleImageType * highResolutionImage,
       const TemplateImageType * templateImage,
       ResampleImageType * resampledImage ) const;
 
   /** Resamples a vector image to a template using linear interpolation */
-  template< class VectorResampleImageType, class TemplateImageType  >
+  template< class VectorResampleImageType, class TemplateImageType >
   void VectorResampleImageLinear(
       const VectorResampleImageType * highResolutionImage,
       const TemplateImageType * templateImage,
