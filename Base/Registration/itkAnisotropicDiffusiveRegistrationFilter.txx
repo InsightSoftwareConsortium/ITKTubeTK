@@ -160,7 +160,7 @@ AnisotropicDiffusiveRegistrationFilter
   // If we have a template for image attributes, use it.  The normal and weight
   // images will be stored at their full resolution.  The diffusion tensor,
   // deformation component, derivative and multiplication vector images are
-  // recalculated every time iterate() is called to regenerate them at the
+  // recalculated every time Initialize() is called to regenerate them at the
   // correct resolution.
   FixedImagePointer highResolutionTemplate = this->GetHighResolutionTemplate();
 
