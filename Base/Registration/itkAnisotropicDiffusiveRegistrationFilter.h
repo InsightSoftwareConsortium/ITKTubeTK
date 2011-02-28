@@ -285,6 +285,8 @@ private:
     AnisotropicDiffusiveRegistrationFilter * Filter;
     vtkPointLocator * PointLocator;
     vtkFloatArray * NormalData;
+    ThreadNormalVectorImageRegionType NormalVectorImageLargestPossibleRegion;
+    ThreadWeightImageRegionType WeightImageLargestPossibleRegion;
     bool ComputeNormals;
     bool ComputeWeights;
     };

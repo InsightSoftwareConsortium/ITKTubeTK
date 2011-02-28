@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 
+#include "itkImageRegionMultidimensionalSplitter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include "vtkFloatArray.h"
 #include "vtkPointData.h"
@@ -301,6 +302,10 @@ AnisotropicDiffusiveRegistrationFilter
   str.Filter = this;
   str.PointLocator = pointLocator;
   str.NormalData = normalData;
+  str.NormalVectorImageLargestPossibleRegion
+      = m_NormalVectorImage->GetLargestPossibleRegion();
+  str.WeightImageLargestPossibleRegion
+      = m_WeightImage->GetLargestPossibleRegion();
   str.ComputeNormals = computeNormals;
   str.ComputeWeights = computeWeights;
 
@@ -338,17 +343,23 @@ AnisotropicDiffusiveRegistrationFilter
             (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
-  // first find out how many pieces extent can be split into.
-  // Using the SplitRequestedRegion method from itk::ImageSource.
-  ThreadNormalVectorImageRegionType splitNormalRegion;
-  int normalTotal = str->Filter->SplitRequestedRegion( threadId,
-                                                       threadCount,
-                                                       splitNormalRegion );
+  // First find out how many pieces extent can be split into.
+  // We don't want to use the SplitRequestedRegion method from itk::ImageSource
+  // because we might be calculating the normals and weights of a high res
+  // template, where the image extent will not match that of the output
+  typedef itk::ImageRegionMultidimensionalSplitter< ImageDimension >
+      SplitterType;
+  typename SplitterType::Pointer splitter = SplitterType::New();
 
-  ThreadWeightImageRegionType splitWeightRegion;
-  int weightTotal = str->Filter->SplitRequestedRegion( threadId,
-                                                       threadCount,
-                                                       splitWeightRegion );
+  int normalTotal = splitter->GetNumberOfSplits(
+      str->NormalVectorImageLargestPossibleRegion, threadCount );
+  ThreadNormalVectorImageRegionType splitNormalRegion = splitter->GetSplit(
+      threadId, normalTotal, str->NormalVectorImageLargestPossibleRegion );
+
+  int weightTotal = splitter->GetNumberOfSplits(
+      str->WeightImageLargestPossibleRegion, threadCount );
+  ThreadWeightImageRegionType splitWeightRegion = splitter->GetSplit(
+      threadId, weightTotal, str->WeightImageLargestPossibleRegion );
 
   // Assert we could split all of the images equally
   assert( normalTotal == weightTotal );
