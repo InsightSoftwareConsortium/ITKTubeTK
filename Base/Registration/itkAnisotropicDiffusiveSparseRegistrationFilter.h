@@ -146,11 +146,11 @@ public:
    *  stored in a matrix.  If the normals are based on the structure tensor,
    *  then the matrix will be symmetric, but we won't enforce that. */
   typedef double NormalVectorComponentType;
-  typedef typename itk::Vector< NormalVectorComponentType, ImageDimension >
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
       NormalVectorType;
-  typedef typename itk::Matrix< NormalVectorComponentType,
-                                ImageDimension,
-                                ImageDimension >        NormalMatrixType;
+  typedef itk::Matrix< NormalVectorComponentType,
+                       ImageDimension,
+                       ImageDimension >                 NormalMatrixType;
   typedef itk::Image< NormalMatrixType, ImageDimension >
       NormalMatrixImageType;
   typedef typename NormalMatrixImageType::Pointer
