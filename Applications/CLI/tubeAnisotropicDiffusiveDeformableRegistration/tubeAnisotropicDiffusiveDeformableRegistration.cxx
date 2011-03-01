@@ -789,6 +789,44 @@ int DoIt( int argc, char * argv[] )
           timeCollector.Report();
           return EXIT_FAILURE;
           }
+
+        // Get the vector images in addition to the normal matrix image
+        std::string::size_type loc
+            = outputNormalVectorImageFileName.find_last_of(".");
+        if( loc == std::string::npos )
+          {
+          tube::ErrorMessage( "Failed to find an extension for normal matrix" );
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+
+        std::string base = outputNormalVectorImageFileName.substr(0, loc);
+        std::string extension = outputNormalVectorImageFileName.substr(loc);
+        std::string outputFileName( outputNormalVectorImageFileName );
+        std::stringstream out;
+
+        typedef typename AnisotropicDiffusiveSparseRegistrationFilterType
+            ::NormalVectorImageType NormalVectorImageType;
+        typedef typename AnisotropicDiffusiveSparseRegistrationFilterType
+            ::NormalVectorImagePointer NormalVectorImagePointer;
+        NormalVectorImagePointer normalImage = NormalVectorImageType::New();
+        for( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          sparseAnisotropicRegistrator->GetHighResolutionNormalVectorImage(
+              normalImage, i );
+          out.clear();
+          out.str("");
+          out << base << i << extension;
+          outputFileName = out.str();
+          if( !ReorientAndWriteImage(
+              normalImage.GetPointer(),
+              fixedImageReader->GetOutput()->GetDirection(),
+              outputFileName ) )
+            {
+            timeCollector.Report();
+            return EXIT_FAILURE;
+            }
+          }
         }
       else
         {

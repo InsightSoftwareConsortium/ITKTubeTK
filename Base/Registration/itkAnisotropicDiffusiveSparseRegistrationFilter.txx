@@ -991,6 +991,51 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 }
 
+/**
+ * Get the normal matrix image as a vector image.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::GetHighResolutionNormalVectorImage(
+    NormalVectorImagePointer & normalImage, int dim ) const
+{
+  if( !m_HighResolutionNormalMatrixImage )
+    {
+    return;
+    }
+
+  // Allocate the vector images
+  this->AllocateSpaceForImage( normalImage, m_HighResolutionNormalMatrixImage );
+
+  // Iterate over the vector images and the normal matrix image
+  NormalMatrixImageRegionType normalMatrixIt = NormalMatrixImageRegionType(
+      m_HighResolutionNormalMatrixImage,
+      m_HighResolutionNormalMatrixImage->GetLargestPossibleRegion() );
+  typedef itk::ImageRegionIterator< NormalVectorImageType >
+      NormalVectorImageRegionType;
+  NormalVectorImageRegionType normalVectorIt = NormalVectorImageRegionType(
+      normalImage, normalImage->GetLargestPossibleRegion() );
+
+  NormalMatrixType matrix;
+  matrix.Fill( 0.0 );
+  NormalVectorType vector;
+  vector.Fill( 0.0 );
+
+  // Extract the normal vectors from the matrix
+  for( normalMatrixIt.Begin(), normalVectorIt.Begin();
+       !normalMatrixIt.IsAtEnd();
+       ++normalMatrixIt, ++normalVectorIt )
+         {
+    matrix = normalMatrixIt.Get();
+    for( int i = 0; i < ImageDimension; i++ )
+      {
+      vector[i] = matrix(i,dim);
+      normalVectorIt.Set( vector );
+      }
+    }
+}
 
 } // end namespace itk
 

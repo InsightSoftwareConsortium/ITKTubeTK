@@ -148,6 +148,10 @@ public:
   typedef double NormalVectorComponentType;
   typedef itk::Vector< NormalVectorComponentType, ImageDimension >
       NormalVectorType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+  typedef typename NormalVectorImageType::Pointer
+      NormalVectorImagePointer;
   typedef itk::Matrix< NormalVectorComponentType,
                        ImageDimension,
                        ImageDimension >                 NormalMatrixType;
@@ -223,6 +227,11 @@ public:
     { return m_NormalMatrixImage; }
   virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage() const
     { return m_HighResolutionNormalMatrixImage; }
+  /** Get the high resolution image of a specific normal vector (column of the
+   *  normal matrix).  Pointer should already have been initialized with
+   *  New() */
+  virtual void GetHighResolutionNormalVectorImage
+      ( NormalVectorImagePointer & normalImage, int dim ) const;
 
   /** Set/get the weighting matrix A image.  Setting the weighting matrix image
    * overrides the structure tensor eigen analysis. */
