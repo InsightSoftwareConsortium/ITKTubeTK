@@ -207,10 +207,7 @@ DiffusiveRegistrationFilter
   typedef typename ResampleImagePointer::ObjectType ResampleImageType;
 
   // Create the resized resampled image
-  if( !resampledImage )
-    {
-    resampledImage = ResampleImageType::New();
-    }
+  resampledImage = ResampleImageType::New();
   this->AllocateSpaceForImage( resampledImage, templateImage );
 
   // Do NN interpolation
