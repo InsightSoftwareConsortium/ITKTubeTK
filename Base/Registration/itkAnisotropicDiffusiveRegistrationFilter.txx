@@ -25,7 +25,7 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 
-#include "itkImageRegionMultidimensionalSplitter.h"
+#include "itkImageRegionSplitter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include "vtkFloatArray.h"
 #include "vtkPointData.h"
@@ -347,8 +347,7 @@ AnisotropicDiffusiveRegistrationFilter
   // We don't want to use the SplitRequestedRegion method from itk::ImageSource
   // because we might be calculating the normals and weights of a high res
   // template, where the image extent will not match that of the output
-  typedef itk::ImageRegionMultidimensionalSplitter< ImageDimension >
-      SplitterType;
+  typedef itk::ImageRegionSplitter< ImageDimension > SplitterType;
   typename SplitterType::Pointer splitter = SplitterType::New();
 
   int normalTotal = splitter->GetNumberOfSplits(
