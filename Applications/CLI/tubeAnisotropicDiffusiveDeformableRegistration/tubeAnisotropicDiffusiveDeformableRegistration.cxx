@@ -581,6 +581,10 @@ int DoIt( int argc, char * argv[] )
     {
     anisotropicRegistrator->SetLambda( lambda );
     }
+  if( sparseAnisotropicRegistrator )
+    {
+    sparseAnisotropicRegistrator->SetLambda( lambda);
+    }
   registrator->SetMaximumRMSError( maximumRMSError );
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
