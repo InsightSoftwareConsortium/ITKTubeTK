@@ -610,8 +610,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
         m_WeightRegularizationsImage,
         m_WeightRegularizationsImage->GetLargestPossibleRegion() );
     for( weightRegularizationsIt.GoToBegin();
-    !weightRegularizationsIt.IsAtEnd();
-    ++weightRegularizationsIt )
+         !weightRegularizationsIt.IsAtEnd();
+         ++weightRegularizationsIt )
       {
       weight = this->ComputeWeightFromDistance( weightRegularizationsIt.Get() );
       weightRegularizationsIt.Set( weight );
