@@ -999,20 +999,36 @@ void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::GetHighResolutionNormalVectorImage(
-    NormalVectorImagePointer & normalImage, int dim ) const
+    NormalVectorImagePointer & normalImage,
+    int dim,
+    bool getHighResolutionNormalVectorImage ) const
 {
-  if( !m_HighResolutionNormalMatrixImage )
+  if( getHighResolutionNormalVectorImage && !m_HighResolutionNormalMatrixImage )
+    {
+    return;
+    }
+  if( !getHighResolutionNormalVectorImage && !m_NormalMatrixImage )
     {
     return;
     }
 
-  // Allocate the vector images
-  this->AllocateSpaceForImage( normalImage, m_HighResolutionNormalMatrixImage );
-
-  // Iterate over the vector images and the normal matrix image
-  NormalMatrixImageRegionType normalMatrixIt = NormalMatrixImageRegionType(
-      m_HighResolutionNormalMatrixImage,
-      m_HighResolutionNormalMatrixImage->GetLargestPossibleRegion() );
+  // Allocate the vector image and iterate over the normal matrix image
+  NormalMatrixImageRegionType normalMatrixIt;
+  if( getHighResolutionNormalVectorImage )
+    {
+    this->AllocateSpaceForImage( normalImage,
+                                 m_HighResolutionNormalMatrixImage );
+    normalMatrixIt = NormalMatrixImageRegionType(
+        m_HighResolutionNormalMatrixImage,
+        m_HighResolutionNormalMatrixImage->GetLargestPossibleRegion() );
+    }
+  else
+    {
+    this->AllocateSpaceForImage( normalImage, m_NormalMatrixImage );
+    normalMatrixIt = NormalMatrixImageRegionType(
+        m_NormalMatrixImage,
+        m_NormalMatrixImage->GetLargestPossibleRegion() );
+    }
   typedef itk::ImageRegionIterator< NormalVectorImageType >
       NormalVectorImageRegionType;
   NormalVectorImageRegionType normalVectorIt = NormalVectorImageRegionType(

@@ -227,11 +227,12 @@ public:
     { return m_NormalMatrixImage; }
   virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage() const
     { return m_HighResolutionNormalMatrixImage; }
-  /** Get the high resolution image of a specific normal vector (column of the
-   *  normal matrix).  Pointer should already have been initialized with
-   *  New() */
+  /** Get the image of a specific normal vector (column of the normal matrix).
+   *  Pointer should already have been initialized with New() */
   virtual void GetHighResolutionNormalVectorImage
-      ( NormalVectorImagePointer & normalImage, int dim ) const;
+      ( NormalVectorImagePointer & normalImage,
+        int dim,
+        bool getHighResolutionNormalVectorImage ) const;
 
   /** Set/get the weighting matrix A image.  Setting the weighting matrix image
    * overrides the structure tensor eigen analysis. */
