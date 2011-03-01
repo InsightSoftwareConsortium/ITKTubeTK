@@ -214,6 +214,11 @@ AnisotropicDiffusiveRegistrationFilter
     this->ComputeNormalVectorAndWeightImages( computeNormals, computeWeights );
     }
 
+  // On the first iteration of the first level, the normal and weight images
+  // will contain the highest resolution images.  We need to save the high
+  // resolution images, and then resample them down to correspond to this level.
+  // On subsequent iterations, we just do the resampling.
+
   // Set the high resolution images only once
   if( !m_HighResolutionNormalVectorImage )
     {
