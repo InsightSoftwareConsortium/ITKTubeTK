@@ -269,7 +269,8 @@ DiffusiveRegistrationFilter
 ::VectorResampleImageLinear(
     const VectorResampleImagePointer & highResolutionImage,
     const TemplateImagePointer & templateImage,
-    VectorResampleImagePointer & resampledImage ) const
+    VectorResampleImagePointer & resampledImage,
+    bool normalize ) const
 {
   // Do linear interpolation
   typedef itk::VectorResampleImageFilter
@@ -285,6 +286,16 @@ DiffusiveRegistrationFilter
   resampler->SetSize( templateImage->GetLargestPossibleRegion().GetSize() );
   resampler->Update();
   resampledImage = resampler->GetOutput();
+
+  if( normalize )
+    {
+    DeformationVectorImageRegionType vectorIt(
+        resampledImage, resampledImage->GetLargestPossibleRegion() );
+    for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
+      {
+      vectorIt.Value().Normalize();
+      }
+    }
 }
 
 /**

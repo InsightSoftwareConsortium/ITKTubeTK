@@ -505,12 +505,15 @@ protected:
       const TemplateImagePointer & templateImage,
       ResampleImagePointer & resampledImage ) const;
 
-  /** Resamples a vector image to a template using linear interpolation */
+  /** Resamples a vector image to a template using linear interpolation.  If
+   *  normalize is true, the vectors will be scaled to length 1 after the
+   *  resampling. */
   template< class VectorResampleImagePointer, class TemplateImagePointer >
   void VectorResampleImageLinear(
       const VectorResampleImagePointer & highResolutionImage,
       const TemplateImagePointer & templateImage,
-      VectorResampleImagePointer & resampledImage ) const;
+      VectorResampleImagePointer & resampledImage,
+      bool normalize = false ) const;
 
 private:
   // Purposely not implemented
