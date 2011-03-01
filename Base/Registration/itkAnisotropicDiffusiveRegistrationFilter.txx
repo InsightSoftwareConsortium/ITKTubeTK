@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 
+#include "itkImageRegionSplitter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include "vtkFloatArray.h"
 #include "vtkPointData.h"
@@ -160,7 +161,7 @@ AnisotropicDiffusiveRegistrationFilter
   // If we have a template for image attributes, use it.  The normal and weight
   // images will be stored at their full resolution.  The diffusion tensor,
   // deformation component, derivative and multiplication vector images are
-  // recalculated every time iterate() is called to regenerate them at the
+  // recalculated every time Initialize() is called to regenerate them at the
   // correct resolution.
   FixedImagePointer highResolutionTemplate = this->GetHighResolutionTemplate();
 
@@ -213,32 +214,43 @@ AnisotropicDiffusiveRegistrationFilter
     this->ComputeNormalVectorAndWeightImages( computeNormals, computeWeights );
     }
 
+  // On the first iteration of the first level, the normal and weight images
+  // will contain the highest resolution images.  We need to save the high
+  // resolution images, and then resample them down to correspond to this level.
+  // On subsequent iterations, we just do the resampling.
+
+  // Set the high resolution images only once
+  if( !m_HighResolutionNormalVectorImage )
+    {
+    m_HighResolutionNormalVectorImage = m_NormalVectorImage;
+    }
+  if( !m_HighResolutionWeightImage )
+    {
+    m_HighResolutionWeightImage = m_WeightImage;
+    }
+
   // If we are using a template or getting an image from the user, we need to
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
-  if( !this->CompareImageAttributes( m_NormalVectorImage, output ) )
+  if( !this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionNormalVectorImage )
-      {
-      m_HighResolutionNormalVectorImage = m_NormalVectorImage;
-      }
-    this->ResampleImageNearestNeighbor(
-        m_HighResolutionNormalVectorImage.GetPointer(),
-        output.GetPointer(),
-        m_NormalVectorImage.GetPointer() );
+    this->VectorResampleImageLinear( m_HighResolutionNormalVectorImage,
+                                     output,
+                                     m_NormalVectorImage,
+                                     true );
+    assert( this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightImage, output ) )
+  if( !this->CompareImageAttributes( m_WeightImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionWeightImage )
-      {
-      m_HighResolutionWeightImage = m_WeightImage;
-      }
-    this->ResampleImageLinear( m_HighResolutionWeightImage.GetPointer(),
-                               output.GetPointer(),
-                               m_WeightImage.GetPointer() );
+    this->ResampleImageLinear( m_HighResolutionWeightImage,
+                               output,
+                               m_WeightImage );
+    assert( this->CompareImageAttributes( m_WeightImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
 }
 
@@ -296,6 +308,10 @@ AnisotropicDiffusiveRegistrationFilter
   str.Filter = this;
   str.PointLocator = pointLocator;
   str.NormalData = normalData;
+  str.NormalVectorImageLargestPossibleRegion
+      = m_NormalVectorImage->GetLargestPossibleRegion();
+  str.WeightImageLargestPossibleRegion
+      = m_WeightImage->GetLargestPossibleRegion();
   str.ComputeNormals = computeNormals;
   str.ComputeWeights = computeWeights;
 
@@ -333,18 +349,27 @@ AnisotropicDiffusiveRegistrationFilter
             (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
-  // first find out how many pieces extent can be split into.
-  // Using the SplitRequestedRegion method from itk::ImageSource.
-  int total;
-  ThreadNormalVectorImageRegionType splitNormalRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitNormalRegion );
+  // First find out how many pieces extent can be split into.
+  // We don't want to use the SplitRequestedRegion method from itk::ImageSource
+  // because we might be calculating the normals and weights of a high res
+  // template, where the image extent will not match that of the output
+  typedef itk::ImageRegionSplitter< ImageDimension > SplitterType;
+  typename SplitterType::Pointer splitter = SplitterType::New();
 
-  ThreadWeightImageRegionType splitWeightRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitWeightRegion );
+  int normalTotal = splitter->GetNumberOfSplits(
+      str->NormalVectorImageLargestPossibleRegion, threadCount );
+  ThreadNormalVectorImageRegionType splitNormalRegion = splitter->GetSplit(
+      threadId, normalTotal, str->NormalVectorImageLargestPossibleRegion );
 
-  if( threadId < total )
+  int weightTotal = splitter->GetNumberOfSplits(
+      str->WeightImageLargestPossibleRegion, threadCount );
+  ThreadWeightImageRegionType splitWeightRegion = splitter->GetSplit(
+      threadId, weightTotal, str->WeightImageLargestPossibleRegion );
+
+  // Assert we could split all of the images equally
+  assert( normalTotal == weightTotal );
+
+  if( threadId < normalTotal )
     {
     str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
         str->PointLocator,
@@ -701,8 +726,8 @@ AnisotropicDiffusiveRegistrationFilter
 
   for( normalVectorRegion.GoToBegin(), outputRegion.GoToBegin(),
        normalDeformationRegion.GoToBegin();
-  !outputRegion.IsAtEnd();
-  ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
+      !outputRegion.IsAtEnd();
+      ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
     {
     n = normalVectorRegion.Get();
     u = outputRegion.Get();

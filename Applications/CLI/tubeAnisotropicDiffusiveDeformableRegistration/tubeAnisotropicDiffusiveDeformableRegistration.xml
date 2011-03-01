@@ -140,7 +140,7 @@
       <flag>v</flag>
       <longflag>outputNormalVectorImage</longflag>
       <channel>output</channel>
-      <description>Image specifying the normal vectors.  This is in the space of the fixed image.  Optional: allows you to save the normal vector image when providing an organ boundary surface.  On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated.</description>
+      <description>Image specifying the normal vectors.  This is in the space of the fixed image.  Optional: allows you to save the normal vector image when providing an organ boundary surface.  On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated.  Gives the 0th column vector of the normal matrix if using the sparse registration. </description>
     </image>
     <image>
       <name>outputWeightRegularizationsImageFileName</name>

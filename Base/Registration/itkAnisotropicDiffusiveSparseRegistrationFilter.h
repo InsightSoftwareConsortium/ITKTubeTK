@@ -146,11 +146,15 @@ public:
    *  stored in a matrix.  If the normals are based on the structure tensor,
    *  then the matrix will be symmetric, but we won't enforce that. */
   typedef double NormalVectorComponentType;
-  typedef typename itk::Vector< NormalVectorComponentType, ImageDimension >
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
       NormalVectorType;
-  typedef typename itk::Matrix< NormalVectorComponentType,
-                                ImageDimension,
-                                ImageDimension >        NormalMatrixType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+  typedef typename NormalVectorImageType::Pointer
+      NormalVectorImagePointer;
+  typedef itk::Matrix< NormalVectorComponentType,
+                       ImageDimension,
+                       ImageDimension >                 NormalMatrixType;
   typedef itk::Image< NormalMatrixType, ImageDimension >
       NormalMatrixImageType;
   typedef typename NormalMatrixImageType::Pointer
@@ -223,6 +227,12 @@ public:
     { return m_NormalMatrixImage; }
   virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage() const
     { return m_HighResolutionNormalMatrixImage; }
+  /** Get the image of a specific normal vector (column of the normal matrix).
+   *  Pointer should already have been initialized with New() */
+  virtual void GetHighResolutionNormalVectorImage
+      ( NormalVectorImagePointer & normalImage,
+        int dim,
+        bool getHighResolutionNormalVectorImage ) const;
 
   /** Set/get the weighting matrix A image.  Setting the weighting matrix image
    * overrides the structure tensor eigen analysis. */
@@ -341,6 +351,11 @@ private:
     AnisotropicDiffusiveSparseRegistrationFilter * Filter;
     vtkPointLocator * PointLocator;
     vtkFloatArray * NormalData;
+    ThreadNormalMatrixImageRegionType NormalMatrixImageLargestPossibleRegion;
+    ThreadWeightMatrixImageRegionType
+        WeightStructuresImageLargestPossibleRegion;
+    ThreadWeightComponentImageRegionType
+        WeightRegularizationsImageLargestPossibleRegion;
     bool ComputeNormals;
     bool ComputeWeightStructures;
     bool ComputeWeightRegularizations;

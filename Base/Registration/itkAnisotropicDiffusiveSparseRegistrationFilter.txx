@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 
+#include "itkImageRegionSplitter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include "vtkFloatArray.h"
 #include "vtkPointData.h"
@@ -185,7 +186,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // If we have a template for image attributes, use it.  The normal and weight
   // images will be stored at their full resolution.  The diffusion tensor,
   // deformation component, derivative and multiplication vector images are
-  // recalculated every time iterate() is called to regenerate them at the
+  // recalculated every time Initialize() is called to regenerate them at the
   // correct resolution.
   FixedImagePointer highResolutionTemplate = this->GetHighResolutionTemplate();
 
@@ -255,45 +256,55 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                               computeWeightRegularizations );
     }
 
+  // On the first iteration of the first level, the normal and weight images
+  // will contain the highest resolution images.  We need to save the high
+  // resolution images, and then resample them down to correspond to this level.
+  // On subsequent iterations, we just do the resampling.
+
+  // Set the high resolution images only once
+  if( !m_HighResolutionNormalMatrixImage )
+    {
+    m_HighResolutionNormalMatrixImage = m_NormalMatrixImage;
+    }
+  if( !m_HighResolutionWeightStructuresImage )
+    {
+    m_HighResolutionWeightStructuresImage = m_WeightStructuresImage;
+    }
+  if( !m_HighResolutionWeightRegularizationsImage )
+    {
+    m_HighResolutionWeightRegularizationsImage = m_WeightRegularizationsImage;
+    }
+
   // If we are using a template or getting an image from the user, we need to
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
-  if( !this->CompareImageAttributes( m_NormalMatrixImage, output ) )
+  if( !this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionNormalMatrixImage )
-      {
-      m_HighResolutionNormalMatrixImage = m_NormalMatrixImage;
-      }
-    this->ResampleImageNearestNeighbor(
-        m_HighResolutionNormalMatrixImage.GetPointer(),
-        output.GetPointer(),
-        m_NormalMatrixImage.GetPointer() );
+    this->ResampleImageNearestNeighbor( m_HighResolutionNormalMatrixImage,
+                                        output,
+                                        m_NormalMatrixImage );
+    assert( this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightStructuresImage, output ) )
+  if( !this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionWeightStructuresImage )
-      {
-      m_HighResolutionWeightStructuresImage = m_WeightStructuresImage;
-      }
-    this->ResampleImageNearestNeighbor(
-        m_HighResolutionWeightStructuresImage.GetPointer(),
-        output.GetPointer(),
-        m_WeightStructuresImage.GetPointer() );
+    this->ResampleImageNearestNeighbor( m_HighResolutionWeightStructuresImage,
+                                        output,
+                                        m_WeightStructuresImage );
+    assert( this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightRegularizationsImage, output ) )
+  if( !this->CompareImageAttributes( m_WeightRegularizationsImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionWeightRegularizationsImage )
-      {
-      m_HighResolutionWeightRegularizationsImage = m_WeightRegularizationsImage;
-      }
-    this->ResampleImageLinear(
-        m_HighResolutionWeightRegularizationsImage.GetPointer(),
-        output.GetPointer(),
-        m_WeightRegularizationsImage.GetPointer() );
+    this->ResampleImageLinear( m_HighResolutionWeightRegularizationsImage,
+                               output,
+                               m_WeightRegularizationsImage );
+    assert( this->CompareImageAttributes(
+        m_WeightRegularizationsImage.GetPointer(), output.GetPointer() ) );
     }
 }
 
@@ -353,6 +364,12 @@ AnisotropicDiffusiveSparseRegistrationFilter
   str.Filter = this;
   str.PointLocator = pointLocator;
   str.NormalData = normalData;
+  str.NormalMatrixImageLargestPossibleRegion
+      = m_NormalMatrixImage->GetLargestPossibleRegion();
+  str.WeightStructuresImageLargestPossibleRegion
+      = m_WeightStructuresImage->GetLargestPossibleRegion();
+  str.WeightRegularizationsImageLargestPossibleRegion
+      = m_WeightRegularizationsImage->GetLargestPossibleRegion();
   str.ComputeNormals = computeNormals;
   str.ComputeWeightStructures = computeWeightStructures;
   str.ComputeWeightRegularizations = computeWeightRegularizations;
@@ -392,22 +409,38 @@ AnisotropicDiffusiveSparseRegistrationFilter
             (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
-  // first find out how many pieces extent can be split into.
-  // Using the SplitRequestedRegion method from itk::ImageSource.
-  int total;
-  ThreadNormalMatrixImageRegionType splitNormalRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitNormalRegion );
+  // First find out how many pieces extent can be split into.
+  // We don't want to use the SplitRequestedRegion method from itk::ImageSource
+  // because we might be calculating the normals and weights of a high res
+  // template, where the image extent will not match that of the output
+  typedef itk::ImageRegionSplitter< ImageDimension > SplitterType;
+  typename SplitterType::Pointer splitter = SplitterType::New();
 
-  ThreadWeightMatrixImageRegionType splitWeightMatrixRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitWeightMatrixRegion );
+  int normalTotal = splitter->GetNumberOfSplits(
+      str->NormalMatrixImageLargestPossibleRegion, threadCount );
+  ThreadNormalMatrixImageRegionType splitNormalRegion = splitter->GetSplit(
+      threadId, normalTotal, str->NormalMatrixImageLargestPossibleRegion );
 
-  ThreadWeightComponentImageRegionType splitWeightComponentMatrixRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitWeightComponentMatrixRegion );
+  int weightMatrixTotal = splitter->GetNumberOfSplits(
+      str->WeightStructuresImageLargestPossibleRegion, threadCount );
+  ThreadWeightMatrixImageRegionType splitWeightMatrixRegion
+      = splitter->GetSplit( threadId,
+                            weightMatrixTotal,
+                            str->WeightStructuresImageLargestPossibleRegion );
 
-  if( threadId < total )
+  int weightComponentTotal = splitter->GetNumberOfSplits(
+      str->WeightRegularizationsImageLargestPossibleRegion, threadCount );
+  ThreadWeightComponentImageRegionType splitWeightComponentMatrixRegion
+      = splitter->GetSplit(
+          threadId,
+          weightComponentTotal,
+          str->WeightRegularizationsImageLargestPossibleRegion );
+
+  // Assert we could split all of the images equally
+  assert( normalTotal == weightMatrixTotal );
+  assert( normalTotal == weightComponentTotal );
+
+  if( threadId < normalTotal )
     {
     str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
         str->PointLocator,
@@ -577,8 +610,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
         m_WeightRegularizationsImage,
         m_WeightRegularizationsImage->GetLargestPossibleRegion() );
     for( weightRegularizationsIt.GoToBegin();
-    !weightRegularizationsIt.IsAtEnd();
-    ++weightRegularizationsIt )
+         !weightRegularizationsIt.IsAtEnd();
+         ++weightRegularizationsIt )
       {
       weight = this->ComputeWeightFromDistance( weightRegularizationsIt.Get() );
       weightRegularizationsIt.Set( weight );
@@ -698,16 +731,16 @@ AnisotropicDiffusiveSparseRegistrationFilter
     // The matrices are used for calculations, and will be copied to the
     // diffusion tensors afterwards.  The matrices are guaranteed to be
     // symmetric.
-    P = N * A * N.GetTranspose();
-    wP = P * w;
+    P = N * A * N.GetTranspose(); // NAN^T
+    wP = P * w; // wP
     I_wP.SetIdentity();
-    I_wP = I_wP - wP;
-    I_wP_transpose = I_wP.GetTranspose();
-    smoothTangentialMatrix = I_wP_transpose * I_wP;
-    smoothNormalMatrix = I_wP_transpose * wP;
-    wP_transpose = wP.GetTranspose();
-    propTangentialMatrix = wP_transpose * I_wP;
-    propNormalMatrix = wP_transpose * wP;
+    I_wP = I_wP - wP; // I-wP
+    I_wP_transpose = I_wP.GetTranspose(); // (I-wP)^T
+    smoothTangentialMatrix = I_wP_transpose * I_wP; // (I-wP)^T * (I-wP)
+    smoothNormalMatrix = I_wP_transpose * wP; // (I-wP)^T * wP
+    wP_transpose = wP.GetTranspose(); // (wP)^T
+    propTangentialMatrix = wP_transpose * I_wP; // (wP)^T * (I-wP)
+    propNormalMatrix = wP_transpose * wP; // (wP)^T * wP
 
     // Copy the matrices to the diffusion tensor
     for ( unsigned int i = 0; i < ImageDimension; i++ )
@@ -819,7 +852,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   assert( this->GetComputeRegularizationTerm() );
 
   // The normal component of u_l is (NAN_l)^T * u
-  // Conveniently, (NAN_l) is the prop multiplication vector (for both SMOOTH
+  // Conveniently, (NAN_l) is the PROP multiplication vector (for both SMOOTH
   // and PROP), so we don't need to compute it again here
   DeformationVectorImageRegionArrayType NAN_lRegionArray;
   for( int i = 0; i < ImageDimension; i++ )
@@ -838,7 +871,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 
   // We want to update the deformation component images for both SMOOTH_NORMAL
   // and PROP_NORMAL, but they point to the same image, so we will grab the
-  // pointer from the first one to update both
+  // pointer from SMOOTH_NORMAL to update both
   DeformationFieldPointer normalDeformationField
       = this->GetDeformationComponentImage( SMOOTH_NORMAL );
   OutputImageRegionType normalDeformationRegion(
@@ -958,6 +991,67 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 }
 
+/**
+ * Get the normal matrix image as a vector image.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::GetHighResolutionNormalVectorImage(
+    NormalVectorImagePointer & normalImage,
+    int dim,
+    bool getHighResolutionNormalVectorImage ) const
+{
+  if( getHighResolutionNormalVectorImage && !m_HighResolutionNormalMatrixImage )
+    {
+    return;
+    }
+  if( !getHighResolutionNormalVectorImage && !m_NormalMatrixImage )
+    {
+    return;
+    }
+
+  // Allocate the vector image and iterate over the normal matrix image
+  NormalMatrixImageRegionType normalMatrixIt;
+  if( getHighResolutionNormalVectorImage )
+    {
+    this->AllocateSpaceForImage( normalImage,
+                                 m_HighResolutionNormalMatrixImage );
+    normalMatrixIt = NormalMatrixImageRegionType(
+        m_HighResolutionNormalMatrixImage,
+        m_HighResolutionNormalMatrixImage->GetLargestPossibleRegion() );
+    }
+  else
+    {
+    this->AllocateSpaceForImage( normalImage, m_NormalMatrixImage );
+    normalMatrixIt = NormalMatrixImageRegionType(
+        m_NormalMatrixImage,
+        m_NormalMatrixImage->GetLargestPossibleRegion() );
+    }
+  typedef itk::ImageRegionIterator< NormalVectorImageType >
+      NormalVectorImageRegionType;
+  NormalVectorImageRegionType normalVectorIt = NormalVectorImageRegionType(
+      normalImage, normalImage->GetLargestPossibleRegion() );
+
+  NormalMatrixType matrix;
+  matrix.Fill( 0.0 );
+  NormalVectorType vector;
+  vector.Fill( 0.0 );
+
+  // Extract the normal vectors from the matrix
+  for( normalMatrixIt.Begin(), normalVectorIt.Begin();
+       !normalMatrixIt.IsAtEnd();
+       ++normalMatrixIt, ++normalVectorIt )
+         {
+    matrix = normalMatrixIt.Get();
+    for( int i = 0; i < ImageDimension; i++ )
+      {
+      vector[i] = matrix(i,dim);
+      normalVectorIt.Set( vector );
+      }
+    }
+}
 
 } // end namespace itk
 

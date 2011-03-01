@@ -581,6 +581,10 @@ int DoIt( int argc, char * argv[] )
     {
     anisotropicRegistrator->SetLambda( lambda );
     }
+  if( sparseAnisotropicRegistrator )
+    {
+    sparseAnisotropicRegistrator->SetLambda( lambda);
+    }
   registrator->SetMaximumRMSError( maximumRMSError );
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
@@ -775,23 +779,68 @@ int DoIt( int argc, char * argv[] )
       }
     else if( sparseAnisotropicRegistrator )
       {
+      // We are giving back the 0th normal vector image, since Slicer cannot
+      // accept the normal matrix image
+      bool haveHighRes = false;
       if( sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage() )
         {
-        if( !ReorientAndWriteImage(
-            sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
-            fixedImageReader->GetOutput()->GetDirection(),
-            outputNormalVectorImageFileName ) )
-          {
-          timeCollector.Report();
-          return EXIT_FAILURE;
-          }
+        haveHighRes = true;
         }
-      else
+
+      // Get the extension for the normal matrix
+      std::string::size_type loc
+          = outputNormalVectorImageFileName.find_last_of(".");
+      if( loc == std::string::npos )
         {
+        tube::ErrorMessage( "Failed to find an extension for normal matrix" );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+
+      std::string base = outputNormalVectorImageFileName.substr(0, loc);
+      std::string extension = outputNormalVectorImageFileName.substr(loc);
+      std::string outputFileName;
+      std::stringstream out;
+
+      // Write out the normal matrix image
+      out.clear();
+      out.str("");
+      out << base << "Matrix" << extension;
+      outputFileName = out.str();
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+
+      // Write out the other normal vector images
+      typedef typename AnisotropicDiffusiveSparseRegistrationFilterType
+          ::NormalVectorImageType NormalVectorImageType;
+      typedef typename AnisotropicDiffusiveSparseRegistrationFilterType
+          ::NormalVectorImagePointer NormalVectorImagePointer;
+      NormalVectorImagePointer normalImage = NormalVectorImageType::New();
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        sparseAnisotropicRegistrator->GetHighResolutionNormalVectorImage(
+            normalImage, i, haveHighRes );
+        out.clear();
+        out.str("");
+        out << base << i << extension;
+        if( i == 0 )
+          {
+          outputFileName = outputNormalVectorImageFileName;
+          }
+        else
+          {
+          outputFileName = out.str();
+          }
         if( !ReorientAndWriteImage(
-            sparseAnisotropicRegistrator->GetNormalMatrixImage(),
+            normalImage.GetPointer(),
             fixedImageReader->GetOutput()->GetDirection(),
-            outputNormalVectorImageFileName ) )
+            outputFileName ) )
           {
           timeCollector.Report();
           return EXIT_FAILURE;
