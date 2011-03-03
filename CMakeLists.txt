@@ -303,8 +303,8 @@ endif( NOT TubeTK_USE_ITKV4 )
 # Build TubeTK
 if( NOT TubeTK_USE_ITKV4 )
   add_subdirectory( Utilities )
-  add_subdirectory( Base )
 endif( NOT TubeTK_USE_ITKV4 )
+add_subdirectory( Base )
 add_subdirectory( Applications )
 
 #-----------------------------------------------------------------------------
