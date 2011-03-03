@@ -34,6 +34,7 @@ limitations under the License.
 #include "sitkIntensityWindowingImageFilter.h"
 #include "sitkMultiplyImageFilter.h"
 #include "sitkConnectedThresholdImageFilter.h"
+#include "sitkExtractImageFilter.h"
 
 // sitkIM includes
 #include "sitkIMMorphologyFilter.h"
@@ -581,6 +582,19 @@ int DoIt( MetaCommand & command )
                            numberOfSamples, filename ) );
       } // end -Z
 
+    // ExtractSlice
+    else if( ( *it ).name == "ExtractSlice" )
+      {
+      unsigned int dimension =
+        ( unsigned int )command.GetValueAsInt( *it, "dimension" );
+      unsigned int slice =
+        ( unsigned int )command.GetValueAsInt( *it, "slice" );
+
+      // Set up the slice extractor
+      itk::simple::ExtractImageFilter filter;
+      im.reset( filter.Execute(im.get(), slice, dimension) );
+      } // end -e
+
     it++;
     }
 
@@ -806,6 +820,13 @@ int main( int argc, char *argv[] )
     MetaCommand::FLOAT, true );
   command.AddOptionField( "Voronoi", "centroidOutFile",
     MetaCommand::STRING, true );
+
+  command.SetOption( "ExtractSlice", "e", false,
+    "Extract a single slice from the image" );
+  command.AddOptionField( "ExtractSlice", "dimension",
+    MetaCommand::INT, true );
+  command.AddOptionField( "ExtractSlice", "slice",
+    MetaCommand::INT, true );
 
   command.AddField( "infile", "infile filename",
     MetaCommand::STRING, MetaCommand::DATA_IN );
