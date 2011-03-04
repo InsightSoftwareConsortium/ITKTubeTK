@@ -281,20 +281,20 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 #-----------------------------------------------------------------------------
 # Setup to conform to Slicer3 paths and define plugin copying macros
 if( NOT TubeTK_USE_ITKV4 )
-include( CMake/Slicer3Config.cmake )
+  include( CMake/Slicer3Config.cmake )
 
-#-----------------------------------------------------------------------------
-# Build Slicer3 cli applications essential to TubeTK
-svnGetSlicerBase( Resources ${CLI_SOURCE_DIR} )
-svnGetSlicerCLI( Templates ${CLI_SOURCE_DIR} )
-svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
+  #---------------------------------------------------------------------------
+  # Build Slicer3 cli applications essential to TubeTK
+  svnGetSlicerBase( Resources ${CLI_SOURCE_DIR} )
+  svnGetSlicerCLI( Templates ${CLI_SOURCE_DIR} )
+  svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
 
-set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR} )
-set( LAUNCH_EXE  "" )
+  set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR} )
+  set( LAUNCH_EXE  "" )
 
-set( SUPPORT_2D_IMAGES ON )
-add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
-  ${CLI_BINARY_DIR}/RegisterImagesModule )
+  set( SUPPORT_2D_IMAGES ON )
+  add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
+    ${CLI_BINARY_DIR}/RegisterImagesModule )
 endif( NOT TubeTK_USE_ITKV4 )
 
 #-----------------------------------------------------------------------------
