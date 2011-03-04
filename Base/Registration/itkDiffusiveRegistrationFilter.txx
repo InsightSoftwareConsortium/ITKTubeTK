@@ -289,12 +289,25 @@ DiffusiveRegistrationFilter
 
   if( normalize )
     {
-    DeformationVectorImageRegionType vectorIt(
-        resampledImage, resampledImage->GetLargestPossibleRegion() );
-    for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
-      {
-      vectorIt.Value().Normalize();
-      }
+    this->NormalizeVectorField( resampledImage );
+    }
+}
+
+/**
+ * Normalizes a vector field to ensure each vector has length 1
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class VectorImagePointer >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::NormalizeVectorField( VectorImagePointer & image ) const
+{
+  DeformationVectorImageRegionType vectorIt(
+      image, image->GetLargestPossibleRegion() );
+  for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
+    {
+    vectorIt.Value().Normalize();
     }
 }
 

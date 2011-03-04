@@ -515,6 +515,10 @@ protected:
       VectorResampleImagePointer & resampledImage,
       bool normalize = false ) const;
 
+  /** Normalizes a vector field to ensure each vector has length 1 */
+  template< class VectorImagePointer >
+  void NormalizeVectorField( VectorImagePointer & image ) const;
+
 private:
   // Purposely not implemented
   DiffusiveRegistrationFilter(const Self&);
