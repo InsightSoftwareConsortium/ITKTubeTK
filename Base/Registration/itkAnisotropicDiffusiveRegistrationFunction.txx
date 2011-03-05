@@ -50,6 +50,9 @@ AnisotropicDiffusiveRegistrationFunction
   this->SetMovingImage(0);
   this->SetFixedImage(0);
 
+  m_IntensityDistanceWeighting = 1.0;
+  m_RegularizationWeighting = 1.0;
+
   m_SumOfSquaredChange = 0.0;
   m_NumberOfPixelsProcessed = 0L;
   m_RMSChange = NumericTraits< double >::max();
@@ -71,6 +74,10 @@ AnisotropicDiffusiveRegistrationFunction
      << ( m_ComputeRegularizationTerm ? "on" : "off" ) << std::endl;
   os << indent << "Compute intensity distance term: "
      << ( m_ComputeIntensityDistanceTerm ? "on" : "off" ) << std::endl;
+  os << indent << "Intensity distance weighting: "
+      << m_IntensityDistanceWeighting << std::endl;
+  os << indent << "Regularization weighting: " << m_RegularizationWeighting
+      << std::endl;
   if ( m_RegularizationFunction )
     {
     os << indent << "Regularization function: " << std::endl;
@@ -299,7 +306,8 @@ AnisotropicDiffusiveRegistrationFunction
   // Compute the final update term
   PixelType updateTerm;
   updateTerm.Fill(0);
-  updateTerm = intensityDistanceTerm + regularizationTerm;
+  updateTerm = ( m_IntensityDistanceWeighting * intensityDistanceTerm )
+               + ( m_RegularizationWeighting * regularizationTerm );
 
   // Update the variables used to calculate RMS change
   gd->m_NumberOfPixelsProcessed += 1;
