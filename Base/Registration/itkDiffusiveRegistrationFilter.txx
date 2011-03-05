@@ -52,7 +52,10 @@ DiffusiveRegistrationFilter
   this->CreateRegistrationFunction();
 
   m_HighResolutionTemplate                      = 0;
+
   m_CurrentLevel                                = 0;
+  m_IntensityDistanceWeightings.push_back( 1.0 );
+  m_RegularizationWeightings.push_back( 1.0 );
 }
 
 /**
@@ -110,6 +113,18 @@ DiffusiveRegistrationFilter
     m_HighResolutionTemplate->Print( os, indent );
     }
   std::cout << indent << "Current level: " << m_CurrentLevel << std::endl;
+  std::cout << indent << "Intensity distance weightings: ";
+  for( unsigned int i = 0; i < m_IntensityDistanceWeightings.size(); i++ )
+    {
+    std::cout << m_IntensityDistanceWeightings[i] << " ";
+    }
+  std::cout << std::endl;
+  std::cout << indent << "Regulraization weightings: " ;
+  for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
+    {
+    std::cout << m_RegularizationWeightings[i] << " ";
+    }
+  std::cout << std::endl;
 }
 
 /**
@@ -341,12 +356,26 @@ DiffusiveRegistrationFilter
   Superclass::Initialize();
 
   // Ensure we have a fixed image, moving image and deformation field
-  if ( !this->GetFixedImage() || !this->GetMovingImage() )
+  if( !this->GetFixedImage() || !this->GetMovingImage() )
     {
     itkExceptionMacro( << "Fixed image and/or moving image not set" );
     }
 
-  // Update the current multiresolution level
+  // Ensure we have good intensity distance and regularization weightings
+  unsigned int intensityWeightingsSize = m_IntensityDistanceWeightings.size();
+  unsigned int regularizationWeightingsSize = m_RegularizationWeightings.size();
+  if( intensityWeightingsSize == 0 || regularizationWeightingsSize == 0 )
+    {
+    itkExceptionMacro( << "Intensity distance and/or regularization weightings "
+                       << "not set" );
+    }
+  if( intensityWeightingsSize != regularizationWeightingsSize )
+    {
+    itkWarningMacro( << "Number of intensity distance weightings does not "
+                     << "equal number of regularization weightings" );
+    }
+
+  // Update the current multiresolution level (when registering, level is 1..N)
   m_CurrentLevel++;
 
   // Check the timestep for stability if we are using the diffusive or
@@ -358,6 +387,28 @@ DiffusiveRegistrationFilter
   // Update the registration function's deformation field
   assert( this->GetDeformationField() );
   df->SetDeformationField( this->GetDeformationField() );
+
+  // Set the intensity distance and regularization weightings to the
+  // registration function.  If we are past the end of the vectors, use the
+  // last element.
+  if( m_CurrentLevel <= intensityWeightingsSize )
+    {
+    df->SetIntensityDistanceWeighting(
+        m_IntensityDistanceWeightings[m_CurrentLevel - 1] );
+    }
+  else
+    {
+    df->SetIntensityDistanceWeighting( m_IntensityDistanceWeightings.back() );
+    }
+  if( m_CurrentLevel <= regularizationWeightingsSize )
+    {
+    df->SetRegularizationWeighting(
+        m_RegularizationWeightings[m_CurrentLevel - 1] );
+    }
+  else
+    {
+    df->SetRegularizationWeighting( m_RegularizationWeightings.back() );
+    }
 
   // Allocate and initialize the images we will use to store data computed
   // during the registration (or set pointers to 0 if they are not being used).

@@ -262,6 +262,24 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
+  /** Set/get the weightings for the intensity distance update term.  If
+   *  using multiresolution registration and the current level is past the
+   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  Default: 1.0 */
+  void SetIntensityDistanceWeightings( std::vector< double >& weightings )
+    { m_IntensityDistanceWeightings = weightings; }
+  const std::vector< double >& GetIntensityDistanceWeightings() const
+    { return m_IntensityDistanceWeightings; }
+
+  /** Set/get the weightings for the intensity distance update term.  If
+   *  using multiresolution registration and the current level is past the
+   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  Default: 1.0 */
+  void SetRegularizationWeightings( std::vector< double >& weightings )
+    { m_RegularizationWeightings = weightings; }
+  const std::vector< double >& GetRegularizationWeightings() const
+    { return m_RegularizationWeightings; }
+
   /** The number of div(T\grad(u))v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
@@ -572,6 +590,11 @@ private:
   unsigned int                              m_CurrentLevel;
 
   /** Relative weightings between the intensity distance and regularization
+   *  update terms.  Stored in a vector so that the user can provide different
+   *  weightings per multiresolution level. */
+  std::vector< double >                     m_IntensityDistanceWeightings;
+  std::vector< double >                     m_RegularizationWeightings;
+
   /** Template used to calculate member images */
   FixedImagePointer                         m_HighResolutionTemplate;
 };
