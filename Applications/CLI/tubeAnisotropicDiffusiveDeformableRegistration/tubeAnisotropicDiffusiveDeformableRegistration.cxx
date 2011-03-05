@@ -567,6 +567,20 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  // Error checking on intensity distance and regularization weightings
+  if( intensityDistanceWeightings.size() <= 0 )
+    {
+    tube::ErrorMessage( "You must provide intensity distance weightings." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+  if( regularizationWeightings.size() <= 0 )
+    {
+    tube::ErrorMessage( "You must provide regularization weightings." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
   // Report progress from reading input data
   double progress = 0.1;
   progressReporter.Report( progress );
@@ -586,6 +600,8 @@ int DoIt( int argc, char * argv[] )
     sparseAnisotropicRegistrator->SetLambda( lambda);
     }
   registrator->SetMaximumRMSError( maximumRMSError );
+  registrator->SetIntensityDistanceWeightings( intensityDistanceWeightings );
+  registrator->SetRegularizationWeightings( regularizationWeightings );
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
   // we don't want the deformation field to undergo Gaussian smoothing on the

@@ -44,6 +44,22 @@
       <description>Time step duration.</description>
       <default>0.125</default>
     </double>
+    <double-vector>
+      <name>intensityDistanceWeightings</name>
+      <flag>j</flag>
+      <longflag>intensityDistanceWeightings</longflag>
+      <description>Comma separated list of weightings to be applied to the intensity distance update term.  The final update term will be ( itensityDistanceWeighting * intensityUpdateTerm ) + ( RegularizationWeighting * regularizationUpdateTerm ).  Increase this value to bias the registration towards a better intensity match with less regularization.  If using a multiresolution registration, you can set a different weighting for each level.  If, on any multiresolution level, the current level is past the number of provided weights, the last weight will be used (allowing you to specify only one weight to be used on all levels).  Default is 1.0 for each level.</description>
+      <label>Intensity distance weightings</label>
+      <default>1.0</default>
+    </double-vector>
+    <double-vector>
+      <name>regularizationWeightings</name>
+      <flag>k</flag>
+      <longflag>regularizationWeightings</longflag>
+      <description>Comma separated list of weightings to be applied to the regularization update term.  The final update term will be ( itensityDistanceWeighting * intensityUpdateTerm ) + ( RegularizationWeighting * regularizationUpdateTerm ).  Increase this value to increase the smoothness of the resulting displacement field.  If using a multiresolution registration, you can set a different weighting for each level.  If, on any multiresolution level, the current level is past the number of provided weights, the last weight will be used (allowing you to specify only one weight to be used on all levels).  Default is 1.0 for each level.</description>
+      <label>Regularization weightings</label>
+      <default>1.0</default>
+    </double-vector>
   </parameters>
 
   <parameters>
