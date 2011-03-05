@@ -540,14 +540,6 @@ protected:
   template< class VectorImagePointer >
   void NormalizeVectorField( VectorImagePointer & image ) const;
 
-  /** This method is called after the solution has been generated. In this case,
-   * we reinitialize the current level. */
-  virtual void PostProcessOutput()
-    {
-    Superclass::PostProcessOutput();
-    m_CurrentLevel = 0;
-    }
-
 private:
   // Purposely not implemented
   DiffusiveRegistrationFilter(const Self&);
