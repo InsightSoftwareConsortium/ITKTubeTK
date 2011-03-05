@@ -596,6 +596,8 @@ int DoIt( int argc, char * argv[] )
   int numberOfLevels = numberOfIterations.size();
   unsigned int * iterations = new unsigned int [ numberOfLevels ];
   std::copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
+  // This is the maximum error for the multiresolution pyramid smoother, not
+  // the registration filter
   double maximumError = 0.01;
 
   // Setup the multiresolution pyramids
