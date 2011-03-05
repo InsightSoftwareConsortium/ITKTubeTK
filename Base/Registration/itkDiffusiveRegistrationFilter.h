@@ -262,6 +262,24 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
+  /** Set/get the weightings for the intensity distance update term.  If
+   *  using multiresolution registration and the current level is past the
+   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  Default: 1.0 */
+  void SetIntensityDistanceWeightings( std::vector< double >& weightings )
+    { m_IntensityDistanceWeightings = weightings; }
+  const std::vector< double >& GetIntensityDistanceWeightings() const
+    { return m_IntensityDistanceWeightings; }
+
+  /** Set/get the weightings for the intensity distance update term.  If
+   *  using multiresolution registration and the current level is past the
+   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  Default: 1.0 */
+  void SetRegularizationWeightings( std::vector< double >& weightings )
+    { m_RegularizationWeightings = weightings; }
+  const std::vector< double >& GetRegularizationWeightings() const
+    { return m_RegularizationWeightings; }
+
   /** The number of div(T\grad(u))v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
@@ -276,6 +294,9 @@ public:
     { m_HighResolutionTemplate = templateImage; }
   virtual FixedImageType * GetHighResolutionTemplate()
     { return m_HighResolutionTemplate; }
+
+  /** Get current resolution level being processed. */
+  itkGetConstReferenceMacro( CurrentLevel, unsigned int );
 
 protected:
   DiffusiveRegistrationFilter();
@@ -555,6 +576,16 @@ private:
   TensorDerivativeImageArrayVectorType
       m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
+
+  /** Variables for multiresolution registratoin.  Current level can be detected
+   *  as Initialize() is called on each new level. */
+  unsigned int                              m_CurrentLevel;
+
+  /** Relative weightings between the intensity distance and regularization
+   *  update terms.  Stored in a vector so that the user can provide different
+   *  weightings per multiresolution level. */
+  std::vector< double >                     m_IntensityDistanceWeightings;
+  std::vector< double >                     m_RegularizationWeightings;
 
   /** Template used to calculate member images */
   FixedImagePointer                         m_HighResolutionTemplate;

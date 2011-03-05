@@ -222,6 +222,19 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
+  /** Set/get the weighting for the intensity distance update term.  Default
+   *  1.0 */
+  void SetIntensityDistanceWeighting( double weighting )
+    { m_IntensityDistanceWeighting = weighting; }
+  double GetIntensityDistanceWeighting() const
+    { return m_IntensityDistanceWeighting; }
+
+  /** Set/get the weighting for the regularization update term.  Default 1.0 */
+  void SetRegularizationWeighting( double weighting )
+    { m_RegularizationWeighting = weighting; }
+  double GetRegularizationWeighting() const
+    { return m_RegularizationWeighting; }
+
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 
@@ -298,6 +311,11 @@ private:
    * regularization terms */
   bool                                  m_ComputeRegularizationTerm;
   bool                                  m_ComputeIntensityDistanceTerm;
+
+  /** Relative weighting between the intensity distance and regularization
+   *  terms (default 1,1) */
+  double                                m_IntensityDistanceWeighting;
+  double                                m_RegularizationWeighting;
 
   /** Used to calculate the RMS change */
   mutable double                        m_SumOfSquaredChange;
