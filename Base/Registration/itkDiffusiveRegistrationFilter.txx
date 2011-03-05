@@ -52,6 +52,7 @@ DiffusiveRegistrationFilter
   this->CreateRegistrationFunction();
 
   m_HighResolutionTemplate                      = 0;
+  m_CurrentLevel                                = 0;
 }
 
 /**
@@ -108,6 +109,7 @@ DiffusiveRegistrationFilter
     os << indent << "Image attribute template:" << std::endl;
     m_HighResolutionTemplate->Print( os, indent );
     }
+  std::cout << indent << "Current level: " << m_CurrentLevel << std::endl;
 }
 
 /**
@@ -343,6 +345,9 @@ DiffusiveRegistrationFilter
     {
     itkExceptionMacro( << "Fixed image and/or moving image not set" );
     }
+
+  // Update the current multiresolution level
+  m_CurrentLevel++;
 
   // Check the timestep for stability if we are using the diffusive or
   // anisotropic diffusive regularization terms

@@ -277,6 +277,9 @@ public:
   virtual FixedImageType * GetHighResolutionTemplate()
     { return m_HighResolutionTemplate; }
 
+  /** Get current resolution level being processed. */
+  itkGetConstReferenceMacro( CurrentLevel, unsigned int );
+
 protected:
   DiffusiveRegistrationFilter();
   virtual ~DiffusiveRegistrationFilter() {}
@@ -519,6 +522,14 @@ protected:
   template< class VectorImagePointer >
   void NormalizeVectorField( VectorImagePointer & image ) const;
 
+  /** This method is called after the solution has been generated. In this case,
+   * we reinitialize the current level. */
+  virtual void PostProcessOutput()
+    {
+    Superclass::PostProcessOutput();
+    m_CurrentLevel = 0;
+    }
+
 private:
   // Purposely not implemented
   DiffusiveRegistrationFilter(const Self&);
@@ -556,6 +567,11 @@ private:
       m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
 
+  /** Variables for multiresolution registratoin.  Current level can be detected
+   *  as Initialize() is called on each new level. */
+  unsigned int                              m_CurrentLevel;
+
+  /** Relative weightings between the intensity distance and regularization
   /** Template used to calculate member images */
   FixedImagePointer                         m_HighResolutionTemplate;
 };
