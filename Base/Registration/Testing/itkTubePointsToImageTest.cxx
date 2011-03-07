@@ -77,15 +77,18 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
     // Get the list of points in the tube
     PointListType tubePointList = tube->GetPoints();
     unsigned int numPoints = tubePointList.size();
-    std::cout << "Number of points = " << numPoints << std::endl;
 
     // Iterate through the points
     PointListType::iterator pointIt = tubePointList.begin();
     for( unsigned int j = 0; j < numPoints; j++ )
       {
       TubePointType * point = static_cast< TubePointType * >(&(*pointIt));
-      double radius = point->GetRadius();
-      std::cout << "point " << j << "; radius " << radius << std::endl;
+      std::cout << "point " << j << "; "
+                << "position " << point->GetPosition()
+                << "radius " << point->GetRadius()
+                << "tangent " << point->GetTangent()
+                << "normal1 " << point->GetNormal1()
+                << "normal2 " << point->GetNormal2() << std::endl;
       ++pointIt;
       }
     ++tubeIt;
