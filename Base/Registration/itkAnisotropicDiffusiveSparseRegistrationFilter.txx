@@ -46,6 +46,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 {
   // Initialize attributes to NULL
   m_BorderSurface                               = 0;
+  m_TubeList                                    = 0;
   m_NormalMatrixImage                           = 0;
   m_WeightStructuresImage                       = 0;
   m_WeightRegularizationsImage                  = 0;
@@ -72,6 +73,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
     os << indent << "Border surface:" << std::endl;
     m_BorderSurface->Print( os );
     }
+//  if( m_TubeList )
+//    {
+//    os << indent << "Tube list:" << std::endl;
+//    m_TubeList->Print( os );
+//    }
   if( m_NormalMatrixImage )
     {
     os << indent << "Normal vector image:" << std::endl;

@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
+#include "itkGroupSpatialObject.h"
 #include "vtkSmartPointer.h"
 class vtkFloatArray;
 class vtkPointLocator;
@@ -197,6 +198,11 @@ public:
   typedef vtkPolyData                                   BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
 
+  /** Tube spatial object types */
+  typedef typename itk::SpatialObject< ImageDimension >::ChildrenListType
+      TubeListType;
+  typedef TubeListType *                                TubeListPointer;
+
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
@@ -209,6 +215,13 @@ public:
     { m_BorderSurface = border; }
   virtual BorderSurfaceType * GetBorderSurface() const
     { return m_BorderSurface; }
+
+  /** Set/get the list of tube spatial objects, which must be in the same space
+   *  as the fixed image. */
+  virtual void SetTubeList( TubeListType * tubeList )
+    { m_TubeList = tubeList; }
+  virtual TubeListType * GetTubeList() const
+    { return m_TubeList; }
 
   /** Set/get the lambda that controls the exponential decay used to calculate
    *  the weight value w as a function of the distance to the closest border
@@ -370,6 +383,7 @@ private:
 
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
+  TubeListPointer                     m_TubeList;
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
