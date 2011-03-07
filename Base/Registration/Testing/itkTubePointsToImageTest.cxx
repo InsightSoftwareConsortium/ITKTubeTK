@@ -66,29 +66,42 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
   std::cout << "Number of tubes: " << numTubes << std::endl;
 
   // Iterate through the tubes
-  ObjectListType::iterator tubeIt = tubeList->begin();
+  ObjectListType::iterator            tubeIt = tubeList->begin();
+  TubeType::Pointer                   tube;
+  PointListType                       tubePointList;
+  unsigned int                        numPoints = 0;
+  PointListType::iterator             pointIt;
+  TubePointType *                     point;
+  TubePointType::PointType            position;
+  float                               radius;
+  TubePointType::CovariantVectorType  normal1;
+  TubePointType::CovariantVectorType  normal2;
+
   for( unsigned int i = 0; i < numTubes; i++ )
     {
     std::cout << "----tube " << i << std::endl;
-    TubeType * tubep = static_cast< TubeType * >( tubeIt->GetPointer() );
-    TubeType::Pointer tube = static_cast< TubeType * >( tubeIt->GetPointer() );
-    tube::ComputeTubeTangentsAndNormals< TubeType >( tubep );
+    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
+    tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
 
     // Get the list of points in the tube
-    PointListType tubePointList = tube->GetPoints();
-    unsigned int numPoints = tubePointList.size();
+    tubePointList = tube->GetPoints();
+    numPoints = tubePointList.size();
 
     // Iterate through the points
-    PointListType::iterator pointIt = tubePointList.begin();
+    pointIt = tubePointList.begin();
     for( unsigned int j = 0; j < numPoints; j++ )
       {
-      TubePointType * point = static_cast< TubePointType * >(&(*pointIt));
+      point = static_cast< TubePointType * >( &( *pointIt ) );
+      position = point->GetPosition();
+      radius = point->GetRadius();
+      normal1 = point->GetNormal1();
+      normal2 = point->GetNormal2();
+
       std::cout << "point " << j << "; "
-                << "position " << point->GetPosition()
-                << "radius " << point->GetRadius()
-                << "tangent " << point->GetTangent()
-                << "normal1 " << point->GetNormal1()
-                << "normal2 " << point->GetNormal2() << std::endl;
+                << "position " << position
+                << "radius " << radius
+                << "normal1 " << normal1
+                << "normal2 " << normal2 << std::endl;
       ++pointIt;
       }
     ++tubeIt;
