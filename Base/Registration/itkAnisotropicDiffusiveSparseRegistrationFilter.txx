@@ -32,6 +32,7 @@ limitations under the License.
 #include "vtkPointLocator.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataNormals.h"
+#include "tubeTubeMath.h"
 
 namespace itk
 {
@@ -205,15 +206,24 @@ AnisotropicDiffusiveSparseRegistrationFilter
   if( computeNormals || computeWeightStructures
       || computeWeightRegularizations )
     {
-    // Ensure we have a border surface to work with
-    if( !this->GetBorderSurface() )
+    // Ensure we have a border surface or a tube list to work with
+    if( !this->GetBorderSurface() && !this->GetTubeList() )
       {
-      itkExceptionMacro( << "You must provide a border surface, or both a "
-                         << "normal matrix image and a weight image" );
+      itkExceptionMacro( << "You must provide a border surface, or a tube list,"
+                         << "or both a normal matrix image and a weight image"
+                         );
       }
 
     // Compute the normals for the surface
-    this->ComputeBorderSurfaceNormals();
+    if( this->GetBorderSurface() )
+      {
+      this->ComputeBorderSurfaceNormals();
+      }
+    // Compute the normals for the tube list
+    if( this->GetTubeList() )
+      {
+      this->ComputeTubeNormals();
+      }
 
     // Allocate the normal vector and/or weight images
     if( computeNormals )
@@ -341,6 +351,66 @@ AnisotropicDiffusiveSparseRegistrationFilter
   else if ( !m_BorderSurface->GetPointData()->GetNormals() )
     {
     itkExceptionMacro( << "Border surface point data does not have normals" );
+    }
+}
+
+/**
+ * Compute the normals for tubes
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeTubeNormals()
+{
+  assert( m_TubeList );
+
+  unsigned int numTubes = m_TubeList->size();
+  if( numTubes <= 0 )
+    {
+    itkExceptionMacro( << "Tube list does not contain tubes" );
+    }
+
+  // Iterate through the tubes
+  typename TubeListType::iterator               tubeIt = m_TubeList->begin();
+  typename TubeType::Pointer                    tube;
+  TubePointListType                             tubePointList;
+  unsigned int                                  numPoints = 0;
+  typename TubePointListType::iterator          pointIt;
+  TubePointType *                               point;
+  typename TubePointType::PointType             position;
+  float                                         radius;
+  typename TubePointType::CovariantVectorType   normal1;
+  typename TubePointType::CovariantVectorType   normal2;
+
+  for( unsigned int i = 0; i < numTubes; i++ )
+    {
+    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
+    tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
+
+    // Get the list of points in the tube
+    tubePointList = tube->GetPoints();
+    numPoints = tubePointList.size();
+
+    // Iterate through the points
+    pointIt = tubePointList.begin();
+    for( unsigned int j = 0; j < numPoints; j++ )
+      {
+      point = static_cast< TubePointType * >( &( *pointIt ) );
+      position = point->GetPosition();
+      radius = point->GetRadius();
+      normal1 = point->GetNormal1();
+      normal2 = point->GetNormal2();
+
+      std::cout << "point " << j << "; "
+                << "position " << position
+                << "radius " << radius
+                << "normal1 " << normal1
+                << "normal2 " << normal2 << std::endl;
+
+      ++pointIt;
+      }
+    ++tubeIt;
     }
 }
 
@@ -565,7 +635,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                       bool computeWeightRegularizations )
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_BorderSurface->GetPointData()->GetNormals() );
+  assert( m_BorderSurface->GetPointData()->GetNormals()
+          || m_TubeList->size() > 0 );
   assert( m_NormalMatrixImage );
   assert( m_WeightStructuresImage );
   assert( m_WeightRegularizationsImage );

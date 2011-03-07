@@ -26,6 +26,7 @@ limitations under the License.
 #include "itkDiffusiveRegistrationFilter.h"
 
 #include "itkGroupSpatialObject.h"
+#include "itkVesselTubeSpatialObject.h"
 #include "vtkSmartPointer.h"
 class vtkFloatArray;
 class vtkPointLocator;
@@ -202,6 +203,10 @@ public:
   typedef typename itk::SpatialObject< ImageDimension >::ChildrenListType
       TubeListType;
   typedef TubeListType *                                TubeListPointer;
+  typedef itk::VesselTubeSpatialObject< ImageDimension >
+      TubeType;
+  typedef typename TubeType::PointListType              TubePointListType;
+  typedef typename TubeType::TubePointType              TubePointType;
 
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
@@ -317,6 +322,9 @@ protected:
 
   /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();
+
+  /** Compute the normals for the tube list. */
+  void ComputeTubeNormals();
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
