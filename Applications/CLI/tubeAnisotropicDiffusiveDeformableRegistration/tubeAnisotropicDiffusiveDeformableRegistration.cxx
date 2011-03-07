@@ -43,10 +43,12 @@ limitations under the License.
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilter.h"
+#include "itkGroupSpatialObject.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkOrientImageFilter.h"
 #include "itkMultiResolutionPDEDeformableRegistration.h"
 #include "itkRecursiveMultiResolutionPyramidImageFilter.h"
+#include "itkSpatialObjectReader.h"
 #include "itkTransform.h"
 #include "itkTransformFileReader.h"
 #include "itkWarpImageFilter.h"
@@ -479,6 +481,34 @@ int DoIt( int argc, char * argv[] )
       sparseAnisotropicRegistrator->SetBorderSurface( borderSurface );
       }
     timeCollector.Stop( "Loading organ boundary" );
+    }
+
+  // Read tube spatial object if we are using the sparse anisotropic regularizer
+  if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+    {
+    timeCollector.Start( "Loading tube list" );
+    typedef itk::SpatialObjectReader< ImageDimension > TubeReaderType;
+    TubeReaderType::Pointer tubeReader = TubeReaderType::New();
+    tubeReader->SetFileName( tubeSpatialObjectFileName.c_str() );
+    try
+      {
+      tubeReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading tube list: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    typedef itk::GroupSpatialObject< ImageDimension > GroupType;
+    typename GroupType::Pointer group = tubeReader->GetGroup();
+    char tubeName[17];
+    strcpy( tubeName, "Tube" );
+    typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
+        tubeList = group->GetChildren();
+    sparseAnisotropicRegistrator->SetTubeList( tubeList );
+    timeCollector.Stop( "Loading tube list" );
     }
 
   // Read normal vector image if we are using the anisotropic regularizer

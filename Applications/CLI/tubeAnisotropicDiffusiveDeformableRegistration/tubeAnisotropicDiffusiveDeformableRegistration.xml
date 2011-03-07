@@ -73,6 +73,14 @@
       <longflag>organBoundary</longflag>
       <description>Filename of the organ boundary surface model.  This should be in the space of the fixed image</description>
     </geometry>
+    <file fileExtensions=".tre">
+      <name>tubeSpatialObjectFileName</name>
+      <channel>input</channel>
+      <label>Tube Spatial Object</label>
+      <flag>p</flag>
+      <longflag>tubeSpatialObject</longflag>
+      <description>Filename of the tube spatial object (.tre).  This should be in the space of the fixed image.  Use for sparse anisotropic diffusion registration only.</description>
+    </file>
     <image type="vector">
       <name>inputNormalVectorImageFileName</name>
       <label>Input Normal Vector Image</label>
