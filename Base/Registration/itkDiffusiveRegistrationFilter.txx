@@ -355,7 +355,7 @@ DiffusiveRegistrationFilter
 {
   Superclass::Initialize();
 
-  // Ensure we have a fixed image, moving image and deformation field
+  // Ensure we have a fixed image and moving image
   if( !this->GetFixedImage() || !this->GetMovingImage() )
     {
     itkExceptionMacro( << "Fixed image and/or moving image not set" );
@@ -384,8 +384,17 @@ DiffusiveRegistrationFilter
   assert( df );
   df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
 
-  // Update the registration function's deformation field
+  // Assert that we have a deformation field, and that its image attributes
+  // match the fixed image
   assert( this->GetDeformationField() );
+  if( !this->CompareImageAttributes( this->GetDeformationField(),
+                                     this->GetFixedImage() ) )
+    {
+    itkExceptionMacro( << "Deformation field attributes do not match fixed "
+                       << "image" );
+    }
+
+  // Update the registration function's deformation field
   df->SetDeformationField( this->GetDeformationField() );
 
   // Set the intensity distance and regularization weightings to the

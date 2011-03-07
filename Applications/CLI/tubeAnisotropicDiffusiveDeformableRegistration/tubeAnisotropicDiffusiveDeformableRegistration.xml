@@ -106,10 +106,18 @@
       <name>initialTransform</name>
       <flag>t</flag>
       <longflag>initialTransform</longflag>
-      <description>Initial transform for aligning the fixed and moving image. When applied to the moving image, should make it look closer to the fixed image. Optional.</description>
+      <description>Initial transform for aligning the fixed and moving image. When applied to the moving image, should make it look closer to the fixed image. Optional. If both an "initial transform" image and an "initial transform" transform are given, the "initial transform" image will be used.</description>
       <label>Initial Transform</label>
       <channel>input</channel>
     </transform>
+    <image type="vector">
+      <name>initialTransformImageFileName</name>
+      <flag>q</flag>
+      <longflag>initialTransformImage</longflag>
+      <description>Initial transform for aligning the fixed and moving image, specified as a vector image.  When applied to the moving image, should make it look closer to the fixed image. Optional. If both an "initial transform" image and an "initial transform" transform are given, the "initial transform" image will be used.</description>
+      <label>Initial Transform Image</label>
+      <channel>input</channel>
+    </image>
     <image>
       <name>fixedImageFileName</name>
       <label>Input Fixed Image</label>

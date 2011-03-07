@@ -251,90 +251,117 @@ int DoIt( int argc, char * argv[] )
   // be in the space of the fixed image
   timeCollector.Start( "Setup initial deformation field" );
   VectorImageType::Pointer initField = VectorImageType::New();
-  typename FixedImageType::Pointer templateImage
-      = fixedImageReader->GetOutput();
-  initField->SetOrigin( templateImage->GetOrigin() );
-  initField->SetSpacing( templateImage->GetSpacing() );
-  initField->SetDirection( templateImage->GetDirection() );
-  initField->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
-  initField->SetRequestedRegion( templateImage->GetRequestedRegion() );
-  initField->SetBufferedRegion( templateImage->GetBufferedRegion() );
-  initField->Allocate();
 
-  // Use the initial transform if given
-  if( initialTransform != "" )
+  // Preferably use an "initial transform" image, if given
+  if( initialTransformImageFileName != "" )
     {
-    typedef itk::TransformFileReader TransformReaderType;
-    TransformReaderType::Pointer transformReader = TransformReaderType::New();
-    transformReader->SetFileName( initialTransform );
+    typedef itk::ImageFileReader< VectorImageType > InitFieldReaderType;
+    typename InitFieldReaderType::Pointer initFieldImageReader
+        = InitFieldReaderType::New();
+    initFieldImageReader->SetFileName( initialTransformImageFileName.c_str() );
     try
       {
-      transformReader->Update();
+      initFieldImageReader->Update();
       }
     catch( itk::ExceptionObject & err )
       {
-      tube::ErrorMessage( "Reading initial transform: Exception caught: "
+      tube::ErrorMessage( "Reading initial transform image: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    if( transformReader->GetTransformList()->size() != 0 )
+    initField = initFieldImageReader->GetOutput();
+    }
+  // If an "initial transform" transform is given, or if there is no initial
+  // transform given
+  else
+    {
+    // Setup the fixed image as a template
+    typename FixedImageType::Pointer templateImage
+        = fixedImageReader->GetOutput();
+    initField->SetOrigin( templateImage->GetOrigin() );
+    initField->SetSpacing( templateImage->GetSpacing() );
+    initField->SetDirection( templateImage->GetDirection() );
+    initField->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
+    initField->SetRequestedRegion( templateImage->GetRequestedRegion() );
+    initField->SetBufferedRegion( templateImage->GetBufferedRegion() );
+    initField->Allocate();
+
+    // Use the "initial transform" transform if given
+    if( initialTransform != "" )
       {
-      TransformReaderType::TransformType::Pointer initial
-          = *( transformReader->GetTransformList()->begin() );
-
-      // Cast to transform pointer, so that we can use TransformPoint()
-      typedef itk::Transform< double, ImageDimension, ImageDimension >
-          TransformType;
-      typename TransformType::Pointer transform
-          = dynamic_cast< TransformType* >( initial.GetPointer() );
-
-      // For each voxel, find the displacement invoked by the given initial
-      // transform.  This should work for all types of transforms (linear,
-      // nonlinear, B-spline, etc) because itk::Transform is the base for each.
-      // Slicer saves transforms in LPS space (see Slicer's
-      // vtkMRMLTransformStorageNode::WriteData()), so we don't need to modify
-      // the initial transform according to the worldCoordinateSystem
-      // variable (unlike the surface model).
-      if( transform )
+      typedef itk::TransformFileReader TransformReaderType;
+      TransformReaderType::Pointer transformReader = TransformReaderType::New();
+      transformReader->SetFileName( initialTransform );
+      try
         {
-        typename TransformType::InputPointType physicalPoint;
-        physicalPoint.Fill( 0 );
-        typename TransformType::OutputPointType transformedPoint;
-        transformedPoint.Fill( 0 );
-        // Initial displacement vector
-        VectorType initVector;
-        initVector.Fill( 0 );
-        typedef itk::ImageRegionIterator< VectorImageType >
-            VectorImageRegionType;
-        VectorImageRegionType initIt = VectorImageRegionType(
-            initField, initField->GetLargestPossibleRegion() );
-        for( initIt.GoToBegin(); !initIt.IsAtEnd(); ++initIt )
-          {
-          initField->TransformIndexToPhysicalPoint( initIt.GetIndex(),
-                                                    physicalPoint );
-          transformedPoint = transform->TransformPoint( physicalPoint );
-          for( unsigned int i = 0; i < ImageDimension; i++ )
-            {
-            initVector[i] = transformedPoint[i] - physicalPoint[i];
-            }
-          initIt.Set( initVector );
-          }
+        transformReader->Update();
         }
-      else
+      catch( itk::ExceptionObject & err )
         {
-        tube::ErrorMessage( "Initial transform is an unsupported type" );
+        tube::ErrorMessage( "Reading initial transform: Exception caught: "
+                            + std::string(err.GetDescription()) );
         timeCollector.Report();
         return EXIT_FAILURE;
         }
+      if( transformReader->GetTransformList()->size() != 0 )
+        {
+        TransformReaderType::TransformType::Pointer initial
+            = *( transformReader->GetTransformList()->begin() );
+
+        // Cast to transform pointer, so that we can use TransformPoint()
+        typedef itk::Transform< double, ImageDimension, ImageDimension >
+            TransformType;
+        typename TransformType::Pointer transform
+            = dynamic_cast< TransformType* >( initial.GetPointer() );
+
+        // For each voxel, find the displacement invoked by the given initial
+        // transform.  This should work for all types of transforms (linear,
+        // nonlinear, B-spline, etc) because itk::Transform is the base for each.
+        // Slicer saves transforms in LPS space (see Slicer's
+        // vtkMRMLTransformStorageNode::WriteData()), so we don't need to modify
+        // the initial transform according to the worldCoordinateSystem
+        // variable (unlike the surface model).
+        if( transform )
+          {
+          typename TransformType::InputPointType physicalPoint;
+          physicalPoint.Fill( 0 );
+          typename TransformType::OutputPointType transformedPoint;
+          transformedPoint.Fill( 0 );
+          // Initial displacement vector
+          VectorType initVector;
+          initVector.Fill( 0 );
+          typedef itk::ImageRegionIterator< VectorImageType >
+              VectorImageRegionType;
+          VectorImageRegionType initIt = VectorImageRegionType(
+              initField, initField->GetLargestPossibleRegion() );
+          for( initIt.GoToBegin(); !initIt.IsAtEnd(); ++initIt )
+            {
+            initField->TransformIndexToPhysicalPoint( initIt.GetIndex(),
+                                                      physicalPoint );
+            transformedPoint = transform->TransformPoint( physicalPoint );
+            for( unsigned int i = 0; i < ImageDimension; i++ )
+              {
+              initVector[i] = transformedPoint[i] - physicalPoint[i];
+              }
+            initIt.Set( initVector );
+            }
+          }
+        else
+          {
+          tube::ErrorMessage( "Initial transform is an unsupported type" );
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
       }
-    }
-  // If no initial transform is given, fill the initial field with zero vectors
-  else
-    {
-    VectorType zeroVector;
-    zeroVector.Fill( 0.0 );
-    initField->FillBuffer( zeroVector );
+    // If no initial transform is given, fill the initial field with zero vectors
+    else
+      {
+      VectorType zeroVector;
+      zeroVector.Fill( 0.0 );
+      initField->FillBuffer( zeroVector );
+      }
     }
   timeCollector.Stop( "Setup initial deformation field" );
 
