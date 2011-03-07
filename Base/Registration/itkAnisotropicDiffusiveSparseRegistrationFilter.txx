@@ -372,45 +372,12 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Iterate through the tubes
-  typename TubeListType::iterator               tubeIt = m_TubeList->begin();
-  typename TubeType::Pointer                    tube;
-  TubePointListType                             tubePointList;
-  unsigned int                                  numPoints = 0;
-  typename TubePointListType::iterator          pointIt;
-  TubePointType *                               point;
-  typename TubePointType::PointType             position;
-  float                                         radius;
-  typename TubePointType::CovariantVectorType   normal1;
-  typename TubePointType::CovariantVectorType   normal2;
-
+  typename TubeType::Pointer tube;
+  typename TubeListType::iterator tubeIt = m_TubeList->begin();
   for( unsigned int i = 0; i < numTubes; i++ )
     {
     tube = static_cast< TubeType * >( tubeIt->GetPointer() );
     tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
-
-    // Get the list of points in the tube
-    tubePointList = tube->GetPoints();
-    numPoints = tubePointList.size();
-
-    // Iterate through the points
-    pointIt = tubePointList.begin();
-    for( unsigned int j = 0; j < numPoints; j++ )
-      {
-      point = static_cast< TubePointType * >( &( *pointIt ) );
-      position = point->GetPosition();
-      radius = point->GetRadius();
-      normal1 = point->GetNormal1();
-      normal2 = point->GetNormal2();
-
-      std::cout << "point " << j << "; "
-                << "position " << position
-                << "radius " << radius
-                << "normal1 " << normal1
-                << "normal2 " << normal2 << std::endl;
-
-      ++pointIt;
-      }
-    ++tubeIt;
     }
 }
 
