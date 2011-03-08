@@ -370,6 +370,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::ComputeTubeNormals()
 {
   assert( m_TubeList );
+  assert( !m_TubeSurface ); // We only want to compute this once
 
   unsigned int numTubes = m_TubeList->size();
   if( numTubes <= 0 )
@@ -377,18 +378,90 @@ AnisotropicDiffusiveSparseRegistrationFilter
     itkExceptionMacro( << "Tube list does not contain tubes" );
     }
 
-  // Iterate through the tubes
+  // Iterate through the tubes to compute tangents and normals
   typename TubeType::Pointer tube;
   typename TubeListType::iterator tubeIt = m_TubeList->begin();
+  int numPoints = 0;
   for( unsigned int i = 0; i < numTubes; i++ )
     {
     tube = static_cast< TubeType * >( tubeIt->GetPointer() );
     tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
+    numPoints += tube->GetPoints().size();
     }
 
-  // Fill in tubeBorderSurface and normals/vectors
+  // We store the tube point positions and two normals in a vtkPolyData, so that
+  // later we can search through them using a vtkPointLocator.  Otherwise, to
+  // determine the normal matrix and weightings later on we will have a nested
+  // loop iterating through each tube point for each voxel coordinate - which
+  // takes forever.  As far as I know, the ITK point locator is not in the
+  // Slicer ITK that tubeTK relies on.
 
-  // TODO
+  // Setup the normal float arrays for the tubes
+  vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkFloatArray::New();
+  positionFloatArray->SetNumberOfComponents( ImageDimension );
+  positionFloatArray->SetNumberOfTuples( numPoints);
+
+  vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkFloatArray::New();
+  normal1FloatArray->SetNumberOfComponents( ImageDimension );
+  normal1FloatArray->SetNumberOfTuples( numPoints );
+  normal1FloatArray->SetName( "normal1" );
+
+  vtkSmartPointer< vtkFloatArray > normal2FloatArray = vtkFloatArray::New();
+  normal2FloatArray->SetNumberOfComponents( ImageDimension );
+  normal2FloatArray->SetNumberOfTuples( numPoints );
+  normal2FloatArray->SetName( "normal2" );
+
+  // Fill in the normal float array for the tubes
+  tubeIt = m_TubeList->begin();
+  TubePointListType tubePointList;
+  typename TubePointListType::iterator pointIt;
+  TubePointType * point;
+  typename TubePointType::PointType pointPosition;
+  typename TubePointType::CovariantVectorType pointNormal1;
+  typename TubePointType::CovariantVectorType pointNormal2;
+  int pointCounter = 0;
+  for( unsigned int i = 0; i < numTubes; i++ )
+    {
+    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
+    tubePointList = tube->GetPoints();
+    numPoints = tubePointList.size();
+    pointIt = tubePointList.begin();
+    for( int j = 0; j < numPoints; j++ )
+      {
+      point = static_cast< TubePointType * >( &( *pointIt ) );
+      pointPosition = point->GetPosition();
+      pointNormal1 = point->GetNormal1();
+      pointNormal2 = point->GetNormal2();
+      // TODO hack for MICCAI because spacing not being read properly
+      for( unsigned int k = 0; k < ImageDimension; k++ )
+        {
+        pointPosition[k] *= 0.875;
+        }
+      positionFloatArray->SetTuple( pointCounter,
+                                    pointPosition.GetDataPointer() );
+      normal1FloatArray->SetTuple( pointCounter,
+                                   pointNormal1.GetDataPointer() );
+      normal2FloatArray->SetTuple( pointCounter,
+                                   pointNormal2.GetDataPointer() );
+      ++pointIt;
+      pointCounter++;
+      }
+    ++tubeIt;
+    }
+
+  // Add the position array to a vtkPoints
+  vtkSmartPointer< vtkPoints > points = vtkPoints::New();
+  points->SetData( positionFloatArray );
+
+  // Add the normal arrays to a vtkFieldData
+  vtkSmartPointer< vtkFieldData > fieldData = vtkFieldData::New();
+  fieldData->AddArray( normal1FloatArray );
+  fieldData->AddArray( normal2FloatArray );
+
+  // Finally, we store everything within the vtkPolyData
+  m_TubeSurface = BorderSurfaceType::New();
+  m_TubeSurface->SetPoints( points );
+  m_TubeSurface->SetFieldData( fieldData );
 }
 
 /**
@@ -414,22 +487,25 @@ AnisotropicDiffusiveSparseRegistrationFilter
     surfacePointLocator->BuildLocator();
     surfaceNormalData = static_cast< vtkFloatArray * >(
         m_BorderSurface->GetPointData()->GetNormals() );
+    assert( surfaceNormalData );
     }
 
   // Create a vtk polydata representing the tube points and associated normals
   vtkPointLocator * tubePointLocator = 0;
   vtkFloatArray * tubeNormal1Data = 0;
   vtkFloatArray * tubeNormal2Data = 0;
-  if( this->GetTubeList() )
+  if( this->GetTubeSurface() )
     {
     tubePointLocator = vtkPointLocator::New();
     tubePointLocator->SetDataSet( m_TubeSurface );
     tubePointLocator->Initialize();
     tubePointLocator->BuildLocator();
     tubeNormal1Data = static_cast< vtkFloatArray * >(
-        m_TubeSurface->GetPointData()->GetNormals() );
+        m_TubeSurface->GetFieldData()->GetArray( "normal1" ) );
     tubeNormal2Data = static_cast< vtkFloatArray * >(
-        m_TubeSurface->GetPointData()->GetVectors() );
+        m_TubeSurface->GetFieldData()->GetArray( "normal2" ) );
+    assert( tubeNormal1Data );
+    assert( tubeNormal2Data );
     }
 
   // Set up struct for multithreaded processing.
@@ -706,8 +782,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                       bool computeWeightRegularizations )
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_BorderSurface->GetPointData()->GetNormals()
-          || m_TubeList->size() > 0 );
+  //assert( m_BorderSurface->GetPointData()->GetNormals() || m_TubeSurface ); // TODO put back
   assert( m_NormalMatrixImage );
   assert( m_WeightStructuresImage );
   assert( m_WeightRegularizationsImage );

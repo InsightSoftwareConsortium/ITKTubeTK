@@ -326,6 +326,10 @@ protected:
   /** Compute the normals for the tube list. */
   void ComputeTubeNormals();
 
+  /** Provide access to the tube surface for derived classes. */
+  virtual BorderSurfaceType * GetTubeSurface() const
+    { return m_TubeSurface; }
+
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
   virtual void ComputeNormalMatrixAndWeightImages(
