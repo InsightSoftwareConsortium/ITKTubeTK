@@ -345,8 +345,11 @@ protected:
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
   virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
-      vtkPointLocator * pointLocator,
-      vtkFloatArray * normalData,
+      vtkPointLocator * surfacePointLocator,
+      vtkFloatArray * surfaceNormalData,
+      vtkPointLocator * tubePointLocator,
+      vtkFloatArray * tubeNormal1Data,
+      vtkFloatArray * tubeNormal2Data,
       ThreadNormalMatrixImageRegionType & normalRegionToProcess,
       ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
       ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
@@ -370,8 +373,11 @@ private:
   struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
     {
     AnisotropicDiffusiveSparseRegistrationFilter * Filter;
-    vtkPointLocator * PointLocator;
-    vtkFloatArray * NormalData;
+    vtkPointLocator * SurfacePointLocator;
+    vtkFloatArray * SurfaceNormalData;
+    vtkPointLocator * TubePointLocator;
+    vtkFloatArray * TubeNormal1Data;
+    vtkFloatArray * TubeNormal2Data;
     ThreadNormalMatrixImageRegionType NormalMatrixImageLargestPossibleRegion;
     ThreadWeightMatrixImageRegionType
         WeightStructuresImageLargestPossibleRegion;
@@ -392,6 +398,7 @@ private:
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
   TubeListPointer                     m_TubeList;
+  BorderSurfacePointer                m_TubeSurface;
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
