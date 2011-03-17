@@ -230,9 +230,9 @@ public:
 
   /** Set/get the lambda that controls the exponential decay used to calculate
    *  the weight value w as a function of the distance to the closest border
-   *  point.  Must be negative. */
+   *  point.  Must be positive. */
   void SetLambda( WeightComponentType l )
-    { if ( l < 0 ) { m_Lambda = l; } }
+    { if ( l > 0 ) { m_Lambda = l; } }
   WeightComponentType GetLambda() const
     { return m_Lambda; }
 
@@ -422,8 +422,8 @@ private:
       m_HighResolutionWeightRegularizationsImage;
 
   /** The lambda factor for computing the weight from distance.  Weight is
-   * modeled as exponential decay: weight = e^(lambda * distance).
-   * (lamba must be negative) */
+   * modeled as exponential decay: weight = e^(-1.0 * lambda * distance).
+   * (lamba must be positive) */
   WeightComponentType                 m_Lambda;
 };
 

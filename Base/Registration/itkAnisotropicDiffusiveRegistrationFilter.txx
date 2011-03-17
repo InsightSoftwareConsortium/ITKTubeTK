@@ -52,7 +52,7 @@ AnisotropicDiffusiveRegistrationFilter
   m_HighResolutionWeightImage                   = 0;
 
   // Lambda for exponential decay used to calculate weight from distance
-  m_Lambda = -0.01;
+  m_Lambda = 0.01;
 }
 
 /**
@@ -539,7 +539,7 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistance( const WeightType distance ) const
 {
-  return exp( m_Lambda * distance );
+  return exp( -1.0 * m_Lambda * distance );
 }
 
 /**

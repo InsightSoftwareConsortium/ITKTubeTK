@@ -609,9 +609,9 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Error checking on lambda
-  if( lambda > 0.0 )
+  if( lambda < 0.0 )
     {
-    tube::ErrorMessage( "Lambda must be negative." );
+    tube::ErrorMessage( "Lambda must be positive." );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
