@@ -25,6 +25,8 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
+#include "itkGroupSpatialObject.h"
+#include "itkVesselTubeSpatialObject.h"
 #include "vtkSmartPointer.h"
 class vtkFloatArray;
 class vtkPointLocator;
@@ -197,6 +199,15 @@ public:
   typedef vtkPolyData                                   BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
 
+  /** Tube spatial object types */
+  typedef typename itk::SpatialObject< ImageDimension >::ChildrenListType
+      TubeListType;
+  typedef TubeListType *                                TubeListPointer;
+  typedef itk::VesselTubeSpatialObject< ImageDimension >
+      TubeType;
+  typedef typename TubeType::PointListType              TubePointListType;
+  typedef typename TubeType::TubePointType              TubePointType;
+
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
@@ -209,6 +220,13 @@ public:
     { m_BorderSurface = border; }
   virtual BorderSurfaceType * GetBorderSurface() const
     { return m_BorderSurface; }
+
+  /** Set/get the list of tube spatial objects, which must be in the same space
+   *  as the fixed image. */
+  virtual void SetTubeList( TubeListType * tubeList )
+    { m_TubeList = tubeList; }
+  virtual TubeListType * GetTubeList() const
+    { return m_TubeList; }
 
   /** Set/get the lambda that controls the exponential decay used to calculate
    *  the weight value w as a function of the distance to the closest border
@@ -305,6 +323,13 @@ protected:
   /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();
 
+  /** Compute the normals for the tube list. */
+  void ComputeTubeNormals();
+
+  /** Provide access to the tube surface for derived classes. */
+  virtual BorderSurfaceType * GetTubeSurface() const
+    { return m_TubeSurface; }
+
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
   virtual void ComputeNormalMatrixAndWeightImages(
@@ -324,8 +349,11 @@ protected:
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
   virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
-      vtkPointLocator * pointLocator,
-      vtkFloatArray * normalData,
+      vtkPointLocator * surfacePointLocator,
+      vtkFloatArray * surfaceNormalData,
+      vtkPointLocator * tubePointLocator,
+      vtkFloatArray * tubeNormal1Data,
+      vtkFloatArray * tubeNormal2Data,
       ThreadNormalMatrixImageRegionType & normalRegionToProcess,
       ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
       ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
@@ -349,8 +377,11 @@ private:
   struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
     {
     AnisotropicDiffusiveSparseRegistrationFilter * Filter;
-    vtkPointLocator * PointLocator;
-    vtkFloatArray * NormalData;
+    vtkPointLocator * SurfacePointLocator;
+    vtkFloatArray * SurfaceNormalData;
+    vtkPointLocator * TubePointLocator;
+    vtkFloatArray * TubeNormal1Data;
+    vtkFloatArray * TubeNormal2Data;
     ThreadNormalMatrixImageRegionType NormalMatrixImageLargestPossibleRegion;
     ThreadWeightMatrixImageRegionType
         WeightStructuresImageLargestPossibleRegion;
@@ -370,6 +401,8 @@ private:
 
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
+  TubeListPointer                     m_TubeList;
+  BorderSurfacePointer                m_TubeSurface;
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */

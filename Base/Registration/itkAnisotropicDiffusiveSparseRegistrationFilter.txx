@@ -32,6 +32,7 @@ limitations under the License.
 #include "vtkPointLocator.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataNormals.h"
+#include "tubeTubeMath.h"
 
 namespace itk
 {
@@ -46,6 +47,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
 {
   // Initialize attributes to NULL
   m_BorderSurface                               = 0;
+  m_TubeList                                    = 0;
+  m_TubeSurface                                 = 0;
   m_NormalMatrixImage                           = 0;
   m_WeightStructuresImage                       = 0;
   m_WeightRegularizationsImage                  = 0;
@@ -71,6 +74,16 @@ AnisotropicDiffusiveSparseRegistrationFilter
     {
     os << indent << "Border surface:" << std::endl;
     m_BorderSurface->Print( os );
+    }
+//  if( m_TubeList )
+//    {
+//    os << indent << "Tube list:" << std::endl;
+//    m_TubeList->Print( os );
+//    }
+  if( m_TubeSurface )
+    {
+    os << indent << "Tube surface:" << std::endl;
+    m_TubeSurface->Print( os );
     }
   if( m_NormalMatrixImage )
     {
@@ -199,15 +212,24 @@ AnisotropicDiffusiveSparseRegistrationFilter
   if( computeNormals || computeWeightStructures
       || computeWeightRegularizations )
     {
-    // Ensure we have a border surface to work with
-    if( !this->GetBorderSurface() )
+    // Ensure we have a border surface or a tube list to work with
+    if( !this->GetBorderSurface() && !this->GetTubeList() )
       {
-      itkExceptionMacro( << "You must provide a border surface, or both a "
-                         << "normal matrix image and a weight image" );
+      itkExceptionMacro( << "You must provide a border surface, or a tube list,"
+                         << "or both a normal matrix image and a weight image"
+                         );
       }
 
     // Compute the normals for the surface
-    this->ComputeBorderSurfaceNormals();
+    if( this->GetBorderSurface() )
+      {
+      this->ComputeBorderSurfaceNormals();
+      }
+    // Compute the normals for the tube list
+    if( this->GetTubeList() )
+      {
+      this->ComputeTubeNormals();
+      }
 
     // Allocate the normal vector and/or weight images
     if( computeNormals )
@@ -339,6 +361,110 @@ AnisotropicDiffusiveSparseRegistrationFilter
 }
 
 /**
+ * Compute the normals for tubes
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeTubeNormals()
+{
+  assert( m_TubeList );
+  assert( !m_TubeSurface ); // We only want to compute this once
+
+  unsigned int numTubes = m_TubeList->size();
+  if( numTubes <= 0 )
+    {
+    itkExceptionMacro( << "Tube list does not contain tubes" );
+    }
+
+  // Iterate through the tubes to compute tangents and normals
+  typename TubeType::Pointer tube;
+  typename TubeListType::iterator tubeIt = m_TubeList->begin();
+  int numPoints = 0;
+  for( unsigned int i = 0; i < numTubes; i++ )
+    {
+    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
+    tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
+    numPoints += tube->GetPoints().size();
+    }
+
+  // We store the tube point positions and two normals in a vtkPolyData, so that
+  // later we can search through them using a vtkPointLocator.  Otherwise, to
+  // determine the normal matrix and weightings later on we will have a nested
+  // loop iterating through each tube point for each voxel coordinate - which
+  // takes forever.  As far as I know, the ITK point locator is not in the
+  // Slicer ITK that tubeTK relies on.
+
+  // Setup the normal float arrays for the tubes
+  vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkFloatArray::New();
+  positionFloatArray->SetNumberOfComponents( ImageDimension );
+  positionFloatArray->SetNumberOfTuples( numPoints);
+
+  vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkFloatArray::New();
+  normal1FloatArray->SetNumberOfComponents( ImageDimension );
+  normal1FloatArray->SetNumberOfTuples( numPoints );
+  normal1FloatArray->SetName( "normal1" );
+
+  vtkSmartPointer< vtkFloatArray > normal2FloatArray = vtkFloatArray::New();
+  normal2FloatArray->SetNumberOfComponents( ImageDimension );
+  normal2FloatArray->SetNumberOfTuples( numPoints );
+  normal2FloatArray->SetName( "normal2" );
+
+  // Fill in the normal float array for the tubes
+  tubeIt = m_TubeList->begin();
+  TubePointListType tubePointList;
+  typename TubePointListType::iterator pointIt;
+  TubePointType * point;
+  typename TubePointType::PointType pointPosition;
+  typename TubePointType::CovariantVectorType pointNormal1;
+  typename TubePointType::CovariantVectorType pointNormal2;
+  int pointCounter = 0;
+  for( unsigned int i = 0; i < numTubes; i++ )
+    {
+    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
+    tubePointList = tube->GetPoints();
+    numPoints = tubePointList.size();
+    pointIt = tubePointList.begin();
+    for( int j = 0; j < numPoints; j++ )
+      {
+      point = static_cast< TubePointType * >( &( *pointIt ) );
+      pointPosition = point->GetPosition();
+      pointNormal1 = point->GetNormal1();
+      pointNormal2 = point->GetNormal2();
+      // TODO hack for MICCAI because spacing not being read properly
+      for( unsigned int k = 0; k < ImageDimension; k++ )
+        {
+        pointPosition[k] *= 0.875;
+        }
+      positionFloatArray->SetTuple( pointCounter,
+                                    pointPosition.GetDataPointer() );
+      normal1FloatArray->SetTuple( pointCounter,
+                                   pointNormal1.GetDataPointer() );
+      normal2FloatArray->SetTuple( pointCounter,
+                                   pointNormal2.GetDataPointer() );
+      ++pointIt;
+      pointCounter++;
+      }
+    ++tubeIt;
+    }
+
+  // Add the position array to a vtkPoints
+  vtkSmartPointer< vtkPoints > points = vtkPoints::New();
+  points->SetData( positionFloatArray );
+
+  // Add the normal arrays to a vtkFieldData
+  vtkSmartPointer< vtkFieldData > fieldData = vtkFieldData::New();
+  fieldData->AddArray( normal1FloatArray );
+  fieldData->AddArray( normal2FloatArray );
+
+  // Finally, we store everything within the vtkPolyData
+  m_TubeSurface = BorderSurfaceType::New();
+  m_TubeSurface->SetPoints( points );
+  m_TubeSurface->SetFieldData( fieldData );
+}
+
+/**
  * Computes the normal vectors and distances to the closest point
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -350,20 +476,46 @@ AnisotropicDiffusiveSparseRegistrationFilter
     bool computeWeightStructures,
     bool computeWeightRegularizations )
 {
-  // Setup the point locator and get the normals from the polydata
-  vtkPointLocator * pointLocator = vtkPointLocator::New();
-  pointLocator->SetDataSet( m_BorderSurface );
-  pointLocator->Initialize();
-  pointLocator->BuildLocator();
-  vtkFloatArray * normalData
-      = static_cast< vtkFloatArray * >
-        (m_BorderSurface->GetPointData()->GetNormals() );
+  // Setup the point locator and get the normals from the surface polydata
+  vtkPointLocator * surfacePointLocator = 0;
+  vtkFloatArray * surfaceNormalData = 0;
+  if( this->GetBorderSurface() )
+    {
+    surfacePointLocator = vtkPointLocator::New();
+    surfacePointLocator->SetDataSet( m_BorderSurface );
+    surfacePointLocator->Initialize();
+    surfacePointLocator->BuildLocator();
+    surfaceNormalData = static_cast< vtkFloatArray * >(
+        m_BorderSurface->GetPointData()->GetNormals() );
+    assert( surfaceNormalData );
+    }
+
+  // Create a vtk polydata representing the tube points and associated normals
+  vtkPointLocator * tubePointLocator = 0;
+  vtkFloatArray * tubeNormal1Data = 0;
+  vtkFloatArray * tubeNormal2Data = 0;
+  if( this->GetTubeSurface() )
+    {
+    tubePointLocator = vtkPointLocator::New();
+    tubePointLocator->SetDataSet( m_TubeSurface );
+    tubePointLocator->Initialize();
+    tubePointLocator->BuildLocator();
+    tubeNormal1Data = static_cast< vtkFloatArray * >(
+        m_TubeSurface->GetFieldData()->GetArray( "normal1" ) );
+    tubeNormal2Data = static_cast< vtkFloatArray * >(
+        m_TubeSurface->GetFieldData()->GetArray( "normal2" ) );
+    assert( tubeNormal1Data );
+    assert( tubeNormal2Data );
+    }
 
   // Set up struct for multithreaded processing.
   AnisotropicDiffusiveSparseRegistrationFilterThreadStruct str;
   str.Filter = this;
-  str.PointLocator = pointLocator;
-  str.NormalData = normalData;
+  str.SurfacePointLocator = surfacePointLocator;
+  str.SurfaceNormalData = surfaceNormalData;
+  str.TubePointLocator = tubePointLocator;
+  str.TubeNormal1Data = tubeNormal1Data;
+  str.TubeNormal2Data = tubeNormal2Data;
   str.NormalMatrixImageLargestPossibleRegion
       = m_NormalMatrixImage->GetLargestPossibleRegion();
   str.WeightStructuresImageLargestPossibleRegion
@@ -389,7 +541,14 @@ AnisotropicDiffusiveSparseRegistrationFilter
   this->m_WeightRegularizationsImage->Modified();
 
   // Clean up memory
-  pointLocator->Delete();
+  if( surfacePointLocator )
+    {
+    surfacePointLocator->Delete();
+    }
+  if( tubePointLocator )
+    {
+    tubePointLocator->Delete();
+    }
 }
 
 /**
@@ -443,8 +602,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   if( threadId < normalTotal )
     {
     str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
-        str->PointLocator,
-        str->NormalData,
+        str->SurfacePointLocator,
+        str->SurfaceNormalData,
+        str->TubePointLocator,
+        str->TubeNormal1Data,
+        str->TubeNormal2Data,
         splitNormalRegion,
         splitWeightMatrixRegion,
         splitWeightComponentMatrixRegion,
@@ -467,26 +629,34 @@ void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
-    vtkPointLocator * pointLocator,
-    vtkFloatArray * normalData,
+    vtkPointLocator * surfacePointLocator,
+    vtkFloatArray * surfaceNormalData,
+    vtkPointLocator * tubePointLocator,
+    vtkFloatArray * tubeNormal1Data,
+    vtkFloatArray * tubeNormal2Data,
     ThreadNormalMatrixImageRegionType & normalRegionToProcess,
-    ThreadWeightMatrixImageRegionType & itkNotUsed(weightMatrixRegionToProcess),
+    ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
     ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
     bool computeNormals,
     bool computeWeightStructures,
     bool computeWeightRegularizations,
     int )
 {
+  assert( ( surfacePointLocator && surfaceNormalData )
+          || ( tubePointLocator && tubeNormal1Data && tubeNormal2Data ) );
+
   // Setup iterators over the normal vector and weight images
-  NormalMatrixImageRegionType normalIt( m_NormalMatrixImage,
-                                        normalRegionToProcess );
+  NormalMatrixImageRegionType normalIt(
+      m_NormalMatrixImage, normalRegionToProcess );
   WeightComponentImageRegionType weightRegularizationsIt(
-      m_WeightRegularizationsImage,
-      weightComponentRegionToProcess );
+      m_WeightRegularizationsImage, weightComponentRegionToProcess );
+  WeightMatrixImageRegionType weightStructuresIt(
+      m_WeightStructuresImage, weightMatrixRegionToProcess );
 
   // The normal vector image will hold the normal of the closest point of the
   // surface polydata, and the weight image will be a function of the distance
-  // between the voxel and this closest point
+  // between the voxel and this closest point, and the weight structure image
+  // will be a function of the structure type
 
   itk::Point< double, ImageDimension >  imageCoord;
   imageCoord.Fill( 0 );
@@ -495,20 +665,59 @@ AnisotropicDiffusiveSparseRegistrationFilter
     {
     borderCoord[i] = 0.0;
     }
-  vtkIdType                             id = 0;
-  WeightComponentType                   distance = 0;
+
+  vtkIdType                             surfaceId = -1;
+  WeightComponentType                   surfaceDistance = 0;
+  vtkIdType                             tubeId = -1;
+  WeightComponentType                   tubeDistance = 0;
+
   NormalMatrixType                      normalMatrix;
   normalMatrix.Fill(0);
 
+  WeightMatrixType                      surfaceWeightMatrix;
+  surfaceWeightMatrix.Fill(0);
+  surfaceWeightMatrix(0,0) = 1.0;
+  WeightMatrixType                      tubeWeightMatrix;
+  tubeWeightMatrix.Fill(0);
+  tubeWeightMatrix(0,0) = 1.0;
+  tubeWeightMatrix(1,1) = 1.0;
+
   // Determine the normals of and the distances to the nearest border point
-  for( normalIt.GoToBegin(), weightRegularizationsIt.GoToBegin();
+  for( normalIt.GoToBegin(),
+       weightRegularizationsIt.GoToBegin(), weightStructuresIt.GoToBegin();
        !normalIt.IsAtEnd();
-       ++normalIt, ++weightRegularizationsIt )
+       ++normalIt, ++weightRegularizationsIt, ++weightStructuresIt )
     {
+    surfaceDistance = 100000000.0;
+    tubeDistance = 100000000.0;
+
     // Find the id of the closest surface point to the current voxel
     m_NormalMatrixImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
                                                         imageCoord );
-    id = pointLocator->FindClosestPoint( imageCoord.GetDataPointer() );
+    if( surfacePointLocator )
+      {
+      surfaceId = surfacePointLocator->FindClosestPoint(
+          imageCoord.GetDataPointer() );
+      m_BorderSurface->GetPoint( surfaceId, borderCoord );
+      surfaceDistance = 0.0;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        surfaceDistance += pow( imageCoord[i] - borderCoord[i], 2 );
+        }
+      surfaceDistance = sqrt( surfaceDistance );
+      }
+    if( tubePointLocator )
+      {
+      tubeId = tubePointLocator->FindClosestPoint(
+          imageCoord.GetDataPointer() );
+      m_TubeSurface->GetPoint( tubeId, borderCoord );
+      tubeDistance = 0.0;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        tubeDistance += pow( imageCoord[i] - borderCoord[i], 2 );
+        }
+      tubeDistance = sqrt( tubeDistance );
+      }
 
     // Find the normal of the surface point that is closest to the current voxel
     if( computeNormals )
@@ -516,7 +725,18 @@ AnisotropicDiffusiveSparseRegistrationFilter
       normalMatrix.Fill(0);
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        normalMatrix(i,0) = normalData->GetValue( id * ImageDimension + i );
+        if( surfaceDistance <= tubeDistance )
+          {
+          normalMatrix(i,0)
+              = surfaceNormalData->GetValue( surfaceId * ImageDimension + i );
+          }
+        else
+          {
+          normalMatrix(i,0)
+              = tubeNormal1Data->GetValue( tubeId * ImageDimension + i );
+          normalMatrix(i,1)
+              = tubeNormal2Data->GetValue( tubeId * ImageDimension + i );
+          }
         }
       normalIt.Set( normalMatrix );
       }
@@ -525,25 +745,28 @@ AnisotropicDiffusiveSparseRegistrationFilter
     // coordinate
     if( computeWeightRegularizations )
       {
-      m_BorderSurface->GetPoint( id, borderCoord );
-      distance = 0.0;
-      for( unsigned int i = 0; i < ImageDimension; i++ )
+      if( surfaceDistance <= tubeDistance )
         {
-        distance += pow( imageCoord[i] - borderCoord[i], 2 );
+        weightRegularizationsIt.Set( surfaceDistance );
         }
-      distance = sqrt( distance );
-      // The weight image will temporarily store distances
-      weightRegularizationsIt.Set( distance );
+      else
+        {
+        weightRegularizationsIt.Set( tubeDistance );
+        }
       }
-    }
 
-  // Compute the weight structures matrix
-  if( computeWeightStructures )
-    {
-    WeightMatrixType weightMatrix;
-    weightMatrix.Fill(0);
-    weightMatrix(0,0) = 1.0;
-    m_WeightStructuresImage->FillBuffer( weightMatrix );
+    // Determine the weight structures based on the structure type
+    if( computeWeightStructures )
+      {
+      if( surfaceDistance <= tubeDistance )
+        {
+        weightStructuresIt.Set( surfaceWeightMatrix );
+        }
+      else
+        {
+        weightStructuresIt.Set( tubeWeightMatrix );
+        }
+      }
     }
 }
 
@@ -559,7 +782,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                       bool computeWeightRegularizations )
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_BorderSurface->GetPointData()->GetNormals() );
+  //assert( m_BorderSurface->GetPointData()->GetNormals() || m_TubeSurface ); // TODO put back
   assert( m_NormalMatrixImage );
   assert( m_WeightStructuresImage );
   assert( m_WeightRegularizationsImage );

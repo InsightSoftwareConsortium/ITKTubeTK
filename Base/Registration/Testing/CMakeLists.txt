@@ -39,6 +39,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
   itkImageToTubeRigidRegistrationTest.cxx
+  itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx )
 
 # expect image comparison perfection on 64-bit machines
@@ -62,7 +63,9 @@ endif( TubeTK_USE_VTK )
 include_directories( 
           ${TubeTK_SOURCE_DIR}/Utilities
           ${TubeTK_SOURCE_DIR}/Base/Filtering
+          ${TubeTK_SOURCE_DIR}/Base/Numerics
           ${TubeTK_SOURCE_DIR}/Base/Registration
+          ${TubeTK_SOURCE_DIR}/Utilities
           )
 
 add_executable( tubeBaseRegistrationFiltersTests
@@ -211,3 +214,9 @@ if( TubeTK_USE_VTK )
                         itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian )
 
 endif( TubeTK_USE_VTK )
+
+add_test( itkTubePointsToImageTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkTubePointsToImageTest
+          ${INPUT_DATA}/Branch-truth-new.tre
+          ${TEMP}/Branch-truth-new-points.mha
+          )
