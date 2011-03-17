@@ -178,13 +178,27 @@ public:
   virtual BorderSurfaceType * GetBorderSurface() const
     { return m_BorderSurface; }
 
-  /** Set/get the lambda that controls the exponential decay used to calculate
-   *  the weight value w as a function of the distance to the closest border
-   *  point.  Must be positive. */
+  /** Set/get the lambda that controls the decay of the weight value w as a
+   *  function of the distance to the closest border point.  If gamma=-1, then
+   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  decays exponentially using a dirac-shaped function
+   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Lambda must
+   *  be positive. */
   void SetLambda( WeightType l )
     { if ( l > 0 ) { m_Lambda = l; } }
   WeightType GetLambda() const
     { return m_Lambda; }
+
+  /** Set/get the gamma that controls the decay of the weight value w as a
+   *  function of the distance to the closest border point.  If gamma=-1, then
+   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  decays exponentially using a dirac-shaped function
+   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Gamma must
+   *  be positive or -1.0. */
+  void SetGamma( WeightType g )
+    { if ( g > 0 || g == -1.0 ) { m_Gamma = g; } }
+  WeightType GetGamma() const
+    { return m_Gamma; }
 
   /** Set/get the image of the normal vectors.  Setting the normal vector
    * image overrides the border surface polydata if a border surface was
@@ -197,7 +211,7 @@ public:
     { return m_HighResolutionNormalVectorImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
-   * the border surface polydata and lambda if a border surface was also
+   * the border surface polydata and lambda/gamma if a border surface was also
    * supplied.  */
   virtual void SetWeightImage( WeightImageType * weightImage )
     { m_WeightImage = weightImage; }
@@ -268,10 +282,17 @@ protected:
       bool computeWeights,
       int threadId );
 
-  /** Computes the weighting factor w from the distance to the border.  The
-   *  weight should be 1 near the border and 0 away from the border. */
-  virtual WeightType ComputeWeightFromDistance( const WeightType distance )
-      const;
+  /** Computes the weighting factor w from the distance to the border using
+   *  exponential decay.  The weight should be 1 near the border and 0 away from
+   *  the border. */
+  virtual WeightType ComputeWeightFromDistanceExponential(
+      const WeightType distance ) const;
+
+  /** Computes the weighting factor w from the distance to the border using
+   *  a dirac-shaped function.  The weight should be 1 near the border and 0
+   *  away from the border. */
+  virtual WeightType ComputeWeightFromDistanceDirac(
+      const WeightType distance ) const;
 
 private:
   // Purposely not implemented
@@ -315,10 +336,9 @@ private:
   NormalVectorImagePointer            m_HighResolutionNormalVectorImage;
   WeightImagePointer                  m_HighResolutionWeightImage;
 
-  /** The lambda factor for computing the weight from distance.  Weight is
-   * modeled as exponential decay: weight = e^(-1.0 * lambda * distance).
-   * (lamba must be positive) */
+  /** The lambda/gamma factors for computing the weight from distance. */
   WeightType                          m_Lambda;
+  WeightType                          m_Gamma;
 
 };
 

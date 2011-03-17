@@ -206,9 +206,15 @@
         <step>0.01</step>
       </constraints>
     </double>
+    <double>
+      <name>gamma</name>
+      <flag>g</flag>
+      <longflag>gamma</longflag>
+      <label>Gamma</label>
+      <channel>input</channel>
+      <description>Controls the dirac-shaped function used to calculate the weight value as a function of the distance to the closest organ border point.  Must be positive to use a dirac-shaped function.  If gamma = -1, then an exponential decay using lambda will be used instead (default behavior).</description>
+      <default>-1.0</default>
       <constraints>
-        <minimum>-10.0</minimum>
-        <maximum>0.0</maximum>
         <step>0.01</step>
       </constraints>
     </double>
