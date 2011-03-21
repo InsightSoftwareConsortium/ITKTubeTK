@@ -56,8 +56,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   m_HighResolutionWeightStructuresImage         = 0;
   m_HighResolutionWeightRegularizationsImage    = 0;
 
-  // Lambda for exponential decay used to calculate weight from distance
-  m_Lambda = -0.01;
+  // Lambda/gamma used to calculate weight from distance
+  m_Lambda = 0.01;
+  m_Gamma = -1.0;
 }
 
 /**
@@ -101,6 +102,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     m_WeightRegularizationsImage->Print( os, indent );
     }
   os << indent << "lambda: " << m_Lambda << std::endl;
+  os << indent << "gamma: " << m_Gamma << std::endl;
   if( m_HighResolutionNormalMatrixImage )
     {
     os << indent << "High resolution normal vector image:" << std::endl;
@@ -832,12 +834,28 @@ AnisotropicDiffusiveSparseRegistrationFilter
     WeightComponentImageRegionType weightRegularizationsIt(
         m_WeightRegularizationsImage,
         m_WeightRegularizationsImage->GetLargestPossibleRegion() );
-    for( weightRegularizationsIt.GoToBegin();
-         !weightRegularizationsIt.IsAtEnd();
-         ++weightRegularizationsIt )
+    bool useExponential = ( m_Gamma == -1.0 );
+    if( useExponential )
       {
-      weight = this->ComputeWeightFromDistance( weightRegularizationsIt.Get() );
-      weightRegularizationsIt.Set( weight );
+      for( weightRegularizationsIt.GoToBegin();
+           !weightRegularizationsIt.IsAtEnd();
+           ++weightRegularizationsIt )
+        {
+        weight = this->ComputeWeightFromDistanceExponential(
+            weightRegularizationsIt.Get() );
+        weightRegularizationsIt.Set( weight );
+        }
+      }
+    else
+      {
+      for( weightRegularizationsIt.GoToBegin();
+           !weightRegularizationsIt.IsAtEnd();
+           ++weightRegularizationsIt )
+        {
+        weight = this->ComputeWeightFromDistanceDirac(
+            weightRegularizationsIt.Get() );
+        weightRegularizationsIt.Set( weight );
+        }
       }
     }
 
@@ -846,7 +864,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
 
 /**
  * Calculates the weighting between the anisotropic diffusive and diffusive
- * regularizations, based on a given distance from a voxel to the border
+ * regularizations, based on a given distance from a voxel to the border, using
+ * exponential decay.
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveSparseRegistrationFilter
@@ -854,9 +873,26 @@ typename AnisotropicDiffusiveSparseRegistrationFilter
 ::WeightComponentType
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeWeightFromDistance( const WeightComponentType distance ) const
+::ComputeWeightFromDistanceExponential( const WeightComponentType distance ) const
 {
-  return exp( m_Lambda * distance );
+  return exp( -1.0 * m_Lambda * distance );
+}
+
+/**
+ * Calculates the weighting between the anisotropic diffusive and diffusive
+ * regularizations, based on a given distance from a voxel to the border, using
+ * a dirac-shaped function
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::WeightComponentType
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeWeightFromDistanceDirac( const WeightComponentType distance ) const
+{
+  return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
+                         * exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**

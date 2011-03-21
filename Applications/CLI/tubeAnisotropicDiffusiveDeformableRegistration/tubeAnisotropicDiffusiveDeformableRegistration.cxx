@@ -609,9 +609,17 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Error checking on lambda
-  if( lambda > 0.0 )
+  if( lambda < 0.0 )
     {
-    tube::ErrorMessage( "Lambda must be negative." );
+    tube::ErrorMessage( "Lambda must be positive." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
+  // Error checking on gamma
+  if( gamma < 0.0 && gamma != -1.0 )
+    {
+    tube::ErrorMessage( "Gamma must be positive." );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -651,10 +659,12 @@ int DoIt( int argc, char * argv[] )
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetLambda( lambda );
+    anisotropicRegistrator->SetGamma( gamma );
     }
   if( sparseAnisotropicRegistrator )
     {
     sparseAnisotropicRegistrator->SetLambda( lambda);
+    sparseAnisotropicRegistrator->SetGamma( gamma );
     }
   registrator->SetMaximumRMSError( maximumRMSError );
   registrator->SetIntensityDistanceWeightings( intensityDistanceWeightings );

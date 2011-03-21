@@ -191,7 +191,6 @@
       <description>Image specifying the the matrices weighting between plane, tube and point-like structures.  This is applicable for sparse sliding organ registration only.  This is in the space of the fixed image.  Optional: allows you to save the weight image when providing an organ boundary surface. On later registrations, you can provide it instead of an organ boundary, so that it doesn't need to be recalculated..</description>
     </image>
   </parameters>
-
   <parameters advanced="true">
     <label>Advanced Parameters</label>
     <description>Advanced parameters</description>
@@ -201,11 +200,21 @@
       <longflag>lambda</longflag>
       <label>Lambda</label>
       <channel>input</channel>
-      <description>Controls the exponential decay used to calculate the weight value as a function of the distance to the closest organ border point.  Must be negative (for exponential decay).</description>
-      <default>-0.1</default>
+      <description>Controls the function used to calculate the weight value as a function of the distance to the closest organ border point.  If gamma = -1, then the function is exponential decay.  Otherwise, the function is a dirac-shaped function.  Must be positive.</description>
+      <default>0.1</default>
       <constraints>
-        <minimum>-10.0</minimum>
-        <maximum>0.0</maximum>
+        <step>0.01</step>
+      </constraints>
+    </double>
+    <double>
+      <name>gamma</name>
+      <flag>g</flag>
+      <longflag>gamma</longflag>
+      <label>Gamma</label>
+      <channel>input</channel>
+      <description>Controls the dirac-shaped function used to calculate the weight value as a function of the distance to the closest organ border point.  Must be positive to use a dirac-shaped function.  If gamma = -1, then an exponential decay using lambda will be used instead (default behavior).</description>
+      <default>-1.0</default>
+      <constraints>
         <step>0.01</step>
       </constraints>
     </double>

@@ -51,8 +51,9 @@ AnisotropicDiffusiveRegistrationFilter
   m_HighResolutionNormalVectorImage             = 0;
   m_HighResolutionWeightImage                   = 0;
 
-  // Lambda for exponential decay used to calculate weight from distance
-  m_Lambda = -0.01;
+  // Lambda/gamma used to calculate weight from distance
+  m_Lambda = 0.01;
+  m_Gamma = -1.0;
 }
 
 /**
@@ -81,6 +82,7 @@ AnisotropicDiffusiveRegistrationFilter
     m_WeightImage->Print( os, indent );
     }
   os << indent << "lambda: " << m_Lambda << std::endl;
+  os << indent << "gamma: " << m_Gamma << std::endl;
   if( m_HighResolutionNormalVectorImage )
     {
     os << indent << "High resolution normal vector image:" << std::endl;
@@ -517,10 +519,22 @@ AnisotropicDiffusiveRegistrationFilter
     WeightType weight = 0;
     WeightImageRegionType weightIt(
         m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-    for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
+    bool useExponential = ( m_Gamma == -1.0 );
+    if( useExponential )
       {
-      weight = this->ComputeWeightFromDistance( weightIt.Get() );
-      weightIt.Set( weight );
+      for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
+        {
+        weight = this->ComputeWeightFromDistanceExponential( weightIt.Get() );
+        weightIt.Set( weight );
+        }
+      }
+    else
+      {
+      for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
+        {
+        weight = this->ComputeWeightFromDistanceDirac( weightIt.Get() );
+        weightIt.Set( weight );
+        }
       }
     }
 
@@ -529,7 +543,8 @@ AnisotropicDiffusiveRegistrationFilter
 
 /**
  * Calculates the weighting between the anisotropic diffusive and diffusive
- * regularizations, based on a given distance from a voxel to the border
+ * regularizations, based on a given distance from a voxel to the border, using
+ * exponential decay.
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFilter
@@ -537,9 +552,26 @@ typename AnisotropicDiffusiveRegistrationFilter
 ::WeightType
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeWeightFromDistance( const WeightType distance ) const
+::ComputeWeightFromDistanceExponential( const WeightType distance ) const
 {
-  return exp( m_Lambda * distance );
+  return exp( -1.0 * m_Lambda * distance );
+}
+
+/**
+ * Calculates the weighting between the anisotropic diffusive and diffusive
+ * regularizations, based on a given distance from a voxel to the border, using
+ * a dirac-shaped function
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::WeightType
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeWeightFromDistanceDirac( const WeightType distance ) const
+{
+  return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
+                         * exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**
