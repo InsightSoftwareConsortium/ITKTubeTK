@@ -165,6 +165,8 @@ public:
   typedef typename
       RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
       DeformationVectorComponentNeighborhoodType;
+  typedef typename DeformationVectorComponentImageType::RegionType
+      ThreadDeformationVectorComponentImageRegionType;
 
   /** Diffusion tensor image types */
   typedef typename RegistrationFunctionType::DiffusionTensorType
@@ -333,7 +335,7 @@ protected:
       const DiffusionTensorImagePointer & tensorImage,
       int term,
       const SpacingType & spacing,
-      const typename OutputImageType::SizeType & radius ) const;
+      const typename OutputImageType::SizeType & radius );
 
   /** Allocate and populate the images of multiplication vectors that the
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
@@ -354,13 +356,34 @@ protected:
   virtual void ComputeDeformationComponentDerivativeImages();
 
   /** Helper to compute the first- and second-order partial derivatives of the
-   *  deformation component images */
+   *  deformation component images, using the
+   *  ThreadedComputeDeformationComponentDerivativeImageHelper() method and a
+   *  multithreading mechanism.
+   *  \sa ThreadedComputeDeformationComponentDerivativeImageHelper */
   virtual void ComputeDeformationComponentDerivativeImageHelper(
-      const DeformationVectorComponentImagePointer & deformationComponentImage,
+      DeformationVectorComponentImagePointer & deformationComponentImage,
       int term,
       int dimension,
-      const SpacingType & spacing,
-      const typename OutputImageType::SizeType & radius ) const;
+      SpacingType & spacing,
+      typename OutputImageType::SizeType & radius );
+
+  /** Does the actual work of computing the first- and second-order partial
+   *  derivatives of the deformation component images over regions supplied
+   *  by the multithreading mechanism.
+   *  \sa ComputeDeformationComponentDerivativeImageHelper
+   *  \sa ComputeDeformationComponentDerivativeImageHelperThreadedCallback */
+   virtual void ThreadedComputeDeformationComponentDerivativeImageHelper(
+       const DeformationVectorComponentImagePointer & deformationComponentImage,
+       const ThreadDeformationVectorComponentImageRegionType
+         & deformationVectorComponenntRegionToProcess,
+       const ThreadScalarDerivativeImageRegionType
+         & scalarDerivativeRegionToProcess,
+       const ThreadTensorDerivativeImageRegionType
+         & tensorDerivativeRegionToProcess,
+       int term,
+       int dimension,
+       const SpacingType & spacing,
+       const typename OutputImageType::SizeType & radius ) const;
 
   /** Get a diffusion tensor image */
   DiffusionTensorImageType * GetDiffusionTensorImage( int index ) const
@@ -555,6 +578,19 @@ private:
     bool *ValidTimeStepList;
     };
 
+  /** Structure for passing information into static callback methods.  Used in
+   *  the threading mechanism for
+   *  ComputeDeformationComponentDerivativeImageHelper. */
+  struct ComputeDeformationComponentDerivativeImageHelperThreadStruct
+    {
+    DiffusiveRegistrationFilter * Filter;
+    DeformationVectorComponentImagePointer DeformationComponentImage;
+    int Term;
+    int Dimension;
+    SpacingType Spacing;
+    typename OutputImageType::SizeType Radius;
+    };
+
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
   static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
@@ -562,6 +598,13 @@ private:
   /** This callback method uses SplitUpdateContainer to acquire a region
   * which it then passes to ThreadedCalculateChange for processing. */
   static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
+
+  /** This callback method uses SplitUpdateContainer to acquire a region which
+  * it then passes to ThreadedComputeDeformationComponentDerivativeImageHelper
+  * for processing. */
+  static ITK_THREAD_RETURN_TYPE
+      ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
+          void *arg );
 
   /** The buffer that holds the updates for an iteration of algorithm. */
   typename UpdateBufferType::Pointer  m_UpdateBuffer;

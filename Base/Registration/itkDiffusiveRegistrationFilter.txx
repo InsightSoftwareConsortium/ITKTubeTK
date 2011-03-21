@@ -624,7 +624,7 @@ DiffusiveRegistrationFilter
     const DiffusionTensorImagePointer & tensorImage,
     int term,
     const SpacingType & spacing,
-    const typename OutputImageType::SizeType & radius ) const
+    const typename OutputImageType::SizeType & radius )
 {
   assert( tensorImage );
 
@@ -712,7 +712,7 @@ DiffusiveRegistrationFilter
   // Get the spacing and the radius
   SpacingType spacing = this->GetOutput()->GetSpacing();
   const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-  const typename OutputImageType::SizeType radius = df->GetRadius();
+  typename OutputImageType::SizeType radius = df->GetRadius();
 
   // By default, calculate the derivatives for each of the deformation
   // components
@@ -740,14 +740,111 @@ void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDeformationComponentDerivativeImageHelper(
+    DeformationVectorComponentImagePointer & deformationComponentImage,
+    int term,
+    int dimension,
+    SpacingType & spacing,
+    typename OutputImageType::SizeType & radius )
+{
+  assert( deformationComponentImage );
+
+  // Set up for multithreaded processing.
+  ComputeDeformationComponentDerivativeImageHelperThreadStruct str;
+  str.Filter = this;
+  str.DeformationComponentImage = deformationComponentImage;
+  str.Term = term;
+  str.Dimension = dimension;
+  str.Spacing = spacing;
+  str.Radius = radius;
+
+  // Multithread the execution
+  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetSingleMethod(
+      this->ComputeDeformationComponentDerivativeImageHelperThreaderCallback,
+      & str );
+  this->GetMultiThreader()->SingleMethodExecute();
+
+  // Explicitly call Modified on the first- and second-order partial derviative
+  // image affected here, since
+  // ThreadedComputeDeformationComponentDerivativeImageHelper changes them
+  // through iterators which do not increment their timestamp
+  m_DeformationComponentFirstOrderDerivativeArrays[term][dimension]->Modified();
+  m_DeformationComponentSecondOrderDerivativeArrays[term][dimension]
+      ->Modified();
+}
+
+/**
+ * Calls ThreadedComputeDeformationComponentDerivativeImageHelper for processing
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+ITK_THREAD_RETURN_TYPE
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDeformationComponentDerivativeImageHelperThreaderCallback( void *arg )
+{
+  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+
+  ComputeDeformationComponentDerivativeImageHelperThreadStruct * str
+      = (ComputeDeformationComponentDerivativeImageHelperThreadStruct *)
+            (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+
+  // Execute the actual method with appropriate output region
+  // first find out how many pieces extent can be split into.
+  // Using the SplitRequestedRegion method from itk::ImageSource.
+  ThreadDeformationVectorComponentImageRegionType
+      splitDeformationVectorComponentRegion;
+  int total = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitDeformationVectorComponentRegion );
+
+  ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
+  int scalarTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitScalarDerivativeRegion );
+
+  ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
+  int tensorTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitTensorDerivativeRegion );
+
+  // Make sure we could split all of the images equally
+  assert( total == scalarTotal );
+  assert( total == tensorTotal );
+
+  if( threadId < total )
+    {
+    str->Filter->ThreadedComputeDeformationComponentDerivativeImageHelper(
+        str->DeformationComponentImage,
+        splitDeformationVectorComponentRegion,
+        splitScalarDerivativeRegion,
+        splitTensorDerivativeRegion,
+        str->Term,
+        str->Dimension,
+        str->Spacing,
+        str->Radius );
+    }
+
+  return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Does the actual work of computing the deformation component image derivatives
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ThreadedComputeDeformationComponentDerivativeImageHelper(
     const DeformationVectorComponentImagePointer & deformationComponentImage,
+    const ThreadDeformationVectorComponentImageRegionType
+      & deformationVectorComponentRegionToProcess,
+    const ThreadScalarDerivativeImageRegionType
+      & scalarDerivativeRegionToProcess,
+    const ThreadTensorDerivativeImageRegionType
+      & tensorDerivativeRegionToProcess,
     int term,
     int dimension,
     const SpacingType & spacing,
     const typename OutputImageType::SizeType & radius ) const
 {
-  assert( deformationComponentImage );
-
   ScalarDerivativeImagePointer firstOrderDerivativeImage
       = m_DeformationComponentFirstOrderDerivativeArrays[term][dimension];
   assert( firstOrderDerivativeImage );
@@ -767,20 +864,16 @@ DiffusiveRegistrationFilter
   FaceStruct< DeformationVectorComponentImagePointer >
       deformationComponentStruct (
           deformationComponentImage,
-          deformationComponentImage->GetLargestPossibleRegion(),
+          deformationVectorComponentRegionToProcess,
           radius );
   DeformationVectorComponentNeighborhoodType deformationComponentNeighborhood;
 
   FaceStruct< ScalarDerivativeImagePointer > firstOrderStruct (
-      firstOrderDerivativeImage,
-      firstOrderDerivativeImage->GetLargestPossibleRegion(),
-      radius );
+      firstOrderDerivativeImage, scalarDerivativeRegionToProcess, radius );
   ScalarDerivativeImageRegionType firstOrderRegion;
 
   FaceStruct< TensorDerivativeImagePointer > secondOrderStruct (
-      secondOrderDerivativeImage,
-      secondOrderDerivativeImage->GetLargestPossibleRegion(),
-      radius );
+      secondOrderDerivativeImage, tensorDerivativeRegionToProcess, radius );
   TensorDerivativeImageRegionType secondOrderRegion;
 
   for( deformationComponentStruct.GoToBegin(), firstOrderStruct.GoToBegin(),
