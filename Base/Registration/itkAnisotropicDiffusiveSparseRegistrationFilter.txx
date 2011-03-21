@@ -1204,7 +1204,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // Get the spacing and the radius
   SpacingType spacing = this->GetOutput()->GetSpacing();
   const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-  const typename OutputImageType::SizeType radius = df->GetRadius();
+  typename OutputImageType::SizeType radius = df->GetRadius();
 
   // Calculate first and second order deformation component image derivatives.
   // The two TANGENTIAL and two NORMAL components share images.  We will
