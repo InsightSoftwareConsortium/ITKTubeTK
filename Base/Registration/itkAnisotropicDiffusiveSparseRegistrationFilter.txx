@@ -57,8 +57,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
   m_HighResolutionWeightRegularizationsImage    = 0;
 
   // Lambda/gamma used to calculate weight from distance
-  m_Lambda = 0.01;
-  m_Gamma = -1.0;
+  m_Lambda  = 0.01;
+  m_Gamma   = -1.0;
 }
 
 /**
@@ -115,8 +115,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
   if( m_HighResolutionWeightRegularizationsImage )
     {
-    os << indent << "High resolution weight regularizations image:"
-        << std::endl;
+    os << indent << "High resolution weight regularizations image:" << std::endl;
     m_HighResolutionWeightRegularizationsImage->Print( os, indent );
     }
 }

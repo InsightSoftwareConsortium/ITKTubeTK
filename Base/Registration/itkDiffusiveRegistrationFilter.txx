@@ -51,9 +51,9 @@ DiffusiveRegistrationFilter
   // Create the registration function
   this->CreateRegistrationFunction();
 
-  m_HighResolutionTemplate                      = 0;
+  m_HighResolutionTemplate  = 0;
 
-  m_CurrentLevel                                = 0;
+  m_CurrentLevel            = 0;
   m_IntensityDistanceWeightings.push_back( 1.0 );
   m_RegularizationWeightings.push_back( 1.0 );
 }
