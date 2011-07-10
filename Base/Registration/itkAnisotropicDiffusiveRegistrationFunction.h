@@ -273,8 +273,8 @@ public:
     { return m_IntensityDistanceFunction.GetPointer(); }
 
   /** Get the RMS change in the deformation field. */
-  virtual double GetRMSChange() const
-    { return m_RMSChange; }
+  virtual double GetRMSTotalChange() const
+    { return m_RMSTotalChange; }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();
@@ -290,7 +290,7 @@ protected:
     {
     void *                              m_RegularizationGlobalDataStruct;
     void *                              m_IntensityDistanceGlobalDataStruct;
-    double                              m_SumOfSquaredChange;
+    double                              m_SumOfSquaredTotalChange;
     unsigned long                       m_NumberOfPixelsProcessed;
     };
 
@@ -317,10 +317,10 @@ private:
   double                                m_IntensityDistanceWeighting;
   double                                m_RegularizationWeighting;
 
-  /** Used to calculate the RMS change */
-  mutable double                        m_SumOfSquaredChange;
+  /** Used to calculate the total RMS change */
   mutable unsigned long                 m_NumberOfPixelsProcessed;
-  mutable double                        m_RMSChange;
+  mutable double                        m_SumOfSquaredTotalChange;
+  mutable double                        m_RMSTotalChange;
 };
 
 } // end namespace itk

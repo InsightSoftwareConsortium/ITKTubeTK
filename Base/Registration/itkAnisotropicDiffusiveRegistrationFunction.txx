@@ -53,9 +53,9 @@ AnisotropicDiffusiveRegistrationFunction
   m_IntensityDistanceWeighting = 1.0;
   m_RegularizationWeighting = 1.0;
 
-  m_SumOfSquaredChange = 0.0;
+  m_SumOfSquaredTotalChange = 0.0;
   m_NumberOfPixelsProcessed = 0L;
-  m_RMSChange = 0.0;
+  m_RMSTotalChange = 0.0;
 }
 
 /**
@@ -88,11 +88,11 @@ AnisotropicDiffusiveRegistrationFunction
     os << indent << "Intensity distance function: " << std::endl;
     m_IntensityDistanceFunction->Print( os, indent );
     }
-  os << indent << "Sum of squared change: " << m_SumOfSquaredChange
-      << std::endl;
   os << indent << "Number of pixels processed: " << m_NumberOfPixelsProcessed
       << std::endl;
-  os << indent << "RMS change: " << m_RMSChange << std::endl;
+  os << indent << "Sum of squared total change: " << m_SumOfSquaredTotalChange
+      << std::endl;
+  os << indent << "RMS total change: " << m_RMSTotalChange << std::endl;
 }
 
 /**
@@ -118,7 +118,7 @@ AnisotropicDiffusiveRegistrationFunction
         = m_IntensityDistanceFunction->GetGlobalDataPointer();
     }
 
-  ans->m_SumOfSquaredChange = 0;
+  ans->m_SumOfSquaredTotalChange = 0;
   ans->m_NumberOfPixelsProcessed = 0L;
 
   return ans;
@@ -148,12 +148,12 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   // Update the variables used to calculate RMS change
-  m_SumOfSquaredChange += gd->m_SumOfSquaredChange;
+  m_SumOfSquaredTotalChange += gd->m_SumOfSquaredTotalChange;
   m_NumberOfPixelsProcessed += gd->m_NumberOfPixelsProcessed;
   if( m_NumberOfPixelsProcessed )
     {
-    m_RMSChange
-    = vcl_sqrt( m_SumOfSquaredChange
+    m_RMSTotalChange
+        = vcl_sqrt( m_SumOfSquaredTotalChange
                     / static_cast< double >( m_NumberOfPixelsProcessed ) );
     }
 
@@ -191,7 +191,7 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   // initialize RMS calculation variables
-  m_SumOfSquaredChange = 0.0;
+  m_SumOfSquaredTotalChange = 0.0;
   m_NumberOfPixelsProcessed = 0L;
 }
 
@@ -303,17 +303,20 @@ AnisotropicDiffusiveRegistrationFunction
       }
     }
 
+  // Weight the intensity and regularization terms
+  intensityDistanceTerm *= m_IntensityDistanceWeighting;
+  regularizationTerm *= m_RegularizationWeighting;
+
   // Compute the final update term
   PixelType updateTerm;
   updateTerm.Fill(0);
-  updateTerm = ( m_IntensityDistanceWeighting * intensityDistanceTerm )
-               + ( m_RegularizationWeighting * regularizationTerm );
+  updateTerm = intensityDistanceTerm + regularizationTerm;
 
   // Update the variables used to calculate RMS change
   gd->m_NumberOfPixelsProcessed += 1;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    gd->m_SumOfSquaredChange += vnl_math_sqr( updateTerm[i] );
+    gd->m_SumOfSquaredTotalChange += vnl_math_sqr( updateTerm[i] );
     }
 
   return updateTerm;
