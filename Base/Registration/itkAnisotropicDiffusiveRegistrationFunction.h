@@ -273,11 +273,11 @@ public:
     { return m_IntensityDistanceFunction.GetPointer(); }
 
   /** Get the RMS changes in the deformation field. */
-  virtual double GetRMSTotalChange() const
+  double GetRMSTotalChange() const
     { return m_RMSTotalChange; }
-  virtual double GetRMSIntensityDistanceChange() const
+  double GetRMSIntensityDistanceChange() const
     { return m_RMSIntensityDistanceChange; }
-  virtual double GetRMSRegularizationChange() const
+  double GetRMSRegularizationChange() const
     { return m_RMSRegularizationChange; };
 
 protected:
