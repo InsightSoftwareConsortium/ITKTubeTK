@@ -1268,8 +1268,7 @@ DiffusiveRegistrationFilter
     {
     std::cout << "Iteration; Time Step; Total Time; "
               << "RMS Total Change; RMS Intensity Change; "
-              << "RMS Regularization Change; "
-              << "Total Energy"
+              << "RMS Regularization Change "
               << std::endl;
     }
   totalTime += timestep;
@@ -1281,7 +1280,7 @@ DiffusiveRegistrationFilter
             << rmsTotalChange << "\t"
             << df->GetRMSIntensityDistanceChange() << "\t"
             << df->GetRMSRegularizationChange() << "\t"
-            << df->GetEnergy() << std::endl;
+            << std::endl;
 }
 
 /**
