@@ -53,9 +53,13 @@ AnisotropicDiffusiveRegistrationFunction
   m_IntensityDistanceWeighting = 1.0;
   m_RegularizationWeighting = 1.0;
 
-  m_SumOfSquaredTotalChange = 0.0;
   m_NumberOfPixelsProcessed = 0L;
+  m_SumOfSquaredTotalChange = 0.0;
+  m_SumOfSquaredIntensityDistanceChange = 0.0;
+  m_SumOfSquaredRegularizationChange = 0.0;
   m_RMSTotalChange = 0.0;
+  m_RMSIntensityDistanceChange = 0.0;
+  m_RMSRegularizationChange = 0.0;
 }
 
 /**
@@ -75,9 +79,9 @@ AnisotropicDiffusiveRegistrationFunction
   os << indent << "Compute intensity distance term: "
      << ( m_ComputeIntensityDistanceTerm ? "on" : "off" ) << std::endl;
   os << indent << "Intensity distance weighting: "
-      << m_IntensityDistanceWeighting << std::endl;
+     << m_IntensityDistanceWeighting << std::endl;
   os << indent << "Regularization weighting: " << m_RegularizationWeighting
-      << std::endl;
+     << std::endl;
   if ( m_RegularizationFunction )
     {
     os << indent << "Regularization function: " << std::endl;
@@ -89,10 +93,18 @@ AnisotropicDiffusiveRegistrationFunction
     m_IntensityDistanceFunction->Print( os, indent );
     }
   os << indent << "Number of pixels processed: " << m_NumberOfPixelsProcessed
-      << std::endl;
+     << std::endl;
   os << indent << "Sum of squared total change: " << m_SumOfSquaredTotalChange
-      << std::endl;
+     << std::endl;
   os << indent << "RMS total change: " << m_RMSTotalChange << std::endl;
+  os << indent << "Sum of squared intensity distance change: "
+     << m_SumOfSquaredIntensityDistanceChange << std::endl;
+  os << indent << "RMS intensity distance change: "
+     << m_RMSIntensityDistanceChange << std::endl;
+  os << indent << "Sum of squared regularization change: "
+     << m_SumOfSquaredRegularizationChange << std::endl;
+  os << indent << "RMS regularization change: " << m_RMSRegularizationChange
+     << std::endl;
 }
 
 /**
@@ -119,6 +131,8 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   ans->m_SumOfSquaredTotalChange = 0;
+  ans->m_SumOfSquaredIntensityDistanceChange = 0;
+  ans->m_SumOfSquaredRegularizationChange = 0;
   ans->m_NumberOfPixelsProcessed = 0L;
 
   return ans;
@@ -149,11 +163,20 @@ AnisotropicDiffusiveRegistrationFunction
 
   // Update the variables used to calculate RMS change
   m_SumOfSquaredTotalChange += gd->m_SumOfSquaredTotalChange;
+  m_SumOfSquaredIntensityDistanceChange
+      += gd->m_SumOfSquaredIntensityDistanceChange;
+  m_SumOfSquaredRegularizationChange += gd->m_SumOfSquaredRegularizationChange;
   m_NumberOfPixelsProcessed += gd->m_NumberOfPixelsProcessed;
   if( m_NumberOfPixelsProcessed )
     {
     m_RMSTotalChange
         = vcl_sqrt( m_SumOfSquaredTotalChange
+                    / static_cast< double >( m_NumberOfPixelsProcessed ) );
+    m_RMSIntensityDistanceChange
+        = vcl_sqrt( m_SumOfSquaredIntensityDistanceChange
+                    / static_cast< double >( m_NumberOfPixelsProcessed ) );
+    m_RMSRegularizationChange
+        = vcl_sqrt( m_SumOfSquaredRegularizationChange
                     / static_cast< double >( m_NumberOfPixelsProcessed ) );
     }
 
@@ -190,8 +213,10 @@ AnisotropicDiffusiveRegistrationFunction
     m_RegularizationFunction->InitializeIteration();
     }
 
-  // initialize RMS calculation variables
+  // Initialize RMS calculation variables
   m_SumOfSquaredTotalChange = 0.0;
+  m_SumOfSquaredIntensityDistanceChange = 0.0;
+  m_SumOfSquaredRegularizationChange = 0.0;
   m_NumberOfPixelsProcessed = 0L;
 }
 
@@ -317,6 +342,10 @@ AnisotropicDiffusiveRegistrationFunction
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     gd->m_SumOfSquaredTotalChange += vnl_math_sqr( updateTerm[i] );
+    gd->m_SumOfSquaredIntensityDistanceChange
+        += vnl_math_sqr( intensityDistanceTerm[i] );
+    gd->m_SumOfSquaredRegularizationChange
+        += vnl_math_sqr( regularizationTerm[i] );
     }
 
   return updateTerm;

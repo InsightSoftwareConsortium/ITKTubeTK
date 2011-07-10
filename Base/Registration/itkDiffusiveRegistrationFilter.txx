@@ -1266,7 +1266,10 @@ DiffusiveRegistrationFilter
   static TimeStepType totalTime = 0.0;
   if( this->GetElapsedIterations() == 0 )
     {
-    std::cout << "Iteration;\tTime Step;\tTotal Time;\tRMS Change;\tEnergy"
+    std::cout << "Iteration; Time Step; Total Time; "
+              << "RMS Total Change; RMS Intensity Change; "
+              << "RMS Regularization Change; "
+              << "Total Energy"
               << std::endl;
     }
   totalTime += timestep;
@@ -1276,6 +1279,8 @@ DiffusiveRegistrationFilter
             << timestep << "\t"
             << totalTime << "\t"
             << rmsTotalChange << "\t"
+            << df->GetRMSIntensityDistanceChange() << "\t"
+            << df->GetRMSRegularizationChange() << "\t"
             << df->GetEnergy() << std::endl;
 }
 
