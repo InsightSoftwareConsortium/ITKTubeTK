@@ -162,6 +162,7 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   // Update the variables used to calculate RMS change
+  m_MetricCalculationLock.Lock();
   m_SumOfSquaredTotalChange += gd->m_SumOfSquaredTotalChange;
   m_SumOfSquaredIntensityDistanceChange
       += gd->m_SumOfSquaredIntensityDistanceChange;
@@ -179,6 +180,7 @@ AnisotropicDiffusiveRegistrationFunction
         = vcl_sqrt( m_SumOfSquaredRegularizationChange
                     / static_cast< double >( m_NumberOfPixelsProcessed ) );
     }
+  m_MetricCalculationLock.Unlock();
 
   delete gd;
 }

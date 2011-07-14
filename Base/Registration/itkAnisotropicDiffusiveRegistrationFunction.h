@@ -331,6 +331,9 @@ private:
   mutable double                        m_RMSTotalChange;
   mutable double                        m_RMSIntensityDistanceChange;
   mutable double                        m_RMSRegularizationChange;
+
+  /** Mutex lock to protect modifications to metric values. */
+  mutable itk::SimpleFastMutexLock      m_MetricCalculationLock;
 };
 
 } // end namespace itk
