@@ -1258,29 +1258,95 @@ DiffusiveRegistrationFilter
 
   RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
   assert( df );
+
+  // Keep track of the total registration time
   TimeStepType timestep = df->GetTimeStep();
+  static TimeStepType totalTime = 0.0;
+  totalTime += timestep;
+
+  // Keep track of the RMS changes
+  double rmsIntensityDistanceChange = df->GetRMSIntensityDistanceChange();
+  double rmsRegularizationChange = df->GetRMSRegularizationChange();
   double rmsTotalChange = df->GetRMSTotalChange();
   this->SetRMSChange( rmsTotalChange );
 
+  // Keep track of the registration RMS change and energies over time
+  static double previousIntensityDistanceEnergy = 0.0;
+  static double previousRegularizationEnergy = 0.0;
+  static double previousTotalEnergy = 0.0;
+  static double previousRMSIntensityDistanceChange = 0.0;
+  static double previousRMSRegularizationChange = 0.0;
+  static double previousRMSTotalChange = 0.0;
+
+  // Keep track of the registration energies
+  double intensityDistanceEnergy = 0.0;
+  double regularizationEnergy = 0.0;
+  if( this->GetComputeIntensityDistanceTerm() )
+    {
+    intensityDistanceEnergy = df->GetWeightedIntensityDistanceEnergy();
+    }
+  if( this->GetComputeRegularizationTerm() )
+    {
+    regularizationEnergy = df->GetWeightedRegularizationEnergy();
+    }
+  double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
+
+  double totalEnergyChange
+      = totalEnergy - previousTotalEnergy;
+  double intensityDistanceEnergyChange
+      = intensityDistanceEnergy - previousIntensityDistanceEnergy;
+  double regularizationEnergyChange
+      = regularizationEnergy - previousRegularizationEnergy;
+
+  double rmsTotalChangeChange
+      = rmsTotalChange - previousRMSTotalChange;
+  double rmsIntensityDistanceChangeChange
+      = rmsIntensityDistanceChange - previousRMSIntensityDistanceChange;
+  double rmsRegularizationChangeChange
+      = rmsRegularizationChange - previousRMSRegularizationChange;
+
   // Print out logging information
-  static TimeStepType totalTime = 0.0;
+  std::string delimiter = ", ";
+  std::string sectionDelimiter = " | ";
   if( this->GetElapsedIterations() == 0 )
     {
-    std::cout << "Iteration; Time Step; Total Time; "
-              << "RMS Total Change; RMS Intensity Change; "
-              << "RMS Regularization Change "
+    std::cout << "All registration metric sections in the order "
+              << "TOTAL, INTENSITY, REGULARIZATION" << std::endl;
+    std::cout << "Iteration" << delimiter
+              << "Time Step" << delimiter
+              << "Total Time" << sectionDelimiter
+              << "RMS Change" << sectionDelimiter
+              << "RMS Change Change" << sectionDelimiter
+              << "Energy" << sectionDelimiter
+              << "Energy Change"
               << std::endl;
     }
-  totalTime += timestep;
   std::cout.setf(std::ios::fixed, std::ios::floatfield);
   std::cout.precision(6);
-  std::cout << this->GetElapsedIterations() << "\t"
-            << timestep << "\t"
-            << totalTime << "\t"
-            << rmsTotalChange << "\t"
-            << df->GetRMSIntensityDistanceChange() << "\t"
-            << df->GetRMSRegularizationChange() << "\t"
+  std::cout << this->GetElapsedIterations() << delimiter
+            << timestep << delimiter
+            << totalTime << sectionDelimiter
+            << rmsTotalChange << delimiter
+            << rmsIntensityDistanceChange << delimiter
+            << rmsRegularizationChange << sectionDelimiter
+            << rmsTotalChangeChange << delimiter
+            << rmsIntensityDistanceChangeChange << delimiter
+            << rmsRegularizationChangeChange << sectionDelimiter
+            << totalEnergy << delimiter
+            << intensityDistanceEnergy << delimiter
+            << regularizationEnergy << sectionDelimiter
+            << totalEnergyChange << delimiter
+            << intensityDistanceEnergyChange << delimiter
+            << regularizationEnergyChange
             << std::endl;
+
+  previousTotalEnergy = totalEnergy;
+  previousIntensityDistanceEnergy = intensityDistanceEnergy;
+  previousRegularizationEnergy = regularizationEnergy;
+
+  previousRMSTotalChange = rmsTotalChange;
+  previousRMSIntensityDistanceChange = rmsIntensityDistanceChange;
+  previousRMSRegularizationChange = rmsRegularizationChange;
 }
 
 /**

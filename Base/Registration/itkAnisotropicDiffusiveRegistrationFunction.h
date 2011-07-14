@@ -280,6 +280,14 @@ public:
   double GetRMSRegularizationChange() const
     { return m_RMSRegularizationChange; };
 
+  /** Get the intensity distance and regularization energies, weighted by
+   *  the specified weightings. */
+  double GetWeightedIntensityDistanceEnergy() const
+    { return m_IntensityDistanceWeighting
+        * this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
+  double GetWeightedRegularizationEnergy() const
+    { return m_RegularizationWeighting * m_RegularizationEnergy; }
+
 protected:
   AnisotropicDiffusiveRegistrationFunction();
   virtual ~AnisotropicDiffusiveRegistrationFunction() {}
@@ -332,8 +340,12 @@ private:
   mutable double                        m_RMSIntensityDistanceChange;
   mutable double                        m_RMSRegularizationChange;
 
-  /** Mutex lock to protect modifications to metric values. */
+  /** Used to calculate the regularization energy. */
+  mutable double                        m_RegularizationEnergy;
+
+  /** Mutex locks to protect modifications to metric values. */
   mutable itk::SimpleFastMutexLock      m_MetricCalculationLock;
+  mutable itk::SimpleFastMutexLock      m_EnergyCalculationLock;
 };
 
 } // end namespace itk

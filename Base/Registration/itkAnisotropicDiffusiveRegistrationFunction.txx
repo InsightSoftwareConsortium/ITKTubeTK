@@ -60,6 +60,7 @@ AnisotropicDiffusiveRegistrationFunction
   m_RMSTotalChange = 0.0;
   m_RMSIntensityDistanceChange = 0.0;
   m_RMSRegularizationChange = 0.0;
+  m_RegularizationEnergy = 0.0;
 }
 
 /**
@@ -220,6 +221,7 @@ AnisotropicDiffusiveRegistrationFunction
   m_SumOfSquaredIntensityDistanceChange = 0.0;
   m_SumOfSquaredRegularizationChange = 0.0;
   m_NumberOfPixelsProcessed = 0L;
+  m_RegularizationEnergy = 0.0;
 }
 
 /**
@@ -278,6 +280,15 @@ AnisotropicDiffusiveRegistrationFunction
         neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
     }
 
+  // Setup for computing the regularization energy at this voxel
+  // Since we are iterating over terms before iterating over x,y,z
+  // we need to store the sum for each dimension
+  std::vector< DeformationVectorType > termRegularizationEnergies;
+  for ( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    termRegularizationEnergies.push_back( DeformationVectorType(0.0) );
+    }
+
   // Compute the motion field regularization update term
   PixelType regularizationTerm;
   regularizationTerm.Fill(0);
@@ -326,6 +337,23 @@ AnisotropicDiffusiveRegistrationFunction
           intermediateVector[i] = intermediateComponent;
           }
         regularizationTerm += intermediateVector;
+
+        // Compute this part of the regularization energy
+        DiffusionTensorType diffusionTensor
+            = tensorNeighborhoods[term].GetCenterPixel();
+        ScalarDerivativeType deformationComponentFirstOrderDerivative
+            = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
+        itk::Vector< double, ImageDimension > multVector(0.0);
+        for( int row = 0; row < ImageDimension; row++ )
+          {
+          for( int col = 0; col < ImageDimension; col++ )
+            {
+            multVector[row]
+                += diffusionTensor(row,col) * deformationComponentFirstOrderDerivative[col];
+            }
+          }
+
+        termRegularizationEnergies[i] += multVector;
         }
       }
     }
@@ -338,6 +366,15 @@ AnisotropicDiffusiveRegistrationFunction
   PixelType updateTerm;
   updateTerm.Fill(0);
   updateTerm = intensityDistanceTerm + regularizationTerm;
+
+  // Finish computing the regularization energies
+  m_EnergyCalculationLock.Lock();
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    m_RegularizationEnergy +=
+        0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
+    }
+  m_EnergyCalculationLock.Unlock();
 
   // Update the variables used to calculate RMS change
   gd->m_NumberOfPixelsProcessed += 1;
