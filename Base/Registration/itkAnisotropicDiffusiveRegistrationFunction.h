@@ -273,13 +273,19 @@ public:
       const
     { return m_IntensityDistanceFunction.GetPointer(); }
 
-  /** Get the RMS changes in the deformation field. */
+  /** Get the RMS and mean changes in the deformation field. */
   double GetRMSTotalChange() const
     { return m_RMSTotalChange; }
   double GetRMSIntensityDistanceChange() const
     { return m_RMSIntensityDistanceChange; }
   double GetRMSRegularizationChange() const
     { return m_RMSRegularizationChange; };
+  double GetMeanTotalChange() const
+    { return m_MeanTotalChange; }
+  double GetMeanIntensityDistanceChange() const
+    { return m_MeanIntensityDistanceChange; }
+  double GetMeanRegularizationChange() const
+    { return m_MeanRegularizationChange; }
 
   /** Get the intensity distance and regularization energies, weighted by
    *  the specified weightings. */
@@ -306,6 +312,9 @@ protected:
     double                              m_SumOfSquaredTotalChange;
     double                              m_SumOfSquaredIntensityDistanceChange;
     double                              m_SumOfSquaredRegularizationChange;
+    double                              m_SumOfTotalChange;
+    double                              m_SumOfIntensityDistanceChange;
+    double                              m_SumOfRegularizationChange;
     unsigned long                       m_NumberOfPixelsProcessed;
     };
 
@@ -340,6 +349,12 @@ private:
   mutable double                        m_RMSTotalChange;
   mutable double                        m_RMSIntensityDistanceChange;
   mutable double                        m_RMSRegularizationChange;
+  mutable double                        m_SumOfTotalChange;
+  mutable double                        m_SumOfIntensityDistanceChange;
+  mutable double                        m_SumOfRegularizationChange;
+  mutable double                        m_MeanTotalChange;
+  mutable double                        m_MeanIntensityDistanceChange;
+  mutable double                        m_MeanRegularizationChange;
 
   /** Used to calculate the regularization energy. */
   mutable double                        m_RegularizationEnergy;

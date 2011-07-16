@@ -1353,13 +1353,21 @@ DiffusiveRegistrationFilter
   double rmsTotalChange = df->GetRMSTotalChange();
   this->SetRMSChange( rmsTotalChange );
 
-  // Keep track of the registration RMS change and energies over time
+  // Keep track of the mean changes
+  double meanIntensityDistanceChange = df->GetMeanIntensityDistanceChange();
+  double meanRegularizationChange = df->GetMeanRegularizationChange();
+  double meanTotalChange = df->GetMeanTotalChange();
+
+  // Keep track of the registration RMS changes and energies over time
   static double previousIntensityDistanceEnergy = 0.0;
   static double previousRegularizationEnergy = 0.0;
   static double previousTotalEnergy = 0.0;
   static double previousRMSIntensityDistanceChange = 0.0;
   static double previousRMSRegularizationChange = 0.0;
   static double previousRMSTotalChange = 0.0;
+  static double previousMeanIntensityDistanceChange = 0.0;
+  static double previousMeanRegularizationChange = 0.0;
+  static double previousMeanTotalChange = 0.0;
 
   // Keep track of the registration energies
   double intensityDistanceEnergy = 0.0;
@@ -1388,6 +1396,13 @@ DiffusiveRegistrationFilter
   double rmsRegularizationChangeChange
       = rmsRegularizationChange - previousRMSRegularizationChange;
 
+  double meanTotalChangeChange
+      = meanTotalChange - previousMeanTotalChange;
+  double meanIntensityDistanceChangeChange
+      = meanIntensityDistanceChange - previousMeanIntensityDistanceChange;
+  double meanRegularizationChangeChange
+      = meanRegularizationChange - previousMeanRegularizationChange;
+
   // Print out logging information
   std::string delimiter = ", ";
   std::string sectionDelimiter = " | ";
@@ -1400,6 +1415,8 @@ DiffusiveRegistrationFilter
               << "Total Time" << sectionDelimiter
               << "RMS Change" << sectionDelimiter
               << "RMS Change Change" << sectionDelimiter
+              << "Mean Change " << sectionDelimiter
+              << "Mean Change Change" << sectionDelimiter
               << "Energy" << sectionDelimiter
               << "Energy Change"
               << std::endl;
@@ -1409,15 +1426,27 @@ DiffusiveRegistrationFilter
   std::cout << this->GetElapsedIterations() << delimiter
             << timestep << delimiter
             << totalTime << sectionDelimiter
+
             << rmsTotalChange << delimiter
             << rmsIntensityDistanceChange << delimiter
             << rmsRegularizationChange << sectionDelimiter
+
             << rmsTotalChangeChange << delimiter
             << rmsIntensityDistanceChangeChange << delimiter
             << rmsRegularizationChangeChange << sectionDelimiter
+
+            << meanTotalChange << delimiter
+            << meanIntensityDistanceChange << delimiter
+            << meanRegularizationChange << sectionDelimiter
+
+            << meanTotalChangeChange << delimiter
+            << meanIntensityDistanceChangeChange << delimiter
+            << meanRegularizationChangeChange << sectionDelimiter
+
             << totalEnergy << delimiter
             << intensityDistanceEnergy << delimiter
             << regularizationEnergy << sectionDelimiter
+
             << totalEnergyChange << delimiter
             << intensityDistanceEnergyChange << delimiter
             << regularizationEnergyChange
@@ -1430,6 +1459,10 @@ DiffusiveRegistrationFilter
   previousRMSTotalChange = rmsTotalChange;
   previousRMSIntensityDistanceChange = rmsIntensityDistanceChange;
   previousRMSRegularizationChange = rmsRegularizationChange;
+
+  previousMeanTotalChange = meanTotalChange;
+  previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
+  previousMeanRegularizationChange = meanRegularizationChange;
 }
 
 /**
