@@ -23,5 +23,5 @@
 
 add_subdirectory( CLI )
 add_subdirectory( ImageMath )
-
 add_subdirectory( MetaImageImporter )
+add_subdirectory( DICOMSeriesConverter )
