@@ -25,6 +25,13 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
+#include "itkGroupSpatialObject.h"
+#include "itkVesselTubeSpatialObject.h"
+#include "vtkSmartPointer.h"
+class vtkFloatArray;
+class vtkPointLocator;
+class vtkPolyData;
+
 namespace itk
 {
 
@@ -141,11 +148,15 @@ public:
    *  stored in a matrix.  If the normals are based on the structure tensor,
    *  then the matrix will be symmetric, but we won't enforce that. */
   typedef double NormalVectorComponentType;
-  typedef typename itk::Vector< NormalVectorComponentType, ImageDimension >
+  typedef itk::Vector< NormalVectorComponentType, ImageDimension >
       NormalVectorType;
-  typedef typename itk::Matrix< NormalVectorComponentType,
-                                ImageDimension,
-                                ImageDimension >        NormalMatrixType;
+  typedef itk::Image< NormalVectorType, ImageDimension >
+      NormalVectorImageType;
+  typedef typename NormalVectorImageType::Pointer
+      NormalVectorImagePointer;
+  typedef itk::Matrix< NormalVectorComponentType,
+                       ImageDimension,
+                       ImageDimension >                 NormalMatrixType;
   typedef itk::Image< NormalMatrixType, ImageDimension >
       NormalMatrixImageType;
   typedef typename NormalMatrixImageType::Pointer
@@ -154,6 +165,8 @@ public:
       NormalMatrixImageBoundaryConditionType;
   typedef itk::ImageRegionIterator< NormalMatrixImageType >
       NormalMatrixImageRegionType;
+  typedef typename NormalMatrixImageType::RegionType
+      ThreadNormalMatrixImageRegionType;
 
   /** Types for weighting between the plane/tube/point states of the
     * regularization - a matrix A, likely symmetric but we won't enforce
@@ -168,6 +181,8 @@ public:
       WeightMatrixImagePointer;
   typedef itk::ImageRegionIterator< WeightMatrixImageType >
       WeightMatrixImageRegionType;
+  typedef typename WeightMatrixImageType::RegionType
+      ThreadWeightMatrixImageRegionType;
 
   /** We also need a weighting w between the diffusive regularization and the
     * anisotropic regularization, which is a scalar. */
@@ -177,10 +192,21 @@ public:
       WeightComponentImagePointer;
   typedef itk::ImageRegionIterator< WeightComponentImageType >
       WeightComponentImageRegionType;
+  typedef typename WeightComponentImageType::RegionType
+      ThreadWeightComponentImageRegionType;
 
   /** Organ boundary surface types */
   typedef vtkPolyData                                   BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
+
+  /** Tube spatial object types */
+  typedef typename itk::SpatialObject< ImageDimension >::ChildrenListType
+      TubeListType;
+  typedef TubeListType *                                TubeListPointer;
+  typedef itk::VesselTubeSpatialObject< ImageDimension >
+      TubeType;
+  typedef typename TubeType::PointListType              TubePointListType;
+  typedef typename TubeType::TubePointType              TubePointType;
 
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
@@ -195,13 +221,34 @@ public:
   virtual BorderSurfaceType * GetBorderSurface() const
     { return m_BorderSurface; }
 
-  /** Set/get the lambda that controls the exponential decay used to calculate
-   *  the weight value w as a function of the distance to the closest border
-   *  point.  Must be negative. */
+  /** Set/get the list of tube spatial objects, which must be in the same space
+   *  as the fixed image. */
+  virtual void SetTubeList( TubeListType * tubeList )
+    { m_TubeList = tubeList; }
+  virtual TubeListType * GetTubeList() const
+    { return m_TubeList; }
+
+  /** Set/get the lambda that controls the decay of the weight value w as a
+   *  function of the distance to the closest border point.  If gamma=-1, then
+   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  decays exponentially using a dirac-shaped function
+   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Lambda must
+   *  be positive. */
   void SetLambda( WeightComponentType l )
-    { if ( l < 0 ) { m_Lambda = l; } }
+    { if ( l > 0 ) { m_Lambda = l; } }
   WeightComponentType GetLambda() const
     { return m_Lambda; }
+
+  /** Set/get the gamma that controls the decay of the weight value w as a
+   *  function of the distance to the closest border point.  If gamma=-1, then
+   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  decays exponentially using a dirac-shaped function
+   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Gamma must
+   *  be positive or -1.0. */
+  void SetGamma( WeightComponentType g )
+    { if ( g > 0 || g == -1.0 ) { m_Gamma = g; } }
+  WeightComponentType GetGamma() const
+    { return m_Gamma; }
 
   /** Set/get the image of the normal vectors.  Setting the normal vector
    * image overrides the border surface polydata if a border surface was
@@ -212,6 +259,12 @@ public:
     { return m_NormalMatrixImage; }
   virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage() const
     { return m_HighResolutionNormalMatrixImage; }
+  /** Get the image of a specific normal vector (column of the normal matrix).
+   *  Pointer should already have been initialized with New() */
+  virtual void GetHighResolutionNormalVectorImage
+      ( NormalVectorImagePointer & normalImage,
+        int dim,
+        bool getHighResolutionNormalVectorImage ) const;
 
   /** Set/get the weighting matrix A image.  Setting the weighting matrix image
    * overrides the structure tensor eigen analysis. */
@@ -223,7 +276,7 @@ public:
     { return m_HighResolutionWeightStructuresImage; }
 
   /** Set/get the weighting value w image.  Setting the weighting component
-    * image overrides the border surface polydata and lambda if the border
+    * image overrides the border surface polydata and lambda/gamma if the border
     * surface was also supplied. */
   virtual void SetWeightRegularizationsImage(
       WeightComponentImageType * weightImage )
@@ -283,6 +336,14 @@ protected:
 
   /** Compute the normals for the border surface. */
   void ComputeBorderSurfaceNormals();
+
+  /** Compute the normals for the tube list. */
+  void ComputeTubeNormals();
+
+  /** Provide access to the tube surface for derived classes. */
+  virtual BorderSurfaceType * GetTubeSurface() const
+    { return m_TubeSurface; }
+
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
   virtual void ComputeNormalMatrixAndWeightImages(
@@ -290,9 +351,41 @@ protected:
       bool computeWeightStructures,
       bool computeWeightRegularizations );
 
-  /** Computes the weighting factor w from the distance to the border.  The
-   *  weight should be 1 near the border and 0 away from the border. */
-  virtual WeightComponentType ComputeWeightFromDistance(
+  /** Computes the normal vectors and distances to the closest point given
+   *  an initialized vtkPointLocator and the surface border normals */
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
+      bool computeNormals,
+      bool computeWeightStructures,
+      bool computeWeightRegularizations );
+
+  /** Does the actual work of updating the output over an output region supplied
+   *  by the multithreading mechanism.
+   *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
+   *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
+  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+      vtkPointLocator * surfacePointLocator,
+      vtkFloatArray * surfaceNormalData,
+      vtkPointLocator * tubePointLocator,
+      vtkFloatArray * tubeNormal1Data,
+      vtkFloatArray * tubeNormal2Data,
+      ThreadNormalMatrixImageRegionType & normalRegionToProcess,
+      ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
+      ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
+      bool computeNormals,
+      bool computeWeightStructures,
+      bool computeWeightRegularizations,
+      int threadId );
+
+  /** Computes the weighting factor w from the distance to the border using
+   *  exponential decay.  The weight should be 1 near the border and 0 away from
+   *  the border. */
+  virtual WeightComponentType ComputeWeightFromDistanceExponential(
+      const WeightComponentType distance ) const;
+
+  /** Computes the weighting factor w from the distance to the border using
+   *  a dirac-shaped function.  The weight should be 1 near the border and 0
+   *  away from the border. */
+  virtual WeightComponentType ComputeWeightFromDistanceDirac(
       const WeightComponentType distance ) const;
 
 private:
@@ -300,8 +393,37 @@ private:
   AnisotropicDiffusiveSparseRegistrationFilter(const Self&);
   void operator=(const Self&); // Purposely not implemented
 
+  /** Structure for passing information into static callback methods.  Used in
+   * the subclasses threading mechanisms. */
+  struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
+    {
+    AnisotropicDiffusiveSparseRegistrationFilter * Filter;
+    vtkPointLocator * SurfacePointLocator;
+    vtkFloatArray * SurfaceNormalData;
+    vtkPointLocator * TubePointLocator;
+    vtkFloatArray * TubeNormal1Data;
+    vtkFloatArray * TubeNormal2Data;
+    ThreadNormalMatrixImageRegionType NormalMatrixImageLargestPossibleRegion;
+    ThreadWeightMatrixImageRegionType
+        WeightStructuresImageLargestPossibleRegion;
+    ThreadWeightComponentImageRegionType
+        WeightRegularizationsImageLargestPossibleRegion;
+    bool ComputeNormals;
+    bool ComputeWeightStructures;
+    bool ComputeWeightRegularizations;
+    };
+
+  /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
+   * output region that it passes to
+   * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
+  static ITK_THREAD_RETURN_TYPE
+      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
+          void * arg );
+
   /** Organ boundary surface and surface of border normals */
   BorderSurfacePointer                m_BorderSurface;
+  TubeListPointer                     m_TubeList;
+  BorderSurfacePointer                m_TubeSurface;
 
   /** Image storing information we will need for each voxel on every
    *  registration iteration */
@@ -320,10 +442,10 @@ private:
   WeightComponentImagePointer
       m_HighResolutionWeightRegularizationsImage;
 
-  /** The lambda factor for computing the weight from distance.  Weight is
-   * modeled as exponential decay: weight = e^(lambda * distance).
-   * (lamba must be negative) */
+  /** The lambda/gamma factors for computing the weight from distance. */
   WeightComponentType                 m_Lambda;
+  WeightComponentType                 m_Gamma;
+
 };
 
 } // end namespace itk

@@ -32,6 +32,7 @@ void RegisterTests()
 #ifdef TubeTK_USE_VTK
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTest );
 #endif
+  REGISTER_TEST( itkTubePointsToImageTest );
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
   REGISTER_TEST( itkTubeToTubeTransformFilterTest );
 }

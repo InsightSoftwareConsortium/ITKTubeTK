@@ -43,10 +43,12 @@ limitations under the License.
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilter.h"
+#include "itkGroupSpatialObject.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkOrientImageFilter.h"
 #include "itkMultiResolutionPDEDeformableRegistration.h"
 #include "itkRecursiveMultiResolutionPyramidImageFilter.h"
+#include "itkSpatialObjectReader.h"
 #include "itkTransform.h"
 #include "itkTransformFileReader.h"
 #include "itkWarpImageFilter.h"
@@ -251,90 +253,117 @@ int DoIt( int argc, char * argv[] )
   // be in the space of the fixed image
   timeCollector.Start( "Setup initial deformation field" );
   VectorImageType::Pointer initField = VectorImageType::New();
-  typename FixedImageType::Pointer templateImage
-      = fixedImageReader->GetOutput();
-  initField->SetOrigin( templateImage->GetOrigin() );
-  initField->SetSpacing( templateImage->GetSpacing() );
-  initField->SetDirection( templateImage->GetDirection() );
-  initField->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
-  initField->SetRequestedRegion( templateImage->GetRequestedRegion() );
-  initField->SetBufferedRegion( templateImage->GetBufferedRegion() );
-  initField->Allocate();
 
-  // Use the initial transform if given
-  if( initialTransform != "" )
+  // Preferably use an "initial transform" image, if given
+  if( initialTransformImageFileName != "" )
     {
-    typedef itk::TransformFileReader TransformReaderType;
-    TransformReaderType::Pointer transformReader = TransformReaderType::New();
-    transformReader->SetFileName( initialTransform );
+    typedef itk::ImageFileReader< VectorImageType > InitFieldReaderType;
+    typename InitFieldReaderType::Pointer initFieldImageReader
+        = InitFieldReaderType::New();
+    initFieldImageReader->SetFileName( initialTransformImageFileName.c_str() );
     try
       {
-      transformReader->Update();
+      initFieldImageReader->Update();
       }
     catch( itk::ExceptionObject & err )
       {
-      tube::ErrorMessage( "Reading initial transform: Exception caught: "
+      tube::ErrorMessage( "Reading initial transform image: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    if( transformReader->GetTransformList()->size() != 0 )
+    initField = initFieldImageReader->GetOutput();
+    }
+  // If an "initial transform" transform is given, or if there is no initial
+  // transform given
+  else
+    {
+    // Setup the fixed image as a template
+    typename FixedImageType::Pointer templateImage
+        = fixedImageReader->GetOutput();
+    initField->SetOrigin( templateImage->GetOrigin() );
+    initField->SetSpacing( templateImage->GetSpacing() );
+    initField->SetDirection( templateImage->GetDirection() );
+    initField->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
+    initField->SetRequestedRegion( templateImage->GetRequestedRegion() );
+    initField->SetBufferedRegion( templateImage->GetBufferedRegion() );
+    initField->Allocate();
+
+    // Use the "initial transform" transform if given
+    if( initialTransform != "" )
       {
-      TransformReaderType::TransformType::Pointer initial
-          = *( transformReader->GetTransformList()->begin() );
-
-      // Cast to transform pointer, so that we can use TransformPoint()
-      typedef itk::Transform< double, ImageDimension, ImageDimension >
-          TransformType;
-      typename TransformType::Pointer transform
-          = dynamic_cast< TransformType* >( initial.GetPointer() );
-
-      // For each voxel, find the displacement invoked by the given initial
-      // transform.  This should work for all types of transforms (linear,
-      // nonlinear, B-spline, etc) because itk::Transform is the base for each.
-      // Slicer saves transforms in LPS space (see Slicer's
-      // vtkMRMLTransformStorageNode::WriteData()), so we don't need to modify
-      // the initial transform according to the worldCoordinateSystem
-      // variable (unlike the surface model).
-      if( transform )
+      typedef itk::TransformFileReader TransformReaderType;
+      TransformReaderType::Pointer transformReader = TransformReaderType::New();
+      transformReader->SetFileName( initialTransform );
+      try
         {
-        typename TransformType::InputPointType physicalPoint;
-        physicalPoint.Fill( 0 );
-        typename TransformType::OutputPointType transformedPoint;
-        transformedPoint.Fill( 0 );
-        // Initial displacement vector
-        VectorType initVector;
-        initVector.Fill( 0 );
-        typedef itk::ImageRegionIterator< VectorImageType >
-            VectorImageRegionType;
-        VectorImageRegionType initIt = VectorImageRegionType(
-            initField, initField->GetLargestPossibleRegion() );
-        for( initIt.GoToBegin(); !initIt.IsAtEnd(); ++initIt )
-          {
-          initField->TransformIndexToPhysicalPoint( initIt.GetIndex(),
-                                                    physicalPoint );
-          transformedPoint = transform->TransformPoint( physicalPoint );
-          for( unsigned int i = 0; i < ImageDimension; i++ )
-            {
-            initVector[i] = transformedPoint[i] - physicalPoint[i];
-            }
-          initIt.Set( initVector );
-          }
+        transformReader->Update();
         }
-      else
+      catch( itk::ExceptionObject & err )
         {
-        tube::ErrorMessage( "Initial transform is an unsupported type" );
+        tube::ErrorMessage( "Reading initial transform: Exception caught: "
+                            + std::string(err.GetDescription()) );
         timeCollector.Report();
         return EXIT_FAILURE;
         }
+      if( transformReader->GetTransformList()->size() != 0 )
+        {
+        TransformReaderType::TransformType::Pointer initial
+            = *( transformReader->GetTransformList()->begin() );
+
+        // Cast to transform pointer, so that we can use TransformPoint()
+        typedef itk::Transform< double, ImageDimension, ImageDimension >
+            TransformType;
+        typename TransformType::Pointer transform
+            = dynamic_cast< TransformType* >( initial.GetPointer() );
+
+        // For each voxel, find the displacement invoked by the given initial
+        // transform.  This should work for all types of transforms (linear,
+        // nonlinear, B-spline, etc) because itk::Transform is the base for each.
+        // Slicer saves transforms in LPS space (see Slicer's
+        // vtkMRMLTransformStorageNode::WriteData()), so we don't need to modify
+        // the initial transform according to the worldCoordinateSystem
+        // variable (unlike the surface model).
+        if( transform )
+          {
+          typename TransformType::InputPointType physicalPoint;
+          physicalPoint.Fill( 0 );
+          typename TransformType::OutputPointType transformedPoint;
+          transformedPoint.Fill( 0 );
+          // Initial displacement vector
+          VectorType initVector;
+          initVector.Fill( 0 );
+          typedef itk::ImageRegionIterator< VectorImageType >
+              VectorImageRegionType;
+          VectorImageRegionType initIt = VectorImageRegionType(
+              initField, initField->GetLargestPossibleRegion() );
+          for( initIt.GoToBegin(); !initIt.IsAtEnd(); ++initIt )
+            {
+            initField->TransformIndexToPhysicalPoint( initIt.GetIndex(),
+                                                      physicalPoint );
+            transformedPoint = transform->TransformPoint( physicalPoint );
+            for( unsigned int i = 0; i < ImageDimension; i++ )
+              {
+              initVector[i] = transformedPoint[i] - physicalPoint[i];
+              }
+            initIt.Set( initVector );
+            }
+          }
+        else
+          {
+          tube::ErrorMessage( "Initial transform is an unsupported type" );
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+        }
       }
-    }
-  // If no initial transform is given, fill the initial field with zero vectors
-  else
-    {
-    VectorType zeroVector;
-    zeroVector.Fill( 0.0 );
-    initField->FillBuffer( zeroVector );
+    // If no initial transform is given, fill the initial field with zero vectors
+    else
+      {
+      VectorType zeroVector;
+      zeroVector.Fill( 0.0 );
+      initField->FillBuffer( zeroVector );
+      }
     }
   timeCollector.Stop( "Setup initial deformation field" );
 
@@ -454,6 +483,34 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Loading organ boundary" );
     }
 
+  // Read tube spatial object if we are using the sparse anisotropic regularizer
+  if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+    {
+    timeCollector.Start( "Loading tube list" );
+    typedef itk::SpatialObjectReader< ImageDimension > TubeReaderType;
+    TubeReaderType::Pointer tubeReader = TubeReaderType::New();
+    tubeReader->SetFileName( tubeSpatialObjectFileName.c_str() );
+    try
+      {
+      tubeReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading tube list: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    typedef itk::GroupSpatialObject< ImageDimension > GroupType;
+    typename GroupType::Pointer group = tubeReader->GetGroup();
+    char tubeName[17];
+    strcpy( tubeName, "Tube" );
+    typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
+        tubeList = group->GetChildren();
+    sparseAnisotropicRegistrator->SetTubeList( tubeList );
+    timeCollector.Stop( "Loading tube list" );
+    }
+
   // Read normal vector image if we are using the anisotropic regularizer
   if( haveAnisotropicRegistrator && inputNormalVectorImageFileName != "" )
     {
@@ -552,9 +609,17 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Error checking on lambda
-  if( lambda > 0.0 )
+  if( lambda < 0.0 )
     {
-    tube::ErrorMessage( "Lambda must be negative." );
+    tube::ErrorMessage( "Lambda must be positive." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
+  // Error checking on gamma
+  if( gamma < 0.0 && gamma != -1.0 )
+    {
+    tube::ErrorMessage( "Gamma must be positive." );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -563,6 +628,20 @@ int DoIt( int argc, char * argv[] )
   if( numberOfIterations.size() <= 0 )
     {
     tube::ErrorMessage( "You must provide a list of number of iterations." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
+  // Error checking on intensity distance and regularization weightings
+  if( intensityDistanceWeightings.size() <= 0 )
+    {
+    tube::ErrorMessage( "You must provide intensity distance weightings." );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+  if( regularizationWeightings.size() <= 0 )
+    {
+    tube::ErrorMessage( "You must provide regularization weightings." );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -580,8 +659,16 @@ int DoIt( int argc, char * argv[] )
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetLambda( lambda );
+    anisotropicRegistrator->SetGamma( gamma );
+    }
+  if( sparseAnisotropicRegistrator )
+    {
+    sparseAnisotropicRegistrator->SetLambda( lambda);
+    sparseAnisotropicRegistrator->SetGamma( gamma );
     }
   registrator->SetMaximumRMSError( maximumRMSError );
+  registrator->SetIntensityDistanceWeightings( intensityDistanceWeightings );
+  registrator->SetRegularizationWeightings( regularizationWeightings );
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
   // we don't want the deformation field to undergo Gaussian smoothing on the
@@ -592,6 +679,8 @@ int DoIt( int argc, char * argv[] )
   int numberOfLevels = numberOfIterations.size();
   unsigned int * iterations = new unsigned int [ numberOfLevels ];
   std::copy( numberOfIterations.begin(), numberOfIterations.end(), iterations );
+  // This is the maximum error for the multiresolution pyramid smoother, not
+  // the registration filter
   double maximumError = 0.01;
 
   // Setup the multiresolution pyramids
@@ -775,23 +864,68 @@ int DoIt( int argc, char * argv[] )
       }
     else if( sparseAnisotropicRegistrator )
       {
+      // We are giving back the 0th normal vector image, since Slicer cannot
+      // accept the normal matrix image
+      bool haveHighRes = false;
       if( sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage() )
         {
-        if( !ReorientAndWriteImage(
-            sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
-            fixedImageReader->GetOutput()->GetDirection(),
-            outputNormalVectorImageFileName ) )
-          {
-          timeCollector.Report();
-          return EXIT_FAILURE;
-          }
+        haveHighRes = true;
         }
-      else
+
+      // Get the extension for the normal matrix
+      std::string::size_type loc
+          = outputNormalVectorImageFileName.find_last_of(".");
+      if( loc == std::string::npos )
         {
+        tube::ErrorMessage( "Failed to find an extension for normal matrix" );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+
+      std::string base = outputNormalVectorImageFileName.substr(0, loc);
+      std::string extension = outputNormalVectorImageFileName.substr(loc);
+      std::string outputFileName;
+      std::stringstream out;
+
+      // Write out the normal matrix image
+      out.clear();
+      out.str("");
+      out << base << "Matrix" << extension;
+      outputFileName = out.str();
+      if( !ReorientAndWriteImage(
+          sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
+          fixedImageReader->GetOutput()->GetDirection(),
+          outputFileName ) )
+        {
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+
+      // Write out the other normal vector images
+      typedef typename AnisotropicDiffusiveSparseRegistrationFilterType
+          ::NormalVectorImageType NormalVectorImageType;
+      typedef typename AnisotropicDiffusiveSparseRegistrationFilterType
+          ::NormalVectorImagePointer NormalVectorImagePointer;
+      NormalVectorImagePointer normalImage = NormalVectorImageType::New();
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        sparseAnisotropicRegistrator->GetHighResolutionNormalVectorImage(
+            normalImage, i, haveHighRes );
+        out.clear();
+        out.str("");
+        out << base << i << extension;
+        if( i == 0 )
+          {
+          outputFileName = outputNormalVectorImageFileName;
+          }
+        else
+          {
+          outputFileName = out.str();
+          }
         if( !ReorientAndWriteImage(
-            sparseAnisotropicRegistrator->GetNormalMatrixImage(),
+            normalImage.GetPointer(),
             fixedImageReader->GetOutput()->GetDirection(),
-            outputNormalVectorImageFileName ) )
+            outputFileName ) )
           {
           timeCollector.Report();
           return EXIT_FAILURE;

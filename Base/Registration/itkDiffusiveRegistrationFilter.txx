@@ -24,7 +24,9 @@ limitations under the License.
 #define __itkDiffusiveRegistrationFilter_txx
 
 #include "itkDiffusiveRegistrationFilter.h"
+
 #include "itkResampleImageFilter.h"
+#include "itkVectorResampleImageFilter.h"
 
 namespace itk
 {
@@ -40,14 +42,20 @@ DiffusiveRegistrationFilter
   m_UpdateBuffer = UpdateBufferType::New();
 
   // We are using our own regularization, so don't use the implementation
-  // provided by the PDERegistration framework
+  // provided by the PDERegistration framework.  We also want to use the image
+  // spacing to calculate derivatives in physical space
   this->SmoothDeformationFieldOff();
   this->SmoothUpdateFieldOff();
+  this->UseImageSpacingOn();
 
   // Create the registration function
   this->CreateRegistrationFunction();
 
   m_HighResolutionTemplate                      = 0;
+
+  m_CurrentLevel                                = 0;
+  m_IntensityDistanceWeightings.push_back( 1.0 );
+  m_RegularizationWeightings.push_back( 1.0 );
 }
 
 /**
@@ -104,6 +112,19 @@ DiffusiveRegistrationFilter
     os << indent << "Image attribute template:" << std::endl;
     m_HighResolutionTemplate->Print( os, indent );
     }
+  std::cout << indent << "Current level: " << m_CurrentLevel << std::endl;
+  std::cout << indent << "Intensity distance weightings: ";
+  for( unsigned int i = 0; i < m_IntensityDistanceWeightings.size(); i++ )
+    {
+    std::cout << m_IntensityDistanceWeightings[i] << " ";
+    }
+  std::cout << std::endl;
+  std::cout << indent << "Regulraization weightings: " ;
+  for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
+    {
+    std::cout << m_RegularizationWeightings[i] << " ";
+    }
+  std::cout << std::endl;
 }
 
 /**
@@ -165,12 +186,12 @@ DiffusiveRegistrationFilter
  * Helper function to check whether the attributes of an image matches template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class CheckedImagePointer, class TemplateImagePointer >
+template < class CheckedImageType, class TemplateImageType >
 bool
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CompareImageAttributes( const CheckedImagePointer & image,
-                          const TemplateImagePointer & templateImage )
+::CompareImageAttributes( const CheckedImageType * image,
+                          const TemplateImageType * templateImage ) const
 {
   assert( image );
   assert( templateImage );
@@ -179,30 +200,31 @@ DiffusiveRegistrationFilter
       && image->GetDirection() == templateImage->GetDirection()
       && image->GetLargestPossibleRegion()
           == templateImage->GetLargestPossibleRegion()
-      && image->GetRequestedRegion() == templateImage->GetRequestedRegion()
-      && image->GetBufferedRegion() == templateImage->GetBufferedRegion();
+      && image->GetLargestPossibleRegion().GetIndex()
+          == templateImage->GetLargestPossibleRegion().GetIndex()
+      && image->GetLargestPossibleRegion().GetSize()
+          == templateImage->GetLargestPossibleRegion().GetSize();
 }
 
 /**
  * Resample an image to match a template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImageType, class TemplateImageType  >
+template< class ResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageNearestNeighbor( const ResampleImageType * highResolutionImage,
-                                const TemplateImageType * templateImage,
-                                ResampleImageType * resampledImage ) const
+::ResampleImageNearestNeighbor(
+    const ResampleImagePointer & highResolutionImage,
+    const TemplateImagePointer & templateImage,
+    ResampleImagePointer & resampledImage ) const
 {
   // We have to implement nearest neighbors by hand, since we are dealing with
   // pixel types that do not have Numeric Traits
+  typedef typename ResampleImagePointer::ObjectType ResampleImageType;
 
   // Create the resized resampled image
-  if( !resampledImage )
-    {
-    resampledImage = ResampleImageType::New();
-    }
+  resampledImage = ResampleImageType::New();
   this->AllocateSpaceForImage( resampledImage, templateImage );
 
   // Do NN interpolation
@@ -218,13 +240,14 @@ DiffusiveRegistrationFilter
   typename ResampleImageType::PixelType pixelValue;
 
   for( resampledImageIt.GoToBegin();
-  !resampledImageIt.IsAtEnd();
-  ++resampledImageIt )
+       !resampledImageIt.IsAtEnd();
+       ++resampledImageIt )
     {
     resampledImage->TransformIndexToPhysicalPoint(
         resampledImageIt.GetIndex(), physicalPoint );
     highResolutionImage->TransformPhysicalPointToIndex(
         physicalPoint, highResolutionIndex );
+    pixelValue = highResolutionImage->GetPixel( highResolutionIndex );
     resampledImageIt.Set( pixelValue );
     }
 }
@@ -233,21 +256,76 @@ DiffusiveRegistrationFilter
  * Resample an image to match a template
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImageType, class TemplateImageType  >
+template< class ResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageLinear( const ResampleImageType * highResolutionImage,
-                       const TemplateImageType * templateImage,
-                       ResampleImageType * resampledImage ) const
+::ResampleImageLinear( const ResampleImagePointer & highResolutionImage,
+                       const TemplateImagePointer & templateImage,
+                       ResampleImagePointer & resampledImage ) const
 {
-  typedef itk::ResampleImageFilter< ResampleImageType, ResampleImageType >
-      ResampleFilterType;
+  // Do linear interpolation
+  typedef itk::ResampleImageFilter
+      < typename ResampleImagePointer::ObjectType,
+        typename ResampleImagePointer::ObjectType > ResampleFilterType;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputParametersFromImage( templateImage );
   resampler->Update();
   resampledImage = resampler->GetOutput();
+}
+
+/**
+ * Resample a vector image to match a template
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class VectorResampleImagePointer, class TemplateImagePointer >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::VectorResampleImageLinear(
+    const VectorResampleImagePointer & highResolutionImage,
+    const TemplateImagePointer & templateImage,
+    VectorResampleImagePointer & resampledImage,
+    bool normalize ) const
+{
+  // Do linear interpolation
+  typedef itk::VectorResampleImageFilter
+      < typename VectorResampleImagePointer::ObjectType,
+        typename VectorResampleImagePointer::ObjectType > ResampleFilterType;
+  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+  resampler->SetInput( highResolutionImage );
+  resampler->SetOutputOrigin( templateImage->GetOrigin() );
+  resampler->SetOutputSpacing( templateImage->GetSpacing() );
+  resampler->SetOutputDirection( templateImage->GetDirection() );
+  resampler->SetOutputStartIndex(
+      templateImage->GetLargestPossibleRegion().GetIndex() );
+  resampler->SetSize( templateImage->GetLargestPossibleRegion().GetSize() );
+  resampler->Update();
+  resampledImage = resampler->GetOutput();
+
+  if( normalize )
+    {
+    this->NormalizeVectorField( resampledImage );
+    }
+}
+
+/**
+ * Normalizes a vector field to ensure each vector has length 1
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class VectorImagePointer >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::NormalizeVectorField( VectorImagePointer & image ) const
+{
+  DeformationVectorImageRegionType vectorIt(
+      image, image->GetLargestPossibleRegion() );
+  for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
+    {
+    vectorIt.Value().Normalize();
+    }
 }
 
 /**
@@ -277,11 +355,28 @@ DiffusiveRegistrationFilter
 {
   Superclass::Initialize();
 
-  // Ensure we have a fixed image, moving image and deformation field
-  if ( !this->GetFixedImage() || !this->GetMovingImage() )
+  // Ensure we have a fixed image and moving image
+  if( !this->GetFixedImage() || !this->GetMovingImage() )
     {
     itkExceptionMacro( << "Fixed image and/or moving image not set" );
     }
+
+  // Ensure we have good intensity distance and regularization weightings
+  unsigned int intensityWeightingsSize = m_IntensityDistanceWeightings.size();
+  unsigned int regularizationWeightingsSize = m_RegularizationWeightings.size();
+  if( intensityWeightingsSize == 0 || regularizationWeightingsSize == 0 )
+    {
+    itkExceptionMacro( << "Intensity distance and/or regularization weightings "
+                       << "not set" );
+    }
+  if( intensityWeightingsSize != regularizationWeightingsSize )
+    {
+    itkWarningMacro( << "Number of intensity distance weightings does not "
+                     << "equal number of regularization weightings" );
+    }
+
+  // Update the current multiresolution level (when registering, level is 1..N)
+  m_CurrentLevel++;
 
   // Check the timestep for stability if we are using the diffusive or
   // anisotropic diffusive regularization terms
@@ -289,9 +384,40 @@ DiffusiveRegistrationFilter
   assert( df );
   df->CheckTimeStepStability( this->GetInput(), this->GetUseImageSpacing() );
 
-  // Update the registration function's deformation field
+  // Assert that we have a deformation field, and that its image attributes
+  // match the fixed image
   assert( this->GetDeformationField() );
+  if( !this->CompareImageAttributes( this->GetDeformationField(),
+                                     this->GetFixedImage() ) )
+    {
+    itkExceptionMacro( << "Deformation field attributes do not match fixed "
+                       << "image" );
+    }
+
+  // Update the registration function's deformation field
   df->SetDeformationField( this->GetDeformationField() );
+
+  // Set the intensity distance and regularization weightings to the
+  // registration function.  If we are past the end of the vectors, use the
+  // last element.
+  if( m_CurrentLevel <= intensityWeightingsSize )
+    {
+    df->SetIntensityDistanceWeighting(
+        m_IntensityDistanceWeightings[m_CurrentLevel - 1] );
+    }
+  else
+    {
+    df->SetIntensityDistanceWeighting( m_IntensityDistanceWeightings.back() );
+    }
+  if( m_CurrentLevel <= regularizationWeightingsSize )
+    {
+    df->SetRegularizationWeighting(
+        m_RegularizationWeightings[m_CurrentLevel - 1] );
+    }
+  else
+    {
+    df->SetRegularizationWeighting( m_RegularizationWeightings.back() );
+    }
 
   // Allocate and initialize the images we will use to store data computed
   // during the registration (or set pointers to 0 if they are not being used).
@@ -326,56 +452,28 @@ DiffusiveRegistrationFilter
   int numTerms = this->GetNumberOfTerms();
 
   // Allocate the diffusion tensor images and their derivatives
-  if( this->GetComputeRegularizationTerm() )
+  // If we are not computing a regularization term, the image arrays will be
+  // filled with '0' pointers
+  DiffusionTensorImagePointer diffusionTensorPointer = 0;
+  TensorDerivativeImagePointer tensorDerivativePointer = 0;
+  for( int i = 0; i < numTerms; i++ )
     {
-    DiffusionTensorImagePointer diffusionTensorPointer = 0;
-    TensorDerivativeImagePointer tensorDerivativePointer = 0;
-    for( int i = 0; i < numTerms; i++ )
+    if( this->GetComputeRegularizationTerm() )
       {
       diffusionTensorPointer = DiffusionTensorImageType::New();
       this->AllocateSpaceForImage( diffusionTensorPointer, output );
-      if( (int) m_DiffusionTensorImages.size() < numTerms )
-        {
-        m_DiffusionTensorImages.push_back( diffusionTensorPointer );
-        }
-      else
-        {
-        m_DiffusionTensorImages[i] = diffusionTensorPointer;
-        }
-
       tensorDerivativePointer = TensorDerivativeImageType::New();
       this->AllocateSpaceForImage( tensorDerivativePointer, output );
-      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
-        {
-        m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
-        }
-      else
-        {
-        m_DiffusionTensorDerivativeImages[i] = tensorDerivativePointer;
-        }
       }
-    }
-  // Fill the arrays with NULL pointers for items not being used
-  else
-    {
-    for( int i = 0; i < numTerms; i++ )
+    if( (int) m_DiffusionTensorImages.size() < numTerms )
       {
-      if( (int) m_DiffusionTensorImages.size() < numTerms )
-        {
-        m_DiffusionTensorImages.push_back( 0 );
-        }
-      else
-        {
-        m_DiffusionTensorImages[i] = 0;
-        }
-      if( (int) m_DiffusionTensorDerivativeImages.size() < numTerms )
-        {
-        m_DiffusionTensorDerivativeImages.push_back( 0 );
-        }
-      else
-        {
-        m_DiffusionTensorDerivativeImages[i] = 0;
-        }
+      m_DiffusionTensorImages.push_back( diffusionTensorPointer );
+      m_DiffusionTensorDerivativeImages.push_back( tensorDerivativePointer );
+      }
+    else
+      {
+      m_DiffusionTensorImages[i] = diffusionTensorPointer;
+      m_DiffusionTensorDerivativeImages[i] = tensorDerivativePointer;
       }
     }
 
@@ -452,20 +550,21 @@ DiffusiveRegistrationFilter
 
   // Setup pointer to the deformation component image - we have only one
   // component, which is the entire deformation field
-  m_DeformationComponentImages[0] = output;
+  m_DeformationComponentImages[GAUSSIAN] = output;
 
   // Setup the first and second order deformation component images
   for( int i = 0; i < ImageDimension; i++ )
     {
-    m_DeformationComponentFirstOrderDerivativeArrays[0][i]
+    m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i]
         = ScalarDerivativeImageType::New();
     this->AllocateSpaceForImage(
-        m_DeformationComponentFirstOrderDerivativeArrays[0][i], output );
+        m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i], output );
 
-    m_DeformationComponentSecondOrderDerivativeArrays[0][i]
+    m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i]
         = TensorDerivativeImageType::New();
     this->AllocateSpaceForImage(
-        m_DeformationComponentSecondOrderDerivativeArrays[0][i], output );
+        m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i],
+        output );
     }
 }
 
@@ -479,13 +578,13 @@ DiffusiveRegistrationFilter
 ::ComputeDiffusionTensorImages()
 {
   assert( this->GetComputeRegularizationTerm() );
-  assert( m_DiffusionTensorImages[0] );
+  assert( m_DiffusionTensorImages[GAUSSIAN] );
 
   // For the Gaussian regularization, we only need to set the
   // diffusion tensors to the identity
   typename DiffusionTensorImageType::PixelType identityTensor;
   identityTensor.SetIdentity();
-  m_DiffusionTensorImages[0]->FillBuffer( identityTensor );
+  m_DiffusionTensorImages[GAUSSIAN]->FillBuffer( identityTensor );
 }
 
 /**
@@ -525,7 +624,7 @@ DiffusiveRegistrationFilter
     const DiffusionTensorImagePointer & tensorImage,
     int term,
     const SpacingType & spacing,
-    const typename OutputImageType::SizeType & radius ) const
+    const typename OutputImageType::SizeType & radius )
 {
   assert( tensorImage );
 
@@ -613,7 +712,7 @@ DiffusiveRegistrationFilter
   // Get the spacing and the radius
   SpacingType spacing = this->GetOutput()->GetSpacing();
   const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-  const typename OutputImageType::SizeType radius = df->GetRadius();
+  typename OutputImageType::SizeType radius = df->GetRadius();
 
   // By default, calculate the derivatives for each of the deformation
   // components
@@ -641,14 +740,111 @@ void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDeformationComponentDerivativeImageHelper(
+    DeformationVectorComponentImagePointer & deformationComponentImage,
+    int term,
+    int dimension,
+    SpacingType & spacing,
+    typename OutputImageType::SizeType & radius )
+{
+  assert( deformationComponentImage );
+
+  // Set up for multithreaded processing.
+  ComputeDeformationComponentDerivativeImageHelperThreadStruct str;
+  str.Filter = this;
+  str.DeformationComponentImage = deformationComponentImage;
+  str.Term = term;
+  str.Dimension = dimension;
+  str.Spacing = spacing;
+  str.Radius = radius;
+
+  // Multithread the execution
+  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetSingleMethod(
+      this->ComputeDeformationComponentDerivativeImageHelperThreaderCallback,
+      & str );
+  this->GetMultiThreader()->SingleMethodExecute();
+
+  // Explicitly call Modified on the first- and second-order partial derviative
+  // image affected here, since
+  // ThreadedComputeDeformationComponentDerivativeImageHelper changes them
+  // through iterators which do not increment their timestamp
+  m_DeformationComponentFirstOrderDerivativeArrays[term][dimension]->Modified();
+  m_DeformationComponentSecondOrderDerivativeArrays[term][dimension]
+      ->Modified();
+}
+
+/**
+ * Calls ThreadedComputeDeformationComponentDerivativeImageHelper for processing
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+ITK_THREAD_RETURN_TYPE
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDeformationComponentDerivativeImageHelperThreaderCallback( void *arg )
+{
+  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+
+  ComputeDeformationComponentDerivativeImageHelperThreadStruct * str
+      = (ComputeDeformationComponentDerivativeImageHelperThreadStruct *)
+            (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+
+  // Execute the actual method with appropriate output region
+  // first find out how many pieces extent can be split into.
+  // Using the SplitRequestedRegion method from itk::ImageSource.
+  ThreadDeformationVectorComponentImageRegionType
+      splitDeformationVectorComponentRegion;
+  int total = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitDeformationVectorComponentRegion );
+
+  ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
+  int scalarTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitScalarDerivativeRegion );
+
+  ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
+  int tensorTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitTensorDerivativeRegion );
+
+  // Make sure we could split all of the images equally
+  assert( total == scalarTotal );
+  assert( total == tensorTotal );
+
+  if( threadId < total )
+    {
+    str->Filter->ThreadedComputeDeformationComponentDerivativeImageHelper(
+        str->DeformationComponentImage,
+        splitDeformationVectorComponentRegion,
+        splitScalarDerivativeRegion,
+        splitTensorDerivativeRegion,
+        str->Term,
+        str->Dimension,
+        str->Spacing,
+        str->Radius );
+    }
+
+  return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Does the actual work of computing the deformation component image derivatives
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ThreadedComputeDeformationComponentDerivativeImageHelper(
     const DeformationVectorComponentImagePointer & deformationComponentImage,
+    const ThreadDeformationVectorComponentImageRegionType
+      & deformationVectorComponentRegionToProcess,
+    const ThreadScalarDerivativeImageRegionType
+      & scalarDerivativeRegionToProcess,
+    const ThreadTensorDerivativeImageRegionType
+      & tensorDerivativeRegionToProcess,
     int term,
     int dimension,
     const SpacingType & spacing,
     const typename OutputImageType::SizeType & radius ) const
 {
-  assert( deformationComponentImage );
-
   ScalarDerivativeImagePointer firstOrderDerivativeImage
       = m_DeformationComponentFirstOrderDerivativeArrays[term][dimension];
   assert( firstOrderDerivativeImage );
@@ -668,20 +864,16 @@ DiffusiveRegistrationFilter
   FaceStruct< DeformationVectorComponentImagePointer >
       deformationComponentStruct (
           deformationComponentImage,
-          deformationComponentImage->GetLargestPossibleRegion(),
+          deformationVectorComponentRegionToProcess,
           radius );
   DeformationVectorComponentNeighborhoodType deformationComponentNeighborhood;
 
   FaceStruct< ScalarDerivativeImagePointer > firstOrderStruct (
-      firstOrderDerivativeImage,
-      firstOrderDerivativeImage->GetLargestPossibleRegion(),
-      radius );
+      firstOrderDerivativeImage, scalarDerivativeRegionToProcess, radius );
   ScalarDerivativeImageRegionType firstOrderRegion;
 
   FaceStruct< TensorDerivativeImagePointer > secondOrderStruct (
-      secondOrderDerivativeImage,
-      secondOrderDerivativeImage->GetLargestPossibleRegion(),
-      radius );
+      secondOrderDerivativeImage, tensorDerivativeRegionToProcess, radius );
   TensorDerivativeImageRegionType secondOrderRegion;
 
   for( deformationComponentStruct.GoToBegin(), firstOrderStruct.GoToBegin(),
@@ -804,22 +996,28 @@ DiffusiveRegistrationFilter
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
   // Using the SplitRequestedRegion method from itk::ImageSource.
-  int total;
   ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitRegion );;
+  int total = str->Filter->SplitRequestedRegion( threadId,
+                                                 threadCount,
+                                                 splitRegion );
 
   ThreadDiffusionTensorImageRegionType splitTensorRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitTensorRegion );
+  int tensorTotal = str->Filter->SplitRequestedRegion( threadId,
+                                                       threadCount,
+                                                       splitTensorRegion );
 
   ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitTensorDerivativeRegion );
+  int tensorDerivativeTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitTensorDerivativeRegion );
 
   ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
-                                             splitScalarDerivativeRegion );
+  int scalarDerivativeTotal = str->Filter->SplitRequestedRegion(
+      threadId, threadCount, splitScalarDerivativeRegion );
+
+  // Make sure we could split all of the images equally
+  assert( total == tensorTotal );
+  assert( total == tensorDerivativeTotal );
+  assert( total == scalarDerivativeTotal );
 
   if (threadId < total)
     {
@@ -884,7 +1082,6 @@ DiffusiveRegistrationFilter
   // Get the radius and output
   const typename OutputImageType::SizeType radius = df->GetRadius();
   OutputImagePointer output = this->GetOutput();
-  SpacingType spacing = output->GetSpacing();
 
   // Break the input into a series of regions.  The first region is free
   // of boundary conditions, the rest with boundary conditions.  We operate
@@ -994,7 +1191,6 @@ DiffusiveRegistrationFilter
           deformationComponentSecondOrderRegionArrays,
           tensorDerivativeRegions,
           multiplicationVectorRegionArrays,
-          spacing,
           globalData );
 
       // Go to the next neighborhood
@@ -1090,7 +1286,8 @@ DiffusiveRegistrationFilter
   // Using the SplitRequestedRegion method from itk::ImageSource.
   int total;
   ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+  total = str->Filter->SplitRequestedRegion( threadId,
+                                             threadCount,
                                              splitRegion );
 
   if (threadId < total)

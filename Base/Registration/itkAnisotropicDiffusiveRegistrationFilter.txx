@@ -24,11 +24,13 @@ limitations under the License.
 #define __itkAnisotropicDiffusiveRegistrationFilter_txx
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
 
-#include "vtkDataArray.h"
+#include "itkImageRegionSplitter.h"
+#include "itkSmoothingRecursiveGaussianImageFilter.h"
+#include "vtkFloatArray.h"
 #include "vtkPointData.h"
 #include "vtkPointLocator.h"
+#include "vtkPolyData.h"
 #include "vtkPolyDataNormals.h"
 
 namespace itk
@@ -49,8 +51,9 @@ AnisotropicDiffusiveRegistrationFilter
   m_HighResolutionNormalVectorImage             = 0;
   m_HighResolutionWeightImage                   = 0;
 
-  // Lambda for exponential decay used to calculate weight from distance
-  m_Lambda = -0.01;
+  // Lambda/gamma used to calculate weight from distance
+  m_Lambda = 0.01;
+  m_Gamma = -1.0;
 }
 
 /**
@@ -79,6 +82,7 @@ AnisotropicDiffusiveRegistrationFilter
     m_WeightImage->Print( os, indent );
     }
   os << indent << "lambda: " << m_Lambda << std::endl;
+  os << indent << "gamma: " << m_Gamma << std::endl;
   if( m_HighResolutionNormalVectorImage )
     {
     os << indent << "High resolution normal vector image:" << std::endl;
@@ -159,7 +163,7 @@ AnisotropicDiffusiveRegistrationFilter
   // If we have a template for image attributes, use it.  The normal and weight
   // images will be stored at their full resolution.  The diffusion tensor,
   // deformation component, derivative and multiplication vector images are
-  // recalculated every time iterate() is called to regenerate them at the
+  // recalculated every time Initialize() is called to regenerate them at the
   // correct resolution.
   FixedImagePointer highResolutionTemplate = this->GetHighResolutionTemplate();
 
@@ -212,32 +216,43 @@ AnisotropicDiffusiveRegistrationFilter
     this->ComputeNormalVectorAndWeightImages( computeNormals, computeWeights );
     }
 
+  // On the first iteration of the first level, the normal and weight images
+  // will contain the highest resolution images.  We need to save the high
+  // resolution images, and then resample them down to correspond to this level.
+  // On subsequent iterations, we just do the resampling.
+
+  // Set the high resolution images only once
+  if( !m_HighResolutionNormalVectorImage )
+    {
+    m_HighResolutionNormalVectorImage = m_NormalVectorImage;
+    }
+  if( !m_HighResolutionWeightImage )
+    {
+    m_HighResolutionWeightImage = m_WeightImage;
+    }
+
   // If we are using a template or getting an image from the user, we need to
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
-  if( !this->CompareImageAttributes( m_NormalVectorImage, output ) )
+  if( !this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionNormalVectorImage )
-      {
-      m_HighResolutionNormalVectorImage = m_NormalVectorImage;
-      }
-    this->ResampleImageNearestNeighbor(
-        m_HighResolutionNormalVectorImage.GetPointer(),
-        output.GetPointer(),
-        m_NormalVectorImage.GetPointer() );
+    this->VectorResampleImageLinear( m_HighResolutionNormalVectorImage,
+                                     output,
+                                     m_NormalVectorImage,
+                                     true );
+    assert( this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightImage, output ) )
+  if( !this->CompareImageAttributes( m_WeightImage.GetPointer(),
+                                     output.GetPointer() ) )
     {
-    // Set the high resolution image only once
-    if( !m_HighResolutionWeightImage )
-      {
-      m_HighResolutionWeightImage = m_WeightImage;
-      }
-    this->ResampleImageLinear( m_HighResolutionWeightImage.GetPointer(),
-                               output.GetPointer(),
-                               m_WeightImage.GetPointer() );
+    this->ResampleImageLinear( m_HighResolutionWeightImage,
+                               output,
+                               m_WeightImage );
+    assert( this->CompareImageAttributes( m_WeightImage.GetPointer(),
+                                          output.GetPointer() ) );
     }
 }
 
@@ -272,6 +287,183 @@ AnisotropicDiffusiveRegistrationFilter
 }
 
 /**
+ * Computes the normal vectors and distances to the closest point
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::GetNormalsAndDistancesFromClosestSurfacePoint( bool computeNormals,
+                                                 bool computeWeights )
+{
+  // Setup the point locator and get the normals from the polydata
+  vtkPointLocator * pointLocator = vtkPointLocator::New();
+  pointLocator->SetDataSet( m_BorderSurface );
+  pointLocator->Initialize();
+  pointLocator->BuildLocator();
+  vtkFloatArray * normalData
+      = static_cast< vtkFloatArray * >
+        (m_BorderSurface->GetPointData()->GetNormals() );
+
+  // Set up struct for multithreaded processing.
+  AnisotropicDiffusiveRegistrationFilterThreadStruct str;
+  str.Filter = this;
+  str.PointLocator = pointLocator;
+  str.NormalData = normalData;
+  str.NormalVectorImageLargestPossibleRegion
+      = m_NormalVectorImage->GetLargestPossibleRegion();
+  str.WeightImageLargestPossibleRegion
+      = m_WeightImage->GetLargestPossibleRegion();
+  str.ComputeNormals = computeNormals;
+  str.ComputeWeights = computeWeights;
+
+  // Multithread the execution
+  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetSingleMethod(
+      this->GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback,
+      & str );
+  this->GetMultiThreader()->SingleMethodExecute();
+
+  // Explicitly call Modified on the normal and weight images here, since
+  // ThreadedGetNormalsAndDistancesFromClosestSurfacePoint changes these buffers
+  // through iterators which do not increment the update buffer timestamp
+  this->m_NormalVectorImage->Modified();
+  this->m_WeightImage->Modified();
+
+  // Clean up memory
+  pointLocator->Delete();
+}
+
+/**
+ * Calls ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+ITK_THREAD_RETURN_TYPE
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback( void * arg )
+{
+  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+
+  AnisotropicDiffusiveRegistrationFilterThreadStruct * str
+      = (AnisotropicDiffusiveRegistrationFilterThreadStruct *)
+            (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+
+  // Execute the actual method with appropriate output region
+  // First find out how many pieces extent can be split into.
+  // We don't want to use the SplitRequestedRegion method from itk::ImageSource
+  // because we might be calculating the normals and weights of a high res
+  // template, where the image extent will not match that of the output
+  typedef itk::ImageRegionSplitter< ImageDimension > SplitterType;
+  typename SplitterType::Pointer splitter = SplitterType::New();
+
+  int normalTotal = splitter->GetNumberOfSplits(
+      str->NormalVectorImageLargestPossibleRegion, threadCount );
+  ThreadNormalVectorImageRegionType splitNormalRegion = splitter->GetSplit(
+      threadId, normalTotal, str->NormalVectorImageLargestPossibleRegion );
+
+  int weightTotal = splitter->GetNumberOfSplits(
+      str->WeightImageLargestPossibleRegion, threadCount );
+  ThreadWeightImageRegionType splitWeightRegion = splitter->GetSplit(
+      threadId, weightTotal, str->WeightImageLargestPossibleRegion );
+
+  // Assert we could split all of the images equally
+  assert( normalTotal == weightTotal );
+
+  if( threadId < normalTotal )
+    {
+    str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+        str->PointLocator,
+        str->NormalData,
+        splitNormalRegion,
+        splitWeightRegion,
+        str->ComputeNormals,
+        str->ComputeWeights,
+        threadId );
+    }
+
+  return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Does the actual work of computing the normal vectors and distances to the
+ * closest point given an initialized vtkPointLocator and the surface border
+ * normals
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+    vtkPointLocator * pointLocator,
+    vtkFloatArray * normalData,
+    ThreadNormalVectorImageRegionType & normalRegionToProcess,
+    ThreadWeightImageRegionType & weightRegionToProcess,
+    bool computeNormals,
+    bool computeWeights,
+    int )
+{
+  // Setup iterators over the normal vector and weight images
+  NormalVectorImageRegionType normalIt( m_NormalVectorImage,
+                                        normalRegionToProcess );
+  WeightImageRegionType weightIt(m_WeightImage,
+                                 weightRegionToProcess );
+
+  // The normal vector image will hold the normal of the closest point of the
+  // surface polydata, and the weight image will be a function of the distance
+  // between the voxel and this closest point
+
+  itk::Point< double, ImageDimension >  imageCoord;
+  imageCoord.Fill( 0 );
+  double                                borderCoord[ImageDimension];
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    borderCoord[i] = 0.0;
+    }
+  vtkIdType                             id = 0;
+  WeightType                            distance = 0;
+  NormalVectorType                      normal;
+  normal.Fill(0);
+
+  // Determine the normals of and the distances to the nearest border point
+  for( normalIt.GoToBegin(), weightIt.GoToBegin();
+       !normalIt.IsAtEnd();
+       ++normalIt, ++weightIt )
+    {
+    // Find the id of the closest surface point to the current voxel
+    m_NormalVectorImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
+                                                        imageCoord );
+    id = pointLocator->FindClosestPoint( imageCoord.GetDataPointer() );
+
+    // Find the normal of the surface point that is closest to the current voxel
+    if( computeNormals )
+      {
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        normal[i] = normalData->GetValue( id * ImageDimension + i );
+        }
+      normalIt.Set( normal );
+      }
+
+    // Calculate distance between the current coordinate and the border surface
+    // coordinate
+    if( computeWeights )
+      {
+      m_BorderSurface->GetPoint( id, borderCoord );
+      distance = 0.0;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        distance += pow( imageCoord[i] - borderCoord[i], 2 );
+        }
+      distance = sqrt( distance );
+      // The weight image will temporarily store distances
+      weightIt.Set( distance );
+      }
+    }
+}
+
+/**
  * Updates the border normals and the weighting factor w
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -287,76 +479,11 @@ AnisotropicDiffusiveRegistrationFilter
 
   std::cout << "Computing normals and weights... " << std::endl;
 
-  // Setup iterators over the normal vector and weight images
-  NormalVectorImageRegionType normalIt(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
-  WeightImageRegionType weightIt(m_WeightImage,
-                                 m_WeightImage->GetLargestPossibleRegion() );
-
-  // Get the normals from the polydata
-  vtkPointLocator * pointLocator = vtkPointLocator::New();
-  pointLocator->SetDataSet( m_BorderSurface );
-  vtkSmartPointer< vtkDataArray > normalData
-      = m_BorderSurface->GetPointData()->GetNormals();
-
   // The normal vector image will hold the normal of the closest point of the
   // surface polydata, and the weight image will be a function of the distance
   // between the voxel and this closest point
-
-  itk::Point< double, ImageDimension >  imageCoordAsPoint;
-  imageCoordAsPoint.Fill( 0 );
-  double                                imageCoord[ImageDimension];
-  double                                borderCoord[ImageDimension];
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    imageCoord[i] = 0;
-    borderCoord[i] = 0;
-    }
-  vtkIdType                             id = 0;
-  WeightType                            distance = 0;
-  NormalVectorType                      normal;
-  normal.Fill(0);
-  WeightType                            weight = 0;
-
-  // Determine the normals of and the distances to the nearest border
-  for( normalIt.GoToBegin(), weightIt.GoToBegin();
-       !normalIt.IsAtEnd();
-       ++normalIt, ++weightIt )
-    {
-
-    // Find the normal of the surface point that is closest to the current voxel
-    m_NormalVectorImage->TransformIndexToPhysicalPoint( normalIt.GetIndex(),
-                                                        imageCoordAsPoint );
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      imageCoord[i] = imageCoordAsPoint[i];
-      }
-    id = pointLocator->FindClosestPoint( imageCoord );
-    normal = normalData->GetTuple( id );
-    if( computeNormals )
-      {
-      normalIt.Set( normal );
-      }
-
-    // Calculate distance between the current coordinate and the border surface
-    // coordinate
-    m_BorderSurface->GetPoint( id, borderCoord );
-    distance = 0.0;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      distance += pow( imageCoord[i] - borderCoord[i], 2 );
-      }
-    distance = sqrt( distance );
-
-    // The weight image will temporarily store distances
-    if( computeWeights )
-      {
-      weightIt.Set( distance );
-      }
-    }
-
-  // Clean up memory
-  pointLocator->Delete();
+  this->GetNormalsAndDistancesFromClosestSurfacePoint( computeNormals,
+                                                       computeWeights );
 
   // Smooth the normals to handle corners (because we are choosing the
   // closest point in the polydata
@@ -389,12 +516,25 @@ AnisotropicDiffusiveRegistrationFilter
     m_WeightImage = weightSmooth->GetOutput();
 
     // Iterate through the weight image and compute the weight from the
+    WeightType weight = 0;
     WeightImageRegionType weightIt(
         m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-    for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
+    bool useExponential = ( m_Gamma == -1.0 );
+    if( useExponential )
       {
-      weight = this->ComputeWeightFromDistance( weightIt.Get() );
-      weightIt.Set( weight );
+      for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
+        {
+        weight = this->ComputeWeightFromDistanceExponential( weightIt.Get() );
+        weightIt.Set( weight );
+        }
+      }
+    else
+      {
+      for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
+        {
+        weight = this->ComputeWeightFromDistanceDirac( weightIt.Get() );
+        weightIt.Set( weight );
+        }
       }
     }
 
@@ -403,7 +543,8 @@ AnisotropicDiffusiveRegistrationFilter
 
 /**
  * Calculates the weighting between the anisotropic diffusive and diffusive
- * regularizations, based on a given distance from a voxel to the border
+ * regularizations, based on a given distance from a voxel to the border, using
+ * exponential decay.
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFilter
@@ -411,9 +552,26 @@ typename AnisotropicDiffusiveRegistrationFilter
 ::WeightType
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeWeightFromDistance( const WeightType distance ) const
+::ComputeWeightFromDistanceExponential( const WeightType distance ) const
 {
-  return exp( m_Lambda * distance );
+  return exp( -1.0 * m_Lambda * distance );
+}
+
+/**
+ * Calculates the weighting between the anisotropic diffusive and diffusive
+ * regularizations, based on a given distance from a voxel to the border, using
+ * a dirac-shaped function
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::WeightType
+AnisotropicDiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeWeightFromDistanceDirac( const WeightType distance ) const
+{
+  return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
+                         * exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**
@@ -600,8 +758,8 @@ AnisotropicDiffusiveRegistrationFilter
 
   for( normalVectorRegion.GoToBegin(), outputRegion.GoToBegin(),
        normalDeformationRegion.GoToBegin();
-  !outputRegion.IsAtEnd();
-  ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
+      !outputRegion.IsAtEnd();
+      ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
     {
     n = normalVectorRegion.Get();
     u = outputRegion.Get();

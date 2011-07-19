@@ -156,7 +156,7 @@ class InteractivePDFSegmenterWidget:
     labelMapNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
     labelMapNodeSelector.addAttribute("vtkMRMLScalarVolumeNode", "LabelMap", True);
     labelMapNodeSelector.noneEnabled = False
-    labelMapNodeSelector.addEnabled = False
+    labelMapNodeSelector.addEnabled = True
     labelMapNodeSelector.removeEnabled = False
     labelMapNodeSelector.editEnabled = True
     labelMapNodeSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.setLabelMapNode)

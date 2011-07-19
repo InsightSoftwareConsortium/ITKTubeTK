@@ -43,6 +43,7 @@ limitations under the License.
 #include "itkDilateObjectMorphologyImageFilter.h"
 #include "itkConnectedThresholdImageFilter.h"
 #include "itkContinuousIndex.h"
+#include "itkNormalizeImageFilter.h"
 #include "metaCommand.h"
 
 // tubetk includes
@@ -475,6 +476,20 @@ int DoIt( MetaCommand & command )
         ++it1;
         ++it2;
         }
+      }
+
+    // Normalize
+    else if( ( *it ).name == "Normalize" )
+      {
+      std::cout << "Normalize" << std::endl;
+      std::cout << "NOTE: since this filter normalizes the data to lie "
+                << "within -1 to 1, integral types will produce an image that "
+                << "DOES NOT HAVE a unit variance" << std::endl;
+      typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
+      typename NormFilterType::Pointer normFilter = NormFilterType::New();
+      normFilter->SetInput( imIn );
+      normFilter->Update();
+      imIn = normFilter->GetOutput();
       }
 
     // I( x )
@@ -1594,6 +1609,9 @@ int main( int argc, char *argv[] )
     true );
   command.AddOptionField(
     "Correction", "referenceVolume", MetaCommand::STRING, true );
+
+  command.SetOption( "Normalize", "d", false,
+    "Normalize image by setting mean to zero and standard deviation to one" );
 
   command.SetOption( "Fuse", "f", false,
     "fuse two images by max, applying offset to second image" );

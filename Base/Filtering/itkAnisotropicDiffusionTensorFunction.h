@@ -83,17 +83,17 @@ public:
       DiffusionTensorNeighborhoodType;
 
   /** Scalar derivative typedefs. */
-  typedef vnl_vector_fixed< ScalarValueType,
-                            itkGetStaticConstMacro(ImageDimension)>
-                                ScalarDerivativeType;
+  typedef itk::Vector< ScalarValueType,
+                       itkGetStaticConstMacro(ImageDimension)>
+                       ScalarDerivativeType;
   typedef itk::Image< ScalarDerivativeType, 3 >       ScalarDerivativeImageType;
   typedef ImageRegionIterator< ScalarDerivativeImageType >
       ScalarDerivativeImageRegionType;
 
   /** Tensor derivative typedefs. */
-  typedef vnl_matrix_fixed< ScalarValueType,
-                            itkGetStaticConstMacro(ImageDimension),
-                            itkGetStaticConstMacro(ImageDimension)>
+  typedef itk::Matrix< ScalarValueType,
+                       itkGetStaticConstMacro(ImageDimension),
+                       itkGetStaticConstMacro(ImageDimension) >
                                                       TensorDerivativeType;
   typedef itk::Image< TensorDerivativeType, 3 >       TensorDerivativeImageType;
   typedef ImageRegionIterator< TensorDerivativeImageType >
@@ -142,7 +142,6 @@ public:
       const ScalarDerivativeImageRegionType & intensityFirstDerivatives,
       const TensorDerivativeImageRegionType & intensitySecondDerivatives,
       const TensorDerivativeImageRegionType & tensorFirstDerivatives,
-      const SpacingType & spacing,
       void * globalData,
       const FloatOffsetType & = FloatOffsetType(0.0));
 

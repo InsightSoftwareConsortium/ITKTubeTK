@@ -58,7 +58,7 @@ add_test( ${PROJECT_NAME}TestSphereNoReg
                -o ${TEMP}/Sphere_noReg_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l -0.1
+               -l 0.1
                -r )
 
 #######
@@ -85,7 +85,7 @@ add_test( ${PROJECT_NAME}TestSphereAnisotropic
                -o ${TEMP}/Sphere_anisotropic_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l -0.1 )
+               -l 0.1 )
 
 #######
 # Test2-Compare
@@ -110,7 +110,7 @@ add_test( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRAS
                -o ${TEMP}/Sphere_anisotropicSurfaceRAS_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l -0.05 )
+               -l 0.05 )
 
 #######
 # Test3-Compare
@@ -135,7 +135,7 @@ add_test( ${PROJECT_NAME}TestSphereAnisotropicSurfaceLPS
                -o ${TEMP}/Sphere_anisotropicSurfaceLPS_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l -0.05
+               -l 0.05
                -c LPS )
 
 #######
@@ -161,7 +161,7 @@ add_test( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASDownsampled
                -o ${TEMP}/Sphere_anisotropicSurfaceRASDownsampled_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l -0.05 )
+               -l 0.05 )
 
 #######
 # Test5-Compare
@@ -187,7 +187,7 @@ add_test( ${PROJECT_NAME}TestSphereGaussian
                -o ${TEMP}/Sphere_gaussian_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l -0.1
+               -l 0.1
                -a )
 
 #######
@@ -288,7 +288,7 @@ add_test( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS
                -o ${TEMP}/Sphere_sparseAnisotropicSurfaceRAS_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l -0.05
+               -l 0.05
                -u SparseSlidingOrgan )
 
 #######
@@ -301,3 +301,54 @@ add_test( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}TestSphereSparseAnisotropicSurfaceRAS )
+
+#######
+# Test11
+#######
+add_test( ${PROJECT_NAME}TestSphereAnisotropicMultiresolution
+            ${PROJ_EXE}
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -n ${INPUT_DATA}/Sphere_normalsMultiresolution.mhd
+               -w ${INPUT_DATA}/Sphere_weightsMultiresolution.mhd
+               -d ${TEMP}/Sphere_anisotropicMultiresolution_motionField.mhd
+               -o ${TEMP}/Sphere_anisotropicMultiresolution_transformedMoving.mhd
+               -i 5,5
+               -s 0.125
+               -l 0.05 )
+
+#######
+# Test11-Compare
+#######
+add_test( ${PROJECT_NAME}TestSphereAnisotropicMultiresolution-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/Sphere_anisotropicMultiresolution_motionField.mhd
+               -b ${BASELINE}/Sphere_anisotropicMultiresolution_motionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}TestSphereAnisotropicMultiresolution-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}TestSphereAnisotropicMultiresolution )
+
+#######
+# Test12
+#######
+add_test( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution
+            ${PROJ_EXE}
+               ${INPUT_DATA}/Sphere_fixed.mhd
+               ${INPUT_DATA}/Sphere_moving.mhd
+               -b ${INPUT_DATA}/Sphere_surfaceBorderRAS.vtk
+               -d ${TEMP}/Sphere_anisotropicSurfaceRASMultiresolution_motionField.mhd
+               -o ${TEMP}/Sphere_anisotropicSurfaceRASMultiresolution_transformedMoving.mhd
+               -i 5,5
+               -s 0.125
+               -l 0.05 )
+
+#######
+# Test12-Compare
+#######
+add_test( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/Sphere_anisotropicSurfaceRASMultiresolution_motionField.mhd
+               -b ${BASELINE}/Sphere_anisotropicMultiresolution_motionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution )

@@ -517,3 +517,23 @@ add_test( ${PROJECT_NAME}Test25-Compare
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test25-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test25 )
+
+#######
+# Test26
+#######
+add_test( ${PROJECT_NAME}Test26
+            ${PROJ_EXE}
+               ${INPUT_DATA}/ES0015_Large.mha
+               -d
+               -w ${TEMP}/${PROJECT_NAME}Test26.mha )
+
+#######
+# Test26-Compare
+#######
+add_test( ${PROJECT_NAME}Test26-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test26.mha
+               -b ${BASELINE}/${PROJECT_NAME}Test26.mha
+               -i 0.001 )
+set_tests_properties( ${PROJECT_NAME}Test26-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test26 )

@@ -165,6 +165,8 @@ public:
   typedef typename
       RegistrationFunctionType::DeformationVectorComponentNeighborhoodType
       DeformationVectorComponentNeighborhoodType;
+  typedef typename DeformationVectorComponentImageType::RegionType
+      ThreadDeformationVectorComponentImageRegionType;
 
   /** Diffusion tensor image types */
   typedef typename RegistrationFunctionType::DiffusionTensorType
@@ -262,6 +264,24 @@ public:
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
+  /** Set/get the weightings for the intensity distance update term.  If
+   *  using multiresolution registration and the current level is past the
+   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  Default: 1.0 */
+  void SetIntensityDistanceWeightings( std::vector< double >& weightings )
+    { m_IntensityDistanceWeightings = weightings; }
+  const std::vector< double >& GetIntensityDistanceWeightings() const
+    { return m_IntensityDistanceWeightings; }
+
+  /** Set/get the weightings for the intensity distance update term.  If
+   *  using multiresolution registration and the current level is past the
+   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  Default: 1.0 */
+  void SetRegularizationWeightings( std::vector< double >& weightings )
+    { m_RegularizationWeightings = weightings; }
+  const std::vector< double >& GetRegularizationWeightings() const
+    { return m_RegularizationWeightings; }
+
   /** The number of div(T\grad(u))v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms() const
@@ -276,6 +296,9 @@ public:
     { m_HighResolutionTemplate = templateImage; }
   virtual FixedImageType * GetHighResolutionTemplate()
     { return m_HighResolutionTemplate; }
+
+  /** Get current resolution level being processed. */
+  itkGetConstReferenceMacro( CurrentLevel, unsigned int );
 
 protected:
   DiffusiveRegistrationFilter();
@@ -312,7 +335,7 @@ protected:
       const DiffusionTensorImagePointer & tensorImage,
       int term,
       const SpacingType & spacing,
-      const typename OutputImageType::SizeType & radius ) const;
+      const typename OutputImageType::SizeType & radius );
 
   /** Allocate and populate the images of multiplication vectors that the
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
@@ -333,13 +356,34 @@ protected:
   virtual void ComputeDeformationComponentDerivativeImages();
 
   /** Helper to compute the first- and second-order partial derivatives of the
-   *  deformation component images */
+   *  deformation component images, using the
+   *  ThreadedComputeDeformationComponentDerivativeImageHelper() method and a
+   *  multithreading mechanism.
+   *  \sa ThreadedComputeDeformationComponentDerivativeImageHelper */
   virtual void ComputeDeformationComponentDerivativeImageHelper(
-      const DeformationVectorComponentImagePointer & deformationComponentImage,
+      DeformationVectorComponentImagePointer & deformationComponentImage,
       int term,
       int dimension,
-      const SpacingType & spacing,
-      const typename OutputImageType::SizeType & radius ) const;
+      SpacingType & spacing,
+      typename OutputImageType::SizeType & radius );
+
+  /** Does the actual work of computing the first- and second-order partial
+   *  derivatives of the deformation component images over regions supplied
+   *  by the multithreading mechanism.
+   *  \sa ComputeDeformationComponentDerivativeImageHelper
+   *  \sa ComputeDeformationComponentDerivativeImageHelperThreadedCallback */
+   virtual void ThreadedComputeDeformationComponentDerivativeImageHelper(
+       const DeformationVectorComponentImagePointer & deformationComponentImage,
+       const ThreadDeformationVectorComponentImageRegionType
+         & deformationVectorComponenntRegionToProcess,
+       const ThreadScalarDerivativeImageRegionType
+         & scalarDerivativeRegionToProcess,
+       const ThreadTensorDerivativeImageRegionType
+         & tensorDerivativeRegionToProcess,
+       int term,
+       int dimension,
+       const SpacingType & spacing,
+       const typename OutputImageType::SizeType & radius ) const;
 
   /** Get a diffusion tensor image */
   DiffusionTensorImageType * GetDiffusionTensorImage( int index ) const
@@ -475,7 +519,7 @@ protected:
   virtual void AllocateUpdateBuffer();
 
   /** Get the update buffer. */
-  virtual UpdateBufferType * GetUpdateBuffer() const
+  virtual UpdateBufferType * GetUpdateBuffer()
     { return m_UpdateBuffer; }
 
   /** Helper function to allocate an image based on a template */
@@ -486,23 +530,38 @@ protected:
 
   /** Helper function to check whether the attributes of an image match a
     * template */
-  template< class CheckedImagePointer, class TemplateImagePointer >
-  bool CompareImageAttributes( const CheckedImagePointer & image,
-                               const TemplateImagePointer & templateImage );
+  template< class CheckedImageType, class TemplateImageType >
+  bool CompareImageAttributes( const CheckedImageType * image,
+                               const TemplateImageType * templateImage )
+  const;
 
   /** Resamples an image to a template using nearest neighbor interpolation */
-  template< class ResampleImageType, class TemplateImageType  >
+  template< class ResampleImagePointer, class TemplateImagePointer >
   void ResampleImageNearestNeighbor(
-      const ResampleImageType * highResolutionImage,
-      const TemplateImageType * templateImage,
-      ResampleImageType * resampledImage ) const;
+      const ResampleImagePointer & highResolutionImage,
+      const TemplateImagePointer & templateImage,
+      ResampleImagePointer & resampledImage ) const;
 
   /** Resamples an image to a template using linear interpolation */
-  template< class ResampleImageType, class TemplateImageType  >
+  template< class ResampleImagePointer, class TemplateImagePointer >
   void ResampleImageLinear(
-      const ResampleImageType * highResolutionImage,
-      const TemplateImageType * templateImage,
-      ResampleImageType * resampledImage ) const;
+      const ResampleImagePointer & highResolutionImage,
+      const TemplateImagePointer & templateImage,
+      ResampleImagePointer & resampledImage ) const;
+
+  /** Resamples a vector image to a template using linear interpolation.  If
+   *  normalize is true, the vectors will be scaled to length 1 after the
+   *  resampling. */
+  template< class VectorResampleImagePointer, class TemplateImagePointer >
+  void VectorResampleImageLinear(
+      const VectorResampleImagePointer & highResolutionImage,
+      const TemplateImagePointer & templateImage,
+      VectorResampleImagePointer & resampledImage,
+      bool normalize = false ) const;
+
+  /** Normalizes a vector field to ensure each vector has length 1 */
+  template< class VectorImagePointer >
+  void NormalizeVectorField( VectorImagePointer & image ) const;
 
 private:
   // Purposely not implemented
@@ -519,6 +578,19 @@ private:
     bool *ValidTimeStepList;
     };
 
+  /** Structure for passing information into static callback methods.  Used in
+   *  the threading mechanism for
+   *  ComputeDeformationComponentDerivativeImageHelper. */
+  struct ComputeDeformationComponentDerivativeImageHelperThreadStruct
+    {
+    DiffusiveRegistrationFilter * Filter;
+    DeformationVectorComponentImagePointer DeformationComponentImage;
+    int Term;
+    int Dimension;
+    SpacingType Spacing;
+    typename OutputImageType::SizeType Radius;
+    };
+
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
   static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
@@ -526,6 +598,13 @@ private:
   /** This callback method uses SplitUpdateContainer to acquire a region
   * which it then passes to ThreadedCalculateChange for processing. */
   static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
+
+  /** This callback method uses SplitUpdateContainer to acquire a region which
+  * it then passes to ThreadedComputeDeformationComponentDerivativeImageHelper
+  * for processing. */
+  static ITK_THREAD_RETURN_TYPE
+      ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
+          void *arg );
 
   /** The buffer that holds the updates for an iteration of algorithm. */
   typename UpdateBufferType::Pointer  m_UpdateBuffer;
@@ -540,6 +619,16 @@ private:
   TensorDerivativeImageArrayVectorType
       m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
+
+  /** Variables for multiresolution registratoin.  Current level can be detected
+   *  as Initialize() is called on each new level. */
+  unsigned int                              m_CurrentLevel;
+
+  /** Relative weightings between the intensity distance and regularization
+   *  update terms.  Stored in a vector so that the user can provide different
+   *  weightings per multiresolution level. */
+  std::vector< double >                     m_IntensityDistanceWeightings;
+  std::vector< double >                     m_RegularizationWeightings;
 
   /** Template used to calculate member images */
   FixedImagePointer                         m_HighResolutionTemplate;

@@ -26,6 +26,7 @@ limitations under the License.
 #include <cstdlib>
 #include <iostream>
 #include "tubeTubeMath.h"
+#include "tubeMatrixMath.h"
 
 
 namespace tube
