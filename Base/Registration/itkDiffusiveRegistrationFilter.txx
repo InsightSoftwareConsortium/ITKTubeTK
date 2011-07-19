@@ -1405,7 +1405,7 @@ DiffusiveRegistrationFilter
 
   // Print out logging information
   std::string delimiter = ", ";
-  std::string sectionDelimiter = " | ";
+  std::string sectionDelimiter = " , ";
   if( this->GetElapsedIterations() == 0 )
     {
     std::cout << "All registration metric sections in the order "
