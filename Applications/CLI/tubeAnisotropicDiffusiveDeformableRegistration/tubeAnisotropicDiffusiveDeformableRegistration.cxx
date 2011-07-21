@@ -675,6 +675,7 @@ int DoIt( int argc, char * argv[] )
   // Setup the anisotropic registrator
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
+  registrator->SetComputeIntensityDistanceTerm( !doNotComputeIntensityDistanceTerm );
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetLambda( lambda );

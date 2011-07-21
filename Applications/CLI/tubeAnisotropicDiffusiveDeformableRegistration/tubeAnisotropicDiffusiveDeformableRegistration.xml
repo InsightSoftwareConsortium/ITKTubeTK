@@ -235,6 +235,14 @@
       <default>false</default>
     </boolean>
     <boolean>
+      <name>doNotComputeIntensityDistanceTerm</name>
+      <longflag>doNotComputeIntensityDistanceTerm</longflag>
+      <label>Do regularization only</label>
+      <channel>input</channel>
+      <description>Whether or not to compute the intensity distance term</description>
+      <default>false</default>
+    </boolean>
+    <boolean>
       <name>doNotUseAnisotropicRegularization</name>
       <flag>a</flag>
       <longflag>doNotUseAnisotropicRegularization</longflag>
