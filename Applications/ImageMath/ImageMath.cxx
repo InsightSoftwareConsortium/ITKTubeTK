@@ -44,6 +44,7 @@ limitations under the License.
 #include "itkConnectedThresholdImageFilter.h"
 #include "itkContinuousIndex.h"
 #include "itkNormalizeImageFilter.h"
+#include "itkMirrorPadImageFilter.h"
 #include "metaCommand.h"
 
 // tubetk includes
@@ -476,6 +477,19 @@ int DoIt( MetaCommand & command )
         ++it1;
         ++it2;
         }
+      }
+
+    // Mirror pad
+    else if( ( *it ).name == "MirrorPad" )
+      {
+      typedef itk::MirrorPadImageFilter< ImageType, ImageType > PadFilterType;
+      typename PadFilterType::Pointer padFilter = PadFilterType::New();
+      padFilter->SetInput( imIn );
+      typename PadFilterType::InputImageSizeType bounds;
+      bounds.Fill( command.GetValueAsInt( *it, "numPadVoxels" ) );
+      padFilter->SetPadBound( bounds );
+      padFilter->Update();
+      imIn = padFilter->GetOutput();
       }
 
     // Normalize
@@ -1721,6 +1735,9 @@ int main( int argc, char *argv[] )
     "I( x ) = I( x ) * inFile2( x )" );
   command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING,
     true );
+
+  command.SetOption( "MirrorPad", "x", false, "Use mirroring to pad an image" );
+  command.AddOptionField( "MirrorPad", "numPadVoxels", MetaCommand::INT, true );
 
   command.SetOption( "vessels", "z", false,
     "Compute ridgness/vesselness for specified scales" );
