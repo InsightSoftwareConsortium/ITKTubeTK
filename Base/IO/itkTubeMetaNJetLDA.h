@@ -35,21 +35,21 @@ limitations under the License.
 #include "itkTubeMetaLDA.h"
 
 /*!    MetaNJetLDA ( .h and .cpp )
- *
- * Description:
- *    Reads and Writes MetaNJetLDA Files, typically designated .mnda files
- *
- *    REQUIRED: itkTubeNJetLDAGenerator instance
- *
- * \author Stephen R. Aylward
- *
- * \date August 29, 1999
- *
- * Depends on:
- *    MetaUtils.h
- *    MetaLDA.h
- *    MetaForm.h
- */
+*
+* Description:
+*    Reads and Writes MetaNJetLDA Files, typically designated .mnda files
+*
+*    REQUIRED: itkTubeNJetLDAGenerator instance
+*
+* \author Stephen R. Aylward
+*
+* \date August 29, 1999
+*
+* Depends on:
+*    MetaUtils.h
+*    MetaLDA.h
+*    MetaForm.h
+*/
 
 namespace itk {
 
@@ -63,41 +63,41 @@ class METAIO_EXPORT MetaNJetLDA
   // PUBLIC
   //
   ////
-  public:
+public:
 
-    typedef std::vector<double>     NJetScalesType;
+  typedef std::vector<double>     NJetScalesType;
 
-    typedef MetaLDA::LDAValuesType  LDAValuesType;
+  typedef MetaLDA::LDAValuesType  LDAValuesType;
 
-    typedef MetaLDA::LDAMatrixType  LDAMatrixType;
+  typedef MetaLDA::LDAMatrixType  LDAMatrixType;
 
-    ////
-    //
-    // Constructors & Destructor
-    //
-    ////
-    MetaNJetLDA( void );
+  ////
+  //
+  // Constructors & Destructor
+  //
+  ////
+  MetaNJetLDA( void );
 
-    MetaNJetLDA( const char *_headerName );
+  MetaNJetLDA( const char *_headerName );
 
-    MetaNJetLDA( const MetaNJetLDA & _metaNJetLDA );
+  MetaNJetLDA( const MetaNJetLDA & _metaNJetLDA );
 
-    MetaNJetLDA( const NJetScalesType & _zeroScales,
+  MetaNJetLDA( const NJetScalesType & _zeroScales,
       const NJetScalesType & _firstScales,
       const NJetScalesType & _secondScales,
       const NJetScalesType & _ridgeScales,
       const LDAValuesType & _ldaValues,
       const LDAMatrixType & _ldaMatrix );
 
-    ~MetaNJetLDA( void );
+  ~MetaNJetLDA( void );
 
-    void  PrintInfo( void ) const;
+  void  PrintInfo( void ) const;
 
-    void  CopyInfo( const MetaNJetLDA & _lda );
+  void  CopyInfo( const MetaNJetLDA & _lda );
 
-    void  Clear( void );
+  void  Clear( void );
 
-    bool  InitializeEssential(
+  bool  InitializeEssential(
       const NJetScalesType & _zeroScales,
       const NJetScalesType & _firstScales,
       const NJetScalesType & _secondScales,
@@ -105,60 +105,60 @@ class METAIO_EXPORT MetaNJetLDA
       const LDAValuesType & _ldaValues,
       const LDAMatrixType & _ldaMatrix );
 
-    //
-    //
-    //
-    void  SetZeroScales( const NJetScalesType & _zeroScales );
-    const NJetScalesType & GetZeroScales( void ) const;
+  //
+  //
+  //
+  void  SetZeroScales( const NJetScalesType & _zeroScales );
+  const NJetScalesType & GetZeroScales( void ) const;
 
-    void  SetFirstScales( const NJetScalesType & _firstScales );
-    const NJetScalesType & GetFirstScales( void ) const;
+  void  SetFirstScales( const NJetScalesType & _firstScales );
+  const NJetScalesType & GetFirstScales( void ) const;
 
-    void  SetSecondScales( const NJetScalesType & _secondScales );
-    const NJetScalesType & GetSecondScales( void ) const;
+  void  SetSecondScales( const NJetScalesType & _secondScales );
+  const NJetScalesType & GetSecondScales( void ) const;
 
-    void  SetRidgeScales( const NJetScalesType & _ridgeScales );
-    const NJetScalesType & GetRidgeScales( void ) const;
+  void  SetRidgeScales( const NJetScalesType & _ridgeScales );
+  const NJetScalesType & GetRidgeScales( void ) const;
 
-    //
-    //
-    //
-    virtual bool CanRead( const char *_headerName=NULL ) const;
+  //
+  //
+  //
+  virtual bool CanRead( const char *_headerName=NULL ) const;
 
-    virtual bool Read( const char *_headerName=NULL );
+  virtual bool Read( const char *_headerName=NULL );
 
-    virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
 
-    virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
 
-    virtual bool Write( const char *_headName=NULL );
+  virtual bool Write( const char *_headName=NULL );
 
-    virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
+  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
   ////
   //
   // PROTECTED
   //
   ////
-  protected:
+protected:
 
-    NJetScalesType  m_ZeroScales;
-    NJetScalesType  m_FirstScales;
-    NJetScalesType  m_SecondScales;
-    NJetScalesType  m_RidgeScales;
+  NJetScalesType  m_ZeroScales;
+  NJetScalesType  m_FirstScales;
+  NJetScalesType  m_SecondScales;
+  NJetScalesType  m_RidgeScales;
 
-    LDAValuesType   m_ZeroScalesTmp;
-    LDAValuesType   m_FirstScalesTmp;
-    LDAValuesType   m_SecondScalesTmp;
-    LDAValuesType   m_RidgeScalesTmp;
+  LDAValuesType   m_ZeroScalesTmp;
+  LDAValuesType   m_FirstScalesTmp;
+  LDAValuesType   m_SecondScalesTmp;
+  LDAValuesType   m_RidgeScalesTmp;
 
-    void  M_Destroy( void );
+  void  M_Destroy( void );
 
-    void  M_SetupReadFields( void );
+  void  M_SetupReadFields( void );
 
-    void  M_SetupWriteFields( void );
+  void  M_SetupWriteFields( void );
 
-    bool  M_Read( void );
+  bool  M_Read( void );
 
 };
 
