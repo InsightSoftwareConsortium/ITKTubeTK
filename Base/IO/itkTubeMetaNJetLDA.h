@@ -58,11 +58,11 @@ namespace tube {
 class METAIO_EXPORT MetaNJetLDA
 : public MetaLDA
 {
-  /////
-  //
-  // PUBLIC
-  //
-  ////
+/////
+//
+// PUBLIC
+//
+////
 public:
 
   typedef std::vector<double>     NJetScalesType;
@@ -98,12 +98,12 @@ public:
   void  Clear( void );
 
   bool  InitializeEssential(
-      const NJetScalesType & _zeroScales,
-      const NJetScalesType & _firstScales,
-      const NJetScalesType & _secondScales,
-      const NJetScalesType & _ridgeScales,
-      const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix );
+    const NJetScalesType & _zeroScales,
+    const NJetScalesType & _firstScales,
+    const NJetScalesType & _secondScales,
+    const NJetScalesType & _ridgeScales,
+    const LDAValuesType & _ldaValues,
+    const LDAMatrixType & _ldaMatrix );
 
   //
   //
@@ -135,11 +135,11 @@ public:
 
   virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
-  ////
-  //
-  // PROTECTED
-  //
-  ////
+////
+//
+// PROTECTED
+//
+////
 protected:
 
   NJetScalesType  m_ZeroScales;
