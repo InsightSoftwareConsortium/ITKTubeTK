@@ -274,16 +274,16 @@ public:
 
   /** Set/get the weightings for the intensity distance update term.  If
    *  using multiresolution registration and the current level is past the
-   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  length of the weight vector, the last weight in the vector will be used.
    *  Default: 1.0 */
   void SetIntensityDistanceWeightings( std::vector< double >& weightings )
     { m_IntensityDistanceWeightings = weightings; }
   const std::vector< double >& GetIntensityDistanceWeightings() const
     { return m_IntensityDistanceWeightings; }
 
-  /** Set/get the weightings for the intensity distance update term.  If
+  /** Set/get the weightings for the regularization update term.  If
    *  using multiresolution registration and the current level is past the
-   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  length of the weight vector, the last weight in the vector will be used.
    *  Default: 1.0 */
   void SetRegularizationWeightings( std::vector< double >& weightings )
     { m_RegularizationWeightings = weightings; }
