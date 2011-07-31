@@ -275,17 +275,17 @@ public:
 
   /** Get the RMS and mean changes in the deformation field. */
   double GetRMSTotalChange() const
-    { return m_RMSTotalChange; }
+    { return this->GetTimeStep() * m_RMSTotalChange; }
   double GetRMSIntensityDistanceChange() const
-    { return m_RMSIntensityDistanceChange; }
+    { return this->GetTimeStep() * m_RMSIntensityDistanceChange; }
   double GetRMSRegularizationChange() const
-    { return m_RMSRegularizationChange; };
+    { return this->GetTimeStep() * m_RMSRegularizationChange; };
   double GetMeanTotalChange() const
-    { return m_MeanTotalChange; }
+    { return this->GetTimeStep() * m_MeanTotalChange; }
   double GetMeanIntensityDistanceChange() const
-    { return m_MeanIntensityDistanceChange; }
+    { return this->GetTimeStep() * m_MeanIntensityDistanceChange; }
   double GetMeanRegularizationChange() const
-    { return m_MeanRegularizationChange; }
+    { return this->GetTimeStep() * m_MeanRegularizationChange; }
 
   /** Get the intensity distance and regularization energies, weighted by
    *  the specified weightings. */
