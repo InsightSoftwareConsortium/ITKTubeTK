@@ -40,8 +40,8 @@ limitations under the License.
 namespace VTREE {
 
 class TubeRegistratorPoint
-  {
-  public:
+{
+public:
     vnl_vector<double> x;
     double r;
     double rn, mn;
@@ -56,56 +56,56 @@ class TubeRegistratorPoint
     vnl_vector<double> dXT;
 
     TubeRegistratorPoint();
-  };
+};
 
 class TubeRegistrator : public Registrator
-  {
+{
 
-  protected:
+protected:
 
-    double cKappa;
+  double cKappa;
 
-    double cMetric;
+  double cMetric;
 
-    TubeNet * cTubeNet;
-    std::list<TubeRegistratorPoint *> cRegPoints;
-    Image3D<short> * cIm;
-    double cImMin, cImRange;
-    int cSampling;
-    int cCount;
-    double cWeight;
-    ImageValueOp3D<short> cImOp;
-    vnl_matrix<double> cBiasV;
-    vnl_matrix<double> cBiasVI;
+  TubeNet * cTubeNet;
+  std::list<TubeRegistratorPoint *> cRegPoints;
+  Image3D<short> * cIm;
+  double cImMin, cImRange;
+  int cSampling;
+  int cCount;
+  double cWeight;
+  ImageValueOp3D<short> cImOp;
+  vnl_matrix<double> cBiasV;
+  vnl_matrix<double> cBiasVI;
 
-    double cRegImThresh;
+  double cRegImThresh;
 
-  public:
+public:
 
-    TubeRegistrator();
+  TubeRegistrator();
 
-    void SetTubeNet(TubeNet * tubes);
-    void SetImage(Image3D<short> * im);
+  void SetTubeNet(TubeNet * tubes);
+  void SetImage(Image3D<short> * im);
 
-    int GetSampling(void);
-    void SetSampling(int newSampling);
-    int SetNumSamples(void);
-    std::list<TubeRegistratorPoint *> * GetSamples(void);
+  int GetSampling(void);
+  void SetSampling(int newSampling);
+  int SetNumSamples(void);
+  std::list<TubeRegistratorPoint *> * GetSamples(void);
 
-    void SetKappa(double kappa);
+  void SetKappa(double kappa);
 
-    void SetImThresh(double newRegThresh);
-    double GetImThresh(void);
+  void SetImThresh(double newRegThresh);
+  double GetImThresh(void);
 
-    void MetricPreProc(void);
-    double Metric(void);
-    double MetricDeriv(double * dX, double * dY, double * dZ,
+  void MetricPreProc(void);
+  double Metric(void);
+  double MetricDeriv(double * dX, double * dY, double * dZ,
                        double * dA, double * dB, double * dG);
 
-    bool Fit(void);
-  };
-
+  bool Fit(void);
 };
+
+}
 
 #endif
 

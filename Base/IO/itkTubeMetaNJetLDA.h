@@ -35,20 +35,20 @@ limitations under the License.
 #include "itkTubeMetaLDA.h"
 
 /*!    MetaNJetLDA ( .h and .cpp )
-*
-* Description:
-*    Reads and Writes MetaNJetLDA Files, typically designated .mnda files
-*
-*    REQUIRED: itkTubeNJetLDAGenerator instance
-*
-* \author Stephen R. Aylward
-*
-* \date August 29, 1999
-*
-* Depends on:
-*    MetaUtils.h
-*    MetaLDA.h
-*    MetaForm.h
+
+Description:
+  Reads and Writes MetaNJetLDA Files, typically designated .mnda files
+
+REQUIRED: itkTubeNJetLDAGenerator instance
+
+\author Stephen R. Aylward
+
+\date August 29, 1999
+
+Depends on:
+  MetaUtils.h
+  MetaLDA.h
+  MetaForm.h
 */
 
 namespace itk {
