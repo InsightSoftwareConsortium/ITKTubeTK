@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ void cliProgressReporterTestCallbackFunction( void * data )
     }
 }
 
-int tubeCLIProgressReporterTest(int argc, char *itkNotUsed(argv)[] ) 
+int tubeCLIProgressReporterTest(int argc, char *itkNotUsed(argv)[] )
 {
   if( argc != 1 )
     {
@@ -49,7 +49,7 @@ int tubeCLIProgressReporterTest(int argc, char *itkNotUsed(argv)[] )
 
   ModuleProcessInformation CLPProcessInfo;
   CLPProcessInfo.Initialize();
-  CLPProcessInfo.SetProgressCallback( 
+  CLPProcessInfo.SetProgressCallback(
     cliProgressReporterTestCallbackFunction, NULL );
 
   std::string processName("tubeCLIProgressReporterTest");
@@ -66,7 +66,7 @@ int tubeCLIProgressReporterTest(int argc, char *itkNotUsed(argv)[] )
   if( reporter.GetProcess( ) != processName )
     {
     std::cerr << "Process name does not match." << std::endl;
-    std::cerr << reporter.GetProcess() << " != " << processName 
+    std::cerr << reporter.GetProcess() << " != " << processName
               << std::endl;
     }
   if( reporter.GetProcessInformation( ) != &CLPProcessInfo )
