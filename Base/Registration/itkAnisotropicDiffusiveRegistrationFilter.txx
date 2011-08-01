@@ -713,7 +713,7 @@ AnisotropicDiffusiveRegistrationFilter
     for( normalIt.GoToBegin(), multIt.GoToBegin();
          !multIt.IsAtEnd();
          ++normalIt, ++multIt )
-           {
+      {
       normalVector = normalIt.Get();
       multIt.Set( normalVector[i] * normalVector );
       }

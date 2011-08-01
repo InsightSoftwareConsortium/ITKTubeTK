@@ -440,7 +440,7 @@ private:
   NormalMatrixImagePointer            m_HighResolutionNormalMatrixImage;
   WeightMatrixImagePointer            m_HighResolutionWeightStructuresImage;
   WeightComponentImagePointer
-      m_HighResolutionWeightRegularizationsImage;
+  m_HighResolutionWeightRegularizationsImage;
 
   /** The lambda/gamma factors for computing the weight from distance. */
   WeightComponentType                 m_Lambda;

@@ -153,7 +153,7 @@ AnisotropicDiffusiveRegistrationFunction
   if( m_NumberOfPixelsProcessed )
     {
     m_RMSChange
-        = vcl_sqrt( m_SumOfSquaredChange
+    = vcl_sqrt( m_SumOfSquaredChange
                     / static_cast< double >( m_NumberOfPixelsProcessed ) );
     }
 

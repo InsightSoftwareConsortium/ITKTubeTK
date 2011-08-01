@@ -1073,7 +1073,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
          multIt.GoToBegin();
          !multIt.IsAtEnd();
          ++normalIt, ++weightStructuresIt, ++multIt )
-           {
+      {
       multVector.Fill( 0.0 );
       N = normalIt.Get();
       A = weightStructuresIt.Get();
@@ -1302,7 +1302,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   for( normalMatrixIt.Begin(), normalVectorIt.Begin();
        !normalMatrixIt.IsAtEnd();
        ++normalMatrixIt, ++normalVectorIt )
-         {
+    {
     matrix = normalMatrixIt.Get();
     for( int i = 0; i < ImageDimension; i++ )
       {
