@@ -119,7 +119,7 @@ DiffusiveRegistrationFilter
     std::cout << m_IntensityDistanceWeightings[i] << " ";
     }
   std::cout << std::endl;
-  std::cout << indent << "Regulraization weightings: " ;
+  std::cout << indent << "Regulraization weightings: ";
   for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
     {
     std::cout << m_RegularizationWeightings[i] << " ";
@@ -665,7 +665,7 @@ DiffusiveRegistrationFilter
     for( tensorNeighborhood.GoToBegin(), tensorDerivativeRegion.GoToBegin();
          !tensorNeighborhood.IsAtEnd();
          ++tensorNeighborhood, ++tensorDerivativeRegion )
-           {
+      {
       reg->ComputeDiffusionTensorFirstOrderPartialDerivatives(
           tensorNeighborhood, tensorDerivativeRegion, spacing );
       }
@@ -881,7 +881,7 @@ DiffusiveRegistrationFilter
        !deformationComponentStruct.IsAtEnd();
        deformationComponentStruct.Increment(), firstOrderStruct.Increment(),
        secondOrderStruct.Increment() )
-         {
+    {
     // Set the neighborhood iterators to the current face
     deformationComponentStruct.SetIteratorToCurrentFace(
         deformationComponentNeighborhood, deformationComponentImage, radius );
@@ -896,7 +896,7 @@ DiffusiveRegistrationFilter
          !deformationComponentNeighborhood.IsAtEnd();
          ++deformationComponentNeighborhood, ++firstOrderRegion,
          ++secondOrderRegion )
-           {
+      {
       reg->ComputeIntensityFirstAndSecondOrderPartialDerivatives(
           deformationComponentNeighborhood,
           firstOrderRegion,
@@ -1315,7 +1315,7 @@ DiffusiveRegistrationFilter
   for( u = u.Begin(), o = o.Begin();
        !u.IsAtEnd();
        ++o, ++u )
-         {
+    {
     o.Value() += static_cast< DeformationVectorType >( u.Value() * dt );
     // no adaptor support here
     }
