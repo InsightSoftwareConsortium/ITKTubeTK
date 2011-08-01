@@ -152,7 +152,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     ->GetChildren( 999999, childName );
 
   TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
-  for( ; tubeIterator != tubeList->end(); ++tubeIterator )
+  for(; tubeIterator != tubeList->end(); ++tubeIterator )
     {
     TubeType* currTube = static_cast<TubeType*>( ( *tubeIterator ).GetPointer() );
 
@@ -167,7 +167,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       {
       typename std::vector<TubePointType>::iterator  tubePointIterator;
       for( tubePointIterator=currTube->GetPoints().begin();
-          tubePointIterator!=currTube->GetPoints().end();
+          tubePointIterator != currTube->GetPoints().end();
           tubePointIterator++ )
         {
         if( sampling != 1 )
@@ -203,7 +203,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
           tM = outer_product( v1, v1 );
           tM = tM + outer_product( v2, v2 );
           biasV = biasV + ( weight * tM );
-          for( unsigned int i=0 ; i<ImageDimension; i++ )
+          for( unsigned int i=0; i<ImageDimension; i++ )
             {
             ( m_C )( i ) += weight*( tubePointIterator->GetPosition() )[i];
             }
@@ -214,7 +214,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         if( sampling>1 )
           {
           while ( skipped++ % ( sampling/2 ) != 0
-            && tubePointIterator!=currTube->GetPoints().end() )
+            && tubePointIterator != currTube->GetPoints().end() )
             {
             tubePointIterator++;
             }
@@ -384,9 +384,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
       vnl_vector_fixed<double, 3> rotationOffset = matrix * m_C;
 
-      point[0] +=  ( m_C )( 0 ) - ( rotationOffset )( 0 );
-      point[1] +=  ( m_C )( 1 ) - ( rotationOffset )( 1 );
-      point[2] +=  ( m_C )( 2 ) - ( rotationOffset )( 2 );
+      point[0] += ( m_C )( 0 ) - ( rotationOffset )( 0 );
+      point[1] += ( m_C )( 1 ) - ( rotationOffset )( 1 );
+      point[2] += ( m_C )( 2 ) - ( rotationOffset )( 2 );
 
       // Need to use interpolator intead
       itk::Index<3> index;
@@ -509,27 +509,27 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
       if( IsInside( inputPoint )
          //&& m_FixedImage->GetPixel( index ) > m_RegImageThreshold
-        )
+      )
+      {
+      sumWeight += *weightIterator;
+      count++;
+      opR = ( *j ).GetRadius();
+      if( opR<0.5 )
         {
-        sumWeight += *weightIterator;
-        count++;
-        opR = ( *j ).GetRadius();
-        if( opR<0.5 )
-          {
-          opR = 0.5;
-          }
-
-        SetScale( opR * m_Kappa );
-
-        xTV( 0 ) = point[0];( xT )( 0 );
-        xTV( 1 ) = point[1];( xT )( 1 );
-        xTV( 2 ) = point[2];( xT )( 2 );
-        dXTV  = EvaluateAllDerivatives();
-        matchMeasure += *WeightIterator  * GetBlurredValue();
-
-        delete dXTV;
-
+        opR = 0.5;
         }
+
+      SetScale( opR * m_Kappa );
+
+      xTV( 0 ) = point[0];( xT )( 0 );
+      xTV( 1 ) = point[1];( xT )( 1 );
+      xTV( 2 ) = point[2];( xT )( 2 );
+      dXTV  = EvaluateAllDerivatives();
+      matchMeasure += *WeightIterator  * GetBlurredValue();
+
+      delete dXTV;
+
+      }
       weightIterator++;
       }
     }
@@ -1315,9 +1315,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
       vnl_vector<double> rotationOffset = matrix * m_C;
 
-      point[0] +=  ( m_C )( 0 ) - ( rotationOffset )( 0 );
-      point[1] +=  ( m_C )( 1 ) - ( rotationOffset )( 1 );
-      point[2] +=  ( m_C )( 2 ) - ( rotationOffset )( 2 );
+      point[0] += ( m_C )( 0 ) - ( rotationOffset )( 0 );
+      point[1] += ( m_C )( 1 ) - ( rotationOffset )( 1 );
+      point[2] += ( m_C )( 2 ) - ( rotationOffset )( 2 );
 
       itk::Index<3> index;
       index[0] = ( unsigned int )point[0];
@@ -1696,7 +1696,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     ( *derivatives )( 2 ) = resZ/wTotalZ;
     }
 
- return derivatives;
+  return derivatives;
 }
 
 /** Evaluate all derivatives at a point */
@@ -1780,26 +1780,26 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       }
     }
 
-    if( wTotalI == 0 )
+  if( wTotalI == 0 )
     {
       derivatives->fill( 0 );
-      return derivatives;
+    return derivatives;
     }
 
-    if( wTotalX == 0 )
+  if( wTotalX == 0 )
         ( *derivatives )( 0 ) = 0;
-    else
-        ( *derivatives )( 0 ) = resX/wTotalX;
+  else
+  ( *derivatives )( 0 ) = resX/wTotalX;
 
-    if( wTotalY == 0 )
+  if( wTotalY == 0 )
         ( *derivatives )( 1 ) = 0;
-    else
-        ( *derivatives )( 1 ) = resY/wTotalY;
+  else
+  ( *derivatives )( 1 ) = resY/wTotalY;
 
-    if( wTotalZ == 0 )
+  if( wTotalZ == 0 )
         ( *derivatives )( 2 ) = 0;
-    else
-        ( *derivatives )( 2 ) = resZ/wTotalZ;
+  else
+  ( *derivatives )( 2 ) = resZ/wTotalZ;
 
   m_BlurredValue = resI/wTotalI;
 
@@ -1808,7 +1808,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   // << ( ( float )clock()-( float )c0 )/( float )CLOCKS_PER_SEC
   // << " s" << std::endl;
 
- return derivatives;
+  return derivatives;
 }
 
 
@@ -1835,9 +1835,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   itk::Vector<double, 3> rotationOffset = matrix * m_CenterOfRotation;
 
-  m_CurrentPoint[0] +=  m_CenterOfRotation[0] - rotationOffset[0];
-  m_CurrentPoint[1] +=  m_CenterOfRotation[1] - rotationOffset[1];
-  m_CurrentPoint[2] +=  m_CenterOfRotation[2] - rotationOffset[2];
+  m_CurrentPoint[0] += m_CenterOfRotation[0] - rotationOffset[0];
+  m_CurrentPoint[1] += m_CenterOfRotation[1] - rotationOffset[1];
+  m_CurrentPoint[2] += m_CenterOfRotation[2] - rotationOffset[2];
 
   //std::cout << " m_CurrentPoint = " << m_CurrentPoint << std::endl;
 

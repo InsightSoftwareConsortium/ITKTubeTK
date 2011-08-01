@@ -114,9 +114,9 @@ public:
   const typename ProbabilityImageType::Pointer GetClassProbabilityVolume(
     unsigned int classNum );
 
-  const typename PDFImageType::Pointer GetClassPDFImage( 
+  const typename PDFImageType::Pointer GetClassPDFImage(
     unsigned int classNum );
-  void SetClassPDFImage( unsigned int classNum, 
+  void SetClassPDFImage( unsigned int classNum,
     typename PDFImageType::Pointer classPDF );
 
   double GetPDFBinMin( unsigned int featureNum );
@@ -162,18 +162,18 @@ private:
   PDFSegmenter( const Self & );          // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-  typedef std::vector< typename ProbabilityImageType::Pointer > 
+  typedef std::vector< typename ProbabilityImageType::Pointer >
     ProbabilityImageVectorType;
 
-  typedef std::vector< typename HistogramImageType::Pointer > 
+  typedef std::vector< typename HistogramImageType::Pointer >
     ClassHistogramImageType;
 
   typedef itk::Vector< PixelType, N+ImageDimension >
-    ListVectorType;
+  ListVectorType;
   typedef itk::Statistics::ListSample< ListVectorType >
-    ListSampleType;
+  ListSampleType;
   typedef std::vector< typename ListSampleType::Pointer >
-    ClassListSampleType;
+  ClassListSampleType;
 
   bool                                     m_SampleUpToDate;
   bool                                     m_PDFsUpToDate;
