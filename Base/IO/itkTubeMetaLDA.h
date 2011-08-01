@@ -32,26 +32,26 @@ limitations under the License.
 #include "metaForm.h"
 
 /*!    MetaLDA ( .h and .cpp )
- *
- * Description:
- *    Reads and Writes MetaLDA Files, typically designated .mlda files
- *
- *    REQUIRED: itkTubeLDAGenerator instance
- *
- * \author Stephen R. Aylward
- * 
- * \date August 29, 1999
- * 
- * Depends on:
- *    MetaUtils.h
- *    MetaForm.h
- */
+*
+* Description:
+*    Reads and Writes MetaLDA Files, typically designated .mlda files
+*
+*    REQUIRED: itkTubeLDAGenerator instance
+*
+* \author Stephen R. Aylward
+*
+* \date August 29, 1999
+*
+* Depends on:
+*    MetaUtils.h
+*    MetaForm.h
+*/
 
 namespace itk {
 
 namespace tube {
 
-class METAIO_EXPORT MetaLDA 
+class METAIO_EXPORT MetaLDA
 : public MetaForm
 {
   /////
@@ -59,60 +59,58 @@ class METAIO_EXPORT MetaLDA
   // PUBLIC
   //
   ////
-  public:
+public:
 
-    typedef vnl_vector< double >    LDAValuesType;
+  typedef vnl_vector< double >    LDAValuesType;
 
-    typedef vnl_matrix< double >    LDAMatrixType;
+  typedef vnl_matrix< double >    LDAMatrixType;
 
-    ////
-    //
-    // Constructors & Destructor
-    //
-    ////
-    MetaLDA( void );
+  ////
+  //
+  // Constructors & Destructor
+  //
+  ////
+  MetaLDA( void );
 
-    MetaLDA( const char *_headerName );   
+  MetaLDA( const char *_headerName );
 
-    MetaLDA( const MetaLDA & _metaLDA );
+  MetaLDA( const MetaLDA & _metaLDA );
 
-    MetaLDA( const LDAValuesType & _ldaValues,
+  MetaLDA( const LDAValuesType & _ldaValues,
       const LDAMatrixType & _ldaMatrix );
 
-    ~MetaLDA( void );
+  ~MetaLDA( void );
 
-    void  PrintInfo( void ) const;
+  void  PrintInfo( void ) const;
 
-    void  CopyInfo( const MetaLDA & _lda );
+  void  CopyInfo( const MetaLDA & _lda );
 
-    void  Clear( void );
+  void  Clear( void );
 
-    bool  InitializeEssential( const LDAValuesType & _ldaValues,
+  bool  InitializeEssential( const LDAValuesType & _ldaValues,
       const LDAMatrixType & _ldaMatrix );
 
-    //
-    //
-    //
-    void  SetLDAValues( const LDAValuesType & _ldaValues );
-    const LDAValuesType & GetLDAValues( void ) const;
+  //
+  //
+  //
+  void  SetLDAValues( const LDAValuesType & _ldaValues );
+  const LDAValuesType & GetLDAValues( void ) const;
 
-    void  SetLDAMatrix( const LDAMatrixType & _ldaMatrix );
-    const LDAMatrixType & GetLDAMatrix( void ) const;
+  void  SetLDAMatrix( const LDAMatrixType & _ldaMatrix );
+  const LDAMatrixType & GetLDAMatrix( void ) const;
 
-    //
-    //
-    //
-    virtual bool CanRead( const char *_headerName=NULL ) const;
+  //
+  //
+  //
+  virtual bool CanRead( const char *_headerName=NULL ) const;
+  virtual bool Read( const char *_headerName=NULL );
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
 
-    virtual bool Read( const char *_headerName=NULL );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
 
-    virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
+  virtual bool Write( const char *_headName=NULL );
 
-    virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
-
-    virtual bool Write( const char *_headName=NULL );
-
-    virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
+  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
   ////
   //
@@ -121,17 +119,17 @@ class METAIO_EXPORT MetaLDA
   ////
   protected:
 
-    LDAValuesType   m_LDAValues;
+LDAValuesType   m_LDAValues;
 
-    LDAMatrixType   m_LDAMatrix;
+  LDAMatrixType   m_LDAMatrix;
 
-    void  M_Destroy( void );
+  void  M_Destroy( void );
 
-    void  M_SetupReadFields( void );
+  void  M_SetupReadFields( void );
 
-    void  M_SetupWriteFields( void );
+  void  M_SetupWriteFields( void );
 
-    bool  M_Read( void );
+  bool  M_Read( void );
 
 };
 
