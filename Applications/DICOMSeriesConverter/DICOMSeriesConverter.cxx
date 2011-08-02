@@ -94,7 +94,7 @@ const std::string CleanString(std::string inString, int strLen)
 
     for(int i=0; i<(int)inString.size(); i++)
       {
-      while(i<(int)inString.size() 
+      while(i<(int)inString.size()
              && !(   (inString[i] >= 'a' && inString[i] <= 'z')
                   || (inString[i] >= '0' && inString[i] <= '9')
                   || (inString[i] >= 'A' && inString[i] <= 'Z')))
@@ -441,11 +441,11 @@ int main( int argc, char* argv[] )
         else
           {
           gdcm::File *file = (*(nameGenerator->GetSeriesHelper()
-                                             ->GetSingleSerieUIDFileSet( 
+                                             ->GetSingleSerieUIDFileSet(
                                                     seriesIdentifier )))[0];
-          std::string sequenceName = file->GetEntryValue( SequenceNameGroup, 
+          std::string sequenceName = file->GetEntryValue( SequenceNameGroup,
                                                           SequenceNameElement );
-          if( sequenceName == splitSequenceName 
+          if( sequenceName == splitSequenceName
               && (int)fileNames.size() > splitNumber)
             {
             processingSplit = true;
@@ -501,7 +501,7 @@ int main( int argc, char* argv[] )
         }
   
       gdcm::File *file = (*(nameGenerator->GetSeriesHelper()
-                                         ->GetSingleSerieUIDFileSet( 
+                                         ->GetSingleSerieUIDFileSet(
                                              seriesIdentifier )))[0];
 
       std::string patientName;
@@ -520,15 +520,15 @@ int main( int argc, char* argv[] )
                                                    StudyDateElement );
       studyDate = CleanString(studyDate, 0);
 
-      std::string modality = file->GetEntryValue( ModalityGroup, 
+      std::string modality = file->GetEntryValue( ModalityGroup,
                                                   ModalityElement );
       modality = CleanString(modality, 0);
 
-      std::string studyID = file->GetEntryValue( StudyIDGroup, 
+      std::string studyID = file->GetEntryValue( StudyIDGroup,
                                                  StudyIDElement );
       studyID = CleanString(studyID, 0);
 
-      std::string seriesNumber = file->GetEntryValue( SeriesNumberGroup, 
+      std::string seriesNumber = file->GetEntryValue( SeriesNumberGroup,
                                                       SeriesNumberElement );
       seriesNumber = CleanString(seriesNumber, 0);
 
@@ -536,7 +536,7 @@ int main( int argc, char* argv[] )
       if( modality == "CT")
         {
         // No real meaning to sequenceName in CT, so use sliceThickness
-        sequenceName = file->GetEntryValue( SliceThicknessGroup, 
+        sequenceName = file->GetEntryValue( SliceThicknessGroup,
                                             SliceThicknessElement );
         if( sequenceName == gdcm::GDCM_UNFOUND )
           {
@@ -552,19 +552,19 @@ int main( int argc, char* argv[] )
         }
       else
         {
-        sequenceName = file->GetEntryValue( SequenceNameGroup, 
+        sequenceName = file->GetEntryValue( SequenceNameGroup,
                                             SequenceNameElement );
         sequenceName = CleanString(sequenceName, 0);
         }
 
-      std::string protocolName = file->GetEntryValue( ProtocolNameGroup, 
+      std::string protocolName = file->GetEntryValue( ProtocolNameGroup,
                                                       ProtocolNameElement );
       protocolName = CleanString(protocolName, 0);
 
       char coord[80];
       if( imageIs3D )
         {
-        std::string spacing = file->GetEntryValue( SpacingGroup,  
+        std::string spacing = file->GetEntryValue( SpacingGroup,
                                                    SpacingElement );
         int split = spacing.find_first_of("\\");
         // int len = spacing.size()-split-1; UNUSED
@@ -579,7 +579,7 @@ int main( int argc, char* argv[] )
         double yPos = atof(pos.substr(splitX+1, lenY).c_str());
         double zPos = atof(pos.substr(splitY+1, lenZ).c_str());
         file = (*(nameGenerator->GetSeriesHelper()
-                               ->GetSingleSerieUIDFileSet( 
+                               ->GetSingleSerieUIDFileSet(
                                         seriesIdentifier )))[1];
         pos = file->GetEntryValue( PositionGroup, PositionElement );
         splitX = pos.find_first_of("\\");
@@ -691,7 +691,7 @@ int main( int argc, char* argv[] )
         sprintf(fileNumString, "%04d", fileNum-splitVolumeStart);
 
         gdcm::File *newfile = (*(nameGenerator->GetSeriesHelper()
-                                           ->GetSingleSerieUIDFileSet( 
+                                           ->GetSingleSerieUIDFileSet(
                                                seriesIdentifier )))[fileNum];
 
         std::string oldFilenameWithPath = newfile->GetFileName().c_str();
@@ -719,8 +719,8 @@ int main( int argc, char* argv[] )
                                           start).c_str();
 
         std::string newDicomFilename = filename;
-        newDicomFilename += "_DCM/"; 
-        newDicomFilename += oldFilename; 
+        newDicomFilename += "_DCM/";
+        newDicomFilename += oldFilename;
 
         newfile->CloseFile();
 
@@ -729,7 +729,7 @@ int main( int argc, char* argv[] )
 
         mappingFilenameStream << oldFilenameWithPath << " "
                               << newDicomFilename << "  "
-                              << metaFilename << "  " 
+                              << metaFilename << "  "
                               << fileNumString << std::endl;
 
         if(optAnonymize)
@@ -764,7 +764,7 @@ int main( int argc, char* argv[] )
           // InstitutionName -> Kitware Anonymization Software
           //newfile->SetValEntry( "Kitware Anonymization Software",
                              // 0x0008, 0x0080 );
-          newfile->AddAnonymizeElement( 0x0008, 0x0080, 
+          newfile->AddAnonymizeElement( 0x0008, 0x0080,
                                      "Kitware Anonymization Software" );
                             
           // InstitutionAddress -> http://kitware.com
@@ -801,7 +801,7 @@ int main( int argc, char* argv[] )
                 }
               else
                 {
-                // groupID is an ordered sequence - abort if past group
+          // groupID is an ordered sequence - abort if past group
                 if(group < groupID[i])
                   {
                   break;
@@ -843,26 +843,26 @@ int main( int argc, char* argv[] )
           newfile->CloseFile();
           }
         }
-      if(!processingSplit) 
-        {
-        seriesItr++;
-        }
-      else
-        {
-        if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
+      if(!processingSplit)
+          {
+          seriesItr++;
+          }
+          else
+          {
+          if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
           {
           processingSplit = false;
           splitVolumeStart = 0;
           seriesItr++;
           }
-        }
-      }
-    }
-  catch (itk::ExceptionObject &ex)
-    {
-    std::cout << "ERROR : " << ex << std::endl;
-    return EXIT_FAILURE;
-    }
+          }
+          }
+          }
+          catch (itk::ExceptionObject &ex)
+          {
+          std::cout << "ERROR : " << ex << std::endl;
+          return EXIT_FAILURE;
+          }
 
   return EXIT_SUCCESS;
-}
+      }
