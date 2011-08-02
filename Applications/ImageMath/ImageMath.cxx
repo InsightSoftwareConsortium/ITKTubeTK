@@ -1754,7 +1754,7 @@ int main( int argc, char *argv[] )
     "Correction", "referenceVolume", MetaCommand::STRING, true );
 
   command.SetOption( "Normalize", "d", false,
-    "Normalize image by setting mean to zero and standard deviation to one (type 0 = use data's mean/std; 1 = use FWHM estimate; 2 = use FWHM mean only)" );
+    "Normalize: type 0 = use data's mean/std; 1 = use FWHM estimate; 2 = use FWHM mean (shift) only" );
   command.AddOptionField( "Normalize", "type", MetaCommand::INT, true );
 
   command.SetOption( "Fuse", "f", false,

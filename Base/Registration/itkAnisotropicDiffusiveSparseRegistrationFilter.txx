@@ -784,7 +784,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                       bool computeWeightRegularizations )
 {
   assert( this->GetComputeRegularizationTerm() );
-  //assert( m_BorderSurface->GetPointData()->GetNormals() || m_TubeSurface ); // TODO put back
+  //assert( m_BorderSurface->GetPointData()->GetNormals() || m_TubeSurface );
+  // TODO put back
   assert( m_NormalMatrixImage );
   assert( m_WeightStructuresImage );
   assert( m_WeightRegularizationsImage );
