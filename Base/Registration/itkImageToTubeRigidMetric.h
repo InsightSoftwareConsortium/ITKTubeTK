@@ -88,7 +88,7 @@ public:
 enum { ImageDimension = 3 };
 enum { RangeDimension = 6 };
 
-unsigned int GetNumberOfParameters( void ) const  {return SpaceDimension};
+unsigned int GetNumberOfParameters( void ) const  {return SpaceDimension;};
 
 /** Typedef for the Range calculator */
   typedef MinimumMaximumImageCalculator<FixedImageType>
