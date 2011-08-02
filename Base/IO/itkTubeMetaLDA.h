@@ -117,9 +117,9 @@ public:
   // PROTECTED
   //
   ////
-  protected:
+protected:
 
-LDAValuesType   m_LDAValues;
+  LDAValuesType   m_LDAValues;
 
   LDAMatrixType   m_LDAMatrix;
 

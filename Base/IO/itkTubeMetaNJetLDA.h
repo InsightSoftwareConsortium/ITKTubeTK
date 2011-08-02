@@ -46,9 +46,9 @@ REQUIRED: itkTubeNJetLDAGenerator instance
 \date August 29, 1999
 
 Depends on:
-  MetaUtils.h
-  MetaLDA.h
-  MetaForm.h
+MetaUtils.h
+MetaLDA.h
+MetaForm.h
 */
 
 namespace itk {
@@ -58,11 +58,11 @@ namespace tube {
 class METAIO_EXPORT MetaNJetLDA
 : public MetaLDA
 {
-/////
-//
-// PUBLIC
-//
-////
+  /////
+  //
+  // PUBLIC
+  //
+  ////
 public:
 
   typedef std::vector<double>     NJetScalesType;
@@ -135,11 +135,11 @@ public:
 
   virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
-////
-//
-// PROTECTED
-//
-////
+  ////
+  //
+  // PROTECTED
+  //
+  ////
 protected:
 
   NJetScalesType  m_ZeroScales;
