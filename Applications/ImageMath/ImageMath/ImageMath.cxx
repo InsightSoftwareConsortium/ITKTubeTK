@@ -116,7 +116,7 @@ int DoIt( MetaCommand & command )
       // Use the sitIM type writer
       sitkIM::TypeImageWriter writer;
       writer.Execute(im.get(), type, outFilename);
-      
+
       } // end -W
 
     else if( ( *it ).name == "Intensity" )
@@ -164,8 +164,9 @@ int DoIt( MetaCommand & command )
 
       // Do the filtering
       sitkIM::UniformNoiseFilter filter;
-      im.reset( filter.Execute( im.get(), valMin, valMax, noiseMean, noiseRange, globalRandSeed ) );
-      
+      im.reset( filter.Execute( im.get(), valMin, valMax,
+        noiseMean, noiseRange, globalRandSeed ) );
+
       } // -N
 
     // GaussianNoise

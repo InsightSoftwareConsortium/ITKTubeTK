@@ -47,7 +47,7 @@ public:
 
   /** Execute the reporter */
   itk::simple::Image* Execute(itk::simple::Image* image,
-                              unsigned int centroids, 
+                              unsigned int centroids,
                               unsigned int iters,
                               unsigned int samples,
                               std::string f);

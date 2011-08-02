@@ -499,11 +499,140 @@ int DoIt( MetaCommand & command )
       std::cout << "NOTE: since this filter normalizes the data to lie "
                 << "within -1 to 1, integral types will produce an image that "
                 << "DOES NOT HAVE a unit variance" << std::endl;
-      typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
-      typename NormFilterType::Pointer normFilter = NormFilterType::New();
-      normFilter->SetInput( imIn );
-      normFilter->Update();
-      imIn = normFilter->GetOutput();
+      int normType = command.GetValueAsInt( *it, "type" );
+      if( normType == 0 )
+        {
+        typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
+        typename NormFilterType::Pointer normFilter = NormFilterType::New();
+        normFilter->SetInput( imIn );
+        normFilter->Update();
+        imIn = normFilter->GetOutput();
+        }
+      else
+        {
+        unsigned int nBins = 50;
+
+        itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
+              imIn->GetLargestPossibleRegion() );
+        it1.GoToBegin();
+        double binMin = it1.Get();
+        double binMax = it1.Get();
+        while( !it1.IsAtEnd() )
+          {
+          double tf = it1.Get();
+          if( tf < binMin )
+            {
+            binMin = tf;
+            }
+          else
+            {
+            if( tf > binMax )
+              {
+              binMax = tf;
+              }
+            }
+          ++it1;
+          }
+
+        int loop = 0;
+        double meanV = 0;
+        double stdDevV = 1;
+        itk::Array<double> bin;
+        bin.set_size( nBins );
+        while( loop++ < 4 )
+          {
+          std::cout << "binMin = " << binMin << " : binMax = " << binMax
+            << std::endl;
+          std::cout << "  Mean = " << meanV << " : StdDev = " << stdDevV
+            << std::endl;
+          it1.GoToBegin();
+          bin.Fill( 0 );
+          while( !it1.IsAtEnd() )
+            {
+            double tf = it1.Get();
+            tf = ( tf-binMin )/( binMax-binMin ) * (nBins-1);
+            if( tf>=0 && tf<nBins )
+              {
+              bin[( int )tf]++;
+              }
+            ++it1;
+            }
+
+          int maxBin = 0;
+          double maxBinV = 0;
+          for( unsigned int i=0; i<nBins; i++ )
+            {
+            if( bin[i] > maxBinV )
+              {
+              maxBinV = bin[i];
+              maxBin = i;
+              }
+            }
+          double fwhm = maxBinV / 2;
+          double binFWHMMin = maxBin;
+          while( binFWHMMin>0 && bin[(int)binFWHMMin]>=fwhm )
+            {
+            --binFWHMMin;
+            }
+          std::cout << "  binfwhmmin = " << binFWHMMin
+            << std::endl;
+          binFWHMMin += ( fwhm - bin[(int)binFWHMMin] )
+            / ( bin[(int)binFWHMMin+1] - bin[(int)binFWHMMin] );
+          std::cout << "  tweak: binfwhmmin = " << binFWHMMin
+            << std::endl;
+
+          double binFWHMMax = maxBin;
+          while( binFWHMMax<(int)nBins-1 && bin[(int)binFWHMMax]>=fwhm )
+            {
+            ++binFWHMMax;
+            }
+          std::cout << "  binfwhmmax = " << binFWHMMax
+            << std::endl;
+          binFWHMMax -= ( fwhm - bin[(int)binFWHMMax] )
+            / ( bin[(int)binFWHMMax-1] - bin[(int)binFWHMMax] );
+          std::cout << "  tweak: binfwhmmax = " << binFWHMMax
+            << std::endl;
+
+          double minV = ( ( binFWHMMin + 0.5 ) / ( nBins - 1 ) )
+            * ( binMax-binMin ) + binMin;
+          double maxV = ( ( binFWHMMax + 0.5 ) / ( nBins - 1 ) )
+            * ( binMax-binMin ) + binMin;
+
+          meanV = ( maxV + minV ) / 2.0;
+
+          // FWHM to StdDev relationship from
+          //   http://mathworld.wolfram.com/GaussianFunction.html
+          stdDevV = ( maxV - minV ) / 2.3548;
+
+          binMin = meanV - 1.5 * stdDevV;
+          binMax = meanV + 1.5 * stdDevV;
+          }
+
+        std::cout << "FINAL: binMin = " << binMin << " : binMax = "
+          << binMax << std::endl;
+        std::cout << "  Mean = " << meanV << " : StdDev = " << stdDevV
+          << std::endl;
+
+        it1.GoToBegin();
+        if( normType == 1 )
+          {
+          while( !it1.IsAtEnd() )
+            {
+            double tf = it1.Get();
+            it1.Set( ( tf - meanV ) / stdDevV );
+            ++it1;
+            }
+          }
+        else
+          {
+          while( !it1.IsAtEnd() )
+            {
+            double tf = it1.Get();
+            it1.Set( tf - meanV );
+            ++it1;
+            }
+          }
+        }
       }
 
     // I( x )
@@ -1625,7 +1754,8 @@ int main( int argc, char *argv[] )
     "Correction", "referenceVolume", MetaCommand::STRING, true );
 
   command.SetOption( "Normalize", "d", false,
-    "Normalize image by setting mean to zero and standard deviation to one" );
+    "Normalize image by setting mean to zero and standard deviation to one (type 0 = use data's mean/std; 1 = use FWHM estimate; 2 = use FWHM mean only)" );
+  command.AddOptionField( "Normalize", "type", MetaCommand::INT, true );
 
   command.SetOption( "Fuse", "f", false,
     "fuse two images by max, applying offset to second image" );

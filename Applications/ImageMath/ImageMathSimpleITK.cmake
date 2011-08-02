@@ -57,4 +57,3 @@ subdirs(ImageMath)
 if (BUILD_TESTING)
   subdirs(Testing)
 endif()
-

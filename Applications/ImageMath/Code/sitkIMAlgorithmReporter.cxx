@@ -99,7 +99,7 @@ double AlgorithmReporter::Execute(itk::simple::Image* inImage1,
   typedef itk::Image<double, 3> Image3DType;
 
 
-  // Set up the computation variables  
+  // Set up the computation variables
   double sum = 0;
   double sumS = 0;
   unsigned int count = 0;
