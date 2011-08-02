@@ -26,7 +26,7 @@ limitations under the License.
 #include <list>
 
 int main(int, char **)
-  {
+{
   std::cout << "Importing your data into the MetaImage format"
     << std::endl
     << "  is merely of matter of making a text file that"
@@ -279,7 +279,7 @@ int main(int, char **)
 
     if(storageList == 0)
       {
-      fp << "ElementDataFile = LIST " ;
+      fp << "ElementDataFile = LIST ";
         std::cout << "What is the dimension of the data stored in files?"
         << std::endl
         << "It must be less than or equal to nDims (" << nDims
@@ -300,7 +300,7 @@ int main(int, char **)
       int totalFiles = 1;
       for (i = nDims; i > fileImageDim; i--)
         {
-          totalFiles *= dimSize[i-1];
+        totalFiles *= dimSize[i-1];
         }
 
       std::string str;
@@ -344,4 +344,4 @@ int main(int, char **)
     }
 
   return 0;
-  }
+}

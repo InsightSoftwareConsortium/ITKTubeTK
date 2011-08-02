@@ -220,53 +220,53 @@ void MetaImageImporterUI::GeneratedMHDFileLineEditChanged()
 void MetaImageImporterUI::DimensionalityChanged(int value)
 {
   for( int i = 0;
-        i < dimensionalitySpinBox->maximum() ;
+        i < dimensionalitySpinBox->maximum();
         ++i)
     {
-      bool visible = i < value;
+    bool visible = i < value;
       QLabel* _label = NULL;
       QSpinBox* spinBox = NULL;
       QDoubleSpinBox* doubleSpinBox = NULL;
       // Dimension
       _label = this->findChild<QLabel *>(
         QString("dimension%1Label").arg(i) );
-      if( _label )
-        {
-        _label->setVisible( visible );
-        }
-      spinBox =
+    if( _label )
+      {
+      _label->setVisible( visible );
+      }
+    spinBox =
         this->findChild<QSpinBox *>( QString("dimension%1SpinBox").arg(i) );
-      if( spinBox )
-        {
-        spinBox->setVisible( visible );
-        }
-      // Spacing
-      _label = this->findChild<QLabel *>(
-        QString("spacing%1Label").arg(i) );
-      if( _label )
-        {
-        _label->setVisible( visible );
-        }
-      doubleSpinBox =
+    if( spinBox )
+      {
+      spinBox->setVisible( visible );
+      }
+    // Spacing
+    _label = this->findChild<QLabel *>(
+      QString("spacing%1Label").arg(i) );
+    if( _label )
+      {
+      _label->setVisible( visible );
+      }
+    doubleSpinBox =
         this->findChild<QDoubleSpinBox *>(
           QString("spacing%1DoubleSpinBox").arg(i) );
-      if( doubleSpinBox )
-        {
-        doubleSpinBox->setVisible( visible );
-        }
-      // Origin
+    if( doubleSpinBox )
+      {
+      doubleSpinBox->setVisible( visible );
+      }
+    // Origin
       _label = this->findChild<QLabel *>( QString("origin%1Label").arg(i) );
-      if( _label )
-        {
-        _label->setVisible( visible );
-        }
-      doubleSpinBox =
+    if( _label )
+      {
+      _label->setVisible( visible );
+      }
+    doubleSpinBox =
         this->findChild<QDoubleSpinBox *>(
           QString("origin%1DoubleSpinBox").arg(i) );
-      if( doubleSpinBox )
-        {
-        doubleSpinBox->setVisible( visible );
-        }
+    if( doubleSpinBox )
+      {
+      doubleSpinBox->setVisible( visible );
+      }
     }
 }
 
