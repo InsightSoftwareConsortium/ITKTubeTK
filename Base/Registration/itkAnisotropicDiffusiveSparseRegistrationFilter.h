@@ -98,24 +98,30 @@ public:
   typedef typename Superclass::TimeStepType             TimeStepType;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;
-  typedef typename Superclass::OutputImageType          OutputImageType;
-  typedef typename Superclass::OutputImagePointer       OutputImagePointer;
-  typedef typename Superclass::OutputImageRegionType    OutputImageRegionType;
+  typedef typename Superclass::OutputImageType
+      OutputImageType;
+  typedef typename Superclass::OutputImagePointer
+      OutputImagePointer;
+  typedef typename Superclass::OutputImageRegionType
+      OutputImageRegionType;
 
   /** The registration function type */
   typedef typename Superclass::RegistrationFunctionType
       RegistrationFunctionType;
-  typedef typename Superclass::SpacingType              SpacingType;
+  typedef typename Superclass::SpacingType
+      SpacingType;
 
   /** Deformation field types. */
-  typedef typename Superclass::DeformationVectorType    DeformationVectorType;
+  typedef typename Superclass::DeformationVectorType
+      DeformationVectorType;
   typedef typename Superclass::DeformationVectorComponentType
       DeformationVectorComponentType;
   typedef typename Superclass::DeformationComponentImageArrayType
       DeformationComponentImageArrayType;
 
   /** Diffusion tensor image types */
-  typedef typename Superclass::DiffusionTensorType      DiffusionTensorType;
+  typedef typename Superclass::DiffusionTensorType
+      DiffusionTensorType;
   typedef typename Superclass::DiffusionTensorImageType
       DiffusionTensorImageType;
 
@@ -202,11 +208,14 @@ public:
   /** Tube spatial object types */
   typedef typename itk::SpatialObject< ImageDimension >::ChildrenListType
       TubeListType;
-  typedef TubeListType *                                TubeListPointer;
+  typedef TubeListType *
+      TubeListPointer;
   typedef itk::VesselTubeSpatialObject< ImageDimension >
       TubeType;
-  typedef typename TubeType::PointListType              TubePointListType;
-  typedef typename TubeType::TubePointType              TubePointType;
+  typedef typename TubeType::PointListType
+      TubePointListType;
+  typedef typename TubeType::TubePointType
+      TubePointType;
 
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
