@@ -2,28 +2,28 @@
 
 #include <ctime>
 
-#include <vnl/algo/vnl_matrix_inverse.h>
+#iRclude <vnl/algo/vnl_matrix_inverse.h>
 
 using namespace VTREE;
 using namespace VHTK;
 
 TubeRegistratorPoint::
 TubeRegistratorPoint(void)
-:x(3), v1(3), v2(3), 
- xT(3), v1T(3), v2T(3), dXT(3)
+:m_X(3), m_V1(3), m_m_V2(3), 
+ m_XT(3), m_V1T(3), m_V2T(3), m_DXT(3)
   {
-  val = 0;
-  x = 0;
-  r = 0;
-  v1 = 0;
-  v2 = 0;
-  rn = 0;
-  mn = 0;
-  w = 0;
-  xT = 0;
-  v1T = 0;
-  v2T = 0;
-  dXT = 0;
+  m_VAL = 0;
+  m_X = 0;
+  m_R = 0;
+  m_V1 = 0;
+  m_V2 = 0;
+  m_RN = 0;
+  m_MN = 0;
+  m_W = 0;
+  m_XT = 0;
+  m_V1T = 0;
+  m_V2T = 0;
+  m_DXT = 0;
   }
 
 TubeRegistrator::
@@ -148,33 +148,33 @@ MetricPreProc(void)
            && (*j)->medialness()>0.02)
           {
           tPnt = new TubeRegistratorPoint;
-          tPnt->x(0) = (*((*j)->x()))(1);
-          tPnt->x(1) = (*((*j)->x()))(2);
-          tPnt->x(2) = (*((*j)->x()))(3);
-          tPnt->r = (*j)->r();
-          tPnt->rn = (*j)->ridgeness();
-          tPnt->mn = (*j)->medialness();
-          tPnt->v1(0) = (*((*j)->v1()))(1);
-          tPnt->v1(1) = (*((*j)->v1()))(2);
-          tPnt->v1(2) = (*((*j)->v1()))(3);
-          tPnt->v2(0) = (*((*j)->v2()))(1);
-          tPnt->v2(1) = (*((*j)->v2()))(2);
-          tPnt->v2(2) = (*((*j)->v2()))(3);
+          tPnt->m_X(0) = (*((*j)->m_X()))(1);
+          tPnt->m_X(1) = (*((*j)->m_X()))(2);
+          tPnt->m_X(2) = (*((*j)->m_X()))(3);
+          tPnt->m_R = (*j)->m_R();
+          tPnt->m_RN = (*j)->ridgeness();
+          tPnt->m_MN = (*j)->medialness();
+          tPnt->m_V1(0) = (*((*j)->m_V1()))(1);
+          tPnt->m_V1(1) = (*((*j)->m_V1()))(2);
+          tPnt->m_V1(2) = (*((*j)->m_V1()))(3);
+          tPnt->m_V2(0) = (*((*j)->m_V2()))(1);
+          tPnt->m_V2(1) = (*((*j)->m_V2()))(2);
+          tPnt->m_V2(2) = (*((*j)->m_V2()))(3);
         
-          tPnt->w = 2/(1+exp(-4*tPnt->r))-1;
+          tPnt->m_W = 2/(1+exp(-4*tPnt->m_R))-1;
         
           cRegPoints.push_back(tPnt);
         
-          cX += tPnt->w*tPnt->x(0);
-          cY += tPnt->w*tPnt->x(1);
-          cZ += tPnt->w*tPnt->x(2);
+          cX += tPnt->m_W*tPnt->m_X(0);
+          cY += tPnt->m_W*tPnt->m_X(1);
+          cZ += tPnt->m_W*tPnt->m_X(2);
         
-          tM = outer_product(tPnt->v1T, tPnt->v1T);
-          tM = tM + outer_product(tPnt->v2T, tPnt->v2T);
-          tM = tPnt->w * tM;
+          tM = outer_product(tPnt->m_V1T, tPnt->m_V1T);
+          tM = tM + outer_product(tPnt->m_V2T, tPnt->m_V2T);
+          tM = tPnt->m_W * tM;
           cBiasV = cBiasV + tM;
         
-          cWeight += tPnt->w;
+          cWeight += tPnt->m_W;
           cCount++;
           }
         while(skipped++%(cSampling/2) != 0 && j!=(*i)->points()->end())
@@ -218,17 +218,17 @@ Metric(void)
     {
     for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
       {
-      TransformPoint(&((*j)->x), &((*j)->xT));
-      if((*j)->xT(0)>=0 && (*j)->xT(0)<cIm->dimSizeX()-1 &&
-         (*j)->xT(1)>=0 && (*j)->xT(1)<cIm->dimSizeY()-1 &&
-         (*j)->xT(2)>=0 && (*j)->xT(2)<cIm->dimSizeZ()-1)
+      TransformPoint(&((*j)->m_X), &((*j)->m_XT));
+      if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<cIm->dimSizeX()-1 &&
+         (*j)->m_XT(1)>=0 && (*j)->m_XT(1)<cIm->dimSizeY()-1 &&
+         (*j)->m_XT(2)>=0 && (*j)->m_XT(2)<cIm->dimSizeZ()-1)
         {
         cWeight += 1;
         cCount++;
-        (*j)->val = (*cIm)((int)(*j)->xT(0),
-                             (int)(*j)->xT(1),
-                             (int)(*j)->xT(2));
-        cMetric += (*j)->val;
+        (*j)->m_VAL = (*cIm)((int)(*j)->m_XT(0),
+                             (int)(*j)->m_XT(1),
+                             (int)(*j)->m_XT(2));
+        cMetric += (*j)->m_VAL;
         }
       }
     }
@@ -236,27 +236,27 @@ Metric(void)
     {
     for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
       {
-      TransformPoint(&((*j)->x), &((*j)->xT));
-      if((*j)->xT(0)>0 && (*j)->xT(0)<cIm->dimSizeX()-2 &&
-         (*j)->xT(1)>0 && (*j)->xT(1)<cIm->dimSizeY()-2 &&
-         (*j)->xT(2)>0 && (*j)->xT(2)<cIm->dimSizeZ()-2 &&
-         (*cIm)((*j)->xT(0), (*j)->xT(1), (*j)->xT(2)) > cRegImThresh)
+      TransformPoint(&((*j)->m_X), &((*j)->m_XT));
+      if((*j)->m_XT(0)>0 && (*j)->m_XT(0)<cIm->dimSizeX()-2 &&
+         (*j)->m_XT(1)>0 && (*j)->m_XT(1)<cIm->dimSizeY()-2 &&
+         (*j)->m_XT(2)>0 && (*j)->m_XT(2)<cIm->dimSizeZ()-2 &&
+         (*cIm)((*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2)) > cRegImThresh)
         {
-        xTV(1) = (*j)->xT(0);
-        xTV(2) = (*j)->xT(1);
-        xTV(3) = (*j)->xT(2);
-        cWeight += (*j)->w;
+        xTV(1) = (*j)->m_XT(0);
+        xTV(2) = (*j)->m_XT(1);
+        xTV(3) = (*j)->m_XT(2);
+        cWeight += (*j)->m_W;
         cCount++;
         opR = (*j)->r;
         if(opR<0.5)
           opR = 0.5;
         cImOp.opScale(opR * cKappa);
-        //(*j)->val = (*j)->w * cImOp.valueIso(xTV);
-        (*j)->val = (*j)->w * cImOp.valueIsoD(xTV, dXTV);
-        (*j)->dXT(0) = dXTV(1);
-        (*j)->dXT(1) = dXTV(2);
-        (*j)->dXT(2) = dXTV(3);
-        cMetric += (*j)->val;
+        //(*j)->m_VAL = (*j)->m_W * cImOp.valueIso(xTV);
+        (*j)->m_VAL = (*j)->m_W * cImOp.valueIsoD(xTV, dXTV);
+        (*j)->m_DXT(0) = dXTV(1);
+        (*j)->m_DXT(1) = dXTV(2);
+        (*j)->m_DXT(2) = dXTV(3);
+        cMetric += (*j)->m_VAL;
         }
       }
     }
@@ -308,57 +308,57 @@ MetricDeriv(double *dX, double *dY, double *dZ,
   vnl_vector<double> tV(3);
   vnl_matrix<double> tM(3,3);
   double tDA, tDB, tDG;
-  //FILE * fp = fopen("test.dat", "w");
+  //FILE * fp = fopen("test.dat", "m_W");
   for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
     {
     if(recalc)
-      TransformPoint(&((*j)->x), &((*j)->xT));
-    if((*j)->xT(0)>0 && (*j)->xT(0)<cIm->dimSizeX()-2 &&
-       (*j)->xT(1)>0 && (*j)->xT(1)<cIm->dimSizeY()-2 &&
-       (*j)->xT(2)>0 && (*j)->xT(2)<cIm->dimSizeZ()-2 &&
-       (*cIm)((*j)->xT(0), (*j)->xT(1), (*j)->xT(2)) > cRegImThresh)
+      TransformPoint(&((*j)->m_X), &((*j)->m_XT));
+    if((*j)->m_XT(0)>0 && (*j)->m_XT(0)<cIm->dimSizeX()-2 &&
+       (*j)->m_XT(1)>0 && (*j)->m_XT(1)<cIm->dimSizeY()-2 &&
+       (*j)->m_XT(2)>0 && (*j)->m_XT(2)<cIm->dimSizeZ()-2 &&
+       (*cIm)((*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2)) > cRegImThresh)
       {
       if(recalc)
         {
-        cWeight += (*j)->w;
+        cWeight += (*j)->m_W;
         cCount++;
         opR = (*j)->r;
         if(opR<0.5)
           opR = 0.5;
         cImOp.opScale(opR * cKappa);
-        xTV(1) = (*j)->xT(0);
-        xTV(2) = (*j)->xT(1);
-        xTV(3) = (*j)->xT(2);
-        (*j)->val = (*j)->w * cImOp.valueIsoD(xTV, dXTV);
-        (*j)->dXT(0) = dXTV(1);
-        (*j)->dXT(1) = dXTV(2);
-        (*j)->dXT(2) = dXTV(3);
-        cMetric += (*j)->val;
+        xTV(1) = (*j)->m_XT(0);
+        xTV(2) = (*j)->m_XT(1);
+        xTV(3) = (*j)->m_XT(2);
+        (*j)->m_VAL = (*j)->m_W * cImOp.valueIsoD(xTV, dXTV);
+        (*j)->m_DXT(0) = dXTV(1);
+        (*j)->m_DXT(1) = dXTV(2);
+        (*j)->m_DXT(2) = dXTV(3);
+        cMetric += (*j)->m_VAL;
         }
 
-      TransformCoVector(&((*j)->v1), &((*j)->v1T));
-      TransformCoVector(&((*j)->v2), &((*j)->v2T));
+      TransformCoVector(&((*j)->m_V1), &((*j)->m_V1T));
+      TransformCoVector(&((*j)->m_V2), &((*j)->m_V2T));
 
-      dXProj1 = dot_product((*j)->dXT, (*j)->v1T);
-      dXProj2 = dot_product((*j)->dXT, (*j)->v2T);
+      dXProj1 = dot_product((*j)->m_DXT, (*j)->m_V1T);
+      dXProj2 = dot_product((*j)->m_DXT, (*j)->m_V2T);
       //fprintf(fp, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n",
-      //        (*j)->x(0), (*j)->x(1), (*j)->x(2),
-      //        (*j)->xT(0), (*j)->xT(1), (*j)->xT(2),
-      //        (*j)->val, 
-      //        (*j)->dXT(0), (*j)->dXT(1), (*j)->dXT(2), 
-      //        (*j)->v1T(0), (*j)->v1T(1), (*j)->v1T(2),
-      //        (*j)->v2T(0), (*j)->v2T(1), (*j)->v2T(2),
-      //        dXProj1, dXProj2, (*j)->r, (*j)->rn, (*j)->mn);
-      (*j)->dXT = (dXProj1*(*j)->v1T + dXProj2*(*j)->v2T);
+      //        (*j)->m_X(0), (*j)->m_X(1), (*j)->m_X(2),
+      //        (*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2),
+      //        (*j)->m_VAL, 
+      //        (*j)->m_DXT(0), (*j)->m_DXT(1), (*j)->m_DXT(2), 
+      //        (*j)->m_V1T(0), (*j)->m_V1T(1), (*j)->m_V1T(2),
+      //        (*j)->m_V2T(0), (*j)->m_V2T(1), (*j)->m_V2T(2),
+      //        dXProj1, dXProj2, (*j)->m_R, (*j)->m_RN, (*j)->m_MN);
+      (*j)->m_DXT = (dXProj1*(*j)->m_V1T + dXProj2*(*j)->m_V2T);
         
-      tM = outer_product((*j)->v1T, (*j)->v1T);
-      tM = tM + outer_product((*j)->v2T, (*j)->v2T);
-      tM = (*j)->w * tM;
+      tM = outer_product((*j)->m_V1T, (*j)->m_V1T);
+      tM = tM + outer_product((*j)->m_V2T, (*j)->m_V2T);
+      tM = (*j)->m_W * tM;
       cBiasV = cBiasV + tM;
 
-      *dX += (*j)->w * (*j)->dXT(0);
-      *dY += (*j)->w * (*j)->dXT(1);
-      *dZ += (*j)->w * (*j)->dXT(2);
+      *dX += (*j)->m_W * (*j)->m_DXT(0);
+      *dY += (*j)->m_W * (*j)->m_DXT(1);
+      *dZ += (*j)->m_W * (*j)->m_DXT(2);
       }
     }
   //fclose(fp);
@@ -387,20 +387,20 @@ MetricDeriv(double *dX, double *dY, double *dZ,
 
   for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
     {
-    if((*j)->xT(0)>=0 && (*j)->xT(0)<cIm->dimSizeX()-1 &&
-       (*j)->xT(1)>=0 && (*j)->xT(1)<cIm->dimSizeY()-1 &&
-       (*j)->xT(2)>=0 && (*j)->xT(2)<cIm->dimSizeZ()-1)
+    if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<cIm->dimSizeX()-1 &&
+       (*j)->m_XT(1)>=0 && (*j)->m_XT(1)<cIm->dimSizeY()-1 &&
+       (*j)->m_XT(2)>=0 && (*j)->m_XT(2)<cIm->dimSizeZ()-1)
       {
-      (*j)->dXT = (*j)->dXT * cBiasVI;
-      //(*j)->dXT(0) -= (*dX);
-      //(*j)->dXT(1) -= (*dY);
-      //(*j)->dXT(2) -= (*dZ);
-      GetDeltaAngles(&((*j)->xT), &((*j)->dXT), &tDA, &tDB, &tDG);
-      //std::cout << "x = " << (*j)->xT(0) << ", " << (*j)->xT(1) << ", " << (*j)->xT(2);
+      (*j)->m_DXT = (*j)->m_DXT * cBiasVI;
+      //(*j)->m_DXT(0) -= (*dX);
+      //(*j)->m_DXT(1) -= (*dY);
+      //(*j)->m_DXT(2) -= (*dZ);
+      GetDeltaAngles(&((*j)->m_XT), &((*j)->m_DXT), &tDA, &tDB, &tDG);
+      //std::cout << "m_X = " << (*j)->m_XT(0) << ", " << (*j)->m_XT(1) << ", " << (*j)->m_XT(2);
       //std::cout << " : dA = " << tDA << ", " << tDB << ", " << tDG << std::endl;
-      *dA += (*j)->w * tDA;
-      *dB += (*j)->w * tDB;
-      *dG += (*j)->w * tDG;
+      *dA += (*j)->m_W * tDA;
+      *dB += (*j)->m_W * tDB;
+      *dG += (*j)->m_W * tDG;
       }
     }
   *dA /= cWeight;
@@ -441,19 +441,19 @@ class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
          {
          cRegOp = newRegOp;
          };
-    double value(TNT::Vector<double> * x)
+    double value(TNT::Vector<double> * m_X)
        {
-       cRegOp->SetOffset((*x)(1)*offsetUnit, (*x)(2)*offsetUnit, (*x)(3)*offsetUnit);
-       cRegOp->SetAngles((*x)(4)*rotUnit, (*x)(5)*rotUnit, (*x)(6)*rotUnit);
+       cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
+       cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
        /*
        std::cout << "V "
-                 << (*x)(1) << " (" << (*x)(1)*offsetUnit << ")  "
-                 << (*x)(2) << " (" << (*x)(2)*offsetUnit << ")  "
-                 << (*x)(3) << " (" << (*x)(3)*offsetUnit << ")  " << std::endl;
+                 << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
+                 << (*m_X)(2) << " (" << (*m_X)(2)*offsetUnit << ")  "
+                 << (*m_X)(3) << " (" << (*m_X)(3)*offsetUnit << ")  " << std::endl;
        std::cout << "  "
-                 << (*x)(4) << " (" << (*x)(4)*rotUnit << ")  "
-                 << (*x)(5) << " (" << (*x)(5)*rotUnit << ")  "
-                 << (*x)(6) << " (" << (*x)(6)*rotUnit << ")  " << std::endl;
+                 << (*m_X)(4) << " (" << (*m_X)(4)*rotUnit << ")  "
+                 << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
+                 << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
        */
        double tf = cRegOp->Metric();
        //std::cout << "   v = " << tf << std::endl;
@@ -475,19 +475,19 @@ class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double>
        {
        cRegOp = newRegOp;
        };
-     TNT::Vector<double> * value(TNT::Vector<double> * x)
+     TNT::Vector<double> * value(TNT::Vector<double> * m_X)
        {
-       cRegOp->SetOffset((*x)(1)*offsetUnit, (*x)(2)*offsetUnit, (*x)(3)*offsetUnit);
-       cRegOp->SetAngles((*x)(4)*rotUnit, (*x)(5)*rotUnit, (*x)(6)*rotUnit);
+       cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
+       cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
        /*
        std::cout << "D " 
-                 << (*x)(1) << " (" << (*x)(1)*offsetUnit << ")  "
-                 << (*x)(2) << " (" << (*x)(2)*offsetUnit << ")  "
-                 << (*x)(3) << " (" << (*x)(3)*offsetUnit << ")  " << std::endl;
+                 << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
+                 << (*m_X)(2) << " (" << (*m_X)(2)*offsetUnit << ")  "
+                 << (*m_X)(3) << " (" << (*m_X)(3)*offsetUnit << ")  " << std::endl;
        std::cout << "  "
-                 << (*x)(4) << " (" << (*x)(4)*rotUnit << ")  "
-                 << (*x)(5) << " (" << (*x)(5)*rotUnit << ")  "
-                 << (*x)(6) << " (" << (*x)(6)*rotUnit << ")  " << std::endl;
+                 << (*m_X)(4) << " (" << (*m_X)(4)*rotUnit << ")  "
+                 << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
+                 << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
        */
        cRegOp->MetricDeriv(&cD(1), &cD(2), &cD(3),
                            &cD(4), &cD(5), &cD(6));
@@ -541,7 +541,7 @@ bool TubeRegistrator::Fit(void)
 
   std::cout << "Initial State = " << x << ", " << y << ", " << z << std::endl;
   std::cout << "                " << a << ", " << b << ", " << g << std::endl;
-  std::cout << "   val = " << func->value(&m) << std::endl;
+  std::cout << "   m_VAL = " << func->value(&m) << std::endl;
 
   double xVal;
   m(1) = x/offsetUnit;
@@ -584,7 +584,7 @@ bool TubeRegistrator::Fit(void)
   
   std::cout << "Final State = " << x << ", " << y << ", " << z << std::endl;
   std::cout << "              " << a << ", " << b << ", " << g << std::endl;
-  std::cout << "   val = " << xVal << std::endl;
+  std::cout << "   m_VAL = " << xVal << std::endl;
 
   (*mO)(0) = x;
   (*mO)(1) = y;

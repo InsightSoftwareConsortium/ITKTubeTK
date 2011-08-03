@@ -42,18 +42,19 @@ namespace VTREE {
 class TubeRegistratorPoint
 {
 public:
-    vnl_vector<double> x;
-    double r;
-    double rn, mn;
-    double w;
-    double val;
-    vnl_vector<double> v1;
-    vnl_vector<double> v2;
+    vnl_vector<double> m_X;
+    double             m_R;
+    double             m_RN;
+    double             m_MN;
+    double             m_W;
+    double             m_VAL;
+    vnl_vector<double> m_V1;
+    vnl_vector<double> m_V2;
 
-    vnl_vector<double> xT;
-    vnl_vector<double> v1T;
-    vnl_vector<double> v2T;
-    vnl_vector<double> dXT;
+    vnl_vector<double> m_XT;
+    vnl_vector<double> m_V1T;
+    vnl_vector<double> m_V2T;
+    vnl_vector<double> m_DXT;
 
     TubeRegistratorPoint();
 };
@@ -108,4 +109,3 @@ public:
 }
 
 #endif
-

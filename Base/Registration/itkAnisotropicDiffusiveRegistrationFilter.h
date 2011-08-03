@@ -88,30 +88,42 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType           FixedImageType;
-  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
-  typedef typename Superclass::MovingImageType          MovingImageType;
-  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
-  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
-  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
-  typedef typename Superclass::TimeStepType             TimeStepType;
+  typedef typename Superclass::FixedImageType
+      FixedImageType;
+  typedef typename Superclass::FixedImagePointer
+      FixedImagePointer;
+  typedef typename Superclass::MovingImageType
+      MovingImageType;
+  typedef typename Superclass::MovingImagePointer
+      MovingImagePointer;
+  typedef typename Superclass::DeformationFieldType
+      DeformationFieldType;
+  typedef typename Superclass::DeformationFieldPointer
+      DeformationFieldPointer;
+  typedef typename Superclass::TimeStepType
+      TimeStepType;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;
-  typedef typename Superclass::OutputImageType          OutputImageType;
-  typedef typename Superclass::OutputImagePointer       OutputImagePointer;
-  typedef typename Superclass::OutputImageRegionType    OutputImageRegionType;
+  typedef typename Superclass::OutputImageType
+      OutputImageType;
+  typedef typename Superclass::OutputImagePointer
+      OutputImagePointer;
+  typedef typename Superclass::OutputImageRegionType
+      OutputImageRegionType;
 
   /** The registration function type */
   typedef typename Superclass::RegistrationFunctionType
       RegistrationFunctionType;
 
   /** Deformation field types. */
-  typedef typename Superclass::DeformationVectorType    DeformationVectorType;
+  typedef typename Superclass::DeformationVectorType
+      DeformationVectorType;
   typedef typename Superclass::DeformationVectorComponentType
       DeformationVectorComponentType;
 
   /** Diffusion tensor image types */
-  typedef typename Superclass::DiffusionTensorType       DiffusionTensorType;
+  typedef typename Superclass::DiffusionTensorType
+      DiffusionTensorType;
   typedef typename Superclass::DiffusionTensorImageType
       DiffusionTensorImageType;
 
