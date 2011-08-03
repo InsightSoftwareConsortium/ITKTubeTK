@@ -43,6 +43,8 @@ TubeRegistrator.h Namespace Disable
 TubeRegistrator.cpp Namespace Disable
 itkTubeCVTImageFilter.h Namespace Disable
 itkTubeCVTImageFilter.txx Namespace Disable
+itkTubeNJetLDAGenerator.h Namespace Disable
+itkTubeNJetLDAGenerator.txx Namespace Disable
 itkTubePDFSegmenter.h Namespace Disable
 itkTubePDFSegmenter.txx Namespace Disable
 itkTubeRadiusExtractor.h Namespace Disable
