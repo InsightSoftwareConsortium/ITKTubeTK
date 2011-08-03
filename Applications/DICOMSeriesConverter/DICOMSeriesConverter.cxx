@@ -77,7 +77,7 @@ const std::string CleanString(std::string inString, int strLen)
     {
     for(int i=0; i<(int)inString.size(); i++)
       {
-      while(i<(int)inString.size() 
+      while(i<(int)inString.size()
             && !(   (inString[i] >= 'a' && inString[i] <= 'z')
                  || (inString[i] >= '0' && inString[i] <= '9')
                  || (inString[i] >= 'A' && inString[i] <= 'Z')
@@ -790,7 +790,7 @@ int main( int argc, char* argv[] )
             for(int i = 0; i<numID; i++)
               {
               if(group == groupID[i]
-                 && element == elementID[i])
+              && element == elementID[i])
                 {
                 //gdcm::DocEntry * tmpIt = it;
                 it = newfile->GetNextEntry();
@@ -801,7 +801,7 @@ int main( int argc, char* argv[] )
                 }
               else
                 {
-          // groupID is an ordered sequence - abort if past group
+                // groupID is an ordered sequence - abort if past group
                 if(group < groupID[i])
                   {
                   break;
@@ -844,25 +844,26 @@ int main( int argc, char* argv[] )
           }
         }
       if(!processingSplit)
-          {
-          seriesItr++;
-          }
-          else
-          {
-          if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
+        {
+        seriesItr++;
+        }
+      else
+        {
+        if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
           {
           processingSplit = false;
           splitVolumeStart = 0;
           seriesItr++;
           }
-          }
-          }
-          }
-          catch (itk::ExceptionObject &ex)
-          {
-          std::cout << "ERROR : " << ex << std::endl;
-          return EXIT_FAILURE;
-          }
+        }
+      }
+    }
+  catch (itk::ExceptionObject &ex)
+    {
+    std::cout << "ERROR : " << ex << std::endl;
+    return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
-      }
+}
+
