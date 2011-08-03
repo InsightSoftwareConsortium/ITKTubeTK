@@ -93,7 +93,8 @@ public:
   /**  Smoothing filter type */
   typedef RecursiveGaussianImageFilter< RealImageType, RealImageType >
       GaussianFilterType;
-  typedef typename GaussianFilterType::Pointer            GaussianFilterPointer;
+  typedef typename GaussianFilterType::Pointer
+      GaussianFilterPointer;
 
   /**  Derivative filter type, it will be the first in the pipeline  */
   typedef RecursiveGaussianImageFilter< InputImageType, RealImageType >
