@@ -81,7 +81,7 @@ public:
     DoNotOrder
   }EigenValueOrderType;
 
-  /** Order eigen values. Default is to OrderByValue:  lambda_1 < lambda_2 < ....*/
+  /** Order eigen values. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
   void OrderEigenValuesBy( EigenValueOrderType order )
     {
     if( order == OrderByMagnitude )
@@ -140,7 +140,7 @@ public:
    */
   typedef typename FunctorType::EigenValueOrderType         EigenValueOrderType;
 
-  /** Order eigen values. Default is to OrderByValue:  lambda_1 < lambda_2 < ....*/
+  /** Order eigen values. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
   void OrderEigenValuesBy( EigenValueOrderType order )
     {
     this->GetFunctor().OrderEigenValuesBy( order );

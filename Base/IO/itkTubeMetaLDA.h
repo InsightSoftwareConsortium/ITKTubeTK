@@ -44,8 +44,7 @@ limitations under the License.
 *
 * Depends on:
 *    MetaUtils.h
-*    MetaForm.h
-*/
+*    MetaForm.h*/
 
 namespace itk {
 

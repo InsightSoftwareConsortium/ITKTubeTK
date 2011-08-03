@@ -122,11 +122,11 @@ public:
   void ComputeStatistics(void);
 
   /** Return the min over the (possibly masked) image.
-   * Requires previous call to ComputeStatistics*/
+   * Requires previous call to ComputeStatistics */
   double GetMin(void) const;
 
   /** Return the max over the (possibly masked) image.
-   * Requires previous call to ComputeStatistics*/
+   * Requires previous call to ComputeStatistics */
   double GetMax(void) const;
 
   /** Evalulate the function at specified point */
