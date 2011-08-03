@@ -640,9 +640,9 @@ template< class ImageType >
 struct FaceStruct
 {
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-      < typename ImageType::ObjectType > FaceCalculatorType;
+      < typename ImageType::ObjectType >                  FaceCalculatorType;
         typedef typename FaceCalculatorType::FaceListType FaceListType;
-        typedef typename FaceListType::iterator FaceListIteratorType;
+        typedef typename FaceListType::iterator           FaceListIteratorType;
 
   FaceStruct()
     {
