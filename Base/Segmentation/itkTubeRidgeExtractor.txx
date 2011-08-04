@@ -573,7 +573,7 @@ RidgeExtractor<TInputImage>
 }
 
 /**
- * Traverse one way **/
+ * Traverse one way */
 template<class TInputImage>
 bool
 RidgeExtractor<TInputImage>

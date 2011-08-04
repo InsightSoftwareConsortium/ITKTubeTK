@@ -101,7 +101,7 @@ public:
   /** Defines the type of matrix used */
   typedef vnl_matrix< double >                  MatrixType;
 
-  /** Tube SpatialObject typedefs*/
+  /** Tube SpatialObject typedefs */
   typedef VesselTubeSpatialObject< TInputImage::ImageDimension >
                                                 TubeType;
   typedef typename TubeType::TubePointType      TubePointType;
@@ -232,11 +232,11 @@ public:
   ::tube::SplineND * GetDataSpline(void);
 
   /**
-   * Get the data spline 1D*/
+   * Get the data spline 1D */
   ::tube::Spline1D * GetDataSpline1D(void);
 
   /**
-   * Get the data spline optimizer*/
+   * Get the data spline optimizer */
   ::tube::Optimizer1D * GetDataSplineOptimizer(void);
 
   /**

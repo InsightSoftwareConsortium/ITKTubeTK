@@ -168,7 +168,7 @@ public:
   itkSetMacro( ThreshMedialnessStart, double );
 
   /**
-   * Get ThreshMedialness Start*/
+   * Get ThreshMedialness Start */
   itkGetMacro( ThreshMedialnessStart, double );
 
   /**
@@ -176,7 +176,7 @@ public:
   itkSetMacro( ExtractRidge, bool );
 
   /**
-   * Get ExtractRidge*/
+   * Get ExtractRidge */
   itkGetMacro( ExtractRidge, bool );
 
   /**
