@@ -103,7 +103,7 @@ public:
     * itkNewMacro(), but the type of the registration function depends on the
     * type of this object.  Can't call the overridden function
     * CreateRegistrationFunction() from the base class constructor, so we'll
-    * call it here. Derived classes should use this instead of itkNewMacro().*/
+    * call it here. Derived classes should use this instead of itkNewMacro(). */
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
