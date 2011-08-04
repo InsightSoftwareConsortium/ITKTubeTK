@@ -112,7 +112,7 @@ public:
       centerOfRotation[i]=metric->GetCenterOfRotation()( i );
       }
     return centerOfRotation;
-    }
+    };
 
   /** Method that initiates the registration. */
   void StartRegistration( void );
