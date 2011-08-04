@@ -43,8 +43,6 @@ itkSpatialObjectToSpatialObjectFilter.h Namespace Disable
 itkSpatialObjectToSpatialObjectFilter.txx Namespace Disable
 itkTubeToTubeTransformFilter.h Namespace Disable
 itkTubeToTubeTransformFilter.txx Namespace Disable
-TubeRegistrator.h Namespace Disable
-TubeRegistrator.cpp Namespace Disable
 itkTubeCVTImageFilter.h Namespace Disable
 itkTubeCVTImageFilter.txx Namespace Disable
 itkTubeNJetLDAGenerator.h Namespace Disable
@@ -66,7 +64,9 @@ itkTubeOtsuThresholdMaskedImageFilter.h Namespace Disable
 itkTubeOtsuThresholdMaskedImageFilter.txx Namespace Disable
 itkDiffusiveRegistrationFilter.h Namespace Disable
 itkDiffusiveRegistrationFilter.txx Namespace Disable
+itkDiffusiveRegistrationFilter.txx Template Disable
 tubeAnisotropicDiffusiveDeformableRegistration.cxx Namespace Disable
+tubeCLIHelperFunctionsTest.cxx Namespace Disable
 tubeCoherenceEnhancingAnisotropicDiffusion.cxx Namespace Disable
 tubeComputeContrastImageUsingPrior.cxx Namespace Disable
 tubeComputeImageSimilarity.cxx Namespace Disable
@@ -85,9 +85,12 @@ tubeMerge.cxx Namespace Disable
 tubeOrImages.cxx Namespace Disable
 tubeOtsuThreshold.cxx Namespace Disable
 tubePDFSegmenter.cxx Namespace Disable
+TubeRegistrator.h Namespace Disable
+TubeRegistrator.cpp Namespace Disable
 tubeResample.cxx Namespace Disable
 tubeSampleCLIApplication.cxx Namespace Disable
 tubeSkeletonize.cxx Namespace Disable
 tubeVesselsRegistration.h Namespace Disable
 tubeUSVesselsRegistration.h Namespace Disable
 ImageMath.cxx Namespace Disable
+MetaImageImporterUI.h Namespace Disable
