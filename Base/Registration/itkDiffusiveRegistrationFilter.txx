@@ -798,11 +798,11 @@ DiffusiveRegistrationFilter
       threadId, threadCount, splitDeformationVectorComponentRegion );
 
   ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
-  int scalarTotal = str->Filter->SplitRequestedRegion(
+  str->Filter->SplitRequestedRegion(
       threadId, threadCount, splitScalarDerivativeRegion );
 
   ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
-  int tensorTotal = str->Filter->SplitRequestedRegion(
+  str->Filter->SplitRequestedRegion(
       threadId, threadCount, splitTensorDerivativeRegion );
 
   // Make sure we could split all of the images equally
