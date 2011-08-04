@@ -31,11 +31,13 @@ void cliProgressReporterTestCallbackFunction( void * data )
 {
   if( data )
     {
-    std::cout << "cliProgressReporterTestCallbackFunction with pointer: " << data << std::endl;
+    std::cout << "cliProgressReporterTestCallbackFunction with pointer: "
+              << data << std::endl;
     }
   else
     {
-    std::cout << "cliProgressReporterTestCallbackFunction with pointer: NULL" << std::endl;
+    std::cout << "cliProgressReporterTestCallbackFunction with pointer: NULL"
+              << std::endl;
     }
 }
 
