@@ -164,7 +164,7 @@ DiffusiveRegistrationFilter
  * Helper function to allocate space for an image given a template image
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class UnallocatedImagePointer, class TemplateImagePointer >
+  template < class UnallocatedImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1002,16 +1002,16 @@ DiffusiveRegistrationFilter
                                                  splitRegion );
 
   ThreadDiffusionTensorImageRegionType splitTensorRegion;
-  int tensorTotal = str->Filter->SplitRequestedRegion( threadId,
+  str->Filter->SplitRequestedRegion( threadId,
                                                        threadCount,
                                                        splitTensorRegion );
 
   ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
-  int tensorDerivativeTotal = str->Filter->SplitRequestedRegion(
+  str->Filter->SplitRequestedRegion(
       threadId, threadCount, splitTensorDerivativeRegion );
 
   ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
-  int scalarDerivativeTotal = str->Filter->SplitRequestedRegion(
+  str->Filter->SplitRequestedRegion(
       threadId, threadCount, splitScalarDerivativeRegion );
 
   // Make sure we could split all of the images equally
