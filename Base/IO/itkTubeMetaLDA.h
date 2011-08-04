@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "metaTypes.h"
+#ifndef __itkTubeMetaLDA_h
+#define __itkTubeMetaLDA_h
 
-#ifndef __tubeMetaLDA_h
-#define __tubeMetaLDA_h
+#include "metaTypes.h"
 
 #include "vnl/vnl_vector.h"
 #include "vnl/vnl_matrix.h"

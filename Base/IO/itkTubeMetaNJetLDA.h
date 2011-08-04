@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "metaTypes.h"
+#ifndef __itkTubeMetaNJetLDA_h
+#define __itkTubeMetaNJetLDA_h
 
-#ifndef __tubeMetaNJetLDA_h
-#define __tubeMetaNJetLDA_h
+#include "metaTypes.h"
 
 #include <vector>
 
