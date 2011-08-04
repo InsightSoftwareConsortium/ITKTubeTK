@@ -510,14 +510,14 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       if( IsInside( inputPoint )
          //&& m_FixedImage->GetPixel( index ) > m_RegImageThreshold
       )
-      {
-      sumWeight += *weightIterator;
-      count++;
-      opR = ( *j ).GetRadius();
-      if( opR<0.5 )
         {
-        opR = 0.5;
-        }
+        sumWeight += *weightIterator;
+        count++;
+        opR = ( *j ).GetRadius();
+        if( opR<0.5 )
+          {
+          opR = 0.5;
+          }
 
       SetScale( opR * m_Kappa );
 
@@ -1130,7 +1130,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::SetTransform( vnl_matrix<double> * newT ) const
 {
   ( *m_T ) = ( *newT );
-}
+  }
 */
 
 /** Set the offset */
@@ -1193,11 +1193,11 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::SetAngles( double alpha, double beta, double gamma ) const
 {
   /*if( alpha == m_Alpha && beta == m_Beta && gamma == m_Gamma )
-    return;
-
-  m_Alpha = alpha;
-  m_Beta = beta;
-  m_Gamma = gamma;*/
+  *  return;
+  *
+  *m_Alpha = alpha;
+  *m_Beta = beta;
+  *m_Gamma = gamma; */
 
   double ca = cos( alpha );
   double sa = sin( alpha );
@@ -1281,7 +1281,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   double sumWeight = 0;
 
   typedef itk::Vector<double, 3>    ITKVectorType;
-  typedef std::list<ITKVectorType> ListType;
+  typedef std::list<ITKVectorType>  ListType;
   ListType dXTlist;
 
   //std::list<vnl_vector<double>*>            dXTlist;

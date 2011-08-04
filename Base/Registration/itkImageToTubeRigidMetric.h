@@ -38,8 +38,7 @@ namespace itk
 {
 
 /** \class ImageToTubeRigidMetric
-* \brief Computes similarity between two objects to be registered
-*/
+* \brief Computes similarity between two objects to be registered */
 
 template < class TFixedImage, class TMovingSpatialObject>
 class ITK_EXPORT ImageToTubeRigidMetric
@@ -59,7 +58,7 @@ public:
   typedef typename MovingSpatialObjectType::ChildrenListType
                                                 ChildrenListType;
   typedef GroupSpatialObject<3>                 TubeNetType;
-  typedef Image<unsigned char, 3>                MaskImageType;
+  typedef Image<unsigned char, 3>               MaskImageType;
   typedef typename MaskImageType::Pointer       MaskImagePointer;
   typedef typename MaskImageType::IndexType     IndexType;
   typedef TFixedImage                           FixedImageType;
@@ -75,9 +74,9 @@ public:
 
   typedef vnl_vector<double>                    VectorType;
   typedef vnl_matrix<double>                    MatrixType;
-  typedef Point<double, 3>                       PointType;
+  typedef Point<double, 3>                      PointType;
 
-  /** Run-time type information ( and related methods ).*/
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
 
   /** Method for creation through the object factory. */
@@ -88,7 +87,7 @@ public:
 enum { ImageDimension = 3 };
 enum { RangeDimension = 6 };
 
-unsigned int GetNumberOfParameters( void ) const  {return SpaceDimension;};
+unsigned int GetNumberOfParameters( void ) const  {return SpaceDimension;}
 
 /** Typedef for the Range calculator */
   typedef MinimumMaximumImageCalculator<FixedImageType>
@@ -128,7 +127,7 @@ RangeCalculatorType;
 /** SubSample the MovingSpatialObject tube */
   void SubSampleTube( unsigned int sampling );
 
-/** Apply the center of rotation to the transformation*/
+/** Apply the center of rotation to the transformation */
   ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
 
 /** Set kappa value */
@@ -223,11 +222,11 @@ private:
   void SetScale( const double scale ) const {m_Scale = scale;}
   itkGetConstMacro( Scale, double );
 
-  /** Test whether the specified point is inside
-  * Thsi method overload the one in the ImageMapper class
-  * \warning This method cannot be safely used in more than one thread at
-  * a time.
-  * \sa Evaluate(); */
+/** Test whether the specified point is inside
+* Thsi method overload the one in the ImageMapper class
+* \warning This method cannot be safely used in more than one thread at
+* a time.
+* \sa Evaluate(); */
 bool IsInside( const InputPointType & point ) const;
 
 VectorType *  EvaluateAllDerivatives( void ) const;
