@@ -87,17 +87,16 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType           FixedImageType;
-  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
-  typedef typename Superclass::MovingImageType          MovingImageType;
-  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
-  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
-  typedef typename Superclass::DeformationFieldTypePointer
-      DeformationFieldTypePointer;
-  typedef typename Superclass::TimeStepType             TimeStepType;
-  typedef typename Superclass::NeighborhoodType         NeighborhoodType;
-  typedef typename Superclass::PixelType                PixelType;
-  typedef typename Superclass::FloatOffsetType          FloatOffsetType;
+  typedef typename Superclass::FixedImageType                FixedImageType;
+  typedef typename Superclass::FixedImagePointer             FixedImagePointer;
+  typedef typename Superclass::MovingImageType               MovingImageType;
+  typedef typename Superclass::MovingImagePointer            MovingImagePointer;
+  typedef typename Superclass::DeformationFieldType          DeformationFieldType;
+  typedef typename Superclass::DeformationFieldTypePointer   DeformationFieldTypePointer;
+  typedef typename Superclass::TimeStepType                  TimeStepType;
+  typedef typename Superclass::NeighborhoodType              NeighborhoodType;
+  typedef typename Superclass::PixelType                     PixelType;
+  typedef typename Superclass::FloatOffsetType               FloatOffsetType;
 
   /** Deformation field types */
   typedef typename DeformationFieldType::PixelType
@@ -259,7 +258,7 @@ public:
       const FloatOffsetType& = FloatOffsetType(0.0) );
 
   /** Returns a pointer to a global data structure that is passed to this
-   * object from the solver at each calculation.*/
+   * object from the solver at each calculation. */
   virtual void * GetGlobalDataPointer() const;
 
   /** Release the global data structure. */
@@ -286,7 +285,7 @@ protected:
     for computing the metric and other intermediate products, such as
     derivatives, that may be used by virtual functions called from
     ComputeUpdate().  Caching these values here allows ComputeUpdate() to be
-    const and thread-safe.*/
+    const and thread-safe. */
   struct GlobalDataStruct
     {
     void *                              m_RegularizationGlobalDataStruct;
@@ -298,7 +297,8 @@ protected:
 private:
   // Purposely not implemented
   AnisotropicDiffusiveRegistrationFunction(const Self&);
-  void operator=(const Self&); // Purposely not implemented
+  void operator=(const Self&);
+  // Purposely not implemented
 
   /** The global timestep. */
   TimeStepType                          m_TimeStep;

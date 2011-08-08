@@ -288,7 +288,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
         + center_Tensor_value(2,2) * gd->m_dxy[2][2];
 
   ScalarValueType total
-      = pdWrtDiffusion1 + pdWrtDiffusion2 + pdWrtDiffusion3
+  = pdWrtDiffusion1 + pdWrtDiffusion2 + pdWrtDiffusion3
         + pdWrtImageIntensity1 + pdWrtImageIntensity2 + pdWrtImageIntensity3;
 
   return ( PixelType ) ( total );

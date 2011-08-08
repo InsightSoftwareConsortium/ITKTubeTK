@@ -103,7 +103,7 @@ public:
    * values that are needed in calculating the time step and other intermediate
    * products such as derivatives that may be used by virtual functions called
    * from ComputeUpdate.  Caching these values here allows the ComputeUpdate
-   * function to be const and thread safe.*/
+   * function to be const and thread safe. */
   struct GlobalDataStruct
     {
     /** Hessian matrix
@@ -190,7 +190,7 @@ public:
     { return m_UseImageSpacing; }
 
   /** Returns a pointer to a global data structure that is passed to this
-   * object from the solver at each calculation.*/
+   * object from the solver at each calculation. */
   virtual void * GetGlobalDataPointer() const
     {
     GlobalDataStruct *ans = new GlobalDataStruct();

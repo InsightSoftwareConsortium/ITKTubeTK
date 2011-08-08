@@ -44,7 +44,7 @@ class ITK_EXPORT JointHistogramImageFunction :
 {
 public:
 
-  /** Class typedefs **/
+  /** Class typedefs */
   typedef JointHistogramImageFunction                  Self;
   typedef ImageFunction<TInputImage,double,TCoordRep>  Superclass;
   typedef SmartPointer<Self>                           Pointer;
@@ -62,7 +62,7 @@ public:
   /** Standard New Macro. */
   itkNewMacro( Self );
 
-  /** Constant for fetching the dimensions of the image. **/
+  /** Constant for fetching the dimensions of the image. */
   itkStaticConstMacro( ImageDimension, unsigned int,
                        Superclass::ImageDimension );
 
@@ -79,10 +79,10 @@ public:
   /** Override the Set for the InputImage */
   virtual void SetInputImage( const InputImageType * ptr );
 
-  /** Set the mask or second image used in the comparison. **/
+  /** Set the mask or second image used in the comparison. */
   virtual void SetInputMask( const typename InputImageType::Pointer mask );
 
-  /** Get the mask or second image used in the comparison. **/
+  /** Get the mask or second image used in the comparison. */
   virtual typename InputImageType::Pointer GetInputMask() const
     {
     return m_InputMask;
@@ -175,7 +175,7 @@ protected:
   /** Default destructor */
   ~JointHistogramImageFunction() {}
 
-  /** Printself function for introspection. **/
+  /** Printself function for introspection. */
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
   typename HistogramType::Pointer & ComputeHistogramAtIndex(

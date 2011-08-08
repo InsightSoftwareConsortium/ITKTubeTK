@@ -90,11 +90,11 @@ public:
   itkSetMacro(Scale, double);
 
   /** Set the Ridgeness of all the tubes in the tubenet
-   *  if Ridgeness is not set then the tube keeps its own value*/
+   *  if Ridgeness is not set then the tube keeps its own value */
   itkSetMacro(Ridgeness, double);
 
   /** Set the Medialness of all the tubes in the tubenet
-   *  if Medialness is not set then the tube keeps its own value*/
+   *  if Medialness is not set then the tube keeps its own value */
   itkSetMacro(Medialness, double);
 
   /** Set if we should crop the tube net to fit the image */

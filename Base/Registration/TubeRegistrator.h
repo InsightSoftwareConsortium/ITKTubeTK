@@ -40,72 +40,72 @@ limitations under the License.
 namespace VTREE {
 
 class TubeRegistratorPoint
-  {
-  public:
-    vnl_vector<double> x;
-    double r;
-    double rn, mn;
-    double w;
-    double val;
-    vnl_vector<double> v1;
-    vnl_vector<double> v2;
+{
+public:
+    vnl_vector<double> m_X;
+    double             m_R;
+    double             m_RN;
+    double             m_MN;
+    double             m_W;
+    double             m_VAL;
+    vnl_vector<double> m_V1;
+    vnl_vector<double> m_V2;
 
-    vnl_vector<double> xT;
-    vnl_vector<double> v1T;
-    vnl_vector<double> v2T;
-    vnl_vector<double> dXT;
+    vnl_vector<double> m_XT;
+    vnl_vector<double> m_V1T;
+    vnl_vector<double> m_V2T;
+    vnl_vector<double> m_DXT;
 
     TubeRegistratorPoint();
-  };
-
-class TubeRegistrator : public Registrator
-  {
-
-  protected:
-
-    double cKappa;
-
-    double cMetric;
-
-    TubeNet * cTubeNet;
-    std::list<TubeRegistratorPoint *> cRegPoints;
-    Image3D<short> * cIm;
-    double cImMin, cImRange;
-    int cSampling;
-    int cCount;
-    double cWeight;
-    ImageValueOp3D<short> cImOp;
-    vnl_matrix<double> cBiasV;
-    vnl_matrix<double> cBiasVI;
-
-    double cRegImThresh;
-
-  public:
-
-    TubeRegistrator();
-
-    void SetTubeNet(TubeNet * tubes);
-    void SetImage(Image3D<short> * im);
-
-    int GetSampling(void);
-    void SetSampling(int newSampling);
-    int SetNumSamples(void);
-    std::list<TubeRegistratorPoint *> * GetSamples(void);
-
-    void SetKappa(double kappa);
-
-    void SetImThresh(double newRegThresh);
-    double GetImThresh(void);
-
-    void MetricPreProc(void);
-    double Metric(void);
-    double MetricDeriv(double * dX, double * dY, double * dZ,
-                       double * dA, double * dB, double * dG);
-
-    bool Fit(void);
-  };
-
 };
 
-#endif
+class TubeRegistrator : public Registrator
+{
 
+protected:
+
+  double cKappa;
+
+  double cMetric;
+
+  TubeNet * cTubeNet;
+  std::list<TubeRegistratorPoint *> cRegPoints;
+  Image3D<short> * cIm;
+  double cImMin, cImRange;
+  int cSampling;
+  int cCount;
+  double cWeight;
+  ImageValueOp3D<short> cImOp;
+  vnl_matrix<double> cBiasV;
+  vnl_matrix<double> cBiasVI;
+
+  double cRegImThresh;
+
+public:
+
+  TubeRegistrator();
+
+  void SetTubeNet(TubeNet * tubes);
+  void SetImage(Image3D<short> * im);
+
+  int GetSampling(void);
+  void SetSampling(int newSampling);
+  int SetNumSamples(void);
+  std::list<TubeRegistratorPoint *> * GetSamples(void);
+
+  void SetKappa(double kappa);
+
+  void SetImThresh(double newRegThresh);
+  double GetImThresh(void);
+
+  void MetricPreProc(void);
+  double Metric(void);
+  double MetricDeriv(double * dX, double * dY, double * dZ,
+                       double * dA, double * dB, double * dG);
+
+  bool Fit(void);
+};
+
+}
+
+#endif

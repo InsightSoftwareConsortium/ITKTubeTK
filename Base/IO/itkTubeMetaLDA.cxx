@@ -38,7 +38,7 @@ namespace tube {
 MetaLDA::
 MetaLDA()
 {
-  if( META_DEBUG ) 
+  if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
     }
@@ -50,7 +50,7 @@ MetaLDA()
 MetaLDA::
 MetaLDA( const char *_headerName )
 {
-  if( META_DEBUG ) 
+  if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
     }
@@ -77,7 +77,7 @@ MetaLDA( const MetaLDA & _metaLDA )
 
 //
 MetaLDA::
-MetaLDA( const LDAValuesType & _ldaValues, 
+MetaLDA( const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix )
 {
   if( META_DEBUG )
@@ -103,9 +103,9 @@ PrintInfo() const
 {
   MetaForm::PrintInfo();
 
-  METAIO_STREAM::cout << "LDAValues = " << m_LDAValues 
+  METAIO_STREAM::cout << "LDAValues = " << m_LDAValues
     << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix 
+  METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix
     << METAIO_STREAM::endl;
 }
 
@@ -256,7 +256,7 @@ Read( const char *_headerName )
 
   if( !tmpStream->rdbuf()->is_open() )
     {
-    METAIO_STREAM::cout << "MetaLDA: Read: Cannot open file _" 
+    METAIO_STREAM::cout << "MetaLDA: Read: Cannot open file _"
                         << m_FileName << "_" << METAIO_STREAM::endl;
     delete tmpStream;
     return false;
@@ -299,7 +299,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaLDA: ReadStream: two files open?" 
+    METAIO_STREAM::cout << "MetaLDA: ReadStream: two files open?"
                         << METAIO_STREAM::endl;
     delete m_ReadStream;
     }
@@ -308,7 +308,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( !M_Read() )
     {
-    METAIO_STREAM::cout << "MetaLDA: Read: Cannot parse file" 
+    METAIO_STREAM::cout << "MetaLDA: Read: Cannot parse file"
                         << METAIO_STREAM::endl;
     m_ReadStream = NULL;
     return false;
@@ -361,7 +361,7 @@ WriteStream( METAIO_STREAM::ofstream * _stream )
 {
   if( m_WriteStream != NULL )
     {
-    METAIO_STREAM::cout << "MetaLDA: WriteStream: two files open?" 
+    METAIO_STREAM::cout << "MetaLDA: WriteStream: two files open?"
                         << METAIO_STREAM::endl;
     delete m_WriteStream;
     }
@@ -390,7 +390,7 @@ M_SetupReadFields( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_SetupReadFields" 
+    METAIO_STREAM::cout << "MetaLDA: M_SetupReadFields"
                         << METAIO_STREAM::endl;
     }
 
@@ -433,7 +433,7 @@ M_SetupWriteFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "Matrix", MET_FLOAT_MATRIX, nDims, 
+  MET_InitWriteField( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
     m_LDAMatrix.data_block() );
   m_Fields.push_back( mF );
 }
@@ -442,21 +442,21 @@ M_SetupWriteFields( void )
 bool MetaLDA::
 M_Read( void )
 {
-  if( META_DEBUG ) 
+  if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Loading Header" 
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Loading Header"
                         << METAIO_STREAM::endl;
     }
   if( !MetaForm::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error parsing file" 
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Error parsing file"
                         << METAIO_STREAM::endl;
     return false;
     }
 
-  if( META_DEBUG ) 
+  if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Parsing Header" 
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Parsing Header"
                         << METAIO_STREAM::endl;
     }
   MET_FieldRecordType * mF;

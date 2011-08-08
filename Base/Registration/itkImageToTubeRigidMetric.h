@@ -38,8 +38,7 @@ namespace itk
 {
 
 /** \class ImageToTubeRigidMetric
-* \brief Computes similarity between two objects to be registered
-*/
+* \brief Computes similarity between two objects to be registered */
 
 template < class TFixedImage, class TMovingSpatialObject>
 class ITK_EXPORT ImageToTubeRigidMetric
@@ -59,40 +58,43 @@ public:
   typedef typename MovingSpatialObjectType::ChildrenListType
                                                 ChildrenListType;
   typedef GroupSpatialObject<3>                 TubeNetType;
-  typedef Image<unsigned char, 3>                MaskImageType;
+  typedef Image<unsigned char, 3>               MaskImageType;
   typedef typename MaskImageType::Pointer       MaskImagePointer;
   typedef typename MaskImageType::IndexType     IndexType;
   typedef TFixedImage                           FixedImageType;
   typedef GaussianDerivativeImageFunction<TFixedImage>
                                                 DerivativeImageFunctionType;
 
-//  typedef GaussianSecondDerivativeImageFunction<TFixedImage>
-//                                       SecondDerivativeImageFunctionType;
-
+  //  typedef GaussianSecondDerivativeImageFunction<TFixedImage>
+  //                                       SecondDerivativeImageFunctionType;
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
 
   typedef vnl_vector<double>                    VectorType;
   typedef vnl_matrix<double>                    MatrixType;
-  typedef Point<double, 3>                       PointType;
+  typedef Point<double, 3>                      PointType;
 
-  /** Run-time type information ( and related methods ).*/
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Space dimension is the dimension of parameters space */
-  enum { SpaceDimension = 6 }; //TMapper::SpaceDimension };
+  enum { SpaceDimension = 6 }; //TMapper::SpaceDimension
+
   enum { ImageDimension = 3 };
+
   enum { RangeDimension = 6 };
 
-  unsigned int GetNumberOfParameters( void ) const  {return SpaceDimension;};
+  unsigned int GetNumberOfParameters( void ) const
+    {
+    return SpaceDimension;
+    }
 
   /** Typedef for the Range calculator */
-  typedef MinimumMaximumImageCalculator<FixedImageType>
-                                               RangeCalculatorType;
+  typedef MinimumMaximumImageCalculator<FixedImageType> RangeCalculatorType;
 
   /** Type used for representing point components  */
   typedef typename Superclass::CoordinateRepresentationType
@@ -119,16 +121,16 @@ public:
     DerivativeType & derivative ) const;
 
   /** Get the Value for SingleValue Optimizers */
-  MeasureType    GetValue( const ParametersType & parameters ) const ;
+  MeasureType    GetValue( const ParametersType & parameters ) const;
 
   /** Get Value and Derivatives for MultipleValuedOptimizers */
   void GetValueAndDerivative( const ParametersType & parameters,
-    MeasureType & Value, DerivativeType  & Derivative ) const ;
+    MeasureType & Value, DerivativeType  & Derivative ) const;
 
   /** SubSample the MovingSpatialObject tube */
   void SubSampleTube( unsigned int sampling );
 
-  /** Apply the center of rotation to the transformation*/
+  /** Apply the center of rotation to the transformation */
   ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
 
   /** Set kappa value */
@@ -146,8 +148,10 @@ public:
   itkSetMacro( Extent, double );
   itkGetMacro( Extent, double );
 
-  TransformPointer GetTransform( void ) const {
-    return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() );}
+  TransformPointer GetTransform( void ) const
+    {
+    return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() );
+    }
 
   itkSetObjectMacro( MaskImage, MaskImageType );
 
@@ -161,12 +165,13 @@ protected:
 
   ImageToTubeRigidMetric();
   virtual ~ImageToTubeRigidMetric();
-  ImageToTubeRigidMetric( const Self& ) {}
-  void operator=( const Self& ) {}
+  ImageToTubeRigidMetric( const Self& ) {};
+  void operator=( const Self& ) {};
 
   void ComputeImageRange( void );
+
   void GetDeltaAngles( const Point<double, 3> & x,
-    const vnl_vector_fixed<double, 3> & dx,
+   const vnl_vector_fixed<double, 3> & dx,
     double *dA, double *dB, double *dG ) const;
 
 private:
@@ -221,13 +226,13 @@ private:
 
   /** Set the scale of the blurring */
   void SetScale( const double scale ) const {m_Scale = scale;}
+
   itkGetConstMacro( Scale, double );
 
   /** Test whether the specified point is inside
-  * Thsi method overload the one in the ImageMapper class
-  * \warning This method cannot be safely used in more than one thread at
-  * a time.
-  * \sa Evaluate(); */
+  This method overload the one in the ImageMapper class
+  \warning This method cannot be safely used in more than one thread at a time.
+  \sa Evaluate() */
   bool IsInside( const InputPointType & point ) const;
 
   VectorType *  EvaluateAllDerivatives( void ) const;

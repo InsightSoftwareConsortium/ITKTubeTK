@@ -103,7 +103,7 @@ public:
     * itkNewMacro(), but the type of the registration function depends on the
     * type of this object.  Can't call the overridden function
     * CreateRegistrationFunction() from the base class constructor, so we'll
-    * call it here. Derived classes should use this instead of itkNewMacro().*/
+    * call it here. Derived classes should use this instead of itkNewMacro(). */
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
@@ -638,11 +638,11 @@ private:
  *  when processing an image.  Designed for use with SmartPointers. */
 template< class ImageType >
 struct FaceStruct
-  {
+{
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-      < typename ImageType::ObjectType > FaceCalculatorType;
-  typedef typename FaceCalculatorType::FaceListType FaceListType;
-  typedef typename FaceListType::iterator FaceListIteratorType;
+      < typename ImageType::ObjectType >                  FaceCalculatorType;
+        typedef typename FaceCalculatorType::FaceListType FaceListType;
+        typedef typename FaceListType::iterator           FaceListIteratorType;
 
   FaceStruct()
     {
@@ -857,9 +857,9 @@ struct FaceStruct
     void SetIteratorToCurrentFace(
         std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
         const std::vector< itk::FixedArray< ImageType, VLength > > & images )
-      {
-      int c = 0;
-      if( (int) iterators.size() != (int) images.size() )
+    {
+    int c = 0;
+    if( (int) iterators.size() != (int) images.size() )
         {
         for( int i = 0; i < (int) images.size(); i++ )
           {
@@ -905,7 +905,7 @@ struct FaceStruct
   std::vector< FaceListType >            faceLists;
   std::vector< FaceListIteratorType >    faceListIts;
   int                                    numberOfTerms;
-  };
+};
 
 } // end namespace itk
 

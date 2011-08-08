@@ -42,8 +42,7 @@ namespace tube
 *      Example derivation in SplApprox1D class
 *  \class Spline1D
 *  \author Stephen R. Aylward
-*  \date   11/19/99
-*/
+*  \date   11/19/99 */
 class  Spline1D
 {
 public:

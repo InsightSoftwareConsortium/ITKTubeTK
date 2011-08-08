@@ -75,7 +75,7 @@ public:
    * Type definition for the input image pixel type. */
   typedef typename ImageType::PixelType                 PixelType;
 
-  /**  Type definition for TubeSpatialObjec*/
+  /**  Type definition for TubeSpatialObjec */
   typedef VesselTubeSpatialObject< ImageDimension >     TubeType;
   typedef typename TubeType::TubePointType              TubePointType;
 

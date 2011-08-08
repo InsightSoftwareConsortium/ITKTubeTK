@@ -33,12 +33,12 @@ namespace tube
  * \brief This class provides usefull mathematical operations
  */
 
-/** simple function that return the orthogonal vector to one*/
+/** simple function that return the orthogonal vector to one */
 template <class T>
 vnl_vector<T>
 GetOrthogonalVector(vnl_vector<T> x);
 
-/** simple function that return the cross vector from two vectors*/
+/** simple function that return the cross vector from two vectors */
 template <class T>
 vnl_vector<T>
 GetCrossVector(vnl_vector<T> v1, vnl_vector<T> v2);

@@ -59,14 +59,14 @@ public:
   // Custom Typedefs
   //
   typedef Image< float, 2 >                     ImageT;
-  typedef ImageT                                        ImageType;
-  typedef std::vector< ImageType::Pointer >             ImageListType;
+  typedef ImageT                                ImageType;
+  typedef std::vector< ImageType::Pointer >     ImageListType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
   typedef Image< unsigned char, 2 >    LabelmapT;
-  typedef LabelmapT                            MaskImageType;
+  typedef LabelmapT                    MaskImageType;
 
   typedef double                               FeatureType;
   typedef vnl_vector< FeatureType >            FeatureVectorType;
