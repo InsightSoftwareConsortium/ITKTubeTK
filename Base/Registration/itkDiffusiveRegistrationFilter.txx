@@ -798,16 +798,12 @@ DiffusiveRegistrationFilter
       threadId, threadCount, splitDeformationVectorComponentRegion );
 
   ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
-  int scalarTotal = str->Filter->SplitRequestedRegion(
-      threadId, threadCount, splitScalarDerivativeRegion );
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitScalarDerivativeRegion );
 
   ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
-  int tensorTotal = str->Filter->SplitRequestedRegion(
-      threadId, threadCount, splitTensorDerivativeRegion );
-
-  // Make sure we could split all of the images equally
-  assert( total == scalarTotal );
-  assert( total == tensorTotal );
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitTensorDerivativeRegion );
 
   if( threadId < total )
     {
@@ -1002,22 +998,16 @@ DiffusiveRegistrationFilter
                                                  splitRegion );
 
   ThreadDiffusionTensorImageRegionType splitTensorRegion;
-  int tensorTotal = str->Filter->SplitRequestedRegion( threadId,
-                                                       threadCount,
-                                                       splitTensorRegion );
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitTensorRegion );
 
   ThreadTensorDerivativeImageRegionType splitTensorDerivativeRegion;
-  int tensorDerivativeTotal = str->Filter->SplitRequestedRegion(
-      threadId, threadCount, splitTensorDerivativeRegion );
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitTensorDerivativeRegion );
 
   ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
-  int scalarDerivativeTotal = str->Filter->SplitRequestedRegion(
-      threadId, threadCount, splitScalarDerivativeRegion );
-
-  // Make sure we could split all of the images equally
-  assert( total == tensorTotal );
-  assert( total == tensorDerivativeTotal );
-  assert( total == scalarDerivativeTotal );
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitScalarDerivativeRegion );
 
   if (threadId < total)
     {
