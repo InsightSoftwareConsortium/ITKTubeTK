@@ -105,7 +105,7 @@ RidgeExtractor<TInputImage>
   m_ExtractBoundMax.Fill( 0 );
 
   m_ThreshT = 0.75;
-  m_ThreshX = 2.0;
+  m_ThreshX = 3.0;
   m_ThreshRidgeness = 0.85;    // near 1 = harder
   m_ThreshRidgenessStart = 0.75;
   m_ThreshRoundness = 0.6;    // near 1 = harder
@@ -165,16 +165,16 @@ RidgeExtractor<TInputImage>
     std::cout << std::endl << "Ridge::SetInputImage" << std::endl;
     }
 
-  m_Image = inputImage;
+  m_InputImage = inputImage;
 
-  if( m_Image )
+  if( m_InputImage )
     {
     m_DataFunc->SetInputImage( inputImage );
 
     typedef MinimumMaximumImageFilter<ImageType> MinMaxFilterType;
     typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
-    minMaxFilter->SetInput( m_Image );
+    minMaxFilter->SetInput( m_InputImage );
     minMaxFilter->Update();
     m_DataMin = minMaxFilter->GetMinimum();
     m_DataMax = minMaxFilter->GetMaximum();
@@ -188,7 +188,7 @@ RidgeExtractor<TInputImage>
       }
 
     typename ImageType::RegionType region;
-    region = m_Image->GetLargestPossibleRegion();
+    region = m_InputImage->GetLargestPossibleRegion();
     vnl_vector<int> vMin( ImageDimension );
     vnl_vector<int> vMax( ImageDimension );
     for( unsigned int i=0; i<ImageDimension; i++ )
@@ -202,13 +202,23 @@ RidgeExtractor<TInputImage>
     m_DataSpline->xMax( vMax );
 
     /** Allocate the mask image */
-    m_DataMask = MaskType::New();
-    m_DataMask->SetRegions( region );
-    m_DataMask->CopyInformation( m_Image );
-    m_DataMask->Allocate();
-    m_DataMask->FillBuffer( 0 );
+    m_TubeMaskImage = TubeMaskImageType::New();
+    m_TubeMaskImage->SetRegions( region );
+    m_TubeMaskImage->CopyInformation( m_InputImage );
+    m_TubeMaskImage->Allocate();
+    m_TubeMaskImage->FillBuffer( 0 );
 
     } // end Image == NULL
+}
+
+/**
+ * Get the input image */
+template<class TInputImage>
+typename TInputImage::Pointer
+RidgeExtractor<TInputImage>
+::GetInputImage( void )
+{
+  return m_InputImage;
 }
 
 /**
@@ -488,17 +498,17 @@ RidgeExtractor<TInputImage>
 {
   Superclass::PrintSelf( os, indent );
 
-  if( m_Image.IsNotNull() )
+  if( m_InputImage.IsNotNull() )
     {
-    os << indent << "Image = " << m_Image << std::endl;
+    os << indent << "Image = " << m_InputImage << std::endl;
     }
   else
     {
     os << indent << "Image = NULL" << std::endl;
     }
-  if( m_DataMask.IsNotNull() )
+  if( m_TubeMaskImage.IsNotNull() )
     {
-    os << indent << "DataMask = " << m_DataMask << std::endl;
+    os << indent << "DataMask = " << m_TubeMaskImage << std::endl;
     }
   else
     {
@@ -647,7 +657,8 @@ RidgeExtractor<TInputImage>
   std::vector< TubePointType > pnts;
   pnts.clear();
 
-  typename MaskType::PixelType value = m_DataMask->GetPixel( indx );
+  typename TubeMaskImageType::PixelType value =
+    m_TubeMaskImage->GetPixel( indx );
   if( value != 0 && ( int )value != tubeId )
     {
     if( this->GetDebug() )
@@ -659,7 +670,7 @@ RidgeExtractor<TInputImage>
     }
   else
     {
-    m_DataMask->SetPixel( indx, ( PixelType )( tubeId
+    m_TubeMaskImage->SetPixel( indx, ( PixelType )( tubeId
         + ( tubePointCount/10000.0 ) ) );
     if( dir == 1 )
       {
@@ -671,10 +682,16 @@ RidgeExtractor<TInputImage>
         {
         indxX[i] = lX[i];
         }
-      std::cout << "Initial point ridgeness..." << std::endl;
+      if( this->GetDebug() )
+        {
+        std::cout << "Initial point ridgeness..." << std::endl;
+        }
       ridgeness = Ridgeness( indxX, roundness, curvature );
 
-      std::cout << "Adding point..." << std::endl;
+      if( this->GetDebug() )
+        {
+        std::cout << "Adding point..." << std::endl;
+        }
       TubePointType pnt;
       pnt.SetID( tubePointCount );
       typename TubePointType::PointType tubeX;
@@ -720,7 +737,10 @@ RidgeExtractor<TInputImage>
       pnts.push_back( pnt );
       tubePointCount++;
 
-      std::cout << "Ridge: Added initial tube point." << std::endl;
+      if( this->GetDebug() )
+        {
+        std::cout << "Ridge: Added initial tube point." << std::endl;
+        }
       }
     }
 
@@ -1033,7 +1053,7 @@ RidgeExtractor<TInputImage>
       {
       indx[i] = ( int )( lX[i]+0.5 );
       }
-    double maskVal = m_DataMask->GetPixel( indx );
+    double maskVal = m_TubeMaskImage->GetPixel( indx );
 
     if( maskVal != 0 )
       {
@@ -1049,7 +1069,7 @@ RidgeExtractor<TInputImage>
       }
     else
       {
-      m_DataMask->SetPixel( indx, ( PixelType )( tubeId
+      m_TubeMaskImage->SetPixel( indx, ( PixelType )( tubeId
           + ( tubePointCount/10000.0 ) ) );
       }
 
@@ -1069,7 +1089,6 @@ RidgeExtractor<TInputImage>
         << " = " << lX << std::endl;
       }
 
-    std::cout << "Adding point..." << std::endl;
     TubePointType pnt;
     pnt.SetID( tubePointCount );
     typename TubePointType::PointType tubeX;
@@ -1136,7 +1155,7 @@ RidgeExtractor<TInputImage>
           tmpPoint.SetTangent( tubeV );
           tmpPoint.SetRadius( m_DynamicScaleUsed );
           m_RadiusExtractor->SetRadius0( m_DynamicScaleUsed );
-          if( !m_RadiusExtractor->ComputeOptimalRadiusAtPoint( tmpPoint,
+          if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
             m_DynamicScaleUsed, m_DynamicScaleUsed/4, m_DynamicScaleUsed*2,
             m_DynamicScaleUsed/8, m_DynamicScaleUsed/16 ) )
             {
@@ -1294,7 +1313,7 @@ RidgeExtractor<TInputImage>
         }
       }
 
-    if( m_DataMask->GetPixel( indx ) != 0 )
+    if( m_TubeMaskImage->GetPixel( indx ) != 0 )
       {
       if( m_StatusCallBack )
         {
@@ -1375,7 +1394,7 @@ RidgeExtractor<TInputImage>
         }
       }
 
-    if( m_DataMask->GetPixel( indx ) != 0 )
+    if( m_TubeMaskImage->GetPixel( indx ) != 0 )
       {
       if( m_StatusCallBack )
         {
@@ -1474,7 +1493,7 @@ RidgeExtractor<TInputImage>
 template<class TInputImage>
 typename RidgeExtractor<TInputImage>::TubeType::Pointer
 RidgeExtractor<TInputImage>
-::Extract( ContinuousIndexType & newX, int tubeId )
+::ExtractRidge( ContinuousIndexType & newX, int tubeId )
 {
   ContinuousIndexType lX;
   lX = newX;
@@ -1517,7 +1536,7 @@ RidgeExtractor<TInputImage>
     tmpPoint.SetPosition( tubeX );
     tmpPoint.SetTangent( tubeV );
     tmpPoint.SetRadius( scale0 );
-    if( !m_RadiusExtractor->ComputeOptimalRadiusAtPoint( tmpPoint,
+    if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
       scale0, scale0/4, scale0*2, scale0/8, scale0/16 ) )
       {
       if( this->GetDebug() && m_StatusCallBack )
@@ -1578,9 +1597,15 @@ RidgeExtractor<TInputImage>
       lN[i][j] = m_XHEVect( i, j );
       }
     }
-  std::cout << "Traversing one way" << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << "Traversing one way" << std::endl;
+    }
   TraverseOneWay( lX, lT, lN, 1 );
-  std::cout << "End traversing one way" << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << "End traversing one way" << std::endl;
+    }
 
   if( m_DynamicScale )
     {
@@ -1596,14 +1621,23 @@ RidgeExtractor<TInputImage>
     lT[i] = -1 * lT[i];
     }
 
-  std::cout << "Traversing the other way" << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << "Traversing the other way" << std::endl;
+    }
   TraverseOneWay( lX, lT, lN, -1 );
-  std::cout << "End traversing the other way" << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << "End traversing the other way" << std::endl;
+    }
 
   // return to user defaults
   if( m_DynamicScale )
     {
-    std::cout << "Restoring initial scale" << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "Restoring initial scale" << std::endl;
+      }
     SetScale( scaleOriginal );
     if( m_RadiusExtractor )
       {
@@ -1618,7 +1652,7 @@ RidgeExtractor<TInputImage>
       {
       m_StatusCallBack( "Extract: Ridge", "Too short", 0 );
       }
-    DeleteTube< MaskType >( m_Tube );
+    DeleteTube( m_Tube );
     m_Tube = NULL;
     std::cout << "Ridge returning null." << std::endl;
     return m_Tube;
@@ -1635,7 +1669,10 @@ RidgeExtractor<TInputImage>
   //
   if( m_Tube && m_Tube->GetPoints().size() > 0 )
     {
-    std::cout << "Calculating tangents." << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "Calculating tangents." << std::endl;
+      }
     typename TubePointType::VectorType tangent;
     tangent.Fill( 0.0 );
     tangent[0] = 1;
@@ -1671,23 +1708,17 @@ RidgeExtractor<TInputImage>
 template<class TInputImage>
 void
 RidgeExtractor<TInputImage>
-::SmoothTubeX( TubeType * tube, int h )
+::SmoothTube( TubeType * tube, int h )
 {
   typename TubeType::PointType avg;
-
-  //std::vector<TubePointType> & points = tube->GetPoints();
-  //std::vector<TubePointType>::iterator pnt, pntT;
 
   typename TubeType::PointListType &points = tube->GetPoints();
   typename TubeType::PointListType::iterator pnt, pntT;
 
-  //std::vector<TubePointType>::iterator begin = points.begin();
-  //std::vector<TubePointType>::iterator end = points.end();
-
   typename TubeType::PointListType::iterator begin = points.begin();
   typename TubeType::PointListType::iterator end = points.end();
 
-  DeleteTube< MaskType >( tube );
+  this->DeleteTube( tube );
 
   for( pnt = begin; pnt != end; pnt++ )
     {
@@ -1729,7 +1760,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  AddTube< MaskType >( tube );
+  this->AddTube( tube );
 }
 
 
@@ -1749,25 +1780,32 @@ RidgeExtractor<TInputImage>
 
   if( drawMask == NULL )
     {
-    drawMask = m_DataMask;
+    drawMask = m_TubeMaskImage;
     }
 
+  DrawPixelType zero = 0;
   typename std::vector< TubePointType >::iterator pnt;
   VectorType x( ImageDimension );
   double r;
   for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
     ++pnt )
     {
+    if( this->GetDebug() )
+      {
+      std::cout << "Del pnt = " << pnt->GetPosition() << std::endl;
+      }
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
       x[i] = ( int )( ( *pnt ).GetPosition()[i]+0.5 );
       }
 
     bool inside = true;
+    typename ImageType::IndexType indx;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
-      if( x[i] < m_ExtractBoundMin[i]
-        || x[i] > m_ExtractBoundMax[i] )
+      indx[i] = x[i];
+      if( indx[i] < m_ExtractBoundMin[i]
+        || indx[i] > m_ExtractBoundMax[i] )
         {
         inside = false;
         break;
@@ -1776,53 +1814,57 @@ RidgeExtractor<TInputImage>
 
     if( inside )
       {
-      typename ImageType::IndexType indx;
-      for( unsigned int i=0; i<ImageDimension; ++i )
-        {
-        indx[i] = x[i];
-        }
-      drawMask->SetPixel( indx, 0 );
-      r = ( *pnt ).GetRadius();
-      r += 0.5;
+      drawMask->SetPixel( indx, zero );
+      r = ( *pnt ).GetRadius() + 0.5;
       if( r > 1 )
         {
-        inside = true;
         for( unsigned int i=0; i<ImageDimension; ++i )
           {
-          if( x[i]-r < m_ExtractBoundMin[i]
-            || x[i]-r > m_ExtractBoundMax[i]
-            || x[i]+r < m_ExtractBoundMin[i]
-            || x[i]+r > m_ExtractBoundMax[i] )
+          if( indx[i]-r-1 < m_ExtractBoundMin[i]
+            || indx[i]-r-1 > m_ExtractBoundMax[i]
+            || indx[i]+r+1 < m_ExtractBoundMin[i]
+            || indx[i]+r+1 > m_ExtractBoundMax[i] )
             {
             inside = false;
             break;
             }
           }
+        typename NeighborhoodIteratorType::RadiusType rad;
+        rad.Fill( r );
+        NeighborhoodIteratorType it( rad, drawMask,
+          drawMask->GetLargestPossibleRegion() );
+        double rr = r * r;
+        it.SetLocation( indx );
         if( inside )
           {
-          typename NeighborhoodIteratorType::RadiusType rad;
-          rad.Fill( r );
-          NeighborhoodIteratorType it( rad, drawMask,
-            drawMask->GetLargestPossibleRegion() );
-          double rr = r * r;
-          it.SetLocation( indx );
-          it.GoToBegin();
-          while( !it.IsAtEnd() )
+          for( unsigned int i=0; i<it.Size(); ++i )
             {
-            for( unsigned int i=0; i<it.Size(); ++it )
+            double dist = 0;
+            for( unsigned int j=0; j<ImageDimension; j++ )
               {
-              double dist = 0;
-              for( unsigned int j=0; j<ImageDimension; j++ )
-                {
-                double tf = it.GetOffset(i)[j];
-                dist += tf * tf;
-                }
-              if( dist < rr )
-                {
-                it.SetPixel( i, 0 );
-                }
+              double tf = it.GetOffset(i)[j];
+              dist += tf * tf;
               }
-            ++it;
+            if( dist <= rr )
+              {
+              it.SetPixel( i, zero );
+              }
+            }
+          }
+        else
+          {
+          for( unsigned int i=0; i<it.Size(); ++i )
+            {
+            double dist = 0;
+            for( unsigned int j=0; j<ImageDimension; j++ )
+              {
+              double tf = it.GetOffset(i)[j];
+              dist += tf * tf;
+              }
+            if( dist <= rr )
+              {
+              it.SetPixel( i, zero, inside );
+              }
             }
           }
         }
@@ -1830,6 +1872,17 @@ RidgeExtractor<TInputImage>
     }
   return true;
 }
+
+/**
+ * Delete a tube */
+template<class TInputImage>
+bool
+RidgeExtractor<TInputImage>
+::DeleteTube( TubeType * tube )
+{
+  return this->DeleteTube< TubeMaskImageType >( tube, m_TubeMaskImage );
+}
+
 
 /**
  * Add a tube */
@@ -1848,7 +1901,7 @@ RidgeExtractor<TInputImage>
 
   if( drawMask == NULL )
     {
-    drawMask = m_DataMask;
+    drawMask = m_TubeMaskImage;
     }
 
   VectorType x( ImageDimension );
@@ -1859,16 +1912,22 @@ RidgeExtractor<TInputImage>
   for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
     pnt++ )
     {
+    if( this->GetDebug() )
+      {
+      std::cout << "Add pnt = " << pnt->GetPosition() << std::endl;
+      }
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
       x[i] = ( int )( ( *pnt ).GetPosition()[i]+0.5 );
       }
 
     bool inside = true;
+    typename ImageType::IndexType indx;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
-      if( x[i] < m_ExtractBoundMin[i]
-        || x[i] > m_ExtractBoundMax[i] )
+      indx[i] = x[i];
+      if( indx[i] < m_ExtractBoundMin[i]
+        || indx[i] > m_ExtractBoundMax[i] )
         {
         inside = false;
         break;
@@ -1877,55 +1936,61 @@ RidgeExtractor<TInputImage>
 
     if( inside )
       {
-      typename ImageType::IndexType indx;
-      for( unsigned int i=0; i<ImageDimension; ++i )
-        {
-        indx[i] = x[i];
-        }
       drawMask->SetPixel( indx, ( PixelType )( tubeId +
           ( tubePointCount/10000.0 ) ) );
-      r = ( *pnt ).GetRadius();
-      r += 0.5;
+      r = ( *pnt ).GetRadius() + 0.5;
       if( r > 1 )
         {
         inside = true;
         for( unsigned int i=0; i<ImageDimension; ++i )
           {
-          if( x[i]-r < m_ExtractBoundMin[i]
-            || x[i]-r > m_ExtractBoundMax[i]
-            || x[i]+r < m_ExtractBoundMin[i]
-            || x[i]+r > m_ExtractBoundMax[i] )
+          if( indx[i]-r-1 < m_ExtractBoundMin[i]
+            || indx[i]-r-1 > m_ExtractBoundMax[i]
+            || indx[i]+r+1 < m_ExtractBoundMin[i]
+            || indx[i]+r+1 > m_ExtractBoundMax[i] )
             {
             inside = false;
             break;
             }
           }
+        typename NeighborhoodIteratorType::RadiusType rad;
+        rad.Fill( r );
+        NeighborhoodIteratorType it( rad, drawMask,
+          drawMask->GetLargestPossibleRegion() );
+        double rr = r * r;
+        it.SetLocation( indx );
         if( inside )
           {
-          typename NeighborhoodIteratorType::RadiusType rad;
-          rad.Fill( r );
-          NeighborhoodIteratorType it( rad, drawMask,
-            drawMask->GetLargestPossibleRegion() );
-          double rr = r * r;
-          it.SetLocation( indx );
-          it.GoToBegin();
-          while( !it.IsAtEnd() )
+          for( unsigned int i=0; i<it.Size(); ++i )
             {
-            for( unsigned int i=0; i<it.Size(); ++it )
+            double dist = 0;
+            for( unsigned int j=0; j<ImageDimension; j++ )
               {
-              double dist = 0;
-              for( unsigned int j=0; j<ImageDimension; j++ )
-                {
-                double tf = it.GetOffset(i)[j];
-                dist += tf * tf;
-                }
-              if( dist < rr )
-                {
-                it.SetPixel( i, ( PixelType )( tubeId +
-                    ( tubePointCount/10000.0 ) ) );
-                }
+              double tf = it.GetOffset(i)[j];
+              dist += tf * tf;
               }
-            ++it;
+            if( dist <= rr )
+              {
+              it.SetPixel( i, ( PixelType )( tubeId +
+                  ( tubePointCount/10000.0 ) ) );
+              }
+            }
+          }
+        else
+          {
+          for( unsigned int i=0; i<it.Size(); ++i )
+            {
+            double dist = 0;
+            for( unsigned int j=0; j<ImageDimension; j++ )
+              {
+              double tf = it.GetOffset(i)[j];
+              dist += tf * tf;
+              }
+            if( dist <= rr )
+              {
+              it.SetPixel( i, ( PixelType )( tubeId +
+                  ( tubePointCount/10000.0 ) ), inside );
+              }
             }
           }
         }
@@ -1933,6 +1998,16 @@ RidgeExtractor<TInputImage>
     tubePointCount++;
     }
   return true;
+}
+
+/**
+ * Add a tube */
+template<class TInputImage>
+bool
+RidgeExtractor<TInputImage>
+::AddTube( TubeType * tube )
+{
+  return this->AddTube< TubeMaskImageType >( tube, m_TubeMaskImage );
 }
 
 /** Set the idle call back */

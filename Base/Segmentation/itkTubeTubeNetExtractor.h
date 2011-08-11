@@ -76,7 +76,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     ::itk::GetImageDimension< TInputImage>::ImageDimension );
 
-  /** Typedef for TubeSpatialObject */
+  /** Typedef for VesselTubeSpatialObject */
   typedef VesselTubeSpatialObject< ImageDimension >    TubeType;
 
   /**
@@ -138,7 +138,7 @@ public:
 
   /**
    * Generate output mask */
-  void   DrawVesselMask( MaskType * maskImage );
+  void   DrawMask( MaskType * maskImage );
 
   /**
    * Save a tube net */

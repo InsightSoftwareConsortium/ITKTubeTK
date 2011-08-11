@@ -996,8 +996,7 @@ bool SplineND::extremeConjGrad( VectorType & extX, double * extVal )
 {
   hessian( extX );
 
-  //  VectorType eVals( m_NDims );
-  VectorType eVals( m_NDims, NULL );
+  VectorType eVals( m_NDims, 0.0 );
   MatrixType eVects( m_NDims, m_NDims );
   Eigen( m_H, eVects, eVals, false );
 

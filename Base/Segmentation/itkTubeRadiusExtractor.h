@@ -168,16 +168,16 @@ public:
   itkSetMacro( ThreshMedialnessStart, double );
 
   /**
-   * Get ThreshMedialness Start*/
+   * Get ThreshMedialness Start */
   itkGetMacro( ThreshMedialnessStart, double );
 
   /**
-   * Set Extract Ridge */
-  itkSetMacro( ExtractRidge, bool );
+   * Set Extract Bright Tube (versus a Dark Tube) */
+  itkSetMacro( ExtractBrightTube, bool );
 
   /**
-   * Get ExtractRidge*/
-  itkGetMacro( ExtractRidge, bool );
+   * Get Extract Bright Tube */
+  itkGetMacro( ExtractBrightTube, bool );
 
   /**
    * Return the optimizer */
@@ -190,27 +190,28 @@ public:
   /**
    *
    */
-  void ComputeMeasuresAtPoint( TubePointType & pnt, double pntR,
+  void MeasuresAtPoint( TubePointType & pnt, double pntR,
     double & mness, double & bness, bool doBNess );
 
   /**
    * Compute medialness at a kernel array */
-  void ComputeMeasuresInKernelArray( KernArrayType & kernArray,
+  void MeasuresInKernelArray( KernArrayType & kernArray,
     double pntR, double & mness, double & bness, bool doBNess );
 
   /**
    * Calculate the optimal scale
    */
-  bool ComputeOptimalRadiusAtPoint( TubePointType & pnt, double & r0,
+  bool OptimalRadiusAtPoint( TubePointType & pnt, double & r0,
     double rMin, double rMax, double rStep, double rTolerance );
 
   /**
    * Calculate Radii
    */
-  bool ComputeTubeRadii( TubeType & tube );
+  bool ExtractRadii( TubeType * tube );
 
   void SetIdleCallBack( bool ( *idleCallBack )() );
-  void SetStatusCallBack( void ( *statusCallBack )( char *, char *, int ) );
+  void SetStatusCallBack( void ( *statusCallBack )( const char *,
+      const char *, int ) );
 
 protected:
 
@@ -221,31 +222,31 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  void ComputeValuesInSubKernel( TubePointType pnt, double pntR,
+  void ValuesInSubKernel( TubePointType pnt, double pntR,
     MatrixType & kernN, VectorType & kern, double & kernCnt );
 
-  void ComputeValuesInKernel( TubePointType pnt, double pntR,
+  void ValuesInKernel( TubePointType pnt, double pntR,
     MatrixType & kernN, VectorType & kernPos, VectorType & kernNeg,
     VectorType & kernBrn, bool doBNess );
 
-  void ComputeValuesInFullKernelArray( TubeType & tube,
+  void ValuesInFullKernelArray( TubeType * tube,
     KernArrayType & kernArray,
     KernArrayTubePointIndexType & kernArrayTubePointIndex );
 
   /**
    * Compute medialness at a kernel */
-  void ComputeMeasuresInKernel( double pntR,
+  void MeasuresInKernel( double pntR,
     VectorType & kernPos, VectorType & kernNeg, VectorType & kernBrn,
     double & mness, double & bness, bool doBNess );
 
   /**
    * Calculate Radii one way */
-  void ComputeMeasuresInFullKernelArray( KernArrayType & kernArray,
+  void MeasuresInFullKernelArray( KernArrayType & kernArray,
     unsigned int kernPntStart, unsigned int KernPntEnd );
 
   void SmoothMeasuresInFullKernelArray( KernArrayType & kernArray );
 
-  void ApplyMeasuresInFullKernelArray( TubeType & tube,
+  void ApplyMeasuresInFullKernelArray( TubeType * tube,
     KernArrayType & kernArray,
     KernArrayTubePointIndexType & kernArrayTubePointIndex );
 
@@ -268,7 +269,7 @@ private:
   unsigned int                            m_KernelPointSpacing;
 
   /** Determine if the algorithm extracts ridge or a valley */
-  bool                                    m_ExtractRidge;
+  bool                                    m_ExtractBrightTube;
 
   double                                  m_Radius0;
   double                                  m_RadiusMin;
@@ -283,7 +284,7 @@ private:
   MatrixType                              m_KernX;
 
   bool ( *m_IdleCallBack )();
-  void ( *m_StatusCallBack )( char *, char *, int );
+  void ( *m_StatusCallBack )( const char *, const char *, int );
 
 };
 

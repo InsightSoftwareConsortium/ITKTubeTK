@@ -72,10 +72,10 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetExtractRidge( true );
-  if( radiusOp->GetExtractRidge() != true )
+  radiusOp->SetExtractBrightTube( true );
+  if( radiusOp->GetExtractBrightTube() != true )
     {
-    tube::ErrorMessage( "ExtractRidge != true" );
+    tube::ErrorMessage( "ExtractBrightTube != true" );
     returnStatus = EXIT_FAILURE;
     }
 
@@ -214,7 +214,7 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     radiusOp->SetRadius0( radius0 );
 
     //radiusOp->SetDebug( true );
-    radiusOp->ComputeTubeRadii( *tubep );
+    radiusOp->ExtractRadii( tubep );
 
     double diff;
     double avgDiff = 0;

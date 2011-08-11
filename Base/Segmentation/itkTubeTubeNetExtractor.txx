@@ -296,7 +296,7 @@ TubeNetExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetExtractor<TInputImage, TInputMask>
-::DrawVesselMask( MaskType * ) // mask )
+::DrawMask( MaskType * ) // mask )
 {
   /* // Needs to iterate
   TubeType::ChildrenListType * tubeList =

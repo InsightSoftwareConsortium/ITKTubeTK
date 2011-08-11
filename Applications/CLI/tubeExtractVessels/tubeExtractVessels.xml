@@ -20,31 +20,56 @@
       <index>0</index>
       <description>Input volume</description>
     </image>
+    <string>
+      <name>outputTubeFile</name>
+      <label>Output filename for TubeFile (.tre)</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output tube file</description>
+    </string>
+  </parameters>
+  <parameters>
+    <label>Seeds</label>
     <float-vector>
-      <name>startX</name>
-      <label>Starting index</label>
-      <description>Continuous index within the image at which ridge extraction should start</description>
+      <name>seedX</name>
+      <label>Seed coordinate</label>
       <flag>x</flag>
+      <description>Continuous index for starting ridge extraction</description>
     </float-vector>
     <image>
-      <name>outputTubeFile</name>
-      <label>Output filename for TubeFile</label>
-      <channel>output</channel>
-      <index>2</index>
-      <description>Output tube file</description>
+      <name>seedMaskVolume</name>
+      <label>Seed mask volume</label>
+      <channel>input</channel>
+      <flag>m</flag>
+      <description>Mask of seed points for ride extraction</description>
     </image>
+    <string>
+      <name>seedList</name>
+      <label>Seed list</label>
+      <flag>l</flag>
+      <description>CSV list of seed points for ride extraction</description>
+    </string>
   </parameters>
-
   <parameters>
     <label>Ridge parameters</label>
     <double>
       <name>scale</name>
       <label>Scale of ridge</label>
-      <description>Standard deviation of the scale used for making measurements in the image</description>
+      <description>Scale used for ridge measures</description>
       <longflag>scale</longflag>
       <flag>s</flag>
       <default>2.0</default>
     </double>
+  </parameters>
+  <parameters>
+    <label>Output parameters</label>
+    <image>
+      <name>outputTubeVolume</name>
+      <flag>t</flag>
+      <label>Output filename for tube mask volume</label>
+      <channel>output</channel>
+      <description>Output volume that is a mask of extracted tubes</description>
+    </image>
   </parameters>
 
 </executable>

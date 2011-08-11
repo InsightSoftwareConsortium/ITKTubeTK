@@ -110,23 +110,6 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  if( startX.size() != dimensionT )
-    {
-    std::cout << "startX = ";
-    for( unsigned int i=0; i<startX.size(); i++ )
-      {
-      std::cout << startX[i] << " ";
-      }
-    std::cout << std::endl;
-    std::cout << "dimensionT = " << dimensionT << std::endl;
-    std::cout << "size = " << startX.size() << std::endl;
-    tube::ErrorMessage(
-      "Errror: X vector must be specified to initiate an extraction." );
-    return EXIT_FAILURE;
-    }
-
-  timeCollector.Start("Ridge Extractor");
-
   typedef itk::tube::RidgeExtractor< ImageType > RidgeOpType;
   typename RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
 
@@ -136,22 +119,42 @@ int DoIt( int argc, char * argv[] )
   ridgeOp->SetStepX( 0.75 );
   ridgeOp->SetDynamicScale( true );
 
-  itk::ContinuousIndex< double, dimensionT > cIndx;
-  for( unsigned int i=0; i<dimensionT; i++ )
+  if( seedX.size() > 0 )
     {
-    cIndx[i] = startX[i];
-    }
+    if( seedX.size() != dimensionT )
+      {
+      std::cout << "seedX = ";
+      for( unsigned int i=0; i<seedX.size(); i++ )
+        {
+        std::cout << seedX[i] << " ";
+        }
+      std::cout << std::endl;
+      std::cout << "dimensionT = " << dimensionT << std::endl;
+      std::cout << "size = " << seedX.size() << std::endl;
+      tube::ErrorMessage(
+        "Errror: X vector must be specified to initiate an extraction." );
+      return EXIT_FAILURE;
+      }
 
-  typename TubeType::Pointer xTube = ridgeOp->Extract( cIndx, 1 );
+    timeCollector.Start("Ridge Extractor");
+
+    itk::ContinuousIndex< double, dimensionT > cIndx;
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      cIndx[i] = seedX[i];
+      }
+
+    typename TubeType::Pointer xTube = ridgeOp->Extract( cIndx, 1 );
+
+    if( xTube.IsNull() )
+      {
+      tube::ErrorMessage( "Errror: Ridge not found. " );
+      return EXIT_FAILURE;
+      }
+    }
 
   progressReporter.Report( 0.2 );
   timeCollector.Stop("Ridge Extractor");
-
-  if( xTube.IsNull() )
-    {
-    tube::ErrorMessage( "Errror: Ridge not found. " );
-    return EXIT_FAILURE;
-    }
 
   progressReporter.Report( 1.0 );
   progressReporter.End( );

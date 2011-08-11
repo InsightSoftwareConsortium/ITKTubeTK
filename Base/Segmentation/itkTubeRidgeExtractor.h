@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -64,9 +64,9 @@ public:
   typedef SmartPointer<Self>         Pointer;
   typedef SmartPointer<const Self>   ConstPointer;
 
-  itkTypeMacro(RidgeExtractor, Object);
+  itkTypeMacro( RidgeExtractor, Object );
 
-  itkNewMacro(RidgeExtractor);
+  itkNewMacro( RidgeExtractor );
 
   /**
    * Type definition for the input image. */
@@ -74,12 +74,12 @@ public:
 
   /**
    * Standard for the number of dimension */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      ::itk::GetImageDimension< TInputImage>::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    ::itk::GetImageDimension< TInputImage>::ImageDimension );
 
   /**
    * Type definition for the input image. */
-  typedef Image< float, TInputImage::ImageDimension >     MaskType;
+  typedef Image< float, TInputImage::ImageDimension >     TubeMaskImageType;
 
   /** Type definition for the input image pixel type. */
   typedef typename TInputImage::PixelType                 PixelType;
@@ -112,184 +112,190 @@ public:
 
   /**
    * Set the input image */
-  void SetInputImage(typename ImageType::Pointer inputImage);
+  void SetInputImage( typename ImageType::Pointer inputImage );
 
   /**
    * Get the input image */
-  itkGetObjectMacro(Image, ImageType);
+  typename ImageType::Pointer GetInputImage( void );
 
   /**
    * Get the mask image */
-  itkGetObjectMacro(DataMask, MaskType);
+  itkGetObjectMacro( TubeMaskImage, TubeMaskImageType );
 
   /*
    * Set Data Minimum */
-  void SetDataMin(double dataMin);
+  void SetDataMin( double dataMin );
 
   /**
    * Get Data Minimum */
-  itkGetMacro(DataMin, double);
+  itkGetMacro( DataMin, double );
 
   /**
    * Set Data Maximum */
-  void SetDataMax(double dataMax);
+  void SetDataMax( double dataMax );
 
   /**
    * Get Data Maximum */
-  itkGetMacro(DataMax, double);
+  itkGetMacro( DataMax, double );
 
   /**
    * Set Traversal Step size */
-  itkSetMacro(StepX, double);
+  itkSetMacro( StepX, double );
 
   /**
    * Get Traversal Step size */
-  itkGetMacro(StepX, double);
+  itkGetMacro( StepX, double );
 
   /**
    * Set Tangent change threshold */
-  itkSetMacro(ThreshT, double);
+  itkSetMacro( ThreshT, double );
 
   /**
    * Get Tangent change threshold */
-  itkGetMacro(ThreshT, double);
+  itkGetMacro( ThreshT, double );
 
   /**
    * Set Spatial change threshold */
-  itkSetMacro(ThreshX, double);
+  itkSetMacro( ThreshX, double );
 
   /**
    * Get Spatial change threshold */
-  itkGetMacro(ThreshX, double);
+  itkGetMacro( ThreshX, double );
 
   /**
    * Set Ridgeness Threshold */
-  itkSetMacro(ThreshRidgeness, double);
+  itkSetMacro( ThreshRidgeness, double );
 
   /**
    * Get Ridgeness Threshold */
-  itkGetMacro(ThreshRidgeness, double);
+  itkGetMacro( ThreshRidgeness, double );
 
   /**
    * Set Ridgeness start Threshold */
-  itkSetMacro(ThreshRidgenessStart, double);
+  itkSetMacro( ThreshRidgenessStart, double );
 
   /**
    * Get Ridgeness start Threshold */
-  itkGetMacro(ThreshRidgenessStart, double);
+  itkGetMacro( ThreshRidgenessStart, double );
 
   /**
    * Set Roundness Threshold */
-  itkSetMacro(ThreshRoundness, double);
+  itkSetMacro( ThreshRoundness, double );
 
   /**
    * Get Roundness Threshold */
-  itkGetMacro(ThreshRoundness, double);
+  itkGetMacro( ThreshRoundness, double );
 
   /**
    * Set Roundness start Threshold */
-  itkSetMacro(ThreshRoundnessStart, double);
+  itkSetMacro( ThreshRoundnessStart, double );
 
   /**
    * Get Roundness start Threshold */
-  itkGetMacro(ThreshRoundnessStart, double);
+  itkGetMacro( ThreshRoundnessStart, double );
 
   /**
    * Set Curvature  Threshold */
-  itkSetMacro(ThreshCurvature, double);
+  itkSetMacro( ThreshCurvature, double );
 
   /**
    * Get Curvature  Threshold */
-  itkGetMacro(ThreshCurvature, double);
+  itkGetMacro( ThreshCurvature, double );
 
   /**
    * Set Curvature  Threshold */
-  itkSetMacro(ThreshCurvatureStart, double);
+  itkSetMacro( ThreshCurvatureStart, double );
 
   /**
    * Get Curvature  Threshold */
-  itkGetMacro(ThreshCurvatureStart, double);
+  itkGetMacro( ThreshCurvatureStart, double );
 
 
   /**
    * Set Extract Bound Minimum */
-  itkSetMacro(ExtractBoundMin, IndexType);
+  itkSetMacro( ExtractBoundMin, IndexType );
 
   /**
    * get Extract Bound Minimum */
-  itkGetMacro(ExtractBoundMin, IndexType);
+  itkGetMacro( ExtractBoundMin, IndexType );
 
   /**
    * Set Extract Bound Maximum */
-  itkSetMacro(ExtractBoundMax, IndexType);
+  itkSetMacro( ExtractBoundMax, IndexType );
 
   /**
    * get Extract Bound Maximum */
-  itkGetMacro(ExtractBoundMax, IndexType);
+  itkGetMacro( ExtractBoundMax, IndexType );
 
   /**
    * Get the data spline */
-  ::tube::SplineND * GetDataSpline(void);
+  ::tube::SplineND * GetDataSpline( void );
 
   /**
    * Get the data spline 1D*/
-  ::tube::Spline1D * GetDataSpline1D(void);
+  ::tube::Spline1D * GetDataSpline1D( void );
 
   /**
    * Get the data spline optimizer*/
-  ::tube::Optimizer1D * GetDataSplineOptimizer(void);
+  ::tube::Optimizer1D * GetDataSplineOptimizer( void );
 
   /**
    * Set the scale */
-  void SetScale(double scale);
+  void SetScale( double scale );
 
   /**
    * Get the scale */
-  double GetScale(void);
+  double GetScale( void );
 
   /**
    * Set the extent */
-  void SetExtent(double extent);
+  void SetExtent( double extent );
 
   /**
    * Get the extent */
-  double GetExtent(void);
+  double GetExtent( void );
 
   /**
    * Set the dynamic Scale */
-  void SetDynamicScale(bool dynamicScale);
+  void SetDynamicScale( bool dynamicScale );
 
   /**
    * Get the dynamicScale */
-  itkGetMacro(DynamicScale, bool);
+  itkGetMacro( DynamicScale, bool );
 
-  itkGetMacro(DynamicScaleUsed, double);
+  itkGetMacro( DynamicScaleUsed, double );
 
   /**
    * Set the Recovery Maximum */
-  itkSetMacro(RecoveryMax, int);
+  itkSetMacro( RecoveryMax, int );
 
   /**
    * Get the Recovery Maximum */
-  itkGetMacro(RecoveryMax, int);
+  itkGetMacro( RecoveryMax, int );
 
   /**
    * Delete a tube */
   template <class TDrawMask>
-  bool DeleteTube(TubeType * tube, TDrawMask * drawMask=NULL);
+  bool DeleteTube( TubeType * tube, TDrawMask * drawMask );
+  bool DeleteTube( TubeType * tube );
 
   /**
    * Add a tube */
   template <class TDrawMask>
-  bool AddTube(TubeType * tube, TDrawMask * drawMask=NULL);
+  bool AddTube( TubeType * tube, TDrawMask * drawMask );
+  bool AddTube( TubeType * tube );
+
+  /**
+   * Smooth a tube */
+  void SmoothTube( TubeType * tube, int h );
 
   /**
    * Set the radius Extractor */
-  void  SetRadiusExtractor(RadiusExtractor<TInputImage> * radiusExtractor);
+  void  SetRadiusExtractor( RadiusExtractor<TInputImage> * radiusExtractor );
 
   /**
    * Compute the intensity at the point x */
-  double  Intensity(const IndexType & x);
+  double  Intensity( const IndexType & x );
 
   /**the ridgness at point x */
   double  Ridgeness( const ContinuousIndexType & x, double & roundness,
@@ -301,26 +307,25 @@ public:
 
   /**
    * Extract */
-  typename TubeType::Pointer  Extract( ContinuousIndexType & x, int tubeID );
+  typename TubeType::Pointer  ExtractRidge( ContinuousIndexType & x,
+    int tubeID );
 
   /**
    * Set the idle callback */
-  void   IdleCallBack( bool (*idleCallBack)() );
+  void   IdleCallBack( bool ( *idleCallBack )() );
 
   /**
    * Set the status callback */
-  void   StatusCallBack( void (*statusCallBack)(const char *, const char *,
-      int) );
-
-  void SmoothTubeX(TubeType * tube, int h);
+  void   StatusCallBack( void ( *statusCallBack )( const char *,
+      const char *, int ) );
 
 protected:
 
   RidgeExtractor();
   virtual ~RidgeExtractor();
 
-  RidgeExtractor(const Self&) {}
-  void operator=(const Self&) {}
+  RidgeExtractor( const Self& ) {}
+  void operator=( const Self& ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -331,11 +336,11 @@ protected:
 
 private:
 
-  typename ImageType::Pointer                      m_Image;
+  typename ImageType::Pointer                      m_InputImage;
 
   typename BlurImageFunction<ImageType>::Pointer   m_DataFunc;
 
-  typename MaskType::Pointer                       m_DataMask;
+  typename TubeMaskImageType::Pointer              m_TubeMaskImage;
 
   bool                                             m_DynamicScale;
   double                                           m_DynamicScaleUsed;
@@ -377,8 +382,8 @@ private:
 
   typename TubeType::Pointer                       m_Tube;
 
-  bool  (*m_IdleCallBack)();
-  void  (*m_StatusCallBack)(const char *, const char *, int);
+  bool  ( *m_IdleCallBack )();
+  void  ( *m_StatusCallBack )( const char *, const char *, int );
 
 };
 

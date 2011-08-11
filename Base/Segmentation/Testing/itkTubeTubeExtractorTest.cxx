@@ -28,14 +28,13 @@ limitations under the License.
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 
-#include "itkTubeRidgeExtractor.h"
+#include "itkTubeTubeExtractor.h"
 
-int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
+int itkTubeTubeExtractorTest( int argc, char * argv[] )
   {
   if( argc != 3 )
     {
-    std::cout
-      << "itkTubeRidgeExtractorTest <inputImage> <vessel.tre>"
+    std::cout << "itkTubeTubeExtractorTest <inputImage> <vessel.tre>"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -49,14 +48,11 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
 
   ImageType::Pointer im = imReader->GetOutput();
 
-  typedef itk::tube::RidgeExtractor<ImageType> RidgeOpType;
-  RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
+  typedef itk::tube::TubeExtractor<ImageType> TubeOpType;
+  TubeOpType::Pointer tubeOp = TubeOpType::New();
 
-  ridgeOp->SetInputImage( im );
-  ridgeOp->SetStepX( 0.75 );
-  ridgeOp->SetScale( 2.0 );
-  ridgeOp->SetExtent( 3.0 );
-  ridgeOp->SetDynamicScale( true );
+  tubeOp->SetInputImage( im );
+  tubeOp->SetRadius( 2.0 );
 
   typedef itk::SpatialObjectReader<>                   ReaderType;
   typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
@@ -91,8 +87,8 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     {
     std::cout << std::endl;
     std::cout << std::endl;
-    std::cout << "***** Beginning tube test ***** " << std::endl;
-    std::cout << "***** Beginning tube test ***** " << std::endl;
+    std::cout << "***** Beginning tube test *****" << std::endl;
+    std::cout << "***** Beginning tube test *****" << std::endl;
     unsigned int rndTubeNum = rndGen->GetUniformVariate( 0, 1 ) * numTubes;
     if( rndTubeNum > numTubes-1 )
       {
@@ -123,18 +119,20 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     TubePointType * pnt = static_cast< TubePointType * >(&(*pntIter));
     std::cout << "Test point = " << rndPointNum << std::endl;
 
-    RidgeOpType::ContinuousIndexType x0;
+    TubeOpType::ContinuousIndexType x0;
     for( unsigned int i=0; i<ImageType::ImageDimension; i++)
       {
       x0[i] = pnt->GetPosition()[i];
       }
     std::cout << "Test index = " << x0 << std::endl;
 
-    RidgeOpType::ContinuousIndexType x1 = x0;
-    ridgeOp->SetDebug( true );
-    if( !ridgeOp->LocalRidge( x1 ) )
+    TubeOpType::ContinuousIndexType x1 = x0;
+    tubeOp->SetDebug( true );
+    //tubeOp->GetRidgeOp()->SetDebug( true );
+    //tubeOp->GetRadiusOp()->SetDebug( true );
+    if( !tubeOp->LocalTube( x1 ) )
       {
-      std::cerr << "Local ridge test failed.  No ridge found." << std::endl;
+      std::cerr << "Local tube test failed.  No tube found." << std::endl;
       std::cerr << "   Source = " << x0 << std::endl;
       std::cerr << "   Result = " << x1 << std::endl;
       ++failures;
@@ -150,7 +148,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     diff = vcl_sqrt( diff );
     if( diff > 2 )
       {
-      std::cerr << "Local ridge test failed.  Local ridge too far."
+      std::cerr << "Local tube test failed.  Local tube too far."
         << std::endl;
       std::cerr << "   Source = " << x0 << std::endl;
       std::cerr << "   Result = " << x1 << std::endl;
@@ -158,91 +156,104 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
       continue;
       }
 
-    std::cout << "Local ridge discovery a success!" << std::endl;
+    std::cout << "Local tube discovery a success!" << std::endl;
     std::cout << std::endl;
-    std::cout << "***** Beginning tube extraction ***** " << std::endl;
-    TubeType::Pointer xTube = ridgeOp->ExtractRidge( x1, mcRun );
-    std::cout << "***** Ending tube extraction ***** " << std::endl;
+    std::cout << "***** Beginning tube extraction *****" << std::endl;
+    TubeType::Pointer xTube = tubeOp->ExtractTube( x1, mcRun );
+    std::cout << "***** Ending tube extraction *****" << std::endl;
 
     if( xTube.IsNull() )
       {
-      std::cerr << "Ridge extraction failed" << std::endl;
+      std::cerr << "Tube extraction failed" << std::endl;
       ++failures;
       continue;
       }
 
+    std::cout << "***** Attempting duplicate extraction - should fail *****"
+      << std::endl;
     TubeType::Pointer xTube2;
-    xTube2 = ridgeOp->ExtractRidge( x1, 101 );
+    xTube2 = tubeOp->ExtractTube( x1, 101 );
     if( xTube2.IsNotNull() )
       {
-      std::cerr << "Ridge extracted twice - test failed" << std::endl;
+      std::cerr << "Tube extracted twice - test failed" << std::endl;
+      std::cerr << "  Tube size = " << xTube2->GetPoints().size()
+        << std::endl;
       ++failures;
-      continue;
+      tubeOp->DeleteTube( xTube2 );
       }
 
-    if( !ridgeOp->DeleteTube( xTube ) )
+    std::cout << "***** Attempting delete *****"
+      << std::endl;
+    if( !tubeOp->DeleteTube( xTube ) )
       {
       std::cerr << "Delete tube failed" << std::endl;
       ++failures;
       continue;
       }
 
-    xTube = ridgeOp->ExtractRidge( x1, 101 );
+    std::cout << "***** Attempting extract after delete *****"
+      << std::endl;
+    xTube = tubeOp->ExtractTube( x1, 101 );
     if( xTube.IsNull() )
       {
-      std::cerr << "Ridge extraction after delete failed." << std::endl;
+      std::cerr << "Tube extraction after delete failed." << std::endl;
       ++failures;
       continue;
       }
 
-    if( !ridgeOp->DeleteTube( xTube ) )
+    std::cout << "***** Attempting second delete *****"
+      << std::endl;
+    if( !tubeOp->DeleteTube( xTube ) )
       {
       std::cerr << "Second delete tube failed" << std::endl;
       ++failures;
-      continue;
       }
 
     if( xTube.IsNull() )
       {
-      std::cerr << "Ridge extraction failed" << std::endl;
-      ++failures;
       continue;
       }
 
-    ridgeOp->SmoothTube( xTube, 5 );
+    std::cout << "***** Attempting smooth tube *****" << std::endl;
+    tubeOp->SmoothTube( xTube, 5 );
 
-    if( !ridgeOp->AddTube( xTube ) )
+    std::cout << "***** Attempting add tube *****" << std::endl;
+    if( !tubeOp->AddTube( xTube ) )
       {
       std::cerr << "Add tube failed" << std::endl;
       ++failures;
-      continue;
       }
 
-    if( !ridgeOp->DeleteTube( xTube ) )
+    std::cout << "***** Attempting delete tube *****" << std::endl;
+    if( !tubeOp->DeleteTube( xTube ) )
       {
       std::cerr << "Third delete tube failed" << std::endl;
       ++failures;
-      continue;
       }
     }
 
-  RidgeOpType::TubeMaskImageType::Pointer mask =
-    ridgeOp->GetTubeMaskImage();
-  itk::ImageRegionIterator< RidgeOpType::TubeMaskImageType > maskIt( mask,
+  std::cout << "***** Verifying empty mask *****" << std::endl;
+  TubeOpType::TubeMaskImageType::Pointer mask = tubeOp->GetTubeMaskImage();
+  itk::ImageRegionIterator< TubeOpType::TubeMaskImageType > maskIt( mask,
     mask->GetLargestPossibleRegion() );
+  unsigned int count = 0;
   while( !maskIt.IsAtEnd() )
     {
     if( maskIt.Get() != 0 )
       {
-      std::cout << "Final mask not blank." << std::endl;
-      std::cout << "Number of failures = " << failures << std::endl;
-      return EXIT_FAILURE;
+      ++count;
       }
     ++maskIt;
     }
+  if( count > 0 )
+    {
+    std::cout << "Final mask not blank." << std::endl;
+    std::cout << "  Number of non-blank = " << count << std::endl;
+    ++failures;
+    }
 
   std::cout << "Number of failures = " << failures << std::endl;
-  if( failures > 4 )
+  if( failures > 1 )
     {
     return EXIT_FAILURE;
     }
