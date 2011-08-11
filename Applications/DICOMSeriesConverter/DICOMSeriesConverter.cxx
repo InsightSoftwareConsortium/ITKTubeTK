@@ -801,7 +801,7 @@ int main( int argc, char* argv[] )
                 }
               else
                 {
-                // groupID is an ordered sequence - abort if past group
+          // groupID is an ordered sequence - abort if past group
                 if(group < groupID[i])
                   {
                   break;
@@ -810,17 +810,17 @@ int main( int argc, char* argv[] )
               }
             if(!found)
               {
-              // check for a date
-              //int pos = newfile->GetEntryValue(group, element).find( studyDate );
-              //if(pos != std::string::npos)
-              //  {
-              //  std::string newV = newfile->GetEntryValue(group,element).c_str();
-              //  newV.replace(pos, studyDate.size(), newStudyDate);
-              //  newfile->SetValEntry(newV, group, element);
-              //  newfile->AddAnonymizeElement( group, element, newV );
-              //  }
-              //
-              // check for a date
+        // check for a date
+        //int pos = newfile->GetEntryValue(group, element).find( studyDate );
+        //if(pos != std::string::npos)
+        //  {
+        //  std::string newV = newfile->GetEntryValue(group,element).c_str();
+        //  newV.replace(pos, studyDate.size(), newStudyDate);
+        //  newfile->SetValEntry(newV, group, element);
+        //  newfile->AddAnonymizeElement( group, element, newV );
+        //  }
+        //
+        // check for a date
               int pos = newfile->GetEntryValue(group, element).find( birthDate );
               if(pos != (int)std::string::npos)
                 {
@@ -842,27 +842,27 @@ int main( int argc, char* argv[] )
   
           newfile->CloseFile();
           }
-        }
+          }
       if(!processingSplit)
-        {
-        seriesItr++;
-        }
-      else
-        {
-        if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
           {
+          seriesItr++;
+          }
+          else
+          {
+        if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
+        {
           processingSplit = false;
           splitVolumeStart = 0;
           seriesItr++;
           }
-        }
-      }
-    }
-  catch (itk::ExceptionObject &ex)
-    {
-    std::cout << "ERROR : " << ex << std::endl;
-    return EXIT_FAILURE;
-    }
+          }
+          }
+          }
+          catch (itk::ExceptionObject &ex)
+          {
+          std::cout << "ERROR : " << ex << std::endl;
+          return EXIT_FAILURE;
+          }
 
-  return EXIT_SUCCESS;
-}
+        return EXIT_SUCCESS;
+      }

@@ -31,7 +31,7 @@ namespace tube
 
 class SplineNDValFunc :
 public UserFunc< vnl_vector<double>, double >
- {
+{
 public:
 
   SplineNDValFunc( SplineND * newSpline )
@@ -51,7 +51,7 @@ private:
   SplineND * m_Spline;
   double     m_Val;
 
- };
+};
 
 class SplineNDDerivFunc :
 public UserFunc< vnl_vector<double>, vnl_vector<double> >
