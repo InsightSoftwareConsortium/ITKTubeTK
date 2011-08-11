@@ -63,7 +63,10 @@ public:
 
   /**
    * Type definition for the input image. */
-  typedef TInputImage                        ImageType;
+  typedef TInputImage                                   ImageType;
+
+  typedef typename RidgeExtractor<ImageType>::TubeMaskImageType
+                                                        TubeMaskImageType;
 
   /**
    * Standard for the number of dimension
@@ -75,9 +78,12 @@ public:
    * Type definition for the input image pixel type. */
   typedef typename ImageType::PixelType                 PixelType;
 
-  /**  Type definition for TubeSpatialObjec */
+  /**  Type definition for VesselTubeSpatialObject */
   typedef VesselTubeSpatialObject< ImageDimension >     TubeType;
   typedef typename TubeType::TubePointType              TubePointType;
+
+  typedef RidgeExtractor<ImageType>                     RidgeOpType;
+  typedef RadiusExtractor<ImageType>                    RadiusOpType;
 
   /**
    * Type definition for the input image pixel type. */
@@ -94,7 +100,11 @@ public:
 
   /**
    * Get the input image */
-  itkGetConstObjectMacro( Image, ImageType );
+  itkGetConstObjectMacro( InputImage, ImageType );
+
+  /**
+   * Get the input image */
+  typename TubeMaskImageType::Pointer GetTubeMaskImage( void );
 
   /**
    * Set Data Minimum */
@@ -122,19 +132,11 @@ public:
 
   /**
    * Set Extract Ridge */
-  void ExtractRidge( bool extractRidge );
+  void ExtractBrightTube( bool extractRidge );
 
   /**
    * Get Extract Ridge */
-  bool ExtractRidge( void );
-
-  /**
-   * Set Extract Valley */
-  void ExtractValley( bool extractValley );
-
-  /**
-   * Get Extract Valley */
-  bool ExtractValley( void );
+  bool ExtractBrightTube( void );
 
   /**
    * Get the ridge extractor */
@@ -145,21 +147,26 @@ public:
   typename RadiusExtractor<ImageType>::Pointer GetRadiusOp( void );
 
   /**
+   * Return true if a tube is found from the given seed point */
+  bool LocalTube( ContinuousIndexType & x );
+
+  /**
    * Extract the ND tube given the position of the first point
    * and the tube ID */
-  bool ExtractTube( float x, float y, float z, unsigned int tubeID );
+  typename TubeType::Pointer ExtractTube( ContinuousIndexType & x,
+    unsigned int tubeID );
 
   /**
    * Delete a tube */
-  bool DeleteTube( TubeType* tube );
+  void SmoothTube( TubeType * tube, int h=5 );
 
   /**
-   * Get the last tube extracted */
-  typename TubeType::Pointer GetLastTube( void );
+   * Delete a tube */
+  bool AddTube( TubeType * tube );
 
   /**
-   * Get the last position */
-  ContinuousIndexType   GetLastPosition( void );
+   * Delete a tube */
+  bool DeleteTube( TubeType * tube );
 
   /**
    * Set the tube color */
@@ -175,7 +182,8 @@ public:
 
   /**
    * Set the status callback */
-  void   StatusCallBack( void ( *statusCallBack )( char *, char *, int ) );
+  void   StatusCallBack( void ( *statusCallBack )( const char *,
+      const char *, int ) );
 
   /**
    * Set the tube callback */
@@ -196,17 +204,15 @@ protected:
 
   typename RidgeExtractor<ImageType>::Pointer  m_RidgeOp;
   typename RadiusExtractor<ImageType>::Pointer m_RadiusOp;
-  typename TubeType::Pointer                   m_Tube;
 
   bool ( *m_IdleCallBack )();
-  void ( *m_StatusCallBack )( char *, char *, int );
+  void ( *m_StatusCallBack )( const char *, const char *, int );
   void ( *m_NewTubeCallBack )( TubeType * );
   bool ( *m_AbortProcess )();
 
 private:
 
-  typename ImageType::Pointer  m_Image;
-  ContinuousIndexType          m_X;
+  typename ImageType::Pointer  m_InputImage;
   float                        m_Color[4];
 
 };

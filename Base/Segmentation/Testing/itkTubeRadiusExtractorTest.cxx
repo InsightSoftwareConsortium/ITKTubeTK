@@ -109,10 +109,10 @@ int itkTubeRadiusExtractorTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetExtractRidge( true );
-  if( radiusOp->GetExtractRidge() != true )
+  radiusOp->SetExtractBrightTube( true );
+  if( radiusOp->GetExtractBrightTube() != true )
     {
-    tube::ErrorMessage( "ExtractRidge != true" );
+    tube::ErrorMessage( "ExtractBrightTube != true" );
     returnStatus = EXIT_FAILURE;
     }
 
@@ -197,10 +197,10 @@ int itkTubeRadiusExtractorTest( int argc, char * argv[] )
     double rMax = 10;
     double rStep = 0.25;
     double rTol = 0.1;
-    if( !radiusOp->ComputeOptimalRadiusAtPoint( *pnt, r1, rMin, rMax,
+    if( !radiusOp->OptimalRadiusAtPoint( *pnt, r1, rMin, rMax,
       rStep, rTol ) )
       {
-      std::cout << "ComputeOptimalRadius returned false." << std::endl;
+      std::cout << "OptimalRadius returned false." << std::endl;
       std::cout << "   Target = " << pnt->GetPosition()
         << " at r = " << r0 << std::endl;
       std::cout << "      Result r = " << r1 << std::endl;

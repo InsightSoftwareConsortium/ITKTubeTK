@@ -53,6 +53,7 @@ set( tubeBaseSegmentation_SRCS
   itkTubeRadiusExtractorTest2.cxx
   itkTubeRidgeExtractorTest.cxx
   itkTubeRidgeExtractorTest2.cxx
+  itkTubeTubeExtractorTest.cxx
   )
 
 include_directories(
@@ -143,24 +144,31 @@ add_test( itkTubeRidgeExtractorTest
     ${INPUT_DATA}/Branch.n010.sub.mha
     ${TEMP}/itkTubeRidgeExtractorTest.mha
   )
- 
+
 add_test( itkTubeRidgeExtractorTest2
   ${BASE_SEGMENTATION_TESTS}
   itkTubeRidgeExtractorTest2
     ${INPUT_DATA}/Branch.n010.mha
     ${INPUT_DATA}/Branch-truth.tre
   )
- 
+
 add_test( itkTubeRadiusExtractorTest
   ${BASE_SEGMENTATION_TESTS}
   itkTubeRadiusExtractorTest
     ${INPUT_DATA}/Branch.n010.mha
     ${INPUT_DATA}/Branch-truth.tre
   )
- 
+
 add_test( itkTubeRadiusExtractorTest2
   ${BASE_SEGMENTATION_TESTS}
   itkTubeRadiusExtractorTest2
+    ${INPUT_DATA}/Branch.n010.mha
+    ${INPUT_DATA}/Branch-truth.tre
+  )
+
+add_test( itkTubeTubeExtractorTest
+  ${BASE_SEGMENTATION_TESTS}
+  itkTubeTubeExtractorTest
     ${INPUT_DATA}/Branch.n010.mha
     ${INPUT_DATA}/Branch-truth.tre
   )
