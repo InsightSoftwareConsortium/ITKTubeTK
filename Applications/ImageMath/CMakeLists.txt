@@ -30,9 +30,6 @@ if( COMMAND CMAKE_POLICY )
   cmake_policy( SET CMP0003 NEW )
 endif( COMMAND CMAKE_POLICY )
 
-# If not using ITKv4, build the old way
-if( NOT TubeTK_USE_ITKV4 )
-
 # Disable MSVC 8 warnings
 if( WIN32 )
   option( DISABLE_MSVC8_DEPRECATED_WARNINGS
@@ -70,10 +67,3 @@ slicer3_install_plugins( ${TARGETS} )
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
-
-# If building with ITKv4, build with new code
-else( NOT TubeTK_USE_ITKV4 )
-
-  include(ImageMathSimpleITK.cmake)
-
-endif( NOT TubeTK_USE_ITKV4 )
