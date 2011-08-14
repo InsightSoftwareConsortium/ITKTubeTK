@@ -63,6 +63,7 @@ MetaNJetLDA( const char *_headerName )
 //
 MetaNJetLDA::
 MetaNJetLDA( const MetaNJetLDA & _metaNJetLDA )
+: MetaLDA()
 {
   if( META_DEBUG )
    {
