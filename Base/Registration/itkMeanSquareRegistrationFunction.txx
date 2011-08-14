@@ -175,8 +175,12 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 
   for(unsigned int j = 0; j < ImageDimension; j++ )
     {
-    update[j] = speedValue * fixedGradient[j] * vnl_math_sqr(m_FixedImageSpacing[j]) /
+    update[j] = speedValue * fixedGradient[j] /
       denominator*this->m_GradientStep;
+    if (normalizemetric)
+      {
+      update[j] *= vnl_math_sqr(m_FixedImageSpacing[j]);
+      }
     }
   return update;
 }
