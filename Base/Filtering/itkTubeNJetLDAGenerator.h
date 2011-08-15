@@ -107,9 +107,6 @@ public:
   const typename LDAImageType::Pointer & GetNJetFeatureImage(
     unsigned int num );
 
-  const typename LDAImageType::Pointer & GetNJetKernelImage(
-    unsigned int num );
-
   void Update();
 
   void UpdateLDAImages();
@@ -142,9 +139,7 @@ private:
   bool m_ForceIntensityConsistency;
   bool m_ForceOrientationInsensitivity;
 
-  typename LDAImageType::Pointer m_NJetKernelImage;
-
-  LDAImageListType m_NJetFeatureImageList;
+  LDAImageListType  m_NJetFeatureImageList;
 
   FeatureVectorType m_NJetFeatureVector;
 };
