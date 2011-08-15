@@ -29,13 +29,35 @@
 #include <fstream>
 
 
-#ifdef __BORLANDC__
-#define ITK_TEST_DIMENSION_MAX 5
-#else
-#define ITK_TEST_DIMENSION_MAX 6
-#endif
+// Description:
+// Get the ComponentType and dimension of the image
+void GetImageInformation( std::string fileName,
+                          itk::ImageIOBase::IOComponentType &componentType,
+                          unsigned int & dimension )
+  {
+  // Find out the component type of the image in file
+  typedef itk::ImageIOBase::IOComponentType  PixelType;
 
-int RegressionTestImage ( const char *, const char *, bool, bool, double,
+  itk::ImageIOBase::Pointer imageIO =
+    itk::ImageIOFactory::CreateImageIO( fileName.c_str(),
+                                        itk::ImageIOFactory::ReadMode );
+  if( !imageIO )
+    {
+    std::cerr << "NO IMAGEIO WAS FOUND" << std::endl;
+    return;
+    }
+
+  // Now that we found the appropriate ImageIO class, ask it to
+  // read the meta data from the image file.
+  imageIO->SetFileName( fileName.c_str() );
+  imageIO->ReadImageInformation();
+
+  componentType = imageIO->GetComponentType();
+  dimension = imageIO->GetNumberOfDimensions();
+  }
+
+template< unsigned int DimsT >
+int RegressionTestImage( const char *, const char *, bool, bool, double,
   int, int, bool, const char * );
 
 int main( int argc, char **argv )
@@ -168,15 +190,31 @@ int main( int argc, char **argv )
 
   std::string bestBaselineFilename;
 
+  itk::ImageIOBase::IOComponentType cType = itk::ImageIOBase::UCHAR;
+  unsigned int dims = 0;
+
+  GetImageInformation( testImageFilename, cType, dims );
+
   try
     {
     if( singleBaselineImage )
       {
-      bestBaselineStatus =
-        RegressionTestImage(
-            testImageFilename.c_str(), baselineImageFilename.c_str(),
-            false, false, toleranceIntensity, toleranceRadius,
-            toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+      if( dims == 2 )
+        {
+        bestBaselineStatus =
+          RegressionTestImage<2>(
+              testImageFilename.c_str(), baselineImageFilename.c_str(),
+              false, false, toleranceIntensity, toleranceRadius,
+              toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+        }
+      else
+        {
+        bestBaselineStatus =
+          RegressionTestImage<3>(
+              testImageFilename.c_str(), baselineImageFilename.c_str(),
+              false, false, toleranceIntensity, toleranceRadius,
+              toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+        }
       bestBaselineFilename = baselineImageFilename;
       }
     else
@@ -185,11 +223,21 @@ int main( int argc, char **argv )
       nameIterator baselineImageItr = baselineImageFilenames.begin();
       while( baselineImageItr != baselineImageFilenames.end() )
         {
-        const int currentStatus =
-          RegressionTestImage(
-              testImageFilename.c_str(), baselineImageItr->c_str(),
-              false, false, toleranceIntensity, toleranceRadius,
-              toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+        int currentStatus = 0;
+        if( dims == 2 )
+          {
+          currentStatus = RegressionTestImage<2>(
+            testImageFilename.c_str(), baselineImageItr->c_str(),
+            false, false, toleranceIntensity, toleranceRadius,
+            toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+          }
+        else
+          {
+          currentStatus = RegressionTestImage<3>(
+            testImageFilename.c_str(), baselineImageItr->c_str(),
+            false, false, toleranceIntensity, toleranceRadius,
+            toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+          }
         if( currentStatus < bestBaselineStatus )
           {
           bestBaselineStatus = currentStatus;
@@ -205,19 +253,41 @@ int main( int argc, char **argv )
     // generate images of our closest match
     if( bestBaselineStatus == 0 )
       {
-      RegressionTestImage(
-        testImageFilename.c_str(),
-        bestBaselineFilename.c_str(), true, false,
-        toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
-        writeOutputImage, outputImageFilename.c_str() );
+      if( dims == 2 )
+        {
+        RegressionTestImage<2>(
+          testImageFilename.c_str(),
+          bestBaselineFilename.c_str(), true, false,
+          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          writeOutputImage, outputImageFilename.c_str() );
+        }
+      else
+        {
+        RegressionTestImage<3>(
+          testImageFilename.c_str(),
+          bestBaselineFilename.c_str(), true, false,
+          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          writeOutputImage, outputImageFilename.c_str() );
+        }
       }
     else
       {
-      RegressionTestImage(
-        testImageFilename.c_str(),
-        bestBaselineFilename.c_str(), true, true,
-        toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
-        writeOutputImage, outputImageFilename.c_str() );
+      if( dims == 2 )
+        {
+        RegressionTestImage<2>(
+          testImageFilename.c_str(),
+          bestBaselineFilename.c_str(), true, true,
+          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          writeOutputImage, outputImageFilename.c_str() );
+        }
+      else
+        {
+        RegressionTestImage<3>(
+          testImageFilename.c_str(),
+          bestBaselineFilename.c_str(), true, true,
+          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          writeOutputImage, outputImageFilename.c_str() );
+        }
       }
 
     }
@@ -243,7 +313,8 @@ int main( int argc, char **argv )
 }
 
 // Regression Testing Code
-int RegressionTestImage ( const char *testImageFilename,
+template< unsigned int DimsT >
+int RegressionTestImage( const char *testImageFilename,
   const char *baselineImageFilename, bool reportErrors,
   bool createDifferenceImage, double intensityTolerance,
   int radiusTolerance, int numberOfPixelsTolerance,
@@ -251,15 +322,13 @@ int RegressionTestImage ( const char *testImageFilename,
 {
   // Use the factory mechanism to read the test and baseline files and
   //  convert them to double
-  typedef itk::Image< double, ITK_TEST_DIMENSION_MAX >         ImageType;
-  typedef itk::Image< unsigned char, ITK_TEST_DIMENSION_MAX >  OutputType;
-
-  typedef itk::Image< unsigned char, 2 >                   DiffOutputType;
-
-  typedef itk::ImageFileReader< ImageType >                ReaderType;
+  typedef itk::Image< double, DimsT >         ImageType;
+  typedef itk::Image< unsigned char, DimsT >  OutputType;
+  typedef itk::Image< unsigned char, 2 >      DiffOutputType;
+  typedef itk::ImageFileReader< ImageType >   ReaderType;
 
   // Read the baseline file
-  ReaderType::Pointer baselineReader = ReaderType::New();
+  typename ReaderType::Pointer baselineReader = ReaderType::New();
   baselineReader->SetFileName( baselineImageFilename );
   try
     {
@@ -273,7 +342,7 @@ int RegressionTestImage ( const char *testImageFilename,
     }
 
   // Read the file generated by the test
-  ReaderType::Pointer testReader = ReaderType::New();
+  typename ReaderType::Pointer testReader = ReaderType::New();
   testReader->SetFileName( testImageFilename );
   try
     {
@@ -287,10 +356,10 @@ int RegressionTestImage ( const char *testImageFilename,
     }
 
   // The sizes of the baseline and test image must match
-  ImageType::SizeType baselineSize;
+  typename ImageType::SizeType baselineSize;
   baselineSize = baselineReader->GetOutput()->GetLargestPossibleRegion().
     GetSize();
-  ImageType::SizeType testSize;
+  typename ImageType::SizeType testSize;
   testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
   if ( baselineSize != testSize )
@@ -307,7 +376,7 @@ int RegressionTestImage ( const char *testImageFilename,
 
   // Now compare the two images
   typedef itk::DifferenceImageFilter2<ImageType, ImageType> DiffType;
-  DiffType::Pointer diff = DiffType::New();
+  typename DiffType::Pointer diff = DiffType::New();
   diff->SetValidInput( baselineReader->GetOutput() );
   diff->SetTestInput( testReader->GetOutput() );
 
@@ -331,7 +400,7 @@ int RegressionTestImage ( const char *testImageFilename,
   if( writeOutputImage )
     {
     typedef itk::ImageFileWriter< ImageType > WriterType;
-    WriterType::Pointer writer = WriterType::New();
+    typename WriterType::Pointer writer = WriterType::New();
     writer->SetFileName( outputImageFilename );
     writer->SetInput( diff->GetOutput() );
     writer->Update();
@@ -345,13 +414,13 @@ int RegressionTestImage ( const char *testImageFilename,
       ExtractType;
     typedef itk::ImageFileWriter< DiffOutputType >
       WriterType;
-    typedef itk::ImageRegion< ITK_TEST_DIMENSION_MAX >
+    typedef itk::ImageRegion< DimsT >
       RegionType;
 
-    OutputType::IndexType index; index.Fill( 0 );
-    OutputType::SizeType size; size.Fill( 0 );
+    typename OutputType::IndexType index; index.Fill( 0 );
+    typename OutputType::SizeType size; size.Fill( 0 );
 
-    RescaleType::Pointer rescale = RescaleType::New();
+    typename RescaleType::Pointer rescale = RescaleType::New();
 
     rescale->SetOutputMinimum(
       itk::NumericTraits<unsigned char>::NonpositiveMin() );
@@ -363,18 +432,18 @@ int RegressionTestImage ( const char *testImageFilename,
     region.SetIndex( index );
 
     size = rescale->GetOutput()->GetLargestPossibleRegion().GetSize();
-    for ( unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; i++ )
+    for ( unsigned int i = 2; i < DimsT; i++ )
       {
       size[i] = 0;
       }
     region.SetSize( size );
 
-    ExtractType::Pointer extract = ExtractType::New();
+    typename ExtractType::Pointer extract = ExtractType::New();
 
     extract->SetInput( rescale->GetOutput() );
     extract->SetExtractionRegion( region );
 
-    WriterType::Pointer writer = WriterType::New();
+    typename WriterType::Pointer writer = WriterType::New();
     writer->SetInput( extract->GetOutput() );
     if( createDifferenceImage )
       {

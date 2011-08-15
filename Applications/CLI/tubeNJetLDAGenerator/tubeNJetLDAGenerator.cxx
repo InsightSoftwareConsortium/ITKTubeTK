@@ -220,15 +220,6 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  if( saveKernelImages.size() > 0 )
-    {
-    for( unsigned int i=0; i<numLDA; i++ )
-      {
-      WriteLDA< LDAImageType >( ldaGenerator->GetNJetKernelImage( i ),
-        saveKernelImages, ".k%02d.mha", i );
-      }
-    }
-
   timeCollector.Report();
 
   return 0;

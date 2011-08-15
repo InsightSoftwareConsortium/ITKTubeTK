@@ -101,12 +101,6 @@
       <longflag>useNumberOfLDA</longflag>
     </integer>
     <string>
-      <name>saveKernelImages</name>
-      <description>Save kernel images that represent each eigenvector</description>
-      <label>Save kernel images</label>
-      <longflag>saveKernelImages</longflag>
-    </string>
-    <string>
       <name>saveFeatureImages</name>
       <description>Save intermediate feature images to a file</description>
       <label>Save feature images</label>

@@ -52,8 +52,6 @@ class MySANDFunc:
       {
       cVal = vcl_sin((double)x[0]/2);
       cVal += vcl_cos((double)x[1]/2);
-      std::cout << "s: x = " << x[0] << ", " << x[1]
-        << " : v = " << cVal << std::endl;
       return cVal;
       };
   };

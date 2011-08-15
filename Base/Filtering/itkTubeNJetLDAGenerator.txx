@@ -57,7 +57,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
   m_ForceOrientationInsensitivity = true;
 
   m_NJetFeatureImageList.clear();
-  m_NJetKernelImage = NULL;
 }
 
 template< class ImageT, class LabelmapT >
@@ -257,14 +256,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
       vCount++;
       }
     }
-}
-
-template < class ImageT, class LabelmapT >
-const typename NJetLDAGenerator< ImageT, LabelmapT >::LDAImageType::Pointer &
-NJetLDAGenerator< ImageT, LabelmapT >
-::GetNJetKernelImage( unsigned int num )
-{
-  return m_NJetKernelImage;
 }
 
 template < class ImageT, class LabelmapT >
@@ -585,16 +576,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
   os << indent << "NJetFeatureImageList.size() = "
     << m_NJetFeatureImageList.size() << std::endl;
-
-  if( m_NJetKernelImage.IsNotNull() )
-    {
-    os << indent << "NJetKernelImage = " << m_NJetKernelImage
-      << std::endl;
-    }
-  else
-    {
-    os << indent << "NJetKernelImage = NULL" << std::endl;
-    }
 }
 
 }
