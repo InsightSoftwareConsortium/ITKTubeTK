@@ -593,6 +593,10 @@ protected:
   template< class ImageType >
   bool IsIntensityRangeBetween0And1( ImageType * image ) const;
 
+  /** This method is called after ApplyUpdate() to print out energy and RMS
+   * change metrics and evaluate the stopping conditions. */
+  virtual void PostProcessIteration();
+
 private:
   // Purposely not implemented
   DiffusiveRegistrationFilter(const Self&);

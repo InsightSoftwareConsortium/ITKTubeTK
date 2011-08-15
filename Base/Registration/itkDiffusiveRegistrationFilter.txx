@@ -1373,6 +1373,76 @@ DiffusiveRegistrationFilter
   // output timestamp
   this->GetOutput()->Modified();
 
+  // Print out energy metrics and evaluate stopping condition
+  this->PostProcessIteration();
+}
+
+/**
+ * Calls ThreadedApplyUpdate, need to reimplement here to also split the
+ * diffusion tensor image
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+ITK_THREAD_RETURN_TYPE
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ApplyUpdateThreaderCallback( void * arg )
+{
+  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+
+  DenseFDThreadStruct * str = (DenseFDThreadStruct *)
+            (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+
+  // Execute the actual method with appropriate output region
+  // first find out how many pieces extent can be split into.
+  // Using the SplitRequestedRegion method from itk::ImageSource.
+  int total;
+  ThreadRegionType splitRegion;
+  total = str->Filter->SplitRequestedRegion( threadId,
+                                             threadCount,
+                                             splitRegion );
+
+  if (threadId < total)
+    {
+    str->Filter->ThreadedApplyUpdate(str->TimeStep, splitRegion, threadId );
+    }
+
+  return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Does the actual work of updating the output from the UpdateContainer
+ * over an output region supplied by the multithreading mechanism.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+< TFixedImage, TMovingImage, TDeformationField >
+::ThreadedApplyUpdate(TimeStepType dt,
+  const ThreadRegionType &regionToProcess, int )
+{
+  UpdateBufferRegionType  u( m_UpdateBuffer, regionToProcess );
+  OutputImageRegionType   o( this->GetOutput(), regionToProcess );
+
+  for( u = u.Begin(), o = o.Begin();
+       !u.IsAtEnd();
+       ++o, ++u )
+         {
+    o.Value() += static_cast< DeformationVectorType >( u.Value() * dt );
+    // no adaptor support here
+    }
+}
+
+/**
+ * Does the actual work of updating the output from the UpdateContainer
+ * over an output region supplied by the multithreading mechanism.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::PostProcessIteration()
+{
   RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
   assert( df );
 
@@ -1437,10 +1507,12 @@ DiffusiveRegistrationFilter
   double meanRegularizationChangeChange
       = meanRegularizationChange - previousMeanRegularizationChange;
 
+  unsigned int elapsedIterations = this->GetElapsedIterations();
+
   // Print out logging information
   std::string delimiter = ", ";
   std::string sectionDelimiter = " , ";
-  if( this->GetElapsedIterations() == 0 )
+  if( elapsedIterations == 0 )
     {
     std::cout << "All registration metric sections in the order "
               << "TOTAL, INTENSITY, REGULARIZATION" << std::endl;
@@ -1457,7 +1529,7 @@ DiffusiveRegistrationFilter
     }
   std::cout.setf(std::ios::fixed, std::ios::floatfield);
   std::cout.precision(6);
-  std::cout << this->GetElapsedIterations() << delimiter
+  std::cout << elapsedIterations << delimiter
             << timestep << delimiter
             << totalTime << sectionDelimiter
 
@@ -1486,6 +1558,7 @@ DiffusiveRegistrationFilter
             << regularizationEnergyChange
             << std::endl;
 
+  // Update 'previous' variables
   previousTotalEnergy = totalEnergy;
   previousIntensityDistanceEnergy = intensityDistanceEnergy;
   previousRegularizationEnergy = regularizationEnergy;
@@ -1497,62 +1570,6 @@ DiffusiveRegistrationFilter
   previousMeanTotalChange = meanTotalChange;
   previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
   previousMeanRegularizationChange = meanRegularizationChange;
-}
-
-/**
- * Calls ThreadedApplyUpdate, need to reimplement here to also split the
- * diffusion tensor image
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-ITK_THREAD_RETURN_TYPE
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ApplyUpdateThreaderCallback( void * arg )
-{
-  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
-  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
-
-  DenseFDThreadStruct * str = (DenseFDThreadStruct *)
-            (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
-
-  // Execute the actual method with appropriate output region
-  // first find out how many pieces extent can be split into.
-  // Using the SplitRequestedRegion method from itk::ImageSource.
-  int total;
-  ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion( threadId,
-                                             threadCount,
-                                             splitRegion );
-
-  if (threadId < total)
-    {
-    str->Filter->ThreadedApplyUpdate(str->TimeStep, splitRegion, threadId );
-    }
-
-  return ITK_THREAD_RETURN_VALUE;
-}
-
-/**
- * Does the actual work of updating the output from the UpdateContainer
- * over an output region supplied by the multithreading mechanism.
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-DiffusiveRegistrationFilter
-< TFixedImage, TMovingImage, TDeformationField >
-::ThreadedApplyUpdate(TimeStepType dt,
-  const ThreadRegionType &regionToProcess, int )
-{
-  UpdateBufferRegionType  u( m_UpdateBuffer, regionToProcess );
-  OutputImageRegionType   o( this->GetOutput(), regionToProcess );
-
-  for( u = u.Begin(), o = o.Begin();
-       !u.IsAtEnd();
-       ++o, ++u )
-    {
-    o.Value() += static_cast< DeformationVectorType >( u.Value() * dt );
-    // no adaptor support here
-    }
 }
 
 } // end namespace itk
