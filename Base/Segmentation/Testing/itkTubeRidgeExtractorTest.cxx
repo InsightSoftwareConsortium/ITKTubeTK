@@ -106,6 +106,7 @@ int itkTubeRidgeExtractorTest( int argc, char * argv[] )
   ImageType::IndexType startIndx = itOut.GetIndex();
   std::cout << "Start..." << std::endl;
   bool firstSearch = false;
+  int prev2 = -1;
   while( !itOut.IsAtEnd() )
     {
     contIndx = itOut.GetIndex();
@@ -113,23 +114,39 @@ int itkTubeRidgeExtractorTest( int argc, char * argv[] )
       {
       default:
       case 0:
-        std::cout << "Intensity: " << contIndx << std::endl;
+        if( prev2 != itOut.GetIndex()[2] )
+          {
+          std::cout << "Intensity: " << contIndx << std::endl;
+          prev2 = itOut.GetIndex()[2];
+          }
         itOut.Set( ridgeOp->Intensity( itOut.GetIndex() ) );
         firstSearch = true;
         break;
       case 1:
-        std::cout << "Ridgeness: " << contIndx << std::endl;
+        if( prev2 != itOut.GetIndex()[2] )
+          {
+          std::cout << "Ridgeness: " << contIndx << std::endl;
+          prev2 = itOut.GetIndex()[2];
+          }
         itOut.Set( ridgeOp->Ridgeness( contIndx, roundness, curvature ) );
         firstSearch = true;
         break;
       case 2:
-        std::cout << "Roundness: " << contIndx << std::endl;
+        if( prev2 != itOut.GetIndex()[2] )
+          {
+          std::cout << "Roundness: " << contIndx << std::endl;
+          prev2 = itOut.GetIndex()[2];
+          }
         ridgeOp->Ridgeness( contIndx, roundness, curvature );
         itOut.Set( roundness );
         firstSearch = true;
         break;
       case 3:
-        std::cout << "Curvature: " << contIndx << std::endl;
+        if( prev2 != itOut.GetIndex()[2] )
+          {
+          std::cout << "Curvature: " << contIndx << std::endl;
+          prev2 = itOut.GetIndex()[2];
+          }
         ridgeOp->Ridgeness( contIndx, roundness, curvature );
         itOut.Set( curvature );
         firstSearch = true;
