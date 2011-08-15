@@ -776,8 +776,9 @@ AnisotropicDiffusiveRegistrationFilter
 
     if( normalDeformationVector * tangentialDeformationVector > 0.005 )
       {
-      itkExceptionMacro( << "Normal and tangential deformation field "
-                         << "components are not orthogonal" );
+      itkWarningMacro( << "Normal and tangential deformation field "
+                       << "components are not orthogonal" );
+      this->StopRegistration();
       }
     }
   normalDeformationField->Modified();
