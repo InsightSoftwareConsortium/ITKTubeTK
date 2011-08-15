@@ -1570,6 +1570,14 @@ DiffusiveRegistrationFilter
   previousMeanTotalChange = meanTotalChange;
   previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
   previousMeanRegularizationChange = meanRegularizationChange;
+
+  // Error checking that indicates we should stop
+  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
+    {
+    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
+                     << "  Registration halting.");
+    this->StopRegistration();
+    }
 }
 
 } // end namespace itk
