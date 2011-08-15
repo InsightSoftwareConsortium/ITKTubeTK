@@ -162,10 +162,13 @@ CVTImageFilter< TInputImage, TOutputImage >
   m_OutputImage->Allocate();
   m_OutputImage->FillBuffer( 0 );
 
-  for(int j=0; j<(int)m_NumberOfCentroids; j++)
+  if( this->GetDebug() )
     {
-    std::cout << "Initial Centroid [" << j << "] = " << m_Centroids[j]
-              << std::endl;
+    for(int j=0; j<(int)m_NumberOfCentroids; j++)
+      {
+      std::cout << "Initial Centroid [" << j << "] = " << m_Centroids[j]
+                << std::endl;
+      }
     }
 
   while ( iteration < m_NumberOfIterations )
@@ -174,9 +177,12 @@ CVTImageFilter< TInputImage, TOutputImage >
 
     iterationEnergy = this->ComputeIteration(iterationEnergyDifference);
 
-    std::cout << "Iteration = " << iteration
-              << " : E = " << iterationEnergy
-              << " : EDiff = " << iterationEnergyDifference << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "Iteration = " << iteration
+                << " : E = " << iterationEnergy
+                << " : EDiff = " << iterationEnergyDifference << std::endl;
+      }
     ContinuousIndexType indx;
     indx.Fill(0);
     for(int j=0; j<(int)m_NumberOfCentroids; j++)
@@ -190,7 +196,10 @@ CVTImageFilter< TInputImage, TOutputImage >
       {
       indx[i] = indx[i] / m_NumberOfCentroids;
       }
-    std::cout << "   Mean indx = " << indx << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "   Mean indx = " << indx << std::endl;
+      }
     }
 
   // Generate output image
@@ -210,8 +219,11 @@ CVTImageFilter< TInputImage, TOutputImage >
         }
       }
     m_OutputImage->SetPixel(iIndx, j+1);
-    std::cout << " Final Centroid [" << j << "] = " << m_Centroids[j]
-              << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << " Final Centroid [" << j << "] = " << m_Centroids[j]
+                << std::endl;
+      }
     }
 
   typedef DanielssonDistanceMapImageFilter<OutputImageType, OutputImageType>
@@ -263,7 +275,10 @@ CVTImageFilter< TInputImage, TOutputImage >
     count[j] = 1;
     }
 
-  //std::cout << " computing iteration..." << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << " computing iteration..." << std::endl;
+    }
   //
   //  Generate the sampling points S.
   //
@@ -272,7 +287,10 @@ CVTImageFilter< TInputImage, TOutputImage >
   double dist;
   while ( have < (int)m_NumberOfSamples )
     {
-    //std::cout << " computing iteration have = " << have << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << " computing iteration have = " << have << std::endl;
+      }
     if( m_NumberOfSamples-have < m_NumberOfSamplesPerBatch )
       {
       get = m_NumberOfSamples - have;
@@ -282,7 +300,10 @@ CVTImageFilter< TInputImage, TOutputImage >
       get = m_NumberOfSamplesPerBatch;
       }
 
-    //std::cout << " computing iteration get = " << get << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << " computing iteration get = " << get << std::endl;
+      }
     ComputeSample( &batch, get, m_BatchSamplingMethod );
     have = have + get;
 
@@ -346,17 +367,22 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   if ( sampleSize < 1 )
     {
-    std::cout << "\n";
-    std::cout << "ComputeSample - Fatal error!\n";
-    std::cout << "  sampleSize < 1.\n";
-    exit ( 1 );
+    if( this->GetDebug() )
+      {
+      std::cout << "ComputeSample: Fatal error! SampleSize < 1."
+        << std::endl;
+      }
+    throw( "Sample size less than 1.  Cannot compute CVT" );
     }
 
   (*sample).clear();
   (*sample).reserve(sampleSize);
 
-  //std::cout << "    computing sample" << std::endl;
-  //std::cout << "    computing sample size = " << sampleSize << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << "    computing sample" << std::endl;
+    std::cout << "    computing sample size = " << sampleSize << std::endl;
+    }
   double p1, u;
   IndexType iIndx;
   iIndx.Fill( 0 );
@@ -429,13 +455,15 @@ CVTImageFilter< TInputImage, TOutputImage >
     default:
     case CVT_USER:
       {
-      std::cout << "\n";
-      std::cout << "Sampling method CVT_USER not supported for resampling\n";
-      exit ( 1 );
+      if( this->GetDebug() )
+        {
+        std::cout << "Sampling method CVT_USER not supported for resampling"
+          << std::endl;
+        }
+      throw( "Sampling method CVT_USER not supported for resmpling." );
       break;
       }
     }
-  //std::cout << "    computing sample done" << std::endl;
 }
 
 
@@ -453,7 +481,10 @@ CVTImageFilter< TInputImage, TOutputImage >
   int jc;
   int js;
 
-  //std::cout << "    computing closest" << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << "    computing closest" << std::endl;
+    }
 
   int numberOfSamples = sample.size();
 
@@ -480,7 +511,10 @@ CVTImageFilter< TInputImage, TOutputImage >
         }
       }
     }
-  // std::cout << "    computing closest done" << std::endl;
+  if( this->GetDebug() )
+    {
+    std::cout << "    computing closest done" << std::endl;
+    }
 }
 
 /** PrintSelf */
