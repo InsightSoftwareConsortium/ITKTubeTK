@@ -324,6 +324,23 @@ public:
   StoppingCriterionMaskImageType * GetStoppingCriterionMask() const
     { return m_StoppingCriterionMask; }
 
+  /** Set/get the number of iterations that elapse between evaluations of the stopping
+   *  criterion.  Default 50. */
+  void SetStoppingCriterionEvaluationPeriod( unsigned int numIterations )
+    { m_StoppingCriterionEvaluationPeriod = numIterations; }
+  unsigned int GetStoppingCriterionEvaluationPeriod() const
+    { return m_StoppingCriterionEvaluationPeriod; }
+
+  /** Set/get the total energy change, summed over the stopping criterion evaluation
+   *  period, that indicates the stopping criterion has been reached.  Default 0,
+   *  indicating that the total energy is not used and the stopping criterion is
+   *  defined solely by the number of iterations specified or the maximum RMS change.
+   *  Specify in absolute value. */
+  void SetStoppingCriterionMaxTotalEnergyChange( double energyChange )
+    { m_StoppingCriterionMaxTotalEnergyChange = energyChange; }
+  double GetStoppingCriterionMaxTotalEnergyChange() const
+    { return m_StoppingCriterionMaxTotalEnergyChange; }
+
 protected:
   DiffusiveRegistrationFilter();
   virtual ~DiffusiveRegistrationFilter() {}
@@ -672,6 +689,10 @@ private:
   /** Mask on the stopping criterion computation */
   StoppingCriterionMaskPointer              m_HighResolutionStoppingCriterionMask;
   StoppingCriterionMaskPointer              m_StoppingCriterionMask;
+
+  /** Parameters for stopping criterion */
+  unsigned int                              m_StoppingCriterionEvaluationPeriod;
+  double                                    m_StoppingCriterionMaxTotalEnergyChange;
 
 };
 

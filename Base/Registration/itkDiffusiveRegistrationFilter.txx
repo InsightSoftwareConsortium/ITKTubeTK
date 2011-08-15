@@ -62,6 +62,9 @@ DiffusiveRegistrationFilter
 
   m_StoppingCriterionMask               = 0;
   m_HighResolutionStoppingCriterionMask = 0;
+
+  m_StoppingCriterionEvaluationPeriod     = 50;
+  m_StoppingCriterionMaxTotalEnergyChange = 0;
 }
 
 /**
@@ -142,6 +145,10 @@ DiffusiveRegistrationFilter
     os << indent << "High resolution stopping criterion mask: "
        << m_HighResolutionStoppingCriterionMask << std::endl;
     }
+  os << "Stopping criterion evaluation period: "
+     << m_StoppingCriterionEvaluationPeriod << std::endl;
+  os << "Stopping criterion maximum total energy change: "
+     << m_StoppingCriterionMaxTotalEnergyChange << std::endl;
 }
 
 /**
@@ -1509,6 +1516,14 @@ DiffusiveRegistrationFilter
 
   unsigned int elapsedIterations = this->GetElapsedIterations();
 
+  // Keep track of the total energy change within each stopping criterion
+  // evaluation block
+  static double totalEnergyChangeInEvaluationPeriod = 0;
+  if (elapsedIterations != 0)
+    {
+    totalEnergyChangeInEvaluationPeriod += totalEnergyChange;
+    }
+
   // Print out logging information
   std::string delimiter = ", ";
   std::string sectionDelimiter = " , ";
@@ -1524,7 +1539,8 @@ DiffusiveRegistrationFilter
               << "Mean Change " << sectionDelimiter
               << "Mean Change Change" << sectionDelimiter
               << "Energy" << sectionDelimiter
-              << "Energy Change"
+              << "Energy Change" << sectionDelimiter
+              << "Stopping Criterion"
               << std::endl;
     }
   std::cout.setf(std::ios::fixed, std::ios::floatfield);
@@ -1555,7 +1571,9 @@ DiffusiveRegistrationFilter
 
             << totalEnergyChange << delimiter
             << intensityDistanceEnergyChange << delimiter
-            << regularizationEnergyChange
+            << regularizationEnergyChange << sectionDelimiter
+
+            << totalEnergyChangeInEvaluationPeriod
             << std::endl;
 
   // Update 'previous' variables
@@ -1577,6 +1595,19 @@ DiffusiveRegistrationFilter
     itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
                      << "  Registration halting.");
     this->StopRegistration();
+    }
+
+  // Check for stopping condition
+  if (elapsedIterations != 0
+      && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
+    {
+    if (std::abs(totalEnergyChangeInEvaluationPeriod)
+        < m_StoppingCriterionMaxTotalEnergyChange)
+      {
+      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
+      this->StopRegistration();
+      }
+    totalEnergyChangeInEvaluationPeriod = 0;
     }
 }
 

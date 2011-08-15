@@ -690,6 +690,9 @@ int DoIt( int argc, char * argv[] )
   registrator->SetIntensityDistanceWeightings( intensityDistanceWeightings );
   registrator->SetRegularizationWeightings( regularizationWeightings );
   registrator->SetBackgroundIntensity( backgroundIntensity );
+  registrator->SetStoppingCriterionEvaluationPeriod(
+        static_cast<unsigned int>(stoppingCriterionPeriod));
+  registrator->SetStoppingCriterionMaxTotalEnergyChange(maximumTotalEnergyChange);
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
   // we don't want the deformation field to undergo Gaussian smoothing on the
