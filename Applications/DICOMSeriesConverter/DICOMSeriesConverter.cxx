@@ -810,17 +810,17 @@ int main( int argc, char* argv[] )
               }
             if(!found)
               {
-        // check for a date
-        //int pos = newfile->GetEntryValue(group, element).find( studyDate );
-        //if(pos != std::string::npos)
-        //  {
-        //  std::string newV = newfile->GetEntryValue(group,element).c_str();
-        //  newV.replace(pos, studyDate.size(), newStudyDate);
-        //  newfile->SetValEntry(newV, group, element);
-        //  newfile->AddAnonymizeElement( group, element, newV );
-        //  }
-        //
-        // check for a date
+          // check for a date
+          //int pos = newfile->GetEntryValue(group, element).find( studyDate );
+          //if(pos != std::string::npos)
+          //  {
+          //  std::string newV = newfile->GetEntryValue(group,element).c_str();
+          //  newV.replace(pos, studyDate.size(), newStudyDate);
+          //  newfile->SetValEntry(newV, group, element);
+          //  newfile->AddAnonymizeElement( group, element, newV );
+          //  }
+          //
+          // check for a date
               int pos = newfile->GetEntryValue(group, element).find( birthDate );
               if(pos != (int)std::string::npos)
                 {
@@ -849,7 +849,7 @@ int main( int argc, char* argv[] )
           }
           else
           {
-        if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
+          if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
         {
           processingSplit = false;
           splitVolumeStart = 0;
