@@ -140,11 +140,34 @@ foreach( testNum RANGE 0 37 )
     )
 endforeach( testNum )
 
-add_test( itkVotingResampleImageFunctionTest
+add_test( itkVotingResampleImageFunctionTest0
   ${BASE_NUMERICS_TESTS}
+    --compare ${BASELINE}/itkVotingResampleImageFunctionTest0.png
+              ${TEMP}/itkVotingResampleImageFunctionTest0.png
     itkVotingResampleImageFunctionTest
+      0
       ${INPUT_DATA}/greyscale01.png
-      ${TEMP}/itkVotingResampleImageFunctionTest.mha
+      ${TEMP}/itkVotingResampleImageFunctionTest0.png
+  )
+
+add_test( itkVotingResampleImageFunctionTest1
+  ${BASE_NUMERICS_TESTS}
+    --compare ${BASELINE}/itkVotingResampleImageFunctionTest1.png
+              ${TEMP}/itkVotingResampleImageFunctionTest1.png
+    itkVotingResampleImageFunctionTest
+      1
+      ${INPUT_DATA}/greyscale01.png
+      ${TEMP}/itkVotingResampleImageFunctionTest1.png
+  )
+
+add_test( itkVotingResampleImageFunctionTest2
+  ${BASE_NUMERICS_TESTS}
+    --compare ${BASELINE}/itkVotingResampleImageFunctionTest2.png
+              ${TEMP}/itkVotingResampleImageFunctionTest2.png
+    itkVotingResampleImageFunctionTest
+      2
+      ${INPUT_DATA}/greyscale01.png
+      ${TEMP}/itkVotingResampleImageFunctionTest2.png
   )
 
 add_test( tubeMatrixMathTest
