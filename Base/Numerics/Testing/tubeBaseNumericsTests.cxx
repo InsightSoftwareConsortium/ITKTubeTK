@@ -34,6 +34,7 @@ void RegisterTests()
   REGISTER_TEST( itkImageRegionMomentsCalculatorTest );
   REGISTER_TEST( itkJointHistogramImageFunctionTest );
   REGISTER_TEST( itkNJetImageFunctionTest );
+  REGISTER_TEST( itkVotingResampleImageFunctionTest );
   REGISTER_TEST( tubeMatrixMathTest );
   REGISTER_TEST( tubeOptBrentNDTest );
   REGISTER_TEST( tubeOptBrentTest );
