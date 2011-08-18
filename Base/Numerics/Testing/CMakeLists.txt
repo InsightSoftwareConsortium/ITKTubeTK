@@ -48,6 +48,7 @@ set( tubeBaseNumerics_SRCS
   itkImageRegionMomentsCalculatorTest.cxx
   itkJointHistogramImageFunctionTest.cxx
   itkNJetImageFunctionTest.cxx
+  itkVotingResampleImageFunctionTest.cxx
   tubeMatrixMathTest.cxx
   tubeOptBrentNDTest.cxx
   tubeOptBrentTest.cxx
@@ -138,6 +139,13 @@ foreach( testNum RANGE 0 37 )
         ${TEMP}/itkNJetImageFunctionTest${testNum}.mha
     )
 endforeach( testNum )
+
+add_test( itkVotingResampleImageFunctionTest
+  ${BASE_NUMERICS_TESTS}
+    itkVotingResampleImageFunctionTest
+      ${INPUT_DATA}/greyscale01.png
+      ${TEMP}/itkVotingResampleImageFunctionTest.mha
+  )
 
 add_test( tubeMatrixMathTest
   ${BASE_NUMERICS_TESTS}
