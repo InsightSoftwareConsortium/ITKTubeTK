@@ -1062,7 +1062,7 @@ RidgeExtractor<TInputImage>
         {
         if( this->GetDebug() )
           {
-          std::cout << "*** Ridge terminated: Revisited self" << std::endl;
+          std::cout << "*** Ridge terminated: Revisited voxel" << std::endl;
           }
         break;
         }
@@ -1517,6 +1517,18 @@ RidgeExtractor<TInputImage>
   if( this->GetDebug() )
     {
     std::cout << "*** Ridge found at " << lX << std::endl;
+    }
+
+  typename TubeMaskImageType::IndexType indx;
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    indx[i] = (int)(lX[i] + 0.5);
+    }
+  typename TubeMaskImageType::PixelType value =
+    m_TubeMaskImage->GetPixel( indx );
+  if( value != 0 && ( int )value != tubeId )
+    {
+    return NULL;
     }
 
   MatrixType lN( ImageDimension, ImageDimension-1 );

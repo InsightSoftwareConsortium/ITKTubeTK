@@ -128,13 +128,13 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
 
     TubeOpType::ContinuousIndexType x1 = x0;
     tubeOp->SetDebug( true );
-    //tubeOp->GetRidgeOp()->SetDebug( true );
+    tubeOp->GetRidgeOp()->SetDebug( true );
     //tubeOp->GetRadiusOp()->SetDebug( true );
     if( !tubeOp->LocalTube( x1 ) )
       {
-      std::cerr << "Local tube test failed.  No tube found." << std::endl;
-      std::cerr << "   Source = " << x0 << std::endl;
-      std::cerr << "   Result = " << x1 << std::endl;
+      std::cout << "Local tube test failed.  No tube found." << std::endl;
+      std::cout << "   Source = " << x0 << std::endl;
+      std::cout << "   Result = " << x1 << std::endl;
       ++failures;
       continue;
       }
@@ -148,10 +148,10 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
     diff = vcl_sqrt( diff );
     if( diff > 2 )
       {
-      std::cerr << "Local tube test failed.  Local tube too far."
+      std::cout << "Local tube test failed.  Local tube too far."
         << std::endl;
-      std::cerr << "   Source = " << x0 << std::endl;
-      std::cerr << "   Result = " << x1 << std::endl;
+      std::cout << "   Source = " << x0 << std::endl;
+      std::cout << "   Result = " << x1 << std::endl;
       ++failures;
       continue;
       }
@@ -164,7 +164,7 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
 
     if( xTube.IsNull() )
       {
-      std::cerr << "Tube extraction failed" << std::endl;
+      std::cout << "Tube extraction failed" << std::endl;
       ++failures;
       continue;
       }
@@ -175,8 +175,8 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
     xTube2 = tubeOp->ExtractTube( x1, 101 );
     if( xTube2.IsNotNull() )
       {
-      std::cerr << "Tube extracted twice - test failed" << std::endl;
-      std::cerr << "  Tube size = " << xTube2->GetPoints().size()
+      std::cout << "Tube extracted twice - test failed" << std::endl;
+      std::cout << "  Tube size = " << xTube2->GetPoints().size()
         << std::endl;
       ++failures;
       tubeOp->DeleteTube( xTube2 );
@@ -186,7 +186,7 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
       << std::endl;
     if( !tubeOp->DeleteTube( xTube ) )
       {
-      std::cerr << "Delete tube failed" << std::endl;
+      std::cout << "Delete tube failed" << std::endl;
       ++failures;
       continue;
       }
@@ -196,7 +196,7 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
     xTube = tubeOp->ExtractTube( x1, 101 );
     if( xTube.IsNull() )
       {
-      std::cerr << "Tube extraction after delete failed." << std::endl;
+      std::cout << "Tube extraction after delete failed." << std::endl;
       ++failures;
       continue;
       }
@@ -205,7 +205,7 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
       << std::endl;
     if( !tubeOp->DeleteTube( xTube ) )
       {
-      std::cerr << "Second delete tube failed" << std::endl;
+      std::cout << "Second delete tube failed" << std::endl;
       ++failures;
       }
 
@@ -220,14 +220,14 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
     std::cout << "***** Attempting add tube *****" << std::endl;
     if( !tubeOp->AddTube( xTube ) )
       {
-      std::cerr << "Add tube failed" << std::endl;
+      std::cout << "Add tube failed" << std::endl;
       ++failures;
       }
 
     std::cout << "***** Attempting delete tube *****" << std::endl;
     if( !tubeOp->DeleteTube( xTube ) )
       {
-      std::cerr << "Third delete tube failed" << std::endl;
+      std::cout << "Third delete tube failed" << std::endl;
       ++failures;
       }
     }
