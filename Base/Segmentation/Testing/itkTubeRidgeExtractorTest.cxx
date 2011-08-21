@@ -83,7 +83,7 @@ int itkTubeRidgeExtractorTest( int argc, char * argv[] )
   std::cout << "Extract bound max = " << extractBoundMax << std::endl;
 
   ridgeOp->SetScale( 1.0 );
-  ridgeOp->SetExtent( 3.0 );
+  ridgeOp->SetExtent( 2.5 );
   ridgeOp->SetDynamicScale( true );
 
   double recoveryMax = ridgeOp->GetRecoveryMax();
@@ -110,7 +110,11 @@ int itkTubeRidgeExtractorTest( int argc, char * argv[] )
   while( !itOut.IsAtEnd() )
     {
     contIndx = itOut.GetIndex();
-    switch( ( itOut.GetIndex()[2] - startIndx[2] ) % 5 )
+    if( ((int)(( itOut.GetIndex()[2] - startIndx[2] ) / 2 )) >= 5 )
+      {
+      break;
+      }
+    switch( ((int)(( itOut.GetIndex()[2] - startIndx[2] ) / 2 )) % 5 )
       {
       default:
       case 0:
@@ -157,7 +161,7 @@ int itkTubeRidgeExtractorTest( int argc, char * argv[] )
           skip = (int)(contIndx[1]-startIndx[1])%4 * 3;
           firstSearch = false;
           }
-        if( ++skip > 12 )
+        if( ++skip > 47 )
           {
           skip = 0;
           std::cout << "Local ridge: " << contIndx << std::endl;
@@ -169,7 +173,7 @@ int itkTubeRidgeExtractorTest( int argc, char * argv[] )
               {
               indx[i] = contIndx[i];
               }
-            if( vnl_math_abs( indx[2] - itOut.GetIndex()[2] ) < 4 )
+            if( vnl_math_abs( indx[2] - itOut.GetIndex()[2] ) < 2 )
               {
               indx[2] = itOut.GetIndex()[2];
               int v = imOut->GetPixel( indx );
