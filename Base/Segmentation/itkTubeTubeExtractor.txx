@@ -134,8 +134,8 @@ TubeExtractor<TInputImage>
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  this->m_RidgeOp->SetDataMin( dataMax );
-  this->m_RadiusOp->SetDataMin( dataMax );
+  this->m_RidgeOp->SetDataMax( dataMax );
+  this->m_RadiusOp->SetDataMax( dataMax );
 }
 
 
@@ -152,6 +152,67 @@ TubeExtractor<TInputImage>
     }
 
   return this->m_RidgeOp->GetDataMax();
+}
+
+/**
+ * Set Data Min value */
+template<class TInputImage>
+void
+TubeExtractor<TInputImage>
+::SetExtractBoundMin( typename TInputImage::IndexType dataMin )
+{
+  if( this->m_RidgeOp.IsNull() )
+    {
+    throw( "Input data must be set first in TubeExtractor" );
+    }
+
+  this->m_RidgeOp->SetExtractBoundMin( dataMin );
+}
+
+/**
+ * Get Data Min value */
+template<class TInputImage>
+typename TInputImage::IndexType
+TubeExtractor<TInputImage>
+::GetExtractBoundMin( void ) const
+{
+  if( this->m_RidgeOp.IsNull() )
+    {
+    throw( "Input data must be set first in TubeExtractor" );
+    }
+
+  return this->m_RidgeOp->GetExtractBoundMin();
+}
+
+/**
+ * Set Data Max value */
+template<class TInputImage>
+void
+TubeExtractor<TInputImage>
+::SetExtractBoundMax( typename TInputImage::IndexType dataMax )
+{
+  if( this->m_RidgeOp.IsNull() )
+    {
+    throw( "Input data must be set first in TubeExtractor" );
+    }
+
+  this->m_RidgeOp->SetExtractBoundMax( dataMax );
+}
+
+
+/**
+ * Get Data Max value */
+template<class TInputImage>
+typename TInputImage::IndexType
+TubeExtractor<TInputImage>
+::GetExtractBoundMax( void ) const
+{
+  if( this->m_RidgeOp.IsNull() )
+    {
+    throw( "Input data must be set first in TubeExtractor" );
+    }
+
+  return this->m_RidgeOp->GetExtractBoundMax();
 }
 
 /**

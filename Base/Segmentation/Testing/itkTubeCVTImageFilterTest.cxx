@@ -83,10 +83,10 @@ int itkTubeCVTImageFilterTest(int argc, char* argv [] )
   filter->SetInput( inputImage );
   filter->SetNumberOfCentroids( numCentroids );
   filter->SetInitialSamplingMethod( FilterType::CVT_GRID );
-  filter->SetNumberOfSamples( 10000 );
-  filter->SetNumberOfIterations( 5000 );
-  filter->SetNumberOfIterationsPerBatch( 100 );
-  filter->SetNumberOfSamplesPerBatch( 1000 );
+  filter->SetNumberOfSamples( 1000 );
+  filter->SetNumberOfIterations( 500 );
+  filter->SetNumberOfIterationsPerBatch( 10 );
+  filter->SetNumberOfSamplesPerBatch( 100 );
   filter->SetBatchSamplingMethod( FilterType::CVT_RANDOM );
   filter->SetSeed( 1 );
   filter->Update();

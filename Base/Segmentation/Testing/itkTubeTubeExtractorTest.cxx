@@ -82,6 +82,9 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
 
+  ImageType::IndexType imMinX = tubeOp->GetExtractBoundMin();
+  ImageType::IndexType imMaxX = tubeOp->GetExtractBoundMax();
+
   int failures = 0;
   for( unsigned int mcRun=0; mcRun<2; mcRun++ )
     {
@@ -125,6 +128,19 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
       x0[i] = pnt->GetPosition()[i];
       }
     std::cout << "Test index = " << x0 << std::endl;
+
+    ImageType::IndexType minX = imMinX;
+    ImageType::IndexType maxX = imMaxX;
+    if( x0[2] - 5 > minX[2] )
+      {
+      minX[2] = x0[2] - 5;
+      }
+    if( x0[2] + 5 < maxX[2] )
+      {
+      maxX[2] = x0[2] + 5;
+      }
+    tubeOp->SetExtractBoundMin( minX );
+    tubeOp->SetExtractBoundMax( maxX );
 
     TubeOpType::ContinuousIndexType x1 = x0;
     tubeOp->SetDebug( true );

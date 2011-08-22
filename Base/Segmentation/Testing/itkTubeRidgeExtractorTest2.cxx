@@ -52,10 +52,12 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
   typedef itk::tube::RidgeExtractor<ImageType> RidgeOpType;
   RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
 
+  ridgeOp->SetDebug( true );
+
   ridgeOp->SetInputImage( im );
   ridgeOp->SetStepX( 0.75 );
   ridgeOp->SetScale( 2.0 );
-  ridgeOp->SetExtent( 3.0 );
+  ridgeOp->SetExtent( 2.5 );
   ridgeOp->SetDynamicScale( true );
 
   typedef itk::SpatialObjectReader<>                   ReaderType;
@@ -85,6 +87,9 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     RandGenType;
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
+
+  RidgeOpType::IndexType imMinX = ridgeOp->GetExtractBoundMin();
+  RidgeOpType::IndexType imMaxX = ridgeOp->GetExtractBoundMax();
 
   int failures = 0;
   for( unsigned int mcRun=0; mcRun<2; mcRun++ )
@@ -130,13 +135,26 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
       }
     std::cout << "Test index = " << x0 << std::endl;
 
+    std::cout << "Setting min and max z." << std::endl;
+    RidgeOpType::IndexType minX = imMinX;
+    RidgeOpType::IndexType maxX = imMaxX;
+    if( x0[2] - 5 > minX[2] )
+      {
+      minX[2] = x0[2] - 5;
+      }
+    if( x0[2] + 5 < maxX[2] )
+      {
+      maxX[2] = x0[2] + 5;
+      }
+    ridgeOp->SetExtractBoundMin( minX );
+    ridgeOp->SetExtractBoundMax( maxX );
+
     RidgeOpType::ContinuousIndexType x1 = x0;
-    ridgeOp->SetDebug( true );
     if( !ridgeOp->LocalRidge( x1 ) )
       {
-      std::cerr << "Local ridge test failed.  No ridge found." << std::endl;
-      std::cerr << "   Source = " << x0 << std::endl;
-      std::cerr << "   Result = " << x1 << std::endl;
+      std::cout << "Local ridge test failed.  No ridge found." << std::endl;
+      std::cout << "   Source = " << x0 << std::endl;
+      std::cout << "   Result = " << x1 << std::endl;
       ++failures;
       continue;
       }
@@ -150,10 +168,10 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     diff = vcl_sqrt( diff );
     if( diff > 2 )
       {
-      std::cerr << "Local ridge test failed.  Local ridge too far."
+      std::cout << "Local ridge test failed.  Local ridge too far."
         << std::endl;
-      std::cerr << "   Source = " << x0 << std::endl;
-      std::cerr << "   Result = " << x1 << std::endl;
+      std::cout << "   Source = " << x0 << std::endl;
+      std::cout << "   Result = " << x1 << std::endl;
       ++failures;
       continue;
       }
@@ -166,7 +184,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
 
     if( xTube.IsNull() )
       {
-      std::cerr << "Ridge extraction failed" << std::endl;
+      std::cout << "Ridge extraction failed" << std::endl;
       ++failures;
       continue;
       }
@@ -175,14 +193,14 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     xTube2 = ridgeOp->ExtractRidge( x1, 101 );
     if( xTube2.IsNotNull() )
       {
-      std::cerr << "Ridge extracted twice - test failed" << std::endl;
+      std::cout << "Ridge extracted twice - test failed" << std::endl;
       ++failures;
       continue;
       }
 
     if( !ridgeOp->DeleteTube( xTube ) )
       {
-      std::cerr << "Delete tube failed" << std::endl;
+      std::cout << "Delete tube failed" << std::endl;
       ++failures;
       continue;
       }
@@ -190,21 +208,21 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     xTube = ridgeOp->ExtractRidge( x1, 101 );
     if( xTube.IsNull() )
       {
-      std::cerr << "Ridge extraction after delete failed." << std::endl;
+      std::cout << "Ridge extraction after delete failed." << std::endl;
       ++failures;
       continue;
       }
 
     if( !ridgeOp->DeleteTube( xTube ) )
       {
-      std::cerr << "Second delete tube failed" << std::endl;
+      std::cout << "Second delete tube failed" << std::endl;
       ++failures;
       continue;
       }
 
     if( xTube.IsNull() )
       {
-      std::cerr << "Ridge extraction failed" << std::endl;
+      std::cout << "Ridge extraction failed" << std::endl;
       ++failures;
       continue;
       }
@@ -213,14 +231,14 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
 
     if( !ridgeOp->AddTube( xTube ) )
       {
-      std::cerr << "Add tube failed" << std::endl;
+      std::cout << "Add tube failed" << std::endl;
       ++failures;
       continue;
       }
 
     if( !ridgeOp->DeleteTube( xTube ) )
       {
-      std::cerr << "Third delete tube failed" << std::endl;
+      std::cout << "Third delete tube failed" << std::endl;
       ++failures;
       continue;
       }
@@ -242,7 +260,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     }
 
   std::cout << "Number of failures = " << failures << std::endl;
-  if( failures > 4 )
+  if( failures > 0 )
     {
     return EXIT_FAILURE;
     }

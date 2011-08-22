@@ -59,6 +59,7 @@ public:
    * InputImageType typedef support. */
   typedef TInputImage                                InputImageType;
   typedef typename InputImageType::SpacingType       SpacingType;
+  typedef typename InputImageType::SpacingType       SizeType;
 
   /**
    * IndexType typedef support. */
@@ -144,6 +145,7 @@ private:
   KernelXListType         m_KernelX;
   IndexType               m_KernelMin;
   IndexType               m_KernelMax;
+  SizeType                m_KernelSize;
   double                  m_KernelTotal;
 
   IndexType               m_ImageIndexMin;

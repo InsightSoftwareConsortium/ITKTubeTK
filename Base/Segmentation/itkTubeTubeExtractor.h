@@ -87,7 +87,9 @@ public:
 
   /**
    * Type definition for the input image pixel type. */
-  typedef ContinuousIndex<double,  ImageDimension >     ContinuousIndexType;
+  typedef ContinuousIndex<double, ImageDimension >      ContinuousIndexType;
+
+  typedef typename ImageType::IndexType                 IndexType;
 
   /**
    * Defines the type of vectors used */
@@ -121,6 +123,22 @@ public:
   /**
    * Get Data Maximum */
   double GetDataMax( void );
+
+  /**
+   * Set ExtractBound Minimum */
+  void SetExtractBoundMin( IndexType dataMin );
+
+  /**
+   * Get ExtractBound Minimum */
+  IndexType GetExtractBoundMin( void ) const;
+
+  /**
+   * Set ExtractBound Maximum */
+  void SetExtractBoundMax( IndexType dataMax );
+
+  /**
+   * Get ExtractBound Maximum */
+  IndexType GetExtractBoundMax( void ) const;
 
   /**
    * Set the radius */
