@@ -56,6 +56,7 @@ BlurImageFunction<TInputImage>
   m_KernelTotal = 0;
   m_KernelMin.Fill( 0 );
   m_KernelMax.Fill( 0 );
+  m_KernelSize.Fill( 0 );
   m_KernelX.clear();
   m_KernelWeights.clear();
 
@@ -143,6 +144,7 @@ BlurImageFunction<TInputImage>
   os << indent << "KernelX.size = " << m_KernelX.size() << std::endl;
   os << indent << "KernelMin = " << m_KernelMin << std::endl;
   os << indent << "KernelMax = " << m_KernelMax << std::endl;
+  os << indent << "KernelSize = " << m_KernelSize << std::endl;
   os << indent << "KernelTotal = " << m_KernelTotal << std::endl;
 
   os << indent << "ImageIndexMin = " << m_ImageIndexMin << std::endl;
@@ -172,6 +174,7 @@ BlurImageFunction<TInputImage>
       m_KernelMax[i] = 1;
       }
     m_KernelMin[i] = -m_KernelMax[i];
+    m_KernelSize[i] = m_KernelMax[i] - m_KernelMin[i] + 1;
     }
   if( this->GetDebug() )
     {
@@ -179,6 +182,7 @@ BlurImageFunction<TInputImage>
     std::cout << "  Extent = " << m_Extent << std::endl;
     std::cout << "  KernelMin = " << m_KernelMin << std::endl;
     std::cout << "  KernelMax = " << m_KernelMax << std::endl;
+    std::cout << "  KernelSize = " << m_KernelSize << std::endl;
     }
 
   m_KernelWeights.clear();
@@ -323,21 +327,28 @@ BlurImageFunction<TInputImage>
 
   if( !boundary )
     {
-    KernelWeightsListType::const_iterator it;
-    KernelWeightsListType::const_iterator itEnd;
-    typename KernelXListType::const_iterator  itX;
-    it = m_KernelWeights.begin();
-    itEnd = m_KernelWeights.end();
-    itX = m_KernelX.begin();
+    itk::ImageRegionConstIterator< InputImageType > imIt( this->m_Image,
+      this->m_Image->GetLargestPossibleRegion() );
+    imIt.GoToBegin();
+    KernelWeightsListType::const_iterator it = m_KernelWeights.begin();
+    KernelWeightsListType::const_iterator itEnd = m_KernelWeights.end();
+    typename KernelXListType::const_iterator  itX = m_KernelX.begin();
+    int skipX = (*itX)[0];
     while( it != itEnd )
       {
-      for( unsigned int i=0; i<ImageDimension; i++ )
+      if( (*itX)[0] == skipX )
         {
-        kernelX[i] = point[i] + ( *itX )[i];
+        for( unsigned int i=0; i<ImageDimension; i++ )
+          {
+          kernelX[i] = point[i] + ( *itX )[i];
+          }
+        imIt.SetIndex( kernelX );
         }
-      res += this->m_Image->GetPixel( kernelX ) * ( *it );
+      res += ( imIt.Get() ) * ( *it );
+      ++imIt;
       ++it;
       ++itX;
+      ++kernelX[0];
       }
     wTotal = m_KernelTotal;
     }
