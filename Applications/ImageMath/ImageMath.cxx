@@ -1339,7 +1339,7 @@ int DoIt( MetaCommand & command )
       double factor = command.GetValueAsFloat( *it, "factor" );
 
       typename ImageType::Pointer imSub2 = ImageType::New();
-      imSub2->SetOrigin( imIn->GetOrigin() );
+      imSub2->CopyInformation( imIn );
       typename ImageType::SizeType size;
       typename ImageType::SpacingType spacing;
       if( factor != 0 )
@@ -1370,11 +1370,11 @@ int DoIt( MetaCommand & command )
         factor = meanSpacing/spacing[1];
         size[1] = ( long unsigned int )
                   ( imIn->GetLargestPossibleRegion().GetSize()[1]/factor );
-        factor = meanSpacing/spacing[2];
         spacing[0] = meanSpacing;
         spacing[1] = meanSpacing;
         if( dimensionT == 3 )
           {
+          factor = meanSpacing/spacing[2];
           size[2] = ( long unsigned int )
                     ( imIn->GetLargestPossibleRegion().GetSize()[2]
                       / factor );
