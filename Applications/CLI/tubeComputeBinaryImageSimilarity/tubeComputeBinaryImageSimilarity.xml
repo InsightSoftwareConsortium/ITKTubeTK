@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Registration</category>
+  <title>Compute Binary Image Similarity (TubeTK)</title>
+  <description>Return scores of how well two binary images match.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>Stephen R. Aylward</contributor>
+  <acknowledgements>This work was funded, in part, by USC:EXPOSE.</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume1</name>
+      <label>Input Volume 1</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume 1</description>
+    </image>
+    <image>
+      <name>inputVolume2</name>
+      <label>Input Volume 2</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Input volume 2</description>
+    </image>
+
+  </parameters>
+  <parameters>
+    <label>Results</label>
+    <description>Reporting results</description>
+    <file>
+      <name>resultsFile</name>
+      <label>Results file</label>
+      <description>Write results to a file instead of std out</description>
+      <flag>o</flag>
+      <channel>output</channel>
+    </file>
+  </parameters>
+
+</executable>
