@@ -45,11 +45,11 @@ add_test( ${PROJECT_NAME}Test1
                -S 1024
                -o 255
                -n 127
-               -s 0.5
+               -s 0.4
                -b 20
                -i 100
-               ${INPUT_DATA}/im0001.mha
-               ${INPUT_DATA}/im0001.vk.mask.mha
+               ${INPUT_DATA}/im0001.crop.mha
+               ${INPUT_DATA}/im0001.vk.mask.crop.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
