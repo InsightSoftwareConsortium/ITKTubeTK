@@ -130,8 +130,8 @@ add_test( itkTubeLDAGeneratorTest
   --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
             ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
   itkTubeLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+    ${INPUT_DATA}/ES0015_Large_Subs.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
     ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
     ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
   )
@@ -141,8 +141,8 @@ add_test( itkTubeNJetLDAGeneratorTest
   --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
             ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
   itkTubeNJetLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+    ${INPUT_DATA}/ES0015_Large_Subs.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
     ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
     ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
   )
