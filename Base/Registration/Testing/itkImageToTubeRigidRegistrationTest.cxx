@@ -131,6 +131,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   registrationFilter->SetInitialPosition(initialPose);
   registrationFilter->SetParametersScale(parameterScales);
   registrationFilter->SetVerbose(0);
+  registrationFilter->SetSampling(100);
   try
     {
     registrationFilter->Initialize();
@@ -190,12 +191,23 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   SpatialObjectToImageFilterType::Pointer vesselToImageFilter = 
     SpatialObjectToImageFilterType::New();
 
+  ImageType::Pointer img = imageReader->GetOutput();
+
+  ImageType::SizeType size = img->GetLargestPossibleRegion().GetSize();
+  size[0] = size[0] / 4;
+  size[1] = size[1] / 4;
+  size[2] = size[2] / 4;
+
+  ImageType::SpacingType spacing = img->GetSpacing();
+  spacing[0] = spacing[0] * 4;
+  spacing[1] = spacing[1] * 4;
+  spacing[2] = spacing[2] * 4;
+
   std::cout << "Converting transformed vessel model into a binary image ... ";
-  vesselToImageFilter->SetInput(transformFilter->GetOutput());
-  vesselToImageFilter->SetSize(
-    imageReader->GetOutput()->GetLargestPossibleRegion().GetSize());
-  vesselToImageFilter->SetOrigin(imageReader->GetOutput()->GetOrigin());
-  vesselToImageFilter->SetSpacing(imageReader->GetOutput()->GetSpacing());
+  vesselToImageFilter->SetInput( transformFilter->GetOutput() );
+  vesselToImageFilter->SetSize( size );
+  vesselToImageFilter->SetSpacing( spacing );
+  vesselToImageFilter->SetOrigin( img->GetOrigin() );
   vesselToImageFilter->SetInsideValue(1.0);
   vesselToImageFilter->SetOutsideValue(0.0);
   vesselToImageFilter->Update();
