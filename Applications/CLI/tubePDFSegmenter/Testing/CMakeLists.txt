@@ -48,8 +48,8 @@ add_test( ${PROJECT_NAME}Test1
                --voidId 0
                --reclassifyNotObjectMask
                --reclassifyObjectMask
-               ${INPUT_DATA}/ES0015_Large.mha
-               ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
