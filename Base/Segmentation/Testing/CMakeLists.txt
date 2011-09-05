@@ -148,8 +148,8 @@ add_test( itkTubeRidgeExtractorTest
 add_test( itkTubeRidgeExtractorTest2
   ${BASE_SEGMENTATION_TESTS}
   itkTubeRidgeExtractorTest2
-    ${INPUT_DATA}/Branch.n010.mha
-    ${INPUT_DATA}/Branch-truth.tre
+    ${INPUT_DATA}/Branch.n010.sub.mha
+    ${INPUT_DATA}/Branch-truth_Subs.tre
   )
 
 add_test( itkTubeRadiusExtractorTest
@@ -169,6 +169,6 @@ add_test( itkTubeRadiusExtractorTest2
 add_test( itkTubeTubeExtractorTest
   ${BASE_SEGMENTATION_TESTS}
   itkTubeTubeExtractorTest
-    ${INPUT_DATA}/Branch.n010.mha
+    ${INPUT_DATA}/Branch.n010.sub.mha
     ${INPUT_DATA}/Branch-truth.tre
   )

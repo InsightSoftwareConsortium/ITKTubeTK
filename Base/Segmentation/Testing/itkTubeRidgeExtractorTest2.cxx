@@ -56,7 +56,6 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
 
   ridgeOp->SetInputImage( im );
   ridgeOp->SetStepX( 0.75 );
-  ridgeOp->SetScale( 2.0 );
   ridgeOp->SetExtent( 2.5 );
   ridgeOp->SetDynamicScale( true );
 
@@ -90,9 +89,10 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
 
   RidgeOpType::IndexType imMinX = ridgeOp->GetExtractBoundMin();
   RidgeOpType::IndexType imMaxX = ridgeOp->GetExtractBoundMax();
+  int margin = 5;
 
   int failures = 0;
-  for( unsigned int mcRun=0; mcRun<2; mcRun++ )
+  for( int mcRun=0; mcRun<2; mcRun++ )
     {
     std::cout << std::endl;
     std::cout << std::endl;
@@ -128,26 +128,56 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     TubePointType * pnt = static_cast< TubePointType * >(&(*pntIter));
     std::cout << "Test point = " << rndPointNum << std::endl;
 
+    tube->ComputeObjectToWorldTransform();
+    TubeType::TransformType * soTfm = tube->GetIndexToWorldTransform();
+
+    ImageType::PointType pntX = soTfm->TransformPoint( pnt->GetPosition() );
+
     RidgeOpType::ContinuousIndexType x0;
-    for( unsigned int i=0; i<ImageType::ImageDimension; i++)
+    bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX, x0 );
+    if( inMargin )
       {
-      x0[i] = pnt->GetPosition()[i];
+      for( unsigned int i=0; i<ImageType::ImageDimension; i++ )
+        {
+        if( x0[i] < imMinX[i]+margin || x0[i] > imMaxX[i]-margin )
+          {
+          inMargin = false;
+          break;
+          }
+        }
+      }
+    if( !inMargin )
+      {
+      --mcRun;
+      std::cout << "Warning: Tube point outside of image, repicking..."
+        << std::endl;
+      continue;
       }
     std::cout << "Test index = " << x0 << std::endl;
 
-    std::cout << "Setting min and max z." << std::endl;
+    std::cout << "Setting min and max z to save time." << std::endl;
     RidgeOpType::IndexType minX = imMinX;
     RidgeOpType::IndexType maxX = imMaxX;
-    if( x0[2] - 5 > minX[2] )
+    if( x0[2] - margin > minX[2] )
       {
-      minX[2] = x0[2] - 5;
+      minX[2] = x0[2] - margin;
       }
-    if( x0[2] + 5 < maxX[2] )
+    if( x0[2] + margin < maxX[2] )
       {
-      maxX[2] = x0[2] + 5;
+      maxX[2] = x0[2] + margin;
       }
     ridgeOp->SetExtractBoundMin( minX );
     ridgeOp->SetExtractBoundMax( maxX );
+
+    if( pnt->GetRadius() > 1 )
+      {
+      ridgeOp->SetScale( 0.8 * pnt->GetRadius() );
+      }
+    else
+      {
+      ridgeOp->SetScale( 0.5 );
+      }
+
 
     RidgeOpType::ContinuousIndexType x1 = x0;
     if( !ridgeOp->LocalRidge( x1 ) )
@@ -166,7 +196,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
       diff += tf * tf;
       }
     diff = vcl_sqrt( diff );
-    if( diff > 2 )
+    if( diff > 2*pnt->GetRadius() && diff > 4 )
       {
       std::cout << "Local ridge test failed.  Local ridge too far."
         << std::endl;

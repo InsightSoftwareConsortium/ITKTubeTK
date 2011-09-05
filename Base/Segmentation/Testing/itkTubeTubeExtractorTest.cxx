@@ -84,9 +84,10 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
 
   ImageType::IndexType imMinX = tubeOp->GetExtractBoundMin();
   ImageType::IndexType imMaxX = tubeOp->GetExtractBoundMax();
+  int margin = 5;
 
   int failures = 0;
-  for( unsigned int mcRun=0; mcRun<2; mcRun++ )
+  for( int mcRun=0; mcRun<2; mcRun++ )
     {
     std::cout << std::endl;
     std::cout << std::endl;
@@ -122,13 +123,35 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
     TubePointType * pnt = static_cast< TubePointType * >(&(*pntIter));
     std::cout << "Test point = " << rndPointNum << std::endl;
 
+    tube->ComputeObjectToWorldTransform();
+    TubeType::TransformType * soTfm = tube->GetIndexToWorldTransform();
+
+    ImageType::PointType pntX = soTfm->TransformPoint( pnt->GetPosition() );
+
     TubeOpType::ContinuousIndexType x0;
-    for( unsigned int i=0; i<ImageType::ImageDimension; i++)
+    bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX, x0 );
+    if( inMargin )
       {
-      x0[i] = pnt->GetPosition()[i];
+      for( unsigned int i=0; i<ImageType::ImageDimension; i++ )
+        {
+        if( x0[i] < imMinX[i]+margin || x0[i] > imMaxX[i]-margin )
+          {
+          inMargin = false;
+          break;
+          }
+        }
       }
+    if( !inMargin )
+      {
+      --mcRun;
+      std::cout << "Warning: Tube point outside of image, repicking..."
+        << std::endl;
+      continue;
+      }
+
     std::cout << "Test index = " << x0 << std::endl;
 
+    std::cout << "Setting min and max z to save time." << std::endl;
     ImageType::IndexType minX = imMinX;
     ImageType::IndexType maxX = imMaxX;
     if( x0[2] - 5 > minX[2] )
@@ -141,6 +164,16 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
       }
     tubeOp->SetExtractBoundMin( minX );
     tubeOp->SetExtractBoundMax( maxX );
+
+    if( pnt->GetRadius() > 1 )
+      {
+      tubeOp->SetRadius( 0.8 * pnt->GetRadius() );
+      }
+    else
+      {
+      tubeOp->SetRadius( 0.5 );
+      }
+
 
     TubeOpType::ContinuousIndexType x1 = x0;
     tubeOp->SetDebug( true );

@@ -1,24 +1,24 @@
 ##############################################################################
-# 
+#
 # Library:   TubeTK
-# 
+#
 # Copyright 2010 Kitware Inc. 28 Corporate Drive,
 # Clifton Park, NY, 12065, USA.
-# 
-# All rights reserved. 
-# 
+#
+# All rights reserved.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #       http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#
 ##############################################################################
 
 include_regular_expression( "^.*$" )
@@ -26,12 +26,12 @@ include_regular_expression( "^.*$" )
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
-set( BASELINE 
+set( BASELINE
   ${TubeTK_SOURCE_DIR}/Applications/${PROJECT_NAME}/Testing/Baselines )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-set( PROJ_EXE 
+set( PROJ_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
 
 set( IMAGECOMPARE_EXE
@@ -45,8 +45,8 @@ set( TEXTCOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -i -4000 60000 -4 60
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -i -1 1 -100 100
                -w ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
@@ -54,7 +54,7 @@ add_test( ${PROJECT_NAME}Test1
 #######
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test1.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test1.mha
                -b ${BASELINE}/${PROJECT_NAME}Test1.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
@@ -65,16 +65,19 @@ set_tests_properties( ${PROJECT_NAME}Test1-Compare
 #######
 add_test( ${PROJECT_NAME}Test2
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -i -4000 60000 -4 60
-               -W 2 ${TEMP}/${PROJECT_NAME}Test2.mha )
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -b 5
+               -w ${TEMP}/${PROJECT_NAME}Test2_meanfield.mha
+               -a 0 1 ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -I ${TEMP}/${PROJECT_NAME}Test2_meanfield.mha
+               -w ${TEMP}/${PROJECT_NAME}Test2.mha )
 
 #######
 # Test2-Compare
 #######
 add_test( ${PROJECT_NAME}Test2-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test2.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test2.mha
                -b ${BASELINE}/${PROJECT_NAME}Test2.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
@@ -85,35 +88,61 @@ set_tests_properties( ${PROJECT_NAME}Test2-Compare
 #######
 add_test( ${PROJECT_NAME}Test3
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -n -4000 60000 -100 10
-               -W 2 ${TEMP}/${PROJECT_NAME}Test3.mha )
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -S 1234
+               -n -1 1 10 0.2
+               -w ${TEMP}/${PROJECT_NAME}Test3.mha )
+
+#######
+# Test3-Compare
+#######
+add_test( ${PROJECT_NAME}Test3-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test3.mha
+               -b ${BASELINE}/${PROJECT_NAME}Test3.mha
+               -i 0.001 )
+set_tests_properties( ${PROJECT_NAME}Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
+
 
 #######
 # Test4
 #######
 add_test( ${PROJECT_NAME}Test4
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -N -4000 60000 0 100 )
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -S 1234
+               -N -1 1 10 0.2
+               -w ${TEMP}/${PROJECT_NAME}Test4.mha )
+
+#######
+# Test4-Compare
+#######
+add_test( ${PROJECT_NAME}Test4-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test4.mha
+               -b ${BASELINE}/${PROJECT_NAME}Test4.mha
+               -i 0.001 )
+set_tests_properties( ${PROJECT_NAME}Test4-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
+
 
 #######
 # Test5
 #######
 add_test( ${PROJECT_NAME}Test5
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -f ${INPUT_DATA}/ES0015_Large.mha ${BASELINE}/${PROJECT_NAME}Test3.mha 
-               -W 2 ${TEMP}/${PROJECT_NAME}Test5.mha )
-set_tests_properties( ${PROJECT_NAME}Test5
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -f 10
+                 ${BASELINE}/${PROJECT_NAME}Test2.mha
+               -w ${TEMP}/${PROJECT_NAME}Test5.mha )
 
 #######
 # Test5-Compare
 #######
 add_test( ${PROJECT_NAME}Test5-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test5.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test5.mha
                -b ${BASELINE}/${PROJECT_NAME}Test5.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test5-Compare
@@ -124,17 +153,16 @@ set_tests_properties( ${PROJECT_NAME}Test5-Compare
 #######
 add_test( ${PROJECT_NAME}Test6
             ${PROJ_EXE}
-               -a 0.5 0.5 ${INPUT_DATA}/ES0015_Large.mha  ${BASELINE}/${PROJECT_NAME}Test1.mha 
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -a 0.95 0.05 ${BASELINE}/${PROJECT_NAME}Test5.mha
                -w ${TEMP}/${PROJECT_NAME}Test6.mha )
-set_tests_properties( ${PROJECT_NAME}Test6
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
 #######
 # Test6-Compare
 #######
 add_test( ${PROJECT_NAME}Test6-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test6.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test6.mha
                -b ${BASELINE}/${PROJECT_NAME}Test6.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test6-Compare
@@ -145,8 +173,8 @@ set_tests_properties( ${PROJECT_NAME}Test6-Compare
 #######
 add_test( ${PROJECT_NAME}Test7
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -t -1 1 0 100
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -t -1 -0.33 -1 1
                -w ${TEMP}/${PROJECT_NAME}Test7.mha )
 
 #######
@@ -154,7 +182,7 @@ add_test( ${PROJECT_NAME}Test7
 #######
 add_test( ${PROJECT_NAME}Test7-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test7.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test7.mha
                -b ${BASELINE}/${PROJECT_NAME}Test7.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test7-Compare
@@ -165,8 +193,8 @@ set_tests_properties( ${PROJECT_NAME}Test7-Compare
 #######
 add_test( ${PROJECT_NAME}Test8
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -t -1 1 ${TEMP}/${PROJECT_NAME}Test2.mha 100
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -m -1 -0.33 ${INPUT_DATA}/ES0015_Large_Subs.mha 0
                -w ${TEMP}/${PROJECT_NAME}Test8.mha )
 
 #######
@@ -174,7 +202,7 @@ add_test( ${PROJECT_NAME}Test8
 #######
 add_test( ${PROJECT_NAME}Test8-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test8.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test8.mha
                -b ${BASELINE}/${PROJECT_NAME}Test8.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test8-Compare
@@ -185,16 +213,16 @@ set_tests_properties( ${PROJECT_NAME}Test8-Compare
 #######
 add_test( ${PROJECT_NAME}Test9
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -m -1 1 ${TEMP}/${PROJECT_NAME}Test2.mha 100
-               -w ${TEMP}/${PROJECT_NAME}Test9.mha )
+               ${INPUT_DATA}/GDS0015_1.mha
+               -M 0 5 255 0
+               -W 2 ${TEMP}/${PROJECT_NAME}Test9.mha )
 
 #######
 # Test9-Compare
 #######
 add_test( ${PROJECT_NAME}Test9-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test9.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test9.mha
                -b ${BASELINE}/${PROJECT_NAME}Test9.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test9-Compare
@@ -205,16 +233,16 @@ set_tests_properties( ${PROJECT_NAME}Test9-Compare
 #######
 add_test( ${PROJECT_NAME}Test10
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -M 1 5 1 1
-               -w ${TEMP}/${PROJECT_NAME}Test10.mha )
+               ${INPUT_DATA}/GDS0015_1.mha
+               -M 1 5 255 0
+               -W 2 ${TEMP}/${PROJECT_NAME}Test10.mha )
 
 #######
 # Test10-Compare
 #######
 add_test( ${PROJECT_NAME}Test10-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test10.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test10.mha
                -b ${BASELINE}/${PROJECT_NAME}Test10.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test10-Compare
@@ -225,7 +253,7 @@ set_tests_properties( ${PROJECT_NAME}Test10-Compare
 #######
 add_test( ${PROJECT_NAME}Test11
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -b 10
                -w ${TEMP}/${PROJECT_NAME}Test11.mha )
 
@@ -234,7 +262,7 @@ add_test( ${PROJECT_NAME}Test11
 #######
 add_test( ${PROJECT_NAME}Test11-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test11.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test11.mha
                -b ${BASELINE}/${PROJECT_NAME}Test11.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test11-Compare
@@ -245,7 +273,7 @@ set_tests_properties( ${PROJECT_NAME}Test11-Compare
 #######
 add_test( ${PROJECT_NAME}Test12
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -B 5 2 0
                -w ${TEMP}/${PROJECT_NAME}Test12.mha )
 
@@ -254,9 +282,8 @@ add_test( ${PROJECT_NAME}Test12
 #######
 add_test( ${PROJECT_NAME}Test12-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test12.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test12.mha
                -b ${BASELINE}/${PROJECT_NAME}Test12.mha
-               -n 10
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test12-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test12 )
@@ -266,7 +293,7 @@ set_tests_properties( ${PROJECT_NAME}Test12-Compare
 #######
 add_test( ${PROJECT_NAME}Test13
             ${PROJ_EXE}
-               ${INPUT_DATA}/im0001.crop.mha
+               ${INPUT_DATA}/im0001.crop2.mha
                -z 1 2 3
                -w ${TEMP}/${PROJECT_NAME}Test13.mha )
 
@@ -275,7 +302,7 @@ add_test( ${PROJECT_NAME}Test13
 #######
 add_test( ${PROJECT_NAME}Test13-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test13.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test13.mha
                -b ${BASELINE}/${PROJECT_NAME}Test13.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test13-Compare
@@ -286,7 +313,7 @@ set_tests_properties( ${PROJECT_NAME}Test13-Compare
 #######
 add_test( ${PROJECT_NAME}Test14
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -l 10 ${TEMP}/${PROJECT_NAME}Test14.txt )
 
 #######
@@ -304,8 +331,8 @@ set_tests_properties( ${PROJECT_NAME}Test14-Compare
 #######
 add_test( ${PROJECT_NAME}Test15
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -L 10 1 10000 ${TEMP}/${PROJECT_NAME}Test15.txt )
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -L 100 -1 0.01 ${TEMP}/${PROJECT_NAME}Test15.txt )
 
 #######
 # Test15-Compare
@@ -322,8 +349,8 @@ set_tests_properties( ${PROJECT_NAME}Test15-Compare
 #######
 add_test( ${PROJECT_NAME}Test16
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -c 10 1000
+               ${INPUT_DATA}/CroppedWholeLungCTScan.mhd
+               -c 100 10
                -w ${TEMP}/${PROJECT_NAME}Test16.mha )
 
 #######
@@ -331,7 +358,7 @@ add_test( ${PROJECT_NAME}Test16
 #######
 add_test( ${PROJECT_NAME}Test16-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test16.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test16.mha
                -b ${BASELINE}/${PROJECT_NAME}Test16.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test16-Compare
@@ -342,8 +369,8 @@ set_tests_properties( ${PROJECT_NAME}Test16-Compare
 #######
 add_test( ${PROJECT_NAME}Test17
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -C 10 1000 ${BASELINE}/${PROJECT_NAME}Test7.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -C 100 3 ${BASELINE}/${PROJECT_NAME}Test2.mha
                -w ${TEMP}/${PROJECT_NAME}Test17.mha )
 
 #######
@@ -351,7 +378,7 @@ add_test( ${PROJECT_NAME}Test17
 #######
 add_test( ${PROJECT_NAME}Test17-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test17.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test17.mha
                -b ${BASELINE}/${PROJECT_NAME}Test17.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test17-Compare
@@ -362,8 +389,8 @@ set_tests_properties( ${PROJECT_NAME}Test17-Compare
 #######
 add_test( ${PROJECT_NAME}Test18
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -r 2 
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -r 2
                -w ${TEMP}/${PROJECT_NAME}Test18.mha )
 
 #######
@@ -371,7 +398,7 @@ add_test( ${PROJECT_NAME}Test18
 #######
 add_test( ${PROJECT_NAME}Test18-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test18.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test18.mha
                -b ${BASELINE}/${PROJECT_NAME}Test18.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test18-Compare
@@ -382,7 +409,7 @@ set_tests_properties( ${PROJECT_NAME}Test18-Compare
 #######
 add_test( ${PROJECT_NAME}Test19
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -R ${BASELINE}/${PROJECT_NAME}Test18.mha
                -w ${TEMP}/${PROJECT_NAME}Test19.mha )
 
@@ -391,7 +418,7 @@ add_test( ${PROJECT_NAME}Test19
 #######
 add_test( ${PROJECT_NAME}Test19-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test19.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test19.mha
                -b ${BASELINE}/${PROJECT_NAME}Test19.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test19-Compare
@@ -402,16 +429,16 @@ set_tests_properties( ${PROJECT_NAME}Test19-Compare
 #######
 add_test( ${PROJECT_NAME}Test20
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -s 0 -1000 1000 3 100 100 0
-               -w ${TEMP}/${PROJECT_NAME}Test20.mha )
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -s 0 -1 -0.33 1 70 50 0
+               -W 2 ${TEMP}/${PROJECT_NAME}Test20.mha )
 
 #######
 # Test20-Compare
 #######
 add_test( ${PROJECT_NAME}Test20-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test20.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test20.mha
                -b ${BASELINE}/${PROJECT_NAME}Test20.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test20-Compare
@@ -422,8 +449,8 @@ set_tests_properties( ${PROJECT_NAME}Test20-Compare
 #######
 add_test( ${PROJECT_NAME}Test21
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -O -1000 -1000 -2000
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -O -10 -10 0
                -w ${TEMP}/${PROJECT_NAME}Test21.mha )
 
 #######
@@ -431,40 +458,19 @@ add_test( ${PROJECT_NAME}Test21
 #######
 add_test( ${PROJECT_NAME}Test21-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test21.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test21.mha
                -b ${BASELINE}/${PROJECT_NAME}Test21.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test21-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test21 )
 
 #######
-# Test22
-#######
-add_test( ${PROJECT_NAME}Test22
-            ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -S 7278492372
-               -w ${TEMP}/${PROJECT_NAME}Test22.mha )
-
-#######
-# Test22-Compare
-#######
-add_test( ${PROJECT_NAME}Test22-Compare
-            ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test22.mha 
-               -b ${BASELINE}/${PROJECT_NAME}Test22.mha
-               -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}Test22-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test22 )
-
-
-#######
 # Test23
 #######
 add_test( ${PROJECT_NAME}Test23
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -P 0 ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -P 0 ${INPUT_DATA}/ES0015_Large_Subs.mha
                -w ${TEMP}/${PROJECT_NAME}Test23.mha )
 
 #######
@@ -472,7 +478,7 @@ add_test( ${PROJECT_NAME}Test23
 #######
 add_test( ${PROJECT_NAME}Test23-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test23.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test23.mha
                -b ${BASELINE}/${PROJECT_NAME}Test23.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test23-Compare
@@ -483,8 +489,8 @@ set_tests_properties( ${PROJECT_NAME}Test23-Compare
 #######
 add_test( ${PROJECT_NAME}Test24
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -u ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -u ${INPUT_DATA}/ES0015_Large_Subs.mha
                -w ${TEMP}/${PROJECT_NAME}Test24.mha )
 
 #######
@@ -492,7 +498,7 @@ add_test( ${PROJECT_NAME}Test24
 #######
 add_test( ${PROJECT_NAME}Test24-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test24.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test24.mha
                -b ${BASELINE}/${PROJECT_NAME}Test24.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test24-Compare
@@ -503,8 +509,8 @@ set_tests_properties( ${PROJECT_NAME}Test24-Compare
 #######
 add_test( ${PROJECT_NAME}Test25
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -p 0 ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               -p 0 ${INPUT_DATA}/ES0015_Large_Subs.mha
                -w ${TEMP}/${PROJECT_NAME}Test25.mha )
 
 #######
@@ -512,7 +518,7 @@ add_test( ${PROJECT_NAME}Test25
 #######
 add_test( ${PROJECT_NAME}Test25-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test25.mha 
+               -t ${TEMP}/${PROJECT_NAME}Test25.mha
                -b ${BASELINE}/${PROJECT_NAME}Test25.mha
                -i 0.001 )
 set_tests_properties( ${PROJECT_NAME}Test25-Compare
@@ -523,7 +529,7 @@ set_tests_properties( ${PROJECT_NAME}Test25-Compare
 #######
 add_test( ${PROJECT_NAME}Test26
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -d 0
                -w ${TEMP}/${PROJECT_NAME}Test26.mha )
 
@@ -543,7 +549,7 @@ set_tests_properties( ${PROJECT_NAME}Test26-Compare
 #######
 add_test( ${PROJECT_NAME}Test27
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -x 6
                -w ${TEMP}/${PROJECT_NAME}Test27.mha )
 
@@ -563,7 +569,7 @@ set_tests_properties( ${PROJECT_NAME}Test27-Compare
 #######
 add_test( ${PROJECT_NAME}Test28
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -d 1
                -w ${TEMP}/${PROJECT_NAME}Test28.mha )
 
@@ -583,7 +589,7 @@ set_tests_properties( ${PROJECT_NAME}Test28-Compare
 #######
 add_test( ${PROJECT_NAME}Test29
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
                -d 2
                -w ${TEMP}/${PROJECT_NAME}Test29.mha )
 

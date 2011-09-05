@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef _itkLabelOverlapMeasuresImageFilter_txx
-#define _itkLabelOverlapMeasuresImageFilter_txx
+#ifndef __itkLabelOverlapMeasuresImageFilter_txx
+#define __itkLabelOverlapMeasuresImageFilter_txx
 
 #include "itkLabelOverlapMeasuresImageFilter.h"
 

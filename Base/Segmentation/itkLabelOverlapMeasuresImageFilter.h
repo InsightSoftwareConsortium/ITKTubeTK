@@ -86,7 +86,7 @@ public:
       m_TargetComplement = 0;
       }
 
-  // added for completeness
+    // added for completeness
     LabelSetMeasures& operator=( const LabelSetMeasures& l )
       {
       m_Source = l.m_Source;
@@ -107,8 +107,8 @@ public:
 
   /** Type of the map used to store data per label */
   typedef hash_map<LabelType, LabelSetMeasures> MapType;
-  typedef typename MapType::iterator MapIterator;
-  typedef typename MapType::const_iterator MapConstIterator;
+  typedef typename MapType::iterator            MapIterator;
+  typedef typename MapType::const_iterator      MapConstIterator;
 
   /** Image related typedefs. */
   itkStaticConstMacro( ImageDimension, unsigned int,

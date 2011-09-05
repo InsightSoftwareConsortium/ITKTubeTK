@@ -110,12 +110,14 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
   double avgFailures = 0;
   double avgAvgDiff = 0;
   double avgMaxDiff = 0;
-  unsigned int numMCRuns = 20;
+  unsigned int numMCRuns = 5;
   for( unsigned int mcRun=0; mcRun<numMCRuns; mcRun++ )
     {
     std::cout << std::endl;
     std::cout << "*** RUN = " << mcRun << std::endl;
-    unsigned int rndTubeNum = rndGen->GetUniformVariate( 0, 1 ) * numTubes;
+    unsigned int rndTubeNum = 1;
+      // Use the shorter tube
+      // rndGen->GetUniformVariate( 0, 1 ) * numTubes;
     if( rndTubeNum >= numTubes )
       {
       rndTubeNum = numTubes-1;

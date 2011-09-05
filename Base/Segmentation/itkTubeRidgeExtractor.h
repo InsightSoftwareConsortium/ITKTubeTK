@@ -195,6 +195,14 @@ public:
   itkGetMacro( ThreshRoundnessStart, double );
 
   /**
+   * Set Curvature  Normalization Factor (multiplier for curvature) */
+  itkSetMacro( CurvatureExpectedMax, double );
+
+  /**
+   * Get Curvature  Normalization Factor */
+  itkGetMacro( CurvatureExpectedMax, double );
+
+  /**
    * Set Curvature  Threshold */
   itkSetMacro( ThreshCurvature, double );
 
@@ -209,6 +217,22 @@ public:
   /**
    * Get Curvature  Threshold */
   itkGetMacro( ThreshCurvatureStart, double );
+
+  /**
+   * Set Linearity  Threshold */
+  itkSetMacro( ThreshLinearity, double );
+
+  /**
+   * Get Linearity  Threshold */
+  itkGetMacro( ThreshLinearity, double );
+
+  /**
+   * Set Linearity  Threshold */
+  itkSetMacro( ThreshLinearityStart, double );
+
+  /**
+   * Get Linearity  Threshold */
+  itkGetMacro( ThreshLinearityStart, double );
 
 
   /**
@@ -299,7 +323,7 @@ public:
 
   /**the ridgness at point x */
   double  Ridgeness( const ContinuousIndexType & x, double & roundness,
-    double & curvature );
+    double & curvature, double & linearity );
 
   /**
    * Compute the local Ridge */
@@ -364,12 +388,16 @@ private:
   ::tube::SplineND                               * m_DataSpline;
   ::tube::UserFunc< vnl_vector<int>, double >    * m_SplineValueFunc;
 
+  double                                           m_CurvatureExpectedMax;
+
   double                                           m_ThreshRidgeness;
   double                                           m_ThreshRidgenessStart;
   double                                           m_ThreshRoundness;
   double                                           m_ThreshRoundnessStart;
   double                                           m_ThreshCurvature;
   double                                           m_ThreshCurvatureStart;
+  double                                           m_ThreshLinearity;
+  double                                           m_ThreshLinearityStart;
 
   VectorType                                       m_X;
   VectorType                                       m_XP;

@@ -1158,6 +1158,7 @@ int DoIt( MetaCommand & command )
       double ridgeness = 0;
       double roundness = 0;
       double curvature = 0;
+      double linearity = 0;
       double scale = scaleMin;
       imFunc->SetScale( scale );
       std::cout << "   Processing scale " << scale << std::endl;
@@ -1170,7 +1171,8 @@ int DoIt( MetaCommand & command )
           {
           cIndx[d] = it1.GetIndex()[d];
           }
-        ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature  );
+        ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature,
+          linearity );
         it2.Set( ( PixelType )ridgeness );
         ++it1;
         ++it2;
@@ -1188,7 +1190,8 @@ int DoIt( MetaCommand & command )
             {
             cIndx[d] = it1.GetIndex()[d];
             }
-          ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature  );
+          ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature,
+            linearity );
           if( ridgeness > it2.Get() )
             {
             it2.Set( ( PixelType )ridgeness );
