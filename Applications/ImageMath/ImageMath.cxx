@@ -33,6 +33,7 @@ limitations under the License.
 #include "itkImageRegionIterator.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkNormalVariateGenerator.h"
+#include "itkMersenneTwisterRandomVariateGenerator.h"
 #include "itkHistogramMatchingImageFilter.h"
 #include "itkResampleImageFilter.h"
 #include "itkCastImageFilter.h"
@@ -99,10 +100,14 @@ int DoIt( MetaCommand & command )
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 
-  typedef itk::Statistics::NormalVariateGenerator gaussGenType;
-  typename gaussGenType::Pointer gaussGen = gaussGenType::New();
+  typedef itk::Statistics::NormalVariateGenerator GaussGenType;
+  typename GaussGenType::Pointer gaussGen = GaussGenType::New();
 
-  typedef itk::ImageFileReader< ImageType >   VolumeReaderType;
+  typedef itk::Statistics::MersenneTwisterRandomVariateGenerator
+                                                  UniformGenType;
+  typename UniformGenType::Pointer uniformGen = UniformGenType::New();
+
+  typedef itk::ImageFileReader< ImageType >       VolumeReaderType;
 
   // Declare a reader
   typename VolumeReaderType::Pointer reader = VolumeReaderType::New();
@@ -375,8 +380,8 @@ int DoIt( MetaCommand & command )
         double tf = it2.Get();
         if( tf >= valMin && tf <= valMax )
           {
-          tf += ( 2.0*( rand()/( double )RAND_MAX )-1 ) * noiseRange
-                + noiseMean;
+          tf += ( ( 2.0 * uniformGen->GetVariate() ) - 1 ) * noiseRange
+            + noiseMean;
           it2.Set( ( PixelType )tf );
           }
         ++it2;
@@ -1471,6 +1476,7 @@ int DoIt( MetaCommand & command )
         "seedValue" );
       srand( seed );
       gaussGen->Initialize( ( int )seed );
+      uniformGen->Initialize( ( int )seed );
       } // end -S
 
     // Voronoi

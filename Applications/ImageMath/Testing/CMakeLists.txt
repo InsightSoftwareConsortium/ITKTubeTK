@@ -122,7 +122,7 @@ add_test( ${PROJECT_NAME}Test4-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test4.mha
                -b ${BASELINE}/${PROJECT_NAME}Test4.mha
-               -i 0.001 )
+               -i 0.01 )
 set_tests_properties( ${PROJECT_NAME}Test4-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
 
