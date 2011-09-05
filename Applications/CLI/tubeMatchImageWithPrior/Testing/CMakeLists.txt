@@ -42,11 +42,11 @@ set( IMAGECOMPARE_EXE
 #######
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_1.mha
-               ${INPUT_DATA}/GDS0015_1.mha
+               ${INPUT_DATA}/ES0015_1_Subs.mha
+               ${INPUT_DATA}/GDS0015_1_Subs.mha
                ${TEMP}/${PROJECT_NAME}_ESTest1.mha
                ${TEMP}/${PROJECT_NAME}_GDSTest1.mha
-               -f 0 -b 255 -B 10,10 -S 7 )
+               -g 3 -f 0 -b 255 -B 10,10 -S 7 )
 
 add_test( ${PROJECT_NAME}Test1-Compare
             ${IMAGECOMPARE_EXE}
