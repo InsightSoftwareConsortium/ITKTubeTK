@@ -1453,25 +1453,18 @@ NJetImageFunction<TInputImage>
     }
 
   double sums = 0;
-  double sumv = 0;
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
     sums += p[i]*p[i];
-    sumv += eigSys.get_eigenvalue(i) * eigSys.get_eigenvalue(i);
     if( eigSys.get_eigenvalue(i) >= 0 )
       {
       ridge = -1;
       }
     }
   sums /= (ImageDimension-1);
-  if( sumv != 0 )
-    {
-    sumv /= (sumv + eigSys.get_eigenvalue(ImageDimension-1) *
-      eigSys.get_eigenvalue(ImageDimension-1) );
-    }
 
-  double val = (1.0 - sums) * sumv * ridge;
+  double val = (1.0 - sums) * ridge;
 
   return val;
 }
