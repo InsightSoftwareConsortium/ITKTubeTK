@@ -99,9 +99,9 @@ add_test( itkJointHistogramImageFunctionTest01
     --compare ${BASELINE}/itkJointHistogramImageFunctionTest01.mha
               ${TEMP}/itkJointHistogramImageFunctionTest01.mha
     itkJointHistogramImageFunctionTest
-      ${INPUT_DATA}/GDS0015_1_match.mha
-      ${INPUT_DATA}/ES0015_1.mha
-      ${INPUT_DATA}/GDS0015_1_match.mask.mha
+      ${INPUT_DATA}/GDS0015_1_match_Subs.mha
+      ${INPUT_DATA}/ES0015_1_Subs.mha
+      ${INPUT_DATA}/GDS0015_1_match_Subs.mask.mha
       0
       ${TEMP}/itkJointHistogramImageFunctionTest01.mha
       ${TEMP}/itkJointHistogramImageFunctionTest01Mean.mha
@@ -113,9 +113,9 @@ add_test( itkJointHistogramImageFunctionTest02
     --compare ${BASELINE}/itkJointHistogramImageFunctionTest02.mha
               ${TEMP}/itkJointHistogramImageFunctionTest02.mha
     itkJointHistogramImageFunctionTest
-      ${INPUT_DATA}/GDS0015_1_match.mha
-      ${INPUT_DATA}/ES0015_1.mha
-      ${INPUT_DATA}/GDS0015_1_match.mask.mha
+      ${INPUT_DATA}/GDS0015_1_match_Subs.mha
+      ${INPUT_DATA}/ES0015_1_Subs.mha
+      ${INPUT_DATA}/GDS0015_1_match_Subs.mask.mha
       1
       ${TEMP}/itkJointHistogramImageFunctionTest02.mha
       ${TEMP}/itkJointHistogramImageFunctionTest02Mean.mha
