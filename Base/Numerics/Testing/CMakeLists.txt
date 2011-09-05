@@ -135,7 +135,7 @@ foreach( testNum RANGE 0 37 )
                 ${TEMP}/itkNJetImageFunctionTest${testNum}.mha
       itkNJetImageFunctionTest
         ${testNum}
-        ${INPUT_DATA}/GDS0015_1.mha
+        ${INPUT_DATA}/GDS0015_1_Subs.mha
         ${TEMP}/itkNJetImageFunctionTest${testNum}.mha
     )
 endforeach( testNum )
