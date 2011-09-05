@@ -89,7 +89,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
 
   RidgeOpType::IndexType imMinX = ridgeOp->GetExtractBoundMin();
   RidgeOpType::IndexType imMaxX = ridgeOp->GetExtractBoundMax();
-  int margin = 5;
+  int margin = 10;
 
   int failures = 0;
   for( int mcRun=0; mcRun<2; mcRun++ )

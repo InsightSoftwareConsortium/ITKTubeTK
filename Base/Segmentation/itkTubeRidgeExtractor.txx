@@ -110,9 +110,8 @@ RidgeExtractor<TInputImage>
   m_ThreshRidgenessStart = 0.75;
   m_ThreshRoundness = 0.6;    // near 1 = harder
   m_ThreshRoundnessStart = 0.5;
-  m_ThreshCurvature = 0.8;
-  m_ThreshCurvatureStart = 0.6;
-  m_CurvatureExpectedMax = 0.02;
+  m_ThreshCurvature = 0.0012;
+  m_ThreshCurvatureStart = 0.001;
   m_ThreshLinearity = 0.8;
   m_ThreshLinearityStart = 0.6;
   m_RecoveryMax = 4;
@@ -182,7 +181,6 @@ RidgeExtractor<TInputImage>
     m_DataMin = minMaxFilter->GetMinimum();
     m_DataMax = minMaxFilter->GetMaximum();
     m_DataRange = m_DataMax-m_DataMin;
-    m_CurvatureExpectedMax = 0.003;
 
     if( this->GetDebug() )
       {
@@ -511,7 +509,7 @@ RidgeExtractor<TInputImage>
     }
 
   //curvature = 1.0 - vnl_math_abs( m_XHEVal[0] ) * ridge;
-  curvature = (1 - (m_CurvatureExpectedMax - sumv) / m_CurvatureExpectedMax) * ridge;
+  curvature = sumv;
 
   linearity = 0;
   if( sumv != 0 )
