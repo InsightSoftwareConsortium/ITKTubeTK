@@ -569,7 +569,7 @@ LDAGenerator< ImageT, LabelmapT >
       }
 
     ObjectCovarianceType H;
-    H = vnl_matrix_inverse<double>(meanCov) * covOfMeans;
+    H = covOfMeans * vnl_matrix_inverse<double>(meanCov);
 
     // true = re-order by abs(eval) - zeros will be at end
     ::tube::Eigen<double>( H, m_LDAMatrix, m_LDAValues, true, false );

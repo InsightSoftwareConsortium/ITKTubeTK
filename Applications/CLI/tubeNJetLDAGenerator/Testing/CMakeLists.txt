@@ -47,12 +47,13 @@ add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
                --useNumberOfLDA 3
                --objectId 0,255
-               --zeroScales 1,3
-               --firstScales 3,5
-               --secondScales 10
+               --zeroScales 1
+               --firstScales 1,3
+               --secondScales 5
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
-               ${INPUT_DATA}/ES0015_Large.mha
-               ${INPUT_DATA}/GDS0015_Large.mha
+               --saveFeatureImages ${TEMP}/${PROJECT_NAME}Test1.fi
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               ${INPUT_DATA}/GDS0015_Large_Subs2.mha
                ${TEMP}/${PROJECT_NAME}Test1 )
 
 #######
@@ -74,11 +75,11 @@ add_test( ${PROJECT_NAME}Test2
                --useNumberOfLDA 2
                --objectId 0,255
                --usePCA
-               --zeroScales 1,3
-               --firstScales 3,5
-               --secondScales 10
-               ${INPUT_DATA}/ES0015_Large.mha
-               ${INPUT_DATA}/GDS0015_Large.mha
+               --zeroScales 1
+               --firstScales 1,3
+               --secondScales 5
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               ${INPUT_DATA}/GDS0015_Large_Subs2.mha
                ${TEMP}/${PROJECT_NAME}Test2 )
 
 #######
@@ -101,8 +102,8 @@ add_test( ${PROJECT_NAME}Test3
                --objectId 0,255
                --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test3.mnda
-               ${INPUT_DATA}/ES0015_Large.mha
-               ${INPUT_DATA}/GDS0015_Large.mha
+               ${INPUT_DATA}/ES0015_Large_Subs.mha
+               ${INPUT_DATA}/GDS0015_Large_Subs2.mha
                ${TEMP}/${PROJECT_NAME}Test3 )
 set_tests_properties( ${PROJECT_NAME}Test3
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
@@ -136,9 +137,9 @@ add_test( ${PROJECT_NAME}Test4
             ${PROJ_EXE}
                --useNumberOfLDA 1
                --objectId 127,255
-               --zeroScales 1,3
-               --firstScales 3,5
-               --secondScales 10
+               --zeroScales 1
+               --firstScales 1,3
+               --secondScales 5
                --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test4.mnda
                ${INPUT_DATA}/im0001_n05.crop.mha
@@ -148,7 +149,7 @@ set_tests_properties( ${PROJECT_NAME}Test4
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
 
 #######
-# Test3-Compare2
+# Test4-Compare
 #######
 add_test( ${PROJECT_NAME}Test4-Compare
             ${TEXTCOMPARE_EXE}

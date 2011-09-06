@@ -59,11 +59,11 @@
       <longflag>forceSymmetry</longflag>
     </boolean>
     <boolean>
-      <name>forceSign</name>
-      <description>Post-process the eigenvectors so that intensity weights are positive</description>
-      <label>Force x/y symmetry</label>
+      <name>forceSignOff</name>
+      <description>Do not post-process so that lda images match input</description>
+      <label>Force sign off</label>
       <default>false</default>
-      <longflag>forceSign</longflag>
+      <longflag>forceSignOff</longflag>
     </boolean>
     <double-vector>
       <name>zeroScales</name>

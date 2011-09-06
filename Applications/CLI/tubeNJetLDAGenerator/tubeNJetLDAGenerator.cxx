@@ -63,6 +63,7 @@ void WriteLDA( const typename imageT::Pointer & img,
   char c[80];
   sprintf( c, ext.c_str(), num );
   fname += std::string( c );
+  ldaImageWriter->SetUseCompression( true );
   ldaImageWriter->SetFileName( fname.c_str() );
   ldaImageWriter->SetInput( img );
   ldaImageWriter->Update();
@@ -161,7 +162,7 @@ int DoIt( int argc, char * argv[] )
     ldaGenerator->SetSecondScales( secondScales );
     ldaGenerator->SetRidgeScales( ridgeScales );
 
-    ldaGenerator->SetForceIntensityConsistency( forceSign );
+    ldaGenerator->SetForceIntensityConsistency( !forceSignOff );
     ldaGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
     ldaGenerator->Update();
@@ -189,6 +190,7 @@ int DoIt( int argc, char * argv[] )
       char c[80];
       sprintf( c, ".lda%02d.mha", i );
       fname += std::string( c );
+      ldaImageWriter->SetUseCompression( true );
       ldaImageWriter->SetFileName( fname.c_str() );
       ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( i ) );
       ldaImageWriter->Update();
