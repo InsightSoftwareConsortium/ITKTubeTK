@@ -158,6 +158,7 @@ int DoIt( int argc, char * argv[] )
       char c[80];
       sprintf( c, ".lda%02d.mha", i );
       fname += std::string( c );
+      ldaImageWriter->SetUseCompression( true );
       ldaImageWriter->SetFileName( fname.c_str() );
       ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( i ) );
       ldaImageWriter->Update();
