@@ -241,10 +241,10 @@ public:
       VectorIndexSelectionFilterType;
 
   /** Convenience functions to set/get the registration functions timestep. */
-  void SetTimeStep( const TimeStepType & t )
+  virtual void SetTimeStep( const TimeStepType t )
     { m_OriginalTimeStep = t; }
-  const TimeStepType& GetTimeStep() const
-    { return this->OriginalTimeStep; }
+  virtual const TimeStepType& GetTimeStep() const
+    { return m_OriginalTimeStep; }
 
   /** Set/get whether to compute the motion field regularization term
    *  Default: true */
