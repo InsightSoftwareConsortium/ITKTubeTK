@@ -58,6 +58,9 @@ DiffusiveRegistrationFilter
   m_CurrentLevel            = 0;
   m_IntensityDistanceWeightings.push_back( 1.0 );
   m_RegularizationWeightings.push_back( 1.0 );
+
+  m_StoppingCriterionMask               = 0;
+  m_HighResolutionStoppingCriterionMask = 0;
 }
 
 /**
@@ -128,6 +131,16 @@ DiffusiveRegistrationFilter
     std::cout << m_RegularizationWeightings[i] << " ";
     }
   std::cout << std::endl;
+  if( m_StoppingCriterionMask )
+    {
+    std::cout << indent << "Stopping criterion mask: "
+              << m_StoppingCriterionMask << std::endl;
+    }
+  if( m_HighResolutionStoppingCriterionMask )
+    {
+    std::cout << indent << "High resolution stopping criterion mask: "
+              << m_HighResolutionStoppingCriterionMask << std::endl;
+    }
 }
 
 /**
@@ -198,6 +211,7 @@ DiffusiveRegistrationFilter
 {
   assert( image );
   assert( templateImage );
+
   return image->GetOrigin() == templateImage->GetOrigin()
       && image->GetSpacing() == templateImage->GetSpacing()
       && image->GetDirection() == templateImage->GetDirection()
@@ -399,6 +413,33 @@ DiffusiveRegistrationFilter
 
   // Update the registration function's deformation field
   df->SetDeformationField( this->GetDeformationField() );
+
+  // On the first iteration of the first level, the stopping criterion mask
+  // will contain the highest resolution images.  We need to save the high
+  // resolution image, and then resample them down to correspond to this level.
+  // On subsequent iterations, we just do the resampling.
+
+  // Set the high resolution image only once
+  if ( m_StoppingCriterionMask )
+    {
+    if ( !m_HighResolutionStoppingCriterionMask )
+      {
+      m_HighResolutionStoppingCriterionMask = m_StoppingCriterionMask;
+      }
+
+    // We need to make sure that the attributes of the mask match those of
+    // the current output
+    OutputImagePointer output = this->GetOutput();
+    if ( !this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
+                                        output.GetPointer() ) )
+      {
+      this->ResampleImageNearestNeighbor( m_HighResolutionStoppingCriterionMask,
+                                          output,
+                                          m_StoppingCriterionMask );
+      assert( this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
+                                           output.GetPointer() ) );
+      }
+    }
 
   // Set the intensity distance and regularization weightings to the
   // registration function.  If we are past the end of the vectors, use the
@@ -1015,6 +1056,10 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitScalarDerivativeRegion );
 
+  ThreadStoppingCriterionMaskImageRegionType splitStoppingCriterionMaskImageRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitStoppingCriterionMaskImageRegion );
+
   if (threadId < total)
     {
     str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChange(
@@ -1022,6 +1067,7 @@ DiffusiveRegistrationFilter
       splitTensorRegion,
       splitTensorDerivativeRegion,
       splitScalarDerivativeRegion,
+      splitStoppingCriterionMaskImageRegion,
       threadId);
     str->ValidTimeStepList[threadId] = true;
     }
@@ -1063,6 +1109,8 @@ DiffusiveRegistrationFilter
       tensorDerivativeRegionToProcess,
     const ThreadScalarDerivativeImageRegionType &
       scalarDerivativeRegionToProcess,
+    const ThreadStoppingCriterionMaskImageRegionType &
+      stoppingCriterionMaskRegionToProcess,
     int)
 {
   // Get the FiniteDifferenceFunction to use in calculations.
@@ -1121,8 +1169,13 @@ DiffusiveRegistrationFilter
       m_MultiplicationVectorImageArrays, regionToProcess, radius );
   DeformationVectorImageRegionArrayVectorType multiplicationVectorRegionArrays;
 
+  FaceStruct< FixedImagePointer > stoppingCriterionMaskStruct(
+      m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess, radius );
+  StoppingCriterionMaskImageRegionType stoppingCriterionMaskRegion;
+
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
+  bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
 
   // Go to the first face
   outputStruct.GoToBegin();
@@ -1133,6 +1186,10 @@ DiffusiveRegistrationFilter
     deformationComponentSecondOrderStruct.GoToBegin();
     tensorDerivativeStruct.GoToBegin();
     multiplicationVectorStruct.GoToBegin();
+    }
+  if( haveStoppingCriterionMask )
+    {
+    stoppingCriterionMaskStruct.GoToBegin();
     }
 
   // Iterate over each face
@@ -1157,6 +1214,11 @@ DiffusiveRegistrationFilter
           multiplicationVectorRegionArrays,
           m_MultiplicationVectorImageArrays );
       }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.SetIteratorToCurrentFace(
+          stoppingCriterionMaskRegion, m_StoppingCriterionMask );
+      }
 
     // Go to the beginning of the neighborhood for this face
     outputNeighborhood.GoToBegin();
@@ -1175,10 +1237,22 @@ DiffusiveRegistrationFilter
           }
         }
       }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskRegion.GoToBegin();
+      }
 
     // Iterate through the neighborhood for this face and compute updates
     while( !outputNeighborhood.IsAtEnd() )
       {
+      // Get whether or not to include this pixel in the stopping criterion
+      bool includeInStoppingCriterion = true;
+      if( haveStoppingCriterionMask )
+        {
+        includeInStoppingCriterion
+            = ( stoppingCriterionMaskRegion.Value() == 0.0 );
+        }
+
       // Compute updates
       updateRegion.Value() = df->ComputeUpdate(
           outputNeighborhood,
@@ -1187,6 +1261,7 @@ DiffusiveRegistrationFilter
           deformationComponentSecondOrderRegionArrays,
           tensorDerivativeRegions,
           multiplicationVectorRegionArrays,
+          includeInStoppingCriterion,
           globalData );
 
       // Go to the next neighborhood
@@ -1209,6 +1284,10 @@ DiffusiveRegistrationFilter
             }
           }
         }
+      if( haveStoppingCriterionMask )
+        {
+        ++stoppingCriterionMaskRegion;
+        }
       }
 
     // Go to the next face
@@ -1220,6 +1299,10 @@ DiffusiveRegistrationFilter
       deformationComponentFirstOrderStruct.Increment();
       deformationComponentSecondOrderStruct.Increment();
       multiplicationVectorStruct.Increment();
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.Increment();
       }
     }
 

@@ -260,6 +260,7 @@ AnisotropicDiffusiveRegistrationFunction
     const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
     const DeformationVectorImageRegionArrayVectorType
         & multiplicationVectorRegionArrays,
+    bool includeInMetricComputations,
     void * globalData,
     const FloatOffsetType & offset )
 {
@@ -277,16 +278,22 @@ AnisotropicDiffusiveRegistrationFunction
   if ( this->GetComputeIntensityDistanceTerm() )
     {
     intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
-        neighborhood, gd->m_IntensityDistanceGlobalDataStruct, offset );
+        neighborhood,
+        gd->m_IntensityDistanceGlobalDataStruct,
+        includeInMetricComputations,
+        offset );
     }
 
   // Setup for computing the regularization energy at this voxel
   // Since we are iterating over terms before iterating over x,y,z
   // we need to store the sum for each dimension
   std::vector< DeformationVectorType > termRegularizationEnergies;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  if ( includeInMetricComputations )
     {
-    termRegularizationEnergies.push_back( DeformationVectorType(0.0) );
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      termRegularizationEnergies.push_back( DeformationVectorType(0.0) );
+      }
     }
 
   // Compute the motion field regularization update term
@@ -339,21 +346,24 @@ AnisotropicDiffusiveRegistrationFunction
         regularizationTerm += intermediateVector;
 
         // Compute this part of the regularization energy
-        DiffusionTensorType diffusionTensor
-            = tensorNeighborhoods[term].GetCenterPixel();
-        ScalarDerivativeType deformationComponentFirstOrderDerivative
-            = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
-        itk::Vector< double, ImageDimension > multVector(0.0);
-        for( int row = 0; row < ImageDimension; row++ )
+        if( includeInMetricComputations )
           {
-          for( int col = 0; col < ImageDimension; col++ )
+          DiffusionTensorType diffusionTensor
+              = tensorNeighborhoods[term].GetCenterPixel();
+          ScalarDerivativeType deformationComponentFirstOrderDerivative
+              = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
+          itk::Vector< double, ImageDimension > multVector(0.0);
+          for( int row = 0; row < ImageDimension; row++ )
             {
-            multVector[row]
-                += diffusionTensor(row,col) * deformationComponentFirstOrderDerivative[col];
+            for( int col = 0; col < ImageDimension; col++ )
+              {
+              multVector[row]
+                  += diffusionTensor(row,col) * deformationComponentFirstOrderDerivative[col];
+              }
             }
+          termRegularizationEnergies[i] += multVector;
           }
 
-        termRegularizationEnergies[i] += multVector;
         }
       }
     }
@@ -368,23 +378,26 @@ AnisotropicDiffusiveRegistrationFunction
   updateTerm = intensityDistanceTerm + regularizationTerm;
 
   // Finish computing the regularization energies
-  m_EnergyCalculationLock.Lock();
-  for( unsigned int i = 0; i < ImageDimension; i++ )
+  if( includeInMetricComputations )
     {
-    m_RegularizationEnergy +=
-        0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
-    }
-  m_EnergyCalculationLock.Unlock();
+    m_EnergyCalculationLock.Lock();
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      m_RegularizationEnergy +=
+          0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
+      }
+    m_EnergyCalculationLock.Unlock();
 
-  // Update the variables used to calculate RMS change
-  gd->m_NumberOfPixelsProcessed += 1;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    gd->m_SumOfSquaredTotalChange += vnl_math_sqr( updateTerm[i] );
-    gd->m_SumOfSquaredIntensityDistanceChange
-        += vnl_math_sqr( intensityDistanceTerm[i] );
-    gd->m_SumOfSquaredRegularizationChange
-        += vnl_math_sqr( regularizationTerm[i] );
+    // Update the variables used to calculate RMS change
+    gd->m_NumberOfPixelsProcessed += 1;
+    for( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      gd->m_SumOfSquaredTotalChange += vnl_math_sqr( updateTerm[i] );
+      gd->m_SumOfSquaredIntensityDistanceChange
+          += vnl_math_sqr( intensityDistanceTerm[i] );
+      gd->m_SumOfSquaredRegularizationChange
+          += vnl_math_sqr( regularizationTerm[i] );
+      }
     }
 
   return updateTerm;

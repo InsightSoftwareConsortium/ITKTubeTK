@@ -249,6 +249,25 @@ int DoIt( int argc, char * argv[] )
     }
   timeCollector.Stop( "Loading moving image" );
 
+  // Load the stopping criterion mask if provided
+  if( stoppingCriterionMaskImageFileName != "" )
+    {
+    timeCollector.Start( "Loading stopping criterion mask" );
+    typename DiffusiveRegistrationFilterType::StoppingCriterionMaskPointer
+        stoppingCriterionMaskImage = 0;
+    if( ReadAndOrientImageAxial( stoppingCriterionMaskImage,
+                                 stoppingCriterionMaskImageFileName ) )
+      {
+      registrator->SetStoppingCriterionMask( stoppingCriterionMaskImage );
+      }
+    else
+      {
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    timeCollector.Stop( "Loading stopping criterion mask" );
+    }
+
   // Setup the initial deformation field: the initial deformation field should
   // be in the space of the fixed image
   timeCollector.Start( "Setup initial deformation field" );

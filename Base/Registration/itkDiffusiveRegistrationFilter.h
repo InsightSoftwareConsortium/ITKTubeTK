@@ -240,6 +240,14 @@ public:
       < DeformationFieldType, DeformationVectorComponentImageType >
       VectorIndexSelectionFilterType;
 
+  /** Stopping criterion mask types */
+  typedef FixedImageType StoppingCriterionMaskImageType;
+  typedef FixedImagePointer StoppingCriterionMaskPointer;
+  typedef typename StoppingCriterionMaskImageType::RegionType
+      ThreadStoppingCriterionMaskImageRegionType;
+  typedef ImageRegionIterator< StoppingCriterionMaskImageType >
+      StoppingCriterionMaskImageRegionType;
+
   /** Convenience functions to set/get the registration functions timestep. */
   virtual void SetTimeStep( const TimeStepType t )
     { m_OriginalTimeStep = t; }
@@ -299,6 +307,14 @@ public:
 
   /** Get current resolution level being processed. */
   itkGetConstReferenceMacro( CurrentLevel, unsigned int );
+
+  /** Set a mask in which the RMS error does not contribute to the stopping
+   *  criterion.  Any non-zero voxels will not be considered when determining
+   *  the stopping criterion. */
+  void SetStoppingCriterionMask( StoppingCriterionMaskImageType * mask )
+    { m_StoppingCriterionMask = mask; }
+  StoppingCriterionMaskImageType * GetStoppingCriterionMask() const
+    { return m_StoppingCriterionMask; };
 
 protected:
   DiffusiveRegistrationFilter();
@@ -492,6 +508,8 @@ protected:
         & tensorDerivativeRegionToProcess,
       const ThreadScalarDerivativeImageRegionType
         & scalarDerivativeRegionToProcess,
+      const ThreadStoppingCriterionMaskImageRegionType
+        & stoppingCriterionMaskRegionToProcess,
       int threadId );
 
   /** This method applies changes from the update buffer to the output, using
@@ -634,6 +652,11 @@ private:
 
   /** Template used to calculate member images */
   FixedImagePointer                         m_HighResolutionTemplate;
+
+  /** Mask on the stopping criterion computation */
+  StoppingCriterionMaskPointer              m_HighResolutionStoppingCriterionMask;
+  StoppingCriterionMaskPointer              m_StoppingCriterionMask;
+
 };
 
 /** Struct to simply get the face list and an iterator over the face list

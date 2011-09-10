@@ -140,6 +140,13 @@
       <index>1</index>
       <description>Moving image</description>
     </image>
+    <image>
+      <name>stoppingCriterionMaskImageFileName</name>
+      <label>Stopping Criterion Mask Image</label>
+      <longflag>stoppingCriterionMask</longflag>
+      <channel>input</channel>
+      <description>Mask specifying which voxels should be used in the stopping criterion.  Only pixels with value zero WILL be included in the metric computation and stopping criterion.</description>
+    </image>
     <image type="vector">
       <name>outputDeformationFieldFileName</name>
       <flag>d</flag>
