@@ -242,9 +242,9 @@ public:
 
   /** Convenience functions to set/get the registration functions timestep. */
   void SetTimeStep( const TimeStepType & t )
-    { this->GetRegistrationFunctionPointer()->SetTimeStep( t ); }
+    { m_OriginalTimeStep = t; }
   const TimeStepType& GetTimeStep() const
-    { return this->GetRegistrationFunctionPointer()->GetTimeStep(); }
+    { return this->OriginalTimeStep; }
 
   /** Set/get whether to compute the motion field regularization term
    *  Default: true */
@@ -606,8 +606,10 @@ private:
       ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
           void *arg );
 
+  TimeStepType                              m_OriginalTimeStep;
+
   /** The buffer that holds the updates for an iteration of algorithm. */
-  typename UpdateBufferType::Pointer  m_UpdateBuffer;
+  typename UpdateBufferType::Pointer        m_UpdateBuffer;
 
   /** Images storing information we will need for each voxel on every
    *  registration iteration */

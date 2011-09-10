@@ -41,6 +41,8 @@ DiffusiveRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
+  m_OriginalTimeStep = 1.0;
+
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework.  We also want to use the image
   // spacing to calculate derivatives in physical space
@@ -69,6 +71,7 @@ DiffusiveRegistrationFilter
 {
   Superclass::PrintSelf( os, indent );
 
+  os << indent << "Original timestep: " << m_OriginalTimeStep << std::endl;
   os << indent << "Diffusion tensor images:" << std::endl;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
@@ -422,6 +425,9 @@ DiffusiveRegistrationFilter
   // Allocate and initialize the images we will use to store data computed
   // during the registration (or set pointers to 0 if they are not being used).
   this->AllocateImageMembers();
+
+  // Set the timestep to the registration function.
+  this->GetRegistrationFunctionPointer()->SetTimeStep( m_OriginalTimeStep );
 
   // Compute the diffusion tensors and their derivatives
   if( this->GetComputeRegularizationTerm() )
