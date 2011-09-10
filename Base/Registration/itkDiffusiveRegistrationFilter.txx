@@ -1258,7 +1258,25 @@ DiffusiveRegistrationFilter
 
   RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
   assert( df );
-  this->SetRMSChange( df->GetRMSChange() );
+  TimeStepType timestep = df->GetTimeStep();
+  double rmsChange = df->GetRMSChange();
+  this->SetRMSChange( rmsChange );
+
+  // Print out logging information
+  static TimeStepType totalTime = 0.0;
+  if( this->GetElapsedIterations() == 0 )
+    {
+    std::cout << "Iteration;\tTime Step;\tTotal Time;\tRMS Change;\tEnergy"
+              << std::endl;
+    }
+  totalTime += timestep;
+  std::cout.setf(std::ios::fixed, std::ios::floatfield);
+  std::cout.precision(6);
+  std::cout << this->GetElapsedIterations() << "\t"
+            << timestep << "\t"
+            << totalTime << "\t"
+            << rmsChange << "\t"
+            << df->GetEnergy() << std::endl;
 }
 
 /**

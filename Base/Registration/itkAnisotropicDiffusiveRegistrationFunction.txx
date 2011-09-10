@@ -55,7 +55,7 @@ AnisotropicDiffusiveRegistrationFunction
 
   m_SumOfSquaredChange = 0.0;
   m_NumberOfPixelsProcessed = 0L;
-  m_RMSChange = NumericTraits< double >::max();
+  m_RMSChange = 0.0;
 }
 
 /**
