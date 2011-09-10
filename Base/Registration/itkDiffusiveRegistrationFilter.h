@@ -117,6 +117,7 @@ public:
   typedef typename Superclass::FixedImagePointer        FixedImagePointer;
   typedef typename Superclass::MovingImageType          MovingImageType;
   typedef typename Superclass::MovingImagePointer       MovingImagePointer;
+  typedef typename MovingImageType::PixelType           MovingImagePixelType;
   typedef typename Superclass::DeformationFieldType     DeformationFieldType;
   typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
   typedef typename Superclass::TimeStepType             TimeStepType;
@@ -289,6 +290,13 @@ public:
     { m_RegularizationWeightings = weightings; }
   const std::vector< double >& GetRegularizationWeightings() const
     { return m_RegularizationWeightings; }
+
+  /** Set/get the background intensity of the moving image, used by the
+   *  intensity distance function.  Default 0.0 */
+  void SetBackgroundIntensity( MovingImagePixelType bg )
+    { this->GetRegistrationFunctionPointer()->SetBackgroundIntensity( bg ); }
+  MovingImagePixelType GetBackgroundIntensity() const
+    { return this->GetRegistrationFunctionPointer()->GetBackgroundIntensity(); }
 
   /** The number of div(T\grad(u))v terms we sum for the regularizer.
    *  Reimplement in derived classes. */

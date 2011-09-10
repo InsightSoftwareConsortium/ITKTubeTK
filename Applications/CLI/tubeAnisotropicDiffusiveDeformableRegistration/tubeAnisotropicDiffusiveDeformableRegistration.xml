@@ -140,6 +140,14 @@
       <index>1</index>
       <description>Moving image</description>
     </image>
+    <double>
+      <name>backgroundIntensity</name>
+      <longflag>backgroundIntensity</longflag>
+      <label>Background Intensity</label>
+      <channel>input</channel>
+      <description>Background intensity of the moving image</description>
+      <default>0</default>
+    </double>
     <image>
       <name>stoppingCriterionMaskImageFileName</name>
       <label>Stopping Criterion Mask Image</label>

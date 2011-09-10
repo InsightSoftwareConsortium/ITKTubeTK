@@ -91,6 +91,7 @@ public:
   typedef typename Superclass::FixedImagePointer             FixedImagePointer;
   typedef typename Superclass::MovingImageType               MovingImageType;
   typedef typename Superclass::MovingImagePointer            MovingImagePointer;
+  typedef typename MovingImageType::PixelType                MovingImagePixelType;
   typedef typename Superclass::DeformationFieldType          DeformationFieldType;
   typedef typename Superclass::DeformationFieldTypePointer   DeformationFieldTypePointer;
   typedef typename Superclass::TimeStepType                  TimeStepType;
@@ -233,6 +234,13 @@ public:
     { m_RegularizationWeighting = weighting; }
   double GetRegularizationWeighting() const
     { return m_RegularizationWeighting; }
+
+  /** Set/get the background intensity in the moving image.  Default 0.0 */
+  void SetBackgroundIntensity( MovingImagePixelType bg )
+    { m_IntensityDistanceFunction->SetBackgroundIntensity( bg ); }
+
+  MovingImagePixelType GetBackgroundIntensity() const
+    { return m_IntensityDistanceFunction->GetBackgroundIntensity(); }
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();

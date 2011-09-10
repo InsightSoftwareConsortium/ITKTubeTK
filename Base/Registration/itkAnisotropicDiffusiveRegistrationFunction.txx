@@ -44,9 +44,12 @@ AnisotropicDiffusiveRegistrationFunction
   m_ComputeIntensityDistanceTerm = true;
 
   m_RegularizationFunction = RegularizationFunctionType::New();
-  m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
-  this->SetTimeStep( 1.0 );
 
+  m_IntensityDistanceFunction = IntensityDistanceFunctionType::New();
+  m_IntensityDistanceFunction->SetBackgroundIntensity( 0.0 );
+  m_IntensityDistanceFunction->SetNormalizeGradient( false );
+
+  this->SetTimeStep( 1.0 );
   this->SetMovingImage(0);
   this->SetFixedImage(0);
 
