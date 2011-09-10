@@ -316,13 +316,13 @@ public:
   /** Get current resolution level being processed. */
   itkGetConstReferenceMacro( CurrentLevel, unsigned int );
 
-  /** Set a mask in which the RMS error does not contribute to the stopping
+  /** Set/get a mask in which the RMS error does not contribute to the stopping
    *  criterion.  Any non-zero voxels will not be considered when determining
    *  the stopping criterion. */
   void SetStoppingCriterionMask( StoppingCriterionMaskImageType * mask )
     { m_StoppingCriterionMask = mask; }
   StoppingCriterionMaskImageType * GetStoppingCriterionMask() const
-    { return m_StoppingCriterionMask; };
+    { return m_StoppingCriterionMask; }
 
 protected:
   DiffusiveRegistrationFilter();
