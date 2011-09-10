@@ -119,28 +119,28 @@ DiffusiveRegistrationFilter
     os << indent << "Image attribute template:" << std::endl;
     m_HighResolutionTemplate->Print( os, indent );
     }
-  std::cout << indent << "Current level: " << m_CurrentLevel << std::endl;
-  std::cout << indent << "Intensity distance weightings: ";
+  os << indent << "Current level: " << m_CurrentLevel << std::endl;
+  os << indent << "Intensity distance weightings: ";
   for( unsigned int i = 0; i < m_IntensityDistanceWeightings.size(); i++ )
     {
-    std::cout << m_IntensityDistanceWeightings[i] << " ";
+    os << m_IntensityDistanceWeightings[i] << " ";
     }
-  std::cout << std::endl;
-  std::cout << indent << "Regulraization weightings: ";
+  os << std::endl;
+  os << indent << "Regularization weightings: " ;
   for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
     {
-    std::cout << m_RegularizationWeightings[i] << " ";
+    os << m_RegularizationWeightings[i] << " ";
     }
-  std::cout << std::endl;
+  os << std::endl;
   if( m_StoppingCriterionMask )
     {
-    std::cout << indent << "Stopping criterion mask: "
-              << m_StoppingCriterionMask << std::endl;
+    os << indent << "Stopping criterion mask: "
+       << m_StoppingCriterionMask << std::endl;
     }
   if( m_HighResolutionStoppingCriterionMask )
     {
-    std::cout << indent << "High resolution stopping criterion mask: "
-              << m_HighResolutionStoppingCriterionMask << std::endl;
+    os << indent << "High resolution stopping criterion mask: "
+       << m_HighResolutionStoppingCriterionMask << std::endl;
     }
 }
 
