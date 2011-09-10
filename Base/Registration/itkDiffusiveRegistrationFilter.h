@@ -589,6 +589,10 @@ protected:
   template< class VectorImagePointer >
   void NormalizeVectorField( VectorImagePointer & image ) const;
 
+  /** Computes the minimum and maximum intensity in an image */
+  template< class ImageType >
+  bool IsIntensityRangeBetween0And1( ImageType * image ) const;
+
 private:
   // Purposely not implemented
   DiffusiveRegistrationFilter(const Self&);

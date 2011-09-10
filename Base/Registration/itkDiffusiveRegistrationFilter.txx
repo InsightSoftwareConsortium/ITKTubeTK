@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
+#include "itkMinimumMaximumImageCalculator.h"
 #include "itkResampleImageFilter.h"
 #include "itkVectorResampleImageFilter.h"
 
@@ -361,6 +362,28 @@ DiffusiveRegistrationFilter
 }
 
 /**
+ * Returns whether an image has intensity range between 0 and 1
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class ImageType >
+bool
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::IsIntensityRangeBetween0And1( ImageType * image ) const
+{
+  typedef itk::MinimumMaximumImageCalculator< ImageType > CalculatorType;
+  typename CalculatorType::Pointer calculator = CalculatorType::New();
+  calculator->SetImage( image );
+  calculator->Compute();
+
+  if( calculator->GetMinimum() < 0.0 || calculator->GetMaximum() > 1.0 )
+    {
+    return false;
+    }
+  return true;
+}
+
+/**
  * All other initialization done before the initialize iteration / calculate
  * change / apply update loop
  */
@@ -376,6 +399,17 @@ DiffusiveRegistrationFilter
   if( !this->GetFixedImage() || !this->GetMovingImage() )
     {
     itkExceptionMacro( << "Fixed image and/or moving image not set" );
+    }
+
+  // Calculate minimum and maximum intensities and warn if we are not in range
+  // [0,1]
+  if( !this->IsIntensityRangeBetween0And1( this->GetFixedImage() ) )
+    {
+    itkWarningMacro( << "Fixed image intensity should be [0,1]" );
+    }
+  if( !this->IsIntensityRangeBetween0And1( this->GetMovingImage() ) )
+    {
+    itkWarningMacro( << "Moving image intensity should be [0,1]" );
     }
 
   // Ensure we have good intensity distance and regularization weightings
