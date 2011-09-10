@@ -22,20 +22,6 @@
       <default>20</default>
     </integer-vector>
     <double>
-      <name>maximumRMSError</name>
-      <flag>m</flag>
-      <longflag>maximumRMSError</longflag>
-      <label>Maximum RMS error</label>
-      <channel>input</channel>
-      <description>If the RMS change in a registration iteration is less than the maximum RMS error threshold, the registration will be halted.  Specify a larger value to halt faster.  If using a multiresolution registration, the maximum RMS error condition will be tested at every level (i.e. will run at least one registration on each iteration).  The registration will stop when either the maximum RMS error condition or the number of iterations condition is reached. </description>
-      <default>0.0</default>
-      <constraints>
-        <minimum>0.0</minimum>
-        <maximum>100.0</maximum>
-        <step>0.01</step>
-      </constraints>
-    </double>
-    <double>
       <name>timeStep</name>
       <flag>s</flag>
       <longflag>timestep</longflag>
@@ -60,6 +46,52 @@
       <label>Regularization weightings</label>
       <default>1.0</default>
     </double-vector>
+  </parameters>
+
+  <parameters>
+    <label>Stopping Condition Parameters</label>
+    <description>Parameters dictating when the registration should stop.  The registration will stop when either the 1) maximum number of iterations, 2) maximum total energy change per stopping criterion evaluation period, or 3) maximum RMS change per iteration condition are reached. </description>
+    <integer>
+      <name>stoppingCriterionPeriod</name>
+      <longflag>stoppingCriterionPeriod</longflag>
+      <label>Stopping Criterion Evaluation Period</label>
+      <channel>input</channel>
+      <description>The number of iterations that elapse between evaluations of the total energy change stopping criterion.</description>
+      <default>50</default>
+      <constraints>
+        <minimum>1</minimum>
+        <maximum>500</maximum>
+        <step>1</step>
+      </constraints>
+    </integer>
+    <double>
+      <name>maximumTotalEnergyChange</name>
+      <longflag>maximumTotalEnergyChange</longflag>
+      <label>Maximum Total Energy Change</label>
+      <channel>input</channel>
+      <description> If the total energy change summed over the stopping criterion evaluation period is less than the maximum total energy change threshold, then the registration will be halted.  Specify a larger value to halt faster.  If zero, the total energy change stopping criterion is not used.
+      </description>
+      <default>0.0</default>
+      <constraints>
+        <minimum>0.0</minimum>
+        <maximum>1000000</maximum>
+        <step>1.0</step>
+      </constraints>
+    </double>
+    <double>
+      <name>maximumRMSError</name>
+      <flag>m</flag>
+      <longflag>maximumRMSError</longflag>
+      <label>Maximum RMS error</label>
+      <channel>input</channel>
+      <description>If the RMS change in a registration iteration is less than the maximum RMS error threshold, the registration will be halted.  Specify a larger value to halt faster.  If using a multiresolution registration, the maximum RMS error condition will be tested at every level (i.e. will run at least one registration on each iteration).  If zero, the RMS change stopping criterion is not used.</description>
+      <default>0.0</default>
+      <constraints>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <step>0.01</step>
+      </constraints>
+    </double>
   </parameters>
 
   <parameters>
@@ -139,6 +171,21 @@
       <channel>input</channel>
       <index>1</index>
       <description>Moving image</description>
+    </image>
+    <double>
+      <name>backgroundIntensity</name>
+      <longflag>backgroundIntensity</longflag>
+      <label>Background Intensity</label>
+      <channel>input</channel>
+      <description>Background intensity of the moving image</description>
+      <default>0</default>
+    </double>
+    <image>
+      <name>stoppingCriterionMaskImageFileName</name>
+      <label>Stopping Criterion Mask Image</label>
+      <longflag>stoppingCriterionMask</longflag>
+      <channel>input</channel>
+      <description>Mask specifying which voxels should be used in the stopping criterion.  Only pixels with value zero WILL be included in the metric computation and stopping criterion.</description>
     </image>
     <image type="vector">
       <name>outputDeformationFieldFileName</name>
@@ -225,6 +272,14 @@
       <label>Do not perform regularization</label>
       <channel>input</channel>
       <description>Whether or not to perform motion field regularization</description>
+      <default>false</default>
+    </boolean>
+    <boolean>
+      <name>doNotComputeIntensityDistanceTerm</name>
+      <longflag>doNotComputeIntensityDistanceTerm</longflag>
+      <label>Do regularization only</label>
+      <channel>input</channel>
+      <description>Whether or not to compute the intensity distance term</description>
       <default>false</default>
     </boolean>
     <boolean>

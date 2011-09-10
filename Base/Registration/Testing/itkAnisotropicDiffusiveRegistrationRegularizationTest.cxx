@@ -222,15 +222,17 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   FixedImageType::Pointer fixedImage      = FixedImageType::New();
   MovingImageType::Pointer movingImage    = MovingImageType::New();
 
-  fixedImage->SetLargestPossibleRegion( region );
+  fixedImage->SetRegions( region );
   fixedImage->SetSpacing( spacing );
   fixedImage->SetOrigin( origin );
   fixedImage->Allocate();
+  fixedImage->FillBuffer(0.0);
 
-  movingImage->SetLargestPossibleRegion( region );
+  movingImage->SetRegions( region );
   movingImage->SetSpacing( spacing );
   movingImage->SetOrigin( origin );
   movingImage->Allocate();
+  movingImage->FillBuffer(0.0);
 
   // Setup the registrator object
   typedef itk::DiffusiveRegistrationFilter

@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
+#include "itkMinimumMaximumImageCalculator.h"
 #include "itkResampleImageFilter.h"
 #include "itkVectorResampleImageFilter.h"
 
@@ -41,6 +42,8 @@ DiffusiveRegistrationFilter
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
+  m_OriginalTimeStep = 1.0;
+
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework.  We also want to use the image
   // spacing to calculate derivatives in physical space
@@ -51,11 +54,17 @@ DiffusiveRegistrationFilter
   // Create the registration function
   this->CreateRegistrationFunction();
 
-  m_HighResolutionTemplate                      = 0;
+  m_HighResolutionTemplate  = 0;
 
-  m_CurrentLevel                                = 0;
+  m_CurrentLevel            = 0;
   m_IntensityDistanceWeightings.push_back( 1.0 );
   m_RegularizationWeightings.push_back( 1.0 );
+
+  m_StoppingCriterionMask               = 0;
+  m_HighResolutionStoppingCriterionMask = 0;
+
+  m_StoppingCriterionEvaluationPeriod     = 50;
+  m_StoppingCriterionMaxTotalEnergyChange = 0;
 }
 
 /**
@@ -69,6 +78,7 @@ DiffusiveRegistrationFilter
 {
   Superclass::PrintSelf( os, indent );
 
+  os << indent << "Original timestep: " << m_OriginalTimeStep << std::endl;
   os << indent << "Diffusion tensor images:" << std::endl;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
@@ -112,19 +122,33 @@ DiffusiveRegistrationFilter
     os << indent << "Image attribute template:" << std::endl;
     m_HighResolutionTemplate->Print( os, indent );
     }
-  std::cout << indent << "Current level: " << m_CurrentLevel << std::endl;
-  std::cout << indent << "Intensity distance weightings: ";
+  os << indent << "Current level: " << m_CurrentLevel << std::endl;
+  os << indent << "Intensity distance weightings: ";
   for( unsigned int i = 0; i < m_IntensityDistanceWeightings.size(); i++ )
     {
-    std::cout << m_IntensityDistanceWeightings[i] << " ";
+    os << m_IntensityDistanceWeightings[i] << " ";
     }
-  std::cout << std::endl;
-  std::cout << indent << "Regulraization weightings: ";
+  os << std::endl;
+  os << indent << "Regularization weightings: " ;
   for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
     {
-    std::cout << m_RegularizationWeightings[i] << " ";
+    os << m_RegularizationWeightings[i] << " ";
     }
-  std::cout << std::endl;
+  os << std::endl;
+  if( m_StoppingCriterionMask )
+    {
+    os << indent << "Stopping criterion mask: "
+       << m_StoppingCriterionMask << std::endl;
+    }
+  if( m_HighResolutionStoppingCriterionMask )
+    {
+    os << indent << "High resolution stopping criterion mask: "
+       << m_HighResolutionStoppingCriterionMask << std::endl;
+    }
+  os << "Stopping criterion evaluation period: "
+     << m_StoppingCriterionEvaluationPeriod << std::endl;
+  os << "Stopping criterion maximum total energy change: "
+     << m_StoppingCriterionMaxTotalEnergyChange << std::endl;
 }
 
 /**
@@ -195,6 +219,7 @@ DiffusiveRegistrationFilter
 {
   assert( image );
   assert( templateImage );
+
   return image->GetOrigin() == templateImage->GetOrigin()
       && image->GetSpacing() == templateImage->GetSpacing()
       && image->GetDirection() == templateImage->GetDirection()
@@ -344,6 +369,28 @@ DiffusiveRegistrationFilter
 }
 
 /**
+ * Returns whether an image has intensity range between 0 and 1
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class ImageType >
+bool
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::IsIntensityRangeBetween0And1( ImageType * image ) const
+{
+  typedef itk::MinimumMaximumImageCalculator< ImageType > CalculatorType;
+  typename CalculatorType::Pointer calculator = CalculatorType::New();
+  calculator->SetImage( image );
+  calculator->Compute();
+
+  if( calculator->GetMinimum() < 0.0 || calculator->GetMaximum() > 1.0 )
+    {
+    return false;
+    }
+  return true;
+}
+
+/**
  * All other initialization done before the initialize iteration / calculate
  * change / apply update loop
  */
@@ -359,6 +406,17 @@ DiffusiveRegistrationFilter
   if( !this->GetFixedImage() || !this->GetMovingImage() )
     {
     itkExceptionMacro( << "Fixed image and/or moving image not set" );
+    }
+
+  // Calculate minimum and maximum intensities and warn if we are not in range
+  // [0,1]
+  if( !this->IsIntensityRangeBetween0And1( this->GetFixedImage() ) )
+    {
+    itkWarningMacro( << "Fixed image intensity should be [0,1]" );
+    }
+  if( !this->IsIntensityRangeBetween0And1( this->GetMovingImage() ) )
+    {
+    itkWarningMacro( << "Moving image intensity should be [0,1]" );
     }
 
   // Ensure we have good intensity distance and regularization weightings
@@ -397,6 +455,33 @@ DiffusiveRegistrationFilter
   // Update the registration function's deformation field
   df->SetDeformationField( this->GetDeformationField() );
 
+  // On the first iteration of the first level, the stopping criterion mask
+  // will contain the highest resolution images.  We need to save the high
+  // resolution image, and then resample them down to correspond to this level.
+  // On subsequent iterations, we just do the resampling.
+
+  // Set the high resolution image only once
+  if ( m_StoppingCriterionMask )
+    {
+    if ( !m_HighResolutionStoppingCriterionMask )
+      {
+      m_HighResolutionStoppingCriterionMask = m_StoppingCriterionMask;
+      }
+
+    // We need to make sure that the attributes of the mask match those of
+    // the current output
+    OutputImagePointer output = this->GetOutput();
+    if ( !this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
+                                        output.GetPointer() ) )
+      {
+      this->ResampleImageNearestNeighbor( m_HighResolutionStoppingCriterionMask,
+                                          output,
+                                          m_StoppingCriterionMask );
+      assert( this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
+                                           output.GetPointer() ) );
+      }
+    }
+
   // Set the intensity distance and regularization weightings to the
   // registration function.  If we are past the end of the vectors, use the
   // last element.
@@ -422,6 +507,9 @@ DiffusiveRegistrationFilter
   // Allocate and initialize the images we will use to store data computed
   // during the registration (or set pointers to 0 if they are not being used).
   this->AllocateImageMembers();
+
+  // Set the timestep to the registration function.
+  this->GetRegistrationFunctionPointer()->SetTimeStep( m_OriginalTimeStep );
 
   // Compute the diffusion tensors and their derivatives
   if( this->GetComputeRegularizationTerm() )
@@ -1009,6 +1097,10 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitScalarDerivativeRegion );
 
+  ThreadStoppingCriterionMaskImageRegionType splitStoppingCriterionMaskImageRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitStoppingCriterionMaskImageRegion );
+
   if (threadId < total)
     {
     str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChange(
@@ -1016,6 +1108,7 @@ DiffusiveRegistrationFilter
       splitTensorRegion,
       splitTensorDerivativeRegion,
       splitScalarDerivativeRegion,
+      splitStoppingCriterionMaskImageRegion,
       threadId);
     str->ValidTimeStepList[threadId] = true;
     }
@@ -1057,6 +1150,8 @@ DiffusiveRegistrationFilter
       tensorDerivativeRegionToProcess,
     const ThreadScalarDerivativeImageRegionType &
       scalarDerivativeRegionToProcess,
+    const ThreadStoppingCriterionMaskImageRegionType &
+      stoppingCriterionMaskRegionToProcess,
     int)
 {
   // Get the FiniteDifferenceFunction to use in calculations.
@@ -1115,8 +1210,13 @@ DiffusiveRegistrationFilter
       m_MultiplicationVectorImageArrays, regionToProcess, radius );
   DeformationVectorImageRegionArrayVectorType multiplicationVectorRegionArrays;
 
+  FaceStruct< FixedImagePointer > stoppingCriterionMaskStruct(
+      m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess, radius );
+  StoppingCriterionMaskImageRegionType stoppingCriterionMaskRegion;
+
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
+  bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
 
   // Go to the first face
   outputStruct.GoToBegin();
@@ -1127,6 +1227,10 @@ DiffusiveRegistrationFilter
     deformationComponentSecondOrderStruct.GoToBegin();
     tensorDerivativeStruct.GoToBegin();
     multiplicationVectorStruct.GoToBegin();
+    }
+  if( haveStoppingCriterionMask )
+    {
+    stoppingCriterionMaskStruct.GoToBegin();
     }
 
   // Iterate over each face
@@ -1151,6 +1255,11 @@ DiffusiveRegistrationFilter
           multiplicationVectorRegionArrays,
           m_MultiplicationVectorImageArrays );
       }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.SetIteratorToCurrentFace(
+          stoppingCriterionMaskRegion, m_StoppingCriterionMask );
+      }
 
     // Go to the beginning of the neighborhood for this face
     outputNeighborhood.GoToBegin();
@@ -1169,10 +1278,22 @@ DiffusiveRegistrationFilter
           }
         }
       }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskRegion.GoToBegin();
+      }
 
     // Iterate through the neighborhood for this face and compute updates
     while( !outputNeighborhood.IsAtEnd() )
       {
+      // Get whether or not to include this pixel in the stopping criterion
+      bool includeInStoppingCriterion = true;
+      if( haveStoppingCriterionMask )
+        {
+        includeInStoppingCriterion
+            = ( stoppingCriterionMaskRegion.Value() == 0.0 );
+        }
+
       // Compute updates
       updateRegion.Value() = df->ComputeUpdate(
           outputNeighborhood,
@@ -1181,6 +1302,7 @@ DiffusiveRegistrationFilter
           deformationComponentSecondOrderRegionArrays,
           tensorDerivativeRegions,
           multiplicationVectorRegionArrays,
+          includeInStoppingCriterion,
           globalData );
 
       // Go to the next neighborhood
@@ -1203,6 +1325,10 @@ DiffusiveRegistrationFilter
             }
           }
         }
+      if( haveStoppingCriterionMask )
+        {
+        ++stoppingCriterionMaskRegion;
+        }
       }
 
     // Go to the next face
@@ -1214,6 +1340,10 @@ DiffusiveRegistrationFilter
       deformationComponentFirstOrderStruct.Increment();
       deformationComponentSecondOrderStruct.Increment();
       multiplicationVectorStruct.Increment();
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.Increment();
       }
     }
 
@@ -1250,9 +1380,8 @@ DiffusiveRegistrationFilter
   // output timestamp
   this->GetOutput()->Modified();
 
-  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-  assert( df );
-  this->SetRMSChange( df->GetRMSChange() );
+  // Print out energy metrics and evaluate stopping condition
+  this->PostProcessIteration();
 }
 
 /**
@@ -1305,9 +1434,180 @@ DiffusiveRegistrationFilter
   for( u = u.Begin(), o = o.Begin();
        !u.IsAtEnd();
        ++o, ++u )
-    {
+         {
     o.Value() += static_cast< DeformationVectorType >( u.Value() * dt );
     // no adaptor support here
+    }
+}
+
+/**
+ * Does the actual work of updating the output from the UpdateContainer
+ * over an output region supplied by the multithreading mechanism.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::PostProcessIteration()
+{
+  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  assert( df );
+
+  // Keep track of the total registration time
+  TimeStepType timestep = df->GetTimeStep();
+  static TimeStepType totalTime = 0.0;
+  totalTime += timestep;
+
+  // Keep track of the RMS changes
+  double rmsIntensityDistanceChange = df->GetRMSIntensityDistanceChange();
+  double rmsRegularizationChange = df->GetRMSRegularizationChange();
+  double rmsTotalChange = df->GetRMSTotalChange();
+  this->SetRMSChange( rmsTotalChange );
+
+  // Keep track of the mean changes
+  double meanIntensityDistanceChange = df->GetMeanIntensityDistanceChange();
+  double meanRegularizationChange = df->GetMeanRegularizationChange();
+  double meanTotalChange = df->GetMeanTotalChange();
+
+  // Keep track of the registration RMS changes and energies over time
+  static double previousIntensityDistanceEnergy = 0.0;
+  static double previousRegularizationEnergy = 0.0;
+  static double previousTotalEnergy = 0.0;
+  static double previousRMSIntensityDistanceChange = 0.0;
+  static double previousRMSRegularizationChange = 0.0;
+  static double previousRMSTotalChange = 0.0;
+  static double previousMeanIntensityDistanceChange = 0.0;
+  static double previousMeanRegularizationChange = 0.0;
+  static double previousMeanTotalChange = 0.0;
+
+  // Keep track of the registration energies
+  double intensityDistanceEnergy = 0.0;
+  double regularizationEnergy = 0.0;
+  if( this->GetComputeIntensityDistanceTerm() )
+    {
+    intensityDistanceEnergy = df->GetWeightedIntensityDistanceEnergy();
+    }
+  if( this->GetComputeRegularizationTerm() )
+    {
+    regularizationEnergy = df->GetWeightedRegularizationEnergy();
+    }
+  double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
+
+  double totalEnergyChange
+      = totalEnergy - previousTotalEnergy;
+  double intensityDistanceEnergyChange
+      = intensityDistanceEnergy - previousIntensityDistanceEnergy;
+  double regularizationEnergyChange
+      = regularizationEnergy - previousRegularizationEnergy;
+
+  double rmsTotalChangeChange
+      = rmsTotalChange - previousRMSTotalChange;
+  double rmsIntensityDistanceChangeChange
+      = rmsIntensityDistanceChange - previousRMSIntensityDistanceChange;
+  double rmsRegularizationChangeChange
+      = rmsRegularizationChange - previousRMSRegularizationChange;
+
+  double meanTotalChangeChange
+      = meanTotalChange - previousMeanTotalChange;
+  double meanIntensityDistanceChangeChange
+      = meanIntensityDistanceChange - previousMeanIntensityDistanceChange;
+  double meanRegularizationChangeChange
+      = meanRegularizationChange - previousMeanRegularizationChange;
+
+  unsigned int elapsedIterations = this->GetElapsedIterations();
+
+  // Keep track of the total energy change within each stopping criterion
+  // evaluation block
+  static double totalEnergyChangeInEvaluationPeriod = 0;
+  if (elapsedIterations != 0)
+    {
+    totalEnergyChangeInEvaluationPeriod += totalEnergyChange;
+    }
+
+  // Print out logging information
+  std::string delimiter = ", ";
+  std::string sectionDelimiter = " , ";
+  if( elapsedIterations == 0 )
+    {
+    std::cout << "All registration metric sections in the order "
+              << "TOTAL, INTENSITY, REGULARIZATION" << std::endl;
+    std::cout << "Iteration" << delimiter
+              << "Time Step" << delimiter
+              << "Total Time" << sectionDelimiter
+              << "RMS Change" << sectionDelimiter
+              << "RMS Change Change" << sectionDelimiter
+              << "Mean Change " << sectionDelimiter
+              << "Mean Change Change" << sectionDelimiter
+              << "Energy" << sectionDelimiter
+              << "Energy Change" << sectionDelimiter
+              << "Stopping Criterion"
+              << std::endl;
+    }
+  std::cout.setf(std::ios::fixed, std::ios::floatfield);
+  std::cout.precision(6);
+  std::cout << elapsedIterations << delimiter
+            << timestep << delimiter
+            << totalTime << sectionDelimiter
+
+            << rmsTotalChange << delimiter
+            << rmsIntensityDistanceChange << delimiter
+            << rmsRegularizationChange << sectionDelimiter
+
+            << rmsTotalChangeChange << delimiter
+            << rmsIntensityDistanceChangeChange << delimiter
+            << rmsRegularizationChangeChange << sectionDelimiter
+
+            << meanTotalChange << delimiter
+            << meanIntensityDistanceChange << delimiter
+            << meanRegularizationChange << sectionDelimiter
+
+            << meanTotalChangeChange << delimiter
+            << meanIntensityDistanceChangeChange << delimiter
+            << meanRegularizationChangeChange << sectionDelimiter
+
+            << totalEnergy << delimiter
+            << intensityDistanceEnergy << delimiter
+            << regularizationEnergy << sectionDelimiter
+
+            << totalEnergyChange << delimiter
+            << intensityDistanceEnergyChange << delimiter
+            << regularizationEnergyChange << sectionDelimiter
+
+            << totalEnergyChangeInEvaluationPeriod
+            << std::endl;
+
+  // Update 'previous' variables
+  previousTotalEnergy = totalEnergy;
+  previousIntensityDistanceEnergy = intensityDistanceEnergy;
+  previousRegularizationEnergy = regularizationEnergy;
+
+  previousRMSTotalChange = rmsTotalChange;
+  previousRMSIntensityDistanceChange = rmsIntensityDistanceChange;
+  previousRMSRegularizationChange = rmsRegularizationChange;
+
+  previousMeanTotalChange = meanTotalChange;
+  previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
+  previousMeanRegularizationChange = meanRegularizationChange;
+
+  // Error checking that indicates we should stop
+  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
+    {
+    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
+                     << "  Registration halting.");
+    this->StopRegistration();
+    }
+
+  // Check for stopping condition
+  if (elapsedIterations != 0
+      && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
+    {
+    if (std::abs(totalEnergyChangeInEvaluationPeriod)
+        < m_StoppingCriterionMaxTotalEnergyChange)
+      {
+      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
+      this->StopRegistration();
+      }
+    totalEnergyChangeInEvaluationPeriod = 0;
     }
 }
 

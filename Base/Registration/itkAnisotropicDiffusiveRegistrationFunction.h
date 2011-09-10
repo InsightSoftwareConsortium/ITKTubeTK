@@ -91,6 +91,7 @@ public:
   typedef typename Superclass::FixedImagePointer             FixedImagePointer;
   typedef typename Superclass::MovingImageType               MovingImageType;
   typedef typename Superclass::MovingImagePointer            MovingImagePointer;
+  typedef typename MovingImageType::PixelType                MovingImagePixelType;
   typedef typename Superclass::DeformationFieldType          DeformationFieldType;
   typedef typename Superclass::DeformationFieldTypePointer   DeformationFieldTypePointer;
   typedef typename Superclass::TimeStepType                  TimeStepType;
@@ -234,6 +235,13 @@ public:
   double GetRegularizationWeighting() const
     { return m_RegularizationWeighting; }
 
+  /** Set/get the background intensity in the moving image.  Default 0.0 */
+  void SetBackgroundIntensity( MovingImagePixelType bg )
+    { m_IntensityDistanceFunction->SetBackgroundIntensity( bg ); }
+
+  MovingImagePixelType GetBackgroundIntensity() const
+    { return m_IntensityDistanceFunction->GetBackgroundIntensity(); }
+
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration();
 
@@ -254,6 +262,7 @@ public:
       const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
       const DeformationVectorImageRegionArrayVectorType
           & multiplicationVectorRegionArrays,
+      bool includeInMetricComputations,
       void * globalData,
       const FloatOffsetType& = FloatOffsetType(0.0) );
 
@@ -272,9 +281,27 @@ public:
       const
     { return m_IntensityDistanceFunction.GetPointer(); }
 
-  /** Get the RMS change in the deformation field. */
-  virtual double GetRMSChange() const
-    { return m_RMSChange; }
+  /** Get the RMS and mean changes in the deformation field. */
+  double GetRMSTotalChange() const
+    { return this->GetTimeStep() * m_RMSTotalChange; }
+  double GetRMSIntensityDistanceChange() const
+    { return this->GetTimeStep() * m_RMSIntensityDistanceChange; }
+  double GetRMSRegularizationChange() const
+    { return this->GetTimeStep() * m_RMSRegularizationChange; };
+  double GetMeanTotalChange() const
+    { return this->GetTimeStep() * m_MeanTotalChange; }
+  double GetMeanIntensityDistanceChange() const
+    { return this->GetTimeStep() * m_MeanIntensityDistanceChange; }
+  double GetMeanRegularizationChange() const
+    { return this->GetTimeStep() * m_MeanRegularizationChange; }
+
+  /** Get the intensity distance and regularization energies, weighted by
+   *  the specified weightings. */
+  double GetWeightedIntensityDistanceEnergy() const
+    { return m_IntensityDistanceWeighting
+        * this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
+  double GetWeightedRegularizationEnergy() const
+    { return m_RegularizationWeighting * m_RegularizationEnergy; }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();
@@ -290,7 +317,12 @@ protected:
     {
     void *                              m_RegularizationGlobalDataStruct;
     void *                              m_IntensityDistanceGlobalDataStruct;
-    double                              m_SumOfSquaredChange;
+    double                              m_SumOfSquaredTotalChange;
+    double                              m_SumOfSquaredIntensityDistanceChange;
+    double                              m_SumOfSquaredRegularizationChange;
+    double                              m_SumOfTotalChange;
+    double                              m_SumOfIntensityDistanceChange;
+    double                              m_SumOfRegularizationChange;
     unsigned long                       m_NumberOfPixelsProcessed;
     };
 
@@ -317,10 +349,27 @@ private:
   double                                m_IntensityDistanceWeighting;
   double                                m_RegularizationWeighting;
 
-  /** Used to calculate the RMS change */
-  mutable double                        m_SumOfSquaredChange;
+  /** Used to calculate the RMS change metrics */
   mutable unsigned long                 m_NumberOfPixelsProcessed;
-  mutable double                        m_RMSChange;
+  mutable double                        m_SumOfSquaredTotalChange;
+  mutable double                        m_SumOfSquaredIntensityDistanceChange;
+  mutable double                        m_SumOfSquaredRegularizationChange;
+  mutable double                        m_RMSTotalChange;
+  mutable double                        m_RMSIntensityDistanceChange;
+  mutable double                        m_RMSRegularizationChange;
+  mutable double                        m_SumOfTotalChange;
+  mutable double                        m_SumOfIntensityDistanceChange;
+  mutable double                        m_SumOfRegularizationChange;
+  mutable double                        m_MeanTotalChange;
+  mutable double                        m_MeanIntensityDistanceChange;
+  mutable double                        m_MeanRegularizationChange;
+
+  /** Used to calculate the regularization energy. */
+  mutable double                        m_RegularizationEnergy;
+
+  /** Mutex locks to protect modifications to metric values. */
+  mutable itk::SimpleFastMutexLock      m_MetricCalculationLock;
+  mutable itk::SimpleFastMutexLock      m_EnergyCalculationLock;
 };
 
 } // end namespace itk

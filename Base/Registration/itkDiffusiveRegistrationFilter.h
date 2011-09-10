@@ -117,6 +117,7 @@ public:
   typedef typename Superclass::FixedImagePointer        FixedImagePointer;
   typedef typename Superclass::MovingImageType          MovingImageType;
   typedef typename Superclass::MovingImagePointer       MovingImagePointer;
+  typedef typename MovingImageType::PixelType           MovingImagePixelType;
   typedef typename Superclass::DeformationFieldType     DeformationFieldType;
   typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
   typedef typename Superclass::TimeStepType             TimeStepType;
@@ -240,11 +241,19 @@ public:
       < DeformationFieldType, DeformationVectorComponentImageType >
       VectorIndexSelectionFilterType;
 
+  /** Stopping criterion mask types */
+  typedef FixedImageType StoppingCriterionMaskImageType;
+  typedef FixedImagePointer StoppingCriterionMaskPointer;
+  typedef typename StoppingCriterionMaskImageType::RegionType
+      ThreadStoppingCriterionMaskImageRegionType;
+  typedef ImageRegionIterator< StoppingCriterionMaskImageType >
+      StoppingCriterionMaskImageRegionType;
+
   /** Convenience functions to set/get the registration functions timestep. */
-  void SetTimeStep( const TimeStepType & t )
-    { this->GetRegistrationFunctionPointer()->SetTimeStep( t ); }
-  const TimeStepType& GetTimeStep() const
-    { return this->GetRegistrationFunctionPointer()->GetTimeStep(); }
+  virtual void SetTimeStep( const TimeStepType t )
+    { m_OriginalTimeStep = t; }
+  virtual const TimeStepType& GetTimeStep() const
+    { return m_OriginalTimeStep; }
 
   /** Set/get whether to compute the motion field regularization term
    *  Default: true */
@@ -266,21 +275,28 @@ public:
 
   /** Set/get the weightings for the intensity distance update term.  If
    *  using multiresolution registration and the current level is past the
-   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  length of the weight vector, the last weight in the vector will be used.
    *  Default: 1.0 */
   void SetIntensityDistanceWeightings( std::vector< double >& weightings )
     { m_IntensityDistanceWeightings = weightings; }
   const std::vector< double >& GetIntensityDistanceWeightings() const
     { return m_IntensityDistanceWeightings; }
 
-  /** Set/get the weightings for the intensity distance update term.  If
+  /** Set/get the weightings for the regularization update term.  If
    *  using multiresolution registration and the current level is past the
-   *  length of the weight vector, the last weight in the vecotr will be used.
+   *  length of the weight vector, the last weight in the vector will be used.
    *  Default: 1.0 */
   void SetRegularizationWeightings( std::vector< double >& weightings )
     { m_RegularizationWeightings = weightings; }
   const std::vector< double >& GetRegularizationWeightings() const
     { return m_RegularizationWeightings; }
+
+  /** Set/get the background intensity of the moving image, used by the
+   *  intensity distance function.  Default 0.0 */
+  void SetBackgroundIntensity( MovingImagePixelType bg )
+    { this->GetRegistrationFunctionPointer()->SetBackgroundIntensity( bg ); }
+  MovingImagePixelType GetBackgroundIntensity() const
+    { return this->GetRegistrationFunctionPointer()->GetBackgroundIntensity(); }
 
   /** The number of div(T\grad(u))v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
@@ -299,6 +315,31 @@ public:
 
   /** Get current resolution level being processed. */
   itkGetConstReferenceMacro( CurrentLevel, unsigned int );
+
+  /** Set/get a mask in which the RMS error does not contribute to the stopping
+   *  criterion.  Any non-zero voxels will not be considered when determining
+   *  the stopping criterion. */
+  void SetStoppingCriterionMask( StoppingCriterionMaskImageType * mask )
+    { m_StoppingCriterionMask = mask; }
+  StoppingCriterionMaskImageType * GetStoppingCriterionMask() const
+    { return m_StoppingCriterionMask; }
+
+  /** Set/get the number of iterations that elapse between evaluations of the stopping
+   *  criterion.  Default 50. */
+  void SetStoppingCriterionEvaluationPeriod( unsigned int numIterations )
+    { m_StoppingCriterionEvaluationPeriod = numIterations; }
+  unsigned int GetStoppingCriterionEvaluationPeriod() const
+    { return m_StoppingCriterionEvaluationPeriod; }
+
+  /** Set/get the total energy change, summed over the stopping criterion evaluation
+   *  period, that indicates the stopping criterion has been reached.  Default 0,
+   *  indicating that the total energy is not used and the stopping criterion is
+   *  defined solely by the number of iterations specified or the maximum RMS change.
+   *  Specify in absolute value. */
+  void SetStoppingCriterionMaxTotalEnergyChange( double energyChange )
+    { m_StoppingCriterionMaxTotalEnergyChange = energyChange; }
+  double GetStoppingCriterionMaxTotalEnergyChange() const
+    { return m_StoppingCriterionMaxTotalEnergyChange; }
 
 protected:
   DiffusiveRegistrationFilter();
@@ -492,6 +533,8 @@ protected:
         & tensorDerivativeRegionToProcess,
       const ThreadScalarDerivativeImageRegionType
         & scalarDerivativeRegionToProcess,
+      const ThreadStoppingCriterionMaskImageRegionType
+        & stoppingCriterionMaskRegionToProcess,
       int threadId );
 
   /** This method applies changes from the update buffer to the output, using
@@ -563,6 +606,14 @@ protected:
   template< class VectorImagePointer >
   void NormalizeVectorField( VectorImagePointer & image ) const;
 
+  /** Computes the minimum and maximum intensity in an image */
+  template< class ImageType >
+  bool IsIntensityRangeBetween0And1( ImageType * image ) const;
+
+  /** This method is called after ApplyUpdate() to print out energy and RMS
+   * change metrics and evaluate the stopping conditions. */
+  virtual void PostProcessIteration();
+
 private:
   // Purposely not implemented
   DiffusiveRegistrationFilter(const Self&);
@@ -606,8 +657,10 @@ private:
       ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
           void *arg );
 
+  TimeStepType                              m_OriginalTimeStep;
+
   /** The buffer that holds the updates for an iteration of algorithm. */
-  typename UpdateBufferType::Pointer  m_UpdateBuffer;
+  typename UpdateBufferType::Pointer        m_UpdateBuffer;
 
   /** Images storing information we will need for each voxel on every
    *  registration iteration */
@@ -632,6 +685,15 @@ private:
 
   /** Template used to calculate member images */
   FixedImagePointer                         m_HighResolutionTemplate;
+
+  /** Mask on the stopping criterion computation */
+  StoppingCriterionMaskPointer              m_HighResolutionStoppingCriterionMask;
+  StoppingCriterionMaskPointer              m_StoppingCriterionMask;
+
+  /** Parameters for stopping criterion */
+  unsigned int                              m_StoppingCriterionEvaluationPeriod;
+  double                                    m_StoppingCriterionMaxTotalEnergyChange;
+
 };
 
 /** Struct to simply get the face list and an iterator over the face list

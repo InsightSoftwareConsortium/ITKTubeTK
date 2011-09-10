@@ -249,6 +249,25 @@ int DoIt( int argc, char * argv[] )
     }
   timeCollector.Stop( "Loading moving image" );
 
+  // Load the stopping criterion mask if provided
+  if( stoppingCriterionMaskImageFileName != "" )
+    {
+    timeCollector.Start( "Loading stopping criterion mask" );
+    typename DiffusiveRegistrationFilterType::StoppingCriterionMaskPointer
+        stoppingCriterionMaskImage = 0;
+    if( ReadAndOrientImageAxial( stoppingCriterionMaskImage,
+                                 stoppingCriterionMaskImageFileName ) )
+      {
+      registrator->SetStoppingCriterionMask( stoppingCriterionMaskImage );
+      }
+    else
+      {
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    timeCollector.Stop( "Loading stopping criterion mask" );
+    }
+
   // Setup the initial deformation field: the initial deformation field should
   // be in the space of the fixed image
   timeCollector.Start( "Setup initial deformation field" );
@@ -656,6 +675,7 @@ int DoIt( int argc, char * argv[] )
   // Setup the anisotropic registrator
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
+  registrator->SetComputeIntensityDistanceTerm( !doNotComputeIntensityDistanceTerm );
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetLambda( lambda );
@@ -669,6 +689,10 @@ int DoIt( int argc, char * argv[] )
   registrator->SetMaximumRMSError( maximumRMSError );
   registrator->SetIntensityDistanceWeightings( intensityDistanceWeightings );
   registrator->SetRegularizationWeightings( regularizationWeightings );
+  registrator->SetBackgroundIntensity( backgroundIntensity );
+  registrator->SetStoppingCriterionEvaluationPeriod(
+        static_cast<unsigned int>(stoppingCriterionPeriod));
+  registrator->SetStoppingCriterionMaxTotalEnergyChange(maximumTotalEnergyChange);
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
   // we don't want the deformation field to undergo Gaussian smoothing on the
