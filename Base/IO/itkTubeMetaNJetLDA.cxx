@@ -117,6 +117,15 @@ PrintInfo() const
     << METAIO_STREAM::endl;
   METAIO_STREAM::cout << "RidgeScales = " << m_RidgeScales.size()
     << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "ZeroScalesTmp = " << m_ZeroScalesTmp.size()
+    << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "FirstScalesTmp = " << m_FirstScalesTmp.size()
+    << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "SecondScalesTmp = " << m_SecondScalesTmp.size()
+    << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "RidgeScalesTmp = " << m_RidgeScalesTmp.size()
+    << METAIO_STREAM::endl;
 }
 
 void MetaNJetLDA::
