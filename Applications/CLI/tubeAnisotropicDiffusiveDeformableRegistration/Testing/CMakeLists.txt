@@ -352,3 +352,21 @@ add_test( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution )
+
+#######
+# Test13
+#######
+add_test( ${PROJECT_NAME}TestTubesSparseAnisotropic
+            ${PROJ_EXE}
+               ${INPUT_DATA}/Tubes_fixed.mhd
+               ${INPUT_DATA}/Tubes_moving.mhd
+               -p ${INPUT_DATA}/Tubes_spatialObjects.tre
+               -d ${TEMP}/Tubes_anisotropic_motionField.mhd
+               -o ${TEMP}/Tubes_anisotropic_transformedMoving.mhd
+               -i 5
+               -s 0.125
+               -l 0.01
+               -u SparseSlidingOrgan
+               -v ${TEMP}/Tubes_normalVectors.mhd
+               -x ${TEMP}/Tubes_weightRegularizations.mhd
+               -z ${TEMP}/Tubes_weightStructures.mhd )
