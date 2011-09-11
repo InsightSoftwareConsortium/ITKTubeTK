@@ -274,7 +274,7 @@ add_test( ${PROJECT_NAME}TestBoxesGaussian-Compare
                -b ${BASELINE}/Boxes_gaussian_motionField.mhd
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}TestBoxesGaussian-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}TestGaussian )
+                      PROPERTIES DEPENDS ${PROJECT_NAME}TestBoxesGaussian )
 
 #######
 # Test10
