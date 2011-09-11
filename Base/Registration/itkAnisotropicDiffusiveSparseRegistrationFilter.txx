@@ -380,12 +380,13 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Iterate through the tubes to compute tangents and normals
-  typename TubeType::Pointer tube;
-  typename TubeListType::iterator tubeIt = m_TubeList->begin();
   int numPoints = 0;
-  for( unsigned int i = 0; i < numTubes; i++ )
+  for( typename TubeListType::iterator tubeIt = m_TubeList->begin();
+       tubeIt != m_TubeList->end();
+       ++tubeIt )
     {
-    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
+    typename TubeType::Pointer tube
+        = static_cast< TubeType * >( tubeIt->GetPointer() );
     tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
     numPoints += tube->GetPoints().size();
     }
@@ -400,7 +401,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // Setup the normal float arrays for the tubes
   vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkFloatArray::New();
   positionFloatArray->SetNumberOfComponents( ImageDimension );
-  positionFloatArray->SetNumberOfTuples( numPoints);
+  positionFloatArray->SetNumberOfTuples( numPoints );
 
   vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkFloatArray::New();
   normal1FloatArray->SetNumberOfComponents( ImageDimension );
@@ -417,22 +418,22 @@ AnisotropicDiffusiveSparseRegistrationFilter
   radiusFloatArray->SetName( "radius ");
 
   // Fill in the normal float array for the tubes
-  tubeIt = m_TubeList->begin();
-  TubePointListType tubePointList;
-  typename TubePointListType::iterator pointIt;
   TubePointType * point;
   typename TubePointType::PointType pointPosition;
   typename TubePointType::CovariantVectorType pointNormal1;
   typename TubePointType::CovariantVectorType pointNormal2;
   float radius;
   int pointCounter = 0;
-  for( unsigned int i = 0; i < numTubes; i++ )
+  for( typename TubeListType::iterator tubeIt = m_TubeList->begin();
+       tubeIt != m_TubeList->end();
+       ++tubeIt )
     {
-    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
-    tubePointList = tube->GetPoints();
-    numPoints = tubePointList.size();
-    pointIt = tubePointList.begin();
-    for( int j = 0; j < numPoints; j++ )
+    typename TubeType::Pointer tube
+        = static_cast< TubeType * >( tubeIt->GetPointer() );
+    TubePointListType tubePointList = tube->GetPoints();
+    for( typename TubePointListType::iterator pointIt = tubePointList.begin();
+         pointIt != tubePointList.end();
+         ++pointIt )
       {
       point = static_cast< TubePointType * >( &( *pointIt ) );
       pointPosition = point->GetPosition();
@@ -445,11 +446,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
                                    pointNormal1.GetDataPointer() );
       normal2FloatArray->SetTuple( pointCounter,
                                    pointNormal2.GetDataPointer() );
-      radiusFloatArray->SetValue( j, radius );
-      ++pointIt;
+      radiusFloatArray->SetValue( pointCounter, radius );
       pointCounter++;
       }
-    ++tubeIt;
     }
 
   // Add the position array to a vtkPoints
