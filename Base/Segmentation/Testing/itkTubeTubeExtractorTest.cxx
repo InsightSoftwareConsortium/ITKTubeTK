@@ -84,7 +84,7 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
 
   ImageType::IndexType imMinX = tubeOp->GetExtractBoundMin();
   ImageType::IndexType imMaxX = tubeOp->GetExtractBoundMax();
-  int margin = 5;
+  int margin = 10;
 
   int failures = 0;
   for( int mcRun=0; mcRun<2; mcRun++ )
