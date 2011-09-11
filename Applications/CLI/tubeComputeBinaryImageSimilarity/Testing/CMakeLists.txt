@@ -43,8 +43,8 @@ set( TEXTCOMPARE_EXE
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
                -o ${TEMP}/${PROJECT_NAME}Test1.txt
-               ${INPUT_DATA}/Sphere_fixed.mhd
-               ${INPUT_DATA}/Sphere_moving.mhd )
+               ${INPUT_DATA}/GDS0015_Large_Modified.png
+               ${INPUT_DATA}/GDS0015_Large.mha )
 
 #######
 # Test1-Compare
