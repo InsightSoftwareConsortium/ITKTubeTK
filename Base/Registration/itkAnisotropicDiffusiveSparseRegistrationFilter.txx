@@ -433,11 +433,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
       pointPosition = point->GetPosition();
       pointNormal1 = point->GetNormal1();
       pointNormal2 = point->GetNormal2();
-      // TODO hack for MICCAI because spacing not being read properly
-      for( unsigned int k = 0; k < ImageDimension; k++ )
-        {
-        pointPosition[k] *= 0.875;
-        }
       positionFloatArray->SetTuple( pointCounter,
                                     pointPosition.GetDataPointer() );
       normal1FloatArray->SetTuple( pointCounter,
