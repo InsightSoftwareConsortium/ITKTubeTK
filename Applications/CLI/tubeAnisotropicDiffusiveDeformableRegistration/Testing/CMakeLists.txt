@@ -365,7 +365,7 @@ add_test( ${PROJECT_NAME}TestTubesSparseAnisotropic
                -o ${TEMP}/Tubes_anisotropic_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l 0.01
+               -l 5
                -u SparseSlidingOrgan
                -v ${TEMP}/Tubes_normalVectors.mhd
                -x ${TEMP}/Tubes_weightRegularizations.mhd
