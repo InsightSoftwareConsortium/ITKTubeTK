@@ -1590,12 +1590,12 @@ DiffusiveRegistrationFilter
   previousMeanRegularizationChange = meanRegularizationChange;
 
   // Error checking that indicates we should stop
-  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
-    {
-    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
-                     << "  Registration halting.");
-    this->StopRegistration();
-    }
+//  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
+//    {
+//    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
+//                     << "  Registration halting.");
+//    this->StopRegistration();
+//    }
 
   // Check for stopping condition
   if (elapsedIterations != 0
