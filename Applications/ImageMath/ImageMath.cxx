@@ -77,10 +77,8 @@ ResampleImage(
       typename ResampleFilterType::Pointer filter =
         ResampleFilterType::New();
       filter->SetInput( a );
-      filter->SetSize( b->GetLargestPossibleRegion().GetSize() );
-      filter->SetOutputOrigin( b->GetOrigin() );
-      filter->SetOutputSpacing( b->GetSpacing() );
-      filter->SetDefaultPixelValue( 0 );
+      filter->SetUseReferenceImage(true);
+	    filter->SetReferenceImage(b);
       filter->Update();
       output = filter->GetOutput();
       }
