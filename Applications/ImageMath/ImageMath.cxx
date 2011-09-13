@@ -43,6 +43,7 @@ limitations under the License.
 #include "itkBinaryBallStructuringElement.h"
 #include "itkDilateObjectMorphologyImageFilter.h"
 #include "itkConnectedThresholdImageFilter.h"
+#include "itkExtractImageFilter.h"
 #include "itkContinuousIndex.h"
 #include "itkNormalizeImageFilter.h"
 #include "itkMirrorPadImageFilter.h"
@@ -77,10 +78,8 @@ ResampleImage(
       typename ResampleFilterType::Pointer filter =
         ResampleFilterType::New();
       filter->SetInput( a );
-      filter->SetSize( b->GetLargestPossibleRegion().GetSize() );
-      filter->SetOutputOrigin( b->GetOrigin() );
-      filter->SetOutputSpacing( b->GetSpacing() );
-      filter->SetDefaultPixelValue( 0 );
+      filter->SetUseReferenceImage(true);
+	    filter->SetReferenceImage(b);
       filter->Update();
       output = filter->GetOutput();
       }
@@ -1628,7 +1627,34 @@ int DoIt( MetaCommand & command )
       writeStream.close();
 
       } // end -S
+    // ExtractSlice
+    else if( ( *it ).name == "ExtractSlice" )
+      {
+      unsigned int dimension =
+        ( unsigned int )command.GetValueAsInt( *it, "dimension" );
+      unsigned int slice =
+        ( unsigned int )command.GetValueAsInt( *it, "slice" );
 
+      typedef itk::ExtractImageFilter<ImageType, ImageType> ExtractSliceFilterType;
+      ExtractSliceFilterType::Pointer filter = ExtractSliceFilterType::New();
+      filter->SetInput(imIn);
+      typename ImageType::SizeType size =
+        imIn->GetLargestPossibleRegion().GetSize();
+
+      ImageType::IndexType  extractIndex;
+      extractIndex[0] = 0; extractIndex[1] = 0; extractIndex[2] = 0;
+      ImageType::SizeType   extractSize;
+      extractSize[0] = size[0]; extractSize[1] = size[1]; extractSize[2] = size[2];
+
+      extractIndex[dimension] = slice;
+      extractSize[dimension] = 1;
+
+      ImageType::RegionType desiredRegion(extractIndex,extractSize);
+      filter->SetExtractionRegion(desiredRegion);
+      filter->UpdateLargestPossibleRegion();
+      filter->Update();
+      imIn = filter->GetOutput();
+      } // end -e
     it++;
     }
 
@@ -1898,6 +1924,12 @@ int main( int argc, char *argv[] )
   command.AddField( "infile", "infile filename",
     MetaCommand::STRING, MetaCommand::DATA_IN );
 
+  command.SetOption( "ExtractSlice", "e", false,
+    "Extract a single slice from the image" );
+  command.AddOptionField( "ExtractSlice", "dimension",
+    MetaCommand::INT, true );
+  command.AddOptionField( "ExtractSlice", "slice",
+    MetaCommand::INT, true );
   // Parsing
   if( !command.Parse( argc, argv ) )
     {
