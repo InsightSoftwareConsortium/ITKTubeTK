@@ -140,6 +140,9 @@ int DoIt( int argc, char * argv[] )
   filter->Update();
   outImage = filter->GetOutput();
 
+  std::cout << "Chosen threshold = " << filter->GetThreshold()
+    << std::endl;
+
   timeCollector.Stop("Gaussian Blur");
 
   timeCollector.Start("Save data");

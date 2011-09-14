@@ -120,18 +120,38 @@ int DoIt( int argc, char * argv[] )
 
   typename ConnCompType::Pointer curConnComp = filter->GetOutput();
 
+  itk::ImageRegionIterator< MaskType > maskIter( curMask,
+    curMask->GetLargestPossibleRegion() );
+  maskIter.GoToBegin();
+
   itk::ImageRegionIterator< ConnCompType > iter( curConnComp,
     curConnComp->GetLargestPossibleRegion() );
   iter.GoToBegin();
 
+  while( !iter.IsAtEnd() )
+    {
+    if( maskIter.Get() == 0 )
+      {
+      iter.Set( 0 );
+      }
+    else
+      {
+      unsigned int c = iter.Get();
+      iter.Set( c+1 );
+      }
+    ++maskIter;
+    ++iter;
+    }
+
   if( minSize > 0 )
     {
+    iter.GoToBegin();
     unsigned int numObjects = filter->GetObjectCount()+1;
     std::vector< unsigned int > cSize( numObjects, 0 );
     while( !iter.IsAtEnd() )
       {
       unsigned int c = iter.Get();
-      if( c < numObjects )
+      if( c > 0 && c < numObjects )
         {
         ++cSize[ c ];
         }
@@ -141,21 +161,81 @@ int DoIt( int argc, char * argv[] )
     while( !iter.IsAtEnd() )
       {
       unsigned int c = iter.Get();
-      if( c < numObjects )
+      if( c > 0 && c < numObjects )
         {
         if( cSize[c] < (unsigned int)minSize )
           {
           iter.Set( 0 );
           }
+        }
+      ++iter;
+      }
+    }
+
+  //
+  if( seedMask.size() > 0 )
+    {
+    timeCollector.Start("Load seed mask");
+    typename MaskReaderType::Pointer seedMaskReader = MaskReaderType::New();
+    seedMaskReader->SetFileName( seedMask.c_str() );
+    try
+      {
+      seedMaskReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading seed mask: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    timeCollector.Stop("Load seed mask");
+
+    typename MaskType::Pointer curSeedMask = seedMaskReader->GetOutput();
+
+    itk::ImageRegionIterator< MaskType > seedIter( curSeedMask,
+      curSeedMask->GetLargestPossibleRegion() );
+    seedIter.GoToBegin();
+
+    iter.GoToBegin();
+
+    unsigned int numObjects = filter->GetObjectCount()+1;
+    std::vector< bool > cSeeded( numObjects, false );
+    while( !iter.IsAtEnd() )
+      {
+      unsigned int c = iter.Get();
+      if( c > 0 && c < numObjects )
+        {
+        if( ! cSeeded[c] )
+          {
+          if( seedIter.Get() != 0 )
+            {
+            cSeeded[ c ] = true;
+            }
+          }
+        }
+      ++iter;
+      ++seedIter;
+      }
+    iter.GoToBegin();
+    while( !iter.IsAtEnd() )
+      {
+      unsigned int c = iter.Get();
+      if( c > 0 && c < numObjects+1 )
+        {
+        if( cSeeded[c] )
+          {
+          iter.Set( c );
+          }
         else
           {
-          iter.Set( c+1 );
+          iter.Set( 0 );
           }
         }
       ++iter;
       }
     }
-  
+
   timeCollector.Stop("Connected Components");
 
   typedef itk::ImageFileWriter< ConnCompType  >   ImageWriterType;
