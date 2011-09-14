@@ -172,10 +172,8 @@ double * topTubeLeftPoint,
 double length,
 double radius,
 typename TImage::PixelType backgnd,
-typename TImage::PixelType bottomStart,
-typename TImage::PixelType bottomEnd,
-typename TImage::PixelType topStart,
-typename TImage::PixelType topEnd
+typename TImage::PixelType bottomIntensity,
+typename TImage::PixelType topIntensity
 )
 {
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
@@ -183,63 +181,26 @@ typename TImage::PixelType topEnd
   it.Begin();
 
   typename TImage::IndexType index;
-  typename TImage::PixelType bottomRange = bottomEnd - bottomStart;
-  typename TImage::PixelType topRange = topEnd - topStart;
-  double intensity;
 
   for( ; !it.IsAtEnd(); ++it )
     {
     index = it.GetIndex();
     bool inTube = false;
 
-    if (index[0] <= bottomTubeLeftPoint[0])
+    if ( index[0] > bottomTubeLeftPoint[0] && index[0] < bottomTubeLeftPoint[0] + length )
       {
       if( PointInTube(index, bottomTubeLeftPoint, radius) )
         {
-        it.Set( bottomStart );
-        inTube = true;
-        }
-      }
-    else if ( index[0] > bottomTubeLeftPoint[0] && index[0] < bottomTubeLeftPoint[0] + length )
-      {
-      if( PointInTube(index, bottomTubeLeftPoint, radius) )
-        {
-        intensity = ( (index[0] - bottomTubeLeftPoint[0] ) / length ) * bottomRange + bottomStart;
-        it.Set( intensity ); // or bottomStart for solid tubes
-        inTube = true;
-        }
-      }
-    else if (index[0] >= bottomTubeLeftPoint[0] + length )
-      {
-      if( PointInTube(index, bottomTubeLeftPoint, radius) )
-        {
-        it.Set( bottomEnd );
+        it.Set( bottomIntensity );
         inTube = true;
         }
       }
 
-    if( index[0] <= topTubeLeftPoint[0] )
-      {
-      if( PointInTube(index, topTubeLeftPoint, radius) )
-        {
-        it.Set( topStart );
-        inTube = true;
-        }
-      }
-    else if( index[0] > topTubeLeftPoint[0] && index[0] < topTubeLeftPoint[0] + length )
+    if( index[0] > topTubeLeftPoint[0] && index[0] < topTubeLeftPoint[0] + length )
       {
       if ( PointInTube(index, topTubeLeftPoint, radius) )
         {
-        intensity = ( (index[0] - topTubeLeftPoint[0] ) / length ) * topRange + topStart;
-        it.Set( intensity ); // or topEnd for solid tubes
-        inTube = true;
-        }
-      }
-    else if( index[0] >= topTubeLeftPoint[0] + length )
-      {
-      if( PointInTube(index, topTubeLeftPoint, radius) )
-        {
-        it.Set( topEnd );
+        it.Set( topIntensity );
         inTube = true;
         }
       }
@@ -501,14 +462,12 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     }
   else if ( geometry == tubes )
     {
-    double length = sizeValue / (8.0/5.0);
+    double length = sizeValue / (8.0/3.0);
     double radius = sizeValue / 10.0;
     double center[3] = {sizeValue / 2.0, sizeValue / 2.0, sizeValue / 2.0 };
     double offset = sizeValue / 8.0;
-    PixelType bottomStart = 30;
-    PixelType bottomEnd = 120;
-    PixelType topStart = 130;
-    PixelType topEnd = 220;
+    PixelType bottomIntensity = 30;
+    PixelType topIntensity = 220;
 
     // Create the two tubes on the fixed image
     double fixedBottomTubeLeftPoint[3] = { center[0] - ( length / 2 ) - offset,
@@ -518,7 +477,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
                                         center[1] + radius,
                                         center[2] };
     FillWithTubes<ImageType>( fixed, fixedBottomTubeLeftPoint, fixedTopTubeLeftPoint,
-                              length, radius, bgnd, bottomStart, bottomEnd, topStart, topEnd );
+                              length, radius, bgnd, bottomIntensity, topIntensity );
 
     // Create the two boxes on the moving image
     double shift = sizeValue / 20.0; // <-- this is the transformation!!!
@@ -529,7 +488,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
                                          fixedTopTubeLeftPoint[1],
                                          fixedTopTubeLeftPoint[2] };
     FillWithTubes<ImageType>( moving, movingBottomTubeLeftPoint, movingTopTubeLeftPoint,
-                              length, radius, bgnd, bottomStart, bottomEnd, topStart, topEnd );
+                              length, radius, bgnd, bottomIntensity, topIntensity );
 
     // Create tube spatial objects
     int numPoints = 0;
