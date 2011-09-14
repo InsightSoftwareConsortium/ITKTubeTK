@@ -239,40 +239,35 @@ if( TubeTK_USE_VTK )
 endif( TubeTK_USE_VTK )
 
 
-##
-## TCLAP
-##
-set( proj tclap )
-ExternalProject_Add( ${proj}
-  SVN_REPOSITORY
-    "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/tclap"
-  SOURCE_DIR tclap
-  BINARY_DIR tclap-Build
-  CMAKE_GENERATOR ${gen}
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE:STRING=${build_type}
-  INSTALL_COMMAND ""
-  )
-set( TCLAP_DIR "${base}/tclap-Build" )
+if( NOT GIT_EXECUTABLE )
+  find_package( Git REQUIRED )
+endif( NOT GIT_EXECUTABLE )
 
+option( GIT_PROTOCOL_HTTP
+  "Use HTTP for git access (useful if behind a firewall)" OFF )
+if( GIT_PROTOCOL_HTTP )
+  set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+else( GIT_PROTOCOL_HTTP )
+  set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+endif( GIT_PROTOCOL_HTTP )
 
-##
-## ModuleDescriptionParser
-##
-set( proj ModuleDescriptionParser )
+mark_as_advanced( GIT_PROTOCOL )
 
+set( proj SlicerExecutionModel )
+
+# Set dependency list
 if( NOT USE_SYSTEM_ITK )
   # Depends on ITK if ITK was build using superbuild
-  set( ModuleDescriptionParser_DEPENDS "Insight" )
+  set(SlicerExecutionModel_DEPENDS "Insight")
 else( NOT USE_SYSTEM_ITK )
-  set( ModuleDescriptionParser_DEPENDS "" )
+  set(SlicerExecutionModel_DEPENDS "" )
 endif( NOT USE_SYSTEM_ITK )
 
-ExternalProject_Add( ${proj}
-  SVN_REPOSITORY
-    "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/ModuleDescriptionParser"
-  SOURCE_DIR ModuleDescriptionParser
-  BINARY_DIR ModuleDescriptionParser-Build
+ExternalProject_Add(${proj}
+  GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/SlicerExecutionModel.git"
+  GIT_TAG "origin/master"
+  SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
+  BINARY_DIR ${proj}-build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
@@ -281,42 +276,17 @@ ExternalProject_Add( ${proj}
     -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
+    -DBUILD_EXAMPLES:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF
     -DITK_DIR:PATH=${ITK_DIR}
-  INSTALL_COMMAND ""
-  DEPENDS ${ModuleDescriptionParser_DEPENDS}
-  )
-set( ModuleDescriptionParser_DIR "${base}/ModuleDescriptionParser-Build" )
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
 
-
-##
-## GenerateCLP
-##
-set( proj GenerateCLP )
-ExternalProject_Add( ${proj}
-  SVN_REPOSITORY
-    "http://svn.slicer.org/Slicer3/trunk/Libs/SlicerExecutionModel/GenerateCLP"
-  SOURCE_DIR GenerateCLP
-  BINARY_DIR GenerateCLP-Build
-  CMAKE_GENERATOR ${gen}
-  CMAKE_ARGS
-    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-    -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-    -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-    -DCMAKE_BUILD_TYPE:STRING=${build_type}
-    -DBUILD_TESTING:BOOL=OFF
-    -DITK_DIR:PATH=${ITK_DIR}
-    -DTCLAP_DIR:PATH=${TCLAP_DIR}
-    -DModuleDescriptionParser_DIR:PATH=${ModuleDescriptionParser_DIR}
   INSTALL_COMMAND ""
   DEPENDS
-    "tclap"
-    "ModuleDescriptionParser"
+    ${SlicerExecutionModel_DEPENDS}
   )
-set( GenerateCLP_DIR "${base}/GenerateCLP-Build" )
-set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "GenerateCLP" )
-
+set( SlicerExecutionModel_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
+set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SlicerExecutionModel" )
 
 if( TubeTK_USE_QT )
 
@@ -413,7 +383,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
-    -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
+    -DGenerateCLP_DIR:PATH=${SlicerExecutionModel_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     ${TubeTK_SimpleITK_Def}

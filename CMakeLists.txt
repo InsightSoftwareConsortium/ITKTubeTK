@@ -260,7 +260,7 @@ else( TubeTK_USE_SUPERBUILD )
     include( ${VTK_USE_FILE} )
   endif( TubeTK_USE_VTK )
 
-  find_package( GenerateCLP REQUIRED )
+  find_package( SlicerExecutionModel REQUIRED GenerateCLP )
   include( ${GenerateCLP_USE_FILE} )
 
   if( TubeTK_USE_QT )
