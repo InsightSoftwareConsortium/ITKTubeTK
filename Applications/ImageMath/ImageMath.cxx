@@ -1630,31 +1630,42 @@ int DoIt( MetaCommand & command )
     // ExtractSlice
     else if( ( *it ).name == "ExtractSlice" )
       {
+      typedef itk::ExtractImageFilter<ImageType, ImageType>
+        ExtractSliceFilterType;
+
       unsigned int dimension =
         ( unsigned int )command.GetValueAsInt( *it, "dimension" );
       unsigned int slice =
         ( unsigned int )command.GetValueAsInt( *it, "slice" );
 
-      typedef itk::ExtractImageFilter<ImageType, ImageType> ExtractSliceFilterType;
-      ExtractSliceFilterType::Pointer filter = ExtractSliceFilterType::New();
-      filter->SetInput(imIn);
+      typename ExtractSliceFilterType::Pointer filter =
+        ExtractSliceFilterType::New();
+
       typename ImageType::SizeType size =
         imIn->GetLargestPossibleRegion().GetSize();
 
-      ImageType::IndexType  extractIndex;
-      extractIndex[0] = 0; extractIndex[1] = 0; extractIndex[2] = 0;
-      ImageType::SizeType   extractSize;
-      extractSize[0] = size[0]; extractSize[1] = size[1]; extractSize[2] = size[2];
+      typename ImageType::IndexType  extractIndex;
+      typename ImageType::SizeType   extractSize;
+      for( unsigned int d=0; d<ImageType::ImageDimension; ++d )
+        {
+        extractIndex[d] = 0;
+        extractSize[d] = size[d];
+        }
 
       extractIndex[dimension] = slice;
       extractSize[dimension] = 1;
 
-      ImageType::RegionType desiredRegion(extractIndex,extractSize);
-      filter->SetExtractionRegion(desiredRegion);
+      typename ImageType::RegionType desiredRegion( extractIndex,
+        extractSize );
+
+      filter->SetInput( imIn );
+      filter->SetExtractionRegion( desiredRegion );
       filter->UpdateLargestPossibleRegion();
       filter->Update();
+
       imIn = filter->GetOutput();
       } // end -e
+
     it++;
     }
 
