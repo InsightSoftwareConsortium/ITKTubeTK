@@ -383,7 +383,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
-    -DGenerateCLP_DIR:PATH=${SlicerExecutionModel_DIR}
+    -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     ${TubeTK_SimpleITK_Def}
