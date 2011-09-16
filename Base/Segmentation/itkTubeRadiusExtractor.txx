@@ -1658,7 +1658,7 @@ RadiusExtractor<TInputImage>
 
   typename KernArrayType::iterator pntIter;
   pntIter = tube->GetPoints().begin();
-  while( (*pntIter).GetID() != 0 && pntIter != tube->GetPoints().end() )
+  while( pntIter != tube->GetPoints().end() && (*pntIter).GetID() != 0 )
     {
     pntIter++;
     }
