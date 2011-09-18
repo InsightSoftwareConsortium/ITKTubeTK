@@ -22,6 +22,7 @@ limitations under the License.
 =========================================================================*/
 #include "tubeSpline1D.h"
 #include <cmath>
+#include <iostream>
 
 
 namespace tube
@@ -296,9 +297,10 @@ m_GetData(double x)
 double Spline1D::
 value(double x)
 {
-  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
   //if(!m_Defined)
     {
+    std::cout << "clipping" << std::endl;
     return 0;
     }
 
@@ -311,7 +313,7 @@ value(double x)
 double Spline1D::
 valueD(double x)
 {
-  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
   //if(!m_Defined)
     {
     return 0;
@@ -326,7 +328,7 @@ valueD(double x)
 double Spline1D::
 valueD2(double x)
 {
-  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
   //if(!m_Defined)
     {
     return 0;
@@ -341,7 +343,7 @@ valueD2(double x)
 double Spline1D::
 curv(double x)
 {
-  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
   //if(!m_Defined)
     {
     return 0;
@@ -357,7 +359,7 @@ curv(double x)
 double Spline1D::
 valueJet(double x, double * d, double * d2)
 {
-  if(!m_Defined || (m_Clip && ((int)x<m_XMin || (int)x>m_XMax)))
+  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
   //if(!m_Defined)
     {
     return 0;

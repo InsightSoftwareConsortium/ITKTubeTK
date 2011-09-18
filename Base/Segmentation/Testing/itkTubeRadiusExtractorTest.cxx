@@ -171,7 +171,7 @@ int itkTubeRadiusExtractorTest( int argc, char * argv[] )
     PointListType tubePointList = tube->GetPoints();
     unsigned int numPoints = tubePointList.size();
     unsigned int rndPointNum = rndGen->GetUniformVariate( 0, 1 )
-      * numPoints;
+      * numPoints * 0.8 + numPoints * 0.1;
     if( rndPointNum > numPoints-1 )
       {
       rndPointNum = numPoints-1;
@@ -186,6 +186,10 @@ int itkTubeRadiusExtractorTest( int argc, char * argv[] )
 
     double r0 = pnt->GetRadius();
     double r1 = r0;
+    if( r1 < 1 )
+      {
+      r1 = 1;
+      }
 
     std::cout << "  x = " << pnt->GetPosition() << std::endl;
     std::cout << "  r = " << r0 << std::endl;
