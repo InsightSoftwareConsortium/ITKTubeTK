@@ -539,9 +539,14 @@ RadiusExtractor<TInputImage>
     r0 = rMax;
     }
 
+  double xStep = 0.5 * r0;
+  if( xStep < 0.5 )
+    {
+    xStep = 0.5;
+    }
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    x[i] = pnt.GetPosition()[i] - pnt.GetTangent()[i];
+    x[i] = pnt.GetPosition()[i] - pnt.GetTangent()[i] * xStep;
     }
   tmpPnt.SetPosition( x );
   tmpPnt.SetRadius( r0 );
@@ -560,7 +565,7 @@ RadiusExtractor<TInputImage>
 
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    x1[i] = pnt.GetPosition()[i] + pnt.GetTangent()[i];
+    x1[i] = pnt.GetPosition()[i] + pnt.GetTangent()[i] * xStep;
     }
   tmpPnt.SetPosition( x1 );
   tmpPnt.SetRadius( r0 );
@@ -723,7 +728,6 @@ RadiusExtractor<TInputImage>
     pntR = m_MedialnessOptSpline->xMax() * m_MedialnessScaleStep;
     }
 
-
   /*
   std::cout << "Kern pnt = " << pnt.GetPosition() << std::endl;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
@@ -881,8 +885,8 @@ RadiusExtractor<TInputImage>
 
   if( this->GetDebug() )
     {
-    //std::cout << "kernN0 = " << kernN.get_column( 0 ) << std::endl;
-    //std::cout << "kernN1 = " << kernN.get_column( 1 ) << std::endl;
+    std::cout << "kernN0 = " << kernN.get_column( 0 ) << std::endl;
+    std::cout << "kernN1 = " << kernN.get_column( 1 ) << std::endl;
     }
 
   VectorType n0( ImageDimension );
@@ -896,7 +900,7 @@ RadiusExtractor<TInputImage>
   n0.normalize();
   if( this->GetDebug() )
     {
-    //std::cout << "n0 = " << n0 << std::endl;
+    std::cout << "n0 = " << n0 << std::endl;
     }
   n.set_column( 0, n0 );
   if( ImageDimension == 3 )
@@ -907,7 +911,7 @@ RadiusExtractor<TInputImage>
     n.get_column( 1 ).normalize();
     if( this->GetDebug() )
       {
-      //std::cout << "n1 = " << n.get_column( 1 ) << std::endl;
+      std::cout << "n1 = " << n.get_column( 1 ) << std::endl;
       }
 
     double tf = dot_product( kernN.get_column( 1 ),
@@ -942,16 +946,16 @@ RadiusExtractor<TInputImage>
   double r = (f-e)/f * pntR;
   if( this->GetDebug() )
     {
-    //std::cout << "Pos: opR = " << pntR/f << " opE = " << e
-      //<< " dist = " << r << std::endl;
+    std::cout << "Pos: opR = " << pntR/f << " r = " << r << " opE = " << e
+      << " dist = " << r << std::endl;
     }
   this->ValuesInSubKernel( pnt, r, n, kernPos, kernPosCnt );
 
-  r = (f+e) * pntR / f;
+  r = (f+e)/f * pntR;
   if( this->GetDebug() )
     {
-    //std::cout << "Neg: opR = " << pntR/f << " opE = " << e
-      //<< " dist = " << r << std::endl;
+    std::cout << "Neg: opR = " << pntR/f << " r = " << r << " opE = " << e
+      << " dist = " << r << std::endl;
     }
   this->ValuesInSubKernel( pnt, r, n, kernNeg, kernNegCnt );
 
@@ -974,8 +978,8 @@ RadiusExtractor<TInputImage>
     r = f * pntR;
     if( this->GetDebug() )
       {
-      //std::cout << "Brn: opR = " << pntR/f << " opE = " << e
-        //<< " dist = " << r << std::endl;
+      std::cout << "Brn: opR = " << pntR/f << " opE = " << e
+        << " dist = " << r << std::endl;
       }
     this->ValuesInSubKernel( pnt, r, n, kernBrn, kernBrnCnt );
     }
@@ -1157,7 +1161,7 @@ RadiusExtractor<TInputImage>
       }
     }
 
-  if( kernAvgCnt > 2 )
+  if( kernAvgCnt > 3 )
     {
     /* do the following code twice - once to remove the most-positive
     * of the negative kernel values and once to remove the most-negative
@@ -1234,6 +1238,9 @@ RadiusExtractor<TInputImage>
     kernNegAvg = 0;
     }
   mness = ( kernPosAvg - kernNegAvg ) / ( pntR / 4 );
+  std::cout << "** MNESS = " << mness << std::endl;
+  std::cout << "   kernPosAvg = " << kernPosAvg << std::endl;
+  std::cout << "   kernNegAvg = " << kernNegAvg << std::endl;
 
   if( doBNess )
     {
