@@ -274,7 +274,7 @@ add_test( ${PROJECT_NAME}TestBoxesGaussian-Compare
                -b ${BASELINE}/Boxes_gaussian_motionField.mhd
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}TestBoxesGaussian-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}TestGaussian )
+                      PROPERTIES DEPENDS ${PROJECT_NAME}TestBoxesGaussian )
 
 #######
 # Test10
@@ -352,3 +352,32 @@ add_test( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}TestSphereAnisotropicSurfaceRASMultiresolution )
+
+#######
+# Test13
+#######
+add_test( ${PROJECT_NAME}TestTubesSparseAnisotropic
+            ${PROJ_EXE}
+               ${INPUT_DATA}/Tubes_fixed.mhd
+               ${INPUT_DATA}/Tubes_moving.mhd
+               -p ${INPUT_DATA}/Tubes_spatialObjects.tre
+               -d ${TEMP}/Tubes_anisotropic_motionField.mhd
+               -o ${TEMP}/Tubes_anisotropic_transformedMoving.mhd
+               -i 5
+               -s 0.125
+               -l 0.25
+               -u SparseSlidingOrgan
+               -v ${TEMP}/Tubes_normalVectors.mhd
+               -x ${TEMP}/Tubes_weightRegularizations.mhd
+               -z ${TEMP}/Tubes_weightStructures.mhd )
+
+#######
+# Test13-Compare
+#######
+add_test( ${PROJECT_NAME}TestTubesSparseAnisotropic-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/Tubes_anisotropic_motionField.mhd
+               -b ${BASELINE}/Tubes_anisotropic_motionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}TestTubesSparseAnisotropic-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}TestTubesSparseAnisotropic )

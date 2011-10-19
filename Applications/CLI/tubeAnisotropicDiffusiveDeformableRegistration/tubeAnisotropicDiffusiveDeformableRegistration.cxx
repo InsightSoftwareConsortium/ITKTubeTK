@@ -148,9 +148,13 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
+  bool reportProgress = false;
   tube::CLIProgressReporter progressReporter(
       "AnisotropicDiffusiveDeformableRegistration", CLPProcessInformation );
-  progressReporter.Start();
+  if( reportProgress )
+    {
+    progressReporter.Start();
+    }
 
   // Typedefs seeding definition of the anisotropic diffusive registration
   // filter
@@ -667,7 +671,10 @@ int DoIt( int argc, char * argv[] )
 
   // Report progress from reading input data
   double progress = 0.1;
-  progressReporter.Report( progress );
+  if( reportProgress )
+    {
+    progressReporter.Report( progress );
+    }
 
   // Start the registration
   timeCollector.Start( "Register" );
@@ -748,11 +755,12 @@ int DoIt( int argc, char * argv[] )
   multires->SetNumberOfIterations( iterations );
 
   // Watch the registration's progress
-  tube::CLIFilterWatcher watchRegistration(registrator,
-                                           "Anisotropic Diffusive Registration",
-                                           CLPProcessInformation,
-                                           0.8,
-                                           progress );
+  if( reportProgress )
+    {
+    tube::CLIFilterWatcher watchRegistration(
+          registrator, "Anisotropic Diffusive Registration",
+          CLPProcessInformation, 0.8, progress );
+    }
 
   // Setup the warper: output parameters are derived from the fixed image
   // because the warped moving image should look like the fixed image
@@ -778,7 +786,10 @@ int DoIt( int argc, char * argv[] )
 
   // Report progress from doing the registration
   progress = 0.9;
-  progressReporter.Report( progress );
+  if( reportProgress )
+    {
+    progressReporter.Report( progress );
+    }
 
   // Reorient the registration's output deformation field: deformation field
   // is in the space of the fixed image
@@ -1054,11 +1065,17 @@ int DoIt( int argc, char * argv[] )
 
   // Report progress from writing the outputs
   progress = 1.0;
-  progressReporter.Report( progress );
+  if( reportProgress )
+    {
+    progressReporter.Report( progress );
+    }
 
   // Clean up, we're done
   delete [] iterations;
-  progressReporter.End( );
+  if( reportProgress )
+    {
+    progressReporter.End( );
+    }
   timeCollector.Report();
   return EXIT_SUCCESS;
 }

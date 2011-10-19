@@ -377,6 +377,7 @@ protected:
       vtkPointLocator * tubePointLocator,
       vtkFloatArray * tubeNormal1Data,
       vtkFloatArray * tubeNormal2Data,
+      vtkFloatArray * tubeRadiusData,
       ThreadNormalMatrixImageRegionType & normalRegionToProcess,
       ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
       ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
@@ -397,6 +398,14 @@ protected:
   virtual WeightComponentType ComputeWeightFromDistanceDirac(
       const WeightComponentType distance ) const;
 
+  /** Given a point and two vectors on a plane, and a second point, calculates
+   *  the in-plane distance between the two points. */
+  double ComputeDistanceToPointOnPlane(
+      double * planePoint,
+      float * tangentVector1,
+      float * tangentVector2,
+      itk::Point< double, ImageDimension > otherPoint ) const;
+
 private:
   // Purposely not implemented
   AnisotropicDiffusiveSparseRegistrationFilter(const Self&);
@@ -412,6 +421,7 @@ private:
     vtkPointLocator * TubePointLocator;
     vtkFloatArray * TubeNormal1Data;
     vtkFloatArray * TubeNormal2Data;
+    vtkFloatArray * TubeRadiusData;
     ThreadNormalMatrixImageRegionType NormalMatrixImageLargestPossibleRegion;
     ThreadWeightMatrixImageRegionType
         WeightStructuresImageLargestPossibleRegion;

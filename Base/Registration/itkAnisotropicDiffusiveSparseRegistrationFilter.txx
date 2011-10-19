@@ -380,12 +380,13 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Iterate through the tubes to compute tangents and normals
-  typename TubeType::Pointer tube;
-  typename TubeListType::iterator tubeIt = m_TubeList->begin();
   int numPoints = 0;
-  for( unsigned int i = 0; i < numTubes; i++ )
+  for( typename TubeListType::iterator tubeIt = m_TubeList->begin();
+       tubeIt != m_TubeList->end();
+       ++tubeIt )
     {
-    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
+    typename TubeType::Pointer tube
+        = static_cast< TubeType * >( tubeIt->GetPointer() );
     tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
     numPoints += tube->GetPoints().size();
     }
@@ -400,7 +401,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // Setup the normal float arrays for the tubes
   vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkFloatArray::New();
   positionFloatArray->SetNumberOfComponents( ImageDimension );
-  positionFloatArray->SetNumberOfTuples( numPoints);
+  positionFloatArray->SetNumberOfTuples( numPoints );
 
   vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkFloatArray::New();
   normal1FloatArray->SetNumberOfComponents( ImageDimension );
@@ -412,42 +413,42 @@ AnisotropicDiffusiveSparseRegistrationFilter
   normal2FloatArray->SetNumberOfTuples( numPoints );
   normal2FloatArray->SetName( "normal2" );
 
+  vtkSmartPointer< vtkFloatArray > radiusFloatArray = vtkFloatArray::New();
+  radiusFloatArray->SetNumberOfValues( numPoints );
+  radiusFloatArray->SetName( "radius ");
+
   // Fill in the normal float array for the tubes
-  tubeIt = m_TubeList->begin();
-  TubePointListType tubePointList;
-  typename TubePointListType::iterator pointIt;
   TubePointType * point;
   typename TubePointType::PointType pointPosition;
   typename TubePointType::CovariantVectorType pointNormal1;
   typename TubePointType::CovariantVectorType pointNormal2;
+  float radius;
   int pointCounter = 0;
-  for( unsigned int i = 0; i < numTubes; i++ )
+  for( typename TubeListType::iterator tubeIt = m_TubeList->begin();
+       tubeIt != m_TubeList->end();
+       ++tubeIt )
     {
-    tube = static_cast< TubeType * >( tubeIt->GetPointer() );
-    tubePointList = tube->GetPoints();
-    numPoints = tubePointList.size();
-    pointIt = tubePointList.begin();
-    for( int j = 0; j < numPoints; j++ )
+    typename TubeType::Pointer tube
+        = static_cast< TubeType * >( tubeIt->GetPointer() );
+    TubePointListType tubePointList = tube->GetPoints();
+    for( typename TubePointListType::iterator pointIt = tubePointList.begin();
+         pointIt != tubePointList.end();
+         ++pointIt )
       {
       point = static_cast< TubePointType * >( &( *pointIt ) );
       pointPosition = point->GetPosition();
       pointNormal1 = point->GetNormal1();
       pointNormal2 = point->GetNormal2();
-      // TODO hack for MICCAI because spacing not being read properly
-      for( unsigned int k = 0; k < ImageDimension; k++ )
-        {
-        pointPosition[k] *= 0.875;
-        }
+      radius = point->GetRadius();
       positionFloatArray->SetTuple( pointCounter,
                                     pointPosition.GetDataPointer() );
       normal1FloatArray->SetTuple( pointCounter,
                                    pointNormal1.GetDataPointer() );
       normal2FloatArray->SetTuple( pointCounter,
                                    pointNormal2.GetDataPointer() );
-      ++pointIt;
+      radiusFloatArray->SetValue( pointCounter, radius );
       pointCounter++;
       }
-    ++tubeIt;
     }
 
   // Add the position array to a vtkPoints
@@ -458,6 +459,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   vtkSmartPointer< vtkFieldData > fieldData = vtkFieldData::New();
   fieldData->AddArray( normal1FloatArray );
   fieldData->AddArray( normal2FloatArray );
+  fieldData->AddArray( radiusFloatArray );
 
   // Finally, we store everything within the vtkPolyData
   m_TubeSurface = BorderSurfaceType::New();
@@ -495,6 +497,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   vtkPointLocator * tubePointLocator = 0;
   vtkFloatArray * tubeNormal1Data = 0;
   vtkFloatArray * tubeNormal2Data = 0;
+  vtkFloatArray * tubeRadiusData = 0;
   if( this->GetTubeSurface() )
     {
     tubePointLocator = vtkPointLocator::New();
@@ -505,8 +508,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
         m_TubeSurface->GetFieldData()->GetArray( "normal1" ) );
     tubeNormal2Data = static_cast< vtkFloatArray * >(
         m_TubeSurface->GetFieldData()->GetArray( "normal2" ) );
+    tubeRadiusData = static_cast< vtkFloatArray * >(
+        m_TubeSurface->GetFieldData()->GetArray( "radius ") );
     assert( tubeNormal1Data );
     assert( tubeNormal2Data );
+    assert( tubeRadiusData );
     }
 
   // Set up struct for multithreaded processing.
@@ -517,6 +523,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   str.TubePointLocator = tubePointLocator;
   str.TubeNormal1Data = tubeNormal1Data;
   str.TubeNormal2Data = tubeNormal2Data;
+  str.TubeRadiusData = tubeRadiusData;
   str.NormalMatrixImageLargestPossibleRegion
       = m_NormalMatrixImage->GetLargestPossibleRegion();
   str.WeightStructuresImageLargestPossibleRegion
@@ -608,6 +615,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
         str->TubePointLocator,
         str->TubeNormal1Data,
         str->TubeNormal2Data,
+        str->TubeRadiusData,
         splitNormalRegion,
         splitWeightMatrixRegion,
         splitWeightComponentMatrixRegion,
@@ -635,6 +643,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     vtkPointLocator * tubePointLocator,
     vtkFloatArray * tubeNormal1Data,
     vtkFloatArray * tubeNormal2Data,
+    vtkFloatArray * tubeRadiusData,
     ThreadNormalMatrixImageRegionType & normalRegionToProcess,
     ThreadWeightMatrixImageRegionType & weightMatrixRegionToProcess,
     ThreadWeightComponentImageRegionType & weightComponentRegionToProcess,
@@ -644,7 +653,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
     int )
 {
   assert( ( surfacePointLocator && surfaceNormalData )
-          || ( tubePointLocator && tubeNormal1Data && tubeNormal2Data ) );
+          || ( tubePointLocator && tubeNormal1Data && tubeNormal2Data
+               && tubeRadiusData ) );
 
   // Setup iterators over the normal vector and weight images
   NormalMatrixImageRegionType normalIt(
@@ -661,11 +671,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
 
   itk::Point< double, ImageDimension >  imageCoord;
   imageCoord.Fill( 0 );
-  double                                borderCoord[ImageDimension];
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    borderCoord[i] = 0.0;
-    }
 
   vtkIdType                             surfaceId = -1;
   WeightComponentType                   surfaceDistance = 0;
@@ -699,6 +704,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
       {
       surfaceId = surfacePointLocator->FindClosestPoint(
           imageCoord.GetDataPointer() );
+      double borderCoord[ImageDimension];
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        borderCoord[i] = 0.0;
+        }
       m_BorderSurface->GetPoint( surfaceId, borderCoord );
       surfaceDistance = 0.0;
       for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -711,13 +721,26 @@ AnisotropicDiffusiveSparseRegistrationFilter
       {
       tubeId = tubePointLocator->FindClosestPoint(
           imageCoord.GetDataPointer() );
-      m_TubeSurface->GetPoint( tubeId, borderCoord );
-      tubeDistance = 0.0;
+      double centerlineCoord[ImageDimension];
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        tubeDistance += pow( imageCoord[i] - borderCoord[i], 2 );
+        centerlineCoord[i] = 0.0;
         }
-      tubeDistance = sqrt( tubeDistance );
+      m_TubeSurface->GetPoint( tubeId, centerlineCoord );
+
+      // We want the distance to the tube surface, not the centerline point
+      // Project the current index coordinate onto the plane defined by the
+      // tube centerline point and its two normals, and consider the distance
+      // to the surface via the radius.
+      float normal1[ImageDimension];
+      tubeNormal1Data->GetTupleValue( tubeId, normal1 );
+      float normal2[ImageDimension];
+      tubeNormal2Data->GetTupleValue( tubeId, normal2 );
+
+      double distanceToCenterCoord = ComputeDistanceToPointOnPlane(
+            centerlineCoord, normal1, normal2, imageCoord );
+      tubeDistance
+          = abs( distanceToCenterCoord - tubeRadiusData->GetValue( tubeId ));
       }
 
     // Find the normal of the surface point that is closest to the current voxel
@@ -769,6 +792,51 @@ AnisotropicDiffusiveSparseRegistrationFilter
         }
       }
     }
+}
+
+/**
+ * Computes the distance from the point to the planePoint in the plane defined
+ * by two tangent vectors.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+double
+AnisotropicDiffusiveSparseRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeDistanceToPointOnPlane( double * planePoint,
+                                 float * tangentVector1,
+                                 float * tangentVector2,
+                                 itk::Point< double, ImageDimension> otherPoint ) const
+{
+  double relativePoint[ImageDimension];
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    relativePoint[i] = otherPoint[i] - planePoint[i];
+    }
+
+  double projection1 = 0.0;
+  double projection2 = 0.0;
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    projection1 += pow(relativePoint[i] * tangentVector1[i], 2);
+    projection2 += pow(relativePoint[i] * tangentVector2[i], 2);
+    }
+  projection1 = sqrt( projection1 );
+  projection2 = sqrt( projection2 );
+
+  double pointOnPlane[ImageDimension];
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    pointOnPlane[i] = projection1 * tangentVector1[i]
+        + projection2 * tangentVector2[i];
+    }
+
+  double distance = 0.0;
+  for( int i = 0; i < ImageDimension; i++ )
+    {
+    distance += pow( pointOnPlane[i], 2 );
+    }
+  distance = sqrt( distance );
+  return distance;
 }
 
 /**
