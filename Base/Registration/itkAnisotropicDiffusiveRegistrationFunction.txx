@@ -416,10 +416,10 @@ AnisotropicDiffusiveRegistrationFunction
     double magnitudeRegularizationChange = 0.0;
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      magnitudeTotalChange += vnl_math_sqr( updateTerm[i] );
+      magnitudeTotalChange += vnl_math_sqr( updateTerm[i] * this->GetTimeStep() );
       magnitudeIntensityDistanceChange
-          += vnl_math_sqr( intensityDistanceTerm[i] );
-      magnitudeRegularizationChange += vnl_math_sqr( regularizationTerm[i] );
+          += vnl_math_sqr( intensityDistanceTerm[i] * this->GetTimeStep() );
+      magnitudeRegularizationChange += vnl_math_sqr( regularizationTerm[i] * this->GetTimeStep() );
       }
 
     gd->m_SumOfSquaredTotalChange += magnitudeTotalChange;
