@@ -365,8 +365,19 @@ add_test( ${PROJECT_NAME}TestTubesSparseAnisotropic
                -o ${TEMP}/Tubes_anisotropic_transformedMoving.mhd
                -i 5
                -s 0.125
-               -l 5
+               -l 0.25
                -u SparseSlidingOrgan
                -v ${TEMP}/Tubes_normalVectors.mhd
                -x ${TEMP}/Tubes_weightRegularizations.mhd
                -z ${TEMP}/Tubes_weightStructures.mhd )
+
+#######
+# Test13-Compare
+#######
+add_test( ${PROJECT_NAME}TestTubesSparseAnisotropic-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/Tubes_anisotropic_motionField.mhd
+               -b ${BASELINE}/Tubes_anisotropic_motionField.mhd
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}TestTubesSparseAnisotropic-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}TestTubesSparseAnisotropic )
