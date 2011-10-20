@@ -256,9 +256,9 @@ public:
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
       const ScalarDerivativeImageRegionArrayVectorType
-          & intensityFirstDerivatives,
+          & deformationComponentFirstOrderDerivativeRegions,
       const TensorDerivativeImageRegionArrayVectorType
-          & intensitySecondDerivatives,
+          & deformationComponentSecondOrderDerivativeRegions,
       const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
       const DeformationVectorImageRegionArrayVectorType
           & multiplicationVectorRegionArrays,
@@ -307,6 +307,33 @@ protected:
   AnisotropicDiffusiveRegistrationFunction();
   virtual ~AnisotropicDiffusiveRegistrationFunction() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
+
+  /** Returns the update from the regularization component */
+  virtual PixelType ComputeRegularizationUpdate(
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const ScalarDerivativeImageRegionArrayVectorType
+        & deformationComponentFirstOrderDerivativeRegions,
+    const TensorDerivativeImageRegionArrayVectorType
+        & deformationComponentSecondOrderDerivativeRegions,
+    const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+    const DeformationVectorImageRegionArrayVectorType
+        & multiplicationVectorRegionArrays,
+    void *globalData,
+    const FloatOffsetType& = FloatOffsetType(0.0) );
+
+  /** Updates the energy associated with the regularization */
+  virtual void UpdateRegularizationEnergy(
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const ScalarDerivativeImageRegionArrayVectorType
+        & deformationComponentFirstOrderDerivativeRegions );
+
+  /** Update the RMS and mean update change statistics */
+  virtual void UpdateRMSAndMeanUpdateStatistics(
+    const PixelType & updateTerm,
+    const PixelType & intensityDistanceTerm,
+    const PixelType & regularizationTerm,
+    const TimeStepType & timestep,
+    void * globalData );
 
   /** A global data type for this class of equations.  Used to store information
     for computing the metric and other intermediate products, such as

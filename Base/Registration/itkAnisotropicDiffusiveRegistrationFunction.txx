@@ -305,87 +305,31 @@ AnisotropicDiffusiveRegistrationFunction
         offset );
     }
 
-  // Setup for computing the regularization energy at this voxel
-  // Since we are iterating over terms before iterating over x,y,z
-  // we need to store the sum for each dimension
-  std::vector< DeformationVectorType > termRegularizationEnergies;
-  if ( includeInMetricComputations )
-    {
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      termRegularizationEnergies.push_back( DeformationVectorType(0.0) );
-      }
-    }
-
   // Compute the motion field regularization update term
   PixelType regularizationTerm;
   regularizationTerm.Fill(0);
   if ( this->GetComputeRegularizationTerm() )
     {
-    int numTerms = tensorNeighborhoods.size();
-    assert( (int) tensorDerivativeRegions.size() == numTerms );
+    regularizationTerm = this->ComputeRegularizationUpdate(
+          tensorNeighborhoods,
+          deformationComponentFirstOrderDerivativeRegions,
+          deformationComponentSecondOrderDerivativeRegions,
+          tensorDerivativeRegions,
+          multiplicationVectorRegionArrays,
+          gd->m_RegularizationGlobalDataStruct,
+          offset );
+    }
 
-    DeformationVectorComponentType intermediateComponent = 0;
-    PixelType intermediateVector;
-    intermediateVector.Fill(0);
-
-    // Iterate over each div(T \grad(u))v term
-    for ( int term = 0; term < numTerms; term++ )
+  if ( includeInMetricComputations )
+    {
+    if ( this->GetComputeIntensityDistanceTerm() )
       {
-      assert( tensorNeighborhoods[term].GetImagePointer() );
-      assert( tensorDerivativeRegions[term].GetImage() );
-      // we don't necessarily have vectors to multiply, so no assert required
-
-      // Iterate over each dimension
-      for ( unsigned int i = 0; i < ImageDimension; i++ )
-        {
-        assert( deformationComponentFirstOrderDerivativeRegions[term][i].
-                GetImage() );
-        assert( deformationComponentSecondOrderDerivativeRegions[term][i].
-                GetImage() );
-
-        // Compute div(T \grad(u))
-        intermediateComponent = m_RegularizationFunction->ComputeUpdate(
-            tensorNeighborhoods[term],
-            deformationComponentFirstOrderDerivativeRegions[term][i],
-            deformationComponentSecondOrderDerivativeRegions[term][i],
-            tensorDerivativeRegions[term],
-            gd->m_RegularizationGlobalDataStruct,
-            offset );
-
-        // Multiply by the vector, if given
-        intermediateVector.Fill(0);
-        if( multiplicationVectorRegionArrays[term][i].GetImage() )
-          {
-          intermediateVector = intermediateComponent *
-                               multiplicationVectorRegionArrays[term][i].Get();
-          }
-        else
-          {
-          intermediateVector[i] = intermediateComponent;
-          }
-        regularizationTerm += intermediateVector;
-
-        // Compute this part of the regularization energy
-        if( includeInMetricComputations )
-          {
-          DiffusionTensorType diffusionTensor
-              = tensorNeighborhoods[term].GetCenterPixel();
-          ScalarDerivativeType deformationComponentFirstOrderDerivative
-              = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
-          itk::Vector< double, ImageDimension > multVector(0.0);
-          for( int row = 0; row < ImageDimension; row++ )
-            {
-            for( int col = 0; col < ImageDimension; col++ )
-              {
-              multVector[row]
-                  += diffusionTensor(row,col) * deformationComponentFirstOrderDerivative[col];
-              }
-            }
-          termRegularizationEnergies[i] += multVector;
-          }
-
-        }
+      // TODO compute intensity energy here separately
+      }
+    if ( this->GetComputeRegularizationTerm() )
+      {
+      this->UpdateRegularizationEnergy(
+            tensorNeighborhoods, deformationComponentFirstOrderDerivativeRegions);
       }
     }
 
@@ -398,44 +342,185 @@ AnisotropicDiffusiveRegistrationFunction
   updateTerm.Fill(0);
   updateTerm = intensityDistanceTerm + regularizationTerm;
 
-  // Finish computing the regularization energies
+  // Compute the RMS and mean change metrics
   if( includeInMetricComputations )
     {
-    m_EnergyCalculationLock.Lock();
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      m_RegularizationEnergy +=
-          0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
-      }
-    m_EnergyCalculationLock.Unlock();
-
-    // Update the variables used to calculate RMS change
-    gd->m_NumberOfPixelsProcessed += 1;
-    double magnitudeTotalChange = 0.0;
-    double magnitudeIntensityDistanceChange = 0.0;
-    double magnitudeRegularizationChange = 0.0;
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      magnitudeTotalChange += vnl_math_sqr( updateTerm[i] * this->GetTimeStep() );
-      magnitudeIntensityDistanceChange
-          += vnl_math_sqr( intensityDistanceTerm[i] * this->GetTimeStep() );
-      magnitudeRegularizationChange += vnl_math_sqr( regularizationTerm[i] * this->GetTimeStep() );
-      }
-
-    gd->m_SumOfSquaredTotalChange += magnitudeTotalChange;
-    gd->m_SumOfSquaredIntensityDistanceChange
-        += magnitudeIntensityDistanceChange;
-    gd->m_SumOfSquaredRegularizationChange
-        += magnitudeRegularizationChange;
-
-    gd->m_SumOfTotalChange += vcl_sqrt( magnitudeTotalChange );
-    gd->m_SumOfIntensityDistanceChange
-        += vcl_sqrt( magnitudeIntensityDistanceChange );
-    gd->m_SumOfRegularizationChange
-        += vcl_sqrt( magnitudeRegularizationChange );
+    this->UpdateRMSAndMeanUpdateStatistics(updateTerm,
+                                           intensityDistanceTerm,
+                                           regularizationTerm,
+                                           this->GetTimeStep(),
+                                           globalData );
     }
 
   return updateTerm;
+}
+
+/**
+  * Computes the update term for the regularization
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::PixelType
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::ComputeRegularizationUpdate(
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const ScalarDerivativeImageRegionArrayVectorType
+        & deformationComponentFirstOrderDerivativeRegions,
+    const TensorDerivativeImageRegionArrayVectorType
+        & deformationComponentSecondOrderDerivativeRegions,
+    const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+    const DeformationVectorImageRegionArrayVectorType
+        & multiplicationVectorRegionArrays,
+    void * globalData,
+    const FloatOffsetType & offset )
+{
+  PixelType regularizationTerm;
+  regularizationTerm.Fill(0);
+
+  DeformationVectorComponentType intermediateComponent = 0;
+  PixelType intermediateVector;
+  intermediateVector.Fill(0);
+
+  int numTerms = tensorNeighborhoods.size();
+  assert( (int) tensorDerivativeRegions.size() == numTerms );
+
+  // Iterate over each div(T \grad(u))v term
+  for ( int term = 0; term < numTerms; term++ )
+    {
+    assert( tensorNeighborhoods[term].GetImagePointer() );
+    assert( tensorDerivativeRegions[term].GetImage() );
+    // we don't necessarily have vectors to multiply, so no assert required
+
+    // Iterate over each dimension
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      assert( deformationComponentFirstOrderDerivativeRegions[term][i].
+              GetImage() );
+      assert( deformationComponentSecondOrderDerivativeRegions[term][i].
+              GetImage() );
+
+      // Compute div(T \grad(u))
+      intermediateComponent = m_RegularizationFunction->ComputeUpdate(
+          tensorNeighborhoods[term],
+          deformationComponentFirstOrderDerivativeRegions[term][i],
+          deformationComponentSecondOrderDerivativeRegions[term][i],
+          tensorDerivativeRegions[term],
+          globalData,
+          offset );
+
+      // Multiply by the vector, if given
+      intermediateVector.Fill(0);
+      if( multiplicationVectorRegionArrays[term][i].GetImage() )
+        {
+        intermediateVector = intermediateComponent *
+                             multiplicationVectorRegionArrays[term][i].Get();
+        }
+      else
+        {
+        intermediateVector[i] = intermediateComponent;
+        }
+      regularizationTerm += intermediateVector;
+      }
+    }
+
+  return regularizationTerm;
+}
+
+/**
+  * Updates the regularization energy
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::UpdateRegularizationEnergy(
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const ScalarDerivativeImageRegionArrayVectorType
+        & deformationComponentFirstOrderDerivativeRegions )
+{
+  // Since we are iterating over terms before iterating over x,y,z
+  // we need to store the sum for each dimension
+  std::vector< DeformationVectorType > termRegularizationEnergies;
+  for ( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    termRegularizationEnergies.push_back( DeformationVectorType(0.0) );
+    }
+
+  int numTerms = tensorNeighborhoods.size();
+  for ( int term = 0; term < numTerms; term++ )
+    {
+    for ( unsigned int i = 0; i < ImageDimension; i++ )
+      {
+      DiffusionTensorType diffusionTensor
+          = tensorNeighborhoods[term].GetCenterPixel();
+      ScalarDerivativeType deformationComponentFirstOrderDerivative
+          = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
+      itk::Vector< double, ImageDimension > multVector(0.0);
+      for( int row = 0; row < ImageDimension; row++ )
+        {
+        for( int col = 0; col < ImageDimension; col++ )
+          {
+          multVector[row]
+              += diffusionTensor(row,col) * deformationComponentFirstOrderDerivative[col];
+          }
+        }
+      termRegularizationEnergies[i] += multVector;
+      }
+    }
+
+  m_EnergyCalculationLock.Lock();
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    m_RegularizationEnergy +=
+        0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
+    }
+  m_EnergyCalculationLock.Unlock();
+}
+
+/**
+  * Updates the regularization energy
+  */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+AnisotropicDiffusiveRegistrationFunction
+  < TFixedImage, TMovingImage, TDeformationField >
+::UpdateRMSAndMeanUpdateStatistics(
+    const PixelType & updateTerm,
+    const PixelType & intensityDistanceTerm,
+    const PixelType & regularizationTerm,
+    const TimeStepType & timestep,
+    void * globalData )
+{
+  // Get the global data structure
+  GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
+  assert( gd );
+
+  // Update the variables used to calculate RMS change
+  gd->m_NumberOfPixelsProcessed += 1;
+  double magnitudeTotalChange = 0.0;
+  double magnitudeIntensityDistanceChange = 0.0;
+  double magnitudeRegularizationChange = 0.0;
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    magnitudeTotalChange += vnl_math_sqr( updateTerm[i] * timestep );
+    magnitudeIntensityDistanceChange
+        += vnl_math_sqr( intensityDistanceTerm[i] * this->GetTimeStep() );
+    magnitudeRegularizationChange += vnl_math_sqr( regularizationTerm[i] * timestep );
+    }
+
+  gd->m_SumOfSquaredTotalChange += magnitudeTotalChange;
+  gd->m_SumOfSquaredIntensityDistanceChange
+      += magnitudeIntensityDistanceChange;
+  gd->m_SumOfSquaredRegularizationChange
+      += magnitudeRegularizationChange;
+
+  gd->m_SumOfTotalChange += vcl_sqrt( magnitudeTotalChange );
+  gd->m_SumOfIntensityDistanceChange
+      += vcl_sqrt( magnitudeIntensityDistanceChange );
+  gd->m_SumOfRegularizationChange
+      += vcl_sqrt( magnitudeRegularizationChange );
 }
 
 } // end namespace itk
