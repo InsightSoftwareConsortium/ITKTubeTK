@@ -1481,8 +1481,7 @@ DiffusiveRegistrationFilter
     }
   if( this->GetComputeRegularizationTerm() )
     {
-    regularizationEnergy
-        = df->GetRegularizationWeighting() * df->GetRegularizationEnergy();
+    regularizationEnergy = df->GetRegularizationEnergy();
     }
   double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
 

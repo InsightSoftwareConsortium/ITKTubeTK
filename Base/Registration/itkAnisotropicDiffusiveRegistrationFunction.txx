@@ -302,7 +302,7 @@ AnisotropicDiffusiveRegistrationFunction
         offset );
     }
 
-  // Compute the motion field regularization update term
+  // Compute the (weighted) motion field regularization update term
   PixelType regularizationTerm;
   regularizationTerm.Fill(0);
   if ( this->GetComputeRegularizationTerm() )
@@ -315,23 +315,18 @@ AnisotropicDiffusiveRegistrationFunction
           multiplicationVectorRegionArrays,
           gd->m_RegularizationGlobalDataStruct,
           offset );
-    }
 
-  if ( includeInMetricComputations )
-    {
-    if ( this->GetComputeIntensityDistanceTerm() )
+    if ( includeInMetricComputations )
       {
-      // TODO compute intensity energy here separately
-      }
-    if ( this->GetComputeRegularizationTerm() )
-      {
-      this->UpdateRegularizationEnergy(
-            tensorNeighborhoods, deformationComponentFirstOrderDerivativeRegions);
+      double regularizationEnergy = this->ComputeRegularizationEnergy(
+            tensorNeighborhoods,
+            deformationComponentFirstOrderDerivativeRegions );
+
+      m_EnergyCalculationLock.Lock();
+      m_RegularizationEnergy += regularizationEnergy;
+      m_EnergyCalculationLock.Unlock();
       }
     }
-
-  // Weight the intensity and regularization terms
-  regularizationTerm *= m_RegularizationWeighting;
 
   // Compute the final update term
   PixelType updateTerm;
@@ -421,17 +416,21 @@ AnisotropicDiffusiveRegistrationFunction
       }
     }
 
+  // Weight the regularization term, but don't multiply by the timestep
+  // because the PDE framework will do that for you
+  regularizationTerm *= m_RegularizationWeighting;
+
   return regularizationTerm;
 }
 
 /**
-  * Updates the regularization energy
+  * Computes the regularization energy
   */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
+double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::UpdateRegularizationEnergy(
+::ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions )
@@ -466,17 +465,21 @@ AnisotropicDiffusiveRegistrationFunction
       }
     }
 
-  m_EnergyCalculationLock.Lock();
-  for( unsigned int i = 0; i < ImageDimension; i++ )
+  // Calculate and weight the regularization energy
+  // TODO need this 0.5 here?
+  double regularizationEnergy = 0.0;
+  for( unsigned int i = 0; i < ImageDimension; i++)
     {
-    m_RegularizationEnergy +=
+    regularizationEnergy +=
         0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
     }
-  m_EnergyCalculationLock.Unlock();
+  regularizationEnergy *= m_RegularizationWeighting;
+
+  return regularizationEnergy;
 }
 
 /**
-  * Updates the regularization energy
+  * Updates the statistics
   */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -502,7 +505,7 @@ AnisotropicDiffusiveRegistrationFunction
     {
     magnitudeTotalChange += vnl_math_sqr( updateTerm[i] * timestep );
     magnitudeIntensityDistanceChange
-        += vnl_math_sqr( intensityDistanceTerm[i] * this->GetTimeStep() );
+        += vnl_math_sqr( intensityDistanceTerm[i] * timestep );
     magnitudeRegularizationChange += vnl_math_sqr( regularizationTerm[i] * timestep );
     }
 

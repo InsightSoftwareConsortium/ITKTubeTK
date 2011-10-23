@@ -276,19 +276,21 @@ public:
 
   /** Get the RMS and mean changes in the deformation field. */
   double GetRMSTotalChange() const
-    { return this->GetTimeStep() * m_RMSTotalChange; }
+    { return m_RMSTotalChange; }
   double GetRMSIntensityDistanceChange() const
-    { return this->GetTimeStep() * m_RMSIntensityDistanceChange; }
+    { return m_RMSIntensityDistanceChange; }
   double GetRMSRegularizationChange() const
-    { return this->GetTimeStep() * m_RMSRegularizationChange; };
+    { return m_RMSRegularizationChange; };
   double GetMeanTotalChange() const
-    { return this->GetTimeStep() * m_MeanTotalChange; }
+    { return m_MeanTotalChange; }
   double GetMeanIntensityDistanceChange() const
-    { return this->GetTimeStep() * m_MeanIntensityDistanceChange; }
+    { return m_MeanIntensityDistanceChange; }
   double GetMeanRegularizationChange() const
-    { return this->GetTimeStep() * m_MeanRegularizationChange; }
+    { return m_MeanRegularizationChange; }
 
-  /** Get the intensity distance and regularization energies. */
+  /** Get the intensity distance and regularization energies.
+   *  The regularization energy incorporates the weighting between the
+   *  intensity distance term and the regularization term. */
   double GetIntensityDistanceEnergy() const
     { return this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
   double GetRegularizationEnergy() const
@@ -313,7 +315,7 @@ protected:
     const FloatOffsetType& = FloatOffsetType(0.0) );
 
   /** Updates the energy associated with the regularization */
-  virtual void UpdateRegularizationEnergy(
+  virtual double ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions );
