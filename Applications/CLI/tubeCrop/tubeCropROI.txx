@@ -286,12 +286,15 @@ Update( void )
     cropFilter->SetLowerBoundaryCropSize( lowerCropSize );
     cropFilter->SetUpperBoundaryCropSize( upperCropSize );
 
-    CLIFilterWatcher watcher( cropFilter,
-                             "cropFilterWatcher",
-                             m_ProgressReporter->GetProcessInformation(),
-                             m_ProgressRange,
-                             m_ProgressStart,
-                             true );
+    if( m_ProgressReporter )
+      {
+      CLIFilterWatcher watcher( cropFilter,
+                               "cropFilterWatcher",
+                               m_ProgressReporter->GetProcessInformation(),
+                               m_ProgressRange,
+                               m_ProgressStart,
+                               true );
+      }
 
     try
       {
@@ -331,6 +334,89 @@ CropROI< pixelT, dimensionT>::
 GetOutput( void )
 {
   return m_OutputImage;
+}
+
+template< class pixelT, unsigned int dimensionT >
+void
+CropROI< pixelT, dimensionT>::
+PrintSelf( void )
+{
+  if( m_InputImage.IsNotNull() )
+    {
+    std::cout << "Input Image: " << m_InputImage << std::endl;
+    }
+  else
+    {
+    std::cout << "Input Image: NULL" << std::endl;
+    }
+
+  if( m_OutputImage.IsNotNull() )
+    {
+    std::cout << "Output Image: " << m_OutputImage << std::endl;
+    }
+  else
+    {
+    std::cout << "Output Image: NULL" << std::endl;
+    }
+
+  std::cout << "ROIMin: " << m_ROIMin << std::endl;
+  if( m_UseROIMin )
+    {
+    std::cout << "Use ROIMin: true" << std::endl;
+    }
+  else
+    {
+    std::cout << "Use ROIMin: false" << std::endl;
+    }
+
+  std::cout << "ROIMax: " << m_ROIMax << std::endl;
+  if( m_UseROIMax )
+    {
+    std::cout << "Use ROIMax: true" << std::endl;
+    }
+  else
+    {
+    std::cout << "Use ROIMax: false" << std::endl;
+    }
+
+  std::cout << "ROISize: " << m_ROISize << std::endl;
+  if( m_UseROISize )
+    {
+    std::cout << "Use ROISize: true" << std::endl;
+    }
+  else
+    {
+    std::cout << "Use ROISize: false" << std::endl;
+    }
+
+  std::cout << "ROICenter: " << m_ROICenter << std::endl;
+  if( m_UseROICenter )
+    {
+    std::cout << "Use ROICenter: true" << std::endl;
+    }
+  else
+    {
+    std::cout << "Use ROICenter: false" << std::endl;
+    }
+
+  std::cout << "ROIBoundary: " << m_ROIBoundary << std::endl;
+  if( m_UseROIBoundary )
+    {
+    std::cout << "Use ROIBoundary: true" << std::endl;
+    }
+  else
+    {
+    std::cout << "Use ROIBoundary: false" << std::endl;
+    }
+
+  if( m_TimeCollector == NULL )
+    {
+    std::cout << "Time Collector: NULL" << std::endl;
+    }
+  else
+    {
+    std::cout << "Time Collector: Not NULL" << std::endl;
+    }
 }
 
 } //namespace tube
