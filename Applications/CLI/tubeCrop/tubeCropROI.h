@@ -88,6 +88,8 @@ public:
 
   typename ImageType::Pointer GetOutput( void );
 
+  void PrintSelf( void );
+
 private:
 
   typename ImageType::Pointer    m_InputImage;

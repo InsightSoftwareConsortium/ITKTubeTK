@@ -93,8 +93,6 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer curImage1 = reader1->GetOutput();
   typename ImageType::Pointer outImage = ImageType::New();
   outImage->CopyInformation( curImage1 );
-  typename ImageType::PointType origin = curImage1->GetOrigin();
-  typename ImageType::SpacingType spacing = curImage1->GetSpacing();
 
   typename ImageType::PointType pointX;
   typename ImageType::IndexType indexX;

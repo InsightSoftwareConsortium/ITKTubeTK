@@ -152,10 +152,6 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( 0.1 );
   timeCollector.Stop("Read");
 
-  typename ImageType::SizeType inputSize = inVolume
-                                           ->GetLargestPossibleRegion()
-                                           .GetSize();
-
   typename ImageType::Pointer metricMaskImage = NULL;
   if( metricMask.size() != 0 )
     {
