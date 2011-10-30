@@ -31,3 +31,4 @@ if( NOT TubeTK_USE_ITKV4 )
 endif( NOT TubeTK_USE_ITKV4 )
 
 add_subdirectory( ImageMath )
+add_subdirectory( tubeImageViewer )
