@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Gui</class>
- <widget class="QDialog" name="Gui">
+ <widget class="QWidget" name="Gui">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>1035</width>
-    <height>667</height>
+    <height>864</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,16 +25,16 @@
   <property name="windowTitle">
    <string>TubeTK Image Viewer</string>
   </property>
-  <property name="sizeGripEnabled">
+  <property name="sizeGripEnabled" stdset="0">
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>0</x>
      <y>10</y>
      <width>1021</width>
-     <height>651</height>
+     <height>851</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -135,6 +135,12 @@
               <height>25</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Charter</family>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>R</string>
             </property>
@@ -160,33 +166,14 @@
               <height>25</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Charter</family>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>L</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="pushButton_Center">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>25</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>25</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
             </property>
            </widget>
           </item>
@@ -209,6 +196,12 @@
               <width>25</width>
               <height>25</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Charter</family>
+              <pointsize>7</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>U</string>
@@ -235,6 +228,12 @@
               <height>25</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Charter</family>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>D</string>
             </property>
@@ -256,6 +255,41 @@
          </spacer>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QPushButton" name="pushButton_Reset">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Charter</family>
+              <pointsize>7</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <spacer name="verticalSpacer_4">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -275,6 +309,12 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
           </property>
           <item>
            <property name="text">
@@ -333,6 +373,12 @@
         </item>
         <item>
          <widget class="QLabel" name="PositionX">
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>0</string>
           </property>
@@ -343,6 +389,12 @@
         </item>
         <item>
          <widget class="QLabel" name="PositionY">
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>0</string>
           </property>
@@ -353,6 +405,12 @@
         </item>
         <item>
          <widget class="QLabel" name="PositionZ">
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>0</string>
           </property>
@@ -376,6 +434,12 @@
         </item>
         <item>
          <widget class="QLabel" name="PixelValue">
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>0</string>
           </property>
@@ -431,6 +495,12 @@
             <height>50</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <item>
            <property name="text">
             <string>XY</string>
@@ -459,6 +529,12 @@
             <height>50</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
@@ -481,6 +557,12 @@
           </item>
           <item>
            <widget class="QSlider" name="Slice">
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
@@ -535,6 +617,12 @@
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QCheckBox" name="XY3D">
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>XY</string>
           </property>
@@ -542,6 +630,12 @@
         </item>
         <item>
          <widget class="QCheckBox" name="XZ3D">
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>XZ</string>
           </property>
@@ -549,6 +643,12 @@
         </item>
         <item>
          <widget class="QCheckBox" name="YZ3D">
+          <property name="font">
+           <font>
+            <family>Bitstream Charter</family>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>YZ</string>
           </property>
@@ -575,13 +675,26 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,1">
       <item>
        <widget class="QLabel" name="IntensityMinLabel">
+        <property name="font">
+         <font>
+          <family>Bitstream Charter</family>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>Int. Min</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="IntensityMinDisplay"/>
+       <widget class="QSpinBox" name="IntensityMinDisplay">
+        <property name="font">
+         <font>
+          <family>Bitstream Charter</family>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QSlider" name="IntensityMin">
@@ -602,13 +715,26 @@
       </property>
       <item>
        <widget class="QLabel" name="IntensityMaxLabel">
+        <property name="font">
+         <font>
+          <family>Bitstream Charter</family>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>Int. Max</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="IntensityMaxDisplay"/>
+       <widget class="QSpinBox" name="IntensityMaxDisplay">
+        <property name="font">
+         <font>
+          <family>Bitstream Charter</family>
+          <pointsize>7</pointsize>
+         </font>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QSlider" name="IntensityMax">
@@ -618,6 +744,116 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="font">
+       <font>
+        <family>Bitstream Charter</family>
+        <pointsize>7</pointsize>
+       </font>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="ImageInfoTab">
+       <attribute name="title">
+        <string>Image info</string>
+       </attribute>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1021</width>
+          <height>141</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <spacer name="verticalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>5</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QListWidget" name="ImageInfoTextList"/>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="PreProcessTab">
+       <property name="font">
+        <font>
+         <family>Bitstream Charter</family>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
+       <attribute name="title">
+        <string>Pre-process</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="VesselExtractionTab">
+       <attribute name="title">
+        <string>Vessel Extraction</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="SegmentationTab">
+       <attribute name="title">
+        <string>Segmentation</string>
+       </attribute>
+      </widget>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -631,7 +867,8 @@
         </property>
         <property name="font">
          <font>
-          <family>Arial</family>
+          <family>Sans Serif</family>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -643,7 +880,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonOk">
+       <widget class="QPushButton" name="QuitButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -652,7 +889,8 @@
         </property>
         <property name="font">
          <font>
-          <family>Arial</family>
+          <family>Sans Serif</family>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="windowTitle">
@@ -703,12 +941,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>276</x>
-     <y>619</y>
+     <x>392</x>
+     <y>640</y>
     </hint>
     <hint type="destinationlabel">
-     <x>152</x>
-     <y>623</y>
+     <x>109</x>
+     <y>644</y>
     </hint>
    </hints>
   </connection>
@@ -719,12 +957,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>152</x>
-     <y>623</y>
+     <x>109</x>
+     <y>644</y>
     </hint>
     <hint type="destinationlabel">
-     <x>270</x>
-     <y>619</y>
+     <x>386</x>
+     <y>640</y>
     </hint>
    </hints>
   </connection>
@@ -735,12 +973,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>588</y>
+     <x>106</x>
+     <y>610</y>
     </hint>
     <hint type="destinationlabel">
-     <x>261</x>
-     <y>584</y>
+     <x>374</x>
+     <y>606</y>
     </hint>
    </hints>
   </connection>
@@ -751,28 +989,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>259</x>
-     <y>584</y>
+     <x>372</x>
+     <y>606</y>
     </hint>
     <hint type="destinationlabel">
-     <x>146</x>
-     <y>588</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonOk</sender>
-   <signal>clicked()</signal>
-   <receiver>Gui</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>747</x>
-     <y>658</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>734</x>
-     <y>667</y>
+     <x>106</x>
+     <y>610</y>
     </hint>
    </hints>
   </connection>
@@ -783,8 +1005,8 @@
    <slot>IntensityMax(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>290</x>
-     <y>619</y>
+     <x>406</x>
+     <y>640</y>
     </hint>
     <hint type="destinationlabel">
      <x>127</x>
@@ -799,8 +1021,8 @@
    <slot>IntensityMin(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>280</x>
-     <y>584</y>
+     <x>393</x>
+     <y>606</y>
     </hint>
     <hint type="destinationlabel">
      <x>127</x>
@@ -815,8 +1037,8 @@
    <slot>ChangeSlice(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>556</x>
-     <y>131</y>
+     <x>537</x>
+     <y>275</y>
     </hint>
     <hint type="destinationlabel">
      <x>127</x>
@@ -831,12 +1053,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>556</x>
-     <y>208</y>
+     <x>537</x>
+     <y>352</y>
     </hint>
     <hint type="destinationlabel">
-     <x>573</x>
-     <y>67</y>
+     <x>554</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
@@ -847,12 +1069,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>573</x>
-     <y>69</y>
+     <x>554</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>556</x>
-     <y>192</y>
+     <x>537</x>
+     <y>336</y>
     </hint>
    </hints>
   </connection>
@@ -863,7 +1085,7 @@
    <slot>ZoomIn()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>52</x>
+     <x>37</x>
      <y>38</y>
     </hint>
     <hint type="destinationlabel">
@@ -879,7 +1101,7 @@
    <slot>ZoomOut()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>93</x>
+     <x>73</x>
      <y>38</y>
     </hint>
     <hint type="destinationlabel">
@@ -899,8 +1121,8 @@
      <y>316</y>
     </hint>
     <hint type="destinationlabel">
-     <x>95</x>
-     <y>369</y>
+     <x>83</x>
+     <y>411</y>
     </hint>
    </hints>
   </connection>
@@ -915,8 +1137,8 @@
      <y>391</y>
     </hint>
     <hint type="destinationlabel">
-     <x>100</x>
-     <y>391</y>
+     <x>83</x>
+     <y>435</y>
     </hint>
    </hints>
   </connection>
@@ -931,8 +1153,8 @@
      <y>444</y>
     </hint>
     <hint type="destinationlabel">
-     <x>65</x>
-     <y>426</y>
+     <x>68</x>
+     <y>459</y>
     </hint>
    </hints>
   </connection>
@@ -947,8 +1169,8 @@
      <y>499</y>
     </hint>
     <hint type="destinationlabel">
-     <x>68</x>
-     <y>500</y>
+     <x>71</x>
+     <y>529</y>
     </hint>
    </hints>
   </connection>
@@ -959,8 +1181,8 @@
    <slot>ShiftUp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>60</x>
-     <y>106</y>
+     <x>55</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>192</x>
@@ -991,8 +1213,8 @@
    <slot>ShiftRight()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
-     <y>138</y>
+     <x>82</x>
+     <y>148</y>
     </hint>
     <hint type="destinationlabel">
      <x>131</x>
@@ -1007,8 +1229,8 @@
    <slot>ShiftDown()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>65</x>
-     <y>174</y>
+     <x>55</x>
+     <y>179</y>
     </hint>
     <hint type="destinationlabel">
      <x>127</x>
@@ -1039,8 +1261,8 @@
    <slot>SetViewMode(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>87</x>
-     <y>283</y>
+     <x>83</x>
+     <y>341</y>
     </hint>
     <hint type="destinationlabel">
      <x>161</x>
@@ -1049,18 +1271,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_Center</sender>
+   <sender>pushButton_Reset</sender>
    <signal>clicked()</signal>
    <receiver>Window2D</receiver>
    <slot>Reset()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>63</x>
-     <y>135</y>
+     <x>64</x>
+     <y>254</y>
     </hint>
     <hint type="destinationlabel">
-     <x>124</x>
-     <y>60</y>
+     <x>116</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>

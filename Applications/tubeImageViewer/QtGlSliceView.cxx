@@ -34,7 +34,6 @@ QtGlSliceView( QWidget* p, Qt::WFlags f )
 : QGLWidget( p, 0, f | Qt::MSWindowsOwnDC )
 {
   cValidOverlayData     = false;
-  cViewOverlayData      = false;
   cOverlayOpacity       = 0.0;
   cWinOverlayData       = NULL;
   cViewAxisLabel        = true;
@@ -194,7 +193,9 @@ QtGlSliceView
 
   SizeType   cImData_size   = cImData_region.GetSize();
 
-  if( !cValidImData || newoverlay_size[2]==cImData_size[2] )
+  if( cValidImData && newoverlay_size[0]==cImData_size[0]
+    && newoverlay_size[1]==cImData_size[1]
+    && newoverlay_size[2]==cImData_size[2] )
     {
     cOverlayData = newOverlayData;
 
@@ -210,6 +211,11 @@ QtGlSliceView
     const unsigned long bufferSize = cWinDataSizeX * cWinDataSizeY * 4;
     cWinOverlayData = new unsigned char[ bufferSize ];
     this->update();
+    }
+  else
+    {
+    std::cerr << "Error: cannot set overlay.  Does not match input dims."
+      << std::endl;
     }
 }
 
@@ -537,11 +543,11 @@ update()
             {
             m = m - 1;
             cWinOverlayData[l+0] =
-              ( unsigned char )( cColorTable->color( m )->GetRed()*255 );
+              ( unsigned char )( cColorTable->GetColor( m )->GetRed()*255 );
             cWinOverlayData[l+1] =
-              ( unsigned char )( cColorTable->color( m )->GetGreen()*255 );
+              ( unsigned char )( cColorTable->GetColor( m )->GetGreen()*255 );
             cWinOverlayData[l+2] =
-              ( unsigned char )( cColorTable->color( m )->GetBlue()*255 );
+              ( unsigned char )( cColorTable->GetColor( m )->GetBlue()*255 );
             cWinOverlayData[l+3] =
               ( unsigned char )( cOverlayOpacity*255 );
             }

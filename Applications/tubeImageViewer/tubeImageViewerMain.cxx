@@ -42,7 +42,7 @@ int main( int argc, char* argv[] )
 {
   QApplication myApp( argc, argv );
 
-  tubeImageViewer myGUI( 0, 0, TRUE );
+  tubeImageViewer myGUI( 0 );
 
   typedef float                             ImagePixelType;
   typedef itk::Image< ImagePixelType, 3 >   ImageType;
