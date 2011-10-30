@@ -23,33 +23,43 @@ limitations under the License.
 #ifndef tubeImageViewer_h
 #define tubeImageViewer_h
 
-#include <QObject>
+#include <QWidget>
 
 #include "ui_tubeImageViewerGUI.h"
 #include "ui_tubeImageViewerHelpGUI.h"
 
 #include "itkImage.h"
 
-class tubeImageViewer : public QDialog, Ui::Gui
+class tubeImageViewer : public QWidget, private Ui::Gui
 {
+  Q_OBJECT
+
 public:
 
   typedef itk::Image< float, 3 >         ImageType;
   typedef itk::Image< unsigned char, 3 > OverlayType;
 
-  tubeImageViewer( QWidget* parent = 0, const char* name = 0,
-    bool modal = FALSE, Qt::WFlags fl = 0 );
+  tubeImageViewer( QWidget * parent = 0 );
 
   ~tubeImageViewer();
 
-public slots:
-  void DisplayClick( double v );
-  void DisplayHelp( void );
+private slots:
+
+  void on_Window2D_PixelValueChanged( double v );
+  void on_HelpButton_clicked( void );
+  void on_QuitButton_clicked( void );
 
 public:
 
   void SetInputImage(ImageType * newImData);
   void SetInputOverlay(OverlayType * newOverlayData);
+
+private:
+
+  ImageType::Pointer              m_ImageData;
+  OverlayType::Pointer            m_OverlayData;
+  std::vector< QListWidgetItem >  m_ImageInfoText;
+
 };
 
 #endif

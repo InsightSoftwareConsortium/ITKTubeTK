@@ -57,6 +57,7 @@ QT4_WRAP_UI( tubeImageViewer_UIS_H
   )
 
 QT4_WRAP_CPP( tubeImageViewer_MOC_SRCS
+  tubeImageViewer.h
   QtGlSliceView.h
   )
 

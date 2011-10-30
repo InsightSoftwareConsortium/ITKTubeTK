@@ -30,44 +30,68 @@ limitations under the License.
 /**
  *
  */
-tubeImageViewer::tubeImageViewer(
-  QWidget* _parent,  const char* itkNotUsed( _name ),
-  bool itkNotUsed( _modal ), Qt::WFlags itkNotUsed( _fl ) )
-:QDialog( _parent )
+tubeImageViewer::
+tubeImageViewer( QWidget* _parent )
+:QWidget( _parent )
 {
   setupUi( this );
-
-  QObject::connect( this->Window2D, SIGNAL( PixelValueChanged( double ) ),
-                    this, SLOT( this->DisplayClick( double ) ) );
-  QObject::connect( this->HelpButton, SIGNAL( clicked() ),
-                    this, SLOT( this->DisplayHelp() ) );
 }
 
 /**
  *  Destroys the object and frees any allocated resources
  */
-tubeImageViewer::~tubeImageViewer()
+tubeImageViewer::
+~tubeImageViewer()
 {
 }
 
-void tubeImageViewer::DisplayClick( double v )
+void
+tubeImageViewer::
+on_Window2D_PixelValueChanged( double v )
 {
-  std::cout << "Here" << std::endl;
-
-  std::cout << "  x = " << this->Window2D->GetClickSelectX() << std::endl;
+  std::cout << "Pixel" << std::endl;
 }
 
-void tubeImageViewer::DisplayHelp()
+void
+tubeImageViewer::
+on_HelpButton_clicked()
 {
-  Ui::HelpWindow * helpWindow = new Ui::HelpWindow();
+  std::cout << "Help" << std::endl;
+  //Ui::HelpWindow * helpWindow = new Ui::HelpWindow();
 }
 
-void tubeImageViewer::SetInputImage( ImageType * newImData )
+void
+tubeImageViewer::
+on_QuitButton_clicked()
 {
+  this->close();
+}
+
+void
+tubeImageViewer::
+SetInputImage( ImageType * newImData )
+{
+  m_ImageData = newImData;
+
   this->Window2D->SetInputImage( newImData );
   this->Window2D->SetFlipY( true );
 
-  int maxSlice = newImData->GetLargestPossibleRegion().GetSize()[2]-1;
+  ImageType::SizeType dimSize;
+  dimSize = newImData->GetLargestPossibleRegion().GetSize();
+
+  ImageType::SpacingType spacing;
+  spacing = newImData->GetSpacing();
+
+  ImageType::IndexType index0;
+  index0 = newImData->GetLargestPossibleRegion().GetIndex();
+
+  ImageType::SpacingType origin;
+  for( unsigned int i=0; i<3; i++ )
+    {
+    origin[i] = newImData->GetOrigin()[i];
+    }
+
+  int maxSlice = dimSize[2]-1;
   this->Slice->setMaximum( maxSlice );
   this->SliceNum->setMaximum( maxSlice );
 
@@ -91,12 +115,71 @@ void tubeImageViewer::SetInputImage( ImageType * newImData )
   this->IntensityMax->setValue( static_cast<int>(
     this->Window2D->GetIntensityMax() ) );
 
+  QString infoText;
+  QString tmpText;
+  m_ImageInfoText.clear();
+  infoText = "NDims = 3";
+  m_ImageInfoText.push_back( QListWidgetItem( infoText ) );
+
+  infoText = "DimSize = ";
+  tmpText.setNum( dimSize[0] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( dimSize[1] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( dimSize[2] );
+  infoText.push_back( tmpText );
+  m_ImageInfoText.push_back( QListWidgetItem( infoText ) );
+
+  infoText = "Index = ";
+  tmpText.setNum( index0[0] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( index0[1] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( index0[2] );
+  infoText.push_back( tmpText );
+  m_ImageInfoText.push_back( QListWidgetItem( infoText ) );
+
+  infoText = "Origin = ";
+  tmpText.setNum( origin[0] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( origin[1] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( origin[2] );
+  infoText.push_back( tmpText );
+  m_ImageInfoText.push_back( QListWidgetItem( infoText ) );
+
+  infoText = "Spacing = ";
+  tmpText.setNum( spacing[0] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( spacing[1] );
+  infoText.push_back( tmpText );
+  infoText.push_back( ", " );
+  tmpText.setNum( spacing[2] );
+  infoText.push_back( tmpText );
+  m_ImageInfoText.push_back( QListWidgetItem( infoText ) );
+
+  for( unsigned int i=0; i< m_ImageInfoText.size(); i++ )
+    {
+    this->ImageInfoTextList->addItem( & m_ImageInfoText[i] );
+    }
+
   this->Window2D->show();
   this->Window2D->update();
 }
 
-void tubeImageViewer::SetInputOverlay( OverlayType * newOverlayData )
+void
+tubeImageViewer::
+SetInputOverlay( OverlayType * newOverlayData )
 {
+  m_OverlayData = newOverlayData;
+
   this->Window2D->SetInputOverlay( newOverlayData );
 
   this->Window2D->show();
