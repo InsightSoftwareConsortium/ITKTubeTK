@@ -1274,9 +1274,8 @@ DiffusiveRegistrationFilter
     {
     energies.IntensityDistanceEnergy += str.IntensityDistanceEnergies[i];
     energies.RegularizationEnergy += str.RegularizationEnergies[i];
-    energies.TotalEnergy
-        += ( energies.IntensityDistanceEnergy + energies.RegularizationEnergy );
     }
+  energies.TotalEnergy = energies.IntensityDistanceEnergy + energies.RegularizationEnergy;
 
   delete [] str.IntensityDistanceEnergies;
   delete [] str.RegularizationEnergies;
