@@ -1534,21 +1534,28 @@ DiffusiveRegistrationFilter
   // Compute the RMS and mean metrics
   double numPixels
       = (double) m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed;
-  m_UpdateMetrics.RMSTotalUpdateMagnitude = vcl_sqrt(
-        m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
-        / numPixels );
-  m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude = vcl_sqrt(
-        m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
-        / numPixels );
-  m_UpdateMetrics.RMSRegularizationUpdateMagnitude = vcl_sqrt(
-        m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
-        / numPixels );
-  m_UpdateMetrics.MeanTotalUpdateMagnitude
-      = m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude / numPixels;
-  m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude
-      = m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude / numPixels;
-  m_UpdateMetrics.MeanRegularizationUpdateMagnitude
-      = m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude / numPixels;
+  if( numPixels == 0 )
+    {
+    m_UpdateMetrics.zero();
+    }
+  else
+    {
+    m_UpdateMetrics.RMSTotalUpdateMagnitude = vcl_sqrt(
+          m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+          / numPixels );
+    m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude = vcl_sqrt(
+          m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
+          / numPixels );
+    m_UpdateMetrics.RMSRegularizationUpdateMagnitude = vcl_sqrt(
+          m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
+          / numPixels );
+    m_UpdateMetrics.MeanTotalUpdateMagnitude
+        = m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude / numPixels;
+    m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude
+        = m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude / numPixels;
+    m_UpdateMetrics.MeanRegularizationUpdateMagnitude
+        = m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude / numPixels;
+    }
 
   this->SetRMSChange( m_UpdateMetrics.RMSTotalUpdateMagnitude );
 }
