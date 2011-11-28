@@ -861,6 +861,10 @@ DiffusiveRegistrationFilter
   str.TimeStep = NumericTraits< TimeStepType >::Zero;
   str.UpdateMetricsIntermediate
       = new UpdateMetricsIntermediateStruct[this->GetNumberOfThreads()];
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    str.UpdateMetricsIntermediate[i].zero();
+    }
 
   this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
@@ -1061,7 +1065,8 @@ DiffusiveRegistrationFilter
   bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
 
   // Initialize the metrics
-  updateMetricsIntermediate.zero();
+  UpdateMetricsIntermediateStruct localUpdateMetricsIntermediate;
+  localUpdateMetricsIntermediate.zero();
 
   // Go to the first face
   outputStruct.GoToBegin();
@@ -1170,18 +1175,18 @@ DiffusiveRegistrationFilter
           squaredRegularizationUpdateMagnitude
               += vnl_math_sqr( regularizationTerm[i] );
           }
-        updateMetricsIntermediate.NumberOfPixelsProcessed++;
-        updateMetricsIntermediate.SumOfSquaredTotalUpdateMagnitude
+        localUpdateMetricsIntermediate.NumberOfPixelsProcessed++;
+        localUpdateMetricsIntermediate.SumOfSquaredTotalUpdateMagnitude
             += squaredTotalUpdateMagnitude;
-        updateMetricsIntermediate.SumOfSquaredIntensityDistanceUpdateMagnitude
+        localUpdateMetricsIntermediate.SumOfSquaredIntensityDistanceUpdateMagnitude
             += squaredIntensityDistanceUpdateMagnitude;
-        updateMetricsIntermediate.SumOfSquaredRegularizationUpdateMagnitude
+        localUpdateMetricsIntermediate.SumOfSquaredRegularizationUpdateMagnitude
             += squaredRegularizationUpdateMagnitude;
-        updateMetricsIntermediate.SumOfTotalUpdateMagnitude
+        localUpdateMetricsIntermediate.SumOfTotalUpdateMagnitude
             += vcl_sqrt( squaredTotalUpdateMagnitude );
-        updateMetricsIntermediate.SumOfIntensityDistanceUpdateMagnitude
+        localUpdateMetricsIntermediate.SumOfIntensityDistanceUpdateMagnitude
             += vcl_sqrt( squaredIntensityDistanceUpdateMagnitude );
-        updateMetricsIntermediate.SumOfRegularizationUpdateMagnitude
+        localUpdateMetricsIntermediate.SumOfRegularizationUpdateMagnitude
             += vcl_sqrt( squaredRegularizationUpdateMagnitude );
         }
 
@@ -1227,6 +1232,8 @@ DiffusiveRegistrationFilter
       }
     }
 
+  updateMetricsIntermediate.copyFrom(localUpdateMetricsIntermediate);
+
   // Ask the finite difference function to compute the time step for
   // this iteration.  We give it the global data pointer to use, then
   // ask it to free the global data memory.
@@ -1261,6 +1268,11 @@ DiffusiveRegistrationFilter
   str.OutputImage = outputField;
   str.IntensityDistanceEnergies = new double[this->GetNumberOfThreads()];
   str.RegularizationEnergies = new double[this->GetNumberOfThreads()];
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    str.IntensityDistanceEnergies[i] = 0;
+    str.RegularizationEnergies[i] = 0;
+    }
 
   // Multithread the execution
   this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
@@ -1390,8 +1402,8 @@ DiffusiveRegistrationFilter
   bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
 
   // Initialize the energy values
-  intensityDistanceEnergy = 0.0;
-  regularizationEnergy = 0.0;
+  double localIntensityDistanceEnergy = 0.0;
+  double localRegularizationEnergy = 0.0;
 
   // Go to the first face
   outputStruct.GoToBegin();
@@ -1458,14 +1470,14 @@ DiffusiveRegistrationFilter
         // Calculate intensity distance energy
         if( computeIntensityDistance )
           {
-          intensityDistanceEnergy += df->ComputeIntensityDistanceEnergy(
+          localIntensityDistanceEnergy += df->ComputeIntensityDistanceEnergy(
                 outputNeighborhood.GetIndex(), outputNeighborhood.GetCenterPixel() );
           }
 
         // Calculate regularization energy
         if( computeRegularization )
           {
-          regularizationEnergy += df->ComputeRegularizationEnergy(
+          localRegularizationEnergy += df->ComputeRegularizationEnergy(
                 tensorNeighborhoods,
                 deformationComponentFirstOrderRegionArrays );
           }
@@ -1502,6 +1514,9 @@ DiffusiveRegistrationFilter
       stoppingCriterionMaskStruct.Increment();
       }
     }
+
+  intensityDistanceEnergy = localIntensityDistanceEnergy;
+  regularizationEnergy = localRegularizationEnergy;
 }
 
 /**
