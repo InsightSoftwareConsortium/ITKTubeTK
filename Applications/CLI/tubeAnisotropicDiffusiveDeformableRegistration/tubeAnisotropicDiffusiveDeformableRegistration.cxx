@@ -771,7 +771,7 @@ int DoIt( int argc, char * argv[] )
   warper->SetDeformationField( multires->GetOutput() );
   warper->SetInterpolator( interpolator );
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
-  warper->SetEdgePaddingValue( 0 );
+  warper->SetEdgePaddingValue( backgroundIntensity );
 
   // Update triggers the registration and the warping
   warper->Update();
