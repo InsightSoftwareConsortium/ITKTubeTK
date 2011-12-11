@@ -1795,10 +1795,11 @@ DiffusiveRegistrationFilter
   // TODO this makes tests fail
   if (elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
     {
-//    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
-//                     << "  Registration halting.");
-//    this->StopRegistration();
-//    std::cout << delimiter <<  "!!!";
+    itkWarningMacro( << "Total energy is increasing, indicating numeric instability. "
+                     << energiesChange.TotalEnergy << ".  "
+                     << "Registration halting.");
+    this->StopRegistration();
+    std::cout << delimiter <<  "!!!";
     }
 
   std::cout << std::endl;
