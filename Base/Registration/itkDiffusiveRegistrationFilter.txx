@@ -60,7 +60,7 @@ DiffusiveRegistrationFilter
   m_HighResolutionStoppingCriterionMask = 0;
 
   m_StoppingCriterionEvaluationPeriod     = 50;
-  m_StoppingCriterionMaxTotalEnergyChange = 0;
+  m_StoppingCriterionMaxTotalEnergyChange = -1;
 
   m_Energies.zero();
   m_PreviousEnergies.zero();
@@ -1804,14 +1804,15 @@ DiffusiveRegistrationFilter
 
   std::cout << std::endl;
 
-  // Check for stopping condition // TODO should be in terms of time, not iterations
+  // Check for stopping condition every m_StoppingCriterionEvaluationPeriod
   if (elapsedIterations != 0
       && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
     {
-    if (std::abs(totalEnergyChangeInEvaluationPeriod)
-        < m_StoppingCriterionMaxTotalEnergyChange)
+    if (totalEnergyChangeInEvaluationPeriod > m_StoppingCriterionMaxTotalEnergyChange)
       {
-      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
+      itkWarningMacro( << "Stopping criterion satisfied. "
+                       << totalEnergyChangeInEvaluationPeriod << ".  "
+                       << "Registration halting.");
       this->StopRegistration();
       }
     totalEnergyChangeInEvaluationPeriod = 0;
