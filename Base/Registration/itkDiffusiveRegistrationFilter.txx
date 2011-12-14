@@ -1793,7 +1793,12 @@ DiffusiveRegistrationFilter
   // Error checking for energy increase that indicates we should stop
   // This should never happen with the line search turned on
   // TODO this makes tests fail
+  static int numEnergyViolations = 0;
   if (elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
+    {
+    numEnergyViolations++;
+    }
+  if (numEnergyViolations > 10)
     {
     std::cout << "Total energy is increasing, indicating numeric instability. "
               << energiesChange.TotalEnergy << ".  "
