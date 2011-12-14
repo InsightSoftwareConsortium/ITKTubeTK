@@ -183,7 +183,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
       mappedPoint[j] += itvec[j];
     }
 
-  double movingValue = m_BackgroundIntensity;
+  double movingValue = fixedValue;
   if( m_MovingImageInterpolator->IsInsideBuffer( mappedPoint ) )
     {
     movingValue = m_MovingImageInterpolator->Evaluate( mappedPoint );
