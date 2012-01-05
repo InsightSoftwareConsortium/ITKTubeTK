@@ -7,7 +7,7 @@
   Version:   $Revision: 1.12 $
 
   Copyright ( c ) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+  See http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even 
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
@@ -15,10 +15,11 @@
 
 =========================================================================*/
 
-#include "itkNumericTraits.h"
+#include <metaCommand.h>
 
-#include "metaCommand.h"
-
+#include <math.h>
+#include <string>
+#include <sstream>
 #include <iostream>
 
 
@@ -172,12 +173,6 @@ int main( int argc, char **argv )
         toleranceValue, toleranceNumberOfDifferences );
       }
     
-    }
-  catch( itk::ExceptionObject& e )
-    {
-    std::cerr << "Compare text files caught an ITK exception:\n";
-    std::cerr << e << "\n";
-    bestBaselineStatus = -1;
     }
   catch( const std::exception& e )
     {

@@ -506,7 +506,8 @@ int DoIt( MetaCommand & command )
       int normType = command.GetValueAsInt( *it, "type" );
       if( normType == 0 )
         {
-        typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
+        typedef itk::NormalizeImageFilter< ImageType, ImageType >
+                                                      NormFilterType;
         typename NormFilterType::Pointer normFilter = NormFilterType::New();
         normFilter->SetInput( imIn );
         normFilter->Update();
@@ -549,6 +550,17 @@ int DoIt( MetaCommand & command )
             << std::endl;
           std::cout << "  Mean = " << meanV << " : StdDev = " << stdDevV
             << std::endl;
+
+          if( (binMax - binMin) < nBins
+            && 1 == static_cast< pixelT >( 1.1 ) )
+            {
+            std::cout << "Stretching represent int values" << std::endl;
+            int binMid = (binMax + binMin ) / 2.0;
+            int binStep = ( nBins - 1 ) / 2;
+            binMin = binMid - binStep;
+            binMax = binMin + nBins;
+            }
+
           it1.GoToBegin();
           bin.Fill( 0 );
           while( !it1.IsAtEnd() )
@@ -558,15 +570,23 @@ int DoIt( MetaCommand & command )
             if( tf>=0 && tf<nBins )
               {
               bin[( int )tf]++;
+              if( tf > 0 )
+                {
+                bin[( int )( tf - 1 )] += 0.5;
+                }
+              if( tf < nBins-1 )
+                {
+                bin[( int )( tf + 1 )] += 0.5;
+                }
               }
             ++it1;
             }
 
           int maxBin = 0;
-          double maxBinV = 0;
-          for( unsigned int i=0; i<nBins; i++ )
+          double maxBinV = bin[0];
+          for( unsigned int i=1; i<nBins; i++ )
             {
-            if( bin[i] > maxBinV )
+            if( bin[i] >= maxBinV )
               {
               maxBinV = bin[i];
               maxBin = i;
@@ -596,10 +616,15 @@ int DoIt( MetaCommand & command )
             / ( bin[(int)binFWHMMax-1] - bin[(int)binFWHMMax] );
           std::cout << "  tweak: binfwhmmax = " << binFWHMMax
             << std::endl;
+          if( binFWHMMax <= binFWHMMin )
+            {
+            binFWHMMin = maxBin-1;
+            binFWHMMax = maxBin+1;
+            }
 
-          double minV = ( ( binFWHMMin + 0.5 ) / ( nBins - 1 ) )
+          double minV = ( ( binFWHMMin + 0.5 ) / ( nBins - 1.0 ) )
             * ( binMax-binMin ) + binMin;
-          double maxV = ( ( binFWHMMax + 0.5 ) / ( nBins - 1 ) )
+          double maxV = ( ( binFWHMMax + 0.5 ) / ( nBins - 1.0 ) )
             * ( binMax-binMin ) + binMin;
 
           meanV = ( maxV + minV ) / 2.0;
