@@ -35,10 +35,10 @@ set( PROJ_EXE
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand )
+  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
 set( TEXTCOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/TextCompareCommand )
+  ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
 
 #######
 # Test1

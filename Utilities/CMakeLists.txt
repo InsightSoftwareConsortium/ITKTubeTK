@@ -53,12 +53,21 @@ target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
 add_executable( TextCompareCommand TextCompareCommand.cxx )
 target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} )
 
-slicer3_set_plugins_output_path( 
-  ImageCompareCommand 
-  TextCompareCommand )
-slicer3_install_plugins( 
-  ImageCompareCommand
-  TextCompareCommand )
+install( FILES DESTINATION bin COMPONENT RUNTIME )
+
+# Installation file
+install(
+  TARGETS ImageCompareCommand
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  COMPONENT RUNTIME )
+install(
+  TARGETS TextCompareCommand
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  COMPONENT RUNTIME )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

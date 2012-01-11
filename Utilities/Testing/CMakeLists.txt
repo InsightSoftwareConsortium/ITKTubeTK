@@ -101,12 +101,12 @@ add_test( tubeCLIProgressReporterTest
 
 ## Image Compare
 add_test( ImageCompareCommandTest1
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
     -t ${TEMP}/ES0015_Large.mha
     -b ${INPUT_DATA}/ES0015_Large.mha )
 
 add_test( ImageCompareCommandTest2
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
     -n 1000
     -r 1
     -i 50
@@ -114,19 +114,19 @@ add_test( ImageCompareCommandTest2
     -b ${INPUT_DATA}/im0001_n10.crop.mha )
 
 add_test( ImageCompareCommandTest3
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
      -t ${TEMP}/im0001.mha
      -b ${INPUT_DATA}/im0001_n10.crop.mha )
 set_tests_properties( ImageCompareCommandTest3
                       PROPERTIES WILL_FAIL true )
 
 add_test( ImageCompareCommandTest4
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
      -t ${TEMP}/im0001.crop.mha
      -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001.crop.mha )
 
 add_test( ImageCompareCommandTest5
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/ImageCompareCommand
+  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
      -t ${TEMP}/im0001.crop.mha
      -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001_n20.crop.mha )
 set_tests_properties( ImageCompareCommandTest5
