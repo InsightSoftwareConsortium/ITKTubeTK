@@ -80,5 +80,12 @@ TARGET_LINK_LIBRARIES( ${PROJECT_NAME}
   ${QT_LIBRARIES}
   )
 
-slicer3_set_plugins_output_path( ${PROJECT_NAME} )
-slicer3_install_plugins( ${PROJECT_NAME} )
+install( FILES DESTINATION bin COMPONENT RUNTIME )
+
+# Installation file
+install(
+  TARGETS ${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  COMPONENT RUNTIME )

@@ -59,10 +59,16 @@ set( PROJECT_SOURCE
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
 target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} TubeNumerics )
 
-slicer3_set_plugins_output_path( ${PROJECT_NAME} )
-set( TARGETS 
-  ${PROJECT_NAME} )
-slicer3_install_plugins( ${TARGETS} )
+# Add the install rule
+install( FILES DESTINATION bin COMPONENT RUNTIME )
+
+# Installation file
+install(
+  TARGETS ${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  COMPONENT RUNTIME )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
