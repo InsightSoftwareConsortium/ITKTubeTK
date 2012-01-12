@@ -64,6 +64,10 @@ DiffusiveRegistrationFilter
 
   m_StoppingCriterionEvaluationPeriod     = 50;
   m_StoppingCriterionMaxTotalEnergyChange = 0;
+
+  m_TotalEnergy = 0.0;
+  m_IntensityDistanceEnergy = 0.0;
+  m_RegularizationEnergy = 0.0;
 }
 
 /**
@@ -987,6 +991,11 @@ DiffusiveRegistrationFilter
     this->UpdateDeformationComponentImages();
     this->ComputeDeformationComponentDerivativeImages();
     }
+
+  // Initialize the energy and update metrics
+  m_TotalEnergy = 0.0;
+  m_IntensityDistanceEnergy = 0.0;
+  m_RegularizationEnergy = 0.0;
 }
 
 /**
@@ -1286,6 +1295,9 @@ DiffusiveRegistrationFilter
             = ( stoppingCriterionMaskRegion.Value() == 0.0 );
         }
 
+      typename UpdateBufferType::PixelType intensityDistanceTerm;
+      typename UpdateBufferType::PixelType regularizationTerm;
+
       // Compute updates
       updateRegion.Value() = df->ComputeUpdate(
           outputNeighborhood,
@@ -1294,8 +1306,9 @@ DiffusiveRegistrationFilter
           deformationComponentSecondOrderRegionArrays,
           tensorDerivativeRegions,
           multiplicationVectorRegionArrays,
-          includeInStoppingCriterion,
-          globalData );
+          globalData,
+          intensityDistanceTerm,
+          regularizationTerm );
 
       // Go to the next neighborhood
       ++outputNeighborhood;
@@ -1348,6 +1361,268 @@ DiffusiveRegistrationFilter
 }
 
 /**
+ * Computes the intensity distance and regularization energies under the current
+ * update buffer.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+double
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CalculateEnergies( double & intensityDistanceEnergy,
+                     double & regularizationEnergy )
+{
+  // Set up for multithreaded processing.
+  CalculateEnergiesThreadStruct str;
+  str.Filter = this;
+  str.IntensityDistanceEnergies = new double[this->GetNumberOfThreads()];
+  str.RegularizationEnergies = new double[this->GetNumberOfThreads()];
+
+  // Multithread the execution
+  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetSingleMethod(
+  this->CalculateEnergiesThreaderCallback, & str);
+  this->GetMultiThreader()->SingleMethodExecute();
+
+  // Combine the results from the thread to calculate the total energies
+  double totalEnergy = 0;
+  intensityDistanceEnergy = 0;
+  regularizationEnergy = 0;
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    intensityDistanceEnergy += str.IntensityDistanceEnergies[i];
+    regularizationEnergy += str.RegularizationEnergies[i];
+    totalEnergy += intensityDistanceEnergy + regularizationEnergy;
+    }
+
+  delete [] str.IntensityDistanceEnergies;
+  delete [] str.RegularizationEnergies;
+
+  return totalEnergy;
+}
+
+/**
+ * Calls ThreadedCalculateEnergies for processing
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+ITK_THREAD_RETURN_TYPE
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CalculateEnergiesThreaderCallback( void * arg )
+{
+  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+
+  CalculateEnergiesThreadStruct * str = (CalculateEnergiesThreadStruct *)
+      (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+
+  // Execute the actual method with appropriate output region
+  // first find out how many pieces extent can be split into.
+  // Using the SplitRequestedRegion method from itk::ImageSource.
+  ThreadRegionType splitRegion;
+  int total = str->Filter->SplitRequestedRegion( threadId,
+                                                 threadCount,
+                                                 splitRegion );
+
+  ThreadDiffusionTensorImageRegionType splitTensorRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitTensorRegion );
+
+  ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitScalarDerivativeRegion );
+
+  ThreadStoppingCriterionMaskImageRegionType splitStoppingCriterionMaskImageRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitStoppingCriterionMaskImageRegion );
+
+  if (threadId < total)
+    {
+    str->Filter->ThreadedCalculateEnergies( splitRegion,
+                                            splitTensorRegion,
+                                            splitScalarDerivativeRegion,
+                                            splitStoppingCriterionMaskImageRegion,
+                                            str->IntensityDistanceEnergies[threadId],
+                                            str->RegularizationEnergies[threadId],
+                                            threadId );
+    }
+
+  return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Does the actual work of calculating the energies
+ * over an output region supplied by the multithreading mechanism.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+< TFixedImage, TMovingImage, TDeformationField >
+::ThreadedCalculateEnergies(
+    const ThreadRegionType & regionToProcess,
+    const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
+    const ThreadScalarDerivativeImageRegionType &
+      scalarDerivativeRegionToProcess,
+    const ThreadStoppingCriterionMaskImageRegionType &
+      stoppingCriterionMaskRegionToProcess,
+    double & intensityDistanceEnergy,
+    double & regularizationEnergy,
+    int)
+{
+  // Get the FiniteDifferenceFunction to use in calculations.
+  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  assert( df );
+
+  // Get the radius and output
+  const typename OutputImageType::SizeType radius = df->GetRadius();
+  OutputImagePointer output = this->GetOutput();
+
+  // Break the input into a series of regions.  The first region is free
+  // of boundary conditions, the rest with boundary conditions.  We operate
+  // on the output region because the input has been copied to the output.
+
+  // Setup the types of structs for the face calculations
+  // (Struct handles the case where the image pointer doesn't exist)
+  FaceStruct< OutputImagePointer > outputStruct(
+      output, regionToProcess, radius );
+  NeighborhoodType outputNeighborhood;
+
+  FaceStruct< DiffusionTensorImagePointer > tensorStruct(
+      m_DiffusionTensorImages, tensorRegionToProcess, radius );
+  DiffusionTensorNeighborhoodVectorType tensorNeighborhoods;
+
+  FaceStruct< ScalarDerivativeImagePointer >
+      deformationComponentFirstOrderStruct(
+          m_DeformationComponentFirstOrderDerivativeArrays,
+          scalarDerivativeRegionToProcess,
+          radius );
+  ScalarDerivativeImageRegionArrayVectorType
+      deformationComponentFirstOrderRegionArrays;
+
+  FaceStruct< FixedImagePointer > stoppingCriterionMaskStruct(
+      m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess, radius );
+  StoppingCriterionMaskImageRegionType stoppingCriterionMaskRegion;
+
+  // Get the type of registration
+  bool computeIntensityDistance = this->GetComputeIntensityDistanceTerm();
+  bool computeRegularization = this->GetComputeRegularizationTerm();
+  bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
+
+  // Initialize the energy values
+  intensityDistanceEnergy = 0.0;
+  regularizationEnergy = 0.0;
+
+  // Go to the first face
+  outputStruct.GoToBegin();
+  if( computeRegularization )
+    {
+    tensorStruct.GoToBegin();
+    deformationComponentFirstOrderStruct.GoToBegin();
+    }
+  if( haveStoppingCriterionMask )
+    {
+    stoppingCriterionMaskStruct.GoToBegin();
+    }
+
+  // Iterate over each face
+  while( !outputStruct.IsAtEnd() )
+    {
+    // Set the neighborhood iterators to the current face
+    outputStruct.SetIteratorToCurrentFace( outputNeighborhood, output, radius );
+    if( computeRegularization )
+      {
+      tensorStruct.SetIteratorToCurrentFace(
+          tensorNeighborhoods, m_DiffusionTensorImages, radius );
+      deformationComponentFirstOrderStruct.SetIteratorToCurrentFace(
+          deformationComponentFirstOrderRegionArrays,
+          m_DeformationComponentFirstOrderDerivativeArrays );
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.SetIteratorToCurrentFace(
+          stoppingCriterionMaskRegion, m_StoppingCriterionMask );
+      }
+
+    // Go to the beginning of the neighborhood for this face
+    outputNeighborhood.GoToBegin();
+    if( computeRegularization )
+      {
+      for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+        {
+        tensorNeighborhoods[i].GoToBegin();
+        for( unsigned int j = 0; j < ImageDimension; j++ )
+          {
+          deformationComponentFirstOrderRegionArrays[i][j].GoToBegin();
+          }
+        }
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskRegion.GoToBegin();
+      }
+
+    // Iterate through the neighborhood for this face and compute updates
+    while( !outputNeighborhood.IsAtEnd() )
+      {
+      // Get whether or not to include this pixel in the stopping criterion
+      bool includeInStoppingCriterion = true;
+      if( haveStoppingCriterionMask )
+        {
+        includeInStoppingCriterion
+            = ( stoppingCriterionMaskRegion.Value() == 0.0 );
+        }
+
+      if( includeInStoppingCriterion )
+        {
+        // Calculate intensity distance energy
+        if( computeIntensityDistance )
+          {
+          intensityDistanceEnergy += df->ComputeIntensityDistanceEnergy(
+                outputNeighborhood.GetIndex() );
+          }
+
+        // Calculate regularization energy
+        if( computeRegularization )
+          {
+          regularizationEnergy += df->ComputeRegularizationEnergy(
+                tensorNeighborhoods,
+                deformationComponentFirstOrderRegionArrays );
+          }
+        }
+
+      // Go to the next neighborhood
+      ++outputNeighborhood;
+      if( computeRegularization )
+        {
+        for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+          {
+          ++tensorNeighborhoods[i];
+          for( unsigned int j = 0; j < ImageDimension; j++ )
+            {
+            ++deformationComponentFirstOrderRegionArrays[i][j];
+            }
+          }
+        }
+      if( haveStoppingCriterionMask )
+        {
+        ++stoppingCriterionMaskRegion;
+        }
+      }
+
+    // Go to the next face
+    outputStruct.Increment();
+    if( computeRegularization )
+      {
+      tensorStruct.Increment();
+      deformationComponentFirstOrderStruct.Increment();
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.Increment();
+      }
+    }
+}
+
+/**
  * Applies changes from the update buffer to the output
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -1373,7 +1648,7 @@ DiffusiveRegistrationFilter
   this->GetOutput()->Modified();
 
   // Print out energy metrics and evaluate stopping condition
-  this->PostProcessIteration();
+//  this->PostProcessIteration();
 }
 
 /**
@@ -1432,178 +1707,178 @@ DiffusiveRegistrationFilter
     }
 }
 
-/**
- * Does the actual work of updating the output from the UpdateContainer
- * over an output region supplied by the multithreading mechanism.
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::PostProcessIteration()
-{
-  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-  assert( df );
+///**
+// * Does the actual work of updating the output from the UpdateContainer
+// * over an output region supplied by the multithreading mechanism.
+// */
+//template < class TFixedImage, class TMovingImage, class TDeformationField >
+//void
+//DiffusiveRegistrationFilter
+//  < TFixedImage, TMovingImage, TDeformationField >
+//::PostProcessIteration()
+//{
+//  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+//  assert( df );
 
-  // Keep track of the total registration time
-  TimeStepType timestep = df->GetTimeStep();
-  static TimeStepType totalTime = 0.0;
-  totalTime += timestep;
+//  // Keep track of the total registration time
+//  TimeStepType timestep = df->GetTimeStep();
+//  static TimeStepType totalTime = 0.0;
+//  totalTime += timestep;
 
-  // Keep track of the RMS changes
-  double rmsIntensityDistanceChange = df->GetRMSIntensityDistanceChange();
-  double rmsRegularizationChange = df->GetRMSRegularizationChange();
-  double rmsTotalChange = df->GetRMSTotalChange();
-  this->SetRMSChange( rmsTotalChange );
+//  // Keep track of the RMS changes
+//  double rmsIntensityDistanceChange = df->GetRMSIntensityDistanceChange();
+//  double rmsRegularizationChange = df->GetRMSRegularizationChange();
+//  double rmsTotalChange = df->GetRMSTotalChange();
+//  this->SetRMSChange( rmsTotalChange );
 
-  // Keep track of the mean changes
-  double meanIntensityDistanceChange = df->GetMeanIntensityDistanceChange();
-  double meanRegularizationChange = df->GetMeanRegularizationChange();
-  double meanTotalChange = df->GetMeanTotalChange();
+//  // Keep track of the mean changes
+//  double meanIntensityDistanceChange = df->GetMeanIntensityDistanceChange();
+//  double meanRegularizationChange = df->GetMeanRegularizationChange();
+//  double meanTotalChange = df->GetMeanTotalChange();
 
-  // Keep track of the registration RMS changes and energies over time
-  static double previousIntensityDistanceEnergy = 0.0;
-  static double previousRegularizationEnergy = 0.0;
-  static double previousTotalEnergy = 0.0;
-  static double previousRMSIntensityDistanceChange = 0.0;
-  static double previousRMSRegularizationChange = 0.0;
-  static double previousRMSTotalChange = 0.0;
-  static double previousMeanIntensityDistanceChange = 0.0;
-  static double previousMeanRegularizationChange = 0.0;
-  static double previousMeanTotalChange = 0.0;
+//  // Keep track of the registration RMS changes and energies over time
+//  static double previousIntensityDistanceEnergy = 0.0;
+//  static double previousRegularizationEnergy = 0.0;
+//  static double previousTotalEnergy = 0.0;
+//  static double previousRMSIntensityDistanceChange = 0.0;
+//  static double previousRMSRegularizationChange = 0.0;
+//  static double previousRMSTotalChange = 0.0;
+//  static double previousMeanIntensityDistanceChange = 0.0;
+//  static double previousMeanRegularizationChange = 0.0;
+//  static double previousMeanTotalChange = 0.0;
 
-  // Keep track of the registration energies
-  double intensityDistanceEnergy = 0.0;
-  double regularizationEnergy = 0.0;
-  if( this->GetComputeIntensityDistanceTerm() )
-    {
-    intensityDistanceEnergy = df->GetIntensityDistanceEnergy();
-    }
-  if( this->GetComputeRegularizationTerm() )
-    {
-    regularizationEnergy = df->GetRegularizationEnergy();
-    }
-  double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
+//  // Keep track of the registration energies
+//  double intensityDistanceEnergy = 0.0;
+//  double regularizationEnergy = 0.0;
+//  if( this->GetComputeIntensityDistanceTerm() )
+//    {
+//    intensityDistanceEnergy = df->GetIntensityDistanceEnergy();
+//    }
+//  if( this->GetComputeRegularizationTerm() )
+//    {
+//    regularizationEnergy = df->GetRegularizationEnergy();
+//    }
+//  double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
 
-  double totalEnergyChange
-      = totalEnergy - previousTotalEnergy;
-  double intensityDistanceEnergyChange
-      = intensityDistanceEnergy - previousIntensityDistanceEnergy;
-  double regularizationEnergyChange
-      = regularizationEnergy - previousRegularizationEnergy;
+//  double totalEnergyChange
+//      = totalEnergy - previousTotalEnergy;
+//  double intensityDistanceEnergyChange
+//      = intensityDistanceEnergy - previousIntensityDistanceEnergy;
+//  double regularizationEnergyChange
+//      = regularizationEnergy - previousRegularizationEnergy;
 
-  double rmsTotalChangeChange
-      = rmsTotalChange - previousRMSTotalChange;
-  double rmsIntensityDistanceChangeChange
-      = rmsIntensityDistanceChange - previousRMSIntensityDistanceChange;
-  double rmsRegularizationChangeChange
-      = rmsRegularizationChange - previousRMSRegularizationChange;
+//  double rmsTotalChangeChange
+//      = rmsTotalChange - previousRMSTotalChange;
+//  double rmsIntensityDistanceChangeChange
+//      = rmsIntensityDistanceChange - previousRMSIntensityDistanceChange;
+//  double rmsRegularizationChangeChange
+//      = rmsRegularizationChange - previousRMSRegularizationChange;
 
-  double meanTotalChangeChange
-      = meanTotalChange - previousMeanTotalChange;
-  double meanIntensityDistanceChangeChange
-      = meanIntensityDistanceChange - previousMeanIntensityDistanceChange;
-  double meanRegularizationChangeChange
-      = meanRegularizationChange - previousMeanRegularizationChange;
+//  double meanTotalChangeChange
+//      = meanTotalChange - previousMeanTotalChange;
+//  double meanIntensityDistanceChangeChange
+//      = meanIntensityDistanceChange - previousMeanIntensityDistanceChange;
+//  double meanRegularizationChangeChange
+//      = meanRegularizationChange - previousMeanRegularizationChange;
 
-  unsigned int elapsedIterations = this->GetElapsedIterations();
+//  unsigned int elapsedIterations = this->GetElapsedIterations();
 
-  // Keep track of the total energy change within each stopping criterion
-  // evaluation block
-  static double totalEnergyChangeInEvaluationPeriod = 0;
-  if (elapsedIterations != 0)
-    {
-    totalEnergyChangeInEvaluationPeriod += totalEnergyChange;
-    }
+//  // Keep track of the total energy change within each stopping criterion
+//  // evaluation block
+//  static double totalEnergyChangeInEvaluationPeriod = 0;
+//  if (elapsedIterations != 0)
+//    {
+//    totalEnergyChangeInEvaluationPeriod += totalEnergyChange;
+//    }
 
-  // Print out logging information
-  std::string delimiter = ", ";
-  std::string sectionDelimiter = " , ";
-  if( elapsedIterations == 0 )
-    {
-    std::cout << "All registration metric sections in the order "
-              << "TOTAL, INTENSITY, REGULARIZATION" << std::endl;
-    std::cout << "Iteration" << delimiter
-              << "Time Step" << delimiter
-              << "Total Time" << sectionDelimiter
-              << "RMS Change" << sectionDelimiter
-              << "RMS Change Change" << sectionDelimiter
-              << "Mean Change " << sectionDelimiter
-              << "Mean Change Change" << sectionDelimiter
-              << "Energy" << sectionDelimiter
-              << "Energy Change" << sectionDelimiter
-              << "Stopping Criterion"
-              << std::endl;
-    }
-  std::cout.setf(std::ios::fixed, std::ios::floatfield);
-  std::cout.precision(6);
-  std::cout << elapsedIterations << delimiter
-            << timestep << delimiter
-            << totalTime << sectionDelimiter
+//  // Print out logging information
+//  std::string delimiter = ", ";
+//  std::string sectionDelimiter = " , ";
+//  if( elapsedIterations == 0 )
+//    {
+//    std::cout << "All registration metric sections in the order "
+//              << "TOTAL, INTENSITY, REGULARIZATION" << std::endl;
+//    std::cout << "Iteration" << delimiter
+//              << "Time Step" << delimiter
+//              << "Total Time" << sectionDelimiter
+//              << "RMS Change" << sectionDelimiter
+//              << "RMS Change Change" << sectionDelimiter
+//              << "Mean Change " << sectionDelimiter
+//              << "Mean Change Change" << sectionDelimiter
+//              << "Energy" << sectionDelimiter
+//              << "Energy Change" << sectionDelimiter
+//              << "Stopping Criterion"
+//              << std::endl;
+//    }
+//  std::cout.setf(std::ios::fixed, std::ios::floatfield);
+//  std::cout.precision(6);
+//  std::cout << elapsedIterations << delimiter
+//            << timestep << delimiter
+//            << totalTime << sectionDelimiter
 
-            << rmsTotalChange << delimiter
-            << rmsIntensityDistanceChange << delimiter
-            << rmsRegularizationChange << sectionDelimiter
+//            << rmsTotalChange << delimiter
+//            << rmsIntensityDistanceChange << delimiter
+//            << rmsRegularizationChange << sectionDelimiter
 
-            << rmsTotalChangeChange << delimiter
-            << rmsIntensityDistanceChangeChange << delimiter
-            << rmsRegularizationChangeChange << sectionDelimiter
+//            << rmsTotalChangeChange << delimiter
+//            << rmsIntensityDistanceChangeChange << delimiter
+//            << rmsRegularizationChangeChange << sectionDelimiter
 
-            << meanTotalChange << delimiter
-            << meanIntensityDistanceChange << delimiter
-            << meanRegularizationChange << sectionDelimiter
+//            << meanTotalChange << delimiter
+//            << meanIntensityDistanceChange << delimiter
+//            << meanRegularizationChange << sectionDelimiter
 
-            << meanTotalChangeChange << delimiter
-            << meanIntensityDistanceChangeChange << delimiter
-            << meanRegularizationChangeChange << sectionDelimiter
+//            << meanTotalChangeChange << delimiter
+//            << meanIntensityDistanceChangeChange << delimiter
+//            << meanRegularizationChangeChange << sectionDelimiter
 
-            << totalEnergy << delimiter
-            << intensityDistanceEnergy << delimiter
-            << regularizationEnergy << sectionDelimiter
+//            << totalEnergy << delimiter
+//            << intensityDistanceEnergy << delimiter
+//            << regularizationEnergy << sectionDelimiter
 
-            << "*** " << totalEnergyChange << " *** " << delimiter
-            << intensityDistanceEnergyChange << delimiter
-            << regularizationEnergyChange << sectionDelimiter
+//            << "*** " << totalEnergyChange << " *** " << delimiter
+//            << intensityDistanceEnergyChange << delimiter
+//            << regularizationEnergyChange << sectionDelimiter
 
-            << "*** " << totalEnergyChangeInEvaluationPeriod << " *** ";
+//            << "*** " << totalEnergyChangeInEvaluationPeriod << " *** ";
 
-  // Error checking that indicates we should stop
-  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
-    {
-//    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
-//                     << "  Registration halting.");
-//    this->StopRegistration();
-    std::cout << delimiter <<  "!!!";
-    }
+//  // Error checking that indicates we should stop
+//  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
+//    {
+////    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
+////                     << "  Registration halting.");
+////    this->StopRegistration();
+//    std::cout << delimiter <<  "!!!";
+//    }
 
-  std::cout << std::endl;
+//  std::cout << std::endl;
 
-  // Update 'previous' variables
-  previousTotalEnergy = totalEnergy;
-  previousIntensityDistanceEnergy = intensityDistanceEnergy;
-  previousRegularizationEnergy = regularizationEnergy;
+//  // Update 'previous' variables
+//  previousTotalEnergy = totalEnergy;
+//  previousIntensityDistanceEnergy = intensityDistanceEnergy;
+//  previousRegularizationEnergy = regularizationEnergy;
 
-  previousRMSTotalChange = rmsTotalChange;
-  previousRMSIntensityDistanceChange = rmsIntensityDistanceChange;
-  previousRMSRegularizationChange = rmsRegularizationChange;
+//  previousRMSTotalChange = rmsTotalChange;
+//  previousRMSIntensityDistanceChange = rmsIntensityDistanceChange;
+//  previousRMSRegularizationChange = rmsRegularizationChange;
 
-  previousMeanTotalChange = meanTotalChange;
-  previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
-  previousMeanRegularizationChange = meanRegularizationChange;
+//  previousMeanTotalChange = meanTotalChange;
+//  previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
+//  previousMeanRegularizationChange = meanRegularizationChange;
 
-  // Check for stopping condition
-  if (elapsedIterations != 0
-      && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
-    {
-    if (std::abs(totalEnergyChangeInEvaluationPeriod)
-        < m_StoppingCriterionMaxTotalEnergyChange)
-      {
-      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
-      this->StopRegistration();
-      }
-    totalEnergyChangeInEvaluationPeriod = 0;
-    }
-}
+//  // Check for stopping condition
+//  if (elapsedIterations != 0
+//      && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
+//    {
+//    if (std::abs(totalEnergyChangeInEvaluationPeriod)
+//        < m_StoppingCriterionMaxTotalEnergyChange)
+//      {
+//      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
+//      this->StopRegistration();
+//      }
+//    totalEnergyChangeInEvaluationPeriod = 0;
+//    }
+//}
 
 } // end namespace itk
 

@@ -505,6 +505,8 @@ protected:
   /** This method populates an update buffer with changes for each pixel in the
    * output.  Uses CalculateChangeGradient to determine
    * the gradient displacement field.
+   * The update buffer does not include the global scaling
+   * parameter, which is incorporated in ApplyUpdate
    * Return value is a time step to be used for the update.
    * \sa CalculateChangeGradient */
   virtual TimeStepType CalculateChange();
@@ -535,9 +537,33 @@ protected:
         & stoppingCriterionMaskRegionToProcess,
       int threadId );
 
+  /** Calculates the total, intensity distance and regularization energies,
+   *  using the ThreadedCalculateEnergies() method and a multithreading
+   *  mechanism.
+   * \sa ThreadedCalculateEnergies */
+  virtual double CalculateEnergies( double & intensityDistanceEnergy,
+                                    double & RegularizationEnergy );
+
+  /** Does the actual work of calculating the intensity distance and
+   *  regularization energies over a region supplied by the multithreading
+   * mechanism.
+   * \sa CalculateEnergies
+   * \sa CalculateEnergiesThreaderCallback */
+  virtual void ThreadedCalculateEnergies(
+    const ThreadRegionType & regionToProcess,
+    const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
+    const ThreadScalarDerivativeImageRegionType &
+      scalarDerivativeRegionToProcess,
+    const ThreadStoppingCriterionMaskImageRegionType &
+      stoppingCriterionMaskRegionToProcess,
+    double & intensityDistanceEnergy,
+    double & regularizationEnergy,
+    int threadId );
+
   /** This method applies changes from the update buffer to the output, using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
-   * the time step to use for the update of each pixel.
+   * the time step to use for the update of each pixel.  Also multiplies each
+   * voxel in the update buffer by the scaling value from the line search.
    * \sa ThreadedApplyUpdate */
   virtual void ApplyUpdate( TimeStepType dt );
 
@@ -608,9 +634,9 @@ protected:
   template< class ImageType >
   bool IsIntensityRangeBetween0And1( ImageType * image ) const;
 
-  /** This method is called after ApplyUpdate() to print out energy and RMS
-   * change metrics and evaluate the stopping conditions. */
-  virtual void PostProcessIteration();
+//  /** This method is called after ApplyUpdate() to print out energy and RMS
+//   * change metrics and evaluate the stopping conditions. */
+//  virtual void PostProcessIteration();
 
 private:
   // Purposely not implemented
@@ -640,6 +666,15 @@ private:
     typename OutputImageType::SizeType Radius;
     };
 
+  /** Structure for passing information into static callback methods.  Used in
+   *  the threading mechanism for CalculateEnergies. */
+  struct CalculateEnergiesThreadStruct
+    {
+    DiffusiveRegistrationFilter * Filter;
+    double * IntensityDistanceEnergies;
+    double * RegularizationEnergies;
+    };
+
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
   static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
@@ -656,9 +691,14 @@ private:
       ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
           void *arg );
 
+  /** This callback method uses SplitUpdateContainer to acquire a region which
+  * it then passes to ThreadedComputeEnergies for processing. */
+  static ITK_THREAD_RETURN_TYPE CalculateEnergiesThreaderCallback( void *arg );
+
   TimeStepType                              m_OriginalTimeStep;
 
-  /** The buffer that holds the updates for an iteration of algorithm. */
+  /** The buffer that holds the updates for an iteration of algorithm, without
+   *  the scaling provided by the line search. */
   typename UpdateBufferType::Pointer        m_UpdateBuffer;
 
   /** Images storing information we will need for each voxel on every
@@ -691,6 +731,11 @@ private:
   /** Parameters for stopping criterion */
   unsigned int                              m_StoppingCriterionEvaluationPeriod;
   double                                    m_StoppingCriterionMaxTotalEnergyChange;
+
+  /** Parameters for energies */
+  double                                    m_TotalEnergy;
+  double                                    m_IntensityDistanceEnergy;
+  double                                    m_RegularizationEnergy;
 
 };
 

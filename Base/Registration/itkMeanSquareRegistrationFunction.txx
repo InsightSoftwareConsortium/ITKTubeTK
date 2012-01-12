@@ -115,14 +115,12 @@ typename MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationFie
 ::PixelType
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 ::ComputeUpdate(const NeighborhoodType &it, void * itkNotUsed(globalData),
-                bool includeInEnergyComputation,
                 const FloatOffsetType& itkNotUsed(offset))
 {
   // Get fixed image related information
   // Note: no need to check the index is within
   // fixed image buffer. This is done by the external filter.
   const IndexType index = it.GetIndex();
-  const double fixedValue = (double) this->GetFixedImage()->GetPixel( index );
   const CovariantVectorType fixedGradient = m_FixedImageGradientCalculator->EvaluateAtIndex( index );
   double fixedGradientSquaredMagnitude = 0;
   for(unsigned int j = 0; j < ImageDimension; j++ )
@@ -130,29 +128,8 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     fixedGradientSquaredMagnitude += vnl_math_sqr( fixedGradient[j] ) * m_FixedImageSpacing[j];
     }
 
-  // Get moving image related information
-  const DeformationFieldPixelType itvec = this->GetDeformationField()->GetPixel(index);
-  PointType mappedPoint;
-  this->GetFixedImage()->TransformIndexToPhysicalPoint(index, mappedPoint);
-  for(unsigned int j = 0; j < ImageDimension; j++ )
-    {
-      mappedPoint[j] += itvec[j];
-    }
-
-  double movingValue = m_BackgroundIntensity;
-  if( m_MovingImageInterpolator->IsInsideBuffer( mappedPoint ) )
-    {
-    movingValue = m_MovingImageInterpolator->Evaluate( mappedPoint );
-    }
-
   // Compute update
-  const double speedValue = fixedValue - movingValue;
-  if( includeInEnergyComputation )
-    {
-    m_EnergyCalculationLock.Lock();
-    this->m_Energy += speedValue * speedValue;
-    m_EnergyCalculationLock.Unlock();
-    }
+  const double speedValue = this->ComputeEnergy(index);
 
   const bool normalizemetric=this->GetNormalizeGradient();
   double denominator = 1.0;
@@ -183,6 +160,37 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
       }
     }
   return update;
+}
+
+/**
+ * Compute energy at a non boundary neighbourhood
+ */
+template <class TFixedImage, class TMovingImage, class TDeformationField>
+double
+MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
+::ComputeEnergy(const IndexType & index)
+{
+  const double fixedValue = (double) this->GetFixedImage()->GetPixel( index );
+
+  // Get moving image related information
+  DeformationFieldPixelType itvec = this->GetDeformationField()->GetPixel(index);
+  PointType mappedPoint;
+  this->GetFixedImage()->TransformIndexToPhysicalPoint(index, mappedPoint);
+  for(unsigned int j = 0; j < ImageDimension; j++ )
+    {
+      mappedPoint[j] += itvec[j];
+    }
+
+  double movingValue = m_BackgroundIntensity;
+  if( m_MovingImageInterpolator->IsInsideBuffer( mappedPoint ) )
+    {
+    movingValue = m_MovingImageInterpolator->Evaluate( mappedPoint );
+    }
+
+  // Compute update
+  double energy = fixedValue - movingValue;
+
+  return energy;
 }
 
 } // end namespace itk

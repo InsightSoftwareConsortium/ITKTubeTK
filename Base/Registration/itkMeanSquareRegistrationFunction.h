@@ -144,15 +144,11 @@ public:
    * each pixel that does not lie on a data set boundary */
   virtual PixelType  ComputeUpdate(const NeighborhoodType &neighborhood,
                      void *globalData,
-                     const FloatOffsetType &offset = FloatOffsetType(0.0))
-    {
-    return this->ComputeUpdate(neighborhood, globalData, true, offset);
-    }
-
-  virtual PixelType  ComputeUpdate(const NeighborhoodType &neighborhood,
-                     void *globalData,
-                     bool includeInEnergyComputation,
                      const FloatOffsetType &offset = FloatOffsetType(0.0));
+
+  /** Computes the energy at each pixel that does not lie on a data set
+   *  boundary */
+  virtual double ComputeEnergy(const IndexType & index);
 
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )
