@@ -1740,7 +1740,6 @@ DiffusiveRegistrationFilter
     std::cout << "Iteration" << delimiter
               << "Time Step" << delimiter
               << "Total Time" << sectionDelimiter
-              << "Global Scaling" << sectionDelimiter
               << "RMS Change" << sectionDelimiter
               << "RMS Change Change" << sectionDelimiter
               << "Mean Change " << sectionDelimiter
@@ -1764,7 +1763,7 @@ DiffusiveRegistrationFilter
             << updateMetricsChange.RMSIntensityDistanceUpdateMagnitude << delimiter
             << updateMetricsChange.RMSRegularizationUpdateMagnitude << sectionDelimiter
 
-            << m_UpdateMetrics.MeanTotalUpdateMagnitude << delimiter
+            << ",,, " << m_UpdateMetrics.MeanTotalUpdateMagnitude << " ,,, " << delimiter
             << m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude << delimiter
             << m_UpdateMetrics.MeanRegularizationUpdateMagnitude << sectionDelimiter
 
@@ -1776,11 +1775,11 @@ DiffusiveRegistrationFilter
             << m_Energies.IntensityDistanceEnergy << delimiter
             << m_Energies.RegularizationEnergy << delimiter
 
-            << "*** " << energiesChange.TotalEnergy << " *** " << delimiter
+            << ",,, " << energiesChange.TotalEnergy << " ,,, " << delimiter
             << energiesChange.IntensityDistanceEnergy << delimiter
             << energiesChange.RegularizationEnergy << sectionDelimiter
 
-            << "*** " << totalEnergyChangeInEvaluationPeriod << " *** ";
+            << ",,, " << totalEnergyChangeInEvaluationPeriod << " ,,, ";
 
 
   // Error checking for energy increase that indicates we should stop
