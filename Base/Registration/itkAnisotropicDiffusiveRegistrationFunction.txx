@@ -397,50 +397,6 @@ AnisotropicDiffusiveRegistrationFunction
   return regularizationEnergy;
 }
 
-///**
-//  * Updates the statistics
-//  */
-//template < class TFixedImage, class TMovingImage, class TDeformationField >
-//void
-//AnisotropicDiffusiveRegistrationFunction
-//  < TFixedImage, TMovingImage, TDeformationField >
-//::UpdateRMSAndMeanUpdateStatistics(
-//    const PixelType & updateTerm,
-//    const PixelType & intensityDistanceTerm,
-//    const PixelType & regularizationTerm,
-//    const TimeStepType & timestep,
-//    void * globalData )
-//{
-//  // Get the global data structure
-//  GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
-//  assert( gd );
-
-//  // Update the variables used to calculate RMS change
-//  gd->m_NumberOfPixelsProcessed += 1;
-//  double magnitudeTotalChange = 0.0;
-//  double magnitudeIntensityDistanceChange = 0.0;
-//  double magnitudeRegularizationChange = 0.0;
-//  for( unsigned int i = 0; i < ImageDimension; i++ )
-//    {
-//    magnitudeTotalChange += vnl_math_sqr( updateTerm[i] * timestep );
-//    magnitudeIntensityDistanceChange
-//        += vnl_math_sqr( intensityDistanceTerm[i] * timestep );
-//    magnitudeRegularizationChange += vnl_math_sqr( regularizationTerm[i] * timestep );
-//    }
-
-//  gd->m_SumOfSquaredTotalChange += magnitudeTotalChange;
-//  gd->m_SumOfSquaredIntensityDistanceChange
-//      += magnitudeIntensityDistanceChange;
-//  gd->m_SumOfSquaredRegularizationChange
-//      += magnitudeRegularizationChange;
-
-//  gd->m_SumOfTotalChange += vcl_sqrt( magnitudeTotalChange );
-//  gd->m_SumOfIntensityDistanceChange
-//      += vcl_sqrt( magnitudeIntensityDistanceChange );
-//  gd->m_SumOfRegularizationChange
-//      += vcl_sqrt( magnitudeRegularizationChange );
-//}
-
 } // end namespace itk
 
 #endif

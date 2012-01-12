@@ -65,9 +65,10 @@ DiffusiveRegistrationFilter
   m_StoppingCriterionEvaluationPeriod     = 50;
   m_StoppingCriterionMaxTotalEnergyChange = 0;
 
-  m_TotalEnergy = 0.0;
-  m_IntensityDistanceEnergy = 0.0;
-  m_RegularizationEnergy = 0.0;
+  m_Energies.zero();
+  m_PreviousEnergies.zero();
+  m_UpdateMetrics.zero();
+  m_PreviousUpdateMetrics.zero();
 }
 
 /**
@@ -993,9 +994,10 @@ DiffusiveRegistrationFilter
     }
 
   // Initialize the energy and update metrics
-  m_TotalEnergy = 0.0;
-  m_IntensityDistanceEnergy = 0.0;
-  m_RegularizationEnergy = 0.0;
+  m_PreviousEnergies.copyFrom( m_Energies );
+  m_Energies.zero();
+  m_PreviousUpdateMetrics.copyFrom( m_UpdateMetrics );
+  m_UpdateMetrics.zero();
 }
 
 /**
@@ -1009,8 +1011,13 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChange()
 {
-  TimeStepType gradientTimeStep = this->CalculateChangeGradient();
-  return gradientTimeStep;
+  TimeStepType timeStep = this->CalculateChangeGradient();
+
+  // Now that we know the potential global scaling, we can finish the update
+  // metrics
+  this->UpdateUpdateStatistics(timeStep);
+
+  return timeStep;
 }
 
 /**
@@ -1042,10 +1049,13 @@ DiffusiveRegistrationFilter
 ::CalculateChangeGradient()
 {
   // Set up for multithreaded processing.
-  DenseFDThreadStruct str;
+  CalculateChangeGradientThreadStruct str;
   str.Filter = this;
   // Not used during the calculate change step
   str.TimeStep = NumericTraits< TimeStepType >::Zero;
+  str.UpdateMetricsIntermediate
+      = new UpdateMetricsIntermediateStruct[this->GetNumberOfThreads()];
+
   this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
       this->CalculateChangeGradientThreaderCallback, & str );
@@ -1072,6 +1082,29 @@ DiffusiveRegistrationFilter
   delete [] str.TimeStepList;
   delete [] str.ValidTimeStepList;
 
+  // Combine the results from the threads to calculate the metrics
+  // Will include multiplication by timestep and global scaling, and calculation
+  // of RMS and mean statistics, in UpdateUpdateStatistics
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed
+        += str.UpdateMetricsIntermediate[i].NumberOfPixelsProcessed;
+    m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfSquaredTotalUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfSquaredIntensityDistanceUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfSquaredRegularizationUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfTotalUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfIntensityDistanceUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfRegularizationUpdateMagnitude;
+    }
+
+  delete [] str.UpdateMetricsIntermediate;
+
   // Explicitly call Modified on m_UpdateBuffer here, since
   // ThreadedCalculateChangeGradient changes this buffer through iterators which
   // do not increment the update buffer timestamp
@@ -1092,7 +1125,7 @@ DiffusiveRegistrationFilter
   int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
   int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
 
-  DenseFDThreadStruct * str = (DenseFDThreadStruct *)
+  CalculateChangeGradientThreadStruct * str = (CalculateChangeGradientThreadStruct *)
             (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
@@ -1127,6 +1160,7 @@ DiffusiveRegistrationFilter
       splitTensorDerivativeRegion,
       splitScalarDerivativeRegion,
       splitStoppingCriterionMaskImageRegion,
+      str->UpdateMetricsIntermediate[threadId],
       threadId);
     str->ValidTimeStepList[threadId] = true;
     }
@@ -1153,6 +1187,7 @@ DiffusiveRegistrationFilter
       scalarDerivativeRegionToProcess,
     const ThreadStoppingCriterionMaskImageRegionType &
       stoppingCriterionMaskRegionToProcess,
+    UpdateMetricsIntermediateStruct & updateMetricsIntermediate,
     int)
 {
   // Get the FiniteDifferenceFunction to use in calculations.
@@ -1218,6 +1253,9 @@ DiffusiveRegistrationFilter
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
   bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
+
+  // Initialize the metrics
+  updateMetricsIntermediate.zero();
 
   // Go to the first face
   outputStruct.GoToBegin();
@@ -1287,19 +1325,12 @@ DiffusiveRegistrationFilter
     // Iterate through the neighborhood for this face and compute updates
     while( !outputNeighborhood.IsAtEnd() )
       {
-      // Get whether or not to include this pixel in the stopping criterion
-      bool includeInStoppingCriterion = true;
-      if( haveStoppingCriterionMask )
-        {
-        includeInStoppingCriterion
-            = ( stoppingCriterionMaskRegion.Value() == 0.0 );
-        }
-
+      typename UpdateBufferType::PixelType updateTerm;
       typename UpdateBufferType::PixelType intensityDistanceTerm;
       typename UpdateBufferType::PixelType regularizationTerm;
 
       // Compute updates
-      updateRegion.Value() = df->ComputeUpdate(
+      updateTerm = df->ComputeUpdate(
           outputNeighborhood,
           tensorNeighborhoods,
           deformationComponentFirstOrderRegionArrays,
@@ -1309,6 +1340,44 @@ DiffusiveRegistrationFilter
           globalData,
           intensityDistanceTerm,
           regularizationTerm );
+      updateRegion.Value() = updateTerm;
+
+      // Get whether or not to include this pixel in the stopping criterion
+      bool includeInStoppingCriterion = true;
+      if( haveStoppingCriterionMask )
+        {
+        includeInStoppingCriterion
+            = ( stoppingCriterionMaskRegion.Value() == 0.0 );
+        }
+
+      // Update the metrics
+      if( includeInStoppingCriterion )
+        {
+        double squaredTotalUpdateMagnitude = 0.0;
+        double squaredIntensityDistanceUpdateMagnitude = 0.0;
+        double squaredRegularizationUpdateMagnitude = 0.0;
+        for( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          squaredTotalUpdateMagnitude += vnl_math_sqr( updateTerm[i] );
+          squaredIntensityDistanceUpdateMagnitude
+              += vnl_math_sqr( intensityDistanceTerm[i] );
+          squaredRegularizationUpdateMagnitude
+              += vnl_math_sqr( regularizationTerm[i] );
+          }
+        updateMetricsIntermediate.NumberOfPixelsProcessed++;
+        updateMetricsIntermediate.SumOfSquaredTotalUpdateMagnitude
+            += squaredTotalUpdateMagnitude;
+        updateMetricsIntermediate.SumOfSquaredIntensityDistanceUpdateMagnitude
+            += squaredIntensityDistanceUpdateMagnitude;
+        updateMetricsIntermediate.SumOfSquaredRegularizationUpdateMagnitude
+            += squaredRegularizationUpdateMagnitude;
+        updateMetricsIntermediate.SumOfTotalUpdateMagnitude
+            += vcl_sqrt( squaredTotalUpdateMagnitude );
+        updateMetricsIntermediate.SumOfIntensityDistanceUpdateMagnitude
+            += vcl_sqrt( squaredIntensityDistanceUpdateMagnitude );
+        updateMetricsIntermediate.SumOfRegularizationUpdateMagnitude
+            += vcl_sqrt( squaredRegularizationUpdateMagnitude );
+        }
 
       // Go to the next neighborhood
       ++outputNeighborhood;
@@ -1357,6 +1426,7 @@ DiffusiveRegistrationFilter
   // ask it to free the global data memory.
   TimeStepType timeStep = df->ComputeGlobalTimeStep(globalData);
   df->ReleaseGlobalDataPointer(globalData);
+
   return timeStep;
 }
 
@@ -1365,11 +1435,10 @@ DiffusiveRegistrationFilter
  * update buffer.
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-double
+void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateEnergies( double & intensityDistanceEnergy,
-                     double & regularizationEnergy )
+::CalculateEnergies( EnergiesStruct & energies )
 {
   // Set up for multithreaded processing.
   CalculateEnergiesThreadStruct str;
@@ -1384,20 +1453,17 @@ DiffusiveRegistrationFilter
   this->GetMultiThreader()->SingleMethodExecute();
 
   // Combine the results from the thread to calculate the total energies
-  double totalEnergy = 0;
-  intensityDistanceEnergy = 0;
-  regularizationEnergy = 0;
+  energies.zero();
   for( int i = 0; i < this->GetNumberOfThreads(); i++ )
     {
-    intensityDistanceEnergy += str.IntensityDistanceEnergies[i];
-    regularizationEnergy += str.RegularizationEnergies[i];
-    totalEnergy += intensityDistanceEnergy + regularizationEnergy;
+    energies.IntensityDistanceEnergy += str.IntensityDistanceEnergies[i];
+    energies.RegularizationEnergy += str.RegularizationEnergies[i];
+    energies.TotalEnergy
+        += ( energies.IntensityDistanceEnergy + energies.RegularizationEnergy );
     }
 
   delete [] str.IntensityDistanceEnergies;
   delete [] str.RegularizationEnergies;
-
-  return totalEnergy;
 }
 
 /**
@@ -1623,6 +1689,55 @@ DiffusiveRegistrationFilter
 }
 
 /**
+ * Computes the update statistics for this iteration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::UpdateUpdateStatistics(TimeStepType timeStep)
+{
+  // Compute the true sumOfSquared and sumOf metrics, considering the
+  // timestep and the global scaling
+  double scalingForSumOfSquaredUpdateMagnitude
+      = vnl_math_sqr( timeStep );
+  m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+      *= scalingForSumOfSquaredUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
+      *= scalingForSumOfSquaredUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
+      *= scalingForSumOfSquaredUpdateMagnitude;
+  double scalingForSumOfUpdateMagnitude = timeStep;
+  m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude
+      *= scalingForSumOfUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude
+      *= scalingForSumOfUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude
+      *= scalingForSumOfUpdateMagnitude;
+
+  // Compute the RMS and mean metrics
+  double numPixels
+      = (double) m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed;
+  m_UpdateMetrics.RMSTotalUpdateMagnitude = vcl_sqrt(
+        m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+        / numPixels );
+  m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude = vcl_sqrt(
+        m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
+        / numPixels );
+  m_UpdateMetrics.RMSRegularizationUpdateMagnitude = vcl_sqrt(
+        m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
+        / numPixels );
+  m_UpdateMetrics.MeanTotalUpdateMagnitude
+      = m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude / numPixels;
+  m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude
+      = m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude / numPixels;
+  m_UpdateMetrics.MeanRegularizationUpdateMagnitude
+      = m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude / numPixels;
+
+  this->SetRMSChange( m_UpdateMetrics.RMSTotalUpdateMagnitude );
+}
+
+/**
  * Applies changes from the update buffer to the output
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -1648,7 +1763,7 @@ DiffusiveRegistrationFilter
   this->GetOutput()->Modified();
 
   // Print out energy metrics and evaluate stopping condition
-//  this->PostProcessIteration();
+  this->PostProcessIteration();
 }
 
 /**
@@ -1707,178 +1822,116 @@ DiffusiveRegistrationFilter
     }
 }
 
-///**
-// * Does the actual work of updating the output from the UpdateContainer
-// * over an output region supplied by the multithreading mechanism.
-// */
-//template < class TFixedImage, class TMovingImage, class TDeformationField >
-//void
-//DiffusiveRegistrationFilter
-//  < TFixedImage, TMovingImage, TDeformationField >
-//::PostProcessIteration()
-//{
-//  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-//  assert( df );
+/**
+ * Does the actual work of updating the output from the UpdateContainer
+ * over an output region supplied by the multithreading mechanism.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::PostProcessIteration()
+{
+  // Keep track of the total registration time
+  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  assert( df );
+  TimeStepType timeStep = df->GetTimeStep();
+  static TimeStepType totalTime = 0.0;
+  totalTime += timeStep;
 
-//  // Keep track of the total registration time
-//  TimeStepType timestep = df->GetTimeStep();
-//  static TimeStepType totalTime = 0.0;
-//  totalTime += timestep;
+  // Get the change in energy and update metrics since the previous iteration
+  EnergiesStruct energiesChange;
+  energiesChange.difference( m_Energies, m_PreviousEnergies );
+  UpdateMetricsStruct updateMetricsChange;
+  updateMetricsChange.difference( m_UpdateMetrics, m_PreviousUpdateMetrics );
 
-//  // Keep track of the RMS changes
-//  double rmsIntensityDistanceChange = df->GetRMSIntensityDistanceChange();
-//  double rmsRegularizationChange = df->GetRMSRegularizationChange();
-//  double rmsTotalChange = df->GetRMSTotalChange();
-//  this->SetRMSChange( rmsTotalChange );
+  // Keep track of the total energy change within each stopping criterion
+  // evaluation block
+  unsigned int elapsedIterations = this->GetElapsedIterations();
+  static double totalEnergyChangeInEvaluationPeriod = 0;
+  if (elapsedIterations != 0)
+    {
+    totalEnergyChangeInEvaluationPeriod += energiesChange.TotalEnergy;
+    }
 
-//  // Keep track of the mean changes
-//  double meanIntensityDistanceChange = df->GetMeanIntensityDistanceChange();
-//  double meanRegularizationChange = df->GetMeanRegularizationChange();
-//  double meanTotalChange = df->GetMeanTotalChange();
+  // Print out logging information
+  std::string delimiter = ", ";
+  std::string sectionDelimiter = " , ";
+  if( elapsedIterations == 0 )
+    {
+    std::cout << "All registration metric sections in the order "
+              << "TOTAL, INTENSITY, REGULARIZATION" << std::endl;
+    std::cout << "Iteration" << delimiter
+              << "Time Step" << delimiter
+              << "Total Time" << sectionDelimiter
+              << "Global Scaling" << sectionDelimiter
+              << "RMS Change" << sectionDelimiter
+              << "RMS Change Change" << sectionDelimiter
+              << "Mean Change " << sectionDelimiter
+              << "Mean Change Change" << sectionDelimiter
+              << "Energy" << sectionDelimiter
+              << "Energy Change" << sectionDelimiter
+              << "Stopping Criterion"
+              << std::endl;
+    }
+  std::cout.setf(std::ios::fixed, std::ios::floatfield);
+  std::cout.precision(6);
+  std::cout << elapsedIterations << delimiter
+            << timeStep << delimiter
+            << totalTime << sectionDelimiter
 
-//  // Keep track of the registration RMS changes and energies over time
-//  static double previousIntensityDistanceEnergy = 0.0;
-//  static double previousRegularizationEnergy = 0.0;
-//  static double previousTotalEnergy = 0.0;
-//  static double previousRMSIntensityDistanceChange = 0.0;
-//  static double previousRMSRegularizationChange = 0.0;
-//  static double previousRMSTotalChange = 0.0;
-//  static double previousMeanIntensityDistanceChange = 0.0;
-//  static double previousMeanRegularizationChange = 0.0;
-//  static double previousMeanTotalChange = 0.0;
+            << m_UpdateMetrics.RMSTotalUpdateMagnitude << delimiter
+            << m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude << delimiter
+            << m_UpdateMetrics.RMSRegularizationUpdateMagnitude << sectionDelimiter
 
-//  // Keep track of the registration energies
-//  double intensityDistanceEnergy = 0.0;
-//  double regularizationEnergy = 0.0;
-//  if( this->GetComputeIntensityDistanceTerm() )
-//    {
-//    intensityDistanceEnergy = df->GetIntensityDistanceEnergy();
-//    }
-//  if( this->GetComputeRegularizationTerm() )
-//    {
-//    regularizationEnergy = df->GetRegularizationEnergy();
-//    }
-//  double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
+            << updateMetricsChange.RMSTotalUpdateMagnitude << delimiter
+            << updateMetricsChange.RMSIntensityDistanceUpdateMagnitude << delimiter
+            << updateMetricsChange.RMSRegularizationUpdateMagnitude << sectionDelimiter
 
-//  double totalEnergyChange
-//      = totalEnergy - previousTotalEnergy;
-//  double intensityDistanceEnergyChange
-//      = intensityDistanceEnergy - previousIntensityDistanceEnergy;
-//  double regularizationEnergyChange
-//      = regularizationEnergy - previousRegularizationEnergy;
+            << m_UpdateMetrics.MeanTotalUpdateMagnitude << delimiter
+            << m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude << delimiter
+            << m_UpdateMetrics.MeanRegularizationUpdateMagnitude << sectionDelimiter
 
-//  double rmsTotalChangeChange
-//      = rmsTotalChange - previousRMSTotalChange;
-//  double rmsIntensityDistanceChangeChange
-//      = rmsIntensityDistanceChange - previousRMSIntensityDistanceChange;
-//  double rmsRegularizationChangeChange
-//      = rmsRegularizationChange - previousRMSRegularizationChange;
+            << updateMetricsChange.MeanTotalUpdateMagnitude << delimiter
+            << updateMetricsChange.MeanIntensityDistanceUpdateMagnitude << delimiter
+            << updateMetricsChange.MeanRegularizationUpdateMagnitude << sectionDelimiter
 
-//  double meanTotalChangeChange
-//      = meanTotalChange - previousMeanTotalChange;
-//  double meanIntensityDistanceChangeChange
-//      = meanIntensityDistanceChange - previousMeanIntensityDistanceChange;
-//  double meanRegularizationChangeChange
-//      = meanRegularizationChange - previousMeanRegularizationChange;
+            << m_Energies.TotalEnergy << delimiter
+            << m_Energies.IntensityDistanceEnergy << delimiter
+            << m_Energies.RegularizationEnergy << delimiter
 
-//  unsigned int elapsedIterations = this->GetElapsedIterations();
+            << "*** " << energiesChange.TotalEnergy << " *** " << delimiter
+            << energiesChange.IntensityDistanceEnergy << delimiter
+            << energiesChange.RegularizationEnergy << sectionDelimiter
 
-//  // Keep track of the total energy change within each stopping criterion
-//  // evaluation block
-//  static double totalEnergyChangeInEvaluationPeriod = 0;
-//  if (elapsedIterations != 0)
-//    {
-//    totalEnergyChangeInEvaluationPeriod += totalEnergyChange;
-//    }
+            << "*** " << totalEnergyChangeInEvaluationPeriod << " *** ";
 
-//  // Print out logging information
-//  std::string delimiter = ", ";
-//  std::string sectionDelimiter = " , ";
-//  if( elapsedIterations == 0 )
-//    {
-//    std::cout << "All registration metric sections in the order "
-//              << "TOTAL, INTENSITY, REGULARIZATION" << std::endl;
-//    std::cout << "Iteration" << delimiter
-//              << "Time Step" << delimiter
-//              << "Total Time" << sectionDelimiter
-//              << "RMS Change" << sectionDelimiter
-//              << "RMS Change Change" << sectionDelimiter
-//              << "Mean Change " << sectionDelimiter
-//              << "Mean Change Change" << sectionDelimiter
-//              << "Energy" << sectionDelimiter
-//              << "Energy Change" << sectionDelimiter
-//              << "Stopping Criterion"
-//              << std::endl;
-//    }
-//  std::cout.setf(std::ios::fixed, std::ios::floatfield);
-//  std::cout.precision(6);
-//  std::cout << elapsedIterations << delimiter
-//            << timestep << delimiter
-//            << totalTime << sectionDelimiter
 
-//            << rmsTotalChange << delimiter
-//            << rmsIntensityDistanceChange << delimiter
-//            << rmsRegularizationChange << sectionDelimiter
+  // Error checking for energy increase that indicates we should stop
+  // This should never happen with the line search turned on
+  if (elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
+    {
+    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
+                     << "  Registration halting.");
+    this->StopRegistration();
+    std::cout << delimiter <<  "!!!";
+    }
 
-//            << rmsTotalChangeChange << delimiter
-//            << rmsIntensityDistanceChangeChange << delimiter
-//            << rmsRegularizationChangeChange << sectionDelimiter
+  std::cout << std::endl;
 
-//            << meanTotalChange << delimiter
-//            << meanIntensityDistanceChange << delimiter
-//            << meanRegularizationChange << sectionDelimiter
-
-//            << meanTotalChangeChange << delimiter
-//            << meanIntensityDistanceChangeChange << delimiter
-//            << meanRegularizationChangeChange << sectionDelimiter
-
-//            << totalEnergy << delimiter
-//            << intensityDistanceEnergy << delimiter
-//            << regularizationEnergy << sectionDelimiter
-
-//            << "*** " << totalEnergyChange << " *** " << delimiter
-//            << intensityDistanceEnergyChange << delimiter
-//            << regularizationEnergyChange << sectionDelimiter
-
-//            << "*** " << totalEnergyChangeInEvaluationPeriod << " *** ";
-
-//  // Error checking that indicates we should stop
-//  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
-//    {
-////    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
-////                     << "  Registration halting.");
-////    this->StopRegistration();
-//    std::cout << delimiter <<  "!!!";
-//    }
-
-//  std::cout << std::endl;
-
-//  // Update 'previous' variables
-//  previousTotalEnergy = totalEnergy;
-//  previousIntensityDistanceEnergy = intensityDistanceEnergy;
-//  previousRegularizationEnergy = regularizationEnergy;
-
-//  previousRMSTotalChange = rmsTotalChange;
-//  previousRMSIntensityDistanceChange = rmsIntensityDistanceChange;
-//  previousRMSRegularizationChange = rmsRegularizationChange;
-
-//  previousMeanTotalChange = meanTotalChange;
-//  previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
-//  previousMeanRegularizationChange = meanRegularizationChange;
-
-//  // Check for stopping condition
-//  if (elapsedIterations != 0
-//      && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
-//    {
-//    if (std::abs(totalEnergyChangeInEvaluationPeriod)
-//        < m_StoppingCriterionMaxTotalEnergyChange)
-//      {
-//      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
-//      this->StopRegistration();
-//      }
-//    totalEnergyChangeInEvaluationPeriod = 0;
-//    }
-//}
+  // Check for stopping condition
+  if (elapsedIterations != 0
+      && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
+    {
+    if (std::abs(totalEnergyChangeInEvaluationPeriod)
+        < m_StoppingCriterionMaxTotalEnergyChange)
+      {
+      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
+      this->StopRegistration();
+      }
+    totalEnergyChangeInEvaluationPeriod = 0;
+    }
+}
 
 } // end namespace itk
 

@@ -502,6 +502,153 @@ protected:
       const OutputImageType * deformationField,
       DeformationComponentImageArrayType & deformationComponentImages ) const;
 
+  struct EnergiesStruct
+    {
+    double  TotalEnergy;
+    double  IntensityDistanceEnergy;
+    double  RegularizationEnergy;
+
+    void zero()
+      {
+      TotalEnergy = 0.0;
+      IntensityDistanceEnergy = 0.0;
+      RegularizationEnergy = 0.0;
+      }
+
+    void copyFrom( const EnergiesStruct & rhs )
+      {
+      TotalEnergy = rhs.TotalEnergy;
+      IntensityDistanceEnergy = rhs.IntensityDistanceEnergy;
+      RegularizationEnergy = rhs.RegularizationEnergy;
+      }
+
+    void difference( const EnergiesStruct & lhs, const EnergiesStruct & rhs )
+      {
+      TotalEnergy = lhs.TotalEnergy - rhs.TotalEnergy;
+      IntensityDistanceEnergy
+          = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
+      RegularizationEnergy
+          = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
+      }
+
+    };
+
+  struct UpdateMetricsIntermediateStruct
+    {
+    int     NumberOfPixelsProcessed;
+    double  SumOfSquaredTotalUpdateMagnitude;
+    double  SumOfSquaredIntensityDistanceUpdateMagnitude;
+    double  SumOfSquaredRegularizationUpdateMagnitude;
+    double  SumOfTotalUpdateMagnitude;
+    double  SumOfIntensityDistanceUpdateMagnitude;
+    double  SumOfRegularizationUpdateMagnitude;
+
+    void zero()
+      {
+      NumberOfPixelsProcessed = 0;
+      SumOfSquaredTotalUpdateMagnitude = 0.0;
+      SumOfSquaredIntensityDistanceUpdateMagnitude = 0.0;
+      SumOfSquaredRegularizationUpdateMagnitude = 0.0;
+      SumOfTotalUpdateMagnitude = 0.0;
+      SumOfIntensityDistanceUpdateMagnitude = 0.0;
+      SumOfRegularizationUpdateMagnitude = 0.0;
+      }
+
+    void copyFrom( const UpdateMetricsIntermediateStruct & rhs )
+      {
+      NumberOfPixelsProcessed = rhs.NumberOfPixelsProcessed;
+      SumOfSquaredTotalUpdateMagnitude = rhs.SumOfSquaredTotalUpdateMagnitude;
+      SumOfSquaredIntensityDistanceUpdateMagnitude
+          = rhs.SumOfSquaredIntensityDistanceUpdateMagnitude;
+      SumOfSquaredRegularizationUpdateMagnitude
+          = rhs.SumOfSquaredRegularizationUpdateMagnitude;
+      SumOfTotalUpdateMagnitude = rhs.SumOfTotalUpdateMagnitude;
+      SumOfIntensityDistanceUpdateMagnitude
+          = rhs.SumOfIntensityDistanceUpdateMagnitude;
+      SumOfRegularizationUpdateMagnitude
+          = rhs.SumOfRegularizationUpdateMagnitude;
+      }
+
+    void difference( const UpdateMetricsIntermediateStruct & lhs,
+                     const UpdateMetricsIntermediateStruct & rhs )
+      {
+      SumOfSquaredTotalUpdateMagnitude
+          = lhs.SumOfSquaredTotalUpdateMagnitude
+          - rhs.SumOfSquaredTotalUpdateMagnitude;
+      SumOfSquaredIntensityDistanceUpdateMagnitude
+          = lhs.SumOfSquaredIntensityDistanceUpdateMagnitude
+          - rhs.SumOfSquaredIntensityDistanceUpdateMagnitude;
+      SumOfSquaredRegularizationUpdateMagnitude
+          = lhs.SumOfSquaredRegularizationUpdateMagnitude
+          - rhs.SumOfSquaredRegularizationUpdateMagnitude;
+      SumOfTotalUpdateMagnitude
+          = lhs.SumOfTotalUpdateMagnitude - rhs.SumOfTotalUpdateMagnitude;
+      SumOfIntensityDistanceUpdateMagnitude
+          = lhs.SumOfIntensityDistanceUpdateMagnitude
+          - rhs.SumOfIntensityDistanceUpdateMagnitude;
+      SumOfRegularizationUpdateMagnitude
+          = lhs.SumOfRegularizationUpdateMagnitude
+          - rhs.SumOfRegularizationUpdateMagnitude;
+      }
+    };
+
+  struct UpdateMetricsStruct
+    {
+    UpdateMetricsIntermediateStruct IntermediateStruct;
+    double                          RMSTotalUpdateMagnitude;
+    double                          RMSIntensityDistanceUpdateMagnitude;
+    double                          RMSRegularizationUpdateMagnitude;
+    double                          MeanTotalUpdateMagnitude;
+    double                          MeanIntensityDistanceUpdateMagnitude;
+    double                          MeanRegularizationUpdateMagnitude;
+
+    void zero()
+      {
+      IntermediateStruct.zero();
+      RMSTotalUpdateMagnitude = 0.0;
+      RMSIntensityDistanceUpdateMagnitude = 0.0;
+      RMSRegularizationUpdateMagnitude = 0.0;
+      MeanTotalUpdateMagnitude = 0.0;
+      MeanIntensityDistanceUpdateMagnitude = 0.0;
+      MeanRegularizationUpdateMagnitude = 0.0;
+      }
+
+    void copyFrom( const UpdateMetricsStruct & rhs )
+      {
+      IntermediateStruct.copyFrom(rhs.IntermediateStruct);
+      RMSTotalUpdateMagnitude = rhs.RMSTotalUpdateMagnitude;
+      RMSIntensityDistanceUpdateMagnitude
+          = rhs.RMSIntensityDistanceUpdateMagnitude;
+      RMSRegularizationUpdateMagnitude = rhs.RMSRegularizationUpdateMagnitude;
+      MeanTotalUpdateMagnitude = rhs.MeanTotalUpdateMagnitude;
+      MeanIntensityDistanceUpdateMagnitude
+          = rhs.MeanIntensityDistanceUpdateMagnitude;
+      MeanRegularizationUpdateMagnitude = rhs.MeanRegularizationUpdateMagnitude;
+      }
+
+    // Does not calculate for intermediate struct
+    void difference( const UpdateMetricsStruct & lhs,
+                     const UpdateMetricsStruct & rhs )
+      {
+      RMSTotalUpdateMagnitude
+          = lhs.RMSTotalUpdateMagnitude - rhs.RMSTotalUpdateMagnitude;
+      RMSIntensityDistanceUpdateMagnitude
+          = lhs.RMSIntensityDistanceUpdateMagnitude
+          - rhs.RMSIntensityDistanceUpdateMagnitude;
+      RMSRegularizationUpdateMagnitude
+          = lhs.RMSRegularizationUpdateMagnitude
+          - rhs.RMSRegularizationUpdateMagnitude;
+      MeanTotalUpdateMagnitude
+          = lhs.MeanTotalUpdateMagnitude - rhs.MeanTotalUpdateMagnitude;
+      MeanIntensityDistanceUpdateMagnitude
+          = lhs.MeanIntensityDistanceUpdateMagnitude
+          - rhs.MeanIntensityDistanceUpdateMagnitude;
+      MeanRegularizationUpdateMagnitude
+          = lhs.MeanRegularizationUpdateMagnitude
+          - rhs.MeanRegularizationUpdateMagnitude;
+      }
+    };
+
   /** This method populates an update buffer with changes for each pixel in the
    * output.  Uses CalculateChangeGradient to determine
    * the gradient displacement field.
@@ -535,14 +682,19 @@ protected:
         & scalarDerivativeRegionToProcess,
       const ThreadStoppingCriterionMaskImageRegionType
         & stoppingCriterionMaskRegionToProcess,
+      UpdateMetricsIntermediateStruct & updateMetricsIntermediate,
       int threadId );
 
   /** Calculates the total, intensity distance and regularization energies,
    *  using the ThreadedCalculateEnergies() method and a multithreading
    *  mechanism.
    * \sa ThreadedCalculateEnergies */
-  virtual double CalculateEnergies( double & intensityDistanceEnergy,
-                                    double & RegularizationEnergy );
+  virtual void CalculateEnergies( EnergiesStruct & energies );
+
+  /** Updates the intermediate update statistics (sum-of-squared and sum-of
+   *  statistics, incorporating the time step, and
+   *  computes the RMS and mean update statistics */
+  virtual void UpdateUpdateStatistics( TimeStepType timeStep );
 
   /** Does the actual work of calculating the intensity distance and
    *  regularization energies over a region supplied by the multithreading
@@ -634,9 +786,9 @@ protected:
   template< class ImageType >
   bool IsIntensityRangeBetween0And1( ImageType * image ) const;
 
-//  /** This method is called after ApplyUpdate() to print out energy and RMS
-//   * change metrics and evaluate the stopping conditions. */
-//  virtual void PostProcessIteration();
+  /** This method is called after ApplyUpdate() to print out energy and RMS
+   * change metrics and evaluate the stopping conditions. */
+  virtual void PostProcessIteration();
 
 private:
   // Purposely not implemented
@@ -664,6 +816,17 @@ private:
     int Dimension;
     SpacingType Spacing;
     typename OutputImageType::SizeType Radius;
+    };
+
+  /** Structure for passing information into static callback methods.  Used in
+   *  the threading mechanism for CalculateChangeGradient. */
+  struct CalculateChangeGradientThreadStruct
+    {
+    DiffusiveRegistrationFilter *Filter;
+    TimeStepType TimeStep;
+    TimeStepType *TimeStepList;
+    bool *ValidTimeStepList;
+    UpdateMetricsIntermediateStruct *UpdateMetricsIntermediate;
     };
 
   /** Structure for passing information into static callback methods.  Used in
@@ -732,11 +895,11 @@ private:
   unsigned int                              m_StoppingCriterionEvaluationPeriod;
   double                                    m_StoppingCriterionMaxTotalEnergyChange;
 
-  /** Parameters for energies */
-  double                                    m_TotalEnergy;
-  double                                    m_IntensityDistanceEnergy;
-  double                                    m_RegularizationEnergy;
-
+  /** Parameters for energies and update magnitude metrics */
+  EnergiesStruct                            m_Energies;
+  EnergiesStruct                            m_PreviousEnergies;
+  UpdateMetricsStruct                       m_UpdateMetrics;
+  UpdateMetricsStruct                       m_PreviousUpdateMetrics;
 };
 
 /** Struct to simply get the face list and an iterator over the face list
