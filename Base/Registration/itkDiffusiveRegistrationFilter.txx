@@ -24,10 +24,7 @@ limitations under the License.
 #define __itkDiffusiveRegistrationFilter_txx
 
 #include "itkDiffusiveRegistrationFilter.h"
-
-#include "itkMinimumMaximumImageCalculator.h"
-#include "itkResampleImageFilter.h"
-#include "itkVectorResampleImageFilter.h"
+#include "itkDiffusiveRegistrationFilterUtils.h"
 
 namespace itk
 {
@@ -183,175 +180,6 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Helper function to allocate space for an image given a template image
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-  template < class UnallocatedImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::AllocateSpaceForImage( UnallocatedImagePointer& image,
-                         const TemplateImagePointer& templateImage ) const
-{
-  assert( image );
-  assert( templateImage );
-  image->SetOrigin( templateImage->GetOrigin() );
-  image->SetSpacing( templateImage->GetSpacing() );
-  image->SetDirection( templateImage->GetDirection() );
-  image->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
-  image->SetRequestedRegion( templateImage->GetRequestedRegion() );
-  image->SetBufferedRegion( templateImage->GetBufferedRegion() );
-  image->Allocate();
-}
-
-/**
- * Helper function to check whether the attributes of an image matches template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class CheckedImageType, class TemplateImageType >
-bool
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::CompareImageAttributes( const CheckedImageType * image,
-                          const TemplateImageType * templateImage ) const
-{
-  assert( image );
-  assert( templateImage );
-
-  return image->GetOrigin() == templateImage->GetOrigin()
-      && image->GetSpacing() == templateImage->GetSpacing()
-      && image->GetDirection() == templateImage->GetDirection()
-      && image->GetLargestPossibleRegion()
-          == templateImage->GetLargestPossibleRegion()
-      && image->GetLargestPossibleRegion().GetIndex()
-          == templateImage->GetLargestPossibleRegion().GetIndex()
-      && image->GetLargestPossibleRegion().GetSize()
-          == templateImage->GetLargestPossibleRegion().GetSize();
-}
-
-/**
- * Resample an image to match a template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageNearestNeighbor(
-    const ResampleImagePointer & highResolutionImage,
-    const TemplateImagePointer & templateImage,
-    ResampleImagePointer & resampledImage ) const
-{
-  // We have to implement nearest neighbors by hand, since we are dealing with
-  // pixel types that do not have Numeric Traits
-  typedef typename ResampleImagePointer::ObjectType ResampleImageType;
-
-  // Create the resized resampled image
-  resampledImage = ResampleImageType::New();
-  this->AllocateSpaceForImage( resampledImage, templateImage );
-
-  // Do NN interpolation
-  typedef itk::ImageRegionIteratorWithIndex< ResampleImageType >
-      ResampleImageRegionType;
-  ResampleImageRegionType resampledImageIt = ResampleImageRegionType(
-      resampledImage, resampledImage->GetLargestPossibleRegion() );
-
-  typename ResampleImageType::PointType physicalPoint;
-  physicalPoint.Fill( 0.0 );
-  typename ResampleImageType::IndexType highResolutionIndex;
-  highResolutionIndex.Fill( 0.0 );
-  typename ResampleImageType::PixelType pixelValue;
-
-  for( resampledImageIt.GoToBegin();
-       !resampledImageIt.IsAtEnd();
-       ++resampledImageIt )
-    {
-    resampledImage->TransformIndexToPhysicalPoint(
-        resampledImageIt.GetIndex(), physicalPoint );
-    highResolutionImage->TransformPhysicalPointToIndex(
-        physicalPoint, highResolutionIndex );
-    pixelValue = highResolutionImage->GetPixel( highResolutionIndex );
-    resampledImageIt.Set( pixelValue );
-    }
-}
-
-/**
- * Resample an image to match a template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageLinear( const ResampleImagePointer & highResolutionImage,
-                       const TemplateImagePointer & templateImage,
-                       ResampleImagePointer & resampledImage ) const
-{
-  // Do linear interpolation
-  typedef itk::ResampleImageFilter
-      < typename ResampleImagePointer::ObjectType,
-        typename ResampleImagePointer::ObjectType > ResampleFilterType;
-  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
-  resampler->SetInput( highResolutionImage );
-  resampler->SetOutputParametersFromImage( templateImage );
-  resampler->Update();
-  resampledImage = resampler->GetOutput();
-}
-
-/**
- * Resample a vector image to match a template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class VectorResampleImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::VectorResampleImageLinear(
-    const VectorResampleImagePointer & highResolutionImage,
-    const TemplateImagePointer & templateImage,
-    VectorResampleImagePointer & resampledImage,
-    bool normalize ) const
-{
-  // Do linear interpolation
-  typedef itk::VectorResampleImageFilter
-      < typename VectorResampleImagePointer::ObjectType,
-        typename VectorResampleImagePointer::ObjectType > ResampleFilterType;
-  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
-  resampler->SetInput( highResolutionImage );
-  resampler->SetOutputOrigin( templateImage->GetOrigin() );
-  resampler->SetOutputSpacing( templateImage->GetSpacing() );
-  resampler->SetOutputDirection( templateImage->GetDirection() );
-  resampler->SetOutputStartIndex(
-      templateImage->GetLargestPossibleRegion().GetIndex() );
-  resampler->SetSize( templateImage->GetLargestPossibleRegion().GetSize() );
-  resampler->Update();
-  resampledImage = resampler->GetOutput();
-
-  if( normalize )
-    {
-    this->NormalizeVectorField( resampledImage );
-    }
-}
-
-/**
- * Normalizes a vector field to ensure each vector has length 1
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class VectorImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::NormalizeVectorField( VectorImagePointer & image ) const
-{
-  DeformationVectorImageRegionType vectorIt(
-      image, image->GetLargestPossibleRegion() );
-  for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
-    {
-    vectorIt.Value().Normalize();
-    }
-}
-
-/**
  * Allocate space for the update buffer
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -363,29 +191,8 @@ DiffusiveRegistrationFilter
   // The update buffer looks just like the output and holds the voxel changes
   typename OutputImageType::Pointer output = this->GetOutput();
   assert( output );
-  this->AllocateSpaceForImage( m_UpdateBuffer, output );
-}
-
-/**
- * Returns whether an image has intensity range between 0 and 1
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ImageType >
-bool
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::IsIntensityRangeBetween0And1( ImageType * image ) const
-{
-  typedef itk::MinimumMaximumImageCalculator< ImageType > CalculatorType;
-  typename CalculatorType::Pointer calculator = CalculatorType::New();
-  calculator->SetImage( image );
-  calculator->Compute();
-
-  if( calculator->GetMinimum() < 0.0 || calculator->GetMaximum() > 1.0 )
-    {
-    return false;
-    }
-  return true;
+  itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_UpdateBuffer,
+                                                                output );
 }
 
 /**
@@ -408,11 +215,13 @@ DiffusiveRegistrationFilter
 
   // Calculate minimum and maximum intensities and warn if we are not in range
   // [0,1]
-  if( !this->IsIntensityRangeBetween0And1( this->GetFixedImage() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::IsIntensityRangeBetween0And1(
+        this->GetFixedImage() ) )
     {
     itkWarningMacro( << "Fixed image intensity should be [0,1]" );
     }
-  if( !this->IsIntensityRangeBetween0And1( this->GetMovingImage() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::IsIntensityRangeBetween0And1(
+        this->GetMovingImage() ) )
     {
     itkWarningMacro( << "Moving image intensity should be [0,1]" );
     }
@@ -436,8 +245,8 @@ DiffusiveRegistrationFilter
   // Assert that we have a deformation field, and that its image attributes
   // match the fixed image
   assert( this->GetDeformationField() );
-  if( !this->CompareImageAttributes( this->GetDeformationField(),
-                                     this->GetFixedImage() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+        this->GetDeformationField(), this->GetFixedImage() ) )
     {
     itkExceptionMacro( << "Deformation field attributes do not match fixed "
                        << "image" );
@@ -462,14 +271,15 @@ DiffusiveRegistrationFilter
     // We need to make sure that the attributes of the mask match those of
     // the current output
     OutputImagePointer output = this->GetOutput();
-    if ( !this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
-                                        output.GetPointer() ) )
+    if ( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+          m_StoppingCriterionMask.GetPointer(), output.GetPointer() ) )
       {
-      this->ResampleImageNearestNeighbor( m_HighResolutionStoppingCriterionMask,
-                                          output,
-                                          m_StoppingCriterionMask );
-      assert( this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
-                                           output.GetPointer() ) );
+      itk::DiffusiveRegistrationFilterUtils::ResampleImageNearestNeighbor(
+            m_HighResolutionStoppingCriterionMask,
+            output,
+            m_StoppingCriterionMask );
+      assert( itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+               m_StoppingCriterionMask.GetPointer(), output.GetPointer() ) );
       }
     }
 
@@ -531,9 +341,11 @@ DiffusiveRegistrationFilter
     if( this->GetComputeRegularizationTerm() )
       {
       diffusionTensorPointer = DiffusionTensorImageType::New();
-      this->AllocateSpaceForImage( diffusionTensorPointer, output );
+      itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+            diffusionTensorPointer, output );
       tensorDerivativePointer = TensorDerivativeImageType::New();
-      this->AllocateSpaceForImage( tensorDerivativePointer, output );
+      itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+            tensorDerivativePointer, output );
       }
     if( (int) m_DiffusionTensorImages.size() < numTerms )
       {
@@ -627,12 +439,12 @@ DiffusiveRegistrationFilter
     {
     m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i]
         = ScalarDerivativeImageType::New();
-    this->AllocateSpaceForImage(
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
         m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i], output );
 
     m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i]
         = TensorDerivativeImageType::New();
-    this->AllocateSpaceForImage(
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
         m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i],
         output );
     }
@@ -743,30 +555,6 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Update x, y, z components of a deformation field
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ExtractXYZComponentsFromDeformationField(
-    const OutputImageType * deformationField,
-    DeformationComponentImageArrayType& deformationComponentImages ) const
-{
-  assert( deformationField );
-
-  typename VectorIndexSelectionFilterType::Pointer indexSelector;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    indexSelector = VectorIndexSelectionFilterType::New();
-    indexSelector->SetInput( deformationField );
-    indexSelector->SetIndex( i );
-    deformationComponentImages[i] = indexSelector->GetOutput();
-    indexSelector->Update();
-    }
-}
-
-/**
  * Calculates the derivatives of the deformation vector derivatives after
  * each iteration.
  */
@@ -791,8 +579,8 @@ DiffusiveRegistrationFilter
 
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    this->ExtractXYZComponentsFromDeformationField(
-        m_DeformationComponentImages[i], deformationComponentImageArray );
+    itk::DiffusiveRegistrationFilterUtils::ExtractXYZComponentsFromDeformationField(
+          this->GetDeformationComponentImage(i), deformationComponentImageArray );
 
     for( int j = 0; j < ImageDimension; j++ )
       {

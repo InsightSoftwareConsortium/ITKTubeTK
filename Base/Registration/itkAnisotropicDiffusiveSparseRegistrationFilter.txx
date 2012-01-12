@@ -24,6 +24,7 @@ limitations under the License.
 #define __itkAnisotropicDiffusiveSparseRegistrationFilter_txx
 
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
+#include "itkDiffusiveRegistrationFilterUtils.h"
 
 #include "itkImageRegionSplitter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
@@ -145,7 +146,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   this->SetDeformationComponentImage( PROP_TANGENTIAL, this->GetOutput() );
 
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
-  this->AllocateSpaceForImage( normalDeformationField, output );
+  itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalDeformationField, output );
   this->SetDeformationComponentImage( SMOOTH_NORMAL, normalDeformationField );
   this->SetDeformationComponentImage( PROP_NORMAL, normalDeformationField );
 
@@ -166,9 +167,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
       if( t == SMOOTH_TANGENTIAL || t == SMOOTH_NORMAL )
         {
         firstOrder = ScalarDerivativeImageType::New();
-        this->AllocateSpaceForImage( firstOrder, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( firstOrder, output );
         secondOrder = TensorDerivativeImageType::New();
-        this->AllocateSpaceForImage( secondOrder, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( secondOrder, output );
         }
       this->SetDeformationComponentFirstOrderDerivative( t, i, firstOrder );
       this->SetDeformationComponentSecondOrderDerivative( t, i, secondOrder );
@@ -238,12 +239,12 @@ AnisotropicDiffusiveSparseRegistrationFilter
       m_NormalMatrixImage = NormalMatrixImageType::New();
       if( highResolutionTemplate )
         {
-        this->AllocateSpaceForImage( m_NormalMatrixImage,
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_NormalMatrixImage,
                                      highResolutionTemplate );
         }
       else
         {
-        this->AllocateSpaceForImage( m_NormalMatrixImage, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_NormalMatrixImage, output );
         }
       }
     if( computeWeightStructures )
@@ -251,12 +252,12 @@ AnisotropicDiffusiveSparseRegistrationFilter
       m_WeightStructuresImage = WeightMatrixImageType::New();
       if( highResolutionTemplate )
         {
-        this->AllocateSpaceForImage( m_WeightStructuresImage,
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightStructuresImage,
                                      highResolutionTemplate );
         }
       else
         {
-        this->AllocateSpaceForImage( m_WeightStructuresImage, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightStructuresImage, output );
         }
       }
     if( computeWeightRegularizations )
@@ -264,12 +265,12 @@ AnisotropicDiffusiveSparseRegistrationFilter
       m_WeightRegularizationsImage = WeightComponentImageType::New();
       if( highResolutionTemplate )
         {
-        this->AllocateSpaceForImage( m_WeightRegularizationsImage,
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightRegularizationsImage,
                                      highResolutionTemplate );
         }
       else
         {
-        this->AllocateSpaceForImage( m_WeightRegularizationsImage, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightRegularizationsImage, output );
         }
       }
 
@@ -302,32 +303,31 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
-  if( !this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
-                                     output.GetPointer() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+        m_NormalMatrixImage.GetPointer(), output.GetPointer() ) )
     {
-    this->ResampleImageNearestNeighbor( m_HighResolutionNormalMatrixImage,
-                                        output,
-                                        m_NormalMatrixImage );
-    assert( this->CompareImageAttributes( m_NormalMatrixImage.GetPointer(),
-                                          output.GetPointer() ) );
+    itk::DiffusiveRegistrationFilterUtils::ResampleImageNearestNeighbor(
+          m_HighResolutionNormalMatrixImage, output, m_NormalMatrixImage );
+    assert( itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+             m_NormalMatrixImage.GetPointer(), output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
-                                     output.GetPointer() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+        m_WeightStructuresImage.GetPointer(), output.GetPointer() ) )
     {
-    this->ResampleImageNearestNeighbor( m_HighResolutionWeightStructuresImage,
-                                        output,
-                                        m_WeightStructuresImage );
-    assert( this->CompareImageAttributes( m_WeightStructuresImage.GetPointer(),
-                                          output.GetPointer() ) );
+    itk::DiffusiveRegistrationFilterUtils::ResampleImageNearestNeighbor(
+          m_HighResolutionWeightStructuresImage, output, m_WeightStructuresImage );
+    assert( itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+             m_WeightStructuresImage.GetPointer(), output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightRegularizationsImage.GetPointer(),
-                                     output.GetPointer() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+        m_WeightRegularizationsImage.GetPointer(), output.GetPointer() ) )
     {
-    this->ResampleImageLinear( m_HighResolutionWeightRegularizationsImage,
-                               output,
-                               m_WeightRegularizationsImage );
-    assert( this->CompareImageAttributes(
-        m_WeightRegularizationsImage.GetPointer(), output.GetPointer() ) );
+    itk::DiffusiveRegistrationFilterUtils::ResampleImageLinear(
+          m_HighResolutionWeightRegularizationsImage,
+          output,
+          m_WeightRegularizationsImage );
+    assert( itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+             m_WeightRegularizationsImage.GetPointer(), output.GetPointer() ) );
     }
 }
 
@@ -1132,7 +1132,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     {
     // Create the multiplication vector image that is shared between the PROPs
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
-    this->AllocateSpaceForImage( normalMultsImage, output );
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalMultsImage, output );
 
     // Calculate NAN_l
     DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
@@ -1285,9 +1285,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
     {
     if( i == SMOOTH_TANGENTIAL || i == SMOOTH_NORMAL )
       {
-      this->ExtractXYZComponentsFromDeformationField(
-          this->GetDeformationComponentImage(i),
-          deformationComponentImageArray );
+      itk::DiffusiveRegistrationFilterUtils::ExtractXYZComponentsFromDeformationField(
+            this->GetDeformationComponentImage(i), deformationComponentImageArray );
 
       for( int j = 0; j < ImageDimension; j++ )
         {
@@ -1344,7 +1343,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   NormalMatrixImageRegionType normalMatrixIt;
   if( getHighResolutionNormalVectorImage )
     {
-    this->AllocateSpaceForImage( normalImage,
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalImage,
                                  m_HighResolutionNormalMatrixImage );
     normalMatrixIt = NormalMatrixImageRegionType(
         m_HighResolutionNormalMatrixImage,
@@ -1352,7 +1351,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
   else
     {
-    this->AllocateSpaceForImage( normalImage, m_NormalMatrixImage );
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalImage, m_NormalMatrixImage );
     normalMatrixIt = NormalMatrixImageRegionType(
         m_NormalMatrixImage,
         m_NormalMatrixImage->GetLargestPossibleRegion() );
