@@ -680,7 +680,8 @@ protected:
    *  mechanism.  The stepSize parameter is a uniform scaling parameter
    *  with which to scale the displacement field for use with the line search.
    * \sa ThreadedCalculateEnergies */
-  virtual void CalculateEnergies( EnergiesStruct & energies, double stepSize );
+  virtual void CalculateEnergies( EnergiesStruct & energies,
+                                  OutputImageType * outputField );
 
   /** Updates the intermediate update statistics (sum-of-squared and sum-of
    *  statistics, incorporating the time step, and

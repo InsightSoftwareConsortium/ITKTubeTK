@@ -817,24 +817,9 @@ DiffusiveRegistrationFilter
   // - update magnitude statistics as if stepSize = 1
   TimeStepType stepSize = this->CalculateChangeGradient();
 
-  // Determine the stepSize.  After this,
-  // - update buffer as if stepSize = 1
-  // - energies calculated with determined stepSize
-  // - update magnitude statistics as if stepSize = 1
-
-  // Compute the energies for known constant time step
-
-  // TODO this ends up applying update twice
-  // Should move UpdateUpdateStatistics as part of PostProcessIteration
-  // and do CalculateEnergies after ApplyUpdate using the output after
-  // update buffer has been applied
-  this->CalculateEnergies( m_Energies, stepSize );
-
-
   // Now that we know the potential global scaling, we can finish the update
   // metrics.  After this,
   // - update buffer as if stepSize = 1
-  // - energies calculated with determined stepSize
   // - update magnitude statistics for determined stepSize
   this->UpdateUpdateStatistics(stepSize);
 
@@ -1259,21 +1244,13 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateEnergies( EnergiesStruct & energies, double stepSize )
+::CalculateEnergies( EnergiesStruct & energies, OutputImageType * outputField )
 {
-  assert( this->GetOutput() );
+  assert( outputField );
 
-  // Create a temporary image to store the updated deformation field
-  OutputImagePointer trialOutputPointer = OutputImageType::New();
-  itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( trialOutputPointer,
-                                                                this->GetOutput() );
-
-  // Apply update, update the deformation component images, and compute the
-  // deformation component derivative images under the current stepSize
-  this->ApplyUpdate( stepSize, trialOutputPointer );
   if( this->GetComputeRegularizationTerm() )
     {
-    this->UpdateDeformationComponentImages( trialOutputPointer );
+    this->UpdateDeformationComponentImages( outputField );
     // TODO this will compute first and second derivatives, we need first only
     this->ComputeDeformationComponentDerivativeImages();
     }
@@ -1281,7 +1258,7 @@ DiffusiveRegistrationFilter
   // Set up for multithreaded processing.
   CalculateEnergiesThreadStruct str;
   str.Filter = this;
-  str.OutputImage = trialOutputPointer;
+  str.OutputImage = outputField;
   str.IntensityDistanceEnergies = new double[this->GetNumberOfThreads()];
   str.RegularizationEnergies = new double[this->GetNumberOfThreads()];
 
@@ -1303,8 +1280,6 @@ DiffusiveRegistrationFilter
 
   delete [] str.IntensityDistanceEnergies;
   delete [] str.RegularizationEnergies;
-
-  // TODO delete trialOutputPointer?
 }
 
 /**
@@ -1589,7 +1564,19 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ApplyUpdate(TimeStepType dt)
 {
+  // Do the apply update.  After this,
+  // - update buffer as for determined step size
+  // - energies calculated with determined stepSize ONLY for line search
+  // - globalScaling is optimized (for line search)
+  // - update magnitude statistics for determined stepSize
   this->ApplyUpdate( dt, this->GetOutput() );
+
+  // Calculate the energies.  After this,
+  // - update buffer as for determined step size
+  // - energies calculated with determined stepSize
+  // - globalScaling is optimized (for line search)
+  // - update magnitude statistics for determined stepSize
+  this->CalculateEnergies( m_Energies, this->GetOutput() );
 
   // Print out energy metrics and evaluate stopping condition
   this->PostProcessIteration(dt);
