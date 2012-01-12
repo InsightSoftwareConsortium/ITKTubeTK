@@ -339,7 +339,8 @@ AnisotropicDiffusiveRegistrationFunction
 ::ComputeIntensityDistanceEnergy(
   const typename NeighborhoodType::IndexType index )
 {
-  return m_IntensityDistanceFunction->ComputeEnergy( index );
+  return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference(
+                         index ) );
 }
 
 /**

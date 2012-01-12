@@ -146,9 +146,9 @@ public:
                      void *globalData,
                      const FloatOffsetType &offset = FloatOffsetType(0.0));
 
-  /** Computes the energy at each pixel that does not lie on a data set
-   *  boundary */
-  virtual double ComputeEnergy(const IndexType & index);
+  /** Computes the intensity difference between the fixed and moving image
+   *  at the given index, under the current estimate of the deformation field. */
+  virtual double ComputeIntensityDifference(const IndexType & index);
 
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )

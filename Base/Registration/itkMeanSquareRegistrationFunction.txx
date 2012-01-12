@@ -129,7 +129,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     }
 
   // Compute update
-  const double speedValue = this->ComputeEnergy(index);
+  const double speedValue = this->ComputeIntensityDifference(index);
 
   const bool normalizemetric=this->GetNormalizeGradient();
   double denominator = 1.0;
@@ -163,12 +163,13 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 }
 
 /**
- * Compute energy at a non boundary neighbourhood
+ * Compute intensity difference between fixed and moving images at a
+ * non boundary neighbourhood
  */
 template <class TFixedImage, class TMovingImage, class TDeformationField>
 double
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::ComputeEnergy(const IndexType & index)
+::ComputeIntensityDifference(const IndexType & index)
 {
   const double fixedValue = (double) this->GetFixedImage()->GetPixel( index );
 
@@ -188,9 +189,9 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     }
 
   // Compute update
-  double energy = fixedValue - movingValue;
+  double difference = fixedValue - movingValue;
 
-  return energy;
+  return difference;
 }
 
 } // end namespace itk
