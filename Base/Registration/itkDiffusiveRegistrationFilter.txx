@@ -799,13 +799,27 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChange()
 {
-  TimeStepType timeStep = this->CalculateChangeGradient();
+  // Compute the search direction.  After this,
+  // - update buffer as if stepSize = 1
+  // - energies not yet calculated
+  // - update magnitude statistics as if stepSize = 1
+  TimeStepType stepSize = this->CalculateChangeGradient();
+
+  // Determine the stepSize.  After this,
+  // - update buffer as if stepSize = 1
+  // - energies calculated with determined stepSize
+  // - update magnitude statistics as if stepSize = 1
+
+  this->CalculateEnergies( m_Energies, stepSize );
 
   // Now that we know the potential global scaling, we can finish the update
-  // metrics
-  this->UpdateUpdateStatistics(timeStep);
+  // metrics.  After this,
+  // - update buffer as if stepSize = 1
+  // - energies calculated with determined stepSize
+  // - update magnitude statistics for determined stepSize
+  this->UpdateUpdateStatistics(stepSize);
 
-  return timeStep;
+  return stepSize;
 }
 
 /**
@@ -1226,13 +1240,14 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateEnergies( EnergiesStruct & energies )
+::CalculateEnergies( EnergiesStruct & energies, double stepSize )
 {
   // Set up for multithreaded processing.
   CalculateEnergiesThreadStruct str;
   str.Filter = this;
   str.IntensityDistanceEnergies = new double[this->GetNumberOfThreads()];
   str.RegularizationEnergies = new double[this->GetNumberOfThreads()];
+  str.StepSize = stepSize;
 
   // Multithread the execution
   this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
@@ -1297,6 +1312,7 @@ DiffusiveRegistrationFilter
                                             splitStoppingCriterionMaskImageRegion,
                                             str->IntensityDistanceEnergies[threadId],
                                             str->RegularizationEnergies[threadId],
+                                            str->StepSize,
                                             threadId );
     }
 
@@ -1320,6 +1336,7 @@ DiffusiveRegistrationFilter
       stoppingCriterionMaskRegionToProcess,
     double & intensityDistanceEnergy,
     double & regularizationEnergy,
+    double stepSize,
     int)
 {
   // Get the FiniteDifferenceFunction to use in calculations.
@@ -1431,7 +1448,7 @@ DiffusiveRegistrationFilter
         if( computeIntensityDistance )
           {
           intensityDistanceEnergy += df->ComputeIntensityDistanceEnergy(
-                outputNeighborhood.GetIndex() );
+                outputNeighborhood.GetIndex(), stepSize );
           }
 
         // Calculate regularization energy
@@ -1439,7 +1456,8 @@ DiffusiveRegistrationFilter
           {
           regularizationEnergy += df->ComputeRegularizationEnergy(
                 tensorNeighborhoods,
-                deformationComponentFirstOrderRegionArrays );
+                deformationComponentFirstOrderRegionArrays,
+                stepSize );
           }
         }
 
@@ -1483,19 +1501,19 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::UpdateUpdateStatistics(TimeStepType timeStep)
+::UpdateUpdateStatistics(TimeStepType stepSize)
 {
   // Compute the true sumOfSquared and sumOf metrics, considering the
-  // timestep and the global scaling
+  // actual stepSize
   double scalingForSumOfSquaredUpdateMagnitude
-      = vnl_math_sqr( timeStep );
+      = vnl_math_sqr( stepSize );
   m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
       *= scalingForSumOfSquaredUpdateMagnitude;
   m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
       *= scalingForSumOfSquaredUpdateMagnitude;
   m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
       *= scalingForSumOfSquaredUpdateMagnitude;
-  double scalingForSumOfUpdateMagnitude = timeStep;
+  double scalingForSumOfUpdateMagnitude = stepSize;
   m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude
       *= scalingForSumOfUpdateMagnitude;
   m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude
@@ -1551,7 +1569,7 @@ DiffusiveRegistrationFilter
   this->GetOutput()->Modified();
 
   // Print out energy metrics and evaluate stopping condition
-  this->PostProcessIteration();
+  this->PostProcessIteration(dt);
 }
 
 /**
@@ -1618,14 +1636,11 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::PostProcessIteration()
+::PostProcessIteration(TimeStepType stepSize)
 {
   // Keep track of the total registration time
-  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-  assert( df );
-  TimeStepType timeStep = df->GetTimeStep();
   static TimeStepType totalTime = 0.0;
-  totalTime += timeStep;
+  totalTime += stepSize;
 
   // Get the change in energy and update metrics since the previous iteration
   EnergiesStruct energiesChange;
@@ -1665,7 +1680,7 @@ DiffusiveRegistrationFilter
   std::cout.setf(std::ios::fixed, std::ios::floatfield);
   std::cout.precision(6);
   std::cout << elapsedIterations << delimiter
-            << timeStep << delimiter
+            << stepSize << delimiter
             << totalTime << sectionDelimiter
 
             << m_UpdateMetrics.RMSTotalUpdateMagnitude << delimiter
@@ -1707,7 +1722,7 @@ DiffusiveRegistrationFilter
 
   std::cout << std::endl;
 
-  // Check for stopping condition
+  // Check for stopping condition // TODO should be in terms of time, not iterations
   if (elapsedIterations != 0
       && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
     {

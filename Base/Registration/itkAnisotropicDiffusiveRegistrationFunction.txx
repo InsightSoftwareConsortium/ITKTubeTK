@@ -244,7 +244,8 @@ AnisotropicDiffusiveRegistrationFunction
           offset );
     }
 
-  // Compute the final update term
+  // Compute the final update term - incorporates weighting between intensity
+  // distance term and regularization term, but not global timestep scaling
   PixelType updateTerm;
   updateTerm.Fill(0);
   updateTerm = intensityDistanceTerm + regularizationTerm;
@@ -337,10 +338,10 @@ double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeIntensityDistanceEnergy(
-  const typename NeighborhoodType::IndexType index )
+  const typename NeighborhoodType::IndexType index, double stepSize )
 {
   return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference(
-                         index ) );
+                         index, stepSize ) );
 }
 
 /**
@@ -353,7 +354,8 @@ AnisotropicDiffusiveRegistrationFunction
 ::ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
-        & deformationComponentFirstOrderDerivativeRegions )
+        & deformationComponentFirstOrderDerivativeRegions,
+    double stepSize )
 {
   // Since we are iterating over terms before iterating over x,y,z
   // we need to store the sum for each dimension
@@ -372,6 +374,7 @@ AnisotropicDiffusiveRegistrationFunction
           = tensorNeighborhoods[term].GetCenterPixel();
       ScalarDerivativeType deformationComponentFirstOrderDerivative
           = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
+      deformationComponentFirstOrderDerivative *= stepSize;
       itk::Vector< double, ImageDimension > multVector(0.0);
       for( int row = 0; row < ImageDimension; row++ )
         {
@@ -386,7 +389,6 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   // Calculate and weight the regularization energy
-  // TODO need this 0.5 here?
   double regularizationEnergy = 0.0;
   for( unsigned int i = 0; i < ImageDimension; i++)
     {

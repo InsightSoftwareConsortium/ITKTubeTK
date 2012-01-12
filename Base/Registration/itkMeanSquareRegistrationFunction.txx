@@ -129,7 +129,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     }
 
   // Compute update
-  const double speedValue = this->ComputeIntensityDifference(index);
+  const double speedValue = this->ComputeIntensityDifference(index, 1.0);
 
   const bool normalizemetric=this->GetNormalizeGradient();
   double denominator = 1.0;
@@ -169,12 +169,13 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 template <class TFixedImage, class TMovingImage, class TDeformationField>
 double
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::ComputeIntensityDifference(const IndexType & index)
+::ComputeIntensityDifference(const IndexType & index, double stepSize)
 {
   const double fixedValue = (double) this->GetFixedImage()->GetPixel( index );
 
   // Get moving image related information
   DeformationFieldPixelType itvec = this->GetDeformationField()->GetPixel(index);
+  itvec *= stepSize;
   PointType mappedPoint;
   this->GetFixedImage()->TransformIndexToPhysicalPoint(index, mappedPoint);
   for(unsigned int j = 0; j < ImageDimension; j++ )

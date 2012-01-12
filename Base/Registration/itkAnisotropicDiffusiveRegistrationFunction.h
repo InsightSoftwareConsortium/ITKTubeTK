@@ -245,7 +245,9 @@ public:
                           const FloatOffsetType &offset = FloatOffsetType(0.0));
 
   /** Compute the update value.  The intensityDistanceTerm and
-   *  regularizationTerm are outputs. */
+   *  regularizationTerm are outputs.  Incorporates weighting between
+   *  intensity distance term and regularization term, but does not yet
+   *  incorporate the timestep. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
@@ -263,13 +265,15 @@ public:
 
   /** Updates the energy associated with the intensity distance term */
   virtual double ComputeIntensityDistanceEnergy(
-    const typename NeighborhoodType::IndexType index );
+    const typename NeighborhoodType::IndexType index,
+    double stepSize );
 
   /** Updates the energy associated with the regularization */
   virtual double ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
-        & deformationComponentFirstOrderDerivativeRegions );
+        & deformationComponentFirstOrderDerivativeRegions,
+    double stepSize );
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */

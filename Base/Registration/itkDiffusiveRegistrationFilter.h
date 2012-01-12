@@ -677,14 +677,15 @@ protected:
 
   /** Calculates the total, intensity distance and regularization energies,
    *  using the ThreadedCalculateEnergies() method and a multithreading
-   *  mechanism.
+   *  mechanism.  The stepSize parameter is a uniform scaling parameter
+   *  with which to scale the displacement field for use with the line search.
    * \sa ThreadedCalculateEnergies */
-  virtual void CalculateEnergies( EnergiesStruct & energies );
+  virtual void CalculateEnergies( EnergiesStruct & energies, double stepSize );
 
   /** Updates the intermediate update statistics (sum-of-squared and sum-of
    *  statistics, incorporating the time step, and
    *  computes the RMS and mean update statistics */
-  virtual void UpdateUpdateStatistics( TimeStepType timeStep );
+  virtual void UpdateUpdateStatistics( TimeStepType stepSize );
 
   /** Does the actual work of calculating the intensity distance and
    *  regularization energies over a region supplied by the multithreading
@@ -700,6 +701,7 @@ protected:
       stoppingCriterionMaskRegionToProcess,
     double & intensityDistanceEnergy,
     double & regularizationEnergy,
+    double stepSize,
     int threadId );
 
   /** This method applies changes from the update buffer to the output, using
@@ -733,7 +735,7 @@ protected:
 
   /** This method is called after ApplyUpdate() to print out energy and RMS
    * change metrics and evaluate the stopping conditions. */
-  virtual void PostProcessIteration();
+  virtual void PostProcessIteration(TimeStepType stepSize);
 
 private:
   // Purposely not implemented
@@ -781,6 +783,7 @@ private:
     DiffusiveRegistrationFilter * Filter;
     double * IntensityDistanceEnergies;
     double * RegularizationEnergies;
+    double StepSize;
     };
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an

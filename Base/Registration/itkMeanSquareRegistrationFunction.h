@@ -148,7 +148,7 @@ public:
 
   /** Computes the intensity difference between the fixed and moving image
    *  at the given index, under the current estimate of the deformation field. */
-  virtual double ComputeIntensityDifference(const IndexType & index);
+  virtual double ComputeIntensityDifference(const IndexType & index, double stepSize);
 
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )
