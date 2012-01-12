@@ -24,6 +24,7 @@ limitations under the License.
 #define __itkAnisotropicDiffusiveRegistrationFilter_txx
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
+#include "itkDiffusiveRegistrationFilterUtils.h"
 
 #include "itkImageRegionSplitter.h"
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
@@ -118,7 +119,7 @@ AnisotropicDiffusiveRegistrationFilter
   this->SetDeformationComponentImage( TANGENTIAL, this->GetOutput() );
 
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
-  this->AllocateSpaceForImage( normalDeformationField, output );
+  itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalDeformationField, output );
   this->SetDeformationComponentImage( NORMAL, normalDeformationField );
 
   // Setup the first and second order deformation component images - we need
@@ -131,9 +132,9 @@ AnisotropicDiffusiveRegistrationFilter
     for( int j = 0; j < ImageDimension; j++ )
       {
       firstOrder = ScalarDerivativeImageType::New();
-      this->AllocateSpaceForImage( firstOrder, output );
+      itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( firstOrder, output );
       secondOrder = TensorDerivativeImageType::New();
-      this->AllocateSpaceForImage( secondOrder, output );
+      itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( secondOrder, output );
       this->SetDeformationComponentFirstOrderDerivative( i, j, firstOrder );
       this->SetDeformationComponentSecondOrderDerivative( i, j, secondOrder );
       }
@@ -191,12 +192,12 @@ AnisotropicDiffusiveRegistrationFilter
       m_NormalVectorImage = NormalVectorImageType::New();
       if( highResolutionTemplate )
         {
-        this->AllocateSpaceForImage( m_NormalVectorImage,
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_NormalVectorImage,
                                      highResolutionTemplate );
         }
       else
         {
-        this->AllocateSpaceForImage( m_NormalVectorImage, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_NormalVectorImage, output );
         }
       }
     if( computeWeights )
@@ -204,11 +205,11 @@ AnisotropicDiffusiveRegistrationFilter
       m_WeightImage = WeightImageType::New();
       if( highResolutionTemplate )
         {
-        this->AllocateSpaceForImage( m_WeightImage, highResolutionTemplate );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightImage, highResolutionTemplate );
         }
       else
         {
-        this->AllocateSpaceForImage( m_WeightImage, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightImage, output );
         }
       }
 
@@ -235,24 +236,21 @@ AnisotropicDiffusiveRegistrationFilter
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calclulate the diffusion
   // tensors, deformation components, etc
-  if( !this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
-                                     output.GetPointer() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+        m_NormalVectorImage.GetPointer(), output.GetPointer() ) )
     {
-    this->VectorResampleImageLinear( m_HighResolutionNormalVectorImage,
-                                     output,
-                                     m_NormalVectorImage,
-                                     true );
-    assert( this->CompareImageAttributes( m_NormalVectorImage.GetPointer(),
-                                          output.GetPointer() ) );
+    itk::DiffusiveRegistrationFilterUtils::VectorResampleImageLinear(
+          m_HighResolutionNormalVectorImage, output, m_NormalVectorImage, true );
+    assert( itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+             m_NormalVectorImage.GetPointer(), output.GetPointer() ) );
     }
-  if( !this->CompareImageAttributes( m_WeightImage.GetPointer(),
-                                     output.GetPointer() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+        m_WeightImage.GetPointer(), output.GetPointer() ) )
     {
-    this->ResampleImageLinear( m_HighResolutionWeightImage,
-                               output,
-                               m_WeightImage );
-    assert( this->CompareImageAttributes( m_WeightImage.GetPointer(),
-                                          output.GetPointer() ) );
+    itk::DiffusiveRegistrationFilterUtils::ResampleImageLinear(
+          m_HighResolutionWeightImage, output, m_WeightImage );
+    assert( itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+             m_WeightImage.GetPointer(), output.GetPointer() ) );
     }
 }
 
@@ -705,7 +703,7 @@ AnisotropicDiffusiveRegistrationFilter
     {
     // Create the multiplication vector image
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
-    this->AllocateSpaceForImage( normalMultsImage, output );
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalMultsImage, output );
 
     // Calculate n_l*n
     DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
@@ -730,7 +728,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::UpdateDeformationComponentImages()
+::UpdateDeformationComponentImages( OutputImageType * output )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetNormalVectorImage() );
@@ -740,7 +738,6 @@ AnisotropicDiffusiveRegistrationFilter
   NormalVectorImageRegionType normalVectorRegion(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
-  OutputImagePointer output = this->GetOutput();
   OutputImageRegionType outputRegion(output,
                                      output->GetLargestPossibleRegion() );
 

@@ -655,13 +655,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  // Error checking on intensity distance and regularization weightings
-  if( intensityDistanceWeightings.size() <= 0 )
-    {
-    tube::ErrorMessage( "You must provide intensity distance weightings." );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
+  // Error checking on regularization weightings
   if( regularizationWeightings.size() <= 0 )
     {
     tube::ErrorMessage( "You must provide regularization weightings." );
@@ -694,7 +688,6 @@ int DoIt( int argc, char * argv[] )
     sparseAnisotropicRegistrator->SetGamma( gamma );
     }
   registrator->SetMaximumRMSError( maximumRMSError );
-  registrator->SetIntensityDistanceWeightings( intensityDistanceWeightings );
   registrator->SetRegularizationWeightings( regularizationWeightings );
   registrator->SetBackgroundIntensity( backgroundIntensity );
   registrator->SetStoppingCriterionEvaluationPeriod(
@@ -778,7 +771,7 @@ int DoIt( int argc, char * argv[] )
   warper->SetDeformationField( multires->GetOutput() );
   warper->SetInterpolator( interpolator );
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
-  warper->SetEdgePaddingValue( 0 );
+  warper->SetEdgePaddingValue( backgroundIntensity );
 
   // Update triggers the registration and the warping
   warper->Update();

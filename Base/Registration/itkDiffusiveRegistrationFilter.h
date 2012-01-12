@@ -31,6 +31,37 @@ limitations under the License.
 namespace itk
 {
 
+struct EnergiesStruct
+  {
+  double  TotalEnergy;
+  double  IntensityDistanceEnergy;
+  double  RegularizationEnergy;
+
+  void zero()
+    {
+    TotalEnergy = 0.0;
+    IntensityDistanceEnergy = 0.0;
+    RegularizationEnergy = 0.0;
+    }
+
+  void copyFrom( const EnergiesStruct & rhs )
+    {
+    TotalEnergy = rhs.TotalEnergy;
+    IntensityDistanceEnergy = rhs.IntensityDistanceEnergy;
+    RegularizationEnergy = rhs.RegularizationEnergy;
+    }
+
+  void difference( const EnergiesStruct & lhs, const EnergiesStruct & rhs )
+    {
+    TotalEnergy = lhs.TotalEnergy - rhs.TotalEnergy;
+    IntensityDistanceEnergy
+        = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
+    RegularizationEnergy
+        = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
+    }
+
+  };
+
 /** \class itkDiffusiveRegistrationFilter
  * \brief Registration filter for registrations using anisotropic diffusive
  * regularizers, for example for sliding organ registration.
@@ -236,11 +267,6 @@ public:
       RegistrationFunctionType::DeformationVectorImageRegionArrayVectorType
       DeformationVectorImageRegionArrayVectorType;
 
-  /** Types for vector component extractor */
-  typedef itk::VectorIndexSelectionCastImageFilter
-      < DeformationFieldType, DeformationVectorComponentImageType >
-      VectorIndexSelectionFilterType;
-
   /** Stopping criterion mask types */
   typedef FixedImageType StoppingCriterionMaskImageType;
   typedef FixedImagePointer StoppingCriterionMaskPointer;
@@ -272,15 +298,6 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
-
-  /** Set/get the weightings for the intensity distance update term.  If
-   *  using multiresolution registration and the current level is past the
-   *  length of the weight vector, the last weight in the vector will be used.
-   *  Default: 1.0 */
-  void SetIntensityDistanceWeightings( std::vector< double >& weightings )
-    { m_IntensityDistanceWeightings = weightings; }
-  const std::vector< double >& GetIntensityDistanceWeightings() const
-    { return m_IntensityDistanceWeightings; }
 
   /** Set/get the weightings for the regularization update term.  If
    *  using multiresolution registration and the current level is past the
@@ -388,7 +405,7 @@ protected:
   virtual void InitializeIteration();
 
   /** Updates the deformation vector component images on each iteration. */
-  virtual void UpdateDeformationComponentImages() {};
+  virtual void UpdateDeformationComponentImages( OutputImageType * output );
 
   /** Computes the first- and second-order partial derivatives of the
    *  deformation component images on each iteration.  Override in derived
@@ -506,27 +523,147 @@ protected:
         [index][dimension];
     }
 
-  /** Extracts the x, y, z components of a deformation field. */
-  void ExtractXYZComponentsFromDeformationField(
-      const OutputImageType * deformationField,
-      DeformationComponentImageArrayType & deformationComponentImages ) const;
+  struct UpdateMetricsIntermediateStruct
+    {
+    int     NumberOfPixelsProcessed;
+    double  SumOfSquaredTotalUpdateMagnitude;
+    double  SumOfSquaredIntensityDistanceUpdateMagnitude;
+    double  SumOfSquaredRegularizationUpdateMagnitude;
+    double  SumOfTotalUpdateMagnitude;
+    double  SumOfIntensityDistanceUpdateMagnitude;
+    double  SumOfRegularizationUpdateMagnitude;
+
+    void zero()
+      {
+      NumberOfPixelsProcessed = 0;
+      SumOfSquaredTotalUpdateMagnitude = 0.0;
+      SumOfSquaredIntensityDistanceUpdateMagnitude = 0.0;
+      SumOfSquaredRegularizationUpdateMagnitude = 0.0;
+      SumOfTotalUpdateMagnitude = 0.0;
+      SumOfIntensityDistanceUpdateMagnitude = 0.0;
+      SumOfRegularizationUpdateMagnitude = 0.0;
+      }
+
+    void copyFrom( const UpdateMetricsIntermediateStruct & rhs )
+      {
+      NumberOfPixelsProcessed = rhs.NumberOfPixelsProcessed;
+      SumOfSquaredTotalUpdateMagnitude = rhs.SumOfSquaredTotalUpdateMagnitude;
+      SumOfSquaredIntensityDistanceUpdateMagnitude
+          = rhs.SumOfSquaredIntensityDistanceUpdateMagnitude;
+      SumOfSquaredRegularizationUpdateMagnitude
+          = rhs.SumOfSquaredRegularizationUpdateMagnitude;
+      SumOfTotalUpdateMagnitude = rhs.SumOfTotalUpdateMagnitude;
+      SumOfIntensityDistanceUpdateMagnitude
+          = rhs.SumOfIntensityDistanceUpdateMagnitude;
+      SumOfRegularizationUpdateMagnitude
+          = rhs.SumOfRegularizationUpdateMagnitude;
+      }
+
+    void difference( const UpdateMetricsIntermediateStruct & lhs,
+                     const UpdateMetricsIntermediateStruct & rhs )
+      {
+      SumOfSquaredTotalUpdateMagnitude
+          = lhs.SumOfSquaredTotalUpdateMagnitude
+          - rhs.SumOfSquaredTotalUpdateMagnitude;
+      SumOfSquaredIntensityDistanceUpdateMagnitude
+          = lhs.SumOfSquaredIntensityDistanceUpdateMagnitude
+          - rhs.SumOfSquaredIntensityDistanceUpdateMagnitude;
+      SumOfSquaredRegularizationUpdateMagnitude
+          = lhs.SumOfSquaredRegularizationUpdateMagnitude
+          - rhs.SumOfSquaredRegularizationUpdateMagnitude;
+      SumOfTotalUpdateMagnitude
+          = lhs.SumOfTotalUpdateMagnitude - rhs.SumOfTotalUpdateMagnitude;
+      SumOfIntensityDistanceUpdateMagnitude
+          = lhs.SumOfIntensityDistanceUpdateMagnitude
+          - rhs.SumOfIntensityDistanceUpdateMagnitude;
+      SumOfRegularizationUpdateMagnitude
+          = lhs.SumOfRegularizationUpdateMagnitude
+          - rhs.SumOfRegularizationUpdateMagnitude;
+      }
+    };
+
+  struct UpdateMetricsStruct
+    {
+    UpdateMetricsIntermediateStruct IntermediateStruct;
+    double                          RMSTotalUpdateMagnitude;
+    double                          RMSIntensityDistanceUpdateMagnitude;
+    double                          RMSRegularizationUpdateMagnitude;
+    double                          MeanTotalUpdateMagnitude;
+    double                          MeanIntensityDistanceUpdateMagnitude;
+    double                          MeanRegularizationUpdateMagnitude;
+
+    void zero()
+      {
+      IntermediateStruct.zero();
+      RMSTotalUpdateMagnitude = 0.0;
+      RMSIntensityDistanceUpdateMagnitude = 0.0;
+      RMSRegularizationUpdateMagnitude = 0.0;
+      MeanTotalUpdateMagnitude = 0.0;
+      MeanIntensityDistanceUpdateMagnitude = 0.0;
+      MeanRegularizationUpdateMagnitude = 0.0;
+      }
+
+    void copyFrom( const UpdateMetricsStruct & rhs )
+      {
+      IntermediateStruct.copyFrom(rhs.IntermediateStruct);
+      RMSTotalUpdateMagnitude = rhs.RMSTotalUpdateMagnitude;
+      RMSIntensityDistanceUpdateMagnitude
+          = rhs.RMSIntensityDistanceUpdateMagnitude;
+      RMSRegularizationUpdateMagnitude = rhs.RMSRegularizationUpdateMagnitude;
+      MeanTotalUpdateMagnitude = rhs.MeanTotalUpdateMagnitude;
+      MeanIntensityDistanceUpdateMagnitude
+          = rhs.MeanIntensityDistanceUpdateMagnitude;
+      MeanRegularizationUpdateMagnitude = rhs.MeanRegularizationUpdateMagnitude;
+      }
+
+    // Does not calculate for intermediate struct
+    void difference( const UpdateMetricsStruct & lhs,
+                     const UpdateMetricsStruct & rhs )
+      {
+      RMSTotalUpdateMagnitude
+          = lhs.RMSTotalUpdateMagnitude - rhs.RMSTotalUpdateMagnitude;
+      RMSIntensityDistanceUpdateMagnitude
+          = lhs.RMSIntensityDistanceUpdateMagnitude
+          - rhs.RMSIntensityDistanceUpdateMagnitude;
+      RMSRegularizationUpdateMagnitude
+          = lhs.RMSRegularizationUpdateMagnitude
+          - rhs.RMSRegularizationUpdateMagnitude;
+      MeanTotalUpdateMagnitude
+          = lhs.MeanTotalUpdateMagnitude - rhs.MeanTotalUpdateMagnitude;
+      MeanIntensityDistanceUpdateMagnitude
+          = lhs.MeanIntensityDistanceUpdateMagnitude
+          - rhs.MeanIntensityDistanceUpdateMagnitude;
+      MeanRegularizationUpdateMagnitude
+          = lhs.MeanRegularizationUpdateMagnitude
+          - rhs.MeanRegularizationUpdateMagnitude;
+      }
+    };
 
   /** This method populates an update buffer with changes for each pixel in the
-   * output, using the ThreadedCalculateChange() method and a multithreading
-   * mechanism. Return value is a time step to be used for the update.
-   * \sa ThreadedCalculateChange */
+   * output.  Uses CalculateChangeGradient to determine
+   * the gradient displacement field.
+   * The update buffer does not include the global scaling
+   * parameter, which is incorporated in ApplyUpdate
+   * Return value is a time step to be used for the update.
+   * \sa CalculateChangeGradient */
   virtual TimeStepType CalculateChange();
 
-  /** Inherited from superclass - do not call this function!  Call the other
-   *  ThreadedCalculateChange function instead */
+  /** Inherited from superclass - do not call this function! */
   TimeStepType ThreadedCalculateChange(
       const ThreadRegionType & regionToProcess, int threadId );
 
-  /** Does the actual work of calculating change over a region supplied by
-   * the multithreading mechanism.
-   * \sa CalculateChange
-   * \sa CalculateChangeThreaderCallback */
-  virtual TimeStepType ThreadedCalculateChange(
+  /** This method populates an update buffer with changes for each pixel in the
+   * output when computing the gradient, using the
+   * ThreadedCalculateChange() method and a multithreading
+   * mechanism. Return value is a time step to be used for the update.
+   * \sa ThreadedCalculateChangeGradient */
+  virtual TimeStepType CalculateChangeGradient();
+
+  /** Does the actual work of calculating the gradient part of the line search
+   * over a region supplied by the multithreading mechanism.
+   * \sa CalculateChangeGradient
+   * \sa CalculateChangeGradientThreaderCallback */
+  virtual TimeStepType ThreadedCalculateChangeGradient(
       const ThreadRegionType & regionToProcess,
       const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
       const ThreadTensorDerivativeImageRegionType
@@ -535,19 +672,58 @@ protected:
         & scalarDerivativeRegionToProcess,
       const ThreadStoppingCriterionMaskImageRegionType
         & stoppingCriterionMaskRegionToProcess,
+      UpdateMetricsIntermediateStruct & updateMetricsIntermediate,
       int threadId );
+
+  /** Calculates the total, intensity distance and regularization energies,
+   *  using the ThreadedCalculateEnergies() method and a multithreading
+   *  mechanism.  The stepSize parameter is a uniform scaling parameter
+   *  with which to scale the displacement field for use with the line search.
+   * \sa ThreadedCalculateEnergies */
+  virtual void CalculateEnergies( EnergiesStruct & energies,
+                                  OutputImageType * outputField );
+
+  /** Updates the intermediate update statistics (sum-of-squared and sum-of
+   *  statistics, incorporating the time step, and
+   *  computes the RMS and mean update statistics */
+  virtual void UpdateUpdateStatistics( TimeStepType stepSize );
+
+  /** Does the actual work of calculating the intensity distance and
+   *  regularization energies over a region supplied by the multithreading
+   * mechanism.
+   * \sa CalculateEnergies
+   * \sa CalculateEnergiesThreaderCallback */
+  virtual void ThreadedCalculateEnergies(
+    const OutputImagePointer & output,
+    const ThreadRegionType & regionToProcess,
+    const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
+    const ThreadScalarDerivativeImageRegionType &
+      scalarDerivativeRegionToProcess,
+    const ThreadStoppingCriterionMaskImageRegionType &
+      stoppingCriterionMaskRegionToProcess,
+    double & intensityDistanceEnergy,
+    double & regularizationEnergy,
+    int threadId );
 
   /** This method applies changes from the update buffer to the output, using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
-   * the time step to use for the update of each pixel.
+   * the time step to use for the update of each pixel.  Also multiplies each
+   * voxel in the update buffer by the scaling value from the line search.
    * \sa ThreadedApplyUpdate */
   virtual void ApplyUpdate( TimeStepType dt );
+  virtual void ApplyUpdate( TimeStepType dt, OutputImagePointer outputImage );
+
+  /** Inherited from superclass - do not call this function! */
+  virtual void ThreadedApplyUpdate( TimeStepType dt,
+                                    const ThreadRegionType & regionToProcess,
+                                    int threadId );
 
   /**  Does the actual work of updating the output from the UpdateContainer over
    *  an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
-  virtual void ThreadedApplyUpdate( TimeStepType dt,
+  virtual void ThreadedApplyUpdate( OutputImagePointer & outputImage,
+                                    TimeStepType dt,
                                     const ThreadRegionType & regionToProcess,
                                     int threadId );
 
@@ -565,54 +741,9 @@ protected:
   virtual UpdateBufferType * GetUpdateBuffer()
     { return m_UpdateBuffer; }
 
-  /** Helper function to allocate an image based on a template */
-  template< class UnallocatedImagePointer, class TemplateImagePointer >
-  void AllocateSpaceForImage( UnallocatedImagePointer & image,
-                              const TemplateImagePointer & templateImage )
-  const;
-
-  /** Helper function to check whether the attributes of an image match a
-    * template */
-  template< class CheckedImageType, class TemplateImageType >
-  bool CompareImageAttributes( const CheckedImageType * image,
-                               const TemplateImageType * templateImage )
-  const;
-
-  /** Resamples an image to a template using nearest neighbor interpolation */
-  template< class ResampleImagePointer, class TemplateImagePointer >
-  void ResampleImageNearestNeighbor(
-      const ResampleImagePointer & highResolutionImage,
-      const TemplateImagePointer & templateImage,
-      ResampleImagePointer & resampledImage ) const;
-
-  /** Resamples an image to a template using linear interpolation */
-  template< class ResampleImagePointer, class TemplateImagePointer >
-  void ResampleImageLinear(
-      const ResampleImagePointer & highResolutionImage,
-      const TemplateImagePointer & templateImage,
-      ResampleImagePointer & resampledImage ) const;
-
-  /** Resamples a vector image to a template using linear interpolation.  If
-   *  normalize is true, the vectors will be scaled to length 1 after the
-   *  resampling. */
-  template< class VectorResampleImagePointer, class TemplateImagePointer >
-  void VectorResampleImageLinear(
-      const VectorResampleImagePointer & highResolutionImage,
-      const TemplateImagePointer & templateImage,
-      VectorResampleImagePointer & resampledImage,
-      bool normalize = false ) const;
-
-  /** Normalizes a vector field to ensure each vector has length 1 */
-  template< class VectorImagePointer >
-  void NormalizeVectorField( VectorImagePointer & image ) const;
-
-  /** Computes the minimum and maximum intensity in an image */
-  template< class ImageType >
-  bool IsIntensityRangeBetween0And1( ImageType * image ) const;
-
   /** This method is called after ApplyUpdate() to print out energy and RMS
    * change metrics and evaluate the stopping conditions. */
-  virtual void PostProcessIteration();
+  virtual void PostProcessIteration(TimeStepType stepSize);
 
 private:
   // Purposely not implemented
@@ -624,6 +755,7 @@ private:
   struct DenseFDThreadStruct
     {
     DiffusiveRegistrationFilter *Filter;
+    OutputImagePointer OutputImage;
     TimeStepType TimeStep;
     TimeStepType *TimeStepList;
     bool *ValidTimeStepList;
@@ -642,13 +774,35 @@ private:
     typename OutputImageType::SizeType Radius;
     };
 
+  /** Structure for passing information into static callback methods.  Used in
+   *  the threading mechanism for CalculateChangeGradient. */
+  struct CalculateChangeGradientThreadStruct
+    {
+    DiffusiveRegistrationFilter *Filter;
+    TimeStepType TimeStep;
+    TimeStepType *TimeStepList;
+    bool *ValidTimeStepList;
+    UpdateMetricsIntermediateStruct *UpdateMetricsIntermediate;
+    };
+
+  /** Structure for passing information into static callback methods.  Used in
+   *  the threading mechanism for CalculateEnergies. */
+  struct CalculateEnergiesThreadStruct
+    {
+    DiffusiveRegistrationFilter * Filter;
+    OutputImagePointer OutputImage;
+    double * IntensityDistanceEnergies;
+    double * RegularizationEnergies;
+    };
+
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
   static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
   * which it then passes to ThreadedCalculateChange for processing. */
-  static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
+  static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback(
+    void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region which
   * it then passes to ThreadedComputeDeformationComponentDerivativeImageHelper
@@ -657,9 +811,14 @@ private:
       ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
           void *arg );
 
+  /** This callback method uses SplitUpdateContainer to acquire a region which
+  * it then passes to ThreadedComputeEnergies for processing. */
+  static ITK_THREAD_RETURN_TYPE CalculateEnergiesThreaderCallback( void *arg );
+
   TimeStepType                              m_OriginalTimeStep;
 
-  /** The buffer that holds the updates for an iteration of algorithm. */
+  /** The buffer that holds the updates for an iteration of algorithm, without
+   *  the scaling provided by the line search. */
   typename UpdateBufferType::Pointer        m_UpdateBuffer;
 
   /** Images storing information we will need for each voxel on every
@@ -680,7 +839,6 @@ private:
   /** Relative weightings between the intensity distance and regularization
    *  update terms.  Stored in a vector so that the user can provide different
    *  weightings per multiresolution level. */
-  std::vector< double >                     m_IntensityDistanceWeightings;
   std::vector< double >                     m_RegularizationWeightings;
 
   /** Template used to calculate member images */
@@ -694,280 +852,13 @@ private:
   unsigned int                              m_StoppingCriterionEvaluationPeriod;
   double                                    m_StoppingCriterionMaxTotalEnergyChange;
 
+  /** Parameters for energies and update magnitude metrics */
+  EnergiesStruct                            m_Energies;
+  EnergiesStruct                            m_PreviousEnergies;
+  UpdateMetricsStruct                       m_UpdateMetrics;
+  UpdateMetricsStruct                       m_PreviousUpdateMetrics;
 };
 
-/** Struct to simply get the face list and an iterator over the face list
- *  when processing an image.  Designed for use with SmartPointers. */
-template< class ImageType >
-struct FaceStruct
-{
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-      < typename ImageType::ObjectType >                  FaceCalculatorType;
-        typedef typename FaceCalculatorType::FaceListType FaceListType;
-        typedef typename FaceListType::iterator           FaceListIteratorType;
-
-  FaceStruct()
-    {
-    numberOfTerms = 0;
-    }
-
-  FaceStruct( const ImageType& image,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
-    {
-    numberOfTerms = 0;
-    if( image.GetPointer() )
-      {
-      faceLists.push_back( faceCalculator( image, region, radius ) );
-      numberOfTerms = 1;
-      }
-    }
-
-  FaceStruct( const std::vector< ImageType >& images,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
-    {
-    numberOfTerms = 0;
-    for( int i = 0; i < (int) images.size(); i++ )
-      {
-      if( images[i].GetPointer() )
-        {
-        faceLists.push_back( faceCalculator( images[i], region, radius ) );
-        numberOfTerms++;
-        }
-      }
-    }
-
-  template< unsigned int VLength >
-  FaceStruct( const itk::FixedArray< ImageType, VLength >& images,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
-    {
-    numberOfTerms = 0;
-    for( int i = 0; i < (int) images.Size(); i++ )
-      {
-      if( images[i].GetPointer() )
-        {
-        faceLists.push_back( faceCalculator( images[i], region, radius ) );
-        numberOfTerms++;
-        }
-      }
-    }
-
-  template< unsigned int VLength >
-  FaceStruct( const
-              std::vector< itk::FixedArray< ImageType, VLength > > &images,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
-    {
-    numberOfTerms = 0;
-    for( int i = 0; i < (int) images.size(); i++)
-      {
-      for( unsigned int j = 0; j < images[i].Size(); j++ )
-        {
-        if( images[i][j].GetPointer() )
-          {
-          faceLists.push_back( faceCalculator( images[i][j], region, radius ) );
-          numberOfTerms++;
-          }
-        }
-      }
-    }
-
-  void GoToBegin()
-    {
-    if( (int) faceListIts.size() != numberOfTerms )
-      {
-      for( int i = 0; i < numberOfTerms; i++ )
-        {
-        faceListIts.push_back( faceLists[i].begin() );
-        }
-      }
-    else
-      {
-      for( int i = 0; i < numberOfTerms; i++ )
-        {
-        faceListIts[i] = faceLists[i].begin();
-        }
-      }
-    }
-
-  bool IsAtEnd()
-    {
-    for( int i = 0; i < numberOfTerms; i++ )
-      {
-      if( faceListIts[i] == faceLists[i].end() )
-        {
-        return true;
-        }
-      }
-    return false;
-    }
-
-  void Increment()
-    {
-    for( int i = 0; i < numberOfTerms; i++ )
-      {
-      ++faceListIts[i];
-      }
-    }
-
-  template< class IteratorType >
-  void SetIteratorToCurrentFace(
-      IteratorType& iterator,
-      const ImageType& image,
-      typename ImageType::ObjectType::SizeType radius )
-    {
-    if( image.GetPointer() )
-      {
-      iterator = IteratorType( radius, image, *faceListIts[0] );
-      }
-    else
-      {
-      iterator = IteratorType();
-      }
-    }
-
-  template< class IteratorType >
-  void SetIteratorToCurrentFace(
-      IteratorType& iterator,
-      const ImageType& image )
-    {
-    if( image.GetPointer() )
-      {
-      iterator = IteratorType( image, *faceListIts[0] );
-      }
-    else
-      {
-      iterator = IteratorType();
-      }
-    }
-
-  template< class IteratorType >
-  void SetIteratorToCurrentFace(
-      std::vector< IteratorType >& iterators,
-      const std::vector< ImageType >& images,
-      typename ImageType::ObjectType::SizeType radius )
-    {
-    if( (int) iterators.size() != numberOfTerms )
-      {
-      for( int i = 0; i < numberOfTerms; i++ )
-        {
-        if( images[i].GetPointer() )
-          {
-          iterators.push_back(
-              IteratorType( radius, images[i], *faceListIts[i] ) );
-          }
-        else
-          {
-          iterators.push_back( IteratorType() );
-          }
-        }
-      }
-    else
-      {
-      for( int i = 0; i < numberOfTerms; i++ )
-        {
-        if( images[i].GetPointer() )
-          {
-          iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
-          }
-        else
-          {
-          iterators[i] = IteratorType();
-          }
-        }
-      }
-    }
-
-  template< class IteratorType >
-  void SetIteratorToCurrentFace(
-      std::vector< IteratorType >& iterators,
-      const std::vector< ImageType >& images )
-    {
-    if( (int) iterators.size() != numberOfTerms )
-      {
-      for( int i = 0; i < numberOfTerms; i++ )
-        {
-        if( images[i].GetPointer() )
-          {
-          iterators.push_back( IteratorType( images[i], *faceListIts[i] ) );
-          }
-        else
-          {
-          iterators.push_back( IteratorType() );
-          }
-        }
-      }
-    else
-      {
-      for( int i = 0; i < numberOfTerms; i++ )
-        {
-        if( images[i].GetPointer() )
-          {
-          iterators[i] = IteratorType( images[i], *faceListIts[i] );
-          }
-        else
-          {
-          iterators[i] = IteratorType();
-          }
-        }
-      }
-    }
-
-    template< class IteratorType, unsigned int VLength >
-    void SetIteratorToCurrentFace(
-        std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
-        const std::vector< itk::FixedArray< ImageType, VLength > > & images )
-    {
-    int c = 0;
-    if( (int) iterators.size() != (int) images.size() )
-        {
-        for( int i = 0; i < (int) images.size(); i++ )
-          {
-          itk::FixedArray< IteratorType, VLength > fixedArray;
-          for( int j = 0; j < (int) images[i].Size(); j++ )
-            {
-            if( images[i][j] )
-              {
-              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
-              c++;
-              }
-            else
-              {
-              fixedArray[j] = IteratorType();
-              }
-            }
-          iterators.push_back( fixedArray );
-          }
-        }
-      else
-        {
-        for( int i = 0; i < (int) images.size(); i++ )
-          {
-          itk::FixedArray< IteratorType, VLength > fixedArray;
-          for( int j = 0; j < (int) images[i].Size(); j++ )
-            {
-            if( images[i][j].GetPointer() )
-              {
-              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
-              c++;
-              }
-            else
-              {
-              fixedArray[j] = IteratorType();
-              }
-            }
-          iterators[i] = fixedArray;
-          }
-        }
-      }
-
-  FaceCalculatorType                     faceCalculator;
-  std::vector< FaceListType >            faceLists;
-  std::vector< FaceListIteratorType >    faceListIts;
-  int                                    numberOfTerms;
-};
 
 } // end namespace itk
 

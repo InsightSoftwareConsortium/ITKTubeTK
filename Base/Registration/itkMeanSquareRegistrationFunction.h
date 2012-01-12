@@ -144,15 +144,12 @@ public:
    * each pixel that does not lie on a data set boundary */
   virtual PixelType  ComputeUpdate(const NeighborhoodType &neighborhood,
                      void *globalData,
-                     const FloatOffsetType &offset = FloatOffsetType(0.0))
-    {
-    return this->ComputeUpdate(neighborhood, globalData, true, offset);
-    }
-
-  virtual PixelType  ComputeUpdate(const NeighborhoodType &neighborhood,
-                     void *globalData,
-                     bool includeInEnergyComputation,
                      const FloatOffsetType &offset = FloatOffsetType(0.0));
+
+  /** Computes the intensity difference between the fixed and moving image
+   *  at the given index, under the given deformation vector. */
+  virtual double ComputeIntensityDifference(const IndexType & index,
+                                            const DeformationFieldPixelType & itvec);
 
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )

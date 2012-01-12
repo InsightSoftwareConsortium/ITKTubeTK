@@ -24,10 +24,7 @@ limitations under the License.
 #define __itkDiffusiveRegistrationFilter_txx
 
 #include "itkDiffusiveRegistrationFilter.h"
-
-#include "itkMinimumMaximumImageCalculator.h"
-#include "itkResampleImageFilter.h"
-#include "itkVectorResampleImageFilter.h"
+#include "itkDiffusiveRegistrationFilterUtils.h"
 
 namespace itk
 {
@@ -57,14 +54,18 @@ DiffusiveRegistrationFilter
   m_HighResolutionTemplate  = 0;
 
   m_CurrentLevel            = 0;
-  m_IntensityDistanceWeightings.push_back( 1.0 );
   m_RegularizationWeightings.push_back( 1.0 );
 
   m_StoppingCriterionMask               = 0;
   m_HighResolutionStoppingCriterionMask = 0;
 
   m_StoppingCriterionEvaluationPeriod     = 50;
-  m_StoppingCriterionMaxTotalEnergyChange = 0;
+  m_StoppingCriterionMaxTotalEnergyChange = -1;
+
+  m_Energies.zero();
+  m_PreviousEnergies.zero();
+  m_UpdateMetrics.zero();
+  m_PreviousUpdateMetrics.zero();
 }
 
 /**
@@ -123,12 +124,6 @@ DiffusiveRegistrationFilter
     m_HighResolutionTemplate->Print( os, indent );
     }
   os << indent << "Current level: " << m_CurrentLevel << std::endl;
-  os << indent << "Intensity distance weightings: ";
-  for( unsigned int i = 0; i < m_IntensityDistanceWeightings.size(); i++ )
-    {
-    os << m_IntensityDistanceWeightings[i] << " ";
-    }
-  os << std::endl;
   os << indent << "Regularization weightings: " ;
   for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
     {
@@ -185,175 +180,6 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Helper function to allocate space for an image given a template image
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-  template < class UnallocatedImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::AllocateSpaceForImage( UnallocatedImagePointer& image,
-                         const TemplateImagePointer& templateImage ) const
-{
-  assert( image );
-  assert( templateImage );
-  image->SetOrigin( templateImage->GetOrigin() );
-  image->SetSpacing( templateImage->GetSpacing() );
-  image->SetDirection( templateImage->GetDirection() );
-  image->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
-  image->SetRequestedRegion( templateImage->GetRequestedRegion() );
-  image->SetBufferedRegion( templateImage->GetBufferedRegion() );
-  image->Allocate();
-}
-
-/**
- * Helper function to check whether the attributes of an image matches template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template < class CheckedImageType, class TemplateImageType >
-bool
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::CompareImageAttributes( const CheckedImageType * image,
-                          const TemplateImageType * templateImage ) const
-{
-  assert( image );
-  assert( templateImage );
-
-  return image->GetOrigin() == templateImage->GetOrigin()
-      && image->GetSpacing() == templateImage->GetSpacing()
-      && image->GetDirection() == templateImage->GetDirection()
-      && image->GetLargestPossibleRegion()
-          == templateImage->GetLargestPossibleRegion()
-      && image->GetLargestPossibleRegion().GetIndex()
-          == templateImage->GetLargestPossibleRegion().GetIndex()
-      && image->GetLargestPossibleRegion().GetSize()
-          == templateImage->GetLargestPossibleRegion().GetSize();
-}
-
-/**
- * Resample an image to match a template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageNearestNeighbor(
-    const ResampleImagePointer & highResolutionImage,
-    const TemplateImagePointer & templateImage,
-    ResampleImagePointer & resampledImage ) const
-{
-  // We have to implement nearest neighbors by hand, since we are dealing with
-  // pixel types that do not have Numeric Traits
-  typedef typename ResampleImagePointer::ObjectType ResampleImageType;
-
-  // Create the resized resampled image
-  resampledImage = ResampleImageType::New();
-  this->AllocateSpaceForImage( resampledImage, templateImage );
-
-  // Do NN interpolation
-  typedef itk::ImageRegionIteratorWithIndex< ResampleImageType >
-      ResampleImageRegionType;
-  ResampleImageRegionType resampledImageIt = ResampleImageRegionType(
-      resampledImage, resampledImage->GetLargestPossibleRegion() );
-
-  typename ResampleImageType::PointType physicalPoint;
-  physicalPoint.Fill( 0.0 );
-  typename ResampleImageType::IndexType highResolutionIndex;
-  highResolutionIndex.Fill( 0.0 );
-  typename ResampleImageType::PixelType pixelValue;
-
-  for( resampledImageIt.GoToBegin();
-       !resampledImageIt.IsAtEnd();
-       ++resampledImageIt )
-    {
-    resampledImage->TransformIndexToPhysicalPoint(
-        resampledImageIt.GetIndex(), physicalPoint );
-    highResolutionImage->TransformPhysicalPointToIndex(
-        physicalPoint, highResolutionIndex );
-    pixelValue = highResolutionImage->GetPixel( highResolutionIndex );
-    resampledImageIt.Set( pixelValue );
-    }
-}
-
-/**
- * Resample an image to match a template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ResampleImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ResampleImageLinear( const ResampleImagePointer & highResolutionImage,
-                       const TemplateImagePointer & templateImage,
-                       ResampleImagePointer & resampledImage ) const
-{
-  // Do linear interpolation
-  typedef itk::ResampleImageFilter
-      < typename ResampleImagePointer::ObjectType,
-        typename ResampleImagePointer::ObjectType > ResampleFilterType;
-  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
-  resampler->SetInput( highResolutionImage );
-  resampler->SetOutputParametersFromImage( templateImage );
-  resampler->Update();
-  resampledImage = resampler->GetOutput();
-}
-
-/**
- * Resample a vector image to match a template
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class VectorResampleImagePointer, class TemplateImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::VectorResampleImageLinear(
-    const VectorResampleImagePointer & highResolutionImage,
-    const TemplateImagePointer & templateImage,
-    VectorResampleImagePointer & resampledImage,
-    bool normalize ) const
-{
-  // Do linear interpolation
-  typedef itk::VectorResampleImageFilter
-      < typename VectorResampleImagePointer::ObjectType,
-        typename VectorResampleImagePointer::ObjectType > ResampleFilterType;
-  typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
-  resampler->SetInput( highResolutionImage );
-  resampler->SetOutputOrigin( templateImage->GetOrigin() );
-  resampler->SetOutputSpacing( templateImage->GetSpacing() );
-  resampler->SetOutputDirection( templateImage->GetDirection() );
-  resampler->SetOutputStartIndex(
-      templateImage->GetLargestPossibleRegion().GetIndex() );
-  resampler->SetSize( templateImage->GetLargestPossibleRegion().GetSize() );
-  resampler->Update();
-  resampledImage = resampler->GetOutput();
-
-  if( normalize )
-    {
-    this->NormalizeVectorField( resampledImage );
-    }
-}
-
-/**
- * Normalizes a vector field to ensure each vector has length 1
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class VectorImagePointer >
-void
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::NormalizeVectorField( VectorImagePointer & image ) const
-{
-  DeformationVectorImageRegionType vectorIt(
-      image, image->GetLargestPossibleRegion() );
-  for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
-    {
-    vectorIt.Value().Normalize();
-    }
-}
-
-/**
  * Allocate space for the update buffer
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
@@ -365,29 +191,8 @@ DiffusiveRegistrationFilter
   // The update buffer looks just like the output and holds the voxel changes
   typename OutputImageType::Pointer output = this->GetOutput();
   assert( output );
-  this->AllocateSpaceForImage( m_UpdateBuffer, output );
-}
-
-/**
- * Returns whether an image has intensity range between 0 and 1
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-template< class ImageType >
-bool
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::IsIntensityRangeBetween0And1( ImageType * image ) const
-{
-  typedef itk::MinimumMaximumImageCalculator< ImageType > CalculatorType;
-  typename CalculatorType::Pointer calculator = CalculatorType::New();
-  calculator->SetImage( image );
-  calculator->Compute();
-
-  if( calculator->GetMinimum() < 0.0 || calculator->GetMaximum() > 1.0 )
-    {
-    return false;
-    }
-  return true;
+  itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_UpdateBuffer,
+                                                                output );
 }
 
 /**
@@ -410,27 +215,22 @@ DiffusiveRegistrationFilter
 
   // Calculate minimum and maximum intensities and warn if we are not in range
   // [0,1]
-  if( !this->IsIntensityRangeBetween0And1( this->GetFixedImage() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::IsIntensityRangeBetween0And1(
+        this->GetFixedImage() ) )
     {
     itkWarningMacro( << "Fixed image intensity should be [0,1]" );
     }
-  if( !this->IsIntensityRangeBetween0And1( this->GetMovingImage() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::IsIntensityRangeBetween0And1(
+        this->GetMovingImage() ) )
     {
     itkWarningMacro( << "Moving image intensity should be [0,1]" );
     }
 
-  // Ensure we have good intensity distance and regularization weightings
-  unsigned int intensityWeightingsSize = m_IntensityDistanceWeightings.size();
+  // Ensure we have good regularization weightings
   unsigned int regularizationWeightingsSize = m_RegularizationWeightings.size();
-  if( intensityWeightingsSize == 0 || regularizationWeightingsSize == 0 )
+  if( regularizationWeightingsSize == 0 )
     {
-    itkExceptionMacro( << "Intensity distance and/or regularization weightings "
-                       << "not set" );
-    }
-  if( intensityWeightingsSize != regularizationWeightingsSize )
-    {
-    itkWarningMacro( << "Number of intensity distance weightings does not "
-                     << "equal number of regularization weightings" );
+    itkExceptionMacro( << "Regularization weightings not set" );
     }
 
   // Update the current multiresolution level (when registering, level is 1..N)
@@ -445,8 +245,8 @@ DiffusiveRegistrationFilter
   // Assert that we have a deformation field, and that its image attributes
   // match the fixed image
   assert( this->GetDeformationField() );
-  if( !this->CompareImageAttributes( this->GetDeformationField(),
-                                     this->GetFixedImage() ) )
+  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+        this->GetDeformationField(), this->GetFixedImage() ) )
     {
     itkExceptionMacro( << "Deformation field attributes do not match fixed "
                        << "image" );
@@ -471,29 +271,21 @@ DiffusiveRegistrationFilter
     // We need to make sure that the attributes of the mask match those of
     // the current output
     OutputImagePointer output = this->GetOutput();
-    if ( !this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
-                                        output.GetPointer() ) )
+    if ( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+          m_StoppingCriterionMask.GetPointer(), output.GetPointer() ) )
       {
-      this->ResampleImageNearestNeighbor( m_HighResolutionStoppingCriterionMask,
-                                          output,
-                                          m_StoppingCriterionMask );
-      assert( this->CompareImageAttributes( m_StoppingCriterionMask.GetPointer(),
-                                           output.GetPointer() ) );
+      itk::DiffusiveRegistrationFilterUtils::ResampleImageNearestNeighbor(
+            m_HighResolutionStoppingCriterionMask,
+            output,
+            m_StoppingCriterionMask );
+      assert( itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+               m_StoppingCriterionMask.GetPointer(), output.GetPointer() ) );
       }
     }
 
   // Set the intensity distance and regularization weightings to the
   // registration function.  If we are past the end of the vectors, use the
   // last element.
-  if( m_CurrentLevel <= intensityWeightingsSize )
-    {
-    df->SetIntensityDistanceWeighting(
-        m_IntensityDistanceWeightings[m_CurrentLevel - 1] );
-    }
-  else
-    {
-    df->SetIntensityDistanceWeighting( m_IntensityDistanceWeightings.back() );
-    }
   if( m_CurrentLevel <= regularizationWeightingsSize )
     {
     df->SetRegularizationWeighting(
@@ -549,9 +341,11 @@ DiffusiveRegistrationFilter
     if( this->GetComputeRegularizationTerm() )
       {
       diffusionTensorPointer = DiffusionTensorImageType::New();
-      this->AllocateSpaceForImage( diffusionTensorPointer, output );
+      itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+            diffusionTensorPointer, output );
       tensorDerivativePointer = TensorDerivativeImageType::New();
-      this->AllocateSpaceForImage( tensorDerivativePointer, output );
+      itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+            tensorDerivativePointer, output );
       }
     if( (int) m_DiffusionTensorImages.size() < numTerms )
       {
@@ -645,12 +439,12 @@ DiffusiveRegistrationFilter
     {
     m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i]
         = ScalarDerivativeImageType::New();
-    this->AllocateSpaceForImage(
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
         m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i], output );
 
     m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i]
         = TensorDerivativeImageType::New();
-    this->AllocateSpaceForImage(
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
         m_DeformationComponentSecondOrderDerivativeArrays[GAUSSIAN][i],
         output );
     }
@@ -761,27 +555,15 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Update x, y, z components of a deformation field
+ * Updates the deformation vector component images before each iteration
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ExtractXYZComponentsFromDeformationField(
-    const OutputImageType * deformationField,
-    DeformationComponentImageArrayType& deformationComponentImages ) const
+::UpdateDeformationComponentImages( OutputImageType * output )
 {
-  assert( deformationField );
-
-  typename VectorIndexSelectionFilterType::Pointer indexSelector;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-    {
-    indexSelector = VectorIndexSelectionFilterType::New();
-    indexSelector->SetInput( deformationField );
-    indexSelector->SetIndex( i );
-    deformationComponentImages[i] = indexSelector->GetOutput();
-    indexSelector->Update();
-    }
+  m_DeformationComponentImages[GAUSSIAN] = output;
 }
 
 /**
@@ -809,8 +591,8 @@ DiffusiveRegistrationFilter
 
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    this->ExtractXYZComponentsFromDeformationField(
-        m_DeformationComponentImages[i], deformationComponentImageArray );
+    itk::DiffusiveRegistrationFilterUtils::ExtractXYZComponentsFromDeformationField(
+          this->GetDeformationComponentImage(i), deformationComponentImageArray );
 
     for( int j = 0; j < ImageDimension; j++ )
       {
@@ -1007,9 +789,15 @@ DiffusiveRegistrationFilter
   // computed on every registration iteration
   if( this->GetComputeRegularizationTerm() )
     {
-    this->UpdateDeformationComponentImages();
+    this->UpdateDeformationComponentImages( this->GetOutput() );
     this->ComputeDeformationComponentDerivativeImages();
     }
+
+  // Initialize the energy and update metrics
+  m_PreviousEnergies.copyFrom( m_Energies );
+  m_Energies.zero();
+  m_PreviousUpdateMetrics.copyFrom( m_UpdateMetrics );
+  m_UpdateMetrics.zero();
 }
 
 /**
@@ -1023,14 +811,64 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChange()
 {
+  // Compute the search direction.  After this,
+  // - update buffer as if stepSize = 1
+  // - energies not yet calculated
+  // - update magnitude statistics as if stepSize = 1
+  TimeStepType stepSize = this->CalculateChangeGradient();
+
+  // Now that we know the potential global scaling, we can finish the update
+  // metrics.  After this,
+  // - update buffer as if stepSize = 1
+  // - update magnitude statistics for determined stepSize
+  this->UpdateUpdateStatistics(stepSize);
+
+  return stepSize;
+}
+
+/**
+ * Inherited from superclass - do not call
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::TimeStepType
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ThreadedCalculateChange( const ThreadRegionType &, int)
+{
+  // This function should never be called!
+  itkExceptionMacro( << "ThreadedCalculateChange(regionToProcess, threadId) "
+                     << "should never be called.  Use the other "
+                     << "ThreadedCalculateChange function instead" );
+}
+
+/**
+ * Populates the update buffer with the gradient part of the line search
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+typename DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::TimeStepType
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CalculateChangeGradient()
+{
   // Set up for multithreaded processing.
-  DenseFDThreadStruct str;
+  CalculateChangeGradientThreadStruct str;
   str.Filter = this;
   // Not used during the calculate change step
   str.TimeStep = NumericTraits< TimeStepType >::Zero;
+  str.UpdateMetricsIntermediate
+      = new UpdateMetricsIntermediateStruct[this->GetNumberOfThreads()];
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    str.UpdateMetricsIntermediate[i].zero();
+    }
+
   this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
-      this->CalculateChangeThreaderCallback, & str );
+      this->CalculateChangeGradientThreaderCallback, & str );
 
   // Initialize the list of time step values that will be generated by the
   // various threads.  There is one distinct slot for each possible thread,
@@ -1054,27 +892,50 @@ DiffusiveRegistrationFilter
   delete [] str.TimeStepList;
   delete [] str.ValidTimeStepList;
 
+  // Combine the results from the threads to calculate the metrics
+  // Will include multiplication by timestep and global scaling, and calculation
+  // of RMS and mean statistics, in UpdateUpdateStatistics
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed
+        += str.UpdateMetricsIntermediate[i].NumberOfPixelsProcessed;
+    m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfSquaredTotalUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfSquaredIntensityDistanceUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfSquaredRegularizationUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfTotalUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfIntensityDistanceUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude
+        += str.UpdateMetricsIntermediate[i].SumOfRegularizationUpdateMagnitude;
+    }
+
+  delete [] str.UpdateMetricsIntermediate;
+
   // Explicitly call Modified on m_UpdateBuffer here, since
-  // ThreadedCalculateChange changes this buffer through iterators which do not
-  // increment the update buffer timestamp
+  // ThreadedCalculateChangeGradient changes this buffer through iterators which
+  // do not increment the update buffer timestamp
   this->m_UpdateBuffer->Modified();
 
   return dt;
 }
 
 /**
- * Calls ThreadedCalculateChange for processing
+ * Calls ThreadedCalculateChangeGradient for processing
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateChangeThreaderCallback( void * arg )
+::CalculateChangeGradientThreaderCallback( void * arg )
 {
   int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
   int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
 
-  DenseFDThreadStruct * str = (DenseFDThreadStruct *)
+  CalculateChangeGradientThreadStruct * str = (CalculateChangeGradientThreadStruct *)
             (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
 
   // Execute the actual method with appropriate output region
@@ -1103,12 +964,13 @@ DiffusiveRegistrationFilter
 
   if (threadId < total)
     {
-    str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChange(
+    str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChangeGradient(
       splitRegion,
       splitTensorRegion,
       splitTensorDerivativeRegion,
       splitScalarDerivativeRegion,
       splitStoppingCriterionMaskImageRegion,
+      str->UpdateMetricsIntermediate[threadId],
       threadId);
     str->ValidTimeStepList[threadId] = true;
     }
@@ -1117,7 +979,8 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Inherited from superclass - do not call
+ * Does the actual work of calculating the gradient
+ * over a region supplied by the multithreading mechanism
  */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 typename DiffusiveRegistrationFilter
@@ -1125,25 +988,7 @@ typename DiffusiveRegistrationFilter
 ::TimeStepType
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ThreadedCalculateChange( const ThreadRegionType &, int)
-{
-  // This function should never be called!
-  itkExceptionMacro( << "ThreadedCalculateChange(regionToProcess, threadId) "
-                     << "should never be called.  Use the other "
-                     << "ThreadedCalculateChange function instead" );
-}
-
-/**
- * Does the actual work of calculating change over a region supplied by the
- * multithreading mechanism
- */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
-typename DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::TimeStepType
-DiffusiveRegistrationFilter
-  < TFixedImage, TMovingImage, TDeformationField >
-::ThreadedCalculateChange(
+::ThreadedCalculateChangeGradient(
     const ThreadRegionType & regionToProcess,
     const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
     const ThreadTensorDerivativeImageRegionType &
@@ -1152,6 +997,7 @@ DiffusiveRegistrationFilter
       scalarDerivativeRegionToProcess,
     const ThreadStoppingCriterionMaskImageRegionType &
       stoppingCriterionMaskRegionToProcess,
+    UpdateMetricsIntermediateStruct & updateMetricsIntermediate,
     int)
 {
   // Get the FiniteDifferenceFunction to use in calculations.
@@ -1217,6 +1063,10 @@ DiffusiveRegistrationFilter
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
   bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
+
+  // Initialize the metrics
+  UpdateMetricsIntermediateStruct localUpdateMetricsIntermediate;
+  localUpdateMetricsIntermediate.zero();
 
   // Go to the first face
   outputStruct.GoToBegin();
@@ -1286,6 +1136,23 @@ DiffusiveRegistrationFilter
     // Iterate through the neighborhood for this face and compute updates
     while( !outputNeighborhood.IsAtEnd() )
       {
+      typename UpdateBufferType::PixelType updateTerm;
+      typename UpdateBufferType::PixelType intensityDistanceTerm;
+      typename UpdateBufferType::PixelType regularizationTerm;
+
+      // Compute updates
+      updateTerm = df->ComputeUpdate(
+          outputNeighborhood,
+          tensorNeighborhoods,
+          deformationComponentFirstOrderRegionArrays,
+          deformationComponentSecondOrderRegionArrays,
+          tensorDerivativeRegions,
+          multiplicationVectorRegionArrays,
+          globalData,
+          intensityDistanceTerm,
+          regularizationTerm );
+      updateRegion.Value() = updateTerm;
+
       // Get whether or not to include this pixel in the stopping criterion
       bool includeInStoppingCriterion = true;
       if( haveStoppingCriterionMask )
@@ -1294,16 +1161,34 @@ DiffusiveRegistrationFilter
             = ( stoppingCriterionMaskRegion.Value() == 0.0 );
         }
 
-      // Compute updates
-      updateRegion.Value() = df->ComputeUpdate(
-          outputNeighborhood,
-          tensorNeighborhoods,
-          deformationComponentFirstOrderRegionArrays,
-          deformationComponentSecondOrderRegionArrays,
-          tensorDerivativeRegions,
-          multiplicationVectorRegionArrays,
-          includeInStoppingCriterion,
-          globalData );
+      // Update the metrics
+      if( includeInStoppingCriterion )
+        {
+        double squaredTotalUpdateMagnitude = 0.0;
+        double squaredIntensityDistanceUpdateMagnitude = 0.0;
+        double squaredRegularizationUpdateMagnitude = 0.0;
+        for( unsigned int i = 0; i < ImageDimension; i++ )
+          {
+          squaredTotalUpdateMagnitude += vnl_math_sqr( updateTerm[i] );
+          squaredIntensityDistanceUpdateMagnitude
+              += vnl_math_sqr( intensityDistanceTerm[i] );
+          squaredRegularizationUpdateMagnitude
+              += vnl_math_sqr( regularizationTerm[i] );
+          }
+        localUpdateMetricsIntermediate.NumberOfPixelsProcessed++;
+        localUpdateMetricsIntermediate.SumOfSquaredTotalUpdateMagnitude
+            += squaredTotalUpdateMagnitude;
+        localUpdateMetricsIntermediate.SumOfSquaredIntensityDistanceUpdateMagnitude
+            += squaredIntensityDistanceUpdateMagnitude;
+        localUpdateMetricsIntermediate.SumOfSquaredRegularizationUpdateMagnitude
+            += squaredRegularizationUpdateMagnitude;
+        localUpdateMetricsIntermediate.SumOfTotalUpdateMagnitude
+            += vcl_sqrt( squaredTotalUpdateMagnitude );
+        localUpdateMetricsIntermediate.SumOfIntensityDistanceUpdateMagnitude
+            += vcl_sqrt( squaredIntensityDistanceUpdateMagnitude );
+        localUpdateMetricsIntermediate.SumOfRegularizationUpdateMagnitude
+            += vcl_sqrt( squaredRegularizationUpdateMagnitude );
+        }
 
       // Go to the next neighborhood
       ++outputNeighborhood;
@@ -1347,12 +1232,375 @@ DiffusiveRegistrationFilter
       }
     }
 
+  updateMetricsIntermediate.copyFrom(localUpdateMetricsIntermediate);
+
   // Ask the finite difference function to compute the time step for
   // this iteration.  We give it the global data pointer to use, then
   // ask it to free the global data memory.
   TimeStepType timeStep = df->ComputeGlobalTimeStep(globalData);
   df->ReleaseGlobalDataPointer(globalData);
+
   return timeStep;
+}
+
+/**
+ * Computes the intensity distance and regularization energies under the current
+ * update buffer.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CalculateEnergies( EnergiesStruct & energies, OutputImageType * outputField )
+{
+  assert( outputField );
+
+  if( this->GetComputeRegularizationTerm() )
+    {
+    this->UpdateDeformationComponentImages( outputField );
+    // TODO this will compute first and second derivatives, we need first only
+    this->ComputeDeformationComponentDerivativeImages();
+    }
+
+  // Set up for multithreaded processing.
+  CalculateEnergiesThreadStruct str;
+  str.Filter = this;
+  str.OutputImage = outputField;
+  str.IntensityDistanceEnergies = new double[this->GetNumberOfThreads()];
+  str.RegularizationEnergies = new double[this->GetNumberOfThreads()];
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    str.IntensityDistanceEnergies[i] = 0;
+    str.RegularizationEnergies[i] = 0;
+    }
+
+  // Multithread the execution
+  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetSingleMethod(
+  this->CalculateEnergiesThreaderCallback, & str);
+  this->GetMultiThreader()->SingleMethodExecute();
+
+  // Combine the results from the thread to calculate the total energies
+  energies.zero();
+  for( int i = 0; i < this->GetNumberOfThreads(); i++ )
+    {
+    energies.IntensityDistanceEnergy += str.IntensityDistanceEnergies[i];
+    energies.RegularizationEnergy += str.RegularizationEnergies[i];
+    }
+  energies.TotalEnergy = energies.IntensityDistanceEnergy + energies.RegularizationEnergy;
+
+  delete [] str.IntensityDistanceEnergies;
+  delete [] str.RegularizationEnergies;
+}
+
+/**
+ * Calls ThreadedCalculateEnergies for processing
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+ITK_THREAD_RETURN_TYPE
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::CalculateEnergiesThreaderCallback( void * arg )
+{
+  int threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  int threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+
+  CalculateEnergiesThreadStruct * str = (CalculateEnergiesThreadStruct *)
+      (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
+
+  // Execute the actual method with appropriate output region
+  // first find out how many pieces extent can be split into.
+  // Using the SplitRequestedRegion method from itk::ImageSource.
+  ThreadRegionType splitRegion;
+  int total = str->Filter->SplitRequestedRegion( threadId,
+                                                 threadCount,
+                                                 splitRegion );
+
+  ThreadDiffusionTensorImageRegionType splitTensorRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitTensorRegion );
+
+  ThreadScalarDerivativeImageRegionType splitScalarDerivativeRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitScalarDerivativeRegion );
+
+  ThreadStoppingCriterionMaskImageRegionType splitStoppingCriterionMaskImageRegion;
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+    splitStoppingCriterionMaskImageRegion );
+
+  if (threadId < total)
+    {
+    str->Filter->ThreadedCalculateEnergies( str->OutputImage,
+                                            splitRegion,
+                                            splitTensorRegion,
+                                            splitScalarDerivativeRegion,
+                                            splitStoppingCriterionMaskImageRegion,
+                                            str->IntensityDistanceEnergies[threadId],
+                                            str->RegularizationEnergies[threadId],
+                                            threadId );
+    }
+
+  return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Does the actual work of calculating the energies
+ * over an output region supplied by the multithreading mechanism.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+< TFixedImage, TMovingImage, TDeformationField >
+::ThreadedCalculateEnergies(
+    const OutputImagePointer & output,
+    const ThreadRegionType & regionToProcess,
+    const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
+    const ThreadScalarDerivativeImageRegionType &
+      scalarDerivativeRegionToProcess,
+    const ThreadStoppingCriterionMaskImageRegionType &
+      stoppingCriterionMaskRegionToProcess,
+    double & intensityDistanceEnergy,
+    double & regularizationEnergy,
+    int)
+{
+  // Get the FiniteDifferenceFunction to use in calculations.
+  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  assert( df );
+
+  // Get the radius and output
+  const typename OutputImageType::SizeType radius = df->GetRadius();
+
+  // Break the input into a series of regions.  The first region is free
+  // of boundary conditions, the rest with boundary conditions.  We operate
+  // on the output region because the input has been copied to the output.
+
+  // Setup the types of structs for the face calculations
+  // (Struct handles the case where the image pointer doesn't exist)
+  FaceStruct< OutputImagePointer > outputStruct(
+      output, regionToProcess, radius );
+  NeighborhoodType outputNeighborhood;
+
+  FaceStruct< DiffusionTensorImagePointer > tensorStruct(
+      m_DiffusionTensorImages, tensorRegionToProcess, radius );
+  DiffusionTensorNeighborhoodVectorType tensorNeighborhoods;
+
+  FaceStruct< ScalarDerivativeImagePointer >
+      deformationComponentFirstOrderStruct(
+          m_DeformationComponentFirstOrderDerivativeArrays,
+          scalarDerivativeRegionToProcess,
+          radius );
+  ScalarDerivativeImageRegionArrayVectorType
+      deformationComponentFirstOrderRegionArrays;
+
+  FaceStruct< FixedImagePointer > stoppingCriterionMaskStruct(
+      m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess, radius );
+  StoppingCriterionMaskImageRegionType stoppingCriterionMaskRegion;
+
+  // Get the type of registration
+  bool computeIntensityDistance = this->GetComputeIntensityDistanceTerm();
+  bool computeRegularization = this->GetComputeRegularizationTerm();
+  bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
+
+  // Initialize the energy values
+  double localIntensityDistanceEnergy = 0.0;
+  double localRegularizationEnergy = 0.0;
+
+  // Go to the first face
+  outputStruct.GoToBegin();
+  if( computeRegularization )
+    {
+    tensorStruct.GoToBegin();
+    deformationComponentFirstOrderStruct.GoToBegin();
+    }
+  if( haveStoppingCriterionMask )
+    {
+    stoppingCriterionMaskStruct.GoToBegin();
+    }
+
+  // Iterate over each face
+  while( !outputStruct.IsAtEnd() )
+    {
+    // Set the neighborhood iterators to the current face
+    outputStruct.SetIteratorToCurrentFace( outputNeighborhood, output, radius );
+    if( computeRegularization )
+      {
+      tensorStruct.SetIteratorToCurrentFace(
+          tensorNeighborhoods, m_DiffusionTensorImages, radius );
+      deformationComponentFirstOrderStruct.SetIteratorToCurrentFace(
+          deformationComponentFirstOrderRegionArrays,
+          m_DeformationComponentFirstOrderDerivativeArrays );
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.SetIteratorToCurrentFace(
+          stoppingCriterionMaskRegion, m_StoppingCriterionMask );
+      }
+
+    // Go to the beginning of the neighborhood for this face
+    outputNeighborhood.GoToBegin();
+    if( computeRegularization )
+      {
+      for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+        {
+        tensorNeighborhoods[i].GoToBegin();
+        for( unsigned int j = 0; j < ImageDimension; j++ )
+          {
+          deformationComponentFirstOrderRegionArrays[i][j].GoToBegin();
+          }
+        }
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskRegion.GoToBegin();
+      }
+
+    // Iterate through the neighborhood for this face and compute updates
+    while( !outputNeighborhood.IsAtEnd() )
+      {
+      // Get whether or not to include this pixel in the stopping criterion
+      bool includeInStoppingCriterion = true;
+      if( haveStoppingCriterionMask )
+        {
+        includeInStoppingCriterion
+            = ( stoppingCriterionMaskRegion.Value() == 0.0 );
+        }
+
+      if( includeInStoppingCriterion )
+        {
+        // Calculate intensity distance energy
+        if( computeIntensityDistance )
+          {
+          localIntensityDistanceEnergy += df->ComputeIntensityDistanceEnergy(
+                outputNeighborhood.GetIndex(), outputNeighborhood.GetCenterPixel() );
+          }
+
+        // Calculate regularization energy
+        if( computeRegularization )
+          {
+          localRegularizationEnergy += df->ComputeRegularizationEnergy(
+                tensorNeighborhoods,
+                deformationComponentFirstOrderRegionArrays );
+          }
+        }
+
+      // Go to the next neighborhood
+      ++outputNeighborhood;
+      if( computeRegularization )
+        {
+        for( int i = 0; i < this->GetNumberOfTerms(); i++ )
+          {
+          ++tensorNeighborhoods[i];
+          for( unsigned int j = 0; j < ImageDimension; j++ )
+            {
+            ++deformationComponentFirstOrderRegionArrays[i][j];
+            }
+          }
+        }
+      if( haveStoppingCriterionMask )
+        {
+        ++stoppingCriterionMaskRegion;
+        }
+      }
+
+    // Go to the next face
+    outputStruct.Increment();
+    if( computeRegularization )
+      {
+      tensorStruct.Increment();
+      deformationComponentFirstOrderStruct.Increment();
+      }
+    if( haveStoppingCriterionMask )
+      {
+      stoppingCriterionMaskStruct.Increment();
+      }
+    }
+
+  intensityDistanceEnergy = localIntensityDistanceEnergy;
+  regularizationEnergy = localRegularizationEnergy;
+}
+
+/**
+ * Computes the update statistics for this iteration
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::UpdateUpdateStatistics(TimeStepType stepSize)
+{
+  // Compute the true sumOfSquared and sumOf metrics, considering the
+  // actual stepSize
+  double scalingForSumOfSquaredUpdateMagnitude
+      = vnl_math_sqr( stepSize );
+  m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+      *= scalingForSumOfSquaredUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
+      *= scalingForSumOfSquaredUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
+      *= scalingForSumOfSquaredUpdateMagnitude;
+  double scalingForSumOfUpdateMagnitude = stepSize;
+  m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude
+      *= scalingForSumOfUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude
+      *= scalingForSumOfUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude
+      *= scalingForSumOfUpdateMagnitude;
+
+  // Compute the RMS and mean metrics
+  double numPixels
+      = (double) m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed;
+  if( numPixels == 0 )
+    {
+    m_UpdateMetrics.zero();
+    }
+  else
+    {
+    m_UpdateMetrics.RMSTotalUpdateMagnitude = vcl_sqrt(
+          m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+          / numPixels );
+    m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude = vcl_sqrt(
+          m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
+          / numPixels );
+    m_UpdateMetrics.RMSRegularizationUpdateMagnitude = vcl_sqrt(
+          m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
+          / numPixels );
+    m_UpdateMetrics.MeanTotalUpdateMagnitude
+        = m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude / numPixels;
+    m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude
+        = m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude / numPixels;
+    m_UpdateMetrics.MeanRegularizationUpdateMagnitude
+        = m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude / numPixels;
+    }
+
+  this->SetRMSChange( m_UpdateMetrics.RMSTotalUpdateMagnitude );
+}
+
+/**
+ * Applies changes from the update buffer to the output.  This will only get
+ * called by the superclass, so we know that it is the final apply update.
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+  < TFixedImage, TMovingImage, TDeformationField >
+::ApplyUpdate(TimeStepType dt)
+{
+  // Do the apply update.  After this,
+  // - update buffer as for determined step size
+  // - energies calculated with determined stepSize ONLY for line search
+  // - globalScaling is optimized (for line search)
+  // - update magnitude statistics for determined stepSize
+  this->ApplyUpdate( dt, this->GetOutput() );
+
+  // Calculate the energies.  After this,
+  // - update buffer as for determined step size
+  // - energies calculated with determined stepSize
+  // - globalScaling is optimized (for line search)
+  // - update magnitude statistics for determined stepSize
+  this->CalculateEnergies( m_Energies, this->GetOutput() );
+
+  // Print out energy metrics and evaluate stopping condition
+  this->PostProcessIteration(dt);
 }
 
 /**
@@ -1362,11 +1610,12 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ApplyUpdate(TimeStepType dt)
+::ApplyUpdate(TimeStepType dt, OutputImagePointer outputImage)
 {
   // Set up for multithreaded processing.
   DenseFDThreadStruct str;
   str.Filter = this;
+  str.OutputImage = outputImage;
   str.TimeStep = dt;
   this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
@@ -1378,10 +1627,7 @@ DiffusiveRegistrationFilter
   // Explicitely call Modified on GetOutput here, since ThreadedApplyUpdate
   // changes this buffer through iterators which do not increment the
   // output timestamp
-  this->GetOutput()->Modified();
-
-  // Print out energy metrics and evaluate stopping condition
-  this->PostProcessIteration();
+  outputImage->Modified();
 }
 
 /**
@@ -1411,10 +1657,30 @@ DiffusiveRegistrationFilter
 
   if (threadId < total)
     {
-    str->Filter->ThreadedApplyUpdate(str->TimeStep, splitRegion, threadId );
+    str->Filter->ThreadedApplyUpdate(str->OutputImage,
+                                     str->TimeStep,
+                                     splitRegion,
+                                     threadId );
     }
 
   return ITK_THREAD_RETURN_VALUE;
+}
+
+/**
+ * Inherited from superclass - do not call
+ */
+template < class TFixedImage, class TMovingImage, class TDeformationField >
+void
+DiffusiveRegistrationFilter
+< TFixedImage, TMovingImage, TDeformationField >
+::ThreadedApplyUpdate( TimeStepType,
+                       const ThreadRegionType &,
+                       int )
+{
+  // This function should never be called!
+  itkExceptionMacro( << "ThreadedApplyUpdate(dt, regionToProcess, threadId) "
+                    << "should never be called.  Use the other "
+                    << "ThreadedApplyUpdate function instead" );
 }
 
 /**
@@ -1425,17 +1691,20 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::ThreadedApplyUpdate(TimeStepType dt,
-  const ThreadRegionType &regionToProcess, int )
+::ThreadedApplyUpdate( OutputImagePointer & outputImage,
+                       TimeStepType dt,
+                       const ThreadRegionType &regionToProcess,
+                       int )
 {
   UpdateBufferRegionType  u( m_UpdateBuffer, regionToProcess );
-  OutputImageRegionType   o( this->GetOutput(), regionToProcess );
+  OutputImageRegionType   io( this->GetOutput(), regionToProcess );
+  OutputImageRegionType   oo( outputImage, regionToProcess );
 
-  for( u = u.Begin(), o = o.Begin();
+  for( u = u.Begin(), io = io.Begin(), oo = oo.Begin();
        !u.IsAtEnd();
-       ++o, ++u )
-         {
-    o.Value() += static_cast< DeformationVectorType >( u.Value() * dt );
+       ++io, ++oo, ++u )
+    {
+    oo.Value() = io.Value() + static_cast< DeformationVectorType >( u.Value() * dt );
     // no adaptor support here
     }
 }
@@ -1448,80 +1717,25 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::PostProcessIteration()
+::PostProcessIteration(TimeStepType stepSize)
 {
-  RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
-  assert( df );
-
   // Keep track of the total registration time
-  TimeStepType timestep = df->GetTimeStep();
   static TimeStepType totalTime = 0.0;
-  totalTime += timestep;
+  totalTime += stepSize;
 
-  // Keep track of the RMS changes
-  double rmsIntensityDistanceChange = df->GetRMSIntensityDistanceChange();
-  double rmsRegularizationChange = df->GetRMSRegularizationChange();
-  double rmsTotalChange = df->GetRMSTotalChange();
-  this->SetRMSChange( rmsTotalChange );
-
-  // Keep track of the mean changes
-  double meanIntensityDistanceChange = df->GetMeanIntensityDistanceChange();
-  double meanRegularizationChange = df->GetMeanRegularizationChange();
-  double meanTotalChange = df->GetMeanTotalChange();
-
-  // Keep track of the registration RMS changes and energies over time
-  static double previousIntensityDistanceEnergy = 0.0;
-  static double previousRegularizationEnergy = 0.0;
-  static double previousTotalEnergy = 0.0;
-  static double previousRMSIntensityDistanceChange = 0.0;
-  static double previousRMSRegularizationChange = 0.0;
-  static double previousRMSTotalChange = 0.0;
-  static double previousMeanIntensityDistanceChange = 0.0;
-  static double previousMeanRegularizationChange = 0.0;
-  static double previousMeanTotalChange = 0.0;
-
-  // Keep track of the registration energies
-  double intensityDistanceEnergy = 0.0;
-  double regularizationEnergy = 0.0;
-  if( this->GetComputeIntensityDistanceTerm() )
-    {
-    intensityDistanceEnergy = df->GetWeightedIntensityDistanceEnergy();
-    }
-  if( this->GetComputeRegularizationTerm() )
-    {
-    regularizationEnergy = df->GetWeightedRegularizationEnergy();
-    }
-  double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
-
-  double totalEnergyChange
-      = totalEnergy - previousTotalEnergy;
-  double intensityDistanceEnergyChange
-      = intensityDistanceEnergy - previousIntensityDistanceEnergy;
-  double regularizationEnergyChange
-      = regularizationEnergy - previousRegularizationEnergy;
-
-  double rmsTotalChangeChange
-      = rmsTotalChange - previousRMSTotalChange;
-  double rmsIntensityDistanceChangeChange
-      = rmsIntensityDistanceChange - previousRMSIntensityDistanceChange;
-  double rmsRegularizationChangeChange
-      = rmsRegularizationChange - previousRMSRegularizationChange;
-
-  double meanTotalChangeChange
-      = meanTotalChange - previousMeanTotalChange;
-  double meanIntensityDistanceChangeChange
-      = meanIntensityDistanceChange - previousMeanIntensityDistanceChange;
-  double meanRegularizationChangeChange
-      = meanRegularizationChange - previousMeanRegularizationChange;
-
-  unsigned int elapsedIterations = this->GetElapsedIterations();
+  // Get the change in energy and update metrics since the previous iteration
+  EnergiesStruct energiesChange;
+  energiesChange.difference( m_Energies, m_PreviousEnergies );
+  UpdateMetricsStruct updateMetricsChange;
+  updateMetricsChange.difference( m_UpdateMetrics, m_PreviousUpdateMetrics );
 
   // Keep track of the total energy change within each stopping criterion
   // evaluation block
+  unsigned int elapsedIterations = this->GetElapsedIterations();
   static double totalEnergyChangeInEvaluationPeriod = 0;
   if (elapsedIterations != 0)
     {
-    totalEnergyChangeInEvaluationPeriod += totalEnergyChange;
+    totalEnergyChangeInEvaluationPeriod += energiesChange.TotalEnergy;
     }
 
   // Print out logging information
@@ -1546,65 +1760,64 @@ DiffusiveRegistrationFilter
   std::cout.setf(std::ios::fixed, std::ios::floatfield);
   std::cout.precision(6);
   std::cout << elapsedIterations << delimiter
-            << timestep << delimiter
+            << stepSize << delimiter
             << totalTime << sectionDelimiter
 
-            << rmsTotalChange << delimiter
-            << rmsIntensityDistanceChange << delimiter
-            << rmsRegularizationChange << sectionDelimiter
+            << m_UpdateMetrics.RMSTotalUpdateMagnitude << delimiter
+            << m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude << delimiter
+            << m_UpdateMetrics.RMSRegularizationUpdateMagnitude << sectionDelimiter
 
-            << rmsTotalChangeChange << delimiter
-            << rmsIntensityDistanceChangeChange << delimiter
-            << rmsRegularizationChangeChange << sectionDelimiter
+            << updateMetricsChange.RMSTotalUpdateMagnitude << delimiter
+            << updateMetricsChange.RMSIntensityDistanceUpdateMagnitude << delimiter
+            << updateMetricsChange.RMSRegularizationUpdateMagnitude << sectionDelimiter
 
-            << meanTotalChange << delimiter
-            << meanIntensityDistanceChange << delimiter
-            << meanRegularizationChange << sectionDelimiter
+            << ",,, " << m_UpdateMetrics.MeanTotalUpdateMagnitude << " ,,, " << delimiter
+            << m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude << delimiter
+            << m_UpdateMetrics.MeanRegularizationUpdateMagnitude << sectionDelimiter
 
-            << meanTotalChangeChange << delimiter
-            << meanIntensityDistanceChangeChange << delimiter
-            << meanRegularizationChangeChange << sectionDelimiter
+            << updateMetricsChange.MeanTotalUpdateMagnitude << delimiter
+            << updateMetricsChange.MeanIntensityDistanceUpdateMagnitude << delimiter
+            << updateMetricsChange.MeanRegularizationUpdateMagnitude << sectionDelimiter
 
-            << totalEnergy << delimiter
-            << intensityDistanceEnergy << delimiter
-            << regularizationEnergy << sectionDelimiter
+            << m_Energies.TotalEnergy << delimiter
+            << m_Energies.IntensityDistanceEnergy << delimiter
+            << m_Energies.RegularizationEnergy << delimiter
 
-            << totalEnergyChange << delimiter
-            << intensityDistanceEnergyChange << delimiter
-            << regularizationEnergyChange << sectionDelimiter
+            << ",,, " << energiesChange.TotalEnergy << " ,,, " << delimiter
+            << energiesChange.IntensityDistanceEnergy << delimiter
+            << energiesChange.RegularizationEnergy << sectionDelimiter
 
-            << totalEnergyChangeInEvaluationPeriod
-            << std::endl;
+            << ",,, " << totalEnergyChangeInEvaluationPeriod << " ,,, ";
 
-  // Update 'previous' variables
-  previousTotalEnergy = totalEnergy;
-  previousIntensityDistanceEnergy = intensityDistanceEnergy;
-  previousRegularizationEnergy = regularizationEnergy;
 
-  previousRMSTotalChange = rmsTotalChange;
-  previousRMSIntensityDistanceChange = rmsIntensityDistanceChange;
-  previousRMSRegularizationChange = rmsRegularizationChange;
+  // Error checking for energy increase that indicates we should stop
+  // This should never happen with the line search turned on
+  // TODO this makes tests fail
+  static int numEnergyViolations = 0;
+  if (elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
+    {
+    numEnergyViolations++;
+    }
+  if (numEnergyViolations > 10)
+    {
+    std::cout << "Total energy is increasing, indicating numeric instability. "
+              << energiesChange.TotalEnergy << ".  "
+              << "Registration halting.";
+    this->StopRegistration();
+    std::cout << delimiter <<  "!!!";
+    }
 
-  previousMeanTotalChange = meanTotalChange;
-  previousMeanIntensityDistanceChange = meanIntensityDistanceChange;
-  previousMeanRegularizationChange = meanRegularizationChange;
+  std::cout << std::endl;
 
-  // Error checking that indicates we should stop
-//  if (elapsedIterations != 0 && totalEnergyChange > 0.0)
-//    {
-//    itkWarningMacro( << "Total energy is increasing, indicating numeric instability."
-//                     << "  Registration halting.");
-//    this->StopRegistration();
-//    }
-
-  // Check for stopping condition
+  // Check for stopping condition every m_StoppingCriterionEvaluationPeriod
   if (elapsedIterations != 0
       && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
     {
-    if (std::abs(totalEnergyChangeInEvaluationPeriod)
-        < m_StoppingCriterionMaxTotalEnergyChange)
+    if (totalEnergyChangeInEvaluationPeriod > m_StoppingCriterionMaxTotalEnergyChange)
       {
-      itkWarningMacro( << "Stopping criterion satisfied.  Registration halting.");
+      std::cout << "Stopping criterion satisfied. "
+                << totalEnergyChangeInEvaluationPeriod << ".  "
+                << "Registration halting.";
       this->StopRegistration();
       }
     totalEnergyChangeInEvaluationPeriod = 0;

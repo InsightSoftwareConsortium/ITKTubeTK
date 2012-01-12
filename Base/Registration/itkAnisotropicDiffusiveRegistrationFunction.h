@@ -222,13 +222,6 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
-  /** Set/get the weighting for the intensity distance update term.  Default
-   *  1.0 */
-  void SetIntensityDistanceWeighting( double weighting )
-    { m_IntensityDistanceWeighting = weighting; }
-  double GetIntensityDistanceWeighting() const
-    { return m_IntensityDistanceWeighting; }
-
   /** Set/get the weighting for the regularization update term.  Default 1.0 */
   void SetRegularizationWeighting( double weighting )
     { m_RegularizationWeighting = weighting; }
@@ -251,20 +244,35 @@ public:
                           void *globalData,
                           const FloatOffsetType &offset = FloatOffsetType(0.0));
 
-  /** Compute the update value. */
+  /** Compute the update value.  The intensityDistanceTerm and
+   *  regularizationTerm are outputs.  Incorporates weighting between
+   *  intensity distance term and regularization term, but does not yet
+   *  incorporate the timestep. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
       const ScalarDerivativeImageRegionArrayVectorType
-          & intensityFirstDerivatives,
+          & deformationComponentFirstOrderDerivativeRegions,
       const TensorDerivativeImageRegionArrayVectorType
-          & intensitySecondDerivatives,
+          & deformationComponentSecondOrderDerivativeRegions,
       const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
       const DeformationVectorImageRegionArrayVectorType
           & multiplicationVectorRegionArrays,
-      bool includeInMetricComputations,
       void * globalData,
+      PixelType & intensityDistanceTerm,
+      PixelType & regularizationTerm,
       const FloatOffsetType& = FloatOffsetType(0.0) );
+
+  /** Updates the energy associated with the intensity distance term */
+  virtual double ComputeIntensityDistanceEnergy(
+    const typename NeighborhoodType::IndexType index,
+    const DeformationVectorType & update );
+
+  /** Updates the energy associated with the regularization */
+  virtual double ComputeRegularizationEnergy(
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const ScalarDerivativeImageRegionArrayVectorType
+        & deformationComponentFirstOrderDerivativeRegions );
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
@@ -281,32 +289,39 @@ public:
       const
     { return m_IntensityDistanceFunction.GetPointer(); }
 
-  /** Get the RMS and mean changes in the deformation field. */
-  double GetRMSTotalChange() const
-    { return this->GetTimeStep() * m_RMSTotalChange; }
-  double GetRMSIntensityDistanceChange() const
-    { return this->GetTimeStep() * m_RMSIntensityDistanceChange; }
-  double GetRMSRegularizationChange() const
-    { return this->GetTimeStep() * m_RMSRegularizationChange; };
-  double GetMeanTotalChange() const
-    { return this->GetTimeStep() * m_MeanTotalChange; }
-  double GetMeanIntensityDistanceChange() const
-    { return this->GetTimeStep() * m_MeanIntensityDistanceChange; }
-  double GetMeanRegularizationChange() const
-    { return this->GetTimeStep() * m_MeanRegularizationChange; }
-
-  /** Get the intensity distance and regularization energies, weighted by
-   *  the specified weightings. */
-  double GetWeightedIntensityDistanceEnergy() const
-    { return m_IntensityDistanceWeighting
-        * this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
-  double GetWeightedRegularizationEnergy() const
-    { return m_RegularizationWeighting * m_RegularizationEnergy; }
+  /** Get the intensity distance and regularization energies.
+   *  The regularization energy incorporates the weighting between the
+   *  intensity distance term and the regularization term. */
+  double GetIntensityDistanceEnergy() const
+    { return this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
+  double GetRegularizationEnergy() const
+    { return m_RegularizationEnergy; }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();
   virtual ~AnisotropicDiffusiveRegistrationFunction() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
+
+  /** Returns the update from the regularization component */
+  virtual PixelType ComputeRegularizationUpdate(
+    const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
+    const ScalarDerivativeImageRegionArrayVectorType
+        & deformationComponentFirstOrderDerivativeRegions,
+    const TensorDerivativeImageRegionArrayVectorType
+        & deformationComponentSecondOrderDerivativeRegions,
+    const TensorDerivativeImageRegionVectorType & tensorDerivativeRegions,
+    const DeformationVectorImageRegionArrayVectorType
+        & multiplicationVectorRegionArrays,
+    void *globalData,
+    const FloatOffsetType& = FloatOffsetType(0.0) );
+
+//  /** Update the RMS and mean update change statistics */
+//  virtual void UpdateRMSAndMeanUpdateStatistics(
+//    const PixelType & updateTerm,
+//    const PixelType & intensityDistanceTerm,
+//    const PixelType & regularizationTerm,
+//    const TimeStepType & timestep,
+//    void * globalData );
 
   /** A global data type for this class of equations.  Used to store information
     for computing the metric and other intermediate products, such as
@@ -317,13 +332,6 @@ protected:
     {
     void *                              m_RegularizationGlobalDataStruct;
     void *                              m_IntensityDistanceGlobalDataStruct;
-    double                              m_SumOfSquaredTotalChange;
-    double                              m_SumOfSquaredIntensityDistanceChange;
-    double                              m_SumOfSquaredRegularizationChange;
-    double                              m_SumOfTotalChange;
-    double                              m_SumOfIntensityDistanceChange;
-    double                              m_SumOfRegularizationChange;
-    unsigned long                       m_NumberOfPixelsProcessed;
     };
 
 private:
@@ -345,24 +353,8 @@ private:
   bool                                  m_ComputeIntensityDistanceTerm;
 
   /** Relative weighting between the intensity distance and regularization
-   *  terms (default 1,1) */
-  double                                m_IntensityDistanceWeighting;
+   *  terms (default 1) */
   double                                m_RegularizationWeighting;
-
-  /** Used to calculate the RMS change metrics */
-  mutable unsigned long                 m_NumberOfPixelsProcessed;
-  mutable double                        m_SumOfSquaredTotalChange;
-  mutable double                        m_SumOfSquaredIntensityDistanceChange;
-  mutable double                        m_SumOfSquaredRegularizationChange;
-  mutable double                        m_RMSTotalChange;
-  mutable double                        m_RMSIntensityDistanceChange;
-  mutable double                        m_RMSRegularizationChange;
-  mutable double                        m_SumOfTotalChange;
-  mutable double                        m_SumOfIntensityDistanceChange;
-  mutable double                        m_SumOfRegularizationChange;
-  mutable double                        m_MeanTotalChange;
-  mutable double                        m_MeanIntensityDistanceChange;
-  mutable double                        m_MeanRegularizationChange;
 
   /** Used to calculate the regularization energy. */
   mutable double                        m_RegularizationEnergy;
