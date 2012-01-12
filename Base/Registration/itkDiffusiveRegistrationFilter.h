@@ -31,6 +31,37 @@ limitations under the License.
 namespace itk
 {
 
+struct EnergiesStruct
+  {
+  double  TotalEnergy;
+  double  IntensityDistanceEnergy;
+  double  RegularizationEnergy;
+
+  void zero()
+    {
+    TotalEnergy = 0.0;
+    IntensityDistanceEnergy = 0.0;
+    RegularizationEnergy = 0.0;
+    }
+
+  void copyFrom( const EnergiesStruct & rhs )
+    {
+    TotalEnergy = rhs.TotalEnergy;
+    IntensityDistanceEnergy = rhs.IntensityDistanceEnergy;
+    RegularizationEnergy = rhs.RegularizationEnergy;
+    }
+
+  void difference( const EnergiesStruct & lhs, const EnergiesStruct & rhs )
+    {
+    TotalEnergy = lhs.TotalEnergy - rhs.TotalEnergy;
+    IntensityDistanceEnergy
+        = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
+    RegularizationEnergy
+        = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
+    }
+
+  };
+
 /** \class itkDiffusiveRegistrationFilter
  * \brief Registration filter for registrations using anisotropic diffusive
  * regularizers, for example for sliding organ registration.
@@ -501,37 +532,6 @@ protected:
   void ExtractXYZComponentsFromDeformationField(
       const OutputImageType * deformationField,
       DeformationComponentImageArrayType & deformationComponentImages ) const;
-
-  struct EnergiesStruct
-    {
-    double  TotalEnergy;
-    double  IntensityDistanceEnergy;
-    double  RegularizationEnergy;
-
-    void zero()
-      {
-      TotalEnergy = 0.0;
-      IntensityDistanceEnergy = 0.0;
-      RegularizationEnergy = 0.0;
-      }
-
-    void copyFrom( const EnergiesStruct & rhs )
-      {
-      TotalEnergy = rhs.TotalEnergy;
-      IntensityDistanceEnergy = rhs.IntensityDistanceEnergy;
-      RegularizationEnergy = rhs.RegularizationEnergy;
-      }
-
-    void difference( const EnergiesStruct & lhs, const EnergiesStruct & rhs )
-      {
-      TotalEnergy = lhs.TotalEnergy - rhs.TotalEnergy;
-      IntensityDistanceEnergy
-          = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
-      RegularizationEnergy
-          = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
-      }
-
-    };
 
   struct UpdateMetricsIntermediateStruct
     {
