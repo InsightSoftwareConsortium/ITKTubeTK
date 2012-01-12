@@ -405,7 +405,7 @@ protected:
   virtual void InitializeIteration();
 
   /** Updates the deformation vector component images on each iteration. */
-  virtual void UpdateDeformationComponentImages() {};
+  virtual void UpdateDeformationComponentImages( OutputImageType * output );
 
   /** Computes the first- and second-order partial derivatives of the
    *  deformation component images on each iteration.  Override in derived
@@ -693,6 +693,7 @@ protected:
    * \sa CalculateEnergies
    * \sa CalculateEnergiesThreaderCallback */
   virtual void ThreadedCalculateEnergies(
+    const OutputImagePointer & output,
     const ThreadRegionType & regionToProcess,
     const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
     const ThreadScalarDerivativeImageRegionType &
@@ -701,7 +702,6 @@ protected:
       stoppingCriterionMaskRegionToProcess,
     double & intensityDistanceEnergy,
     double & regularizationEnergy,
-    double stepSize,
     int threadId );
 
   /** This method applies changes from the update buffer to the output, using
@@ -710,12 +710,19 @@ protected:
    * voxel in the update buffer by the scaling value from the line search.
    * \sa ThreadedApplyUpdate */
   virtual void ApplyUpdate( TimeStepType dt );
+  virtual void ApplyUpdate( TimeStepType dt, OutputImagePointer outputImage );
+
+  /** Inherited from superclass - do not call this function! */
+  virtual void ThreadedApplyUpdate( TimeStepType dt,
+                                    const ThreadRegionType & regionToProcess,
+                                    int threadId );
 
   /**  Does the actual work of updating the output from the UpdateContainer over
    *  an output region supplied by the multithreading mechanism.
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
-  virtual void ThreadedApplyUpdate( TimeStepType dt,
+  virtual void ThreadedApplyUpdate( OutputImagePointer & outputImage,
+                                    TimeStepType dt,
                                     const ThreadRegionType & regionToProcess,
                                     int threadId );
 
@@ -747,6 +754,7 @@ private:
   struct DenseFDThreadStruct
     {
     DiffusiveRegistrationFilter *Filter;
+    OutputImagePointer OutputImage;
     TimeStepType TimeStep;
     TimeStepType *TimeStepList;
     bool *ValidTimeStepList;
@@ -781,9 +789,9 @@ private:
   struct CalculateEnergiesThreadStruct
     {
     DiffusiveRegistrationFilter * Filter;
+    OutputImagePointer OutputImage;
     double * IntensityDistanceEnergies;
     double * RegularizationEnergies;
-    double StepSize;
     };
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an

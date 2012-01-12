@@ -263,7 +263,7 @@ protected:
   virtual void ComputeMultiplicationVectorImages();
 
   /** Updates the deformation vector component images on each iteration. */
-  virtual void UpdateDeformationComponentImages();
+  virtual void UpdateDeformationComponentImages( OutputImageType * output );
 
   /** If needed, allocates and computes the normal vector and weight images. */
   virtual void SetupNormalVectorAndWeightImages();

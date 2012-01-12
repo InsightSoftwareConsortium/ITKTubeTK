@@ -338,10 +338,11 @@ double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeIntensityDistanceEnergy(
-  const typename NeighborhoodType::IndexType index, double stepSize )
+  const typename NeighborhoodType::IndexType index,
+  const DeformationVectorType & update )
 {
   return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference(
-                         index, stepSize ) );
+                         index, update ) );
 }
 
 /**
@@ -354,8 +355,7 @@ AnisotropicDiffusiveRegistrationFunction
 ::ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
-        & deformationComponentFirstOrderDerivativeRegions,
-    double stepSize )
+        & deformationComponentFirstOrderDerivativeRegions )
 {
   // Since we are iterating over terms before iterating over x,y,z
   // we need to store the sum for each dimension
@@ -374,7 +374,6 @@ AnisotropicDiffusiveRegistrationFunction
           = tensorNeighborhoods[term].GetCenterPixel();
       ScalarDerivativeType deformationComponentFirstOrderDerivative
           = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
-      deformationComponentFirstOrderDerivative *= stepSize;
       itk::Vector< double, ImageDimension > multVector(0.0);
       for( int row = 0; row < ImageDimension; row++ )
         {

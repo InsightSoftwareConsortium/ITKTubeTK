@@ -728,7 +728,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::UpdateDeformationComponentImages()
+::UpdateDeformationComponentImages( OutputImageType * output )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetNormalVectorImage() );
@@ -738,7 +738,6 @@ AnisotropicDiffusiveRegistrationFilter
   NormalVectorImageRegionType normalVectorRegion(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
-  OutputImagePointer output = this->GetOutput();
   OutputImageRegionType outputRegion(output,
                                      output->GetLargestPossibleRegion() );
 

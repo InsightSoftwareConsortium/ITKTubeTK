@@ -147,8 +147,9 @@ public:
                      const FloatOffsetType &offset = FloatOffsetType(0.0));
 
   /** Computes the intensity difference between the fixed and moving image
-   *  at the given index, under the current estimate of the deformation field. */
-  virtual double ComputeIntensityDifference(const IndexType & index, double stepSize);
+   *  at the given index, under the given deformation vector. */
+  virtual double ComputeIntensityDifference(const IndexType & index,
+                                            const DeformationFieldPixelType & itvec);
 
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )

@@ -1174,7 +1174,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::UpdateDeformationComponentImages()
+::UpdateDeformationComponentImages( OutputImageType * output )
 {
   assert( this->GetComputeRegularizationTerm() );
 
@@ -1192,7 +1192,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Setup the iterators for the deformation field
-  OutputImagePointer output = this->GetOutput();
   OutputImageRegionType outputRegion(output,
                                      output->GetLargestPossibleRegion() );
 

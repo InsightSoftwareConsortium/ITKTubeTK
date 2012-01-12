@@ -332,7 +332,7 @@ protected:
   virtual void ComputeMultiplicationVectorImages();
 
   /** Updates the deformation vector component images on each iteration. */
-  virtual void UpdateDeformationComponentImages();
+  virtual void UpdateDeformationComponentImages( OutputImageType * output );
 
   /** Computes the first- and second-order partial derivatives of the
    *  deformation component images on each iteration.  Override in derived

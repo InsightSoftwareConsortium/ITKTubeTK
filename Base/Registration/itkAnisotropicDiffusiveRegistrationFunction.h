@@ -266,14 +266,13 @@ public:
   /** Updates the energy associated with the intensity distance term */
   virtual double ComputeIntensityDistanceEnergy(
     const typename NeighborhoodType::IndexType index,
-    double stepSize );
+    const DeformationVectorType & update );
 
   /** Updates the energy associated with the regularization */
   virtual double ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
-        & deformationComponentFirstOrderDerivativeRegions,
-    double stepSize );
+        & deformationComponentFirstOrderDerivativeRegions );
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
