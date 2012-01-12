@@ -53,7 +53,6 @@ AnisotropicDiffusiveRegistrationFunction
   this->SetMovingImage(0);
   this->SetFixedImage(0);
 
-  m_IntensityDistanceWeighting = 1.0;
   m_RegularizationWeighting = 1.0;
 
   m_NumberOfPixelsProcessed = 0L;
@@ -89,8 +88,6 @@ AnisotropicDiffusiveRegistrationFunction
      << ( m_ComputeRegularizationTerm ? "on" : "off" ) << std::endl;
   os << indent << "Compute intensity distance term: "
      << ( m_ComputeIntensityDistanceTerm ? "on" : "off" ) << std::endl;
-  os << indent << "Intensity distance weighting: "
-     << m_IntensityDistanceWeighting << std::endl;
   os << indent << "Regularization weighting: " << m_RegularizationWeighting
      << std::endl;
   if ( m_RegularizationFunction )
@@ -334,7 +331,6 @@ AnisotropicDiffusiveRegistrationFunction
     }
 
   // Weight the intensity and regularization terms
-  intensityDistanceTerm *= m_IntensityDistanceWeighting;
   regularizationTerm *= m_RegularizationWeighting;
 
   // Compute the final update term

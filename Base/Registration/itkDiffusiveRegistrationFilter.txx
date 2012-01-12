@@ -57,7 +57,6 @@ DiffusiveRegistrationFilter
   m_HighResolutionTemplate  = 0;
 
   m_CurrentLevel            = 0;
-  m_IntensityDistanceWeightings.push_back( 1.0 );
   m_RegularizationWeightings.push_back( 1.0 );
 
   m_StoppingCriterionMask               = 0;
@@ -123,12 +122,6 @@ DiffusiveRegistrationFilter
     m_HighResolutionTemplate->Print( os, indent );
     }
   os << indent << "Current level: " << m_CurrentLevel << std::endl;
-  os << indent << "Intensity distance weightings: ";
-  for( unsigned int i = 0; i < m_IntensityDistanceWeightings.size(); i++ )
-    {
-    os << m_IntensityDistanceWeightings[i] << " ";
-    }
-  os << std::endl;
   os << indent << "Regularization weightings: " ;
   for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
     {
@@ -419,18 +412,11 @@ DiffusiveRegistrationFilter
     itkWarningMacro( << "Moving image intensity should be [0,1]" );
     }
 
-  // Ensure we have good intensity distance and regularization weightings
-  unsigned int intensityWeightingsSize = m_IntensityDistanceWeightings.size();
+  // Ensure we have good regularization weightings
   unsigned int regularizationWeightingsSize = m_RegularizationWeightings.size();
-  if( intensityWeightingsSize == 0 || regularizationWeightingsSize == 0 )
+  if( regularizationWeightingsSize == 0 )
     {
-    itkExceptionMacro( << "Intensity distance and/or regularization weightings "
-                       << "not set" );
-    }
-  if( intensityWeightingsSize != regularizationWeightingsSize )
-    {
-    itkWarningMacro( << "Number of intensity distance weightings does not "
-                     << "equal number of regularization weightings" );
+    itkExceptionMacro( << "Regularization weightings not set" );
     }
 
   // Update the current multiresolution level (when registering, level is 1..N)
@@ -485,15 +471,6 @@ DiffusiveRegistrationFilter
   // Set the intensity distance and regularization weightings to the
   // registration function.  If we are past the end of the vectors, use the
   // last element.
-  if( m_CurrentLevel <= intensityWeightingsSize )
-    {
-    df->SetIntensityDistanceWeighting(
-        m_IntensityDistanceWeightings[m_CurrentLevel - 1] );
-    }
-  else
-    {
-    df->SetIntensityDistanceWeighting( m_IntensityDistanceWeightings.back() );
-    }
   if( m_CurrentLevel <= regularizationWeightingsSize )
     {
     df->SetRegularizationWeighting(
@@ -1485,11 +1462,12 @@ DiffusiveRegistrationFilter
   double regularizationEnergy = 0.0;
   if( this->GetComputeIntensityDistanceTerm() )
     {
-    intensityDistanceEnergy = df->GetWeightedIntensityDistanceEnergy();
+    intensityDistanceEnergy = df->GetIntensityDistanceEnergy();
     }
   if( this->GetComputeRegularizationTerm() )
     {
-    regularizationEnergy = df->GetWeightedRegularizationEnergy();
+    regularizationEnergy
+        = df->GetRegularizationWeighting() * df->GetRegularizationEnergy();
     }
   double totalEnergy = intensityDistanceEnergy + regularizationEnergy;
 

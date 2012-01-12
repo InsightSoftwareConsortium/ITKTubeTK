@@ -222,13 +222,6 @@ public:
   bool GetComputeIntensityDistanceTerm() const
     { return m_ComputeIntensityDistanceTerm; }
 
-  /** Set/get the weighting for the intensity distance update term.  Default
-   *  1.0 */
-  void SetIntensityDistanceWeighting( double weighting )
-    { m_IntensityDistanceWeighting = weighting; }
-  double GetIntensityDistanceWeighting() const
-    { return m_IntensityDistanceWeighting; }
-
   /** Set/get the weighting for the regularization update term.  Default 1.0 */
   void SetRegularizationWeighting( double weighting )
     { m_RegularizationWeighting = weighting; }
@@ -295,13 +288,11 @@ public:
   double GetMeanRegularizationChange() const
     { return this->GetTimeStep() * m_MeanRegularizationChange; }
 
-  /** Get the intensity distance and regularization energies, weighted by
-   *  the specified weightings. */
-  double GetWeightedIntensityDistanceEnergy() const
-    { return m_IntensityDistanceWeighting
-        * this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
-  double GetWeightedRegularizationEnergy() const
-    { return m_RegularizationWeighting * m_RegularizationEnergy; }
+  /** Get the intensity distance and regularization energies. */
+  double GetIntensityDistanceEnergy() const
+    { return this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
+  double GetRegularizationEnergy() const
+    { return m_RegularizationEnergy; }
 
 protected:
   AnisotropicDiffusiveRegistrationFunction();
@@ -372,8 +363,7 @@ private:
   bool                                  m_ComputeIntensityDistanceTerm;
 
   /** Relative weighting between the intensity distance and regularization
-   *  terms (default 1,1) */
-  double                                m_IntensityDistanceWeighting;
+   *  terms (default 1) */
   double                                m_RegularizationWeighting;
 
   /** Used to calculate the RMS change metrics */
