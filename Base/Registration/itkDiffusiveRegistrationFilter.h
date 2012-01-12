@@ -503,21 +503,28 @@ protected:
       DeformationComponentImageArrayType & deformationComponentImages ) const;
 
   /** This method populates an update buffer with changes for each pixel in the
-   * output, using the ThreadedCalculateChange() method and a multithreading
-   * mechanism. Return value is a time step to be used for the update.
-   * \sa ThreadedCalculateChange */
+   * output.  Uses CalculateChangeGradient to determine
+   * the gradient displacement field.
+   * Return value is a time step to be used for the update.
+   * \sa CalculateChangeGradient */
   virtual TimeStepType CalculateChange();
 
-  /** Inherited from superclass - do not call this function!  Call the other
-   *  ThreadedCalculateChange function instead */
+  /** Inherited from superclass - do not call this function! */
   TimeStepType ThreadedCalculateChange(
       const ThreadRegionType & regionToProcess, int threadId );
 
-  /** Does the actual work of calculating change over a region supplied by
-   * the multithreading mechanism.
-   * \sa CalculateChange
-   * \sa CalculateChangeThreaderCallback */
-  virtual TimeStepType ThreadedCalculateChange(
+  /** This method populates an update buffer with changes for each pixel in the
+   * output when computing the gradient, using the
+   * ThreadedCalculateChange() method and a multithreading
+   * mechanism. Return value is a time step to be used for the update.
+   * \sa ThreadedCalculateChangeGradient */
+  virtual TimeStepType CalculateChangeGradient();
+
+  /** Does the actual work of calculating the gradient part of the line search
+   * over a region supplied by the multithreading mechanism.
+   * \sa CalculateChangeGradient
+   * \sa CalculateChangeGradientThreaderCallback */
+  virtual TimeStepType ThreadedCalculateChangeGradient(
       const ThreadRegionType & regionToProcess,
       const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
       const ThreadTensorDerivativeImageRegionType
@@ -639,7 +646,8 @@ private:
 
   /** This callback method uses SplitUpdateContainer to acquire a region
   * which it then passes to ThreadedCalculateChange for processing. */
-  static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
+  static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback(
+    void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region which
   * it then passes to ThreadedComputeDeformationComponentDerivativeImageHelper
