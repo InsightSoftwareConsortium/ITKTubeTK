@@ -55,8 +55,14 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
 
   // Get the group
   GroupType::Pointer group = tubeReader->GetGroup();
-  std::cout << "Number of children = " << group->GetNumberOfChildren()
+  unsigned int numberOfChildren = group->GetNumberOfChildren();
+  std::cout << "Number of children = " << numberOfChildren
     << std::endl;
+  if( numberOfChildren != 1 )
+    {
+    std::cerr << "Wrong number of children" << std::endl;
+    return EXIT_FAILURE;
+    }
 
   // Get the list of tubes from the group
   char tubeName[17];
@@ -64,6 +70,11 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
   unsigned int numTubes = tubeList->size();
   std::cout << "Number of tubes: " << numTubes << std::endl;
+  if( numTubes != 1 )
+    {
+    std::cerr << "Wrong number of tubes" << std::endl;
+    return EXIT_FAILURE;
+    }
 
   // Iterate through the tubes
   ObjectListType::iterator            tubeIt = tubeList->begin();
