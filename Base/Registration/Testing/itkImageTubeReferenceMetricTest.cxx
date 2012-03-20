@@ -15,29 +15,31 @@
 
 =========================================================================*/
 
+#include "itkEuler3DTransform.h"
 #include "itkImageFileWriter.h"
-#include "itkImageFileReader.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageToTubeRigidMetric.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkSpatialObjectToImageFilter.h"
-#include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 #include "itkTubeSpatialObjectPoint.h"
+#include "itkTubeToTubeTransformFilter.h"
+#include "itkVesselTubeSpatialObjectPoint.h"
+#include "itkSpatialObjectReader.h"
 
 /**
- *  This test is a base to generate image and spatial objects for the
+ *  This test is a base to generate images and spatial objects for the
  *  registration/metric testing process.
  */
 
 int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
 {
-  if ( argc < 4 )
+  if ( argc < 5 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
               << " Output_Image " << "Output_Tube "
-              << "Output_TubeAsImage "
+              << "Output_TubeAsImage " << "Output_TransformedTubeAsImage "
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -45,11 +47,15 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   typedef itk::Image<double, 3>                             Image3DType;
   typedef itk::ImageRegionIteratorWithIndex< Image3DType >  Image3DIteratorType;
   typedef itk::TubeSpatialObject<3>                         TubeType;
-  typedef itk::TubeSpatialObjectPoint<3>                    TubePointType;
+  typedef itk::VesselTubeSpatialObjectPoint<3>              TubePointType;
   typedef itk::GroupSpatialObject<3>                        TubeNetType;
 
   typedef itk::SpatialObjectToImageFilter< TubeNetType, Image3DType >
     SpatialObjectToImageFilterType;
+  typedef itk::Euler3DTransform<double> TransformType;
+  typedef itk::TubeToTubeTransformFilter<TransformType, 3>
+    TubeTransformFilterType;
+
   typedef itk::ImageFileWriter<Image3DType>                 ImageWriterType;
   typedef itk::SpatialObjectWriter<3>                       TubeWriterType;
 
@@ -58,8 +64,10 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   imageSize[1] = 128;
   imageSize[2] = 128;
 
-  // Create fixed image
-  std::cout << "Create fixed image..." << std::endl;
+  //------------------------------------------------------------------
+  // Generate a simple tube image using Gaussian Filter
+  //------------------------------------------------------------------
+  std::cout << "Generate a tube blured image..." << std::endl;
   Image3DType::Pointer fixedImage = Image3DType::New();
   fixedImage->SetRegions(imageSize);
   fixedImage->Allocate();
@@ -121,23 +129,26 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  // Create tube
-  std::cout << "Create moving image..." << std::endl;
-
+  //------------------------------------------------------------------
+  // Generate a simple spatial object tube
+  //------------------------------------------------------------------
+  std::cout << "Create spatial object tube..." << std::endl;
   TubeType::Pointer tube = TubeType::New();
+  tube->SetArtery( true );
+
   TubePointType point;
   point.SetRadius( 2.0 );
 
   for (int i = -750; i < 750; ++i)
     {
-    point.SetPosition( 15, 15, i / 100.);
+    point.SetPosition( 15, 15, i / 10.);
     tube->GetPoints().push_back(point);
     }
 
   TubeNetType::Pointer group = TubeNetType::New();
   group->AddSpatialObject( tube );
 
-  std::cout << "Write tubeFile: " << argv[2] << std::endl;
+  std::cout << "Write a tubeFile: " << argv[2] << std::endl;
   TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
   tubeWriter->SetFileName( argv[2] );
   tubeWriter->SetInput( group );
@@ -151,9 +162,12 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  // Transform the tube into an image
+  //------------------------------------------------------------------
+  // Write the tube as an image without transformation
+  //------------------------------------------------------------------
+  std::cout << "Convert the tube into an Image..." << std::endl;
   SpatialObjectToImageFilterType::Pointer imageFilter =
-  SpatialObjectToImageFilterType::New();
+    SpatialObjectToImageFilterType::New();
   imageFilter->SetInput( group );
   imageFilter->SetSize( imageSize );
 
@@ -162,6 +176,7 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   origin[1] = 0;
   origin[2] = 0;
   imageFilter->SetOrigin( origin );
+  imageFilter->Update();
 
   // write image
   ImageWriterType::Pointer imageTubeWriter = ImageWriterType::New();
@@ -171,6 +186,94 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   try
     {
     imageTubeWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  //------------------------------------------------------------------
+  // Write the tube as an image with a transformation
+  //------------------------------------------------------------------
+  std::cout << "Transform and Convert the tube into an Image..." << std::endl;
+
+  // read tube (spatialObject)
+  typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
+  TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
+  tubeReader->SetFileName("TubeOutM.tre");
+  try
+    {
+    tubeReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  TransformType::Pointer transformTube = TransformType::New();
+
+  TubeType::VectorType translateT;
+  translateT[0] = 25;
+  translateT[1] = 25;
+  translateT[2] = 25;
+  transformTube->Translate( translateT );
+
+  TubeType::ScalarType angleX = 10;
+  TubeType::ScalarType angleY = 0;
+  TubeType::ScalarType angleZ = 0;
+
+  transformTube->Translate( translateT );
+  transformTube->SetRotation( angleX, angleY, angleZ );
+
+  itk::Matrix<double,3,3> rotationMatrix;
+  itk::Vector<double,3> translation;
+
+  rotationMatrix = transformTube->GetMatrix();
+  translation = transformTube->GetTranslation();
+
+  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1)
+            << " " << rotationMatrix(0,2) << std::endl;
+  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1)
+            << " " << rotationMatrix(1,2) << std::endl;
+  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1)
+            << " " << rotationMatrix(2,2) << std::endl;
+  std::cout << translation[0] << " " << translation[1]
+            << " " << translation[2] << std::endl;
+
+  // create transform filter
+  TubeTransformFilterType::Pointer transformFilter =
+    TubeTransformFilterType::New();
+  transformFilter->SetScale( 1.0 );
+  transformFilter->SetInput( tubeReader->GetGroup() );
+  transformFilter->SetTransform( transformTube );
+
+  try
+    {
+    transformFilter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  SpatialObjectToImageFilterType::Pointer imageFilterTransform =
+    SpatialObjectToImageFilterType::New();
+  imageFilterTransform->SetInput( transformFilter->GetOutput() );
+  imageFilterTransform->SetSize( imageSize );
+  imageFilterTransform->SetOrigin( origin );
+  imageFilterTransform->Update();
+
+  // write image
+  ImageWriterType::Pointer imageTubeWriterT = ImageWriterType::New();
+  imageTubeWriterT->SetFileName( argv[4] );
+  std::cout << "Write tubeAsImageFile: " << argv[4] << std::endl;
+  imageTubeWriterT->SetInput( imageFilterTransform->GetOutput() );
+  try
+    {
+    imageTubeWriterT->Update();
     }
   catch( itk::ExceptionObject & err )
     {
