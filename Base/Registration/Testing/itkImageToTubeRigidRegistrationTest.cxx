@@ -107,6 +107,42 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  // TODO Delete
+  // Compute the distance between the vessel and the image
+  typedef itk::ImageToTubeRigidMetric<ImageType, TubeNetType> MetricType;
+  typedef itk::Array<double>                                  ParametersType;
+  typedef MetricType::InterpolatorType                        InterpolatorType;
+  typedef MetricType::TransformType                           TransformType;
+
+  // Initialize the metric
+  MetricType::Pointer metric = MetricType::New();
+  metric->SetExtent( 3 );
+  metric->SetSampling( 1 );
+  metric->SetVerbose( true );
+
+  InterpolatorType::Pointer interpolator = InterpolatorType::New();
+  TransformType::Pointer transform = TransformType::New();
+  TransformType::ParametersType parameters = transform->GetParameters();
+
+  metric->SetFixedImage( imageReader->GetOutput() );
+ // metric->SetFixedImage( imageFilter->GetOutput() );
+  metric->SetMovingSpatialObject ( vesselReader->GetGroup() );
+  metric->SetInterpolator( interpolator );
+  metric->SetTransform( transform );
+  try
+    {
+    metric->Initialize();
+    }
+  catch ( itk::ExceptionObject &excp )
+    {
+    std::cerr << "Exception caught while initializing metric." << std::endl;
+    std::cerr << excp << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  MetricType::MeasureType value = metric->GetValue( parameters );
+  std::cout << "Metric Measure: " << value << std::endl;
+
   // register the vessel and the image
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
