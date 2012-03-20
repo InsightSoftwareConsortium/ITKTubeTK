@@ -26,6 +26,8 @@ include_regular_expression( "^.*$" )
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
+#set(ITKRegistrationCommonTests
+
 set( BASE_REGISTRATION_FILTERS_TESTS
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests )
 
@@ -39,8 +41,10 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
   itkImageToTubeRigidRegistrationTest.cxx
+  itkImageToTubeRigidMetricTest.cxx
   itkTubePointsToImageTest.cxx
-  itkTubeToTubeTransformFilterTest.cxx )
+  itkTubeToTubeTransformFilterTest.cxx
+   )
 
 # expect image comparison perfection on 64-bit machines
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -215,6 +219,10 @@ if( TubeTK_USE_VTK )
                         itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian )
 
 endif( TubeTK_USE_VTK )
+
+add_test( itkImageToTubeRigidMetricTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          )
 
 add_test( itkTubePointsToImageTest
           ${BASE_REGISTRATION_FILTERS_TESTS} itkTubePointsToImageTest
