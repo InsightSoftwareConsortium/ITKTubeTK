@@ -40,8 +40,9 @@ set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Registration/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
-  itkImageToTubeRigidRegistrationTest.cxx
   itkImageToTubeRigidMetricTest.cxx
+  itkImageTubeReferenceMetricTest.cxx
+  itkImageToTubeRigidRegistrationTest.cxx
   itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx
    )
@@ -220,12 +221,19 @@ if( TubeTK_USE_VTK )
 
 endif( TubeTK_USE_VTK )
 
-add_test( itkImageToTubeRigidMetricTest
-          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
-          )
-
 add_test( itkTubePointsToImageTest
           ${BASE_REGISTRATION_FILTERS_TESTS} itkTubePointsToImageTest
           ${INPUT_DATA}/Branch-truth-new.tre
           ${TEMP}/Branch-truth-new-points.mha
+          )
+
+add_test( itkImageToTubeRigidMetricTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          )
+
+add_test( itkImageTubeReferenceMetricTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          ${TEMP}/ImageReferenceMetric.mha
+          ${TEMP}/TubeReferenceMetric.tre
+          ${TEMP}/TubeAsImageReferenceMetric.mha
           )
