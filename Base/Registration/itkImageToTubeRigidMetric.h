@@ -37,8 +37,15 @@ limitations under the License.
 namespace itk
 {
 
-/** \class ImageToTubeRigidMetric
-* \brief Computes similarity between two objects to be registered */
+/**
+ * \class ImageToTubeRigidMetric
+ * \brief Computes similarity between two objects to be registered
+ * The metric implemented here corresponds to the following paper:
+ * \link http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
+ * The metric is based on the fact that vessel centerlines are scaled
+ * intensity ridges in the image.
+ * \warning (Derivative)
+*/
 
 template < class TFixedImage, class TMovingSpatialObject>
 class ITK_EXPORT ImageToTubeRigidMetric
