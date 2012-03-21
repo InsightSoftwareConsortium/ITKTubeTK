@@ -321,7 +321,7 @@ if( TubeTK_USE_QT )
       set( proj CTK )
       ExternalProject_Add( CTK
         GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
-        GIT_TAG "origin/master"
+        GIT_TAG "d76ebaac2226f8ef431835eff1693012ffaf62c3"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
         BINARY_DIR CTK-Build
         CMAKE_GENERATOR ${gen}
