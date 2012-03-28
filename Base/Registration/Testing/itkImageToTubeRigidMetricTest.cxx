@@ -26,10 +26,9 @@
 
 /**
  *  This test exercised the metric evaluation methods in the
- *  itkImageToTubeRigidMetric class. Two 3D binary images (32x32x32)
- *  and a .tre image are used as reference for the metric
- *  One image is computed without any transformation while the other one
- *  is the same translated in both x, y, z and then rotated on the y axis.
+ *  itkImageToTubeRigidMetric class. The distance between
+ *  a 3D binary images (32x32x32) and a .tre image is computed and check with
+ *  the reference for the metric.
  */
 
 int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
@@ -38,9 +37,9 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Input_Image "
-              << "Input_Vessel "
-              << "Input_TransformedImage."
+              << " Input_FixedImage "
+              << "Input_SpatialObject "
+              << "Input_ExpectedValue."
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -88,7 +87,7 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     }
 
   //------------------------------------------------------------------
-  // Compute the metric for an identical spatial object 32x32x32
+  // Compute the metric for a 3D image susampled at 1/30
   //------------------------------------------------------------------
   MetricType::Pointer metric = MetricType::New();
   metric->SetExtent( 3 );
@@ -115,61 +114,11 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     }
 
   MetricType::MeasureType value = metric->GetValue( parameters );
-  // Warning: value corresponding to specific parameters and images (identical 32x32x32)
-  if (value < (1.095681 - epsilonReg) )
+  if (value < ( atof(argv[3]) - epsilonReg ) ||
+      value > ( atof(argv[3]) + epsilonReg ) )
     {
-    std::cerr << "Metric value less than expected."
+    std::cerr << "Distance value different than expected."
               << value
-              << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  //------------------------------------------------------------------
-  // Compute the metric for an transformed spatial object 32x32x32
-  //------------------------------------------------------------------
-  // read image (fixedImageTranformed)
-  ImageReaderType::Pointer imageReaderT = ImageReaderType::New();
-  imageReaderT->SetFileName( argv[3] );
-  try
-    {
-    imageReaderT->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    std::cerr << "Exception caught: " << err << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  MetricType::Pointer metricT = MetricType::New();
-  metricT->SetExtent( 3 );
-  metricT->SetSampling( 30 );
-  metricT->SetVerbose( true );
-
-  InterpolatorType::Pointer interpolatorT = InterpolatorType::New();
-  TransformType::Pointer transformT = TransformType::New();
-  TransformType::ParametersType parametersT = transformT->GetParameters();
-
-  metricT->SetFixedImage( imageReaderT->GetOutput() );
-  metricT->SetMovingSpatialObject ( tubeReader->GetGroup() );
-  metricT->SetInterpolator( interpolatorT );
-  metricT->SetTransform( transformT );
-  try
-    {
-    metricT->Initialize();
-    }
-  catch ( itk::ExceptionObject &excp )
-    {
-    std::cerr << "Exception caught while initializing metric." << std::endl;
-    std::cerr << excp << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  MetricType::MeasureType valueT = metricT->GetValue( parametersT );
-  // Warning: value corresponding to specific parameters and images (transformed 32x32x32)
-  if (valueT > (-1.13622 + epsilonReg) )
-    {
-    std::cerr << "Metric value more than expected:"
-              << valueT
               << std::endl;
     return EXIT_FAILURE;
     }

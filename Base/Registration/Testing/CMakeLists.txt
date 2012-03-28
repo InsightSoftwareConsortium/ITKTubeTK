@@ -41,7 +41,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
   itkImageToTubeRigidMetricTest.cxx
-  itkImageTubeReferenceMetricTest.cxx
+  itkSyntheticTubeImageGenerationsTest.cxx
   itkImageToTubeRigidRegistrationTest.cxx
   itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx
@@ -227,18 +227,25 @@ add_test( itkTubePointsToImageTest
           ${TEMP}/Branch-truth-new-points.mha
           )
 
-add_test( itkImageToTubeRigidMetricTest
+add_test( itkImageToTubeRigidMetricTest1
           ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
-          ${INPUT_DATA}/TubeAsImageReferenceMetric.mha
-          ${INPUT_DATA}/TubeReferenceMetric.tre
-          ${INPUT_DATA}/TransformedTubeAsImageReferenceMetric.mha
+          ${INPUT_DATA}/SyntheticVesselTubeImage.mha
+          ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          1.095681
           )
 
-add_test( itkImageTubeReferenceMetricTest
-          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageTubeReferenceMetricTest
-          ${TEMP}/ImageReferenceMetric.mha
-          ${TEMP}/TubeReferenceMetric.tre
-          ${TEMP}/TubeAsImageReferenceMetric.mha
-          ${INPUT_DATA}/TubeReferenceMetric.tre
-          ${TEMP}/TransformedTubeAsImageReferenceMetric.mha
+add_test( itkImageToTubeRigidMetricTest2
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          ${INPUT_DATA}/SyntheticTransformedVesselTubeImage.mha
+          ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          -1.13622
+          )
+
+add_test( itkSyntheticTubeImagesGenerationsTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkSyntheticTubeImageGenerationsTest
+          ${TEMP}/SyntheticBlurredTubeImage.mha
+          ${TEMP}/SyntheticVesselTube.tre
+          ${TEMP}/SyntheticVesselTubeImage.mha
+          ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          ${TEMP}/SyntheticTransformedVesselTubeImage.mha
           )

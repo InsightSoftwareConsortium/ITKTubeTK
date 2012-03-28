@@ -34,17 +34,17 @@
  *  registration/metric testing process.
  */
 
-int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
+int itkSyntheticTubeImageGenerationsTest(int argc, char* argv [] )
 {
   if ( argc < 6 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Output_Image "
-              << "Output_Tube "
-              << "Output_TubeAsImage "
-              << "Input_VesselTube "
-              << "Output_TransformedTubeAsImage."
+              << " Output_BlurredTubeImage "
+              << "Output_VesselTube "
+              << "Output_VesselTubeImage "
+              << "Input_VesselTubeManuallyModified "
+              << "Output_TransformedVesselTubeImage."
               << std::endl;
     return EXIT_FAILURE;
     }
