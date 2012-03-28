@@ -229,11 +229,16 @@ add_test( itkTubePointsToImageTest
 
 add_test( itkImageToTubeRigidMetricTest
           ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          ${INPUT_DATA}/TubeAsImageReferenceMetric.mha
+          ${INPUT_DATA}/TubeReferenceMetric.tre
+          ${INPUT_DATA}/TransformedTubeAsImageReferenceMetric.mha
           )
 
 add_test( itkImageTubeReferenceMetricTest
-          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageTubeReferenceMetricTest
           ${TEMP}/ImageReferenceMetric.mha
           ${TEMP}/TubeReferenceMetric.tre
           ${TEMP}/TubeAsImageReferenceMetric.mha
+          ${INPUT_DATA}/TubeReferenceMetric.tre
+          ${TEMP}/TransformedTubeAsImageReferenceMetric.mha
           )

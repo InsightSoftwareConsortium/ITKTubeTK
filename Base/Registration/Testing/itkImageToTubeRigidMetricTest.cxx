@@ -15,7 +15,6 @@
 
 =========================================================================*/
 
-#include "itkImageFileWriter.h"
 #include "itkImageFileReader.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkEuler3DTransform.h"
@@ -23,23 +22,25 @@
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkSpatialObjectReader.h"
-#include "itkSpatialObjectWriter.h"
 #include "itkTubeSpatialObjectPoint.h"
 
 /**
  *  This test exercised the metric evaluation methods in the
- *  itkImageToTubeRigidMetric class. Two 3D binary images are
- *  created for testing purposes -- one of a rectangle (tube) and another of the
- *  same rectangle translated in both x, y, z (first then rotate).
+ *  itkImageToTubeRigidMetric class. Two 3D binary images (32x32x32)
+ *  and a .tre image are used as reference for the metric
+ *  One image is computed without any transformation while the other one
+ *  is the same translated in both x, y, z and then rotated on the y axis.
  */
 
 int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
 {
-  if ( argc < 3 )
+  if ( argc < 4 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Input_Image " << "Input_Vessel "
+              << " Input_Image "
+              << "Input_Vessel "
+              << "Input_TransformedImage."
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -51,8 +52,6 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
   typedef itk::GroupSpatialObject<3>                        TubeNetType;
 
   typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;
-  typedef itk::ImageFileWriter<Image3DType>                 Image3DWriterType;
-  typedef itk::SpatialObjectWriter<3>                       TubeWriterType;
   typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
 
   typedef itk::ImageToTubeRigidMetric<Image3DType, TubeNetType>   MetricType;
@@ -60,9 +59,11 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
   typedef MetricType::InterpolatorType                            InterpolatorType;
   typedef MetricType::TransformType                               TransformType;
 
+  const double epsilonReg = 0.05; // Delta threshold on the measure checking.
+
   // read image (fixedImage)
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
-  imageReader->SetFileName("TubeImageTransformed.mha"); //argv[1]);
+  imageReader->SetFileName( argv[1] );
   try
     {
     imageReader->Update();
@@ -75,7 +76,7 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
 
   // read tube (spatialObject)
   TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
-  tubeReader->SetFileName("TubeOutM.tre"); //argv[2]);
+  tubeReader->SetFileName( argv[2] );
   try
     {
     tubeReader->Update();
@@ -86,10 +87,12 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  // Initialize the metric
+  //------------------------------------------------------------------
+  // Compute the metric for an identical spatial object 32x32x32
+  //------------------------------------------------------------------
   MetricType::Pointer metric = MetricType::New();
   metric->SetExtent( 3 );
-  metric->SetSampling( 20 );
+  metric->SetSampling( 30 );
   metric->SetVerbose( true );
 
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
@@ -111,7 +114,65 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  metric->GetValue( parameters );
+  MetricType::MeasureType value = metric->GetValue( parameters );
+  // Warning: value corresponding to specific parameters and images (identical 32x32x32)
+  if (value < (1.095681 - epsilonReg) )
+    {
+    std::cerr << "Metric value less than expected."
+              << value
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  //------------------------------------------------------------------
+  // Compute the metric for an transformed spatial object 32x32x32
+  //------------------------------------------------------------------
+  // read image (fixedImageTranformed)
+  ImageReaderType::Pointer imageReaderT = ImageReaderType::New();
+  imageReaderT->SetFileName( argv[3] );
+  try
+    {
+    imageReaderT->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  MetricType::Pointer metricT = MetricType::New();
+  metricT->SetExtent( 3 );
+  metricT->SetSampling( 30 );
+  metricT->SetVerbose( true );
+
+  InterpolatorType::Pointer interpolatorT = InterpolatorType::New();
+  TransformType::Pointer transformT = TransformType::New();
+  TransformType::ParametersType parametersT = transformT->GetParameters();
+
+  metricT->SetFixedImage( imageReaderT->GetOutput() );
+  metricT->SetMovingSpatialObject ( tubeReader->GetGroup() );
+  metricT->SetInterpolator( interpolatorT );
+  metricT->SetTransform( transformT );
+  try
+    {
+    metricT->Initialize();
+    }
+  catch ( itk::ExceptionObject &excp )
+    {
+    std::cerr << "Exception caught while initializing metric." << std::endl;
+    std::cerr << excp << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  MetricType::MeasureType valueT = metricT->GetValue( parametersT );
+  // Warning: value corresponding to specific parameters and images (transformed 32x32x32)
+  if (valueT > (-1.13622 + epsilonReg) )
+    {
+    std::cerr << "Metric value more than expected:"
+              << valueT
+              << std::endl;
+    return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
 }
