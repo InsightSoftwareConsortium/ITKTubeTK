@@ -19,6 +19,8 @@
 #include "itkImageFileWriter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageToTubeRigidMetric.h"
+#include "itkMetaDataDictionary.h"
+#include "itkMetaDataObject.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkSpatialObjectWriter.h"
@@ -32,14 +34,17 @@
  *  registration/metric testing process.
  */
 
-int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
+int itkSyntheticTubeImageGenerationsTest(int argc, char* argv [] )
 {
-  if ( argc < 5 )
+  if ( argc < 6 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Output_Image " << "Output_Tube "
-              << "Output_TubeAsImage " << "Output_TransformedTubeAsImage "
+              << " Output_BlurredTubeImage "
+              << "Output_VesselTube "
+              << "Output_VesselTubeImage "
+              << "Input_VesselTubeManuallyModified "
+              << "Output_TransformedVesselTubeImage."
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -60,9 +65,9 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   typedef itk::SpatialObjectWriter<3>                       TubeWriterType;
 
   Image3DType::SizeType imageSize;
-  imageSize[0] = 128;
-  imageSize[1] = 128;
-  imageSize[2] = 128;
+  imageSize[0] = 32;
+  imageSize[1] = 32;
+  imageSize[2] = 32;
 
   //------------------------------------------------------------------
   // Generate a simple tube image using Gaussian Filter
@@ -80,9 +85,9 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   for ( fixedIt.GoToBegin(); !fixedIt.IsAtEnd(); ++fixedIt, ++pixelIndex )
     {
     Image3DType::IndexType index = fixedIt.GetIndex();
-    if ((index[0]>=55)&&(index[0]<=65)&&(index[1]>=55)&&(index[1]<=65))
+    if ((index[0]>=15)&&(index[0]<=25)&&(index[1]>=15)&&(index[1]<=25))
       {
-        fixedIt.Set(255 - 20 * (pixelIndex % 5)); // Center brighter
+        fixedIt.Set(255 - 20 * (pixelIndex % 5)); // Brighter center
       }
     }
 
@@ -117,6 +122,7 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   // write image
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( argv[1] );
+  imageWriter->SetUseCompression( true );
   std::cout << "Write imageFile: " << argv[1] << std::endl;
   imageWriter->SetInput( blurFilters[2]->GetOutput() );
   try
@@ -134,12 +140,21 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   //------------------------------------------------------------------
   std::cout << "Create spatial object tube..." << std::endl;
   TubeType::Pointer tube = TubeType::New();
-  tube->SetArtery( true );
+
+  // Try to add the metaData about the vessel object subtype
+  // There is currently some issues on it with ITK.
+  // See:
+  // http://www.itk.org/Wiki/ITK/Examples/Broken/SimpleOperations/MetaDataDictionary
+  // http://public.kitware.com/Bug/view.php?id=12329#bugnotes
+  itk::MetaDataDictionary& tubeMetaDictionary = tube->GetMetaDataDictionary();
+  itk::EncapsulateMetaData<std::string>( tubeMetaDictionary,
+                                         "ObjectSubType",
+                                         "Vessel" );
 
   TubePointType point;
   point.SetRadius( 2.0 );
 
-  for (int i = -750; i < 750; ++i)
+  for (int i = -550; i < 550; ++i)
     {
     point.SetPosition( 15, 15, i / 10.);
     tube->GetPoints().push_back(point);
@@ -148,7 +163,7 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   TubeNetType::Pointer group = TubeNetType::New();
   group->AddSpatialObject( tube );
 
-  std::cout << "Write a tubeFile: " << argv[2] << std::endl;
+  std::cout << "Write tubeFile: " << argv[2] << std::endl;
   TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
   tubeWriter->SetFileName( argv[2] );
   tubeWriter->SetInput( group );
@@ -199,9 +214,10 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   std::cout << "Transform and Convert the tube into an Image..." << std::endl;
 
   // read tube (spatialObject)
-  typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
+  typedef itk::SpatialObjectReader<3> TubeNetReaderType;
   TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
-  tubeReader->SetFileName("TubeOutM.tre");
+  std::cout << "Read VesselTube: " << argv[4] << std::endl;
+  tubeReader->SetFileName( argv[4] );
   try
     {
     tubeReader->Update();
@@ -215,13 +231,13 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
   TransformType::Pointer transformTube = TransformType::New();
 
   TubeType::VectorType translateT;
-  translateT[0] = 25;
-  translateT[1] = 25;
-  translateT[2] = 25;
+  translateT[0] = 2.5;
+  translateT[1] = 2.5;
+  translateT[2] = 2.5;
   transformTube->Translate( translateT );
 
-  TubeType::ScalarType angleX = 10;
-  TubeType::ScalarType angleY = 0;
+  TubeType::ScalarType angleX = 0;
+  TubeType::ScalarType angleY = 5;
   TubeType::ScalarType angleZ = 0;
 
   transformTube->Translate( translateT );
@@ -268,8 +284,8 @@ int itkImageTubeReferenceMetricTest(int argc, char* argv [] )
 
   // write image
   ImageWriterType::Pointer imageTubeWriterT = ImageWriterType::New();
-  imageTubeWriterT->SetFileName( argv[4] );
-  std::cout << "Write tubeAsImageFile: " << argv[4] << std::endl;
+  imageTubeWriterT->SetFileName( argv[5] );
+  std::cout << "Write transformedTubeAsImageFile: " << argv[5] << std::endl;
   imageTubeWriterT->SetInput( imageFilterTransform->GetOutput() );
   try
     {
