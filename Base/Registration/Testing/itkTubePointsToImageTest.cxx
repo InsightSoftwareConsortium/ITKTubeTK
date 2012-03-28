@@ -26,6 +26,8 @@ limitations under the License.
 #include "itkGroupSpatialObject.h"
 #include "tubeMessage.h"
 #include "tubeTubeMath.h"
+#include "itkSpatialObjectToImageFilter.h"
+#include "itkImageFileWriter.h"
 
 int itkTubePointsToImageTest( int argc, char * argv[] )
   {
@@ -118,5 +120,27 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
     ++tubeIt;
     }
 
+  typedef itk::SpatialObjectToImageFilter<GroupType, ImageType>
+                                              SpatialObjectToImageFilterType;
+  SpatialObjectToImageFilterType::Pointer tubeToImageFilter =
+    SpatialObjectToImageFilterType::New();
+
+  tubeToImageFilter->SetInput( group );
+
+  ImageType::SizeType   size;
+  size[0] = 100;
+  size[1] = 100;
+  size[2] = 100;
+  tubeToImageFilter->SetSize( size );
+
+  tubeToImageFilter->SetInsideValue(1.0);
+  tubeToImageFilter->SetOutsideValue(0.0);
+  tubeToImageFilter->Update();
+  typedef itk::ImageFileWriter< ImageType > ImageWriterType;
+
+  ImageWriterType::Pointer imageWriter = ImageWriterType::New();
+  imageWriter->SetFileName(argv[2]);
+  imageWriter->SetInput(tubeToImageFilter->GetOutput());
+  imageWriter->Update();
   return EXIT_SUCCESS;
   }
