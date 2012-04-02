@@ -290,8 +290,10 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   //this->GetMetric()->SetTransform( m_Transformation );
   //this->GetMetric()->SetExtent( 3 );
   //this->GetMetric()->SubSampleMovingTube( 40 );
-  static_cast<itk::ImageToTubeRigidMetric<TFixedImage, TMovingTube>*>(
-    this->GetMetric() )->SparseRegistration( parameters );
+
+  // TODO do the sparse Registration here !
+  // static_cast<itk::ImageToTubeRigidMetric<TFixedImage, TMovingTube>*>(
+  // this->GetMetric() )->SparseRegistration( parameters );
 }
 
 } // end namespace itk
