@@ -72,8 +72,6 @@ public:
   typedef GaussianDerivativeImageFunction<TFixedImage>
                                                 DerivativeImageFunctionType;
 
-  //  typedef GaussianSecondDerivativeImageFunction<TFixedImage>
-  //                                       SecondDerivativeImageFunctionType;
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
@@ -89,7 +87,7 @@ public:
   itkNewMacro( Self );
 
   /** Space dimension is the dimension of parameters space */
-  enum { SpaceDimension = 6 }; //TMapper::SpaceDimension
+  enum { SpaceDimension = 6 };
 
   enum { ImageDimension = 3 };
 
@@ -128,14 +126,14 @@ public:
     DerivativeType & derivative ) const;
 
   /** Get the Value for SingleValue Optimizers */
-  MeasureType    GetValue( const ParametersType & parameters ) const;
+  MeasureType  GetValue( const ParametersType & parameters ) const;
 
   /** Get Value and Derivatives for MultipleValuedOptimizers */
   void GetValueAndDerivative( const ParametersType & parameters,
     MeasureType & Value, DerivativeType  & Derivative ) const;
 
   /** SubSample the MovingSpatialObject tube */
-  void SubSampleTube( unsigned int sampling );
+  void SubSampleTube();
 
   /** Apply the center of rotation to the transformation */
   ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
@@ -144,9 +142,6 @@ public:
   itkSetMacro( Kappa, double );
 
   vnl_vector_fixed<double, 3> GetCenterOfRotation( void ) {return m_C;}
-
-  /** Apply a sparse registration to get closer */
-  void SparseRegistration( ParametersType & parameters );
 
   /** Initialize the metric */
   void Initialize( void ) throw ( ExceptionObject );
@@ -179,13 +174,11 @@ protected:
 
   void GetDeltaAngles( const Point<double, 3> & x,
    const vnl_vector_fixed<double, 3> & dx,
-    double *dA, double *dB, double *dG ) const;
+   double angle[3] ) const;
 
 private:
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
-  // typename SecondDerivativeImageFunctionType::Pointer
-  //   m_SecondDerivativeImageFunction;
 
   MaskImagePointer                       m_MaskImage;
   unsigned int                           m_NumberOfPoints;
@@ -197,8 +190,6 @@ private:
   unsigned int                           m_Iteration;
   double                                 m_Kappa;
   double                                 m_RegImageThreshold;
-  //MovingSpatialObjectPointer           m_MovingSpatialObject;
-  //FixedImagePointer                    m_FixedImage;
   double                                 m_Extent;
   mutable double                         m_Scale;
   unsigned int                           m_Sampling;
@@ -206,24 +197,22 @@ private:
   mutable OutputPointType                m_CurrentPoint;
   mutable double                         m_BlurredValue;
   bool                                   m_Verbose;
-//  mutable VectorType                   m_Derivatives;
 
   double                                 m_S;
-  double                                 m_Alpha;
-  double                                 m_Beta;
-  double                                 m_Gamma;
-
   vnl_matrix<double>                   * m_T;
-  //vnl_matrix<double>                 * m_TI;
   vnl_vector<double>                   * m_O;
   vnl_vector_fixed<double, 3>            m_C;
 
-  vnl_vector<double>                   * m_TempV;
-  vnl_vector<double>                   * m_TempV2;
+
+  vnl_vector_fixed<double, 3>           m_Factors;
+
+  // Create gfact var insteal calculating it all the time
+
 
   //void SetTransform( vnl_matrix<double> * newT ) const;
   void SetOffset( double oX, double oY, double oZ ) const;
   void SetAngles( double newAlpha, double newBeta, double newGamma ) const;
+
   void TransformPoint( vnl_vector<double> * in,
     vnl_vector<double> * out ) const;
   void TransformVector( vnl_vector<double> * in,
@@ -232,7 +221,8 @@ private:
     vnl_vector<double> * out ) const;
 
   /** Set the scale of the blurring */
-  void SetScale( const double scale ) const {m_Scale = scale;}
+  // --> A const method for a set method ??!
+  void SetScale( const double scale ) const { m_Scale = scale; }
 
   itkGetConstMacro( Scale, double );
 
@@ -248,12 +238,17 @@ private:
   itkGetConstMacro( BlurredValue, double );
 
   VectorType* GetSecondDerivatives() const;
-  MatrixType* GetHessian( PointType, double, double ) const;
+  MatrixType* GetHessian( PointType ) const;
   double ComputeLaplacianMagnitude( Vector<double, 3> *v ) const;
-  double  ComputeThirdDerivatives( Vector<double, 3> *v ) const;
-  double  ComputeDerivatives( Vector<double, 3> *v ) const;
+  double ComputeThirdDerivatives( Vector<double, 3> *v ) const;
+  double ComputeDerivatives( Vector<double, 3> *v ) const;
 
-  bool IsInsideMask( const IndexType & index ) const;
+  // NEW MEthods --> Neeed to be moved then
+  void GetPointBounds(PointType point, int bounds[6]);
+  void GetCurrentPointBounds(int bounds[6]);
+  void ClampPointBoundsToImage(int bounds[6]);
+  void ComputeCenterRotation();
+  TubeNetType::ChildrenListType* GetTubes() const;
 };
 
 } // end namespace itk
