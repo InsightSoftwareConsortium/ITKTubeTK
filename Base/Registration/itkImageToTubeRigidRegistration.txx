@@ -211,11 +211,11 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
         typename MetricType::DerivativeType  derivatives( 6 );
         derivatives.Fill( 0 );
         this->GetMetric()->GetDerivative( params, derivatives );
+        //this->GetMetric()->GetValue( params );
         fprintf( fic, "%f %f %f %f %f %f %f %f %f %f %f %f %f\n",
           params[0], params[1], params[2], params[3], params[4], params[5],
           derivatives[0], derivatives[1], derivatives[2], derivatives[3],
           derivatives[4], derivatives[5], 0 );
-        //this->GetMetric()->GetValue( params ) );
       }
     }
 
@@ -226,7 +226,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   fclose( fic );
 
 }
-
 
 /** Starts the Registration Process */
 template <class TFixedImage, class TMovingTube>
@@ -290,8 +289,10 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   //this->GetMetric()->SetTransform( m_Transformation );
   //this->GetMetric()->SetExtent( 3 );
   //this->GetMetric()->SubSampleMovingTube( 40 );
-  static_cast<itk::ImageToTubeRigidMetric<TFixedImage, TMovingTube>*>(
-    this->GetMetric() )->SparseRegistration( parameters );
+
+  // TODO do the sparse Registration here !
+  // static_cast<itk::ImageToTubeRigidMetric<TFixedImage, TMovingTube>*>(
+  // this->GetMetric() )->SparseRegistration( parameters );
 }
 
 } // end namespace itk
