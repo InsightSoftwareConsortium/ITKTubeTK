@@ -94,9 +94,7 @@ public:
   enum { RangeDimension = 6 };
 
   unsigned int GetNumberOfParameters( void ) const
-    {
-    return SpaceDimension;
-    }
+    { return SpaceDimension; }
 
   /** Typedef for the Range calculator */
   typedef MinimumMaximumImageCalculator<FixedImageType> RangeCalculatorType;
@@ -141,7 +139,8 @@ public:
   /** Set kappa value */
   itkSetMacro( Kappa, double );
 
-  vnl_vector_fixed<double, 3> GetCenterOfRotation( void ) {return m_C;}
+  vnl_vector_fixed<double, 3> GetCenterOfRotation( void )
+    { return m_RotationCenter; }
 
   /** Initialize the metric */
   void Initialize( void ) throw ( ExceptionObject );
@@ -151,9 +150,7 @@ public:
   itkGetMacro( Extent, double );
 
   TransformPointer GetTransform( void ) const
-    {
-    return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() );
-    }
+    { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
   itkSetObjectMacro( MaskImage, MaskImageType );
 
@@ -173,8 +170,8 @@ protected:
   void ComputeImageRange( void );
 
   void GetDeltaAngles( const Point<double, 3> & x,
-   const vnl_vector_fixed<double, 3> & dx,
-   double angle[3] ) const;
+                       const vnl_vector_fixed<double, 3> & dx,
+                       double angle[3] ) const;
 
 private:
 
@@ -198,30 +195,22 @@ private:
   mutable double                         m_BlurredValue;
   bool                                   m_Verbose;
 
-  double                                 m_S;
   vnl_matrix<double>                   * m_T;
-  vnl_vector<double>                   * m_O;
-  vnl_vector_fixed<double, 3>            m_C;
-
+  vnl_vector<double>                   * m_Offsets;
+  vnl_vector_fixed<double, 3>            m_RotationCenter;
 
   vnl_vector_fixed<double, 3>           m_Factors;
 
-  // Create gfact var insteal calculating it all the time
+  // TODO Create gfact var insteal calculating it all the time
 
-
-  //void SetTransform( vnl_matrix<double> * newT ) const;
   void SetOffset( double oX, double oY, double oZ ) const;
   void SetAngles( double newAlpha, double newBeta, double newGamma ) const;
 
-  void TransformPoint( vnl_vector<double> * in,
-    vnl_vector<double> * out ) const;
-  void TransformVector( vnl_vector<double> * in,
-    vnl_vector<double> * out );
-  void TransformCoVector( vnl_vector<double> * in,
-    vnl_vector<double> * out ) const;
+  void TransformPoint( vnl_vector<double>* in, vnl_vector<double> * out ) const;
+  void TransformVector( vnl_vector<double>* in, vnl_vector<double> * out );
 
   /** Set the scale of the blurring */
-  // --> A const method for a set method ??!
+  // --> A const method for a set method ?!
   void SetScale( const double scale ) const { m_Scale = scale; }
 
   itkGetConstMacro( Scale, double );
@@ -243,10 +232,9 @@ private:
   double ComputeThirdDerivatives( Vector<double, 3> *v ) const;
   double ComputeDerivatives( Vector<double, 3> *v ) const;
 
-  // NEW MEthods --> Neeed to be moved then
-  void GetPointBounds(PointType point, int bounds[6]);
-  void GetCurrentPointBounds(int bounds[6]);
-  void ClampPointBoundsToImage(int bounds[6]);
+  void GetPointBounds( PointType point, int bounds[6] );
+  void GetCurrentPointBounds( int bounds[6] );
+  void ClampPointBoundsToImage( int bounds[6] );
   void ComputeCenterRotation();
   TubeNetType::ChildrenListType* GetTubes() const;
 };

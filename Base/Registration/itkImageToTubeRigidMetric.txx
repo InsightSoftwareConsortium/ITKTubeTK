@@ -37,25 +37,24 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   m_Iteration = 1;
   m_Kappa = 1;
   m_RegImageThreshold = 0;
+  m_Sampling = 30;
+
   m_Scale = 1;
-  m_C.fill(0);
+  m_Factors.fill(1.0);
+  m_RotationCenter.fill(0);
+  m_Offsets = new vnl_vector<double>( 3, 0 );
+
   m_T = new vnl_matrix<double>( 3, 3 );
   m_T->set_identity();
 
-  m_O = new vnl_vector<double>( 3, 0 );
-
-  m_S = 1.0;
-  m_Extent = 3; // TODO Not need to set an extent as the dim is fix ?!
+  m_Extent = 3;     // TODO Check depedencies --> enum { ImageDimension = 3 };
   m_Verbose = true;
-  m_Sampling = 30;
   m_DerivativeImageFunction = DerivativeImageFunctionType::New();
 
   this->m_FixedImage = 0;           // has to be provided by the user.
   this->m_MovingSpatialObject = 0;  // has to be provided by the user.
   this->m_Transform = 0;            // has to be provided by the user.
   this->m_Interpolator = 0;         // has to be provided by the user.
-
-  m_Factors.fill(1.0);
 }
 
 /** Destructor */
@@ -64,7 +63,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::~ImageToTubeRigidMetric()
 {
   delete m_T;
-  delete m_O;
+  delete m_Offsets;
 }
 
 /** SetImageRange */
@@ -113,8 +112,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 /** Subsample the MovingSpatialObject tubenet  */
-// WARNING: I think there is a bug from Stephen method with the index incrementation
-// Currently replicated the exact same behaviour with a clearer code, but it must be checked.
+// WARNING: I think there is a bug from Stephen method with the
+// index incrementation. I currently replicated the exact same behaviour,
+// but the method must be validated.
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -128,7 +128,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   TubeNetType::Pointer newTubeNet = TubeNetType::New();
   TubeNetType::ChildrenListType* tubeList = GetTubes();
   TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
-  for (; tubeIterator != tubeList->end(); ++tubeIterator )
+  for ( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
     TubeType::Pointer newTube = TubeType::New();
     TubeType* currTube =
@@ -163,7 +163,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
             }
           }
 
-        // TODO Why +10 here ?!
+        // TODO Why +10 ?!
         if( tubePointIterator != currTube->GetPoints().end()
             && ( ( skippedPoints + 10 ) < tubeSize ) )
           {
@@ -179,8 +179,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
           for( unsigned int i = 0; i < ImageDimension; ++i )
             {
-            v1( i ) = ( *tubePointIterator ).GetNormal1()[i];
-            v2( i ) = ( *tubePointIterator ).GetNormal2()[i];
+            v1[i] = ( *tubePointIterator ).GetNormal1()[i];
+            v2[i] = ( *tubePointIterator ).GetNormal2()[i];
             }
 
           tM = outer_product( v1, v1 );
@@ -188,7 +188,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
           biasV = biasV + ( weight * tM );
           for( unsigned int i = 0; i < ImageDimension; ++i )
             {
-            m_C[i] += weight*( tubePointIterator->GetPosition() )[i];
+            m_RotationCenter[i] +=
+              weight * ( tubePointIterator->GetPosition() )[i];
             }
           m_SumWeight += weight;
           m_NumberOfPoints++;
@@ -203,7 +204,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
             }
           else
             {
-            tubePointIterator = currTube->GetPoints().end()- 1;
+            tubePointIterator = currTube->GetPoints().end() - 1;
             }
           }
         }
@@ -229,23 +230,23 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 {
   for ( unsigned int i = 0; i<ImageDimension; ++i )
     {
-    m_C[i] /= m_SumWeight;
+    m_RotationCenter[i] /= m_SumWeight;
     }
 
   if( m_Verbose )
     {
     std::cout << "Center of Rotation = "
-              << m_C[0] << "  " \
-              << m_C[1] << "  " \
-              << m_C[2] << std::endl;
+              << m_RotationCenter[0] << "  " \
+              << m_RotationCenter[1] << "  " \
+              << m_RotationCenter[2] << std::endl;
     std::cout << "Extent = " << m_Extent << std::endl;
     }
 }
 
 /** Get tubes contained within the Spatial Object */
 // WARNING:
-// Method must use GetMaximumDepth from my own ITK repository
-// Patch pushed in Gerrit, waiting for validation.
+// Method might use GetMaximumDepth from ITK.
+// Patch pushed in ITKv4, waiting for validation.
 template < class TFixedImage, class TMovingSpatialObject>
 typename GroupSpatialObject<3>::ChildrenListType*
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -259,12 +260,12 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   char childName[] = "Tube";
   return this->m_MovingSpatialObject->GetChildren( 999999, childName );
   //return this->m_MovingSpatialObject
-  //  ->GetChildren( this->m_MovingSpatialObject->GetMaximumDepth(), childName );
+  // ->GetChildren( this->m_MovingSpatialObject->GetMaximumDepth(), childName );
 }
 
 /** Get the match Measure */
 // TODO Do not pass the parameter as arguments use instead
-// the transform parameters previously set
+// the transform parameters previously set.
 template < class TFixedImage, class TMovingSpatialObject>
 typename ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>::MeasureType
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -282,15 +283,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   double count = 0;
   double opR;
 
-  // TODO why static ?
-  static vnl_vector<double> xTV( 3 );
-  static vnl_vector<double> xT( 3 );
-  static vnl_vector<double> dXT( 3 );
-  vnl_vector<double> v1T( 3 );
-  vnl_vector<double> v2T( 3 );
-  vnl_vector<double> T( 3 );
-  vnl_vector<double> N1( 3 );
-
   std::list<double>::const_iterator weightIterator;
   weightIterator = m_Weight.begin();
 
@@ -307,24 +299,22 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     TubeType* currTube = static_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
 
-    // TODO Rename J !
-    std::vector<TubePointType>::iterator j;
-    for( j = currTube->GetPoints().begin();
-         j != currTube->GetPoints().end(); ++j )
+    std::vector<TubePointType>::iterator pointIterator;
+    for( pointIterator = currTube->GetPoints().begin();
+         pointIterator != currTube->GetPoints().end();
+         ++pointIterator )
         {
-
-        // TODO FACTORIZE {
-        itk::Point<double, 3> inputPoint = j->GetPosition();
+        itk::Point<double, 3> inputPoint = pointIterator->GetPosition();
         static itk::Point<double, 3> point;
         Matrix<double, 3, 3> matrix =  GetTransform()->GetRotationMatrix();
 
         point =  matrix * inputPoint + GetTransform()->GetOffset();
 
-        vnl_vector_fixed<double, 3> rotationOffset = matrix * m_C;
+        vnl_vector_fixed<double, 3> rotationOffset = matrix * m_RotationCenter;
 
-        point[0] += m_C[0] - rotationOffset[0];
-        point[1] += m_C[1] - rotationOffset[1];
-        point[2] += m_C[2] - rotationOffset[2];
+        point[0] += m_RotationCenter[0] - rotationOffset[0];
+        point[1] += m_RotationCenter[1] - rotationOffset[1];
+        point[2] += m_RotationCenter[2] - rotationOffset[2];
 
         // TODO
         // Need to use interpolator intead
@@ -333,13 +323,12 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         index[0] = static_cast<unsigned int>( point[0] );
         index[1] = static_cast<unsigned int>( point[1] );
         index[2] = static_cast<unsigned int>( point[2] );
-        // TODO FACTORIZE }
 
         if( this->IsInside( inputPoint ) )
           {
           sumWeight += *weightIterator;
           count++;
-          opR = j->GetRadius();
+          opR = pointIterator->GetRadius();
           opR = std::max( opR, 0.5 );
 
           SetScale( opR * m_Kappa );
@@ -347,7 +336,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
           Vector<double, 3> v2;
           for( unsigned int i = 0; i < 3; ++i )
             {
-            v2[i] = j->GetNormal1()[i];
+            v2[i] = pointIterator->GetNormal1()[i];
             }
 
             matchMeasure += *weightIterator * fabs(
@@ -385,7 +374,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     }
 
   delete tubeList;
-  return matchMeasure; // conjugate gradient always minimizes the value
+  return matchMeasure;
 }
 
 /** Compute the Laplacian magnitude */
@@ -624,25 +613,13 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   pos[1] = x[1];
   pos[2] = x[2];
 
-  tempV = ( pos - ( *m_O ) ) - ( m_C );
+  tempV = ( pos - ( *m_Offsets ) ) - ( m_RotationCenter );
   tempV.normalize();
 
-  angle[0] = dx[1] * tempV[1] * dx[2] * ( -tempV[2] );
-  angle[1] = dx[0] * tempV[2] * dx[2] * ( -tempV[0] );
-  angle[2] = dx[0] * tempV[0] * dx[1] * ( -tempV[1] );
+  angle[0] = dx[1] * ( -tempV[2] ) + dx[2] * tempV[1];
+  angle[1] = dx[0] * tempV[2] + dx[2] * ( -tempV[0] );
+  angle[2] = dx[0] * ( -tempV[1] ) + dx[1] * tempV[0];
 }
-
-/** Set the transformation */
-// TODO USE THIS OR CHANGE IT INTO MACRO
-/*
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::SetTransform( vnl_matrix<double> * newT ) const
-{
-  ( *m_T ) = ( *newT );
-  }
-*/
 
 /** Set the offset */
 template < class TFixedImage, class TMovingSpatialObject>
@@ -650,14 +627,14 @@ void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::SetOffset( double oX, double oY, double oZ ) const
 {
-  if( ( *m_O )( 0 ) == oX && ( *m_O )( 1 ) == oY && ( *m_O )( 2 ) == oZ )
+  if( ( *m_Offsets )( 0 ) == oX && ( *m_Offsets )( 1 ) == oY && ( *m_Offsets )( 2 ) == oZ )
     {
     return;
     }
 
-  ( *m_O )( 0 ) = oX;
-  ( *m_O )( 1 ) = oY;
-  ( *m_O )( 2 ) = oZ;
+  ( *m_Offsets )( 0 ) = oX;
+  ( *m_Offsets )( 1 ) = oY;
+  ( *m_Offsets )( 2 ) = oZ;
 }
 
 /** Transform a point */
@@ -669,11 +646,11 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   vnl_vector<double>* tempV = new vnl_vector<double>( 3, 0 );
   vnl_vector<double>* tempV2 = new vnl_vector<double>( 3, 0 );
 
-  ( *out ) = ( *in ) - ( m_C );
+  ( *out ) = ( *in ) - ( m_RotationCenter );
   ( *tempV ) = ( *m_T ) * ( *out );
 
-  ( *tempV2 ) = ( *tempV ) + ( *m_O );
-  ( *out ) = m_S * ( ( *tempV2 ) + ( m_C ) );
+  ( *tempV2 ) = ( *tempV ) + ( *m_Offsets );
+  ( *out ) = m_Scale * ( ( *tempV2 ) + ( m_RotationCenter ) );
 }
 
 /** Transform a vector */
@@ -682,18 +659,7 @@ void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::TransformVector( vnl_vector<double> * in, vnl_vector<double> * out )
 {
-  ( *out ) = m_S * ( ( *m_T ) * ( *in ) );
-}
-
-// TODO Transform a CoVector === Transform a Vector
-
-/** Transform a co vector */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::TransformCoVector( vnl_vector<double> * in, vnl_vector<double> * out ) const
-{
-  ( *out ) = m_S * ( ( *m_T ) * ( *in ) );
+  ( *out ) = m_Scale * ( ( *m_T ) * ( *in ) );
 }
 
 /** Set Angles */
@@ -770,9 +736,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   unsigned int listindex = 0;
   TubeNetType::ChildrenListType* tubeList = GetTubes();
   TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
-  for( tubeIterator = tubeList->begin();
-       tubeIterator != tubeList->end();
-       ++tubeIterator )
+  for( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
     TubeType* currTube = static_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
@@ -788,11 +752,11 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
       point =  matrix * inputPoint + GetTransform()->GetOffset();
 
-      vnl_vector<double> rotationOffset = matrix * m_C;
+      vnl_vector<double> rotationOffset = matrix * m_RotationCenter;
 
-      point[0] += m_C[0] - rotationOffset[0];
-      point[1] += m_C[1] - rotationOffset[1];
-      point[2] += m_C[2] - rotationOffset[2];
+      point[0] += m_RotationCenter[0] - rotationOffset[0];
+      point[1] += m_RotationCenter[1] - rotationOffset[1];
+      point[2] += m_RotationCenter[2] - rotationOffset[2];
 
       itk::Index<3> index;
       index[0] = static_cast<unsigned int>( point[0] );
@@ -945,10 +909,10 @@ template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::GetValueAndDerivative( const ParametersType & parameters,
-    MeasureType & itkNotUsed( Value ), DerivativeType  & Derivative ) const
+                         MeasureType&  Value,
+                         DerivativeType  & Derivative ) const
 {
-  //std::cout << "GetValueAndDerivative()" << std::endl;
-  //Value      = GetValue( parameters );
+  Value = GetValue( parameters );
   GetDerivative( parameters, Derivative );
 }
 
@@ -1160,7 +1124,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   Vector<double, 3>  m_CenterOfRotation;
   for( unsigned int i = 0; i < 3; i++ )
     {
-    m_CenterOfRotation[i]= m_C[i];
+    m_CenterOfRotation[i]= m_RotationCenter[i];
     }
 
   itk::Vector<double, 3> rotationOffset = matrix * m_CenterOfRotation;
