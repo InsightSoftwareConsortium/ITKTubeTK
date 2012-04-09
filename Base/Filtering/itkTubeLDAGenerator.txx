@@ -427,13 +427,11 @@ LDAGenerator< ImageT, LabelmapT >
   while( !itInMask.IsAtEnd() )
     {
     ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-    unsigned int valC = 0;
     bool found = false;
     for( unsigned int c=0; c<numClasses; c++ )
       {
       if( val == m_ObjectIdList[c] )
         {
-        valC = c;
         found = true;
         break;
         }
