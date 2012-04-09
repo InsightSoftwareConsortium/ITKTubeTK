@@ -20,11 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkTubeTubeNetExtractor_h
-#define __itkTubeTubeNetExtractor_h
+#ifndef __itkTubeTubeNetworkExtractor_h
+#define __itkTubeTubeNetworkExtractor_h
 
 #include "itkTubeTubeExtractor.h"
-//#include <TubeIO/itkTubeNet.h>
 
 namespace itk
 {
@@ -35,17 +34,17 @@ namespace tube
 /**
  * This class extract the a tube given an image
  *
- * /sa itkTubeTubeNetExtractor
+ * /sa itkTubeTubeNetworkExtractor
  */
 
 template <class TInputImage, class TInputMask>
-class ITK_EXPORT TubeNetExtractor : public TubeExtractor<TInputImage>
+class ITK_EXPORT TubeNetworkExtractor : public TubeExtractor<TInputImage>
 {
 public:
 
   /**
    * Standard self typedef */
-  typedef TubeNetExtractor          Self;
+  typedef TubeNetworkExtractor          Self;
   typedef Object                    Superclass;
   typedef SmartPointer<Self>        Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
@@ -101,8 +100,8 @@ public:
   bool DeleteTube( TubeType * newTube );
 
   /**
-   * Get the tube Net */
-  typename TubeType::Pointer GetTubeNet( void );
+   * Get the tube Network */
+  typename TubeType::Pointer GetTubeNetwork( void );
 
   /**
    * Set use mask */
@@ -154,9 +153,9 @@ public:
 
 protected:
 
-  TubeNetExtractor();
-  virtual ~TubeNetExtractor();
-  TubeNetExtractor( const Self& ) {}
+  TubeNetworkExtractor();
+  virtual ~TubeNetworkExtractor();
+  TubeNetworkExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
@@ -164,7 +163,7 @@ protected:
 private:
 
   typename ImageType::Pointer      m_Image;
-  typename TubeType::Pointer       m_TubeNet;
+  typename TubeType::Pointer       m_TubeNetwork;
   int                              m_TubeNum;
 
   bool                             m_AEUseMask;
@@ -178,7 +177,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTubeTubeNetExtractor.txx"
+#include "itkTubeTubeNetworkExtractor.txx"
 #endif
 
-#endif /* __itkTubeTubeNetExtractor_h */
+#endif /* __itkTubeTubeNetworkExtractor_h */

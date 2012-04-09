@@ -370,7 +370,12 @@ int itkNJetImageFunctionTest(int argc, char* argv [] )
     }
 
   // All objects should be automatically destroyed at this point
-  return EXIT_SUCCESS;
-
+  if( !error )
+    {
+    return EXIT_SUCCESS;
+    }
+  else
+    {
+    return EXIT_FAILURE;
+    }
 }
-

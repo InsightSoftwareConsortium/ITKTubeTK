@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Developer Tools</category>
+  <title>NJet Linear Discriminant Analysis (TubeTK)</title>
+  <description>Given an image and foreground and background masks, computes multiscale Jet (0, 1, and 2 order) features at each pixel, performs a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>Stephen R. Aylward</contributor>
+  <acknowledgements></acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputImage</name>
+      <label>Input image</label>
+      <index>0</index>
+      <description>Input volume list</description>
+      <default></default>
+    </image>
+    <image>
+      <name>labelmap</name>
+      <label>Label map</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Labelmap that designates the object of interest and "other"</description>
+      <default></default>
+    </image>
+    <image>
+      <name>outputSeedImage</name>
+      <label>Output seed image</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Output seed image</description>
+      <default></default>
+    </image>
+  </parameters>
+  <parameters advanced="true">
+    <label>LDA Parameters</label>
+    <description>Parameters that determine how the LDA is generated</description>
+    <image>
+      <name>maskROI</name>
+      <label>Mask ROI</label>
+      <description>ROI for training and labeling</description>
+      <default></default>
+      <longflag>maskROI</longflag>
+    </image>
+    <double-vector>
+      <name>ridgeScales</name>
+      <description>Scales at which Ridge features are computed</description>
+      <label>Ridge scales</label>
+      <default>0.5,1.0,2.5</default>
+      <longflag>ridgeScales</longflag>
+    </double-vector>
+    <integer>
+      <name>objectId</name>
+      <description>Id to be used in labelmap</description>
+      <label>Id of vessels in the labelmap</label>
+      <default>255</default>
+      <longflag>objectId</longflag>
+    </integer>
+    <file>
+      <name>saveVesselSeedInfo</name>
+      <description>Save vessel seed info to a file</description>
+      <label>Save vessel seed Info</label>
+      <longflag>saveVesselSeedInfo</longflag>
+    </file>
+    <file>
+      <name>loadVesselSeedInfo</name>
+      <description>Load vessel seed info from a file</description>
+      <label>Load vessel seed Info</label>
+      <longflag>loadVesselSeedInfo</longflag>
+    </file>
+    <string>
+      <name>saveFeatureImages</name>
+      <description>Base filename for saving feature images</description>
+      <label>Feature images base filename</label>
+      <longflag>saveFeatureImages</longflag>
+    </string>
+  </parameters>
+</executable>
