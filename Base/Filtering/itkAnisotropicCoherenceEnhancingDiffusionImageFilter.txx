@@ -172,7 +172,6 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
     // Find the smallest eigenvalue
     double smallest = vnl_math_abs( eigenValue[0] );
     unsigned int smallestEigenValueIndex=0;
-
     for ( unsigned int i=1; i <=2; i++ )
       {
       if ( vnl_math_abs( eigenValue[i] ) < smallest )
@@ -185,18 +184,15 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 
     // Find the largest eigenvalue
     double largest = vnl_math_abs( eigenValue[0] );
-    unsigned int largestEigenValueIndex=0;
-
     for ( unsigned int i=1; i <=2; i++ )
       {
       if (  vnl_math_abs( eigenValue[i] > largest ) )
         {
-        largestEigenValueIndex = i;
+        largest = vnl_math_abs( eigenValue[i] );
         }
       }
 
     unsigned int middleEigenValueIndex=0;
-
     for ( unsigned int i=0; i <=2; i++ )
       {
       if ( eigenValue[i] != smallest && eigenValue[i] != largest )

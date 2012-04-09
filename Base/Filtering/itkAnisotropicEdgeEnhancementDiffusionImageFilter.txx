@@ -198,7 +198,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
     // Find the smallest eigenvalue
     double smallest = vnl_math_abs( eigenValue[0] );
-    unsigned int smallestEigenValueIndex=0;
 
     for ( unsigned int i=1; i <=2; i++ )
       {
@@ -206,36 +205,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
         {
         Lambda1 = eigenValue[i];
         smallest = vnl_math_abs( eigenValue[i] );
-        smallestEigenValueIndex = i;
         }
       }
-
-    // Find the largest eigenvalue
-    double largest = vnl_math_abs( eigenValue[0] );
-    unsigned int largestEigenValueIndex=0;
-
-    for ( unsigned int i=1; i <=2; i++ )
-      {
-      if (  vnl_math_abs( eigenValue[i] > largest ) )
-        {
-        largestEigenValueIndex = i;
-        }
-      }
-
-    unsigned int middleEigenValueIndex=0;
-
-    for ( unsigned int i=0; i <=2; i++ )
-      {
-      if ( eigenValue[i] != smallest && eigenValue[i] != largest )
-        {
-        middleEigenValueIndex = i;
-        break;
-        }
-      }
-
-    /* std::cout << "EigenValues: " << eigenValue[smallestEigenValueIndex]
-         << "\t" << eigenValue[middleEigenValueIndex]  << "\t"
-         << eigenValue[largestEigenValueIndex] << std::endl; */
 
     Lambda2 = 1.0;
     Lambda3 = 1.0;
