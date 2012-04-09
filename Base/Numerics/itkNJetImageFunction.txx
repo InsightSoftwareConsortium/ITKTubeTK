@@ -1422,11 +1422,11 @@ NJetImageFunction<TInputImage>
   typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // RIDGENESS AND DERIVATIVE
-  double v;
+  double val;
   MatrixType h;
   VectorType p;
 
-  v = JetAtContinuousIndex(cIndex, d, h, scale);
+  val = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
@@ -1464,7 +1464,7 @@ NJetImageFunction<TInputImage>
     }
   sums /= (ImageDimension-1);
 
-  double val = (1.0 - sums) * ridge;
+  val = (1.0 - sums) * ridge;
 
   return val;
 }
@@ -1478,12 +1478,12 @@ NJetImageFunction<TInputImage>
   typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // RIDGENESS AND DERIVATIVE
-  double v;
+  double val;
   MatrixType h;
   VectorType p;
   VectorType vv;
 
-  v = JetAtContinuousIndex(cIndex, d, h, scale);
+  val = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
@@ -1534,7 +1534,7 @@ NJetImageFunction<TInputImage>
     sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
 
-  double val = (1.0 - sums) * sumv * ridge;
+  val = (1.0 - sums) * sumv * ridge;
 
   double dV1 = 0;
   for(unsigned int i=0; i<ImageDimension; i++)
@@ -1556,12 +1556,12 @@ NJetImageFunction<TInputImage>
   typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   // RIDGENESS AND DERIVATIVE
-  double v;
+  double val;
   MatrixType h;
   VectorType p;
   VectorType vv;
 
-  v = JetAtContinuousIndex(cIndex, d, h, scale);
+  val = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
@@ -1622,7 +1622,7 @@ NJetImageFunction<TInputImage>
     sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
 
-  double val = (1.0 - sums) * sumv * ridge;
+  val = (1.0 - sums) * sumv * ridge;
 
   double dV1 = 0;
   double dV2 = 0;
@@ -2347,12 +2347,12 @@ NJetImageFunction<TInputImage>
                              double scale) const
 {
   // RIDGENESS
-  double v;
+  double val;
   VectorType d;
   MatrixType h;
   VectorType p;
 
-  v = JetAtContinuousIndex(cIndex, d, h, scale);
+  val = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
@@ -2413,7 +2413,7 @@ NJetImageFunction<TInputImage>
                     * eigSys.get_eigenvalue(order[ImageDimension-1]));
     }
 
-  double val = (1.0 - sums) * sumv * ridge;
+  val = (1.0 - sums) * sumv * ridge;
 
   return val;
 }
@@ -2427,12 +2427,12 @@ NJetImageFunction<TInputImage>
   // RIDGENESS
   itk::Vector<double, TInputImage::ImageDimension> d;
 
-  double v;
+  double val;
   MatrixType h;
   VectorType p;
   VectorType vv;
 
-  v = JetAtContinuousIndex(cIndex, d, h, scale);
+  val = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
@@ -2479,7 +2479,7 @@ NJetImageFunction<TInputImage>
     sumv /= ( sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
 
-  double val = (1.0 - sums) * sumv * ridge;
+  val = (1.0 - sums) * sumv * ridge;
 
   return val;
 }
@@ -2494,12 +2494,12 @@ NJetImageFunction<TInputImage>
   // RIDGENESS
   itk::Vector<double, TInputImage::ImageDimension> d;
 
-  double v;
+  double val;
   MatrixType h;
   VectorType p;
   VectorType vv;
 
-  v = JetAtContinuousIndex(cIndex, d, h, scale);
+  val = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
@@ -2557,7 +2557,7 @@ NJetImageFunction<TInputImage>
     sumv /= (sumv + vv[ImageDimension-1] * vv[ImageDimension-1] );
     }
 
-  double val = (1.0 - sums) * sumv * ridge;
+  val = (1.0 - sums) * sumv * ridge;
 
   return val;
 }
