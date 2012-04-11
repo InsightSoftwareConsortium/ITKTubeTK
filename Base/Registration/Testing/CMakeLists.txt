@@ -41,10 +41,12 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
   itkImageToTubeRigidMetricTest.cxx
+  itkImageToTubeRigidMetricMeasuresTest.cxx
   itkSyntheticTubeImageGenerationsTest.cxx
   itkImageToTubeRigidRegistrationTest.cxx
   itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx
+  itkImageToTubeRigidRegistrationMeasuresTest.cxx
    )
 
 # expect image comparison perfection on 64-bit machines
@@ -111,6 +113,15 @@ add_test( itkImageToTubeRigidRegistrationTest
           ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
           )
 set_tests_properties( itkImageToTubeRigidRegistrationTest
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
+
+add_test( itkImageToTubeRigidRegistrationMeasuresTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationMeasuresTest
+          ${INPUT_DATA}/Branch.n020.mha
+          ${INPUT_DATA}/Branch-truth-new.tre
+          ${TEMP}/RegistrationPerformances
+          )
+set_tests_properties( itkImageToTubeRigidRegistrationMeasuresTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
 if( TubeTK_USE_VTK )
@@ -239,6 +250,13 @@ add_test( itkImageToTubeRigidMetricTest2
           ${INPUT_DATA}/SyntheticTransformedVesselTubeImage.mha
           ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
           -1.13622
+          )
+
+add_test( itkImageToTubeRigidMetricMeasuresTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricMeasuresTest
+          ${INPUT_DATA}/SyntheticVesselTubeImage.mha
+          ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          ${TEMP}/MetricPerformance.txt
           )
 
 add_test( itkSyntheticTubeImagesGenerationsTest

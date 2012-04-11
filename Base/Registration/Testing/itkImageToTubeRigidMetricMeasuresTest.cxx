@@ -24,14 +24,16 @@
 #include "itkSpatialObjectReader.h"
 #include "itkTubeSpatialObjectPoint.h"
 
+#include "itkTimeProbesCollectorBase.h"
+#include "itkMemoryProbesCollectorBase.h"
+
 /**
  *  This test exercised the metric evaluation methods in the
  *  itkImageToTubeRigidMetric class. The distance between
- *  a 3D binary images (32x32x32) and a .tre image is computed and check with
- *  the reference for the metric.
+ *  a 3D binary images (32x32x32) and a .tre image is computed.
  */
 
-int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
+int itkImageToTubeRigidMetricMeasuresTest(int argc, char* argv [] )
 {
   if ( argc < 4 )
     {
@@ -39,7 +41,7 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
               << argv[0]
               << " Input_FixedImage "
               << "Input_SpatialObject "
-              << "Input_ExpectedValue."
+              << "Output_Results"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -57,8 +59,6 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
   typedef itk::Array<double>                                      ParametersType;
   typedef MetricType::InterpolatorType                            InterpolatorType;
   typedef MetricType::TransformType                               TransformType;
-
-  const double epsilonReg = 0.05; // Delta threshold on the measure checking.
 
   // read image (fixedImage)
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -102,9 +102,36 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
   metric->SetMovingSpatialObject ( tubeReader->GetGroup() );
   metric->SetInterpolator( interpolator );
   metric->SetTransform( transform );
+
+  // Add a time probe
+  itk::TimeProbesCollectorBase chronometer;
+  itk::MemoryProbesCollectorBase memorymeter;
+
+  // Create stream to record the measure
+  std::ofstream measuresFile;
+  measuresFile.open( argv[3] );
+  if ( !measuresFile.is_open() )
+    {
+    std::cerr << "Unable to open: " << argv[3] << std::endl;
+    return EXIT_FAILURE;
+    }
+
   try
     {
+    memorymeter.Start( "MetricComputation" );
+    chronometer.Start( "MetricComputation" );
+
     metric->Initialize();
+    MetricType::MeasureType value = metric->GetValue( parameters );
+
+    memorymeter.Stop( "MetricComputation" );
+    chronometer.Stop( "MetricComputation" );
+
+    // Report the time and memory taken by the registration
+    chronometer.Report( measuresFile );
+    memorymeter.Report( measuresFile );
+
+    std::cout << "Metric value: " << value << std::endl;
     }
   catch ( itk::ExceptionObject &excp )
     {
@@ -113,15 +140,6 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  MetricType::MeasureType value = metric->GetValue( parameters );
-  if (value < ( atof(argv[3]) - epsilonReg ) ||
-      value > ( atof(argv[3]) + epsilonReg ) )
-    {
-    std::cerr << "Distance value different than expected."
-              << value
-              << std::endl;
-    return EXIT_FAILURE;
-    }
-
+  measuresFile.close();
   return EXIT_SUCCESS;
 }

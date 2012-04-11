@@ -35,8 +35,10 @@ void RegisterTests()
 #endif
   REGISTER_TEST( itkTubePointsToImageTest );
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
+  REGISTER_TEST( itkImageToTubeRigidRegistrationMeasuresTest );
   REGISTER_TEST( itkTubeToTubeTransformFilterTest );
   REGISTER_TEST( itkImageToTubeRigidMetricTest );
+  REGISTER_TEST( itkImageToTubeRigidMetricMeasuresTest );
   REGISTER_TEST( itkSyntheticTubeImageGenerationsTest );
 }
 
