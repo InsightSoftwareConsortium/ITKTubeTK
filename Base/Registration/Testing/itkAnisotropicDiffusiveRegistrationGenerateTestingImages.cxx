@@ -561,6 +561,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( argv[1] );
+  imageWriter->SetUseCompression( true );
   imageWriter->SetInput( fixed );
   try
     {
@@ -573,6 +574,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     }
   imageWriter->SetFileName( argv[2] );
   imageWriter->SetInput( moving );
+  imageWriter->SetUseCompression( true );
   try
     {
     imageWriter->Update();

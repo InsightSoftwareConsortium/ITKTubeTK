@@ -140,6 +140,7 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
 
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   imageWriter->SetFileName(argv[2]);
+  imageWriter->SetUseCompression( true );
   imageWriter->SetInput(tubeToImageFilter->GetOutput());
   imageWriter->Update();
   return EXIT_SUCCESS;

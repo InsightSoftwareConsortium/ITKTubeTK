@@ -185,6 +185,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
+  writer->SetUseCompression( true );
   writer->SetInput( orientOutputFilter->GetOutput() );
 
   try
