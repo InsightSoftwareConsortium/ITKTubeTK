@@ -76,7 +76,7 @@ set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
-set( SITE_SCRIPT_DIR "${TUBETK_SOURCE_DIR}/CMake/DashboardScripts" )
+set( TUBETK_SCRIPT_DIR "${TUBETK_SOURCE_DIR}/CMake/DashboardScripts" )
 set( SITE_UPDATE_COMMAND "${GIT_COMMAND}" )
 set( GIT_EXECUTABLE "${GIT_COMMAND}" )
 
@@ -104,7 +104,7 @@ endif()
 set( SITE_MEMORYCHECK_COMMAND_OPTIONS
   "--gen-suppressions=all --trace-children=yes -q --leak-check=yes --show-reachable=yes --num-callers=50" )
 set( SITE_MEMORYCHECK_SUPPRESSIONS_FILE
-  "${SITE_SCRIPT_DIR}/valgrind_suppressions.txt" )
+  "${TUBETK_SCRIPT_DIR}/valgrind_suppressions.txt" )
 
 set( MEMORYCHECK_FLAGS "-g -O0 -ggdb" )
 if( SITE_NIGHTLY_MEMORY
@@ -116,12 +116,12 @@ endif()
 
 if( "${SITE_CTEST_MODE}" STREQUAL "Experimental" )
   if( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD )
-    include( "${SITE_SCRIPT_DIR}/run_experimental.cmake" )
+    include( "${TUBETK_SCRIPT_DIR}/run_experimental.cmake" )
   else()
-    include( "${SITE_SCRIPT_DIR}/run_experimental_noSuperBuild.cmake" )
+    include( "${TUBETK_SCRIPT_DIR}/run_experimental_noSuperBuild.cmake" )
   endif()
 elseif( "${SITE_CTEST_MODE}" STREQUAL "Continuous" )
-  include( "${SITE_SCRIPT_DIR}/run_continuous.cmake" )
+  include( "${TUBETK_SCRIPT_DIR}/run_continuous.cmake" )
 elseif( "${SITE_CTEST_MODE}" STREQUAL "Nightly" )
-  include( "${SITE_SCRIPT_DIR}/run_nightly.cmake" )
+  include( "${TUBETK_SCRIPT_DIR}/run_nightly.cmake" )
 endif()

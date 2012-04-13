@@ -27,7 +27,7 @@ set( SCRIPT_NAME "Style" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
 set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
-include( ${SITE_SCRIPT_DIR}/cmakecache.cmake )
+include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 
 set( ENV{PATH} "$ENV{PATH}:/usr/local/bin" )
 

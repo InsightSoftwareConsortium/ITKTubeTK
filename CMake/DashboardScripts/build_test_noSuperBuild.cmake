@@ -27,7 +27,7 @@ set( SCRIPT_NAME "BuildTest-NoSuperbuild" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
 set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
-include( ${SITE_SCRIPT_DIR}/cmakecache.cmake )
+include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
