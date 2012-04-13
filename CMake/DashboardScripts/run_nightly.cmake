@@ -30,18 +30,18 @@ if( SITE_NIGHTLY_BUILD_TEST )
   set( ENV{TUBETK_RUN_MODEL} "Nightly" )
   set( ENV{TUBETK_FORCE_BUILD} "1" )
 
-  include( "${SITE_SCRIPT_DIR}/build_test.cmake" )
+  include( "${TUBETK_SCRIPT_DIR}/build_test.cmake" )
 
   if( SITE_NIGHTLY_STYLE )
-    include( "${SITE_SCRIPT_DIR}/style.cmake" )
+    include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
   endif( SITE_NIGHTLY_STYLE )
 
   if( SITE_NIGHTLY_COVERAGE )
-    include( "${SITE_SCRIPT_DIR}/coverage.cmake" )
+    include( "${TUBETK_SCRIPT_DIR}/coverage.cmake" )
   endif( SITE_NIGHTLY_COVERAGE )
 
   if( SITE_NIGHTLY_MEMORY )
-    include( "${SITE_SCRIPT_DIR}/memory.cmake" )
+    include( "${TUBETK_SCRIPT_DIR}/memory.cmake" )
   endif( SITE_NIGHTLY_MEMORY )
 
 endif( SITE_NIGHTLY_BUILD_TEST )

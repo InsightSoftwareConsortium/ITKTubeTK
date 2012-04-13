@@ -41,7 +41,7 @@ if( SITE_CONTINUOUS_BUILD_TEST )
     set( START_TIME ${CTEST_ELAPSED_TIME} )
 
     message("---- Checking for changes ----")
-    include( "${SITE_SCRIPT_DIR}/build_test.cmake" )
+    include( "${TUBETK_SCRIPT_DIR}/build_test.cmake" )
 
     if( "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
 
@@ -49,17 +49,17 @@ if( SITE_CONTINUOUS_BUILD_TEST )
 
       if( SITE_CONTINUOUS_STYLE )
         message("---- Style script ----")
-        include( "${SITE_SCRIPT_DIR}/style.cmake" )
+        include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
       endif( SITE_CONTINUOUS_STYLE )
 
       if( SITE_CONTINUOUS_COVERAGE )
         message("---- Coverage script ----")
-        include( "${SITE_SCRIPT_DIR}/coverage.cmake" )
+        include( "${TUBETK_SCRIPT_DIR}/coverage.cmake" )
       endif( SITE_CONTINUOUS_COVERAGE )
 
       if( SITE_CONTINUOUS_MEMORY )
         message("---- Memory script ----")
-        include( "${SITE_SCRIPT_DIR}/memory.cmake" )
+        include( "${TUBETK_SCRIPT_DIR}/memory.cmake" )
       endif( SITE_CONTINUOUS_MEMORY )
 
       set( ENV{TUBETK_FORCE_BUILD} "0" )
