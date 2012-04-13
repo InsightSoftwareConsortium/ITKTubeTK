@@ -25,7 +25,7 @@ set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_CONTINUOUS_BUILD_TEST )
 
-  ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
+  ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
 
   message("---- Starting continuous loop ----")
   set( ENV{TUBETK_RUN_MODEL} "Continuous" )

@@ -48,9 +48,9 @@ set( SITE_GIT_COMMAND
 set( SITE_SVN_COMMAND
   "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
 
-set( SITE_SOURCE_DIR
+set( TUBETK_SOURCE_DIR
   "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk" )
-set( SITE_BINARY_DIR
+set( TUBETK_BINARY_DIR
   "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD OFF )
@@ -74,16 +74,16 @@ set( SITE_NIGHTLY_MEMORY OFF )
 #
 # The following advanced variables should only be changed by experts
 #
-set( CTEST_SOURCE_DIRECTORY "${SITE_SOURCE_DIR}" )
-set( CTEST_BINARY_DIRECTORY "${SITE_BINARY_DIR}" )
+set( CTEST_SOURCE_DIRECTORY "${TUBETK_SOURCE_DIR}" )
+set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
-set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/CMake/DashboardScripts" )
+set( SITE_SCRIPT_DIR "${TUBETK_SOURCE_DIR}/CMake/DashboardScripts" )
 set( SITE_UPDATE_COMMAND "${SITE_GIT_COMMAND}" )
 set( GIT_EXECUTABLE "${SITE_GIT_COMMAND}" )
 
-set( SITE_EXECUTABLE_DIRS "${SITE_BINARY_DIR}/ModuleDescriptionParser-Build/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/GenerateCLP-Build/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/Insight-Build/bin/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/VTK-Build/bin/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/TubeTK-Build/bin/${SITE_BUILD_TYPE};${SITE_BINARY_DIR}/TubeTK-Build/lib/TubeTK/Plugins/${SITE_BUILD_TYPE}" )
+set( SITE_EXECUTABLE_DIRS "${TUBETK_BINARY_DIR}/ModuleDescriptionParser-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/GenerateCLP-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/Insight-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/VTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/lib/TubeTK/Plugins/${SITE_BUILD_TYPE}" )
 set( ENV{PATH} "${SITE_EXECUTABLE_DIRS};$ENV{PATH}" )
 
 set( SITE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /GR /MP /EHsc" )

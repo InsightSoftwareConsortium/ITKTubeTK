@@ -25,7 +25,7 @@ set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_NIGHTLY_BUILD_TEST )
 
-  ctest_empty_binary_directory( "${SITE_BINARY_DIR}" )
+  ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
 
   set( ENV{TUBETK_RUN_MODEL} "Nightly" )
   set( ENV{TUBETK_FORCE_BUILD} "1" )

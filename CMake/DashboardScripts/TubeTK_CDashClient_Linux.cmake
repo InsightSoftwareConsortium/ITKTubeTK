@@ -48,8 +48,8 @@ set( SITE_GIT_COMMAND "/usr/bin/git" )
 set( SITE_SVN_COMMAND "/usr/bin/svn" )
 set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 
-set( SITE_SOURCE_DIR "/home/aylward/src/tubetk" )
-set( SITE_BINARY_DIR "/home/aylward/src/tubetk-${SITE_BUILD_TYPE}" )
+set( TUBETK_SOURCE_DIR "/home/aylward/src/tubetk" )
+set( TUBETK_BINARY_DIR "/home/aylward/src/tubetk-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD ON )
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )
@@ -71,12 +71,12 @@ set( SITE_NIGHTLY_MEMORY OFF )
 #
 # The following advanced variables should only be changed by experts
 #
-set( CTEST_SOURCE_DIRECTORY "${SITE_SOURCE_DIR}" )
-set( CTEST_BINARY_DIRECTORY "${SITE_BINARY_DIR}" )
+set( CTEST_SOURCE_DIRECTORY "${TUBETK_SOURCE_DIR}" )
+set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 
 set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
-set( SITE_SCRIPT_DIR "${SITE_SOURCE_DIR}/CMake/DashboardScripts" )
+set( SITE_SCRIPT_DIR "${TUBETK_SOURCE_DIR}/CMake/DashboardScripts" )
 set( SITE_UPDATE_COMMAND "${GIT_COMMAND}" )
 set( GIT_EXECUTABLE "${GIT_COMMAND}" )
 

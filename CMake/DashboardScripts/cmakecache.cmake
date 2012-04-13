@@ -30,8 +30,8 @@ set( CTEST_TEST_TIMEOUT 1500 )
 
 set( CTEST_CMAKE_GENERATOR ${SITE_CMAKE_GENERATOR} )
 set( CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}" )
-set( CTEST_SOURCE_DIRECTORY "${SITE_SOURCE_DIR}" )
-set( CTEST_BINARY_DIRECTORY "${SITE_BINARY_DIR}/${SCRIPT_BINARY_SUBDIR}" )
+set( CTEST_SOURCE_DIRECTORY "${TUBETK_SOURCE_DIR}" )
+set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}/${SCRIPT_BINARY_SUBDIR}" )
 
 set( CTEST_BUILD_COMMAND "${SITE_MAKE_COMMAND}" )
 set( CTEST_CMAKE_COMMAND "${SITE_CMAKE_COMMAND}" )
@@ -85,30 +85,30 @@ file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
   TubeTK_USE_KWSTYLE:BOOL=ON
   " )
 
-if( EXISTS ${SITE_BINARY_DIR}/Insight-Build/CMakeCache.txt )
+if( EXISTS ${TUBETK_BINARY_DIR}/Insight-Build/CMakeCache.txt )
   file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
-    ITK_DIR:PATH=${SITE_BINARY_DIR}/Insight-Build
+    ITK_DIR:PATH=${TUBETK_BINARY_DIR}/Insight-Build
     " )
 endif()
 
-if( EXISTS ${SITE_BINARY_DIR}/GenerateCLP-Build/CMakeCache.txt)
+if( EXISTS ${TUBETK_BINARY_DIR}/GenerateCLP-Build/CMakeCache.txt)
   file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
-    GenerateCLP_DIR:PATH=${SITE_BINARY_DIR}/GenerateCLP-Build
+    GenerateCLP_DIR:PATH=${TUBETK_BINARY_DIR}/GenerateCLP-Build
     " )
 endif()
 
-if( EXISTS ${SITE_BINARY_DIR}/CTK-Build/CMakeCache.txt )
+if( EXISTS ${TUBETK_BINARY_DIR}/CTK-Build/CMakeCache.txt )
   file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
-    CTK_DIR:PATH=${SITE_BINARY_DIR}/CTK-Build
+    CTK_DIR:PATH=${TUBETK_BINARY_DIR}/CTK-Build
     " )
 endif()
 
-if( EXISTS ${SITE_BINARY_DIR}/VTK-Build/CMakeCache.txt )
+if( EXISTS ${TUBETK_BINARY_DIR}/VTK-Build/CMakeCache.txt )
   file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "
-    VTK_DIR:PATH=${SITE_BINARY_DIR}/VTK-Build
+    VTK_DIR:PATH=${TUBETK_BINARY_DIR}/VTK-Build
     " )
 endif()
