@@ -56,9 +56,9 @@ int tubeBaseNumericsPrintTest( int, char* [] )
     itk::tube::BlurImageFunction< ImageType > ::New();
   std::cout << "-------------tbif" << tbif << std::endl;
 
-  itk::NJetImageFunction< ImageType >::Pointer
+  itk::tube::NJetImageFunction< ImageType >::Pointer
     njetObject =
-    itk::NJetImageFunction< ImageType >::New();
+    itk::tube::NJetImageFunction< ImageType >::New();
   std::cout << "-------------itkTubeNJetImageFunction"
             << njetObject
             << std::endl;

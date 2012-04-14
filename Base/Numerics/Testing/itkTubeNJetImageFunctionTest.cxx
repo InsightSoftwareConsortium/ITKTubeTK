@@ -57,7 +57,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
 
 
   // Declare the type for the Filter
-  typedef itk::NJetImageFunction< ImageType > FunctionType;
+  typedef itk::tube::NJetImageFunction< ImageType > FunctionType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -74,7 +74,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
 
   ImageType::Pointer inputImage = reader->GetOutput();
 
-  typedef itk::NJetImageFunction< ImageType >   FunctionType;
+  typedef itk::tube::NJetImageFunction< ImageType >   FunctionType;
   FunctionType::Pointer func = FunctionType::New();
   func->SetInputImage( inputImage );
 
