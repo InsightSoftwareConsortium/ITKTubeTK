@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkNJetImageFunction_txx
-#define __itkNJetImageFunction_txx
+#ifndef __itkTubeNJetImageFunction_txx
+#define __itkTubeNJetImageFunction_txx
 
-#include "itkNJetImageFunction.h"
+#include "itkTubeNJetImageFunction.h"
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIteratorWithIndex.h"
 
@@ -31,6 +31,9 @@ limitations under the License.
 
 
 namespace itk
+{
+
+namespace tube
 {
 
 /**
@@ -2635,6 +2638,8 @@ NJetImageFunction<TInputImage>
 
   return 0;
 }
+
+} // namespace tube
 
 } // namespace itk
 

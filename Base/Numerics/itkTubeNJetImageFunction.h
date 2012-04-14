@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkNJetImageFunction_h
-#define __itkNJetImageFunction_h
+#ifndef __itkTubeNJetImageFunction_h
+#define __itkTubeNJetImageFunction_h
 
 #include "itkImageFunction.h"
 #include "itkMatrix.h"
@@ -38,6 +38,9 @@ limitations under the License.
 #include "vnl/vnl_c_vector.txx"
 
 namespace itk
+{
+
+namespace tube
 {
 
 /**
@@ -425,10 +428,12 @@ protected:
 
 };
 
+} // namespace tube
+
 } // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkNJetImageFunction.txx"
+  #include "itkTubeNJetImageFunction.txx"
 #endif
 
 #endif

@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ limitations under the License.
 
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
-#include "itkNJetImageFunction.h"
+#include "itkTubeNJetImageFunction.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 
@@ -38,40 +38,56 @@ int tubeBaseNumericsPrintTest( int, char* [] )
   typedef itk::Image< float, 2 >                 ImageType;
   typedef itk::Image< itk::Vector<float, 2>, 2 > VectorImageType;
 
-  itk::ImageRegionMomentsCalculator< ImageType >::Pointer 
+  itk::ImageRegionMomentsCalculator< ImageType >::Pointer
     regionMomentsObject =
     itk::ImageRegionMomentsCalculator< ImageType >::New();
-  std::cout << "-------------itkImageRegionMomentsCalculator" 
+  std::cout << "-------------itkImageRegionMomentsCalculator"
             << regionMomentsObject
             << std::endl;
 
-  itk::JointHistogramImageFunction< ImageType >::Pointer 
+  itk::JointHistogramImageFunction< ImageType >::Pointer
     jointHistoObject =
     itk::JointHistogramImageFunction< ImageType >::New();
-  std::cout << "-------------itkJointHistogramImageFunction" 
+  std::cout << "-------------itkJointHistogramImageFunction"
             << jointHistoObject
             << std::endl;
 
-  itk::NJetImageFunction< ImageType >::Pointer 
+  itk::tube::BlurImageFunction< ImageType >::Pointer tbif =
+    itk::tube::BlurImageFunction< ImageType > ::New();
+  std::cout << "-------------tbif" << tbif << std::endl;
+
+  itk::NJetImageFunction< ImageType >::Pointer
     njetObject =
     itk::NJetImageFunction< ImageType >::New();
-  std::cout << "-------------itkNJetImageFunction" 
+  std::cout << "-------------itkTubeNJetImageFunction"
             << njetObject
             << std::endl;
 
+  itk::tube::LDAGenerator< ImageType, ImageType >::Pointer
+    ldaGenerator =
+    itk::tube::LDAGenerator< ImageType, ImageType >::New();
+  std::cout << "-------------LDAGenerator"
+    << ldaGenerator << std::endl;
+
+  itk::tube::NJetLDAGenerator< ImageType, ImageType >::Pointer
+    njetLDAGenerator =
+    itk::tube::NJetLDAGenerator< ImageType, ImageType >::New();
+  std::cout << "-------------LDANJetGenerator"
+    << njetLDAGenerator << std::endl;
+
   itk::Statistics::VectorImageToListGenerator< VectorImageType,
-      ImageType >::Pointer 
+      ImageType >::Pointer
     vectorImageToListObject =
     itk::Statistics::VectorImageToListGenerator< VectorImageType,
       ImageType >::New();
-  std::cout << "-------------itkVectorImageToListGenerator" 
+  std::cout << "-------------itkVectorImageToListGenerator"
             << vectorImageToListObject
             << std::endl;
 
-  itk::VotingResampleImageFunction< ImageType >::Pointer 
+  itk::VotingResampleImageFunction< ImageType >::Pointer
     votingResampleObject =
     itk::VotingResampleImageFunction< ImageType >::New();
-  std::cout << "-------------itkVotingResampleImageFunction" 
+  std::cout << "-------------itkVotingResampleImageFunction"
             << votingResampleObject
             << std::endl;
 
