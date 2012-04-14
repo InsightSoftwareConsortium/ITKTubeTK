@@ -151,7 +151,7 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 typename LDAGenerator< ImageT, LabelmapT >::ObjectIdType
 LDAGenerator< ImageT, LabelmapT >
-::GetObjectId( int num )
+::GetObjectId( unsigned int num )
 {
   if( num < m_ObjectIdList.size() )
     {
@@ -319,15 +319,55 @@ LDAGenerator< ImageT, LabelmapT >
 
     FeatureVectorType v( numFeatures );
     FeatureVectorType vLDA( numFeatures );
-    while( !itLDAIm.IsAtEnd() )
+
+    if( m_Labelmap.IsNotNull() )
       {
-      ContinuousIndexType indx = itLDAIm.GetIndex();
-      v = this->GetFeatureVector( indx );
+      unsigned int numClasses = this->GetNumberOfObjects();
+      typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
+        ConstMaskImageIteratorType;
+      ConstMaskImageIteratorType itInMask( m_Labelmap,
+        m_Labelmap->GetLargestPossibleRegion() );
+      while( !itLDAIm.IsAtEnd() )
+        {
+        ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+        bool found = false;
+        for( unsigned int c=0; c<numClasses; c++ )
+          {
+          if( val == m_ObjectIdList[c] )
+            {
+            found = true;
+            break;
+            }
+          }
+        if( found )
+          {
+          ContinuousIndexType indx = itLDAIm.GetIndex();
+          v = this->GetFeatureVector( indx );
 
-      vLDA = v * m_LDAMatrix;
+          vLDA = v * m_LDAMatrix;
 
-      itLDAIm.Set( vLDA[ ldaNum ] );
-      ++itLDAIm;
+          itLDAIm.Set( vLDA[ ldaNum ] );
+          }
+        else
+          {
+          itLDAIm.Set( 0 );
+          }
+        ++itLDAIm;
+        ++itInMask;
+        }
+      }
+    else
+      {
+      while( !itLDAIm.IsAtEnd() )
+        {
+        ContinuousIndexType indx = itLDAIm.GetIndex();
+        v = this->GetFeatureVector( indx );
+
+        vLDA = v * m_LDAMatrix;
+
+        itLDAIm.Set( vLDA[ ldaNum ] );
+        ++itLDAIm;
+        }
       }
 
     timeCollector.Stop( "GenerateLDAImage" );

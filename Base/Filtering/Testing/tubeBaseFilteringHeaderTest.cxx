@@ -33,10 +33,7 @@ limitations under the License.
 #include "itkAnisotropicHybridDiffusionImageFilter.h"
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include "itkTubeBlurImageFunction.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
-#include "itkTubeLDAGenerator.h"
-#include "itkTubeNJetLDAGenerator.h"
 
 int main ( int , char ** )
 {

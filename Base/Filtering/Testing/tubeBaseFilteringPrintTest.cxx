@@ -35,10 +35,7 @@ limitations under the License.
 #include "itkAnisotropicHybridDiffusionImageFilter.h"
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include "itkTubeBlurImageFunction.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
-#include "itkTubeLDAGenerator.h"
-#include "itkTubeNJetLDAGenerator.h"
 
 
 int tubeBaseFilteringPrintTest( int, char* [] )
@@ -57,11 +54,11 @@ int tubeBaseFilteringPrintTest( int, char* [] )
     itk::AnisotropicDiffusionTensorFunction< ImageType >::New();
   std::cout << "-------------adtf" << adtf << std::endl;
 
-  //itk::AnisotropicDiffusionTensorImageFilter< ImageType, ImageType >
-    //::Pointer adtif =
-    //itk::AnisotropicDiffusionTensorImageFilter< ImageType, ImageType >
-    //::New();
-  //std::cout << "-------------adtif" << adtif << std::endl;
+  itk::AnisotropicDiffusionTensorImageFilter< ImageType, ImageType >
+    ::Pointer adtif =
+    itk::AnisotropicDiffusionTensorImageFilter< ImageType, ImageType >
+    ::New();
+  std::cout << "-------------adtif" << adtif << std::endl;
 
   itk::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
     ::Pointer aeedif =
@@ -75,39 +72,23 @@ int tubeBaseFilteringPrintTest( int, char* [] )
     ::New();
   std::cout << "-------------ahdif" << ahdif << std::endl;
 
-  //itk::StructureTensorRecursiveGaussianImageFilter< ImageType, ImageType >
-    //::Pointer strgif =
-    //itk::StructureTensorRecursiveGaussianImageFilter< ImageType, ImageType >
-    //::New();
-  //std::cout << "-------------strgif" << strgif << std::endl;
+  itk::StructureTensorRecursiveGaussianImageFilter< ImageType, ImageType >
+    ::Pointer strgif =
+    itk::StructureTensorRecursiveGaussianImageFilter< ImageType, ImageType >
+    ::New();
+  std::cout << "-------------strgif" << strgif << std::endl;
 
-  //itk::SymmetricEigenVectorAnalysisImageFilter< ImageType, ImageType,
-    //ImageType >::Pointer sevaif =
-    //itk::SymmetricEigenVectorAnalysisImageFilter< ImageType, ImageType,
-    //ImageType >::New();
-  //std::cout << "-------------sevaif" << sevaif << std::endl;
-
-  itk::tube::BlurImageFunction< ImageType >::Pointer tbif =
-    itk::tube::BlurImageFunction< ImageType > ::New();
-  std::cout << "-------------tbif" << tbif << std::endl;
+  itk::SymmetricEigenVectorAnalysisImageFilter< ImageType, ImageType,
+    ImageType >::Pointer sevaif =
+    itk::SymmetricEigenVectorAnalysisImageFilter< ImageType, ImageType,
+    ImageType >::New();
+  std::cout << "-------------sevaif" << sevaif << std::endl;
 
   itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer
     vesselEnahncingObj =
     itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
   std::cout << "-------------TubeEnhancingDiffusion2DImageFilter"
     << vesselEnahncingObj << std::endl;
-
-  itk::tube::LDAGenerator< ImageType, ImageType >::Pointer
-    ldaGenerator =
-    itk::tube::LDAGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------LDAGenerator"
-    << ldaGenerator << std::endl;
-
-  itk::tube::NJetLDAGenerator< ImageType, ImageType >::Pointer
-    njetLDAGenerator =
-    itk::tube::NJetLDAGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------LDANJetGenerator"
-    << njetLDAGenerator << std::endl;
 
   return EXIT_SUCCESS;
 }

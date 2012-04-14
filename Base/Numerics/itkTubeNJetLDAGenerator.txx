@@ -36,7 +36,7 @@ limitations under the License.
 
 
 #include "tubeMatrixMath.h"
-#include "itkNJetImageFunction.h"
+#include "itkTubeNJetImageFunction.h"
 
 namespace itk
 {
@@ -94,11 +94,75 @@ void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::GenerateNJetFeatureImages( void )
 {
+  typedef NJetImageFunction< ImageType > NJetFunctionType;
+
   unsigned int numFeatures = this->GetNumberOfFeatures();
   unsigned int numFeatureImages = this->GetNumberOfFeatureImages();
 
-  m_NJetFeatureImageList.resize( numFeatures );
+  std::vector< typename NJetFunctionType::Pointer > njetList;
+  njetlist.resize( numFeatures );
 
+  m_NJetFeatureImageList.resize( numFeatures );
+  if( this->GetLabelMap() != NULL )
+    {
+    for( unsigned int i=0; i<numFeatureImages; i++ )
+      {
+      njetList[i] = NJetFunctionType::New();
+      njetList[i]->SetInputImage( this->GetFeatureImage(i) );
+      }
+    for( unsigned int i=0; i<numFeatures; i++ )
+      {
+      m_NJetFeatureImageList[i] = LDAImageType::New();
+      m_NJetFeatureImageList[i]->CopyInformation(
+        this->GetFeatureImage(0) );
+      m_NJetFeatureImageList[i]->SetRegions(
+        this->GetFeatureImage(0)->GetLargestPossibleRegion() );
+      m_NJetFeatureImageList[i]->Allocate();
+      }
+
+    typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
+      ConstMaskImageIteratorType;
+    ConstMaskImageIteratorType itInMask( this->GetLabelmap(),
+      this->GetLabelmap()->GetLargestPossibleRegion() );
+    while( !itInMask.IsAtEnd() )
+      {
+      ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+      bool found = false;
+      for( unsigned int c=0; c<numClasses; c++ )
+        {
+        if( val == this->GetObjectId(c) )
+          {
+          found = true;
+          break;
+          }
+        }
+      if( found )
+        {
+        unsigned int vcount = 0;
+        LDAImageType::IndexType indx = itInMask.GetIndex();
+        for( unsigned int i=0; i<numFeatureImages; i++ )
+          {
+          m_NJetFeatureImageList[ vcount++ ].SetPixel( indx,
+            this->GetFeatureImage(i).GetPixel( indx ) );
+          for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
+            {
+            m_NJetFeatureImageList[ vcount++ ].SetPixel( indx,
+              njetList[i]->EvaluateAtIndex( iter.GetIndex(),
+                m_ZeroScales[s] ) );
+            }
+          for( unsigned int s=0; s<m_FirstScales.size(); s++ )
+            {
+            for( unsigned int d=0; d<ImageDimension; d++ )
+              {
+              }
+            }
+          }
+        }
+      ++itInMask;
+      }
+    }
+  else
+    {
   typedef itk::RecursiveGaussianImageFilter< LDAImageType, LDAImageType >
     GaussFilterType;
   unsigned int vCount = 0;
@@ -232,9 +296,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
       m_NJetFeatureImageList[vCount++] = curImage;
       }
 
-    typedef NJetImageFunction< ImageType > NJetFunctionType;
     typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
-
     for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
       {
       m_NJetFeatureImageList[vCount] = LDAImageType::New();
@@ -449,15 +511,50 @@ NJetLDAGenerator< ImageT, LabelmapT >
         double fMean = 0;
         double mMean = 0;
         unsigned int count = 0;
-        while( !iterF.IsAtEnd() )
+        if( this->GetLabelmap() )
           {
-          fVal = iterF.Get();
-          mVal = iterM.Get();
-          fMean += fVal;
-          mMean += mVal;
-          ++count;
-          ++iterF;
-          ++iterM;
+          unsigned int numClasses = this->GetNumberOfObjects();
+          typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
+            ConstMaskImageIteratorType;
+          ConstMaskImageIteratorType itInMask( this->GetLabelmap(),
+            this->GetLabelmap()->GetLargestPossibleRegion() );
+          while( !iterF.IsAtEnd() )
+            {
+            ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+            bool found = false;
+            for( unsigned int c=0; c<numClasses; c++ )
+              {
+              if( val == this->GetObjectId(c) )
+                {
+                found = true;
+                break;
+                }
+              }
+            if( found )
+              {
+              fVal = iterF.Get();
+              mVal = iterM.Get();
+              fMean += fVal;
+              mMean += mVal;
+              ++count;
+              }
+            ++iterF;
+            ++iterM;
+            ++itInMask;
+            }
+          }
+        else
+          {
+          while( !iterF.IsAtEnd() )
+            {
+            fVal = iterF.Get();
+            mVal = iterM.Get();
+            fMean += fVal;
+            mMean += mVal;
+            ++count;
+            ++iterF;
+            ++iterM;
+            }
           }
         fMean /= count;
         mMean /= count;

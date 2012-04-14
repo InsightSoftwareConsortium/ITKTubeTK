@@ -57,16 +57,15 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   )
 
-SET( TubeTK_Base_Filtering_SRCS
-  itkTubeNJetLDAGenerator2F.cxx
-  )
+#SET( TubeTK_Base_Filtering_SRCS
+  #)
 
-ADD_LIBRARY( TubeFiltering STATIC ${TubeTK_Base_Filtering_SRCS} )
-TARGET_LINK_LIBRARIES( TubeFiltering ${ITK_LIBRARIES} )
+#ADD_LIBRARY( TubeFiltering STATIC ${TubeTK_Base_Filtering_SRCS} )
+#TARGET_LINK_LIBRARIES( TubeFiltering ${ITK_LIBRARIES} )
 
-slicer3_set_plugins_output_path( TubeFiltering)
-set( TARGETS TubeFiltering )
-slicer3_install_plugins( ${TARGETS} )
+#slicer3_set_plugins_output_path( TubeFiltering)
+#set( TARGETS TubeFiltering )
+#slicer3_install_plugins( ${TARGETS} )
 
 IF( BUILD_TESTING )
   add_subdirectory( Testing )

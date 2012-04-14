@@ -45,10 +45,8 @@ set( tubeBaseFilteringTests_SRCS
   tubeBaseFilteringPrintTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
-  itkTubeBlurImageFunctionTest.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
-  itkTubeLDAGeneratorTest.cxx
-  itkTubeNJetLDAGeneratorTest.cxx )
+  )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
@@ -90,14 +88,6 @@ add_test( itkStructureTensorRecursiveGaussianImageFilterTest2
 add_test( itkStructureTensorRecursiveGaussianImageFilterTest3
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTestNew )
-
-add_test( itkTubeBlurImageFunctionTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeBlurImageFunctionTest.mha
-            ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  itkTubeBlurImageFunctionTest
-    ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  )
 
 add_test( itkTubeEnhancingDiffusion2DImageFilterTest
   ${BASE_FILTERING_TESTS}
