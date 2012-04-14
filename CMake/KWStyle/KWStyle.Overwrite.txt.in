@@ -32,8 +32,8 @@ itkJointHistogramImageFunction.h Namespace Disable
 itkJointHistogramImageFunction.txx Namespace Disable
 itkLabelOverlapMeasuresImageFilter.h Namespace Disable
 itkLabelOverlapMeasuresImageFilter.txx Namespace Disable
-itkNJetImageFunction.h Namespace Disable
-itkNJetImageFunction.txx Namespace Disable
+itkTubeNJetImageFunction.h Namespace Disable
+itkTubeNJetImageFunction.txx Namespace Disable
 itkSpatialObjectToSpatialObjectFilter.h Namespace Disable
 itkSpatialObjectToSpatialObjectFilter.txx Namespace Disable
 itkStructureTensorRecursiveGaussianImageFilter.h Namespace Disable
