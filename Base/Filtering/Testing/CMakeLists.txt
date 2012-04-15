@@ -114,25 +114,3 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
       ${INPUT_DATA}/im0001_n10.crop2.mha
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
-
-add_test( itkTubeLDAGeneratorTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-  itkTubeLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
-  )
-
-add_test( itkTubeNJetLDAGeneratorTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-  itkTubeNJetLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
-  )
