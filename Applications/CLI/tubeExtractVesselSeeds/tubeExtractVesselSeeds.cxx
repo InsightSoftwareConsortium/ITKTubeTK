@@ -80,14 +80,14 @@ int DoIt( int argc, char * argv[] )
 
   typedef pixelT                                   InputPixelType;
   typedef itk::Image< InputPixelType, dimensionT > InputImageType;
-  typedef itk::Image< unsigned short, dimensionT > MaskImageType;
+  typedef itk::Image< unsigned short, dimensionT > MapImageType;
   typedef itk::Image< float, dimensionT >          LDAImageType;
 
   typedef itk::ImageFileReader< LDAImageType >     ImageReaderType;
-  typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
+  typedef itk::ImageFileReader< MapImageType >     MapReaderType;
   typedef itk::ImageFileWriter< LDAImageType >     LDAImageWriterType;
 
-  typedef itk::tube::NJetLDAGenerator< LDAImageType, MaskImageType >
+  typedef itk::tube::NJetLDAGenerator< LDAImageType, MapImageType >
     LDAGeneratorType;
   typename LDAGeneratorType::Pointer ldaGenerator = LDAGeneratorType::New();
 
@@ -99,14 +99,18 @@ int DoIt( int argc, char * argv[] )
   reader->Update();
   ldaGenerator->SetFeatureImage( reader->GetOutput() );
 
-  typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
-  inMaskReader->SetFileName( labelmap.c_str() );
-  inMaskReader->Update();
-  ldaGenerator->SetLabelmap( inMaskReader->GetOutput() );
-
   timeCollector.Stop( "LoadData" );
 
-  ldaGenerator->SetObjectId( objectId );
+  if( labelmap.size() > 0 )
+    {
+    timeCollector.Start( "LoadLabelMap" );
+    typename MapReaderType::Pointer  inMapReader = MapReaderType::New();
+    inMapReader->SetFileName( labelmap.c_str() );
+    inMapReader->Update();
+    ldaGenerator->SetLabelmap( inMapReader->GetOutput() );
+    ldaGenerator->SetObjectId( objectId );
+    timeCollector.Stop( "LoadLabelMap" );
+    }
 
   if( loadVesselSeedInfo.size() > 0 )
     {
@@ -126,7 +130,13 @@ int DoIt( int argc, char * argv[] )
     }
   else
     {
-    timeCollector.Start( "Update" );
+    if( labelmap.size() == 0 )
+      {
+      std::cerr << "Must specify a labelmap if training to find seeds"
+                << std::endl;
+      return EXIT_FAILURE;
+      }
+
 
     int numScales = ridgeScales.size();
 
@@ -136,11 +146,9 @@ int DoIt( int argc, char * argv[] )
     ldaGenerator->SetFirstScales( midScale );
     ldaGenerator->SetRidgeScales( ridgeScales );
 
-    ldaGenerator->SetForceIntensityConsistency( true );
     ldaGenerator->SetForceOrientationInsensitivity( true );
 
     ldaGenerator->Update();
-
     timeCollector.Stop( "Update" );
     }
 
@@ -170,12 +178,14 @@ int DoIt( int argc, char * argv[] )
 
   if( saveFeatureImages.size() > 0 )
     {
+    timeCollector.Start( "SaveFeatureImages" );
     unsigned int numFeatures = ldaGenerator->GetNumberOfFeatures();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
       WriteLDA< LDAImageType >( ldaGenerator->GetNJetFeatureImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }
+    timeCollector.Stop( "SaveFeatureImages" );
     }
 
   timeCollector.Report();

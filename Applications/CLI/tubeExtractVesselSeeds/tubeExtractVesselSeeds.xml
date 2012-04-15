@@ -19,32 +19,39 @@
       <default></default>
     </image>
     <image>
-      <name>labelmap</name>
-      <label>Label map</label>
-      <channel>input</channel>
-      <index>1</index>
-      <description>Labelmap that designates the object of interest and "other"</description>
-      <default></default>
-    </image>
-    <image>
       <name>outputSeedImage</name>
       <label>Output seed image</label>
       <channel>output</channel>
-      <index>2</index>
+      <index>1</index>
       <description>Output seed image</description>
       <default></default>
     </image>
   </parameters>
-  <parameters advanced="true">
-    <label>LDA Parameters</label>
-    <description>Parameters that determine how the LDA is generated</description>
+  <parameters advanced="false">
+    <label>General Parameters</label>
+    <description>Parameters that control training and seed finding</description>
     <image>
-      <name>maskROI</name>
-      <label>Mask ROI</label>
-      <description>ROI for training and labeling</description>
+      <name>labelmap</name>
+      <label>Train label map</label>
+      <channel>input</channel>
+      <description>Labelmap that designates the object of interest</description>
       <default></default>
-      <longflag>maskROI</longflag>
+      <longflag>labelmap</longflag>
     </image>
+  </parameters>
+  <parameters advanced="false">
+    <label>Seed Finding Parameters</label>
+    <description>Parameters that control seed finding</description>
+    <file>
+      <name>loadVesselSeedInfo</name>
+      <description>Load vessel seed info from a file</description>
+      <label>Load vessel seed Info</label>
+      <longflag>loadVesselSeedInfo</longflag>
+    </file>
+  </parameters>
+  <parameters advanced="true">
+    <label>Training Parameters</label>
+    <description>Parameters that determine how the seed finder is generated</description>
     <double-vector>
       <name>ridgeScales</name>
       <description>Scales at which Ridge features are computed</description>
@@ -64,12 +71,6 @@
       <description>Save vessel seed info to a file</description>
       <label>Save vessel seed Info</label>
       <longflag>saveVesselSeedInfo</longflag>
-    </file>
-    <file>
-      <name>loadVesselSeedInfo</name>
-      <description>Load vessel seed info from a file</description>
-      <label>Load vessel seed Info</label>
-      <longflag>loadVesselSeedInfo</longflag>
     </file>
     <string>
       <name>saveFeatureImages</name>

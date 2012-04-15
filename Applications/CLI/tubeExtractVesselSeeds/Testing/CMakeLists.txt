@@ -46,10 +46,9 @@ set( TEXTCOMPARE_EXE
 add_test( ${PROJECT_NAME}Test1
             ${PROJ_EXE}
                --saveVesselSeedInfo ${TEMP}/${PROJECT_NAME}Test1.vsi
-               --saveSeedImage ${TEMP}/${PROJECT_NAME}Test1.mha
+               --labelmap ${INPUT_DATA}/im0001.vk.mask.mha
                ${INPUT_DATA}/im0001.mha
-               ${INPUT_DATA}/im0001.vk.mha
-               ${TEMP}/${PROJECT_NAME}Test1 )
+               ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
 # Test1-Compare
