@@ -251,9 +251,10 @@ int DoIt( MetaCommand & command )
 
           MetaImage * metaImage = metaWriter->GetMetaImagePointer();
 
-          metaImage->ElementSize( 0, imIn->GetSpacing()[0] );
-          metaImage->ElementSize( 1, imIn->GetSpacing()[1] );
-          metaImage->ElementSize( 2, imIn->GetSpacing()[2] );
+          for( unsigned int d=0; d<ImageType::ImageDimension; ++d )
+            {
+            metaImage->ElementSize( d, imIn->GetSpacing()[d] );
+            }
 
           metaImage->AddUserField( "ElementByteOrderMSB",
                                   MET_STRING, strlen( "False" ), "False" );
@@ -700,8 +701,7 @@ int DoIt( MetaCommand & command )
           it1.Set( ( PixelType )tf );
           }
         ++it1;
-        ++it2;
-        }
+        ++it2; }
       } // end -a
 
     // Threshold
@@ -1274,7 +1274,7 @@ int DoIt( MetaCommand & command )
       unsigned int zMax = 1;
       if( dimensionT == 3 )
         {
-        zMax = imIn->GetLargestPossibleRegion().GetSize()[2];
+        zMax = imIn->GetLargestPossibleRegion().GetSize()[dimensionT-1];
         }
       for( z=0; z<dimensionT && z<zMax; z++ )
         {
@@ -1394,7 +1394,7 @@ int DoIt( MetaCommand & command )
         double meanSpacing = ( spacing[0] + spacing[1] ) / 2;
         if( dimensionT == 3 )
           {
-          meanSpacing = ( meanSpacing + spacing[2] ) / 2;
+          meanSpacing = ( meanSpacing + spacing[dimensionT-1] ) / 2;
           }
         factor = meanSpacing/spacing[0];
         size[0] = ( long unsigned int )
@@ -1406,11 +1406,11 @@ int DoIt( MetaCommand & command )
         spacing[1] = meanSpacing;
         if( dimensionT == 3 )
           {
-          factor = meanSpacing/spacing[2];
-          size[2] = ( long unsigned int )
-                    ( imIn->GetLargestPossibleRegion().GetSize()[2]
+          factor = meanSpacing/spacing[dimensionT-1];
+          size[dimensionT-1] = ( long unsigned int )
+                    ( imIn->GetLargestPossibleRegion().GetSize()[dimensionT-1]
                       / factor );
-          spacing[2] = meanSpacing;
+          spacing[dimensionT-1] = meanSpacing;
           }
         }
       imSub2->SetRegions( size );
@@ -1467,7 +1467,7 @@ int DoIt( MetaCommand & command )
       if( dimensionT == 3 )
         {
         float z = command.GetValueAsFloat( *it, "z" );
-        seed[2] = ( long int )z;
+        seed[dimensionT-1] = ( long int )z;
         }
 
       filter->SetInput( imIn );
@@ -1483,12 +1483,12 @@ int DoIt( MetaCommand & command )
     // offset
     else if( ( *it ).name == "offset" )
       {
-      double offset[3];
+      double offset[dimensionT];
       offset[0] = command.GetValueAsFloat( *it, "offsetX" );
       offset[1] = command.GetValueAsFloat( *it, "offsetY" );
       if( dimensionT == 3 )
         {
-        offset[2] = command.GetValueAsFloat( *it, "offsetZ" );
+        offset[dimensionT-1] = command.GetValueAsFloat( *it, "offsetZ" );
         }
       imIn->SetOrigin( offset );
       }
@@ -1534,7 +1534,7 @@ int DoIt( MetaCommand & command )
       writeStream << numberOfCentroids << std::endl;
       for( unsigned int i=0; i<numberOfCentroids; i++ )
         {
-        for( unsigned int j = 0; j<3; j++ )
+        for( unsigned int j = 0; j<dimensionT; j++ )
           {
           writeStream << ( *( filter->GetCentroids() ) )[i][j];
           if( j<2 )
@@ -1613,7 +1613,7 @@ int DoIt( MetaCommand & command )
           {
           indx[i] = 0;
           i++;
-          if( i>2 )
+          if( i>(int)(dimensionT-1) )
             {
             done = true;
             }
@@ -1621,8 +1621,8 @@ int DoIt( MetaCommand & command )
             {
             if( i == 2 )
               {
-              std::cout << "Computing adjacency of slice : " << indx[2]
-                        << std::endl;
+              std::cout << "Computing adjacency of slice : "
+                        << indx[dimensionT-1] << std::endl;
               }
             indx[i]++;
             }
