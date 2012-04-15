@@ -41,7 +41,7 @@ limitations under the License.
 #include "tubeOptimizerND.h"
 #include "tubeOptParabolicFit1D.h"
 #include "tubeSpline1D.h"
-#include "tubeSplineApproximating1D.h"
+#include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
 #include "tubeTubeMath.h"
 #include "tubeUserFunc.h"

@@ -29,6 +29,9 @@ limitations under the License.
 
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
+#include "itkTubeBlurImageFunction.h"
+#include "itkTubeLDAGenerator.h"
+#include "itkTubeNJetLDAGenerator.h"
 #include "itkTubeNJetImageFunction.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
