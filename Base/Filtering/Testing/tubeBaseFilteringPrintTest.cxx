@@ -37,13 +37,13 @@ limitations under the License.
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
-
 int tubeBaseFilteringPrintTest( int, char* [] )
 {
   typedef itk::Image< float, 3 >  ImageType;
   typedef itk::Matrix< float, 3 > MatrixType;
 
-  itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType, ImageType >
+  itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
+    ImageType >
     ::Pointer acedif =
     itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
     ImageType >::New();
@@ -53,12 +53,6 @@ int tubeBaseFilteringPrintTest( int, char* [] )
     ::Pointer adtf =
     itk::AnisotropicDiffusionTensorFunction< ImageType >::New();
   std::cout << "-------------adtf" << adtf << std::endl;
-
-  itk::AnisotropicDiffusionTensorImageFilter< ImageType, ImageType >
-    ::Pointer adtif =
-    itk::AnisotropicDiffusionTensorImageFilter< ImageType, ImageType >
-    ::New();
-  std::cout << "-------------adtif" << adtif << std::endl;
 
   itk::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
     ::Pointer aeedif =
@@ -72,16 +66,26 @@ int tubeBaseFilteringPrintTest( int, char* [] )
     ::New();
   std::cout << "-------------ahdif" << ahdif << std::endl;
 
-  itk::StructureTensorRecursiveGaussianImageFilter< ImageType, ImageType >
+  itk::StructureTensorRecursiveGaussianImageFilter< ImageType >
     ::Pointer strgif =
-    itk::StructureTensorRecursiveGaussianImageFilter< ImageType, ImageType >
+    itk::StructureTensorRecursiveGaussianImageFilter< ImageType >
     ::New();
   std::cout << "-------------strgif" << strgif << std::endl;
 
-  itk::SymmetricEigenVectorAnalysisImageFilter< ImageType, ImageType,
-    ImageType >::Pointer sevaif =
-    itk::SymmetricEigenVectorAnalysisImageFilter< ImageType, ImageType,
-    ImageType >::New();
+  typedef itk::FixedArray< float, 3 >            EigenValueArrayType;
+  typedef itk::Matrix< float, 3, 3 >             EigenVectorMatrixType;
+  typedef itk::Image< EigenValueArrayType, 3>    EigenValueImageType;
+  typedef itk::Image< EigenVectorMatrixType, 3>  EigenVectorImageType;
+  typedef itk::StructureTensorRecursiveGaussianImageFilter< ImageType >::
+    OutputImageType SymmetricSecondRankTensorImageType;
+  itk::SymmetricEigenVectorAnalysisImageFilter<
+    SymmetricSecondRankTensorImageType,
+    EigenValueImageType,
+    EigenVectorImageType >::Pointer sevaif =
+      itk::SymmetricEigenVectorAnalysisImageFilter<
+        SymmetricSecondRankTensorImageType,
+        EigenValueImageType,
+        EigenVectorImageType >::New();
   std::cout << "-------------sevaif" << sevaif << std::endl;
 
   itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer
