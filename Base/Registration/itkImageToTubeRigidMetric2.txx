@@ -430,9 +430,7 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
   vnl_vector<double> v1T( 3 );  // Co-Vector that defines the direction normal1
   vnl_vector<double> v2T( 3 );  // Co-Vector that defines the direction normal2
 
-
   PointsType  dXTlist;
-
   typename std::vector<TransformedPointType>::iterator transformedPointIterator;
   for ( transformedPointIterator = m_TransformedPoints.begin();
         transformedPointIterator != m_TransformedPoints.end();
@@ -548,12 +546,12 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
 {
   if ( !this->UpdateTransformedPoints( parameters ) )
     {
-    //Value = m_CachedValue;
+    Value = m_CachedValue;
     Derivative = m_CachedDerivative;
     return;
     }
 
-  //Value = GetValue( parameters );
+  Value = GetValue( parameters );
   GetDerivative( parameters, Derivative );
 }
 

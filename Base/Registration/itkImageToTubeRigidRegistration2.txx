@@ -40,7 +40,7 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
   this->m_InitialTransformParameters.Fill( 0.0f );
   this->m_LastTransformParameters.Fill( 0.0f );
 
-  m_NumberOfIteration = 100; //by default
+  m_NumberOfIteration = 100;
   m_LearningRate = 0.1;
   m_IsInitialized = false;
 
@@ -63,9 +63,9 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 ::SetInitialPosition( double position[6] )
 {
   m_InitialPosition.set_size( 6 );
-  for( unsigned int i=0;i<6;i++ )
+  for( unsigned int i = 0; i < 6; ++i )
   {
-    m_InitialPosition[i]=position[i];
+    m_InitialPosition[i] = position[i];
   }
 }
 
@@ -76,11 +76,10 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 ::SetParametersScale( double scales[6] )
 {
   m_ParametersScale.set_size( 6 );
-  for( unsigned int i=0;i<6;i++ )
+  for( unsigned int i = 0; i < 6; ++i )
   {
-    m_ParametersScale[i]=scales[i];
+    m_ParametersScale[i] = scales[i];
   }
-
 }
 
 /** Initialize by setting the interconnects
@@ -108,13 +107,11 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
   optimizer->MaximizeOn();
   optimizer->SetScales( m_ParametersScale );
 
-  // Gradient descent stuff
+  // Gradient descent parameters
   optimizer->SetLearningRate( m_LearningRate );
   optimizer->SetNumberOfIterations( m_NumberOfIteration );
 
   this->SetOptimizer( optimizer );
-
-
   this->SetInitialTransformParameters( m_InitialPosition );
 
   try
@@ -147,6 +144,7 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 
   try
     {
+    this->SparseRegistration();
     this->GetOptimizer()->StartOptimization();
     }
   catch( ExceptionObject& err )
@@ -165,50 +163,50 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
             << this->m_LastTransformParameters << std::endl;
 }
 
-/** Apply the sparse registration */
+/** Apply a sparse registration */
 template <class TFixedImage, class TMovingTube>
 void
 ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
-::SparseRegistration( ParametersType & parameters )
+::SparseRegistration()
 {
   if( !m_IsInitialized )
     {
     this->Initialize();
     }
 
-  ParametersType params( 6 );
+  ParametersType parameters = this->GetLastTransformParameters();
+  ParametersType params( MetricType::SpaceDimension );
+  ParametersType optimalParameters( MetricType::SpaceDimension );
 
   double optimalValue = 0;
-  ParametersType optimalParameters( 6 );
-
-  for( float a=-0.1;a<=0.1;a+=0.1 )
+  for( float a = -0.1; a <= 0.1; a += 0.1 )
     {
-    params[0] = parameters[0]+a;
-    for( float b=-0.1;b<=0.1;b+=0.1 )
+    params[0] = parameters[0] + a;
+    for( float b = -0.1; b <= 0.1; b += 0.1 )
       {
-      params[1] = parameters[1]+b;
-      for( float c=-0.1;c<=0.1;c+=0.1 )
+      params[1] = parameters[1] + b;
+      for( float c = -0.1; c <= 0.1; c += 0.1 )
         {
-        params[2] = parameters[2]+c;
-        for( int x=-10;x<=10;x+=10 )
+        params[2] = parameters[2] + c;
+        for( int x = -10; x <= 10; x += 10 )
           {
-          params[3] = parameters[3]+x;
-          for( int y=-10;y<=10;y+=10 )
+          params[3] = parameters[3] + x;
+          for( int y = -10; y <= 10; y += 10 )
             {
-            params[4] = parameters[4]+y;
-            for( int z=-10;z<=10;z+=10 )
+            params[4] = parameters[4] + y;
+            for( int z = -10; z <= 10;z += 10 )
               {
-              params[5] = parameters[5]+z;
+              params[5] = parameters[5] + z;
               double value = this->GetMetric()->GetValue( params );
               if( value > optimalValue )
                 {
                 optimalValue = value;
-                optimalParameters[0]=params[0];
-                optimalParameters[1]=params[1];
-                optimalParameters[2]=params[2];
-                optimalParameters[3]=params[3];
-                optimalParameters[4]=params[4];
-                optimalParameters[5]=params[5];
+                optimalParameters[0] = params[0];
+                optimalParameters[1] = params[1];
+                optimalParameters[2] = params[2];
+                optimalParameters[3] = params[3];
+                optimalParameters[4] = params[4];
+                optimalParameters[5] = params[5];
                 }
               }
             }
@@ -217,7 +215,20 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
       }
     }
 
-  parameters = optimalParameters;
+  this->SetParametersScale( optimalParameters );
+}
+
+/** Get Center of Rotation */
+template <class TFixedImage, class TMovingTube>
+typename ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
+::MetricType::PointType
+ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
+::GetCenterOfRotation( void )
+{
+  typename MetricType::Pointer metric =
+    dynamic_cast<MetricType*>( this->GetMetric() );
+
+  return metric->GetCenterOfRotation();
 }
 
 } // end namespace itk
