@@ -39,18 +39,61 @@ set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Registration/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
+# Use to Generate Generic Tests using same core
+macro( GENERATE_TESTS BASE_NAME CLASS_NAMES TEST_EXTENSIONS )
+MESSAGE( ${BASE_NAME} )
+MESSAGE( ${CLASS_NAMES} )
+MESSAGE( ${TEST_EXTENSIONS} )
+
+  foreach( className ${CLASS_NAMES} )
+    set( CTK_ADD_CLASS_NAME ${className} )
+
+    foreach( extension ${TEST_EXTENSIONS} )
+    set( CTK_ADD_TEST_EXTENSION ${extension} )
+      configure_file(
+          itk${BASE_NAME}${extension}.cxx.in
+          ${CMAKE_CURRENT_BINARY_DIR}/itk${className}${extension}.cxx
+          )
+
+      list( APPEND GenericTubeBaseRegistrationFiltersTests_SRCS
+            ${CMAKE_CURRENT_BINARY_DIR}/itk${className}${extension}.cxx
+          )
+    endforeach()
+
+  endforeach()
+endmacro()
+
+# Use to generate the generic tests
+set( MULTIPLE_TEST_EXTENTIONS
+      Test
+      PerformancesTest
+     )
+
+# Generate Tests for the Metrics
+set( MULTIPLE_METRIC_CLASS_NAMES
+  ImageToTubeRigidMetric
+  ImageToTubeRigidMetric2
+  )
+set( MULTIPLE_REGISTRATION_CLASS_NAMES
+  ImageToTubeRigidRegistration
+  ImageToTubeRigidRegistration2
+  )
+
+set( GenericTubeBaseRegistrationFiltersTests_SRCS )
+GENERATE_TESTS ( "ImageToTubeRigidMetric"
+                 "${MULTIPLE_METRIC_CLASS_NAMES}"
+                 "${MULTIPLE_TEST_EXTENTIONS}" )
+GENERATE_TESTS ( "ImageToTubeRigidRegistration"
+                 "${MULTIPLE_REGISTRATION_CLASS_NAMES}"
+                 "${MULTIPLE_TEST_EXTENTIONS}" )
+
 set( tubeBaseRegistrationFilters_SRCS
-  itkImageToTubeRigidMetricTest.cxx
-  itkImageToTubeRigidMetricPerformancesTest.cxx
-  itkImageToTubeRigidMetric2Test.cxx
-  itkImageToTubeRigidMetric2PerformancesTest.cxx
   itkSyntheticTubeImageGenerationsTest.cxx
-  itkImageToTubeRigidRegistrationTest.cxx
-  itkImageToTubeRigidRegistrationPerformancesTest.cxx
-  itkImageToTubeRigidRegistration2Test.cxx
-  itkImageToTubeRigidRegistration2PerformancesTest.cxx
   itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx
+  )
+list( APPEND tubeBaseRegistrationFilters_SRCS
+      ${GenericTubeBaseRegistrationFiltersTests_SRCS}
    )
 
 # expect image comparison perfection on 64-bit machines
