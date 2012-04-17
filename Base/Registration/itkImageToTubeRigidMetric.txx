@@ -271,7 +271,6 @@ typename ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>::MeasureType
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::GetValue( const ParametersType & parameters ) const
 {
-  unsigned long c0 = clock();
   if( m_Verbose )
     {
     std::cout << "**** Get Value ****" << std::endl;
@@ -287,8 +286,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   weightIterator = m_Weight.begin();
 
   // TODO change the place where you set the parameters !
-  SetOffset( parameters[3], parameters[4], parameters[5] );
-  this->m_Transform->SetParameters( parameters );
+  //SetOffset( parameters[3], parameters[4], parameters[5] );
+  //this->m_Transform->SetParameters( parameters );
 
   GroupSpatialObject<3>::ChildrenListType::iterator tubeIterator;
   TubeNetType::ChildrenListType* tubeList = GetTubes();
@@ -305,7 +304,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
          ++pointIterator )
         {
         itk::Point<double, 3> inputPoint = pointIterator->GetPosition();
-        static itk::Point<double, 3> point;
+        /*static itk::Point<double, 3> point;
         Matrix<double, 3, 3> matrix =  GetTransform()->GetRotationMatrix();
 
         point =  matrix * inputPoint + GetTransform()->GetOffset();
@@ -322,7 +321,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         itk::Index<3> index;
         index[0] = static_cast<unsigned int>( point[0] );
         index[1] = static_cast<unsigned int>( point[1] );
-        index[2] = static_cast<unsigned int>( point[2] );
+        index[2] = static_cast<unsigned int>( point[2] );*/
 
         if( this->IsInside( inputPoint ) )
           {
@@ -338,6 +337,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
             {
             v2[i] = pointIterator->GetNormal1()[i];
             }
+          std::cout << "vector: " << v2[0] << " - " << v2[1] << " - " << v2[2] << std::endl;
 
             matchMeasure += *weightIterator * fabs(
               ComputeLaplacianMagnitude( &v2 ) );
@@ -350,6 +350,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         weightIterator++;
         }
     }
+
+  std::cout << "SumWeight: " << sumWeight << std::endl;
 
   if( sumWeight == 0 )
     {
@@ -367,10 +369,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   if( m_Verbose )
     {
-    std::cout << "matchMeasure= " << matchMeasure << std::endl;
-    std::cout << "Time for GetValue()  = "
-              << clock() - c0
-              << " ms" << std::endl;
+    std::cout << "matchMeasure = " << matchMeasure << std::endl;
     }
 
   delete tubeList;
@@ -695,7 +694,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::GetDerivative( const ParametersType & parameters,
                  DerivativeType & derivative ) const
 {
-  long c0 = clock();
   derivative = DerivativeType( SpaceDimension );
   SetOffset( parameters[3], parameters[4], parameters[5] );
   this->m_Transform->SetParameters( parameters );
@@ -765,7 +763,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
       if( this->IsInside( inputPoint ) )
         {
-        XTlist[listindex++] = point;
+        XTlist[listindex++] = m_CurrentPoint;
         sumWeight += *weightIterator;
         count++;
         opR = pointIterator->GetRadius();
@@ -879,10 +877,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   if( m_Verbose )
     {
-    std::cout << "Time = "
-              << ( clock() - c0 ) / static_cast<double>( CLOCKS_PER_SEC )
-              << std::endl;
-
     std::cout << "dA = " << dAngle[0] << std::endl;
     std::cout << "dB = " << dAngle[1] << std::endl;
     std::cout << "dG = " << dAngle[2] << std::endl;

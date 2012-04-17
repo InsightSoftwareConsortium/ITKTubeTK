@@ -89,7 +89,7 @@ public:
     }
 };
 
-int itkImageToTubeRigidRegistrationMeasuresTest(int argc, char* argv [] )
+int itkImageToTubeRigidRegistrationPerformancesTest(int argc, char* argv [] )
 {
   if ( argc < 4 )
     {
@@ -179,7 +179,7 @@ int itkImageToTubeRigidRegistrationMeasuresTest(int argc, char* argv [] )
   registrationFilter->SetLearningRate( 0.1 );
   registrationFilter->SetInitialPosition( initialPose );
   registrationFilter->SetParametersScale( parameterScales );
-  registrationFilter->SetVerbose( 0 );
+  registrationFilter->SetVerbose( false );
   registrationFilter->SetSampling( 50 );
 
   // Add a time probe

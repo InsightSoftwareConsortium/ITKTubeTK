@@ -20,20 +20,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkImageToTubeRigidRegistration_txx
-#define __itkImageToTubeRigidRegistration_txx
+#ifndef __itkImageToTubeRigidRegistration2_txx
+#define __itkImageToTubeRigidRegistration2_txx
 
-#include "itkImageToTubeRigidRegistration.h"
+#include "itkImageToTubeRigidRegistration2.h"
 #include <itkNormalVariateGenerator.h>
-
 
 namespace itk
 {
 
 /** Constructor */
 template <class TFixedImage, class TMovingTube>
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
-::ImageToTubeRigidRegistration()
+ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
+::ImageToTubeRigidRegistration2()
 {
   this->m_InitialTransformParameters = ParametersType( ParametersDimension );
   this->m_LastTransformParameters = ParametersType( ParametersDimension );
@@ -57,11 +56,10 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   m_Verbose = true;
 }
 
-
 /** Set the initial position */
 template <class TFixedImage, class TMovingTube>
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 ::SetInitialPosition( double position[6] )
 {
   m_InitialPosition.set_size( 6 );
@@ -74,7 +72,7 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 /** Set the parameters scales */
  template <class TFixedImage, class TMovingTube>
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 ::SetParametersScale( double scales[6] )
 {
   m_ParametersScale.set_size( 6 );
@@ -85,12 +83,11 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 
 }
 
-
 /** Initialize by setting the interconnects
  *  between components. */
 template <class TFixedImage, class TMovingTube>
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 ::Initialize() throw ( ExceptionObject )
 {
   typename MetricType::Pointer metric = MetricType::New();
@@ -99,28 +96,15 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   metric->SetKappa( m_Kappa );
   metric->SetSampling( m_Sampling );
   metric->SetVerbose( m_Verbose );
-  //metric->SetMaskImage( m_MaskImage );
 
   this->SetMetric( metric );
   typename OptimizerType::Pointer optimizer = OptimizerType::New();
-
   typename TransformType::Pointer transform = TransformType::New();
   this->SetTransform( transform );
   typename InterpolatorType::Pointer interp = InterpolatorType::New();
   this->SetInterpolator( interp );
 
-  /*
-  ParametersType  parametersScale( ParametersDimension );
-  parametersScale[0] = 30; //20
-  parametersScale[1] = 30;
-  parametersScale[2] = 30;
-  parametersScale[3] = 1;
-  parametersScale[4] = 1;
-  parametersScale[5] = 1;
-  */
-
   optimizer->SetScales( m_ParametersScale );
-
   optimizer->MaximizeOn();
   optimizer->SetScales( m_ParametersScale );
 
@@ -128,46 +112,8 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   optimizer->SetLearningRate( m_LearningRate );
   optimizer->SetNumberOfIterations( m_NumberOfIteration );
 
-
-  /*  optimizer->SetMaximumIteration( m_NumberOfIteration );
-
-  Statistics::NormalVariateGenerator::Pointer generator =
-      Statistics::NormalVariateGenerator::New();
-  generator->SetReferenceCount( 2 );
-  generator->Initialize( time( NULL ) );
-
-  optimizer->SetNormalVariateGenerator( generator );
-  optimizer->Initialize( 40 );
-  */
-
   this->SetOptimizer( optimizer );
 
-  /* ParametersType parameters = ParametersType( ParametersDimension );
-  unsigned int k = 0;
-
-  // Initialize the 3 rotation angles
-  for ( unsigned int i=0; i<TFixedImage::ImageDimension; i++ )
-    {
-    parameters[ k++ ] = 0;
-    }
-
-  m_Parameters[ k++ ]=-0.0658653;
-  m_Parameters[ k++ ]=0.0841746;
-  m_Parameters[ k++ ]=-0.0794313;
-
-  // Initialize the 3 translation offsets
-  for ( unsigned int i=0; i<TFixedImage::ImageDimension; i++ )
-    {
-    parameters[ k++ ] = 0;
-    }
-  parameters[ k++ ]=30;//49.0362; //30
-  parameters[ k++ ]=-20;//-24.9046; //-20
-  parameters[ k++ ]=20;//26.0874; //20
-
-  parameters[ k++ ]= -71;
-  parameters[ k++ ]= -23;
-  parameters[ k++ ]= -25.8;
-  */
 
   this->SetInitialTransformParameters( m_InitialPosition );
 
@@ -188,97 +134,41 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   m_IsInitialized = true;
 }
 
-
-/**  */
-template <class TFixedImage, class TMovingTube>
-void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
-::CreateMatlabMetric( const char* filename )
-{
-  FILE* fic = fopen( filename, "wb" );
-
-  ParametersType params( ParametersDimension );
-  params.Fill( 0 );
-
-  unsigned long c0=clock();
-  // Test for XY translation
-  for( float x = -10; x<=10; x+=1.0 )
-    {
-    for( float y = -10; y<=10; y+=1.0 )
-      {
-        params[3] = x;
-        params[4] = y;
-        typename MetricType::DerivativeType  derivatives( 6 );
-        derivatives.Fill( 0 );
-        this->GetMetric()->GetDerivative( params, derivatives );
-        //this->GetMetric()->GetValue( params );
-        fprintf( fic, "%f %f %f %f %f %f %f %f %f %f %f %f %f\n",
-          params[0], params[1], params[2], params[3], params[4], params[5],
-          derivatives[0], derivatives[1], derivatives[2], derivatives[3],
-          derivatives[4], derivatives[5], 0 );
-      }
-    }
-
-  std::cout << "Total time to run MonteCarlo simulation: "
-    << ( ( float )clock()-( float )c0 )/( float )CLOCKS_PER_SEC << " secs."
-    << std::endl;
-
-  fclose( fic );
-
-}
-
 /** Starts the Registration Process */
 template <class TFixedImage, class TMovingTube>
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 ::StartRegistration( void )
 {
-  double c0 = clock();
-
   if( !m_IsInitialized )
     {
     this->Initialize();
     }
 
-  /*
-  if( m_IterationCommand )
-    {
-    m_IterationCommand->SetMaximumValue( m_NumberOfIteration );
-    m_IterationCommand->SetOptimizer( ( OptimizerType* )
-    this->GetOptimizer() );
-    }
-  */
-
   try
     {
-    // do the optimization
     this->GetOptimizer()->StartOptimization();
     }
   catch( ExceptionObject& err )
     {
     // An error has occurred in the optimization.
     // Update the parameters
-    this->m_LastTransformParameters = this->GetOptimizer()
-      ->GetCurrentPosition();
+    this->m_LastTransformParameters =
+      this->GetOptimizer()->GetCurrentPosition();
     // Pass exception to caller
     throw err;
     }
 
-  std::cout << "The Solution is : ";
-  this->m_LastTransformParameters = this->GetOptimizer()
-    ->GetCurrentPosition();
-  // give the result to the superclass
-  std::cout << this->m_LastTransformParameters << std::endl;
+  this->m_LastTransformParameters = this->GetOptimizer()->GetCurrentPosition();
 
-  std::cout << "Total Time = " << ( clock()-c0 )/( double )CLOCKS_PER_SEC
-    << std::endl;
-
+  std::cout << "Solution: "
+            << this->m_LastTransformParameters << std::endl;
 }
 
 /** Apply the sparse registration */
 template <class TFixedImage, class TMovingTube>
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
 ::SparseRegistration( ParametersType & parameters )
 {
   if( !m_IsInitialized )

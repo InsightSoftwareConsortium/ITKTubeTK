@@ -18,7 +18,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkImageToTubeRigidRegistration.h"
+#include "itkImageToTubeRigidRegistration2.h"
 #include "itkSpatialObjectReader.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
@@ -30,14 +30,14 @@
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 
-int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
+int itkImageToTubeRigidRegistration2Test(int argc, char* argv [] )
 {
 
   if ( argc < 4 )
     {
-    std::cerr << "Missing Parameters: " 
+    std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Input_Image " << "Input_Vessel " << "Output_Image " 
+              << " Input_Image " << "Input_Vessel " << "Output_Image "
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -47,14 +47,14 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   typedef itk::Image<double, 3>                           ImageType;
   typedef itk::ImageFileReader<ImageType>                 ImageReaderType;
   typedef itk::ImageFileWriter<ImageType>                 ImageWriterType;
-  typedef itk::ImageToTubeRigidRegistration<ImageType, TubeNetType>  
+  typedef itk::ImageToTubeRigidRegistration2<ImageType, TubeNetType>
                                                           RegistrationFilterType;
-  typedef itk::Euler3DTransform<double>                   TransformType; 
+  typedef itk::Euler3DTransform<double>                   TransformType;
   typedef itk::TubeToTubeTransformFilter<TransformType,3> TubeTransformFilterType;
 
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
-  imageReader->SetFileName(argv[1]);
+  imageReader->SetFileName( argv[1] );
   try
     {
     imageReader->Update();
@@ -71,16 +71,16 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
                                                            GaussianBlurFilterType;
   GaussianBlurFilterType::Pointer blurFilters[3];
-  for (int i = 0; i < 3; i++)
+  for ( int i = 0; i < 3; ++i )
     {
     blurFilters[i] = GaussianBlurFilterType::New();
-    blurFilters[i]->SetSigma(3.0);
+    blurFilters[i]->SetSigma( 3.0 );
     blurFilters[i]->SetZeroOrder();
-    blurFilters[i]->SetDirection(i);
+    blurFilters[i]->SetDirection( i );
     }
-  blurFilters[0]->SetInput(imageReader->GetOutput());
-  blurFilters[1]->SetInput(blurFilters[0]->GetOutput());
-  blurFilters[2]->SetInput(blurFilters[1]->GetOutput());
+  blurFilters[0]->SetInput( imageReader->GetOutput() );
+  blurFilters[1]->SetInput( blurFilters[0]->GetOutput() );
+  blurFilters[2]->SetInput( blurFilters[1]->GetOutput() );
   try
     {
     blurFilters[0]->Update();
@@ -93,9 +93,9 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  // read vessel  
+  // read vessel
   TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
-  vesselReader->SetFileName(argv[2]);
+  vesselReader->SetFileName( argv[2] );
   try
     {
     vesselReader->Update();
@@ -110,27 +110,28 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   randGenerator->Initialize( 137593424 );
-  
+
   double parameterScales[6] = {30.0, 30.0, 30.0, 1.0, 1.0, 1.0};
   double initialPose[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   if (argc > 9)
     {
     for (int i = 0; i < 6; i++)
       {
-      initialPose[i] = atof(argv[4+i]);
+      initialPose[i] = atof( argv[4+i] );
       }
     }
-  
-  RegistrationFilterType::Pointer  registrationFilter = RegistrationFilterType::New();
-  
+
+  RegistrationFilterType::Pointer  registrationFilter =
+    RegistrationFilterType::New();
+
   registrationFilter->SetFixedImage( blurFilters[2]->GetOutput() );
   registrationFilter->SetMovingSpatialObject( vesselReader->GetGroup() );
   registrationFilter->SetNumberOfIteration( 1000 );
-  registrationFilter->SetLearningRate(0.1);
-  registrationFilter->SetInitialPosition(initialPose);
-  registrationFilter->SetParametersScale(parameterScales);
+  registrationFilter->SetLearningRate( 0.1 );
+  registrationFilter->SetInitialPosition( initialPose );
+  registrationFilter->SetParametersScale( parameterScales );
   registrationFilter->SetVerbose( false );
-  registrationFilter->SetSampling(100);
+  registrationFilter->SetSampling( 100 );
   try
     {
     registrationFilter->Initialize();
@@ -142,14 +143,13 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-
   // validate the registration result
-  TransformType* outputTransform = 
+  TransformType* outputTransform =
     dynamic_cast<TransformType *>(registrationFilter->GetTransform());
-  
+
   TransformType::Pointer invTransform = TransformType::New();
   outputTransform->GetInverse(invTransform);
-  
+
   std::cout << "Registration result: ";
   for (int i = 0; i < 6; i++)
     {
@@ -171,10 +171,10 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
 
   // create transform filter
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
-  transformFilter->SetInput(vesselReader->GetGroup());
-  transformFilter->SetScale(1.0);
-  transformFilter->SetTransform(outputTransform);
-  
+  transformFilter->SetInput( vesselReader->GetGroup() );
+  transformFilter->SetScale( 1.0 );
+  transformFilter->SetTransform( outputTransform );
+
   try
     {
     transformFilter->Update();
@@ -184,10 +184,10 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
-  
-  typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType> 
+
+  typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
                                               SpatialObjectToImageFilterType;
-  SpatialObjectToImageFilterType::Pointer vesselToImageFilter = 
+  SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
     SpatialObjectToImageFilterType::New();
 
   ImageType::Pointer img = imageReader->GetOutput();
@@ -207,19 +207,17 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   vesselToImageFilter->SetSize( size );
   vesselToImageFilter->SetSpacing( spacing );
   vesselToImageFilter->SetOrigin( img->GetOrigin() );
-  vesselToImageFilter->SetInsideValue(1.0);
-  vesselToImageFilter->SetOutsideValue(0.0);
+  vesselToImageFilter->SetInsideValue( 1.0 );
+  vesselToImageFilter->SetOutsideValue( 0.0 );
   vesselToImageFilter->Update();
   std::cout << "end." << std::endl;
-  
+
   std::cout << "Outputing result image ... ";
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   imageWriter->SetFileName(argv[3]);
   imageWriter->SetInput(vesselToImageFilter->GetOutput());
   imageWriter->Update();
   std::cout << "end." << std::endl;
-  
+
   return EXIT_SUCCESS;
-
 }
-

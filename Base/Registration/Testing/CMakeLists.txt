@@ -41,12 +41,16 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseRegistrationFilters_SRCS
   itkImageToTubeRigidMetricTest.cxx
-  itkImageToTubeRigidMetricMeasuresTest.cxx
+  itkImageToTubeRigidMetricPerformancesTest.cxx
+  itkImageToTubeRigidMetric2Test.cxx
+  itkImageToTubeRigidMetric2PerformancesTest.cxx
   itkSyntheticTubeImageGenerationsTest.cxx
   itkImageToTubeRigidRegistrationTest.cxx
+  itkImageToTubeRigidRegistrationPerformancesTest.cxx
+  itkImageToTubeRigidRegistration2Test.cxx
+  itkImageToTubeRigidRegistration2PerformancesTest.cxx
   itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx
-  itkImageToTubeRigidRegistrationMeasuresTest.cxx
    )
 
 # expect image comparison perfection on 64-bit machines
@@ -115,13 +119,31 @@ add_test( itkImageToTubeRigidRegistrationTest
 set_tests_properties( itkImageToTubeRigidRegistrationTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
-add_test( itkImageToTubeRigidRegistrationMeasuresTest
-          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationMeasuresTest
+add_test( itkImageToTubeRigidRegistrationPerformancesTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationPerformancesTest
           ${INPUT_DATA}/Branch.n020.mha
           ${INPUT_DATA}/Branch-truth-new.tre
-          ${TEMP}/RegistrationPerformances
+          ${TEMP}/itkImageToTubeRigidRegistrationPerformances
           )
-set_tests_properties( itkImageToTubeRigidRegistrationMeasuresTest
+set_tests_properties( itkImageToTubeRigidRegistrationPerformancesTest
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
+
+add_test( itkImageToTubeRigidRegistration2Test
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistration2Test
+          ${INPUT_DATA}/Branch.n020.mha
+          ${TEMP}/itkTubeToTubeTransformFilter.tre
+          ${TEMP}/itkImageToTubeRigidRegistration2Test.mha
+          )
+set_tests_properties( itkImageToTubeRigidRegistration2Test
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
+
+add_test( itkImageToTubeRigidRegistration2PerformancesTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistration2PerformancesTest
+          ${INPUT_DATA}/Branch.n020.mha
+          ${INPUT_DATA}/Branch-truth-new.tre
+          ${TEMP}/itkImageToTubeRigidRegistration2Performances
+          )
+set_tests_properties( itkImageToTubeRigidRegistration2PerformancesTest
                       PROPERTIES DEPENDS itkTubeToTubeTransformFilterTest )
 
 if( TubeTK_USE_VTK )
@@ -252,11 +274,32 @@ add_test( itkImageToTubeRigidMetricTest2
           -1.13622
           )
 
-add_test( itkImageToTubeRigidMetricMeasuresTest
-          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricMeasuresTest
+add_test( itkImageToTubeRigidMetric2Test1
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2Test
           ${INPUT_DATA}/SyntheticVesselTubeImage.mha
           ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
-          ${TEMP}/MetricPerformance.txt
+          1.095681
+          )
+
+add_test( itkImageToTubeRigidMetric2Test2
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2Test
+          ${INPUT_DATA}/SyntheticTransformedVesselTubeImage.mha
+          ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          -1.13622
+          )
+
+add_test( itkImageToTubeRigidMetricPerformancesTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricPerformancesTest
+          ${INPUT_DATA}/SyntheticVesselTubeImage.mha
+          ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          ${TEMP}/itkImageToTubeRigidMetricPerformance.txt
+          )
+
+add_test( itkImageToTubeRigidMetric2PerformancesTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2PerformancesTest
+          ${INPUT_DATA}/SyntheticVesselTubeImage.mha
+          ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          ${TEMP}/itkImageToTubeRigidMetric2Performance.txt
           )
 
 add_test( itkSyntheticTubeImagesGenerationsTest
