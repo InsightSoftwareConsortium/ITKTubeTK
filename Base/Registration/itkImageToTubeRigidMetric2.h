@@ -127,24 +127,26 @@ public:
   typedef typename TransformType::JacobianType     TransformJacobianType;
 
   /** Get the Derivatives of the Match Measure */
-  const DerivativeType & GetDerivative( const ParametersType &
-    parameters ) const;
+  const DerivativeType& GetDerivative( const ParametersType&
+                                        parameters ) const;
   void GetDerivative( const ParametersType & parameters,
-    DerivativeType & derivative ) const;
+                      DerivativeType& derivative ) const;
 
   /** Get the Value for SingleValue Optimizers */
   MeasureType  GetValue( const ParametersType & parameters ) const;
 
   /** Get Value and Derivatives for MultipleValuedOptimizers */
-  void GetValueAndDerivative( const ParametersType & parameters,
-    MeasureType & Value, DerivativeType  & Derivative ) const;
+  void GetValueAndDerivative( const ParametersType& parameters,
+                              MeasureType& Value,
+                              DerivativeType& Derivative ) const;
 
   /** Apply the center of rotation to the transformation */
   ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
 
-  /** Set kappa value */
+  /** Set kappa value, control the radius scalling  of the metric */
   itkSetMacro( Kappa, double );
 
+  /** Return the center of rotation of the whole extent */
   vnl_vector_fixed<double, 3> GetCenterOfRotation( void )
     { return m_RotationCenter; }
 
@@ -155,12 +157,15 @@ public:
   itkSetMacro( Extent, double );
   itkGetMacro( Extent, double );
 
+  /** Return the current transform */
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
+  /** Set the verbosity of the computations */
   itkSetMacro( Verbose, bool );
   itkGetMacro( Verbose, bool );
 
+  /** Control the ratio of the subsampling */
   itkSetMacro( Sampling, unsigned int );
   itkGetMacro( Sampling, unsigned int );
 
@@ -195,21 +200,19 @@ private:
   mutable vnl_vector_fixed<double, 3>    m_Offset;
   vnl_vector_fixed<double, 3>            m_RotationCenter;
   vnl_vector_fixed<double, 3>            m_Factors;
+  mutable TransformedPointsType          m_TransformedPoints;
 
-  mutable TransformedPointsType m_TransformedPoints;
-
-  /** SubSample the MovingSpatialObject tube */
   void SubSampleTube();
   void SetOffset( double oX, double oY, double oZ ) const;
-  void UpdateCurrentPoint( const InputPointType & point ) const;
+  void ComputeCenterRotation();
   void UpdateTransformedPoints() const;
   bool UpdateTransformedPoints( const ParametersType & parameters ) const;
 
-  double ComputeLaplacianMagnitude( TransformedPointType& ) const;
-  double ComputeThirdDerivatives( Vector<double, 3> *v, TransformedPointType& ) const;
-  double ComputeDerivatives( Vector<double, 3> *v ) const;
-  void ComputeCenterRotation();
   TubeNetType::ChildrenListType* GetTubes() const;
+
+  double ComputeLaplacianMagnitude( TransformedPointType& ) const;
+  double ComputeThirdDerivatives( Vector<double, 3> *v,
+                                  TransformedPointType& ) const;
 };
 
 } // end namespace itk

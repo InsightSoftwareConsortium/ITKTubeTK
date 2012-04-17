@@ -69,10 +69,7 @@ public:
                                                         Superclass;
   typedef SmartPointer<Self>                            Pointer;
   typedef SmartPointer<const Self>                      ConstPointer;
-
   typedef typename Superclass::FixedImageType           FixedImageType;
-
-  /** Typedef of the mask image */
   typedef Image<unsigned char, 3>                       MaskImageType;
 
   /** Method for creation through the object factory. */
@@ -80,43 +77,30 @@ public:
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidRegistration2,
-    ImageToSpatialObjectRegistrationMethod );
+                ImageToSpatialObjectRegistrationMethod );
 
-  typedef ImageToTubeRigidMetric2<FixedImageType, TMovingTube>   MetricType;
-
-  typedef typename MetricType::TransformParametersType     ParametersType;
-  typedef typename MetricType::TransformType               TransformType;
+  typedef ImageToTubeRigidMetric2<FixedImageType, TMovingTube>
+                                                        MetricType;
+  typedef typename MetricType::TransformParametersType  ParametersType;
+  typedef typename MetricType::TransformType            TransformType;
+  typedef typename Superclass::InterpolatorType         InterpolatorType;
+  typedef GradientDescentOptimizer                      OptimizerType;
 
   /**  Dimension of the images.  */
   enum {ImageDimension = FixedImageType::ImageDimension,
-    ParametersDimension = TransformType::ParametersDimension};
-
-
-  typedef typename Superclass::InterpolatorType   InterpolatorType;
-
-  typedef GradientDescentOptimizer                OptimizerType;
+        ParametersDimension = TransformType::ParametersDimension};
 
   /** Typedef for the optimizer observer */
   typedef typename itk::SimpleMemberCommand<Self> CommandIterationType;
 
   /** Get Center of Rotation */
-  itk::Vector<double, 3> GetCenterOfRotation( void )
-    {
-    itk::Vector<double, 3> centerOfRotation;
-    typename MetricType::Pointer metric = dynamic_cast<MetricType*>(
-      this->GetMetric() );
-    for( unsigned int i=0;i<3;i++ )
-      {
-      centerOfRotation[i]=metric->GetCenterOfRotation()( i );
-      }
-    return centerOfRotation;
-    };
+  typename MetricType::PointType GetCenterOfRotation( void );
 
   /** Method that initiates the registration. */
   void StartRegistration( void );
 
   /** Start the sparse registration */
-  void SparseRegistration( ParametersType & parameters );
+  void SparseRegistration( void );
 
   /** Set the number of iteration */
   itkSetMacro( NumberOfIteration, unsigned int );
@@ -139,15 +123,22 @@ public:
   /** Set the mask image */
   itkSetObjectMacro( MaskImage, MaskImageType );
 
-  void SetExtent( float extent ) {m_Extent = extent;}
-  void SetVerbose( bool verbose ) {m_Verbose = verbose;}
-  void SetKappa( float kappa ) {m_Kappa = kappa;}
-  void SetSampling( unsigned int sampling ) {m_Sampling = sampling;}
+  /** Set the extent */
+  itkSetMacro( Extent, float );
+
+  /** Set the verbosity of the computations */
+  itkSetMacro( Verbose, bool );
+
+  /** Control the radius scalling  of the metric */
+  itkSetMacro( Kappa, float );
+
+  /** Control the ratio of the subsampling */
+  itkSetMacro( Sampling, unsigned int );
 
 protected:
 
   ImageToTubeRigidRegistration2();
-  virtual ~ImageToTubeRigidRegistration2() {};
+  virtual ~ImageToTubeRigidRegistration2() {}
 
 private:
 
