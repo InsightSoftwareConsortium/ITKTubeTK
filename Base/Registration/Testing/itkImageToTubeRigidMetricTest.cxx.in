@@ -1,24 +1,30 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx,v $
-  Language:  C++
-  Date:      $Date: 2012/03/19
-  Version:   $Revision: 1.0 $
+Library:   TubeTK
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 ( the "License" );
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
 
 #include "itkImageFileReader.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkEuler3DTransform.h"
-#include "itkImageToTubeRigidMetric2.h"
+#include "itk@CTK_ADD_CLASS_NAME@.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkSpatialObjectReader.h"
@@ -26,12 +32,12 @@
 
 /**
  *  This test exercised the metric evaluation methods in the
- *  itkImageToTubeRigidMetric2 class. The distance between
+ *  itk@CTK_ADD_METRIC_CLASS_NAME@ class. The distance between
  *  a 3D binary images (32x32x32) and a .tre image is computed and check with
  *  the reference for the metric.
  */
 
-int itkImageToTubeRigidMetric2Test(int argc, char* argv [] )
+int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
 {
   if ( argc < 4 )
     {
@@ -53,7 +59,7 @@ int itkImageToTubeRigidMetric2Test(int argc, char* argv [] )
   typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;
   typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
 
-  typedef itk::ImageToTubeRigidMetric2<Image3DType, TubeNetType>
+  typedef itk::@CTK_ADD_CLASS_NAME@<Image3DType, TubeNetType>
     MetricType;
   typedef itk::Array<double>                                      ParametersType;
   typedef MetricType::InterpolatorType                            InterpolatorType;
