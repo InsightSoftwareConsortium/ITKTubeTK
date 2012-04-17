@@ -18,7 +18,7 @@
 #include "itkImageFileReader.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkEuler3DTransform.h"
-#include "itkImageToTubeRigidMetric.h"
+#include "itkImageToTubeRigidMetric2.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkSpatialObjectReader.h"
@@ -33,7 +33,7 @@
  *  a 3D binary images (32x32x32) and a .tre image is computed.
  */
 
-int itkImageToTubeRigidMetricMeasuresTest(int argc, char* argv [] )
+int itkImageToTubeRigidMetric2PerformancesTest(int argc, char* argv [] )
 {
   if ( argc < 4 )
     {
@@ -55,7 +55,7 @@ int itkImageToTubeRigidMetricMeasuresTest(int argc, char* argv [] )
   typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;
   typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
 
-  typedef itk::ImageToTubeRigidMetric<Image3DType, TubeNetType>   MetricType;
+  typedef itk::ImageToTubeRigidMetric2<Image3DType, TubeNetType>  MetricType;
   typedef itk::Array<double>                                      ParametersType;
   typedef MetricType::InterpolatorType                            InterpolatorType;
   typedef MetricType::TransformType                               TransformType;
