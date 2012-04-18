@@ -305,41 +305,12 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
   const double scaleExtentProduct = point.Scale * m_Extent;
   double result = 0;
   double wI = 0;
-  unsigned int n = 0;
 
-  // TODO displace These first as precomputed
   itk::Index<3> index;
   for( double dist = -scaleExtentProduct; dist <= scaleExtentProduct; ++dist )
     {
-    index[0] = static_cast<unsigned int>(
-          point.TransformedPoint.GetPosition()[0]
-          + dist * point.TransformedPoint.GetNormal1().GetElement(0) );
-    index[1] = static_cast<unsigned int>(
-          point.TransformedPoint.GetPosition()[1]
-          + dist * point.TransformedPoint.GetNormal1().GetElement(1) );
-    index[2] = static_cast<unsigned int>(
-          point.TransformedPoint.GetPosition()[2]
-          + dist * point.TransformedPoint.GetNormal1().GetElement(2) );
-
     double distSquared = std::pow( dist, 2 );
-    itk::Size<3> size =
-      this->m_FixedImage->GetLargestPossibleRegion().GetSize();
-    if( index[0] >= 0 && ( index[0] < static_cast<unsigned int>( size[0] ) )
-      && index[1] >= 0 && ( index[1] < static_cast<unsigned int>( size[1] ) )
-      && index[2] >= 0 && ( index[2] < static_cast<unsigned int>( size[2] ) ) )
-      {
-      wI += ( -1 + ( distSquared / scaleSquared ) )
-        * exp( -0.5 * distSquared / scaleSquared );
-      n++;
-      }
-    }
-
-  double error = wI / n;
-  for( double dist = -scaleExtentProduct; dist <= scaleExtentProduct; ++dist )
-    {
-    double distSquared = std::pow( dist, 2 );
-    wI = ( -1 + ( distSquared / scaleSquared ) )
-      * exp( -0.5 * distSquared / scaleSquared ) - error;
+    wI = exp( -0.5 * distSquared / scaleSquared );
 
     index[0] = static_cast<unsigned int>(
           point.TransformedPoint.GetPosition()[0]
@@ -575,8 +546,8 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
        dist <= scaleExtentProduct;
        dist += 0.1 )
     {
-    wI = 2 * dist * exp( -0.5 * std::pow( dist, 2 ) / scaleSquared );
-
+    double distSquared = std::pow( dist, 2 );
+    wI = - dist / scaleSquared * exp( -0.5 * distSquared / scaleSquared );
     wTotalX += fabs( wI );
 
     index[0] = static_cast<unsigned int>(

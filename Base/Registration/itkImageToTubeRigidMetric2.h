@@ -52,29 +52,30 @@ class ITK_EXPORT ImageToTubeRigidMetric2
 : public ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>
 {
 public:
-  typedef ImageToTubeRigidMetric2          Self;
+  typedef ImageToTubeRigidMetric2                 Self;
   typedef ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>
                                                   Superclass;
   typedef SmartPointer<Self>                      Pointer;
   typedef SmartPointer<const Self>                ConstPointer;
-
-  /** Type definition for a tube point */
-  typedef VesselTubeSpatialObjectPoint<3>       TubePointType;
-  typedef VesselTubeSpatialObject<3>            TubeType;
-  typedef TMovingSpatialObject                  MovingSpatialObjectType;
+  typedef VesselTubeSpatialObjectPoint<3>         TubePointType;
+  typedef VesselTubeSpatialObject<3>              TubeType;
+  typedef TMovingSpatialObject                    MovingSpatialObjectType;
   typedef typename MovingSpatialObjectType::ChildrenListType
-                                                ChildrenListType;
-  typedef GroupSpatialObject<3>                 TubeNetType;
-  typedef Image<unsigned char, 3>               MaskImageType;
-  typedef typename MaskImageType::Pointer       MaskImagePointer;
-  typedef typename MaskImageType::IndexType     IndexType;
-  typedef TFixedImage                           FixedImageType;
+                                                  ChildrenListType;
+  typedef GroupSpatialObject<3>                   TubeNetType;
+  typedef Image<unsigned char, 3>                 MaskImageType;
+  typedef typename MaskImageType::Pointer         MaskImagePointer;
+  typedef typename MaskImageType::IndexType       IndexType;
+  typedef TFixedImage                             FixedImageType;
   typedef GaussianDerivativeImageFunction<TFixedImage>
-                                                DerivativeImageFunctionType;
-
-  typedef typename Superclass::DerivativeType   DerivativeType;
-  typedef typename Superclass::ParametersType   ParametersType;
-  typedef typename Superclass::MeasureType      MeasureType;
+                                                  DerivativeImageFunctionType;
+  typedef typename Superclass::DerivativeType     DerivativeType;
+  typedef typename Superclass::ParametersType     ParametersType;
+  typedef typename Superclass::MeasureType        MeasureType;
+  typedef vnl_vector<double>                      VectorType;
+  typedef vnl_matrix<double>                      MatrixType;
+  typedef Point<double, 3>                        PointType;
+  typedef std::list<PointType>                    PointsType;
 
   struct TransformedPointType
     {
@@ -86,11 +87,6 @@ public:
     double Weight;
     };
   typedef std::vector<TransformedPointType> TransformedPointsType;
-
-  typedef vnl_vector<double>                    VectorType;
-  typedef vnl_matrix<double>                    MatrixType;
-  typedef Point<double, 3>                      PointType;
-  typedef std::list<PointType> PointsType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric2, ImageToSpatialObjectMetric );

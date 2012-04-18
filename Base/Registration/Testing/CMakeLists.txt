@@ -321,7 +321,7 @@ add_test( itkImageToTubeRigidMetric2Test1
           ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2Test
           ${INPUT_DATA}/SyntheticVesselTubeImage.mha
           ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
-          1.095681
+          2.77459
           )
 
 add_test( itkImageToTubeRigidMetric2Test2
