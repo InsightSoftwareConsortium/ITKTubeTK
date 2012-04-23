@@ -26,11 +26,6 @@ include_regular_expression( "^.*$" )
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
-Include(MIDAS3.cmake)
-set( MIDAS_REST_URL http://midas3.kitware.com/api/rest )
-set( MIDAS_KEY_DIR ${TESTING_DATA_INPUT})
-
-
 #set(ITKRegistrationCommonTests
 
 set( BASE_REGISTRATION_FILTERS_TESTS
@@ -358,12 +353,3 @@ add_test( itkSyntheticTubeImagesGenerationsTest
           ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
           ${TEMP}/SyntheticTransformedVesselTubeImage.mha
           )
-# Tests using data from MIDAS
-if ( MIDAS_USER != "" )
-        MIDAS_ADD_TEST( itkImageToTubeRigidMetricLargeDatasetPerformaceTest
-          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricPerformancesTest
-          MIDAS{LargeSizeTubeImage.mha.md5}
-          MIDAS{LargeSizeTubeManuallyModified.tre}
-          ${TEMP}/itkImageToTubeRigidMetricLargeDatasetPerformaceTest
-          )
-endif( MIDAS_USER != "" )
