@@ -120,28 +120,6 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
 
-add_test( itkTubeLDAGeneratorTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-  itkTubeLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
-  )
-
-add_test( itkTubeNJetLDAGeneratorTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-    itkTubeNJetLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
-  )
-
 ## MIDAS tests
 MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest
   ${BASE_FILTERING_TESTS}
@@ -160,14 +138,6 @@ MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest2
 MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest3
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTestNew )
-
-MIDAS_ADD_TEST( itkTubeBlurImageFunctionMIDASTest
-  ${BASE_FILTERING_TESTS}
-  --compare MIDAS{itkTubeBlurImageFunctionTest.mha.md5}
-            ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  itkTubeBlurImageFunctionTest
-    ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  )
 
 MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterMIDASTest
   ${BASE_FILTERING_TESTS}
@@ -194,25 +164,3 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetina10MIDASTest
       MIDAS{im0001_n10.crop2.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
-
-MIDAS_ADD_TEST( itkTubeLDAGeneratorMIDASTest
-  ${BASE_FILTERING_TESTS}
-  --compare MIDAS{itkTubeLDAGeneratorTest_lda0.mha.md5}
-            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-  itkTubeLDAGeneratorTest
-    MIDAS{ES0015_Large_Subs.mha.md5}
-    MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
-    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
-  )
-
-MIDAS_ADD_TEST( itkTubeNJetLDAGeneratorMIDASTest
-  ${BASE_FILTERING_TESTS}
-  --compare MIDAS{itkTubeNJetLDAGeneratorTest_lda0.mha.md5}
-            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-  itkTubeNJetLDAGeneratorTest
-    MIDAS{ES0015_Large_Subs.mha.md5}
-    MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
-  )
