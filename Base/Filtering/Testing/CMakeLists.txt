@@ -23,6 +23,11 @@
 
 include_regular_expression( "^.*$" )
 
+Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+
+
 find_package( Tclsh )
 if( TCL_TCLSH )
   add_test( PrintSelf-BaseFiltering ${TCL_TCLSH}
@@ -114,3 +119,100 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
       ${INPUT_DATA}/im0001_n10.crop2.mha
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
+
+add_test( itkTubeLDAGeneratorTest
+  ${BASE_FILTERING_TESTS}
+  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
+            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+  itkTubeLDAGeneratorTest
+    ${INPUT_DATA}/ES0015_Large_Subs.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
+  )
+
+add_test( itkTubeNJetLDAGeneratorTest
+  ${BASE_FILTERING_TESTS}
+  --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
+            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+    itkTubeNJetLDAGeneratorTest
+    ${INPUT_DATA}/ES0015_Large_Subs.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
+  )
+
+## MIDAS tests
+MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest
+  ${BASE_FILTERING_TESTS}
+    itkStructureTensorRecursiveGaussianImageFilterTest
+      MIDAS{PrimitiveObjects.mha.md5}
+      ${TEMP}/PrimaryEigenVectorImage.mha
+      ${TEMP}/PrimaryEigenValueImage.mha )
+
+MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest2
+  ${BASE_FILTERING_TESTS}
+    itkStructureTensorRecursiveGaussianImageFilterTest
+      MIDAS{CylinderSynthetic.mha.md5}
+      ${TEMP}/CylinderPrimaryEigenVectorImage.mha
+      ${TEMP}/CylinderPrimaryEigenValueImage.mha )
+
+MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest3
+  ${BASE_FILTERING_TESTS}
+    itkStructureTensorRecursiveGaussianImageFilterTestNew )
+
+MIDAS_ADD_TEST( itkTubeBlurImageFunctionMIDASTest
+  ${BASE_FILTERING_TESTS}
+  --compare MIDAS{itkTubeBlurImageFunctionTest.mha.md5}
+            ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  itkTubeBlurImageFunctionTest
+    ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  )
+
+MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterMIDASTest
+  ${BASE_FILTERING_TESTS}
+    --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterTest.mha.md5}
+      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
+    itkTubeEnhancingDiffusion2DImageFilterTest
+      MIDAS{ES0015_1_Subs.mha.md5}
+      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha )
+
+MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetinaMIDASTest
+  ${BASE_FILTERING_TESTS}
+    --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha.md5}
+      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
+    itkTubeEnhancingDiffusion2DImageFilterTest
+      MIDAS{im0001.crop2.mha.md5}
+      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
+      true )
+
+MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetina10MIDASTest
+  ${BASE_FILTERING_TESTS}
+    --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha.md5}
+      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
+    itkTubeEnhancingDiffusion2DImageFilterTest
+      MIDAS{im0001_n10.crop2.mha.md5}
+      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
+      true )
+
+MIDAS_ADD_TEST( itkTubeLDAGeneratorMIDASTest
+  ${BASE_FILTERING_TESTS}
+  --compare MIDAS{itkTubeLDAGeneratorTest_lda0.mha.md5}
+            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+  itkTubeLDAGeneratorTest
+    MIDAS{ES0015_Large_Subs.mha.md5}
+    MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
+    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
+  )
+
+MIDAS_ADD_TEST( itkTubeNJetLDAGeneratorMIDASTest
+  ${BASE_FILTERING_TESTS}
+  --compare MIDAS{itkTubeNJetLDAGeneratorTest_lda0.mha.md5}
+            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+  itkTubeNJetLDAGeneratorTest
+    MIDAS{ES0015_Large_Subs.mha.md5}
+    MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
+  )

@@ -57,6 +57,10 @@ include( "CTestConfig.cmake" )
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
   ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
 
+#-----------------------------------------------------------------------------
+# Configure MIDAS_USER and API_KEY to download testing data from MIDAS
+SET(MIDAS_USER "" CACHE STRING "MIDAS User email address")
+SET(MIDAS_DEFAULT_API_KEY "" CACHE STRING "MIDAS DEFAULT API Key")
 
 #-----------------------------------------------------------------------------
 # Doxygen setup
