@@ -97,7 +97,7 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   BlurFilterType::Pointer blur0 = BlurFilterType::New();
   blur0->SetInput( inputImage );
   blur0->SetSigma( 2.0 );
-  blur0->SetOrder( 
+  blur0->SetOrder(
     itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
   blur0->SetDirection( 0 );
   blur0->Update();
@@ -105,7 +105,7 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   BlurFilterType::Pointer blur1 = BlurFilterType::New();
   blur1->SetInput( inputImage );
   blur1->SetSigma( 2.0 );
-  blur1->SetOrder( 
+  blur1->SetOrder(
     itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
   blur1->SetDirection( 1 );
   blur1->Update();
@@ -113,7 +113,7 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   BlurFilterType::Pointer blur2 = BlurFilterType::New();
   blur2->SetInput( inputImage );
   blur2->SetSigma( 4.0 );
-  blur2->SetOrder( 
+  blur2->SetOrder(
     itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
   blur2->SetDirection( 0 );
   blur2->Update();
@@ -121,7 +121,7 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   BlurFilterType::Pointer blur3 = BlurFilterType::New();
   blur3->SetInput( inputImage );
   blur3->SetSigma( 4.0 );
-  blur3->SetOrder( 
+  blur3->SetOrder(
     itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
   blur3->SetDirection( 1 );
   blur3->Update();
@@ -141,7 +141,7 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   std::cout << "Number of LDA = " << filter->GetNumberOfLDA() << std::endl;
   for( unsigned int i=0; i<filter->GetNumberOfLDA(); i++ )
     {
-    std::cout << "LDA" << i << " = " << filter->GetLDAValue(i) << " : " 
+    std::cout << "LDA" << i << " = " << filter->GetLDAValue(i) << " : "
       << filter->GetLDAVector(i) << std::endl;
     }
 

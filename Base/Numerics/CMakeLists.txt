@@ -27,7 +27,7 @@ FIND_PACKAGE( ITK REQUIRED )
 INCLUDE( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Numerics_H_Files
-  itkNJetImageFunction.h
+  itkTubeNJetImageFunction.h
   itkJointHistogramImageFunction.h
   tubeMatrixMath.h
   tubeOptParabolicFit1D.h
@@ -43,7 +43,7 @@ set( TubeTK_Base_Numerics_H_Files
   )
 
 set( TubeTK_Base_Numerics_TXX_Files
-  itkNJetImageFunction.txx
+  itkTubeNJetImageFunction.txx
   itkJointHistogramImageFunction.txx
   tubeTubeMath.txx
   tubeMatrixMath.txx
@@ -54,6 +54,7 @@ include_directories(
   )
 
 SET( TubeTK_Base_Numerics_SRCS
+  itkTubeNJetLDAGenerator2F.cxx
   tubeOptBrent1D.cxx
   tubeOptGoldenMean1D.cxx
   tubeOptParabolicFit1D.cxx

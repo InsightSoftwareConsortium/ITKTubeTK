@@ -91,7 +91,7 @@ public:
 
   void             SetObjectId( ObjectIdType objectId );
   void             AddObjectId( ObjectIdType objectId );
-  ObjectIdType     GetObjectId( int num = 0 );
+  ObjectIdType     GetObjectId( unsigned int num = 0 );
 
   unsigned int     GetNumberOfObjects( void );
 

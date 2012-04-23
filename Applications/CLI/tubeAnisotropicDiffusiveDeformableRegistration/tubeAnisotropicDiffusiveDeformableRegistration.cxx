@@ -123,6 +123,7 @@ bool ReorientAndWriteImage( ImageType * inputImage,
   typedef itk::ImageFileWriter< ImageType > FileWriterType;
   typename FileWriterType::Pointer imageWriter = FileWriterType::New();
   imageWriter->SetFileName( fileName );
+  imageWriter->SetUseCompression( true );
   imageWriter->SetInput( orient->GetOutput() );
   try
     {
@@ -800,6 +801,7 @@ int DoIt( int argc, char * argv[] )
     typedef itk::ImageFileWriter< VectorImageType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetFileName( outputDeformationFieldFileName );
+    fieldWriter->SetUseCompression( true );
     fieldWriter->SetInput( orientOutput->GetOutput() );
     try
       {
@@ -823,6 +825,7 @@ int DoIt( int argc, char * argv[] )
 //    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
 //    GridWriterType::Pointer gridWriter = GridWriterType::New();
 //    gridWriter->SetFileName( outputTransformFileName );
+//    gridWriter->SetUseCompression( true );
 //    gridWriter->SetInput( orientOutput->GetOutput() );
 //    try
 //      {
@@ -845,6 +848,7 @@ int DoIt( int argc, char * argv[] )
     typedef itk::ImageFileWriter< MovingImageType > ImageWriterType;
     typename ImageWriterType::Pointer imageWriter = ImageWriterType::New();
     imageWriter->SetFileName( outputResampledImageFileName );
+    imageWriter->SetUseCompression( true );
     imageWriter->SetInput( warper->GetOutput() );
     try
       {

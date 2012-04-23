@@ -278,5 +278,5 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  return EXIT_SUCCESS;
+  return returnStatus;
   }

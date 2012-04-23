@@ -32,7 +32,7 @@ limitations under the License.
 #include "itkTubeRadiusExtractor.h"
 #include "itkTubeRidgeExtractor.h"
 #include "itkTubeTubeExtractor.h"
-#include "itkTubeTubeNetExtractor.h"
+#include "itkTubeTubeNetworkExtractor.h"
 
 int main ( int , char ** )
 {

@@ -55,8 +55,11 @@ public:
   typedef SmartPointer<Self>                                      Pointer;
   typedef SmartPointer<const Self>                                ConstPointer;
 
+  // itkNewMacro( Self );  // Not included since pure virutal
+
   /** Run-time type information (and related methods) */
-  itkTypeMacro(AnisotropicDiffusionTensorImageFilter, ImageToImageFilter );
+  itkTypeMacro( AnisotropicDiffusionTensorImageFilter,
+    FiniteDifferenceImageFiler );
 
   /** Convenient typedefs */
   typedef typename Superclass::InputImageType  InputImageType;

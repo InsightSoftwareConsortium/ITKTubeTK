@@ -168,6 +168,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
     
     ImageWriterType::Pointer imageWriter = ImageWriterType::New();
     imageWriter->SetFileName(argv[4]);
+    imageWriter->SetUseCompression( true );
     imageWriter->SetInput(vesselToImageFilter->GetOutput());
     imageWriter->Update();
     }

@@ -28,7 +28,6 @@
       <description>Output Volume</description>
     </image>
   </parameters>
-
   <parameters>
     <label>Post-Dilation</label>
     <integer>

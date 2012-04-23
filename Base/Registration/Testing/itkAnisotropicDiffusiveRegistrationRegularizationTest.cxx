@@ -196,6 +196,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   typedef itk::ImageFileWriter< DeformationFieldType > WriterType;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[1] );
+  writer->SetUseCompression( true );
   writer->SetInput( deformationField );
   try
     {
@@ -318,6 +319,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
     VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
     vectorWriter->SetFileName( argv[4] );
+    vectorWriter->SetUseCompression( true );
     vectorWriter->SetInput( anisotropicRegistrator->GetNormalVectorImage() );
     vectorWriter->Write();
 

@@ -45,10 +45,8 @@ set( tubeBaseFilteringTests_SRCS
   tubeBaseFilteringPrintTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
-  itkTubeBlurImageFunctionTest.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
-  itkTubeLDAGeneratorTest.cxx
-  itkTubeNJetLDAGeneratorTest.cxx )
+  )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
@@ -91,14 +89,6 @@ add_test( itkStructureTensorRecursiveGaussianImageFilterTest3
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTestNew )
 
-add_test( itkTubeBlurImageFunctionTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeBlurImageFunctionTest.mha
-            ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  itkTubeBlurImageFunctionTest
-    ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  )
-
 add_test( itkTubeEnhancingDiffusion2DImageFilterTest
   ${BASE_FILTERING_TESTS}
     --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
@@ -124,25 +114,3 @@ add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
       ${INPUT_DATA}/im0001_n10.crop2.mha
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
-
-add_test( itkTubeLDAGeneratorTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-  itkTubeLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
-  )
-
-add_test( itkTubeNJetLDAGeneratorTest
-  ${BASE_FILTERING_TESTS}
-  --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-  itkTubeNJetLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
-  )

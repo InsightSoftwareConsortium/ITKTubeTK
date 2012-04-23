@@ -47,7 +47,10 @@ set( tubeBaseNumerics_SRCS
   tubeBaseNumericsPrintTest.cxx
   itkImageRegionMomentsCalculatorTest.cxx
   itkJointHistogramImageFunctionTest.cxx
-  itkNJetImageFunctionTest.cxx
+  itkTubeNJetImageFunctionTest.cxx
+  itkTubeBlurImageFunctionTest.cxx
+  itkTubeLDAGeneratorTest.cxx
+  itkTubeNJetLDAGeneratorTest.cxx
   itkVotingResampleImageFunctionTest.cxx
   tubeMatrixMathTest.cxx
   tubeOptBrentNDTest.cxx
@@ -129,14 +132,14 @@ add_test( itkImageRegionMomentsCalculatorTest
   )
 
 foreach( testNum RANGE 0 37 )
-  add_test( itkNJetImageFunctionTest${testNum}
+  add_test( itkTubeNJetImageFunctionTest${testNum}
     ${BASE_NUMERICS_TESTS}
-      --compare ${BASELINE}/itkNJetImageFunctionTest${testNum}.mha
-                ${TEMP}/itkNJetImageFunctionTest${testNum}.mha
-      itkNJetImageFunctionTest
+      --compare ${BASELINE}/itkTubeNJetImageFunctionTest${testNum}.mha
+                ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
+      itkTubeNJetImageFunctionTest
         ${testNum}
         ${INPUT_DATA}/GDS0015_1_Subs.mha
-        ${TEMP}/itkNJetImageFunctionTest${testNum}.mha
+        ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
     )
 endforeach( testNum )
 
@@ -214,4 +217,35 @@ add_test( tubeSplineNDTest
             ${TEMP}/tubeSplineNDTest.mha
   tubeSplineNDTest
     ${TEMP}/tubeSplineNDTest.mha
+  )
+
+
+add_test( itkTubeBlurImageFunctionTest
+  ${BASE_NUMERICS_TESTS}
+  --compare ${BASELINE}/itkTubeBlurImageFunctionTest.mha
+            ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  itkTubeBlurImageFunctionTest
+    ${TEMP}/itkTubeBlurImageFunctionTest.mha
+  )
+
+add_test( itkTubeLDAGeneratorTest
+  ${BASE_NUMERICS_TESTS}
+  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
+            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+  itkTubeLDAGeneratorTest
+    ${INPUT_DATA}/ES0015_Large_Subs.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
+  )
+
+add_test( itkTubeNJetLDAGeneratorTest
+  ${BASE_NUMERICS_TESTS}
+  --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
+            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+  itkTubeNJetLDAGeneratorTest
+    ${INPUT_DATA}/ES0015_Large_Subs.mha
+    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
   )
