@@ -1,24 +1,24 @@
 ##############################################################################
-# 
+#g
 # Library:   TubeTK
-# 
+#g
 # Copyright 2010 Kitware Inc. 28 Corporate Drive,
 # Clifton Park, NY, 12065, USA.
-# 
-# All rights reserved. 
-# 
+#g
+# All rights reserved.g
+#g
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#g
 #       http://www.apache.org/licenses/LICENSE-2.0
-# 
+#g
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#g
 ##############################################################################
 
 project( TubeFiltering )
@@ -27,24 +27,36 @@ FIND_PACKAGE( ITK REQUIRED )
 INCLUDE( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Numerics_H_Files
-  itkTubeNJetImageFunction.h
+  itkImageRegionMomentsCalculator.h
   itkJointHistogramImageFunction.h
+  itkTubeBlurImageFunction.h
+  itkTubeLDAGenerator.h
+  itkTubeNJetImageFunction.h
+  itkTubeNJetLDAGenerator2F.h
+  itkTubeNJetLDAGenerator.h
+  itkVectorImageToListGenerator.h
+  itkVotinResampleImageFunction.h
   tubeMatrixMath.h
+  tubeOptBrent1D.h
+  tubeOptGoldenMean1D.h
+  tubeOptimizer1D.h
+  tubeOptimizerND.h
   tubeOptParabolicFit1D.h
   tubeSpline1D.h
-  tubeOptBrent1D.h
   tubeSplineApproximation1D.h
-  tubeOptGoldenMean1D.h
   tubeSplineND.h
-  tubeOptimizer1D.h
   tubeTubeMath.h
-  tubeOptimizerND.h
   tubeUserFunc.h
   )
 
 set( TubeTK_Base_Numerics_TXX_Files
-  itkTubeNJetImageFunction.txx
+  itkImageRegionMomentsCalculator.txx
   itkJointHistogramImageFunction.txx
+  itkTubeLDAGenerator.txx
+  itkTubeNJetImageFunction.txx
+  itkTubeNJetLDAGenerator.txx
+  itkVectorImageToListGenerator.txx
+  itkVotingResampleImageFunction.txx
   tubeTubeMath.txx
   tubeMatrixMath.txx
   )
@@ -78,8 +90,9 @@ IF( BUILD_TESTING )
   add_subdirectory( Testing )
 ENDIF( BUILD_TESTING )
 
-#install(FILES 
-  #${TubeTK_Base_Numerics_H_Files}
-  #${TubeTK_Base_Numerics_TXX_Files}
-  #DESTINATION include)
+install(FILESg
+  ${TubeTK_Base_Numerics_H_Files}
+  ${TubeTK_Base_Numerics_TXX_Files}
+  DESTINATION include
+  )
 
