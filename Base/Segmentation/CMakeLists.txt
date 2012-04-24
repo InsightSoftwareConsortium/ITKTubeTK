@@ -22,7 +22,10 @@
 ##############################################################################
 
 set( TubeTK_Base_Segmentation_H_Files
+  itkLabelOverlapMeauresImageFilter.h
   itkTubeCVTImageFilter.h
+  itkTubeOtsuThresholdMaskedImageCalculator.h
+  itkTubeOtsuThresholdMaskedImageFilter.h
   itkTubePDFSegmenter.h
   itkTubeRadiusExtractor.h
   itkTubeRidgeExtractor.h
@@ -31,7 +34,10 @@ set( TubeTK_Base_Segmentation_H_Files
   )
 
 set(TubeTK_Base_Segmentation_TXX_Files
+  itkLabelOverlapMeauresImageFilter.txx
   itkTubeCVTImageFilter.txx
+  itkTubeOtsuThresholdMaskedImageCalculator.txx
+  itkTubeOtsuThresholdMaskedImageFilter.txx
   itkTubePDFSegmenter.txx
   itkTubeRadiusExtractor.txx
   itkTubeRidgeExtractor.txx
@@ -43,9 +49,9 @@ IF( BUILD_TESTING )
   add_subdirectory( Testing )
 ENDIF( BUILD_TESTING )
 
-#install(FILES
-  #${TubeTK_Base_Segmentation_H_Files}
+install(FILES
+  ${TubeTK_Base_Segmentation_H_Files}
   #${TubeTK_Base_Segmentation_TXX_Files}
-  #DESTINATION include
-  #)
+  DESTINATION include
+  )
 

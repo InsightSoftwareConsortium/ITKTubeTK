@@ -34,22 +34,17 @@ set(TubeTK_Base_Filtering_H_Files
   itkAnisotropicHybridDiffusionImageFilter.h
   itkStructureTensorRecursiveGaussianImageFilter.h
   itkSymmetricEigenVectorAnalysisImageFilter.h
-  itkTubeBlurImageFunction.h
   itkTubeEnhancingDiffusion2DImageFilter.h
-  itkTubeLDAGenerator.h
 )
 
 set(TubeTK_Base_Filtering_TXX_Files
-  itkTubeEnhancingDiffusion2DImageFilter.txx
-  itkStructureTensorRecursiveGaussianImageFilter.txx
-  itkAnisotropicHybridDiffusionImageFilter.txx
-  itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx
-  itkAnisotropicDiffusionTensorImageFilter.txx
   itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx
   itkAnisotropicDiffusionTensorFunction.txx
-  itkTubeBlurImageFunction.txx
+  itkAnisotropicDiffusionTensorImageFilter.txx
+  itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx
+  itkAnisotropicHybridDiffusionImageFilter.txx
+  itkStructureTensorRecursiveGaussianImageFilter.txx
   itkTubeEnhancingDiffusion2DImageFilter.txx
-  itkTubeLDAGenerator.txx
 )
 
 include_directories(
@@ -58,7 +53,7 @@ include_directories(
   )
 
 #SET( TubeTK_Base_Filtering_SRCS
-  #)
+#  )
 
 #ADD_LIBRARY( TubeFiltering STATIC ${TubeTK_Base_Filtering_SRCS} )
 #TARGET_LINK_LIBRARIES( TubeFiltering ${ITK_LIBRARIES} )
@@ -71,7 +66,8 @@ IF( BUILD_TESTING )
   add_subdirectory( Testing )
 ENDIF( BUILD_TESTING )
 
-#install(FILES
-  #${TubeTK_Base_Filtering_H_Files}
-  #${TubeTK_Base_Filtering_H_Files}
-  #DESTINATION include)
+install( FILES
+  ${TubeTK_Base_Filtering_H_Files}
+  ${TubeTK_Base_Filtering_H_Files}
+  DESTINATION includeg
+  )
