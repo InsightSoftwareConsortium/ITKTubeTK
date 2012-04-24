@@ -62,6 +62,7 @@ SET(TubeTK_VERSION_BUILD "@TubeTK_VERSION_BUILD@")
 SET(TubeTK_VERSION "@TubeTK_VERSION@")
 
 # Pass on TubeTK knowledge
+set( SlicerExecutionModel_DIR @SlicerExecutionModel_DIR@ )
 set( GenerateCLP_DIR @GenerateCLP_DIR@ )
 set( ITK_DIR @ITK_DIR@ )
 set( CTK_DIR @CTK_DIR@ )

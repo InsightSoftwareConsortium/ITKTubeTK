@@ -9,7 +9,7 @@
 #	1:	Print basic extra information
 #	2:	Print lots of details
 #
-set verbose 0
+set verbose 1
 
 set class_name ""
 
