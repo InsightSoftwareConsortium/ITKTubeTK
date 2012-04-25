@@ -23,6 +23,10 @@
 
 include_regular_expression( "^.*$" )
 
+Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
@@ -56,3 +60,26 @@ add_test( ${PROJECT_NAME}Test1-Compare
                -b ${BASELINE}/DSC_Test1_20030625_361_3__0.86_1.60_3.mhd )
 set_tests_properties( ${PROJECT_NAME}Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+
+#######
+# MIDAS-Test1
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
+             ${PROJ_EXE}
+               -i
+               -r
+               -a Test1 001
+               -w
+               -o ${TEMP}
+               -b DSC_
+               MIDAS_ADD_DIRECTORY{DICOMSeries} )
+
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
+             ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/DSC_Test1_20030625_361_3__0.86_1.60_3.mhd
+               -b MIDAS{DSC_Test1_20030625_361_3__0.86_1.60_3.mhd.md5}
+               MIDAS_FETCH_ONLY{DSC_Test1_20030625_361_3__0.86_1.60_3.zraw.md5}
+              )
+
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
