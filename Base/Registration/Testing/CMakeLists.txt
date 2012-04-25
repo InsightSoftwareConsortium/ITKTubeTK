@@ -23,6 +23,11 @@
 
 include_regular_expression( "^.*$" )
 
+Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+
+
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
@@ -351,5 +356,224 @@ add_test( itkSyntheticTubeImagesGenerationsTest
           ${TEMP}/SyntheticVesselTube.tre
           ${TEMP}/SyntheticVesselTubeImage.mha
           ${INPUT_DATA}/SyntheticVesselTubeManuallyModified.tre
+          ${TEMP}/SyntheticTransformedVesselTubeImage.mha
+          )
+
+
+# MIDAS tests
+
+MIDAS_ADD_TEST( itkTubeToTubeTransformFilterMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkTubeToTubeTransformFilterTest
+          MIDAS{Branch-truth-new.tre.md5}
+          ${TEMP}/itkTubeToTubeTransformFilter.tre
+          MIDAS{Branch.n020.mha.md5}
+          ${TEMP}/itkTubeToTubeTransformFilter.mha
+          0.2 0.1 0.1 5 -5 5
+          0
+          )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
+          MIDAS{Branch.n020.mha.md5}
+          ${TEMP}/itkTubeToTubeTransformFilter.tre
+          ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
+          )
+set_tests_properties( itkImageToTubeRigidRegistrationMIDASTest
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterMIDASTest )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationPerformancesMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationPerformancesTest
+          MIDAS{Branch.n020.mha.md5}
+          MIDAS{Branch-truth-new.tre.md5}
+          ${TEMP}/itkImageToTubeRigidRegistrationPerformances
+          )
+set_tests_properties( itkImageToTubeRigidRegistrationPerformancesMIDASTest
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterMIDASTest )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidRegistration2MIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistration2Test
+          MIDAS{Branch.n020.mha.md5}
+          ${TEMP}/itkTubeToTubeTransformFilter.tre
+          ${TEMP}/itkImageToTubeRigidRegistration2Test.mha
+          )
+set_tests_properties( itkImageToTubeRigidRegistration2MIDASTest
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterMIDASTest )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidRegistration2PerformancesMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistration2PerformancesTest
+          MIDAS{Branch.n020.mha.md5}
+          MIDAS{Branch-truth-new.tre.md5}
+          ${TEMP}/itkImageToTubeRigidRegistration2Performances
+          )
+set_tests_properties( itkImageToTubeRigidRegistration2PerformancesMIDASTest
+                      PROPERTIES DEPENDS itkTubeToTubeTransformFilterMIDASTest )
+
+if( TubeTK_USE_VTK )
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraightNoNoise
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+            itkAnisotropicDiffusiveRegistrationRegularizationTest
+          ${TEMP}/Regularization_straight_noNoise_origMotionField.mhd
+          ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
+          ${TEMP}/Regularization_straight_noNoise_smoothedMotionField_normal.mhd
+          ${TEMP}/Regularization_straight_noNoise_normalVectorImage.mhd
+          ${TEMP}/Regularization_straight_noNoise_organBoundary.vtk
+          0 0
+          5 0.125 1
+          )
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraightNoNoise-Compare
+          ${IMAGECOMPARE_EXE}
+            -t ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
+            -b MIDAS{Regularization_straight_noNoise_smoothedMotionField.mhd.md5}
+            -i ${imageCompareTolerance}
+            MIDAS_FETCH_ONLY{Regularization_straight_noNoise_smoothedMotionField.zraw.md5}
+          )
+  set_tests_properties( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraightNoNoise-Compare
+                        PROPERTIES DEPENDS
+                        itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraightNoNoise )
+
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraight
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+            itkAnisotropicDiffusiveRegistrationRegularizationTest
+          ${TEMP}/Regularization_straight_origMotionField.mhd
+          ${TEMP}/Regularization_straight_smoothedMotionField.mhd
+          ${TEMP}/Regularization_straight_smoothedMotionField_normal.mhd
+          ${TEMP}/Regularization_straight_normalVectorImage.mhd
+          ${TEMP}/Regularization_straight_smoothedMotionField_organBoundary.vtk
+          0.1 0
+          5 0.125 1
+          )
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraight-Compare
+          ${IMAGECOMPARE_EXE}
+            -t ${TEMP}/Regularization_straight_smoothedMotionField.mhd
+            -b MIDAS{Regularization_straight_smoothedMotionField.mhd.md5}
+            -i ${imageCompareTolerance}
+            MIDAS_FETCH_ONLY{Regularization_straight_smoothedMotionField.zraw.md5}
+          )
+  set_tests_properties( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraight-Compare
+                        PROPERTIES DEPENDS
+                        itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestStraight )
+
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledNoNoise
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+            itkAnisotropicDiffusiveRegistrationRegularizationTest
+          ${TEMP}/Regularization_angled_noNoise_origMotionField.mhd
+          ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
+          ${TEMP}/Regularization_angled_noNoise_smoothedMotionField_normal.mhd
+          ${TEMP}/Regularization_angled_noNoise_normalVectorImage.mhd
+          ${TEMP}/Regularization_angled_noNoise_organBoundary.vtk
+          0 0.5
+          5 0.125 1
+          )
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledNoNoise-Compare
+          ${IMAGECOMPARE_EXE}
+            -t ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
+            -b MIDAS{Regularization_angled_noNoise_smoothedMotionField.mhd.md5}
+            -i ${imageCompareTolerance}
+            MIDAS_FETCH_ONLY{Regularization_angled_noNoise_smoothedMotionField.zraw.md5}
+          )
+  set_tests_properties( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledNoNoise-Compare
+                        PROPERTIES DEPENDS
+                        itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledNoNoise )
+
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngled
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+            itkAnisotropicDiffusiveRegistrationRegularizationTest
+          ${TEMP}/Regularization_angled_origMotionField.mhd
+          ${TEMP}/Regularization_angled_smoothedMotionField.mhd
+          ${TEMP}/Regularization_angled_smoothedMotionField_normal.mhd
+          ${TEMP}/Regularization_angled_normalVectorImage.mhd
+          ${TEMP}/Regularization_angled_smoothedMotionField_organBoundary.vtk
+          0.1 0.5
+          5 0.125 1
+          )
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngled-Compare
+          ${IMAGECOMPARE_EXE}
+            -t ${TEMP}/Regularization_angled_smoothedMotionField.mhd
+            -b MIDAS{Regularization_angled_smoothedMotionField.mhd.md5}
+            -i ${imageCompareTolerance}
+            MIDAS_FETCH_ONLY{Regularization_angled_smoothedMotionField.zraw.md5}
+          )
+  set_tests_properties( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngled-Compare
+                        PROPERTIES DEPENDS
+                        itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngled )
+
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledGaussian
+          ${BASE_REGISTRATION_FILTERS_TESTS}
+            itkAnisotropicDiffusiveRegistrationRegularizationTest
+          ${TEMP}/Regularization_angled_gaussian_origMotionField.mhd
+          ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
+          ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_normal.mhd
+          ${TEMP}/Regularization_angled_gaussian_normalVectorImage.mhd
+          ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_organBoundary.vtk
+          0.1 0.5
+          5 0.125 0
+          )
+  MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledGaussian-Compare
+          ${IMAGECOMPARE_EXE}
+            -t ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
+            -b MIDAS{Regularization_angled_gaussian_smoothedMotionField.mhd.md5}
+            -i ${imageCompareTolerance}
+            MIDAS_FETCH_ONLY{Regularization_angled_gaussian_smoothedMotionField.zraw.md5}
+          )
+  set_tests_properties( itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledGaussian-Compare
+                        PROPERTIES DEPENDS
+                        itkAnisotropicDiffusiveRegistrationRegularizationMIDASTestAngledGaussian )
+
+endif( TubeTK_USE_VTK )
+
+MIDAS_ADD_TEST( itkTubePointsToImageMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkTubePointsToImageTest
+          MIDAS{Branch-truth-new.tre.md5}
+          ${TEMP}/Branch-truth-new-points.mha
+          )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidMetricMIDASTest1
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          MIDAS{SyntheticVesselTubeImage.mha.md5}
+          MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
+          1.095681
+          )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidMetricMIDASTest2
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
+          MIDAS{SyntheticTransformedVesselTubeImage.mha.md5}
+          MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
+          -1.13622
+          )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidMetric2MIDASTest1
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2Test
+          MIDAS{SyntheticVesselTubeImage.mha.md5}
+          MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
+          2.77459
+          )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidMetric2MIDASTest2
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2Test
+          MIDAS{SyntheticTransformedVesselTubeImage.mha.md5}
+          MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
+          -1.13622
+          )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidMetricPerformancesMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricPerformancesTest
+          MIDAS{SyntheticVesselTubeImage.mha.md5}
+          MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
+          ${TEMP}/itkImageToTubeRigidMetricPerformance.txt
+          )
+
+MIDAS_ADD_TEST( itkImageToTubeRigidMetric2PerformancesMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2PerformancesTest
+          MIDAS{SyntheticVesselTubeImage.mha.md5}
+          MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
+          ${TEMP}/itkImageToTubeRigidMetric2Performance.txt
+          )
+
+MIDAS_ADD_TEST( itkSyntheticTubeImagesGenerationsMIDASTest
+          ${BASE_REGISTRATION_FILTERS_TESTS} itkSyntheticTubeImageGenerationsTest
+          ${TEMP}/SyntheticBlurredTubeImage.mha
+          ${TEMP}/SyntheticVesselTube.tre
+          ${TEMP}/SyntheticVesselTubeImage.mha
+          MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
           ${TEMP}/SyntheticTransformedVesselTubeImage.mha
           )
