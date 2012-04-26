@@ -23,6 +23,11 @@
 
 include_regular_expression( "^.*$" )
 
+Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+
+
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
@@ -158,3 +163,123 @@ add_test( ${PROJECT_NAME}Test4-Compare
                -b ${BASELINE}/${PROJECT_NAME}Test1.mnda )
 set_tests_properties( ${PROJECT_NAME}Test4-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
+
+
+#######
+# MIDAS-Test1
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
+            ${PROJ_EXE}
+               --useNumberOfLDA 3
+               --objectId 0,255
+               --zeroScales 1
+               --firstScales 1,3
+               --secondScales 5
+               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
+               --saveFeatureImages ${TEMP}/${PROJECT_NAME}Test1.fi
+               MIDAS{ES0015_Large_Subs.mha.md5}
+               MIDAS{GDS0015_Large_Subs2.mha.md5}
+               ${TEMP}/${PROJECT_NAME}Test1 )
+
+#######
+# MIDAS-Test1-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
+            ${IMAGECOMPARE_EXE}
+               -i 0.01
+               -t ${TEMP}/${PROJECT_NAME}Test1.lda00.mha
+               -b MIDAS{${PROJECT_NAME}Test1.lda00.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
+
+#######
+# MIDAS-Test2
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2
+            ${PROJ_EXE}
+               --useNumberOfLDA 2
+               --objectId 0,255
+               --usePCA
+               --zeroScales 1
+               --firstScales 1,3
+               --secondScales 5
+               MIDAS{ES0015_Large_Subs.mha.md5}
+               MIDAS{GDS0015_Large_Subs2.mha.md5}
+               ${TEMP}/${PROJECT_NAME}Test2 )
+
+#######
+# MIDAS-Test2-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2-Compare
+            ${IMAGECOMPARE_EXE}
+               -i 0.01
+               -t ${TEMP}/${PROJECT_NAME}Test2.lda01.mha
+               -b MIDAS{${PROJECT_NAME}Test2.lda01.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test2 )
+
+#######
+# MIDAS-Test3
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3
+            ${PROJ_EXE}
+               --useNumberOfLDA 4
+               --objectId 0,255
+               --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
+               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test3.mnda
+               MIDAS{ES0015_Large_Subs.mha.md5}
+               MIDAS{GDS0015_Large_Subs2.mha.md5}
+               ${TEMP}/${PROJECT_NAME}Test3 )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test3
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
+
+#######
+# Test3-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3-Compare
+            ${IMAGECOMPARE_EXE}
+               -i 0.02
+               -t ${TEMP}/${PROJECT_NAME}Test3.lda00.mha
+               -b MIDAS{${PROJECT_NAME}Test1.lda00.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test3 )
+
+#######
+# MIDAS-Test3-Compare2
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3-Compare2
+            ${TEXTCOMPARE_EXE}
+               -d 0.01
+               -t ${TEMP}/${PROJECT_NAME}Test3.mnda
+               -b MIDAS{${PROJECT_NAME}Test1.mnda.md5} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test3-Compare2
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test3 )
+
+#######
+# MIDAS-Test4
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test4
+            ${PROJ_EXE}
+               --useNumberOfLDA 1
+               --objectId 127,255
+               --zeroScales 1
+               --firstScales 1,3
+               --secondScales 5
+               --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
+               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test4.mnda
+               MIDAS{im0001_n05.crop.mha.md5}
+               MIDAS{im0001.vk.crop.mha.md5}
+               ${TEMP}/${PROJECT_NAME}Test4 )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test4
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
+
+#######
+# MIDAS-Test4-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test4-Compare
+            ${TEXTCOMPARE_EXE}
+               -d 0.01
+               -t ${TEMP}/${PROJECT_NAME}Test4.mnda
+               -b MIDAS{${PROJECT_NAME}Test1.mnda.md5} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test4-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test4 )

@@ -148,7 +148,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -i 0.02
                -t ${TEMP}/${PROJECT_NAME}Test1.lda00.mha
-               -b MIDAS{${PROJECT_NAME}Test1.lda00.mha )
+               -b MIDAS{${PROJECT_NAME}Test1.lda00.mha.md5} )
 set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
 
