@@ -23,6 +23,7 @@
 
 include_regular_expression( "^.*$" )
 
+Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 

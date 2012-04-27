@@ -23,6 +23,10 @@
 
 include_regular_expression( "^.*$" )
 
+Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
@@ -72,3 +76,40 @@ add_test( ${PROJECT_NAME}Test2-Compare
                -b ${BASELINE}/${PROJECT_NAME}Test2.mha )
 set_tests_properties( ${PROJECT_NAME}Test2-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
+
+
+#######
+# MIDAS-Test1
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
+            ${PROJ_EXE}
+               MIDAS{ES0015_1.mha.md5}
+               ${TEMP}/${PROJECT_NAME}Test1.mha )
+
+#######
+# MIDAS-Test1-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test1.mha
+               -b MIDAS{${PROJECT_NAME}Test1.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
+#######
+# MIDAS-Test2
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2
+            ${PROJ_EXE}
+               --mask MIDAS{GDS0015_1_match.mask.mha.md5}
+               MIDAS{ES0015_1.mha.md5}
+               ${TEMP}/${PROJECT_NAME}Test2.mha )
+
+#######
+# MIDAS-Test2-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test2.mha
+               -b MIDAS{${PROJECT_NAME}Test2.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test2 )

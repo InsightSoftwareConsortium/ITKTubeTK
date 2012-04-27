@@ -23,6 +23,11 @@
 
 include_regular_expression( "^.*$" )
 
+Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+
+
 set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
 set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
 
@@ -120,3 +125,82 @@ add_test( ${PROJECT_NAME}Test4-Compare
                -i ${imageCompareTolerance} )
 set_tests_properties( ${PROJECT_NAME}Test4-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
+
+
+#######
+# MIDAS-Test1
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
+            ${PROJ_EXE}
+               MIDAS{CroppedWholeLungCTScan.mhd.md5}
+               ${TEMP}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha
+               MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
+              )
+
+#######
+# MIDAS-Test1-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha
+               -b MIDAS{itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha.md5}
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
+
+#######
+# MIDAS-Test2
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2
+            ${PROJ_EXE}
+               MIDAS{SyntheticTubeImage.mha.md5}
+               ${TEMP}/SyntheticTubeEEDFilterResultImage.mha )
+
+#######
+# MIDAS-Test2-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubeEEDFilterResultImage.mha
+               -b MIDAS{SyntheticTubeEEDFilterResultImage.mha.md5}
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test2 )
+
+#######
+# MIDAS-Test3
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3
+            ${PROJ_EXE}
+               MIDAS{SyntheticTubePlusSurfaceImage.mha.md5}
+               ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha )
+
+#######
+# MIDAS-Test3-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha
+               -b MIDAS{SyntheticTubePlusSurfaceEEDFilterResultImage.mha.md5}
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test3 )
+
+#######
+# MIDAS-Test4
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test4
+            ${PROJ_EXE}
+               MIDAS{SyntheticTubePlusSurfaceImage_oriented.mha.md5}
+               ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage_oriented.mha )
+
+#######
+# MIDAS-Test4-Compare
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test4-Compare
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage_oriented.mha
+               -b MIDAS{SyntheticTubePlusSurfaceEEDFilterResultImage_oriented.mha.md5}
+               -i ${imageCompareTolerance} )
+set_tests_properties( ${PROJECT_NAME}MIDAS-Test4-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test4 )
