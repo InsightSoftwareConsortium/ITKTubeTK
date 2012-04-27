@@ -403,8 +403,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-TestSphereNoReg
                -r
                MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
                MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_normals.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_weights.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_normals.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_weights.zraw.md5}
         )
 
 #######
@@ -436,8 +436,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-TestSphereAnisotropic
                -l 0.1
                MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
                MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_normals.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_weights.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_normals.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_weights.zraw.md5}
             )
 
 #######
@@ -562,8 +562,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-TestSphereGaussian
                -a
                MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
                MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_normals.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_weights.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_normals.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_weights.zraw.md5}
             )
 
 #######
@@ -623,8 +623,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-TestBoxesAnisotropic
                -s 0.125
                MIDAS_FETCH_ONLY{Boxes_fixed.raw.md5}
                MIDAS_FETCH_ONLY{Boxes_moving.raw.md5}
-               MIDAS_FETCH_ONLY{Boxes_normals.raw.md5}
-               MIDAS_FETCH_ONLY{Boxes_weights.raw.md5}
+               MIDAS_FETCH_ONLY{Boxes_normals.zraw.md5}
+               MIDAS_FETCH_ONLY{Boxes_weights.zraw.md5}
             )
 
 #######
@@ -720,8 +720,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-TestSphereAnisotropicMultiresolution
                -l 0.05
                MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
                MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_normalsMultiresolution.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_weightsMultiresolution.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_normalsMultiresolution.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_weightsMultiresolution.zraw.md5}
               )
 
 #######
