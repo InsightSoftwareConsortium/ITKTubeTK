@@ -66,14 +66,14 @@ set_tests_properties( ${PROJECT_NAME}Test1-Compare
 #######
 MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
             ${PROJ_EXE}
-               MIDAS{ES0015_Large_Wo_offset.mha
+               MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test1.mha
                --sigma 25 )
 
 MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
-               -b MIDAS{${PROJECT_NAME}Test1.mha
+               -b MIDAS{${PROJECT_NAME}Test1.mha.md5}
                -n 30
                 )
 set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
