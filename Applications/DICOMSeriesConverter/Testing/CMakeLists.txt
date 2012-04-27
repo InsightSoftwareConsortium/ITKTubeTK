@@ -72,7 +72,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
                -w
                -o ${TEMP}
                -b DSC_
-               MIDAS_ADD_DIRECTORY{DICOMSeries} )
+               MIDAS_DIRECTORY{DICOMSeries} )
 
 MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
              ${IMAGECOMPARE_EXE}
