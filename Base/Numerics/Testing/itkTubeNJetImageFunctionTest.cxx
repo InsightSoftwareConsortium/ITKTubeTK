@@ -282,7 +282,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         {
         val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
         h = func->GetMostRecentHessian();
-        outIter.Set( h[0][0] + h[1][1] );
+        outIter.Set( h[0][0] );
         break;
         }
       case 27:
