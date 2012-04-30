@@ -656,8 +656,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-TestBoxesGaussian
                -a
                MIDAS_FETCH_ONLY{Boxes_fixed.raw.md5}
                MIDAS_FETCH_ONLY{Boxes_moving.raw.md5}
-               MIDAS_FETCH_ONLY{Boxes_normals.raw.md5}
-               MIDAS_FETCH_ONLY{Boxes_weights.raw.md5}
+               MIDAS_FETCH_ONLY{Boxes_normals.zraw.md5}
+               MIDAS_FETCH_ONLY{Boxes_weights.zraw.md5}
              )
 
 #######
