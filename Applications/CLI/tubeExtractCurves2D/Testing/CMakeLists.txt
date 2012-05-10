@@ -77,4 +77,4 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
                -n 30
                 )
 set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )

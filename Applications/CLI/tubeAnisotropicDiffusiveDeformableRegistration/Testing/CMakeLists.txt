@@ -606,7 +606,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-TestBoxesNoReg-Compare
                 MIDAS_FETCH_ONLY{Boxes_noReg_motionField.zraw.md5}
               )
 set_tests_properties( ${PROJECT_NAME}MIDAS-TestBoxesNoReg-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}TestBoxesNoReg )
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-TestBoxesNoReg )
 
 #######
 # MIDAS-Test8
