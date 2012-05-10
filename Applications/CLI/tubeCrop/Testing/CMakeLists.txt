@@ -211,4 +211,4 @@ MIDAS_ADD_Test( ${PROJECT_NAME}MIDAS-Test4-Compare11
                -t ${TEMP}/${PROJECT_NAME}Test4_11.mha
                -b MIDAS{${PROJECT_NAME}Test4_11.mha.md5} )
 set_tests_properties( ${PROJECT_NAME}MIDAS-Test4-Compare11
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test4 )
+                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test4 )
