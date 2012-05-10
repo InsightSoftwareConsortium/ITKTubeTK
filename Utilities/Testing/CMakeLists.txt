@@ -92,9 +92,9 @@ add_test( tubeMessageTest
             ${UTILITIES_TESTS}
             tubeMessageTest )
 
-add_test( tubeCLIfilterwatchertest
-            ${utilities_tests}
-            tubeCLIfilterwatchertest ${input_data}/Branch.n010.mha )
+add_test( tubeCLIFilterWatcherTest
+            ${UTILITIES_TESTS}
+            tubeCLIFilterWatcherTest ${INPUT_DATA}/Branch.n010.mha )
 
 add_test( tubeCLIHelperFunctionsTest 
             ${UTILITIES_TESTS}
@@ -139,9 +139,9 @@ set_tests_properties( ImageCompareCommandTest5
 
 
 ## Add MIDAS tests here
-MIDAS_ADD_TEST( tubeCLIfilterwatchertest
-            ${utilities_tests}
-            tubeCLIfilterwatchertest MIDAS{Branch.n010.mha.md5} )
+MIDAS_ADD_TEST( tubeCLIFilterWatcherMIDAS-Test
+            ${UTILITIES_TESTS}
+            tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5} )
 
 MIDAS_ADD_TEST( tubeCLIHelperFunctionsMIDAS-Test
             ${UTILITIES_TESTS}
