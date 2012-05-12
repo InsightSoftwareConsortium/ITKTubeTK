@@ -25,7 +25,7 @@ limitations under the License.
 #endif
 
 #include <iostream>
-#include "itkTestMain.h"
+#include "tubeTestMain.h"
 
 
 void RegisterTests()
