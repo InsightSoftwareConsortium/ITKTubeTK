@@ -121,10 +121,10 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  spline.xMax( 3 );
-  if( spline.xMax() != 3 )
+  spline.xMax( 6 );
+  if( spline.xMax() != 6 )
     {
-    std::cout << "xMax should be 3 and not " << spline.xMax() << std::endl;
+    std::cout << "xMax should be 6 and not " << spline.xMax() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
@@ -211,6 +211,7 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
   ImageWriterType::Pointer imWriter = ImageWriterType::New( );
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );
+  imWriter->SetUseCompression( true );
   imWriter->Update( );
 
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
