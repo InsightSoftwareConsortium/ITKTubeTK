@@ -103,12 +103,14 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
   double scale = 4.0;
 
   FunctionType::VectorType v1, v2, d;
-  FunctionType::MatrixType h;
-  v1.Fill(0);
-  v2.Fill(0);
+  v1.Fill( 0 );
   v1[0] = 1;
+  v2.Fill( 0 );
   v2[1] = 1;
   double val;
+  double val2;
+  FunctionType::MatrixType h;
+  FunctionType::MatrixType h2;
 
   int function = atoi( argv[1] );
 
@@ -280,23 +282,48 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 26:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
+        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, v2, scale );
         h = func->GetMostRecentHessian();
-        outIter.Set( h[0][0] );
+        outIter.Set( h[0][0] * h[1][1] + h[0][1] * h[1][0] );
         break;
         }
       case 27:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, scale );
-        h = func->GetMostRecentHessian();
-        outIter.Set( h[0][0] + h[1][1] );
+        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
+        val2 = func->GetMostRecentRidgeness();
+        if( val != val2 )
+          {
+          error = true;
+          std::cerr << "Ridgeness and recent ridgeness differ at "
+            << outIter.GetIndex() << std::endl;
+          outIter.Set( val-val2 );
+          }
+        else
+          {
+          outIter.Set( 0 );
+          }
         break;
         }
       case 28:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, v2, scale );
+        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
         h = func->GetMostRecentHessian();
-        outIter.Set( h[0][0] + h[1][1] );
+        val2 = func->HessianAtIndex( outIter.GetIndex(), scale, h2 );
+        val = vnl_math_abs( h[0][0] - h2[0][0] ) +
+              vnl_math_abs( h[0][1] - h2[0][1] ) +
+              vnl_math_abs( h[1][0] - h2[1][0] ) +
+              vnl_math_abs( h[1][1] - h2[1][1] );
+        if( val > 0.0001 )
+          {
+          error = true;
+          std::cerr << "Ridgeness Hessian and Hessian differ at "
+            << outIter.GetIndex() << std::endl;
+          outIter.Set( val );
+          }
+        else
+          {
+          outIter.Set( 0 );
+          }
         break;
         }
       case 29:
