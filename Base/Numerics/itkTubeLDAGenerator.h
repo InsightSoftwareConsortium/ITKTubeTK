@@ -85,7 +85,7 @@ public:
   void SetFeatureImage( typename ImageType::Pointer img );
   void AddFeatureImage( typename ImageType::Pointer img );
   virtual typename ImageType::Pointer GetFeatureImage( unsigned int num );
-  virtual unsigned int GetNumberOfFeatureImages( void );
+  ImageListType * GetFeatureImageList();
 
   virtual unsigned int GetNumberOfFeatures( void );
 
@@ -93,7 +93,7 @@ public:
   void             AddObjectId( ObjectIdType objectId );
   ObjectIdType     GetObjectId( unsigned int num = 0 );
 
-  unsigned int     GetNumberOfObjects( void );
+  unsigned int     GetNumberOfObjectIds( void );
 
   ObjectMeanType       * GetObjectMean( ObjectIdType objectId );
   ObjectCovarianceType * GetObjectCovariance( ObjectIdType objectId );
@@ -144,18 +144,17 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  FeatureVectorType               m_FeatureVector;
-
 private:
 
   LDAGenerator( const Self & );          // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-  bool                            m_PerformLDA;
-  bool                            m_PerformPCA;
-
   //  Data
   ImageListType                   m_FeatureImageList;
+  FeatureVectorType               m_FeatureVector;
+
+  bool                            m_PerformLDA;
+  bool                            m_PerformPCA;
 
   typename MaskImageType::Pointer m_Labelmap;
 
@@ -175,7 +174,6 @@ private:
   void                          * m_ProgressProcessInfo;
   double                          m_ProgressFraction;
   double                          m_ProgressStart;
-
 
 };
 

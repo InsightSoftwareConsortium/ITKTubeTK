@@ -110,17 +110,17 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 unsigned int
 LDAGenerator< ImageT, LabelmapT >
-::GetNumberOfFeatureImages( void )
+::GetNumberOfFeatures( void )
 {
   return m_FeatureImageList.size();
 }
 
 template < class ImageT, class LabelmapT >
-unsigned int
+typename LDAGenerator< ImageT, LabelmapT >::ImageListType *
 LDAGenerator< ImageT, LabelmapT >
-::GetNumberOfFeatures( void )
+::GetFeatureImageList( void )
 {
-  return m_FeatureImageList.size();
+  return & m_FeatureImageList;
 }
 
 template < class ImageT, class LabelmapT >
@@ -143,7 +143,7 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 unsigned int
 LDAGenerator< ImageT, LabelmapT >
-::GetNumberOfObjects( void )
+::GetNumberOfObjectIds( void )
 {
    return m_ObjectIdList.size();
 }
@@ -322,7 +322,7 @@ LDAGenerator< ImageT, LabelmapT >
 
     if( m_Labelmap.IsNotNull() )
       {
-      unsigned int numClasses = this->GetNumberOfObjects();
+      unsigned int numClasses = this->GetNumberOfObjectIds();
       typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
         ConstMaskImageIteratorType;
       ConstMaskImageIteratorType itInMask( m_Labelmap,
@@ -398,19 +398,18 @@ vnl_vector< double >
 LDAGenerator< ImageT, LabelmapT >
 ::GetFeatureVector( const ContinuousIndexType & indx )
 {
-  unsigned int numFeatureImages = this->GetNumberOfFeatureImages();
+  unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  m_FeatureVector.set_size( numFeatureImages );
+  m_FeatureVector.set_size( numFeatures );
 
-  unsigned int vCount = 0;
   typename ImageType::IndexType indxI;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     indxI[i] = static_cast<int>( indx[i] );
     }
-  for( unsigned int i=0; i<numFeatureImages; i++ )
+  for( unsigned int i=0; i<numFeatures; i++ )
     {
-    m_FeatureVector[vCount++] = static_cast< FeatureType >(
+    m_FeatureVector[i] = static_cast< FeatureType >(
       m_FeatureImageList[i]->GetPixel( indxI ) );
     }
 
@@ -432,7 +431,7 @@ LDAGenerator< ImageT, LabelmapT >
   ConstMaskImageIteratorType itInMask( m_Labelmap,
     m_Labelmap->GetLargestPossibleRegion() );
 
-  unsigned int numClasses = this->GetNumberOfObjects();
+  unsigned int numClasses = this->GetNumberOfObjectIds();
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
   m_ObjectMeanList.resize( numClasses );
@@ -575,7 +574,7 @@ LDAGenerator< ImageT, LabelmapT >
 
   timeCollector.Start( "GenerateLDA" );
 
-  unsigned int numClasses = this->GetNumberOfObjects();
+  unsigned int numClasses = this->GetNumberOfObjectIds();
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
   if( m_PerformLDA )
