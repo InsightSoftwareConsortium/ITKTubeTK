@@ -466,50 +466,6 @@ LDAGenerator< ImageT, LabelmapT >
   while( !itInMask.IsAtEnd() )
     {
     ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-    bool found = false;
-    for( unsigned int c=0; c<numClasses; c++ )
-      {
-      if( val == m_ObjectIdList[c] )
-        {
-        found = true;
-        break;
-        }
-      }
-
-    if( found )
-      {
-      ContinuousIndexType indx = itInMask.GetIndex();
-      LDAValuesType v = this->GetFeatureVector( indx );
-      ++globalCount;
-      for( unsigned int i=0; i<numFeatures; i++ )
-        {
-        globalSum[i] += v[i];
-        for( unsigned int j=0; j<numFeatures; j++ )
-          {
-          globalSumOfSquares[i][j] += v[i] * v[j];
-          }
-        }
-      }
-    ++itInMask;
-    }
-
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    m_GlobalMean[i] = globalSum[i] / globalCount;
-    }
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    for( unsigned int j=0; j<numFeatures; j++ )
-      {
-      m_GlobalCovariance[i][j] = ( globalSumOfSquares[i][j]
-        / globalCount ) - ( m_GlobalMean[i] * m_GlobalMean[j] );
-      }
-    }
-
-  itInMask.GoToBegin();
-  while( !itInMask.IsAtEnd() )
-    {
-    ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
     unsigned int valC = 0;
     bool found = false;
     for( unsigned int c=0; c<numClasses; c++ )
@@ -528,16 +484,31 @@ LDAGenerator< ImageT, LabelmapT >
       LDAValuesType v = this->GetFeatureVector( indx );
       for( unsigned int i=0; i<numFeatures; i++ )
         {
+        globalSum[i] += v[i];
         sumList[valC][i] += v[i];
         for( unsigned int j=0; j<numFeatures; j++ )
           {
+          globalSumOfSquares[i][j] += v[i] * v[j];
           sumOfSquaresList[valC][i][j] += v[i]*v[j];
           }
         }
+      ++globalCount;
       ++countList[valC];
       }
-
     ++itInMask;
+    }
+
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    m_GlobalMean[i] = globalSum[i] / globalCount;
+    }
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    for( unsigned int j=0; j<numFeatures; j++ )
+      {
+      m_GlobalCovariance[i][j] = ( globalSumOfSquares[i][j]
+        / globalCount ) - ( m_GlobalMean[i] * m_GlobalMean[j] );
+      }
     }
 
   for( unsigned int c=0; c<numClasses; c++ )

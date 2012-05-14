@@ -135,6 +135,8 @@ protected:
   virtual ~LDAGenerator( void );
 
   ImageListType                   m_FeatureImageList;
+  typename MaskImageType::Pointer m_Labelmap;
+  ObjectIdListType                m_ObjectIdList;
 
   typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
 
@@ -157,9 +159,6 @@ private:
   bool                            m_PerformLDA;
   bool                            m_PerformPCA;
 
-  typename MaskImageType::Pointer m_Labelmap;
-
-  ObjectIdListType                m_ObjectIdList;
   ObjectMeanListType              m_ObjectMeanList;
   ObjectCovarianceListType        m_ObjectCovarianceList;
 
