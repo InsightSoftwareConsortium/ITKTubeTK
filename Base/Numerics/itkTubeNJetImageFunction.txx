@@ -756,14 +756,13 @@ NJetImageFunction<TInputImage>
   double physGaussFactor = -0.5/(scale*scale);
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
 
-  double physDist;
-  double pixelValue;
-  double expValue;
-  double expValueD;
+  double physDist = 0;
+  double pixelValue = 0;
+  double expValue = 0;
+  double expValueD = 0;
 
-  double v, vTotal;
-  v = 0;
-  vTotal = 0;
+  double v = 0;
+  double vTotal = 0;
 
   itk::Vector<double, TInputImage::ImageDimension> dTotal;
   d.Fill(0);
@@ -821,8 +820,8 @@ NJetImageFunction<TInputImage>
           expValueD = 2 * (cIndex[i]-xShift[i]) * m_InputImageSpacing[i]
                         * physGaussFactor
                         * expValue;
-          dTotal[i] += vnl_math_abs(expValueD);
           d[i] += pixelValue * expValueD;
+          dTotal[i] += vnl_math_abs(expValueD);
           }
         }
       }
@@ -1362,6 +1361,7 @@ NJetImageFunction<TInputImage>
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
+  int xRadius;
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1372,12 +1372,15 @@ NJetImageFunction<TInputImage>
       xMin[i] = m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
+    xRadius = (int) vnl_math_floor( cIndex[i] - xMin[i] );
 
-    xMax[i] = (int) vnl_math_ceil(cIndex[i]
-                          + (scale * m_Extent / m_InputImageSpacing[i]));
+    xMax[i] = (int) vnl_math_ceil( cIndex[i] + xRadius );
     if(xMax[i] > (int) m_InputImageMaxX[i])
       {
       xMax[i] = m_InputImageMaxX[i];
+      xRadius = (int) vnl_math_floor(xMax[i] - cIndex[i]);
+      xMin[i] = (int) vnl_math_floor(cIndex[i] - xRadius);
+      xShift[i] = xMin[i];
       }
     }
 
@@ -1431,8 +1434,8 @@ NJetImageFunction<TInputImage>
         }
       }
 
+    xShift[0]++;
     unsigned int i = 0;
-    xShift[i]++;
     while( !done && xShift[i]>xMax[i] )
       {
       xShift[i] = xMin[i];
@@ -1463,10 +1466,6 @@ NJetImageFunction<TInputImage>
     if(dTotal[i] != 0)
       {
       d[i] = d[i] / dTotal[i];
-      }
-    else
-      {
-      d[i] = 0;
       }
     m_MostRecentDerivative[i] = d[i];
 
