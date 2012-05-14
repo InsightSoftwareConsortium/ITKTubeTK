@@ -56,7 +56,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
   m_ForceIntensityConsistency = true;
   m_ForceOrientationInsensitivity = true;
 
-  m_NJetFeatureImageList.clear();
+  m_NJetImageList.clear();
 }
 
 template< class ImageT, class LabelmapT >
@@ -70,45 +70,89 @@ unsigned int
 NJetLDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfFeatures( void )
 {
-  unsigned int featuresPerImage = 1 + m_ZeroScales.size()
+  unsigned int featuresPerImage = m_ZeroScales.size()
     + (m_FirstScales.size()*(ImageDimension+1))
     + (m_SecondScales.size()*(ImageDimension+1))
     + m_RidgeScales.size();
 
-  unsigned int numFeatures = this->GetNumberOfFeatureImages()
+  unsigned int numFeatures = this->GetNumberOfNJetImages()
     * featuresPerImage;
 
   return numFeatures;
 }
 
 template < class ImageT, class LabelmapT >
-const typename NJetLDAGenerator< ImageT, LabelmapT >::LDAImageType::Pointer &
+void
 NJetLDAGenerator< ImageT, LabelmapT >
-::GetNJetFeatureImage( unsigned int num )
+::SetNJetImage( typename NJetImageType::Pointer img )
 {
-  return m_NJetFeatureImageList[ num ];
+  m_NJetImageList.clear();
+  m_NJetImageList.push_back( img );
 }
 
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
-::GenerateNJetFeatureImages( void )
+::AddNJetImage( typename NJetImageType::Pointer img )
+{
+  m_NJetImageList.push_back( img );
+}
+
+template < class ImageT, class LabelmapT >
+typename ImageT::Pointer
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetNJetImage( unsigned int num )
+{
+  if( num < m_NJetImageList.size() )
+    {
+    return m_NJetImageList[num];
+    }
+  else
+    {
+    return NULL;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+unsigned int
+NJetLDAGenerator< ImageT, LabelmapT >
+::GetNumberOfNJetImages( void )
+{
+  return m_NJetImageList.size();
+}
+
+
+template < class ImageT, class LabelmapT >
+void
+NJetLDAGenerator< ImageT, LabelmapT >
+::GenerateFeatureImages( void )
 {
   unsigned int numFeatures = this->GetNumberOfFeatures();
-  unsigned int numFeatureImages = this->GetNumberOfFeatureImages();
 
-  m_NJetFeatureImageList.resize( numFeatures );
+  unsigned int numNJetImages = this->GetNumberOfNJetImages();
 
+  this->m_FeatureImageList.resize( numFeatures );
+
+  typedef itk::RecursiveGaussianImageFilter< NJetImageType, LDAImageType >
+    FirstGaussFilterType;
   typedef itk::RecursiveGaussianImageFilter< LDAImageType, LDAImageType >
     GaussFilterType;
   unsigned int vCount = 0;
-  for( unsigned int i=0; i<numFeatureImages; i++ )
+  for( unsigned int njetImageNum=0; njetImageNum<numNJetImages;
+    njetImageNum++ )
     {
-    m_NJetFeatureImageList[vCount++] = this->GetFeatureImage( i );
     for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
       {
-      typename LDAImageType::Pointer curImage = this->GetFeatureImage( i );
-      for( unsigned int d=0; d<ImageDimension; d++ )
+      typename FirstGaussFilterType::Pointer firstFilter =
+        FirstGaussFilterType::New();
+      firstFilter->SetInput( m_NJetImageList[ njetImageNum ] );
+      firstFilter->SetSigma( m_ZeroScales[s] );
+      firstFilter->SetNormalizeAcrossScale( true );
+      firstFilter->SetOrder( GaussFilterType::ZeroOrder );
+      firstFilter->SetDirection( 0 );
+      firstFilter->Update();
+      typename LDAImageType::Pointer curImage = firstFilter->GetOutput();
+      for( unsigned int d=1; d<ImageDimension; d++ )
         {
         typename GaussFilterType::Pointer filter = GaussFilterType::New();
         filter->SetInput( curImage );
@@ -119,15 +163,31 @@ NJetLDAGenerator< ImageT, LabelmapT >
         filter->Update();
         curImage = filter->GetOutput();
         }
-      m_NJetFeatureImageList[vCount++] = curImage;
+      this->m_FeatureImageList[ vCount++ ] = curImage;
       }
     for( unsigned int s=0; s<m_FirstScales.size(); s++ )
       {
       for( unsigned int d=0; d<ImageDimension; d++ )
         {
-        typename LDAImageType::Pointer curImage =
-          this->GetFeatureImage( i );
-        for( unsigned int d2=0; d2<ImageDimension; d2++ )
+        typename FirstGaussFilterType::Pointer firstFilter =
+          FirstGaussFilterType::New();
+        firstFilter->SetInput( m_NJetImageList[ njetImageNum ] );
+        firstFilter->SetNormalizeAcrossScale( true );
+        if( d == 0 )
+          {
+          firstFilter->SetSigma( m_FirstScales[s] );
+          firstFilter->SetOrder( GaussFilterType::FirstOrder );
+          firstFilter->SetDirection( 0 );
+          }
+        else
+          {
+          firstFilter->SetSigma( m_FirstScales[s] );
+          firstFilter->SetOrder( GaussFilterType::ZeroOrder );
+          firstFilter->SetDirection( 0 );
+          }
+        firstFilter->Update();
+        typename LDAImageType::Pointer curImage = firstFilter->GetOutput();
+        for( unsigned int d2=1; d2<ImageDimension; d2++ )
           {
           typename GaussFilterType::Pointer filter = GaussFilterType::New();
           filter->SetInput( curImage );
@@ -160,10 +220,18 @@ NJetLDAGenerator< ImageT, LabelmapT >
             ++iter;
             }
           }
-        m_NJetFeatureImageList[vCount++] = curImage;
+        this->m_FeatureImageList[ vCount++ ] = curImage;
         }
-      typename LDAImageType::Pointer curImage = this->GetFeatureImage( i );
-      for( unsigned int d=0; d<ImageDimension; d++ )
+      typename FirstGaussFilterType::Pointer firstFilter =
+        FirstGaussFilterType::New();
+      firstFilter->SetInput( m_NJetImageList[ njetImageNum ] );
+      firstFilter->SetNormalizeAcrossScale( true );
+      firstFilter->SetSigma( m_FirstScales[s] );
+      firstFilter->SetOrder( GaussFilterType::FirstOrder );
+      firstFilter->SetDirection( 0 );
+      firstFilter->Update();
+      typename LDAImageType::Pointer curImage = firstFilter->GetOutput();
+      for( unsigned int d=1; d<ImageDimension; d++ )
         {
         typename GaussFilterType::Pointer filter = GaussFilterType::New();
         filter->SetInput( curImage );
@@ -187,15 +255,31 @@ NJetLDAGenerator< ImageT, LabelmapT >
           ++iter;
           }
         }
-      m_NJetFeatureImageList[vCount++] = curImage;
+      this->m_FeatureImageList[ vCount++ ] = curImage;
       }
     for( unsigned int s=0; s<m_SecondScales.size(); s++ )
       {
       for( unsigned int d=0; d<ImageDimension; d++ )
         {
-        typename LDAImageType::Pointer curImage =
-          this->GetFeatureImage( i );
-        for( unsigned int d2=0; d2<ImageDimension; d2++ )
+        typename FirstGaussFilterType::Pointer firstFilter =
+          FirstGaussFilterType::New();
+        firstFilter->SetInput( m_NJetImageList[ njetImageNum ] );
+        firstFilter->SetNormalizeAcrossScale( true );
+        if( d == 0 )
+          {
+          firstFilter->SetSigma( m_SecondScales[s] );
+          firstFilter->SetOrder( GaussFilterType::SecondOrder );
+          firstFilter->SetDirection( 0 );
+          }
+        else
+          {
+          firstFilter->SetSigma( m_SecondScales[s] );
+          firstFilter->SetOrder( GaussFilterType::ZeroOrder );
+          firstFilter->SetDirection( 0 );
+          }
+        firstFilter->Update();
+        typename LDAImageType::Pointer curImage = firstFilter->GetOutput();
+        for( unsigned int d2=1; d2<ImageDimension; d2++ )
           {
           typename GaussFilterType::Pointer filter = GaussFilterType::New();
           filter->SetInput( curImage );
@@ -215,10 +299,18 @@ NJetLDAGenerator< ImageT, LabelmapT >
           filter->Update();
           curImage = filter->GetOutput();
           }
-        m_NJetFeatureImageList[vCount++] = curImage;
+        this->m_FeatureImageList[ vCount++ ] = curImage;
         }
-      typename LDAImageType::Pointer curImage = this->GetFeatureImage( i );
-      for( unsigned int d=0; d<ImageDimension; d++ )
+      typename FirstGaussFilterType::Pointer firstFilter =
+        FirstGaussFilterType::New();
+      firstFilter->SetInput( m_NJetImageList[ njetImageNum ] );
+      firstFilter->SetNormalizeAcrossScale( true );
+      firstFilter->SetSigma( m_SecondScales[s] );
+      firstFilter->SetOrder( GaussFilterType::SecondOrder );
+      firstFilter->SetDirection( 0 );
+      firstFilter->Update();
+      typename LDAImageType::Pointer curImage = firstFilter->GetOutput();
+      for( unsigned int d=1; d<ImageDimension; d++ )
         {
         typename GaussFilterType::Pointer filter = GaussFilterType::New();
         filter->SetInput( curImage );
@@ -229,24 +321,24 @@ NJetLDAGenerator< ImageT, LabelmapT >
         filter->Update();
         curImage = filter->GetOutput();
         }
-      m_NJetFeatureImageList[vCount++] = curImage;
+      this->m_FeatureImageList[ vCount++ ] = curImage;
       }
 
-    typedef NJetImageFunction< ImageType > NJetFunctionType;
+    typedef NJetImageFunction< NJetImageType > NJetFunctionType;
     typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
 
     for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
       {
-      m_NJetFeatureImageList[vCount] = LDAImageType::New();
-      m_NJetFeatureImageList[vCount]->CopyInformation(
-        this->GetFeatureImage(i) );
-      m_NJetFeatureImageList[vCount]->SetRegions(
-        this->GetFeatureImage(i)->GetLargestPossibleRegion() );
-      m_NJetFeatureImageList[vCount]->Allocate();
+      this->m_FeatureImageList[ vCount ] = LDAImageType::New();
+      this->m_FeatureImageList[ vCount ]->SetRegions(
+        m_NJetImageList[ njetImageNum ]->GetLargestPossibleRegion() );
+      this->m_FeatureImageList[ vCount ]->Allocate();
+      this->m_FeatureImageList[ vCount ]->CopyInformation(
+        m_NJetImageList[ njetImageNum ] );
       itk::ImageRegionIteratorWithIndex< LDAImageType > iter(
-        m_NJetFeatureImageList[vCount],
-        m_NJetFeatureImageList[vCount]->GetLargestPossibleRegion() );
-      njet->SetInputImage( this->GetFeatureImage(i) );
+        this->m_FeatureImageList[ vCount ],
+        this->m_FeatureImageList[ vCount ]->GetLargestPossibleRegion() );
+      njet->SetInputImage( m_NJetImageList[ njetImageNum ] );
       while( !iter.IsAtEnd() )
         {
         iter.Set( njet->RidgenessAtIndex( iter.GetIndex(),
@@ -355,28 +447,6 @@ NJetLDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-vnl_vector< double >
-NJetLDAGenerator< ImageT, LabelmapT >
-::GetFeatureVector( const ContinuousIndexType & indx )
-{
-  unsigned int numFeatures = this->GetNumberOfFeatures();
-
-  m_NJetFeatureVector.set_size( numFeatures );
-
-  typename ImageType::IndexType indxI;
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    indxI[i] = indx[i];
-    }
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    m_NJetFeatureVector[i] = m_NJetFeatureImageList[i]->GetPixel( indxI );
-    }
-
-  return m_NJetFeatureVector;
-}
-
-template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::GenerateLDA()
@@ -387,9 +457,8 @@ NJetLDAGenerator< ImageT, LabelmapT >
     {
     unsigned int vCount = 0;
     std::vector< int > orientationNum( this->GetNumberOfFeatures(), 0 );
-    for( unsigned int i=0; i<this->GetNumberOfFeatureImages(); i++ )
+    for( unsigned int i=0; i<this->GetNumberOfNJetImages(); i++ )
       {
-      orientationNum[ vCount ] = -1;
       vCount++;
       int orientationBase = vCount;
       for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
@@ -436,8 +505,8 @@ NJetLDAGenerator< ImageT, LabelmapT >
       if( m_ForceIntensityConsistency )
         {
         itk::ImageRegionIterator< LDAImageType > iterF(
-          this->GetFeatureImage(0),
-          this->GetFeatureImage(0)->GetLargestPossibleRegion() );
+          m_NJetImageList[ 0 ],
+          m_NJetImageList[ 0 ]->GetLargestPossibleRegion() );
         itk::ImageRegionIterator< LDAImageType > iterM(
           this->GetLDAImage(i),
           this->GetLDAImage(i)->GetLargestPossibleRegion() );
@@ -525,7 +594,7 @@ void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::Update( void )
 {
-  this->GenerateNJetFeatureImages();
+  this->GenerateFeatureImages();
 
   Superclass::Update();
 }
@@ -535,7 +604,7 @@ void
 NJetLDAGenerator< ImageT, LabelmapT >
 ::UpdateLDAImages( void )
 {
-  this->GenerateNJetFeatureImages();
+  this->GenerateFeatureImages();
 
   Superclass::UpdateLDAImages();
 }
@@ -574,8 +643,8 @@ NJetLDAGenerator< ImageT, LabelmapT >
   os << indent << "RidgeScales.size() = " << m_RidgeScales.size()
     << std::endl;
 
-  os << indent << "NJetFeatureImageList.size() = "
-    << m_NJetFeatureImageList.size() << std::endl;
+  os << indent << "NJetImageList.size() = " << m_NJetImageList.size()
+    << std::endl;
 }
 
 }

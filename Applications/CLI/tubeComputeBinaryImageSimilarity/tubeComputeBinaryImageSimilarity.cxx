@@ -36,7 +36,7 @@ limitations under the License.
 #include "itkImageFileReader.h"
 
 // TubeTK Filters
-#include "itkLabelOverlapMeasuresImageFilter.h"
+#include "itkTubeLabelOverlapMeasuresImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -90,7 +90,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer image1 = reader1->GetOutput();
   typename ImageType::Pointer image2 = reader2->GetOutput();
 
-  typedef itk::LabelOverlapMeasuresImageFilter< ImageType >
+  typedef itk::tube::LabelOverlapMeasuresImageFilter< ImageType >
     MetricFilterType;
 
   typename MetricFilterType::Pointer metric = MetricFilterType::New();

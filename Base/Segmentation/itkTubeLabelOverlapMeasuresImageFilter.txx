@@ -20,17 +20,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkLabelOverlapMeasuresImageFilter_txx
-#define __itkLabelOverlapMeasuresImageFilter_txx
+#ifndef __itkTubeLabelOverlapMeasuresImageFilter_txx
+#define __itkTubeLabelOverlapMeasuresImageFilter_txx
 
-#include "itkLabelOverlapMeasuresImageFilter.h"
+#include "itkTubeLabelOverlapMeasuresImageFilter.h"
 
 #include "itkImageRegionConstIterator.h"
 #include "itkProgressReporter.h"
 
 namespace itk {
 
-#if defined(__GNUC__) && (__GNUC__ <= 2) //NOTE: This class needs a mutex for gnu 2.95
+namespace tube {
+
+//NOTE: This class needs a mutex for gnu 2.95
+#if defined(__GNUC__) && (__GNUC__ <= 2)
 /** Used for mutex locking */
 #define LOCK_HASHMAP this->m_Mutex.Lock()
 #define UNLOCK_HASHMAP this->m_Mutex.Unlock()
@@ -119,12 +122,14 @@ LabelOverlapMeasuresImageFilter<TLabelImage>
   for( int n = 0; n < this->GetNumberOfThreads(); n++ )
     {
     // iterate over the map for this thread
-    for( MapConstIterator threadIt = this->m_LabelSetMeasuresPerThread[n].begin();
+    for( MapConstIterator threadIt =
+        this->m_LabelSetMeasuresPerThread[n].begin();
       threadIt != this->m_LabelSetMeasuresPerThread[n].end();
       ++threadIt )
       {
       // does this label exist in the cumulative stucture yet?
-      MapIterator mapIt = this->m_LabelSetMeasures.find( ( *threadIt ).first );
+      MapIterator mapIt = this->m_LabelSetMeasures.find(
+        ( *threadIt ).first );
       if( mapIt == this->m_LabelSetMeasures.end() )
         {
         // create a new entry
@@ -438,6 +443,8 @@ LabelOverlapMeasuresImageFilter<TLabelImage>
 
 }
 
+
+}// end namespace tube
 
 }// end namespace itk
 #endif

@@ -29,7 +29,7 @@ SplineApproximation1D::
 SplineApproximation1D()
 : Spline1D()
 {
-  m_SplineApproximation1DMatrixConst = (float)(1.0/6.0);
+  m_SplineApproximation1DMatrixConst = (double)(1.0/6.0);
   m_SplineApproximation1DMatrix(0, 0) = 1;
   m_SplineApproximation1DMatrix(0, 1) = 0;
   m_SplineApproximation1DMatrix(0, 2) = 0;
@@ -54,7 +54,7 @@ SplineApproximation1D( UserFunc<int, double> *newFunval,
   Optimizer1D *newOpt1D )
 : Spline1D(newFunval, newOpt1D)
 {
-  m_SplineApproximation1DMatrixConst = (float)(1.0/6.0);
+  m_SplineApproximation1DMatrixConst = (double)(1.0/6.0);
   m_SplineApproximation1DMatrix(0, 0) = 1;
   m_SplineApproximation1DMatrix(0, 1) = 0;
   m_SplineApproximation1DMatrix(0, 2) = 0;

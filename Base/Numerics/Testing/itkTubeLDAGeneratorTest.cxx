@@ -136,6 +136,7 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->Update();
+  filter->SetLabelmap( NULL );
   filter->UpdateLDAImages();
 
   std::cout << "Number of LDA = " << filter->GetNumberOfLDA() << std::endl;

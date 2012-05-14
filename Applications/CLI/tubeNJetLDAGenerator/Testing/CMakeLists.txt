@@ -53,8 +53,8 @@ add_test( ${PROJECT_NAME}Test1
                --useNumberOfLDA 3
                --objectId 0,255
                --zeroScales 1
-               --firstScales 1,3
-               --secondScales 5
+               --firstScales 2
+               --secondScales 3
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveFeatureImages ${TEMP}/${PROJECT_NAME}Test1.fi
                ${INPUT_DATA}/ES0015_Large_Subs.mha
@@ -81,7 +81,7 @@ add_test( ${PROJECT_NAME}Test2
                --objectId 0,255
                --usePCA
                --zeroScales 1
-               --firstScales 1,3
+               --firstScales 3
                --secondScales 5
                ${INPUT_DATA}/ES0015_Large_Subs.mha
                ${INPUT_DATA}/GDS0015_Large_Subs2.mha
@@ -143,7 +143,7 @@ add_test( ${PROJECT_NAME}Test4
                --useNumberOfLDA 1
                --objectId 127,255
                --zeroScales 1
-               --firstScales 1,3
+               --firstScales 3
                --secondScales 5
                --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test4.mnda
@@ -173,7 +173,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
                --useNumberOfLDA 3
                --objectId 0,255
                --zeroScales 1
-               --firstScales 1,3
+               --firstScales 3
                --secondScales 5
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveFeatureImages ${TEMP}/${PROJECT_NAME}Test1.fi
@@ -201,7 +201,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2
                --objectId 0,255
                --usePCA
                --zeroScales 1
-               --firstScales 1,3
+               --firstScales 3
                --secondScales 5
                MIDAS{ES0015_Large_Subs.mha.md5}
                MIDAS{GDS0015_Large_Subs2.mha.md5}
@@ -263,7 +263,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test4
                --useNumberOfLDA 1
                --objectId 127,255
                --zeroScales 1
-               --firstScales 1,3
+               --firstScales 3
                --secondScales 5
                --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test4.mnda

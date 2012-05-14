@@ -92,13 +92,14 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
     }
   ImageType::Pointer maskImage = maskReader->GetOutput();
 
-  FilterType::NJetScalesType scales(2);
-  scales[0] = 2;
-  scales[1] = 4;
+  FilterType::NJetScalesType scales(3);
+  scales[0] = 0.5;
+  scales[1] = 1;
+  scales[2] = 4;
   FilterType::NJetScalesType scales2(1);
-  scales2[0] = 2;
+  scales2[0] = 3;
   FilterType::Pointer filter = FilterType::New();
-  filter->SetFeatureImage( inputImage );
+  filter->SetNJetImage( inputImage );
   filter->SetLabelmap( maskImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
@@ -108,6 +109,8 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
   filter->SetRidgeScales( scales2 );
   std::cout << filter << std::endl;
   filter->Update();
+
+  filter->SetLabelmap( NULL );
   filter->UpdateLDAImages();
 
   std::cout << "Number of LDA = " << filter->GetNumberOfLDA() << std::endl;

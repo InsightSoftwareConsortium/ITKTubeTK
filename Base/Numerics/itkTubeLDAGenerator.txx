@@ -24,6 +24,7 @@ limitations under the License.
 #define __itkTubeLDAGenerator_txx
 
 #include <limits>
+#include <iostream>
 
 #include "itkTubeLDAGenerator.h"
 
@@ -55,7 +56,6 @@ LDAGenerator< ImageT, LabelmapT >
   m_Labelmap = NULL;
 
   m_ObjectIdList.clear();
-  m_ObjectIdList.push_back( 1 );
   m_ObjectMeanList.clear();
   m_ObjectCovarianceList.clear();
 
@@ -110,17 +110,17 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 unsigned int
 LDAGenerator< ImageT, LabelmapT >
-::GetNumberOfFeatureImages( void )
+::GetNumberOfFeatures( void )
 {
   return m_FeatureImageList.size();
 }
 
 template < class ImageT, class LabelmapT >
-unsigned int
+typename LDAGenerator< ImageT, LabelmapT >::ImageListType *
 LDAGenerator< ImageT, LabelmapT >
-::GetNumberOfFeatures( void )
+::GetFeatureImageList( void )
 {
-  return m_FeatureImageList.size();
+  return & m_FeatureImageList;
 }
 
 template < class ImageT, class LabelmapT >
@@ -143,7 +143,7 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 unsigned int
 LDAGenerator< ImageT, LabelmapT >
-::GetNumberOfObjects( void )
+::GetNumberOfObjectIds( void )
 {
    return m_ObjectIdList.size();
 }
@@ -322,7 +322,7 @@ LDAGenerator< ImageT, LabelmapT >
 
     if( m_Labelmap.IsNotNull() )
       {
-      unsigned int numClasses = this->GetNumberOfObjects();
+      unsigned int numClasses = this->GetNumberOfObjectIds();
       typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
         ConstMaskImageIteratorType;
       ConstMaskImageIteratorType itInMask( m_Labelmap,
@@ -398,19 +398,18 @@ vnl_vector< double >
 LDAGenerator< ImageT, LabelmapT >
 ::GetFeatureVector( const ContinuousIndexType & indx )
 {
-  unsigned int numFeatureImages = this->GetNumberOfFeatureImages();
+  unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  m_FeatureVector.set_size( numFeatureImages );
+  m_FeatureVector.set_size( numFeatures );
 
-  unsigned int vCount = 0;
   typename ImageType::IndexType indxI;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     indxI[i] = static_cast<int>( indx[i] );
     }
-  for( unsigned int i=0; i<numFeatureImages; i++ )
+  for( unsigned int i=0; i<numFeatures; i++ )
     {
-    m_FeatureVector[vCount++] = static_cast< FeatureType >(
+    m_FeatureVector[i] = static_cast< FeatureType >(
       m_FeatureImageList[i]->GetPixel( indxI ) );
     }
 
@@ -432,7 +431,7 @@ LDAGenerator< ImageT, LabelmapT >
   ConstMaskImageIteratorType itInMask( m_Labelmap,
     m_Labelmap->GetLargestPossibleRegion() );
 
-  unsigned int numClasses = this->GetNumberOfObjects();
+  unsigned int numClasses = this->GetNumberOfObjectIds();
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
   m_ObjectMeanList.resize( numClasses );
@@ -467,50 +466,6 @@ LDAGenerator< ImageT, LabelmapT >
   while( !itInMask.IsAtEnd() )
     {
     ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-    bool found = false;
-    for( unsigned int c=0; c<numClasses; c++ )
-      {
-      if( val == m_ObjectIdList[c] )
-        {
-        found = true;
-        break;
-        }
-      }
-
-    if( found )
-      {
-      ContinuousIndexType indx = itInMask.GetIndex();
-      LDAValuesType v = this->GetFeatureVector( indx );
-      ++globalCount;
-      for( unsigned int i=0; i<numFeatures; i++ )
-        {
-        globalSum[i] += v[i];
-        for( unsigned int j=0; j<numFeatures; j++ )
-          {
-          globalSumOfSquares[i][j] += v[i] * v[j];
-          }
-        }
-      }
-    ++itInMask;
-    }
-
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    m_GlobalMean[i] = globalSum[i] / globalCount;
-    }
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    for( unsigned int j=0; j<numFeatures; j++ )
-      {
-      m_GlobalCovariance[i][j] = ( globalSumOfSquares[i][j]
-        / globalCount ) - ( m_GlobalMean[i] * m_GlobalMean[j] );
-      }
-    }
-
-  itInMask.GoToBegin();
-  while( !itInMask.IsAtEnd() )
-    {
-    ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
     unsigned int valC = 0;
     bool found = false;
     for( unsigned int c=0; c<numClasses; c++ )
@@ -529,16 +484,31 @@ LDAGenerator< ImageT, LabelmapT >
       LDAValuesType v = this->GetFeatureVector( indx );
       for( unsigned int i=0; i<numFeatures; i++ )
         {
+        globalSum[i] += v[i];
         sumList[valC][i] += v[i];
         for( unsigned int j=0; j<numFeatures; j++ )
           {
+          globalSumOfSquares[i][j] += v[i] * v[j];
           sumOfSquaresList[valC][i][j] += v[i]*v[j];
           }
         }
+      ++globalCount;
       ++countList[valC];
       }
-
     ++itInMask;
+    }
+
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    m_GlobalMean[i] = globalSum[i] / globalCount;
+    }
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    for( unsigned int j=0; j<numFeatures; j++ )
+      {
+      m_GlobalCovariance[i][j] = ( globalSumOfSquares[i][j]
+        / globalCount ) - ( m_GlobalMean[i] * m_GlobalMean[j] );
+      }
     }
 
   for( unsigned int c=0; c<numClasses; c++ )
@@ -575,7 +545,7 @@ LDAGenerator< ImageT, LabelmapT >
 
   timeCollector.Start( "GenerateLDA" );
 
-  unsigned int numClasses = this->GetNumberOfObjects();
+  unsigned int numClasses = this->GetNumberOfObjectIds();
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
   if( m_PerformLDA )
@@ -597,6 +567,8 @@ LDAGenerator< ImageT, LabelmapT >
         }
       }
 
+    std::cout << "Num classes = " << numClasses << std::endl;
+    std::cout << "Num features = " << numFeatures << std::endl;
     for( unsigned int i=0; i<numFeatures; i++ )
       {
       for( unsigned int j=0; j<numFeatures; j++ )

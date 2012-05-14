@@ -58,9 +58,9 @@ protected:
 
   typedef vnl_matrix_fixed<double, 4, 4> MatrixType;
 
-  float      m_SplineApproximation1DMatrixConst;
+  double      m_SplineApproximation1DMatrixConst;
 
-  MatrixType m_SplineApproximation1DMatrix;
+  MatrixType  m_SplineApproximation1DMatrix;
 
 };
 

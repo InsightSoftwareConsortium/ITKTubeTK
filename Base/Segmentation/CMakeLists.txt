@@ -29,8 +29,9 @@ set( TubeTK_Base_Segmentation_H_Files
   itkTubePDFSegmenter.h
   itkTubeRadiusExtractor.h
   itkTubeRidgeExtractor.h
+  itkTubeRidgeSeedImageFilter.h
   itkTubeTubeExtractor.h
-  itkTubeTubeNetExtractor.h
+  itkTubeTubeNetworkExtractor.h
   )
 
 set(TubeTK_Base_Segmentation_TXX_Files
@@ -41,8 +42,9 @@ set(TubeTK_Base_Segmentation_TXX_Files
   itkTubePDFSegmenter.txx
   itkTubeRadiusExtractor.txx
   itkTubeRidgeExtractor.txx
+  itkTubeRidgeSeedImageFilter.txx
   itkTubeTubeExtractor.txx
-  itkTubeTubeNetExtractor.txx
+  itkTubeTubeNetworkExtractor.txx
   )
 
 IF( BUILD_TESTING )
@@ -51,7 +53,7 @@ ENDIF( BUILD_TESTING )
 
 install(FILES
   ${TubeTK_Base_Segmentation_H_Files}
-  #${TubeTK_Base_Segmentation_TXX_Files}
+  ${TubeTK_Base_Segmentation_TXX_Files}
   DESTINATION include
   )
 

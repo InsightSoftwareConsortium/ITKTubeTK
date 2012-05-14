@@ -39,7 +39,8 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class NJetLDAGenerator : public LDAGenerator< ImageT, LabelmapT >
+class NJetLDAGenerator :
+  public LDAGenerator< Image< float, ImageT::ImageDimension >, LabelmapT >
 {
 public:
 
@@ -55,34 +56,21 @@ public:
   //
   // Custom Typedefs
   //
-  typedef ImageT                                        ImageType;
-  typedef std::vector< typename ImageType::Pointer >    ImageListType;
+  typedef ImageT                                          NJetImageType;
+  typedef std::vector< typename NJetImageType::Pointer >  NJetImageListType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef LabelmapT                            MaskImageType;
+  typedef typename Superclass::MaskImageType      MaskImageType;
 
-  typedef double                               FeatureType;
-  typedef vnl_vector< FeatureType >            FeatureVectorType;
+  typedef typename Superclass::FeatureType        FeatureType;
+  typedef typename Superclass::FeatureVectorType  FeatureVectorType;
 
-  typedef int                                  ObjectIdType;
-  typedef std::vector< ObjectIdType >          ObjectIdListType;
+  typedef typename Superclass::LDAVectorType      LDAVectorType;
+  typedef typename Superclass::LDAImageType       LDAImageType;
 
-  typedef vnl_vector< double >                 ObjectMeanType;
-  typedef std::vector< ObjectMeanType >        ObjectMeanListType;
-
-  typedef vnl_matrix< double >                 ObjectCovarianceType;
-  typedef std::vector< ObjectCovarianceType >  ObjectCovarianceListType;
-
-  typedef vnl_vector< double >                 LDAValuesType;
-  typedef vnl_vector< double >                 LDAVectorType;
-  typedef vnl_matrix< double >                 LDAMatrixType;
-
-  typedef std::vector< double >                NJetScalesType;
-
-  typedef itk::Image< float, ImageDimension >           LDAImageType;
-  typedef std::vector< typename LDAImageType::Pointer > LDAImageListType;
+  typedef std::vector< double >                   NJetScalesType;
 
   //
   // Methods
@@ -104,11 +92,12 @@ public:
   void SetForceOrientationInsensitivity( bool _forceOrientation );
   bool GetForceOrientationInsensitivity( void );
 
-  const typename LDAImageType::Pointer & GetNJetFeatureImage(
-    unsigned int num );
+  void SetNJetImage( typename NJetImageType::Pointer img );
+  void AddNJetImage( typename NJetImageType::Pointer img );
+  virtual typename NJetImageType::Pointer GetNJetImage( unsigned int num );
+  virtual unsigned int GetNumberOfNJetImages( void );
 
   void Update();
-
   void UpdateLDAImages();
 
 protected:
@@ -116,11 +105,7 @@ protected:
   NJetLDAGenerator( void );
   virtual ~NJetLDAGenerator( void );
 
-  typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
-
-  void GenerateNJetFeatureImages( void );
-
-  virtual LDAValuesType GetFeatureVector( const ContinuousIndexType & indx );
+  void GenerateFeatureImages( void );
 
   virtual void GenerateLDA( void );
 
@@ -139,9 +124,7 @@ private:
   bool m_ForceIntensityConsistency;
   bool m_ForceOrientationInsensitivity;
 
-  LDAImageListType  m_NJetFeatureImageList;
-
-  FeatureVectorType m_NJetFeatureVector;
+  NJetImageListType m_NJetImageList;
 };
 
 }

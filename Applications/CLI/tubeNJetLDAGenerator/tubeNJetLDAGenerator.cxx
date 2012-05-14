@@ -105,11 +105,11 @@ int DoIt( int argc, char * argv[] )
     reader->Update();
     if( vNum == 0 )
       {
-      ldaGenerator->SetFeatureImage( reader->GetOutput() );
+      ldaGenerator->SetNJetImage( reader->GetOutput() );
       }
     else
       {
-      ldaGenerator->AddFeatureImage( reader->GetOutput() );
+      ldaGenerator->AddNJetImage( reader->GetOutput() );
       }
     }
 
@@ -123,12 +123,9 @@ int DoIt( int argc, char * argv[] )
   if( objectId.size() > 0 )
     {
     ldaGenerator->SetObjectId( objectId[0] );
-    if( objectId.size() > 1 )
+    for( unsigned int o=1; o<objectId.size(); o++ )
       {
-      for( unsigned int o=1; o<objectId.size(); o++ )
-        {
-        ldaGenerator->AddObjectId( objectId[o] );
-        }
+      ldaGenerator->AddObjectId( objectId[o] );
       }
     }
 
@@ -217,7 +214,7 @@ int DoIt( int argc, char * argv[] )
     unsigned int numFeatures = ldaGenerator->GetNumberOfFeatures();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
-      WriteLDA< LDAImageType >( ldaGenerator->GetNJetFeatureImage( i ),
+      WriteLDA< LDAImageType >( ldaGenerator->GetFeatureImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }
     }

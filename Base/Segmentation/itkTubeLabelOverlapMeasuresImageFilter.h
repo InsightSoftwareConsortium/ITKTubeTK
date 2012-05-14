@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkLabelOverlapMeasuresImageFilter_h
-#define __itkLabelOverlapMeasuresImageFilter_h
+#ifndef __itkTubeLabelOverlapMeasuresImageFilter_h
+#define __itkTubeLabelOverlapMeasuresImageFilter_h
 
 #include "itkImageToImageFilter.h"
 #include "itkFastMutexLock.h"
@@ -30,6 +30,8 @@ limitations under the License.
 #include "itk_hash_map.h"
 
 namespace itk {
+
+namespace tube {
 
 /** \class LabelOverlapMeasuresImageFilter
  * \brief Computes overlap measures between the set same set of labels of
@@ -195,20 +197,24 @@ protected:
   void EnlargeOutputRequestedRegion( DataObject *data );
 
 private:
-  LabelOverlapMeasuresImageFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  //purposely not implemented
+  LabelOverlapMeasuresImageFilter( const Self& );
+  //purposely not implemented
+  void operator=( const Self& );
 
-  std::vector<MapType>                            m_LabelSetMeasuresPerThread;
-  MapType                                         m_LabelSetMeasures;
+  std::vector<MapType>                          m_LabelSetMeasuresPerThread;
+  MapType                                       m_LabelSetMeasures;
 
-  SimpleFastMutexLock                             m_Mutex;
+  SimpleFastMutexLock                           m_Mutex;
 
 }; // end of class
+
+} // end namespace tube
 
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkLabelOverlapMeasuresImageFilter.txx"
+#include "itkTubeLabelOverlapMeasuresImageFilter.txx"
 #endif
 
 #endif
