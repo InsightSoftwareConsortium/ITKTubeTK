@@ -24,6 +24,7 @@ limitations under the License.
 #define __itkTubeLDAGenerator_txx
 
 #include <limits>
+#include <iostream>
 
 #include "itkTubeLDAGenerator.h"
 
@@ -55,7 +56,6 @@ LDAGenerator< ImageT, LabelmapT >
   m_Labelmap = NULL;
 
   m_ObjectIdList.clear();
-  m_ObjectIdList.push_back( 1 );
   m_ObjectMeanList.clear();
   m_ObjectCovarianceList.clear();
 
@@ -596,6 +596,8 @@ LDAGenerator< ImageT, LabelmapT >
         }
       }
 
+    std::cout << "Num classes = " << numClasses << std::endl;
+    std::cout << "Num features = " << numFeatures << std::endl;
     for( unsigned int i=0; i<numFeatures; i++ )
       {
       for( unsigned int j=0; j<numFeatures; j++ )

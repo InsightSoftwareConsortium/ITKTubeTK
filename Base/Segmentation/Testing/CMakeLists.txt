@@ -58,6 +58,7 @@ set( tubeBaseSegmentation_SRCS
   itkTubeRadiusExtractorTest2.cxx
   itkTubeRidgeExtractorTest.cxx
   itkTubeRidgeExtractorTest2.cxx
+  itkTubeRidgeSeedGeneratorTest.cxx
   itkTubeTubeExtractorTest.cxx
   )
 
@@ -176,6 +177,13 @@ add_test( itkTubeTubeExtractorTest
   itkTubeTubeExtractorTest
     ${INPUT_DATA}/Branch.n010.sub.mha
     ${INPUT_DATA}/Branch-truth.tre
+  )
+
+add_test( itkTubeRidgeSeedGeneratorTest
+  ${BASE_SEGMENTATION_TESTS}
+  itkTubeRidgeSeedGeneratorTest
+    ${INPUT_DATA}/Branch.n010.sub.mha
+    ${TEMP}/itkTubeRidgeSeedGeneratorTest.mha
   )
 
 ## MIDAS TESTs

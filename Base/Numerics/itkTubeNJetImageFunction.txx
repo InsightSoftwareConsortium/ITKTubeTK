@@ -172,6 +172,14 @@ NJetImageFunction<TInputImage>
     os << indent << "m_InputImage = NULL" << std::endl;
     }
   os << indent << "m_Extent = " << m_Extent << std::endl;
+  os << indent << "m_MostRecentIntensity = " << m_MostRecentIntensity
+    << std::endl;
+  os << indent << "m_MostRecentDerivative = " << m_MostRecentDerivative
+    << std::endl;
+  os << indent << "m_MostRecentHessian = " << m_MostRecentHessian
+    << std::endl;
+  os << indent << "m_MostRecentRidgeness = " << m_MostRecentRidgeness
+    << std::endl;
 }
 
 

@@ -48,8 +48,8 @@ add_test( ${PROJECT_NAME}Test1
                --useNumberOfLDA 3
                --objectId 0,255
                --zeroScales 1
-               --firstScales 1,3
-               --secondScales 5
+               --firstScales 2
+               --secondScales 3
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
                --saveFeatureImages ${TEMP}/${PROJECT_NAME}Test1.fi
                ${INPUT_DATA}/ES0015_Large_Subs.mha
@@ -76,7 +76,7 @@ add_test( ${PROJECT_NAME}Test2
                --objectId 0,255
                --usePCA
                --zeroScales 1
-               --firstScales 1,3
+               --firstScales 3
                --secondScales 5
                ${INPUT_DATA}/ES0015_Large_Subs.mha
                ${INPUT_DATA}/GDS0015_Large_Subs2.mha

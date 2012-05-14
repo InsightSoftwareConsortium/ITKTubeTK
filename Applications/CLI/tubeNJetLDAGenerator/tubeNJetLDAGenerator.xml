@@ -38,7 +38,7 @@
       <label>Object Id</label>
       <longflag>objectId</longflag>
       <description>List of values that represent the objects in the label map</description>
-      <default></default>
+      <default>255</default>
     </integer-vector>
   </parameters>
   <parameters advanced="true">
@@ -69,7 +69,7 @@
       <name>zeroScales</name>
       <description>Scales at which 0th-order features are computed</description>
       <label>Zero-order scales</label>
-      <default></default>
+      <default>1</default>
       <longflag>zeroScales</longflag>
     </double-vector>
     <double-vector>

@@ -134,6 +134,8 @@ protected:
   LDAGenerator( void );
   virtual ~LDAGenerator( void );
 
+  ImageListType                   m_FeatureImageList;
+
   typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
 
   virtual LDAValuesType GetFeatureVector( const ContinuousIndexType &
@@ -150,7 +152,6 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   //  Data
-  ImageListType                   m_FeatureImageList;
   FeatureVectorType               m_FeatureVector;
 
   bool                            m_PerformLDA;
