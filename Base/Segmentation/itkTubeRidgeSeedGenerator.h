@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkTubeTubeSeedGenerator_h
-#define __itkTubeTubeSeedGenerator_h
+#ifndef __itkTubeRidgeSeedGenerator_h
+#define __itkTubeRidgeSeedGenerator_h
 
 #include <vector>
 
@@ -39,69 +39,59 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class TubeSeedGenerator : public LDAGenerator< ImageT, LabelmapT >
+class RidgeSeedGenerator :
+  public LDAGenerator< itk::Image< float, ImageT::ImageDimension >,
+  LabelmapT >
 {
 public:
 
-  typedef TubeSeedGenerator                    Self;
+  typedef RidgeSeedGenerator                   Self;
   typedef LDAGenerator< ImageT, LabelmapT >    Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( TubeSeedGenerator, LDAGenerator );
+  itkTypeMacro( RidgeSeedGenerator, LDAGenerator );
 
   itkNewMacro( Self );
 
   //
   // Custom Typedefs
   //
-  typedef ImageT                                        ImageType;
-  typedef std::vector< typename ImageType::Pointer >    ImageListType;
+  typedef ImageT                                     RidgeImageType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef LabelmapT                            MaskImageType;
+  typedef typename Superclass::MaskImageType         MaskImageType;
 
-  typedef double                               FeatureType;
-  typedef vnl_vector< FeatureType >            FeatureVectorType;
+  typedef typename Superclass::FeatureType           FeatureType;
+  typedef typename Superclass::FeatureVectorType     FeatureVectorType;
+  typedef typename Superclass::ObjectIdType          ObjectIdType;
+  typedef typename Superclass::LDAValuesType         LDAValuesType;
+  typedef typename Superclass::LDAVectorType         LDAVectorType;
+  typedef typename Superclass::LDAMatrixType         LDAMatrixType;
+  typedef typename Superclass::LDAImageType          LDAImageType;
 
-  typedef int                                  ObjectIdType;
-  typedef std::vector< ObjectIdType >          ObjectIdListType;
-
-  typedef vnl_vector< double >                 ObjectMeanType;
-  typedef std::vector< ObjectMeanType >        ObjectMeanListType;
-
-  typedef vnl_matrix< double >                 ObjectCovarianceType;
-  typedef std::vector< ObjectCovarianceType >  ObjectCovarianceListType;
-
-  typedef vnl_vector< double >                 LDAValuesType;
-  typedef vnl_vector< double >                 LDAVectorType;
-  typedef vnl_matrix< double >                 LDAMatrixType;
-
-  typedef std::vector< double >                NJetScalesType;
-
-  typedef itk::Image< float, ImageDimension >           LDAImageType;
-  typedef std::vector< typename LDAImageType::Pointer > LDAImageListType;
+  typedef std::vector< double >                      RidgeScalesType;
 
   //
   // Methods
   //
-  unsigned int GetNumberOfFeatures( void );
+  void SetRidgeImage( typename RidgeImageType::Pointer img );
+  typename RidgeImageType::Pointer GetRidgeImage( void );
+
+  virtual unsigned int GetNumberOfFeatures( void );
 
   void SetIntensityRange( float intensityMin, float intensityMax );
   float GetIntensityMin( void );
   float GetIntensityMax( void );
 
-  void SetIntensityThresholdByPercentile( float percentile,
+  void SetIntensityRangeByPercentile( float percentile,
     bool findBrightPoints=true );
 
-  void SetScales( const NJetScalesType & scales );
+  void SetScales( const RidgeScalesType & scales );
 
-  NJetScalesType & GetScales( void );
-
-  const typename LDAImageType::Pointer & GetNJetFeatureImage(
-    unsigned int num );
+  RidgeScalesType & GetScales( void );
 
   void Update();
 
@@ -109,29 +99,34 @@ public:
 
 protected:
 
-  TubeSeedGenerator( void );
-  virtual ~TubeSeedGenerator( void );
+  RidgeSeedGenerator( void );
+  virtual ~RidgeSeedGenerator( void );
 
   typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
 
-  void GenerateNJetFeatureImages( void );
-
-  virtual LDAValuesType GetFeatureVector( const ContinuousIndexType & indx );
-
+  //
+  // Methods from LDAGenerator
+  //
   virtual void GenerateLDA( void );
+
+  //
+  // Methods
+  //
+  void GenerateFeatureImages( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  TubeSeedGenerator( const Self & );          // Purposely not implemented
+  RidgeSeedGenerator( const Self & );    // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-  NJetScalesType m_Scales;
+  typename RidgeImageType::Pointer   m_RidgeImage;
 
-  LDAImageListType  m_NJetFeatureImageList;
+  double                             m_IntensityMin;
+  double                             m_IntensityMax;
 
-  FeatureVectorType m_NJetFeatureVector;
+  RidgeScalesType                    m_Scales;
 };
 
 }
@@ -139,7 +134,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTubeTubeSeedGenerator.txx"
+#include "itkTubeRidgeSeedGenerator.txx"
 #endif
 
 #endif

@@ -181,9 +181,12 @@ add_test( itkTubeTubeExtractorTest
 
 add_test( itkTubeRidgeSeedGeneratorTest
   ${BASE_SEGMENTATION_TESTS}
+  --compare ${BASELINE}/itkTubeRidgeSeedGeneratorTest.lda00.mha
+    ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
   itkTubeRidgeSeedGeneratorTest
-    ${INPUT_DATA}/Branch.n010.sub.mha
-    ${TEMP}/itkTubeRidgeSeedGeneratorTest.mha
+    ${INPUT_DATA}/im0001.crop.mha
+    ${INPUT_DATA}/im0001.vk.crop.mha
+    ${TEMP}/itkTubeRidgeSeedGeneratorTest
   )
 
 ## MIDAS TESTs
