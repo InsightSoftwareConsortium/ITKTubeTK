@@ -28,12 +28,6 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-
-set( BASELINE
-       ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -45,34 +39,16 @@ set( IMAGECOMPARE_EXE
 #######
 # Test1
 #######
-add_test( ${PROJECT_NAME}Test1
-            ${PROJ_EXE}
-               -r 0.2
-               ${INPUT_DATA}/im0001.crop.mha
-               ${INPUT_DATA}/im0001.crop.mha )
-
-#######
-# Test2
-#######
-add_test( ${PROJECT_NAME}Test2
-            ${PROJ_EXE}
-               -c
-               ${INPUT_DATA}/im0001.crop.mha
-               ${INPUT_DATA}/im0001.crop.mha )
-
-#######
-# MIDAS-Test1
-#######
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
             ${PROJ_EXE}
                -r 0.2
                MIDAS{im0001.crop.mha.md5}
                MIDAS{im0001.crop.mha.md5} )
 
 #######
-# MIDAS-Test2
+# Test2
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
             ${PROJ_EXE}
                -c
                MIDAS{im0001.crop.mha.md5}

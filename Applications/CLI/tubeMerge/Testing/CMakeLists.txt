@@ -28,12 +28,6 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-
-set( BASELINE
-       ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -45,95 +39,42 @@ set( IMAGECOMPARE_EXE
 #######
 # Test1
 #######
-add_test( ${PROJECT_NAME}Test1
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
              ${PROJ_EXE}
-               ${INPUT_DATA}/ES0015_Large.mha
-               -m ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
+               MIDAS{ES0015_Large.mha.md5}
+               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
-add_test( ${PROJECT_NAME}Test1-Compare
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
              ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
-set_tests_properties( ${PROJECT_NAME}Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+               -b MIDAS{${PROJECT_NAME}Test1.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}-Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
 
 #######
 # Test2
 #######
-add_test( ${PROJECT_NAME}Test2
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
              ${PROJ_EXE}
                -a
                -b 50,50
                -f
-               ${INPUT_DATA}/ES0015_Large.mha
-               -m ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
+               MIDAS{ES0015_Large.mha.md5}
+               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test2.mha )
 
-add_test( ${PROJECT_NAME}Test2-Compare
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
              ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha
-               -b ${BASELINE}/${PROJECT_NAME}Test2.mha )
-set_tests_properties( ${PROJECT_NAME}Test2-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test2 )
+               -b MIDAS{${PROJECT_NAME}Test2.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}-Test2-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test2 )
 
 #######
 # Test3
 #######
-add_test( ${PROJECT_NAME}Test3
-             ${PROJ_EXE}
-               -a
-               -b 50,50
-               ${INPUT_DATA}/ES0015_Large.mha
-               -m ${INPUT_DATA}/ES0015_Large_Wo_offset.mha
-               ${TEMP}/${PROJECT_NAME}Test3.mha )
-
-add_test( ${PROJECT_NAME}Test3-Compare
-             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test3.mha
-               -b ${BASELINE}/${PROJECT_NAME}Test3.mha )
-set_tests_properties( ${PROJECT_NAME}Test3-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test3 )
-
-#######
-# MIDAS-Test1
-#######
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
-             ${PROJ_EXE}
-               MIDAS{ES0015_Large.mha.md5}
-               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test1.mha )
-
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
-             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test1.mha
-               -b MIDAS{${PROJECT_NAME}Test1.mha.md5} )
-set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
-
-#######
-# MIDAS-Test2
-#######
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2
-             ${PROJ_EXE}
-               -a
-               -b 50,50
-               -f
-               MIDAS{ES0015_Large.mha.md5}
-               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test2.mha )
-
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test2-Compare
-             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test2.mha
-               -b MIDAS{${PROJECT_NAME}Test2.mha.md5} )
-set_tests_properties( ${PROJECT_NAME}MIDAS-Test2-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test2 )
-
-#######
-# MIDAS-Test3
-#######
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
              ${PROJ_EXE}
                -a
                -b 50,50
@@ -141,9 +82,9 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test3.mha )
 
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test3-Compare
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
              ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test3.mha
                -b MIDAS{${PROJECT_NAME}Test3.mha.md5} )
-set_tests_properties( ${PROJECT_NAME}MIDAS-Test3-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test3 )
+set_tests_properties( ${PROJECT_NAME}-Test3-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test3 )

@@ -41,9 +41,6 @@ set( BASE_FILTERING_TESTS
 set( BASE_FILTERING_HEADER_TEST
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseFilteringHeaderTest )
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Filtering/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseFilteringTests_SRCS
@@ -76,70 +73,25 @@ add_test( tubeBaseFilteringPrintTest
   ${BASE_FILTERING_TESTS}
   tubeBaseFilteringPrintTest )
 
-add_test( itkStructureTensorRecursiveGaussianImageFilterTest
-  ${BASE_FILTERING_TESTS}
-    itkStructureTensorRecursiveGaussianImageFilterTest
-      ${INPUT_DATA}/PrimitiveObjects.mha
-      ${TEMP}/PrimaryEigenVectorImage.mha
-      ${TEMP}/PrimaryEigenValueImage.mha )
-
-add_test( itkStructureTensorRecursiveGaussianImageFilterTest2
-  ${BASE_FILTERING_TESTS}
-    itkStructureTensorRecursiveGaussianImageFilterTest
-      ${INPUT_DATA}/CylinderSynthetic.mha
-      ${TEMP}/CylinderPrimaryEigenVectorImage.mha
-      ${TEMP}/CylinderPrimaryEigenValueImage.mha )
-
-add_test( itkStructureTensorRecursiveGaussianImageFilterTest3
-  ${BASE_FILTERING_TESTS}
-    itkStructureTensorRecursiveGaussianImageFilterTestNew )
-
-add_test( itkTubeEnhancingDiffusion2DImageFilterTest
-  ${BASE_FILTERING_TESTS}
-    --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
-    itkTubeEnhancingDiffusion2DImageFilterTest
-      ${INPUT_DATA}/ES0015_1_Subs.mha
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha )
-
-add_test( itkTubeEnhancingDiffusion2DImageFilterRetinaTest
-  ${BASE_FILTERING_TESTS}
-    --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
-    itkTubeEnhancingDiffusion2DImageFilterTest
-      ${INPUT_DATA}/im0001.crop2.mha
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
-      true )
-
-add_test( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
-  ${BASE_FILTERING_TESTS}
-    --compare ${BASELINE}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
-    itkTubeEnhancingDiffusion2DImageFilterTest
-      ${INPUT_DATA}/im0001_n10.crop2.mha
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
-      true )
-
-## MIDAS tests
-MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest
+MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTest
       MIDAS{PrimitiveObjects.mha.md5}
       ${TEMP}/PrimaryEigenVectorImage.mha
       ${TEMP}/PrimaryEigenValueImage.mha )
 
-MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest2
+MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest2
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTest
       MIDAS{CylinderSynthetic.mha.md5}
       ${TEMP}/CylinderPrimaryEigenVectorImage.mha
       ${TEMP}/CylinderPrimaryEigenValueImage.mha )
 
-MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterMIDASTest3
+MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest3
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTestNew )
 
-MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterMIDASTest
+MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterTest
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterTest.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
@@ -147,7 +99,7 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterMIDASTest
       MIDAS{ES0015_1_Subs.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha )
 
-MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetinaMIDASTest
+MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetinaTest
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
@@ -156,7 +108,7 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetinaMIDASTest
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
       true )
 
-MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetina10MIDASTest
+MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
