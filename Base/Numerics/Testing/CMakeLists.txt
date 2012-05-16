@@ -43,9 +43,6 @@ set( BASE_NUMERICS_HEADER_TEST
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseNumericsHeaderTest
   )
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Numerics/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseNumerics_SRCS
@@ -102,82 +99,6 @@ add_test( tubeBaseNumericsPrintTest
   tubeBaseNumericsPrintTest
   )
 
-add_test( itkJointHistogramImageFunctionTest01
-  ${BASE_NUMERICS_TESTS}
-    --compare ${BASELINE}/itkJointHistogramImageFunctionTest01.mha
-              ${TEMP}/itkJointHistogramImageFunctionTest01.mha
-    itkJointHistogramImageFunctionTest
-      ${INPUT_DATA}/GDS0015_1_match_Subs.mha
-      ${INPUT_DATA}/ES0015_1_Subs.mha
-      ${INPUT_DATA}/GDS0015_1_match_Subs.mask.mha
-      0
-      ${TEMP}/itkJointHistogramImageFunctionTest01.mha
-      ${TEMP}/itkJointHistogramImageFunctionTest01Mean.mha
-      ${TEMP}/itkJointHistogramImageFunctionTest01StdDev.mha
-  )
-
-add_test( itkJointHistogramImageFunctionTest02
-  ${BASE_NUMERICS_TESTS}
-    --compare ${BASELINE}/itkJointHistogramImageFunctionTest02.mha
-              ${TEMP}/itkJointHistogramImageFunctionTest02.mha
-    itkJointHistogramImageFunctionTest
-      ${INPUT_DATA}/GDS0015_1_match_Subs.mha
-      ${INPUT_DATA}/ES0015_1_Subs.mha
-      ${INPUT_DATA}/GDS0015_1_match_Subs.mask.mha
-      1
-      ${TEMP}/itkJointHistogramImageFunctionTest02.mha
-      ${TEMP}/itkJointHistogramImageFunctionTest02Mean.mha
-      ${TEMP}/itkJointHistogramImageFunctionTest02StdDev.mha
-  )
-
-add_test( itkImageRegionMomentsCalculatorTest
-  ${BASE_NUMERICS_TESTS}
-    itkImageRegionMomentsCalculatorTest
-      ${INPUT_DATA}/scoring-test.png
-  )
-
-foreach( testNum RANGE 0 37 )
-  add_test( itkTubeNJetImageFunctionTest${testNum}
-    ${BASE_NUMERICS_TESTS}
-      --compare ${BASELINE}/itkTubeNJetImageFunctionTest${testNum}.mha
-                ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
-      itkTubeNJetImageFunctionTest
-        ${testNum}
-        ${INPUT_DATA}/GDS0015_1_Subs.mha
-        ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
-    )
-endforeach( testNum )
-
-add_test( itkVotingResampleImageFunctionTest0
-  ${BASE_NUMERICS_TESTS}
-    --compare ${BASELINE}/itkVotingResampleImageFunctionTest0.png
-              ${TEMP}/itkVotingResampleImageFunctionTest0.png
-    itkVotingResampleImageFunctionTest
-      0
-      ${INPUT_DATA}/greyscale01.png
-      ${TEMP}/itkVotingResampleImageFunctionTest0.png
-  )
-
-add_test( itkVotingResampleImageFunctionTest1
-  ${BASE_NUMERICS_TESTS}
-    --compare ${BASELINE}/itkVotingResampleImageFunctionTest1.png
-              ${TEMP}/itkVotingResampleImageFunctionTest1.png
-    itkVotingResampleImageFunctionTest
-      1
-      ${INPUT_DATA}/greyscale01.png
-      ${TEMP}/itkVotingResampleImageFunctionTest1.png
-  )
-
-add_test( itkVotingResampleImageFunctionTest2
-  ${BASE_NUMERICS_TESTS}
-    --compare ${BASELINE}/itkVotingResampleImageFunctionTest2.png
-              ${TEMP}/itkVotingResampleImageFunctionTest2.png
-    itkVotingResampleImageFunctionTest
-      2
-      ${INPUT_DATA}/greyscale01.png
-      ${TEMP}/itkVotingResampleImageFunctionTest2.png
-  )
-
 add_test( tubeMatrixMathTest
   ${BASE_NUMERICS_TESTS}
   tubeMatrixMathTest
@@ -208,56 +129,7 @@ add_test( tubeUserFuncTest
   tubeUserFuncTest
   )
 
-add_test( tubeSplineApprox1DTest
-  ${BASE_NUMERICS_TESTS}
-  --compare ${BASELINE}/tubeSplineApprox1DTest.mha
-            ${TEMP}/tubeSplineApprox1DTest.mha
-  tubeSplineApprox1DTest
-    ${TEMP}/tubeSplineApprox1DTest.mha
-  )
-
-add_test( tubeSplineNDTest
-  ${BASE_NUMERICS_TESTS}
-  --compare ${BASELINE}/tubeSplineNDTest.mha
-            ${TEMP}/tubeSplineNDTest.mha
-  tubeSplineNDTest
-    ${TEMP}/tubeSplineNDTest.mha
-  )
-
-
-add_test( itkTubeBlurImageFunctionTest
-  ${BASE_NUMERICS_TESTS}
-  --compare ${BASELINE}/itkTubeBlurImageFunctionTest.mha
-            ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  itkTubeBlurImageFunctionTest
-    ${TEMP}/itkTubeBlurImageFunctionTest.mha
-  )
-
-add_test( itkTubeLDAGeneratorTest
-  ${BASE_NUMERICS_TESTS}
-  --compare ${BASELINE}/itkTubeLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-  itkTubeLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
-  )
-
-add_test( itkTubeNJetLDAGeneratorTest
-  ${BASE_NUMERICS_TESTS}
-  --compare ${BASELINE}/itkTubeNJetLDAGeneratorTest_lda0.mha
-            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-  itkTubeNJetLDAGeneratorTest
-    ${INPUT_DATA}/ES0015_Large_Subs.mha
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask_Subs.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
-  )
-
-
-# MIDAS TESTS
-MIDAS_ADD_TEST( itkJointHistogramImageFunctionMIDASTest01
+MIDAS_ADD_TEST( itkJointHistogramImageFunctionTest01
   ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkJointHistogramImageFunctionTest01.mha.md5}
               ${TEMP}/itkJointHistogramImageFunctionTest01.mha
@@ -271,7 +143,7 @@ MIDAS_ADD_TEST( itkJointHistogramImageFunctionMIDASTest01
       ${TEMP}/itkJointHistogramImageFunctionTest01StdDev.mha
   )
 
-MIDAS_ADD_TEST( itkJointHistogramImageFunctionMIDASTest02
+MIDAS_ADD_TEST( itkJointHistogramImageFunctionTest02
   ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkJointHistogramImageFunctionTest02.mha.md5}
               ${TEMP}/itkJointHistogramImageFunctionTest02.mha
@@ -285,14 +157,14 @@ MIDAS_ADD_TEST( itkJointHistogramImageFunctionMIDASTest02
       ${TEMP}/itkJointHistogramImageFunctionTest02StdDev.mha
   )
 
-MIDAS_ADD_TEST( itkImageRegionMomentsCalculatorMIDASTest
+MIDAS_ADD_TEST( itkImageRegionMomentsCalculatorTest
   ${BASE_NUMERICS_TESTS}
     itkImageRegionMomentsCalculatorTest
       MIDAS{scoring-test.png.md5}
   )
 
 foreach( testNum RANGE 0 37 )
-  MIDAS_ADD_TEST( itkTubeNJetImageFunctionMIDASTest${testNum}
+  MIDAS_ADD_TEST( itkTubeNJetImageFunctionTest${testNum}
     ${BASE_NUMERICS_TESTS}
       --compare MIDAS{itkTubeNJetImageFunctionTest${testNum}.mha.md5}
                 ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
@@ -303,7 +175,7 @@ foreach( testNum RANGE 0 37 )
     )
 endforeach( testNum )
 
-MIDAS_ADD_TEST( itkVotingResampleImageFunctionMIDASTest0
+MIDAS_ADD_TEST( itkVotingResampleImageFunctionTest0
   ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkVotingResampleImageFunctionTest0.png.md5}
               ${TEMP}/itkVotingResampleImageFunctionTest0.png
@@ -313,7 +185,7 @@ MIDAS_ADD_TEST( itkVotingResampleImageFunctionMIDASTest0
       ${TEMP}/itkVotingResampleImageFunctionTest0.png
   )
 
-MIDAS_ADD_TEST( itkVotingResampleImageFunctionMIDASTest1
+MIDAS_ADD_TEST( itkVotingResampleImageFunctionTest1
   ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkVotingResampleImageFunctionTest1.png.md5}
               ${TEMP}/itkVotingResampleImageFunctionTest1.png
@@ -323,7 +195,7 @@ MIDAS_ADD_TEST( itkVotingResampleImageFunctionMIDASTest1
       ${TEMP}/itkVotingResampleImageFunctionTest1.png
   )
 
-MIDAS_ADD_TEST( itkVotingResampleImageFunctionMIDASTest2
+MIDAS_ADD_TEST( itkVotingResampleImageFunctionTest2
   ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkVotingResampleImageFunctionTest2.png.md5}
               ${TEMP}/itkVotingResampleImageFunctionTest2.png
@@ -333,7 +205,7 @@ MIDAS_ADD_TEST( itkVotingResampleImageFunctionMIDASTest2
       ${TEMP}/itkVotingResampleImageFunctionTest2.png
   )
 
-MIDAS_ADD_TEST( tubeSplineApprox1DMIDASTest
+MIDAS_ADD_TEST( tubeSplineApprox1DTest
   ${BASE_NUMERICS_TESTS}
   --compare MIDAS{tubeSplineApprox1DTest.mha.md5}
             ${TEMP}/tubeSplineApprox1DTest.mha
@@ -341,7 +213,7 @@ MIDAS_ADD_TEST( tubeSplineApprox1DMIDASTest
     ${TEMP}/tubeSplineApprox1DTest.mha
   )
 
-MIDAS_ADD_TEST( tubeSplineNDMIDASTest
+MIDAS_ADD_TEST( tubeSplineNDTest
   ${BASE_NUMERICS_TESTS}
   --compare MIDAS{tubeSplineNDTest.mha.md5}
             ${TEMP}/tubeSplineNDTest.mha
@@ -349,8 +221,7 @@ MIDAS_ADD_TEST( tubeSplineNDMIDASTest
     ${TEMP}/tubeSplineNDTest.mha
   )
 
-
-MIDAS_ADD_TEST( itkTubeBlurImageFunctionMIDASTest
+MIDAS_ADD_TEST( itkTubeBlurImageFunctionTest
   ${BASE_NUMERICS_TESTS}
   --compare MIDAS{itkTubeBlurImageFunctionTest.mha.md5}
             ${TEMP}/itkTubeBlurImageFunctionTest.mha
@@ -358,7 +229,7 @@ MIDAS_ADD_TEST( itkTubeBlurImageFunctionMIDASTest
     ${TEMP}/itkTubeBlurImageFunctionTest.mha
   )
 
-MIDAS_ADD_TEST( itkTubeLDAGeneratorMIDASTest
+MIDAS_ADD_TEST( itkTubeLDAGeneratorTest
   ${BASE_NUMERICS_TESTS}
   --compare MIDAS{itkTubeLDAGeneratorTest_lda0.mha.md5}
             ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
@@ -369,7 +240,7 @@ MIDAS_ADD_TEST( itkTubeLDAGeneratorMIDASTest
     ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
   )
 
-MIDAS_ADD_TEST( itkTubeNJetLDAGeneratorMIDASTest
+MIDAS_ADD_TEST( itkTubeNJetLDAGeneratorTest
   ${BASE_NUMERICS_TESTS}
   --compare MIDAS{itkTubeNJetLDAGeneratorTest_lda0.mha.md5}
             ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha

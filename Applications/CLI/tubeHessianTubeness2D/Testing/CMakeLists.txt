@@ -28,12 +28,6 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-
-set( BASELINE
-       ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -45,35 +39,17 @@ set( IMAGECOMPARE_EXE
 #######
 # Test1
 #######
-add_test( ${PROJECT_NAME}Test1
-            ${PROJ_EXE}
-               ${INPUT_DATA}/im0001.crop.mha
-               --min 0.1 --max 3.0 --steps 10 --timestep 0.001
-               ${TEMP}/${PROJECT_NAME}Test1.mha )
-
-add_test( ${PROJECT_NAME}Test1-Compare
-            ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test1.mha
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mha
-               -n 90
-                )
-set_tests_properties( ${PROJECT_NAME}Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
-
-#######
-# MIDAS-Test1
-#######
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
             ${PROJ_EXE}
                MIDAS{im0001.crop.mha.md5}
                --min 0.1 --max 3.0 --steps 10 --timestep 0.001
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
                -b MIDAS{${PROJECT_NAME}Test1.mha.md5}
                -n 90
                 )
-set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
+set_tests_properties( ${PROJECT_NAME}-Test1-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )

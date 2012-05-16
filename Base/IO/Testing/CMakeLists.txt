@@ -36,9 +36,6 @@ set( BASE_IO_TESTS
 set( BASE_IO_HEADER_TEST
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseIOHeaderTest )
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-set( BASELINE ${TubeTK_SOURCE_DIR}/Base/IO/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseIOTests_SRCS

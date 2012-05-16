@@ -41,17 +41,7 @@ set( UTILITIES_TESTS
 set( UTILITIES_HEADER_TEST 
       ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeUtilitiesHeaderTest )
 
-set( APPLICATION_PATH ${TubeTK_BINARY_DIR}/Utilities )
-
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-
-set( BASELINE ${APPLICATION_PATH}/Testing/Baselines )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
-file( COPY ${INPUT_DATA}/ES0015_Large.mha DESTINATION ${TEMP} )
-file( COPY ${INPUT_DATA}/im0001.crop.mha DESTINATION ${TEMP} )
 
 # Test CLI generation
 set( tubeCLIHelperFunctionsTest_SOURCE
@@ -92,92 +82,49 @@ add_test( tubeMessageTest
             ${UTILITIES_TESTS}
             tubeMessageTest )
 
-add_test( tubeCLIFilterWatcherTest
+MIDAS_ADD_TEST( tubeCLIFilterWatcherTest
             ${UTILITIES_TESTS}
-            tubeCLIFilterWatcherTest ${INPUT_DATA}/Branch.n010.mha )
+            tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5} )
 
-add_test( tubeCLIHelperFunctionsTest 
+MIDAS_ADD_TEST( tubeCLIHelperFunctionsTest
             ${UTILITIES_TESTS}
-            tubeCLIHelperFunctionsTest ${INPUT_DATA}/Branch.n010.mha )
+            tubeCLIHelperFunctionsTest MIDAS{Branch.n010.mha.md5} )
 
-add_test( tubeCLIProgressReporterTest 
+add_test( tubeCLIProgressReporterTest
             ${UTILITIES_TESTS}
             tubeCLIProgressReporterTest )
 
 ## Image Compare
-add_test( ImageCompareCommandTest1
+MIDAS_ADD_TEST( ImageCompareCommand-Test1
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-    -t ${TEMP}/ES0015_Large.mha
-    -b ${INPUT_DATA}/ES0015_Large.mha )
-
-add_test( ImageCompareCommandTest2
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-    -n 1000
-    -r 1
-    -i 50
-    -t ${TEMP}/im0001.crop.mha
-    -b ${INPUT_DATA}/im0001_n10.crop.mha )
-
-add_test( ImageCompareCommandTest3
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-     -t ${TEMP}/im0001.mha
-     -b ${INPUT_DATA}/im0001_n10.crop.mha )
-set_tests_properties( ImageCompareCommandTest3
-                      PROPERTIES WILL_FAIL true )
-
-add_test( ImageCompareCommandTest4
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-     -t ${TEMP}/im0001.crop.mha
-     -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001.crop.mha )
-
-add_test( ImageCompareCommandTest5
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-     -t ${TEMP}/im0001.crop.mha
-     -B 2 ${INPUT_DATA}/im0001_n10.crop.mha ${INPUT_DATA}/im0001_n20.crop.mha )
-set_tests_properties( ImageCompareCommandTest5
-                      PROPERTIES WILL_FAIL true )
-
-
-## Add MIDAS tests here
-MIDAS_ADD_TEST( tubeCLIFilterWatcherMIDAS-Test
-            ${UTILITIES_TESTS}
-            tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5} )
-
-MIDAS_ADD_TEST( tubeCLIHelperFunctionsMIDAS-Test
-            ${UTILITIES_TESTS}
-            tubeCLIHelperFunctionsTest MIDAS{Branch.n010.mha.md5} )
-
-## Image Compare
-MIDAS_ADD_TEST( ImageCompareCommandMIDAS-Test1
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-    -t ${TEMP}/ES0015_Large.mha
+    -t MIDAS{ES0015_Large.mha.md5}
     -b MIDAS{ES0015_Large.mha.md5} )
 
-MIDAS_ADD_TEST( ImageCompareCommandMIDAS-Test2
+MIDAS_ADD_TEST( ImageCompareCommand-Test2
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
     -n 1000
     -r 1
     -i 50
-    -t ${TEMP}/im0001.crop.mha
+    -t MIDAS{im0001.crop.mha.md5}
     -b MIDAS{im0001_n10.crop.mha.md5} )
 
-MIDAS_ADD_TEST( ImageCompareCommandMIDAS-Test3
+MIDAS_ADD_TEST( ImageCompareCommand-Test3
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
      -t ${TEMP}/im0001.mha
      -b MIDAS{im0001_n10.crop.mha.md5} )
-set_tests_properties( ImageCompareCommandMIDAS-Test3
+set_tests_properties( ImageCompareCommand-Test3
                       PROPERTIES WILL_FAIL true )
 
-MIDAS_ADD_TEST( ImageCompareCommandMIDAS-Test4
+MIDAS_ADD_TEST( ImageCompareCommand-Test4
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-     -t ${TEMP}/im0001.crop.mha
+     -t MIDAS{im0001.crop.mha.md5}
      -B 2 MIDAS{im0001_n10.crop.mha.md5} MIDAS{im0001.crop.mha.md5} )
 
-MIDAS_ADD_TEST( ImageCompareCommandMIDAS-Test5
+MIDAS_ADD_TEST( ImageCompareCommand-Test5
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-     -t ${TEMP}/im0001.crop.mha
+     -t MIDAS{im0001.crop.mha.md5}
      -B 2 MIDAS{im0001_n10.crop.mha.md5} MIDAS{im0001_n20.crop.mha.md5} )
-set_tests_properties( ImageCompareCommandMIDAS-Test5
+set_tests_properties( ImageCompareCommand-Test5
                       PROPERTIES WILL_FAIL true )
 
 

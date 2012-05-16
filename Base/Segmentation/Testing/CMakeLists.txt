@@ -44,9 +44,6 @@ set( BASE_SEGMENTATION_HEADER_TEST
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationHeaderTest
   )
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-set( BASELINE ${TubeTK_SOURCE_DIR}/Base/Segmentation/Testing/Baselines )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseSegmentation_SRCS
@@ -99,105 +96,14 @@ add_test( tubeBaseSegmentationPrintTest
   tubeBaseSegmentationPrintTest
   )
 
-add_test( itkTubeCVTImageFilterTest
-  ${BASE_SEGMENTATION_TESTS}
-  itkTubeCVTImageFilterTest
-    ${INPUT_DATA}/GDS0015_1.mha
-    ${TEMP}/itkTubeCVTImageFilterTest.mha
-  )
-
-add_test( itkTubeOtsuThresholdMaskedImageFilterTest
-  ${BASE_SEGMENTATION_TESTS}
-  --compare ${BASELINE}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
-            ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
-  itkTubeOtsuThresholdMaskedImageFilterTest
-    ${INPUT_DATA}/ES0015_1.mha
-    ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest1.mha
-    ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
-  )
-
-add_test( itkTubePDFSegmenterTest
-  ${BASE_SEGMENTATION_TESTS}
-  --compare ${BASELINE}/itkTubePDFSegmenterTest_mask.mha
-            ${TEMP}/itkTubePDFSegmenterTest_mask.mha
-  itkTubePDFSegmenterTest
-    ${INPUT_DATA}/ES0015_Large.mha
-    false
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
-    ${TEMP}/itkTubePDFSegmenterTest_prob0.mha
-    ${TEMP}/itkTubePDFSegmenterTest_prob1.mha
-    ${TEMP}/itkTubePDFSegmenterTest_mask.mha
-  )
-
-add_test( itkTubePDFSegmenterTest2
-  ${BASE_SEGMENTATION_TESTS}
-  --compare ${BASELINE}/itkTubePDFSegmenterTest2_mask.mha
-            ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
-  itkTubePDFSegmenterTest
-    ${INPUT_DATA}/ES0015_Large.mha
-    true
-    ${INPUT_DATA}/GDS0015_Large-TrainingMask.mha
-    ${TEMP}/itkTubePDFSegmenterTest2_prob0.mha
-    ${TEMP}/itkTubePDFSegmenterTest2_prob1.mha
-    ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
-  )
-
-add_test( itkTubeRidgeExtractorTest
-  ${BASE_SEGMENTATION_TESTS}
-  --compare ${BASELINE}/itkTubeRidgeExtractorTest.mha
-    ${TEMP}/itkTubeRidgeExtractorTest.mha
-  itkTubeRidgeExtractorTest
-    ${INPUT_DATA}/Branch.n010.sub.mha
-    ${TEMP}/itkTubeRidgeExtractorTest.mha
-  )
-
-add_test( itkTubeRidgeExtractorTest2
-  ${BASE_SEGMENTATION_TESTS}
-  itkTubeRidgeExtractorTest2
-    ${INPUT_DATA}/Branch.n010.sub.mha
-    ${INPUT_DATA}/Branch-truth_Subs.tre
-  )
-
-add_test( itkTubeRadiusExtractorTest
-  ${BASE_SEGMENTATION_TESTS}
-  itkTubeRadiusExtractorTest
-    ${INPUT_DATA}/Branch.n010.mha
-    ${INPUT_DATA}/Branch-truth.tre
-  )
-
-add_test( itkTubeRadiusExtractorTest2
-  ${BASE_SEGMENTATION_TESTS}
-  itkTubeRadiusExtractorTest2
-    ${INPUT_DATA}/Branch.n010.mha
-    ${INPUT_DATA}/Branch-truth.tre
-  )
-
-add_test( itkTubeTubeExtractorTest
-  ${BASE_SEGMENTATION_TESTS}
-  itkTubeTubeExtractorTest
-    ${INPUT_DATA}/Branch.n010.sub.mha
-    ${INPUT_DATA}/Branch-truth.tre
-  )
-
-add_test( itkTubeRidgeSeedGeneratorTest
-  ${BASE_SEGMENTATION_TESTS}
-  --compare ${BASELINE}/itkTubeRidgeSeedGeneratorTest.lda00.mha
-    ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
-  itkTubeRidgeSeedGeneratorTest
-    ${INPUT_DATA}/im0001.crop.mha
-    ${INPUT_DATA}/im0001.vk.crop.mha
-    ${TEMP}/itkTubeRidgeSeedGeneratorTest
-  )
-
-## MIDAS TESTs
-MIDAS_ADD_TEST( itkTubeCVTImageFilterMIDASTest
+MIDAS_ADD_TEST( itkTubeCVTImageFilterTest
   ${BASE_SEGMENTATION_TESTS}
   itkTubeCVTImageFilterTest
     MIDAS{GDS0015_1.mha.md5}
     ${TEMP}/itkTubeCVTImageFilterTest.mha
   )
 
-MIDAS_ADD_TEST( itkTubeOtsuThresholdMaskedImageFilterMIDASTest
+MIDAS_ADD_TEST( itkTubeOtsuThresholdMaskedImageFilterTest
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubeOtsuThresholdMaskedImageFilterTest2.mha.md5}
             ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
@@ -207,7 +113,7 @@ MIDAS_ADD_TEST( itkTubeOtsuThresholdMaskedImageFilterMIDASTest
     ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
   )
 
-MIDAS_ADD_TEST( itkTubePDFSegmenterMIDASTest
+MIDAS_ADD_TEST( itkTubePDFSegmenterTest
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubePDFSegmenterTest_mask.mha.md5}
             ${TEMP}/itkTubePDFSegmenterTest_mask.mha
@@ -220,7 +126,7 @@ MIDAS_ADD_TEST( itkTubePDFSegmenterMIDASTest
     ${TEMP}/itkTubePDFSegmenterTest_mask.mha
   )
 
-MIDAS_ADD_TEST( itkTubePDFSegmenterMIDASTest2
+MIDAS_ADD_TEST( itkTubePDFSegmenterTest2
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubePDFSegmenterTest2_mask.mha.md5}
             ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
@@ -233,7 +139,7 @@ MIDAS_ADD_TEST( itkTubePDFSegmenterMIDASTest2
     ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
   )
 
-MIDAS_ADD_TEST( itkTubeRidgeExtractorMIDASTest
+MIDAS_ADD_TEST( itkTubeRidgeExtractorTest
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubeRidgeExtractorTest.mha.md5}
     ${TEMP}/itkTubeRidgeExtractorTest.mha
@@ -242,30 +148,41 @@ MIDAS_ADD_TEST( itkTubeRidgeExtractorMIDASTest
     ${TEMP}/itkTubeRidgeExtractorTest.mha
   )
 
-MIDAS_ADD_TEST( itkTubeRidgeExtractorMIDASTest2
+MIDAS_ADD_TEST( itkTubeRidgeExtractorTest2
   ${BASE_SEGMENTATION_TESTS}
   itkTubeRidgeExtractorTest2
     MIDAS{Branch.n010.sub.mha.md5}
     MIDAS{Branch-truth_Subs.tre.md5}
   )
 
-MIDAS_ADD_TEST( itkTubeRadiusExtractorMIDASTest
+MIDAS_ADD_TEST( itkTubeRadiusExtractorTest
   ${BASE_SEGMENTATION_TESTS}
   itkTubeRadiusExtractorTest
     MIDAS{Branch.n010.mha.md5}
     MIDAS{Branch-truth.tre.md5}
   )
 
-MIDAS_ADD_TEST( itkTubeRadiusExtractorMIDASTest2
+MIDAS_ADD_TEST( itkTubeRadiusExtractorTest2
   ${BASE_SEGMENTATION_TESTS}
   itkTubeRadiusExtractorTest2
     MIDAS{Branch.n010.mha.md5}
     MIDAS{Branch-truth.tre.md5}
   )
 
-MIDAS_ADD_TEST( itkTubeTubeExtractorMIDASTest
+MIDAS_ADD_TEST( itkTubeTubeExtractorTest
   ${BASE_SEGMENTATION_TESTS}
   itkTubeTubeExtractorTest
     MIDAS{Branch.n010.sub.mha.md5}
     MIDAS{Branch-truth.tre.md5}
   )
+
+# Keep this test commented out until we upload the baseline
+#MIDAS_ADD_TEST( itkTubeRidgeSeedGeneratorTest
+#  ${BASE_SEGMENTATION_TESTS}
+#  --compare MIDAS{itkTubeRidgeSeedGeneratorTest.lda00.mha.md5}
+#    ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
+#  itkTubeRidgeSeedGeneratorTest
+#    MIDAS{im0001.crop.mha.md5}
+#    MIDAS{im0001.vk.crop.mha.md5}
+#    ${TEMP}/itkTubeRidgeSeedGeneratorTest
+#  )

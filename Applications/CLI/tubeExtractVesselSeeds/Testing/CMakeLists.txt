@@ -28,12 +28,6 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
 
-set( INPUT_DATA ${TubeTK_SOURCE_DIR}/Data )
-set( ITK_INPUT_DATA ${ITK_DATA_ROOT}/Input )
-
-set( BASELINE
-  ${TubeTK_SOURCE_DIR}/Applications/CLI/${PROJECT_NAME}/Testing/Baselines )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -48,28 +42,7 @@ set( TEXTCOMPARE_EXE
 #######
 # Test1
 #######
-add_test( ${PROJECT_NAME}Test1
-            ${PROJ_EXE}
-               --saveVesselSeedInfo ${TEMP}/${PROJECT_NAME}Test1.vsi
-               --labelmap ${INPUT_DATA}/im0001.vk.mask.mha
-               ${INPUT_DATA}/im0001.mha
-               ${TEMP}/${PROJECT_NAME}Test1.mha )
-
-#######
-# Test1-Compare
-#######
-add_test( ${PROJECT_NAME}Test1-Compare
-            ${IMAGECOMPARE_EXE}
-               -i 0.01
-               -t ${TEMP}/${PROJECT_NAME}Test1.mha
-               -b ${BASELINE}/${PROJECT_NAME}Test1.mha )
-set_tests_properties( ${PROJECT_NAME}Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
-
-#######
-# MIDAS-Test1
-#######
-MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
             ${PROJ_EXE}
                --saveVesselSeedInfo ${TEMP}/${PROJECT_NAME}Test1.vsi
                --labelmap MIDAS{im0001.vk.mask.mha.md5}
@@ -77,13 +50,13 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 #######
-# MIDAS-Test1-Compare
+# Test1-Compare
 #######
 #This test will be commented out until we get a baseline image for this test
-#MIDAS_ADD_TEST( ${PROJECT_NAME}MIDAS-Test1-Compare
+#MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
 #            ${IMAGECOMPARE_EXE}
 #               -i 0.01
 #               -t ${TEMP}/${PROJECT_NAME}Test1.mha
 #               -b MIDAS{${PROJECT_NAME}Test1.mha.md5} )
-#set_tests_properties( ${PROJECT_NAME}MIDAS-Test1-Compare
-#                      PROPERTIES DEPENDS ${PROJECT_NAME}MIDAS-Test1 )
+#set_tests_properties( ${PROJECT_NAME}-Test1-Compare
+#                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
