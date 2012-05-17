@@ -11,7 +11,7 @@ license is available on the web:
   http://www.apache.org/licenses/LICENSE-2.0
 
 The source code is available on the web:
-  http://gitorious.org/tubetk/
+  http://gitorious.org/tubetk-src/
 
 The development of TubeTK is being funded, in part, by the following grants
   1. NIH/NIBIB sponsored "National Alliance of Medical Image Computing"
