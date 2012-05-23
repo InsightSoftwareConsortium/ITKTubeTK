@@ -52,6 +52,12 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
     m_SmoothingFilters[ i ]->ReleaseDataFlagOn();
     }
 
+  // Outer Gaussian smoothing filter
+  m_TensorComponentSmoothingFilter = GaussianFilterType::New();
+  m_TensorComponentSmoothingFilter->SetOrder( GaussianFilterType::ZeroOrder );
+  m_TensorComponentSmoothingFilter->SetNormalizeAcrossScale( m_NormalizeAcrossScale );
+  //m_TensorComponentSmoothingFilter->ReleaseDataFlagOn();
+ 
   m_DerivativeFilter = DerivativeFilterType::New();
   m_DerivativeFilter->SetOrder( DerivativeFilterType::FirstOrder );
   m_DerivativeFilter->SetNormalizeAcrossScale( m_NormalizeAcrossScale );
@@ -70,6 +76,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
   m_ImageAdaptor = OutputImageAdaptorType::New();
 
   this->SetSigma( 1.0 );
+  this->SetSigmaOuter( 1.0 );
 
 }
 
@@ -82,6 +89,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::SetSigma( RealType sigma )
 {
 
+  m_Sigma = sigma;
   for( unsigned int i = 0; i < ImageDimension - 1; i++ )
     {
     m_SmoothingFilters[ i ]->SetSigma( sigma );
@@ -90,6 +98,20 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
   this->Modified();
 
+}
+
+
+/**
+ * Set value of SigmaOuter
+ */
+template <typename TInputImage, typename TOutputImage>
+void
+StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+::SetSigmaOuter( RealType sigma )
+{
+  m_SigmaOuter = sigma;
+  m_TensorComponentSmoothingFilter->SetSigma( sigma );
+  this->Modified();
 }
 
 /**
@@ -234,7 +256,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
     }
 
-  // Finally calculate the outer (diadic) product of the gradient.
+  //Calculate the outer (diadic) product of the gradient.
   ImageRegionIteratorWithIndex< OutputImageType > ottensor(
     this->GetOutput(),
     this->GetOutput()->GetRequestedRegion() );
@@ -245,7 +267,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
   const unsigned int numberTensorElements
       = (ImageDimension*(ImageDimension+1))/2;
-  std::vector<PixelType> tmp( numberTensorElements );
+  std::vector<InternalRealType> tmp( numberTensorElements );
 
   ottensor.GoToBegin();
   itgradient.GoToBegin();
@@ -266,6 +288,51 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
     ++itgradient;
     ++ottensor;
+    }
+
+  //Finally, smooth the outer product components
+  typedef typename itk::Image<InternalRealType, ImageDimension> ComponentImageType;
+    
+  for(unsigned int i =0; i < numberTensorElements; i++)
+    {
+    typename ComponentImageType::Pointer componentImage = ComponentImageType::New();
+    componentImage->SetLargestPossibleRegion( inputImage->GetLargestPossibleRegion() );
+    componentImage->SetBufferedRegion( inputImage->GetBufferedRegion() );
+    componentImage->SetRequestedRegion( inputImage->GetRequestedRegion() );
+    componentImage->Allocate();
+    
+    ImageRegionIteratorWithIndex< ComponentImageType > 
+              compit(
+                    componentImage,
+                    componentImage->GetRequestedRegion()
+                    );
+    
+    ottensor.GoToBegin();
+    compit.GoToBegin();
+    while( !compit.IsAtEnd() )
+      {
+      compit.Value() = ottensor.Get()[i];
+      ++compit;
+      ++ottensor;
+      }
+    
+    m_TensorComponentSmoothingFilter->SetInput(componentImage);
+    m_TensorComponentSmoothingFilter->Update();
+    
+    ImageRegionIteratorWithIndex< ComponentImageType > 
+    smoothedCompIt( m_TensorComponentSmoothingFilter->GetOutput(),
+                    m_TensorComponentSmoothingFilter->GetOutput()->GetRequestedRegion());
+    
+    ottensor.GoToBegin();
+    smoothedCompIt.GoToBegin();
+
+    while( !ottensor.IsAtEnd() )
+      {
+      ottensor.Value()[i] = smoothedCompIt.Get();  
+      ++smoothedCompIt;
+      ++ottensor;
+      }
+    
     }
 }
 
