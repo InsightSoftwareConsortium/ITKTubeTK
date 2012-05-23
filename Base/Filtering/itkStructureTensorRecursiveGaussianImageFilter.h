@@ -37,6 +37,7 @@ namespace itk
  *
  * \brief Computes the structure tensor of a multidimensional image
  *
+ *
  * \warning Operates in image (pixel) space, not physical space
  *
  * \ingroup GradientFilters
@@ -111,10 +112,18 @@ public:
 
   /** Set Sigma value. Sigma is measured in the units of image spacing.  */
   void SetSigma( RealType sigma );
+  void SetSigmaOuter( RealType rho);
 
   /** Define which normalization factor will be used for the Gaussian */
   void SetNormalizeAcrossScale( bool normalizeInScaleSpace );
   itkGetMacro( NormalizeAcrossScale, bool );
+
+  //Sigma value for the Gaussian derivative filters
+  itkGetMacro( Sigma, RealType );
+
+  //Sigma value for the outer Gaussian smoothing filter
+  itkGetMacro( SigmaOuter,   RealType );
+ 
 
   /** StructureTensorRecursiveGaussianImageFilter needs all of the input to produce an
    * output. Therefore, StructureTensorRecursiveGaussianImageFilter needs to provide
@@ -140,11 +149,15 @@ private:
 
   std::vector<GaussianFilterPointer>         m_SmoothingFilters;
   DerivativeFilterPointer                    m_DerivativeFilter;
+  GaussianFilterPointer                      m_TensorComponentSmoothingFilter;
   OutputImageAdaptorPointer                  m_ImageAdaptor;
 
   /** Normalize the image across scale space */
   bool m_NormalizeAcrossScale;
 
+
+  RealType      m_Sigma;
+  RealType      m_SigmaOuter;
 };
 
 } // end namespace itk
