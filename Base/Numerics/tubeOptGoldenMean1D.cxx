@@ -66,8 +66,18 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
   double prevV = m_FuncVal->value( *extX );
   double xstep = m_XStep;
   int dir = 1;
-  double v1 = maxSign * m_FuncVal->value( *extX+dir*xstep );
-  double v2 = maxSign * m_FuncVal->value( *extX-dir*xstep );
+
+  double v1 = v-m_Tolerance;
+  if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
+    {
+    v1 = maxSign * m_FuncVal->value( *extX+dir*xstep );
+    }
+
+  double v2 = v1-m_Tolerance;
+  if( *extX-dir*xstep <= m_XMax && *extX-dir*xstep >= m_XMin )
+    {
+    v2 = maxSign * m_FuncVal->value( *extX-dir*xstep );
+    }
 
   if( v2>v1 )
     {
@@ -84,7 +94,14 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
   while( v < prevV && xstep > 2 * m_Tolerance && iter < m_MaxIterations )
     {
     dir *= -1;
-    v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+    if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
+      {
+      v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+      }
+    else
+      {
+      dir *= -1;
+      }
     if( v<prevV && dir == dirInit )
       {
       xstep /= 1.618;
@@ -95,25 +112,41 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
   prevV = v;
 
   *extX += dir*xstep;
-
   if( *extX > m_XMax )
     {
     *extX = m_XMax;
-    *extVal = prevV;
+    *extVal = m_FuncVal->value( *extX );
     return false;
     }
-
   if( *extX < m_XMin )
     {
     *extX = m_XMin;
-    *extVal = prevV;
+    *extVal = m_FuncVal->value( *extX );
     return false;
     }
 
   dirInit = dir;
   while( xstep > m_Tolerance && iter < m_MaxIterations )
     {
-    v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+    if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
+      {
+      v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+      }
+    else
+      {
+      if( *extX > m_XMax )
+        {
+        *extX = m_XMax;
+        *extVal = m_FuncVal->value( *extX );
+        return false;
+        }
+      if( *extX < m_XMin )
+        {
+        *extX = m_XMin;
+        *extVal = m_FuncVal->value( *extX );
+        return false;
+        }
+      }
     while( v > prevV && iter < m_MaxIterations )
       {
       dirInit = dir;
@@ -122,14 +155,13 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
       if( *extX > m_XMax )
         {
         *extX = m_XMax;
-        *extVal = prevV;
+        *extVal = m_FuncVal->value( *extX );
         return false;
         }
-
       if( *extX < m_XMin )
         {
         *extX = m_XMin;
-        *extVal = prevV;
+        *extVal = m_FuncVal->value( *extX );
         return false;
         }
       v = maxSign * m_FuncVal->value( *extX+dir*xstep );
