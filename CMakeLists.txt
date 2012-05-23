@@ -60,7 +60,9 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
 #-----------------------------------------------------------------------------
 # Configure MIDAS_USER and API_KEY to download testing data from MIDAS
 SET(MIDAS_USER "" CACHE STRING "MIDAS User email address")
+mark_as_advanced( MIDAS_USER )
 SET(MIDAS_DEFAULT_API_KEY "" CACHE STRING "MIDAS DEFAULT API Key")
+mark_as_advanced( MIDAS_DEFAULT_API_KEY )
 
 #-----------------------------------------------------------------------------
 # Doxygen setup
@@ -173,6 +175,7 @@ endif( UNIX )
 # ITK Setup
 option( USE_SYSTEM_ITK
   "Exclude ITK from SuperBuild and use an existing build instead." OFF )
+mark_as_advanced( USE_SYSTEM_ITK )
 if( USE_SYSTEM_ITK )
   find_package( ITK REQUIRED )
   include( ${ITK_USE_FILE} )
@@ -215,6 +218,7 @@ if( TubeTK_USE_VTK )
   # VTK Superbuild or System
   option( USE_SYSTEM_VTK
     "Exclude VTK from SuperBuild and use an existing build instead." OFF )
+  mark_as_advanced( USE_SYSTEM_VTK )
   if( USE_SYSTEM_VTK )
     find_package( VTK REQUIRED )
     include( ${VTK_USE_FILE} )
@@ -231,6 +235,7 @@ if( TubeTK_USE_QT )
   # CTK Superbuild or System
   option( USE_SYSTEM_CTK
     "Exclude CTK from SuperBuild and use an existing build instead." OFF )
+  mark_as_advanced( USE_SYSTEM_CTK )
   if( USE_SYSTEM_CTK )
     find_package( CTK REQUIRED )
     include( ${CTK_USE_FILE} )
@@ -248,6 +253,7 @@ mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
 # Superbuild setup
 option( TubeTK_USE_SUPERBUILD
   "Build TubeTK and the projects it depends on via SuperBuild.cmake." ON )
+mark_as_advanced( TubeTK_USE_SUPERBUILD )
 
 if( TubeTK_USE_SUPERBUILD )
 
