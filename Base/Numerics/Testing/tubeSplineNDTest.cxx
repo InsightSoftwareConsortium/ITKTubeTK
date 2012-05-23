@@ -228,6 +228,7 @@ int tubeSplineNDTest( int argc, char *argv[] )
   ImageWriterType::Pointer imWriter = ImageWriterType::New( );
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );
+  imWriter->SetUseCompression( true );
   imWriter->Update( );
 
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
