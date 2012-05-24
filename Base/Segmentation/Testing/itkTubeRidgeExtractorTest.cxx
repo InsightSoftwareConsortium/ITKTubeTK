@@ -218,6 +218,7 @@ int itkTubeRidgeExtractorTest( int argc, char * argv[] )
   ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[2] );
   imWriter->SetInput( imOut );
+  imWriter->SetUseCompression( true );
   imWriter->Update();
 
   return EXIT_SUCCESS;
