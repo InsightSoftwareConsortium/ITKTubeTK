@@ -294,7 +294,7 @@
       <description>The type of the anisotropic registration.  Each voxel has one normal in the "Sliding Organ" type, and three normals in the "Sparse Sliding Organ" type.  "Sparse Sliding Organ" is under development and not recommended.</description>
       <default>SlidingOrgan</default>
     </string-enumeration>
-    <string-enumeration>
+    <string-enumeration hidden="true">
       <name>worldCoordinateSystem</name>
       <flag>c</flag>
       <longflag>worldCoordinateSystem</longflag>
