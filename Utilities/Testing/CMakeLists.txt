@@ -110,7 +110,7 @@ MIDAS_ADD_TEST( ImageCompareCommand-Test2
 
 MIDAS_ADD_TEST( ImageCompareCommand-Test3
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
-     -t ${TEMP}/im0001.mha
+     -t MIDAS{im0001.mha.md5}
      -b MIDAS{im0001_n10.crop.mha.md5} )
 set_tests_properties( ImageCompareCommand-Test3
                       PROPERTIES WILL_FAIL true )
@@ -125,6 +125,13 @@ MIDAS_ADD_TEST( ImageCompareCommand-Test5
      -t MIDAS{im0001.crop.mha.md5}
      -B 2 MIDAS{im0001_n10.crop.mha.md5} MIDAS{im0001_n20.crop.mha.md5} )
 set_tests_properties( ImageCompareCommand-Test5
+                      PROPERTIES WILL_FAIL true )
+
+MIDAS_ADD_TEST( ImageCompareCommand-Test6
+  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
+     -t MIDAS{im0001_n10.crop.mha.md5}
+     -b ${TEMP}/filedoesnotexist.mha )
+set_tests_properties( ImageCompareCommand-Test6
                       PROPERTIES WILL_FAIL true )
 
 
