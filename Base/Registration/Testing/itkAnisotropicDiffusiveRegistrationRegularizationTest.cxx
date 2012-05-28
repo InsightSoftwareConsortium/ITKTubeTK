@@ -244,6 +244,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[1] );
   writer->SetInput( registrator->GetOutput() );
+  writer->SetUseCompression( true );
   try
     {
     writer->Update();
