@@ -193,11 +193,7 @@ if( TubeTK_USE_VTK )
   MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
             itkAnisotropicDiffusiveRegistrationRegularizationTest
-          ${TEMP}/Regularization_straight_noNoise_origMotionField.mhd
           ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
-          ${TEMP}/Regularization_straight_noNoise_smoothedMotionField_normal.mhd
-          ${TEMP}/Regularization_straight_noNoise_normalVectorImage.mhd
-          ${TEMP}/Regularization_straight_noNoise_organBoundary.vtk
           0 0
           5 0.125 1
           )
@@ -215,11 +211,7 @@ if( TubeTK_USE_VTK )
   MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTestStraight
           ${BASE_REGISTRATION_FILTERS_TESTS}
             itkAnisotropicDiffusiveRegistrationRegularizationTest
-          ${TEMP}/Regularization_straight_origMotionField.mhd
           ${TEMP}/Regularization_straight_smoothedMotionField.mhd
-          ${TEMP}/Regularization_straight_smoothedMotionField_normal.mhd
-          ${TEMP}/Regularization_straight_normalVectorImage.mhd
-          ${TEMP}/Regularization_straight_smoothedMotionField_organBoundary.vtk
           0.1 0
           5 0.125 1
           )
@@ -237,11 +229,7 @@ if( TubeTK_USE_VTK )
   MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise
           ${BASE_REGISTRATION_FILTERS_TESTS}
             itkAnisotropicDiffusiveRegistrationRegularizationTest
-          ${TEMP}/Regularization_angled_noNoise_origMotionField.mhd
           ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
-          ${TEMP}/Regularization_angled_noNoise_smoothedMotionField_normal.mhd
-          ${TEMP}/Regularization_angled_noNoise_normalVectorImage.mhd
-          ${TEMP}/Regularization_angled_noNoise_organBoundary.vtk
           0 0.5
           5 0.125 1
           )
@@ -259,11 +247,7 @@ if( TubeTK_USE_VTK )
   MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTestAngled
           ${BASE_REGISTRATION_FILTERS_TESTS}
             itkAnisotropicDiffusiveRegistrationRegularizationTest
-          ${TEMP}/Regularization_angled_origMotionField.mhd
           ${TEMP}/Regularization_angled_smoothedMotionField.mhd
-          ${TEMP}/Regularization_angled_smoothedMotionField_normal.mhd
-          ${TEMP}/Regularization_angled_normalVectorImage.mhd
-          ${TEMP}/Regularization_angled_smoothedMotionField_organBoundary.vtk
           0.1 0.5
           5 0.125 1
           )
@@ -281,11 +265,7 @@ if( TubeTK_USE_VTK )
   MIDAS_ADD_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian
           ${BASE_REGISTRATION_FILTERS_TESTS}
             itkAnisotropicDiffusiveRegistrationRegularizationTest
-          ${TEMP}/Regularization_angled_gaussian_origMotionField.mhd
           ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
-          ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_normal.mhd
-          ${TEMP}/Regularization_angled_gaussian_normalVectorImage.mhd
-          ${TEMP}/Regularization_angled_gaussian_smoothedMotionField_organBoundary.vtk
           0.1 0.5
           5 0.125 0
           )

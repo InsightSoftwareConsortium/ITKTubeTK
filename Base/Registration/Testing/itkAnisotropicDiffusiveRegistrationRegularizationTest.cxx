@@ -40,16 +40,12 @@ limitations under the License.
 int itkAnisotropicDiffusiveRegistrationRegularizationTest(
                                                       int argc, char* argv [] )
 {
-  if( argc < 11 )
+  if( argc < 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-              << "original motion field image, "
               << "smoothed motion field image, "
-              << "smoothed motion field image (normal), "
-              << "normal vector image, "
-              << "border surface, "
               << "noise variance, "
               << "border slope, "
               << "number of iterations, "
@@ -106,7 +102,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   VectorType  borderN( 0.0 ); // normal to the border
   VectorType  perpN;   // perpendicular to the border
 
-  borderSlope = atof( argv[7] );
+  borderSlope = atof( argv[3] );
   if( borderSlope == 0 )
     {
     borderN[0] = 0.0;
@@ -160,7 +156,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   PixelType     randY = 0;
   PixelType     randZ = 0;
   double        mean = 0;
-  double        variance = atof(argv[6]);
+  double        variance = atof(argv[2]);
 
   for( it.GoToBegin(); ! it.IsAtEnd(); ++it )
     {
@@ -192,33 +188,6 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     it.Set(pixel);
     }
 
-  // Save the motion field image
-  typedef itk::ImageFileWriter< DeformationFieldType > WriterType;
-  WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[1] );
-  writer->SetUseCompression( true );
-  writer->SetInput( deformationField );
-  try
-    {
-    writer->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    std::cerr << "Exception caught: " << err << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  int useAnisotropic = atoi( argv[10] );
-  if( useAnisotropic )
-    {
-    // Save the border polydata
-    vtkPolyDataWriter * polyDataWriter = vtkPolyDataWriter::New();
-    polyDataWriter->SetFileName( argv[5] );
-    polyDataWriter->SetInput( plane->GetOutput() );
-    polyDataWriter->Update();
-    polyDataWriter->Delete();
-    }
-
   // Setup the images to be registered
   FixedImageType::Pointer fixedImage      = FixedImageType::New();
   MovingImageType::Pointer movingImage    = MovingImageType::New();
@@ -246,6 +215,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   DiffusiveRegistrationFilterType::Pointer registrator = 0;
   AnisotropicDiffusiveRegistrationFilterType::Pointer anisotropicRegistrator
       = 0;
+  int useAnisotropic = atoi( argv[6] );
   if( useAnisotropic )
     {
     registrator = AnisotropicDiffusiveRegistrationFilterType::New();
@@ -262,15 +232,17 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   registrator->SetFixedImage( fixedImage );
   // because we are just doing motion field regularization in this test:
   registrator->SetComputeIntensityDistanceTerm( false );
-  registrator->SetTimeStep( atof( argv[9] ) );
-  registrator->SetNumberOfIterations( atoi( argv[8] ) );
+  registrator->SetTimeStep( atof( argv[5] ) );
+  registrator->SetNumberOfIterations( atoi( argv[4] ) );
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetBorderSurface( plane->GetOutput() );
     }
 
   // Save the smoothed deformation field
-  writer->SetFileName( argv[2] );
+  typedef itk::ImageFileWriter< DeformationFieldType > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetFileName( argv[1] );
   writer->SetInput( registrator->GetOutput() );
   try
     {
@@ -314,32 +286,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
                                       << "tuples in border normal" << std::endl;
       return EXIT_FAILURE;
       }
-
-    // Save the normal vector image
-    typedef itk::ImageFileWriter< VectorImageType > VectorWriterType;
-    VectorWriterType::Pointer vectorWriter = VectorWriterType::New();
-    vectorWriter->SetFileName( argv[4] );
-    vectorWriter->SetUseCompression( true );
-    vectorWriter->SetInput( anisotropicRegistrator->GetNormalVectorImage() );
-    vectorWriter->Write();
-
-    // Save the output deformation field normal image
-    writer->SetFileName( argv[3] );
-    writer->SetInput(
-        anisotropicRegistrator->GetNormalDeformationComponentImage() );
-    try
-      {
-      writer->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      std::cerr << "Exception caught: " << err << std::endl;
-      return EXIT_FAILURE;
-      }
     }
-
-  // Clean up memory
-  plane->Delete();
 
   return EXIT_SUCCESS;
 
