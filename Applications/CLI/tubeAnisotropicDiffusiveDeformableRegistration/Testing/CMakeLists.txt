@@ -418,9 +418,9 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution
 MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_anisotropicSurfaceRASMultiresolution_motionField.mhd
-               -b MIDAS{Sphere_anisotropicMultiresolution_motionField.mhd.md5}
+               -b MIDAS{Sphere_anisotropicSurfaceRASMultiresolution_motionField.mhd.md5}
                -i ${imageCompareTolerance}
-               MIDAS_FETCH_ONLY{Sphere_anisotropicMultiresolution_motionField.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_anisotropicSurfaceRASMultiresolution_motionField.zraw.md5}
               )
 set_tests_properties( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution )
