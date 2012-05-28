@@ -58,8 +58,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereNoReg
                -s 0.125
                -l 0.1
                -r
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_normals.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_weights.zraw.md5}
         )
@@ -90,8 +90,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropic
                -i 5
                -s 0.125
                -l 0.1
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_normals.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_weights.zraw.md5}
             )
@@ -121,8 +121,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRAS
                -i 5
                -s 0.125
                -l 0.05
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
               )
 
 #######
@@ -152,8 +152,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceLPS
                -s 0.125
                -l 0.05
                -c LPS
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
               )
 
 #######
@@ -181,8 +181,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASDownsampled
                -i 5
                -s 0.125
                -l 0.05
-               MIDAS_FETCH_ONLY{Sphere_fixedDownsampled.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixedDownsampled.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
             )
 
 #######
@@ -212,8 +212,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereGaussian
                -s 0.125
                -l 0.1
                -a
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_normals.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_weights.zraw.md5}
             )
@@ -242,8 +242,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesNoReg
                -i 5
                -s 0.125
                -r
-               MIDAS_FETCH_ONLY{Boxes_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Boxes_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Boxes_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Boxes_moving.zraw.md5}
             )
 
 #######
@@ -271,8 +271,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesAnisotropic
                -d ${TEMP}/Boxes_anisotropic_motionField.mhd
                -i 5
                -s 0.125
-               MIDAS_FETCH_ONLY{Boxes_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Boxes_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Boxes_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Boxes_moving.zraw.md5}
                MIDAS_FETCH_ONLY{Boxes_normals.zraw.md5}
                MIDAS_FETCH_ONLY{Boxes_weights.zraw.md5}
             )
@@ -303,8 +303,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesGaussian
                -i 5
                -s 0.125
                -a
-               MIDAS_FETCH_ONLY{Boxes_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Boxes_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Boxes_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Boxes_moving.zraw.md5}
                MIDAS_FETCH_ONLY{Boxes_normals.zraw.md5}
                MIDAS_FETCH_ONLY{Boxes_weights.zraw.md5}
              )
@@ -335,8 +335,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereSparseAnisotropicSurfaceRAS
                -s 0.125
                -l 0.05
                -u SparseSlidingOrgan
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
             )
 
 #######
@@ -365,8 +365,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicMultiresolution
                -i 5,5
                -s 0.125
                -l 0.05
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_normalsMultiresolution.zraw.md5}
                MIDAS_FETCH_ONLY{Sphere_weightsMultiresolution.zraw.md5}
               )
@@ -396,8 +396,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution
                -i 5,5
                -s 0.125
                -l 0.05
-               MIDAS_FETCH_ONLY{Sphere_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Sphere_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
               )
 
 #######
@@ -426,8 +426,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestTubesSparseAnisotropic
                -s 0.125
                -l 0.25
                -u SparseSlidingOrgan
-               MIDAS_FETCH_ONLY{Tubes_fixed.raw.md5}
-               MIDAS_FETCH_ONLY{Tubes_moving.raw.md5}
+               MIDAS_FETCH_ONLY{Tubes_fixed.zraw.md5}
+               MIDAS_FETCH_ONLY{Tubes_moving.zraw.md5}
               )
 
 #######
