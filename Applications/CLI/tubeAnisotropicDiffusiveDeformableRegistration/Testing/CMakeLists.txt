@@ -36,13 +36,13 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-# expect image comparison perfection on 64-bit machines
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+# expect image comparison perfection on 64-bit linux machines
+if( UNIX AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set( imageCompareTolerance 0 )
-# ... and give a bit of tolerance for 32-bit machines
-else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+# ... and give a bit of tolerance for 32-bit machines or windows/mac
+else()
   set( imageCompareTolerance 0.000001 )
-endif( CMAKE_SIZEOF_VOID_P EQUAL 8)
+endif()
 
 #######
 # Test1
