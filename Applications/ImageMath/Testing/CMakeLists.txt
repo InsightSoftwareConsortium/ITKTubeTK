@@ -56,8 +56,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
                -b MIDAS{${PROJECT_NAME}Test1.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
 
 #######
 # Test2
@@ -79,8 +79,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
                -t ${TEMP}/${PROJECT_NAME}Test2.mha
                -b MIDAS{${PROJECT_NAME}Test2.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test2-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test2 )
+set_property(TEST ${PROJECT_NAME}-Test2-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test2 )
 
 #######
 # Test3
@@ -100,8 +100,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
                -t ${TEMP}/${PROJECT_NAME}Test3.mha
                -b MIDAS{${PROJECT_NAME}Test3.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test3-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test3 )
+set_property(TEST ${PROJECT_NAME}-Test3-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
 
 
 #######
@@ -122,8 +122,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4-Compare
                -t ${TEMP}/${PROJECT_NAME}Test4.mha
                -b MIDAS{${PROJECT_NAME}Test4.mha.md5}
                -i 0.01 )
-set_tests_properties( ${PROJECT_NAME}-Test4-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test4 )
+set_property(TEST ${PROJECT_NAME}-Test4-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test4 )
 
 
 #######
@@ -144,8 +144,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test5-Compare
                -t ${TEMP}/${PROJECT_NAME}Test5.mha
                -b MIDAS{${PROJECT_NAME}Test5.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test5-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test5 )
+set_property(TEST ${PROJECT_NAME}-Test5-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test5 )
 
 #######
 # Test6
@@ -164,8 +164,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test6-Compare
                -t ${TEMP}/${PROJECT_NAME}Test6.mha
                -b MIDAS{${PROJECT_NAME}Test6.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test6-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test6 )
+set_property(TEST ${PROJECT_NAME}-Test6-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test6 )
 
 #######
 # Test7
@@ -184,8 +184,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test7-Compare
                -t ${TEMP}/${PROJECT_NAME}Test7.mha
                -b MIDAS{${PROJECT_NAME}Test7.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test7-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test7 )
+set_property(TEST ${PROJECT_NAME}-Test7-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test7 )
 
 #######
 # Test8
@@ -204,8 +204,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test8-Compare
                -t ${TEMP}/${PROJECT_NAME}Test8.mha
                -b MIDAS{${PROJECT_NAME}Test8.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test8-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test8 )
+set_property(TEST ${PROJECT_NAME}-Test8-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test8 )
 
 #######
 # Test9
@@ -224,8 +224,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test9-Compare
                -t ${TEMP}/${PROJECT_NAME}Test9.mha
                -b MIDAS{${PROJECT_NAME}Test9.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test9-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test9 )
+set_property(TEST ${PROJECT_NAME}-Test9-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test9 )
 
 #######
 # Test10
@@ -244,8 +244,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test10-Compare
                -t ${TEMP}/${PROJECT_NAME}Test10.mha
                -b MIDAS{${PROJECT_NAME}Test10.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test10-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test10 )
+set_property(TEST ${PROJECT_NAME}-Test10-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test10 )
 
 #######
 # Test11
@@ -264,8 +264,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test11-Compare
                -t ${TEMP}/${PROJECT_NAME}Test11.mha
                -b MIDAS{${PROJECT_NAME}Test11.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test11-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test11 )
+set_property(TEST ${PROJECT_NAME}-Test11-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test11 )
 
 #######
 # Test12
@@ -284,8 +284,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test12-Compare
                -t ${TEMP}/${PROJECT_NAME}Test12.mha
                -b MIDAS{${PROJECT_NAME}Test12.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test12-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test12 )
+set_property(TEST ${PROJECT_NAME}-Test12-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test12 )
 
 #######
 # Test13
@@ -304,8 +304,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test13-Compare
                -t ${TEMP}/${PROJECT_NAME}Test13.mha
                -b MIDAS{${PROJECT_NAME}Test13.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test13-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test13 )
+set_property(TEST ${PROJECT_NAME}-Test13-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test13 )
 
 #######
 # Test14
@@ -322,8 +322,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test14-Compare
             ${TEXTCOMPARE_EXE}
             -t ${TEMP}/${PROJECT_NAME}Test14.txt
             -b MIDAS{${PROJECT_NAME}Test14.txt.md5})
-set_tests_properties( ${PROJECT_NAME}-Test14-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test14 )
+set_property(TEST ${PROJECT_NAME}-Test14-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test14 )
 
 #######
 # Test15
@@ -340,8 +340,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test15-Compare
             ${TEXTCOMPARE_EXE}
             -t ${TEMP}/${PROJECT_NAME}Test15.txt
             -b MIDAS{${PROJECT_NAME}Test15.txt.md5})
-set_tests_properties( ${PROJECT_NAME}-Test15-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test15 )
+set_property(TEST ${PROJECT_NAME}-Test15-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test15 )
 
 #######
 # Test16
@@ -362,8 +362,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test16-Compare
                -t ${TEMP}/${PROJECT_NAME}Test16.mha
                -b MIDAS{${PROJECT_NAME}Test16.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test16-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test16 )
+set_property(TEST ${PROJECT_NAME}-Test16-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test16 )
 
 #######
 # Test17
@@ -382,8 +382,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test17-Compare
                -t ${TEMP}/${PROJECT_NAME}Test17.mha
                -b MIDAS{${PROJECT_NAME}Test17.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test17-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test17 )
+set_property(TEST ${PROJECT_NAME}-Test17-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test17 )
 
 #######
 # Test18
@@ -402,8 +402,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test18-Compare
                -t ${TEMP}/${PROJECT_NAME}Test18.mha
                -b MIDAS{${PROJECT_NAME}Test18.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test18-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test18 )
+set_property(TEST ${PROJECT_NAME}-Test18-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test18 )
 
 #######
 # Test19
@@ -422,8 +422,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test19-Compare
                -t ${TEMP}/${PROJECT_NAME}Test19.mha
                -b MIDAS{${PROJECT_NAME}Test19.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test19-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test19 )
+set_property(TEST ${PROJECT_NAME}-Test19-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test19 )
 
 #######
 # Test20
@@ -442,8 +442,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test20-Compare
                -t ${TEMP}/${PROJECT_NAME}Test20.mha
                -b MIDAS{${PROJECT_NAME}Test20.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test20-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test20 )
+set_property(TEST ${PROJECT_NAME}-Test20-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test20 )
 
 #######
 # Test21
@@ -462,8 +462,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test21-Compare
                -t ${TEMP}/${PROJECT_NAME}Test21.mha
                -b MIDAS{${PROJECT_NAME}Test21.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test21-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test21 )
+set_property(TEST ${PROJECT_NAME}-Test21-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test21 )
 
 #######
 # Test23
@@ -482,8 +482,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test23-Compare
                -t ${TEMP}/${PROJECT_NAME}Test23.mha
                -b MIDAS{${PROJECT_NAME}Test23.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test23-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test23 )
+set_property(TEST ${PROJECT_NAME}-Test23-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test23 )
 
 #######
 # Test24
@@ -502,8 +502,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test24-Compare
                -t ${TEMP}/${PROJECT_NAME}Test24.mha
                -b MIDAS{${PROJECT_NAME}Test24.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test24-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test24 )
+set_property(TEST ${PROJECT_NAME}-Test24-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test24 )
 
 #######
 # Test25
@@ -522,8 +522,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test25-Compare
                -t ${TEMP}/${PROJECT_NAME}Test25.mha
                -b MIDAS{${PROJECT_NAME}Test25.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test25-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test25 )
+set_property(TEST ${PROJECT_NAME}-Test25-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test25 )
 
 #######
 # Test26
@@ -542,8 +542,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test26-Compare
                -t ${TEMP}/${PROJECT_NAME}Test26.mha
                -b MIDAS{${PROJECT_NAME}Test26.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test26-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test26 )
+set_property(TEST ${PROJECT_NAME}-Test26-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test26 )
 
 #######
 # Test27
@@ -562,8 +562,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test27-Compare
                -t ${TEMP}/${PROJECT_NAME}Test27.mha
                -b MIDAS{${PROJECT_NAME}Test27.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test27-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test27 )
+set_property(TEST ${PROJECT_NAME}-Test27-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test27 )
 
 #######
 # Test28
@@ -582,8 +582,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test28-Compare
                -t ${TEMP}/${PROJECT_NAME}Test28.mha
                -b MIDAS{${PROJECT_NAME}Test28.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test28-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test28 )
+set_property(TEST ${PROJECT_NAME}-Test28-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test28 )
 
 #######
 # Test29
@@ -602,5 +602,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test29-Compare
                -t ${TEMP}/${PROJECT_NAME}Test29.mha
                -b MIDAS{${PROJECT_NAME}Test29.mha.md5}
                -i 0.001 )
-set_tests_properties( ${PROJECT_NAME}-Test29-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test29 )
+set_property(TEST ${PROJECT_NAME}-Test29-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test29 )
