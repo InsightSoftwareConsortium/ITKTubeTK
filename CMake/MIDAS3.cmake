@@ -142,7 +142,7 @@ set(midas_test_name \"${testName}\")
   set_tests_properties(${testName}_fetchData PROPERTIES FAIL_REGULAR_EXPRESSION "(Error downloading)|(Error: Computed checksum)")
   # Finally, create the test
   add_test(${testArgs})
-  set_tests_properties(${testName} PROPERTIES DEPENDS ${testName}_fetchData)
+  set_property(TEST ${testName} APPEND PROPERTY DEPENDS ${testName}_fetchData)
 endfunction(midas_add_test)
 
 # Helper macro to write the download scripts for MIDAS.*{} arguments
