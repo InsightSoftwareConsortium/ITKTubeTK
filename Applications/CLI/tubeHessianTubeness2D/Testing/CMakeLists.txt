@@ -51,5 +51,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
                -b MIDAS{${PROJECT_NAME}Test1.mha.md5}
                -n 90
                 )
-set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )

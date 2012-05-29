@@ -52,5 +52,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
             #${IMAGECOMPARE_EXE}
                #-t ${TEMP}/${PROJECT_NAME}Test1.mha
                #-b ${BASELINE}/${PROJECT_NAME}Test1.mha )
-#set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-              #PROPERTIES DEPENDS ${PROJECT_NAME}Test1 )
+#set_property(TEST ${PROJECT_NAME}-Test1-Compare
+              #APPEND PROPERTY DEPENDS ${PROJECT_NAME}Test1 )

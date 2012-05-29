@@ -62,8 +62,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
                -t ${TEMP}/itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha
                -b MIDAS{itkAnisotropicHybridEnhancingDiffusionImageFilterTest.mha.md5}
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
 
 #######
 # Test2
@@ -81,8 +81,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
                -t ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage.mha
                -b MIDAS{SyntheticTubePlusSurfaceHybridFilterResultImage.mha.md5}
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}-Test2-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test2 )
+set_property(TEST ${PROJECT_NAME}-Test2-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test2 )
 
 #######
 # Test3
@@ -100,5 +100,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
                -t ${TEMP}/SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha
                -b MIDAS{SyntheticTubePlusSurfaceHybridFilterResultImage_oriented.mha.md5}
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}-Test3-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test3 )
+set_property(TEST ${PROJECT_NAME}-Test3-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
