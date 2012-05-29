@@ -37,7 +37,7 @@ set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
 # expect image comparison perfection on 64-bit linux machines
-if( UNIX AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
+if( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set( imageCompareTolerance 0 )
 # ... and give a bit of tolerance for 32-bit machines or windows/mac
 else()
