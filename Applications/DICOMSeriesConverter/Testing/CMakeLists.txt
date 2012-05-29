@@ -56,5 +56,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
                MIDAS_FETCH_ONLY{DSC_Test1_20030625_361_3__0.86_1.60_3.zraw.md5}
               )
 
-set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )

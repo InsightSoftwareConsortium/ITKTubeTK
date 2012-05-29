@@ -62,8 +62,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
                -t ${TEMP}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha
                -b MIDAS{itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha.md5}
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
 
 #######
 # Test2
@@ -81,8 +81,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
                -t ${TEMP}/SyntheticSurfaceCEDFilterResultImage.mha
                -b MIDAS{SyntheticSurfaceCEDFilterResultImage.mha.md5}
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}-Test2-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test2 )
+set_property(TEST ${PROJECT_NAME}-Test2-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test2 )
 
 #######
 # Test3
@@ -100,8 +100,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
                -t ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage.mha
                -b MIDAS{SyntheticTubePlusSurfaceCEDFilterResultImage.mha.md5}
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}-Test3-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test3 )
+set_property(TEST ${PROJECT_NAME}-Test3-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
 
 #######
 # Test4
@@ -119,5 +119,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4-Compare
                -t ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha
                -b MIDAS{SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha.md5}
                -i ${imageCompareTolerance} )
-set_tests_properties( ${PROJECT_NAME}-Test4-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test4 )
+set_property(TEST ${PROJECT_NAME}-Test4-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test4 )

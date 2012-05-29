@@ -52,5 +52,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
             ${TEXTCOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.txt
                -b MIDAS{${PROJECT_NAME}Test1.txt.md5} )
-set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )

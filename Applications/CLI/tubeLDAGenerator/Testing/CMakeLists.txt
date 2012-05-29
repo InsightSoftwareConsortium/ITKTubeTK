@@ -59,8 +59,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
                -i 0.02
                -t ${TEMP}/${PROJECT_NAME}Test1.lda00.mha
                -b MIDAS{${PROJECT_NAME}Test1.lda00.mha.md5} )
-set_tests_properties( ${PROJECT_NAME}-Test1-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
 
 #######
 # Test2
@@ -82,8 +82,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
                -i 0.02
                -t ${TEMP}/${PROJECT_NAME}Test2.lda01.mha
                -b MIDAS{${PROJECT_NAME}Test2.lda01.mha.md5} )
-set_tests_properties( ${PROJECT_NAME}-Test2-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test2 )
+set_property(TEST ${PROJECT_NAME}-Test2-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test2 )
 
 #######
 # Test3
@@ -97,8 +97,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
                MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large.mha.md5}
                MIDAS{GDS0015_Large.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test3 )
-set_tests_properties( ${PROJECT_NAME}-Test3
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${PROJECT_NAME}-Test3
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
 
 #######
 # Test3-Compare
@@ -108,8 +108,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
                -i 0.02
                -t ${TEMP}/${PROJECT_NAME}Test3.lda00.mha
                -b MIDAS{${PROJECT_NAME}Test1.lda00.mha.md5} )
-set_tests_properties( ${PROJECT_NAME}-Test3-Compare
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test3 )
+set_property(TEST ${PROJECT_NAME}-Test3-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
 
 #######
 # Test4-Compare
@@ -119,5 +119,5 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare2
                -d 0.01
                -t ${TEMP}/${PROJECT_NAME}Test3.mlda
                -b MIDAS{${PROJECT_NAME}Test1.mlda.md5} )
-set_tests_properties( ${PROJECT_NAME}-Test3-Compare2
-                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test3 )
+set_property(TEST ${PROJECT_NAME}-Test3-Compare2
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
