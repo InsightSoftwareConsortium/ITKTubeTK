@@ -227,10 +227,6 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
         }
       }
 
-    /* std::cout << "EigenValues: " << eigenValue[smallestEigenValueIndex]
-       << "\t" << eigenValue[middleEigenValueIndex]  << "\t"
-       << eigenValue[largestEigenValueIndex] << std::endl; */
-
     //Set the lambda's appropriately.
 
     //Compute EED lambdas first
@@ -326,7 +322,24 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     //Get the eigenVector matrix
     EigenVectorMatrixType eigenVectorMatrix;
-    eigenVectorMatrix = eigenVectorImageIterator.Get();
+
+    unsigned int vectorLength = 3; // Eigenvector length
+
+    itk::VariableLengthVector<double> firstEigenVector( vectorLength );
+    itk::VariableLengthVector<double> secondEigenVector( vectorLength );
+    itk::VariableLengthVector<double> thirdEigenVector( vectorLength );
+
+    for ( unsigned int i=0; i < vectorLength; i++ ) {
+    // Get eigenvectors belonging to eigenvalue order
+      firstEigenVector[i] = eigenVectorMatrix[largestEigenValueIndex][i];
+      secondEigenVector[i] = eigenVectorMatrix[middleEigenValueIndex][i];
+      thirdEigenVector[i] = eigenVectorMatrix[smallestEigenValueIndex][i];
+     
+      // Set eigenVectorMatrix in correct order
+      eigenVectorMatrix[0][i] = firstEigenVector[i];
+      eigenVectorMatrix[1][i] = secondEigenVector[i];
+      eigenVectorMatrix[2][i] = thirdEigenVector[i];
+      }
 
     EigenVectorMatrixType  eigenVectorMatrixTranspose;
     eigenVectorMatrixTranspose = eigenVectorMatrix.GetTranspose();
