@@ -247,7 +247,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
       firstEigenVector[i] = eigenVectorMatrix[largestEigenValueIndex][i];
       secondEigenVector[i] = eigenVectorMatrix[middleEigenValueIndex][i];
       thirdEigenVector[i] = eigenVectorMatrix[smallestEigenValueIndex][i];
-     
+
       // Set eigenVectorMatrix in correct order
       eigenVectorMatrix[0][i] = firstEigenVector[i];
       eigenVectorMatrix[1][i] = secondEigenVector[i];
