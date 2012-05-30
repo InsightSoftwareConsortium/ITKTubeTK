@@ -198,6 +198,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
     // Find the smallest eigenvalue
     double smallest = vnl_math_abs( eigenValue[0] );
+    unsigned int smallestEigenValueIndex=0;
 
     for ( unsigned int i=1; i <=2; i++ )
       {
@@ -205,6 +206,29 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
         {
         Lambda1 = eigenValue[i];
         smallest = vnl_math_abs( eigenValue[i] );
+        smallestEigenValueIndex = i;
+        }
+      }
+
+    // Find the largest eigenvalue
+    double largest = vnl_math_abs( eigenValue[0] );
+    unsigned int largestEigenValueIndex=0;
+    for ( unsigned int i=1; i <=2; i++ )
+      {
+      if (  vnl_math_abs( eigenValue[i] > largest ) )
+        {
+        largest = vnl_math_abs( eigenValue[i] );
+        largestEigenValueIndex = i;
+        }
+      }
+
+    unsigned int middleEigenValueIndex=0;
+    for ( unsigned int i=0; i <=2; i++ )
+      {
+      if ( eigenValue[i] != smallest && eigenValue[i] != largest )
+        {
+        middleEigenValueIndex = i;
+        break;
         }
       }
 
@@ -230,16 +254,29 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
       Lambda1 = 1.0 - expVal;
       }
 
-    /* std::cout << "Lambda1,Lambda2, Lambda3\t"
-         << Lambda1 << "\t" << Lambda2 << "\t" << Lambda3 << std::endl; */
-
     eigenValueMatrix(0,0) = Lambda1;
     eigenValueMatrix(1,1) = Lambda2;
     eigenValueMatrix(2,2) = Lambda3;
 
     //Get the eigenVector matrix
     EigenVectorMatrixType eigenVectorMatrix;
-    eigenVectorMatrix = eigenVectorImageIterator.Get();
+    unsigned int vectorLength = 3; // Eigenvector length
+
+    itk::VariableLengthVector<double> firstEigenVector( vectorLength );
+    itk::VariableLengthVector<double> secondEigenVector( vectorLength );
+    itk::VariableLengthVector<double> thirdEigenVector( vectorLength );
+
+    for ( unsigned int i=0; i < vectorLength; i++ ) {
+    // Get eigenvectors belonging to eigenvalue order
+      firstEigenVector[i] = eigenVectorMatrix[largestEigenValueIndex][i];
+      secondEigenVector[i] = eigenVectorMatrix[middleEigenValueIndex][i];
+      thirdEigenVector[i] = eigenVectorMatrix[smallestEigenValueIndex][i];
+     
+      // Set eigenVectorMatrix in correct order
+      eigenVectorMatrix[0][i] = firstEigenVector[i];
+      eigenVectorMatrix[1][i] = secondEigenVector[i];
+      eigenVectorMatrix[2][i] = thirdEigenVector[i];
+      }
 
     EigenVectorMatrixType  eigenVectorMatrixTranspose;
     eigenVectorMatrixTranspose = eigenVectorMatrix.GetTranspose();
