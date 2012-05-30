@@ -62,7 +62,7 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
     maxSign = -1;
     }
 
-  double v = m_FuncVal->value( *extX );
+  double v = maxSign * m_FuncVal->value( *extX );
   double prevV = v;
   double xstep = m_XStep;
   int dir = 1;
@@ -115,13 +115,13 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
   if( *extX > m_XMax )
     {
     *extX = m_XMax;
-    *extVal = m_FuncVal->value( *extX );
+    *extVal = maxSign * m_FuncVal->value( *extX );
     return false;
     }
   if( *extX < m_XMin )
     {
     *extX = m_XMin;
-    *extVal = m_FuncVal->value( *extX );
+    *extVal = maxSign * m_FuncVal->value( *extX );
     return false;
     }
 
@@ -137,13 +137,13 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
       if( *extX > m_XMax )
         {
         *extX = m_XMax;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = maxSign * m_FuncVal->value( *extX );
         return false;
         }
       if( *extX < m_XMin )
         {
         *extX = m_XMin;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = maxSign * m_FuncVal->value( *extX );
         return false;
         }
       }
@@ -155,13 +155,13 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
       if( *extX > m_XMax )
         {
         *extX = m_XMax;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = maxSign * m_FuncVal->value( *extX );
         return false;
         }
       if( *extX < m_XMin )
         {
         *extX = m_XMin;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = maxSign * m_FuncVal->value( *extX );
         return false;
         }
       v = maxSign * m_FuncVal->value( *extX+dir*xstep );
@@ -174,7 +174,7 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
     dir *= -1;
     }
 
-  *extVal = maxSign*prevV;
+  *extVal = prevV;
   return true;
 }
 
