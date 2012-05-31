@@ -32,7 +32,8 @@ endif( COMMAND CMAKE_POLICY )
 
 # Disable MSVC 8 warnings
 if( WIN32 )
-  option( DISABLE_MSVC8_DEPRECATED_WARNINGS "Disable Visual Studio 8 deprecated warnings" ON )
+  option( DISABLE_MSVC8_DEPRECATED_WARNINGS
+    "Disable Visual Studio 8 deprecated warnings" ON )
   mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )
   if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
@@ -51,6 +52,7 @@ include( ${GenerateCLP_USE_FILE} )
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_BINARY_DIR}/Slicer3/RegisterImagesModule
   )
 
 set( PROJECT_SOURCE

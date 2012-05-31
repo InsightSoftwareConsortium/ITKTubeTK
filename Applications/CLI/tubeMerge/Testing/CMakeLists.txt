@@ -59,7 +59,6 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
              ${PROJ_EXE}
                -a
                -b 50,50
-               -f
                MIDAS{ES0015_Large.mha.md5}
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test2.mha )
@@ -88,3 +87,22 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
                -b MIDAS{${PROJECT_NAME}Test3.mha.md5} )
 set_tests_properties( ${PROJECT_NAME}-Test3-Compare
                       PROPERTIES DEPENDS ${PROJECT_NAME}-Test3 )
+
+#######
+# Test4
+#######
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4
+             ${PROJ_EXE}
+               -a
+               -b 50,50
+               -i 0
+               MIDAS{ES0015_Large.mha.md5}
+               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               ${TEMP}/${PROJECT_NAME}Test4.mha )
+
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4-Compare
+             ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test4.mha
+               -b MIDAS{${PROJECT_NAME}Test4.mha.md5} )
+set_tests_properties( ${PROJECT_NAME}-Test4-Compare
+                      PROPERTIES DEPENDS ${PROJECT_NAME}-Test4 )
