@@ -241,7 +241,23 @@ int DoIt( int argc, char * argv[] )
   outImageMap->CopyInformation( curImage1 );
   outImageMap->SetRegions( regionOut );
   outImageMap->Allocate();
-  outImageMap->FillBuffer( 1 );
+  outImageMap->FillBuffer( 0 );
+  typename ImageType::IndexType center = curImage1->
+    GetLargestPossibleRegion().GetIndex();
+  for( unsigned int i=0; i<dimensionT; i++ )
+    {
+    center[i] += size1[i] / 2;
+    }
+  outImageMap->SetPixel( center, 1 );
+  typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
+          ImageType>   MapFilterType;
+  typename MapFilterType::Pointer mapFilter = MapFilterType::New();
+  mapFilter->SetInput( outImageMap );
+  mapFilter->SetInputIsBinary( true );
+  mapFilter->SetUseImageSpacing( true );
+  mapFilter->Update();
+  typename ImageType::Pointer outImageDistMap =
+    mapFilter->GetDistanceMap();
 
   itk::ImageRegionIteratorWithIndex< ImageType > iter( curImage1,
     curImage1->GetLargestPossibleRegion() );
@@ -252,7 +268,6 @@ int DoIt( int argc, char * argv[] )
     if( !mask || tf != 0 )
       {
       outImage->SetPixel( indexX, tf );
-      outImageMap->SetPixel( indexX, 0 );
       }
     ++iter;
     }
@@ -279,6 +294,10 @@ int DoIt( int argc, char * argv[] )
       }
     typename ImageType::Pointer curImage2 = reader2->GetOutput();
     timeCollector.Stop("Load data");
+
+    typename ImageType::SizeType size2 = curImage2->
+                                           GetLargestPossibleRegion().
+                                           GetSize();
 
     timeCollector.Start("Register images");
     typedef typename itk::ImageToImageRegistrationHelper< ImageType >
@@ -326,99 +345,26 @@ int DoIt( int argc, char * argv[] )
       ++iter2;
       ++iterTmp;
       }
-
-    writer->SetFileName( "image2Reg.mha" );
-    writer->SetInput( curImage2Reg );
-    writer->SetUseCompression( true );
-    writer->Update();
-
-    typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
-            ImageType>   MapFilterType;
-    typename MapFilterType::Pointer mapFilter = MapFilterType::New();
-    mapFilter->SetInput( outImageMap );
-    mapFilter->SetInputIsBinary( true );
-    mapFilter->SetUseImageSpacing( true );
-    mapFilter->Update();
-    typename ImageType::Pointer outImageDistMap =
-      mapFilter->GetDistanceMap();
-    writer->SetFileName( "outImageDistMap.mha" );
-    writer->SetInput( outImageDistMap );
-    writer->SetUseCompression( true );
-    writer->Update();
     timeCollector.Stop("Resample Image");
 
-    timeCollector.Start("Resample Map");
-    typename ImageType::Pointer curImage2Tmp = ImageType::New();
-    curImage2Tmp->CopyInformation( curImage2 );
-    curImage2Tmp->SetRegions( curImage2->GetLargestPossibleRegion() );
-    curImage2Tmp->Allocate();
-    curImage2Tmp->FillBuffer( 1 );
-    if( mask )
-      {
-      itk::ImageRegionIteratorWithIndex< ImageType > iter2(
-        curImage2, curImage2->GetLargestPossibleRegion() );
-      itk::ImageRegionIteratorWithIndex< ImageType > iter2Tmp(
-        curImage2Tmp, curImage2Tmp->GetLargestPossibleRegion() );
-      while( !iter2.IsAtEnd() )
-        {
-        double tf = iter2.Get();
-        if( tf == 0 )
-          {
-          iter2Tmp.Set( 0 );
-          }
-        ++iter2;
-        ++iter2Tmp;
-        }
-      }
-
-    regOp->SetMovingImage( curImage2Tmp );
-    typename ImageType::ConstPointer imageTmp2 = regOp->ResampleImage(
-      RegFilterType::OptimizedRegistrationMethodType::
-      NEAREST_NEIGHBOR_INTERPOLATION,
-      NULL, NULL, NULL, background );
     typename ImageType::Pointer curImage2Map = ImageType::New();
-    curImage2Map->CopyInformation( tmpImage );
-    curImage2Map->SetRegions( tmpImage->GetLargestPossibleRegion() );
+    curImage2Map->CopyInformation( outImage );
+    curImage2Map->SetRegions( outImage->GetLargestPossibleRegion() );
     curImage2Map->Allocate();
-    itk::ImageRegionConstIteratorWithIndex< ImageType > iterTmp2(
-      imageTmp2, imageTmp2->GetLargestPossibleRegion() );
-    itk::ImageRegionIteratorWithIndex< ImageType > iter2Map(
-      curImage2Map, curImage2Map->GetLargestPossibleRegion() );
-    itk::ImageRegionIteratorWithIndex< ImageType > iterOutMap(
-      outImageMap, outImageMap->GetLargestPossibleRegion() );
-    while( !iter2Map.IsAtEnd() )
+    curImage2Map->FillBuffer( 0 );
+    typename ImageType::IndexType center = curImage2->
+      GetLargestPossibleRegion().GetIndex();
+    for( unsigned int i=0; i<dimensionT; i++ )
       {
-      double tf2 = iterTmp2.Get();
-      double tfOut = iterOutMap.Get();
-      if( tf2 != 0 && tfOut == 0 )
-        {
-        iter2Map.Set( 0 );
-        }
-      else
-        {
-        if( tf2 != 0 )
-          {
-          iter2Map.Set( -2 );
-          }
-        else
-          {
-          iter2Map.Set( -3 );
-          }
-        }
-      if( tf2 != 0 )
-        {
-        iterOutMap.Set( 0 );
-        }
-      ++iterTmp2;
-      ++iterOutMap;
-      ++iter2Map;
+      center[i] += size2[i] / 2;
       }
-    timeCollector.Stop("Resample Map");
-
-    progress += 1.0/(double)inputVolume2.size() * 0.2;
-    progressReporter.Report( progress );
-
-    timeCollector.Start("Distance Map");
+    typename ImageType::PointType pnt;
+    curImage2->TransformIndexToPhysicalPoint( center, pnt );
+    typename ImageType::PointType pnt2;
+    pnt2 = regOp->GetCurrentMatrixTransform()->TransformPoint( pnt );
+    curImage2Map->TransformPhysicalPointToIndex( pnt2, center );
+    curImage2Map->SetPixel( center, 1 );
+    timeCollector.Start("Distance Map 2");
     typename MapFilterType::Pointer mapFilter2 = MapFilterType::New();
     mapFilter2->SetInput( curImage2Map );
     mapFilter2->SetInputIsBinary( true );
@@ -426,80 +372,131 @@ int DoIt( int argc, char * argv[] )
     mapFilter2->Update();
     typename ImageType::Pointer curImage2DistMap =
       mapFilter2->GetDistanceMap();
-    writer->SetFileName( "curImage2DistMap.mha" );
-    writer->SetInput( curImage2DistMap );
-    writer->SetUseCompression( true );
-    writer->Update();
-    timeCollector.Stop("Distance Map");
+    timeCollector.Stop("Distance Map 2");
 
+    progress += 1.0/(double)inputVolume2.size() * 0.2;
+    progressReporter.Report( progress );
+
+    iter2.GoToBegin();
     itk::ImageRegionConstIteratorWithIndex< ImageType > iter2Dist(
       curImage2DistMap, curImage2DistMap->GetLargestPossibleRegion() );
-    double distMax = 0;
-    while( !iter2Dist.IsAtEnd() )
-      {
-      double tf2D = iter2Dist.Get();
-      if( tf2D > distMax )
-        {
-        distMax = tf2D;
-        }
-      ++iter2Dist;
-      }
-
-    timeCollector.Start("Blend");
-    iter2.GoToBegin();
-    iter2Map.GoToBegin();
-    iter2Dist.GoToBegin();
     itk::ImageRegionIteratorWithIndex< ImageType > iterOut(
       outImage, outImage->GetLargestPossibleRegion() );
     itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutDist(
       outImageDistMap, outImageDistMap->GetLargestPossibleRegion() );
+    bool first = true;
+    double dist2Max = 0;
+    double distOutMax = 0;
+    double dist2Min = 0;
+    double distOutMin = 0;
+    while( !iter2Dist.IsAtEnd() )
+      {
+      double tf2 = iter2.Get();
+      double tf2D = iter2Dist.Get();
+      double tfOut = iterOut.Get();
+      double tfOutD = iterOutDist.Get();
+      if( tf2 != background && tfOut != background )
+        {
+        if( first )
+          {
+          dist2Min = tf2D;
+          distOutMin = tfOutD;
+          first = false;
+          }
+        if( tf2D > dist2Max )
+          {
+          dist2Max = tf2D;
+          }
+        if( tf2D < dist2Min )
+          {
+          dist2Min = tf2D;
+          }
+        if( tfOutD > distOutMax )
+          {
+          distOutMax = tfOutD;
+          }
+        if( tfOutD < distOutMin )
+          {
+          distOutMin = tfOutD;
+          }
+        }
+      ++iter2;
+      ++iter2Dist;
+      ++iterOut;
+      ++iterOutDist;
+      }
+
+    std::cout << "2: " << dist2Min << " - " << dist2Max << std::endl;
+    std::cout << "Out: " << distOutMin << " - " << distOutMax << std::endl;
+
+    timeCollector.Start("Blend");
+    iter2.GoToBegin();
+    iter2Dist.GoToBegin();
+    iterOut.GoToBegin();
+    iterOutDist.GoToBegin();
     while( !iter2.IsAtEnd() )
       {
       double tf2 = iter2.Get();
-      double tf2M = iter2Map.Get();
       double tf2D = iter2Dist.Get();
-      double tf1 = iterOut.Get();
-      double tf1D = iterOutDist.Get();
+      double tfOut = iterOut.Get();
+      double tfOutD = iterOutDist.Get();
       if( average || weighted )
         {
-        if( tf2M != -3 )
+        if( tf2 != background )
           {
-          if( tf2M != -2 )
+          if( tfOut != background )
             {
             if( weighted )
               {
-              double ratio = tf2D/distMax;
-              ratio *= 0.5;
-              if( tf2D < tf1D )
+              double d2 = 1 - (tf2D-dist2Min)/(dist2Max-dist2Min);
+              d2 = d2 * 2.5 - 1;
+              double dOut = 1 - (tfOutD-distOutMin)/(distOutMax-distOutMin);
+              dOut = dOut * 2.5 - 1;
+              if( d2 < 0 )
                 {
-                tf1 = ( ratio * tf2 + (1-ratio) * tf1 );
+                d2 = 0;
+                dOut = 1;
                 }
-              else
+              if( dOut < 0 )
                 {
-                tf1 = ( (1-ratio) * tf2 + ratio * tf1 );
+                d2 = 1;
+                dOut = 0;
                 }
+              if( d2 >= 1 )
+                {
+                d2 = 1;
+                dOut = 0;
+                }
+              if( dOut >= 1 )
+                {
+                d2 = 0;
+                dOut = 1;
+                }
+              double ratio2 = vcl_sqrt( d2 * ( 1 - dOut ) );
+              double ratioOut = vcl_sqrt( dOut * ( 1 - d2 ) );
+              double ratio = ( ratio2 + ( 1-ratioOut ) ) / 2;
+              tfOut = ( ratio * tf2 + (1-ratio) * tfOut );
               }
             else
               {
-              tf1 = ( tf1 + tf2 ) / 2;
+              tfOut = ( tfOut + tf2 ) / 2;
               }
             }
           else
             {
-            tf1 = tf2;
+            tfOut = tf2;
             }
           }
         }
-      else if( tf2M != -3 )
+      else if( tf2 != background )
         {
-        if( tf2 > tf1 )
+        if( tf2 > tfOut )
           {
-          tf1 = tf2;
+          tfOut = tf2;
           }
         }
-      iterOut.Set( tf1 );
+      iterOut.Set( tfOut );
       ++iter2;
-      ++iter2Map;
       ++iter2Dist;
       ++iterOut;
       ++iterOutDist;
