@@ -41,6 +41,10 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "itkImageRegionIteratorWithIndex.h"
+#include "itkDanielssonDistanceMapImageFilter.h"
+
+// Include Slicer3's registration method
+#include "itkImageToImageRegistrationHelper.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -51,6 +55,7 @@ int DoIt( int argc, char * argv[] );
 #include "tubeMergeCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
+#define PARSE_ARGS_FLOAT_ONLY
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
@@ -63,7 +68,7 @@ int DoIt( int argc, char * argv[] )
   //   of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
-  // CLIProgressReporter is used to communicate progress with the Slicer GUI
+  // CLIProgressReporter is used to communicate progress with Slicer's GUI
   tube::CLIProgressReporter    progressReporter( "Merge",
                                                  CLPProcessInformation );
   progressReporter.Start();
@@ -71,6 +76,9 @@ int DoIt( int argc, char * argv[] )
   typedef pixelT                                        PixelType;
   typedef itk::Image< PixelType,  dimensionT >          ImageType;
   typedef itk::ImageFileReader< ImageType >             ReaderType;
+  typedef itk::ImageFileWriter< ImageType  >            WriterType;
+
+  typename WriterType::Pointer writer = WriterType::New();
 
   timeCollector.Start("Load data");
 
@@ -91,14 +99,19 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Load data");
 
   typename ImageType::Pointer curImage1 = reader1->GetOutput();
-  typename ImageType::Pointer outImage = ImageType::New();
-  outImage->CopyInformation( curImage1 );
 
   typename ImageType::PointType pointX;
   typename ImageType::IndexType indexX;
 
   typename ImageType::IndexType minX1Org;
   minX1Org = curImage1->GetLargestPossibleRegion().GetIndex();
+  if( boundary.size() == dimensionT )
+    {
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      minX1Org[i] -= boundary[i];
+      }
+    }
   typename ImageType::SizeType size1 = curImage1->
                                          GetLargestPossibleRegion().
                                          GetSize();
@@ -107,11 +120,12 @@ int DoIt( int argc, char * argv[] )
     {
     maxX1Org[i] = minX1Org[i] + size1[i] - 1;
     }
-
-  bool useBoundary = false;
-  if( boundary.size() == dimensionT)
+  if( boundary.size() == dimensionT )
     {
-    useBoundary = true;
+    for( unsigned int i=0; i<dimensionT; i++ )
+      {
+      maxX1Org[i] += 2*boundary[i];
+      }
     }
 
   double progress = 0.1;
@@ -144,6 +158,7 @@ int DoIt( int argc, char * argv[] )
       }
     timeCollector.Stop("Load data");
 
+    timeCollector.Start("Determine ROI");
     progress += 1.0/(double)inputVolume2.size() * 0.4;
     progressReporter.Report( progress );
 
@@ -152,8 +167,16 @@ int DoIt( int argc, char * argv[] )
     typename ImageType::IndexType minX2;
     typename ImageType::IndexType minX2Org;
     minX2Org = curImage2->GetLargestPossibleRegion().GetIndex();
+    if( boundary.size() == dimensionT )
+      {
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        minX2Org[i] -= boundary[i];
+        }
+      }
     curImage2->TransformIndexToPhysicalPoint( minX2Org, pointX );
     curImage1->TransformPhysicalPointToIndex( pointX, minX2 );
+
     typename ImageType::SizeType size2 = curImage2->
                                            GetLargestPossibleRegion().
                                            GetSize();
@@ -162,6 +185,13 @@ int DoIt( int argc, char * argv[] )
     for( unsigned int i=0; i<dimensionT; i++ )
       {
       maxX2Org[i] = minX2Org[i] + size2[i] - 1;
+      }
+    if( boundary.size() == dimensionT )
+      {
+      for( unsigned int i=0; i<dimensionT; i++ )
+        {
+        maxX2Org[i] += 2*boundary[i];
+        }
       }
     curImage2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
     curImage1->TransformPhysicalPointToIndex( pointX, maxX2 );
@@ -193,50 +223,57 @@ int DoIt( int argc, char * argv[] )
       {
       sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
       }
+    timeCollector.Stop("Determine ROI");
     }
 
-  typename ImageType::RegionType regionOut = outImage->
-                                               GetLargestPossibleRegion();
+  timeCollector.Start("Allocate output image");
+  typename ImageType::RegionType regionOut;
   regionOut.SetSize( sizeOut );
   regionOut.SetIndex( minXOut );
+
+  typename ImageType::Pointer outImage = ImageType::New();
+  outImage->CopyInformation( curImage1 );
   outImage->SetRegions( regionOut );
   outImage->Allocate();
   outImage->FillBuffer( background );
 
-  if( useBoundary )
+  typename ImageType::Pointer outImageMap = ImageType::New();
+  outImageMap->CopyInformation( curImage1 );
+  outImageMap->SetRegions( regionOut );
+  outImageMap->Allocate();
+  outImageMap->FillBuffer( 0 );
+  typename ImageType::IndexType center = curImage1->
+    GetLargestPossibleRegion().GetIndex();
+  for( unsigned int i=0; i<dimensionT; i++ )
     {
-    for( unsigned int i=0; i<dimensionT; i++ )
-      {
-      minX1Org[i] += boundary[i];
-      maxX1Org[i] -= boundary[i];
-      }
+    center[i] += size1[i] / 2;
     }
+  outImageMap->SetPixel( center, 1 );
+  typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
+          ImageType>   MapFilterType;
+  typename MapFilterType::Pointer mapFilter = MapFilterType::New();
+  mapFilter->SetInput( outImageMap );
+  mapFilter->SetInputIsBinary( true );
+  mapFilter->SetUseImageSpacing( true );
+  mapFilter->Update();
+  typename ImageType::Pointer outImageDistMap =
+    mapFilter->GetDistanceMap();
 
   itk::ImageRegionIteratorWithIndex< ImageType > iter( curImage1,
     curImage1->GetLargestPossibleRegion() );
   while( !iter.IsAtEnd() )
     {
     indexX = iter.GetIndex();
-    bool useTf1 = true;
-    if( !firstImageSpecial && useBoundary )
+    double tf = iter.Get();
+    if( !mask || tf != 0 )
       {
-      for( unsigned int i=0; i<dimensionT; i++ )
-        {
-        if( indexX[i]<minX1Org[i] || indexX[i]>maxX1Org[i] )
-          {
-          useTf1 = false;
-          break;
-          }
-        }
-      }
-    if( useTf1 )
-      {
-      outImage->SetPixel( indexX, iter.Get() );
+      outImage->SetPixel( indexX, tf );
       }
     ++iter;
     }
   progress += 0.1;
   progressReporter.Report( progress );
+  timeCollector.Stop("Allocate output image");
 
   for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
     {
@@ -258,81 +295,218 @@ int DoIt( int argc, char * argv[] )
     typename ImageType::Pointer curImage2 = reader2->GetOutput();
     timeCollector.Stop("Load data");
 
-    typename ImageType::IndexType minX2Org;
-    minX2Org = curImage2->GetLargestPossibleRegion().GetIndex();
     typename ImageType::SizeType size2 = curImage2->
                                            GetLargestPossibleRegion().
                                            GetSize();
-    typename ImageType::IndexType maxX2Org;
+
+    timeCollector.Start("Register images");
+    typedef typename itk::ImageToImageRegistrationHelper< ImageType >
+                                                              RegFilterType;
+    typename RegFilterType::Pointer regOp = RegFilterType::New();
+    regOp->SetFixedImage( curImage1 );
+    regOp->SetMovingImage( curImage2 );
+    regOp->SetSampleFromOverlap( true );
+    regOp->SetEnableLoadedRegistration( false );
+    regOp->SetEnableInitialRegistration( false );
+    regOp->SetEnableRigidRegistration( true );
+    regOp->SetRigidSamplingRatio( samplingRatio );
+    regOp->SetRigidMaxIterations( iterations );
+    regOp->SetEnableAffineRegistration( false );
+    regOp->SetEnableBSplineRegistration( false );
+    regOp->SetExpectedOffsetPixelMagnitude( expectedOffset );
+    regOp->SetExpectedRotationMagnitude( expectedRotation );
+
+    regOp->Initialize();
+    regOp->Update();
+
+    if( saveTransform.size() > 1 )
+      {
+      regOp->SaveTransform( saveTransform );
+      }
+    timeCollector.Stop("Register images");
+
+    timeCollector.Start("Resample Image");
+    regOp->SetFixedImage( outImage );
+    typename ImageType::ConstPointer tmpImage = regOp->ResampleImage(
+      RegFilterType::OptimizedRegistrationMethodType::
+      NEAREST_NEIGHBOR_INTERPOLATION,
+      NULL, NULL, NULL, background );
+    typename ImageType::Pointer curImage2Reg = ImageType::New();
+    curImage2Reg->CopyInformation( tmpImage );
+    curImage2Reg->SetRegions( tmpImage->GetLargestPossibleRegion() );
+    curImage2Reg->Allocate();
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iterTmp(
+      tmpImage, tmpImage->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iter2(
+      curImage2Reg, curImage2Reg->GetLargestPossibleRegion() );
+    while( !iter2.IsAtEnd() )
+      {
+      iter2.Set( iterTmp.Get() );
+      ++iter2;
+      ++iterTmp;
+      }
+    timeCollector.Stop("Resample Image");
+
+    typename ImageType::Pointer curImage2Map = ImageType::New();
+    curImage2Map->CopyInformation( outImage );
+    curImage2Map->SetRegions( outImage->GetLargestPossibleRegion() );
+    curImage2Map->Allocate();
+    curImage2Map->FillBuffer( 0 );
+    typename ImageType::IndexType center = curImage2->
+      GetLargestPossibleRegion().GetIndex();
     for( unsigned int i=0; i<dimensionT; i++ )
       {
-      maxX2Org[i] = minX2Org[i] + size2[i] - 1;
+      center[i] += size2[i] / 2;
       }
-    if( useBoundary )
-      {
-      for( unsigned int i=0; i<dimensionT; i++ )
-        {
-        minX2Org[i] += boundary[i];
-        maxX2Org[i] -= boundary[i];
-        }
-      }
+    typename ImageType::PointType pnt;
+    curImage2->TransformIndexToPhysicalPoint( center, pnt );
+    typename ImageType::PointType pnt2;
+    pnt2 = regOp->GetCurrentMatrixTransform()->TransformPoint( pnt );
+    curImage2Map->TransformPhysicalPointToIndex( pnt2, center );
+    curImage2Map->SetPixel( center, 1 );
+    timeCollector.Start("Distance Map 2");
+    typename MapFilterType::Pointer mapFilter2 = MapFilterType::New();
+    mapFilter2->SetInput( curImage2Map );
+    mapFilter2->SetInputIsBinary( true );
+    mapFilter2->SetUseImageSpacing( true );
+    mapFilter2->Update();
+    typename ImageType::Pointer curImage2DistMap =
+      mapFilter2->GetDistanceMap();
+    timeCollector.Stop("Distance Map 2");
 
     progress += 1.0/(double)inputVolume2.size() * 0.2;
     progressReporter.Report( progress );
 
-    itk::ImageRegionIteratorWithIndex< ImageType > iter2( curImage2,
-      curImage2->GetLargestPossibleRegion() );
     iter2.GoToBegin();
-    typename ImageType::IndexType indexX2;
-    while( !iter2.IsAtEnd() )
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iter2Dist(
+      curImage2DistMap, curImage2DistMap->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOut(
+      outImage, outImage->GetLargestPossibleRegion() );
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutDist(
+      outImageDistMap, outImageDistMap->GetLargestPossibleRegion() );
+    bool first = true;
+    double dist2Max = 0;
+    double distOutMax = 0;
+    double dist2Min = 0;
+    double distOutMin = 0;
+    while( !iter2Dist.IsAtEnd() )
       {
-      indexX2 = iter2.GetIndex();
-      bool useTf2 = true;
-      if( useBoundary )
+      double tf2 = iter2.Get();
+      double tf2D = iter2Dist.Get();
+      double tfOut = iterOut.Get();
+      double tfOutD = iterOutDist.Get();
+      if( tf2 != background && tfOut != background )
         {
-        for( unsigned int i=0; i<dimensionT; i++ )
+        if( first )
           {
-          if( indexX2[i]<minX2Org[i] || indexX2[i]>maxX2Org[i] )
-            {
-            useTf2 = false;
-            break;
-            }
+          dist2Min = tf2D;
+          distOutMin = tfOutD;
+          first = false;
           }
-        }
-      if( useTf2 )
-        {
-        double tf2 = iter2.Get();
-        curImage2->TransformIndexToPhysicalPoint( indexX2, pointX );
-        if( outImage->TransformPhysicalPointToIndex( pointX, indexX ) )
+        if( tf2D > dist2Max )
           {
-          if( average )
-            {
-            double tf1 = outImage->GetPixel( indexX );
-            if( tf1 != background )
-              {
-              tf1 = ( tf2 + tf1 ) / 2.0;
-              }
-            else
-              {
-              tf1 = tf2;
-              }
-            outImage->SetPixel( indexX, tf1 );
-            }
-          else
-            {
-            outImage->SetPixel( indexX, tf2 );
-            }
+          dist2Max = tf2D;
+          }
+        if( tf2D < dist2Min )
+          {
+          dist2Min = tf2D;
+          }
+        if( tfOutD > distOutMax )
+          {
+          distOutMax = tfOutD;
+          }
+        if( tfOutD < distOutMin )
+          {
+          distOutMin = tfOutD;
           }
         }
       ++iter2;
+      ++iter2Dist;
+      ++iterOut;
+      ++iterOutDist;
       }
+
+    std::cout << "2: " << dist2Min << " - " << dist2Max << std::endl;
+    std::cout << "Out: " << distOutMin << " - " << distOutMax << std::endl;
+
+    timeCollector.Start("Blend");
+    iter2.GoToBegin();
+    iter2Dist.GoToBegin();
+    iterOut.GoToBegin();
+    iterOutDist.GoToBegin();
+    while( !iter2.IsAtEnd() )
+      {
+      double tf2 = iter2.Get();
+      double tf2D = iter2Dist.Get();
+      double tfOut = iterOut.Get();
+      double tfOutD = iterOutDist.Get();
+      if( average || weighted )
+        {
+        if( tf2 != background )
+          {
+          if( tfOut != background )
+            {
+            if( weighted )
+              {
+              double d2 = 1 - (tf2D-dist2Min)/(dist2Max-dist2Min);
+              d2 = d2 * 2.5 - 1;
+              double dOut = 1 - (tfOutD-distOutMin)/(distOutMax-distOutMin);
+              dOut = dOut * 2.5 - 1;
+              if( d2 < 0 )
+                {
+                d2 = 0;
+                dOut = 1;
+                }
+              if( dOut < 0 )
+                {
+                d2 = 1;
+                dOut = 0;
+                }
+              if( d2 >= 1 )
+                {
+                d2 = 1;
+                dOut = 0;
+                }
+              if( dOut >= 1 )
+                {
+                d2 = 0;
+                dOut = 1;
+                }
+              double ratio2 = vcl_sqrt( d2 * ( 1 - dOut ) );
+              double ratioOut = vcl_sqrt( dOut * ( 1 - d2 ) );
+              double ratio = ( ratio2 + ( 1-ratioOut ) ) / 2;
+              tfOut = ( ratio * tf2 + (1-ratio) * tfOut );
+              }
+            else
+              {
+              tfOut = ( tfOut + tf2 ) / 2;
+              }
+            }
+          else
+            {
+            tfOut = tf2;
+            }
+          }
+        }
+      else if( tf2 != background )
+        {
+        if( tf2 > tfOut )
+          {
+          tfOut = tf2;
+          }
+        }
+      iterOut.Set( tfOut );
+      ++iter2;
+      ++iter2Dist;
+      ++iterOut;
+      ++iterOutDist;
+      }
+    timeCollector.Stop("Blend");
     progress += 1.0/(double)inputVolume2.size() * 0.19;
     progressReporter.Report( progress );
     }
 
   timeCollector.Start("Save data");
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
-  typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( outImage );
   writer->SetUseCompression( true );

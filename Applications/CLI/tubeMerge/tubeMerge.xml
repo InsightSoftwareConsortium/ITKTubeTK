@@ -47,20 +47,13 @@
       <default>false</default>
     </boolean>
     <boolean>
-      <name>firstImageSpecial</name>
-      <label>First image special (no bounardy)</label>
-      <description>First image is treated as special, boundary is not applied.</description>
-      <longflag>firstImageSpecial</longflag>
-      <flag>f</flag>
+      <name>weighted</name>
+      <label>Distance weighted</label>
+      <description>Weighted average based on depth of overlap</description>
+      <longflag>weighted</longflag>
+      <flag>w</flag>
       <default>false</default>
     </boolean>
-    <integer-vector>
-      <name>boundary</name>
-      <label>Additional boundary pixels</label>
-      <description>Pixel boundary in second image to be ignored</description>
-      <longflag>boundary</longflag>
-      <flag>b</flag>
-    </integer-vector>
     <double>
       <name>background</name>
       <label>Background intensity</label>
@@ -69,6 +62,65 @@
       <flag>k</flag>
       <default>0</default>
     </double>
+    <boolean>
+      <name>mask</name>
+      <label>Mask inputs</label>
+      <description>Zero-valued input pixels are ignored</description>
+      <longflag>mask</longflag>
+      <flag>M</flag>
+      <default>false</default>
+    </boolean>
+  </parameters>
+  <parameters>
+    <label>Registration options</label>
+    <integer>
+      <name>iterations</name>
+      <label>Registration iterations</label>
+      <description>Number of iterations (0=no registration)</description>
+      <longflag>iterations</longflag>
+      <flag>i</flag>
+      <default>300</default>
+    </integer>
+    <integer-vector>
+      <name>boundary</name>
+      <label>Additional boundary pixels</label>
+      <description>Pixels to be added around the second image as padding (account for registration movement)</description>
+      <longflag>boundary</longflag>
+      <flag>b</flag>
+      <default></default>
+    </integer-vector>
+    <float>
+      <name>expectedOffset</name>
+      <label>Expected misalignment (offset)</label>
+      <description>Expected initial mis-registration between the images</description>
+      <longflag>expectedOffset</longflag>
+      <flag>o</flag>
+      <default>20</default>
+    </float>
+    <float>
+      <name>expectedRotation</name>
+      <label>Expected misalignment (rotation)</label>
+      <description>Expected initial mis-registration between the images</description>
+      <longflag>expectedRotation</longflag>
+      <flag>r</flag>
+      <default>0.001</default>
+    </float>
+    <float>
+      <name>samplingRatio</name>
+      <label>Sampling ratio</label>
+      <description>Portion of pixels to use for registration</description>
+      <longflag>samplingRatio</longflag>
+      <flag>s</flag>
+      <default>0.01</default>
+    </float>
+    <string>
+      <name>saveTransform</name>
+      <label>Save transform</label>
+      <description>Filename to save the transform to</description>
+      <longflag>saveTransform</longflag>
+      <flag>S</flag>
+      <default></default>
+    </string>
   </parameters>
 
 </executable>
