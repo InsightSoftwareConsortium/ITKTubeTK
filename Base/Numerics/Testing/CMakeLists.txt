@@ -110,21 +110,54 @@ add_test( tubeOptBrentTest
   tubeOptBrentTest
   )
 
+# Minimization - initialized at middle of interval
 add_test( tubeOptGoldenMeanTest
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest 0
+  tubeOptGoldenMeanTest
+  1 1 -3 3.5 1 0.01 -0.5 -1
   )
 
+# impossible maximization - not unimodal distribution
 add_test( tubeOptGoldenMeanTest1
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest 1
+  tubeOptGoldenMeanTest
+  100 2 -300 350 0 350 100 -1
   )
 set_tests_properties( tubeOptGoldenMeanTest1
                       PROPERTIES WILL_FAIL true )
 
+# minimization - initialized at xMax
 add_test( tubeOptGoldenMeanTest2
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest 2
+  tubeOptGoldenMeanTest
+  100 2 -300 350 1 350 100 -1
+  )
+
+# minimization - initialized at xMin
+add_test( tubeOptGoldenMeanTest3
+  ${BASE_NUMERICS_TESTS}
+  tubeOptGoldenMeanTest
+  1 1 -3 3.5 1 -3 -0.5 -1  )
+
+# maximization - initialized at middle of interval
+add_test( tubeOptGoldenMeanTest4
+  ${BASE_NUMERICS_TESTS}
+  tubeOptGoldenMeanTest
+  100 2 -300 300 0 100 0 1
+  )
+
+# maximization - initialized at xMax
+add_test( tubeOptGoldenMeanTest5
+  ${BASE_NUMERICS_TESTS}
+  tubeOptGoldenMeanTest
+  100 2 -300 300 0 300 0 1
+  )
+
+# maximization - initialized at xMin
+add_test( tubeOptGoldenMeanTest6
+  ${BASE_NUMERICS_TESTS}
+  tubeOptGoldenMeanTest
+  100 2 -300 300 0 -300 0 1
   )
 
 add_test( tubeOptParabolicFitTest

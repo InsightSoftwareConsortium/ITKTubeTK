@@ -70,23 +70,28 @@ class MyOGMFunc2:
 
 int tubeOptGoldenMeanTest( int argc, char *argv[] )
 {
-  int testNum = 0;
-  if( argc > 1 )
+  if( argc < 9 )
     {
-    testNum = atoi( argv[ 1 ] );
+    std::cout << "Requires 9 arguments" << std::endl;
+    return EXIT_FAILURE;
     }
+
+  double factor = atof( argv[1] );
+  int funcType = atoi( argv[2] );
+  double xMin = atof( argv[3] );
+  double xMax = atof( argv[4] );
+  int minimizing = atoi( argv[5] );
+  double x = atof( argv[6] );
+  double idealXPiScaling = atof( argv[7] );
+  double idealV = atof( argv[8] );
 
   MyOGMFunc * myFunc = new MyOGMFunc();
   tube::OptGoldenMean1D * opt = new tube::OptGoldenMean1D( myFunc );
-
-  double factor = 1;
   MyOGMFunc2 * myFunc2 = NULL;
-  if( testNum != 0 )
+  if( funcType == 2 )
     {
-    factor = 100;
     myFunc2 = new MyOGMFunc2();
     opt->use( myFunc2 );
-
     delete myFunc;
     }
 
@@ -94,66 +99,65 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
 
   int returnStatus = EXIT_SUCCESS;
 
-  opt->xMin( -3*factor );
-  if( opt->xMin() != -3*factor )
+  opt->xMin( xMin );
+  if( opt->xMin() != xMin )
     {
-    std::cout << "xMin should be -3.5 and not " << opt->xMin() << std::endl;
+    std::cout << "xMin should be " << xMin << " and not "
+              << opt->xMin() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->xMax( 3.5*factor );
-  if( opt->xMax() != 3.5*factor )
+  opt->xMax( xMax);
+  if( opt->xMax() != xMax )
     {
-    std::cout << "xMax should be 3.5 and not " << opt->xMax() << std::endl;
+    std::cout << "xMax should be " << xMax << " and not "
+              << opt->xMax() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
   opt->xStep( 0.1*factor );
   if( opt->xStep() != 0.1*factor )
     {
-    std::cout << "xStep should be 0.1 and not " << opt->xStep()
-      << std::endl;
+    std::cout << "xStep should be " << 0.1*factor
+              << " and not " << opt->xStep() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
   opt->tolerance( 0.000001*factor );
   if( opt->tolerance() != 0.000001*factor )
     {
-    std::cout << "tolerance should be 0.000001 and not " << opt->tolerance()
-      << std::endl;
+    std::cout << "tolerance should be " << 0.000001*factor
+              << " and not " << opt->tolerance() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
   opt->maxIterations( 300 );
   if( opt->maxIterations() != 300 )
     {
-    std::cout << "maxIterations should be 100 and not "
+    std::cout << "maxIterations should be 300 and not "
       << opt->maxIterations() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->searchForMin( true );
-  if( !opt->searchForMin() )
+  if( minimizing )
     {
-    std::cout << "searchForMin should be false and not true." << std::endl;
-    returnStatus = EXIT_FAILURE;
+    opt->searchForMin( true );
+    if( !opt->searchForMin() )
+      {
+      std::cout << "searchForMin should be true and not false." << std::endl;
+      returnStatus = EXIT_FAILURE;
+      }
     }
-  if( testNum == 1 )
+  else
     {
     opt->searchForMin( false );
     if( opt->searchForMin() )
       {
-      std::cout << "searchForMin should be false and not true."
-        << std::endl;
+      std::cout << "searchForMin should be false and not true." << std::endl;
       returnStatus = EXIT_FAILURE;
       }
     }
 
-  double x = 0.01 * factor;
-  if( testNum != 0 )
-    {
-    x = opt->xMax();
-    }
   double xVal = 0;
   if( !opt->extreme( &x, &xVal ) )
     {
@@ -161,11 +165,7 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  double idealX = - vnl_math::pi / 2;
-  if( testNum != 0 )
-    {
-    idealX = vnl_math::pi * factor;
-    }
+  double idealX = vnl_math::pi * idealXPiScaling;
   if( vnl_math_abs( idealX - x ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  x=" << x
@@ -174,7 +174,6 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  double idealV = -1;
   if( vnl_math_abs( idealV - xVal ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  xVal=" << xVal
@@ -183,7 +182,7 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
     }
 
   delete opt;
-  if( testNum != 0 )
+  if( funcType == 2 )
     {
     delete myFunc2;
     }

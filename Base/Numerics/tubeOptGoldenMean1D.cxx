@@ -62,8 +62,8 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
     maxSign = -1;
     }
 
-  double v;
-  double prevV = m_FuncVal->value( *extX );
+  double v = maxSign * m_FuncVal->value( *extX );
+  double prevV = v;
   double xstep = m_XStep;
   int dir = 1;
 
@@ -174,7 +174,7 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
     dir *= -1;
     }
 
-  *extVal = maxSign*prevV;
+  *extVal = maxSign * prevV;
   return true;
 }
 
