@@ -111,19 +111,22 @@ add_test( tubeOptBrentTest
 
 add_test( tubeOptGoldenMeanTest
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest 0
+  tubeOptGoldenMeanTest
+  1 1 -3 3.5 1 0.01 -0.5 -1
   )
 
 add_test( tubeOptGoldenMeanTest1
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest 1
+  tubeOptGoldenMeanTest
+  100 2 -300 350 0 350 100 -1
   )
 set_tests_properties( tubeOptGoldenMeanTest1
                       PROPERTIES WILL_FAIL true )
 
 add_test( tubeOptGoldenMeanTest2
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest 2
+  tubeOptGoldenMeanTest
+  100 2 -300 350 1 350 100 -1
   )
 
 add_test( tubeOptParabolicFitTest
