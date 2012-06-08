@@ -48,8 +48,9 @@ set( SITE_GIT_COMMAND "/usr/bin/git" )
 set( SITE_SVN_COMMAND "/usr/bin/svn" )
 set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 
-set( TUBETK_SOURCE_DIR "/home/aylward/src/tubetk" )
-set( TUBETK_BINARY_DIR "/home/aylward/src/tubetk-${SITE_BUILD_TYPE}" )
+set( TUBETK_GIT_REPOSITORY "git://gitorious.org/tubetk/tubetk-src.git" )
+set( TUBETK_SOURCE_DIR "/home/aylward/src/dashboards/tubetk" )
+set( TUBETK_BINARY_DIR "/home/aylward/src/dashboards/tubetk-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD ON )
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )
@@ -112,6 +113,13 @@ if( SITE_NIGHTLY_MEMORY
     OR SITE_EXPERIMENTAL_MEMORY )
   set( SITE_C_FLAGS "${SITE_C_FLAGS} ${MEMORYCHECK_FLAGS}" )
   set( SITE_CXX_FLAGS "${SITE_CXX_FLAGS} ${MEMORYCHECK_FLAGS}" )
+endif()
+
+if( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
+  execute_process( COMMAND
+    "${SITE_GIT_COMMAND}"
+    clone "${TUBETK_GIT_REPOSITORY}" "${TUBETK_SOURCE_DIR}" )
+  ctest_run_script()
 endif()
 
 if( "${SITE_CTEST_MODE}" STREQUAL "Experimental" )

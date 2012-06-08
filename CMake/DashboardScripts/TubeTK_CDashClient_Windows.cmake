@@ -95,6 +95,13 @@ set( SITE_MEMORYCHECK_COMMAND_OPTIONS "" )
 set( SITE_MEMORYCHECK_SUPPRESSIONS_FILE
   "${CTEST_SCRIPT_DIRECTORY}/valgrind_suppressions.txt" )
 
+if( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
+  execute_process( COMMAND
+    "${SITE_GIT_COMMAND}"
+    clone "${TUBETK_GIT_REPOSITORY}" "${TUBETK_SOURCE_DIR}" )
+  ctest_run_script()
+endif()
+
 if( "${SITE_CTEST_MODE}" STREQUAL "Experimental" )
   if( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD )
     include( "${TUBETK_SCRIPT_DIR}/run_experimental.cmake" )
