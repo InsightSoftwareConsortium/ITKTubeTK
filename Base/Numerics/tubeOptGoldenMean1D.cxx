@@ -67,13 +67,13 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
   double xstep = m_XStep;
   int dir = 1;
 
-  double v1 = v-m_Tolerance;
+  double v1 = v-std::abs(v*0.0001);
   if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
     {
     v1 = maxSign * m_FuncVal->value( *extX+dir*xstep );
     }
 
-  double v2 = v1-m_Tolerance;
+  double v2 = v1-std::abs(v1*0.0001);
   if( *extX-dir*xstep <= m_XMax && *extX-dir*xstep >= m_XMin )
     {
     v2 = maxSign * m_FuncVal->value( *extX-dir*xstep );
