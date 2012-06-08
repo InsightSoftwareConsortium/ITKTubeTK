@@ -163,6 +163,7 @@ macro(_process_keyfile keyFile testName extractTgz)
 
   # Obtain the checksum
   file(READ "${MIDAS_KEY_DIR}/${keyFile}" checksum)
+  string(STRIP ${checksum} checksum)
 
   # Write the test script file for downloading
   if(UNIX)
