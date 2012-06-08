@@ -63,7 +63,7 @@ SET(MIDAS_USER "" CACHE STRING "MIDAS User email address")
 mark_as_advanced( MIDAS_USER )
 SET(MIDAS_DEFAULT_API_KEY "" CACHE STRING "MIDAS DEFAULT API Key")
 mark_as_advanced( MIDAS_DEFAULT_API_KEY )
-SET(MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_DATA) 
+SET(MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_Data)
 
 #-----------------------------------------------------------------------------
 # Doxygen setup
