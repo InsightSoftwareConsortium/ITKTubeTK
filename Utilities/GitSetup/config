@@ -1,0 +1,9 @@
+[hooks]
+	url = http://tubetk.org/TubeTK.git
+[ssh]
+	host = tubetk.org
+	key = id_git_tubetk
+	request-url = https://www.kitware.com/Admin/SendPassword.cgi
+[stage]
+	url = git://tubetk.org/stage/TubeTK.git
+	pushurl = git@tubetk.org:stage/TubeTK.git
