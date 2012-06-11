@@ -36,12 +36,16 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
+set( TEXTCOMPARE_EXE
+ ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+
 #######
 # Test1
 #######
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
              ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
+               --saveTransform ${TEMP}/${PROJECT_NAME}Test1.tfm
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
@@ -52,12 +56,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
 set_property(TEST ${PROJECT_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
 
+#MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Tfm-Compare
+             #${TEXTCOMPARE_EXE}
+               #-t ${TEMP}/${PROJECT_NAME}Test1.tfm
+               #-b MIDAS{${PROJECT_NAME}Test1.tfm.md5} )
+#set_property(TEST ${PROJECT_NAME}-Test1-Tfm-Compare
+                      #APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
+
 #######
 # Test2
 #######
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
              ${PROJ_EXE}
                -a
+               -i 0
                -b 50,50
                MIDAS{ES0015_Large.mha.md5}
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
@@ -75,7 +87,8 @@ set_property(TEST ${PROJECT_NAME}-Test2-Compare
 #######
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
              ${PROJ_EXE}
-               -a
+               -i 0
+               -w
                -b 50,50
                MIDAS{ES0015_Large.mha.md5}
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
