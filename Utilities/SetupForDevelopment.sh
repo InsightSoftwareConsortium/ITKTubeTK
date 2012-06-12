@@ -3,7 +3,7 @@
 cd "${BASH_SOURCE%/*}/.." &&
 Utilities/GitSetup/setup-user && echo &&
 Utilities/GitSetup/setup-hooks && echo &&
-Utilities/GitSetup/SetupGitAliases.sh && echo &&
+Utilities/GitSetup/setup-aliases && echo &&
 Utilities/GitSetup/setup-stage && echo &&
 (Utilities/GitSetup/setup-ssh ||
  echo 'Failed to setup SSH.  Run this again to retry.') && echo &&
