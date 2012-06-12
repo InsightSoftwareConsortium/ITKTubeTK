@@ -86,7 +86,7 @@ set_property(TEST ${PROJECT_NAME}-Test2-Compare
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
              ${PROJ_EXE}
                -i 0
-               -k 1000
+               -k 10
                -b 50,50
                MIDAS{ES0015_Large.mha.md5}
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
