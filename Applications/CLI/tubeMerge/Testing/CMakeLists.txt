@@ -27,7 +27,6 @@ Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -68,7 +67,6 @@ set_property(TEST ${PROJECT_NAME}-Test1-Compare
 #######
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
              ${PROJ_EXE}
-               -a
                -i 0
                -b 50,50
                MIDAS{ES0015_Large.mha.md5}
@@ -88,7 +86,7 @@ set_property(TEST ${PROJECT_NAME}-Test2-Compare
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
              ${PROJ_EXE}
                -i 0
-               -w
+               -k 1000
                -b 50,50
                MIDAS{ES0015_Large.mha.md5}
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
@@ -106,8 +104,8 @@ set_property(TEST ${PROJECT_NAME}-Test3-Compare
 #######
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4
              ${PROJ_EXE}
-               -a
                -b 50,50
+               -M
                -i 0
                MIDAS{ES0015_Large.mha.md5}
                -m MIDAS{ES0015_Large_Wo_offset.mha.md5}

@@ -56,7 +56,7 @@ int DoIt( int argc, char * argv[] );
 #include "tubeMergeCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
-#define PARSE_ARGS_FLOAT_ONLY
+#define PARSE_ARGS_FLOAT_ONLY 1
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
@@ -238,28 +238,6 @@ int DoIt( int argc, char * argv[] )
   outImage->Allocate();
   outImage->FillBuffer( background );
 
-  typename ImageType::Pointer outImageMap = ImageType::New();
-  outImageMap->CopyInformation( curImage1 );
-  outImageMap->SetRegions( regionOut );
-  outImageMap->Allocate();
-  outImageMap->FillBuffer( 0 );
-  typename ImageType::IndexType center = curImage1->
-    GetLargestPossibleRegion().GetIndex();
-  for( unsigned int i=0; i<dimensionT; i++ )
-    {
-    center[i] += size1[i] / 2;
-    }
-  outImageMap->SetPixel( center, 1 );
-  typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
-          ImageType>   MapFilterType;
-  typename MapFilterType::Pointer mapFilter = MapFilterType::New();
-  mapFilter->SetInput( outImageMap );
-  mapFilter->SetInputIsBinary( true );
-  mapFilter->SetUseImageSpacing( true );
-  mapFilter->Update();
-  typename ImageType::Pointer outImageDistMap =
-    mapFilter->GetDistanceMap();
-
   itk::ImageRegionIteratorWithIndex< ImageType > iter( curImage1,
     curImage1->GetLargestPossibleRegion() );
   while( !iter.IsAtEnd() )
@@ -332,6 +310,7 @@ int DoIt( int argc, char * argv[] )
     curImage2Reg->CopyInformation( tmpImage );
     curImage2Reg->SetRegions( tmpImage->GetLargestPossibleRegion() );
     curImage2Reg->Allocate();
+    curImage2Reg->FillBuffer( background );
     typename ImageType::Pointer outImageMap = ImageType::New();
     outImageMap->CopyInformation( tmpImage );
     outImageMap->SetRegions( tmpImage->GetLargestPossibleRegion() );
@@ -380,6 +359,8 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop("Resample Image");
 
     timeCollector.Start("Out Distance Map");
+    typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
+      ImageType>   MapFilterType;
     typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
     mapDistFilter->SetInput( outImageMap );
     mapDistFilter->SetInputIsBinary( false );
@@ -428,7 +409,6 @@ int DoIt( int argc, char * argv[] )
 
     iter2.GoToBegin();
     iterOut.GoToBegin();
-    iterOutVor.GoToBegin();
     itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap(
       outImageDistMap, outImageDistMap->GetLargestPossibleRegion() );
     itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap(
@@ -455,15 +435,15 @@ int DoIt( int argc, char * argv[] )
           double vDist = iterVorDistMap.Get();
           double oDist = iterOutDistMap.Get();
 
-          if( vDist > 0 )
-            {
-            double ratio = vDist/(oDist+vDist);
-            oVal = ratio * oVal + (1-ratio)*iVal;
-            }
-          else if( vDist < 0 )
+          if( vDist < 0 )
             {
             vDist = -vDist;
-            double ratio = vDist/(oDist+vDist);
+            double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
+            oVal = ratio * oVal + (1-ratio)*iVal;
+            }
+          else if( vDist > 0 )
+            {
+            double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
             oVal = ratio * iVal + (1-ratio)*oVal;
             }
           else

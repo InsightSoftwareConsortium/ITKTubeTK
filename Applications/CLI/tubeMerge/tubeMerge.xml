@@ -38,22 +38,6 @@
 
   <parameters>
     <label>Merge options</label>
-    <boolean>
-      <name>average</name>
-      <label>Average values</label>
-      <description>Average values when overlap occurs</description>
-      <longflag>average</longflag>
-      <flag>a</flag>
-      <default>false</default>
-    </boolean>
-    <boolean>
-      <name>weighted</name>
-      <label>Distance weighted</label>
-      <description>Weighted average based on depth of overlap</description>
-      <longflag>weighted</longflag>
-      <flag>w</flag>
-      <default>false</default>
-    </boolean>
     <double>
       <name>background</name>
       <label>Background intensity</label>
@@ -61,14 +45,6 @@
       <longflag>background</longflag>
       <flag>k</flag>
       <default>0</default>
-    </double>
-    <double>
-      <name>blendMargin</name>
-      <label>Blend margin</label>
-      <description>Relative size of the blending band (0 to 1)</description>
-      <longflag>blendMargin</longflag>
-      <flag>B</flag>
-      <default>0.5</default>
     </double>
     <boolean>
       <name>mask</name>
