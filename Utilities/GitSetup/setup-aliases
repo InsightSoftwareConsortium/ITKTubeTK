@@ -26,7 +26,7 @@ git config alias.pullall "!bash -c \"git pull && git submodule update --init\"" 
 git config alias.prepush 'log --graph --stat origin/master..' &&
 
 # Staging aliases - can help streamline staging topic branches.
-stage_cmd='ssh git@igstk.org stage IGSTK' &&
+stage_cmd='ssh git@tubetk.org stage TubeTK' &&
 git_branch="\$(git symbolic-ref HEAD | sed -e 's|^refs/heads/||')" &&
 # General alias to run the SSH command, e.g. git stage-cmd print.
 git config alias.stage-cmd "!${stage_cmd}" &&
