@@ -99,6 +99,13 @@ if( EXISTS ${TUBETK_BINARY_DIR}/GenerateCLP-Build/CMakeCache.txt)
     " )
 endif()
 
+if( EXISTS ${TUBETK_BINARY_DIR}/SlicerExecutionModel-Build/CMakeCache.txt)
+  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
+    "
+    SlicerExecutionModel_DIR:PATH=${TUBETK_BINARY_DIR}/SlicerExecutionModel-Build
+    " )
+endif()
+
 if( EXISTS ${TUBETK_BINARY_DIR}/CTK-Build/CMakeCache.txt )
   file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
     "

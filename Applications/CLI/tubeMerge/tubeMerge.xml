@@ -38,22 +38,6 @@
 
   <parameters>
     <label>Merge options</label>
-    <boolean>
-      <name>average</name>
-      <label>Average values</label>
-      <description>Average values when overlap occurs</description>
-      <longflag>average</longflag>
-      <flag>a</flag>
-      <default>false</default>
-    </boolean>
-    <boolean>
-      <name>weighted</name>
-      <label>Distance weighted</label>
-      <description>Weighted average based on depth of overlap</description>
-      <longflag>weighted</longflag>
-      <flag>w</flag>
-      <default>false</default>
-    </boolean>
     <double>
       <name>background</name>
       <label>Background intensity</label>

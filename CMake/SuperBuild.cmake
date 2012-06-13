@@ -267,7 +267,7 @@ ExternalProject_Add(${proj}
   GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/SlicerExecutionModel.git"
   GIT_TAG "origin/master"
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
-  BINARY_DIR ${proj}-build
+  BINARY_DIR ${proj}-Build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
@@ -285,7 +285,7 @@ ExternalProject_Add(${proj}
   DEPENDS
     ${SlicerExecutionModel_DEPENDS}
   )
-set( SlicerExecutionModel_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
+set( SlicerExecutionModel_DIR ${CMAKE_BINARY_DIR}/${proj}-Build )
 set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SlicerExecutionModel" )
 
 if( TubeTK_USE_QT )
