@@ -24,10 +24,10 @@
 ##############################################################################
 #
 # Configure the following variables and move this file to the directory above
-#   the tubetk source directory.
+#   the TubeTK source directory.
 #
 set( SITE_NAME "ginger.aylward.org" )
-set( SITE_PLATFORM "WindowsXP-VS2010Exp" )
+set( SITE_PLATFORM "WindowsXP-VS2010-32" )
 set( SITE_BUILD_TYPE "Release" )
 set( SITE_CMAKE_GENERATOR "Visual Studio 10" )
 set( SITE_CTEST_MODE "Experimental" ) # one of Experimental, Continuous,
@@ -48,10 +48,11 @@ set( SITE_GIT_COMMAND
 set( SITE_SVN_COMMAND
   "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
 
+set( TUBETK_GIT_REPOSITORY "git://tubetk.org/TubeTK.git" )
 set( TUBETK_SOURCE_DIR
-  "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk" )
+  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK" )
 set( TUBETK_BINARY_DIR
-  "C:\\Documents and Settings\\aylward\\My Documents\\src\\tubetk-${SITE_BUILD_TYPE}" )
+  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD OFF )
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )

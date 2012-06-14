@@ -24,10 +24,10 @@
 ##############################################################################
 #
 # Configure the following variables and move this file to the directory above
-#   the tubetk source directory.
+#   the TubeTK source directory.
 #
 set( SITE_NAME "aylward@krull.kitware" )
-set( SITE_PLATFORM "Linux" )
+set( SITE_PLATFORM "Linux-64" )
 set( SITE_BUILD_TYPE "Release" )
 set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
 set( SITE_CTEST_MODE "Experimental" ) # one of Experimental, Continuous,
@@ -48,9 +48,9 @@ set( SITE_GIT_COMMAND "/usr/bin/git" )
 set( SITE_SVN_COMMAND "/usr/bin/svn" )
 set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 
-set( TUBETK_GIT_REPOSITORY "git://gitorious.org/tubetk/tubetk-src.git" )
-set( TUBETK_SOURCE_DIR "/home/aylward/src/dashboards/tubetk" )
-set( TUBETK_BINARY_DIR "/home/aylward/src/dashboards/tubetk-${SITE_BUILD_TYPE}" )
+set( TUBETK_GIT_REPOSITORY "git://tubetk.org/TubeTK.git" )
+set( TUBETK_SOURCE_DIR "/home/aylward/src/dashboards/TubeTK" )
+set( TUBETK_BINARY_DIR "/home/aylward/src/dashboards/TubeTK-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD ON )
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )
