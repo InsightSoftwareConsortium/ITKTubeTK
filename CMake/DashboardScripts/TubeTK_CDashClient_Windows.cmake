@@ -22,16 +22,49 @@
 ##############################################################################
 
 ##############################################################################
+# The following should not be changed.  The following converts command-line
+# args to ctest vars.  Author: Jean-Christophe Fillon-Robin, Kitware
+#
+# Note: The syntax to pass option from the command line while invoking ctest is
+#       the following:
+#   ctest -S /path/to/script.cmake,OPTNAME1##OPTVALUE1^^OPTNAME2##OPTVALUE2
+#
+# Example:
+#   ctest -S /path/to/script.cmake,SCRIPT_MODE##continuous^^GIT_TAG##next
+#
+if(NOT CTEST_SCRIPT_ARG STREQUAL "")
+  string(REPLACE "^^" "\\;" CTEST_SCRIPT_ARG_AS_LIST "${CTEST_SCRIPT_ARG}")
+  set(CTEST_SCRIPT_ARG_AS_LIST ${CTEST_SCRIPT_ARG_AS_LIST})
+  foreach(argn_argv ${CTEST_SCRIPT_ARG_AS_LIST})
+    string(REPLACE "##" "\\;" argn_argv_list ${argn_argv})
+    set(argn_argv_list ${argn_argv_list})
+    list(GET argn_argv_list 0 argn)
+    list(GET argn_argv_list 1 argv)
+    set(${argn} ${argv})
+  endforeach()
+endif()
+##############################################################################
+
+##############################################################################
 #
 # Configure the following variables and move this file to the directory above
 #   the TubeTK source directory.
 #
 set( SITE_NAME "ginger.aylward.org" )
-set( SITE_PLATFORM "WindowsXP-VS2010-32" )
-set( SITE_BUILD_TYPE "Release" )
+set( SITE_PLATFORM "WindowsXP-VS2010_32" )
+if(NOT SITE_BUILD_TYPE)
+  set( SITE_BUILD_TYPE "Release" )
+endif()
+if(NOT SITE_CTEST_MODE)
+  set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
+endif()
 set( SITE_CMAKE_GENERATOR "Visual Studio 10" )
-set( SITE_CTEST_MODE "Experimental" ) # one of Experimental, Continuous,
-                                      #   or Nightly
+
+set( TUBETK_GIT_REPOSITORY "git://tubetk.org/TubeTK.git" )
+set( TUBETK_SOURCE_DIR
+  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK" )
+set( TUBETK_BINARY_DIR
+  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK-${SITE_BUILD_TYPE}" )
 
 set( SITE_MAKE_COMMAND "${CTEST_BUILD_COMMAND}" )
 set( SITE_CMAKE_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\cmake" )
@@ -47,12 +80,6 @@ set( SITE_GIT_COMMAND
   "C:\\Program Files\\Git\\bin\\git" )
 set( SITE_SVN_COMMAND
   "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
-
-set( TUBETK_GIT_REPOSITORY "git://tubetk.org/TubeTK.git" )
-set( TUBETK_SOURCE_DIR
-  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK" )
-set( TUBETK_BINARY_DIR
-  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK-${SITE_BUILD_TYPE}" )
 
 set( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD OFF )
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )
