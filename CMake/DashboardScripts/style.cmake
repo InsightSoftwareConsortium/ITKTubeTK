@@ -31,8 +31,9 @@ include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 
 set( ENV{PATH} "$ENV{PATH}:/usr/local/bin" )
 
-ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
+#ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+#ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+#ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
+#EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
+ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" TARGET StyleCheck )
 ctest_submit()

@@ -23,7 +23,7 @@
 
 cmake_minimum_required( VERSION 2.6 )
 
-set( SCRIPT_NAME "BuildTest-NoSuperbuild" )
+set( SCRIPT_NAME "BuildTest" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
 set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
@@ -44,8 +44,7 @@ if( res GREATER 0 OR res LESS 0 OR "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
   ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
   ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
   ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-  ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-  ctest_submit()
+  ctest_submit( PARTS update configure build )
 
   set( ENV{TUBETK_FORCE_BUILD} "1" )
 

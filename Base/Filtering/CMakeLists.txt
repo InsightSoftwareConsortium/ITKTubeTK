@@ -68,6 +68,6 @@ ENDIF( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Filtering_H_Files}
-  ${TubeTK_Base_Filtering_H_Files}
+  ${TubeTK_Base_Filtering_TXX_Files}
   DESTINATION include
   )

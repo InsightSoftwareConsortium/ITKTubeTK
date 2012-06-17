@@ -29,8 +29,6 @@ set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
 
 include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 
-ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-
 if( "$ENV{TUBETK_RUN_MODEL}" STREQUAL "Experimental" )
   set( res 1 )
 else()
@@ -44,14 +42,7 @@ if( res GREATER 0 OR res LESS 0 OR "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
   ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
   ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
   ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
-  ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-
-  ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" APPEND )
-  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" )
-  ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" APPEND )
-  ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}/TubeTK-Build" APPEND )
-
-  ctest_submit()
+  ctest_submit( PARTS update configure build )
 
   set( ENV{TUBETK_FORCE_BUILD} "1" )
 

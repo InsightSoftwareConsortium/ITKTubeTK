@@ -23,7 +23,7 @@
 
 set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
-if( SITE_CONTINUOUS_BUILD_TEST )
+if( SITE_CONTINUOUS_BUILD )
 
   ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
 
@@ -41,26 +41,33 @@ if( SITE_CONTINUOUS_BUILD_TEST )
     set( START_TIME ${CTEST_ELAPSED_TIME} )
 
     message("---- Checking for changes ----")
-    include( "${TUBETK_SCRIPT_DIR}/build_test.cmake" )
+    include( "${TUBETK_SCRIPT_DIR}/build.cmake" )
 
     if( "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
 
-      message("---- Changes found ----")
-
-      if( SITE_CONTINUOUS_STYLE )
-        message("---- Style script ----")
-        include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
-      endif( SITE_CONTINUOUS_STYLE )
+      if( SITE_CONTINUOUS_TEST )
+        include( "${TUBETK_SCRIPT_DIR}/test.cmake" )
+      endif()
 
       if( SITE_CONTINUOUS_COVERAGE )
-        message("---- Coverage script ----")
         include( "${TUBETK_SCRIPT_DIR}/coverage.cmake" )
-      endif( SITE_CONTINUOUS_COVERAGE )
+      endif()
 
       if( SITE_CONTINUOUS_MEMORY )
-        message("---- Memory script ----")
         include( "${TUBETK_SCRIPT_DIR}/memory.cmake" )
-      endif( SITE_CONTINUOUS_MEMORY )
+      endif()
+
+      if( SITE_CONTINUOUS_STYLE )
+        include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
+      endif()
+
+      if( SITE_CONTINUOUS_PACKAGE )
+        include( "${TUBETK_SCRIPT_DIR}/package.cmake" )
+      endif()
+
+      if( SITE_CONTINUOUS_UPLOAD )
+        include( "${TUBETK_SCRIPT_DIR}/upload.cmake" )
+      endif()
 
       set( ENV{TUBETK_FORCE_BUILD} "0" )
 

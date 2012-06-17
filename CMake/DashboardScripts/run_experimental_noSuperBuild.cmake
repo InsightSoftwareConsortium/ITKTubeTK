@@ -26,20 +26,32 @@ set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
 set( ENV{TUBETK_FORCE_BUILD} "0" )
 
-if( SITE_EXPERIMENTAL_BUILD_TEST )
-  include( "${TUBETK_SCRIPT_DIR}/build_test_noSuperBuild.cmake" )
-ENDif( SITE_EXPERIMENTAL_BUILD_TEST )
+if( SITE_EXPERIMENTAL_BUILD )
+  include( "${TUBETK_SCRIPT_DIR}/build_noSuperBuild.cmake" )
+ENDif()
 
-if( SITE_EXPERIMENTAL_STYLE )
-  include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
-endif( SITE_EXPERIMENTAL_STYLE )
+if( SITE_EXPERIMENTAL_TEST )
+  include( "${TUBETK_SCRIPT_DIR}/test.cmake" )
+ENDif()
 
 if( SITE_EXPERIMENTAL_COVERAGE )
   include( "${TUBETK_SCRIPT_DIR}/coverage.cmake" )
-endif( SITE_EXPERIMENTAL_COVERAGE )
+endif()
 
 if( SITE_EXPERIMENTAL_MEMORY )
   include( "${TUBETK_SCRIPT_DIR}/memory.cmake" )
-endif( SITE_EXPERIMENTAL_MEMORY )
+endif()
+
+if( SITE_EXPERIMENTAL_STYLE )
+  include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
+endif()
+
+if( SITE_EXPERIMENTAL_PACKAGE )
+  include( "${TUBETK_SCRIPT_DIR}/package.cmake" )
+endif()
+
+if( SITE_EXPERIMENTAL_UPLOAD )
+  include( "${TUBETK_SCRIPT_DIR}/upload.cmake" )
+endif()
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)

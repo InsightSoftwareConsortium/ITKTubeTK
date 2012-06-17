@@ -21,13 +21,16 @@
 #
 ##############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required( VERSION 2.6 )
 
-set( SCRIPT_NAME "BuildTest" )
+set( SCRIPT_NAME "Upload" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
 set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
 include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 
-ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_submit( PARTS Coverage )
+include( ${CTEST_BINARY_DIRECTORY}/CPackConfig.cmake )
+
+FILE(GLOB TUBETK_PACKAGE_FILES
+  "${CTEST_BINARY_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.*" )
+ctest_upload( FILES ${TUBETK_PACKAGE_FILES} )

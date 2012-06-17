@@ -22,27 +22,27 @@
 ##############################################################################
 
 set( TubeTK_Base_Segmentation_H_Files
-  itkLabelOverlapMeauresImageFilter.h
   itkTubeCVTImageFilter.h
+  itkTubeLabelOverlapMeasuresImageFilter.h
   itkTubeOtsuThresholdMaskedImageCalculator.h
   itkTubeOtsuThresholdMaskedImageFilter.h
   itkTubePDFSegmenter.h
   itkTubeRadiusExtractor.h
   itkTubeRidgeExtractor.h
-  itkTubeRidgeSeedImageFilter.h
+  itkTubeRidgeSeedGenerator.h
   itkTubeTubeExtractor.h
   itkTubeTubeNetworkExtractor.h
   )
 
 set(TubeTK_Base_Segmentation_TXX_Files
-  itkLabelOverlapMeauresImageFilter.txx
   itkTubeCVTImageFilter.txx
+  itkTubeLabelOverlapMeasuresImageFilter.txx
   itkTubeOtsuThresholdMaskedImageCalculator.txx
   itkTubeOtsuThresholdMaskedImageFilter.txx
   itkTubePDFSegmenter.txx
   itkTubeRadiusExtractor.txx
   itkTubeRidgeExtractor.txx
-  itkTubeRidgeSeedImageFilter.txx
+  itkTubeRidgeSeedGenerator.txx
   itkTubeTubeExtractor.txx
   itkTubeTubeNetworkExtractor.txx
   )
