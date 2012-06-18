@@ -40,6 +40,12 @@ if( SITE_CONTINUOUS_BUILD )
 
     set( START_TIME ${CTEST_ELAPSED_TIME} )
 
+    set( SCRIPT_NAME "BuildTest" )
+    set( SCRIPT_BINARY_SUBDIR "" )
+    set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
+    include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+    ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+
     message("---- Checking for changes ----")
     include( "${TUBETK_SCRIPT_DIR}/build.cmake" )
 

@@ -21,41 +21,49 @@
 #
 ##############################################################################
 
-set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
+set( ENV{TUBETK_RUN_MODEL} "Nightly" )
+set( ENV{TUBETK_FORCE_BUILD} "1" )
 
-if( SITE_NIGHTLY_BUILD_TEST )
+set( SCRIPT_NAME "BuildTest" )
+set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
+set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
-  ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
+  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_submit( PARTS configure )
 
-  set( ENV{TUBETK_RUN_MODEL} "Nightly" )
-  set( ENV{TUBETK_FORCE_BUILD} "1" )
-
-  include( "${TUBETK_SCRIPT_DIR}/build.cmake" )
+  if( SITE_NIGHTLY_BUILD )
+    ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+    ctest_submit( PARTS build )
+  endif()
 
   if( SITE_NIGHTLY_TEST )
-    include( "${TUBETK_SCRIPT_DIR}/test.cmake" )
+    ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_submit( PARTS test )
   endif()
 
   if( SITE_NIGHTLY_COVERAGE )
-    include( "${TUBETK_SCRIPT_DIR}/coverage.cmake" )
+    ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_submit( PARTS Coverage )
   endif()
-
-  if( SITE_NIGHTLY_MEMORY )
-    include( "${TUBETK_SCRIPT_DIR}/memory.cmake" )
-  endif()
-
-  if( SITE_NIGHTLY_STYLE )
-    include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
-  endif( SITE_NIGHTLY_STYLE )
 
   if( SITE_NIGHTLY_PACKAGE )
-    include( "${TUBETK_SCRIPT_DIR}/package.cmake" )
+    EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" package )
   endif()
 
   if( SITE_NIGHTLY_UPLOAD )
     include( "${TUBETK_SCRIPT_DIR}/upload.cmake" )
   endif()
 
+  if( SITE_NIGHTLY_MEMORY )
+    ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_submit( PARTS MemCheck )
+  endif()
+
+if( SITE_NIGHTLY_STYLE )
+  include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
 endif()
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)

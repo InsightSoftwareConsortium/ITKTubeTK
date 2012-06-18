@@ -259,7 +259,7 @@ mark_as_advanced( TubeTK_USE_SUPERBUILD )
 if( TubeTK_USE_SUPERBUILD )
 
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild.cmake" )
-  return( )
+  return()
 
 else( TubeTK_USE_SUPERBUILD )
 

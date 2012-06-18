@@ -23,33 +23,32 @@
 
 cmake_minimum_required( VERSION 2.8 )
 
-set( SCRIPT_NAME "BuildTest" )
-set( SCRIPT_BINARY_SUBDIR "" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
-
-include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
-
-if( "$ENV{TUBETK_RUN_MODEL}" STREQUAL "Experimental" )
-  set( res 1 )
-else()
+if( NOT "$ENV{TUBETK_RUN_MODEL}" STREQUAL "Experimental" )
   ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
 endif()
 
-if( res GREATER 0 OR res LESS 0 OR "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
+if( res GREATER 0 OR
+    res LESS 0 OR
+    "$ENV{TUBETK_RUN_MODEL}" STREQUAL "Experimental" OR
+    "$ENV{TUBETK_FORCE_BUILD}" STREQUAL "1" )
 
-  message( "Changes detected. Rebuilding and testing..." )
+  message( "Changes detected. Rebuilding..." )
 
-  ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-  ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
+  if( "$ENV{TUBETK_RUN_MODEL}" STREQUAL "Experimental" )
+    ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
+    ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
+  else()
+    ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+    ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
+    ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+  endif()
+
   ctest_submit( PARTS update configure build )
-
-  set( ENV{TUBETK_FORCE_BUILD} "1" )
 
 else()
 
   message( "No changes detected." )
-  # set( ENV{TUBETK_FORCE_BUILD} "0" ) # Don't turn off force build.
-  # Might be forced for another reason.
 
 endif()

@@ -22,36 +22,48 @@
 ##############################################################################
 
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
-set( ENV{TUBETK_FORCE_BUILD} "1" )
+set( ENV{TUBETK_FORCE_BUILD} "0" )
 
+set( SCRIPT_NAME "BuildTest" )
+set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
+set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
-if( SITE_EXPERIMENTAL_BUILD )
-  include( "${TUBETK_SCRIPT_DIR}/build.cmake" )
-ENDif()
+  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_submit( PARTS configure )
 
-if( SITE_EXPERIMENTAL_TEST )
-  include( "${TUBETK_SCRIPT_DIR}/test.cmake" )
-ENDif()
+  if( SITE_EXPERIMENTAL_BUILD )
+    ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+    ctest_submit( PARTS build )
+  endif()
 
-if( SITE_EXPERIMENTAL_COVERAGE )
-  include( "${TUBETK_SCRIPT_DIR}/coverage.cmake" )
-endif()
+  if( SITE_EXPERIMENTAL_TEST )
+    ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_submit( PARTS test )
+  endif()
 
-if( SITE_EXPERIMENTAL_MEMORY )
-  include( "${TUBETK_SCRIPT_DIR}/memory.cmake" )
-endif()
+  if( SITE_EXPERIMENTAL_COVERAGE )
+    ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_submit( PARTS Coverage )
+  endif()
+
+  if( SITE_EXPERIMENTAL_PACKAGE )
+    EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" package )
+  endif()
+
+  if( SITE_EXPERIMENTAL_UPLOAD )
+    include( "${TUBETK_SCRIPT_DIR}/upload.cmake" )
+  endif()
+
+  if( SITE_EXPERIMENTAL_MEMORY )
+    ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    ctest_submit( PARTS MemCheck )
+  endif()
 
 if( SITE_EXPERIMENTAL_STYLE )
   include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
-endif()
-
-if( SITE_EXPERIMENTAL_PACKAGE )
-  include( "${TUBETK_SCRIPT_DIR}/package.cmake" )
-endif()
-
-if( SITE_EXPERIMENTAL_UPLOAD )
-  include( "${TUBETK_SCRIPT_DIR}/upload.cmake" )
 endif()
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)

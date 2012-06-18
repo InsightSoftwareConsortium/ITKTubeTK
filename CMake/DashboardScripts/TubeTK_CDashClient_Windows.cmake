@@ -81,7 +81,6 @@ set( SITE_GIT_COMMAND
 set( SITE_SVN_COMMAND
   "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
 
-set( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD OFF )
 set( SITE_EXPERIMENTAL_BUILD_TEST ON )
 set( SITE_EXPERIMENTAL_STYLE OFF )
 set( SITE_EXPERIMENTAL_COVERAGE OFF )
@@ -131,11 +130,7 @@ if( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
 endif()
 
 if( "${SITE_CTEST_MODE}" STREQUAL "Experimental" )
-  if( SITE_EXPERIMENTAL_UPDATE_SUPERBUILD )
-    include( "${TUBETK_SCRIPT_DIR}/run_experimental.cmake" )
-  else()
-    include( "${TUBETK_SCRIPT_DIR}/run_experimental_noSuperBuild.cmake" )
-  endif()
+  include( "${TUBETK_SCRIPT_DIR}/run_experimental.cmake" )
 elseif( "${SITE_CTEST_MODE}" STREQUAL "Continuous" )
   include( "${TUBETK_SCRIPT_DIR}/run_continuous.cmake" )
 elseif( "${SITE_CTEST_MODE}" STREQUAL "Nightly" )

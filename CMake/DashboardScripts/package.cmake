@@ -21,15 +21,4 @@
 #
 ##############################################################################
 
-cmake_minimum_required( VERSION 2.6 )
-
-set( SCRIPT_NAME "Package" )
-set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
-
-include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
-
-ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" TARGET package )
-#ctest_submit( PARTS build )
+ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" TARGET package APPEND )
