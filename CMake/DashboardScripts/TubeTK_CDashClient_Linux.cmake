@@ -27,14 +27,9 @@
 #   the tubetk source directory.
 #
 set( SITE_NAME "krull.kitware" )
-message( WARNING ${BuildStamp} )
 set( SITE_PLATFORM "Linux_64" )
-if(NOT SITE_BUILD_TYPE)
-  set( SITE_BUILD_TYPE "Release" )
-endif()
-if(NOT SITE_CTEST_MODE)
-  set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
-endif()
+set( SITE_BUILD_TYPE "Release" )
+set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
 set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
 
 set( TUBETK_GIT_REPOSITORY "git@tubetk.org:TubeTK.git" )
@@ -60,25 +55,25 @@ set( SITE_EXPERIMENTAL_BUILD ON )
 set( SITE_EXPERIMENTAL_TEST ON )
 set( SITE_EXPERIMENTAL_COVERAGE OFF )
 set( SITE_EXPERIMENTAL_MEMORY OFF )
-set( SITE_EXPERIMENTAL_STYLE OFF )
 set( SITE_EXPERIMENTAL_PACKAGE OFF )
 set( SITE_EXPERIMENTAL_UPLOAD OFF )
+set( SITE_EXPERIMENTAL_STYLE OFF )
 
 set( SITE_CONTINUOUS_BUILD ON ) # Must be ON for any Continuous to run
 set( SITE_CONTINUOUS_TEST ON ) # Must be ON for any Continuous to run
 set( SITE_CONTINUOUS_COVERAGE OFF )
 set( SITE_CONTINUOUS_MEMORY OFF )
-set( SITE_CONTINUOUS_STYLE ON )
 set( SITE_CONTINUOUS_PACKAGE ON )
 set( SITE_CONTINUOUS_UPLOAD ON )
+set( SITE_CONTINUOUS_STYLE OFF )
 
 set( SITE_NIGHTLY_BUILD ON ) # Must be on for any Nightly to run
 set( SITE_NIGHTLY_TEST ON )
 set( SITE_NIGHTLY_COVERAGE ON )
 set( SITE_NIGHTLY_MEMORY ON )
-set( SITE_NIGHTLY_STYLE ON )
 set( SITE_NIGHTLY_PACKAGE ON )
 set( SITE_NIGHTLY_UPLOAD ON )
+set( SITE_NIGHTLY_STYLE ON )
 ##############################################################################
 
 ##############################################################################

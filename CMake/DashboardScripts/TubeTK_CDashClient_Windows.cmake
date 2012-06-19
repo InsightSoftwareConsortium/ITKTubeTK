@@ -22,42 +22,14 @@
 ##############################################################################
 
 ##############################################################################
-# The following should not be changed.  The following converts command-line
-# args to ctest vars.  Author: Jean-Christophe Fillon-Robin, Kitware
-#
-# Note: The syntax to pass option from the command line while invoking ctest is
-#       the following:
-#   ctest -S /path/to/script.cmake,OPTNAME1##OPTVALUE1^^OPTNAME2##OPTVALUE2
-#
-# Example:
-#   ctest -S /path/to/script.cmake,SCRIPT_MODE##continuous^^GIT_TAG##next
-#
-if(NOT CTEST_SCRIPT_ARG STREQUAL "")
-  string(REPLACE "^^" "\\;" CTEST_SCRIPT_ARG_AS_LIST "${CTEST_SCRIPT_ARG}")
-  set(CTEST_SCRIPT_ARG_AS_LIST ${CTEST_SCRIPT_ARG_AS_LIST})
-  foreach(argn_argv ${CTEST_SCRIPT_ARG_AS_LIST})
-    string(REPLACE "##" "\\;" argn_argv_list ${argn_argv})
-    set(argn_argv_list ${argn_argv_list})
-    list(GET argn_argv_list 0 argn)
-    list(GET argn_argv_list 1 argv)
-    set(${argn} ${argv})
-  endforeach()
-endif()
-##############################################################################
-
-##############################################################################
 #
 # Configure the following variables and move this file to the directory above
 #   the TubeTK source directory.
 #
 set( SITE_NAME "ginger.aylward.org" )
 set( SITE_PLATFORM "WindowsXP-VS2010_32" )
-if(NOT SITE_BUILD_TYPE)
-  set( SITE_BUILD_TYPE "Release" )
-endif()
-if(NOT SITE_CTEST_MODE)
-  set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
-endif()
+set( SITE_BUILD_TYPE "Release" )
+set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
 set( SITE_CMAKE_GENERATOR "Visual Studio 10" )
 
 set( TUBETK_GIT_REPOSITORY "git://tubetk.org/TubeTK.git" )
@@ -81,20 +53,29 @@ set( SITE_GIT_COMMAND
 set( SITE_SVN_COMMAND
   "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
 
-set( SITE_EXPERIMENTAL_BUILD_TEST ON )
-set( SITE_EXPERIMENTAL_STYLE OFF )
-set( SITE_EXPERIMENTAL_COVERAGE OFF )
-set( SITE_EXPERIMENTAL_MEMORY OFF )
+set( SITE_EXPERIMENTAL_BUILD ON )
+set( SITE_EXPERIMENTAL_TEST ON )
+set( SITE_EXPERIMENTAL_COVERAGE OFF ) # Linux only
+set( SITE_EXPERIMENTAL_MEMORY OFF )   # Linux only
+set( SITE_EXPERIMENTAL_PACKAGE OFF )
+set( SITE_EXPERIMENTAL_UPLOAD OFF )
+set( SITE_EXPERIMENTAL_STYLE OFF )    # Linux only
 
-set( SITE_CONTINUOUS_BUILD_TEST ON ) # Must be ON for any Continuous to run
-set( SITE_CONTINUOUS_STYLE OFF )
-set( SITE_CONTINUOUS_COVERAGE OFF )
-set( SITE_CONTINUOUS_MEMORY OFF )
+set( SITE_CONTINUOUS_BUILD ON )
+set( SITE_CONTINUOUS_TEST ON )
+set( SITE_CONTINUOUS_COVERAGE OFF ) # Linux only
+set( SITE_CONTINUOUS_MEMORY OFF )   # Linux only
+set( SITE_CONTINUOUS_PACKAGE ON )
+set( SITE_CONTINUOUS_UPLOAD ON )
+set( SITE_CONTINUOUS_STYLE OFF )    # Linux only
 
-set( SITE_NIGHTLY_BUILD_TEST ON ) # Must be ON for any Nightly to run
-set( SITE_NIGHTLY_STYLE OFF )
-set( SITE_NIGHTLY_COVERAGE OFF )
-set( SITE_NIGHTLY_MEMORY OFF )
+set( SITE_NIGHTLY_BUILD ON )
+set( SITE_NIGHTLY_TEST ON )
+set( SITE_NIGHTLY_COVERAGE OFF ) # Linux only
+set( SITE_NIGHTLY_MEMORY OFF )   # Linux only
+set( SITE_NIGHTLY_PACKAGE ON )
+set( SITE_NIGHTLY_UPLOAD ON )
+set( SITE_NIGHTLY_STYLE OFF )    # Linux only
 
 
 ###########################################################################
