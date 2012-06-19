@@ -25,15 +25,15 @@ project( TubeTK )
 
 #-----------------------------------------------------------------------------
 # Require CMake 2.8 for the superbuild functionality
-cmake_minimum_required( VERSION 2.8.4 )
+cmake_minimum_required( VERSION 2.8.8 )
 
 #-----------------------------------------------------------------------------
 #  Set TubeTK
 set( TubeTK_VERSION_MAJOR "0" )
 set( TubeTK_VERSION_MINOR "9" )
-include( CMake/kwsysDateStamp.cmake )
-set( TubeTK_VERSION_BUILD
-  ${KWSYS_DATE_STAMP_YEAR}${KWSYS_DATE_STAMP_MONTH}${KWSYS_DATE_STAMP_DAY} )
+set( TubeTK_VERSION_PATCH "0" )
+include( CMake/CMakeFunctionToday.cmake )
+TODAY( TubeTK_VERSION_BUILD )
 set( TubeTK_VERSION
   "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_BUILD}" )
 
@@ -46,11 +46,11 @@ set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 # Dashboard setup
 include( ${CMAKE_ROOT}/Modules/Dart.cmake )
 mark_as_advanced( TCL_TCLSH DART_ROOT )
-enable_testing()
+enable_testing( )
 if( BUILD_TESTING )
   set( BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard" )
   mark_as_advanced( BUILDNAME )
-endif( BUILD_TESTING )
+endif()
 set( BUILD_WARNING_REPORT_LIMIT -1 )
 set( BUILD_ERROR_REPORT_LIMIT -1 )
 include( "CTestConfig.cmake" )
@@ -59,11 +59,11 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
 
 #-----------------------------------------------------------------------------
 # Configure MIDAS_USER and API_KEY to download testing data from MIDAS
-SET(MIDAS_USER "" CACHE STRING "MIDAS User email address")
+set( MIDAS_USER "" CACHE STRING "MIDAS User email address" )
 mark_as_advanced( MIDAS_USER )
-SET(MIDAS_DEFAULT_API_KEY "" CACHE STRING "MIDAS DEFAULT API Key")
+set( MIDAS_DEFAULT_API_KEY "" CACHE STRING "MIDAS DEFAULT API Key" )
 mark_as_advanced( MIDAS_DEFAULT_API_KEY )
-SET(MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_Data)
+set( MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_Data )
 
 #-----------------------------------------------------------------------------
 # Doxygen setup
@@ -102,16 +102,16 @@ if( TubeTK_USE_KWSTYLE )
     set( KWSTYLE_ARGUMENTS -xml ${TubeTK_BINARY_DIR}/KWStyle.kws.xml
       -v -o ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt
       -D ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
-  endif( KWSTYLE_DASHBOARD_SUBMISSION )
+  endif()
 
 
   if( KWSTYLE_USE_VIM_FORMAT )
     set( KWSTYLE_ARGUMENTS -vim ${KWSTYLE_ARGUMENTS} )
-  endif( KWSTYLE_USE_VIM_FORMAT )
+  endif()
 
   if( KWSTYLE_USE_MSVC_FORMAT )
     set( KWSTYLE_ARGUMENTS -msvc ${KWSTYLE_ARGUMENTS} )
-  endif( KWSTYLE_USE_MSVC_FORMAT )
+  endif()
 
   configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.kws.xml.in
     ${TubeTK_BINARY_DIR}/KWStyle.kws.xml )
@@ -126,7 +126,7 @@ if( TubeTK_USE_KWSTYLE )
     COMMAND ${KWSTYLE_EXECUTABLE} ${KWSTYLE_ARGUMENTS}
     WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
     COMMENT "Coding Style Checker" VERBATIM )
-endif( TubeTK_USE_KWSTYLE )
+endif()
 
 #-----------------------------------------------------------------------------
 # MSVC setup
@@ -135,13 +135,13 @@ if( WIN32 )
   if( NOT CMAKE_FIRST_PASS_COMPLETED )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP"
          CACHE STRING "Flags used by all build types" FORCE )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED )
+  endif()
   option( DISABLE_MSVC8_DEPRECATED_WARNINGS
          "Disable Visual Studio 8 deprecated warnings" ON )
   mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )
   if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
-  endif( DISABLE_MSVC8_DEPRECATED_WARNINGS )
+  endif()
 endif( WIN32 )
 
 #-----------------------------------------------------------------------------
@@ -152,7 +152,7 @@ if( APPLE )
          CACHE STRING "Flags used by all build types" FORCE )
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common"
          CACHE STRING "Flags used by all build types" FORCE )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED )
+  endif()
 endif( APPLE )
 
 #-----------------------------------------------------------------------------
@@ -168,9 +168,9 @@ if( UNIX )
            CACHE STRING "Flags used by all build types" FORCE )
       set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
            CACHE STRING "Flags used by all build types" FORCE )
-    endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED )
-endif( UNIX )
+    endif()
+  endif()
+endif()
 
 #-----------------------------------------------------------------------------
 # ITK Setup
@@ -180,7 +180,7 @@ mark_as_advanced( USE_SYSTEM_ITK )
 if( USE_SYSTEM_ITK )
   find_package( ITK REQUIRED )
   include( ${ITK_USE_FILE} )
-endif( USE_SYSTEM_ITK )
+endif()
 
 #-----------------------------------------------------------------------------
 # ITKv4 Switch
@@ -223,8 +223,8 @@ if( TubeTK_USE_VTK )
   if( USE_SYSTEM_VTK )
     find_package( VTK REQUIRED )
     include( ${VTK_USE_FILE} )
-  endif( USE_SYSTEM_VTK )
-endif( TubeTK_USE_VTK )
+  endif()
+endif()
 
 #-----------------------------------------------------------------------------
 # CTK Setup
@@ -240,8 +240,8 @@ if( TubeTK_USE_QT )
   if( USE_SYSTEM_CTK )
     find_package( CTK REQUIRED )
     include( ${CTK_USE_FILE} )
-  endif( USE_SYSTEM_CTK )
-endif( TubeTK_USE_QT )
+  endif()
+endif()
 
 #-----------------------------------------------------------------------------
 # Indicate that this cmakelists.txt file has already been parsed once.
@@ -269,7 +269,7 @@ else( TubeTK_USE_SUPERBUILD )
   if( TubeTK_USE_VTK )
     find_package( VTK REQUIRED )
     include( ${VTK_USE_FILE} )
-  endif( TubeTK_USE_VTK )
+  endif()
 
   find_package( SlicerExecutionModel REQUIRED GenerateCLP )
   include( ${GenerateCLP_USE_FILE} )
@@ -278,10 +278,10 @@ else( TubeTK_USE_SUPERBUILD )
     if( TubeTK_USE_CTK )
       find_package( CTK REQUIRED )
       include( ${CTK_USE_FILE} )
-    endif( TubeTK_USE_CTK )
-  endif( TubeTK_USE_QT )
+    endif()
+  endif()
 
-endif( TubeTK_USE_SUPERBUILD )
+endif()
 
 
 #-----------------------------------------------------------------------------
@@ -306,7 +306,7 @@ if( NOT TubeTK_USE_ITKV4 )
   set( SUPPORT_2D_IMAGES ON )
   add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
     ${CLI_BINARY_DIR}/RegisterImagesModule )
-endif( NOT TubeTK_USE_ITKV4 )
+endif()
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -314,18 +314,13 @@ endif( NOT TubeTK_USE_ITKV4 )
 # Build TubeTK
 if( NOT TubeTK_USE_ITKV4 )
   add_subdirectory( Utilities )
-endif( NOT TubeTK_USE_ITKV4 )
+endif()
 add_subdirectory( Base )
 add_subdirectory( Applications )
 
 #-----------------------------------------------------------------------------
 # Create the directory where tests store temp results
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
-
-install(
-  FILES README.txt
-  DESTINATION doc
-  )
 
 #-----------------------------------------------------------------------------
 # Configure vars to export
@@ -385,3 +380,106 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.bat.in
 # Configure a launcher for running tubetk methods from the cmdline in linux
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.sh.in
   ${TubeTK_BINARY_DIR}/tubeLauncher.sh @ONLY )
+
+#-----------------------------------------------------------------------------
+# Configure packaging
+
+# Record itk, vtk, ctk, and GenerateCLP libs used by TubeTK for packaging
+file( GLOB_RECURSE ITK_BINARIES "${ITK_DIR}/bin/lib*" )
+file( GLOB_RECURSE VTK_BINARIES "${VTK_DIR}/bin/lib*" )
+file( GLOB_RECURSE CTK_BINARIES "${CTK_DIR}/CTK-build/bin/lib*" )
+file( GLOB_RECURSE SEM_BINARIES "${GenerateCLP_DIR}/bin/lib*" )
+list( APPEND TubeTK_SUPPORT_BINARIES
+  ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES} )
+install( FILES ${TubeTK_SUPPORT_BINARIES}
+  DESTINATION lib)
+
+# Record the environment setup files for packaging
+set( TubeTK_LINUX_SETUP
+  ${TubeTK_SOURCE_DIR}/CMake/tubeSourceMeToSetupLinux.sh )
+set( TubeTK_WINDOWS_SETUP
+  ${TubeTK_SOURCE_DIR}/CMake/tubeRunMeToSetupWindows.bat )
+
+include( InstallRequiredSystemLibraries )
+
+set( CPACK_PACKAGE_DESCRIPTION_SUMMARY
+  "TubeTK for the analysis of geometric structures in images." )
+set( CPACK_PACKAGE_VENDOR "Kitware, Inc." )
+set( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt" )
+set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt" )
+
+set( CPACK_PACKAGE_VERSION_MAJOR ${TubeTK_VERSION_MAJOR} )
+set( CPACK_PACKAGE_VERSION_MINOR ${TubeTK_VERSION_MINOR} )
+set( CPACK_PACKAGE_VERSION_PATCH ${TubeTK_VERSION_PATCH} )
+set( CPACK_PACKAGE_VERSION ${TubeTK_VERSION_BUILD} )
+
+set( CPACK_PACKAGE_CONTACT "stephen.aylward@kitware.com" )
+
+set( CPACK_PACKAGE_INSTALL_DIRECTORY
+  "TubeTK_${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}" )
+
+if( WIN32 AND NOT UNIX )
+  # There is a bug in NSI that does not handle full unix paths properly. Make
+  # sure there is at least one set of four ( 4 ) backlasshes.
+  set( CPACK_PACKAGE_ICON
+    "${TubeTK_SOURCE_DIR}/Documentation\\\\TubeTK_Icon.bmp" )
+  set( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\TubeTK.exe" )
+  set( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} TubeTK" )
+  set( CPACK_NSIS_HELP_LINK "http:\\\\\\\\tubetk.org" )
+  set( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\tubetk.org" )
+  set( CPACK_NSIS_CONTACT "stephen.aylward@kitware.com" )
+  set( CPACK_NSIS_MODIFY_PATH ON )
+else()
+  set( CPACK_STRIP_FILES true )
+  set( CPACK_SOURCE_STRIP_FILES true )
+endif()
+
+set( CMAKE_INSTALL_RPATH "$ORIGIN/../..;." )
+
+#
+# Standard CPack setup
+OPTION(CMAKE_INSTALL_DEBUG_LIBRARIES
+  "Install Microsoft runtime debug libraries with CMake." FALSE)
+MARK_AS_ADVANCED(CMAKE_INSTALL_DEBUG_LIBRARIES)
+
+# By default, do not warn when built on machines using only VS Express:
+if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
+endif()
+
+# Make this explicit here, rather than accepting the CPack default value,
+# so we can refer to it:
+set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
+
+# Installers for 32- vs. 64-bit CMake:
+#  - Root install directory (displayed to end user at installer-run time)
+#  - "NSIS package/display name" (text used in the installer GUI)
+#  - Registry key used to store info about the installation
+if(CMAKE_CL_64)
+  set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+  set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} (Win64)")
+  set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION} (Win64)")
+else()
+  set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
+  set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+  set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION}")
+endif()
+
+if(NOT DEFINED CPACK_SYSTEM_NAME)
+  set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
+endif()
+
+if(${CPACK_SYSTEM_NAME} MATCHES Windows)
+  if(CMAKE_CL_64)
+    set(CPACK_SYSTEM_NAME win64-x64)
+  else()
+    set(CPACK_SYSTEM_NAME win32-x86)
+  endif()
+endif()
+
+set( CPACK_SOURCE_PACKAGE_FILE_NAME "TubeTK-${TubeTK_VERSION_BUILD}")
+set( CPACK_PACKAGE_FILE_NAME
+  "${CPACK_SOURCE_PACKAGE_FILE_NAME}-${CPACK_SYSTEM_NAME}")
+
+# include CPack model once all variables are set
+INCLUDE(CPack)

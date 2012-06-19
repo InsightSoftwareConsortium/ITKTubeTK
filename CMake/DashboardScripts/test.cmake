@@ -21,18 +21,13 @@
 #
 ##############################################################################
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required( VERSION 2.8 )
 
-set( SCRIPT_NAME "Coverage" )
-set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
-
-include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
-
-ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
-ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}" )
+#set( SCRIPT_NAME "BuildTest" )
+#set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
+#set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+#include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+#ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+#ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
-ctest_submit( PARTS Coverage )
+ctest_submit( PARTS test )

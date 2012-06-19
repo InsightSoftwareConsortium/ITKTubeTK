@@ -22,22 +22,67 @@
 ##############################################################################
 
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
-set( ENV{TUBETK_FORCE_BUILD} "1" )
 
-if( SITE_EXPERIMENTAL_BUILD_TEST )
-  include( "${TUBETK_SCRIPT_DIR}/build_test.cmake" )
-ENDif( SITE_EXPERIMENTAL_BUILD_TEST )
+set( SCRIPT_NAME "BuildTest" )
+set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
+set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+
+if( SITE_EXPERIMENTAL_BUILD )
+  #ctest_update( SOURCE ${CTEST_SOURCE_DIRECTORY} )
+  ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+else()
+  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+endif()
+
+if( SITE_EXPERIMENTAL_TEST )
+  ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
+endif()
+
+if( SITE_EXPERIMENTAL_COVERAGE )
+  ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+endif()
+
+if( SITE_EXPERIMENTAL_MEMORY )
+  ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
+endif()
+
+function( TubeTK_Package )
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} --build ${CTEST_BINARY_DIRECTORY} --target package --config ${CTEST_BUILD_CONFIGURATION}
+    WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY}
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    OUTPUT_FILE CPackOutputFiles.txt
+    )
+endfunction( TubeTK_Package )
+
+function( TubeTK_Upload )
+  set(package_list)
+  set(regexp ".*CPack: - package: (.*) generated\\.")
+  set(raw_package_list)
+  file(STRINGS ${CTEST_BINARY_DIRECTORY}/CPackOutputFiles.txt raw_package_list REGEX ${regexp})
+  foreach(package ${raw_package_list})
+    string(REGEX REPLACE ${regexp} "\\1" package_path "${package}" )
+    list(APPEND package_list ${package_path})
+  endforeach()
+  ctest_upload( FILES ${package_list} )
+endfunction( TubeTK_Upload )
+
+if( SITE_EXPERIMENTAL_PACKAGE )
+  TubeTK_Package()
+endif()
+
+if( SITE_EXPERIMENTAL_UPLOAD )
+  TubeTK_Upload()
+endif()
+
+ctest_submit()
 
 if( SITE_EXPERIMENTAL_STYLE )
   include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
-endif( SITE_EXPERIMENTAL_STYLE )
-
-if( SITE_EXPERIMENTAL_COVERAGE )
-  include( "${TUBETK_SCRIPT_DIR}/coverage.cmake" )
-endif( SITE_EXPERIMENTAL_COVERAGE )
-
-if( SITE_EXPERIMENTAL_MEMORY )
-  include( "${TUBETK_SCRIPT_DIR}/memory.cmake" )
-endif( SITE_EXPERIMENTAL_MEMORY )
+endif()
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)

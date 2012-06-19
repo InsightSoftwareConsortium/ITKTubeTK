@@ -35,7 +35,7 @@ set( TubeTK_Base_Numerics_H_Files
   itkTubeNJetLDAGenerator2F.h
   itkTubeNJetLDAGenerator.h
   itkVectorImageToListGenerator.h
-  itkVotinResampleImageFunction.h
+  itkVotingResampleImageFunction.h
   tubeMatrixMath.h
   tubeOptBrent1D.h
   tubeOptGoldenMean1D.h
@@ -65,7 +65,7 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   )
 
-SET( TubeTK_Base_Numerics_SRCS
+set( TubeTK_Base_Numerics_SRCS
   itkTubeNJetLDAGenerator2F.cxx
   tubeOptBrent1D.cxx
   tubeOptGoldenMean1D.cxx
@@ -81,9 +81,9 @@ ADD_LIBRARY( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
 TARGET_LINK_LIBRARIES( TubeNumerics ${ITK_LIBRARIES} )
 
 if( NOT TubeTK_USE_ITKV4 )
-slicer3_set_plugins_output_path( TubeNumerics )
-set( TARGETS TubeNumerics )
-slicer3_install_plugins( ${TARGETS} )
+  slicer3_set_plugins_output_path( TubeNumerics )
+  set( TARGETS TubeNumerics )
+  slicer3_install_plugins( ${TARGETS} )
 endif( NOT TubeTK_USE_ITKV4 )
 
 IF( BUILD_TESTING )
@@ -95,4 +95,3 @@ install(FILES
   ${TubeTK_Base_Numerics_TXX_Files}
   DESTINATION include
   )
-
