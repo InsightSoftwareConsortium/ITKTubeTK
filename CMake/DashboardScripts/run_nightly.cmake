@@ -22,7 +22,6 @@
 ##############################################################################
 
 set( ENV{TUBETK_RUN_MODEL} "Nightly" )
-set( ENV{TUBETK_FORCE_BUILD} "1" )
 
 set( SCRIPT_NAME "BuildTest" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
@@ -30,37 +29,57 @@ set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
-  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+if( SITE_NIGHTLY_BUILD )
+  ctest_update( SOURCE ${CTEST_SOURCE_DIRECTORY} )
   ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
-  ctest_submit( PARTS configure )
+  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+else()
+  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+endif()
 
-  if( SITE_NIGHTLY_BUILD )
-    ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
-    ctest_submit( PARTS build )
-  endif()
+if( SITE_NIGHTLY_TEST )
+  ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
+endif()
 
-  if( SITE_NIGHTLY_TEST )
-    ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-    ctest_submit( PARTS test )
-  endif()
+if( SITE_NIGHTLY_COVERAGE )
+  ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+endif()
 
-  if( SITE_NIGHTLY_COVERAGE )
-    ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
-    ctest_submit( PARTS Coverage )
-  endif()
+if( SITE_NIGHTLY_MEMORY )
+  ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
+endif()
 
-  if( SITE_NIGHTLY_PACKAGE )
-    EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" package )
-  endif()
+function( TubeTK_Package )
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} --build ${CTEST_BINARY_DIRECTORY} --target package --config ${CTEST_BUILD_CONFIGURATION}
+    WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY}
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    OUTPUT_FILE CPackOutputFiles.txt
+    )
+endfunction( TubeTK_Package )
 
-  if( SITE_NIGHTLY_UPLOAD )
-    include( "${TUBETK_SCRIPT_DIR}/upload.cmake" )
-  endif()
+function( TubeTK_Upload )
+  set(package_list)
+  set(regexp ".*CPack: - package: (.*) generated\\.")
+  set(raw_package_list)
+  file(STRINGS ${CTEST_BINARY_DIRECTORY}/CPackOutputFiles.txt raw_package_list REGEX ${regexp})
+  foreach(package ${raw_package_list})
+    string(REGEX REPLACE ${regexp} "\\1" package_path "${package}" )
+    list(APPEND package_list ${package_path})
+  endforeach()
+  ctest_upload( FILES ${package_list} )
+endfunction( TubeTK_Upload )
 
-  if( SITE_NIGHTLY_MEMORY )
-    ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
-    ctest_submit( PARTS MemCheck )
-  endif()
+if( SITE_NIGHTLY_PACKAGE )
+  TubeTK_Package()
+endif()
+
+if( SITE_NIGHTLY_UPLOAD )
+  TubeTK_Upload()
+endif()
+
+ctest_submit()
 
 if( SITE_NIGHTLY_STYLE )
   include( "${TUBETK_SCRIPT_DIR}/style.cmake" )

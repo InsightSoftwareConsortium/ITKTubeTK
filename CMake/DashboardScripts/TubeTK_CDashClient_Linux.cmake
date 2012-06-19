@@ -22,35 +22,12 @@
 ##############################################################################
 
 ##############################################################################
-# The following should not be changed.  The following converts command-line
-# args to ctest vars.  Author: Jean-Christophe Fillon-Robin, Kitware
-#
-# Note: The syntax to pass option from the command line while invoking ctest is
-#       the following:
-#   ctest -S /path/to/script.cmake,OPTNAME1##OPTVALUE1^^OPTNAME2##OPTVALUE2
-#
-# Example:
-#   ctest -S /path/to/script.cmake,SCRIPT_MODE##continuous^^GIT_TAG##next
-#
-if(NOT CTEST_SCRIPT_ARG STREQUAL "")
-  string(REPLACE "^^" "\\;" CTEST_SCRIPT_ARG_AS_LIST "${CTEST_SCRIPT_ARG}")
-  set(CTEST_SCRIPT_ARG_AS_LIST ${CTEST_SCRIPT_ARG_AS_LIST})
-  foreach(argn_argv ${CTEST_SCRIPT_ARG_AS_LIST})
-    string(REPLACE "##" "\\;" argn_argv_list ${argn_argv})
-    set(argn_argv_list ${argn_argv_list})
-    list(GET argn_argv_list 0 argn)
-    list(GET argn_argv_list 1 argv)
-    set(${argn} ${argv})
-  endforeach()
-endif()
-##############################################################################
-
-##############################################################################
 #
 # Configure the following variables and move this file to the directory above
 #   the tubetk source directory.
 #
 set( SITE_NAME "krull.kitware" )
+message( WARNING ${BuildStamp} )
 set( SITE_PLATFORM "Linux_64" )
 if(NOT SITE_BUILD_TYPE)
   set( SITE_BUILD_TYPE "Release" )
@@ -60,7 +37,7 @@ if(NOT SITE_CTEST_MODE)
 endif()
 set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
 
-set( TUBETK_GIT_REPOSITORY "git://tubetk.org/TubeTK.git" )
+set( TUBETK_GIT_REPOSITORY "git@tubetk.org:TubeTK.git" )
 set( TUBETK_SOURCE_DIR "/home/aylward/src/TubeTK" )
 set( TUBETK_BINARY_DIR "/home/aylward/src/TubeTK-${SITE_BUILD_TYPE}" )
 
@@ -79,20 +56,29 @@ set( SITE_GIT_COMMAND "/usr/bin/git" )
 set( SITE_SVN_COMMAND "/usr/bin/svn" )
 set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 
-set( SITE_EXPERIMENTAL_BUILD_TEST ON )
-set( SITE_EXPERIMENTAL_STYLE OFF )
+set( SITE_EXPERIMENTAL_BUILD ON )
+set( SITE_EXPERIMENTAL_TEST ON )
 set( SITE_EXPERIMENTAL_COVERAGE OFF )
 set( SITE_EXPERIMENTAL_MEMORY OFF )
+set( SITE_EXPERIMENTAL_STYLE OFF )
+set( SITE_EXPERIMENTAL_PACKAGE OFF )
+set( SITE_EXPERIMENTAL_UPLOAD OFF )
 
-set( SITE_CONTINUOUS_BUILD_TEST ON ) # Must be ON for any Continuous to run
-set( SITE_CONTINUOUS_STYLE ON )
+set( SITE_CONTINUOUS_BUILD ON ) # Must be ON for any Continuous to run
+set( SITE_CONTINUOUS_TEST ON ) # Must be ON for any Continuous to run
 set( SITE_CONTINUOUS_COVERAGE OFF )
 set( SITE_CONTINUOUS_MEMORY OFF )
+set( SITE_CONTINUOUS_STYLE ON )
+set( SITE_CONTINUOUS_PACKAGE ON )
+set( SITE_CONTINUOUS_UPLOAD ON )
 
-set( SITE_NIGHTLY_BUILD_TEST ON ) # Must be on for any Nightly to run
-set( SITE_NIGHTLY_STYLE ON )
+set( SITE_NIGHTLY_BUILD ON ) # Must be on for any Nightly to run
+set( SITE_NIGHTLY_TEST ON )
 set( SITE_NIGHTLY_COVERAGE ON )
 set( SITE_NIGHTLY_MEMORY ON )
+set( SITE_NIGHTLY_STYLE ON )
+set( SITE_NIGHTLY_PACKAGE ON )
+set( SITE_NIGHTLY_UPLOAD ON )
 ##############################################################################
 
 ##############################################################################

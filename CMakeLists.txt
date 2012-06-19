@@ -322,11 +322,6 @@ add_subdirectory( Applications )
 # Create the directory where tests store temp results
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
 
-install(
-  FILES README.txt
-  DESTINATION doc
-  )
-
 #-----------------------------------------------------------------------------
 # Configure vars to export
 
@@ -422,7 +417,6 @@ set( CPACK_PACKAGE_CONTACT "stephen.aylward@kitware.com" )
 
 set( CPACK_PACKAGE_INSTALL_DIRECTORY
   "TubeTK_${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}" )
-set( CPACK_SOURCE_PACKAGE_FILE_NAME "TubeTK-${TubeTK_VERSION_BUILD}")
 
 if( WIN32 AND NOT UNIX )
   # There is a bug in NSI that does not handle full unix paths properly. Make
@@ -483,10 +477,9 @@ if(${CPACK_SYSTEM_NAME} MATCHES Windows)
   endif()
 endif()
 
-if(NOT DEFINED CPACK_PACKAGE_FILE_NAME)
-  set(CPACK_PACKAGE_FILE_NAME
-    "${CPACK_SOURCE_PACKAGE_FILE_NAME}-${CPACK_SYSTEM_NAME}")
-endif()
+set( CPACK_SOURCE_PACKAGE_FILE_NAME "TubeTK-${TubeTK_VERSION_BUILD}")
+set( CPACK_PACKAGE_FILE_NAME
+  "${CPACK_SOURCE_PACKAGE_FILE_NAME}-${CPACK_SYSTEM_NAME}")
 
 # include CPack model once all variables are set
 INCLUDE(CPack)
