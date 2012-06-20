@@ -39,7 +39,6 @@ set( CTEST_CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 set( CTEST_QMAKE_COMMAND "${SITE_QMAKE_COMMAND}" )
 
 set( GITCOMMAND "${SITE_GIT_COMMAND}" )
-set( CVSCOMMAND "${SITE_CVS_COMMAND}" )
 set( SVNCOMMAND "${SITE_SVN_COMMAND}" )
 set( GIT_EXECUTABLE "${SITE_GIT_COMMAND}" )
 
@@ -64,7 +63,7 @@ set( CTEST_MEMORYCHECK_SUPPRESSIONS_FILE
 
 message( "Running ${SCRIPT_NAME} script..." )
 
-file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+file( WRITE "${TUBETK_BINARY_DIR}/CMakeCache.txt" "
   SITE:STRING=${CTEST_SITE}
   BUILDNAME:STRING=${CTEST_BUILD_NAME}
   BUILD_TESTING:BOOL=ON
@@ -79,7 +78,6 @@ file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
   MAKECOMMAND:FILEPATH=${CTEST_BUILD_COMMAND}
   GITCOMMAND:FILEPATH=${GITCOMMAND}
   SVNCOMMAND:FILEPATH=${SVNCOMMAND}
-  CVSCOMMAND:FILEPATH=${CVSCOMMAND}
   GIT_EXECUTABLE:FILEPATH=${GITCOMMAND}
   QT_QMAKE_EXECUTABLE:FILEPATH=${CTEST_QMAKE_COMMAND}
   TubeTK_USE_SUPERBUILD:BOOL=${SCRIPT_TubeTK_USE_SUPERBUILD}
@@ -87,35 +85,35 @@ file( WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
   " )
 
 if( EXISTS ${TUBETK_BINARY_DIR}/Insight-Build/CMakeCache.txt )
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
+  file( APPEND "${TUBETK_BINARY_DIR}/CMakeCache.txt"
     "
     ITK_DIR:PATH=${TUBETK_BINARY_DIR}/Insight-Build
     " )
 endif()
 
 if( EXISTS ${TUBETK_BINARY_DIR}/GenerateCLP-Build/CMakeCache.txt)
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
+  file( APPEND "${TUBETK_BINARY_DIR}/CMakeCache.txt"
     "
     GenerateCLP_DIR:PATH=${TUBETK_BINARY_DIR}/GenerateCLP-Build
     " )
 endif()
 
 if( EXISTS ${TUBETK_BINARY_DIR}/SlicerExecutionModel-Build/CMakeCache.txt)
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
+  file( APPEND "${TUBETK_BINARY_DIR}/CMakeCache.txt"
     "
     SlicerExecutionModel_DIR:PATH=${TUBETK_BINARY_DIR}/SlicerExecutionModel-Build
     " )
 endif()
 
 if( EXISTS ${TUBETK_BINARY_DIR}/CTK-Build/CMakeCache.txt )
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
+  file( APPEND "${TUBETK_BINARY_DIR}/CMakeCache.txt"
     "
     CTK_DIR:PATH=${TUBETK_BINARY_DIR}/CTK-Build
     " )
 endif()
 
 if( EXISTS ${TUBETK_BINARY_DIR}/VTK-Build/CMakeCache.txt )
-  file( APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt"
+  file( APPEND "${TUBETK_BINARY_DIR}/CMakeCache.txt"
     "
     VTK_DIR:PATH=${TUBETK_BINARY_DIR}/VTK-Build
     " )
