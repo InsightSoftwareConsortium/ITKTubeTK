@@ -25,8 +25,6 @@ cmake_minimum_required(VERSION 2.8)
 
 set( SCRIPT_NAME "Style" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
-
 include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 
 set( ENV{PATH} "$ENV{PATH}:/usr/local/bin" )

@@ -25,7 +25,6 @@ set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_CONTINUOUS_BUILD )
   ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
-  set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
 endif()
 
 set( ENV{TUBETK_RUN_MODEL} "Continuous" )
@@ -105,7 +104,6 @@ while( ${CTEST_ELAPSED_TIME} LESS 68400 )
 
   # loop no faster than once every 2 minutes
   ctest_sleep( ${START_TIME} 120 ${CTEST_ELAPSED_TIME} )
-  set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
 
 endwhile()
 
