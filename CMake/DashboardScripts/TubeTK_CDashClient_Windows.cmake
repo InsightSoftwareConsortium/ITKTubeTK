@@ -26,7 +26,7 @@
 # Configure the following variables and move this file to the directory above
 #   the TubeTK source directory.
 #
-set( SITE_NAME "ginger.aylward.org" )
+set( SITE_NAME "Ginger.Aylward.Org" )
 set( SITE_PLATFORM "WindowsXP-VS2010_32" )
 set( SITE_BUILD_TYPE "Release" )
 set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
@@ -34,9 +34,9 @@ set( SITE_CMAKE_GENERATOR "Visual Studio 10" )
 
 set( TUBETK_GIT_REPOSITORY "git://tubetk.org/TubeTK.git" )
 set( TUBETK_SOURCE_DIR
-  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK" )
+  "C:\\Users\\aylward\\src\\TubeTK" )
 set( TUBETK_BINARY_DIR
-  "C:\\Documents and Settings\\aylward\\My Documents\\src\\TubeTK-${SITE_BUILD_TYPE}" )
+  "C:\\Users\\aylward\\src\\TubeTK-${SITE_BUILD_TYPE}" )
 
 set( SITE_MAKE_COMMAND "${CTEST_BUILD_COMMAND}" )
 set( SITE_CMAKE_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\cmake" )
@@ -45,13 +45,10 @@ set( SITE_CTEST_COMMAND "C:\\Program Files\\CMake 2.8\\bin\\ctest" )
 
 set( SITE_MEMORYCHECK_COMMAND "" )
 set( SITE_COVERAGE_COMMAND "" )
-
 set( SITE_KWSTYLE_DIR "" )
 
-set( SITE_GIT_COMMAND
-  "C:\\Program Files\\Git\\bin\\git" )
-set( SITE_SVN_COMMAND
-  "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
+set( SITE_GIT_COMMAND "C:\\Program Files\\Git\\bin\\git" )
+set( SITE_SVN_COMMAND "C:\\Program Files\\CollabNet\\Subversion Client\\svn" )
 
 set( SITE_EXPERIMENTAL_BUILD ON )
 set( SITE_EXPERIMENTAL_TEST ON )

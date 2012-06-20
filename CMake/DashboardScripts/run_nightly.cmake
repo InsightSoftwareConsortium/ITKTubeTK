@@ -25,11 +25,12 @@ set( ENV{TUBETK_RUN_MODEL} "Nightly" )
 
 set( SCRIPT_NAME "BuildTest" )
 set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
-set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
 include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
 if( SITE_NIGHTLY_BUILD )
+  ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
   ctest_update( SOURCE ${CTEST_SOURCE_DIRECTORY} )
   ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
   ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
