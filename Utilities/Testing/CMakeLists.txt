@@ -35,11 +35,21 @@ if( TCL_TCLSH )
               ${TubeTK_SOURCE_DIR}/Utilities )
 endif( TCL_TCLSH )
 
-set( UTILITIES_TESTS 
-      ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeUtilitiesTests )
+if( Slicer3_INSTALL_BIN_DIR )
+  set( UTILITIES_TESTS
+        ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeUtilitiesTests )
+else()
+  set( UTILITIES_TESTS
+        ${TubeTK_BINARY_DIR}/bin/tubeUtilitiesTests )
+endif()
 
-set( UTILITIES_HEADER_TEST 
-      ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeUtilitiesHeaderTest )
+if( Slicer3_INSTALL_BIN_DIR )
+  set( UTILITIES_HEADER_TEST
+        ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeUtilitiesHeaderTest )
+else()
+  set( UTILITIES_HEADER_TEST
+        ${TubeTK_BINARY_DIR}/bin/tubeUtilitiesHeaderTest )
+endif()
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -62,16 +72,16 @@ include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
 add_executable( tubeUtilitiesHeaderTest 
   tubeUtilitiesHeaderTest.cxx )
 target_link_libraries( tubeUtilitiesHeaderTest
-  ITKIO ITKNumerics ITKBasicFilters )
+  ${ITK_LIBRARIES} )
 
 add_executable( tubeUtilitiesTests
   tubeUtilitiesTests.cxx
   ${tubeUtilities_SRCS} )
 target_link_libraries( tubeUtilitiesTests
-  ITKIO ITKNumerics ITKBasicFilters )
+  ${ITK_LIBRARIES} )
 
-add_test( tubeUtilitiesHeaderTest 
-            ${UTILITIES_HEADER_TEST} )
+add_test( tubeUtilitiesHeaderTest
+  ${UTILITIES_HEADER_TEST} )
 
 add_test( tubeUtilitiesPrintTest 
             ${UTILITIES_TESTS}

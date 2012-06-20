@@ -119,7 +119,12 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 DifferenceImageFilter2<TInputImage, TOutputImage>
-::ThreadedGenerateData(const OutputImageRegionType &threadRegion, int threadId)
+::ThreadedGenerateData(const OutputImageRegionType &threadRegion,
+#if ITK_VERSION_MAJOR == 3
+  int threadId)
+#else
+  ThreadIdType threadId)
+#endif
 {
   typedef ConstNeighborhoodIterator<InputImageType>   SmartIterator;
   typedef ImageRegionConstIterator<InputImageType>    InputIterator;

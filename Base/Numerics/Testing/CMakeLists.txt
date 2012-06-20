@@ -35,13 +35,21 @@ if( TCL_TCLSH )
     ${TubeTK_SOURCE_DIR}/Base/Numerics )
 endif( TCL_TCLSH )
 
-set( BASE_NUMERICS_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseNumericsTests
-  )
+if( Slicer3_INSTALL_BIN_DIR )
+  set( BASE_NUMERICS_TESTS
+        ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseNumericsTests )
+else()
+  set( BASE_NUMERICS_TESTS
+        ${TubeTK_BINARY_DIR}/bin/tubeBaseNumericsTests )
+endif()
 
-set( BASE_NUMERICS_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseNumericsHeaderTest
-  )
+if( Slicer3_INSTALL_BIN_DIR )
+  set( BASE_NUMERICS_HEADER_TEST
+        ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseNumericsHeaderTest )
+else()
+  set( BASE_NUMERICS_HEADER_TEST
+        ${TubeTK_BINARY_DIR}/bin/tubeBaseNumericsHeaderTest )
+endif()
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -75,9 +83,7 @@ add_executable( tubeBaseNumericsHeaderTest
   )
 target_link_libraries( tubeBaseNumericsHeaderTest
   TubeNumerics
-  ITKIO
-  ITKNumerics
-  ITKBasicFilters
+  ${ITK_LIBRARIES}
   )
 
 add_executable( tubeBaseNumericsTests
@@ -86,9 +92,7 @@ add_executable( tubeBaseNumericsTests
   )
 target_link_libraries( tubeBaseNumericsTests
   TubeNumerics
-  ITKIO
-  ITKNumerics
-  ITKBasicFilters
+  ${ITK_LIBRARIES}
   )
 
 add_test( tubeBaseNumericsHeaderTest

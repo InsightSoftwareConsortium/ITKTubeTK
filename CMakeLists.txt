@@ -312,9 +312,7 @@ endif()
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 # Build TubeTK
-if( NOT TubeTK_USE_ITKV4 )
-  add_subdirectory( Utilities )
-endif()
+add_subdirectory( Utilities )
 add_subdirectory( Base )
 add_subdirectory( Applications )
 
