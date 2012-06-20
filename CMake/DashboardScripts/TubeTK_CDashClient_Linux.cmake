@@ -26,7 +26,7 @@
 # Configure the following variables and move this file to the directory above
 #   the tubetk source directory.
 #
-set( SITE_NAME "krull.kitware" )
+set( SITE_NAME "Krull.Kitware" )
 set( SITE_PLATFORM "Linux_64" )
 set( SITE_BUILD_TYPE "Release" )
 set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
@@ -49,7 +49,6 @@ set( SITE_KWSTYLE_DIR "/usr/local/bin" )
 
 set( SITE_GIT_COMMAND "/usr/bin/git" )
 set( SITE_SVN_COMMAND "/usr/bin/svn" )
-set( SITE_CVS_COMMAND "/usr/bin/cvs" )
 
 set( SITE_EXPERIMENTAL_BUILD ON )
 set( SITE_EXPERIMENTAL_TEST ON )
@@ -59,8 +58,8 @@ set( SITE_EXPERIMENTAL_PACKAGE OFF )
 set( SITE_EXPERIMENTAL_UPLOAD OFF )
 set( SITE_EXPERIMENTAL_STYLE OFF )
 
-set( SITE_CONTINUOUS_BUILD ON ) # Must be ON for any Continuous to run
-set( SITE_CONTINUOUS_TEST ON ) # Must be ON for any Continuous to run
+set( SITE_CONTINUOUS_BUILD ON )
+set( SITE_CONTINUOUS_TEST ON )
 set( SITE_CONTINUOUS_COVERAGE OFF )
 set( SITE_CONTINUOUS_MEMORY OFF )
 set( SITE_CONTINUOUS_PACKAGE ON )

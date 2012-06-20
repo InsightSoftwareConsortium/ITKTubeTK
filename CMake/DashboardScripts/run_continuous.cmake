@@ -24,91 +24,90 @@
 set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
 
 if( SITE_CONTINUOUS_BUILD )
-
   ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
+  set( SCRIPT_TubeTK_USE_SUPERBUILD ON )
+endif()
 
-  set( ENV{TUBETK_RUN_MODEL} "Continuous" )
+set( ENV{TUBETK_RUN_MODEL} "Continuous" )
 
-  ###########################################################################
-  # run some "inside-the-loop" continuous scripts for a while
-  #
-  while( ${CTEST_ELAPSED_TIME} LESS 68400 )
+###########################################################################
+# run some "inside-the-loop" continuous scripts for a while
+#
+while( ${CTEST_ELAPSED_TIME} LESS 68400 )
 
-    set( START_TIME ${CTEST_ELAPSED_TIME} )
+  set( START_TIME ${CTEST_ELAPSED_TIME} )
 
-    set( SCRIPT_NAME "BuildTest" )
-    set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
-    set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
-    include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
-    ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+  set( SCRIPT_NAME "BuildTest" )
+  set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
+  include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+  ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
-    ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
+  ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
 
-    if( res GREATER 0 OR res LESS 0 )
+  if( res GREATER 0 OR res LESS 0 )
 
-      if( SITE_EXPERIMENTAL_BUILD )
-        ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
-        ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
-        ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
-      else()
-        ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
-      endif()
-
-      if( SITE_EXPERIMENTAL_TEST )
-        ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
-      endif()
-
-      if( SITE_EXPERIMENTAL_COVERAGE )
-        ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
-      endif()
-
-      if( SITE_EXPERIMENTAL_MEMORY )
-        ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
-      endif()
-
-      function( TubeTK_Package )
-        execute_process(
-          COMMAND ${CMAKE_COMMAND} --build ${CTEST_BINARY_DIRECTORY} --target package --config ${CTEST_BUILD_CONFIGURATION}
-          WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY}
-          OUTPUT_STRIP_TRAILING_WHITESPACE
-          OUTPUT_FILE CPackOutputFiles.txt
-          )
-      endfunction( TubeTK_Package )
-
-      function( TubeTK_Upload )
-        set(package_list)
-        set(regexp ".*CPack: - package: (.*) generated\\.")
-        set(raw_package_list)
-        file(STRINGS ${CTEST_BINARY_DIRECTORY}/CPackOutputFiles.txt raw_package_list REGEX ${regexp})
-        foreach(package ${raw_package_list})
-          string(REGEX REPLACE ${regexp} "\\1" package_path "${package}" )
-          list(APPEND package_list ${package_path})
-        endforeach()
-        ctest_upload( FILES ${package_list} )
-      endfunction( TubeTK_Upload )
-
-      if( SITE_EXPERIMENTAL_PACKAGE )
-        TubeTK_Package()
-      endif()
-
-      if( SITE_EXPERIMENTAL_UPLOAD )
-        TubeTK_Upload()
-      endif()
-
-      ctest_submit()
-
-      if( SITE_EXPERIMENTAL_STYLE )
-        include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
-      endif()
-
+    if( SITE_CONTINUOUS_BUILD )
+      ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+      ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+      ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+    else()
+      ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
     endif()
 
-    # loop no faster than once every 2 minutes
-    ctest_sleep( ${START_TIME} 120 ${CTEST_ELAPSED_TIME} )
+    if( SITE_CONTINUOUS_TEST )
+      ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    endif()
 
-  endwhile()
+    if( SITE_CONTINUOUS_COVERAGE )
+      ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    endif()
 
-endif()
+    if( SITE_CONTINUOUS_MEMORY )
+      ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
+    endif()
+
+    function( TubeTK_Package )
+      execute_process(
+        COMMAND ${CMAKE_COMMAND} --build ${CTEST_BINARY_DIRECTORY} --target package --config ${CTEST_BUILD_CONFIGURATION}
+        WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY}
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        OUTPUT_FILE CPackOutputFiles.txt
+        )
+    endfunction( TubeTK_Package )
+
+    function( TubeTK_Upload )
+      set(package_list)
+      set(regexp ".*CPack: - package: (.*) generated\\.")
+      set(raw_package_list)
+      file(STRINGS ${CTEST_BINARY_DIRECTORY}/CPackOutputFiles.txt raw_package_list REGEX ${regexp})
+      foreach(package ${raw_package_list})
+        string(REGEX REPLACE ${regexp} "\\1" package_path "${package}" )
+        list(APPEND package_list ${package_path})
+      endforeach()
+      ctest_upload( FILES ${package_list} )
+    endfunction( TubeTK_Upload )
+
+    if( SITE_CONTINUOUS_PACKAGE )
+      TubeTK_Package()
+    endif()
+
+    if( SITE_CONTINUOUS_UPLOAD )
+      TubeTK_Upload()
+    endif()
+
+    ctest_submit()
+
+    if( SITE_CONTINUOUS_STYLE )
+      include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
+    endif()
+
+  endif()
+
+  # loop no faster than once every 2 minutes
+  ctest_sleep( ${START_TIME} 120 ${CTEST_ELAPSED_TIME} )
+  set( SCRIPT_TubeTK_USE_SUPERBUILD OFF )
+
+endwhile()
 
 # do not run this script as a dashboard
 set(CTEST_RUN_CURRENT_SCRIPT 0)
