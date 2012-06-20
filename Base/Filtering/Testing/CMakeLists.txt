@@ -58,13 +58,13 @@ include_directories(
 add_executable( tubeBaseFilteringHeaderTest
   tubeBaseFilteringHeaderTest.cxx )
 target_link_libraries( tubeBaseFilteringHeaderTest
-  ITKIO ITKNumerics ITKBasicFilters )
+  ${ITK_LIBRARIES} )
 
 add_executable( tubeBaseFilteringTests
   tubeBaseFilteringTests.cxx
   ${tubeBaseFilteringTests_SRCS} )
 target_link_libraries( tubeBaseFilteringTests
-  ITKIO ITKNumerics ITKBasicFilters )
+  ${ITK_LIBRARIES} )
 
 add_test( tubeBaseFilteringHeaderTest
   ${BASE_FILTERING_HEADER_TEST} )

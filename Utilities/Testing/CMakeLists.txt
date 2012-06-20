@@ -62,13 +62,13 @@ include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
 add_executable( tubeUtilitiesHeaderTest 
   tubeUtilitiesHeaderTest.cxx )
 target_link_libraries( tubeUtilitiesHeaderTest
-  ITKIO ITKNumerics ITKBasicFilters )
+  ${ITK_LIBRARIES} )
 
 add_executable( tubeUtilitiesTests
   tubeUtilitiesTests.cxx
   ${tubeUtilities_SRCS} )
 target_link_libraries( tubeUtilitiesTests
-  ITKIO ITKNumerics ITKBasicFilters )
+  ${ITK_LIBRARIES} )
 
 add_test( tubeUtilitiesHeaderTest 
             ${UTILITIES_HEADER_TEST} )

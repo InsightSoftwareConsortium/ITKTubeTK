@@ -127,8 +127,9 @@ endif()
 
 set( tubeBaseRegistrationFilters_LIBS
   tubeBaseRegistrationFiltersTests
-  ITKIO ITKNumerics ITKBasicFilters
+  ${ITK_LIBRARIES}
   )
+
 if( TubeTK_USE_VTK )
   set( tubeBaseRegistrationFilters_LIBS
     ${tubeBaseRegistrationFilters_LIBS}

@@ -71,9 +71,7 @@ add_executable( tubeBaseSegmentationHeaderTest
   )
 target_link_libraries( tubeBaseSegmentationHeaderTest
   TubeNumerics
-  ITKIO
-  ITKNumerics
-  ITKBasicFilters
+  ${ITK_LIBRARIES}
   )
 
 add_executable( tubeBaseSegmentationTests
@@ -82,9 +80,7 @@ add_executable( tubeBaseSegmentationTests
   )
 target_link_libraries( tubeBaseSegmentationTests
   TubeNumerics
-  ITKIO
-  ITKNumerics
-  ITKBasicFilters
+  ${ITK_LIBRARIES}
   )
 
 add_test( tubeBaseSegmentationHeaderTest

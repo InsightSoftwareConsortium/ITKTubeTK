@@ -75,9 +75,7 @@ add_executable( tubeBaseNumericsHeaderTest
   )
 target_link_libraries( tubeBaseNumericsHeaderTest
   TubeNumerics
-  ITKIO
-  ITKNumerics
-  ITKBasicFilters
+  ${ITK_LIBRARIES}
   )
 
 add_executable( tubeBaseNumericsTests
@@ -86,9 +84,7 @@ add_executable( tubeBaseNumericsTests
   )
 target_link_libraries( tubeBaseNumericsTests
   TubeNumerics
-  ITKIO
-  ITKNumerics
-  ITKBasicFilters
+  ${ITK_LIBRARIES}
   )
 
 add_test( tubeBaseNumericsHeaderTest
