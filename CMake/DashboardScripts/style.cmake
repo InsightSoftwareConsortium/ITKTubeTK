@@ -21,16 +21,18 @@
 #
 ##############################################################################
 
-cmake_minimum_required(VERSION 2.8)
-
-set( SCRIPT_NAME "Style" )
-set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
-include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style" )
+configure_file(
+  ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
+  ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
 
 set( ENV{PATH} "$ENV{PATH}:/usr/local/bin" )
 
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
-ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}" )
+ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
+  SOURCE "${TUBETK_SOURCE_DIR}"
+  OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
 ctest_submit()
