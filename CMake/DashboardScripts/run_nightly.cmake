@@ -30,29 +30,29 @@ ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 if( SITE_NIGHTLY_BUILD )
   ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
   ctest_update( SOURCE ${CTEST_SOURCE_DIRECTORY} )
-  ctest_configure( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
-  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
-  ctest_build( BUILD "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_configure( BUILD "${TUBETK_BINARY_DIR}" )
+  ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
+  ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
 else()
-  ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}/.." )
+  ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
 endif()
 
 if( SITE_NIGHTLY_TEST )
-  ctest_test( BUILD "${CTEST_BINARY_DIRECTORY}" )
+  ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
 endif()
 
 if( SITE_NIGHTLY_COVERAGE )
-  ctest_coverage( BUILD "${CTEST_BINARY_DIRECTORY}" )
+  ctest_coverage( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
 endif()
 
 if( SITE_NIGHTLY_MEMORY )
-  ctest_memcheck( BUILD "${CTEST_BINARY_DIRECTORY}" )
+  ctest_memcheck( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
 endif()
 
 function( TubeTK_Package )
   execute_process(
-    COMMAND ${CMAKE_COMMAND} --build ${CTEST_BINARY_DIRECTORY} --target package --config ${CTEST_BUILD_CONFIGURATION}
-    WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} --build ${TUBETK_BINARY_DIR}/TubeTK-Build --target package --config ${CTEST_BUILD_CONFIGURATION}
+    WORKING_DIRECTORY ${TUBETK_BINARY_DIR}/TubeTK-Build
     OUTPUT_STRIP_TRAILING_WHITESPACE
     OUTPUT_FILE CPackOutputFiles.txt
     )
@@ -62,7 +62,7 @@ function( TubeTK_Upload )
   set(package_list)
   set(regexp ".*CPack: - package: (.*) generated\\.")
   set(raw_package_list)
-  file(STRINGS ${CTEST_BINARY_DIRECTORY}/CPackOutputFiles.txt raw_package_list REGEX ${regexp})
+  file(STRINGS ${TUBETK_BINARY_DIR}/TubeTK-Build/CPackOutputFiles.txt raw_package_list REGEX ${regexp})
   foreach(package ${raw_package_list})
     string(REGEX REPLACE ${regexp} "\\1" package_path "${package}" )
     list(APPEND package_list ${package_path})
