@@ -36,10 +36,12 @@ while( ${CTEST_ELAPSED_TIME} LESS 68400 )
 
   set( START_TIME ${CTEST_ELAPSED_TIME} )
 
-  set( SCRIPT_NAME "BuildTest" )
-  set( CTEST_BUILD_NAME
-    "${SITE_BUILD_NAME}-${SCRIPT_NAME}-${SITE_BUILD_TYPE}" )
-  include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+  set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest" )
+  configure_file(
+    ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
+    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+  set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+
   ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
   ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res )
@@ -47,7 +49,9 @@ while( ${CTEST_ELAPSED_TIME} LESS 68400 )
   if( res GREATER 0 OR res LESS 0 )
 
     if( SITE_CONTINUOUS_BUILD )
-      ctest_configure( BUILD "${TUBETK_BINARY_DIR}" )
+      ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
+        SOURCE "${TUBETK_SOURCE_DIR}"
+        OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
       ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
       ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
     else()

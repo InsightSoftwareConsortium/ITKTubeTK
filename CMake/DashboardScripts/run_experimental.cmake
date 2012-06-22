@@ -23,36 +23,41 @@
 
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
 
-set( SCRIPT_NAME "BuildTest" )
-set( CTEST_BUILD_NAME
-  "${SITE_BUILD_NAME}-${SCRIPT_NAME}-${SITE_BUILD_TYPE}" )
-include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest" )
+configure_file(
+  ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
+  ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
-if( SITE_EXPERIMENTAL_BUILD )
-  #ctest_update( SOURCE ${CTEST_SOURCE_DIRECTORY} )
-  ctest_configure( BUILD "${TUBETK_BINARY_DIR}" )
+if( SITE_NIGHTLY_BUILD )
+  # ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
+  # ctest_update( SOURCE "${TUBETK_SOURCE_DIR}" )
+  ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
+    SOURCE "${TUBETK_SOURCE_DIR}"
+    OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
 else()
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
 endif()
 
-if( SITE_EXPERIMENTAL_TEST )
+if( SITE_NIGHTLY_TEST )
   ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
 endif()
 
-if( SITE_EXPERIMENTAL_COVERAGE )
+if( SITE_NIGHTLY_COVERAGE )
   ctest_coverage( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
 endif()
 
-if( SITE_EXPERIMENTAL_MEMORY )
+if( SITE_NIGHTLY_MEMORY )
   ctest_memcheck( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
 endif()
 
 function( TubeTK_Package )
   execute_process(
-    COMMAND ${CMAKE_COMMAND} --build ${TUBETK_BINARY_DIR}/TubeTK-Build --target package --config ${TUBETK_BINARY_DIR}/TubeTK-Build
+    COMMAND ${CMAKE_COMMAND} --build ${TUBETK_BINARY_DIR}/TubeTK-Build --target package --config ${CTEST_BUILD_CONFIGURATION}
     WORKING_DIRECTORY ${TUBETK_BINARY_DIR}/TubeTK-Build
     OUTPUT_STRIP_TRAILING_WHITESPACE
     OUTPUT_FILE CPackOutputFiles.txt
@@ -71,17 +76,17 @@ function( TubeTK_Upload )
   ctest_upload( FILES ${package_list} )
 endfunction( TubeTK_Upload )
 
-if( SITE_EXPERIMENTAL_PACKAGE )
+if( SITE_NIGHTLY_PACKAGE )
   TubeTK_Package()
 endif()
 
-if( SITE_EXPERIMENTAL_UPLOAD )
+if( SITE_NIGHTLY_UPLOAD )
   TubeTK_Upload()
 endif()
 
 ctest_submit()
 
-if( SITE_EXPERIMENTAL_STYLE )
+if( SITE_NIGHTLY_STYLE )
   include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
 endif()
 
