@@ -24,15 +24,16 @@
 set( ENV{TUBETK_RUN_MODEL} "Nightly" )
 
 set( SCRIPT_NAME "BuildTest" )
-set( CTEST_BUILD_NAME
-  "${SITE_BUILD_NAME}-${SCRIPT_NAME}-${SITE_BUILD_TYPE}" )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-${SCRIPT_NAME}" )
 include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
 if( SITE_NIGHTLY_BUILD )
   ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
-  ctest_update( SOURCE ${CTEST_SOURCE_DIRECTORY} )
-  ctest_configure( BUILD "${TUBETK_BINARY_DIR}" )
+  ctest_update( SOURCE "${TUBETK_SOURCE_DIR}" )
+  ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
+    SOURCE "${TUBETK_SOURCE_DIR}"
+    OPTIONS "-C ${TUBETK_BINARY_DIR}/InitializeCMakeCache.cmake" )
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
 else()
