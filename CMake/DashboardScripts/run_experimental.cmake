@@ -24,7 +24,6 @@
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
 
 set( SCRIPT_NAME "BuildTest" )
-set( SCRIPT_BINARY_SUBDIR "TubeTK-Build" )
 include( ${TUBETK_SCRIPT_DIR}/cmakecache.cmake )
 ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
 
