@@ -23,7 +23,7 @@
 
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
 
-set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest" )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-Experimental" )
 configure_file(
   ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
   ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
@@ -39,20 +39,24 @@ if( SITE_NIGHTLY_BUILD )
     OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
+  ctest_submit( PARTS Configure Build )
 else()
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
 endif()
 
 if( SITE_NIGHTLY_TEST )
   ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+  ctest_submit( PARTS Test )
 endif()
 
 if( SITE_NIGHTLY_COVERAGE )
   ctest_coverage( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+  ctest_submit( PARTS Coverage )
 endif()
 
 if( SITE_NIGHTLY_MEMORY )
   ctest_memcheck( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+  ctest_submit( PARTS MemCheck )
 endif()
 
 function( TubeTK_Package )
@@ -74,6 +78,7 @@ function( TubeTK_Upload )
     list(APPEND package_list ${package_path})
   endforeach()
   ctest_upload( FILES ${package_list} )
+  ctest_submit( PARTS Upload )
 endfunction( TubeTK_Upload )
 
 if( SITE_NIGHTLY_PACKAGE )
@@ -83,8 +88,6 @@ endif()
 if( SITE_NIGHTLY_UPLOAD )
   TubeTK_Upload()
 endif()
-
-ctest_submit()
 
 if( SITE_NIGHTLY_STYLE )
   include( "${TUBETK_SCRIPT_DIR}/style.cmake" )

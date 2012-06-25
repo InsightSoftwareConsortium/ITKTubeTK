@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style" )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style-$ENV{TUBETK_RUN_MODEL}" )
 configure_file(
   ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
   ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
@@ -35,4 +35,4 @@ ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
   OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
-ctest_submit()
+ctest_submit( PARTS configure build )
