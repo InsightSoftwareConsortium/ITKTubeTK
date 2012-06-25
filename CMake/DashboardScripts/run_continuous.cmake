@@ -36,7 +36,7 @@ while( ${CTEST_ELAPSED_TIME} LESS 68400 )
 
   set( START_TIME ${CTEST_ELAPSED_TIME} )
 
-  set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest" )
+  set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-Continuous" )
   configure_file(
     ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
     ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )

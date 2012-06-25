@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style" )
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style-$ENV{TUBETK_RUN_MODEL}" )
 configure_file(
   ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
   ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
