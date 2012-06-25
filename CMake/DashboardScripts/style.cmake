@@ -35,4 +35,4 @@ ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
   OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
 ctest_read_custom_files( "${CTEST_BINARY_DIRECTORY}" )
 EXECUTE_PROCESS( COMMAND make -C "${CTEST_BINARY_DIRECTORY}" StyleCheck )
-ctest_submit()
+ctest_submit( PARTS configure build )
