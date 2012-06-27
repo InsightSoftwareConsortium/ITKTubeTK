@@ -21,6 +21,8 @@
 #
 ##############################################################################
 
+set( CTEST_CMAKE_GENERATOR "${SITE_CMAKE_GENERATOR}" )
+
 set( ENV{TUBETK_RUN_MODEL} "Experimental" )
 
 set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-Experimental" )
