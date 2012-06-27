@@ -21,17 +21,13 @@
 #
 ##############################################################################
 
-set( CTEST_CMAKE_GENERATOR "${SITE_CMAKE_GENERATOR}" )
-
-set( ENV{TUBETK_RUN_MODEL} "Nightly" )
-
 set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-Nightly" )
 configure_file(
   ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
   ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
 set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
 
-ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
+ctest_start( "Nightly" )
 
 if( SITE_NIGHTLY_BUILD )
   ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
@@ -91,8 +87,26 @@ if( SITE_NIGHTLY_UPLOAD )
   TubeTK_Upload()
 endif()
 
+function( TubeTK_Style )
+  set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style-Nightly" )
+  configure_file(
+    ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
+    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+  set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+  ctest_start( "Nightly" )
+  ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
+    SOURCE "${TUBETK_SOURCE_DIR}"
+    OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+  ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} --build ${TUBETK_BINARY_DIR}/TubeTK-Build --target StyleCheck --config ${CTEST_BUILD_CONFIGURATION}
+    WORKING_DIRECTORY ${TUBETK_BINARY_DIR}/TubeTK-Build
+    )
+  ctest_submit( PARTS configure build )
+endif()
+
 if( SITE_NIGHTLY_STYLE )
-  include( "${TUBETK_SCRIPT_DIR}/style.cmake" )
+  TubeTK_Style()
 endif()
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)
