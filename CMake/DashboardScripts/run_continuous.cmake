@@ -22,6 +22,7 @@
 ##############################################################################
 
 set( CTEST_CTEST_COMMAND ${SITE_CTEST_COMMAND} )
+set( CTEST_CMAKE_GENERATOR "${SITE_CMAKE_GENERATOR}" )
 
 if( SITE_CONTINUOUS_BUILD )
   ctest_empty_binary_directory( "${TUBETK_BINARY_DIR}" )
