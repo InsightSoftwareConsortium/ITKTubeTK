@@ -123,7 +123,7 @@ while( ${CTEST_ELAPSED_TIME} LESS 68400 )
         WORKING_DIRECTORY ${TUBETK_BINARY_DIR}/TubeTK-Build
         )
       ctest_submit( PARTS configure build )
-    endif()
+    endfunction()
 
     if( SITE_CONTINUOUS_STYLE )
       TubeTK_Style()

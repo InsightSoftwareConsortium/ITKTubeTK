@@ -104,7 +104,7 @@ function( TubeTK_Style )
     WORKING_DIRECTORY ${TUBETK_BINARY_DIR}/TubeTK-Build
     )
   ctest_submit( PARTS configure build )
-endif()
+endfunction()
 
 if( SITE_EXPERIMENTAL_STYLE )
   TubeTK_Style()
