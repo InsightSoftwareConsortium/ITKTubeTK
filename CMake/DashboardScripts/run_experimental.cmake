@@ -24,7 +24,7 @@
 set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-Experimental" )
 configure_file(
   ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
-  ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+  ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
 set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
 
 ctest_start( "Experimental" )
@@ -92,7 +92,7 @@ function( TubeTK_Style )
   set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style-Experimental" )
   configure_file(
     ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
-    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
   set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_start( "Experimental" )
   ctest_configure( BUILD "${TUBETK_BINARY_DIR}"

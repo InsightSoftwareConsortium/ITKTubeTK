@@ -40,7 +40,7 @@ while( ${CTEST_ELAPSED_TIME} LESS 68400 )
   set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-Continuous" )
   configure_file(
     ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
-    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
   set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
 
   ctest_start( "$ENV{TUBETK_RUN_MODEL}" )
@@ -111,7 +111,7 @@ while( ${CTEST_ELAPSED_TIME} LESS 68400 )
       set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-Style-Nightly" )
       configure_file(
         ${TUBETK_SOURCE_DIR}/CMake/DashboardScripts/InitCMakeCache.cmake.in
-        ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake @ONLY )
+        ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
       set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
       ctest_start( "Nightly" )
       ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
