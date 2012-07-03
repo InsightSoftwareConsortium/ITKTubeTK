@@ -20,12 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#include <itkLabelMapToAcousticImpedanceImageFilter.h>
 
-#include <iostream>
-#include "tubeTestMain.h"
+#include <map>
 
-
-void RegisterTests()
+int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
 {
-  REGISTER_TEST( itkLabelMapToAcousticImpedanceImageFilterTest );
+  // Use std::vector here for efficiency if TLabelPixel is always an integer?
+  //typedef std::map< TLabelPixel, TImpedancePixel > LookupTableType;
+  return EXIT_SUCCESS;
 }

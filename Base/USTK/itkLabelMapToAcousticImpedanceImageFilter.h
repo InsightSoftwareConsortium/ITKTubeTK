@@ -20,12 +20,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#ifndef __itkLabelMapToAcousticImpedanceFilter_h
+#define __itkLabelMapToAcousticImpedanceFilter_h
 
-#include <iostream>
-#include "tubeTestMain.h"
+#include <itkUnaryFunctorImageFilter.h>
+#include <itkLabelMapToAcousticImpedanceFunctor.h>
 
-
-void RegisterTests()
+namespace itk
 {
-  REGISTER_TEST( itkLabelMapToAcousticImpedanceImageFilterTest );
-}
+
+/** \class LabelMapToAcousticImpedanceImageFilter
+ *
+ * \brief Creates an image of approximate acoustic impedance from a label map of
+ * classified tissues.
+ *
+ */
+template< typename TInputImage, typename TOutputImage >
+class LabelMapToAcousticImpedanceImageFilter:
+  public UnaryFunctorImageFilter< TInputImage, TOutputImage,
+    Functor::LabelMapToAcousticImpedanceFunctor< typename TInputImage::PixelType,
+      typename TOutputImage::PixelType, TInputImage[] > >
+{
+};
+
+} // end namespace itk
+
+#endif
