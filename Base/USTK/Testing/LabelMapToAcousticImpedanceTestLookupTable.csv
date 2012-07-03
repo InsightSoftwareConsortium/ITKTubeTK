@@ -1,0 +1,5 @@
+Label, Tissue Type, Acoustic Impedance (MRayls)
+0,     Fat,         4.0
+1,     Blood,       5.0
+2,     Kidney,      6.0
+3,     Liver,       7.0

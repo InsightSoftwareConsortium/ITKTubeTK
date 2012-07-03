@@ -56,4 +56,5 @@ target_link_libraries( tubeBaseUSTKTests
 MIDAS_ADD_TEST( itkLabelMapToAcousticImpedanceImageFilterTest
   ${BASE_USTK_TESTS}
   itkLabelMapToAcousticImpedanceImageFilterTest
+  ${CMAKE_CURRENT_SOURCE_DIR}/LabelMapToAcousticImpedanceTestLookupTable.csv
   )

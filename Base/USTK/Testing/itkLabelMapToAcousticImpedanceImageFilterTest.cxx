@@ -21,12 +21,69 @@ limitations under the License.
 
 =========================================================================*/
 #include <itkLabelMapToAcousticImpedanceImageFilter.h>
+#include <fstream>
 
-#include <map>
+
+template< class TLookupTable >
+int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable );
 
 int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
 {
-  // Use std::vector here for efficiency if TLabelPixel is always an integer?
-  //typedef std::map< TLabelPixel, TImpedancePixel > LookupTableType;
+  if( argc < 2 )
+    {
+    std::cerr << "Missing arguments." << std::endl;
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << " lookupTable.csv " << std::endl;
+    return EXIT_FAILURE;
+    }
+  const char * lookupTableFileName = argv[1];
+
+  typedef std::vector< float > LookupTableType;
+  LookupTableType lookupTable;
+
+  if( ReadLookupTableFromCSV< LookupTableType >( lookupTableFileName, lookupTable )
+    == EXIT_FAILURE )
+    {
+    return EXIT_FAILURE;
+    }
+
+  return EXIT_SUCCESS;
+}
+
+template< class TLookupTable >
+int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable )
+{
+  std::ifstream inputStream( filename );
+  if( !inputStream.is_open() )
+    {
+    std::cerr << "Could not open input file: " << filename << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  // Ignore the header
+  std::string str;
+  std::getline( inputStream, str );
+  if( !inputStream.good() )
+    {
+    inputStream.close();
+    return EXIT_FAILURE;
+    }
+
+  size_t label = 0;
+  char tissueType[256];
+  float acousticImpedance;
+  inputStream >> label;
+  while( inputStream.good() )
+    {
+    lookupTable.resize( label + 1 );
+    inputStream.get(); // ','
+    inputStream.getline( tissueType, 256, ',' );
+    inputStream >> acousticImpedance;
+    std::getline( inputStream, str );
+    lookupTable[label] = acousticImpedance;
+    inputStream >> label;
+    }
+
+  inputStream.close();
   return EXIT_SUCCESS;
 }
