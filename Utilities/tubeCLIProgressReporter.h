@@ -66,7 +66,7 @@ public:
         // }
 
       m_TimeProbe.Stop( );
-      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMeanTime( )
+      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean( )
                                           * m_TimeProbe.GetNumberOfStops( );
       m_TimeProbe.Start( );
 
@@ -151,7 +151,7 @@ public:
       m_ProcessInformation->Progress = 1;
       m_ProcessInformation->StageProgress = 1;
 
-      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMeanTime( )
+      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean( )
                                           * m_TimeProbe.GetNumberOfStops( );
 
       if( m_ProcessInformation->ProgressCallbackFunction
@@ -171,7 +171,7 @@ public:
                 << "</filter-name>"
                 << std::endl;
       std::cout << "<filter-time>"
-                << m_TimeProbe.GetMeanTime( ) 
+                << m_TimeProbe.GetMean()
                    * m_TimeProbe.GetNumberOfStops( )
                 << "</filter-time>"
                 << std::endl;
