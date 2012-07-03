@@ -63,14 +63,6 @@ LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
     return !( *this != other );
 }
 
-template< class TLabelPixel, class TImpedancePixel, class TLookupTable >
-TImpedancePixel
-LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
-::operator()( const TLabelPixel & input ) const
-{
-    return (*m_LookupTable)[input];
-}
-
 } // end namespace Functor
 } // end namespace itk
 

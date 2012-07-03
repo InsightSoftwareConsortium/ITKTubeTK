@@ -56,7 +56,10 @@ public:
   bool operator==(const LabelMapToAcousticImpedanceFunctor &) const;
 
   /** Perform the function on a given pixel. */
-  inline TImpedancePixel operator()( const TLabelPixel & input ) const;
+  inline TImpedancePixel operator()( const TLabelPixel & input ) const
+    {
+    return (*m_LookupTable)[input];
+    };
 
 private:
   const LookupTableType * m_LookupTable;

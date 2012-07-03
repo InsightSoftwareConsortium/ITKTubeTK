@@ -41,6 +41,31 @@ class LabelMapToAcousticImpedanceImageFilter:
     Functor::LabelMapToAcousticImpedanceFunctor< typename TInputImage::PixelType,
       typename TOutputImage::PixelType, TLookupTable > >
 {
+public:
+  typedef Functor::LabelMapToAcousticImpedanceFunctor< typename TInputImage::PixelType,
+      typename TOutputImage::PixelType, TLookupTable > FunctorType;
+
+  /** Standard class typedefs. */
+  typedef LabelMapToAcousticImpedanceImageFilter                            Self;
+  typedef UnaryFunctorImageFilter< TInputImage, TOutputImage, FunctorType > Superclass;
+  typedef SmartPointer< Self >                                              Pointer;
+  typedef SmartPointer< const Self >                                        ConstPointer;
+
+  /** Method for creation through the object factory. */
+  itkNewMacro(Self);
+
+  /** Runtime type information. */
+  itkTypeMacro( LabelMapToAcousticImpedanceImageFilter,
+                UnaryFunctorImageFilter );
+
+protected:
+  LabelMapToAcousticImpedanceImageFilter() {}
+  virtual ~LabelMapToAcousticImpedanceImageFilter() {}
+
+private:
+  LabelMapToAcousticImpedanceImageFilter( const Self & ); // purposely not implemented
+  void operator=( const Self & ); // purposely not implemented
+
 };
 
 } // end namespace itk

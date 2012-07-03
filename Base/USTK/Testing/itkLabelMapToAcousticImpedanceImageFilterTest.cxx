@@ -38,6 +38,14 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
     }
   const char * lookupTableFileName = argv[1];
 
+  static const unsigned int Dimension = 2;
+
+  typedef unsigned char                              LabelMapPixelType;
+  typedef itk::Image< LabelMapPixelType, Dimension > LabelMapType;
+
+  typedef float                                               AcousticImpedancePixelType;
+  typedef itk::Image< AcousticImpedancePixelType, Dimension > AcousticImpedanceImageType;
+
   typedef std::vector< float > LookupTableType;
   LookupTableType lookupTable;
 
@@ -46,6 +54,12 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
     {
     return EXIT_FAILURE;
     }
+
+  typedef itk::LabelMapToAcousticImpedanceImageFilter< LabelMapType,
+    AcousticImpedanceImageType, LookupTableType >
+      LabelMapToAcousticImpedanceImageFilterType;
+
+  LabelMapToAcousticImpedanceImageFilterType::Pointer filter = LabelMapToAcousticImpedanceImageFilterType::New();
 
   return EXIT_SUCCESS;
 }
