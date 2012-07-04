@@ -63,7 +63,8 @@ MetaLDA( const char *_headerName )
 
 //
 MetaLDA::
-MetaLDA( const MetaLDA & _metaLDA )
+MetaLDA( const MetaLDA & _metaLDA ):
+  MetaForm()
 {
   if( META_DEBUG )
    {

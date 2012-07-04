@@ -91,11 +91,12 @@ public:
 
   ~MetaNJetLDA( void );
 
-  void  PrintInfo( void ) const;
+  virtual void  PrintInfo( void ) const;
 
-  void  CopyInfo( const MetaNJetLDA & _lda );
+  using MetaLDA::CopyInfo;
+  virtual void  CopyInfo( const MetaNJetLDA & _lda );
 
-  void  Clear( void );
+  virtual void  Clear( void );
 
   bool  InitializeEssential(
     const NJetScalesType & _zeroScales,
