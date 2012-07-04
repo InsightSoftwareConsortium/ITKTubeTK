@@ -80,11 +80,12 @@ public:
 
   ~MetaLDA( void );
 
-  void  PrintInfo( void ) const;
+  virtual void  PrintInfo( void ) const;
 
-  void  CopyInfo( const MetaLDA & _lda );
+  using MetaForm::CopyInfo;
+  virtual void  CopyInfo( const MetaLDA & _lda );
 
-  void  Clear( void );
+  virtual void  Clear( void );
 
   bool  InitializeEssential( const LDAValuesType & _ldaValues,
       const LDAMatrixType & _ldaMatrix );
