@@ -38,6 +38,15 @@ limitations under the License.
 
 int itkVotingResampleImageFunctionTest(int argc, char* argv[] )
 {
+  if( argc != 4 )
+    {
+    std::cerr << "Missing arguments." << std::endl;
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0]
+      << " testNumber inputImage outputImage"
+      << std::endl;
+    return EXIT_FAILURE;
+    }
 
   const unsigned int NDimensions = 2;
   typedef unsigned char                       PixelType;
