@@ -38,7 +38,6 @@ limitations under the License.
 #include "itkImageFileWriter.h"
 #include "itkHistogram.h"
 #include "itkJoinImageFilter.h"
-#include "itkListSampleToHistogramGenerator.h"
 #include "itkHistogramToProbabilityImageFilter.h"
 #include "itkDiscreteGaussianImageFilter.h"
 #include "itkCurvatureAnisotropicDiffusionImageFilter.h"
@@ -472,12 +471,12 @@ PDFSegmenter< ImageT, N, LabelmapT >
     unsigned int totalIn = 0;
     itk::Array<unsigned int> totalInClass( numClasses );
     totalInClass.Fill( 0 );
-    typename ListSampleType::ConstIterator inClassListIt;
-    typename ListSampleType::ConstIterator inClassListItEnd;
     for( unsigned int c=0; c<numClasses; c++ )
       {
-      inClassListIt = m_InClassList[c]->Begin();
-      inClassListItEnd = m_InClassList[c]->End();
+      typename ListSampleType::ConstIterator
+        inClassListIt( m_InClassList[c]->Begin() );
+      typename ListSampleType::ConstIterator
+        inClassListItEnd( m_InClassList[c]->End() );
       double binV;
       while( inClassListIt != inClassListItEnd )
         {
@@ -554,10 +553,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
 
     // Create Histogram
     unsigned int totalOut = 0;
-    typename ListSampleType::ConstIterator outListIt;
-    typename ListSampleType::ConstIterator outListItEnd;
-    outListIt = m_OutList->Begin();
-    outListItEnd = m_OutList->End();
+    typename ListSampleType::ConstIterator
+      outListIt( m_OutList->Begin() );
+    typename ListSampleType::ConstIterator
+      outListItEnd( m_OutList->End() );
     double binV;
     while( outListIt != outListItEnd )
       {
@@ -639,10 +638,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
     m_InClassHisto[c]->FillBuffer( 0 );
 
     unsigned int count = 0;
-    typename ListSampleType::ConstIterator inClassListIt;
-    typename ListSampleType::ConstIterator inClassListItEnd;
-    inClassListIt = m_InClassList[c]->Begin();
-    inClassListItEnd = m_InClassList[c]->End();
+    typename ListSampleType::ConstIterator
+      inClassListIt( m_InClassList[c]->Begin() );
+    typename ListSampleType::ConstIterator
+      inClassListItEnd( m_InClassList[c]->End() );
     typename HistogramImageType::IndexType indxHisto;
     while( inClassListIt != inClassListItEnd )
       {
@@ -677,10 +676,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
   m_OutHisto->FillBuffer( 0 );
   if( m_OutList->Size() > 0 )
     {
-    typename ListSampleType::ConstIterator outListIt;
-    typename ListSampleType::ConstIterator outListItEnd;
-    outListIt = m_OutList->Begin();
-    outListItEnd = m_OutList->End();
+    typename ListSampleType::ConstIterator
+      outListIt( m_OutList->Begin() );
+    typename ListSampleType::ConstIterator
+      outListItEnd( m_OutList->End() );
     typename HistogramImageType::IndexType indxHisto;
     while( outListIt != outListItEnd )
       {
@@ -1040,10 +1039,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
       insideConnecter->SetLower( 64 );
       insideConnecter->SetUpper( 194 );
       insideConnecter->SetReplaceValue( 255 );
-      typename ListSampleType::ConstIterator inClassListIt;
-      typename ListSampleType::ConstIterator inClassListItEnd;
-      inClassListIt = m_InClassList[c]->Begin();
-      inClassListItEnd = m_InClassList[c]->End();
+      typename ListSampleType::ConstIterator
+        inClassListIt( m_InClassList[c]->Begin() );
+      typename ListSampleType::ConstIterator
+        inClassListItEnd( m_InClassList[c]->End() );
       typename ImageType::IndexType indx;
       while( inClassListIt != inClassListItEnd )
         {
@@ -1092,10 +1091,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
       // Erase outside mask from label image
       if( !m_ReclassifyNotObjectMask )
         {
-        typename ListSampleType::ConstIterator outListIt;
-        typename ListSampleType::ConstIterator outListItEnd;
-        outListIt = m_OutList->Begin();
-        outListItEnd = m_OutList->End();
+        typename ListSampleType::ConstIterator
+          outListIt( m_OutList->Begin() );
+        typename ListSampleType::ConstIterator
+          outListItEnd( m_OutList->End() );
         while( outListIt != outListItEnd )
           {
           for( unsigned int i=0; i<ImageDimension; i++ )

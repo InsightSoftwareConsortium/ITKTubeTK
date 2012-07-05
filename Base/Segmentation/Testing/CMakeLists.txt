@@ -36,13 +36,25 @@ if( TCL_TCLSH )
     )
 endif( TCL_TCLSH )
 
-set( BASE_SEGMENTATION_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationTests
-  )
+if( Slicer3_INSTALL_BIN_DIR )
+  set( BASE_SEGMENTATION_TESTS
+    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationTests
+    )
+else()
+  set( BASE_SEGMENTATION_TESTS
+    ${TubeTK_BINARY_DIR}/bin/tubeBaseSegmentationTests
+    )
+endif()
 
-set( BASE_SEGMENTATION_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationHeaderTest
-  )
+if( Slicer3_INSTALL_BIN_DIR )
+  set( BASE_SEGMENTATION_HEADER_TEST
+    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationHeaderTest
+    )
+else()
+  set( BASE_SEGMENTATION_HEADER_TEST
+    ${TubeTK_BINARY_DIR}/bin/tubeBaseSegmentationHeaderTest
+    )
+endif()
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
