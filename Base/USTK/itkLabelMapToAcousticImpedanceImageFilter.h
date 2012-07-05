@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkLabelMapToAcousticImpedanceFilter_h
-#define __itkLabelMapToAcousticImpedanceFilter_h
+#ifndef __itkLabelMapToAcousticImpedanceImageFilter_h
+#define __itkLabelMapToAcousticImpedanceImageFilter_h
 
 #include <itkUnaryFunctorImageFilter.h>
 #include <itkLabelMapToAcousticImpedanceFunctor.h>
@@ -42,12 +42,14 @@ class LabelMapToAcousticImpedanceImageFilter:
       typename TOutputImage::PixelType, TLookupTable > >
 {
 public:
-  typedef Functor::LabelMapToAcousticImpedanceFunctor< typename TInputImage::PixelType,
-      typename TOutputImage::PixelType, TLookupTable > FunctorType;
-
   /** Standard class typedefs. */
   typedef LabelMapToAcousticImpedanceImageFilter                            Self;
-  typedef UnaryFunctorImageFilter< TInputImage, TOutputImage, FunctorType > Superclass;
+  typedef UnaryFunctorImageFilter< TInputImage,
+            TOutputImage,
+            Functor::LabelMapToAcousticImpedanceFunctor<
+              typename TInputImage::PixelType,
+              typename TOutputImage::PixelType,
+              TLookupTable > >                                              Superclass;
   typedef SmartPointer< Self >                                              Pointer;
   typedef SmartPointer< const Self >                                        ConstPointer;
 
@@ -58,9 +60,13 @@ public:
   itkTypeMacro( LabelMapToAcousticImpedanceImageFilter,
                 UnaryFunctorImageFilter );
 
+  typedef typename Superclass::FunctorType FunctorType;
+
 protected:
   LabelMapToAcousticImpedanceImageFilter() {}
   virtual ~LabelMapToAcousticImpedanceImageFilter() {}
+
+  virtual void BeforeThreadedGenerateData();
 
 private:
   LabelMapToAcousticImpedanceImageFilter( const Self & ); // purposely not implemented
@@ -69,5 +75,9 @@ private:
 };
 
 } // end namespace itk
+
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "itkLabelMapToAcousticImpedanceImageFilter.txx"
+#endif
 
 #endif

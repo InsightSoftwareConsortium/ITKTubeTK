@@ -43,11 +43,19 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
   typedef unsigned char                              LabelMapPixelType;
   typedef itk::Image< LabelMapPixelType, Dimension > LabelMapType;
 
-  typedef float                                               AcousticImpedancePixelType;
-  typedef itk::Image< AcousticImpedancePixelType, Dimension > AcousticImpedanceImageType;
+  typedef float
+    AcousticImpedancePixelType;
+  typedef itk::Image< AcousticImpedancePixelType, Dimension >
+    AcousticImpedanceImageType;
 
   typedef std::vector< float > LookupTableType;
-  LookupTableType lookupTable;
+
+  typedef itk::LabelMapToAcousticImpedanceImageFilter< LabelMapType,
+    AcousticImpedanceImageType, LookupTableType >
+      LabelMapToAcousticImpedanceImageFilterType;
+
+  typedef LabelMapToAcousticImpedanceImageFilterType::FunctorType FunctorType;
+  FunctorType::LookupTableType lookupTable;
 
   if( ReadLookupTableFromCSV< LookupTableType >( lookupTableFileName, lookupTable )
     == EXIT_FAILURE )
@@ -55,11 +63,12 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::LabelMapToAcousticImpedanceImageFilter< LabelMapType,
-    AcousticImpedanceImageType, LookupTableType >
-      LabelMapToAcousticImpedanceImageFilterType;
+  FunctorType functor;
+  functor.SetLookupTable( &lookupTable );
 
-  LabelMapToAcousticImpedanceImageFilterType::Pointer filter = LabelMapToAcousticImpedanceImageFilterType::New();
+  LabelMapToAcousticImpedanceImageFilterType::Pointer filter =
+    LabelMapToAcousticImpedanceImageFilterType::New();
+  filter->SetFunctor( functor );
 
   return EXIT_SUCCESS;
 }
