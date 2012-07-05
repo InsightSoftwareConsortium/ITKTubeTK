@@ -394,7 +394,7 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
   vnl_matrix<double> biasV( 3, 3, 0 );  // Bias Matrix
   double dAngle[3] = { 0, 0, 0 };
   double dXProj1, dXProj2;
-  vnl_vector<double> dPosition( 3 );
+  vnl_vector<double> position( 3, 0.0 );
 
   Vector<double, 3> v1;         // Co-Vector that defines the direction normal1
   Vector<double, 3> v2;         // Co-Vector that defines the direction normal2
@@ -432,13 +432,13 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
 
     biasV += tM;
 
-    dPosition[0] += transformedPointIterator->Weight * ( dXT[0] );
-    dPosition[1] += transformedPointIterator->Weight * ( dXT[1] );
-    dPosition[2] += transformedPointIterator->Weight * ( dXT[2] );
+    position[0] += transformedPointIterator->Weight * ( dXT[0] );
+    position[1] += transformedPointIterator->Weight * ( dXT[1] );
+    position[2] += transformedPointIterator->Weight * ( dXT[2] );
     dXTlist.push_back( dXT );
     }
 
-  dPosition *= vnl_matrix_inverse<double>( biasV ).inverse();
+  position *= vnl_matrix_inverse<double>( biasV ).inverse();
 
   if( m_SumWeight == 0 )
     {
@@ -458,7 +458,7 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
     biasV = 1.0 / m_SumWeight * biasV;
     }
 
-  this->SetOffset( dPosition[0], dPosition[1], dPosition[2] );
+  this->SetOffset( position[0], position[1], position[2] );
   PointsType::iterator  dXTIterator = dXTlist.begin();
 
   for ( transformedPointIterator = m_TransformedPoints.begin();
@@ -490,9 +490,9 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
     std::cout << "dA = " << dAngle[0] << std::endl;
     std::cout << "dB = " << dAngle[1] << std::endl;
     std::cout << "dG = " << dAngle[2] << std::endl;
-    std::cout << "dX = " << dPosition[0] << std::endl;
-    std::cout << "dY = " << dPosition[1] << std::endl;
-    std::cout << "dZ = " << dPosition[2] << std::endl;
+    std::cout << "dX = " << position[0] << std::endl;
+    std::cout << "dY = " << position[1] << std::endl;
+    std::cout << "dZ = " << position[2] << std::endl;
     }
 
   if( m_Iteration > 0 )
@@ -500,14 +500,14 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
     derivative[0] = dAngle[0];
     derivative[1] = dAngle[1];
     derivative[2] = dAngle[2];
-    derivative[3] = dPosition[0];
-    derivative[4] = dPosition[1];
-    derivative[5] = dPosition[2];
+    derivative[3] = position[0];
+    derivative[4] = position[1];
+    derivative[5] = position[2];
     m_CachedDerivative = derivative;
     }
 }
 
-/** Get both the match Measure and theDerivative Measure */
+/** Get both the match Measure and the Derivative Measure */
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
@@ -523,7 +523,7 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
     }
 
   Value = GetValue( parameters );
-  GetDerivative( parameters, Derivative );
+  this->GetDerivative( parameters, Derivative );
 }
 
 template < class TFixedImage, class TMovingSpatialObject>
