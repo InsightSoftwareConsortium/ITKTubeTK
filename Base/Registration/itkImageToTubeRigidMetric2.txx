@@ -135,7 +135,7 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
       {
       typename std::vector<TubePointType>::iterator  tubePointIterator;
       int loopIndex = 0;
-      unsigned int skippedPoints;
+      unsigned int skippedPoints = 0;
       for ( tubePointIterator = currTube->GetPoints().begin();
             tubePointIterator != currTube->GetPoints().end();
             tubePointIterator++, ++loopIndex )
