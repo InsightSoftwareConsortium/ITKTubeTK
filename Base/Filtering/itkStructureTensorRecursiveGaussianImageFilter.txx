@@ -301,7 +301,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     componentImage->SetRequestedRegion( inputImage->GetRequestedRegion() );
     componentImage->Allocate();
     
-    ImageRegionIteratorWithIndex< ComponentImageType > 
+    ImageRegionIteratorWithIndex< ComponentImageType >
               compit(
                     componentImage,
                     componentImage->GetRequestedRegion()
@@ -319,7 +319,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     m_TensorComponentSmoothingFilter->SetInput(componentImage);
     m_TensorComponentSmoothingFilter->Update();
     
-    ImageRegionIteratorWithIndex< ComponentImageType > 
+    ImageRegionIteratorWithIndex< ComponentImageType >
     smoothedCompIt( m_TensorComponentSmoothingFilter->GetOutput(),
                     m_TensorComponentSmoothingFilter->GetOutput()->GetRequestedRegion());
     
@@ -328,7 +328,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
     while( !ottensor.IsAtEnd() )
       {
-      ottensor.Value()[i] = smoothedCompIt.Get();  
+      ottensor.Value()[i] = smoothedCompIt.Get();
       ++smoothedCompIt;
       ++ottensor;
       }
