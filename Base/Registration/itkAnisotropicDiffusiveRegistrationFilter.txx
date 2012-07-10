@@ -119,7 +119,8 @@ AnisotropicDiffusiveRegistrationFilter
   this->SetDeformationComponentImage( TANGENTIAL, this->GetOutput() );
 
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
-  itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalDeformationField, output );
+  itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+                                     normalDeformationField, output );
   this->SetDeformationComponentImage( NORMAL, normalDeformationField );
 
   // Setup the first and second order deformation component images - we need
@@ -197,7 +198,8 @@ AnisotropicDiffusiveRegistrationFilter
         }
       else
         {
-        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_NormalVectorImage, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+                                     m_NormalVectorImage, output );
         }
       }
     if( computeWeights )
@@ -205,11 +207,13 @@ AnisotropicDiffusiveRegistrationFilter
       m_WeightImage = WeightImageType::New();
       if( highResolutionTemplate )
         {
-        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightImage, highResolutionTemplate );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+                                     m_WeightImage, highResolutionTemplate );
         }
       else
         {
-        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_WeightImage, output );
+        itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+                                     m_WeightImage, output );
         }
       }
 
@@ -703,7 +707,8 @@ AnisotropicDiffusiveRegistrationFilter
     {
     // Create the multiplication vector image
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
-    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( normalMultsImage, output );
+    itk::DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+                                               normalMultsImage, output );
 
     // Calculate n_l*n
     DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
@@ -755,8 +760,8 @@ AnisotropicDiffusiveRegistrationFilter
 
   for( normalVectorRegion.GoToBegin(), outputRegion.GoToBegin(),
        normalDeformationRegion.GoToBegin();
-      !outputRegion.IsAtEnd();
-      ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
+  !outputRegion.IsAtEnd();
+  ++normalVectorRegion, ++outputRegion, ++normalDeformationRegion )
     {
     n = normalVectorRegion.Get();
     u = outputRegion.Get();
