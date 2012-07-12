@@ -27,12 +27,12 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_USTK_H_Files
-  itkLabelMapToAcousticImpedanceFilter.h
+  itkLabelMapToAcousticImpedanceImageFilter.h
   itkLabelMapToAcousticImpedanceFunctor.h
   )
 
 set( TubeTK_Base_USTK_TXX_Files
-  itkLabelMapToAcousticImpedanceFilter.txx
+  itkLabelMapToAcousticImpedanceImageFilter.txx
   itkLabelMapToAcousticImpedanceFunctor.txx
   )
 
