@@ -23,21 +23,29 @@ limitations under the License.
 #include <itkLabelMapToAcousticImpedanceImageFilter.h>
 #include <fstream>
 
+#include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
+
 
 template< class TLookupTable >
 int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable );
 
 int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
 {
-  if( argc < 2 )
+  // Argument parsing.
+  if( argc < 4 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " lookupTable.csv " << std::endl;
+    std::cerr << argv[0] << " lookupTable.csv inputLabelMap.mha outputAcousticImpedance.mha" << std::endl;
     return EXIT_FAILURE;
     }
   const char * lookupTableFileName = argv[1];
+  const char * labelMap = argv[2];
+  const char * acousticImpedance = argv[3];
 
+
+  // Types.
   static const unsigned int Dimension = 2;
 
   typedef unsigned char                              LabelMapPixelType;
@@ -50,6 +58,15 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
 
   typedef std::vector< float > LookupTableType;
 
+
+
+  // Reader.
+  typedef itk::ImageFileReader< LabelMapType > ReaderType;
+  ReaderType::Pointer reader = ReaderType::New();
+  reader->SetFileName( labelMap );
+
+
+  // Filter.
   typedef itk::LabelMapToAcousticImpedanceImageFilter< LabelMapType,
     AcousticImpedanceImageType, LookupTableType >
       LabelMapToAcousticImpedanceImageFilterType;
@@ -69,6 +86,23 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
   LabelMapToAcousticImpedanceImageFilterType::Pointer filter =
     LabelMapToAcousticImpedanceImageFilterType::New();
   filter->SetFunctor( functor );
+  filter->SetInput( reader->GetOutput() );
+
+
+  // Writer.
+  typedef itk::ImageFileWriter< AcousticImpedanceImageType > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetInput( filter->GetOutput() );
+  writer->SetFileName( acousticImpedance );
+  try
+    {
+    writer->Update();
+    }
+  catch( itk::ExceptionObject & e )
+    {
+    std::cerr << "Error during pipeline Update: " << e << std::endl;
+    return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
 }
