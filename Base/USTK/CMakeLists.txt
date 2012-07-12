@@ -27,9 +27,13 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_USTK_H_Files
+  itkLabelMapToAcousticImpedanceFilter.h
+  itkLabelMapToAcousticImpedanceFunctor.h
   )
 
 set( TubeTK_Base_USTK_TXX_Files
+  itkLabelMapToAcousticImpedanceFilter.txx
+  itkLabelMapToAcousticImpedanceFunctor.txx
   )
 
 #set( TubeTK_Base_USTK_SRCS

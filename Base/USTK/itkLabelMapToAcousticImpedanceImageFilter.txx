@@ -20,12 +20,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#ifndef __itkLabelMapToAcousticImpedanceImageFilter_txx
+#define __itkLabelMapToAcousticImpedanceImageFilter_txx
 
-#include <iostream>
-#include "tubeTestMain.h"
+#include "itkLabelMapToAcousticImpedanceImageFilter.h"
 
-
-void RegisterTests()
+namespace itk
 {
-  REGISTER_TEST( itkLabelMapToAcousticImpedanceImageFilterTest );
+
+template< class TInputImage, class TOutputImage, class TLookupTable >
+void
+LabelMapToAcousticImpedanceImageFilter< TInputImage, TOutputImage, TLookupTable >
+::BeforeThreadedGenerateData()
+{
+  Superclass::BeforeThreadedGenerateData();
+
+  const typename FunctorType::LookupTableType * lookupTable =
+    this->GetFunctor().GetLookupTable();
+  if( lookupTable == NULL )
+    {
+    itkExceptionMacro( << "Please set the lookup table \
+ for the LabelMapToAcousticImpedanceImageFilter functor. " );
+    }
 }
+
+} // end namespace itk
+
+#endif
