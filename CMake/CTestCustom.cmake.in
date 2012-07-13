@@ -8,6 +8,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
     "ctk"
     "vtkpng"
+    "vtkjpeg"
     "vtkexpat"
     "vtkfreetype"
     "vtkexodus2"
@@ -70,6 +71,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "qtconcurrentiteratekernel"
     "log4qt"
     "itktiff"
+    "itkjpeg"
     "itkPhilipsPAR"
     "vxl"
     "netlib"
