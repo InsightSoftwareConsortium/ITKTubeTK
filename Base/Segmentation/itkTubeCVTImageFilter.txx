@@ -68,7 +68,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 ::SetCentroids(const PointArrayType * centroids)
 {
   m_InitialSamplingMethod = CVT_USER;
-  m_NumberOfCentroids = centroids.size();
+  m_NumberOfCentroids = centroids->size();
   m_Centroids.reserve(m_NumberOfCentroids);
   for(int i = 0; i<m_NumberOfCentroids; i++)
     {
