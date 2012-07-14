@@ -147,6 +147,7 @@ endif( WIN32 )
 #-----------------------------------------------------------------------------
 # Mac setup
 if( APPLE )
+  include( ${CMAKE_CURRENT_SOURCE_DIR}/CMake/SlicerBlockSetCMakeOSXVariables.cmake )
   if( NOT CMAKE_FIRST_PASS_COMPLETED )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common"
          CACHE STRING "Flags used by all build types" FORCE )
