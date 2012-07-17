@@ -35,6 +35,7 @@ set(TubeTK_Base_Filtering_H_Files
   itkStructureTensorRecursiveGaussianImageFilter.h
   itkSymmetricEigenVectorAnalysisImageFilter.h
   itkTubeEnhancingDiffusion2DImageFilter.h
+  itkSheetnessMeasureImageFilter.h
 )
 
 set(TubeTK_Base_Filtering_TXX_Files
@@ -45,6 +46,7 @@ set(TubeTK_Base_Filtering_TXX_Files
   itkAnisotropicHybridDiffusionImageFilter.txx
   itkStructureTensorRecursiveGaussianImageFilter.txx
   itkTubeEnhancingDiffusion2DImageFilter.txx
+  itkSheetnessMeasureImageFilter.txx
 )
 
 include_directories(
