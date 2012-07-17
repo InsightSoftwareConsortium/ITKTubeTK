@@ -48,6 +48,7 @@ set( tubeBaseFilteringTests_SRCS
   itkStructureTensorRecursiveGaussianImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
+  itkSheetnessMeasureImageFilterTest.cxx
   )
 
 include_directories(
@@ -72,6 +73,10 @@ add_test( tubeBaseFilteringHeaderTest
 add_test( tubeBaseFilteringPrintTest
   ${BASE_FILTERING_TESTS}
   tubeBaseFilteringPrintTest )
+
+add_test( itkSheetnessMeasureImageFilterTest
+  ${BASE_FILTERING_TESTS}
+  itkSheetnessMeasureImageFilterTest )
 
 MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest
   ${BASE_FILTERING_TESTS}

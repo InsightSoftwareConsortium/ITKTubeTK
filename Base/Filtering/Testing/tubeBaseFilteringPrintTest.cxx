@@ -36,6 +36,7 @@ limitations under the License.
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
+#include "itkSheetnessMeasureImageFilter.h"
 
 int tubeBaseFilteringPrintTest( int, char* [] )
 {
@@ -93,6 +94,12 @@ int tubeBaseFilteringPrintTest( int, char* [] )
     itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
   std::cout << "-------------TubeEnhancingDiffusion2DImageFilter"
     << vesselEnahncingObj << std::endl;
+
+  itk::SheetnessMeasureImageFilter< float >::Pointer
+    sheetnessMeasureImageFilterObj =
+    itk::SheetnessMeasureImageFilter< float >::New();
+  std::cout << "-------------SheetnessMeasureImageFilter"
+    << sheetnessMeasureImageFilterObj << std::endl;
 
   return EXIT_SUCCESS;
 }

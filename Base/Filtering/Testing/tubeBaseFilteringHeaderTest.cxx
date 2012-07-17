@@ -34,6 +34,7 @@ limitations under the License.
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
+#include "itkSheetnessMeasureImageFilter.h"
 
 int main ( int , char ** )
 {
