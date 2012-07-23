@@ -48,7 +48,7 @@ set( SITE_SVN_COMMAND "C:/Program Files/TortoiseSVN/bin/svn" )
 #
 # The following advanced variables should only be changed by experts
 #
-set( TUBETK_SCRIPT_DIR "${TUBETK_BINARY_DIR}/CMake" )
+set( TUBETK_SCRIPT_DIR "${TUBETK_SOURCE_DIR}/CMake" )
 
 set( SITE_CTEST_MODE "Experimental" )
 
@@ -94,26 +94,30 @@ set( CMAKE_GENERATOR ${SITE_CMAKE_GENERATOR} )
 set( QT_QMAKE_EXECUTABLE "${SITE_QMAKE_COMMAND}" )
 
 if( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
+
   execute_process( COMMAND
     "${SITE_GIT_COMMAND}"
     clone "${TUBETK_GIT_REPOSITORY}" "${TUBETK_SOURCE_DIR}" )
   ctest_run_script()
+
+else()
+
+  set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-New" )
+  configure_file(
+    ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
+    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
+  set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+
+  ctest_start( "Experimental" )
+  ctest_update( SOURCE "${TUBETK_SOURCE_DIR}" )
+  ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
+    SOURCE "${TUBETK_SOURCE_DIR}"
+    OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+  ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
+  ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
+  ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+  ctest_submit( PARTS Notes Update Configure Build Test )
+
 endif()
-
-set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-New" )
-configure_file(
-  ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
-  ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
-set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
-
-ctest_start( "Experimental" )
-ctest_update( SOURCE "${TUBETK_SOURCE_DIR}" )
-ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
-  SOURCE "${TUBETK_SOURCE_DIR}"
-  OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
-ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
-ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
-ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
-ctest_submit( PARTS Notes Update Configure Build Test )
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)
