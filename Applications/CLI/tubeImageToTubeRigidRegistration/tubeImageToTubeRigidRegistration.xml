@@ -14,22 +14,22 @@
     <label>IO</label>
     <description>Input/output parameters</description>
     <image>
-      <name>inputImage</name>
-      <label>Input Image</label>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input image</description>
+      <description>Input volume.</description>
     </image>
-    <image>
+    <file>
       <name>inputVessel</name>
       <label>Input Vessel</label>
       <channel>input</channel>
       <index>1</index>
-      <description>Output Volume</description>
-    </image>
+      <description>Input vessel (tube).</description>
+    </file>
     <image>
-      <name>outputImage</name>
-      <label>Output Image</label>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
       <channel>output</channel>
       <index>2</index>
       <description>Binary image demonstrating where the tube is located after it has been registered.</description>
@@ -41,10 +41,10 @@
     <double>
       <name>gaussianBlurStdDev</name>
       <label>Gaussian blur std. dev.</label>
-      <description>Standard deviation of the Gaussian kernel used to blur the binary mask</description>
+      <description>Standard deviation of the Gaussian kernel used to blur input volume.  This increases the likelihood that the vessel spatial object overlapps with the vessel image at their initial alignment and enlarges the convergence zone.</description>
       <longflag>gaussianBlurStdDev</longflag>
       <flag>g</flag>
-      <default>4.0</default>
+      <default>3.0</default>
     </double>
   </parameters>
 

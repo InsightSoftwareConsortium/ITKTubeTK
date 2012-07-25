@@ -53,9 +53,9 @@ set( TubeTK_Base_Registration_TXX_Files
   itkTubeToTubeTransformFilter.h
   )
 
-IF( BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
+endif( BUILD_TESTING )
 
 install(FILES
   ${TubeTK_Base_Segmentation_H_Files}

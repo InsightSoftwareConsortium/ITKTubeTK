@@ -151,11 +151,9 @@ MIDAS_ADD_TEST( itkTubeToTubeTransformFilterTest
 MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationTest
   ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
   MIDAS{Branch.n020.mha.md5}
-  ${TEMP}/itkTubeToTubeTransformFilter.tre
+  MIDAS{tube.tre.md5}
   ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
   )
-set_property(TEST itkImageToTubeRigidRegistrationTest
-  APPEND PROPERTY DEPENDS itkTubeToTubeTransformFilterTest )
 
 MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationPerformancesTest
   ${BASE_REGISTRATION_FILTERS_TESTS}
@@ -171,11 +169,9 @@ MIDAS_ADD_TEST( itkImageToTubeRigidRegistration2Test
   ${BASE_REGISTRATION_FILTERS_TESTS}
   itkImageToTubeRigidRegistration2Test
   MIDAS{Branch.n020.mha.md5}
-  ${TEMP}/itkTubeToTubeTransformFilter.tre
+  MIDAS{tube.tre.md5}
   ${TEMP}/itkImageToTubeRigidRegistration2Test.mha
   )
-set_property(TEST itkImageToTubeRigidRegistration2Test
-  APPEND PROPERTY DEPENDS itkTubeToTubeTransformFilterTest )
 
 MIDAS_ADD_TEST( itkImageToTubeRigidRegistration2PerformancesTest
   ${BASE_REGISTRATION_FILTERS_TESTS}

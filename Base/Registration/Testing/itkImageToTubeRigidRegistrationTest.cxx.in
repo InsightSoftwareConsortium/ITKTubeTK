@@ -28,13 +28,11 @@ limitations under the License.
 #include "itkSpatialObjectReader.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
-#include "itkTransform.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkTubeToTubeTransformFilter.h"
 #include "itkEuler3DTransform.h"
 #include "itkMath.h"
 #include "itkRecursiveGaussianImageFilter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
 
 int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
 {
@@ -47,50 +45,46 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
               << std::endl;
     return EXIT_FAILURE;
     }
+  const char * inputImage = argv[1];
+  const char * inputVessel = argv[2];
+  const char * outputImage = argv[3];
 
-  typedef itk::GroupSpatialObject<3>                      TubeNetType;
-  typedef itk::SpatialObjectReader<3>                     TubeNetReaderType;
-  typedef itk::Image<double, 3>                           ImageType;
-  typedef itk::ImageFileReader<ImageType>                 ImageReaderType;
-  typedef itk::ImageFileWriter<ImageType>                 ImageWriterType;
-  typedef itk::@CTK_ADD_CLASS_NAME@<ImageType, TubeNetType>
-                                                          RegistrationFilterType;
-  typedef itk::Euler3DTransform<double>                   TransformType;
-  typedef itk::TubeToTubeTransformFilter<TransformType,3> TubeTransformFilterType;
+  static const unsigned int Dimension = 3;
+  typedef double            FloatType;
+
+  typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
+  typedef itk::SpatialObjectReader< Dimension >          TubeNetReaderType;
+  typedef itk::Image< FloatType, Dimension >             ImageType;
+  typedef itk::ImageFileReader< ImageType >              ImageReaderType;
+  typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
+  typedef itk::@CTK_ADD_CLASS_NAME@< ImageType, TubeNetType >
+                                                         RegistrationFilterType;
+  typedef itk::Euler3DTransform< FloatType >             TransformType;
+  typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
+                                                         TubeTransformFilterType;
 
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
-  imageReader->SetFileName( argv[1] );
-  try
-    {
-    imageReader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    std::cerr << "Exception caught: " << err << std::endl;
-    return EXIT_FAILURE;
-    }
+  imageReader->SetFileName( inputImage );
 
-  // guassian blur the original input image to increase the likelihood of vessel
+  // Guassian blur the original input image to increase the likelihood of vessel
   // spatial object overlapping with the vessel image at their initial alignment.
   // this enlarges the convergence zone.
   typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
                                                            GaussianBlurFilterType;
-  GaussianBlurFilterType::Pointer blurFilters[3];
-  for ( int i = 0; i < 3; ++i )
+  GaussianBlurFilterType::Pointer blurFilters[Dimension];
+  for ( unsigned int ii = 0; ii < Dimension; ++ii )
     {
-    blurFilters[i] = GaussianBlurFilterType::New();
-    blurFilters[i]->SetSigma( 3.0 );
-    blurFilters[i]->SetZeroOrder();
-    blurFilters[i]->SetDirection( i );
+    blurFilters[ii] = GaussianBlurFilterType::New();
+    blurFilters[ii]->SetSigma( 3.0 );
+    blurFilters[ii]->SetZeroOrder();
+    blurFilters[ii]->SetDirection( ii );
     }
   blurFilters[0]->SetInput( imageReader->GetOutput() );
   blurFilters[1]->SetInput( blurFilters[0]->GetOutput() );
   blurFilters[2]->SetInput( blurFilters[1]->GetOutput() );
   try
     {
-    blurFilters[0]->Update();
-    blurFilters[1]->Update();
     blurFilters[2]->Update();
     }
   catch( itk::ExceptionObject & err )
@@ -101,7 +95,7 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
 
   // read vessel
   TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
-  vesselReader->SetFileName( argv[2] );
+  vesselReader->SetFileName( inputVessel );
   try
     {
     vesselReader->Update();
@@ -112,18 +106,13 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  // register the vessel and the image
-  itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
-    = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
-  randGenerator->Initialize( 137593424 );
-
   double parameterScales[6] = {30.0, 30.0, 30.0, 1.0, 1.0, 1.0};
-  double initialPose[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   if (argc > 9)
     {
     for (int i = 0; i < 6; i++)
       {
-      initialPose[i] = atof( argv[4+i] );
+      initialPosition[i] = atof( argv[4+i] );
       }
     }
 
@@ -134,7 +123,7 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
   registrationFilter->SetMovingSpatialObject( vesselReader->GetGroup() );
   registrationFilter->SetNumberOfIteration( 1000 );
   registrationFilter->SetLearningRate( 0.1 );
-  registrationFilter->SetInitialPosition( initialPose );
+  registrationFilter->SetInitialPosition( initialPosition );
   registrationFilter->SetParametersScale( parameterScales );
   registrationFilter->SetVerbose( false );
   registrationFilter->SetSampling( 100 );
@@ -220,7 +209,7 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
 
   std::cout << "Outputing result image ... ";
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
-  imageWriter->SetFileName(argv[3]);
+  imageWriter->SetFileName( outputImage );
   imageWriter->SetInput(vesselToImageFilter->GetOutput());
   imageWriter->Update();
   std::cout << "end." << std::endl;

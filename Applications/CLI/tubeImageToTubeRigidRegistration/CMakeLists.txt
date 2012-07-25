@@ -51,7 +51,7 @@ include( ${GenerateCLP_USE_FILE} )
 # Include Utilities to access tubeCLIHelperFunctions.h
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/Registration
   )
 
 set( PROJECT_SOURCE

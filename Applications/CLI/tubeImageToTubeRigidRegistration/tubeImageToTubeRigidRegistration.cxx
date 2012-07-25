@@ -31,7 +31,12 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
+#include "itkEuler3DTransform.h"
+#include "itkImageToTubeRigidRegistration.h"
 #include "itkRecursiveGaussianImageFilter.h"
+#include "itkSpatialObjectReader.h"
+#include "itkSpatialObjectToImageFilter.h"
+#include "itkTubeToTubeTransformFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -59,13 +64,23 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                 PixelType;
-  typedef itk::Image< PixelType,  dimensionT >  ImageType;
-  typedef itk::ImageFileReader< ImageType >     ReaderType;
+  static const unsigned int Dimension = 3;
+  typedef double            FloatType;
+
+  typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
+  typedef itk::SpatialObjectReader< Dimension >          TubeNetReaderType;
+  typedef itk::Image< FloatType, Dimension >             ImageType;
+  typedef itk::ImageFileReader< ImageType >              ImageReaderType;
+  typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
+  typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType >
+                                                         RegistrationFilterType;
+  typedef itk::Euler3DTransform< FloatType >             TransformType;
+  typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
+                                                         TubeTransformFilterType;
 
   timeCollector.Start("Load data");
-  typename ReaderType::Pointer reader = ReaderType::New();
-  //reader->SetFileName( inputVolume.c_str() );
+  typename ImageReaderType::Pointer reader = ImageReaderType::New();
+  reader->SetFileName( inputVolume.c_str() );
   try
     {
     reader->Update();
@@ -77,53 +92,139 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+
+  TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
+  vesselReader->SetFileName( inputVessel );
+  try
+    {
+    vesselReader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Reading vessel: Exception caught: "
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
   timeCollector.Stop("Load data");
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  typename ImageType::Pointer curImage = reader->GetOutput();
 
-  if( gaussianBlurStdDev > 0 )
+  typename ImageType::Pointer currentImage = reader->GetOutput();
+  if( gaussianBlurStdDev > 0.0 )
     {
     timeCollector.Start("Gaussian Blur");
 
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
-      FilterType;
-    typename FilterType::Pointer filter;
+      GaussianFilterType;
+    GaussianFilterType::Pointer gaussianFilter;
 
     // Progress per iteration
-    double progressFraction = 0.8/dimensionT;
-
-    for(unsigned int i=0; i<dimensionT; i++)
+    const double progressFraction = 0.1/Dimension;
+    for( unsigned int ii = 0; ii < Dimension; ++ii )
       {
-      filter = FilterType::New();
-      filter->SetInput( curImage );
-      filter->SetNormalizeAcrossScale( true );
-      filter->SetSigma( gaussianBlurStdDev );
+      gaussianFilter = GaussianFilterType::New();
+      gaussianFilter->SetInput( currentImage );
+      gaussianFilter->SetSigma( gaussianBlurStdDev );
 
-      filter->SetOrder(
+      gaussianFilter->SetOrder(
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
-      filter->SetDirection( i );
-      tube::CLIFilterWatcher watcher( filter,
+      gaussianFilter->SetDirection( ii );
+      tube::CLIFilterWatcher watcher( gaussianFilter,
                                       "Blur Filter 1D",
                                       CLPProcessInformation,
                                       progressFraction,
                                       progress,
                                       true );
 
-      filter->Update();
-      curImage = filter->GetOutput();
+      gaussianFilter->Update();
+      currentImage = gaussianFilter->GetOutput();
       }
 
     timeCollector.Stop("Gaussian Blur");
     }
 
-  typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
+
+  timeCollector.Start("Register image to tube");
+  const double parameterScales[6] = {30.0, 30.0, 30.0, 1.0, 1.0, 1.0};
+  const double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+  RegistrationFilterType::Pointer  registrationFilter =
+    RegistrationFilterType::New();
+
+  registrationFilter->SetFixedImage( currentImage );
+  registrationFilter->SetMovingSpatialObject( vesselReader->GetGroup() );
+  registrationFilter->SetNumberOfIteration( 1000 );
+  registrationFilter->SetLearningRate( 0.1 );
+  registrationFilter->SetInitialPosition( initialPosition );
+  registrationFilter->SetParametersScale( parameterScales );
+  registrationFilter->SetVerbose( false );
+  registrationFilter->SetSampling( 100 );
+  try
+    {
+    registrationFilter->Initialize();
+    registrationFilter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Performing registration: Exception caught: "
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+  progress = 0.9;
+  progressReporter.Report( progress );
+  timeCollector.Stop("Register image to tube");
+
 
   timeCollector.Start("Save data");
+  TransformType* outputTransform =
+    dynamic_cast<TransformType *>(registrationFilter->GetTransform());
+
+  TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
+  transformFilter->SetInput( vesselReader->GetGroup() );
+  transformFilter->SetScale( 1.0 );
+  transformFilter->SetTransform( outputTransform );
+  try
+    {
+    transformFilter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Transforming tube: Exception caught: "
+      + std::string(err.GetDescription()) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
+  typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
+                                              SpatialObjectToImageFilterType;
+  SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
+    SpatialObjectToImageFilterType::New();
+  ImageType::SizeType size = currentImage->GetLargestPossibleRegion().GetSize();
+  const double decimationFactor = 4.0;
+  typedef ImageType::SizeType::SizeValueType SizeValueType;
+  size[0] = static_cast< SizeValueType >( size[0] / decimationFactor );
+  size[1] = static_cast< SizeValueType >( size[1] / decimationFactor );
+  size[2] = static_cast< SizeValueType >( size[2] / decimationFactor );
+
+  ImageType::SpacingType spacing = currentImage->GetSpacing();
+  spacing[0] = spacing[0] * decimationFactor;
+  spacing[1] = spacing[1] * decimationFactor;
+  spacing[2] = spacing[2] * decimationFactor;
+  vesselToImageFilter->SetInput( transformFilter->GetOutput() );
+  vesselToImageFilter->SetSize( size );
+  vesselToImageFilter->SetSpacing( spacing );
+  vesselToImageFilter->SetOrigin( currentImage->GetOrigin() );
+  vesselToImageFilter->SetInsideValue( 1.0 );
+  vesselToImageFilter->SetOutsideValue( 0.0 );
+  vesselToImageFilter->Update();
+
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  //writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( curImage );
+  writer->SetFileName( outputVolume.c_str() );
+  writer->SetInput( vesselToImageFilter->GetOutput() );
   writer->SetUseCompression( true );
   try
     {
@@ -152,5 +253,5 @@ int main( int argc, char **argv )
 
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputVolume.
-  //return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
 }

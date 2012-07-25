@@ -337,7 +337,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
             {
             v2[i] = pointIterator->GetNormal1()[i];
             }
-          std::cout << "vector: " << v2[0] << " - " << v2[1] << " - " << v2[2] << std::endl;
 
             matchMeasure += *weightIterator * fabs(
               ComputeLaplacianMagnitude( &v2 ) );
@@ -351,11 +350,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         }
     }
 
-  std::cout << "SumWeight: " << sumWeight << std::endl;
-
   if( sumWeight == 0 )
     {
-    std::cout << "GetValue: All the mapped image is outside ! " << std::endl;
+    std::cerr << "GetValue: All the mapped image is outside ! " << std::endl;
     matchMeasure = -1;
     }
   else
@@ -369,7 +366,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   if( m_Verbose )
     {
-    std::cout << "matchMeasure = " << matchMeasure << std::endl;
+    std::cerr << "matchMeasure = " << matchMeasure << std::endl;
     }
 
   delete tubeList;

@@ -127,10 +127,10 @@ public:
   itkSetMacro( LearningRate, double );
 
   /** Set the initial position */
-  void SetInitialPosition( double position[6] );
+  void SetInitialPosition( const double position[6] );
 
   /** Set the parameters scales */
-  void SetParametersScale( double scales[6] );
+  void SetParametersScale( const double scales[6] );
 
   /** Set the iteration observer */
   itkSetObjectMacro( IterationCommand, CommandIterationType );
@@ -150,12 +150,10 @@ public:
   void SetSampling( unsigned int sampling ) {m_Sampling = sampling;}
 
 protected:
-
   ImageToTubeRigidRegistration();
   virtual ~ImageToTubeRigidRegistration() {};
 
 private:
-
   ImageToTubeRigidRegistration( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
 

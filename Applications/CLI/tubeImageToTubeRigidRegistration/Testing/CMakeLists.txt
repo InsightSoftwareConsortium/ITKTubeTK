@@ -39,10 +39,12 @@ set( IMAGECOMPARE_EXE
 #######
 # Test1
 #######
-#MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
-            #${PROJ_EXE}
-               #MIDAS{ES0015_Large.mha.md5}
-               #${TEMP}/${PROJECT_NAME}Test1.mha )
+MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
+  ${PROJ_EXE}
+  MIDAS{Branch.n020.mha.md5}
+  MIDAS{tube.tre.md5}
+  ${TEMP}/${PROJECT_NAME}Test1.mha
+  )
 
 #######
 # Test1-Compare

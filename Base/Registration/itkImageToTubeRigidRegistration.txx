@@ -62,27 +62,26 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 template <class TFixedImage, class TMovingTube>
 void
 ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
-::SetInitialPosition( double position[6] )
+::SetInitialPosition( const double position[6] )
 {
   m_InitialPosition.set_size( 6 );
-  for( unsigned int i=0;i<6;i++ )
-  {
-    m_InitialPosition[i]=position[i];
-  }
+  for( unsigned int ii = 0; ii < 6; ++ii )
+    {
+    m_InitialPosition[ii]=position[ii];
+    }
 }
 
 /** Set the parameters scales */
  template <class TFixedImage, class TMovingTube>
 void
 ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
-::SetParametersScale( double scales[6] )
+::SetParametersScale( const double scales[6] )
 {
   m_ParametersScale.set_size( 6 );
-  for( unsigned int i=0;i<6;i++ )
-  {
-    m_ParametersScale[i]=scales[i];
-  }
-
+  for( unsigned int ii = 0; ii < 6; ++ii )
+    {
+    m_ParametersScale[ii]=scales[ii];
+    }
 }
 
 
