@@ -220,61 +220,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 
 }
 
-/** Apply the sparse registration */
-template <class TFixedImage, class TMovingTube>
-void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
-::SparseRegistration( ParametersType & parameters )
-{
-  if( !m_IsInitialized )
-    {
-    this->Initialize();
-    }
-
-  ParametersType params( 6 );
-
-  double optimalValue = 0;
-  ParametersType optimalParameters( 6 );
-
-  for( float a=-0.1;a<=0.1;a+=0.1 )
-    {
-    params[0] = parameters[0]+a;
-    for( float b=-0.1;b<=0.1;b+=0.1 )
-      {
-      params[1] = parameters[1]+b;
-      for( float c=-0.1;c<=0.1;c+=0.1 )
-        {
-        params[2] = parameters[2]+c;
-        for( int x=-10;x<=10;x+=10 )
-          {
-          params[3] = parameters[3]+x;
-          for( int y=-10;y<=10;y+=10 )
-            {
-            params[4] = parameters[4]+y;
-            for( int z=-10;z<=10;z+=10 )
-              {
-              params[5] = parameters[5]+z;
-              double value = this->GetMetric()->GetValue( params );
-              if( value > optimalValue )
-                {
-                optimalValue = value;
-                optimalParameters[0]=params[0];
-                optimalParameters[1]=params[1];
-                optimalParameters[2]=params[2];
-                optimalParameters[3]=params[3];
-                optimalParameters[4]=params[4];
-                optimalParameters[5]=params[5];
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-  parameters = optimalParameters;
-}
-
 } // end namespace itk
 
 

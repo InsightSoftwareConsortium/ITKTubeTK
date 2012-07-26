@@ -97,9 +97,6 @@ public:
   /** Method that initiates the registration. */
   void StartRegistration( void );
 
-  /** Start the sparse registration */
-  void SparseRegistration( ParametersType & parameters );
-
   /** Set the number of iteration */
   itkSetMacro( NumberOfIteration, unsigned int );
 
