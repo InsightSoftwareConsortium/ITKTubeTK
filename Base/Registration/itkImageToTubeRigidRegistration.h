@@ -112,10 +112,15 @@ public:
   /** Initialize the registration */
   void Initialize() throw ( ExceptionObject );
 
-  void SetExtent( float extent ) {m_Extent = extent;}
-  void SetVerbose( bool verbose ) {m_Verbose = verbose;}
-  void SetKappa( float kappa ) {m_Kappa = kappa;}
-  void SetSampling( unsigned int sampling ) {m_Sampling = sampling;}
+  itkSetMacro( Extent, float );
+
+  itkSetMacro( Verbose, bool );
+
+  /** Control the radius scaling of the metric. */
+  itkSetMacro( Kappa, float );
+
+  /** Control the sampling of the tube. */
+  itkSetMacro( Sampling, unsigned int );
 
 protected:
   ImageToTubeRigidRegistration();
