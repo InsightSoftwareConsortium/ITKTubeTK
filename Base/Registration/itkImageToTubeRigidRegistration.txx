@@ -187,8 +187,6 @@ void
 ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 ::StartRegistration( void )
 {
-  double c0 = clock();
-
   if( !m_IsInitialized )
     {
     this->Initialize();
@@ -209,15 +207,9 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
     throw err;
     }
 
-  std::cout << "The Solution is : ";
+  // give the result to the superclass
   this->m_LastTransformParameters = this->GetOptimizer()
     ->GetCurrentPosition();
-  // give the result to the superclass
-  std::cout << this->m_LastTransformParameters << std::endl;
-
-  std::cout << "Total Time = " << ( clock()-c0 )/( double )CLOCKS_PER_SEC
-    << std::endl;
-
 }
 
 } // end namespace itk
