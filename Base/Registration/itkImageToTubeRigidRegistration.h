@@ -46,7 +46,7 @@ namespace itk
  *
  * This Class define the generic interface for a registration method.
  * The basic elements of a registration method are:
- *   - Metric to compare the FixedImage and the TMovingTube
+ *   - Metric to compare the TFixedImage and the TMovingTube
  *   - Transformation used to register the FixedImage against the TMovingTube
  *   - Optimization method used to search for the best transformation
  *
@@ -88,28 +88,11 @@ public:
   enum {ImageDimension = FixedImageType::ImageDimension,
     ParametersDimension = TransformType::ParametersDimension};
 
-
   typedef typename Superclass::InterpolatorType   InterpolatorType;
 
   //typedef GradientDescentVariableStepOptimizer  OptimizerType;
   typedef GradientDescentOptimizer                OptimizerType;
   //typedef OnePlusOneEvolutionaryOptimizer       OptimizerType;
-
-  /** Typedef for the optimizer observer */
-  typedef typename itk::SimpleMemberCommand<Self> CommandIterationType;
-
-  /** Get Center of Rotation */
-  itk::Vector<double, 3> GetCenterOfRotation( void )
-    {
-    itk::Vector<double, 3> centerOfRotation;
-    typename MetricType::Pointer metric = dynamic_cast<MetricType*>(
-      this->GetMetric() );
-    for( unsigned int i=0;i<3;i++ )
-      {
-      centerOfRotation[i]=metric->GetCenterOfRotation()( i );
-      }
-    return centerOfRotation;
-    };
 
   /** Method that initiates the registration. */
   void StartRegistration( void );
@@ -128,9 +111,6 @@ public:
 
   /** Set the parameters scales */
   void SetParametersScale( const double scales[6] );
-
-  /** Set the iteration observer */
-  itkSetObjectMacro( IterationCommand, CommandIterationType );
 
   /** Initialize the registration */
   void Initialize() throw ( ExceptionObject );
@@ -152,7 +132,6 @@ private:
   void operator=( const Self& ); //purposely not implemented
 
   unsigned int                             m_NumberOfIteration;
-  typename CommandIterationType::Pointer   m_IterationCommand;
   bool                                     m_IsInitialized;
   double                                   m_LearningRate;
   ParametersType                           m_InitialPosition;

@@ -237,15 +237,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
     this->Initialize();
     }
 
-  /*
-  if( m_IterationCommand )
-    {
-    m_IterationCommand->SetMaximumValue( m_NumberOfIteration );
-    m_IterationCommand->SetOptimizer( ( OptimizerType* )
-    this->GetOptimizer() );
-    }
-  */
-
   try
     {
     // do the optimization
