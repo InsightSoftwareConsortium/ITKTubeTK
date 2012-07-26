@@ -149,11 +149,14 @@ MIDAS_ADD_TEST( itkTubeToTubeTransformFilterTest
   )
 
 MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationTest
-  ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidRegistrationTest
-  MIDAS{Branch.n020.mha.md5}
-  MIDAS{tube.tre.md5}
-  ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
-  )
+  ${BASE_REGISTRATION_FILTERS_TESTS}
+    --compare MIDAS{itkImageToTubeRigidRegistrationTest.mha.md5}
+      ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
+    itkImageToTubeRigidRegistrationTest
+    MIDAS{Branch.n020.mha.md5}
+    MIDAS{tube.tre.md5}
+    ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
+    )
 
 MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationPerformancesTest
   ${BASE_REGISTRATION_FILTERS_TESTS}
