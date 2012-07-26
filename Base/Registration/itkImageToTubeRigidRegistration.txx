@@ -50,7 +50,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   m_InitialPosition.Fill( 0 );
   m_ParametersScale.Fill( 1 );
 
-  m_MaskImage = 0;
   m_Extent = 3;
   m_Kappa = 1;
   m_Sampling = 30;
@@ -98,7 +97,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   metric->SetKappa( m_Kappa );
   metric->SetSampling( m_Sampling );
   metric->SetVerbose( m_Verbose );
-  //metric->SetMaskImage( m_MaskImage );
 
   this->SetMetric( metric );
   typename OptimizerType::Pointer optimizer = OptimizerType::New();

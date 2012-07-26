@@ -72,9 +72,6 @@ public:
 
   typedef typename Superclass::FixedImageType           FixedImageType;
 
-  /** Typedef of the mask image */
-  typedef Image<unsigned char, 3>                       MaskImageType;
-
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
@@ -138,9 +135,6 @@ public:
   /** Initialize the registration */
   void Initialize() throw ( ExceptionObject );
 
-  /** Set the mask image */
-  itkSetObjectMacro( MaskImage, MaskImageType );
-
   /** Write a matlab file to display the metric */
   void CreateMatlabMetric( const char* filename );
 
@@ -157,7 +151,6 @@ private:
   ImageToTubeRigidRegistration( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
 
-  typename MaskImageType::Pointer          m_MaskImage;
   unsigned int                             m_NumberOfIteration;
   typename CommandIterationType::Pointer   m_IterationCommand;
   bool                                     m_IsInitialized;
