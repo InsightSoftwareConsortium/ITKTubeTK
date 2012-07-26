@@ -46,9 +46,14 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   m_IsInitialized = false;
 
   m_InitialPosition.set_size( 6 );
+  m_InitialPosition.Fill( 0.0 );
   m_ParametersScale.set_size( 6 );
-  m_InitialPosition.Fill( 0 );
-  m_ParametersScale.Fill( 1 );
+  m_ParametersScale[0] = 30.;
+  m_ParametersScale[1] = 30.;
+  m_ParametersScale[2] = 30.;
+  m_ParametersScale[3] = 1.;
+  m_ParametersScale[4] = 1.;
+  m_ParametersScale[5] = 1.;
 
   m_Extent = 3;
   m_Kappa = 1;
@@ -105,16 +110,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   this->SetTransform( transform );
   typename InterpolatorType::Pointer interp = InterpolatorType::New();
   this->SetInterpolator( interp );
-
-  /*
-  ParametersType  parametersScale( ParametersDimension );
-  parametersScale[0] = 30; //20
-  parametersScale[1] = 30;
-  parametersScale[2] = 30;
-  parametersScale[3] = 1;
-  parametersScale[4] = 1;
-  parametersScale[5] = 1;
-  */
 
   optimizer->SetScales( m_ParametersScale );
 
@@ -185,44 +180,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   m_IsInitialized = true;
 }
 
-
-/**  */
-template <class TFixedImage, class TMovingTube>
-void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
-::CreateMatlabMetric( const char* filename )
-{
-  FILE* fic = fopen( filename, "wb" );
-
-  ParametersType params( ParametersDimension );
-  params.Fill( 0 );
-
-  unsigned long c0=clock();
-  // Test for XY translation
-  for( float x = -10; x<=10; x+=1.0 )
-    {
-    for( float y = -10; y<=10; y+=1.0 )
-      {
-        params[3] = x;
-        params[4] = y;
-        typename MetricType::DerivativeType  derivatives( 6 );
-        derivatives.Fill( 0 );
-        this->GetMetric()->GetDerivative( params, derivatives );
-        //this->GetMetric()->GetValue( params );
-        fprintf( fic, "%f %f %f %f %f %f %f %f %f %f %f %f %f\n",
-          params[0], params[1], params[2], params[3], params[4], params[5],
-          derivatives[0], derivatives[1], derivatives[2], derivatives[3],
-          derivatives[4], derivatives[5], 0 );
-      }
-    }
-
-  std::cout << "Total time to run MonteCarlo simulation: "
-    << ( ( float )clock()-( float )c0 )/( float )CLOCKS_PER_SEC << " secs."
-    << std::endl;
-
-  fclose( fic );
-
-}
 
 /** Starts the Registration Process */
 template <class TFixedImage, class TMovingTube>

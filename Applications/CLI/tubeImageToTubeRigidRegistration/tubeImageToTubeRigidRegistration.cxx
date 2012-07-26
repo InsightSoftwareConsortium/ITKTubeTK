@@ -148,8 +148,6 @@ int DoIt( int argc, char * argv[] )
 
 
   timeCollector.Start("Register image to tube");
-  const double parameterScales[6] = {30.0, 30.0, 30.0, 1.0, 1.0, 1.0};
-  const double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   RegistrationFilterType::Pointer  registrationFilter =
     RegistrationFilterType::New();
@@ -158,8 +156,6 @@ int DoIt( int argc, char * argv[] )
   registrationFilter->SetMovingSpatialObject( vesselReader->GetGroup() );
   registrationFilter->SetNumberOfIteration( 1000 );
   registrationFilter->SetLearningRate( 0.1 );
-  registrationFilter->SetInitialPosition( initialPosition );
-  registrationFilter->SetParametersScale( parameterScales );
   registrationFilter->SetVerbose( false );
   registrationFilter->SetSampling( 100 );
   try

@@ -115,9 +115,6 @@ public:
   /** Initialize the registration */
   void Initialize() throw ( ExceptionObject );
 
-  /** Write a matlab file to display the metric */
-  void CreateMatlabMetric( const char* filename );
-
   void SetExtent( float extent ) {m_Extent = extent;}
   void SetVerbose( bool verbose ) {m_Verbose = verbose;}
   void SetKappa( float kappa ) {m_Kappa = kappa;}

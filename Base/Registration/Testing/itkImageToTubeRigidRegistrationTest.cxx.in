@@ -106,7 +106,6 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  double parameterScales[6] = {30.0, 30.0, 30.0, 1.0, 1.0, 1.0};
   double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   if (argc > 9)
     {
@@ -124,7 +123,6 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
   registrationFilter->SetNumberOfIteration( 1000 );
   registrationFilter->SetLearningRate( 0.1 );
   registrationFilter->SetInitialPosition( initialPosition );
-  registrationFilter->SetParametersScale( parameterScales );
   registrationFilter->SetVerbose( false );
   registrationFilter->SetSampling( 100 );
   try
