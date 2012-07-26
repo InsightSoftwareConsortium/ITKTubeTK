@@ -33,7 +33,6 @@ template < class TFixedImage, class TMovingSpatialObject>
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::ImageToTubeRigidMetric()
 {
-  m_MaskImage = 0;
   m_Iteration = 1;
   m_Kappa = 1;
   m_RegImageThreshold = 0;
@@ -125,12 +124,12 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   unsigned int step = m_Sampling / 2 - 1;
 
   vnl_matrix<double> biasV( 3, 3, 0 );
-  TubeNetType::Pointer newTubeNet = TubeNetType::New();
-  TubeNetType::ChildrenListType* tubeList = GetTubes();
-  TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
+  typename TubeNetType::Pointer newTubeNet = TubeNetType::New();
+  typename TubeNetType::ChildrenListType* tubeList = GetTubes();
+  typename TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
   for ( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
-    TubeType::Pointer newTube = TubeType::New();
+    typename TubeType::Pointer newTube = TubeType::New();
     TubeType* currTube =
       static_cast<TubeType*>( ( *tubeIterator ).GetPointer() );
 
@@ -248,7 +247,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 // Method might use GetMaximumDepth from ITK.
 // Patch pushed in ITKv4, waiting for validation.
 template < class TFixedImage, class TMovingSpatialObject>
-typename GroupSpatialObject<3>::ChildrenListType*
+typename ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>::TubeNetType::ChildrenListType*
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::GetTubes() const
 {
@@ -290,7 +289,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   //this->m_Transform->SetParameters( parameters );
 
   GroupSpatialObject<3>::ChildrenListType::iterator tubeIterator;
-  TubeNetType::ChildrenListType* tubeList = GetTubes();
+  typename TubeNetType::ChildrenListType* tubeList = GetTubes();
   for( tubeIterator = tubeList->begin();
        tubeIterator != tubeList->end();
        tubeIterator++ )
@@ -298,7 +297,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     TubeType* currTube = static_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
 
-    std::vector<TubePointType>::iterator pointIterator;
+    typename std::vector<TubePointType>::iterator pointIterator;
     for( pointIterator = currTube->GetPoints().begin();
          pointIterator != currTube->GetPoints().end();
          ++pointIterator )
@@ -729,14 +728,14 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   itk::FixedArray<Point<double, 3>, 5000> XTlist;
 
   unsigned int listindex = 0;
-  TubeNetType::ChildrenListType* tubeList = GetTubes();
-  TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
+  typename TubeNetType::ChildrenListType* tubeList = GetTubes();
+  typename TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
   for( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
     TubeType* currTube = static_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
 
-    std::vector<TubePointType>::iterator pointIterator;
+    typename std::vector<TubePointType>::iterator pointIterator;
     for( pointIterator = currTube->GetPoints().begin();
          pointIterator != currTube->GetPoints().end();
          ++pointIterator )

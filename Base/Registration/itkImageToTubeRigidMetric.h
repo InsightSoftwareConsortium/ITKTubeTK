@@ -28,11 +28,9 @@ limitations under the License.
 #include "itkVesselTubeSpatialObject.h"
 #include "itkMinimumMaximumImageCalculator.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include <time.h>
 #include "itkEuler3DTransform.h"
 #include "itkImageToSpatialObjectMetric.h"
 #include <itkGaussianDerivativeImageFunction.h>
-//#include <itkGaussianSecondDerivativeImageFunction.h>
 
 namespace itk
 {
@@ -47,38 +45,40 @@ namespace itk
  * \warning (Derivative)
 */
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingTube>
 class ITK_EXPORT ImageToTubeRigidMetric
-: public ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>
+: public ImageToSpatialObjectMetric<TFixedImage, TMovingTube>
 {
 public:
   typedef ImageToTubeRigidMetric                Self;
-  typedef ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>
+  typedef ImageToSpatialObjectMetric<TFixedImage, TMovingTube>
                                                 Superclass;
   typedef SmartPointer<Self>                    Pointer;
   typedef SmartPointer<const Self>              ConstPointer;
 
+  /**  Dimension of the image and tube.  */
+  itkStaticConstMacro( ImageDimension, unsigned int, TFixedImage::ImageDimension );
+  itkStaticConstMacro( TubeDimension, unsigned int, TMovingTube::ObjectDimension );
+
   /** Type definition for a tube point */
-  typedef VesselTubeSpatialObjectPoint<3>       TubePointType;
-  typedef VesselTubeSpatialObject<3>            TubeType;
-  typedef TMovingSpatialObject                  MovingSpatialObjectType;
-  typedef typename MovingSpatialObjectType::ChildrenListType
-                                                ChildrenListType;
-  typedef GroupSpatialObject<3>                 TubeNetType;
-  typedef Image<unsigned char, 3>               MaskImageType;
-  typedef typename MaskImageType::Pointer       MaskImagePointer;
-  typedef typename MaskImageType::IndexType     IndexType;
-  typedef TFixedImage                           FixedImageType;
-  typedef GaussianDerivativeImageFunction<TFixedImage>
+  typedef VesselTubeSpatialObjectPoint< TubeDimension>  TubePointType;
+  typedef VesselTubeSpatialObject< TubeDimension >      TubeType;
+  typedef TMovingTube                                   MovingTubeType;
+  typedef typename MovingTubeType::ChildrenListType
+                                                        ChildrenListType;
+  typedef GroupSpatialObject< TubeDimension >           TubeNetType;
+  typedef TFixedImage                                   FixedImageType;
+  typedef typename FixedImageType::IndexType            IndexType;
+  typedef GaussianDerivativeImageFunction< TFixedImage >
                                                 DerivativeImageFunctionType;
 
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
 
-  typedef vnl_vector<double>                    VectorType;
-  typedef vnl_matrix<double>                    MatrixType;
-  typedef Point<double, 3>                      PointType;
+  typedef vnl_vector< double >                    VectorType;
+  typedef vnl_matrix< double >                    MatrixType;
+  typedef Point< double, ImageDimension >         PointType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
@@ -88,8 +88,6 @@ public:
 
   /** Space dimension is the dimension of parameters space */
   enum { SpaceDimension = 6 };
-
-  enum { ImageDimension = 3 };
 
   enum { RangeDimension = 6 };
 
@@ -152,8 +150,6 @@ public:
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
-  itkSetObjectMacro( MaskImage, MaskImageType );
-
   itkSetMacro( Verbose, bool );
   itkGetMacro( Verbose, bool );
 
@@ -161,11 +157,11 @@ public:
   itkGetMacro( Sampling, unsigned int );
 
 protected:
-
   ImageToTubeRigidMetric();
   virtual ~ImageToTubeRigidMetric();
-  ImageToTubeRigidMetric( const Self& ) {};
-  void operator=( const Self& ) {};
+
+  ImageToTubeRigidMetric( const Self& ); // purposely not implemented
+  void operator=( const Self& ); // purposely not implemented
 
   void ComputeImageRange( void );
 
@@ -174,10 +170,8 @@ protected:
                        double angle[3] ) const;
 
 private:
-
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  MaskImagePointer                       m_MaskImage;
   unsigned int                           m_NumberOfPoints;
   std::list<double>                      m_Weight;
   double                                 m_SumWeight;
@@ -236,7 +230,7 @@ private:
   void GetCurrentPointBounds( int bounds[6] );
   void ClampPointBoundsToImage( int bounds[6] );
   void ComputeCenterRotation();
-  TubeNetType::ChildrenListType* GetTubes() const;
+  typename TubeNetType::ChildrenListType* GetTubes() const;
 };
 
 } // end namespace itk

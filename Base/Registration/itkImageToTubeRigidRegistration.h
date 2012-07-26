@@ -36,7 +36,6 @@ limitations under the License.
 #include "itkImageRegionIterator.h"
 #include "itkVectorContainer.h"
 #include "itkTubeSpatialObject.h"
-#include "itkCommand.h"
 
 namespace itk
 {
@@ -112,12 +111,12 @@ public:
   /** Initialize the registration */
   void Initialize() throw ( ExceptionObject );
 
-  itkSetMacro( Extent, float );
+  itkSetMacro( Extent, double );
 
   itkSetMacro( Verbose, bool );
 
   /** Control the radius scaling of the metric. */
-  itkSetMacro( Kappa, float );
+  itkSetMacro( Kappa, double );
 
   /** Control the sampling of the tube. */
   itkSetMacro( Sampling, unsigned int );
@@ -135,8 +134,8 @@ private:
   double                                   m_LearningRate;
   ParametersType                           m_InitialPosition;
   ParametersType                           m_ParametersScale;
-  float                                    m_Extent;
-  float                                    m_Kappa;
+  double                                   m_Extent;
+  double                                   m_Kappa;
   bool                                     m_Verbose;
   unsigned int                             m_Sampling;
 
