@@ -344,6 +344,8 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 {
   Superclass::PrintSelf(os,indent);
   os << "NormalizeAcrossScale: " << m_NormalizeAcrossScale << std::endl;
+  os << "Sigma: " << m_Sigma << std::endl;
+  os << "SigmaOuter: " << m_SigmaOuter << std::endl;
 }
 
 

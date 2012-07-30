@@ -179,7 +179,16 @@ SheetnessMeasureImageFilter< TPixel >
   os << indent << "Alpha1: " << m_Alpha << std::endl;
   os << indent << "Beta: " << m_Beta << std::endl;
   os << indent << "Cfactor: " << m_Cfactor << std::endl;
+  if( m_DetectBrightSheets )
+    {
+    os << indent << "DetectBrightSheets: true" << std::endl;
+    }
+  else
+    {
+    os << indent << "DetectBrightSheets: false" << std::endl;
+    }
 }
+
 } // end namespace itk
 
 #endif

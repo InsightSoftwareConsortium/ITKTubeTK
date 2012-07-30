@@ -23,12 +23,13 @@
 
 include_regular_expression( "^.*$" )
 
-find_package( Tclsh )
-if( TCL_TCLSH )
-  add_test( PrintSelf-BaseIO ${TCL_TCLSH}
-    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl
-    ${TubeTK_SOURCE_DIR}/Base/IO )
-endif( TCL_TCLSH )
+find_package( PythonInterp )
+if( PYTHON_EXECUTABLE )
+  add_test( PrintSelf-BaseIO ${PYTHON_EXECUTABLE}
+    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.py
+    ${TubeTK_SOURCE_DIR}/Base/IO
+    )
+endif()
 
 set( BASE_IO_TESTS
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseIOTests )
