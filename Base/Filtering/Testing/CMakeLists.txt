@@ -27,13 +27,13 @@ include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
-
-find_package( Tclsh )
-if( TCL_TCLSH )
-  add_test( PrintSelf-BaseFiltering ${TCL_TCLSH}
-    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl
-    ${TubeTK_SOURCE_DIR}/Base/Filter )
-endif( TCL_TCLSH )
+find_package( PythonInterp )
+if( PYTHON_EXECUTABLE )
+  add_test( PrintSelf-BaseFiltering ${PYTHON_EXECUTABLE}
+    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.py
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    )
+endif()
 
 set( BASE_FILTERING_TESTS
   ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseFilteringTests )

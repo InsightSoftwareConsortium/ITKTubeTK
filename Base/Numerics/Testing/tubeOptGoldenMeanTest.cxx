@@ -92,7 +92,6 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
     {
     myFunc2 = new MyOGMFunc2();
     opt->use( myFunc2 );
-    delete myFunc;
     }
 
   double epsilon = 0.000001 * factor;
@@ -186,6 +185,7 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
     {
     delete myFunc2;
     }
+  delete myFunc;
 
   return returnStatus;
 }

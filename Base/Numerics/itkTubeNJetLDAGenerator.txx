@@ -456,15 +456,17 @@ NJetLDAGenerator< ImageT, LabelmapT >
   if( m_ForceIntensityConsistency || m_ForceOrientationInsensitivity )
     {
     unsigned int vCount = 0;
-    std::vector< int > orientationNum( this->GetNumberOfFeatures(), 0 );
+    std::vector< int > orientationNum;
     for( unsigned int i=0; i<this->GetNumberOfNJetImages(); i++ )
       {
       vCount++;
+      orientationNum.resize( vCount + 1, 0 );
       int orientationBase = vCount;
       for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
         {
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
       for( unsigned int s=0; s<m_FirstScales.size(); s++ )
         {
@@ -473,9 +475,11 @@ NJetLDAGenerator< ImageT, LabelmapT >
           {
           orientationNum[ vCount ] = orientationBase;
           vCount++;
+          orientationNum.resize( vCount + 1, 0 );
           }
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
       orientationBase = vCount;
       for( unsigned int s=0; s<m_SecondScales.size(); s++ )
@@ -485,14 +489,17 @@ NJetLDAGenerator< ImageT, LabelmapT >
           {
           orientationNum[ vCount ] = orientationBase;
           vCount++;
+          orientationNum.resize( vCount + 1, 0 );
           }
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
       for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
         {
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
       }
 
