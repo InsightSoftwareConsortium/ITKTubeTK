@@ -88,14 +88,25 @@ RidgeExtractor<TInputImage>
   m_DataFunc = BlurImageFunction<ImageType>::New();
   m_DataFunc->SetScale( 3 ); // 1.5
   m_DataFunc->SetExtent( 3.1 ); // 3
+  m_DataMin = NumericTraits< double >::max();
+  m_DataMax = NumericTraits< double >::min();
+  m_DataRange = NumericTraits< double >::max();
 
   m_StepX = 0.2;
   m_X.set_size( ImageDimension );
+  m_X.fill( 0.0 );
   m_XP.set_size( ImageDimension );
+  m_XP.fill( 0.0 );
+  m_XVal = 0.0;
   m_XD.set_size( ImageDimension );
+  m_XD.fill( 0.0 );
   m_XH.set_size( ImageDimension, ImageDimension );
+  m_XH.fill( 0.0 );
   m_XHEVal.set_size( ImageDimension );
+  m_XHEVal.fill( 0.0 );
   m_XHEVect.set_size( ImageDimension, ImageDimension );
+  m_XHEVect.fill( 0.0 );
+  m_CurvatureExpectedMax = NumericTraits< double >::min();
 
   m_DynamicScale = false;
   m_DynamicScaleUsed = 3;
@@ -496,16 +507,16 @@ RidgeExtractor<TInputImage>
   roundness = ( vnl_math_abs( m_XHEVal[ ImageDimension-2 ] ) / meanCurv)
     * ridge;
   */
-  roundness = 0;
+  roundness = 0.;
   if( sumv != 0 )
     {
     roundness = ( m_XHEVal[ImageDimension-2] * m_XHEVal[ImageDimension-2] )
       / sumv;
     }
-  roundness = 1 - vnl_math_abs( roundness - 1 );
-  if( roundness < 0 )
+  roundness = 1. - vnl_math_abs( roundness - 1 );
+  if( roundness < 0. )
     {
-    roundness = 0;
+    roundness = 0.;
     }
 
   //curvature = 1.0 - vnl_math_abs( m_XHEVal[0] ) * ridge;

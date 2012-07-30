@@ -574,7 +574,7 @@ RadiusExtractor<TInputImage>
   tmpPnt.SetNormal2( pnt.GetNormal2() );
   kernArray.push_back( tmpPnt );
 
-  double mness = 0;
+  double mness = 0.0;
 
   if( rMin < 0.5 )
     {
