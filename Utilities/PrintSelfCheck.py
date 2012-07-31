@@ -43,8 +43,7 @@ class ClassErrors(object):
         if class_name and len(ivars) > 0 and not printself_found:
             self.missing_printselfs += 1
             if VERBOSE >= 1:
-                print('PrintSelf declaration missing for ' + class_name,
-                        file=sys.stderr)
+                print('PrintSelf declaration missing for ' + class_name)
 
         if class_name and printself_found:
             class_path = fname[:-2]
@@ -148,7 +147,7 @@ class ClassErrors(object):
 
         if superclass_name and not superclass_called:
             if VERBOSE >= 1:
-                print('     Superclass PrintSelf not called!', file=sys.stderr)
+                print('     Superclass PrintSelf not called!')
             self.missing_superclass_calls += 1
 
         for ivar, found in ivars_printed.iteritems():
