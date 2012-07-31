@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import with_statement
 
 # Verify that each class's PrintSelf prints all ivars that have
 # a Set/Get.
