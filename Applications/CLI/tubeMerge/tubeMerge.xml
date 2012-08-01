@@ -20,18 +20,18 @@
       <index>0</index>
       <description>Input volume 1</description>
     </image>
-    <image multiple="true">
+    <image>
       <name>inputVolume2</name>
       <label>Input Volume 2</label>
+      <channel>input</channel>
+      <index>1</index>
       <description>Input volume 2</description>
-      <longflag>mergeVolumes</longflag>
-      <flag>m</flag>
     </image>
     <image>
       <name>outputVolume</name>
       <label>Output Volume</label>
       <channel>output</channel>
-      <index>1</index>
+      <index>2</index>
       <description>Output Volume</description>
     </image>
   </parameters>
@@ -71,7 +71,7 @@
       <description>Pixels to be added around the second image as padding (account for registration movement)</description>
       <longflag>boundary</longflag>
       <flag>b</flag>
-      <default></default>
+      <default>0</default>
     </integer-vector>
     <float>
       <name>expectedOffset</name>
