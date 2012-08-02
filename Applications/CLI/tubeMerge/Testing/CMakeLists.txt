@@ -1,4 +1,4 @@
-##############################################################################
+#############################################################################
 #
 # Library:   TubeTK
 #
@@ -45,7 +45,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
              ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                --saveTransform ${TEMP}/${PROJECT_NAME}Test1.tfm
-               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test1.mha )
 
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
@@ -70,7 +70,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
                -i 0
                -b 50,50
                MIDAS{ES0015_Large.mha.md5}
-               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test2.mha )
 
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
@@ -89,7 +89,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
                -k 10
                -b 50,50
                MIDAS{ES0015_Large.mha.md5}
-               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test3.mha )
 
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
@@ -108,7 +108,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4
                -M
                -i 0
                MIDAS{ES0015_Large.mha.md5}
-               -m MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test4.mha )
 
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4-Compare
