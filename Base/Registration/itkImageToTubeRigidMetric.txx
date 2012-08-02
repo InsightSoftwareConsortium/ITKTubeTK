@@ -43,9 +43,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   m_RotationCenter.fill(0);
   m_Offsets = new vnl_vector<double>( 3, 0 );
 
-  m_T = new vnl_matrix<double>( 3, 3 );
-  m_T->set_identity();
-
   m_Extent = 3;     // TODO Check depedencies --> enum { ImageDimension = 3 };
   m_Verbose = true;
   m_DerivativeImageFunction = DerivativeImageFunctionType::New();
@@ -61,7 +58,6 @@ template < class TFixedImage, class TMovingSpatialObject>
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::~ImageToTubeRigidMetric()
 {
-  delete m_T;
   delete m_Offsets;
 }
 
@@ -594,6 +590,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   return derivatives;
 }
 
+
 /** GetDeltaAngles */
 template < class TFixedImage, class TMovingSpatialObject>
 void
@@ -616,6 +613,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   angle[2] = dx[0] * ( -tempV[1] ) + dx[1] * tempV[0];
 }
 
+
 /** Set the offset */
 template < class TFixedImage, class TMovingSpatialObject>
 void
@@ -632,56 +630,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   ( *m_Offsets )( 2 ) = oZ;
 }
 
-/** Transform a point */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::TransformPoint( vnl_vector<double> * in, vnl_vector<double> * out ) const
-{
-  vnl_vector<double>* tempV = new vnl_vector<double>( 3, 0 );
-  vnl_vector<double>* tempV2 = new vnl_vector<double>( 3, 0 );
-
-  ( *out ) = ( *in ) - ( m_RotationCenter );
-  ( *tempV ) = ( *m_T ) * ( *out );
-
-  ( *tempV2 ) = ( *tempV ) + ( *m_Offsets );
-  ( *out ) = m_Scale * ( ( *tempV2 ) + ( m_RotationCenter ) );
-}
-
-/** Transform a vector */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::TransformVector( vnl_vector<double> * in, vnl_vector<double> * out )
-{
-  ( *out ) = m_Scale * ( ( *m_T ) * ( *in ) );
-}
-
-/** Set Angles */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::SetAngles( double alpha, double beta, double gamma ) const
-{
-  double ca = cos( alpha );
-  double sa = sin( alpha );
-  double cb = cos( beta );
-  double sb = sin( beta );
-  double cg = cos( gamma );
-  double sg = sin( gamma );
-
-  ( *m_T )( 0, 0 ) = ca * cb;
-  ( *m_T )( 0, 1 ) = ca * sb * sg - sa * cg;
-  ( *m_T )( 0, 2 ) = ca * sb * cg + sa * sg;
-  ( *m_T )( 1, 0 ) = sa * cb;
-  ( *m_T )( 1, 1 ) = sa * sb * sg + ca * cg;
-  ( *m_T )( 1, 2 ) = sa * sb * cg - ca * sg;
-  ( *m_T )( 2, 0 ) = -sb;
-  ( *m_T )( 2, 1 ) = cb * sg;
-  ( *m_T )( 2, 2 ) = cb * cg;
-
-  *m_T = vnl_matrix_inverse<double>( *m_T ).inverse();
-}
 
 /** Get the Derivative Measure */
 template < class TFixedImage, class TMovingSpatialObject>

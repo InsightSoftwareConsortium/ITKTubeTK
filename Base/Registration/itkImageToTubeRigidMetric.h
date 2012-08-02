@@ -189,7 +189,6 @@ private:
   mutable double                         m_BlurredValue;
   bool                                   m_Verbose;
 
-  vnl_matrix<double>                   * m_T;
   vnl_vector<double>                   * m_Offsets;
   vnl_vector_fixed<double, 3>            m_RotationCenter;
 
@@ -198,10 +197,6 @@ private:
   // TODO Create gfact var insteal calculating it all the time
 
   void SetOffset( double oX, double oY, double oZ ) const;
-  void SetAngles( double newAlpha, double newBeta, double newGamma ) const;
-
-  void TransformPoint( vnl_vector<double>* in, vnl_vector<double> * out ) const;
-  void TransformVector( vnl_vector<double>* in, vnl_vector<double> * out );
 
   /** Set the scale of the blurring */
   // --> A const method for a set method ?!
