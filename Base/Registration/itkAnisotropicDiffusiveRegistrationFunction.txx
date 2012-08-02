@@ -255,7 +255,7 @@ AnisotropicDiffusiveRegistrationFunction
 
 /**
   * Computes the update term for the regularization
-  */
+ */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
@@ -332,7 +332,7 @@ AnisotropicDiffusiveRegistrationFunction
 
 /**
   * Computes the intensity distance energy
-  */
+ */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction
@@ -347,7 +347,7 @@ AnisotropicDiffusiveRegistrationFunction
 
 /**
   * Computes the regularization energy
-  */
+ */
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction

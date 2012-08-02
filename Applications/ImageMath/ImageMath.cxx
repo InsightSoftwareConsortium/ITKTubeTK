@@ -79,7 +79,7 @@ ResampleImage(
         ResampleFilterType::New();
       filter->SetInput( a );
       filter->SetUseReferenceImage(true);
-	    filter->SetReferenceImage(b);
+      filter->SetReferenceImage(b);
       filter->Update();
       output = filter->GetOutput();
       }
