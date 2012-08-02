@@ -43,7 +43,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   m_RotationCenter.fill( 0.0 );
 
   m_Extent = 3;     // TODO Check depedencies --> enum { ImageDimension = 3 };
-  m_Verbose = true;
   m_DerivativeImageFunction = DerivativeImageFunctionType::New();
 
   this->m_FixedImage = 0;           // has to be provided by the user.
@@ -71,11 +70,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   m_ImageMin = m_RangeCalculator->GetMinimum();
   m_ImageMax = m_RangeCalculator->GetMaximum();
 
-  if( m_Verbose )
-    {
-    std::cout << "ImageMin = " << m_ImageMin << std::endl;
-    std::cout << "ImageMax = " << m_ImageMax << std::endl;
-    }
+  itkDebugMacro( "ImageMin = " << m_ImageMin );
+  itkDebugMacro( "ImageMax = " << m_ImageMax );
 
   m_RegImageThreshold = m_ImageMax;
 }
@@ -204,12 +200,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       }
     newTubeNet->AddSpatialObject( newTube );
     }
-
-  if ( m_Verbose )
-    {
-    std::cout << "Number of Points for the metric = "
-              << m_NumberOfPoints << std::endl;
-    }
+  itkDebugMacro( "Number of Points for the metric = " << m_NumberOfPoints );
 
   this->SetMovingSpatialObject( newTubeNet );
   delete tubeList;
@@ -226,14 +217,11 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     m_RotationCenter[i] /= m_SumWeight;
     }
 
-  if( m_Verbose )
-    {
-    std::cout << "Center of Rotation = "
+  itkDebugMacro( "Center of Rotation = "
               << m_RotationCenter[0] << "  " \
               << m_RotationCenter[1] << "  " \
-              << m_RotationCenter[2] << std::endl;
-    std::cout << "Extent = " << m_Extent << std::endl;
-    }
+              << m_RotationCenter[2] );
+  itkDebugMacro( "Extent = " << m_Extent );
 }
 
 /** Get tubes contained within the Spatial Object */
@@ -264,11 +252,8 @@ typename ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>::MeasureType
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::GetValue( const ParametersType & parameters ) const
 {
-  if( m_Verbose )
-    {
-    std::cout << "**** Get Value ****" << std::endl;
-    std::cout << "Parameters = " << parameters << std::endl;
-    }
+  itkDebugMacro( "**** Get Value ****" );
+  itkDebugMacro( "Parameters = " << parameters );
 
   MeasureType matchMeasure = 0;
   double sumWeight = 0;
@@ -356,10 +341,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
                    - static_cast<float>( m_ImageMin );
     }
 
-  if( m_Verbose )
-    {
-    std::cerr << "matchMeasure = " << matchMeasure << std::endl;
-    }
+  itkDebugMacro( "matchMeasure = " << matchMeasure );
 
   delete tubeList;
   return matchMeasure;
@@ -565,13 +547,10 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       }
     }
 
-  if (m_Verbose)
-    {
-    std::cout << "Result = "
+  itkDebugMacro( "Result = "
               << result[0] << " : "
               << result[1] << " : "
-              << result[2] << std::endl;
-    }
+              << result[2] );
 
   if( wTotalI == 0 )
     {
@@ -622,11 +601,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   this->m_Transform->SetParameters( parameters );
 
-  if( m_Verbose )
-    {
-    std::cout << "**** Get Derivative ****" << std::endl;
-    std::cout <<"parameters = "<< parameters << std::endl;
-    }
+  itkDebugMacro( "**** Get Derivative ****" );
+  itkDebugMacro( "parameters = "<< parameters )
 
   vnl_matrix<double> biasV( 3, 3, 0 );
   vnl_matrix<double> biasVI( 3, 3, 0 );
@@ -757,10 +733,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     dAngle[0] = dAngle[1] = dAngle[2] = 0;
     derivative.fill(0);
 
-    if( m_Verbose )
-      {
-      std::cout << "GetDerivative : sumWeight == 0 !" << std::endl;
-      }
+    itkWarningMacro( "GetDerivative : sumWeight == 0 !" );
     return;
     }
   else
@@ -777,9 +750,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   // ImageDimension correct here?
   vnl_vector_fixed< double, ImageDimension > offsets;
-  //offsets[0] = parameters[3];
-  //offsets[1] = parameters[4];
-  //offsets[2] = parameters[5];
   offsets[0] = dPosition[0];
   offsets[1] = dPosition[1];
   offsets[2] = dPosition[2];
@@ -806,15 +776,12 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   dAngle[1] /= sumWeight * dXTlist.size();
   dAngle[2] /= sumWeight * dXTlist.size();
 
-  if( m_Verbose )
-    {
-    std::cout << "dA = " << dAngle[0] << std::endl;
-    std::cout << "dB = " << dAngle[1] << std::endl;
-    std::cout << "dG = " << dAngle[2] << std::endl;
-    std::cout << "dX = " << dPosition[0] << std::endl;
-    std::cout << "dY = " << dPosition[1] << std::endl;
-    std::cout << "dZ = " << dPosition[2] << std::endl;
-    }
+  itkDebugMacro( "dA = " << dAngle[0] );
+  itkDebugMacro( "dB = " << dAngle[1] );
+  itkDebugMacro( "dG = " << dAngle[2] );
+  itkDebugMacro( "dX = " << dPosition[0] );
+  itkDebugMacro( "dY = " << dPosition[1] );
+  itkDebugMacro( "dZ = " << dPosition[2] );
 
   if( m_Iteration > 0 )
     {

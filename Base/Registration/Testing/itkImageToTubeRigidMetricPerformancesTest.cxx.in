@@ -98,7 +98,6 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
   MetricType::Pointer metric = MetricType::New();
   metric->SetExtent( 3 );
   metric->SetSampling( 30 );
-  metric->SetVerbose( false );
 
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
   TransformType::Pointer transform = TransformType::New();

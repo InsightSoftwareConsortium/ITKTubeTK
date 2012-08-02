@@ -156,7 +156,6 @@ int DoIt( int argc, char * argv[] )
   registrationFilter->SetMovingSpatialObject( vesselReader->GetGroup() );
   registrationFilter->SetNumberOfIteration( 1000 );
   registrationFilter->SetLearningRate( 0.1 );
-  registrationFilter->SetVerbose( false );
   registrationFilter->SetSampling( 100 );
   try
     {

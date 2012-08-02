@@ -129,7 +129,6 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   registrationFilter->SetLearningRate(0.1);
   registrationFilter->SetInitialPosition(initialPose);
   registrationFilter->SetParametersScale(parameterScales);
-  registrationFilter->SetVerbose( false );
   registrationFilter->SetSampling(100);
   try
     {

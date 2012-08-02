@@ -150,9 +150,6 @@ public:
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
-  itkSetMacro( Verbose, bool );
-  itkGetMacro( Verbose, bool );
-
   itkSetMacro( Sampling, unsigned int );
   itkGetMacro( Sampling, unsigned int );
 
@@ -188,7 +185,6 @@ private:
 
   mutable OutputPointType                m_CurrentPoint;
   mutable double                         m_BlurredValue;
-  bool                                   m_Verbose;
 
   vnl_vector_fixed< double, TubeDimension >  m_Offsets;
   vnl_vector_fixed< double, 3 >              m_RotationCenter;

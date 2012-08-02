@@ -58,7 +58,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   m_Extent = 3;
   m_Kappa = 1;
   m_Sampling = 30;
-  m_Verbose = true;
 }
 
 
@@ -101,7 +100,6 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
   metric->SetExtent( m_Extent );
   metric->SetKappa( m_Kappa );
   metric->SetSampling( m_Sampling );
-  metric->SetVerbose( m_Verbose );
 
   this->SetMetric( metric );
   typename OptimizerType::Pointer optimizer = OptimizerType::New();
