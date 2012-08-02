@@ -40,8 +40,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   m_Scale = 1;
   m_Factors.fill(1.0);
-  m_RotationCenter.fill(0);
-  m_Offsets = new vnl_vector<double>( 3, 0 );
+  m_RotationCenter.fill( 0.0 );
 
   m_Extent = 3;     // TODO Check depedencies --> enum { ImageDimension = 3 };
   m_Verbose = true;
@@ -58,7 +57,6 @@ template < class TFixedImage, class TMovingSpatialObject>
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::~ImageToTubeRigidMetric()
 {
-  delete m_Offsets;
 }
 
 /** SetImageRange */
@@ -281,7 +279,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   weightIterator = m_Weight.begin();
 
   // TODO change the place where you set the parameters !
-  //SetOffset( parameters[3], parameters[4], parameters[5] );
   //this->m_Transform->SetParameters( parameters );
 
   GroupSpatialObject<3>::ChildrenListType::iterator tubeIterator;
@@ -591,12 +588,12 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-/** GetDeltaAngles */
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::GetDeltaAngles( const Point<double, 3> & x,
   const vnl_vector_fixed<double, 3> & dx,
+  const vnl_vector_fixed<double, 3> & offsets,
   double angle[3] ) const
 {
   vnl_vector_fixed<double, 3> tempV;
@@ -605,29 +602,12 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   pos[1] = x[1];
   pos[2] = x[2];
 
-  tempV = ( pos - ( *m_Offsets ) ) - ( m_RotationCenter );
+  tempV = ( pos - offsets ) - ( m_RotationCenter );
   tempV.normalize();
 
   angle[0] = dx[1] * ( -tempV[2] ) + dx[2] * tempV[1];
   angle[1] = dx[0] * tempV[2] + dx[2] * ( -tempV[0] );
   angle[2] = dx[0] * ( -tempV[1] ) + dx[1] * tempV[0];
-}
-
-
-/** Set the offset */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::SetOffset( double oX, double oY, double oZ ) const
-{
-  if( ( *m_Offsets )( 0 ) == oX && ( *m_Offsets )( 1 ) == oY && ( *m_Offsets )( 2 ) == oZ )
-    {
-    return;
-    }
-
-  ( *m_Offsets )( 0 ) = oX;
-  ( *m_Offsets )( 1 ) = oY;
-  ( *m_Offsets )( 2 ) = oZ;
 }
 
 
@@ -639,7 +619,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
                  DerivativeType & derivative ) const
 {
   derivative = DerivativeType( SpaceDimension );
-  SetOffset( parameters[3], parameters[4], parameters[5] );
+
   this->m_Transform->SetParameters( parameters );
 
   if( m_Verbose )
@@ -795,7 +775,14 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   listindex  = 0;
 
-  this->SetOffset( dPosition[0], dPosition[1], dPosition[2] );
+  // ImageDimension correct here?
+  vnl_vector_fixed< double, ImageDimension > offsets;
+  //offsets[0] = parameters[3];
+  //offsets[1] = parameters[4];
+  //offsets[2] = parameters[5];
+  offsets[0] = dPosition[0];
+  offsets[1] = dPosition[1];
+  offsets[2] = dPosition[2];
 
   while( dXTIterator != dXTlist.end() )
     {
@@ -807,7 +794,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     dXT = dXT * biasVI;
     const Point<double, 3> & xT = XTlist[listindex++];
 
-    GetDeltaAngles( xT, dXT, angleDelta );
+    this->GetDeltaAngles( xT, dXT, offsets, angleDelta );
     dAngle[0] += *weightIterator * angleDelta[0];
     dAngle[1] += *weightIterator * angleDelta[1];
     dAngle[2] += *weightIterator * angleDelta[2];

@@ -167,6 +167,7 @@ protected:
 
   void GetDeltaAngles( const Point<double, 3> & x,
                        const vnl_vector_fixed<double, 3> & dx,
+                       const vnl_vector_fixed<double, 3> & offsets,
                        double angle[3] ) const;
 
 private:
@@ -189,14 +190,12 @@ private:
   mutable double                         m_BlurredValue;
   bool                                   m_Verbose;
 
-  vnl_vector<double>                   * m_Offsets;
-  vnl_vector_fixed<double, 3>            m_RotationCenter;
+  vnl_vector_fixed< double, TubeDimension >  m_Offsets;
+  vnl_vector_fixed< double, 3 >              m_RotationCenter;
 
-  vnl_vector_fixed<double, 3>           m_Factors;
+  vnl_vector_fixed< double, 3 >              m_Factors;
 
   // TODO Create gfact var insteal calculating it all the time
-
-  void SetOffset( double oX, double oY, double oZ ) const;
 
   /** Set the scale of the blurring */
   // --> A const method for a set method ?!
