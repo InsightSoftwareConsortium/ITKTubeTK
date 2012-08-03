@@ -644,7 +644,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       {
       InputPointType inputPoint = pointIterator->GetPosition();
       itk::Point<double, 3> point;
-      Matrix<double, 3, 3> matrix =  GetTransform()->GetRotationMatrix();
+      typename TransformType::MatrixType matrix =
+        this->GetTransform()->GetMatrix();
 
       point =  matrix * inputPoint + GetTransform()->GetOffset();
 
@@ -1008,8 +1009,8 @@ bool
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::IsInside( const InputPointType & point ) const
 {
-  Matrix<double, 3, 3> matrix =  GetTransform()->GetRotationMatrix();
-  m_CurrentPoint =  matrix * point + GetTransform()->GetOffset();
+  typename TransformType::MatrixType matrix =  this->GetTransform()->GetMatrix();
+  m_CurrentPoint =  matrix * point + this->GetTransform()->GetOffset();
 
   Vector<double, 3>  m_CenterOfRotation;
   for( unsigned int i = 0; i < 3; i++ )
@@ -1017,7 +1018,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     m_CenterOfRotation[i]= m_RotationCenter[i];
     }
 
-  itk::Vector<double, 3> rotationOffset = matrix * m_CenterOfRotation;
+  Vector<double, 3> rotationOffset = matrix * m_CenterOfRotation;
 
   m_CurrentPoint[0] += m_CenterOfRotation[0] - rotationOffset[0];
   m_CurrentPoint[1] += m_CenterOfRotation[1] - rotationOffset[1];

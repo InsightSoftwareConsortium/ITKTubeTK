@@ -30,9 +30,15 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
-set( BASE_REGISTRATION_FILTERS_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests
-  )
+if( Slicer3_INSTALL_BIN_DIR )
+  set( BASE_REGISTRATION_FILTERS_TESTS
+    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests
+    )
+else()
+  set( BASE_REGISTRATION_FILTERS_TESTS
+    ${TubeTK_BINARY_DIR}/bin/tubeBaseRegistrationFiltersTests
+    )
+endif()
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
@@ -91,13 +97,8 @@ list( APPEND tubeBaseRegistrationFilters_SRCS
   ${GenericTubeBaseRegistrationFiltersTests_SRCS}
   )
 
-# expect image comparison perfection on 64-bit linux machines
-if( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( imageCompareTolerance 0 )
-# ... and give a bit of tolerance for 32-bit machines or windows/mac
-else()
-  set( imageCompareTolerance 0.000001 )
-endif()
+# give a bit of tolerance
+set( imageCompareTolerance 0.000001 )
 
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )

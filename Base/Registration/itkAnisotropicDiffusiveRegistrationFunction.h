@@ -92,8 +92,12 @@ public:
   typedef typename Superclass::MovingImageType               MovingImageType;
   typedef typename Superclass::MovingImagePointer            MovingImagePointer;
   typedef typename MovingImageType::PixelType                MovingImagePixelType;
-  typedef typename Superclass::DeformationFieldType          DeformationFieldType;
-  typedef typename Superclass::DeformationFieldTypePointer   DeformationFieldTypePointer;
+#if ITK_VERSION_MAJOR > 3
+  typedef typename Superclass::DisplacementFieldType     DeformationFieldType;
+  typedef typename DeformationFieldType::Pointer         DeformationFieldPointer;
+#else
+  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
+#endif
   typedef typename Superclass::TimeStepType                  TimeStepType;
   typedef typename Superclass::NeighborhoodType              NeighborhoodType;
   typedef typename Superclass::PixelType                     PixelType;

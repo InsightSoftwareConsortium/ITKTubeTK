@@ -616,7 +616,7 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
          ++pointIterator )
       {
       OutputPointType tempPoint;
-      Matrix<double, 3, 3> matrix = GetTransform()->GetRotationMatrix();
+      Matrix<double, 3, 3> matrix = GetTransform()->GetMatrix();
       vnl_vector<double> rotationOffset = matrix * m_RotationCenter;
 
       tempPoint = matrix * pointIterator->GetPosition()

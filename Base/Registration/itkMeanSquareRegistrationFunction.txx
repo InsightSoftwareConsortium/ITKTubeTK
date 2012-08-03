@@ -129,7 +129,11 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     }
 
   // Compute update
+#if ITK_VERSION_MAJOR > 3
+  DeformationFieldPixelType itvec = this->GetDisplacementField()->GetPixel(index);
+#else
   DeformationFieldPixelType itvec = this->GetDeformationField()->GetPixel(index);
+#endif
   const double speedValue = this->ComputeIntensityDifference(index, itvec);
 
   const bool normalizemetric=this->GetNormalizeGradient();
