@@ -28,7 +28,6 @@ limitations under the License.
 namespace itk
 {
 
-/** Constructor */
 template < class TFixedImage, class TMovingSpatialObject>
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::ImageToTubeRigidMetric()
@@ -51,14 +50,14 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   this->m_Interpolator = 0;         // has to be provided by the user.
 }
 
-/** Destructor */
+
 template < class TFixedImage, class TMovingSpatialObject>
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::~ImageToTubeRigidMetric()
 {
 }
 
-/** SetImageRange */
+
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -76,7 +75,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   m_RegImageThreshold = m_ImageMax;
 }
 
-/** Initialize the metric  */
+
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -86,10 +85,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   m_NumberOfPoints = 0;
   m_SumWeight = 0;
 
-  if( !this->m_MovingSpatialObject || !this->m_FixedImage)
+  if( !this->m_MovingSpatialObject || !this->m_FixedImage )
     {
-    std::cout << "SubSampleTube : No tube/image net plugged in ! " << std::endl;
-    return;
+    itkExceptionMacro( "No tube/image net plugged in !" );
     }
 
   this->ComputeImageRange();
@@ -97,7 +95,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   this->ComputeCenterRotation();
 
   this->m_Interpolator->SetInputImage( this->m_FixedImage );
-  m_DerivativeImageFunction->SetInputImage( this->m_FixedImage );
+  this->m_DerivativeImageFunction->SetInputImage( this->m_FixedImage );
 }
 
 /** Subsample the MovingSpatialObject tubenet  */
