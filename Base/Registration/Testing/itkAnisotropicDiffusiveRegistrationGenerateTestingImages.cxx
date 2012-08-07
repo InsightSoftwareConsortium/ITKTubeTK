@@ -54,7 +54,7 @@ typename TImage::PixelType backgnd )
 {
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
   Iterator it( image, image->GetBufferedRegion() );
-  it.Begin();
+  it.GoToBegin();
 
   typename TImage::IndexType index;
   double r2 = vnl_math_sqr( radius );
@@ -89,7 +89,7 @@ typename TImage::PixelType topEnd
 {
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
   Iterator it( image, image->GetBufferedRegion() );
-  it.Begin();
+  it.GoToBegin();
 
   typename TImage::IndexType index;
   typename TImage::PixelType bottomRange = bottomEnd - bottomStart;
@@ -178,7 +178,7 @@ typename TImage::PixelType topIntensity
 {
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
   Iterator it( image, image->GetBufferedRegion() );
-  it.Begin();
+  it.GoToBegin();
 
   typename TImage::IndexType index;
 
