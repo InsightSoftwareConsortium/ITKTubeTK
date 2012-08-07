@@ -28,4 +28,5 @@ limitations under the License.
 void RegisterTests()
 {
   REGISTER_TEST( itkLabelMapToAcousticImpedanceImageFilterTest );
+  REGISTER_TEST( itkAngleOfIncidenceImageFilterTest );
 }
