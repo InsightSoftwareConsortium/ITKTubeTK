@@ -178,7 +178,6 @@ private:
   typename RangeCalculatorType::Pointer  m_RangeCalculator;
   unsigned int                           m_Iteration;
   double                                 m_Kappa;
-  double                                 m_RegImageThreshold;
   double                                 m_Extent;
   mutable double                         m_Scale;
   unsigned int                           m_Sampling;

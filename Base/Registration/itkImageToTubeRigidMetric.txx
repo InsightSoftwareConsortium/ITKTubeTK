@@ -34,7 +34,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 {
   m_Iteration = 1;
   m_Kappa = 1;
-  m_RegImageThreshold = 0;
   m_Sampling = 30;
 
   m_Scale = 1;
@@ -71,8 +70,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   itkDebugMacro( "ImageMin = " << m_ImageMin );
   itkDebugMacro( "ImageMax = " << m_ImageMax );
-
-  m_RegImageThreshold = m_ImageMax;
 }
 
 
