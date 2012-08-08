@@ -72,13 +72,14 @@ public:
   typedef GaussianDerivativeImageFunction< TFixedImage >
                                                 DerivativeImageFunctionType;
 
+  typedef double                                InternalComputationValueType;
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
 
-  typedef vnl_vector< double >                    VectorType;
-  typedef vnl_matrix< double >                    MatrixType;
-  typedef Point< double, ImageDimension >         PointType;
+  typedef vnl_vector< InternalComputationValueType >                    VectorType;
+  typedef vnl_matrix< InternalComputationValueType >                    MatrixType;
+  typedef Point< InternalComputationValueType, ImageDimension >         PointType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
@@ -150,8 +151,8 @@ public:
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
-  itkSetMacro( Sampling, unsigned int );
-  itkGetMacro( Sampling, unsigned int );
+  itkSetMacro( Sampling, OffsetValueType );
+  itkGetMacro( Sampling, OffsetValueType );
 
 protected:
   ImageToTubeRigidMetric();
@@ -162,41 +163,38 @@ protected:
 
   void ComputeImageRange( void );
 
-  void GetDeltaAngles( const Point<double, 3> & x,
-                       const vnl_vector_fixed<double, 3> & dx,
-                       const vnl_vector_fixed<double, 3> & offsets,
+  void GetDeltaAngles( const Point< InternalComputationValueType, 3> & x,
+                       const vnl_vector_fixed< InternalComputationValueType, 3> & dx,
+                       const vnl_vector_fixed< InternalComputationValueType, 3> & offsets,
                        double angle[3] ) const;
 
 private:
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  unsigned int                           m_NumberOfPoints;
-  std::list<double>                      m_Weight;
-  double                                 m_SumWeight;
-  double                                 m_ImageMin;
-  double                                 m_ImageMax;
-  typename RangeCalculatorType::Pointer  m_RangeCalculator;
-  unsigned int                           m_Iteration;
-  double                                 m_Kappa;
-  double                                 m_Extent;
-  mutable double                         m_Scale;
-  unsigned int                           m_Sampling;
+  unsigned int                               m_NumberOfPoints;
+  std::list< InternalComputationValueType >  m_Weight;
+  InternalComputationValueType               m_SumWeight;
+  InternalComputationValueType               m_ImageMin;
+  InternalComputationValueType               m_ImageMax;
+  typename RangeCalculatorType::Pointer      m_RangeCalculator;
+  unsigned int                               m_Iteration;
+  double                                     m_Kappa;
+  double                                     m_Extent;
+  InternalComputationValueType               m_InitialScale;
+  OffsetValueType                            m_Sampling;
 
   mutable OutputPointType                m_CurrentPoint;
-  mutable double                         m_BlurredValue;
+  mutable InternalComputationValueType   m_BlurredValue;
 
-  vnl_vector_fixed< double, TubeDimension >  m_Offsets;
-  vnl_vector_fixed< double, 3 >              m_RotationCenter;
+  vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
+  vnl_vector_fixed< InternalComputationValueType, 3 >              m_RotationCenter;
 
-  vnl_vector_fixed< double, 3 >              m_Factors;
+  vnl_vector_fixed< InternalComputationValueType, 3 >              m_Factors;
 
   // TODO Create gfact var insteal calculating it all the time
 
   /** Set the scale of the blurring */
-  // --> A const method for a set method ?!
-  void SetScale( const double scale ) const { m_Scale = scale; }
-
-  itkGetConstMacro( Scale, double );
+  itkGetConstMacro( InitialScale, InternalComputationValueType );
 
   /** Test whether the specified point is inside
   This method overload the one in the ImageMapper class
@@ -205,18 +203,15 @@ private:
   bool IsInside( const InputPointType & point ) const;
 
   VectorType *  EvaluateAllDerivatives( void ) const;
-  VectorType *  ComputeThirdDerivatives( void ) const;
 
-  itkGetConstMacro( BlurredValue, double );
+  itkGetConstMacro( BlurredValue, InternalComputationValueType );
 
-  VectorType* GetSecondDerivatives() const;
-  MatrixType* GetHessian( PointType ) const;
-  double ComputeLaplacianMagnitude( Vector<double, 3> *v ) const;
-  double ComputeThirdDerivatives( Vector<double, 3> *v ) const;
-  double ComputeDerivatives( Vector<double, 3> *v ) const;
+  double ComputeLaplacianMagnitude( Vector< InternalComputationValueType, 3 > *v,
+    const InternalComputationValueType & scale ) const;
+  double ComputeThirdDerivatives( Vector< InternalComputationValueType, 3 > *v,
+    const InternalComputationValueType & scale ) const;
+  double ComputeDerivatives( Vector< InternalComputationValueType, 3 > *v ) const;
 
-  void GetPointBounds( PointType point, int bounds[6] );
-  void GetCurrentPointBounds( int bounds[6] );
   void ClampPointBoundsToImage( int bounds[6] );
   void ComputeCenterRotation();
   typename TubeNetType::ChildrenListType* GetTubes() const;

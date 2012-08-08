@@ -36,7 +36,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   m_Kappa = 1;
   m_Sampling = 30;
 
-  m_Scale = 1;
+  m_InitialScale = 1;
   m_Factors.fill(1.0);
   m_RotationCenter.fill( 0.0 );
 
@@ -110,7 +110,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   typename TubeNetType::Pointer newTubeNet = TubeNetType::New();
   typename TubeNetType::ChildrenListType* tubeList = GetTubes();
-  typename TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
+  typename TubeNetType::ChildrenListType::iterator tubeIterator =
+    tubeList->begin();
   for ( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
     typename TubeType::Pointer newTube = TubeType::New();
@@ -248,12 +249,13 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   itkDebugMacro( "**** Get Value ****" );
   itkDebugMacro( "Parameters = " << parameters );
 
-  MeasureType matchMeasure = 0;
-  double sumWeight = 0;
-  double count = 0;
-  double opR;
+  MeasureType matchMeasure = 0.0;
+  InternalComputationValueType sumWeight = 0.0;
+  InternalComputationValueType count = 0.0;
+  InternalComputationValueType opR;
+  InternalComputationValueType scale = this->m_InitialScale;
 
-  std::list<double>::const_iterator weightIterator;
+  std::list< InternalComputationValueType >::const_iterator weightIterator;
   weightIterator = m_Weight.begin();
 
   // TODO change the place where you set the parameters !
@@ -300,7 +302,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
           opR = pointIterator->GetRadius();
           opR = std::max( opR, 0.5 );
 
-          SetScale( opR * m_Kappa );
+          scale = opR * m_Kappa;
 
           Vector<double, 3> v2;
           for( unsigned int i = 0; i < 3; ++i )
@@ -309,7 +311,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
             }
 
             matchMeasure += *weightIterator * fabs(
-              ComputeLaplacianMagnitude( &v2 ) );
+              ComputeLaplacianMagnitude( &v2, scale ) );
             }
         else
           {
@@ -345,14 +347,15 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 template < class TFixedImage, class TMovingSpatialObject>
 double
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::ComputeLaplacianMagnitude( Vector<double, 3> *v ) const
+::ComputeLaplacianMagnitude( Vector< InternalComputationValueType, 3> *v,
+  const InternalComputationValueType & scale ) const
 {
   // We convolve the 1D signal defined by the direction v at point
   // m_CurrentPoint with a second derivative of a gaussian
-  const double scaleSquared = std::pow( m_Scale, 2 );
-  const double scaleExtentProduct = m_Scale * m_Extent;
-  double result = 0;
-  double wI = 0;
+  const InternalComputationValueType scaleSquared = scale * scale;
+  const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
+  InternalComputationValueType result = 0.0;
+  InternalComputationValueType wI = 0.0;
   unsigned int n = 0;
 
   itk::Index<3> index;
@@ -406,160 +409,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   return result;
 }
 
-/** Compute the Hessian value at a given point */
-template < class TFixedImage, class TMovingSpatialObject>
-typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject>::MatrixType*
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::GetHessian( PointType point ) const
-{
-  int i, j, k, l, m;
-  double xDist2, yDist2, zDist2;
-  double wI, wTotalI=0, resI=0;
-  MatrixType* hessian = new MatrixType( 3, 3, 0 );
-  MatrixType w( 3, 3, 0.0 );
-  MatrixType wTotal( 3, 3, 0.0 );
-
-  int pointBounds[6];
-  this->GetPointBounds( point, pointBounds );
-  for( i = pointBounds[4]; i <= pointBounds[5]; ++i )
-    {
-    zDist2 = ( i - point[2] ) * ( i - point[2] ) * std::pow( m_Factors[2], 2 );
-    for( j = pointBounds[2]; j <= pointBounds[3]; ++j )
-      {
-      yDist2 = ( j - point[1] ) * ( j - point[1] ) * std::pow( m_Factors[1], 2 );
-      for( k = pointBounds[0]; k <= pointBounds[1]; ++k )
-        {
-        xDist2 = ( k - point[0] ) * ( k - point[0] ) * std::pow( m_Factors[0], 2 );
-        if( xDist2 + yDist2 + zDist2 <= std::pow( m_Scale * m_Extent, 2 ) )
-          {
-          wI = static_cast<double>( exp( -0.5 * ( yDist2 + xDist2 + zDist2 )
-            / std::pow( m_Scale, 2 ) ) );
-
-          w( 0, 0 ) = ( 4 * xDist2 - 2 ) * wI;
-          w( 0, 1 ) = ( 4 * ( k-point[0] )
-            * ( j - point[1] ) * m_Factors[0] * m_Factors[1] ) * wI;
-          w( 0, 2 ) = ( 4 * ( k-point[0] )
-            * ( i - point[2] ) * m_Factors[0] * m_Factors[2] ) * wI;
-          w( 1, 0 ) = w( 0, 1 );
-          w( 1, 1 ) = ( 4 * yDist2 - 2 ) * wI;
-          w( 1, 2 ) = ( 4 * ( j-point[1] )
-            * ( i - point[2] ) * m_Factors[1] * m_Factors[2] ) * wI;
-          w( 2, 0 ) = w( 0, 2 );
-          w( 2, 1 ) = w( 1, 2 );
-          w( 2, 2 ) = ( 4 * zDist2 - 2 ) * wI;
-
-          itk::Size<3> size =
-            this->m_FixedImage->GetLargestPossibleRegion().GetSize();
-
-          if( i >= 0 && ( i < size[2] ) && j >= 0 && ( j < size[1] )
-            && k >= 0 && ( k < size[0] ) )
-            {
-            wTotalI += static_cast<double>( fabs( wI ) );
-            for( l = 0; l < 3; ++l )
-              {
-              for( m = 0; m < 3; ++m )
-                {
-                wTotal( l, m ) += fabs( w( l, m ) );
-                }
-              }
-
-            itk::Index<3> index = {k, j, i};
-            double value = this->m_FixedImage->GetPixel( index );
-            resI += value * wI;
-
-            for( l = 0; l < 3; ++l )
-              {
-              for( m = 0; m < 3; ++m )
-                {
-                ( *hessian )( l, m ) += value * w( l, m );
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-  for( l = 0; l < 3; ++l )
-    {
-    for( m = 0; m < 3; ++m )
-      {
-      ( *hessian )( l, m ) /= wTotal( l, m );
-      }
-    }
-
-  return hessian;
-}
-
-/** GetSecondDerivative */
-template < class TFixedImage, class TMovingSpatialObject>
-typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject>::VectorType*
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::GetSecondDerivatives( void ) const
-{
-  vnl_vector<double>* derivatives = new  vnl_vector<double>( 3 );
-  itk::Index<3> index;
-  PixelType value;
-  double squaredDistance;
-  double squaredDistances[3];
-  double wI;          // TODO Rename these variables
-  double wTotalI = 0; // TODO Rename these variables
-  double weights[3];
-  double result[3] = { 0, 0, 0 };
-  double const gfact = -0.5 / ( std::pow( m_Scale, 2 ) );
-
-  int currentPointBounds[6];
-  this->GetCurrentPointBounds( currentPointBounds );
-  this->ClampPointBoundsToImage( currentPointBounds );
-  for( int i = currentPointBounds[4]; i <= currentPointBounds[5]; ++i )
-    {
-    squaredDistances[2] = std::pow( i - m_CurrentPoint[2], 2 );
-    for( int j = currentPointBounds[2]; j <= currentPointBounds[3]; ++j )
-      {
-      squaredDistances[1] = std::pow( j - m_CurrentPoint[1], 2 );
-      for( int k = currentPointBounds[0]; k <= currentPointBounds[1]; ++k )
-        {
-        squaredDistances[0] = std::pow( k - m_CurrentPoint[0], 2 );
-        squaredDistance = squaredDistances[0] +
-                          squaredDistances[1] +
-                          squaredDistances[2];
-
-        wI = exp( gfact * ( squaredDistance ) );
-        weights[0] = ( 1 - squaredDistances[0] ) * wI;
-        weights[1] = ( 1 - squaredDistances[1] ) * wI;
-        weights[2] = ( 1 - squaredDistances[2] ) * wI;
-        wTotalI += wI;
-
-        // WARNING: value was set to 1000
-        index[0]=k; index[1]=j; index[2]=i;
-        value = this->m_FixedImage->GetPixel( index );
-        result[0] += value * weights[0];
-        result[1] += value * weights[1];
-        result[2] += value * weights[2];
-        }
-      }
-    }
-
-  itkDebugMacro( "Result = "
-              << result[0] << " : "
-              << result[1] << " : "
-              << result[2] );
-
-  if( wTotalI == 0 )
-    {
-    derivatives->fill( 0 );
-    }
-  else
-    {
-    ( *derivatives )( 0 ) = result[0];
-    ( *derivatives )( 1 ) = result[1];
-    ( *derivatives )( 2 ) = result[2];
-    }
-
-  return derivatives;
-}
-
-
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -594,13 +443,15 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   this->m_Transform->SetParameters( parameters );
 
+  InternalComputationValueType scale = this->m_InitialScale;
+  InternalComputationValueType opR;
+
   itkDebugMacro( "**** Get Derivative ****" );
   itkDebugMacro( "parameters = "<< parameters )
 
   vnl_matrix<double> biasV( 3, 3, 0 );
   vnl_matrix<double> biasVI( 3, 3, 0 );
 
-  double opR;
 
   std::list<double>::const_iterator weightIterator;
   weightIterator = m_Weight.begin();
@@ -663,7 +514,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         opR = pointIterator->GetRadius();
         opR = std::max( opR, 0.5 );
 
-        SetScale( opR * m_Kappa );
+        scale = opR * m_Kappa;
 
         Vector<double, 3> v1;
         Vector<double, 3> v2;
@@ -682,8 +533,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         v1 = this->m_Transform->TransformVector( v1 );
         v2 = this->m_Transform->TransformVector( v2 );
 
-        dXProj1 = ComputeThirdDerivatives( &v1 );
-        dXProj2 = ComputeThirdDerivatives( &v2 );
+        dXProj1 = ComputeThirdDerivatives( &v1, scale );
+        dXProj2 = ComputeThirdDerivatives( &v2, scale );
 
         Vector<double, 3> dXT;
 
@@ -805,17 +656,18 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 template < class TFixedImage, class TMovingSpatialObject>
 double
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::ComputeThirdDerivatives( Vector<double, 3> *v ) const
+::ComputeThirdDerivatives( Vector< InternalComputationValueType, 3> *v,
+  const InternalComputationValueType & scale ) const
 {
   // We convolve the 1D signal defined by the direction v at point
   // m_CurrentPoint with a second derivative of a gaussian
-  double result = 0;
-  double wI = 0;
+  InternalComputationValueType result = 0.0;
+  InternalComputationValueType wI = 0.0;
   itk::Index<3> index;
 
-  double wTotalX = 0;
-  const double scaleSquared = std::pow( m_Scale, 2 );
-  const double scaleExtentProduct = m_Scale * m_Extent;
+  InternalComputationValueType wTotalX = 0.0;
+  const InternalComputationValueType scaleSquared = scale * scale;
+  const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
 
   for( double dist = -scaleExtentProduct;
        dist <= scaleExtentProduct;
@@ -843,155 +695,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     }
 
   return result / wTotalX;
-}
-
-/** Compute third derivatives at a point */
-template < class TFixedImage, class TMovingSpatialObject>
-typename ImageToTubeRigidMetric<TFixedImage,
-  TMovingSpatialObject>::VectorType *
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::ComputeThirdDerivatives( void ) const
-{
-  vnl_vector<double>* derivatives  = new  vnl_vector<double>( 3 );
-  itk::Index<3> index;
-  PixelType value;
-  double distances[3];
-  double squaredDistance;
-  double squaredDistances[3];
-  double weights[3];
-  double weightSum[3];
-  double wI;
-  double wTotalI = 0;
-  double result[3] = { 0, 0, 0 };
-  double const gfact = -0.5 / ( std::pow( m_Scale, 2 ) );
-
-  double currentPointBounds[6];
-  this->GetCurrentPointBounds( currentPointBounds );
-  this->ClampPointBoundsToImage( currentPointBounds );
-  for( int i = currentPointBounds[4]; i <= currentPointBounds[5]; ++i )
-    {
-    distances[2] = ( i - m_CurrentPoint[2] );
-    squaredDistances[2] = std::pow( distances[2], 2 );
-    for( int j = currentPointBounds[2]; j <= currentPointBounds[3]; ++j )
-      {
-      distances[1] = ( j - m_CurrentPoint[1] );
-      squaredDistances[1] = std::pow( distances[1], 2 );
-      for( int k = currentPointBounds[0]; k <= currentPointBounds[1]; ++k )
-        {
-        distances[0] = ( k - m_CurrentPoint[0] );
-        squaredDistances[0] = std::pow( distances[0], 2 );
-        squaredDistance = squaredDistances[0] +
-                          squaredDistances[1] +
-                          squaredDistances[2];
-
-        wI = exp( gfact * ( squaredDistance ) );
-
-        // Check what's are this constants ?!
-        weights[0] = 4 * distances[0] * squaredDistances[0] * wI;
-        weights[1] = 4 * distances[1] * squaredDistances[1] * wI;
-        weights[2] = 4 * distances[2] * squaredDistances[2] * wI;
-
-        wTotalI += wI;
-        weightSum[0] += fabs( weights[0] );
-        weightSum[1] += fabs( weights[1] );
-        weightSum[2] += fabs( weights[2] );
-
-        index[0]=k; index[1]=j; index[2]=i;
-        value = this->m_FixedImage->GetPixel( index );
-        result[0] += value * weights[0];
-        result[1] += value * weights[1];
-        result[2] += value * weights[2];
-        }
-      }
-    }
-
-  ( *derivatives )( 0 ) = ( weightSum[0] != 0 ) ? result[0] / weightSum[0] : 0;
-  ( *derivatives )( 1 ) = ( weightSum[1] != 0 ) ? result[1] / weightSum[1] : 0;
-  ( *derivatives )( 2 ) = ( weightSum[2] != 0 ) ? result[2] / weightSum[2] : 0;
-
-  if( wTotalI == 0 )
-    {
-    derivatives->fill( 0 );
-    }
-
-  return derivatives;
-}
-
-/** Evaluate all derivatives at a point */
-template < class TFixedImage, class TMovingSpatialObject>
-typename ImageToTubeRigidMetric<TFixedImage,TMovingSpatialObject>::VectorType*
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::EvaluateAllDerivatives( void ) const
-{
-  vnl_vector<double>* derivatives  = new  vnl_vector<double>( 3 );
-  itk::Index<3> index;
-  PixelType value;
-  double distances[3];
-  double squaredDistance;
-  double squaredDistances[3];
-  double weights[3];
-  double weightSum[3];
-  double wI;
-  double wTotalI = 0;
-  double resI = 0;
-  double result[3] = { 0, 0, 0 };
-  double const gfact = -0.5 / ( std::pow( m_Scale, 2 ) );
-
-  double currentPointBounds[6];
-  this->GetCurrentPointBounds( currentPointBounds );
-  this->ClampPointBoundsToImage( currentPointBounds );
-  for( int i = currentPointBounds[4]; i <= currentPointBounds[5]; ++i )
-    {
-    distances[2] = ( i - m_CurrentPoint[2] );
-    squaredDistances[2] = std::pow( distances[2], 2 );
-    for( int j = currentPointBounds[2]; j <= currentPointBounds[3]; ++j )
-      {
-      distances[1] = ( j - m_CurrentPoint[1] );
-      squaredDistances[1] = std::pow( distances[1], 2 );
-      for( int k = currentPointBounds[0]; k <= currentPointBounds[1]; ++k )
-        {
-        distances[0] = ( k - m_CurrentPoint[0] );
-        squaredDistances[0] = std::pow( distances[0], 2 );
-        squaredDistance = squaredDistances[0] +
-                          squaredDistances[1] +
-                          squaredDistances[2];
-
-        wI = exp( gfact * ( squaredDistance ) );
-
-        weights[0] = 2 * distances[0] * wI;
-        weights[1] = 2 * distances[1] * wI;
-        weights[2] = 2 * distances[2] * wI;
-
-        wTotalI += wI;
-        weightSum[0] += fabs( weights[0] );
-        weightSum[1] += fabs( weights[1] );
-        weightSum[2] += fabs( weights[2] );
-
-        resI += value * wI;
-        index[0]=k; index[1]=j; index[2]=i;
-        value = this->m_FixedImage->GetPixel( index );
-        result[0] += value * weights[0];
-        result[1] += value * weights[1];
-        result[2] += value * weights[2];
-        }
-      }
-    }
-
-  ( *derivatives )( 0 ) = ( weightSum[0] != 0 ) ? result[0] / weightSum[0] : 0;
-  ( *derivatives )( 1 ) = ( weightSum[1] != 0 ) ? result[1] / weightSum[1] : 0;
-  ( *derivatives )( 2 ) = ( weightSum[2] != 0 ) ? result[2] / weightSum[2] : 0;
-
-  if( wTotalI == 0 )
-    {
-    derivatives->fill( 0 );
-    m_BlurredValue = 0;
-    }
-  else
-    {
-    m_BlurredValue = resI / wTotalI;
-    }
-
-  return derivatives;
 }
 
 /** Test whether the specified point is inside
@@ -1022,38 +725,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   return ( this->m_Interpolator->IsInsideBuffer( m_CurrentPoint ) );
 }
 
-/** Compute the bounds at a given point */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::GetPointBounds(PointType point, int bounds[6])
-{
-  double const scaleExtentProd = m_Scale * m_Extent;
-
-  bounds[0] = static_cast<int>( floor( point[0] - scaleExtentProd )
-                                / m_Factors[0] );
-  bounds[1] = static_cast<int>( ceil( point[0] + scaleExtentProd )
-                                / m_Factors[0] );
-  bounds[2] = static_cast<int>( floor( point[1] - scaleExtentProd )
-                                / m_Factors[1] );
-  bounds[3] = static_cast<int>( ceil( point[1] + scaleExtentProd )
-                                / m_Factors[1] );
-  bounds[4] = static_cast<int>( floor( point[2] - scaleExtentProd )
-                                / m_Factors[2] );
-  bounds[5] = static_cast<int>( ceil( point[2] + scaleExtentProd )
-                                / m_Factors[2] );
-}
-
-/** Compute the bounds at the currently processed point */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::GetCurrentPointBounds(int bounds[6])
-{
-  this->GetPointBounds( m_CurrentPoint, bounds );
-}
-
-/** CLamp the point bounds to the fixed Image */
+/** Clamp the point bounds to the fixed Image */
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
