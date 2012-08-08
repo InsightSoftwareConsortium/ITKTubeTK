@@ -44,6 +44,7 @@ set( tubeBaseUSTK_SRCS
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   ${TubeTK_SOURCE_DIR}/Base/USTK
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   )
 
 add_executable( tubeBaseUSTKTests
@@ -66,8 +67,8 @@ MIDAS_ADD_TEST( itkLabelMapToAcousticImpedanceImageFilterTest
     ${TEMP}/itkLabelMapToAcousticImpedanceImageFilterTest.mha
   )
 
-MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
-  ${BASE_USTK_TESTS}
-    MIDAS{itkAngleOfIncidenceImageFilterTest.mha.md5}
-    ${TEMP}/itkAngleOfIncidenceImageFilterTest.mha
-  )
+#MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
+#  ${BASE_USTK_TESTS}
+#    MIDAS{itkAngleOfIncidenceImageFilterTest.mha.md5}
+#    ${TEMP}/itkAngleOfIncidenceImageFilterTest.mha
+#  )

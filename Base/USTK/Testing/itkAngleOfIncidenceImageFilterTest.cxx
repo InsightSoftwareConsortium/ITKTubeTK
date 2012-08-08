@@ -20,6 +20,7 @@
 #include "itkSheetnessMeasureImageFilter.h"
 #include "itkAngleOfIncidenceImageFilter.h"
 #include "itkImageFileWriter.h"
+#include "itkImageFileReader.h"
 #include "itkThresholdImageFilter.h"
 
 int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
@@ -39,49 +40,41 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
   typedef unsigned short                              UltrasoundPixelType;
   typedef itk::Image< UltrasoundPixelType, Dimension > UltrasoundImageType;
 
-  typedef float
-    AngleOfIncidencePixelType;
-  typedef itk::Image< AngleOfIncidencePixelType, Dimension >
-    AngleOfIncidenceImageType;
+  typedef float                                              AngleOfIncidencePixelType;
+  typedef itk::Image< AngleOfIncidencePixelType, Dimension > AngleOfIncidenceImageType;
 
-  // Reader.
+  // Reader,
   typedef itk::ImageFileReader< UltrasoundImageType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
 
   // Declare the type for the Hessian filter
-  typedef itk::HessianRecursiveGaussianImageFilter<
-                                            ImageType >  HessianFilterType;
-
-  typedef HessianFilterType::OutputImageType HessianImageType;
+  typedef itk::HessianRecursiveGaussianImageFilter< UltrasoundImageType >  HessianFilterType;
 
   // Declare the type for the sheetness measure filter
-  typedef itk::SheetnessMeasureImageFilter< float >  AngleOfIncidenceImageFilter;
-
-  typedef AngleOfIncidenceImageFilter::OutputImageType SheetnessImageType;
+  typedef itk::SheetnessMeasureImageFilter< float >  SheetnessMeasureImageFilterType;
 
 
   // Create a Hessian Filter
   HessianFilterType::Pointer filterHessian = HessianFilterType::New();
 
   // Create a sheetness Filter
-  AngleOfIncidenceImageFilter::Pointer filterSheetness = AngleOfIncidenceImageFilter::New();
+  SheetnessMeasureImageFilterType::Pointer filterSheetness = SheetnessMeasureImageFilterType::New();
 
 
   // Connect the input images
-  filterHessian->SetInput( inputImage );
+  filterHessian->SetInput( reader->GetOutput() );
   filterSheetness->SetInput( filterHessian->GetOutput() );
 
   // Select the value of Sigma
   filterHessian->SetSigma( 0.5 );
-
 
   // Execute the filter
   std::cout << "Generate sheetness measure" << std::endl;
   filterSheetness->Update();
 
   //Write out the sheetness image
-  typedef AngleOfIncidenceImageFilter::OutputImageType SheetnessImageType;
+  typedef SheetnessMeasureImageFilterType::OutputImageType SheetnessImageType;
 
   typedef itk::ImageFileWriter<SheetnessImageType>     SheetnessImageWriterType;
   SheetnessImageWriterType::Pointer writer= SheetnessImageWriterType::New();
@@ -91,11 +84,10 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
   writer->Update();
 
   //Generate a binary image by threshlding the sheetness measure
-  typedef itk::ThresholdImageFilter< UltrasoundImageType
- >  ThresholdFilterType;
+  typedef itk::ThresholdImageFilter< SheetnessImageType >  ThresholdFilterType;
 
   ThresholdFilterType::Pointer thresholdFilter = ThresholdFilterType::New();
-  thresholdFilter->SetInput( filterSheetness->GetOutput();
+  thresholdFilter->SetInput( filterSheetness->GetOutput());
   thresholdFilter->SetOutsideValue( 0 );
   thresholdFilter->ThresholdBelow ( 180 );
   thresholdFilter->Update();
@@ -105,17 +97,17 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
         < UltrasoundImageType, AngleOfIncidenceImageType >   AngleOfIncidenceImageFilterType;
 
   // Create a sheetness Filter
-  AngleOfIncidenceImageFilter::Pointer filterAngleOfIncidence = AngleOfIncidenceImageFilter::New();
+  AngleOfIncidenceImageFilterType::Pointer filterAngleOfIncidence = AngleOfIncidenceImageFilterType::New();
   filterAngleOfIncidence->SetInput( thresholdFilter->GetOutput() );
 
   //Write out the Angle of Incidence image
-  typedef AngleOfIncidencesFilterType::OutputImageType AngleOfIncidencesImageType;
+  typedef AngleOfIncidenceImageFilterType::OutputImageType AngleOfIncidencesImageType;
   typedef itk::ImageFileWriter<AngleOfIncidencesImageType>     AngleOfIncidencesImageWriterType;
-  AngleOfIncidencesImageWriterType::Pointer writer= AngleOfIncidencesImageWriterType::New();
+  AngleOfIncidencesImageWriterType::Pointer angleOfIncidenceWriter= AngleOfIncidencesImageWriterType::New();
   std::cout<< "Writing out angle of incidence measure image" << std::endl;
-  writer->SetFileName(argv[3]);
-  writer->SetInput(filterAngleOfIncidence->GetOutput());
-  writer->Update();
+  angleOfIncidenceWriter->SetFileName(argv[3]);
+  angleOfIncidenceWriter->SetInput(filterAngleOfIncidence->GetOutput());
+  angleOfIncidenceWriter->Update();
 
 
   return EXIT_SUCCESS;

@@ -29,11 +29,13 @@ include( ${ITK_USE_FILE} )
 set( TubeTK_Base_USTK_H_Files
   itkLabelMapToAcousticImpedanceImageFilter.h
   itkLabelMapToAcousticImpedanceFunctor.h
+  itkAngleOfIncidenceImageFilter.h
   )
 
 set( TubeTK_Base_USTK_TXX_Files
   itkLabelMapToAcousticImpedanceImageFilter.txx
   itkLabelMapToAcousticImpedanceFunctor.txx
+  itkAngleOfIncidenceImageFilter.txx
   )
 
 #set( TubeTK_Base_USTK_SRCS
