@@ -151,6 +151,7 @@ public:
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
+  /** Downsample the tube points by this integer value. */
   itkSetMacro( Sampling, OffsetValueType );
   itkGetMacro( Sampling, OffsetValueType );
 

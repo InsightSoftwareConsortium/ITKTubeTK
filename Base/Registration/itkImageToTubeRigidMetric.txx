@@ -80,7 +80,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 {
   m_Weight.clear();
   m_NumberOfPoints = 0;
-  m_SumWeight = 0;
+  m_SumWeight = 0.0;
 
   if( !this->m_MovingSpatialObject || !this->m_FixedImage )
     {
@@ -104,19 +104,19 @@ void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::SubSampleTube()
 {
-  double weight = 0.0;
-  unsigned int tubeSize = 0;
-  unsigned int step = m_Sampling / 2 - 1;
+  InternalComputationValueType weight = 0.0;
+  SizeValueType tubeSize = 0;
+  OffsetValueType step = m_Sampling / 2 - 1;
 
   typename TubeNetType::Pointer newTubeNet = TubeNetType::New();
-  typename TubeNetType::ChildrenListType* tubeList = GetTubes();
+  typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
   typename TubeNetType::ChildrenListType::iterator tubeIterator =
     tubeList->begin();
   for ( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
     typename TubeType::Pointer newTube = TubeType::New();
     TubeType* currentTube =
-      static_cast<TubeType*>( ( *tubeIterator ).GetPointer() );
+      static_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
 
     currentTube->RemoveDuplicatePoints();
     currentTube->ComputeTangentAndNormals();
