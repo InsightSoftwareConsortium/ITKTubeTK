@@ -138,9 +138,6 @@ public:
   /** Set kappa value */
   itkSetMacro( Kappa, double );
 
-  vnl_vector_fixed<double, 3> GetCenterOfRotation( void )
-    { return m_RotationCenter; }
-
   /** Initialize the metric */
   void Initialize( void ) throw ( ExceptionObject );
 
@@ -169,6 +166,10 @@ protected:
                        const vnl_vector_fixed< InternalComputationValueType, 3> & offsets,
                        double angle[3] ) const;
 
+  /** Calculate the weighting for each tube point and its scale, which is based
+   * on the local radius. */
+  virtual void ComputeTubePointScalesAndWeights();
+
 private:
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
@@ -184,11 +185,15 @@ private:
   InternalComputationValueType               m_InitialScale;
   OffsetValueType                            m_Sampling;
 
-  mutable OutputPointType                m_CurrentPoint;
-  mutable InternalComputationValueType   m_BlurredValue;
+  mutable OutputPointType                    m_CurrentPoint;
+  mutable InternalComputationValueType       m_BlurredValue;
 
   vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
-  vnl_vector_fixed< InternalComputationValueType, 3 >              m_RotationCenter;
+
+  /** The center of rotation of the weighted tube points. */
+  typedef typename TubePointType::PointType
+    CenterOfRotationType;
+  CenterOfRotationType m_CenterOfRotation;
 
   vnl_vector_fixed< InternalComputationValueType, 3 >              m_Factors;
 

@@ -38,7 +38,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   m_InitialScale = 1;
   m_Factors.fill(1.0);
-  m_RotationCenter.fill( 0.0 );
+  m_CenterOfRotation.Fill( 0.0 );
 
   m_Extent = 3;     // TODO Check depedencies --> enum { ImageDimension = 3 };
   m_DerivativeImageFunction = DerivativeImageFunctionType::New();
@@ -89,6 +89,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   this->ComputeImageRange();
   this->SubSampleTube();
+  this->ComputeTubePointScalesAndWeights();
   this->ComputeCenterRotation();
 
   this->m_Interpolator->SetInputImage( this->m_FixedImage );
@@ -110,9 +111,10 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   typename TubeNetType::Pointer newTubeNet = TubeNetType::New();
   typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
-  typename TubeNetType::ChildrenListType::iterator tubeIterator =
-    tubeList->begin();
-  for ( ; tubeIterator != tubeList->end(); ++tubeIterator )
+  typedef typename TubeNetType::ChildrenListType::iterator TubesIteratorType;
+  for( TubesIteratorType tubeIterator = tubeList->begin();
+    tubeIterator != tubeList->end();
+    ++tubeIterator )
     {
     typename TubeType::Pointer newTube = TubeType::New();
     TubeType* currentTube =
@@ -124,12 +126,13 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     tubeSize = currentTube->GetPoints().size();
     if ( tubeSize > this->m_Sampling )
       {
-      typename TubeType::PointListType::const_iterator  tubePointIterator;
       OffsetValueType loopIndex = 0;
       OffsetValueType skippedPoints = 0;
       const typename TubeType::PointListType & currentTubePoints
         = currentTube->GetPoints();
-      for ( tubePointIterator = currentTubePoints.begin();
+      typedef typename TubeType::PointListType::const_iterator
+        TubePointIteratorType;
+      for ( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
             tubePointIterator != currentTubePoints.end();
             ++tubePointIterator, ++loopIndex )
         {
@@ -156,18 +159,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
             && ( ( skippedPoints + 10 ) < tubeSize ) )
           {
           newTube->GetPoints().push_back( *( tubePointIterator ) );
-          double val = -2 * ( tubePointIterator->GetRadius() );
-          weight = 2.0 / ( 1.0 + exp( val ) );
-
-          m_Weight.push_back( weight );
-
-          for( unsigned int i = 0; i < ImageDimension; ++i )
-            {
-            m_RotationCenter[i] +=
-              weight * ( tubePointIterator->GetPosition() )[i];
-            }
-          m_SumWeight += weight;
-          m_NumberOfPoints++;
           }
 
         if( m_Sampling > 1 )
@@ -192,22 +183,63 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   delete tubeList;
 }
 
-/** Compute the Center of Rotation */
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject >
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::ComputeCenterRotation()
 {
   for ( unsigned int i = 0; i<ImageDimension; ++i )
     {
-    m_RotationCenter[i] /= m_SumWeight;
+    this->m_CenterOfRotation[i] /= m_SumWeight;
     }
 
   itkDebugMacro( "Center of Rotation = "
-              << m_RotationCenter[0] << "  " \
-              << m_RotationCenter[1] << "  " \
-              << m_RotationCenter[2] );
+              << this->m_CenterOfRotation[0] << "  " \
+              << this->m_CenterOfRotation[1] << "  " \
+              << this->m_CenterOfRotation[2] );
   itkDebugMacro( "Extent = " << m_Extent );
+}
+
+template < class TFixedImage, class TMovingSpatialObject >
+void
+ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+::ComputeTubePointScalesAndWeights()
+{
+  typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
+  typedef typename TubeNetType::ChildrenListType::iterator TubesIteratorType;
+
+  for( TubesIteratorType tubeIterator = tubeList->begin();
+       tubeIterator != tubeList->end();
+       ++tubeIterator )
+    {
+    TubeType* currentTube =
+      static_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
+    const typename TubeType::PointListType & currentTubePoints
+      = currentTube->GetPoints();
+    typedef typename TubeType::PointListType::const_iterator
+      TubePointIteratorType;
+    for ( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
+          tubePointIterator != currentTubePoints.end();
+          ++tubePointIterator )
+      {
+      const InternalComputationValueType val =
+        -2.0 * ( tubePointIterator->GetRadius() );
+      const InternalComputationValueType weight =
+        2.0 / ( 1.0 + exp( val ) );
+
+      m_Weight.push_back( weight );
+
+      for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+        {
+        this->m_CenterOfRotation[ii] +=
+          weight * ( tubePointIterator->GetPosition() )[ii];
+        }
+      m_SumWeight += weight;
+      m_NumberOfPoints++;
+      }
+    }
+
+  delete tubeList;
 }
 
 /** Get tubes contained within the Spatial Object */
@@ -273,11 +305,11 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
         point =  matrix * inputPoint + GetTransform()->GetOffset();
 
-        vnl_vector_fixed<double, 3> rotationOffset = matrix * m_RotationCenter;
+        vnl_vector_fixed<double, 3> rotationOffset = matrix * ;
 
-        point[0] += m_RotationCenter[0] - rotationOffset[0];
-        point[1] += m_RotationCenter[1] - rotationOffset[1];
-        point[2] += m_RotationCenter[2] - rotationOffset[2];
+        point[0] += this->m_CenterOfRotation[0] - rotationOffset[0];
+        point[1] += this->m_CenterOfRotation[1] - rotationOffset[1];
+        point[2] += this->m_CenterOfRotation[2] - rotationOffset[2];
 
         // TODO
         // Need to use interpolator intead
@@ -415,7 +447,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   pos[1] = x[1];
   pos[2] = x[2];
 
-  tempV = ( pos - offsets ) - ( m_RotationCenter );
+  tempV = ( pos - offsets ) - ( this->m_CenterOfRotation.GetVnlVector() );
   tempV.normalize();
 
   angle[0] = dx[1] * ( -tempV[2] ) + dx[2] * tempV[1];
@@ -487,11 +519,11 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
       point =  matrix * inputPoint + GetTransform()->GetOffset();
 
-      vnl_vector<double> rotationOffset = matrix * m_RotationCenter;
+      CenterOfRotationType rotationOffset = matrix * this->m_CenterOfRotation;
 
-      point[0] += m_RotationCenter[0] - rotationOffset[0];
-      point[1] += m_RotationCenter[1] - rotationOffset[1];
-      point[2] += m_RotationCenter[2] - rotationOffset[2];
+      point[0] += this->m_CenterOfRotation[0] - rotationOffset[0];
+      point[1] += this->m_CenterOfRotation[1] - rotationOffset[1];
+      point[2] += this->m_CenterOfRotation[2] - rotationOffset[2];
 
       itk::Index<3> index;
       index[0] = static_cast<unsigned int>( point[0] );
@@ -700,19 +732,19 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::IsInside( const InputPointType & point ) const
 {
   typename TransformType::MatrixType matrix =  this->GetTransform()->GetMatrix();
-  m_CurrentPoint =  matrix * point + this->GetTransform()->GetOffset();
+  m_CurrentPoint = matrix * point + this->GetTransform()->GetOffset();
 
-  Vector<double, 3>  m_CenterOfRotation;
-  for( unsigned int i = 0; i < 3; i++ )
+  CenterOfRotationType centerOfRotation;
+  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
     {
-    m_CenterOfRotation[i]= m_RotationCenter[i];
+    centerOfRotation[ii] = this->m_CenterOfRotation[ii];
     }
 
-  Vector<double, 3> rotationOffset = matrix * m_CenterOfRotation;
+  CenterOfRotationType rotationOffset = matrix * centerOfRotation;
 
-  m_CurrentPoint[0] += m_CenterOfRotation[0] - rotationOffset[0];
-  m_CurrentPoint[1] += m_CenterOfRotation[1] - rotationOffset[1];
-  m_CurrentPoint[2] += m_CenterOfRotation[2] - rotationOffset[2];
+  m_CurrentPoint[0] += centerOfRotation[0] - rotationOffset[0];
+  m_CurrentPoint[1] += centerOfRotation[1] - rotationOffset[1];
+  m_CurrentPoint[2] += centerOfRotation[2] - rotationOffset[2];
 
   return ( this->m_Interpolator->IsInsideBuffer( m_CurrentPoint ) );
 }
