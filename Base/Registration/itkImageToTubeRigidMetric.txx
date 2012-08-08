@@ -108,47 +108,46 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   unsigned int tubeSize = 0;
   unsigned int step = m_Sampling / 2 - 1;
 
-  vnl_matrix<double> biasV( 3, 3, 0 );
   typename TubeNetType::Pointer newTubeNet = TubeNetType::New();
   typename TubeNetType::ChildrenListType* tubeList = GetTubes();
   typename TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
   for ( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
     typename TubeType::Pointer newTube = TubeType::New();
-    TubeType* currTube =
+    TubeType* currentTube =
       static_cast<TubeType*>( ( *tubeIterator ).GetPointer() );
 
-    currTube->RemoveDuplicatePoints();
-    currTube->ComputeTangentAndNormals();
+    currentTube->RemoveDuplicatePoints();
+    currentTube->ComputeTangentAndNormals();
 
-    tubeSize = currTube->GetPoints().size();
+    tubeSize = currentTube->GetPoints().size();
     if ( tubeSize > m_Sampling )
       {
       typename std::vector<TubePointType>::iterator  tubePointIterator;
       int loopIndex = 0;
       unsigned int skippedPoints = 0;
-      for ( tubePointIterator = currTube->GetPoints().begin();
-            tubePointIterator != currTube->GetPoints().end();
+      for ( tubePointIterator = currentTube->GetPoints().begin();
+            tubePointIterator != currentTube->GetPoints().end();
             tubePointIterator++, ++loopIndex )
         {
         if( m_Sampling != 1 )
           {
-          if ( std::distance(tubePointIterator, currTube->GetPoints().end() -1 )
+          if ( std::distance(tubePointIterator, currentTube->GetPoints().end() -1 )
                > step )
             {
             tubePointIterator +=
-              (tubePointIterator == currTube->GetPoints().begin()) ? 0 : step;
+              (tubePointIterator == currentTube->GetPoints().begin()) ? 0 : step;
             skippedPoints = ( loopIndex * ( step + 1 ) * 2 ) + 1;
             }
           else
             {
             skippedPoints = step + 2;
-            tubePointIterator = currTube->GetPoints().end();
+            tubePointIterator = currentTube->GetPoints().end();
             }
           }
 
         // TODO Why +10 ?!
-        if( tubePointIterator != currTube->GetPoints().end()
+        if( tubePointIterator != currentTube->GetPoints().end()
             && ( ( skippedPoints + 10 ) < tubeSize ) )
           {
           newTube->GetPoints().push_back( *( tubePointIterator ) );
@@ -169,7 +168,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
           tM = outer_product( v1, v1 );
           tM = tM + outer_product( v2, v2 );
-          biasV = biasV + ( weight * tM );
           for( unsigned int i = 0; i < ImageDimension; ++i )
             {
             m_RotationCenter[i] +=
@@ -181,14 +179,14 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
         if( m_Sampling > 1 )
           {
-          if ( std::distance(tubePointIterator, currTube->GetPoints().end() -1 )
+          if ( std::distance(tubePointIterator, currentTube->GetPoints().end() -1 )
                > step )
             {
             tubePointIterator += step;
             }
           else
             {
-            tubePointIterator = currTube->GetPoints().end() - 1;
+            tubePointIterator = currentTube->GetPoints().end() - 1;
             }
           }
         }
