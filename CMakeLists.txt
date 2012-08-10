@@ -38,7 +38,7 @@ set( TubeTK_VERSION
   "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_BUILD}" )
 
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 
 
@@ -329,7 +329,9 @@ set( TubeTK_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/IO
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
-  ${TubeTK_SOURCE_DIR}/Base/Registration )
+  ${TubeTK_SOURCE_DIR}/Base/Registration
+  ${TubeTK_SOURCE_DIR}/Base/USTK
+  )
 
 if( WIN32 )
  set( TubeTK_EXECUTABLE_DIRS
@@ -344,6 +346,7 @@ else()
    ${ITK_DIR}/bin
    ${VTK_DIR}/bin
    ${TubeTK_BINARY_DIR}/bin
+   ${TubeTK_BINARY_DIR}/lib
    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins )
 endif()
 
