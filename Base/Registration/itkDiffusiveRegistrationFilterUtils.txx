@@ -35,10 +35,10 @@ namespace itk
 /**
  * Helper function to allocate space for an image given a template image
  */
-template < class UnallocatedImagePointer, class TemplateImagePointer >
+template < class TUnallocatedImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilterUtils
-::AllocateSpaceForImage( UnallocatedImagePointer& image,
+::AllocateSpaceForImage( TUnallocatedImagePointer& image,
                          const TemplateImagePointer& templateImage )
 {
   assert( image );

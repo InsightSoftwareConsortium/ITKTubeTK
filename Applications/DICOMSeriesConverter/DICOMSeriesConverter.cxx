@@ -842,7 +842,7 @@ int main( int argc, char* argv[] )
   
           newfile->CloseFile();
           }
-          }
+        }
       if(!processingSplit)
         {
         seriesItr++;
@@ -850,7 +850,7 @@ int main( int argc, char* argv[] )
       else
         {
         if(splitVolumeStart+splitNumber >= unsplitNumberOfFileNames)
-        {
+          {
           processingSplit = false;
           splitVolumeStart = 0;
           seriesItr++;

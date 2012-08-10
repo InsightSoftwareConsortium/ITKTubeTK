@@ -127,11 +127,13 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
   // Note: no need to check the index is within
   // fixed image buffer. This is done by the external filter.
   const IndexType index = it.GetIndex();
-  const CovariantVectorType fixedGradient = m_FixedImageGradientCalculator->EvaluateAtIndex( index );
-  double fixedGradientSquaredMagnitude = 0;
+  const CovariantVectorType fixedGradient =
+    m_FixedImageGradientCalculator->EvaluateAtIndex( index );
+  double fixedGradientSquaredMagnitude = 0.0;
   for(unsigned int j = 0; j < ImageDimension; j++ )
     {
-    fixedGradientSquaredMagnitude += vnl_math_sqr( fixedGradient[j] ) * m_FixedImageSpacing[j];
+    fixedGradientSquaredMagnitude +=
+      vnl_math_sqr( fixedGradient[j] ) * m_FixedImageSpacing[j];
     }
 
   // Compute update

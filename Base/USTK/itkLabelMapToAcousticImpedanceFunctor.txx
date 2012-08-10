@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -49,7 +49,8 @@ LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
 
 template< class TLabelPixel, class TImpedancePixel, class TLookupTable >
 const typename
-LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >::LookupTableType *
+LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
+::LookupTableType *
 LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
 ::GetLookupTable() const
 {
