@@ -23,8 +23,8 @@
 
 project( TubeFiltering )
 
-FIND_PACKAGE( ITK REQUIRED )
-INCLUDE( ${ITK_USE_FILE} )
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
 
 set(TubeTK_Base_Filtering_H_Files
   itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h
@@ -54,19 +54,19 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   )
 
-#SET( TubeTK_Base_Filtering_SRCS
+#set( TubeTK_Base_Filtering_SRCS
 #  )
 
-#ADD_LIBRARY( TubeFiltering STATIC ${TubeTK_Base_Filtering_SRCS} )
-#TARGET_LINK_LIBRARIES( TubeFiltering ${ITK_LIBRARIES} )
+#add_library( TubeFiltering ${TubeTK_Base_Filtering_SRCS} )
+#target_link_libraries( TubeFiltering ${ITK_LIBRARIES} )
 
 #slicer3_set_plugins_output_path( TubeFiltering)
 #set( TARGETS TubeFiltering )
 #slicer3_install_plugins( ${TARGETS} )
 
-IF( BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
+endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Filtering_H_Files}
