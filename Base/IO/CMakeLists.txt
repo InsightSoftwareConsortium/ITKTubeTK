@@ -23,8 +23,8 @@
 
 project( TubeIO )
 
-FIND_PACKAGE( ITK REQUIRED )
-INCLUDE( ${ITK_USE_FILE} )
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_IO_H_Files
   itkTubeMetaLDA.h
@@ -38,13 +38,13 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   )
 
-SET( TubeTK_Base_IO_SRCS
+set( TubeTK_Base_IO_SRCS
   itkTubeMetaLDA.cxx
   itkTubeMetaNJetLDA.cxx
   )
 
-ADD_LIBRARY( TubeIO STATIC ${TubeTK_Base_IO_SRCS} )
-TARGET_LINK_LIBRARIES( TubeIO ${ITK_LIBRARIES} )
+add_library( TubeIO ${TubeTK_Base_IO_SRCS} )
+target_link_libraries( TubeIO ${ITK_LIBRARIES} )
 
 if( NOT TubeTK_USE_ITKV4 )
   slicer3_set_plugins_output_path( TubeIO )
@@ -52,9 +52,9 @@ if( NOT TubeTK_USE_ITKV4 )
   slicer3_install_plugins( ${TARGETS} )
 endif()
 
-IF( BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
+endif( BUILD_TESTING )
 
 install(FILES
   ${TubeTK_Base_Numerics_H_Files}

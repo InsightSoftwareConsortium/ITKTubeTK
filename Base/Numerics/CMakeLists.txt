@@ -23,8 +23,8 @@
 
 project( TubeFiltering )
 
-FIND_PACKAGE( ITK REQUIRED )
-INCLUDE( ${ITK_USE_FILE} )
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Numerics_H_Files
   itkImageRegionMomentsCalculator.h
@@ -77,8 +77,8 @@ set( TubeTK_Base_Numerics_SRCS
   tubeSplineND.cxx
   )
 
-ADD_LIBRARY( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
-TARGET_LINK_LIBRARIES( TubeNumerics ${ITK_LIBRARIES} )
+add_library( TubeNumerics ${TubeTK_Base_Numerics_SRCS} )
+target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
 if( NOT TubeTK_USE_ITKV4 )
   slicer3_set_plugins_output_path( TubeNumerics )
@@ -86,9 +86,9 @@ if( NOT TubeTK_USE_ITKV4 )
   slicer3_install_plugins( ${TARGETS} )
 endif( NOT TubeTK_USE_ITKV4 )
 
-IF( BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
+endif( BUILD_TESTING )
 
 install(FILES
   ${TubeTK_Base_Numerics_H_Files}
