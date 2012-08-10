@@ -113,7 +113,8 @@ public:
                                                      DefaultInterpolatorType;
 
   /** Covariant vector type. */
-  typedef CovariantVector<double,itkGetStaticConstMacro(ImageDimension)> CovariantVectorType;
+  typedef CovariantVector< double,itkGetStaticConstMacro(ImageDimension) >
+    CovariantVectorType;
 
   /** Gradient calculator type. */
   typedef CentralDifferenceImageFunction<FixedImageType> GradientCalculatorType;

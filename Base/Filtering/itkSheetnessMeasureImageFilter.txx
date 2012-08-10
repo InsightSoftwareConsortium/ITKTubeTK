@@ -1,20 +1,25 @@
 /*=========================================================================
- *
- *  Copyright Insight Software Consortium
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0.txt
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *=========================================================================*/
+
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
 #ifndef __itkSheetnessMeasureImageFilter_txx
 #define __itkSheetnessMeasureImageFilter_txx
 
@@ -158,9 +163,12 @@ SheetnessMeasureImageFilter< TPixel >
       const double Rb = vnl_math_abs( l3 + l3 - l2 - l1 ) / l3;
       const double Rn = vcl_sqrt( l3*l3 + l2*l2 + l1*l1 );
 
-      sheetness  =         vcl_exp( - ( Rs * Rs ) / ( 2.0 * m_Alpha * m_Alpha ) );
-      sheetness *= ( 1.0 - vcl_exp( - ( Rb * Rb ) / ( 2.0 * m_Beta * m_Beta ) ) );
-      sheetness *= ( 1.0 - vcl_exp( - ( Rn * Rn ) / ( 2.0 * m_Cfactor     * m_Cfactor     ) ) );
+      sheetness  =         vcl_exp( - ( Rs * Rs ) /
+          ( 2.0 * m_Alpha * m_Alpha ) );
+      sheetness *= ( 1.0 - vcl_exp( - ( Rb * Rb ) /
+          ( 2.0 * m_Beta * m_Beta ) ) );
+      sheetness *= ( 1.0 - vcl_exp( - ( Rn * Rn ) /
+          ( 2.0 * m_Cfactor * m_Cfactor     ) ) );
       oit.Set(static_cast< OutputPixelType >( sheetness));
       }
 

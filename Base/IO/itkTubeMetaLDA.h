@@ -90,18 +90,12 @@ public:
   bool  InitializeEssential( const LDAValuesType & _ldaValues,
       const LDAMatrixType & _ldaMatrix );
 
-  //
-  //
-  //
   void  SetLDAValues( const LDAValuesType & _ldaValues );
   const LDAValuesType & GetLDAValues( void ) const;
 
   void  SetLDAMatrix( const LDAMatrixType & _ldaMatrix );
   const LDAMatrixType & GetLDAMatrix( void ) const;
 
-  //
-  //
-  //
   virtual bool CanRead( const char *_headerName=NULL ) const;
   virtual bool Read( const char *_headerName=NULL );
   virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
