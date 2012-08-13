@@ -57,10 +57,10 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
 
   // Get the group
   GroupType::Pointer group = tubeReader->GetGroup();
-  unsigned int numberOfChildren = group->GetNumberOfChildren();
+  const unsigned int numberOfChildren = group->GetNumberOfChildren();
   std::cout << "Number of children = " << numberOfChildren
     << std::endl;
-  if( numberOfChildren != 1 )
+  if( numberOfChildren != 2 )
     {
     std::cerr << "Wrong number of children" << std::endl;
     return EXIT_FAILURE;
@@ -70,9 +70,9 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
   char tubeName[17];
   strcpy( tubeName, "Tube" );
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
-  unsigned int numTubes = tubeList->size();
+  const unsigned int numTubes = tubeList->size();
   std::cout << "Number of tubes: " << numTubes << std::endl;
-  if( numTubes != 1 )
+  if( numTubes != 2 )
     {
     std::cerr << "Wrong number of tubes" << std::endl;
     return EXIT_FAILURE;
