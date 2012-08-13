@@ -149,6 +149,10 @@ public:
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
   /** Downsample the tube points by this integer value. */
+#if ITK_VERSION_MAJOR < 4
+  typedef signed long OffsetValueType;
+  typedef unsigned long SizeValueType;
+#endif
   itkSetMacro( Sampling, OffsetValueType );
   itkGetMacro( Sampling, OffsetValueType );
 
