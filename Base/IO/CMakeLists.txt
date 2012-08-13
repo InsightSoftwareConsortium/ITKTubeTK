@@ -43,7 +43,7 @@ set( TubeTK_Base_IO_SRCS
   itkTubeMetaNJetLDA.cxx
   )
 
-add_library( TubeIO ${TubeTK_Base_IO_SRCS} )
+add_library( TubeIO STATIC ${TubeTK_Base_IO_SRCS} )
 target_link_libraries( TubeIO ${ITK_LIBRARIES} )
 
 if( NOT TubeTK_USE_ITKV4 )
