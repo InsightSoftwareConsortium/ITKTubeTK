@@ -105,7 +105,6 @@ void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::SubSampleTube()
 {
-  InternalComputationValueType weight = 0.0;
   SizeValueType tubeSize = 0;
   const OffsetValueType step = m_Sampling / 2 - 1;
 
