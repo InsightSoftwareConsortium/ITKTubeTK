@@ -123,7 +123,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     currentTube->ComputeTangentAndNormals();
 
     tubeSize = currentTube->GetPoints().size();
-    if ( tubeSize > this->m_Sampling )
+    if ( static_cast< OffsetValueType >( tubeSize ) > this->m_Sampling )
       {
       OffsetValueType loopIndex = 0;
       OffsetValueType skippedPoints = 0;
@@ -155,7 +155,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
         // TODO Why +10 ?!
         if( tubePointIterator != currentTubePoints.end()
-            && ( ( skippedPoints + 10 ) < tubeSize ) )
+            && ( ( skippedPoints + 10 ) < static_cast< OffsetValueType >( tubeSize )) )
           {
           newTube->GetPoints().push_back( *( tubePointIterator ) );
           }
