@@ -50,20 +50,24 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::Image<double, 3>                             Image3DType;
-  typedef itk::ImageRegionIteratorWithIndex< Image3DType >  Image3DIteratorType;
-  typedef itk::TubeSpatialObject<3>                         TubeType;
-  typedef itk::TubeSpatialObjectPoint<3>                    TubePointType;
-  typedef itk::GroupSpatialObject<3>                        TubeNetType;
+  typedef double            FloatType;
+  static const unsigned int ImageDimension = 3;
+  static const unsigned int TubeDimension = 3;
 
-  typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;
-  typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
+  typedef itk::Image< FloatType, ImageDimension >         ImageType;
+  typedef itk::ImageRegionIteratorWithIndex< ImageType >  ImageIteratorType;
+  typedef itk::TubeSpatialObject< TubeDimension >         TubeType;
+  typedef itk::TubeSpatialObjectPoint< TubeDimension >    TubePointType;
+  typedef itk::GroupSpatialObject< TubeDimension >        TubeNetType;
 
-  typedef itk::@CTK_ADD_CLASS_NAME@<Image3DType, TubeNetType>
+  typedef itk::ImageFileReader< ImageType >               ImageReaderType;
+  typedef itk::SpatialObjectReader< TubeDimension >       TubeNetReaderType;
+
+  typedef itk::@CTK_ADD_CLASS_NAME@< ImageType, TubeNetType >
     MetricType;
-  typedef itk::Array<double>                                      ParametersType;
-  typedef MetricType::InterpolatorType                            InterpolatorType;
-  typedef MetricType::TransformType                               TransformType;
+  typedef MetricType::ParametersType                      ParametersType;
+  typedef MetricType::InterpolatorType                    InterpolatorType;
+  typedef MetricType::TransformType                       TransformType;
 
   const double epsilonReg = 0.05; // Delta threshold on the measure checking.
 
