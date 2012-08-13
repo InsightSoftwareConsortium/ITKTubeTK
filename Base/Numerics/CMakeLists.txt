@@ -77,7 +77,7 @@ set( TubeTK_Base_Numerics_SRCS
   tubeSplineND.cxx
   )
 
-add_library( TubeNumerics ${TubeTK_Base_Numerics_SRCS} )
+add_library( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
 if( NOT TubeTK_USE_ITKV4 )
