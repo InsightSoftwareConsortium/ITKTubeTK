@@ -189,9 +189,6 @@ private:
   InternalComputationValueType               m_InitialScale;
   OffsetValueType                            m_Sampling;
 
-  mutable OutputPointType                    m_CurrentPoint;
-  mutable InternalComputationValueType       m_BlurredValue;
-
   vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
 
   /** The center of rotation of the weighted tube points. */
@@ -207,19 +204,18 @@ private:
   itkGetConstMacro( InitialScale, InternalComputationValueType );
 
   /** Test whether the specified point is inside
-  This method overload the one in the ImageMapper class
-  \warning This method cannot be safely used in more than one thread at a time.
-  \sa Evaluate() */
-  bool IsInside( const InputPointType & point ) const;
+  This method overload the one in the ImageMapper class */
+  bool IsInside( const InputPointType & point,
+    OutputPointType & currentPoint ) const;
 
   VectorType *  EvaluateAllDerivatives( void ) const;
 
-  itkGetConstMacro( BlurredValue, InternalComputationValueType );
-
   double ComputeLaplacianMagnitude( Vector< InternalComputationValueType, 3 > *v,
-    const InternalComputationValueType & scale ) const;
+    const InternalComputationValueType & scale,
+    const OutputPointType & currentPoint ) const;
   double ComputeThirdDerivatives( Vector< InternalComputationValueType, 3 > *v,
-    const InternalComputationValueType & scale ) const;
+    const InternalComputationValueType & scale,
+    const OutputPointType & currentPoint ) const;
   double ComputeDerivatives( Vector< InternalComputationValueType, 3 > *v ) const;
 
   void ClampPointBoundsToImage( int bounds[6] );

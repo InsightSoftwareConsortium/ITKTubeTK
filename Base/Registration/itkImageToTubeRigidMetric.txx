@@ -298,7 +298,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
          pointIterator != currTube->GetPoints().end();
          ++pointIterator )
         {
-        itk::Point<double, 3> inputPoint = pointIterator->GetPosition();
+        const InputPointType inputPoint = pointIterator->GetPosition();
+        OutputPointType currentPoint;
         /*static itk::Point<double, 3> point;
         Matrix<double, 3, 3> matrix =  GetTransform()->GetRotationMatrix();
 
@@ -318,7 +319,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         index[1] = static_cast<unsigned int>( point[1] );
         index[2] = static_cast<unsigned int>( point[2] );*/
 
-        if( this->IsInside( inputPoint ) )
+        if( this->IsInside( inputPoint, currentPoint ) )
           {
           sumWeight += *weightIterator;
           count++;
@@ -334,7 +335,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
             }
 
             matchMeasure += *weightIterator * fabs(
-              ComputeLaplacianMagnitude( &v2, scale ) );
+              ComputeLaplacianMagnitude( &v2, scale, currentPoint ) );
             }
         else
           {
@@ -371,32 +372,35 @@ template < class TFixedImage, class TMovingSpatialObject>
 double
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::ComputeLaplacianMagnitude( Vector< InternalComputationValueType, 3> *v,
-  const InternalComputationValueType & scale ) const
+  const InternalComputationValueType & scale,
+  const OutputPointType & currentPoint ) const
 {
   // We convolve the 1D signal defined by the direction v at point
-  // m_CurrentPoint with a second derivative of a gaussian
+  // currentPoint with a second derivative of a gaussian
   const InternalComputationValueType scaleSquared = scale * scale;
   const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
   InternalComputationValueType result = 0.0;
   InternalComputationValueType wI = 0.0;
   unsigned int n = 0;
+  typename FixedImageType::IndexType index;
 
-  itk::Index<3> index;
+#if ITK_VERSION_MAJOR < 4
+  typedef signed long IndexValueType;
+#endif
   for( double dist = -scaleExtentProduct; dist <= scaleExtentProduct; ++dist )
     {
-    index[0] =
-      static_cast<unsigned int>( m_CurrentPoint[0] + dist * v->GetElement(0) );
-    index[1] =
-      static_cast<unsigned int>( m_CurrentPoint[1] + dist * v->GetElement(1) );
-    index[2] =
-      static_cast<unsigned int>( m_CurrentPoint[2] + dist * v->GetElement(2) );
+    for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+      {
+      index[ii] =
+        static_cast< IndexValueType >( currentPoint[ii] + dist * v->GetElement(ii) );
+      }
 
-    double distSquared = std::pow( dist, 2 );
-    itk::Size<3> size =
+    double distSquared = dist * dist;
+    const typename FixedImageType::SizeType size =
       this->m_FixedImage->GetLargestPossibleRegion().GetSize();
-    if( index[0] >= 0 && ( index[0] < static_cast<unsigned int>( size[0] ) )
-      && index[1] >= 0 && ( index[1] < static_cast<unsigned int>( size[1] ) )
-      && index[2] >= 0 && ( index[2] < static_cast<unsigned int>( size[2] ) ) )
+    if( index[0] >= 0 && ( index[0] < static_cast< IndexValueType >( size[0] ) )
+      && index[1] >= 0 && ( index[1] < static_cast< IndexValueType >( size[1] ) )
+      && index[2] >= 0 && ( index[2] < static_cast< IndexValueType >( size[2] ) ) )
       {
       wI += ( -1 + ( distSquared / scaleSquared ) )
         * exp( -0.5 * distSquared / scaleSquared );
@@ -404,27 +408,26 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       }
     }
 
-  double error = wI / n;
+  const double error = wI / n;
   for( double dist = -scaleExtentProduct; dist <= scaleExtentProduct; ++dist )
     {
-    double distSquared = std::pow( dist, 2 );
+    const double distSquared = dist * dist;
     wI = ( -1 + ( distSquared / scaleSquared ) )
       * exp( -0.5 * distSquared / scaleSquared ) - error;
 
-    index[0] =
-      static_cast<unsigned int>( m_CurrentPoint[0] + dist * v->GetElement(0) );
-    index[1] =
-      static_cast<unsigned int>( m_CurrentPoint[1] + dist * v->GetElement(1) );
-    index[2] =
-      static_cast<unsigned int>( m_CurrentPoint[2] + dist * v->GetElement(2) );
-
-    itk::Size<3> size =
-      this->m_FixedImage->GetLargestPossibleRegion().GetSize();
-    if( index[0] >= 0 && ( index[0] < static_cast<unsigned int>( size[0] ) )
-      && index[1] >= 0 && ( index[1] < static_cast<unsigned int>( size[1] ) )
-      && index[2] >= 0 && ( index[2] < static_cast<unsigned int>( size[2] ) ) )
+    for( unsigned int ii = 0; ii < ImageDimension; ++ii )
       {
-      double value = this->m_FixedImage->GetPixel( index );
+      index[ii] =
+        static_cast< IndexValueType >( currentPoint[ii] + dist * v->GetElement(ii) );
+      }
+
+    const typename FixedImageType::SizeType size =
+      this->m_FixedImage->GetLargestPossibleRegion().GetSize();
+    if( index[0] >= 0 && ( index[0] < static_cast< IndexValueType >( size[0] ) )
+      && index[1] >= 0 && ( index[1] < static_cast< IndexValueType >( size[1] ) )
+      && index[2] >= 0 && ( index[2] < static_cast< IndexValueType >( size[2] ) ) )
+      {
+      const double value = this->m_FixedImage->GetPixel( index );
       result += value * wI;
       }
     }
@@ -512,7 +515,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
          ++pointIterator )
       {
       InputPointType inputPoint = pointIterator->GetPosition();
-      itk::Point<double, 3> point;
+      InputPointType point;
+      OutputPointType currentPoint;
       typename TransformType::MatrixType matrix =
         this->GetTransform()->GetMatrix();
 
@@ -529,9 +533,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       index[1] = static_cast<unsigned int>( point[1] );
       index[2] = static_cast<unsigned int>( point[2] );
 
-      if( this->IsInside( inputPoint ) )
+      if( this->IsInside( inputPoint, currentPoint ) )
         {
-        XTlist[listindex++] = m_CurrentPoint;
+        XTlist[listindex++] = currentPoint;
         sumWeight += *weightIterator;
         count++;
         opR = pointIterator->GetRadius();
@@ -556,8 +560,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         v1 = this->m_Transform->TransformVector( v1 );
         v2 = this->m_Transform->TransformVector( v2 );
 
-        dXProj1 = ComputeThirdDerivatives( &v1, scale );
-        dXProj2 = ComputeThirdDerivatives( &v2, scale );
+        dXProj1 = ComputeThirdDerivatives( &v1, scale, currentPoint );
+        dXProj2 = ComputeThirdDerivatives( &v2, scale, currentPoint );
 
         Vector<double, 3> dXT;
 
@@ -664,34 +668,38 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   delete tubeList;
 }
 
-/** Get both the match Measure and theDerivative Measure */
+
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::GetValueAndDerivative( const ParametersType & parameters,
-                         MeasureType&  Value,
-                         DerivativeType  & Derivative ) const
+                         MeasureType & value,
+                         DerivativeType & derivative ) const
 {
-  Value = GetValue( parameters );
-  GetDerivative( parameters, Derivative );
+  value = this->GetValue( parameters );
+  this->GetDerivative( parameters, derivative );
 }
+
 
 template < class TFixedImage, class TMovingSpatialObject>
 double
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 ::ComputeThirdDerivatives( Vector< InternalComputationValueType, 3> *v,
-  const InternalComputationValueType & scale ) const
+  const InternalComputationValueType & scale,
+  const OutputPointType & currentPoint ) const
 {
   // We convolve the 1D signal defined by the direction v at point
-  // m_CurrentPoint with a second derivative of a gaussian
+  // currentPoint with a second derivative of a gaussian
   InternalComputationValueType result = 0.0;
   InternalComputationValueType wI = 0.0;
-  itk::Index<3> index;
 
   InternalComputationValueType wTotalX = 0.0;
   const InternalComputationValueType scaleSquared = scale * scale;
   const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
 
+#if ITK_VERSION_MAJOR < 4
+  typedef long int IndexValueType;
+#endif
   for( double dist = -scaleExtentProduct;
        dist <= scaleExtentProduct;
        dist += 0.1 )
@@ -700,14 +708,14 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
     wTotalX += fabs( wI );
 
-    index[0] =
-      static_cast<unsigned int>( m_CurrentPoint[0] + dist * v->GetElement(0) );
-    index[1] =
-      static_cast<unsigned int>( m_CurrentPoint[1] + dist * v->GetElement(1) );
-    index[2] =
-      static_cast<unsigned int>( m_CurrentPoint[2] + dist * v->GetElement(2) );
+    typename FixedImageType::IndexType index;
+    for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+      {
+      index[ii] =
+        static_cast< IndexValueType >( currentPoint[ii] + dist * v->GetElement(ii) );
+      }
 
-    itk::Size<3> size =
+    const typename FixedImageType::SizeType size =
       this->m_FixedImage->GetLargestPossibleRegion().GetSize();
     if( index[0] >= 0 && ( index[0] < static_cast<unsigned int>( size[0] ) )
       && index[1] >= 0 && ( index[1] < static_cast<unsigned int>( size[1] ) )
@@ -720,32 +728,30 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   return result / wTotalX;
 }
 
-/** Test whether the specified point is inside
- * Thsi method overload the one in the ImageMapper class
- * \warning This method cannot be safely used in more than one thread at
- * a time.
- * \sa Evaluate(); */
+
 template < class TFixedImage, class TMovingSpatialObject>
 bool
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::IsInside( const InputPointType & point ) const
+::IsInside( const InputPointType & point,
+  OutputPointType & currentPoint ) const
 {
   typename TransformType::MatrixType matrix =  this->GetTransform()->GetMatrix();
-  m_CurrentPoint = matrix * point + this->GetTransform()->GetOffset();
+  currentPoint = matrix * point + this->GetTransform()->GetOffset();
 
   CenterOfRotationType centerOfRotation;
-  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+  for( unsigned int ii = 0; ii < ImageDimension; ++ii )
     {
     centerOfRotation[ii] = this->m_CenterOfRotation[ii];
     }
 
   CenterOfRotationType rotationOffset = matrix * centerOfRotation;
 
-  m_CurrentPoint[0] += centerOfRotation[0] - rotationOffset[0];
-  m_CurrentPoint[1] += centerOfRotation[1] - rotationOffset[1];
-  m_CurrentPoint[2] += centerOfRotation[2] - rotationOffset[2];
+  for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+    {
+    currentPoint[ii] += centerOfRotation[ii] - rotationOffset[ii];
+    }
 
-  return ( this->m_Interpolator->IsInsideBuffer( m_CurrentPoint ) );
+  return ( this->m_Interpolator->IsInsideBuffer( currentPoint ) );
 }
 
 /** Clamp the point bounds to the fixed Image */
