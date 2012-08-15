@@ -150,8 +150,9 @@ public:
 
   /** Downsample the tube points by this integer value. */
 #if ITK_VERSION_MAJOR < 4
-  typedef signed long OffsetValueType;
+  typedef signed long   OffsetValueType;
   typedef unsigned long SizeValueType;
+  typedef long int      IndexValueType;
 #endif
   itkSetMacro( Sampling, OffsetValueType );
   itkGetMacro( Sampling, OffsetValueType );
@@ -159,9 +160,6 @@ public:
 protected:
   ImageToTubeRigidMetric();
   virtual ~ImageToTubeRigidMetric();
-
-  ImageToTubeRigidMetric( const Self& ); // purposely not implemented
-  void operator=( const Self& ); // purposely not implemented
 
   void ComputeImageRange( void );
 
@@ -221,6 +219,9 @@ private:
   void ClampPointBoundsToImage( int bounds[6] );
   void ComputeCenterRotation();
   typename TubeNetType::ChildrenListType* GetTubes() const;
+
+  ImageToTubeRigidMetric( const Self& ); // purposely not implemented
+  void operator=( const Self& ); // purposely not implemented
 };
 
 } // end namespace itk

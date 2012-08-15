@@ -241,6 +241,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   delete tubeList;
 }
 
+
 /** Get tubes contained within the Spatial Object */
 // WARNING:
 // Method might use GetMaximumDepth from ITK.
@@ -261,6 +262,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   // ->GetChildren( this->m_MovingSpatialObject->GetMaximumDepth(), childName );
 }
 
+
 /** Get the match Measure */
 // TODO Do not pass the parameter as arguments use instead
 // the transform parameters previously set.
@@ -274,8 +276,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   MeasureType matchMeasure = 0.0;
   InternalComputationValueType sumWeight = 0.0;
-  InternalComputationValueType count = 0.0;
-  InternalComputationValueType opR;
   InternalComputationValueType scale = this->m_InitialScale;
 
   std::list< InternalComputationValueType >::const_iterator weightIterator;
@@ -322,16 +322,16 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
         if( this->IsInside( inputPoint, currentPoint ) )
           {
           sumWeight += *weightIterator;
-          count++;
-          opR = pointIterator->GetRadius();
-          opR = std::max( opR, 0.5 );
+          InternalComputationValueType scalingRadius = pointIterator->GetRadius();
+          // !TODO 0.5 should be a parameter of the class
+          scalingRadius = std::max( scalingRadius, 0.5 );
 
-          scale = opR * m_Kappa;
+          scale = scalingRadius * m_Kappa;
 
-          Vector<double, 3> v2;
-          for( unsigned int i = 0; i < 3; ++i )
+          Vector<InternalComputationValueType, TubeDimension> v2;
+          for( unsigned int ii = 0; ii < TubeDimension; ++ii )
             {
-            v2[i] = pointIterator->GetNormal1()[i];
+            v2[ii] = pointIterator->GetNormal1()[ii];
             }
 
             matchMeasure += *weightIterator * fabs(
@@ -366,6 +366,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   return matchMeasure;
 }
 
+
 /** Compute the Laplacian magnitude */
 // TODO FACTORIZE CODE --> See computeThirdDerivative
 template < class TFixedImage, class TMovingSpatialObject>
@@ -384,9 +385,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   unsigned int n = 0;
   typename FixedImageType::IndexType index;
 
-#if ITK_VERSION_MAJOR < 4
-  typedef signed long IndexValueType;
-#endif
   for( double dist = -scaleExtentProduct; dist <= scaleExtentProduct; ++dist )
     {
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )
@@ -435,6 +433,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   return result;
 }
 
+
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -458,7 +457,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-/** Get the Derivative Measure */
 template < class TFixedImage, class TMovingSpatialObject>
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -481,8 +479,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
   std::list<double>::const_iterator weightIterator;
   weightIterator = m_Weight.begin();
-
-  unsigned int count = 0;
 
   double dPosition[3] = { 0, 0, 0 };
   double dAngle[3] = { 0, 0, 0 };
@@ -524,20 +520,21 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
       CenterOfRotationType rotationOffset = matrix * this->m_CenterOfRotation;
 
-      point[0] += this->m_CenterOfRotation[0] - rotationOffset[0];
-      point[1] += this->m_CenterOfRotation[1] - rotationOffset[1];
-      point[2] += this->m_CenterOfRotation[2] - rotationOffset[2];
+      for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+        {
+        point[ii] += this->m_CenterOfRotation[ii] - rotationOffset[ii];
+        }
 
-      itk::Index<3> index;
-      index[0] = static_cast<unsigned int>( point[0] );
-      index[1] = static_cast<unsigned int>( point[1] );
-      index[2] = static_cast<unsigned int>( point[2] );
+      typename FixedImageType::IndexType index;
+      for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+        {
+        index[ii] = static_cast< IndexValueType >( point[ii] );
+        }
 
       if( this->IsInside( inputPoint, currentPoint ) )
         {
         XTlist[listindex++] = currentPoint;
         sumWeight += *weightIterator;
-        count++;
         opR = pointIterator->GetRadius();
         opR = std::max( opR, 0.5 );
 
@@ -697,9 +694,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   const InternalComputationValueType scaleSquared = scale * scale;
   const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
 
-#if ITK_VERSION_MAJOR < 4
-  typedef long int IndexValueType;
-#endif
   for( double dist = -scaleExtentProduct;
        dist <= scaleExtentProduct;
        dist += 0.1 )
