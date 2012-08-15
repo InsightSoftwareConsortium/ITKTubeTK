@@ -43,7 +43,7 @@ ImageToTubeRigidMetric2<TFixedImage, TMovingSpatialObject>
   m_RotationCenter.fill(0);
 
   m_Extent = 3;
-  m_Verbose = true;
+  m_Verbose = false;
   m_DerivativeImageFunction = DerivativeImageFunctionType::New();
 
   this->m_FixedImage = 0;           // has to be provided by the user.

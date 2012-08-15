@@ -156,6 +156,7 @@ MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationTest
     itkImageToTubeRigidRegistrationTest
     MIDAS{Branch.n020.mha.md5}
     MIDAS{tube.tre.md5}
+    ${TEMP}/itkImageToTubeRigidRegistrationTest.tre
     ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
     )
 
@@ -174,6 +175,7 @@ MIDAS_ADD_TEST( itkImageToTubeRigidRegistration2Test
   itkImageToTubeRigidRegistration2Test
   MIDAS{Branch.n020.mha.md5}
   MIDAS{tube.tre.md5}
+  ${TEMP}/itkImageToTubeRigidRegistration2Test.tre
   ${TEMP}/itkImageToTubeRigidRegistration2Test.mha
   )
 

@@ -26,6 +26,7 @@ limitations under the License.
 
 #include "itk@CTK_ADD_CLASS_NAME@.h"
 #include "itkSpatialObjectReader.h"
+#include "itkSpatialObjectWriter.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkSpatialObjectToImageFilter.h"
@@ -41,13 +42,17 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Input_Image " << "Input_Vessel " << "Output_Image "
+              << " Input_Image "
+              << " Input_Vessel"
+              << " Output_Tubes"
+              << " Output_Image"
               << std::endl;
     return EXIT_FAILURE;
     }
   const char * inputImage = argv[1];
   const char * inputVessel = argv[2];
-  const char * outputImage = argv[3];
+  const char * outputTubes = argv[3];
+  const char * outputImage = argv[4];
 
   static const unsigned int Dimension = 3;
   typedef double            FloatType;
@@ -107,11 +112,11 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     }
 
   double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  if (argc > 9)
+  if (argc > 10)
     {
-    for (int i = 0; i < 6; i++)
+    for (unsigned int ii = 0; ii < 6; ii++)
       {
-      initialPosition[i] = atof( argv[4+i] );
+      initialPosition[ii] = atof( argv[5+ii] );
       }
     }
 
@@ -136,37 +141,44 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     }
 
   // validate the registration result
+  //! \todo validate against known real results.
   TransformType* outputTransform =
     dynamic_cast<TransformType *>(registrationFilter->GetTransform());
 
-  TransformType::Pointer invTransform = TransformType::New();
-  outputTransform->GetInverse(invTransform);
+  TransformType::Pointer inverseTransform = TransformType::New();
+  outputTransform->GetInverse(inverseTransform);
 
   std::cout << "Registration result: ";
-  for (int i = 0; i < 6; i++)
+  for (unsigned int ii = 0; ii < 6; ++ii)
     {
-    std::cout << outputTransform->GetParameters().GetElement(i) << " ";
+    std::cout << outputTransform->GetParameters().GetElement(ii) << " ";
     }
   std::cout << std::endl;
 
-  itk::Matrix<double,3,3> rotationMatrix;
-  itk::Vector<double,3> translation;
-
+  itk::Matrix< double, Dimension, Dimension > rotationMatrix;
+  itk::Vector< double, Dimension > translation;
   rotationMatrix = outputTransform->GetMatrix();
   translation = outputTransform->GetTranslation();
 
-  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
-  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;
-  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1) << " " << rotationMatrix(2,2) << std::endl;
-  std::cout << translation[0] << " " << translation[1] << " " << translation[2]
-      << std::endl;
+  std::cout << "Rotation matrix: " << std::endl;
+  std::string indent( "    " );
+  std::cout << indent << rotationMatrix(0,0) << " "
+    << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
+  std::cout << indent << rotationMatrix(1,0) << " "
+    << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;
+  std::cout << indent << rotationMatrix(2,0) << " "
+    << rotationMatrix(2,1) << " " << rotationMatrix(2,2) << std::endl;
 
-  // create transform filter
+  std::cout << "Translations: " << std::endl;
+  std::cout << indent << translation[0] << " "
+    << translation[1] << " " << translation[2] << std::endl;
+
+  // Transform the input tubes.
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );
   transformFilter->SetScale( 1.0 );
   transformFilter->SetTransform( outputTransform );
-
+  std::cout << "Outputting transformed tubes...";
   try
     {
     transformFilter->Update();
@@ -174,6 +186,22 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
   catch( itk::ExceptionObject & err )
     {
     std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+  std::cout << " done.\n";
+
+  // Write the transformed tube to file.
+  typedef itk::SpatialObjectWriter< Dimension > TubeNetWriterType;
+  TubeNetWriterType::Pointer tubesWriter = TubeNetWriterType::New();
+  tubesWriter->SetInput( transformFilter->GetOutput() );
+  tubesWriter->SetFileName( outputTubes );
+  try
+    {
+    tubesWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "ExceptionObject: " << err << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -184,15 +212,16 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
 
   ImageType::Pointer img = imageReader->GetOutput();
 
+  const double decimationFactor = 4.0;
   ImageType::SizeType size = img->GetLargestPossibleRegion().GetSize();
-  size[0] = size[0] / 4;
-  size[1] = size[1] / 4;
-  size[2] = size[2] / 4;
+  size[0] = size[0] / decimationFactor;
+  size[1] = size[1] / decimationFactor;
+  size[2] = size[2] / decimationFactor;
 
   ImageType::SpacingType spacing = img->GetSpacing();
-  spacing[0] = spacing[0] * 4;
-  spacing[1] = spacing[1] * 4;
-  spacing[2] = spacing[2] * 4;
+  spacing[0] = spacing[0] * decimationFactor;
+  spacing[1] = spacing[1] * decimationFactor;
+  spacing[2] = spacing[2] * decimationFactor;
 
   std::cout << "Converting transformed vessel model into a binary image ... ";
   vesselToImageFilter->SetInput( transformFilter->GetOutput() );
@@ -202,14 +231,14 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
   vesselToImageFilter->SetInsideValue( 1.0 );
   vesselToImageFilter->SetOutsideValue( 0.0 );
   vesselToImageFilter->Update();
-  std::cout << "end." << std::endl;
+  std::cout << "done." << std::endl;
 
-  std::cout << "Outputing result image ... ";
+  std::cout << "Outputting tube sampled as an image ... ";
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( outputImage );
   imageWriter->SetInput(vesselToImageFilter->GetOutput());
   imageWriter->Update();
-  std::cout << "end." << std::endl;
+  std::cout << "done." << std::endl;
 
   return EXIT_SUCCESS;
 }

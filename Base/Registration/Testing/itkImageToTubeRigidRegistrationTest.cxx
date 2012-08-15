@@ -209,7 +209,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   vesselToImageFilter->SetInsideValue(1.0);
   vesselToImageFilter->SetOutsideValue(0.0);
   vesselToImageFilter->Update();
-  std::cout << "end." << std::endl;
+  std::cout << "done." << std::endl;
 
   std::cout << "Outputing result image ... ";
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
@@ -217,7 +217,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   imageWriter->SetUseCompression( true );
   imageWriter->SetInput(vesselToImageFilter->GetOutput());
   imageWriter->Update();
-  std::cout << "end." << std::endl;
+  std::cout << "done." << std::endl;
 
   return EXIT_SUCCESS;
 
