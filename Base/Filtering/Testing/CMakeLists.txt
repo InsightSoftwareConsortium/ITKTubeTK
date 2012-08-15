@@ -49,6 +49,7 @@ set( tubeBaseFilteringTests_SRCS
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
   itkSheetnessMeasureImageFilterTest.cxx
+  itkSheetnessMeasureImageFilterTest2.cxx
   )
 
 include_directories(
