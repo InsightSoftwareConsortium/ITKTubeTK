@@ -94,7 +94,7 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
 
   //Compute the angle of incidence measure
   typedef itk::AngleOfIncidenceImageFilter
-        < UltrasoundImageType, AngleOfIncidenceImageType >   AngleOfIncidenceImageFilterType;
+        < SheetnessImageType, AngleOfIncidenceImageType >   AngleOfIncidenceImageFilterType;
 
   // Create a sheetness Filter
   AngleOfIncidenceImageFilterType::Pointer filterAngleOfIncidence = AngleOfIncidenceImageFilterType::New();
