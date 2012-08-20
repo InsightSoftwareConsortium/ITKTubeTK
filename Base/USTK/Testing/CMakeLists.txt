@@ -67,8 +67,9 @@ MIDAS_ADD_TEST( itkLabelMapToAcousticImpedanceImageFilterTest
     ${TEMP}/itkLabelMapToAcousticImpedanceImageFilterTest.mha
   )
 
-#MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
-#  ${BASE_USTK_TESTS}
-#    MIDAS{itkAngleOfIncidenceImageFilterTest.mha.md5}
-#    ${TEMP}/itkAngleOfIncidenceImageFilterTest.mha
-#  )
+MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
+  ${BASE_USTK_TESTS}
+    itkAngleOfIncidenceImageFilterTest
+    MIDAS{PrimitiveObjects.mha.md5}
+    ${TEMP}/PrimitveObjectsAngleOfIncidenceImage.mha
+  )
