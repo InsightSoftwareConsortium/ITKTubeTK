@@ -35,7 +35,7 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << "  inputImage sheetnessImage primaryEigenVectorOutputImage [sheetnessThreshold]"<< std::endl;
+    std::cerr << argv[0] << "  inputImage sheetnessImage primaryEigenVectorOutputImage [sigma] [sheetnessThresholdValue]"<< std::endl;
     return EXIT_FAILURE;
     }
 
@@ -75,8 +75,14 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
   filterHessian->SetInput( reader->GetOutput() );
   filterSheetness->SetInput( filterHessian->GetOutput() );
 
-  // Select the value of Sigma
-  filterHessian->SetSigma( 0.5 );
+  //Select the value of Sigma for the Hessian computation
+  double sigma = 0.5;
+  if ( argc > 4 )
+    {
+    sigma = atof ( argv[4] );
+    std::cout << "Setting the sigma value....:\t" << sigma << std::endl;
+    }
+  filterHessian->SetSigma( sigma );
 
   // Execute the filter
   std::cout << "Generate sheetness measure" << std::endl;
@@ -89,12 +95,19 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
   std::cout << "Write out the sheetness image" << std::endl;
   typedef itk::ImageFileWriter<SheetnessImageType>     SheetnessImageWriterType;
   SheetnessImageWriterType::Pointer writer= SheetnessImageWriterType::New();
-  writer->SetFileName(argv[1]);
+  writer->SetFileName(argv[2]);
   writer->SetInput(filterSheetness->GetOutput());
   writer->Update();
 
-  //Compute the eigen values
+  //Set sheetness threshold
+  double sheetnessThresholdValue = 0.0;
+  if ( argc > 5 )
+    {
+    sheetnessThresholdValue = atof ( argv[5] );
+    std::cout << "Setting sheetness threshold value...:\t" << sheetnessThresholdValue << std::endl;
+    }
 
+  //Compute the eigen values
   typedef  SheetnessFilterType::InputImageType SymmetricSecondRankTensorImageType;
   typedef  itk::FixedArray< double, Dimension>    EigenValueArrayType;
   typedef  itk::Image< EigenValueArrayType, Dimension> EigenValueImageType;
@@ -151,20 +164,6 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
     }
   primaryEigenVectorImage->FillBuffer( nullVector );
 
-  //Generate an image containing the largest eigen values
-  typedef itk::Image< double, 3 >    PrimaryEigenValueImageType;
-  PrimaryEigenValueImageType::Pointer primaryEigenValueImage = PrimaryEigenValueImageType::New();
-
-  PrimaryEigenValueImageType::RegionType eigenValueImageRegion;
-  eigenValueImageRegion.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
-  eigenValueImageRegion.SetIndex(eigenVectorImage->GetLargestPossibleRegion().GetIndex());
-  primaryEigenValueImage->SetRegions( eigenValueImageRegion );
-  primaryEigenValueImage->SetOrigin(eigenVectorImage->GetOrigin());
-  primaryEigenValueImage->SetSpacing(eigenVectorImage->GetSpacing());
-  primaryEigenValueImage->Allocate();
-  primaryEigenValueImage->FillBuffer( 0.0 );
-
-
   //Setup the iterators
   //
   //Iterator for the eigenvector matrix image
@@ -173,25 +172,26 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
       eigenVectorImage, eigenVectorImage->GetRequestedRegion());
   eigenVectorImageIterator.GoToBegin();
 
+  //Iterator for the input eigen value image
+  EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
+  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
+      eigenImage, eigenImage->GetRequestedRegion());
+  eigenValueImageIterator.GoToBegin();
+
+  //Iterator for the Sheetness input image
+  SheetnessImageType::ConstPointer sheetnessImage = filterSheetness->GetOutput();
+  itk::ImageRegionConstIterator<SheetnessImageType> sheetnessValueImageIterator;
+  sheetnessValueImageIterator = itk::ImageRegionConstIterator<SheetnessImageType>(
+      sheetnessImage, sheetnessImage->GetRequestedRegion());
+  sheetnessValueImageIterator.GoToBegin();
+
   //Iterator for the output image with the largest eigenvector
   itk::ImageRegionIterator<VectorImageType> primaryEigenVectorImageIterator;
   primaryEigenVectorImageIterator = itk::ImageRegionIterator<VectorImageType>(
       primaryEigenVectorImage, primaryEigenVectorImage->GetRequestedRegion());
   primaryEigenVectorImageIterator.GoToBegin();
 
-  //Iterator for the output image with the largest eigenvalue
-  itk::ImageRegionIterator<PrimaryEigenValueImageType> primaryEigenValueImageIterator;
-  primaryEigenValueImageIterator = itk::ImageRegionIterator<PrimaryEigenValueImageType>(
-      primaryEigenValueImage, primaryEigenValueImage->GetRequestedRegion());
-  primaryEigenValueImageIterator.GoToBegin();
-
-
-  //Iterator for the eigen value image
-  EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
-  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
-  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
-      eigenImage, eigenImage->GetRequestedRegion());
-  eigenValueImageIterator.GoToBegin();
 
   double toleranceEigenValues = 1e-4;
 
@@ -245,38 +245,42 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
         }
       }
 
-    // Write out the largest eigen value
-    primaryEigenValueImageIterator.Set( eigenValue[largestEigenValueIndex]);
-
-
     EigenValueImageType::IndexType pixelIndex;
     pixelIndex = eigenValueImageIterator.GetIndex();
 
     EigenVectorMatrixType   matrixPixel;
     matrixPixel = eigenVectorImageIterator.Get();
 
-    if( fabs(largest) >  toleranceEigenValues  )
+    //If the eigen value is above the tolernace eigen value and the sheetness is above
+    //a threshold, then write out the eigen vector
+
+    SheetnessImageType::PixelType sheetnessValue;
+    sheetnessValue = sheetnessValueImageIterator.Get();
+    if( (fabs(largest) >  toleranceEigenValues)  ||
+        (sheetnessValue >  sheetnessThresholdValue) )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
       for ( unsigned int i=0; i < vectorLength; i++ )
-      {
-      primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
-      }
+        {
+        primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
+        }
 
       primaryEigenVectorImageIterator.Set( primaryEigenVector );
       }
 
     ++eigenValueImageIterator;
     ++eigenVectorImageIterator;
+    ++sheetnessValueImageIterator;
     ++primaryEigenVectorImageIterator;
-    ++primaryEigenValueImageIterator;
     }
 
   typedef itk::ImageFileWriter< VectorImageType > EigenVectorWriterType;
   EigenVectorWriterType::Pointer eigenVectorWriter = EigenVectorWriterType::New();
-  eigenVectorWriter->SetFileName( argv[2] );
+  eigenVectorWriter->SetFileName( argv[3] );
   eigenVectorWriter->SetInput( primaryEigenVectorImage );
+
+  std::cout << "Write out the primary eigen vector image" << std::endl;
   eigenVectorWriter->Update();
 
   return EXIT_SUCCESS;
