@@ -35,4 +35,5 @@ void RegisterTests()
   REGISTER_TEST( itkStructureTensorRecursiveGaussianImageFilterTestNew );
   REGISTER_TEST( itkTubeEnhancingDiffusion2DImageFilterTest );
   REGISTER_TEST( itkSheetnessMeasureImageFilterTest );
+  REGISTER_TEST( itkSheetnessMeasureImageFilterTest2 );
 }

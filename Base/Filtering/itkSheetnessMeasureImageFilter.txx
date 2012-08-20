@@ -37,7 +37,7 @@ SheetnessMeasureImageFilter< TPixel >
 ::SheetnessMeasureImageFilter()
 {
   m_Alpha = 0.5;
-  m_Beta = 2.0;
+  m_Beta = 0.5;
   m_Cfactor = 2.0;
   m_DetectBrightSheets = true;
 
@@ -150,27 +150,31 @@ SheetnessMeasureImageFilter< TPixel >
         }
       }
 
-    //
-    // Avoid divisions by zero (or close to zero)
-    //
+
+    double Rs;
+    double Rb;
+    double Rn;
+
     if( static_cast<double>( l3 ) < vnl_math::eps )
       {
-      oit.Set(NumericTraits< OutputPixelType >::Zero);
+      Rs=0.0;
+      Rb=0.0;
       }
     else
       {
-      const double Rs = l2 / l3;
-      const double Rb = vnl_math_abs( l3 + l3 - l2 - l1 ) / l3;
-      const double Rn = vcl_sqrt( l3*l3 + l2*l2 + l1*l1 );
-
-      sheetness  =         vcl_exp( - ( Rs * Rs ) /
-          ( 2.0 * m_Alpha * m_Alpha ) );
-      sheetness *= ( 1.0 - vcl_exp( - ( Rb * Rb ) /
-          ( 2.0 * m_Beta * m_Beta ) ) );
-      sheetness *= ( 1.0 - vcl_exp( - ( Rn * Rn ) /
-          ( 2.0 * m_Cfactor * m_Cfactor     ) ) );
-      oit.Set(static_cast< OutputPixelType >( sheetness));
+      Rs = l2 / l3;
+      Rb = vnl_math_abs( l3 + l3 - l2 - l1 ) / l3;
       }
+
+    Rn = vcl_sqrt( l3*l3 + l2*l2 + l1*l1 );
+
+    sheetness  =         vcl_exp( - ( Rs * Rs ) /
+        ( 2.0 * m_Alpha * m_Alpha ) );
+    sheetness *= ( 1.0 - vcl_exp( - ( Rb * Rb ) /
+        ( 2.0 * m_Beta * m_Beta ) ) );
+    sheetness *= ( 1.0 - vcl_exp( - ( Rn * Rn ) /
+        ( 2.0 * m_Cfactor * m_Cfactor     ) ) );
+    oit.Set(static_cast< OutputPixelType >( sheetness));
 
     ++it;
     ++oit;
