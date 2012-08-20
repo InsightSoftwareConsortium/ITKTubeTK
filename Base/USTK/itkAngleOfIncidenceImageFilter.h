@@ -25,6 +25,10 @@ limitations under the License.
 
 #include "itkImageToImageFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
+#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
+#include "itkVectorImage.h"
+#include "itkHessianRecursiveGaussianImageFilter.h"
 
 namespace itk
 {
@@ -52,11 +56,7 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(AngleOfIncidenceImageFilter, ImageToImageFilter);
 
-  /** Number of dimensions. */
-  itkStaticConstMacro(NDimensions, unsigned int,
-                      TInputImage::ImageDimension);
-
-  itkStaticConstMacro(InputDimension, unsigned int, 3);
+  itkStaticConstMacro(Dimension, unsigned int, 3);
 
   /** Some convenient typedefs for input image */
   typedef TInputImage                           InputImageType;
@@ -74,6 +74,25 @@ public:
   typedef typename OutputImageType::RegionType OutputImageRegionType;
   typedef typename OutputImageType::PixelType  OutputImagePixelType;
 
+  /** typedef to generate surface normal vector using eigen analysis */
+  typedef typename itk::HessianRecursiveGaussianImageFilter< InputImageType >  HessianFilterType;
+
+  typedef itk::SymmetricSecondRankTensor< double, 3 >         SymmetricSecondRankTensorType;
+  typedef itk::Image< SymmetricSecondRankTensorType, 3>       SymmetricSecondRankTensorImageType;
+  typedef  itk::Matrix< double, 3, 3>                         EigenVectorMatrixType;
+  typedef  itk::Image< EigenVectorMatrixType, 3>              EigenVectorMatrixImageType;
+  typedef  itk::FixedArray< double, 3>                        EigenValueArrayType;
+  typedef  itk::Image< EigenValueArrayType, 3>                EigenValueImageType;
+
+  typedef itk::VectorImage< double, 3 >    EigenVectorImageType;
+
+  typedef itk::SymmetricEigenAnalysisImageFilter
+        <SymmetricSecondRankTensorImageType, EigenValueImageType> EigenValueAnalysisFilterType;
+
+  typedef itk::SymmetricEigenVectorAnalysisImageFilter
+        <SymmetricSecondRankTensorImageType, EigenValueImageType,
+         EigenVectorMatrixImageType>                                    EigenVectorAnalysisFilterType;
+
   /** Set/Get Ultrasound origin vector */
   itkSetMacro(UltrasoundOrigin, VectorType);
   itkGetConstMacro(UltrasoundOrigin, VectorType);
@@ -86,12 +105,25 @@ protected:
   virtual ~AngleOfIncidenceImageFilter() {}
   void PrintSelf(std::ostream & os, Indent indent) const;
 
+  void ComputeNormalVectorImage();
 private:
   AngleOfIncidenceImageFilter(const Self &); //purposely not implemented
   void operator=(const Self &);          //purposely not implemented
 
   /* Ultasound origin*/
   VectorType m_UltrasoundOrigin;
+
+  /* Hessian analysis filter */
+  typename HessianFilterType::Pointer m_HessianFilter;
+
+  /* Eigen value analysis filter */
+  EigenValueAnalysisFilterType::Pointer m_EigenValueAnalysisFilter;
+
+  /* Eigen vector analysis filter */
+  EigenVectorAnalysisFilterType::Pointer m_EigenVectorAnalysisFilter;
+
+  // Primary eigen vector image
+  EigenVectorImageType::Pointer m_PrimaryEigenVectorImage;
 
 };
 } // end namespace itk

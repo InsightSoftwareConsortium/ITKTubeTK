@@ -39,6 +39,27 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::AngleOfIncidenceImageFilter()
 {
   m_UltrasoundOrigin.Fill(0);
+
+  //Eigen vector analysis filter
+  m_EigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
+  m_EigenVectorAnalysisFilter->SetDimension( Dimension );
+  m_EigenVectorAnalysisFilter->OrderEigenValuesBy(
+      EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
+
+  //Eigen value analysis filter
+  m_EigenValueAnalysisFilter = EigenValueAnalysisFilterType::New();
+  m_EigenValueAnalysisFilter->SetDimension( Dimension );
+  m_EigenValueAnalysisFilter->OrderEigenValuesBy(
+        EigenValueAnalysisFilterType::FunctorType::OrderByValue );
+
+  //Hessian filter
+  m_HessianFilter = HessianFilterType::New();
+
+  //Eigen vector image
+  m_PrimaryEigenVectorImage = EigenVectorImageType::New();
+  unsigned int vectorLength = 3; // Eigenvector length
+  m_PrimaryEigenVectorImage->SetVectorLength ( vectorLength );
+
 }
 
 /**
@@ -83,16 +104,155 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   outputIt.GoToBegin();
   inputIt.GoToBegin();
 
+  //Iterator for the primary eigen vector image with the largest eigenvector
+  itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
+  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
+      m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion());
+  primaryEigenVectorImageIterator.GoToBegin();
+
+
   InputImageSpacingType inputImageSpacing;
   InputImagePointType   inputImageOrigin;
 
   while ( !inputIt.IsAtEnd() )
     {
+    //Compute the angle and set it to output iterator. TODO
     outputIt.Set( inputIt.Get() );
     ++inputIt;
     ++outputIt;
+    ++primaryEigenVectorImageIterator;
     }
 }
+
+template< class TInputImage, class TOutputImage >
+void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
+::ComputeNormalVectorImage()
+{
+  m_HessianFilter->SetInput( this->ProcessObject::GetInput(0) );
+  m_HessianFilter->Update();
+
+  m_EigenValueAnalysisFilter->SetInput( m_HessianFilter->GetOutput() );
+  m_EigenValueAnalysisFilter->Update();
+
+  m_EigenVectorAnalysisFilter->SetInput( m_HessianFilter->GetOutput() );
+  m_EigenVectorAnalysisFilter->Update();
+
+  //Generate an image with eigen vector pixel that correspond to the largest eigen value
+  EigenVectorImageType::ConstPointer eigenVectorImage =
+                    m_EigenVectorAnalysisFilter->GetOutput();
+
+  EigenVectorImageType::RegionType region;
+  region.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
+  region.SetIndex(eigenVectorImage->GetLargestPossibleRegion().GetIndex());
+  m_PrimaryEigenVectorImage->SetRegions( region );
+  m_PrimaryEigenVectorImage->SetOrigin(eigenVectorImage->GetOrigin());
+  m_PrimaryEigenVectorImage->SetSpacing(eigenVectorImage->GetSpacing());
+  m_PrimaryEigenVectorImage->Allocate();
+
+  //Fill up the buffer with null vector
+  unsigned int vectorLength = 3;
+  itk::VariableLengthVector< double > nullVector( vectorLength );
+  for ( unsigned int i=0; i < vectorLength; i++ )
+    {
+    nullVector[i] = 0.0;
+    }
+  m_PrimaryEigenVectorImage->FillBuffer( nullVector );
+
+  //Setup the iterators
+  //
+  //Iterator for the eigenvector matrix image
+  itk::ImageRegionConstIterator<EigenVectorImageType> eigenVectorImageIterator;
+  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorImageType>(
+      eigenVectorImage, eigenVectorImage->GetRequestedRegion());
+  eigenVectorImageIterator.GoToBegin();
+
+  //Iterator for the output image with the largest eigenvector
+  itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
+  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
+      m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion());
+  primaryEigenVectorImageIterator.GoToBegin();
+
+  //Iterator for the eigen value image
+  EigenValueImageType::ConstPointer eigenImage = m_EigenValueAnalysisFilter->GetOutput();
+  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
+  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
+      eigenImage, eigenImage->GetRequestedRegion());
+  eigenValueImageIterator.GoToBegin();
+
+  double toleranceEigenValues = 1e-4;
+
+  while (!eigenValueImageIterator.IsAtEnd())
+    {
+    // Get the eigen value
+    EigenValueArrayType eigenValue;
+    eigenValue = eigenValueImageIterator.Get();
+
+    // Find the smallest eigenvalue
+    double smallest = vnl_math_abs( eigenValue[0] );
+    double Lambda1 = eigenValue[0];
+    unsigned int smallestEigenValueIndex=0;
+
+    for ( unsigned int i=1; i <=2; i++ )
+      {
+      if ( vnl_math_abs( eigenValue[i] ) < smallest )
+        {
+        Lambda1 = eigenValue[i];
+        smallest = vnl_math_abs( eigenValue[i] );
+        smallestEigenValueIndex = i;
+        }
+      }
+
+    // Find the largest eigenvalue
+    double largest = vnl_math_abs( eigenValue[0] );
+    double Lambda3 = eigenValue[0];
+    unsigned int largestEigenValueIndex=0;
+
+    for ( unsigned int i=1; i <=2; i++ )
+      {
+      if (  vnl_math_abs( eigenValue[i] > largest ) )
+        {
+        Lambda3 = eigenValue[i];
+        largest = vnl_math_abs( eigenValue[i] );
+        largestEigenValueIndex = i;
+        }
+      }
+
+    // find Lambda2 so that |Lambda1| < |Lambda2| < |Lambda3|
+    double Lambda2 = eigenValue[0];
+    unsigned int middleEigenValueIndex=0;
+
+    for ( unsigned int i=0; i <=2; i++ )
+      {
+      if ( eigenValue[i] != Lambda1 && eigenValue[i] != Lambda3 )
+        {
+        Lambda2 = eigenValue[i];
+        middleEigenValueIndex = i;
+        break;
+        }
+      }
+
+    EigenVectorMatrixType   matrixPixel;
+    matrixPixel = eigenVectorImageIterator.Get();
+
+    if( fabs(largest) >  toleranceEigenValues  )
+      {
+      //Assuming eigenvectors are rows
+      itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
+      for ( unsigned int i=0; i < vectorLength; i++ )
+        {
+        primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
+        }
+      primaryEigenVectorImageIterator.Set( primaryEigenVector );
+      }
+
+    ++eigenValueImageIterator;
+    ++eigenVectorImageIterator;
+    ++primaryEigenVectorImageIterator;
+    }
+
+
+}
+
 
 template< class TInputImage, class TOutputImage >
 void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
@@ -103,5 +263,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
      << static_cast< typename NumericTraits< VectorType >::PrintType >( m_UltrasoundOrigin )
      << std::endl;
 }
+
+
 } // end namespace itk
 #endif
