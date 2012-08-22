@@ -116,8 +116,29 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
   while ( !inputIt.IsAtEnd() )
     {
-    //Compute the angle and set it to output iterator. TODO
-    outputIt.Set( inputIt.Get() );
+    //Compute the angle and set it to output iterator.
+
+    //Normal vector
+    EigenVectorImageType::PixelType   vectorPixel;
+    vectorPixel = eigenVectorImageIterator.Get();
+
+    itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
+    for ( unsigned int i=0; i < vectorLength; i++ )
+      {
+      primaryEigenVector[i] = vectorPixel[i];
+      }
+
+    //Vector from the probe origin to the surface voxel
+    VectorType beamVector;
+
+    beamVector[0] = inputIt.Get()[0] - m_UltrasoundOrigin[0];
+    beamVector[1] = inputIt.Get()[1] - m_UltrasoundOrigin[1];
+    beamVector[2] = inputIt.Get()[2] - m_UltrasoundOrigin[2];
+
+    //Compute the dot product
+    double dotProduct = itk::DotProduct( beamVector, primaryEigenVector);
+
+    outputIt.Set( dotProduct );
     ++inputIt;
     ++outputIt;
     ++primaryEigenVectorImageIterator;
