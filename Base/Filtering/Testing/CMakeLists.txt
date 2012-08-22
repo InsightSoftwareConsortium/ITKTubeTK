@@ -86,6 +86,14 @@ MIDAS_ADD_TEST( itkSheetnessMeasureImageFilterTest2
       ${TEMP}/PrimitiveObjectsSheetnessMeasure.mha
       ${TEMP}/PrimitiaveObjectsPrimaryEigenVector.mha )
 
+MIDAS_ADD_TEST( itkSheetnessMeasureImageFilterTest3
+  ${BASE_FILTERING_TESTS}
+    itkSheetnessMeasureImageFilterTest2
+      MIDAS{UltrasoundCroppedResampled.mha.md5}
+      ${TEMP}/UltrasoundCroppedResampledSheetnessMeasure.mha
+      ${TEMP}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0)
+
+
 MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTest
