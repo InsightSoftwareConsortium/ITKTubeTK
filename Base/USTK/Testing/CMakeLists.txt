@@ -71,5 +71,9 @@ MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
   ${BASE_USTK_TESTS}
     itkAngleOfIncidenceImageFilterTest
     MIDAS{PrimitiveObjects.mha.md5}
+    ${TEMP}/PrimitveObjectsSheetnessImage.mha
     ${TEMP}/PrimitveObjectsAngleOfIncidenceImage.mha
+    10
+    10
+    10
   )

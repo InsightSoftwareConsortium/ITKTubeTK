@@ -26,11 +26,11 @@
 int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
 {
   // Argument parsing.
-  if( argc < 4 )
+  if( argc < 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " Input_Ultrasound_Image Output_Sheetness_Image Output_Angle_Of_Incidence_Image" << std::endl;
+    std::cerr << argv[0] << " Input_Ultrasound_Image Output_Sheetness_Image Output_Angle_Of_Incidence_Image UltrasoundOriginX UltrasoundOrignY UltrasoundOriginZ" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -98,6 +98,19 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
 
   // Create a sheetness Filter
   AngleOfIncidenceImageFilterType::Pointer filterAngleOfIncidence = AngleOfIncidenceImageFilterType::New();
+
+  //Read in the ultrasound probe origin (X,Y,Z)
+  double UltrasoundProbeOriginX = atof( argv[4] );
+  double UltrasoundProbeOriginY = atof( argv[5] );
+  double UltrasoundProbeOriginZ = atof( argv[6] );
+
+  itk::Vector< double, 3 > UltrasoundProbeOriginVector;
+
+  UltrasoundProbeOriginVector[0] = UltrasoundProbeOriginX;
+  UltrasoundProbeOriginVector[1] = UltrasoundProbeOriginY;
+  UltrasoundProbeOriginVector[0] = UltrasoundProbeOriginZ;
+
+  filterAngleOfIncidence->SetUltrasoundProbeOrigin( UltrasoundProbeOriginVector );
   filterAngleOfIncidence->SetInput( thresholdFilter->GetOutput() );
 
   //Write out the Angle of Incidence image

@@ -66,7 +66,7 @@ public:
 
 
   /** typedef for the origin type */
-  typedef Point< double, 3>     VectorType;
+  typedef Vector< double, 3>     VectorType;
 
   /* typedef for the output image */
   typedef TOutputImage                         OutputImageType;
@@ -94,8 +94,8 @@ public:
          EigenVectorMatrixImageType>                                    EigenVectorAnalysisFilterType;
 
   /** Set/Get Ultrasound origin vector */
-  itkSetMacro(UltrasoundOrigin, VectorType);
-  itkGetConstMacro(UltrasoundOrigin, VectorType);
+  itkSetMacro(UltrasoundProbeOrigin, VectorType);
+  itkGetConstMacro(UltrasoundProbeOrigin, VectorType);
 
   /* Generate Data */
   void GenerateData(void);
@@ -111,7 +111,7 @@ private:
   void operator=(const Self &);          //purposely not implemented
 
   /* Ultasound origin*/
-  VectorType m_UltrasoundOrigin;
+  VectorType m_UltrasoundProbeOrigin;
 
   /* Hessian analysis filter */
   typename HessianFilterType::Pointer m_HessianFilter;

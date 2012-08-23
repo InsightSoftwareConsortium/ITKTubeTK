@@ -38,7 +38,7 @@ template< class TInputImage, class TOutputImage >
 AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::AngleOfIncidenceImageFilter()
 {
-  m_UltrasoundOrigin.Fill(0);
+  m_UltrasoundProbeOrigin.Fill(0);
 
   //Eigen vector analysis filter
   m_EigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
@@ -86,7 +86,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     dynamic_cast< TOutputImage * >(
       this->ProcessObject::GetOutput(0) ) );
 
-  VectorType originInput;
+  Point< double> originInput;
   originInput.Fill(0.0);
   outputImagePtr->SetOrigin(originInput);
   outputImagePtr->SetSpacing( inputImagePtr->GetSpacing() );
@@ -104,6 +104,9 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   outputIt.GoToBegin();
   inputIt.GoToBegin();
 
+  //Compute the Normal Vector Image
+  this->ComputeNormalVectorImage();
+
   //Iterator for the primary eigen vector image with the largest eigenvector
   itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
   primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
@@ -118,25 +121,36 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     {
     //Compute the angle and set it to output iterator.
 
-    //Normal vector
-    EigenVectorImageType::PixelType   vectorPixel;
-    vectorPixel = eigenVectorImageIterator.Get();
+    itk::VariableLengthVector<double> vectorPixel;
+    vectorPixel.SetSize(3);
+    vectorPixel[0] = primaryEigenVectorImageIterator.Get()[0];
+    vectorPixel[1] = primaryEigenVectorImageIterator.Get()[1];
+    vectorPixel[2] = primaryEigenVectorImageIterator.Get()[2];
 
-    itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
-    for ( unsigned int i=0; i < vectorLength; i++ )
-      {
-      primaryEigenVector[i] = vectorPixel[i];
-      }
+    itk::Vector<double,3>  primaryEigenVector;
+
+    primaryEigenVector[0] = vectorPixel[0];
+    primaryEigenVector[1] = vectorPixel[1];
+    primaryEigenVector[2] = vectorPixel[2];
 
     //Vector from the probe origin to the surface voxel
-    VectorType beamVector;
+    itk::Vector<double, 3>    beamVector;
 
-    beamVector[0] = inputIt.Get()[0] - m_UltrasoundOrigin[0];
-    beamVector[1] = inputIt.Get()[1] - m_UltrasoundOrigin[1];
-    beamVector[2] = inputIt.Get()[2] - m_UltrasoundOrigin[2];
-
+    beamVector[0] = inputIt.GetIndex()[0] - m_UltrasoundProbeOrigin[0];
+    beamVector[1] = inputIt.GetIndex()[1] - m_UltrasoundProbeOrigin[1];
+    beamVector[2] = inputIt.GetIndex()[2] - m_UltrasoundProbeOrigin[2];
+    std::cout << "Beam vector for("  << inputIt.GetIndex()[0]  << ","
+                                     << inputIt.GetIndex()[1]  << ","
+                                     << inputIt.GetIndex()[2]  << "):=("
+                                     << beamVector[0]        << ","
+                                     << beamVector[1]        << ","
+                                     << beamVector[2]        << ")" << std::endl;
     //Compute the dot product
-    double dotProduct = itk::DotProduct( beamVector, primaryEigenVector);
+    double dotProduct = beamVector*primaryEigenVector;
+
+    std::cout << "dotProduct(" << primaryEigenVector[0]  << ","
+                               << primaryEigenVector[1]  << ","
+                               << primaryEigenVector[2] << ")=" << dotProduct << std::endl;
 
     outputIt.Set( dotProduct );
     ++inputIt;
@@ -149,7 +163,7 @@ template< class TInputImage, class TOutputImage >
 void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::ComputeNormalVectorImage()
 {
-  m_HessianFilter->SetInput( this->ProcessObject::GetInput(0) );
+  m_HessianFilter->SetInput( this->GetInput() );
   m_HessianFilter->Update();
 
   m_EigenValueAnalysisFilter->SetInput( m_HessianFilter->GetOutput() );
@@ -159,10 +173,10 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   m_EigenVectorAnalysisFilter->Update();
 
   //Generate an image with eigen vector pixel that correspond to the largest eigen value
-  EigenVectorImageType::ConstPointer eigenVectorImage =
+  EigenVectorMatrixImageType::ConstPointer eigenVectorImage =
                     m_EigenVectorAnalysisFilter->GetOutput();
 
-  EigenVectorImageType::RegionType region;
+  EigenVectorMatrixImageType::RegionType region;
   region.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
   region.SetIndex(eigenVectorImage->GetLargestPossibleRegion().GetIndex());
   m_PrimaryEigenVectorImage->SetRegions( region );
@@ -182,8 +196,8 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   //Setup the iterators
   //
   //Iterator for the eigenvector matrix image
-  itk::ImageRegionConstIterator<EigenVectorImageType> eigenVectorImageIterator;
-  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorImageType>(
+  itk::ImageRegionConstIterator<EigenVectorMatrixImageType> eigenVectorImageIterator;
+  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorMatrixImageType>(
       eigenVectorImage, eigenVectorImage->GetRequestedRegion());
   eigenVectorImageIterator.GoToBegin();
 
@@ -281,7 +295,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 {
   Superclass::PrintSelf(os, indent);
   os << indent << "Ultrasound origin vector : "
-     << static_cast< typename NumericTraits< VectorType >::PrintType >( m_UltrasoundOrigin )
+     << static_cast< typename NumericTraits< VectorType >::PrintType >( m_UltrasoundProbeOrigin )
      << std::endl;
 }
 
