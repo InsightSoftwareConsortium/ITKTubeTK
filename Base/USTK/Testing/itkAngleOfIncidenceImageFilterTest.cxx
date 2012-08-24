@@ -108,7 +108,7 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
 
   UltrasoundProbeOriginVector[0] = UltrasoundProbeOriginX;
   UltrasoundProbeOriginVector[1] = UltrasoundProbeOriginY;
-  UltrasoundProbeOriginVector[0] = UltrasoundProbeOriginZ;
+  UltrasoundProbeOriginVector[2] = UltrasoundProbeOriginZ;
 
   filterAngleOfIncidence->SetUltrasoundProbeOrigin( UltrasoundProbeOriginVector );
   filterAngleOfIncidence->SetInput( thresholdFilter->GetOutput() );
