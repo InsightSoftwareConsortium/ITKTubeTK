@@ -37,11 +37,14 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseUSTK_SRCS
   itkLabelMapToAcousticImpedanceImageFilterTest.cxx
+  itkAngleOfIncidenceImageFilterTest.cxx
+
   )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Utilities
   ${TubeTK_SOURCE_DIR}/Base/USTK
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   )
 
 add_executable( tubeBaseUSTKTests
@@ -62,4 +65,15 @@ MIDAS_ADD_TEST( itkLabelMapToAcousticImpedanceImageFilterTest
     ${CMAKE_CURRENT_SOURCE_DIR}/LabelMapToAcousticImpedanceTestLookupTable.csv
     MIDAS{CIRSPhantomAbdominalLabels.nrrd.md5}
     ${TEMP}/itkLabelMapToAcousticImpedanceImageFilterTest.mha
+  )
+
+MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
+  ${BASE_USTK_TESTS}
+    itkAngleOfIncidenceImageFilterTest
+    MIDAS{PrimitiveObjects.mha.md5}
+    ${TEMP}/PrimitveObjectsSheetnessImage.mha
+    ${TEMP}/PrimitveObjectsAngleOfIncidenceImage.mha
+    10
+    10
+    10
   )
