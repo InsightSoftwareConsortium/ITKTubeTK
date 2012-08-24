@@ -30,7 +30,7 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " Input_Ultrasound_Image Output_Sheetness_Image Output_Angle_Of_Incidence_Image UltrasoundOriginX UltrasoundOrignY UltrasoundOriginZ" << std::endl;
+    std::cerr << argv[0] << " Input_Ultrasound_Image Output_Sheetness_Image Output_Angle_Of_Incidence_Image UltrasoundOriginX UltrasoundOrignY UltrasoundOriginZ [Sheetness_Threshold]" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -89,7 +89,13 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
   ThresholdFilterType::Pointer thresholdFilter = ThresholdFilterType::New();
   thresholdFilter->SetInput( filterSheetness->GetOutput());
   thresholdFilter->SetOutsideValue( 0 );
-  thresholdFilter->ThresholdBelow ( 180 );
+
+  double sheetnessThresholdValue = 0.1;
+  if ( argc > 7 )
+    {
+    sheetnessThresholdValue = atof( argv[7] );
+    }
+  thresholdFilter->ThresholdBelow ( sheetnessThresholdValue );
   thresholdFilter->Update();
 
   //Compute the angle of incidence measure

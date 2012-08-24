@@ -139,18 +139,24 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     beamVector[0] = inputIt.GetIndex()[0] - m_UltrasoundProbeOrigin[0];
     beamVector[1] = inputIt.GetIndex()[1] - m_UltrasoundProbeOrigin[1];
     beamVector[2] = inputIt.GetIndex()[2] - m_UltrasoundProbeOrigin[2];
+
+    /*
     std::cout << "Beam vector for("  << inputIt.GetIndex()[0]  << ","
                                      << inputIt.GetIndex()[1]  << ","
                                      << inputIt.GetIndex()[2]  << "):=("
                                      << beamVector[0]        << ","
                                      << beamVector[1]        << ","
                                      << beamVector[2]        << ")" << std::endl;
+    */
+
     //Compute the dot product
     double dotProduct = beamVector*primaryEigenVector;
 
+    /*
     std::cout << "dotProduct(" << primaryEigenVector[0]  << ","
                                << primaryEigenVector[1]  << ","
                                << primaryEigenVector[2] << ")=" << dotProduct << std::endl;
+    */
 
     outputIt.Set( dotProduct );
     ++inputIt;
@@ -164,6 +170,9 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::ComputeNormalVectorImage()
 {
   m_HessianFilter->SetInput( this->GetInput() );
+
+  double sigma = 0.5;
+  m_HessianFilter->SetSigma ( sigma );
   m_HessianFilter->Update();
 
   m_EigenValueAnalysisFilter->SetInput( m_HessianFilter->GetOutput() );
@@ -269,6 +278,13 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     EigenVectorMatrixType   matrixPixel;
     matrixPixel = eigenVectorImageIterator.Get();
 
+    /*
+    std::cout << "EigenValues(" << eigenValueImageIterator.GetIndex()[0] << ","
+                                         << eigenValueImageIterator.GetIndex()[1] << ","
+                                         << eigenValueImageIterator.GetIndex()[2] <<")\t="
+                                         << smallest << ","
+                                         << largest << ")" << std::endl;
+    */
     if( fabs(largest) >  toleranceEigenValues  )
       {
       //Assuming eigenvectors are rows
@@ -277,6 +293,14 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
         {
         primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
         }
+      /*
+      std::cout << "PrimaryEigenVector(" << eigenValueImageIterator.GetIndex()[0] << ","
+                                         << eigenValueImageIterator.GetIndex()[1] << ","
+                                         << eigenValueImageIterator.GetIndex()[2] <<")\t="
+                                         << primaryEigenVector[0] << ","
+                                         << primaryEigenVector[1] << ","
+                                         << primaryEigenVector[2] << ")" << std::endl;
+      */
       primaryEigenVectorImageIterator.Set( primaryEigenVector );
       }
 
@@ -284,8 +308,6 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     ++eigenVectorImageIterator;
     ++primaryEigenVectorImageIterator;
     }
-
-
 }
 
 
