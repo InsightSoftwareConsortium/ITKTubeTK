@@ -203,21 +203,6 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     EigenValueArrayType eigenValue;
     eigenValue = eigenValueImageIterator.Get();
 
-    // Find the smallest eigenvalue
-    double smallest = vnl_math_abs( eigenValue[0] );
-    double Lambda1 = eigenValue[0];
-    unsigned int smallestEigenValueIndex=0;
-
-    for ( unsigned int i=1; i <=2; i++ )
-      {
-      if ( vnl_math_abs( eigenValue[i] ) < smallest )
-        {
-        Lambda1 = eigenValue[i];
-        smallest = vnl_math_abs( eigenValue[i] );
-        smallestEigenValueIndex = i;
-        }
-      }
-
     // Find the largest eigenvalue
     double largest = vnl_math_abs( eigenValue[0] );
     double Lambda3 = eigenValue[0];
@@ -230,20 +215,6 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
         Lambda3 = eigenValue[i];
         largest = vnl_math_abs( eigenValue[i] );
         largestEigenValueIndex = i;
-        }
-      }
-
-    // find Lambda2 so that |Lambda1| < |Lambda2| < |Lambda3|
-    double Lambda2 = eigenValue[0];
-    unsigned int middleEigenValueIndex=0;
-
-    for ( unsigned int i=0; i <=2; i++ )
-      {
-      if ( eigenValue[i] != Lambda1 && eigenValue[i] != Lambda3 )
-        {
-        Lambda2 = eigenValue[i];
-        middleEigenValueIndex = i;
-        break;
         }
       }
 
