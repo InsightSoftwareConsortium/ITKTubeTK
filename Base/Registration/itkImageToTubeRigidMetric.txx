@@ -516,7 +516,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
       typename TransformType::MatrixType matrix =
         this->GetTransform()->GetMatrix();
 
-      point =  matrix * inputPoint + GetTransform()->GetOffset();
+      point =  matrix * inputPoint + this->GetTransform()->GetOffset();
 
       CenterOfRotationType rotationOffset = matrix * this->m_CenterOfRotation;
 
@@ -540,6 +540,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
         scale = opR * m_Kappa;
 
+        //! \todo: these should be CovariantVectors?
         Vector<double, 3> v1;
         Vector<double, 3> v2;
         for( unsigned int i = 0; i < 3; ++i )
