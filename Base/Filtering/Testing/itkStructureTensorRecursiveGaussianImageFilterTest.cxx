@@ -205,14 +205,12 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
 
     // Find the largest eigenvalue
     double largest = vnl_math_abs( eigenValue[0] );
-    double Lambda3 = eigenValue[0];
     unsigned int largestEigenValueIndex=0;
 
     for ( unsigned int i=1; i <=2; i++ )
       {
       if (  vnl_math_abs( eigenValue[i] > largest ) )
         {
-        Lambda3 = eigenValue[i];
         largest = vnl_math_abs( eigenValue[i] );
         largestEigenValueIndex = i;
         }
