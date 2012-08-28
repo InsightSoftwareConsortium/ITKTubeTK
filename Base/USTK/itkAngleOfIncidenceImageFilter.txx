@@ -149,16 +149,27 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
                                      << beamVector[2]        << ")" << std::endl;
     */
 
-    //Compute the dot product
-    double dotProduct = beamVector*primaryEigenVector;
+    //Normalize the vectors
+    const double zeroNormVectorTolerance = 1e-8;
 
-    /*
-    std::cout << "dotProduct(" << primaryEigenVector[0]  << ","
+    if ( (beamVector.GetNorm() > zeroNormVectorTolerance) &&
+         (primaryEigenVector.GetNorm() > zeroNormVectorTolerance) )
+      {
+      beamVector.Normalize();
+      primaryEigenVector.Normalize();
+
+      //compute dot product
+      double dotProduct = beamVector*primaryEigenVector;
+
+      /*
+      std::cout << "dotProduct(" << primaryEigenVector[0]  << ","
                                << primaryEigenVector[1]  << ","
                                << primaryEigenVector[2] << ")=" << dotProduct << std::endl;
-    */
+      */
 
-    outputIt.Set( dotProduct );
+      outputIt.Set( fabs(dotProduct) );
+      }
+
     ++inputIt;
     ++outputIt;
     ++primaryEigenVectorImageIterator;
