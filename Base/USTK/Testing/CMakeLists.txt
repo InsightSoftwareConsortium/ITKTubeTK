@@ -38,7 +38,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseUSTK_SRCS
   itkLabelMapToAcousticImpedanceImageFilterTest.cxx
   itkAngleOfIncidenceImageFilterTest.cxx
-
+  itkGradientBasedAngleOfIncidenceImageFilterTest.cxx
   )
 
 include_directories(
@@ -76,4 +76,38 @@ MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
     10
     10
     10
+  )
+
+MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest
+  ${BASE_USTK_TESTS}
+  --compareNumberOfPixelsTolerance 50
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.mha
+    itkGradientBasedAngleOfIncidenceImageFilterTest
+      MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.mha
+      31.8
+      -24.8
+  )
+
+MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest2
+  ${BASE_USTK_TESTS}
+  --compareNumberOfPixelsTolerance 50
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha
+    itkGradientBasedAngleOfIncidenceImageFilterTest
+      MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha
+      136.5
+      -90.8
   )
