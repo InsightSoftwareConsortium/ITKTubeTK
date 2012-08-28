@@ -47,6 +47,7 @@ set( tubeBaseFilteringTests_SRCS
   tubeBaseFilteringPrintTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
+  itkSubSampleTubeSpatialObjectFilterTest.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
   itkSheetnessMeasureImageFilterTest.cxx
   )
@@ -95,6 +96,12 @@ MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest2
 MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest3
   ${BASE_FILTERING_TESTS}
     itkStructureTensorRecursiveGaussianImageFilterTestNew )
+
+MIDAS_ADD_TEST( itkSubSampleTubeSpatialObjectFilterTest
+  ${BASE_FILTERING_TESTS}
+    itkSubSampleTubeSpatialObjectFilterTest
+      MIDAS{Branch-truth-new.tre.md5}
+      ${TEMP}/itkSubSampleTubeSpatialObjectFilterTest.tre )
 
 MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterTest
   ${BASE_FILTERING_TESTS}
