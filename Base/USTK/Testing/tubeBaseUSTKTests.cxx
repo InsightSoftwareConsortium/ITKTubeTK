@@ -29,4 +29,5 @@ void RegisterTests()
 {
   REGISTER_TEST( itkLabelMapToAcousticImpedanceImageFilterTest );
   REGISTER_TEST( itkAngleOfIncidenceImageFilterTest );
+  REGISTER_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest );
 }
