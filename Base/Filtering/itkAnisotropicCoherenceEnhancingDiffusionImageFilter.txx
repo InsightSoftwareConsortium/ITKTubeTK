@@ -49,6 +49,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   m_ContrastParameterLambdaC = 15.0;
   m_Alpha = 0.001;
   m_Sigma = 1.0;
+  m_SigmaOuter = 1.0;
 }
 
 template <class TInputImage, class TOutputImage>
@@ -74,6 +75,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 
   StructureTensorFilter->SetInput( this->GetOutput() );
   StructureTensorFilter->SetSigma ( m_Sigma );
+  StructureTensorFilter->SetSigmaOuter ( m_SigmaOuter );
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigen vectors of the structure tensor
@@ -283,30 +285,6 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
     ++eigenValueImageIterator;
     ++eigenVectorImageIterator;
     }
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::SetSigma( double sigma)
-{
-  m_Sigma = sigma;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::SetContrastParameterLambdaC( double value )
-{
-  m_ContrastParameterLambdaC = value;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::SetAlpha( double value )
-{
-  m_Alpha = value;
 }
 
 template <class TInputImage, class TOutputImage>

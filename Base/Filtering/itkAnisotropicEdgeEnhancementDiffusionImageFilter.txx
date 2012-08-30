@@ -50,6 +50,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   m_ThresholdParameterC = 3.31488;
   m_ContrastParameterLambdaE = 30.0;
   m_Sigma = 1.0;
+  m_SigmaOuter = 1.0;
 }
 
 template <class TInputImage, class TOutputImage>
@@ -75,6 +76,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
   StructureTensorFilter->SetInput( this->GetOutput() );
   StructureTensorFilter->SetSigma( m_Sigma );
+  StructureTensorFilter->SetSigmaOuter( m_SigmaOuter );
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigen vectors of the structure tensor
@@ -308,30 +310,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     ++eigenVectorImageIterator;
     ++gradientMagnitudeImageIterator;
     }
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::SetSigma( double sigma)
-{
-  m_Sigma = sigma;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::SetThresholdParameterC( double threshold)
-{
-  m_ThresholdParameterC = threshold;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::SetContrastParameterLambdaE( double contrast)
-{
-  m_ContrastParameterLambdaE = contrast;
 }
 
 template <class TInputImage, class TOutputImage>

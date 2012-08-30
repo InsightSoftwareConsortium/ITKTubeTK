@@ -115,13 +115,20 @@ public:
                                                DiffusionTensorNeighborhoodType;
 
   /** Set the contrast parameter */
-  void SetContrastParameterLambdaE( double value );
+  itkSetMacro( ContrastParameterLambdaE, double );
 
   /** Set threshold parameter C */
-  void SetThresholdParameterC( double value );
+  itkSetMacro( ThresholdParameterC,  double );
 
-  /** Set the sigma value for structure tensor computation */
-  void SetSigma( double sigma );
+  /** Set the sigma and outer sigma value for structure tensor computation */
+  itkSetMacro( Sigma, double);
+  itkSetMacro( SigmaOuter, double);
+
+  /**Get methods */
+  itkGetMacro( ContrastParameterLambdaE, double);
+  itkGetMacro( ThresholdParameterC, double);
+  itkGetMacro( Sigma, double);
+  itkGetMacro( SigmaOuter, double);
 
 
 protected:
@@ -140,6 +147,7 @@ private:
   double    m_ContrastParameterLambdaE;
   double    m_ThresholdParameterC;
   double    m_Sigma;
+  double    m_SigmaOuter;
 };
 
 
