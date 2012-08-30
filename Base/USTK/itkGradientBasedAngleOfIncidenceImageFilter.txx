@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkGradientBasedAngleOfIncidenceImageFilter_hxx
-#define __itkGradientBasedAngleOfIncidenceImageFilter_hxx
+#ifndef __itkGradientBasedAngleOfIncidenceImageFilter_txx
+#define __itkGradientBasedAngleOfIncidenceImageFilter_txx
 
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
 
@@ -39,9 +39,7 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
 ::GradientBasedAngleOfIncidenceImageFilter()
 {
   typedef GradientImageFilter<
-      OperatorImageType,
-      OperatorValueType,
-      OperatorValueType >
+      OperatorImageType, OperatorValueType, OperatorValueType >
     DefaultGradientFilterType;
   this->m_GradientImageFilter = DefaultGradientFilterType::New().GetPointer();
 
@@ -83,12 +81,9 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   const OriginType origin = this->m_UltrasoundProbeOrigin;
   const double gradientMagnitudeTolerance = this->m_GradientMagnitudeTolerance;
 
-  typedef ImageRegionConstIteratorWithIndex< InputImageType >
-    InputIteratorType;
-  typedef ImageRegionConstIterator< GradientOutputImageType >
-    GradientIteratorType;
-  typedef ImageRegionIterator< OutputImageType >
-    OutputIteratorType;
+  typedef ImageRegionConstIteratorWithIndex< InputImageType > InputIteratorType;
+  typedef ImageRegionConstIterator< GradientOutputImageType > GradientIteratorType;
+  typedef ImageRegionIterator< OutputImageType >              OutputIteratorType;
 
   InputIteratorType inputIt( input, outputRegionForThread );
   GradientIteratorType gradientIt( gradient, outputRegionForThread );
