@@ -90,8 +90,8 @@ public:
 
   /** Set/Get the filter used to calculate the gradients of the input image.
    * The default is a simple GradientImageFilter. */
-  itkSetObjectMacro( GradientImageFilter, GradientFilterType );
-  itkGetObjectMacro( GradientImageFilter, GradientFilterType );
+  itkSetObjectMacro( GradientFilter, GradientFilterType );
+  itkGetObjectMacro( GradientFilter, GradientFilterType );
 
   /** Set/Get the tolerance for the gradient magnitude.  If the gradient
    * magnitude is below this value, the output is set to zero. */
@@ -120,7 +120,7 @@ private:
 
   OriginType m_UltrasoundProbeOrigin;
 
-  typename GradientFilterType::Pointer m_GradientImageFilter;
+  typename GradientFilterType::Pointer m_GradientFilter;
 
   double m_GradientMagnitudeTolerance;
 };

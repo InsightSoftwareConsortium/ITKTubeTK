@@ -41,7 +41,7 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   typedef GradientImageFilter<
       OperatorImageType, OperatorValueType, OperatorValueType >
     DefaultGradientFilterType;
-  this->m_GradientImageFilter = DefaultGradientFilterType::New().GetPointer();
+  this->m_GradientFilter = DefaultGradientFilterType::New().GetPointer();
 
   this->m_CastImageFilter = CastImageFilterType::New();
 
@@ -59,9 +59,9 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
 ::BeforeThreadedGenerateData( void )
 {
   this->m_CastImageFilter->SetInput( this->GetInput() );
-  this->m_GradientImageFilter->SetNumberOfThreads( this->GetNumberOfThreads() );
-  this->m_GradientImageFilter->SetInput( this->m_CastImageFilter->GetOutput() );
-  this->m_GradientImageFilter->Update();
+  this->m_GradientFilter->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->m_GradientFilter->SetInput( this->m_CastImageFilter->GetOutput() );
+  this->m_GradientFilter->Update();
 }
 
 
@@ -75,7 +75,7 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
 {
   const InputImageType * input = this->GetInput();
   const GradientOutputImageType * gradient =
-    this->m_GradientImageFilter->GetOutput();
+    this->m_GradientFilter->GetOutput();
   OutputImageType * output = this->GetOutput();
 
   const OriginType origin = this->m_UltrasoundProbeOrigin;

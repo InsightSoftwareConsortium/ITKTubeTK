@@ -1,29 +1,35 @@
 /*=========================================================================
- *
- *  Copyright Insight Software Consortium
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0.txt
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *=========================================================================*/
 
-#include "itkGradientBasedAngleOfIncidenceImageFilter.h"
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
+
+#include "itkAcousticImpulseResponseImageFilter.h"
 #include "itkImageFileWriter.h"
 #include "itkImageFileReader.h"
-#include "itkGradientRecursiveGaussianImageFilter.h"
+#include "itkGradientBasedAngleOfIncidenceImageFilter.h"
+#include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
 
 #include <sstream>
 
-int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
+int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
 {
   // Argument parsing.
   if( argc < 6 )
@@ -71,11 +77,19 @@ int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
   istrm >> probeOrigin[1];
   angleOfIncidenceFilter->SetUltrasoundProbeOrigin( probeOrigin );
 
+  // Calculate the acoustic impulse response
+  typedef itk::AcousticImpulseResponseImageFilter< ImageType, ImageType >
+    AcousticImpulseResponseFilterType;
+  AcousticImpulseResponseFilterType::Pointer acousticImpulseResponseFilter =
+    AcousticImpulseResponseFilterType::New();
+  acousticImpulseResponseFilter->SetInput( 0, reader->GetOutput() );
+  acousticImpulseResponseFilter->SetInput( 1, angleOfIncidenceFilter->GetOutput() );
+
   // Writer
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;
   ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputImage );
-  writer->SetInput( angleOfIncidenceFilter->GetOutput() );
+  writer->SetInput( acousticImpulseResponseFilter->GetOutput() );
   try
     {
     writer->Update();
@@ -87,16 +101,16 @@ int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
     }
 
   // Use a different gradient filter.
-  typedef itk::GradientRecursiveGaussianImageFilter<
-    AngleOfIncidenceFilterType::OperatorImageType,
-    AngleOfIncidenceFilterType::GradientOutputImageType
+  typedef itk::GradientMagnitudeRecursiveGaussianImageFilter<
+    AcousticImpulseResponseFilterType::OperatorImageType,
+    AcousticImpulseResponseFilterType::OperatorImageType
       >
-      GradientRecursiveGaussianFilterType;
-  GradientRecursiveGaussianFilterType::Pointer gradientRecursiveGaussianFilter =
-    GradientRecursiveGaussianFilterType::New();
-  gradientRecursiveGaussianFilter->SetSigma( 0.5 );
-  angleOfIncidenceFilter->SetGradientFilter( gradientRecursiveGaussianFilter );
-  angleOfIncidenceFilter->SetGradientMagnitudeTolerance( 0.5e-3 );
+      GradientMagnitudeRecursiveGaussianFilterType;
+  GradientMagnitudeRecursiveGaussianFilterType::Pointer
+    gradientMagnitudeRecursiveGaussianFilter =
+      GradientMagnitudeRecursiveGaussianFilterType::New();
+  gradientMagnitudeRecursiveGaussianFilter->SetSigma( 0.5 );
+  acousticImpulseResponseFilter->SetGradientMagnitudeFilter( gradientMagnitudeRecursiveGaussianFilter );
 
   writer->SetFileName( outputImageWithGradientRecursiveGaussian );
   try

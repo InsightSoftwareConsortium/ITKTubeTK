@@ -37,6 +37,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseUSTK_SRCS
   itkLabelMapToAcousticImpedanceImageFilterTest.cxx
+  itkAcousticImpulseResponseImageFilterTest.cxx
   itkAngleOfIncidenceImageFilterTest.cxx
   itkGradientBasedAngleOfIncidenceImageFilterTest.cxx
   )
@@ -108,6 +109,23 @@ MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest2
       MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
       ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha
       ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha
+      136.5
+      -90.8
+  )
+
+MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest2
+  ${BASE_USTK_TESTS}
+  #--compareNumberOfPixelsTolerance 50
+  #--compare
+      #MIDAS{itkAcousticImpulseResponseImageFilterTest2GradientImageFilter.mha.md5}
+      #${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientImageFilter.mha
+  #--compare
+      #MIDAS{itkAcousticImpulseResponseImageFilterTest2GradientRecursiveGaussianImageFilter.mha.md5}
+      #${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientRecursiveGaussianImageFilter.mha
+    itkAcousticImpulseResponseImageFilterTest
+      MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
+      ${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientImageFilter.mha
+      ${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientRecursiveGaussianImageFilter.mha
       136.5
       -90.8
   )
