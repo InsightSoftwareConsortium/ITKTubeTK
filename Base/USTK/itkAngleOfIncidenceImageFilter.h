@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -41,7 +41,8 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage >
-class ITK_EXPORT AngleOfIncidenceImageFilter:public ImageToImageFilter< TInputImage, TOutputImage >
+class ITK_EXPORT AngleOfIncidenceImageFilter:
+  public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */
@@ -56,7 +57,8 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(AngleOfIncidenceImageFilter, ImageToImageFilter);
 
-  itkStaticConstMacro(Dimension, unsigned int, 3);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    TInputImage::ImageDimension );
 
   /** Some convenient typedefs for input image */
   typedef TInputImage                           InputImageType;
@@ -66,7 +68,7 @@ public:
 
 
   /** typedef for the origin type */
-  typedef Vector< double, 3>     VectorType;
+  typedef Vector< double, ImageDimension >     VectorType;
 
   /* typedef for the output image */
   typedef TOutputImage                         OutputImageType;
@@ -75,35 +77,44 @@ public:
   typedef typename OutputImageType::PixelType  OutputImagePixelType;
 
   /** typedef to generate surface normal vector using eigen analysis */
-  typedef typename itk::HessianRecursiveGaussianImageFilter< InputImageType >  HessianFilterType;
+  typedef typename itk::HessianRecursiveGaussianImageFilter< InputImageType >
+    HessianFilterType;
 
-  typedef itk::SymmetricSecondRankTensor< double, 3 >         SymmetricSecondRankTensorType;
-  typedef itk::Image< SymmetricSecondRankTensorType, 3>       SymmetricSecondRankTensorImageType;
-  typedef  itk::Matrix< double, 3, 3>                         EigenVectorMatrixType;
-  typedef  itk::Image< EigenVectorMatrixType, 3>              EigenVectorMatrixImageType;
-  typedef  itk::FixedArray< double, 3>                        EigenValueArrayType;
-  typedef  itk::Image< EigenValueArrayType, 3>                EigenValueImageType;
+  typedef SymmetricSecondRankTensor< double, ImageDimension >
+    SymmetricSecondRankTensorType;
+  typedef Image< SymmetricSecondRankTensorType, ImageDimension >
+    SymmetricSecondRankTensorImageType;
+  typedef Matrix< double, ImageDimension, ImageDimension >
+    EigenVectorMatrixType;
+  typedef Image< EigenVectorMatrixType, ImageDimension >
+    EigenVectorMatrixImageType;
+  typedef FixedArray< double, ImageDimension >
+    EigenValueArrayType;
+  typedef Image< EigenValueArrayType, ImageDimension >
+    EigenValueImageType;
 
-  typedef itk::VectorImage< double, 3 >    EigenVectorImageType;
+  typedef itk::VectorImage< double, ImageDimension >    EigenVectorImageType;
 
   typedef itk::SymmetricEigenAnalysisImageFilter
-        <SymmetricSecondRankTensorImageType, EigenValueImageType> EigenValueAnalysisFilterType;
+    <SymmetricSecondRankTensorImageType, EigenValueImageType>
+    EigenValueAnalysisFilterType;
 
   typedef itk::SymmetricEigenVectorAnalysisImageFilter
         <SymmetricSecondRankTensorImageType, EigenValueImageType,
-         EigenVectorMatrixImageType>                                    EigenVectorAnalysisFilterType;
+         EigenVectorMatrixImageType>
+    EigenVectorAnalysisFilterType;
 
   /** Set/Get Ultrasound origin vector */
   itkSetMacro(UltrasoundProbeOrigin, VectorType);
   itkGetConstMacro(UltrasoundProbeOrigin, VectorType);
 
-  /* Generate Data */
-  void GenerateData(void);
-
 protected:
   AngleOfIncidenceImageFilter();
   virtual ~AngleOfIncidenceImageFilter() {}
   void PrintSelf(std::ostream & os, Indent indent) const;
+
+  /* Generate Data */
+  void GenerateData(void);
 
   void ComputeNormalVectorImage();
 private:
@@ -117,13 +128,13 @@ private:
   typename HessianFilterType::Pointer m_HessianFilter;
 
   /* Eigen value analysis filter */
-  EigenValueAnalysisFilterType::Pointer m_EigenValueAnalysisFilter;
+  typename EigenValueAnalysisFilterType::Pointer m_EigenValueAnalysisFilter;
 
   /* Eigen vector analysis filter */
-  EigenVectorAnalysisFilterType::Pointer m_EigenVectorAnalysisFilter;
+  typename EigenVectorAnalysisFilterType::Pointer m_EigenVectorAnalysisFilter;
 
   // Primary eigen vector image
-  EigenVectorImageType::Pointer m_PrimaryEigenVectorImage;
+  typename EigenVectorImageType::Pointer m_PrimaryEigenVectorImage;
 
 };
 } // end namespace itk

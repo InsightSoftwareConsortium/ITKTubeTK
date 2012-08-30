@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkAngleOfIncidenceImageFilter_hxx
-#define __itkAngleOfIncidenceImageFilter_hxx
+#ifndef __itkAngleOfIncidenceImageFilter_txx
+#define __itkAngleOfIncidenceImageFilter_txx
 
 #include "itkAngleOfIncidenceImageFilter.h"
 #include "itkImageRegionConstIterator.h"
@@ -42,13 +42,13 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
   //Eigen vector analysis filter
   m_EigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
-  m_EigenVectorAnalysisFilter->SetDimension( Dimension );
+  m_EigenVectorAnalysisFilter->SetDimension( ImageDimension );
   m_EigenVectorAnalysisFilter->OrderEigenValuesBy(
       EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   //Eigen value analysis filter
   m_EigenValueAnalysisFilter = EigenValueAnalysisFilterType::New();
-  m_EigenValueAnalysisFilter->SetDimension( Dimension );
+  m_EigenValueAnalysisFilter->SetDimension( ImageDimension );
   m_EigenValueAnalysisFilter->OrderEigenValuesBy(
         EigenValueAnalysisFilterType::FunctorType::OrderByValue );
 
@@ -98,8 +98,10 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   outputImagePtr->Allocate();
   outputImagePtr->FillBuffer(0);
 
-  InputImageConstIteratorType inputIt( inputImagePtr, inputImagePtr->GetLargestPossibleRegion() );
-  OutputImageIteratorType     outputIt( outputImagePtr, outputImagePtr->GetLargestPossibleRegion() );
+  InputImageConstIteratorType inputIt( inputImagePtr,
+    inputImagePtr->GetLargestPossibleRegion() );
+  OutputImageIteratorType     outputIt( outputImagePtr,
+    outputImagePtr->GetLargestPossibleRegion() );
 
   outputIt.GoToBegin();
   inputIt.GoToBegin();
@@ -161,12 +163,6 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
       //compute dot product
       double dotProduct = beamVector*primaryEigenVector;
 
-      /*
-      std::cout << "dotProduct(" << primaryEigenVector[0]  << ","
-                               << primaryEigenVector[1]  << ","
-                               << primaryEigenVector[2] << ")=" << dotProduct << std::endl;
-      */
-
       outputIt.Set( fabs(dotProduct) );
       }
 
@@ -193,10 +189,10 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   m_EigenVectorAnalysisFilter->Update();
 
   //Generate an image with eigen vector pixel that correspond to the largest eigen value
-  EigenVectorMatrixImageType::ConstPointer eigenVectorImage =
+  typename EigenVectorMatrixImageType::ConstPointer eigenVectorImage =
                     m_EigenVectorAnalysisFilter->GetOutput();
 
-  EigenVectorMatrixImageType::RegionType region;
+  typename EigenVectorMatrixImageType::RegionType region;
   region.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
   region.SetIndex(eigenVectorImage->GetLargestPossibleRegion().GetIndex());
   m_PrimaryEigenVectorImage->SetRegions( region );
@@ -228,13 +224,14 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   primaryEigenVectorImageIterator.GoToBegin();
 
   //Iterator for the eigen value image
-  EigenValueImageType::ConstPointer eigenImage = m_EigenValueAnalysisFilter->GetOutput();
+  typename EigenValueImageType::ConstPointer eigenImage
+    = m_EigenValueAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
   eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
       eigenImage, eigenImage->GetRequestedRegion());
   eigenValueImageIterator.GoToBegin();
 
-  double toleranceEigenValues = 1e-4;
+  const double toleranceEigenValues = 1e-4;
 
   while (!eigenValueImageIterator.IsAtEnd())
     {
@@ -273,14 +270,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
         {
         primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
         }
-      /*
-      std::cout << "PrimaryEigenVector(" << eigenValueImageIterator.GetIndex()[0] << ","
-                                         << eigenValueImageIterator.GetIndex()[1] << ","
-                                         << eigenValueImageIterator.GetIndex()[2] <<")\t="
-                                         << primaryEigenVector[0] << ","
-                                         << primaryEigenVector[1] << ","
-                                         << primaryEigenVector[2] << ")" << std::endl;
-      */
+
       primaryEigenVectorImageIterator.Set( primaryEigenVector );
       }
 
@@ -297,8 +287,9 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 {
   Superclass::PrintSelf(os, indent);
   os << indent << "Ultrasound origin vector : "
-     << static_cast< typename NumericTraits< VectorType >::PrintType >( m_UltrasoundProbeOrigin )
-     << std::endl;
+     << static_cast< typename NumericTraits< VectorType >::PrintType >
+  ( m_UltrasoundProbeOrigin )
+  << std::endl;
 }
 
 

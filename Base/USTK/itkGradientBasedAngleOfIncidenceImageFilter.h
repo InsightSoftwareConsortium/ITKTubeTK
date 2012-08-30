@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -31,9 +31,9 @@ namespace itk
 /** \class GradientBasedAngleOfIncidenceImageFilter
  * \brief Computes cosine of the angle of incidence.
  *
- * The cosine of the angle of incidence is computed as the angle between the ultrasound beam
- * direction and the normal of the "local surface", which is computed as the
- * local gradient.
+ * The cosine of the angle of incidence is computed as the angle between the
+ * ultrasound beam direction and the normal of the "local surface", which is
+ * computed as the local gradient.
  *
  * For every input pixel location, the beam direction is computed by normalizing
  * the vector from that location to the center of rotation of a phased array or
@@ -73,7 +73,8 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     InputImageType::ImageDimension );
 
-  typedef TOperatorValue OperatorValueType;
+  typedef TOperatorValue
+    OperatorValueType;
   typedef Image< OperatorValueType, ImageDimension >
     OperatorImageType;
   typedef CovariantVector< OperatorValueType, ImageDimension >
