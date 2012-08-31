@@ -45,6 +45,9 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseFilteringTests_SRCS
   tubeBaseFilteringPrintTest.cxx
+  itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx
+  itkAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
+  itkAnisotropicHybridDiffusionImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTest.cxx
   itkStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
@@ -137,3 +140,21 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
       MIDAS{im0001_n10.crop2.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
+
+MIDAS_ADD_TEST( itkAnisotropicHybridDiffusionImageFilterTest
+ ${BASE_FILTERING_TESTS}
+ itkAnisotropicHybridDiffusionImageFilterTest
+ MIDAS{CroppedWholeLungCTScan.mhd.md5}
+ ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha )
+
+MIDAS_ADD_TEST( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
+ ${BASE_FILTERING_TESTS}
+ itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
+ MIDAS{CroppedWholeLungCTScan.mhd.md5}
+ ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha )
+
+MIDAS_ADD_TEST( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
+ ${BASE_FILTERING_TESTS}
+ itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
+ MIDAS{CroppedWholeLungCTScan.mhd.md5}
+ ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha )
