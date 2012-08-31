@@ -114,22 +114,31 @@ public:
   typedef typename Superclass::DiffusionTensorNeighborhoodType
                                                DiffusionTensorNeighborhoodType;
   /** Set the contrast parameter for EED */
-  void SetContrastParameterLambdaEED( double value );
+  itkSetMacro(ContrastParameterLambdaEED, double );
 
   /** Set the contrast parameter for CED */
-  void SetContrastParameterLambdaCED( double value );
+  itkSetMacro(ContrastParameterLambdaCED, double );
 
   /** Set the contrast parameter for Hybrid */
-  void SetContrastParameterLambdaHybrid( double value );
+  itkSetMacro(ContrastParameterLambdaHybrid, double );
 
   /** Set threshold parameter C */
-  void SetThresholdParameterC( double value );
+  itkSetMacro(ThresholdParameterC, double);
 
   /** Set the sigma value for structure tensor computation */
-  void SetSigma( double sigma );
+  itkSetMacro( Sigma, double);
+  itkSetMacro( SigmaOuter, double);
 
   /** Set the alpha value for structure tensor computation */
-  void SetAlpha( double alpha );
+  itkSetMacro( Alpha, double );
+
+  /** Get methods */
+  itkGetMacro( ContrastParameterLambdaEED, double);
+  itkGetMacro( ContrastParameterLambdaCED, double);
+  itkGetMacro( ContrastParameterLambdaHybrid, double);
+  itkGetMacro( ThresholdParameterC, double);
+  itkGetMacro( Sigma, double);
+  itkGetMacro( SigmaOuter, double);
 
 protected:
   AnisotropicHybridDiffusionImageFilter();
@@ -149,6 +158,7 @@ private:
   double    m_ContrastParameterLambdaHybrid;
   double    m_ThresholdParameterC;
   double    m_Sigma;
+  double    m_SigmaOuter;
   double    m_Alpha;
 };
 
