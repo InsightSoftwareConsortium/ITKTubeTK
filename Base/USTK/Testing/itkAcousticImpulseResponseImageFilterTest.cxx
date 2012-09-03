@@ -148,7 +148,7 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
   istrm >> angleDependenceDouble;
   acousticImpulseResponseFilter->SetAngleDependence( angleDependenceDouble );
 
-  // Writer
+  // Write image.
   try
     {
     acousticImpulseResponseFilter->Update();
@@ -169,7 +169,7 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
   GradientMagnitudeRecursiveGaussianFilterType::Pointer
     gradientMagnitudeRecursiveGaussianFilter =
       GradientMagnitudeRecursiveGaussianFilterType::New();
-  gradientMagnitudeRecursiveGaussianFilter->SetSigma( 0.5 );
+  gradientMagnitudeRecursiveGaussianFilter->SetSigma( 1.0 );
   acousticImpulseResponseFilter->SetGradientMagnitudeFilter(
     gradientMagnitudeRecursiveGaussianFilter );
 
