@@ -128,4 +128,5 @@ MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest2
       ${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientRecursiveGaussianImageFilter.mha
       136.5
       -90.8
+      1.0
   )

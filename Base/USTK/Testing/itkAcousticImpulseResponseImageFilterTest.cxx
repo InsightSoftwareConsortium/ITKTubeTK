@@ -26,13 +26,67 @@ limitations under the License.
 #include "itkImageFileReader.h"
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
 #include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
+#include "itkAbsImageAdaptor.h"
+#include "itkAddConstantToImageFilter.h"
+#include "itkLog10ImageAdaptor.h"
+#include "itkIntensityWindowingImageFilter.h"
 
 #include <sstream>
+
+// Very rough B-Mode that does not take into account system properties or a
+// a realistic image formation process.
+template< class TInputImage >
+void
+RoughBMode( TInputImage * inputImage, const char * fileName )
+{
+  typedef TInputImage InputImageType;
+  typedef itk::AbsImageAdaptor< InputImageType,
+      typename InputImageType::PixelType >
+    AbsAdaptorType;
+  typename AbsAdaptorType::Pointer absAdaptor = AbsAdaptorType::New();
+  absAdaptor->SetImage( inputImage );
+
+  typedef itk::AddConstantToImageFilter<
+      AbsAdaptorType,
+      typename InputImageType::PixelType,
+      InputImageType >
+    AddConstantFilterType;
+  typename AddConstantFilterType::Pointer addConstantFilter =
+    AddConstantFilterType::New();
+  addConstantFilter->SetInput( absAdaptor );
+  addConstantFilter->SetConstant( 1.0e-12 );
+  addConstantFilter->Update();
+
+  typedef itk::Log10ImageAdaptor< InputImageType,
+      typename InputImageType::PixelType >
+    Log10AdaptorType;
+  typename Log10AdaptorType::Pointer log10Adaptor =
+    Log10AdaptorType::New();
+  log10Adaptor->SetImage( addConstantFilter->GetOutput() );
+
+  typedef unsigned char OutputPixelType;
+  typedef itk::Image< OutputPixelType, InputImageType::ImageDimension >
+    OutputImageType;
+  typedef itk::IntensityWindowingImageFilter< Log10AdaptorType,
+      OutputImageType >
+    IntensityWindowingFilterType;
+  typename IntensityWindowingFilterType::Pointer intensityWindowingFilter =
+    IntensityWindowingFilterType::New();
+  intensityWindowingFilter->SetWindowMinimum( -5.0 );
+  intensityWindowingFilter->SetWindowMaximum( 2.0 );
+  intensityWindowingFilter->SetInput( log10Adaptor );
+
+  typedef itk::ImageFileWriter< OutputImageType > WriterType;
+  typename WriterType::Pointer writer = WriterType::New();
+  writer->SetInput( intensityWindowingFilter->GetOutput() );
+  writer->SetFileName( fileName );
+  writer->Update();
+}
 
 int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
 {
   // Argument parsing.
-  if( argc < 6 )
+  if( argc < 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: "
@@ -42,6 +96,7 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
               << " outputImageWithGradientRecursiveGaussian"
               << " originX"
               << " originY"
+              << " angleDependence"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -50,6 +105,7 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
   const char * outputImageWithGradientRecursiveGaussian = argv[3];
   const char * originX = argv[4];
   const char * originY = argv[5];
+  const char * angleDependence = argv[6];
 
   // Types
   static const unsigned int Dimension = 2;
@@ -82,17 +138,21 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
     AcousticImpulseResponseFilterType;
   AcousticImpulseResponseFilterType::Pointer acousticImpulseResponseFilter =
     AcousticImpulseResponseFilterType::New();
-  acousticImpulseResponseFilter->SetInput( 0, reader->GetOutput() );
-  acousticImpulseResponseFilter->SetInput( 1, angleOfIncidenceFilter->GetOutput() );
+  acousticImpulseResponseFilter->SetInput( 0,
+    reader->GetOutput() );
+  acousticImpulseResponseFilter->SetInput( 1,
+    angleOfIncidenceFilter->GetOutput() );
+  istrm.clear();
+  istrm.str( angleDependence );
+  double angleDependenceDouble;
+  istrm >> angleDependenceDouble;
+  acousticImpulseResponseFilter->SetAngleDependence( angleDependenceDouble );
 
   // Writer
-  typedef itk::ImageFileWriter< ImageType > ImageWriterType;
-  ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputImage );
-  writer->SetInput( acousticImpulseResponseFilter->GetOutput() );
   try
     {
-    writer->Update();
+    acousticImpulseResponseFilter->Update();
+    RoughBMode( acousticImpulseResponseFilter->GetOutput(), outputImage );
     }
   catch( itk::ExceptionObject & error )
     {
@@ -110,12 +170,14 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv [] )
     gradientMagnitudeRecursiveGaussianFilter =
       GradientMagnitudeRecursiveGaussianFilterType::New();
   gradientMagnitudeRecursiveGaussianFilter->SetSigma( 0.5 );
-  acousticImpulseResponseFilter->SetGradientMagnitudeFilter( gradientMagnitudeRecursiveGaussianFilter );
+  acousticImpulseResponseFilter->SetGradientMagnitudeFilter(
+    gradientMagnitudeRecursiveGaussianFilter );
 
-  writer->SetFileName( outputImageWithGradientRecursiveGaussian );
   try
     {
-    writer->Update();
+    acousticImpulseResponseFilter->Update();
+    RoughBMode( acousticImpulseResponseFilter->GetOutput(),
+      outputImageWithGradientRecursiveGaussian );
     }
   catch( itk::ExceptionObject & error )
     {
