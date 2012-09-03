@@ -69,14 +69,13 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
     this->m_GradientMagnitudeFilter->GetOutput();
   OutputImageType * output = this->GetOutput();
 
-  typedef ImageRegionConstIterator< InputImageType >
-    InputIteratorType;
+  typedef ImageRegionConstIterator< InputImageType > InputIteratorType;
+  typedef ImageRegionIterator< OutputImageType >     OutputIteratorType;
+
   typedef ImageRegionConstIterator< OperatorImageType >
     AngleOfIncidenceIteratorType;
   typedef ImageRegionConstIterator< OperatorImageType >
     GradientMagnitudeIteratorType;
-  typedef ImageRegionIterator< OutputImageType >
-    OutputIteratorType;
 
   InputIteratorType inputIt( input, outputRegionForThread );
   AngleOfIncidenceIteratorType angleOfIncidenceIt( angleOfIncidence,

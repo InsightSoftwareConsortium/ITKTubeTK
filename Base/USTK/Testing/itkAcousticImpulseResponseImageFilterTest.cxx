@@ -67,11 +67,10 @@ RoughBMode( TInputImage * inputImage, const char * fileName )
   typedef unsigned char OutputPixelType;
   typedef itk::Image< OutputPixelType, InputImageType::ImageDimension >
     OutputImageType;
-  typedef itk::IntensityWindowingImageFilter< Log10AdaptorType,
-      OutputImageType >
+  typedef itk::IntensityWindowingImageFilter< Log10AdaptorType, OutputImageType >
     IntensityWindowingFilterType;
-  typename IntensityWindowingFilterType::Pointer intensityWindowingFilter =
-    IntensityWindowingFilterType::New();
+  typename IntensityWindowingFilterType::Pointer
+    intensityWindowingFilter = IntensityWindowingFilterType::New();
   intensityWindowingFilter->SetWindowMinimum( -5.0 );
   intensityWindowingFilter->SetWindowMaximum( 2.0 );
   intensityWindowingFilter->SetInput( log10Adaptor );
