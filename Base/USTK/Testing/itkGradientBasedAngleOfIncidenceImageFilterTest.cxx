@@ -95,7 +95,7 @@ int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
   GradientRecursiveGaussianFilterType::Pointer gradientRecursiveGaussianFilter =
     GradientRecursiveGaussianFilterType::New();
   gradientRecursiveGaussianFilter->SetSigma( 0.5 );
-  angleOfIncidenceFilter->SetGradientImageFilter( gradientRecursiveGaussianFilter );
+  angleOfIncidenceFilter->SetGradientFilter( gradientRecursiveGaussianFilter );
   angleOfIncidenceFilter->SetGradientMagnitudeTolerance( 0.5e-3 );
 
   writer->SetFileName( outputImageWithGradientRecursiveGaussian );
