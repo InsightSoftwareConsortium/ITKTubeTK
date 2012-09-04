@@ -90,6 +90,7 @@ GENERATE_TESTS ( "ImageToTubeRigidRegistration"
 
 set( tubeBaseRegistrationFilters_SRCS
   itkSyntheticTubeImageGenerationsTest.cxx
+  itkTubeExponentialResolutionWeightFunctionTest.cxx
   itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx
   )
@@ -352,4 +353,10 @@ MIDAS_ADD_TEST( itkSyntheticTubeImagesGenerationsTest
   ${TEMP}/SyntheticVesselTubeImage.mha
   MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
   ${TEMP}/SyntheticTransformedVesselTubeImage.mha
+  )
+
+MIDAS_ADD_TEST( itkTubeExponentialResolutionWeightFunctionTest
+  ${BASE_REGISTRATION_FILTERS_TESTS}
+  itkTubeExponentialResolutionWeightFunctionTest
+  ${TEMP}/itkTubeExponentialResolutionWeightFunctionTest.csv
   )

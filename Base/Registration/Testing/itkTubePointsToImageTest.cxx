@@ -30,7 +30,7 @@ limitations under the License.
 #include "itkImageFileWriter.h"
 
 int itkTubePointsToImageTest( int argc, char * argv[] )
-  {
+{
   if( argc != 3 )
     {
     std::cout
@@ -144,4 +144,4 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
   imageWriter->SetInput(tubeToImageFilter->GetOutput());
   imageWriter->Update();
   return EXIT_SUCCESS;
-  }
+}
