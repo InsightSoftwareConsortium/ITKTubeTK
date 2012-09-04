@@ -145,16 +145,24 @@ MIDAS_ADD_TEST( itkAnisotropicHybridDiffusionImageFilterTest
  ${BASE_FILTERING_TESTS}
  itkAnisotropicHybridDiffusionImageFilterTest
  MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha )
+ ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha
+ MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
+ )
+
 
 MIDAS_ADD_TEST( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
  ${BASE_FILTERING_TESTS}
  itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
  MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha )
+ ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha
+ MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
+)
+
 
 MIDAS_ADD_TEST( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
  ${BASE_FILTERING_TESTS}
  itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
  MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha )
+ ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha
+ MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
+)
