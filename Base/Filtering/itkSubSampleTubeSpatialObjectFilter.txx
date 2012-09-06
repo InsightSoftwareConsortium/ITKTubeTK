@@ -26,7 +26,7 @@ namespace itk
 template< typename TTubeSpatialObject >
 SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 ::SubSampleTubeSpatialObjectFilter():
-  m_SamplingFactor(1)
+  m_Sampling(1)
 {
 }
 
@@ -44,22 +44,22 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
   PointListType & outputPoints = output->GetPoints();
   const size_t numberOfInputPoints = inputPoints.size();
   size_t numberOfOutputPoints;
-  if( this->m_SamplingFactor == 1 )
+  if( this->m_Sampling == 1 )
     {
-    numberOfOutputPoints = numberOfInputPoints / this->m_SamplingFactor + 0;
+    numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 0;
     }
-  else if( numberOfInputPoints % this->m_SamplingFactor == 0 )
+  else if( numberOfInputPoints % this->m_Sampling == 0 )
     {
-    numberOfOutputPoints = numberOfInputPoints / this->m_SamplingFactor + 1;
+    numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 1;
     }
   else
     {
-    numberOfOutputPoints = numberOfInputPoints / this->m_SamplingFactor + 2;
+    numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 2;
     }
   outputPoints.resize( numberOfOutputPoints );
   for( size_t inputIndex = 0, outputIndex = 0;
     outputIndex < numberOfOutputPoints - 1;
-    ++outputIndex, inputIndex += this->m_SamplingFactor )
+    ++outputIndex, inputIndex += this->m_Sampling )
     {
     outputPoints[outputIndex] = inputPoints[inputIndex];
     }

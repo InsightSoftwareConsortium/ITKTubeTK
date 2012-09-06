@@ -31,6 +31,8 @@ namespace itk
  * (an integer greater or equal to one).  The beginning and end
  * points of the tube are always included.
  *
+ * \sa SubSampleTubeChildrenSpatialObjectFilter
+ *
  */
 template< typename TTubeSpatialObject >
 class SubSampleTubeSpatialObjectFilter:
@@ -41,8 +43,8 @@ public:
   typedef SubSampleTubeSpatialObjectFilter  Self;
   typedef SpatialObjectToSpatialObjectFilter< TTubeSpatialObject, TTubeSpatialObject >
     Superclass;
-  typedef SmartPointer< Self >                    Pointer;
-  typedef SmartPointer< const Self >              ConstPointer;
+  typedef SmartPointer< Self >              Pointer;
+  typedef SmartPointer< const Self >        ConstPointer;
 
   typedef TTubeSpatialObject TubeSpatialObjectType;
 
@@ -58,8 +60,8 @@ public:
 #endif
   /** Set the sampling factor.  The output points taken every sampling factor
    * from the input points. */
-  itkSetMacro( SamplingFactor, SizeValueType );
-  itkGetConstMacro( SamplingFactor, SizeValueType );
+  itkSetClampMacro( Sampling, SizeValueType, 1, NumericTraits< SizeValueType >::max() );
+  itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
   SubSampleTubeSpatialObjectFilter();
@@ -67,10 +69,10 @@ protected:
   virtual void GenerateData();
 
 private:
-  SubSampleTubeSpatialObjectFilter( const Self & );
+  SubSampleTubeSpatialObjectFilter( const Self & ); // purposely not implemented
   void operator=( const Self & ); // purposely not implemented
 
-  SizeValueType m_SamplingFactor;
+  SizeValueType m_Sampling;
 };
 
 } // end namespace itk

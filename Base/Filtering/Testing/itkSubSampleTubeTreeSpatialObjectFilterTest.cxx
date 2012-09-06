@@ -21,14 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkSubSampleTubeSpatialObjectFilter.h"
+#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
 #include "itkGroupSpatialObject.h"
 #include "itkVesselTubeSpatialObject.h"
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 
-int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
+int itkSubSampleTubeTreeSpatialObjectFilterTest( int argc, char* argv [] )
 {
   if( argc < 3 )
     {
@@ -45,6 +45,7 @@ int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
   typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
 
+  // Read input tube tree.
   typedef itk::SpatialObjectReader< Dimension >  ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputTubeNetwork );
@@ -62,46 +63,32 @@ int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
     << groupSpatialObject->GetNumberOfChildren()
     << std::endl;
 
-  GroupSpatialObjectType::Pointer output = GroupSpatialObjectType::New();
-  char childName[] = "Tube";
-  GroupSpatialObjectType::ChildrenListType * children =
-    groupSpatialObject->GetChildren( 1000, childName );
-  typedef GroupSpatialObjectType::ChildrenListType::iterator
-    GroupChildrenIteratorType;
-  for( GroupChildrenIteratorType it = children->begin();
-       it != children->end();
-       ++it )
+  // Sub-sample the tube tree.
+  typedef itk::SubSampleTubeTreeSpatialObjectFilter< GroupSpatialObjectType,
+    TubeSpatialObjectType >
+      SubSampleTubeTreeFilterType;
+  SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
+    SubSampleTubeTreeFilterType::New();
+  subSampleTubeTreeFilter->SetInput( reader->GetGroup() );
+
+  const unsigned int sampling = 100;
+  subSampleTubeTreeFilter->SetSampling( sampling );
+  if( subSampleTubeTreeFilter->GetSampling() != sampling )
     {
-    TubeSpatialObjectType * pointBasedSpatialObject =
-      dynamic_cast< TubeSpatialObjectType * >( (*it).GetPointer() );
-    if( pointBasedSpatialObject )
-      {
-      typedef itk::SubSampleTubeSpatialObjectFilter< TubeSpatialObjectType >
-        SubSampleFilterType;
-      SubSampleFilterType::Pointer subSampleFilter = SubSampleFilterType::New();
-      const unsigned int samplingFactor = 5;
-      subSampleFilter->SetSampling( samplingFactor );
-      subSampleFilter->SetInput( pointBasedSpatialObject );
-      try
-        {
-        subSampleFilter->Update();
-        }
-      catch( itk::ExceptionObject & error )
-        {
-        std::cerr << "Error: " << error << std::endl;
-        return EXIT_FAILURE;
-        }
-      output->AddSpatialObject( subSampleFilter->GetOutput() );
-      }
+    std::cerr << "Sampling did not get set correctly." << std::endl;
+    return EXIT_FAILURE;
     }
 
-
+  // Write output tube tree.
   typedef itk::SpatialObjectWriter< Dimension > WriterType;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputTubeNetwork );
-  writer->SetInput( output );
+  writer->SetInput( subSampleTubeTreeFilter->GetOutput() );
   try
     {
+    // Currently, there is a bug in the SpatialObjectWriter that it does not do
+    // a pipeline update on its inputs.
+    subSampleTubeTreeFilter->Update();
     writer->Update();
     }
   catch( itk::ExceptionObject & error )
@@ -109,8 +96,6 @@ int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
     std::cerr << "Error: " << error << std::endl;
     return EXIT_FAILURE;
     }
-
-  delete children;
 
   return EXIT_SUCCESS;
 }
