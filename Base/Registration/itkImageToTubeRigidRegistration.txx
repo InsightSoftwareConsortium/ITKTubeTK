@@ -24,15 +24,16 @@ limitations under the License.
 #define __itkImageToTubeRigidRegistration_txx
 
 #include "itkImageToTubeRigidRegistration.h"
-#include <itkNormalVariateGenerator.h>
 
+#include "itkNormalVariateGenerator.h"
+#include "itkSpatialObjectDuplicator.h"
+#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
 namespace itk
 {
 
-/** Constructor */
-template <class TFixedImage, class TMovingTube>
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::ImageToTubeRigidRegistration()
 {
   this->m_InitialTransformParameters = ParametersType( ParametersDimension );
@@ -57,14 +58,12 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 
   m_Extent = 3;
   m_Kappa = 1;
-  m_Sampling = 30;
 }
 
 
-/** Set the initial position */
-template <class TFixedImage, class TMovingTube>
+template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::SetInitialPosition( const double position[6] )
 {
   m_InitialPosition.set_size( 6 );
@@ -74,10 +73,10 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
     }
 }
 
-/** Set the parameters scales */
- template <class TFixedImage, class TMovingTube>
+
+template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::SetParametersScale( const double scales[6] )
 {
   m_ParametersScale.set_size( 6 );
@@ -88,18 +87,15 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 }
 
 
-/** Initialize by setting the interconnects
- *  between components. */
-template <class TFixedImage, class TMovingTube>
+template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::Initialize() throw ( ExceptionObject )
 {
   typename MetricType::Pointer metric = MetricType::New();
 
   metric->SetExtent( m_Extent );
   metric->SetKappa( m_Kappa );
-  metric->SetSampling( m_Sampling );
 
   this->SetMetric( metric );
   typename OptimizerType::Pointer optimizer = OptimizerType::New();
@@ -179,10 +175,9 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 }
 
 
-/** Starts the Registration Process */
-template <class TFixedImage, class TMovingTube>
+template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
-ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
+ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::StartRegistration( void )
 {
   if( !m_IsInitialized )
@@ -211,6 +206,5 @@ ImageToTubeRigidRegistration<TFixedImage, TMovingTube>
 }
 
 } // end namespace itk
-
 
 #endif

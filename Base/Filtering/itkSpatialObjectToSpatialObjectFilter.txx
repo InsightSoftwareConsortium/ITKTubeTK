@@ -84,7 +84,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
   return static_cast< const TInputSpatialObject * >
     ( this->ProcessObject::GetInput( index ) );
 #else
-  const TInputImage * input = dynamic_cast< const TInputSpatialObject * >
+  const TInputSpatialObject * input = dynamic_cast< const TInputSpatialObject * >
     ( this->ProcessObject::GetInput( index ) );
 
   if ( input == NULL && this->ProcessObject::GetInput( input ) != NULL )

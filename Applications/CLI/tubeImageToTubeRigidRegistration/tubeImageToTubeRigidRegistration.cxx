@@ -37,6 +37,8 @@ limitations under the License.
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkTubeToTubeTransformFilter.h"
+#include "itkVesselTubeSpatialObject.h"
+#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -67,16 +69,19 @@ int DoIt( int argc, char * argv[] )
   static const unsigned int Dimension = 3;
   typedef double            FloatType;
 
+  typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;
   typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
   typedef itk::SpatialObjectReader< Dimension >          TubeNetReaderType;
   typedef itk::Image< FloatType, Dimension >             ImageType;
   typedef itk::ImageFileReader< ImageType >              ImageReaderType;
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
-  typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType >
+  typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
                                                          RegistrationFilterType;
   typedef itk::Euler3DTransform< FloatType >             TransformType;
   typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
+  typedef itk::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
+                                                         SubSampleTubeNetFilterType;
 
   timeCollector.Start("Load data");
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
@@ -106,9 +111,29 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-
   timeCollector.Stop("Load data");
   double progress = 0.1;
+  progressReporter.Report( progress );
+
+  timeCollector.Start("Sub-sample data");
+  SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
+    SubSampleTubeNetFilterType::New();
+  subSampleTubeNetFilter->SetInput( vesselReader->GetGroup() );
+  subSampleTubeNetFilter->SetSampling( 100 );
+  try
+    {
+    subSampleTubeNetFilter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Sub-sampling vessel: Exception caught: "
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
+  timeCollector.Stop("Sub-sample data");
+  progress = 0.2;
   progressReporter.Report( progress );
 
 
@@ -153,10 +178,9 @@ int DoIt( int argc, char * argv[] )
     RegistrationFilterType::New();
 
   registrationFilter->SetFixedImage( currentImage );
-  registrationFilter->SetMovingSpatialObject( vesselReader->GetGroup() );
+  registrationFilter->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
   registrationFilter->SetNumberOfIteration( 1000 );
   registrationFilter->SetLearningRate( 0.1 );
-  registrationFilter->SetSampling( 100 );
   try
     {
     registrationFilter->Initialize();

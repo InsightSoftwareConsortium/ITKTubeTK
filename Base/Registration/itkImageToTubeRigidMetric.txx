@@ -34,7 +34,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 {
   m_Iteration = 1;
   m_Kappa = 1;
-  m_Sampling = 30;
 
   m_InitialScale = 1;
   m_Factors.fill(1.0);
@@ -88,7 +87,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     }
 
   this->ComputeImageRange();
-  this->SubSampleTube();
   this->ComputeTubePointScalesAndWeights();
   this->ComputeCenterRotation();
 
@@ -96,91 +94,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   this->m_DerivativeImageFunction->SetInputImage( this->m_FixedImage );
 }
 
-/** Subsample the MovingSpatialObject tubenet  */
-// WARNING: I think there is a bug from Stephen method with the
-// index incrementation. I currently replicated the exact same behaviour,
-// but the method must be validated.
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::SubSampleTube()
-{
-  SizeValueType tubeSize = 0;
-  const OffsetValueType step = m_Sampling / 2 - 1;
-
-  typename TubeNetType::Pointer newTubeNet = TubeNetType::New();
-  typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
-  typedef typename TubeNetType::ChildrenListType::iterator TubesIteratorType;
-  for( TubesIteratorType tubeIterator = tubeList->begin();
-    tubeIterator != tubeList->end();
-    ++tubeIterator )
-    {
-    typename TubeType::Pointer newTube = TubeType::New();
-    TubeType* currentTube =
-      static_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
-
-    currentTube->RemoveDuplicatePoints();
-    currentTube->ComputeTangentAndNormals();
-
-    tubeSize = currentTube->GetPoints().size();
-    if ( static_cast< OffsetValueType >( tubeSize ) > this->m_Sampling )
-      {
-      OffsetValueType loopIndex = 0;
-      OffsetValueType skippedPoints = 0;
-      const typename TubeType::PointListType & currentTubePoints
-        = currentTube->GetPoints();
-      typedef typename TubeType::PointListType::const_iterator
-        TubePointIteratorType;
-      for ( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
-            tubePointIterator != currentTubePoints.end();
-            ++tubePointIterator, ++loopIndex )
-        {
-        if( m_Sampling > 1 )
-          {
-          if ( std::distance(tubePointIterator, currentTubePoints.end() - 1 )
-               > step )
-            {
-            if( tubePointIterator != currentTubePoints.begin() )
-              {
-              tubePointIterator += step;
-              }
-            skippedPoints = ( loopIndex * ( step + 1 ) * 2 ) + 1;
-            }
-          else
-            {
-            skippedPoints = step + 2;
-            tubePointIterator = currentTubePoints.end();
-            }
-          }
-
-        // TODO Why +10 ?!
-        if( tubePointIterator != currentTubePoints.end()
-            && ( ( skippedPoints + 10 ) < static_cast< OffsetValueType >( tubeSize )) )
-          {
-          newTube->GetPoints().push_back( *( tubePointIterator ) );
-          }
-
-        if( m_Sampling > 1 )
-          {
-          if ( std::distance(tubePointIterator, currentTubePoints.end() -1 )
-               > step )
-            {
-            tubePointIterator += step;
-            }
-          else
-            {
-            tubePointIterator = currentTubePoints.end() - 1;
-            }
-          }
-        }
-      }
-    newTubeNet->AddSpatialObject( newTube );
-    }
-  itkDebugMacro( "Number of Points for the metric = " << m_NumberOfPoints );
-
-  this->SetMovingSpatialObject( newTubeNet );
-  delete tubeList;
-}
 
 template < class TFixedImage, class TMovingSpatialObject >
 void
@@ -199,6 +112,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   itkDebugMacro( "Extent = " << m_Extent );
 }
 
+
 template < class TFixedImage, class TMovingSpatialObject >
 void
 ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
@@ -213,6 +127,8 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     {
     TubeType* currentTube =
       static_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
+    currentTube->RemoveDuplicatePoints();
+    currentTube->ComputeTangentAndNormals();
     const typename TubeType::PointListType & currentTubePoints
       = currentTube->GetPoints();
     typedef typename TubeType::PointListType::const_iterator

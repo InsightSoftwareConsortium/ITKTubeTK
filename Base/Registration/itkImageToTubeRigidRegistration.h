@@ -41,13 +41,24 @@ namespace itk
 {
 
 /** \class ImageToTubeRigidRegistration
- * \brief Base class for registration methods
+ * \brief Register a hierarchy of tubes to an image.
  *
- * This Class define the generic interface for a registration method.
+ * This class provides basic registration of a hierarchy of tubes to an image.
+ *
+ * \tparam TFixedImage Type of the image to register against.
+ * \tparam TMovingSpatialObject Type of the moving spatial.  This could be a
+ * TubeSpatialObject or perhaps a hierarchy of tubes contained in a
+ * GroupSpatialObject.
+ * \tparam TMovingTube Type of the tubes. Should be some type of
+ * TubeSpatialObject.
+ *
  * The basic elements of a registration method are:
- *   - Metric to compare the TFixedImage and the TMovingTube
- *   - Transformation used to register the FixedImage against the TMovingTube
- *   - Optimization method used to search for the best transformation
+ *   - Metric to compare the image and the tubes.
+ *   - Transformation used to register the image against the tubes.
+ *
+ * \todo Below is out of date and needs to be updated.
+ *
+ *   - Optimization method used to search for the best transformation.
  *
  * Registration is not limited to Images, and for this reason
  * this class is templated over the type of the FixedImage object,
@@ -58,18 +69,22 @@ namespace itk
  *  \ingroup AffineImageRegistration
  */
 
-template <class TFixedImage, class TMovingTube>
+template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 class ITK_EXPORT ImageToTubeRigidRegistration
-: public ImageToSpatialObjectRegistrationMethod<TFixedImage, TMovingTube>
+: public ImageToSpatialObjectRegistrationMethod< TFixedImage,
+  TMovingSpatialObject >
 {
 public:
   typedef ImageToTubeRigidRegistration                  Self;
-  typedef ImageToSpatialObjectRegistrationMethod<TFixedImage, TMovingTube>
+  typedef ImageToSpatialObjectRegistrationMethod< TFixedImage,
+    TMovingSpatialObject >
                                                         Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef SmartPointer< Self >                          Pointer;
+  typedef SmartPointer< const Self >                    ConstPointer;
 
   typedef typename Superclass::FixedImageType           FixedImageType;
+  typedef typename Superclass::MovingSpatialObjectType  MovingSpatialObjectType;
+  typedef TMovingTube                                   MovingTubeType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -78,7 +93,8 @@ public:
   itkTypeMacro( ImageToTubeRigidRegistration,
     ImageToSpatialObjectRegistrationMethod );
 
-  typedef ImageToTubeRigidMetric<FixedImageType, TMovingTube>   MetricType;
+  typedef ImageToTubeRigidMetric< FixedImageType, MovingSpatialObjectType >
+    MetricType;
 
   typedef typename MetricType::TransformParametersType     ParametersType;
   typedef typename MetricType::TransformType               TransformType;
@@ -112,12 +128,11 @@ public:
   void Initialize() throw ( ExceptionObject );
 
   itkSetMacro( Extent, double );
+  itkGetConstMacro( Extent, double );
 
   /** Control the radius scaling of the metric. */
   itkSetMacro( Kappa, double );
-
-  /** Control the sampling of the tube. */
-  itkSetMacro( Sampling, unsigned int );
+  itkGetConstMacro( Kappa, double );
 
 protected:
   ImageToTubeRigidRegistration();
@@ -134,8 +149,6 @@ private:
   ParametersType                           m_ParametersScale;
   double                                   m_Extent;
   double                                   m_Kappa;
-  unsigned int                             m_Sampling;
-
 };
 
 } // end namespace itk

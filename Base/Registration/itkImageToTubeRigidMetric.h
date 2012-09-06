@@ -129,9 +129,6 @@ public:
   void GetValueAndDerivative( const ParametersType & parameters,
     MeasureType & Value, DerivativeType  & Derivative ) const;
 
-  /** SubSample the MovingSpatialObject tube */
-  void SubSampleTube();
-
   /** Apply the center of rotation to the transformation */
   ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
 
@@ -150,12 +147,9 @@ public:
 
   /** Downsample the tube points by this integer value. */
 #if ITK_VERSION_MAJOR < 4
-  typedef signed long   OffsetValueType;
   typedef unsigned long SizeValueType;
   typedef long int      IndexValueType;
 #endif
-  itkSetMacro( Sampling, OffsetValueType );
-  itkGetMacro( Sampling, OffsetValueType );
 
 protected:
   ImageToTubeRigidMetric();
@@ -185,7 +179,6 @@ private:
   double                                     m_Kappa;
   double                                     m_Extent;
   InternalComputationValueType               m_InitialScale;
-  OffsetValueType                            m_Sampling;
 
   vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
 

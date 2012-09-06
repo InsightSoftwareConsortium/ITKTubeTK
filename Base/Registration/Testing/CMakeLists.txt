@@ -30,6 +30,13 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
+include_directories(
+  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
+  ${TubeTK_SOURCE_DIR}/Base/Registration
+  )
+
 if( Slicer3_INSTALL_BIN_DIR )
   set( BASE_REGISTRATION_FILTERS_TESTS
     ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests
@@ -70,11 +77,9 @@ set( MULTIPLE_TEST_EXTENTIONS
 
 # Generate Tests for the Metrics
 set( MULTIPLE_METRIC_CLASS_NAMES
-  ImageToTubeRigidMetric
   ImageToTubeRigidMetric2
   )
 set( MULTIPLE_REGISTRATION_CLASS_NAMES
-  ImageToTubeRigidRegistration
   ImageToTubeRigidRegistration2
   )
 
@@ -89,6 +94,8 @@ GENERATE_TESTS ( "ImageToTubeRigidRegistration"
   )
 
 set( tubeBaseRegistrationFilters_SRCS
+  itkImageToTubeRigidMetricTest.cxx
+  itkImageToTubeRigidRegistrationTest.cxx
   itkSyntheticTubeImageGenerationsTest.cxx
   itkTubeExponentialResolutionWeightFunctionTest.cxx
   itkTubeExponentialWithBoundsResolutionWeightFunctionTest.cxx
@@ -113,12 +120,6 @@ if( TubeTK_USE_VTK )
     )
 endif()
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/Registration
-  )
 
 add_executable( tubeBaseRegistrationFiltersTests
   tubeBaseRegistrationFiltersTests.cxx
@@ -162,15 +163,16 @@ MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationTest
     ${TEMP}/itkImageToTubeRigidRegistrationTest.mha
     )
 
-MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationPerformancesTest
-  ${BASE_REGISTRATION_FILTERS_TESTS}
-  itkImageToTubeRigidRegistrationPerformancesTest
-  MIDAS{Branch.n020.mha.md5}
-  MIDAS{Branch-truth-new.tre.md5}
-  ${TEMP}/itkImageToTubeRigidRegistrationPerformances
-  )
-set_property(TEST itkImageToTubeRigidRegistrationPerformancesTest
-  APPEND PROPERTY DEPENDS itkTubeToTubeTransformFilterTest )
+# \todo Re-enable after the "2" classes are removed.
+#MIDAS_ADD_TEST( itkImageToTubeRigidRegistrationPerformancesTest
+  #${BASE_REGISTRATION_FILTERS_TESTS}
+  #itkImageToTubeRigidRegistrationPerformancesTest
+  #MIDAS{Branch.n020.mha.md5}
+  #MIDAS{Branch-truth-new.tre.md5}
+  #${TEMP}/itkImageToTubeRigidRegistrationPerformances
+  #)
+#set_property(TEST itkImageToTubeRigidRegistrationPerformancesTest
+  #APPEND PROPERTY DEPENDS itkTubeToTubeTransformFilterTest )
 
 MIDAS_ADD_TEST( itkImageToTubeRigidRegistration2Test
   ${BASE_REGISTRATION_FILTERS_TESTS}
@@ -333,12 +335,12 @@ MIDAS_ADD_TEST( itkImageToTubeRigidMetric2Test2
   -1.13622
   )
 
-MIDAS_ADD_TEST( itkImageToTubeRigidMetricPerformancesTest
-  ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricPerformancesTest
-  MIDAS{SyntheticVesselTubeImage.mha.md5}
-  MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
-  ${TEMP}/itkImageToTubeRigidMetricPerformance.txt
-  )
+#MIDAS_ADD_TEST( itkImageToTubeRigidMetricPerformancesTest
+  #${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricPerformancesTest
+  #MIDAS{SyntheticVesselTubeImage.mha.md5}
+  #MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
+  #${TEMP}/itkImageToTubeRigidMetricPerformance.txt
+  #)
 
 MIDAS_ADD_TEST( itkImageToTubeRigidMetric2PerformancesTest
   ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetric2PerformancesTest

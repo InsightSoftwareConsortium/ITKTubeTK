@@ -27,7 +27,7 @@ namespace itk
  *
  * \brief Sub-sample points from a tube.
  *
- * The input tube are sub-sampled by the \c SamplingFactor
+ * The input tube are sub-sampled by the \c Sampling
  * (an integer greater or equal to one).  The beginning and end
  * points of the tube are always included.
  *
