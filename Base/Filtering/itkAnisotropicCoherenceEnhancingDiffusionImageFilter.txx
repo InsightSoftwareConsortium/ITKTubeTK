@@ -297,6 +297,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   os << indent << "Contrast parameter LambdaC: "
     << m_ContrastParameterLambdaC << std::endl;
   os << indent << "Sigma: " << m_Sigma << std::endl;
+  os << indent << "SigmaOuter : " << m_SigmaOuter << std::endl;
   os << indent << "Alpha: " << m_Alpha << std::endl;
 }
 
