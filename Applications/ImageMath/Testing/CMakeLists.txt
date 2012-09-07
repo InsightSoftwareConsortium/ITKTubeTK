@@ -361,7 +361,8 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test16-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test16.mha
                -b MIDAS{${PROJECT_NAME}Test16.mha.md5}
-               -i 0.001 )
+               -i 0.5
+               -n 300 )
 set_property(TEST ${PROJECT_NAME}-Test16-Compare
                       APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test16 )
 
