@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "itkTubeExponentialWithBoundsResolutionWeightFunction.h"
+#include "itkTubeParametricExponentialResolutionWeightFunction.h"
 
 #include "itkTubeSpatialObjectPoint.h"
 
@@ -41,7 +41,7 @@ writeElement( std::ofstream & outputFile,
   outputFile << pointWeight << delim;
 }
 
-int itkTubeExponentialWithBoundsResolutionWeightFunctionTest( int argc, char * argv[] )
+int itkTubeParametricExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
 {
   if( argc < 2 )
     {
@@ -77,7 +77,7 @@ int itkTubeExponentialWithBoundsResolutionWeightFunctionTest( int argc, char * a
     return EXIT_FAILURE;
     }
 
-  typedef itk::Function::TubeExponentialWithBoundsResolutionWeightFunction< TubePointType, float >
+  typedef itk::Function::TubeParametricExponentialResolutionWeightFunction< TubePointType, float >
     WeightFunctionType;
   WeightFunctionType weightFunction;
 
@@ -94,22 +94,6 @@ int itkTubeExponentialWithBoundsResolutionWeightFunctionTest( int argc, char * a
   if( delta != 2.0f )
     {
     std::cerr << "Failure in GetDelta." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  weightFunction.SetLowerBound( 0.2f );
-  float lower = weightFunction.GetLowerBound();
-  if( lower != 0.2f )
-    {
-    std::cerr << "Failure in GetLowerBound." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  weightFunction.SetUpperBound( 0.7f );
-  float upper = weightFunction.GetUpperBound();
-  if( upper != 0.7f )
-    {
-    std::cerr << "Failure in GetUpperBound." << std::endl;
     return EXIT_FAILURE;
     }
 

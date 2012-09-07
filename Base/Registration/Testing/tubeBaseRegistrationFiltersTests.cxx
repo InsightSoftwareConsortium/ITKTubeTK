@@ -34,7 +34,8 @@ void RegisterTests()
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTest );
 #endif
   REGISTER_TEST( itkTubeExponentialResolutionWeightFunctionTest );
-  REGISTER_TEST( itkTubeExponentialWithBoundsResolutionWeightFunctionTest );
+  REGISTER_TEST( itkTubeParametricExponentialResolutionWeightFunctionTest );
+  REGISTER_TEST( itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest );
   REGISTER_TEST( itkTubePointsToImageTest );
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
   REGISTER_TEST( itkImageToTubeRigidRegistration2Test );

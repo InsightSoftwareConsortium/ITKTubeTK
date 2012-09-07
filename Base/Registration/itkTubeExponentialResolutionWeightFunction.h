@@ -35,13 +35,13 @@ namespace Function
  *
  * \brief Weight tube points exponentially by their radius.
  *
- * \f$ w_i = \frac{1}{1 + \delta (e^{-\alpha r_i} - 1)} \f$
+ * \f$ w_i = \frac{2}{1 + e^{-2 r_i}} \f$
  *
- * where \f$\delta\ \in (-1, 1)f$ controls the amount of weighting.  A
- * positive Delta weighs large tubes higher than small tubes, and a
- * negative Delta weighs small tubes higher than large tubes.
- * \f$\alpha \in [0, \infty)\f$ controls transition in weights.
- * \f$r\f$ is the tube radius at a point.
+ * As in Eqn. 2. Alyward, S. Weeks, S. and Bullitt, E.  Analysis of the
+ * Parameter Space of a Metric for Registering 3D Vascular Images.  MICCAI, 2001.
+ *
+ * \sa TubeExponentialResolutionWeightFunction
+ * \sa TubeExponentialWithBoundsResolutionWeightFunction
  *
  * */
 template< class TTubePoint, class TOperatorValue=double >
@@ -51,8 +51,7 @@ public:
   typedef TOperatorValue OperatorValueType;
   typedef TTubePoint     TubePointType;
 
-  TubeExponentialResolutionWeightFunction():
-    m_Alpha( 2.0 )
+  TubeExponentialResolutionWeightFunction()
     {}
   ~TubeExponentialResolutionWeightFunction()
     {}
@@ -60,33 +59,9 @@ public:
   inline OperatorValueType operator()( const TubePointType & tubePoint )
     {
     const OperatorValueType radius = tubePoint.GetRadius();
-    return static_cast< OperatorValueType >( 1.0 /
-      (1.0 + this->m_Delta * (vcl_exp( -this->m_Alpha * radius ) - 1.0)));
+    return static_cast< OperatorValueType >( 2.0 /
+      (1.0 + vcl_exp( -2.0 * radius ) ));
     }
-
-  void SetDelta( const OperatorValueType delta )
-    {
-    this->m_Delta = delta;
-    }
-
-  OperatorValueType GetDelta( void ) const
-    {
-    return this->m_Delta;
-    }
-
-  void SetAlpha( const OperatorValueType alpha )
-    {
-    this->m_Alpha = alpha;
-    }
-
-  OperatorValueType GetAlpha( void ) const
-    {
-    return this->m_Alpha;
-    }
-
-private:
-  OperatorValueType m_Delta;
-  OperatorValueType m_Alpha;
 };
 
 } // end namespace Function

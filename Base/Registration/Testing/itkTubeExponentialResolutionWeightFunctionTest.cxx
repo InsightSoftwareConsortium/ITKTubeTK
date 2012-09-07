@@ -26,21 +26,6 @@ limitations under the License.
 
 #include <fstream>
 
-template< class TWeightFunction, class TTubePoint >
-void
-writeElement( std::ofstream & outputFile,
-  TWeightFunction & weightFunction,
-  const TTubePoint & tubePoint,
-  float alpha,
-  float delta,
-  char delim=',' )
-{
-  weightFunction.SetAlpha( alpha );
-  weightFunction.SetDelta( delta );
-  float pointWeight = weightFunction( tubePoint );
-  outputFile << pointWeight << delim;
-}
-
 int itkTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
 {
   if( argc < 2 )
@@ -81,44 +66,10 @@ int itkTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
     WeightFunctionType;
   WeightFunctionType weightFunction;
 
-  weightFunction.SetAlpha( 2.0f );
-  float alpha = weightFunction.GetAlpha();
-  if( alpha != 2.0f )
-    {
-    std::cerr << "Failure in GetAlpha." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  weightFunction.SetDelta( 2.0f );
-  float delta = weightFunction.GetDelta();
-  if( delta != 2.0f )
-    {
-    std::cerr << "Failure in GetDelta." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  unsigned int numberOfAlphas = 5;
-  float alphas[] = { 5.0, 2.0, 1.0, 0.5, 0.0 };
-  unsigned int numberOfDeltas = 5;
-  float deltas[] = { 0.7, 0.5, 0.0, -0.5, -0.7 };
-
   for( unsigned int ii = 0; ii < numberOfPoints; ++ii )
     {
-    for( unsigned int jj = 0; jj < numberOfAlphas - 1; ++jj )
-      {
-      for( unsigned int kk = 0; kk < numberOfDeltas; ++kk )
-        {
-        writeElement( outputFile, weightFunction,
-          tubePointContainer[ii], alphas[jj], deltas[kk] );
-        }
-      }
-    for( unsigned int kk = 0; kk < numberOfDeltas - 1; ++kk )
-      {
-      writeElement( outputFile, weightFunction,
-        tubePointContainer[ii], alphas[numberOfAlphas-1], deltas[kk] );
-      }
-    writeElement( outputFile, weightFunction,
-      tubePointContainer[ii], alphas[numberOfAlphas-1], deltas[numberOfDeltas-1], '\n' );
+    const float pointWeight = weightFunction( tubePointContainer[ii] );
+    outputFile << pointWeight << '\n';
     }
 
   outputFile.flush();

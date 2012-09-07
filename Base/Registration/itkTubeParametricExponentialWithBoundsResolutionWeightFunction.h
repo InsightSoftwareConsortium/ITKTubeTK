@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef itkTubeExponentialWithBoundsResolutionWeightFunction_h
-#define itkTubeExponentialWithBoundsResolutionWeightFunction_h
+#ifndef itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h
+#define itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h
 
-#include "itkTubeExponentialResolutionWeightFunction.h"
+#include "itkTubeParametricExponentialResolutionWeightFunction.h"
 
 #include "itkNumericTraits.h"
 
@@ -33,29 +33,29 @@ namespace Function
 {
 
 /**
- * \class TubeExponentialWithBoundsResolutionWeightFunction
+ * \class TubeParametricExponentialWithBoundsResolutionWeightFunction
  *
  * \brief Weight tube points exponentially by their radius if within bounds.
  *
- * This is similar to TubeExponentialResolutionWeightFunction except that values
+ * This is similar to TubeParametricExponentialResolutionWeightFunction except that values
  * outside the UpperBound or LowerBound are given a weight of zero.
  *
  * */
 template< class TTubePoint, class TOperatorValue=double >
-class TubeExponentialWithBoundsResolutionWeightFunction:
-  public TubeExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
+class TubeParametricExponentialWithBoundsResolutionWeightFunction:
+  public TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
 {
 public:
-  typedef TubeExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
+  typedef TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
     Superclass;
   typedef typename Superclass::OperatorValueType OperatorValueType;
   typedef typename Superclass::TubePointType     TubePointType;
 
-  TubeExponentialWithBoundsResolutionWeightFunction():
+  TubeParametricExponentialWithBoundsResolutionWeightFunction():
     m_LowerBound( NumericTraits< OperatorValueType >::min() ),
     m_UpperBound( NumericTraits< OperatorValueType >::max() )
     {}
-  ~TubeExponentialWithBoundsResolutionWeightFunction()
+  ~TubeParametricExponentialWithBoundsResolutionWeightFunction()
     {}
 
   inline OperatorValueType operator()( const TubePointType & tubePoint )

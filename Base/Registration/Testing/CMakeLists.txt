@@ -98,7 +98,8 @@ set( tubeBaseRegistrationFilters_SRCS
   itkImageToTubeRigidRegistrationTest.cxx
   itkSyntheticTubeImageGenerationsTest.cxx
   itkTubeExponentialResolutionWeightFunctionTest.cxx
-  itkTubeExponentialWithBoundsResolutionWeightFunctionTest.cxx
+  itkTubeParametricExponentialResolutionWeightFunctionTest.cxx
+  itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest.cxx
   itkTubePointsToImageTest.cxx
   itkTubeToTubeTransformFilterTest.cxx
   )
@@ -364,8 +365,14 @@ MIDAS_ADD_TEST( itkTubeExponentialResolutionWeightFunctionTest
   ${TEMP}/itkTubeExponentialResolutionWeightFunctionTest.csv
   )
 
-MIDAS_ADD_TEST( itkTubeExponentialWithBoundsResolutionWeightFunctionTest
+MIDAS_ADD_TEST( itkTubeParametricExponentialResolutionWeightFunctionTest
   ${BASE_REGISTRATION_FILTERS_TESTS}
-  itkTubeExponentialWithBoundsResolutionWeightFunctionTest
-  ${TEMP}/itkTubeExponentialWithBoundsResolutionWeightFunctionTest.csv
+  itkTubeParametricExponentialResolutionWeightFunctionTest
+  ${TEMP}/itkTubeParametricExponentialResolutionWeightFunctionTest.csv
+  )
+
+MIDAS_ADD_TEST( itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest
+  ${BASE_REGISTRATION_FILTERS_TESTS}
+  itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest
+  ${TEMP}/itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest.csv
   )
