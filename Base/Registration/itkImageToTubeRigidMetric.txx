@@ -78,7 +78,6 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::Initialize( void ) throw ( ExceptionObject )
 {
   m_ResolutionWeights.clear();
-  m_NumberOfPoints = 0;
 
   if( !this->m_MovingSpatialObject || !this->m_FixedImage )
     {
@@ -129,15 +128,14 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
         const InternalComputationValueType weight =
           2.0 / ( 1.0 + exp( val ) );
 
-        m_ResolutionWeights.push_back( weight );
+        this->m_ResolutionWeights.push_back( weight );
 
-        for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+        for( unsigned int ii = 0; ii < TubeDimension; ++ii )
           {
           this->m_CenterOfRotation[ii] +=
             weight * ( tubePointIterator->GetPosition() )[ii];
           }
         resolutionWeightSum += weight;
-        m_NumberOfPoints++;
         }
       }
     }

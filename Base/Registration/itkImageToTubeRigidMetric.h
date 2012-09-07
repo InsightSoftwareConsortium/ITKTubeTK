@@ -169,7 +169,6 @@ protected:
 private:
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  unsigned int                               m_NumberOfPoints;
   std::list< InternalComputationValueType >  m_ResolutionWeights;
   InternalComputationValueType               m_ImageMin;
   InternalComputationValueType               m_ImageMax;
