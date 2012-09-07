@@ -28,8 +28,8 @@ limitations under the License.
 namespace itk
 {
 
-template < class TFixedImage, class TMovingSpatialObject>
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ImageToTubeRigidMetric()
 {
   m_Iteration = 1;
@@ -49,16 +49,16 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::~ImageToTubeRigidMetric()
 {
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeImageRange( void )
 {
   m_RangeCalculator = RangeCalculatorType::New();
@@ -72,9 +72,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::Initialize( void ) throw ( ExceptionObject )
 {
   m_Weight.clear();
@@ -95,9 +95,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject >
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeCenterRotation()
 {
   for ( unsigned int i = 0; i<ImageDimension; ++i )
@@ -113,9 +113,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject >
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeTubePointScalesAndWeights()
 {
   typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
@@ -126,31 +126,35 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
        ++tubeIterator )
     {
     TubeType* currentTube =
-      static_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
-    currentTube->RemoveDuplicatePoints();
-    currentTube->ComputeTangentAndNormals();
-    const typename TubeType::PointListType & currentTubePoints
-      = currentTube->GetPoints();
-    typedef typename TubeType::PointListType::const_iterator
-      TubePointIteratorType;
-    for ( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
-          tubePointIterator != currentTubePoints.end();
-          ++tubePointIterator )
+      dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
+    if( currentTube != NULL )
       {
-      const InternalComputationValueType val =
-        -2.0 * ( tubePointIterator->GetRadius() );
-      const InternalComputationValueType weight =
-        2.0 / ( 1.0 + exp( val ) );
+      currentTube->RemoveDuplicatePoints();
+      currentTube->ComputeTangentAndNormals();
 
-      m_Weight.push_back( weight );
-
-      for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+      const typename TubeType::PointListType & currentTubePoints
+        = currentTube->GetPoints();
+      typedef typename TubeType::PointListType::const_iterator
+        TubePointIteratorType;
+      for ( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
+            tubePointIterator != currentTubePoints.end();
+            ++tubePointIterator )
         {
-        this->m_CenterOfRotation[ii] +=
-          weight * ( tubePointIterator->GetPosition() )[ii];
+        const InternalComputationValueType val =
+          -2.0 * ( tubePointIterator->GetRadius() );
+        const InternalComputationValueType weight =
+          2.0 / ( 1.0 + exp( val ) );
+
+        m_Weight.push_back( weight );
+
+        for( unsigned int ii = 0; ii < ImageDimension; ++ii )
+          {
+          this->m_CenterOfRotation[ii] +=
+            weight * ( tubePointIterator->GetPosition() )[ii];
+          }
+        m_SumWeight += weight;
+        m_NumberOfPoints++;
         }
-      m_SumWeight += weight;
-      m_NumberOfPoints++;
       }
     }
 
@@ -162,14 +166,15 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 // WARNING:
 // Method might use GetMaximumDepth from ITK.
 // Patch pushed in ITKv4, waiting for validation.
-template < class TFixedImage, class TMovingSpatialObject>
-typename ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>::TubeNetType::ChildrenListType*
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
+typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >::
+TubeNetType::ChildrenListType*
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetTubes() const
 {
   if (!this->m_MovingSpatialObject)
     {
-    return 0;
+    return NULL;
     }
 
   char childName[] = "Tube";
@@ -182,9 +187,10 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 /** Get the match Measure */
 // TODO Do not pass the parameter as arguments use instead
 // the transform parameters previously set.
-template < class TFixedImage, class TMovingSpatialObject>
-typename ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>::MeasureType
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
+typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >::
+MeasureType
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetValue( const ParametersType & parameters ) const
 {
   itkDebugMacro( "**** Get Value ****" );
@@ -200,7 +206,7 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
   // TODO change the place where you set the parameters !
   //this->m_Transform->SetParameters( parameters );
 
-  GroupSpatialObject<3>::ChildrenListType::iterator tubeIterator;
+  typename TubeNetType::ChildrenListType::iterator tubeIterator;
   typename TubeNetType::ChildrenListType* tubeList = GetTubes();
   for( tubeIterator = tubeList->begin();
        tubeIterator != tubeList->end();
@@ -285,9 +291,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 
 /** Compute the Laplacian magnitude */
 // TODO FACTORIZE CODE --> See computeThirdDerivative
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 double
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeLaplacianMagnitude( Vector< InternalComputationValueType, 3> *v,
   const InternalComputationValueType & scale,
   const OutputPointType & currentPoint ) const
@@ -350,9 +356,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetDeltaAngles( const Point<double, 3> & x,
   const vnl_vector_fixed<double, 3> & dx,
   const vnl_vector_fixed<double, 3> & offsets,
@@ -373,9 +379,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetDerivative( const ParametersType & parameters,
                  DerivativeType & derivative ) const
 {
@@ -583,9 +589,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetValueAndDerivative( const ParametersType & parameters,
                          MeasureType & value,
                          DerivativeType & derivative ) const
@@ -595,9 +601,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 double
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeThirdDerivatives( Vector< InternalComputationValueType, 3> *v,
   const InternalComputationValueType & scale,
   const OutputPointType & currentPoint ) const
@@ -640,9 +646,9 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 bool
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::IsInside( const InputPointType & point,
   OutputPointType & currentPoint ) const
 {
@@ -663,22 +669,6 @@ ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
     }
 
   return ( this->m_Interpolator->IsInsideBuffer( currentPoint ) );
-}
-
-/** Clamp the point bounds to the fixed Image */
-template < class TFixedImage, class TMovingSpatialObject>
-void
-ImageToTubeRigidMetric<TFixedImage, TMovingSpatialObject>
-::ClampPointBoundsToImage(int bounds[6])
-{
-  SizeType size = this->m_FixedImage->GetLargestPossibleRegion().GetSize();
-
-  bounds[0] = vnl_math_max( bounds[0], 0 );
-  bounds[1] = vnl_math_min( bounds[1], static_cast<int>( size[0] ) - 1 );
-  bounds[2] = vnl_math_max( bounds[2], 0 );
-  bounds[3] = vnl_math_min( bounds[3], static_cast<int>( size[1] ) - 1 );
-  bounds[4] = vnl_math_max( bounds[4], 0 );
-  bounds[5] = vnl_math_min( bounds[5], static_cast<int>( size[2] ) - 1 );
 }
 
 } // end namespace itk

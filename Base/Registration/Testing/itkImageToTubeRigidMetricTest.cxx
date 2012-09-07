@@ -28,7 +28,6 @@ limitations under the License.
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkSpatialObjectReader.h"
-#include "itkTubeSpatialObjectPoint.h"
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itkSpatialObjectFactory.h"
 #include "itkVesselTubeSpatialObject.h"
@@ -59,20 +58,17 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
 
   typedef itk::Image< FloatType, ImageDimension >         ImageType;
   typedef itk::ImageRegionIteratorWithIndex< ImageType >  ImageIteratorType;
-  typedef itk::TubeSpatialObject< TubeDimension >         TubeType;
-  typedef itk::TubeSpatialObjectPoint< TubeDimension >    TubePointType;
+  typedef itk::VesselTubeSpatialObject< TubeDimension >   TubeType;
   typedef itk::GroupSpatialObject< TubeDimension >        TubeNetType;
 
   typedef itk::ImageFileReader< ImageType >               ImageReaderType;
   typedef itk::SpatialObjectReader< TubeDimension >       TubeNetReaderType;
 
-  typedef itk::ImageToTubeRigidMetric< ImageType, TubeNetType >
+  typedef itk::ImageToTubeRigidMetric< ImageType, TubeNetType, TubeType >
     MetricType;
   typedef MetricType::ParametersType                      ParametersType;
   typedef MetricType::InterpolatorType                    InterpolatorType;
   typedef MetricType::TransformType                       TransformType;
-
-  const double epsilonReg = 0.05; // Delta threshold on the measure checking.
 
   // read image (fixedImage)
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -107,11 +103,6 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     SubSampleTubeNetFilterType::New();
   subSampleTubeNetFilter->SetInput( tubeReader->GetGroup() );
   subSampleTubeNetFilter->SetSampling( 30 );
-  // Necessary because the objects in the file are really
-  // VesselTubeSpatialObject.  This is a necessarry hack until the
-  // SpatialObjectFactory registration system is fixed.
-  itk::SpatialObjectFactory< itk::VesselTubeSpatialObject< TubeDimension > >
-    ::RegisterSpatialObject();
   try
     {
     subSampleTubeNetFilter->Update();
@@ -147,11 +138,12 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  const double epsilonReg = 0.05; // Delta threshold on the measure checking.
   MetricType::MeasureType value = metric->GetValue( parameters );
   if (value < ( atof(argv[3]) - epsilonReg ) ||
       value > ( atof(argv[3]) + epsilonReg ) )
     {
-    std::cerr << "Distance value different than expected."
+    std::cerr << "Distance value different than expected: "
               << value
               << std::endl;
     return EXIT_FAILURE;

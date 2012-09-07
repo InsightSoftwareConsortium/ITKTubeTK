@@ -25,12 +25,11 @@ limitations under the License.
 
 #include "itkPoint.h"
 #include "itkGroupSpatialObject.h"
-#include "itkVesselTubeSpatialObject.h"
 #include "itkMinimumMaximumImageCalculator.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkEuler3DTransform.h"
 #include "itkImageToSpatialObjectMetric.h"
-#include <itkGaussianDerivativeImageFunction.h>
+#include "itkGaussianDerivativeImageFunction.h"
 
 namespace itk
 {
@@ -42,37 +41,40 @@ namespace itk
  * \link http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
  * The metric is based on the fact that vessel centerlines are scaled
  * intensity ridges in the image.
+ *
+ * \tparam TFixedImage Type of the Image to register against.
+ * \tparam TMovingSpatialObject Type of the SpatialObject to register with,
+ * could be a Tube, Group, etc.
+ * \tparam TTubeSpatialObject Type of the tubes contained within the input
+ * TMovingSpatialObject to use for the registration.
+ *
  * \warning (Derivative)
 */
 
-template < class TFixedImage, class TMovingTube>
+template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 class ITK_EXPORT ImageToTubeRigidMetric
-: public ImageToSpatialObjectMetric<TFixedImage, TMovingTube>
+: public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {
 public:
+  /** Standard class typedefs. */
   typedef ImageToTubeRigidMetric                Self;
-  typedef ImageToSpatialObjectMetric<TFixedImage, TMovingTube>
+  typedef ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
                                                 Superclass;
   typedef SmartPointer<Self>                    Pointer;
   typedef SmartPointer<const Self>              ConstPointer;
 
   /**  Dimension of the image and tube.  */
   itkStaticConstMacro( ImageDimension, unsigned int, TFixedImage::ImageDimension );
-  itkStaticConstMacro( TubeDimension, unsigned int, TMovingTube::ObjectDimension );
+  itkStaticConstMacro( TubeDimension, unsigned int, TTubeSpatialObject::ObjectDimension );
 
-  /** Type definition for a tube point */
-  typedef VesselTubeSpatialObjectPoint< TubeDimension>  TubePointType;
-  typedef VesselTubeSpatialObject< TubeDimension >      TubeType;
-  typedef TMovingTube                                   MovingTubeType;
-  typedef typename MovingTubeType::ChildrenListType
-                                                        ChildrenListType;
-  typedef GroupSpatialObject< TubeDimension >           TubeNetType;
-  typedef TFixedImage                                   FixedImageType;
-  typedef typename FixedImageType::IndexType            IndexType;
-  typedef GaussianDerivativeImageFunction< TFixedImage >
-                                                DerivativeImageFunctionType;
+  typedef TFixedImage                           FixedImageType;
+  typedef TMovingSpatialObject                  TubeNetType;
+  typedef TTubeSpatialObject                    TubeType;
+  typedef typename TubeType::TubePointType      TubePointType;
 
   typedef double                                InternalComputationValueType;
+  typedef GaussianDerivativeImageFunction< TFixedImage >
+                                                DerivativeImageFunctionType;
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
@@ -89,8 +91,6 @@ public:
 
   /** Space dimension is the dimension of parameters space */
   enum { SpaceDimension = 6 };
-
-  enum { RangeDimension = 6 };
 
   unsigned int GetNumberOfParameters( void ) const
     { return SpaceDimension; }
@@ -189,8 +189,6 @@ private:
 
   vnl_vector_fixed< InternalComputationValueType, 3 >              m_Factors;
 
-  // TODO Create gfact var insteal calculating it all the time
-
   /** Set the scale of the blurring */
   itkGetConstMacro( InitialScale, InternalComputationValueType );
 
@@ -209,7 +207,6 @@ private:
     const OutputPointType & currentPoint ) const;
   double ComputeDerivatives( Vector< InternalComputationValueType, 3 > *v ) const;
 
-  void ClampPointBoundsToImage( int bounds[6] );
   void ComputeCenterRotation();
   typename TubeNetType::ChildrenListType* GetTubes() const;
 

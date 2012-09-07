@@ -311,14 +311,14 @@ MIDAS_ADD_TEST( itkImageToTubeRigidMetricTest1
   ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
   MIDAS{SyntheticVesselTubeImage.mha.md5}
   MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
-  1.095681
+  0.874634
   )
 
 MIDAS_ADD_TEST( itkImageToTubeRigidMetricTest2
   ${BASE_REGISTRATION_FILTERS_TESTS} itkImageToTubeRigidMetricTest
   MIDAS{SyntheticTransformedVesselTubeImage.mha.md5}
   MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
-  -1.13622
+  -1.35168
   )
 
 MIDAS_ADD_TEST( itkImageToTubeRigidMetric2Test1

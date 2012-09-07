@@ -93,7 +93,7 @@ public:
   itkTypeMacro( ImageToTubeRigidRegistration,
     ImageToSpatialObjectRegistrationMethod );
 
-  typedef ImageToTubeRigidMetric< FixedImageType, MovingSpatialObjectType >
+  typedef ImageToTubeRigidMetric< FixedImageType, MovingSpatialObjectType, MovingTubeType >
     MetricType;
 
   typedef typename MetricType::TransformParametersType     ParametersType;
