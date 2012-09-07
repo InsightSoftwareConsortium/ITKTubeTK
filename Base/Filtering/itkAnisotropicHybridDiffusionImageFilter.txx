@@ -386,6 +386,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     << m_ContrastParameterLambdaCED << std::endl;
   os << indent << "EED Contrast parameter "
     << m_ContrastParameterLambdaEED << std::endl;
+  os << indent << "Threshold C parameter "
+    << m_ThresholdParameterC << std::endl;
   os << indent << "Hybrid Contrast parameter"
     << m_ContrastParameterLambdaHybrid << std::endl;
   os << indent << "Alpha " << m_Alpha << std::endl;

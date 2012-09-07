@@ -322,6 +322,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   os << indent << "Contrast parameter LambdaE: "
     << m_ContrastParameterLambdaE  << std::endl;
   os << indent << "Sigma : " << m_Sigma << std::endl;
+  os << indent << "SigmaOuter : " << m_SigmaOuter << std::endl;
   os << indent << "Threshold parameter C "
     << m_ThresholdParameterC << std::endl;
 }
