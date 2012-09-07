@@ -170,8 +170,7 @@ private:
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
   unsigned int                               m_NumberOfPoints;
-  std::list< InternalComputationValueType >  m_Weight;
-  InternalComputationValueType               m_SumWeight;
+  std::list< InternalComputationValueType >  m_ResolutionWeights;
   InternalComputationValueType               m_ImageMin;
   InternalComputationValueType               m_ImageMax;
   typename RangeCalculatorType::Pointer      m_RangeCalculator;
@@ -207,7 +206,6 @@ private:
     const OutputPointType & currentPoint ) const;
   double ComputeDerivatives( Vector< InternalComputationValueType, 3 > *v ) const;
 
-  void ComputeCenterRotation();
   typename TubeNetType::ChildrenListType* GetTubes() const;
 
   ImageToTubeRigidMetric( const Self& ); // purposely not implemented

@@ -77,9 +77,8 @@ void
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::Initialize( void ) throw ( ExceptionObject )
 {
-  m_Weight.clear();
+  m_ResolutionWeights.clear();
   m_NumberOfPoints = 0;
-  m_SumWeight = 0.0;
 
   if( !this->m_MovingSpatialObject || !this->m_FixedImage )
     {
@@ -88,7 +87,6 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
   this->ComputeImageRange();
   this->ComputeTubePointScalesAndWeights();
-  this->ComputeCenterRotation();
 
   this->m_Interpolator->SetInputImage( this->m_FixedImage );
   this->m_DerivativeImageFunction->SetInputImage( this->m_FixedImage );
@@ -98,29 +96,15 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
 void
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeCenterRotation()
-{
-  for ( unsigned int i = 0; i<ImageDimension; ++i )
-    {
-    this->m_CenterOfRotation[i] /= m_SumWeight;
-    }
-
-  itkDebugMacro( "Center of Rotation = "
-              << this->m_CenterOfRotation[0] << "  " \
-              << this->m_CenterOfRotation[1] << "  " \
-              << this->m_CenterOfRotation[2] );
-  itkDebugMacro( "Extent = " << m_Extent );
-}
-
-
-template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
-void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeTubePointScalesAndWeights()
 {
   typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
-  typedef typename TubeNetType::ChildrenListType::iterator TubesIteratorType;
 
+  //! \todo Use CompensatedSummation from ITKv4.
+  InternalComputationValueType resolutionWeightSum =
+    NumericTraits< InternalComputationValueType >::Zero;
+
+  typedef typename TubeNetType::ChildrenListType::iterator TubesIteratorType;
   for( TubesIteratorType tubeIterator = tubeList->begin();
        tubeIterator != tubeList->end();
        ++tubeIterator )
@@ -145,20 +129,24 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
         const InternalComputationValueType weight =
           2.0 / ( 1.0 + exp( val ) );
 
-        m_Weight.push_back( weight );
+        m_ResolutionWeights.push_back( weight );
 
         for( unsigned int ii = 0; ii < ImageDimension; ++ii )
           {
           this->m_CenterOfRotation[ii] +=
             weight * ( tubePointIterator->GetPosition() )[ii];
           }
-        m_SumWeight += weight;
+        resolutionWeightSum += weight;
         m_NumberOfPoints++;
         }
       }
     }
-
   delete tubeList;
+
+  for ( unsigned int ii = 0; ii < TubeDimension; ++ii )
+    {
+    this->m_CenterOfRotation[ii] /= resolutionWeightSum;
+    }
 }
 
 
@@ -201,7 +189,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   InternalComputationValueType scale = this->m_InitialScale;
 
   std::list< InternalComputationValueType >::const_iterator weightIterator;
-  weightIterator = m_Weight.begin();
+  weightIterator = m_ResolutionWeights.begin();
 
   // TODO change the place where you set the parameters !
   //this->m_Transform->SetParameters( parameters );
@@ -400,7 +388,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
 
   std::list<double>::const_iterator weightIterator;
-  weightIterator = m_Weight.begin();
+  weightIterator = m_ResolutionWeights.begin();
 
   double dPosition[3] = { 0, 0, 0 };
   double dAngle[3] = { 0, 0, 0 };
@@ -535,7 +523,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
   biasVI = vnl_matrix_inverse<double>( biasV ).inverse();
 
-  weightIterator = m_Weight.begin();
+  weightIterator = m_ResolutionWeights.begin();
   ListType::iterator  dXTIterator = dXTlist.begin();
 
   listindex  = 0;
