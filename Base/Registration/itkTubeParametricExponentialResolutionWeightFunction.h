@@ -51,6 +51,8 @@ template< class TTubePoint, class TOperatorValue=double >
 class TubeParametricExponentialResolutionWeightFunction
 {
 public:
+  typedef TubeParametricExponentialResolutionWeightFunction Self;
+
   typedef TOperatorValue OperatorValueType;
   typedef TTubePoint     TubePointType;
 
@@ -85,6 +87,21 @@ public:
   OperatorValueType GetAlpha( void ) const
     {
     return this->m_Alpha;
+    }
+
+  bool operator!=( const Self & other ) const
+    {
+    if( this->m_Delta != other.m_Delta ||
+        this->m_Alpha != other.m_Alpha )
+      {
+      return true;
+      }
+    return false;
+    }
+
+  bool operator==( const Self & other ) const
+    {
+    return !( *this != other );
     }
 
 private:

@@ -30,6 +30,7 @@ limitations under the License.
 #include "itkEuler3DTransform.h"
 #include "itkImageToSpatialObjectMetric.h"
 #include "itkGaussianDerivativeImageFunction.h"
+#include "itkTubeExponentialResolutionWeightFunction.h"
 
 namespace itk
 {
@@ -51,7 +52,10 @@ namespace itk
  * \warning (Derivative)
 */
 
-template < class TFixedImage, class TMovingSpatialObject, class TTubeSpatialObject >
+template < class TFixedImage,
+  class TMovingSpatialObject,
+  class TTubeSpatialObject,
+  class TResolutionWeightFunction = Function::TubeExponentialResolutionWeightFunction< typename TTubeSpatialObject::TubePointType > >
 class ITK_EXPORT ImageToTubeRigidMetric
 : public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {
@@ -71,6 +75,7 @@ public:
   typedef TMovingSpatialObject                  TubeNetType;
   typedef TTubeSpatialObject                    TubeType;
   typedef typename TubeType::TubePointType      TubePointType;
+  typedef TResolutionWeightFunction             ResolutionWeightFunctionType;
 
   typedef double                                InternalComputationValueType;
   typedef GaussianDerivativeImageFunction< TFixedImage >
@@ -132,15 +137,22 @@ public:
   /** Apply the center of rotation to the transformation */
   ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
 
-  /** Set kappa value */
-  itkSetMacro( Kappa, double );
-
   /** Initialize the metric */
   void Initialize( void ) throw ( ExceptionObject );
 
-  /** Set the extent of the blurring */
+  /** Control the radius scaling of the metric. */
+  itkSetMacro( Kappa, double );
+  itkGetConstMacro( Kappa, double );
+
+  /** Set/Get the extent of the blurring */
   itkSetMacro( Extent, double );
-  itkGetMacro( Extent, double );
+  itkGetConstMacro( Extent, double );
+
+  /** Set/Get the function used to determine the resolution weights.  This function
+   *  takes a tube point as an input and outputs a weight for that point. */
+  ResolutionWeightFunctionType & GetResolutionWeightFunction();
+  const ResolutionWeightFunctionType & GetResolutionWeightFunction() const;
+  void SetResolutionWeightFunction( const ResolutionWeightFunctionType & function );
 
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
@@ -164,12 +176,15 @@ protected:
 
   /** Calculate the weighting for each tube point and its scale, which is based
    * on the local radius. */
-  virtual void ComputeTubePointScalesAndWeights();
+  virtual void ComputeTubePointResolutionWeights();
 
 private:
+  typedef std::list< InternalComputationValueType > ResolutionWeightsContainerType;
+  ResolutionWeightsContainerType             m_ResolutionWeights;
+
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  std::list< InternalComputationValueType >  m_ResolutionWeights;
+  ResolutionWeightFunctionType               m_ResolutionWeightFunction;
   InternalComputationValueType               m_ImageMin;
   InternalComputationValueType               m_ImageMax;
   typename RangeCalculatorType::Pointer      m_RangeCalculator;

@@ -36,6 +36,7 @@ limitations under the License.
 #include "itkImageRegionIterator.h"
 #include "itkVectorContainer.h"
 #include "itkTubeSpatialObject.h"
+#include "itkTubeExponentialResolutionWeightFunction.h"
 
 namespace itk
 {
@@ -93,11 +94,15 @@ public:
   itkTypeMacro( ImageToTubeRigidRegistration,
     ImageToSpatialObjectRegistrationMethod );
 
-  typedef ImageToTubeRigidMetric< FixedImageType, MovingSpatialObjectType, MovingTubeType >
-    MetricType;
+  typedef ImageToTubeRigidMetric< FixedImageType,
+    MovingSpatialObjectType,
+    MovingTubeType,
+    Function::TubeExponentialResolutionWeightFunction<
+    typename MovingTubeType::TubePointType > >
+    DefaultMetricType;
 
-  typedef typename MetricType::TransformParametersType     ParametersType;
-  typedef typename MetricType::TransformType               TransformType;
+  typedef typename DefaultMetricType::TransformParametersType     ParametersType;
+  typedef typename DefaultMetricType::TransformType               TransformType;
 
   /**  Dimension of the images.  */
   enum {ImageDimension = FixedImageType::ImageDimension,
@@ -127,13 +132,6 @@ public:
   /** Initialize the registration */
   void Initialize() throw ( ExceptionObject );
 
-  itkSetMacro( Extent, double );
-  itkGetConstMacro( Extent, double );
-
-  /** Control the radius scaling of the metric. */
-  itkSetMacro( Kappa, double );
-  itkGetConstMacro( Kappa, double );
-
 protected:
   ImageToTubeRigidRegistration();
   virtual ~ImageToTubeRigidRegistration() {};
@@ -147,8 +145,6 @@ private:
   double                                   m_LearningRate;
   ParametersType                           m_InitialPosition;
   ParametersType                           m_ParametersScale;
-  double                                   m_Extent;
-  double                                   m_Kappa;
 };
 
 } // end namespace itk

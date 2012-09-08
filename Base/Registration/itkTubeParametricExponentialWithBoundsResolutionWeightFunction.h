@@ -46,8 +46,11 @@ class TubeParametricExponentialWithBoundsResolutionWeightFunction:
   public TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
 {
 public:
+  typedef TubeParametricExponentialWithBoundsResolutionWeightFunction
+    Self;
   typedef TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
     Superclass;
+
   typedef typename Superclass::OperatorValueType OperatorValueType;
   typedef typename Superclass::TubePointType     TubePointType;
 
@@ -88,6 +91,23 @@ public:
     {
     return this->m_UpperBound;
     }
+
+  bool operator!=( const Self & other ) const
+    {
+    if( Superclass::operator!=( other ) ||
+        this->m_LowerBound != other.m_LowerBound ||
+        this->m_UpperBound != other.m_UpperBound )
+      {
+      return true;
+      }
+    return false;
+    }
+
+  bool operator==( const Self & other ) const
+    {
+    return !( *this != other );
+    }
+
 
 private:
   OperatorValueType m_LowerBound;

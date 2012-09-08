@@ -56,8 +56,8 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   m_ParametersScale[4] = 1.;
   m_ParametersScale[5] = 1.;
 
-  m_Extent = 3;
-  m_Kappa = 1;
+  typename DefaultMetricType::Pointer metric = DefaultMetricType::New();
+  this->SetMetric( metric );
 }
 
 
@@ -92,20 +92,12 @@ void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::Initialize() throw ( ExceptionObject )
 {
-  typename MetricType::Pointer metric = MetricType::New();
-
-  metric->SetExtent( m_Extent );
-  metric->SetKappa( m_Kappa );
-
-  this->SetMetric( metric );
   typename OptimizerType::Pointer optimizer = OptimizerType::New();
 
   typename TransformType::Pointer transform = TransformType::New();
   this->SetTransform( transform );
   typename InterpolatorType::Pointer interp = InterpolatorType::New();
   this->SetInterpolator( interp );
-
-  optimizer->SetScales( m_ParametersScale );
 
   optimizer->MaximizeOn();
   optimizer->SetScales( m_ParametersScale );
