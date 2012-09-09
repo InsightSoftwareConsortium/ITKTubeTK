@@ -134,9 +134,6 @@ public:
   void GetValueAndDerivative( const ParametersType & parameters,
     MeasureType & Value, DerivativeType  & Derivative ) const;
 
-  /** Apply the center of rotation to the transformation */
-  ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
-
   /** Initialize the metric */
   void Initialize( void ) throw ( ExceptionObject );
 
@@ -196,8 +193,7 @@ private:
   vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
 
   /** The center of rotation of the weighted tube points. */
-  typedef typename TubePointType::PointType
-    CenterOfRotationType;
+  typedef typename TubePointType::PointType CenterOfRotationType;
   CenterOfRotationType m_CenterOfRotation;
 
   vnl_vector_fixed< InternalComputationValueType, 3 >              m_Factors;
@@ -205,10 +201,13 @@ private:
   /** Set the scale of the blurring */
   itkGetConstMacro( InitialScale, InternalComputationValueType );
 
-  /** Test whether the specified point is inside
-  This method overload the one in the ImageMapper class */
-  bool IsInside( const InputPointType & point,
-    OutputPointType & currentPoint ) const;
+  /** Test whether the specified tube point is inside the Image.
+   * \param inputPoint the non-transformed tube point.
+   * \param outputPoint the transformed tube point.
+   * \param transform the transform to apply to the input point. */
+  bool IsInside( const InputPointType & inputPoint,
+    OutputPointType & outputPoint,
+    const TransformType * transform ) const;
 
   VectorType *  EvaluateAllDerivatives( void ) const;
 

@@ -27,7 +27,6 @@ limitations under the License.
 #include "itkImageFileWriter.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkTubeToTubeTransformFilter.h"
-#include "itkEuler3DTransform.h"
 #include "itkMath.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkVesselTubeSpatialObject.h"
@@ -63,7 +62,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
                                                          RegistrationFilterType;
-  typedef itk::Euler3DTransform< FloatType >             TransformType;
+  typedef RegistrationFilterType::TransformType          TransformType;
   typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
 
@@ -159,9 +158,10 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   //! \todo validate against known real results.
   TransformType::Pointer outputTransform =
     dynamic_cast<TransformType *>(registrationFilter->GetTransform());
+  outputTransform->SetParameters( registrationFilter->GetLastTransformParameters() );
 
   TransformType::Pointer inverseTransform = TransformType::New();
-  outputTransform->GetInverse(inverseTransform);
+  outputTransform->GetInverse( inverseTransform );
 
   std::cout << "Registration result: ";
   for (unsigned int ii = 0; ii < 6; ++ii)

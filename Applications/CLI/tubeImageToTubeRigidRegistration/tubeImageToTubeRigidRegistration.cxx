@@ -77,7 +77,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
                                                          RegistrationFilterType;
-  typedef itk::Euler3DTransform< FloatType >             TransformType;
+  typedef RegistrationFilterType::TransformType          TransformType;
   typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
   typedef itk::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
@@ -201,6 +201,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Save data");
   TransformType* outputTransform =
     dynamic_cast<TransformType *>(registrationFilter->GetTransform());
+  outputTransform->SetParameters( registrationFilter->GetLastTransformParameters() );
 
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );

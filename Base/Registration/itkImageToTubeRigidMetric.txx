@@ -132,28 +132,6 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::ComputeImageRange( void )
-{
-  m_RangeCalculator = RangeCalculatorType::New();
-  m_RangeCalculator->SetImage( this->m_FixedImage );
-  m_RangeCalculator->Compute();
-  m_ImageMin = m_RangeCalculator->GetMinimum();
-  m_ImageMax = m_RangeCalculator->GetMaximum();
-
-  itkDebugMacro( "ImageMin = " << m_ImageMin );
-  itkDebugMacro( "ImageMax = " << m_ImageMax );
-}
-
-
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
-  TResolutionWeightFunction >
 ::Initialize( void ) throw ( ExceptionObject )
 {
   m_ResolutionWeights.clear();
@@ -168,6 +146,28 @@ ImageToTubeRigidMetric< TFixedImage,
 
   this->m_Interpolator->SetInputImage( this->m_FixedImage );
   this->m_DerivativeImageFunction->SetInputImage( this->m_FixedImage );
+}
+
+
+template < class TFixedImage,
+  class TMovingSpatialObject,
+  class TTubeSpatialObject,
+  class TResolutionWeightFunction >
+void
+ImageToTubeRigidMetric< TFixedImage,
+  TMovingSpatialObject,
+  TTubeSpatialObject,
+  TResolutionWeightFunction >
+::ComputeImageRange( void )
+{
+  m_RangeCalculator = RangeCalculatorType::New();
+  m_RangeCalculator->SetImage( this->m_FixedImage );
+  m_RangeCalculator->Compute();
+  m_ImageMin = m_RangeCalculator->GetMinimum();
+  m_ImageMax = m_RangeCalculator->GetMaximum();
+
+  itkDebugMacro( "ImageMin = " << m_ImageMin );
+  itkDebugMacro( "ImageMax = " << m_ImageMax );
 }
 
 
@@ -228,6 +228,11 @@ ImageToTubeRigidMetric< TFixedImage,
     {
     this->m_CenterOfRotation[ii] /= resolutionWeightSum;
     }
+
+  //! \todo partial template specialization for transforms with a center?
+  TransformType * transform = static_cast< TransformType * >
+    ( this->m_Transform.GetPointer() );
+  transform->SetCenter( this->m_CenterOfRotation );
 }
 
 
@@ -287,72 +292,59 @@ ImageToTubeRigidMetric< TFixedImage,
     NumericTraits< InternalComputationValueType >::Zero;
   InternalComputationValueType scale = this->m_InitialScale;
 
-  std::list< InternalComputationValueType >::const_iterator weightIterator;
-  weightIterator = m_ResolutionWeights.begin();
+  ResolutionWeightsContainerType::const_iterator weightIterator;
+  weightIterator = this->m_ResolutionWeights.begin();
 
-  // TODO change the place where you set the parameters !
-  //this->m_Transform->SetParameters( parameters );
+  // Create a copy of the transform to keep true const correctness (thread-safe)
+  // Set the parameters on the copy and uses the copy.
+  LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
+  TransformType * transformCopy = static_cast< TransformType * >( anotherTransform.GetPointer() );
+  transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
+  transformCopy->SetParameters( parameters );
 
   typename TubeNetType::ChildrenListType::iterator tubeIterator;
-  typename TubeNetType::ChildrenListType* tubeList = GetTubes();
+  typename TubeNetType::ChildrenListType * tubeList = GetTubes();
   for( tubeIterator = tubeList->begin();
        tubeIterator != tubeList->end();
        tubeIterator++ )
     {
-    TubeType* currTube = static_cast<TubeType*>(
-      ( *tubeIterator ).GetPointer() );
-
-    typename std::vector<TubePointType>::iterator pointIterator;
-    for( pointIterator = currTube->GetPoints().begin();
-         pointIterator != currTube->GetPoints().end();
-         ++pointIterator )
-        {
-        const InputPointType inputPoint = pointIterator->GetPosition();
-        OutputPointType currentPoint;
-        /*static itk::Point<double, 3> point;
-        Matrix<double, 3, 3> matrix =  GetTransform()->GetRotationMatrix();
-
-        point =  matrix * inputPoint + GetTransform()->GetOffset();
-
-        vnl_vector_fixed<double, 3> rotationOffset = matrix * ;
-
-        point[0] += this->m_CenterOfRotation[0] - rotationOffset[0];
-        point[1] += this->m_CenterOfRotation[1] - rotationOffset[1];
-        point[2] += this->m_CenterOfRotation[2] - rotationOffset[2];
-
-        // TODO
-        // Need to use interpolator intead
-
-        itk::Index<3> index;
-        index[0] = static_cast<unsigned int>( point[0] );
-        index[1] = static_cast<unsigned int>( point[1] );
-        index[2] = static_cast<unsigned int>( point[2] );*/
-
-        if( this->IsInside( inputPoint, currentPoint ) )
+    TubeType * currentTube =
+      dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
+    if( currentTube != NULL )
+      {
+      typename TubeType::PointListType::iterator pointIterator;
+      for( pointIterator = currentTube->GetPoints().begin();
+           pointIterator != currentTube->GetPoints().end();
+           ++pointIterator )
           {
-          sumWeight += *weightIterator;
-          InternalComputationValueType scalingRadius = pointIterator->GetRadius();
-          // !TODO 0.5 should be a parameter of the class
-          scalingRadius = std::max( scalingRadius, 0.5 );
-
-          scale = scalingRadius * m_Kappa;
-
-          Vector<InternalComputationValueType, TubeDimension> v2;
-          for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+          const InputPointType inputPoint = pointIterator->GetPosition();
+          OutputPointType currentPoint;
+          if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
             {
-            v2[ii] = pointIterator->GetNormal1()[ii];
+            sumWeight += *weightIterator;
+            InternalComputationValueType scalingRadius = pointIterator->GetRadius();
+            // !TODO 0.5 should be a parameter of the class
+            scalingRadius = std::max( scalingRadius, 0.5 );
+
+            scale = scalingRadius * m_Kappa;
+
+            Vector<InternalComputationValueType, TubeDimension> v2;
+            for( unsigned int ii = 0; ii < TubeDimension; ++ii )
+              {
+              v2[ii] = pointIterator->GetNormal1()[ii];
+              }
+
+              matchMeasure += *weightIterator * fabs(
+                ComputeLaplacianMagnitude( &v2, scale, currentPoint ) );
+              }
+          else
+            {
+            matchMeasure -= m_ImageMax;
             }
 
-            matchMeasure += *weightIterator * fabs(
-              ComputeLaplacianMagnitude( &v2, scale, currentPoint ) );
-            }
-        else
-          {
-          matchMeasure -= m_ImageMax;
+          weightIterator++;
           }
-
-        weightIterator++;
-        }
+      } // end is a tube
     }
 
   if( sumWeight == 0 )
@@ -492,6 +484,14 @@ ImageToTubeRigidMetric< TFixedImage,
 {
   derivative = DerivativeType( SpaceDimension );
 
+  // Create a copy of the transform to keep true const correctness (thread-safe)
+  // Set the parameters on the copy and uses the copy.
+  LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
+  TransformType * transformCopy = static_cast< TransformType * >( anotherTransform.GetPointer() );
+  transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
+  transformCopy->SetParameters( parameters );
+
+  //! \todo remove me
   this->m_Transform->SetParameters( parameters );
 
   InternalComputationValueType scale = this->m_InitialScale;
@@ -524,19 +524,19 @@ ImageToTubeRigidMetric< TFixedImage,
   typedef itk::Vector<double, 3>    ITKVectorType;
   typedef std::list<ITKVectorType>  ListType;
   ListType dXTlist;
-  itk::FixedArray<Point<double, 3>, 5000> XTlist;
+  FixedArray<Point<double, 3>, 5000> XTlist;
 
   unsigned int listindex = 0;
   typename TubeNetType::ChildrenListType* tubeList = GetTubes();
   typename TubeNetType::ChildrenListType::iterator tubeIterator = tubeList->begin();
   for( ; tubeIterator != tubeList->end(); ++tubeIterator )
     {
-    TubeType* currTube = static_cast<TubeType*>(
+    TubeType* currentTube = static_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
 
     typename std::vector<TubePointType>::iterator pointIterator;
-    for( pointIterator = currTube->GetPoints().begin();
-         pointIterator != currTube->GetPoints().end();
+    for( pointIterator = currentTube->GetPoints().begin();
+         pointIterator != currentTube->GetPoints().end();
          ++pointIterator )
       {
       InputPointType inputPoint = pointIterator->GetPosition();
@@ -560,7 +560,7 @@ ImageToTubeRigidMetric< TFixedImage,
         index[ii] = static_cast< IndexValueType >( point[ii] );
         }
 
-      if( this->IsInside( inputPoint, currentPoint ) )
+      if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
         {
         XTlist[listindex++] = currentPoint;
         sumWeight += *weightIterator;
@@ -774,26 +774,12 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::IsInside( const InputPointType & point,
-  OutputPointType & currentPoint ) const
+::IsInside( const InputPointType & inputPoint,
+  OutputPointType & outputPoint,
+  const TransformType * transform ) const
 {
-  typename TransformType::MatrixType matrix =  this->GetTransform()->GetMatrix();
-  currentPoint = matrix * point + this->GetTransform()->GetOffset();
-
-  CenterOfRotationType centerOfRotation;
-  for( unsigned int ii = 0; ii < ImageDimension; ++ii )
-    {
-    centerOfRotation[ii] = this->m_CenterOfRotation[ii];
-    }
-
-  CenterOfRotationType rotationOffset = matrix * centerOfRotation;
-
-  for( unsigned int ii = 0; ii < ImageDimension; ++ii )
-    {
-    currentPoint[ii] += centerOfRotation[ii] - rotationOffset[ii];
-    }
-
-  return ( this->m_Interpolator->IsInsideBuffer( currentPoint ) );
+  outputPoint = transform->TransformPoint( inputPoint );
+  return ( this->m_Interpolator->IsInsideBuffer( outputPoint ) );
 }
 
 } // end namespace itk
