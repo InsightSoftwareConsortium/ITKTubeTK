@@ -25,7 +25,6 @@ limitations under the License.
 
 #include "itkTransform.h"
 #include "itkImageToSpatialObjectRegistrationMethod.h"
-#include "itkLinearInterpolateImageFunction.h"
 #include "itkImageToTubeRigidMetric.h"
 #include "itkGradientDescentOptimizer.h"
 #include "itkImage.h"

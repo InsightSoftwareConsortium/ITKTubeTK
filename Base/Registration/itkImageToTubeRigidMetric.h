@@ -23,10 +23,7 @@ limitations under the License.
 #ifndef __itkImageToTubeRigidMetric_h
 #define __itkImageToTubeRigidMetric_h
 
-#include "itkPoint.h"
-#include "itkGroupSpatialObject.h"
 #include "itkMinimumMaximumImageCalculator.h"
-#include "itkLinearInterpolateImageFunction.h"
 #include "itkEuler3DTransform.h"
 #include "itkImageToSpatialObjectMetric.h"
 #include "itkGaussianDerivativeImageFunction.h"
@@ -141,7 +138,7 @@ public:
   itkSetMacro( Kappa, double );
   itkGetConstMacro( Kappa, double );
 
-  /** Set/Get the extent of the blurring */
+  /** Set/Get the extent of the blurring calculation given in Gaussian sigma's. */
   itkSetMacro( Extent, double );
   itkGetConstMacro( Extent, double );
 
@@ -185,21 +182,14 @@ private:
   InternalComputationValueType               m_ImageMin;
   InternalComputationValueType               m_ImageMax;
   typename RangeCalculatorType::Pointer      m_RangeCalculator;
-  unsigned int                               m_Iteration;
   double                                     m_Kappa;
   double                                     m_Extent;
-  InternalComputationValueType               m_InitialScale;
 
   vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
 
   /** The center of rotation of the weighted tube points. */
   typedef typename TubePointType::PointType CenterOfRotationType;
   CenterOfRotationType m_CenterOfRotation;
-
-  vnl_vector_fixed< InternalComputationValueType, 3 >              m_Factors;
-
-  /** Set the scale of the blurring */
-  itkGetConstMacro( InitialScale, InternalComputationValueType );
 
   /** Test whether the specified tube point is inside the Image.
    * \param inputPoint the non-transformed tube point.
@@ -211,8 +201,9 @@ private:
 
   VectorType *  EvaluateAllDerivatives( void ) const;
 
-  double ComputeLaplacianMagnitude( Vector< InternalComputationValueType, 3 > *v,
-    const InternalComputationValueType & scale,
+  InternalComputationValueType ComputeLaplacianMagnitude(
+    const typename TubePointType::CovariantVectorType & tubeNormal,
+    const InternalComputationValueType scale,
     const OutputPointType & currentPoint ) const;
   double ComputeThirdDerivatives( Vector< InternalComputationValueType, 3 > *v,
     const InternalComputationValueType & scale,

@@ -96,8 +96,6 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 
   typename TransformType::Pointer transform = TransformType::New();
   this->SetTransform( transform );
-  typename InterpolatorType::Pointer interp = InterpolatorType::New();
-  this->SetInterpolator( interp );
 
   optimizer->MaximizeOn();
   optimizer->SetScales( m_ParametersScale );

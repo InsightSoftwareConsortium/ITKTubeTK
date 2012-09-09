@@ -67,7 +67,6 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
   typedef itk::ImageToTubeRigidMetric< ImageType, TubeNetType, TubeType >
     MetricType;
   typedef MetricType::ParametersType                      ParametersType;
-  typedef MetricType::InterpolatorType                    InterpolatorType;
   typedef MetricType::TransformType                       TransformType;
 
   // read image (fixedImage)
@@ -119,13 +118,11 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
   MetricType::Pointer metric = MetricType::New();
   metric->SetExtent( 3 );
 
-  InterpolatorType::Pointer interpolator = InterpolatorType::New();
   TransformType::Pointer transform = TransformType::New();
   TransformType::ParametersType parameters = transform->GetParameters();
 
   metric->SetFixedImage( imageReader->GetOutput() );
   metric->SetMovingSpatialObject ( subSampleTubeNetFilter->GetOutput() );
-  metric->SetInterpolator( interpolator );
   metric->SetTransform( transform );
   try
     {
