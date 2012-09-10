@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itkImageToTubeRigidRegistration.h"
 
+#include "itkLinearInterpolateImageFunction.h"
 #include "itkNormalVariateGenerator.h"
 #include "itkSpatialObjectDuplicator.h"
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
@@ -58,6 +59,10 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 
   typename DefaultMetricType::Pointer metric = DefaultMetricType::New();
   this->SetMetric( metric );
+
+  typedef LinearInterpolateImageFunction< FixedImageType > DefaultInterpolatorType;
+  typename DefaultInterpolatorType::Pointer interpolator = DefaultInterpolatorType::New();
+  this->SetInterpolator( interpolator );
 }
 
 
@@ -117,33 +122,6 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   */
 
   this->SetOptimizer( optimizer );
-
-  /* ParametersType parameters = ParametersType( ParametersDimension );
-  unsigned int k = 0;
-
-  // Initialize the 3 rotation angles
-  for ( unsigned int i=0; i<TFixedImage::ImageDimension; i++ )
-    {
-    parameters[ k++ ] = 0;
-    }
-
-  m_Parameters[ k++ ]=-0.0658653;
-  m_Parameters[ k++ ]=0.0841746;
-  m_Parameters[ k++ ]=-0.0794313;
-
-  // Initialize the 3 translation offsets
-  for ( unsigned int i=0; i<TFixedImage::ImageDimension; i++ )
-    {
-    parameters[ k++ ] = 0;
-    }
-  parameters[ k++ ]=30;//49.0362; //30
-  parameters[ k++ ]=-20;//-24.9046; //-20
-  parameters[ k++ ]=20;//26.0874; //20
-
-  parameters[ k++ ]= -71;
-  parameters[ k++ ]= -23;
-  parameters[ k++ ]= -25.8;
-  */
 
   this->SetInitialTransformParameters( m_InitialPosition );
 

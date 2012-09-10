@@ -163,10 +163,10 @@ protected:
 
   void ComputeImageRange( void );
 
-  void GetDeltaAngles( const Point< InternalComputationValueType, 3> & x,
-                       const vnl_vector_fixed< InternalComputationValueType, 3> & dx,
-                       const vnl_vector_fixed< InternalComputationValueType, 3> & offsets,
-                       double angle[3] ) const;
+  void GetDeltaAngles( const OutputPointType & x,
+    const vnl_vector_fixed< InternalComputationValueType, 3> & dx,
+    const vnl_vector_fixed< InternalComputationValueType, 3> & offsets,
+    double angle[3] ) const;
 
   /** Calculate the weighting for each tube point and its scale, which is based
    * on the local radius. */
@@ -199,16 +199,14 @@ private:
     OutputPointType & outputPoint,
     const TransformType * transform ) const;
 
-  VectorType *  EvaluateAllDerivatives( void ) const;
-
   InternalComputationValueType ComputeLaplacianMagnitude(
     const typename TubePointType::CovariantVectorType & tubeNormal,
     const InternalComputationValueType scale,
     const OutputPointType & currentPoint ) const;
-  double ComputeThirdDerivatives( Vector< InternalComputationValueType, 3 > *v,
-    const InternalComputationValueType & scale,
+  InternalComputationValueType ComputeThirdDerivatives(
+    const Vector< InternalComputationValueType, TubeDimension > *v,
+    const InternalComputationValueType scale,
     const OutputPointType & currentPoint ) const;
-  double ComputeDerivatives( Vector< InternalComputationValueType, 3 > *v ) const;
 
   typename TubeNetType::ChildrenListType* GetTubes() const;
 
