@@ -115,7 +115,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
     SubSampleTubeNetFilterType::New();
   subSampleTubeNetFilter->SetInput( vesselReader->GetGroup() );
-  subSampleTubeNetFilter->SetSampling( 100 );
+  subSampleTubeNetFilter->SetSampling( 30 );
   try
     {
     subSampleTubeNetFilter->Update();

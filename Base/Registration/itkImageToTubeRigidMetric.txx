@@ -515,10 +515,12 @@ ImageToTubeRigidMetric< TFixedImage,
 
   typedef std::vector< OutputPointType > TubePointsContainerType;
   TubePointsContainerType transformedTubePoints;
+  transformedTubePoints.reserve( this->m_ResolutionWeights.size() );
 
   typedef Vector< InternalComputationValueType, TubeDimension >  dTubePointsType;
   typedef std::vector< dTubePointsType >                         dTubePointsContainerType;
   dTubePointsContainerType dtransformedTubePoints;
+  dtransformedTubePoints.reserve( this->m_ResolutionWeights.size() );
 
   typename TubeNetType::ChildrenListType * tubeList = GetTubes();
   typename TubeNetType::ChildrenListType::const_iterator tubeIterator;
