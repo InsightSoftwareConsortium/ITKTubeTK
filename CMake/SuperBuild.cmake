@@ -385,6 +385,10 @@ endif( TubeTK_USE_QT )
 ## TubeTK - Normal Build
 ##
 set( proj TubeTK )
+if( TubeTK_USE_KWSTYLE )
+  set( kwstyle_dashboard_submission_arg
+    "-DKWSTYLE_DASHBOARD_SUBMISSION:BOOL=${KWSTYLE_DASHBOARD_SUBMISSION}" )
+endif()
 ExternalProject_Add( ${proj}
   DOWNLOAD_COMMAND ""
   SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -407,7 +411,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
-    -DKWSTYLE_DASHBOARD_SUBMISSION:BOOL=${KWSTYLE_DASHBOARD_SUBMISSION}
+    ${kwstyle_dashboard_submission_arg}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_ITKV4:BOOL=${TubeTK_USE_ITKV4}
