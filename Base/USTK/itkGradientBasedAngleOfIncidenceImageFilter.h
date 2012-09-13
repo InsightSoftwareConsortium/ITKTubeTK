@@ -83,10 +83,32 @@ public:
     GradientOutputImageType;
   typedef ImageToImageFilter< OperatorImageType, GradientOutputImageType >
     GradientFilterType;
+  typedef Vector< TOperatorValue, InputImageType::ImageDimension >
+    BeamDirectionType;
 
-  /** Set/Get the location of the ultrasound beam probe center of rotation. */
+  /** Probe type.  Determines how the beam angle is calculated.  For
+   * CURVILINEAR or PHASED, the UltrasoundProbeOrigin must be set.  For
+   * a LINEAR probe, the UltrasoundProbeDirection must be set. */
+  typedef enum {
+    CURVILINEAR,
+    PHASED,
+    LINEAR
+  } ProbeType;
+
+  /** Set/Get the probe type.  This determines how the beam direction is
+   * computed. */
+  itkSetMacro( UltrasoundProbeType, ProbeType );
+  itkGetConstMacro( UltrasoundProbeType, ProbeType );
+
+  /** Set/Get the location of the ultrasound beam probe center of rotation.
+   * This is only valid when the UltrasoundProbeType is CURVILINEAR or PHASED. */
   itkSetMacro( UltrasoundProbeOrigin, OriginType );
   itkGetConstMacro( UltrasoundProbeOrigin, OriginType );
+
+  /** Set/Get the direction of the ultrasound beam.  This is only valid when the
+   * UltrasoundProbeType is LINEAR. */
+  void SetUltrasoundProbeBeamDirection( const BeamDirectionType & beamDirection );
+  itkGetConstMacro( UltrasoundProbeBeamDirection, BeamDirectionType );
 
   /** Set/Get the filter used to calculate the gradients of the input image.
    * The default is a simple GradientImageFilter. */
@@ -118,11 +140,13 @@ private:
   typedef CastImageFilter< InputImageType, OperatorImageType > CastImageFilterType;
   typename CastImageFilterType::Pointer m_CastImageFilter;
 
-  OriginType m_UltrasoundProbeOrigin;
 
   typename GradientFilterType::Pointer m_GradientFilter;
 
-  double m_GradientMagnitudeTolerance;
+  double            m_GradientMagnitudeTolerance;
+  ProbeType         m_UltrasoundProbeType;
+  OriginType        m_UltrasoundProbeOrigin;
+  BeamDirectionType m_UltrasoundProbeBeamDirection;
 };
 
 } // end namespace itk
