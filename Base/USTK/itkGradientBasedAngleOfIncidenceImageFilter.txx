@@ -45,9 +45,27 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
 
   this->m_CastImageFilter = CastImageFilterType::New();
 
+  this->m_UltrasoundProbeType = CURVILINEAR;
   this->m_UltrasoundProbeOrigin.Fill( 0.0 );
+  this->m_UltrasoundProbeBeamDirection.Fill( 0.0 );
 
   this->m_GradientMagnitudeTolerance = 1.0e-7;
+}
+
+
+template< class TInputImage, class TOutputImage, class TOperatorValue >
+void
+GradientBasedAngleOfIncidenceImageFilter< TInputImage,
+  TOutputImage,
+  TOperatorValue >
+::SetUltrasoundProbeBeamDirection( const BeamDirectionType & beamDirection )
+{
+  if( beamDirection != this->m_UltrasoundProbeBeamDirection )
+    {
+    this->m_UltrasoundProbeBeamDirection = beamDirection;
+    this->m_UltrasoundProbeBeamDirection.Normalize();
+    this->Modified();
+    }
 }
 
 
@@ -62,6 +80,12 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   this->m_GradientFilter->SetNumberOfThreads( this->GetNumberOfThreads() );
   this->m_GradientFilter->SetInput( this->m_CastImageFilter->GetOutput() );
   this->m_GradientFilter->Update();
+
+  if( this->m_UltrasoundProbeType == LINEAR &&
+      this->m_UltrasoundProbeBeamDirection.GetNorm() == static_cast< OperatorValueType >( 0.0 ) )
+    {
+    itkExceptionMacro( "The BeamDirection must be specified with a LINEAR probe." );
+    }
 }
 
 
@@ -92,6 +116,8 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   ProgressReporter progress( this, threadId,
     outputRegionForThread.GetNumberOfPixels() );
 
+  BeamDirectionType beamDirection = this->m_UltrasoundProbeBeamDirection;
+
   for( inputIt.GoToBegin(), gradientIt.GoToBegin(), outputIt.GoToBegin();
        !outputIt.IsAtEnd();
        ++inputIt, ++gradientIt, ++outputIt )
@@ -100,9 +126,12 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
     typename InputImageType::PointType point;
     input->TransformIndexToPhysicalPoint( index, point );
 
-    typedef Vector< OperatorValueType, ImageDimension > VectorType;
-    VectorType beamDirection = point - origin;
-    beamDirection.Normalize();
+    if( this->m_UltrasoundProbeType == CURVILINEAR ||
+        this->m_UltrasoundProbeType == PHASED )
+      {
+      beamDirection = point - origin;
+      beamDirection.Normalize();
+      }
 
     GradientOutputPixelType gradientPixel = gradientIt.Get();
     const typename GradientOutputPixelType::RealValueType gradientNorm =
@@ -133,8 +162,27 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);
+  os << indent << "GradientMagnitudeTolerance: "
+     << this->m_GradientMagnitudeTolerance
+     << indent << "UltrasoundProbeType: ";
+  switch( this->m_UltrasoundProbeType )
+    {
+  case CURVILINEAR:
+    os << "CURVILINEAR";
+    break;
+  case PHASED:
+    os << "PHASED";
+    break;
+  case LINEAR:
+    os << "LINEAR";
+    break;
+  default:
+    os << "INVALID";
+    }
   os << indent << "UltrasoundProbeOrigin: "
      << this->m_UltrasoundProbeOrigin
+     << indent << "BeamDirection: "
+     << this->m_UltrasoundProbeBeamDirection
      << std::endl;
 }
 

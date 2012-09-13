@@ -92,6 +92,7 @@ MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest
       MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
       ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha
       ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.mha
+      CURVILINEAR
       31.8
       -24.8
   )
@@ -109,8 +110,45 @@ MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest2
       MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
       ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha
       ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha
+      CURVILINEAR
       136.5
       -90.8
+  )
+
+MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest3
+  ${BASE_USTK_TESTS}
+  --compareNumberOfPixelsTolerance 50
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest3GradientImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientImageFilter.mha
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest3GradientRecursiveGaussianImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientRecursiveGaussianImageFilter.mha
+    itkGradientBasedAngleOfIncidenceImageFilterTest
+      MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientImageFilter.mha
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientRecursiveGaussianImageFilter.mha
+      LINEAR
+      0.0
+      1.0
+  )
+
+MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest4
+  ${BASE_USTK_TESTS}
+  --compareNumberOfPixelsTolerance 50
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.mha
+  --compare
+      MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest4GradientRecursiveGaussianImageFilter.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientRecursiveGaussianImageFilter.mha
+    itkGradientBasedAngleOfIncidenceImageFilterTest
+      MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.mha
+      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientRecursiveGaussianImageFilter.mha
+      LINEAR
+      0.5
+      0.5
   )
 
 MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest1

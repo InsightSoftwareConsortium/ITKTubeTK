@@ -26,7 +26,7 @@
 int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
 {
   // Argument parsing.
-  if( argc < 6 )
+  if( argc < 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: "
@@ -34,16 +34,20 @@ int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
               << " inputImage"
               << " outputImage"
               << " outputImageWithGradientRecursiveGaussian"
-              << " originX"
-              << " originY"
+              << " probeType(CURVILINEAR|LINEAR)"
+              << " (originX|beamDirectionX)"
+              << " (originY|beamDirectionY)"
               << std::endl;
     return EXIT_FAILURE;
     }
   const char * inputImage = argv[1];
   const char * outputImage = argv[2];
   const char * outputImageWithGradientRecursiveGaussian = argv[3];
-  const char * originX = argv[4];
-  const char * originY = argv[5];
+  const char * probeType = argv[4];
+  const char * originX = argv[5];
+  const char * originY = argv[6];
+  const char * beamDirectionX = argv[5];
+  const char * beamDirectionY = argv[6];
 
   // Types
   static const unsigned int Dimension = 2;
@@ -69,7 +73,29 @@ int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
   istrm.clear();
   istrm.str( originY );
   istrm >> probeOrigin[1];
-  angleOfIncidenceFilter->SetUltrasoundProbeOrigin( probeOrigin );
+  istrm.clear();
+  AngleOfIncidenceFilterType::BeamDirectionType beamDirection;
+  istrm.str( beamDirectionX );
+  istrm >> beamDirection[0];
+  istrm.clear();
+  istrm.str( beamDirectionY );
+  istrm >> beamDirection[1];
+  const std::string probeTypeStr( probeType );
+  if( probeTypeStr.compare( "CURVILINEAR" ) == 0 )
+    {
+    angleOfIncidenceFilter->SetUltrasoundProbeType( AngleOfIncidenceFilterType::CURVILINEAR );
+    angleOfIncidenceFilter->SetUltrasoundProbeOrigin( probeOrigin );
+    }
+  else if( probeTypeStr.compare( "LINEAR" ) == 0 )
+    {
+    angleOfIncidenceFilter->SetUltrasoundProbeType( AngleOfIncidenceFilterType::LINEAR );
+    angleOfIncidenceFilter->SetUltrasoundProbeBeamDirection( beamDirection );
+    }
+  else
+    {
+    std::cerr << "Unknown probe type" << std::endl;
+    return EXIT_FAILURE;
+    }
 
   // Writer
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;
