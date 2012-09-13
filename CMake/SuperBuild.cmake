@@ -25,7 +25,11 @@ include( ExternalProject )
 set( base "${CMAKE_BINARY_DIR}" )
 set_property( DIRECTORY PROPERTY EP_BASE ${base} )
 
-set( shared ON ) # use for BUILD_SHARED_LIBS on all subsequent projects
+if( BUILD_SHARED_LIBS )
+  set( shared ${BUILD_SHARED_LIBS} )
+else()
+  set( shared ON ) # use for BUILD_SHARED_LIBS on all subsequent projects
+endif()
 set( testing OFF ) # use for BUILD_TESTING on all subsequent projects
 set( build_type "Debug" )
 if( CMAKE_BUILD_TYPE )
