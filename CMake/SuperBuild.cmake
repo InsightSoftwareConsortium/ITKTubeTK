@@ -132,7 +132,8 @@ if( NOT USE_SYSTEM_ITK )
     set( proj Insight )
     ExternalProject_Add( ${proj}
       GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Kitware/ITK.git"
-      GIT_TAG "v3.20.1"
+      # release-3.20 branch on 2012-09-26.
+      GIT_TAG "dcd655f89c"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
       BINARY_DIR Insight-Build
       CMAKE_GENERATOR ${gen}
