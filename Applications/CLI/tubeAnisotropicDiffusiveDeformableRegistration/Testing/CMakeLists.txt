@@ -31,7 +31,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${MODULE_NAME} )
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
@@ -47,7 +47,7 @@ endif()
 #######
 # Test1
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereNoReg
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereNoReg
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -67,20 +67,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereNoReg
 #######
 # Test1-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereNoReg-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereNoReg-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_noReg_motionField.mhd
                -b MIDAS{Sphere_noReg_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_noReg_motionField.zraw.md5}
             )
-set_property(TEST ${PROJECT_NAME}-TestSphereNoReg-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereNoReg )
+set_property(TEST ${MODULE_NAME}-TestSphereNoReg-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereNoReg )
 
 #######
 # Test2
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropic
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropic
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -99,20 +99,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropic
 #######
 # Test2-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropic-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropic-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_anisotropic_motionField.mhd
                -b MIDAS{Sphere_anisotropic_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_anisotropic_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestSphereAnisotropic-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereAnisotropic )
+set_property(TEST ${MODULE_NAME}-TestSphereAnisotropic-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropic )
 
 #######
 # Test3
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRAS
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -128,7 +128,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRAS
 #######
 # Test3-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_anisotropicSurfaceRAS_motionField.mhd
                -b MIDAS{Sphere_anisotropicSurface_motionField.mhd.md5}
@@ -136,13 +136,13 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
                MIDAS_FETCH_ONLY{Sphere_anisotropicSurface_motionField.zraw.md5}
               )
 
-set_property(TEST ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRAS )
+set_property(TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS )
 
 #######
 # Test4
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceLPS
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -159,20 +159,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceLPS
 #######
 # Test4-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_anisotropicSurfaceLPS_motionField.mhd
                -b MIDAS{Sphere_anisotropicSurface_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_anisotropicSurface_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereAnisotropicSurfaceLPS )
+set_property(TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS )
 
 #######
 # Test5
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASDownsampled
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled
             ${PROJ_EXE}
                MIDAS{Sphere_fixedDownsampled.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -188,20 +188,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASDownsampled
 #######
 # Test5-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_anisotropicSurfaceRASDownsampled_motionField.mhd
                -b MIDAS{Sphere_anisotropicSurfaceDownsampled_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_anisotropicSurfaceDownsampled_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASDownsampled )
+set_property(TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled )
 
 #######
 # Test6
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereGaussian
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereGaussian
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -221,20 +221,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereGaussian
 #######
 # Test6-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereGaussian-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereGaussian-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_gaussian_motionField.mhd
                -b MIDAS{Sphere_gaussian_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_gaussian_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestSphereGaussian-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereGaussian )
+set_property(TEST ${MODULE_NAME}-TestSphereGaussian-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereGaussian )
 
 #######
 # Test7
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesNoReg
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestBoxesNoReg
             ${PROJ_EXE}
                MIDAS{Boxes_fixed.mhd.md5}
                MIDAS{Boxes_moving.mhd.md5}
@@ -249,20 +249,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesNoReg
 #######
 # Test7-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesNoReg-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestBoxesNoReg-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Boxes_noReg_motionField.mhd
                -b MIDAS{Boxes_noReg_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                 MIDAS_FETCH_ONLY{Boxes_noReg_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestBoxesNoReg-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestBoxesNoReg )
+set_property(TEST ${MODULE_NAME}-TestBoxesNoReg-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestBoxesNoReg )
 
 #######
 # Test8
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesAnisotropic
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestBoxesAnisotropic
             ${PROJ_EXE}
                MIDAS{Boxes_fixed.mhd.md5}
                MIDAS{Boxes_moving.mhd.md5}
@@ -280,20 +280,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesAnisotropic
 #######
 # Test8-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesAnisotropic-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestBoxesAnisotropic-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Boxes_anisotropic_motionField.mhd
                -b MIDAS{Boxes_anisotropic_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLLY{Boxes_anisotropic_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestBoxesAnisotropic-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestBoxesAnisotropic )
+set_property(TEST ${MODULE_NAME}-TestBoxesAnisotropic-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestBoxesAnisotropic )
 
 #######
 # Test9
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesGaussian
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestBoxesGaussian
             ${PROJ_EXE}
                MIDAS{Boxes_fixed.mhd.md5}
                MIDAS{Boxes_moving.mhd.md5}
@@ -312,20 +312,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesGaussian
 #######
 # Test9-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestBoxesGaussian-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestBoxesGaussian-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Boxes_gaussian_motionField.mhd
                -b MIDAS{Boxes_gaussian_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                 MIDAS_FETCH_ONLY{Boxes_gaussian_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestBoxesGaussian-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestBoxesGaussian )
+set_property(TEST ${MODULE_NAME}-TestBoxesGaussian-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestBoxesGaussian )
 
 #######
 # Test10
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereSparseAnisotropicSurfaceRAS
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -342,20 +342,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereSparseAnisotropicSurfaceRAS
 #######
 # Test10-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereSparseAnisotropicSurfaceRAS-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_sparseAnisotropicSurfaceRAS_motionField.mhd
                -b MIDAS{Sphere_sparseAnisotropicSurface_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_sparseAnisotropicSurface_motionField.zraw.md5}
              )
-set_property(TEST ${PROJECT_NAME}-TestSphereSparseAnisotropicSurfaceRAS-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereSparseAnisotropicSurfaceRAS )
+set_property(TEST ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS )
 
 #######
 # Test11
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicMultiresolution
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicMultiresolution
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -374,20 +374,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicMultiresolution
 #######
 # Test11-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicMultiresolution-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicMultiresolution-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_anisotropicMultiresolution_motionField.mhd
                -b MIDAS{Sphere_anisotropicMultiresolution_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_anisotropicMultiresolution_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestSphereAnisotropicMultiresolution-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereAnisotropicMultiresolution )
+set_property(TEST ${MODULE_NAME}-TestSphereAnisotropicMultiresolution-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicMultiresolution )
 
 #######
 # Test12
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution
             ${PROJ_EXE}
                MIDAS{Sphere_fixed.mhd.md5}
                MIDAS{Sphere_moving.mhd.md5}
@@ -403,20 +403,20 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution
 #######
 # Test12-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Sphere_anisotropicSurfaceRASMultiresolution_motionField.mhd
                -b MIDAS{Sphere_anisotropicSurfaceRASMultiresolution_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Sphere_anisotropicSurfaceRASMultiresolution_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution )
+set_property(TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution )
 
 #######
 # Test13
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestTubesSparseAnisotropic
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestTubesSparseAnisotropic
             ${PROJ_EXE}
                MIDAS{Tubes_fixed.mhd.md5}
                MIDAS{Tubes_moving.mhd.md5}
@@ -433,12 +433,12 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-TestTubesSparseAnisotropic
 #######
 # Test13-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-TestTubesSparseAnisotropic-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-TestTubesSparseAnisotropic-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/Tubes_anisotropic_motionField.mhd
                -b MIDAS{Tubes_anisotropic_motionField.mhd.md5}
                -i ${imageCompareTolerance}
                MIDAS_FETCH_ONLY{Tubes_anisotropic_motionField.zraw.md5}
               )
-set_property(TEST ${PROJECT_NAME}-TestTubesSparseAnisotropic-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-TestTubesSparseAnisotropic )
+set_property(TEST ${MODULE_NAME}-TestTubesSparseAnisotropic-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestTubesSparseAnisotropic )
