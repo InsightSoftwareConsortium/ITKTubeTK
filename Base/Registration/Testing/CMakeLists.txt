@@ -138,7 +138,7 @@ set( tubeBaseRegistrationFilters_LIBS
 if( TubeTK_USE_VTK )
   set( tubeBaseRegistrationFilters_LIBS
     ${tubeBaseRegistrationFilters_LIBS}
-    vtkCommon vtkGraphics vtkIO
+    ${VTK_LIBRARIES}
     )
 endif()
 target_link_libraries( ${tubeBaseRegistrationFilters_LIBS} )

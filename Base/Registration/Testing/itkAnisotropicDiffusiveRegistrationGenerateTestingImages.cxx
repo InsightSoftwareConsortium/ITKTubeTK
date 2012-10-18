@@ -39,6 +39,7 @@ limitations under the License.
 #include "vtkDensifyPolyData.h"
 #include "vtkSmoothPolyDataFilter.h"
 #include "vtkPolyDataNormals.h"
+#include "vtkVersion.h"
 
 #include <math.h>
 
@@ -256,12 +257,21 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
   bottomCube->Update();
 
   vtkAppendPolyData * append = vtkAppendPolyData::New();
+#if VTK_MAJOR_VERSION > 5
+  append->AddInputData( topCube->GetOutput() );
+  append->AddInputData( bottomCube->GetOutput() );
+#else
   append->AddInput( topCube->GetOutput() );
   append->AddInput( bottomCube->GetOutput() );
+#endif
   append->Update();
 
   vtkDensifyPolyData * densify = vtkDensifyPolyData::New();
+#if VTK_MAJOR_VERSION > 5
+  densify->AddInputData( append->GetOutput() );
+#else
   densify->AddInput( append->GetOutput() );
+#endif
   densify->SetNumberOfSubdivisions( 6 );
   densify->Update();
 
@@ -594,12 +604,20 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     vtkPolyDataNormals * normalsFilter = vtkPolyDataNormals::New();
     normalsFilter->ComputePointNormalsOn();
     normalsFilter->ComputeCellNormalsOff();
+#if VTK_MAJOR_VERSION > 5
+    normalsFilter->SetInputData( border );
+#else
     normalsFilter->SetInput( border );
+#endif
     normalsFilter->Update();
 
     vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
     polyWriter->SetFileName( argv[3] );
+#if VTK_MAJOR_VERSION > 5
+    polyWriter->SetInputData( normalsFilter->GetOutput() );
+#else
     polyWriter->SetInput( normalsFilter->GetOutput() );
+#endif
     polyWriter->Write();
     }
   else if ( geometry == tubes )
