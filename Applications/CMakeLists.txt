@@ -27,6 +27,9 @@ if( NOT TubeTK_USE_ITKV4 )
   add_subdirectory( CLI )
   add_subdirectory( MetaImageImporter )
   add_subdirectory( DICOMSeriesConverter )
+  if ( TubeTK_BUILD_SLICER_EXTENSION )
+    add_subdirectory( SpatialObjectsLoadable )
+  endif( TubeTK_BUILD_SLICER_EXTENSION )
 
 endif( NOT TubeTK_USE_ITKV4 )
 
