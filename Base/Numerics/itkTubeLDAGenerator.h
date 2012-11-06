@@ -84,6 +84,13 @@ public:
   //
   void SetFeatureImage( typename ImageType::Pointer img );
   void AddFeatureImage( typename ImageType::Pointer img );
+
+  void UpdateWhitenFeatureImageStats( unsigned int num );
+  void WhitenFeatureImage( unsigned int num );
+  void SetWhitenFeatureImageMean( unsigned int num, double mean );
+  double GetWhitenFeatureImageMean( unsigned int num );
+  void SetWhitenFeatureImageStdDev( unsigned int num, double stdDev );
+  double GetWhitenFeatureImageStdDev( unsigned int num );
   virtual typename ImageType::Pointer GetFeatureImage( unsigned int num );
   ImageListType * GetFeatureImageList();
 
@@ -155,6 +162,9 @@ private:
 
   //  Data
   FeatureVectorType               m_FeatureVector;
+
+  FeatureVectorType               m_WhitenFeatureImageMean;
+  FeatureVectorType               m_WhitenFeatureImageStdDev;
 
   bool                            m_PerformLDA;
   bool                            m_PerformPCA;
