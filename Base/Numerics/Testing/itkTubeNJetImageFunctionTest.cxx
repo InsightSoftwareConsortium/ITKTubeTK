@@ -100,7 +100,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
     std::cerr << "Max = " << func->GetMax() << " != " << maxI << std::endl;
     }
 
-  double scale = 4.0;
+  double scale = 0.5;
 
   FunctionType::VectorType v1, v2, d;
   v1.Fill( 0 );
@@ -252,25 +252,31 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 21:
         {
-        val = func->Ridgeness( pnt, v1, scale );
+        val = func->Ridgeness( pnt, scale );
+        val = func->GetMostRecentRidgeLevelness();
         outIter.Set( val );
         break;
         }
       case 22:
         {
-        val = func->Ridgeness( pnt, v1, v2, scale );
+        val = func->Ridgeness( pnt, scale );
+        val = func->GetMostRecentRidgeRoundness();
         outIter.Set( val );
         break;
         }
       case 23:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
+        val = func->Ridgeness( pnt, scale );
+        val = func->GetMostRecentRidgeCurvature();
         outIter.Set( val );
         break;
         }
       case 24:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, scale );
+        val = func->Ridgeness( pnt, scale );
+        val *= func->GetMostRecentRidgeLevelness();
+        val *= func->GetMostRecentRidgeRoundness();
+        val *= func->GetMostRecentRidgeCurvature();
         outIter.Set( val );
         break;
         }
