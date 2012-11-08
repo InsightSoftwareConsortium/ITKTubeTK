@@ -132,7 +132,7 @@ endif()
 # MSVC setup
 if( WIN32 )
   add_definitions( -D_SCL_SECURE_NO_WARNINGS )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED )
+  if( NOT CMAKE_FIRST_PASS_COMPLETED AND "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP"
          CACHE STRING "Flags used by all build types" FORCE )
   endif()
