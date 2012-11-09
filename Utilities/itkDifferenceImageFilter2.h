@@ -149,7 +149,7 @@ private:
 # include "Templates/itkDifferenceImageFilter2+-.h"
 #endif
 
-#if ITK_TEMPLATE_TXX
+#ifndef ITK_MANUAL_INSTANTIATION
 # include "itkDifferenceImageFilter2.txx"
 #endif
 

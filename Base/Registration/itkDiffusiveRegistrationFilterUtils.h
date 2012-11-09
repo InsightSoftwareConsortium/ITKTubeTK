@@ -361,7 +361,7 @@ struct FaceStruct
 # include "Templates/itkDiffusiveRegistrationFilterUtils+-.h"
 #endif
 
-#if ITK_TEMPLATE_TXX
+#ifndef ITK_MANUAL_INSTANTIATION
 # include "itkDiffusiveRegistrationFilterUtils.txx"
 #endif
 

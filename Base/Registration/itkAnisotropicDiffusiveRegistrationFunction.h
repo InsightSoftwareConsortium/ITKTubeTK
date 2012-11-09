@@ -374,7 +374,7 @@ private:
 # include "Templates/itkAnisotropicDiffusiveRegistrationFunction+-.h"
 #endif
 
-#if ITK_TEMPLATE_TXX
+#ifndef ITK_MANUAL_INSTANTIATION
 # include "itkAnisotropicDiffusiveRegistrationFunction.txx"
 #endif
 

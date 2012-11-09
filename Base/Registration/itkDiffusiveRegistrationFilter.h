@@ -887,7 +887,7 @@ private:
 # include "Templates/itkDiffusiveRegistrationFilter+-.h"
 #endif
 
-#if ITK_TEMPLATE_TXX
+#ifndef ITK_MANUAL_INSTANTIATION
 # include "itkDiffusiveRegistrationFilter.txx"
 #endif
 
