@@ -93,10 +93,10 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
   ImageType::Pointer maskImage = maskReader->GetOutput();
 
   FilterType::NJetScalesType scales(2);
-  scales[0] = 0.5;
-  scales[1] = 2;
+  scales[0] = 1;
+  scales[1] = 4;
   FilterType::NJetScalesType scales2(1);
-  scales2[0] = 3;
+  scales2[0] = 2;
   FilterType::Pointer filter = FilterType::New();
   filter->SetNJetImage( inputImage );
   filter->SetLabelmap( maskImage );

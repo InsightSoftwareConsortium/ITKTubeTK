@@ -87,9 +87,9 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
 
   func->ComputeStatistics();
   func->SetUseProjection( false );
-  double minI = 0;
-  double maxI = 255;
-  if( func->GetMin() != 0 )
+  double minI = 126;
+  double maxI = 160;
+  if( func->GetMin() != minI )
     {
     error = true;
     std::cerr << "Min = " << func->GetMin() << " != " << minI << std::endl;
@@ -100,7 +100,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
     std::cerr << "Max = " << func->GetMax() << " != " << maxI << std::endl;
     }
 
-  double scale = 0.5;
+  double scale = 1;
 
   FunctionType::VectorType v1, v2, d;
   v1.Fill( 0 );

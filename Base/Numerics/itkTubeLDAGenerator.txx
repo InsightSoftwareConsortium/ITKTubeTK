@@ -52,8 +52,8 @@ LDAGenerator< ImageT, LabelmapT >
   m_PerformPCA = false;
 
   m_FeatureImageList.clear();
-  m_WhitenFeatureImageMean.set_size( 0 );
-  m_WhitenFeatureImageStdDev.set_size( 0 );
+  m_WhitenFeatureImageMean.clear();
+  m_WhitenFeatureImageStdDev.clear();
 
   m_Labelmap = NULL;
 
@@ -83,8 +83,8 @@ LDAGenerator< ImageT, LabelmapT >
 ::SetFeatureImage( typename ImageType::Pointer img )
 {
   m_FeatureImageList.clear();
-  m_WhitenFeatureImageMean.set_size( 0 );
-  m_WhitenFeatureImageStdDev.set_size( 0 );
+  m_WhitenFeatureImageMean.clear();
+  m_WhitenFeatureImageStdDev.clear();
   m_FeatureImageList.push_back( img );
 }
 
@@ -112,6 +112,14 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
+typename LDAGenerator< ImageT, LabelmapT >::ImageListType *
+LDAGenerator< ImageT, LabelmapT >
+::GetFeatureImageList( void )
+{
+  return & m_FeatureImageList;
+}
+
+template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
 ::UpdateWhitenFeatureImageStats( unsigned int num )
@@ -122,8 +130,8 @@ LDAGenerator< ImageT, LabelmapT >
     {
     if( m_WhitenFeatureImageMean.size() != numFeatures )
       {
-      m_WhitenFeatureImageMean.set_size( numFeatures );
-      m_WhitenFeatureImageStdDev.set_size( numFeatures );
+      m_WhitenFeatureImageMean.resize( numFeatures );
+      m_WhitenFeatureImageStdDev.resize( numFeatures );
       for( unsigned int i=0; i<numFeatures; i++ )
         {
         m_WhitenFeatureImageMean[i] = 0;
@@ -285,6 +293,38 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
+::SetWhitenMeans( const ValueListType & means )
+{
+  m_WhitenFeatureImageMean = means;
+}
+
+template < class ImageT, class LabelmapT >
+const typename LDAGenerator< ImageT, LabelmapT >::ValueListType &
+LDAGenerator< ImageT, LabelmapT >
+::GetWhitenMeans( void ) const
+{
+  return m_WhitenFeatureImageMean;
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::SetWhitenStdDevs( const ValueListType & stdDevs )
+{
+  m_WhitenFeatureImageStdDev = stdDevs;
+}
+
+template < class ImageT, class LabelmapT >
+const typename LDAGenerator< ImageT, LabelmapT >::ValueListType &
+LDAGenerator< ImageT, LabelmapT >
+::GetWhitenStdDevs( void ) const
+{
+  return m_WhitenFeatureImageStdDev;
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
 ::SetWhitenFeatureImageMean( unsigned int num, double mean )
 {
   if( num < m_WhitenFeatureImageMean.size() )
@@ -340,14 +380,6 @@ LDAGenerator< ImageT, LabelmapT >
 ::GetNumberOfFeatures( void )
 {
   return m_FeatureImageList.size();
-}
-
-template < class ImageT, class LabelmapT >
-typename LDAGenerator< ImageT, LabelmapT >::ImageListType *
-LDAGenerator< ImageT, LabelmapT >
-::GetFeatureImageList( void )
-{
-  return & m_FeatureImageList;
 }
 
 template < class ImageT, class LabelmapT >
@@ -807,8 +839,6 @@ LDAGenerator< ImageT, LabelmapT >
         }
       }
 
-    std::cout << "Num classes = " << numClasses << std::endl;
-    std::cout << "Num features = " << numFeatures << std::endl;
     for( unsigned int i=0; i<numFeatures; i++ )
       {
       for( unsigned int j=0; j<numFeatures; j++ )
