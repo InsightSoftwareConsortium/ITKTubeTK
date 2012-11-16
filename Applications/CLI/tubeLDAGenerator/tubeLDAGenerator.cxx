@@ -95,10 +95,13 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
-  inMaskReader->SetFileName( labelmap.c_str() );
-  inMaskReader->Update();
-  ldaGenerator->SetLabelmap( inMaskReader->GetOutput() );
+  if( labelmap.size() > 0 )
+    {
+    typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
+    inMaskReader->SetFileName( labelmap.c_str() );
+    inMaskReader->Update();
+    ldaGenerator->SetLabelmap( inMaskReader->GetOutput() );
+    }
 
   timeCollector.Stop( "LoadData" );
 
@@ -125,6 +128,8 @@ int DoIt( int argc, char * argv[] )
 
     ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
     ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
+    ldaGenerator->SetWhitenMeans( ldaReader.GetWhitenMeans() );
+    ldaGenerator->SetWhitenStdDevs( ldaReader.GetWhitenStdDevs() );
 
     timeCollector.Stop( "LoadLDA" );
     }
@@ -170,7 +175,9 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "SaveLDA" );
     itk::tube::MetaLDA ldaWriter( ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix() );
+      ldaGenerator->GetLDAMatrix(),
+      ldaGenerator->GetWhitenMeans(),
+      ldaGenerator->GetWhitenStdDevs() );
     ldaWriter.Write( saveLDAInfo.c_str() );
     timeCollector.Stop( "SaveLDA" );
     }

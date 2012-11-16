@@ -48,7 +48,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
                --objectId 0,255
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mlda
                MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large.mha.md5}
-               MIDAS{GDS0015_Large.mha.md5}
+               --labelmap MIDAS{GDS0015_Large.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test1 )
 
 #######
@@ -71,7 +71,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
                --objectId 0,255
                --usePCA
                MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large.mha.md5}
-               MIDAS{GDS0015_Large.mha.md5}
+               --labelmap MIDAS{GDS0015_Large.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test2 )
 
 #######
@@ -95,7 +95,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
                --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mlda
                --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test3.mlda
                MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large.mha.md5}
-               MIDAS{GDS0015_Large.mha.md5}
+               --labelmap MIDAS{GDS0015_Large.mha.md5}
                ${TEMP}/${PROJECT_NAME}Test3 )
 set_property(TEST ${PROJECT_NAME}-Test3
                       APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
