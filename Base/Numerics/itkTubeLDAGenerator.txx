@@ -52,6 +52,8 @@ LDAGenerator< ImageT, LabelmapT >
   m_PerformPCA = false;
 
   m_FeatureImageList.clear();
+  m_WhitenFeatureImageMean.clear();
+  m_WhitenFeatureImageStdDev.clear();
 
   m_Labelmap = NULL;
 
@@ -81,6 +83,8 @@ LDAGenerator< ImageT, LabelmapT >
 ::SetFeatureImage( typename ImageType::Pointer img )
 {
   m_FeatureImageList.clear();
+  m_WhitenFeatureImageMean.clear();
+  m_WhitenFeatureImageStdDev.clear();
   m_FeatureImageList.push_back( img );
 }
 
@@ -108,19 +112,274 @@ LDAGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-unsigned int
-LDAGenerator< ImageT, LabelmapT >
-::GetNumberOfFeatures( void )
-{
-  return m_FeatureImageList.size();
-}
-
-template < class ImageT, class LabelmapT >
 typename LDAGenerator< ImageT, LabelmapT >::ImageListType *
 LDAGenerator< ImageT, LabelmapT >
 ::GetFeatureImageList( void )
 {
   return & m_FeatureImageList;
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::UpdateWhitenFeatureImageStats( unsigned int num )
+{
+  unsigned int numFeatures = this->GetNumberOfFeatures();
+
+  if( num < numFeatures )
+    {
+    if( m_WhitenFeatureImageMean.size() != numFeatures )
+      {
+      m_WhitenFeatureImageMean.resize( numFeatures );
+      m_WhitenFeatureImageStdDev.resize( numFeatures );
+      for( unsigned int i=0; i<numFeatures; i++ )
+        {
+        m_WhitenFeatureImageMean[i] = 0;
+        m_WhitenFeatureImageStdDev[i] = 1;
+        }
+      }
+    double imVal = 0;
+    double imMean = 0;
+    double imStdDev = 0;
+    unsigned int imCount = 0;
+    if( m_Labelmap.IsNotNull() )
+      {
+      unsigned int numClasses = this->GetNumberOfObjectIds();
+
+      typedef itk::ImageRegionIteratorWithIndex< ImageT >
+        ImageIteratorType;
+      ImageIteratorType itIm( m_FeatureImageList[num],
+        m_FeatureImageList[num]->GetLargestPossibleRegion() );
+
+      typedef itk::ImageRegionConstIterator< MaskImageType >
+        ConstMaskImageIteratorType;
+      ConstMaskImageIteratorType itInMask( m_Labelmap,
+        m_Labelmap->GetLargestPossibleRegion() );
+
+      double prevNotFound = 999999;
+      while( !itIm.IsAtEnd() )
+        {
+        ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+        bool found = false;
+        if( val != prevNotFound )
+          {
+          for( unsigned int c=0; c<numClasses; c++ )
+            {
+            if( val == m_ObjectIdList[c] )
+              {
+              found = true;
+              break;
+              }
+            }
+          }
+        if( !found )
+          {
+          prevNotFound = val;
+          }
+        else
+          {
+          imVal = itIm.Get();
+          imMean += imVal;
+          imStdDev += ( imVal * imVal );
+          ++imCount;
+          }
+        ++itIm;
+        ++itInMask;
+        }
+      }
+    else
+      {
+      typedef itk::ImageRegionIteratorWithIndex< ImageT >
+        ImageIteratorType;
+      ImageIteratorType itIm( m_FeatureImageList[num],
+        m_FeatureImageList[num]->GetLargestPossibleRegion() );
+
+      while( !itIm.IsAtEnd() )
+        {
+        imVal = itIm.Get();
+        imMean += imVal;
+        imStdDev += (imVal * imVal);
+        ++imCount;
+        ++itIm;
+        }
+      }
+
+    imMean /= imCount;
+    imStdDev = vcl_sqrt( ( imStdDev / imCount ) - ( imMean * imMean ) );
+
+    m_WhitenFeatureImageMean[num] = imMean;
+    m_WhitenFeatureImageStdDev[num] = imStdDev;
+
+    }
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::WhitenFeatureImage( unsigned int num )
+{
+  unsigned int numFeatures = this->GetNumberOfFeatures();
+
+  if( num < numFeatures && m_WhitenFeatureImageMean.size() == numFeatures )
+    {
+    double imVal = 0;
+    double imMean = m_WhitenFeatureImageMean[num];
+    double imStdDev = m_WhitenFeatureImageStdDev[num];
+    if( imStdDev == 0 )
+      {
+      imStdDev = 1;
+      }
+
+    if( m_Labelmap.IsNotNull() )
+      {
+      unsigned int numClasses = this->GetNumberOfObjectIds();
+
+      typedef itk::ImageRegionIteratorWithIndex< ImageT >
+        ImageIteratorType;
+      ImageIteratorType itIm( m_FeatureImageList[num],
+        m_FeatureImageList[num]->GetLargestPossibleRegion() );
+
+      typedef itk::ImageRegionConstIterator< MaskImageType >
+        ConstMaskImageIteratorType;
+      ConstMaskImageIteratorType itInMask( m_Labelmap,
+        m_Labelmap->GetLargestPossibleRegion() );
+
+      double prevNotFound = 999999;
+      while( !itIm.IsAtEnd() )
+        {
+        ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+        bool found = false;
+        if( val != prevNotFound )
+          {
+          for( unsigned int c=0; c<numClasses; c++ )
+            {
+            if( val == m_ObjectIdList[c] )
+              {
+              found = true;
+              break;
+              }
+            }
+          }
+        if( !found )
+          {
+          prevNotFound = val;
+          }
+        else
+          {
+          imVal = itIm.Get();
+          itIm.Set( (imVal - imMean) / imStdDev );
+          }
+        ++itIm;
+        ++itInMask;
+        }
+      }
+    else
+      {
+      typedef itk::ImageRegionIteratorWithIndex< ImageT >
+        ImageIteratorType;
+      ImageIteratorType itIm( m_FeatureImageList[num],
+        m_FeatureImageList[num]->GetLargestPossibleRegion() );
+
+      while( !itIm.IsAtEnd() )
+        {
+        imVal = itIm.Get();
+        itIm.Set( (imVal - imMean) / imStdDev );
+        ++itIm;
+        }
+      }
+    }
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::SetWhitenMeans( const ValueListType & means )
+{
+  m_WhitenFeatureImageMean = means;
+}
+
+template < class ImageT, class LabelmapT >
+const typename LDAGenerator< ImageT, LabelmapT >::ValueListType &
+LDAGenerator< ImageT, LabelmapT >
+::GetWhitenMeans( void ) const
+{
+  return m_WhitenFeatureImageMean;
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::SetWhitenStdDevs( const ValueListType & stdDevs )
+{
+  m_WhitenFeatureImageStdDev = stdDevs;
+}
+
+template < class ImageT, class LabelmapT >
+const typename LDAGenerator< ImageT, LabelmapT >::ValueListType &
+LDAGenerator< ImageT, LabelmapT >
+::GetWhitenStdDevs( void ) const
+{
+  return m_WhitenFeatureImageStdDev;
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::SetWhitenFeatureImageMean( unsigned int num, double mean )
+{
+  if( num < m_WhitenFeatureImageMean.size() )
+    {
+    m_WhitenFeatureImageMean[num] = mean;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+double
+LDAGenerator< ImageT, LabelmapT >
+::GetWhitenFeatureImageMean( unsigned int num )
+{
+  if( num < m_WhitenFeatureImageMean.size() )
+    {
+    return m_WhitenFeatureImageMean[num];
+    }
+  else
+    {
+    return 0;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+void
+LDAGenerator< ImageT, LabelmapT >
+::SetWhitenFeatureImageStdDev( unsigned int num, double stdDev )
+{
+  if( num < m_WhitenFeatureImageStdDev.size() )
+    {
+    m_WhitenFeatureImageStdDev[num] = stdDev;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+double
+LDAGenerator< ImageT, LabelmapT >
+::GetWhitenFeatureImageStdDev( unsigned int num )
+{
+  if( num < m_WhitenFeatureImageStdDev.size() )
+    {
+    return m_WhitenFeatureImageStdDev[num];
+    }
+  else
+    {
+    return 1;
+    }
+}
+
+template < class ImageT, class LabelmapT >
+unsigned int
+LDAGenerator< ImageT, LabelmapT >
+::GetNumberOfFeatures( void )
+{
+  return m_FeatureImageList.size();
 }
 
 template < class ImageT, class LabelmapT >
@@ -327,19 +586,28 @@ LDAGenerator< ImageT, LabelmapT >
         ConstMaskImageIteratorType;
       ConstMaskImageIteratorType itInMask( m_Labelmap,
         m_Labelmap->GetLargestPossibleRegion() );
+      double prevNotFound = 999999;
       while( !itLDAIm.IsAtEnd() )
         {
         ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
         bool found = false;
-        for( unsigned int c=0; c<numClasses; c++ )
+        if( val != prevNotFound )
           {
-          if( val == m_ObjectIdList[c] )
+          for( unsigned int c=0; c<numClasses; c++ )
             {
-            found = true;
-            break;
+            if( val == m_ObjectIdList[c] )
+              {
+              found = true;
+              break;
+              }
             }
           }
-        if( found )
+        if( !found )
+          {
+          prevNotFound = val;
+          itLDAIm.Set( 0 );
+          }
+        else
           {
           ContinuousIndexType indx = itLDAIm.GetIndex();
           v = this->GetFeatureVector( indx );
@@ -347,10 +615,6 @@ LDAGenerator< ImageT, LabelmapT >
           vLDA = v * m_LDAMatrix;
 
           itLDAIm.Set( vLDA[ ldaNum ] );
-          }
-        else
-          {
-          itLDAIm.Set( 0 );
           }
         ++itLDAIm;
         ++itInMask;
@@ -462,23 +726,31 @@ LDAGenerator< ImageT, LabelmapT >
   ObjectCovarianceType globalSumOfSquares( numFeatures, numFeatures );
   globalSumOfSquares.fill( 0 );
 
+  double prevNotFound = 999999;
   itInMask.GoToBegin();
   while( !itInMask.IsAtEnd() )
     {
     ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
     unsigned int valC = 0;
     bool found = false;
-    for( unsigned int c=0; c<numClasses; c++ )
+    if( val != prevNotFound )
       {
-      if( val == m_ObjectIdList[c] )
+      for( unsigned int c=0; c<numClasses; c++ )
         {
-        valC = c;
-        found = true;
-        break;
+        if( val == m_ObjectIdList[c] )
+          {
+          valC = c;
+          found = true;
+          break;
+          }
         }
       }
 
-    if( found )
+    if( !found )
+      {
+      prevNotFound = val;
+      }
+    else
       {
       ContinuousIndexType indx = itInMask.GetIndex();
       LDAValuesType v = this->GetFeatureVector( indx );
@@ -488,8 +760,8 @@ LDAGenerator< ImageT, LabelmapT >
         sumList[valC][i] += v[i];
         for( unsigned int j=0; j<numFeatures; j++ )
           {
-          globalSumOfSquares[i][j] += v[i] * v[j];
-          sumOfSquaresList[valC][i][j] += v[i]*v[j];
+          globalSumOfSquares[i][j] += (v[i] * v[j]);
+          sumOfSquaresList[valC][i][j] += (v[i] * v[j]);
           }
         }
       ++globalCount;
@@ -567,8 +839,6 @@ LDAGenerator< ImageT, LabelmapT >
         }
       }
 
-    std::cout << "Num classes = " << numClasses << std::endl;
-    std::cout << "Num features = " << numFeatures << std::endl;
     for( unsigned int i=0; i<numFeatures; i++ )
       {
       for( unsigned int j=0; j<numFeatures; j++ )

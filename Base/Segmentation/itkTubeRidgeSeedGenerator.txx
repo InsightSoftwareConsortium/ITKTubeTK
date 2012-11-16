@@ -83,7 +83,7 @@ unsigned int
 RidgeSeedGenerator< ImageT, LabelmapT >
 ::GetNumberOfFeatures( void )
 {
-  unsigned int numFeatures = m_Scales.size() * (ImageDimension+3);
+  unsigned int numFeatures = m_Scales.size() * (ImageDimension+6);
 
   return numFeatures;
 }
@@ -175,9 +175,9 @@ RidgeSeedGenerator< ImageT, LabelmapT >
             ( tf >= m_IntensityMin && tf <= m_IntensityMax ) )
           {
           typename RidgeImageType::IndexType indx = iter.GetIndex();
+          unsigned int fcount = 0;
           for( unsigned int s=0; s<m_Scales.size(); s++ )
             {
-            unsigned int fcount = 0;
             double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
             this->m_FeatureImageList[ fcount++ ]->
               SetPixel( indx, njet->GetMostRecentIntensity() );
@@ -197,6 +197,12 @@ RidgeSeedGenerator< ImageT, LabelmapT >
               }
             this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
               ridgeness );
+            this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
+              njet->GetMostRecentRidgeRoundness() );
+            this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
+              njet->GetMostRecentRidgeLevelness() );
+            this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
+              njet->GetMostRecentRidgeCurvature() );
             }
           }
         }
@@ -215,9 +221,9 @@ RidgeSeedGenerator< ImageT, LabelmapT >
           ( tf >= m_IntensityMin && tf <= m_IntensityMax ) )
         {
         typename RidgeImageType::IndexType indx = iter.GetIndex();
+        unsigned int fcount = 0;
         for( unsigned int s=0; s<m_Scales.size(); s++ )
           {
-          unsigned int fcount = 0;
           double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
           this->m_FeatureImageList[ fcount++ ]->
             SetPixel( indx, njet->GetMostRecentIntensity() );
@@ -229,19 +235,29 @@ RidgeSeedGenerator< ImageT, LabelmapT >
             }
           this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, dMag );
           m = njet->GetMostRecentHessian();
-          vnl_symmetric_eigensystem< double > eigSys( m.GetVnlMatrix() );
+          LDAMatrixType eVects;
+          LDAVectorType eVals;
+          ::tube::Eigen<double>( m.GetVnlMatrix().as_ref(),
+             eVects, eVals, false, true );
           for( unsigned int d=0; d<ImageDimension; d++ )
             {
             this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-              eigSys.get_eigenvalue( d ) );
+              eVals[d] );
             }
           this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
             ridgeness );
+          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
+            njet->GetMostRecentRidgeRoundness() );
+          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
+            njet->GetMostRecentRidgeLevelness() );
+          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
+            njet->GetMostRecentRidgeCurvature() );
           }
         }
       ++iter;
       }
     }
+
 }
 
 template < class ImageT, class LabelmapT >
@@ -275,6 +291,13 @@ RidgeSeedGenerator< ImageT, LabelmapT >
 {
   this->GenerateFeatureImages();
 
+  unsigned int numFeatures = this->GetNumberOfFeatures();
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    this->UpdateWhitenFeatureImageStats( i );
+    this->WhitenFeatureImage( i );
+    }
+
   Superclass::Update();
 }
 
@@ -284,6 +307,12 @@ RidgeSeedGenerator< ImageT, LabelmapT >
 ::UpdateLDAImages( void )
 {
   this->GenerateFeatureImages();
+
+  unsigned int numFeatures = this->GetNumberOfFeatures();
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    this->WhitenFeatureImage( i );
+    }
 
   Superclass::UpdateLDAImages();
 }

@@ -40,6 +40,8 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
 
   vnl_vector< double > v(3);
   vnl_matrix< double > m(3, 3);
+  std::vector< double > wm(3);
+  std::vector< double > ws(3);
   v[0] = 1;
   v[1] = 2;
   v[2] = 3;
@@ -52,11 +54,20 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
   m(2,0) = 7;
   m(2,1) = 8;
   m(2,2) = 9;
+  wm[0] = 1;
+  wm[1] = 2;
+  wm[2] = 3;
+  ws[0] = 3;
+  ws[1] = 2;
+  ws[2] = 1;
 
   itk::tube::MetaLDA mlda1;
   mlda1.SetLDAValues( v );
   mlda1.SetLDAMatrix( m );
-  if( mlda1.GetLDAValues() != v || mlda1.GetLDAMatrix() != m )
+  mlda1.SetWhitenMeans( wm );
+  mlda1.SetWhitenStdDevs( ws );
+  if( mlda1.GetLDAValues() != v || mlda1.GetLDAMatrix() != m
+      || mlda1.GetWhitenMeans() != wm || mlda1.GetWhitenStdDevs() != ws )
     {
     std::cout << "LDA values don't match after set"
       << std::endl;
@@ -66,6 +77,8 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
 
   itk::tube::MetaLDA mlda2( mlda1 );
   if( mlda2.GetLDAValues() != mlda1.GetLDAValues() ||
+    mlda2.GetWhitenMeans() != mlda1.GetWhitenMeans() ||
+    mlda2.GetWhitenStdDevs() != mlda1.GetWhitenStdDevs() ||
     mlda2.GetLDAMatrix() != mlda1.GetLDAMatrix() )
     {
     std::cout << "LDA values don't match after copy constructor"
@@ -73,8 +86,10 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::MetaLDA mlda3( v, m );
+  itk::tube::MetaLDA mlda3( v, m, wm, ws );
   if( mlda3.GetLDAValues() != mlda1.GetLDAValues() ||
+    mlda3.GetWhitenMeans() != mlda1.GetWhitenMeans() ||
+    mlda3.GetWhitenStdDevs() != mlda1.GetWhitenStdDevs() ||
     mlda3.GetLDAMatrix() != mlda1.GetLDAMatrix() )
     {
     std::cout << "LDA values don't match after explicit constructor"
@@ -86,6 +101,8 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
 
   itk::tube::MetaLDA mlda4( argv[1] );
   if( mlda4.GetLDAValues() != mlda1.GetLDAValues() ||
+    mlda4.GetWhitenMeans() != mlda1.GetWhitenMeans() ||
+    mlda4.GetWhitenStdDevs() != mlda1.GetWhitenStdDevs() ||
     mlda4.GetLDAMatrix() != mlda1.GetLDAMatrix() )
     {
     std::cout << "LDA values don't match after write/read constructor"
@@ -94,8 +111,10 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
     }
 
   itk::tube::MetaLDA mlda5;
-  mlda5.InitializeEssential( v, m );
+  mlda5.InitializeEssential( v, m, wm, ws );
   if( mlda5.GetLDAValues() != mlda1.GetLDAValues() ||
+    mlda5.GetWhitenMeans() != mlda1.GetWhitenMeans() ||
+    mlda5.GetWhitenStdDevs() != mlda1.GetWhitenStdDevs() ||
     mlda5.GetLDAMatrix() != mlda1.GetLDAMatrix() )
     {
     std::cout << "LDA values don't match after InitializeEssential"
@@ -112,6 +131,8 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
 
   mlda5.Read( argv[1] );
   if( mlda5.GetLDAValues() != mlda1.GetLDAValues() ||
+    mlda5.GetWhitenMeans() != mlda1.GetWhitenMeans() ||
+    mlda5.GetWhitenStdDevs() != mlda1.GetWhitenStdDevs() ||
     mlda5.GetLDAMatrix() != mlda1.GetLDAMatrix() )
     {
     std::cout << "LDA values don't match after read"

@@ -102,11 +102,14 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
   func->SetRidgeImage( inputImage );
   func->SetLabelmap( maskImage );
 
-  FunctionType::RidgeScalesType scales(1);
-  scales[0] = 0.18;
+  FunctionType::RidgeScalesType scales(2);
+  scales[0] = 0.5;
+  scales[1] = 1.5;
+  //scales[2] = 3.0;
+  //scales[3] = 6.0;
   func->SetScales( scales );
 
-  func->SetIntensityRange( 120, 2000 );
+  //func->SetIntensityRange( 140, 2000 );
   func->SetLabelmap( maskImage );
   func->SetObjectId( 255 );
   func->AddObjectId( 127 );

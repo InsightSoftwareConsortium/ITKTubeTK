@@ -87,7 +87,9 @@ public:
       const NJetScalesType & _secondScales,
       const NJetScalesType & _ridgeScales,
       const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix );
+      const LDAMatrixType & _ldaMatrix,
+      const ValueListType & _whitenMeans,
+      const ValueListType & _whitenStdDevs);
 
   ~MetaNJetLDA( void );
 
@@ -104,7 +106,9 @@ public:
     const NJetScalesType & _secondScales,
     const NJetScalesType & _ridgeScales,
     const LDAValuesType & _ldaValues,
-    const LDAMatrixType & _ldaMatrix );
+    const LDAMatrixType & _ldaMatrix,
+    const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs);
 
   //
   //
