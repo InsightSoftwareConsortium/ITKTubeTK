@@ -83,7 +83,9 @@ MetaNJetLDA(
   const NJetScalesType & _secondScales,
   const NJetScalesType & _ridgeScales,
   const LDAValuesType & _ldaValues,
-  const LDAMatrixType & _ldaMatrix )
+  const LDAMatrixType & _ldaMatrix,
+  const ValueListType & _whitenMeans,
+  const ValueListType & _whitenStdDevs )
 {
   if( META_DEBUG )
    {
@@ -93,7 +95,7 @@ MetaNJetLDA(
   Clear();
 
   InitializeEssential( _zeroScales, _firstScales, _secondScales,
-    _ridgeScales, _ldaValues, _ldaMatrix );
+    _ridgeScales, _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs );
 }
 
 //
@@ -162,14 +164,17 @@ InitializeEssential(
   const NJetScalesType & _secondScales,
   const NJetScalesType & _ridgeScales,
   const LDAValuesType & _ldaValues,
-  const LDAMatrixType & _ldaMatrix )
+  const LDAMatrixType & _ldaMatrix,
+  const ValueListType & _whitenMeans,
+  const ValueListType & _whitenStdDevs )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaNJetLDA: Initialize" << METAIO_STREAM::endl;
     }
 
-  MetaLDA::InitializeEssential( _ldaValues, _ldaMatrix );
+  MetaLDA::InitializeEssential( _ldaValues, _ldaMatrix, _whitenMeans,
+    _whitenStdDevs );
 
   SetZeroScales( _zeroScales );
   SetFirstScales( _firstScales );
@@ -417,7 +422,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   m_ReadStream = NULL;
 
   InitializeEssential( m_ZeroScales, m_FirstScales, m_SecondScales,
-    m_RidgeScales, m_LDAValues, m_LDAMatrix );
+    m_RidgeScales, m_LDAValues, m_LDAMatrix, m_WhitenMeans, m_WhitenStdDevs );
 
   return true;
 }
