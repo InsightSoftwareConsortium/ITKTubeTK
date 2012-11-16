@@ -183,13 +183,12 @@ MIDAS_ADD_TEST( itkTubeTubeExtractorTest
     MIDAS{Branch-truth.tre.md5}
   )
 
-# Keep this test commented out until we upload the baseline
-#MIDAS_ADD_TEST( itkTubeRidgeSeedGeneratorTest
-#  ${BASE_SEGMENTATION_TESTS}
-#  --compare MIDAS{itkTubeRidgeSeedGeneratorTest.lda00.mha.md5}
-#    ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
-#  itkTubeRidgeSeedGeneratorTest
-#    MIDAS{im0001.crop.mha.md5}
-#    MIDAS{im0001.vk.crop.mha.md5}
-#    ${TEMP}/itkTubeRidgeSeedGeneratorTest
-#  )
+MIDAS_ADD_TEST( itkTubeRidgeSeedGeneratorTest
+  ${BASE_SEGMENTATION_TESTS}
+  --compare MIDAS{itkTubeRidgeSeedGeneratorTest.lda00.mha.md5}
+            ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
+  itkTubeRidgeSeedGeneratorTest
+    MIDAS{im0001.crop.mha.md5}
+    MIDAS{im0001.vk.mask.crop.mha.md5}
+    ${TEMP}/itkTubeRidgeSeedGeneratorTest
+  )
