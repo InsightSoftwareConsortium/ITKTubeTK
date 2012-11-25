@@ -756,9 +756,6 @@ PDFSegmenter< ImageT, N, LabelmapT >
       {
       std::cout << "Outside histogram image smoothing..." << std::endl;
 
-      typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
-        HistogramImageType > HistoBlurGenType;
-
       typename HistoBlurGenType::Pointer m_OutHistoBlurGen =
         HistoBlurGenType::New();
       m_OutHistoBlurGen->SetInput( m_OutHisto );

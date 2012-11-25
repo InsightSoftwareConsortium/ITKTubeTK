@@ -132,8 +132,8 @@ if( NOT USE_SYSTEM_ITK )
     set( proj Insight )
     ExternalProject_Add( ${proj}
       GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Kitware/ITK.git"
-      # release-3.20 branch on 2012-11-13.
-      GIT_TAG "3f5d32015df46591fde9c4656b59842f11efe9e4"
+      # release-3.20 branch on 2012-11-20.
+      GIT_TAG "b946b56436cce517d03eeb1684fb9e37c3f842a7"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
       BINARY_DIR Insight-Build
       CMAKE_GENERATOR ${gen}
@@ -198,7 +198,7 @@ if( TubeTK_USE_VTK )
       set( proj VTK )
       ExternalProject_Add( VTK
         GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/VTK.git"
-        GIT_TAG "origin/slicer-4.0"
+        GIT_TAG "3138cd11a9eb76a741ce5e3a86417449acfe7eba"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
         BINARY_DIR VTK-Build
         CMAKE_GENERATOR ${gen}
@@ -335,7 +335,7 @@ if( TubeTK_USE_QT )
       set( proj CTK )
       ExternalProject_Add( CTK
         GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
-        GIT_TAG "d76ebaac2226f8ef431835eff1693012ffaf62c3"
+        GIT_TAG "11a59a395deb8ff50ddb07b427e47e6665447586"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
         BINARY_DIR CTK-Build
         CMAKE_GENERATOR ${gen}

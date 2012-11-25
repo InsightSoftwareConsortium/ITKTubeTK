@@ -1635,12 +1635,11 @@ NJetImageFunction<TInputImage>
                              double scale) const
 {
   // RIDGENESS
-  double val;
   VectorType d;
   MatrixType h;
   VectorType p;
 
-  val = JetAtContinuousIndex(cIndex, d, h, scale);
+  JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
