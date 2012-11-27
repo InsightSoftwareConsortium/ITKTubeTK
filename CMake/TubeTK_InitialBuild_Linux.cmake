@@ -24,24 +24,26 @@
 #############################################################################
 #
 # Configure the following variables and move this file to the directory above
-#   the TubeTK source directory.
+#   the tubetk source directory.
 #
-set( SITE_NAME "Ginger.Aylward.Org" )
-set( SITE_PLATFORM "Windows7-VS2010-64" )
+set( SITE_NAME "Eternia.Kitware" )
+set( SITE_PLATFORM "Ubuntu-12.10-64" )
 set( SITE_BUILD_TYPE "Release" )
-set( SITE_CMAKE_GENERATOR "Visual Studio 10" )
+set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
 
 set( TUBETK_GIT_REPOSITORY "http://tubetk.org/TubeTK.git" )
-set( TUBETK_SOURCE_DIR "C:/Users/aylward/src/TubeTK" )
-set( TUBETK_BINARY_DIR "C:/Users/aylward/src/TubeTK-${SITE_BUILD_TYPE}" )
+set( TUBETK_SOURCE_DIR "/home/aylward/src/TubeTK" )
+set( TUBETK_BINARY_DIR "/home/aylward/src/TubeTK-${SITE_BUILD_TYPE}" )
 
-set( SITE_MAKE_COMMAND "${CTEST_BUILD_COMMAND}" )
-set( SITE_CMAKE_COMMAND "C:/Program Files/CMake 2.8/bin/cmake" )
-set( SITE_QMAKE_COMMAND "C:/Qt/4.8.2/bin/qmake" )
-set( SITE_CTEST_COMMAND "C:/Program Files/CMake 2.8/bin/ctest" )
+set( ENV{DISPLAY} ":0" )
 
-set( SITE_GIT_COMMAND "C:/Program Files (x86)/Git/bin/git" )
-set( SITE_SVN_COMMAND "C:/Program Files/TortoiseSVN/bin/svn" )
+set( SITE_MAKE_COMMAND "make" )
+set( SITE_CMAKE_COMMAND "/usr/local/bin/cmake" )
+set( SITE_QMAKE_COMMAND "/usr/local/Trolltech/Qt-4.7.4/bin/qmake" )
+set( SITE_CTEST_COMMAND "/usr/local/bin/ctest" )
+
+set( SITE_GIT_COMMAND "/usr/bin/git" )
+set( SITE_SVN_COMMAND "/usr/bin/svn" )
 #############################################################################
 
 #############################################################################
@@ -58,11 +60,13 @@ set( SITE_UPDATE_COMMAND "${SITE_GIT_COMMAND}" )
 
 set( CTEST_SITE "${SITE_NAME}" )
 
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-New" )
+
 set( CTEST_BUILD_CONFIGURATION "${SITE_BUILD_TYPE}" )
 set( CTEST_BUILD_COMMAND "${SITE_MAKE_COMMAND}" )
 
 set( CTEST_SOURCE_DIRECTORY "${TUBETK_SOURCE_DIR}" )
-set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}" )
 
 set( CTEST_CMAKE_GENERATOR "${SITE_CMAKE_GENERATOR}" )
 set( CTEST_TEST_TIMEOUT 1500 )
@@ -72,11 +76,10 @@ set( CTEST_CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 
-set( SITE_EXECUTABLE_DIRS "${TUBETK_BINARY_DIR}/ModuleDescriptionParser-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/GenerateCLP-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/Insight-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/VTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/lib/TubeTK/Plugins/${SITE_BUILD_TYPE}" )
-set( ENV{PATH} "${SITE_EXECUTABLE_DIRS};$ENV{PATH}" )
-
-set( SITE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /GR /MP /EHsc" )
-set( SITE_C_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /MP" )
+set( SITE_CXX_FLAGS
+  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
+set( SITE_C_FLAGS
+  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
 set( SITE_EXE_LINKER_FLAGS "" )
 set( SITE_SHARED_LINKER_FLAGS "" )
 
@@ -94,30 +97,24 @@ set( CMAKE_GENERATOR ${SITE_CMAKE_GENERATOR} )
 set( QT_QMAKE_EXECUTABLE "${SITE_QMAKE_COMMAND}" )
 
 if( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
-
   execute_process( COMMAND
     "${SITE_GIT_COMMAND}"
     clone "${TUBETK_GIT_REPOSITORY}" "${TUBETK_SOURCE_DIR}" )
-  ctest_run_script()
-
-else()
-
-  set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-New" )
   configure_file(
     ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
     ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
-  set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
-
+  ctest_run_script()
+else()
+  configure_file(
+    ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
+    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
   ctest_start( "Experimental" )
   ctest_update( SOURCE "${TUBETK_SOURCE_DIR}" )
-  ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
-    SOURCE "${TUBETK_SOURCE_DIR}"
-    OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+  ctest_configure( BUILD "${TUBETK_BINARY_DIR}" SOURCE "${TUBETK_SOURCE_DIR}" OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
   ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
   ctest_submit( PARTS Notes Update Configure Build Test )
-
 endif()
 
 set(CTEST_RUN_CURRENT_SCRIPT 0)
