@@ -363,6 +363,32 @@ if( TubeTK_USE_QT )
 
 endif( TubeTK_USE_QT )
 
+##
+## A conventient 2D/3D image viewer that can handle anisotropic spacing.
+##
+set( ImageViewer_DEPENDS )
+if( NOT USE_SYSTEM_ITK )
+  set( ImageViewer_DEPENDS Insight )
+endif()
+set( proj ImageViewer )
+ExternalProject_Add( ImageViewer
+  GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
+  GIT_TAG "907f4616cfef89bb69edc06936eed9d96f578da1"
+  SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
+  BINARY_DIR ImageViewer-Build
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
+    "-DITK_DIR:PATH=${ITK_DIR}"
+  # For convenience.
+  INSTALL_COMMAND "${CMAKE_COMMAND}"
+    -E
+    copy_if_different
+    "${CMAKE_BINARY_DIR}/ImageViewer-Build/ImageViewer-build/ImageViewer/ImageViewer"
+    "${CMAKE_BINARY_DIR}/TubeTK-Build/bin/ImageViewer"
+  DEPENDS
+    ${ImageViewer_DEPENDS}
+  )
 
 ##
 ## TubeTK - Normal Build
