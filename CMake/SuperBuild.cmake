@@ -363,6 +363,24 @@ if( TubeTK_USE_QT )
 
 endif( TubeTK_USE_QT )
 
+##
+## LibSVM
+##
+if ( TubeTK_USE_LIBSVM )
+  set( proj LIBSVM )
+  ExternalProject_Add(
+    ${proj}
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
+    BINARY_DIR ${proj}-Build
+    GIT_REPOSITORY https://bitbucket.org/rkwitt/cmake-libsvm.git
+    GIT_TAG origin/master
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-Build
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DBUILD_SHARED_LIBS:BOOL=ON}
+  )
+  set( LIBSVM_DIR "${CMAKE_BINARY_DIR}/${proj}-Build" )
+endif( TubeTK_USE_LIBSVM )
 
 ##
 ## TubeTK - Normal Build
