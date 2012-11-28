@@ -7,6 +7,8 @@ Utilities/GitSetup/setup-aliases && echo &&
 Utilities/GitSetup/setup-stage && echo &&
 (Utilities/GitSetup/setup-ssh ||
  echo 'Failed to setup SSH.  Run this again to retry.') && echo &&
+(Utilities/GitSetup/setup-gerrit ||
+ echo 'Failed to setup Gerrit.  Run this again to retry.') && echo &&
 Utilities/GitSetup/tips
 
 # Rebase master by default
