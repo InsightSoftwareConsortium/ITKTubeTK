@@ -372,8 +372,8 @@ if ( TubeTK_USE_LIBSVM )
     ${proj}
     SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
     BINARY_DIR ${proj}-Build
-    GIT_REPOSITORY https://bitbucket.org/rkwitt/cmake-libsvm.git
-    GIT_TAG origin/master
+    GIT_REPOSITORY https://github.com/TubeTK/cmake-libsvm
+    GIT_TAG a802a4224a6c3d7458e46887e77d75bf305a105b
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-Build
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
