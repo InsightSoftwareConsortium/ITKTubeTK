@@ -428,6 +428,7 @@ ExternalProject_Add( ${proj}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION}
     ${TubeTK_SimpleITK_Def}
   INSTALL_COMMAND ""
   DEPENDS
