@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ limitations under the License.
 #define __tubeMessage_h
 
 #include <iostream>
+#include <ostream>
+#include <string>
 
 namespace tube {
 
@@ -56,6 +58,81 @@ void Message( const T& str, int level = 0 )
     default:
       break;
     }
+}
+
+/** Formatted logging, as with printf(...) */
+inline void FmtMessage(int level, const char* fmt, va_list args )
+{
+	std::ostream & os = level >= MessageLevel::Information ? std::cerr : std::cout;
+
+	char text[1024];
+	memset(text, 0, sizeof(char)*1023);
+	vsnprintf(text, 1023, fmt, args);
+
+  #ifndef NDEBUG
+  if( level == MessageLevel::Debug )
+    {
+    os << "<debug>" << text << "</debug>" << std::endl;
+    return;
+    }
+  #endif
+
+  switch( level )
+    {
+    case MessageLevel::Information:
+      os << "<info>" << text << "</info>" << std::endl;
+      break;
+    case MessageLevel::Warning:
+      os << "<warning>" << text << "</warning>" << std::endl;
+      break;
+    case MessageLevel::Error:
+      os << "<error>" << text << "</error>" << std::endl;
+      break;
+    default:
+      break;
+    }
+  os.flush();
+}
+
+inline void FmtInfoMessage(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    FmtMessage( MessageLevel::Information, fmt, args );
+    va_end(args);
+}
+
+inline void FmtInformationMessage(const char* fmt, ...)
+{
+  va_list args;
+  va_start( args, fmt );
+  FmtMessage( MessageLevel::Information, fmt, args );
+  va_end( args );
+
+}
+
+inline void FmtWarningMessage(const char* fmt, ...)
+{
+  va_list args;
+  va_start( args, fmt );
+  FmtMessage( MessageLevel::Warning, fmt, args );
+  va_end( args );
+}
+
+inline void FmtErrorMessage(const char* fmt, ...)
+{
+  va_list args;
+  va_start( args, fmt );
+  FmtMessage( MessageLevel::Error, fmt, args );
+  va_end( args );
+}
+
+inline void FmtDebugMessage(const char* fmt, ...)
+{
+  va_list args;
+  va_start( args, fmt );
+  FmtMessage( MessageLevel::Debug, fmt, args );
+  va_end( args );
 }
 
 template <class T>
