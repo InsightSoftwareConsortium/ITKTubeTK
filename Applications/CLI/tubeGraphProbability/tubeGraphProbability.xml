@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Graph Probability Computation</title>
+  <description>Propagates averaged information of a (MEAN) graph to the current graph, based on connectivity information.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <file>
+      <name>inGraphFile</name>
+      <index>0</index>
+      <description>Input graph file (Filename serves as base for output files, .matProb.txt, .cntProb.txt, .brcProb.txt)</description>
+    </file>
+    <file>
+      <name>meanGraphFile</name>
+      <index>1</index>
+      <description>Mean input graph</description>
+    </file>
+    <file>
+      <name>outGraphFile</name>
+      <index>2</index>
+      <description>Output graph file (basename)</description>
+    </file>
+  </parameters>
+
+</executable>
