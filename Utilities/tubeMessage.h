@@ -28,6 +28,11 @@ limitations under the License.
 #include <ostream>
 #include <string>
 
+#include <cstdarg>
+#include <cstring>
+#include <cstdio>
+
+
 namespace tube {
 
 namespace MessageLevel {
