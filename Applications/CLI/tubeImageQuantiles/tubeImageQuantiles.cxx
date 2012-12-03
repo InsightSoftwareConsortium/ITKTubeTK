@@ -38,8 +38,13 @@ limitations under the License.
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/p_square_quantile.hpp>
 
-#include "tubeMessage.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+#include <sstream>
 
+#include "tubeMessage.h"
 #include "tubeImageQuantilesCLP.h"
 
 enum { TDimensions = 3 };
@@ -86,6 +91,8 @@ void computeQuantiles( ImageType::Pointer image,
       tube::ErrorMessage("Check quantile range!");
       throw std::exception();
       }
+    tube::FmtInfoMessage("Configure accumulator for quantile = %.2f", q);
+
     QuantileAccumulatorType *acc = new QuantileAccumulatorType(
       quantile_probability = q);
     accVec.push_back(acc);
@@ -123,39 +130,91 @@ void computeQuantiles( ImageType::Pointer image,
 }
 
 
+/**
+ * Writes quantiles and quantile values to a file in JSON
+ * format. Example (for quantiles 0.05, 0.5, 0.95):
+ *
+ *  {
+ *     "quantiles":
+ *     [
+ *        <quantile0>,
+ *        <quantile1>,
+ *        ...
+ *        <quantileN>
+ *     ],
+ *     "quantileValues":
+ *     [
+ *        <quantileValue0>,
+ *        <quantileValue1>,
+ *        ...
+ *        <quantileValueN>
+ *     ]
+ *   }
+ */
+void writeQuantilesToFile( const vector<float>& quantiles,
+                           const vector<ImagePixelType>& quantileValues,
+                           const string &outFile )
+{
+  tube::FmtInfoMessage( "Writing %d quantiles to %s",
+        quantiles.size(), outFile.c_str());
+
+  try
+    {
+    property_tree::ptree root;
+    property_tree::ptree quantilesJSON;
+    property_tree::ptree quantileValuesJSON;
+
+    for ( int i=0; i<quantiles.size(); ++i )
+      {
+      property_tree::ptree quantileElementJSON;
+      property_tree::ptree quantileValueElementJSON;
+      quantileElementJSON.put( "", quantiles[i] );
+      quantileValueElementJSON.put( "", quantileValues[i] );
+      quantilesJSON.push_back(make_pair( "", quantileElementJSON ) );
+      quantileValuesJSON.push_back(make_pair( "", quantileValueElementJSON ) );
+      }
+    root.add_child( "quantiles", quantilesJSON);
+    root.add_child( "quantileValues", quantileValuesJSON );
+    property_tree::write_json( outFile, root );
+    }
+  catch (property_tree::json_parser::json_parser_error &e)
+    {
+    tube::ErrorMessage( e.message() );
+    throw std::exception();
+    }
+}
+
+
 int main( int argc, char*argv[] )
 {
   PARSE_ARGS;
 
-  tube::FmtInfoMessage("Reading image file %s", imageFile.c_str());
+  tube::FmtInfoMessage("Reading image file %s",
+    imageFile.c_str());
   ImageReaderType::Pointer imReader = ImageReaderType::New();
   imReader->SetFileName( imageFile );
-  imReader->Update();
+  ImageType::Pointer im;
 
-  ImageType::Pointer im = imReader->GetOutput();
-
-  tube::InfoMessage("Running CLASSIC ITK image statistics filter");
-  StatisticsImageFilterType::Pointer stats = StatisticsImageFilterType::New ();
-  stats->SetInput(im);
-  stats->Update();
-
-  vector<float> quantileValues;
   try
     {
+    imReader->Update();
+    im = imReader->GetOutput();
+    }
+  catch (itk::ExceptionObject &ex)
+    {
+    tube::ErrorMessage( ex.GetDescription() );
+    return EXIT_FAILURE;
+    }
+
+   vector<float> quantileValues;
+   try
+    {
     computeQuantiles(im, quantiles, quantileValues);
+    writeQuantilesToFile( quantiles, quantileValues, outFile );
     }
   catch (std::exception &e)
     {
     return EXIT_FAILURE;
     }
-  assert(quantiles.size() == quantileValues.size());
-
-  for (int i=0; i<quantiles.size(); ++i)
-    {
-    cout << quantiles[i] << "," << quantileValues[i] << endl;
-    }
-  //cout << "Min: " << stats->GetMinimum() << endl;
-  //cout << "Max: " << stats->GetMaximum() << endl;
-
   return EXIT_SUCCESS;
 }

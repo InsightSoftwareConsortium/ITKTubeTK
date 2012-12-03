@@ -26,7 +26,7 @@
     <file>
       <name>outFile</name>
       <index>1</index>
-      <description>Output file with quantile values</description>
+      <description>Output file with quantile information in JSON format</description>
     </file>
   </parameters>
 
