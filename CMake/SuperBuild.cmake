@@ -439,6 +439,7 @@ ExternalProject_Add( ${proj}
     ${kwstyle_dashboard_submission_arg}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
+    -DTubeTK_USE_Boost:BOOL=${TubeTK_USE_Boost}
     -DTubeTK_USE_ITKV4:BOOL=${TubeTK_USE_ITKV4}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}

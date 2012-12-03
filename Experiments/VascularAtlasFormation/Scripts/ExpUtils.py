@@ -9,23 +9,23 @@ import numpy as np
 from sklearn import svm
 
 
-def check_file(file):
+def check_file(file_name):
     """ Checks if file exists """
     if file is None:
         return False
-    return os.path.exists(file) and os.path.isfile(file)
+    return os.path.exists(file_name) and os.path.isfile(file_name)
 
 
-def ensure_dir(d):
+def ensure_dir(directory):
     """ Checks if directory exists; if 'False', it creates it """
-    if not os.path.exists(d):
-        print "Creating directory %s" % d
-        os.makedirs(d)
+    if not os.path.exists(directory):
+        print "Creating directory %s" % directory
+        os.makedirs(directory)
 
 
-def check_dir(d):
+def check_dir(directory):
     """ Checks existence of a directory """
-    return os.path.exists(d)
+    return os.path.exists(directory)
 
 
 def compute_registrations(config, options):

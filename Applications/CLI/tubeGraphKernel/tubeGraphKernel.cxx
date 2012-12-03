@@ -27,7 +27,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 #include "itkMatrix.h"
-#include "SPKernel.h"
+#include "ShortestPathKernel.h"
 #include "tubeGraphKernelCLP.h"
 
 using namespace boost;
@@ -172,13 +172,24 @@ int main(int argc, char **argv)
 
     for ( int i = 0; i < N; ++i)
       {
-      SPKernel::graphType f = SPKernel::graphFromAdjFile( listA[i].c_str() );
+      // Reads i-th graph from file
+      ShortestPathKernel::GraphType f =
+        ShortestPathKernel::GraphFromAdjFile( listA[i].c_str() );
+
+
+      // Now, iterate over the 'compare-to' graphs
       for ( int j = 0; j < M; ++j)
         {
-        tube::FmtInfoMessage("Computing (%d,%d)-th kernel entry ...", i, j);
-        SPKernel::graphType g = SPKernel::graphFromAdjFile( listB[j].c_str() );
-        SPKernel spk(f,g);
-        K[i][j] = spk.compute(SPKernel::EDGE_KERNEL_DEL);
+        tube::FmtInfoMessage("Computing (%d,%d)-th kernel entry",
+          i, j);
+
+        // Reads j-th 'compare-to' graphs
+        ShortestPathKernel::GraphType g =
+          ShortestPathKernel::GraphFromAdjFile( listB[j].c_str() );
+
+        // Creates the Shortest-Path Kernel and sets K[i][j]-th kernel entry
+        ShortestPathKernel spk(f,g);
+        K[i][j] = spk.Compute(ShortestPathKernel::EDGE_KERNEL_DEL);
         }
       }
 

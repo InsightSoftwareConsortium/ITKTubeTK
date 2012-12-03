@@ -21,14 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "SPKernel.h"
+#include "ShortestPathKernel.h"
 
 
 using namespace boost;
 using namespace std;
-
-using boost::property_tree::ptree;
-using boost::lexical_cast;
 
 
 namespace tube
@@ -36,7 +33,8 @@ namespace tube
 
 
 //-----------------------------------------------------------------------------
-SPKernel::graphType SPKernel::graphFromAdjFile(const char *fileName)
+ShortestPathKernel::GraphType
+ShortestPathKernel::GraphFromAdjFile(const char *fileName)
 {
   ifstream reader;
 
@@ -47,7 +45,7 @@ SPKernel::graphType SPKernel::graphFromAdjFile(const char *fileName)
 
   tube::FmtInfoMessage("Reading graph with %d vertices", nVertices);
 
-  SPKernel::graphType g(nVertices);
+  ShortestPathKernel::GraphType g(nVertices);
   for ( int i=0; i<nVertices; ++i )
       {
       // Type is ID for now
@@ -73,37 +71,38 @@ SPKernel::graphType SPKernel::graphFromAdjFile(const char *fileName)
 
 
 //-----------------------------------------------------------------------------
-SPKernel::graphType SPKernel::graphFromJSONFile(const char *fileName)
+ShortestPathKernel::GraphType
+ShortestPathKernel::GraphFromJSONFile(const char *fileName)
 {
   try
     {
-    ptree pt;
+    property_tree::ptree pt;
     read_json(fileName, pt);
 
     // Gets #vertices
-    int nVertices = boost::lexical_cast<int>(pt.get<string>("nVertices"));
+    int nVertices = lexical_cast<int>(pt.get<string>("nVertices"));
 
     // Parses linkage information
     int cnt = 0;
     vector<vector<int> > linkInfo(nVertices);
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("adjM"))
-    {
-      ptree adjInfoTree = (ptree)v.second;
-      BOOST_FOREACH(ptree::value_type &w, adjInfoTree.get_child(""))
+    BOOST_FOREACH(property_tree::ptree::value_type &v, pt.get_child("adjM"))
+      {
+      property_tree::ptree adjInfoTree = (property_tree::ptree)v.second;
+      BOOST_FOREACH(property_tree::ptree::value_type &w, adjInfoTree.get_child(""))
         {
         int vertexId = lexical_cast<int>(w.second.data());
         linkInfo[cnt].push_back(vertexId);
         }
       ++cnt;
-    }
+      }
 
     // Parses distance information
     cnt = 0;
     vector<vector<double> > distInfo(nVertices);
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("dist"))
+    BOOST_FOREACH(property_tree::ptree::value_type &v, pt.get_child("dist"))
       {
-      ptree distInfoTree = (ptree)v.second;
-      BOOST_FOREACH(ptree::value_type &w, distInfoTree.get_child(""))
+      property_tree::ptree distInfoTree = (property_tree::ptree)v.second;
+      BOOST_FOREACH(property_tree::ptree::value_type &w, distInfoTree.get_child(""))
         {
         double distToNeighbor = lexical_cast<double>(w.second.data());
         distInfo[cnt].push_back(distToNeighbor);
@@ -113,7 +112,7 @@ SPKernel::graphType SPKernel::graphFromJSONFile(const char *fileName)
 
     // Parses vertex type information
     vector<int> typeInfo;
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("type"))
+    BOOST_FOREACH(property_tree::ptree::value_type &v, pt.get_child("type"))
       {
       int type = lexical_cast<int>(v.second.data());
       typeInfo.push_back(type);
@@ -125,7 +124,7 @@ SPKernel::graphType SPKernel::graphFromJSONFile(const char *fileName)
         typeInfo.size() <= nVertices);
 
     // Now build the graph
-    SPKernel::graphType g(nVertices);
+    ShortestPathKernel::GraphType g(nVertices);
     for (int i=0; i<nVertices;++i)
       {
       g[vertex(i, g)].type = typeInfo[i];
@@ -139,39 +138,40 @@ SPKernel::graphType SPKernel::graphFromJSONFile(const char *fileName)
         tube::FmtDebugMessage("Adding edge (%d,%d) with weight %.5f",
           linkInfo[i][0], linkInfo[i][j], distInfo[i][j]);
         add_edge(linkInfo[i][0], linkInfo[i][j], distInfo[i][j], g);
+        }
       }
-    }
     return g;
-  }
-  catch (std::exception &e)
-  {
+    }
+  catch (const std::exception &e)
+    {
     tube::FmtErrorMessage("Error reading JSON graph file %s (Msg: %s)",
       fileName, e.what());
-    throw std::exception();
-  }
+    throw e;
+    }
 }
 
 
 //-----------------------------------------------------------------------------
-SPKernel::graphType SPKernel::floydTransform(const graphType &in)
+ShortestPathKernel::GraphType
+ShortestPathKernel::FloydTransform(const GraphType &in)
 {
   int nVertices = num_vertices(in);
 
-  distanceMatrixType distances(nVertices);
-  distanceMatrixMapType dm(distances, in);
+  DistanceMatrixType distances(nVertices);
+  DistanceMatrixMapType dm(distances, in);
 
   floyd_warshall_all_pairs_shortest_paths(in, dm);
 
-  graphType out(nVertices);
+  GraphType out(nVertices);
   assert(nVertices == num_vertices(out));
 
-  constVertexAllMapType mapIn = get(vertex_all, in);
-  vertexAllMapType mapOut = get(vertex_all, out);
+  ConstVertexAllMapType mapIn = get(vertex_all, in);
+  VertexAllMapType mapOut = get(vertex_all, out);
 
   for (int i=0; i<nVertices; ++i)
     {
-    vertexType v0 = vertex(i,in);   // Vertex type of i-th node in input graph
-    vertexType v1 = vertex(i,out);  // Vertex type of i-th node in output graph
+    VertexType v0 = vertex(i,in);   // Vertex type of i-th node in input graph
+    VertexType v1 = vertex(i,out);  // Vertex type of i-th node in output graph
     put(mapOut, v1, get(mapIn, v0));
     }
 
@@ -196,39 +196,49 @@ SPKernel::graphType SPKernel::floydTransform(const graphType &in)
 
 
 //-----------------------------------------------------------------------------
-void SPKernel::computeFTGraphs(void)
+void ShortestPathKernel::ComputeFTGraphs(void)
 {
-  tube::FmtDebugMessage("Computing Floyd transform.");
-  fg0 = floydTransform(g0);
-  fg1 = floydTransform(g1);
-  isFloyd = true;
+  tube::FmtDebugMessage( "Computing Floyd transform." );
+  m_fg0 = FloydTransform( m_g0 );
+  m_fg1 = FloydTransform( m_g1 );
+  m_isFloyd = true;
 }
 
 
 //-----------------------------------------------------------------------------
-double SPKernel::compute(int edgeKernelType)
+double ShortestPathKernel::Compute(int edgeKernelType)
 {
   double kernelValue = 0.0;
-  edgeIteratorType aIt, aEnd, bIt, bEnd;
+  long int cntEdgeEvaluations = 0;
+  EdgeIteratorType aIt, aEnd, bIt, bEnd;
 
-  if (!isFloyd)
+  /*
+   * In case the two input graphs are not already Floyd-transformed,
+   * do that now!
+   */
+  if (!m_isFloyd)
     {
-    computeFTGraphs();
+    ComputeFTGraphs();
     }
 
-  long int cnt = 0;
-  for (tie(aIt,aEnd) = edges(fg0); aIt != aEnd; ++aIt)
-    {
-    const edgeDescriptorType &e0 = *aIt;
-    int src_type = fg0[source(e0, fg0)].type;
-    int dst_type = fg0[target(e0, fg0)].type;
-    edgeWeightMapType wmFG0 = get(edge_weight, fg0);
 
-    for (tie(bIt, bEnd) = edges(fg1); bIt != bEnd; ++bIt)
+  // Get the weight maps for both Floyd-transformed graphs
+  EdgeWeightMapType wmFG0 = get( edge_weight, m_fg0);
+  EdgeWeightMapType wmFG1 = get( edge_weight, m_fg1 );
+
+
+  // Iterate over all the edges of Floyd-transformed graph fg0
+  for ( tie( aIt, aEnd ) = edges( m_fg0 ); aIt != aEnd; ++aIt )
+    {
+    const EdgeDescriptorType &e0 = *aIt;
+    int src_type = m_fg0[source(e0, m_fg0)].type; // Type of start vertex
+    int dst_type = m_fg0[target(e0, m_fg0)].type; // Type of end vertex
+
+    // Iterate over all the edges of Floyd-transformed graph fg1
+    for ( tie( bIt, bEnd ) = edges( m_fg1 ); bIt != bEnd; ++bIt )
       {
-      cnt++;
-      const edgeDescriptorType &e1 = *bIt;
-      edgeWeightMapType wmFG1 = get(edge_weight, fg1);
+      cntEdgeEvaluations++;
+      const EdgeDescriptorType &e1 = *bIt;
 
       /*
        * We only consider walks of equal length --- At this point we
@@ -248,16 +258,14 @@ double SPKernel::compute(int edgeKernelType)
       double edgeKernelValue = 0.0;
       switch (edgeKernelType)
         {
-        // Our only supported kernel so far
         case EDGE_KERNEL_DEL:
           /*
            * Delta kernel on edge start/end types, i.e.,
            * 1 if types are equal, 0 otherwise
            */
           bool vertexTypeCheck =
-            (src_type == fg1[source(e1, fg1)].type) &&
-            (dst_type == fg1[target(e1, fg1)].type);
-
+            (src_type == m_fg1[source(e1, m_fg1)].type) &&
+            (dst_type == m_fg1[target(e1, m_fg1)].type);
           if (!vertexTypeCheck)
             {
             continue;
@@ -266,10 +274,11 @@ double SPKernel::compute(int edgeKernelType)
           break;
         }
       kernelValue += edgeKernelValue;
-      ++cnt;
       }
     }
-  tube::FmtInfoMessage("Performed %ld edge evaluations", cnt);
+
+  tube::FmtInfoMessage("Performed %ld edge evaluations",
+    cntEdgeEvaluations);
   return kernelValue;
 }
 
