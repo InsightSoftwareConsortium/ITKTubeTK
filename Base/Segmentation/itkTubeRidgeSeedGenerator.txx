@@ -237,7 +237,7 @@ RidgeSeedGenerator< ImageT, LabelmapT >
           m = njet->GetMostRecentHessian();
           LDAMatrixType eVects;
           LDAVectorType eVals;
-          ::tube::Eigen<double>( m.GetVnlMatrix().as_ref(),
+          ::tube::ComputeEigen<double>( m.GetVnlMatrix().as_ref(),
              eVects, eVals, false, true );
           for( unsigned int d=0; d<ImageDimension; d++ )
             {

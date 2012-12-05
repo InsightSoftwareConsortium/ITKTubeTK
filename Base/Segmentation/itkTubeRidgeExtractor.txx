@@ -415,7 +415,7 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::Eigen( m_XH, m_XHEVect, m_XHEVal, false, true );
+  ::tube::ComputeEigen( m_XH, m_XHEVect, m_XHEVal, false, true );
 
   if( this->GetDebug() )
     {
@@ -462,13 +462,6 @@ RidgeExtractor<TInputImage>
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     m_XP[i] = dot_product( m_XHEVect.get_column( i ), m_XD );
-    /*
-    m_XP[i] = 0;
-    for( unsigned int j=0; j<ImageDimension; j++ )
-      {
-      m_XP[i] += m_XHEVect( j, i )*m_XD[j];
-      }
-    */
     }
 
   double sums = 0;

@@ -48,22 +48,22 @@ int Test( void )
     vnl_vector<float> v2(dimensionT);
     if( dimensionT == 3 )
       {
-      v2 = tube::GetOrthogonalVector( v1 );
+      v2 = tube::ComputeOrthogonalVector( v1 );
       if( vnl_math_abs( dot_product( v1, v2 ) ) > epsilon )
         {
         std::cout << count << " : ";
-        std::cout << "FAILURE: GetOrthogonalVector: DotProduct = "
+        std::cout << "FAILURE: ComputeOrthogonalVector: DotProduct = "
                   << v1 << " .* " << v2 << " = "
                   << dot_product( v1, v2 ) << std::endl;
         returnStatus = EXIT_FAILURE;
         }
 
-      vnl_vector<float> v3 = tube::GetCrossVector( v1, v2 );
+      vnl_vector<float> v3 = tube::ComputeCrossVector( v1, v2 );
       if( vnl_math_abs( dot_product( v1, v3 ) ) > epsilon ||
           vnl_math_abs( dot_product( v2, v3 ) ) > epsilon )
         {
         std::cout << count << " : ";
-        std::cout << "FAILURE: GetCrossVector: DotProduct = "
+        std::cout << "FAILURE: ComputeCrossVector: DotProduct = "
           << dot_product( v1, v3 ) << " and "
           << dot_product( v2, v3 ) << std::endl;
         returnStatus = EXIT_FAILURE;
@@ -102,14 +102,14 @@ int Test( void )
 
     vnl_matrix<float> eVects(dimensionT, dimensionT);
     vnl_vector<float> eVals(dimensionT);
-    tube::Eigen( m1, eVects, eVals, true );
+    tube::ComputeEigen( m1, eVects, eVals, true );
     for( unsigned int d=0; d<dimensionT; d++ )
       {
       v1 = m1 * eVects.get_column(d);
       if( vnl_math_abs( v1.magnitude() - vnl_math_abs(eVals[d]) ) > epsilon )
         {
         std::cout << count << " : ";
-        std::cout << "FAILURE: Eigen : "
+        std::cout << "FAILURE: ComputeEigen : "
           << " v1 * M1 = " << v1
           << " and v1 norm = " << v1.magnitude()
           << " != " << eVals[d]
