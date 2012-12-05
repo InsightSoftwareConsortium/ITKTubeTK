@@ -62,7 +62,7 @@ void GraphKernel::CountingSort(vector<int>& vec)
     ++C[a];
     }
   int current = 0;
-  for (int i = 0; i < maxVal; ++i)
+  for (int i = 0; i <= maxVal; ++i)
     {
     for(int j =0; j < C[i]; ++j)
       {
@@ -84,13 +84,10 @@ string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
    * 4) Sort the neighbor vector (CountingSort)
    * 5) Create string from vector
    */
-  IndexMapType index = get(boost::vertex_index, G);
+  IndexMapType index = get(vertex_index, G);
 
   VertexNeighborType nb = adjacent_vertices(vertex(v, G), G);
   int nNeighbors = distance(nb.first, nb.second);
-
-  // tube::FmtInfoMessage("Vertex %d (type = %d) has %d neighbors",
-  //  v, G[vertex(v, G)].type, nNeighbors);
 
   vector<int> nbVec(nNeighbors);
   for (int cnt=0; nb.first != nb.second; ++nb.first, ++cnt)
