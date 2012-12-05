@@ -259,6 +259,9 @@ int main(int argc, char **argv)
       {
       for (int i = 0; i < N; ++i)
         {
+        tube::FmtInfoMessage("Adding data from graph %s",
+          listA[i].c_str());
+
         GraphKernel::GraphType f = loadGraph(listA[i]);
         WLSubtreeKernel::UpdateLabelCompression( f,
                                                  labelMap,
@@ -284,6 +287,8 @@ int main(int argc, char **argv)
         {
         GraphKernel::GraphType g = loadGraph(listB[j]);
 
+        tube::FmtInfoMessage("Running kernel on graphs (%d,%d)",
+          i,j);
 
         GraphKernel *gk = 0;
         switch(graphKernelType)

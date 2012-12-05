@@ -89,6 +89,12 @@ string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
   VertexNeighborType nb = adjacent_vertices(vertex(v, G), G);
   int nNeighbors = distance(nb.first, nb.second);
 
+  // No neighbors
+  if (!nNeighbors)
+    {
+    return BuildPrefixFromVertexID(G[vertex(v,G)].type);
+    }
+
   vector<int> nbVec(nNeighbors);
   for (int cnt=0; nb.first != nb.second; ++nb.first, ++cnt)
     {

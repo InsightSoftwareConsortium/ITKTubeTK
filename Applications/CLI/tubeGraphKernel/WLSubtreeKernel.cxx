@@ -16,7 +16,6 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
 {
   int h = 0;
   int N = num_vertices(G);
-
   LabelMapType::const_iterator it;
   for (int i=0; i<N; ++i)
     {
