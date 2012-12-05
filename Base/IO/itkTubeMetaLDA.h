@@ -91,7 +91,7 @@ public:
 
   virtual void  Clear( void );
 
-  virtual bool  InitializeEssential( const LDAValuesType & _ldaValues,
+  bool  InitializeEssential( const LDAValuesType & _ldaValues,
       const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
       const ValueListType & _whitenStdDevs );
 
