@@ -32,20 +32,7 @@ limitations under the License.
 #include <fstream>
 #include <exception>
 
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-
-#include <boost/graph/floyd_warshall_shortest.hpp>
-#include <boost/graph/exterior_property.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
-
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
+#include "GraphKernel.h"
 
 #include "tubeMessage.h"
 #include "itkTimeProbesCollectorBase.h"
@@ -54,95 +41,56 @@ limitations under the License.
 namespace tube
 {
 
-/** \class ShortestPathKernel
- * \brief Impementation of a Shortest-Path Kernel
+
+/**
  *
- * This class implements the shortest-path kernel as proposed in
+ * \class ShortestPathKernel
+ * \brief Impementation of Borgwardt's Shortest-Path Kernel
+ *
+ * This class implements the shortest-path kernel, proposed in
  *
  * [1] K.M. Borgwardt and H.P. Kriegel, "Shortest-Path Kernels on
  *     Graphs", In: IEEE Int. Conf. on Data Mining, 2005
+ *
  */
-class ShortestPathKernel
+class ShortestPathKernel : public GraphKernel
   {
+  /** Public types/data members */
   public:
 
     /** Edge kernel types */
-    static const int EDGE_KERNEL_DEL = 0;   // k(x,x') = Delta kernel
+    static const int EDGE_KERNEL_DEL = 0;
 
-    /** Node meta-information */
-    struct nodeInfoType
-    {
-      int type;
-    };
-
-    /** Some typedefs for BGL */
-    typedef boost::adjacency_list<
-      boost::listS,     // Use a list for vertices
-      boost::vecS,      // Use a vector for edges
-      boost::directedS, // We have a directed graph
-      nodeInfoType,     // Own vertex information
-      boost::property<boost::edge_weight_t, double> > GraphType; // Edge-weights
-
-    typedef boost::exterior_vertex_property<GraphType, double> DistancePropertyType;
-    typedef DistancePropertyType::matrix_type DistanceMatrixType;
-    typedef DistancePropertyType::matrix_map_type DistanceMatrixMapType;
-
-    /** Vertex descriptor and vertex iterator */
-    typedef boost::graph_traits<GraphType>::vertex_descriptor VertexType;
-    typedef boost::graph_traits<GraphType>::vertex_iterator VertexIteratorType;
-
-    /** Edge descriptor, edge iterator and edge weight map */
-    typedef boost::graph_traits<GraphType>::edge_descriptor EdgeDescriptorType;
-    typedef boost::graph_traits<GraphType>::edge_iterator EdgeIteratorType;
-    typedef boost::property_map<GraphType, boost::edge_weight_t>::type EdgeWeightMapType;
-
-    /** Types used to hold all vetex (+ property) information  */
-    typedef boost::property_map<GraphType, boost::vertex_all_t>::const_type ConstVertexAllMapType;
-    typedef boost::property_map<GraphType, boost::vertex_all_t>::type VertexAllMapType;
-
-
+  /** Private types/data members */
   private:
 
-    /*
-     * g0, g1   ... original graphs
-     * fg0, fg1 ... Floyd-transformed graphs
-     */
-    GraphType m_g0, m_g1, m_fg0, m_fg1;
+    /** Floyd-transformed graphs */
+    GraphType m_FG0, m_FG1;
 
-    /** Graph information */
-    int m_nVerticesG0, m_nVerticesG1;
+    int m_edgeKernelType;
 
-    /** Did we already Floyd-transform the graphs */
-    bool m_isFloyd;
-
-
+  /** Public static/non-static functions */
   public:
 
     /** CTOR - Consumer sets graphs */
-    ShortestPathKernel(const GraphType &g0, const GraphType &g1) :
-      m_isFloyd(false)
-    {
-      m_g0 = g0;
-      m_g1 = g1;
-    }
+    ShortestPathKernel(const GraphType &G0, const GraphType &G1) :
+      GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
 
-    /** Runs Floyd-transformation on both graphs */
-    void ComputeFTGraphs(void);
-
-    /** Reads graph information from JSON file */
-    static GraphType GraphFromJSONFile(const char *fileName);
-
-    /** Reads graph information from adjacency matrix */
-    static GraphType GraphFromAdjFile(const char *fileName);
+     /** Sets edge-kernel type */
+    void SetEdgeKernel(int type)
+      { m_edgeKernelType = type; }
 
     /** Computes the SP kernel value, see [1], Section 4.2 */
-    double Compute(int edgeKernelType);
+    double Compute(void);
 
 
+  /** Private static/non-static functions */
   private:
 
     /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
     GraphType FloydTransform(const GraphType &in);
   };
+
+
 } // End of namespace tube
 #endif

@@ -22,10 +22,10 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
   )
 
-set( KERNEL_SRC ShortestPathKernel.cxx)
+set( KERNEL_SRC ShortestPathKernel.cxx WLSubtreeKernel.cxx GraphKernel.cxx)
 set( PROJECT_SOURCE ${PROJECT_NAME}.cxx ${KERNEL_SRC})
 
 generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
 
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} ObjectDocuments )
+target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} ObjectDocuments)
