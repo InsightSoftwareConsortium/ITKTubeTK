@@ -158,14 +158,14 @@ bool  ComputeTubeTangentsAndNormals( TubeT * tube )
         tt.Normalize();
         }
 
-      vnl_vector< double > vv = GetCrossVector( t.GetVnlVector(),
+      vnl_vector< double > vv = ::tube::ComputeCrossVector( t.GetVnlVector(),
         tt.GetVnlVector() );
       n2[0] = vv[0];
       n2[1] = vv[1];
       n2[2] = vv[2];
       n2.Normalize();
 
-      vv = GetCrossVector( t.GetVnlVector(), n2.GetVnlVector() );
+      vv = ::tube::ComputeCrossVector( t.GetVnlVector(), n2.GetVnlVector() );
       n1[0] = vv[0];
       n1[1] = vv[1];
       n1[2] = vv[2];
@@ -347,7 +347,7 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
           }
         }
 
-      vnl_vector< double > vv = GetCrossVector( t.GetVnlVector(),
+      vnl_vector< double > vv = ::tube::ComputeCrossVector( t.GetVnlVector(),
         tt.GetVnlVector() );
       n2[0] = vv[0];
       n2[1] = vv[1];
@@ -360,7 +360,7 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
         std::cout << "  n2 = " << n2 << std::endl;
         }
 
-      vv = GetCrossVector( t.GetVnlVector(), n2.GetVnlVector() );
+      vv = ::tube::ComputeCrossVector( t.GetVnlVector(), n2.GetVnlVector() );
       n1[0] = vv[0];
       n1[1] = vv[1];
       n1[2] = vv[2];
