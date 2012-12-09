@@ -130,7 +130,7 @@ endif()
 
 #-----------------------------------------------------------------------------
 # MSVC setup
-if( WIN32 )
+if( MSVC )
   add_definitions( -D_SCL_SECURE_NO_WARNINGS )
   if( NOT CMAKE_FIRST_PASS_COMPLETED )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP"
@@ -142,7 +142,7 @@ if( WIN32 )
   if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
   endif()
-endif( WIN32 )
+endif( MSVC )
 
 #-----------------------------------------------------------------------------
 # Mac setup
