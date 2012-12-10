@@ -353,9 +353,14 @@ endif()
 set( TubeTK_LIBRARY_DIRS
   ${TubeTK_EXECUTABLE_DIRS} )
 
-set( TubeTK_LIBRARIES
+set( TubeTK_LIBS
   TubeIO
   TubeNumerics )
+set( TubeTK_LIBRARIES )
+foreach( library ${TubeTK_LIBS} )
+  get_target_property( library_location ${library} LOCATION )
+  list( APPEND TubeTK_LIBRARIES ${library_location} )
+endforeach()
 
 set( TubeTK_CMAKE_EXTENSIONS_DIR
   ${TubeTK_SOURCE_DIR}/CMake )
@@ -365,6 +370,10 @@ set( TubeTK_USE_FILE
 
 #-----------------------------------------------------------------------------
 # Configure TubeTKConfig.cmake
+# The variables set above are for building against a TubeTK build tree.
+# A different TubeTKConfig.cmake will need to be generated in order to build
+# against a TubeTK installation.
+
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKConfig.cmake.in
   ${TubeTK_BINARY_DIR}/TubeTKConfig.cmake @ONLY )
 
