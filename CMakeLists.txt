@@ -333,7 +333,7 @@ set( TubeTK_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/USTK
   )
 
-if( WIN32 )
+if( MSVC )
  set( TubeTK_EXECUTABLE_DIRS
    ${GenerateCLP_DIR}/${CMAKE_BUILD_TYPE}
    ${ITK_DIR}/bin/${CMAKE_BUILD_TYPE}
