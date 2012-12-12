@@ -1,4 +1,4 @@
-#############################################################################
+##############################################################################
 #
 # Library:   TubeTK
 #
@@ -19,37 +19,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#############################################################################
+##############################################################################
 
-#############################################################################
+##############################################################################
 #
 # Configure the following variables and move this file to the directory above
-#   the tubetk source directory.
+#   the TubeTK source directory.
 #
-set( SITE_NAME "Eternia.Kitware" )
-set( SITE_PLATFORM "Ubuntu-12.10-64" )
+set( SITE_NAME "Ginger.Aylward.Org" )
+set( SITE_PLATFORM "Windows7-VS2010-64" )
 set( SITE_BUILD_TYPE "Release" )
-set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
+set( SITE_CMAKE_GENERATOR "Visual Studio 10 Win64" )
 
 set( TUBETK_GIT_REPOSITORY "http://tubetk.org/TubeTK.git" )
-set( TUBETK_SOURCE_DIR "/home/aylward/src/TubeTK" )
-set( TUBETK_BINARY_DIR "/home/aylward/src/TubeTK-${SITE_BUILD_TYPE}" )
+set( TUBETK_SOURCE_DIR "C:/Users/aylward/src/TubeTK" )
+set( TUBETK_BINARY_DIR "C:/Users/aylward/src/TubeTK-${SITE_BUILD_TYPE}" )
 
-set( ENV{DISPLAY} ":0" )
+set( SITE_MAKE_COMMAND "${CTEST_BUILD_COMMAND}" )
 
-set( SITE_MAKE_COMMAND "make" )
+set( SITE_CMAKE_COMMAND "C:/Program Files/CMake 2.8/bin/cmake" )
+set( SITE_CTEST_COMMAND "C:/Program Files/CMake 2.8/bin/ctest" )
 
-set( SITE_CMAKE_COMMAND "/usr/local/bin/cmake" )
-set( SITE_CTEST_COMMAND "/usr/local/bin/ctest" )
+set( SITE_QMAKE_COMMAND "C:/Qt/4.7.4/bin/qmake" )
 
-set( SITE_QMAKE_COMMAND "/usr/local/Trolltech/Qt-4.7.4/bin/qmake" )
+set( SITE_GIT_COMMAND "C:/Program Files (x86)/Git/bin/git" )
+set( SITE_SVN_COMMAND "C:/Program Files/TortoiseSVN/bin/svn" )
+##############################################################################
 
-set( SITE_GIT_COMMAND "/usr/bin/git" )
-set( SITE_SVN_COMMAND "/usr/bin/svn" )
-#############################################################################
-
-#############################################################################
-#
+##############################################################################
+###########################################################################
 # The following advanced variables should only be changed by experts
 #
 set( TUBETK_SCRIPT_DIR "${TUBETK_SOURCE_DIR}/CMake" )
@@ -78,10 +76,11 @@ set( CTEST_CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 
-set( SITE_CXX_FLAGS
-  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
-set( SITE_C_FLAGS
-  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
+set( SITE_EXECUTABLE_DIRS "${TUBETK_BINARY_DIR}/ModuleDescriptionParser-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/GenerateCLP-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/Insight-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/VTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/lib/TubeTK/Plugins/${SITE_BUILD_TYPE}" )
+set( ENV{PATH} "${SITE_EXECUTABLE_DIRS};$ENV{PATH}" )
+
+set( SITE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /GR /MP /EHsc" )
+set( SITE_C_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /MP" )
 set( SITE_EXE_LINKER_FLAGS "" )
 set( SITE_SHARED_LINKER_FLAGS "" )
 
