@@ -39,29 +39,57 @@ limitations under the License.
 #include "tubeDensityProbabilityCLP.h"
 
 
-/** Forward decl. */
-int DoIt( int, char **argv );
+template< unsigned int VDimension >
+int DoIt( int argc, char **argv );
 
+// This needs to be declared for tubeCLIHelperFunctions.
+template< class TPixel, unsigned int VDimension >
+int DoIt( int argc, char **argv ){ return 0; }
+#include "tubeCLIHelperFunctions.h"
 
 int main(int argc, char **argv)
 {
   PARSE_ARGS;
 
-  return DoIt( argc, argv );
+  itk::ImageIOBase::IOComponentType componentType;
+  unsigned int dimension;
+
+  try
+    {
+    tube::GetImageInformation( inTubeFile, componentType, dimension );
+    switch( dimension )
+      {
+      case 2:
+        return DoIt< 2 >( argc, argv );
+      case 3:
+        return DoIt< 3 >( argc, argv );
+      default:
+        return EXIT_FAILURE;
+      }
+    }
+  catch( const std::exception & exception )
+    {
+    tube::ErrorMessage( exception.what() );
+    return EXIT_FAILURE;
+    }
+  return EXIT_FAILURE;
 }
 
 
+template< unsigned int VDimension >
 int DoIt(int argc, char **argv)
 {
   PARSE_ARGS;
 
-  typedef itk::Image< short, 3 >             ImageType;
-  typedef itk::GroupSpatialObject<3>         GroupType;
-  typedef itk::ImageFileReader< ImageType >  ImageReaderType;
-  typedef itk::SpatialObjectReader<3>        SOReaderType;
-  typedef itk::VesselTubeSpatialObject< 3 >  TubeType;
-  typedef TubeType::TubePointType            TubePointType;
-  typedef TubeType::TransformType            TubeTransformType;
+  const unsigned int Dimension = VDimension;
+
+  typedef itk::Image< short, Dimension >             ImageType;
+  typedef itk::GroupSpatialObject< Dimension >       GroupType;
+  typedef itk::ImageFileReader< ImageType >          ImageReaderType;
+  typedef itk::SpatialObjectReader< Dimension >      SOReaderType;
+  typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
+  typedef typename TubeType::TubePointType           TubePointType;
+  typedef typename TubeType::TransformType           TubeTransformType;
 
 
   tube::CLIProgressReporter progressReporter(
@@ -73,39 +101,39 @@ int DoIt(int argc, char **argv)
   /*
    * Read in spatial object file (tubes)
    */
-  SOReaderType::Pointer soReader = SOReaderType::New();
+  typename SOReaderType::Pointer soReader = SOReaderType::New();
   soReader->SetFileName( inTubeFile.c_str() );
   soReader->Update();
-  GroupType::Pointer group = soReader->GetGroup();
+  typename GroupType::Pointer group = soReader->GetGroup();
 
   progressReporter.Report(0.1);
 
   /*
    * Read in ATLAS EMD image
    */
-  ImageReaderType::Pointer imReader = ImageReaderType::New();
+  typename ImageReaderType::Pointer imReader = ImageReaderType::New();
   imReader->SetFileName( inMeanImageFile.c_str() );
   imReader->Update();
-  ImageType::Pointer meanImage = imReader->GetOutput();
+  typename ImageType::Pointer meanImage = imReader->GetOutput();
 
   progressReporter.Report(0.2);
 
-
-  TubeType::ChildrenListType * tubeList = group->GetChildren(99999, "Tube");
-  TubeType::ChildrenListType::const_iterator tubeIt = tubeList->begin();
+  char childName[] = "Tube";
+  typename TubeType::ChildrenListType * tubeList = group->GetChildren(99999, childName);
+  typename TubeType::ChildrenListType::const_iterator tubeIt = tubeList->begin();
   TubePointType tubePoint;
-  TubeTransformType::Pointer tubeTransform;
+  typename TubeTransformType::Pointer tubeTransform;
   std::ofstream writeStream;
   writeStream.open(outFile.c_str(), std::ios::binary | std::ios::out);
   while(tubeIt != tubeList->end()) // Iterate over tubes
     {
-    TubeType::Pointer tube = dynamic_cast<TubeType *>((*tubeIt).GetPointer());
+    typename TubeType::Pointer tube = dynamic_cast<TubeType *>((*tubeIt).GetPointer());
 
     tube->RemoveDuplicatePoints();
     tube->ComputeTangentAndNormals();
 
-    itk::Point<double, 3> pnt;
-    itk::Index< 3 > indx;
+    itk::Point<double, Dimension> pnt;
+    itk::Index< Dimension > indx;
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
     for( unsigned int i=0; i<tube->GetNumberOfPoints() ; i++)
