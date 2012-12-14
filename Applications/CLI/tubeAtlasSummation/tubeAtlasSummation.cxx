@@ -107,7 +107,7 @@ int DoIt( int argc, char *argv[] )
   assert(outputSize.size() == Dimensions);
 
   AtlasBuilderType::SizeType size;
-  for (int i=0; i < outputSpacing.size(); ++i)
+  for (size_t i=0; i < outputSpacing.size(); ++i)
     {
     size[i] = outputSpacing[i];
     }
@@ -116,7 +116,7 @@ int DoIt( int argc, char *argv[] )
   assert( outputSpacing.size() > 0 );
 
   AtlasBuilderType::SpacingType spacing;
-  for (int i=0; i < outputSpacing.size(); ++i)
+  for (size_t i=0; i < outputSpacing.size(); ++i)
     {
     spacing[i] = outputSpacing[i];
     }

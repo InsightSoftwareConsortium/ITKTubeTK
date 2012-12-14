@@ -108,7 +108,7 @@ int DoIt(int argc, char **argv)
     itk::Index< 3 > indx;
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
-    for(int i=0; i<tube->GetNumberOfPoints() ; i++)
+    for( unsigned int i=0; i<tube->GetNumberOfPoints() ; i++)
       {
       tubePoint = static_cast<TubePointType>(tube->GetPoints()[i]); // Get point
       pnt = tubePoint.GetPosition(); // Get point's position
