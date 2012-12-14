@@ -178,8 +178,9 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
     }
 
   // Get the list of tubes
+  char tubeName[] = "Tube";
   ChildrenListType* tubeList = InputTube->GetChildren(this->m_ChildrenDepth,
-                                                      "Tube");
+                                                      tubeName);
 
   //int size = tubeList->size();
 
