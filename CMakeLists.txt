@@ -175,6 +175,16 @@ if( UNIX )
 endif()
 
 #-----------------------------------------------------------------------------
+# JsonCpp Setup
+option( USE_SYSTEM_JsonCpp
+  "Exclude JsonCpp from SuperBuild and use and existing build instead" OFF )
+mark_as_advanced( USE_SYSTEM_JsonCpp )
+if( USE_SYSTEM_JsonCpp )
+  find_package( JsonCpp REQUIRED )
+  include_directories( ${JsonCpp_INCLUDE_DIRS} )
+endif()
+
+#-----------------------------------------------------------------------------
 # ITK Setup
 option( USE_SYSTEM_ITK
   "Exclude ITK from SuperBuild and use an existing build instead." OFF )
@@ -276,6 +286,9 @@ if( TubeTK_USE_SUPERBUILD )
   return()
 
 else( TubeTK_USE_SUPERBUILD )
+
+  find_package( JsonCpp REQUIRED )
+  include_directories( ${JsonCpp_INCLUDE_DIRS} )
 
   find_package( ITK REQUIRED )
   include( ${ITK_USE_FILE} )

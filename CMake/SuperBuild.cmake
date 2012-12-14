@@ -37,7 +37,48 @@ set( TubeTK_DEPENDS "" )
 set( gen "${CMAKE_GENERATOR}" )
 
 ##
-## Check if sytem ITK or superbuild ITK (or ITKv4)
+## Check if system TubeTK or superbuild TubeTK
+##
+if( NOT USE_SYSTEM_JsonCpp )
+  if( NOT GIT_EXECUTABLE )
+    find_package( Git REQUIRED )
+  endif( NOT GIT_EXECUTABLE )
+
+  option( GIT_PROTOCOL_HTTP
+    "Use HTTP for git access (useful if behind a firewall)" OFF )
+  if( GIT_PROTOCOL_HTTP )
+    set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+  else( GIT_PROTOCOL_HTTP )
+    set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+  endif( GIT_PROTOCOL_HTTP )
+  mark_as_advanced( GIT_PROTOCOL )
+
+  ##
+  ## JsonCpp
+  ##
+  set( proj JsonCpp )
+  ExternalProject_Add( JsonCpp
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/jsoncpp-cmake.git"
+    GIT_TAG "691d15e2b0f9a87a5c0861da48976fca2bd2c70d"
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/JsonCpp"
+    BINARY_DIR JsonCpp-Build
+    CMAKE_GENERATOR ${gen}
+    CMAKE_ARGS
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DBUILD_SHARED_LIBS:BOOL=${shared}
+    INSTALL_COMMAND ""
+    )
+  set( JsonCpp_DIR "${base}/JsonCpp-Build" )
+  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "JsonCpp" )
+endif( NOT USE_SYSTEM_JsonCpp )
+
+
+##
+## Check if system ITK or superbuild ITK (or ITKv4)
 ##
 if( NOT USE_SYSTEM_ITK )
 
@@ -441,6 +482,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_ITKV4:BOOL=${TubeTK_USE_ITKV4}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
+    -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
