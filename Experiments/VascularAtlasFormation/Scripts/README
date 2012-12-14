@@ -1,0 +1,35 @@
+!!!CAUTION!!!: The vascular atlas generation experiments are highly experimental at
+the current stage.
+
+The AtlasGenerationDriver.py is the central script that coordinates and runs the
+atlas generation procedure. It can serve as an template for any further experiments
+that might be added to TubeTK in the future.
+
+Type
+
+$ python AtlasGenerationDriver.py --help
+
+to get a list of available command line options.
+
+An exemplary call looks like
+
+$python AtlasGenerationDriver.py --dest /tmp/ --data Data.json --cvruns 3 --config Config.json \
+  --phantom /Data/BrainWebPhantom/phantom.mha --cells 500 --stage=4
+
+which runs the fourth stage of atlas generation. For a more detailed description of the various
+stages of processing, it is useful to take a look at the in-code documentation of the
+AtlasGenerationDriver.py script.
+
+Two core command-line parameters are the '--data' (set to 'Data.json') and the '--config'
+parameter (set to 'Config.json' in the example). For both JSON files, examples exist in the
+current directory.
+
+'Config.json' sets the paths of all the executables that are used during atlas generation. The
+paths are relativ to the TubeTK build directory, which as to be set on the command line as
+
+$ export TUBETK_BUILD=<PathToTubeTKBuild>
+
+'Data.json' contains the absolute paths for the source data -
+here male and female vascular networks as well as corresponding MRA and MRI (T1) images. The
+'--phantom' parameter specifies the phantom to use (here BrainWeb T1 phantom). To understand
+the remaining parameters, please read the original publication in the 'Resources\' directory.
