@@ -86,12 +86,15 @@ if( TubeTK_USE_KWSTYLE )
   option( KWSTYLE_USE_VIM_FORMAT
     "Set KWStyle to generate errors with a VIM-compatible format."
     OFF )
+  mark_as_advanced( KWSTYLE_USE_VIM_FORMAT )
   option( KWSTYLE_USE_MSVC_FORMAT
     "Set KWStyle to generate errors with a VisualStudio-compatible format."
     OFF )
+  mark_as_advanced( KWSTYLE_USE_MSVC_FORMAT )
   option( KWSTYLE_DASHBOARD_SUBMISSION
     "Set KWStyle arguments to generate report for dashboard submission."
     ON )
+  mark_as_advanced( KWSTYLE_DASHBOARD_SUBMISSION )
 
   if( KWSTYLE_DASHBOARD_SUBMISSION )
     set( KWSTYLE_ARGUMENTS -lesshtml
