@@ -366,7 +366,7 @@ endif( TubeTK_USE_QT )
 ##
 ## LibSVM
 ##
-if ( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_LIBSVM )
   set( proj LIBSVM )
   ExternalProject_Add(
     ${proj}
@@ -414,6 +414,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_ITKV4:BOOL=${TubeTK_USE_ITKV4}
+    -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
