@@ -380,12 +380,7 @@ ExternalProject_Add( ImageViewer
   CMAKE_ARGS
     "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
     "-DITK_DIR:PATH=${ITK_DIR}"
-  # For convenience.
-  INSTALL_COMMAND "${CMAKE_COMMAND}"
-    -E
-    copy_if_different
-    "${CMAKE_BINARY_DIR}/ImageViewer-Build/ImageViewer-build/ImageViewer/ImageViewer"
-    "${CMAKE_BINARY_DIR}/TubeTK-Build/bin/ImageViewer"
+  INSTALL_COMMAND ""
   DEPENDS
     ${ImageViewer_DEPENDS}
   )
