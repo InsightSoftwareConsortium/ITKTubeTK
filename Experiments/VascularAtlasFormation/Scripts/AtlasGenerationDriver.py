@@ -17,25 +17,6 @@ LOGGING_LEVELS = {
     'debug': logging.DEBUG}
 
 
-def setup(config):
-    """
-
-    Reads the environment variable TUBETK_BUILD which is
-    supposed to point to the TubeTK build directory and adds
-    that to the relative  executable path names from the
-    config file, given by the user.
-
-    """
-    TubeTK_build = os.getenv( "TUBETK_BUILD", None )
-    if TubeTK_build is None:
-        raise Exception( "TUBETK_BUILD not set!" )
-
-    for element in config["Exec"]:
-        full_exec_path =  os.path.join(TubeTK_build, config["Exec"][element] )
-        config["Exec"][element] = full_exec_path
-    return config
-
-
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -73,8 +54,7 @@ def main(argv=None):
         return -1
 
     config_fid = open(options.config).read()
-    config_dat = json.loads(config_fid)
-    config = setup(config_dat)
+    config = json.loads(config_fid)
 
     json_fid = open(options.data).read()
     json_dat = json.loads( json_fid )

@@ -241,6 +241,12 @@ option( TubeTK_USE_LIBSVM
   OFF )
 
 #-----------------------------------------------------------------------------
+# Boost setup
+option( TubeTK_USE_Boost
+  "Use Boost libraries."
+  OFF )
+
+#-----------------------------------------------------------------------------
 # CTK Setup
 if( TubeTK_USE_QT )
   option( TubeTK_USE_CTK

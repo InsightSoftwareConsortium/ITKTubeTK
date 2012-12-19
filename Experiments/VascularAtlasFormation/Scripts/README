@@ -25,9 +25,8 @@ parameter (set to 'Config.json' in the example). For both JSON files, examples e
 current directory.
 
 'Config.json' sets the paths of all the executables that are used during atlas generation. The
-paths are relativ to the TubeTK build directory, which as to be set on the command line as
-
-$ export TUBETK_BUILD=<PathToTubeTKBuild>
+paths are absolute paths to the executables that are being used withint the AtlasGenerationDriver.py
+script.
 
 'Data.json' contains the absolute paths for the source data -
 here male and female vascular networks as well as corresponding MRA and MRI (T1) images. The
