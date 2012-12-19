@@ -61,29 +61,10 @@ namespace tube
  */
 class WLSubtreeKernel : public GraphKernel
   {
-  /** Public types/data members */
   public:
 
     typedef std::map<std::string, int>  LabelMapType;
     typedef std::vector<LabelMapType>   LabelMapVectorType;
-
-
-  /** Private types/data members */
-  private:
-
-    /** Our initial set of vertex labels */
-    std::set<int> m_initialLabelSet;
-
-    /** Subtree height */
-    int m_subtreeHeight;
-
-    /** Label map + Count */
-    const LabelMapVectorType & m_labelMap;
-    const int m_labelCount;
-
-
-  /** Public member functions */
-  public:
 
     /** CTOR - Variant with no vertex label information */
     WLSubtreeKernel( const GraphType &G0,
@@ -114,8 +95,17 @@ class WLSubtreeKernel : public GraphKernel
                                int subtreeHeight);
 
 
-  /** Private static/non-static functions */
   private:
+
+    /** Our initial set of vertex labels */
+    std::set<int> m_initialLabelSet;
+
+    /** Subtree height */
+    int m_subtreeHeight;
+
+    /** Label map + Count */
+    const LabelMapVectorType & m_labelMap;
+    const int m_labelCount;
 
     /*
      * Take a graph 'G' and use the label map information and the number of

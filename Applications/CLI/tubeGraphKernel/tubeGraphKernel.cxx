@@ -53,9 +53,9 @@ enum
  * stores the full path's the the graph files in 'list', as well
  * as the label (i.e., class assignment) information in 'labels'.
  */
-void readGraphList(const string &fileName,
-                   vector<string> &list,
-                   vector<int> &labels)
+void readGraphList(const std::string &fileName,
+                   std::vector<std::string> &list,
+                   std::vector<int> &labels)
 {
   list.clear();
   try
@@ -63,27 +63,27 @@ void readGraphList(const string &fileName,
     ptree pt;
     read_json(fileName, pt);
 
-    int nGraphs = boost::lexical_cast<int>(pt.get<string>("nGraphs"));
+    int nGraphs = boost::lexical_cast<int>( pt.get<string>("nGraphs") );
 
     int graphCount = 0;
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("graphList"))
+    BOOST_FOREACH( ptree::value_type &v, pt.get_child("graphList") )
       {
-      const string &file = lexical_cast<string>(v.second.data());
+      const string &file = lexical_cast<string>( v.second.data() );
       list.push_back( file );
       ++graphCount;
       }
 
     int labelCount = 0;
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("labels"))
+    BOOST_FOREACH( ptree::value_type &v, pt.get_child("labels") )
       {
-      int label = lexical_cast<int>(v.second.data());
+      int label = lexical_cast<int>( v.second.data() );
       labels.push_back( label );
       ++labelCount;
       }
-    assert(graphCount == nGraphs);
-    assert(labelCount == nGraphs);
+    assert( graphCount == nGraphs );
+    assert( labelCount == nGraphs );
     }
-  catch (std::exception &e)
+  catch( std::exception &e )
     {
     tube::FmtErrorMessage("Error reading JSON graph file %s (Msg: %s)",
       fileName.c_str(), e.what());
@@ -96,26 +96,27 @@ void readGraphList(const string &fileName,
  * Write a VNL matrix (the kernel matrix) 'K' to the file 'baseFileName'
  * in binary format (double).
  */
-void writeKernel(const string &baseFileName, const vnl_matrix<double> &K)
+void writeKernel(const std::string &baseFileName, const vnl_matrix<double> &K)
 {
-  string outFileName = baseFileName + ".bin";
-  ofstream ofs;
+  std::string outFileName = baseFileName + ".bin";
+  std::ofstream ofs;
+
   ofs.open( outFileName.c_str(), ios::binary | ios::out );
-  if (!ofs)
+  if( !ofs )
     {
     tube::FmtErrorMessage("Could not open kernel matrix %s for writing!",
       outFileName.c_str());
     throw std::exception();
     }
   ofs.write( (const char *)K.data_block(), K.size()*sizeof(double) );
-  if (ofs.bad())
+  if( ofs.bad() )
     {
     tube::FmtErrorMessage("Could not write kernel matrix %s!",
       outFileName.c_str());
     throw std::exception();
     }
   ofs.close();
-  if (ofs.fail())
+  if( ofs.fail() )
     {
     tube::FmtErrorMessage("Could not close kernel matrix file %s!",
       outFileName.c_str());
@@ -131,33 +132,33 @@ void writeKernel(const string &baseFileName, const vnl_matrix<double> &K)
  * that it can be immediately used with LIBSVM's svm-train
  * binary.
  */
-void writeKernelLibSVM(const string &baseFileName,
+void writeKernelLibSVM(const std::string &baseFileName,
                        const vnl_matrix<double> &K,
-                       const vector<int> &labels)
+                       const std::vector<int> &labels)
 {
-  string outFileName = baseFileName + ".libsvm";
-  ofstream ofs;
+  std::string outFileName = baseFileName + ".libsvm";
+  std::ofstream ofs;
   ofs.open( outFileName.c_str(), ios::binary | ios::out );
-  if (!ofs)
+  if( !ofs )
     {
     tube::FmtErrorMessage("Could not open kernel matrix %s for writing!",
       outFileName.c_str());
     throw std::exception();
     }
 
-  assert(K.rows() == labels.size());
+  assert( K.rows() == labels.size() );
 
-  for (unsigned int r = 0; r < K.rows(); ++r)
+  for(unsigned int r = 0; r < K.rows(); ++r)
     {
     ofs << labels[r] << " " << "0:" << r+1 << " ";
-    for (unsigned int c = 0; c < K.cols()-1; ++c)
+    for(unsigned int c = 0; c < K.cols()-1; ++c)
       {
       ofs << c+1 << ":" << K[r][c] << " ";
       }
-    ofs << K.cols() << ":" << K[r][K.cols()-1] << endl;
+    ofs << K.cols() << ":" << K[r][K.cols()-1] << std::endl;
     }
   ofs.close();
-  if (ofs.fail())
+  if( ofs.fail() )
     {
     tube::FmtErrorMessage("Could not close kernel matrix file %s!",
       outFileName.c_str());
@@ -170,7 +171,7 @@ void writeKernelLibSVM(const string &baseFileName,
 bool fileExists(const std::string &fileName)
 {
   std::ifstream file( fileName.c_str() );
-  if (!file.good())
+  if( !file.good() )
     {
     return false;
     }
@@ -189,8 +190,8 @@ bool fileExists(const std::string &fileName)
 GraphKernel::GraphType loadGraph(string graphFile)
 {
   const char * labelFile = 0;
-  string labelFileStr = graphFile + ".vertexLabel";
-  if (fileExists(labelFileStr))
+  std::string labelFileStr = graphFile + ".vertexLabel";
+  if( fileExists(labelFileStr) )
     {
     labelFile = labelFileStr.c_str();
     }
@@ -222,20 +223,20 @@ int main(int argc, char **argv)
      *
      */
 
-    vector<string> listA, listB;
-    vector<int> labelsB, labelsA;
+    std::vector<string> listA, listB;
+    std::vector<int> labelsB, labelsA;
     readGraphList( graphListA, listA, labelsA );
     readGraphList( graphListB, listB, labelsB );
 
     int N = listA.size();
     int M = listB.size();
 
-    assert( N > 0 && M > 0);
+    assert( N > 0 && M > 0 );
 
-    tube::FmtDebugMessage("Read N=%d entries from %s.", N, graphListA.c_str());
-    tube::FmtDebugMessage("Read M=%d entries from %s.", M, graphListB.c_str());
+    tube::FmtDebugMessage( "Read N=%d entries from %s.", N, graphListA.c_str() );
+    tube::FmtDebugMessage( "Read M=%d entries from %s.", M, graphListB.c_str() );
 
-    vnl_matrix<double> K(N, M);
+    vnl_matrix<double> K( N, M );
     K.fill(0.0);
 
     /*
@@ -255,9 +256,9 @@ int main(int argc, char **argv)
     WLSubtreeKernel::LabelMapVectorType labelMap(subtreeHeight);
     int labelCount = 0;
 
-    if (graphKernelType == GK_WLKernel)
+    if( graphKernelType == GK_WLKernel )
       {
-      for (int i = 0; i < N; ++i)
+      for( int i = 0; i < N; ++i )
         {
         tube::FmtInfoMessage("Adding data from graph %s",
           listA[i].c_str());
@@ -280,10 +281,10 @@ int main(int argc, char **argv)
      *
      */
 
-    for (int i = 0; i < N; ++i)
+    for( int i = 0; i < N; ++i )
       {
       GraphKernel::GraphType f = loadGraph(listA[i]);
-      for (int j = 0; j < M; ++j)
+      for( int j = 0; j < M; ++j )
         {
         GraphKernel::GraphType g = loadGraph(listB[j]);
 
@@ -291,7 +292,7 @@ int main(int argc, char **argv)
           i,j);
 
         GraphKernel *gk = 0;
-        switch(graphKernelType)
+        switch( graphKernelType )
           {
           case GK_SPKernel:
             {
@@ -326,9 +327,9 @@ int main(int argc, char **argv)
     writeKernel( outputKernel, K );
     writeKernelLibSVM( outputKernel, K, labelsA );
     }
-  catch (std::exception &e)
+  catch(std::exception &e)
     {
-    tube::ErrorMessage("Exiting ...");
+    tube::ErrorMessage( "Exiting ..." );
     return EXIT_FAILURE;
     }
   return EXIT_SUCCESS;

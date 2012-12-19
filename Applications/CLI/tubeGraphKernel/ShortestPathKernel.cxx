@@ -25,8 +25,6 @@ limitations under the License.
 
 
 using namespace boost;
-using namespace std;
-
 
 namespace tube
 {
@@ -36,38 +34,38 @@ namespace tube
 ShortestPathKernel::GraphType
 ShortestPathKernel::FloydTransform(const GraphType &in)
 {
-  int nVertices = num_vertices(in);
+  int nVertices = num_vertices( in );
 
-  DistanceMatrixType distances(nVertices);
-  DistanceMatrixMapType dm(distances, in);
+  DistanceMatrixType distances( nVertices );
+  DistanceMatrixMapType dm( distances, in );
 
-  floyd_warshall_all_pairs_shortest_paths(in, dm);
+  floyd_warshall_all_pairs_shortest_paths( in, dm );
 
   GraphType out(nVertices);
-  assert(nVertices == num_vertices(out));
+  assert( nVertices == num_vertices(out) );
 
-  ConstVertexAllMapType mapIn = get(vertex_all, in);
-  VertexAllMapType mapOut = get(vertex_all, out);
+  ConstVertexAllMapType mapIn = get( vertex_all, in );
+  VertexAllMapType mapOut = get( vertex_all, out );
 
-  for (int i=0; i<nVertices; ++i)
+  for( int i=0; i<nVertices; ++i )
     {
-    VertexType v0 = vertex(i,in);   // Vertex type of i-th node in input graph
-    VertexType v1 = vertex(i,out);  // Vertex type of i-th node in output graph
-    put(mapOut, v1, get(mapIn, v0));
+    VertexType v0 = vertex( i,in );   // Vertex type of i-th node in input graph
+    VertexType v1 = vertex( i,out );  // Vertex type of i-th node in output graph
+    put(mapOut, v1, get( mapIn, v0 ) );
     }
 
-  for(int i=0; i<nVertices; ++i)
+  for( int i=0; i<nVertices; ++i )
     {
-    for (int j=0; j<nVertices; ++j)
+    for( int j=0; j<nVertices; ++j )
       {
       // As long as we do not INF distance between (i,j), and ...
-      if (dm[i][j] != numeric_limits<double>::max())
+      if ( dm[i][j] != std::numeric_limits<double>::max() )
         {
         // the edge exists ...
-        if (!edge(i, j, out).second)
+        if ( !edge( i, j, out ).second )
           {
           // add an edge with the shortest path length
-          add_edge(i, j, dm[i][j], out);
+          add_edge( i, j, dm[i][j], out );
           }
         }
       }
@@ -89,19 +87,19 @@ double ShortestPathKernel::Compute(void)
 
 
   // Get the weight maps for both Floyd-transformed graphs
-  EdgeWeightMapType wmFG0 = get( edge_weight, m_FG0);
+  EdgeWeightMapType wmFG0 = get( edge_weight, m_FG0 );
   EdgeWeightMapType wmFG1 = get( edge_weight, m_FG1 );
 
 
   // Iterate over all the edges of Floyd-transformed graph fg0
-  for ( tie( aIt, aEnd ) = edges( m_FG0 ); aIt != aEnd; ++aIt )
+  for( tie( aIt, aEnd ) = edges( m_FG0 ); aIt != aEnd; ++aIt )
     {
     const EdgeDescriptorType &e0 = *aIt;
     int src_type = m_FG0[source(e0, m_FG0)].type; // Type of start vertex
     int dst_type = m_FG0[target(e0, m_FG0)].type; // Type of end vertex
 
     // Iterate over all the edges of Floyd-transformed graph fg1
-    for ( tie( bIt, bEnd ) = edges( m_FG1 ); bIt != bEnd; ++bIt )
+    for( tie( bIt, bEnd ) = edges( m_FG1 ); bIt != bEnd; ++bIt )
       {
       cntEdgeEvaluations++;
       const EdgeDescriptorType &e1 = *bIt;
@@ -116,13 +114,13 @@ double ShortestPathKernel::Compute(void)
        */
       double weightE0 = wmFG0[*aIt];
       double weightE1 = wmFG1[*bIt];
-      if (!fabs(weightE0 - weightE1) < numeric_limits<double>::epsilon())
+      if( !fabs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon() )
         {
         continue;
         }
 
       double edgeKernelValue = 0.0;
-      switch (m_edgeKernelType)
+      switch ( m_edgeKernelType )
         {
         case EDGE_KERNEL_DEL:
           /*
@@ -130,9 +128,9 @@ double ShortestPathKernel::Compute(void)
            * 1 if types are equal, 0 otherwise
            */
           bool vertexTypeCheck =
-            (src_type == m_FG1[source(e1, m_FG1)].type) &&
-            (dst_type == m_FG1[target(e1, m_FG1)].type);
-          if (!vertexTypeCheck)
+            ( src_type == m_FG1[source(e1, m_FG1)].type ) &&
+            ( dst_type == m_FG1[target(e1, m_FG1)].type );
+          if( !vertexTypeCheck )
             {
             continue;
             }

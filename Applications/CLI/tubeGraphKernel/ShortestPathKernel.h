@@ -55,22 +55,10 @@ namespace tube
  */
 class ShortestPathKernel : public GraphKernel
   {
-  /** Public types/data members */
   public:
 
     /** Edge kernel types */
     static const int EDGE_KERNEL_DEL = 0;
-
-  /** Private types/data members */
-  private:
-
-    /** Floyd-transformed graphs */
-    GraphType m_FG0, m_FG1;
-
-    int m_edgeKernelType;
-
-  /** Public static/non-static functions */
-  public:
 
     /** CTOR - Consumer sets graphs */
     ShortestPathKernel(const GraphType &G0, const GraphType &G1) :
@@ -84,8 +72,12 @@ class ShortestPathKernel : public GraphKernel
     double Compute(void);
 
 
-  /** Private static/non-static functions */
   private:
+
+    /** Floyd-transformed graphs */
+    GraphType m_FG0, m_FG1;
+
+    int m_edgeKernelType;
 
     /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
     GraphType FloydTransform(const GraphType &in);

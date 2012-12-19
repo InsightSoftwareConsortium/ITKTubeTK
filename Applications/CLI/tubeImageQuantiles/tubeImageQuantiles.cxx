@@ -49,7 +49,6 @@ limitations under the License.
 
 enum { TDimensions = 3 };
 
-using namespace std;
 using namespace boost;
 using namespace boost::accumulators;
 
@@ -72,8 +71,8 @@ typedef itk::ImageRegionConstIterator<ImageType>          ImageIteratorType;
  * are actually never stored.
  */
 void computeQuantiles( ImageType::Pointer image,
-                       const vector<float> & quantiles,
-                       vector<ImagePixelType> & quantileValues)
+                       const std::vector<float> & quantiles,
+                       std::vector<ImagePixelType> & quantileValues)
 {
   assert(!quantileValues.size());
 
@@ -83,10 +82,10 @@ void computeQuantiles( ImageType::Pointer image,
    * estimate exactly one of the given N desired quantile. If
    * the desired quantile is not within (0,1), throw an exception.
    */
-  vector<QuantileAccumulatorType *> accVec;
+  std::vector<QuantileAccumulatorType *> accVec;
   BOOST_FOREACH(float q, quantiles)
     {
-    if (q <= 0 || q >= 1)
+    if(q <= 0 || q >= 1)
       {
       tube::ErrorMessage("Check quantile range!");
       throw std::exception();
@@ -106,7 +105,7 @@ void computeQuantiles( ImageType::Pointer image,
    */
   ImageIteratorType imIt( image, image->GetLargestPossibleRegion() );
   imIt.GoToBegin();
-  while(!imIt.IsAtEnd())
+  while( !imIt.IsAtEnd() )
     {
     ImagePixelType p = imIt.Get();
     BOOST_FOREACH( QuantileAccumulatorType *acc, accVec )
@@ -151,9 +150,9 @@ void computeQuantiles( ImageType::Pointer image,
  *     ]
  *   }
  */
-void writeQuantilesToFile( const vector<float>& quantiles,
-                           const vector<ImagePixelType>& quantileValues,
-                           const string &outFile )
+void writeQuantilesToFile( const std::vector<float>& quantiles,
+                           const std::vector<ImagePixelType>& quantileValues,
+                           const std::string &outFile )
 {
   tube::FmtInfoMessage( "Writing %d quantiles to %s",
         quantiles.size(), outFile.c_str());
@@ -200,13 +199,13 @@ int main( int argc, char*argv[] )
     imReader->Update();
     im = imReader->GetOutput();
     }
-  catch (itk::ExceptionObject &ex)
+  catch ( itk::ExceptionObject &ex )
     {
     tube::ErrorMessage( ex.GetDescription() );
     return EXIT_FAILURE;
     }
 
-   vector<float> quantileValues;
+  std::vector<float> quantileValues;
    try
     {
     computeQuantiles(im, quantiles, quantileValues);

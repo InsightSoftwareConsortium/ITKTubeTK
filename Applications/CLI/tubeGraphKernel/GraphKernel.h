@@ -58,9 +58,9 @@ class GraphKernel
 
     /** Node meta-information */
     struct nodeInfoType
-    {
+      {
       int type;
-    };
+      };
 
     /** The graph type */
     typedef boost::adjacency_list< boost::listS,
@@ -110,10 +110,10 @@ class GraphKernel
 
     /** CTOR */
     GraphKernel(const GraphType &G0, const GraphType &G1)
-    {
+      {
       m_G0 = G0;
       m_G1 = G1;
-    }
+      }
 
     /** Read graph from adj file */
     static GraphType GraphFromAdjFile( const char *graphFile,
@@ -126,7 +126,6 @@ class GraphKernel
     virtual double Compute(void) { return 0.0; };
 
 
-  /** Protected data members */
   protected:
 
     /** Two input graphs */
@@ -134,10 +133,6 @@ class GraphKernel
 
     /** Label vectors */
     std::vector<int> labelsG0, labelsG1;
-
-
-  /** Protected static/non-static functions */
-  protected:
 
     /** Build a string representation of the neighbors of v-th vertex */
     static std::string BuildNeighborStr(const GraphType &G, int v);
