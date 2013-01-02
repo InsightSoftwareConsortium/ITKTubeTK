@@ -143,4 +143,19 @@ MIDAS_ADD_TEST( ImageCompareCommand-Test6
 set_tests_properties( ImageCompareCommand-Test6
                       PROPERTIES WILL_FAIL true )
 
+add_test( JsonCompareCommand-Test1
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest1.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
 
+add_test( JsonCompareCommand-Test2
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
+set_tests_properties( JsonCompareCommand-Test2
+                      PROPERTIES WILL_FAIL true )
+
+add_test( JsonCompareCommand-Test3
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline2.json )
