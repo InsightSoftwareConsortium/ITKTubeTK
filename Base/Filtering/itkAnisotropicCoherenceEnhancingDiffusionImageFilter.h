@@ -115,13 +115,22 @@ public:
                                                DiffusionTensorNeighborhoodType;
 
   /** Set the contrast parameter */
-  void SetContrastParameterLambdaC( double value );
+  itkSetMacro( ContrastParameterLambdaC, double);
 
   /** Set Alpha */
-  void SetAlpha( double value );
+  itkSetMacro( Alpha, double);
 
-  /** Set the sigma value */
-  void SetSigma( double value );
+  /**  Sigma value for the Gaussian derivative filters */
+  itkSetMacro( Sigma, double );
+
+  /** Sigma value for the outer Gaussian smoothing filter */
+  itkSetMacro( SigmaOuter, double );
+
+  itkGetMacro( Sigma, double );
+  itkGetMacro( SigmaOuter, double );
+  itkGetMacro( ContrastParameterLambdaC, double );
+  itkGetMacro( Alpha, double );
+
 
 protected:
   AnisotropicCoherenceEnhancingDiffusionImageFilter();
@@ -139,6 +148,7 @@ private:
   double     m_ContrastParameterLambdaC;
   double     m_Alpha;
   double     m_Sigma;
+  double     m_SigmaOuter;
 };
 
 

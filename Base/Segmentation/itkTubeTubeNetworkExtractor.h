@@ -44,10 +44,10 @@ public:
 
   /**
    * Standard self typedef */
-  typedef TubeNetworkExtractor          Self;
-  typedef Object                    Superclass;
-  typedef SmartPointer<Self>        Pointer;
-  typedef SmartPointer<const Self>  ConstPointer;
+  typedef TubeNetworkExtractor             Self;
+  typedef Object                           Superclass;
+  typedef SmartPointer<Self>               Pointer;
+  typedef SmartPointer<const Self>         ConstPointer;
 
   itkTypeMacro( Self, Object );
 

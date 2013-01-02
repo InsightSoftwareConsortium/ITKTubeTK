@@ -52,6 +52,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   m_ContrastParameterLambdaCED = 30.0;
   m_ContrastParameterLambdaEED = 20.0;
   m_Sigma = 1.0;
+  m_SigmaOuter = 1.0;
   m_Alpha = 0.001;
 }
 
@@ -79,6 +80,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
   StructureTensorFilter->SetInput( this->GetOutput() );
   StructureTensorFilter->SetSigma( m_Sigma );
+  StructureTensorFilter->SetSigmaOuter( m_SigmaOuter );
   StructureTensorFilter->Update();
 
   // Step 1.2: Identify the eigen vectors of the structure tensor
@@ -376,54 +378,6 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::SetSigma( double sigma)
-{
-  m_Sigma = sigma;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::SetThresholdParameterC( double threshold)
-{
-  m_ThresholdParameterC = threshold;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::SetContrastParameterLambdaEED( double contrast)
-{
-  m_ContrastParameterLambdaEED = contrast;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::SetContrastParameterLambdaCED( double contrast)
-{
-  m_ContrastParameterLambdaCED = contrast;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::SetContrastParameterLambdaHybrid( double contrast)
-{
-  m_ContrastParameterLambdaHybrid = contrast;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::SetAlpha( double alpha)
-{
-  m_Alpha = alpha;
-}
-
-template <class TInputImage, class TOutputImage>
-void
-AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
@@ -432,10 +386,13 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     << m_ContrastParameterLambdaCED << std::endl;
   os << indent << "EED Contrast parameter "
     << m_ContrastParameterLambdaEED << std::endl;
+  os << indent << "Threshold C parameter "
+    << m_ThresholdParameterC << std::endl;
   os << indent << "Hybrid Contrast parameter"
     << m_ContrastParameterLambdaHybrid << std::endl;
   os << indent << "Alpha " << m_Alpha << std::endl;
   os << indent << "Sigma " << m_Sigma << std::endl;
+  os << indent << "Sigma outer " << m_SigmaOuter << std::endl;
 }
 
 } // end namespace itk

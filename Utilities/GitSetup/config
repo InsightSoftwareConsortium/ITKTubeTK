@@ -7,3 +7,7 @@
 [stage]
 	url = git://tubetk.org/stage/TubeTK.git
 	pushurl = git@tubetk.org:stage/TubeTK.git
+[gerrit]
+	project = TubeTK
+	site = http://review.source.kitware.com
+	pushurl = $username@review.source.kitware.com:TubeTK

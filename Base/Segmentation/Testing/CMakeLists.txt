@@ -27,14 +27,13 @@ Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
-
-find_package( Tclsh )
-if( TCL_TCLSH )
-  add_test( PrintSelf-BaseSegmentation ${TCL_TCLSH}
-    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl
+find_package( PythonInterp )
+if( PYTHON_EXECUTABLE )
+  add_test( PrintSelf-BaseSegmentation ${PYTHON_EXECUTABLE}
+    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/Segmentation
     )
-endif( TCL_TCLSH )
+endif()
 
 if( Slicer3_INSTALL_BIN_DIR )
   set( BASE_SEGMENTATION_TESTS
@@ -184,13 +183,12 @@ MIDAS_ADD_TEST( itkTubeTubeExtractorTest
     MIDAS{Branch-truth.tre.md5}
   )
 
-# Keep this test commented out until we upload the baseline
-#MIDAS_ADD_TEST( itkTubeRidgeSeedGeneratorTest
-#  ${BASE_SEGMENTATION_TESTS}
-#  --compare MIDAS{itkTubeRidgeSeedGeneratorTest.lda00.mha.md5}
-#    ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
-#  itkTubeRidgeSeedGeneratorTest
-#    MIDAS{im0001.crop.mha.md5}
-#    MIDAS{im0001.vk.crop.mha.md5}
-#    ${TEMP}/itkTubeRidgeSeedGeneratorTest
-#  )
+MIDAS_ADD_TEST( itkTubeRidgeSeedGeneratorTest
+  ${BASE_SEGMENTATION_TESTS}
+  --compare MIDAS{itkTubeRidgeSeedGeneratorTest.lda00.mha.md5}
+            ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
+  itkTubeRidgeSeedGeneratorTest
+    MIDAS{im0001.crop.mha.md5}
+    MIDAS{im0001.vk.mask.crop.mha.md5}
+    ${TEMP}/itkTubeRidgeSeedGeneratorTest
+  )

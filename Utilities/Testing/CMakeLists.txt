@@ -1,24 +1,24 @@
 ##############################################################################
-# 
+#
 # Library:   TubeTK
-# 
+#
 # Copyright 2010 Kitware Inc. 28 Corporate Drive,
 # Clifton Park, NY, 12065, USA.
-# 
-# All rights reserved. 
-# 
+#
+# All rights reserved.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #       http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
+#
 ##############################################################################
 
 include_regular_expression( "^.*$" )
@@ -27,13 +27,12 @@ Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
-
-find_package( Tclsh )
-if( TCL_TCLSH )
-  add_test( PrintSelf-UtilitiesFilters ${TCL_TCLSH}
-              ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl  
+find_package( PythonInterp )
+if( PYTHON_EXECUTABLE )
+  add_test( PrintSelf-UtilitiesFilters ${PYTHON_EXECUTABLE}
+              ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.py
               ${TubeTK_SOURCE_DIR}/Utilities )
-endif( TCL_TCLSH )
+endif()
 
 if( Slicer3_INSTALL_BIN_DIR )
   set( UTILITIES_TESTS
@@ -56,20 +55,20 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 # Test CLI generation
 set( tubeCLIHelperFunctionsTest_SOURCE
      tubeCLIHelperFunctionsTest.cxx )
-generateclp( tubeCLIHelperFunctionsTest_SOURCE 
+generateclp( tubeCLIHelperFunctionsTest_SOURCE
              tubeCLIHelperFunctionsTest.xml )
-     
+
 # Add test here
 set( tubeUtilities_SRCS
   tubeUtilitiesPrintTest.cxx
-  tubeMessageTest.cxx 
-  tubeCLIFilterWatcherTest.cxx 
-  tubeCLIProgressReporterTest.cxx 
+  tubeMessageTest.cxx
+  tubeCLIFilterWatcherTest.cxx
+  tubeCLIProgressReporterTest.cxx
   ${tubeCLIHelperFunctionsTest_SOURCE} )
 
 include_directories( ${TubeTK_SOURCE_DIR}/Utilities )
 
-add_executable( tubeUtilitiesHeaderTest 
+add_executable( tubeUtilitiesHeaderTest
   tubeUtilitiesHeaderTest.cxx )
 target_link_libraries( tubeUtilitiesHeaderTest
   ${ITK_LIBRARIES} )
@@ -83,12 +82,12 @@ target_link_libraries( tubeUtilitiesTests
 add_test( tubeUtilitiesHeaderTest
   ${UTILITIES_HEADER_TEST} )
 
-add_test( tubeUtilitiesPrintTest 
+add_test( tubeUtilitiesPrintTest
             ${UTILITIES_TESTS}
             tubeUtilitiesPrintTest )
 
 ## Add tests here
-add_test( tubeMessageTest 
+add_test( tubeMessageTest
             ${UTILITIES_TESTS}
             tubeMessageTest )
 
@@ -144,4 +143,19 @@ MIDAS_ADD_TEST( ImageCompareCommand-Test6
 set_tests_properties( ImageCompareCommand-Test6
                       PROPERTIES WILL_FAIL true )
 
+add_test( JsonCompareCommand-Test1
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest1.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
 
+add_test( JsonCompareCommand-Test2
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
+set_tests_properties( JsonCompareCommand-Test2
+                      PROPERTIES WILL_FAIL true )
+
+add_test( JsonCompareCommand-Test3
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline2.json )

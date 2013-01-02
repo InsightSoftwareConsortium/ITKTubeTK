@@ -73,7 +73,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
   unsigned int featuresPerImage = m_ZeroScales.size()
     + (m_FirstScales.size()*(ImageDimension+1))
     + (m_SecondScales.size()*(ImageDimension+1))
-    + m_RidgeScales.size();
+    + m_RidgeScales.size() * 4;
 
   unsigned int numFeatures = this->GetNumberOfNJetImages()
     * featuresPerImage;
@@ -329,23 +329,41 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
     for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
       {
-      this->m_FeatureImageList[ vCount ] = LDAImageType::New();
-      this->m_FeatureImageList[ vCount ]->SetRegions(
-        m_NJetImageList[ njetImageNum ]->GetLargestPossibleRegion() );
-      this->m_FeatureImageList[ vCount ]->Allocate();
-      this->m_FeatureImageList[ vCount ]->CopyInformation(
-        m_NJetImageList[ njetImageNum ] );
-      itk::ImageRegionIteratorWithIndex< LDAImageType > iter(
+      for( unsigned int m=0; m<4; m++ )
+        {
+        this->m_FeatureImageList[ vCount+m ] = LDAImageType::New();
+        this->m_FeatureImageList[ vCount+m ]->SetRegions(
+          m_NJetImageList[ njetImageNum ]->GetLargestPossibleRegion() );
+        this->m_FeatureImageList[ vCount+m ]->Allocate();
+        this->m_FeatureImageList[ vCount+m ]->CopyInformation(
+          m_NJetImageList[ njetImageNum ] );
+        }
+      itk::ImageRegionIteratorWithIndex< LDAImageType > iterRidge(
         this->m_FeatureImageList[ vCount ],
         this->m_FeatureImageList[ vCount ]->GetLargestPossibleRegion() );
+      itk::ImageRegionIteratorWithIndex< LDAImageType > iterRound(
+        this->m_FeatureImageList[ vCount+1 ],
+        this->m_FeatureImageList[ vCount+1 ]->GetLargestPossibleRegion() );
+      itk::ImageRegionIteratorWithIndex< LDAImageType > iterCurve(
+        this->m_FeatureImageList[ vCount+2 ],
+        this->m_FeatureImageList[ vCount+2 ]->GetLargestPossibleRegion() );
+      itk::ImageRegionIteratorWithIndex< LDAImageType > iterLevel(
+        this->m_FeatureImageList[ vCount+3 ],
+        this->m_FeatureImageList[ vCount+3 ]->GetLargestPossibleRegion() );
       njet->SetInputImage( m_NJetImageList[ njetImageNum ] );
-      while( !iter.IsAtEnd() )
+      while( !iterRidge.IsAtEnd() )
         {
-        iter.Set( njet->RidgenessAtIndex( iter.GetIndex(),
+        iterRidge.Set( njet->RidgenessAtIndex( iterRidge.GetIndex(),
             m_RidgeScales[s] ) );
-        ++iter;
+        iterRound.Set( njet->GetMostRecentRidgeRoundness() );
+        iterCurve.Set( njet->GetMostRecentRidgeCurvature() );
+        iterLevel.Set( njet->GetMostRecentRidgeLevelness() );
+        ++iterRidge;
+        ++iterRound;
+        ++iterCurve;
+        ++iterLevel;
         }
-      vCount++;
+      vCount += 4;
       }
     }
 }
@@ -456,15 +474,17 @@ NJetLDAGenerator< ImageT, LabelmapT >
   if( m_ForceIntensityConsistency || m_ForceOrientationInsensitivity )
     {
     unsigned int vCount = 0;
-    std::vector< int > orientationNum( this->GetNumberOfFeatures(), 0 );
+    std::vector< int > orientationNum;
     for( unsigned int i=0; i<this->GetNumberOfNJetImages(); i++ )
       {
       vCount++;
+      orientationNum.resize( vCount + 1, 0 );
       int orientationBase = vCount;
       for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
         {
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
       for( unsigned int s=0; s<m_FirstScales.size(); s++ )
         {
@@ -473,9 +493,11 @@ NJetLDAGenerator< ImageT, LabelmapT >
           {
           orientationNum[ vCount ] = orientationBase;
           vCount++;
+          orientationNum.resize( vCount + 1, 0 );
           }
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
       orientationBase = vCount;
       for( unsigned int s=0; s<m_SecondScales.size(); s++ )
@@ -485,14 +507,17 @@ NJetLDAGenerator< ImageT, LabelmapT >
           {
           orientationNum[ vCount ] = orientationBase;
           vCount++;
+          orientationNum.resize( vCount + 1, 0 );
           }
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
-      for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
+      for( unsigned int s=0; s<m_RidgeScales.size()*4; s++ )
         {
         orientationNum[ vCount ] = -1;
         vCount++;
+        orientationNum.resize( vCount + 1, 0 );
         }
       }
 
@@ -596,6 +621,13 @@ NJetLDAGenerator< ImageT, LabelmapT >
 {
   this->GenerateFeatureImages();
 
+  unsigned int numFeatures = this->GetNumberOfFeatures();
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    this->UpdateWhitenFeatureImageStats( i );
+    this->WhitenFeatureImage( i );
+    }
+
   Superclass::Update();
 }
 
@@ -605,6 +637,12 @@ NJetLDAGenerator< ImageT, LabelmapT >
 ::UpdateLDAImages( void )
 {
   this->GenerateFeatureImages();
+
+  unsigned int numFeatures = this->GetNumberOfFeatures();
+  for( unsigned int i=0; i<numFeatures; i++ )
+    {
+    this->WhitenFeatureImage( i );
+    }
 
   Superclass::UpdateLDAImages();
 }

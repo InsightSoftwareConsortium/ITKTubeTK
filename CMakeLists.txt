@@ -41,6 +41,7 @@ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
 
 #-----------------------------------------------------------------------------
 # Dashboard setup
@@ -132,7 +133,7 @@ endif()
 # MSVC setup
 if( MSVC )
   add_definitions( -D_SCL_SECURE_NO_WARNINGS )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED )
+  if( NOT CMAKE_FIRST_PASS_COMPLETED AND "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP"
          CACHE STRING "Flags used by all build types" FORCE )
   endif()
@@ -174,6 +175,16 @@ if( UNIX )
 endif()
 
 #-----------------------------------------------------------------------------
+# JsonCpp Setup
+option( USE_SYSTEM_JsonCpp
+  "Exclude JsonCpp from SuperBuild and use and existing build instead" OFF )
+mark_as_advanced( USE_SYSTEM_JsonCpp )
+if( USE_SYSTEM_JsonCpp )
+  find_package( JsonCpp REQUIRED )
+  include_directories( ${JsonCpp_INCLUDE_DIRS} )
+endif()
+
+#-----------------------------------------------------------------------------
 # ITK Setup
 option( USE_SYSTEM_ITK
   "Exclude ITK from SuperBuild and use an existing build instead." OFF )
@@ -198,11 +209,17 @@ option( TubeTK_USE_QT
 
 if( TubeTK_USE_QT )
   find_package( Qt4 )
-  set( minimum_required_qt_version "4.6" )
+  # Slicer only tests against a specific Qt version.  To override the
+  # version check, set the TubeTK_REQUIRED_QT_VERSION CMake variable.
+  if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
+    set( TubeTK_REQUIRED_QT_VERSION
+      "4.7.4" CACHE STRING "Exact required Qt version" FORCE)
+  endif()
   if( QT4_FOUND )
-    if( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}"
-        VERSION_LESS "${minimum_required_qt_version}" )
-      message( FATAL_ERROR "Error: TubeTK requires Qt >= 4.6" )
+    if( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+        VERSION_EQUAL "${TubeTK_REQUIRED_QT_VERSION}" )
+      message( FATAL_ERROR
+        "Error: TubeTK requires Qt == ${TubeTK_REQUIRED_QT_VERSION}" )
     endif()
     include( ${QT_USE_FILE} )
   else()
@@ -226,6 +243,18 @@ if( TubeTK_USE_VTK )
     include( ${VTK_USE_FILE} )
   endif()
 endif()
+
+#-----------------------------------------------------------------------------
+# libSVM Setup
+option( TubeTK_USE_LIBSVM
+  "Build libSVM for Support Vector Machine support."
+  OFF )
+
+#-----------------------------------------------------------------------------
+# Boost setup
+option( TubeTK_USE_Boost
+  "Use Boost libraries."
+  OFF )
 
 #-----------------------------------------------------------------------------
 # CTK Setup
@@ -263,6 +292,9 @@ if( TubeTK_USE_SUPERBUILD )
   return()
 
 else( TubeTK_USE_SUPERBUILD )
+
+  find_package( JsonCpp REQUIRED )
+  include_directories( ${JsonCpp_INCLUDE_DIRS} )
 
   find_package( ITK REQUIRED )
   include( ${ITK_USE_FILE} )

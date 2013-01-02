@@ -41,7 +41,48 @@ set( TubeTK_DEPENDS "" )
 set( gen "${CMAKE_GENERATOR}" )
 
 ##
-## Check if sytem ITK or superbuild ITK (or ITKv4)
+## Check if system TubeTK or superbuild TubeTK
+##
+if( NOT USE_SYSTEM_JsonCpp )
+  if( NOT GIT_EXECUTABLE )
+    find_package( Git REQUIRED )
+  endif( NOT GIT_EXECUTABLE )
+
+  option( GIT_PROTOCOL_HTTP
+    "Use HTTP for git access (useful if behind a firewall)" OFF )
+  if( GIT_PROTOCOL_HTTP )
+    set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+  else( GIT_PROTOCOL_HTTP )
+    set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+  endif( GIT_PROTOCOL_HTTP )
+  mark_as_advanced( GIT_PROTOCOL )
+
+  ##
+  ## JsonCpp
+  ##
+  set( proj JsonCpp )
+  ExternalProject_Add( JsonCpp
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/jsoncpp-cmake.git"
+    GIT_TAG "691d15e2b0f9a87a5c0861da48976fca2bd2c70d"
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/JsonCpp"
+    BINARY_DIR JsonCpp-Build
+    CMAKE_GENERATOR ${gen}
+    CMAKE_ARGS
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DBUILD_SHARED_LIBS:BOOL=${shared}
+    INSTALL_COMMAND ""
+    )
+  set( JsonCpp_DIR "${base}/JsonCpp-Build" )
+  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "JsonCpp" )
+endif( NOT USE_SYSTEM_JsonCpp )
+
+
+##
+## Check if system ITK or superbuild ITK (or ITKv4)
 ##
 if( NOT USE_SYSTEM_ITK )
 
@@ -140,7 +181,8 @@ if( NOT USE_SYSTEM_ITK )
     set( proj Insight )
     ExternalProject_Add( ${proj}
       GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Kitware/ITK.git"
-      GIT_TAG "v3.20.1"
+      # release-3.20 branch on 2012-11-27.
+      GIT_TAG "787200e5250da02069964063548a39d5e46662e2"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
       BINARY_DIR Insight-Build
       CMAKE_GENERATOR ${gen}
@@ -207,7 +249,7 @@ if( TubeTK_USE_VTK )
       set( proj VTK )
       ExternalProject_Add( VTK
         GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/VTK.git"
-        GIT_TAG "origin/slicer-4.0"
+        GIT_TAG "3138cd11a9eb76a741ce5e3a86417449acfe7eba"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
         BINARY_DIR VTK-Build
         CMAKE_GENERATOR ${gen}
@@ -350,7 +392,7 @@ if( TubeTK_USE_QT )
       set( proj CTK )
       ExternalProject_Add( CTK
         GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
-        GIT_TAG "d76ebaac2226f8ef431835eff1693012ffaf62c3"
+        GIT_TAG "11a59a395deb8ff50ddb07b427e47e6665447586"
         SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
         BINARY_DIR CTK-Build
         CMAKE_GENERATOR ${gen}
@@ -380,6 +422,45 @@ if( TubeTK_USE_QT )
 
 endif( TubeTK_USE_QT )
 
+##
+## A conventient 2D/3D image viewer that can handle anisotropic spacing.
+##
+set( ImageViewer_DEPENDS )
+if( NOT USE_SYSTEM_ITK )
+  set( ImageViewer_DEPENDS Insight )
+endif()
+set( proj ImageViewer )
+ExternalProject_Add( ImageViewer
+  GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
+  GIT_TAG "361e639e999d2d8f3aa093a6611398798099c89c"
+  SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
+  BINARY_DIR ImageViewer-Build
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
+    "-DITK_DIR:PATH=${ITK_DIR}"
+  INSTALL_COMMAND ""
+  DEPENDS
+    ${ImageViewer_DEPENDS}
+  )
+
+## LibSVM
+##
+if ( TubeTK_USE_LIBSVM )
+  set( proj LIBSVM )
+  ExternalProject_Add(
+    ${proj}
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
+    BINARY_DIR ${proj}-Build
+    GIT_REPOSITORY https://github.com/TubeTK/cmake-libsvm
+    GIT_TAG a802a4224a6c3d7458e46887e77d75bf305a105b
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-Build
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DBUILD_SHARED_LIBS:BOOL=ON}
+  )
+  set( LIBSVM_DIR "${CMAKE_BINARY_DIR}/${proj}-Build" )
+endif( TubeTK_USE_LIBSVM )
 
 ##
 ## TubeTK - Normal Build
@@ -401,7 +482,7 @@ ExternalProject_Add( ${proj}
     -DSITE:STRING=${SITE}
     -DMAKECOMMAND:STRING=${MAKECOMMAND}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
-    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
+    -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_TESTING:BOOL=${BUILD_TESTING}
     -DBUILD_DOCUMENTATION:BOOL=${BUILD_DOCUMENTATION}
     -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
@@ -414,13 +495,16 @@ ExternalProject_Add( ${proj}
     ${kwstyle_dashboard_submission_arg}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
+    -DTubeTK_USE_Boost:BOOL=${TubeTK_USE_Boost}
     -DTubeTK_USE_ITKV4:BOOL=${TubeTK_USE_ITKV4}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
+    -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION}
     ${TubeTK_SimpleITK_Def}
   INSTALL_COMMAND ""
   DEPENDS

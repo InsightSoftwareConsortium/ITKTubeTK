@@ -273,6 +273,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
       continue;
       }
     }
+  delete tubeList;
 
   RidgeOpType::TubeMaskImageType::Pointer mask =
     ridgeOp->GetTubeMaskImage();

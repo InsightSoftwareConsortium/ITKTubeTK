@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Graph Kernel Computation (TubeTK)</title>
+  <description>Computes a (p.d.) kernel matrix K of similarity values between two collections of input graphs. \
+Given a list A of N graphs and a list B of M graphs, the K(i,j)-th entry of K contains the similarity \
+value among the i-th graph of A and the j-th graph of B. K will eventually be a N x M matrix.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <file>
+      <name>graphListA</name>
+      <description>First list of input graphs</description>
+      <index>0</index>
+    </file>
+    <file>
+      <name>graphListB</name>
+      <description>Second list of input graphs</description>
+      <index>1</index>
+    </file>
+    <file>
+      <name>outputKernel</name>
+      <description>Basename for output kernel (will write .bin, .libsvm files)</description>
+      <index>2</index>
+    </file>
+    <integer>
+      <name>graphKernelType</name>
+      <longflag>graphKernelType</longflag>
+      <description>
+      0 ... Shortest-Path kernel, 1 ... Weisfeiler-Lehman subtree kernel
+      </description>
+      <default>0</default>
+    </integer>
+    <integer>
+      <name>subtreeHeight</name>
+      <longflag>subtreeHeight</longflag>
+      <description>
+      Subtree height for Weisfeiler-Lehman kernel
+      </description>
+      <default>1</default>
+    </integer>
+  </parameters>
+
+</executable>

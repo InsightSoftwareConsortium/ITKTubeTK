@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Apply transform to tubes (TubeTK)</title>
+  <description> Applies a transform to tubes (i.e., Spatial Objects).</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <file>
+      <name>inputTubeFile</name>
+      <description>Input tubes</description>
+    </file>
+    <file>
+      <name>transformFile</name>
+      <description>Transform to apply (in ITK format, AffineTransform)</description>
+    </file>
+    <file>
+      <name>outputTubeFile</name>
+      <description>Output tubes</description>
+    </file>
+  </parameters>
+
+</executable>

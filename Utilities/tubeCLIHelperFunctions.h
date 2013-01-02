@@ -32,7 +32,7 @@ namespace tube {
 
 // Description:
 // Get the ComponentType and dimension of the image
-void GetImageInformation( std::string fileName,
+void GetImageInformation( const std::string & fileName,
                           itk::ImageIOBase::IOComponentType &componentType,
                           unsigned int & dimension )
   {

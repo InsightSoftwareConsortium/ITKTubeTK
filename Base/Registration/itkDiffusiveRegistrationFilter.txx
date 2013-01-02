@@ -128,7 +128,7 @@ DiffusiveRegistrationFilter
     m_HighResolutionTemplate->Print( os, indent );
     }
   os << indent << "Current level: " << m_CurrentLevel << std::endl;
-  os << indent << "Regularization weightings: " ;
+  os << indent << "Regularization weightings: ";
   for( unsigned int i = 0; i < m_RegularizationWeightings.size(); i++ )
     {
     os << m_RegularizationWeightings[i] << " ";
@@ -1594,10 +1594,12 @@ DiffusiveRegistrationFilter
           / numPixels );
     m_UpdateMetrics.MeanTotalUpdateMagnitude
         = m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude / numPixels;
-    m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude
-        = m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude / numPixels;
-    m_UpdateMetrics.MeanRegularizationUpdateMagnitude
-        = m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude / numPixels;
+    m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude =
+      m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude /
+        numPixels;
+    m_UpdateMetrics.MeanRegularizationUpdateMagnitude =
+      m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude /
+        numPixels;
     }
 
   this->SetRMSChange( m_UpdateMetrics.RMSTotalUpdateMagnitude );

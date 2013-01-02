@@ -90,7 +90,7 @@ public:
 
   unsigned int GetNumberOfParameters( void ) const
     {
-    return 2;
+    return 3;
     }
 
   void SetInputImage( typename ImageType::Pointer _inputImage )
@@ -123,102 +123,10 @@ public:
     m_Scales = _scales;
     }
 
+
   void Initialize( void )
     {
     m_CallsToGetValue = 0;
-
-    typedef itk::ImageRegionIterator< ImageType >
-      ImageIteratorType;
-    typedef itk::ImageRegionConstIterator< ImageType >
-      ConstImageIteratorType;
-
-    m_MaskedImage = ImageType::New();
-    m_MaskedImage->SetRegions( m_InputImage->GetLargestPossibleRegion() );
-    m_MaskedImage->CopyInformation( m_InputImage );
-    m_MaskedImage->Allocate();
-
-    m_InputMeanBkg = 0;
-    m_InputStdDevBkg = 0;
-    double countBkg = 0;
-    m_InputMeanObj = 0;
-    m_InputStdDevObj = 0;
-    double countObj = 0;
-
-    std::cout << "Computing background mean" << std::endl;
-
-    double sumBkg = 0;
-    double sumsBkg = 0;
-    double sumObj = 0;
-    double sumsObj = 0;
-    ConstImageIteratorType iterInput( m_InputImage,
-      m_InputImage->GetLargestPossibleRegion() );
-    ConstImageIteratorType iterMask( m_InputMask,
-      m_InputMask->GetLargestPossibleRegion() );
-    while( !iterInput.IsAtEnd() )
-      {
-      if( iterMask.Get() == m_MaskObjectValue )
-        {
-        sumObj += iterInput.Get();
-        sumsObj += iterInput.Get() * iterInput.Get();
-        ++countObj;
-        }
-      else if( iterMask.Get() == m_MaskBackgroundValue )
-        {
-        sumBkg += iterInput.Get();
-        sumsBkg += iterInput.Get() * iterInput.Get();
-        ++countBkg;
-        }
-      ++iterInput;
-      ++iterMask;
-      }
-
-    if( countBkg > 0 )
-      {
-      m_InputMeanBkg = sumBkg/countBkg;
-      m_InputStdDevBkg = vcl_sqrt( sumsBkg/countBkg -
-        m_InputMeanBkg*m_InputMeanBkg );
-      }
-    if( countObj > 0 )
-      {
-      m_InputMeanObj = sumObj/countObj;
-      m_InputStdDevObj = vcl_sqrt( sumsObj/countObj -
-        m_InputMeanObj*m_InputMeanObj );
-      }
-
-    std::cout << "  Object mean = " << m_InputMeanObj << std::endl;
-    std::cout << "  Object StdDev = " << m_InputStdDevObj << std::endl;
-    std::cout << "  Background mean = " << m_InputMeanBkg << std::endl;
-    std::cout << "  Background StdDev = " << m_InputStdDevBkg << std::endl;
-
-    ImageIteratorType iterMaskedImage( m_MaskedImage,
-      m_MaskedImage->GetLargestPossibleRegion() );
-    iterMask.GoToBegin();
-    iterInput.GoToBegin();
-    while( !iterMask.IsAtEnd() )
-      {
-      double tfObj = (iterInput.Get() - m_InputMeanObj)/m_InputStdDevObj;
-      double tfBkg = (iterInput.Get() - m_InputMeanBkg)/m_InputStdDevBkg;
-      if( ( vnl_math_abs(tfObj) < vnl_math_abs(tfBkg) &&
-            iterMask.Get() != m_MaskBackgroundValue ) ||
-          ( iterMask.Get() == 0 ) )
-        {
-        iterMaskedImage.Set( 0 );
-        }
-      else
-        {
-        iterMaskedImage.Set( tfBkg );
-        }
-      ++iterMaskedImage;
-      ++iterMask;
-      ++iterInput;
-      }
-
-    typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
-    typename ImageWriterType::Pointer writer = ImageWriterType::New();
-    writer->SetFileName( "maskedImage.mha" );
-    writer->SetInput( m_MaskedImage );
-    writer->SetUseCompression( true );
-    writer->Update();
     }
 
   void GetDerivative( const ParametersType & params,
@@ -239,100 +147,115 @@ public:
 
   MeasureType GetValue( const ParametersType & params ) const
     {
-    typename BlurFilterType::Pointer filterInput = BlurFilterType::New();
-    filterInput->SetInput( m_InputImage );
-    float inputSigma = 0;
-    inputSigma = params[0];
-    if( inputSigma > 0.3 && inputSigma < 100 )
+    typename BlurFilterType::Pointer filterInputObj = BlurFilterType::New();
+    filterInputObj->SetInput( m_InputImage );
+    double sigmaObj = params[0];
+    if( sigmaObj > 0.3 && sigmaObj < 100 )
       {
-      filterInput->SetSigma( inputSigma );
+      filterInputObj->SetSigma( sigmaObj );
       }
     else
       {
       return 100;
       }
-    filterInput->Update();
-    typename ImageType::Pointer inputB =
-      filterInput->GetOutput();
+    filterInputObj->Update();
+    typename ImageType::Pointer imgObj = filterInputObj->GetOutput();
 
-    typename BlurFilterType::Pointer filterMaskedImage =
+    typename BlurFilterType::Pointer filterInputBkg =
       BlurFilterType::New();
-    filterMaskedImage->SetInput( m_MaskedImage );
-    float maskedSigma = 0;
-    maskedSigma = params[1];
-    if( maskedSigma > 5 && maskedSigma < 80 )
+    filterInputBkg->SetInput( m_InputImage );
+    double sigmaBkg = params[1];
+    if( sigmaBkg > sigmaObj && sigmaBkg < 100 )
       {
-      filterMaskedImage->SetSigma( maskedSigma );
+      filterInputBkg->SetSigma( sigmaBkg );
       }
     else
       {
       return 100;
       }
-    filterMaskedImage->Update();
-    typename ImageType::Pointer maskedInputB =
-      filterMaskedImage->GetOutput();
+    filterInputBkg->Update();
+    typename ImageType::Pointer imgBkg = filterInputBkg->GetOutput();
 
-    typedef itk::ImageRegionConstIterator< ImageType >
-      ConstImageIteratorType;
-    typedef itk::ImageRegionIterator< ImageType >
-      ImageIteratorType;
+    double alpha = params[2];
 
-    double sumsMetric = 0;
-    unsigned int countMetric = 0;
+    double meanObj = 0;
+    double stdDevObj = 0;
+    double countObj = 0;
+    double meanBkg = 0;
+    double stdDevBkg = 0;
+    double countBkg = 0;
 
-    ConstImageIteratorType iterInput( m_InputImage,
-      m_InputImage->GetLargestPossibleRegion() );
-    ConstImageIteratorType iterInputB( inputB,
-      inputB->GetLargestPossibleRegion() );
+    double sumObj = 0;
+    double sumsObj = 0;
+    double sumBkg = 0;
+    double sumsBkg = 0;
+
+    typedef ImageRegionIterator< ImageType >       ImageIteratorType;
+    typedef ImageRegionConstIterator< ImageType >  ConstImageIteratorType;
+
+    ConstImageIteratorType iterObj( imgObj,
+      imgObj->GetLargestPossibleRegion() );
+    ConstImageIteratorType iterBkg( imgBkg,
+      imgBkg->GetLargestPossibleRegion() );
     ConstImageIteratorType iterMask( m_InputMask,
       m_InputMask->GetLargestPossibleRegion() );
-    ConstImageIteratorType iterMaskedB( maskedInputB,
-      maskedInputB->GetLargestPossibleRegion() );
-    ImageIteratorType iterOutput( m_OutputImage,
+    ImageIteratorType iterOut( m_OutputImage,
       m_OutputImage->GetLargestPossibleRegion() );
-    while( !iterInputB.IsAtEnd() )
+
+    double meanRawBkg = 0;
+    double countRawBkg = 0;
+    while( !iterBkg.IsAtEnd() )
       {
-      double tfObj = (iterInputB.Get() - m_InputMeanObj)/m_InputStdDevObj;
-      double tfBkg = (iterInputB.Get() - m_InputMeanBkg)/m_InputStdDevBkg;
-      double tf = iterMaskedB.Get() * m_InputStdDevBkg + m_InputMeanBkg;
-      tf = iterInputB.Get() - tf;
-      iterOutput.Set( tf );
+      meanRawBkg += iterBkg.Get();
+      ++countRawBkg;
+      ++iterBkg;
+      }
+    meanRawBkg /= countRawBkg;
 
-      if( vnl_math_abs(tfBkg) < vnl_math_abs(tfObj) &&
-        iterMask.Get() == m_MaskBackgroundValue )
+    iterBkg.GoToBegin();
+    while( !iterObj.IsAtEnd() )
+      {
+      double tf = iterObj.Get() * ( 1 + alpha * (iterBkg.Get()-meanRawBkg) );
+      if( iterMask.Get() == m_MaskObjectValue )
         {
-        tf = (tf - m_InputMeanBkg)/m_InputStdDevBkg;
-        sumsMetric += tf * tf;
-        ++countMetric;
+        sumObj += tf;
+        sumsObj += tf * tf;
+        ++countObj;
         }
-      else if( vnl_math_abs(tfObj) < vnl_math_abs(tfBkg) &&
-        iterMask.Get() == m_MaskObjectValue )
+      else if( iterMask.Get() == m_MaskBackgroundValue )
         {
-        tf = (tf - m_InputMeanObj)/m_InputStdDevObj;
-        sumsMetric += tf * tf;
-        ++countMetric;
+        sumBkg += tf;
+        sumsBkg += tf * tf;
+        ++countBkg;
         }
-
-      ++iterInput;
-      ++iterInputB;
+      iterOut.Set( tf );
+      ++iterObj;
+      ++iterBkg;
       ++iterMask;
-      ++iterMaskedB;
-      ++iterOutput;
+      ++iterOut;
       }
 
-    double result = 0;
-    if( countMetric > 0 )
+    if( countObj > 0 )
       {
-      double outputSpreadMetric = sumsMetric/countMetric;
-      result = vnl_math_abs( outputSpreadMetric );
+      meanObj = sumObj/countObj;
+      stdDevObj = vcl_sqrt( sumsObj/countObj - meanObj*meanObj );
       }
+    if( countBkg > 0 )
+      {
+      meanBkg = sumBkg/countBkg;
+      stdDevBkg = vcl_sqrt( sumsBkg/countBkg - stdDevBkg*stdDevBkg );
+      }
+
+    double dp = vnl_math_abs(meanObj - meanBkg) / (stdDevObj * stdDevBkg);
 
     std::cout << ++m_CallsToGetValue << " : "
-              << inputSigma << ", "
-              << maskedSigma << ", ";
-    std::cout << " : result = " << result << std::endl;
+              << params[0] << ", " << params[1] << ", "
+              << params[2] << ": "
+              << meanObj << " (" << stdDevObj << ") "
+              << meanBkg << " (" << stdDevBkg << ") "
+              << " : " << dp << std::endl;
 
-    return result;
+    return dp;
     }
 
 protected:
@@ -352,13 +275,9 @@ private:
 
   typename ImageType::Pointer         m_InputImage;
   typename ImageType::Pointer         m_InputMask;
-  typename ImageType::Pointer         m_MaskedImage;
   mutable typename ImageType::Pointer m_OutputImage;
 
-  double                              m_InputMeanObj;
-  double                              m_InputStdDevObj;
-  double                              m_InputMeanBkg;
-  double                              m_InputStdDevBkg;
+  double                              m_InputMean;
 
   unsigned int                        m_MaskObjectValue;
   unsigned int                        m_MaskBackgroundValue;
@@ -442,15 +361,39 @@ int DoIt( int argc, char * argv[] )
   outputImage->Allocate();
   progressReporter.Report( 0.2 );
 
-  itk::Array<double> params(2);
-  params[0] = objectScale;
-  params[1] = backgroundScale;
-
   typedef itk::ContrastCostFunction< PixelType, dimensionT >
                                                 ContrastCostFunctionType;
   typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
   typedef itk::FRPROptimizer                    OptimizerType;
   typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
+
+  ImageIteratorType iter( inputImage,
+    inputImage->GetLargestPossibleRegion() );
+  double inputMin = iter.Get();
+  double inputMax = inputMin;
+  double inputMean = 0;
+  unsigned inputCount = 0;
+  while( !iter.IsAtEnd() )
+    {
+    double tf = iter.Get();
+    if( tf < inputMin )
+      {
+      inputMin = tf;
+      }
+    else if( tf > inputMax )
+      {
+      inputMax = tf;
+      }
+    inputMean += tf;
+    ++inputCount;
+    ++iter;
+    }
+  inputMean /= inputCount;
+
+  itk::Array<double> params(3);
+  params[0] = objectScale;
+  params[1] = backgroundScale;
+  params[2] = 20*(inputMax - inputMin);
 
   typename ContrastCostFunctionType::Pointer costFunc =
     ContrastCostFunctionType::New();
@@ -472,7 +415,7 @@ int DoIt( int argc, char * argv[] )
   initOptimizer->Initialize( 1.0 );
   initOptimizer->SetMetricWorstPossibleValue( 101 );
   initOptimizer->SetMaximumIteration( iterations*0.5 );
-  initOptimizer->SetMaximize( false );
+  initOptimizer->SetMaximize( true );
 
   OptimizerType::Pointer optimizer = OptimizerType::New();
   optimizer->SetUseUnitLengthGradient( true );
@@ -481,15 +424,17 @@ int DoIt( int argc, char * argv[] )
   optimizer->SetStepLength( 0.1 );
   optimizer->SetStepTolerance( 0.001 );
   optimizer->SetValueTolerance( 0.01 );
-  optimizer->SetMaximize( false );
+  optimizer->SetMaximize( true );
 
-  OptimizerType::ScalesType scales( 2 );
+  OptimizerType::ScalesType scales( 3 );
   scales[0] = 1.0 / 0.1;
   scales[1] = 1.0 / 2.0;
+  scales[2] = 1.0 / (params[2]/10);
 
-  OptimizerType::ScalesType scales2( 2 );
+  OptimizerType::ScalesType scales2( 3 );
   scales2[0] = scales[0] * scales[0];
   scales2[1] = scales[1] * scales[1];
+  scales2[2] = scales[2] * scales[2];
 
   // OnePlusOne should be passed squared-scales
   initOptimizer->SetScales( scales2 );

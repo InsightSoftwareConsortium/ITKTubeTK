@@ -27,20 +27,22 @@
 #   the tubetk source directory.
 #
 set( SITE_NAME "Eternia.Kitware" )
-set( SITE_PLATFORM "Ubuntu-12.04-64" )
-set( SITE_BUILD_TYPE "Debug" )
+set( SITE_PLATFORM "Ubuntu-12.10-64" )
+set( SITE_BUILD_TYPE "Release" )
 set( SITE_CMAKE_GENERATOR "Unix Makefiles" )
 
 set( TUBETK_GIT_REPOSITORY "http://tubetk.org/TubeTK.git" )
-set( TUBETK_SOURCE_DIR "/Users/aylward/src/test/TubeTK" )
-set( TUBETK_BINARY_DIR "/Users/aylward/src/test/TubeTK-${SITE_BUILD_TYPE}" )
+set( TUBETK_SOURCE_DIR "/home/aylward/src/TubeTK" )
+set( TUBETK_BINARY_DIR "/home/aylward/src/TubeTK-${SITE_BUILD_TYPE}" )
 
 set( ENV{DISPLAY} ":0" )
 
-set( SITE_MAKE_COMMAND "make -j3" )
-set( SITE_CMAKE_COMMAND "/usr/bin/cmake" )
-set( SITE_QMAKE_COMMAND "/Users/aylward/QtSDK/Desktop/Qt/474/gcc/bin/qmake" )
-set( SITE_CTEST_COMMAND "/usr/bin/ctest -j3" )
+set( SITE_MAKE_COMMAND "make" )
+
+set( SITE_CMAKE_COMMAND "/usr/local/bin/cmake" )
+set( SITE_CTEST_COMMAND "/usr/local/bin/ctest" )
+
+set( SITE_QMAKE_COMMAND "/usr/local/Trolltech/Qt-4.7.4/bin/qmake" )
 
 set( SITE_GIT_COMMAND "/usr/bin/git" )
 set( SITE_SVN_COMMAND "/usr/bin/svn" )
@@ -60,11 +62,13 @@ set( SITE_UPDATE_COMMAND "${SITE_GIT_COMMAND}" )
 
 set( CTEST_SITE "${SITE_NAME}" )
 
+set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-New" )
+
 set( CTEST_BUILD_CONFIGURATION "${SITE_BUILD_TYPE}" )
 set( CTEST_BUILD_COMMAND "${SITE_MAKE_COMMAND}" )
 
 set( CTEST_SOURCE_DIRECTORY "${TUBETK_SOURCE_DIR}" )
-set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+set( CTEST_BINARY_DIRECTORY "${TUBETK_BINARY_DIR}" )
 
 set( CTEST_CMAKE_GENERATOR "${SITE_CMAKE_GENERATOR}" )
 set( CTEST_TEST_TIMEOUT 1500 )
@@ -73,9 +77,6 @@ set( CTEST_CMAKE_COMMAND "${SITE_CMAKE_COMMAND}" )
 set( CTEST_CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
-
-set( SITE_EXECUTABLE_DIRS "${SITE_KWSTYLE_DIR}" )
-set( ENV{PATH} "${SITE_EXECUTABLE_DIRS}:$ENV{PATH}" )
 
 set( SITE_CXX_FLAGS
   "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
@@ -101,19 +102,17 @@ if( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
   execute_process( COMMAND
     "${SITE_GIT_COMMAND}"
     clone "${TUBETK_GIT_REPOSITORY}" "${TUBETK_SOURCE_DIR}" )
-  ctest_run_script()
-else()
-  set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-New" )
   configure_file(
     ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
     ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
-  set( CTEST_NOTES_FILES "${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
-
+  ctest_run_script()
+else()
+  configure_file(
+    ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
+    ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
   ctest_start( "Experimental" )
   ctest_update( SOURCE "${TUBETK_SOURCE_DIR}" )
-  ctest_configure( BUILD "${TUBETK_BINARY_DIR}"
-    SOURCE "${TUBETK_SOURCE_DIR}"
-    OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
+  ctest_configure( BUILD "${TUBETK_BINARY_DIR}" SOURCE "${TUBETK_SOURCE_DIR}" OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
   ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )

@@ -113,19 +113,22 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
-  inMaskReader->SetFileName( labelmap.c_str() );
-  inMaskReader->Update();
-  ldaGenerator->SetLabelmap( inMaskReader->GetOutput() );
+  if( labelmap.size() > 0 )
+    {
+    typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
+    inMaskReader->SetFileName( labelmap.c_str() );
+    inMaskReader->Update();
+    ldaGenerator->SetLabelmap( inMaskReader->GetOutput() );
+    }
 
   timeCollector.Stop( "LoadData" );
 
-  if( objectId.size() > 0 )
+  if( objectIdList.size() > 0 )
     {
-    ldaGenerator->SetObjectId( objectId[0] );
-    for( unsigned int o=1; o<objectId.size(); o++ )
+    ldaGenerator->SetObjectId( objectIdList[0] );
+    for( unsigned int o=1; o<objectIdList.size(); o++ )
       {
-      ldaGenerator->AddObjectId( objectId[o] );
+      ldaGenerator->AddObjectId( objectIdList[o] );
       }
     }
 
@@ -141,12 +144,17 @@ int DoIt( int argc, char * argv[] )
     itk::tube::MetaNJetLDA ldaReader( loadLDAInfo.c_str() );
     ldaReader.Read();
 
-    ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
-    ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
     ldaGenerator->SetZeroScales( ldaReader.GetZeroScales() );
     ldaGenerator->SetFirstScales( ldaReader.GetFirstScales() );
     ldaGenerator->SetSecondScales( ldaReader.GetSecondScales() );
     ldaGenerator->SetRidgeScales( ldaReader.GetRidgeScales() );
+    ldaGenerator->SetWhitenMeans( ldaReader.GetWhitenMeans() );
+    ldaGenerator->SetWhitenStdDevs( ldaReader.GetWhitenStdDevs() );
+    ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
+    ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
+
+    ldaGenerator->SetForceIntensityConsistency( !forceSignOff );
+    ldaGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
     timeCollector.Stop( "LoadLDA" );
     }
@@ -158,6 +166,8 @@ int DoIt( int argc, char * argv[] )
     ldaGenerator->SetFirstScales( firstScales );
     ldaGenerator->SetSecondScales( secondScales );
     ldaGenerator->SetRidgeScales( ridgeScales );
+    ldaGenerator->SetWhitenMeans( whitenMeans );
+    ldaGenerator->SetWhitenStdDevs( whitenStdDevs );
 
     ldaGenerator->SetForceIntensityConsistency( !forceSignOff );
     ldaGenerator->SetForceOrientationInsensitivity( forceSymmetry );
@@ -168,7 +178,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   unsigned int numLDA = ldaGenerator->GetNumberOfLDA();
-  if( useNumberOfLDA>0 && useNumberOfLDA < (int)numLDA )
+  if( useNumberOfLDA > 0 && useNumberOfLDA < (int)numLDA )
     {
     numLDA = useNumberOfLDA;
     }
@@ -204,7 +214,9 @@ int DoIt( int argc, char * argv[] )
       ldaGenerator->GetSecondScales(),
       ldaGenerator->GetRidgeScales(),
       ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix() );
+      ldaGenerator->GetLDAMatrix(),
+      ldaGenerator->GetWhitenMeans(),
+      ldaGenerator->GetWhitenStdDevs() );
     ldaWriter.Write( saveLDAInfo.c_str() );
     timeCollector.Stop( "SaveLDA" );
     }

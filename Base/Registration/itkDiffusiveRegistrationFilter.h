@@ -32,7 +32,7 @@ namespace itk
 {
 
 struct EnergiesStruct
-  {
+{
   double  TotalEnergy;
   double  IntensityDistanceEnergy;
   double  RegularizationEnergy;
@@ -54,13 +54,10 @@ struct EnergiesStruct
   void difference( const EnergiesStruct & lhs, const EnergiesStruct & rhs )
     {
     TotalEnergy = lhs.TotalEnergy - rhs.TotalEnergy;
-    IntensityDistanceEnergy
-        = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
-    RegularizationEnergy
-        = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
+    IntensityDistanceEnergy = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
+    RegularizationEnergy = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
     }
-
-  };
+};
 
 /** \class itkDiffusiveRegistrationFilter
  * \brief Registration filter for registrations using anisotropic diffusive
@@ -272,12 +269,12 @@ public:
       DeformationVectorImageRegionArrayVectorType;
 
   /** Stopping criterion mask types */
-  typedef FixedImageType StoppingCriterionMaskImageType;
+  typedef FixedImageType    StoppingCriterionMaskImageType;
   typedef FixedImagePointer StoppingCriterionMaskPointer;
   typedef typename StoppingCriterionMaskImageType::RegionType
-      ThreadStoppingCriterionMaskImageRegionType;
+    ThreadStoppingCriterionMaskImageRegionType;
   typedef ImageRegionIterator< StoppingCriterionMaskImageType >
-      StoppingCriterionMaskImageRegionType;
+    StoppingCriterionMaskImageRegionType;
 
   /** Convenience functions to set/get the registration functions timestep. */
   virtual void SetTimeStep( const TimeStepType t )
@@ -566,22 +563,22 @@ protected:
     void difference( const UpdateMetricsIntermediateStruct & lhs,
                      const UpdateMetricsIntermediateStruct & rhs )
       {
-      SumOfSquaredTotalUpdateMagnitude
-          = lhs.SumOfSquaredTotalUpdateMagnitude
+      SumOfSquaredTotalUpdateMagnitude =
+        lhs.SumOfSquaredTotalUpdateMagnitude
           - rhs.SumOfSquaredTotalUpdateMagnitude;
-      SumOfSquaredIntensityDistanceUpdateMagnitude
-          = lhs.SumOfSquaredIntensityDistanceUpdateMagnitude
+      SumOfSquaredIntensityDistanceUpdateMagnitude =
+        lhs.SumOfSquaredIntensityDistanceUpdateMagnitude
           - rhs.SumOfSquaredIntensityDistanceUpdateMagnitude;
-      SumOfSquaredRegularizationUpdateMagnitude
-          = lhs.SumOfSquaredRegularizationUpdateMagnitude
+      SumOfSquaredRegularizationUpdateMagnitude =
+        lhs.SumOfSquaredRegularizationUpdateMagnitude
           - rhs.SumOfSquaredRegularizationUpdateMagnitude;
-      SumOfTotalUpdateMagnitude
-          = lhs.SumOfTotalUpdateMagnitude - rhs.SumOfTotalUpdateMagnitude;
-      SumOfIntensityDistanceUpdateMagnitude
-          = lhs.SumOfIntensityDistanceUpdateMagnitude
+      SumOfTotalUpdateMagnitude =
+        lhs.SumOfTotalUpdateMagnitude - rhs.SumOfTotalUpdateMagnitude;
+      SumOfIntensityDistanceUpdateMagnitude =
+        lhs.SumOfIntensityDistanceUpdateMagnitude
           - rhs.SumOfIntensityDistanceUpdateMagnitude;
-      SumOfRegularizationUpdateMagnitude
-          = lhs.SumOfRegularizationUpdateMagnitude
+      SumOfRegularizationUpdateMagnitude =
+        lhs.SumOfRegularizationUpdateMagnitude
           - rhs.SumOfRegularizationUpdateMagnitude;
       }
     };
@@ -624,21 +621,21 @@ protected:
     void difference( const UpdateMetricsStruct & lhs,
                      const UpdateMetricsStruct & rhs )
       {
-      RMSTotalUpdateMagnitude
-          = lhs.RMSTotalUpdateMagnitude - rhs.RMSTotalUpdateMagnitude;
-      RMSIntensityDistanceUpdateMagnitude
-          = lhs.RMSIntensityDistanceUpdateMagnitude
+      RMSTotalUpdateMagnitude =
+        lhs.RMSTotalUpdateMagnitude - rhs.RMSTotalUpdateMagnitude;
+      RMSIntensityDistanceUpdateMagnitude =
+        lhs.RMSIntensityDistanceUpdateMagnitude
           - rhs.RMSIntensityDistanceUpdateMagnitude;
-      RMSRegularizationUpdateMagnitude
-          = lhs.RMSRegularizationUpdateMagnitude
+      RMSRegularizationUpdateMagnitude =
+        lhs.RMSRegularizationUpdateMagnitude
           - rhs.RMSRegularizationUpdateMagnitude;
-      MeanTotalUpdateMagnitude
-          = lhs.MeanTotalUpdateMagnitude - rhs.MeanTotalUpdateMagnitude;
-      MeanIntensityDistanceUpdateMagnitude
-          = lhs.MeanIntensityDistanceUpdateMagnitude
+      MeanTotalUpdateMagnitude =
+        lhs.MeanTotalUpdateMagnitude - rhs.MeanTotalUpdateMagnitude;
+      MeanIntensityDistanceUpdateMagnitude =
+        lhs.MeanIntensityDistanceUpdateMagnitude
           - rhs.MeanIntensityDistanceUpdateMagnitude;
-      MeanRegularizationUpdateMagnitude
-          = lhs.MeanRegularizationUpdateMagnitude
+      MeanRegularizationUpdateMagnitude =
+        lhs.MeanRegularizationUpdateMagnitude
           - rhs.MeanRegularizationUpdateMagnitude;
       }
     };
@@ -847,11 +844,10 @@ private:
   DiffusionTensorImageArrayType             m_DiffusionTensorImages;
   TensorDerivativeImageVectorType           m_DiffusionTensorDerivativeImages;
   DeformationFieldArrayType                 m_DeformationComponentImages;
-  ScalarDerivativeImageArrayVectorType
-      m_DeformationComponentFirstOrderDerivativeArrays;
-  TensorDerivativeImageArrayVectorType
-      m_DeformationComponentSecondOrderDerivativeArrays;
-  DeformationVectorImageArrayVectorType     m_MultiplicationVectorImageArrays;
+
+  ScalarDerivativeImageArrayVectorType  m_DeformationComponentFirstOrderDerivativeArrays;
+  TensorDerivativeImageArrayVectorType  m_DeformationComponentSecondOrderDerivativeArrays;
+  DeformationVectorImageArrayVectorType m_MultiplicationVectorImageArrays;
 
   /** Variables for multiresolution registratoin.  Current level can be detected
    *  as Initialize() is called on each new level. */

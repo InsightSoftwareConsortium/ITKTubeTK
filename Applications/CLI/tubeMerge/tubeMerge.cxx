@@ -140,11 +140,9 @@ int DoIt( int argc, char * argv[] )
     {
     sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
     }
-  for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
-    {
     timeCollector.Start("Load data");
     typename ReaderType::Pointer reader2 = ReaderType::New();
-    reader2->SetFileName( inputVolume2[imageNum].c_str() );
+    reader2->SetFileName( inputVolume2.c_str() );
     try
       {
       reader2->Update();
@@ -225,7 +223,6 @@ int DoIt( int argc, char * argv[] )
       sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
       }
     timeCollector.Stop("Determine ROI");
-    }
 
   timeCollector.Start("Allocate output image");
   typename ImageType::RegionType regionOut;
@@ -254,11 +251,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
   timeCollector.Stop("Allocate output image");
 
-  for( unsigned int imageNum=0; imageNum<inputVolume2.size(); imageNum++ )
-    {
     timeCollector.Start("Load data");
-    typename ReaderType::Pointer reader2 = ReaderType::New();
-    reader2->SetFileName( inputVolume2[imageNum].c_str() );
+    reader2->SetFileName( inputVolume2.c_str() );
     try
       {
       reader2->Update();
@@ -271,7 +265,7 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    typename ImageType::Pointer curImage2 = reader2->GetOutput();
+    curImage2 = reader2->GetOutput();
     timeCollector.Stop("Load data");
 
     timeCollector.Start("Register images");
@@ -464,7 +458,6 @@ int DoIt( int argc, char * argv[] )
       ++iterOutDistMap;
       ++iterVorDistMap;
       }
-    }
 
   timeCollector.Start("Save data");
   writer->SetFileName( outputVolume.c_str() );

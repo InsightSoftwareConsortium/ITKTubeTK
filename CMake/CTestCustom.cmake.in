@@ -1,10 +1,10 @@
-SET(CTEST_CUSTOM_WARNING_MATCH
+set(CTEST_CUSTOM_WARNING_MATCH
   ${CTEST_CUSTOM_WARNING_MATCH}
   "{standard input}:[0-9][0-9]*: Warning: "
   "{standard input}:[0-9][0-9]*: warning: "
   )
 
-SET(CTEST_CUSTOM_WARNING_EXCEPTION
+set(CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
     "ctk"
     "itkjpeg"
@@ -96,15 +96,24 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
     "warning: jobserver unavailable"
     )
 
-SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
+set(CTEST_CUSTOM_COVERAGE_EXCLUDE
     ".*CLP.h"
     "Slicer3"
     "Slicer3-Build"
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
     )
 
+set(CTEST_CUSTOM_MEMCHECK_IGNORE
+  # Ignore possible memory leaks in the python interpreter.
+  PrintSelf-UtilitiesFilters
+  PrintSelf-BaseFiltering
+  PrintSelf-BaseNumerics
+  PrintSelf-BaseIO
+  PrintSelf-BaseSegmentation
+  )
+
 # GLOB automatically recurses in subdirs
-SET(CTEST_EXTRA_COVERAGE_GLOB
+set(CTEST_EXTRA_COVERAGE_GLOB
    Utilities/*.cxx
    Utilities/*.txx
    Base/*.cxx

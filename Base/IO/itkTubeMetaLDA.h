@@ -60,6 +60,8 @@ class METAIO_EXPORT MetaLDA
   ////
 public:
 
+  typedef std::vector< double >   ValueListType;
+
   typedef vnl_vector< double >    LDAValuesType;
 
   typedef vnl_matrix< double >    LDAMatrixType;
@@ -76,7 +78,9 @@ public:
   MetaLDA( const MetaLDA & _metaLDA );
 
   MetaLDA( const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix );
+      const LDAMatrixType & _ldaMatrix,
+      const ValueListType & _whitenMeans,
+      const ValueListType & _whitenStdDevs );
 
   ~MetaLDA( void );
 
@@ -88,20 +92,21 @@ public:
   virtual void  Clear( void );
 
   bool  InitializeEssential( const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix );
+      const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
+      const ValueListType & _whitenStdDevs );
 
-  //
-  //
-  //
   void  SetLDAValues( const LDAValuesType & _ldaValues );
   const LDAValuesType & GetLDAValues( void ) const;
 
   void  SetLDAMatrix( const LDAMatrixType & _ldaMatrix );
   const LDAMatrixType & GetLDAMatrix( void ) const;
 
-  //
-  //
-  //
+  void  SetWhitenMeans( const ValueListType & _whitenMeans );
+  const ValueListType & GetWhitenMeans( void ) const;
+
+  void  SetWhitenStdDevs( const ValueListType & _whitenStdDevs );
+  const ValueListType & GetWhitenStdDevs( void ) const;
+
   virtual bool CanRead( const char *_headerName=NULL ) const;
   virtual bool Read( const char *_headerName=NULL );
   virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
@@ -120,6 +125,9 @@ public:
 protected:
 
   LDAValuesType   m_LDAValues;
+
+  ValueListType   m_WhitenMeans;
+  ValueListType   m_WhitenStdDevs;
 
   LDAMatrixType   m_LDAMatrix;
 

@@ -27,13 +27,12 @@ include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
-
-find_package( Tclsh )
-if( TCL_TCLSH )
-  add_test( PrintSelf-BaseNumerics ${TCL_TCLSH}
-    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.tcl
+find_package( PythonInterp )
+if( PYTHON_EXECUTABLE )
+  add_test( PrintSelf-BaseNumerics ${PYTHON_EXECUTABLE}
+    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/Numerics )
-endif( TCL_TCLSH )
+endif()
 
 if( Slicer3_INSTALL_BIN_DIR )
   set( BASE_NUMERICS_TESTS
@@ -220,7 +219,7 @@ foreach( testNum RANGE 0 37 )
                 ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
       itkTubeNJetImageFunctionTest
         ${testNum}
-        MIDAS{GDS0015_1_Subs.mha.md5}
+        MIDAS{im0001.crop2.mha.md5}
         ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
     )
 endforeach( testNum )

@@ -21,20 +21,19 @@
     <image>
       <name>labelmap</name>
       <label>Label map</label>
-      <channel>input</channel>
-      <index>1</index>
+      <longflag>labelmap</longflag>
       <description>Labelmap that designates the object of interest and "other"</description>
       <default></default>
     </image>
     <string>
       <name>outputBase</name>
       <label>Output base name</label>
-      <index>2</index>
+      <index>1</index>
       <description>Basename for output LDA images</description>
       <default></default>
     </string>
     <integer-vector>
-      <name>objectId</name>
+      <name>objectIdList</name>
       <label>Object Id</label>
       <longflag>objectId</longflag>
       <description>List of values that represent the objects in the label map</description>
@@ -92,6 +91,20 @@
       <label>Ridge scales</label>
       <default></default>
       <longflag>ridgeScales</longflag>
+    </double-vector>
+    <double-vector>
+      <name>whitenMeans</name>
+      <description>Whiten means</description>
+      <label>Whiten means</label>
+      <default></default>
+      <longflag>whitenMeans</longflag>
+    </double-vector>
+    <double-vector>
+      <name>whitenStdDevs</name>
+      <description>Whiten std. devs.</description>
+      <label>Whiten std. devs.</label>
+      <default></default>
+      <longflag>whitenStdDevs</longflag>
     </double-vector>
     <integer>
       <name>useNumberOfLDA</name>

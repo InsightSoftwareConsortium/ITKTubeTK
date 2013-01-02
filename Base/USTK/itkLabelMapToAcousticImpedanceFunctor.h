@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -59,7 +59,7 @@ public:
   inline TImpedancePixel operator()( const TLabelPixel & input ) const
     {
     return (*m_LookupTable)[input];
-    };
+    }
 
 private:
   const LookupTableType * m_LookupTable;

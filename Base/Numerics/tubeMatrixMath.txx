@@ -132,7 +132,7 @@ ComputeEuclideanDistance(PointType x, PointType y)
  * Compute eigen values and vectors  */
 template <class T>
 void
-Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
+Eigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax )
 {
 
