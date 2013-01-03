@@ -73,7 +73,7 @@ public:
    * Standard for the number of dimension
    */
   itkStaticConstMacro( ImageDimension, unsigned int,
-    ::itk::GetImageDimension< TInputImage>::ImageDimension );
+    TInputImage::ImageDimension );
 
   typedef VesselTubeSpatialObject< TInputImage::ImageDimension >
                                                              TubeType;

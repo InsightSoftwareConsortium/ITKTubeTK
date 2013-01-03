@@ -53,7 +53,7 @@ ImageToTubeRigidRegistration2<TFixedImage, TMovingTube>
   m_Extent = 3;
   m_Kappa = 1;
   m_Sampling = 30;
-  m_Verbose = true;
+  m_Verbose = false;
 }
 
 /** Set the initial position */

@@ -34,28 +34,26 @@ set( TubeTK_Base_Registration_H_Files
   itkImageToTubeRigidRegistration2.h
   itkImageToTubeRigidRegistration.h
   itkMeanSquareRegistrationFunction.h
-  itkSpatialObjectToSpatialObjectFilter.h
   itkTubeToTubeTransformFilter.h
   )
 
 set( TubeTK_Base_Registration_TXX_Files
-  itkAnisotropicDiffusiveRegistrationFilter.h
-  itkAnisotropicDiffusiveRegistrationFunction.h
-  itkAnisotropicDiffusiveSparseRegistrationFilter.h
-  itkDiffusiveRegistrationFilter.h
-  itkDiffusiveRegistrationFilterUtils.h
-  itkImageToTubeRigidMetric2.h
-  itkImageToTubeRigidMetric.h
-  itkImageToTubeRigidRegistration2.h
-  itkImageToTubeRigidRegistration.h
-  itkMeanSquareRegistrationFunction.h
-  itkSpatialObjectToSpatialObjectFilter.h
-  itkTubeToTubeTransformFilter.h
+  itkAnisotropicDiffusiveRegistrationFilter.txx
+  itkAnisotropicDiffusiveRegistrationFunction.txx
+  itkAnisotropicDiffusiveSparseRegistrationFilter.txx
+  itkDiffusiveRegistrationFilter.txx
+  itkDiffusiveRegistrationFilterUtils.txx
+  itkImageToTubeRigidMetric2.txx
+  itkImageToTubeRigidMetric.txx
+  itkImageToTubeRigidRegistration2.txx
+  itkImageToTubeRigidRegistration.txx
+  itkMeanSquareRegistrationFunction.txx
+  itkTubeToTubeTransformFilter.txx
   )
 
-IF( BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
+endif( BUILD_TESTING )
 
 install(FILES
   ${TubeTK_Base_Segmentation_H_Files}

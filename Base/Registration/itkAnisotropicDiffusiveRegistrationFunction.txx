@@ -149,7 +149,11 @@ AnisotropicDiffusiveRegistrationFunction
 ::InitializeIteration()
 {
   if( !this->GetMovingImage() || !this->GetFixedImage()
+#if ITK_VERSION_MAJOR > 3
+    || !this->GetDisplacementField() )
+#else
     || !this->GetDeformationField() )
+#endif
     {
     itkExceptionMacro( << "MovingImage, FixedImage and/or deformation field "
                        << "not set" );
@@ -160,8 +164,13 @@ AnisotropicDiffusiveRegistrationFunction
     {
     m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() );
     m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
+#if ITK_VERSION_MAJOR > 3
+    m_IntensityDistanceFunction->SetDisplacementField(
+        this->GetDisplacementField() );
+#else
     m_IntensityDistanceFunction->SetDeformationField(
         this->GetDeformationField() );
+#endif
     m_IntensityDistanceFunction->InitializeIteration();
     }
   if( this->GetComputeRegularizationTerm() )

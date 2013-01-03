@@ -66,13 +66,13 @@ public:
   typedef std::vector< ObjectIdType >          ObjectIdListType;
 
   typedef float                                ProbabilityPixelType;
-  typedef itk::Image< ProbabilityPixelType,
-    ::itk::GetImageDimension< ImageT >::ImageDimension >
+  typedef Image< ProbabilityPixelType,
+    ImageT::ImageDimension >
                                                ProbabilityImageType;
 
-  typedef itk::Image<float, N>                 HistogramImageType;
+  typedef Image<float, N>                      HistogramImageType;
   typedef HistogramImageType                   PDFImageType;
-  typedef itk::Vector<double, N>               ListDoubleType;
+  typedef Vector<double, N>                    ListDoubleType;
 
   //
   // Methods
