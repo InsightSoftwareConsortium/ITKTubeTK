@@ -24,8 +24,9 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itk@CTK_ADD_CLASS_NAME@.h"
+#include "itkImageToTubeRigidRegistration.h"
 #include "itkSpatialObjectReader.h"
+#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itkImageFileReader.h"
 #include "itkTubeToTubeTransformFilter.h"
 #include "itkEuler3DTransform.h"
@@ -95,9 +96,9 @@ public:
     }
 };
 
-int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
+int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv [] )
 {
-  if ( argc < 4 )
+  if( argc < 4 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
@@ -106,11 +107,12 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  typedef itk::VesselTubeSpatialObject< 3 >              TubeType;
   typedef itk::GroupSpatialObject<3>                     TubeNetType;
   typedef itk::SpatialObjectReader<3>                    TubeNetReaderType;
   typedef itk::Image<double, 3>                          ImageType;
   typedef itk::ImageFileReader<ImageType>                ImageReaderType;
-  typedef itk::@CTK_ADD_CLASS_NAME@<ImageType, TubeNetType>
+  typedef itk::ImageToTubeRigidRegistration<ImageType, TubeNetType, TubeType>
                                                          RegistrationFilterType;
 
   // read image
@@ -168,6 +170,23 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  // subsample points in vessel
+  typedef itk::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
+    SubSampleTubeNetFilterType;
+  SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
+    SubSampleTubeNetFilterType::New();
+  subSampleTubeNetFilter->SetInput( vesselReader->GetGroup() );
+  subSampleTubeNetFilter->SetSampling( 30 );
+  try
+    {
+    subSampleTubeNetFilter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
   // register the vessel and the image
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
@@ -180,12 +199,11 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     RegistrationFilterType::New();
 
   registrationFilter->SetFixedImage( blurFilters[2]->GetOutput() );
-  registrationFilter->SetMovingSpatialObject( vesselReader->GetGroup() );
+  registrationFilter->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
   registrationFilter->SetNumberOfIteration( 1000 );
   registrationFilter->SetLearningRate( 0.1 );
   registrationFilter->SetInitialPosition( initialPose );
   registrationFilter->SetParametersScale( parameterScales );
-  registrationFilter->SetSampling( 50 );
 
   // Add a time probe
   itk::TimeProbesCollectorBase chronometer;

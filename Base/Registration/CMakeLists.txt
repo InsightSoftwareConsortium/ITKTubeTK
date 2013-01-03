@@ -29,9 +29,7 @@ set( TubeTK_Base_Registration_H_Files
   itkAnisotropicDiffusiveSparseRegistrationFilter.h
   itkDiffusiveRegistrationFilter.h
   itkDiffusiveRegistrationFilterUtils.h
-  itkImageToTubeRigidMetric2.h
   itkImageToTubeRigidMetric.h
-  itkImageToTubeRigidRegistration2.h
   itkImageToTubeRigidRegistration.h
   itkMeanSquareRegistrationFunction.h
   itkTubeToTubeTransformFilter.h
@@ -43,9 +41,7 @@ set( TubeTK_Base_Registration_TXX_Files
   itkAnisotropicDiffusiveSparseRegistrationFilter.txx
   itkDiffusiveRegistrationFilter.txx
   itkDiffusiveRegistrationFilterUtils.txx
-  itkImageToTubeRigidMetric2.txx
   itkImageToTubeRigidMetric.txx
-  itkImageToTubeRigidRegistration2.txx
   itkImageToTubeRigidRegistration.txx
   itkMeanSquareRegistrationFunction.txx
   itkTubeToTubeTransformFilter.txx
