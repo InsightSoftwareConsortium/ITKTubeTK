@@ -43,6 +43,10 @@ set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
 
+# for Cppcheck
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${TubeTK_SOURCE_DIR}/Utilities/Cppcheck")
+include( FindCppcheck )
+
 #-----------------------------------------------------------------------------
 # Dashboard setup
 include( ${CMAKE_ROOT}/Modules/Dart.cmake )

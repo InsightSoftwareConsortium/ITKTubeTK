@@ -58,6 +58,7 @@ set( TubeTK_USE_CTK "@TubeTK_USE_VTK@" )
 set( TubeTK_USE_SYSTEM_VTK "@TubeTK_USE_SYSTEM_VTK@" )
 set( TubeTK_USE_CTK "@TubeTK_USE_CTK@" )
 set( TubeTK_USE_SYSTEM_CTK "@TubeTK_USE_SYSTEM_CTK@" )
+set (TubeTK_USE_CPPCHECK "@TubeTK_USE_CPPCHECK@" )
 
 # Relative install paths in the TubeTK install tree
 set( TubeTK_INSTALL_BIN_DIR "@TubeTK_INSTALL_BIN_DIR@" )
