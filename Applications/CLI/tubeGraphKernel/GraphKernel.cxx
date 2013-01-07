@@ -146,6 +146,12 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
   reader.close();
 
 
+  // Set node degree as label (suggested in [Shervashidze11a])
+  for( int i=0; i<nVertices; ++i )
+    {
+    g[vertex(i,g)].type = out_degree(i, g);
+    }
+
   // In case no label file is given
   if (!labelFile)
     {
@@ -167,6 +173,7 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
       reader >> lab;
       reader.get();
       g[vertex(i, g)].type = lab;
+
     }
   reader.close();
   return g;

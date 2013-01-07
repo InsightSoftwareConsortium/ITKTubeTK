@@ -747,7 +747,11 @@ def compute_trn_gk(config, options):
     compose_gk_list(config, options, "Common", "trn", trn_common_json_file)
 
     cmd = [config["Exec"]["tubeGraphKernel"],
-        trn_common_json_file, trn_common_json_file, trn_common_kern_file]
+        trn_common_json_file,
+        trn_common_json_file,
+        trn_common_kern_file,
+        "--graphKernelType %d" % options["kernelType"],
+        "--subtreeHeight %d" % options["wlHeight"]]
     subprocess.call(cmd)
 
 
@@ -770,12 +774,20 @@ def compute_tst_gk(config, options):
     compose_gk_list(config, options, "Common", "tst", tst_common_json_file)
 
     cmd = [config["Exec"]["tubeGraphKernel"],
-        tst_common_json_file, trn_common_json_file, tst_common_kern_file]
+        tst_common_json_file,
+        trn_common_json_file,
+        tst_common_kern_file,
+        "--graphKernelType %d" % options["kernelType"],
+        "--subtreeHeight %d" % options["wlHeight"]]
     subprocess.call(cmd)
 
 
 def trn_classifier(config, options):
-    """ Train a support vector machine classifer """
+    """
+
+    Train a support vector machine classifer
+
+    """
 
     logger = logging.getLogger()
 
@@ -805,6 +817,7 @@ def trn_classifier(config, options):
     clf = svm.SVC(kernel="precomputed")
     score = clf.fit(kernel_data, labels).score(kernel_data, labels)
     logger.debug("Training finished (Score = %.2f)!" % score)
+    print float(sum(clf.n_support_))/N
 
     clf_out_file = os.path.join(cv_dir, "svm-Common.clf")
     with open(clf_out_file, 'wb') as fid:
@@ -845,5 +858,6 @@ def tst_classifier(config, options):
         clf = cPickle.load(fid)
 
     y = clf.predict(kernel_data)
+
     score = clf.score(kernel_data, labels)
     logger.debug("Testing score = %.2f (%d/%d)" % (score, int(score*M), M))
