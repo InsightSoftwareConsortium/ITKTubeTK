@@ -223,7 +223,7 @@ RidgeSeedGenerator< ImageT, LabelmapT >
             dot += t[2]*t2[2];
             }
           }
-        this->m_FeatureImageList[ dotPos ]->SetPixel( indx, dot );
+        this->m_FeatureImageList[ dotPos ]->SetPixel( indx, vnl_math_abs( dot ) );
         }
       ++iter;
       ++itInMask;
@@ -310,7 +310,7 @@ RidgeSeedGenerator< ImageT, LabelmapT >
           dot += t[2]*t2[2];
           }
         }
-      this->m_FeatureImageList[ dotPos ]->SetPixel( indx, dot );
+      this->m_FeatureImageList[ dotPos ]->SetPixel( indx, vnl_math_abs( dot ) );
       ++iter;
       }
     }
