@@ -30,6 +30,8 @@ def main(argv=None):
     parser.add_option("", "--config", help="Config file with relative executable paths")
     parser.add_option("", "--cells", help="Number of CVT cells to use for ATLAS building", type="int", default=1000)
     parser.add_option("", "--logat", help="Log at the specified logging level")
+    parser.add_option("", "--kernelType", help="Graph kernel type (0 ... SP, 1 ... WL)", type="int", default=0)
+    parser.add_option("", "--wlHeight", help="Subtree height of the WL subtree kernel", type="int", default=1)
     parser.add_option("", "--logto", help="Log to the specified file")
     parser.add_option("", "--phantom", help="Brainweb phantom")
 
@@ -84,6 +86,8 @@ def main(argv=None):
         stage_opt["dest"] = options.dest
         stage_opt["phantom"] = options.phantom
         stage_opt["cells"] = options.cells
+        stage_opt["kernelType"] = options.kernelType
+        stage_opt["wlHeight"] = options.wlHeight
 
         if (options.stage == 1):
             stage_opt["mra_wSkull_glob"] = "Series*tof*.mha"    # MRA ToF images (includes skull)
