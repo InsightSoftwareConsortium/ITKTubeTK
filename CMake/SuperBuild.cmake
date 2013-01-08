@@ -446,7 +446,7 @@ ExternalProject_Add( ImageViewer
 
 ## LibSVM
 ##
-if ( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_LIBSVM )
   set( proj LIBSVM )
   ExternalProject_Add(
     ${proj}
@@ -497,6 +497,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_Boost:BOOL=${TubeTK_USE_Boost}
     -DTubeTK_USE_ITKV4:BOOL=${TubeTK_USE_ITKV4}
+    -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
     -DTubeTK_EXECUTABLE_DIRS:BOOL=${TubeTK_EXECUTABLE_DIRS}
     -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
     -DITK_DIR:PATH=${ITK_DIR}
