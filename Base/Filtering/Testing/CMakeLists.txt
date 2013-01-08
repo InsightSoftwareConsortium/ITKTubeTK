@@ -133,6 +133,7 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterTest
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterTest.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
+    --compareIntensityTolerance 0.00001
     itkTubeEnhancingDiffusion2DImageFilterTest
       MIDAS{ES0015_1_Subs.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha )
@@ -141,6 +142,7 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetinaTest
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
+    --compareIntensityTolerance 0.0001
     itkTubeEnhancingDiffusion2DImageFilterTest
       MIDAS{im0001.crop2.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
@@ -150,6 +152,7 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
+    --compareIntensityTolerance 0.0001
     itkTubeEnhancingDiffusion2DImageFilterTest
       MIDAS{im0001_n10.crop2.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
