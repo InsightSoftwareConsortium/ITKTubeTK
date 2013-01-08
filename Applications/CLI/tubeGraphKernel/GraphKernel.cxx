@@ -24,47 +24,46 @@ limitations under the License.
 
 #include "GraphKernel.h"
 
-using namespace std;
-using namespace boost;
-using namespace boost::property_tree;
-
 
 namespace tube
 {
 
 
 //-----------------------------------------------------------------------------
-string GraphKernel::LabelVectorToString(const vector<int> &labVec)
+std::string GraphKernel::LabelVectorToString(const std::vector<int> &labVec)
 {
-  stringstream res;
-  copy(labVec.begin(), labVec.end(), ostream_iterator<int>(res, ""));
+  std::stringstream res;
+  std::copy(
+    labVec.begin(),
+    labVec.end(),
+    std::ostream_iterator<int>(res, ""));
   return res.str();
 }
 
 
 //-----------------------------------------------------------------------------
-string GraphKernel::BuildPrefixFromVertexID(int v)
+std::string GraphKernel::BuildPrefixFromVertexID(int v)
 {
-  stringstream res;
+  std::stringstream res;
   res << v << ",";
   return res.str();
 }
 
 
 //-----------------------------------------------------------------------------
-void GraphKernel::CountingSort(vector<int>& vec)
+void GraphKernel::CountingSort(std::vector<int>& vec)
 {
-  int maxVal = *max_element(vec.begin(), vec.end());
+  int maxVal = *std::max_element(vec.begin(), vec.end());
 
-  vector<int> C(maxVal + 1);
+  std::vector<int> C(maxVal + 1);
   BOOST_FOREACH(int a, vec)
     {
     ++C[a];
     }
   int current = 0;
-  for (int i = 0; i <= maxVal; ++i)
+  for( int i = 0; i <= maxVal; ++i )
     {
-    for(int j =0; j < C[i]; ++j)
+    for( int j =0; j < C[i]; ++j )
       {
       vec[current++] = i;
       }
@@ -73,7 +72,7 @@ void GraphKernel::CountingSort(vector<int>& vec)
 
 
 //-----------------------------------------------------------------------------
-string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
+std::string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
 {
   /*
    * Algorithm:
@@ -84,10 +83,10 @@ string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
    * 4) Sort the neighbor vector (CountingSort)
    * 5) Create string from vector
    */
-  IndexMapType index = get(vertex_index, G);
+  IndexMapType index = boost::get(boost::vertex_index, G);
 
   VertexNeighborType nb = adjacent_vertices(vertex(v, G), G);
-  int nNeighbors = distance(nb.first, nb.second);
+  int nNeighbors = std::distance(nb.first, nb.second);
 
   // No neighbors
   if (!nNeighbors)
@@ -95,8 +94,8 @@ string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
     return BuildPrefixFromVertexID(G[vertex(v,G)].type);
     }
 
-  vector<int> nbVec(nNeighbors);
-  for (int cnt=0; nb.first != nb.second; ++nb.first, ++cnt)
+  std::vector<int> nbVec(nNeighbors);
+  for( int cnt=0; nb.first != nb.second; ++nb.first, ++cnt )
     {
     int vertexIndex = index[*nb.first];
     int tp = G[vertex(vertexIndex, G)].type;
@@ -114,10 +113,10 @@ GraphKernel::GraphType
 GraphKernel::GraphFromAdjFile( const char *graphFile,
                                const char *labelFile)
 {
-  ifstream reader;
+  std::ifstream reader;
 
   int nVertices = 0;
-  reader.open(graphFile, ios::binary | ios::in);
+  reader.open(graphFile, std::ios::binary | std::ios::in);
   reader >> nVertices;
   reader.get();
 
@@ -125,19 +124,19 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
     nVertices);
 
   GraphKernel::GraphType g(nVertices);
-  for ( int i=0; i<nVertices; ++i )
+  for( int i=0; i<nVertices; ++i )
       {
       // Defaults to ID
       g[vertex(i, g)].type = i;
       }
-  for ( int i=0; i<nVertices; ++i )
+  for( int i=0; i<nVertices; ++i )
     {
-    for ( int j=0; j<nVertices; ++j )
+    for( int j=0; j<nVertices; ++j )
       {
       double tf;
       reader >> tf;
       reader.get();
-      if (tf > 0)
+      if(tf > 0)
         {
         add_edge( i, j, 1, g );
         }
@@ -153,7 +152,7 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
     }
 
   // In case no label file is given
-  if (!labelFile)
+  if(!labelFile)
     {
     return g;
     }
@@ -162,7 +161,7 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
     labelFile);
 
   int nLabels = 0;
-  reader.open(labelFile, ios::binary | ios::in);
+  reader.open(labelFile, std::ios::binary | std::ios::in);
   reader >> nLabels;
   reader.get();
 
@@ -186,21 +185,25 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
 {
   try
     {
-    ptree pt;
+    boost::property_tree::ptree pt;
     read_json(graphFile, pt);
 
     // Gets #vertices
     int nVertices = boost::lexical_cast<int>(
-      pt.get<string>("nVertices"));
+      pt.get<std::string>("nVertices"));
 
 
     // Parses linkage information
     int cnt = 0;
-    vector<vector<int> > linkInfo(nVertices);
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("adjM"))
+    std::vector<std::vector<int> > linkInfo(nVertices);
+    BOOST_FOREACH(boost::property_tree::ptree::value_type &v,
+      pt.get_child("adjM"))
       {
-      ptree adjInfoTree = (ptree)v.second;
-      BOOST_FOREACH(ptree::value_type &w, adjInfoTree.get_child(""))
+      boost::property_tree::ptree adjInfoTree =
+        (boost::property_tree::ptree)v.second;
+
+      BOOST_FOREACH(boost::property_tree::ptree::value_type &w,
+        adjInfoTree.get_child(""))
         {
         int vertexId = boost::lexical_cast<int>(w.second.data());
         linkInfo[cnt].push_back(vertexId);
@@ -211,11 +214,15 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
 
     // Parses distance information
     cnt = 0;
-    vector<vector<double> > distInfo(nVertices);
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("dist"))
+    std::vector<std::vector<double> > distInfo(nVertices);
+    BOOST_FOREACH(boost::property_tree::ptree::value_type &v,
+      pt.get_child("dist"))
       {
-      ptree distInfoTree = (ptree)v.second;
-      BOOST_FOREACH(ptree::value_type &w, distInfoTree.get_child(""))
+      boost::property_tree::ptree distInfoTree =
+        (boost::property_tree::ptree)v.second;
+
+      BOOST_FOREACH(boost::property_tree::ptree::value_type &w,
+        distInfoTree.get_child(""))
         {
         double distToNeighbor = boost::lexical_cast<double>(w.second.data());
         distInfo[cnt].push_back(distToNeighbor);
@@ -225,8 +232,9 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
 
 
     // Parses vertex type information
-    vector<int> typeInfo;
-    BOOST_FOREACH(ptree::value_type &v, pt.get_child("type"))
+    std::vector<int> typeInfo;
+    BOOST_FOREACH(boost::property_tree::ptree::value_type &v,
+      pt.get_child("type"))
       {
       int type = boost::lexical_cast<int>(v.second.data());
       typeInfo.push_back(type);
@@ -239,15 +247,15 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
 
     // Now build the graph
     GraphKernel::GraphType g(nVertices);
-    for (int i=0; i<nVertices;++i)
+    for( int i=0; i<nVertices;++i)
       {
       g[vertex(i, g)].type = typeInfo[i];
       }
 
-    for (int i=0; i<linkInfo.size(); ++i)
+    for( int i=0; i<linkInfo.size(); ++i)
       {
       assert(linkInfo[i].size() == distInfo[i].size());
-      for (int j=1; j<linkInfo[i].size(); ++j)
+      for( int j=1; j<linkInfo[i].size(); ++j)
         {
         tube::FmtDebugMessage("Adding edge (%d,%d) with weight %.5f",
           linkInfo[i][0], linkInfo[i][j], distInfo[i][j]);
