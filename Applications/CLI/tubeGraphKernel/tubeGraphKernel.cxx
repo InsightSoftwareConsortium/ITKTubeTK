@@ -33,14 +33,6 @@ limitations under the License.
 
 #include "tubeGraphKernelCLP.h"
 
-using namespace boost;
-using namespace tube;
-using namespace std;
-
-using boost::property_tree::ptree;
-using boost::lexical_cast;
-
-
 enum
   {
   GK_SPKernel = 0,
@@ -60,23 +52,23 @@ void readGraphList(const std::string &fileName,
   list.clear();
   try
     {
-    ptree pt;
+    boost::property_tree::ptree pt;
     read_json(fileName, pt);
 
-    int nGraphs = boost::lexical_cast<int>( pt.get<string>("nGraphs") );
+    int nGraphs = boost::lexical_cast<int>( pt.get<std::string>("nGraphs") );
 
     int graphCount = 0;
-    BOOST_FOREACH( ptree::value_type &v, pt.get_child("graphList") )
+    BOOST_FOREACH( boost::property_tree::ptree::value_type &v, pt.get_child("graphList") )
       {
-      const string &file = lexical_cast<string>( v.second.data() );
+      const std::string &file = boost::lexical_cast<std::string>( v.second.data() );
       list.push_back( file );
       ++graphCount;
       }
 
     int labelCount = 0;
-    BOOST_FOREACH( ptree::value_type &v, pt.get_child("labels") )
+    BOOST_FOREACH( boost::property_tree::ptree::value_type &v, pt.get_child("labels") )
       {
-      int label = lexical_cast<int>( v.second.data() );
+      int label = boost::lexical_cast<int>( v.second.data() );
       labels.push_back( label );
       ++labelCount;
       }
@@ -101,7 +93,7 @@ void writeKernel(const std::string &baseFileName, const vnl_matrix<double> &K)
   std::string outFileName = baseFileName + ".bin";
   std::ofstream ofs;
 
-  ofs.open( outFileName.c_str(), ios::binary | ios::out );
+  ofs.open( outFileName.c_str(), std::ios::binary | std::ios::out );
   if( !ofs )
     {
     tube::FmtErrorMessage("Could not open kernel matrix %s for writing!",
@@ -138,7 +130,7 @@ void writeKernelLibSVM(const std::string &baseFileName,
 {
   std::string outFileName = baseFileName + ".libsvm";
   std::ofstream ofs;
-  ofs.open( outFileName.c_str(), ios::binary | ios::out );
+  ofs.open( outFileName.c_str(), std::ios::binary | std::ios::out );
   if( !ofs )
     {
     tube::FmtErrorMessage("Could not open kernel matrix %s for writing!",
@@ -187,7 +179,7 @@ bool fileExists(const std::string &fileName)
  * label file should have the same name as the adjaceny matrix
  * file + the suffix '.vertexLabel'
  */
-GraphKernel::GraphType loadGraph(string graphFile)
+tube::GraphKernel::GraphType loadGraph(std::string graphFile)
 {
   const char * labelFile = 0;
   std::string labelFileStr = graphFile + ".vertexLabel";
@@ -195,7 +187,7 @@ GraphKernel::GraphType loadGraph(string graphFile)
     {
     labelFile = labelFileStr.c_str();
     }
-  return GraphKernel::GraphFromAdjFile(
+  return tube::GraphKernel::GraphFromAdjFile(
     graphFile.c_str(), labelFile);
 }
 
@@ -223,7 +215,7 @@ int main(int argc, char **argv)
      *
      */
 
-    std::vector<string> listA, listB;
+    std::vector<std::string> listA, listB;
     std::vector<int> labelsB, labelsA;
     readGraphList( graphListA, listA, labelsA );
     readGraphList( graphListB, listB, labelsB );
@@ -253,7 +245,7 @@ int main(int argc, char **argv)
      *
      */
 
-    WLSubtreeKernel::LabelMapVectorType labelMap(subtreeHeight);
+    tube::WLSubtreeKernel::LabelMapVectorType labelMap(subtreeHeight);
     int labelCount = 0;
 
     if( graphKernelType == GK_WLKernel )
@@ -263,8 +255,8 @@ int main(int argc, char **argv)
         tube::FmtInfoMessage("Adding data from graph %s",
           listA[i].c_str());
 
-        GraphKernel::GraphType f = loadGraph(listA[i]);
-        WLSubtreeKernel::UpdateLabelCompression( f,
+        tube::GraphKernel::GraphType f = loadGraph(listA[i]);
+        tube::WLSubtreeKernel::UpdateLabelCompression( f,
                                                  labelMap,
                                                  labelCount,
                                                  subtreeHeight );
@@ -283,26 +275,26 @@ int main(int argc, char **argv)
 
     for( int i = 0; i < N; ++i )
       {
-      GraphKernel::GraphType f = loadGraph(listA[i]);
+      tube::GraphKernel::GraphType f = loadGraph(listA[i]);
       for( int j = 0; j < M; ++j )
         {
-        GraphKernel::GraphType g = loadGraph(listB[j]);
+        tube::GraphKernel::GraphType g = loadGraph(listB[j]);
 
         tube::FmtInfoMessage("Running kernel on graphs (%d,%d)",
           i,j);
 
-        GraphKernel *gk = 0;
+        tube::GraphKernel *gk = 0;
         switch( graphKernelType )
           {
           case GK_SPKernel:
             {
-            gk = new ShortestPathKernel(f, g);
+            gk = new tube::ShortestPathKernel(f, g);
             K[i][j] = gk->Compute();
             break;
             }
           case GK_WLKernel:
             {
-            gk = new WLSubtreeKernel( f,
+            gk = new tube::WLSubtreeKernel( f,
                                       g,
                                       labelMap,
                                       labelCount,

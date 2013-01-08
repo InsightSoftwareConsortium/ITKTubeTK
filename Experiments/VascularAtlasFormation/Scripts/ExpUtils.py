@@ -39,10 +39,10 @@ def compute_registrations(config, options):
 
     logger = logging.getLogger();
 
-    for dir in options["subjects"]:
-        mra_wSkull_listing = glob.glob(os.path.join(dir, options["mra_wSkull_glob"]))
-        mri_wSkull_listing = glob.glob(os.path.join(dir, options["mri_wSkull_glob"]))
-        mri_nSkull_listing = glob.glob(os.path.join(dir, options["mri_nSkull_glob"]))
+    for subject_dir in options["subjects"]:
+        mra_wSkull_listing = glob.glob(os.path.join(subject_dir, options["mra_wSkull_glob"]))
+        mri_wSkull_listing = glob.glob(os.path.join(subject_dir, options["mri_wSkull_glob"]))
+        mri_nSkull_listing = glob.glob(os.path.join(subject_dir, options["mri_nSkull_glob"]))
 
         sum_len = 0
         sum_len += len( mri_wSkull_listing )
@@ -52,12 +52,12 @@ def compute_registrations(config, options):
         if not sum_len == 3:
             raise Exception( "Mismatch in nr. of MRI/MRA files!" )
 
-        ensure_dir(os.path.join(options["dest"], os.path.basename(dir)))
+        ensure_dir(os.path.join(options["dest"], os.path.basename(subject_dir)))
 
-        rig_transform_file = os.path.join(options["dest"], os.path.basename(dir), "MRA-T1.tfm" )
-        aff_transform_file = os.path.join(options["dest"], os.path.basename(dir), "T1-Phantom.tfm")
-        rig_image_file = os.path.join(options["dest"], os.path.basename(dir), "mra-t1.mha")
-        aff_image_file = os.path.join(options["dest"], os.path.basename(dir), "t1-phantom.mha")
+        rig_transform_file = os.path.join(options["dest"], os.path.basename(subject_dir), "MRA-T1.tfm" )
+        aff_transform_file = os.path.join(options["dest"], os.path.basename(subject_dir), "T1-Phantom.tfm")
+        rig_image_file = os.path.join(options["dest"], os.path.basename(subject_dir), "mra-t1.mha")
+        aff_image_file = os.path.join(options["dest"], os.path.basename(subject_dir), "t1-phantom.mha")
 
         param_type = "--registration Rigid"
         param_save = "--saveTransform %s" % rig_transform_file
@@ -100,19 +100,19 @@ def transform_tubes_to_phantom(config, options):
 
     logger = logging.getLogger()
 
-    for dir in options["subjects"]:
-        tubes_original_file = os.path.join(dir, "color-new.tre" )
+    for subject_dir in options["subjects"]:
+        tubes_original_file = os.path.join(subject_dir, "VascularNetwork.tre" )
 
         if (not check_file(tubes_original_file)):
             raise Exception("Original tube file %s not existent!" % tubes_original_file)
 
         # Output tube files (to be generated in subjects destination directory)
-        tubes_mra_t1_file = os.path.join(options["dest"], os.path.basename(dir), "color-new-mra-t1.tre" )
-        tubes_t1_pha_file = os.path.join(options["dest"], os.path.basename(dir), "color-new-t1-phantom.tre")
+        tubes_mra_t1_file = os.path.join(options["dest"], os.path.basename(subject_dir), "VascularNetwork-mra-t1.tre" )
+        tubes_t1_pha_file = os.path.join(options["dest"], os.path.basename(subject_dir), "VascularNetwork-t1-phantom.tre")
 
         # Transform files (assumed to exist in destination directory of subject)
-        mra_t1_tfm_file = os.path.join(options["dest"], os.path.basename(dir), "MRA-T1.tfm" )
-        t1_pha_tfm_file = os.path.join(options["dest"], os.path.basename(dir), "T1-Phantom.tfm" )
+        mra_t1_tfm_file = os.path.join(options["dest"], os.path.basename(subject_dir), "MRA-T1.tfm" )
+        t1_pha_tfm_file = os.path.join(options["dest"], os.path.basename(subject_dir), "T1-Phantom.tfm" )
 
         if (not check_file(mra_t1_tfm_file)):
             raise Exception("MRA to T1 transform file %s missing!" % mra_t1_tfm_file)
@@ -142,18 +142,18 @@ def compute_ind_atlas_edm(config, options):
     """
     logger = logging.getLogger()
 
-    for dir in options["subjects"]:
-        den_image_name = os.path.join(options["dest"], os.path.basename(dir), "color-new-t1-phantomDD.mha")
-        rad_image_name = os.path.join(options["dest"], os.path.basename(dir), "color-new-t1-phantomRad.mha")
-        tan_image_name = os.path.join(options["dest"], os.path.basename(dir), "color-new-t1-phantomTan.mha")
+    for subject_dir in options["subjects"]:
+        den_image_name = os.path.join(options["dest"], os.path.basename(subject_dir), "VascularNetwork-t1-phantomDD.mha")
+        rad_image_name = os.path.join(options["dest"], os.path.basename(subject_dir), "VascularNetwork-t1-phantomRad.mha")
+        tan_image_name = os.path.join(options["dest"], os.path.basename(subject_dir), "VascularNetwork-t1-phantomTan.mha")
 
         # Tubes in phantom space (assumed to exist at that stage)
-        tubes_in_phantom_space = os.path.join(options["dest"], os.path.basename(dir), "color-new-t1-phantom.tre" )
+        tubes_in_phantom_space = os.path.join(options["dest"], os.path.basename(subject_dir), "VascularNetwork-t1-phantom.tre" )
         if (not check_file(tubes_in_phantom_space)):
             raise Exception( "Tube file %s missing!" % tubes_in_phantom_space )
 
         logger.debug("Create individual EDM for %s"
-            % os.path.basename(dir))
+            % os.path.basename(subject_dir))
 
         cmd = [config["Exec"]["tubeDensityImageRadiusBuilder"],
             tubes_in_phantom_space, den_image_name, rad_image_name, tan_image_name,
@@ -195,7 +195,7 @@ def compute_grp_atlas_sum(config, options):
             if not options["grouplabel"][i] == grp:
                 continue
 
-            ind_edm_file = os.path.join(options["dest"], os.path.basename(options["subjects"][i]),"color-new-t1-phantomDD.mha")
+            ind_edm_file = os.path.join(options["dest"], os.path.basename(options["subjects"][i]),"VascularNetwork-t1-phantomDD.mha")
             if not check_file(ind_edm_file):
                 raise Exception("Euclidean distance file %s missing!" % ind_edm_file)
 
@@ -297,7 +297,7 @@ def graph_from_atlas(config, options, grp, atlas_type, data_type):
             continue
 
         subject_dir = os.path.join(options["dest"], os.path.basename(options["subjects"][i]))
-        tubes_in_phantom_space = os.path.join(subject_dir, "color-new-t1-phantom.tre" )
+        tubes_in_phantom_space = os.path.join(subject_dir, "VascularNetwork-t1-phantom.tre" )
 
         if (not check_file(tubes_in_phantom_space)):
             raise Exception("Transformed tubes (%s) are missing!" % tubes_in_phantom_space)
@@ -309,7 +309,7 @@ def graph_from_atlas(config, options, grp, atlas_type, data_type):
         logger.debug("Compute graph for %s individual %s (using ATLAS type %s)"
             % (grp, os.path.basename(options["subjects"][i]), atlas_type))
 
-        output_graph_file = os.path.join(cv_subject_dir, "color-new-t1-phantom-%s.grp" % atlas_type )
+        output_graph_file = os.path.join(cv_subject_dir, "VascularNetwork-t1-phantom-%s.grp" % atlas_type )
         cmd = [config["Exec"]["tubeToGraph"],
             tubes_in_phantom_space, atlas_file, output_graph_file]
         subprocess.call(cmd)
@@ -364,7 +364,7 @@ def graph_from_graphs(config, options, grp, atlas_type, create_image=False):
 
         # Assume existence of tubes (in Phantom space) for each subject
         cv_subject_dir = os.path.join(cv_dir, os.path.basename(options["subjects"][i]))
-        tube_graph = os.path.join(cv_subject_dir, "color-new-t1-phantom-%s.grp" % atlas_type)
+        tube_graph = os.path.join(cv_subject_dir, "VascularNetwork-t1-phantom-%s.grp" % atlas_type)
         if (not check_file(tube_graph)):
             raise Exception("Graph %s missing!" % tube_graph)
 
@@ -619,7 +619,7 @@ def compute_tube_prob(config, options, atlas_type, data_type):
             %  os.path.basename(options["subjects"][i]))
 
         prob_file = os.path.join(cv_dir, os.path.basename(options["subjects"][i]), "on-%s-atlas.treProb.txt" % atlas_type)
-        tube_file = os.path.join(options["dest"], os.path.basename(options["subjects"][i]), "color-new-t1-phantom.tre")
+        tube_file = os.path.join(options["dest"], os.path.basename(options["subjects"][i]), "VascularNetwork-t1-phantom.tre")
 
         cmd = [config["Exec"]["tubeDensityProbability"],
             tube_file, atlas_file, prob_file]
@@ -663,7 +663,7 @@ def compute_graph_probability(config, options, grp, atlas_type, data_type):
     for i in options[data_type]:
         in_graph_file = os.path.join(
             cv_dir, os.path.basename(options["subjects"][i]),
-            "color-new-t1-phantom-%s.grp" % atlas_type)
+            "VascularNetwork-t1-phantom-%s.grp" % atlas_type)
 
         if not check_file("%s.mat" % in_graph_file):
             raise Exception("Sub-file %s.mat missing!" % in_graph_file)
@@ -674,7 +674,7 @@ def compute_graph_probability(config, options, grp, atlas_type, data_type):
 
         out_graph_file = os.path.join(cv_dir,
             os.path.basename(options["subjects"][i]),
-            "color-new-t1-phantom-%s-%s.grp" % (atlas_type, grp))
+            "VascularNetwork-t1-phantom-%s-%s.grp" % (atlas_type, grp))
 
         cmd = [config["Exec"]["tubeGraphProbability"],
             in_graph_file, summary_graph_file, out_graph_file]
@@ -720,7 +720,7 @@ def compose_gk_list(config, options, atlas_type, data_type, graph_list_file):
         subject_graph_file = os.path.join(
             cv_dir,
             os.path.basename(options["subjects"][i]),
-            "color-new-t1-phantom-%s.grp.mat" % atlas_type)
+            "VascularNetwork-t1-phantom-%s.grp.mat" % atlas_type)
         if not check_file(subject_graph_file):
             raise Exception("Subject graph file %s missing!" % subject_graph_file)
         graph_list.append(subject_graph_file)
@@ -747,7 +747,11 @@ def compute_trn_gk(config, options):
     compose_gk_list(config, options, "Common", "trn", trn_common_json_file)
 
     cmd = [config["Exec"]["tubeGraphKernel"],
-        trn_common_json_file, trn_common_json_file, trn_common_kern_file]
+        trn_common_json_file,
+        trn_common_json_file,
+        trn_common_kern_file,
+        "--graphKernelType %d" % options["kernelType"],
+        "--subtreeHeight %d" % options["wlHeight"]]
     subprocess.call(cmd)
 
 
@@ -770,12 +774,20 @@ def compute_tst_gk(config, options):
     compose_gk_list(config, options, "Common", "tst", tst_common_json_file)
 
     cmd = [config["Exec"]["tubeGraphKernel"],
-        tst_common_json_file, trn_common_json_file, tst_common_kern_file]
+        tst_common_json_file,
+        trn_common_json_file,
+        tst_common_kern_file,
+        "--graphKernelType %d" % options["kernelType"],
+        "--subtreeHeight %d" % options["wlHeight"]]
     subprocess.call(cmd)
 
 
 def trn_classifier(config, options):
-    """ Train a support vector machine classifer """
+    """
+
+    Train a support vector machine classifer
+
+    """
 
     logger = logging.getLogger()
 
@@ -805,6 +817,7 @@ def trn_classifier(config, options):
     clf = svm.SVC(kernel="precomputed")
     score = clf.fit(kernel_data, labels).score(kernel_data, labels)
     logger.debug("Training finished (Score = %.2f)!" % score)
+    print float(sum(clf.n_support_))/N
 
     clf_out_file = os.path.join(cv_dir, "svm-Common.clf")
     with open(clf_out_file, 'wb') as fid:
@@ -845,5 +858,6 @@ def tst_classifier(config, options):
         clf = cPickle.load(fid)
 
     y = clf.predict(kernel_data)
+
     score = clf.score(kernel_data, labels)
     logger.debug("Testing score = %.2f (%d/%d)" % (score, int(score*M), M))

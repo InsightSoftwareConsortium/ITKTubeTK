@@ -1,8 +1,5 @@
 #include "WLSubtreeKernel.h"
 
-using namespace std;
-using namespace boost;
-
 
 namespace tube
 {
@@ -10,14 +7,14 @@ namespace tube
 
 //-----------------------------------------------------------------------------
 void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
-                                              vector<LabelMapType> & labelMap,
+                                              std::vector<LabelMapType> & labelMap,
                                               int &cLabCounter,
                                               int subtreeHeight)
 {
   int h = 0;
   int N = num_vertices(G);
   LabelMapType::const_iterator it;
-  for (int i=0; i<N; ++i)
+  for(int i=0; i<N; ++i)
     {
     /*
      * On level h = 0, we relabel the vertex types to start
@@ -25,9 +22,9 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
      * This will allow convenient indexing!
      */
     int type = G[vertex(i,G)].type;
-    string vertexStr = lexical_cast<string>(type);
+    std::string vertexStr = boost::lexical_cast<std::string>(type);
     it = labelMap[h].find(vertexStr);
-    if (it == labelMap[h].end())
+    if(it == labelMap[h].end())
       {
       tube::FmtDebugMessage("Relabel %d (%s) -> %d",
         i, vertexStr.c_str(), cLabCounter);
@@ -50,15 +47,15 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
    * while fetching neighbor information and building the compressed label.
    * Once we are done with all vertices, we relabel!
    */
-  for (h=1; h<subtreeHeight; ++h)
+  for( h=1; h<subtreeHeight; ++h )
     {
-    vector<int> relabel(N,-1);
+    std::vector<int> relabel(N,-1);
     LabelMapType::iterator it;
-    for (int i=0; i<N; ++i)
+    for( int i=0; i<N; ++i )
       {
-      string nbStr = BuildNeighborStr(G, i);
+      std::string nbStr = BuildNeighborStr(G, i);
       it = labelMap[h].find(nbStr);
-      if (it == labelMap[h].end())
+      if( it == labelMap[h].end() )
         {
         tube::FmtDebugMessage("(N) Relabel %d (%s) -> %d",
           i, nbStr.c_str(), cLabCounter);
@@ -74,9 +71,9 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
         }
       }
       // RELABEL now!
-      for (int i=0; i<N; ++i)
+      for( int i=0; i<N; ++i )
         {
-        if (relabel[i] > 0)
+        if( relabel[i] > 0 )
           {
           G[vertex(i,G)].type = relabel[i];
           }
@@ -86,19 +83,19 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
 
 
 //-----------------------------------------------------------------------------
-vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
+std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
 {
   int dim = m_labelCount;
-  vector<int> phi(dim, 0);
+  std::vector<int> phi(dim, 0);
   int N = num_vertices(G);
 
   int h = 0;
   LabelMapType::const_iterator it;
-  for (int i=0; i<N; ++i)
+  for( int i=0; i<N; ++i )
     {
     int tp = G[vertex(i,G)].type;
-    it = m_labelMap[h].find(lexical_cast<string>(tp));
-    if (it != m_labelMap[h].end())
+    it = m_labelMap[h].find(boost::lexical_cast<std::string>(tp));
+    if( it != m_labelMap[h].end() )
       {
       int cLab = (*it).second;
       G[vertex(i,G)].type = cLab;
@@ -106,21 +103,21 @@ vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
       }
     }
 
-  for (h=1; h<m_subtreeHeight; ++h)
+  for( h=1; h<m_subtreeHeight; ++h )
     {
-    vector<int> relabel(N,-1);
-    for (int i=0; i<N; ++i)
+    std::vector<int> relabel(N,-1);
+    for( int i=0; i<N; ++i )
       {
-      string nbStr = BuildNeighborStr(G, i);
+      std::string nbStr = BuildNeighborStr(G, i);
       it = m_labelMap[h].find(nbStr);
-      if (it != m_labelMap[h].end())
+      if( it != m_labelMap[h].end() )
         {
         int cLab = (*it).second;
         relabel[i] = cLab;
         phi[cLab]++;
         }
       }
-      for (int i=0; i<N; ++i)
+      for( int i=0; i<N; ++i )
         {
         if (relabel[i]>0)
           {
@@ -135,10 +132,10 @@ vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
 //-----------------------------------------------------------------------------
 double WLSubtreeKernel::Compute()
 {
-  vector<int> phiG0 = BuildPhi(m_G0);
-  vector<int> phiG1 = BuildPhi(m_G1);
+  std::vector<int> phiG0 = BuildPhi(m_G0);
+  std::vector<int> phiG1 = BuildPhi(m_G1);
 
-  if (phiG0.size() != phiG1.size())
+  if( phiG0.size() != phiG1.size() )
     {
     tube::ErrorMessage("Mismatch in feature mapping!");
     throw std::exception();

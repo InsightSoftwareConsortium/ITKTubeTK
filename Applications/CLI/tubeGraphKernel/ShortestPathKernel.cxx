@@ -24,8 +24,6 @@ limitations under the License.
 #include "ShortestPathKernel.h"
 
 
-using namespace boost;
-
 namespace tube
 {
 
@@ -44,8 +42,8 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
   GraphType out(nVertices);
   assert( nVertices == num_vertices(out) );
 
-  ConstVertexAllMapType mapIn = get( vertex_all, in );
-  VertexAllMapType mapOut = get( vertex_all, out );
+  ConstVertexAllMapType mapIn = boost::get( boost::vertex_all, in );
+  VertexAllMapType mapOut = boost::get( boost::vertex_all, out );
 
   for( int i=0; i<nVertices; ++i )
     {
@@ -87,8 +85,8 @@ double ShortestPathKernel::Compute(void)
 
 
   // Get the weight maps for both Floyd-transformed graphs
-  EdgeWeightMapType wmFG0 = get( edge_weight, m_FG0 );
-  EdgeWeightMapType wmFG1 = get( edge_weight, m_FG1 );
+  EdgeWeightMapType wmFG0 = boost::get( boost::edge_weight, m_FG0 );
+  EdgeWeightMapType wmFG1 = boost::get( boost::edge_weight, m_FG1 );
 
 
   // Iterate over all the edges of Floyd-transformed graph fg0

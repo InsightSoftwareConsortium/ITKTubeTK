@@ -14,5 +14,5 @@
             "tubeGraphKernel" :                 "<FullPathToTubeTKBuildDirectory>/bin/tubeGraphKernel",
             "RegisterImages" :                  "<FullPathToTubeTKBuildDirectory>/lib/TubeTK/Plugins/RegisterImages"
         },
-    "cvtCells" : 1000
+    "cvtCells" : 200
 }
