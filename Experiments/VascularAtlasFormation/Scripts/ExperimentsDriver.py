@@ -24,7 +24,7 @@ def main(argv=None):
     parser = OptionParser()
 
     parser.add_option("", "--stage", help="Processing stage (0 = Run all)" , type="int" )
-    parser.add_option("", "--dest", help="Destination base directory")
+    parser.add_option("", "--dest", help="Destination base directory", default="/tmp/")
     parser.add_option("", "--data", help="Data file in JSON format (see README for format)")
     parser.add_option("", "--cvruns", help="Number of cross-validation runs (1 == single split)", type="int", default=1)
     parser.add_option("", "--config", help="Config file with relative executable paths")
@@ -90,9 +90,9 @@ def main(argv=None):
         stage_opt["wlHeight"] = options.wlHeight
 
         if (options.stage == 1):
-            stage_opt["mra_wSkull_glob"] = "Series*tof*.mha"    # MRA ToF images (includes skull)
-            stage_opt["mri_wSkull_glob"] = "Series*FLASH*.mha"  # MRI T1 images (includes skull)
-            stage_opt["mri_nSkull_glob"] = "bSeries*FLASH*.mha" # MRA Tof images (skull-stripped)
+            stage_opt["mra_wSkull_glob"] = "*MRA.mha"            # MRA ToF images (includes skull)
+            stage_opt["mri_wSkull_glob"] = "*T1-Flash.mha"       # MRI T1 images  (includes skull)
+            stage_opt["mri_nSkull_glob"] = "*SkullStripped*.mha" # MRA Tof images (skull-stripped)
             Utils.compute_registrations(config, stage_opt)
         elif (options.stage == 2):
             Utils.transform_tubes_to_phantom(config, stage_opt)
