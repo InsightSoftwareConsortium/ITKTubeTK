@@ -43,10 +43,6 @@ set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
 
-# for Cppcheck
-set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${TubeTK_SOURCE_DIR}/Utilities/Cppcheck")
-include( FindCppcheck )
-
 #-----------------------------------------------------------------------------
 # Dashboard setup
 include( ${CMAKE_ROOT}/Modules/Dart.cmake )
@@ -72,7 +68,24 @@ set( MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_Data )
 
 #-----------------------------------------------------------------------------
 # Doxygen setup
-add_subdirectory( CMake/Doxygen )
+option( TubeTK_USE_DOXYGEN
+  "Run DOXYGEN in order to generate source code documentation."
+  OFF )
+mark_as_advanced( TubeTK_USE_DOXYGEN )
+if( TubeTK_USE_DOXYGEN )
+  add_subdirectory( CMake/Doxygen )
+endif()
+
+#-----------------------------------------------------------------------------
+#  Cppcheck Setup
+option( TubeTK_USE_CPPCHECK
+  "Run CPPCHECK in order to perform a static check of the code."
+  OFF )
+mark_as_advanced( TubeTK_USE_CPPCHECK )
+if( TubeTK_USE_CPPCHECK )
+  set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${TubeTK_SOURCE_DIR}/Utilities/Cppcheck")
+  include( FindCppcheck )
+endif()
 
 #-----------------------------------------------------------------------------
 # KWStyle setup
@@ -200,7 +213,6 @@ mark_as_advanced( TubeTK_USE_ITKV4 )
 option( TubeTK_USE_QT
   "Use QT to compile TubeTK, enables additional applications and libraries."
   ON )
-
 if( TubeTK_USE_QT )
   find_package( Qt4 )
   # Slicer only tests against a specific Qt version.  To override the
