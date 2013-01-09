@@ -39,9 +39,12 @@ def compute_registrations(config, options):
 
     logger = logging.getLogger();
 
+    print options["subjects"]
     for subject_dir in options["subjects"]:
-        mra_wSkull_listing = glob.glob(os.path.join(subject_dir, options["mra_wSkull_glob"]))
-        mri_wSkull_listing = glob.glob(os.path.join(subject_dir, options["mri_wSkull_glob"]))
+        subject_id = int(os.path.basename(subject_dir).rsplit('-')[-1])
+
+        mra_wSkull_listing = glob.glob(os.path.join(subject_dir, "Normal%.3d%s" %(subject_id, options["mra_wSkull_glob"])))
+        mri_wSkull_listing = glob.glob(os.path.join(subject_dir, "Normal%.3d%s" %(subject_id, options["mri_wSkull_glob"])))
         mri_nSkull_listing = glob.glob(os.path.join(subject_dir, options["mri_nSkull_glob"]))
 
         sum_len = 0
