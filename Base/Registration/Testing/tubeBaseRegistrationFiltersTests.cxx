@@ -38,14 +38,10 @@ void RegisterTests()
   REGISTER_TEST( itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest );
   REGISTER_TEST( itkTubePointsToImageTest );
   REGISTER_TEST( itkImageToTubeRigidRegistrationTest );
-  REGISTER_TEST( itkImageToTubeRigidRegistration2Test );
-  //REGISTER_TEST( itkImageToTubeRigidRegistrationPerformancesTest );
-  REGISTER_TEST( itkImageToTubeRigidRegistration2PerformancesTest );
+  REGISTER_TEST( itkImageToTubeRigidRegistrationPerformanceTest );
   REGISTER_TEST( itkTubeToTubeTransformFilterTest );
   REGISTER_TEST( itkImageToTubeRigidMetricTest );
-  //REGISTER_TEST( itkImageToTubeRigidMetricPerformancesTest );
-  REGISTER_TEST( itkImageToTubeRigidMetric2Test );
-  REGISTER_TEST( itkImageToTubeRigidMetric2PerformancesTest );
+  REGISTER_TEST( itkImageToTubeRigidMetricPerformanceTest );
   REGISTER_TEST( itkSyntheticTubeImageGenerationsTest );
 }
 

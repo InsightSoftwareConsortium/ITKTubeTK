@@ -24,10 +24,11 @@ limitations under the License.
 #include "itkImageFileReader.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkEuler3DTransform.h"
-#include "itk@CTK_ADD_CLASS_NAME@.h"
+#include "itkImageToTubeRigidMetric.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkSpatialObjectToImageFilter.h"
 #include "itkSpatialObjectReader.h"
+#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itkTubeSpatialObjectPoint.h"
 
 #include "itkTimeProbesCollectorBase.h"
@@ -35,13 +36,13 @@ limitations under the License.
 
 /**
  *  This test exercised the metric evaluation methods in the
- *  itk@CTK_ADD_METRIC_CLASS_NAME@ class. The distance between
+ *  itkImageToTubeRigidMetric class. The distance between
  *  a 3D binary images (32x32x32) and a .tre image is computed.
  */
 
-int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
+int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv [] )
 {
-  if ( argc < 4 )
+  if( argc < 4 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
@@ -54,17 +55,18 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
 
   typedef itk::Image<double, 3>                             Image3DType;
   typedef itk::ImageRegionIteratorWithIndex< Image3DType >  Image3DIteratorType;
-  typedef itk::TubeSpatialObject<3>                         TubeType;
+  typedef itk::VesselTubeSpatialObject<3>                   TubeType;
   typedef itk::TubeSpatialObjectPoint<3>                    TubePointType;
   typedef itk::GroupSpatialObject<3>                        TubeNetType;
 
   typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;
   typedef itk::SpatialObjectReader<3>                       TubeNetReaderType;
 
-  typedef itk::@CTK_ADD_CLASS_NAME@<Image3DType, TubeNetType> MetricType;
-  typedef itk::Array<double>                                      ParametersType;
-  typedef MetricType::InterpolatorType                            InterpolatorType;
-  typedef MetricType::TransformType                               TransformType;
+  typedef itk::ImageToTubeRigidMetric<Image3DType, TubeNetType, TubeType >
+                                                            MetricType;
+  typedef itk::Array<double>                                ParametersType;
+  typedef MetricType::InterpolatorType                      InterpolatorType;
+  typedef MetricType::TransformType                         TransformType;
 
   // read image (fixedImage)
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -92,19 +94,35 @@ int itk@CTK_ADD_CLASS_NAME@@CTK_ADD_TEST_EXTENSION@(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
+  // subsample points in vessel
+  typedef itk::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
+    SubSampleTubeNetFilterType;
+  SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
+    SubSampleTubeNetFilterType::New();
+  subSampleTubeNetFilter->SetInput( tubeReader->GetGroup() );
+  subSampleTubeNetFilter->SetSampling( 30 );
+  try
+    {
+    subSampleTubeNetFilter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::cerr << "Exception caught: " << err << std::endl;
+    return EXIT_FAILURE;
+    }
+
   //------------------------------------------------------------------
   // Compute the metric for a 3D image susampled at 1/30
   //------------------------------------------------------------------
   MetricType::Pointer metric = MetricType::New();
   metric->SetExtent( 3 );
-  metric->SetSampling( 30 );
 
   InterpolatorType::Pointer interpolator = InterpolatorType::New();
   TransformType::Pointer transform = TransformType::New();
   TransformType::ParametersType parameters = transform->GetParameters();
 
   metric->SetFixedImage( imageReader->GetOutput() );
-  metric->SetMovingSpatialObject ( tubeReader->GetGroup() );
+  metric->SetMovingSpatialObject ( subSampleTubeNetFilter->GetOutput() );
   metric->SetInterpolator( interpolator );
   metric->SetTransform( transform );
 
