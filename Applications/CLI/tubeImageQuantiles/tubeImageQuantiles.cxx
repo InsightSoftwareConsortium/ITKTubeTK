@@ -49,7 +49,7 @@ limitations under the License.
 
 enum { TDimensions = 3 };
 
-using namespace boost;
+//using namespace boost;
 using namespace boost::accumulators;
 
 typedef itk::Image< float, TDimensions >                  ImageType;
@@ -159,14 +159,14 @@ void writeQuantilesToFile( const std::vector<float>& quantiles,
 
   try
     {
-    property_tree::ptree root;
-    property_tree::ptree quantilesJSON;
-    property_tree::ptree quantileValuesJSON;
+    boost::property_tree::ptree root;
+    boost::property_tree::ptree quantilesJSON;
+    boost::property_tree::ptree quantileValuesJSON;
 
-    for ( int i=0; i<quantiles.size(); ++i )
+    for( size_t i=0; i<quantiles.size(); ++i )
       {
-      property_tree::ptree quantileElementJSON;
-      property_tree::ptree quantileValueElementJSON;
+      boost::property_tree::ptree quantileElementJSON;
+      boost::property_tree::ptree quantileValueElementJSON;
       quantileElementJSON.put( "", quantiles[i] );
       quantileValueElementJSON.put( "", quantileValues[i] );
       quantilesJSON.push_back(make_pair( "", quantileElementJSON ) );
@@ -174,9 +174,9 @@ void writeQuantilesToFile( const std::vector<float>& quantiles,
       }
     root.add_child( "quantiles", quantilesJSON);
     root.add_child( "quantileValues", quantileValuesJSON );
-    property_tree::write_json( outFile, root );
+    boost::property_tree::write_json( outFile, root );
     }
-  catch (property_tree::json_parser::json_parser_error &e)
+  catch(boost::property_tree::json_parser::json_parser_error &e)
     {
     tube::ErrorMessage( e.message() );
     throw std::exception();
@@ -199,7 +199,7 @@ int main( int argc, char*argv[] )
     imReader->Update();
     im = imReader->GetOutput();
     }
-  catch ( itk::ExceptionObject &ex )
+  catch( itk::ExceptionObject &ex )
     {
     tube::ErrorMessage( ex.GetDescription() );
     return EXIT_FAILURE;
@@ -211,7 +211,7 @@ int main( int argc, char*argv[] )
     computeQuantiles(im, quantiles, quantileValues);
     writeQuantilesToFile( quantiles, quantileValues, outFile );
     }
-  catch (std::exception &e)
+  catch(std::exception &e)
     {
     return EXIT_FAILURE;
     }
