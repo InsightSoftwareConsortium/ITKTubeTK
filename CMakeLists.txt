@@ -42,22 +42,22 @@ set( TubeTK_VERSION
   "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_BUILD}" )
 
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
 #-----------------------------------------------------------------------------
 #  Setup for building extensions
 set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY "bin" )
 set( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY "lib/TubeTK" )
 set( SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY "include/TubeTK" )
-set( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY "share/bin" )
-set( SlicerExecutionModel_CLI_ARHCHIVE_INSTALL_DIRECTORY "lib/bin" )
+set( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY "share/TubeTK" )
+set( SlicerExecutionModel_CLI_ARHCHIVE_INSTALL_DIRECTORY "lib/TubeTK" )
 
 set( SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 set( SlicerExecutionModel_CLI_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 set( SlicerExecutionModel_CLI_INCLUDE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/include/TubeTK" )
-set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/share/bin" )
-set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/bin" )
+set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/share/TubeTK" )
+set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
 option( TubeTK_BUILD_SLICER_EXTENSION
         "Build TubeTK as a Slicer extension" OFF )
