@@ -37,7 +37,7 @@ include( ${USE_VTK_FILE} )
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  LOGO_HEADER ${Slicer_SOURCE_DIR}/Resources/NAMICLogo.h
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} vtkCommon vtkGraphics vtkIO 
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
@@ -45,8 +45,6 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Registration
   )
-
-# TODO Check if this file is different from the own provided by Slicer: tubeCLISharedLibraryWrapper.cxx )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
