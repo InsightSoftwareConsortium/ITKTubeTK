@@ -25,7 +25,7 @@ include( ${CMAKE_CURRENT_SOURCE_DIR}/CMake/SlicerBlockSetCMakeOSXVariables.cmake
 
 project( TubeTK )
 
-set(Slicer_SKIP_PROJECT_COMMAND ON)
+set( Slicer_SKIP_PROJECT_COMMAND ON )
 
 #-----------------------------------------------------------------------------
 # Require CMake 2.8 for the superbuild functionality
@@ -46,23 +46,39 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 
 #-----------------------------------------------------------------------------
+#  Setup for building extensions
+set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY "bin" )
+set( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY "lib/TubeTK" )
+set( SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY "include/TubeTK" )
+set( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY "share/bin" )
+set( SlicerExecutionModel_CLI_ARHCHIVE_INSTALL_DIRECTORY "lib/bin" )
+
+set( SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
+set( SlicerExecutionModel_CLI_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
+set( SlicerExecutionModel_CLI_INCLUDE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/include/TubeTK" )
+set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/share/bin" )
+set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/bin" )
+
 option( TubeTK_BUILD_SLICER_EXTENSION
         "Build TubeTK as a Slicer extension" OFF )
 if( TubeTK_BUILD_SLICER_EXTENSION )
-  set(EXTENSION_NAME TubeTK)
-  set(EXTENSION_HOMEPAGE "http://www.slicer.org/slicerWiki/index.php/Documentation/4.1/Extensions/LoadableExtensionTemplate")
-  set(EXTENSION_CATEGORY "Examples")
-  set(EXTENSION_CONTRIBUTORS "Jean-Christophe Fillion-Robin (Kitware)")
-  set(EXTENSION_DESCRIPTION "This is an example of extension bundling a loadable module")
-  set(EXTENSION_ICONURL "http://viewvc.slicer.org/viewvc.cgi/Slicer4/trunk/Extensions/Testing/LoadableExtensionTemplate/Resources/Icons/LoadableExtensionTemplate.png?revision=19437&view=co")
-  set(EXTENSION_SCREENSHOTURLS "http://wiki.slicer.org/slicerWiki/images/4/42/Slicer-r19441-LoadableExtensionTemplate-screenshot.png")
+  set( EXTENSION_NAME TubeTK )
+  set( EXTENSION_HOMEPAGE "http://www.tubetk.org" )
+  set( EXTENSION_CATEGORY "TubeTK" )
+  set( EXTENSION_CONTRIBUTORS "TubeTK Team @ Kitware" )
+  set( EXTENSION_DESCRIPTION
+    "Using local image geometry for segmentation, registration, and filtering" )
+  set( EXTENSION_ICONURL
+    "http://public.kitware.com/Wiki/images/a/ad/TubeTK_Icon.jpg" )
+  set( EXTENSION_SCREENSHOTURLS
+    "http://public.kitware.com/Wiki/images/f/fd/VesselExtraction.jpg" )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
 
 #-----------------------------------------------------------------------------
 # Dashboard setup
 include( ${CMAKE_ROOT}/Modules/Dart.cmake )
 mark_as_advanced( TCL_TCLSH DART_ROOT )
-enable_testing( )
+enable_testing()
 if( BUILD_TESTING )
   set( BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard" )
   mark_as_advanced( BUILDNAME )
@@ -94,8 +110,7 @@ mark_as_advanced( TubeTK_USE_KWSTYLE )
 if( TubeTK_USE_KWSTYLE )
   find_program( KWSTYLE_EXECUTABLE
     NAMES KWStyle
-    PATHS /usr/local/bin
-    )
+    PATHS /usr/local/bin )
   mark_as_advanced( KWSTYLE_EXECUTABLE )
 
   option( KWSTYLE_USE_VIM_FORMAT
@@ -273,9 +288,9 @@ mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
 #-----------------------------------------------------------------------------
 # Superbuild setup
 
-set(superbuild_enabled_by_default ON)
+set( superbuild_enabled_by_default ON )
 if( TubeTK_BUILD_SLICER_EXTENSION )
-  set(superbuild_enabled_by_default OFF)
+  set( superbuild_enabled_by_default OFF )
 endif()
 
 option( TubeTK_USE_SUPERBUILD
@@ -290,19 +305,19 @@ if( TubeTK_USE_SUPERBUILD )
 else( TubeTK_USE_SUPERBUILD )
 
   if( TubeTK_BUILD_SLICER_EXTENSION )
-    
+
     find_package( Slicer REQUIRED )
-    include(${Slicer_USE_FILE})
-    
-    set(TubeTK_USE_ITKV4 OFF)
-    if(${ITK_VERSION_MAJOR} STREQUAL "4")
-      set(TubeTK_USE_ITKV4 ON)
+    include( ${Slicer_USE_FILE} )
+
+    set( TubeTK_USE_ITKV4 OFF )
+    if( ${ITK_VERSION_MAJOR} STREQUAL "4" )
+      set( TubeTK_USE_ITKV4 ON )
     endif()
-    
-    set(TubeTK_USE_VTK ON)
-    set(TubeTK_USE_QT ON)
-    set(TubeTK_USE_CTK ON)
-    
+
+    set( TubeTK_USE_VTK ON )
+    set( TubeTK_USE_QT ON )
+    set( TubeTK_USE_CTK ON )
+
   else( TubeTK_BUILD_SLICER_EXTENSION )
 
     find_package( ITK REQUIRED )
@@ -372,8 +387,7 @@ set( TubeTK_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/IO
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
   ${TubeTK_SOURCE_DIR}/Base/Registration
-  ${TubeTK_SOURCE_DIR}/Base/USTK
-  )
+  ${TubeTK_SOURCE_DIR}/Base/USTK )
 
 if( WIN32 )
  set( TubeTK_EXECUTABLE_DIRS
@@ -438,7 +452,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   list( APPEND TubeTK_SUPPORT_BINARIES
     ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES} )
   install( FILES ${TubeTK_SUPPORT_BINARIES}
-    DESTINATION lib)
+    DESTINATION lib )
 
   # Record the environment setup files for packaging
   set( TubeTK_LINUX_SETUP
@@ -484,51 +498,51 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   #
   # Standard CPack setup
-  OPTION(CMAKE_INSTALL_DEBUG_LIBRARIES
-    "Install Microsoft runtime debug libraries with CMake." FALSE)
-  MARK_AS_ADVANCED(CMAKE_INSTALL_DEBUG_LIBRARIES)
+  OPTION( CMAKE_INSTALL_DEBUG_LIBRARIES
+    "Install Microsoft runtime debug libraries with CMake." FALSE )
+  MARK_AS_ADVANCED( CMAKE_INSTALL_DEBUG_LIBRARIES )
 
   # By default, do not warn when built on machines using only VS Express:
-  if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
-    set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
+  if( NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS )
+    set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON )
   endif()
 
   # Make this explicit here, rather than accepting the CPack default value,
   # so we can refer to it:
-  set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
+  set( CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}" )
 
   # Installers for 32- vs. 64-bit CMake:
-  #  - Root install directory (displayed to end user at installer-run time)
-  #  - "NSIS package/display name" (text used in the installer GUI)
+  #  - Root install directory ( displayed to end user at installer-run time )
+  #  - "NSIS package/display name" ( text used in the installer GUI )
   #  - Registry key used to store info about the installation
-  if(CMAKE_CL_64)
-    set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
-    set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} (Win64)")
-    set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION} (Win64)")
+  if( CMAKE_CL_64 )
+    set( CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64" )
+    set( CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ( Win64 )" )
+    set( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION} ( Win64 )" )
   else()
-    set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
-    set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-    set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION}")
+    set( CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES" )
+    set( CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY}" )
+    set( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION}" )
   endif()
 
-  if(NOT DEFINED CPACK_SYSTEM_NAME)
-    set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
+  if( NOT DEFINED CPACK_SYSTEM_NAME )
+    set( CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR} )
   endif()
 
-  if(${CPACK_SYSTEM_NAME} MATCHES Windows)
-    if(CMAKE_CL_64)
-      set(CPACK_SYSTEM_NAME win64-x64)
+  if( ${CPACK_SYSTEM_NAME} MATCHES Windows )
+    if( CMAKE_CL_64 )
+      set( CPACK_SYSTEM_NAME win64-x64 )
     else()
-      set(CPACK_SYSTEM_NAME win32-x86)
+      set( CPACK_SYSTEM_NAME win32-x86 )
     endif()
   endif()
 
-  set( CPACK_SOURCE_PACKAGE_FILE_NAME "TubeTK-${TubeTK_VERSION_BUILD}")
+  set( CPACK_SOURCE_PACKAGE_FILE_NAME "TubeTK-${TubeTK_VERSION_BUILD}" )
   set( CPACK_PACKAGE_FILE_NAME
-    "${CPACK_SOURCE_PACKAGE_FILE_NAME}-${CPACK_SYSTEM_NAME}")
+    "${CPACK_SOURCE_PACKAGE_FILE_NAME}-${CPACK_SYSTEM_NAME}" )
 
   # include CPack model once all variables are set
-  INCLUDE(CPack)
+  INCLUDE( CPack )
 else( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  include(${Slicer_EXTENSION_CPACK})
+  include( ${Slicer_EXTENSION_CPACK} )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
