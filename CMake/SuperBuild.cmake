@@ -365,6 +365,14 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   endif( TubeTK_USE_QT )
   
+else( NOT TubeTK_BUILD_SLICER_EXTENSION )
+
+  unset( CTK_DIR )
+  unset( ITK_DIR )
+  unset( VTK_DIR )
+  unset( QT_QMAKE_EXECUTABLE )
+  unset( SlicerExecutionModel_DIR )
+
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
 
