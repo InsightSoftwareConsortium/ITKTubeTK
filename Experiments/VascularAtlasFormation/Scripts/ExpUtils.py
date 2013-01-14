@@ -4,9 +4,11 @@ import json
 import glob
 import cPickle
 import logging
+import random
 import subprocess
 import numpy as np
 from sklearn import svm
+from sklearn import cross_validation as cval
 
 
 def check_file(file_name):
@@ -626,6 +628,8 @@ def compute_tube_prob(config, options, atlas_type, data_type):
 
         cmd = [config["Exec"]["tubeDensityProbability"],
             tube_file, atlas_file, prob_file]
+        print cmd
+
         subprocess.call(cmd)
 
 
@@ -784,6 +788,67 @@ def compute_tst_gk(config, options):
         "--subtreeHeight %d" % options["wlHeight"]]
     subprocess.call(cmd)
 
+# Normalizing the kernel using the following method seems only to make
+# sense as long as you are in a transducive learning setting, i.e., where
+# you can actually see the testing data ... otherwise, in an inductive
+# learning setting, the question is how to normalize the kernel ???
+#def normalize_kernel(kernel_data):
+#    """ Normalize kernel matrix
+#
+#    Use K_ij / sqrt( K_ii * K_jj) for normalization
+#
+#    :param kernel_data: numpy array of kernel values
+#    :returns: normalized numpy array of kernel values
+#    """
+#
+#    diag_mat = np.matrix(kernel_data.diagonal())
+#    norm_mat = 1./(diag_mat.T * diag_mat)
+#    norm_mat[np.isinf(norm_mat)] = 0.0
+#
+#    return np.array(np.multiply(kernel_data, np.sqrt(norm_mat)))
+
+
+#def crossvalidate_cost_param(clf, kernel, labels, n_cv_runs, cost_values, trn_fraction):
+#    """ Cross-validate cost factor C of SVM using precomputed kernel
+#    """
+#
+#    n_samples = kernel.shape[0] # Assume NxN kernel matrix
+#    n_trn_samples = int(trn_fraction * n_samples)
+#    full_set = set(xrange(n_samples))
+#
+#    map_scores = list()
+#    for C in cost_values:
+#        score_list = list()
+#        for cv_run in range(1, n_cv_runs):
+#            trn_set = set(random.sample(xrange(n_samples), n_trn_samples))
+#            tst_lst = list(full_set - trn_set)
+#            trn_lst = list(trn_set)
+#
+#            # Make numpy matrix
+#            kernel_mat = np.matrix(kernel)
+#
+#            # Extract training kernel entries (i.e., all train rows, all train cols)
+#            trn_kernel_mat = np.delete(kernel_mat, tst_lst, axis=0)
+#            trn_kernel_mat = np.delete(trn_kernel_mat, tst_lst, axis=1)
+#            trn_lab = np.delete(labels, tst_lst)
+#
+#            # Extract testing kernel entries (i.e., all test rows, all training cols)
+#            tst_kernel_mat = np.delete(kernel_mat, trn_lst, axis=0)
+#            tst_kernel_mat = np.delete(tst_kernel_mat, tst_lst, axis=1)
+#            tst_lab = np.delete(labels, trn_lst)
+#
+#            # Next, train classifier with current C value
+#            clf = svm.SVC(kernel="precomputed", C=20, verbose=False)
+#            clf.fit(trn_kernel_mat, trn_lab)
+#            label_hat = clf.predict(tst_kernel_mat)
+#            score_hat = clf.score(tst_kernel_mat, tst_lab)
+#            score_list.append(score_hat)
+#
+#        print "mAP (%.2f) at C=%.2f" % (np.mean(score_list)*100,C)
+#        map_scores.append(np.mean(score_list)*100)
+#
+#    return map_scores.index(max(map_scores))
+
 
 def trn_classifier(config, options):
     """
@@ -808,7 +873,7 @@ def trn_classifier(config, options):
     if not check_file(kernel_data_file):
         raise Exception("Training kernel data file %s missing!" % kernel_data_file)
 
-    # Reads kernel from binary file
+    # Reads kernel from binary file and normalizes it
     kernel_data = np.fromfile(kernel_data_file, dtype="double").reshape(N,N);
 
     labels = []
@@ -817,7 +882,8 @@ def trn_classifier(config, options):
         labels.append(label)
 
     logger.debug("Training C-SVM with precomputed kernel ...")
-    clf = svm.SVC(kernel="precomputed")
+    clf = svm.SVC(kernel="precomputed", C=1, verbose=True)
+
     score = clf.fit(kernel_data, labels).score(kernel_data, labels)
     logger.debug("Training finished (Score = %.2f)!" % score)
     print float(sum(clf.n_support_))/N
