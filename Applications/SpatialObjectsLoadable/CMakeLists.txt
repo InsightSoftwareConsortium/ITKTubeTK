@@ -8,10 +8,11 @@ string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
 #-----------------------------------------------------------------------------
 # To build each module against a given slicer build tree 
 # without having to build the complete extensions
-if(NOT Slicer_SOURCE_DIR)
-  find_package(Slicer REQUIRED)
-  include(${Slicer_USE_FILE})
-endif()
+# - this is now handled by top-level cmakelists.txt file
+#if(NOT Slicer_SOURCE_DIR)
+#  find_package(Slicer REQUIRED)
+#  include(${Slicer_USE_FILE})
+#endif()
 
 #-----------------------------------------------------------------------------
 add_subdirectory(MRML)
