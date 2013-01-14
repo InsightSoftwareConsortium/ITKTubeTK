@@ -70,7 +70,7 @@ qMRMLSceneSpatialObjectsModel::qMRMLSceneSpatialObjectsModel(QObject *vparent)
   Q_D(qMRMLSceneSpatialObjectsModel);
   d->init();
 
-  this->setListenNodeModifiedEvent(true);
+  this->setListenNodeModifiedEvent(qMRMLSceneModel::AllNodes);
   this->setVisibilityColumn(-1);
   this->setOpacityColumn(-1);
   this->setCheckableColumn(-1);
