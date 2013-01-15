@@ -31,6 +31,13 @@
       <description>The centered phantom data image.</description>
     </image>
     <boolean>
+      <name>centerOnZero</name>
+      <longflag>centerOnZero</longflag>
+      <label>Translate origin to (0,0,0)</label>
+      <description>Set this to ensure that the output image will have origin = (0,0,0).</description>
+      <default>false</default>
+    </boolean>
+    <boolean>
       <name>isLabelMap</name>
       <longflag>isLabelMap</longflag>
       <label>Does the input contain discrete label information ?</label>

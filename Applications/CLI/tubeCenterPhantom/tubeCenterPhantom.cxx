@@ -162,9 +162,16 @@ int DoIt(int argc, char **argv)
 
       for(unsigned int dim=0; dim<Dimension; ++dim)
         {
-        translation[dim] = orientedImageOrigin[dim]
-          + static_cast<double>(orientedImageSize[dim])/2.0
-          - static_cast<double>(refImageSize[dim])/2.0;
+        if( centerOnZero )
+          {
+          translation[dim] = orientedImageOrigin[dim];
+          }
+        else
+          {
+          translation[dim] = orientedImageOrigin[dim]
+            + static_cast<double>(orientedImageSize[dim])/2.0
+            - static_cast<double>(refImageSize[dim])/2.0;
+          }
         }
       transform->Translate(translation);
 
