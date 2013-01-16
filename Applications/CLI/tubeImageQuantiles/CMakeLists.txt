@@ -28,7 +28,7 @@ cmake_minimum_required( VERSION 2.8 )
 set(BOOST_ROOT  /software/boost_1_51_0/)
 set(Boost_ADDITIONAL_VERSIONS "1.51")
 
-find_package(Boost 1.51 REQUIRED)
+find_package(Boost 1.49 REQUIRED)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif()

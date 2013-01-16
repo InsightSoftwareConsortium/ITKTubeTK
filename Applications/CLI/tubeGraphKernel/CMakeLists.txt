@@ -13,7 +13,7 @@ set(CMAKE_CXX_FLAGS "-O3 -ffast-math -msse3")
 
 # Find Boost
 set(Boost_ADDITIONAL_VERSIONS "1.51")
-find_package(Boost 1.51 REQUIRED)
+find_package(Boost 1.49 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 include_directories(
