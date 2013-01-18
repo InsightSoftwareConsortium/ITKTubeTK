@@ -852,12 +852,12 @@ LDAGenerator< ImageT, LabelmapT >
     H = covOfMeans * vnl_matrix_inverse<double>(meanCov);
 
     // true = re-order by abs(eval) - zeros will be at end
-    ::tube::Eigen<double>( H, m_LDAMatrix, m_LDAValues, true, false );
+    ::tube::ComputeEigen<double>( H, m_LDAMatrix, m_LDAValues, true, false );
     }
   else if( m_PerformPCA )
     {
     // true = re-order by abs(eval) - zeros will be at end
-    ::tube::Eigen<double>( m_GlobalCovariance, m_LDAMatrix, m_LDAValues,
+    ::tube::ComputeEigen<double>( m_GlobalCovariance, m_LDAMatrix, m_LDAValues,
       true, false );
     }
   else
@@ -885,7 +885,7 @@ LDAGenerator< ImageT, LabelmapT >
       }
 
     // true = re-order by abs(eval) - zeros will be at end
-    ::tube::Eigen<double>( covOfMeans, m_LDAMatrix, m_LDAValues, true,
+    ::tube::ComputeEigen<double>( covOfMeans, m_LDAMatrix, m_LDAValues, true,
       false );
     }
 
