@@ -87,9 +87,9 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
 
   func->ComputeStatistics();
   func->SetUseProjection( false );
-  double minI = 0;
-  double maxI = 255;
-  if( func->GetMin() != 0 )
+  double minI = 126;
+  double maxI = 160;
+  if( func->GetMin() != minI )
     {
     error = true;
     std::cerr << "Min = " << func->GetMin() << " != " << minI << std::endl;
@@ -100,7 +100,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
     std::cerr << "Max = " << func->GetMax() << " != " << maxI << std::endl;
     }
 
-  double scale = 4.0;
+  double scale = 1;
 
   FunctionType::VectorType v1, v2, d;
   v1.Fill( 0 );
@@ -252,25 +252,31 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 21:
         {
-        val = func->Ridgeness( pnt, v1, scale );
+        val = func->Ridgeness( pnt, scale );
+        val = func->GetMostRecentRidgeLevelness();
         outIter.Set( val );
         break;
         }
       case 22:
         {
-        val = func->Ridgeness( pnt, v1, v2, scale );
+        val = func->Ridgeness( pnt, scale );
+        val = func->GetMostRecentRidgeRoundness();
         outIter.Set( val );
         break;
         }
       case 23:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
+        val = func->Ridgeness( pnt, scale );
+        val = func->GetMostRecentRidgeCurvature();
         outIter.Set( val );
         break;
         }
       case 24:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, scale );
+        val = func->Ridgeness( pnt, scale );
+        val *= func->GetMostRecentRidgeLevelness();
+        val *= func->GetMostRecentRidgeRoundness();
+        val *= func->GetMostRecentRidgeCurvature();
         outIter.Set( val );
         break;
         }

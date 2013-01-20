@@ -100,16 +100,18 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
 
   FunctionType::Pointer func = FunctionType::New();
   func->SetRidgeImage( inputImage );
-  func->SetLabelmap( maskImage );
 
-  FunctionType::RidgeScalesType scales(1);
-  scales[0] = 0.18;
-  func->SetScales( scales );
-
-  func->SetIntensityRange( 120, 2000 );
   func->SetLabelmap( maskImage );
   func->SetObjectId( 255 );
   func->AddObjectId( 127 );
+
+  FunctionType::RidgeScalesType scales(5);
+  scales[0] = 0.3;
+  scales[1] = 0.5;
+  scales[2] = 0.75;
+  scales[3] = 1.0;
+  scales[4] = 1.5;
+  func->SetScales( scales );
 
   func->Update();
 
@@ -120,7 +122,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
   WriterType::Pointer writer = WriterType::New();
   writer->SetUseCompression( true );
   std::cout << "Number of LDA = " << func->GetNumberOfLDA() << std::endl;
-  for( unsigned int i=0; i<func->GetNumberOfLDA(); i++ )
+  for( unsigned int i=0; i<3; i++ )
     {
     sprintf( filename, "%s.lda%02d.mha", argv[3], i );
     writer->SetFileName( filename );

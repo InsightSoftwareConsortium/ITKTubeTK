@@ -145,8 +145,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
 }
 
 template < class ImageT, unsigned int N, class LabelmapT >
-const typename itk::Image< float,
-  ::itk::GetImageDimension< ImageT >::ImageDimension >::Pointer
+const typename Image< float,
+  ImageT::ImageDimension >::Pointer
 PDFSegmenter< ImageT, N, LabelmapT >
 ::GetClassProbabilityVolume( unsigned int classNum )
 {
@@ -756,9 +756,6 @@ PDFSegmenter< ImageT, N, LabelmapT >
       {
       std::cout << "Outside histogram image smoothing..." << std::endl;
 
-      typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
-        HistogramImageType > HistoBlurGenType;
-
       typename HistoBlurGenType::Pointer m_OutHistoBlurGen =
         HistoBlurGenType::New();
       m_OutHistoBlurGen->SetInput( m_OutHisto );
@@ -1138,10 +1135,10 @@ PDFSegmenter< ImageT, N, LabelmapT >
       //
       // Erode
       //
-      typedef itk::BinaryBallStructuringElement< MaskPixelType,
-        ::itk::GetImageDimension<ImageType>::ImageDimension >
+      typedef BinaryBallStructuringElement< MaskPixelType,
+        ImageType::ImageDimension >
           StructuringElementType;
-      typedef itk::BinaryErodeImageFilter< MaskImageType, MaskImageType,
+      typedef BinaryErodeImageFilter< MaskImageType, MaskImageType,
         StructuringElementType >
           ErodeFilterType;
 

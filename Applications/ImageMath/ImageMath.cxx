@@ -1597,7 +1597,7 @@ int DoIt( MetaCommand & command )
             {
             indx2[i] = 0;
             i++;
-            if( i>2 )
+            if( i > (int)(dimensionT)-1 )
               {
               done2 = true;
               }
@@ -1613,13 +1613,13 @@ int DoIt( MetaCommand & command )
           {
           indx[i] = 0;
           i++;
-          if( i>(int)(dimensionT-1) )
+          if( i>(int)(dimensionT)-1 )
             {
             done = true;
             }
           else
             {
-            if( i == 2 )
+            if( i == (int)(dimensionT)-1 )
               {
               std::cout << "Computing adjacency of slice : "
                         << indx[dimensionT-1] << std::endl;

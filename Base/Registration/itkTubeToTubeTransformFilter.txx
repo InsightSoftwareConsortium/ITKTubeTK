@@ -67,9 +67,6 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
                                 ->GetScaleComponent()[i]/m_Scale;
     }
 
-  std::cout << "Spacing : [" << groupspacing[0] << ", " << groupspacing[1]
-    << ", " << groupspacing[2] << "]" << std::endl;
-
   m_Output->GetIndexToObjectTransform()->SetScaleComponent(groupspacing);
 
   // Set the transform

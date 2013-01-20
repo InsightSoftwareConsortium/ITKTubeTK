@@ -37,7 +37,7 @@ namespace tube
  * Do not check for wrong dimension             */
 template <class T>
 vnl_vector<T>
-GetOrthogonalVector(vnl_vector<T>  v)
+ComputeOrthogonalVector(vnl_vector<T>  v)
 {
   // create the orthogonal vector
   vnl_vector<T> n(v.size());
@@ -59,7 +59,7 @@ GetOrthogonalVector(vnl_vector<T>  v)
     tt[2] = 0.5;
     tt.normalize();
 
-    n = GetCrossVector( v, tt );
+    n = ComputeCrossVector( v, tt );
     }
 
   return n;
@@ -72,7 +72,7 @@ GetOrthogonalVector(vnl_vector<T>  v)
  * could use vnl_cross3D instead        */
 template <class T>
 vnl_vector<T>
-GetCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
+ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
 {
   vnl_vector<T> dest(v1.size());
   dest(0) = ((v1)(1) * (v2)(2)) - ((v1)(2) * (v2)(1));
@@ -132,7 +132,8 @@ ComputeEuclideanDistance(PointType x, PointType y)
  * Compute eigen values and vectors  */
 template <class T>
 void
-Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
+ComputeEigen(vnl_matrix<T> const & mat,
+  vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax )
 {
 
@@ -151,12 +152,12 @@ Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
       eVals.fill( mat[0][0] );
       break;
     case 2:
-      TriDiag2D(eVects, eVals, subD);
-      Tqli(eVals, subD, eVects);
+      ComputeTriDiag2D(eVects, eVals, subD);
+      ComputeTqli(eVals, subD, eVects);
       break;
     case 3:
-      TriDiag3D(eVects, eVals, subD);
-      Tqli(eVals, subD, eVects);
+      ComputeTriDiag3D(eVects, eVals, subD);
+      ComputeTqli(eVals, subD, eVects);
       break;
     default:
       vnl_symmetric_eigensystem< T > eigen( mat );
@@ -222,7 +223,8 @@ Eigen(vnl_matrix<T> &mat, vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
  * Preform trilinear diagonalisation in 2D */
 template <class T>
 void
-TriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD)
+ComputeTriDiag2D(vnl_matrix<T> &mat,
+  vnl_vector<T> &diag, vnl_vector<T> &subD)
 {
   diag(0) = mat(0,0);
   diag(1) = mat(1,1);
@@ -236,7 +238,8 @@ TriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD)
  * Preform trilinear diagonalisation in 3D */
 template <class T>
 void
-TriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD)
+ComputeTriDiag3D(vnl_matrix<T> &mat,
+  vnl_vector<T> &diag, vnl_vector<T> &subD)
 {
   double  a = mat(0,0), b = mat(0,1), c = mat(0,2),
           d = mat(1,1), e = mat(1,2), f = mat(2,2);
@@ -274,7 +277,7 @@ TriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD)
  *                         */
 template <class T>
 void
-Tqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
+ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
 {
   int iter, i, k, l, m;
   double dd, g, r, f, s, c, p, b;

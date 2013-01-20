@@ -33,6 +33,7 @@ limitations under the License.
 #include "vtkPointLocator.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataNormals.h"
+#include "vtkVersion.h"
 
 namespace itk
 {
@@ -272,7 +273,11 @@ AnisotropicDiffusiveRegistrationFilter
   normalsFilter->ComputePointNormalsOn();
   normalsFilter->ComputeCellNormalsOff();
   //normalsFilter->SetFeatureAngle(30); // TODO
+#if VTK_MAJOR_VERSION > 5
+  normalsFilter->SetInputData( m_BorderSurface );
+#else
   normalsFilter->SetInput( m_BorderSurface );
+#endif
   normalsFilter->Update();
   m_BorderSurface = normalsFilter->GetOutput();
   normalsFilter->Delete();

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Compute Quantiles from Image Data (TubeTK)</title>
+  <description>Computes quantiles from intensity information per voxel (TubeTK).</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Roland Kwitt, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <file>
+      <name>imageFile</name>
+      <index>0</index>
+      <description>Image</description>
+    </file>
+    <float-vector>
+      <name>quantiles</name>
+      <longflag>quantiles</longflag>
+      <default>0.25,0.5,0.75</default>
+    </float-vector>
+    <file>
+      <name>outFile</name>
+      <index>1</index>
+      <description>Output file with quantile information in JSON format</description>
+    </file>
+  </parameters>
+
+</executable>

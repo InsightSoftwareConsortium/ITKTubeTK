@@ -219,7 +219,7 @@ foreach( testNum RANGE 0 37 )
                 ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
       itkTubeNJetImageFunctionTest
         ${testNum}
-        MIDAS{GDS0015_1_Subs.mha.md5}
+        MIDAS{im0001.crop2.mha.md5}
         ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
     )
 endforeach( testNum )

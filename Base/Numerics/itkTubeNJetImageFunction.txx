@@ -62,6 +62,10 @@ NJetImageFunction<TInputImage>
   m_MostRecentDerivative.Fill(0);
   m_MostRecentHessian.Fill(0);
   m_MostRecentRidgeness = 0;
+  m_MostRecentRidgeRoundness = 0;
+  m_MostRecentRidgeLevelness = 0;
+  m_MostRecentRidgeCurvature = 0;
+  m_MostRecentRidgeTangent.Fill(0);
 }
 
 /**
@@ -1632,49 +1636,35 @@ NJetImageFunction<TInputImage>
                              double scale) const
 {
   // RIDGENESS
-  double val;
   VectorType d;
   MatrixType h;
   VectorType p;
 
-  val = JetAtContinuousIndex(cIndex, d, h, scale);
+  JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
-  typename InputImageType::IndexType order;
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    order[i] = i;
-    }
-  for( unsigned int i=0; i<ImageDimension-1; i++ )
-    {
-    for( unsigned int j=i+1; j<ImageDimension; j++ )
-      {
-      if( eigSys.get_eigenvalue( order[j] ) >
-          eigSys.get_eigenvalue( order[i] ) )
-        {
-        int k = order[i];
-        order[i] = order[j];
-        order[j] = k;
-        }
-      }
-    }
+  assert( eigSys.get_eigenvalue(0) > eigSys.get_eigenvalue(1) );
 
-  if( d.GetNorm() != 0 )
+  double dNorm = d.GetNorm();
+  if( dNorm == 0 )
     {
-    d.Normalize();
+    d.SetVnlVector( eigSys.get_eigenvector( ImageDimension-1 ) );
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      p[i] = 0;
+      }
     }
   else
     {
-    d.SetVnlVector( eigSys.get_eigenvector( order[ImageDimension-1] ) );
-    }
-
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    p[i] = 0;
-    for( unsigned int j=0; j<ImageDimension; j++ )
+    d.Normalize();
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      p[i] += eigSys.get_eigenvector(order[i])[j] * d[j];
+      p[i] = 0;
+      for( unsigned int j=0; j<ImageDimension; j++ )
+        {
+        p[i] += eigSys.get_eigenvector(i)[j] * d[j];
+        }
       }
     }
 
@@ -1684,25 +1674,74 @@ NJetImageFunction<TInputImage>
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
     sums += p[i]*p[i];
-    sumv += eigSys.get_eigenvalue(order[i])
-            * eigSys.get_eigenvalue(order[i]);
-    if( eigSys.get_eigenvalue(order[i]) >= 0 )
+    sumv += eigSys.get_eigenvalue(i)
+            * eigSys.get_eigenvalue(i);
+    if( eigSys.get_eigenvalue(i) >= 0 )
       {
       ridge = -1;
       }
     }
   sums /= (ImageDimension-1);
+
+  double ridgeness = (1.0 - sums) * ridge;
+
+  double roundness = 0;
   if( sumv != 0 )
     {
-    sumv /= (sumv + eigSys.get_eigenvalue(order[ImageDimension-1])
-                    * eigSys.get_eigenvalue(order[ImageDimension-1]));
+    if( ImageDimension > 2 )
+      {
+      if( eigSys.get_eigenvalue(0) != 0
+          && eigSys.get_eigenvalue(ImageDimension-2) != 0 )
+        {
+        double r0 = ( eigSys.get_eigenvalue(0)
+                      * eigSys.get_eigenvalue(0) )
+                    / ( eigSys.get_eigenvalue(ImageDimension-2)
+                        * eigSys.get_eigenvalue(ImageDimension-2) );
+        double r1 = ( eigSys.get_eigenvalue(ImageDimension-2)
+                        * eigSys.get_eigenvalue(ImageDimension-2) )
+                    / ( eigSys.get_eigenvalue(0)
+                        * eigSys.get_eigenvalue(0) );
+        roundness = ( r0 < r1 ) ? r0 : r1;
+        }
+      }
+    else
+      {
+      if( eigSys.get_eigenvalue(0) != 0
+          && eigSys.get_eigenvalue(ImageDimension-1) != 0 )
+        {
+        double r0 = ( eigSys.get_eigenvalue(0)
+                      * eigSys.get_eigenvalue(0) )
+                    / ( eigSys.get_eigenvalue(ImageDimension-1)
+                        * eigSys.get_eigenvalue(ImageDimension-1) );
+        double r1 = ( eigSys.get_eigenvalue(ImageDimension-1)
+                        * eigSys.get_eigenvalue(ImageDimension-1) )
+                    / ( eigSys.get_eigenvalue(0)
+                        * eigSys.get_eigenvalue(0) );
+        roundness = ( r0 < r1 ) ? r0 : r1;
+        roundness = ( 1 - roundness );
+        }
+      }
     }
 
-  val = (1.0 - sums) * sumv * ridge;
 
-  m_MostRecentRidgeness = val;
+  double levelness = 0;
+  if( sumv != 0 )
+    {
+    levelness = sumv / ( sumv
+                         + eigSys.get_eigenvalue(ImageDimension-1)
+                          * eigSys.get_eigenvalue(ImageDimension-1) );
+    }
 
-  return val;
+  double curvature = vcl_sqrt( sumv / ( ImageDimension-1 ) );
+
+
+  m_MostRecentRidgeness = ridgeness;
+  m_MostRecentRidgeRoundness = roundness;
+  m_MostRecentRidgeLevelness = levelness;
+  m_MostRecentRidgeCurvature = curvature;
+  m_MostRecentRidgeTangent.SetVnlVector( eigSys.get_eigenvector( ImageDimension-1 ) );
+
+  return m_MostRecentRidgeness;
 }
 
 template <class TInputImage>

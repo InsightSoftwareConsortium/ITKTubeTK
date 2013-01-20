@@ -415,7 +415,7 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::Eigen( m_XH, m_XHEVect, m_XHEVal, false );
+  ::tube::ComputeEigen( m_XH, m_XHEVect, m_XHEVal, false, true );
 
   if( this->GetDebug() )
     {
@@ -462,13 +462,6 @@ RidgeExtractor<TInputImage>
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     m_XP[i] = dot_product( m_XHEVect.get_column( i ), m_XD );
-    /*
-    m_XP[i] = 0;
-    for( unsigned int j=0; j<ImageDimension; j++ )
-      {
-      m_XP[i] += m_XHEVect( j, i )*m_XD[j];
-      }
-    */
     }
 
   double sums = 0;
@@ -486,8 +479,8 @@ RidgeExtractor<TInputImage>
   sums /= (ImageDimension-1);
   sumv /= (ImageDimension-1);
 
-  // sums is avg(P^2, Q^2) = should be near 0 for ridge
-  // sumv is avg(v1^2, v2^2) = should be near 0 for a flat ridge
+  // sums is avg(P^2, Q^2) = 0 for ridge
+  // sumv is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
 
   double ridgeness = (1.0 - sums) * ridge;
   //double ridgeness = (1.0 - sums) * (1.0 - sumv) * ridge;

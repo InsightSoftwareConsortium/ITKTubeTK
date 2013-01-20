@@ -136,6 +136,10 @@ public:
   itkGetConstMacro( MostRecentDerivative, VectorType );
   itkGetConstMacro( MostRecentHessian, MatrixType );
   itkGetConstMacro( MostRecentRidgeness, double );
+  itkGetConstMacro( MostRecentRidgeRoundness, double );
+  itkGetConstMacro( MostRecentRidgeLevelness, double );
+  itkGetConstMacro( MostRecentRidgeCurvature, double );
+  itkGetConstMacro( MostRecentRidgeTangent, VectorType );
 
   /** Evalulate the function at specified point */
   double Evaluate( const PointType & point, double scale=1 ) const;
@@ -313,6 +317,10 @@ protected:
   mutable VectorType      m_MostRecentDerivative;
   mutable MatrixType      m_MostRecentHessian;
   mutable double          m_MostRecentRidgeness;
+  mutable double          m_MostRecentRidgeRoundness;
+  mutable double          m_MostRecentRidgeLevelness;
+  mutable double          m_MostRecentRidgeCurvature;
+  mutable VectorType      m_MostRecentRidgeTangent;
 
   bool                    m_ValidStats;
   double                  m_StatsMin;

@@ -227,7 +227,11 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     {
     registrator = DiffusiveRegistrationFilterType::New();
     }
+#if ITK_VERSION_MAJOR > 3
+  registrator->SetInitialDisplacementField( deformationField );
+#else
   registrator->SetInitialDeformationField( deformationField );
+#endif
   registrator->SetMovingImage( movingImage );
   registrator->SetFixedImage( fixedImage );
   // because we are just doing motion field regularization in this test:
