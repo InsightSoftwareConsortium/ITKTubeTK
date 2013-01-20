@@ -31,7 +31,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
@@ -40,22 +40,22 @@ set( IMAGECOMPARE_EXE
 #######
 # Test1
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                -S 1024
                MIDAS{201002TP0ES14_Small.mha.md5}
                MIDAS{201002TP0GD15_Small_Match.mha.md5}
                MIDAS{201002TP0ES16_Small.mha.md5}
                MIDAS{201002TP0ES15_Small.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test1.mha )
+               ${TEMP}/${MODULE_NAME}Test1.mha )
 
 #######
 # Test1-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -i 0.001
-               -t ${TEMP}/${PROJECT_NAME}Test1.mha
-               -b MIDAS{/${PROJECT_NAME}Test1.mha.md5} )
-set_property(TEST ${PROJECT_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
+               -t ${TEMP}/${MODULE_NAME}Test1.mha
+               -b MIDAS{/${MODULE_NAME}Test1.mha.md5} )
+set_property(TEST ${MODULE_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

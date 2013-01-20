@@ -30,7 +30,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
@@ -41,34 +41,34 @@ set( TEXTCOMPARE_EXE
 #######
 # Test1
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                --useNumberOfLDA 3
                --objectId 0,255
                --zeroScales 1
                --firstScales 3
                --secondScales 5
-               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
-               --saveFeatureImages ${TEMP}/${PROJECT_NAME}Test1
+               --saveLDAInfo ${TEMP}/${MODULE_NAME}Test1.mnda
+               --saveFeatureImages ${TEMP}/${MODULE_NAME}Test1
                MIDAS{ES0015_Large_Subs.mha.md5}
                --labelmap MIDAS{GDS0015_Large_Subs2.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test1 )
+               ${TEMP}/${MODULE_NAME}Test1 )
 
 #######
 # Test1-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -i 0.01
-               -t ${TEMP}/${PROJECT_NAME}Test1.lda00.mha
-               -b MIDAS{${PROJECT_NAME}Test1.lda00.mha.md5} )
-set_property(TEST ${PROJECT_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
+               -t ${TEMP}/${MODULE_NAME}Test1.lda00.mha
+               -b MIDAS{${MODULE_NAME}Test1.lda00.mha.md5} )
+set_property(TEST ${MODULE_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 #######
 # Test2
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
             ${PROJ_EXE}
                --useNumberOfLDA 2
                --objectId 0,255
@@ -78,90 +78,90 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
                --secondScales 5
                MIDAS{ES0015_Large_Subs.mha.md5}
                --labelmap MIDAS{GDS0015_Large_Subs2.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test2 )
+               ${TEMP}/${MODULE_NAME}Test2 )
 
 #######
 # Test2-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
             ${IMAGECOMPARE_EXE}
                -i 0.01
-               -t ${TEMP}/${PROJECT_NAME}Test2.lda01.mha
-               -b MIDAS{${PROJECT_NAME}Test2.lda01.mha.md5} )
-set_property(TEST ${PROJECT_NAME}-Test2-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test2 )
+               -t ${TEMP}/${MODULE_NAME}Test2.lda01.mha
+               -b MIDAS{${MODULE_NAME}Test2.lda01.mha.md5} )
+set_property(TEST ${MODULE_NAME}-Test2-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
 #######
 # Test3
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test3
             ${PROJ_EXE}
                --useNumberOfLDA 3
-               --saveFeatureImages ${TEMP}/${PROJECT_NAME}Test3
-               --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
-               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test3.mnda
+               --saveFeatureImages ${TEMP}/${MODULE_NAME}Test3
+               --loadLDAInfo ${TEMP}/${MODULE_NAME}Test1.mnda
+               --saveLDAInfo ${TEMP}/${MODULE_NAME}Test3.mnda
                MIDAS{ES0015_Large_Subs.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test3 )
-set_property(TEST ${PROJECT_NAME}-Test3
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1-Compare )
+               ${TEMP}/${MODULE_NAME}Test3 )
+set_property(TEST ${MODULE_NAME}-Test3
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-Compare )
 
 #######
 # Test3-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test3-Compare
             ${IMAGECOMPARE_EXE}
                -i 0.02
-               -t ${TEMP}/${PROJECT_NAME}Test3.lda00.mha
-               -b MIDAS{${PROJECT_NAME}Test1.lda00.mha.md5} )
-set_property(TEST ${PROJECT_NAME}-Test3-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
+               -t ${TEMP}/${MODULE_NAME}Test3.lda00.mha
+               -b MIDAS{${MODULE_NAME}Test1.lda00.mha.md5} )
+set_property(TEST ${MODULE_NAME}-Test3-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 #######
 # Test3-Compare2
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare2
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test3-Compare2
             ${TEXTCOMPARE_EXE}
                -d 0.01
-               -t ${TEMP}/${PROJECT_NAME}Test3.mnda
-               -b MIDAS{${PROJECT_NAME}Test1.mnda.md5} )
-set_property(TEST ${PROJECT_NAME}-Test3-Compare2
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
+               -t ${TEMP}/${MODULE_NAME}Test3.mnda
+               -b MIDAS{${MODULE_NAME}Test1.mnda.md5} )
+set_property(TEST ${MODULE_NAME}-Test3-Compare2
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 #######
 # Test3-Compare3
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare3
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test3-Compare3
             ${IMAGECOMPARE_EXE}
                -i 0.01
-               -t ${TEMP}/${PROJECT_NAME}Test3.f01.mha
-               -b ${TEMP}/${PROJECT_NAME}Test1.f01.mha )
-set_property(TEST ${PROJECT_NAME}-Test3-Compare3
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
+               -t ${TEMP}/${MODULE_NAME}Test3.f01.mha
+               -b ${TEMP}/${MODULE_NAME}Test1.f01.mha )
+set_property(TEST ${MODULE_NAME}-Test3-Compare3
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 #######
 # Test4
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test4
             ${PROJ_EXE}
                --useNumberOfLDA 1
                --objectId 127,255
                --zeroScales 1
                --firstScales 3,4
                --secondScales 5
-               --loadLDAInfo ${TEMP}/${PROJECT_NAME}Test1.mnda
-               --saveLDAInfo ${TEMP}/${PROJECT_NAME}Test4.mnda
+               --loadLDAInfo ${TEMP}/${MODULE_NAME}Test1.mnda
+               --saveLDAInfo ${TEMP}/${MODULE_NAME}Test4.mnda
                MIDAS{im0001_n05.crop.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test4 )
-set_property(TEST ${PROJECT_NAME}-Test4
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
+               ${TEMP}/${MODULE_NAME}Test4 )
+set_property(TEST ${MODULE_NAME}-Test4
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 #######
 # Test4-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test4-Compare
             ${TEXTCOMPARE_EXE}
                -d 0.01
-               -t ${TEMP}/${PROJECT_NAME}Test4.mnda
-               -b MIDAS{${PROJECT_NAME}Test1.mnda.md5} )
-set_property(TEST ${PROJECT_NAME}-Test4-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test4 )
+               -t ${TEMP}/${MODULE_NAME}Test4.mnda
+               -b MIDAS{${MODULE_NAME}Test1.mnda.md5} )
+set_property(TEST ${MODULE_NAME}-Test4-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )

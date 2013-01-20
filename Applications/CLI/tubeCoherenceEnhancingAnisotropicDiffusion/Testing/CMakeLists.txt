@@ -31,7 +31,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
@@ -47,7 +47,7 @@ endif()
 #######
 # Test1
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                MIDAS{CroppedWholeLungCTScan.mhd.md5}
                ${TEMP}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha
@@ -57,18 +57,18 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
 #######
 # Test1-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha
                -b MIDAS{itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${PROJECT_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
+set_property(TEST ${MODULE_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 #######
 # Test2
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
             ${PROJ_EXE}
                MIDAS{SyntheticSurfaceImage.mha.md5}
                ${TEMP}/SyntheticSurfaceCEDFilterResultImage.mha )
@@ -76,18 +76,18 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2
 #######
 # Test2-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test2-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticSurfaceCEDFilterResultImage.mha
                -b MIDAS{SyntheticSurfaceCEDFilterResultImage.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${PROJECT_NAME}-Test2-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test2 )
+set_property(TEST ${MODULE_NAME}-Test2-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
 #######
 # Test3
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test3
             ${PROJ_EXE}
                MIDAS{SyntheticTubePlusSurfaceImage.mha.md5}
                ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage.mha )
@@ -95,18 +95,18 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3
 #######
 # Test3-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test3-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test3-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage.mha
                -b MIDAS{SyntheticTubePlusSurfaceCEDFilterResultImage.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${PROJECT_NAME}-Test3-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test3 )
+set_property(TEST ${MODULE_NAME}-Test3-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 #######
 # Test4
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test4
             ${PROJ_EXE}
                MIDAS{SyntheticTubePlusSurfaceImage_oriented.mha.md5}
                ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha )
@@ -114,10 +114,10 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4
 #######
 # Test4-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test4-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test4-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha
                -b MIDAS{SyntheticTubePlusSurfaceCEDFilterResultImage_oriented.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${PROJECT_NAME}-Test4-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test4 )
+set_property(TEST ${MODULE_NAME}-Test4-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )

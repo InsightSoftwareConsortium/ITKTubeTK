@@ -31,7 +31,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
- ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+ ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
 set( TEXTCOMPARE_EXE
  ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
@@ -39,18 +39,18 @@ set( TEXTCOMPARE_EXE
 #######
 # Test1
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
-               -o ${TEMP}/${PROJECT_NAME}Test1.txt
+               -o ${TEMP}/${MODULE_NAME}Test1.txt
                MIDAS{GDS0015_Large_Modified.png.md5}
                MIDAS{GDS0015_Large.mha.md5} )
 
 #######
 # Test1-Compare
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
             ${TEXTCOMPARE_EXE}
-               -t ${TEMP}/${PROJECT_NAME}Test1.txt
-               -b MIDAS{${PROJECT_NAME}Test1.txt.md5} )
-set_property(TEST ${PROJECT_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
+               -t ${TEMP}/${MODULE_NAME}Test1.txt
+               -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
+set_property(TEST ${MODULE_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

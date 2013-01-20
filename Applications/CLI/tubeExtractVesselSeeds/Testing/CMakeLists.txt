@@ -31,7 +31,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${PROJECT_NAME} )
+  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
@@ -42,21 +42,21 @@ set( TEXTCOMPARE_EXE
 #######
 # Test1
 #######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
-               --saveVesselSeedInfo ${TEMP}/${PROJECT_NAME}Test1.vsi
+               --saveVesselSeedInfo ${TEMP}/${MODULE_NAME}Test1.vsi
                --labelmap MIDAS{im0001.vk.mask.mha.md5}
                MIDAS{im0001.mha.md5}
-               ${TEMP}/${PROJECT_NAME}Test1.mha )
+               ${TEMP}/${MODULE_NAME}Test1.mha )
 
 #######
 # Test1-Compare
 #######
 #This test will be commented out until we get a baseline image for this test
-#MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
+#MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
 #            ${IMAGECOMPARE_EXE}
 #               -i 0.01
-#               -t ${TEMP}/${PROJECT_NAME}Test1.mha
-#               -b MIDAS{${PROJECT_NAME}Test1.mha.md5} )
-#set_property(TEST ${PROJECT_NAME}-Test1-Compare
-#                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )
+#               -t ${TEMP}/${MODULE_NAME}Test1.mha
+#               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+#set_property(TEST ${MODULE_NAME}-Test1-Compare
+#                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
