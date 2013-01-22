@@ -16,35 +16,43 @@ value among the i-th graph of A and the j-th graph of B. K will eventually be a 
     <label>IO</label>
     <description>Input/output parameters</description>
     <file>
-      <name>graphListA</name>
-      <description>First list of input graphs</description>
+      <name>argGraphListA</name>
+      <description>First list of input graphs.</description>
       <index>0</index>
     </file>
     <file>
-      <name>graphListB</name>
-      <description>Second list of input graphs</description>
+      <name>argGraphListB</name>
+      <description>Second list of input graphs.</description>
       <index>1</index>
     </file>
     <file>
-      <name>outputKernel</name>
-      <description>Basename for output kernel (will write .bin, .libsvm files)</description>
+      <name>argOutputKernel</name>
+      <description>Basename for output kernel (will write .bin, .libsvm files).</description>
       <index>2</index>
     </file>
     <integer>
-      <name>graphKernelType</name>
+      <name>argGraphKernelType</name>
       <longflag>graphKernelType</longflag>
       <description>
-      0 ... Shortest-Path kernel, 1 ... Weisfeiler-Lehman subtree kernel
+      0 ... Shortest-Path kernel, 1 ... Weisfeiler-Lehman subtree kernel.
       </description>
       <default>0</default>
     </integer>
     <integer>
-      <name>subtreeHeight</name>
+      <name>argSubtreeHeight</name>
       <longflag>subtreeHeight</longflag>
       <description>
-      Subtree height for Weisfeiler-Lehman kernel
+      Subtree height for Weisfeiler-Lehman kernel.
       </description>
       <default>1</default>
+    </integer>
+    <integer>
+      <name>argDefaultLabelType</name>
+      <longflag>defaultLabelType</longflag>
+      <description>
+      If no label file is associated with graphs (i.e., a file with .vertexLabel suffix) given, this specifies the default node labeling strategy (0 ... Node ID, 1 ... Node degree).
+      </description>
+      <default>0</default>
     </integer>
   </parameters>
 

@@ -32,6 +32,8 @@ def main(argv=None):
     parser.add_option("", "--logat", help="Log at the specified logging level")
     parser.add_option("", "--kernelType", help="Graph kernel type (0 ... SP, 1 ... WL)", type="int", default=0)
     parser.add_option("", "--wlHeight", help="Subtree height of the WL subtree kernel", type="int", default=1)
+    parser.add_option("", "--defLabel", help="Specify default labeling of graph nodes (0 ... Node ID, 1 ... Node degree)", type="int", default=0)
+    parser.add_option("", "--phantomType", help="Specify the phantom type that is used (Supported are: SPL, BrainWeb)")
     parser.add_option("", "--logto", help="Log to the specified file")
     parser.add_option("", "--phantom", help="Brainweb phantom")
 
@@ -53,6 +55,9 @@ def main(argv=None):
         return -1
     if (options.phantom is None):
         print "Error: No phantom given!"
+        return -1
+    if (options.phantomType is None):
+        print "Error: No phantom type given!"
         return -1
 
     config_fid = open(options.config).read()
@@ -81,13 +86,16 @@ def main(argv=None):
 
     try:
         stage_opt = dict()
-        stage_opt["grouplabel"] = subject_lab_list
+        stage_opt["groupLabel"] = subject_lab_list
         stage_opt["subjects"] = subject_dir_list
         stage_opt["dest"] = options.dest
         stage_opt["phantom"] = options.phantom
+        stage_opt["phantomType"] = options.phantomType
         stage_opt["cells"] = options.cells
         stage_opt["kernelType"] = options.kernelType
         stage_opt["wlHeight"] = options.wlHeight
+        stage_opt["defLabel"] = options.defLabel
+        stage_opt["randomSeed"] = 1234 # Random seed for repeatability
 
         if (options.stage == 1):
             stage_opt["mra_wSkull_glob"] = "*MRA.mha"            # MRA ToF images (includes skull)
@@ -98,7 +106,7 @@ def main(argv=None):
             Utils.transform_tubes_to_phantom(config, stage_opt)
         elif (options.stage == 3):
             Utils.compute_ind_atlas_edm(config, stage_opt)
-        elif (options.stage > 3 and options.stage < 20):
+        elif (options.stage > 3 and options.stage < 23):
             for cv_id,(train,test) in enumerate(cv):
                 stage_opt["id"] = cv_id + 1 # Cross-validation ID
                 stage_opt["trn"] = train    # Trn indices
@@ -119,8 +127,11 @@ def main(argv=None):
                     15: Utils.compute_ind_graph_prob_testing,
                     16: Utils.compute_trn_gk,
                     17: Utils.compute_tst_gk,
-                    18: Utils.trn_classifier,
-                    19: Utils.tst_classifier
+                    18: Utils.compute_full_gk,
+                    19: Utils.trn_classifier,
+                    20: Utils.tst_classifier,
+                    21: Utils.evaluate_classifier_from_full_gk,
+                    22: Utils.compute_distance_signatures
                 }[options.stage](config, stage_opt)
         else:
             print "Error: Stage %d not available!" % options.stage

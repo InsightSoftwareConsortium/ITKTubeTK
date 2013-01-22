@@ -43,9 +43,9 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
 
   /*
    * For levels > 0, we have to be careful with relabeling immediately, since
-   * we need neighbor information. Thus, we recored the relabeling result and
-   * while fetching neighbor information and building the compressed label.
-   * Once we are done with all vertices, we relabel!
+   * we need neighbor information. We record the relabeling result while fetching
+   * neighbor information and building the compressed label. Once we are done
+   * with all vertices, we relabel!
    */
   for( h=1; h<subtreeHeight; ++h )
     {
@@ -98,6 +98,8 @@ std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
     if( it != m_labelMap[h].end() )
       {
       int cLab = (*it).second;
+      tube::FmtDebugMessage( "(N) Relabel %d (%s) -> %d",
+        i, boost::lexical_cast<std::string>(G[vertex(i,G)].type).c_str(), cLab);
       G[vertex(i,G)].type = cLab;
       phi[cLab]++;
       }
@@ -119,7 +121,7 @@ std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
       }
       for( int i=0; i<N; ++i )
         {
-        if (relabel[i]>0)
+        if( relabel[i] > 0 )
           {
           G[vertex(i,G)].type = relabel[i];
           }

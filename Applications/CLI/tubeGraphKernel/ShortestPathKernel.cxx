@@ -39,8 +39,8 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
 
   floyd_warshall_all_pairs_shortest_paths( in, dm );
 
-  GraphType out(nVertices);
-  assert( nVertices == num_vertices(out) );
+  GraphType out( nVertices );
+  assert( nVertices == num_vertices( out) );
 
   ConstVertexAllMapType mapIn = boost::get( boost::vertex_all, in );
   VertexAllMapType mapOut = boost::get( boost::vertex_all, out );
@@ -57,17 +57,36 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
     for( int j=0; j<nVertices; ++j )
       {
       // As long as we do not INF distance between (i,j), and ...
-      if ( dm[i][j] != std::numeric_limits<double>::max() )
+      if( dm[i][j] != std::numeric_limits<double>::max() )
         {
         // the edge exists ...
-        if ( !edge( i, j, out ).second )
+        if( !edge( i, j, out ).second )
           {
           // add an edge with the shortest path length
           add_edge( i, j, dm[i][j], out );
           }
         }
+      else
+        {
+        //tube::FmtWarningMessage( "Numeric limit found at (%d,%d)!",
+        //  i,j);
+        }
       }
     }
+
+    // For debugging ...
+/*
+ *    for(int i=0; i<nVertices;++i)
+ *      {
+ *      for(int j=0; j<nVertices;++j)
+ *        {
+ *        std::cout << dm[i][j] << " ";
+ *        }
+ *      std::cout << std::endl;
+ *      }
+ *
+ */
+
     return out;
 }
 
@@ -87,7 +106,6 @@ double ShortestPathKernel::Compute(void)
   // Get the weight maps for both Floyd-transformed graphs
   EdgeWeightMapType wmFG0 = boost::get( boost::edge_weight, m_FG0 );
   EdgeWeightMapType wmFG1 = boost::get( boost::edge_weight, m_FG1 );
-
 
   // Iterate over all the edges of Floyd-transformed graph fg0
   for( tie( aIt, aEnd ) = edges( m_FG0 ); aIt != aEnd; ++aIt )
@@ -110,9 +128,19 @@ double ShortestPathKernel::Compute(void)
        * We could also use a Brownian bridge kernel to bound the max.
        * shortest-path length, e.g., max(0,c - |len(e)-len(e')|)
        */
+
       double weightE0 = wmFG0[*aIt];
       double weightE1 = wmFG1[*bIt];
-      if( !fabs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon() )
+
+      // Skip edges, if one weight is 0 (i.e., an edge from a node to itself)
+      if( fabs( weightE0 ) <= std::numeric_limits< double >::epsilon() ||
+          fabs( weightE1 ) <= std::numeric_limits< double >::epsilon() )
+        {
+        continue;
+        }
+
+      // Skip edges, unless the weights are equal
+      if( !( fabs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon() ) )
         {
         continue;
         }
@@ -121,10 +149,6 @@ double ShortestPathKernel::Compute(void)
       switch ( m_edgeKernelType )
         {
         case EDGE_KERNEL_DEL:
-          /*
-           * Delta kernel on edge start/end types, i.e.,
-           * 1 if types are equal, 0 otherwise
-           */
           bool vertexTypeCheck =
             ( src_type == m_FG1[source(e1, m_FG1)].type ) &&
             ( dst_type == m_FG1[target(e1, m_FG1)].type );
@@ -132,7 +156,10 @@ double ShortestPathKernel::Compute(void)
             {
             continue;
             }
-          edgeKernelValue = 1.0;
+          else
+            {
+            edgeKernelValue = 1.0;
+            }
           break;
         }
       kernelValue += edgeKernelValue;

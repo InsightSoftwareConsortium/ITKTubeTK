@@ -179,7 +179,8 @@ bool fileExists(const std::string &fileName)
  * label file should have the same name as the adjaceny matrix
  * file + the suffix '.vertexLabel'
  */
-tube::GraphKernel::GraphType loadGraph(std::string graphFile)
+tube::GraphKernel::GraphType loadGraph(std::string graphFile,
+  tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM)
 {
   const char * labelFile = 0;
   std::string labelFileStr = graphFile + ".vertexLabel";
@@ -188,16 +189,17 @@ tube::GraphKernel::GraphType loadGraph(std::string graphFile)
     labelFile = labelFileStr.c_str();
     }
   return tube::GraphKernel::GraphFromAdjFile(
-    graphFile.c_str(), labelFile);
+    graphFile.c_str(), labelFile, defNodeLabel );
 }
 
 
 int main(int argc, char **argv)
 {
   PARSE_ARGS;
+
   try
     {
-    switch(graphKernelType)
+    switch( argGraphKernelType )
       {
       case GK_WLKernel:
       case GK_SPKernel:
@@ -217,16 +219,16 @@ int main(int argc, char **argv)
 
     std::vector<std::string> listA, listB;
     std::vector<int> labelsB, labelsA;
-    readGraphList( graphListA, listA, labelsA );
-    readGraphList( graphListB, listB, labelsB );
+    readGraphList( argGraphListA, listA, labelsA );
+    readGraphList( argGraphListB, listB, labelsB );
 
     int N = listA.size();
     int M = listB.size();
 
     assert( N > 0 && M > 0 );
 
-    tube::FmtDebugMessage( "Read N=%d entries from %s.", N, graphListA.c_str() );
-    tube::FmtDebugMessage( "Read M=%d entries from %s.", M, graphListB.c_str() );
+    tube::FmtDebugMessage( "Read N=%d entries from %s.", N, argGraphListA.c_str() );
+    tube::FmtDebugMessage( "Read M=%d entries from %s.", M, argGraphListB.c_str() );
 
     vnl_matrix<double> K( N, M );
     K.fill(0.0);
@@ -245,21 +247,30 @@ int main(int argc, char **argv)
      *
      */
 
-    tube::WLSubtreeKernel::LabelMapVectorType labelMap(subtreeHeight);
+    if( !tube::GraphKernel::IsValidDefaultNodeLabeling( argDefaultLabelType ) )
+      {
+      tube::ErrorMessage( "Labeling strategy not supported!" );
+      return EXIT_FAILURE;
+      }
+    tube::GraphKernel::DefaultNodeLabelingType defLabelType =
+      static_cast<tube::GraphKernel::DefaultNodeLabelingType>( argDefaultLabelType );
+
+    tube::WLSubtreeKernel::LabelMapVectorType labelMap( argSubtreeHeight );
     int labelCount = 0;
 
-    if( graphKernelType == GK_WLKernel )
+
+    if( argGraphKernelType == GK_WLKernel )
       {
       for( int i = 0; i < N; ++i )
         {
         tube::FmtInfoMessage("Adding data from graph %s",
           listA[i].c_str());
 
-        tube::GraphKernel::GraphType f = loadGraph(listA[i]);
+        tube::GraphKernel::GraphType f = loadGraph( listA[i], defLabelType );
         tube::WLSubtreeKernel::UpdateLabelCompression( f,
                                                  labelMap,
                                                  labelCount,
-                                                 subtreeHeight );
+                                                 argSubtreeHeight );
         }
       }
 
@@ -275,16 +286,16 @@ int main(int argc, char **argv)
 
     for( int i = 0; i < N; ++i )
       {
-      tube::GraphKernel::GraphType f = loadGraph(listA[i]);
+      tube::GraphKernel::GraphType f = loadGraph(listA[i], defLabelType );
       for( int j = 0; j < M; ++j )
         {
-        tube::GraphKernel::GraphType g = loadGraph(listB[j]);
+        tube::GraphKernel::GraphType g = loadGraph(listB[j], defLabelType );
 
         tube::FmtInfoMessage("Running kernel on graphs (%d,%d)",
           i,j);
 
         tube::GraphKernel *gk = 0;
-        switch( graphKernelType )
+        switch( argGraphKernelType )
           {
           case GK_SPKernel:
             {
@@ -298,7 +309,7 @@ int main(int argc, char **argv)
                                       g,
                                       labelMap,
                                       labelCount,
-                                      subtreeHeight );
+                                      argSubtreeHeight );
 
             K[i][j] = gk->Compute();
             break;
@@ -316,8 +327,8 @@ int main(int argc, char **argv)
      *
      */
 
-    writeKernel( outputKernel, K );
-    writeKernelLibSVM( outputKernel, K, labelsA );
+    writeKernel( argOutputKernel, K );
+    writeKernelLibSVM( argOutputKernel, K, labelsA );
     }
   catch(std::exception &e)
     {
