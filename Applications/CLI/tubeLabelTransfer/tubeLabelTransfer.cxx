@@ -467,14 +467,22 @@ int DoIt( int argc, char **argv )
       outImage->SetPixel( index, originalLabel );
       }
 
-    outMappingFile << cell
-                   << " "
-                   << dominantLabel
-                   << " "
-                   << originalLabel
+    outMappingFile << cell << " ";
+    if( argOutputHistogram )
+      {
+      for( unsigned int i=0; i<cellHist.size(); ++i)
+        {
+        outMappingFile << cellHist[i] << " ";
+        }
+      }
+    else
+      {
+      outMappingFile << originalLabel;
+      }
+    outMappingFile << std::endl;
 
-                   << std::endl;
 
+    // Reset cell histogram
     std::fill( cellHist.begin(), cellHist.end(), 0);
     ++mapIt;
     }

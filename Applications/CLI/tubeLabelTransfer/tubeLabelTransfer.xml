@@ -33,6 +33,13 @@
       <index>3</index>
       <description>File name of the output mapping file, mapping CVT cell IDs to features.</description>
     </file>
+    <boolean>
+      <name>argOutputHistogram</name>
+      <label>Output feature histogram</label>
+      <longflag>outputHistogram</longflag>
+      <description>Produces a mapping file with CVT cell -> feature histogram, instead of CVT cell -> Dominant label.</description>
+      <default>false</default>
+    </boolean>
   </parameters>
 
 </executable>
