@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>Filtering</category>
+  <title>Label CVT cells based on an anatomical label map (TubeTK)</title>
+  <description>Assign an anatomical label to each cell in a Central Voronoi Tesselation (CVT).</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Roland Kwitt, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <file>
+      <name>inImageFileName</name>
+      <index>0</index>
+      <description>Filename of the input image.</description>
+    </file>
+    <file>
+      <name>inLabelFileName</name>
+      <index>1</index>
+      <description>Filename of the label map image.</description>
+    </file>
+    <file>
+      <name>outImageFileName</name>
+      <index>2</index>
+      <description>File name of the labeled output CVT image.</description>
+    </file>
+    <file>
+     <name>outMappingFileName</name>
+      <index>3</index>
+      <description>File name of the output mapping file, mapping CVT cell IDs to features.</description>
+    </file>
+    <boolean>
+      <name>argOutputHistogram</name>
+      <label>Output feature histogram</label>
+      <longflag>outputHistogram</longflag>
+      <description>Produces a mapping file with CVT cell -> feature histogram, instead of CVT cell -> Dominant label.</description>
+      <default>false</default>
+    </boolean>
+  </parameters>
+
+</executable>
