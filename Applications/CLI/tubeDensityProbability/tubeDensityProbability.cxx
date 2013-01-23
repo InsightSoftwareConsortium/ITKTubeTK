@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
   try
     {
-    tube::GetImageInformation( inTubeFile, componentType, dimension );
+    tube::GetImageInformation( inMeanImageFile, componentType, dimension );
     switch( dimension )
       {
       case 2:

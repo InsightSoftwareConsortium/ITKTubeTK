@@ -109,9 +109,24 @@ std::string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
 
 
 //-----------------------------------------------------------------------------
+bool GraphKernel::IsValidDefaultNodeLabeling( int desiredType )
+{
+  switch( desiredType )
+    {
+    case LABEL_BY_NUM:
+    case LABEL_BY_DEG:
+      return true;
+    default:
+      return false;
+    }
+}
+
+
+//-----------------------------------------------------------------------------
 GraphKernel::GraphType
 GraphKernel::GraphFromAdjFile( const char *graphFile,
-                               const char *labelFile)
+                               const char *labelFile,
+                               DefaultNodeLabelingType defNodeLabel)
 {
   std::ifstream reader;
 
@@ -133,7 +148,7 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
     {
     for( int j=0; j<nVertices; ++j )
       {
-      double tf;
+      double tf = 0.0;
       reader >> tf;
       reader.get();
       if(tf > 0)
@@ -145,10 +160,33 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
   reader.close();
 
 
-  // Set node degree as label (suggested in [Shervashidze11a])
+  /*
+   * We support either the node ID or the node degree as a
+   * label (degree is suggested in [Shervashidze11a]
+   */
+  switch( defNodeLabel )
+    {
+    case LABEL_BY_NUM:
+      tube::InfoMessage( "Using node number (ID) as label!" );
+      break;
+    case LABEL_BY_DEG:
+      tube::InfoMessage(" Using node degree as label!" );
+      break;
+    }
+
   for( int i=0; i<nVertices; ++i )
     {
-    g[vertex(i,g)].type = out_degree(i, g);
+    switch( defNodeLabel )
+      {
+      // ... use node number
+      case LABEL_BY_NUM:
+        g[vertex(i,g)].type = i;
+        break;
+      // ... use node degree
+      case LABEL_BY_DEG:
+        g[vertex(i,g)].type = out_degree(i, g);
+        break;
+      }
     }
 
   // In case no label file is given

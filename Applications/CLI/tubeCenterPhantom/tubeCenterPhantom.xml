@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Filter</category>
+  <title>Center Phantom in Reference Space (TubeTK)</title>
+  <description>Center phantom data (e.g., image, labelmap) w.r.t. to the center of a reference image's space</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Roland Kwitt, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputImageFile</name>
+      <label>Input image</label>
+      <index>1</index>
+      <description>Phantom image (e.g., could be label map, or a T1-weighted MR image).</description>
+    </image>
+    <image>
+      <name>referenceImageFile</name>
+      <label>Reference image</label>
+      <index>2</index>
+      <description>The reference image that is used for centering the phantom data.</description>
+    </image>
+    <image>
+      <name>outputImageFile</name>
+      <label>Output image</label>
+      <index>3</index>
+      <description>The centered phantom data image.</description>
+    </image>
+    <boolean>
+      <name>centerOnZero</name>
+      <longflag>centerOnZero</longflag>
+      <label>Translate origin to (0,0,0)</label>
+      <description>Set this to ensure that the output image will have origin = (0,0,0).</description>
+      <default>false</default>
+    </boolean>
+    <boolean>
+      <name>isLabelMap</name>
+      <longflag>isLabelMap</longflag>
+      <label>Does the input contain discrete label information ?</label>
+      <description>Specifies that the input phantom data contains discrete labels.</description>
+      <default>false</default>
+    </boolean>
+  </parameters>
+</executable>

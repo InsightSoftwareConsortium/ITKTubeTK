@@ -56,6 +56,13 @@ class GraphKernel
   /** Public static/non-static functions */
   public:
 
+    /** Default strategy for node labeling without label file */
+    typedef enum
+      {
+      LABEL_BY_NUM = 0,
+      LABEL_BY_DEG = 1
+      } DefaultNodeLabelingType;
+
     /** Node meta-information */
     struct nodeInfoType
       {
@@ -115,10 +122,13 @@ class GraphKernel
       m_G1 = G1;
       }
 
+    /** Check if the desired default node labeling is supported */
+    static bool IsValidDefaultNodeLabeling( int desiredType );
+
     /** Read graph from adj file */
     static GraphType GraphFromAdjFile( const char *graphFile,
-                                       const char *labelFile);
-
+                                       const char *labelFile,
+                                       DefaultNodeLabelingType defNodeLabel);
     /** Read graph from JSON file */
     static GraphType GraphFromJSONFile(const char *graphFile);
 
@@ -130,9 +140,6 @@ class GraphKernel
 
     /** Two input graphs */
     GraphType m_G0, m_G1;
-
-    /** Label vectors */
-    std::vector<int> labelsG0, labelsG1;
 
     /** Build a string representation of the neighbors of v-th vertex */
     static std::string BuildNeighborStr(const GraphType &G, int v);
