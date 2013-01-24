@@ -89,6 +89,8 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkUTF16TextCodec"
     "vtkVariantArray"
     "vxl"
+    "FLTK"
+    "fltk"
     "is here"
     "has no symbols"
     "no public symbols found"
