@@ -41,6 +41,23 @@ set( TubeTK_DEPENDS "" )
 set( gen "${CMAKE_GENERATOR}" )
 
 ##
+## Find GIT and determine proper protocol for accessing GIT repos.
+##  - Users may need to choose HTTP is they are behind a firewall.
+##
+if( NOT GIT_EXECUTABLE )
+  find_package( Git REQUIRED )
+endif( NOT GIT_EXECUTABLE )
+
+option( GIT_PROTOCOL_HTTP
+  "Use HTTP for git access (useful if behind a firewall)" OFF )
+if( GIT_PROTOCOL_HTTP )
+  set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
+else( GIT_PROTOCOL_HTTP )
+  set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+endif( GIT_PROTOCOL_HTTP )
+mark_as_advanced( GIT_PROTOCOL )
+
+##
 ## Check if system TubeTK or superbuild TubeTK
 ##
 if( NOT USE_SYSTEM_JsonCpp )
@@ -302,19 +319,6 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     if( TubeTK_USE_CTK )
 
       if( NOT USE_SYSTEM_CTK )
-
-        if( NOT GIT_EXECUTABLE )
-          find_package( Git REQUIRED )
-        endif( NOT GIT_EXECUTABLE )
-
-        option( GIT_PROTOCOL_HTTP
-          "Use HTTP for git access (useful if behind a firewall)" OFF )
-        if( GIT_PROTOCOL_HTTP )
-          set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
-        else( GIT_PROTOCOL_HTTP )
-          set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
-        endif( GIT_PROTOCOL_HTTP )
-        mark_as_advanced( GIT_PROTOCOL )
 
         if( TubeTK_USE_VTK )
           if( NOT USE_SYSTEM_VTK )
