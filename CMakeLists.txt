@@ -425,6 +425,12 @@ add_subdirectory( Base )
 add_subdirectory( Applications )
 
 #-----------------------------------------------------------------------------
+# Optionally build Slicer-specific modules
+if( TubeTK_BUILD_SLICER_EXTENSION )
+  add_subdirectory( SlicerModules )
+endif( TubeTK_BUILD_SLICER_EXTENSION )
+
+#-----------------------------------------------------------------------------
 # Create the directory where tests store temp results
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
 
