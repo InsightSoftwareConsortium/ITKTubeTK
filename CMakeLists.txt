@@ -256,11 +256,17 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   if( TubeTK_USE_QT )
     find_package( Qt4 )
-    set( minimum_required_qt_version "4.6" )
+    # Slicer only tests against a specific Qt version.  To override the
+    # version check, set the TubeTK_REQUIRED_QT_VERSION CMake variable.
+    if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
+      set( TubeTK_REQUIRED_QT_VERSION
+        "4.7.4" CACHE STRING "Exact required Qt version" FORCE)
+    endif()
     if( QT4_FOUND )
-      if( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}"
-          VERSION_LESS "${minimum_required_qt_version}" )
-        message( FATAL_ERROR "Error: TubeTK requires Qt >= 4.6" )
+      if( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+          VERSION_EQUAL "${TubeTK_REQUIRED_QT_VERSION}" )
+        message( FATAL_ERROR
+          "Error: TubeTK requires Qt == ${TubeTK_REQUIRED_QT_VERSION}" )
       endif()
       include( ${QT_USE_FILE} )
     else()
