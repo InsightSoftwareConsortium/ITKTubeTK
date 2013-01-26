@@ -22,7 +22,7 @@
 ##############################################################################
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME tubeMaskToStats)
+set(MODULE_NAME ComputeImageStatisticsUsingMask )
 
 find_package(SlicerExecutionModel REQUIRED)
 include(${SlicerExecutionModel_USE_FILE})

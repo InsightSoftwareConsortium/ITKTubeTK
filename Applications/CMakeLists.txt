@@ -21,7 +21,7 @@
 # 
 ##############################################################################
 
-add_subdirectory( AtlasSummation )
+add_subdirectory( AtlasBuilderUsingIntensity )
 add_subdirectory( ComputeBinaryImageSimilarityMetrics )
 add_subdirectory( ComputeImageSimilarityMetrics )
 add_subdirectory( ComputeImageStatisticsUsingMask )

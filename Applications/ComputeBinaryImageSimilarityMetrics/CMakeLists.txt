@@ -22,7 +22,7 @@
 ##############################################################################
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME tubeComputeBinaryImageSimilarity)
+set(MODULE_NAME ComputeBinaryImageSimilarityMetrics)
 
 find_package(SlicerExecutionModel REQUIRED)
 include(${SlicerExecutionModel_USE_FILE})

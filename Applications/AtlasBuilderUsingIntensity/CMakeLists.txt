@@ -21,11 +21,10 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-set(MODULE_NAME ComputeImageSimilarityMetrics)
+set( MODULE_NAME AtlasBuilderUsingIntensity )
 
-find_package(SlicerExecutionModel REQUIRED)
-include(${SlicerExecutionModel_USE_FILE})
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
@@ -33,13 +32,17 @@ include( ${USE_ITK_FILE} )
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
+  ADDITIONAL_SRCS AtlasSummation.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} vtkCommon vtkGraphics vtkIO
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ObjectDocuments
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Registration
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
   )
 
-if( BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( BUILD_TESTING )
+#-----------------------------------------------------------------------------
+#if( BUILD_TESTING )
+  #add_subdirectory( Testing )
+#endif( BUILD_TESTING )

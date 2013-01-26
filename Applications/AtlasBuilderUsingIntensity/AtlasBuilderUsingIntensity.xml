@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
+  <category>TubeTK</category>
   <title>Atlas Computation</title>
   <description> Computes an Atlas from a set of subject-specific files</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>

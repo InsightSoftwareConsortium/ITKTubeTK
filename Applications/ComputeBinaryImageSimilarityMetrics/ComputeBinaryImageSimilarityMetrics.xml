@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Registration</category>
+  <category>TubeTK</category>
   <title>Compute Binary Image Similarity (TubeTK)</title>
   <description>Return scores of how well two binary images match.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>

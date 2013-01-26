@@ -38,7 +38,7 @@ limitations under the License.
 #include <stdio.h>
 #include "metaCommand.h"
 
-#include <tubeAtlasSummationCLP.h>
+#include <AtlasBuilderUsingIntensityCLP.h>
 
 
 using namespace tube;

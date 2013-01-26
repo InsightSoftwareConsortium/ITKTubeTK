@@ -45,7 +45,7 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
-#include "tubeGraphProbabilityCLP.h"
+#include "ComputeTubeGraphProbabilityCLP.h"
 
 
 /** Forward decl. */

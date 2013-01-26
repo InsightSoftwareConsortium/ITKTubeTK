@@ -45,7 +45,7 @@ limitations under the License.
 #include <sstream>
 
 #include "tubeMessage.h"
-#include "tubeImageQuantilesCLP.h"
+#include "ComputeImageQuantilesCLP.h"
 
 enum { TDimensions = 3 };
 

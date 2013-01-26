@@ -29,14 +29,13 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include <iostream>
-#include <fstream>
-
 #include "itkImage.h"
 #include "itkImageFileReader.h"
-
-// TubeTK Filters
-#include "itkTubeLabelOverlapMeasuresImageFilter.h"
+#include "itkIdentityTransform.h"
+#include "itkLinearInterpolateImageFunction.h"
+#include "itkMutualInformationImageToImageMetric.h"
+#include "itkNormalizedCorrelationImageToImageMetric.h"
+#include "itkNormalizeImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -44,7 +43,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "tubeComputeBinaryImageSimilarityCLP.h"
+#include "ComputeImageSimilarityMetricsCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -54,7 +53,7 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef short                                               PixelType;
+  typedef pixelT                                              PixelType;
   typedef itk::Image< PixelType,  dimensionT >                ImageType;
   typedef itk::ImageFileReader< ImageType >                   ReaderType;
 
@@ -90,48 +89,67 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer image1 = reader1->GetOutput();
   typename ImageType::Pointer image2 = reader2->GetOutput();
 
-  typedef itk::tube::LabelOverlapMeasuresImageFilter< ImageType >
-    MetricFilterType;
+  typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
 
-  typename MetricFilterType::Pointer metric = MetricFilterType::New();
-  metric->SetSourceImage( image1 );
-  metric->SetTargetImage( image2 );
-  metric->Update();
+  typename NormFilterType::Pointer norm1 = NormFilterType::New();
+  norm1->SetInput( image1 );
+  norm1->Update();
+  image1 = norm1->GetOutput();
 
-  if( resultsFile.size() == 0 )
+  typename NormFilterType::Pointer norm2 = NormFilterType::New();
+  norm2->SetInput( image2 );
+  norm2->Update();
+  image2 = norm2->GetOutput();
+
+  typedef itk::IdentityTransform< double, dimensionT >
+    TransformType;
+  typename TransformType::Pointer transform = TransformType::New();
+
+  typedef itk::LinearInterpolateImageFunction< ImageType, double >
+    InterpolatorType;
+  typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
+  interpolator->SetInputImage( image2 );
+
+  typedef itk::ImageToImageMetric< ImageType, ImageType >
+    MetricType;
+  typename MetricType::Pointer metric;
+
+  if( !correlation )
     {
-    std::cout << "Total Overlap = " << metric->GetTotalOverlap()
-      << std::endl;
-    std::cout << "Union Overlap (Jaccard Coefficient) = "
-      << metric->GetUnionOverlap() << std::endl;
-    std::cout << "Mean Overlap (Dice Coefficient) = "
-      << metric->GetMeanOverlap() << std::endl;
-    std::cout << "Volume Similarity = " << metric->GetVolumeSimilarity()
-      << std::endl;
-    std::cout << "False Negative Error = " << metric->GetFalseNegativeError()
-      << std::endl;
-    std::cout << "False Positive Error = " << metric->GetFalsePositiveError()
-      << std::endl;
+    typedef itk::MutualInformationImageToImageMetric< ImageType, ImageType >
+                                                           MIMetricType;
+    metric = MIMetricType::New();
     }
   else
     {
-    std::ofstream outFile;
-    outFile.open( resultsFile.c_str() );
-    outFile << "Total Overlap = " << metric->GetTotalOverlap()
-      << std::endl;
-    outFile << "Union Overlap (Jaccard Coefficient) = "
-      << metric->GetUnionOverlap() << std::endl;
-    outFile << "Mean Overlap (Dice Coefficient) = "
-      << metric->GetMeanOverlap() << std::endl;
-    outFile << "Volume Similarity = " << metric->GetVolumeSimilarity()
-      << std::endl;
-    outFile << "False Negative Error = " << metric->GetFalseNegativeError()
-      << std::endl;
-    outFile << "False Positive Error = " << metric->GetFalsePositiveError()
-      << std::endl;
-    outFile.close();
+    typedef itk::NormalizedCorrelationImageToImageMetric< ImageType,
+                                                           ImageType >
+                                                           CorMetricType;
+    metric = CorMetricType::New();
     }
 
+  typename ImageType::SizeType size = image1->GetLargestPossibleRegion().
+                                              GetSize();
+
+  metric->SetFixedImage( image1 );
+  metric->SetMovingImage( image2 );
+  metric->SetFixedImageRegion( image1->GetLargestPossibleRegion() );
+  metric->SetTransform( transform );
+  metric->SetInterpolator( interpolator );
+  metric->SetNumberOfSpatialSamples( size[0]*size[1]*samplingRate );
+  metric->Initialize();
+  metric->MultiThreadingInitialize();
+
+  if( !correlation )
+    {
+    std::cout << metric->GetValue( transform->GetParameters() )
+              << std::endl;
+    }
+  else
+    {
+    std::cout << -metric->GetValue( transform->GetParameters() )
+              << std::endl;
+    }
 
   return EXIT_SUCCESS;
 }
