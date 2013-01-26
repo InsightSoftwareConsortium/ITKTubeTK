@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category>Filtering</category>
-  <title>Hessian Tubeness 2D (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Enhance tubes using diffusion (TubeTK)</title>
   <description>Compute vesselness score of an image using Frangi's method.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url></documentation-url>

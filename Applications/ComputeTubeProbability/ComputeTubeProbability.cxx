@@ -36,7 +36,7 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
-#include "tubeDensityProbabilityCLP.h"
+#include "ComputeTubeProbabilityCLP.h"
 
 
 template< unsigned int VDimension >

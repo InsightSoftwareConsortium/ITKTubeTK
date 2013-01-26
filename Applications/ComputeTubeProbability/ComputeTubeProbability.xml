@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Pseudo-Probability of Tube Points (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Compute Pseudo-Probability of Tube Points (TubeTK)</title>
   <description>Takes all points of the input tubes, maps them into the space of the mean Euclidean distance image and outputs the distance values at those points.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

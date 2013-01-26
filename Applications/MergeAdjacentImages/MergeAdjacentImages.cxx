@@ -53,7 +53,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "tubeMergeCLP.h"
+#include "MergeAdjacentImagesCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #define PARSE_ARGS_FLOAT_ONLY 1

@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 ##############################################################################
-project( MetaImageImporter )
+project( ConvertToMetaImage )
 
 cmake_minimum_required( VERSION 2.4 )
 if( COMMAND CMAKE_POLICY )
@@ -58,14 +58,14 @@ if( TubeTK_USE_QT )
     link_libraries( ${QT_QTMAIN_LIBRARY} )
   endif( HIDE_CONSOLE )
 
-  add_executable( MetaImageImporter
+  add_executable( ConvertToMetaImage
     ${MetaImageImporter_SRCS} ${MetaImageImporter_UI_CXX} )
 
   link_libraries(
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY} )
 
-  target_link_libraries( MetaImageImporter
+  target_link_libraries( ConvertToMetaImage
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
     ${QT_QTDESIGNER_LIBRARY} )
@@ -75,7 +75,7 @@ if( TubeTK_USE_QT )
 
   # Installation file
   install(
-    TARGETS MetaImageImporter
+    TARGETS ConvertToMetaImage
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
@@ -83,4 +83,4 @@ if( TubeTK_USE_QT )
 
 endif( TubeTK_USE_QT )
 
-add_executable( MetaImageImporterCLI MetaImageImporterCLI.cxx )
+add_executable( ConvertToMetaImageCLI ConvertToMetaImageCLI.cxx )

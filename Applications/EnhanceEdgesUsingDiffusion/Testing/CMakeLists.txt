@@ -50,7 +50,7 @@ endif()
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                MIDAS{CroppedWholeLungCTScan.mhd.md5}
-               ${TEMP}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha
+               ${TEMP}/${MODULE_NAME}-Test1.mha
                MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
               )
 
@@ -59,8 +59,8 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha
-               -b MIDAS{itkAnisotropicEdgeEnhancingDiffusionImageFilterTest.mha.md5}
+               -t ${TEMP}/${MODULE_NAME}-Test1.mha
+               -b MIDAS{${MODULE_NAME}-Test1.mha.md5}
                -i ${imageCompareTolerance} )
 set_property(TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
@@ -71,15 +71,15 @@ set_property(TEST ${MODULE_NAME}-Test1-Compare
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
             ${PROJ_EXE}
                MIDAS{SyntheticTubeImage.mha.md5}
-               ${TEMP}/SyntheticTubeEEDFilterResultImage.mha )
+               ${TEMP}/${MODULE_NAME}-Test2.mha )
 
 #######
 # Test2-Compare
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/SyntheticTubeEEDFilterResultImage.mha
-               -b MIDAS{SyntheticTubeEEDFilterResultImage.mha.md5}
+               -t ${TEMP}/${MODULE_NAME}-Test2.mha
+               -b MIDAS{${MODULE_NAME}-Test2.mha.md5}
                -i ${imageCompareTolerance} )
 set_property(TEST ${MODULE_NAME}-Test2-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
@@ -90,15 +90,15 @@ set_property(TEST ${MODULE_NAME}-Test2-Compare
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test3
             ${PROJ_EXE}
                MIDAS{SyntheticTubePlusSurfaceImage.mha.md5}
-               ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha )
+               ${TEMP}/${MODULE_NAME}-Test3.mha )
 
 #######
 # Test3-Compare
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test3-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage.mha
-               -b MIDAS{SyntheticTubePlusSurfaceEEDFilterResultImage.mha.md5}
+               -t ${TEMP}/${MODULE_NAME}-Test3.mha
+               -b MIDAS{${MODULE_NAME}-Test3.mha.md5}
                -i ${imageCompareTolerance} )
 set_property(TEST ${MODULE_NAME}-Test3-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
@@ -109,15 +109,15 @@ set_property(TEST ${MODULE_NAME}-Test3-Compare
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test4
             ${PROJ_EXE}
                MIDAS{SyntheticTubePlusSurfaceImage_oriented.mha.md5}
-               ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage_oriented.mha )
+               ${TEMP}/${MODULE_NAME}-Test4.mha )
 
 #######
 # Test4-Compare
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test4-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/SyntheticTubePlusSurfaceEEDFilterResultImage_oriented.mha
-               -b MIDAS{SyntheticTubePlusSurfaceEEDFilterResultImage_oriented.mha.md5}
+               -t ${TEMP}/${MODULE_NAME}-Test4.mha
+               -b MIDAS{${MODULE_NAME}-Test4.mha.md5}
                -i ${imageCompareTolerance} )
 set_property(TEST ${MODULE_NAME}-Test4-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )

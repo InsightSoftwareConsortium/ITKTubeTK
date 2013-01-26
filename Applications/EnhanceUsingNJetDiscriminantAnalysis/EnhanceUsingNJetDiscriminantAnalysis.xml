@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category>Developer Tools</category>
-  <title>NJet Linear Discriminant Analysis (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Enhance Image Using NJet Measures fed into Discriminant Analysis (TubeTK)</title>
   <description>Given an image and foreground and background masks, computes multiscale Jet (0, 1, and 2 order) features at each pixel, performs a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url></documentation-url>

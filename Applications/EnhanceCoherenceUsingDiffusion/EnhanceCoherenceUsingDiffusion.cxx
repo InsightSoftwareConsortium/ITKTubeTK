@@ -42,7 +42,7 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
+#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -50,7 +50,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "tubeEdgeEnhancingAnisotropicDiffusionCLP.h"
+#include "EnhanceCoherenceUsingDiffusionCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -66,8 +66,8 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "EdgeEnhancingAnisotropicDiffusion",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter    progressReporter(
+    "CoherenceEnhancingAnisotropicDiffusion", CLPProcessInformation );
   progressReporter.Start();
 
   // Define the types and dimension of the images
@@ -85,7 +85,7 @@ int DoIt( int argc, char * argv[] )
   // Read the input volume
   timeCollector.Start("Load data");
   typedef itk::ImageFileReader< InputImageType  >  ImageReaderType;
-  typename ImageReaderType::Pointer   reader = ImageReaderType::New();
+  typename ImageReaderType::Pointer reader = ImageReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
     {
@@ -119,44 +119,47 @@ int DoIt( int argc, char * argv[] )
   orientInputFilter->SetDesiredCoordinateOrientationToAxial();
   orientInputFilter->SetInput( castInputImageFilter->GetOutput() );
 
-  // Perform the edge enhancing anisotropic diffusion
-  timeCollector.Start("Edge enhancing anisotropic diffusion");
+  // Perform the coherence enhancing anisotropic diffusion
+  timeCollector.Start("Coherence enhancing anisotropic diffusion");
 
-  // Declare the anisotropic diffusion edge enhancement filter
-  typedef itk::AnisotropicEdgeEnhancementDiffusionImageFilter<
-    FilterInputImageType, FilterOutputImageType>  EdgeEnhancementFilterType;
+  // Declare the anisotropic diffusion coherence enhancing filter
+  typedef itk::AnisotropicCoherenceEnhancingDiffusionImageFilter<
+    FilterInputImageType, FilterOutputImageType>
+    CoherenceEnhancingFilterType;
 
-  // Create a edge enhancement Filter
-  typename EdgeEnhancementFilterType::Pointer EdgeEnhancementFilter =
-    EdgeEnhancementFilterType::New();
+  // Create a coherence enhancing filter
+  typename CoherenceEnhancingFilterType::Pointer CoherenceEnhancingFilter =
+    CoherenceEnhancingFilterType::New();
 
-  EdgeEnhancementFilter->SetInput( orientInputFilter->GetOutput() );
+  CoherenceEnhancingFilter->SetInput( orientInputFilter->GetOutput() );
 
-  //Set/Get EED parameters
-  EdgeEnhancementFilter->SetSigma( scaleParameter );
-  EdgeEnhancementFilter->SetContrastParameterLambdaE( eedContrastParameter );
-  EdgeEnhancementFilter->SetTimeStep( timeStep );
-  EdgeEnhancementFilter->SetNumberOfIterations( numberOfIterations );
+  //Set/Get CED parameters
+  CoherenceEnhancingFilter->SetSigma( scaleParameter );
+  CoherenceEnhancingFilter->SetAlpha( alpha );
+  CoherenceEnhancingFilter->SetContrastParameterLambdaC(
+    cedContrastParameter );
+  CoherenceEnhancingFilter->SetTimeStep( timeStep );
+  CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
 
   double progressFraction = 0.8;
-  tube::CLIFilterWatcher watcher( EdgeEnhancementFilter,
-    "Edge enhancement anisotropic diffusion", CLPProcessInformation,
+  tube::CLIFilterWatcher watcher( CoherenceEnhancingFilter,
+    "Coherence enhancing anisotropic diffusion", CLPProcessInformation,
     progressFraction, progress, true );
 
   try
     {
-    EdgeEnhancementFilter->Update();
+    CoherenceEnhancingFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage(
-      "Edge enhancing anisotropic diffusion: Exception caught: "
+      "Coherence enhancing anisotropic diffusion: Exception caught: "
       + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Edge enhancing anisotropic diffusion");
+  timeCollector.Stop("Coherence enhancing anisotropic diffusion");
   progress = 0.9;
   progressReporter.Report( progress );
 
@@ -165,7 +168,7 @@ int DoIt( int argc, char * argv[] )
     CastOutputImageFilterType;
   typename CastOutputImageFilterType::Pointer castOutputImageFilter =
     CastOutputImageFilterType::New();
-  castOutputImageFilter->SetInput( EdgeEnhancementFilter->GetOutput() );
+  castOutputImageFilter->SetInput( CoherenceEnhancingFilter->GetOutput() );
 
   // Reorient back from axial to whatever direction we had before
   typedef itk::OrientImageFilter< OutputImageType, OutputImageType >
@@ -182,7 +185,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput ( orientOutputFilter->GetOutput() );
+  writer->SetUseCompression( true );
+  writer->SetInput( orientOutputFilter->GetOutput() );
 
   try
     {

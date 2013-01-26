@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Merge (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Merge Adjacent Images (TubeTK)</title>
   <description>Merge the second image into the space of the first</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

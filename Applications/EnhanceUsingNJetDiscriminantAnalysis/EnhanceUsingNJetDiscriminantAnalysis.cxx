@@ -46,7 +46,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 // Must include CLP before including tubeCLIHelperFunctions
-#include "tubeNJetLDAGeneratorCLP.h"
+#include "EnhanceUsingNJetDiscriminantAnalysisCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Hybrid Enhancing Anisotropic Diffusion with Continuous Switch (TubeTK)</title>
-  <description>Continuous switch between edge enhancing anisotropic diffusion (for homogeneous regions and plate-like structures) and coherence enhancing anisotropic diffusion (for tube-like structures and small spherical structures).  Implemented as described in Mendrik et al., Noise reduction in computed tomography scans using 3-D anisotropic diffusion with continuous switch, IEEE Transactions on Medical Imaging, 28(10), pp. 1585-1594, 2009.</description>
+  <category>TubeTK</category>
+  <title>Coherence Enhancing Anisotropic Diffusion (TubeTK)</title>
+  <description>Performs coherence enhancing anisotropic diffusion: smooths flow-like structures (ex. vessels/tubes).  Strong smoothing is performed in the direction of least intensity contrast (i.e. parallel to the tube).  Implemented as described in Mendrik et al., Noise reduction in computed tomography scans using 3-D anisotropic diffusion with continuous switch, IEEE Transactions on Medical Imaging, 28(10), pp. 1585-1594, 2009.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
@@ -40,36 +40,20 @@
       <default>1.0</default>
     </double>
     <double>
-      <name>eedContrastParameter</name>
-      <label>EED Contrast Parameter</label>
-      <description>Contrast of edges, as opposed to noise (used by the edge enhancing diffusion).  If set too low, noise will not be filtered.  If set too high, plate-like structures will not be preserved.</description>
-      <longflag>EEDContrast</longflag>
-      <flag>e</flag>
-      <default>20.0</default>
-    </double>
-    <double>
       <name>cedContrastParameter</name>
       <label>CED Contrast Parameter</label>
-      <description>Ratio between the second and third eigenvalues that indicates a tube-like structure (used by the coherence enhancing diffusion).  If set too low, small spherical structures will not be preserved.  If set too high, tubular structures will not be filtered.</description>
+      <description>Ratio between the second and third eigenvalues that indicates a tube-like structure.  If set too low, small spherical structures will not be preserved.  If set too high, tubular structures will not be filtered.</description>
       <longflag>CEDContrast</longflag>
       <flag>c</flag>
-      <default>30.0</default>
+      <default>15.0</default>
     </double>
     <double>
       <name>alpha</name>
       <label>Alpha Parameter</label>
-      <description>Regularization parameter to ensure that the diffusion tensor matrix is positive definite and to prevent division by zero (used by both the coherence enhancing diffusion and the continuous switch).  Should be set to something very small.</description>
+      <description>Regularization parameter to ensure that the diffusion tensor matrix is positive definite and to prevent division by zero.  Should be set to something very small.</description>
       <longflag>alpha</longflag>
       <flag>a</flag>
       <default>0.001</default>
-    </double>
-    <double>
-      <name>hybridContrastParameter</name>
-      <label>Hybrid Contrast Parameter</label>
-      <description>Contrast of small structures and tubes to be filtered with coherence enhancing diffusion (CED).  If set too low, noise in homogeneous regions will look like valid contrast and may be filtered with CED, instead of edge enhancing diffusion (EED).  If set too high, only small structures and tubes with high contrast will be filtered with CED, while lower-contrast small structures and tubes will be filtered with EED.</description>
-      <longflag>hybridContrast</longflag>
-      <flag>y</flag>
-      <default>30.0</default>
     </double>
     <double>
       <name>timeStep</name>

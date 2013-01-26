@@ -55,12 +55,12 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
 set_property(TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-#MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Tfm-Compare
-             #${TEXTCOMPARE_EXE}
-               #-t ${TEMP}/${MODULE_NAME}Test1.tfm
-               #-b MIDAS{${MODULE_NAME}Test1.tfm.md5} )
-#set_property(TEST ${MODULE_NAME}-Test1-Tfm-Compare
-                      #APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Tfm-Compare
+             ${TEXTCOMPARE_EXE}
+               -t ${TEMP}/${MODULE_NAME}Test1.tfm
+               -b MIDAS{${MODULE_NAME}Test1.tfm.md5} )
+set_property(TEST ${MODULE_NAME}-Test1-Tfm-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 #######
 # Test2

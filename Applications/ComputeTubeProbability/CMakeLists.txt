@@ -1,23 +1,46 @@
-project( tubeDensityProbability )
-cmake_minimum_required( VERSION 2.8 )
+##############################################################################
+#
+# Library:   TubeTK
+#
+# Copyright 2010 Kitware Inc. 28 Corporate Drive,
+# Clifton Park, NY, 12065, USA.
+#
+# All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 ( the "License" );
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+##############################################################################
 
-# Find ITK
+#-----------------------------------------------------------------------------
+set( MODULE_NAME ComputeTubeProbability )
+
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-# Find GenerateCLP
-find_package( GenerateCLP REQUIRED )
-include( ${GenerateCLP_USE_FILE} )
-
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
+#-----------------------------------------------------------------------------
+SEMMacroBuildCLI(
+  NAME ${MODULE_NAME}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ObjectDocuments
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Utilities
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
   )
 
-set( PROJECT_SOURCE ${PROJECT_NAME}.cxx )
-
-generateclp( PROJECT_SOURCE ${PROJECT_NAME}.xml )
-
-add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} ObjectDocuments)
+#if( BUILD_TESTING )
+  #add_subdirectory( Testing )
+#endif( BUILD_TESTING )

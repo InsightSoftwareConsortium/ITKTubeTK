@@ -23,7 +23,7 @@
 
 # If you follow the SampleCLIApplication format, you only need to change the
 # following line to configure this CMakeLists.txt file.
-project( DICOMSeriesConverter )
+project( ConvertDICOMSeriesToImages )
 
 cmake_minimum_required( VERSION 2.8 )
 if( COMMAND CMAKE_POLICY )

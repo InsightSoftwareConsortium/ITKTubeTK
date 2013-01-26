@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
+  <category>TubeTK</category>
   <title>Compute Contrast Image Using Prior (TubeTK)</title>
   <description>Given an image and a mask, process the image to maximize the SNR between the classes indicated by the mask.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
