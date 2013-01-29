@@ -91,6 +91,7 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
     "vxl"
     "FLTK"
     "fltk"
+    "JsonCpp"
     "is here"
     "has no symbols"
     "no public symbols found"
