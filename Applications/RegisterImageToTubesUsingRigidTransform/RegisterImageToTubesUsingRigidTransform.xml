@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Registration</category>
-  <title>Image To Tube Rigid Registration (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Register image to tubes using rigid transform (TubeTK)</title>
   <description>Registration of a vessel to its location within an image.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

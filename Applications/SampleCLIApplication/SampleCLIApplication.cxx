@@ -40,17 +40,15 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 // Includes specific to this CLI application
-#include "itkBinaryThinningImageFilter.h"
-#include "itkBinaryBallStructuringElement.h"
-#include "itkBinaryDilateImageFilter.h"
+#include "itkRecursiveGaussianImageFilter.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "tubeSkeletonizeCLP.h"
+// Must include CLP before including tubeCLIHelperFunctions
+#include "SampleCLIApplicationCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
@@ -66,15 +64,15 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "Skeletonize",
+  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef unsigned char                         PixelType;
+  typedef float                                 PixelType;
   typedef itk::Image< PixelType,  dimensionT >  ImageType;
   typedef itk::ImageFileReader< ImageType >     ReaderType;
 
-  timeCollector.Start( "Load data" );
+  timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -94,45 +92,47 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::Pointer curImage = reader->GetOutput();
 
-  timeCollector.Start("Binary Thinning");
+  if( gaussianBlurStdDev > 0 )
+    {
+    timeCollector.Start("Gaussian Blur");
 
-  typedef itk::BinaryThinningImageFilter< ImageType, ImageType >    FilterType;
-  typedef itk::BinaryBallStructuringElement< PixelType, dimensionT> SEType;
-  typedef itk::BinaryDilateImageFilter< ImageType, ImageType, SEType >
-                                                                    DilateType;
-  typename FilterType::Pointer filter;
-  typename DilateType::Pointer dilator;
+    typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
+      FilterType;
+    typename FilterType::Pointer filter;
 
-  // Progress per iteration
-  double progressFraction = 0.8/dimensionT;
+    // Progress per iteration
+    double progressFraction = 0.8/dimensionT;
 
-  filter = FilterType::New();
-  filter->SetInput( curImage );
-  tube::CLIFilterWatcher watcher( filter,
-                                  "Binary Thinning",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
-  filter->Update();
-  curImage = filter->GetOutput();
-  timeCollector.Stop("Binary Thinning");
+    for(unsigned int i=0; i<dimensionT; i++)
+      {
+      filter = FilterType::New();
+      filter->SetInput( curImage );
+      filter->SetNormalizeAcrossScale( true );
+      filter->SetSigma( gaussianBlurStdDev );
 
-  SEType binaryBall;
-  binaryBall.SetRadius( radius );
-  binaryBall.CreateStructuringElement();
-  dilator = DilateType::New();
-  dilator->SetInput( curImage );
-  dilator->SetForegroundValue( 1 );
-  dilator->SetKernel( binaryBall );
-  dilator->Update();
+      filter->SetOrder(
+               itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+      filter->SetDirection( i );
+      tube::CLIFilterWatcher watcher( filter,
+                                      "Blur Filter 1D",
+                                      CLPProcessInformation,
+                                      progressFraction,
+                                      progress,
+                                      true );
+
+      filter->Update();
+      curImage = filter->GetOutput();
+      }
+
+    timeCollector.Stop("Gaussian Blur");
+    }
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
   timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( dilator->GetOutput() );
+  writer->SetInput( curImage );
   writer->SetUseCompression( true );
   try
     {
@@ -141,7 +141,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }

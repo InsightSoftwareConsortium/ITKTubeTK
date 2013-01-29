@@ -36,7 +36,7 @@ limitations under the License.
 #include "itkNearestNeighborInterpolateImageFunction.h"
 #include "itkOrientImageFilter.h"
 
-#include "tubeCenterPhantomCLP.h"
+#include "RegisterUsingImageCentersCLP.h"
 
 template< unsigned int VDimension >
 int DoIt( int argc, char **argv );

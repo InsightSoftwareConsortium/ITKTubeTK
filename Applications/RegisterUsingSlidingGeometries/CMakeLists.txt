@@ -22,11 +22,10 @@
 ##############################################################################
 
 
-#-----------------------------------------------------------------------------
-set(MODULE_NAME tubeAnisotropicDiffusiveDeformableRegistration)
+set( MODULE_NAME RegisterUsingSlidingGeometries )
 
-find_package(SlicerExecutionModel REQUIRED)
-include(${SlicerExecutionModel_USE_FILE})
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )

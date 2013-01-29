@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category>Filter</category>
-  <title>Center Phantom in Reference Space (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Register using image centers (TubeTK)</title>
   <description>Center phantom data (e.g., image, labelmap) w.r.t. to the center of a reference image's space</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

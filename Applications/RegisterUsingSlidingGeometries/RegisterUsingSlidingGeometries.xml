@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Registration</category>
-  <title>Anisotropic Diffusive Deformable Registration (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Register Using Sliding Geometries (TubeTK)</title>
   <description>Performs registration between images depicting sliding organs, using an anisotropic diffusive regularization.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
