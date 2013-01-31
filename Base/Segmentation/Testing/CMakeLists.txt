@@ -188,7 +188,7 @@ MIDAS_ADD_TEST( itkTubeRidgeSeedGeneratorTest
   --compare MIDAS{itkTubeRidgeSeedGeneratorTest.lda00.mha.md5}
     ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
   itkTubeRidgeSeedGeneratorTest
-    MIDAS{im0001.crop.contrast.mha.md5}
-    MIDAS{im0001.vk.mask.crop.mha.md5}
-    ${TEMP}/itkTubeRidgeSeedGeneratorTest
+    ${TEMP}/FinalMerged_DF.mhd
+    ${TEMP}/mask.mha
+    ${TEMP}/FinalMerged_DF_Vess.mha
   )

@@ -46,7 +46,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
   bool error = false;
 
   // Define the dimension of the images
-  const unsigned int Dimension = 2;
+  const unsigned int Dimension = 3;
 
   // Define the pixel type
   typedef float                                   PixelType;
@@ -105,12 +105,9 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
   func->SetObjectId( 255 );
   func->AddObjectId( 127 );
 
-  FunctionType::RidgeScalesType scales(5);
-  scales[0] = 0.3;
-  scales[1] = 0.5;
-  scales[2] = 0.75;
-  scales[3] = 1.0;
-  scales[4] = 1.5;
+  FunctionType::RidgeScalesType scales(2);
+  scales[0] = 0.75;
+  scales[1] = 1.5;
   func->SetScales( scales );
 
   func->Update();
