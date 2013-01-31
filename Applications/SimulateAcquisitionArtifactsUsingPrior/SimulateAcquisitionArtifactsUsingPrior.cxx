@@ -85,7 +85,7 @@ private:
 };
 
 // Must include CLP before including tubeCLIHleperFunctions
-#include "tubeMatchImageWithPriorCLP.h"
+#include "SimulateAcquisitionArtifactsUsingPriorCLP.h"
 
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"

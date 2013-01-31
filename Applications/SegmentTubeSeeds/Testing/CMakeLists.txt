@@ -52,11 +52,10 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
 #######
 # Test1-Compare
 #######
-#This test will be commented out until we get a baseline image for this test
-#MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
-#            ${IMAGECOMPARE_EXE}
-#               -i 0.01
-#               -t ${TEMP}/${MODULE_NAME}Test1.mha
-#               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-#set_property(TEST ${MODULE_NAME}-Test1-Compare
-#                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
+            ${IMAGECOMPARE_EXE}
+               -i 0.01
+               -t ${TEMP}/${MODULE_NAME}Test1.mha
+               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+set_property(TEST ${MODULE_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

@@ -22,10 +22,10 @@
 ##############################################################################
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME tubeMatchImageWithPrior)
+set( MODULE_NAME SimulateAcquisitionArtifactsUsingPrior )
 
-find_package(SlicerExecutionModel REQUIRED)
-include(${SlicerExecutionModel_USE_FILE})
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
@@ -33,7 +33,7 @@ include( ${USE_ITK_FILE} )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} vtkCommon vtkGraphics vtkIO TubeNumerics
+  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeNumerics
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Numerics

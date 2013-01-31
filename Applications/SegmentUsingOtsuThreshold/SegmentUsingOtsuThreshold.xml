@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Otsu Threshold Application (TubeTK)</title>
-  <description>Run simple otsu thresholding on an image.</description>
+  <category>TubeTK</category>
+  <title>Segment using Otsu threshold (TubeTK)</title>
+  <description>Run Otsu thresholding to automatically split the intensities in an image.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>

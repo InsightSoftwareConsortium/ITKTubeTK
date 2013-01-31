@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Ridge Extractor (TubeTK)</title>
-  <description>Extracts a 1D Ridge from an ND image.  Ridge approximates the centerline.</description>
+  <category>TubeTK</category>
+  <title>Segment Tubes (TubeTK)</title>
+  <description>Extracts a 1D scaled ridge and estimate its radius in an ND image.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
