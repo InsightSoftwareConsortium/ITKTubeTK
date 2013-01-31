@@ -21,15 +21,14 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-set(MODULE_NAME tubeConnectedComponents)
+set( MODULE_NAME SegmentConnectedComponents )
 
-find_package(SlicerExecutionModel REQUIRED)
-include(${SlicerExecutionModel_USE_FILE})
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
-#-----------------------------------------------------------------------------
+
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h

@@ -30,7 +30,7 @@ limitations under the License.
 
 #include "itkTubePDFSegmenter.h"
 
-#include "tubePDFSegmenterCLP.h"
+#include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
 #include "itkImage.h"
 #include "itkImageFileReader.h"

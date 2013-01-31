@@ -22,10 +22,10 @@
 ##############################################################################
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME tubePDFSegmenter)
+set( MODULE_NAME SegmentConnectedComponentsUsingParzenPDFs )
 
-find_package(SlicerExecutionModel REQUIRED)
-include(${SlicerExecutionModel_USE_FILE})
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
