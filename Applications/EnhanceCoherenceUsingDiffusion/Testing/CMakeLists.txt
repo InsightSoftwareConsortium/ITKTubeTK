@@ -78,7 +78,7 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
             ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/SyntheticSurfaceCEDFilterResultImage.mha
+               -t ${TEMP}/${MODULE_NAME}-Test2.mha
                -b MIDAS{${MODULE_NAME}-Test2.mha.md5}
                -i ${imageCompareTolerance} )
 set_property(TEST ${MODULE_NAME}-Test2-Compare
