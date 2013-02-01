@@ -42,7 +42,7 @@ limitations under the License.
 #include "itkTransformFileReader.h"
 #include "itkTransformFactoryBase.h"
 
-#include "tubeTransformCLP.h"
+#include "TubeTransformCLP.h"
 
 
 using namespace tube;

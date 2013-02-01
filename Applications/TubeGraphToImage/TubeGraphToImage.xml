@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>N:1 Graph Mapping</title>
-  <description> Map multiple graphs into just one graph</description>
+  <category>TubeTK</category>
+  <title>Tube Graph to image</title>
+  <description> Computes an image from a graph representation and the CVT centroids</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
@@ -14,19 +14,19 @@
     <label>IO</label>
     <description>Input/output parameters</description>
     <string>
-      <name>listFile</name>
+      <name>inCentroidsFile</name>
       <index>0</index>
-      <description>ObjectDocument file containing subject-specifc graphs</description>
+      <description>File with CVT centroids</description>
     </string>
     <string>
-      <name>graphFile</name>
+      <name>inGraphFile</name>
       <index>1</index>
-      <description>Ouput graph</description>
+      <description>Input graph</description>
     </string>
-    <integer>
-      <name>nCentroids</name>
-      <description>Number of centroids (of CVT) used to compute the subject-specific graphs</description>
-    </integer>
+    <string>
+      <name>outImageFile</name>
+      <description>Output image filename (will be used as basename for more image output)</description>
+    </string>
   </parameters>
 
 </executable>

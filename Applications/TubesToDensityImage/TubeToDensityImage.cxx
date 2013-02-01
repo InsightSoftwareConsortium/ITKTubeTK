@@ -40,7 +40,7 @@ limitations under the License.
 #include "itkTransformFactoryBase.h"
 
 // CLI parsing
-#include "tubeDensityImageRadiusBuilderCLP.h"
+#include "TubeToDensityImageCLP.h"
 
 using namespace tube;
 

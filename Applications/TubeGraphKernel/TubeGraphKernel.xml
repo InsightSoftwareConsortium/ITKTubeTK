@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Graph Kernel Computation (TubeTK)</title>
+  <category>TubeTK</category>
+  <title>Tube Graph Kernel (TubeTK)</title>
   <description>Computes a (p.d.) kernel matrix K of similarity values between two collections of input graphs. \
 Given a list A of N graphs and a list B of M graphs, the K(i,j)-th entry of K contains the similarity \
 value among the i-th graph of A and the j-th graph of B. K will eventually be a N x M matrix.</description>

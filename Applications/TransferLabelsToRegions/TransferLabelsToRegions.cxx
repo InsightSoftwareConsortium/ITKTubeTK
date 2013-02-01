@@ -43,7 +43,7 @@ limitations under the License.
 #include "itkImageDuplicator.h"
 
 
-#include "tubeLabelTransferCLP.h"
+#include "TransferLabelsToRegionsCLP.h"
 
 // STL includes
 #include <algorithm>
@@ -325,8 +325,9 @@ int DoIt( int argc, char **argv )
   try
     {
     // Assert if CVT cells are numbered  1 ... C
-    itkAssertOrThrowMacro( ( maxCVTIndex - minCVTIndex ) == regions.size()-1,
-      "CVT cell numberinf not continuous!" );
+    itkAssertOrThrowMacro( static_cast<int>( maxCVTIndex - minCVTIndex )
+      == static_cast<int>(regions.size()-1),
+      "CVT cell numbering not continuous!" );
     }
   catch( itk::ExceptionObject &ex )
     {

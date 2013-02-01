@@ -38,7 +38,7 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
-#include "tubeToGraphCLP.h"
+#include "TubeToTubeGraphCLP.h"
 
 
 typedef itk::Image< short, 3 >             ImageType;
@@ -126,8 +126,10 @@ int DoIt( int argc, char *argv[] )
   branchNodes.fill(0);
 
   int count = 0;
+  char tubeName[10];
+  sprintf( tubeName, "Tube" );
   TubeSpatialObjectType::ChildrenListType *
-    tubeList = group->GetChildren(99999, "Tube");
+    tubeList = group->GetChildren( 99999, tubeName );
   TubeSpatialObjectType::ChildrenListType::const_iterator
            tubeIt = tubeList->begin();
   int numTubes = tubeList->size();

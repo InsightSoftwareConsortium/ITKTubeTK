@@ -31,7 +31,7 @@ limitations under the License.
 #include "ShortestPathKernel.h"
 #include "WLSubtreeKernel.h"
 
-#include "tubeGraphKernelCLP.h"
+#include "TubeGraphKernelCLP.h"
 
 enum
   {

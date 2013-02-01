@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Compute Euclidean distance map</title>
-  <description> Computes an Euclidean distance map</description>
+  <category>TubeTK</category>
+  <title>Tube to density image (TubeTK)</title>
+  <description> Computes an Euclidean distance map from tubes</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>

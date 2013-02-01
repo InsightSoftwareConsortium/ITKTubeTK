@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 
-  <category>Filtering</category>
-  <title>Label CVT cells based on an anatomical label map (TubeTK)</title>
-  <description>Assign an anatomical label to each cell in a Central Voronoi Tesselation (CVT).</description>
+  <category>TubeTK</category>
+  <title>Transfer labels to regions (TubeTK)</title>
+  <description>Label regions in one image based on overlap with labels in another image (TubeTK)</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
