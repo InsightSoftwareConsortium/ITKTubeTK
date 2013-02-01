@@ -53,6 +53,9 @@ target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
 add_executable( TextCompareCommand TextCompareCommand.cxx )
 target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} )
 
+add_executable( JsonCompareCommand JsonCompareCommand.cxx )
+target_link_libraries( JsonCompareCommand ${ITK_LIBRARIES} ${JsonCpp_LIBRARIES} )
+
 install( FILES DESTINATION bin COMPONENT RUNTIME )
 
 # Installation file
@@ -64,6 +67,12 @@ install(
   COMPONENT RUNTIME )
 install(
   TARGETS TextCompareCommand
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  COMPONENT RUNTIME )
+install(
+  TARGETS JsonCompareCommand
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin

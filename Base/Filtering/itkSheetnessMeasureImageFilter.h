@@ -71,7 +71,7 @@ public:
 
   /** Image dimension = 3. */
   itkStaticConstMacro(ImageDimension, unsigned int,
-                      ::itk::GetImageDimension< InputImageType >::ImageDimension);
+                      InputImageType::ImageDimension);
   itkStaticConstMacro(InputPixelDimension, unsigned int,
                       InputPixelType::Dimension);
 
@@ -132,7 +132,7 @@ private:
 };
 } // end namespace itk
 
-#if ITK_TEMPLATE_TXX
+#ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSheetnessMeasureImageFilter.txx"
 #endif
 

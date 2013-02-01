@@ -25,7 +25,6 @@ limitations under the License.
 
 #include "itkTransform.h"
 #include "itkImageToSpatialObjectRegistrationMethod.h"
-#include "itkLinearInterpolateImageFunction.h"
 #include "itkImageToTubeRigidMetric.h"
 #include "itkGradientDescentOptimizer.h"
 #include "itkImage.h"
@@ -36,19 +35,30 @@ limitations under the License.
 #include "itkImageRegionIterator.h"
 #include "itkVectorContainer.h"
 #include "itkTubeSpatialObject.h"
-#include "itkCommand.h"
+#include "itkTubeExponentialResolutionWeightFunction.h"
 
 namespace itk
 {
 
 /** \class ImageToTubeRigidRegistration
- * \brief Base class for registration methods
+ * \brief Register a hierarchy of tubes to an image.
  *
- * This Class define the generic interface for a registration method.
+ * This class provides basic registration of a hierarchy of tubes to an image.
+ *
+ * \tparam TFixedImage Type of the image to register against.
+ * \tparam TMovingSpatialObject Type of the moving spatial.  This could be a
+ * TubeSpatialObject or perhaps a hierarchy of tubes contained in a
+ * GroupSpatialObject.
+ * \tparam TMovingTube Type of the tubes. Should be some type of
+ * TubeSpatialObject.
+ *
  * The basic elements of a registration method are:
- *   - Metric to compare the FixedImage and the TMovingTube
- *   - Transformation used to register the FixedImage against the TMovingTube
- *   - Optimization method used to search for the best transformation
+ *   - Metric to compare the image and the tubes.
+ *   - Transformation used to register the image against the tubes.
+ *
+ * \todo Below is out of date and needs to be updated.
+ *
+ *   - Optimization method used to search for the best transformation.
  *
  * Registration is not limited to Images, and for this reason
  * this class is templated over the type of the FixedImage object,
@@ -59,21 +69,22 @@ namespace itk
  *  \ingroup AffineImageRegistration
  */
 
-template <class TFixedImage, class TMovingTube>
+template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 class ITK_EXPORT ImageToTubeRigidRegistration
-: public ImageToSpatialObjectRegistrationMethod<TFixedImage, TMovingTube>
+: public ImageToSpatialObjectRegistrationMethod< TFixedImage,
+  TMovingSpatialObject >
 {
 public:
   typedef ImageToTubeRigidRegistration                  Self;
-  typedef ImageToSpatialObjectRegistrationMethod<TFixedImage, TMovingTube>
+  typedef ImageToSpatialObjectRegistrationMethod< TFixedImage,
+    TMovingSpatialObject >
                                                         Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef SmartPointer< Self >                          Pointer;
+  typedef SmartPointer< const Self >                    ConstPointer;
 
   typedef typename Superclass::FixedImageType           FixedImageType;
-
-  /** Typedef of the mask image */
-  typedef Image<unsigned char, 3>                       MaskImageType;
+  typedef typename Superclass::MovingSpatialObjectType  MovingSpatialObjectType;
+  typedef TMovingTube                                   MovingTubeType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -82,15 +93,19 @@ public:
   itkTypeMacro( ImageToTubeRigidRegistration,
     ImageToSpatialObjectRegistrationMethod );
 
-  typedef ImageToTubeRigidMetric<FixedImageType, TMovingTube>   MetricType;
+  typedef ImageToTubeRigidMetric< FixedImageType,
+    MovingSpatialObjectType,
+    MovingTubeType,
+    Function::TubeExponentialResolutionWeightFunction<
+    typename MovingTubeType::TubePointType > >
+    DefaultMetricType;
 
-  typedef typename MetricType::TransformParametersType     ParametersType;
-  typedef typename MetricType::TransformType               TransformType;
+  typedef typename DefaultMetricType::TransformParametersType     ParametersType;
+  typedef typename DefaultMetricType::TransformType               TransformType;
 
   /**  Dimension of the images.  */
   enum {ImageDimension = FixedImageType::ImageDimension,
     ParametersDimension = TransformType::ParametersDimension};
-
 
   typedef typename Superclass::InterpolatorType   InterpolatorType;
 
@@ -98,27 +113,8 @@ public:
   typedef GradientDescentOptimizer                OptimizerType;
   //typedef OnePlusOneEvolutionaryOptimizer       OptimizerType;
 
-  /** Typedef for the optimizer observer */
-  typedef typename itk::SimpleMemberCommand<Self> CommandIterationType;
-
-  /** Get Center of Rotation */
-  itk::Vector<double, 3> GetCenterOfRotation( void )
-    {
-    itk::Vector<double, 3> centerOfRotation;
-    typename MetricType::Pointer metric = dynamic_cast<MetricType*>(
-      this->GetMetric() );
-    for( unsigned int i=0;i<3;i++ )
-      {
-      centerOfRotation[i]=metric->GetCenterOfRotation()( i );
-      }
-    return centerOfRotation;
-    };
-
   /** Method that initiates the registration. */
   void StartRegistration( void );
-
-  /** Start the sparse registration */
-  void SparseRegistration( ParametersType & parameters );
 
   /** Set the number of iteration */
   itkSetMacro( NumberOfIteration, unsigned int );
@@ -127,50 +123,27 @@ public:
   itkSetMacro( LearningRate, double );
 
   /** Set the initial position */
-  void SetInitialPosition( double position[6] );
+  void SetInitialPosition( const double position[6] );
 
   /** Set the parameters scales */
-  void SetParametersScale( double scales[6] );
-
-  /** Set the iteration observer */
-  itkSetObjectMacro( IterationCommand, CommandIterationType );
+  void SetParametersScale( const double scales[6] );
 
   /** Initialize the registration */
   void Initialize() throw ( ExceptionObject );
 
-  /** Set the mask image */
-  itkSetObjectMacro( MaskImage, MaskImageType );
-
-  /** Write a matlab file to display the metric */
-  void CreateMatlabMetric( const char* filename );
-
-  void SetExtent( float extent ) {m_Extent = extent;}
-  void SetVerbose( bool verbose ) {m_Verbose = verbose;}
-  void SetKappa( float kappa ) {m_Kappa = kappa;}
-  void SetSampling( unsigned int sampling ) {m_Sampling = sampling;}
-
 protected:
-
   ImageToTubeRigidRegistration();
   virtual ~ImageToTubeRigidRegistration() {};
 
 private:
-
   ImageToTubeRigidRegistration( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
 
-  typename MaskImageType::Pointer          m_MaskImage;
   unsigned int                             m_NumberOfIteration;
-  typename CommandIterationType::Pointer   m_IterationCommand;
   bool                                     m_IsInitialized;
   double                                   m_LearningRate;
   ParametersType                           m_InitialPosition;
   ParametersType                           m_ParametersScale;
-  float                                    m_Extent;
-  float                                    m_Kappa;
-  bool                                     m_Verbose;
-  unsigned int                             m_Sampling;
-
 };
 
 } // end namespace itk

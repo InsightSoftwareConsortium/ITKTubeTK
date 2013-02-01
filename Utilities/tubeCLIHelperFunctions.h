@@ -32,7 +32,7 @@ namespace tube {
 
 // Description:
 // Get the ComponentType and dimension of the image
-void GetImageInformation( std::string fileName,
+void GetImageInformation( const std::string & fileName,
                           itk::ImageIOBase::IOComponentType &componentType,
                           unsigned int & dimension )
   {
@@ -132,7 +132,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
     }
   catch( itk::ExceptionObject &excep )
     {
-    std::cerr << argv[0] << ": itk exception caught !" << std::endl;
+    std::cerr << argv[0] << ": ITK exception caught !" << std::endl;
     std::cerr << excep << std::endl;
     return EXIT_FAILURE;
     }

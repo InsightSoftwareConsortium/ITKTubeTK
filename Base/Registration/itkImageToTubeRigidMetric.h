@@ -23,16 +23,11 @@ limitations under the License.
 #ifndef __itkImageToTubeRigidMetric_h
 #define __itkImageToTubeRigidMetric_h
 
-#include "itkPoint.h"
-#include "itkGroupSpatialObject.h"
-#include "itkVesselTubeSpatialObject.h"
 #include "itkMinimumMaximumImageCalculator.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include <time.h>
 #include "itkEuler3DTransform.h"
 #include "itkImageToSpatialObjectMetric.h"
-#include <itkGaussianDerivativeImageFunction.h>
-//#include <itkGaussianSecondDerivativeImageFunction.h>
+#include "itkGaussianDerivativeImageFunction.h"
+#include "itkTubeExponentialResolutionWeightFunction.h"
 
 namespace itk
 {
@@ -44,41 +39,51 @@ namespace itk
  * \link http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
  * The metric is based on the fact that vessel centerlines are scaled
  * intensity ridges in the image.
+ *
+ * \tparam TFixedImage Type of the Image to register against.
+ * \tparam TMovingSpatialObject Type of the SpatialObject to register with,
+ * could be a Tube, Group, etc.
+ * \tparam TTubeSpatialObject Type of the tubes contained within the input
+ * TMovingSpatialObject to use for the registration.
+ *
  * \warning (Derivative)
 */
 
-template < class TFixedImage, class TMovingSpatialObject>
+template < class TFixedImage,
+  class TMovingSpatialObject,
+  class TTubeSpatialObject,
+  class TResolutionWeightFunction = Function::TubeExponentialResolutionWeightFunction< typename TTubeSpatialObject::TubePointType > >
 class ITK_EXPORT ImageToTubeRigidMetric
-: public ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>
+: public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {
 public:
+  /** Standard class typedefs. */
   typedef ImageToTubeRigidMetric                Self;
-  typedef ImageToSpatialObjectMetric<TFixedImage, TMovingSpatialObject>
+  typedef ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
                                                 Superclass;
   typedef SmartPointer<Self>                    Pointer;
   typedef SmartPointer<const Self>              ConstPointer;
 
-  /** Type definition for a tube point */
-  typedef VesselTubeSpatialObjectPoint<3>       TubePointType;
-  typedef VesselTubeSpatialObject<3>            TubeType;
-  typedef TMovingSpatialObject                  MovingSpatialObjectType;
-  typedef typename MovingSpatialObjectType::ChildrenListType
-                                                ChildrenListType;
-  typedef GroupSpatialObject<3>                 TubeNetType;
-  typedef Image<unsigned char, 3>               MaskImageType;
-  typedef typename MaskImageType::Pointer       MaskImagePointer;
-  typedef typename MaskImageType::IndexType     IndexType;
-  typedef TFixedImage                           FixedImageType;
-  typedef GaussianDerivativeImageFunction<TFixedImage>
-                                                DerivativeImageFunctionType;
+  /**  Dimension of the image and tube.  */
+  itkStaticConstMacro( ImageDimension, unsigned int, TFixedImage::ImageDimension );
+  itkStaticConstMacro( TubeDimension, unsigned int, TTubeSpatialObject::ObjectDimension );
 
+  typedef TFixedImage                           FixedImageType;
+  typedef TMovingSpatialObject                  TubeNetType;
+  typedef TTubeSpatialObject                    TubeType;
+  typedef typename TubeType::TubePointType      TubePointType;
+  typedef TResolutionWeightFunction             ResolutionWeightFunctionType;
+
+  typedef double                                InternalComputationValueType;
+  typedef GaussianDerivativeImageFunction< TFixedImage >
+                                                DerivativeImageFunctionType;
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
 
-  typedef vnl_vector<double>                    VectorType;
-  typedef vnl_matrix<double>                    MatrixType;
-  typedef Point<double, 3>                      PointType;
+  typedef vnl_vector< InternalComputationValueType >                    VectorType;
+  typedef vnl_matrix< InternalComputationValueType >                    MatrixType;
+  typedef Point< InternalComputationValueType, ImageDimension >         PointType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
@@ -88,10 +93,6 @@ public:
 
   /** Space dimension is the dimension of parameters space */
   enum { SpaceDimension = 6 };
-
-  enum { ImageDimension = 3 };
-
-  enum { RangeDimension = 6 };
 
   unsigned int GetNumberOfParameters( void ) const
     { return SpaceDimension; }
@@ -130,113 +131,87 @@ public:
   void GetValueAndDerivative( const ParametersType & parameters,
     MeasureType & Value, DerivativeType  & Derivative ) const;
 
-  /** SubSample the MovingSpatialObject tube */
-  void SubSampleTube();
-
-  /** Apply the center of rotation to the transformation */
-  ParametersType ApplyCenterOfRotation( const ParametersType & parameters );
-
-  /** Set kappa value */
-  itkSetMacro( Kappa, double );
-
-  vnl_vector_fixed<double, 3> GetCenterOfRotation( void )
-    { return m_RotationCenter; }
-
   /** Initialize the metric */
   void Initialize( void ) throw ( ExceptionObject );
 
-  /** Set the extent of the blurring */
+  /** Control the radius scaling of the metric. */
+  itkSetMacro( Kappa, double );
+  itkGetConstMacro( Kappa, double );
+
+  /** Set/Get the extent of the blurring calculation given in Gaussian sigma's. */
   itkSetMacro( Extent, double );
-  itkGetMacro( Extent, double );
+  itkGetConstMacro( Extent, double );
+
+  /** Set/Get the function used to determine the resolution weights.  This function
+   *  takes a tube point as an input and outputs a weight for that point. */
+  ResolutionWeightFunctionType & GetResolutionWeightFunction();
+  const ResolutionWeightFunctionType & GetResolutionWeightFunction() const;
+  void SetResolutionWeightFunction( const ResolutionWeightFunctionType & function );
 
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
-  itkSetObjectMacro( MaskImage, MaskImageType );
-
-  itkSetMacro( Verbose, bool );
-  itkGetMacro( Verbose, bool );
-
-  itkSetMacro( Sampling, unsigned int );
-  itkGetMacro( Sampling, unsigned int );
+  /** Downsample the tube points by this integer value. */
+#if ITK_VERSION_MAJOR < 4
+  typedef unsigned long SizeValueType;
+  typedef long int      IndexValueType;
+#endif
 
 protected:
-
   ImageToTubeRigidMetric();
   virtual ~ImageToTubeRigidMetric();
-  ImageToTubeRigidMetric( const Self& ) {};
-  void operator=( const Self& ) {};
 
   void ComputeImageRange( void );
 
-  void GetDeltaAngles( const Point<double, 3> & x,
-                       const vnl_vector_fixed<double, 3> & dx,
-                       double angle[3] ) const;
+  void GetDeltaAngles( const OutputPointType & x,
+    const vnl_vector_fixed< InternalComputationValueType, 3> & dx,
+    const vnl_vector_fixed< InternalComputationValueType, 3> & offsets,
+    double angle[3] ) const;
+
+  /** Calculate the weighting for each tube point and its scale, which is based
+   * on the local radius. */
+  virtual void ComputeTubePointResolutionWeights();
 
 private:
+  typedef std::list< InternalComputationValueType > ResolutionWeightsContainerType;
+  ResolutionWeightsContainerType             m_ResolutionWeights;
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  MaskImagePointer                       m_MaskImage;
-  unsigned int                           m_NumberOfPoints;
-  std::list<double>                      m_Weight;
-  double                                 m_SumWeight;
-  double                                 m_ImageMin;
-  double                                 m_ImageMax;
-  typename RangeCalculatorType::Pointer  m_RangeCalculator;
-  unsigned int                           m_Iteration;
-  double                                 m_Kappa;
-  double                                 m_RegImageThreshold;
-  double                                 m_Extent;
-  mutable double                         m_Scale;
-  unsigned int                           m_Sampling;
+  ResolutionWeightFunctionType               m_ResolutionWeightFunction;
+  InternalComputationValueType               m_ImageMin;
+  InternalComputationValueType               m_ImageMax;
+  typename RangeCalculatorType::Pointer      m_RangeCalculator;
+  double                                     m_Kappa;
+  double                                     m_Extent;
 
-  mutable OutputPointType                m_CurrentPoint;
-  mutable double                         m_BlurredValue;
-  bool                                   m_Verbose;
+  vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
 
-  vnl_matrix<double>                   * m_T;
-  vnl_vector<double>                   * m_Offsets;
-  vnl_vector_fixed<double, 3>            m_RotationCenter;
+  /** The center of rotation of the weighted tube points. */
+  typedef typename TubePointType::PointType CenterOfRotationType;
+  CenterOfRotationType m_CenterOfRotation;
 
-  vnl_vector_fixed<double, 3>           m_Factors;
+  /** Test whether the specified tube point is inside the Image.
+   * \param inputPoint the non-transformed tube point.
+   * \param outputPoint the transformed tube point.
+   * \param transform the transform to apply to the input point. */
+  bool IsInside( const InputPointType & inputPoint,
+    OutputPointType & outputPoint,
+    const TransformType * transform ) const;
 
-  // TODO Create gfact var insteal calculating it all the time
+  InternalComputationValueType ComputeLaplacianMagnitude(
+    const typename TubePointType::CovariantVectorType & tubeNormal,
+    const InternalComputationValueType scale,
+    const OutputPointType & currentPoint ) const;
+  InternalComputationValueType ComputeThirdDerivatives(
+    const Vector< InternalComputationValueType, TubeDimension > *v,
+    const InternalComputationValueType scale,
+    const OutputPointType & currentPoint ) const;
 
-  void SetOffset( double oX, double oY, double oZ ) const;
-  void SetAngles( double newAlpha, double newBeta, double newGamma ) const;
+  typename TubeNetType::ChildrenListType* GetTubes() const;
 
-  void TransformPoint( vnl_vector<double>* in, vnl_vector<double> * out ) const;
-  void TransformVector( vnl_vector<double>* in, vnl_vector<double> * out );
-
-  /** Set the scale of the blurring */
-  // --> A const method for a set method ?!
-  void SetScale( const double scale ) const { m_Scale = scale; }
-
-  itkGetConstMacro( Scale, double );
-
-  /** Test whether the specified point is inside
-  This method overload the one in the ImageMapper class
-  \warning This method cannot be safely used in more than one thread at a time.
-  \sa Evaluate() */
-  bool IsInside( const InputPointType & point ) const;
-
-  VectorType *  EvaluateAllDerivatives( void ) const;
-  VectorType *  ComputeThirdDerivatives( void ) const;
-
-  itkGetConstMacro( BlurredValue, double );
-
-  VectorType* GetSecondDerivatives() const;
-  MatrixType* GetHessian( PointType ) const;
-  double ComputeLaplacianMagnitude( Vector<double, 3> *v ) const;
-  double ComputeThirdDerivatives( Vector<double, 3> *v ) const;
-  double ComputeDerivatives( Vector<double, 3> *v ) const;
-
-  void GetPointBounds( PointType point, int bounds[6] );
-  void GetCurrentPointBounds( int bounds[6] );
-  void ClampPointBoundsToImage( int bounds[6] );
-  void ComputeCenterRotation();
-  TubeNetType::ChildrenListType* GetTubes() const;
+  ImageToTubeRigidMetric( const Self& ); // purposely not implemented
+  void operator=( const Self& ); // purposely not implemented
 };
 
 } // end namespace itk

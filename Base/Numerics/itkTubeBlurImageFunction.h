@@ -69,7 +69,7 @@ public:
   /**
    * Dimension of the underlying image. */
   itkStaticConstMacro(ImageDimension, unsigned int,
-    ::itk::GetImageDimension< InputImageType >::ImageDimension );
+    InputImageType::ImageDimension );
 
   /**
    * Point typedef support. */

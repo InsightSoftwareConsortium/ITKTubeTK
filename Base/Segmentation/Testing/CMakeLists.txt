@@ -186,9 +186,9 @@ MIDAS_ADD_TEST( itkTubeTubeExtractorTest
 MIDAS_ADD_TEST( itkTubeRidgeSeedGeneratorTest
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubeRidgeSeedGeneratorTest.lda00.mha.md5}
-            ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
+    ${TEMP}/itkTubeRidgeSeedGeneratorTest.lda00.mha
   itkTubeRidgeSeedGeneratorTest
-    MIDAS{im0001.crop.mha.md5}
+    MIDAS{im0001.crop.contrast.mha.md5}
     MIDAS{im0001.vk.mask.crop.mha.md5}
     ${TEMP}/itkTubeRidgeSeedGeneratorTest
   )

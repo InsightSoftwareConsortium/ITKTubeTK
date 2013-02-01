@@ -31,6 +31,8 @@ limitations under the License.
 void RegisterTests()
 {
   REGISTER_TEST( tubeBaseFilteringPrintTest );
+  REGISTER_TEST( itkSubSampleTubeSpatialObjectFilterTest );
+  REGISTER_TEST( itkSubSampleTubeTreeSpatialObjectFilterTest );
   REGISTER_TEST( itkStructureTensorRecursiveGaussianImageFilterTest );
   REGISTER_TEST( itkStructureTensorRecursiveGaussianImageFilterTestNew );
   REGISTER_TEST( itkTubeEnhancingDiffusion2DImageFilterTest );

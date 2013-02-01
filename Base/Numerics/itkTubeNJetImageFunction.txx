@@ -65,6 +65,7 @@ NJetImageFunction<TInputImage>
   m_MostRecentRidgeRoundness = 0;
   m_MostRecentRidgeLevelness = 0;
   m_MostRecentRidgeCurvature = 0;
+  m_MostRecentRidgeTangent.Fill(0);
 }
 
 /**
@@ -1643,11 +1644,7 @@ NJetImageFunction<TInputImage>
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
-  if( eigSys.get_eigenvalue(0) > eigSys.get_eigenvalue(1) )
-    {
-    std::cout << "Error: values should be most negative to most positive"
-      << std::endl;
-    }
+  assert( eigSys.get_eigenvalue(0) > eigSys.get_eigenvalue(1) );
 
   double dNorm = d.GetNorm();
   if( dNorm == 0 )
@@ -1737,10 +1734,12 @@ NJetImageFunction<TInputImage>
 
   double curvature = vcl_sqrt( sumv / ( ImageDimension-1 ) );
 
+
   m_MostRecentRidgeness = ridgeness;
   m_MostRecentRidgeRoundness = roundness;
   m_MostRecentRidgeLevelness = levelness;
   m_MostRecentRidgeCurvature = curvature;
+  m_MostRecentRidgeTangent.SetVnlVector( eigSys.get_eigenvector( ImageDimension-1 ) );
 
   return m_MostRecentRidgeness;
 }

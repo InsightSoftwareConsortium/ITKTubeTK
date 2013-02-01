@@ -97,7 +97,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
   rotationMatrix[2][1] = cb*sg;
   rotationMatrix[2][2] = cb*cg;
 
-  transform->SetRotationMatrix(rotationMatrix);
+  transform->SetMatrix(rotationMatrix);
 
   std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
   std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;

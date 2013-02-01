@@ -360,7 +360,7 @@ private:
 # include "Templates/itkAnisotropicDiffusiveRegistrationFilter+-.h"
 #endif
 
-#if ITK_TEMPLATE_TXX
+#ifndef ITK_MANUAL_INSTANTIATION
 # include "itkAnisotropicDiffusiveRegistrationFilter.txx"
 #endif
 

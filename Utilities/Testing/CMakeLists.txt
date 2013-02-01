@@ -143,27 +143,19 @@ MIDAS_ADD_TEST( ImageCompareCommand-Test6
 set_tests_properties( ImageCompareCommand-Test6
                       PROPERTIES WILL_FAIL true )
 
-# Cppcheck static code analysis test
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${TubeTK_SOURCE_DIR}/Utilities/Cppcheck/FindCppcheck.cmake")
-option (TubeTK_USE_CPPCHECK
-	"Create a test that does static code analysis with cppcheck." ON )
-if( TubeTK_USE_CPPCHECK )
-  find_package( Cppcheck REQUIRED )
-  set( cppcheck_paths_to_check
-	"${TubeTK_SOURCE_DIR}/Applications"
-	"${TubeTK_SOURCE_DIR}/Base"
-	"${TubeTK_SOURCE_DIR}/Utilities/Testing"
-	)
-  set (cppcheck_suppressions_file "${TubeTK_SOURCE_DIR}/Utilities/Cppcheck/TubeTKCppcheck.supp" )
-  set (cppcheck_cmd_prefix "${CPPCHECK_EXECUTABLE}" -q --xml --suppressions "${cppcheck_suppressions_file}" )
-  add_test( CppcheckStyle ${cppcheck_cmd_prefix} --enable=style ${cppcheck_paths_to_check} )
-  add_test( CppcheckPerformance ${cppcheck_cmd_prefix} --enable=performance ${cppcheck_paths_to_check} )
-  add_test( CppcheckPortability ${cppcheck_cmd_prefix} --enable=portability ${cppcheck_paths_to_check} )
-  add_test( CppcheckInformation ${cppcheck_cmd_prefix} --enable=information ${cppcheck_paths_to_check} )
-  add_test( CppcheckUnusedFunction ${cppcheck_cmd_prefix} --enable=unusedFunction ${cppcheck_paths_to_check} )
-  set_tests_properties( CppcheckStyle CppcheckPerformance CppcheckPortability
-    CppcheckInformation CppcheckUnusedFunction
-    PROPERTIES FAIL_REGULAR_EXPRESSION "error file="
-    )
-endif( TubeTK_USE_CPPCHECK )
+add_test( JsonCompareCommand-Test1
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest1.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
 
+add_test( JsonCompareCommand-Test2
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
+set_tests_properties( JsonCompareCommand-Test2
+                      PROPERTIES WILL_FAIL true )
+
+add_test( JsonCompareCommand-Test3
+  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline2.json )

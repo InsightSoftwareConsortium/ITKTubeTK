@@ -89,6 +89,9 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkUTF16TextCodec"
     "vtkVariantArray"
     "vxl"
+    "FLTK"
+    "fltk"
+    "JsonCpp"
     "is here"
     "has no symbols"
     "no public symbols found"
@@ -121,3 +124,7 @@ set(CTEST_EXTRA_COVERAGE_GLOB
    Applications/*.cxx
    Applications/*.txx
    )
+
+set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 2500)
+
+set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 2500)

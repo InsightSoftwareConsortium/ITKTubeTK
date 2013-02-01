@@ -80,6 +80,15 @@ set( TubeTK_Base_Numerics_SRCS
 add_library( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
+#
+# To fix compilation problem: relocation R_X86_64_32 against `a local symbol' can not be
+# used when making a shared object; recompile with -fPIC
+# See http://www.cmake.org/pipermail/cmake/2007-May/014350.html
+#
+#if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+  #set_target_properties(TubeNumerics PROPERTIES COMPILE_FLAGS "-fPIC")
+#endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+
 if( NOT TubeTK_USE_ITKV4 )
   slicer3_set_plugins_output_path( TubeNumerics )
   set( TARGETS TubeNumerics )

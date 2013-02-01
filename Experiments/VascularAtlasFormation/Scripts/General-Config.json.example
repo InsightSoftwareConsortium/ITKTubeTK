@@ -1,0 +1,18 @@
+{
+    "Exec" :
+        {
+            "ImageMath" :                       "<FullPathToTubeTKBuildDirectory>/bin/ImageMath",
+            "tubeToGraph" :                     "<FullPathToTubeTKBuildDirectory>/bin/tubeToGraph",
+            "tubeGraphsToGraph" :               "<FullPathToTubeTKBuildDirectory>/bin/tubeGraphsToGraph",
+            "tubeGraphToImage" :                "<FullPathToTubeTKBuildDirectory>/bin/tubeGraphToImage",
+            "tubeAtlasSummation" :              "<FullPathToTubeTKBuildDirectory>/bin/tubeAtlasSummation",
+            "tubeTransform" :                   "<FullPathToTubeTKBuildDirectory>/bin/tubeTransform",
+            "tubeGraphToImage" :                "<FullPathToTubeTKBuildDirectory>/bin/tubeGraphToImage",
+            "tubeDensityImageRadiusBuilder" :   "<FullPathToTubeTKBuildDirectory>/bin/tubeDensityImageRadiusBuilder",
+            "tubeDensityProbability" :          "<FullPathToTubeTKBuildDirectory>/bin/tubeDensityProbability",
+            "tubeGraphProbability" :            "<FullPathToTubeTKBuildDirectory>/bin/tubeGraphProbability",
+            "tubeGraphKernel" :                 "<FullPathToTubeTKBuildDirectory>/bin/tubeGraphKernel",
+            "RegisterImages" :                  "<FullPathToTubeTKBuildDirectory>/lib/TubeTK/Plugins/RegisterImages"
+        },
+    "cvtCells" : 200
+}

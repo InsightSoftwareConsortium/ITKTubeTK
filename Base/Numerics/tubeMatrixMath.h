@@ -36,12 +36,12 @@ namespace tube
 /** simple function that return the orthogonal vector to one */
 template <class T>
 vnl_vector<T>
-GetOrthogonalVector(vnl_vector<T> x);
+ComputeOrthogonalVector(vnl_vector<T> x);
 
 /** simple function that return the cross vector from two vectors */
 template <class T>
 vnl_vector<T>
-GetCrossVector(vnl_vector<T> v1, vnl_vector<T> v2);
+ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2);
 
 /** return the new position folowing the vector dir */
 template <class T>
@@ -56,28 +56,28 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
 /** Compute eigen values and vectors  */
 template <class T>
 void
-Eigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
+ComputeEigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
   vnl_vector<T> &eVals, bool orderByAbs, bool minToMax = true);
 
 /** Preform trilinear diagonalisation */
 template <class T>
 void
-TriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+ComputeTriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
 /** Preform trilinear diagonalisation in 2D */
 template <class T>
 void
-TriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+ComputeTriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
 /** Preform trilinear diagonalisation in 3D */
 template <class T>
 void
-TriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
+ComputeTriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
 /**                                          */
 template <class T>
 void
-Tqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
+ComputeTqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
 
 /** Compute the euclidean distance for two points */
 template <class PointType>

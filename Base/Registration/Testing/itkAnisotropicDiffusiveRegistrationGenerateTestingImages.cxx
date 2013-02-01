@@ -39,6 +39,7 @@ limitations under the License.
 #include "vtkDensifyPolyData.h"
 #include "vtkSmoothPolyDataFilter.h"
 #include "vtkPolyDataNormals.h"
+#include "vtkVersion.h"
 
 #include <math.h>
 
@@ -54,7 +55,7 @@ typename TImage::PixelType backgnd )
 {
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
   Iterator it( image, image->GetBufferedRegion() );
-  it.Begin();
+  it.GoToBegin();
 
   typename TImage::IndexType index;
   double r2 = vnl_math_sqr( radius );
@@ -89,7 +90,7 @@ typename TImage::PixelType topEnd
 {
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
   Iterator it( image, image->GetBufferedRegion() );
-  it.Begin();
+  it.GoToBegin();
 
   typename TImage::IndexType index;
   typename TImage::PixelType bottomRange = bottomEnd - bottomStart;
@@ -178,7 +179,7 @@ typename TImage::PixelType topIntensity
 {
   typedef itk::ImageRegionIteratorWithIndex<TImage> Iterator;
   Iterator it( image, image->GetBufferedRegion() );
-  it.Begin();
+  it.GoToBegin();
 
   typename TImage::IndexType index;
 
@@ -256,12 +257,21 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
   bottomCube->Update();
 
   vtkAppendPolyData * append = vtkAppendPolyData::New();
+#if VTK_MAJOR_VERSION > 5
+  append->AddInputData( topCube->GetOutput() );
+  append->AddInputData( bottomCube->GetOutput() );
+#else
   append->AddInput( topCube->GetOutput() );
   append->AddInput( bottomCube->GetOutput() );
+#endif
   append->Update();
 
   vtkDensifyPolyData * densify = vtkDensifyPolyData::New();
+#if VTK_MAJOR_VERSION > 5
+  densify->AddInputData( append->GetOutput() );
+#else
   densify->AddInput( append->GetOutput() );
+#endif
   densify->SetNumberOfSubdivisions( 6 );
   densify->Update();
 
@@ -594,12 +604,20 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     vtkPolyDataNormals * normalsFilter = vtkPolyDataNormals::New();
     normalsFilter->ComputePointNormalsOn();
     normalsFilter->ComputeCellNormalsOff();
+#if VTK_MAJOR_VERSION > 5
+    normalsFilter->SetInputData( border );
+#else
     normalsFilter->SetInput( border );
+#endif
     normalsFilter->Update();
 
     vtkPolyDataWriter * polyWriter = vtkPolyDataWriter::New();
     polyWriter->SetFileName( argv[3] );
+#if VTK_MAJOR_VERSION > 5
+    polyWriter->SetInputData( normalsFilter->GetOutput() );
+#else
     polyWriter->SetInput( normalsFilter->GetOutput() );
+#endif
     polyWriter->Write();
     }
   else if ( geometry == tubes )
