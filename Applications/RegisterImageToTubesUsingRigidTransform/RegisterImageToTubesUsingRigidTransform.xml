@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>TubeTK</category>
+  <title>Register image to tubes using rigid transform (TubeTK)</title>
+  <description>Registration of a vessel to its location within an image.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Matthew McCormick, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume.</description>
+    </image>
+    <file>
+      <name>inputVessel</name>
+      <label>Input Vessel</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Input vessel (tube).</description>
+    </file>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Binary image demonstrating where the tube is located after it has been registered.</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>Blur filter</label>
+    <double>
+      <name>gaussianBlurStdDev</name>
+      <label>Gaussian blur std. dev.</label>
+      <description>Standard deviation of the Gaussian kernel used to blur input volume.  This increases the likelihood that the vessel spatial object overlapps with the vessel image at their initial alignment and enlarges the convergence zone.</description>
+      <longflag>gaussianBlurStdDev</longflag>
+      <flag>g</flag>
+      <default>3.0</default>
+    </double>
+  </parameters>
+
+</executable>

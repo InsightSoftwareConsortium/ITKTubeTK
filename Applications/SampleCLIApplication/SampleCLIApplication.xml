@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>TubeTK</category>
+  <title>Sample CLI Application (TubeTK)</title>
+  <description>Demonstration of how to write a CLI application.  Performs blurring.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output Volume</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>Blur filter</label>
+    <double>
+      <name>gaussianBlurStdDev</name>
+      <label>Gaussian blur std. dev.</label>
+      <description>Standard deviation of the Gaussian kernel used to blur the binary mask</description>
+      <longflag>gaussianBlurStdDev</longflag>
+      <flag>g</flag>
+      <default>4.0</default>
+    </double>
+  </parameters>
+
+</executable>

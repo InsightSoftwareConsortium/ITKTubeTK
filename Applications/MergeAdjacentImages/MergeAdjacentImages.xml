@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>TubeTK</category>
+  <title>Merge Adjacent Images (TubeTK)</title>
+  <description>Merge the second image into the space of the first</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume1</name>
+      <label>Input Volume 1</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume 1</description>
+    </image>
+    <image>
+      <name>inputVolume2</name>
+      <label>Input Volume 2</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Input volume 2</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Output Volume</description>
+    </image>
+  </parameters>
+
+  <parameters>
+    <label>Merge options</label>
+    <double>
+      <name>background</name>
+      <label>Background intensity</label>
+      <description>Value to assign to pixels in the output image that don't intersect an input image</description>
+      <longflag>background</longflag>
+      <flag>k</flag>
+      <default>0</default>
+    </double>
+    <boolean>
+      <name>mask</name>
+      <label>Mask inputs</label>
+      <description>Zero-valued input pixels are ignored</description>
+      <longflag>mask</longflag>
+      <flag>M</flag>
+      <default>false</default>
+    </boolean>
+  </parameters>
+  <parameters>
+    <label>Registration options</label>
+    <integer>
+      <name>iterations</name>
+      <label>Registration iterations</label>
+      <description>Number of iterations (0=no registration)</description>
+      <longflag>iterations</longflag>
+      <flag>i</flag>
+      <default>300</default>
+    </integer>
+    <integer-vector>
+      <name>boundary</name>
+      <label>Additional boundary pixels</label>
+      <description>Pixels to be added around the second image as padding (account for registration movement)</description>
+      <longflag>boundary</longflag>
+      <flag>b</flag>
+      <default>0</default>
+    </integer-vector>
+    <float>
+      <name>expectedOffset</name>
+      <label>Expected misalignment (offset)</label>
+      <description>Expected initial mis-registration between the images</description>
+      <longflag>expectedOffset</longflag>
+      <flag>o</flag>
+      <default>20</default>
+    </float>
+    <float>
+      <name>expectedRotation</name>
+      <label>Expected misalignment (rotation)</label>
+      <description>Expected initial mis-registration between the images</description>
+      <longflag>expectedRotation</longflag>
+      <flag>r</flag>
+      <default>0.001</default>
+    </float>
+    <float>
+      <name>samplingRatio</name>
+      <label>Sampling ratio</label>
+      <description>Portion of pixels to use for registration</description>
+      <longflag>samplingRatio</longflag>
+      <flag>s</flag>
+      <default>0.01</default>
+    </float>
+    <string>
+      <name>saveTransform</name>
+      <label>Save transform</label>
+      <description>Filename to save the transform to</description>
+      <longflag>saveTransform</longflag>
+      <flag>S</flag>
+      <default></default>
+    </string>
+  </parameters>
+
+</executable>

@@ -46,7 +46,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
   bool error = false;
 
   // Define the dimension of the images
-  const unsigned int Dimension = 2;
+  const unsigned int Dimension = 3;
 
   // Define the pixel type
   typedef float                                   PixelType;

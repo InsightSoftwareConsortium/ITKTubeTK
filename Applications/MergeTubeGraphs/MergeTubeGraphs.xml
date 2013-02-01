@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>TubeTK</category>
+  <title>Merge Tube Graphs (TubeTK)</title>
+  <description> Map multiple graphs into just one graph</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <string>
+      <name>listFile</name>
+      <index>0</index>
+      <description>ObjectDocument file containing subject-specifc graphs</description>
+    </string>
+    <string>
+      <name>graphFile</name>
+      <index>1</index>
+      <description>Ouput graph</description>
+    </string>
+    <integer>
+      <name>nCentroids</name>
+      <description>Number of centroids (of CVT) used to compute the subject-specific graphs</description>
+    </integer>
+  </parameters>
+
+</executable>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>TubeTK</category>
+  <title>Segment Tubes (TubeTK)</title>
+  <description>Extracts a 1D scaled ridge and estimate its radius in an ND image.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume</description>
+    </image>
+    <string>
+      <name>outputTubeFile</name>
+      <label>Output filename for TubeFile (.tre)</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output tube file</description>
+    </string>
+  </parameters>
+  <parameters>
+    <label>Seeds</label>
+    <float-vector>
+      <name>seedX</name>
+      <label>Seed coordinate</label>
+      <flag>x</flag>
+      <description>Continuous index for starting ridge extraction</description>
+    </float-vector>
+    <image>
+      <name>seedMaskVolume</name>
+      <label>Seed mask volume</label>
+      <channel>input</channel>
+      <flag>m</flag>
+      <description>Mask of seed points for ride extraction</description>
+    </image>
+    <string>
+      <name>seedList</name>
+      <label>Seed list</label>
+      <flag>l</flag>
+      <description>CSV list of seed points for ride extraction</description>
+    </string>
+  </parameters>
+  <parameters>
+    <label>Ridge parameters</label>
+    <double>
+      <name>scale</name>
+      <label>Scale of ridge</label>
+      <description>Scale used for ridge measures</description>
+      <longflag>scale</longflag>
+      <flag>s</flag>
+      <default>2.0</default>
+    </double>
+  </parameters>
+  <parameters>
+    <label>Output parameters</label>
+    <image>
+      <name>outputTubeVolume</name>
+      <flag>t</flag>
+      <label>Output filename for tube mask volume</label>
+      <channel>output</channel>
+      <description>Output volume that is a mask of extracted tubes</description>
+    </image>
+  </parameters>
+
+</executable>

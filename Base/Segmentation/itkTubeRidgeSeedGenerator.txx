@@ -119,16 +119,27 @@ RidgeSeedGenerator< ImageT, LabelmapT >
       ConstMaskImageIteratorType;
     ConstMaskImageIteratorType itInMask( this->m_Labelmap,
       this->m_Labelmap->GetLargestPossibleRegion() );
+    double count = 0;
+    bool found = false;
+    ObjectIdType prevObjVal = static_cast<ObjectIdType>( itInMask.Get() )+1;
     while( !iter.IsAtEnd() )
       {
-      ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-      bool found = false;
-      for( unsigned int c=0; c<numClasses; c++ )
+      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
         {
-        if( val == this->m_ObjectIdList[c] )
+        std::cout << "Tr1: " << count << std::endl;
+        }
+      ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+      if( val != prevObjVal )
+        {
+        found = false;
+        prevObjVal = val;
+        for( unsigned int c=0; c<numClasses; c++ )
           {
-          found = true;
-          break;
+          if( val == this->m_ObjectIdList[c] )
+            {
+            found = true;
+            break;
+            }
           }
         }
       if( found )
@@ -184,31 +195,41 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     int dotPos = numFeatures-1;
     iter.GoToBegin();
     itInMask.GoToBegin();
+    count = 0;
     while( !iter.IsAtEnd() )
       {
-      ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-      bool found = false;
-      for( unsigned int c=0; c<numClasses; c++ )
+      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
         {
-        if( val == this->m_ObjectIdList[c] )
+        std::cout << "Tr2: " << count << std::endl;
+        }
+      ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
+      if( val != prevObjVal )
+        {
+        found = false;
+        prevObjVal = val;
+        for( unsigned int c=0; c<numClasses; c++ )
           {
-          found = true;
-          break;
+          if( val == this->m_ObjectIdList[c] )
+            {
+            found = true;
+            break;
+            }
           }
         }
       if( found )
         {
         typename RidgeImageType::IndexType indx = iter.GetIndex();
-        typename NJetFunctionType::VectorType t, t2;
+        typename RidgeImageType::IndexType indx2 = iter.GetIndex();
+        typename NJetFunctionType::VectorType t;
+        typename NJetFunctionType::VectorType t2;
         t[0] = this->m_FeatureImageList[ xPos ]->GetPixel( indx );
         t[1] = this->m_FeatureImageList[ yPos ]->GetPixel( indx );
-        typename RidgeImageType::IndexType indx2 = iter.GetIndex();
-        indx2[0] = indx[0] + vnl_math_rnd( t[0] );
-        indx2[1] = indx[1] + vnl_math_rnd( t[1] );
+        indx2[0] = indx[0] + vnl_math_rnd( 2*t[0] );
+        indx2[1] = indx[1] + vnl_math_rnd( 2*t[1] );
         if( ImageDimension > 2 )
           {
-          t[2] = vcl_sqrt( 1 - ( t[0]*t[0] + t[1]*t[1] ) );
-          indx2[2] = indx[2] + vnl_math_rnd( t[2] );
+          t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
+          indx2[2] = indx[2] + vnl_math_rnd( 2*t[2] );
           }
         double dot = 0;
         if( this->m_FeatureImageList[ xPos ]->GetLargestPossibleRegion().IsInside( indx2 ) )
@@ -218,8 +239,8 @@ RidgeSeedGenerator< ImageT, LabelmapT >
           dot = t[0]*t2[0] + t[1]*t2[1];
           if( ImageDimension>2 )
             {
-            t[2] = vcl_sqrt( 1 - ( t[0]*t[0] + t[1]*t[1] ) );
-            t2[2] = vcl_sqrt( 1 - ( t2[0]*t2[0] + t2[1]*t2[1] ) );
+            t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
+            t2[2] = vcl_sqrt( vnl_math_abs( 1 - ( t2[0]*t2[0] + t2[1]*t2[1] ) ) );
             dot += t[2]*t2[2];
             }
           }
@@ -233,8 +254,13 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     {
     itk::ImageRegionIteratorWithIndex< LDAImageType > iter(
       m_RidgeImage, m_RidgeImage->GetLargestPossibleRegion() );
+    double count = 0;
     while( !iter.IsAtEnd() )
       {
+      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
+        {
+        std::cout << "Te1: " << count << std::endl;
+        }
       typename RidgeImageType::IndexType indx = iter.GetIndex();
       unsigned int fcount = 0;
       double extremeScale = 0;
@@ -283,19 +309,25 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     int yPos = numFeatures-2;
     int dotPos = numFeatures-1;
     iter.GoToBegin();
+    count = 0;
     while( !iter.IsAtEnd() )
       {
+      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
+        {
+        std::cout << "Te2: " << count << std::endl;
+        }
       typename RidgeImageType::IndexType indx = iter.GetIndex();
-      typename NJetFunctionType::VectorType t, t2;
+      typename RidgeImageType::IndexType indx2 = iter.GetIndex();
+      typename NJetFunctionType::VectorType t;
+      typename NJetFunctionType::VectorType t2;
       t[0] = this->m_FeatureImageList[ xPos ]->GetPixel( indx );
       t[1] = this->m_FeatureImageList[ yPos ]->GetPixel( indx );
-      typename RidgeImageType::IndexType indx2 = iter.GetIndex();
-      indx2[0] = indx[0] + vnl_math_rnd( t[0] );
-      indx2[1] = indx[1] + vnl_math_rnd( t[1] );
+      indx2[0] = indx[0] + vnl_math_rnd( 2*t[0] );
+      indx2[1] = indx[1] + vnl_math_rnd( 2*t[1] );
       if( ImageDimension > 2 )
         {
-        t[2] = vcl_sqrt( 1 - ( t[0]*t[0] + t[1]*t[1] ) );
-        indx2[2] = indx[2] + vnl_math_rnd( t[2] );
+        t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
+        indx2[2] = indx[2] + vnl_math_rnd( 2*t[2] );
         }
       double dot = 0;
       if( this->m_FeatureImageList[ xPos ]->GetLargestPossibleRegion().IsInside( indx2 ) )
@@ -305,8 +337,8 @@ RidgeSeedGenerator< ImageT, LabelmapT >
         dot = t[0]*t2[0] + t[1]*t2[1];
         if( ImageDimension>2 )
           {
-          t[2] = vcl_sqrt( 1 - ( t[0]*t[0] + t[1]*t[1] ) );
-          t2[2] = vcl_sqrt( 1 - ( t2[0]*t2[0] + t2[1]*t2[1] ) );
+          t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
+          t2[2] = vcl_sqrt( vnl_math_abs( 1 - ( t2[0]*t2[0] + t2[1]*t2[1] ) ) );
           dot += t[2]*t2[2];
           }
         }
