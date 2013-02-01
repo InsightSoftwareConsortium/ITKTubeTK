@@ -44,16 +44,14 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
                -i
                -r
                -a Test1 001
-               -w
                -o ${TEMP}
                -b DSC_
                MIDAS_DIRECTORY{DICOMSeries} )
 
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
              ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/DSC_Test1_20030625_361_3__0.86_1.60_3.mhd
-               -b MIDAS{DSC_Test1_20030625_361_3__0.86_1.60_3.mhd.md5}
-               MIDAS_FETCH_ONLY{DSC_Test1_20030625_361_3__0.86_1.60_3.zraw.md5}
+               -t ${TEMP}/DSC_Test1_20030625_361_3__0.86_1.60_3.mha
+               -b MIDAS{DSC_Test1_20030625_361_3__0.86_1.60_3.mha.md5}
               )
 
 set_property(TEST ${PROJECT_NAME}-Test1-Compare
