@@ -261,6 +261,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
       set( TubeTK_REQUIRED_QT_VERSION
         "4.7.4" CACHE STRING "Exact required Qt version" FORCE)
+    mark_as_advanced( TubeTK_REQUIRED_QT_VERSION )
     endif()
     if( QT4_FOUND )
       if( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
