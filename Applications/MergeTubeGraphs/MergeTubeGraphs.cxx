@@ -41,7 +41,7 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
-#include "TubeGraphsToGraphCLP.h"
+#include "MergeTubeGraphsCLP.h"
 
 #include "MetaObjectDocument.h"
 #include "itkObjectDocument.h"

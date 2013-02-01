@@ -2,7 +2,7 @@
 <executable>
 
   <category>TubeTK</category>
-  <title>Tube Graphs to Graph mapping (TubeTK)</title>
+  <title>Merge Tube Graphs (TubeTK)</title>
   <description> Map multiple graphs into just one graph</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

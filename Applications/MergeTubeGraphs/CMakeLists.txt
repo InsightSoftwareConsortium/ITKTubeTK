@@ -34,7 +34,7 @@
 #        harder to maintain and understand, even if you think your way is
 #        "better."
 
-set( MODULE_NAME TubeGraphsToTubeGraph )
+set( MODULE_NAME MergeTubeGraphs )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
