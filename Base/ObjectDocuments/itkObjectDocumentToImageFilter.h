@@ -48,14 +48,14 @@ namespace tube
 
 template< class TInputObjectDocument, class TOutputImageType >
 class ITK_EXPORT ObjectDocumentToImageFilter :
-  public ObjectDocumentToObjectSource<TInputObjectDocument, ::itk::GetImageDimension<TOutputImageType>::ImageDimension>
+  public ObjectDocumentToObjectSource<TInputObjectDocument, TOutputImageType::ImageDimension>
 {
   public:
 
     enum { TDimensions = 3 };
 
     typedef ObjectDocumentToImageFilter                       Self;
-    typedef ObjectDocumentToObjectSource<TInputObjectDocument,::itk::GetImageDimension<TOutputImageType>::ImageDimension> Superclass;
+    typedef ObjectDocumentToObjectSource<TInputObjectDocument,TOutputImageType::ImageDimension> Superclass;
 
     typedef SmartPointer< Self >                              Pointer;
     typedef SmartPointer< const Self >                        ConstPointer;

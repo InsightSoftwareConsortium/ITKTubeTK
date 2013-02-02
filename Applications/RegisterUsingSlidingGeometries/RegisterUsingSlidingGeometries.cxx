@@ -485,7 +485,11 @@ int DoIt( int argc, char * argv[] )
       RAStoLPS->RotateZ(180); // flip in superior-inferior
       vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
           = vtkTransformPolyDataFilter::New();
+#if VTK_MAJOR_VERSION > 5
+      transformPolyDataFilter->SetInputData( borderSurface );
+#else
       transformPolyDataFilter->SetInput( borderSurface );
+#endif
       transformPolyDataFilter->SetTransform( RAStoLPS );
       transformPolyDataFilter->Update();
       borderSurface = transformPolyDataFilter->GetOutput();

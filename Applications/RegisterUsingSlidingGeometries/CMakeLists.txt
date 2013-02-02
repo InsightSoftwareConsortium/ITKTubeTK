@@ -37,7 +37,7 @@ include( ${USE_VTK_FILE} )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} vtkCommon vtkGraphics vtkIO
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ${VTK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Filtering

@@ -657,6 +657,11 @@ int DoIt( int argc, char * argv[] )
     blendScales[1] = 1.0 / 0.1;
     blendScales[2] = 1.0 / 0.1;
 
+    typename BlendCostFunctionType::ParametersType costFunctionScales( 3 );
+    costFunctionScales[0] = blendScales[0];
+    costFunctionScales[1] = blendScales[1];
+    costFunctionScales[2] = blendScales[2];
+
     OptimizerType::ScalesType blendScales2( 3 );
     blendScales2[0] = blendScales[0] * blendScales[0];
     blendScales2[1] = blendScales[1] * blendScales[1];
@@ -665,7 +670,7 @@ int DoIt( int argc, char * argv[] )
     // OnePlusOne should be passed squared-scales
     initOptimizer->SetScales( blendScales2 );
     optimizer->SetScales( blendScales );
-    costFunc->SetScales( blendScales );
+    costFunc->SetScales( costFunctionScales );
 
     initOptimizer->SetCostFunction( costFunc );
     optimizer->SetCostFunction( costFunc );
@@ -751,6 +756,12 @@ int DoIt( int argc, char * argv[] )
     blendScaleScales[2] = 1.0 / 0.01;
     blendScaleScales[3] = 1.0 / 0.5;
 
+    typename BlendScaleCostFunctionType::ParametersType costFunctionScaleScales( 4 );
+    costFunctionScaleScales[0] = blendScaleScales[0];
+    costFunctionScaleScales[1] = blendScaleScales[1];
+    costFunctionScaleScales[2] = blendScaleScales[2];
+    costFunctionScaleScales[3] = blendScaleScales[3];
+
     OptimizerType::ScalesType blendScaleScales2( 4 );
     blendScaleScales2[0] = blendScaleScales[0] * blendScaleScales[0];
     blendScaleScales2[1] = blendScaleScales[1] * blendScaleScales[1];
@@ -760,7 +771,7 @@ int DoIt( int argc, char * argv[] )
     // OnePlusOne should be passed squared-scales
     initOptimizer->SetScales( blendScaleScales2 );
     optimizer->SetScales( blendScaleScales );
-    costFunc->SetScales( blendScaleScales );
+    costFunc->SetScales( costFunctionScaleScales );
 
     initOptimizer->SetCostFunction( costFunc );
     optimizer->SetCostFunction( costFunc );

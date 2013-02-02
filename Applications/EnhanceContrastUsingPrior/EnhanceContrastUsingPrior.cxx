@@ -21,14 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
 #include "itkImage.h"
 #include "itkImageSpatialObject.h"
 #include "itkImageFileReader.h"
@@ -431,6 +423,11 @@ int DoIt( int argc, char * argv[] )
   scales[1] = 1.0 / 2.0;
   scales[2] = 1.0 / (params[2]/10);
 
+  typename ContrastCostFunctionType::ParametersType costFunctionScales( 3 );
+  costFunctionScales[0] = scales[0];
+  costFunctionScales[1] = scales[1];
+  costFunctionScales[0] = scales[0];
+
   OptimizerType::ScalesType scales2( 3 );
   scales2[0] = scales[0] * scales[0];
   scales2[1] = scales[1] * scales[1];
@@ -439,7 +436,7 @@ int DoIt( int argc, char * argv[] )
   // OnePlusOne should be passed squared-scales
   initOptimizer->SetScales( scales2 );
   optimizer->SetScales( scales );
-  costFunc->SetScales( scales );
+  costFunc->SetScales( costFunctionScales );
 
   initOptimizer->SetCostFunction( costFunc );
   optimizer->SetCostFunction( costFunc );

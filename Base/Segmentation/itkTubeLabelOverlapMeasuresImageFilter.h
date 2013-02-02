@@ -26,8 +26,13 @@ limitations under the License.
 #include "itkImageToImageFilter.h"
 #include "itkFastMutexLock.h"
 #include "itkNumericTraits.h"
+#include "itkVersion.h"
 
+#if ITK_VERSION_MAJOR < 4
 #include "itk_hash_map.h"
+#else
+#include "itksys/hash_map.hxx"
+#endif
 
 namespace itk {
 
@@ -108,7 +113,11 @@ public:
     };
 
   /** Type of the map used to store data per label */
+#if ITK_VERSION_MAJOR > 3
+  typedef itksys::hash_map<LabelType, LabelSetMeasures> MapType;
+#else
   typedef hash_map<LabelType, LabelSetMeasures> MapType;
+#endif
   typedef typename MapType::iterator            MapIterator;
   typedef typename MapType::const_iterator      MapConstIterator;
 

@@ -126,7 +126,11 @@ protected:
   /** This method applies changes from the m_UpdateBuffer to the output using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
    * the time step to use for the update of each pixel. */
+#if ITK_VERSION_MAJOR > 3
+  virtual void ApplyUpdate(const TimeStepType& dt);
+#else
   virtual void ApplyUpdate(TimeStepType dt);
+#endif
 
   /** Method to allow subclasses to get direct access to the update
    * buffer */
@@ -166,7 +170,11 @@ protected:
                                     const ThreadRegionType &regionToProcess,
                                     const ThreadDiffusionTensorImageRegionType
                                       &diffusionRegionToProcess,
+#if ITK_VERSION_MAJOR > 3
+                                    ThreadIdType threadId );
+#else
                                     int threadId );
+#endif
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
@@ -194,8 +202,13 @@ private:
     {
     AnisotropicDiffusionTensorImageFilter *Filter;
     TimeStepType TimeStep;
+#if ITK_VERSION_MAJOR > 3
+    std::vector< TimeStepType > TimeStepList;
+    std::vector< bool > ValidTimeStepList;
+#else
     TimeStepType *TimeStepList;
     bool *ValidTimeStepList;
+#endif
     };
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
