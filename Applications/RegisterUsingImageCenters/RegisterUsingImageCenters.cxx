@@ -21,11 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
 
 #include "itkImage.h"
 #include "itkMatrix.h"
