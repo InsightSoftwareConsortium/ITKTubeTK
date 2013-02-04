@@ -99,7 +99,6 @@ if( NOT USE_SYSTEM_JsonCpp )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "JsonCpp" )
 endif( NOT USE_SYSTEM_JsonCpp )
 
-
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   ##
   ## Check if system ITK or superbuild ITK
@@ -356,6 +355,42 @@ else( NOT TubeTK_BUILD_SLICER_EXTENSION )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
 ##
+## Check if system ParameterSerializer or superbuild ParameterSerializer
+##
+if( NOT USE_SYSTEM_ParameterSerializer )
+  ##
+  ## ParameterSerializer
+  ##
+  set( proj ParameterSerializer )
+  ExternalProject_Add( ParameterSerializer
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ParameterSerializer.git"
+    GIT_TAG "876eb643a3ce3ed06e0fc9376081bd8e24d095ee"
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/ParameterSerializer"
+    BINARY_DIR ParameterSerializer-Build
+    CMAKE_GENERATOR ${gen}
+    CMAKE_ARGS
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      -DBUILD_SHARED_LIBS:BOOL=${shared}
+      -DITK_DIR:PATH=${ITK_DIR}
+      -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+    INSTALL_COMMAND ""
+    DEPENDS
+      "Insight"
+      "JsonCpp"
+    )
+  set( ParameterSerializer_DIR "${base}/ParameterSerializer-Build" )
+  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "ParameterSerializer" )
+endif( NOT USE_SYSTEM_ParameterSerializer )
+
+
+##
 ## A convenient 2D/3D image viewer that can handle anisotropic spacing.
 ##
 set( ImageViewer_DEPENDS )
@@ -462,6 +497,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_Boost:BOOL=${TubeTK_USE_Boost}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
     -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+    -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
     -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}

@@ -284,6 +284,16 @@ option( TubeTK_USE_Boost
   "Use Boost libraries."
   OFF )
 
+#-----------------------------------------------------------------------------
+# ParameterSerializer Setup
+option( USE_SYSTEM_ParameterSerializer
+  "Exclude ParameterSerializer from SuperBuild and use and existing build instead" OFF )
+mark_as_advanced( USE_SYSTEM_ParameterSerializer )
+if( USE_SYSTEM_ParameterSerializer )
+  find_package( ParameterSerializer REQUIRED )
+  include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
+endif()
+
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   #-----------------------------------------------------------------------------
   # ITK Setup
@@ -404,6 +414,9 @@ else( TubeTK_USE_SUPERBUILD )
 
   find_package( JsonCpp REQUIRED )
   include_directories( ${JsonCpp_INCLUDE_DIRS} )
+
+  find_package( ParameterSerializer )
+  include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
 
   if( TubeTK_BUILD_SLICER_EXTENSION )
 
