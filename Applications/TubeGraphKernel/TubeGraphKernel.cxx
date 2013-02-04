@@ -31,6 +31,10 @@ limitations under the License.
 #include "ShortestPathKernel.h"
 #include "WLSubtreeKernel.h"
 
+// Convenient string formatting and FS stuff ...
+#include <boost/format.hpp>
+#include <boost/filesystem.hpp>
+
 #include "TubeGraphKernelCLP.h"
 
 enum
@@ -40,12 +44,18 @@ enum
   };
 
 
-/**
- * Reads a list of input graphs from JSON file 'fileName' and
- * stores the full path's the the graph files in 'list', as well
- * as the label (i.e., class assignment) information in 'labels'.
+/** Read-in a list of graphs from a list.
+ *  Reads a list of input graphs from JSON file 'fileName' and stores the full
+ *  path's the the graph files in 'list', as well as the label (i.e., class
+ *  assignment) information in 'labels'.
+ *
+ *  \param fileName Filename of the list file.
+ *  \param basePath Absolute path to the directory where graph files reside.
+ *  \param list This vector will be filled with filenames of the graph files.
+ *  \param labels This vector will be filled with one label for each graph.
  */
 void readGraphList(const std::string &fileName,
+                   const std::string &basePath,
                    std::vector<std::string> &list,
                    std::vector<int> &labels)
 {
@@ -60,8 +70,20 @@ void readGraphList(const std::string &fileName,
     int graphCount = 0;
     BOOST_FOREACH( boost::property_tree::ptree::value_type &v, pt.get_child("graphList") )
       {
-      const std::string &file = boost::lexical_cast<std::string>( v.second.data() );
-      list.push_back( file );
+      // Compose path to graph file
+      boost::filesystem::path base( basePath.c_str() );
+      boost::filesystem::path file( boost::lexical_cast<std::string>( v.second.data() ) );
+      boost::filesystem::path fullPathToFile = base / file;
+
+      // Check existence
+      if( !boost::filesystem::exists( fullPathToFile.string().c_str() ) )
+        {
+        tube::FmtErrorMessage("Graph file %s not found!",
+          fullPathToFile.string().c_str() );
+        throw std::exception();
+        }
+
+      list.push_back( fullPathToFile.string() );
       ++graphCount;
       }
 
@@ -77,16 +99,17 @@ void readGraphList(const std::string &fileName,
     }
   catch( std::exception &e )
     {
-    tube::FmtErrorMessage("Error reading JSON graph file %s (Msg: %s)",
-      fileName.c_str(), e.what());
+    tube::FmtErrorMessage("Error reading JSON graph file %s!",
+      fileName.c_str() );
     throw std::exception();
     }
 }
 
 
-/**
- * Write a VNL matrix (the kernel matrix) 'K' to the file 'baseFileName'
- * in binary format (double).
+/** Writes VNL matrix to binary file.
+ *
+ *  \param baseFileName The basename of the binary file (.bin is appended).
+ *  \param K The VNL kernel matrix.
  */
 void writeKernel(const std::string &baseFileName, const vnl_matrix<double> &K)
 {
@@ -116,13 +139,46 @@ void writeKernel(const std::string &baseFileName, const vnl_matrix<double> &K)
     }
 }
 
+/** Writes VNL matrix to plain-text file.
+ *  Writes VNL matrix in row-by-row manner to a plain-text file (One value on
+ *  each line).
+ *
+ *  \param baseFileName The basename of the plain-text file (.txt is appended).
+ *  \param K The VNL kernel matrix.
+ */
+void writeKernelPlainText( const std::string &baseFileName,
+                           const vnl_matrix<double> &K )
+{
+  std::string outFileName = baseFileName + ".txt";
+  std::ofstream ofs;
 
-/**
- * Write a VNL matrix (the kernel matrix) 'K' to the file
- * 'baseFileName' in LIBSVM compatible format. 'labels' is
- * used to augment the kernel with label information, such
- * that it can be immediately used with LIBSVM's svm-train
- * binary.
+  ofs.open( outFileName.c_str(), std::ios::binary | std::ios::out );
+  if( !ofs )
+    {
+    tube::FmtErrorMessage("Could not open kernel matrix %s!",
+      outFileName.c_str());
+    throw std::exception();
+    }
+  for( unsigned int r = 0; r < K.rows(); ++r )
+    {
+    for( unsigned int c = 0; c < K.columns(); ++c )
+      {
+      ofs << K[r][c] << std::endl;
+      }
+    }
+  ofs.close();
+  if( ofs.fail() )
+    {
+    tube::FmtErrorMessage("Could not close kernel matrix file %s!",
+      outFileName.c_str());
+    throw std::exception();
+    }
+}
+
+/** Writes VNL matrix to LibSVM compatible file.
+ *
+ *  \param baseFileName The basename of the LibSVM file (.libsvm is appended).
+ *  \param K The VNL kernel matrix.
  */
 void writeKernelLibSVM(const std::string &baseFileName,
                        const vnl_matrix<double> &K,
@@ -140,10 +196,10 @@ void writeKernelLibSVM(const std::string &baseFileName,
 
   assert( K.rows() == labels.size() );
 
-  for(unsigned int r = 0; r < K.rows(); ++r)
+  for( unsigned int r = 0; r < K.rows(); ++r )
     {
     ofs << labels[r] << " " << "0:" << r+1 << " ";
-    for(unsigned int c = 0; c < K.cols()-1; ++c)
+    for( unsigned int c = 0; c < K.cols()-1; ++c )
       {
       ofs << c+1 << ":" << K[r][c] << " ";
       }
@@ -159,7 +215,11 @@ void writeKernelLibSVM(const std::string &baseFileName,
 }
 
 
-/** Check if 'fileName' exists */
+/** Check if a file exists.
+ *
+ *  \param fileName The name of the file to check.
+ *  \returns true if exists, false otherwise.
+ */
 bool fileExists(const std::string &fileName)
 {
   std::ifstream file( fileName.c_str() );
@@ -171,13 +231,16 @@ bool fileExists(const std::string &fileName)
 }
 
 
-/**
- * Load a graph file (as adjacency matrix) from disk. We use
- * GraphKernel's functionality for that. Further, we try to load
- * a vertex label file if it exists. This file specifies the
- * vertex labelings to use. The convention is that the vertex
- * label file should have the same name as the adjaceny matrix
- * file + the suffix '.vertexLabel'
+/** Load graph from adjacency-matrix (plain-text) file.
+ *  Load a graph file (as adjacency matrix) from disk. We use GraphKernel's
+ *  functionality for that. Further, we try to load a vertex label file if it
+ *  exists. This file specifies the vertex labelings to use. The convention is
+ *  that the vertex label file should have the same name as the adjaceny matrix
+ *  file + the suffix '.vertexLabel'
+ *
+ *  \param graphFile The adjacency matrix file to load.
+ *  \param defNodeLabel The type of default node labeling to use.
+ *  \returns The constructed graph.
  */
 tube::GraphKernel::GraphType loadGraph(std::string graphFile,
   tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM)
@@ -219,8 +282,8 @@ int main(int argc, char **argv)
 
     std::vector<std::string> listA, listB;
     std::vector<int> labelsB, labelsA;
-    readGraphList( argGraphListA, listA, labelsA );
-    readGraphList( argGraphListB, listB, labelsB );
+    readGraphList( argGraphListA, argBasePath, listA, labelsA );
+    readGraphList( argGraphListB, argBasePath, listB, labelsB );
 
     int N = listA.size();
     int M = listB.size();
@@ -321,14 +384,15 @@ int main(int argc, char **argv)
     /*
      *
      * Eventually, dump the kernel to disk - 1) in LIBSVM comp.
-     * format (directly usable by svm-train) and 2) as a binary
+     * format (directly usable by svm-train), 2) as a binary
      * kernel matrix that can be loaded in Python for instance
-     * (e.g., for scikits-learn SVM)
+     * (e.g., for scikits-learn SVM) and 3) as plain text.
      *
      */
 
     writeKernel( argOutputKernel, K );
     writeKernelLibSVM( argOutputKernel, K, labelsA );
+    writeKernelPlainText( argOutputKernel, K );
     }
   catch(std::exception &e)
     {

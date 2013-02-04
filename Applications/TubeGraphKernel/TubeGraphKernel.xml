@@ -9,7 +9,7 @@ value among the i-th graph of A and the j-th graph of B. K will eventually be a 
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Kitware</contributor>
+  <contributor>Roland Kwitt, Stephen R. Aylward, Kitware</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
 
   <parameters>
@@ -30,6 +30,11 @@ value among the i-th graph of A and the j-th graph of B. K will eventually be a 
       <description>Basename for output kernel (will write .bin, .libsvm files).</description>
       <index>2</index>
     </file>
+    <string>
+      <name>argBasePath</name>
+      <description>Absolute path to the graph files.</description>
+      <index>3</index>
+    </string>
     <integer>
       <name>argGraphKernelType</name>
       <longflag>graphKernelType</longflag>
