@@ -66,7 +66,7 @@ int main( int argc, char **argv )
 }
 
 
-/**
+/** Check if image contains discrete values.
  *
  * \param fileName Image file name
  * \return 'true' if image, given by 'fileName' has a discrete-value type
@@ -92,9 +92,7 @@ bool IsDiscrete( const std::string & fileName )
 }
 
 
-/**
- *
- * Check for equality of VNL vectors
+/** Check for equality of VNL vectors.
  *
  * \param v 1st VNL vector
  * \param g 2nd VNL vector
@@ -121,9 +119,7 @@ bool check_vnl_vector_equality( const vnl_vector<T> &v,
   return true;
 }
 
-/**
- *
- * Check for equality of VNL matrices
+/** Check for equality of VNL matrices.
  *
  * \param V 1st VNL matrix
  * \param G 2nd VNL matrix
@@ -154,7 +150,7 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
 }
 
 
-/**
+/** Create an empty image.
  *
  *  \param outImage Image that is about to be created (has to exist)
  *  \param targetSize Desired size of the image
@@ -175,7 +171,8 @@ void CreateEmptyImage(
 }
 
 
-/**
+/** Evaluate if two images are compatible.
+ *  Compatibility is defined in terms of spacing, directions, size and origin.
  *
  *  \param imageA 1st input image of type ImageType
  *  \param imageB 2nd input image of type ImageType

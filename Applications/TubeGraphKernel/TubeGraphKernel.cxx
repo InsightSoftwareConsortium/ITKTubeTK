@@ -218,7 +218,7 @@ void writeKernelLibSVM(const std::string &baseFileName,
 /** Check if a file exists.
  *
  *  \param fileName The name of the file to check.
- *  \returns true if exists, false otherwise.
+ *  \return true if exists, false otherwise.
  */
 bool fileExists(const std::string &fileName)
 {
@@ -240,7 +240,7 @@ bool fileExists(const std::string &fileName)
  *
  *  \param graphFile The adjacency matrix file to load.
  *  \param defNodeLabel The type of default node labeling to use.
- *  \returns The constructed graph.
+ *  \return The constructed graph.
  */
 tube::GraphKernel::GraphType loadGraph(std::string graphFile,
   tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM)
