@@ -116,9 +116,9 @@ class ITK_EXPORT ObjectDocumentToObjectSource : public ProcessObject
     virtual const DocumentType * GetInput();
 
     /** Must be be defined by deriving class */
-    virtual void GraftOutput(DataObject *output){}
-    virtual void GraftNthOutput(unsigned int idx, DataObject *output){}
-    virtual DataObjectPointer MakeOutput( unsigned int idx );
+    virtual void GraftOutput( DataObject * ){}
+    virtual void GraftNthOutput( unsigned int, DataObject * ){}
+    virtual DataObjectPointer MakeOutput( unsigned int );
 
   protected:
 
@@ -128,7 +128,7 @@ class ITK_EXPORT ObjectDocumentToObjectSource : public ProcessObject
     ObjectDocumentToObjectSource();
     ~ObjectDocumentToObjectSource(){}
 
-    virtual DataObject * GetOutput(unsigned int idx) {  return this->ProcessObject::GetOutput(idx); }
+    DataObject * GetOutput(unsigned int idx) { return this->ProcessObject::GetOutput(idx); }
 
     /**
      * Composes object's transforms ranging from start to end

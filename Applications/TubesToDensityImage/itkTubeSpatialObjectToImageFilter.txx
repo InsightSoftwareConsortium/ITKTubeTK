@@ -121,12 +121,10 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
   itkDebugMacro(<< "TubeSpatialObjectToImageFilter::Update() called");
 
   //Get the input and output pointers
-  typedef typename SuperClass::InputSpatialObjectType InputSpatialObjectType;
-  const InputSpatialObjectType            * InputTube = this->GetInput();
-  typename SuperClass::OutputImagePointer   OutputImage = this->GetOutput();
+  const typename SuperClass::InputSpatialObjectType   * InputTube = this->GetInput();
+  typename SuperClass::OutputImagePointer             OutputImage = this->GetOutput();
 
   // Generate the image
-
   typename OutputImageType::RegionType region;
   if( this->m_Size[0] == 0 )
     {
@@ -135,7 +133,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
               << std::endl;
     SizeType size;
 
-    typename InputSpatialObjectType::BoundingBoxType::PointType   maxPoint;
+    typename SuperClass::InputSpatialObjectType::BoundingBoxType::PointType maxPoint;
     maxPoint = InputTube->GetBoundingBox()->GetMaximum();
 
     typename OutputImageType::PointType   physicalSize;

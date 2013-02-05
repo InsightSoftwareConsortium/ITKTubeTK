@@ -166,7 +166,7 @@ AtlasSummation::InputImagePointer AtlasSummation
 
 //-----------------------------------------------------------------------------
 void AtlasSummation
-::Start( InputImageType::Pointer image )
+::Start( InputImageType::Pointer )
 {
   m_image_number = 0;
 }
