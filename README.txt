@@ -3,7 +3,7 @@ TubeTK: Tubular object extraction, registration, and analysis
 TubeTK is being developed by Kitware, Inc.
 
 The TubeTK project overview is available on the web:
-   http://public.kitware.com/Wiki/TubeTK
+   http://tubetk.org/
 
 This work is distributed under the Apache 2.0 license.  Non-commercial
 and commercial use is encouraged.  More information on the Apache 2.0
@@ -11,7 +11,7 @@ license is available on the web:
   http://www.apache.org/licenses/LICENSE-2.0
 
 The source code is available on the web:
-  http://gitorious.org/tubetk-src/
+  http://tubetk.org/TubeTK.git
 
 The development of TubeTK is being funded, in part, by the following grants
   1. NIH/NIBIB sponsored "National Alliance of Medical Image Computing"
