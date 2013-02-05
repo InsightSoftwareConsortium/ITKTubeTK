@@ -37,9 +37,6 @@ limitations under the License.
 #include "itkVesselTubeSpatialObject.h"
 #include "itkMinimumMaximumImageFilter.h"
 
-#include "MetaObjectDocument.h"
-#include "itkObjectDocument.h"
-
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"

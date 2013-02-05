@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeFiltering )
+project( TubeNumerics )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
