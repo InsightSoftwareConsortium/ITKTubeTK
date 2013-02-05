@@ -44,7 +44,7 @@ int DoIt( int argc, char **argv );
 
 // This needs to be declared for tubeCLIHelperFunctions.
 template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char **argv ){ return 0; }
+int DoIt( int itkNotUsed(argc), char **itkNotUsed(argv) ){ return 0; }
 #include "tubeCLIHelperFunctions.h"
 
 int main(int argc, char **argv)
