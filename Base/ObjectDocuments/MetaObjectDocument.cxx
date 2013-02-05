@@ -96,7 +96,7 @@ void MetaObjectDocument::
 SetObjectList( ObjectListType& list )
 {
   m_objects = list;
-  m_NObjects = list.size();
+  m_NObjects = static_cast<int>(list.size());
 }
 
 

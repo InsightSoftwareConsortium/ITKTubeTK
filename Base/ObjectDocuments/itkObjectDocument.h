@@ -83,7 +83,10 @@ class ObjectDocument : public Document
     itkSetMacro( ObjectName, ObjectNameType );
 
     /** Get the number of transforms associated with the object */
-    unsigned int GetNumberOfTransforms() const { return m_transformList.size(); }
+    unsigned int GetNumberOfTransforms() const
+      {
+      return static_cast<unsigned int>(m_transformList.size());
+      }
 
     /** Get a std::vector of all the transform file names in order */
     TransformNameListType GetTransformNames() const { return m_transformList; }

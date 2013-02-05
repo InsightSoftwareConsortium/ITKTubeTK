@@ -95,9 +95,10 @@ int DoIt( int argc, char *argv[] )
     imReader->Update();
     image = imReader->GetOutput();
     }
-  catch( itk::ExceptionObject & e )
+  catch( itk::ExceptionObject & ex )
     {
-    tube::ErrorMessage( "Cannot read image file" );
+    tube::FmtErrorMessage( "Cannot read image file: %s",
+        ex.what());
     return EXIT_FAILURE;
     }
   timeCollector.Stop( "Load CVT" );
