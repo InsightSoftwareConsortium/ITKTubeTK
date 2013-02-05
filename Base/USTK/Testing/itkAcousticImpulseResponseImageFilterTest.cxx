@@ -27,7 +27,7 @@ limitations under the License.
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
 #include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
 #include "itkAbsImageAdaptor.h"
-#include "itkAddConstantToImageFilter.h"
+#include "itkAddImageFilter.h"
 #include "itkLog10ImageAdaptor.h"
 #include "itkIntensityWindowingImageFilter.h"
 
@@ -46,15 +46,15 @@ RoughBMode( TInputImage * inputImage, const char * fileName )
   typename AbsAdaptorType::Pointer absAdaptor = AbsAdaptorType::New();
   absAdaptor->SetImage( inputImage );
 
-  typedef itk::AddConstantToImageFilter<
+  typedef itk::AddImageFilter<
       AbsAdaptorType,
-      typename InputImageType::PixelType,
+      InputImageType,
       InputImageType >
     AddConstantFilterType;
   typename AddConstantFilterType::Pointer addConstantFilter =
     AddConstantFilterType::New();
-  addConstantFilter->SetInput( absAdaptor );
-  addConstantFilter->SetConstant( 1.0e-12 );
+  addConstantFilter->SetInput1( absAdaptor );
+  addConstantFilter->SetConstant2( 1.0e-12 );
   addConstantFilter->Update();
 
   typedef itk::Log10ImageAdaptor< InputImageType,

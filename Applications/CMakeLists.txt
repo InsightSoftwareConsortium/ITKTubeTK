@@ -30,8 +30,8 @@ if( TubeTK_USE_Boost )
 endif( TubeTK_USE_Boost )
 add_subdirectory( ComputeTubeGraphProbability )
 add_subdirectory( ComputeTubeProbability )
-# Has not been updated for GDCM 2.0.
-if( NOT TubeTK_USE_ITKV4 )
+# TODO: Has not been updated for GDCM 2.0.
+if( 0 )
   add_subdirectory( ConvertDICOMSeriesToImages )
 endif()
 add_subdirectory( ConvertToMetaImage )
@@ -45,8 +45,8 @@ add_subdirectory( EnhanceTubesUsingDiffusion )
 add_subdirectory( EnhanceUsingDiscriminantAnalysis )
 add_subdirectory( EnhanceUsingNJetDiscriminantAnalysis )
 add_subdirectory( ImageMath )
-# Requires Slicer3.
-if( NOT TubeTK_USE_ITKV4 )
+# TODO: Requires Slicer3 CLI (needs update).
+if( 0 )
   add_subdirectory( MergeAdjacentImages )
 endif()
 add_subdirectory( MergeTubeGraphs )

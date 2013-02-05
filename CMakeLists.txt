@@ -296,13 +296,6 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   endif()
 
   #-----------------------------------------------------------------------------
-  # ITKv4 Switch
-  option( TubeTK_USE_ITKV4
-    "Compile with ITKv4. Only supported applications will be built."
-    OFF )
-  mark_as_advanced( TubeTK_USE_ITKV4 )
-
-  #-----------------------------------------------------------------------------
   # QT Setup
   option( TubeTK_USE_QT
     "Use QT to compile TubeTK, enables additional applications and libraries."
@@ -414,11 +407,6 @@ else( TubeTK_USE_SUPERBUILD )
     find_package( Slicer REQUIRED )
     include( ${Slicer_USE_FILE} )
 
-    set( TubeTK_USE_ITKV4 OFF )
-    if( ${ITK_VERSION_MAJOR} STREQUAL "4" )
-      set( TubeTK_USE_ITKV4 ON )
-    endif()
-
     set( TubeTK_USE_VTK ON )
     set( TubeTK_USE_QT ON )
     set( TubeTK_USE_CTK ON )
@@ -454,7 +442,8 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 #-----------------------------------------------------------------------------
 # Setup to conform to Slicer3 paths and define plugin copying macros
-if( NOT TubeTK_USE_ITKV4 )
+# TODO: Needs update to Slicer4
+if( 0 )
   include( CMake/Slicer3Config.cmake )
 
   #---------------------------------------------------------------------------

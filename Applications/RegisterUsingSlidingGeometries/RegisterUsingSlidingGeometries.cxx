@@ -21,14 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
@@ -746,7 +738,7 @@ int DoIt( int argc, char * argv[] )
   multires->SetRegistrationFilter( registrator );
   multires->SetFixedImage( orientFixed->GetOutput() );
   multires->SetMovingImage( orientMoving->GetOutput() );
-  multires->SetArbitraryInitialDeformationField( orientInitField->GetOutput() );
+  multires->SetArbitraryInitialDisplacementField( orientInitField->GetOutput() );
   multires->SetFixedImagePyramid( fixedImagePyramid );
   multires->SetMovingImagePyramid( movingImagePyramid );
   multires->SetNumberOfLevels( numberOfLevels );
@@ -773,7 +765,7 @@ int DoIt( int argc, char * argv[] )
       < MovingImageType, typename WarperType::CoordRepType > InterpolatorType;
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
   warper->SetInput( movingImageReader->GetOutput() );
-  warper->SetDeformationField( multires->GetOutput() );
+  warper->SetDisplacementField( multires->GetOutput() );
   warper->SetInterpolator( interpolator );
   warper->SetOutputParametersFromImage( fixedImageReader->GetOutput() );
   warper->SetEdgePaddingValue( backgroundIntensity );

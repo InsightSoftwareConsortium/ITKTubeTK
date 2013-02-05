@@ -27,8 +27,8 @@ limitations under the License.
 #include "itkAddImageFilter.h"
 #include "itkSubtractImageFilter.h"
 #include "itkSquareImageFilter.h"
-#include "itkDivideByConstantImageFilter.h"
-#include "itkMultiplyByConstantImageFilter.h"
+#include "itkDivideImageFilter.h"
+#include "itkMultiplyImageFilter.h"
 #include "itkSqrtImageFilter.h"
 #include "itkDiscreteGaussianImageFilter.h"
 
@@ -200,9 +200,9 @@ void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeMeanAndStandardDeviation() const
 {
-  typedef itk::DivideByConstantImageFilter< HistogramType, double,
+  typedef itk::DivideImageFilter< HistogramType, double,
     HistogramType >                                          DividerType;
-  typedef itk::MultiplyByConstantImageFilter< HistogramType, double,
+  typedef itk::MultiplyImageFilter< HistogramType, double,
     HistogramType >                                          MultiplierType;
   typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
                                                              AdderType;
