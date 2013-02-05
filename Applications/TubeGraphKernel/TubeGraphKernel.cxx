@@ -68,22 +68,34 @@ void readGraphList(const std::string &fileName,
     int nGraphs = boost::lexical_cast<int>( pt.get<std::string>("nGraphs") );
 
     int graphCount = 0;
-    BOOST_FOREACH( boost::property_tree::ptree::value_type &v, pt.get_child("graphList") )
+    BOOST_FOREACH( boost::property_tree::ptree::value_type &v,
+                   pt.get_child("graphList") )
       {
-      // Compose path to graph file
-      boost::filesystem::path base( basePath.c_str() );
-      boost::filesystem::path file( boost::lexical_cast<std::string>( v.second.data() ) );
-      boost::filesystem::path fullPathToFile = base / file;
+      std::string fullGraphFileName;
+      if( basePath.empty() )
+        {
+        // Assume filename is absolute
+        fullGraphFileName = boost::lexical_cast<std::string>( v.second.data() );
+        }
+      else
+        {
+        // Build absolute filename from basePath and fileName
+        boost::filesystem::path base( basePath.c_str() );
+        boost::filesystem::path file(
+          boost::lexical_cast<std::string>( v.second.data() ) );
+        boost::filesystem::path fullPathToGraphFile = base / file;
+        fullGraphFileName = fullPathToGraphFile.string();
+        }
 
       // Check existence
-      if( !boost::filesystem::exists( fullPathToFile.string().c_str() ) )
+      if( !boost::filesystem::exists( fullGraphFileName.c_str() ) )
         {
         tube::FmtErrorMessage("Graph file %s not found!",
-          fullPathToFile.string().c_str() );
+          fullGraphFileName.c_str() );
         throw std::exception();
         }
 
-      list.push_back( fullPathToFile.string() );
+      list.push_back( fullGraphFileName );
       ++graphCount;
       }
 

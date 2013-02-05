@@ -27,13 +27,13 @@ value among the i-th graph of A and the j-th graph of B. K will eventually be a 
     </file>
     <file>
       <name>argOutputKernel</name>
-      <description>Basename for output kernel (will write .bin, .libsvm files).</description>
+      <description>Basename for output kernel (will write .bin, .libsvm, .txt files).</description>
       <index>2</index>
     </file>
     <string>
       <name>argBasePath</name>
-      <description>Absolute path to the graph files.</description>
-      <index>3</index>
+      <longflag>basePath</longflag>
+      <description>Absolute path to the graph files (Optional).</description>
     </string>
     <integer>
       <name>argGraphKernelType</name>

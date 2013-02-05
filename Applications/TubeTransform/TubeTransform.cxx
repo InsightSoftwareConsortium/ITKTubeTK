@@ -86,7 +86,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   tube::CLIProgressReporter progressReporter(
-    "tubeTransform",
+    "TubeTransform",
     CLPProcessInformation );
 
   progressReporter.Start();

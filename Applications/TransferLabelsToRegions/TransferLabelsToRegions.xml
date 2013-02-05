@@ -14,22 +14,22 @@
     <label>IO</label>
     <description>Input/output parameters</description>
     <file>
-      <name>inImageFileName</name>
+      <name>argInImageFileName</name>
       <index>0</index>
       <description>Filename of the input image.</description>
     </file>
     <file>
-      <name>inLabelFileName</name>
+      <name>argInLabelFileName</name>
       <index>1</index>
       <description>Filename of the label map image.</description>
     </file>
     <file>
-      <name>outImageFileName</name>
+      <name>argOutImageFileName</name>
       <index>2</index>
       <description>File name of the labeled output CVT image.</description>
     </file>
     <file>
-     <name>outMappingFileName</name>
+     <name>argOutMappingFileName</name>
       <index>3</index>
       <description>File name of the output mapping file, mapping CVT cell IDs to features.</description>
     </file>
@@ -40,6 +40,13 @@
       <description>Produces a mapping file with CVT cell -> feature histogram, instead of CVT cell -> Dominant label.</description>
       <default>false</default>
     </boolean>
+    <integer-vector>
+      <name>argOmit</name>
+      <longflag>omitRegions</longflag>
+      <description>Omit these segmentation regions.</description>
+      <label>omitRegions</label>
+      <default></default>
+    </integer-vector>
   </parameters>
 
 </executable>

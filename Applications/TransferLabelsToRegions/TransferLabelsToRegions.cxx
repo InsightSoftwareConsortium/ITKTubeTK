@@ -43,6 +43,9 @@ limitations under the License.
 #include "itkImageDuplicator.h"
 
 
+// BOOST includes
+#include <boost/dynamic_bitset.hpp>
+
 #include "TransferLabelsToRegionsCLP.h"
 
 // STL includes
@@ -61,7 +64,7 @@ int DoIt( int argc, char * argv[] );
 int main( int argc, char **argv )
 {
   PARSE_ARGS;
-  return tube::ParseArgsAndCallDoIt( inImageFileName, argc, argv );
+  return tube::ParseArgsAndCallDoIt( argInImageFileName, argc, argv );
 
 }
 
@@ -240,8 +243,8 @@ int DoIt( int argc, char **argv )
   typedef itk::ImageIOBase::IOComponentType               ScalarTPixelype;
 
   // Check input images's type (we assume discrete valued images)
-  if( !IsDiscrete( inImageFileName ) ||
-      !IsDiscrete( inLabelFileName ) )
+  if( !IsDiscrete( argInImageFileName ) ||
+      !IsDiscrete( argInLabelFileName ) )
     {
     tube::ErrorMessage( "Non-discrete value types in input files!" );
     return EXIT_FAILURE;
@@ -257,7 +260,7 @@ int DoIt( int argc, char **argv )
   typename InputReaderType::Pointer inImageReader =
     InputReaderType::New( );
 
-  inImageReader->SetFileName( inImageFileName.c_str( ) );
+  inImageReader->SetFileName( argInImageFileName.c_str( ) );
   try
     {
     inImageReader->Update( );
@@ -273,7 +276,7 @@ int DoIt( int argc, char **argv )
   typename InputReaderType::Pointer inLabelImageReader =
     InputReaderType::New( );
 
-  inLabelImageReader->SetFileName( inLabelFileName.c_str() );
+  inLabelImageReader->SetFileName( argInLabelFileName.c_str() );
   try
     {
     inLabelImageReader->Update( );
@@ -289,7 +292,7 @@ int DoIt( int argc, char **argv )
   /*
    * Since we will use the voxel indices, extracted from the input image, to
    * index voxels in the label image, we have to ensure compatibility w.r.t.
-   * spacing, direction and size.
+   * spacing, direction, size and origin.
    */
   if( !CheckCompatibility< InputImageType >( inImage, inLabelImage ) )
     {
@@ -321,7 +324,6 @@ int DoIt( int argc, char **argv )
 
   try
     {
-    // Assert if CVT cells are numbered  1 ... C
     itkAssertOrThrowMacro( static_cast<int>( maxCVTIndex - minCVTIndex )
       == static_cast<int>(regions.size()-1),
       "CVT cell numbering not continuous!" );
@@ -379,20 +381,20 @@ int DoIt( int argc, char **argv )
    * since it allows us to easily build a histogram later on.
    */
   unsigned int labelCounter = 0;
-  std::map< TPixel, unsigned int > labelRemap;
-  std::map< unsigned int, TPixel > labelRemapInverse;
+  std::map< TPixel, unsigned int > labelRemapFwd;
+  std::map< unsigned int, TPixel > labelRemapInv;
 
   typename std::set< TPixel >::const_iterator labelSetIt = labelSet.begin();
   while( labelSetIt != labelSet.end() )
     {
-    labelRemap[*(labelSetIt)] = labelCounter;
-    labelRemapInverse[labelCounter] = *(labelSetIt);
+    labelRemapFwd[*(labelSetIt)] = labelCounter;
+    labelRemapInv[labelCounter] = *(labelSetIt);
     ++labelCounter;
     ++labelSetIt;
     }
 
-  typename std::map< TPixel, unsigned int >::iterator u = labelRemap.begin();
-  while( u != labelRemap.end() )
+  typename std::map< TPixel, unsigned int >::iterator u = labelRemapFwd.begin();
+  while( u != labelRemapFwd.end() )
     {
     tube::FmtDebugMessage("%.4d mapsto %.4d",
       (*u).first, (*u).second);
@@ -408,6 +410,9 @@ int DoIt( int argc, char **argv )
     inImage->GetLargestPossibleRegion().GetSize() );
 
 
+  // Counter for background cells
+  unsigned int omittedRegionCounter = 0;
+
   /*
    * Relabeling algorithm:
    *
@@ -416,17 +421,26 @@ int DoIt( int argc, char **argv )
    *   3) Set voxel values (of CVT cell) in output image to dominant label
    */
   std::ofstream outMappingFile;
-  outMappingFile.open( outMappingFileName.c_str() );
+  outMappingFile.open( argOutMappingFileName.c_str() );
 
   if( outMappingFile.fail() )
     {
     tube::FmtErrorMessage( "Could not open %s for writing!",
-      outMappingFileName.c_str() );
+      argOutMappingFileName.c_str() );
     return EXIT_FAILURE;
     }
 
   // Vector, holding the frequencies of label occurrence
   std::vector< unsigned int > cellHist( labelSet.size() );
+  boost::dynamic_bitset<> omitLabel( labelSet.size() );
+
+  // Set OMIT flag for certain labels
+  for( unsigned int o=0; o<argOmit.size(); ++o)
+    {
+    // Translate original label to remapped one and set
+    // the bit to omit this label in future computatons
+    omitLabel[labelRemapFwd[argOmit[o]]] = 1;
+    }
 
   typename mapType::iterator mapIt = cvtToIndex.begin();
   while( mapIt != cvtToIndex.end() )
@@ -443,22 +457,31 @@ int DoIt( int argc, char **argv )
       static_cast<int>( indexVector.size() ) );
 
     // Build histogram of anatomical labels in CVT cell
-    for(unsigned int v=0; v<indexVector.size(); ++v)
+    for( unsigned int v=0; v<indexVector.size(); ++v )
       {
       indexType index = indexVector[v];
       TPixel label = inLabelImage->GetPixel( index );
-      cellHist[labelRemap[label]] += 1;
+      cellHist[labelRemapFwd[label]] += 1;
       }
 
-    // Determine position of highest freq.
+    // Find the dominant label
     unsigned int dominantLabel = distance(
       cellHist.begin(),
       std::max_element(
         cellHist.begin(),
         cellHist.end() ) );
 
-    // Map label back to original one
-    TPixel originalLabel = labelRemapInverse[dominantLabel];
+    // Map the artificial label to the original one
+    TPixel originalLabel = labelRemapInv[dominantLabel];
+
+    if( omitLabel[originalLabel] )
+      {
+      // If we omit a region, give it a unique label - by that we
+      // can ensure that omitted background (for instance) cells do
+      // not get just one background label
+      originalLabel = omittedRegionCounter++;
+      }
+
     for(unsigned int v=0; v < indexVector.size(); ++v)
       {
       indexType index = indexVector[v];
@@ -488,7 +511,7 @@ int DoIt( int argc, char **argv )
   outMappingFile.close();
 
   typename OutputWriterType::Pointer writer = OutputWriterType::New( );
-  writer->SetFileName( outImageFileName.c_str( ) );
+  writer->SetFileName( argOutImageFileName.c_str( ) );
   writer->SetInput( outImage );
   writer->SetUseCompression( true );
   try

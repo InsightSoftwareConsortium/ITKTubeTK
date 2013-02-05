@@ -48,7 +48,7 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
               MIDAS{mutag_test_graphs.json.md5}
               MIDAS{mutag_test_graphs.json.md5}
               ${TEMP}/${MODULE_NAME}Test1
-              ${MIDAS_DATA_DIR}
+              --basePath ${MIDAS_DATA_DIR}
               --graphKernelType 1
               --subtreeHeight 2 )
 
