@@ -34,7 +34,7 @@
 #        harder to maintain and understand, even if you think your way is
 #        "better."
 
-set( MODULE_NAME TubeToDensityImage )
+set( MODULE_NAME TubesToDensityImage )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -46,12 +46,12 @@ include( ${USE_ITK_FILE} )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ObjectDocuments
+  TARGET_LIBRARIES ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocument
   )
 
 #if( BUILD_TESTING )

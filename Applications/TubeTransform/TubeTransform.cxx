@@ -35,7 +35,6 @@ limitations under the License.
 #include <itkSpatialObjectWriter.h>
 #include <itkSpatialObjectReader.h>
 
-#include <OptionList.h>
 #include "itkTubeToTubeTransformFilter.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFactoryBase.h"

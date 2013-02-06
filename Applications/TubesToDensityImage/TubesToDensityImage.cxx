@@ -34,7 +34,6 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
-#include <OptionList.h>
 #include "itkTubeToTubeTransformFilter.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFactoryBase.h"
