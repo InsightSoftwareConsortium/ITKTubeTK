@@ -147,14 +147,14 @@ def transform_tubes_to_phantom(config, options):
         logger.debug("MRA to T1 space for %s (using %s transform)"
             % (tubes_original_file, mra_t1_tfm_file))
 
-        t0_cmd = [config["Exec"]["tubeTransform"], tubes_original_file, mra_t1_tfm_file, tubes_mra_t1_file]
+        t0_cmd = [config["Exec"]["TubeTransform"], tubes_original_file, mra_t1_tfm_file, tubes_mra_t1_file]
         subprocess.call(t0_cmd)
 
         # Tubes (in MRI T1 image space) to Phantom image space
         logger.debug("T1 to Phantom space for %s (using %s transform)"
             % (tubes_mra_t1_file, tubes_t1_pha_file))
 
-        t1_cmd = [config["Exec"]["tubeTransform"], tubes_mra_t1_file, t1_pha_tfm_file, tubes_t1_pha_file]
+        t1_cmd = [config["Exec"]["TubeTransform"], tubes_mra_t1_file, t1_pha_tfm_file, tubes_t1_pha_file]
         subprocess.call(t1_cmd)
 
 
@@ -180,7 +180,7 @@ def compute_ind_atlas_edm(config, options):
         logger.debug("Create individual EDM for %s"
             % os.path.basename(subject_dir))
 
-        cmd = [config["Exec"]["tubeDensityImageRadiusBuilder"],
+        cmd = [config["Exec"]["TubeToDensityImage"],
             tubes_in_phantom_space, den_image_name, rad_image_name, tan_image_name,
             "--inputTemplateImage %s" % options["phantom"],
             "--useSquareDistance"]
@@ -242,12 +242,12 @@ def compute_grp_atlas_sum(config, options):
 
         cmd = None
         if options["phantomType"] == "BrainWeb":
-            cmd = [config["Exec"]["tubeAtlasSummation"],
+            cmd = [config["Exec"]["AtlasBuilderUsingIntensity"],
                 atlas_edm_doc, atlas_edm_file, atlas_edm_var_file,
                 "--outputSize %d,%d,%d" % (181, 217, 181),
                 "--outputSpacing %d,%d,%d" % (1,1,1)]
         elif options["phantomType"] == "SPL":
-            cmd = [config["Exec"]["tubeAtlasSummation"],
+            cmd = [config["Exec"]["AtlasBuilderUsingIntensity"],
                 atlas_edm_doc, atlas_edm_file, atlas_edm_var_file,
                 "--outputSize %d,%d,%d" % (256, 256, 256),
                 "--outputSpacing %d,%d,%d" % (1,1,1)]
@@ -362,7 +362,7 @@ def graph_from_atlas(config, options, grp, atlas_type, data_type):
             % (grp, os.path.basename(options["subjects"][i]), atlas_type))
 
         output_graph_file = os.path.join(cv_subject_dir, "VascularNetwork-t1-phantom-%s.grp" % atlas_type )
-        cmd = [config["Exec"]["tubeToGraph"],
+        cmd = [config["Exec"]["TubeToTubeGraph"],
             tubes_in_phantom_space, atlas_file, output_graph_file]
         subprocess.call(cmd)
 
@@ -407,7 +407,7 @@ def graph_from_graphs(config, options, grp, atlas_type, create_image=False):
     :param grp: Selects the group for which we want to compute a summary graph.
     :param atlas_type: Selectes the individual graphs based on the atlas that
                        was used to generate them.
-    :param create_image: Run tubeGraphToImage for visualization of results.
+    :param create_image: Run TubeGraphToImage for visualization of results.
     """
 
     logger = logging.getLogger()
@@ -442,7 +442,7 @@ def graph_from_graphs(config, options, grp, atlas_type, create_image=False):
 
     fid.close()
 
-    cmd = [config["Exec"]["tubeGraphsToGraph"],
+    cmd = [config["Exec"]["MergeTubeGraphs"],
         graph_doc_file,
         os.path.join(cv_dir, grp, "Normal-mean-%s.grp" % atlas_type),
         "%d" % options["cells"]]
@@ -458,7 +458,7 @@ def graph_from_graphs(config, options, grp, atlas_type, create_image=False):
         if not check_file(atlas_cvt_file):
             raise Exception("Atlas CVT file %s missing!" % atlas_cvt_file)
 
-        cmd = [config["Exec"]["tubeGraphToImage"],
+        cmd = [config["Exec"]["TubeGraphToImage"],
             atlas_cvt_file,
             os.path.join(cv_dir, grp, "Normal-mean-%s.grp" % atlas_type),
             os.path.join(cv_dir, grp, "Normal-mean-%s.cvt" % atlas_type)]
@@ -691,7 +691,7 @@ def compute_tube_prob(config, options, atlas_type, data_type):
         prob_file = os.path.join(cv_dir, os.path.basename(options["subjects"][i]), "on-%s-atlas.treProb.txt" % atlas_type)
         tube_file = os.path.join(options["dest"], os.path.basename(options["subjects"][i]), "VascularNetwork-t1-phantom.tre")
 
-        cmd = [config["Exec"]["tubeDensityProbability"],
+        cmd = [config["Exec"]["ComputeTubeProbability"],
             tube_file, atlas_file, prob_file]
         print cmd
 
@@ -757,7 +757,7 @@ def compute_graph_probability(config, options, grp, atlas_type, data_type):
             os.path.basename(options["subjects"][i]),
             "VascularNetwork-t1-phantom-%s-%s.grp" % (atlas_type, grp))
 
-        cmd = [config["Exec"]["tubeGraphProbability"],
+        cmd = [config["Exec"]["ComputeTubeGraphProbability"],
             in_graph_file, summary_graph_file, out_graph_file]
         print cmd
         subprocess.call(cmd)
@@ -854,7 +854,7 @@ def compute_trn_gk(config, options):
     trn_common_json_file = os.path.join(cv_dir, "trn-Common.json")
     compose_gk_list(config, options, "Common", "trn", trn_common_json_file)
 
-    cmd = [config["Exec"]["tubeGraphKernel"],
+    cmd = [config["Exec"]["TubeGraphKernel"],
         trn_common_json_file,
         trn_common_json_file,
         trn_common_kern_file,
@@ -885,7 +885,7 @@ def compute_tst_gk(config, options):
     tst_common_kern_file = os.path.join(cv_dir, "tst-Common.kern")
     compose_gk_list(config, options, "Common", "tst", tst_common_json_file)
 
-    cmd = [config["Exec"]["tubeGraphKernel"],
+    cmd = [config["Exec"]["TubeGraphKernel"],
         tst_common_json_file,
         trn_common_json_file,
         tst_common_kern_file,
@@ -935,7 +935,7 @@ def compute_full_gk(config, options):
         json.dump(full_data, outfile)
 
     full_common_kern_file = os.path.join(cv_dir, "full-Common.kern")
-    cmd = [config["Exec"]["tubeGraphKernel"],
+    cmd = [config["Exec"]["TubeGraphKernel"],
         graph_list_file,
         graph_list_file,
         full_common_kern_file,
@@ -1075,7 +1075,7 @@ def compute_distance_signatures(config, options):
 
     # Compute the k(y,y) entries ... (used in kernel-induced distance)
     k2_file = os.path.join(cv_dir, "k2-sgd.kern")
-    cmd = [config["Exec"]["tubeGraphKernel"],
+    cmd = [config["Exec"]["TubeGraphKernel"],
             sgd_file,
             sgd_file,
             k2_file,
@@ -1123,7 +1123,7 @@ def compute_distance_signatures(config, options):
         k1_file = os.path.join(cv_dir, os.path.basename(subject), "k1-sgd.kern")
 
         # First, the k(x,x) entries ... (used in kernel-induced distance)
-        cmd = [config["Exec"]["tubeGraphKernel"],
+        cmd = [config["Exec"]["TubeGraphKernel"],
             subject_graph_list_file,
             subject_graph_list_file,
             k0_file,
@@ -1133,7 +1133,7 @@ def compute_distance_signatures(config, options):
         subprocess.call(cmd)
 
         # Second, the k(x,y) entries ... (used in kernel-induced distance)
-        cmd = [config["Exec"]["tubeGraphKernel"],
+        cmd = [config["Exec"]["TubeGraphKernel"],
             subject_graph_list_file,
             sgd_file,
             k1_file,
@@ -1167,7 +1167,7 @@ def evaluate_classifier_from_full_gk(config, options):
     # Create mapping of class to label
     label_map = create_label_map(options)
 
-    # This is the file created by tubeGraphKernel
+    # This is the file created by TubeGraphKernel
     kernel_data_file = os.path.join(cv_dir, "full-Common.kern.bin")
     if not check_file(kernel_data_file):
         raise Exception("Training kernel data file %s missing!" % kernel_data_file)

@@ -23,6 +23,14 @@
       <longflag>quantiles</longflag>
       <default>0.25,0.5,0.75</default>
     </float-vector>
+    <boolean>
+      <name>outputPlainText</name>
+      <label>Output plain text</label>
+      <longflag>outputPlainText</longflag>
+      <description>If set, an ASCII file with quantile values is written, instead of a file in JSON format.
+      </description>
+      <default>false</default>
+    </boolean>
     <file>
       <name>outFile</name>
       <index>1</index>

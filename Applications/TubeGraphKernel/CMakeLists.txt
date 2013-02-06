@@ -44,7 +44,7 @@ include( ${USE_ITK_FILE} )
 
 # Find Boost
 set(Boost_ADDITIONAL_VERSIONS "1.51")
-find_package(Boost 1.49 REQUIRED)
+find_package(Boost 1.49 COMPONENTS system filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------------
@@ -53,13 +53,13 @@ set(CMAKE_CXX_FLAGS "-O3 -ffast-math -msse3")
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES}
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
   ADDITIONAL_SRCS ShortestPathKernel.cxx WLSubtreeKernel.cxx GraphKernel.cxx
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Filtering
   )
 
-#if( BUILD_TESTING )
-#  add_subdirectory( Testing )
-#endif( BUILD_TESTING )
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )

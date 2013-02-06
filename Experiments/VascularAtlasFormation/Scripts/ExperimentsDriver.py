@@ -75,7 +75,7 @@ def main(argv=None):
     logger = logging.getLogger()
 
     N = len(json_dat["Data"])
-    cv = ShuffleSplit(N, n_iterations=options.cvruns, test_size=0.3, random_state=0)
+    cv = ShuffleSplit(N, n_iter=options.cvruns, test_size=0.3, random_state=0)
     Utils.ensure_dir(options.dest)
 
     logger.debug("Destination directory = %s" % options.dest)

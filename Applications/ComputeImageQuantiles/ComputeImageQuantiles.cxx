@@ -150,7 +150,7 @@ void computeQuantiles( ImageType::Pointer image,
  *     ]
  *   }
  */
-void writeQuantilesToFile( const std::vector<float>& quantiles,
+void writeQuantilesToJSONFile( const std::vector<float>& quantiles,
                            const std::vector<ImagePixelType>& quantileValues,
                            const std::string &outFile )
 {
@@ -184,6 +184,25 @@ void writeQuantilesToFile( const std::vector<float>& quantiles,
 }
 
 
+/**
+ * Writes the quantiles to a plain ASCII file, one
+ * quantile value per line.
+ */
+void writeQuantilesToTextFile( const std::vector<float> &quantiles,
+                               const std::string &outFile )
+{
+  std::ofstream quantileFile;
+  quantileFile.open( outFile.c_str() );
+  for( unsigned int i=0; i<quantiles.size(); ++i )
+    {
+    quantileFile << quantiles[i] << std::endl;
+    }
+  quantileFile.close();
+}
+
+
+
+
 int main( int argc, char*argv[] )
 {
   PARSE_ARGS;
@@ -209,7 +228,14 @@ int main( int argc, char*argv[] )
    try
     {
     computeQuantiles(im, quantiles, quantileValues);
-    writeQuantilesToFile( quantiles, quantileValues, outFile );
+    if( outputPlainText )
+      {
+      writeQuantilesToTextFile( quantiles, outFile );
+      }
+    else
+      {
+      writeQuantilesToJSONFile( quantiles, quantileValues, outFile );
+      }
     }
   catch(std::exception &e)
     {
