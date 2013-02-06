@@ -21,15 +21,41 @@
 #
 ##############################################################################
 
-project( ObjectDocuments )
+project( TubeObjectDocuments )
 
 # Find ITK
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-add_library( ObjectDocuments
+set( TubeTK_Base_ObjectDocuments_H_Files
+  itkObjectDocumentToImageFilter.h
+  itkObjectDocumentToObjectSource.h
+  itkSpatialObjectToSpatialObjectFilter.h )
+
+set( TubeTk_Base_ObjectDocuments_TXX_Files
+  itkObjectDocumentToImageFilter.txx
+  itkObjectDocumentToObjectSource.txx
+  itkSpatialObjectToSpatialObjectFilter.txx )
+
+add_library( TubeObjectDocuments
   MetaDocument.cxx
   MetaObjectDocument.cxx
   OptionList.cxx )
 
-target_link_libraries( ObjectDocuments ${ITK_LIBRARIES} )
+target_link_libraries( TubeObjectDocuments ${ITK_LIBRARIES} )
+
+if( NOT TubeTK_USE_ITKV4 )
+  slicer3_set_plugins_output_path( TubeObjectDocuments )
+  set( TARGETS TubeObjectDocuments )
+  slicer3_install_plugins( ${TARGETS} )
+endif( NOT TubeTK_USE_ITKV4 )
+
+install(FILES
+  ${TubeTK_Base_ObjectDocuments_H_Files}
+  ${TubeTK_Base_ObjectDocuments_TXX_Files}
+  DESTINATION include
+  )
+
+#if( BUILD_TESTING )
+#  add_subdirectory( Testing )
+#endif( BUILD_TESTING )

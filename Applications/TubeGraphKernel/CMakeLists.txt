@@ -58,7 +58,6 @@ SEMMacroBuildCLI(
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
   )
 
 #if( BUILD_TESTING )

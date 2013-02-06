@@ -34,10 +34,7 @@ limitations under the License.
 #include <itkVesselTubeSpatialObject.h>
 #include <itkSpatialObjectWriter.h>
 #include <itkSpatialObjectReader.h>
-#include <MetaObjectDocument.h>
-#include <itkObjectDocument.h>
 
-#include <OptionList.h>
 #include "itkTubeToTubeTransformFilter.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFactoryBase.h"
