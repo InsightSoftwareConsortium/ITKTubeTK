@@ -65,7 +65,6 @@ int main( int argc, char **argv )
 {
   PARSE_ARGS;
   return tube::ParseArgsAndCallDoIt( argInImageFileName, argc, argv );
-
 }
 
 
@@ -307,25 +306,27 @@ int DoIt( int argc, char **argv )
   typename itk::ImageRegionIteratorWithIndex< InputImageType > inImageIt(
     inImage, inImage->GetLargestPossibleRegion());
 
-  std::set< TPixel > regions;
+  std::set< TPixel > cvtCellIdentifiers;
 
   inImageIt.GoToBegin();
   while( !inImageIt.IsAtEnd() )
     {
-    regions.insert( inImageIt.Get() );
+    cvtCellIdentifiers.insert( inImageIt.Get() );
     ++inImageIt;
     }
 
-  tube::FmtInfoMessage("%d distinct CVT cells!",
-    static_cast<int>( regions.size() ) );
+  tube::FmtDebugMessage("%d distinct CVT cells!",
+    static_cast<int>( cvtCellIdentifiers.size() ) );
 
-  TPixel maxCVTIndex = *std::max_element( regions.begin(), regions.end() );
-  TPixel minCVTIndex = *std::min_element( regions.begin(), regions.end() );
+  TPixel maxCVTIndex = *std::max_element( cvtCellIdentifiers.begin(),
+                                          cvtCellIdentifiers.end() );
+  TPixel minCVTIndex = *std::min_element( cvtCellIdentifiers.begin(),
+                                          cvtCellIdentifiers.end() );
 
   try
     {
     itkAssertOrThrowMacro( static_cast<int>( maxCVTIndex - minCVTIndex )
-      == static_cast<int>(regions.size()-1),
+      == static_cast<int>(cvtCellIdentifiers.size()-1),
       "CVT cell numbering not continuous!" );
     }
   catch( itk::ExceptionObject &ex )
@@ -334,7 +335,7 @@ int DoIt( int argc, char **argv )
     return EXIT_FAILURE;
     }
 
-  tube::FmtInfoMessage("Maximum CVT identifier = %d!",
+  tube::FmtDebugMessage("Maximum CVT identifier = %d!",
     static_cast<int>( maxCVTIndex ) );
 
 
@@ -410,8 +411,11 @@ int DoIt( int argc, char **argv )
     inImage->GetLargestPossibleRegion().GetSize() );
 
 
-  // Counter for background cells
-  unsigned int omittedRegionCounter = 0;
+  // Count newly created IDs for CVT cells, other than segmentation labels
+  unsigned int omittedRegionCounter = maxLabel + 1;
+  tube::FmtDebugMessage( "OmittedRegionCounter init to %d",
+    omittedRegionCounter );
+
 
   /*
    * Relabeling algorithm:
@@ -437,8 +441,6 @@ int DoIt( int argc, char **argv )
   // Set OMIT flag for certain labels
   for( unsigned int o=0; o<argOmit.size(); ++o)
     {
-    // Translate original label to remapped one and set
-    // the bit to omit this label in future computatons
     omitLabel[labelRemapFwd[argOmit[o]]] = 1;
     }
 
@@ -447,16 +449,14 @@ int DoIt( int argc, char **argv )
     {
     TPixel cell = (*mapIt).first;
 
-    tube::FmtDebugMessage("Processing cell %d!",
-      static_cast<int>(cell) );
-
     const std::vector< indexType > & indexVector =
       (*mapIt).second;
 
-    tube::FmtDebugMessage("Index vector has size = %d!",
+    tube::FmtDebugMessage("Cell %d: Index vector has size = %d!",
+      static_cast<int>(cell),
       static_cast<int>( indexVector.size() ) );
 
-    // Build histogram of anatomical labels in CVT cell
+    // Build histogram of anatomical labels in current CVT cell
     for( unsigned int v=0; v<indexVector.size(); ++v )
       {
       indexType index = indexVector[v];
@@ -473,8 +473,10 @@ int DoIt( int argc, char **argv )
 
     // Map the artificial label to the original one
     TPixel originalLabel = labelRemapInv[dominantLabel];
+    tube::FmtDebugMessage( "Dominant label in CVT cell %d = %d (%d)",
+      cell, dominantLabel, labelRemapInv[dominantLabel] );
 
-    if( omitLabel[originalLabel] )
+    if( omitLabel[dominantLabel] )
       {
       // If we omit a region, give it a unique label - by that we
       // can ensure that omitted background (for instance) cells do
@@ -482,16 +484,16 @@ int DoIt( int argc, char **argv )
       originalLabel = omittedRegionCounter++;
       }
 
-    for(unsigned int v=0; v < indexVector.size(); ++v)
+    for(unsigned int v=0; v < indexVector.size(); ++v )
       {
       indexType index = indexVector[v];
       outImage->SetPixel( index, originalLabel );
       }
 
-    outMappingFile << cell << " ";
+    outMappingFile << cvtCellIdentifiers.size() << " ";
     if( argOutputHistogram )
       {
-      for( unsigned int i=0; i<cellHist.size(); ++i)
+      for( unsigned int i=0; i<cellHist.size(); ++i )
         {
         outMappingFile << cellHist[i] << " ";
         }
@@ -502,14 +504,16 @@ int DoIt( int argc, char **argv )
       }
     outMappingFile << std::endl;
 
-
     // Reset cell histogram
-    std::fill( cellHist.begin(), cellHist.end(), 0);
+    std::fill( cellHist.begin(), cellHist.end(), 0 );
     ++mapIt;
     }
 
   outMappingFile.close();
+  tube::FmtDebugMessage( "Introduced %d new labels!",
+    omittedRegionCounter - maxLabel - 1 );
 
+  // Write relabeled CVT image to file
   typename OutputWriterType::Pointer writer = OutputWriterType::New( );
   writer->SetFileName( argOutImageFileName.c_str( ) );
   writer->SetInput( outImage );
