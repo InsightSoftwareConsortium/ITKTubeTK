@@ -152,10 +152,6 @@ public:
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
 
   /** Downsample the tube points by this integer value. */
-#if ITK_VERSION_MAJOR < 4
-  typedef unsigned long SizeValueType;
-  typedef long int      IndexValueType;
-#endif
 
 protected:
   ImageToTubeRigidMetric();

@@ -187,11 +187,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template<class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-#if ITK_VERSION_MAJOR < 4
-::ApplyUpdate(TimeStepType dt)
-#else
 ::ApplyUpdate(const TimeStepType & dt)
-#endif
 {
   itkDebugMacro( << "ApplyUpdate Invoked with time step size: " << dt );
   // Set up for multithreaded processing.
@@ -268,31 +264,17 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // various threads.  There is one distinct slot for each possible thread,
   // so this data structure is thread-safe.
   int threadCount = this->GetMultiThreader()->GetNumberOfThreads();
-#if ITK_VERSION_MAJOR > 3
   str.TimeStepList.resize( threadCount );
   str.ValidTimeStepList.resize( threadCount );
-#else
-  str.TimeStepList = new TimeStepType[threadCount];
-  str.ValidTimeStepList = new bool[threadCount];
-#endif
   for (int i =0; i < threadCount; ++i)
     {      str.ValidTimeStepList[i] = false;    }
 
   // Multithread the execution
   this->GetMultiThreader()->SingleMethodExecute();
 
-#if ITK_VERSION_MAJOR > 3
   // Resolve the single value time step to return
   TimeStepType dt = this->ResolveTimeStep( str.TimeStepList,
                                            str.ValidTimeStepList );
-#else
-  // Resolve the single value time step to return
-  TimeStepType dt = this->ResolveTimeStep( str.TimeStepList,
-                                           str.ValidTimeStepList,
-                                           threadCount);
-  delete [] str.TimeStepList;
-  delete [] str.ValidTimeStepList;
-#endif
 
   return  dt;
 }
@@ -340,11 +322,7 @@ void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::ThreadedApplyUpdate(TimeStepType dt, const ThreadRegionType &regionToProcess,
                       const ThreadDiffusionTensorImageRegionType &,
-#if ITK_VERSION_MAJOR > 3
                       ThreadIdType )
-#else
-                      int )
-#endif
 {
   ImageRegionIterator<UpdateBufferType> u(m_UpdateBuffer,    regionToProcess);
   ImageRegionIterator<OutputImageType>  o(this->GetOutput(), regionToProcess);
@@ -487,13 +465,8 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {
   itkDebugMacro( << "GenerateData is called" );
 
-#if ITK_VERSION_MAJOR < 4
-  if (this->GetState() == Superclass::UNINITIALIZED)
-#else
   if (this->GetIsInitialized())
-#endif
     {
-
     // Allocate the output image
     this->AllocateOutputs();
 

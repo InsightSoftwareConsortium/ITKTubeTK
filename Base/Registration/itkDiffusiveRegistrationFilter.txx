@@ -44,11 +44,7 @@ DiffusiveRegistrationFilter
   // We are using our own regularization, so don't use the implementation
   // provided by the PDERegistration framework.  We also want to use the image
   // spacing to calculate derivatives in physical space
-#if ITK_VERSION_MAJOR > 3
   this->SmoothDisplacementFieldOff();
-#else
-  this->SmoothDeformationFieldOff();
-#endif
   this->SmoothUpdateFieldOff();
   this->UseImageSpacingOn();
 
@@ -248,7 +244,6 @@ DiffusiveRegistrationFilter
 
   // Assert that we have a deformation field, and that its image attributes
   // match the fixed image
-#if ITK_VERSION_MAJOR > 3
   assert( this->GetDisplacementField() );
   if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
         this->GetDisplacementField(), this->GetFixedImage() ) )
@@ -259,18 +254,6 @@ DiffusiveRegistrationFilter
 
   // Update the registration function's deformation field
   df->SetDisplacementField( this->GetDisplacementField() );
-#else
-  assert( this->GetDeformationField() );
-  if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
-        this->GetDeformationField(), this->GetFixedImage() ) )
-    {
-    itkExceptionMacro( << "Deformation field attributes do not match fixed "
-                       << "image" );
-    }
-
-  // Update the registration function's deformation field
-  df->SetDeformationField( this->GetDeformationField() );
-#endif
 
   // On the first iteration of the first level, the stopping criterion mask
   // will contain the highest resolution images.  We need to save the high
@@ -892,13 +875,8 @@ DiffusiveRegistrationFilter
   // so this data structure is thread-safe.
   int threadCount = this->GetMultiThreader()->GetNumberOfThreads();
 
-#if ITK_VERSION_MAJOR > 3
   str.TimeStepList.resize( threadCount );
   str.ValidTimeStepList.resize( threadCount );
-#else
-  str.TimeStepList = new TimeStepType[threadCount];
-  str.ValidTimeStepList = new bool[threadCount];
-#endif
   for ( int i = 0; i < threadCount; ++i )
     {
     str.ValidTimeStepList[i] = false;
@@ -907,18 +885,9 @@ DiffusiveRegistrationFilter
   // Multithread the execution
   this->GetMultiThreader()->SingleMethodExecute();
 
-#if ITK_VERSION_MAJOR > 3
   // Resolve the single value time step to return
   TimeStepType dt = this->ResolveTimeStep( str.TimeStepList,
                                            str.ValidTimeStepList );
-#else
-  // Resolve the single value time step to return
-  TimeStepType dt = this->ResolveTimeStep( str.TimeStepList,
-                                           str.ValidTimeStepList,
-                                           threadCount);
-  delete [] str.TimeStepList;
-  delete [] str.ValidTimeStepList;
-#endif
 
   // Combine the results from the threads to calculate the metrics
   // Will include multiplication by timestep and global scaling, and calculation
@@ -1613,11 +1582,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-#if ITK_VERSION_MAJOR > 3
 ::ApplyUpdate( const TimeStepType & dt )
-#else
-::ApplyUpdate(TimeStepType dt)
-#endif
 {
   // Do the apply update.  After this,
   // - update buffer as for determined step size
@@ -1674,9 +1639,6 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ApplyUpdateThreaderCallback( void * arg )
 {
-#if ITK_VERSION_MAJOR < 4
-  typedef int ThreadIdType;
-#endif
   const ThreadIdType threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
   const ThreadIdType threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
 
@@ -1712,11 +1674,7 @@ DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedApplyUpdate( TimeStepType,
                        const ThreadRegionType &,
-#if ITK_VERSION_MAJOR > 3
                        ThreadIdType )
-#else
-                       int )
-#endif
 {
   // This function should never be called!
   itkExceptionMacro( << "ThreadedApplyUpdate(dt, regionToProcess, threadId) "
@@ -1735,11 +1693,7 @@ DiffusiveRegistrationFilter
 ::ThreadedApplyUpdate( OutputImagePointer & outputImage,
                        TimeStepType dt,
                        const ThreadRegionType &regionToProcess,
-#if ITK_VERSION_MAJOR > 3
                        ThreadIdType )
-#else
-                       int )
-#endif
 {
   ImageRegionIterator< UpdateBufferType > updateIt( m_UpdateBuffer, regionToProcess );
   typedef ImageRegionIterator< OutputImageType > OutputImageIteratorType;

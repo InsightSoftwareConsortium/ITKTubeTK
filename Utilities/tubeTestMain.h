@@ -333,9 +333,7 @@ int RegressionTestImage (const char *testImageFilename,
     ExtractType::Pointer extract = ExtractType::New();
       extract->SetInput(rescale->GetOutput());
       extract->SetExtractionRegion(region);
-#if ITK_VERSION_MAJOR > 3
       extract->SetDirectionCollapseToIdentity();
-#endif
 
     WriterType::Pointer writer = WriterType::New();
       writer->SetInput(extract->GetOutput());

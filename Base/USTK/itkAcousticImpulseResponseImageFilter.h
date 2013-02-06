@@ -107,9 +107,6 @@ protected:
   virtual void PrintSelf(std::ostream & os, Indent indent) const;
 
   virtual void BeforeThreadedGenerateData( void );
-#if ITK_VERSION_MAJOR < 4
-  typedef int ThreadIdType;
-#endif
   virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
     ThreadIdType threadId );
 

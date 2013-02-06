@@ -48,12 +48,7 @@ public:
 
   typedef TOutputSpatialObject OutputSpatialObjectType;
 
-#if ITK_VERSION_MAJOR < 4
-  // In version 4, it is a std::string.
-  typedef unsigned int                               DataObjectIdentifierType;
-#else
   typedef Superclass::DataObjectIdentifierType       DataObjectIdentifierType;
-#endif
   typedef Superclass::DataObjectPointerArraySizeType DataObjectPointerArraySizeType;
 
   /** Run-time type information (and related methods). */
@@ -115,14 +110,9 @@ public:
    * ProcessObject::GetNumberOfIndexedOutputs()). See the GraftOutput for
    * general usage information. */
   virtual void GraftNthOutput(unsigned int idx, DataObject *output);
-#if ITK_VERSION_MAJOR < 4
-  virtual ProcessObject::DataObjectPointer
-    MakeOutput( unsigned int idx );
-#else
   using Superclass::MakeOutput;
   virtual ProcessObject::DataObjectPointer
     MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx );
-#endif
 
 protected:
   SpatialObjectSource();
