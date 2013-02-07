@@ -20,16 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
-#include <iostream>
 #include <fstream>
 
 #include "itkImage.h"

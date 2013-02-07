@@ -426,7 +426,7 @@ int DoIt( int argc, char * argv[] )
   typename ContrastCostFunctionType::ParametersType costFunctionScales( 3 );
   costFunctionScales[0] = scales[0];
   costFunctionScales[1] = scales[1];
-  costFunctionScales[0] = scales[0];
+  costFunctionScales[2] = scales[2];
 
   OptimizerType::ScalesType scales2( 3 );
   scales2[0] = scales[0] * scales[0];

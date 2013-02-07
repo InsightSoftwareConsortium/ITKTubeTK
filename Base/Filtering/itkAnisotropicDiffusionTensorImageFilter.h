@@ -79,10 +79,10 @@ public:
       DiffusionTensorImageType;
 
   // Define the type for storing the eigen-values
-  typedef itk::FixedArray< double, ImageDimension >   EigenValueArrayType;
+  typedef FixedArray< double, ImageDimension >   EigenValueArrayType;
 
   // Declare the types of the output images
-  typedef itk::Image< EigenValueArrayType, ImageDimension >
+  typedef Image< EigenValueArrayType, ImageDimension >
       EigenAnalysisOutputImageType;
 
   /** The value type of a time step.  Inherited from the superclass. */
@@ -176,7 +176,7 @@ protected:
       const ThreadRegionType &regionToProcess,
       const ThreadDiffusionTensorImageRegionType
         &diffusionRegionToProcess,
-      int threadId );
+      ThreadIdType threadId );
 
   /** Prepare for the iteration process. */
   virtual void InitializeIteration();

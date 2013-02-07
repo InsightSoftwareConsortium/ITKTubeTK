@@ -122,6 +122,11 @@ public:
   itkGetMacro( SigmaOuter,   RealType );
  
 
+protected:
+  StructureTensorRecursiveGaussianImageFilter();
+  virtual ~StructureTensorRecursiveGaussianImageFilter() {};
+  void PrintSelf(std::ostream& os, Indent indent) const;
+
   /** StructureTensorRecursiveGaussianImageFilter needs all of the input to produce an
    * output. Therefore, StructureTensorRecursiveGaussianImageFilter needs to provide
    * an implementation for GenerateInputRequestedRegion in order to inform
@@ -129,13 +134,8 @@ public:
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
   virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
 
-protected:
-  StructureTensorRecursiveGaussianImageFilter();
-  virtual ~StructureTensorRecursiveGaussianImageFilter() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
-
   /** Generate Data */
-  void GenerateData( void );
+  void GenerateData();
 
   // Override since the filter produces the entire dataset
   void EnlargeOutputRequestedRegion(DataObject *output);

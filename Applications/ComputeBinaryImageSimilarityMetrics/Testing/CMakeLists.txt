@@ -42,7 +42,7 @@ set( TEXTCOMPARE_EXE
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                -o ${TEMP}/${MODULE_NAME}Test1.txt
-               MIDAS{GDS0015_Large_Modified.png.md5}
+               MIDAS{GDS0015_Large_Modified.mha.md5}
                MIDAS{GDS0015_Large.mha.md5} )
 
 #######

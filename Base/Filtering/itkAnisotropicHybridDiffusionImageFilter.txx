@@ -36,8 +36,6 @@ limitations under the License.
 #include "itkVector.h"
 #include "itkFixedArray.h"
 
-//#define INTERMEDIATE_OUTPUTS
-
 namespace itk {
 
 /**
@@ -63,8 +61,6 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 {
   itkDebugMacro( << "UpdateDiffusionTensorImage() called" );
 
-  std::cerr << "UpdateDiffusionTensorImage()" << std::endl;
-
   /* IN THIS METHOD, the following items will be implemented
    - Compute the structure tensor ( Multiscale version structure tensor )
    - Compute its eigen vectors
@@ -76,12 +72,12 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   //Step 1.1: Compute the structure tensor
   // Instantiate the structure tensor filter
   typename StructureTensorFilterType::Pointer
-    StructureTensorFilter  = StructureTensorFilterType::New();
+    structureTensorFilter  = StructureTensorFilterType::New();
 
-  StructureTensorFilter->SetInput( this->GetOutput() );
-  StructureTensorFilter->SetSigma( m_Sigma );
-  StructureTensorFilter->SetSigmaOuter( m_SigmaOuter );
-  StructureTensorFilter->Update();
+  structureTensorFilter->SetInput( this->GetOutput() );
+  structureTensorFilter->SetSigma( m_Sigma );
+  structureTensorFilter->SetSigmaOuter( m_SigmaOuter );
+  structureTensorFilter->Update();
 
   // Step 1.2: Identify the eigen vectors of the structure tensor
   typedef  Matrix< double, 3, 3>
@@ -104,7 +100,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   eigenVectorAnalysisFilter->OrderEigenValuesBy(
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
-  eigenVectorAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
+  eigenVectorAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
   eigenVectorAnalysisFilter->Modified();
   eigenVectorAnalysisFilter->Update();
 
@@ -119,7 +115,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   eigenAnalysisFilter->OrderEigenValuesBy(
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 
-  eigenAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
+  eigenAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
   eigenAnalysisFilter->Update();
 
   /* Compute the gradient magnitude. This is required to set Lambda1 */
