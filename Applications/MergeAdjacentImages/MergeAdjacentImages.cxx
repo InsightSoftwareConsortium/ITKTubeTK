@@ -44,7 +44,7 @@ limitations under the License.
 #include "itkDanielssonDistanceMapImageFilter.h"
 #include "itkSignedDanielssonDistanceMapImageFilter.h"
 
-// Include Slicer3's registration method
+// Include Slicer4's registration method
 #include "itkImageToImageRegistrationHelper.h"
 
 // Must do a forward declaraction of DoIt before including

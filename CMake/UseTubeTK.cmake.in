@@ -53,7 +53,7 @@ set( TubeTK_LIBRARIES "@TubeTK_LIBRARIES@" )
 set( TubeTK_CMAKE_EXTENSIONS_DIR "@TubeTK_CMAKE_EXTENSIONS_DIR@" )
 
 # Slicer vars and macros as provided by TubeTK
-include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer3Config.cmake" )
+include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )
 
 # The TubeTK version number
 SET(TubeTK_VERSION_MAJOR "@TubeTK_VERSION_MAJOR@")

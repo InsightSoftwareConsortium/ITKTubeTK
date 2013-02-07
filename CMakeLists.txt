@@ -441,24 +441,30 @@ include( ${CMAKE_ROOT}/Modules/TestBigEndian.cmake )
 test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 #-----------------------------------------------------------------------------
-# Setup to conform to Slicer3 paths and define plugin copying macros
-# TODO: Needs update to Slicer4
-if( 0 )
-  include( CMake/Slicer3Config.cmake )
+# Setup to conform to Slicer4 paths and define plugin copying macros
+include( CMake/Slicer4Config.cmake )
 
-  #---------------------------------------------------------------------------
-  # Build Slicer3 cli applications essential to TubeTK
-  svnGetSlicerBase( Resources ${CLI_SOURCE_DIR} )
-  svnGetSlicerCLI( Templates ${CLI_SOURCE_DIR} )
-  svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
+#---------------------------------------------------------------------------
+# build slicer4 cli applications essential to tubetk
+svnGetSlicerBase( Resources )
+svnGetSlicerBase( Base/CLI )
+svnGetSlicerBase( Libs/ITKFactoryRegistration )
+svnGetSlicerCLI( ExpertAutomatedRegistration )
 
-  set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR} )
-  set( LAUNCH_EXE  "" )
+set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
+set( LAUNCH_EXE  "" )
+set( SUPPORT_2D_IMAGES on )
 
-  set( SUPPORT_2D_IMAGES ON )
-  add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
-    ${CLI_BINARY_DIR}/RegisterImagesModule )
-endif()
+add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
+  ${Slicer_BINARY_DIR}/Base/CLI )
+add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
+  ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+
+# ExpertAutomatedRegistration needs to link to ITKFactoryRegistration and this
+# is the only way I can do it for now.
+set(ITK_LIBRARIES ${ITK_LIBRARIES} ITKFactoryRegistration )
+add_subdirectory(${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
+  ${Slicer_BINARY_DIR}/ExpertAutomatedRegistration )
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------

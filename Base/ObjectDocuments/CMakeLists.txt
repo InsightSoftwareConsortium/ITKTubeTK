@@ -44,11 +44,9 @@ add_library( TubeObjectDocuments STATIC
 
 target_link_libraries( TubeObjectDocuments ${ITK_LIBRARIES} )
 
-if( NOT TubeTK_USE_ITKV4 )
-  slicer3_set_plugins_output_path( TubeObjectDocuments )
-  set( TARGETS TubeObjectDocuments )
-  slicer3_install_plugins( ${TARGETS} )
-endif( NOT TubeTK_USE_ITKV4 )
+slicer4_set_plugins_output_path( TubeObjectDocuments )
+set( TARGETS TubeObjectDocuments )
+slicer4_install_plugins( ${TARGETS} )
 
 install(FILES
   ${TubeTK_Base_ObjectDocuments_H_Files}

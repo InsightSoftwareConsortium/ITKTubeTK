@@ -35,21 +35,11 @@ if( PYTHON_EXECUTABLE )
     )
 endif()
 
-if( Slicer3_INSTALL_BIN_DIR )
-  set( BASE_FILTERING_TESTS
-    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseFilteringTests )
-else()
-  set( BASE_FILTERING_TESTS
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseFilteringTests )
-endif()
+set( BASE_FILTERING_TESTS
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseFilteringTests )
 
-if( Slicer3_INSTALL_BIN_DIR )
 set( BASE_FILTERING_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseFilteringHeaderTest )
-else()
-  set( BASE_FILTERING_HEADER_TEST
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseFilteringHeaderTest )
-endif()
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseFilteringHeaderTest )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

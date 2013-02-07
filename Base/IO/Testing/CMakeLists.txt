@@ -31,21 +31,11 @@ if( PYTHON_EXECUTABLE )
     )
 endif()
 
-if( Slicer3_INSTALL_BIN_DIR )
-  set( BASE_IO_TESTS
-    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseIOTests )
-else()
-  set( BASE_IO_TESTS
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseIOTests )
-endif()
+set( BASE_IO_TESTS
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseIOTests )
 
-if( Slicer3_INSTALL_BIN_DIR )
-  set( BASE_IO_HEADER_TEST
-    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseIOHeaderTest )
-else()
-  set( BASE_IO_HEADER_TEST
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseIOHeaderTest )
-endif()
+set( BASE_IO_HEADER_TEST
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseIOHeaderTest )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

@@ -101,8 +101,8 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
 
 set(CTEST_CUSTOM_COVERAGE_EXCLUDE
     ".*CLP.h"
-    "Slicer3"
-    "Slicer3-Build"
+    "Slicer4"
+    "Slicer4-Build"
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
     )
 

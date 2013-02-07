@@ -111,6 +111,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
         -DBUILD_TESTING:BOOL=OFF
         -DITK_USE_REVIEW:BOOL=ON
         -DITK_USE_OPTIMIZED_REGISTRATION_METHODS:BOOL=ON
+        -DITKV3_COMPATIBILITY:BOOL=ON
       INSTALL_COMMAND ""
       )
 
@@ -152,8 +153,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
     set( SimpleITK_DIR "${base}/SimpleITK-Build" )
     set( TubeTK_SimpleITK_Def "-DSimpleITK_DIR:PATH=${SimpleITK_DIR}" )
-    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SimpleITK" )
-
+#     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SimpleITK" )
 
     set( ITK_DIR "${base}/Insight-Build" )
     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "Insight" )
@@ -181,7 +181,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
         set( proj VTK )
         ExternalProject_Add( VTK
           GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/VTK.git"
-          GIT_TAG "origin/slicer-4.0"
+          GIT_TAG "03ddda8cd503b957268fee138c7b57465e5842a4"
           SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
           BINARY_DIR VTK-Build
           CMAKE_GENERATOR ${gen}
@@ -210,7 +210,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
         set( proj VTK )
         ExternalProject_Add( VTK
           GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/VTK.git"
-          GIT_TAG "origin/slicer-4.0"
+          GIT_TAG "03ddda8cd503b957268fee138c7b57465e5842a4"
           SOURCE_DIR "${CMAKE_BINARY_DIR}/VTK"
           BINARY_DIR VTK-Build
           CMAKE_GENERATOR ${gen}
@@ -289,7 +289,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
         set( proj CTK )
         ExternalProject_Add( CTK
           GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
-          GIT_TAG "d76ebaac2226f8ef431835eff1693012ffaf62c3"
+          GIT_TAG "1e823001cb41c92667299635643f1007876d09f6"
           SOURCE_DIR "${CMAKE_BINARY_DIR}/CTK"
           BINARY_DIR CTK-Build
           CMAKE_GENERATOR ${gen}

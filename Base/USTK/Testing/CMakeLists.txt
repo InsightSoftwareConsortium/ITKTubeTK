@@ -25,13 +25,8 @@ include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 
-if( Slicer3_INSTALL_BIN_DIR )
-  set( BASE_USTK_TESTS
-    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseUSTKTests )
-else()
-  set( BASE_USTK_TESTS
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseUSTKTests )
-endif()
+set( BASE_USTK_TESTS
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseUSTKTests )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

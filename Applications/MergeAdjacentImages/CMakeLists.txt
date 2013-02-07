@@ -38,7 +38,8 @@ SEMMacroBuildCLI(
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_BINARY_DIR}/Slicer3/RegisterImagesModule
+    ${TubeTK_BINARY_DIR}/Slicer4/ExpertAutomatedRegistration
+    ${TubeTK_BINARY_DIR}/Slicer4/ExpertAutomatedRegistration/ITKRegistrationHelper
   )
 
 if( BUILD_TESTING )
