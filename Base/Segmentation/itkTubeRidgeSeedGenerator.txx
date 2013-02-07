@@ -113,18 +113,19 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     {
     unsigned int numClasses = this->GetNumberOfObjectIds();
 
-    itk::ImageRegionIteratorWithIndex< RidgeImageType > iter(
+    ImageRegionIteratorWithIndex< RidgeImageType > iter(
       m_RidgeImage, m_RidgeImage->GetLargestPossibleRegion() );
-    typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
+    typedef ImageRegionConstIteratorWithIndex< MaskImageType >
       ConstMaskImageIteratorType;
     ConstMaskImageIteratorType itInMask( this->m_Labelmap,
       this->m_Labelmap->GetLargestPossibleRegion() );
-    double count = 0;
+    double count = 0.0;
     bool found = false;
     ObjectIdType prevObjVal = static_cast<ObjectIdType>( itInMask.Get() )+1;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
+      ++count;
+      if( (count / 10000.0) == static_cast<int>(count/10000.0) )
         {
         std::cout << "Tr1: " << count << std::endl;
         }
@@ -195,10 +196,11 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     int dotPos = numFeatures-1;
     iter.GoToBegin();
     itInMask.GoToBegin();
-    count = 0;
+    count = 0.0;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
+      ++count;
+      if( (count / 10000.0) == static_cast<int>(count/10000.0) )
         {
         std::cout << "Tr2: " << count << std::endl;
         }
@@ -252,12 +254,13 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     }
   else
     {
-    itk::ImageRegionIteratorWithIndex< LDAImageType > iter(
+    ImageRegionIteratorWithIndex< LDAImageType > iter(
       m_RidgeImage, m_RidgeImage->GetLargestPossibleRegion() );
-    double count = 0;
+    double count = 0.0;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
+      ++count;
+      if( (count / 10000.0) == static_cast<int>(count/10000.0) )
         {
         std::cout << "Te1: " << count << std::endl;
         }
@@ -312,7 +315,8 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     count = 0;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
+      ++count;
+      if( (count / 10000.0) == static_cast<int>(count/10000.0) )
         {
         std::cout << "Te2: " << count << std::endl;
         }
