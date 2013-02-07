@@ -290,10 +290,10 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
       g[vertex(i, g)].type = typeInfo[i];
       }
 
-    for( int i=0; i<linkInfo.size(); ++i)
+    for( unsigned int i=0; i<linkInfo.size(); ++i)
       {
       assert(linkInfo[i].size() == distInfo[i].size());
-      for( int j=1; j<linkInfo[i].size(); ++j)
+      for( unsigned int j=1; j<linkInfo[i].size(); ++j)
         {
         tube::FmtDebugMessage("Adding edge (%d,%d) with weight %.5f",
           linkInfo[i][0], linkInfo[i][j], distInfo[i][j]);

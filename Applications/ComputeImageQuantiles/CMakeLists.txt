@@ -35,8 +35,15 @@ find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
 #-----------------------------------------------------------------------------
+# Fiddle with template-depth (for BOOST's accumulators)
 set( USER_CMAKE_CXX_FLAGS "-ftemplate-depth-100" )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USER_CMAKE_CXX_FLAGS}" )
+set( CMAKE_CXX_FLAGS_RELEASE
+	 "${CMAKE_CXX_FLAGS_RELEASE} ${USER_CMAKE_CXX_FLAGS}" )
+set( CMAKE_CXX_FLAGS_DEB_DEBUG
+	"${CMAKE_CXX_FLAGS_DEBUG} ${USER_CMAKE_CXX_FLAGS}" )
+set( CMAKE_CXX_FLAGS_DEB_RELWITHDEBINFO
+	"${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${USER_CMAKE_CXX_FLAGS}" )
 
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
