@@ -27,6 +27,7 @@ limitations under the License.
 
 #include "itkTubeRidgeSeedGenerator.h"
 
+#include "itkProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
 
 #include "itkImage.h"
@@ -109,25 +110,26 @@ RidgeSeedGenerator< ImageT, LabelmapT >
   typename NJetFunctionType::VectorType v;
   typename NJetFunctionType::MatrixType m;
   njet->SetInputImage( m_RidgeImage );
+
+  ProgressReporter progress( this, 0,
+    m_RidgeImage->GetLargestPossibleRegion().GetNumberOfPixels()*2, 100 );
+
   if( this->m_Labelmap.IsNotNull() )
     {
     unsigned int numClasses = this->GetNumberOfObjectIds();
 
-    itk::ImageRegionIteratorWithIndex< RidgeImageType > iter(
+    ImageRegionIteratorWithIndex< RidgeImageType > iter(
       m_RidgeImage, m_RidgeImage->GetLargestPossibleRegion() );
-    typedef itk::ImageRegionConstIteratorWithIndex< MaskImageType >
+    typedef ImageRegionConstIteratorWithIndex< MaskImageType >
       ConstMaskImageIteratorType;
     ConstMaskImageIteratorType itInMask( this->m_Labelmap,
       this->m_Labelmap->GetLargestPossibleRegion() );
-    double count = 0;
     bool found = false;
     ObjectIdType prevObjVal = static_cast<ObjectIdType>( itInMask.Get() )+1;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
-        {
-        std::cout << "Tr1: " << count << std::endl;
-        }
+      progress.CompletedPixel();
+
       ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
       if( val != prevObjVal )
         {
@@ -195,13 +197,9 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     int dotPos = numFeatures-1;
     iter.GoToBegin();
     itInMask.GoToBegin();
-    count = 0;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
-        {
-        std::cout << "Tr2: " << count << std::endl;
-        }
+      progress.CompletedPixel();
       ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
       if( val != prevObjVal )
         {
@@ -252,15 +250,12 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     }
   else
     {
-    itk::ImageRegionIteratorWithIndex< LDAImageType > iter(
+    ImageRegionIteratorWithIndex< LDAImageType > iter(
       m_RidgeImage, m_RidgeImage->GetLargestPossibleRegion() );
-    double count = 0;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
-        {
-        std::cout << "Te1: " << count << std::endl;
-        }
+      progress.CompletedPixel();
+
       typename RidgeImageType::IndexType indx = iter.GetIndex();
       unsigned int fcount = 0;
       double extremeScale = 0;
@@ -309,13 +304,10 @@ RidgeSeedGenerator< ImageT, LabelmapT >
     int yPos = numFeatures-2;
     int dotPos = numFeatures-1;
     iter.GoToBegin();
-    count = 0;
     while( !iter.IsAtEnd() )
       {
-      if( (++count / 10000.0) == static_cast<int>(count/10000.0) )
-        {
-        std::cout << "Te2: " << count << std::endl;
-        }
+      progress.CompletedPixel();
+
       typename RidgeImageType::IndexType indx = iter.GetIndex();
       typename RidgeImageType::IndexType indx2 = iter.GetIndex();
       typename NJetFunctionType::VectorType t;
