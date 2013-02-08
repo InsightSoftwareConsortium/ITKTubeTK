@@ -37,7 +37,7 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class LDAGenerator : public Object
+class LDAGenerator : public ProcessObject
 {
 public:
 
