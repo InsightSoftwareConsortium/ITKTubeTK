@@ -26,16 +26,16 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
     it = labelMap[h].find(vertexStr);
     if(it == labelMap[h].end())
       {
-      tube::FmtDebugMessage("Relabel %d (%s) -> %d",
-        i, vertexStr.c_str(), cLabCounter);
+      //tube::FmtDebugMessage("Relabel %d (%s) -> %d",
+      //  i, vertexStr.c_str(), cLabCounter);
       labelMap[h][vertexStr] = cLabCounter;
       G[vertex(i,G)].type = cLabCounter;
       ++cLabCounter;
       }
     else
       {
-      tube::FmtDebugMessage("Relabel %d (%s) -> %d",
-        i, vertexStr.c_str(), (*it).second);
+      //tube::FmtDebugMessage("Relabel %d (%s) -> %d",
+      //  i, vertexStr.c_str(), (*it).second);
       int cLab =(*it).second;
       G[vertex(i,G)].type = cLab;
       }
@@ -57,16 +57,16 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
       it = labelMap[h].find(nbStr);
       if( it == labelMap[h].end() )
         {
-        tube::FmtDebugMessage("(N) Relabel %d (%s) -> %d",
-          i, nbStr.c_str(), cLabCounter);
+        //tube::FmtDebugMessage("(N) Relabel %d (%s) -> %d",
+        //  i, nbStr.c_str(), cLabCounter);
         labelMap[h][nbStr] = cLabCounter;
         relabel[i] = cLabCounter;
         ++cLabCounter;
         }
       else
         {
-        tube::FmtDebugMessage("(F) Relabel %d (%s) -> %d",
-          i, nbStr.c_str(), labelMap[h][nbStr]);
+        //tube::FmtDebugMessage("(F) Relabel %d (%s) -> %d",
+        //  i, nbStr.c_str(), labelMap[h][nbStr]);
         relabel[i] = labelMap[h][nbStr];
         }
       }
@@ -98,8 +98,8 @@ std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
     if( it != m_labelMap[h].end() )
       {
       int cLab = (*it).second;
-      tube::FmtDebugMessage( "(N) Relabel %d (%s) -> %d",
-        i, boost::lexical_cast<std::string>(G[vertex(i,G)].type).c_str(), cLab);
+      //tube::FmtDebugMessage( "(N) Relabel %d (%s) -> %d",
+      //  i, boost::lexical_cast<std::string>(G[vertex(i,G)].type).c_str(), cLab);
       G[vertex(i,G)].type = cLab;
       phi[cLab]++;
       }

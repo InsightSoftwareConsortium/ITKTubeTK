@@ -180,7 +180,7 @@ def compute_ind_atlas_edm(config, options):
         logger.debug("Create individual EDM for %s"
             % os.path.basename(subject_dir))
 
-        cmd = [config["Exec"]["TubeToDensityImage"],
+        cmd = [config["Exec"]["TubesToDensityImage"],
             tubes_in_phantom_space, den_image_name, rad_image_name, tan_image_name,
             "--inputTemplateImage %s" % options["phantom"],
             "--useSquareDistance"]

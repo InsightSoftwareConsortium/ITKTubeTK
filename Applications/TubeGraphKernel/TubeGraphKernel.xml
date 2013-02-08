@@ -35,6 +35,11 @@ value among the i-th graph of A and the j-th graph of B. K will eventually be a 
       <longflag>basePath</longflag>
       <description>Absolute path to the graph files (Optional).</description>
     </string>
+    <string>
+      <name>argGlobalLabelFileName</name>
+      <longflag>useGlobalLabelFile</longflag>
+      <description>Specify a global label file to use (Optional).</description>
+    </string>
     <integer>
       <name>argGraphKernelType</name>
       <longflag>graphKernelType</longflag>
@@ -55,7 +60,7 @@ value among the i-th graph of A and the j-th graph of B. K will eventually be a 
       <name>argDefaultLabelType</name>
       <longflag>defaultLabelType</longflag>
       <description>
-      If no label file is associated with graphs (i.e., a file with .vertexLabel suffix) given, this specifies the default node labeling strategy (0 ... Node ID, 1 ... Node degree).
+      If no label file is associated with graphs, or no global label file is given, this specifies the default node labeling strategy (0 ... label by node ID, 1 ... label by node degree).
       </description>
       <default>0</default>
     </integer>
