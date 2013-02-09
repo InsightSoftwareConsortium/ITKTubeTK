@@ -37,7 +37,7 @@ set( TubeTk_Base_ObjectDocuments_TXX_Files
   itkObjectDocumentToObjectSource.txx
   itkSpatialObjectToSpatialObjectFilter.txx )
 
-add_library( TubeObjectDocuments
+add_library( TubeObjectDocuments STATIC
   MetaDocument.cxx
   MetaObjectDocument.cxx
   OptionList.cxx )
