@@ -357,7 +357,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     endif( TubeTK_USE_CTK )
 
   endif( TubeTK_USE_QT )
-  
+
 else( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   unset( CTK_DIR )
@@ -465,6 +465,7 @@ ExternalProject_Add( ${proj}
     -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
     -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION}
+    -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
     ${TubeTK_SimpleITK_Def}
   INSTALL_COMMAND ""
   DEPENDS
