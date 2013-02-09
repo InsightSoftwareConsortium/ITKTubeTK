@@ -74,7 +74,6 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
     "http://public.kitware.com/Wiki/images/f/fd/VesselExtraction.jpg" )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
 
 #-----------------------------------------------------------------------------
 # Dashboard setup
@@ -101,12 +100,17 @@ set( MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_Data )
 
 #-----------------------------------------------------------------------------
 # Doxygen setup
-option( TubeTK_USE_DOXYGEN
-  "Run DOXYGEN in order to generate source code documentation."
+option( BUILD_DOCUMENTATION
+  "Build software guide and source code documentation."
   OFF )
-mark_as_advanced( TubeTK_USE_DOXYGEN )
-if( TubeTK_USE_DOXYGEN )
-  add_subdirectory( CMake/Doxygen )
+if( BUILD_DOCUMENTATION )
+  option( TubeTK_USE_DOXYGEN
+    "Run DOXYGEN in order to generate source code documentation."
+    ON )
+  mark_as_advanced( TubeTK_USE_DOXYGEN )
+  if( TubeTK_USE_DOXYGEN )
+    add_subdirectory( CMake/Doxygen )
+  endif()
 endif()
 
 #-----------------------------------------------------------------------------
@@ -116,16 +120,16 @@ option( TubeTK_USE_CPPCHECK
   OFF )
 mark_as_advanced( TubeTK_USE_CPPCHECK )
 if( TubeTK_USE_CPPCHECK )
-  set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${TubeTK_SOURCE_DIR}/Utilities/Cppcheck")
+  list(APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/Cppcheck")
   include( FindCppcheck )
   find_package( Cppcheck REQUIRED )
   set( cppcheck_paths_to_check
 	  "${TubeTK_SOURCE_DIR}/Applications"
 	  "${TubeTK_SOURCE_DIR}/Base"
-	  "${TubeTK_SOURCE_DIR}/Utilities/Testing"
+	  "${TubeTK_SOURCE_DIR}/Utilities"
 	  )
   set( cppcheck_suppressions_file
-    "${TubeTK_SOURCE_DIR}/Utilities/Cppcheck/TubeTKCppcheck.supp" )
+    "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheck.supp" )
   set( cppcheck_cmd_prefix
     "${CPPCHECK_EXECUTABLE}" -q --xml --suppressions "${cppcheck_suppressions_file}" )
   add_test( CppcheckStyle
@@ -250,6 +254,9 @@ if( UNIX )
   endif()
 endif()
 
+# Implementation agnostic fPIC
+set( CMAKE_POSITION_INDEPENDENT_CODE ON )
+
 #-----------------------------------------------------------------------------
 # JsonCpp Setup
 option( USE_SYSTEM_JsonCpp
@@ -265,6 +272,11 @@ endif()
 option( TubeTK_USE_LIBSVM
   "Build libSVM for Support Vector Machine support."
   OFF )
+if( TubeTK_USE_LIBSVM )
+  list(APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/LibSVM")
+  include( FindLibSVM )
+  find_package( LibSVM REQUIRED )
+endif()
 
 #-----------------------------------------------------------------------------
 # Boost setup
