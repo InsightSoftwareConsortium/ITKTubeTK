@@ -30,7 +30,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseFiltering ${PYTHON_EXECUTABLE}
-    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.py
+    ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     )
 endif()
