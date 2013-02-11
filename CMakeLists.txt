@@ -460,11 +460,22 @@ add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
 add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
   ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
 
-# ExpertAutomatedRegistration needs to link to ITKFactoryRegistration and this
-# is the only way I can do it for now.
-set(ITK_LIBRARIES ${ITK_LIBRARIES} ITKFactoryRegistration )
-add_subdirectory(${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
-  ${Slicer_BINARY_DIR}/ExpertAutomatedRegistration )
+set(SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES
+  ${SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES} ${ITKFactoryRegistration_INCLUDE_DIRS}
+  CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
+  )
+set(SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX
+  ${Slicer_BINARY_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx
+  CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
+  )
+configure_file(
+  ${Slicer_SOURCE_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx.in
+  ${SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX}
+  )
+set(SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
+  ITKFactoryRegistration
+  CACHE INTERNAL "SlicerExecutionModel extra libraries" FORCE
+  )
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
