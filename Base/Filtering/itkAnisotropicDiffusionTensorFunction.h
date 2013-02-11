@@ -255,10 +255,6 @@ private:
 
 } // namespace itk
 
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkAnisotropicDiffusionTensorFunction+-.h"
-#endif
-
 #ifndef ITK_MANUAL_INSTANTIATION
 # include "itkAnisotropicDiffusionTensorFunction.txx"
 #endif

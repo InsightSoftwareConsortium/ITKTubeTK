@@ -39,7 +39,8 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Segmentation
-    ${TubeTK_BINARY_DIR}/Slicer3/RegisterImagesModule
+    ${TubeTK_BINARY_DIR}/Slicer4/ExpertAutomatedRegistration
+    ${TubeTK_BINARY_DIR}/Slicer4/ExpertAutomatedRegistration/ITKRegistrationHelper
   )
 
 if( BUILD_TESTING )

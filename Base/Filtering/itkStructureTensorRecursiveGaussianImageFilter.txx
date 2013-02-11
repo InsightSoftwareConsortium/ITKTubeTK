@@ -171,7 +171,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 template <typename TInputImage, typename TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
-::GenerateData(void)
+::GenerateData()
 {
   // Create a process accumulator for tracking the progress of this
   // minipipeline

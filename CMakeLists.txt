@@ -296,13 +296,6 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   endif()
 
   #-----------------------------------------------------------------------------
-  # ITKv4 Switch
-  option( TubeTK_USE_ITKV4
-    "Compile with ITKv4. Only supported applications will be built."
-    OFF )
-  mark_as_advanced( TubeTK_USE_ITKV4 )
-
-  #-----------------------------------------------------------------------------
   # QT Setup
   option( TubeTK_USE_QT
     "Use QT to compile TubeTK, enables additional applications and libraries."
@@ -414,11 +407,6 @@ else( TubeTK_USE_SUPERBUILD )
     find_package( Slicer REQUIRED )
     include( ${Slicer_USE_FILE} )
 
-    set( TubeTK_USE_ITKV4 OFF )
-    if( ${ITK_VERSION_MAJOR} STREQUAL "4" )
-      set( TubeTK_USE_ITKV4 ON )
-    endif()
-
     set( TubeTK_USE_VTK ON )
     set( TubeTK_USE_QT ON )
     set( TubeTK_USE_CTK ON )
@@ -453,23 +441,30 @@ include( ${CMAKE_ROOT}/Modules/TestBigEndian.cmake )
 test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 #-----------------------------------------------------------------------------
-# Setup to conform to Slicer3 paths and define plugin copying macros
-if( NOT TubeTK_USE_ITKV4 )
-  include( CMake/Slicer3Config.cmake )
+# Setup to conform to Slicer4 paths and define plugin copying macros
+include( CMake/Slicer4Config.cmake )
 
-  #---------------------------------------------------------------------------
-  # Build Slicer3 cli applications essential to TubeTK
-  svnGetSlicerBase( Resources ${CLI_SOURCE_DIR} )
-  svnGetSlicerCLI( Templates ${CLI_SOURCE_DIR} )
-  svnGetSlicerCLI( RegisterImagesModule ${CLI_SOURCE_DIR} )
+#---------------------------------------------------------------------------
+# build slicer4 cli applications essential to tubetk
+svnGetSlicerBase( Resources )
+svnGetSlicerBase( Base/CLI )
+svnGetSlicerBase( Libs/ITKFactoryRegistration )
+svnGetSlicerCLI( ExpertAutomatedRegistration )
 
-  set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR} )
-  set( LAUNCH_EXE  "" )
+set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
+set( LAUNCH_EXE  "" )
+set( SUPPORT_2D_IMAGES on )
 
-  set( SUPPORT_2D_IMAGES ON )
-  add_subdirectory( ${CLI_SOURCE_DIR}/RegisterImagesModule
-    ${CLI_BINARY_DIR}/RegisterImagesModule )
-endif()
+add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
+  ${Slicer_BINARY_DIR}/Base/CLI )
+add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
+  ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+
+# ExpertAutomatedRegistration needs to link to ITKFactoryRegistration and this
+# is the only way I can do it for now.
+set(ITK_LIBRARIES ${ITK_LIBRARIES} ITKFactoryRegistration )
+add_subdirectory(${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
+  ${Slicer_BINARY_DIR}/ExpertAutomatedRegistration )
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------

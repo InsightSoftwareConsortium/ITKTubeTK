@@ -21,13 +21,10 @@
 # 
 ##############################################################################
 
+add_subdirectory( Filtering )
 add_subdirectory( IO )
 add_subdirectory( Numerics )
 add_subdirectory( USTK )
 add_subdirectory( Registration )
 add_subdirectory( Segmentation )
 add_subdirectory( ObjectDocuments )
-
-if( NOT TubeTK_USE_ITKV4 )
-  add_subdirectory( Filtering )
-endif()

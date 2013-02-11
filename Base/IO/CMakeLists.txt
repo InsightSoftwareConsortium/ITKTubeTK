@@ -46,11 +46,9 @@ set( TubeTK_Base_IO_SRCS
 add_library( TubeIO STATIC ${TubeTK_Base_IO_SRCS} )
 target_link_libraries( TubeIO ${ITK_LIBRARIES} )
 
-if( NOT TubeTK_USE_ITKV4 )
-  slicer3_set_plugins_output_path( TubeIO )
-  set( TARGETS TubeIO )
-  slicer3_install_plugins( ${TARGETS} )
-endif()
+slicer4_set_plugins_output_path( TubeIO )
+set( TARGETS TubeIO )
+slicer4_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

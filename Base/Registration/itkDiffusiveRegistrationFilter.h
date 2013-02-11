@@ -146,13 +146,8 @@ public:
   typedef typename Superclass::MovingImageType          MovingImageType;
   typedef typename Superclass::MovingImagePointer       MovingImagePointer;
   typedef typename MovingImageType::PixelType           MovingImagePixelType;
-#if ITK_VERSION_MAJOR > 3
   typedef typename Superclass::DisplacementFieldType     DeformationFieldType;
   typedef typename Superclass::DisplacementFieldPointer  DeformationFieldPointer;
-#else
-  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
-  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
-#endif
   typedef typename Superclass::TimeStepType             TimeStepType;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;
@@ -711,21 +706,13 @@ protected:
    * the time step to use for the update of each pixel.  Also multiplies each
    * voxel in the update buffer by the scaling value from the line search.
    * \sa ThreadedApplyUpdate */
-#if ITK_VERSION_MAJOR > 3
   virtual void ApplyUpdate( const TimeStepType & dt );
-#else
-  virtual void ApplyUpdate( TimeStepType dt );
-#endif
   virtual void ApplyUpdate( TimeStepType dt, OutputImagePointer outputImage );
 
   /** Inherited from superclass - do not call this function! */
   virtual void ThreadedApplyUpdate( TimeStepType dt,
                                     const ThreadRegionType & regionToProcess,
-#if ITK_VERSION_MAJOR > 3
                                     ThreadIdType threadId );
-#else
-                                    int threadId );
-#endif
 
   /**  Does the actual work of updating the output from the UpdateContainer over
    *  an output region supplied by the multithreading mechanism.
@@ -734,11 +721,7 @@ protected:
   virtual void ThreadedApplyUpdate( OutputImagePointer & outputImage,
                                     TimeStepType dt,
                                     const ThreadRegionType & regionToProcess,
-#if ITK_VERSION_MAJOR > 3
                                     ThreadIdType threadId );
-#else
-                                    int threadId );
-#endif
 
   /** Create the registration function, with default parameters for
     * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
@@ -793,13 +776,8 @@ private:
     {
     DiffusiveRegistrationFilter *Filter;
     TimeStepType TimeStep;
-#if ITK_VERSION_MAJOR > 3
     std::vector< TimeStepType > TimeStepList;
     std::vector< bool > ValidTimeStepList;
-#else
-    TimeStepType *TimeStepList;
-    bool *ValidTimeStepList;
-#endif
     UpdateMetricsIntermediateStruct *UpdateMetricsIntermediate;
     };
 

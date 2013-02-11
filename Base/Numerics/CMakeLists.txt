@@ -80,11 +80,9 @@ set( TubeTK_Base_Numerics_SRCS
 add_library( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
-if( NOT TubeTK_USE_ITKV4 )
-  slicer3_set_plugins_output_path( TubeNumerics )
-  set( TARGETS TubeNumerics )
-  slicer3_install_plugins( ${TARGETS} )
-endif( NOT TubeTK_USE_ITKV4 )
+slicer4_set_plugins_output_path( TubeNumerics )
+set( TARGETS TubeNumerics )
+slicer4_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

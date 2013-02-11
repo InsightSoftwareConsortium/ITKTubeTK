@@ -47,12 +47,10 @@ namespace tube
 template <unsigned int ObjectDimension,
           class TOutputImage,
           class TRadiusImage = Image<float,
-                                     ::itk::GetImageDimension<TOutputImage>
-                                          ::ImageDimension>,
+                                     TOutputImage::ImageDimension>,
           class TTangentImage = Image<
-                    itk::Vector<float, ::itk::GetImageDimension<TOutputImage>
-                                            ::ImageDimension>,
-                    ::itk::GetImageDimension<TOutputImage>::ImageDimension> >
+                    itk::Vector<float, TOutputImage::ImageDimension>,
+                    TOutputImage::ImageDimension> >
 class ITK_EXPORT TubeSpatialObjectToImageFilter :
   public SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
                                      TOutputImage>

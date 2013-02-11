@@ -20,10 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 
 #include "itkImageLinearIteratorWithIndex.h"
@@ -227,11 +223,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     {
     registrator = DiffusiveRegistrationFilterType::New();
     }
-#if ITK_VERSION_MAJOR > 3
   registrator->SetInitialDisplacementField( deformationField );
-#else
-  registrator->SetInitialDeformationField( deformationField );
-#endif
   registrator->SetMovingImage( movingImage );
   registrator->SetFixedImage( fixedImage );
   // because we are just doing motion field regularization in this test:

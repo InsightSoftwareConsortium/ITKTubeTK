@@ -25,14 +25,13 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkMultiThreader.h"
 #include "itkDiffusionTensor3D.h"
-#include "itkHessianRecursiveGaussianImageFilter.h"
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include "itkSymmetricEigenAnalysisImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 /** \class AnisotropicHybridDiffusionImageFilter
  *  This class is an implementation of anisotropic hybrid diffusion with
  * continous switch:
@@ -89,22 +88,22 @@ public:
    * It is inherited from the superclass. */
   itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
 
-  typedef itk::Matrix<double, ImageDimension, ImageDimension> MatrixType;
+  typedef Matrix<double, ImageDimension, ImageDimension> MatrixType;
 
   // Define image of matrix pixel type
-  typedef itk::Image< MatrixType, ImageDimension>  OutputMatrixImageType;
+  typedef Image< MatrixType, ImageDimension>  OutputMatrixImageType;
 
   // Define the symmetric tensor pixel type
-  typedef itk::SymmetricSecondRankTensor< double, ImageDimension>
+  typedef SymmetricSecondRankTensor< double, ImageDimension>
                                                          TensorPixelType;
-  typedef itk::Image< TensorPixelType, ImageDimension>
+  typedef Image< TensorPixelType, ImageDimension>
                                                          TensorImageType;
 
    // Define the type for storing the eigen-value
-  typedef itk::FixedArray< double, ImageDimension >      EigenValueArrayType;
+  typedef FixedArray< double, ImageDimension >      EigenValueArrayType;
 
   // Declare the types of the output images
-  typedef itk::Image< EigenValueArrayType, ImageDimension >
+  typedef Image< EigenValueArrayType, ImageDimension >
                                                   EigenAnalysisOutputImageType;
 
   /** The container type for the update buffer. */

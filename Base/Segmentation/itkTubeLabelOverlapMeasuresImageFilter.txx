@@ -83,19 +83,6 @@ LabelOverlapMeasuresImageFilter<TLabelImage>
 template<class TLabelImage>
 void
 LabelOverlapMeasuresImageFilter<TLabelImage>
-::AllocateOutputs()
-{
-  // Pass the source through as the output
-  LabelImagePointer image =
-    const_cast<TLabelImage *>( this->GetSourceImage() );
-  this->SetNthOutput( 0, image );
-
-  // Nothing that needs to be allocated for the remaining outputs
-}
-
-template<class TLabelImage>
-void
-LabelOverlapMeasuresImageFilter<TLabelImage>
 ::BeforeThreadedGenerateData()
 {
   int numberOfThreads = this->GetNumberOfThreads();
@@ -156,7 +143,7 @@ template<class TLabelImage>
 void
 LabelOverlapMeasuresImageFilter<TLabelImage>
 ::ThreadedGenerateData( const RegionType& outputRegionForThread,
-  int threadId )
+  ThreadIdType threadId )
 {
   ImageRegionConstIterator<LabelImageType> ItS( this->GetSourceImage(),
     outputRegionForThread );

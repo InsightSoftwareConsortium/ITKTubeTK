@@ -44,11 +44,7 @@ SpatialObjectSource< TOutputSpatialObject >
 template< class TOutputSpatialObject >
 ProcessObject::DataObjectPointer
 SpatialObjectSource< TOutputSpatialObject >
-#if ITK_VERSION_MAJOR < 4
-::MakeOutput( unsigned int itkNotUsed(idx) )
-#else
 ::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed(idx) )
-#endif
 {
   return OutputSpatialObjectType::New().GetPointer();
 }
@@ -60,13 +56,8 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void )
 {
   // we assume that the first output is of the templated type
-#if ITK_VERSION_MAJOR < 4
-  return static_cast< TOutputSpatialObject * >
-    ( this->ProcessObject::GetOutput(0) );
-#else
   return itkDynamicCastInDebugMode< TOutputSpatialObject * >
     ( this->GetPrimaryOutput() );
-#endif
 }
 
 
@@ -76,13 +67,8 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void ) const
 {
   // we assume that the first output is of the templated type
-#if ITK_VERSION_MAJOR < 4
-  return static_cast< const TOutputSpatialObject * >
-    ( this->ProcessObject::GetOutput() );
-#else
   return itkDynamicCastInDebugMode< const TOutputSpatialObject * >
     ( this->GetPrimaryOutput() );
-#endif
 }
 
 
@@ -136,16 +122,12 @@ void
 SpatialObjectSource< TOutputSpatialObject >
 ::GraftNthOutput(unsigned int idx, DataObject *graft)
 {
-#if ITK_VERSION_MAJOR < 4
-  this->GraftOutput( idx, graft );
-#else
   if ( idx >= this->GetNumberOfIndexedOutputs() )
     {
     itkExceptionMacro(<< "Requested to graft output " << idx
                       << " but this filter only has " << this->GetNumberOfIndexedOutputs() << " indexed Outputs.");
     }
   this->GraftOutput( this->MakeNameFromOutputIndex(idx), graft );
-#endif
 }
 
 } // end namespace itk

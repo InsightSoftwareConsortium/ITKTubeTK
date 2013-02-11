@@ -111,11 +111,7 @@ protected:
    * \sa ImageToImageFilter::ThreadedGenerateData(),
    *     ImageToImageFilter::GenerateData()  */
   void ThreadedGenerateData(const OutputImageRegionType& threadRegion,
-#if ITK_VERSION_MAJOR == 3
-                              int threadId);
-#else
                               ThreadIdType threadId);
-#endif
 
   void BeforeThreadedGenerateData();
   void AfterThreadedGenerateData();

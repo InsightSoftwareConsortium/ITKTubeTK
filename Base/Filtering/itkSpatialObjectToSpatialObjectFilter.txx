@@ -64,13 +64,8 @@ const typename SpatialObjectToSpatialObjectFilter
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 ::GetInput( void ) const
 {
-#if ITK_VERSION_MAJOR < 4
-  return static_cast< const TInputSpatialObject * >
-    ( this->ProcessObject::GetInput(0) );
-#else
   return itkDynamicCastInDebugMode< const TInputSpatialObject * >
     ( this->GetPrimaryInput() );
-#endif
 }
 
 
@@ -80,10 +75,6 @@ const typename SpatialObjectToSpatialObjectFilter
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 ::GetInput( unsigned int index ) const
 {
-#if ITK_VERSION_MAJOR < 4
-  return static_cast< const TInputSpatialObject * >
-    ( this->ProcessObject::GetInput( index ) );
-#else
   const TInputSpatialObject * input = dynamic_cast< const TInputSpatialObject * >
     ( this->ProcessObject::GetInput( index ) );
 
@@ -93,7 +84,6 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
       << " to type " <<  typeid( InputSpatialObjectType ).name () );
     }
   return input;
-#endif
 }
 
 } // end namespace itk

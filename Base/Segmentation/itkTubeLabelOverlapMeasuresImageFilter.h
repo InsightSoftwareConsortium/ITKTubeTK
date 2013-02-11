@@ -23,11 +23,11 @@ limitations under the License.
 #ifndef __itkTubeLabelOverlapMeasuresImageFilter_h
 #define __itkTubeLabelOverlapMeasuresImageFilter_h
 
-#include "itkImageToImageFilter.h"
+#include "itkInPlaceImageFilter.h"
 #include "itkFastMutexLock.h"
 #include "itkNumericTraits.h"
 
-#include "itk_hash_map.h"
+#include "itksys/hash_map.hxx"
 
 namespace itk {
 
@@ -43,7 +43,7 @@ namespace tube {
  */
 template<class TLabelImage>
 class ITK_EXPORT LabelOverlapMeasuresImageFilter :
-    public ImageToImageFilter<TLabelImage, TLabelImage>
+    public InPlaceImageFilter< TLabelImage >
 {
 public:
   /** Standard Self typedef */
@@ -108,9 +108,9 @@ public:
     };
 
   /** Type of the map used to store data per label */
-  typedef hash_map<LabelType, LabelSetMeasures> MapType;
-  typedef typename MapType::iterator            MapIterator;
-  typedef typename MapType::const_iterator      MapConstIterator;
+  typedef itksys::hash_map<LabelType, LabelSetMeasures> MapType;
+  typedef typename MapType::iterator                    MapIterator;
+  typedef typename MapType::const_iterator              MapConstIterator;
 
   /** Image related typedefs. */
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -176,19 +176,12 @@ protected:
   ~LabelOverlapMeasuresImageFilter(){};
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
-  /**
-   * Pass the input through unmodified. Do this by setting the output to the
-   * source this by setting the output to the source image in the
-   * AllocateOutputs() method.
-   */
-  void AllocateOutputs();
-
   void BeforeThreadedGenerateData();
 
   void AfterThreadedGenerateData();
 
   /** Multi-thread version GenerateData. */
-  void ThreadedGenerateData( const RegionType&, int );
+  void ThreadedGenerateData( const RegionType&, ThreadIdType );
 
   // Override since the filter needs all the data for the algorithm
   void GenerateInputRequestedRegion();

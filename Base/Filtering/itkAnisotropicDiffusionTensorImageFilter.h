@@ -27,7 +27,9 @@ limitations under the License.
 #include "itkAnisotropicDiffusionTensorFunction.h"
 #include "itkMultiThreader.h"
 
-namespace itk {
+namespace itk
+{
+
 /** \class AnisotropicDiffusionTensorImageFilter
  * \brief This is a superclass for filters that iteratively enhance edges in
  *        an image by solving a non-linear diffusion equation.
@@ -42,8 +44,6 @@ namespace itk {
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
-
-
 template <class TInputImage, class TOutputImage>
 class ITK_EXPORT AnisotropicDiffusionTensorImageFilter
   : public FiniteDifferenceImageFilter<TInputImage, TOutputImage>
@@ -79,10 +79,10 @@ public:
       DiffusionTensorImageType;
 
   // Define the type for storing the eigen-values
-  typedef itk::FixedArray< double, ImageDimension >   EigenValueArrayType;
+  typedef FixedArray< double, ImageDimension >   EigenValueArrayType;
 
   // Declare the types of the output images
-  typedef itk::Image< EigenValueArrayType, ImageDimension >
+  typedef Image< EigenValueArrayType, ImageDimension >
       EigenAnalysisOutputImageType;
 
   /** The value type of a time step.  Inherited from the superclass. */
@@ -126,7 +126,7 @@ protected:
   /** This method applies changes from the m_UpdateBuffer to the output using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
    * the time step to use for the update of each pixel. */
-  virtual void ApplyUpdate(TimeStepType dt);
+  virtual void ApplyUpdate(const TimeStepType& dt);
 
   /** Method to allow subclasses to get direct access to the update
    * buffer */
@@ -166,7 +166,7 @@ protected:
                                     const ThreadRegionType &regionToProcess,
                                     const ThreadDiffusionTensorImageRegionType
                                       &diffusionRegionToProcess,
-                                    int threadId );
+                                    ThreadIdType threadId );
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
@@ -176,7 +176,7 @@ protected:
       const ThreadRegionType &regionToProcess,
       const ThreadDiffusionTensorImageRegionType
         &diffusionRegionToProcess,
-      int threadId );
+      ThreadIdType threadId );
 
   /** Prepare for the iteration process. */
   virtual void InitializeIteration();
@@ -194,8 +194,8 @@ private:
     {
     AnisotropicDiffusionTensorImageFilter *Filter;
     TimeStepType TimeStep;
-    TimeStepType *TimeStepList;
-    bool *ValidTimeStepList;
+    std::vector< TimeStepType > TimeStepList;
+    std::vector< bool > ValidTimeStepList;
     };
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an

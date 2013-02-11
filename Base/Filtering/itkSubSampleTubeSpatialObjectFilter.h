@@ -55,9 +55,6 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-#if ITK_VERSION_MAJOR < 4
-  typedef unsigned long SizeValueType;
-#endif
   /** Set the sampling factor.  The output points taken every sampling factor
    * from the input points. */
   itkSetClampMacro( Sampling, SizeValueType, 1, NumericTraits< SizeValueType >::max() );

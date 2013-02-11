@@ -37,15 +37,9 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Registration
   )
 
-if( Slicer3_INSTALL_BIN_DIR )
-  set( BASE_REGISTRATION_FILTERS_TESTS
-    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests
-    )
-else()
-  set( BASE_REGISTRATION_FILTERS_TESTS
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseRegistrationFiltersTests
-    )
-endif()
+set( BASE_REGISTRATION_FILTERS_TESTS
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseRegistrationFiltersTests
+  )
 
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )

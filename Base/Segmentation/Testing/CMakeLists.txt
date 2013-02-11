@@ -30,30 +30,18 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseSegmentation ${PYTHON_EXECUTABLE}
-    ${TubeTK_SOURCE_DIR}/Utilities/PrintSelfCheck.py
+    ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/Segmentation
     )
 endif()
 
-if( Slicer3_INSTALL_BIN_DIR )
-  set( BASE_SEGMENTATION_TESTS
-    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationTests
-    )
-else()
-  set( BASE_SEGMENTATION_TESTS
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseSegmentationTests
-    )
-endif()
+set( BASE_SEGMENTATION_TESTS
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseSegmentationTests
+  )
 
-if( Slicer3_INSTALL_BIN_DIR )
-  set( BASE_SEGMENTATION_HEADER_TEST
-    ${TubeTK_BINARY_DIR}/${Slicer3_INSTALL_BIN_DIR}/tubeBaseSegmentationHeaderTest
-    )
-else()
-  set( BASE_SEGMENTATION_HEADER_TEST
-    ${TubeTK_BINARY_DIR}/bin/tubeBaseSegmentationHeaderTest
-    )
-endif()
+set( BASE_SEGMENTATION_HEADER_TEST
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseSegmentationHeaderTest
+  )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

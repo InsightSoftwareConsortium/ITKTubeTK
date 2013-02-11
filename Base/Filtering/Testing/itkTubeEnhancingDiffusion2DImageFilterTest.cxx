@@ -20,12 +20,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
-#include "itkFilterWatcher.h"
+#include <itkFilterWatcher.h>
 #include <itkExceptionObject.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
