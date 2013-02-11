@@ -434,7 +434,6 @@ else( TubeTK_USE_SUPERBUILD )
 
 endif()
 
-
 #-----------------------------------------------------------------------------
 # Misc.
 include( ${CMAKE_ROOT}/Modules/TestBigEndian.cmake )
@@ -455,27 +454,19 @@ set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
 set( LAUNCH_EXE  "" )
 set( SUPPORT_2D_IMAGES on )
 
-add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
-  ${Slicer_BINARY_DIR}/Base/CLI )
 add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
   ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
+  ${Slicer_BINARY_DIR}/Base/CLI )
 
-set(SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES
-  ${SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES} ${ITKFactoryRegistration_INCLUDE_DIRS}
-  CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
-  )
-set(SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX
-  ${Slicer_BINARY_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx
-  CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
-  )
-configure_file(
-  ${Slicer_SOURCE_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx.in
-  ${SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX}
-  )
 set(SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
+  ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES}
+  SlicerBaseCLI
   ITKFactoryRegistration
-  CACHE INTERNAL "SlicerExecutionModel extra libraries" FORCE
-  )
+  CACHE INTERNAL "SlicerExecutionModel extra libraries" FORCE)
+
+add_subdirectory(${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
+  ${Slicer_BINARY_DIR}/ExpertAutomatedRegistration )
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
