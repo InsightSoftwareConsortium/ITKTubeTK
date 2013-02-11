@@ -38,7 +38,12 @@ template< unsigned int VDimension >
 int DoIt( int argc, char **argv );
 
 template <class TPixel, unsigned int VDimension>
-int DoIt( int argc, char **argv ) { return 0; }
+int DoIt( int argc, char **argv )
+{
+	(void)argc;
+	(void)argv;
+	return 0;
+}
 #include "tubeCLIHelperFunctions.h"
 
 

@@ -24,7 +24,7 @@ set( MODULE_NAME ComputeImageQuantiles )
 
 # Help finding BOOST
 set( BOOST_ROOT  /software/boost_1_51_0/ )
-set( Boost_ADDITIONAL_VERSIONS "1.51" )
+set( Boost_ADDITIONAL_VERSIONS "1.51 1.52 1.53" )
 
 find_package( Boost 1.49 REQUIRED )
 
