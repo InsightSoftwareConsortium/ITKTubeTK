@@ -434,7 +434,6 @@ else( TubeTK_USE_SUPERBUILD )
 
 endif()
 
-
 #-----------------------------------------------------------------------------
 # Misc.
 include( ${CMAKE_ROOT}/Modules/TestBigEndian.cmake )
@@ -455,14 +454,17 @@ set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
 set( LAUNCH_EXE  "" )
 set( SUPPORT_2D_IMAGES on )
 
-add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
-  ${Slicer_BINARY_DIR}/Base/CLI )
 add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
   ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
+  ${Slicer_BINARY_DIR}/Base/CLI )
 
-# ExpertAutomatedRegistration needs to link to ITKFactoryRegistration and this
-# is the only way I can do it for now.
-set(ITK_LIBRARIES ${ITK_LIBRARIES} ITKFactoryRegistration )
+set(SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
+  ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES}
+  SlicerBaseCLI
+  ITKFactoryRegistration
+  CACHE INTERNAL "SlicerExecutionModel extra libraries" FORCE)
+
 add_subdirectory(${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
   ${Slicer_BINARY_DIR}/ExpertAutomatedRegistration )
 
