@@ -31,7 +31,7 @@ namespace itk
  * (an integer greater or equal to one).  The beginning and end
  * points of the tube are always included.
  *
- * \sa SubSampleTubeChildrenSpatialObjectFilter
+ * \sa SubSampleTubeTreeSpatialObjectFilter
  *
  */
 template< typename TTubeSpatialObject >
