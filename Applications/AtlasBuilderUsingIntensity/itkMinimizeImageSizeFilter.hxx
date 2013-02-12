@@ -28,8 +28,8 @@ namespace tube
 {
 
 
-template<class TInputImage>
-MinimizeImageSizeFilter<TInputImage>
+template< class TInputImage >
+MinimizeImageSizeFilter< TInputImage >
 ::MinimizeImageSizeFilter()
 {
   this->SetBufferImage( false );
@@ -40,7 +40,7 @@ MinimizeImageSizeFilter<TInputImage>
 
 
 
-template<class TInputImage>
+template< class TInputImage >
 void
 MinimizeImageSizeFilter<TInputImage>
 ::GenerateData()
@@ -65,14 +65,12 @@ MinimizeImageSizeFilter<TInputImage>
     }
   else if( TDimension == 2 )
     {
-    std::cout << " 2D dimension image cropping is not implemented yet...sorry!"
-              << std::endl;
+    itkExceptionMacro("2D image cropping is not implemented yet...sorry!");
     return;
     }
   else
     {
-    std::cout << "The dimension size is not compatiable with the filter"
-              << std::endl;
+    itkExceptionMacro("The dimension size is not compatiable with the filter");
     return;
     }
 
@@ -87,14 +85,14 @@ MinimizeImageSizeFilter<TInputImage>
     {
     if( this->GetClipEndIndices() )
       {
-      for( int i = 0; i < TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         size[i] += m_NumberOfBufferPixels[i];
         }
       }
     if( this->GetClipStartIndices() )
       {
-      for( int j = 0; j < TDimension; j++ )
+      for( unsigned int j = 0; j < TDimension; j++ )
         {
         size[j] += m_NumberOfBufferPixels[j];
         // Get the physical point for the new origin
@@ -122,15 +120,15 @@ MinimizeImageSizeFilter<TInputImage>
 }
 
 
-template<class TInputImage>
+template< class TInputImage >
 void
-MinimizeImageSizeFilter<TInputImage>
+MinimizeImageSizeFilter< TInputImage >
 ::Get3DCroppedEndRegion( InputImageConstPointer input, RegionType& region )
 {
   InputPixelType  threshold = GetThresholdValue();
   bool            isThresAbove = this->GetThresholdAbove();
 
-  typedef ImageSliceConstIteratorWithIndex< InputImageType>
+  typedef ImageSliceConstIteratorWithIndex< InputImageType >
     ImageSliceConstIteratorType;
   SizeType  size = region.GetSize();
 
@@ -152,18 +150,26 @@ MinimizeImageSizeFilter<TInputImage>
           {
           if( it_input.Get() > threshold && !isThresAbove )
             {
-            breakPoint = true; break;
+            breakPoint = true;
+            break;
             }
           else if( it_input.Get() < threshold && isThresAbove )
             {
-            breakPoint = true; break;
+            breakPoint = true;
+            break;
             }
           --it_input;
           }
-        if( breakPoint ){ break; }
+        if( breakPoint )
+          {
+          break;
+          }
         it_input.PreviousLine();
         }
-      if( breakPoint ){ break; }
+      if( breakPoint )
+        {
+        break;
+        }
       it_input.PreviousSlice();
       }
 
@@ -183,9 +189,9 @@ MinimizeImageSizeFilter<TInputImage>
     }
 }
 
-template<class TInputImage>
+template< class TInputImage >
 void
-MinimizeImageSizeFilter<TInputImage>
+MinimizeImageSizeFilter< TInputImage >
 ::Get3DCroppedStartRegion( InputImageConstPointer input, RegionType& region )
 {
   InputPixelType  threshold = GetThresholdValue();
@@ -240,7 +246,7 @@ MinimizeImageSizeFilter<TInputImage>
     // This is the index of the first point found in the plane defined by
     // i & i+1 ( starting from beginning ). Therefore it is the first point
     // for dimension i+2
-    unsigned int dim = (i+2)%TDimension;  //Dimension that is changed
+    unsigned int dim = ( i+2 ) % TDimension;  //Dimension that is changed
     index[dim] = it_input.GetIndex()[dim];
 
     size[dim]  -= ( index[dim] - region.GetIndex()[dim] );

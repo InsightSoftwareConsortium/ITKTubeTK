@@ -32,6 +32,7 @@ limitations under the License.
 #include "itkImageToImageFilter.h"
 #include "itkInterpolateImageFunction.h"
 #include "itkSize.h"
+#include "itkMacro.h"
 
 namespace itk
 {
@@ -49,20 +50,23 @@ namespace tube
  * ALSO :: Expects transforms in the identical manner as ResampleImageFilter
  *  (ie. Fixed->Moving )
  */
-template <class TInputImage, class TOutputImage, class TNonSingularTransform,
-          class TInterpolatorPrecisionType=double>
-class ITK_EXPORT CompleteImageResampleFilter: public ProcessObject
+template < class TInputImage,
+           class TOutputImage,
+           class TNonSingularTransform,
+           class TInterpolatorPrecisionType=double >
+class ITK_EXPORT CompleteImageResampleFilter:
+    public ImageToImageFilter< TInputImage, TOutputImage >
 {
   public:
 
     /** Standard class typedefs. */
     typedef CompleteImageResampleFilter               Self;
     typedef ProcessObject                             Superclass;
-    typedef SmartPointer<Self>                        Pointer;
-    typedef SmartPointer<const Self>                  ConstPointer;
+    typedef SmartPointer< Self >                      Pointer;
+    typedef SmartPointer< const Self >                ConstPointer;
 
-    typedef TInputImage InputImageType;
-    typedef TOutputImage OutputImageType;
+    typedef TInputImage                               InputImageType;
+    typedef TOutputImage                              OutputImageType;
     typedef typename InputImageType::ConstPointer     InputImageConstPointer;
     typedef typename OutputImageType::Pointer         OutputImagePointer;
     typedef typename InputImageType::RegionType       InputImageRegionType;
@@ -74,59 +78,67 @@ class ITK_EXPORT CompleteImageResampleFilter: public ProcessObject
     itkTypeMacro(Self,ImageToImageFilter);
 
     /** Number of dimensions. */
-    itkStaticConstMacro(ImageDimension, unsigned int, TOutputImage::ImageDimension);
+    itkStaticConstMacro( ImageDimension, unsigned int,
+                         TOutputImage::ImageDimension);
 
-    // ** ResampleImageFilter typedef ** //
-    typedef ResampleImageFilter<InputImageType, OutputImageType,
-      TInterpolatorPrecisionType>   ResampleImageFilterType;
+    /** ResampleImageFilter typedef */
+    typedef ResampleImageFilter< InputImageType,
+                                 OutputImageType,
+                                 TInterpolatorPrecisionType >
+                                                    ResampleImageFilterType;
 
     /** Transform typedef
      *
      * Note: The transform needs to have an inverse to determine
      * the proper outcome dimensions
      */
-    typedef TNonSingularTransform                         TransformType;
-    typedef typename TransformType::ConstPointer          TransformPointerType;
+    typedef TNonSingularTransform                   TransformType;
+    typedef typename TransformType::ConstPointer    TransformPointerType;
 
     /** Interpolator typedef. */
-    typedef InterpolateImageFunction<InputImageType,
-      TInterpolatorPrecisionType> InterpolatorType;
-    typedef typename InterpolatorType::Pointer  InterpolatorPointerType;
+    typedef InterpolateImageFunction< InputImageType,
+                                      TInterpolatorPrecisionType>
+                                                    InterpolatorType;
+    typedef typename InterpolatorType::Pointer      InterpolatorPointerType;
 
     /** Image size typedef. */
-    typedef Size<itkGetStaticConstMacro(ImageDimension)> SizeType;
+    typedef Size< itkGetStaticConstMacro( ImageDimension ) >
+                                                    SizeType;
 
     /** Image index typedef. */
-    typedef typename TOutputImage::IndexType IndexType;
+    typedef typename TOutputImage::IndexType        IndexType;
 
     /** Image point typedef. */
     typedef typename InterpolatorType::PointType    PointType;
 
     /** Image pixel value typedef. */
-    typedef typename TOutputImage::PixelType   PixelType;
+    typedef typename TOutputImage::PixelType        PixelType;
 
     /** Typedef to describe the output image region type. */
-    typedef typename TOutputImage::RegionType OutputImageRegionType;
+    typedef typename TOutputImage::RegionType       OutputImageRegionType;
 
     /** Image spacing typedef */
-    typedef typename TOutputImage::SpacingType SpacingType;
-    typedef typename TOutputImage::PointType   OriginPointType;
+    typedef typename TOutputImage::SpacingType      SpacingType;
+    typedef typename TOutputImage::PointType        OriginPointType;
 
     /*
      * Set the coordinate transformation.
      * Set the coordinate transform to use for resampling.  Note that this
      * must be in index coordinates and is the output-to-input transform,
      * NOT the input-to-output transform that you might naively expect.
-     * The default is itk::AffineTransform<TInterpolatorPrecisionType, ImageDimension>.
+     * The default is itk::AffineTransform<TInterpolatorPrecisionType,
+     * ImageDimension>.
      */
     itkSetConstObjectMacro( Transform, TransformType );
 
     /** Get a pointer to the coordinate transform. */
     itkGetConstObjectMacro( Transform, TransformType );
 
-    /** Set the interpolator function.  The default is
-     * itk::LinearInterpolateImageFunction<InputImageType, TInterpolatorPrecisionType>. Some
-     * other options are itk::NearestNeighborInterpolateImageFunction
+    /**
+     * Set the interpolator function.  The default is
+     * itk::LinearInterpolateImageFunction<InputImageType,
+     * TInterpolatorPrecisionType>. Some other options are
+     * itk::NearestNeighborInterpolateImageFunction
      * (useful for binary masks and other images with a small number of
      * possible pixel values), and itk::BSplineInterpolateImageFunction
      * (which provides a higher order of interpolation).  */
@@ -137,10 +149,10 @@ class ITK_EXPORT CompleteImageResampleFilter: public ProcessObject
 
     /** Set the pixel value when a transformed pixel is outside of the
      * image.  The default default pixel value is 0. */
-    itkSetMacro(DefaultPixelValue,PixelType);
+    itkSetMacro( DefaultPixelValue, PixelType );
 
     /** Get the pixel value when a transformed pixel is outside of the image */
-    itkGetMacro(DefaultPixelValue,PixelType);
+    itkGetMacro( DefaultPixelValue, PixelType );
 
     /** Set the output image spacing. */
     itkSetMacro(OutputSpacing, SpacingType);
@@ -154,13 +166,12 @@ class ITK_EXPORT CompleteImageResampleFilter: public ProcessObject
 
     itkGetObjectMacro( Output, OutputImageType );
 
-    void Update();
-
   protected:
 
-    itkSetObjectMacro( Output, OutputImageType );
+    /** This is where the work is done! */
+    virtual void GenerateData();
 
-    // ** Determine the output bounding box for the 3D case ** //
+    /** Determine the output bounding box for the 3D case */
     void FindOutput3DParameters(
       InputImageConstPointer image,
       TransformPointerType transform,
@@ -170,20 +181,21 @@ class ITK_EXPORT CompleteImageResampleFilter: public ProcessObject
     CompleteImageResampleFilter();
     ~CompleteImageResampleFilter() {};
 
-    void PrintSelf(std::ostream& os, Indent indent) const;
+    void PrintSelf( std::ostream& os, Indent indent ) const;
 
   private:
 
     CompleteImageResampleFilter(const Self&); //purposely not implemented
     void operator=(const Self&); //purposely not implemented
 
-    InputImageConstPointer          m_Input;
-    OutputImagePointer              m_Output;
-    TransformPointerType            m_Transform;  // Coordinate transform to use
-    InterpolatorPointerType         m_Interpolator; // Image function for interpolation
-    PixelType                       m_DefaultPixelValue; // default pixel value if the point
-                                                 // is outside the image
-    SpacingType                     m_OutputSpacing; // output image spacing
+    InputImageConstPointer      m_Input;
+    OutputImagePointer          m_Output;
+    TransformPointerType        m_Transform;         // Coordinate transform
+    InterpolatorPointerType     m_Interpolator;      // Interpolation function
+    PixelType                   m_DefaultPixelValue; // Default pixel value if
+                                                     // the point is outside of
+                                                     // the image
+    SpacingType                 m_OutputSpacing;     // Output image spacing
   };
 
 } // End namespace tube
@@ -191,7 +203,7 @@ class ITK_EXPORT CompleteImageResampleFilter: public ProcessObject
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkCompleteImageResampleFilter.txx"
+#include "itkCompleteImageResampleFilter.hxx"
 #endif
 
 #endif

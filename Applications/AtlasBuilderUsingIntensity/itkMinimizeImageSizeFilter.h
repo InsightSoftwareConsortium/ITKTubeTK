@@ -25,7 +25,6 @@ limitations under the License.
 #ifndef __itkMinimizeImageSizeFilter_h
 #define __itkMinimizeImageSizeFilter_h
 
-#include <itkProcessObject.h>
 #include <itkImageSliceIteratorWithIndex.h>
 #include <itkImageToImageFilter.h>
 #include <itkResampleImageFilter.h>

@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+  //this->SetOutput( filter->GetOutput() );
 
 
 #ifndef __itkCompleteImageResampleFilter_txx
@@ -37,15 +38,21 @@ namespace tube
 /**
  * Initialize new instance
  */
-template <class TInputImage, class TOutputImage, class TNonSingularTransform, class TInterpolatorPrecisionType>
-CompleteImageResampleFilter<TInputImage, TOutputImage,TNonSingularTransform,TInterpolatorPrecisionType>
+template < class TInputImage,
+           class TOutputImage,
+           class TNonSingularTransform,
+           class TInterpolatorPrecisionType >
+CompleteImageResampleFilter< TInputImage,
+                             TOutputImage,
+                             TNonSingularTransform,
+                             TInterpolatorPrecisionType >
 ::CompleteImageResampleFilter()
 {
-  m_OutputSpacing.Fill(1.0);
-
+  m_OutputSpacing.Fill( 1.0 );
   m_Transform = TransformType::New();
-  m_Interpolator = LinearInterpolateImageFunction<InputImageType, TInterpolatorPrecisionType>::New();
-  m_DefaultPixelValue = 0;
+  m_Interpolator = LinearInterpolateImageFunction< InputImageType,
+                                                   TInterpolatorPrecisionType>::New();
+  this->SetDefaultPixelValue( 0 );
 }
 
 
@@ -54,15 +61,21 @@ CompleteImageResampleFilter<TInputImage, TOutputImage,TNonSingularTransform,TInt
  *
  * \todo Add details about this class
  */
-template <class TInputImage, class TOutputImage, class TNonSingularTransform, class TInterpolatorPrecisionType>
+template < class TInputImage,
+           class TOutputImage,
+           class TNonSingularTransform,
+           class TInterpolatorPrecisionType >
 void
-CompleteImageResampleFilter<TInputImage, TOutputImage,TNonSingularTransform,TInterpolatorPrecisionType>
-::PrintSelf(std::ostream& os, Indent indent) const
+CompleteImageResampleFilter< TInputImage,
+                             TOutputImage,
+                             TNonSingularTransform,
+                             TInterpolatorPrecisionType>
+::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
 
   os << indent << "DefaultPixelValue: "
-     << static_cast<typename NumericTraits<PixelType>::PrintType>(m_DefaultPixelValue)
+     << static_cast< typename NumericTraits<PixelType>::PrintType >(m_DefaultPixelValue)
      << std::endl;
   os << indent << "OutputSpacing: " << m_OutputSpacing << std::endl;
   os << indent << "Transform: " << m_Transform.GetPointer() << std::endl;
@@ -75,49 +88,64 @@ CompleteImageResampleFilter<TInputImage, TOutputImage,TNonSingularTransform,TInt
 /**
  * Set the output image spacing.
  */
-template <class TInputImage, class TOutputImage, class TNonSingularTransform, class TInterpolatorPrecisionType>
+template < class TInputImage,
+           class TOutputImage,
+           class TNonSingularTransform,
+           class TInterpolatorPrecisionType >
 void
-CompleteImageResampleFilter<TInputImage,TOutputImage,TNonSingularTransform,TInterpolatorPrecisionType>
+CompleteImageResampleFilter< TInputImage,
+                             TOutputImage,
+                             TNonSingularTransform,
+                             TInterpolatorPrecisionType >
 ::SetOutputSpacing(
   const double spacing[ImageDimension] )
 {
-  SpacingType s(spacing);
+  SpacingType s( spacing );
   this->SetOutputSpacing( s );
 }
 
 
-
-template <class TInputImage, class TOutputImage, class TNonSingularTransform, class TInterpolatorPrecisionType>
+template < class TInputImage,
+           class TOutputImage,
+           class TNonSingularTransform,
+           class TInterpolatorPrecisionType >
 void
-CompleteImageResampleFilter<TInputImage,TOutputImage,TNonSingularTransform,TInterpolatorPrecisionType>
-::Update()
+CompleteImageResampleFilter< TInputImage,
+                             TOutputImage,
+                             TNonSingularTransform,
+                             TInterpolatorPrecisionType >
+::GenerateData()
 {
-  itkDebugMacro(<<"Actually executing");
-
   // Get the input image and output pointer
-  InputImageConstPointer       inputImage = this->GetInput();
+  InputImageConstPointer  inputImage = this->GetInput();
   OutputImagePointer      outputPtr = this->GetOutput();
 
-  // ** Determine the output size and origin ** //
+  // Allocate
+  this->AllocateOutputs();
+
+  // Determine the output size and origin
   SizeType outputSize;
   PointType outputOrigin;
   TransformPointerType    transform = this->GetTransform();
 
-  if( ImageDimension == 3)
+  if( ImageDimension == 3 )
     {
     typename TransformType::Pointer inverse = TransformType::New();
     transform->GetInverse(inverse);
-    FindOutput3DParameters( inputImage, inverse.GetPointer(), outputSize, outputOrigin );
+    FindOutput3DParameters( inputImage,
+                            inverse.GetPointer(),
+                            outputSize,
+                            outputOrigin );
     }
   else
     {
-    std::cout << "\n\nCompleteImageResampleFilter:: SORRY, Filter temp. only setup for 3D images" << std::endl;
-    std::cout << "    Using default input Image values for output size and spacing \n" << std::endl;
+    itkExceptionMacro(<<"Filter only setup for 3D images");
     outputSize = inputImage->GetLargestPossibleRegion().GetSize();
     outputOrigin = inputImage->GetOrigin();
     }
 
-  typename ResampleImageFilterType::Pointer resampleFilter = ResampleImageFilterType::New();
+  typename ResampleImageFilterType::Pointer resampleFilter =
+    ResampleImageFilterType::New();
   resampleFilter->SetInput( inputImage );
   resampleFilter->SetOutputSpacing( this->GetOutputSpacing() );
   resampleFilter->SetOutputOrigin( outputOrigin );
@@ -125,23 +153,38 @@ CompleteImageResampleFilter<TInputImage,TOutputImage,TNonSingularTransform,TInte
   resampleFilter->SetTransform( transform );
   resampleFilter->SetDefaultPixelValue( m_DefaultPixelValue );
   resampleFilter->SetInterpolator( m_Interpolator );
-  resampleFilter->Update();
 
-  this->SetOutput( resampleFilter->GetOutput() );
+  resampleFilter->GraftOutput( this->GetOutput() );
+  resampleFilter->Update();
+  this->GraftOutput( resampleFilter->GetOutput() );
 }
 
 
-//Defines the bounding box around the entire resampled image.  Means that none of the image is cut off in resampling
-// *** Expects the transform maps Moving->Fixed ** //
-template <class TInputImage, class TOutputImage, class TNonSingularTransform, class TInterpolatorPrecisionType>
+/**
+ * Defines the bounding box around the entire resampled image. Means that none
+ * of the image is cut off in resampling.
+ *
+ * Expects the transform maps Moving->Fixed
+ */
+template < class TInputImage,
+           class TOutputImage,
+           class TNonSingularTransform,
+           class TInterpolatorPrecisionType >
 void
-CompleteImageResampleFilter<TInputImage,TOutputImage,TNonSingularTransform,TInterpolatorPrecisionType>
-::FindOutput3DParameters( InputImageConstPointer image, TransformPointerType transform, SizeType& outputSize, PointType& origin ) const
-  {
+CompleteImageResampleFilter< TInputImage,
+                             TOutputImage,
+                             TNonSingularTransform,
+                             TInterpolatorPrecisionType >
+::FindOutput3DParameters( InputImageConstPointer image,
+                          TransformPointerType transform,
+                          SizeType& outputSize,
+                          PointType& origin ) const
+{
   SizeType size = image->GetRequestedRegion().GetSize();
   PointType  max;
   max.Fill( NumericTraits<double>::NonpositiveMin() );
   origin.Fill( 9999999 ); //Fill origin ( min value with large number )
+
   //Transform all of the image corners and determine the minimum bounding box
   for( int x = 0; x <= (int)size[0]; x+= size[0] )
     {
@@ -159,22 +202,28 @@ CompleteImageResampleFilter<TInputImage,TOutputImage,TNonSingularTransform,TInte
 
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
-          if( point[i] < origin[i] ) { origin[i] = point[i]; }
-          if( point[i] > max[i] ) { max[i] = point[i]; }
+          if( point[i] < origin[i] )
+            {
+            origin[i] = point[i];
+            }
+          if( point[i] > max[i] )
+            {
+            max[i] = point[i];
+            }
           }
         }
       }
     }
+
   // Origin represents the minimum point on the image
   typename InputImageType::SpacingType  spacing = image->GetSpacing();
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    outputSize[i] = (long unsigned int)(( max[i] - origin[i] ) / spacing[i]);
+    outputSize[i] = (long unsigned int)( ( max[i] - origin[i] ) / spacing[i] );
     }
   }
 
 } // End of namespace tube
-
 
 } // End namespace itk
 
