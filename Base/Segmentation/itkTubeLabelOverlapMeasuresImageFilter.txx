@@ -106,7 +106,7 @@ LabelOverlapMeasuresImageFilter<TLabelImage>
 ::AfterThreadedGenerateData()
 {
   // Run through the map for each thread and accumulate the set measures.
-  for( unsigned int n = 0; n < this->GetNumberOfThreads(); n++ )
+  for( ThreadIdType n = 0; n < this->GetNumberOfThreads(); n++ )
     {
     // iterate over the map for this thread
     for( MapConstIterator threadIt =

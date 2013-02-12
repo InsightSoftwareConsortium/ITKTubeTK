@@ -861,7 +861,7 @@ DiffusiveRegistrationFilter
   str.TimeStep = NumericTraits< TimeStepType >::Zero;
   str.UpdateMetricsIntermediate
       = new UpdateMetricsIntermediateStruct[this->GetNumberOfThreads()];
-  for( unsigned int i = 0; i < this->GetNumberOfThreads(); i++ )
+  for( ThreadIdType i = 0; i < this->GetNumberOfThreads(); i++ )
     {
     str.UpdateMetricsIntermediate[i].zero();
     }
@@ -892,7 +892,7 @@ DiffusiveRegistrationFilter
   // Combine the results from the threads to calculate the metrics
   // Will include multiplication by timestep and global scaling, and calculation
   // of RMS and mean statistics, in UpdateUpdateStatistics
-  for( unsigned int i = 0; i < this->GetNumberOfThreads(); i++ )
+  for( ThreadIdType i = 0; i < this->GetNumberOfThreads(); i++ )
     {
     m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed
         += str.UpdateMetricsIntermediate[i].NumberOfPixelsProcessed;
@@ -1265,7 +1265,7 @@ DiffusiveRegistrationFilter
   str.OutputImage = outputField;
   str.IntensityDistanceEnergies = new double[this->GetNumberOfThreads()];
   str.RegularizationEnergies = new double[this->GetNumberOfThreads()];
-  for( unsigned int i = 0; i < this->GetNumberOfThreads(); i++ )
+  for( ThreadIdType i = 0; i < this->GetNumberOfThreads(); i++ )
     {
     str.IntensityDistanceEnergies[i] = 0;
     str.RegularizationEnergies[i] = 0;
@@ -1279,7 +1279,7 @@ DiffusiveRegistrationFilter
 
   // Combine the results from the thread to calculate the total energies
   energies.zero();
-  for( unsigned int i = 0; i < this->GetNumberOfThreads(); i++ )
+  for( ThreadIdType i = 0; i < this->GetNumberOfThreads(); i++ )
     {
     energies.IntensityDistanceEnergy += str.IntensityDistanceEnergies[i];
     energies.RegularizationEnergy += str.RegularizationEnergies[i];
