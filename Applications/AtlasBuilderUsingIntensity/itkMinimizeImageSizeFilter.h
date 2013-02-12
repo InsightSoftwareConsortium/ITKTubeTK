@@ -27,6 +27,7 @@ limitations under the License.
 
 #include <itkProcessObject.h>
 #include <itkImageSliceIteratorWithIndex.h>
+#include <itkImageToImageFilter.h>
 #include <itkResampleImageFilter.h>
 
 namespace itk
@@ -47,44 +48,47 @@ namespace tube
   * Done for all dimensions...Good Filter to follow \sa
   * itkCompleteImageResampleFilter.h
   */
-template<class TInputImage>
-class MinimizeImageSizeFilter : public ProcessObject
+template<class TInputImage >
+class MinimizeImageSizeFilter : public ImageToImageFilter< TInputImage,
+                                                           TInputImage >
 {
-
   public:
 
-    typedef MinimizeImageSizeFilter                               Self;
-    typedef ProcessObject                                         Superclass;
+    typedef MinimizeImageSizeFilter                 Self;
+    typedef ImageToImageFilter< TInputImage,
+                                TInputImage >       Superclass;
 
-    typedef SmartPointer<Self>                                    Pointer;
-    typedef SmartPointer<const Self>                              ConstPointer;
+    typedef SmartPointer<Self>                      Pointer;
+    typedef SmartPointer<const Self>                ConstPointer;
 
     itkNewMacro( Self );
     itkTypeMacro( Self, Superclass );
 
-    typedef TInputImage                                           InputImageType;
-    typedef typename InputImageType::PixelType                    InputPixelType;
+    typedef TInputImage                             InputImageType;
+    typedef typename InputImageType::PixelType      InputPixelType;
 
-    typedef TInputImage                                           OutputImageType;
-    typedef typename InputImageType::ConstPointer                 InputImageConstPointer;
-    typedef typename OutputImageType::Pointer                     OutputImagePointer;
+    typedef TInputImage                             OutputImageType;
+    typedef typename InputImageType::ConstPointer   InputImageConstPointer;
+    typedef typename OutputImageType::Pointer       OutputImagePointer;
 
-    typedef typename InputImageType::RegionType                   RegionType;
-    typedef typename InputImageType::SizeType                     SizeType;
-    typedef typename InputImageType::IndexType                    IndexType;
-    typedef typename InputImageType::PointType                    PointType;
+    typedef typename InputImageType::RegionType     RegionType;
+    typedef typename InputImageType::SizeType       SizeType;
+    typedef typename InputImageType::IndexType      IndexType;
+    typedef typename InputImageType::PointType      PointType;
 
     /** Number of dimensions. */
     itkStaticConstMacro(TDimension, unsigned int, TInputImage::ImageDimension);
 
-    // ** Get/Set the input ** //
+    /** Get/Set the input */
     itkGetConstObjectMacro( Input, InputImageType );
     itkSetObjectMacro( Input, InputImageType );
 
-    // ** Set the image pixel buffer on each side of the image (can be negative to crop inside) ** //
+    /** Set the image pixel buffer on each side of the image (can be negative
+     * to crop inside) */
     itkGetConstReferenceMacro( NumberOfBufferPixels, SizeType );
 
-    /** Set the number of pixels (per end) that will be added before and past the first and last valid pixels */
+    /** Set the number of pixels (per end) that will be added before and past
+     * the first and last valid pixels */
     void SetNumberOfBufferPixels( SizeType& size )
       {
       m_NumberOfBufferPixels = size;
@@ -92,17 +96,18 @@ class MinimizeImageSizeFilter : public ProcessObject
       }
 
     /** Get the threshold marker for considering a pixel to be kept in image
-    *            (value non-inclusive -- threshold value to be removed )*/
+     * (value non-inclusive -- threshold value to be removed ) */
     itkGetConstMacro( ThresholdValue, InputPixelType );
     /** Set the threshold marker for considering a pixel to be kept in image
-    *            (value non-inclusive -- threshold value to be removed )*/
+      * (value non-inclusive -- threshold value to be removed ) */
     itkSetMacro( ThresholdValue, InputPixelType );
-
     /** Get whether the threshold value is upper or lower boundry
-    *   (default is false: ie all values below m_ThresholdValue will be excluded) */
+      * (default is false: ie all values below m_ThresholdValue will be
+      * excluded) */
     itkGetConstMacro( ThresholdAbove, bool );
     /** Set whether the threshold value is upper or lower boundry
-    *   (default is false: ie all values below m_ThresholdValue will be excluded) */
+      *(default is false: ie all values below m_ThresholdValue will be
+      excluded) */
     itkSetMacro( ThresholdAbove, bool );
 
     /** Get the default pixel value when resampling: (default is 0) */
@@ -111,22 +116,25 @@ class MinimizeImageSizeFilter : public ProcessObject
     itkSetMacro( DefaultPixelValue, InputPixelType );
 
     /** Turn on and off the clip the end dimension size function.
-    *  Will clip the end of each dimension in the image to the first incidence of a pixel > threshold */
+      * Will clip the end of each dimension in the image to the first
+      * incidence of a pixel > threshold */
     itkBooleanMacro( ClipEndIndices );
     /** Turn on and off the clip the start dimension size function.
-    *  Will clip the start of each dimension in the image to the first incidence of a pixel > threshold */
+      * Will clip the start of each dimension in the image to the first
+      * incidence of a pixel > threshold */
     itkBooleanMacro( ClipStartIndices );
 
     itkGetObjectMacro( Output, OutputImageType );
 
-    virtual  void Update();
+    /** Does the real work! */
+    virtual void GenerateData();
 
   protected:
 
     MinimizeImageSizeFilter();
     ~MinimizeImageSizeFilter(){}
 
-    itkSetObjectMacro( Output, OutputImageType );
+    //itkSetObjectMacro( Output, OutputImageType );
 
     itkGetConstMacro( ClipEndIndices, bool );
     itkSetMacro( ClipEndIndices, bool );
@@ -137,8 +145,10 @@ class MinimizeImageSizeFilter : public ProcessObject
     itkGetConstMacro( BufferImage, bool );
     itkSetMacro( BufferImage, bool );
 
-    void Get3DCroppedStartRegion( InputImageConstPointer input, RegionType& region );
-    void  Get3DCroppedEndRegion( InputImageConstPointer input, RegionType& region );
+    void Get3DCroppedStartRegion( InputImageConstPointer input,
+                                  RegionType& region );
+    void Get3DCroppedEndRegion( InputImageConstPointer input,
+                                RegionType& region );
 
   private:
 
@@ -161,7 +171,7 @@ class MinimizeImageSizeFilter : public ProcessObject
 } // End of namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkMinimizeImageSizeFilter.txx"
+#include "itkMinimizeImageSizeFilter.hxx"
 #endif
 
 #endif

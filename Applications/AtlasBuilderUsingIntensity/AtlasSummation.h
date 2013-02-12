@@ -29,8 +29,8 @@ limitations under the License.
 #include <itkImageRegionIterator.h>
 #include <itkResampleImageFilter.h>
 #include <itkAffineTransform.h>
-#include "itkCompleteImageResampleFilter.h"
 #include "itkMinimizeImageSizeFilter.h"
+#include "itkCompleteImageResampleFilter.h"
 #include "itkRobustMeanAndSigmaImageBuilder.h"
 #include "itkMeanAndSigmaImageBuilder.h"
 
