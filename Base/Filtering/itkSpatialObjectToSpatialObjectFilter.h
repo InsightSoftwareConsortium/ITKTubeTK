@@ -50,6 +50,7 @@ public:
   typedef TInputSpatialObject  InputSpatialObjectType;
   typedef TOutputSpatialObject OutputSpatialObjectType;
 
+  using Superclass::SetInput;
   virtual void SetInput( const InputSpatialObjectType * spatialObject );
 
   virtual void SetInput( unsigned int,
