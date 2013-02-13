@@ -180,7 +180,7 @@ def compute_ind_atlas_edm(config, options):
         logger.debug("Create individual EDM for %s"
             % os.path.basename(subject_dir))
 
-        cmd = [config["Exec"]["TubeToDensityImage"],
+        cmd = [config["Exec"]["TubesToDensityImage"],
             tubes_in_phantom_space, den_image_name, rad_image_name, tan_image_name,
             "--inputTemplateImage %s" % options["phantom"],
             "--useSquareDistance"]
@@ -280,7 +280,6 @@ def compute_grp_atlas_cvt(config, options):
         group_names.add(grp)
 
     for grp in group_names:
-
         logger.debug("Currently processing group %s" % grp)
 
         grp_dir = os.path.join(cv_dir, grp)
@@ -861,6 +860,11 @@ def compute_trn_gk(config, options):
         "--defaultLabelType %d" % options["defLabel"],
         "--graphKernelType %d" % options["kernelType"],
         "--subtreeHeight %d" % options["wlHeight"]]
+
+    if not options["globalLabelFile"] is None:
+        cmd.append("--globalLabelFile %s" % options["globalLabelFile"])
+
+    print cmd
     subprocess.call(cmd)
 
 
@@ -891,7 +895,9 @@ def compute_tst_gk(config, options):
         tst_common_kern_file,
         "--defaultLabelType %d" % options["defLabel"],
         "--graphKernelType %d" % options["kernelType"],
-        "--subtreeHeight %d" % options["wlHeight"]]
+        "--subtreeHeight %d" % options["wlHeight"],
+        "--globalLabelFile %s" % options["globalLabelFile"]]
+    print cmd
     subprocess.call(cmd)
 
 

@@ -433,6 +433,8 @@ int DoIt( int argc, char **argv )
       argOutMappingFileName.c_str() );
     return EXIT_FAILURE;
     }
+  outMappingFile << cvtCellIdentifiers.size() << std::endl;
+
 
   // Vector, holding the frequencies of label occurrence
   std::vector< unsigned int > cellHist( labelSet.size() );
@@ -490,7 +492,6 @@ int DoIt( int argc, char **argv )
       outImage->SetPixel( index, originalLabel );
       }
 
-    outMappingFile << cvtCellIdentifiers.size() << " ";
     if( argOutputHistogram )
       {
       for( unsigned int i=0; i<cellHist.size(); ++i )

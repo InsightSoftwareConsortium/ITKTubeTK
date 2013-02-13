@@ -227,42 +227,46 @@ void writeKernelLibSVM(const std::string &baseFileName,
 }
 
 
-/** Check if a file exists.
+/** Build graph from adjacency matrix (and label information).
  *
- *  \param fileName The name of the file to check.
- *  \return true if exists, false otherwise.
- */
-bool fileExists(const std::string &fileName)
-{
-  std::ifstream file( fileName.c_str() );
-  if( !file.good() )
-    {
-    return false;
-    }
-  return true;
-}
-
-
-/** Load graph from adjacency-matrix (plain-text) file.
- *  Load a graph file (as adjacency matrix) from disk. We use GraphKernel's
- *  functionality for that. Further, we try to load a vertex label file if it
- *  exists. This file specifies the vertex labelings to use. The convention is
- *  that the vertex label file should have the same name as the adjaceny matrix
- *  file + the suffix '.vertexLabel'
+ *  Load a graph file (as adjacency matrix) from disk. In case a global label
+ *  file is provided, we use that for labeling the nodes. Otherwise, check if
+ *  a graph-specific label file (suffix .vertexLabel) exists and if so, load
+ *  it.
  *
  *  \param graphFile The adjacency matrix file to load.
  *  \param defNodeLabel The type of default node labeling to use.
+ *  \param globalLabelFile Filename of a global label file to use.
  *  \return The constructed graph.
  */
-tube::GraphKernel::GraphType loadGraph(std::string graphFile,
-  tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM)
+tube::GraphKernel::GraphType loadGraph( std::string graphFile,
+  tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM,
+  const std::string & globalLabelFile = std::string() )
 {
   const char * labelFile = 0;
-  std::string labelFileStr = graphFile + ".vertexLabel";
-  if( fileExists(labelFileStr) )
+  // Global label file given
+  if( !globalLabelFile.empty() )
     {
-    labelFile = labelFileStr.c_str();
+    labelFile = globalLabelFile.c_str();
+    tube::FmtInfoMessage( "Trying to use global label file %s",
+      labelFile );
     }
+  // Build graph-specific label file name
+  else
+    {
+    std::string labelFileStr = graphFile + ".vertexLabel";
+    labelFile = labelFileStr.c_str();
+    tube::FmtInfoMessage( "Trying to use graph-specific label file %s",
+      labelFile );
+    }
+  // In case it does not exist, reset to 0
+  if( !boost::filesystem::exists( labelFile ) )
+    {
+    tube::FmtInfoMessage( "Label file %s not existent - fallback to default!",
+      labelFile );
+    labelFile = 0;
+    }
+  // Load graph and return
   return tube::GraphKernel::GraphFromAdjFile(
     graphFile.c_str(), labelFile, defNodeLabel );
 }
@@ -333,7 +337,6 @@ int main(int argc, char **argv)
     tube::WLSubtreeKernel::LabelMapVectorType labelMap( argSubtreeHeight );
     int labelCount = 0;
 
-
     if( argGraphKernelType == GK_WLKernel )
       {
       for( int i = 0; i < N; ++i )
@@ -341,11 +344,13 @@ int main(int argc, char **argv)
         tube::FmtInfoMessage("Adding data from graph %s",
           listA[i].c_str());
 
-        tube::GraphKernel::GraphType f = loadGraph( listA[i], defLabelType );
+        tube::GraphKernel::GraphType f = loadGraph( listA[i],
+                                                    defLabelType,
+                                                    argGlobalLabelFileName );
         tube::WLSubtreeKernel::UpdateLabelCompression( f,
-                                                 labelMap,
-                                                 labelCount,
-                                                 argSubtreeHeight );
+                                                       labelMap,
+                                                       labelCount,
+                                                       argSubtreeHeight );
         }
       }
 
@@ -361,10 +366,14 @@ int main(int argc, char **argv)
 
     for( int i = 0; i < N; ++i )
       {
-      tube::GraphKernel::GraphType f = loadGraph(listA[i], defLabelType );
+      tube::GraphKernel::GraphType f = loadGraph( listA[i],
+                                                  defLabelType,
+                                                  argGlobalLabelFileName );
       for( int j = 0; j < M; ++j )
         {
-        tube::GraphKernel::GraphType g = loadGraph(listB[j], defLabelType );
+        tube::GraphKernel::GraphType g = loadGraph( listB[j],
+                                                    defLabelType,
+                                                    argGlobalLabelFileName );
 
         tube::FmtInfoMessage("Running kernel on graphs (%d,%d)",
           i,j);
@@ -381,10 +390,10 @@ int main(int argc, char **argv)
           case GK_WLKernel:
             {
             gk = new tube::WLSubtreeKernel( f,
-                                      g,
-                                      labelMap,
-                                      labelCount,
-                                      argSubtreeHeight );
+                                            g,
+                                            labelMap,
+                                            labelCount,
+                                            argSubtreeHeight );
 
             K[i][j] = gk->Compute();
             break;
