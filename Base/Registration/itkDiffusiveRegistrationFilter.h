@@ -710,7 +710,7 @@ protected:
   virtual void ApplyUpdate( TimeStepType dt, OutputImagePointer outputImage );
 
   /** Inherited from superclass - do not call this function! */
-  virtual void ThreadedApplyUpdate( TimeStepType dt,
+  virtual void ThreadedApplyUpdate( const TimeStepType & dt,
                                     const ThreadRegionType & regionToProcess,
                                     ThreadIdType threadId );
 

@@ -1672,7 +1672,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::ThreadedApplyUpdate( TimeStepType,
+::ThreadedApplyUpdate( const TimeStepType &,
                        const ThreadRegionType &,
                        ThreadIdType )
 {
