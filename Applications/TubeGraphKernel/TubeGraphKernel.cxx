@@ -262,7 +262,7 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
   // In case it does not exist, reset to 0
   if( !boost::filesystem::exists( labelFile ) )
     {
-    tube::FmtInfoMessage( "Label file %s not existent - using default!",
+    tube::FmtInfoMessage( "Label file %s not existent - fallback to default!",
       labelFile );
     labelFile = 0;
     }

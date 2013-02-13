@@ -34,6 +34,7 @@ def main(argv=None):
     parser.add_option("", "--wlHeight", help="Subtree height of the WL subtree kernel", type="int", default=1)
     parser.add_option("", "--defLabel", help="Specify default labeling of graph nodes (0 ... Node ID, 1 ... Node degree)", type="int", default=0)
     parser.add_option("", "--phantomType", help="Specify the phantom type that is used (Supported are: SPL, BrainWeb)")
+    parser.add_option("", "--globalLabelFile", help="Specify a global label file to use")
     parser.add_option("", "--logto", help="Log to the specified file")
     parser.add_option("", "--phantom", help="Brainweb phantom")
 
@@ -70,7 +71,7 @@ def main(argv=None):
     subject_lab_list = [] # The group label for each subject, e.g., 'Male', 'Female'
     for e in json_dat["Data"]:
         subject_dir_list.append(e["Source"])
-        subject_lab_list.append(e["Group"])
+        subject_lab_list.append(e["Group"].rstrip())
 
     logger = logging.getLogger()
 
@@ -95,6 +96,7 @@ def main(argv=None):
         stage_opt["kernelType"] = options.kernelType
         stage_opt["wlHeight"] = options.wlHeight
         stage_opt["defLabel"] = options.defLabel
+        stage_opt["globalLabelFile"] = options.globalLabelFile
         stage_opt["randomSeed"] = 1234 # Random seed for repeatability
 
         if (options.stage == 1):

@@ -37,7 +37,7 @@ value among the i-th graph of A and the j-th graph of B. K will eventually be a 
     </string>
     <string>
       <name>argGlobalLabelFileName</name>
-      <longflag>useGlobalLabelFile</longflag>
+      <longflag>globalLabelFile</longflag>
       <description>Specify a global label file to use (Optional).</description>
     </string>
     <integer>

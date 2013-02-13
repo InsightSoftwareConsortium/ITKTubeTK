@@ -280,7 +280,6 @@ def compute_grp_atlas_cvt(config, options):
         group_names.add(grp)
 
     for grp in group_names:
-
         logger.debug("Currently processing group %s" % grp)
 
         grp_dir = os.path.join(cv_dir, grp)
@@ -861,6 +860,11 @@ def compute_trn_gk(config, options):
         "--defaultLabelType %d" % options["defLabel"],
         "--graphKernelType %d" % options["kernelType"],
         "--subtreeHeight %d" % options["wlHeight"]]
+
+    if not options["globalLabelFile"] is None:
+        cmd.append("--globalLabelFile %s" % options["globalLabelFile"])
+
+    print cmd
     subprocess.call(cmd)
 
 
@@ -891,7 +895,9 @@ def compute_tst_gk(config, options):
         tst_common_kern_file,
         "--defaultLabelType %d" % options["defLabel"],
         "--graphKernelType %d" % options["kernelType"],
-        "--subtreeHeight %d" % options["wlHeight"]]
+        "--subtreeHeight %d" % options["wlHeight"],
+        "--globalLabelFile %s" % options["globalLabelFile"]]
+    print cmd
     subprocess.call(cmd)
 
 
