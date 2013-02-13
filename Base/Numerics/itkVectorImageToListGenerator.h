@@ -106,7 +106,8 @@ public:
                       PixelTraitsType::Dimension);
 
   /** Standard itk::ProcessObject subclass method. */
-  virtual DataObjectPointer MakeOutput(unsigned int idx);
+  using Superclass::MakeOutput;
+  virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
 
   virtual void SetMeasurementVectorSize( const MeasurementVectorSizeType s )
     {
@@ -129,6 +130,7 @@ public:
     }
 
   /** Method to set/get the image */
+  using Superclass::SetInput;
   void SetInput( const ImageType* image );
   const ImageType* GetInput() const;
 

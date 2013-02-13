@@ -106,6 +106,7 @@ class ITK_EXPORT ObjectDocumentToObjectSource : public ProcessObject
     }
 
     /** Set the input document object */
+    using Superclass::SetInput;
     virtual void SetInput( const DocumentType * input )
     {
       // Process object is not const-correct so the const_cast is required here
@@ -118,7 +119,9 @@ class ITK_EXPORT ObjectDocumentToObjectSource : public ProcessObject
     /** Must be be defined by deriving class */
     virtual void GraftOutput( DataObject * ){}
     virtual void GraftNthOutput( unsigned int, DataObject * ){}
-    virtual DataObjectPointer MakeOutput( unsigned int );
+
+    using Superclass::MakeOutput;
+    virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
 
   protected:
 

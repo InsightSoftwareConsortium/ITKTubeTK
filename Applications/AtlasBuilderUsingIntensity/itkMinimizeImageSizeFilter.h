@@ -80,7 +80,6 @@ class MinimizeImageSizeFilter : public ImageToImageFilter< TInputImage,
 
     /** Get/Set the input */
     itkGetConstObjectMacro( Input, InputImageType );
-    itkSetObjectMacro( Input, InputImageType );
 
     /** Set the image pixel buffer on each side of the image (can be negative
      * to crop inside) */
@@ -125,15 +124,13 @@ class MinimizeImageSizeFilter : public ImageToImageFilter< TInputImage,
 
     itkGetObjectMacro( Output, OutputImageType );
 
+  protected:
+
     /** Does the real work! */
     virtual void GenerateData();
 
-  protected:
-
     MinimizeImageSizeFilter();
     ~MinimizeImageSizeFilter(){}
-
-    //itkSetObjectMacro( Output, OutputImageType );
 
     itkGetConstMacro( ClipEndIndices, bool );
     itkSetMacro( ClipEndIndices, bool );

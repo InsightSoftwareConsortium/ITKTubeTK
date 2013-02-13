@@ -80,15 +80,15 @@ class Document : public DataObject
     void CopyInformation(const DataObject*) {}
 
     /** Documents do not use region information so must override these classes */
-    void UpdateOutputInformation() {}
+    virtual void UpdateOutputInformation() {}
     /** Documents do not use region information so must override these classes */
-    bool VerifyRequestedRegion() { return true; }
+    virtual bool VerifyRequestedRegion() { return true; }
     /** Documents do not use region information so must override these classes */
     bool RequestedRegionIsOutsideOfTheBufferedRegion() { return false; }
     /** Documents do not use region information so must override these classes */
-    void SetRequestedRegion( Superclass * ) {}
+    virtual void SetRequestedRegion( const DataObject * ) {}
     /** Documents do not use region information so must override these classes */
-    void SetRequestedRegionToLargestPossibleRegion() {}
+    virtual void SetRequestedRegionToLargestPossibleRegion() {}
 
   protected:
 

@@ -162,8 +162,6 @@ class ITK_EXPORT CompleteImageResampleFilter:
     itkGetConstReferenceMacro( OutputSpacing, SpacingType );
 
     itkGetConstObjectMacro( Input, InputImageType );
-    itkSetObjectMacro( Input, InputImageType );
-
     itkGetObjectMacro( Output, OutputImageType );
 
   protected:
