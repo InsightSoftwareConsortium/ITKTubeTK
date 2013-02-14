@@ -835,7 +835,8 @@ typename DiffusiveRegistrationFilter
 ::TimeStepType
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ThreadedCalculateChange( const ThreadRegionType &, int)
+::ThreadedCalculateChange( const ThreadRegionType &,
+                           ThreadIdType itkNotUsed(threadId) )
 {
   // This function should never be called!
   itkExceptionMacro( << "ThreadedCalculateChange(regionToProcess, threadId) "
