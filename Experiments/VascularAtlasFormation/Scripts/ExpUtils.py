@@ -857,12 +857,13 @@ def compute_trn_gk(config, options):
         trn_common_json_file,
         trn_common_json_file,
         trn_common_kern_file,
-        "--defaultLabelType %d" % options["defLabel"],
-        "--graphKernelType %d" % options["kernelType"],
-        "--subtreeHeight %d" % options["wlHeight"]]
+        "--defaultLabelType %d" % options["defaultLabelType"],
+        "--graphKernelType %d" % options["graphKernelType"],
+        "--subtreeHeight %d" % options["subtreeHeight"]]
 
     if not options["globalLabelFile"] is None:
-        cmd.append("--globalLabelFile %s" % options["globalLabelFile"])
+        full_path_to_label_file = os.path.join(cv_dir, "Common", options["globalLabelFile"])
+        cmd.append("--globalLabelFile %s" % full_path_to_label_file)
 
     print cmd
     subprocess.call(cmd)
@@ -893,10 +894,14 @@ def compute_tst_gk(config, options):
         tst_common_json_file,
         trn_common_json_file,
         tst_common_kern_file,
-        "--defaultLabelType %d" % options["defLabel"],
-        "--graphKernelType %d" % options["kernelType"],
-        "--subtreeHeight %d" % options["wlHeight"],
-        "--globalLabelFile %s" % options["globalLabelFile"]]
+        "--defaultLabelType %d" % options["defaultLabelType"],
+        "--graphKernelType %d" % options["graphKernelType"],
+        "--subtreeHeight %d" % options["subtreeHeight"]]
+
+    if not options["globalLabelFile"] is None:
+        full_path_to_label_file = os.path.join(cv_dir, "Common", options["globalLabelFile"])
+        cmd.append("--globalLabelFile %s" % full_path_to_label_file)
+
     print cmd
     subprocess.call(cmd)
 
@@ -945,9 +950,9 @@ def compute_full_gk(config, options):
         graph_list_file,
         graph_list_file,
         full_common_kern_file,
-        "--defaultLabelType %d" % options["defLabel"],
-        "--graphKernelType %d" % options["kernelType"],
-        "--subtreeHeight %d" % options["wlHeight"]]
+        "--defaultLabelType %d" % options["defaultLabelType"],
+        "--graphKernelType %d" % options["graphKernelType"],
+        "--subtreeHeight %d" % options["subtreeHeight"]]
     subprocess.call(cmd)
 
 
@@ -1085,9 +1090,9 @@ def compute_distance_signatures(config, options):
             sgd_file,
             sgd_file,
             k2_file,
-            "--defaultLabelType %d" % options["defLabel"],
-            "--graphKernelType %d" % options["kernelType"],
-            "--subtreeHeight %d" % options["wlHeight"]]
+            "--defaultLabelType %d" % options["defaultLabelType"],
+            "--graphKernelType %d" % options["graphKernelType"],
+            "--subtreeHeight %d" % options["subtreeHeight"]]
     subprocess.call(cmd)
 
 
@@ -1133,9 +1138,9 @@ def compute_distance_signatures(config, options):
             subject_graph_list_file,
             subject_graph_list_file,
             k0_file,
-            "--defaultLabelType %d" % options["defLabel"],
-            "--graphKernelType %d" % options["kernelType"],
-            "--subtreeHeight %d" % options["wlHeight"]]
+            "--defaultLabelType %d" % options["defaultLabelType"],
+            "--graphKernelType %d" % options["graphKernelType"],
+            "--subtreeHeight %d" % options["subtreeHeight"]]
         subprocess.call(cmd)
 
         # Second, the k(x,y) entries ... (used in kernel-induced distance)
@@ -1143,10 +1148,57 @@ def compute_distance_signatures(config, options):
             subject_graph_list_file,
             sgd_file,
             k1_file,
-            "--defaultLabelType %d" % options["defLabel"],
-            "--graphKernelType %d" % options["kernelType"],
-            "--subtreeHeight %d" % options["wlHeight"]]
+            "--defaultLabelType %d" % options["defaultLabelType"],
+            "--graphKernelType %d" % options["graphKernelType"],
+            "--subtreeHeight %d" % options["subtreeHeight"]]
+
         subprocess.call(cmd)
+
+
+def compute_glo_label_map(config, options):
+    """ Computes a global label map from CVT cell ID to a discrete label.
+
+    The created mapping files can later be used as input to the graph
+    kernel(s) to provide better (more discriminative) labelings of nodes.
+    """
+
+    logger = logging.getLogger()
+
+    cv_dir = os.path.join(options["dest"], "cv-%.4d" % options["id"])
+    if not check_dir(cv_dir):
+        raise Exception("Cross-validation directory %s missing!" % cv_dir)
+
+    atlas_cvt_file = os.path.join(cv_dir, "Common", "bNormalDD-mean.cvt.mha")
+    if not check_file(atlas_cvt_file):
+        raise Exception("CVT file %s for group Common not found!" % atlas_cvt_file)
+
+    # Newly created CVT files, one (w)ith background cell counting, the other has (n)o background cell counting
+    relabeled_wBack_atlas_cvt_img_file = os.path.join(cv_dir, "Common", "relabeled-wBack-bNormalDD-mean.cvt.mha")
+    relabeled_nBack_atlas_cvt_img_file = os.path.join(cv_dir, "Common", "relabeled-nBack-bNormalDD-mean.cvt.mha")
+
+    # CVT cell ID to new label mapping, one (w)ith background cell counting, the other has (n)o background cell counting
+    relabeled_wBack_atlas_cvt_map_file = os.path.join(cv_dir, "Common", "relabeled-wBack-bNormalDD-mean.cvt.map")
+    relabeled_nBack_atlas_cvt_map_file = os.path.join(cv_dir, "Common", "relabeled-nBack-bNormalDD-mean.cvt.map")
+
+    if options["segmentationImage"] is None:
+        raise Exception("No segmentation file given!")
+
+    # Run with background cell labeling
+    cmd = [config["Exec"]["TransferLabelsToRegions"],
+            atlas_cvt_file,
+            options["segmentationImage"],
+            relabeled_wBack_atlas_cvt_img_file,
+            relabeled_wBack_atlas_cvt_map_file,
+            "--omitRegions %d" % 0]
+    subprocess.call(cmd)
+
+    # Rum without background cell labeling
+    cmd = [config["Exec"]["TransferLabelsToRegions"],
+            atlas_cvt_file,
+            options["segmentationImage"],
+            relabeled_nBack_atlas_cvt_img_file,
+            relabeled_nBack_atlas_cvt_map_file]
+    subprocess.call(cmd)
 
 
 def evaluate_classifier_from_full_gk(config, options):

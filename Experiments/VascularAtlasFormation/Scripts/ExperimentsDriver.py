@@ -30,13 +30,14 @@ def main(argv=None):
     parser.add_option("", "--config", help="Config file with relative executable paths")
     parser.add_option("", "--cells", help="Number of CVT cells to use for ATLAS building", type="int", default=1000)
     parser.add_option("", "--logat", help="Log at the specified logging level")
-    parser.add_option("", "--kernelType", help="Graph kernel type (0 ... SP, 1 ... WL)", type="int", default=0)
-    parser.add_option("", "--wlHeight", help="Subtree height of the WL subtree kernel", type="int", default=1)
-    parser.add_option("", "--defLabel", help="Specify default labeling of graph nodes (0 ... Node ID, 1 ... Node degree)", type="int", default=0)
-    parser.add_option("", "--phantomType", help="Specify the phantom type that is used (Supported are: SPL, BrainWeb)")
+    parser.add_option("", "--graphKernelType", help="Graph kernel type (see TubeGraphKernel)", type="int", default=0)
+    parser.add_option("", "--subtreeHeight", help="Subtree height of the WL subtree kernel (see TubeGraphKernel)", type="int", default=1)
+    parser.add_option("", "--defaultLabelType", help="Specify default labeling of graph nodes (see TubeGraphKernel)", type="int", default=0)
     parser.add_option("", "--globalLabelFile", help="Specify a global label file to use")
+    parser.add_option("", "--segmentationImage", help="Image with brain segmentations (e.g., provided with SPL phantom)")
     parser.add_option("", "--logto", help="Log to the specified file")
-    parser.add_option("", "--phantom", help="Brainweb phantom")
+    parser.add_option("", "--phantom", help="Phantom file to use")
+    parser.add_option("", "--phantomType", help="Specify the phantom type that is used (Supported phantoms are are: SPL, BrainWeb)")
 
     (options, args) = parser.parse_args()
 
@@ -93,10 +94,11 @@ def main(argv=None):
         stage_opt["phantom"] = options.phantom
         stage_opt["phantomType"] = options.phantomType
         stage_opt["cells"] = options.cells
-        stage_opt["kernelType"] = options.kernelType
-        stage_opt["wlHeight"] = options.wlHeight
-        stage_opt["defLabel"] = options.defLabel
+        stage_opt["graphKernelType"] = options.graphKernelType
+        stage_opt["subtreeHeight"] = options.subtreeHeight
+        stage_opt["defaultLabelType"] = options.defaultLabelType
         stage_opt["globalLabelFile"] = options.globalLabelFile
+        stage_opt["segmentationImage"] = options.segmentationImage
         stage_opt["randomSeed"] = 1234 # Random seed for repeatability
 
         if (options.stage == 1):
@@ -108,7 +110,7 @@ def main(argv=None):
             Utils.transform_tubes_to_phantom(config, stage_opt)
         elif (options.stage == 3):
             Utils.compute_ind_atlas_edm(config, stage_opt)
-        elif (options.stage > 3 and options.stage < 23):
+        elif (options.stage > 3 and options.stage < 24):
             for cv_id,(train,test) in enumerate(cv):
                 stage_opt["id"] = cv_id + 1 # Cross-validation ID
                 stage_opt["trn"] = train    # Trn indices
@@ -127,13 +129,14 @@ def main(argv=None):
                     13: Utils.compute_ind_graph_common_testing,
                     14: Utils.compute_ind_tube_prob_testing,
                     15: Utils.compute_ind_graph_prob_testing,
-                    16: Utils.compute_trn_gk,
-                    17: Utils.compute_tst_gk,
-                    18: Utils.compute_full_gk,
-                    19: Utils.trn_classifier,
-                    20: Utils.tst_classifier,
-                    21: Utils.evaluate_classifier_from_full_gk,
-                    22: Utils.compute_distance_signatures
+                    16: Utils.compute_glo_label_map,
+                    17: Utils.compute_trn_gk,
+                    18: Utils.compute_tst_gk,
+                    19: Utils.compute_full_gk,
+                    20: Utils.trn_classifier,
+                    21: Utils.tst_classifier,
+                    22: Utils.evaluate_classifier_from_full_gk,
+                    23: Utils.compute_distance_signatures
                 }[options.stage](config, stage_opt)
         else:
             print "Error: Stage %d not available!" % options.stage

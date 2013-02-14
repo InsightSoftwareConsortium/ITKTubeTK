@@ -16,7 +16,7 @@
     <file>
       <name>argInImageFileName</name>
       <index>0</index>
-      <description>Filename of the input image.</description>
+      <description>Filename of the input CVT image.</description>
     </file>
     <file>
       <name>argInLabelFileName</name>
@@ -31,7 +31,7 @@
     <file>
      <name>argOutMappingFileName</name>
       <index>3</index>
-      <description>File name of the output mapping file, mapping CVT cell IDs to features.</description>
+      <description>File name of the output mapping file, mapping CVT cell IDs to discrete labels or a label histogram.</description>
     </file>
     <boolean>
       <name>argOutputHistogram</name>
