@@ -646,7 +646,7 @@ protected:
 
   /** Inherited from superclass - do not call this function! */
   TimeStepType ThreadedCalculateChange(
-      const ThreadRegionType & regionToProcess, int threadId );
+      const ThreadRegionType & regionToProcess, ThreadIdType threadId );
 
   /** This method populates an update buffer with changes for each pixel in the
    * output when computing the gradient, using the
