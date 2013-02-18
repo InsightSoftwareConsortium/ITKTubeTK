@@ -481,6 +481,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES}
     SlicerBaseCLI
     ITKFactoryRegistration
+    ${JsonCpp_LIBRARIES} # For ParameterSerialization
     CACHE INTERNAL "SlicerExecutionModel extra libraries" FORCE)
 endif()
 

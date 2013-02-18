@@ -33,7 +33,7 @@ endif( COMMAND CMAKE_POLICY )
 # Disable MSVC 8 warnings
 if( WIN32 )
   option( DISABLE_MSVC8_DEPRECATED_WARNINGS "Disable Visual Studio 8 deprecated warnings" ON )
-  mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )  
+  mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )
   if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
   endif( DISABLE_MSVC8_DEPRECATED_WARNINGS )
@@ -42,10 +42,6 @@ endif( WIN32)
 # Find ITK
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
-
-# Find GenerateCLP
-find_package( GenerateCLP REQUIRED )
-include( ${GenerateCLP_USE_FILE} )
 
 add_executable( ImageCompareCommand ImageCompareCommand.cxx )
 target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
@@ -81,4 +77,3 @@ install(
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
-

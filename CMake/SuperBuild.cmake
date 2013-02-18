@@ -256,19 +256,72 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   endif( TubeTK_USE_VTK )
 
-  set( proj SlicerExecutionModel )
+  ##
+  ## Check if system ParameterSerializer or superbuild ParameterSerializer
+  ##
+  if( NOT USE_SYSTEM_ParameterSerializer )
+    ##
+    ## ParameterSerializer
+    ##
+    set( proj ParameterSerializer )
+    # Set dependency list
+    if( NOT USE_SYSTEM_ITK )
+      # Depends on ITK if ITK was build using superbuild
+      set( ${proj}_DEPENDS "Insight")
+    else()
+      set( ${proj}_DEPENDS "" )
+    endif()
+    if( NOT USE_SYSTEM_JsonCpp )
+      # Depends on ITK if ITK was build using superbuild
+      set( ${proj}_DEPENDS ${${proj}_DEPENDS} "JsonCpp")
+    else()
+      set( ${proj}_DEPENDS "" )
+    endif()
+    ExternalProject_Add( ${proj}
+      GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ParameterSerializer.git"
+      GIT_TAG "d76c9821705204b379f2a92db2bc1b15c0d24ffc"
+      SOURCE_DIR "${CMAKE_BINARY_DIR}/ParameterSerializer"
+      BINARY_DIR ParameterSerializer-Build
+      CMAKE_GENERATOR ${gen}
+      CMAKE_ARGS
+        -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+        -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+        -DBUILD_SHARED_LIBS:BOOL=${shared}
+        -DITK_DIR:PATH=${ITK_DIR}
+        -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+      INSTALL_COMMAND ""
+      DEPENDS
+        ${${proj}_DEPENDS}
+      )
+    set( ParameterSerializer_DIR "${base}/ParameterSerializer-Build" )
+    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "ParameterSerializer" )
+  endif( NOT USE_SYSTEM_ParameterSerializer )
 
+  set( proj SlicerExecutionModel )
   # Set dependency list
   if( NOT USE_SYSTEM_ITK )
     # Depends on ITK if ITK was build using superbuild
     set( SlicerExecutionModel_DEPENDS "Insight")
-  else( NOT USE_SYSTEM_ITK )
+  else()
     set( SlicerExecutionModel_DEPENDS "" )
-  endif( NOT USE_SYSTEM_ITK )
-
-  ExternalProject_Add( ${proj}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/SlicerExecutionModel.git"
-    GIT_TAG "origin/master"
+  endif()
+  if( NOT USE_SYSTEM_ParameterSerializer )
+    # Depends on ITK if ITK was build using superbuild
+    set( SlicerExecutionModel_DEPENDS "ParameterSerializer")
+  else()
+    set( SlicerExecutionModel_DEPENDS "" )
+  endif()
+  ExternalProject_Add(${proj}
+    # Has enhancements required for the SEM ParameterSerializer.
+    # Change back to upstream after pull request merged.
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/SlicerExecutionModel.git"
+    GIT_TAG "0d22bf6bc303d42040b3efd23330c489f266f2fb"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-Build
     CMAKE_GENERATOR ${gen}
@@ -284,6 +337,9 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_TESTING:BOOL=OFF
       -DITK_DIR:PATH=${ITK_DIR}
+      -DSlicerExecutionModel_USE_SERIALIZER:BOOL=ON
+      -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
     INSTALL_COMMAND ""
     DEPENDS
       ${SlicerExecutionModel_DEPENDS}
@@ -353,42 +409,6 @@ else( NOT TubeTK_BUILD_SLICER_EXTENSION )
   unset( SlicerExecutionModel_DIR )
 
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
-
-##
-## Check if system ParameterSerializer or superbuild ParameterSerializer
-##
-if( NOT USE_SYSTEM_ParameterSerializer )
-  ##
-  ## ParameterSerializer
-  ##
-  set( proj ParameterSerializer )
-  ExternalProject_Add( ParameterSerializer
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ParameterSerializer.git"
-    GIT_TAG "876eb643a3ce3ed06e0fc9376081bd8e24d095ee"
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/ParameterSerializer"
-    BINARY_DIR ParameterSerializer-Build
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DITK_DIR:PATH=${ITK_DIR}
-      -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
-    INSTALL_COMMAND ""
-    DEPENDS
-      "Insight"
-      "JsonCpp"
-    )
-  set( ParameterSerializer_DIR "${base}/ParameterSerializer-Build" )
-  set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "ParameterSerializer" )
-endif( NOT USE_SYSTEM_ParameterSerializer )
-
 
 ##
 ## A convenient 2D/3D image viewer that can handle anisotropic spacing.
