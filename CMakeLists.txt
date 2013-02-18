@@ -454,16 +454,18 @@ set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
 set( LAUNCH_EXE  "" )
 set( SUPPORT_2D_IMAGES on )
 
-add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
-  ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
-add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
-  ${Slicer_BINARY_DIR}/Base/CLI )
+if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+  add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
+    ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+  add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
+    ${Slicer_BINARY_DIR}/Base/CLI )
 
-set(SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
-  ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES}
-  SlicerBaseCLI
-  ITKFactoryRegistration
-  CACHE INTERNAL "SlicerExecutionModel extra libraries" FORCE)
+  set(SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
+    ${SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES}
+    SlicerBaseCLI
+    ITKFactoryRegistration
+    CACHE INTERNAL "SlicerExecutionModel extra libraries" FORCE)
+endif()
 
 add_subdirectory(${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
   ${Slicer_BINARY_DIR}/ExpertAutomatedRegistration )
