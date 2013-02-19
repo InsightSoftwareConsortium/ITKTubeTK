@@ -117,47 +117,47 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
     set( ITK_DIR "${base}/Insight-Build" )
 
-    # Also get SimpleITK
-    set( proj SimpleITK )
-    ExternalProject_Add( ${proj}
-      GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/SimpleITK/SimpleITK.git"
-      GIT_TAG "v0.6.1"
-      SOURCE_DIR "${CMAKE_BINARY_DIR}/SimpleITK"
-      BINARY_DIR "SimpleITK-Build"
-      CMAKE_GENERATOR ${gen}
-      CMAKE_ARGS
-        -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-        -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-        -DCMAKE_BUILD_TYPE:STRING=${build_type}
-        -DITK_DIR:STRING=${CMAKE_BINARY_DIR}/Insight-Build
-        -DBUILD_SHARED_LIBS:BOOL=${shared}
-        -DBUILD_TESTING:BOOL=OFF
-        -DWRAP_JAVA:BOOL=OFF
-        -DWRAP_PYTHON:BOOL=OFF
-        -DWRAP_LUA:BOOL=OFF
-        -DWRAP_CSHARP:BOOL=OFF
-        -DWRAP_TCL:BOOL=OFF
-        -DWRAP_R:BOOL=OFF
-        -DWRAP_RUBY:BOOL=OFF
-      INSTALL_COMMAND ""
-      DEPENDS
-        "Insight"
-      )
+    if( TubeTK_USE_SimpleITK )
+      # Also get SimpleITK
+      set( proj SimpleITK )
+      ExternalProject_Add( ${proj}
+        GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/SimpleITK/SimpleITK.git"
+        GIT_TAG "v0.6.1"
+        SOURCE_DIR "${CMAKE_BINARY_DIR}/SimpleITK"
+        BINARY_DIR "SimpleITK-Build"
+        CMAKE_GENERATOR ${gen}
+        CMAKE_ARGS
+          -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+          -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+          -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+          -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+          -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+          -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+          -DCMAKE_BUILD_TYPE:STRING=${build_type}
+          -DITK_DIR:STRING=${CMAKE_BINARY_DIR}/Insight-Build
+          -DBUILD_SHARED_LIBS:BOOL=${shared}
+          -DBUILD_TESTING:BOOL=OFF
+          -DWRAP_JAVA:BOOL=OFF
+          -DWRAP_PYTHON:BOOL=OFF
+          -DWRAP_LUA:BOOL=OFF
+          -DWRAP_CSHARP:BOOL=OFF
+          -DWRAP_TCL:BOOL=OFF
+          -DWRAP_R:BOOL=OFF
+          -DWRAP_RUBY:BOOL=OFF
+        INSTALL_COMMAND ""
+        DEPENDS
+          "Insight"
+        )
 
-    set( SimpleITK_DIR "${base}/SimpleITK-Build" )
-    set( TubeTK_SimpleITK_Def "-DSimpleITK_DIR:PATH=${SimpleITK_DIR}" )
-#     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SimpleITK" )
-
-    set( ITK_DIR "${base}/Insight-Build" )
-    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "Insight" )
-
+      set( SimpleITK_DIR "${base}/SimpleITK-Build" )
+      set( TubeTK_SimpleITK_Def "-DSimpleITK_DIR:PATH=${SimpleITK_DIR}" )
+  #     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SimpleITK" )
+    endif()
     set( SimpleITK_DIR "" )
     set( TubeTK_SimpleITK_Def "" )
 
+    set( ITK_DIR "${base}/Insight-Build" )
+    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "Insight" )
   endif( NOT USE_SYSTEM_ITK )
 
   ##
