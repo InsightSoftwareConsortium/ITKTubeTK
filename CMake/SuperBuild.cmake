@@ -121,7 +121,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     set( proj SimpleITK )
     ExternalProject_Add( ${proj}
       GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/SimpleITK/SimpleITK.git"
-      GIT_TAG "origin/master"
+      GIT_TAG "v0.6.1"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/SimpleITK"
       BINARY_DIR "SimpleITK-Build"
       CMAKE_GENERATOR ${gen}
