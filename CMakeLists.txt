@@ -294,6 +294,9 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     find_package( ITK REQUIRED )
     include( ${ITK_USE_FILE} )
   endif()
+  option( TubeTK_USE_SimpleITK
+    "Use SimpleITK to compile TubeTK, enables additional applications and libraries."
+    OFF )
 
   #-----------------------------------------------------------------------------
   # QT Setup
