@@ -460,6 +460,7 @@ set( SUPPORT_2D_IMAGES on )
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   add_subdirectory(${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
     ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+  include_directories(${Slicer_BINARY_DIR}/Libs/itkFactoryRegistration)
   add_subdirectory(${Slicer_SOURCE_DIR}/Base/CLI
     ${Slicer_BINARY_DIR}/Base/CLI )
 
