@@ -47,12 +47,12 @@ const int Dimensions = 3;
 
 typedef unsigned int                                  DensityPixelType;
 typedef float                                         RadiusPixelType;
-typedef itk::Vector< float, Dimensions >              VectorType;
+typedef itk::Vector< float, Dimensions >              TangentPixelType;
 
 typedef itk::Image< unsigned char, Dimensions >       TemplateImageType;
 typedef itk::Image< DensityPixelType, Dimensions >    DensityImageType;
 typedef itk::Image< RadiusPixelType, Dimensions >     RadiusImageType;
-typedef itk::Image< VectorType, Dimensions >          TangentImageType;
+typedef itk::Image< TangentPixelType, Dimensions >    TangentImageType;
 
 typedef itk::ImageFileReader< TemplateImageType >     TemplateImageReaderType;
 

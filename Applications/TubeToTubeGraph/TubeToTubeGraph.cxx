@@ -40,17 +40,7 @@ limitations under the License.
 
 #include "TubeToTubeGraphCLP.h"
 
-
-typedef itk::Image< short, 3 >             ImageType;
-typedef itk::GroupSpatialObject<3>         GroupType;
-typedef itk::ImageFileReader< ImageType >  ImageReaderType;
-typedef itk::SpatialObjectReader< >        SpatialObjectReaderType;
-typedef itk::VesselTubeSpatialObject< 3 >  TubeSpatialObjectType;
-typedef TubeSpatialObjectType::TubePointType   TubePointType;
-typedef TubeSpatialObjectType::TransformType    TubeTransformType;
-
 int DoIt( int, char *[] );
-
 
 
 int main(int argc, char **argv)
@@ -63,6 +53,17 @@ int main(int argc, char **argv)
 
 int DoIt( int argc, char *argv[] )
 {
+  const unsigned int Dimension = 3;
+
+  typedef short                                      PixelType;
+  typedef itk::Image< PixelType, Dimension >         ImageType;
+  typedef itk::GroupSpatialObject< Dimension >       GroupType;
+  typedef itk::ImageFileReader< ImageType >          ImageReaderType;
+  typedef itk::SpatialObjectReader< >                SpatialObjectReaderType;
+  typedef itk::VesselTubeSpatialObject< Dimension >  TubeSpatialObjectType;
+  typedef TubeSpatialObjectType::TubePointType       TubePointType;
+  typedef TubeSpatialObjectType::TransformType       TubeTransformType;
+
   PARSE_ARGS;
 
   itk::TimeProbesCollectorBase timeCollector;
