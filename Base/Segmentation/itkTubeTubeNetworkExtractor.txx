@@ -102,7 +102,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 bool
 TubeNetworkExtractor<TInputImage, TInputMask>
-::ExtractTube( float x, float y, float z )
+::ExtractTube( float itkNotUsed(x), float itkNotUsed(y), float itkNotUsed(z) )
 {
   /*if( TubeExtractor<TInputImage>::ExtractTube( x, y, z, m_TubeNum ) )
     {
@@ -124,7 +124,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 bool
 TubeNetworkExtractor<TInputImage, TInputMask>
-::DeleteTube( TubeType * newTube )
+::DeleteTube( TubeType * itkNotUsed(newTube) )
 {
   //TubeExtractor<TInputImage>::DeleteTube( newTube );
   //return m_TubeNetwork->DeleteTube( newTube );
@@ -177,7 +177,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 template<class TInputImage, class TInputMask>
 void
 TubeNetworkExtractor<TInputImage, TInputMask>
-::AutoExtractAutoThresh( double alpha )
+::AutoExtractAutoThresh( double itkNotUsed(alpha) )
 {
 /*  vnl_vector<int> bin( 256,0.0 );
   int i, j, k, l;
