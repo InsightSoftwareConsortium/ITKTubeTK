@@ -1317,7 +1317,7 @@ def trn_classifier(config, options):
         labels.append(label)
 
     logger.debug("Training C-SVM with precomputed kernel ...")
-    clf = svm.SVC(kernel="precomputed", C=20, verbose=True)
+    clf = svm.SVC(kernel="precomputed", C=200, verbose=True)
 
     score = clf.fit(kernel_data, labels).score(kernel_data, labels)
     logger.debug("Training finished (Score = %.2f)!" % score)
@@ -1327,6 +1327,15 @@ def trn_classifier(config, options):
     with open(clf_out_file, 'wb') as fid:
         cPickle.dump(clf, fid)
     logger.debug("Wrote classifer to %s!" % clf_out_file)
+
+    # Write SVM information file
+    svm_info_file = os.path.join(cv_dir, "svm-Info.json")
+    svm_info = dict()
+    svm_info["num_sv"] = float(sum(clf.n_support_))/N
+    svm_info["trn_score"] = score
+    with open(svm_info_file, 'wb') as fp:
+        json.dump(svm_info, fp)
+    logger.debug("Wrote classifier info to %s!" % svm_info_file)
 
 
 def tst_classifier(config, options):
@@ -1369,3 +1378,17 @@ def tst_classifier(config, options):
 
     score = clf.score(kernel_data, labels)
     logger.debug("Testing score = %.2f (%d/%d)" % (score, int(score*M), M))
+
+    # Try to update the SVM information file
+    svm_info = dict()
+    svm_info_file = os.path.join(cv_dir, "svm-Info.json")
+    if check_file(svm_info_file):
+        fp = open(svm_info_file)
+        svm_info = json.load(fp)
+        svm_info["tst_score"] = score
+        svm_info["truth"] = list(labels)
+        svm_info["guess"] = list(y)
+        fp.close()
+
+        with open(svm_info_file, 'wb') as fp:
+            json.dump(svm_info, fp)
