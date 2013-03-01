@@ -95,7 +95,8 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     set( proj Insight )
     ExternalProject_Add( ${proj}
       GIT_REPOSITORY "${GIT_PROTOCOL}://itk.org/ITK.git"
-      GIT_TAG "v4.3.1"
+      # master on 2013-02-28
+      GIT_TAG "9fe3eaaac2321f"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/Insight"
       BINARY_DIR Insight-Build
       CMAKE_GENERATOR ${gen}
