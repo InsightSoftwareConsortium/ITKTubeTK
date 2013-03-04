@@ -72,7 +72,7 @@ class GraphKernel
     /** The graph type */
     typedef boost::adjacency_list< boost::listS,
                                    boost::vecS,
-                                   boost::directedS,
+                                   boost::undirectedS,
                                    nodeInfoType,
                                    boost::property< boost::edge_weight_t,
                                                     double> > GraphType;

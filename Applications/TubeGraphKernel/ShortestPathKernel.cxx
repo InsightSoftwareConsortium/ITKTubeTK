@@ -43,7 +43,7 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
   assert( nVertices == num_vertices( out) );
 
   ConstVertexAllMapType mapIn = boost::get( boost::vertex_all, in );
-  VertexAllMapType mapOut = boost::get( boost::vertex_all, out );
+  VertexAllMapType mapOut     = boost::get( boost::vertex_all, out );
 
   for( int i=0; i<nVertices; ++i )
     {
@@ -54,7 +54,7 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
 
   for( int i=0; i<nVertices; ++i )
     {
-    for( int j=0; j<nVertices; ++j )
+    for( int j=0; j<=i; ++j )
       {
       // As long as we do not INF distance between (i,j), and ...
       if( dm[i][j] != std::numeric_limits<double>::max() )
@@ -74,21 +74,26 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
       }
     }
 
-    // For debugging ...
-/*
- *    for(int i=0; i<nVertices;++i)
- *      {
- *      for(int j=0; j<nVertices;++j)
- *        {
- *        std::cout << dm[i][j] << " ";
- *        }
- *      std::cout << std::endl;
- *      }
- *
- */
+  //EdgeIteratorType x,y;
+  //for(tie(x,y) = edges(out); x!=y;++x)
+  //  {
+  //  std::cout << "(" << source(*x,out) << ", " << target(*x, out) << ") -> "
+  //      << out[source(*x,out)].type << " " << dm[source(*x,out)][target(*x,out)] << "\n";
+  //  }
 
-    return out;
+  // For debugging ... output shortest-path distance matrix
+  //for(int i=0; i<nVertices;++i)
+  //  {
+  //  for(int j=0; j<nVertices;++j)
+  //    {
+  //    std::cout << dm[i][j] << " ";
+  //    }
+  //  std::cout << std::endl;
+  //  }
+  return out;
 }
+
+
 
 
 //-----------------------------------------------------------------------------
@@ -96,7 +101,7 @@ double ShortestPathKernel::Compute(void)
 {
   double kernelValue = 0.0;
   long int cntEdgeEvaluations = 0;
-  EdgeIteratorType aIt, aEnd, bIt, bEnd;
+  EdgeIteratorType aIt, aEnd;
 
   tube::FmtDebugMessage( "Computing Floyd transform." );
   m_FG0 = FloydTransform( m_G0 );
@@ -111,10 +116,13 @@ double ShortestPathKernel::Compute(void)
   for( tie( aIt, aEnd ) = edges( m_FG0 ); aIt != aEnd; ++aIt )
     {
     const EdgeDescriptorType &e0 = *aIt;
-    int src_type = m_FG0[source(e0, m_FG0)].type; // Type of start vertex
-    int dst_type = m_FG0[target(e0, m_FG0)].type; // Type of end vertex
+
+    int srcLabel = m_FG0[source(e0, m_FG0)].type; // Type of start vertex
+    int dstLabel = m_FG0[target(e0, m_FG0)].type; // Type of end vertex
+    ensureOrder<int>( srcLabel, dstLabel );
 
     // Iterate over all the edges of Floyd-transformed graph fg1
+    EdgeIteratorType bIt, bEnd;
     for( tie( bIt, bEnd ) = edges( m_FG1 ); bIt != bEnd; ++bIt )
       {
       cntEdgeEvaluations++;
@@ -132,13 +140,6 @@ double ShortestPathKernel::Compute(void)
       double weightE0 = wmFG0[*aIt];
       double weightE1 = wmFG1[*bIt];
 
-      // Skip edges, if one weight is 0 (i.e., an edge from a node to itself)
-      if( fabs( weightE0 ) <= std::numeric_limits< double >::epsilon() ||
-          fabs( weightE1 ) <= std::numeric_limits< double >::epsilon() )
-        {
-        continue;
-        }
-
       // Skip edges, unless the weights are equal
       if( !( fabs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon() ) )
         {
@@ -149,9 +150,13 @@ double ShortestPathKernel::Compute(void)
       switch ( m_edgeKernelType )
         {
         case EDGE_KERNEL_DEL:
+          int cmpSrcLabel = m_FG1[source(e1, m_FG1)].type;
+          int cmpDstLabel = m_FG1[target(e1, m_FG1)].type;
+          ensureOrder<int>( cmpSrcLabel, cmpDstLabel );
+
           bool vertexTypeCheck =
-            ( src_type == m_FG1[source(e1, m_FG1)].type ) &&
-            ( dst_type == m_FG1[target(e1, m_FG1)].type );
+            ( srcLabel == cmpSrcLabel ) &&
+            ( dstLabel == cmpDstLabel );
           if( !vertexTypeCheck )
             {
             continue;
