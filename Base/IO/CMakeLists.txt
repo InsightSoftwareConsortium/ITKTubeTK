@@ -43,7 +43,12 @@ set( TubeTK_Base_IO_SRCS
   itkTubeMetaNJetLDA.cxx
   )
 
-add_library( TubeIO STATIC ${TubeTK_Base_IO_SRCS} )
+add_library( TubeIO STATIC
+  ${TubeTK_Base_IO_H_Files}
+  ${TubeTK_Base_IO_TXX_Files}
+  ${TubeTK_Base_IO_SRCS}
+  )
+
 target_link_libraries( TubeIO ${ITK_LIBRARIES} )
 
 slicer4_set_plugins_output_path( TubeIO )
@@ -54,8 +59,8 @@ if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
 
-install(FILES
+install( FILES
   ${TubeTK_Base_Numerics_H_Files}
-  #${TubeTK_Base_Numerics_TXX_Files}
+  ${TubeTK_Base_Numerics_TXX_Files}
   DESTINATION include
   )

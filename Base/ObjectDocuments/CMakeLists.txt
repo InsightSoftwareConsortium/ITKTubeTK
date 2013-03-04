@@ -30,17 +30,26 @@ include( ${USE_ITK_FILE} )
 set( TubeTK_Base_ObjectDocuments_H_Files
   itkObjectDocumentToImageFilter.h
   itkObjectDocumentToObjectSource.h
-  itkSpatialObjectToSpatialObjectFilter.h )
+  itkSpatialObjectToSpatialObjectFilter.h
+  )
 
 set( TubeTk_Base_ObjectDocuments_TXX_Files
   itkObjectDocumentToImageFilter.txx
   itkObjectDocumentToObjectSource.txx
-  itkSpatialObjectToSpatialObjectFilter.txx )
+  itkSpatialObjectToSpatialObjectFilter.txx
+  )
 
-add_library( TubeObjectDocuments STATIC
+set( TubeTk_Base_ObjectDocuments_SRCS
   MetaDocument.cxx
   MetaObjectDocument.cxx
-  OptionList.cxx )
+  OptionList.cxx
+  )
+
+add_library( TubeObjectDocuments STATIC
+  ${TubeTK_Base_ObjectDocuments_H_Files}
+  ${TubeTk_Base_ObjectDocuments_TXX_Files}
+  ${TubeTk_Base_ObjectDocuments_SRCS}
+  )
 
 target_link_libraries( TubeObjectDocuments ${ITK_LIBRARIES} )
 
@@ -48,12 +57,12 @@ slicer4_set_plugins_output_path( TubeObjectDocuments )
 set( TARGETS TubeObjectDocuments )
 slicer4_install_plugins( ${TARGETS} )
 
-install(FILES
+#if( BUILD_TESTING )
+#  add_subdirectory( Testing )
+#endif( BUILD_TESTING )
+
+install( FILES
   ${TubeTK_Base_ObjectDocuments_H_Files}
   ${TubeTK_Base_ObjectDocuments_TXX_Files}
   DESTINATION include
   )
-
-#if( BUILD_TESTING )
-#  add_subdirectory( Testing )
-#endif( BUILD_TESTING )
