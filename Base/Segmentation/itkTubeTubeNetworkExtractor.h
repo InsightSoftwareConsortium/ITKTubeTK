@@ -92,14 +92,6 @@ public:
   itkGetConstObjectMacro( Image, ImageType );
 
   /**
-   * Extract a 3D tube */
-  bool ExtractTube( float x, float y, float z );
-
-  /**
-   * Delete a tube */
-  bool DeleteTube( TubeType * newTube );
-
-  /**
    * Get the tube Network */
   typename TubeType::Pointer GetTubeNetwork( void );
 
@@ -126,10 +118,6 @@ public:
   /**
    * Auto extract tubes using a mask */
   void   AutoExtractThresh( double newAEThresh );
-
-  /**
-   * Auto extract tubes using a mask */
-  void   AutoExtractAutoThresh( double alpha=0.002 );
 
   /**
    * AutoExtract tubes */

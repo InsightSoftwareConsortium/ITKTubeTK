@@ -98,41 +98,6 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 }
 
 /**
- * Extract a 3D tube */
-template<class TInputImage, class TInputMask>
-bool
-TubeNetworkExtractor<TInputImage, TInputMask>
-::ExtractTube( float x, float y, float z )
-{
-  /*if( TubeExtractor<TInputImage>::ExtractTube( x, y, z, m_TubeNum ) )
-    {
-    if( !m_Tube )
-      {
-      std::cout << "Extract Tube: TubeExtractor returns no tube !"
-        << std::endl;
-      return false;
-      }
-    m_TubeNetwork->AddSpatialObject( m_Tube );
-    m_TubeNum++;
-    return true;
-    }*/
-  return false;
-}
-
-/**
- * Delete a tube */
-template<class TInputImage, class TInputMask>
-bool
-TubeNetworkExtractor<TInputImage, TInputMask>
-::DeleteTube( TubeType * newTube )
-{
-  //TubeExtractor<TInputImage>::DeleteTube( newTube );
-  //return m_TubeNetwork->DeleteTube( newTube );
-  return false;
-}
-
-
-/**
  * Get the tube net */
 template<class TInputImage, class TInputMask>
 typename TubeNetworkExtractor<TInputImage, TInputMask>::TubeType::Pointer
@@ -170,76 +135,6 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 ::AutoExtractThresh( double newAEThresh )
 {
   m_AEThresh = newAEThresh;
-}
-
-/**
- * Auto extract tubes using a mask */
-template<class TInputImage, class TInputMask>
-void
-TubeNetworkExtractor<TInputImage, TInputMask>
-::AutoExtractAutoThresh( double alpha )
-{
-/*  vnl_vector<int> bin( 256,0.0 );
-  int i, j, k, l;
-  long n;
-  int bnd, tot;
-  unsigned int size[ImageDimension];
-  for( unsigned int i=0;i<ImageDimension;i++ )
-    {
-    size[i]=m_Image->GetLargestPossibleRegion().GetSize()[i];
-    }
-  bin = 0.0;
-  n = 0;
-  for( i=0; i<size[2]; i++ )
-    {
-    for( j=0; j<size[1]; j++ )
-      {
-      for( k=0; k<size[0]; k++ )
-        {
-        ImageType::IndexType index;
-        index[0]=k;
-        index[1]=j;
-        index[2]=i;
-        if( !m_AEUseMask || m_AEMask->GetPixel( index )>0 )
-          {
-          l = ( m_Image->GetPixel( index )-m_RidgeOp->GetDataMin() )
-              / ( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )*255;
-          if( l<0 )
-            {
-            l = 0;
-            }
-          if( l>255 )
-            {
-            l = 255;
-            }
-          bin[l]++;
-          n++;
-          }
-        }
-      }
-    }
-  bnd = ( int )( alpha*n );
-  if( n > 0 )
-    {
-    tot=0;
-    for( l=255; l>=0; l-- )
-      {
-      tot += bin[l];
-      if( tot>bnd )
-        {
-        break;
-        }
-      }
-    m_AEThresh = ( l + 0.5 ) / 256.0 *
-      ( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )
-      + m_RidgeOp->GetDataMin();
-    }
-  else
-    {
-    m_AEThresh = m_RidgeOp->GetDataMax();
-    }
-  std::cout << "AEThesh = " << m_AEThresh << std::endl;
-*/
 }
 
 /**
