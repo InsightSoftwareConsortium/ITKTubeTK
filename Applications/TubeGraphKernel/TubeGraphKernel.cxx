@@ -243,7 +243,9 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
   tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM,
   const std::string & globalLabelFile = std::string() )
 {
-  const char * labelFile = 0;
+  const char * labelFile = 0; // Will stay 0 as long as there is NO per-graph label file
+  std::string labelFileStr; // Used to build the graph-specific label file name
+
   // Global label file given
   if( !globalLabelFile.empty() )
     {
@@ -254,7 +256,7 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
   // Build graph-specific label file name
   else
     {
-    std::string labelFileStr = graphFile + ".vertexLabel";
+    labelFileStr = graphFile + ".vertexLabel";
     labelFile = labelFileStr.c_str();
     tube::FmtInfoMessage( "Trying to use graph-specific label file %s",
       labelFile );
@@ -268,7 +270,9 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
     }
   // Load graph and return
   return tube::GraphKernel::GraphFromAdjFile(
-    graphFile.c_str(), labelFile, defNodeLabel );
+    graphFile.c_str(),
+    labelFile,
+    defNodeLabel );
 }
 
 

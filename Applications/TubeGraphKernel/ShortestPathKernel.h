@@ -81,6 +81,15 @@ class ShortestPathKernel : public GraphKernel
 
     /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
     GraphType FloydTransform(const GraphType &in);
+
+    template <typename T>
+    void ensureOrder(T& first, T& second)
+    {
+      if ( first > second )
+        {
+        std::swap( first, second );
+        }
+    }
   };
 
 
