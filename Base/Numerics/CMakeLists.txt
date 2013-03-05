@@ -32,8 +32,8 @@ set( TubeTK_Base_Numerics_H_Files
   itkTubeBlurImageFunction.h
   itkTubeLDAGenerator.h
   itkTubeNJetImageFunction.h
-  itkTubeNJetLDAGenerator2F.h
   itkTubeNJetLDAGenerator.h
+  itkTubeNJetLDAGenerator2F.h
   itkVectorImageToListGenerator.h
   itkVotingResampleImageFunction.h
   tubeMatrixMath.h
@@ -57,8 +57,8 @@ set( TubeTK_Base_Numerics_TXX_Files
   itkTubeNJetLDAGenerator.txx
   itkVectorImageToListGenerator.txx
   itkVotingResampleImageFunction.txx
-  tubeTubeMath.txx
   tubeMatrixMath.txx
+  tubeTubeMath.txx
   )
 
 include_directories(
@@ -69,15 +69,20 @@ set( TubeTK_Base_Numerics_SRCS
   itkTubeNJetLDAGenerator2F.cxx
   tubeOptBrent1D.cxx
   tubeOptGoldenMean1D.cxx
-  tubeOptParabolicFit1D.cxx
   tubeOptimizer1D.cxx
   tubeOptimizerND.cxx
+  tubeOptParabolicFit1D.cxx
   tubeSpline1D.cxx
   tubeSplineApproximation1D.cxx
   tubeSplineND.cxx
   )
 
-add_library( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
+add_library( TubeNumerics STATIC
+  ${TubeTK_Base_Numerics_H_Files}
+  ${TubeTK_Base_Numerics_TXX_Files}
+  ${TubeTK_Base_Numerics_SRCS}
+  )
+
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
 slicer4_set_plugins_output_path( TubeNumerics )
@@ -88,7 +93,7 @@ if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
 
-install(FILES
+install( FILES
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_TXX_Files}
   DESTINATION include
