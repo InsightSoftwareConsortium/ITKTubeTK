@@ -55,7 +55,7 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
 #######
 # Test2
 #######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
             ${PROJ_EXE}
               MIDAS_FETCH_ONLY{mutag_1.mat.md5}
               MIDAS_FETCH_ONLY{mutag_2.mat.md5}
