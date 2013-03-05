@@ -48,7 +48,9 @@ find_package(Boost 1.49 COMPONENTS system filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------------
-set(CMAKE_CXX_FLAGS "-O3 -ffast-math -msse3")
+if( CMAKE_COMPILER_IS_GNUCXX )
+  set(CMAKE_CXX_FLAGS "-O3 -ffast-math -msse3")
+endif()
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
