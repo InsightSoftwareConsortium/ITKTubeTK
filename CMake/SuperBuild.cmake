@@ -25,7 +25,7 @@ include( ExternalProject )
 set( base "${CMAKE_BINARY_DIR}" )
 set_property( DIRECTORY PROPERTY EP_BASE ${base} )
 
-if( BUILD_SHARED_LIBS )
+if( DEFINED BUILD_SHARED_LIBS )
   set( shared ${BUILD_SHARED_LIBS} )
 else()
   set( shared ON ) # use for BUILD_SHARED_LIBS on all subsequent projects
