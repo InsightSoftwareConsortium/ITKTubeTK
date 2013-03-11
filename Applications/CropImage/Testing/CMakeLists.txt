@@ -121,3 +121,40 @@ MIDAS_ADD_Test( ${MODULE_NAME}-Test4-Compare11
                -b MIDAS{${MODULE_NAME}Test4_11.mha.md5} )
 set_property(TEST ${MODULE_NAME}-Test4-Compare11
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
+
+# Needs ParameterSerializer
+if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+  #######
+  # Test5
+  #######
+  MIDAS_ADD_Test( ${MODULE_NAME}-Test5
+                 ${PROJ_EXE}
+                 MIDAS{ES0015_Large.mha.md5}
+                 ${TEMP}/${MODULE_NAME}Test5.mha
+                 --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test5.json
+                 -b 5,5 )
+
+  MIDAS_ADD_Test( ${MODULE_NAME}-Test5-Compare
+                 ${IMAGECOMPARE_EXE}
+                 -t ${TEMP}/${MODULE_NAME}Test5.mha
+                 -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+  set_property(TEST ${MODULE_NAME}-Test5-Compare
+                        APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test5 )
+
+  #######
+  # Test6
+  #######
+  MIDAS_ADD_Test( ${MODULE_NAME}-Test6
+                 ${PROJ_EXE}
+                 MIDAS{ES0015_Large.mha.md5}
+                 ${TEMP}/${MODULE_NAME}Test6.mha
+                 --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test6.json
+                 -b 5,5 )
+
+  MIDAS_ADD_Test( ${MODULE_NAME}-Test6-Compare
+                 ${IMAGECOMPARE_EXE}
+                 -t ${TEMP}/${MODULE_NAME}Test6.mha
+                 -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+  set_property(TEST ${MODULE_NAME}-Test6-Compare
+                        APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test6 )
+endif()
