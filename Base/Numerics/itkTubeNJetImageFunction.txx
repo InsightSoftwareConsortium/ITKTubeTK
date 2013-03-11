@@ -1644,7 +1644,7 @@ NJetImageFunction<TInputImage>
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
-  assert( eigSys.get_eigenvalue(0) > eigSys.get_eigenvalue(1) );
+  assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
 
   double dNorm = d.GetNorm();
   if( dNorm == 0 )
