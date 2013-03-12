@@ -1184,6 +1184,8 @@ NJetImageFunction<TInputImage>
     HessianAtContinuousIndex(cIndex, scale, m);
     vnl_symmetric_eigensystem< double > eigSys(m.GetVnlMatrix());
 
+    assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
+
     double dp = 0;
     for(int i=0; i<ImageDimension; i++)
       {
@@ -1232,6 +1234,8 @@ NJetImageFunction<TInputImage>
     {
     HessianAtContinuousIndex(cIndex, scale, m);
     vnl_symmetric_eigensystem< double > eigSys(m.GetVnlMatrix());
+
+    assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
 
     double dp0 = 0;
     double dp1 = 0;
@@ -1644,6 +1648,9 @@ NJetImageFunction<TInputImage>
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
+  // Ensure ordering of eigenvalues; According to VNL documentation,
+  // eigenvalues are in increasing order (with smallest eigenvalues
+  // first)
   assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
 
   double dNorm = d.GetNorm();
@@ -1762,6 +1769,8 @@ NJetImageFunction<TInputImage>
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
 
+  assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
+
   if( d.GetNorm() != 0 )
     {
     d.Normalize();
@@ -1830,6 +1839,8 @@ NJetImageFunction<TInputImage>
   val = JetAtContinuousIndex(cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys(h.GetVnlMatrix());
+
+  assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
 
   if( d.GetNorm() != 0 )
     {
