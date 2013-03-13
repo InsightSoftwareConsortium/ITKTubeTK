@@ -41,17 +41,17 @@ set( TEXTCOMPARE_EXE
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
                 ${PROJ_EXE}
-                    MIDAS{T1NoSkull.mha.md5}
-                    ${TEMP}/${MODULE_NAME}Test1.txt
-                    --outputPlainText )
+                  MIDAS{T1NoSkull.mha.md5}
+                  ${TEMP}/${MODULE_NAME}Test1.txt
+                  --outputPlainText )
 
 ###############
 # Test1-Compare
 ###############
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
                 ${TEXTCOMPARE_EXE}
-                -t ${TEMP}/${MODULE_NAME}Test1.txt
-                -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
+                  -t ${TEMP}/${MODULE_NAME}Test1.txt
+                  -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
 
 set_property(TEST ${MODULE_NAME}-Test1-Compare
-                APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
