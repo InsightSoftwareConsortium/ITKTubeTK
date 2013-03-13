@@ -79,7 +79,7 @@ if( NOT USE_SYSTEM_JsonCpp )
   set( proj JsonCpp )
   ExternalProject_Add( JsonCpp
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/jsoncpp-cmake.git"
-    GIT_TAG "b1d742628d5dbf22ad250fa71af5b8f2c482b15c"
+    GIT_TAG "e2cfe02abc7a2715f8f44fe0ef1ae46e7d6aa92e"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/JsonCpp"
     BINARY_DIR JsonCpp-Build
     CMAKE_GENERATOR ${gen}
