@@ -21,19 +21,6 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-# Style Guidelines
-#   * Place a space after ( and before )
-#   * Test input and output images should be in .mha format
-#   * Test coverage should be > 85% before committing
-#   * Test outputs and baselines should be pre-pended with ${MODULE_NAME}
-#   * Use appropriate TubeTK comment blocks at the top every file
-#   * Follow our naming convention - if you are uncertain, ask
-#   * Use the tube namespace for all classes
-#   * Your code is a part of TubeTK - don't be "different" - it makes the code
-#        harder to maintain and understand, even if you think your way is
-#        "better."
-
 set( MODULE_NAME TubeGraphKernel )
 
 find_package( SlicerExecutionModel REQUIRED )
@@ -45,7 +32,6 @@ include( ${USE_ITK_FILE} )
 # Find Boost
 set(Boost_ADDITIONAL_VERSIONS "1.51")
 find_package(Boost 1.49 COMPONENTS system filesystem REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------------
 if( CMAKE_COMPILER_IS_GNUCXX )
@@ -58,6 +44,7 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
   ADDITIONAL_SRCS ShortestPathKernel.cxx WLSubtreeKernel.cxx GraphKernel.cxx
   INCLUDE_DIRECTORIES
+    ${Boost_INCLUDE_DIRS}
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Filtering
   )
