@@ -43,32 +43,32 @@ set( IMAGECOMPARE_EXE
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
                 ${PROJ_EXE}
-                MIDAS{VesselNetwork-In-SPL2012-ReferenceSpace.tre.md5}
-                ${TEMP}/${MODULE_NAME}Test1-Den.mha
-                ${TEMP}/${MODULE_NAME}Test1-Rad.mha
-                ${TEMP}/${MODULE_NAME}Test1-Tan.mha
-                --inputTemplateImage
-                MIDAS{SPL2012-ReferenceSpace.mha.md5}
-                --useSquareDistance )
+                  MIDAS{VesselNetwork-In-SPL2012-ReferenceSpace.tre.md5}
+                  ${TEMP}/${MODULE_NAME}Test1-Den.mha
+                  ${TEMP}/${MODULE_NAME}Test1-Rad.mha
+                  ${TEMP}/${MODULE_NAME}Test1-Tan.mha
+                  --inputTemplateImage
+                  MIDAS{SPL2012-ReferenceSpace.mha.md5}
+                  --useSquareDistance )
 
 ###############
 # Test1-Compare
 ###############
 MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Den
                 ${IMAGECOMPARE_EXE}
-                -t ${TEMP}/${MODULE_NAME}Test1-Den.mha
-                -b MIDAS{${MODULE_NAME}Test1-Den.mha.md5} )
+                  -t ${TEMP}/${MODULE_NAME}Test1-Den.mha
+                  -b MIDAS{${MODULE_NAME}Test1-Den.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Den
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+                APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Rad
                 ${IMAGECOMPARE_EXE}
-                -t ${TEMP}/${MODULE_NAME}Test1-Rad.mha
-                -b MIDAS{${MODULE_NAME}Test1-Rad.mha.md5} )
+                  -t ${TEMP}/${MODULE_NAME}Test1-Rad.mha
+                  -b MIDAS{${MODULE_NAME}Test1-Rad.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Rad
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+                APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Tan
                 ${IMAGECOMPARE_EXE}
