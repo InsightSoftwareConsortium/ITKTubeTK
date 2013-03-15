@@ -9,7 +9,7 @@ using namespace VHTK;
 
 TubeRegistratorPoint::
 TubeRegistratorPoint(void)
-:m_X(3), m_V1(3), m_m_V2(3), 
+:m_X(3), m_V1(3), m_m_V2(3),
  m_XT(3), m_V1T(3), m_V2T(3), m_DXT(3)
   {
   m_VAL = 0;
@@ -108,10 +108,14 @@ void TubeRegistrator::
 MetricPreProc(void)
   {
   if(cIm == NULL)
+    {
     return;
+    }
 
   if(cTubeNet == NULL)
+    {
     return;
+    }
 
   std::list<Tube *>::iterator i;
   std::list<TubePoint *>::iterator j;
@@ -119,8 +123,10 @@ MetricPreProc(void)
   vnl_vector<double> tV(3);
   vnl_matrix<double> tM(3,3);
 
-  for(l=cRegPoints.begin(); l!=cRegPoints.end(); l++)
+  for(l=cRegPoints.begin(); l!=cRegPoints.end(); ++l)
+    {
     delete * l;
+    }
   cRegPoints.clear();
 
   cCount = 0;
@@ -134,15 +140,17 @@ MetricPreProc(void)
   double cY = 0;
   double cZ = 0;
   TubeRegistratorPoint * tPnt;
-  for(i=cTubeNet->tubes()->begin(); i!=cTubeNet->tubes()->end(); i++)
+  for(i=cTubeNet->tubes()->begin(); i!=cTubeNet->tubes()->end(); ++i)
     {
     skipped = 0;
     tubeSize = (*i)->points()->size();
     if(tubeSize>cSampling)
-      for(j=(*i)->points()->begin(); j!=(*i)->points()->end(); j++)
+      for(j=(*i)->points()->begin(); j!=(*i)->points()->end(); ++j)
         {
         while(skipped++%(cSampling/2) != 0 && j!=(*i)->points()->end())
-          j++;
+          {
+          ++j;
+          }
         if(j!=(*i)->points()->end() && skipped+10<tubeSize
            && (*j)->ridgeness()>0.2
            && (*j)->medialness()>0.02)
@@ -160,31 +168,35 @@ MetricPreProc(void)
           tPnt->m_V2(0) = (*((*j)->m_V2()))(1);
           tPnt->m_V2(1) = (*((*j)->m_V2()))(2);
           tPnt->m_V2(2) = (*((*j)->m_V2()))(3);
-        
+
           tPnt->m_W = 2/(1+exp(-4*tPnt->m_R))-1;
-        
+
           cRegPoints.push_back(tPnt);
-        
+
           cX += tPnt->m_W*tPnt->m_X(0);
           cY += tPnt->m_W*tPnt->m_X(1);
           cZ += tPnt->m_W*tPnt->m_X(2);
-        
+
           tM = outer_product(tPnt->m_V1T, tPnt->m_V1T);
           tM = tM + outer_product(tPnt->m_V2T, tPnt->m_V2T);
           tM = tPnt->m_W * tM;
           cBiasV = cBiasV + tM;
-        
+
           cWeight += tPnt->m_W;
           cCount++;
           }
         while(skipped++%(cSampling/2) != 0 && j!=(*i)->points()->end())
-          j++;
+          {
+          ++j;
+          }
         if(j==(*i)->points()->end())
-          j--;
+          {
+          --j;
+          }
         }
     }
   cBiasV = (1.0/cWeight) * cBiasV;
-  
+
   SetCenter(cX/cWeight, cY/cWeight, cZ/cWeight);
 
   std::cout << "Sampling = " << cSampling << std::endl;
@@ -216,7 +228,7 @@ Metric(void)
 
   if(cKappa == 0)
     {
-    for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
+    for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
       {
       TransformPoint(&((*j)->m_X), &((*j)->m_XT));
       if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<cIm->dimSizeX()-1 &&
@@ -234,7 +246,7 @@ Metric(void)
     }
   else
     {
-    for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
+    for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
       {
       TransformPoint(&((*j)->m_X), &((*j)->m_XT));
       if((*j)->m_XT(0)>0 && (*j)->m_XT(0)<cIm->dimSizeX()-2 &&
@@ -279,7 +291,7 @@ MetricDeriv(double *dX, double *dY, double *dZ,
   long c0 = clock();
 
   double opR;
-  
+
   bool recalc = Updated();
 
   if(recalc)
@@ -309,7 +321,7 @@ MetricDeriv(double *dX, double *dY, double *dZ,
   vnl_matrix<double> tM(3,3);
   double tDA, tDB, tDG;
   //FILE * fp = fopen("test.dat", "m_W");
-  for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
+  for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
     {
     if(recalc)
       TransformPoint(&((*j)->m_X), &((*j)->m_XT));
@@ -344,13 +356,13 @@ MetricDeriv(double *dX, double *dY, double *dZ,
       //fprintf(fp, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n",
       //        (*j)->m_X(0), (*j)->m_X(1), (*j)->m_X(2),
       //        (*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2),
-      //        (*j)->m_VAL, 
-      //        (*j)->m_DXT(0), (*j)->m_DXT(1), (*j)->m_DXT(2), 
+      //        (*j)->m_VAL,
+      //        (*j)->m_DXT(0), (*j)->m_DXT(1), (*j)->m_DXT(2),
       //        (*j)->m_V1T(0), (*j)->m_V1T(1), (*j)->m_V1T(2),
       //        (*j)->m_V2T(0), (*j)->m_V2T(1), (*j)->m_V2T(2),
       //        dXProj1, dXProj2, (*j)->m_R, (*j)->m_RN, (*j)->m_MN);
       (*j)->m_DXT = (dXProj1*(*j)->m_V1T + dXProj2*(*j)->m_V2T);
-        
+
       tM = outer_product((*j)->m_V1T, (*j)->m_V1T);
       tM = tM + outer_product((*j)->m_V2T, (*j)->m_V2T);
       tM = (*j)->m_W * tM;
@@ -371,7 +383,7 @@ MetricDeriv(double *dX, double *dY, double *dZ,
   *dX = tV(0);
   *dY = tV(1);
   *dZ = tV(2);
-  
+
   if(cWeight == 0)
     {
     cBiasV = 0;
@@ -385,7 +397,7 @@ MetricDeriv(double *dX, double *dY, double *dZ,
     cBiasV = 1.0/cWeight * cBiasV;
   cBiasVI = vnl_matrix_inverse<double>(cBiasV).inverse();
 
-  for(j=cRegPoints.begin(); j!=cRegPoints.end(); j++)
+  for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
     {
     if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<cIm->dimSizeX()-1 &&
        (*j)->m_XT(1)>=0 && (*j)->m_XT(1)<cIm->dimSizeY()-1 &&
@@ -480,7 +492,7 @@ class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double>
        cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
        cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
        /*
-       std::cout << "D " 
+       std::cout << "D "
                  << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
                  << (*m_X)(2) << " (" << (*m_X)(2)*offsetUnit << ")  "
                  << (*m_X)(3) << " (" << (*m_X)(3)*offsetUnit << ")  " << std::endl;
@@ -492,7 +504,7 @@ class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double>
        cRegOp->MetricDeriv(&cD(1), &cD(2), &cD(3),
                            &cD(4), &cD(5), &cD(6));
        /*
-       std::cout << "  " 
+       std::cout << "  "
                  << cD(1) << " (" << cD(1)/offsetDUnit << ")  "
                  << cD(2) << " (" << cD(2)/offsetDUnit << ")  "
                  << cD(3) << " (" << cD(3)/offsetDUnit << ")  " << std::endl;
@@ -557,7 +569,7 @@ bool TubeRegistrator::Fit(void)
 
   std::cout << "Bounding min..." << std::endl;
   op.bound(&m, &xVal);
-  
+
   std::cout << "Min bound at..."
            << m(1) << " (" << m(1)*offsetUnit << ")  "
            << m(2) << " (" << m(2)*offsetUnit << ")  "
@@ -566,7 +578,7 @@ bool TubeRegistrator::Fit(void)
            << m(4) << " (" << m(4)*rotUnit << ")  "
            << m(5) << " (" << m(5)*rotUnit << ")  "
            << m(6) << " (" << m(6)*rotUnit << ")  " << std::endl;
-  
+
   cSampling /= 2;
   //cKappa /= 1.5;
   MetricPreProc();
@@ -581,7 +593,7 @@ bool TubeRegistrator::Fit(void)
   a = m(4)*rotUnit;
   b = m(5)*rotUnit;
   g = m(6)*rotUnit;
-  
+
   std::cout << "Final State = " << x << ", " << y << ", " << z << std::endl;
   std::cout << "              " << a << ", " << b << ", " << g << std::endl;
   std::cout << "   m_VAL = " << xVal << std::endl;

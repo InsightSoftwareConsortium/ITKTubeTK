@@ -97,7 +97,7 @@ class ObjectDocument : public Document
     /** Remove last transform from the list -- Does nothing if there are no transforms */
     void RemoveTransformNameFromBack()
     {
-      if( m_transformList.size() > 0 )
+      if( !m_transformList.empty() )
         {
         m_transformList.pop_back();
         }
