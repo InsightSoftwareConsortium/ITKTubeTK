@@ -275,9 +275,10 @@ void AtlasSummation
   catch( ... )
     {
     ::tube::FmtErrorMessage("Error in writing %s!", file);
+    delete [] number;
     return;
     }
-  delete number;
+  delete [] number;
 }
 
 

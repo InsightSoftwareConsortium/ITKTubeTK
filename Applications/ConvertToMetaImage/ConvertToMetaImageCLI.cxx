@@ -343,5 +343,9 @@ int main(int, char **)
       }
     }
 
+  // Memory cleanup
+  delete [] origin;
+  delete [] pointSpacing;
+  delete [] dimSize;
   return 0;
 }
