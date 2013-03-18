@@ -43,6 +43,9 @@ SEMMacroBuildCLI(
   )
 
 #-----------------------------------------------------------------------------
-#if( BUILD_TESTING )
-  #add_subdirectory( Testing )
-#endif( BUILD_TESTING )
+find_package( PythonInterp )
+if( BUILD_TESTING )
+  if( PYTHON_EXECUTABLE )
+    add_subdirectory( Testing )
+  endif()
+endif( BUILD_TESTING )
