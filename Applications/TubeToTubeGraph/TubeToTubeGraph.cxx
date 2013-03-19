@@ -317,5 +317,5 @@ int DoIt( int argc, char *argv[] )
   delete tubeList;
   timeCollector.Report();
 
-  return 1;
+  return EXIT_SUCCESS;
 }
