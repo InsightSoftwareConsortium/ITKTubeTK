@@ -1,0 +1,13 @@
+NumberOfObjects = 4
+Type = Image
+Name = @MIDAS_DATA_DIR@/DDMap58.mha
+EndObject =
+Type = Image
+Name = @MIDAS_DATA_DIR@/DDMap86.mha
+EndObject =
+Type = Image
+Name = @MIDAS_DATA_DIR@/DDMap57.mha
+EndObject =
+Type = Image
+Name = @MIDAS_DATA_DIR@/DDMap25.mha
+EndObject =

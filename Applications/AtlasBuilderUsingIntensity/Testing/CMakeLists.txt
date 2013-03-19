@@ -36,43 +36,23 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
+configure_file( ${TubeTK_SOURCE_DIR}/Applications/${MODULE_NAME}/Testing/ListTemplate.txt
+                ${TEMP}/${MODULE_NAME}-List.txt IMMEDIATE @ONLY)
 
 #######
 # Test1
 #######
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-00
+MIDAS_ADD_Test( ${MODULE_NAME}-Test1
                 ${PROJ_EXE}
-                  --help
-                  MIDAS_FETCH_ONLY{ComposeObjectDocumentForAtlasBuilderUsingIntensity.py.md5}
                   MIDAS_FETCH_ONLY{DDMap58.mha.md5}
                   MIDAS_FETCH_ONLY{DDMap86.mha.md5}
                   MIDAS_FETCH_ONLY{DDMap57.mha.md5}
-                  MIDAS_FETCH_ONLY{DDMap25.mha.md5} )
-
-set( SCRIPTNAME ${MIDAS_DATA_DIR}/ComposeObjectDocumentForAtlasBuilderUsingIntensity.py )
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-01
-                  ${PYTHON_EXECUTABLE}
-                    ${SCRIPTNAME}
-                    ${MIDAS_DATA_DIR}
-                    ${TEMP}/${MODULE_NAME}-List.txt
-                    DDMap58.mha
-                    DDMap86.mha
-                    DDMap57.mha
-                    DDMap25.mha )
-
-set_property(TEST ${MODULE_NAME}-Test1-01
-             APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-00 )
-
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-02
-                ${PROJ_EXE}
+                  MIDAS_FETCH_ONLY{DDMap25.mha.md5}
                   ${TEMP}/${MODULE_NAME}-List.txt
                   ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
                   ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
                   --outputSize 256,256,256
                   --outputSpacing 1,1,1 )
-
-set_property(TEST ${MODULE_NAME}-Test1-02
-             APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-01 )
 
 #######
 # Test1-Compare
