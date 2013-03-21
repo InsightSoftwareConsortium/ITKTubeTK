@@ -230,7 +230,7 @@ int main( int argc, char*argv[] )
     computeQuantiles(im, quantiles, quantileValues);
     if( outputPlainText )
       {
-      writeQuantilesToTextFile( quantiles, outFile );
+      writeQuantilesToTextFile( quantileValues, outFile );
       }
     else
       {

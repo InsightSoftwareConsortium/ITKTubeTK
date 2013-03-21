@@ -715,8 +715,6 @@ int main( int argc, char* argv[] )
           }
         std::string oldFilename = oldFilenameWithPath.substr(start,
                                       oldFilenameWithPath.size()-start).c_str();
-        std::string oldFilenamePath = oldFilenameWithPath.substr(0,
-                                          start).c_str();
 
         std::string newDicomFilename = filename;
         newDicomFilename += "_DCM/";
@@ -845,7 +843,7 @@ int main( int argc, char* argv[] )
         }
       if(!processingSplit)
         {
-        seriesItr++;
+        ++seriesItr;
         }
       else
         {
@@ -853,7 +851,7 @@ int main( int argc, char* argv[] )
           {
           processingSplit = false;
           splitVolumeStart = 0;
-          seriesItr++;
+          ++seriesItr;
           }
         }
       }

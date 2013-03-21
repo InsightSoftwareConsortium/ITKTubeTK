@@ -3,7 +3,7 @@
 
   <category>TubeTK</category>
   <title>Transfer labels to regions (TubeTK)</title>
-  <description>Label regions in one image based on overlap with labels in another image (TubeTK)</description>
+  <description>Label regions in one image based on overlap with labels in another image (TubeTK).</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>

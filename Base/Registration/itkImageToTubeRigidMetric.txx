@@ -580,7 +580,7 @@ ImageToTubeRigidMetric< TFixedImage,
           }
         dtransformedTubePoints.push_back( dtransformedTubePoint );
         }
-      weightIterator++;
+      ++weightIterator;
       }
     }
   delete tubeList;
