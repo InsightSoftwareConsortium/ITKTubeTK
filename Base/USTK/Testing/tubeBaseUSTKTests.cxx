@@ -31,4 +31,5 @@ void RegisterTests()
   REGISTER_TEST( itkAngleOfIncidenceImageFilterTest );
   REGISTER_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest );
   REGISTER_TEST( itkAcousticImpulseResponseImageFilterTest );
+  REGISTER_TEST( itkUltrasoundProbeGeometryCalculatorTest );
 }

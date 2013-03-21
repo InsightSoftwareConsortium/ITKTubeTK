@@ -32,6 +32,7 @@ set( TubeTK_Base_USTK_H_Files
   itkGradientBasedAngleOfIncidenceImageFilter.h
   itkLabelMapToAcousticImpedanceFunctor.h
   itkLabelMapToAcousticImpedanceImageFilter.h
+  itkUltrasoundProbeGeometryCalculator.h
   )
 
 set( TubeTK_Base_USTK_TXX_Files
@@ -40,6 +41,7 @@ set( TubeTK_Base_USTK_TXX_Files
   itkGradientBasedAngleOfIncidenceImageFilter.txx
   itkLabelMapToAcousticImpedanceFunctor.txx
   itkLabelMapToAcousticImpedanceImageFilter.txx
+  itkUltrasoundProbeGeometryCalculator.txx
   )
 
 add_custom_target( TubeUSTK SOURCES

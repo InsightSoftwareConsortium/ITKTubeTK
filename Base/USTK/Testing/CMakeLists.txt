@@ -35,6 +35,7 @@ set( tubeBaseUSTK_SRCS
   itkAcousticImpulseResponseImageFilterTest.cxx
   itkAngleOfIncidenceImageFilterTest.cxx
   itkGradientBasedAngleOfIncidenceImageFilterTest.cxx
+  itkUltrasoundProbeGeometryCalculatorTest.cxx
   )
 
 include_directories(
@@ -216,4 +217,10 @@ MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest4
       136.5
       -90.8
       2.0
+  )
+
+MIDAS_ADD_TEST( itkUltrasoundProbeGeometryCalculatorTest
+  ${BASE_USTK_TESTS}
+    itkUltrasoundProbeGeometryCalculatorTest
+      MIDAS{ultrasound_screenshot_cropped.png.md5}
   )
