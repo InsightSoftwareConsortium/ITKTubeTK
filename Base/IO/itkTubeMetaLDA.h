@@ -31,33 +31,26 @@ limitations under the License.
 #include "metaUtils.h"
 #include "metaForm.h"
 
-/*!    MetaLDA ( .h and .cpp )
+namespace itk
+{
+
+namespace tube
+{
+
+/**
 *
-* Description:
-*    Reads and Writes MetaLDA Files, typically designated .mlda files
+* Reads and Writes MetaLDA Files, typically designated .mlda files
 *
-*    REQUIRED: itkTubeLDAGenerator instance
+* REQUIRED: itkTubeLDAGenerator instance
 *
 * \author Stephen R. Aylward
 *
 * \date August 29, 1999
 *
-* Depends on:
-*    MetaUtils.h
-*    MetaForm.h*/
-
-namespace itk {
-
-namespace tube {
-
+*/
 class METAIO_EXPORT MetaLDA
 : public MetaForm
 {
-  /////
-  //
-  // PUBLIC
-  //
-  ////
 public:
 
   typedef std::vector< double >   ValueListType;
@@ -66,11 +59,6 @@ public:
 
   typedef vnl_matrix< double >    LDAMatrixType;
 
-  ////
-  //
-  // Constructors & Destructor
-  //
-  ////
   MetaLDA( void );
 
   MetaLDA( const char *_headerName );
@@ -78,9 +66,9 @@ public:
   MetaLDA( const MetaLDA & _metaLDA );
 
   MetaLDA( const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix,
-      const ValueListType & _whitenMeans,
-      const ValueListType & _whitenStdDevs );
+    const LDAMatrixType & _ldaMatrix,
+    const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs );
 
   ~MetaLDA( void );
 
@@ -92,8 +80,8 @@ public:
   virtual void  Clear( void );
 
   bool  InitializeEssential( const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
-      const ValueListType & _whitenStdDevs );
+    const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs );
 
   void  SetLDAValues( const LDAValuesType & _ldaValues );
   const LDAValuesType & GetLDAValues( void ) const;
@@ -107,21 +95,16 @@ public:
   void  SetWhitenStdDevs( const ValueListType & _whitenStdDevs );
   const ValueListType & GetWhitenStdDevs( void ) const;
 
-  virtual bool CanRead( const char *_headerName=NULL ) const;
-  virtual bool Read( const char *_headerName=NULL );
+  virtual bool CanRead( const char * _headerName = NULL ) const;
+  virtual bool Read( const char * _headerName = NULL );
   virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
 
   virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
 
-  virtual bool Write( const char *_headName=NULL );
+  virtual bool Write( const char * _headName = NULL );
 
   virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
-  ////
-  //
-  // PROTECTED
-  //
-  ////
 protected:
 
   LDAValuesType   m_LDAValues;

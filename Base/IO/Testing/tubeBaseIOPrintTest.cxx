@@ -20,19 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
 #define ITK_LEAN_AND_MEAN
 
 #include <cstdlib>
 
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
+#include "itkTubeMetaTubeParams.h"
 
 
-int tubeBaseIOPrintTest( int, char* [] )
+int tubeBaseIOPrintTest( int, char * [] )
 {
   itk::tube::MetaLDA metalda;
   std::cout << "-------------metaLDA" << std::endl;

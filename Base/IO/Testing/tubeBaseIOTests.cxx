@@ -20,16 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <iostream>
 #include "tubeTestMain.h"
 
-void RegisterTests()
+void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseIOPrintTest );
   REGISTER_TEST( itkTubeMetaLDATest );
   REGISTER_TEST( itkTubeMetaNJetLDATest );
+  REGISTER_TEST( itkTubeMetaTubeParamsTest );
 }

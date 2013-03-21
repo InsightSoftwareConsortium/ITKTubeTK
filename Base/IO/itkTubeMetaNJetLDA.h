@@ -34,35 +34,26 @@ limitations under the License.
 #include "metaForm.h"
 #include "itkTubeMetaLDA.h"
 
-/*!    MetaNJetLDA ( .h and .cpp )
+namespace itk
+{
 
-Description:
-  Reads and Writes MetaNJetLDA Files, typically designated .mnda files
+namespace tube
+{
 
-REQUIRED: itkTubeNJetLDAGenerator instance
-
-\author Stephen R. Aylward
-
-\date August 29, 1999
-
-Depends on:
-MetaUtils.h
-MetaLDA.h
-MetaForm.h
+/**
+*
+* Reads and Writes MetaNJetLDA Files, typically designated .mnda files
+*
+* REQUIRED: itkTubeNJetLDAGenerator instance
+*
+* \author Stephen R. Aylward
+*
+* \date August 29, 1999
+*
 */
-
-namespace itk {
-
-namespace tube {
-
 class METAIO_EXPORT MetaNJetLDA
 : public MetaLDA
 {
-  /////
-  //
-  // PUBLIC
-  //
-  ////
 public:
 
   typedef std::vector<double>     NJetScalesType;
@@ -71,11 +62,6 @@ public:
 
   typedef MetaLDA::LDAMatrixType  LDAMatrixType;
 
-  ////
-  //
-  // Constructors & Destructor
-  //
-  ////
   MetaNJetLDA( void );
 
   MetaNJetLDA( const char *_headerName );
@@ -83,13 +69,13 @@ public:
   MetaNJetLDA( const MetaNJetLDA & _metaNJetLDA );
 
   MetaNJetLDA( const NJetScalesType & _zeroScales,
-      const NJetScalesType & _firstScales,
-      const NJetScalesType & _secondScales,
-      const NJetScalesType & _ridgeScales,
-      const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix,
-      const ValueListType & _whitenMeans,
-      const ValueListType & _whitenStdDevs);
+    const NJetScalesType & _firstScales,
+    const NJetScalesType & _secondScales,
+    const NJetScalesType & _ridgeScales,
+    const LDAValuesType & _ldaValues,
+    const LDAMatrixType & _ldaMatrix,
+    const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs);
 
   ~MetaNJetLDA( void );
 
@@ -111,8 +97,6 @@ public:
     const ValueListType & _whitenStdDevs);
 
   //
-  //
-  //
   void  SetZeroScales( const NJetScalesType & _zeroScales );
   const NJetScalesType & GetZeroScales( void ) const;
 
@@ -126,25 +110,18 @@ public:
   const NJetScalesType & GetRidgeScales( void ) const;
 
   //
-  //
-  //
-  virtual bool CanRead( const char *_headerName=NULL ) const;
+  virtual bool CanRead( const char * _headerName = NULL ) const;
 
-  virtual bool Read( const char *_headerName=NULL );
+  virtual bool Read( const char * _headerName = NULL );
 
   virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
 
   virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
 
-  virtual bool Write( const char *_headName=NULL );
+  virtual bool Write( const char * _headName = NULL );
 
   virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
-  ////
-  //
-  // PROTECTED
-  //
-  ////
 protected:
 
   NJetScalesType  m_ZeroScales;
