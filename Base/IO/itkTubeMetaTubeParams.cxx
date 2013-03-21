@@ -906,11 +906,11 @@ M_SetupWriteFields( void )
   mF = new MET_FieldRecordType;
   if( m_TubeBright )
     {
-    MET_InitWriteField( mF, "TubeBright", MET_STRING, 5, "True" );
+    MET_InitWriteField( mF, "TubeBright", MET_STRING, 4, "True" );
     }
   else
     {
-    MET_InitWriteField( mF, "TubeBright", MET_STRING, 6, "False" );
+    MET_InitWriteField( mF, "TubeBright", MET_STRING, 5, "False" );
     }
   m_Fields.push_back( mF );
 
@@ -931,11 +931,11 @@ M_SetupWriteFields( void )
   mF = new MET_FieldRecordType;
   if( m_TubeRidgeDynamicScale )
     {
-    MET_InitWriteField( mF, "TubeRidgeDynamicScale", MET_STRING, 5, "True" );
+    MET_InitWriteField( mF, "TubeRidgeDynamicScale", MET_STRING, 4, "True" );
     }
   else
     {
-    MET_InitWriteField( mF, "TubeRidgeDynamicScale", MET_STRING, 6, "False" );
+    MET_InitWriteField( mF, "TubeRidgeDynamicScale", MET_STRING, 5, "False" );
     }
   m_Fields.push_back( mF );
 
