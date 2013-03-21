@@ -27,13 +27,17 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_USTK_H_Files
+  itkAcousticImpulseResponseImageFilter.h
   itkAngleOfIncidenceImageFilter.h
+  itkGradientBasedAngleOfIncidenceImageFilter.h
   itkLabelMapToAcousticImpedanceFunctor.h
   itkLabelMapToAcousticImpedanceImageFilter.h
   )
 
 set( TubeTK_Base_USTK_TXX_Files
+  itkAcousticImpulseResponseImageFilter.txx
   itkAngleOfIncidenceImageFilter.txx
+  itkGradientBasedAngleOfIncidenceImageFilter.txx
   itkLabelMapToAcousticImpedanceFunctor.txx
   itkLabelMapToAcousticImpedanceImageFilter.txx
   )
