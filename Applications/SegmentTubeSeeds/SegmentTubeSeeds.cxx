@@ -112,11 +112,11 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "LoadLabelMap" );
     }
 
-  if( loadVesselSeedInfo.size() > 0 )
+  if( loadTubeSeedInfo.size() > 0 )
     {
-    timeCollector.Start( "LoadVesselSeed" );
+    timeCollector.Start( "LoadTubeSeed" );
 
-    itk::tube::MetaNJetLDA ldaReader( loadVesselSeedInfo.c_str() );
+    itk::tube::MetaNJetLDA ldaReader( loadTubeSeedInfo.c_str() );
     ldaReader.Read();
 
     ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
@@ -126,7 +126,7 @@ int DoIt( int argc, char * argv[] )
     ldaGenerator->SetSecondScales( ldaReader.GetSecondScales() );
     ldaGenerator->SetRidgeScales( ldaReader.GetRidgeScales() );
 
-    timeCollector.Stop( "LoadVesselSeed" );
+    timeCollector.Stop( "LoadTubeSeed" );
     }
   else
     {
@@ -152,7 +152,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Update" );
     }
 
-  timeCollector.Start( "SaveVesselSeedImage" );
+  timeCollector.Start( "SaveTubeSeedImage" );
   ldaGenerator->UpdateLDAImages();
   typename LDAImageWriterType::Pointer ldaImageWriter =
     LDAImageWriterType::New();
@@ -160,20 +160,22 @@ int DoIt( int argc, char * argv[] )
   ldaImageWriter->SetFileName( outputSeedImage.c_str() );
   ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( 0 ) );
   ldaImageWriter->Update();
-  timeCollector.Stop( "SaveVesselSeedImage" );
+  timeCollector.Stop( "SaveTubeSeedImage" );
 
-  if( saveVesselSeedInfo.size() > 0 )
+  if( saveTubeSeedInfo.size() > 0 )
     {
-    timeCollector.Start( "SaveVesselSeedInfo" );
+    timeCollector.Start( "SaveTubeSeedInfo" );
     itk::tube::MetaNJetLDA ldaWriter(
       ldaGenerator->GetZeroScales(),
       ldaGenerator->GetFirstScales(),
       ldaGenerator->GetSecondScales(),
       ldaGenerator->GetRidgeScales(),
       ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix() );
-    ldaWriter.Write( saveVesselSeedInfo.c_str() );
-    timeCollector.Stop( "SaveVesselSeedInfo" );
+      ldaGenerator->GetLDAMatrix(),
+      ldaGenerator->GetWhitenMeans(),
+      ldaGenerator->GetWhitenStdDevs() );
+    ldaWriter.Write( saveTubeSeedInfo.c_str() );
+    timeCollector.Stop( "SaveTubeSeedInfo" );
     }
 
   if( saveFeatureImages.size() > 0 )
@@ -182,7 +184,7 @@ int DoIt( int argc, char * argv[] )
     unsigned int numFeatures = ldaGenerator->GetNumberOfFeatures();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
-      WriteLDA< LDAImageType >( ldaGenerator->GetNJetFeatureImage( i ),
+      WriteLDA< LDAImageType >( ldaGenerator->GetFeatureImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }
     timeCollector.Stop( "SaveFeatureImages" );

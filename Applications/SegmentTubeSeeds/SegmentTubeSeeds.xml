@@ -43,10 +43,10 @@
     <label>Seed Finding Parameters</label>
     <description>Parameters that control seed finding</description>
     <file>
-      <name>loadVesselSeedInfo</name>
+      <name>loadTubeSeedInfo</name>
       <description>Load vessel seed info from a file</description>
-      <label>Load vessel seed Info</label>
-      <longflag>loadVesselSeedInfo</longflag>
+      <label>Load vessel seed information</label>
+      <longflag>loadTubeSeedInfo</longflag>
     </file>
   </parameters>
   <parameters advanced="true">
@@ -54,23 +54,23 @@
     <description>Parameters that determine how the seed finder is generated</description>
     <double-vector>
       <name>ridgeScales</name>
-      <description>Scales at which Ridge features are computed</description>
+      <description>Scales at which ridge features are computed</description>
       <label>Ridge scales</label>
       <default>0.5,1.0,2.5</default>
       <longflag>ridgeScales</longflag>
     </double-vector>
     <integer>
       <name>objectId</name>
-      <description>Id to be used in labelmap</description>
-      <label>Id of vessels in the labelmap</label>
+      <description>ID to be used in labelmap</description>
+      <label>ID of vessels in the labelmap</label>
       <default>255</default>
       <longflag>objectId</longflag>
     </integer>
     <file>
-      <name>saveVesselSeedInfo</name>
+      <name>saveTubeSeedInfo</name>
       <description>Save vessel seed info to a file</description>
-      <label>Save vessel seed Info</label>
-      <longflag>saveVesselSeedInfo</longflag>
+      <label>Save vessel seed information</label>
+      <longflag>saveTubeSeedInfo</longflag>
     </file>
     <string>
       <name>saveFeatureImages</name>
