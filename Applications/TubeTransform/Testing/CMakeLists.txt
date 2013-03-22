@@ -51,7 +51,8 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
                 ${TEXTCOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1.tre
-                  -b MIDAS{${MODULE_NAME}Test1.tre.md5} )
+                  -b MIDAS{${MODULE_NAME}Test1.tre.md5}
+                  -d 0.01)
 
 set_property(TEST ${MODULE_NAME}-Test1-Compare
            APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

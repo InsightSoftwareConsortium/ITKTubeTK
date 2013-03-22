@@ -300,11 +300,13 @@ int DoIt( int argc, char * argv[] )
       RegFilterType::OptimizedRegistrationMethodType::
       NEAREST_NEIGHBOR_INTERPOLATION,
       NULL, NULL, NULL, background );
+
     typename ImageType::Pointer curImage2Reg = ImageType::New();
     curImage2Reg->CopyInformation( tmpImage );
     curImage2Reg->SetRegions( tmpImage->GetLargestPossibleRegion() );
     curImage2Reg->Allocate();
     curImage2Reg->FillBuffer( background );
+
     typename ImageType::Pointer outImageMap = ImageType::New();
     outImageMap->CopyInformation( tmpImage );
     outImageMap->SetRegions( tmpImage->GetLargestPossibleRegion() );
@@ -318,6 +320,7 @@ int DoIt( int argc, char * argv[] )
       outImage, outImage->GetLargestPossibleRegion() );
     itk::ImageRegionIteratorWithIndex< ImageType > iterOutMap(
       outImageMap, outImageMap->GetLargestPossibleRegion() );
+
     while( !iter2.IsAtEnd() )
       {
       double iVal = iterTmp.Get();
@@ -351,6 +354,8 @@ int DoIt( int argc, char * argv[] )
       ++iterOutMap;
       }
     timeCollector.Stop("Resample Image");
+
+
 
     timeCollector.Start("Out Distance Map");
     typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
