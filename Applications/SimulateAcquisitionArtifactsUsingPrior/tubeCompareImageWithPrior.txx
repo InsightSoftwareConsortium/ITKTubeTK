@@ -718,13 +718,12 @@ Update( void )
     std::cout << "MBg = " << meanMaskBg <<  " - "
               << "MFg = " << meanMaskFg << std::endl;
 
-    typedef itk::ShiftScaleImageFilter< ImageType, ImageType >
-      FilterType;
-    typename FilterType::Pointer filter = FilterType::New();
-
     double scale = (meanVolFg - meanVolBg) / (meanMaskFg - meanMaskBg);
     double shift = meanVolBg/scale - meanMaskBg;
-    filter = FilterType::New();
+
+     typedef itk::ShiftScaleImageFilter< ImageType, ImageType >
+      FilterType;
+    typename FilterType::Pointer filter = FilterType::New();
     filter->SetInput( m_OutputMaskImage );
     filter->SetShift( shift );
     filter->SetScale( scale );

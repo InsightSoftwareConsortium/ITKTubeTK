@@ -74,7 +74,7 @@ void computeQuantiles( ImageType::Pointer image,
                        const std::vector<float> & quantiles,
                        std::vector<ImagePixelType> & quantileValues)
 {
-  assert(!quantileValues.size());
+  assert(quantileValues.empty());
 
   /*
    * Create a and configure a vector of length N of pointers

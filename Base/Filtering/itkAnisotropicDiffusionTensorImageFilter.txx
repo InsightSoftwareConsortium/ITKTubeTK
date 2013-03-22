@@ -221,12 +221,12 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // First find out how many pieces the extent can be split into.
   // Using the SplitRequestedRegion method from itk::ImageSource.
   ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitRegion);
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitRegion );
 
-  ThreadDiffusionTensorImageRegionType    splitRegionDiffusionTensorImage;
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitRegionDiffusionTensorImage);
+  ThreadDiffusionTensorImageRegionType splitRegionDiffusionTensorImage;
+  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                             splitRegionDiffusionTensorImage );
   if (threadId < total)
     {
     str->Filter->ThreadedApplyUpdate(str->TimeStep,
@@ -292,13 +292,13 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // Using the SplitRequestedRegion method from itk::ImageSource.
   ThreadRegionType splitRegion;
 
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitRegion);
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitRegion );
 
   ThreadDiffusionTensorImageRegionType splitDiffusionimageRegion;
 
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitDiffusionimageRegion);
+  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                             splitDiffusionimageRegion );
 
   if (threadId < total)
     {

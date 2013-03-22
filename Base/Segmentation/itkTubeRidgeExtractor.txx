@@ -1278,7 +1278,7 @@ RidgeExtractor<TInputImage>
     }
   SetScale( iScale0 );
 
-  if( pnts.size() > 0 )
+  if( !pnts.empty() )
     {
     return true;
     }

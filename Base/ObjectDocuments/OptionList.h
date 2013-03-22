@@ -51,11 +51,8 @@ class OptionList
     {
       public:
 
-        RequiredOptionMissing(std::string tag)
-        {
-          OptionTag = tag ;
-        }
-      std::string OptionTag ;
+        RequiredOptionMissing(std::string tag) : OptionTag( tag ) {}
+        std::string OptionTag ;
     };
 
     int GetOption(std::string option_tag, StringVector* values) ;
