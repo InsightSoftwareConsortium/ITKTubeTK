@@ -1691,7 +1691,7 @@ int DoIt( MetaCommand & command )
       imIn = filter->GetOutput();
       } // end -e
 
-    it++;
+    ++it;
     }
 
   return EXIT_SUCCESS;

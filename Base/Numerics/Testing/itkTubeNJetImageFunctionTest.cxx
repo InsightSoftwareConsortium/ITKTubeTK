@@ -252,21 +252,21 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 21:
         {
-        val = func->Ridgeness( pnt, scale );
+        func->Ridgeness( pnt, scale );
         val = func->GetMostRecentRidgeLevelness();
         outIter.Set( val );
         break;
         }
       case 22:
         {
-        val = func->Ridgeness( pnt, scale );
+        func->Ridgeness( pnt, scale );
         val = func->GetMostRecentRidgeRoundness();
         outIter.Set( val );
         break;
         }
       case 23:
         {
-        val = func->Ridgeness( pnt, scale );
+        func->Ridgeness( pnt, scale );
         val = func->GetMostRecentRidgeCurvature();
         outIter.Set( val );
         break;
@@ -312,7 +312,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 28:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
+        func->RidgenessAtIndex( outIter.GetIndex(), scale );
         h = func->GetMostRecentHessian();
         val2 = func->HessianAtIndex( outIter.GetIndex(), scale, h2 );
         val = vnl_math_abs( h[0][0] - h2[0][0] ) +

@@ -102,7 +102,7 @@ public:
   itkSetMacro(Omega, Precision);
   itkSetMacro(Sensitivity, Precision);
 
-  void SetScales(const std::vector<Precision> scales)
+  void SetScales(const std::vector<Precision> &scales)
     {
     m_Scales = scales;
     }

@@ -380,7 +380,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
           }
         }
       }
-    TubeIterator++;
+    ++TubeIterator;
     }
 
   delete tubeList;

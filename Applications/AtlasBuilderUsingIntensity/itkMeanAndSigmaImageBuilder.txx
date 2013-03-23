@@ -128,15 +128,13 @@ void MeanAndSigmaImageBuilder< TInputImageType,
   PointType   outputOrigin  = sumImage->GetOrigin();
 
   // Build Mean and Variance Images
-  OutputMeanImagePointer meanImage = this->GetOutputMeanImage();
-  meanImage = OutputMeanImageType::New();
+  OutputMeanImagePointer meanImage = OutputMeanImageType::New();
   meanImage->SetRegions( outputRegion );
   meanImage->SetSpacing( outputSpacing );
   meanImage->SetOrigin( outputOrigin );
   meanImage->Allocate();
 
-  OutputSigmaImagePointer sigmaImage = this->GetOutputSigmaImage();
-  sigmaImage = OutputSigmaImageType::New();
+  OutputSigmaImagePointer sigmaImage = OutputSigmaImageType::New();
   sigmaImage->SetRegions( outputRegion );
   sigmaImage->SetSpacing( outputSpacing );
   sigmaImage->SetOrigin( outputOrigin );
