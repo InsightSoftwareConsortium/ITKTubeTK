@@ -461,7 +461,6 @@ CVTImageFilter< TInputImage, TOutputImage >
           << std::endl;
         }
       throw( "Sampling method CVT_USER not supported for resmpling." );
-      break;
       }
     }
 }
