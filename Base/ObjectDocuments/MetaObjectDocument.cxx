@@ -254,7 +254,7 @@ M_SetupObjectReadFields(void)
     std::string labelTransform;
     labelTransform.append( LABEL_TRANSFORM );
     char buffer[20];
-    sprintf( buffer, "%i", i );
+    sprintf( buffer, "%u", i );
     labelTransform.append( buffer );
 
     mF = new MET_FieldRecordType;
@@ -295,7 +295,7 @@ M_SetupObjectWriteFields( unsigned int object_idx )
     std::string label;
     label.append( LABEL_TRANSFORM );
     char buffer[20];
-    sprintf( buffer, "%i", i );
+    sprintf( buffer, "%u", i );
     label.append( buffer );
 
     mF = new MET_FieldRecordType;
@@ -388,7 +388,7 @@ M_Read(void)
       std::string labelTransform;
       labelTransform.append( LABEL_TRANSFORM );
       char buffer[20];
-      sprintf( buffer, "%i", j );
+      sprintf( buffer, "%u", j );
       labelTransform.append( buffer );
 
       mF = MET_GetFieldRecord( labelTransform.c_str(), &m_Fields );
