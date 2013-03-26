@@ -198,8 +198,7 @@ public:
     }
 
   virtual void ReleaseGlobalDataPointer(void * GlobalData) const
-    { delete (GlobalDataStruct *) GlobalData; }
-
+    { delete static_cast<GlobalDataStruct *>( GlobalData ); }
 protected:
   AnisotropicDiffusionTensorFunction();
   virtual ~AnisotropicDiffusionTensorFunction() {}

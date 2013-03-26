@@ -100,7 +100,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
                 const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
-  GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
+  GlobalDataStruct *gd = static_cast<GlobalDataStruct *>( globalData );
   assert( gd );
   gd->m_GradMagSqr = 1.0e-6;
 
@@ -128,7 +128,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
     const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
-  GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
+  GlobalDataStruct *gd = static_cast<GlobalDataStruct *>( globalData );
   assert( gd );
   gd->m_GradMagSqr = 1.0e-6;
 
