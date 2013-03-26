@@ -309,7 +309,7 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
     {
     tube::FmtErrorMessage("Error reading JSON graph file %s (Msg: %s)",
       graphFile, e.what());
-    throw e;
+    throw;
     }
 }
 
