@@ -130,12 +130,12 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     // initialize the interconnects between components
     Superclass::Initialize();
     }
-  catch( ExceptionObject& err )
+  catch( const ExceptionObject& err )
     {
     this->m_LastTransformParameters = ParametersType( 1 );
     this->m_LastTransformParameters.Fill( 0.0f );
     // pass exception to caller
-    throw err;
+    throw;
     }
   this->GetOptimizer()->SetCostFunction( this->GetMetric() );
 
@@ -158,14 +158,14 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     // do the optimization
     this->GetOptimizer()->StartOptimization();
     }
-  catch( ExceptionObject& err )
+  catch( const ExceptionObject& err )
     {
     // An error has occurred in the optimization.
     // Update the parameters
     this->m_LastTransformParameters = this->GetOptimizer()
       ->GetCurrentPosition();
     // Pass exception to caller
-    throw err;
+    throw;
     }
 
   // give the result to the superclass
