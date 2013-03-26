@@ -97,6 +97,7 @@ public:
       m_Intersection = l.m_Intersection;
       m_SourceComplement = l.m_SourceComplement;
       m_TargetComplement = l.m_TargetComplement;
+      return *this;
       }
 
     unsigned long m_Source;
