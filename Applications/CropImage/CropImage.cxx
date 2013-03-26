@@ -178,7 +178,7 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Stop("CropFilter");
       throw( out.str() );
       }
-    catch( std::string s )
+    catch( const std::string & s )
       {
       std::cerr << "Error during crop filter: " << s << std::endl;
       timeCollector.Stop("CropFilter");
@@ -278,7 +278,7 @@ int DoIt( int argc, char * argv[] )
         timeCollector.Stop("CropFilter");
         throw( out.str() );
         }
-      catch( std::string s )
+      catch( const std::string & s )
         {
         std::stringstream out;
         out << "Error during crop filter: " << s << std::endl;
