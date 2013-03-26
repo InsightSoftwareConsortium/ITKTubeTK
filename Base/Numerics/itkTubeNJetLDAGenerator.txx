@@ -529,20 +529,25 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
       if( m_ForceIntensityConsistency )
         {
-        itk::ImageRegionIterator< LDAImageType > iterF(
-          m_NJetImageList[ 0 ],
-          m_NJetImageList[ 0 ]->GetLargestPossibleRegion() );
-        itk::ImageRegionIterator< LDAImageType > iterM(
-          this->GetLDAImage(i),
-          this->GetLDAImage(i)->GetLargestPossibleRegion() );
+        typedef ImageRegionConstIterator< LDAImageType > ImageIteratorType;
+        typename LDAImageType::Pointer nJetImage = m_NJetImageList[0];
+        ImageIteratorType iterF(
+          nJetImage,
+          nJetImage->GetRequestedRegion() );
+        typename LDAImageType::Pointer ldaImage = this->GetLDAImage(i);
+        ImageIteratorType iterM(
+          ldaImage,
+          ldaImage->GetRequestedRegion() );
         double fVal;
         double mVal;
-        double sff = 0;
-        double smm = 0;
-        double sfm = 0;
-        double fMean = 0;
-        double mMean = 0;
+        double sff = 0.0;
+        double smm = 0.0;
+        double sfm = 0.0;
+        double fMean = 0.0;
+        double mMean = 0.0;
         unsigned int count = 0;
+        iterF.GoToBegin();
+        iterM.GoToBegin();
         while( !iterF.IsAtEnd() )
           {
           fVal = iterF.Get();
