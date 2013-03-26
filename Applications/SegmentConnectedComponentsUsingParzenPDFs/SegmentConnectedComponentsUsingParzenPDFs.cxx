@@ -164,7 +164,7 @@ int DoIt( int argc, char *argv[] )
       {
       std::string fname = loadClassPDFBase;
       char c[80];
-      sprintf(c, ".c%d.mha", i );
+      sprintf(c, ".c%u.mha", i );
       fname += std::string( c );
       typename PDFImageReaderType::Pointer pdfImageReader =
         PDFImageReaderType::New();
@@ -204,7 +204,7 @@ int DoIt( int argc, char *argv[] )
       {
       std::string fname = saveClassProbabilityVolumeBase;
       char c[80];
-      sprintf(c, ".c%d.mha", i );
+      sprintf(c, ".c%u.mha", i );
       fname += std::string( c );
       ProbImageWriterType::Pointer probImageWriter =
         ProbImageWriterType::New();
@@ -228,7 +228,7 @@ int DoIt( int argc, char *argv[] )
       indx.Fill( 100 );
       std::string fname = saveClassPDFBase;
       char c[80];
-      sprintf(c, ".c%d.mha", i );
+      sprintf(c, ".c%u.mha", i );
       fname += std::string( c );
       typename PDFImageWriterType::Pointer pdfImageWriter =
         PDFImageWriterType::New();
