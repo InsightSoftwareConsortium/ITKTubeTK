@@ -122,7 +122,7 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::ReleaseGlobalDataPointer(void *GlobalData) const
 {
-  GlobalDataStruct * gd = ( GlobalDataStruct * ) GlobalData;
+  GlobalDataStruct * gd = static_cast<GlobalDataStruct *>(GlobalData);
 
   // Release the component data structures
   if( this->GetComputeRegularizationTerm() )
@@ -213,7 +213,7 @@ AnisotropicDiffusiveRegistrationFunction
     const FloatOffsetType & offset )
 {
   // Get the global data structure
-  GlobalDataStruct * gd = ( GlobalDataStruct * ) globalData;
+  GlobalDataStruct * gd = static_cast<GlobalDataStruct *>( globalData );
   assert( gd );
 
   // Iterate over the deformation field components to compute the regularization
