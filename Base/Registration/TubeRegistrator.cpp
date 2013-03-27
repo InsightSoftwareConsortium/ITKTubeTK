@@ -209,7 +209,6 @@ Metric(void)
   {
   long c0 = clock();
 
-  double opR;
   std::list<TubeRegistratorPoint *>::iterator j;
   static TNT::Vector<double> xTV(3);
   static TNT::Vector<double> dXTV(3);
@@ -259,7 +258,7 @@ Metric(void)
         xTV(3) = (*j)->m_XT(2);
         cWeight += (*j)->m_W;
         cCount++;
-        opR = (*j)->r;
+        double opR = (*j)->r;
         if(opR<0.5)
           opR = 0.5;
         cImOp.opScale(opR * cKappa);

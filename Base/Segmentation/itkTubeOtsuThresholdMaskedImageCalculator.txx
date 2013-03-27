@@ -149,9 +149,9 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
     std::cout << "Using mask2" << std::endl;
     while( !iter.IsAtEnd() )
       {
-      unsigned int binNumber;
       if( maskIter.Get() != 0 )
         {
+        unsigned int binNumber;
         PixelType value = iter.Get();
 
         if ( value == imageMin )

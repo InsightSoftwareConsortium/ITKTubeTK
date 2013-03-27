@@ -81,7 +81,6 @@ DumpOption(std::string option_tag, bool withTag, bool withNewLine)
 {
   typedef OptionMap::const_iterator CI ;
   std::pair<CI, CI> bound = m_Map.equal_range(option_tag) ;
-  int count = 0 ;
 
   if (bound.first != bound.second)
     {
@@ -90,6 +89,7 @@ DumpOption(std::string option_tag, bool withTag, bool withNewLine)
     std::cout << "--" << option_tag << " " ;
     }
 
+    int count = 0 ;
     for (CI i = bound.first ; i != bound.second ; ++i)
       {
       std::cout << i->second << " " ;

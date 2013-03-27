@@ -243,16 +243,15 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
 {
   double  a = mat(0,0), b = mat(0,1), c = mat(0,2),
           d = mat(1,1), e = mat(1,2), f = mat(2,2);
-  double s, q;
 
   diag(0) = a;
   subD(2) = 0;
   if(c != 0)
     {
-    s = sqrt(b*b+c*c);
+    const double s = sqrt(b*b+c*c);
     b /= s;
     c /= s;
-    q = 2*b*e+c*(f-d);
+    const double q = 2*b*e+c*(f-d);
     diag(1) = d+c*q;
     diag(2) = f-c*q;
     subD(0) = s;

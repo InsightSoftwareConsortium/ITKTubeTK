@@ -663,11 +663,11 @@ M_Read( void )
         << m_Fields[i]->name << METAIO_STREAM::endl;
       }
     }
-  unsigned int nZeroScales = 0;
+
   mF = MET_GetFieldRecord( "NZeroScales", &m_Fields );
   if( mF && mF->defined )
     {
-    nZeroScales = ( unsigned int )mF->value[0];
+    const unsigned int nZeroScales = ( unsigned int )mF->value[0];
     if( META_DEBUG )
       {
       METAIO_STREAM::cout << "MetaNJetLDA: M_Read: ZeroScales"
@@ -690,11 +690,10 @@ M_Read( void )
     m_ZeroScales.clear();
     }
 
-  unsigned int nFirstScales = 0;
   mF = MET_GetFieldRecord( "NFirstScales", &m_Fields );
   if( mF && mF->defined )
     {
-    nFirstScales = ( unsigned int )mF->value[0];
+    const unsigned int nFirstScales = ( unsigned int )mF->value[0];
     m_FirstScales.resize( nFirstScales, 0 );
     mF = MET_GetFieldRecord( "FirstScales", &m_Fields );
     if( mF && mF->defined )
@@ -710,11 +709,10 @@ M_Read( void )
     m_FirstScales.clear();
     }
 
-  unsigned int nSecondScales = 0;
   mF = MET_GetFieldRecord( "NSecondScales", &m_Fields );
   if( mF && mF->defined )
     {
-    nSecondScales = ( unsigned int )mF->value[0];
+    const unsigned int nSecondScales = ( unsigned int )mF->value[0];
     m_SecondScales.resize( nSecondScales, 0 );
     mF = MET_GetFieldRecord( "SecondScales", &m_Fields );
     if( mF && mF->defined )
@@ -730,11 +728,10 @@ M_Read( void )
     m_SecondScales.clear();
     }
 
-  unsigned int nRidgeScales = 0;
   mF = MET_GetFieldRecord( "NRidgeScales", &m_Fields );
   if( mF && mF->defined )
     {
-    nRidgeScales = ( unsigned int )mF->value[0];
+    const unsigned int nRidgeScales = ( unsigned int )mF->value[0];
     m_RidgeScales.resize( nRidgeScales, 0 );
     mF = MET_GetFieldRecord( "RidgeScales", &m_Fields );
     if( mF && mF->defined )
