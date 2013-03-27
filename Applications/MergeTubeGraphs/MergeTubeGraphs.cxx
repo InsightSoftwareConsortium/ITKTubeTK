@@ -92,7 +92,6 @@ int DoIt( int argc, char *argv[] )
   logMsg << "Number of graphs " << numberOfGraphs;
   tube::InfoMessage( logMsg.str() );
 
-  std::ifstream readStream;
   vnl_matrix<double> aMat(numberOfCentroids, numberOfCentroids);
   aMat.fill(0);
   vnl_vector<double> bVect(numberOfCentroids);
