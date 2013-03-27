@@ -129,7 +129,6 @@ int DoIt( int argc, char *argv[] )
     {
     std::cout << "Trying to use user-specified constraints!" << std::endl;
 
-    std::vector<int> size;
     if ( !outputSize.size() )
       {
       std::cerr << "Output size is missing!" << std::endl;

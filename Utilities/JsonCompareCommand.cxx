@@ -122,8 +122,6 @@ int main( int argc, char **argv )
     baselineFilenames = command.GetValueAsList( "baselineFiles" );
     }
 
-  std::string bestBaselineFilename;
-
   try
     {
     if( singleBaselineFile )
@@ -132,7 +130,6 @@ int main( int argc, char **argv )
         RegressionTestJson(
             testFilename.c_str(), baselineFilename.c_str(),
             true, true, toleranceValue );
-      bestBaselineFilename = baselineFilename;
       }
     else
       {
@@ -147,7 +144,6 @@ int main( int argc, char **argv )
         if( currentStatus < bestBaselineStatus )
           {
           bestBaselineStatus = currentStatus;
-          bestBaselineFilename = *baselineFileItr;
           }
         if( bestBaselineStatus == 0 )
           {

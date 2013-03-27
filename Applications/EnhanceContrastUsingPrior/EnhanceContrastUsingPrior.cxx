@@ -363,8 +363,6 @@ int DoIt( int argc, char * argv[] )
     inputImage->GetLargestPossibleRegion() );
   double inputMin = iter.Get();
   double inputMax = inputMin;
-  double inputMean = 0;
-  unsigned inputCount = 0;
   while( !iter.IsAtEnd() )
     {
     double tf = iter.Get();
@@ -376,11 +374,8 @@ int DoIt( int argc, char * argv[] )
       {
       inputMax = tf;
       }
-    inputMean += tf;
-    ++inputCount;
     ++iter;
     }
-  inputMean /= inputCount;
 
   itk::Array<double> params(3);
   params[0] = objectScale;
