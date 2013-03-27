@@ -384,8 +384,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   assert( m_TubeList );
   assert( !m_TubeSurface ); // We only want to compute this once
 
-  unsigned int numTubes = m_TubeList->size();
-  if( numTubes <= 0 )
+  if( m_TubeList->empty() )
     {
     itkExceptionMacro( << "Tube list does not contain tubes" );
     }
