@@ -516,11 +516,11 @@ M_SetupWriteFields( void )
     m_LDAMatrix.data_block() );
   m_Fields.push_back( mF );
 
-  double tf[ 4096 ];
   int tfCount = m_WhitenMeans.size();
 
   if( tfCount > 0 )
     {
+    double tf[ 4096 ];
     mF = new MET_FieldRecordType;
     for( int i=0; i<tfCount; i++ )
       {

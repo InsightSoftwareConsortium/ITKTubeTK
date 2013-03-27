@@ -242,7 +242,6 @@ int main(int, char **)
     fp << "HeaderSize = " << headerSize << std::endl;
     }
 
-  int storageList = 0;
   if(storage == 0)
     {
     std::string fname;
@@ -274,6 +273,7 @@ int main(int, char **)
       << "        know what we are talking about, choose option 0."
       << std::endl
       << "  -=> ";
+    int storageList = 0;
     std::cin >> storageList;
     std::cout << std::endl;
 
