@@ -32,21 +32,48 @@ limitations under the License.
 
 #include <itkTubeRidgeSeedGenerator.h>
 
-int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
+// Forward declaration
+template< int Dimension > int
+DoIt(int argc, char * argv [] );
+
+// Pick the method to run based on testnum
+int itkTubeRidgeSeedGeneratorTest(int argc, char * argv [] )
 {
-  if( argc != 4 )
+  if( argc != 5 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " inputImage maskImage outputImage"
+    std::cerr << argv[0] << " testnum inputImage maskImage outputImage"
       << std::endl;
     return EXIT_FAILURE;
     }
 
-  bool error = false;
+  switch( std::atoi( argv[1] ) )
+    {
+    case 0:
+      {
+      std::cout << "Test Number = 0" << std::endl;
+      return DoIt< 2 >( argc, argv );
+      }
+    case 1:
+      {
+      std::cout << "Test Number = 1" << std::endl;
+      return DoIt< 3 >( argc, argv );
+      }
+    default:
+      {
+      std::cout << "Testnum not found" << std::endl;
+      return EXIT_FAILURE;
+      }
+    };
+}
 
-  // Define the dimension of the images
-  const unsigned int Dimension = 3;
+template< int Dimension >
+int DoIt(int argc, char * argv [] )
+{
+  int testNum = std::atoi( argv[1] );
+
+  bool error = false;
 
   // Define the pixel type
   typedef float                                   PixelType;
@@ -71,8 +98,8 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
                                                   FunctionType;
 
   // Create the reader
-  ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  typename ReaderType::Pointer reader = ReaderType::New();
+  reader->SetFileName( argv[2] );
   try
     {
     reader->Update();
@@ -82,11 +109,11 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
     std::cerr << "Exception caught during read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer inputImage = reader->GetOutput();
+  typename ImageType::Pointer inputImage = reader->GetOutput();
 
   // Create the mask reader
-  MaskReaderType::Pointer maskReader = MaskReaderType::New();
-  maskReader->SetFileName( argv[2] );
+  typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
+  maskReader->SetFileName( argv[3] );
   try
     {
     maskReader->Update();
@@ -96,16 +123,16 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
     std::cerr << "Exception caught during mask read:\n"  << e;
     return EXIT_FAILURE;
     }
-  MaskImageType::Pointer maskImage = maskReader->GetOutput();
+  typename MaskImageType::Pointer maskImage = maskReader->GetOutput();
 
-  FunctionType::Pointer func = FunctionType::New();
+  typename FunctionType::Pointer func = FunctionType::New();
   func->SetRidgeImage( inputImage );
 
   func->SetLabelmap( maskImage );
   func->SetObjectId( 255 );
   func->AddObjectId( 127 );
 
-  FunctionType::RidgeScalesType scales(5);
+  typename FunctionType::RidgeScalesType scales(5);
   scales[0] = 0.3;
   scales[1] = 0.5;
   scales[2] = 0.75;
@@ -115,16 +142,18 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
 
   func->Update();
 
+  // Save RidgeSeedInfo
+
   func->SetLabelmap( NULL );
   func->UpdateLDAImages();
 
   char filename[4096];
-  WriterType::Pointer writer = WriterType::New();
+  typename WriterType::Pointer writer = WriterType::New();
   writer->SetUseCompression( true );
   std::cout << "Number of LDA = " << func->GetNumberOfLDA() << std::endl;
   for( unsigned int i=0; i<3; i++ )
     {
-    sprintf( filename, "%s.lda%02d.mha", argv[3], i );
+    std::sprintf( filename, "%s.lda%02d.mha", argv[4], i );
     writer->SetFileName( filename );
     writer->SetInput( func->GetLDAImage(i) );
     std::cout << "LDA" << i << " = " << func->GetLDAValue(i) << " : "
@@ -142,7 +171,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
 
   for( unsigned int i=0; i<func->GetNumberOfFeatures(); i++ )
     {
-    sprintf( filename, "%s.f%02d.mha", argv[3], i );
+    std::sprintf( filename, "%s.f%02d.mha", argv[4], i );
     writer->SetFileName( filename );
     writer->SetInput( func->GetFeatureImage(i) );
     try
@@ -156,6 +185,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
       }
     }
 
+  // Load RidgeSeedInfo
 
   // All objects should be automatically destroyed at this point
   if( !error )
