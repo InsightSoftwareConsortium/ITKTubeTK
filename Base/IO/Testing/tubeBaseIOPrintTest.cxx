@@ -20,24 +20,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #define ITK_LEAN_AND_MEAN
 
 #include <cstdlib>
 
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
+#include "itkTubeMetaRidgeSeed.h"
 #include "itkTubeMetaTubeParams.h"
 
 
 int tubeBaseIOPrintTest( int, char * [] )
 {
-  itk::tube::MetaLDA metalda;
+  itk::tube::MetaLDA metaLDA;
   std::cout << "-------------metaLDA" << std::endl;
-  metalda.PrintInfo();
+  metaLDA.PrintInfo();
 
-  itk::tube::MetaNJetLDA metanjlda;
+  itk::tube::MetaNJetLDA metaNJetLDA;
   std::cout << "-------------metaNJetLDA" << std::endl;
-  metanjlda.PrintInfo();
+  metaNJetLDA.PrintInfo();
+
+  itk::tube::MetaRidgeSeed metaRidgeSeed;
+  std::cout << "-------------metaRidgeSeed" << std::endl;
+  metaRidgeSeed.PrintInfo();
+
+  itk::tube::MetaTubeParams metaTubeParams;
+  std::cout << "-------------metaTubeParams" << std::endl;
+  metaTubeParams.PrintInfo();
 
   return EXIT_SUCCESS;
 }

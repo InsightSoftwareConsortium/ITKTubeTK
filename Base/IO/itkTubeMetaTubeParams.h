@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeMetaTubeParams_h
 #define __itkTubeMetaTubeParams_h
 
@@ -194,4 +195,4 @@ protected:
 
 } // namespace itk
 
-#endif
+#endif // __itkTubeMetaTubeParams_h

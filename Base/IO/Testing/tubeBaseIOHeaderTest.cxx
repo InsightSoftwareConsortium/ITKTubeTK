@@ -20,11 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <cstdlib>
 #include <iostream>
 
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
+#include "itkTubeMetaRidgeSeed.h"
 #include "itkTubeMetaTubeParams.h"
 
 int main ( int , char ** )

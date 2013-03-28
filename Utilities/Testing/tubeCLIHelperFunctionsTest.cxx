@@ -20,9 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <cstdlib>
 
@@ -30,7 +27,7 @@ limitations under the License.
 
 // Forward declaration required by CLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char *argv[] );
+int DoIt( int argc, char * argv [] );
 
 // Must include CLP before including tubeCLIHleperFunctions
 #include "tubeCLIHelperFunctionsTestCLP.h"
@@ -39,14 +36,14 @@ int DoIt( int argc, char *argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv [] )
 {
   PARSE_ARGS;
 
   return EXIT_SUCCESS;
 }
 
-int tubeCLIHelperFunctionsTest(int argc, char *argv[] )
+int tubeCLIHelperFunctionsTest( int argc, char * argv [] )
 {
   PARSE_ARGS;
 

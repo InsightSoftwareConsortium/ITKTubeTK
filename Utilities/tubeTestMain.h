@@ -42,24 +42,24 @@
 
 #define ITK_TEST_DIMENSION_MAX 6
 
-typedef int (*MainFuncPointer)(int , char* [] );
+typedef int (*MainFuncPointer)(int , char * [] );
 std::map<std::string, MainFuncPointer> StringToTestFunctionMap;
 
 #define REGISTER_TEST(test) \
-extern int test(int, char* [] ); \
+extern int test( int, char * [] ); \
 StringToTestFunctionMap[#test] = test
 
-int RegressionTestImage (const char *testImageFilename,
-                         const char *baselineImageFilename,
-                         int reportErrors,
-                         double intensityTolerance = 0.0,
-                         unsigned int numberOfPixelsTolerance = 0,
-                         unsigned int radiusTolerance = 0);
+int RegressionTestImage ( const char * testImageFilename,
+                          const char * baselineImageFilename,
+                          int reportErrors,
+                          double intensityTolerance = 0.0,
+                          unsigned int numberOfPixelsTolerance = 0,
+                          unsigned int radiusTolerance = 0);
 
 std::map<std::string,int> RegressionTestBaselines (char *);
 
-void RegisterTests();
-void PrintAvailableTests()
+void RegisterTests( void );
+void PrintAvailableTests( void )
 {
   std::cout << "Available tests:\n";
   std::map<std::string, MainFuncPointer>::iterator j = StringToTestFunctionMap.begin();
@@ -72,18 +72,18 @@ void PrintAvailableTests()
     }
 }
 
-int main(int ac, char* av[] )
+int main( int ac, char * av [] )
 {
   double intensityTolerance  = 0.0;
   unsigned int numberOfPixelsTolerance = 0;
   unsigned int radiusTolerance = 0;
 
-  typedef std::pair< char *, char *> ComparePairType;
+  typedef std::pair< char *, char * > ComparePairType;
   std::vector< ComparePairType > compareList;
 
   RegisterTests();
   std::string testToRun;
-  if(ac < 2)
+  if( ac < 2 )
     {
     PrintAvailableTests();
     std::cout << "To run a test, enter the test number: ";

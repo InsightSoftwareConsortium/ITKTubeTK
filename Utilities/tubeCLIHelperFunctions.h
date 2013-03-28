@@ -61,7 +61,7 @@ void GetImageInformation( const std::string & fileName,
 
 int ParseArgsAndCallDoIt( std::string inputImage,
                           int argc,
-                          char **argv )
+                          char * argv [] )
   {
   itk::ImageIOBase::IOComponentType componentType;
   unsigned int dimension;
@@ -74,25 +74,25 @@ int ParseArgsAndCallDoIt( std::string inputImage,
       switch( componentType )
         {
         case itk::ImageIOBase::UCHAR:
-          return DoIt<unsigned char, 2>( argc, argv );
+          return DoIt< unsigned char, 2 >( argc, argv );
         case itk::ImageIOBase::CHAR:
-          return DoIt<char, 2>( argc, argv );
+          return DoIt< char, 2 >( argc, argv );
         case itk::ImageIOBase::USHORT:
-          return DoIt<unsigned short, 2>( argc, argv );
+          return DoIt< unsigned short, 2 >( argc, argv );
         case itk::ImageIOBase::SHORT:
-          return DoIt<short, 2>( argc, argv );
+          return DoIt< short, 2 >( argc, argv );
         case itk::ImageIOBase::UINT:
-          return DoIt<unsigned int, 2>( argc, argv );
+          return DoIt< unsigned int, 2 >( argc, argv );
         case itk::ImageIOBase::INT:
-          return DoIt<int, 2>( argc, argv );
+          return DoIt< int, 2 >( argc, argv );
         case itk::ImageIOBase::ULONG:
-          return DoIt<unsigned long, 2>( argc, argv );
+          return DoIt< unsigned long, 2 >( argc, argv );
         case itk::ImageIOBase::LONG:
-          return DoIt<long, 2>( argc, argv );
+          return DoIt< long, 2 >( argc, argv );
         case itk::ImageIOBase::FLOAT:
-          return DoIt<float, 2>( argc, argv );
+          return DoIt< float, 2 >( argc, argv );
         case itk::ImageIOBase::DOUBLE:
-          return DoIt<double, 2>( argc, argv );
+          return DoIt< double, 2 >( argc, argv );
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
         default:
           std::cout << "unknown component type" << std::endl;
@@ -104,25 +104,25 @@ int ParseArgsAndCallDoIt( std::string inputImage,
       switch( componentType )
         {
         case itk::ImageIOBase::UCHAR:
-          return DoIt<unsigned char, 3>( argc, argv );
+          return DoIt <unsigned char, 3 >( argc, argv );
         case itk::ImageIOBase::CHAR:
-          return DoIt<char, 3>( argc, argv );
+          return DoIt <char, 3 >( argc, argv );
         case itk::ImageIOBase::USHORT:
-          return DoIt<unsigned short, 3>( argc, argv );
+          return DoIt <unsigned short, 3 >( argc, argv );
         case itk::ImageIOBase::SHORT:
-          return DoIt<short, 3>( argc, argv );
+          return DoIt <short, 3 >( argc, argv );
         case itk::ImageIOBase::UINT:
-          return DoIt<unsigned int, 3>( argc, argv );
+          return DoIt <unsigned int, 3 >( argc, argv );
         case itk::ImageIOBase::INT:
-          return DoIt<int, 3>( argc, argv );
+          return DoIt <int, 3 >( argc, argv );
         case itk::ImageIOBase::ULONG:
-          return DoIt<unsigned long, 3>( argc, argv );
+          return DoIt <unsigned long, 3 >( argc, argv );
         case itk::ImageIOBase::LONG:
-          return DoIt<long, 3>( argc, argv );
+          return DoIt <long, 3 >( argc, argv );
         case itk::ImageIOBase::FLOAT:
-          return DoIt<float, 3>( argc, argv );
+          return DoIt <float, 3 >( argc, argv );
         case itk::ImageIOBase::DOUBLE:
-          return DoIt<double, 3>( argc, argv );
+          return DoIt <double, 3 >( argc, argv );
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
         default:
           std::cout << "unknown component type" << std::endl;
@@ -130,7 +130,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
         }
       }
     }
-  catch( itk::ExceptionObject &excep )
+  catch( itk::ExceptionObject & excep )
     {
     std::cerr << argv[0] << ": ITK exception caught !" << std::endl;
     std::cerr << excep << std::endl;
@@ -149,24 +149,24 @@ int ParseArgsAndCallDoIt( std::string inputImage,
 
 int ParseArgsAndCallDoIt( std::string inputImage,
                           int argc,
-                          char **argv )
+                          char * argv [] )
   {
   itk::ImageIOBase::IOComponentType componentType;
   unsigned int dimension;
 
   try
     {
-    GetImageInformation(inputImage, componentType, dimension );
+    GetImageInformation( inputImage, componentType, dimension );
     if( dimension == 2 )
       {
-      return DoIt<float, 2>( argc, argv );
+      return DoIt< float, 2 >( argc, argv );
       }
     else if( dimension == 3 )
       {
-      return DoIt<float, 3>( argc, argv );
+      return DoIt< float, 3 >( argc, argv );
       }
     }
-  catch( itk::ExceptionObject &excep )
+  catch( itk::ExceptionObject & excep )
     {
     std::cerr << argv[0] << ": itk exception caught !" << std::endl;
     std::cerr << excep << std::endl;
@@ -186,4 +186,3 @@ int ParseArgsAndCallDoIt( std::string inputImage,
 }; // namespace tube
 
 #endif
-

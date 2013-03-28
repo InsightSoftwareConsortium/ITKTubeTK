@@ -43,6 +43,7 @@ set( tubeBaseIOTests_SRCS
   tubeBaseIOPrintTest.cxx
   itkTubeMetaLDATest.cxx
   itkTubeMetaNJetLDATest.cxx
+  itkTubeMetaRidgeSeedTest.cxx
   itkTubeMetaTubeParamsTest.cxx )
 
 include_directories(
@@ -78,6 +79,12 @@ add_test( itkTubeMetaNJetLDATest
   ${BASE_IO_TESTS}
   itkTubeMetaNJetLDATest
     ${TEMP}/itkTubeMetaNJetLDATest.mnda
+  )
+
+add_test( itkTubeMetaRidgeSeedTest
+  ${BASE_IO_TESTS}
+  itkTubeMetaRidgeSeedTest
+    ${TEMP}/itkTubeMetaRidgeSeedTest.mrs
   )
 
 add_test( itkTubeMetaTubeParamsTest
