@@ -149,12 +149,15 @@ Clear( void )
     METAIO_STREAM::cout << "MetaNJetLDA: Clear" << METAIO_STREAM::endl;
     }
 
+  MetaLDA::Clear();
+
+  strcpy( m_FormTypeName, "NJetLDA" );
+
   m_ZeroScales.clear();
   m_FirstScales.clear();
   m_SecondScales.clear();
   m_RidgeScales.clear();
 
-  MetaLDA::Clear();
 }
 
 bool MetaNJetLDA::
@@ -555,7 +558,6 @@ M_SetupReadFields( void )
 void MetaNJetLDA::
 M_SetupWriteFields( void )
 {
-  strcpy( m_FormTypeName, "NJetLDA" );
   MetaLDA::M_SetupWriteFields();
 
   MET_FieldRecordType * mF;
