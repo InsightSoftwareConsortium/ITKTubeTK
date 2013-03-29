@@ -448,7 +448,7 @@ int DoIt( int argc, char * argv[] )
     if( extension == std::string(".vtk") )
       {
       vtkSmartPointer< vtkPolyDataReader > polyDataReader
-          = vtkPolyDataReader::New();
+          = vtkSmartPointer< vtkPolyDataReader >::New();
       polyDataReader->SetFileName( organBoundaryFileName.c_str() );
       polyDataReader->Update();
       borderSurface = polyDataReader->GetOutput();
@@ -456,7 +456,7 @@ int DoIt( int argc, char * argv[] )
     else if( extension == std::string(".vtp") )
       {
       vtkSmartPointer< vtkXMLPolyDataReader > polyDataReader
-          = vtkXMLPolyDataReader::New();
+          = vtkSmartPointer< vtkXMLPolyDataReader >::New();
       polyDataReader->SetFileName( organBoundaryFileName.c_str() );
       polyDataReader->Update();
       borderSurface = polyDataReader->GetOutput();
@@ -473,10 +473,10 @@ int DoIt( int argc, char * argv[] )
     // space.  It's easiest to transform the model to LPS space.
     if( worldCoordinateSystem == "RAS" )
       {
-      vtkSmartPointer< vtkTransform > RAStoLPS = vtkTransform::New();
+      vtkSmartPointer< vtkTransform > RAStoLPS = vtkSmartPointer< vtkTransform >::New();
       RAStoLPS->RotateZ(180); // flip in superior-inferior
       vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
-          = vtkTransformPolyDataFilter::New();
+          = vtkSmartPointer< vtkTransformPolyDataFilter >::New();
 #if VTK_MAJOR_VERSION > 5
       transformPolyDataFilter->SetInputData( borderSurface );
 #else
