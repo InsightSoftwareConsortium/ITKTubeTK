@@ -135,7 +135,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     }
 
   // Create the polydata for the surface
-  vtkSmartPointer< vtkPlaneSource > plane = vtkPlaneSource::New();
+  vtkSmartPointer< vtkPlaneSource > plane = vtkSmartPointer< vtkPlaneSource >::New();
   plane->SetCenter( center[0], center[1], center[2] );
   plane->SetNormal( borderN[0], borderN[1], borderN[2] );
   plane->Update();
