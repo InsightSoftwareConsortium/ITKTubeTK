@@ -280,6 +280,7 @@ int itkTubeTubeExtractorTest( int argc, char * argv[] )
       ++failures;
       }
     }
+  delete tubeList;
 
   std::cout << "***** Verifying empty mask *****" << std::endl;
   TubeOpType::TubeMaskImageType::Pointer mask = tubeOp->GetTubeMaskImage();
