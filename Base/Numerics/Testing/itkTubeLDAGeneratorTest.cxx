@@ -132,6 +132,16 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   filter->AddFeatureImage( blur1->GetOutput() );
   filter->AddFeatureImage( blur2->GetOutput() );
   filter->AddFeatureImage( blur3->GetOutput() );
+  filter->UpdateWhitenFeatureImageStats( 0 );
+  filter->UpdateWhitenFeatureImageStats( 1 );
+  filter->UpdateWhitenFeatureImageStats( 2 );
+  filter->UpdateWhitenFeatureImageStats( 3 );
+  filter->UpdateWhitenFeatureImageStats( 4 );
+  filter->WhitenFeatureImage( 0 );
+  filter->WhitenFeatureImage( 1 );
+  filter->WhitenFeatureImage( 2 );
+  filter->WhitenFeatureImage( 3 );
+  filter->WhitenFeatureImage( 4 );
   filter->SetLabelmap( maskImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );

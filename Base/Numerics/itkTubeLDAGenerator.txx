@@ -139,6 +139,7 @@ LDAGenerator< ImageT, LabelmapT >
         }
       }
     double imVal = 0;
+    double delta = 0;
     double imMean = 0;
     double imStdDev = 0;
     unsigned int imCount = 0;
@@ -157,17 +158,18 @@ LDAGenerator< ImageT, LabelmapT >
         m_Labelmap->GetLargestPossibleRegion() );
 
       bool found = false;
-      ObjectIdType prevObjVal = static_cast<ObjectIdType>( itInMask.Get() ) + 1;
+      ObjectIdType prevMaskVal = static_cast<ObjectIdType>(itInMask.Get())
+        + 1;
       while( !itIm.IsAtEnd() )
         {
-        ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-        if( val != prevObjVal )
+        ObjectIdType maskVal = static_cast<ObjectIdType>( itInMask.Get() );
+        if( maskVal != prevMaskVal )
           {
           found = false;
-          prevObjVal = val;
+          prevMaskVal = maskVal;
           for( unsigned int c=0; c<numClasses; c++ )
             {
-            if( val == m_ObjectIdList[c] )
+            if( maskVal == m_ObjectIdList[c] )
               {
               found = true;
               break;
@@ -177,12 +179,21 @@ LDAGenerator< ImageT, LabelmapT >
         if( found )
           {
           imVal = itIm.Get();
-          imMean += imVal;
-          imStdDev += ( imVal * imVal );
           ++imCount;
+          delta = imVal - imMean;
+          imMean += delta / imCount;
+          imStdDev += delta * (imVal - imMean);
           }
         ++itIm;
         ++itInMask;
+        }
+      if( imCount > 1 )
+        {
+        imStdDev = vcl_sqrt( imStdDev / ( imCount - 1 ) );
+        }
+      else
+        {
+        imStdDev = 0;
         }
       }
     else
@@ -195,17 +206,20 @@ LDAGenerator< ImageT, LabelmapT >
       while( !itIm.IsAtEnd() )
         {
         imVal = itIm.Get();
-        imMean += imVal;
-        imStdDev += (imVal * imVal);
         ++imCount;
+        delta = imVal - imMean;
+        imMean += delta / imCount;
+        imStdDev += delta * (imVal - imMean);
         ++itIm;
         }
-      }
-
-    if( imCount > 0 )
-      {
-      imMean /= imCount;
-      imStdDev = vcl_sqrt( vnl_math_abs( ( imStdDev / imCount ) - ( imMean * imMean ) ) );
+      if( imCount > 1 )
+        {
+        imStdDev = vcl_sqrt( imStdDev / ( imCount - 1 ) );
+        }
+      else
+        {
+        imStdDev = 0;
+        }
       }
 
     m_WhitenFeatureImageMean[num] = imMean;
@@ -231,60 +245,16 @@ LDAGenerator< ImageT, LabelmapT >
       imStdDev = 1;
       }
 
-    if( m_Labelmap.IsNotNull() )
+    typedef itk::ImageRegionIteratorWithIndex< ImageT >
+      ImageIteratorType;
+    ImageIteratorType itIm( m_FeatureImageList[num],
+      m_FeatureImageList[num]->GetLargestPossibleRegion() );
+
+    while( !itIm.IsAtEnd() )
       {
-      unsigned int numClasses = this->GetNumberOfObjectIds();
-
-      typedef itk::ImageRegionIteratorWithIndex< ImageT >
-        ImageIteratorType;
-      ImageIteratorType itIm( m_FeatureImageList[num],
-        m_FeatureImageList[num]->GetLargestPossibleRegion() );
-
-      typedef itk::ImageRegionConstIterator< MaskImageType >
-        ConstMaskImageIteratorType;
-      ConstMaskImageIteratorType itInMask( m_Labelmap,
-        m_Labelmap->GetLargestPossibleRegion() );
-
-      bool found = false;
-      ObjectIdType prevObjVal = static_cast<ObjectIdType>( itInMask.Get() ) + 1;
-      while( !itIm.IsAtEnd() )
-        {
-        ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-        if( val != prevObjVal )
-          {
-          found = false;
-          prevObjVal = val;
-          for( unsigned int c=0; c<numClasses; c++ )
-            {
-            if( val == m_ObjectIdList[c] )
-              {
-              found = true;
-              break;
-              }
-            }
-          }
-        if( found )
-          {
-          imVal = itIm.Get();
-          itIm.Set( (imVal - imMean) / imStdDev );
-          }
-        ++itIm;
-        ++itInMask;
-        }
-      }
-    else
-      {
-      typedef itk::ImageRegionIteratorWithIndex< ImageT >
-        ImageIteratorType;
-      ImageIteratorType itIm( m_FeatureImageList[num],
-        m_FeatureImageList[num]->GetLargestPossibleRegion() );
-
-      while( !itIm.IsAtEnd() )
-        {
-        imVal = itIm.Get();
-        itIm.Set( (imVal - imMean) / imStdDev );
-        ++itIm;
-        }
+      imVal = itIm.Get();
+      itIm.Set( (imVal - imMean) / imStdDev );
+      ++itIm;
       }
     }
 }
@@ -586,17 +556,18 @@ LDAGenerator< ImageT, LabelmapT >
       ConstMaskImageIteratorType itInMask( m_Labelmap,
         m_Labelmap->GetLargestPossibleRegion() );
       bool found = false;
-      ObjectIdType prevObjVal = static_cast<ObjectIdType>( itInMask.Get() ) + 1;
+      ObjectIdType prevMaskVal = static_cast<ObjectIdType>(itInMask.Get())
+        + 1;
       while( !itLDAIm.IsAtEnd() )
         {
-        ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-        if( val != prevObjVal )
+        ObjectIdType maskVal = static_cast<ObjectIdType>( itInMask.Get() );
+        if( maskVal != prevMaskVal )
           {
           found = false;
-          prevObjVal = val;
+          prevMaskVal = maskVal;
           for( unsigned int c=0; c<numClasses; c++ )
             {
-            if( val == m_ObjectIdList[c] )
+            if( maskVal == m_ObjectIdList[c] )
               {
               found = true;
               break;
@@ -701,8 +672,6 @@ LDAGenerator< ImageT, LabelmapT >
   m_ObjectMeanList.resize( numClasses );
   m_ObjectCovarianceList.resize( numClasses );
   std::vector< unsigned int > countList( numClasses );
-  ObjectMeanListType sumList( numClasses );
-  ObjectCovarianceListType sumOfSquaresList( numClasses );
   for( unsigned int i=0; i<numClasses; i++ )
     {
     m_ObjectMeanList[i].set_size( numFeatures );
@@ -710,34 +679,31 @@ LDAGenerator< ImageT, LabelmapT >
     m_ObjectCovarianceList[i].set_size( numFeatures, numFeatures );
     m_ObjectCovarianceList[i].fill( 0 );
     countList[i] = 0;
-    sumList[i].set_size( numFeatures );
-    sumList[i].fill( 0 );
-    sumOfSquaresList[i].set_size( numFeatures, numFeatures );
-    sumOfSquaresList[i].fill( 0 );
     }
 
   m_GlobalMean.set_size( numFeatures );
   m_GlobalMean.fill( 0 );
   m_GlobalCovariance.set_size( numFeatures, numFeatures );
   m_GlobalCovariance.fill( 0 );
-  unsigned int globalCount = 0;
-  ObjectMeanType globalSum( numFeatures );
-  globalSum.fill( 0 );
-  ObjectCovarianceType globalSumOfSquares( numFeatures, numFeatures );
-  globalSumOfSquares.fill( 0 );
 
-  double prevNotFound = 999999;
+  unsigned int globalCount = 0;
+
+  double delta = 0;
+  double deltaJ = 0;
+  unsigned int valC = 0;
+  bool found = false;
   itInMask.GoToBegin();
+  ObjectIdType prevMaskVal = static_cast<ObjectIdType>(itInMask.Get()) + 1;
   while( !itInMask.IsAtEnd() )
     {
-    ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-    unsigned int valC = 0;
-    bool found = false;
-    if( val != prevNotFound )
+    ObjectIdType maskVal = static_cast<ObjectIdType>( itInMask.Get() );
+    if( maskVal != prevMaskVal )
       {
+      prevMaskVal = maskVal;
+      found = false;
       for( unsigned int c=0; c<numClasses; c++ )
         {
-        if( val == m_ObjectIdList[c] )
+        if( maskVal == m_ObjectIdList[c] )
           {
           valC = c;
           found = true;
@@ -745,59 +711,52 @@ LDAGenerator< ImageT, LabelmapT >
           }
         }
       }
-
-    if( !found )
-      {
-      prevNotFound = val;
-      }
-    else
+    if( found )
       {
       ContinuousIndexType indx = itInMask.GetIndex();
       LDAValuesType v = this->GetFeatureVector( indx );
-      for( unsigned int i=0; i<numFeatures; i++ )
-        {
-        globalSum[i] += v[i];
-        sumList[valC][i] += v[i];
-        for( unsigned int j=0; j<numFeatures; j++ )
-          {
-          globalSumOfSquares[i][j] += (v[i] * v[j]);
-          sumOfSquaresList[valC][i][j] += (v[i] * v[j]);
-          }
-        }
+
       ++globalCount;
       ++countList[valC];
+      for( unsigned int i=0; i<numFeatures; i++ )
+        {
+        delta = v[i] - m_GlobalMean[i];
+        m_GlobalMean[i] += delta / globalCount;
+
+        delta = v[i] - m_ObjectMeanList[valC][i];
+        m_ObjectMeanList[valC][i] += delta / countList[valC];
+        }
+      for( unsigned int i=0; i<numFeatures; i++ )
+        {
+        for( unsigned int j=0; j<numFeatures; j++ )
+          {
+          delta = v[i] - m_GlobalMean[i];
+          deltaJ = v[j] - m_GlobalMean[j];
+          m_GlobalCovariance[i][j] += delta * deltaJ;
+
+          delta = v[i] - m_ObjectMeanList[valC][i];
+          deltaJ = v[j] - m_ObjectMeanList[valC][j];
+          m_ObjectCovarianceList[valC][i][j] += delta * deltaJ;
+          }
+        }
       }
     ++itInMask;
     }
 
   for( unsigned int i=0; i<numFeatures; i++ )
     {
-    m_GlobalMean[i] = globalSum[i] / globalCount;
-    }
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
     for( unsigned int j=0; j<numFeatures; j++ )
       {
-      m_GlobalCovariance[i][j] = ( globalSumOfSquares[i][j]
-        / globalCount ) - ( m_GlobalMean[i] * m_GlobalMean[j] );
-      }
-    }
-
-  for( unsigned int c=0; c<numClasses; c++ )
-    {
-    if( countList[c] > 0 )
-      {
-      for( unsigned int i=0; i<numFeatures; i++ )
+      m_GlobalCovariance[i][j] /= globalCount - 1;
+      for( unsigned int c=0; c<numClasses; c++ )
         {
-        m_ObjectMeanList[c][i] = sumList[c][i] / countList[c];
-        }
-      for( unsigned int i=0; i<numFeatures; i++ )
-        {
-        for( unsigned int j=0; j<numFeatures; j++ )
+        if( countList[c] > 1 )
           {
-          m_ObjectCovarianceList[c][i][j] = ( sumOfSquaresList[c][i][j]
-            / countList[c] ) - ( m_ObjectMeanList[c][i]
-            * m_ObjectMeanList[c][j] );
+          m_ObjectCovarianceList[c][i][j] /= countList[c] - 1;
+          }
+        else
+          {
+          m_ObjectCovarianceList[c][i][j] = 1;
           }
         }
       }
@@ -830,8 +789,10 @@ LDAGenerator< ImageT, LabelmapT >
     meanCov.fill( 0 );
     for( unsigned int c=0; c<numClasses; c++ )
       {
-      std::cout << "LDA Means[" << c << "] = " << m_ObjectMeanList[c] << std::endl;
-      std::cout << "LDA Cov[" << c << "] = " << m_ObjectCovarianceList[c] << std::endl;
+      std::cout << "Object Means[" << m_ObjectIdList[c] << "] = "
+        << m_ObjectMeanList[c] << std::endl;
+      std::cout << "LDA Cov[" << m_ObjectIdList[c] << "] = "
+        << m_ObjectCovarianceList[c] << std::endl;
       for( unsigned int i=0; i<numFeatures; i++ )
         {
         for( unsigned int j=0; j<numFeatures; j++ )
@@ -856,13 +817,14 @@ LDAGenerator< ImageT, LabelmapT >
     H = covOfMeans * vnl_matrix_inverse<double>(meanCov);
 
     // true = re-order by abs(eval) - zeros will be at end
-    ::tube::ComputeEigen<double>( H, m_LDAMatrix, m_LDAValues, true, false );
+    ::tube::ComputeEigen<double>( H, m_LDAMatrix, m_LDAValues,
+      true, false );
     }
   else if( m_PerformPCA )
     {
     // true = re-order by abs(eval) - zeros will be at end
-    ::tube::ComputeEigen<double>( m_GlobalCovariance, m_LDAMatrix, m_LDAValues,
-      true, false );
+    ::tube::ComputeEigen<double>( m_GlobalCovariance,
+      m_LDAMatrix, m_LDAValues, true, false );
     }
   else
     {
@@ -889,8 +851,8 @@ LDAGenerator< ImageT, LabelmapT >
       }
 
     // true = re-order by abs(eval) - zeros will be at end
-    ::tube::ComputeEigen<double>( covOfMeans, m_LDAMatrix, m_LDAValues, true,
-      false );
+    ::tube::ComputeEigen<double>( covOfMeans, m_LDAMatrix, m_LDAValues,
+      true, false );
     }
 
   timeCollector.Stop( "GenerateLDA" );
