@@ -409,21 +409,21 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // Slicer ITK that tubeTK relies on.
 
   // Setup the normal float arrays for the tubes
-  vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkSmartPointer< vtkFloatArray >::New();
   positionFloatArray->SetNumberOfComponents( ImageDimension );
   positionFloatArray->SetNumberOfTuples( numPoints );
 
-  vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkSmartPointer< vtkFloatArray >::New();
   normal1FloatArray->SetNumberOfComponents( ImageDimension );
   normal1FloatArray->SetNumberOfTuples( numPoints );
   normal1FloatArray->SetName( "normal1" );
 
-  vtkSmartPointer< vtkFloatArray > normal2FloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > normal2FloatArray = vtkSmartPointer< vtkFloatArray >::New();
   normal2FloatArray->SetNumberOfComponents( ImageDimension );
   normal2FloatArray->SetNumberOfTuples( numPoints );
   normal2FloatArray->SetName( "normal2" );
 
-  vtkSmartPointer< vtkFloatArray > radiusFloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > radiusFloatArray = vtkSmartPointer< vtkFloatArray >::New();
   radiusFloatArray->SetNumberOfValues( numPoints );
   radiusFloatArray->SetName( "radius ");
 
@@ -462,11 +462,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Add the position array to a vtkPoints
-  vtkSmartPointer< vtkPoints > points = vtkPoints::New();
+  vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
   points->SetData( positionFloatArray );
 
   // Add the normal arrays to a vtkFieldData
-  vtkSmartPointer< vtkFieldData > fieldData = vtkFieldData::New();
+  vtkSmartPointer< vtkFieldData > fieldData = vtkSmartPointer< vtkFieldData >::New();
   fieldData->AddArray( normal1FloatArray );
   fieldData->AddArray( normal2FloatArray );
   fieldData->AddArray( radiusFloatArray );
