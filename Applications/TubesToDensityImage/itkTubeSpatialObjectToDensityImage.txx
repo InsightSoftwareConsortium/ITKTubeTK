@@ -60,7 +60,6 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TTangentImageType>
 ::SetSpacing( SpacingType s )
 {
-  m_Spacing = new double[TDimension];
   for( unsigned int i = 0; i < TDimension; i++ )
     {
     m_Spacing[i] = s[i];
