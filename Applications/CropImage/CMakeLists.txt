@@ -23,6 +23,20 @@
 
 #-----------------------------------------------------------------------------
 set( MODULE_NAME CropImage )
+project( ${MODULE_NAME} )
+
+set( CropImage_H_Files
+  tubeCropROI.h
+  )
+
+set( CropImage_TXX_Files
+  tubeCropROI.txx
+  )
+
+add_custom_target( CropImageInclude SOURCES
+  ${CropImage_H_Files}
+  ${CropImage_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

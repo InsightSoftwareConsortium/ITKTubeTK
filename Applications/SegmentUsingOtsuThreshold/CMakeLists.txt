@@ -23,6 +23,7 @@
 
 #-----------------------------------------------------------------------------
 set( MODULE_NAME SegmentUsingOtsuThreshold )
+project( ${MODULE_NAME} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

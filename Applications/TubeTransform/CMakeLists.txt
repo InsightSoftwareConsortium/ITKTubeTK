@@ -21,7 +21,22 @@
 #
 ##############################################################################
 
+#-----------------------------------------------------------------------------
 set( MODULE_NAME TubeTransform )
+project( ${MODULE_NAME} )
+
+set( TubeTransform_H_Files
+  itkTubeToTubeTransformFilter.h
+  )
+
+set( TubeTransform_TXX_Files
+  itkTubeToTubeTransformFilter.txx
+  )
+
+add_custom_target( TubeTransformInclude SOURCES
+  ${TubeTransform_H_Files}
+  ${TubeTransform_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

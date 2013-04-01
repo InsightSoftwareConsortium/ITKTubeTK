@@ -21,8 +21,9 @@
 #
 ##############################################################################
 
-
+#-----------------------------------------------------------------------------
 set( MODULE_NAME RegisterUsingSlidingGeometries )
+project( ${MODULE_NAME} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

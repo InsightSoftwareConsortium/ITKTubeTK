@@ -21,6 +21,7 @@
 #
 ##############################################################################
 set( MODULE_NAME ComputeImageQuantiles )
+project( ${MODULE_NAME} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

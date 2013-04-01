@@ -21,7 +21,19 @@
 #
 ##############################################################################
 
+#-----------------------------------------------------------------------------
 set( MODULE_NAME TubeGraphKernel )
+project( ${MODULE_NAME} )
+
+set( TubeGraphKernel_H_Files
+  GraphKernel.h
+  ShortestPathKernel.h
+  WLSubtreeKernel.h
+  )
+
+add_custom_target( TubeGraphKernelInclude SOURCES
+  ${TubeGraphKernel_H_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
