@@ -23,6 +23,20 @@
 
 #-----------------------------------------------------------------------------
 set( MODULE_NAME SimulateAcquisitionArtifactsUsingPrior )
+project( ${MODULE_NAME} )
+
+set( SimulateAcquisitionArtifactsUsingPrior_H_Files
+  tubeCompareImageWithPrior.h
+  )
+
+set( SimulateAcquisitionArtifactsUsingPrior_TXX_Files
+  tubeCompareImageWithPrior.txx
+  )
+
+add_custom_target( SimulateAcquisitionArtifactsUsingPriorInclude SOURCES
+  ${SimulateAcquisitionArtifactsUsingPrior_H_Files}
+  ${SimulateAcquisitionArtifactsUsingPrior_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

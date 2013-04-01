@@ -22,19 +22,8 @@
 ##############################################################################
 
 #-----------------------------------------------------------------------------
-# Style Guidelines
-#   * Place a space after ( and before )
-#   * Test input and output images should be in .mha format
-#   * Test coverage should be > 85% before committing
-#   * Test outputs and baselines should be pre-pended with ${MODULE_NAME}
-#   * Use appropriate TubeTK comment blocks at the top every file
-#   * Follow our naming convention - if you are uncertain, ask
-#   * Use the tube namespace for all classes
-#   * Your code is a part of TubeTK - don't be "different" - it makes the code
-#        harder to maintain and understand, even if you think your way is
-#        "better."
-
 set( MODULE_NAME TubeGraphToImage )
+project( ${MODULE_NAME} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

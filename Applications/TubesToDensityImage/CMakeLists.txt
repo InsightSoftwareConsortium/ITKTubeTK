@@ -21,7 +21,26 @@
 #
 ##############################################################################
 
+#-----------------------------------------------------------------------------
 set( MODULE_NAME TubesToDensityImage )
+project( ${MODULE_NAME} )
+
+set( TubesToDensityImage_H_Files
+  itkInverseIntensityImageFilter.h
+  itkTubeSpatialObjectToDensityImage.h
+  itkTubeSpatialObjectToImageFilter.h
+  )
+
+set( TubesToDensityImage_TXX_Files
+  itkInverseIntensityImageFilter.txx
+  itkTubeSpatialObjectToDensityImage.txx
+  itkTubeSpatialObjectToImageFilter.txx
+  )
+
+add_custom_target( TubesToDensityImageInclude SOURCES
+  ${TubesToDensityImage_H_Files}
+  ${TubesToDensityImage_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

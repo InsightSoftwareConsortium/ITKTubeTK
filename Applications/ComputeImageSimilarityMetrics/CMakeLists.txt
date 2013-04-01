@@ -23,6 +23,7 @@
 
 #-----------------------------------------------------------------------------
 set(MODULE_NAME ComputeImageSimilarityMetrics)
+project( ${MODULE_NAME} )
 
 find_package(SlicerExecutionModel REQUIRED)
 include(${SlicerExecutionModel_USE_FILE})

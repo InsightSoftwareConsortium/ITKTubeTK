@@ -21,7 +21,33 @@
 #
 ##############################################################################
 
+#-----------------------------------------------------------------------------
 set( MODULE_NAME AtlasBuilderUsingIntensity )
+project( ${MODULE_NAME} )
+
+set( AtlasBuilderUsingIntensity_H_Files
+  AtlasSummation.h
+  itkCompleteImageResampleFilter.h
+  itkMeanAndSigmaImageBuilder.h
+  itkMinimizeImageSizeFilter.h
+  itkRobustMeanAndSigmaImageBuilder.h
+  )
+
+set( AtlasBuilderUsingIntensity_HXX_Files
+  itkCompleteImageResampleFilter.hxx
+  itkMinimizeImageSizeFilter.hxx
+  )
+
+set( AtlasBuilderUsingIntensity_TXX_Files
+  itkMeanAndSigmaImageBuilder.txx
+  itkRobustMeanAndSigmaImageBuilder.txx
+  )
+
+add_custom_target( AtlasBuilderUsingIntensityInclude SOURCES
+  ${AtlasBuilderUsingIntensity_H_Files}
+  ${AtlasBuilderUsingIntensity_HXX_Files}
+  ${AtlasBuilderUsingIntensity_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -47,5 +73,5 @@ if( BUILD_TESTING )
   find_package( PythonInterp )
   if( PYTHON_EXECUTABLE )
     add_subdirectory( Testing )
-  endif()
+  endif( PYTHON_EXECUTABLE )
 endif( BUILD_TESTING )
