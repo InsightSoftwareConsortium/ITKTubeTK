@@ -269,7 +269,7 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeBorderSurfaceNormals()
 {
   assert( m_BorderSurface );
-  vtkPolyDataNormals * normalsFilter = vtkPolyDataNormals::New();
+  vtkSmartPointer< vtkPolyDataNormals > normalsFilter = vtkSmartPointer< vtkPolyDataNormals >::New();
   normalsFilter->ComputePointNormalsOn();
   normalsFilter->ComputeCellNormalsOff();
   //normalsFilter->SetFeatureAngle(30); // TODO
@@ -280,7 +280,6 @@ AnisotropicDiffusiveRegistrationFilter
 #endif
   normalsFilter->Update();
   m_BorderSurface = normalsFilter->GetOutput();
-  normalsFilter->Delete();
 
   // Make sure we now have the normals
   if ( !m_BorderSurface->GetPointData() )
@@ -304,7 +303,7 @@ AnisotropicDiffusiveRegistrationFilter
                                                  bool computeWeights )
 {
   // Setup the point locator and get the normals from the polydata
-  vtkPointLocator * pointLocator = vtkPointLocator::New();
+  vtkSmartPointer< vtkPointLocator > pointLocator = vtkSmartPointer< vtkPointLocator >::New();
   pointLocator->SetDataSet( m_BorderSurface );
   pointLocator->Initialize();
   pointLocator->BuildLocator();
@@ -336,9 +335,6 @@ AnisotropicDiffusiveRegistrationFilter
   // through iterators which do not increment the update buffer timestamp
   this->m_NormalVectorImage->Modified();
   this->m_WeightImage->Modified();
-
-  // Clean up memory
-  pointLocator->Delete();
 }
 
 /**
