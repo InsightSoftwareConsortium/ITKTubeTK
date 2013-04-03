@@ -348,7 +348,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::ComputeBorderSurfaceNormals()
 {
   assert( m_BorderSurface );
-  vtkPolyDataNormals * normalsFilter = vtkPolyDataNormals::New();
+  vtkSmartPointer< vtkPolyDataNormals > normalsFilter = vtkSmartPointer< vtkPolyDataNormals >::New();
   normalsFilter->ComputePointNormalsOn();
   normalsFilter->ComputeCellNormalsOff();
   //normalsFilter->SetFeatureAngle(30); // TODO
@@ -359,7 +359,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
 #endif
   normalsFilter->Update();
   m_BorderSurface = normalsFilter->GetOutput();
-  normalsFilter->Delete();
 
   // Make sure we now have the normals
   if ( !m_BorderSurface->GetPointData() )
@@ -472,7 +471,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   fieldData->AddArray( radiusFloatArray );
 
   // Finally, we store everything within the vtkPolyData
-  m_TubeSurface = BorderSurfaceType::New();
+  m_TubeSurface = vtkSmartPointer< BorderSurfaceType >::New();
   m_TubeSurface->SetPoints( points );
   m_TubeSurface->SetFieldData( fieldData );
 }
@@ -490,11 +489,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
     bool computeWeightRegularizations )
 {
   // Setup the point locator and get the normals from the surface polydata
-  vtkPointLocator * surfacePointLocator = 0;
+  vtkSmartPointer< vtkPointLocator > surfacePointLocator = 0;
   vtkFloatArray * surfaceNormalData = 0;
   if( this->GetBorderSurface() )
     {
-    surfacePointLocator = vtkPointLocator::New();
+    surfacePointLocator = vtkSmartPointer< vtkPointLocator >::New();
     surfacePointLocator->SetDataSet( m_BorderSurface );
     surfacePointLocator->Initialize();
     surfacePointLocator->BuildLocator();
@@ -504,13 +503,13 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Create a vtk polydata representing the tube points and associated normals
-  vtkPointLocator * tubePointLocator = 0;
+  vtkSmartPointer< vtkPointLocator > tubePointLocator = 0;
   vtkFloatArray * tubeNormal1Data = 0;
   vtkFloatArray * tubeNormal2Data = 0;
   vtkFloatArray * tubeRadiusData = 0;
   if( this->GetTubeSurface() )
     {
-    tubePointLocator = vtkPointLocator::New();
+    tubePointLocator = vtkSmartPointer< vtkPointLocator >::New();
     tubePointLocator->SetDataSet( m_TubeSurface );
     tubePointLocator->Initialize();
     tubePointLocator->BuildLocator();
@@ -557,16 +556,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
   this->m_NormalMatrixImage->Modified();
   this->m_WeightStructuresImage->Modified();
   this->m_WeightRegularizationsImage->Modified();
-
-  // Clean up memory
-  if( surfacePointLocator )
-    {
-    surfacePointLocator->Delete();
-    }
-  if( tubePointLocator )
-    {
-    tubePointLocator->Delete();
-    }
 }
 
 /**

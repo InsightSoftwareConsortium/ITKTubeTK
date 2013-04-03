@@ -503,6 +503,9 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Loading organ boundary" );
     }
 
+  typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
+    tubeList;
+
   // Read tube spatial object if we are using the sparse anisotropic regularizer
   if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
     {
@@ -525,8 +528,7 @@ int DoIt( int argc, char * argv[] )
     typename GroupType::Pointer group = tubeReader->GetGroup();
     char tubeName[17];
     strcpy( tubeName, "Tube" );
-    typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
-        tubeList = group->GetChildren();
+    tubeList = group->GetChildren();
     sparseAnisotropicRegistrator->SetTubeList( tubeList );
     timeCollector.Stop( "Loading tube list" );
     }
@@ -1065,6 +1067,7 @@ int DoIt( int argc, char * argv[] )
 
   // Clean up, we're done
   delete [] iterations;
+  delete tubeList;
   if( reportProgress )
     {
     progressReporter.End( );
