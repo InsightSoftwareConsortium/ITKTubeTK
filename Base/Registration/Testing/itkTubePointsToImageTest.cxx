@@ -119,6 +119,7 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
       }
     ++tubeIt;
     }
+  delete tubeList;
 
   typedef itk::SpatialObjectToImageFilter<GroupType, ImageType>
                                               SpatialObjectToImageFilterType;
