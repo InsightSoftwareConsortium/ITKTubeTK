@@ -193,7 +193,6 @@ int DoIt( int argc, char *argv[] )
         }
       else
         {
-        TubeGraphPnt * tgP;
         int len = graph->GetPoints().size();
         if(graph->GetPoints().size()>3
           && graph->GetPoints().at(len-1)->m_GraphNode == tNode
@@ -208,8 +207,7 @@ int DoIt( int argc, char *argv[] )
                   << " " << cNode << " " << tNode;
           tube::WarningMessage( logMsg.str() );
 
-          tgP = graph->GetPoints().at(len-1);
-          graph->GetPoints().pop_back();
+          TubeGraphPnt * tgP = graph->GetPoints().back();
           cNode = tNode;
           cRadius = tgP->m_R;
           for(int i=0; i<3; i++)
@@ -220,12 +218,18 @@ int DoIt( int argc, char *argv[] )
               }
             }
           cCount = tgP->m_P;
+          graph->GetPoints().pop_back();
+          /* Memory allocated for each element of list returned by
+          graph->GetPoints() usually released when destructor of graph called,
+          but since tgP is popped off back of list, memory would not be
+          released without explicit delete. */
+          delete tgP;
           }
         else
           {
           numberOfNodesCrossed++;
           aMat[cNode-1][tNode-1] = aMat[cNode-1][tNode-1]+1;
-          tgP = new TubeGraphPnt(3);
+          TubeGraphPnt * tgP = new TubeGraphPnt(3);
           tgP->m_GraphNode = cNode;
           tgP->m_R = cRadius/cCount;
           tgP->m_P = cCount;
@@ -250,8 +254,7 @@ int DoIt( int argc, char *argv[] )
       }
     if(numberOfNodesCrossed>0)
       {
-      TubeGraphPnt * tgP;
-      tgP = new TubeGraphPnt(3);
+      TubeGraphPnt * tgP = new TubeGraphPnt(3);
       tgP->m_GraphNode = cNode;
       tgP->m_R = cRadius/cCount;
       for(int i=0; i<3; i++)
