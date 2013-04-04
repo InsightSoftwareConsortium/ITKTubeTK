@@ -504,7 +504,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
-    tubeList;
+    tubeList = 0;
 
   // Read tube spatial object if we are using the sparse anisotropic regularizer
   if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
@@ -526,8 +526,6 @@ int DoIt( int argc, char * argv[] )
       }
     typedef itk::GroupSpatialObject< ImageDimension > GroupType;
     typename GroupType::Pointer group = tubeReader->GetGroup();
-    char tubeName[17];
-    strcpy( tubeName, "Tube" );
     tubeList = group->GetChildren();
     sparseAnisotropicRegistrator->SetTubeList( tubeList );
     timeCollector.Stop( "Loading tube list" );
@@ -1067,7 +1065,12 @@ int DoIt( int argc, char * argv[] )
 
   // Clean up, we're done
   delete [] iterations;
-  delete tubeList;
+
+  if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+    {
+    delete tubeList;
+    }
+
   if( reportProgress )
     {
     progressReporter.End( );
