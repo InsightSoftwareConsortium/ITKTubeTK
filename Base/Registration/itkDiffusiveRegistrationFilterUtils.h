@@ -357,10 +357,6 @@ struct FaceStruct
 
 } // end namespace itk
 
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkDiffusiveRegistrationFilterUtils+-.h"
-#endif
-
 #ifndef ITK_MANUAL_INSTANTIATION
 # include "itkDiffusiveRegistrationFilterUtils.txx"
 #endif

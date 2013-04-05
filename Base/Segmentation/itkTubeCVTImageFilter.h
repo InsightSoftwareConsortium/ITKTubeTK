@@ -116,7 +116,7 @@ public:
 
 protected:
   CVTImageFilter();
-  ~CVTImageFilter() {};
+  ~CVTImageFilter() {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 

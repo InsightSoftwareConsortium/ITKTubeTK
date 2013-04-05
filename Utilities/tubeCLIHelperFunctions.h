@@ -94,7 +94,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
         case itk::ImageIOBase::DOUBLE:
           return DoIt<double, 2>( argc, argv );
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-        default:
+//      default:
           std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;
         }
@@ -124,7 +124,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
         case itk::ImageIOBase::DOUBLE:
           return DoIt<double, 3>( argc, argv );
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-        default:
+//      default:
           std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;
         }

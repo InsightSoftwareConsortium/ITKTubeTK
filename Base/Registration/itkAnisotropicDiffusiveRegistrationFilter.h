@@ -356,10 +356,6 @@ private:
 
 } // end namespace itk
 
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkAnisotropicDiffusiveRegistrationFilter+-.h"
-#endif
-
 #ifndef ITK_MANUAL_INSTANTIATION
 # include "itkAnisotropicDiffusiveRegistrationFilter.txx"
 #endif

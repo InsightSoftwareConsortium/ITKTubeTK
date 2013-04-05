@@ -174,7 +174,7 @@ public:
 
 protected:
   LabelOverlapMeasuresImageFilter();
-  ~LabelOverlapMeasuresImageFilter(){};
+  ~LabelOverlapMeasuresImageFilter(){}
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
   void BeforeThreadedGenerateData();

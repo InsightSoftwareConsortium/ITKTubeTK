@@ -141,10 +141,6 @@ private:
                                             DifferenceImageFilter2##y; } \
   }
 
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkDifferenceImageFilter2+-.h"
-#endif
-
 #ifndef ITK_MANUAL_INSTANTIATION
 # include "itkDifferenceImageFilter2.txx"
 #endif

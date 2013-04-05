@@ -366,10 +366,6 @@ private:
 
 } // end namespace itk
 
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkAnisotropicDiffusiveRegistrationFunction+-.h"
-#endif
-
 #ifndef ITK_MANUAL_INSTANTIATION
 # include "itkAnisotropicDiffusiveRegistrationFunction.txx"
 #endif
