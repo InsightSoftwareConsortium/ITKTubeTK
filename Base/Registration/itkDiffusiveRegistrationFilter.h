@@ -395,7 +395,7 @@ protected:
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
    *  some of the multiplication vector images in derived classes.  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
-  virtual void ComputeMultiplicationVectorImages() {};
+  virtual void ComputeMultiplicationVectorImages() {}
 
   /** Initialize the state of the filter before each iteration. */
   virtual void InitializeIteration();
@@ -856,10 +856,6 @@ private:
 
 
 } // end namespace itk
-
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkDiffusiveRegistrationFilter+-.h"
-#endif
 
 #ifndef ITK_MANUAL_INSTANTIATION
 # include "itkDiffusiveRegistrationFilter.txx"
