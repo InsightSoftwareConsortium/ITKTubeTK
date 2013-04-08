@@ -28,9 +28,17 @@ find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
 set( TubeTK_Base_ObjectDocuments_H_Files
+  itkBlobSpatialObjectDocument.h
+  itkDocument.h
+  itkImageDocument.h
+  itkObjectDocument.h
   itkObjectDocumentToImageFilter.h
   itkObjectDocumentToObjectSource.h
+  itkSpatialObjectDocument.h
   itkSpatialObjectToSpatialObjectFilter.h
+  MetaDocument.h
+  MetaObjectDocument.h
+  OptionList.h
   )
 
 set( TubeTk_Base_ObjectDocuments_TXX_Files
