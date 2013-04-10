@@ -56,6 +56,9 @@ MetaObjectDocument() : m_MaxNumTransforms( 20 )
     std::cout << "MetaObjectDocument()" << std::endl;
     }
   Clear();
+  m_ReadStream = NULL;
+  m_WriteStream = NULL;
+  m_FileName[0] = '\0';
 }
 
 
@@ -161,11 +164,7 @@ Write(const char *_fileName)
     }
 
   M_SetupWriteFields();
-
-  if(!m_WriteStream)
-    {
-    m_WriteStream = new std::ofstream;
-    }
+  M_PrepareNewWriteStream();
 
 #ifdef __sgi
   // Create the file. This is required on some older sgi's
@@ -181,9 +180,7 @@ Write(const char *_fileName)
   bool result = M_Write();
 
   m_WriteStream->close();
-  delete m_WriteStream;
-  m_WriteStream = 0;
-
+  m_WriteStream->clear();
   return result;
 }
 
@@ -196,8 +193,7 @@ M_SetupReadFields(void)
     std::cout << "MetaObjectDocument: M_SetupReadFields" << std::endl;
     }
 
-  m_Fields.clear();
-
+  MetaDocument::ClearFields();
   MetaDocument::M_SetupReadFields();
 
   MET_FieldRecordType * mF;
@@ -213,8 +209,7 @@ M_SetupReadFields(void)
 void MetaObjectDocument::
 M_SetupWriteFields(void)
 {
-  m_Fields.clear();
-
+  MetaDocument::ClearFields();
   MetaDocument::M_SetupWriteFields();
 
   MET_FieldRecordType * mF;
@@ -234,7 +229,8 @@ M_SetupWriteFields(void)
 void MetaObjectDocument::
 M_SetupObjectReadFields(void)
 {
-  m_Fields.clear();
+  MetaDocument::ClearFields();
+
   MET_FieldRecordType * mF;
 
   std::string type;
@@ -330,7 +326,7 @@ M_Read(void)
   MET_FieldRecordType * mF;
 
   mF = MET_GetFieldRecord(LABEL_NOBJECTS, &m_Fields);
-  if(mF && mF->defined)
+  if(mF != NULL && mF->defined)
     {
     m_NObjects = (int)mF->value[0];
     }
@@ -347,7 +343,7 @@ M_Read(void)
     ObjectDocumentType::Pointer object = ObjectDocumentType::New();
 
     mF = MET_GetFieldRecord( LABEL_TYPE, &m_Fields );
-    if(mF->defined)
+    if(mF != NULL && mF->defined)
       {
       char * objectType = (char*)mF->value;
       if( !strcmp(objectType, ID_LABEL_IMAGETYPE) )
@@ -377,7 +373,7 @@ M_Read(void)
 
     //Read Object Name
     mF = MET_GetFieldRecord( LABEL_NAME, &m_Fields );
-    if(mF->defined)
+    if(mF != NULL && mF->defined)
       {
       object->SetObjectName( (const char *) mF->value );
       }
@@ -392,7 +388,7 @@ M_Read(void)
       labelTransform.append( buffer );
 
       mF = MET_GetFieldRecord( labelTransform.c_str(), &m_Fields );
-      if(mF->defined)
+      if(mF != NULL && mF->defined)
         {
         // Vector reference count starts 1, not 0
         object->AddTransformNameToBack( (const char *) mF->value );

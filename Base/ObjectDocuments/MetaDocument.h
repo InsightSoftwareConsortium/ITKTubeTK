@@ -87,6 +87,7 @@ class MetaDocument
     void M_PrepareNewReadStream(void);
 
     virtual void M_SetupWriteFields(void);
+    void M_PrepareNewWriteStream(void);
 
     virtual bool M_Read(void);
 
