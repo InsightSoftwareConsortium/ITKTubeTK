@@ -130,7 +130,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     // initialize the interconnects between components
     Superclass::Initialize();
     }
-  catch( const ExceptionObject& err )
+  catch( const ExceptionObject& )
     {
     this->m_LastTransformParameters = ParametersType( 1 );
     this->m_LastTransformParameters.Fill( 0.0f );

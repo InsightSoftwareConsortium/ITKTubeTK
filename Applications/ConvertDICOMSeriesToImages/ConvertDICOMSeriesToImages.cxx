@@ -420,20 +420,19 @@ int main( int argc, char* argv[] )
       fileNames = nameGenerator->GetFileNames( seriesIdentifier );
       unsplitNumberOfFileNames = fileNames.size();
 
-      if(optSplit)
+      if( optSplit )
         {
-        if(processingSplit)
+        if( processingSplit )
           {
           fileNames = nameGenerator->GetFileNames( seriesIdentifier );
           splitVolumeStart += splitNumber;
-          FileNamesIterator  fileNamesStart;
-          FileNamesIterator  fileNamesEnd;
-          fileNamesStart = fileNames.begin();
-          fileNamesEnd = fileNames.begin() + splitVolumeStart;
+          FileNamesIterator fileNamesStart  = fileNames.begin();
+          FileNamesIterator fileNamesEnd    = fileNames.end() + splitVolumeStart;
           fileNames.erase(fileNamesStart, fileNamesEnd);
-          if(splitVolumeStart+splitNumber < unsplitNumberOfFileNames)
+
+          if( splitVolumeStart+splitNumber < unsplitNumberOfFileNames )
             {
-            fileNamesStart = fileNames.begin() + splitNumber;
+            FileNamesIterator fileNamesStart = fileNames.begin() + splitNumber;
             fileNamesEnd = fileNames.end();
             fileNames.erase(fileNamesStart, fileNamesEnd);
             }
