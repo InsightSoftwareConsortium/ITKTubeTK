@@ -4,9 +4,10 @@ Demonstrate evaluation of a discriminant SVM graph classifier
 using N-Fold cross-validation.
 """
 
-
-# Author: Roland Kwitt, Kitware Inc., 2013
-# E-Mail: roland.kwitt@kitware.com
+__license__ = "Apache License, Version 2.0 (see TubeTK)"
+__author__  = "Roland Kwitt, Kitware Inc., 2013"
+__email__   = "E-Mail: roland.kwitt@kitware.com"
+__status__  = "Development"
 
 
 # Graph handling
