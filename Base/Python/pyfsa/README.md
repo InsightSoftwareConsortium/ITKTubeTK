@@ -1,4 +1,5 @@
-pyfsa =====
+pyfsa
+=====
 
 Overview
 --------
@@ -18,7 +19,7 @@ Requirements
 ------------
 
 - **networkx**, available at
-  [http://networkx.github.io)](http://networkx.github.io)
+  [http://networkx.github.io](http://networkx.github.io)
 - **scikit-learn**, available at
   [http://scikit-learn.org/stable/](http://scikit-learn.org/stable/)
 - **numpy**, available at [http://www.numpy.org](http://www.numpy.org)
