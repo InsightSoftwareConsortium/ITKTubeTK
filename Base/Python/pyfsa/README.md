@@ -4,7 +4,7 @@ pyfsa
 Overview
 --------
 
-This package implements *Fine-structure analysis (FSA)* for (vertex-labled)
+This package implements *Fine-structure analysis (FSA)* for (vertex-labeled)
 undirected graphs (with unit edge weights).
 
 Besides the core functionality of building general graph analysis tools upon
@@ -69,10 +69,10 @@ typhimurium* or not (125 positive, 63 negative).
     the adjacency information (in the form of a {0,1} matrix), and one file
     containing one label for each vertex.
 
-    Addittionally, we have three auxiliary files: ```mutag.list```,
+    Additionally, we have three auxiliary files: ```mutag.list```,
     ```mutag.labels``` and ```mutag.groups```. ```mutag.list``` contains the
     filenames of the files that contain the adjacency information.
-    ```mutag.labels``` contains a numberic label for each graph that indicates
+    ```mutag.labels``` contains a numeric label for each graph that indicates
     its class membership (i.e., mutagen or not).  Finally, ```mutag.groups```
     contains, for each graph, grouping information, i.e., to which group the
     graph belongs to. In our case, this is unused and corresponds to the class
@@ -102,7 +102,7 @@ typhimurium* or not (125 positive, 63 negative).
       --codewords 32 \
       --cvRuns 10 \
       --logLevel info \
-      --writeAs tmp/mutag \
+      --writeAs /tmp/mutag \
       --groupInfo /tmp/MUTAG/mutag.groups \
       --recompute \
       --radii 1,2
