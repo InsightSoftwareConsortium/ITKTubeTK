@@ -121,7 +121,7 @@ class ObjectDocument : public Document
 
   protected:
 
-    ObjectDocument(){}
+    ObjectDocument() : m_ObjectName(0) {}
 
     void PrintSelf(std::ostream& os, Indent indent) const
     {

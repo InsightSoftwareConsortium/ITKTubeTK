@@ -51,6 +51,8 @@ Optimizer1D
   m_XMax = 1;
   m_XStep = 0.01;
   m_Defined = false;
+  m_FuncVal = 0;
+  m_FuncDeriv = 0;
 }
 
 

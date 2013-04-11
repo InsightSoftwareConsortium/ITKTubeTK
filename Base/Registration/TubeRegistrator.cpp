@@ -446,6 +446,7 @@ class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
      TubeRegistrator * cRegOp;
    public:
      mVMetricCost()
+       : cRegOp(0)
        {
        };
      void use(TubeRegistrator * newRegOp)
@@ -479,7 +480,7 @@ class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double>
      TubeRegistrator * cRegOp;
    public:
      mVMetricDeriv()
-       : cD(6, 0.0)
+       : cRegOp(0), cD(6, 0.0)
        {
        };
      void use(TubeRegistrator * newRegOp)
