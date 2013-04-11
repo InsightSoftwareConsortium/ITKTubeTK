@@ -174,6 +174,8 @@ int DoIt( int argc, char *argv[] )
     {
     WriteImage( atlasBuilder->GetValidCountImage(), outputCountImage.c_str() );
     }
+  delete reader;
+  delete atlasBuilder;
   return EXIT_SUCCESS;
 }
 

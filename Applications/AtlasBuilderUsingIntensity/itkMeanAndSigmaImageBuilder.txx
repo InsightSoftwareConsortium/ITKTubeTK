@@ -211,8 +211,6 @@ void MeanAndSigmaImageBuilder< TInputImageType,
 
   // Unset the processing flag and dump the processing image pointers
   this->SetIsProcessing( false );
-  sumImage->Delete();
-  sumSquareImage->Delete();
 }
 
 

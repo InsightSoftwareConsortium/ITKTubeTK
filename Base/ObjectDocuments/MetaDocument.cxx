@@ -37,8 +37,7 @@ namespace tube
 MetaDocument::
 MetaDocument(void)
 {
-  this->ClearFields();
-  MetaDocument::Clear();
+  this->Clear();
   m_ReadStream = NULL;
   m_WriteStream = NULL;
   m_FileName[0] = '\0';
@@ -48,8 +47,7 @@ MetaDocument(void)
 MetaDocument::
 MetaDocument(const char * _fileName)
 {
-  this->ClearFields();
-  MetaDocument::Clear();
+  this->Clear();
   m_ReadStream = NULL;
   m_WriteStream = NULL;
   this->Read(_fileName);
@@ -59,9 +57,14 @@ MetaDocument(const char * _fileName)
 MetaDocument::
 ~MetaDocument(void)
 {
-  delete m_ReadStream;
-  delete m_WriteStream;
-
+  if (m_ReadStream != NULL)
+    {
+    delete m_ReadStream;
+    }
+  if (m_WriteStream != NULL)
+    {
+    delete m_WriteStream;
+    }
   this->ClearFields();
 }
 
@@ -149,11 +152,7 @@ Write(const char *_fileName)
     }
 
   M_SetupWriteFields();
-
-  if(!m_WriteStream)
-    {
-    m_WriteStream = new std::ofstream;
-    }
+  M_PrepareNewWriteStream();
 
 #ifdef __sgi
   // Create the file. This is required on some older sgi's
@@ -169,8 +168,7 @@ Write(const char *_fileName)
   bool result = M_Write();
 
   m_WriteStream->close();
-  delete m_WriteStream;
-  m_WriteStream = 0;
+  m_WriteStream->clear();
 
   return result;
 }
@@ -324,20 +322,20 @@ M_Read(void)
   MET_FieldRecordType * mF;
 
   mF = MET_GetFieldRecord("DateLastModified", &m_Fields);
-  if(mF && mF->defined)
+  if(mF != NULL && mF->defined)
     {
     strcpy(m_DateLastModified, (char *)(mF->value));
     }
 
   mF = MET_GetFieldRecord("Comment", &m_Fields);
-  if(mF && mF->defined)
+  if(mF != NULL && mF->defined)
     {
     strcpy(m_Comment, (char *)(mF->value));
     }
 
 
   mF = MET_GetFieldRecord("Name", &m_Fields);
-  if(mF && mF->defined)
+  if(mF != NULL && mF->defined)
     {
     strcpy(m_Name, (char *)(mF->value));
     }
@@ -372,6 +370,24 @@ M_PrepareNewReadStream()
   else
     {
     m_ReadStream = new std::ifstream;
+    }
+}
+
+
+void MetaDocument::
+M_PrepareNewWriteStream()
+{
+  if(m_WriteStream)
+    {
+    if(m_WriteStream->is_open())
+      {
+      m_WriteStream->close();
+      }
+    m_WriteStream->clear();
+    }
+  else
+    {
+    m_WriteStream = new std::ofstream;
     }
 }
 
