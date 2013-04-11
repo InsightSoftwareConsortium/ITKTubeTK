@@ -368,7 +368,7 @@ endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 set( proj ImageViewer )
 ExternalProject_Add( ImageViewer
   GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
-  GIT_TAG "c8d2f3c9d148824dc3d0f05d37bbb7e141651b6f"
+  GIT_TAG "b2ac8ef25da64f17b1e2e08ddb5415ec95783515"
   SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
   BINARY_DIR ImageViewer-Build
   CMAKE_GENERATOR ${gen}
