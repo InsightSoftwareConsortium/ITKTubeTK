@@ -39,6 +39,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
   m_Cumulative = false;
   m_BuildRadiusImage = false;
   m_BuildTangentImage = false;
+  m_FallOff = 0.0;
   this->m_Size.Fill(0);
   unsigned int i;
   for(i=0; i<ObjectDimension; i++)

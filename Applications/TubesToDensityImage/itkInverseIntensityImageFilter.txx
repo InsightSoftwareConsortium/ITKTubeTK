@@ -36,6 +36,14 @@ namespace itk
 namespace tube
 {
 
+
+template <class TInputImage>
+InverseIntensityImageFilter<TInputImage>
+::InverseIntensityImageFilter()
+{
+  m_InverseMaximumIntensity = 0;
+}
+
 /** Generate Data */
 template <class TInputImage>
 void

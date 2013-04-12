@@ -72,8 +72,8 @@ class ITK_EXPORT InverseIntensityImageFilter :
 
   protected:
 
-    InverseIntensityImageFilter() {};
-    ~InverseIntensityImageFilter(){};
+    InverseIntensityImageFilter();
+    ~InverseIntensityImageFilter() {}
 
     /* GenerateData produce the main work */
     void GenerateData();
