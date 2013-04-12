@@ -311,11 +311,11 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 
   // Look at points right along the center of the sector
   IndexValueType orthogonalIndicesToExamine[radiusPointsToExamine];
-  for( unsigned int ii = 0; ii < pointsToExamine; ++ii )
+  for( unsigned int ii = 0; ii < radiusPointsToExamine; ++ii )
     {
     const float ignoreFraction = 0.9f;
     const float keepFraction = 1.0f - 2*ignoreFraction;
-    const float keepStep = keepFraction / (pointsToExamine - 1);
+    const float keepStep = keepFraction / (radiusPointsToExamine - 1);
     const SizeValueType size = inputSize[orthogonalDirection];
     const SizeValueType offset = static_cast< SizeValueType >( size * (ignoreFraction + keepStep * ii) );
     orthogonalIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection] + offset;
