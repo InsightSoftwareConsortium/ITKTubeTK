@@ -48,16 +48,16 @@ const char * MetaObjectDocument::ID_LABEL_SPATIALOBJTYPE = "SpatialObject";
 
 
 MetaObjectDocument::
-MetaObjectDocument() : m_MaxNumTransforms( 20 )
+MetaObjectDocument()
+: m_NObjects( 0 ),
+  m_MaxNumTransforms( 20 )
 {
-  m_NObjects = 0;
   if(META_DEBUG)
     {
     std::cout << "MetaObjectDocument()" << std::endl;
     }
-  Clear();
-  m_ReadStream = NULL;
-  m_WriteStream = NULL;
+
+  this->Clear();
   m_FileName[0] = '\0';
 }
 
@@ -114,9 +114,12 @@ GetObjectList(void)
 void MetaObjectDocument::
 Clear(void)
 {
-  if(META_DEBUG) std::cout << "MetaObjectDocument: Clear" << std::endl;
-  MetaDocument::Clear();
+  if(META_DEBUG)
+    {
+    std::cout << "MetaObjectDocument: Clear" << std::endl;
+    }
 
+  MetaDocument::Clear();
   m_objects.clear();
 }
 

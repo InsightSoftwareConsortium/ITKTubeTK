@@ -29,8 +29,9 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
                                 TOutputSigmaImageType >
 ::RobustMeanAndSigmaImageBuilder()
+: m_NumberOfOutlierImagesToRemove(0),
+  m_TotalNumberOfImages(0)
 {
-  m_TotalNumberOfImages = 0;
 }
 
 

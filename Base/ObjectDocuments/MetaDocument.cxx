@@ -36,10 +36,10 @@ namespace tube
 
 MetaDocument::
 MetaDocument(void)
+: m_ReadStream(NULL),
+  m_WriteStream(NULL)
 {
   this->Clear();
-  m_ReadStream = NULL;
-  m_WriteStream = NULL;
   m_FileName[0] = '\0';
 }
 
@@ -230,15 +230,20 @@ Name(void) const
 void MetaDocument::
 Clear(void)
 {
-  if(META_DEBUG)  std::cout << "MetaDocument: Clear()" << std::endl;
-  strcpy(m_Comment, "");
-  strcpy(m_DateLastModified, "");
-  strcpy(m_Name, "");
+  if(META_DEBUG)
+    {
+    std::cout << "MetaDocument: Clear()" << std::endl;
+    }
+
+  m_Comment[0] = '\0';
+  m_DateLastModified[0] = '\0';
+  m_Name[0] = '\0';
 
   if(META_DEBUG)
     {
     std::cout << "MetaDocument: Clear: m_Name=" << m_Name << std::endl;
     }
+
   this->ClearFields();
 }
 

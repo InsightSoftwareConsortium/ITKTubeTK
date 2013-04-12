@@ -27,14 +27,16 @@ MeanAndSigmaImageBuilder< TInputImageType,
                           TOutputMeanImageType,
                           TOutputSigmaImageType>
 ::MeanAndSigmaImageBuilder(void)
+: m_ImageCountThreshold(1),
+  m_ThresholdInputImageBelowOn(false),
+  m_ThresholdInputImageBelow(0),
+  m_IsProcessing(false),
+  m_UseStandardDeviation(true),
+  m_DynamicallyAdjustOutputSize(false)
 {
-  this->SetIsProcessing( false );
-  this->SetThresholdInputImageBelow( 0 );
-
-  // This must be called AFTER SetThresholdInputImageBelow()
-  this->SetThresholdInputImageBelowOn( false );
-  this->SetUseStandardDeviation( true );
-  this->SetImageCountThreshold( 1 );
+  m_OutputSize.Fill(0);
+  m_OutputSpacing.Fill(0);
+  m_OutputOrigin.Fill(0);
 }
 
 
