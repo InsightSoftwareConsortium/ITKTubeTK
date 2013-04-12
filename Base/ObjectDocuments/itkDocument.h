@@ -92,7 +92,7 @@ class Document : public DataObject
 
   protected:
 
-    Document(){}
+    Document() : m_DateModified(0), m_Comment(0) {}
     ~Document(){}
 
     virtual void PrintSelf(std::ostream& os, Indent indent) const

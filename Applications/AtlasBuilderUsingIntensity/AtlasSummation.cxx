@@ -51,7 +51,8 @@ AtlasSummation
 
   m_ImageCountThreshold = 1; // Must be > than 0.
 
-  m_numOfImages = 0;  // Variable used for median calculations
+  m_image_number = 0;
+  m_numOfImages  = 0;  // Variable used for median calculations
   TMedianDefaultPixelValue = itk::NumericTraits<InputPixelType>::max();
   count = 0;
 }
