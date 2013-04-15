@@ -230,7 +230,7 @@ class RobustMeanAndSigmaImageBuilder :
 };
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkRobustMeanAndSigmaImageBuilder.txx"
+#include "itkRobustMeanAndSigmaImageBuilder.txx"
 #endif
 
 

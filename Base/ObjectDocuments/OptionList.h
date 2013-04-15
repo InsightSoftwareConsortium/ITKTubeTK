@@ -19,10 +19,10 @@
 #define __OPTIONLIST_H_
 
 #include <itkWin32Header.h>
-#include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
+
 #include "itkArray.h"
 
 namespace tube
@@ -35,11 +35,11 @@ class OptionList
 
     typedef std::multimap<std::string, std::string> OptionMap ;
     typedef std::vector<std::string>                StringVector ;
-    typedef const char *                            LabelType;
+    typedef std::string                             LabelType;
 
-    static const char *                   INPUT_DELIMITER;
-    static const char *                   BOOLEAN_VALUE_TRUE;
-    static const char *                   BOOLEAN_VALUE_FALSE;
+    static const std::string              INPUT_DELIMITER;
+    static const std::string              BOOLEAN_VALUE_TRUE;
+    static const std::string              BOOLEAN_VALUE_FALSE;
     static LabelType                      NUMBER_SEPARATOR;
     static LabelType                      DUAL_ELEMENT_DELIMITER;
 
@@ -51,38 +51,38 @@ class OptionList
     {
       public:
 
-        RequiredOptionMissing(std::string tag) : OptionTag( tag ) {}
+        RequiredOptionMissing(const std::string & tag) : OptionTag( tag ) {}
         std::string OptionTag ;
     };
 
-    int GetOption(std::string option_tag, StringVector* values) ;
+    int GetOption(const std::string & option_tag, StringVector & values) const;
 
-    int DumpOption(std::string option_tag, bool withTag = true, bool withNewLine = false) ;
+    int DumpOption(const std::string & option_tag, bool withTag = true, bool withNewLine = false) const;
 
-    int GetMultiDoubleOption(std::string tag, std::vector<double>* args, bool required) ;
+    int GetMultiDoubleOption(const std::string & tag, std::vector<double> & args, bool required) const;
 
-    int GetMultiDoubleOption(std::string tag, itk::Array<double>* args, bool required) ;
+    int GetMultiDoubleOption(const std::string & tag, itk::Array<double> & args, bool required) const;
 
-    double GetDoubleOption(std::string tag, double default_value, bool required);
+    double GetDoubleOption(const std::string & tag, double default_value, bool required) const;
 
-    bool GetBooleanOption(std::string tag, bool default_value, bool required);
+    bool GetBooleanOption(const std::string & tag, bool default_value, bool required) const;
 
-    int GetMultiIntOption(std::string tag, std::vector<int>* args, bool required );
+    int GetMultiIntOption(const std::string & tag, std::vector<int> & args, bool required ) const;
 
-    int GetIntOption(std::string tag, int default_value, bool required) ;
+    int GetIntOption(const std::string & tag, int default_value, bool required) const;
 
-    int GetMultiUCharOption(std::string tag, std::vector< unsigned char >* args, bool required);
+    int GetMultiUCharOption(const std::string & tag, std::vector< unsigned char > & args, bool required) const;
 
-    unsigned char GetUCharOption(std::string tag, unsigned char default_value, bool required) ;
+    unsigned char GetUCharOption(const std::string & tag, unsigned char default_value, bool required) const;
 
-    int GetMultiUIntOption(std::string tag, std::vector< unsigned int >* args, bool required);
+    int GetMultiUIntOption(const std::string & tag, std::vector< unsigned int > & args, bool required) const;
 
-    unsigned int GetUIntOption(std::string tag, unsigned int default_value, bool required) ;
+    unsigned int GetUIntOption(const std::string & tag, unsigned int default_value, bool required) const;
 
-    int GetStringOption(std::string tag, std::string* ret, bool required);
+    int GetStringOption(const std::string & tag, std::string & ret, bool required) const;
 
-    int GetMultiStringOption(std::string tag, std::vector< std::string >* ret,
-                             bool required);
+    int GetMultiStringOption(const std::string & tag, std::vector< std::string > & ret,
+                             bool required) const;
   protected:
 
   private:

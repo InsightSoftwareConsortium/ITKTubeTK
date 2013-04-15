@@ -253,39 +253,30 @@ void AtlasSummation
 
 //-----------------------------------------------------------------------------
 void AtlasSummation
-::WriteImage( MeanImageType::Pointer image, const char * file )
+::WriteImage( MeanImageType::Pointer image, const std::string & file )
 {
   typedef itk::ImageFileWriter< MeanImageType > FileWriterType;
   ++count;
-  std::string file1;
-  file1.append(file);
-
-  char* number = new char[10];
-  sprintf(number,"%d",count);
-
-  file1.append( number );
-  file1.append( ".mhd" );
+  std::stringstream file1;
+  file1 << file << count << ".mhd";
 
   try
     {
     FileWriterType::Pointer writer = FileWriterType::New();
     writer->SetInput( image );
-    writer->SetFileName( file1.c_str() );
+    writer->SetFileName( file1.str().c_str() );
     writer->Update();
     }
   catch( ... )
     {
-    ::tube::FmtErrorMessage("Error in writing %s!", file);
-    delete [] number;
-    return;
+    ::tube::FmtErrorMessage("Error in writing " + file1.str());
     }
-  delete [] number;
 }
 
 
 //-----------------------------------------------------------------------------
 void AtlasSummation
-::WriteImage( ProcessImagePointer image, const char * file )
+::WriteImage( ProcessImagePointer image, const std::string & file )
 {
   typedef itk::ImageFileWriter< ProcessImageType > FileWriterType;
 
@@ -298,8 +289,7 @@ void AtlasSummation
     }
   catch( ... )
     {
-    ::tube::FmtErrorMessage("Error in writing %s!", file);
-    return;
+    ::tube::FmtErrorMessage("Error in writing " + file);
     }
 }
 

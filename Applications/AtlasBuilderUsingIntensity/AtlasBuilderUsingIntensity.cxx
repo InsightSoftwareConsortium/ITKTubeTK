@@ -47,7 +47,7 @@ const unsigned int Dimensions = 3;
 
 /** Processors */
 typedef AtlasSummation                                AtlasBuilderType;
-typedef itk::AffineTransform< double, Dimensions >		TransformType;
+typedef itk::AffineTransform< double, Dimensions >    TransformType;
 
 
 /** Object types */
@@ -72,10 +72,10 @@ typedef itk::tube::ObjectDocumentToImageFilter<
 
 
 /** Function declarations */
-void WriteImage( UShortImagePointer image, const char * file );
-void WriteImage( FloatImageType::Pointer image, const char * file );
+void WriteImage( UShortImagePointer image, const std::string & file );
+void WriteImage( FloatImageType::Pointer image, const std::string & file );
 void SetParameterList( AtlasBuilderType * atlasBuilder , MetaCommand command);
-int DoIt( int, char *[]);
+int DoIt( int argc, char *argv[] );
 
 
 //-----------------------------------------------------------------------------
@@ -142,8 +142,7 @@ int DoIt( int argc, char *argv[] )
     ImageDocumentType::Pointer doc =
       static_cast<ImageDocumentType*>( (*it_imgDoc).GetPointer() );
 
-    const char * name = doc->GetObjectName();
-    tube::FmtInfoMessage( "Adding image: %s", name);
+    tube::FmtInfoMessage("Adding image: " + doc->GetObjectName());
 
     filter->SetInput( doc );
     filter->ApplyTransforms( false );
@@ -181,7 +180,7 @@ int DoIt( int argc, char *argv[] )
 
 
 //-----------------------------------------------------------------------------
-void WriteImage( UShortImageType::Pointer i, const char * name )
+void WriteImage( UShortImageType::Pointer i, const std::string & name )
 {
   typedef itk::ImageFileWriter< UShortImageType >   UShortWriterType;
   UShortWriterType::Pointer   writer  = UShortWriterType::New();
@@ -194,7 +193,7 @@ void WriteImage( UShortImageType::Pointer i, const char * name )
 
 
 //-----------------------------------------------------------------------------
-void WriteImage( FloatImageType::Pointer i, const char * name )
+void WriteImage( FloatImageType::Pointer i, const std::string & name )
 {
   typedef itk::ImageFileWriter< FloatImageType >   WriterType;
   WriterType::Pointer   writer  = WriterType::New();

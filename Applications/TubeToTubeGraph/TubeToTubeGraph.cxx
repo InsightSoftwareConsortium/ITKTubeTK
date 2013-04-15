@@ -129,7 +129,7 @@ int DoIt( int argc, char *argv[] )
 
   int count = 0;
   char tubeName[10];
-  sprintf( tubeName, "Tube" );
+  std::sprintf( tubeName, "Tube" );
   TubeSpatialObjectType::ChildrenListType *
     tubeList = group->GetChildren( 99999, tubeName );
   TubeSpatialObjectType::ChildrenListType::const_iterator

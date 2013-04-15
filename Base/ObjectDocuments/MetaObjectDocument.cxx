@@ -22,11 +22,10 @@ limitations under the License.
 =========================================================================*/
 
 
-#include <stdio.h>
-#include <ctype.h>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
+#include <vector>
 
 #include <metaUtils.h>
 #include "MetaObjectDocument.h"
@@ -34,17 +33,17 @@ limitations under the License.
 namespace tube {
 
 
-const char * MetaObjectDocument::LABEL_NOBJECTS   = "NumberOfObjects";
-const char * MetaObjectDocument::LABEL_TYPE       = "Type";
-const char * MetaObjectDocument::LABEL_NAME       = "Name";
-const char * MetaObjectDocument::LABEL_NUM_TRANS  = "NumberOfTransforms";
-const char * MetaObjectDocument::LABEL_TRANSFORM  = "Transform";
+const std::string MetaObjectDocument::LABEL_NOBJECTS   = "NumberOfObjects";
+const std::string MetaObjectDocument::LABEL_TYPE       = "Type";
+const std::string MetaObjectDocument::LABEL_NAME       = "Name";
+const std::string MetaObjectDocument::LABEL_NUM_TRANS  = "NumberOfTransforms";
+const std::string MetaObjectDocument::LABEL_TRANSFORM  = "Transform";
 
 
 /** Object Types *** NOTE:  MUST match the corresponding object values */
-const char * MetaObjectDocument::ID_LABEL_BLOBTYPE  = "Blob";
-const char * MetaObjectDocument::ID_LABEL_IMAGETYPE = "Image";
-const char * MetaObjectDocument::ID_LABEL_SPATIALOBJTYPE = "SpatialObject";
+const std::string MetaObjectDocument::ID_LABEL_BLOBTYPE  = "Blob";
+const std::string MetaObjectDocument::ID_LABEL_IMAGETYPE = "Image";
+const std::string MetaObjectDocument::ID_LABEL_SPATIALOBJTYPE = "SpatialObject";
 
 
 MetaObjectDocument::
@@ -77,10 +76,8 @@ PrintInfo() const
   while( it != m_objects.end() )
     {
     std::cout << "object Number: " << index <<std::endl;
-    const char* name = (*it)->GetObjectName();
-    int numTrans = (*it)->GetNumberOfTransforms();
-    std::cout << "objectName = " << name << std::endl;
-    std::cout << "NumberOfTransforms = " << numTrans << std::endl;
+    std::cout << "objectName = " << (*it)->GetObjectName() << std::endl;
+    std::cout << "NumberOfTransforms = " << (*it)->GetNumberOfTransforms() << std::endl;
     std::cout << "\n";
     ++it;
     }
@@ -125,16 +122,16 @@ Clear(void)
 
 
 bool MetaObjectDocument::
-Read( const char *_fileName )
+Read( const std::string & _fileName )
 {
   if(META_DEBUG)
     {
     std::cout << "MetaObjectDocument: Read" << std::endl;
     }
 
-  if(_fileName != NULL)
+  if(!_fileName.empty())
     {
-    strcpy(m_FileName, _fileName);
+    m_FileName = _fileName;
     }
   Clear();
 
@@ -142,9 +139,9 @@ Read( const char *_fileName )
   M_SetupReadFields();
   M_PrepareNewReadStream();
 
-  m_ReadStream->open(m_FileName, std::ios::binary | std::ios::in);
-  m_ReadStream->seekg(0,std::ios::beg);
-  if(!m_ReadStream->is_open())
+  m_ReadStream.open(m_FileName.c_str(), std::ios::binary | std::ios::in);
+  m_ReadStream.seekg(0,std::ios::beg);
+  if(!m_ReadStream.is_open())
     {
     std::cout << "MetaObjectDocument: Read(): Cannot open file: "
       << m_FileName << std::endl;
@@ -152,18 +149,18 @@ Read( const char *_fileName )
     }
   bool result = M_Read();
 
-  m_ReadStream->close();
-  m_ReadStream->clear();
+  m_ReadStream.close();
+  m_ReadStream.clear();
   return result;
 }
 
 
 bool MetaObjectDocument::
-Write(const char *_fileName)
+Write(const std::string &_fileName)
 {
-  if(_fileName != NULL)
+  if(!_fileName.empty())
     {
-    FileName(_fileName);
+    m_FileName = _fileName;
     }
 
   M_SetupWriteFields();
@@ -171,19 +168,19 @@ Write(const char *_fileName)
 
 #ifdef __sgi
   // Create the file. This is required on some older sgi's
-  std::ofstream tFile(m_FileName,std::ios::out);
+  std::ofstream tFile(m_FileName.c_str(),std::ios::out);
   tFile.close();
 #endif
-  m_WriteStream->open(m_FileName,std::ios::binary | std::ios::out);
-  if(!m_WriteStream->is_open())
+  m_WriteStream.open(m_FileName.c_str(), std::ios::binary | std::ios::out);
+  if(!m_WriteStream.is_open())
     {
     return false;
     }
 
   bool result = M_Write();
 
-  m_WriteStream->close();
-  m_WriteStream->clear();
+  m_WriteStream.close();
+  m_WriteStream.clear();
   return result;
 }
 
@@ -201,8 +198,8 @@ M_SetupReadFields(void)
 
   MET_FieldRecordType * mF;
 
-  mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, LABEL_NOBJECTS, MET_INT, true);
+  mF = new MET_FieldRecordType();
+  MET_InitReadField(mF, LABEL_NOBJECTS.c_str(), MET_INT, true);
   mF->required = true;
   mF->terminateRead = true;
   m_Fields.push_back(mF);
@@ -217,8 +214,8 @@ M_SetupWriteFields(void)
 
   MET_FieldRecordType * mF;
 
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField(mF, LABEL_NOBJECTS, MET_INT, m_NObjects);
+  mF = new MET_FieldRecordType();
+  MET_InitWriteField(mF, LABEL_NOBJECTS.c_str(), MET_INT, m_NObjects);
   mF->required = true;
   m_Fields.push_back(mF);
 
@@ -236,32 +233,24 @@ M_SetupObjectReadFields(void)
 
   MET_FieldRecordType * mF;
 
-  std::string type;
-  type.append( LABEL_TYPE );
-  mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, type.c_str(), MET_STRING, true);
+  mF = new MET_FieldRecordType();
+  MET_InitReadField(mF, LABEL_TYPE.c_str(), MET_STRING, true);
   m_Fields.push_back(mF);
 
-  std::string object;
-  object.append( LABEL_NAME );
-  mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, object.c_str(), MET_STRING, false);
+  mF = new MET_FieldRecordType();
+  MET_InitReadField(mF, LABEL_NAME.c_str(), MET_STRING, false);
   m_Fields.push_back(mF);
 
   for( unsigned int i = 0; i < m_MaxNumTransforms; i++ )
     {
-    std::string labelTransform;
-    labelTransform.append( LABEL_TRANSFORM );
-    char buffer[20];
-    sprintf( buffer, "%u", i );
-    labelTransform.append( buffer );
-
-    mF = new MET_FieldRecordType;
-    MET_InitReadField(mF, labelTransform.c_str(), MET_STRING, false);
+    std::stringstream labelTransform;
+    labelTransform << LABEL_TRANSFORM << i;
+    mF = new MET_FieldRecordType();
+    MET_InitReadField(mF, labelTransform.str().c_str(), MET_STRING, false);
     m_Fields.push_back(mF);
     }
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitReadField(mF, "EndObject" , MET_NONE, true);
   mF->terminateRead = true;
   mF->required = true;
@@ -275,37 +264,33 @@ M_SetupObjectWriteFields( unsigned int object_idx )
   MET_FieldRecordType * mF;
 
   //Record the type of object
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField(mF, LABEL_TYPE, MET_STRING,
-    strlen(m_objects[object_idx]->GetObjectType()),
-    m_objects[object_idx]->GetObjectType() );
+  mF = new MET_FieldRecordType();
+  MET_InitWriteField(mF, LABEL_TYPE.c_str(), MET_STRING,
+    m_objects[object_idx]->GetObjectType().length(),
+    m_objects[object_idx]->GetObjectType().c_str() );
   m_Fields.push_back(mF);
 
   //Record the object Name
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField(mF, LABEL_NAME, MET_STRING,
-    strlen(m_objects[object_idx]->GetObjectName()),
-    m_objects[object_idx]->GetObjectName() );
+  mF = new MET_FieldRecordType();
+  MET_InitWriteField(mF, LABEL_NAME.c_str(), MET_STRING,
+    m_objects[object_idx]->GetObjectName().length(),
+    m_objects[object_idx]->GetObjectName().c_str() );
   m_Fields.push_back(mF);
 
   //Record Names of each Transform
   for( unsigned int i=0; i < m_objects[object_idx]->GetNumberOfTransforms(); i++ )
     {
-    std::string label;
-    label.append( LABEL_TRANSFORM );
-    char buffer[20];
-    sprintf( buffer, "%u", i );
-    label.append( buffer );
-
-    mF = new MET_FieldRecordType;
-    MET_InitWriteField(mF, label.c_str(), MET_STRING,
-      strlen(m_objects[object_idx]->GetTransformNames()[i]),
-      m_objects[object_idx]->GetTransformNames()[i] );
+    std::stringstream label;
+    label << LABEL_TRANSFORM << i;
+    mF = new MET_FieldRecordType();
+    MET_InitWriteField(mF, label.str().c_str(), MET_STRING,
+      m_objects[object_idx]->GetTransformNames()[i].length(),
+      m_objects[object_idx]->GetTransformNames()[i].c_str() );
     m_Fields.push_back(mF);
   }
 
   //Place end object tag
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitWriteField(mF, "EndObject", MET_NONE );
   m_Fields.push_back(mF);
 }
@@ -328,7 +313,7 @@ M_Read(void)
 
   MET_FieldRecordType * mF;
 
-  mF = MET_GetFieldRecord(LABEL_NOBJECTS, &m_Fields);
+  mF = MET_GetFieldRecord(LABEL_NOBJECTS.c_str(), &m_Fields);
   if(mF != NULL && mF->defined)
     {
     m_NObjects = (int)mF->value[0];
@@ -341,27 +326,27 @@ M_Read(void)
     //Setup the Object read fields
     M_SetupObjectReadFields();
 
-    MET_Read(*m_ReadStream, & m_Fields, '=');
+    MET_Read(m_ReadStream, & m_Fields, '=');
 
     ObjectDocumentType::Pointer object = ObjectDocumentType::New();
 
-    mF = MET_GetFieldRecord( LABEL_TYPE, &m_Fields );
+    mF = MET_GetFieldRecord( LABEL_TYPE.c_str(), &m_Fields );
     if(mF != NULL && mF->defined)
       {
-      char * objectType = (char*)mF->value;
-      if( !strcmp(objectType, ID_LABEL_IMAGETYPE) )
+      const std::string objectType = (const char *)mF->value;
+      if( objectType == ID_LABEL_IMAGETYPE )
           {
           if(META_DEBUG)
             std::cout << "Reading in an image: " << objectType << std::endl;
           object = ImageDocumentType::New();
           }
-        else if( !strcmp(objectType, ID_LABEL_BLOBTYPE) )
+        else if( objectType == ID_LABEL_BLOBTYPE )
           {
           if(META_DEBUG)
             std::cout << "Reading in a blob: "  << objectType << std::endl;
           object = BlobSpatialObjectDocumentType::New();
           }
-        else if( !strcmp(objectType, ID_LABEL_SPATIALOBJTYPE) )
+        else if( objectType == ID_LABEL_SPATIALOBJTYPE )
           {
           if(META_DEBUG)
             std::cout << "Reading in a spatial object: "  << objectType << std::endl;
@@ -369,34 +354,29 @@ M_Read(void)
           }
         else
           {
-          std::cerr <<"Error: Object field type does not match any existing list of types for Object #" << i << std::endl;
+          std::cerr << "Error: Object field type does not match any existing list of types for Object #" << i << std::endl;
           return false;
           }
       }
 
     //Read Object Name
-    mF = MET_GetFieldRecord( LABEL_NAME, &m_Fields );
+    mF = MET_GetFieldRecord( LABEL_NAME.c_str(), &m_Fields );
     if(mF != NULL && mF->defined)
       {
-      object->SetObjectName( (const char *) mF->value );
+      object->SetObjectName( (const char *)mF->value );
       }
 
     //Read Transform
     for( unsigned int j = 0; j < m_MaxNumTransforms; j++ )
       {
-      std::string labelTransform;
-      labelTransform.append( LABEL_TRANSFORM );
-      char buffer[20];
-      sprintf( buffer, "%u", j );
-      labelTransform.append( buffer );
-
-      mF = MET_GetFieldRecord( labelTransform.c_str(), &m_Fields );
+      std::stringstream labelTransform;
+      labelTransform << LABEL_TRANSFORM << j;
+      mF = MET_GetFieldRecord( labelTransform.str().c_str(), &m_Fields );
       if(mF != NULL && mF->defined)
         {
         // Vector reference count starts 1, not 0
-        object->AddTransformNameToBack( (const char *) mF->value );
-        const char* trans = (const char *) mF->value;
-        if(META_DEBUG) std::cout <<" Transform : " << trans <<std::endl;
+        object->AddTransformNameToBack( (const char *)mF->value );
+        if(META_DEBUG) std::cout <<" Transform : " << (const char *)mF->value <<std::endl;
         }
       }
     m_objects.push_back( object );
@@ -416,7 +396,7 @@ M_Write(void)
 
   std::ofstream fp;
 
-  fp.open(m_FileName);
+  fp.open(m_FileName.c_str());
   if(!fp.is_open())
     {
     std::cout << "can't open file " << m_FileName << std::endl;

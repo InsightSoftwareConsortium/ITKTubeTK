@@ -142,7 +142,7 @@ class ITK_EXPORT ObjectDocumentToObjectSource : public ProcessObject
     TransformPointer ComposeTransforms( ConstDocumentPointer doc, int startIndex=0, int endIndex=-1 ) const;
 
     /** Read the transform from file */
-    TransformPointer ReadTransform( const char * ) const;
+    TransformPointer ReadTransform( const std::string & file ) const;
 
     /** Flag to determine whether to apply transforms or not */
     bool                                    m_ApplyTransforms;

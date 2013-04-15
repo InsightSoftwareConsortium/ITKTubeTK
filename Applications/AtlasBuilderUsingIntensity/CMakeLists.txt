@@ -33,19 +33,15 @@ set( AtlasBuilderUsingIntensity_H_Files
   itkRobustMeanAndSigmaImageBuilder.h
   )
 
-set( AtlasBuilderUsingIntensity_HXX_Files
-  itkCompleteImageResampleFilter.hxx
-  itkMinimizeImageSizeFilter.hxx
-  )
-
 set( AtlasBuilderUsingIntensity_TXX_Files
+  itkCompleteImageResampleFilter.txx
   itkMeanAndSigmaImageBuilder.txx
+  itkMinimizeImageSizeFilter.txx
   itkRobustMeanAndSigmaImageBuilder.txx
   )
 
 add_custom_target( AtlasBuilderUsingIntensityInclude SOURCES
   ${AtlasBuilderUsingIntensity_H_Files}
-  ${AtlasBuilderUsingIntensity_HXX_Files}
   ${AtlasBuilderUsingIntensity_TXX_Files}
   )
 

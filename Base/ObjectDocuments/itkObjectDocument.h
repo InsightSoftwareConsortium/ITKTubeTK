@@ -57,8 +57,8 @@ class ObjectDocument : public Document
 
     typedef Superclass::DateType                  DateType;
     typedef Superclass::CommentsType              CommentsType;
-    typedef const char *                          ObjectNameType;
-    typedef const char *                          TransformNameType;
+    typedef std::string                           ObjectNameType;
+    typedef std::string                           TransformNameType;
 
     /** Not Implemented, but would allow for Document objects to be held by other documents */
     typedef Superclass::ChildrenListType          ChildrenListType;
@@ -74,7 +74,7 @@ class ObjectDocument : public Document
     itkTypeMacro( Self, Superclass );
 
     /** To be implemented by the object type that inherits this class */
-    virtual const char *  GetObjectType() const{ return "Object";}
+    virtual std::string  GetObjectType() const{ return "Object";}
 
     /** Get the Object file name -- default is undefined */
     itkGetConstReferenceMacro( ObjectName, ObjectNameType );
@@ -92,7 +92,7 @@ class ObjectDocument : public Document
     TransformNameListType GetTransformNames() const { return m_transformList; }
 
     /** Add a transform name to the end of the transform list */
-    void AddTransformNameToBack( const char * trans ) { m_transformList.push_back( trans ); }
+    void AddTransformNameToBack( const std::string & trans ) { m_transformList.push_back( trans ); }
 
     /** Remove last transform from the list -- Does nothing if there are no transforms */
     void RemoveTransformNameFromBack()
@@ -111,8 +111,7 @@ class ObjectDocument : public Document
       TransformNameListType::const_iterator it = m_transformList.begin();
       while( it != m_transformList.end() )
         {
-        const char * name = *it;
-        std::cout << name << std::endl;
+        std::cout << *it << std::endl;
         ++it;
         }
     }
@@ -121,7 +120,7 @@ class ObjectDocument : public Document
 
   protected:
 
-    ObjectDocument() : m_ObjectName(0) {}
+    ObjectDocument(){}
 
     void PrintSelf(std::ostream& os, Indent indent) const
     {
@@ -133,8 +132,7 @@ class ObjectDocument : public Document
       TransformNameListType::const_iterator it = m_transformList.begin();
       while( it != m_transformList.end() )
         {
-        const char * name = *it;
-        std::cout << name << std::endl;
+        std::cout << *it << std::endl;
         ++it;
         }
     }

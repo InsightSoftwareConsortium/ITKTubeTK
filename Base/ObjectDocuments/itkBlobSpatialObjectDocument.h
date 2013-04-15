@@ -72,13 +72,13 @@ class BlobSpatialObjectDocument : public SpatialObjectDocument
     itkTypeMacro( Self, Superclass );
 
     /** Return the type of the object within the Document (ie. "Blob") */
-    const char * GetObjectType() const { return "Blob"; }
+    std::string GetObjectType() const { return "Blob"; }
 
-    const char * LABEL_BLOBTYPE;
+    const std::string LABEL_BLOBTYPE;
 
   protected:
 
-    BlobSpatialObjectDocument(){ LABEL_BLOBTYPE  = "Blob"; }
+    BlobSpatialObjectDocument() : LABEL_BLOBTYPE("Blob"){}
     ~BlobSpatialObjectDocument(){}
 
   private:

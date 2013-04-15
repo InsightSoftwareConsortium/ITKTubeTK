@@ -201,7 +201,7 @@ class ITK_EXPORT CompleteImageResampleFilter:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkCompleteImageResampleFilter.hxx"
+#include "itkCompleteImageResampleFilter.txx"
 #endif
 
 #endif
