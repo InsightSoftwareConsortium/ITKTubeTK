@@ -47,12 +47,12 @@ CompleteImageResampleFilter< TInputImage,
                              TNonSingularTransform,
                              TInterpolatorPrecisionType >
 ::CompleteImageResampleFilter()
+: m_DefaultPixelValue(0)
 {
   m_OutputSpacing.Fill( 1.0 );
   m_Transform = TransformType::New();
   m_Interpolator = LinearInterpolateImageFunction< InputImageType,
                                                    TInterpolatorPrecisionType>::New();
-  this->SetDefaultPixelValue( 0 );
 }
 
 

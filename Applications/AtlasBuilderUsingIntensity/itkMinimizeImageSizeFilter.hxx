@@ -31,13 +31,15 @@ namespace tube
 template< class TInputImage >
 MinimizeImageSizeFilter< TInputImage >
 ::MinimizeImageSizeFilter()
+: m_BufferImage(false),
+  m_ThresholdValue(0),
+  m_ThresholdAbove(false),
+  m_DefaultPixelValue(0),
+  m_ClipEndIndices(false),
+  m_ClipStartIndices(false)
 {
-  this->SetBufferImage( false );
-  this->SetThresholdValue( 0 );
-  this->SetThresholdAbove( false );
-  this->SetDefaultPixelValue( 0 );
+  m_NumberOfBufferPixels.Fill(0);
 }
-
 
 
 template< class TInputImage >
