@@ -1,0 +1,32 @@
+
+{
+	"ParameterGroups" :
+	[
+		{
+			"Label" : "Crop filter",
+			"Parameters" :
+			[
+
+				{
+					"Name" : "min",
+					"Value" : [ 15, 15 ]
+				},
+
+				{
+					"Name" : "max",
+					"Value" : []
+				},
+
+				{
+					"Name" : "size",
+					"Value" : [ 81, 81 ]
+				},
+
+				{
+					"Name" : "boundary",
+					"Value" : [ 7, 7 ]
+				}
+			]
+		}
+	]
+}

@@ -67,7 +67,9 @@ add_executable( tubeUtilitiesTests
   tubeUtilitiesTests.cxx
   ${tubeUtilities_SRCS} )
 target_link_libraries( tubeUtilitiesTests
-  ${ITK_LIBRARIES} )
+  ${ITK_LIBRARIES}
+  ${JsonCpp_LIBRARIES}
+  )
 
 add_test( tubeUtilitiesHeaderTest
   ${UTILITIES_HEADER_TEST} )
