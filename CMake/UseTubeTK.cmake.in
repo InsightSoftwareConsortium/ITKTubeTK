@@ -52,9 +52,6 @@ set( TubeTK_LIBRARIES "@TubeTK_LIBRARIES@" )
 # CMake magic is stored here by TubeTK
 set( TubeTK_CMAKE_EXTENSIONS_DIR "@TubeTK_CMAKE_EXTENSIONS_DIR@" )
 
-# Slicer vars and macros as provided by TubeTK
-include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )
-
 # The TubeTK version number
 SET(TubeTK_VERSION_MAJOR "@TubeTK_VERSION_MAJOR@")
 SET(TubeTK_VERSION_MINOR "@TubeTK_VERSION_MINOR@")
@@ -71,3 +68,7 @@ set( GITCOMMAND @GITCOMMAND@ )
 set( SVNCOMMAND @SVNCOMMAND@ )
 set( CVSCOMMAND @CVSCOMMAND@ )
 set( QT_QMAKE_EXECUTABLE @QT_QMAKE_EXECUTABLE@ )
+
+# Slicer vars and macros as provided by TubeTK
+# Needs to come after the definition of SlicerExecutionModel_DIR.
+include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )
