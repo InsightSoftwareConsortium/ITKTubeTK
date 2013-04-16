@@ -79,7 +79,7 @@ if( NOT USE_SYSTEM_JsonCpp )
   set( proj JsonCpp )
   ExternalProject_Add( JsonCpp
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/jsoncpp-cmake.git"
-    GIT_TAG "e2cfe02abc7a2715f8f44fe0ef1ae46e7d6aa92e"
+    GIT_TAG "838583b52ba3fac143ec4e09bd189498a7ff9686"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/JsonCpp"
     BINARY_DIR JsonCpp-Build
     CMAKE_GENERATOR ${gen}
@@ -279,7 +279,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     endif()
     ExternalProject_Add( ${proj}
       GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ParameterSerializer.git"
-      GIT_TAG "d76c9821705204b379f2a92db2bc1b15c0d24ffc"
+      GIT_TAG "4161e9b314364e7f288cb06c9d1906e928cfc2b4"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/ParameterSerializer"
       BINARY_DIR ParameterSerializer-Build
       CMAKE_GENERATOR ${gen}
@@ -321,7 +321,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     # Has enhancements required for the SEM ParameterSerializer.
     # Change back to upstream after pull request merged.
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/SlicerExecutionModel.git"
-    GIT_TAG "0d22bf6bc303d42040b3efd23330c489f266f2fb"
+    GIT_TAG "18cc0eef9f71456f59b50423f30c864ef4d6b3ed"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-Build
     CMAKE_GENERATOR ${gen}
@@ -338,6 +338,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
       -DBUILD_TESTING:BOOL=OFF
       -DITK_DIR:PATH=${ITK_DIR}
       -DSlicerExecutionModel_USE_SERIALIZER:BOOL=ON
+      -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
       -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
     INSTALL_COMMAND ""

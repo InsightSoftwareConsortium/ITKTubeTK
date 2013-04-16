@@ -13,11 +13,6 @@
 				},
 
 				{
-					"Name" : "max",
-					"Value" : []
-				},
-
-				{
 					"Name" : "size",
 					"Value" : [ 81, 81 ]
 				},
