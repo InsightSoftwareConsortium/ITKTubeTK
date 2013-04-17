@@ -231,6 +231,11 @@ protected:
 
   void                       m_GetData(double x);
 
+private:
+
+  /** Prevent copying and assignment */
+  Spline1D(const Spline1D &);
+  Spline1D& operator=(const Spline1D &);
 };
 
 } // end namespace itk

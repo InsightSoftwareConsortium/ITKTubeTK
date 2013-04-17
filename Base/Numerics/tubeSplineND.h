@@ -271,6 +271,11 @@ protected:
 
   void  m_GetData(const VectorType &x);
 
+private:
+
+  /** Prevent copying and assignment */
+  SplineND(const SplineND &);
+  SplineND& operator=(const SplineND &);
 };
 
 } //end namespace tube

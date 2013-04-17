@@ -242,7 +242,8 @@ public:
 
 protected:
 
-  BlendCostFunction() {};
+  BlendCostFunction() : m_Mode(0),
+                        m_CallsToGetValue(0) {};
   virtual ~BlendCostFunction() {};
 
   void PrintSelf( std::ostream & os, Indent indent ) const
@@ -470,7 +471,8 @@ public:
 
 protected:
 
-  BlendScaleCostFunction() {};
+  BlendScaleCostFunction() : m_Mode(0),
+                             m_CallsToGetValue(0) {};
   virtual ~BlendScaleCostFunction() {};
 
   void PrintSelf( std::ostream & os, Indent indent ) const
