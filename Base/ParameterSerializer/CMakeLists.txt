@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( ParameterSerializer )
+project( TubeParameterSerializer )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
