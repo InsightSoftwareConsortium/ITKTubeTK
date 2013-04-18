@@ -389,6 +389,7 @@ int main(int argc, char **argv)
             {
             gk = new tube::ShortestPathKernel(f, g);
             K[i][j] = gk->Compute();
+            delete gk;
             break;
             }
           case GK_WLKernel:
@@ -400,6 +401,7 @@ int main(int argc, char **argv)
                                             argSubtreeHeight );
 
             K[i][j] = gk->Compute();
+            delete gk;
             break;
             }
           }
