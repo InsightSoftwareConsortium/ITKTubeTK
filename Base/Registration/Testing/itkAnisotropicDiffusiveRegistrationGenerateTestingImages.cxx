@@ -226,6 +226,7 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
 }
 
 // Function to create the planar polydata
+//cppcheck-suppress unusedFunction
 vtkPolyData* CreatePlanePolydata( double * origin,
                                   double * point1, double * point2,
                                   int resolution )
@@ -278,6 +279,7 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
   return densify->GetOutput();
 }
 
+
 // Intensity windowing from 0..255 to 0..1
 template <class TImage>
 void IntensityWindow(
@@ -308,6 +310,8 @@ TImage * image )
     }
 }
 
+
+//cppcheck-suppress unusedFunction
 int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
                                                       int argc, char* argv [] )
 {

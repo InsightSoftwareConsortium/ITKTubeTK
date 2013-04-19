@@ -68,6 +68,7 @@ public:
     m_KernelArray = newKernelArray;
     }
 
+  // cppcheck-suppress unusedFunction
   void SetMedialnessScaleStep( double newMedialnessScaleStep )
     {
     m_MedialnessScaleStep = newMedialnessScaleStep;
