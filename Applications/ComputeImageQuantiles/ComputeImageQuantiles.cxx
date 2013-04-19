@@ -124,8 +124,8 @@ void computeQuantiles( ImageType::Pointer image,
     {
     ImagePixelType qVal = p_square_quantile(*acc);
     quantileValues.push_back(qVal);
-    delete *acc;
-    *acc = NULL;
+    delete acc;
+    acc = NULL;
     }
   return;
 }
