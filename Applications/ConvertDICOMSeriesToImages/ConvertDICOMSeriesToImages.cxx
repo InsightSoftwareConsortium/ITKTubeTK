@@ -838,6 +838,11 @@ int main( int argc, char* argv[] )
           newfile->ClearAnonymizeList();
 
           newfile->CloseFile();
+
+          //delete fileReader;
+          //fileReader = NULL;
+          delete newfile;
+          newfile = NULL;
           }
         }
       if(!processingSplit)

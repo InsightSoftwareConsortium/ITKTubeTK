@@ -808,6 +808,7 @@ int DoIt( int argc, char * argv[] )
       tube::ErrorMessage( "Writing volume: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
+      delete [] iterations;
       return EXIT_FAILURE;
       }
     timeCollector.Stop( "Write deformation field" );
@@ -832,6 +833,7 @@ int DoIt( int argc, char * argv[] )
 //      tube::ErrorMessage( "Writing volume: Exception caught: "
 //                          + std::string(err.GetDescription()) );
 //      timeCollector.Report();
+//      delete [] iterations;
 //      return EXIT_FAILURE;
 //      }
 //    timeCollector.Stop( "Write output transform" );
@@ -855,6 +857,7 @@ int DoIt( int argc, char * argv[] )
       tube::ErrorMessage( "Writing volume: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
+      delete [] iterations;
       return EXIT_FAILURE;
       }
     timeCollector.Stop( "Write resampled moving image" );
@@ -875,6 +878,7 @@ int DoIt( int argc, char * argv[] )
             outputNormalVectorImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -886,6 +890,7 @@ int DoIt( int argc, char * argv[] )
             outputNormalVectorImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -907,6 +912,7 @@ int DoIt( int argc, char * argv[] )
         {
         tube::ErrorMessage( "Failed to find an extension for normal matrix" );
         timeCollector.Report();
+        delete [] iterations;
         return EXIT_FAILURE;
         }
 
@@ -926,6 +932,7 @@ int DoIt( int argc, char * argv[] )
           outputFileName ) )
         {
         timeCollector.Report();
+        delete [] iterations;
         return EXIT_FAILURE;
         }
 
@@ -956,6 +963,7 @@ int DoIt( int argc, char * argv[] )
             outputFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -979,6 +987,7 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -990,6 +999,7 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -1006,6 +1016,7 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -1017,6 +1028,7 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -1039,6 +1051,7 @@ int DoIt( int argc, char * argv[] )
           outputWeightStructuresImageFileName ) )
         {
         timeCollector.Report();
+        delete [] iterations;
         return EXIT_FAILURE;
         }
       }
@@ -1050,6 +1063,7 @@ int DoIt( int argc, char * argv[] )
           outputWeightStructuresImageFileName ) )
         {
         timeCollector.Report();
+        delete [] iterations;
         return EXIT_FAILURE;
         }
       }

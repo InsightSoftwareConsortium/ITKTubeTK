@@ -82,6 +82,7 @@ int DoIt( int argc, char *argv[] )
   if( !reader->Read( listFile.c_str() ) )
     {
     tube::ErrorMessage( "Could not read ObjectDocument file!" );
+    delete reader;
     return EXIT_FAILURE;
     }
 
@@ -120,6 +121,7 @@ int DoIt( int argc, char *argv[] )
                 << std::endl;
       std::cerr << numberOfCentroids << " != " << numberOfCentroids2
                 << std::endl;
+      delete reader;
       return 0;
       }
     for(int i=0; i<numberOfCentroids; i++)
@@ -142,6 +144,7 @@ int DoIt( int argc, char *argv[] )
       {
       std::cerr << "Error: fileList's #Centroids != branch #Centroids"
                 << std::endl;
+      delete reader;
       return 0;
       }
     for(int i=0; i<numberOfCentroids; i++)
@@ -161,6 +164,7 @@ int DoIt( int argc, char *argv[] )
       {
       std::cerr << "Error: fileList's #Centroids != root #Centroids"
                 << std::endl;
+      delete reader;
       return 0;
       }
     for(int i=0; i<numberOfCentroids; i++)
@@ -231,5 +235,6 @@ int DoIt( int argc, char *argv[] )
     }
   writeStream.close();
 
+  delete reader;
   return 1;
   }
