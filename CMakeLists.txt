@@ -131,7 +131,7 @@ if( TubeTK_USE_CPPCHECK )
   set( cppcheck_suppressions_file
     "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheck.supp" )
   set( cppcheck_cmd_prefix
-    "${CPPCHECK_EXECUTABLE}" -q --xml --suppressions "${cppcheck_suppressions_file}" )
+    "${CPPCHECK_EXECUTABLE}" -q --xml --inline-suppr --suppressions "${cppcheck_suppressions_file}" )
   add_test( CppcheckStyle
     ${cppcheck_cmd_prefix} --enable=style ${cppcheck_paths_to_check} )
   add_test( CppcheckPerformance

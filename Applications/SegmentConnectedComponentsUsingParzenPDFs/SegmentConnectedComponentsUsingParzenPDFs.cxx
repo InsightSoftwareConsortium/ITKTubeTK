@@ -55,6 +55,7 @@ void GetImageType (std::string fileName,
 
 // Description:
 // Get the PixelTypes and ComponentTypes from fileNames
+// cppcheck-suppress unusedFunction
 void GetImageTypes (std::vector<std::string> fileNames,
   std::vector<itk::ImageIOBase::IOPixelType> &pixelTypes,
   std::vector<itk::ImageIOBase::IOComponentType> &componentTypes)

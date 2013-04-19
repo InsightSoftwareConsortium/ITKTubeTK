@@ -263,11 +263,8 @@ GetWhitenStdDevs( void ) const
   return m_WhitenStdDevs;
 }
 
-//
-//
-//
-bool MetaLDA::
-CanRead( const char *_headerName ) const
+//cppcheck-suppress unusedFunction
+bool MetaLDA::CanRead( const char *_headerName ) const
 {
   // First check the extension
   METAIO_STL::string fname = _headerName;
@@ -340,8 +337,8 @@ Read( const char *_headerName )
 }
 
 
-bool MetaLDA::
-CanReadStream( METAIO_STREAM::ifstream * _stream ) const
+// cppcheck-suppress unusedFunction
+bool MetaLDA::CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
   if( !strncmp( MET_ReadForm( *_stream ).c_str(), "LDA", 3 ) )
     {
@@ -390,13 +387,9 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   return true;
 }
 
-//
-//
-//
-//
 
-bool MetaLDA::
-Write( const char *_headName )
+//cppcheck-suppress unusedFunction
+bool MetaLDA::Write( const char *_headName )
 {
   if( _headName != NULL && strlen( _headName ) > 1 )
     {
