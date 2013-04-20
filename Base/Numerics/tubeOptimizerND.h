@@ -111,6 +111,11 @@ protected:
   UserFunc< vnl_vector<double>, double >               * m_FuncValND;
   UserFunc< vnl_vector<double>, vnl_vector<double> >   * m_FuncDerivND;
 
+private:
+
+    /** Prevent copying and assignment */
+    OptimizerND(const OptimizerND &);
+    OptimizerND& operator=(const OptimizerND &);
 };
 
 } // end namespace tube

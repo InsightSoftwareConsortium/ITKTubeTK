@@ -311,7 +311,6 @@ TImage * image )
 }
 
 
-//cppcheck-suppress unusedFunction
 int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
                                                       int argc, char* argv [] )
 {

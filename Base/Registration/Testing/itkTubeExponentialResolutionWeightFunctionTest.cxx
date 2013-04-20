@@ -26,7 +26,7 @@ limitations under the License.
 
 #include <fstream>
 
-// cppcheck-suppress unusedFunction
+
 int itkTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
 {
   if( argc < 2 )

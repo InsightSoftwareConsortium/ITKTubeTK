@@ -41,7 +41,7 @@ writeElement( std::ofstream & outputFile,
   outputFile << pointWeight << delim;
 }
 
-// cppcheck-suppress unusedFunction
+
 int itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest( int argc, char * argv[] )
 {
   if( argc < 2 )
