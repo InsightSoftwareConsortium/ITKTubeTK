@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkTubeNJetLDAGenerator_h
-#define __itkTubeNJetLDAGenerator_h
+#ifndef __itkTubeNJetFeatureVectorGenerator_h
+#define __itkTubeNJetFeatureVectorGenerator_h
 
 #include <vector>
 
@@ -30,7 +30,7 @@ limitations under the License.
 
 #include "itkImage.h"
 
-#include "itkTubeLDAGenerator.h"
+#include "itkTubeFeatureVectorGenerator.h"
 
 namespace itk
 {
@@ -38,93 +38,81 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT, class LabelmapT >
-class NJetLDAGenerator :
-  public LDAGenerator< Image< float, ImageT::ImageDimension >, LabelmapT >
+template< class ImageT >
+class NJetFeatureVectorGenerator :
+  public FeatureVectorGenerator<
+    Image< typename ImageT::PixelType, ImageT::ImageDimension > >
 {
 public:
 
-  typedef NJetLDAGenerator                     Self;
-  typedef LDAGenerator< ImageT, LabelmapT >    Superclass;
+  typedef NJetFeatureVectorGenerator           Self;
+  typedef FeatureVectorGenerator< ImageT >     Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( NJetLDAGenerator, LDAGenerator );
+  itkTypeMacro( NJetFeatureVectorGenerator, FeatureVectorGenerator );
 
   itkNewMacro( Self );
 
   //
   // Custom Typedefs
   //
-  typedef ImageT                                          NJetImageType;
-  typedef std::vector< typename NJetImageType::Pointer >  NJetImageListType;
-
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef typename Superclass::MaskImageType      MaskImageType;
+  typedef typename Superclass::FeatureValueType   FeatureValueType;
 
-  typedef typename Superclass::FeatureType        FeatureType;
   typedef typename Superclass::FeatureVectorType  FeatureVectorType;
 
-  typedef typename Superclass::LDAVectorType      LDAVectorType;
-  typedef typename Superclass::LDAImageType       LDAImageType;
+  typedef typename Superclass::ImageType          ImageType;
+
+  typedef typename Superclass::IndexType          IndexType;
 
   typedef std::vector< double >                   NJetScalesType;
 
   //
   // Methods
   //
-  unsigned int GetNumberOfFeatures( void );
+  virtual unsigned int GetNumberOfFeatures( void ) const;
 
   void SetZeroScales( const NJetScalesType & scales );
   void SetFirstScales( const NJetScalesType & scales );
   void SetSecondScales( const NJetScalesType & scales );
   void SetRidgeScales( const NJetScalesType & scales );
 
-  NJetScalesType & GetZeroScales( void );
-  NJetScalesType & GetFirstScales( void );
-  NJetScalesType & GetSecondScales( void );
-  NJetScalesType & GetRidgeScales( void );
+  NJetScalesType & GetZeroScales( void ) const;
+  NJetScalesType & GetFirstScales( void ) const;
+  NJetScalesType & GetSecondScales( void ) const;
+  NJetScalesType & GetRidgeScales( void ) const;
 
-  void SetForceIntensityConsistency( bool _forceIntensity );
-  bool GetForceIntensityConsistency( void );
   void SetForceOrientationInsensitivity( bool _forceOrientation );
-  bool GetForceOrientationInsensitivity( void );
+  bool GetForceOrientationInsensitivity( void ) const;
 
-  void SetNJetImage( typename NJetImageType::Pointer img );
-  void AddNJetImage( typename NJetImageType::Pointer img );
-  virtual typename NJetImageType::Pointer GetNJetImage( unsigned int num );
-  virtual unsigned int GetNumberOfNJetImages( void );
+  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const;
 
-  void Update();
-  void UpdateLDAImages();
+  virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
+    unsigned int fNum ) const;
 
 protected:
 
-  NJetLDAGenerator( void );
-  virtual ~NJetLDAGenerator( void );
-
-  void GenerateFeatureImages( void );
-
-  virtual void GenerateLDA( void );
+  NJetFeatureVectorGenerator( void );
+  virtual ~NJetFeatureVectorGenerator( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  NJetLDAGenerator( const Self & );          // Purposely not implemented
-  void operator = ( const Self & );      // Purposely not implemented
+  // Purposely not implemented
+  NJetFeatureVectorGenerator( const Self & );
+  void operator = ( const Self & );
 
   NJetScalesType m_ZeroScales;
   NJetScalesType m_FirstScales;
   NJetScalesType m_SecondScales;
   NJetScalesType m_RidgeScales;
 
-  bool m_ForceIntensityConsistency;
   bool m_ForceOrientationInsensitivity;
 
-  NJetImageListType m_NJetImageList;
 };
 
 }
@@ -132,7 +120,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTubeNJetLDAGenerator.txx"
+#include "itkTubeNJetFeatureVectorGenerator.txx"
 #endif
 
 #endif

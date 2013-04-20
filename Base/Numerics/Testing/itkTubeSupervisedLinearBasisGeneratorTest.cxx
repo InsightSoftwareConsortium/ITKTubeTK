@@ -33,16 +33,16 @@ limitations under the License.
 
 #include "itkRecursiveGaussianImageFilter.h"
 
-#include "itkTubeLDAGenerator.h"
+#include "itkTubeSupervisedLinearBasisGenerator.h"
 
-int itkTubeLDAGeneratorTest(int argc, char* argv [] )
+int itkTubeSupervisedLinearBasisGeneratorTest(int argc, char* argv [] )
 {
   if( argc != 5 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage inputMask outputLDA0Image outputLDA1Image"
+      << " inputImage inputMask outputBasis0Image outputBasis1Image"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -62,7 +62,8 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
 
 
   // Declare the type for the Filter
-  typedef itk::tube::LDAGenerator< ImageType, ImageType > FilterType;
+  typedef itk::tube::SupervisedLinearBasisGenerator< ImageType,
+    ImageType > FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -147,19 +148,20 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   filter->AddObjectId( 127 );
   filter->Update();
   filter->SetLabelmap( NULL );
-  filter->UpdateLDAImages();
+  filter->UpdateBasisImages();
 
-  std::cout << "Number of LDA = " << filter->GetNumberOfLDA() << std::endl;
-  for( unsigned int i=0; i<filter->GetNumberOfLDA(); i++ )
+  std::cout << "Number of Basis = " << filter->GetNumberOfBasis()
+    << std::endl;
+  for( unsigned int i=0; i<filter->GetNumberOfBasis(); i++ )
     {
-    std::cout << "LDA" << i << " = " << filter->GetLDAValue(i) << " : "
-      << filter->GetLDAVector(i) << std::endl;
+    std::cout << "Basis" << i << " = " << filter->GetBasisValue(i) << " : "
+      << filter->GetBasisVector(i) << std::endl;
     }
 
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[3] );
   writer->SetUseCompression( true );
-  writer->SetInput( filter->GetLDAImage(0) );
+  writer->SetInput( filter->GetBasisImage(0) );
   try
     {
     writer->Update();
@@ -173,7 +175,7 @@ int itkTubeLDAGeneratorTest(int argc, char* argv [] )
   WriterType::Pointer writer2 = WriterType::New();
   writer2->SetFileName( argv[4] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetLDAImage(1) );
+  writer2->SetInput( filter->GetBasisImage(1) );
   try
     {
     writer2->Update();

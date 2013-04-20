@@ -30,8 +30,7 @@ limitations under the License.
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
 #include "itkTubeBlurImageFunction.h"
-#include "itkTubeLDAGenerator.h"
-#include "itkTubeNJetLDAGenerator.h"
+#include "itkTubeNJetFeatureVectorGenerator.h"
 #include "itkTubeNJetImageFunction.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
@@ -66,17 +65,11 @@ int tubeBaseNumericsPrintTest( int, char* [] )
             << njetObject
             << std::endl;
 
-  itk::tube::LDAGenerator< ImageType, ImageType >::Pointer
-    ldaGenerator =
-    itk::tube::LDAGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------LDAGenerator"
-    << ldaGenerator << std::endl;
-
-  itk::tube::NJetLDAGenerator< ImageType, ImageType >::Pointer
-    njetLDAGenerator =
-    itk::tube::NJetLDAGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------LDANJetGenerator"
-    << njetLDAGenerator << std::endl;
+  itk::tube::NJetFeatureVectorGenerator< ImageType >::Pointer
+    njetFeatureVectorGenerator =
+    itk::tube::NJetFeatureVectorGenerator< ImageType >::New();
+  std::cout << "-------------NJetFeatureVectorGenerator"
+    << njetFeatureVectorGenerator << std::endl;
 
   itk::Statistics::VectorImageToListGenerator< VectorImageType,
       ImageType >::Pointer

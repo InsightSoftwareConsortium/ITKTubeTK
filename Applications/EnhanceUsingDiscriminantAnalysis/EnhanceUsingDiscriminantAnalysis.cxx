@@ -37,7 +37,7 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"
-#include "itkTubeLDAGenerator.h"
+#include "itkTubeSupervisedLinearBasisGenerator.h"
 #include "itkTubeMetaLDA.h"
 
 // Must do a forward declaraction of DoIt before including
@@ -67,15 +67,15 @@ int DoIt( int argc, char * argv[] )
   typedef pixelT                                   InputPixelType;
   typedef itk::Image< InputPixelType, dimensionT > InputImageType;
   typedef itk::Image< unsigned short, dimensionT > MaskImageType;
-  typedef itk::Image< float, dimensionT >          LDAImageType;
+  typedef itk::Image< float, dimensionT >          BasisImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
-  typedef itk::ImageFileWriter< LDAImageType >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< BasisImageType >     BasisImageWriterType;
 
-  typedef itk::tube::LDAGenerator< InputImageType, MaskImageType >
-    LDAGeneratorType;
-  typename LDAGeneratorType::Pointer ldaGenerator = LDAGeneratorType::New();
+  typedef itk::tube::SupervisedLinearBasisGenerator< InputImageType, MaskImageType >
+    SupervisedLinearBasisGeneratorType;
+  typename SupervisedLinearBasisGeneratorType::Pointer ldaGenerator = SupervisedLinearBasisGeneratorType::New();
 
   timeCollector.Start( "LoadData" );
 
@@ -119,19 +119,19 @@ int DoIt( int argc, char * argv[] )
     ldaGenerator->SetPerformPCA( true );
     }
 
-  if( loadLDAInfo.size() > 0 )
+  if( loadBasisInfo.size() > 0 )
     {
-    timeCollector.Start( "LoadLDA" );
+    timeCollector.Start( "LoadBasis" );
 
-    itk::tube::MetaLDA ldaReader( loadLDAInfo.c_str() );
+    itk::tube::MetaLDA ldaReader( loadBasisInfo.c_str() );
     ldaReader.Read();
 
-    ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
-    ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
+    ldaGenerator->SetBasisValues( ldaReader.GetLDAValues() );
+    ldaGenerator->SetBasisMatrix( ldaReader.GetLDAMatrix() );
     ldaGenerator->SetWhitenMeans( ldaReader.GetWhitenMeans() );
     ldaGenerator->SetWhitenStdDevs( ldaReader.GetWhitenStdDevs() );
 
-    timeCollector.Stop( "LoadLDA" );
+    timeCollector.Stop( "LoadBasis" );
     }
   else
     {
@@ -144,42 +144,42 @@ int DoIt( int argc, char * argv[] )
 
   if( outputBase.size() > 0 )
     {
-    timeCollector.Start( "SaveLDAImages" );
+    timeCollector.Start( "SaveBasisImages" );
 
-    unsigned int numLDA = ldaGenerator->GetNumberOfLDA();
-    if( useNumberOfLDA>0 && useNumberOfLDA < (int)numLDA )
+    unsigned int numBasis = ldaGenerator->GetNumberOfBasis();
+    if( useNumberOfBasis>0 && useNumberOfBasis < (int)numBasis )
       {
-      numLDA = useNumberOfLDA;
+      numBasis = useNumberOfBasis;
       }
-    std::cout << "number of lda = " << numLDA << std::endl;
+    std::cout << "number of lda = " << numBasis << std::endl;
 
-    ldaGenerator->UpdateLDAImages();
+    ldaGenerator->UpdateBasisImages();
 
-    for( unsigned int i=0; i<numLDA; i++ )
+    for( unsigned int i=0; i<numBasis; i++ )
       {
-      typename LDAImageWriterType::Pointer ldaImageWriter =
-        LDAImageWriterType::New();
+      typename BasisImageWriterType::Pointer ldaImageWriter =
+        BasisImageWriterType::New();
       std::string fname = outputBase;
       char c[80];
       sprintf( c, ".lda%02d.mha", i );
       fname += std::string( c );
       ldaImageWriter->SetUseCompression( true );
       ldaImageWriter->SetFileName( fname.c_str() );
-      ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( i ) );
+      ldaImageWriter->SetInput( ldaGenerator->GetBasisImage( i ) );
       ldaImageWriter->Update();
       }
-    timeCollector.Stop( "SaveLDAImages" );
+    timeCollector.Stop( "SaveBasisImages" );
     }
 
-  if( saveLDAInfo.size() > 0 )
+  if( saveBasisInfo.size() > 0 )
     {
-    timeCollector.Start( "SaveLDA" );
-    itk::tube::MetaLDA ldaWriter( ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix(),
+    timeCollector.Start( "SaveBasis" );
+    itk::tube::MetaLDA ldaWriter( ldaGenerator->GetBasisValues(),
+      ldaGenerator->GetBasisMatrix(),
       ldaGenerator->GetWhitenMeans(),
       ldaGenerator->GetWhitenStdDevs() );
-    ldaWriter.Write( saveLDAInfo.c_str() );
-    timeCollector.Stop( "SaveLDA" );
+    ldaWriter.Write( saveBasisInfo.c_str() );
+    timeCollector.Stop( "SaveBasis" );
     }
 
   timeCollector.Report();

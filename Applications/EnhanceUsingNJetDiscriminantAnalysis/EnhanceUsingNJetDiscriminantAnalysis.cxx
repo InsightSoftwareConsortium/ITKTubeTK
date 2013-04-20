@@ -37,7 +37,7 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"
-#include "itkTubeNJetLDAGenerator.h"
+#include "itkTubeNJetSupervisedLinearBasisGenerator.h"
 #include "itkTubeMetaNJetLDA.h"
 
 // Must do a forward declaraction of DoIt before including
@@ -52,13 +52,13 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template < class imageT >
-void WriteLDA( const typename imageT::Pointer & img,
+void WriteBasis( const typename imageT::Pointer & img,
   std::string base, std::string ext, int num )
 {
-  typedef itk::ImageFileWriter< imageT >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< imageT >     BasisImageWriterType;
 
-  typename LDAImageWriterType::Pointer ldaImageWriter =
-    LDAImageWriterType::New();
+  typename BasisImageWriterType::Pointer ldaImageWriter =
+    BasisImageWriterType::New();
   std::string fname = base;
   char c[80];
   sprintf( c, ext.c_str(), num );
@@ -85,15 +85,15 @@ int DoIt( int argc, char * argv[] )
   typedef pixelT                                   InputPixelType;
   typedef itk::Image< InputPixelType, dimensionT > InputImageType;
   typedef itk::Image< unsigned short, dimensionT > MaskImageType;
-  typedef itk::Image< float, dimensionT >          LDAImageType;
+  typedef itk::Image< float, dimensionT >          BasisImageType;
 
-  typedef itk::ImageFileReader< LDAImageType >     ImageReaderType;
+  typedef itk::ImageFileReader< BasisImageType >     ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
-  typedef itk::ImageFileWriter< LDAImageType >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< BasisImageType >     BasisImageWriterType;
 
-  typedef itk::tube::NJetLDAGenerator< LDAImageType, MaskImageType >
-    LDAGeneratorType;
-  typename LDAGeneratorType::Pointer ldaGenerator = LDAGeneratorType::New();
+  typedef itk::tube::NJetSupervisedLinearBasisGenerator< BasisImageType, MaskImageType >
+    SupervisedLinearBasisGeneratorType;
+  typename SupervisedLinearBasisGeneratorType::Pointer ldaGenerator = SupervisedLinearBasisGeneratorType::New();
 
   timeCollector.Start( "LoadData" );
 
@@ -137,11 +137,11 @@ int DoIt( int argc, char * argv[] )
     ldaGenerator->SetPerformPCA( true );
     }
 
-  if( loadLDAInfo.size() > 0 )
+  if( loadBasisInfo.size() > 0 )
     {
-    timeCollector.Start( "LoadLDA" );
+    timeCollector.Start( "LoadBasis" );
 
-    itk::tube::MetaNJetLDA ldaReader( loadLDAInfo.c_str() );
+    itk::tube::MetaNJetLDA ldaReader( loadBasisInfo.c_str() );
     ldaReader.Read();
 
     ldaGenerator->SetZeroScales( ldaReader.GetZeroScales() );
@@ -150,13 +150,13 @@ int DoIt( int argc, char * argv[] )
     ldaGenerator->SetRidgeScales( ldaReader.GetRidgeScales() );
     ldaGenerator->SetWhitenMeans( ldaReader.GetWhitenMeans() );
     ldaGenerator->SetWhitenStdDevs( ldaReader.GetWhitenStdDevs() );
-    ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
-    ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
+    ldaGenerator->SetBasisValues( ldaReader.GetLDAValues() );
+    ldaGenerator->SetBasisMatrix( ldaReader.GetLDAMatrix() );
 
     ldaGenerator->SetForceIntensityConsistency( !forceSignOff );
     ldaGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
-    timeCollector.Stop( "LoadLDA" );
+    timeCollector.Stop( "LoadBasis" );
     }
   else
     {
@@ -177,48 +177,48 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Update" );
     }
 
-  unsigned int numLDA = ldaGenerator->GetNumberOfLDA();
-  if( useNumberOfLDA > 0 && useNumberOfLDA < (int)numLDA )
+  unsigned int numBasis = ldaGenerator->GetNumberOfBasis();
+  if( useNumberOfBasis > 0 && useNumberOfBasis < (int)numBasis )
     {
-    numLDA = useNumberOfLDA;
+    numBasis = useNumberOfBasis;
     }
 
   if( outputBase.size() > 0 )
     {
-    timeCollector.Start( "SaveLDAImages" );
+    timeCollector.Start( "SaveBasisImages" );
 
-    ldaGenerator->UpdateLDAImages();
+    ldaGenerator->UpdateBasisImages();
 
-    for( unsigned int i=0; i<numLDA; i++ )
+    for( unsigned int i=0; i<numBasis; i++ )
       {
-      typename LDAImageWriterType::Pointer ldaImageWriter =
-        LDAImageWriterType::New();
+      typename BasisImageWriterType::Pointer ldaImageWriter =
+        BasisImageWriterType::New();
       std::string fname = outputBase;
       char c[80];
       sprintf( c, ".lda%02d.mha", i );
       fname += std::string( c );
       ldaImageWriter->SetUseCompression( true );
       ldaImageWriter->SetFileName( fname.c_str() );
-      ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( i ) );
+      ldaImageWriter->SetInput( ldaGenerator->GetBasisImage( i ) );
       ldaImageWriter->Update();
       }
-    timeCollector.Stop( "SaveLDAImages" );
+    timeCollector.Stop( "SaveBasisImages" );
     }
 
-  if( saveLDAInfo.size() > 0 )
+  if( saveBasisInfo.size() > 0 )
     {
-    timeCollector.Start( "SaveLDA" );
+    timeCollector.Start( "SaveBasis" );
     itk::tube::MetaNJetLDA ldaWriter(
       ldaGenerator->GetZeroScales(),
       ldaGenerator->GetFirstScales(),
       ldaGenerator->GetSecondScales(),
       ldaGenerator->GetRidgeScales(),
-      ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix(),
+      ldaGenerator->GetBasisValues(),
+      ldaGenerator->GetBasisMatrix(),
       ldaGenerator->GetWhitenMeans(),
       ldaGenerator->GetWhitenStdDevs() );
-    ldaWriter.Write( saveLDAInfo.c_str() );
-    timeCollector.Stop( "SaveLDA" );
+    ldaWriter.Write( saveBasisInfo.c_str() );
+    timeCollector.Stop( "SaveBasis" );
     }
 
   if( saveFeatureImages.size() > 0 )
@@ -226,7 +226,7 @@ int DoIt( int argc, char * argv[] )
     unsigned int numFeatures = ldaGenerator->GetNumberOfFeatures();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
-      WriteLDA< LDAImageType >( ldaGenerator->GetFeatureImage( i ),
+      WriteBasis< BasisImageType >( ldaGenerator->GetFeatureImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }
     }

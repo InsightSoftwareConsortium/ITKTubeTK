@@ -48,9 +48,7 @@ set( tubeBaseNumerics_SRCS
   itkJointHistogramImageFunctionTest.cxx
   itkTubeNJetImageFunctionTest.cxx
   itkTubeBlurImageFunctionTest.cxx
-  itkTubeLDAGeneratorTest.cxx
-  itkTubeNJetLDAGeneratorTest.cxx
-  itkTubeNJetLDAGenerator2FTest.cxx
+  itkTubeNJetFeatureVectorGeneratorTest.cxx
   itkVotingResampleImageFunctionTest.cxx
   tubeMatrixMathTest.cxx
   tubeOptBrentNDTest.cxx
@@ -268,35 +266,15 @@ MIDAS_ADD_TEST( itkTubeBlurImageFunctionTest
     ${TEMP}/itkTubeBlurImageFunctionTest.mha
   )
 
-MIDAS_ADD_TEST( itkTubeLDAGeneratorTest
+#MIDAS_ADD_TEST( itkTubeNJetFeatureVectorGeneratorTest
+  #${BASE_NUMERICS_TESTS}
+  #--compare MIDAS{itkTubeNJetFeatureVectorGeneratorTest_lda0.mha.md5}
+            #${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_lda0.mha
+MIDAS_ADD_TEST( itkTubeNJetFeatureVectorGeneratorTest
   ${BASE_NUMERICS_TESTS}
-  --compare MIDAS{itkTubeLDAGeneratorTest_lda0.mha.md5}
-            ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-  itkTubeLDAGeneratorTest
+  itkTubeNJetFeatureVectorGeneratorTest
     MIDAS{ES0015_Large_Subs.mha.md5}
     MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
-    ${TEMP}/itkTubeLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeLDAGeneratorTest_lda1.mha
-  )
-
-MIDAS_ADD_TEST( itkTubeNJetLDAGeneratorTest
-  ${BASE_NUMERICS_TESTS}
-  --compare MIDAS{itkTubeNJetLDAGeneratorTest_lda0.mha.md5}
-            ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-  itkTubeNJetLDAGeneratorTest
-    MIDAS{ES0015_Large_Subs.mha.md5}
-    MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeNJetLDAGeneratorTest_lda1.mha
-  )
-
-MIDAS_ADD_TEST( itkTubeNJetLDAGenerator2FTest
-  ${BASE_NUMERICS_TESTS}
-  --compare MIDAS{itkTubeNJetLDAGeneratorTest_lda0.mha.md5}
-            ${TEMP}/itkTubeNJetLDAGenerator2FTest_lda0.mha
-  itkTubeNJetLDAGenerator2FTest
-    MIDAS{ES0015_Large_Subs.mha.md5}
-    MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
-    ${TEMP}/itkTubeNJetLDAGenerator2FTest_lda0.mha
-    ${TEMP}/itkTubeNJetLDAGenerator2FTest_lda1.mha
+    ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_lda1.mha
   )

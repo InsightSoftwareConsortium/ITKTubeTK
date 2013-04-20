@@ -39,61 +39,64 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class RidgeSeedGenerator :
-  public LDAGenerator< itk::Image< float, ImageT::ImageDimension >,
-  LabelmapT >
+class ITK_EXPORT RidgeSeedGenerator :
+  public ImageToImageFilter< ImageT,
+           Image< float, ImageT::ImageDimension > >
 {
 public:
 
   typedef RidgeSeedGenerator                   Self;
-  typedef LDAGenerator< ImageT, LabelmapT >    Superclass;
+  typedef ImageToImageFilter< ImageT, LabelmapT >    Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( RidgeSeedGenerator, LDAGenerator );
+  itkTypeMacro( RidgeSeedGenerator, ImageToImageFilter );
 
   itkNewMacro( Self );
 
   //
   // Custom Typedefs
   //
-  typedef ImageT                                     RidgeImageType;
+  typedef ImageT                                     InputImageType;
+  typedef Image< float, Image::ImageDimension >      OutputImageType;
+
+  typedef typename LabelmapT                         MaskImageType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef typename Superclass::MaskImageType         MaskImageType;
+  typedef LDAGenerator< OutputImageType, LabelmapT >    LDAGeneratorType;
 
-  typedef typename Superclass::FeatureType           FeatureType;
-  typedef typename Superclass::FeatureVectorType     FeatureVectorType;
-  typedef typename Superclass::ObjectIdType          ObjectIdType;
-  typedef typename Superclass::LDAValuesType         LDAValuesType;
-  typedef typename Superclass::LDAVectorType         LDAVectorType;
-  typedef typename Superclass::LDAMatrixType         LDAMatrixType;
-  typedef typename Superclass::LDAImageType          LDAImageType;
+  typedef typename LDAGeneratorType::FeatureType        FeatureType;
+  typedef typename LDAGeneratorType::FeatureVectorType  FeatureVectorType;
+  typedef typename LDAGeneratorType::ObjectIdType       ObjectIdType;
 
-  typedef std::vector< double >                      RidgeScalesType;
+  typedef typename LDAGeneratorType::LDAValuesType      LDAValuesType;
+  typedef typename LDAGeneratorType::LDAVectorType      LDAVectorType;
+  typedef typename LDAGeneratorType::LDAMatrixType      LDAMatrixType;
+  typedef typename LDAGeneratorType::LDAImageType       LDAImageType;
+
+  typedef std::vector< double >                         RidgeScalesType;
 
   //
   // Methods
   //
-  void SetRidgeImage( typename RidgeImageType::Pointer img );
+  void SetInputImage( typename RidgeImageType::Pointer img );
   typename RidgeImageType::Pointer GetRidgeImage( void );
 
   virtual unsigned int GetNumberOfFeatures( void );
 
   void SetIntensityRange( float intensityMin, float intensityMax );
-  float GetIntensityMin( void );
-  float GetIntensityMax( void );
+  itkSetMacro( IntensityMin, float );
+  itkGetMacro( IntensityMin, float );
+  itkSetMacro( IntensityMax, float );
+  itkGetMacro( IntensityMax, float );
 
   void SetIntensityRangeByPercentile( float percentile,
     bool findBrightPoints=true );
 
-  void SetScales( const RidgeScalesType & scales );
-
-  RidgeScalesType & GetScales( void );
-
-  void Update();
+  itkSetMacro( Scales, RidgeScalesType );
+  itkGetMacro( Scales, RidgeScalesType );
 
   void UpdateLDAImages();
 
@@ -104,15 +107,9 @@ protected:
 
   typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
 
-  //
-  // Methods from LDAGenerator
-  //
-  virtual void GenerateLDA( void );
+  void GenerateInputRequestedRegion();
 
-  //
-  // Methods
-  //
-  void GenerateFeatureImages( void );
+  void GenerateData();
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -121,7 +118,7 @@ private:
   RidgeSeedGenerator( const Self & );    // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-  typename RidgeImageType::Pointer   m_RidgeImage;
+  LDAGenerator::Pointer              m_LDAGenerator;
 
   double                             m_IntensityMin;
   double                             m_IntensityMax;

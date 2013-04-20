@@ -31,6 +31,7 @@ limitations under the License.
 #include "itkTubePDFSegmenter.h"
 #include "itkTubeRadiusExtractor.h"
 #include "itkTubeRidgeExtractor.h"
+//#include "itkTubeRidgeSeedSupervisedLinearBasisGenerator.h"
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
 

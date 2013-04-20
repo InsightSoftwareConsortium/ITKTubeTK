@@ -39,6 +39,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Utilities
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Segmentation
     ${TubeTK_SOURCE_DIR}/Base/IO
   )
 

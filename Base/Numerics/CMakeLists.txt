@@ -30,10 +30,9 @@ set( TubeTK_Base_Numerics_H_Files
   itkImageRegionMomentsCalculator.h
   itkJointHistogramImageFunction.h
   itkTubeBlurImageFunction.h
-  itkTubeLDAGenerator.h
+  itkTubeSupervisedLinearBasisGenerator.h
   itkTubeNJetImageFunction.h
-  itkTubeNJetLDAGenerator2F.h
-  itkTubeNJetLDAGenerator.h
+  itkTubeNJetSupervisedLinearBasisGenerator.h
   itkVectorImageToListGenerator.h
   itkVotingResampleImageFunction.h
   tubeMatrixMath.h
@@ -52,9 +51,9 @@ set( TubeTK_Base_Numerics_H_Files
 set( TubeTK_Base_Numerics_TXX_Files
   itkImageRegionMomentsCalculator.txx
   itkJointHistogramImageFunction.txx
-  itkTubeLDAGenerator.txx
+  itkTubeSupervisedLinearBasisGenerator.txx
   itkTubeNJetImageFunction.txx
-  itkTubeNJetLDAGenerator.txx
+  itkTubeNJetSupervisedLinearBasisGenerator.txx
   itkVectorImageToListGenerator.txx
   itkVotingResampleImageFunction.txx
   tubeTubeMath.txx
@@ -66,7 +65,6 @@ include_directories(
   )
 
 set( TubeTK_Base_Numerics_SRCS
-  itkTubeNJetLDAGenerator2F.cxx
   tubeOptBrent1D.cxx
   tubeOptGoldenMean1D.cxx
   tubeOptParabolicFit1D.cxx

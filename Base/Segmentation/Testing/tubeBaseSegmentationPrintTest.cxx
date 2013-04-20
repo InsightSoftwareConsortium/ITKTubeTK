@@ -33,7 +33,7 @@ limitations under the License.
 #include "itkTubePDFSegmenter.h"
 #include "itkTubeRadiusExtractor.h"
 #include "itkTubeRidgeExtractor.h"
-#include "itkTubeRidgeSeedGenerator.h"
+// #include "itkTubeRidgeSeedSupervisedLinearBasisGenerator.h"
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
 
@@ -73,11 +73,11 @@ int tubeBaseSegmentationPrintTest( int, char* [] )
   std::cout << "-------------itkTubeRidgeExtractor" << ridgeObject
     << std::endl;
 
-  itk::tube::RidgeSeedGenerator< ImageType, ImageType >::Pointer
-    ridgeSeedObject =
-    itk::tube::RidgeSeedGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------itkTubeRidgeSeedGenerator"
-    << ridgeSeedObject << std::endl;
+  // itk::tube::RidgeSeedSupervisedLinearBasisGenerator< ImageType, ImageType >::Pointer
+    // ridgeSeedSupervisedLinearBasisObject =
+    // itk::tube::RidgeSeedSupervisedLinearBasisGenerator< ImageType, ImageType >::New();
+  // std::cout << "-------------itkTubeRidgeSeedSupervisedLinearBasisGenerator"
+    // << ridgeSeedSupervisedLinearBasisObject << std::endl;
 
   itk::tube::TubeExtractor< ImageType >::Pointer
     tubeObject = itk::tube::TubeExtractor< ImageType >::New();

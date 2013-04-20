@@ -44,7 +44,7 @@ set( TEXTCOMPARE_EXE
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
-               --saveVesselSeedInfo ${TEMP}/${MODULE_NAME}Test1.vsi
+               --saveTubeSeedInfo ${TEMP}/${MODULE_NAME}Test1.mtsi
                --labelmap MIDAS{im0001.vk.mask.mha.md5}
                MIDAS{im0001.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )

@@ -37,8 +37,8 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"
-#include "itkTubeNJetLDAGenerator.h"
-#include "itkTubeMetaNJetLDA.h"
+#include "itkTubeMetaRidgeSeed.h"
+#include "itkTubeRidgeSeedSupervisedLinearBasisGenerator.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -52,21 +52,21 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template < class imageT >
-void WriteLDA( const typename imageT::Pointer & img,
+void WriteRidgeSeed( const typename imageT::Pointer & img,
   std::string base, std::string ext, int num )
 {
-  typedef itk::ImageFileWriter< imageT >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< imageT >     RidgeSeedImageWriterType;
 
-  typename LDAImageWriterType::Pointer ldaImageWriter =
-    LDAImageWriterType::New();
+  typename RidgeSeedImageWriterType::Pointer rsImageWriter =
+    RidgeSeedImageWriterType::New();
   std::string fname = base;
   char c[80];
   sprintf( c, ext.c_str(), num );
   fname += std::string( c );
-  ldaImageWriter->SetUseCompression( true );
-  ldaImageWriter->SetFileName( fname.c_str() );
-  ldaImageWriter->SetInput( img );
-  ldaImageWriter->Update();
+  rsImageWriter->SetUseCompression( true );
+  rsImageWriter->SetFileName( fname.c_str() );
+  rsImageWriter->SetInput( img );
+  rsImageWriter->Update();
 }
 
 template< class pixelT, unsigned int dimensionT >
@@ -81,15 +81,16 @@ int DoIt( int argc, char * argv[] )
   typedef pixelT                                   InputPixelType;
   typedef itk::Image< InputPixelType, dimensionT > InputImageType;
   typedef itk::Image< unsigned short, dimensionT > MapImageType;
-  typedef itk::Image< float, dimensionT >          LDAImageType;
+  typedef itk::Image< float, dimensionT >          RidgeSeedImageType;
 
-  typedef itk::ImageFileReader< LDAImageType >     ImageReaderType;
+  typedef itk::ImageFileReader< RidgeSeedImageType >     ImageReaderType;
   typedef itk::ImageFileReader< MapImageType >     MapReaderType;
-  typedef itk::ImageFileWriter< LDAImageType >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< RidgeSeedImageType >     RidgeSeedImageWriterType;
 
-  typedef itk::tube::NJetLDAGenerator< LDAImageType, MapImageType >
-    LDAGeneratorType;
-  typename LDAGeneratorType::Pointer ldaGenerator = LDAGeneratorType::New();
+  typedef itk::tube::RidgeSeedSupervisedLinearBasisGenerator<
+    RidgeSeedImageType, MapImageType >             RidgeSeedGeneratorType;
+  typename RidgeSeedGeneratorType::Pointer rsGenerator =
+    RidgeSeedGeneratorType::New();
 
   timeCollector.Start( "LoadData" );
 
@@ -97,7 +98,7 @@ int DoIt( int argc, char * argv[] )
   reader = ImageReaderType::New();
   reader->SetFileName( inputImage.c_str() );
   reader->Update();
-  ldaGenerator->SetFeatureImage( reader->GetOutput() );
+  rsGenerator->SetRidgeImage( reader->GetOutput() );
 
   timeCollector.Stop( "LoadData" );
 
@@ -107,8 +108,8 @@ int DoIt( int argc, char * argv[] )
     typename MapReaderType::Pointer  inMapReader = MapReaderType::New();
     inMapReader->SetFileName( labelmap.c_str() );
     inMapReader->Update();
-    ldaGenerator->SetLabelmap( inMapReader->GetOutput() );
-    ldaGenerator->SetObjectId( objectId );
+    rsGenerator->SetLabelmap( inMapReader->GetOutput() );
+    rsGenerator->SetObjectId( objectId );
     timeCollector.Stop( "LoadLabelMap" );
     }
 
@@ -116,15 +117,14 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "LoadTubeSeed" );
 
-    itk::tube::MetaNJetLDA ldaReader( loadTubeSeedInfo.c_str() );
-    ldaReader.Read();
+    itk::tube::MetaRidgeSeed rsReader( loadTubeSeedInfo.c_str() );
+    rsReader.Read();
 
-    ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
-    ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
-    ldaGenerator->SetZeroScales( ldaReader.GetZeroScales() );
-    ldaGenerator->SetFirstScales( ldaReader.GetFirstScales() );
-    ldaGenerator->SetSecondScales( ldaReader.GetSecondScales() );
-    ldaGenerator->SetRidgeScales( ldaReader.GetRidgeScales() );
+    rsGenerator->SetBasisValues( rsReader.GetLDAValues() );
+    rsGenerator->SetBasisMatrix( rsReader.GetLDAMatrix() );
+    rsGenerator->SetWhitenMeans( rsReader.GetWhitenMeans() );
+    rsGenerator->SetWhitenStdDevs( rsReader.GetWhitenStdDevs() );
+    rsGenerator->SetScales( rsReader.GetRidgeSeedScales() );
 
     timeCollector.Stop( "LoadTubeSeed" );
     }
@@ -137,54 +137,45 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
 
+    rsGenerator->SetScales( ridgeScales );
 
-    int numScales = ridgeScales.size();
-
-    typename LDAGeneratorType::NJetScalesType midScale(1);
-    midScale[0] = ridgeScales[(int)(numScales/2)];
-    ldaGenerator->SetZeroScales( midScale );
-    ldaGenerator->SetFirstScales( midScale );
-    ldaGenerator->SetRidgeScales( ridgeScales );
-
-    ldaGenerator->SetForceOrientationInsensitivity( true );
-
-    ldaGenerator->Update();
+    timeCollector.Start( "Update" );
+    rsGenerator->Update();
     timeCollector.Stop( "Update" );
+    rsGenerator->SetLabelmap( NULL );
     }
 
   timeCollector.Start( "SaveTubeSeedImage" );
-  ldaGenerator->UpdateLDAImages();
-  typename LDAImageWriterType::Pointer ldaImageWriter =
-    LDAImageWriterType::New();
-  ldaImageWriter->SetUseCompression( true );
-  ldaImageWriter->SetFileName( outputSeedImage.c_str() );
-  ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( 0 ) );
-  ldaImageWriter->Update();
+  rsGenerator->UpdateBasisImages();
+  typename RidgeSeedImageWriterType::Pointer rsImageWriter =
+    RidgeSeedImageWriterType::New();
+  rsImageWriter->SetUseCompression( true );
+  rsImageWriter->SetFileName( outputSeedImage.c_str() );
+  rsImageWriter->SetInput( rsGenerator->GetBasisImage( 0 ) );
+  rsImageWriter->Update();
   timeCollector.Stop( "SaveTubeSeedImage" );
 
   if( saveTubeSeedInfo.size() > 0 )
     {
     timeCollector.Start( "SaveTubeSeedInfo" );
-    itk::tube::MetaNJetLDA ldaWriter(
-      ldaGenerator->GetZeroScales(),
-      ldaGenerator->GetFirstScales(),
-      ldaGenerator->GetSecondScales(),
-      ldaGenerator->GetRidgeScales(),
-      ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix(),
-      ldaGenerator->GetWhitenMeans(),
-      ldaGenerator->GetWhitenStdDevs() );
-    ldaWriter.Write( saveTubeSeedInfo.c_str() );
+    itk::tube::MetaRidgeSeed rsWriter(
+      rsGenerator->GetScales(),
+      rsGenerator->GetBasisValues(),
+      rsGenerator->GetBasisMatrix(),
+      rsGenerator->GetWhitenMeans(),
+      rsGenerator->GetWhitenStdDevs() );
+    rsWriter.Write( saveTubeSeedInfo.c_str() );
     timeCollector.Stop( "SaveTubeSeedInfo" );
     }
 
   if( saveFeatureImages.size() > 0 )
     {
     timeCollector.Start( "SaveFeatureImages" );
-    unsigned int numFeatures = ldaGenerator->GetNumberOfFeatures();
+    unsigned int numFeatures = rsGenerator->GetNumberOfFeatures();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
-      WriteLDA< LDAImageType >( ldaGenerator->GetFeatureImage( i ),
+      WriteRidgeSeed< RidgeSeedImageType >(
+        rsGenerator->GetFeatureImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }
     timeCollector.Stop( "SaveFeatureImages" );

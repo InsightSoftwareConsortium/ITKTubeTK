@@ -38,7 +38,7 @@ void RegisterTests()
   REGISTER_TEST( itkTubeRidgeExtractorTest2 );
   REGISTER_TEST( itkTubeRadiusExtractorTest );
   REGISTER_TEST( itkTubeRadiusExtractorTest2 );
-  REGISTER_TEST( itkTubeRidgeSeedGeneratorTest );
+  // REGISTER_TEST( itkTubeRidgeSeedSupervisedLinearBasisGeneratorTest );
   REGISTER_TEST( itkTubeTubeExtractorTest );
 
 }
