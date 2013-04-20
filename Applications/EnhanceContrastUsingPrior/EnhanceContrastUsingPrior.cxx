@@ -252,7 +252,10 @@ public:
 
 protected:
 
-  ContrastCostFunction() {};
+  ContrastCostFunction() : m_InputMean(0.0),
+                           m_MaskObjectValue(0),
+                           m_MaskBackgroundValue(0),
+                           m_CallsToGetValue(0) {};
   virtual ~ContrastCostFunction() {};
 
   void PrintSelf( std::ostream & os, Indent indent ) const

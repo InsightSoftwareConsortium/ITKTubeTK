@@ -64,13 +64,12 @@ class ShortestPathKernel : public GraphKernel
     ShortestPathKernel(const GraphType &G0, const GraphType &G1) :
       GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
 
-     /** Sets edge-kernel type */
+    /** Sets edge-kernel type */
     void SetEdgeKernel(int type)
       { m_edgeKernelType = type; }
 
     /** Computes the SP kernel value, see [1], Section 4.2 */
     double Compute(void);
-
 
   private:
 
@@ -83,6 +82,7 @@ class ShortestPathKernel : public GraphKernel
     GraphType FloydTransform(const GraphType &in);
 
     template <typename T>
+    // cppcheck-suppress unusedPrivateFunction
     void ensureOrder(T& first, T& second)
     {
       if ( first > second )

@@ -387,8 +387,6 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   return true;
 }
 
-
-//cppcheck-suppress unusedFunction
 bool MetaLDA::Write( const char *_headName )
 {
   if( _headName != NULL && strlen( _headName ) > 1 )

@@ -41,6 +41,7 @@ writeElement( std::ofstream & outputFile,
   outputFile << pointWeight << delim;
 }
 
+
 int itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest( int argc, char * argv[] )
 {
   if( argc < 2 )
@@ -53,6 +54,7 @@ int itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest( int argc
     }
   const char * outputCSV = argv[1];
 
+  // cppcheck-suppress unreadVariable
   static const unsigned int Dimension = 2;
   typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
   typedef std::vector< TubePointType >              TubePointContainerType;

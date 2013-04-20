@@ -26,6 +26,7 @@ limitations under the License.
 
 #include <fstream>
 
+
 int itkTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
 {
   if( argc < 2 )
@@ -38,6 +39,7 @@ int itkTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
     }
   const char * outputCSV = argv[1];
 
+  // cppcheck-suppress unreadVariable
   static const unsigned int Dimension = 2;
   typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
   typedef std::vector< TubePointType >              TubePointContainerType;

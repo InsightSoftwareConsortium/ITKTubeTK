@@ -57,7 +57,9 @@ public:
 
   RadiusExtractorMedialnessFunc( RadiusExtractor< ImageT > *
     newRadiusExtractor,
-    double newMedialnessScaleStep )
+    double newMedialnessScaleStep ) :
+    m_KernelArray(0),
+    m_Value(0.0)
     {
     m_RadiusExtractor = newRadiusExtractor;
     m_MedialnessScaleStep = newMedialnessScaleStep;
