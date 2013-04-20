@@ -130,6 +130,7 @@ public:
     m_CallsToGetValue = 0;
     }
 
+  // cppcheck-suppress unusedFunction
   void GetDerivative( const ParametersType & params,
                       DerivativeType & deriv ) const
     {

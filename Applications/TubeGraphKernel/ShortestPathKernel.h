@@ -64,7 +64,8 @@ class ShortestPathKernel : public GraphKernel
     ShortestPathKernel(const GraphType &G0, const GraphType &G1) :
       GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
 
-     /** Sets edge-kernel type */
+    /** Sets edge-kernel type */
+    // cppcheck-suppress unusedFunction
     void SetEdgeKernel(int type)
       { m_edgeKernelType = type; }
 
