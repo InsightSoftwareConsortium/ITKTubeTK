@@ -279,7 +279,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     endif()
     ExternalProject_Add( ${proj}
       GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ParameterSerializer.git"
-      GIT_TAG "4161e9b314364e7f288cb06c9d1906e928cfc2b4"
+      GIT_TAG "23911582d78ced102946c95dd67294d4057bb645"
       SOURCE_DIR "${CMAKE_BINARY_DIR}/ParameterSerializer"
       BINARY_DIR ParameterSerializer-Build
       CMAKE_GENERATOR ${gen}
