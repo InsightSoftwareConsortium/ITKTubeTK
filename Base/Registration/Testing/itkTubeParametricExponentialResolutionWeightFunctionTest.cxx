@@ -53,7 +53,6 @@ int itkTubeParametricExponentialResolutionWeightFunctionTest( int argc, char * a
     }
   const char * outputCSV = argv[1];
 
-  // cppcheck-suppress unreadVariable
   static const unsigned int Dimension = 2;
   typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
   typedef std::vector< TubePointType >              TubePointContainerType;

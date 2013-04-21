@@ -82,7 +82,6 @@ class ShortestPathKernel : public GraphKernel
     GraphType FloydTransform(const GraphType &in);
 
     template <typename T>
-    // cppcheck-suppress unusedPrivateFunction
     void ensureOrder(T& first, T& second)
     {
       if ( first > second )

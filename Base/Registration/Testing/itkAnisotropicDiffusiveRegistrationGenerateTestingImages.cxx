@@ -226,7 +226,6 @@ vtkPolyData* CreateSpherePolydata( double * center, double radius )
 }
 
 // Function to create the planar polydata
-//cppcheck-suppress unusedFunction
 vtkPolyData* CreatePlanePolydata( double * origin,
                                   double * point1, double * point2,
                                   int resolution )
