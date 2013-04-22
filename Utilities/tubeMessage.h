@@ -33,22 +33,25 @@ limitations under the License.
 #include <cstdio>
 
 
-namespace tube {
+namespace tube
+{
 
-namespace MessageLevel {
+namespace MessageLevel
+{
   enum { Information, Warning, Error, Debug };
 }
+
 
 template <class T>
 void Message( const T& str, int level = 0 )
 {
-  #ifndef NDEBUG
+#ifndef NDEBUG
   if( level == MessageLevel::Debug )
     {
     std::cout << "<debug>" << str << "</debug>" << std::endl;
     return;
     }
-  #endif
+#endif
   switch( level )
     {
     case MessageLevel::Information:
@@ -65,39 +68,59 @@ void Message( const T& str, int level = 0 )
     }
 }
 
-/** Formatted logging, as with printf(...) */
-inline void FmtMessage(int level, const char* fmt, va_list args )
+
+inline void FmtMessage(int level, const std::string & message )
 {
-	std::ostream & os = level >= MessageLevel::Information ? std::cerr : std::cout;
+  std::ostream & os = level >= MessageLevel::Information ? std::cerr : std::cout;
 
-	char text[1024];
-	memset(text, 0, sizeof(char)*1023);
-	vsnprintf(text, 1023, fmt, args);
-
-  #ifndef NDEBUG
+#ifndef NDEBUG
   if( level == MessageLevel::Debug )
     {
-    os << "<debug>" << text << "</debug>" << std::endl;
+    os << "<debug>" << message << "</debug>" << std::endl;
     return;
     }
-  #endif
+#endif
 
   switch( level )
     {
     case MessageLevel::Information:
-      os << "<info>" << text << "</info>" << std::endl;
+      os << "<info>" << message << "</info>" << std::endl;
       break;
     case MessageLevel::Warning:
-      os << "<warning>" << text << "</warning>" << std::endl;
+      os << "<warning>" << message << "</warning>" << std::endl;
       break;
     case MessageLevel::Error:
-      os << "<error>" << text << "</error>" << std::endl;
+      os << "<error>" << message << "</error>" << std::endl;
       break;
+#ifndef NDEBUG
+    case MessageLevel::Debug:
+      os << "<debug>" << message << "</debug>" << std::endl;
+      break;
+#endif
     default:
       break;
     }
+
   os.flush();
 }
+
+
+/** Formatted logging, as with printf(...) */
+inline void FmtMessage(int level, const char* fmt, va_list args )
+{
+  char message[1024];
+  std::memset(message, 0, sizeof(char) * 1023);
+  std::vsnprintf(message, 1023, fmt, args);
+
+  FmtMessage(level, std::string(message));
+}
+
+
+inline void FmtInfoMessage(const std::string & message)
+{
+    FmtMessage( MessageLevel::Information, message );
+}
+
 
 inline void FmtInfoMessage(const char* fmt, ...)
 {
@@ -106,6 +129,13 @@ inline void FmtInfoMessage(const char* fmt, ...)
     FmtMessage( MessageLevel::Information, fmt, args );
     va_end(args);
 }
+
+
+inline void FmtInformationMessage(const std::string & message)
+{
+    FmtMessage( MessageLevel::Information, message );
+}
+
 
 inline void FmtInformationMessage(const char* fmt, ...)
 {
@@ -116,6 +146,13 @@ inline void FmtInformationMessage(const char* fmt, ...)
 
 }
 
+
+inline void FmtWarningMessage(const std::string & message)
+{
+    FmtMessage( MessageLevel::Warning, message );
+}
+
+
 inline void FmtWarningMessage(const char* fmt, ...)
 {
   va_list args;
@@ -123,6 +160,13 @@ inline void FmtWarningMessage(const char* fmt, ...)
   FmtMessage( MessageLevel::Warning, fmt, args );
   va_end( args );
 }
+
+
+inline void FmtErrorMessage(const std::string & message)
+{
+    FmtMessage( MessageLevel::Error, message );
+}
+
 
 inline void FmtErrorMessage(const char* fmt, ...)
 {
@@ -132,6 +176,13 @@ inline void FmtErrorMessage(const char* fmt, ...)
   va_end( args );
 }
 
+
+inline void FmtDebugMessage(const std::string & message)
+{
+    FmtMessage( MessageLevel::Debug, message );
+}
+
+
 inline void FmtDebugMessage(const char* fmt, ...)
 {
   va_list args;
@@ -140,11 +191,13 @@ inline void FmtDebugMessage(const char* fmt, ...)
   va_end( args );
 }
 
+
 template <class T>
 void InfoMessage( const T& str )
 {
   Message( str, MessageLevel::Information );
 }
+
 
 template <class T>
 void InformationMessage( const T& str )
@@ -152,11 +205,13 @@ void InformationMessage( const T& str )
   Message( str, MessageLevel::Information );
 }
 
+
 template <class T>
 void WarningMessage( const T& str )
 {
   Message( str, MessageLevel::Warning );
 }
+
 
 template <class T>
 void ErrorMessage( const T& str )
@@ -164,12 +219,13 @@ void ErrorMessage( const T& str )
   Message( str, MessageLevel::Error );
 }
 
+
 template <class T>
 void DebugMessage( const T& str )
 {
   Message( str, MessageLevel::Debug );
 }
 
-};
+}
 
 #endif
