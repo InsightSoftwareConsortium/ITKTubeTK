@@ -57,7 +57,7 @@ set_property(TEST ${MODULE_NAME}-Test1-Compare
 
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
             ${IMAGECOMPARE_EXE}
-               -i 0.001
+               -i 0.005
                -t ${TEMP}/${MODULE_NAME}_GDSTest1.mha
                -b MIDAS{${MODULE_NAME}_GDSTest1.mha.md5} )
 set_property(TEST ${MODULE_NAME}-Test2-Compare

@@ -263,7 +263,6 @@ GetWhitenStdDevs( void ) const
   return m_WhitenStdDevs;
 }
 
-//cppcheck-suppress unusedFunction
 bool MetaLDA::CanRead( const char *_headerName ) const
 {
   // First check the extension
@@ -336,8 +335,6 @@ Read( const char *_headerName )
   return result;
 }
 
-
-// cppcheck-suppress unusedFunction
 bool MetaLDA::CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
   if( !strncmp( MET_ReadForm( *_stream ).c_str(), "LDA", 3 ) )

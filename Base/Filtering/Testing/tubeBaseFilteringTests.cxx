@@ -28,7 +28,6 @@ limitations under the License.
 #include "tubeTestMain.h"
 
 
-// cppcheck-suppress unusedFunction
 void RegisterTests()
 {
   REGISTER_TEST( tubeBaseFilteringPrintTest );
