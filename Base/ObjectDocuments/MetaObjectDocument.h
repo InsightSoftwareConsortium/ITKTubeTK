@@ -25,6 +25,11 @@ limitations under the License.
 #ifndef __MetaObjectDocument_h
 #define __MetaObjectDocument_h
 
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include "MetaDocument.h"
 #include "itkImageDocument.h"
 #include "itkBlobSpatialObjectDocument.h"
@@ -47,11 +52,11 @@ class MetaObjectDocument : public MetaDocument
 
     void  PrintInfo() const;
 
-    bool  Read(const char * _fileName=NULL);
+    bool  Read(const std::string & _fileName = std::string());
 
-    bool  ReadStream(int _nDims, std::ifstream * _stream);
+    bool  ReadStream(int _nDims, std::ifstream & _stream);
 
-    bool  Write(const char * _fileName=NULL);
+    bool  Write(const std::string & _fileName = std::string());
 
     /** Clear tube information */
     void Clear();
@@ -74,16 +79,16 @@ class MetaObjectDocument : public MetaDocument
     void M_SetupWriteFields(void);
     void M_SetupObjectWriteFields(unsigned int);
 
-    const static char * LABEL_NOBJECTS;
-    const static char * LABEL_TYPE;
-    const static char * LABEL_NAME;
-    const static char * LABEL_NUM_TRANS;
-    const static char * LABEL_TRANSFORM;
+    static const std::string LABEL_NOBJECTS;
+    static const std::string LABEL_TYPE;
+    static const std::string LABEL_NAME;
+    static const std::string LABEL_NUM_TRANS;
+    static const std::string LABEL_TRANSFORM;
 
     /** Label ID names of possible object types */
-    const static char * ID_LABEL_BLOBTYPE;
-    const static char * ID_LABEL_IMAGETYPE;
-    const static char * ID_LABEL_SPATIALOBJTYPE;
+    static const std::string ID_LABEL_BLOBTYPE;
+    static const std::string ID_LABEL_IMAGETYPE;
+    static const std::string ID_LABEL_SPATIALOBJTYPE;
 
     int m_NObjects;
 

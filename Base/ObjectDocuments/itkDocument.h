@@ -52,8 +52,8 @@ class Document : public DataObject
     typedef SmartPointer< Self >                  Pointer;
     typedef SmartPointer< const Self >            ConstPointer;
 
-    typedef const char *                          DateType;
-    typedef const char *                          CommentsType;
+    typedef std::string                           DateType;
+    typedef std::string                           CommentsType;
 
     /**
      * Not Implemented, but would allow for Document
@@ -92,7 +92,7 @@ class Document : public DataObject
 
   protected:
 
-    Document() : m_DateModified(0), m_Comment(0) {}
+    Document(){}
     ~Document(){}
 
     virtual void PrintSelf(std::ostream& os, Indent indent) const

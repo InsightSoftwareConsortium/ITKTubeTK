@@ -24,9 +24,10 @@ limitations under the License.
 #ifndef __MetaDocument_H
 #define __MetaDocument_H
 
-#include <iostream>
 #include <fstream>
-#include <time.h>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include <metaUtils.h>
 #include <metaTypes.h>
@@ -42,32 +43,32 @@ class MetaDocument
 
     /** CTOR, DTOR */
     MetaDocument(void);
-    MetaDocument(const char * _fileName);
+    MetaDocument(const std::string & _fileName);
 
     virtual ~MetaDocument(void);
 
-    void  FileName(const char *_fileName);
-    const char  * FileName(void) const;
+    void  FileName(const std::string & _fileName);
+    std::string FileName(void) const;
 
     void  CopyInfo(const MetaDocument * _object);
 
-    virtual bool  Read(const char * _fileName=NULL);
+    virtual bool  Read(const std::string & _fileName = std::string());
 
-    virtual bool  Write(const char * _fileName=NULL);
+    virtual bool  Write(const std::string & _fileName = std::string());
 
     /** Writes image parameters to stdout */
     virtual void  PrintInfo(void) const;
 
-    const char* DateLastModified(void) const;
-    void DateLastModified(const char* _dateModified);
+    std::string DateLastModified(void) const;
+    void DateLastModified(const std::string & _dateModified);
 
     /** Comment(...), Optional Field, Arbitrary String */
-    const char  * Comment(void) const;
-    void Comment(const char * _comment);
+    std::string Comment(void) const;
+    void Comment(const std::string & _comment);
 
     /** Name(...), Optional Field, Name of the current MetaDocument */
-    virtual void  Name(const char *_Name);
-    virtual const char * Name(void) const;
+    virtual void  Name(const std::string & _Name);
+    virtual std::string Name(void) const;
 
     virtual void Clear(void);
 
@@ -75,13 +76,13 @@ class MetaDocument
 
   protected:
 
-    std::ifstream* m_ReadStream;
-    std::ofstream* m_WriteStream;
+    std::ifstream m_ReadStream;
+    std::ofstream m_WriteStream;
 
-    char m_Comment[255];
-    char m_DateLastModified[255];
-    char m_Name[255];
-    char m_FileName[255];
+    std::string m_Comment;
+    std::string m_DateLastModified;
+    std::string m_Name;
+    std::string m_FileName;
 
     virtual void M_SetupReadFields(void);
     void M_PrepareNewReadStream(void);

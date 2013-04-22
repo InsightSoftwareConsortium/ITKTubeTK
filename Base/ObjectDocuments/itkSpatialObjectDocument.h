@@ -73,13 +73,13 @@ class SpatialObjectDocument : public ObjectDocument
     itkTypeMacro( Self, Superclass );
 
     /** Return the type of the object within the Document (ie. "SpatialObject") */
-    const char * GetObjectType() const { return "SpatialObject"; }
+    std::string GetObjectType() const { return "SpatialObject"; }
 
-    const char * LABEL_SOTYPE;
+    const std::string LABEL_SOTYPE;
 
   protected:
 
-    SpatialObjectDocument(){ LABEL_SOTYPE  = "SpatialObject"; }
+    SpatialObjectDocument() : LABEL_SOTYPE("SpatialObject"){}
     ~SpatialObjectDocument(){}
 
   private:

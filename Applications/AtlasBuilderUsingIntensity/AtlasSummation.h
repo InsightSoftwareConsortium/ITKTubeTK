@@ -235,8 +235,8 @@ class AtlasSummation
 
     void Start( InputImageType::Pointer );
     void SumImage( InputImageType::Pointer );
-    void WriteImage( MeanImageType::Pointer, const char *);
-    void WriteImage( ProcessImagePointer, const char *);
+    void WriteImage( MeanImageType::Pointer, const std::string & );
+    void WriteImage( ProcessImagePointer, const std::string & );
 
     /** Median specific functions */
     MedianImageListType&  GetInputImageList() { return m_medianList; }

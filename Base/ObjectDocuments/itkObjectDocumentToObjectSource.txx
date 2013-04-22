@@ -115,7 +115,7 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 template< class TInputObjectDocument, unsigned int TDimension >
 typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::TransformPointer
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::ReadTransform( const char * file ) const
+  ::ReadTransform( const std::string & file ) const
 {
   typename TransformReaderType::Pointer reader = TransformReaderType::New();
   reader->SetFileName( file );

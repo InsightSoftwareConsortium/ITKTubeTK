@@ -167,7 +167,7 @@ class MinimizeImageSizeFilter : public ImageToImageFilter< TInputImage,
 } // End of namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkMinimizeImageSizeFilter.hxx"
+#include "itkMinimizeImageSizeFilter.txx"
 #endif
 
 #endif

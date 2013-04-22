@@ -22,12 +22,12 @@ limitations under the License.
 =========================================================================*/
 
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
 #include <fstream>
-#include <string.h>
-#include <math.h>
+#include <iostream>
+#include <string>
 
 #include "MetaDocument.h"
 
@@ -36,20 +36,15 @@ namespace tube
 
 MetaDocument::
 MetaDocument(void)
-: m_ReadStream(NULL),
-  m_WriteStream(NULL)
 {
   this->Clear();
-  m_FileName[0] = '\0';
 }
 
 
 MetaDocument::
-MetaDocument(const char * _fileName)
+MetaDocument(const std::string & _fileName)
 {
   this->Clear();
-  m_ReadStream = NULL;
-  m_WriteStream = NULL;
   this->Read(_fileName);
 }
 
@@ -57,14 +52,6 @@ MetaDocument(const char * _fileName)
 MetaDocument::
 ~MetaDocument(void)
 {
-  if (m_ReadStream != NULL)
-    {
-    delete m_ReadStream;
-    }
-  if (m_WriteStream != NULL)
-    {
-    delete m_WriteStream;
-    }
   this->ClearFields();
 }
 
@@ -76,24 +63,29 @@ ClearFields()
   {
   std::cout << "MetaDocument:ClearFields" << std::endl;
   }
+
+  for(std::vector<MET_FieldRecordType *>::iterator it = m_Fields.begin();
+      it != m_Fields.end(); ++it)
+      {
+      delete *it;
+      *it = NULL;
+      }
+
   m_Fields.clear();
 }
 
 
 void MetaDocument::
-FileName(const char *_fileName)
+FileName(const std::string & _fileName)
 {
-  if(_fileName != NULL)
+  if(!_fileName.empty())
     {
-    if(_fileName[0] != '\0')
-      {
-      strcpy(m_FileName, _fileName);
-      }
+    m_FileName = _fileName;
     }
 }
 
 
-const char * MetaDocument::
+std::string MetaDocument::
 FileName(void) const
 {
   return m_FileName;
@@ -103,33 +95,32 @@ FileName(void) const
 void MetaDocument::
 CopyInfo(const MetaDocument * _object)
 {
-  DateLastModified(_object->DateLastModified());
-  Comment(_object->Comment());
-  Name(_object->Name());
-
+  m_DateLastModified = _object->DateLastModified();
+  m_Comment = _object->Comment();
+  m_Name = _object->Name();
 }
 
 
 bool MetaDocument::
-Read(const char *_fileName)
+Read(const std::string & _fileName)
 {
   if(META_DEBUG)
     {
     std::cout << "MetaDocument: Read" << std::endl;
     }
 
-  if(_fileName != NULL)
-    {
-    strcpy(m_FileName, _fileName);
-    }
+  if(!_fileName.empty())
+  {
+    m_FileName = _fileName;
+  }
 
   Clear();
 
   M_SetupReadFields();
   M_PrepareNewReadStream();
 
-  m_ReadStream->open(m_FileName);
-  if(!m_ReadStream->is_open())
+  m_ReadStream.open(m_FileName.c_str());
+  if(!m_ReadStream.is_open())
     {
     std::cout << "MetaDocument: Read: Cannot open file" << std::endl;
     return false;
@@ -137,18 +128,18 @@ Read(const char *_fileName)
 
   bool result = M_Read();
 
-  m_ReadStream->close();
-  m_ReadStream->clear();
+  m_ReadStream.close();
+  m_ReadStream.clear();
   return result;
 }
 
 
 bool MetaDocument::
-Write(const char *_fileName)
+Write(const std::string & _fileName)
 {
-  if(_fileName != NULL)
+  if(!_fileName.empty())
     {
-    FileName(_fileName);
+    m_FileName = _fileName;
     }
 
   M_SetupWriteFields();
@@ -156,19 +147,19 @@ Write(const char *_fileName)
 
 #ifdef __sgi
   // Create the file. This is required on some older sgi's
-  std::ofstream tFile(m_FileName,std::ios::out);
+  std::ofstream tFile(m_FileName.c_str(),std::ios::out);
   tFile.close();
 #endif
-  m_WriteStream->open(m_FileName,std::ios::binary | std::ios::out);
-  if(!m_WriteStream->is_open())
+  m_WriteStream.open(m_FileName.c_str(),std::ios::binary | std::ios::out);
+  if(!m_WriteStream.is_open())
     {
     return false;
     }
 
   bool result = M_Write();
 
-  m_WriteStream->close();
-  m_WriteStream->clear();
+  m_WriteStream.close();
+  m_WriteStream.clear();
 
   return result;
 }
@@ -183,7 +174,7 @@ PrintInfo(void) const
 }
 
 
-const char* MetaDocument::
+std::string MetaDocument::
 DateLastModified(void) const
 {
   return m_DateLastModified;
@@ -191,13 +182,13 @@ DateLastModified(void) const
 
 
 void MetaDocument::
-DateLastModified( const char* _date )
+DateLastModified( const std::string & _date )
 {
-  strcpy(m_DateLastModified, _date );
+  m_DateLastModified = _date ;
 }
 
 
-const char * MetaDocument::
+std::string MetaDocument::
 Comment(void) const
 {
   return m_Comment;
@@ -205,23 +196,23 @@ Comment(void) const
 
 
 void MetaDocument::
-Comment(const char * _comment)
+Comment(const std::string & _comment)
 {
-  strcpy(m_Comment, _comment);
+  m_Comment = _comment;
 }
 
 
 void  MetaDocument::
-Name(const char *_Name)
+Name(const std::string & _Name)
 {
-  if(_Name != NULL)
+  if(!_Name.empty())
     {
-    strcpy(m_Name, _Name);
+    m_Name = _Name;
     }
 }
 
 
-const char  * MetaDocument::
+std::string MetaDocument::
 Name(void) const
 {
   return m_Name;
@@ -235,9 +226,9 @@ Clear(void)
     std::cout << "MetaDocument: Clear()" << std::endl;
     }
 
-  m_Comment[0] = '\0';
-  m_DateLastModified[0] = '\0';
-  m_Name[0] = '\0';
+  m_Comment.clear();
+  m_DateLastModified.clear();
+  m_Name.clear();
 
   if(META_DEBUG)
     {
@@ -259,15 +250,15 @@ M_SetupReadFields(void)
 
   MET_FieldRecordType * mF;
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitReadField(mF, "Comment", MET_STRING, false);
   m_Fields.push_back(mF);
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitReadField(mF, "DateLastModified", MET_STRING, false);
   m_Fields.push_back(mF);
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitReadField(mF, "Name", MET_STRING, false);
   m_Fields.push_back(mF);
 }
@@ -291,25 +282,25 @@ M_SetupWriteFields(void)
 
   MET_FieldRecordType * mF;
 
-  if(strlen(m_Comment)>0)
+  if(!m_Comment.empty())
     {
-    mF = new MET_FieldRecordType;
-    MET_InitWriteField(mF, "Comment", MET_STRING, strlen(m_Comment), m_Comment);
+    mF = new MET_FieldRecordType();
+    MET_InitWriteField(mF, "Comment", MET_STRING, m_Comment.length(), m_Comment.c_str());
     m_Fields.push_back(mF);
     }
 
-  if(strlen(m_DateLastModified)>0)
+  if(!m_DateLastModified.empty())
     {
-    mF = new MET_FieldRecordType;
-    MET_InitWriteField(mF, "DateLastModified", MET_STRING, strlen(m_DateLastModified),
-                      m_DateLastModified);
+    mF = new MET_FieldRecordType();
+    MET_InitWriteField(mF, "DateLastModified", MET_STRING, m_DateLastModified.length(),
+                      m_DateLastModified.c_str());
     m_Fields.push_back(mF);
     }
 
-  if(strlen(m_Name)>0)
+  if(!m_Name.empty())
     {
-    mF = new MET_FieldRecordType;
-    MET_InitWriteField(mF, "Name", MET_STRING, strlen(m_Name),m_Name);
+    mF = new MET_FieldRecordType();
+    MET_InitWriteField(mF, "Name", MET_STRING, m_Name.length(), m_Name.c_str());
     m_Fields.push_back(mF);
     }
 }
@@ -318,7 +309,7 @@ M_SetupWriteFields(void)
 bool MetaDocument::
 M_Read(void)
 {
-  if(!MET_Read(*m_ReadStream, & m_Fields, '='))
+  if(!MET_Read(m_ReadStream, & m_Fields, '='))
     {
     std::cout << "MetaDocument: Read: MET_Read Failed" << std::endl;
     return false;
@@ -329,20 +320,20 @@ M_Read(void)
   mF = MET_GetFieldRecord("DateLastModified", &m_Fields);
   if(mF != NULL && mF->defined)
     {
-    strcpy(m_DateLastModified, (char *)(mF->value));
+    m_DateLastModified = (const char *)mF->value;
     }
 
   mF = MET_GetFieldRecord("Comment", &m_Fields);
   if(mF != NULL && mF->defined)
     {
-    strcpy(m_Comment, (char *)(mF->value));
+    m_Comment = (const char *)mF->value;
     }
 
 
   mF = MET_GetFieldRecord("Name", &m_Fields);
   if(mF != NULL && mF->defined)
     {
-    strcpy(m_Name, (char *)(mF->value));
+    m_Name = (const char *)mF->value;
     }
   return true;
 }
@@ -351,7 +342,7 @@ M_Read(void)
 bool MetaDocument::
 M_Write(void)
 {
-  if(!MET_Write(*m_WriteStream, & m_Fields))
+  if(!MET_Write(m_WriteStream, & m_Fields))
     {
     std::cout << "MetaDocument: Write: MET_Write Failed" << std::endl;
     return false;
@@ -364,36 +355,22 @@ M_Write(void)
 void MetaDocument::
 M_PrepareNewReadStream()
 {
-  if(m_ReadStream)
+  if(m_ReadStream.is_open())
     {
-    if(m_ReadStream->is_open())
-      {
-      m_ReadStream->close();
-      }
-    m_ReadStream->clear();
+    m_ReadStream.close();
     }
-  else
-    {
-    m_ReadStream = new std::ifstream;
-    }
+  m_ReadStream.clear();
 }
 
 
 void MetaDocument::
 M_PrepareNewWriteStream()
 {
-  if(m_WriteStream)
+  if(m_WriteStream.is_open())
     {
-    if(m_WriteStream->is_open())
-      {
-      m_WriteStream->close();
-      }
-    m_WriteStream->clear();
+    m_WriteStream.close();
     }
-  else
-    {
-    m_WriteStream = new std::ofstream;
-    }
+  m_WriteStream.clear();
 }
 
 } // End namespace tube
