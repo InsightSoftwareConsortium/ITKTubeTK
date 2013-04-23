@@ -134,17 +134,16 @@ MetricPreProc(void)
   cBiasV = 0;
 
   vnl_vector<double> tv(3);
-  int skipped = 0;
-  int tubeSize = 0;
   double cX = 0;
   double cY = 0;
   double cZ = 0;
   TubeRegistratorPoint * tPnt;
   for(i=cTubeNet->tubes()->begin(); i!=cTubeNet->tubes()->end(); ++i)
     {
-    skipped = 0;
-    tubeSize = (*i)->points()->size();
+    int tubeSize = (*i)->points()->size();
     if(tubeSize>cSampling)
+      {
+      int skipped = 0;
       for(j=(*i)->points()->begin(); j!=(*i)->points()->end(); ++j)
         {
         while(skipped++%(cSampling/2) != 0 && j!=(*i)->points()->end())
@@ -194,6 +193,7 @@ MetricPreProc(void)
           --j;
           }
         }
+      }
     }
   cBiasV = (1.0/cWeight) * cBiasV;
 

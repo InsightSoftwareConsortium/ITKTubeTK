@@ -120,10 +120,9 @@ CVTImageFilter< TInputImage, TOutputImage >
   inputIt.GoToBegin();
   m_InputImageMax = inputIt.Get();
   ++inputIt;
-  double tf;
   while(!inputIt.IsAtEnd())
     {
-    tf = inputIt.Get();
+    double tf = inputIt.Get();
     if( tf > m_InputImageMax )
       {
       m_InputImageMax = tf;
@@ -137,7 +136,6 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   unsigned int iteration = 0;
   double iterationEnergyDifference = 0.0;
-  double iterationEnergy;// = 0.0;
 
   if( m_Seed != -1 )
     {
@@ -175,7 +173,7 @@ CVTImageFilter< TInputImage, TOutputImage >
     {
     iteration = iteration + 1;
 
-    iterationEnergy = this->ComputeIteration(iterationEnergyDifference);
+    double iterationEnergy = this->ComputeIteration(iterationEnergyDifference);
 
     if( this->GetDebug() )
       {
@@ -256,7 +254,6 @@ CVTImageFilter< TInputImage, TOutputImage >
   int i;
   int j;
   int j2;
-  double term;
 
   //  Take each generator as the first sample point for its region.
   //  This can slightly slow the convergence, but it simplifies the
@@ -336,7 +333,7 @@ CVTImageFilter< TInputImage, TOutputImage >
   energyDiff = 0.0;
   for ( j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
-    term = 0.0;
+    double term = 0.0;
     for ( i = 0; i < ImageDimension; i++ )
       {
       term += ( centroids2[j][i] - m_Centroids[j][i] )
@@ -383,7 +380,6 @@ CVTImageFilter< TInputImage, TOutputImage >
     std::cout << "    computing sample" << std::endl;
     std::cout << "    computing sample size = " << sampleSize << std::endl;
     }
-  double p1, u;
   IndexType iIndx;
   iIndx.Fill( 0 );
   ContinuousIndexType indx;
@@ -405,11 +401,10 @@ CVTImageFilter< TInputImage, TOutputImage >
         gridSize[i] = (int)(m_InputImageSize[i] / factor);
         len = len * gridSize[i];
         }
-      double tmpJ, tmpLen;
       for ( j = 0; j < len; j++ )
         {
-        tmpJ = j;
-        tmpLen = len;
+        double tmpJ = j;
+        double tmpLen = len;
         for(i=ImageDimension-1; i>=0; i--)
           {
           tmpLen = tmpLen / gridSize[i];
@@ -435,8 +430,8 @@ CVTImageFilter< TInputImage, TOutputImage >
       {
       for ( j = 0; j < (int)sampleSize; j++ )
         {
-        u = 1;
-        p1 = 0;
+        double u = 1;
+        double p1 = 0;
         while(u >= p1)
           {
           for ( i = 0; i < ImageDimension; i++ )
@@ -474,7 +469,6 @@ CVTImageFilter< TInputImage, TOutputImage >
                   const PointArrayType & centroids,
                   unsigned int * nearest )
 {
-  double distMin;
   double dist;
   int i;
   int jc;
@@ -491,7 +485,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   for ( js = 0; js < numberOfSamples; js++ )
     {
-    distMin = 1e20;
+    double distMin = 1e20;
     nearest[js] = 0;
 
     for ( jc = 0; jc < numberOfCentroids; jc++ )

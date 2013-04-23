@@ -582,10 +582,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
     // Clip Histograms
     double outlierRejectPercent = 0.01;
     double totalReject = totalOut * outlierRejectPercent;
-    unsigned int count;
     for( unsigned int i=0; i<N; i++ )
       {
-      count = 0;
+      unsigned int count = 0;
       for( unsigned int b=0; b<m_HistoNumBinsND; b++ )
         {
         count += static_cast<unsigned int>( outImHisto[i][b] );
@@ -646,10 +645,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
     while( inClassListIt != inClassListItEnd )
       {
       bool valid = true;
-      double binV;
       for( unsigned int i=0; i<N; i++ )
         {
-        binV = inClassListIt.GetMeasurementVector()[i];
+        double binV = inClassListIt.GetMeasurementVector()[i];
         binV = ( int )( ( binV - m_HistoBinMin[i] )
           * m_HistoBinScale[i] + 0.5 );
         indxHisto[i] = ( int )binV;
@@ -684,10 +682,9 @@ PDFSegmenter< ImageT, N, LabelmapT >
     while( outListIt != outListItEnd )
       {
       bool valid = true;
-      double binV;
       for( unsigned int i=0; i<N; i++ )
         {
-        binV = outListIt.GetMeasurementVector()[i];
+        double binV = outListIt.GetMeasurementVector()[i];
         binV = ( int )( ( binV - m_HistoBinMin[i] )
           * m_HistoBinScale[i] + 0.5 );
         if( binV<0 || binV>=m_HistoNumBinsND

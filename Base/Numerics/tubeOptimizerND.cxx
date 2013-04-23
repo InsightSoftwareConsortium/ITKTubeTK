@@ -265,7 +265,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
 {
   m_X0 = x;
   double a = 1;
-  double xmin, xmax, xstep;
+  double xmin, xmax;
   unsigned int count = 0;
   while( fabs(a) > m_Tolerance )
     {
@@ -331,7 +331,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
       break;
       }
 
-    xstep = fabs( dot_product(m_XStep, m_X0Dir) );
+    double xstep = fabs( dot_product(m_XStep, m_X0Dir) );
 
     a = 0;
     m_Opt1D->xMin( xmin );

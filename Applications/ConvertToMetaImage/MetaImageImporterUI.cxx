@@ -381,7 +381,6 @@ void MetaImageImporterUI::BrowseImportFileNamesFPrintF()
 bool MetaImageImporterUI::Import()
 {
   int i;
-  QSpinBox* spinBox = NULL;
   QDoubleSpinBox* doubleSpinBox = NULL;
   std::ofstream fp;
   fp.open(generatedMHDFileLineEdit->text().toStdString().c_str());
@@ -390,6 +389,7 @@ bool MetaImageImporterUI::Import()
   fp << "DimSize =";
   for( i = 0; i < dimensionalitySpinBox->value(); i++)
     {
+    QSpinBox* spinBox = NULL;
     spinBox =
       this->findChild<QSpinBox *>( QString("dimension%1SpinBox").arg(i) );
     if( spinBox )

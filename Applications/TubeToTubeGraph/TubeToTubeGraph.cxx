@@ -167,7 +167,6 @@ int DoIt( int argc, char *argv[] )
       cVect[i] = tubePoint.GetTangent()[i];
       }
     cMat = outer_product(cVect, cVect);
-    int tNode;
     if(tube->GetRoot())
       {
       rootNodes[cNode-1] = rootNodes[cNode-1]+1;
@@ -180,7 +179,7 @@ int DoIt( int argc, char *argv[] )
       pnt = tubePoint.GetPosition();
       pnt = tubeTransform->TransformPoint(pnt);
       image->TransformPhysicalPointToIndex(pnt, indx);
-      tNode = image->GetPixel(indx);
+      int tNode = image->GetPixel(indx);
       if(tNode == cNode)
         {
         cCount++;

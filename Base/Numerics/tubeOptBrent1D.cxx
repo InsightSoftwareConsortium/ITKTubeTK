@@ -82,8 +82,8 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
   unsigned int iter;
 
   int ok1, ok2;
-  double a, b, d, d1, d2, du, dv, dw, dx, e=0.0;
-  double fu, fv, fw, fx, olde, tol1, tol2, u, u1, u2, v, w, x, xm;
+  double a, b, d, d1, d2, dv, dw, dx, e=0.0;
+  double fu, fv, fw, fx, olde, u, u1, u2, v, w, x;
 
   double maxSign = -1;
 
@@ -156,13 +156,13 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
 
   for(iter = 0; iter < m_MaxIterations; iter++)
     {
-    xm = 0.5 * (a+b);
+    double xm = 0.5 * (a+b);
     //std::cout << "x = " << x << std::endl;
     //std::cout << "  fx = " << fx << std::endl;
     //std::cout << "  a = " << a << std::endl;
     //std::cout << "  b = " << b << std::endl;
-    tol1 = m_Tolerance * fabs(x) + m_Small;
-    tol2 = 2.0 * tol1;
+    double tol1 = m_Tolerance * fabs(x) + m_Small;
+    double tol2 = 2.0 * tol1;
     if(fabs(x-xm) <= (tol2 - 0.5*(b-a)))
       {
       *extX = x;
@@ -245,7 +245,7 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
         return true;
         }
       }
-    du = maxSign * m_FuncDeriv->value(u);
+    double du = maxSign * m_FuncDeriv->value(u);
     if(fu <= fx)
       {
       if(u >= x)

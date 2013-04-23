@@ -218,13 +218,12 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     //radiusOp->SetDebug( true );
     radiusOp->ExtractRadii( tubep );
 
-    double diff;
     double avgDiff = 0;
     double maxDiff = 0;
     pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
-      diff = vnl_math_abs( pntIter->GetRadius() - idealR[i] );
+      double diff = vnl_math_abs( pntIter->GetRadius() - idealR[i] );
       avgDiff += diff;
       if( diff > maxDiff )
         {

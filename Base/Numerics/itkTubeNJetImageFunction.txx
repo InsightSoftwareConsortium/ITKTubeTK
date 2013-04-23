@@ -775,7 +775,6 @@ NJetImageFunction<TInputImage>
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
-  int xRadius;
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -786,7 +785,7 @@ NJetImageFunction<TInputImage>
       xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
+    int xRadius = (int) vnl_math_floor(cIndex[i] - xMin[i]);
 
     xMax[i] = (int) vnl_math_ceil(cIndex[i] + xRadius);
     if(xMax[i] > (int) m_InputImageMaxX[i])
@@ -1369,7 +1368,6 @@ NJetImageFunction<TInputImage>
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
-  int xRadius;
 
   for(unsigned int i=0; i<ImageDimension; i++)
     {
@@ -1380,7 +1378,7 @@ NJetImageFunction<TInputImage>
       xMin[i] = m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    xRadius = (int) vnl_math_floor( cIndex[i] - xMin[i] );
+    int xRadius = (int) vnl_math_floor( cIndex[i] - xMin[i] );
 
     xMax[i] = (int) vnl_math_ceil( cIndex[i] + xRadius );
     if(xMax[i] > (int) m_InputImageMaxX[i])

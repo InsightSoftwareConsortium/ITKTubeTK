@@ -51,7 +51,6 @@ bool  ComputeTubeTangentsAndNormals( TubeT * tube )
 
   PointType x1, x3;
   VectorType t;
-  double l;
   t.Fill( 0.0 );
 
   if( length == 1 )
@@ -80,7 +79,7 @@ bool  ComputeTubeTangentsAndNormals( TubeT * tube )
     {
     x1 = tube->GetPoint(it1)->GetPosition();
     x3 = tube->GetPoint(it3)->GetPosition();
-    l=0;
+    double l=0;
     for(unsigned int i=0; i<dimension; i++)
       {
       t[i] = (x3[i] - x1[i]);
@@ -217,7 +216,6 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
 
   PointType x1, x3;
   VectorType t;
-  double l;
   t.Fill(0.0);
 
   if( length == 1 )
@@ -246,7 +244,7 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
     {
     x1 = tubeV[it1].GetPosition();
     x3 = tubeV[it3].GetPosition();
-    l=0;
+    double l=0;
     for(unsigned int i=0; i<dimension; i++)
       {
       t[i] = (x3[i] - x1[i]);
