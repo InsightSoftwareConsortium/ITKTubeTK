@@ -321,7 +321,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     # Has enhancements required for the SEM ParameterSerializer.
     # Change back to upstream after pull request merged.
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/SlicerExecutionModel.git"
-    GIT_TAG "18cc0eef9f71456f59b50423f30c864ef4d6b3ed"
+    GIT_TAG "8ebf568a7b90a1d0e5ec7cf4cf2e8e490a24d0ab"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-Build
     CMAKE_GENERATOR ${gen}
