@@ -317,7 +317,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   else()
     set( SlicerExecutionModel_DEPENDS "" )
   endif()
-  ExternalProject_Add(${proj}
+  ExternalProject_Add( ${proj}
     # Has enhancements required for the SEM ParameterSerializer.
     # Change back to upstream after pull request merged.
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/SlicerExecutionModel.git"
@@ -445,12 +445,11 @@ ExternalProject_Add( ImageViewer
 ##
 if( TubeTK_USE_LIBSVM )
   set( proj LIBSVM )
-  ExternalProject_Add(
-    ${proj}
+  ExternalProject_Add( ${proj}
     SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
     BINARY_DIR ${proj}-Build
-    GIT_REPOSITORY https://github.com/TubeTK/cmake-libsvm
-    GIT_TAG a802a4224a6c3d7458e46887e77d75bf305a105b
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/cmake-libsvm.git"
+    GIT_TAG "a802a4224a6c3d7458e46887e77d75bf305a105b"
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
