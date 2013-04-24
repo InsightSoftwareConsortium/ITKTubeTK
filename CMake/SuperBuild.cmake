@@ -411,35 +411,37 @@ else( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
-##
-## A convenient 2D/3D image viewer that can handle anisotropic spacing.
-##
-set( ImageViewer_DEPENDS )
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  if( NOT USE_SYSTEM_ITK )
-    set( ImageViewer_DEPENDS Insight )
-  endif( NOT USE_SYSTEM_ITK )
-else( NOT TubeTK_BUILD_SLICER_EXTENSION )
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
-set( proj ImageViewer )
-ExternalProject_Add( ImageViewer
-  GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
-  GIT_TAG "b2ac8ef25da64f17b1e2e08ddb5415ec95783515"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
-  BINARY_DIR ImageViewer-Build
-  CMAKE_GENERATOR ${gen}
-  CMAKE_ARGS
-    -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-    -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-    -DCMAKE_BUILD_TYPE:STRING=${build_type}
-    ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-    -DITK_DIR:PATH=${ITK_DIR}
-  INSTALL_COMMAND ""
-  DEPENDS
-    ${ImageViewer_DEPENDS}
-  )
+if( TubeTK_BUILD_ImageViewer )
+  ##
+  ## A convenient 2D/3D image viewer that can handle anisotropic spacing.
+  ##
+  set( ImageViewer_DEPENDS )
+  if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+    if( NOT USE_SYSTEM_ITK )
+      set( ImageViewer_DEPENDS Insight )
+    endif( NOT USE_SYSTEM_ITK )
+  else( NOT TubeTK_BUILD_SLICER_EXTENSION )
+  endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+  set( proj ImageViewer )
+  ExternalProject_Add( ImageViewer
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
+    GIT_TAG "b2ac8ef25da64f17b1e2e08ddb5415ec95783515"
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
+    BINARY_DIR ImageViewer-Build
+    CMAKE_GENERATOR ${gen}
+    CMAKE_ARGS
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      -DITK_DIR:PATH=${ITK_DIR}
+    INSTALL_COMMAND ""
+    DEPENDS
+      ${ImageViewer_DEPENDS}
+    )
+endif( TubeTK_BUILD_ImageViewer )
 
 ## LibSVM
 ##

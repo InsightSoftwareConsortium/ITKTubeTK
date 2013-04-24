@@ -381,6 +381,10 @@ else( NOT TubeTK_BUILD_SLICER_EXTENSION )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
 #-----------------------------------------------------------------------------
+# OFF by default since FLTK.org is down (4/24/13)
+option( TubeTK_BUILD_ImageViewer "Build image viewer" OFF )
+
+#-----------------------------------------------------------------------------
 # Indicate that this cmakelists.txt file has already been parsed once.
 # Keeps append commands from having an effect every time cmake is run.
 set( CMAKE_FIRST_PASS_COMPLETED ON
