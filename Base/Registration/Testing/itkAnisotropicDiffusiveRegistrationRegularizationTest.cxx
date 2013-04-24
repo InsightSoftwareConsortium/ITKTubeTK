@@ -148,9 +148,6 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   randGenerator->Initialize( 137593424 );
-  PixelType     randX = 0;
-  PixelType     randY = 0;
-  PixelType     randZ = 0;
   double        mean = 0;
   double        variance = atof(argv[2]);
 
@@ -174,9 +171,9 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
       }
 
     // Add random noise
-    randX = randGenerator->GetNormalVariate( mean, variance );
-    randY = randGenerator->GetNormalVariate( mean, variance );
-    randZ = randGenerator->GetNormalVariate( mean, variance );
+    PixelType randX = randGenerator->GetNormalVariate( mean, variance );
+    PixelType randY = randGenerator->GetNormalVariate( mean, variance );
+    PixelType randZ = randGenerator->GetNormalVariate( mean, variance );
     pixel[0] += randX;
     pixel[1] += randY;
     pixel[2] += randZ;

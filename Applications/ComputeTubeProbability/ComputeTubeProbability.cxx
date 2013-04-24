@@ -52,10 +52,10 @@ int main(int argc, char **argv)
   PARSE_ARGS;
 
   itk::ImageIOBase::IOComponentType componentType;
-  unsigned int dimension;
 
   try
     {
+    unsigned int dimension;
     tube::GetImageInformation( inMeanImageFile, componentType, dimension );
     switch( dimension )
       {

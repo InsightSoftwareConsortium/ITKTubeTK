@@ -1560,19 +1560,16 @@ int DoIt( MetaCommand & command )
       itk::Index<dimensionT> indx3;
       indx.Fill( 0 );
       bool done = false;
-      bool invalid = false;
-      bool done2 = false;
-      int c, n;
+      int n;
       while( !done )
         {
-        c = ( int )( imIn->GetPixel( indx )-1 );
+        int c = ( int )( imIn->GetPixel( indx )-1 );
         indx2.Fill( 0 );
         indx2[0] = 1;
-        invalid = false;
-        done2 = false;
+        bool done2 = false;
         while( !done2 )
           {
-          invalid = false;
+          bool invalid = false;
           for( unsigned int d=0; d<dimensionT; d++ )
             {
             indx3[d] = indx[d] + indx2[d];
@@ -1973,10 +1970,11 @@ int main( int argc, char *argv[] )
     }
 
   itk::ImageIOBase::IOComponentType componentType;
-  unsigned int dimension;
+
 
   try
     {
+    unsigned int dimension;
     GetImageInformation( command.GetValueAsString( "infile" ),
                          componentType, dimension );
     if( dimension == 2 )

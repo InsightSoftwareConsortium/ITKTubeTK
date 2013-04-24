@@ -77,7 +77,7 @@ bool OptParabolicFit1D::m_Extreme( double *extX, double *extVal )
     minSign = -1;
     }
 
-  double d, v, fv, x, fx, u, fu, tf, w, fw;
+  double d, v, fv, x, fx, u, fu, w;
 
   d = -1;
   v = ( *extX );
@@ -135,7 +135,7 @@ bool OptParabolicFit1D::m_Extreme( double *extX, double *extVal )
     // Bracket = u, v, x;
   if( x<u )
     {
-    tf = u;
+    double tf = u;
     u = x;
     x = tf;
     tf = fu;
@@ -162,7 +162,7 @@ bool OptParabolicFit1D::m_Extreme( double *extX, double *extVal )
       return false;
       }
 
-    fw = minSign * m_FuncVal->value( w );
+    double fw = minSign * m_FuncVal->value( w );
 
     if( fw<fv )
       {

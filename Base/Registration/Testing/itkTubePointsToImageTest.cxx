@@ -82,7 +82,6 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
   ObjectListType::iterator            tubeIt = tubeList->begin();
   TubeType::Pointer                   tube;
   PointListType                       tubePointList;
-  unsigned int                        numPoints = 0;
   PointListType::iterator             pointIt;
   TubePointType *                     point;
   TubePointType::PointType            position;
@@ -98,7 +97,7 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
 
     // Get the list of points in the tube
     tubePointList = tube->GetPoints();
-    numPoints = tubePointList.size();
+    unsigned int numPoints = tubePointList.size();
 
     // Iterate through the points
     pointIt = tubePointList.begin();
