@@ -110,7 +110,7 @@ inline void FmtMessage(int level, const char* fmt, va_list args )
 {
   char message[1024];
   std::memset(message, 0, sizeof(char) * 1023);
-  std::vsnprintf(message, 1023, fmt, args);
+  vsnprintf(message, 1023, fmt, args);
 
   FmtMessage(level, std::string(message));
 }
