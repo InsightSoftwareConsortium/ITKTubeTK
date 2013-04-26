@@ -110,9 +110,13 @@ set(CTEST_CUSTOM_MEMCHECK_IGNORE
   # Ignore possible memory leaks in the python interpreter.
   PrintSelf-UtilitiesFilters
   PrintSelf-BaseFiltering
-  PrintSelf-BaseNumerics
   PrintSelf-BaseIO
+  PrintSelf-BaseNumerics
+  PrintSelf-BaseObjectDocuments
+  PrintSelf-BaseParameterSerializer
+  PrintSelf-BaseRegistration
   PrintSelf-BaseSegmentation
+  PrintSelf-BaseUSTK
   )
 
 # GLOB automatically recurses in subdirs
