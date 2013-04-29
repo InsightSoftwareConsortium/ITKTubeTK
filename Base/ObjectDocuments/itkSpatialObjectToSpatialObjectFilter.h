@@ -42,9 +42,9 @@ public ProcessObject
     /** Standard class typedefs. */
     typedef SpatialObjectToSpatialObjectFilter<TInputSpatialObject,
                                                TOutputSpatialObject>  Self;
-    typedef ProcessObject  Superclass;
-    typedef SmartPointer<Self>  Pointer;
-    typedef SmartPointer<const Self>  ConstPointer;
+    typedef ProcessObject                                             Superclass;
+    typedef SmartPointer<Self>                                        Pointer;
+    typedef SmartPointer<const Self>                                  ConstPointer;
 
     /** Method for creation through the object factory. */
     itkNewMacro(Self);

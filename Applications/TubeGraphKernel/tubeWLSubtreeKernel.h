@@ -98,14 +98,14 @@ class WLSubtreeKernel : public GraphKernel
   private:
 
     /** Our initial set of vertex labels */
-    std::set<int> m_initialLabelSet;
+    std::set<int>              m_initialLabelSet;
 
     /** Subtree height */
-    int m_subtreeHeight;
+    int                        m_subtreeHeight;
 
     /** Label map + Count */
     const LabelMapVectorType & m_labelMap;
-    const int m_labelCount;
+    const int                  m_labelCount;
 
     /*
      * Take a graph 'G' and use the label map information and the number of

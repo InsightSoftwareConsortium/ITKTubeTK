@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -55,7 +55,8 @@ class ITK_EXPORT ObjectDocumentToImageFilter :
     enum { TDimensions = 3 };
 
     typedef ObjectDocumentToImageFilter                       Self;
-    typedef ObjectDocumentToObjectSource<TInputObjectDocument,TOutputImageType::ImageDimension> Superclass;
+    typedef ObjectDocumentToObjectSource<TInputObjectDocument,
+      TOutputImageType::ImageDimension>                       Superclass;
 
     typedef SmartPointer< Self >                              Pointer;
     typedef SmartPointer< const Self >                        ConstPointer;
@@ -67,7 +68,7 @@ class ITK_EXPORT ObjectDocumentToImageFilter :
     typedef TOutputImageType                                  OutputImageType;
     typedef typename OutputImageType::Pointer                 OutputImagePointer;
 
-    typedef typename Superclass::TransformType  TransformType;
+    typedef typename Superclass::TransformType                TransformType;
     typedef typename TransformType::Pointer                   TransformPointer;
 
     /** Interpolator function Type def. for image resampling (default is Linear) */

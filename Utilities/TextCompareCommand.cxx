@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: ImageCompareCommand.cxx, v $
+  Module:    $RCSfile: TextCompareCommand.cxx, v $
   Language:  C++
   Date:      $Date: 2008-11-09 18:18:52 $
   Version:   $Revision: 1.12 $
@@ -9,8 +9,8 @@
   Copyright ( c ) Insight Software Consortium. All rights reserved.
   See http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
@@ -25,7 +25,7 @@
 
 int RegressionTestFile ( const char *testFilename,
   const char *baselineFilename, bool reportErrors,
-  bool createDifferenceFile, double valueTolerance, 
+  bool createDifferenceFile, double valueTolerance,
   int numberOfDifferenceTolerance );
 
 int main( int argc, char **argv )
@@ -37,32 +37,32 @@ int main( int argc, char **argv )
 
   // Option for setting the tolerable difference in intensity values
   // between the two images.
-  command.SetOption( "toleranceValue", "d", false, 
+  command.SetOption( "toleranceValue", "d", false,
     "Acceptable differences in numeric values in the files" );
   command.AddOptionField( "toleranceValue", "value", MetaCommand::FLOAT,
     true );
 
-  // Option for setting the number of pixel that can be tolerated to 
+  // Option for setting the number of pixel that can be tolerated to
   // have different intensities.
-  command.SetOption( "toleranceNumberOfDifferences", "n", false, 
+  command.SetOption( "toleranceNumberOfDifferences", "n", false,
     "Number of differences that are acceptable to have intensity differences" );
   command.AddOptionField( "toleranceNumberOfDifferences", "value",
     MetaCommand::INT, true );
 
   // Option for setting the filename of the test image.
-  command.SetOption( "testFile", "t", true, 
+  command.SetOption( "testFile", "t", true,
     "Filename of the text file to be tested against the baseline images" );
   command.AddOptionField( "testFile", "filename", MetaCommand::STRING,
     true );
 
   // Option for setting the filename of multiple baseline images.
-  command.SetOption( "baselineFiles", "B", false, 
+  command.SetOption( "baselineFiles", "B", false,
     "List of baseline text files <N> <image1> <image2>...<imageN>" );
   command.AddOptionField( "baselineFiles", "filename", MetaCommand::LIST,
     true );
 
   // Option for setting the filename of a single baseline image.
-  command.SetOption( "baselineFile", "b", false, 
+  command.SetOption( "baselineFile", "b", false,
     "Baseline text file filename" );
   command.AddOptionField( "baselineFile", "filename", MetaCommand::STRING,
     true );
@@ -80,35 +80,35 @@ int main( int argc, char **argv )
     toleranceValue = command.GetValueAsFloat( "toleranceValue",
       "value" );
     }
- 
+
   // If a number of differences tolerance was given in the command line
   if( command.GetOptionWasSet( "toleranceNumberOfDifferences" ) )
     {
     toleranceNumberOfDifferences = command.GetValueAsInt(
       "toleranceNumberOfDifferences", "value" );
     }
-     
+
   // Get the filename of the image to be tested
   if( command.GetOptionWasSet( "testFile" ) )
     {
-    testFilename = 
+    testFilename =
       command.GetValueAsString( "testFile", "filename" );
     }
- 
+
   std::list< std::string > baselineFilenames;
   baselineFilenames.clear();
 
   bool singleBaselineFile = true;
 
-  if( !command.GetOptionWasSet( "baselineFile" ) 
+  if( !command.GetOptionWasSet( "baselineFile" )
     && !command.GetOptionWasSet( "baselineFiles" ) )
     {
-    std::cerr << 
-      "You must provide a -BaselineFile or -BaselineFiles option" 
+    std::cerr <<
+      "You must provide a -BaselineFile or -BaselineFiles option"
       << std::endl;
     return EXIT_FAILURE;
     }
-     
+
   // Get the filename of the base line file
   if( command.GetOptionWasSet( "baselineFile" ) )
     {
@@ -123,16 +123,16 @@ int main( int argc, char **argv )
     singleBaselineFile = false;
     baselineFilenames = command.GetValueAsList( "baselineFiles" );
     }
-  
-  std::string bestBaselineFilename; 
+
+  std::string bestBaselineFilename;
 
   try
     {
-    if( singleBaselineFile ) 
+    if( singleBaselineFile )
       {
-      bestBaselineStatus = 
-        RegressionTestFile( 
-            testFilename.c_str(), baselineFilename.c_str(), 
+      bestBaselineStatus =
+        RegressionTestFile(
+            testFilename.c_str(), baselineFilename.c_str(),
             false, false, toleranceValue, toleranceNumberOfDifferences );
       bestBaselineFilename = baselineFilename;
       }
@@ -143,8 +143,8 @@ int main( int argc, char **argv )
       while( baselineFileItr != baselineFilenames.end() )
         {
         const int currentStatus =
-          RegressionTestFile( 
-              testFilename.c_str(), baselineFileItr->c_str(), 
+          RegressionTestFile(
+              testFilename.c_str(), baselineFileItr->c_str(),
               false, false, toleranceValue, toleranceNumberOfDifferences );
         if( currentStatus < bestBaselineStatus )
           {
@@ -161,18 +161,18 @@ int main( int argc, char **argv )
     // generate images of our closest match
     if( bestBaselineStatus == 0 )
       {
-      RegressionTestFile( 
-        testFilename.c_str(), bestBaselineFilename.c_str(), true, false, 
+      RegressionTestFile(
+        testFilename.c_str(), bestBaselineFilename.c_str(), true, false,
         toleranceValue, toleranceNumberOfDifferences );
       }
     else
       {
-      RegressionTestFile( 
-        testFilename.c_str(), 
-        bestBaselineFilename.c_str(), true, true, 
+      RegressionTestFile(
+        testFilename.c_str(),
+        bestBaselineFilename.c_str(), true, true,
         toleranceValue, toleranceNumberOfDifferences );
       }
-    
+
     }
   catch( const std::exception& e )
     {
@@ -200,7 +200,7 @@ int main( int argc, char **argv )
 // Regression Testing Code
 int RegressionTestFile ( const char *testFilename,
   const char *baselineFilename, bool reportErrors,
-  bool createDifferenceFile, double valueTolerance, 
+  bool createDifferenceFile, double valueTolerance,
   int numberOfDifferenceTolerance )
 {
   std::ifstream baselineFin( baselineFilename );
@@ -226,7 +226,7 @@ int RegressionTestFile ( const char *testFilename,
     diffFout.open( diffFilename.c_str() );
     if( ! diffFout.is_open() )
       {
-      std::cerr << "Cannot create difference file = " << diffFilename 
+      std::cerr << "Cannot create difference file = " << diffFilename
         << std::endl;
       return EXIT_FAILURE;
       }

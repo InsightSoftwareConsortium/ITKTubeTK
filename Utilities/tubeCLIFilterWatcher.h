@@ -71,27 +71,27 @@ protected:
           {
           strncpy(m_ProcessInformation->ProgressMessage,
                   this->GetComment().c_str(), 1023);
-          m_ProcessInformation->Progress = 
+          m_ProcessInformation->Progress =
             (this->GetProcess()->GetProgress() * m_Fraction + m_Start);
           if (m_Fraction != 1.0)
             {
-            m_ProcessInformation->StageProgress = 
+            m_ProcessInformation->StageProgress =
               this->GetProcess()->GetProgress();
             }
-  
+
           this->GetTimeProbe().Stop();
           m_ProcessInformation->ElapsedTime
             = this->GetTimeProbe().GetMean()
             * this->GetTimeProbe().GetNumberOfStops();
           this->GetTimeProbe().Start();
-  
+
           if (m_ProcessInformation->Abort)
             {
             this->GetProcess()->AbortGenerateDataOn();
             m_ProcessInformation->Progress = 0;
             m_ProcessInformation->StageProgress = 0;
             }
-  
+
           if (m_ProcessInformation->ProgressCallbackFunction
               && m_ProcessInformation->ProgressCallbackClientData)
             {
@@ -102,14 +102,14 @@ protected:
         if( !m_ProcessInformation || m_UseStdCout )
           {
           std::cout << "<filter-progress>"
-                    << (this->GetProcess()->GetProgress() * m_Fraction) 
+                    << (this->GetProcess()->GetProgress() * m_Fraction)
                        + m_Start
                     << "</filter-progress>"
                     << std::endl;
           if (m_Fraction != 1.0)
             {
             std::cout << "<filter-stage-progress>"
-                      << this->GetProcess()->GetProgress() 
+                      << this->GetProcess()->GetProgress()
                       << "</filter-stage-progress>"
                       << std::endl;
             }
@@ -118,7 +118,7 @@ protected:
         }
       }
   }
-  
+
   /** Callback method to show the StartEvent */
   virtual void StartFilter()
   {
@@ -134,7 +134,7 @@ protected:
         m_ProcessInformation->StageProgress = 0;
         strncpy(m_ProcessInformation->ProgressMessage,
                 this->GetComment().c_str(), 1023);
-        
+
         if (m_ProcessInformation->ProgressCallbackFunction
             && m_ProcessInformation->ProgressCallbackClientData)
           {
@@ -172,11 +172,11 @@ protected:
         {
         m_ProcessInformation->Progress = 1;
         m_ProcessInformation->StageProgress = 1;
-  
+
         m_ProcessInformation->ElapsedTime
           = this->GetTimeProbe().GetMean()
           * this->GetTimeProbe().GetNumberOfStops();
-        
+
         if (m_ProcessInformation->ProgressCallbackFunction
             && m_ProcessInformation->ProgressCallbackClientData)
           {

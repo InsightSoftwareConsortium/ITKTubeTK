@@ -78,7 +78,7 @@ public:
 private:
 
   ImageEvalType cEval;
-  double cGof;
+  double        cGof;
 
 };
 

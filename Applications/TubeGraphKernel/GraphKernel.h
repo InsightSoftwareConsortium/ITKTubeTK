@@ -78,42 +78,42 @@ class GraphKernel
                                                     double> > GraphType;
     /** Access vertex index information */
     typedef boost::property_map<
-      GraphType, boost::vertex_index_t>::type IndexMapType;
+      GraphType, boost::vertex_index_t>::type     IndexMapType;
 
     /** Access vertex neighborhoods */
     typedef boost::graph_traits<GraphType>
-      ::adjacency_iterator                    AdjacencyIteratorType;
+      ::adjacency_iterator                        AdjacencyIteratorType;
 
     typedef std::pair< AdjacencyIteratorType,
-                       AdjacencyIteratorType> VertexNeighborType;
+                       AdjacencyIteratorType>     VertexNeighborType;
 
     /** Access to shortest-path information */
     typedef boost::exterior_vertex_property<
-      GraphType, double>                      DistancePropertyType;
-    typedef DistancePropertyType::matrix_type DistanceMatrixType;
+      GraphType, double>                          DistancePropertyType;
+    typedef DistancePropertyType::matrix_type     DistanceMatrixType;
     typedef DistancePropertyType::matrix_map_type DistanceMatrixMapType;
 
     /** Vertex descriptor and vertex iterator */
     typedef boost::graph_traits<
-      GraphType>::vertex_descriptor           VertexType;
+      GraphType>::vertex_descriptor               VertexType;
     typedef boost::graph_traits<
-      GraphType>::vertex_iterator             VertexIteratorType;
+      GraphType>::vertex_iterator                 VertexIteratorType;
 
     /** Edge descriptor, edge iterator and edge-weight information */
     typedef boost::graph_traits<
-      GraphType>::edge_descriptor             EdgeDescriptorType;
+      GraphType>::edge_descriptor                 EdgeDescriptorType;
     typedef boost::graph_traits<
-      GraphType>::edge_iterator               EdgeIteratorType;
+      GraphType>::edge_iterator                   EdgeIteratorType;
     typedef boost::property_map<
-      GraphType, boost::edge_weight_t>::type  EdgeWeightMapType;
+      GraphType, boost::edge_weight_t>::type      EdgeWeightMapType;
 
     /** Types used to access all vertex (+property) information  */
     typedef boost::property_map<
       GraphType,
-      boost::vertex_all_t>::const_type        ConstVertexAllMapType;
+      boost::vertex_all_t>::const_type            ConstVertexAllMapType;
     typedef boost::property_map<
       GraphType,
-      boost::vertex_all_t>::type              VertexAllMapType;
+      boost::vertex_all_t>::type                  VertexAllMapType;
 
     /** CTOR */
     GraphKernel(const GraphType &G0, const GraphType &G1)

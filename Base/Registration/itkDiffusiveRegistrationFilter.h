@@ -146,8 +146,8 @@ public:
   typedef typename Superclass::MovingImageType          MovingImageType;
   typedef typename Superclass::MovingImagePointer       MovingImagePointer;
   typedef typename MovingImageType::PixelType           MovingImagePixelType;
-  typedef typename Superclass::DisplacementFieldType     DeformationFieldType;
-  typedef typename Superclass::DisplacementFieldPointer  DeformationFieldPointer;
+  typedef typename Superclass::DisplacementFieldType    DeformationFieldType;
+  typedef typename Superclass::DisplacementFieldPointer DeformationFieldPointer;
   typedef typename Superclass::TimeStepType             TimeStepType;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;

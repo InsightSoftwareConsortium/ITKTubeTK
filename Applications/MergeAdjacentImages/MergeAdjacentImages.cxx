@@ -356,7 +356,6 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop("Resample Image");
 
 
-
     timeCollector.Start("Out Distance Map");
     typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
       ImageType>   MapFilterType;

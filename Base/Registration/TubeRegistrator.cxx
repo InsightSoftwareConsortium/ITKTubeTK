@@ -465,13 +465,11 @@ double rotDUnit=0.1;
 
 class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
    {
-   protected:
-     TubeRegistrator * cRegOp;
    public:
      mVMetricCost()
        : cRegOp(0)
        {
-       };
+       }
      void use(TubeRegistrator * newRegOp)
          {
          cRegOp = newRegOp;
@@ -494,6 +492,8 @@ class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
        //std::cout << "   v = " << tf << std::endl;
        return tf;
        }
+     protected:
+       TubeRegistrator * cRegOp;
    };
 
 class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double> *>

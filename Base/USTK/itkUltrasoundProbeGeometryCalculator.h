@@ -106,7 +106,7 @@ private:
   UltrasoundProbeGeometryCalculator( const Self & ); // purposely not implemented
   void operator=( const Self & ); // purposely not implemented
 
-  unsigned int m_GeneralBeamDirection;
+  unsigned int   m_GeneralBeamDirection;
   InputPixelType m_BackgroundValue;
 };
 

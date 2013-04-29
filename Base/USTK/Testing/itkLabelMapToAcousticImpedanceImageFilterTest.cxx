@@ -59,7 +59,6 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
   typedef std::vector< float > LookupTableType;
 
 
-
   // Reader.
   typedef itk::ImageFileReader< LabelMapType > ReaderType;
   ReaderType::Pointer reader = ReaderType::New();

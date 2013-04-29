@@ -220,7 +220,6 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     primaryEigenValueImageIterator.Set( eigenValue[largestEigenValueIndex]);
 
 
-
     EigenValueImageType::IndexType pixelIndex;
     pixelIndex = eigenValueImageIterator.GetIndex();
 
@@ -242,7 +241,6 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     std::cout << "\t" << tensorPixel(1,0) << "\t" << tensorPixel(1,1) << "\t" << tensorPixel(1,2) << std::endl;
     std::cout << "\t" << tensorPixel(2,0) << "\t" << tensorPixel(2,1) << "\t" << tensorPixel(2,2) << std::endl;
     */
-
 
 
     if( fabs(largest) >  toleranceEigenValues  )

@@ -343,15 +343,15 @@ int DoIt( int argc, char **argv )
    * Create a mapping from CVT cell ID to the vector of corresponding
    * voxel indices.
    */
-  typedef typename InputImageType::IndexType indexType;
-  typedef typename std::map< TPixel, std::vector< indexType > > mapType;
+  typedef typename InputImageType::IndexType                    IndexType;
+  typedef typename std::map< TPixel, std::vector< IndexType > > MapType;
 
-  mapType cvtToIndex;
+  MapType cvtToIndex;
 
   inImageIt.GoToBegin();
   while( !inImageIt.IsAtEnd() )
    {
-   indexType index = inImageIt.GetIndex();
+   IndexType index = inImageIt.GetIndex();
    cvtToIndex[inImageIt.Get()].push_back( index );
    ++inImageIt;
    }
@@ -446,12 +446,12 @@ int DoIt( int argc, char **argv )
     omitLabel[labelRemapFwd[argOmit[o]]] = 1;
     }
 
-  typename mapType::iterator mapIt = cvtToIndex.begin();
+  typename MapType::iterator mapIt = cvtToIndex.begin();
   while( mapIt != cvtToIndex.end() )
     {
     TPixel cell = (*mapIt).first;
 
-    const std::vector< indexType > & indexVector =
+    const std::vector< IndexType > & indexVector =
       (*mapIt).second;
 
     tube::FmtDebugMessage("Cell %d: Index vector has size = %d!",
@@ -461,7 +461,7 @@ int DoIt( int argc, char **argv )
     // Build histogram of anatomical labels in current CVT cell
     for( unsigned int v=0; v<indexVector.size(); ++v )
       {
-      indexType index = indexVector[v];
+      IndexType index = indexVector[v];
       TPixel label = inLabelImage->GetPixel( index );
       cellHist[labelRemapFwd[label]] += 1;
       }
@@ -488,7 +488,7 @@ int DoIt( int argc, char **argv )
 
     for(unsigned int v=0; v < indexVector.size(); ++v )
       {
-      indexType index = indexVector[v];
+      IndexType index = indexVector[v];
       outImage->SetPixel( index, originalLabel );
       }
 

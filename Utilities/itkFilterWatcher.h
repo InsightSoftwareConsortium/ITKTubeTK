@@ -1,25 +1,30 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkFilterWatcher.h,v $
+  Module:    $RCSfile: itkFilterWatcher.h, v $
   Language:  C++
   Date:      $Date: 2007-01-29 14:42:11 $
   Version:   $Revision: 1.15 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright ( c ) Insight Software Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _itkFilterWatcher_h
-#define _itkFilterWatcher_h
+
+#ifndef __itkFilterWatcher_h
+#define __itkFilterWatcher_h
 
 #include "itkCommand.h"
 #include "itkProcessObject.h"
 #include <time.h>
+
+namespace itk
+{
+
 // The following class is a convenience  to watch the progress of a filter
 
 class FilterWatcher
@@ -138,13 +143,13 @@ public:
 
 protected:
 
-  clock_t m_Start;
-  clock_t m_End;
-  int m_Steps;
-  int m_Iterations;
-  bool m_Quiet;
-  bool m_TestAbort;
-  std::string m_Comment;
+  clock_t                     m_Start;
+  clock_t                     m_End;
+  int                         m_Steps;
+  int                         m_Iterations;
+  bool                        m_Quiet;
+  bool                        m_TestAbort;
+  std::string                 m_Comment;
   itk::ProcessObject::Pointer m_Process;
 
 private:
@@ -152,5 +157,7 @@ private:
   FilterWatcher(); // Purposely not implemented
 
 };
+
+} // End namespace itk
 
 #endif

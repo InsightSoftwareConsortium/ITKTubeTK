@@ -90,10 +90,10 @@ class MetaObjectDocument : public MetaDocument
     static const std::string ID_LABEL_IMAGETYPE;
     static const std::string ID_LABEL_SPATIALOBJTYPE;
 
-    int m_NObjects;
+    int                      m_NObjects;
 
-    ObjectListType  m_objects;
-    const unsigned int m_MaxNumTransforms;  //Maximum number of transforms
+    ObjectListType           m_objects;
+    const unsigned int       m_MaxNumTransforms;  //Maximum number of transforms
 
   private:
 };

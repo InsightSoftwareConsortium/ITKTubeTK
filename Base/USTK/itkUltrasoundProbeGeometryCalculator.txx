@@ -220,8 +220,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 
     // Compute the line slope and intercept for each pair of points that were
     // previously detected.
-    typedef typename OriginType::RealType MeasurementType;
-    typedef Vector< MeasurementType, 2 > MeasurementVectorType;
+    typedef typename OriginType::RealType                   MeasurementType;
+    typedef Vector< MeasurementType, 2 >                    MeasurementVectorType;
     typedef Statistics::ListSample< MeasurementVectorType > SampleType;
     typename SampleType::Pointer side1LineParameters = SampleType::New();
     typename SampleType::Pointer side2LineParameters = SampleType::New();

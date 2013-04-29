@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public:
       m_ProcessInformation->Progress = fraction;
       // if( m_Fraction != 1.0 )
         // {
-        // m_ProcessInformation->StageProgress = 
+        // m_ProcessInformation->StageProgress =
         //   this->GetProcess( )->GetProgress( );
         // }
 
@@ -80,7 +80,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }

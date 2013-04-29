@@ -87,17 +87,17 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType                FixedImageType;
-  typedef typename Superclass::FixedImagePointer             FixedImagePointer;
-  typedef typename Superclass::MovingImageType               MovingImageType;
-  typedef typename Superclass::MovingImagePointer            MovingImagePointer;
-  typedef typename MovingImageType::PixelType                MovingImagePixelType;
+  typedef typename Superclass::FixedImageType            FixedImageType;
+  typedef typename Superclass::FixedImagePointer         FixedImagePointer;
+  typedef typename Superclass::MovingImageType           MovingImageType;
+  typedef typename Superclass::MovingImagePointer        MovingImagePointer;
+  typedef typename MovingImageType::PixelType            MovingImagePixelType;
   typedef typename Superclass::DisplacementFieldType     DeformationFieldType;
   typedef typename DeformationFieldType::Pointer         DeformationFieldPointer;
-  typedef typename Superclass::TimeStepType                  TimeStepType;
-  typedef typename Superclass::NeighborhoodType              NeighborhoodType;
-  typedef typename Superclass::PixelType                     PixelType;
-  typedef typename Superclass::FloatOffsetType               FloatOffsetType;
+  typedef typename Superclass::TimeStepType              TimeStepType;
+  typedef typename Superclass::NeighborhoodType          NeighborhoodType;
+  typedef typename Superclass::PixelType                 PixelType;
+  typedef typename Superclass::FloatOffsetType           FloatOffsetType;
 
   /** Deformation field types */
   typedef typename DeformationFieldType::PixelType
