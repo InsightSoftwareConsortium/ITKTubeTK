@@ -22,7 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 
-#include "AtlasSummation.h"
+#include "tubeAtlasSummation.h"
 
 #include <cstdio>
 

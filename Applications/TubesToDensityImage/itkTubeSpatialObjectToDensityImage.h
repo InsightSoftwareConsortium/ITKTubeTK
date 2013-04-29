@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 
-#ifndef __TubeSpatialObjectToDensityImage_h
-#define __TubeSpatialObjectToDensityImage_h
+#ifndef __itkTubeSpatialObjectToDensityImage_h
+#define __itkTubeSpatialObjectToDensityImage_h
 
 #include <itkObject.h>
 #include <itkImage.h>

@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 
-#ifndef __AtlasSummation_h
-#define __AtlasSummation_h
+#ifndef __tubeAtlasSummation_h
+#define __tubeAtlasSummation_h
 
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>

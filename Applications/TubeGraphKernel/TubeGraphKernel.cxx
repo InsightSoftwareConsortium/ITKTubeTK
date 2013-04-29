@@ -28,8 +28,8 @@ limitations under the License.
 #include "itkTimeProbesCollectorBase.h"
 
 #include "itkMatrix.h"
-#include "ShortestPathKernel.h"
-#include "WLSubtreeKernel.h"
+#include "tubeShortestPathKernel.h"
+#include "tubeWLSubtreeKernel.h"
 
 // Convenient string formatting and FS stuff ...
 #include <boost/format.hpp>

@@ -20,8 +20,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef itkTubeParametricExponentialResolutionWeightFunction_h
-#define itkTubeParametricExponentialResolutionWeightFunction_h
+
+#ifndef __itkTubeParametricExponentialResolutionWeightFunction_h
+#define __itkTubeParametricExponentialResolutionWeightFunction_h
 
 #include "vnl/vnl_math.h"
 

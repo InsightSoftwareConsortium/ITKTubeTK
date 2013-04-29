@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __MetaDocument_H
-#define __MetaDocument_H
+#ifndef __tubeMetaDocument_h
+#define __tubeMetaDocument_h
 
 #include <fstream>
 #include <iostream>

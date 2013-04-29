@@ -21,6 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
+#ifndef __itkRobustMeanAndSigmaImageBuilder_txx
+#define __itkRobustMeanAndSigmaImageBuilder_txx
+
 //-----------------------------------------------------------------------------
 template< class TInputImageType,
           class TOutputMeanImageType,
@@ -482,3 +485,5 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
     ++it_upper;
     }
 }
+
+#endif

@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 
-#include "AtlasSummation.h"
-#include "MetaObjectDocument.h"
+#include "tubeAtlasSummation.h"
+#include "tubeMetaObjectDocument.h"
 #include "itkObjectDocumentToImageFilter.h"
 
 #include "tubeMessage.h"

@@ -20,8 +20,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef itkTubeExponentialResolutionWeightFunction_h
-#define itkTubeExponentialResolutionWeightFunction_h
+
+#ifndef __itkTubeExponentialResolutionWeightFunction_h
+#define __itkTubeExponentialResolutionWeightFunction_h
 
 #include "vnl/vnl_math.h"
 

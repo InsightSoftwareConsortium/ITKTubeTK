@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "ShortestPathKernel.h"
+#include "tubeShortestPathKernel.h"
 
 
 namespace tube

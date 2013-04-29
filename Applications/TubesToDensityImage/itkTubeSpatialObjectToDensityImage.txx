@@ -20,6 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
+#ifndef __itkTubeSpatialObjectToDensityImage_txx
+#define __itkTubeSpatialObjectToDensityImage_txx
+
 #include "itkTubeSpatialObjectToDensityImage.h"
 
 /** Constructor */
@@ -201,3 +205,5 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     std::cerr << e.GetDescription() <<std::endl;
     }
 }
+
+#endif

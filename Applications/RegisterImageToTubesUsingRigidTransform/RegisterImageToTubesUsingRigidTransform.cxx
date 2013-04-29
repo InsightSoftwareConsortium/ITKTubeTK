@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"

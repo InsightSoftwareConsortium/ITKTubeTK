@@ -28,7 +28,7 @@ limitations under the License.
 #include <vector>
 
 #include <metaUtils.h>
-#include "MetaObjectDocument.h"
+#include "tubeMetaObjectDocument.h"
 
 namespace tube {
 

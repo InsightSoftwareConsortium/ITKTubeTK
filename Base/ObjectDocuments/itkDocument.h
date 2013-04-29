@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 
-#ifndef _itkDocument_h
-#define _itkDocument_h
+#ifndef __itkDocument_h
+#define __itkDocument_h
 
 #include <itkDataObject.h>
 #include <itkObjectFactory.h>

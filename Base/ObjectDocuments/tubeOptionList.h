@@ -15,8 +15,8 @@
 
 =========================================================================*/
 
-#ifndef __OPTIONLIST_H_
-#define __OPTIONLIST_H_
+#ifndef __tubeOptionList_h
+#define __tubeOptionList_h
 
 #include <itkWin32Header.h>
 #include <map>

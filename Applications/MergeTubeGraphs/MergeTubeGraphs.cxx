@@ -43,7 +43,7 @@ limitations under the License.
 
 #include "MergeTubeGraphsCLP.h"
 
-#include "MetaObjectDocument.h"
+#include "tubeMetaObjectDocument.h"
 #include "itkObjectDocument.h"
 
 using namespace tube;

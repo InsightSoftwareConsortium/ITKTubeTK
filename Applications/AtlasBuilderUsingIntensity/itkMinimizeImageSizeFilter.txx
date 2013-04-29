@@ -21,6 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
+#ifndef __itkMinimizeImageSizeFilter_txx
+#define __itkMinimizeImageSizeFilter_txx
+
 namespace itk
 {
 
@@ -260,3 +263,5 @@ MinimizeImageSizeFilter< TInputImage >
 } // End of namespace tube
 
 } // End of itk namespace
+
+#endif
