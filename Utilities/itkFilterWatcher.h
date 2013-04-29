@@ -131,10 +131,10 @@ public:
       }
   }
   
-  void QuietOn() {m_Quiet = true;};
-  void QuietOff() {m_Quiet = false;};
-  void TestAbortOn() {m_TestAbort = true;};
-  void TestAbortOff() {m_TestAbort = false;};
+  void QuietOn() {m_Quiet = true;}
+  void QuietOff() {m_Quiet = false;}
+  void TestAbortOn() {m_TestAbort = true;}
+  void TestAbortOff() {m_TestAbort = false;}
 
 protected:
 

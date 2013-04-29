@@ -133,7 +133,7 @@ public:
 
 protected:
   ImageToTubeRigidRegistration();
-  virtual ~ImageToTubeRigidRegistration() {};
+  virtual ~ImageToTubeRigidRegistration() {}
 
 private:
   ImageToTubeRigidRegistration( const Self& ); //purposely not implemented

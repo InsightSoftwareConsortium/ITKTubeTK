@@ -41,12 +41,12 @@ class MyOBFunc:
     MyOBFunc( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cVal = vcl_sin(x);
       return cVal;
-      };
+      }
   };
 
 class MyOBFuncD:
@@ -58,12 +58,12 @@ class MyOBFuncD:
     MyOBFuncD( )
       {
       cDeriv = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cDeriv = vcl_cos(x);
       return cDeriv;
-      };
+      }
   };
 
 int tubeOptBrentTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )

@@ -295,11 +295,11 @@ public:
 
 protected:
   NJetImageFunction();
-  NJetImageFunction( const Self& ){};
+  NJetImageFunction( const Self& ){}
 
-  ~NJetImageFunction(){};
+  ~NJetImageFunction(){}
 
-  void operator=( const Self& ){};
+  void operator=( const Self& ){}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   typename InputImageType::ConstPointer  m_InputImage;

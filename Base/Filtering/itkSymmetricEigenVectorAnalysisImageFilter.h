@@ -161,8 +161,8 @@ public:
     }
 
 protected:
-  SymmetricEigenVectorAnalysisImageFilter() {};
-  virtual ~SymmetricEigenVectorAnalysisImageFilter() {};
+  SymmetricEigenVectorAnalysisImageFilter() {}
+  virtual ~SymmetricEigenVectorAnalysisImageFilter() {}
 
 private:
   SymmetricEigenVectorAnalysisImageFilter(const Self&); //purposely not implemented

@@ -47,13 +47,13 @@ class MySANDFunc:
     MySANDFunc( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const vnl_vector<int> & x )
       {
       cVal = vcl_sin((double)x[0]/2);
       cVal += vcl_cos((double)x[1]/2);
       return cVal;
-      };
+      }
   };
 
 class MySANDFuncV:
@@ -65,13 +65,13 @@ class MySANDFuncV:
     MySANDFuncV( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const vnl_vector<double> & x )
       {
       cVal = vcl_sin((double)x[0]/2);
       cVal += vcl_cos((double)x[1]/2);
       return cVal;
-      };
+      }
   };
 class MySANDFuncD:
   public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
@@ -83,13 +83,13 @@ class MySANDFuncD:
       {
       cDeriv.set_size(2);
       cDeriv.fill( 0 );
-      };
+      }
     const vnl_vector<double> & value( const vnl_vector<double> & x )
       {
       cDeriv[0] = vcl_cos((double)x[0]/2);
       cDeriv[1] = -vcl_sin((double)x[1]/2);
       return cDeriv;
-      };
+      }
   };
 
 int tubeSplineNDTest( int argc, char *argv[] )
@@ -220,7 +220,7 @@ int tubeSplineNDTest( int argc, char *argv[] )
         itIm.Set( spline.valueVDD2(x, d, d2) );
         break;
         }
-      };
+      }
     ++itIm;
     }
 

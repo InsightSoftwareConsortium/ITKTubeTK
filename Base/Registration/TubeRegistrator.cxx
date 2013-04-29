@@ -475,7 +475,7 @@ class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
      void use(TubeRegistrator * newRegOp)
          {
          cRegOp = newRegOp;
-         };
+         }
     double value(TNT::Vector<double> * m_X)
        {
        cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
@@ -493,7 +493,7 @@ class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
        double tf = cRegOp->Metric();
        //std::cout << "   v = " << tf << std::endl;
        return tf;
-       };
+       }
    };
 
 class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double> *>
@@ -505,11 +505,11 @@ class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double>
      mVMetricDeriv()
        : cRegOp(0), cD(6, 0.0)
        {
-       };
+       }
      void use(TubeRegistrator * newRegOp)
        {
        cRegOp = newRegOp;
-       };
+       }
      TNT::Vector<double> * value(TNT::Vector<double> * m_X)
        {
        cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
@@ -543,7 +543,7 @@ class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double>
        cD(5) /= rotDUnit;
        cD(6) /= rotDUnit;
        return &cD;
-       };
+       }
    };
 
 bool TubeRegistrator::Fit(void)

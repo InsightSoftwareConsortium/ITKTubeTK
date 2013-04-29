@@ -189,7 +189,7 @@ TubesType::Pointer ReadTubes( const char * file )
   try
     {
     reader->SetFileName( file );
-    std::cout << "Reading Tube group... " ;
+    std::cout << "Reading Tube group... ";
     reader->Update();
     std::cout << "Done." << std::endl;
     }

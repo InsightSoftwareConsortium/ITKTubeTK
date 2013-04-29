@@ -50,7 +50,7 @@ public:
     m_Start = start;
     m_StartCalled = false;
     m_UseStdCout = useStdCout;
-  };
+  }
 
 protected:
 

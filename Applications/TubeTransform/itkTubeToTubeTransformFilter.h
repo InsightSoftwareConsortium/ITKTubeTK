@@ -116,7 +116,7 @@ class ITK_EXPORT TubeToTubeTransformFilter
   protected:
 
     TubeToTubeTransformFilter();
-    virtual ~TubeToTubeTransformFilter() {};
+    virtual ~TubeToTubeTransformFilter() {}
     void PrintSelf(std::ostream& os, Indent indent) const;
 
   private:

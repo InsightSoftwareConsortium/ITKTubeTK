@@ -62,7 +62,7 @@ public:
 
   ///
   /// Get node XML tag name (like Storage, Model)
-  virtual const char* GetNodeTagName() {return "SpatialObjectsStorage";};
+  virtual const char* GetNodeTagName() {return "SpatialObjectsStorage";}
 
   ///
   /// Return a default file extension for writting
@@ -73,8 +73,8 @@ public:
   virtual bool CanReadInReferenceNode(vtkMRMLNode *refNode);
 
 protected:
-  vtkMRMLSpatialObjectsStorageNode(){};
-  ~vtkMRMLSpatialObjectsStorageNode(){};
+  vtkMRMLSpatialObjectsStorageNode(){}
+  ~vtkMRMLSpatialObjectsStorageNode(){}
   vtkMRMLSpatialObjectsStorageNode(const vtkMRMLSpatialObjectsStorageNode&);
   void operator=(const vtkMRMLSpatialObjectsStorageNode&);
 

@@ -135,7 +135,7 @@ public:
 
 protected:
   TubeEnhancingDiffusion2DImageFilter();
-  ~TubeEnhancingDiffusion2DImageFilter() {};
+  ~TubeEnhancingDiffusion2DImageFilter() {}
   void PrintSelf(std::ostream &os, Indent indent) const;
   void GenerateData();
 

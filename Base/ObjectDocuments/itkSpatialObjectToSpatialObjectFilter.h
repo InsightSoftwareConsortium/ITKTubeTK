@@ -72,8 +72,8 @@ public ProcessObject
     const InputSpatialObjectType *  GetInput(void);
     const InputSpatialObjectType *  GetInput(unsigned int idx);
 
-    void GenerateOutputInformation() {}; // do nothing
-    void GenerateData() {}; // do nothing
+    void GenerateOutputInformation() {} // do nothing
+    void GenerateData() {} // do nothing
 
   protected:
 

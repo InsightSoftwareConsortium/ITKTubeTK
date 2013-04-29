@@ -97,7 +97,7 @@ class ITK_EXPORT ObjectDocumentToObjectSource : public ProcessObject
     }
 
     /** Purposely not implemented -- To be implemented by deriving class */
-    virtual void GenerateOutputInformation() {}; // do nothing
+    virtual void GenerateOutputInformation() {} // do nothing
 
     /** Get the output object */
     DataObject * GetOutput()

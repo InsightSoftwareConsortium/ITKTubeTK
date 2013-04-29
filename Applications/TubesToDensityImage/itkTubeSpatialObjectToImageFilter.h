@@ -116,7 +116,7 @@ class ITK_EXPORT TubeSpatialObjectToImageFilter :
 
   protected:
 
-    TubeSpatialObjectToImageFilter() ;
+    TubeSpatialObjectToImageFilter();
     ~TubeSpatialObjectToImageFilter();
 
     /** Create the ouptut images and fill it */

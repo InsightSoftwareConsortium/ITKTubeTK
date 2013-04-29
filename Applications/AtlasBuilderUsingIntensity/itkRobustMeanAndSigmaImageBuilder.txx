@@ -403,7 +403,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
 
     while( !it_middle.IsAtEnd() )
       {
-      it_median.Set( it_middle.Get() ) ;
+      it_median.Set( it_middle.Get() );
       ++it_middle;
       ++it_median;
       }

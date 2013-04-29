@@ -38,23 +38,23 @@ OptionList::LabelType OptionList::DUAL_ELEMENT_DELIMITER = "*";
 OptionList::
 OptionList(int argc, char* argv[])
 {
-  std::string tag ;
-  std::string value ;
+  std::string tag;
+  std::string value;
 
-  int index = 1 ;
+  int index = 1;
   while (index < argc)
     {
     if (argv[index][0] == '-' && argv[index][1] == '-')
       {
-      tag = argv[index] ;
-      tag = tag.erase(0, 2) ; // remove '--'
+      tag = argv[index];
+      tag = tag.erase(0, 2); // remove '--'
       }
     else
       {
-      value = argv[index] ;
-      m_Map.insert(std::make_pair(tag, value)) ;
+      value = argv[index];
+      m_Map.insert(std::make_pair(tag, value));
       }
-    index++ ;
+    index++;
     }
 }
 
@@ -62,71 +62,71 @@ OptionList(int argc, char* argv[])
 int OptionList::
 GetOption(const std::string & option_tag, StringVector & values) const
 {
-  values.clear() ;
-  typedef OptionMap::const_iterator CI ;
-  std::pair<CI, CI> bound = m_Map.equal_range(option_tag) ;
-  int count = 0 ;
+  values.clear();
+  typedef OptionMap::const_iterator CI;
+  std::pair<CI, CI> bound = m_Map.equal_range(option_tag);
+  int count = 0;
 
-  for (CI i = bound.first ; i != bound.second ; ++i)
+  for (CI i = bound.first; i != bound.second; ++i)
     {
-    values.push_back(i->second) ;
-    count++ ;
+    values.push_back(i->second);
+    count++;
     }
-  return count ;
+  return count;
 }
 
 
 int OptionList::
 DumpOption(const std::string & option_tag, bool withTag, bool withNewLine) const
 {
-  typedef OptionMap::const_iterator CI ;
-  std::pair<CI, CI> bound = m_Map.equal_range(option_tag) ;
+  typedef OptionMap::const_iterator CI;
+  std::pair<CI, CI> bound = m_Map.equal_range(option_tag);
 
   if (bound.first != bound.second)
     {
     if (withTag)
       {
-      std::cout << "--" << option_tag << " " ;
+      std::cout << "--" << option_tag << " ";
       }
 
-    int count = 0 ;
-    for (CI i = bound.first ; i != bound.second ; ++i)
+    int count = 0;
+    for (CI i = bound.first; i != bound.second; ++i)
       {
-      std::cout << i->second << " " ;
-      count++ ;
+      std::cout << i->second << " ";
+      count++;
       }
 
     if (withNewLine)
-      std::cout << std::endl ;
+      std::cout << std::endl;
 
-    return count++ ;
+    return count++;
     }
-  return 0 ;
+  return 0;
 }
 
 
 int OptionList::
 GetMultiDoubleOption(const std::string & tag, std::vector<double> & args, bool required) const
 {
-  args.clear() ;
+  args.clear();
 
-  StringVector temp_args ;
-  const int arg_no = this->GetOption(tag, temp_args) ;
+  StringVector temp_args;
+  const int arg_no = this->GetOption(tag, temp_args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return -1 ;
+    return -1;
 
   if (temp_args[0] == "-")
-    return -2 ;
+    return -2;
 
-  for (int i = 0 ; i < arg_no ; i++)
+  for (int i = 0; i < arg_no; i++)
     {
-    args.push_back( std::atof(temp_args[i].c_str()) ) ;
+    args.push_back( std::atof(temp_args[i].c_str()) );
     }
-  return arg_no ;
+  return arg_no;
 }
 
 
@@ -144,52 +144,52 @@ GetMultiDoubleOption(const std::string & tag, itk::Array<double> & args, bool re
 
   itk::Array<double> array( arg_no );
 
-  for (int i = 0 ; i < arg_no ; i++)
+  for (int i = 0; i < arg_no; i++)
     {
     array[i] = tmp[i];
     }
 
   args = array;
 
-  return arg_no ;
+  return arg_no;
 }
 
 
 double OptionList::
 GetDoubleOption(const std::string & tag, double default_value, bool required) const
 {
-  StringVector temp_args ;
-  const int arg_no = this->GetOption(tag, temp_args) ;
+  StringVector temp_args;
+  const int arg_no = this->GetOption(tag, temp_args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return default_value ;
+    return default_value;
 
-  return std::atof(temp_args[0].c_str()) ;
+  return std::atof(temp_args[0].c_str());
 }
 
 
 bool OptionList::
 GetBooleanOption(const std::string & tag, bool default_value, bool required) const
 {
-  StringVector args ;
-  const int arg_no = this->GetOption(tag, args) ;
+  StringVector args;
+  const int arg_no = this->GetOption(tag, args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return default_value ;
+    return default_value;
 
   if (args[0] == BOOLEAN_VALUE_TRUE )
     {
-      return true ;
+      return true;
     }
   else
     {
-      return false ;
+      return false;
     }
 }
 
@@ -197,162 +197,162 @@ GetBooleanOption(const std::string & tag, bool default_value, bool required) con
 int OptionList::
 GetMultiIntOption(const std::string & tag, std::vector<int> & args, bool required ) const
 {
-  args.clear() ;
+  args.clear();
 
-  StringVector temp_args ;
-  const int arg_no = this->GetOption(tag, temp_args) ;
+  StringVector temp_args;
+  const int arg_no = this->GetOption(tag, temp_args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return -1 ;
+    return -1;
 
   if (temp_args[0] == "-")
-    return -2 ;
+    return -2;
 
-  for (int i = 0 ; i < arg_no ; i++)
+  for (int i = 0; i < arg_no; i++)
     {
-    args.push_back( std::atoi(temp_args[i].c_str()) ) ;
+    args.push_back( std::atoi(temp_args[i].c_str()) );
     }
-  return arg_no ;
+  return arg_no;
 }
 
 
 int OptionList::
 GetMultiUIntOption(const std::string & tag, std::vector<unsigned int> & args, bool required) const
 {
-  args.clear() ;
+  args.clear();
 
-  StringVector temp_args ;
-  const int arg_no = this->GetOption(tag, temp_args) ;
+  StringVector temp_args;
+  const int arg_no = this->GetOption(tag, temp_args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return -1 ;
+    return -1;
 
   if (temp_args[0] == "-")
-    return -2 ;
+    return -2;
 
-  for (int i = 0 ; i < arg_no ; i++)
+  for (int i = 0; i < arg_no; i++)
     {
-    args.push_back( (unsigned int) std::atoi(temp_args[i].c_str()) ) ;
+    args.push_back( (unsigned int) std::atoi(temp_args[i].c_str()) );
     }
-  return arg_no ;
+  return arg_no;
 }
 
 
 int OptionList::
 GetMultiUCharOption(const std::string & tag,  std::vector<unsigned char> & args, bool required ) const
 {
-  args.clear() ;
+  args.clear();
 
-  StringVector temp_args ;
-  const int arg_no = this->GetOption(tag, temp_args) ;
+  StringVector temp_args;
+  const int arg_no = this->GetOption(tag, temp_args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return -1 ;
+    return -1;
 
   if (temp_args[0] == "-")
-    return -2 ;
+    return -2;
 
-  for (int i = 0 ; i < arg_no ; i++)
+  for (int i = 0; i < arg_no; i++)
     {
-    args.push_back( (unsigned char)std::atoi(temp_args[i].c_str()) ) ;
+    args.push_back( (unsigned char)std::atoi(temp_args[i].c_str()) );
     }
 
-  return arg_no ;
+  return arg_no;
 }
 
 
 int OptionList::
 GetIntOption(const std::string & tag, int default_value, bool required) const
 {
-  StringVector args ;
-  const int arg_no = this->GetOption(tag, args) ;
+  StringVector args;
+  const int arg_no = this->GetOption(tag, args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return default_value ;
+    return default_value;
 
-  return std::atoi(args[0].c_str()) ;
+  return std::atoi(args[0].c_str());
 }
 
 
 unsigned int OptionList::
 GetUIntOption(const std::string & tag, unsigned int default_value, bool required ) const
 {
-  StringVector args ;
-  const int arg_no = this->GetOption(tag, args) ;
+  StringVector args;
+  const int arg_no = this->GetOption(tag, args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return default_value ;
+    return default_value;
 
-  return (unsigned int)std::atoi(args[0].c_str()) ;
+  return (unsigned int)std::atoi(args[0].c_str());
 }
 
 
 unsigned char OptionList::
 GetUCharOption(const std::string & tag, unsigned char default_value, bool required) const
 {
-  StringVector args ;
-  const int arg_no = this->GetOption(tag, args) ;
+  StringVector args;
+  const int arg_no = this->GetOption(tag, args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return default_value ;
+    return default_value;
 
-  return (unsigned char)std::atoi(args[0].c_str()) ;
+  return (unsigned char)std::atoi(args[0].c_str());
 }
 
 
 int OptionList::
 GetStringOption(const std::string & tag, std::string & ret, bool required ) const
 {
-  StringVector args ;
-  const int arg_no = this->GetOption(tag, args) ;
+  StringVector args;
+  const int arg_no = this->GetOption(tag, args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return -1 ;
+    return -1;
 
-  ret = args[0] ;
-  return arg_no ;
+  ret = args[0];
+  return arg_no;
 }
 
 
 int OptionList::
 GetMultiStringOption(const std::string & tag, std::vector< std::string > & ret, bool required ) const
 {
-  ret.clear() ;
-  StringVector args ;
-  const int arg_no = this->GetOption(tag, args) ;
+  ret.clear();
+  StringVector args;
+  const int arg_no = this->GetOption(tag, args);
 
   if (required && arg_no == 0)
-    throw RequiredOptionMissing(tag) ;
+    throw RequiredOptionMissing(tag);
 
   if (arg_no == 0)
-    return -1 ;
+    return -1;
 
-  for (int i = 0 ; i < arg_no ; i++)
+  for (int i = 0; i < arg_no; i++)
     {
-    ret.push_back( args[i] ) ;
+    ret.push_back( args[i] );
     }
-  return arg_no ;
+  return arg_no;
 }
 
 } // End namespace tube

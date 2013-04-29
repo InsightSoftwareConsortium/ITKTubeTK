@@ -121,7 +121,7 @@ public:
 protected:
 
   BlurImageFunction();
-  virtual ~BlurImageFunction(){};
+  virtual ~BlurImageFunction(){}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 

@@ -272,9 +272,9 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     Statistics::Algorithm::InsertSort< SubsampleType >( side2LineParametersSS,
       activeDimension, 0, side2LineParametersSS->Size() );
     const MeasurementVectorType side1MedianLineParameter =
-      side1LineParametersSS->GetMeasurementVectorByIndex( side1LineParametersSS->Size() / 2 );;
+      side1LineParametersSS->GetMeasurementVectorByIndex( side1LineParametersSS->Size() / 2 );
     const MeasurementVectorType side2MedianLineParameter =
-      side2LineParametersSS->GetMeasurementVectorByIndex( side2LineParametersSS->Size() / 2 );;
+      side2LineParametersSS->GetMeasurementVectorByIndex( side2LineParametersSS->Size() / 2 );
 
     // Get the intersection of the lines -- defines the ProbeOrigin
     typedef vnl_vector< MeasurementType > VnlVectorType;
