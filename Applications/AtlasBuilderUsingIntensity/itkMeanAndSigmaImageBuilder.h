@@ -50,8 +50,8 @@ namespace tube
  *  could require interpolation, which would change the maintain base results.
  */
 template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+        class TOutputMeanImageType,
+        class TOutputSigmaImageType>
 class MeanAndSigmaImageBuilder : public Object
 {
 public:
