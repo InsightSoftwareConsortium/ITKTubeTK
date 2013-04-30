@@ -38,7 +38,7 @@ namespace tube
 
 namespace MessageLevel
 {
-  enum { Information, Warning, Error, Debug };
+enum { Information, Warning, Error, Debug };
 }
 
 
@@ -118,22 +118,22 @@ inline void FmtMessage(int level, const char* fmt, va_list args )
 
 inline void FmtInfoMessage(const std::string & message)
 {
-    FmtMessage( MessageLevel::Information, message );
+  FmtMessage( MessageLevel::Information, message );
 }
 
 
 inline void FmtInfoMessage(const char* fmt, ...)
 {
-    va_list args;
-    va_start(args, fmt);
-    FmtMessage( MessageLevel::Information, fmt, args );
-    va_end(args);
+  va_list args;
+  va_start(args, fmt);
+  FmtMessage( MessageLevel::Information, fmt, args );
+  va_end(args);
 }
 
 
 inline void FmtInformationMessage(const std::string & message)
 {
-    FmtMessage( MessageLevel::Information, message );
+  FmtMessage( MessageLevel::Information, message );
 }
 
 
@@ -149,7 +149,7 @@ inline void FmtInformationMessage(const char* fmt, ...)
 
 inline void FmtWarningMessage(const std::string & message)
 {
-    FmtMessage( MessageLevel::Warning, message );
+  FmtMessage( MessageLevel::Warning, message );
 }
 
 
@@ -164,7 +164,7 @@ inline void FmtWarningMessage(const char* fmt, ...)
 
 inline void FmtErrorMessage(const std::string & message)
 {
-    FmtMessage( MessageLevel::Error, message );
+  FmtMessage( MessageLevel::Error, message );
 }
 
 
@@ -179,7 +179,7 @@ inline void FmtErrorMessage(const char* fmt, ...)
 
 inline void FmtDebugMessage(const std::string & message)
 {
-    FmtMessage( MessageLevel::Debug, message );
+  FmtMessage( MessageLevel::Debug, message );
 }
 
 

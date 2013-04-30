@@ -89,11 +89,13 @@ public:
   /** Probe type.  Determines how the beam angle is calculated.  For
    * CURVILINEAR or PHASED, the UltrasoundProbeOrigin must be set.  For
    * a LINEAR probe, the UltrasoundProbeDirection must be set. */
-  typedef enum {
+  typedef enum
+    {
     CURVILINEAR,
     PHASED,
     LINEAR
-  } ProbeType;
+    }
+  ProbeType;
 
   /** Set/Get the probe type.  This determines how the beam direction is
    * computed. */

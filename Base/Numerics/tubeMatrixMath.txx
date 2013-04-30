@@ -272,8 +272,6 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
     }
 }
 
-/**
- *                         */
 template <class T>
 void
 ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)

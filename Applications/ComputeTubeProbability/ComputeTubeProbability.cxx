@@ -153,4 +153,4 @@ int DoIt(int argc, char **argv)
   progressReporter.End();
 
   return 1;
-  }
+}

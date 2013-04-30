@@ -32,12 +32,10 @@ namespace itk
 namespace tube
 {
 
-/**
- * \class BlurImageFunction
+/** \class BlurImageFunction
  * \brief Calculate the gaussian blurred value at point
  *        given a scale and extent of the gaussian.
  * This class is templated over the input image type.
- *
  */
 template <class TInputImage>
 class ITK_EXPORT BlurImageFunction :

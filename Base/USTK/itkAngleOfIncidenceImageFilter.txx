@@ -62,9 +62,6 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
 }
 
-/**
- *
- */
 template< class TInputImage, class TOutputImage >
 void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::GenerateData(void)

@@ -154,18 +154,18 @@ int DoIt( int argc, char *argv[] )
     builder->SetSpacing( sp );
     }
 
-    builder->UseSquareDistance( useSquareDistance );
-    builder->SetTubes( ReadTubes( inputTubeFile.c_str() ) );
+  builder->UseSquareDistance( useSquareDistance );
+  builder->SetTubes( ReadTubes( inputTubeFile.c_str() ) );
 
-    progress = 0.1; // At about 10% done
-    progressReporter.Report( progress );
+  progress = 0.1; // At about 10% done
+  progressReporter.Report( progress );
 
-    timeCollector.Start( "Update filter" );
-    builder->Update();
-    timeCollector.Stop( "Update filter" );
+  timeCollector.Start( "Update filter" );
+  builder->Update();
+  timeCollector.Stop( "Update filter" );
 
-    progress = 0.8; // At about 80% done after filter
-    progressReporter.Report( progress );
+  progress = 0.8; // At about 80% done after filter
+  progressReporter.Report( progress );
 
   timeCollector.Start( "Save data" );
   WriteImage( outputDensityImage.c_str(), builder->GetDensityMap() );

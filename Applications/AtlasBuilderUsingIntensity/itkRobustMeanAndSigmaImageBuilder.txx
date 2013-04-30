@@ -225,10 +225,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
          * ( same as itkMeanAndSigmaImageBuilder )
          */
         }
-      /*
-       * List is ascending & the input value is less than list swap, and
-       * vise-versa
-       */
+      /* List is ascending & the input value is less than list swap, and vice versa */
       else if( ( ListIsAscending && it_input.Get() < it_list.Get() ) ||
                   ( !ListIsAscending && it_input.Get() > it_list.Get() )  )
         {

@@ -34,7 +34,7 @@ class vtkSlicerSpatialObjectsLogic;
 /// \ingroup Slicer_QtModules_SpatialObjects
 class qSlicerSpatialObjectsReader : public qSlicerFileReader
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   typedef qSlicerFileReader Superclass;

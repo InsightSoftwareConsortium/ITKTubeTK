@@ -60,7 +60,6 @@ namespace itk
  * - PixelT         short, 2D
  *   Precision      float, 2D
  *
- *
  * - todo
  *   - using parallelism/threading eg over scales
  *   - completely itk-fying, eg eigenvalues calculation
@@ -69,7 +68,6 @@ namespace itk
  *     (there must be a potential gain there)
  *
  * email: r.manniesing@erasmusmc.nl
- *
  */
 template <class PixelT = short int, unsigned int DimensionT = 2>
 class ITK_EXPORT TubeEnhancingDiffusion2DImageFilter :

@@ -37,11 +37,7 @@ limitations under the License.
 
 #include "TubeGraphKernelCLP.h"
 
-enum
-  {
-  GK_SPKernel = 0,
-  GK_WLKernel = 1
-  };
+enum { GK_SPKernel = 0, GK_WLKernel = 1 };
 
 
 /** Read-in a list of graphs from a list.
@@ -293,11 +289,9 @@ int main(int argc, char **argv)
       }
 
     /*
-     *
      * Read graph lists 'listA' and 'listB' and fill class labels;
      * NOTE: The labels are currently unused, since classification
      * is done in the driver script.
-     *
      */
 
     std::vector<std::string> listA, listB;
@@ -317,7 +311,6 @@ int main(int argc, char **argv)
     K.fill(0.0);
 
     /*
-     *
      * In case we use the Weisfeiler-Lehman kernel, we need to build
      * the label compression mapping beforehand. This means, we need
      * to load the graphs, compress labels and store the mappings.
@@ -327,7 +320,6 @@ int main(int argc, char **argv)
      * In case of testing, the first list is still the list of training
      * graphs and the second list will use that mapping. TODO: Make the
      * list loadable from file/
-     *
      */
 
     if( !tube::GraphKernel::IsValidDefaultNodeLabeling( argDefaultLabelType ) )
@@ -360,12 +352,10 @@ int main(int argc, char **argv)
 
 
     /*
-     *
      * Next, we build the kernel matrix K, where the K_ij-th entry
      * is the WL kernel value between the i-th graph of the first
      * (i.e., 'listA') list and the j-th graph of the second list
      * (i.e., 'listB').
-     *
      */
 
     for( int i = 0; i < N; ++i )
@@ -409,12 +399,10 @@ int main(int argc, char **argv)
       }
 
     /*
-     *
      * Eventually, dump the kernel to disk - 1) in LIBSVM comp.
      * format (directly usable by svm-train), 2) as a binary
      * kernel matrix that can be loaded in Python for instance
      * (e.g., for scikits-learn SVM) and 3) as plain text.
-     *
      */
 
     writeKernel( argOutputKernel, K );

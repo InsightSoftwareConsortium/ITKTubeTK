@@ -44,19 +44,19 @@ public:
                       double start = 0.0,
                       bool useStdCout = false)
     : SimpleFilterWatcher(o, comment)
-  {
+    {
     m_ProcessInformation = inf;
     m_Fraction = fraction;
     m_Start = start;
     m_StartCalled = false;
     m_UseStdCout = useStdCout;
-  }
+    }
 
 protected:
 
   /** Callback method to show the ProgressEvent */
   virtual void ShowProgress()
-  {
+    {
     if( !m_StartCalled )
       {
       this->StartFilter();
@@ -80,8 +80,7 @@ protected:
             }
 
           this->GetTimeProbe().Stop();
-          m_ProcessInformation->ElapsedTime
-            = this->GetTimeProbe().GetMean()
+          m_ProcessInformation->ElapsedTime = this->GetTimeProbe().GetMean()
             * this->GetTimeProbe().GetNumberOfStops();
           this->GetTimeProbe().Start();
 
@@ -117,11 +116,11 @@ protected:
           }
         }
       }
-  }
+    }
 
   /** Callback method to show the StartEvent */
   virtual void StartFilter()
-  {
+    {
     this->SetSteps(0);
     this->SetIterations(0);
     this->GetTimeProbe().Start();
@@ -160,11 +159,11 @@ protected:
         std::cout << std::flush;
         }
       }
-  }
+    }
 
   /** Callback method to show the EndEvent */
   virtual void EndFilter()
-  {
+    {
     this->GetTimeProbe().Stop();
     if (!this->GetQuiet())
       {
@@ -173,8 +172,7 @@ protected:
         m_ProcessInformation->Progress = 1;
         m_ProcessInformation->StageProgress = 1;
 
-        m_ProcessInformation->ElapsedTime
-          = this->GetTimeProbe().GetMean()
+        m_ProcessInformation->ElapsedTime = this->GetTimeProbe().GetMean()
           * this->GetTimeProbe().GetNumberOfStops();
 
         if (m_ProcessInformation->ProgressCallbackFunction
@@ -201,7 +199,7 @@ protected:
         std::cout << std::flush;
         }
       }
-  }
+    }
 
   ModuleProcessInformation * m_ProcessInformation;
 

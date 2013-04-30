@@ -219,7 +219,7 @@ CompleteImageResampleFilter< TInputImage,
     {
     outputSize[i] = (long unsigned int)( ( max[i] - origin[i] ) / spacing[i] );
     }
-  }
+}
 
 } // End of namespace tube
 

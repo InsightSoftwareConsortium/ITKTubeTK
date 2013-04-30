@@ -35,7 +35,7 @@ namespace tube {
 void GetImageInformation( const std::string & fileName,
                           itk::ImageIOBase::IOComponentType &componentType,
                           unsigned int & dimension )
-  {
+{
   // Find out the component type of the image in file
   typedef itk::ImageIOBase::IOComponentType  PixelType;
 
@@ -55,14 +55,14 @@ void GetImageInformation( const std::string & fileName,
 
   componentType = imageIO->GetComponentType();
   dimension = imageIO->GetNumberOfDimensions();
-  }
+}
 
 #ifndef PARSE_ARGS_FLOAT_ONLY
 
 int ParseArgsAndCallDoIt( std::string inputImage,
                           int argc,
                           char **argv )
-  {
+{
   itk::ImageIOBase::IOComponentType componentType;
   unsigned int dimension;
 
@@ -143,14 +143,14 @@ int ParseArgsAndCallDoIt( std::string inputImage,
     }
 
   return EXIT_SUCCESS;
-  }
+}
 
 #else // PARSE_ARGS_FLOAT_ONLY
 
 int ParseArgsAndCallDoIt( std::string inputImage,
                           int argc,
                           char **argv )
-  {
+{
   itk::ImageIOBase::IOComponentType componentType;
   unsigned int dimension;
 
@@ -179,7 +179,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
     }
 
   return EXIT_SUCCESS;
-  }
+}
 
 #endif
 

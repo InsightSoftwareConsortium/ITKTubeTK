@@ -167,17 +167,17 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
      << indent << "UltrasoundProbeType: ";
   switch( this->m_UltrasoundProbeType )
     {
-  case CURVILINEAR:
-    os << "CURVILINEAR";
-    break;
-  case PHASED:
-    os << "PHASED";
-    break;
-  case LINEAR:
-    os << "LINEAR";
-    break;
-  default:
-    os << "INVALID";
+    case CURVILINEAR:
+      os << "CURVILINEAR";
+      break;
+    case PHASED:
+      os << "PHASED";
+      break;
+    case LINEAR:
+      os << "LINEAR";
+      break;
+    default:
+      os << "INVALID";
     }
   os << indent << "UltrasoundProbeOrigin: "
      << this->m_UltrasoundProbeOrigin

@@ -34,12 +34,8 @@ namespace itk
 {
 
 /** \class StructureTensorRecursiveGaussianImageFilter
- *
  * \brief Computes the structure tensor of a multidimensional image
- *
- *
  * \warning Operates in image (pixel) space, not physical space
- *
  * \ingroup GradientFilters
  * \ingroup Singlethreaded
  */

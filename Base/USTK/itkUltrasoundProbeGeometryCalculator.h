@@ -50,7 +50,6 @@ namespace tube
  * is the intersection of these lines.  By radiating out from this origin, the
  * median of the first non-background values determine the output
  * StartOfAcquisitionRadius.
- *
  */
 template< class TInputImage > class ITK_EXPORT
   UltrasoundProbeGeometryCalculator: public ProcessObject { public:

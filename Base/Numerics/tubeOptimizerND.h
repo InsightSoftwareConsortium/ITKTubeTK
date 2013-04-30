@@ -113,9 +113,9 @@ protected:
 
 private:
 
-    /** Prevent copying and assignment */
-    OptimizerND(const OptimizerND &);
-    OptimizerND& operator=(const OptimizerND &);
+  /** Prevent copying and assignment */
+  OptimizerND(const OptimizerND &);
+  OptimizerND& operator=(const OptimizerND &);
 };
 
 } // end namespace tube

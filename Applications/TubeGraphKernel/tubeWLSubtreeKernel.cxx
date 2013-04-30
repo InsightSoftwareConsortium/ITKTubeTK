@@ -93,14 +93,14 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
         relabel[i] = labelMap[h][nbStr];
         }
       }
-      // RELABEL now!
-      for( int i=0; i<N; ++i )
+    // RELABEL now!
+    for( int i=0; i<N; ++i )
+      {
+      if( relabel[i] > 0 )
         {
-        if( relabel[i] > 0 )
-          {
-          G[vertex(i,G)].type = relabel[i];
-          }
+        G[vertex(i,G)].type = relabel[i];
         }
+      }
     }
 }
 
@@ -142,13 +142,13 @@ std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
         phi[cLab]++;
         }
       }
-      for( int i=0; i<N; ++i )
+    for( int i=0; i<N; ++i )
+      {
+      if( relabel[i] > 0 )
         {
-        if( relabel[i] > 0 )
-          {
-          G[vertex(i,G)].type = relabel[i];
-          }
+        G[vertex(i,G)].type = relabel[i];
         }
+      }
     }
   return phi;
 }

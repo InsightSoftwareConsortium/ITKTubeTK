@@ -189,7 +189,7 @@ GetBooleanOption(const std::string & tag, bool default_value, bool required) con
     }
   else
     {
-      return false;
+    return false;
     }
 }
 

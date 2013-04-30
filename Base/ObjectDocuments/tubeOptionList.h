@@ -31,63 +31,63 @@ namespace tube
 class OptionList
 {
 
-  public:
+public:
 
-    typedef std::multimap<std::string, std::string> OptionMap;
-    typedef std::vector<std::string>                StringVector;
-    typedef std::string                             LabelType;
+  typedef std::multimap<std::string, std::string> OptionMap;
+  typedef std::vector<std::string>                StringVector;
+  typedef std::string                             LabelType;
 
-    static const std::string              INPUT_DELIMITER;
-    static const std::string              BOOLEAN_VALUE_TRUE;
-    static const std::string              BOOLEAN_VALUE_FALSE;
-    static LabelType                      NUMBER_SEPARATOR;
-    static LabelType                      DUAL_ELEMENT_DELIMITER;
+  static const std::string              INPUT_DELIMITER;
+  static const std::string              BOOLEAN_VALUE_TRUE;
+  static const std::string              BOOLEAN_VALUE_FALSE;
+  static LabelType                      NUMBER_SEPARATOR;
+  static LabelType                      DUAL_ELEMENT_DELIMITER;
 
 
-    OptionList(int argc, char* argv[]);
-    ~OptionList() {}
+  OptionList(int argc, char* argv[]);
+  ~OptionList() {}
 
-    class RequiredOptionMissing
+  class RequiredOptionMissing
     {
-      public:
+    public:
 
-        RequiredOptionMissing(const std::string & tag) : OptionTag( tag ) {}
-        std::string OptionTag;
+      RequiredOptionMissing(const std::string & tag) : OptionTag( tag ) {}
+      std::string OptionTag;
     };
 
-    int GetOption(const std::string & option_tag, StringVector & values) const;
+  int GetOption(const std::string & option_tag, StringVector & values) const;
 
-    int DumpOption(const std::string & option_tag, bool withTag = true, bool withNewLine = false) const;
+  int DumpOption(const std::string & option_tag, bool withTag = true, bool withNewLine = false) const;
 
-    int GetMultiDoubleOption(const std::string & tag, std::vector<double> & args, bool required) const;
+  int GetMultiDoubleOption(const std::string & tag, std::vector<double> & args, bool required) const;
 
-    int GetMultiDoubleOption(const std::string & tag, itk::Array<double> & args, bool required) const;
+  int GetMultiDoubleOption(const std::string & tag, itk::Array<double> & args, bool required) const;
 
-    double GetDoubleOption(const std::string & tag, double default_value, bool required) const;
+  double GetDoubleOption(const std::string & tag, double default_value, bool required) const;
 
-    bool GetBooleanOption(const std::string & tag, bool default_value, bool required) const;
+  bool GetBooleanOption(const std::string & tag, bool default_value, bool required) const;
 
-    int GetMultiIntOption(const std::string & tag, std::vector<int> & args, bool required ) const;
+  int GetMultiIntOption(const std::string & tag, std::vector<int> & args, bool required ) const;
 
-    int GetIntOption(const std::string & tag, int default_value, bool required) const;
+  int GetIntOption(const std::string & tag, int default_value, bool required) const;
 
-    int GetMultiUCharOption(const std::string & tag, std::vector< unsigned char > & args, bool required) const;
+  int GetMultiUCharOption(const std::string & tag, std::vector< unsigned char > & args, bool required) const;
 
-    unsigned char GetUCharOption(const std::string & tag, unsigned char default_value, bool required) const;
+  unsigned char GetUCharOption(const std::string & tag, unsigned char default_value, bool required) const;
 
-    int GetMultiUIntOption(const std::string & tag, std::vector< unsigned int > & args, bool required) const;
+  int GetMultiUIntOption(const std::string & tag, std::vector< unsigned int > & args, bool required) const;
 
-    unsigned int GetUIntOption(const std::string & tag, unsigned int default_value, bool required) const;
+  unsigned int GetUIntOption(const std::string & tag, unsigned int default_value, bool required) const;
 
-    int GetStringOption(const std::string & tag, std::string & ret, bool required) const;
+  int GetStringOption(const std::string & tag, std::string & ret, bool required) const;
 
-    int GetMultiStringOption(const std::string & tag, std::vector< std::string > & ret,
-                             bool required) const;
-  protected:
+  int GetMultiStringOption(const std::string & tag, std::vector< std::string > & ret,
+                           bool required) const;
+protected:
 
-  private:
+private:
 
-    OptionMap m_Map;
+  OptionMap m_Map;
 };
 
 } // End namespace tube

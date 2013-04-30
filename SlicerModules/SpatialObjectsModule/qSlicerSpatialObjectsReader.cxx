@@ -46,7 +46,7 @@ limitations under the License.
 //------------------------------------------------------------------------------
 class qSlicerSpatialObjectsReaderPrivate
 {
-  public:
+public:
   vtkSmartPointer<vtkSlicerSpatialObjectsLogic> Logic;
 };
 

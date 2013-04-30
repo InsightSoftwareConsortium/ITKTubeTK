@@ -60,16 +60,16 @@ void MetaDocument::
 ClearFields()
 {
   if(META_DEBUG)
-  {
-  std::cout << "MetaDocument:ClearFields" << std::endl;
-  }
+    {
+    std::cout << "MetaDocument:ClearFields" << std::endl;
+    }
 
   for(std::vector<MET_FieldRecordType *>::iterator it = m_Fields.begin();
-      it != m_Fields.end(); ++it)
-      {
-      delete *it;
-      *it = NULL;
-      }
+    it != m_Fields.end(); ++it)
+    {
+    delete *it;
+    *it = NULL;
+    }
 
   m_Fields.clear();
 }

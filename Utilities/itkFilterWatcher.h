@@ -33,7 +33,7 @@ class FilterWatcher
 public:
 
   FilterWatcher(itk::ProcessObject* o, const char *comment="")
-  {
+    {
     m_Start = 0;
     m_End = 0;
     m_Process = o;
@@ -72,12 +72,12 @@ public:
     m_Process->AddObserver(itk::ProgressEvent(), progressFilterCommand);
     m_Process->AddObserver(itk::IterationEvent(), iterationFilterCommand);
     m_Process->AddObserver(itk::AbortEvent(), abortFilterCommand);
-  }
+    }
 
   virtual ~FilterWatcher() {}
 
   virtual void ShowProgress()
-  {
+    {
     m_Steps++;
     if (!m_Quiet)
       {
@@ -94,21 +94,21 @@ public:
         m_Process->AbortGenerateDataOn();
         }
       }
-  }
+    }
 
   virtual void ShowAbort()
-  {
+    {
     std::cout << std::endl << "      ABORT" << std::endl << std::flush;
-  }
+    }
 
   virtual void ShowIteration()
-  {
+    {
     std::cout << " # " << std::flush;
     m_Iterations++;
-  }
+    }
 
   virtual void StartFilter()
-  {
+    {
     m_Steps = 0;
     m_Iterations = 0;
     m_Start = ::clock();
@@ -117,11 +117,11 @@ public:
               << m_Process
               << (m_Quiet ? "Progress Quiet " : "Progress ")
               << std::flush;
-  }
+    }
 
   const char *GetNameOfClass () {return m_Process->GetNameOfClass();}
   virtual void EndFilter()
-  {
+    {
     m_End = ::clock();
     std::cout << std::endl << "Filter took "
               << static_cast<double>(m_End - m_Start) / CLOCKS_PER_SEC
@@ -134,7 +134,7 @@ public:
       {
       itkExceptionMacro ("Filter does not have progress.");
       }
-  }
+    }
   
   void QuietOn() {m_Quiet = true;}
   void QuietOff() {m_Quiet = false;}

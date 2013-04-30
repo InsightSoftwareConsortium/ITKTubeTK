@@ -31,8 +31,7 @@ namespace itk
 namespace Function
 {
 
-/**
- * \class TubeExponentialResolutionWeightFunction
+/** \class TubeExponentialResolutionWeightFunction
  *
  * \brief Weight tube points exponentially by their radius.
  *
@@ -43,8 +42,7 @@ namespace Function
  *
  * \sa TubeExponentialResolutionWeightFunction
  * \sa TubeExponentialWithBoundsResolutionWeightFunction
- *
- * */
+ */
 template< class TTubePoint, class TOperatorValue=double >
 class TubeExponentialResolutionWeightFunction
 {

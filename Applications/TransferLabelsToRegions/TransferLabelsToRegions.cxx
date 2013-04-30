@@ -72,11 +72,10 @@ int main( int argc, char **argv )
  *
  * \param fileName Image file name
  * \return 'true' if image, given by 'fileName' has a discrete-value type
- *
  */
 bool IsDiscrete( const std::string & fileName )
 {
-   typedef itk::ImageIOBase::IOComponentType ScalarTPixelype;
+  typedef itk::ImageIOBase::IOComponentType ScalarTPixelype;
 
   itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
     fileName.c_str(), itk::ImageIOFactory::ReadMode);
@@ -100,7 +99,6 @@ bool IsDiscrete( const std::string & fileName )
  * \param g 2nd VNL vector
  * \param tol Tolerance value
  * \return true in case of equality, false else
- *
  */
 template <typename T>
 bool check_vnl_vector_equality( const vnl_vector<T> &v,
@@ -127,7 +125,6 @@ bool check_vnl_vector_equality( const vnl_vector<T> &v,
  * \param G 2nd VNL matrix
  * \param tol Tolerance value
  * \return true in case of equality, false else
- *
  */
 template <typename T>
 bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
@@ -156,7 +153,6 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
  *
  *  \param outImage Image that is about to be created (has to exist)
  *  \param targetSize Desired size of the image
- *
  */
 template < class ImageType >
 void CreateEmptyImage(
@@ -179,7 +175,6 @@ void CreateEmptyImage(
  *  \param imageA 1st input image of type ImageType
  *  \param imageB 2nd input image of type ImageType
  *  \returns true if image have equal spacing and size, false else
- *
  */
 template < typename ImageType >
 bool CheckCompatibility(
@@ -300,9 +295,7 @@ int DoIt( int argc, char **argv )
     }
 
 
-  /*
-   * Determine the set of unique CVT cell IDs.
-   */
+  // Determine the set of unique CVT cell IDs.
   typename itk::ImageRegionIteratorWithIndex< InputImageType > inImageIt(
     inImage, inImage->GetLargestPossibleRegion());
 
@@ -350,16 +343,14 @@ int DoIt( int argc, char **argv )
 
   inImageIt.GoToBegin();
   while( !inImageIt.IsAtEnd() )
-   {
-   IndexType index = inImageIt.GetIndex();
-   cvtToIndex[inImageIt.Get()].push_back( index );
-   ++inImageIt;
-   }
+    {
+    IndexType index = inImageIt.GetIndex();
+    cvtToIndex[inImageIt.Get()].push_back( index );
+    ++inImageIt;
+    }
 
 
-  /*
-   * Determine the set of unique labels in the label map image.
-   */
+  // Determine the set of unique labels in the label map image.
   std::set< TPixel > labelSet;
   typename itk::ImageRegionIteratorWithIndex< InputImageType > inLabelImageIt(
     inLabelImage, inLabelImage->GetLargestPossibleRegion());

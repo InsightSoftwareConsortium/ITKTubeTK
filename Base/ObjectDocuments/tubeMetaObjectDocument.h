@@ -39,63 +39,63 @@ namespace tube
 
 class MetaObjectDocument : public MetaDocument
 {
-  public:
+public:
 
-    typedef itk::tube::ObjectDocument                   ObjectDocumentType;
-    typedef itk::tube::BlobSpatialObjectDocument        BlobSpatialObjectDocumentType;
-    typedef itk::tube::SpatialObjectDocument            SpatialObjectDocumentType;
-    typedef itk::tube::ImageDocument                    ImageDocumentType;
-    typedef std::vector<ObjectDocumentType::Pointer>    ObjectListType;
+  typedef itk::tube::ObjectDocument                   ObjectDocumentType;
+  typedef itk::tube::BlobSpatialObjectDocument        BlobSpatialObjectDocumentType;
+  typedef itk::tube::SpatialObjectDocument            SpatialObjectDocumentType;
+  typedef itk::tube::ImageDocument                    ImageDocumentType;
+  typedef std::vector<ObjectDocumentType::Pointer>    ObjectListType;
 
-    MetaObjectDocument();
-    ~MetaObjectDocument();
+  MetaObjectDocument();
+  ~MetaObjectDocument();
 
-    void  PrintInfo() const;
+  void  PrintInfo() const;
 
-    bool  Read(const std::string & _fileName = std::string());
+  bool  Read(const std::string & _fileName = std::string());
 
-    bool  ReadStream(int _nDims, std::ifstream & _stream);
+  bool  ReadStream(int _nDims, std::ifstream & _stream);
 
-    bool  Write(const std::string & _fileName = std::string());
+  bool  Write(const std::string & _fileName = std::string());
 
-    /** Clear tube information */
-    void Clear();
+  /** Clear tube information */
+  void Clear();
 
-    void AddObject( ObjectDocumentType::Pointer );
+  void AddObject( ObjectDocumentType::Pointer );
 
-    /** Overrides any previously added objects */
-    void SetObjectList( ObjectListType& list );
+  /** Overrides any previously added objects */
+  void SetObjectList( ObjectListType& list );
 
-    ObjectListType * GetObjectList(void);
+  ObjectListType * GetObjectList(void);
 
 
-  protected:
-    bool M_Write(void);
-    bool M_Read(void);
+protected:
+  bool M_Write(void);
+  bool M_Read(void);
 
-    void M_SetupReadFields(void);
-    void M_SetupObjectReadFields(void);
+  void M_SetupReadFields(void);
+  void M_SetupObjectReadFields(void);
 
-    void M_SetupWriteFields(void);
-    void M_SetupObjectWriteFields(unsigned int);
+  void M_SetupWriteFields(void);
+  void M_SetupObjectWriteFields(unsigned int);
 
-    static const std::string LABEL_NOBJECTS;
-    static const std::string LABEL_TYPE;
-    static const std::string LABEL_NAME;
-    static const std::string LABEL_NUM_TRANS;
-    static const std::string LABEL_TRANSFORM;
+  static const std::string LABEL_NOBJECTS;
+  static const std::string LABEL_TYPE;
+  static const std::string LABEL_NAME;
+  static const std::string LABEL_NUM_TRANS;
+  static const std::string LABEL_TRANSFORM;
 
-    /** Label ID names of possible object types */
-    static const std::string ID_LABEL_BLOBTYPE;
-    static const std::string ID_LABEL_IMAGETYPE;
-    static const std::string ID_LABEL_SPATIALOBJTYPE;
+  /** Label ID names of possible object types */
+  static const std::string ID_LABEL_BLOBTYPE;
+  static const std::string ID_LABEL_IMAGETYPE;
+  static const std::string ID_LABEL_SPATIALOBJTYPE;
 
-    int                      m_NObjects;
+  int                      m_NObjects;
 
-    ObjectListType           m_objects;
-    const unsigned int       m_MaxNumTransforms;  //Maximum number of transforms
+  ObjectListType           m_objects;
+  const unsigned int       m_MaxNumTransforms;  //Maximum number of transforms
 
-  private:
+private:
 };
 
 } // End namespace tube
