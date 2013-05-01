@@ -48,8 +48,8 @@ namespace itk
 // constructor
 template <class PixelT, unsigned int DimensionT>
 TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
-::TubeEnhancingDiffusion2DImageFilter():
-    m_TimeStep(0.2),
+::TubeEnhancingDiffusion2DImageFilter( void )
+  : m_TimeStep(0.2),
     m_Iterations(200),
     m_RecalculateTubeness(100),
     m_Beta(0.5),
@@ -410,7 +410,7 @@ TubeEnhancingDiffusion2DImageFilter<PixelT,DimensionT>::TubenessFunction2D(
 // diffusiontensor
 template <class PixelT, unsigned int DimensionT>
 void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
-::DiffusionTensor()
+::DiffusionTensor( void )
 {
   ImageRegionIterator<PrecisionImageType>
     itxx( m_Dxx, m_Dxx->GetLargestPossibleRegion() );
@@ -470,7 +470,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 // generatedata
 template <class PixelT, unsigned int DimensionT>
 void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
-::GenerateData()
+::GenerateData( void )
 {
   if (m_Verbose)
     {

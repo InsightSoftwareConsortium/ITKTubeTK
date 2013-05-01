@@ -26,7 +26,7 @@ namespace tube
 {
 
 SplineApproximation1D::
-SplineApproximation1D()
+SplineApproximation1D( void )
 : Spline1D()
 {
   m_SplineApproximation1DMatrixConst = (double)(1.0/6.0);
@@ -75,7 +75,7 @@ SplineApproximation1D( UserFunc<int, double> *newFunval,
 
 
 SplineApproximation1D::
-~SplineApproximation1D()
+~SplineApproximation1D( void )
 {
 
 }

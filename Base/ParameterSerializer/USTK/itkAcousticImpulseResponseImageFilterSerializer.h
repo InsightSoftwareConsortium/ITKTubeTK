@@ -57,12 +57,12 @@ public:
 
   typedef TAcousticImpulseResponseImageFilter AcousticImpulseResponseImageFilterType;
 
-  virtual void Serialize();
-  virtual void DeSerialize();
+  virtual void Serialize( void );
+  virtual void DeSerialize( void );
 
 protected:
-  AcousticImpulseResponseImageFilterSerializer();
-  virtual ~AcousticImpulseResponseImageFilterSerializer();
+  AcousticImpulseResponseImageFilterSerializer( void );
+  virtual ~AcousticImpulseResponseImageFilterSerializer( void );
 
   typedef ImageToImageFilterSerializer
     < typename AcousticImpulseResponseImageFilterType::GradientMagnitudeFilterType >

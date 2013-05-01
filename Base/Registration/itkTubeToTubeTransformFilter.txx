@@ -33,7 +33,7 @@ namespace itk
  */
 template <class TTransformType, unsigned int TDimension>
 TubeToTubeTransformFilter<TTransformType,TDimension>
-::TubeToTubeTransformFilter()
+::TubeToTubeTransformFilter( void )
 {
   m_Output = 0;
   m_CropSize = NULL;
@@ -53,7 +53,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
 template <class TTransformType, unsigned int TDimension>
 void
 TubeToTubeTransformFilter<TTransformType,TDimension>
-::Update(void)
+::Update( void )
 {
   m_Output = GroupType::New();
 

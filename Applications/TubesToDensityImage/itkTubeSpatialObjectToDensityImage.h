@@ -95,9 +95,9 @@ public:
     DensityImageType, DensityImageType > DanielssonFilterType;
 
   /** Retrieve Density map created by inverted Danielsson Distance Map */
-  DensityImagePointer GetDensityMap() const { return m_DensityImage; }
-  RadiusImagePointer  GetRadiusMap()  const { return m_RadiusImage;  }
-  TangentImagePointer GetTangentMap() const { return m_TangentImage; }
+  DensityImagePointer GetDensityMap( void ) const { return m_DensityImage; }
+  RadiusImagePointer  GetRadiusMap( void )  const { return m_RadiusImage;  }
+  TangentImagePointer GetTangentMap( void ) const { return m_TangentImage; }
 
   /** Use square distance instead of linear distance */
   inline void UseSquareDistance( bool v ) { m_UseSquareDistance = v; }
@@ -113,11 +113,11 @@ public:
 
   void SetMaxDensityIntensity( DensityPixelType max ) { m_max = max; }
 
-  void Update();
+  void Update( void );
 
 protected:
 
-  TubeGroupPointer GetTubes() const
+  TubeGroupPointer GetTubes( void ) const
     { return m_TubeGroup; }
   void SetDensityMap( DensityImagePointer density )
     { m_DensityImage = density; }
@@ -126,8 +126,8 @@ protected:
   void SetTangentMap( TangentImagePointer tangent )
     { m_TangentImage = tangent; }
 
-  TubeSpatialObjectToDensityImage();
-  ~TubeSpatialObjectToDensityImage();
+  TubeSpatialObjectToDensityImage( void );
+  ~TubeSpatialObjectToDensityImage( void );
 
 private:
 

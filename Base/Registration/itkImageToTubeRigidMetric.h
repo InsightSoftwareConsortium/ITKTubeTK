@@ -143,8 +143,8 @@ public:
 
   /** Set/Get the function used to determine the resolution weights.  This function
    *  takes a tube point as an input and outputs a weight for that point. */
-  ResolutionWeightFunctionType & GetResolutionWeightFunction();
-  const ResolutionWeightFunctionType & GetResolutionWeightFunction() const;
+  ResolutionWeightFunctionType & GetResolutionWeightFunction( void );
+  const ResolutionWeightFunctionType & GetResolutionWeightFunction( void ) const;
   void SetResolutionWeightFunction( const ResolutionWeightFunctionType & function );
 
   TransformPointer GetTransform( void ) const
@@ -153,8 +153,8 @@ public:
   /** Downsample the tube points by this integer value. */
 
 protected:
-  ImageToTubeRigidMetric();
-  virtual ~ImageToTubeRigidMetric();
+  ImageToTubeRigidMetric( void );
+  virtual ~ImageToTubeRigidMetric( void );
 
   void ComputeImageRange( void );
 
@@ -165,7 +165,7 @@ protected:
 
   /** Calculate the weighting for each tube point and its scale, which is based
    * on the local radius. */
-  virtual void ComputeTubePointResolutionWeights();
+  virtual void ComputeTubePointResolutionWeights( void );
 
 private:
   typedef std::list< InternalComputationValueType > ResolutionWeightsContainerType;
@@ -203,7 +203,7 @@ private:
     const InternalComputationValueType scale,
     const OutputPointType & currentPoint ) const;
 
-  typename TubeNetType::ChildrenListType* GetTubes() const;
+  typename TubeNetType::ChildrenListType* GetTubes( void ) const;
 
   ImageToTubeRigidMetric( const Self& ); // purposely not implemented
   void operator=( const Self& ); // purposely not implemented

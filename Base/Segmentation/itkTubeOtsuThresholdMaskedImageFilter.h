@@ -122,12 +122,12 @@ public:
   /** End concept checking */
 #endif
 protected:
-  OtsuThresholdMaskedImageFilter();
-  ~OtsuThresholdMaskedImageFilter(){}
+  OtsuThresholdMaskedImageFilter( void );
+  ~OtsuThresholdMaskedImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  void GenerateInputRequestedRegion();
-  void GenerateData ();
+  void GenerateInputRequestedRegion( void );
+  void GenerateData( void );
 
 private:
   OtsuThresholdMaskedImageFilter(const Self&); //purposely not implemented

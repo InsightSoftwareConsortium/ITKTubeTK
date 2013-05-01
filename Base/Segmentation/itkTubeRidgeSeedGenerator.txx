@@ -46,7 +46,7 @@ namespace tube
 
 template< class ImageT, class LabelmapT >
 RidgeSeedGenerator< ImageT, LabelmapT >
-::RidgeSeedGenerator()
+::RidgeSeedGenerator( void )
 {
   m_RidgeImage = NULL;
 
@@ -55,7 +55,7 @@ RidgeSeedGenerator< ImageT, LabelmapT >
 
 template< class ImageT, class LabelmapT >
 RidgeSeedGenerator< ImageT, LabelmapT >
-::~RidgeSeedGenerator()
+::~RidgeSeedGenerator( void )
 {
 }
 
@@ -360,7 +360,7 @@ RidgeSeedGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 RidgeSeedGenerator< ImageT, LabelmapT >
-::GenerateLDA()
+::GenerateLDA( void )
 {
   Superclass::GenerateLDA();
 }

@@ -27,7 +27,7 @@ limitations under the License.
 #include <iostream>
 #include "tubeTestMain.h"
 
-void RegisterTests()
+void RegisterTests( void )
 {
 #ifdef TubeTK_USE_VTK
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationGenerateTestingImages );

@@ -47,7 +47,7 @@ const std::string MetaObjectDocument::ID_LABEL_SPATIALOBJTYPE = "SpatialObject";
 
 
 MetaObjectDocument::
-MetaObjectDocument()
+MetaObjectDocument( void )
 : m_NObjects( 0 ),
   m_MaxNumTransforms( 20 )
 {
@@ -62,13 +62,13 @@ MetaObjectDocument()
 
 
 MetaObjectDocument::
-~MetaObjectDocument()
+~MetaObjectDocument( void )
 {
 }
 
 
 void MetaObjectDocument::
-PrintInfo() const
+PrintInfo( void ) const
 {
   MetaDocument::PrintInfo();
   ObjectListType::const_iterator  it = m_objects.begin();
@@ -102,14 +102,14 @@ SetObjectList( ObjectListType& list )
 
 MetaObjectDocument::ObjectListType *
 MetaObjectDocument::
-GetObjectList(void)
+GetObjectList( void )
 {
   return &m_objects;
 }
 
 
 void MetaObjectDocument::
-Clear(void)
+Clear( void )
 {
   if(META_DEBUG)
     {
@@ -186,7 +186,7 @@ Write(const std::string &_fileName)
 
 
 void MetaObjectDocument::
-M_SetupReadFields(void)
+M_SetupReadFields( void )
 {
   if(META_DEBUG)
     {
@@ -207,7 +207,7 @@ M_SetupReadFields(void)
 
 
 void MetaObjectDocument::
-M_SetupWriteFields(void)
+M_SetupWriteFields( void )
 {
   MetaDocument::ClearFields();
   MetaDocument::M_SetupWriteFields();
@@ -227,7 +227,7 @@ M_SetupWriteFields(void)
 
 
 void MetaObjectDocument::
-M_SetupObjectReadFields(void)
+M_SetupObjectReadFields( void )
 {
   MetaDocument::ClearFields();
 
@@ -297,7 +297,7 @@ M_SetupObjectWriteFields( unsigned int object_idx )
 
 
 bool MetaObjectDocument::
-M_Read(void)
+M_Read( void )
 {
   if(META_DEBUG)
     std::cout << "MetaObjectDocument: M_Read: Loading Header" << std::endl;
@@ -386,7 +386,7 @@ M_Read(void)
 
 
 bool MetaObjectDocument::
-M_Write(void)
+M_Write( void )
 {
   if(!MetaDocument::M_Write())
     {

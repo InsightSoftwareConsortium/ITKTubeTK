@@ -32,7 +32,7 @@ namespace tube
 
 template< class TInputObjectDocument, unsigned int TDimension >
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::ObjectDocumentToObjectSource()
+::ObjectDocumentToObjectSource( void )
 {
   m_ComposedTransformIsIdentity = true;
   this->ApplyTransforms( true );  // Set transforms to be built (default value)
@@ -43,7 +43,7 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 template< class TInputObjectDocument, unsigned int TDimension >
 const typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::DocumentType *
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::GetInput()
+::GetInput( void )
 {
   if (this->GetNumberOfInputs() < 1)
     {
@@ -57,7 +57,7 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 template< class TInputObjectDocument, unsigned int TDimension >
 typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::TransformPointer
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::GetComposedTransform()
+::GetComposedTransform( void )
 {
   ConstDocumentPointer doc = static_cast<const DocumentType * > (this->ProcessObject::GetInput(0) );
   if( m_ApplyTransforms )

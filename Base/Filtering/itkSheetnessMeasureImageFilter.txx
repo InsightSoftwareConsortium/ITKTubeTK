@@ -34,7 +34,7 @@ namespace itk
  */
 template< typename TPixel >
 SheetnessMeasureImageFilter< TPixel >
-::SheetnessMeasureImageFilter()
+::SheetnessMeasureImageFilter( void )
 {
   m_Alpha = 0.5;
   m_Beta = 0.5;
@@ -51,7 +51,7 @@ SheetnessMeasureImageFilter< TPixel >
 template< typename TPixel >
 void
 SheetnessMeasureImageFilter< TPixel >
-::GenerateData()
+::GenerateData( void )
 {
   itkDebugMacro(<< "SheetnessMeasureImageFilter generating data ");
 

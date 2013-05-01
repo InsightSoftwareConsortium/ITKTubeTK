@@ -35,7 +35,7 @@ namespace itk
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::DiffusiveRegistrationFilter()
+::DiffusiveRegistrationFilter( void )
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
@@ -153,7 +153,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CreateRegistrationFunction()
+::CreateRegistrationFunction( void )
 {
   typename RegistrationFunctionType::Pointer registrationFunction
       = RegistrationFunctionType::New();
@@ -172,7 +172,7 @@ typename DiffusiveRegistrationFilter
 ::RegistrationFunctionType *
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::GetRegistrationFunctionPointer() const
+::GetRegistrationFunctionPointer( void ) const
 {
   RegistrationFunctionType * df = dynamic_cast< RegistrationFunctionType * >
        ( this->GetDifferenceFunction().GetPointer() );
@@ -186,7 +186,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateUpdateBuffer()
+::AllocateUpdateBuffer( void )
 {
   // The update buffer looks just like the output and holds the voxel changes
   typename OutputImageType::Pointer output = this->GetOutput();
@@ -203,7 +203,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::Initialize()
+::Initialize( void )
 {
   Superclass::Initialize();
 
@@ -321,7 +321,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateImageMembers()
+::AllocateImageMembers( void )
 {
   assert( this->GetOutput() );
 
@@ -421,7 +421,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeDeformationComponentAndDerivativeImages()
+::InitializeDeformationComponentAndDerivativeImages( void )
 {
   assert( this->GetOutput() );
   assert( this->GetComputeRegularizationTerm() );
@@ -457,7 +457,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorImages()
+::ComputeDiffusionTensorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_DiffusionTensorImages[GAUSSIAN] );
@@ -477,7 +477,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorDerivativeImages()
+::ComputeDiffusionTensorDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -574,7 +574,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDeformationComponentDerivativeImages()
+::ComputeDeformationComponentDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -779,7 +779,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeIteration()
+::InitializeIteration( void )
 {
   assert( this->GetOutput() );
   Superclass::InitializeIteration();
@@ -809,7 +809,7 @@ typename DiffusiveRegistrationFilter
 ::TimeStepType
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateChange()
+::CalculateChange( void )
 {
   // Compute the search direction.  After this,
   // - update buffer as if stepSize = 1
@@ -853,7 +853,7 @@ typename DiffusiveRegistrationFilter
 ::TimeStepType
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateChangeGradient()
+::CalculateChangeGradient( void )
 {
   // Set up for multithreaded processing.
   CalculateChangeGradientThreadStruct str;

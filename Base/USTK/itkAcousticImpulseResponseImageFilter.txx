@@ -32,8 +32,8 @@ namespace itk
 
 template< class TInputImage, class TOutputImage, class TOperatorValue >
 AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
-::AcousticImpulseResponseImageFilter():
-  m_AngleDependence( 1.0 )
+::AcousticImpulseResponseImageFilter( void )
+  : m_AngleDependence( 1.0 )
 {
   this->SetNumberOfRequiredInputs( 2 );
 

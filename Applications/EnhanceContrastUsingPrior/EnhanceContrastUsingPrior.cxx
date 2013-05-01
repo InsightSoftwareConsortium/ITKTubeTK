@@ -256,7 +256,7 @@ protected:
                            m_MaskObjectValue(0),
                            m_MaskBackgroundValue(0),
                            m_CallsToGetValue(0) {}
-  virtual ~ContrastCostFunction() {}
+  virtual ~ContrastCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -486,7 +486,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

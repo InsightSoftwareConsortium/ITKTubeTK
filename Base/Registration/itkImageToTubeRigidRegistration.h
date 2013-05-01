@@ -129,11 +129,11 @@ public:
   void SetParametersScale( const double scales[6] );
 
   /** Initialize the registration */
-  void Initialize() throw ( ExceptionObject );
+  void Initialize( void ) throw ( ExceptionObject );
 
 protected:
-  ImageToTubeRigidRegistration();
-  virtual ~ImageToTubeRigidRegistration() {}
+  ImageToTubeRigidRegistration( void );
+  virtual ~ImageToTubeRigidRegistration( void ) {}
 
 private:
   ImageToTubeRigidRegistration( const Self& ); //purposely not implemented

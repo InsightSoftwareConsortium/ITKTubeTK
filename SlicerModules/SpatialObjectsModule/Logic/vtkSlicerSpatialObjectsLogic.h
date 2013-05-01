@@ -42,7 +42,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_LOGIC_EXPORT vtkSlicerSpatialObjectsLogic
  : public vtkSlicerModuleLogic
 {
 public:
-  static vtkSlicerSpatialObjectsLogic *New();
+  static vtkSlicerSpatialObjectsLogic *New( void );
   vtkTypeRevisionMacro(vtkSlicerSpatialObjectsLogic,vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
@@ -74,11 +74,11 @@ public:
   // Description:
   // Register MRML Node classes to Scene.
   // Called automatically when the MRMLScene is attached to this logic class.
-  virtual void RegisterNodes();
+  virtual void RegisterNodes( void );
 
 protected:
-  vtkSlicerSpatialObjectsLogic();
-  ~vtkSlicerSpatialObjectsLogic();
+  vtkSlicerSpatialObjectsLogic( void );
+  ~vtkSlicerSpatialObjectsLogic( void );
   vtkSlicerSpatialObjectsLogic(const vtkSlicerSpatialObjectsLogic&);
   void operator=(const vtkSlicerSpatialObjectsLogic&);
 

@@ -242,9 +242,9 @@ public:
 
 protected:
 
-  BlendCostFunction() : m_Mode(0),
-                        m_CallsToGetValue(0) {}
-  virtual ~BlendCostFunction() {}
+  BlendCostFunction( void )
+    : m_Mode(0), m_CallsToGetValue(0) {}
+  virtual ~BlendCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -471,9 +471,9 @@ public:
 
 protected:
 
-  BlendScaleCostFunction() : m_Mode(0),
-                             m_CallsToGetValue(0) {}
-  virtual ~BlendScaleCostFunction() {}
+  BlendScaleCostFunction( void )
+    : m_Mode(0), m_CallsToGetValue(0) {}
+  virtual ~BlendScaleCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -819,7 +819,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

@@ -33,12 +33,12 @@ namespace tube
 {
 
 NJetLDAGenerator2F
-::NJetLDAGenerator2F()
+::NJetLDAGenerator2F( void )
 {
 }
 
 NJetLDAGenerator2F
-::~NJetLDAGenerator2F()
+::~NJetLDAGenerator2F( void )
 {
 }
 

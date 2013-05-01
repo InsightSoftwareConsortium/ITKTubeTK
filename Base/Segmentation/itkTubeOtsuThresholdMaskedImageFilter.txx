@@ -35,7 +35,7 @@ namespace tube {
 
 template<class TInputImage, class TOutputImage>
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
-::OtsuThresholdMaskedImageFilter()
+::OtsuThresholdMaskedImageFilter( void )
 {
   m_MaskImage      = NULL;
   m_OutsideValue   = NumericTraits<OutputPixelType>::Zero;
@@ -47,7 +47,7 @@ OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
 template<class TInputImage, class TOutputImage>
 void
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
-::GenerateData()
+::GenerateData( void )
 {
   typename ProgressAccumulator::Pointer progress =
     ProgressAccumulator::New();
@@ -85,7 +85,7 @@ OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
 template<class TInputImage, class TOutputImage>
 void
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
-::GenerateInputRequestedRegion()
+::GenerateInputRequestedRegion( void )
 {
   TInputImage * input = const_cast<TInputImage *>( this->GetInput() );
   if( input )

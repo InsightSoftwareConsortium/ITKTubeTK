@@ -32,7 +32,7 @@ namespace tube
 
 //-----------------------------------------------------------------------------
 AtlasSummation
-::AtlasSummation()
+::AtlasSummation( void )
 {
   m_isStdDeviation = true;
   m_isProcessing = false;
@@ -59,7 +59,7 @@ AtlasSummation
 
 //-----------------------------------------------------------------------------
 AtlasSummation
-::~AtlasSummation()
+::~AtlasSummation( void )
 {}
 
 
@@ -245,7 +245,7 @@ bool AtlasSummation
 
 //-----------------------------------------------------------------------------
 void AtlasSummation
-::Finalize()
+::Finalize( void )
 {
   m_meanBuilder->FinalizeOutput();
 }

@@ -93,9 +93,9 @@ public:
 
   RidgeScalesType & GetScales( void );
 
-  void Update();
+  void Update( void );
 
-  void UpdateLDAImages();
+  void UpdateLDAImages( void );
 
 protected:
 

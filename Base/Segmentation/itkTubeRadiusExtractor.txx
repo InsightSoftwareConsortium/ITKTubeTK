@@ -57,9 +57,9 @@ public:
 
   RadiusExtractorMedialnessFunc( RadiusExtractor< ImageT > *
     newRadiusExtractor,
-    double newMedialnessScaleStep ) :
-    m_KernelArray(0),
-    m_Value(0.0)
+    double newMedialnessScaleStep )
+    : m_KernelArray(0),
+      m_Value(0.0)
     {
     m_RadiusExtractor = newRadiusExtractor;
     m_MedialnessScaleStep = newMedialnessScaleStep;
@@ -110,7 +110,7 @@ private:
 /** Constructor */
 template<class TInputImage>
 RadiusExtractor<TInputImage>
-::RadiusExtractor()
+::RadiusExtractor( void )
 {
   m_Image = NULL;
   m_ImageXMin.Fill( 0 );
@@ -195,7 +195,7 @@ RadiusExtractor<TInputImage>
 /** Destructor */
 template<class TInputImage>
 RadiusExtractor<TInputImage>
-::~RadiusExtractor()
+::~RadiusExtractor( void )
 {
   if( m_MedialnessFunc != NULL )
     {

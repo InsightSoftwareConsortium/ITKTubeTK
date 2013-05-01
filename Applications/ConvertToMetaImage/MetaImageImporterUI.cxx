@@ -77,7 +77,7 @@ void MetaImageImporterUI::GoToPreviousPage()
     }
 }
 
-void MetaImageImporterUI::BuildPreviousNextPushButtons()
+void MetaImageImporterUI::BuildPreviousNextPushButtons( void )
 {
   connect( page1NextPushButton, SIGNAL( clicked() ),
             this, SLOT( GoToNextPage() ) );
@@ -131,7 +131,7 @@ void MetaImageImporterUI::BuildPage1()
   page1NextPushButton->setEnabled( false );
 }
 
-void MetaImageImporterUI::BuildPage2()
+void MetaImageImporterUI::BuildPage2( void )
 {
   // dimensions
   connect( dimensionalitySpinBox, SIGNAL( valueChanged(int) ),
@@ -192,7 +192,7 @@ void MetaImageImporterUI::BuildPage6()
     this, SLOT( BrowseImportFileNames() ) );
   connect( importFileNamesFPrintFPushButton, SIGNAL( clicked() ),
     this, SLOT( BrowseImportFileNamesFPrintF() ) );
-  connect( importFilenamesTextEdit, SIGNAL( textChanged( ) ),
+  connect( importFilenamesTextEdit, SIGNAL( textChanged() ),
     this, SLOT( FileNamesStyleChanged() ) );
 
   connect( listOfNamesRadioButton, SIGNAL( toggled( bool ) ),

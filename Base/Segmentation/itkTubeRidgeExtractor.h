@@ -257,11 +257,11 @@ public:
 
   /**
    * Get the data spline 1D */
-  ::tube::Spline1D * GetDataSpline1D(void);
+  ::tube::Spline1D * GetDataSpline1D( void );
 
   /**
    * Get the data spline optimizer */
-  ::tube::Optimizer1D * GetDataSplineOptimizer(void);
+  ::tube::Optimizer1D * GetDataSplineOptimizer( void );
 
   /**
    * Set the scale */
@@ -336,7 +336,7 @@ public:
 
   /**
    * Set the idle callback */
-  void   IdleCallBack( bool ( *idleCallBack )() );
+  void   IdleCallBack( bool ( *idleCallBack )( void ) );
 
   /**
    * Set the status callback */
@@ -345,8 +345,8 @@ public:
 
 protected:
 
-  RidgeExtractor();
-  virtual ~RidgeExtractor();
+  RidgeExtractor( void );
+  virtual ~RidgeExtractor( void );
 
   RidgeExtractor( const Self& ) {}
   void operator=( const Self& ) {}
@@ -410,7 +410,7 @@ private:
 
   typename TubeType::Pointer                       m_Tube;
 
-  bool  ( *m_IdleCallBack )();
+  bool  ( *m_IdleCallBack )( void );
   void  ( *m_StatusCallBack )( const char *, const char *, int );
 
 };

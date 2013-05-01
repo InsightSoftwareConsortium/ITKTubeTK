@@ -57,18 +57,18 @@ public:
     if( m_ProcessInformation )
       {
       strncpy( m_ProcessInformation->ProgressMessage,
-              this->m_Process.c_str( ), 1023 );
+              this->m_Process.c_str(), 1023 );
       m_ProcessInformation->Progress = fraction;
       // if( m_Fraction != 1.0 )
       //   {
       //   m_ProcessInformation->StageProgress =
-      //   this->GetProcess( )->GetProgress( );
+      //   this->GetProcess()->GetProgress();
       //   }
 
-      m_TimeProbe.Stop( );
-      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean( )
-                                          * m_TimeProbe.GetNumberOfStops( );
-      m_TimeProbe.Start( );
+      m_TimeProbe.Stop();
+      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean()
+                                          * m_TimeProbe.GetNumberOfStops();
+      m_TimeProbe.Start();
 
       if( m_ProcessInformation->Abort )
         {
@@ -94,7 +94,7 @@ public:
       // if( m_Fraction != 1.0 )
       //   {
       //   std::cout << "<filter-stage-progress>"
-      //             << this->GetProcess( )->GetProgress( )
+      //             << this->GetProcess()->GetProgress()
       //             << "</filter-stage-progress>"
       //             << std::endl;
       //   }
@@ -108,13 +108,13 @@ public:
   /** Callback method to show the StartEvent */
   virtual void Start( void )
     {
-    m_TimeProbe.Start( );
+    m_TimeProbe.Start();
     if( m_ProcessInformation )
       {
       m_ProcessInformation->Progress = 0;
       m_ProcessInformation->StageProgress = 0;
       strncpy( m_ProcessInformation->ProgressMessage,
-              m_Process.c_str( ), 1023 );
+              m_Process.c_str(), 1023 );
 
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
@@ -145,14 +145,14 @@ public:
   /** Callback method to show the EndEvent */
   virtual void End( void )
     {
-    m_TimeProbe.Stop( );
+    m_TimeProbe.Stop();
     if( m_ProcessInformation )
       {
       m_ProcessInformation->Progress = 1;
       m_ProcessInformation->StageProgress = 1;
 
-      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean( )
-                                          * m_TimeProbe.GetNumberOfStops( );
+      m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean()
+                                          * m_TimeProbe.GetNumberOfStops();
 
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
@@ -172,7 +172,7 @@ public:
                 << std::endl;
       std::cout << "<filter-time>"
                 << m_TimeProbe.GetMean()
-                   * m_TimeProbe.GetNumberOfStops( )
+                   * m_TimeProbe.GetNumberOfStops()
                 << "</filter-time>"
                 << std::endl;
       std::cout << "</filter-end>";

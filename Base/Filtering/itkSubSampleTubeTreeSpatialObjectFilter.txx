@@ -28,8 +28,8 @@ namespace itk
 
 template< class TSpatialObject, class TTubeSpatialObject >
 SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
-::SubSampleTubeTreeSpatialObjectFilter():
-  m_Sampling(1)
+::SubSampleTubeTreeSpatialObjectFilter( void )
+  : m_Sampling(1)
 {
   //! \todo fix this system.
   SpatialObjectFactoryBase::RegisterDefaultSpatialObjects();
@@ -96,7 +96,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
 template< class TSpatialObject, class TTubeSpatialObject >
 void
 SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
-::GenerateData()
+::GenerateData( void )
 {
   typename SpatialObjectBaseType::Pointer output = this->GetOutput();
   const SpatialObjectType * input = this->GetInput();

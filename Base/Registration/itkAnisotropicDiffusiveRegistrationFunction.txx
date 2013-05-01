@@ -34,7 +34,7 @@ namespace itk
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 AnisotropicDiffusiveRegistrationFunction
  < TFixedImage, TMovingImage, TDeformationField >
-::AnisotropicDiffusiveRegistrationFunction()
+::AnisotropicDiffusiveRegistrationFunction( void )
 {
   typename Superclass::RadiusType r;
   r.Fill(1);
@@ -94,7 +94,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void *
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::GetGlobalDataPointer() const
+::GetGlobalDataPointer( void ) const
 {
   GlobalDataStruct * ans = new GlobalDataStruct();
 
@@ -146,7 +146,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeIteration()
+::InitializeIteration( void )
 {
   if( !this->GetMovingImage() || !this->GetFixedImage()
     || !this->GetDisplacementField() )

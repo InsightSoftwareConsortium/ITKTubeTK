@@ -92,7 +92,7 @@ struct FaceStruct
         typedef typename FaceCalculatorType::FaceListType FaceListType;
         typedef typename FaceListType::iterator           FaceListIteratorType;
 
-  FaceStruct()
+  FaceStruct( void )
     {
     numberOfTerms = 0;
     }
@@ -160,7 +160,7 @@ struct FaceStruct
       }
     }
 
-  void GoToBegin()
+  void GoToBegin( void )
     {
     if( (int) faceListIts.size() != numberOfTerms )
       {
@@ -178,7 +178,7 @@ struct FaceStruct
       }
     }
 
-  bool IsAtEnd()
+  bool IsAtEnd( void )
     {
     for( int i = 0; i < numberOfTerms; i++ )
       {
@@ -190,7 +190,7 @@ struct FaceStruct
     return false;
     }
 
-  void Increment()
+  void Increment( void )
     {
     for( int i = 0; i < numberOfTerms; i++ )
       {

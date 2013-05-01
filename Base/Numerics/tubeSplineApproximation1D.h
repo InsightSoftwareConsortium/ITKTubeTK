@@ -39,11 +39,11 @@ public:
 
   typedef vnl_vector<double> VectorType;
 
-  SplineApproximation1D();
+  SplineApproximation1D( void );
   SplineApproximation1D( UserFunc<int, double> *newFunval,
     Optimizer1D * newOpt1D );
 
-  virtual ~SplineApproximation1D();
+  virtual ~SplineApproximation1D( void );
 
   double  dataValue( const VectorType & y, double x );
 

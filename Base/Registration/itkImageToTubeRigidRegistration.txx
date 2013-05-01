@@ -35,7 +35,7 @@ namespace itk
 
 template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
-::ImageToTubeRigidRegistration()
+::ImageToTubeRigidRegistration( void )
 {
   this->m_InitialTransformParameters = ParametersType( ParametersDimension );
   this->m_LastTransformParameters = ParametersType( ParametersDimension );

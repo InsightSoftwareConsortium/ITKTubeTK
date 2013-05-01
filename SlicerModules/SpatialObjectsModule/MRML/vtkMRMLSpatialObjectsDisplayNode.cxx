@@ -38,7 +38,7 @@ vtkCxxSetReferenceStringMacro(vtkMRMLSpatialObjectsDisplayNode,
                               SpatialObjectsDisplayPropertiesNodeID);
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsDisplayNode::vtkMRMLSpatialObjectsDisplayNode()
+vtkMRMLSpatialObjectsDisplayNode::vtkMRMLSpatialObjectsDisplayNode( void )
 {
   this->BackfaceCulling = 0;
 
@@ -54,7 +54,7 @@ vtkMRMLSpatialObjectsDisplayNode::vtkMRMLSpatialObjectsDisplayNode()
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsDisplayNode::~vtkMRMLSpatialObjectsDisplayNode()
+vtkMRMLSpatialObjectsDisplayNode::~vtkMRMLSpatialObjectsDisplayNode( void )
 {
   this->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(NULL);
 }
@@ -140,7 +140,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateScene(vtkMRMLScene *scene)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences()
+void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences( void )
 {
   Superclass::UpdateReferences();
 
@@ -165,7 +165,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateReferenceID(const char *oldID,
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayPropertiesNode* vtkMRMLSpatialObjectsDisplayNode::
-GetSpatialObjectsDisplayPropertiesNode()
+GetSpatialObjectsDisplayPropertiesNode( void )
 {
   vtkMRMLSpatialObjectsDisplayPropertiesNode* node = NULL;
 
@@ -217,7 +217,7 @@ SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id )
 }
 
 //------------------------------------------------------------------------------
-std::vector<int> vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes()
+std::vector<int> vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes( void )
 {
   std::vector<int> modes;
 
@@ -231,7 +231,7 @@ std::vector<int> vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes()
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayNode::GetNumberOfScalarInvariants()
+int vtkMRMLSpatialObjectsDisplayNode::GetNumberOfScalarInvariants( void )
 {
   static std::vector<int> modes =
     vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes();

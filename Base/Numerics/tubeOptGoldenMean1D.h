@@ -39,9 +39,9 @@ class OptGoldenMean1D : public Optimizer1D
 
 public:
 
-  OptGoldenMean1D();
+  OptGoldenMean1D( void );
   OptGoldenMean1D(UserFunc<double, double> *newFuncVal);
-  ~OptGoldenMean1D();
+  ~OptGoldenMean1D( void );
 
   void use(UserFunc<double, double> *newFuncVal);
 

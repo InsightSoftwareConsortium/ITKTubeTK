@@ -56,7 +56,7 @@ public:
     vnl_vector<double> m_V2T;
     vnl_vector<double> m_DXT;
 
-    TubeRegistratorPoint();
+    TubeRegistratorPoint( void );
 };
 
 class TubeRegistrator : public Registrator
@@ -83,27 +83,27 @@ protected:
 
 public:
 
-  TubeRegistrator();
+  TubeRegistrator( void );
 
   void SetTubeNet(TubeNet * tubes);
   void SetImage(Image3D<short> * im);
 
-  int GetSampling(void);
+  int GetSampling( void );
   void SetSampling(int newSampling);
-  int SetNumSamples(void);
-  std::list<TubeRegistratorPoint *> * GetSamples(void);
+  int SetNumSamples( void );
+  std::list<TubeRegistratorPoint *> * GetSamples( void );
 
   void SetKappa(double kappa);
 
   void SetImThresh(double newRegThresh);
-  double GetImThresh(void);
+  double GetImThresh( void );
 
-  void MetricPreProc(void);
-  double Metric(void);
+  void MetricPreProc( void );
+  double Metric( void );
   double MetricDeriv(double * dX, double * dY, double * dZ,
                        double * dA, double * dB, double * dG);
 
-  bool Fit(void);
+  bool Fit( void );
 };
 
 }

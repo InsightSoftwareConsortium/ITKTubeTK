@@ -38,9 +38,9 @@ namespace tube
 
 template< class TInputImage >
 UltrasoundProbeGeometryCalculator< TInputImage >
-::UltrasoundProbeGeometryCalculator():
-  m_GeneralBeamDirection( 1 ),
-  m_BackgroundValue( NumericTraits< InputPixelType >::Zero )
+::UltrasoundProbeGeometryCalculator( void )
+  : m_GeneralBeamDirection( 1 ),
+    m_BackgroundValue( NumericTraits< InputPixelType >::Zero )
 {
   this->SetNumberOfRequiredInputs( 1 );
   this->SetNumberOfRequiredOutputs( 2 );
@@ -52,7 +52,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 
 template< class TInputImage >
 UltrasoundProbeGeometryCalculator< TInputImage >
-::~UltrasoundProbeGeometryCalculator()
+::~UltrasoundProbeGeometryCalculator( void )
 {
 }
 
@@ -82,7 +82,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 template< class TInputImage >
 const typename UltrasoundProbeGeometryCalculator< TInputImage >::InputImageType *
 UltrasoundProbeGeometryCalculator< TInputImage >
-::GetInput() const
+::GetInput( void ) const
 {
   return itkDynamicCastInDebugMode< const TInputImage * >( this->GetPrimaryInput() );
 }
@@ -91,7 +91,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 template< class TInputImage >
 const typename UltrasoundProbeGeometryCalculator< TInputImage >::OriginType &
 UltrasoundProbeGeometryCalculator< TInputImage >
-::GetUltrasoundProbeOrigin() const
+::GetUltrasoundProbeOrigin( void ) const
 {
   typename DecoratedOriginType::ConstPointer decoratedOrigin =
     static_cast< const DecoratedOriginType * >( this->ProcessObject::GetOutput( "UltrasoundProbeOrigin" ) );
@@ -102,7 +102,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 template< class TInputImage >
 const typename UltrasoundProbeGeometryCalculator< TInputImage >::RadiusType &
 UltrasoundProbeGeometryCalculator< TInputImage >
-::GetStartOfAcquisitionRadius() const
+::GetStartOfAcquisitionRadius( void ) const
 {
   typename DecoratedRadiusType::ConstPointer decoratedRadius =
     static_cast< const DecoratedRadiusType * >( this->ProcessObject::GetOutput( "StartOfAcquisitionRadius" ) );
@@ -113,7 +113,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 template< class TInputImage >
 void
 UltrasoundProbeGeometryCalculator< TInputImage >
-::GenerateData()
+::GenerateData( void )
 {
   OriginType probeOrigin;
   RadiusType startOfAcquisitionRadius;

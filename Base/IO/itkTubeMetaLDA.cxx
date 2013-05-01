@@ -36,7 +36,7 @@ namespace tube {
 // MetaLDA Constructors
 //
 MetaLDA::
-MetaLDA()
+MetaLDA( void )
 {
   if( META_DEBUG )
     {
@@ -63,8 +63,8 @@ MetaLDA( const char *_headerName )
 
 //
 MetaLDA::
-MetaLDA( const MetaLDA & _metaLDA ):
-  MetaForm()
+MetaLDA( const MetaLDA & _metaLDA )
+  : MetaForm()
 {
   if( META_DEBUG )
    {
@@ -95,14 +95,14 @@ MetaLDA( const LDAValuesType & _ldaValues,
 
 //
 MetaLDA::
-~MetaLDA()
+~MetaLDA( void )
 {
   M_Destroy();
 }
 
 //
 void MetaLDA::
-PrintInfo() const
+PrintInfo( void ) const
 {
   MetaForm::PrintInfo();
 

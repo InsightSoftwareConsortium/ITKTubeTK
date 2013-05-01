@@ -196,7 +196,7 @@ public:
 
   /**
    * Set the idle callback */
-  void   IdleCallBack( bool ( *idleCallBack )() );
+  void   IdleCallBack( bool ( *idleCallBack )( void ) );
 
   /**
    * Set the status callback */
@@ -209,12 +209,12 @@ public:
 
   /**
    * Set the status callback */
-  void   AbortProcess( bool ( *abortProcess )() );
+  void   AbortProcess( bool ( *abortProcess )( void ) );
 
 protected:
 
-  TubeExtractor();
-  virtual ~TubeExtractor();
+  TubeExtractor( void );
+  virtual ~TubeExtractor( void );
   TubeExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
@@ -223,10 +223,10 @@ protected:
   typename RidgeExtractor<ImageType>::Pointer  m_RidgeOp;
   typename RadiusExtractor<ImageType>::Pointer m_RadiusOp;
 
-  bool ( *m_IdleCallBack )();
+  bool ( *m_IdleCallBack )( void );
   void ( *m_StatusCallBack )( const char *, const char *, int );
   void ( *m_NewTubeCallBack )( TubeType * );
-  bool ( *m_AbortProcess )();
+  bool ( *m_AbortProcess )( void );
 
 private:
 

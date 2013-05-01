@@ -44,7 +44,7 @@ CompleteImageResampleFilter< TInputImage,
                              TOutputImage,
                              TNonSingularTransform,
                              TInterpolatorPrecisionType >
-::CompleteImageResampleFilter()
+::CompleteImageResampleFilter( void )
 : m_DefaultPixelValue(0)
 {
   m_OutputSpacing.Fill( 1.0 );
@@ -112,7 +112,7 @@ CompleteImageResampleFilter< TInputImage,
                              TOutputImage,
                              TNonSingularTransform,
                              TInterpolatorPrecisionType >
-::GenerateData()
+::GenerateData( void )
 {
   // Get the input image and output pointer
   InputImageConstPointer  inputImage = this->GetInput();

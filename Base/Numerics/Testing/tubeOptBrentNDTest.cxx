@@ -39,7 +39,7 @@ public tube::UserFunc< vnl_vector<double>, double >
   {
   public:
 
-    MyNDFunc( )
+    MyNDFunc( void )
       {
       cVal = 0;
       }
@@ -58,7 +58,7 @@ public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
   {
   public:
 
-    MyNDFuncD( )
+    MyNDFuncD( void )
       {
       cDx.set_size(2);
       }

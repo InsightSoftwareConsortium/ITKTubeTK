@@ -112,7 +112,7 @@ public:
 
   // some defaults for lowdose example
   // used in the paper
-  void SetDefaultPars()
+  void SetDefaultPars( void )
     {
     m_TimeStep                  = 0.25;
     m_Iterations                = 200;
@@ -132,10 +132,10 @@ public:
     }
 
 protected:
-  TubeEnhancingDiffusion2DImageFilter();
-  ~TubeEnhancingDiffusion2DImageFilter() {}
+  TubeEnhancingDiffusion2DImageFilter( void );
+  ~TubeEnhancingDiffusion2DImageFilter( void ) {}
   void PrintSelf(std::ostream &os, Indent indent) const;
-  void GenerateData();
+  void GenerateData( void );
 
 private:
 
@@ -171,7 +171,7 @@ private:
   // calculates diffusion tensor
   // based on current values of hessian (for which we have
   // maximim vessel response).
-  void DiffusionTensor();
+  void DiffusionTensor( void );
 
   // Sorted increasing magnitude: l1, l2
   inline Precision TubenessFunction2D ( const Precision, const Precision );

@@ -84,7 +84,7 @@ public:
   itkSetConstObjectMacro(MaskImage,ImageType);
 
   /** Compute the Otsu's threshold for the input image. */
-  void Compute(void);
+  void Compute( void );
 
   /** Return the Otsu's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
@@ -98,8 +98,8 @@ public:
   void SetRegion( const RegionType & region );
 
 protected:
-  OtsuThresholdMaskedImageCalculator();
-  virtual ~OtsuThresholdMaskedImageCalculator() {}
+  OtsuThresholdMaskedImageCalculator( void );
+  virtual ~OtsuThresholdMaskedImageCalculator( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:

@@ -36,7 +36,7 @@ namespace itk
  */
 template< class TInputImage, class TOutputImage >
 AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
-::AngleOfIncidenceImageFilter()
+::AngleOfIncidenceImageFilter( void )
 {
   m_UltrasoundProbeOrigin.Fill(0);
 
@@ -64,7 +64,7 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
 template< class TInputImage, class TOutputImage >
 void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
-::GenerateData(void)
+::GenerateData( void )
 {
   typedef typename TInputImage::SizeType          InputImageSizeType;
   typedef typename TInputImage::PointType         InputImagePointType;
@@ -171,7 +171,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
 template< class TInputImage, class TOutputImage >
 void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
-::ComputeNormalVectorImage()
+::ComputeNormalVectorImage( void )
 {
   m_HessianFilter->SetInput( this->GetInput() );
 

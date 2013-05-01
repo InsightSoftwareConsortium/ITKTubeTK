@@ -336,7 +336,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
 

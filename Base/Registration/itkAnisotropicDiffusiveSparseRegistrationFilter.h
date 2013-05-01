@@ -219,7 +219,7 @@ public:
 
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
-  virtual int GetNumberOfTerms() const
+  virtual int GetNumberOfTerms( void ) const
     { return 4; }
 
   /** Set/get the organ boundary polydata, which must be in the same space as
@@ -227,14 +227,14 @@ public:
    *  may be changed over the course of the registration. */
   virtual void SetBorderSurface( BorderSurfaceType * border )
     { m_BorderSurface = border; }
-  virtual BorderSurfaceType * GetBorderSurface() const
+  virtual BorderSurfaceType * GetBorderSurface( void ) const
     { return m_BorderSurface; }
 
   /** Set/get the list of tube spatial objects, which must be in the same space
    *  as the fixed image. */
   virtual void SetTubeList( TubeListType * tubeList )
     { m_TubeList = tubeList; }
-  virtual TubeListType * GetTubeList() const
+  virtual TubeListType * GetTubeList( void ) const
     { return m_TubeList; }
 
   /** Set/get the lambda that controls the decay of the weight value w as a
@@ -245,7 +245,7 @@ public:
    *  be positive. */
   void SetLambda( WeightComponentType l )
     { if ( l > 0 ) { m_Lambda = l; } }
-  WeightComponentType GetLambda() const
+  WeightComponentType GetLambda( void ) const
     { return m_Lambda; }
 
   /** Set/get the gamma that controls the decay of the weight value w as a
@@ -256,7 +256,7 @@ public:
    *  be positive or -1.0. */
   void SetGamma( WeightComponentType g )
     { if ( g > 0 || g == -1.0 ) { m_Gamma = g; } }
-  WeightComponentType GetGamma() const
+  WeightComponentType GetGamma( void ) const
     { return m_Gamma; }
 
   /** Set/get the image of the normal vectors.  Setting the normal vector
@@ -264,9 +264,9 @@ public:
    * also supplied. */
   virtual void SetNormalMatrixImage( NormalMatrixImageType * normalImage )
     { m_NormalMatrixImage = normalImage; }
-  virtual NormalMatrixImageType * GetNormalMatrixImage() const
+  virtual NormalMatrixImageType * GetNormalMatrixImage( void ) const
     { return m_NormalMatrixImage; }
-  virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage() const
+  virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage( void ) const
     { return m_HighResolutionNormalMatrixImage; }
   /** Get the image of a specific normal vector (column of the normal matrix).
    *  Pointer should already have been initialized with New() */
@@ -279,9 +279,9 @@ public:
    * overrides the structure tensor eigen analysis. */
   virtual void SetWeightStructuresImage( WeightMatrixImageType * weightImage )
     { m_WeightStructuresImage = weightImage; }
-  virtual WeightMatrixImageType * GetWeightStructuresImage() const
+  virtual WeightMatrixImageType * GetWeightStructuresImage( void ) const
     { return m_WeightStructuresImage; }
-  virtual WeightMatrixImageType * GetHighResolutionWeightStructuresImage() const
+  virtual WeightMatrixImageType * GetHighResolutionWeightStructuresImage( void ) const
     { return m_HighResolutionWeightStructuresImage; }
 
   /** Set/get the weighting value w image.  Setting the weighting component
@@ -290,24 +290,24 @@ public:
   virtual void SetWeightRegularizationsImage(
       WeightComponentImageType * weightImage )
     { m_WeightRegularizationsImage = weightImage; }
-  virtual WeightComponentImageType * GetWeightRegularizationsImage() const
+  virtual WeightComponentImageType * GetWeightRegularizationsImage( void ) const
     { return m_WeightRegularizationsImage; }
   virtual WeightComponentImageType *
-      GetHighResolutionWeightRegularizationsImage() const
+      GetHighResolutionWeightRegularizationsImage( void ) const
     { return m_HighResolutionWeightRegularizationsImage; }
 
   /** Get the normal components of the deformation field.  The normal
    *  deformation field component images are the same for both the SMOOTH_NORMAL
    *  and PROP_NORMAL terms, so we will return one arbitrarily. */
-  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
+  virtual const DeformationFieldType * GetNormalDeformationComponentImage( void )
       const
     {
     return this->GetDeformationComponentImage( SMOOTH_NORMAL );
     }
 
 protected:
-  AnisotropicDiffusiveSparseRegistrationFilter();
-  virtual ~AnisotropicDiffusiveSparseRegistrationFilter() {}
+  AnisotropicDiffusiveSparseRegistrationFilter( void );
+  virtual ~AnisotropicDiffusiveSparseRegistrationFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Handy for array indexing. */
@@ -319,17 +319,17 @@ protected:
   /** Allocate the deformation component images and their derivative images.
    *  (which may be updated throughout the registration). Reimplement in derived
    *  classes. */
-  virtual void InitializeDeformationComponentAndDerivativeImages();
+  virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
   /** Allocate and populate the diffusion tensor images.
    *  Reimplement in derived classes. */
-  virtual void ComputeDiffusionTensorImages();
+  virtual void ComputeDiffusionTensorImages( void );
 
   /** Allocate and populate the images of multiplication vectors that the
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
    *  some of the multiplication vector images in derived classes.  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
-  virtual void ComputeMultiplicationVectorImages();
+  virtual void ComputeMultiplicationVectorImages( void );
 
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages( OutputImageType * output );
@@ -338,19 +338,19 @@ protected:
    *  deformation component images on each iteration.  Override in derived
    *  classes if the deformation components image pointers are not unique, to
    *  avoid computing the same derivatives multiple times. */
-  virtual void ComputeDeformationComponentDerivativeImages();
+  virtual void ComputeDeformationComponentDerivativeImages( void );
 
   /** If needed, allocates and computes the normal vector and weight images. */
-  virtual void SetupNormalMatrixAndWeightImages();
+  virtual void SetupNormalMatrixAndWeightImages( void );
 
   /** Compute the normals for the border surface. */
-  void ComputeBorderSurfaceNormals();
+  void ComputeBorderSurfaceNormals( void );
 
   /** Compute the normals for the tube list. */
-  void ComputeTubeNormals();
+  void ComputeTubeNormals( void );
 
   /** Provide access to the tube surface for derived classes. */
-  virtual BorderSurfaceType * GetTubeSurface() const
+  virtual BorderSurfaceType * GetTubeSurface( void ) const
     { return m_TubeSurface; }
 
   /** Computes the normal vector image and weighting factors w given the

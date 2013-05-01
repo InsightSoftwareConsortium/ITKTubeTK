@@ -352,19 +352,19 @@ int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedReadFileTypes()
+void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedReadFileTypes( void )
 {
   this->SupportedReadFileTypes->InsertNextValue("SpatialObject (.tre)");
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedWriteFileTypes()
+void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedWriteFileTypes( void )
 {
   this->SupportedWriteFileTypes->InsertNextValue("SpatialObject (.tre)");
 }
 
 //------------------------------------------------------------------------------
-const char* vtkMRMLSpatialObjectsStorageNode::GetDefaultWriteFileExtension()
+const char* vtkMRMLSpatialObjectsStorageNode::GetDefaultWriteFileExtension( void )
 {
   return "tre";
 }

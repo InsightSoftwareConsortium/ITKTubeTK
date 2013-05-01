@@ -75,11 +75,11 @@ public:
   void SetSeed( unsigned int seed );
 
   void SetUseRegistration( bool reg );
-  bool GetUseRegistration( );
+  bool GetUseRegistration( void );
   void SetUseRegistrationTransform( bool reg );
-  bool GetUseRegistrationTransform( );
+  bool GetUseRegistrationTransform( void );
   void SetUseRegistrationOptimization( bool reg );
-  bool GetUseRegistrationOptimization( );
+  bool GetUseRegistrationOptimization( void );
   void SetRegistrationTransform(
     typename RegistrationMethodType::TransformType::Pointer tfm );
   typename RegistrationMethodType::TransformType::Pointer

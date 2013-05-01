@@ -60,7 +60,7 @@ public:
   typedef itk::Image< double, 4 >   ImageType;
 
   /** Default constructor: insufficient for using class */
-  SplineND();
+  SplineND( void );
 
   /** Constructor produces usable instance of this class
   *  \param newNDims dimensionality of the space being interpolated
@@ -80,7 +80,7 @@ public:
   /** Destructor
   *  This class is not usually derived
   */
-  virtual ~SplineND();
+  virtual ~SplineND( void );
 
   /** Specify a new spline function
   *  \param newNDims dimensionality of the space being interpolated
@@ -102,7 +102,7 @@ public:
   *   set to zero.  If false, values beyond edges are faded to 0 as a
   *   function of distance from edge, squeared.
   */
-  bool clipEdge();
+  bool clipEdge( void );
 
   /** Sets the characteristics of spline evaluations near data bounds
   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
@@ -112,25 +112,25 @@ public:
   void clipEdge(bool newClip);
 
   /** Returns the number of dimensions of the problem's domain.  */
-  int nDims() { return m_NDims; }
+  int nDims( void ) { return m_NDims; }
 
   /** User specification of lower bound */
   void xMin(const IntVectorType & newXMin);
 
   /** Returns the control points' (integer value locations) lower bound */
-  const IntVectorType & xMin();
+  const IntVectorType & xMin( void );
 
   /** User Specification of upper bound */
   void xMax(const IntVectorType & newXMax);
 
   /** Sets control points' (integer value locations) upper bound */
-  const IntVectorType & xMax();
+  const IntVectorType & xMax( void );
 
   /** Tracks the validity of internally maintained intermediate
    * calculations and data. Returns true if a new spline instance has been
    * created (e.g., use has been called)
    */
-  bool newData();
+  bool newData( void );
 
   /** User sets to true to force recalcuation of internal data.
    * For example, use to flag that UserFunc has changed externally

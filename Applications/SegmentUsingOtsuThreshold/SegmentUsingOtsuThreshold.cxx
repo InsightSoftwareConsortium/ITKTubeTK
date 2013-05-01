@@ -164,7 +164,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Save data");
   progress = 1.0;
   progressReporter.Report( progress );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

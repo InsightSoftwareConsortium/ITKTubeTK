@@ -112,12 +112,12 @@ public:
   /** End concept checking */
 #endif
 protected:
-  SheetnessMeasureImageFilter();
-  ~SheetnessMeasureImageFilter() {}
+  SheetnessMeasureImageFilter( void );
+  ~SheetnessMeasureImageFilter( void ) {}
   void PrintSelf(std::ostream & os, Indent indent) const;
 
   /** Generate Data */
-  void GenerateData(void);
+  void GenerateData( void );
 
 private:
   SheetnessMeasureImageFilter(const Self &); //purposely not implemented

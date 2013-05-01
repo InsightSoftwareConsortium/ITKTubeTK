@@ -101,8 +101,8 @@ public:
   itkGetObjectMacro( GradientMagnitudeFilter, GradientMagnitudeFilterType );
 
 protected:
-  AcousticImpulseResponseImageFilter();
-  virtual ~AcousticImpulseResponseImageFilter() {}
+  AcousticImpulseResponseImageFilter( void );
+  virtual ~AcousticImpulseResponseImageFilter( void ) {}
 
   virtual void PrintSelf(std::ostream & os, Indent indent) const;
 

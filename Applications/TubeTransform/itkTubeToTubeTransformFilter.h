@@ -40,7 +40,7 @@ namespace tube
  *  a the group with transformed tubes.
  *
  *  \warning Transform Class MUST have a proper implementation of
- *    ::TransformCovariantVector()
+ *    ::TransformCovariantVector( void )
  *
  *  \warning The scale is applied before computing the transformation.
  *
@@ -75,7 +75,7 @@ public:
   itkTypeMacro(Self, Object);
 
   /** Apply the transformation to the tube */
-  void Update(void);
+  void Update( void );
 
   /** Set the Transformation */
   itkSetObjectMacro(Transform, TransformType);
@@ -115,8 +115,8 @@ public:
 
 protected:
 
-  TubeToTubeTransformFilter();
-  virtual ~TubeToTubeTransformFilter() {}
+  TubeToTubeTransformFilter( void );
+  virtual ~TubeToTubeTransformFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:

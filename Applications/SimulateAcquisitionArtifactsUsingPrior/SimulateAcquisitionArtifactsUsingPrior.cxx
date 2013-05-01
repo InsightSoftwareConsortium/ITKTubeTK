@@ -250,7 +250,7 @@ int DoIt( int argc, char * argv[] )
       MyMIWPFunc< pixelT, dimensionT >( eval );
     tube::SplineApproximation1D * spline1D = new
       tube::SplineApproximation1D();
-    tube::OptBrent1D * opt = new tube::OptBrent1D( );
+    tube::OptBrent1D * opt = new tube::OptBrent1D();
     tube::SplineND spline( 3, myFunc, spline1D, opt );
 
     vnl_vector< int > xMin(3);
@@ -339,7 +339,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

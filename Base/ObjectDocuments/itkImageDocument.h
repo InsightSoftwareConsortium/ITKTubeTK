@@ -70,13 +70,13 @@ public:
   itkTypeMacro( Self, Superclass );
 
   /** Return the type of the object within the Document (ie. "Image") */
-  std::string GetObjectType() const { return "Image"; }
+  std::string GetObjectType( void ) const { return "Image"; }
   const std::string LABEL_IMAGETYPE;
-  ~ImageDocument(){}
+  ~ImageDocument( void ) {}
 
 protected:
 
-  ImageDocument() : LABEL_IMAGETYPE("Image"){}
+  ImageDocument( void ) : LABEL_IMAGETYPE("Image") {}
 
 private:
 };

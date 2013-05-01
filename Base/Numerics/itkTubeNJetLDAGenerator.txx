@@ -46,7 +46,7 @@ namespace tube
 
 template< class ImageT, class LabelmapT >
 NJetLDAGenerator< ImageT, LabelmapT >
-::NJetLDAGenerator()
+::NJetLDAGenerator( void )
 {
   m_ZeroScales.resize( 0 );
   m_FirstScales.resize( 0 );
@@ -61,7 +61,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
 
 template< class ImageT, class LabelmapT >
 NJetLDAGenerator< ImageT, LabelmapT >
-::~NJetLDAGenerator()
+::~NJetLDAGenerator( void )
 {
 }
 
@@ -467,7 +467,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 NJetLDAGenerator< ImageT, LabelmapT >
-::GenerateLDA()
+::GenerateLDA( void )
 {
   Superclass::GenerateLDA();
 

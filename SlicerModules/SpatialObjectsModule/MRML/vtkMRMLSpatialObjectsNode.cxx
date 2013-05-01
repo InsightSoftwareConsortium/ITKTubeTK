@@ -56,14 +56,14 @@ vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsNode);
 
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsNode::vtkMRMLSpatialObjectsNode()
+vtkMRMLSpatialObjectsNode::vtkMRMLSpatialObjectsNode( void )
 {
   this->PrepareSubsampling();
   this->SubsamplingRatio = 1;
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsNode::~vtkMRMLSpatialObjectsNode()
+vtkMRMLSpatialObjectsNode::~vtkMRMLSpatialObjectsNode( void )
 {
   this->CleanSubsampling();
 }
@@ -138,7 +138,7 @@ void vtkMRMLSpatialObjectsNode::UpdateScene(vtkMRMLScene *scene)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::UpdateReferences()
+void vtkMRMLSpatialObjectsNode::UpdateReferences( void )
 {
   for(int ii = 0; ii < this->GetNumberOfDisplayNodes(); ++ii)
     {
@@ -154,7 +154,7 @@ void vtkMRMLSpatialObjectsNode::UpdateReferences()
 }
 
 //------------------------------------------------------------------------------
-vtkPolyData* vtkMRMLSpatialObjectsNode::GetFilteredPolyData()
+vtkPolyData* vtkMRMLSpatialObjectsNode::GetFilteredPolyData( void )
 {
   return this->PolyData;
   //return this->CleanPolyDataPostSubsampling->GetOutput();
@@ -162,7 +162,7 @@ vtkPolyData* vtkMRMLSpatialObjectsNode::GetFilteredPolyData()
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
-GetLineDisplayNode()
+GetLineDisplayNode( void )
 {
   int nnodes = this->GetNumberOfDisplayNodes();
   vtkMRMLSpatialObjectsLineDisplayNode *node = NULL;
@@ -182,7 +182,7 @@ GetLineDisplayNode()
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
-GetTubeDisplayNode()
+GetTubeDisplayNode( void )
 {
   int nnodes = this->GetNumberOfDisplayNodes();
   vtkMRMLSpatialObjectsTubeDisplayNode *node = NULL;
@@ -202,7 +202,7 @@ GetTubeDisplayNode()
 
 //----------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
-GetGlyphDisplayNode()
+GetGlyphDisplayNode( void )
 {
   int nnodes = this->GetNumberOfDisplayNodes();
   vtkMRMLSpatialObjectsGlyphDisplayNode *node = NULL;
@@ -222,7 +222,7 @@ GetGlyphDisplayNode()
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
-AddLineDisplayNode()
+AddLineDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetLineDisplayNode();
   if (node == NULL)
@@ -250,7 +250,7 @@ AddLineDisplayNode()
 
 //----------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
-AddTubeDisplayNode()
+AddTubeDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetTubeDisplayNode();
   if (node == NULL)
@@ -277,7 +277,7 @@ AddTubeDisplayNode()
 
 //----------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
-AddGlyphDisplayNode()
+AddGlyphDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetGlyphDisplayNode();
   if (node == NULL)
@@ -353,7 +353,7 @@ void vtkMRMLSpatialObjectsNode::SetSubsamplingRatio(float ratio)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::PrepareSubsampling()
+void vtkMRMLSpatialObjectsNode::PrepareSubsampling( void )
 {
   this->ShuffledIds = vtkIdTypeArray::New();
   this->CleanPolyDataPostSubsampling = vtkCleanPolyData::New();
@@ -366,7 +366,7 @@ void vtkMRMLSpatialObjectsNode::PrepareSubsampling()
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::UpdateSubsampling()
+void vtkMRMLSpatialObjectsNode::UpdateSubsampling( void )
 {
   if (!this->GetPolyData())
     {
@@ -396,14 +396,14 @@ void vtkMRMLSpatialObjectsNode::UpdateSubsampling()
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::CleanSubsampling()
+void vtkMRMLSpatialObjectsNode::CleanSubsampling( void )
 {
   this->CleanPolyDataPostSubsampling->Delete();
   this->ShuffledIds->Delete();
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLStorageNode* vtkMRMLSpatialObjectsNode::CreateDefaultStorageNode()
+vtkMRMLStorageNode* vtkMRMLSpatialObjectsNode::CreateDefaultStorageNode( void )
 {
   vtkDebugMacro("vtkMRMLSpatialObjectsNode::CreateDefaultStorageNode");
 
@@ -412,7 +412,7 @@ vtkMRMLStorageNode* vtkMRMLSpatialObjectsNode::CreateDefaultStorageNode()
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes()
+void vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes( void )
 {
   vtkDebugMacro("vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes");
 

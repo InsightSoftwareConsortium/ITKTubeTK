@@ -42,7 +42,7 @@ namespace tube
  * Set the input Image */
 template <class TInputImage>
 BlurImageFunction<TInputImage>
-::BlurImageFunction()
+::BlurImageFunction( void )
 {
   this->m_Image = NULL;
 

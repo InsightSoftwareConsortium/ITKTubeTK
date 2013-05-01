@@ -76,30 +76,30 @@ public:
 
   /* Sets all the transforms to be applied (equivalent to ->ApplyTransforms(0, -1) ) */
   void ApplyTransforms( bool );
-  bool ApplyTransforms()
+  bool ApplyTransforms( void )
     {
     return m_ApplyTransforms;
     }
 
   /** Return the composed Transform combining start to end */
-  TransformPointer GetComposedTransform();
+  TransformPointer GetComposedTransform( void );
 
-  bool ComposedTransformIsIdentity()
+  bool ComposedTransformIsIdentity( void )
     {
     return m_ComposedTransformIsIdentity;
     }
 
   /** Purposely not implemented -- To be implemented by deriving class */
-  virtual void GenerateData()
+  virtual void GenerateData( void )
     {
     std::cout << " In source filter class" << std::endl;
     }
 
   /** Purposely not implemented -- To be implemented by deriving class */
-  virtual void GenerateOutputInformation() {} // do nothing
+  virtual void GenerateOutputInformation( void ) {} // do nothing
 
   /** Get the output object */
-  DataObject * GetOutput()
+  DataObject * GetOutput( void )
     {
     return this->ProcessObject::GetOutput(0);
     }
@@ -113,11 +113,11 @@ public:
     }
 
   /** Get the input document object */
-  virtual const DocumentType * GetInput();
+  virtual const DocumentType * GetInput( void );
 
   /** Must be be defined by deriving class */
-  virtual void GraftOutput( DataObject * ){}
-  virtual void GraftNthOutput( unsigned int, DataObject * ){}
+  virtual void GraftOutput( DataObject * ) {}
+  virtual void GraftNthOutput( unsigned int, DataObject * ) {}
 
   using Superclass::MakeOutput;
   virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
@@ -127,8 +127,8 @@ protected:
   /** Typedef for transform file reader */
   typedef SpatialObjectReader<TDimension>                          TransformReaderType;
 
-  ObjectDocumentToObjectSource();
-  ~ObjectDocumentToObjectSource(){}
+  ObjectDocumentToObjectSource( void );
+  ~ObjectDocumentToObjectSource( void ) {}
 
   DataObject * GetOutput(unsigned int idx) { return this->ProcessObject::GetOutput(idx); }
 

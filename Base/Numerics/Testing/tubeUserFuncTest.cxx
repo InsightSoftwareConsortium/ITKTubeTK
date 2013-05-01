@@ -39,7 +39,7 @@ class UserFunc2
 {
 public :
 
-  virtual ~UserFunc2() = 0;
+  virtual ~UserFunc2( void ) = 0;
 
   /** Derive this function */
   virtual const vnl_vector<double> & value( const vnl_vector<double> & x )
@@ -47,7 +47,7 @@ public :
 
 };
 
-inline UserFunc2::~UserFunc2()
+inline UserFunc2::~UserFunc2( void )
 {
 }
 
@@ -58,7 +58,7 @@ public tube::UserFunc2
   {
   public:
 
-    MyFunc2( )
+    MyFunc2( void )
       {
       cVal.set_size(1);
       }

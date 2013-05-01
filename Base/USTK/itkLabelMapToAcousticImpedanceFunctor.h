@@ -46,10 +46,10 @@ public:
   /** Set/Get the lookup table.  It must be persistant throughout the life of the
    * functor. */
   void SetLookupTable( const LookupTableType * lookupTable );
-  const LookupTableType * GetLookupTable() const;
+  const LookupTableType * GetLookupTable( void ) const;
 
-  LabelMapToAcousticImpedanceFunctor();
-  ~LabelMapToAcousticImpedanceFunctor() {}
+  LabelMapToAcousticImpedanceFunctor( void );
+  ~LabelMapToAcousticImpedanceFunctor( void ) {}
 
   /** Comparison operator. */
   bool operator!=(const LabelMapToAcousticImpedanceFunctor &) const;

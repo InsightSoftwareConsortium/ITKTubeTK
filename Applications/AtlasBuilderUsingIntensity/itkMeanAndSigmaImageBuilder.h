@@ -109,7 +109,7 @@ public:
    * function will eliminate the results of this output
    * and will start a new summation.
    */
-  virtual void FinalizeOutput();
+  virtual void FinalizeOutput( void );
 
   /** Get the output mean image */
   itkGetObjectMacro( OutputMeanImage, OutputMeanImageType );
@@ -219,8 +219,8 @@ public:
 
 protected:
 
-  MeanAndSigmaImageBuilder();
-  ~MeanAndSigmaImageBuilder(){}
+  MeanAndSigmaImageBuilder( void );
+  ~MeanAndSigmaImageBuilder( void ) {}
 
   /** Processing image types */
   typedef typename ProcessImageType::PixelType         ProcessPixelType;

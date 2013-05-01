@@ -252,35 +252,35 @@ int DoIt( int argc, char **argv )
    */
   typename InputImageType::Pointer inImage;
   typename InputReaderType::Pointer inImageReader =
-    InputReaderType::New( );
+    InputReaderType::New();
 
-  inImageReader->SetFileName( argInImageFileName.c_str( ) );
+  inImageReader->SetFileName( argInImageFileName.c_str() );
   try
     {
-    inImageReader->Update( );
+    inImageReader->Update();
     }
   catch( itk::ExceptionObject &ex )
     {
     tube::ErrorMessage( ex.what() );
     return EXIT_FAILURE;
     }
-  inImage = inImageReader->GetOutput( );
+  inImage = inImageReader->GetOutput();
 
   typename InputImageType::Pointer inLabelImage;
   typename InputReaderType::Pointer inLabelImageReader =
-    InputReaderType::New( );
+    InputReaderType::New();
 
   inLabelImageReader->SetFileName( argInLabelFileName.c_str() );
   try
     {
-    inLabelImageReader->Update( );
+    inLabelImageReader->Update();
     }
   catch( itk::ExceptionObject &ex )
     {
     tube::ErrorMessage( ex.what() );
     return EXIT_FAILURE;
     }
-  inLabelImage = inLabelImageReader->GetOutput( );
+  inLabelImage = inLabelImageReader->GetOutput();
 
 
   /*
@@ -506,13 +506,13 @@ int DoIt( int argc, char **argv )
     omittedRegionCounter - maxLabel - 1 );
 
   // Write relabeled CVT image to file
-  typename OutputWriterType::Pointer writer = OutputWriterType::New( );
-  writer->SetFileName( argOutImageFileName.c_str( ) );
+  typename OutputWriterType::Pointer writer = OutputWriterType::New();
+  writer->SetFileName( argOutImageFileName.c_str() );
   writer->SetInput( outImage );
   writer->SetUseCompression( true );
   try
     {
-    writer->Update( );
+    writer->Update();
     }
   catch( itk::ExceptionObject &ex )
     {

@@ -1087,7 +1087,7 @@ int DoIt( int argc, char * argv[] )
 
   if( reportProgress )
     {
-    progressReporter.End( );
+    progressReporter.End();
     }
   timeCollector.Report();
   return EXIT_SUCCESS;

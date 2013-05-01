@@ -30,7 +30,7 @@ namespace itk
 
 template< typename TInputSpatialObject, typename TOutputSpatialObject >
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
-::SpatialObjectToSpatialObjectFilter()
+::SpatialObjectToSpatialObjectFilter( void )
 {
   this->SetNumberOfRequiredInputs( 1 );
 }

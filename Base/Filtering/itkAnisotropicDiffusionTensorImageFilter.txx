@@ -45,7 +45,7 @@ namespace itk {
  */
 template <class TInputImage, class TOutputImage>
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::AnisotropicDiffusionTensorImageFilter()
+::AnisotropicDiffusionTensorImageFilter( void )
 {
   m_UpdateBuffer = UpdateBufferType::New();
   m_DiffusionTensorImage = DiffusionTensorImageType::New();
@@ -64,7 +64,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
  template <class TInputImage, class TOutputImage>
  void
  AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
- ::InitializeIteration()
+ ::InitializeIteration( void )
 {
   itkDebugMacro( << "InitializeIteration() called " );
 
@@ -104,7 +104,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::CopyInputToOutput()
+::CopyInputToOutput( void )
 {
   typename TInputImage::ConstPointer  input  = this->GetInput();
   typename TOutputImage::Pointer      output = this->GetOutput();
@@ -140,7 +140,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::AllocateUpdateBuffer()
+::AllocateUpdateBuffer( void )
 {
   itkDebugMacro( << "AllocateUpdateBuffer() called" );
 
@@ -161,7 +161,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::AllocateDiffusionTensorImage()
+::AllocateDiffusionTensorImage( void )
 {
   itkDebugMacro( << "AllocateDiffusionTensorImage() called" );
 
@@ -242,7 +242,7 @@ template <class TInputImage, class TOutputImage>
 typename
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>::TimeStepType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::CalculateChange()
+::CalculateChange( void )
 {
   itkDebugMacro( << "CalculateChange called" );
 
@@ -455,7 +455,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::GenerateData()
+::GenerateData( void )
 {
   itkDebugMacro( << "GenerateData is called" );
 
@@ -511,7 +511,7 @@ template <class TInputImage, class TOutputImage>
 typename AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::DiffusionTensorImagePointerType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::GetDiffusionTensorImage()
+::GetDiffusionTensorImage( void )
 {
   return m_DiffusionTensorImage;
 }

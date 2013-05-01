@@ -55,7 +55,7 @@ public:
 protected:
 
   /** Callback method to show the ProgressEvent */
-  virtual void ShowProgress()
+  virtual void ShowProgress( void )
     {
     if( !m_StartCalled )
       {
@@ -119,7 +119,7 @@ protected:
     }
 
   /** Callback method to show the StartEvent */
-  virtual void StartFilter()
+  virtual void StartFilter( void )
     {
     this->SetSteps(0);
     this->SetIterations(0);
@@ -162,7 +162,7 @@ protected:
     }
 
   /** Callback method to show the EndEvent */
-  virtual void EndFilter()
+  virtual void EndFilter( void )
     {
     this->GetTimeProbe().Stop();
     if (!this->GetQuiet())

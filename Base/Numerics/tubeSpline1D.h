@@ -49,7 +49,7 @@ public:
 
   typedef vnl_vector<double> VectorType;
 
-  Spline1D();
+  Spline1D( void );
 
   /** Construct a viable class instance
    * \param newFuncVal an instance of a derivation of the UserFunc class
@@ -62,7 +62,7 @@ public:
   Spline1D( UserFunc<int, double> * newFuncVal, Optimizer1D * newOpt1D);
 
   //! Virtual destructor
-  virtual ~Spline1D();
+  virtual ~Spline1D( void );
 
   /** Supply a new spline definition
    * \param newFuncVal an instance of a derivation of the UserFunc class
@@ -79,18 +79,18 @@ public:
    * to zero. If false, values beyond edges are faded to 0 as a function of
    * distance from edge, squeared.
    */
-  bool    clipEdge();
+  bool    clipEdge( void );
 
   /** User specification of characteristics */
   void    clipEdge(bool newClip);
 
   /** Returns the control points' (integer value locations) lower bound */
-  int     xMin();
+  int     xMin( void );
   /** User specification of lower bound */
   void    xMin(int newXMin);
 
   /** Sets control points' (integer value locations) upper bound */
-  int     xMax();
+  int     xMax( void );
   /** User Specification of upper bound */
   void    xMax(int newXMax);
 
@@ -98,7 +98,7 @@ public:
    * calculations and data.  Returns true if a new spline instance has been
    * created (e.g., use has been called)
    */
-  bool    newData();
+  bool    newData( void );
 
   /** User sets to true to force recalcuation of internal data
    *  For example, use to flag that UserFunc has changed externally

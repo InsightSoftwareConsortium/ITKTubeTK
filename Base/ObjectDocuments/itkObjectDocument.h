@@ -73,7 +73,7 @@ public:
   itkTypeMacro( Self, Superclass );
 
   /** To be implemented by the object type that inherits this class */
-  virtual std::string  GetObjectType() const{ return "Object";}
+  virtual std::string  GetObjectType( void ) const{ return "Object";}
 
   /** Get the Object file name -- default is undefined */
   itkGetConstReferenceMacro( ObjectName, ObjectNameType );
@@ -82,19 +82,19 @@ public:
   itkSetMacro( ObjectName, ObjectNameType );
 
   /** Get the number of transforms associated with the object */
-  unsigned int GetNumberOfTransforms() const
+  unsigned int GetNumberOfTransforms( void ) const
     {
     return static_cast<unsigned int>(m_transformList.size());
     }
 
   /** Get a std::vector of all the transform file names in order */
-  TransformNameListType GetTransformNames() const { return m_transformList; }
+  TransformNameListType GetTransformNames( void ) const { return m_transformList; }
 
   /** Add a transform name to the end of the transform list */
   void AddTransformNameToBack( const std::string & trans ) { m_transformList.push_back( trans ); }
 
   /** Remove last transform from the list -- Does nothing if there are no transforms */
-  void RemoveTransformNameFromBack()
+  void RemoveTransformNameFromBack( void )
     {
     if( !m_transformList.empty() )
       {
@@ -115,11 +115,11 @@ public:
       }
     }
 
-  ~ObjectDocument(){}
+  ~ObjectDocument( void ) {}
 
 protected:
 
-  ObjectDocument(){}
+  ObjectDocument( void ) {}
 
   void PrintSelf(std::ostream& os, Indent indent) const
     {

@@ -141,8 +141,8 @@ public:
 
 protected:
 
-  TubeNetworkExtractor();
-  virtual ~TubeNetworkExtractor();
+  TubeNetworkExtractor( void );
+  virtual ~TubeNetworkExtractor( void );
   TubeNetworkExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 

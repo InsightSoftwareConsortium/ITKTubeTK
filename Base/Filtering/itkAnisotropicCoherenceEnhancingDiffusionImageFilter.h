@@ -133,12 +133,12 @@ public:
 
 
 protected:
-  AnisotropicCoherenceEnhancingDiffusionImageFilter();
- ~AnisotropicCoherenceEnhancingDiffusionImageFilter() {}
+  AnisotropicCoherenceEnhancingDiffusionImageFilter( void );
+ ~AnisotropicCoherenceEnhancingDiffusionImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage();
+  void virtual UpdateDiffusionTensorImage( void );
 
 private:
   //purposely not implemented

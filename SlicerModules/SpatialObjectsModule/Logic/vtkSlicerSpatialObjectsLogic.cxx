@@ -43,11 +43,11 @@ vtkCxxRevisionMacro(vtkSlicerSpatialObjectsLogic, "$Revision: 1.9.12.1 $");
 vtkStandardNewMacro(vtkSlicerSpatialObjectsLogic);
 
 //------------------------------------------------------------------------------
-vtkSlicerSpatialObjectsLogic::vtkSlicerSpatialObjectsLogic()
+vtkSlicerSpatialObjectsLogic::vtkSlicerSpatialObjectsLogic( void )
 {}
 
 //------------------------------------------------------------------------------
-vtkSlicerSpatialObjectsLogic::~vtkSlicerSpatialObjectsLogic()
+vtkSlicerSpatialObjectsLogic::~vtkSlicerSpatialObjectsLogic( void )
 {}
 
 //------------------------------------------------------------------------------
@@ -235,7 +235,7 @@ void vtkSlicerSpatialObjectsLogic::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //------------------------------------------------------------------------------
-void vtkSlicerSpatialObjectsLogic::RegisterNodes()
+void vtkSlicerSpatialObjectsLogic::RegisterNodes( void )
 {
   if(!this->GetMRMLScene())
     {

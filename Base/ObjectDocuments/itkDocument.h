@@ -68,31 +68,31 @@ public:
   itkTypeMacro( Self, Superclass );
 
   /** Get the inputted Comments value */
-  CommentsType GetComment() const { return m_Comment; }
+  CommentsType GetComment( void ) const { return m_Comment; }
   /** Set the Comments value */
   void SetComment( CommentsType comment ) { m_Comment = comment; }
 
   /** Get the modification Date (not implemented) */
-  DateType  GetDateModified() const { return m_DateModified; }
+  DateType  GetDateModified( void ) const { return m_DateModified; }
 
   /** There is no information that can be passed using this function */
   void CopyInformation(const DataObject*) {}
 
   /** Documents do not use region information so must override these classes */
-  virtual void UpdateOutputInformation() {}
+  virtual void UpdateOutputInformation( void ) {}
   /** Documents do not use region information so must override these classes */
-  virtual bool VerifyRequestedRegion() { return true; }
+  virtual bool VerifyRequestedRegion( void ) { return true; }
   /** Documents do not use region information so must override these classes */
-  bool RequestedRegionIsOutsideOfTheBufferedRegion() { return false; }
+  bool RequestedRegionIsOutsideOfTheBufferedRegion( void ) { return false; }
   /** Documents do not use region information so must override these classes */
   virtual void SetRequestedRegion( const DataObject * ) {}
   /** Documents do not use region information so must override these classes */
-  virtual void SetRequestedRegionToLargestPossibleRegion() {}
+  virtual void SetRequestedRegionToLargestPossibleRegion( void ) {}
 
 protected:
 
-  Document(){}
-  ~Document(){}
+  Document( void ) {}
+  ~Document( void ) {}
 
   virtual void PrintSelf(std::ostream& os, Indent indent) const
     {

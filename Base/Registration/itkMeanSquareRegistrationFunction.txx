@@ -34,7 +34,7 @@ namespace itk {
  */
 template <class TFixedImage, class TMovingImage, class TDeformationField>
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::MeanSquareRegistrationFunction()
+::MeanSquareRegistrationFunction( void )
 {
 
   RadiusType r;
@@ -93,7 +93,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 template <class TFixedImage, class TMovingImage, class TDeformationField>
 void
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::InitializeIteration()
+::InitializeIteration( void )
 {
   if( !this->GetMovingImage() || !this->GetFixedImage() || !m_MovingImageInterpolator )
     {

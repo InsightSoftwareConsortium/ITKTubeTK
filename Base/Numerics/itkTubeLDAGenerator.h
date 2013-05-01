@@ -89,7 +89,7 @@ public:
 
   virtual typename ImageType::Pointer GetFeatureImage( unsigned int num );
 
-  ImageListType * GetFeatureImageList();
+  ImageListType * GetFeatureImageList( void );
 
   void UpdateWhitenFeatureImageStats( unsigned int num );
 

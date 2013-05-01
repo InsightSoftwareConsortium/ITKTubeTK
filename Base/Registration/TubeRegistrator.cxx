@@ -31,7 +31,7 @@ using namespace VTREE;
 using namespace VHTK;
 
 TubeRegistratorPoint::
-TubeRegistratorPoint(void)
+TubeRegistratorPoint( void )
 :m_X(3), m_V1(3), m_m_V2(3),
  m_XT(3), m_V1T(3), m_V2T(3), m_DXT(3)
 {
@@ -50,7 +50,7 @@ TubeRegistratorPoint(void)
 }
 
 TubeRegistrator::
-TubeRegistrator(void)
+TubeRegistrator( void )
 : cBiasV(3,3), cBiasVI(3,3)
 {
   cKappa = 1;
@@ -92,19 +92,19 @@ SetSampling(int newSampling)
 }
 
 int TubeRegistrator::
-GetSampling(void)
+GetSampling( void )
 {
   return cSampling;
 }
 
 int TubeRegistrator::
-SetNumSamples(void)
+SetNumSamples( void )
 {
   return cCount;
 }
 
 std::list<TubeRegistratorPoint *> * TubeRegistrator::
-GetSamples(void)
+GetSamples( void )
 {
   return & cRegPoints;
 }
@@ -122,13 +122,13 @@ SetImThresh(double newRegThresh)
 }
 
 double TubeRegistrator::
-GetImThresh(void)
+GetImThresh( void )
 {
   return cRegImThresh;
 }
 
 void TubeRegistrator::
-MetricPreProc(void)
+MetricPreProc( void )
 {
   if(cIm == NULL)
     {
@@ -228,7 +228,7 @@ MetricPreProc(void)
 }
 
 double TubeRegistrator::
-Metric(void)
+Metric( void )
 {
   long c0 = clock();
 
@@ -472,7 +472,7 @@ double rotDUnit=0.1;
 class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
 {
 public:
-  mVMetricCost()
+  mVMetricCost( void )
     : cRegOp(0)
     {
     }
@@ -508,7 +508,7 @@ protected:
   TNT::Vector<double> cD;
   TubeRegistrator * cRegOp;
 public:
-  mVMetricDeriv()
+  mVMetricDeriv( void )
     : cRegOp(0), cD(6, 0.0)
     {
     }
@@ -552,7 +552,7 @@ public:
     }
 };
 
-bool TubeRegistrator::Fit(void)
+bool TubeRegistrator::Fit( void )
 {
   mVMetricCost * func = new mVMetricCost;
   func->use(this);

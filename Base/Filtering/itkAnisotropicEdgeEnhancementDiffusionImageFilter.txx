@@ -45,7 +45,7 @@ namespace itk {
  */
 template <class TInputImage, class TOutputImage>
 AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::AnisotropicEdgeEnhancementDiffusionImageFilter()
+::AnisotropicEdgeEnhancementDiffusionImageFilter( void )
 {
   m_ThresholdParameterC = 3.31488;
   m_ContrastParameterLambdaE = 30.0;
@@ -56,7 +56,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::UpdateDiffusionTensorImage()
+::UpdateDiffusionTensorImage( void )
 {
   itkDebugMacro( << "UpdateDiffusionTensorImage() called" );
 

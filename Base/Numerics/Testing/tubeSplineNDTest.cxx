@@ -44,7 +44,7 @@ class MySANDFunc:
   private:
     double cVal;
   public:
-    MySANDFunc( )
+    MySANDFunc( void )
       {
       cVal = 0;
       }
@@ -62,7 +62,7 @@ class MySANDFuncV:
   private:
     double cVal;
   public:
-    MySANDFuncV( )
+    MySANDFuncV( void )
       {
       cVal = 0;
       }
@@ -79,7 +79,7 @@ class MySANDFuncD:
   private:
     vnl_vector<double> cDeriv;
   public:
-    MySANDFuncD( )
+    MySANDFuncD( void )
       {
       cDeriv.set_size(2);
       cDeriv.fill( 0 );
@@ -106,8 +106,8 @@ int tubeSplineNDTest( int argc, char *argv[] )
 
   tube::SplineApproximation1D * spline1D = new tube::SplineApproximation1D();
 
-  //tube::OptParabolicFit1D * opt = new tube::OptParabolicFit1D( );
-  tube::OptBrent1D * opt = new tube::OptBrent1D( );
+  //tube::OptParabolicFit1D * opt = new tube::OptParabolicFit1D();
+  tube::OptBrent1D * opt = new tube::OptBrent1D();
 
   tube::SplineND spline( 2, myFunc, spline1D, opt );
 
@@ -133,7 +133,7 @@ int tubeSplineNDTest( int argc, char *argv[] )
 
   typedef itk::Image< float, 3 >  ImageType;
 
-  ImageType::Pointer im = ImageType::New( );
+  ImageType::Pointer im = ImageType::New();
   ImageType::RegionType imRegion;
   ImageType::SizeType imSize;
   imSize[0] = 60;
@@ -151,10 +151,10 @@ int tubeSplineNDTest( int argc, char *argv[] )
   imSpacing[1] = 0.2;
   imSpacing[2] = 0.2;
   im->SetSpacing( imSpacing );
-  im->Allocate( );
+  im->Allocate();
 
   itk::ImageRegionIteratorWithIndex<ImageType> itIm( im,
-    im->GetLargestPossibleRegion( ) );
+    im->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
   itIm.GoToBegin();
   vnl_vector<double> x(2);
@@ -225,11 +225,11 @@ int tubeSplineNDTest( int argc, char *argv[] )
     }
 
   typedef itk::ImageFileWriter<ImageType> ImageWriterType;
-  ImageWriterType::Pointer imWriter = ImageWriterType::New( );
+  ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );
   imWriter->SetUseCompression( true );
-  imWriter->Update( );
+  imWriter->Update();
 
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();

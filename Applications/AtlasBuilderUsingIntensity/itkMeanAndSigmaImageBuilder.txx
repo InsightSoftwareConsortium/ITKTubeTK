@@ -30,7 +30,7 @@ template< class TInputImageType,
 MeanAndSigmaImageBuilder< TInputImageType,
                           TOutputMeanImageType,
                           TOutputSigmaImageType>
-::MeanAndSigmaImageBuilder(void)
+::MeanAndSigmaImageBuilder( void )
 : m_ImageCountThreshold(1),
   m_ThresholdInputImageBelowOn(false),
   m_ThresholdInputImageBelow(0),
@@ -117,7 +117,7 @@ template< class TInputImageType,
 void MeanAndSigmaImageBuilder< TInputImageType,
                                TOutputMeanImageType,
                                TOutputSigmaImageType>
-::FinalizeOutput()
+::FinalizeOutput( void )
 {
   if( !( this->GetIsProcessing() ) )
     {

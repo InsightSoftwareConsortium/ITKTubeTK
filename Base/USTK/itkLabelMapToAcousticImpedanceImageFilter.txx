@@ -31,7 +31,7 @@ namespace itk
 template< class TInputImage, class TOutputImage, class TLookupTable >
 void
 LabelMapToAcousticImpedanceImageFilter< TInputImage, TOutputImage, TLookupTable >
-::BeforeThreadedGenerateData()
+::BeforeThreadedGenerateData( void )
 {
   Superclass::BeforeThreadedGenerateData();
 

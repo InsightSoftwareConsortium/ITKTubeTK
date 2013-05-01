@@ -33,7 +33,7 @@ template < class TDensityImageType,
 TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TRadiusImageType,
                                 TTangentImageType>
-::TubeSpatialObjectToDensityImage()
+::TubeSpatialObjectToDensityImage( void )
 {
   for(short i = 0; i < TDimension; i++ )
     {
@@ -51,7 +51,7 @@ template < class TDensityImageType,
 TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TRadiusImageType,
                                 TTangentImageType>
-::~TubeSpatialObjectToDensityImage()
+::~TubeSpatialObjectToDensityImage( void )
 {
 }
 
@@ -78,7 +78,7 @@ void
 TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TRadiusImageType,
                                 TTangentImageType>
-::Update()
+::Update( void )
 {
   if(m_Size[0] == 0)
     {

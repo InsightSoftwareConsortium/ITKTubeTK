@@ -39,9 +39,9 @@ class OptParabolicFit1D : public Optimizer1D
 
 public:
 
-  OptParabolicFit1D();
+  OptParabolicFit1D( void );
   OptParabolicFit1D( UserFunc< double, double > * newFuncVal );
-  ~OptParabolicFit1D();
+  ~OptParabolicFit1D( void );
 
   void use( UserFunc< double, double > * newFuncVal,
             UserFunc< double, double > * deriv = NULL );

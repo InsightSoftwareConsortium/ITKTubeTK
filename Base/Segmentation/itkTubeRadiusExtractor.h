@@ -205,14 +205,14 @@ public:
    */
   bool ExtractRadii( TubeType * tube );
 
-  void SetIdleCallBack( bool ( *idleCallBack )() );
+  void SetIdleCallBack( bool ( *idleCallBack )( void ) );
   void SetStatusCallBack( void ( *statusCallBack )( const char *,
       const char *, int ) );
 
 protected:
 
-  RadiusExtractor();
-  virtual ~RadiusExtractor();
+  RadiusExtractor( void );
+  virtual ~RadiusExtractor( void );
   RadiusExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
@@ -279,7 +279,7 @@ private:
   unsigned int                            m_KernNumDirs;
   MatrixType                              m_KernX;
 
-  bool ( *m_IdleCallBack )();
+  bool ( *m_IdleCallBack )( void );
   void ( *m_StatusCallBack )( const char *, const char *, int );
 
 };

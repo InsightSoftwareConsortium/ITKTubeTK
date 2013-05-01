@@ -58,15 +58,15 @@ public:
   static const int EDGE_KERNEL_DEL = 0;
 
   /** CTOR - Consumer sets graphs */
-  ShortestPathKernel(const GraphType &G0, const GraphType &G1) :
-    GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
+  ShortestPathKernel(const GraphType &G0, const GraphType &G1)
+    : GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
 
   /** Sets edge-kernel type */
   void SetEdgeKernel(int type)
     { m_edgeKernelType = type; }
 
   /** Computes the SP kernel value, see [1], Section 4.2 */
-  double Compute(void);
+  double Compute( void );
 
 private:
 

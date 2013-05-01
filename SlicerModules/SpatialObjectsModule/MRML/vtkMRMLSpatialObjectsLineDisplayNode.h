@@ -39,7 +39,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT
 vtkMRMLSpatialObjectsLineDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
 {
 public:
-  static vtkMRMLSpatialObjectsLineDisplayNode* New();
+  static vtkMRMLSpatialObjectsLineDisplayNode* New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsLineDisplayNode,
                vtkMRMLSpatialObjectsDisplayNode);
   void PrintSelf(ostream& os, vtkIndent indent);
@@ -47,7 +47,7 @@ public:
   //----------------------------------------------------------------------------
   /// MRMLNode methods
   //----------------------------------------------------------------------------
-  virtual vtkMRMLNode* CreateNodeInstance();
+  virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
   /// Read node attributes from XML (MRML) file
@@ -64,16 +64,16 @@ public:
 
   ///
   /// Get node XML tag name (like Volume, UnstructuredGrid)
-  virtual const char* GetNodeTagName()
+  virtual const char* GetNodeTagName( void )
   {return "SpatialObjectsLineDisplayNode";}
 
   ///
   /// Update the pipeline based on this node attributes
-  virtual void UpdatePolyDataPipeline();
+  virtual void UpdatePolyDataPipeline( void );
 
 protected:
-  vtkMRMLSpatialObjectsLineDisplayNode();
-  ~vtkMRMLSpatialObjectsLineDisplayNode();
+  vtkMRMLSpatialObjectsLineDisplayNode( void );
+  ~vtkMRMLSpatialObjectsLineDisplayNode( void );
   vtkMRMLSpatialObjectsLineDisplayNode(
     const vtkMRMLSpatialObjectsLineDisplayNode&);
   void operator= (const vtkMRMLSpatialObjectsLineDisplayNode&);

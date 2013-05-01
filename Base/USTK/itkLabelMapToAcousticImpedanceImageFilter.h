@@ -62,10 +62,10 @@ public:
   typedef typename Superclass::FunctorType FunctorType;
 
 protected:
-  LabelMapToAcousticImpedanceImageFilter() {}
-  virtual ~LabelMapToAcousticImpedanceImageFilter() {}
+  LabelMapToAcousticImpedanceImageFilter( void ) {}
+  virtual ~LabelMapToAcousticImpedanceImageFilter( void ) {}
 
-  virtual void BeforeThreadedGenerateData();
+  virtual void BeforeThreadedGenerateData( void );
 
 private:
   LabelMapToAcousticImpedanceImageFilter( const Self & ); // purposely not implemented

@@ -30,7 +30,7 @@ namespace itk
 
 template< class TOutputSpatialObject >
 SpatialObjectSource< TOutputSpatialObject >
-::SpatialObjectSource()
+::SpatialObjectSource( void )
 {
   // Create the output. We use static_cast<> here because we know the default
   // output must be of type TOutputSpatialObject

@@ -122,7 +122,7 @@ int itkTubeMetaLDATest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  mlda5.Clear( );
+  mlda5.Clear();
   if( mlda5.GetLDAValues().size() != 0 )
     {
     std::cout << "LDA size not 0 after clear." << std::endl;

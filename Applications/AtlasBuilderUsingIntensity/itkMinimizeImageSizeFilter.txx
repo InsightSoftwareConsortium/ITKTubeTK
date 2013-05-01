@@ -33,7 +33,7 @@ namespace tube
 
 template< class TInputImage >
 MinimizeImageSizeFilter< TInputImage >
-::MinimizeImageSizeFilter()
+::MinimizeImageSizeFilter( void )
 : m_BufferImage(false),
   m_ThresholdValue(0),
   m_ThresholdAbove(false),
@@ -48,7 +48,7 @@ MinimizeImageSizeFilter< TInputImage >
 template< class TInputImage >
 void
 MinimizeImageSizeFilter<TInputImage>
-::GenerateData()
+::GenerateData( void )
 {
   InputImageConstPointer input = this->GetInput();
   RegionType region = input->GetLargestPossibleRegion();

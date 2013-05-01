@@ -42,13 +42,13 @@ vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsLineDisplayNode);
 
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsLineDisplayNode::vtkMRMLSpatialObjectsLineDisplayNode()
+vtkMRMLSpatialObjectsLineDisplayNode::vtkMRMLSpatialObjectsLineDisplayNode( void )
 {
   this->ColorMode = vtkMRMLSpatialObjectsDisplayNode::colorModeSolid;
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsLineDisplayNode::~vtkMRMLSpatialObjectsLineDisplayNode()
+vtkMRMLSpatialObjectsLineDisplayNode::~vtkMRMLSpatialObjectsLineDisplayNode( void )
 {
   this->RemoveObservers (vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
 }
@@ -79,7 +79,7 @@ void vtkMRMLSpatialObjectsLineDisplayNode::PrintSelf(ostream& os,
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsLineDisplayNode::UpdatePolyDataPipeline()
+void vtkMRMLSpatialObjectsLineDisplayNode::UpdatePolyDataPipeline( void )
 {
   if (!this->GetInputPolyData() || !this->Visibility)
     {

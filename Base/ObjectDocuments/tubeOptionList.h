@@ -45,7 +45,7 @@ public:
 
 
   OptionList(int argc, char* argv[]);
-  ~OptionList() {}
+  ~OptionList( void ) {}
 
   class RequiredOptionMissing
     {

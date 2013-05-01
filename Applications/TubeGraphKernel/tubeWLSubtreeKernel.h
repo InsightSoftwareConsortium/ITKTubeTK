@@ -68,16 +68,16 @@ public:
                    const GraphType &G1,
                    const LabelMapVectorType & labelMap,
                    const int & labelCount,
-                   int subtreeHeight) :
-                      GraphKernel(G0, G1),
-                      m_subtreeHeight(subtreeHeight),
-                      m_labelMap(labelMap),
-                      m_labelCount(labelCount)
+                   int subtreeHeight)
+                     : GraphKernel(G0, G1),
+                       m_subtreeHeight(subtreeHeight),
+                       m_labelMap(labelMap),
+                       m_labelCount(labelCount)
     {
     }
 
   /** Compute the WLSubtree kernel */
-  double Compute(void);
+  double Compute( void );
 
   /*
    * Take graph information and update

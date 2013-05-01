@@ -226,7 +226,7 @@ SetUseRegistration( bool reg )
 
 template< class pixelT, unsigned int dimensionT >
 bool CompareImageWithPrior< pixelT, dimensionT>::
-GetUseRegistration( )
+GetUseRegistration( void )
 {
   return m_UseRegistration;
 }
@@ -240,7 +240,7 @@ SetUseRegistrationTransform( bool reg )
 
 template< class pixelT, unsigned int dimensionT >
 bool CompareImageWithPrior< pixelT, dimensionT>::
-GetUseRegistrationTransform( )
+GetUseRegistrationTransform( void )
 {
   return m_UseRegistrationTransform;
 }
@@ -254,7 +254,7 @@ SetUseRegistrationOptimization( bool reg )
 
 template< class pixelT, unsigned int dimensionT >
 bool CompareImageWithPrior< pixelT, dimensionT>::
-GetUseRegistrationOptimization( )
+GetUseRegistrationOptimization( void )
 {
   return m_UseRegistrationOptimization;
 }

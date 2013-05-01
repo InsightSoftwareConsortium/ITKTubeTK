@@ -40,7 +40,7 @@ namespace tube
  * Constructor */
 template<class TInputImage>
 TubeExtractor<TInputImage>
-::TubeExtractor()
+::TubeExtractor( void )
 {
   m_RidgeOp = NULL;
   m_RadiusOp = NULL;
@@ -60,7 +60,7 @@ TubeExtractor<TInputImage>
  * Destructor */
 template<class TInputImage>
 TubeExtractor<TInputImage>
-::~TubeExtractor()
+::~TubeExtractor( void )
 {
 }
 

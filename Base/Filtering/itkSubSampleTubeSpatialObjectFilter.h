@@ -59,9 +59,9 @@ public:
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
-  SubSampleTubeSpatialObjectFilter();
+  SubSampleTubeSpatialObjectFilter( void );
 
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
 private:
   SubSampleTubeSpatialObjectFilter( const Self & ); // purposely not implemented
