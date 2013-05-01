@@ -30,7 +30,7 @@ limitations under the License.
 
 #include "itkTubeMetaLDA.h"
 
-int itkTubeMetaLDATest(int argc, char* argv [] )
+int itkTubeMetaLDATest(int argc, char* argv[] )
 {
   if( argc != 2 )
     {

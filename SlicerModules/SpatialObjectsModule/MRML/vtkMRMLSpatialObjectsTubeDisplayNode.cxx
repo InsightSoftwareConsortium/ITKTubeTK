@@ -96,19 +96,19 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::ReadXMLAttributes(const char** atts)
 
   const char* attName;
   const char* attValue;
-  while (*atts != NULL)
+  while(*atts != NULL)
     {
     attName = *(atts++);
     attValue = *(atts++);
 
-    if (!strcmp(attName, "tubeRadius"))
+    if(!strcmp(attName, "tubeRadius"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> this->TubeRadius;
       }
 
-    if (!strcmp(attName, "tubeNumberOfSides"))
+    if(!strcmp(attName, "tubeNumberOfSides"))
       {
       std::stringstream ss;
       ss << attValue;
@@ -167,7 +167,7 @@ vtkAlgorithmOutput* vtkMRMLSpatialObjectsTubeDisplayNode::GetOutputPort( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline( void )
 {
-  if (!this->GetInputPolyData() || !this->Visibility)
+  if(!this->GetInputPolyData() || !this->Visibility)
     {
     return;
     }
@@ -185,17 +185,17 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline( void )
                                 vtkDataSetAttributes::SCALARS,
                                 vtkAssignAttribute::POINT_DATA);
 
-  if (SpatialObjectsDisplayPropertiesNode != NULL)
+  if(SpatialObjectsDisplayPropertiesNode != NULL)
     {
     const int colorMode = this->GetColorMode();
-    if (colorMode ==
+    if(colorMode ==
           vtkMRMLSpatialObjectsDisplayNode::colorModeSolid)
       {
       this->ScalarVisibilityOff();
 
       vtkMRMLNode* colorNode =
         this->GetScene()->GetNodeByID("vtkMRMLColorTableNodeFullRainbow");
-      if (colorNode)
+      if(colorNode)
         {
         this->SetAndObserveColorNodeID(colorNode->GetID());
         }
@@ -204,7 +204,7 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline( void )
       this->SetScalarRange(0, 255);
       }
 
-    else if (colorMode ==
+    else if(colorMode ==
                vtkMRMLSpatialObjectsDisplayNode::colorModeScalarData)
       {
       this->ScalarVisibilityOn();

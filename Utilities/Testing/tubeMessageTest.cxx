@@ -27,7 +27,7 @@ limitations under the License.
 #include <cstdlib>
 #include <tubeMessage.h>
 
-int tubeMessageTest(int argc, char* argv [] )
+int tubeMessageTest(int argc, char* argv[] )
 {
   if( argc > 1 )
     {

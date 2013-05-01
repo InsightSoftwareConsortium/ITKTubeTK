@@ -23,9 +23,9 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
-int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv [] )
+int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv[] )
 {
-  if ( argc < 3 )
+  if( argc < 3 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
@@ -53,7 +53,7 @@ int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv [
     {
     reader->Update();
     }
-  catch ( itk::ExceptionObject &err )
+  catch( itk::ExceptionObject &err )
     {
     std::cerr << "Exception thrown: " << err << std::endl;
     return EXIT_FAILURE;

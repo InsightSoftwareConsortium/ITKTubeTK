@@ -32,7 +32,7 @@ limitations under the License.
 #include "itkTubeMetaNJetLDA.h"
 
 
-int tubeBaseIOPrintTest( int, char* [] )
+int tubeBaseIOPrintTest( int, char*[] )
 {
   itk::tube::MetaLDA metalda;
   std::cout << "-------------metaLDA" << std::endl;

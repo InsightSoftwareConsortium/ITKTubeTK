@@ -34,7 +34,7 @@ limitations under the License.
 #include "metaForm.h"
 #include "itkTubeMetaLDA.h"
 
-/*!    MetaNJetLDA ( .h and .cpp )
+/**    MetaNJetLDA ( .h and .cpp )
 
 Description:
   Reads and Writes MetaNJetLDA Files, typically designated .mnda files

@@ -223,7 +223,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
       ((TubeType *)((*TubeIterator).GetPointer()))->ComputeTangentAndNormals();
       }
 
-    for (unsigned int k=0;
+    for(unsigned int k=0;
          k < ((TubeType *)(TubeIterator->GetPointer()))->GetNumberOfPoints();
          k++)
       {
@@ -244,7 +244,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
 
         index[i] = (long int)(point[i]+0.5);
 
-        if ( (index[i]<=0) ||
+        if( (index[i]<=0) ||
              ( static_cast<unsigned int>(index[i]) >=
                OutputImage->GetLargestPossibleRegion().GetSize()[i] ) )
           {
@@ -278,7 +278,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
           }
 
         // Radius Image and Density image with radius
-        if (m_UseRadius)
+        if(m_UseRadius)
           {
           double phys_pt_radius = tubePoint->GetRadius() *
                                       ((TubeType *)((TubeIterator)
@@ -306,16 +306,16 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
             }
           if(ObjectDimension == 2)
             {
-            for (double x=-radius; x<=radius+step/2; x+=step)
+            for(double x=-radius; x<=radius+step/2; x+=step)
               {
-              for (double y=-radius; y<=radius+step/2; y+=step)
+              for(double y=-radius; y<=radius+step/2; y+=step)
                 {
-                if ( ( (x*x) +(y*y)) <= (radius*radius) )
+                if( ( (x*x) +(y*y)) <= (radius*radius) )
                   // test  inside the sphere
                   {
                   index2[0]=(long)(point[0]+x+0.5);
                   index2[1]=(long)(point[1]+y+0.5);
-                  if (  (unsigned long)index2[0] <
+                  if(  (unsigned long)index2[0] <
                         OutputImage->GetLargestPossibleRegion().GetSize()[0]
                         && (unsigned long)index2[1] <
                         OutputImage->GetLargestPossibleRegion().GetSize()[1]
@@ -344,13 +344,13 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
             }
           else if(ObjectDimension == 3)
             {
-            for (double x=-radius; x<=radius+step/2; x+=step)
+            for(double x=-radius; x<=radius+step/2; x+=step)
               {
-              for (double y=-radius; y<=radius+step/2; y+=step)
+              for(double y=-radius; y<=radius+step/2; y+=step)
                 {
-                for (double z=-radius; z<=radius+step/2; z+=step)
+                for(double z=-radius; z<=radius+step/2; z+=step)
                   {
-                  if ( ( (x*x) +(y*y) +(z*z)) <= (radius*radius) )
+                  if( ( (x*x) +(y*y) +(z*z)) <= (radius*radius) )
                     // test  inside the sphere
                     {
                     index2[0]=(long)(point[0]+x+0.5);
@@ -358,7 +358,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
                     index2[2]=(long)(point[2]+z+0.5);
 
                     // Test that point is within the output image boundries
-                    if ( index2[0] >= 0
+                    if( index2[0] >= 0
                          && index2[1] >= 0
                          && index2[2] >= 0
                          && (unsigned long)index2[0] <

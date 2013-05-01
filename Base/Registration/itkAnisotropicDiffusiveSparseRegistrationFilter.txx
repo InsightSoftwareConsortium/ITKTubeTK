@@ -361,11 +361,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   m_BorderSurface = normalsFilter->GetOutput();
 
   // Make sure we now have the normals
-  if ( !m_BorderSurface->GetPointData() )
+  if( !m_BorderSurface->GetPointData() )
     {
     itkExceptionMacro( << "Border surface does not contain point data" );
     }
-  else if ( !m_BorderSurface->GetPointData()->GetNormals() )
+  else if( !m_BorderSurface->GetPointData()->GetNormals() )
     {
     itkExceptionMacro( << "Border surface point data does not have normals" );
     }
@@ -1069,9 +1069,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
     propNormalMatrix = wP_transpose * wP; // (wP)^T * wP
 
     // Copy the matrices to the diffusion tensor
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      for ( unsigned int j = 0; j < ImageDimension; j++ )
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
         smoothTangentialDiffusionTensor(i,j) = smoothTangentialMatrix(i,j);
         smoothNormalDiffusionTensor(i,j) = smoothNormalMatrix(i,j);

@@ -38,7 +38,7 @@ limitations under the License.
 #define MODULE_IMPORT
 #endif
 
-extern "C" MODULE_IMPORT int ModuleEntryPoint(int, char* []);
+extern "C" MODULE_IMPORT int ModuleEntryPoint(int, char*[]);
 
 int main(int argc, char** argv)
 {

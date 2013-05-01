@@ -80,7 +80,7 @@ const typename SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpa
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::GetInput( void )
 {
-  if (this->GetNumberOfInputs() < 1)
+  if(this->GetNumberOfInputs() < 1)
     {
     return 0;
     }

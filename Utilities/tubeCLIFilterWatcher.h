@@ -73,7 +73,7 @@ protected:
                   this->GetComment().c_str(), 1023);
           m_ProcessInformation->Progress =
             (this->GetProcess()->GetProgress() * m_Fraction + m_Start);
-          if (m_Fraction != 1.0)
+          if(m_Fraction != 1.0)
             {
             m_ProcessInformation->StageProgress =
               this->GetProcess()->GetProgress();
@@ -84,14 +84,14 @@ protected:
             * this->GetTimeProbe().GetNumberOfStops();
           this->GetTimeProbe().Start();
 
-          if (m_ProcessInformation->Abort)
+          if(m_ProcessInformation->Abort)
             {
             this->GetProcess()->AbortGenerateDataOn();
             m_ProcessInformation->Progress = 0;
             m_ProcessInformation->StageProgress = 0;
             }
 
-          if (m_ProcessInformation->ProgressCallbackFunction
+          if(m_ProcessInformation->ProgressCallbackFunction
               && m_ProcessInformation->ProgressCallbackClientData)
             {
             (*(m_ProcessInformation->ProgressCallbackFunction))(
@@ -105,7 +105,7 @@ protected:
                        + m_Start
                     << "</filter-progress>"
                     << std::endl;
-          if (m_Fraction != 1.0)
+          if(m_Fraction != 1.0)
             {
             std::cout << "<filter-stage-progress>"
                       << this->GetProcess()->GetProgress()
@@ -125,16 +125,16 @@ protected:
     this->SetIterations(0);
     this->GetTimeProbe().Start();
     this->m_StartCalled = true;
-    if (!this->GetQuiet())
+    if(!this->GetQuiet())
       {
-      if (m_ProcessInformation)
+      if(m_ProcessInformation)
         {
         m_ProcessInformation->Progress = 0;
         m_ProcessInformation->StageProgress = 0;
         strncpy(m_ProcessInformation->ProgressMessage,
                 this->GetComment().c_str(), 1023);
 
-        if (m_ProcessInformation->ProgressCallbackFunction
+        if(m_ProcessInformation->ProgressCallbackFunction
             && m_ProcessInformation->ProgressCallbackClientData)
           {
           (*(m_ProcessInformation->ProgressCallbackFunction))(
@@ -165,9 +165,9 @@ protected:
   virtual void EndFilter( void )
     {
     this->GetTimeProbe().Stop();
-    if (!this->GetQuiet())
+    if(!this->GetQuiet())
       {
-      if (m_ProcessInformation)
+      if(m_ProcessInformation)
         {
         m_ProcessInformation->Progress = 1;
         m_ProcessInformation->StageProgress = 1;
@@ -175,7 +175,7 @@ protected:
         m_ProcessInformation->ElapsedTime = this->GetTimeProbe().GetMean()
           * this->GetTimeProbe().GetNumberOfStops();
 
-        if (m_ProcessInformation->ProgressCallbackFunction
+        if(m_ProcessInformation->ProgressCallbackFunction
             && m_ProcessInformation->ProgressCallbackClientData)
           {
           (*(m_ProcessInformation->ProgressCallbackFunction))(

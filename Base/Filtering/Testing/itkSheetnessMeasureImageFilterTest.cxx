@@ -20,7 +20,7 @@
 #include "itkSheetnessMeasureImageFilter.h"
 #include "itkImageFileWriter.h"
 
-int itkSheetnessMeasureImageFilterTest(int ,char* [] )
+int itkSheetnessMeasureImageFilterTest(int ,char*[] )
 {
   std::cout << "itkSheetnessMeasureImageFilterTest running..." << std::endl;
 

@@ -35,7 +35,7 @@ limitations under the License.
 
 #define numCentroids 4
 
-int itkTubeCVTImageFilterTest(int argc, char* argv [] )
+int itkTubeCVTImageFilterTest(int argc, char* argv[] )
 {
   if( argc != 3 )
     {
@@ -71,7 +71,7 @@ int itkTubeCVTImageFilterTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -139,7 +139,7 @@ int itkTubeCVTImageFilterTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

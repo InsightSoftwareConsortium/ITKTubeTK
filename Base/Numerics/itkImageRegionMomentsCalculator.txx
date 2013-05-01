@@ -137,7 +137,7 @@ Compute( void )
       {
       for( unsigned int i=0; i<ImageDimension; i++ )
         {
-        if( ! ( ( physicalPosition[i]<=m_RegionOfInterestPoint1[i]
+        if( !( ( physicalPosition[i]<=m_RegionOfInterestPoint1[i]
                && physicalPosition[i]>=m_RegionOfInterestPoint2[i] )
               || ( physicalPosition[i]<=m_RegionOfInterestPoint2[i]
                   && physicalPosition[i]>=m_RegionOfInterestPoint1[i] ) ) )
@@ -362,10 +362,10 @@ GetPrincipalAxesToPhysicalAxesTransform( void ) const
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     offset[i]  = m_Cg [i];
-    for ( unsigned int j = 0; j < ImageDimension; j++ )
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       matrix[j][i] = m_Pa[i][j];    // Note the transposition
       }
@@ -390,10 +390,10 @@ GetPhysicalAxesToPrincipalAxesTransform( void ) const
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     offset[i]    = m_Cg [i];
-    for ( unsigned int j = 0; j < ImageDimension; j++ )
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       matrix[j][i] = m_Pa[i][j];    // Note the transposition
       }

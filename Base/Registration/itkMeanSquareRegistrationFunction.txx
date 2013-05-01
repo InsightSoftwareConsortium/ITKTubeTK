@@ -142,17 +142,17 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 
   const bool normalizemetric=this->GetNormalizeGradient();
   double denominator = 1.0;
-  if (normalizemetric)
+  if(normalizemetric)
     {
     denominator = speedValue*speedValue *fixedGradientSquaredMagnitude;
     denominator = vcl_sqrt(denominator);
     }
-  if (denominator == 0)
+  if(denominator == 0)
     {
     denominator=1.0;
     }
   PixelType update;
-  if ( vnl_math_abs(speedValue) < m_IntensityDifferenceThreshold ||
+  if( vnl_math_abs(speedValue) < m_IntensityDifferenceThreshold ||
     denominator < m_DenominatorThreshold )
     {
     update.Fill(0.0);
@@ -163,7 +163,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     {
     update[j] = speedValue * fixedGradient[j] /
       denominator*this->m_GradientStep;
-    if (normalizemetric)
+    if(normalizemetric)
       {
       update[j] *= vnl_math_sqr(m_FixedImageSpacing[j]);
       }

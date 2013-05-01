@@ -78,7 +78,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
   const TInputSpatialObject * input = dynamic_cast< const TInputSpatialObject * >
     ( this->ProcessObject::GetInput( index ) );
 
-  if ( input == NULL && this->ProcessObject::GetInput( input ) != NULL )
+  if( input == NULL && this->ProcessObject::GetInput( input ) != NULL )
     {
     itkWarningMacro (<< "Unable to convert input number " << index
       << " to type " <<  typeid( InputSpatialObjectType ).name () );

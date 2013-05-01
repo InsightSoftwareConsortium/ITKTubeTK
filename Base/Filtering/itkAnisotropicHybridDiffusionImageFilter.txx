@@ -193,9 +193,9 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     double smallest = vnl_math_abs( eigenValue[0] );
     unsigned int smallestEigenValueIndex=0;
 
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if ( vnl_math_abs( eigenValue[i] ) < smallest )
+      if( vnl_math_abs( eigenValue[i] ) < smallest )
         {
         smallest = vnl_math_abs( eigenValue[i] );
         smallestEigenValueIndex = i;
@@ -206,9 +206,9 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     double largest = vnl_math_abs( eigenValue[0] );
     unsigned int largestEigenValueIndex=0;
 
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if (  vnl_math_abs( eigenValue[i] > largest ) )
+      if(  vnl_math_abs( eigenValue[i] > largest ) )
         {
         largestEigenValueIndex = i;
         }
@@ -216,9 +216,9 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     unsigned int middleEigenValueIndex=0;
 
-    for ( unsigned int i=0; i <=2; i++ )
+    for( unsigned int i=0; i <=2; i++ )
       {
-      if ( eigenValue[i] != smallest && eigenValue[i] != largest )
+      if( eigenValue[i] != smallest && eigenValue[i] != largest )
         {
         middleEigenValueIndex = i;
         break;
@@ -240,7 +240,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     double gradientMagnitude = gradientMagnitudeImageIterator.Get();
 
-    if ( gradientMagnitude < zerovalueTolerance )
+    if( gradientMagnitude < zerovalueTolerance )
       {
       LambdaEED1 = 1.0;
       }
@@ -327,7 +327,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     itk::VariableLengthVector<double> secondEigenVector( vectorLength );
     itk::VariableLengthVector<double> thirdEigenVector( vectorLength );
 
-    for ( unsigned int i=0; i < vectorLength; i++ ) {
+    for( unsigned int i=0; i < vectorLength; i++ ) {
     // Get eigenvectors belonging to eigenvalue order
       firstEigenVector[i] = eigenVectorMatrix[largestEigenValueIndex][i];
       secondEigenVector[i] = eigenVectorMatrix[middleEigenValueIndex][i];

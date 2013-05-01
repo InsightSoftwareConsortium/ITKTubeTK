@@ -30,7 +30,7 @@ limitations under the License.
 template< class TLookupTable >
 int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable );
 
-int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
+int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv[] )
 {
   // Argument parsing.
   if( argc < 4 )

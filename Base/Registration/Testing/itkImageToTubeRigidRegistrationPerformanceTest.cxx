@@ -57,7 +57,7 @@ protected:
   CommandIterationUpdate( void ) {}
   ~CommandIterationUpdate( void )
     {
-    if ( measuresFileStream.is_open() )
+    if( measuresFileStream.is_open() )
       {
       measuresFileStream.close();
       }
@@ -83,7 +83,7 @@ public:
       return;
       }
 
-    if ( measuresFileStream.is_open() )
+    if( measuresFileStream.is_open() )
       {
       measuresFileStream << optimizer->GetCurrentIteration() << ";";
       measuresFileStream << optimizer->GetValue() << std::endl;
@@ -96,7 +96,7 @@ public:
     }
 };
 
-int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv [] )
+int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv[] )
 {
   if( argc < 4 )
     {
@@ -135,7 +135,7 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv [] )
     <ImageType, ImageType> GaussianBlurFilterType;
 
   GaussianBlurFilterType::Pointer blurFilters[3];
-  for (int i = 0; i < 3; i++)
+  for(int i = 0; i < 3; i++)
     {
     blurFilters[i] = GaussianBlurFilterType::New();
     blurFilters[i]->SetSigma( 3.0 );
@@ -219,7 +219,7 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv [] )
   // Create stream to record the measure
   std::ofstream measuresFile;
   measuresFile.open( timeFile );
-  if ( !measuresFile.is_open() )
+  if( !measuresFile.is_open() )
     {
     std::cerr << "Unable to open: " << timeFile << std::endl;
     return EXIT_FAILURE;

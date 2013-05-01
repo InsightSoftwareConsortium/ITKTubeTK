@@ -200,7 +200,7 @@ ImageToTubeRigidMetric< TFixedImage,
         = currentTube->GetPoints();
       typedef typename TubeType::PointListType::const_iterator
         TubePointIteratorType;
-      for ( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
+      for( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
             tubePointIterator != currentTubePoints.end();
             ++tubePointIterator )
         {
@@ -220,7 +220,7 @@ ImageToTubeRigidMetric< TFixedImage,
     }
   delete tubeList;
 
-  for ( unsigned int ii = 0; ii < TubeDimension; ++ii )
+  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
     {
     this->m_CenterOfRotation[ii] /= resolutionWeightSum;
     }
@@ -250,7 +250,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TResolutionWeightFunction >
 ::GetTubes( void ) const
 {
-  if (!this->m_MovingSpatialObject)
+  if(!this->m_MovingSpatialObject)
     {
     return NULL;
     }

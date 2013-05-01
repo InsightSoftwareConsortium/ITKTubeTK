@@ -29,7 +29,7 @@ limitations under the License.
 
 #include <itkTubeEnhancingDiffusion2DImageFilter.h>
 
-int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
+int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv[] )
 {
   if( argc < 3 )
     {
@@ -113,7 +113,7 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during pipeline Update\n"  << e;
     return EXIT_FAILURE;

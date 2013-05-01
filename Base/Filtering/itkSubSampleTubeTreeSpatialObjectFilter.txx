@@ -84,7 +84,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
   ChildrenListType *children = input->GetChildren(0);
   typename ChildrenListType::const_iterator it = children->begin();
-  while ( it != children->end() )
+  while( it != children->end() )
     {
     this->SubSampleLevel( *it, newSpatialObjectBase );
     ++it;
@@ -121,7 +121,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
   ChildrenListType *children = input->GetChildren(0);
   typename ChildrenListType::const_iterator it = children->begin();
-  while ( it != children->end() )
+  while( it != children->end() )
     {
     this->SubSampleLevel( *it, output );
     ++it;

@@ -30,7 +30,7 @@ limitations under the License.
 
 #include "itkTubeMetaNJetLDA.h"
 
-int itkTubeMetaNJetLDATest(int argc, char* argv [] )
+int itkTubeMetaNJetLDATest(int argc, char* argv[] )
 {
   if( argc != 2 )
     {

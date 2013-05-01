@@ -23,7 +23,7 @@
 
 #include <sstream>
 
-int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
+int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv[] )
 {
   // Argument parsing.
   if( argc < 7 )

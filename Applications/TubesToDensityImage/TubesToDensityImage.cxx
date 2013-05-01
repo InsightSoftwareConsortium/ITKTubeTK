@@ -101,7 +101,7 @@ int DoIt( int argc, char *argv[] )
 
   builder->SetMaxDensityIntensity( max_densityIntensity ); // Const
 
-  if ( !inputTemplateImage.empty() )
+  if( !inputTemplateImage.empty() )
     {
     std::cout << "Trying to use template image as constraints!" << std::endl;
 
@@ -129,7 +129,7 @@ int DoIt( int argc, char *argv[] )
     {
     std::cout << "Trying to use user-specified constraints!" << std::endl;
 
-    if ( !outputSize.size() )
+    if( !outputSize.size() )
       {
       std::cerr << "Output size is missing!" << std::endl;
       return -1;
@@ -141,7 +141,7 @@ int DoIt( int argc, char *argv[] )
       }
     builder->SetSize( sizeValue );
 
-    if ( !outputSpacing.size() )
+    if( !outputSpacing.size() )
       {
       std::cerr << "Output spacing is missing!" << std::endl;
       return -1;

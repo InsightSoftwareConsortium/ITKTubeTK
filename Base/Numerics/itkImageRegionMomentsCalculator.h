@@ -122,7 +122,7 @@ public:
   /** Set the input image. */
   virtual void SetImage( const ImageType * image )
     {
-    if ( m_Image != image )
+    if( m_Image != image )
       {
       m_Image = image;
       this->Modified();
@@ -134,7 +134,7 @@ public:
   virtual void SetSpatialObjectMask(
      const SpatialObject< itkGetStaticConstMacro( ImageDimension ) > * so )
     {
-    if ( m_SpatialObjectMask != so )
+    if( m_SpatialObjectMask != so )
       {
       m_SpatialObjectMask = so;
       this->Modified();

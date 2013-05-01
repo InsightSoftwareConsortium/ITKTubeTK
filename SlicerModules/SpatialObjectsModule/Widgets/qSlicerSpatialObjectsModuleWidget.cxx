@@ -109,7 +109,7 @@ setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* spatialObjectsNode)
 {
   Q_D(qSlicerSpatialObjectsModuleWidget);
 
-  if (d->spatialObjectsNode == spatialObjectsNode)
+  if(d->spatialObjectsNode == spatialObjectsNode)
     return;
 
   d->spatialObjectsNode = spatialObjectsNode;
@@ -118,7 +118,7 @@ setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* spatialObjectsNode)
   d->TubeDisplayWidget->setSpatialObjectsNode(spatialObjectsNode);
   d->GlyphDisplayWidget->setSpatialObjectsNode(spatialObjectsNode);
 
-  if (spatialObjectsNode)
+  if(spatialObjectsNode)
     {
     d->LineDisplayWidget->
       setSpatialObjectsDisplayNode(spatialObjectsNode->GetLineDisplayNode());
@@ -139,10 +139,10 @@ void qSlicerSpatialObjectsModuleWidget::setSolidTubeColor(bool solid)
     GetNodesByClass("vtkMRMLSpatialObjectsTubeDisplayNode", nodes);
 
   vtkMRMLSpatialObjectsTubeDisplayNode* node = 0;
-  for (unsigned int i = 0; i < nodes.size(); ++i)
+  for(unsigned int i = 0; i < nodes.size(); ++i)
     {
     node = vtkMRMLSpatialObjectsTubeDisplayNode::SafeDownCast(nodes[i]);
-    if (solid)
+    if(solid)
       {
       node->SetColorMode(vtkMRMLSpatialObjectsDisplayNode::colorModeSolid);
       }

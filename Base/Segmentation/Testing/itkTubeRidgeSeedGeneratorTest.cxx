@@ -32,7 +32,7 @@ limitations under the License.
 
 #include <itkTubeRidgeSeedGenerator.h>
 
-int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
+int itkTubeRidgeSeedGeneratorTest(int argc, char* argv[] )
 {
   if( argc != 4 )
     {
@@ -77,7 +77,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during read:\n"  << e;
     return EXIT_FAILURE;
@@ -91,7 +91,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
     {
     maskReader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during mask read:\n"  << e;
     return EXIT_FAILURE;
@@ -133,7 +133,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
       {
       writer->Update();
       }
-    catch (itk::ExceptionObject& e)
+    catch(itk::ExceptionObject& e)
       {
       std::cerr << "Exception caught during write:\n"  << e;
       error = true;
@@ -149,7 +149,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv [] )
       {
       writer->Update();
       }
-    catch (itk::ExceptionObject& e)
+    catch(itk::ExceptionObject& e)
       {
       std::cerr << "Exception caught during write:\n"  << e;
       error = true;

@@ -159,7 +159,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
   ProgressReporter progress(this, threadId, threadRegion.GetNumberOfPixels());
 
   // Process the internal face and each of the boundary faces.
-  for (FaceListIterator face = faceList.begin(); face != faceList.end(); ++face)
+  for(FaceListIterator face = faceList.begin(); face != faceList.end(); ++face)
     {
     SmartIterator test(radius, testImage, *face); // Iterate over test image.
     InputIterator valid(validImage, *face);       // Iterate over valid image.
@@ -186,7 +186,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
         RealType minimumAbsDifference = absDifference;
 
         unsigned int neighborhoodSize = test.Size();
-        for (unsigned int i=0; i < neighborhoodSize; ++i)
+        for(unsigned int i=0; i < neighborhoodSize; ++i)
           {
           // Use the RealType for the difference to make sure we get the
           // sign.

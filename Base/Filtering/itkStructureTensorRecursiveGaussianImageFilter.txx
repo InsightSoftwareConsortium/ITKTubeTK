@@ -159,7 +159,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 {
   TOutputImage *out = dynamic_cast< TOutputImage* >(output);
 
-  if (out)
+  if(out)
     {
     out->SetRequestedRegion( out->GetLargestPossibleRegion() );
     }
@@ -274,14 +274,14 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
   while( !itgradient.IsAtEnd() )
     {
     unsigned int count = 0;
-    for ( unsigned int j = 0; j < ImageDimension; ++j)
+    for( unsigned int j = 0; j < ImageDimension; ++j)
       {
-      for (int k = j; k < ImageDimension; ++k)
+      for(int k = j; k < ImageDimension; ++k)
         {
         tmp[count++] = itgradient.Get()[j]*itgradient.Get()[k];
         }
       }
-    for (unsigned int j = 0; j < numberTensorElements; ++j)
+    for(unsigned int j = 0; j < numberTensorElements; ++j)
       {
       ottensor.Value()[j] = tmp[j];
       }

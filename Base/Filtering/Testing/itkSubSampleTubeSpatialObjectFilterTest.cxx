@@ -28,7 +28,7 @@ limitations under the License.
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 
-int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
+int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv[] )
 {
   if( argc < 3 )
     {

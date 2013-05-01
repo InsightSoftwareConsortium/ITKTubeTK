@@ -78,7 +78,7 @@ SheetnessMeasureImageFilter< TPixel >
                                                 output->GetRequestedRegion() );
   oit.GoToBegin();
   it.GoToBegin();
-  while ( !it.IsAtEnd() )
+  while( !it.IsAtEnd() )
     {
     // Get the eigen value
     eigenValue = it.Get();

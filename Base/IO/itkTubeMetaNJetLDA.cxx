@@ -315,7 +315,7 @@ CanRead( const char *_headerName ) const
   bool extensionFound = false;
 
   METAIO_STL::string::size_type stringPos = fname.rfind( ".mnda" );
-  if ( ( stringPos != METAIO_STL::string::npos )
+  if( ( stringPos != METAIO_STL::string::npos )
       && ( stringPos == fname.length() - 5 ) )
     {
     extensionFound = true;
