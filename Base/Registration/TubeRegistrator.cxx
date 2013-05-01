@@ -338,14 +338,19 @@ MetricDeriv(double *dX, double *dY, double *dZ,
 
   cBiasV = 0;
 
-  double dXProj1, dXProj2;
+  double dXProj1;
+  double dXProj2;
 
   std::list<TubeRegistratorPoint *>::iterator j;
   TNT::Vector<double> xTV(3);
   TNT::Vector<double> dXTV(3);
   vnl_vector<double> tV(3);
   vnl_matrix<double> tM(3,3);
-  double tDA, tDB, tDG;
+
+  double tDA;
+  double tDB;
+  double tDG;
+
   //FILE * fp = fopen("test.dat", "m_W");
   for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
     {
@@ -564,13 +569,12 @@ bool TubeRegistrator::Fit( void )
   OptimizerND op(6, func, funcD, &op1D);
   op.searchForMin(false);
 
-  double x, y, z, a, b, g;
-  x = (*mO)(0);
-  y = (*mO)(1);
-  z = (*mO)(2);
-  a = mAlpha;
-  b = mBeta;
-  g = mGamma;
+  double x = (*mO)(0);
+  double y = (*mO)(1);
+  double z = (*mO)(2);
+  double a = mAlpha;
+  double b = mBeta;
+  double g = mGamma;
 
   TNT::Vector<double> m(6);
   m = -100;

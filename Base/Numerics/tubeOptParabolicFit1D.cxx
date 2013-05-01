@@ -77,7 +77,14 @@ bool OptParabolicFit1D::m_Extreme( double *extX, double *extVal )
     minSign = -1;
     }
 
-  double d, v, fv, x, fx, u, fu, w;
+  double d;
+  double v;
+  double fv;
+  double x;
+  double fx;
+  double u;
+  double fu;
+  double w;
 
   d = -1;
   v = ( *extX );

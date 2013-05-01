@@ -52,11 +52,14 @@ namespace tube
  * StartOfAcquisitionRadius.
  */
 template< class TInputImage > class ITK_EXPORT
-  UltrasoundProbeGeometryCalculator: public ProcessObject { public:
+  UltrasoundProbeGeometryCalculator: public ProcessObject
+{
+public:
   /** Standard class typedefs. */
-  typedef UltrasoundProbeGeometryCalculator  Self; typedef ProcessObject
-    Superclass; typedef SmartPointer< Self >               Pointer; typedef
-    SmartPointer< const Self >         ConstPointer;
+  typedef UltrasoundProbeGeometryCalculator  Self;
+  typedef ProcessObject                      Superclass;
+  typedef SmartPointer< Self >               Pointer;
+  typedef SmartPointer< const Self >         ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

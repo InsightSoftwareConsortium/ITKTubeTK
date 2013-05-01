@@ -307,7 +307,8 @@ int RegressionTestImage (const char *testImageFilename,
     typedef itk::ExtractImageFilter<OutputType,DiffOutputType>     ExtractType;
     typedef itk::ImageFileWriter<DiffOutputType>                   WriterType;
     typedef itk::ImageRegion<ITK_TEST_DIMENSION_MAX>               RegionType;
-    OutputType::SizeType size; size.Fill(0);
+    OutputType::SizeType size;
+    size.Fill(0);
 
     RescaleType::Pointer rescale = RescaleType::New();
       rescale->SetOutputMinimum(itk::NumericTraits<unsigned char>::NonpositiveMin());
@@ -318,7 +319,9 @@ int RegressionTestImage (const char *testImageFilename,
 
     //Get the center slice of the image,  In 3D, the first slice
     //is often a black slice with little debugging information.
-    OutputType::IndexType index; index.Fill(0);
+    OutputType::IndexType index;
+    index.Fill(0);
+
     for(unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; i++)
       {
       index[i]=size[i]/2;//NOTE: Integer Divide used to get approximately the center slice

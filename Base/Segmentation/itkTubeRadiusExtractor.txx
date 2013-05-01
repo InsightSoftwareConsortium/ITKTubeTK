@@ -1247,7 +1247,8 @@ RadiusExtractor<TInputImage>
   if( doBNess )
     {
     unsigned int kernBrnMaxI = m_KernNumDirs;
-    double kernBrnMax, kernBrnAvg;
+    double kernBrnMax;
+    double kernBrnAvg;
     double kernBrnAvgCnt = 1;
     for( unsigned int i=0; i<m_KernNumDirs; i++ )
       {
@@ -1572,7 +1573,10 @@ RadiusExtractor<TInputImage>
     ++pntCnt;
     }
 
-  double w, r, m, b;
+  double w;
+  double r;
+  double m;
+  double b;
 
   double r1 = kernArray[1].GetRadius();
   double m1 = kernArray[1].GetMedialness();

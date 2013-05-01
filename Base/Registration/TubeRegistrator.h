@@ -71,7 +71,8 @@ protected:
   TubeNet * cTubeNet;
   std::list<TubeRegistratorPoint *> cRegPoints;
   Image3D<short> * cIm;
-  double cImMin, cImRange;
+  double cImMin;
+  double cImRange;
   int cSampling;
   int cCount;
   double cWeight;

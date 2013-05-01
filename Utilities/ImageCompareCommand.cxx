@@ -417,8 +417,11 @@ int RegressionTestImage( const char *testImageFilename,
     typedef itk::ImageRegion< DimsT >
       RegionType;
 
-    typename OutputType::IndexType index; index.Fill( 0 );
-    typename OutputType::SizeType size; size.Fill( 0 );
+    typename OutputType::IndexType index;
+    index.Fill( 0 );
+
+    typename OutputType::SizeType size;
+    size.Fill( 0 );
 
     typename RescaleType::Pointer rescale = RescaleType::New();
 

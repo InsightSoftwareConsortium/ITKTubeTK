@@ -138,8 +138,7 @@ NJetLDAGenerator< ImageT, LabelmapT >
   typedef itk::RecursiveGaussianImageFilter< LDAImageType, LDAImageType >
     GaussFilterType;
   unsigned int vCount = 0;
-  for( unsigned int njetImageNum=0; njetImageNum<numNJetImages;
-    njetImageNum++ )
+  for( unsigned int njetImageNum=0; njetImageNum<numNJetImages; njetImageNum++ )
     {
     for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
       {

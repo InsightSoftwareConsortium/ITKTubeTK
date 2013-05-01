@@ -81,9 +81,30 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
 {
   unsigned int iter;
 
-  int ok1, ok2;
-  double a, b, d, d1, d2, dv, dw, dx, e=0.0;
-  double fu, fv, fw, fx, olde, u, u1, u2, v, w, x;
+  int ok1;
+  int ok2;
+
+  double a;
+  double b;
+  double d;
+  double d1;
+  double d2;
+  double dv;
+  double dw;
+  double dx;
+  double e = 0.0;
+
+  double fu;
+  double fv;
+  double fw;
+  double fx;
+  double olde;
+  double u;
+  double u1;
+  double u2;
+  double v;
+  double w;
+  double x;
 
   double maxSign = -1;
 

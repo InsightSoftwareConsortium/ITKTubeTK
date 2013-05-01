@@ -1894,8 +1894,7 @@ RidgeExtractor<TInputImage>
   typename std::vector< TubePointType >::iterator pnt;
   VectorType x( ImageDimension );
   double r;
-  for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
-    ++pnt )
+  for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end(); ++pnt )
     {
     if( this->GetDebug() )
       {

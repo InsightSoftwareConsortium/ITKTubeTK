@@ -159,7 +159,8 @@ void CreateEmptyImage(
   typename ImageType::Pointer &outImage,
   typename ImageType::SizeType targetSize)
 {
-  typename ImageType::IndexType start; start.Fill(0);
+  typename ImageType::IndexType start;
+  start.Fill(0);
   typename ImageType::SizeType outImageSize = targetSize;
 
   typename ImageType::RegionType region( start, outImageSize );
