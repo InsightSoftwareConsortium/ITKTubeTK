@@ -117,6 +117,7 @@ protected:
   vtkAssignAttribute* avalAssignAttribute;
   /// Creates with a tube for every point based on the radius.
   vtkTubeFilter*      TubeFilter;
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsTubeDisplayNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsTubeDisplayNode_h)

@@ -66,6 +66,6 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
   outputPoints[numberOfOutputPoints - 1] = inputPoints[numberOfInputPoints - 1];
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSubSampleTubeSpatialObjectFilter_txx)

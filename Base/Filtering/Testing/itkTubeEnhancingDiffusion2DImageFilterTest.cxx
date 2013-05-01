@@ -121,5 +121,4 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv[] )
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
-
 }

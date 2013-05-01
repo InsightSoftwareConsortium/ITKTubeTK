@@ -183,8 +183,8 @@ AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilte
     }
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAcousticImpulseResponseImageFilterSerializer_txx)

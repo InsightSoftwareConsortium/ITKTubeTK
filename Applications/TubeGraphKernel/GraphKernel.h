@@ -66,7 +66,7 @@ public:
   struct nodeInfoType
     {
     int type;
-    };
+    }; // End struct nodeInfoType
 
   /** The graph type */
   typedef boost::adjacency_list< boost::listS,
@@ -151,8 +151,9 @@ protected:
 
   /** In-place counting sort on int vector */
   static void CountingSort(std::vector<int> & vec);
-};
 
+}; // End class GraphKernel
 
-}
-#endif
+} // End namespace tube
+
+#endif // End !defined(__GraphKernel_h)

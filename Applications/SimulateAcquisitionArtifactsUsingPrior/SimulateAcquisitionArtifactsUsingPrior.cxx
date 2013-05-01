@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -55,7 +55,7 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 template< class pixelT, unsigned int dimensionT >
-class MyMIWPFunc:
+class MyMIWPFunc :
 public tube::UserFunc< vnl_vector<int>, double >
 {
 public:
@@ -80,7 +80,7 @@ private:
   ImageEvalType cEval;
   double        cGof;
 
-};
+}; // End class MyMIWPFunc
 
 // Must include CLP before including tubeCLIHleperFunctions
 #include "SimulateAcquisitionArtifactsUsingPriorCLP.h"

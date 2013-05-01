@@ -392,6 +392,6 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
     }
 }
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeMatrixMath_txx)

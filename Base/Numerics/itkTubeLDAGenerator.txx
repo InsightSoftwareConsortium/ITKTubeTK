@@ -975,11 +975,10 @@ LDAGenerator< ImageT, LabelmapT >
     }
   os << indent << "ProgressFraction = " << m_ProgressFraction << std::endl;
   os << indent << "ProgressStart = " << m_ProgressStart << std::endl;
-
 }
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif //LDAGenerator_txx
+#endif // End !defined(__itkTubeLDAGenerator_txx)

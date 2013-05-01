@@ -37,7 +37,7 @@ namespace itk
  * that returns a pointer to the output SpatialObject.
  */
 template< class TOutputSpatialObject >
-class ITK_EXPORT SpatialObjectSource: public ProcessObject
+class ITK_EXPORT SpatialObjectSource : public ProcessObject
 {
 public:
   /** Standard class typedefs. */
@@ -121,12 +121,13 @@ protected:
 private:
   SpatialObjectSource( const Self & ); // purposely not implemented
   void operator=( const Self & );      // purposely not implemented
-};
 
-} // end namespace itk
+}; // End class SpatialObjectSource
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSpatialObjectSource.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSpatialObjectSource_h)

@@ -130,22 +130,22 @@ public:
    * Note: Parameters need to be set before adding any images!
    */
   void SetOutputSpacing( const SpacingType& s )
-  {
+    {
     m_OutputSpacing = s;
     m_OutSpacingSet = true;
-  }
+    }
 
   void SetOutputSize( const SizeType& s )
-  {
+    {
     m_OutputSize = s;
     m_OutSizeSet = true;
-  }
+    }
 
   void SetOutputOrigin( const PointType& o )
-  {
+    {
     m_OutputOrigin = o;
     m_OutOriginSet = true;
-  }
+    }
 
   const SpacingType GetOutputSpacing( void ) const
     { return m_OutputSpacing; }
@@ -271,8 +271,8 @@ private:
 
   int count;
 
-};
-
+}; // End class AtlasSummation
 
 } // End namespace tube
-#endif
+
+#endif // End !defined(__tubeAtlasSummation_h)

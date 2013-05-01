@@ -226,14 +226,15 @@ private:
 
   unsigned int                            m_NumberOfOutlierImagesToRemove;
   unsigned int                            m_TotalNumberOfImages;
-};
+
+}; // End class RobustMeanAndSigmaImageBuilder
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkRobustMeanAndSigmaImageBuilder.txx"
 #endif
 
+} // End namespace tube
 
-} // End of namespace tube
+} // End namespace itk
 
-} // End of itk namespace
-#endif
+#endif // End !defined(__itkRobustMeanAndSigmaImageBuilder_h)

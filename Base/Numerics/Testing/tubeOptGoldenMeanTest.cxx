@@ -32,41 +32,45 @@ limitations under the License.
 #include "tubeOptimizer1D.h"
 #include "tubeUserFunc.h"
 
-class MyOGMFunc:
-  public tube::UserFunc< double, double >
-  {
-  private:
-    double cVal;
-  public:
-    MyOGMFunc( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const double & x )
-      {
-      cVal = vcl_sin(x);
-      std::cout << x << " : " << cVal << std::endl;
-      return cVal;
-      }
-  };
+class MyOGMFunc : public tube::UserFunc< double, double >
+{
+private:
+  double cVal;
 
-class MyOGMFunc2:
-  public tube::UserFunc< double, double >
-  {
-  private:
-    double cVal;
-  public:
-    MyOGMFunc2( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const double & x )
-      {
-      cVal = vcl_cos( x/100 );
-      std::cout << x << " : " << cVal << std::endl;
-      return cVal;
-      }
-  };
+public:
+  MyOGMFunc( void )
+    {
+    cVal = 0;
+    }
+
+  const double & value( const double & x )
+    {
+    cVal = vcl_sin(x);
+    std::cout << x << " : " << cVal << std::endl;
+    return cVal;
+    }
+
+}; // End class MyOGMFunc
+
+class MyOGMFunc2 : public tube::UserFunc< double, double >
+{
+private:
+  double cVal;
+
+public:
+  MyOGMFunc2( void )
+    {
+    cVal = 0;
+    }
+
+  const double & value( const double & x )
+    {
+    cVal = vcl_cos( x/100 );
+    std::cout << x << " : " << cVal << std::endl;
+    return cVal;
+    }
+
+}; // End class MyOGMFunc2
 
 int tubeOptGoldenMeanTest( int argc, char *argv[] )
 {

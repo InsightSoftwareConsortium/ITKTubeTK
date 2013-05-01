@@ -140,10 +140,11 @@ private:
 
   ObjectNameType                    m_ObjectName;
   TransformNameListType             m_transformList;
-};
+
+}; // End class ObjectDocument
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkObjectDocument_h)

@@ -32,39 +32,41 @@ limitations under the License.
 #include "tubeOptimizer1D.h"
 #include "tubeUserFunc.h"
 
-class MyOBFunc:
-  public tube::UserFunc< double, double >
-  {
-  private:
-    double cVal;
-  public:
-    MyOBFunc( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const double & x )
-      {
-      cVal = vcl_sin(x);
-      return cVal;
-      }
-  };
+class MyOBFunc : public tube::UserFunc< double, double >
+{
+private:
+  double cVal;
 
-class MyOBFuncD:
-  public tube::UserFunc< double, double >
-  {
-  private:
-    double cDeriv;
-  public:
-    MyOBFuncD( void )
-      {
-      cDeriv = 0;
-      }
-    const double & value( const double & x )
-      {
-      cDeriv = vcl_cos(x);
-      return cDeriv;
-      }
-  };
+public:
+  MyOBFunc( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const double & x )
+    {
+    cVal = vcl_sin(x);
+    return cVal;
+    }
+
+}; // End class MyOBFunc
+
+class MyOBFuncD : public tube::UserFunc< double, double >
+{
+private:
+  double cDeriv;
+
+public:
+  MyOBFuncD( void )
+    {
+    cDeriv = 0;
+    }
+  const double & value( const double & x )
+    {
+    cDeriv = vcl_cos(x);
+    return cDeriv;
+    }
+
+}; // End class MyOBFuncD
 
 int tubeOptBrentTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
 {

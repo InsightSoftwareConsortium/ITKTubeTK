@@ -28,7 +28,8 @@ limitations under the License.
 #include "itkImageIOBase.h"
 #include "itkImageIOFactory.h"
 
-namespace tube {
+namespace tube
+{
 
 // Description:
 // Get the ComponentType and dimension of the image
@@ -145,7 +146,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
   return EXIT_SUCCESS;
 }
 
-#else // PARSE_ARGS_FLOAT_ONLY
+#else
 
 int ParseArgsAndCallDoIt( std::string inputImage,
                           int argc,
@@ -183,6 +184,6 @@ int ParseArgsAndCallDoIt( std::string inputImage,
 
 #endif
 
-} // namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeCLIHelperFunctions_h)

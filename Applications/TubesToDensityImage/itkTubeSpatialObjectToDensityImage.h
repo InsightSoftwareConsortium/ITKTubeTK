@@ -141,15 +141,15 @@ private:
   /** Max value allowed for inverse intensity filter */
   DensityPixelType                  m_max;
   bool                              m_UseSquareDistance;
-};
+
+}; // End class TubeSpatialObjectToDensityImage
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkTubeSpatialObjectToDensityImage.txx"
+#include "itkTubeSpatialObjectToDensityImage.txx"
 #endif
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of namespace itk
+} // End namespace itk
 
-
-#endif //__TubeSpatialObjectToDensityImage_h
+#endif // End !defined(__TubeSpatialObjectToDensityImage_h)

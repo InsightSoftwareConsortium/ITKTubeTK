@@ -28,7 +28,7 @@ limitations under the License.
 #ifndef __tubeOptBrent1D_h
 #define __tubeOptBrent1D_h
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -65,8 +65,8 @@ protected:
 
   double m_Small;
 
-};
+}; // End class OptBrent1D
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeOptBrent1D_h)

@@ -164,6 +164,7 @@ protected:
 
   vtkCleanPolyData* CleanPolyDataPostSubsampling;
   float SubsamplingRatio;
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsNode_h)

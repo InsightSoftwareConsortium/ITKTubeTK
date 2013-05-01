@@ -33,7 +33,7 @@ namespace itk
  * \sa SubSampleTubeTreeSpatialObjectFilter
  */
 template< typename TTubeSpatialObject >
-class SubSampleTubeSpatialObjectFilter:
+class SubSampleTubeSpatialObjectFilter :
   public SpatialObjectToSpatialObjectFilter< TTubeSpatialObject, TTubeSpatialObject >
 {
 public:
@@ -68,12 +68,13 @@ private:
   void operator=( const Self & ); // purposely not implemented
 
   SizeValueType m_Sampling;
-};
 
-} // end namespace itk
+}; // End class SubSampleTubeSpatialObjectFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSubSampleTubeSpatialObjectFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSubSampleTubeSpatialObjectFilter_h)

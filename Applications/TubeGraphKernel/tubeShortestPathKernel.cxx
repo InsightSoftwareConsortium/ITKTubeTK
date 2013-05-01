@@ -175,4 +175,4 @@ double ShortestPathKernel::Compute( void )
 }
 
 
-} // End of namespace tube
+} // End namespace tube

@@ -178,5 +178,4 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
   return true;
 }
 
-
-} // namespace tube
+} // End namespace tube

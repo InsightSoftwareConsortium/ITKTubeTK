@@ -51,9 +51,11 @@ MetaLDA.h
 MetaForm.h
 */
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 class METAIO_EXPORT MetaNJetLDA
 : public MetaLDA
@@ -165,10 +167,10 @@ protected:
 
   bool  M_Read( void );
 
-};
+}; // End class MetaNJetLDA
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeMetaNJetLDA_h)

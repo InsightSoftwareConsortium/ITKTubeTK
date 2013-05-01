@@ -419,6 +419,6 @@ PrintSelf( void )
     }
 }
 
-} //namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeCropROI_txx)

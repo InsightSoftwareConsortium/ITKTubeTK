@@ -55,7 +55,8 @@ int DoIt( int argc, char * argv[] );
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
 
-namespace itk {
+namespace itk
+{
 
 template< class pixelT, unsigned int dimensionT >
 class ContrastCostFunction
@@ -281,9 +282,9 @@ private:
 
   mutable unsigned int                m_CallsToGetValue;
 
-};
+}; // End class ContrastCostFunction
 
-} //namespace itk
+} // End namespace itk
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )

@@ -186,4 +186,4 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
   return s;
 }
 
-} // end namespace tube
+} // End namespace tube

@@ -84,7 +84,8 @@ private:
 
   SpatialObjectToSpatialObjectFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
-};
+
+}; // End class SpatialObjectToSpatialObjectFilter
 
 } // End namespace tube
 
@@ -94,4 +95,4 @@ private:
 #include "itkSpatialObjectToSpatialObjectFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSpatialObjectToSpatialObjectFilter_h)

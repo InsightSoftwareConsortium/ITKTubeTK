@@ -26,9 +26,11 @@ limitations under the License.
 #include "itkImageToImageFilter.h"
 #include "itkFixedArray.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class OtsuThresholdMaskedImageFilter
  * \brief Threshold an image using the Otsu Threshold
@@ -140,14 +142,14 @@ private:
 
   typename TInputImage::Pointer m_MaskImage;
 
-}; // end of class
+}; // End class OtsuThresholdMaskedImageFilter
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeOtsuThresholdMaskedImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeOtsuThresholdMaskedImageFilter_h)

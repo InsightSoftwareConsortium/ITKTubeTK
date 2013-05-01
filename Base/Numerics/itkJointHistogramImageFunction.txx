@@ -490,6 +490,6 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   return m_Histogram;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkJointHistogramImageFunction_txx)

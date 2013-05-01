@@ -29,11 +29,9 @@ limitations under the License.
 namespace tube
 {
 
-
 class OptValFuncND : public UserFunc<double, double>
 {
 public:
-
   OptValFuncND( OptimizerND * newOpt )
     {
     m_Opt = newOpt;
@@ -47,16 +45,14 @@ public:
     }
 
 private:
-
   OptimizerND * m_Opt;
   double        m_Val;
 
-};
+}; // End class OptValFuncND
 
 class OptDerivFuncND : public UserFunc<double, double>
 {
 public:
-
   OptDerivFuncND( OptimizerND * newOpt )
     {
     m_Opt = newOpt;
@@ -70,11 +66,10 @@ public:
     }
 
 private:
-
   OptimizerND * m_Opt;
   double m_Deriv;
 
-};
+}; // End class OptDerivFuncND
 
 
 OptimizerND::OptimizerND( void )
@@ -443,4 +438,4 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
   return true;
 }
 
-} // namespace tube
+} // End namespace tube

@@ -130,6 +130,6 @@ SpatialObjectSource< TOutputSpatialObject >
   this->GraftOutput( this->MakeNameFromOutputIndex(idx), graft );
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSpatialObjectSource_txx)

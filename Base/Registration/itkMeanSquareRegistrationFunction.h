@@ -30,7 +30,8 @@ limitations under the License.
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkCentralDifferenceImageFunction.h"
 
-namespace itk {
+namespace itk
+{
 
 /** \class MeanSquareRegistrationFunction
  *
@@ -188,7 +189,7 @@ protected:
   struct GlobalDataStruct
     {
     FixedImageNeighborhoodIteratorType   m_FixedImageIterator;
-    };
+    }; // End struct GlobalDataStruct
 
 private:
   MeanSquareRegistrationFunction(const Self&); //purposely not implemented
@@ -215,13 +216,13 @@ private:
   mutable SimpleFastMutexLock     m_EnergyCalculationLock;
 
   MovingImagePixelType            m_BackgroundIntensity;
-};
 
+}; // End class MeanSquareRegistrationFunction
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkMeanSquareRegistrationFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkMeanSquareRegistrationFunction_h)

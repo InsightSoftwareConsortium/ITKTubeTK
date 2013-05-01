@@ -286,13 +286,15 @@ private:
   SizeType                                m_OutputSize;
   SpacingType                             m_OutputSpacing;
   PointType                               m_OutputOrigin;
-};
+
+}; // End class MeanAndSigmaImageBuilder
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkMeanAndSigmaImageBuilder.txx"
+#include "itkMeanAndSigmaImageBuilder.txx"
 #endif
 
-} // End of tube namespace
+} // End namespace tube
 
-} // End of itk namespace
-#endif
+} // End namespace itk
+
+#endif // End !defined(__itkMeanAndSigmaImageBuilder_h)

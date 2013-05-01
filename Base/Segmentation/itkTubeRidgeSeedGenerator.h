@@ -127,14 +127,15 @@ private:
   double                             m_IntensityMax;
 
   RidgeScalesType                    m_Scales;
-};
 
-}
+}; // End class RidgeSeedGenerator
 
-}
+} // End namespace tube
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeRidgeSeedGenerator.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeRidgeSeedGenerator_h)

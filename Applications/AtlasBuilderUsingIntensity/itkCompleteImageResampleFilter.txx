@@ -221,8 +221,8 @@ CompleteImageResampleFilter< TInputImage,
     }
 }
 
-} // End of namespace tube
+} // End namespace tube
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkCompleteImageResampleFilter_txx)

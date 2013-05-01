@@ -206,4 +206,4 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     }
 }
 
-#endif
+#endif // End !defined(__itkTubeSpatialObjectToDensityImage_txx)

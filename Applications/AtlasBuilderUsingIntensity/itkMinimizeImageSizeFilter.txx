@@ -260,8 +260,8 @@ MinimizeImageSizeFilter< TInputImage >
     }
 }
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of itk namespace
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkMinimizeImageSizeFilter_txx)

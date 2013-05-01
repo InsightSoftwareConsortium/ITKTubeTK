@@ -562,8 +562,8 @@ CVTImageFilter< TInputImage, TOutputImage >
             << std::endl;
 }
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeCVTImageFilter_txx)

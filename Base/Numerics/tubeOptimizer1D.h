@@ -28,7 +28,7 @@ limitations under the License.
 #ifndef __tubeOptimizer1D_h
 #define __tubeOptimizer1D_h
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -108,9 +108,9 @@ protected:
   UserFunc< double, double > * m_FuncDeriv;
 
   virtual  bool m_Extreme( double * x, double * xVal );
-};
 
+}; // End class Optimizer1D
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeOptimizer1D_h)

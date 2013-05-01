@@ -111,10 +111,10 @@ InverseIntensityImageFilter<TInputImage>
     }
 
   itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data()  finished");
-} // end GenerateData function
+}
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of namespace itk
+} // End namespace itk
 
-#endif  // end of__itkInverseIntensityImageFilter_txx
+#endif // End !defined(__itkInverseIntensityImageFilter_txx)

@@ -86,6 +86,7 @@ protected:
   // Collection of pointers to display logic objects
   // for spatial objects nodes in the scene.
   vtkCollection *DisplayLogicCollection;
-};
 
-#endif
+}; // End class vtkSlicerSpatialObjectsLogic
+
+#endif // End !defined(__vtkSlicerSpatialObjectsLogic_h)

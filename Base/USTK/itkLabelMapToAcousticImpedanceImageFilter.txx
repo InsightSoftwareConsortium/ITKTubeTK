@@ -44,6 +44,6 @@ LabelMapToAcousticImpedanceImageFilter< TInputImage, TOutputImage, TLookupTable 
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkLabelMapToAcousticImpedanceImageFilter_txx)

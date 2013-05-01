@@ -125,13 +125,12 @@ private:
   double                 m_Ridgeness; // default -1
   double                 m_Medialness; // default -1
 
-};
+}; // End class TubeToTubeTransformFilter
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeToTubeTransformFilter.txx"
 #endif
 
-#endif /* __itkTubeToTubeTransformFilter_h */
+#endif // End !defined(__itkTubeToTubeTransformFilter_h)

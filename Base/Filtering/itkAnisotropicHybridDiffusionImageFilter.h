@@ -159,13 +159,13 @@ private:
   double    m_Sigma;
   double    m_SigmaOuter;
   double    m_Alpha;
-};
 
+}; // End class AnisotropicHybridDiffusionImageFilter
 
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicHybridDiffusionImageFilter.txx"
+#include "itkAnisotropicHybridDiffusionImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicHybridDiffusionImageFilter_h)

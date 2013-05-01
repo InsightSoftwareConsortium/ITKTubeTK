@@ -149,14 +149,14 @@ private:
   IndexType               m_ImageIndexMin;
   IndexType               m_ImageIndexMax;
 
-};
+}; // End class BlurImageFunction
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeBlurImageFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeBlurImageFunction_h)

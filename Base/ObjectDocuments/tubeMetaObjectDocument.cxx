@@ -30,8 +30,8 @@ limitations under the License.
 #include <metaUtils.h>
 #include "tubeMetaObjectDocument.h"
 
-namespace tube {
-
+namespace tube
+{
 
 const std::string MetaObjectDocument::LABEL_NOBJECTS   = "NumberOfObjects";
 const std::string MetaObjectDocument::LABEL_TYPE       = "Type";

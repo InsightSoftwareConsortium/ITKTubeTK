@@ -79,7 +79,7 @@ public:
       const DeformationFieldType * deformationField,
       DeformationComponentImageArrayType & deformationComponentImages );
 
-};
+}; // End class DiffusiveRegistrationFilterUtils
 
 
 /** Struct to simply get the face list and an iterator over the face list
@@ -353,12 +353,13 @@ struct FaceStruct
   std::vector< FaceListType >            faceLists;
   std::vector< FaceListIteratorType >    faceListIts;
   int                                    numberOfTerms;
-};
 
-} // end namespace itk
+}; // End struct FaceStruct
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkDiffusiveRegistrationFilterUtils.txx"
+#include "itkDiffusiveRegistrationFilterUtils.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkDiffusiveRegistrationFilterUtils_h)

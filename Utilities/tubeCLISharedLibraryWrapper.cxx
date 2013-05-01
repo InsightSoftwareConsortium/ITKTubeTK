@@ -24,7 +24,7 @@ limitations under the License.
 // This file is intended to be compiled and linked against a shared
 // library CLP to prevent the need to compile twice.
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 

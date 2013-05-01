@@ -62,8 +62,8 @@ protected:
 
   MatrixType  m_SplineApproximation1DMatrix;
 
-};
+}; // End class SplineApproximation1D
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeSplineApproximation1D_h)

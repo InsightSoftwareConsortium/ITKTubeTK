@@ -21,10 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
-
 
 #include <itkImage.h>
 #include <itkStructureTensorRecursiveGaussianImageFilter.h>
@@ -279,5 +278,4 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv[]  )
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
-
 }

@@ -36,7 +36,7 @@ namespace tube
  * \sa ParameterSerializer
  */
 template< class TAcousticImpulseResponseImageFilter >
-class ITK_EXPORT AcousticImpulseResponseImageFilterSerializer:
+class ITK_EXPORT AcousticImpulseResponseImageFilterSerializer :
   public ImageToImageFilterSerializer< typename TAcousticImpulseResponseImageFilter::Superclass >
 {
 public:
@@ -82,14 +82,15 @@ protected:
 private:
   AcousticImpulseResponseImageFilterSerializer( const Self & );
   void operator=( const Self & ); // purposely not implemented
-};
 
-} // end namespace tube
+}; // End class AcousticImpulseResponseImageFilterSerializer
 
-} // end namespace itk
+} // End namespace tube
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkAcousticImpulseResponseImageFilterSerializer.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAcousticImpulseResponseImageFilterSerializer_h)

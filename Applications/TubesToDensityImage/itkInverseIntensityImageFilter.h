@@ -85,15 +85,14 @@ private:
 
   InputPixelType                 m_InverseMaximumIntensity;
 
-}; // end of class
+}; // End class InverseIntensityImageFilter
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkInverseIntensityImageFilter.txx"
-#endif   // ITK_MANUAL_INSTANTIATION
+#endif
 
-#endif  // _itkInverseIntensityImageFilter_h
+#endif // End !defined(_itkInverseIntensityImageFilter_h)

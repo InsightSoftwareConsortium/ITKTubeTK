@@ -53,7 +53,7 @@ template < class TInputImage,
            class TOutputImage,
            class TNonSingularTransform,
            class TInterpolatorPrecisionType=double >
-class ITK_EXPORT CompleteImageResampleFilter:
+class ITK_EXPORT CompleteImageResampleFilter :
     public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
@@ -193,7 +193,8 @@ private:
                                                    // the point is outside of
                                                    // the image
   SpacingType                 m_OutputSpacing;     // Output image spacing
-};
+
+}; // End class CompleteImageResampleFilter
 
 } // End namespace tube
 
@@ -203,4 +204,4 @@ private:
 #include "itkCompleteImageResampleFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkCompleteImageResampleFilter_h)

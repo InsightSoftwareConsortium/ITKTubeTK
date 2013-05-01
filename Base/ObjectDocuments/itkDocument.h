@@ -106,10 +106,11 @@ private:
 
   DateType      m_DateModified;
   CommentsType  m_Comment;
-};
+
+}; // End class Document
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkDocument_h)

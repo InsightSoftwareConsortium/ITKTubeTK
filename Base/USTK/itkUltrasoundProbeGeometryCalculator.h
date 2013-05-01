@@ -52,7 +52,7 @@ namespace tube
  * StartOfAcquisitionRadius.
  */
 template< class TInputImage > class ITK_EXPORT
-  UltrasoundProbeGeometryCalculator: public ProcessObject
+  UltrasoundProbeGeometryCalculator : public ProcessObject
 {
 public:
   /** Standard class typedefs. */
@@ -110,14 +110,15 @@ private:
 
   unsigned int   m_GeneralBeamDirection;
   InputPixelType m_BackgroundValue;
-};
 
-} // end namespace tube
+}; // End class UltrasoundProbeGeometryCalculator
 
-} // end namespace itk
+} // End namespace tube
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkUltrasoundProbeGeometryCalculator.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkUltrasoundProbeGeometryCalculator_h)

@@ -109,8 +109,9 @@ private:
    * for the graph, see [1]
    */
   std::vector<int> BuildPhi( GraphType &G );
-};
 
+}; // End class WLSubtreeKernel
 
-} // End of namespace tube
-#endif
+} // End namespace tube
+
+#endif // End !defined(__tubeWLSubtreeKernel_h)

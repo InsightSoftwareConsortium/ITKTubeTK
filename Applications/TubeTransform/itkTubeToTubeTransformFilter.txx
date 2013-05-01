@@ -234,4 +234,4 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeToTubeTransformFilter_txx)

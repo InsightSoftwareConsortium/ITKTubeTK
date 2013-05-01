@@ -116,8 +116,9 @@ private:
   /** Prevent copying and assignment */
   OptimizerND(const OptimizerND &);
   OptimizerND& operator=(const OptimizerND &);
-};
 
-} // end namespace tube
+}; // End class OptimizerND
 
-#endif
+} // End namespace tube
+
+#endif // End !defined(__tubeOptimizerND_h)

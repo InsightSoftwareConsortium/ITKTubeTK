@@ -392,6 +392,6 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
 
   itkDebugMacro(<< "TubeSpatialObjectToImageFilter::Update() finished");
 
-} // end update function
+} // End update function
 
-#endif
+#endif // End !defined(__itkTubeSpatialObjectToImageFilter_txx)

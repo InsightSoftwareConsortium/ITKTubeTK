@@ -154,10 +154,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 
   // Setup the first and second order deformation component image derivatives
   // The two TANGENTIAL and two NORMAL components share images.
-  int termOrder[4] = { SMOOTH_TANGENTIAL,
-                       PROP_TANGENTIAL,
-                       SMOOTH_NORMAL,
-                       PROP_NORMAL };
+  int termOrder[4] = { SMOOTH_TANGENTIAL, PROP_TANGENTIAL, SMOOTH_NORMAL, PROP_NORMAL };
   int t = 0;
   ScalarDerivativeImagePointer firstOrder = 0;
   TensorDerivativeImagePointer secondOrder = 0;
@@ -1380,6 +1377,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveSparseRegistrationFilter_txx)

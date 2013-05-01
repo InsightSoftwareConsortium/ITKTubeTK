@@ -110,7 +110,8 @@ private:
   void GetTransformedBoundingBox( OutputImagePointer image, TransformPointer transform, SizeType &, PointType &) const;
 
   InterpolatorImageFunctionPointer m_Interpolator;
-};
+
+}; // End class ObjectDocumentToImageFilter
 
 } // End namespace tube
 
@@ -120,4 +121,4 @@ private:
 #include "itkObjectDocumentToImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkObjectDocumentToImageFilter_h)

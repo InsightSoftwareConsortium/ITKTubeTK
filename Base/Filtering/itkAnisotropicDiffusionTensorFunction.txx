@@ -25,7 +25,8 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusionTensorFunction.h"
 
-namespace itk {
+namespace itk
+{
 
 template< class TImageType >
 AnisotropicDiffusionTensorFunction< TImageType>
@@ -332,6 +333,6 @@ AnisotropicDiffusionTensorFunction<TImageType>
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusionTensorFunction_txx)

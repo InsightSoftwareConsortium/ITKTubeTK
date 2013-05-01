@@ -61,9 +61,11 @@ public:
     return static_cast< OperatorValueType >( 2.0 /
       (1.0 + vcl_exp( -2.0 * radius ) ));
     }
-};
 
-} // end namespace Function
-} // end namespace itk
+}; // End class TubeExponentialResolutionWeightFunction
 
-#endif
+} // End namespace Function
+
+} // End namespace itk
+
+#endif // End !defined(__itkTubeExponentialResolutionWeightFunction_h)

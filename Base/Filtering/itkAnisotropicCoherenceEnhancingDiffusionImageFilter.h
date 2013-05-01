@@ -32,7 +32,8 @@ limitations under the License.
 #include "itkSymmetricEigenAnalysisImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 /** \class AnisotropicCoherenceEnhancingDiffusionImageFilter
  *
  * \brief This class is implementation of Coherence-enhancing diffusion (CED):
@@ -149,13 +150,13 @@ private:
   double     m_Alpha;
   double     m_Sigma;
   double     m_SigmaOuter;
-};
 
+}; // End class AnisotropicCoherenceEnhancingDiffusionImageFilter
 
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx"
+#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h)

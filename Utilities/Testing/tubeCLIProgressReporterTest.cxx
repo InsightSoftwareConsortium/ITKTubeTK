@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -77,5 +77,4 @@ int tubeCLIProgressReporterTest(int argc, char *itkNotUsed(argv)[] )
     }
 
   return EXIT_SUCCESS;
-
 }

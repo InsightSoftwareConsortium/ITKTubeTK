@@ -26,8 +26,11 @@ limitations under the License.
 #include "itkVectorImageToListGenerator.h"
 #include "itkImageRegionConstIterator.h"
 
-namespace itk {
-namespace Statistics {
+namespace itk
+{
+
+namespace Statistics
+{
 
 template < class TImage, class TMaskImage >
 VectorImageToListGenerator< TImage, TMaskImage >
@@ -262,7 +265,8 @@ VectorImageToListGenerator< TImage, TMaskImage >
   return decoratedOutput->Get();
 }
 
-} // end of namespace Statistics
-} // end of namespace itk
+} // End namespace Statistics
 
-#endif
+} // End namespace itk
+
+#endif // End !defined(__itkVectorImageToListGenerator_txx)

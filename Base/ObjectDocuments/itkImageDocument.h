@@ -78,10 +78,10 @@ protected:
 
   ImageDocument( void ) : LABEL_IMAGETYPE("Image") {}
 
-private:
-};
+}; // End class ImageDocument
 
 } // End namespace tube
 
 } // End namespace itk
-#endif
+
+#endif // End !defined(__itkImageDocument_h)

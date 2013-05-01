@@ -752,6 +752,6 @@ ImageToTubeRigidMetric< TFixedImage,
   return ( this->m_Interpolator->IsInsideBuffer( outputPoint ) );
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidMetric_txx)

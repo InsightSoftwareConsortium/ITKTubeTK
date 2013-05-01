@@ -140,14 +140,14 @@ private:
   typename RadiusImage::Pointer     m_RadiusImage;
   typename TangentImage::Pointer    m_TangentImage;
 
-}; // end of class
+}; // End class TubeSpatialObjectToImageFilter
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkTubeSpatialObjectToImageFilter.txx"
-#endif   // ITK_MANUAL_INSTANTIATION
+#include "itkTubeSpatialObjectToImageFilter.txx"
+#endif
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of namespace itk
+} // End namespace itk
 
-#endif  // _itkTubeSpatialObjectToImageFilter_h
+#endif // End !defined(_itkTubeSpatialObjectToImageFilter_h)

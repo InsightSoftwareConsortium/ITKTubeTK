@@ -338,4 +338,4 @@ MeanAndSigmaImageBuilder< TInputImageType,
   this->SetOutputSize( inputSize );
 }
 
-#endif
+#endif // End !defined(__itkMeanAndSigmaImageBuilder_txx)

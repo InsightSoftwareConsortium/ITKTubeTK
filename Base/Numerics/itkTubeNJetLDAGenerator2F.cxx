@@ -20,9 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkTubeNJetLDAGenerator2F_cxx
-#define __itkTubeNJetLDAGenerator2F_cxx
-
 #include "itkTubeNJetLDAGenerator.h"
 #include "itkTubeNJetLDAGenerator2F.h"
 
@@ -49,8 +46,6 @@ NJetLDAGenerator2F
   Superclass::PrintSelf( os, indent );
 }
 
-}
+} // End namespace tube
 
-}
-
-#endif //NJetLDAGenerator2F_cxx
+} // End namespace itk

@@ -316,4 +316,4 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
 }
 
 
-} // namespace tube
+} // End namespace tube

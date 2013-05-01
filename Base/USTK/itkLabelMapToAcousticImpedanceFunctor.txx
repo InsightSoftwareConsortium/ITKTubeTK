@@ -75,7 +75,8 @@ LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
     return !( *this != other );
 }
 
-} // end namespace Functor
-} // end namespace itk
+} // End namespace Functor
 
-#endif
+} // End namespace itk
+
+#endif // End !defined(__itkLabelMapToAcousticImpedanceFunctor_txx)

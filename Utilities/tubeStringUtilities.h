@@ -82,6 +82,6 @@ void StringToVector( const std::string & s, std::vector< T > & vec )
   vec.push_back( tVal );
 }
 
-}
+} // End namespace tube
 
-#endif //end of tubeStringUtilities.h
+#endif // End !defined(__tubeStringUtilities_h)

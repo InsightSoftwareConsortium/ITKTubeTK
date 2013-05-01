@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -129,5 +129,4 @@ int itkVotingResampleImageFunctionTest(int argc, char* argv[] )
   imWriter->Update();
 
   return EXIT_SUCCESS;
-
 }

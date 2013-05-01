@@ -258,13 +258,12 @@ private:
   ImageConstPointer         m_Image;
   SpatialObjectConstPointer m_SpatialObjectMask;
 
-};  // class ImageRegionMomentsCalculator
+}; // End class ImageRegionMomentsCalculator
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkImageRegionMomentsCalculator.txx"
 #endif
 
-#endif /* __itkImageRegionMomentsCalculator_h */
+#endif // End !defined(__itkImageRegionMomentsCalculator_h)

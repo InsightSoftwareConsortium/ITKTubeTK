@@ -48,7 +48,7 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage, class TOperatorValue=float >
-class ITK_EXPORT GradientBasedAngleOfIncidenceImageFilter:
+class ITK_EXPORT GradientBasedAngleOfIncidenceImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
@@ -146,12 +146,13 @@ private:
   ProbeType         m_UltrasoundProbeType;
   OriginType        m_UltrasoundProbeOrigin;
   BeamDirectionType m_UltrasoundProbeBeamDirection;
-};
 
-} // end namespace itk
+}; // End class GradientBasedAngleOfIncidenceImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkGradientBasedAngleOfIncidenceImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkGradientBasedAngleOfIncidenceImageFilter_h)

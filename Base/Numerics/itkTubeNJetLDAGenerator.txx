@@ -689,8 +689,8 @@ NJetLDAGenerator< ImageT, LabelmapT >
     << std::endl;
 }
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif //NJetLDAGenerator_txx
+#endif // End !defined(__itkTubeNJetLDAGenerator_txx)

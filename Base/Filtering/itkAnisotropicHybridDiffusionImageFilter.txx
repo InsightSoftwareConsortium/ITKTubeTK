@@ -36,7 +36,8 @@ limitations under the License.
 #include "itkVector.h"
 #include "itkFixedArray.h"
 
-namespace itk {
+namespace itk
+{
 
 /**
  * Constructor
@@ -391,6 +392,6 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   os << indent << "Sigma outer " << m_SigmaOuter << std::endl;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicHybridDiffusionImageFilter_txx)

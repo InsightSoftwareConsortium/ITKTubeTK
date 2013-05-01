@@ -14,10 +14,9 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
-
 
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 #include "itkImageFileReader.h"
@@ -151,5 +150,4 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
     }
 
   return EXIT_SUCCESS;
-
 }

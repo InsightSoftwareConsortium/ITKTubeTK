@@ -34,7 +34,7 @@ namespace tube
  * filter and reporting these events to std::cout. Formats reports
  * with xml.
  */
-class CLIFilterWatcher: public itk::SimpleFilterWatcher
+class CLIFilterWatcher : public itk::SimpleFilterWatcher
 {
 public:
   CLIFilterWatcher(itk::ProcessObject* o,
@@ -208,8 +208,8 @@ protected:
   bool   m_StartCalled;
   bool   m_UseStdCout;
 
-};
+}; // End class CLIFilterWatcher
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__tubeCLIFilterWatcher_h)

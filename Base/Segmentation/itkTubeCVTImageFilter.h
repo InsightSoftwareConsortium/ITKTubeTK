@@ -158,15 +158,14 @@ private:
   unsigned int          m_NumberOfIterationsPerBatch;
   unsigned int          m_NumberOfSamplesPerBatch;
 
-}; // end of class
+}; // End class CVTImageFilter
 
-}// end namespace tube
+} // End namespace tube
 
-}// end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeCVTImageFilter.txx"
-#endif   // ITK_MANUAL_INSTANTIATION
+#endif
 
-#endif  // _itkCVTImageFilter_h
+#endif // End !defined(_itkCVTImageFilter_h)

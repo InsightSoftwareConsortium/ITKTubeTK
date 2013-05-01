@@ -408,8 +408,8 @@ RidgeSeedGenerator< ImageT, LabelmapT >
   os << indent << "Scales.size() = " << m_Scales.size() << std::endl;
 }
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif //RidgeSeedGenerator_txx
+#endif // End !defined(__itkTubeRidgeSeedGenerator_txx)

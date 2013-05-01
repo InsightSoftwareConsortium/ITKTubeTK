@@ -29,9 +29,11 @@ limitations under the License.
 
 #include "itksys/hash_map.hxx"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class LabelOverlapMeasuresImageFilter
  * \brief Computes overlap measures between the set same set of labels of
@@ -76,7 +78,7 @@ public:
    * \brief Metrics stored per label */
   class LabelSetMeasures
     {
-    public:
+  public:
     // default constructor
     LabelSetMeasures( void )
       {
@@ -106,7 +108,8 @@ public:
     unsigned long m_Intersection;
     unsigned long m_SourceComplement;
     unsigned long m_TargetComplement;
-    };
+
+    }; // End class LabelSetMeasures
 
   /** Type of the map used to store data per label */
   typedef itksys::hash_map<LabelType, LabelSetMeasures> MapType;
@@ -201,14 +204,14 @@ private:
 
   SimpleFastMutexLock                           m_Mutex;
 
-}; // end of class
+}; // End class LabelOverlapMeasuresImageFilter
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeLabelOverlapMeasuresImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeLabelOverlapMeasuresImageFilter_h)

@@ -38,59 +38,63 @@ limitations under the License.
 #include "tubeSplineApproximation1D.h"
 #include "tubeUserFunc.h"
 
-class MySANDFunc:
-  public tube::UserFunc< vnl_vector<int>, double >
-  {
-  private:
-    double cVal;
-  public:
-    MySANDFunc( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const vnl_vector<int> & x )
-      {
-      cVal = vcl_sin((double)x[0]/2);
-      cVal += vcl_cos((double)x[1]/2);
-      return cVal;
-      }
-  };
+class MySANDFunc : public tube::UserFunc< vnl_vector<int>, double >
+{
+private:
+  double cVal;
 
-class MySANDFuncV:
-  public tube::UserFunc< vnl_vector<double>, double >
-  {
-  private:
-    double cVal;
-  public:
-    MySANDFuncV( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const vnl_vector<double> & x )
-      {
-      cVal = vcl_sin((double)x[0]/2);
-      cVal += vcl_cos((double)x[1]/2);
-      return cVal;
-      }
-  };
-class MySANDFuncD:
-  public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
-  {
-  private:
-    vnl_vector<double> cDeriv;
-  public:
-    MySANDFuncD( void )
-      {
-      cDeriv.set_size(2);
-      cDeriv.fill( 0 );
-      }
-    const vnl_vector<double> & value( const vnl_vector<double> & x )
-      {
-      cDeriv[0] = vcl_cos((double)x[0]/2);
-      cDeriv[1] = -vcl_sin((double)x[1]/2);
-      return cDeriv;
-      }
-  };
+public:
+  MySANDFunc( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const vnl_vector<int> & x )
+    {
+    cVal = vcl_sin((double)x[0]/2);
+    cVal += vcl_cos((double)x[1]/2);
+    return cVal;
+    }
+
+}; // End class MySANDFunc
+
+class MySANDFuncV : public tube::UserFunc< vnl_vector<double>, double >
+{
+private:
+  double cVal;
+
+public:
+  MySANDFuncV( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const vnl_vector<double> & x )
+    {
+    cVal = vcl_sin((double)x[0]/2);
+    cVal += vcl_cos((double)x[1]/2);
+    return cVal;
+    }
+
+}; // End class MySANDFuncV
+
+class MySANDFuncD : public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
+{
+private:
+  vnl_vector<double> cDeriv;
+
+public:
+  MySANDFuncD( void )
+    {
+    cDeriv.set_size(2);
+    cDeriv.fill( 0 );
+    }
+  const vnl_vector<double> & value( const vnl_vector<double> & x )
+    {
+    cDeriv[0] = vcl_cos((double)x[0]/2);
+    cDeriv[1] = -vcl_sin((double)x[1]/2);
+    return cDeriv;
+    }
+
+}; // End class MySANDFuncD
 
 int tubeSplineNDTest( int argc, char *argv[] )
 {

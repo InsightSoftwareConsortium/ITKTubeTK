@@ -41,7 +41,7 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage >
-class ITK_EXPORT AngleOfIncidenceImageFilter:
+class ITK_EXPORT AngleOfIncidenceImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
@@ -136,11 +136,12 @@ private:
   // Primary eigen vector image
   typename EigenVectorImageType::Pointer m_PrimaryEigenVectorImage;
 
-};
-} // end namespace itk
+}; // End class AngleOfIncidenceImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkAngleOfIncidenceImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAngleOfIncidenceImageFilter_h)

@@ -240,6 +240,6 @@ DiffusiveRegistrationFilterUtils
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkDiffusiveRegistrationFilterUtils_txx)

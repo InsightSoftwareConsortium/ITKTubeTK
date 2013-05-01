@@ -46,9 +46,11 @@ limitations under the License.
 *    MetaUtils.h
 *    MetaForm.h*/
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 class METAIO_EXPORT MetaLDA
 : public MetaForm
@@ -139,10 +141,10 @@ protected:
 
   bool  M_Read( void );
 
-};
+}; // End class MetaLDA
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeMetaLDA_h)

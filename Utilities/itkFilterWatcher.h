@@ -156,8 +156,8 @@ private:
 
   FilterWatcher( void ); // Purposely not implemented
 
-};
+}; // End class FilterWatcher
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkFilterWatcher_h)

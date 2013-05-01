@@ -38,7 +38,8 @@ namespace itk
 // The default operation is to order eigen values in ascending order.
 // You may also use OrderEigenValuesBy() to order eigen values by
 // magnitude as is common with use of tensors in vessel extraction.
-namespace Functor {
+namespace Functor
+{
 
 template< typename TInput, typename TOutput, typename TMatrix >
 class SymmetricEigenVectorAnalysisFunction
@@ -79,7 +80,7 @@ public:
     OrderByValue=1,
     OrderByMagnitude,
     DoNotOrder
-  }EigenValueOrderType;
+  } EigenValueOrderType;
 
   /** Order eigen values. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
   void OrderEigenValuesBy( EigenValueOrderType order )
@@ -96,9 +97,10 @@ public:
 
 private:
   CalculatorType m_Calculator;
-};
 
-}  // end namespace functor
+}; // End class SymmetricEigenVectorAnalysisFunction
+
+} // End namespace functor
 
 
 /** \class SymmetricEigenVectorAnalysisImageFilter
@@ -166,8 +168,8 @@ private:
   SymmetricEigenVectorAnalysisImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
-};
+}; // End class SymmetricEigenVectorAnalysisImageFilter
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSymmetricEigenVectorAnalysisImageFilter_h)

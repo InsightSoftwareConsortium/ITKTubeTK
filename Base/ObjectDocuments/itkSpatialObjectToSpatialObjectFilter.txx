@@ -112,4 +112,4 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkSpatialObjectToSpatialObjectFilter_txx)

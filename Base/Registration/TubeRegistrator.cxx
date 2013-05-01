@@ -505,7 +505,8 @@ public:
     }
 protected:
   TubeRegistrator * cRegOp;
-};
+
+}; // End class mVMetricCost
 
 class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double> *>
 {
@@ -555,7 +556,8 @@ public:
     cD(6) /= rotDUnit;
     return &cD;
     }
-};
+
+}; // End class mVMetricDeriv
 
 bool TubeRegistrator::Fit( void )
 {

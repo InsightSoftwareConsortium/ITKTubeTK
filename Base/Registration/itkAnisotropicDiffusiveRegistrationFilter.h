@@ -322,7 +322,7 @@ private:
     ThreadWeightImageRegionType WeightImageLargestPossibleRegion;
     bool ComputeNormals;
     bool ComputeWeights;
-    };
+    }; // End struct AnisotropicDiffusiveRegistrationFilterThreadStruct
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to
@@ -352,12 +352,12 @@ private:
   WeightType                          m_Lambda;
   WeightType                          m_Gamma;
 
-};
+}; // End class AnisotropicDiffusiveRegistrationFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusiveRegistrationFilter.txx"
+#include "itkAnisotropicDiffusiveRegistrationFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveRegistrationFilter_h)

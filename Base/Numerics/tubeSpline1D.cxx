@@ -31,7 +31,6 @@ namespace tube
 class Spline1DValFunc : public UserFunc<double, double>
 {
 public:
-
   Spline1DValFunc(Spline1D * newSpline)
     {
     m_Spline = newSpline;
@@ -45,16 +44,14 @@ public:
     }
 
 protected:
-
   Spline1D * m_Spline;
   double     m_Val;
 
-};
+}; // End class Spline1DValFunc
 
 class Spline1DDerivFunc : public UserFunc<double, double>
 {
 public:
-
   Spline1DDerivFunc(Spline1D * newSpline)
     {
     m_Spline = newSpline;
@@ -68,11 +65,10 @@ public:
     }
 
 protected:
-
   Spline1D * m_Spline;
   double m_Deriv;
 
-};
+}; // End class Spline1DDerivFunc
 
 //
 //
@@ -424,4 +420,4 @@ PrintSelf( std::ostream & os ) const
     }
 }
 
-} // namespace
+} // End namespace tube

@@ -394,8 +394,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     << m_GeneralBeamDirection << std::endl;
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkUltrasoundProbeGeometryCalculator_txx)

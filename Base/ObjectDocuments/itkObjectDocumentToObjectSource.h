@@ -156,7 +156,8 @@ private:
   ObjectDocumentToObjectSource(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
   ConstDocumentPointer                              m_Input;
-};
+
+}; // End class ObjectDocumentToObjectSource
 
 } // End namespace tube
 
@@ -166,4 +167,4 @@ private:
 #include "itkObjectDocumentToObjectSource.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkObjectDocumentToObjectSource_h)

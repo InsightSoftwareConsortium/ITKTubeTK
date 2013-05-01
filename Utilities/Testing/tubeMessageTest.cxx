@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -47,5 +47,4 @@ int tubeMessageTest(int argc, char* argv[] )
   tube::ErrorMessage( "Error2" );
 
   return EXIT_SUCCESS;
-
 }

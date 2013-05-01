@@ -104,4 +104,4 @@ static const unsigned char image_TubeTKLogo[] =
   "uFLNfILmnkBcVE6cpCEbVhEuFelRRXahovMqqjNU2dnZ1+lvCt37DYkH5aHG9K45hOkJAy"
   "b+Bgtjnij2/wEaaANC";
 
-#endif
+#endif // End !defined(__TubeTKLogo_h)

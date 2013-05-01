@@ -254,6 +254,6 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
   m_MeanDifference = m_TotalDifference / numberOfPixels;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkDifferenceImageFilter2_txx)

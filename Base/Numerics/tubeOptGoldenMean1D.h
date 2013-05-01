@@ -50,8 +50,8 @@ protected:
   bool m_Extreme(double * x, double * xVal);
 
 
-};
+}; // End class OptGoldenMean1D
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeOptGoldenMean1D_h)

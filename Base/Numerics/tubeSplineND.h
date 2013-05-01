@@ -276,8 +276,9 @@ private:
   /** Prevent copying and assignment */
   SplineND(const SplineND &);
   SplineND& operator=(const SplineND &);
-};
 
-} //end namespace tube
+}; // End class SplineND
 
-#endif
+} // End namespace tube
+
+#endif // End !defined(__tubeSplineND_h)

@@ -91,6 +91,7 @@ protected:
 
   /// Write data from a  referenced node
   virtual int WriteDataInternal(vtkMRMLNode *refNode);
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsStorageNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsStorageNode_h)

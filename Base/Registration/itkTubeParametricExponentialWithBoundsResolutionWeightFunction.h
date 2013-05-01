@@ -111,9 +111,11 @@ public:
 private:
   OperatorValueType m_LowerBound;
   OperatorValueType m_UpperBound;
-};
 
-} // end namespace Function
-} // end namespace itk
+}; // End class TubeParametricExponentialWithBoundsResolutionWeightFunction
 
-#endif
+} // End namespace Function
+
+} // End namespace itk
+
+#endif // End !defined(__itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h)

@@ -29,11 +29,9 @@ limitations under the License.
 namespace tube
 {
 
-class SplineNDValFunc :
-public UserFunc< vnl_vector<double>, double >
+class SplineNDValFunc : public UserFunc< vnl_vector<double>, double >
 {
 public:
-
   SplineNDValFunc( SplineND * newSpline )
     {
     m_Spline = newSpline;
@@ -47,17 +45,14 @@ public:
     }
 
 private:
-
   SplineND * m_Spline;
   double     m_Val;
 
-};
+}; // End class SplineNDValFunc
 
-class SplineNDDerivFunc :
-public UserFunc< vnl_vector<double>, vnl_vector<double> >
+class SplineNDDerivFunc : public UserFunc< vnl_vector<double>, vnl_vector<double> >
 {
 public:
-
   SplineNDDerivFunc( SplineND * newSpline )
     {
     m_Spline = newSpline;
@@ -71,11 +66,10 @@ public:
     }
 
 private:
-
   SplineND * m_Spline;
   vnl_vector<double> m_Dx;
 
-};
+}; // End class SplineNDDerivFunc
 
 
 SplineND::SplineND( void )
@@ -1004,4 +998,4 @@ bool SplineND::extremeConjGrad( VectorType & extX, double * extVal )
   return m_OptND->extreme( extX, extVal, m_NDims, eVects );
 }
 
-} // namespace
+} // End namespace tube

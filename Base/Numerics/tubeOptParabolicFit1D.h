@@ -54,8 +54,8 @@ protected:
   bool m_Extreme( double * x, double * xVal );
 
 
-};
+}; // End class OptParabolicFit1D
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeOptParabolicFit1D_h)
