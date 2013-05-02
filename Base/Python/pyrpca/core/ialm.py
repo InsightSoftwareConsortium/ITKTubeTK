@@ -1,16 +1,17 @@
 """ialm.py
 
-Implements the inexact Lagrangian multiplier approach (IALM) to solve the
-matrix deconvolution problem
+Implements the inexact Lagrangian multiplier approach (IALM) to solve
+the matrix deconvolution problem
 
 \min_{P,C} ||P||_* + \gamma ||C||_1, s.t. ||M-P-C||_{fro} < eps
 
-that was proposed as an approach to robust PCA by Candes et al. in
+that was proposed as an approach to solve Candes et al.'s robust
+PCA formulation, cf.,
 
 [1] Candes et al., "Robust Principal Component Analysis?",
     In: Journal of the ACM, Vol. 58, No. 3, 2011
 
-The IALM algorithm was proposed in
+Reference for the IALM algorithm:
 
 [2] Lin et al., "The Augmented Lagrangian Multiplier Method
     for Exact Recovery of Corrupted Low-Rank Matrices", 2011
@@ -33,7 +34,7 @@ import warnings
 
 
 def main(argv=None):
-    """ Functionality to test module from commane line.
+    """ Functionality to test the module from the commane line.
     """
 
     if argv is None:
@@ -53,9 +54,12 @@ def main(argv=None):
 
     m, n = X.shape
     print "data (%d x %d) loaded in %.2g [sec]" % (m, n, (t1-t0))
-    low_rank, sparse, n_iter = recover(X,options.gam)
+    low_rank, sparse, n_iter = recover(X, options.gam)
 
-    np.savetxt(options.sav, np.round(low_rank), delimiter=' ')
+    if not options.sav is None:
+        # save rounded low-rank result - usefull for images
+        np.savetxt(options.sav, np.round(low_rank), delimiter=' ')
+
 
 def recover(D, gamma=None):
     """Recover low-rank and sparse part.
@@ -165,6 +169,7 @@ def recover(D, gamma=None):
             converged = True
 
     return (A_hat, E_hat, k)
+
 
 if __name__ == "__main__":
     main()

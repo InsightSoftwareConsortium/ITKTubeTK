@@ -1,8 +1,7 @@
 pyrpca
 ======
 
-This module currently implements two recent proposals for *robust PCA*
-(with different objectives):
+This module implements two recent proposals for *robust PCA*:
 ```bibtex
 @article{Candes11a,
     author = {E.J.~Cand\'es and X.~Li and Y.~Ma and J.~Wright},
@@ -25,26 +24,42 @@ and
     year = 2012}
 ```
 Please cite these articles in case you use this code. Note that the original
-authors of those articles also provide MATLAB code.
+authors of those articles also provide MATLAB code. Note that the objectives
+of the two works are different. Candes et al.'s approach assumes randomly
+distributed (outliers) throughout the dataset, while Xu et al.'s approach
+assumes that full observations (i.e., column vectors of the data matrix) and
+not just single entries are corrupted.
+
+Requirements
+------------
+
+* **numnpy**
+* [**SimpleITK**](http://www.simpleitk.org) [Optional]
 
 Problem Statement(s)
 --------------------
 
-tbd.
+See references (above) for the exact problem formulations of Candes
+et al. and Xu et al.
 
 Example
 -------
 An illustrative example for Candes et al.'s RPCA approach is to use a
-[checkerboard image](https://github.com/rkwitt/pyrpca/blob/master/examples/checkerboard.png) (which is inherently
-low-rank), corrupted with random noise and try to recover the low-rank part (i.e. the checkerboard) as well as the
-sparsity pattern (i.e., the noise).
+checkerboard image (provided under the `examples` directory) which is,
+by definition, low-rank and corrupt that image with randomly distributed
+outliers. The task is then to recover the low-rank part and thus obtain
+a *clean* version of the checkerboard image (as well as the sparsity
+pattern).
 
-The `examples` directory contains an example (`ex1.py`) that demonstrates exactly this scenario.
-**Note:** The example requires [SimpleITK](http://www.simpleitk.org)'s python wrapping for image
-loading and image writing (It should be easy to replace these parts with your favorite image handling
-library, though). Run the code with
-```bash
-python ex1.py checkerboard.png 0.3 /tmp/outlierImage.png /tmp/lowRank.png
+The `examples` directory contains an example (`ex1.py`) that demonstrates
+exactly this scenario.  **Note:** The example requires
+[SimpleITK](http://www.simpleitk.org)'s python wrapping for image loading and
+image writing (it should be easy to replace these parts with your favorite
+image handling library, though).
+
+Run the code with
+```
+bash python ex1.py checkerboard.png 0.3 /tmp/outlierImage.png /tmp/lowRank.png
 ```
 Two images will be written: `/tmp/outlierImage.png` (i.e., the image *with*
 outliers) and `/tmp/lowRank.png` (i.e., the *low-rank* recovered part).

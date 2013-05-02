@@ -1,14 +1,12 @@
 """ealm.py
 
-Implements the exact Lagrangian multiplier approach (EALM) to solve the matrix
-deconvolution problem
+Implements the exact Lagrangian multiplier approach (EALM) to solve
+Candes et al.'s approach to robust PCA, i.e.,
 
 min_{P,C} ||P||_* + gamma ||C||_1, s.t. ||M-P-C||_{fro} < eps
 
-that was proposed as an approach to robust PCA by Candes et al. in
-
-[1] Candes et al., "Robust Principal Component Analysis?", In: Journal of the
-    ACM, Vol. 58, No. 3, 2011
+[1] Candes et al., "Robust Principal Component Analysis?", In:
+    Journal of the ACM, Vol. 58, No. 3, 2011
 
 The EALM algorithm was originally proposed in
 
@@ -34,7 +32,7 @@ import warnings
 
 
 def main(argv=None):
-    """ Functionality to test module from commane line.
+    """ Functionality to test the module from the commane line.
     """
 
     if argv is None:
@@ -62,7 +60,7 @@ def main(argv=None):
 def recover(D, gamma=None):
     """Recover low-rank and sparse part, using Alg. 4 of [2].
 
-    Note: gamma is lambda in the formulation of Alg. 4.
+    Note: gamma is lambda in Alg. 4.
 
     Parameters
     ---------
@@ -180,4 +178,4 @@ def recover(D, gamma=None):
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
