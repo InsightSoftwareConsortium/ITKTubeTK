@@ -34,9 +34,9 @@
  *  registration/metric testing process.
  */
 
-int itkSyntheticTubeImageGenerationsTest(int argc, char* argv [] )
+int itkSyntheticTubeImageGenerationsTest(int argc, char* argv[] )
 {
-  if ( argc < 6 )
+  if( argc < 6 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
@@ -82,10 +82,10 @@ int itkSyntheticTubeImageGenerationsTest(int argc, char* argv [] )
   std::cout << "Start Filling Images (Square Tube)..." << std::endl;
   Image3DIteratorType fixedIt( fixedImage, fixedImage->GetBufferedRegion() );
   int pixelIndex = 1;
-  for ( fixedIt.GoToBegin(); !fixedIt.IsAtEnd(); ++fixedIt, ++pixelIndex )
+  for( fixedIt.GoToBegin(); !fixedIt.IsAtEnd(); ++fixedIt, ++pixelIndex )
     {
     Image3DType::IndexType index = fixedIt.GetIndex();
-    if ((index[0]>=15)&&(index[0]<=25)&&(index[1]>=15)&&(index[1]<=25))
+    if((index[0]>=15)&&(index[0]<=25)&&(index[1]>=15)&&(index[1]<=25))
       {
         fixedIt.Set(255 - 20 * (pixelIndex % 5)); // Brighter center
       }
@@ -97,7 +97,7 @@ int itkSyntheticTubeImageGenerationsTest(int argc, char* argv [] )
   typedef itk::RecursiveGaussianImageFilter<Image3DType, Image3DType>
     GaussianBlurFilterType;
   GaussianBlurFilterType::Pointer blurFilters[3];
-  for (int i = 0; i < 3; i++)
+  for(int i = 0; i < 3; i++)
     {
     blurFilters[i] = GaussianBlurFilterType::New();
     blurFilters[i]->SetSigma(3.0);
@@ -154,7 +154,7 @@ int itkSyntheticTubeImageGenerationsTest(int argc, char* argv [] )
   TubePointType point;
   point.SetRadius( 2.0 );
 
-  for (int i = -550; i < 550; ++i)
+  for(int i = -550; i < 550; ++i)
     {
     point.SetPosition( 15, 15, i / 10.);
     tube->GetPoints().push_back(point);

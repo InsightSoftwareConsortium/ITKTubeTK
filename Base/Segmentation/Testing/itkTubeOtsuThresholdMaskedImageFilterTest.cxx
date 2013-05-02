@@ -33,7 +33,7 @@ limitations under the License.
 
 #include <itkTubeOtsuThresholdMaskedImageFilter.h>
 
-int itkTubeOtsuThresholdMaskedImageFilterTest(int argc, char* argv [] )
+int itkTubeOtsuThresholdMaskedImageFilterTest(int argc, char* argv[] )
 {
   if( argc != 4 )
     {
@@ -70,7 +70,7 @@ int itkTubeOtsuThresholdMaskedImageFilterTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -92,7 +92,7 @@ int itkTubeOtsuThresholdMaskedImageFilterTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;
@@ -115,7 +115,7 @@ int itkTubeOtsuThresholdMaskedImageFilterTest(int argc, char* argv [] )
     {
     writer2->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

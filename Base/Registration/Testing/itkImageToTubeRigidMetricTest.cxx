@@ -39,9 +39,9 @@ limitations under the License.
  *  the reference for the metric.
  */
 
-int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
+int itkImageToTubeRigidMetricTest(int argc, char* argv[] )
 {
-  if ( argc < 4 )
+  if( argc < 4 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
@@ -128,7 +128,7 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
     {
     metric->Initialize();
     }
-  catch ( itk::ExceptionObject &excp )
+  catch( itk::ExceptionObject &excp )
     {
     std::cerr << "Exception caught while initializing metric." << std::endl;
     std::cerr << excp << std::endl;
@@ -137,7 +137,7 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv [] )
 
   const double epsilonReg = 0.05; // Delta threshold on the measure checking.
   MetricType::MeasureType value = metric->GetValue( parameters );
-  if (value < ( atof(argv[3]) - epsilonReg ) ||
+  if(value < ( atof(argv[3]) - epsilonReg ) ||
       value > ( atof(argv[3]) + epsilonReg ) )
     {
     std::cerr << "Distance value different than expected: "

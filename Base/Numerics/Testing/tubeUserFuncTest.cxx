@@ -31,7 +31,7 @@ limitations under the License.
 
 namespace tube {
 
-/*! Derive this class to pass functions to Spline and Optimization Classes
+/** Derive this class to pass functions to Spline and Optimization Classes
  * \author Stephen R. Aylward
  * \date 11/22/99
  */

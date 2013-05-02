@@ -334,7 +334,7 @@ int RegressionTestImage( const char *testImageFilename,
     {
     baselineReader->UpdateLargestPossibleRegion();
     }
-  catch ( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception detected while reading "
       << baselineImageFilename << " : "  << e;
@@ -348,7 +348,7 @@ int RegressionTestImage( const char *testImageFilename,
     {
     testReader->UpdateLargestPossibleRegion();
     }
-  catch ( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception detected while reading " << testImageFilename
       << " : "  << e << std::endl;
@@ -362,7 +362,7 @@ int RegressionTestImage( const char *testImageFilename,
   typename ImageType::SizeType testSize;
   testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-  if ( baselineSize != testSize )
+  if( baselineSize != testSize )
     {
     std::cerr <<
       "The size of the Baseline image and Test image do not match!"
@@ -406,7 +406,7 @@ int RegressionTestImage( const char *testImageFilename,
     writer->Update();
     }
 
-  if ( reportErrors )
+  if( reportErrors )
     {
     typedef itk::RescaleIntensityImageFilter< ImageType, OutputType >
       RescaleType;
@@ -432,7 +432,7 @@ int RegressionTestImage( const char *testImageFilename,
     region.SetIndex( index );
 
     size = rescale->GetOutput()->GetLargestPossibleRegion().GetSize();
-    for ( unsigned int i = 2; i < DimsT; i++ )
+    for( unsigned int i = 2; i < DimsT; i++ )
       {
       size[i] = 0;
       }
@@ -472,7 +472,7 @@ int RegressionTestImage( const char *testImageFilename,
           << std::endl;
         std::cerr << e.what() << "\n";
         }
-      catch ( ... )
+      catch( ... )
         {
         std::cerr << "Error during rescale of " << diffName.str()
           << std::endl;
@@ -488,7 +488,7 @@ int RegressionTestImage( const char *testImageFilename,
           << std::endl;
         std::cerr << e.what() << "\n";
         }
-      catch ( ... )
+      catch( ... )
         {
         std::cerr << "Error during write of " << diffName.str()
           << std::endl;
@@ -512,7 +512,7 @@ int RegressionTestImage( const char *testImageFilename,
         << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch ( ... )
+    catch( ... )
       {
       std::cerr << "Error during rescale of " << baseName.str()
         << std::endl;
@@ -527,7 +527,7 @@ int RegressionTestImage( const char *testImageFilename,
       std::cerr << "Error during write of " << baseName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch ( ... )
+    catch( ... )
       {
       std::cerr << "Error during write of " << baseName.str() << std::endl;
       }
@@ -550,7 +550,7 @@ int RegressionTestImage( const char *testImageFilename,
         << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch ( ... )
+    catch( ... )
       {
       std::cerr << "Error during rescale of " << testName.str()
         << std::endl;
@@ -565,7 +565,7 @@ int RegressionTestImage( const char *testImageFilename,
       std::cerr << "Error during write of " << testName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch ( ... )
+    catch( ... )
       {
       std::cerr << "Error during write of " << testName.str() << std::endl;
       }

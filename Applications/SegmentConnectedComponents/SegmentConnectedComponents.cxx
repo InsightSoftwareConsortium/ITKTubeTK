@@ -206,7 +206,7 @@ int DoIt( int argc, char * argv[] )
       unsigned int c = iter.Get();
       if( c > 0 && c < numObjects )
         {
-        if( ! cSeeded[c] )
+        if( !cSeeded[c] )
           {
           if( seedIter.Get() != 0 )
             {

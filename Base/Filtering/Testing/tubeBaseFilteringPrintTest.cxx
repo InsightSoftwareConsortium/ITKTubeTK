@@ -38,7 +38,7 @@ limitations under the License.
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
 #include "itkSheetnessMeasureImageFilter.h"
 
-int tubeBaseFilteringPrintTest( int, char* [] )
+int tubeBaseFilteringPrintTest( int, char*[] )
 {
   typedef itk::Image< float, 3 >  ImageType;
   typedef itk::Matrix< float, 3 > MatrixType;

@@ -32,7 +32,7 @@ limitations under the License.
 
 #include <itkTubeNJetImageFunction.h>
 
-int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
+int itkTubeNJetImageFunctionTest(int argc, char* argv[] )
 {
   if( argc < 4 )
     {
@@ -66,7 +66,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during read:\n"  << e;
     return EXIT_FAILURE;
@@ -426,7 +426,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

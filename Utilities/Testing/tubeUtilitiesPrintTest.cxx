@@ -30,7 +30,7 @@ limitations under the License.
 //#include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
 
-int tubeUtilitiesPrintTest( int, char* [] )
+int tubeUtilitiesPrintTest( int, char*[] )
 {
   /*
   itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer

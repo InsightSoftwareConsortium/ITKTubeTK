@@ -155,7 +155,7 @@ bool PointInTube( TIndex index, double * tubeLeftPoint, double radius)
   centerPoint[2] = tubeLeftPoint[2];
 
   double distance = 0;
-  for (int i = 0; i < 3; i++)
+  for(int i = 0; i < 3; i++)
     {
     distance += vnl_math_sqr(index[i] - centerPoint[i]);
     }
@@ -188,7 +188,7 @@ typename TImage::PixelType topIntensity
     index = it.GetIndex();
     bool inTube = false;
 
-    if ( index[0] > bottomTubeLeftPoint[0] && index[0] < bottomTubeLeftPoint[0] + length )
+    if( index[0] > bottomTubeLeftPoint[0] && index[0] < bottomTubeLeftPoint[0] + length )
       {
       if( PointInTube(index, bottomTubeLeftPoint, radius) )
         {
@@ -199,14 +199,14 @@ typename TImage::PixelType topIntensity
 
     if( index[0] > topTubeLeftPoint[0] && index[0] < topTubeLeftPoint[0] + length )
       {
-      if ( PointInTube(index, topTubeLeftPoint, radius) )
+      if( PointInTube(index, topTubeLeftPoint, radius) )
         {
         it.Set( topIntensity );
         inTube = true;
         }
       }
 
-    if ( !inTube )
+    if( !inTube )
       {
       it.Set( backgnd );
       }
@@ -311,7 +311,7 @@ TImage * image )
 
 
 int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
-                                                      int argc, char* argv [] )
+                                                      int argc, char* argv[] )
 {
   if( argc < 7 )
     {
@@ -387,14 +387,14 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
   enum geometryTypes { circles, boxes, tubes };
 
   int geometry = atoi( argv[4] );
-  if ( geometry == circles )
+  if( geometry == circles )
     {
     double movingCenter[ImageDimension];
     double fixedCenter[ImageDimension];
     PixelType fgnd = 250;
 
     // fill moving with sphere
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       movingCenter[i] = sizeValue / 2.0;
       }
@@ -403,7 +403,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
 
     // fill fixed with sphere
     fixedCenter[0] = (sizeValue / 2.0) - 2.0;
-    for ( unsigned int i = 1; i < ImageDimension; i++ )
+    for( unsigned int i = 1; i < ImageDimension; i++ )
       {
       fixedCenter[i] = sizeValue / 2.0;
       }
@@ -418,7 +418,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
       return EXIT_FAILURE;
       }
     }
-  else if ( geometry == boxes )
+  else if( geometry == boxes )
     {
     double boxSize[3] = { sizeValue / (8.0/3.0),
                           sizeValue / 5.0,
@@ -472,7 +472,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
       return EXIT_FAILURE;
       }
     }
-  else if ( geometry == tubes )
+  else if( geometry == tubes )
     {
     double length = sizeValue / (8.0/3.0);
     double radius = sizeValue / 10.0;
@@ -560,7 +560,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
 
   // Scale the images to 0..1
   bool intensityWindow = atoi( argv[5] ) == 1;
-  if (intensityWindow)
+  if(intensityWindow)
     {
     IntensityWindow<ImageType>( fixed );
     IntensityWindow<ImageType>( moving );
@@ -598,7 +598,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     }
 
   // ---------------------------------------------------------
-  if ( geometry == circles || geometry == boxes )
+  if( geometry == circles || geometry == boxes )
     {
     std::cout << "Saving the normal surface border" << std::endl;
 
@@ -622,7 +622,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
 #endif
     polyWriter->Write();
     }
-  else if ( geometry == tubes )
+  else if( geometry == tubes )
     {
     std::cout << "Saving the tube spatial objects" << std::endl;
 

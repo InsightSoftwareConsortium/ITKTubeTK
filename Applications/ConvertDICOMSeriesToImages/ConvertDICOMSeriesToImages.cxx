@@ -265,7 +265,7 @@ int main( int argc, char* argv[] )
     {
     nameGenerator->SetInputDirectory( inputDirectory );
     }
-  catch (itk::ExceptionObject &ex)
+  catch(itk::ExceptionObject &ex)
     {
     std::cout << "ERROR: 2D Read: " << ex << std::endl;
     return EXIT_FAILURE;
@@ -473,7 +473,7 @@ int main( int argc, char* argv[] )
           {
           reader2D->Update();
           }
-        catch (itk::ExceptionObject &ex)
+        catch(itk::ExceptionObject &ex)
           {
           std::cout << "ERROR: 2D Read: " << ex << std::endl;
           return EXIT_FAILURE;
@@ -492,7 +492,7 @@ int main( int argc, char* argv[] )
           {
           reader->Update();
           }
-        catch (itk::ExceptionObject &ex)
+        catch(itk::ExceptionObject &ex)
           {
           std::cout << "ERROR: 3D Read: " << ex << std::endl;
           return EXIT_FAILURE;
@@ -666,7 +666,7 @@ int main( int argc, char* argv[] )
         {
         writer->Update();
         }
-      catch (itk::ExceptionObject &ex)
+      catch(itk::ExceptionObject &ex)
         {
         std::cout << ex << std::endl;
         return EXIT_FAILURE;
@@ -860,7 +860,7 @@ int main( int argc, char* argv[] )
         }
       }
     }
-  catch (itk::ExceptionObject &ex)
+  catch(itk::ExceptionObject &ex)
     {
     std::cout << "ERROR : " << ex << std::endl;
     return EXIT_FAILURE;

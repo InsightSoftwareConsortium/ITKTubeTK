@@ -40,7 +40,7 @@ limitations under the License.
  *  a 3D binary images (32x32x32) and a .tre image is computed.
  */
 
-int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv [] )
+int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv[] )
 {
   if( argc < 4 )
     {
@@ -133,7 +133,7 @@ int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv [] )
   // Create stream to record the measure
   std::ofstream measuresFile;
   measuresFile.open( argv[3] );
-  if ( !measuresFile.is_open() )
+  if( !measuresFile.is_open() )
     {
     std::cerr << "Unable to open: " << argv[3] << std::endl;
     return EXIT_FAILURE;
@@ -156,7 +156,7 @@ int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv [] )
 
     std::cout << "Metric value: " << value << std::endl;
     }
-  catch ( itk::ExceptionObject &excp )
+  catch( itk::ExceptionObject &excp )
     {
     std::cerr << "Exception caught while initializing metric." << std::endl;
     std::cerr << excp << std::endl;

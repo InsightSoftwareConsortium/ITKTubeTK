@@ -84,7 +84,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 ::GenerateInputRequestedRegion( void )
 {
   Superclass::GenerateInputRequestedRegion();
-  if ( this->GetInput() )
+  if( this->GetInput() )
     {
     typename InputImageType::Pointer inpt =
           const_cast< TInputImage * >( this->GetInput() );
@@ -169,7 +169,7 @@ CVTImageFilter< TInputImage, TOutputImage >
       }
     }
 
-  while ( iteration < m_NumberOfIterations )
+  while( iteration < m_NumberOfIterations )
     {
     iteration = iteration + 1;
 
@@ -266,7 +266,7 @@ CVTImageFilter< TInputImage, TOutputImage >
   unsigned int * nearest = new unsigned int[m_NumberOfSamplesPerBatch];
   PointArrayType batch(m_NumberOfSamplesPerBatch);
 
-  for ( j = 0; j < (int)m_NumberOfCentroids; j++ )
+  for( j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
     centroids2[j] = m_Centroids[j];
     count[j] = 1;
@@ -282,7 +282,7 @@ CVTImageFilter< TInputImage, TOutputImage >
   int get;
   int have = 0;
   double dist;
-  while ( have < (int)m_NumberOfSamples )
+  while( have < (int)m_NumberOfSamples )
     {
     if( this->GetDebug() )
       {
@@ -306,12 +306,12 @@ CVTImageFilter< TInputImage, TOutputImage >
 
     ComputeClosest( batch, m_Centroids, nearest );
 
-    for ( j = 0; j < get; j++ )
+    for( j = 0; j < get; j++ )
       {
       j2 = nearest[j];
 
       dist = 0;
-      for ( i = 0; i < ImageDimension; i++ )
+      for( i = 0; i < ImageDimension; i++ )
         {
         centroids2[j2][i] = centroids2[j2][i] + batch[j][i];
         dist = ( m_Centroids[j2][i] - batch[j][i] )
@@ -322,19 +322,19 @@ CVTImageFilter< TInputImage, TOutputImage >
       }
     }
 
-  for ( j = 0; j < (int)m_NumberOfCentroids; j++ )
+  for( j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
-    for ( i = 0; i < ImageDimension; i++ )
+    for( i = 0; i < ImageDimension; i++ )
       {
       centroids2[j][i] = centroids2[j][i] / count[j];
       }
     }
 
   energyDiff = 0.0;
-  for ( j = 0; j < (int)m_NumberOfCentroids; j++ )
+  for( j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
     double term = 0.0;
-    for ( i = 0; i < ImageDimension; i++ )
+    for( i = 0; i < ImageDimension; i++ )
       {
       term += ( centroids2[j][i] - m_Centroids[j][i] )
               * ( centroids2[j][i] - m_Centroids[j][i] );
@@ -362,7 +362,7 @@ CVTImageFilter< TInputImage, TOutputImage >
   int i;
   int j;
 
-  if ( sampleSize < 1 )
+  if( sampleSize < 1 )
     {
     if( this->GetDebug() )
       {
@@ -401,7 +401,7 @@ CVTImageFilter< TInputImage, TOutputImage >
         gridSize[i] = (int)(m_InputImageSize[i] / factor);
         len = len * gridSize[i];
         }
-      for ( j = 0; j < len; j++ )
+      for( j = 0; j < len; j++ )
         {
         double tmpJ = j;
         double tmpLen = len;
@@ -415,9 +415,9 @@ CVTImageFilter< TInputImage, TOutputImage >
         (*sample).push_back(iIndx);
         }
       delete [] gridSize;
-      for ( j = len; j < (int)sampleSize; j++ )
+      for( j = len; j < (int)sampleSize; j++ )
         {
-        for ( i = 0; i < ImageDimension; i++ )
+        for( i = 0; i < ImageDimension; i++ )
           {
           iIndx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
                            * m_InputImageSize[i]-1 );
@@ -428,13 +428,13 @@ CVTImageFilter< TInputImage, TOutputImage >
       }
     case CVT_RANDOM:
       {
-      for ( j = 0; j < (int)sampleSize; j++ )
+      for( j = 0; j < (int)sampleSize; j++ )
         {
         double u = 1;
         double p1 = 0;
         while(u >= p1)
           {
-          for ( i = 0; i < ImageDimension; i++ )
+          for( i = 0; i < ImageDimension; i++ )
             {
             indx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
                              * m_InputImageSize[i]-1 );
@@ -483,21 +483,21 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   int numberOfCentroids = centroids.size();
 
-  for ( js = 0; js < numberOfSamples; js++ )
+  for( js = 0; js < numberOfSamples; js++ )
     {
     double distMin = 1e20;
     nearest[js] = 0;
 
-    for ( jc = 0; jc < numberOfCentroids; jc++ )
+    for( jc = 0; jc < numberOfCentroids; jc++ )
       {
       dist = 0.0;
-      for ( i = 0; i < ImageDimension; i++ )
+      for( i = 0; i < ImageDimension; i++ )
         {
         dist += ( sample[js][i] - centroids[jc][i] )
                  * ( sample[js][i] - centroids[jc][i] );
         }
 
-      if ( jc == 0 || dist < distMin )
+      if( jc == 0 || dist < distMin )
         {
         distMin = dist;
         nearest[js] = jc;

@@ -89,14 +89,14 @@ vtkAlgorithmOutput* vtkMRMLSpatialObjectsGlyphDisplayNode::GetOutputPort( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsGlyphDisplayNode::UpdatePolyDataPipeline( void )
 {
-  if (!this->GetInputPolyData()|| !this->Visibility)
+  if(!this->GetInputPolyData()|| !this->Visibility)
     {
     return;
     }
 
   this->Superclass::UpdatePolyDataPipeline();
 
-  /*if (this->Glyph3DMapper)
+  /*if(this->Glyph3DMapper)
     {
     this->Glyph3DMapper->SetInputConnection(
       this->PolyData->GetSource()->GetOutputPort());

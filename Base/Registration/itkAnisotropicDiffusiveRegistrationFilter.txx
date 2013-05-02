@@ -282,11 +282,11 @@ AnisotropicDiffusiveRegistrationFilter
   m_BorderSurface = normalsFilter->GetOutput();
 
   // Make sure we now have the normals
-  if ( !m_BorderSurface->GetPointData() )
+  if( !m_BorderSurface->GetPointData() )
     {
     itkExceptionMacro( << "Border surface does not contain point data" );
     }
-  else if ( !m_BorderSurface->GetPointData()->GetNormals() )
+  else if( !m_BorderSurface->GetPointData()->GetNormals() )
     {
     itkExceptionMacro( << "Border surface point data does not have normals" );
     }
@@ -641,10 +641,10 @@ AnisotropicDiffusiveRegistrationFilter
 
     // Create the normalMatrix used to calculate nn^T
     // (The first column is filled with the values of n, the rest are 0s)
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       normalMatrix( i, 0 ) = n[i];
-      for ( unsigned int j = 1; j < ImageDimension; j++ )
+      for( unsigned int j = 1; j < ImageDimension; j++ )
         {
         normalMatrix( i, j ) = 0;
         }
@@ -660,9 +660,9 @@ AnisotropicDiffusiveRegistrationFilter
     normalMatrix = normalMatrix * w; // w^2nn^T
 
     // Copy the matrices to the diffusion tensor
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      for ( unsigned int j = 0; j < ImageDimension; j++ )
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
         tangentialDiffusionTensor( i, j ) = tangentialMatrix( i, j );
         normalDiffusionTensor( i, j ) = normalMatrix( i, j );

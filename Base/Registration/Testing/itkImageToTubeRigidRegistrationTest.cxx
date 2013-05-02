@@ -32,10 +32,10 @@ limitations under the License.
 #include "itkVesselTubeSpatialObject.h"
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
-int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
+int itkImageToTubeRigidRegistrationTest(int argc, char* argv[] )
 {
 
-  if ( argc < 4 )
+  if( argc < 4 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
@@ -76,7 +76,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
                                                            GaussianBlurFilterType;
   GaussianBlurFilterType::Pointer blurFilters[Dimension];
-  for ( unsigned int ii = 0; ii < Dimension; ++ii )
+  for( unsigned int ii = 0; ii < Dimension; ++ii )
     {
     blurFilters[ii] = GaussianBlurFilterType::New();
     blurFilters[ii]->SetSigma( 3.0 );
@@ -127,9 +127,9 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
     }
 
   double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  if (argc > 10)
+  if(argc > 10)
     {
-    for (unsigned int ii = 0; ii < 6; ++ii)
+    for(unsigned int ii = 0; ii < 6; ++ii)
       {
       initialPosition[ii] = atof( argv[5+ii] );
       }
@@ -164,7 +164,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv [] )
   outputTransform->GetInverse( inverseTransform );
 
   std::cout << "Registration result: ";
-  for (unsigned int ii = 0; ii < 6; ++ii)
+  for(unsigned int ii = 0; ii < 6; ++ii)
     {
     std::cout << outputTransform->GetParameters().GetElement(ii) << " ";
     }

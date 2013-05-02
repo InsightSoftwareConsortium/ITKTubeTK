@@ -45,7 +45,7 @@ const typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::Do
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 ::GetInput( void )
 {
-  if (this->GetNumberOfInputs() < 1)
+  if(this->GetNumberOfInputs() < 1)
     {
     return 0;
     }

@@ -31,7 +31,7 @@ limitations under the License.
 #include "metaUtils.h"
 #include "metaForm.h"
 
-/*!    MetaLDA ( .h and .cpp )
+/**    MetaLDA ( .h and .cpp )
 *
 * Description:
 *    Reads and Writes MetaLDA Files, typically designated .mlda files

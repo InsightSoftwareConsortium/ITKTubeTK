@@ -95,11 +95,11 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
     it.GetNeighborhood();
   std::map<typename TInputImage::PixelType, int> tally;
   typename std::map<typename TInputImage::PixelType, int>::const_iterator itr;
-  for (unsigned int i = 0; i < n.Size(); i++)
+  for(unsigned int i = 0; i < n.Size(); i++)
     {
     tally[n[i]] = 0;
     }
-  for (unsigned int i = 0; i < n.Size(); i++)
+  for(unsigned int i = 0; i < n.Size(); i++)
     {
     tally[n[i]] += 1;
     }

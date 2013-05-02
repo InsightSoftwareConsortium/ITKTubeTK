@@ -37,7 +37,7 @@ limitations under the License.
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
 
-int tubeBaseSegmentationPrintTest( int, char* [] )
+int tubeBaseSegmentationPrintTest( int, char*[] )
 {
   typedef itk::Image< float, 2 > ImageType;
 

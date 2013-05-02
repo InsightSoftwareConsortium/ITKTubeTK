@@ -23,7 +23,7 @@
 #include "itkImageFileReader.h"
 #include "itkThresholdImageFilter.h"
 
-int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
+int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv[] )
 {
   // Argument parsing.
   if( argc < 7 )
@@ -91,7 +91,7 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
   thresholdFilter->SetOutsideValue( 0 );
 
   double sheetnessThresholdValue = 0.1;
-  if ( argc > 7 )
+  if( argc > 7 )
     {
     sheetnessThresholdValue = atof( argv[7] );
     }

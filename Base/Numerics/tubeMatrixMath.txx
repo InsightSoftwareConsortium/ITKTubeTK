@@ -281,11 +281,11 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
 
   int n = mat.rows();
 
-  for (l=0; l<n; l++)
+  for(l=0; l<n; l++)
     {
-    for (iter = 0; iter < EIGEN_MAX_ITERATIONS; iter++)
+    for(iter = 0; iter < EIGEN_MAX_ITERATIONS; iter++)
       {
-      for (m=l; m<n; m++)
+      for(m=l; m<n; m++)
         {
         if(m!=(n-1))
           {
@@ -318,7 +318,7 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
       s = 1;
       c = 1;
       p = 0;
-      for (i=m-1; i>=l; i--)
+      for(i=m-1; i>=l; i--)
         {
         f = s*subD(i);
         b = c*subD(i);

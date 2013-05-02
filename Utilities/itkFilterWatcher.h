@@ -79,17 +79,17 @@ public:
   virtual void ShowProgress( void )
     {
     m_Steps++;
-    if (!m_Quiet)
+    if(!m_Quiet)
       {
       std::cout << " | " << m_Process->GetProgress() << std::flush;
-      if ((m_Steps % 10) == 0)
+      if((m_Steps % 10) == 0)
         {
         std::cout << std::endl;
         }
       }
-    if (m_TestAbort)
+    if(m_TestAbort)
       {
-      if (m_Process->GetProgress() > .03)
+      if(m_Process->GetProgress() > .03)
         {
         m_Process->AbortGenerateDataOn();
         }
@@ -130,7 +130,7 @@ public:
               << "-------- End " << m_Process->GetNameOfClass()
               << " \"" << m_Comment << "\" "
               << m_Process << std::flush;
-    if (m_Steps < 1)
+    if(m_Steps < 1)
       {
       itkExceptionMacro ("Filter does not have progress.");
       }

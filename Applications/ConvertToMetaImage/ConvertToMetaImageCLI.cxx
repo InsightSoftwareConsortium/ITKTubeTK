@@ -195,21 +195,21 @@ int main(int, char **)
   std::cout << std::endl;
   switch(elementType)
     {
-    case 0 : fp << "ElementType = MET_CHAR" << std::endl;
+    case 0: fp << "ElementType = MET_CHAR" << std::endl;
       break;
-    case 1 : fp << "ElementType = MET_UCHAR" << std::endl;
+    case 1: fp << "ElementType = MET_UCHAR" << std::endl;
       break;
-    case 2 : fp << "ElementType = MET_SHORT" << std::endl;
+    case 2: fp << "ElementType = MET_SHORT" << std::endl;
       break;
-    case 3 : fp << "ElementType = MET_USHORT" << std::endl;
+    case 3: fp << "ElementType = MET_USHORT" << std::endl;
       break;
-    case 4 : fp << "ElementType = MET_INT" << std::endl;
+    case 4: fp << "ElementType = MET_INT" << std::endl;
       break;
-    case 5 : fp << "ElementType = MET_UINT" << std::endl;
+    case 5: fp << "ElementType = MET_UINT" << std::endl;
       break;
-    case 6 : fp << "ElementType = MET_FLOAT" << std::endl;
+    case 6: fp << "ElementType = MET_FLOAT" << std::endl;
       break;
-    case 7 : fp << "ElementType = MET_DOUBLE" << std::endl;
+    case 7: fp << "ElementType = MET_DOUBLE" << std::endl;
       break;
     default: fp.close();
       std::cout << "...have a nice day." << std::endl;
@@ -289,7 +289,7 @@ int main(int, char **)
         int fileImageDim;
       std::cin >>fileImageDim;
       std::cout << std::endl;
-      if ( (fileImageDim < 0 ) || (fileImageDim > nDims) )
+      if( (fileImageDim < 0 ) || (fileImageDim > nDims) )
         {
         std::cout << "    ...we'll assume you meant " << (nDims - 1)
           << " ..." << std::endl;
@@ -298,7 +298,7 @@ int main(int, char **)
       fp << fileImageDim
         << std::endl;
       int totalFiles = 1;
-      for (i = nDims; i > fileImageDim; i--)
+      for(i = nDims; i > fileImageDim; i--)
         {
         totalFiles *= dimSize[i-1];
         }

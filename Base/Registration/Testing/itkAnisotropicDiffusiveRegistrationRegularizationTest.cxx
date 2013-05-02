@@ -34,7 +34,7 @@ limitations under the License.
 #include "vtkPolyDataWriter.h"
 
 int itkAnisotropicDiffusiveRegistrationRegularizationTest(
-                                                      int argc, char* argv [] )
+                                                      int argc, char* argv[] )
 {
   if( argc < 7 )
     {
@@ -151,7 +151,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   double        mean = 0;
   double        variance = atof(argv[2]);
 
-  for( it.GoToBegin(); ! it.IsAtEnd(); ++it )
+  for( it.GoToBegin(); !it.IsAtEnd(); ++it )
     {
     index = it.GetIndex();
 
@@ -161,7 +161,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
       }
 
     // Use definition of a plane to decide which side we are on
-    if ( borderN * ( center - indexAsVector ) < 0 )
+    if( borderN * ( center - indexAsVector ) < 0 )
       {
       pixel = bottomHalfPixel;
       }

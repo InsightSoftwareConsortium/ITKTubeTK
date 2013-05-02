@@ -217,7 +217,7 @@ setSpatialObjectsDisplayNode(vtkMRMLSpatialObjectsDisplayNode*
 
   d->SpatialObjectsDisplayNode = SpatialObjectsDisplayNode;
 
-  if (vtkMRMLSpatialObjectsLineDisplayNode::
+  if(vtkMRMLSpatialObjectsLineDisplayNode::
         SafeDownCast(d->SpatialObjectsDisplayNode))
     {
     d->MaterialPropertyWidget->setHidden(true);
@@ -246,7 +246,7 @@ void qSlicerSpatialObjectsWidget::setVisibility(bool state)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -259,12 +259,12 @@ void qSlicerSpatialObjectsWidget::clickColorBySolid(bool checked)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
 
-  if (checked)
+  if(checked)
     {
     d->SpatialObjectsDisplayNode->SetColorModeToSolid();
     d->SpatialObjectsDisplayNode->SetScalarVisibility(0);
@@ -280,7 +280,7 @@ void qSlicerSpatialObjectsWidget::onColorBySolidChanged(const QColor &color)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -294,7 +294,7 @@ void qSlicerSpatialObjectsWidget::setColorBySolid()
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -308,7 +308,7 @@ void qSlicerSpatialObjectsWidget::setColorByScalar()
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -323,7 +323,7 @@ void qSlicerSpatialObjectsWidget::onColorByScalarChanged(int scalarIndex)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode ||
+  if(!d->SpatialObjectsDisplayNode ||
       !d->SpatialObjectsNode ||
       !d->SpatialObjectsNode->GetPolyData() ||
       !d->SpatialObjectsNode->GetPolyData()->GetPointData())
@@ -336,7 +336,7 @@ void qSlicerSpatialObjectsWidget::onColorByScalarChanged(int scalarIndex)
     SetActiveScalarName(activeScalarName.toLatin1());
 
   double range[2] = {0.,0.};
-  if (scalarIndex < 0)
+  if(scalarIndex < 0)
     {
     d->ScalarRangeWidget->setRange(range[0], range[1]);
     }
@@ -362,7 +362,7 @@ void qSlicerSpatialObjectsWidget::onColorByScalarRangeChanged(double minValue,
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode ||
+  if(!d->SpatialObjectsDisplayNode ||
       !d->SpatialObjectsNode ||
       !d->SpatialObjectsNode->GetPolyData() ||
       !d->SpatialObjectsNode->GetPolyData()->GetPointData() ||
@@ -383,7 +383,7 @@ void qSlicerSpatialObjectsWidget::setColorByCellScalars()
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -398,7 +398,7 @@ setColorByCellScalarsColorTable(vtkMRMLNode* colortableNode)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode || !colortableNode)
+  if(!d->SpatialObjectsDisplayNode || !colortableNode)
     {
     return;
     }
@@ -413,7 +413,7 @@ void qSlicerSpatialObjectsWidget::setOpacity(double opacity)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -433,7 +433,7 @@ void qSlicerSpatialObjectsWidget::setColor(const QColor& color)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -441,7 +441,7 @@ void qSlicerSpatialObjectsWidget::setColor(const QColor& color)
   // QColors loose precision in the numbers, don't reset the color if it didn't
   // "really" change.
   double* oldColor = d->SpatialObjectsDisplayNode->GetColor();
-  if (QColor::fromRgbF(oldColor[0], oldColor[1], oldColor[2]) != color)
+  if(QColor::fromRgbF(oldColor[0], oldColor[1], oldColor[2]) != color)
     {
     d->SpatialObjectsDisplayNode->SetColor(color.redF(),
                                            color.greenF(),
@@ -454,7 +454,7 @@ void qSlicerSpatialObjectsWidget::setAmbient(double ambient)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -474,7 +474,7 @@ void qSlicerSpatialObjectsWidget::setDiffuse(double diffuse)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -494,7 +494,7 @@ void qSlicerSpatialObjectsWidget::setSpecular(double specular)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -514,7 +514,7 @@ void qSlicerSpatialObjectsWidget::setSpecularPower(double specularPower)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -534,7 +534,7 @@ void qSlicerSpatialObjectsWidget::setBackfaceCulling(bool backfaceCulling)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
@@ -554,7 +554,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
-  if (!d->SpatialObjectsNode ||
+  if(!d->SpatialObjectsNode ||
       !d->SpatialObjectsDisplayNode ||
       this->inProcess )
     {
@@ -572,7 +572,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
   d->ColorByScalarComboBox->setDataSet(
     vtkDataSet::SafeDownCast(d->SpatialObjectsNode->GetPolyData()));
 
-  switch (d->SpatialObjectsDisplayNode->GetColorMode())
+  switch(d->SpatialObjectsDisplayNode->GetColorMode())
     {
       case vtkMRMLSpatialObjectsDisplayNode::colorModeScalar:
          d->SpatialObjectsDisplayNode->SetColorMode(

@@ -80,7 +80,7 @@ SpatialObjectSource< TOutputSpatialObject >
   OutputSpatialObjectType * output = dynamic_cast< OutputSpatialObjectType * >
                       ( this->ProcessObject::GetOutput(idx) );
 
-  if ( output == NULL && this->ProcessObject::GetOutput(idx) != NULL )
+  if( output == NULL && this->ProcessObject::GetOutput(idx) != NULL )
     {
     itkWarningMacro (<< "Unable to convert output number " << idx
       << " to type " <<  typeid( OutputSpatialObjectType ).name() );
@@ -103,7 +103,7 @@ void
 SpatialObjectSource< TOutputSpatialObject >
 ::GraftOutput(const DataObjectIdentifierType & key, DataObject *graft)
 {
-  if ( !graft )
+  if( !graft )
     {
     itkExceptionMacro(<< "Requested to graft output that is a NULL pointer");
     }
@@ -122,7 +122,7 @@ void
 SpatialObjectSource< TOutputSpatialObject >
 ::GraftNthOutput(unsigned int idx, DataObject *graft)
 {
-  if ( idx >= this->GetNumberOfIndexedOutputs() )
+  if( idx >= this->GetNumberOfIndexedOutputs() )
     {
     itkExceptionMacro(<< "Requested to graft output " << idx
                       << " but this filter only has " << this->GetNumberOfIndexedOutputs() << " indexed Outputs.");

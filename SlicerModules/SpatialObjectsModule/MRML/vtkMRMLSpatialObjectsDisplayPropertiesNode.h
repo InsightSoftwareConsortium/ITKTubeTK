@@ -47,10 +47,10 @@ limitations under the License.
 virtual void Set##name (type _arg) \
   { \
   vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting " #name " to " << _arg); \
-  if (this->name != _arg) \
+  if(this->name != _arg) \
     { \
     this->name = _arg; \
-    if (this->GlyphGeometry == this->Lines || \
+    if(this->GlyphGeometry == this->Lines || \
         this->GlyphGeometry == this->Tubes) \
       { \
       this->UpdateGlyphSource(); \

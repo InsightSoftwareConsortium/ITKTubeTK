@@ -35,7 +35,7 @@ limitations under the License.
 
 #include "itkTubeNJetLDAGenerator.h"
 
-int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
+int itkTubeNJetLDAGeneratorTest(int argc, char* argv[] )
 {
   if( argc != 5 )
     {
@@ -71,7 +71,7 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -85,7 +85,7 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
     {
     maskReader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -127,7 +127,7 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;
@@ -141,7 +141,7 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv [] )
     {
     writer2->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

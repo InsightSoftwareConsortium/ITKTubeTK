@@ -79,7 +79,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
   os << indent << "RecalculateTubeness       : " << m_RecalculateTubeness
      << std::endl;
   os << indent << "Scales                    : ";
-  for (unsigned int i=0; i<m_Scales.size(); ++i)
+  for(unsigned int i=0; i<m_Scales.size(); ++i)
     {
     os << m_Scales[i] << " ";
     }
@@ -359,14 +359,14 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
       ev[0] = ES.get_eigenvalue(0);
       ev[1] = ES.get_eigenvalue(1);
 
-      if ( vcl_abs(ev[0]) > vcl_abs(ev[1])  )
+      if( vcl_abs(ev[0]) > vcl_abs(ev[1])  )
         {
         std::swap(ev[0], ev[1]);
         }
 
       const Precision vesselness = TubenessFunction2D( ev[0], ev[1] );
 
-      if ( vesselness > 0 && vesselness > vit.Value() )
+      if( vesselness > 0 && vesselness > vit.Value() )
         {
         vit.Value() = vesselness;
 
@@ -472,7 +472,7 @@ template <class PixelT, unsigned int DimensionT>
 void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 ::GenerateData( void )
 {
-  if (m_Verbose)
+  if(m_Verbose)
     {
     std::cout << std::endl <<
       "begin vesselenhancingdiffusion2Dimagefilter ... " << std::endl;
@@ -515,7 +515,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
     std::cout << "recalc v            \t" << m_RecalculateTubeness
               << std::endl;
     std::cout << "scales              \t";
-    for (unsigned int i=0; i<m_Scales.size(); ++i)
+    for(unsigned int i=0; i<m_Scales.size(); ++i)
       {
       std::cout << m_Scales[i] << " ";
       }

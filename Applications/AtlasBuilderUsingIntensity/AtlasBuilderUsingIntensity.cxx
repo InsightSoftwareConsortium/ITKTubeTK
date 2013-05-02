@@ -107,7 +107,7 @@ int DoIt( int argc, char *argv[] )
   assert(outputSize.size() == Dimensions);
 
   AtlasBuilderType::SizeType size;
-  for (size_t i=0; i < outputSpacing.size(); ++i)
+  for(size_t i=0; i < outputSpacing.size(); ++i)
     {
     size[i] = outputSpacing[i];
     }
@@ -116,7 +116,7 @@ int DoIt( int argc, char *argv[] )
   assert( outputSpacing.size() > 0 );
 
   AtlasBuilderType::SpacingType spacing;
-  for (size_t i=0; i < outputSpacing.size(); ++i)
+  for(size_t i=0; i < outputSpacing.size(); ++i)
     {
     spacing[i] = outputSpacing[i];
     }
@@ -169,7 +169,7 @@ int DoIt( int argc, char *argv[] )
   // Save output images
   WriteImage( atlasBuilder->GetMeanImage(), outputMeanAtlas.c_str() );
   WriteImage( atlasBuilder->GetVarianceImage(), outputVarianceAtlas.c_str() );
-  if ( !outputCountImage.empty() )
+  if( !outputCountImage.empty() )
     {
     WriteImage( atlasBuilder->GetValidCountImage(), outputCountImage.c_str() );
     }

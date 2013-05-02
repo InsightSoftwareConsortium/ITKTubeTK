@@ -121,14 +121,14 @@ setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode)
   vtkMRMLSpatialObjectsDisplayNode *oldTDN = NULL;
   vtkMRMLSpatialObjectsDisplayNode *oldGDN = NULL;
 
-  if (d->SpatialObjectsNode)
+  if(d->SpatialObjectsNode)
     {
     oldLDN = d->SpatialObjectsNode->GetLineDisplayNode();
     oldTDN = d->SpatialObjectsNode->GetTubeDisplayNode();
     oldGDN = d->SpatialObjectsNode->GetGlyphDisplayNode();
     }
 
-  if (SpatialObjectsNode)
+  if(SpatialObjectsNode)
     {
     d->LineDN = SpatialObjectsNode->GetLineDisplayNode();
     d->TubeDN = SpatialObjectsNode->GetTubeDisplayNode();
@@ -159,24 +159,24 @@ void qSlicerSpatialObjectsBasicWidget::updateWidgetFromMRML()
 {
   Q_D(qSlicerSpatialObjectsBasicWidget);
 
-  if (!d->SpatialObjectsNode)
+  if(!d->SpatialObjectsNode)
     {
     return;
     }
 
-  if (d->SpatialObjectsNode->GetLineDisplayNode())
+  if(d->SpatialObjectsNode->GetLineDisplayNode())
     {
     d->LineVisibility->setChecked(
       d->SpatialObjectsNode->GetLineDisplayNode()->GetVisibility());
     }
 
-  if (d->SpatialObjectsNode->GetTubeDisplayNode())
+  if(d->SpatialObjectsNode->GetTubeDisplayNode())
     {
     d->TubeVisibility->setChecked(
       d->SpatialObjectsNode->GetTubeDisplayNode()->GetVisibility());
     }
 
-  if (d->SpatialObjectsNode->GetGlyphDisplayNode())
+  if(d->SpatialObjectsNode->GetGlyphDisplayNode())
     {
     d->GlyphVisibility->setChecked(
       d->SpatialObjectsNode->GetGlyphDisplayNode()->GetVisibility());
@@ -188,14 +188,14 @@ void qSlicerSpatialObjectsBasicWidget::setLineVisibility(int state)
 {
   Q_D(qSlicerSpatialObjectsBasicWidget);
 
-  if (!d->SpatialObjectsNode)
+  if(!d->SpatialObjectsNode)
     {
     return;
     }
 
   vtkMRMLSpatialObjectsDisplayNode* dNode =
     d->SpatialObjectsNode->GetLineDisplayNode();
-  if (dNode)
+  if(dNode)
     {
     dNode->SetVisibility((state > 0));
     }
@@ -206,14 +206,14 @@ void qSlicerSpatialObjectsBasicWidget::setTubeVisibility(int state)
 {
   Q_D(qSlicerSpatialObjectsBasicWidget);
 
-  if (!d->SpatialObjectsNode)
+  if(!d->SpatialObjectsNode)
     {
     return;
     }
 
   vtkMRMLSpatialObjectsDisplayNode* dNode =
     d->SpatialObjectsNode->GetTubeDisplayNode();
-  if (dNode)
+  if(dNode)
     {
     dNode->SetVisibility((state > 0));
     }
@@ -224,14 +224,14 @@ void qSlicerSpatialObjectsBasicWidget::setGlyphVisibility(int state)
 {
   Q_D(qSlicerSpatialObjectsBasicWidget);
 
-  if (!d->SpatialObjectsNode)
+  if(!d->SpatialObjectsNode)
     {
     return;
     }
 
   vtkMRMLSpatialObjectsDisplayNode* dNode =
     d->SpatialObjectsNode->GetGlyphDisplayNode();
-  if (dNode)
+  if(dNode)
     {
     dNode->SetVisibility((state > 0));
     }

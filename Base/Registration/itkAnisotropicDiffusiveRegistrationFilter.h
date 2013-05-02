@@ -197,7 +197,7 @@ public:
    *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Lambda must
    *  be positive. */
   void SetLambda( WeightType l )
-    { if ( l > 0 ) { m_Lambda = l; } }
+    { if( l > 0 ) { m_Lambda = l; } }
   WeightType GetLambda( void ) const
     { return m_Lambda; }
 
@@ -208,7 +208,7 @@ public:
    *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Gamma must
    *  be positive or -1.0. */
   void SetGamma( WeightType g )
-    { if ( g > 0 || g == -1.0 ) { m_Gamma = g; } }
+    { if( g > 0 || g == -1.0 ) { m_Gamma = g; } }
   WeightType GetGamma( void ) const
     { return m_Gamma; }
 

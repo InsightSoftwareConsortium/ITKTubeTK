@@ -67,7 +67,7 @@ void vtkMRMLSpatialObjectsDisplayNode::WriteXML(ostream& of, int nIndent)
   vtkIndent indent(nIndent);
   of << indent << " colorMode =\"" << this->ColorMode << "\"";
 
-  if (this->SpatialObjectsDisplayPropertiesNodeID != NULL)
+  if(this->SpatialObjectsDisplayPropertiesNodeID != NULL)
     {
     of << indent << " SpatialObjectsDisplayPropertiesNodeRef=\""
        << this->SpatialObjectsDisplayPropertiesNodeID << "\"";
@@ -83,12 +83,12 @@ void vtkMRMLSpatialObjectsDisplayNode::ReadXMLAttributes(const char** atts)
 
   const char* attName;
   const char* attValue;
-  while (*atts != NULL)
+  while(*atts != NULL)
     {
     attName = *(atts++);
     attValue = *(atts++);
 
-    if (!strcmp(attName, "colorMode"))
+    if(!strcmp(attName, "colorMode"))
       {
       std::stringstream ss;
       ss << attValue;
@@ -97,7 +97,7 @@ void vtkMRMLSpatialObjectsDisplayNode::ReadXMLAttributes(const char** atts)
       this->SetColorMode(colorMode);
       }
 
-    else if (!strcmp(attName, "SpatialObjectsDisplayPropertiesNodeRef"))
+    else if(!strcmp(attName, "SpatialObjectsDisplayPropertiesNodeRef"))
       {
       this->SetSpatialObjectsDisplayPropertiesNodeID(attValue);
       }
@@ -144,7 +144,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences( void )
 {
   Superclass::UpdateReferences();
 
-  if (this->SpatialObjectsDisplayPropertiesNodeID != NULL &&
+  if(this->SpatialObjectsDisplayPropertiesNodeID != NULL &&
       this->Scene->GetNodeByID(
         this->SpatialObjectsDisplayPropertiesNodeID) == NULL)
     {
@@ -156,7 +156,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences( void )
 void vtkMRMLSpatialObjectsDisplayNode::UpdateReferenceID(const char *oldID,
                                                          const char *newID)
 {
-  if (this->SpatialObjectsDisplayPropertiesNodeID &&
+  if(this->SpatialObjectsDisplayPropertiesNodeID &&
       !strcmp(oldID, this->SpatialObjectsDisplayPropertiesNodeID))
     {
     this->SetSpatialObjectsDisplayPropertiesNodeID(newID);
@@ -184,7 +184,7 @@ GetSpatialObjectsDisplayPropertiesNode( void )
 void vtkMRMLSpatialObjectsDisplayNode::
 SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id )
 {
-  if (
+  if(
       (id != this->GetSpatialObjectsDisplayPropertiesNodeID())
       && id != NULL && this->GetSpatialObjectsDisplayPropertiesNodeID() != NULL
       && (strcmp(id, this->GetSpatialObjectsDisplayPropertiesNodeID()) == 0)
@@ -210,7 +210,7 @@ SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id )
 
   //The new SpatialObjectsDisplayPropertiesNode can have a different setting
   // on the properties so we emit the event that the polydata has been modified.
-  if (cnode)
+  if(cnode)
     {
     this->InvokeEvent(vtkMRMLModelNode::PolyDataModifiedEvent, this);
     }

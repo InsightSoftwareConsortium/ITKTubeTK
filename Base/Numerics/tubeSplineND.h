@@ -33,7 +33,7 @@ limitations under the License.
 namespace tube
 {
 
-/*! Multidimensional spline class
+/** Multidimensional spline class
  *  Evaluates user supplied function to determine values at integers
  *  and will then interpolate (based on derivation used) non-integer
  *  values.  Includes methods for determining value, first derivative,

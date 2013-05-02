@@ -38,7 +38,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 
 
-int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  )
+int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv[]  )
 {
   if( argc < 4 )
     {
@@ -77,7 +77,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
   filter->SetInput( reader->GetOutput() );
 
   // Set the value of sigma if specificed in command line
-  if ( argc > 4 )
+  if( argc > 4 )
     {
     double sigma = atof( argv[4] );
     filter->SetSigma( sigma );
@@ -138,7 +138,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
 
   //Fill up the buffer with null vector
   itk::VariableLengthVector< double > nullVector( vectorLength );
-  for ( unsigned int i=0; i < vectorLength; i++ )
+  for( unsigned int i=0; i < vectorLength; i++ )
     {
     nullVector[i] = 0.0;
     }
@@ -197,7 +197,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
 
   double toleranceEigenValues = 1e-4;
 
-  while (!eigenValueImageIterator.IsAtEnd())
+  while(!eigenValueImageIterator.IsAtEnd())
     {
     // Get the eigen value
     EigenValueArrayType eigenValue;
@@ -207,9 +207,9 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
     double largest = vnl_math_abs( eigenValue[0] );
     unsigned int largestEigenValueIndex=0;
 
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if (  vnl_math_abs( eigenValue[i] > largest ) )
+      if(  vnl_math_abs( eigenValue[i] > largest ) )
         {
         largest = vnl_math_abs( eigenValue[i] );
         largestEigenValueIndex = i;
@@ -247,7 +247,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv []  
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
-      for ( unsigned int i=0; i < vectorLength; i++ )
+      for( unsigned int i=0; i < vectorLength; i++ )
       {
       primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
       }

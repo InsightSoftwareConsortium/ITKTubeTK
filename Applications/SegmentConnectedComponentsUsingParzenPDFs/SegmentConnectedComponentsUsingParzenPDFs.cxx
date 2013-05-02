@@ -63,7 +63,7 @@ void GetImageTypes (std::vector<std::string> fileNames,
   componentTypes.clear();
 
   // For each file, find the pixel and component type
-  for (std::vector<std::string>::size_type i = 0; i < fileNames.size(); i++)
+  for(std::vector<std::string>::size_type i = 0; i < fileNames.size(); i++)
     {
     itk::ImageIOBase::IOPixelType pixelType;
     itk::ImageIOBase::IOComponentType componentType;
@@ -287,7 +287,7 @@ int main( int argc, char * argv[] )
         }
       }
 
-    switch (componentType)
+    switch(componentType)
       {
       case itk::ImageIOBase::UCHAR:
         if(N == 1)

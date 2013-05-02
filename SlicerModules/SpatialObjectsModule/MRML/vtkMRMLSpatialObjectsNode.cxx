@@ -83,12 +83,12 @@ void vtkMRMLSpatialObjectsNode::ReadXMLAttributes(const char** atts)
 
   const char* attName;
   const char* attValue;
-  while (*atts != NULL)
+  while(*atts != NULL)
     {
     attName = *(atts++);
     attValue = *(atts++);
 
-    if (!strcmp(attName, "SubsamplingRatio"))
+    if(!strcmp(attName, "SubsamplingRatio"))
       {
       this->SubsamplingRatio = atof(attValue);
       }
@@ -107,7 +107,7 @@ void vtkMRMLSpatialObjectsNode::Copy(vtkMRMLNode *anode)
   vtkMRMLSpatialObjectsNode *node =
     vtkMRMLSpatialObjectsNode::SafeDownCast(anode);
 
-  if (node)
+  if(node)
     {
     this->SetSubsamplingRatio(node->SubsamplingRatio);
     }
@@ -144,7 +144,7 @@ void vtkMRMLSpatialObjectsNode::UpdateReferences( void )
     {
     vtkMRMLSpatialObjectsDisplayNode *node = vtkMRMLSpatialObjectsDisplayNode::
       SafeDownCast(this->GetNthDisplayNode(ii));
-    if (node)
+    if(node)
       {
       node->SetInputPolyData(this->GetFilteredPolyData());
       }
@@ -167,11 +167,11 @@ GetLineDisplayNode( void )
   int nnodes = this->GetNumberOfDisplayNodes();
   vtkMRMLSpatialObjectsLineDisplayNode *node = NULL;
 
-  for (int n = 0; n < nnodes; ++n)
+  for(int n = 0; n < nnodes; ++n)
     {
     node = vtkMRMLSpatialObjectsLineDisplayNode::SafeDownCast(
              this->GetNthDisplayNode(n));
-    if (node)
+    if(node)
       {
       break;
       }
@@ -187,11 +187,11 @@ GetTubeDisplayNode( void )
   int nnodes = this->GetNumberOfDisplayNodes();
   vtkMRMLSpatialObjectsTubeDisplayNode *node = NULL;
 
-  for (int n = 0; n < nnodes; ++n)
+  for(int n = 0; n < nnodes; ++n)
     {
     node = vtkMRMLSpatialObjectsTubeDisplayNode::SafeDownCast(
              this->GetNthDisplayNode(n));
-    if (node)
+    if(node)
       {
       break;
       }
@@ -207,11 +207,11 @@ GetGlyphDisplayNode( void )
   int nnodes = this->GetNumberOfDisplayNodes();
   vtkMRMLSpatialObjectsGlyphDisplayNode *node = NULL;
 
-  for (int n = 0; n < nnodes; ++n)
+  for(int n = 0; n < nnodes; ++n)
     {
     node = vtkMRMLSpatialObjectsGlyphDisplayNode::SafeDownCast(
             this->GetNthDisplayNode(n));
-    if (node)
+    if(node)
       {
       break;
       }
@@ -225,11 +225,11 @@ vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddLineDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetLineDisplayNode();
-  if (node == NULL)
+  if(node == NULL)
     {
     node = vtkMRMLSpatialObjectsLineDisplayNode::New();
 
-    if (this->GetScene())
+    if(this->GetScene())
       {
       this->GetScene()->AddNode(node);
       node->Delete();
@@ -253,10 +253,10 @@ vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddTubeDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetTubeDisplayNode();
-  if (node == NULL)
+  if(node == NULL)
     {
     node = vtkMRMLSpatialObjectsTubeDisplayNode::New();
-    if (this->GetScene())
+    if(this->GetScene())
       {
       this->GetScene()->AddNode(node);
       node->Delete();
@@ -280,10 +280,10 @@ vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddGlyphDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetGlyphDisplayNode();
-  if (node == NULL)
+  if(node == NULL)
     {
     node = vtkMRMLSpatialObjectsGlyphDisplayNode::New();
-    if (this->GetScene())
+    if(this->GetScene())
       {
       this->GetScene()->AddNode(node);
       node->Delete();
@@ -307,7 +307,7 @@ void vtkMRMLSpatialObjectsNode::SetAndObservePolyData(vtkPolyData* polyData)
 {
   vtkMRMLModelNode::SetAndObservePolyData(polyData);
 
-  if (!polyData)
+  if(!polyData)
     {
     return;
     }
@@ -344,7 +344,7 @@ void vtkMRMLSpatialObjectsNode::SetSubsamplingRatio(float ratio)
   // Clamp
   const float newSubsamplingRatio =
     (ratio < 0. ? 0. : (ratio > 1. ? 1.: ratio));
-  if (oldSubsampling != newSubsamplingRatio)
+  if(oldSubsampling != newSubsamplingRatio)
     {
     this->SubsamplingRatio = newSubsamplingRatio;
     this->UpdateSubsampling();
@@ -368,7 +368,7 @@ void vtkMRMLSpatialObjectsNode::PrepareSubsampling( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::UpdateSubsampling( void )
 {
-  if (!this->GetPolyData())
+  if(!this->GetPolyData())
     {
     return;
     }
@@ -376,18 +376,18 @@ void vtkMRMLSpatialObjectsNode::UpdateSubsampling( void )
   vtkDebugMacro(<< this->GetClassName() << "Updating the subsampling");
 
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetLineDisplayNode();
-  if (node != NULL)
+  if(node != NULL)
     {
     node->SetInputPolyData(this->GetFilteredPolyData());
     }
 
   node = this->GetTubeDisplayNode();
-  if (node != NULL)
+  if(node != NULL)
     {
     node->SetInputPolyData(this->GetFilteredPolyData());
     }
   node = this->GetGlyphDisplayNode();
-  if (node != NULL)
+  if(node != NULL)
     {
     node->SetInputPolyData(this->GetFilteredPolyData());
     }

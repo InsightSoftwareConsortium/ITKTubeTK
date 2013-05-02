@@ -97,7 +97,7 @@ const TImage*
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetInput( void ) const
 {
-  if (this->GetNumberOfInputs() < 1)
+  if(this->GetNumberOfInputs() < 1)
     {
     return 0;
     }
@@ -111,7 +111,7 @@ const TMaskImage*
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetMaskImage( void ) const
 {
-  if (this->GetNumberOfInputs() < 2)
+  if(this->GetNumberOfInputs() < 2)
     {
     return 0;
     }
@@ -148,7 +148,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 
   output->Clear();
 
-  if (this->GetNumberOfInputs() > 1)
+  if(this->GetNumberOfInputs() > 1)
     {
     maskImage = const_cast< MaskImageType * >(this->GetMaskImage());
     }
@@ -157,16 +157,16 @@ VectorImageToListGenerator< TImage, TMaskImage >
   IteratorType it( input, input->GetBufferedRegion() );
   it.GoToBegin();
 
-  if (maskImage) // mask specified
+  if(maskImage) // mask specified
     {
     if(m_UseSingleMaskValue)
       {
       typedef ImageRegionConstIterator< MaskImageType > MaskIteratorType;
       MaskIteratorType mit( maskImage, maskImage->GetBufferedRegion() );
       mit.GoToBegin();
-      while (!it.IsAtEnd())
+      while(!it.IsAtEnd())
         {
-        if (mit.Get() == this->m_MaskValue)
+        if(mit.Get() == this->m_MaskValue)
           {
           MeasurementVectorType m;
           m = it.Get();
@@ -181,9 +181,9 @@ VectorImageToListGenerator< TImage, TMaskImage >
       typedef ImageRegionConstIterator< MaskImageType > MaskIteratorType;
       MaskIteratorType mit( maskImage, maskImage->GetBufferedRegion() );
       mit.GoToBegin();
-      while (!it.IsAtEnd())
+      while(!it.IsAtEnd())
         {
-        if (mit.Get() != 0)
+        if(mit.Get() != 0)
           {
           MeasurementVectorType m;
           m = it.Get();
@@ -196,7 +196,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     }
   else // no mask specified
     {
-    while (!it.IsAtEnd())
+    while(!it.IsAtEnd())
       {
       MeasurementVectorType m;
       m = it.Get();
@@ -238,13 +238,13 @@ VectorImageToListGenerator< TImage, TMaskImage >
   // TODO: Why don't most other ITK filters that take multiple inputs check
   // for this ?
   //
-  if (this->GetNumberOfInputs() > 1)
+  if(this->GetNumberOfInputs() > 1)
     {
     MaskImageType *maskImage =
       const_cast< MaskImageType * >(this->GetMaskImage());
     ImageType     *image =
       const_cast< ImageType * >( this->GetInput() );
-    if (!image->GetBufferedRegion().IsInside( maskImage->GetBufferedRegion()) )
+    if(!image->GetBufferedRegion().IsInside( maskImage->GetBufferedRegion()) )
       {
       maskImage->SetRequestedRegion( image->GetBufferedRegion() );
       }

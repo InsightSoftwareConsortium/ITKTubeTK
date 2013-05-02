@@ -261,9 +261,9 @@ DiffusiveRegistrationFilter
   // On subsequent iterations, we just do the resampling.
 
   // Set the high resolution image only once
-  if ( m_StoppingCriterionMask )
+  if( m_StoppingCriterionMask )
     {
-    if ( !m_HighResolutionStoppingCriterionMask )
+    if( !m_HighResolutionStoppingCriterionMask )
       {
       m_HighResolutionStoppingCriterionMask = m_StoppingCriterionMask;
       }
@@ -271,7 +271,7 @@ DiffusiveRegistrationFilter
     // We need to make sure that the attributes of the mask match those of
     // the current output
     OutputImagePointer output = this->GetOutput();
-    if ( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+    if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
           m_StoppingCriterionMask.GetPointer(), output.GetPointer() ) )
       {
       itk::DiffusiveRegistrationFilterUtils::ResampleImageNearestNeighbor(
@@ -878,7 +878,7 @@ DiffusiveRegistrationFilter
 
   str.TimeStepList.resize( threadCount );
   str.ValidTimeStepList.resize( threadCount );
-  for ( int i = 0; i < threadCount; ++i )
+  for( int i = 0; i < threadCount; ++i )
     {
     str.ValidTimeStepList[i] = false;
     }
@@ -960,7 +960,7 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitStoppingCriterionMaskImageRegion );
 
-  if (threadId < total)
+  if(threadId < total)
     {
     str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChangeGradient(
       splitRegion,
@@ -1326,7 +1326,7 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitStoppingCriterionMaskImageRegion );
 
-  if (threadId < total)
+  if(threadId < total)
     {
     str->Filter->ThreadedCalculateEnergies( str->OutputImage,
                                             splitRegion,
@@ -1655,7 +1655,7 @@ DiffusiveRegistrationFilter
                                              threadCount,
                                              splitRegion );
 
-  if (threadId < total)
+  if(threadId < total)
     {
     str->Filter->ThreadedApplyUpdate(str->OutputImage,
                                      str->TimeStep,
@@ -1734,7 +1734,7 @@ DiffusiveRegistrationFilter
   // evaluation block
   unsigned int elapsedIterations = this->GetElapsedIterations();
   static double totalEnergyChangeInEvaluationPeriod = 0;
-  if (elapsedIterations != 0)
+  if(elapsedIterations != 0)
     {
     totalEnergyChangeInEvaluationPeriod += energiesChange.TotalEnergy;
     }
@@ -1795,11 +1795,11 @@ DiffusiveRegistrationFilter
   // This should never happen with the line search turned on
   // TODO this makes tests fail
   static int numEnergyViolations = 0;
-  if (elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
+  if(elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
     {
     numEnergyViolations++;
     }
-  if (numEnergyViolations > 10)
+  if(numEnergyViolations > 10)
     {
     std::cout << "Total energy is increasing, indicating numeric instability. "
               << energiesChange.TotalEnergy << ".  "
@@ -1811,10 +1811,10 @@ DiffusiveRegistrationFilter
   std::cout << std::endl;
 
   // Check for stopping condition every m_StoppingCriterionEvaluationPeriod
-  if (elapsedIterations != 0
+  if(elapsedIterations != 0
       && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
     {
-    if (totalEnergyChangeInEvaluationPeriod > m_StoppingCriterionMaxTotalEnergyChange)
+    if(totalEnergyChangeInEvaluationPeriod > m_StoppingCriterionMaxTotalEnergyChange)
       {
       std::cout << "Stopping criterion satisfied. "
                 << totalEnergyChangeInEvaluationPeriod << ".  "

@@ -27,10 +27,10 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
-int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
+int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
 {
 
-  if ( argc < 12 )
+  if( argc < 12 )
     {
     std::cerr << "Missing Parameters: " 
               << argv[0]
@@ -141,7 +141,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  if (atoi(argv[11]))
+  if(atoi(argv[11]))
     {
     // Write vessel as an image
     typedef itk::Image<double, 3>                           ImageType;

@@ -202,9 +202,9 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     double smallest = vnl_math_abs( eigenValue[0] );
     unsigned int smallestEigenValueIndex=0;
 
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if ( vnl_math_abs( eigenValue[i] ) < smallest )
+      if( vnl_math_abs( eigenValue[i] ) < smallest )
         {
         Lambda1 = eigenValue[i];
         smallest = vnl_math_abs( eigenValue[i] );
@@ -215,9 +215,9 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     // Find the largest eigenvalue
     double largest = vnl_math_abs( eigenValue[0] );
     unsigned int largestEigenValueIndex=0;
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if (  vnl_math_abs( eigenValue[i] > largest ) )
+      if(  vnl_math_abs( eigenValue[i] > largest ) )
         {
         largest = vnl_math_abs( eigenValue[i] );
         largestEigenValueIndex = i;
@@ -225,9 +225,9 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
       }
 
     unsigned int middleEigenValueIndex=0;
-    for ( unsigned int i=0; i <=2; i++ )
+    for( unsigned int i=0; i <=2; i++ )
       {
-      if ( eigenValue[i] != smallest && eigenValue[i] != largest )
+      if( eigenValue[i] != smallest && eigenValue[i] != largest )
         {
         middleEigenValueIndex = i;
         break;
@@ -241,7 +241,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
     double gradientMagnitude = gradientMagnitudeImageIterator.Get();
 
-    if ( gradientMagnitude < zerovalueTolerance )
+    if( gradientMagnitude < zerovalueTolerance )
       {
       Lambda1 = 1.0;
       }
@@ -268,7 +268,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     itk::VariableLengthVector<double> secondEigenVector( vectorLength );
     itk::VariableLengthVector<double> thirdEigenVector( vectorLength );
 
-    for ( unsigned int i=0; i < vectorLength; i++ ) {
+    for( unsigned int i=0; i < vectorLength; i++ ) {
     // Get eigenvectors belonging to eigenvalue order
       firstEigenVector[i] = eigenVectorMatrix[largestEigenValueIndex][i];
       secondEigenVector[i] = eigenVectorMatrix[middleEigenValueIndex][i];

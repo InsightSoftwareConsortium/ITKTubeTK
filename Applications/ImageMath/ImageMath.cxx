@@ -1101,7 +1101,7 @@ int DoIt( MetaCommand & command )
         }
       std::ofstream writeStream;
       writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;
@@ -1145,7 +1145,7 @@ int DoIt( MetaCommand & command )
         }
       std::ofstream writeStream;
       writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;
@@ -1526,7 +1526,7 @@ int DoIt( MetaCommand & command )
       std::ofstream writeStream;
       writeStream.open( filename.c_str(),
         std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;
@@ -1628,7 +1628,7 @@ int DoIt( MetaCommand & command )
 
       writeStream.open( filename.c_str(),
         std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;

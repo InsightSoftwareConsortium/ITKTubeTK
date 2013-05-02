@@ -461,21 +461,21 @@ bool MetaImageImporterUI::Import()
 
   switch( elementTypeComboBox->currentIndex() )
     {
-    case 0 : fp << "ElementType = MET_CHAR" << std::endl;
+    case 0: fp << "ElementType = MET_CHAR" << std::endl;
       break;
-    case 1 : fp << "ElementType = MET_UCHAR" << std::endl;
+    case 1: fp << "ElementType = MET_UCHAR" << std::endl;
       break;
-    case 2 : fp << "ElementType = MET_SHORT" << std::endl;
+    case 2: fp << "ElementType = MET_SHORT" << std::endl;
       break;
-    case 3 : fp << "ElementType = MET_USHORT" << std::endl;
+    case 3: fp << "ElementType = MET_USHORT" << std::endl;
       break;
-    case 4 : fp << "ElementType = MET_INT" << std::endl;
+    case 4: fp << "ElementType = MET_INT" << std::endl;
       break;
-    case 5 : fp << "ElementType = MET_UINT" << std::endl;
+    case 5: fp << "ElementType = MET_UINT" << std::endl;
       break;
-    case 6 : fp << "ElementType = MET_FLOAT" << std::endl;
+    case 6: fp << "ElementType = MET_FLOAT" << std::endl;
       break;
-    case 7 : fp << "ElementType = MET_DOUBLE" << std::endl;
+    case 7: fp << "ElementType = MET_DOUBLE" << std::endl;
       break;
     default: fp.close();
       QMessageBox::critical( this, "Import", "Wrong Element type" );

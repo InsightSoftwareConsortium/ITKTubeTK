@@ -42,11 +42,11 @@
 
 #define ITK_TEST_DIMENSION_MAX 6
 
-typedef int (*MainFuncPointer)(int , char* [] );
+typedef int (*MainFuncPointer)(int , char*[] );
 std::map<std::string, MainFuncPointer> StringToTestFunctionMap;
 
 #define REGISTER_TEST(test) \
-extern int test(int, char* [] ); \
+extern int test(int, char*[] ); \
 StringToTestFunctionMap[#test] = test
 
 int RegressionTestImage (const char *testImageFilename,
@@ -107,38 +107,38 @@ int main(int ac, char* av[] )
     {
     while( ac > 0 && testToRun.empty() )
       {
-      if (strcmp(av[1], "--with-threads") == 0)
+      if(strcmp(av[1], "--with-threads") == 0)
         {
         int numThreads = atoi(av[2]);
         itk::MultiThreader::SetGlobalDefaultNumberOfThreads(numThreads);
         av += 2;
         ac -= 2;
         }
-      else if (strcmp(av[1], "--without-threads") == 0)
+      else if(strcmp(av[1], "--without-threads") == 0)
         {
         itk::MultiThreader::SetGlobalDefaultNumberOfThreads(1);
         av += 1;
         ac -= 1;
         }
-      else if (ac > 3 && strcmp(av[1], "--compare") == 0)
+      else if(ac > 3 && strcmp(av[1], "--compare") == 0)
         {
         compareList.push_back( ComparePairType( av[2], av[3] ) );
         av += 3;
         ac -= 3;
         }
-      else if (ac > 2 && strcmp(av[1], "--compareNumberOfPixelsTolerance") == 0)
+      else if(ac > 2 && strcmp(av[1], "--compareNumberOfPixelsTolerance") == 0)
         {
         numberOfPixelsTolerance = atoi( av[2] );
         av += 2;
         ac -= 2;
         }
-      else if (ac > 2 && strcmp(av[1], "--compareRadiusTolerance") == 0)
+      else if(ac > 2 && strcmp(av[1], "--compareRadiusTolerance") == 0)
         {
         radiusTolerance = atoi( av[2] );
         av += 2;
         ac -= 2;
         }
-      else if (ac > 2 && strcmp(av[1], "--compareIntensityTolerance") == 0)
+      else if(ac > 2 && strcmp(av[1], "--compareIntensityTolerance") == 0)
         {
         intensityTolerance = atof( av[2] );
         av += 2;
@@ -169,7 +169,7 @@ int main(int ac, char* av[] )
         std::map<std::string,int>::iterator baseline = baselines.begin();
         std::string bestBaseline;
         int bestBaselineStatus = itk::NumericTraits<int>::max();
-        while (baseline != baselines.end())
+        while(baseline != baselines.end())
           {
           baseline->second = RegressionTestImage(testFilename,
                                                  (baseline->first).c_str(),
@@ -177,19 +177,19 @@ int main(int ac, char* av[] )
                                                  intensityTolerance,
                                                  numberOfPixelsTolerance,
                                                  radiusTolerance );
-          if (baseline->second < bestBaselineStatus)
+          if(baseline->second < bestBaselineStatus)
             {
             bestBaseline = baseline->first;
             bestBaselineStatus = baseline->second;
             }
-          if (baseline->second == 0)
+          if(baseline->second == 0)
             {
             break;
             }
           ++baseline;
           }
         // if the best we can do still has errors, generate the error images
-         if (bestBaselineStatus)
+         if(bestBaselineStatus)
           {
           RegressionTestImage(testFilename,
                               bestBaseline.c_str(),
@@ -253,7 +253,7 @@ int RegressionTestImage (const char *testImageFilename,
     {
     baselineReader->UpdateLargestPossibleRegion();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception detected while reading " << baselineImageFilename << " : "  << e.GetDescription();
     return 1000;
@@ -266,7 +266,7 @@ int RegressionTestImage (const char *testImageFilename,
     {
     testReader->UpdateLargestPossibleRegion();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception detected while reading " << testImageFilename << " : "  << e.GetDescription() << std::endl;
     return 1000;
@@ -278,7 +278,7 @@ int RegressionTestImage (const char *testImageFilename,
   ImageType::SizeType testSize;
     testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-  if (baselineSize != testSize)
+  if(baselineSize != testSize)
     {
     std::cerr << "The size of the Baseline image and Test image do not match!" << std::endl;
     std::cerr << "Baseline image: " << baselineImageFilename
@@ -301,7 +301,7 @@ int RegressionTestImage (const char *testImageFilename,
     status = diff->GetNumberOfPixelsWithDifferences();
 
   // if there are discrepencies, create an diff image
-  if ( (status > numberOfPixelsTolerance) && reportErrors )
+  if( (status > numberOfPixelsTolerance) && reportErrors )
     {
     typedef itk::RescaleIntensityImageFilter<ImageType,OutputType> RescaleType;
     typedef itk::ExtractImageFilter<OutputType,DiffOutputType>     ExtractType;
@@ -319,7 +319,7 @@ int RegressionTestImage (const char *testImageFilename,
     //Get the center slice of the image,  In 3D, the first slice
     //is often a black slice with little debugging information.
     OutputType::IndexType index; index.Fill(0);
-    for (unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; i++)
+    for(unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; i++)
       {
       index[i]=size[i]/2;//NOTE: Integer Divide used to get approximately the center slice
       size[i] = 0;
@@ -354,7 +354,7 @@ int RegressionTestImage (const char *testImageFilename,
       std::cerr << "Error during rescale of " << diffName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch (...)
+    catch(...)
       {
       std::cerr << "Error during rescale of " << diffName.str() << std::endl;
       }
@@ -368,7 +368,7 @@ int RegressionTestImage (const char *testImageFilename,
       std::cerr << "Error during write of " << diffName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch (...)
+    catch(...)
       {
       std::cerr << "Error during write of " << diffName.str() << std::endl;
       }
@@ -389,7 +389,7 @@ int RegressionTestImage (const char *testImageFilename,
       std::cerr << "Error during rescale of " << baseName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch (...)
+    catch(...)
       {
       std::cerr << "Error during rescale of " << baseName.str() << std::endl;
       }
@@ -403,7 +403,7 @@ int RegressionTestImage (const char *testImageFilename,
       std::cerr << "Error during write of " << baseName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch (...)
+    catch(...)
       {
       std::cerr << "Error during write of " << baseName.str() << std::endl;
       }
@@ -424,7 +424,7 @@ int RegressionTestImage (const char *testImageFilename,
       std::cerr << "Error during rescale of " << testName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch (...)
+    catch(...)
       {
       std::cerr << "Error during rescale of " << testName.str() << std::endl;
       }
@@ -438,7 +438,7 @@ int RegressionTestImage (const char *testImageFilename,
       std::cerr << "Error during write of " << testName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch (...)
+    catch(...)
       {
       std::cerr << "Error during write of " << testName.str() << std::endl;
       }
@@ -470,17 +470,17 @@ std::map<std::string,int> RegressionTestBaselines (char *baselineFilename)
   int x = 0;
   std::string::size_type suffixPos = originalBaseline.rfind(".");
   std::string suffix;
-  if (suffixPos != std::string::npos)
+  if(suffixPos != std::string::npos)
     {
     suffix = originalBaseline.substr(suffixPos,originalBaseline.length());
     originalBaseline.erase(suffixPos,originalBaseline.length());
     }
-  while (++x)
+  while(++x)
     {
     std::ostringstream filename;
     filename << originalBaseline << "." << x << suffix;
     std::ifstream filestream(filename.str().c_str());
-    if (!filestream)
+    if(!filestream)
       {
       break;
       }
