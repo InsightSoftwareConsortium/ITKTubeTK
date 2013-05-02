@@ -26,14 +26,14 @@ and
 Please cite these articles in case you use this code. Note that the original
 authors of those articles also provide MATLAB code. Note that the objectives
 of the two works are different. Candes et al.'s approach assumes randomly
-distributed (outliers) throughout the dataset, while Xu et al.'s approach
+distributed corruptions throughout the dataset, while Xu et al.'s approach
 assumes that full observations (i.e., column vectors of the data matrix) and
 not just single entries are corrupted.
 
 Requirements
 ------------
 
-* **numnpy**
+* [**numnpy**](http://www.numpy.org/)
 * [**SimpleITK**](http://www.simpleitk.org) [Optional]
 
 Problem Statement(s)
@@ -52,14 +52,14 @@ a *clean* version of the checkerboard image (as well as the sparsity
 pattern).
 
 The `examples` directory contains an example (`ex1.py`) that demonstrates
-exactly this scenario.  **Note:** The example requires
+exactly this scenario.  (**Note:** The example requires
 [SimpleITK](http://www.simpleitk.org)'s python wrapping for image loading and
-image writing (it should be easy to replace these parts with your favorite
+image writing; it should be easy to replace these parts with your favorite
 image handling library, though).
 
 Run the code with
-```
-bash python ex1.py checkerboard.png 0.3 /tmp/outlierImage.png /tmp/lowRank.png
+```bash
+python ex1.py checkerboard.png 0.3 /tmp/outlierImage.png /tmp/lowRank.png
 ```
 Two images will be written: `/tmp/outlierImage.png` (i.e., the image *with*
 outliers) and `/tmp/lowRank.png` (i.e., the *low-rank* recovered part).
