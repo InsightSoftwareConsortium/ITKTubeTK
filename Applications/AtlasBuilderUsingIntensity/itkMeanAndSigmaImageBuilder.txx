@@ -20,6 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
+#ifndef __itkMeanAndSigmaImageBuilder_txx
+#define __itkMeanAndSigmaImageBuilder_txx
+
 template< class TInputImageType,
           class TOutputMeanImageType,
           class TOutputSigmaImageType>
@@ -333,3 +337,5 @@ MeanAndSigmaImageBuilder< TInputImageType,
 
   this->SetOutputSize( inputSize );
 }
+
+#endif

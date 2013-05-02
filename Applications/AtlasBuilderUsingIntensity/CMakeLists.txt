@@ -26,11 +26,11 @@ set( MODULE_NAME AtlasBuilderUsingIntensity )
 project( ${MODULE_NAME} )
 
 set( AtlasBuilderUsingIntensity_H_Files
-  AtlasSummation.h
   itkCompleteImageResampleFilter.h
   itkMeanAndSigmaImageBuilder.h
   itkMinimizeImageSizeFilter.h
   itkRobustMeanAndSigmaImageBuilder.h
+  tubeAtlasSummation.h
   )
 
 set( AtlasBuilderUsingIntensity_TXX_Files
@@ -54,7 +54,7 @@ include( ${USE_ITK_FILE} )
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  ADDITIONAL_SRCS AtlasSummation.cxx
+  ADDITIONAL_SRCS tubeAtlasSummation.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} TubeObjectDocuments
   INCLUDE_DIRECTORIES

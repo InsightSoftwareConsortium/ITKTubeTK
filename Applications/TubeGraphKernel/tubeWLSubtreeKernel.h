@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 
-#ifndef __WLSubtreeKernel_h
-#define __WLSubtreeKernel_h
+#ifndef __tubeWLSubtreeKernel_h
+#define __tubeWLSubtreeKernel_h
 
 #include <iostream>
 #include <utility>

@@ -20,6 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
+#ifndef __itkTubeSpatialObjectToImageFilter_txx
+#define __itkTubeSpatialObjectToImageFilter_txx
+
 #include <vnl/vnl_vector.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include "itkTubeSpatialObjectToImageFilter.h"
@@ -389,3 +393,5 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
   itkDebugMacro(<< "TubeSpatialObjectToImageFilter::Update() finished");
 
 } // end update function
+
+#endif

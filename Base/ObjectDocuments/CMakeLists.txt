@@ -36,9 +36,9 @@ set( TubeTK_Base_ObjectDocuments_H_Files
   itkObjectDocumentToObjectSource.h
   itkSpatialObjectDocument.h
   itkSpatialObjectToSpatialObjectFilter.h
-  MetaDocument.h
-  MetaObjectDocument.h
-  OptionList.h
+  tubeMetaDocument.h
+  tubeMetaObjectDocument.h
+  tubeOptionList.h
   )
 
 set( TubeTk_Base_ObjectDocuments_TXX_Files
@@ -48,9 +48,9 @@ set( TubeTk_Base_ObjectDocuments_TXX_Files
   )
 
 set( TubeTk_Base_ObjectDocuments_SRCS
-  MetaDocument.cxx
-  MetaObjectDocument.cxx
-  OptionList.cxx
+  tubeMetaDocument.cxx
+  tubeMetaObjectDocument.cxx
+  tubeOptionList.cxx
   )
 
 add_library( TubeObjectDocuments STATIC

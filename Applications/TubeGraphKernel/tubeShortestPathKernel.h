@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 
-#ifndef __ShortestPathKernel_h
-#define __ShortestPathKernel_h
+#ifndef __tubeShortestPathKernel_h
+#define __tubeShortestPathKernel_h
 
 #include <iostream>
 #include <utility>

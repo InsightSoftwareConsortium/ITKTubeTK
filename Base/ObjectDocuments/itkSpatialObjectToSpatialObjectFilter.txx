@@ -15,8 +15,10 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _itkSpatialObjectToSpatialObjectFilter_txx
-#define _itkSpatialObjectToSpatialObjectFilter_txx
+
+#ifndef __itkSpatialObjectToSpatialObjectFilter_txx
+#define __itkSpatialObjectToSpatialObjectFilter_txx
+
 #include "itkSpatialObjectToSpatialObjectFilter.h"
 
 

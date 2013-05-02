@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#ifndef __itkObjectDocumentToImageFilter_txx
+#define __itkObjectDocumentToImageFilter_txx
 
 #include "itkObjectDocumentToImageFilter.h"
 
@@ -155,3 +157,5 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 } // End namespace tube
 
 } // End namespace itk
+
+#endif

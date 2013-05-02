@@ -27,8 +27,8 @@ project( ${MODULE_NAME} )
 
 set( TubeGraphKernel_H_Files
   GraphKernel.h
-  ShortestPathKernel.h
-  WLSubtreeKernel.h
+  tubeShortestPathKernel.h
+  tubeWLSubtreeKernel.h
   )
 
 add_custom_target( TubeGraphKernelInclude SOURCES
@@ -54,7 +54,7 @@ SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-  ADDITIONAL_SRCS ShortestPathKernel.cxx WLSubtreeKernel.cxx GraphKernel.cxx
+  ADDITIONAL_SRCS GraphKernel.cxx tubeShortestPathKernel.cxx tubeWLSubtreeKernel.cxx
   INCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIRS}
     ${TubeTK_SOURCE_DIR}/Utilities
