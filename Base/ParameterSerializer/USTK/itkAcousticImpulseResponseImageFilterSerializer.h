@@ -32,11 +32,8 @@ namespace tube
 {
 
 /** \class AcousticImpulseResponseImageFilterSerializer
- *
  * \brief Parameter serializer for AcousticImpulseResponseImageFilter.
- *
  * \sa ParameterSerializer
- *
  */
 template< class TAcousticImpulseResponseImageFilter >
 class ITK_EXPORT AcousticImpulseResponseImageFilterSerializer:

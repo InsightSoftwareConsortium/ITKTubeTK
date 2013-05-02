@@ -50,7 +50,6 @@ namespace tube
  * is the intersection of these lines.  By radiating out from this origin, the
  * median of the first non-background values determine the output
  * StartOfAcquisitionRadius.
- *
  */
 template< class TInputImage > class ITK_EXPORT
   UltrasoundProbeGeometryCalculator: public ProcessObject { public:
@@ -106,7 +105,7 @@ private:
   UltrasoundProbeGeometryCalculator( const Self & ); // purposely not implemented
   void operator=( const Self & ); // purposely not implemented
 
-  unsigned int m_GeneralBeamDirection;
+  unsigned int   m_GeneralBeamDirection;
   InputPixelType m_BackgroundValue;
 };
 

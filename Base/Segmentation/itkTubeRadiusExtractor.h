@@ -47,7 +47,6 @@ namespace tube
 
 /**
  * This class extract the radius of a tube given an image
- *
  * /sa itkTubeRidgeExtractor
  */
 
@@ -187,9 +186,6 @@ public:
    * Return the optimizer */
   SplineType & GetMedialnessOptimizerSpline( void );
 
-  /**
-   *
-   */
   void MeasuresAtPoint( TubePointType & pnt, double pntR,
     double & mness, double & bness, bool doBNess );
 

@@ -34,113 +34,112 @@ namespace tube
 {
 
 
-/**
-  * \class ObjectDocument
-  * \brief Encodes an object file name and its ordered transform file names
-  *
-  *  Object Documents will store the file name of an object type (eg. image, spatial object, etc)
-  *     and a set file names for the transforms that are to be applied consecutively to the object.
-  *
-  *  IO is done through MetaObjectDocument.h
-  *
-  *  \ingroup Document
-  */
+/** \class ObjectDocument
+ * \brief Encodes an object file name and its ordered transform file names
+ *
+ *  Object Documents will store the file name of an object type (eg. image, spatial object, etc)
+ *     and a set file names for the transforms that are to be applied consecutively to the object.
+ *
+ *  IO is done through MetaObjectDocument.h
+ *
+ *  \ingroup Document
+ */
 class ObjectDocument : public Document
 {
-  public:
+public:
 
-    typedef ObjectDocument          Self;
-    typedef Document                Superclass;
+  typedef ObjectDocument          Self;
+  typedef Document                Superclass;
 
-    typedef SmartPointer< Self >        Pointer;
-    typedef SmartPointer< const Self >  ConstPointer;
+  typedef SmartPointer< Self >        Pointer;
+  typedef SmartPointer< const Self >  ConstPointer;
 
-    typedef Superclass::DateType                  DateType;
-    typedef Superclass::CommentsType              CommentsType;
-    typedef std::string                           ObjectNameType;
-    typedef std::string                           TransformNameType;
+  typedef Superclass::DateType                  DateType;
+  typedef Superclass::CommentsType              CommentsType;
+  typedef std::string                           ObjectNameType;
+  typedef std::string                           TransformNameType;
 
-    /** Not Implemented, but would allow for Document objects to be held by other documents */
-    typedef Superclass::ChildrenListType          ChildrenListType;
-    typedef Superclass::ChildrenListPointer       ChildrenListPointer;
+  /** Not Implemented, but would allow for Document objects to be held by other documents */
+  typedef Superclass::ChildrenListType          ChildrenListType;
+  typedef Superclass::ChildrenListPointer       ChildrenListPointer;
 
-    /** list that holds the ordered transform Names */
-    typedef std::vector< TransformNameType >      TransformNameListType;
+  /** list that holds the ordered transform Names */
+  typedef std::vector< TransformNameType >      TransformNameListType;
 
-    /** Method for creation through the object factory. */
-    itkNewMacro( Self );
+  /** Method for creation through the object factory. */
+  itkNewMacro( Self );
 
-    /** Run-time type information (and related methods). */
-    itkTypeMacro( Self, Superclass );
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( Self, Superclass );
 
-    /** To be implemented by the object type that inherits this class */
-    virtual std::string  GetObjectType() const{ return "Object";}
+  /** To be implemented by the object type that inherits this class */
+  virtual std::string  GetObjectType() const{ return "Object";}
 
-    /** Get the Object file name -- default is undefined */
-    itkGetConstReferenceMacro( ObjectName, ObjectNameType );
+  /** Get the Object file name -- default is undefined */
+  itkGetConstReferenceMacro( ObjectName, ObjectNameType );
 
-    /** Set the Object file name */
-    itkSetMacro( ObjectName, ObjectNameType );
+  /** Set the Object file name */
+  itkSetMacro( ObjectName, ObjectNameType );
 
-    /** Get the number of transforms associated with the object */
-    unsigned int GetNumberOfTransforms() const
+  /** Get the number of transforms associated with the object */
+  unsigned int GetNumberOfTransforms() const
+    {
+    return static_cast<unsigned int>(m_transformList.size());
+    }
+
+  /** Get a std::vector of all the transform file names in order */
+  TransformNameListType GetTransformNames() const { return m_transformList; }
+
+  /** Add a transform name to the end of the transform list */
+  void AddTransformNameToBack( const std::string & trans ) { m_transformList.push_back( trans ); }
+
+  /** Remove last transform from the list -- Does nothing if there are no transforms */
+  void RemoveTransformNameFromBack()
+    {
+    if( !m_transformList.empty() )
       {
-      return static_cast<unsigned int>(m_transformList.size());
+      m_transformList.pop_back();
       }
-
-    /** Get a std::vector of all the transform file names in order */
-    TransformNameListType GetTransformNames() const { return m_transformList; }
-
-    /** Add a transform name to the end of the transform list */
-    void AddTransformNameToBack( const std::string & trans ) { m_transformList.push_back( trans ); }
-
-    /** Remove last transform from the list -- Does nothing if there are no transforms */
-    void RemoveTransformNameFromBack()
-    {
-      if( !m_transformList.empty() )
-        {
-        m_transformList.pop_back();
-        }
     }
 
-    void Print( std::ostream& os ) const
+  void Print( std::ostream& os ) const
     {
-      os << "ObjectName: " << m_ObjectName << std::endl;
+    os << "ObjectName: " << m_ObjectName << std::endl;
 
-      os<< "Transform List: " << std::endl;
-      TransformNameListType::const_iterator it = m_transformList.begin();
-      while( it != m_transformList.end() )
-        {
-        std::cout << *it << std::endl;
-        ++it;
-        }
+    os<< "Transform List: " << std::endl;
+    TransformNameListType::const_iterator it = m_transformList.begin();
+    while( it != m_transformList.end() )
+      {
+      std::cout << *it << std::endl;
+      ++it;
+      }
     }
 
-    ~ObjectDocument(){}
+  ~ObjectDocument(){}
 
-  protected:
+protected:
 
-    ObjectDocument(){}
+  ObjectDocument(){}
 
-    void PrintSelf(std::ostream& os, Indent indent) const
+  void PrintSelf(std::ostream& os, Indent indent) const
     {
-      Superclass::PrintSelf(os,indent);
+    Superclass::PrintSelf(os,indent);
 
-      os << indent << "ObjectName: " << m_ObjectName << std::endl;
+    os << indent << "ObjectName: " << m_ObjectName << std::endl;
 
-      os << indent << "Transform List: " << std::endl;
-      TransformNameListType::const_iterator it = m_transformList.begin();
-      while( it != m_transformList.end() )
-        {
-        std::cout << *it << std::endl;
-        ++it;
-        }
+    os << indent << "Transform List: " << std::endl;
+    TransformNameListType::const_iterator it = m_transformList.begin();
+    while( it != m_transformList.end() )
+      {
+      std::cout << *it << std::endl;
+      ++it;
+      }
     }
 
-  private:
+private:
 
-    ObjectNameType                    m_ObjectName;
-    TransformNameListType             m_transformList;
+  ObjectNameType                    m_ObjectName;
+  TransformNameListType             m_transformList;
 };
 
 } // End namespace tube

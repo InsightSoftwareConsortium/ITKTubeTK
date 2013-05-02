@@ -30,12 +30,10 @@ limitations under the License.
 
 #include <cmath>
 
-/** Return 0 if the test file and baseline file have the same JSON content
- * and 1 otherwise.
- *
- * Values within the JSON object can be ignored by setting them to
- *   "Regression test NA"
- **/
+/** Return 0 if the test file and baseline file have the same JSON content and 1
+ * otherwise. Values within the JSON object can be ignored by setting them to
+ * "Regression test NA"
+ */
 int RegressionTestJson( const char *testJSONFileName,
   const char *baselineJSONFileName,
   bool reportErrors = true,

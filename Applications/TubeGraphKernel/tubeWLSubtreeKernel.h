@@ -44,9 +44,7 @@ limitations under the License.
 namespace tube
 {
 
-/**
- *
- * \class WLSubtreeKernel
+/** \class WLSubtreeKernel
  * \brief WLSubtreekernel implements the Weisfeiler-Lehman
  * subtree kernel proposed in
  *
@@ -57,63 +55,61 @@ namespace tube
  * Please read this article for any further details on this
  * kind of graph kernel. Naming of variables in this class
  * is close to the original publication.
- *
  */
 class WLSubtreeKernel : public GraphKernel
-  {
-  public:
+{
+public:
 
-    typedef std::map<std::string, int>  LabelMapType;
-    typedef std::vector<LabelMapType>   LabelMapVectorType;
+  typedef std::map<std::string, int>  LabelMapType;
+  typedef std::vector<LabelMapType>   LabelMapVectorType;
 
-    /** CTOR - Variant with no vertex label information */
-    WLSubtreeKernel( const GraphType &G0,
-                     const GraphType &G1,
-                     const LabelMapVectorType & labelMap,
-                     const int & labelCount,
-                     int subtreeHeight) :
-                        GraphKernel(G0, G1),
-                        m_subtreeHeight(subtreeHeight),
-                        m_labelMap(labelMap),
-                        m_labelCount(labelCount)
+  /** CTOR - Variant with no vertex label information */
+  WLSubtreeKernel( const GraphType &G0,
+                   const GraphType &G1,
+                   const LabelMapVectorType & labelMap,
+                   const int & labelCount,
+                   int subtreeHeight) :
+                      GraphKernel(G0, G1),
+                      m_subtreeHeight(subtreeHeight),
+                      m_labelMap(labelMap),
+                      m_labelCount(labelCount)
     {
     }
 
-    /** Compute the WLSubtree kernel */
-    double Compute(void);
+  /** Compute the WLSubtree kernel */
+  double Compute(void);
 
-    /*
-     * Take graph information and update
-     *
-     *  1) 'labelMap' for each subtree height with compressed label mapping
-     *  2) the number of compressed labels per subtree level (in 'cLabCounter')
-     *
-     */
-    static void UpdateLabelCompression( GraphType &G,
-                               std::vector<LabelMapType> & labelMap,
-                               int & cLabCounter,
-                               int subtreeHeight);
+  /*
+   * Take graph information and update
+   *
+   *  1) 'labelMap' for each subtree height with compressed label mapping
+   *  2) the number of compressed labels per subtree level (in 'cLabCounter')
+   */
+  static void UpdateLabelCompression( GraphType &G,
+                             std::vector<LabelMapType> & labelMap,
+                             int & cLabCounter,
+                             int subtreeHeight);
 
 
-  private:
+private:
 
-    /** Our initial set of vertex labels */
-    std::set<int> m_initialLabelSet;
+  /** Our initial set of vertex labels */
+  std::set<int>              m_initialLabelSet;
 
-    /** Subtree height */
-    int m_subtreeHeight;
+  /** Subtree height */
+  int                        m_subtreeHeight;
 
-    /** Label map + Count */
-    const LabelMapVectorType & m_labelMap;
-    const int m_labelCount;
+  /** Label map + Count */
+  const LabelMapVectorType & m_labelMap;
+  const int                  m_labelCount;
 
-    /*
-     * Take a graph 'G' and use the label map information and the number of
-     * compressed labels per subtree level to compute a feature mapping phi
-     * for the graph, see [1]
-     */
-    std::vector<int> BuildPhi( GraphType &G );
-  };
+  /*
+   * Take a graph 'G' and use the label map information and the number of
+   * compressed labels per subtree level to compute a feature mapping phi
+   * for the graph, see [1]
+   */
+  std::vector<int> BuildPhi( GraphType &G );
+};
 
 
 } // End of namespace tube

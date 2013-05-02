@@ -30,19 +30,19 @@ namespace tube
 {
 
 /** Example of how to use Spline1D.   Program is run to verify methods
-*  \example TestSpline1D/testSpline1D.cpp
-*/
+ *  \example TestSpline1D/testSpline1D.cpp
+ */
 
 /** 1D Spline abstract base class
-*
-*  Provides a consistent interface to setting the common
-*      parameters of spline functions.   Also, hides the
-*      archiving of previous calculations and control point
-*      evaluations to speed subsequent spline evaluations.
-*      Example derivation in SplApprox1D class
-*  \class Spline1D
-*  \author Stephen R. Aylward
-*  \date   11/19/99 */
+ *
+ *  Provides a consistent interface to setting the common
+ *      parameters of spline functions.   Also, hides the
+ *      archiving of previous calculations and control point
+ *      evaluations to speed subsequent spline evaluations.
+ *      Example derivation in SplApprox1D class
+ *  \class Spline1D
+ *  \author Stephen R. Aylward
+ *  \date   11/19/99 */
 class  Spline1D
 {
 public:

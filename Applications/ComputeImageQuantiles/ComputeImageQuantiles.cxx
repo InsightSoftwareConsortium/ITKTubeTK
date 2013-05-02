@@ -203,8 +203,6 @@ void writeQuantilesToTextFile( const std::vector<float> &quantiles,
 }
 
 
-
-
 int main( int argc, char*argv[] )
 {
   PARSE_ARGS;

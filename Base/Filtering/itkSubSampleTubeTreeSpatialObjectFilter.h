@@ -29,7 +29,6 @@ namespace itk
 {
 
 /** \class itkSubSampleTubeTreeSpatialObjectFilter
- *
  * \brief Sub-sample tubes within a SpatialObject hierarchy.
  *
  * The input to this SpatialObjectFilter can be a single TubeSpatialObject or a
@@ -38,7 +37,6 @@ namespace itk
  * factor.  Non-Tube spatial objects are passed to the output unchanged.
  *
  * \sa SubSampleTubeSpatialObjectFilter
- *
  */
 template< class TSpatialObject, class TTubeSpatialObject >
 class SubSampleTubeTreeSpatialObjectFilter:

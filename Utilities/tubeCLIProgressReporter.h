@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -42,28 +42,28 @@ public:
   CLIProgressReporter( const char * process,
                        ModuleProcessInformation * inf,
                        bool useStdCout = false )
-  {
+    {
     m_Process = process;
     m_ProcessInformation = inf;
     m_UseStdCout = useStdCout;
-  }
+    }
 
   virtual ~CLIProgressReporter( void )
-  {
-  }
+    {
+    }
 
   virtual bool Report( double fraction )
-  {
+    {
     if( m_ProcessInformation )
       {
       strncpy( m_ProcessInformation->ProgressMessage,
               this->m_Process.c_str( ), 1023 );
       m_ProcessInformation->Progress = fraction;
       // if( m_Fraction != 1.0 )
-        // {
-        // m_ProcessInformation->StageProgress = 
-        //   this->GetProcess( )->GetProgress( );
-        // }
+      //   {
+      //   m_ProcessInformation->StageProgress =
+      //   this->GetProcess( )->GetProgress( );
+      //   }
 
       m_TimeProbe.Stop( );
       m_ProcessInformation->ElapsedTime = m_TimeProbe.GetMean( )
@@ -80,7 +80,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
@@ -92,22 +92,22 @@ public:
                 << "</filter-progress>"
                 << std::endl;
       // if( m_Fraction != 1.0 )
-        // {
-        // std::cout << "<filter-stage-progress>"
-                  // << this->GetProcess( )->GetProgress( )
-                  // << "</filter-stage-progress>"
-                  // << std::endl;
-        // }
+      //   {
+      //   std::cout << "<filter-stage-progress>"
+      //             << this->GetProcess( )->GetProgress( )
+      //             << "</filter-stage-progress>"
+      //             << std::endl;
+      //   }
       // std::cout << std::flush;
       }
 
     return true;
 
-  }
+    }
 
   /** Callback method to show the StartEvent */
   virtual void Start( void )
-  {
+    {
     m_TimeProbe.Start( );
     if( m_ProcessInformation )
       {
@@ -140,11 +140,11 @@ public:
                 << std::endl;
       std::cout << std::flush;
       }
-  }
+    }
 
   /** Callback method to show the EndEvent */
   virtual void End( void )
-  {
+    {
     m_TimeProbe.Stop( );
     if( m_ProcessInformation )
       {
@@ -178,27 +178,27 @@ public:
       std::cout << "</filter-end>";
       std::cout << std::flush;
       }
-  }
+    }
 
   virtual void SetUseStdCout( bool useStdCout )
-  {
+    {
     m_UseStdCout = useStdCout;
-  }
+    }
 
   virtual bool GetUseStdCout( void )
-  {
+    {
     return m_UseStdCout;
-  }
+    }
 
   virtual std::string GetProcess( void )
-  {
+    {
     return m_Process;
-  }
+    }
 
   virtual ModuleProcessInformation * GetProcessInformation( void )
-  {
+    {
     return m_ProcessInformation;
-  }
+    }
 
 protected:
 

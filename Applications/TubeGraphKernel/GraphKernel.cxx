@@ -206,10 +206,10 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
   assert(nLabels == nVertices);
   for ( int i=0; i<nLabels; ++i )
     {
-      int lab;
-      reader >> lab;
-      reader.get();
-      g[vertex(i, g)].type = lab;
+    int lab;
+    reader >> lab;
+    reader.get();
+    g[vertex(i, g)].type = lab;
 
     }
   reader.close();

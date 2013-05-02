@@ -34,7 +34,7 @@
 void GetImageInformation( std::string fileName,
                           itk::ImageIOBase::IOComponentType &componentType,
                           unsigned int & dimension )
-  {
+{
   // Find out the component type of the image in file
   typedef itk::ImageIOBase::IOComponentType  PixelType;
 
@@ -54,7 +54,7 @@ void GetImageInformation( std::string fileName,
 
   componentType = imageIO->GetComponentType();
   dimension = imageIO->GetNumberOfDimensions();
-  }
+}
 
 template< unsigned int DimsT >
 int RegressionTestImage( const char *, const char *, bool, bool, double,

@@ -43,13 +43,11 @@ namespace itk
 namespace tube
 {
 
-/**
- * \class NJetImageFunction
+/** \class NJetImageFunction
  * \brief Calculate the gaussian blurred value, 1st derivatives, and
  *        second derivatives at point
  *        given a scale and extent of the gaussian.
  * This class is templated over the input image type.
- *
  */
 template <class TInputImage>
 class ITK_EXPORT NJetImageFunction :

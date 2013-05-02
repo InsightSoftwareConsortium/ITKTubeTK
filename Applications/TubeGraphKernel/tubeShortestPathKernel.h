@@ -42,54 +42,51 @@ namespace tube
 {
 
 
-/**
- *
- * \class ShortestPathKernel
+/** \class ShortestPathKernel
  * \brief Impementation of Borgwardt's Shortest-Path Kernel
  *
  * This class implements the shortest-path kernel, proposed in
  *
  * [1] K.M. Borgwardt and H.P. Kriegel, "Shortest-Path Kernels on
  *     Graphs", In: IEEE Int. Conf. on Data Mining, 2005
- *
  */
 class ShortestPathKernel : public GraphKernel
-  {
-  public:
+{
+public:
 
-    /** Edge kernel types */
-    static const int EDGE_KERNEL_DEL = 0;
+  /** Edge kernel types */
+  static const int EDGE_KERNEL_DEL = 0;
 
-    /** CTOR - Consumer sets graphs */
-    ShortestPathKernel(const GraphType &G0, const GraphType &G1) :
-      GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
+  /** CTOR - Consumer sets graphs */
+  ShortestPathKernel(const GraphType &G0, const GraphType &G1) :
+    GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
 
-    /** Sets edge-kernel type */
-    void SetEdgeKernel(int type)
-      { m_edgeKernelType = type; }
+  /** Sets edge-kernel type */
+  void SetEdgeKernel(int type)
+    { m_edgeKernelType = type; }
 
-    /** Computes the SP kernel value, see [1], Section 4.2 */
-    double Compute(void);
+  /** Computes the SP kernel value, see [1], Section 4.2 */
+  double Compute(void);
 
-  private:
+private:
 
-    /** Floyd-transformed graphs */
-    GraphType m_FG0, m_FG1;
+  /** Floyd-transformed graphs */
+  GraphType m_FG0, m_FG1;
 
-    int m_edgeKernelType;
+  int m_edgeKernelType;
 
-    /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
-    GraphType FloydTransform(const GraphType &in);
+  /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
+  GraphType FloydTransform(const GraphType &in);
 
-    template <typename T>
-    void ensureOrder(T& first, T& second)
+  template <typename T>
+  void ensureOrder(T& first, T& second)
     {
-      if ( first > second )
-        {
-        std::swap( first, second );
-        }
+    if ( first > second )
+      {
+      std::swap( first, second );
+      }
     }
-  };
+};
 
 
 } // End of namespace tube

@@ -29,7 +29,7 @@ namespace tube
 {
 
 
-  template <class TInputSpatialObject, class TOutputSpatialObject>
+template <class TInputSpatialObject, class TOutputSpatialObject>
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::SpatialObjectToSpatialObjectFilter()
 {

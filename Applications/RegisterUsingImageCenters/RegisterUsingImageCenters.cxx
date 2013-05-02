@@ -40,9 +40,9 @@ int DoIt( int argc, char **argv );
 template <class TPixel, unsigned int VDimension>
 int DoIt( int argc, char **argv )
 {
-    (void)argc;
-    (void)argv;
-	return 0;
+  (void)argc;
+  (void)argv;
+  return 0;
 }
 #include "tubeCLIHelperFunctions.h"
 
@@ -104,10 +104,10 @@ int DoIt(int argc, char **argv)
        * Define the image type, the reader type and the nearest-neighbor (NN)
        * interpolator type that might be used later on.
        */
-      typedef itk::Image< short, Dimension > ImageType;
-      typedef itk::ImageFileReader< ImageType > ReaderType;
+      typedef itk::Image< short, Dimension >                ImageType;
+      typedef itk::ImageFileReader< ImageType >             ReaderType;
       typedef itk::NearestNeighborInterpolateImageFunction<
-        ImageType, double > NNInterpolatorType;
+        ImageType, double >                                 NNInterpolatorType;
 
 
       // Read input file
@@ -233,5 +233,5 @@ int DoIt(int argc, char **argv)
       return EXIT_FAILURE;
       }
     }
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }

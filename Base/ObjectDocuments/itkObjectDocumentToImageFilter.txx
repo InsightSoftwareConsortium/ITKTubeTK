@@ -71,14 +71,14 @@ template< class TInputObjectDocument, class TOutputImageType >
 typename ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>::OutputImagePointer
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 ::ReadDocument( ConstDocumentPointer doc )
-  {
+{
 
   typename ImageFileReaderType::Pointer reader = ImageFileReaderType::New();
   reader->SetFileName( doc->GetObjectName() );
 
   reader->Update();
   return reader->GetOutput();
-  }
+}
 
 
 template< class TInputObjectDocument, class TOutputImageType >
@@ -152,7 +152,7 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
     {
     outputSize[i] = (long int)(( max[i] - origin[i] ) / spacing[i] );
     }
-  }
+}
 
 } // End namespace tube
 

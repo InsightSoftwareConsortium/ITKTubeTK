@@ -34,54 +34,53 @@ namespace tube
 {
 
 
-/**
-  * \class BlobSpatialObjectDocument
-  * \brief Encodes a blob Spatial Object file name and its ordered transform file names
-  *
-  *  Object will store the file name of a \sa BlobSpatialObject type
-  *     and will a set file names for the transforms that are to be applied consecutively to the object.
-  *
-  *  IO is done through MetaObjectDocument.h
-  *
-  *  \ingroup Document
-  */
+/** \class BlobSpatialObjectDocument
+ * \brief Encodes a blob Spatial Object file name and its ordered transform file names
+ *
+ *  Object will store the file name of a \sa BlobSpatialObject type
+ *     and will a set file names for the transforms that are to be applied consecutively to the object.
+ *
+ *  IO is done through MetaObjectDocument.h
+ *
+ *  \ingroup Document
+ */
 class BlobSpatialObjectDocument : public SpatialObjectDocument
 {
-  public:
+public:
 
-    typedef BlobSpatialObjectDocument             Self;
-    typedef SpatialObjectDocument                 Superclass;
+  typedef BlobSpatialObjectDocument             Self;
+  typedef SpatialObjectDocument                 Superclass;
 
-    typedef SmartPointer<Self>                    Pointer;
-    typedef SmartPointer< const Self >            ConstPointer;
+  typedef SmartPointer<Self>                    Pointer;
+  typedef SmartPointer< const Self >            ConstPointer;
 
-    typedef Superclass::DateType                  DateType;
-    typedef Superclass::CommentsType              CommentsType;
+  typedef Superclass::DateType                  DateType;
+  typedef Superclass::CommentsType              CommentsType;
 
-    /** Not Implemented, but would allow for Document objects to be held by other documents */
-    typedef Superclass::ChildrenListType          ChildrenListType;
-    typedef Superclass::ChildrenListPointer       ChildrenListPointer;
+  /** Not Implemented, but would allow for Document objects to be held by other documents */
+  typedef Superclass::ChildrenListType          ChildrenListType;
+  typedef Superclass::ChildrenListPointer       ChildrenListPointer;
 
-    /** list that holds the ordered transform Names */
-    typedef Superclass::TransformNameListType     TransformNameListType;
+  /** list that holds the ordered transform Names */
+  typedef Superclass::TransformNameListType     TransformNameListType;
 
-    /** Method for creation through the object factory. */
-    itkNewMacro( Self );
+  /** Method for creation through the object factory. */
+  itkNewMacro( Self );
 
-    /** Run-time type information (and related methods). */
-    itkTypeMacro( Self, Superclass );
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( Self, Superclass );
 
-    /** Return the type of the object within the Document (ie. "Blob") */
-    std::string GetObjectType() const { return "Blob"; }
+  /** Return the type of the object within the Document (ie. "Blob") */
+  std::string GetObjectType() const { return "Blob"; }
 
-    const std::string LABEL_BLOBTYPE;
+  const std::string LABEL_BLOBTYPE;
 
-  protected:
+protected:
 
-    BlobSpatialObjectDocument() : LABEL_BLOBTYPE("Blob"){}
-    ~BlobSpatialObjectDocument(){}
+  BlobSpatialObjectDocument() : LABEL_BLOBTYPE("Blob"){}
+  ~BlobSpatialObjectDocument(){}
 
-  private:
+private:
 };
 
 } // End namespace tube

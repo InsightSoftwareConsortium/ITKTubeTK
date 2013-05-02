@@ -237,4 +237,4 @@ int DoIt( int argc, char *argv[] )
 
   delete reader;
   return 1;
-  }
+}

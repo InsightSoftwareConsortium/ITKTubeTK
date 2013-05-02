@@ -84,7 +84,7 @@ InverseIntensityImageFilter<TInputImage>
 
   // ** Build Input and output iterators for inversion ** //
   typedef  ImageRegionConstIterator<InputImageType>      InputIteratorType;
-  typedef  ImageRegionIterator<OutputImageType>     OutputIteratorType;
+  typedef  ImageRegionIterator<OutputImageType>          OutputIteratorType;
   InputIteratorType it_input( InputImage, region );
   OutputIteratorType it_output( OutputImage, region );
 

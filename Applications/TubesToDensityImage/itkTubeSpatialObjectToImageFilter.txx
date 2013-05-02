@@ -223,9 +223,9 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
       ((TubeType *)((*TubeIterator).GetPointer()))->ComputeTangentAndNormals();
       }
 
-   for (unsigned int k=0;
-        k < ((TubeType *)(TubeIterator->GetPointer()))->GetNumberOfPoints();
-        k++)
+    for (unsigned int k=0;
+         k < ((TubeType *)(TubeIterator->GetPointer()))->GetNumberOfPoints();
+         k++)
       {
       bool IsInside = true;
       typedef typename TubeType::TubePointType TubePointType;

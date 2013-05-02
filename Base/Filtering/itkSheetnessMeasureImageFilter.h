@@ -29,7 +29,7 @@ limitations under the License.
 namespace itk
 {
 
-/**\class itkSheetnessMeasureImageFilter
+/** \class itkSheetnessMeasureImageFilter
  *
  * \brief Computes a measure of sheetness from the Hessian Eigenvalues
  *

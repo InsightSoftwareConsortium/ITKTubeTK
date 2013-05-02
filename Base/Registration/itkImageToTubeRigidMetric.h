@@ -32,8 +32,7 @@ limitations under the License.
 namespace itk
 {
 
-/**
- * \class ImageToTubeRigidMetric
+/** \class ImageToTubeRigidMetric
  * \brief Computes similarity between two objects to be registered
  * The metric implemented here corresponds to the following paper:
  * \link http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
@@ -47,7 +46,7 @@ namespace itk
  * TMovingSpatialObject to use for the registration.
  *
  * \warning (Derivative)
-*/
+ */
 
 template < class TFixedImage,
   class TMovingSpatialObject,

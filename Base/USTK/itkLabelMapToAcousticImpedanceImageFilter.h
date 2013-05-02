@@ -33,7 +33,6 @@ namespace itk
  *
  * \brief Creates an image of approximate acoustic impedance from a label map of
  * classified tissues.
- *
  */
 template< class TInputImage, class TOutputImage, class TLookupTable >
 class LabelMapToAcousticImpedanceImageFilter:

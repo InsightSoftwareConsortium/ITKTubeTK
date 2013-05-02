@@ -34,7 +34,7 @@ TubeRegistratorPoint::
 TubeRegistratorPoint(void)
 :m_X(3), m_V1(3), m_m_V2(3),
  m_XT(3), m_V1T(3), m_V2T(3), m_DXT(3)
-  {
+{
   m_VAL = 0;
   m_X = 0;
   m_R = 0;
@@ -47,12 +47,12 @@ TubeRegistratorPoint(void)
   m_V1T = 0;
   m_V2T = 0;
   m_DXT = 0;
-  }
+}
 
 TubeRegistrator::
 TubeRegistrator(void)
 : cBiasV(3,3), cBiasVI(3,3)
-  {
+{
   cKappa = 1;
   cTubeNet = NULL;
   cRegPoints.clear();
@@ -67,69 +67,69 @@ TubeRegistrator(void)
   cMetric = 0;
 
   cRegImThresh = 0;
-  }
+}
 
 void TubeRegistrator::
 SetTubeNet(TubeNet * tubes)
-  {
+{
   cTubeNet = tubes;
-  }
+}
 
 void TubeRegistrator::
 SetImage(Image3D<short> * im)
-  {
+{
   cIm = im;
   cImOp.use(cIm);
 
   cImMin = cIm->dataMin();
   cImRange = cIm->dataMax()-cImMin;
-  }
+}
 
 void TubeRegistrator::
 SetSampling(int newSampling)
-  {
+{
   cSampling = newSampling;
-  }
+}
 
 int TubeRegistrator::
 GetSampling(void)
-  {
+{
   return cSampling;
-  }
+}
 
 int TubeRegistrator::
 SetNumSamples(void)
-  {
+{
   return cCount;
-  }
+}
 
 std::list<TubeRegistratorPoint *> * TubeRegistrator::
 GetSamples(void)
-  {
+{
   return & cRegPoints;
-  }
+}
 
 void TubeRegistrator::
 SetKappa(double kappa)
-  {
+{
   cKappa = kappa;
-  }
+}
 
 void TubeRegistrator::
 SetImThresh(double newRegThresh)
-  {
+{
   cRegImThresh = newRegThresh;
-  }
+}
 
 double TubeRegistrator::
 GetImThresh(void)
-  {
+{
   return cRegImThresh;
-  }
+}
 
 void TubeRegistrator::
 MetricPreProc(void)
-  {
+{
   if(cIm == NULL)
     {
     return;
@@ -225,11 +225,11 @@ MetricPreProc(void)
   std::cout << "Sampling = " << cSampling << std::endl;
   std::cout << "Num Samples = " << cCount << std::endl;
   std::cout << "Center = " << cX/cWeight << ", " << cY/cWeight << ", " << cZ/cWeight << std::endl;
-  }
+}
 
 double TubeRegistrator::
 Metric(void)
-  {
+{
   long c0 = clock();
 
   std::list<TubeRegistratorPoint *>::iterator j;
@@ -296,19 +296,23 @@ Metric(void)
     }
 
   if(cWeight == 0 || cImRange == 0)
+    {
     cMetric = 10;
+    }
   else
+    {
     cMetric = (cMetric/cWeight-cImMin)/cImRange;
+    }
 
   //std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
 
   return cMetric;
-  }
+}
 
 double TubeRegistrator::
 MetricDeriv(double *dX, double *dY, double *dZ,
             double *dA, double *dB, double *dG)
-  {
+{
 
   long c0 = clock();
 
@@ -416,7 +420,9 @@ MetricDeriv(double *dX, double *dY, double *dZ,
     return 10;
     }
   else
+    {
     cBiasV = 1.0/cWeight * cBiasV;
+    }
   cBiasVI = vnl_matrix_inverse<double>(cBiasV).inverse();
 
   for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
@@ -446,7 +452,7 @@ MetricDeriv(double *dX, double *dY, double *dZ,
   std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
 
   return cMetric;
-  }
+}
 
 //
 //
@@ -464,90 +470,90 @@ double offsetDUnit=3.5;
 double rotDUnit=0.1;
 
 class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
-   {
-   protected:
-     TubeRegistrator * cRegOp;
-   public:
-     mVMetricCost()
-       : cRegOp(0)
-       {
-       };
-     void use(TubeRegistrator * newRegOp)
-         {
-         cRegOp = newRegOp;
-         }
-    double value(TNT::Vector<double> * m_X)
-       {
-       cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
-       cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
-       /*
-       std::cout << "V "
-                 << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
-                 << (*m_X)(2) << " (" << (*m_X)(2)*offsetUnit << ")  "
-                 << (*m_X)(3) << " (" << (*m_X)(3)*offsetUnit << ")  " << std::endl;
-       std::cout << "  "
-                 << (*m_X)(4) << " (" << (*m_X)(4)*rotUnit << ")  "
-                 << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
-                 << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
-       */
-       double tf = cRegOp->Metric();
-       //std::cout << "   v = " << tf << std::endl;
-       return tf;
-       }
-   };
+{
+public:
+  mVMetricCost()
+    : cRegOp(0)
+    {
+    }
+  void use(TubeRegistrator * newRegOp)
+    {
+    cRegOp = newRegOp;
+    }
+  double value(TNT::Vector<double> * m_X)
+    {
+    cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
+    cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
+    /*
+    std::cout << "V "
+              << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
+              << (*m_X)(2) << " (" << (*m_X)(2)*offsetUnit << ")  "
+              << (*m_X)(3) << " (" << (*m_X)(3)*offsetUnit << ")  " << std::endl;
+    std::cout << "  "
+              << (*m_X)(4) << " (" << (*m_X)(4)*rotUnit << ")  "
+              << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
+              << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
+    */
+    double tf = cRegOp->Metric();
+    //std::cout << "   v = " << tf << std::endl;
+    return tf;
+    }
+protected:
+  TubeRegistrator * cRegOp;
+};
 
 class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double> *>
-   {
-   protected:
-     TNT::Vector<double> cD;
-     TubeRegistrator * cRegOp;
-   public:
-     mVMetricDeriv()
-       : cRegOp(0), cD(6, 0.0)
-       {
-       }
-     void use(TubeRegistrator * newRegOp)
-       {
-       cRegOp = newRegOp;
-       }
-     TNT::Vector<double> * value(TNT::Vector<double> * m_X)
-       {
-       cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
-       cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
-       /*
-       std::cout << "D "
-                 << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
-                 << (*m_X)(2) << " (" << (*m_X)(2)*offsetUnit << ")  "
-                 << (*m_X)(3) << " (" << (*m_X)(3)*offsetUnit << ")  " << std::endl;
-       std::cout << "  "
-                 << (*m_X)(4) << " (" << (*m_X)(4)*rotUnit << ")  "
-                 << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
-                 << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
-       */
-       cRegOp->MetricDeriv(&cD(1), &cD(2), &cD(3),
-                           &cD(4), &cD(5), &cD(6));
-       /*
-       std::cout << "  "
-                 << cD(1) << " (" << cD(1)/offsetDUnit << ")  "
-                 << cD(2) << " (" << cD(2)/offsetDUnit << ")  "
-                 << cD(3) << " (" << cD(3)/offsetDUnit << ")  " << std::endl;
-       std::cout << "  "
-                 << cD(4) << " (" << cD(4)/rotDUnit << ")  "
-                 << cD(5) << " (" << cD(5)/rotDUnit << ")  "
-                 << cD(6) << " (" << cD(6)/rotDUnit << ")  " << std::endl;
-       */
-       cD(1) /= offsetDUnit;
-       cD(2) /= offsetDUnit;
-       cD(3) /= offsetDUnit;
-       cD(4) /= rotDUnit;
-       cD(5) /= rotDUnit;
-       cD(6) /= rotDUnit;
-       return &cD;
-       }
-   };
+{
+protected:
+  TNT::Vector<double> cD;
+  TubeRegistrator * cRegOp;
+public:
+  mVMetricDeriv()
+    : cRegOp(0), cD(6, 0.0)
+    {
+    }
+  void use(TubeRegistrator * newRegOp)
+    {
+    cRegOp = newRegOp;
+    }
+  TNT::Vector<double> * value(TNT::Vector<double> * m_X)
+    {
+    cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
+    cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
+    /*
+    std::cout << "D "
+             << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
+             << (*m_X)(2) << " (" << (*m_X)(2)*offsetUnit << ")  "
+             << (*m_X)(3) << " (" << (*m_X)(3)*offsetUnit << ")  " << std::endl;
+    std::cout << "  "
+             << (*m_X)(4) << " (" << (*m_X)(4)*rotUnit << ")  "
+             << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
+             << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
+    */
+    cRegOp->MetricDeriv(&cD(1), &cD(2), &cD(3),
+                        &cD(4), &cD(5), &cD(6));
+    /*
+    std::cout << "  "
+             << cD(1) << " (" << cD(1)/offsetDUnit << ")  "
+             << cD(2) << " (" << cD(2)/offsetDUnit << ")  "
+             << cD(3) << " (" << cD(3)/offsetDUnit << ")  " << std::endl;
+    std::cout << "  "
+             << cD(4) << " (" << cD(4)/rotDUnit << ")  "
+             << cD(5) << " (" << cD(5)/rotDUnit << ")  "
+             << cD(6) << " (" << cD(6)/rotDUnit << ")  " << std::endl;
+    */
+    cD(1) /= offsetDUnit;
+    cD(2) /= offsetDUnit;
+    cD(3) /= offsetDUnit;
+    cD(4) /= rotDUnit;
+    cD(5) /= rotDUnit;
+    cD(6) /= rotDUnit;
+    return &cD;
+    }
+};
 
 bool TubeRegistrator::Fit(void)
-  {
+{
   mVMetricCost * func = new mVMetricCost;
   func->use(this);
 
@@ -629,4 +635,4 @@ bool TubeRegistrator::Fit(void)
   mGamma = g;
 
   return true;
-  }
+}

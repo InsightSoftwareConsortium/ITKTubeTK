@@ -35,131 +35,130 @@ namespace itk
 namespace tube
 {
 
-/**
-  * \class MinimizeImageSizeFilter
-  * \brief Cuts the edges off of an image ( either from the origin, end
-  * extend or both for all dimensions ).
-  *
-  * Can clip the image to the first valid pixel (ie > threshold) and/or
-  * create a buffer around the image of the first valid pixel
-  * (i.e., pixel + buffer).
-  *
-  * Done for all dimensions...Good Filter to follow \sa
-  * itkCompleteImageResampleFilter.h
-  */
+/** \class MinimizeImageSizeFilter
+ * \brief Cuts the edges off of an image ( either from the origin, end
+ * extend or both for all dimensions ).
+ *
+ * Can clip the image to the first valid pixel (ie > threshold) and/or
+ * create a buffer around the image of the first valid pixel
+ * (i.e., pixel + buffer).
+ *
+ * Done for all dimensions...Good Filter to follow \sa
+ * itkCompleteImageResampleFilter.h
+ */
 template<class TInputImage >
 class MinimizeImageSizeFilter : public ImageToImageFilter< TInputImage,
                                                            TInputImage >
 {
-  public:
+public:
 
-    typedef MinimizeImageSizeFilter                 Self;
-    typedef ImageToImageFilter< TInputImage,
-                                TInputImage >       Superclass;
+  typedef MinimizeImageSizeFilter                 Self;
+  typedef ImageToImageFilter< TInputImage,
+                              TInputImage >       Superclass;
 
-    typedef SmartPointer<Self>                      Pointer;
-    typedef SmartPointer<const Self>                ConstPointer;
+  typedef SmartPointer<Self>                      Pointer;
+  typedef SmartPointer<const Self>                ConstPointer;
 
-    itkNewMacro( Self );
-    itkTypeMacro( Self, Superclass );
+  itkNewMacro( Self );
+  itkTypeMacro( Self, Superclass );
 
-    typedef TInputImage                             InputImageType;
-    typedef typename InputImageType::PixelType      InputPixelType;
+  typedef TInputImage                             InputImageType;
+  typedef typename InputImageType::PixelType      InputPixelType;
 
-    typedef TInputImage                             OutputImageType;
-    typedef typename InputImageType::ConstPointer   InputImageConstPointer;
-    typedef typename OutputImageType::Pointer       OutputImagePointer;
+  typedef TInputImage                             OutputImageType;
+  typedef typename InputImageType::ConstPointer   InputImageConstPointer;
+  typedef typename OutputImageType::Pointer       OutputImagePointer;
 
-    typedef typename InputImageType::RegionType     RegionType;
-    typedef typename InputImageType::SizeType       SizeType;
-    typedef typename InputImageType::IndexType      IndexType;
-    typedef typename InputImageType::PointType      PointType;
+  typedef typename InputImageType::RegionType     RegionType;
+  typedef typename InputImageType::SizeType       SizeType;
+  typedef typename InputImageType::IndexType      IndexType;
+  typedef typename InputImageType::PointType      PointType;
 
-    /** Number of dimensions. */
-    itkStaticConstMacro(TDimension, unsigned int, TInputImage::ImageDimension);
+  /** Number of dimensions. */
+  itkStaticConstMacro(TDimension, unsigned int, TInputImage::ImageDimension);
 
-    /** Get/Set the input */
-    itkGetConstObjectMacro( Input, InputImageType );
+  /** Get/Set the input */
+  itkGetConstObjectMacro( Input, InputImageType );
 
-    /** Set the image pixel buffer on each side of the image (can be negative
-     * to crop inside) */
-    itkGetConstReferenceMacro( NumberOfBufferPixels, SizeType );
+  /** Set the image pixel buffer on each side of the image (can be negative
+   * to crop inside) */
+  itkGetConstReferenceMacro( NumberOfBufferPixels, SizeType );
 
-    /** Set the number of pixels (per end) that will be added before and past
-     * the first and last valid pixels */
-    void SetNumberOfBufferPixels( SizeType& size )
-      {
-      m_NumberOfBufferPixels = size;
-      this->SetBufferImage( true );
-      }
+  /** Set the number of pixels (per end) that will be added before and past
+   * the first and last valid pixels */
+  void SetNumberOfBufferPixels( SizeType& size )
+    {
+    m_NumberOfBufferPixels = size;
+    this->SetBufferImage( true );
+    }
 
-    /** Get the threshold marker for considering a pixel to be kept in image
-     * (value non-inclusive -- threshold value to be removed ) */
-    itkGetConstMacro( ThresholdValue, InputPixelType );
-    /** Set the threshold marker for considering a pixel to be kept in image
-      * (value non-inclusive -- threshold value to be removed ) */
-    itkSetMacro( ThresholdValue, InputPixelType );
-    /** Get whether the threshold value is upper or lower boundry
-      * (default is false: ie all values below m_ThresholdValue will be
-      * excluded) */
-    itkGetConstMacro( ThresholdAbove, bool );
-    /** Set whether the threshold value is upper or lower boundry
-      *(default is false: ie all values below m_ThresholdValue will be
-      excluded) */
-    itkSetMacro( ThresholdAbove, bool );
+  /** Get the threshold marker for considering a pixel to be kept in image
+   * (value non-inclusive -- threshold value to be removed ) */
+  itkGetConstMacro( ThresholdValue, InputPixelType );
+  /** Set the threshold marker for considering a pixel to be kept in image
+    * (value non-inclusive -- threshold value to be removed ) */
+  itkSetMacro( ThresholdValue, InputPixelType );
+  /** Get whether the threshold value is upper or lower boundry
+    * (default is false: ie all values below m_ThresholdValue will be
+    * excluded) */
+  itkGetConstMacro( ThresholdAbove, bool );
+  /** Set whether the threshold value is upper or lower boundry
+    *(default is false: ie all values below m_ThresholdValue will be
+    excluded) */
+  itkSetMacro( ThresholdAbove, bool );
 
-    /** Get the default pixel value when resampling: (default is 0) */
-    itkGetConstMacro( DefaultPixelValue, InputPixelType );
-    /** Set the default pixel value when resampling: (default is 0) */
-    itkSetMacro( DefaultPixelValue, InputPixelType );
+  /** Get the default pixel value when resampling: (default is 0) */
+  itkGetConstMacro( DefaultPixelValue, InputPixelType );
+  /** Set the default pixel value when resampling: (default is 0) */
+  itkSetMacro( DefaultPixelValue, InputPixelType );
 
-    /** Turn on and off the clip the end dimension size function.
-      * Will clip the end of each dimension in the image to the first
-      * incidence of a pixel > threshold */
-    itkBooleanMacro( ClipEndIndices );
-    /** Turn on and off the clip the start dimension size function.
-      * Will clip the start of each dimension in the image to the first
-      * incidence of a pixel > threshold */
-    itkBooleanMacro( ClipStartIndices );
+  /** Turn on and off the clip the end dimension size function.
+    * Will clip the end of each dimension in the image to the first
+    * incidence of a pixel > threshold */
+  itkBooleanMacro( ClipEndIndices );
+  /** Turn on and off the clip the start dimension size function.
+    * Will clip the start of each dimension in the image to the first
+    * incidence of a pixel > threshold */
+  itkBooleanMacro( ClipStartIndices );
 
-    itkGetObjectMacro( Output, OutputImageType );
+  itkGetObjectMacro( Output, OutputImageType );
 
-  protected:
+protected:
 
-    /** Does the real work! */
-    virtual void GenerateData();
+  /** Does the real work! */
+  virtual void GenerateData();
 
-    MinimizeImageSizeFilter();
-    ~MinimizeImageSizeFilter(){}
+  MinimizeImageSizeFilter();
+  ~MinimizeImageSizeFilter(){}
 
-    itkGetConstMacro( ClipEndIndices, bool );
-    itkSetMacro( ClipEndIndices, bool );
+  itkGetConstMacro( ClipEndIndices, bool );
+  itkSetMacro( ClipEndIndices, bool );
 
-    itkGetConstMacro( ClipStartIndices, bool );
-    itkSetMacro( ClipStartIndices, bool );
+  itkGetConstMacro( ClipStartIndices, bool );
+  itkSetMacro( ClipStartIndices, bool );
 
-    itkGetConstMacro( BufferImage, bool );
-    itkSetMacro( BufferImage, bool );
+  itkGetConstMacro( BufferImage, bool );
+  itkSetMacro( BufferImage, bool );
 
-    void Get3DCroppedStartRegion( InputImageConstPointer input,
-                                  RegionType& region );
-    void Get3DCroppedEndRegion( InputImageConstPointer input,
+  void Get3DCroppedStartRegion( InputImageConstPointer input,
                                 RegionType& region );
+  void Get3DCroppedEndRegion( InputImageConstPointer input,
+                              RegionType& region );
 
-  private:
+private:
 
-    InputImageConstPointer                  m_Input;
-    OutputImagePointer                      m_Output;
+  InputImageConstPointer                  m_Input;
+  OutputImagePointer                      m_Output;
 
-    SizeType                                m_NumberOfBufferPixels;
-    bool                                    m_BufferImage;
-    InputPixelType                          m_ThresholdValue;
-    bool                                    m_ThresholdAbove;
+  SizeType                                m_NumberOfBufferPixels;
+  bool                                    m_BufferImage;
+  InputPixelType                          m_ThresholdValue;
+  bool                                    m_ThresholdAbove;
 
-    InputPixelType                          m_DefaultPixelValue;
+  InputPixelType                          m_DefaultPixelValue;
 
-    bool                                    m_ClipEndIndices;
-    bool                                    m_ClipStartIndices;
+  bool                                    m_ClipEndIndices;
+  bool                                    m_ClipStartIndices;
 };
 
 } // End of namespace tube

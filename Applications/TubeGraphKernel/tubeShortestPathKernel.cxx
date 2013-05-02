@@ -94,8 +94,6 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 double ShortestPathKernel::Compute(void)
 {

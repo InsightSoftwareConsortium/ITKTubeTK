@@ -144,7 +144,7 @@ bool
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::AutoExtract( int , int ) // zMin, int zMax )
 {
-/*  itk::Size<3> size;
+  /* itk::Size<3> size;
   size = m_Image->GetLargestPossibleRegion().GetSize();
 
   int i, j, k;
@@ -182,7 +182,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
     {
     m_StatusCallBack( "Auto Extract", "Done!", 1 );
     }
-*/
+  */
   return true;
 }
 

@@ -264,7 +264,7 @@ int DoIt( int argc, char * argv[] )
   imageWriter->Write();
 
   return EXIT_SUCCESS;
-  }
+}
 
 int main(int argc, char **argv)
 {

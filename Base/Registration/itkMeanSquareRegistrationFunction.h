@@ -32,8 +32,7 @@ limitations under the License.
 
 namespace itk {
 
-/**
- * \class MeanSquareRegistrationFunction
+/** \class MeanSquareRegistrationFunction
  *
  * This class encapsulate the PDE which drives the demons registration
  * algorithm. It is used by MeanSquareRegistrationFilter to compute the

@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 {
   PARSE_ARGS;
 
-    return DoIt( argc, argv );
+  return DoIt( argc, argv );
 }
 
 
@@ -235,4 +235,4 @@ int DoIt( int argc, char **argv )
   writeCntStream.close();
 
   return 1;
-  }
+}

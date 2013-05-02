@@ -51,108 +51,107 @@ namespace tube
  * \brief Base class for all graph kernels
  */
 class GraphKernel
-  {
+{
 
-  /** Public static/non-static functions */
-  public:
+public:
 
-    /** Default strategy for node labeling without label file */
-    typedef enum
-      {
-      LABEL_BY_NUM = 0,
-      LABEL_BY_DEG = 1
-      } DefaultNodeLabelingType;
+  /** Default strategy for node labeling without label file */
+  typedef enum
+    {
+    LABEL_BY_NUM = 0,
+    LABEL_BY_DEG = 1
+    } DefaultNodeLabelingType;
 
-    /** Node meta-information */
-    struct nodeInfoType
-      {
-      int type;
-      };
+  /** Node meta-information */
+  struct nodeInfoType
+    {
+    int type;
+    };
 
-    /** The graph type */
-    typedef boost::adjacency_list< boost::listS,
-                                   boost::vecS,
-                                   boost::undirectedS,
-                                   nodeInfoType,
-                                   boost::property< boost::edge_weight_t,
-                                                    double> > GraphType;
-    /** Access vertex index information */
-    typedef boost::property_map<
-      GraphType, boost::vertex_index_t>::type IndexMapType;
+  /** The graph type */
+  typedef boost::adjacency_list< boost::listS,
+                                 boost::vecS,
+                                 boost::undirectedS,
+                                 nodeInfoType,
+                                 boost::property< boost::edge_weight_t,
+                                                  double> > GraphType;
+  /** Access vertex index information */
+  typedef boost::property_map<
+    GraphType, boost::vertex_index_t>::type     IndexMapType;
 
-    /** Access vertex neighborhoods */
-    typedef boost::graph_traits<GraphType>
-      ::adjacency_iterator                    AdjacencyIteratorType;
+  /** Access vertex neighborhoods */
+  typedef boost::graph_traits<GraphType>
+    ::adjacency_iterator                        AdjacencyIteratorType;
 
-    typedef std::pair< AdjacencyIteratorType,
-                       AdjacencyIteratorType> VertexNeighborType;
+  typedef std::pair< AdjacencyIteratorType,
+                     AdjacencyIteratorType>     VertexNeighborType;
 
-    /** Access to shortest-path information */
-    typedef boost::exterior_vertex_property<
-      GraphType, double>                      DistancePropertyType;
-    typedef DistancePropertyType::matrix_type DistanceMatrixType;
-    typedef DistancePropertyType::matrix_map_type DistanceMatrixMapType;
+  /** Access to shortest-path information */
+  typedef boost::exterior_vertex_property<
+    GraphType, double>                          DistancePropertyType;
+  typedef DistancePropertyType::matrix_type     DistanceMatrixType;
+  typedef DistancePropertyType::matrix_map_type DistanceMatrixMapType;
 
-    /** Vertex descriptor and vertex iterator */
-    typedef boost::graph_traits<
-      GraphType>::vertex_descriptor           VertexType;
-    typedef boost::graph_traits<
-      GraphType>::vertex_iterator             VertexIteratorType;
+  /** Vertex descriptor and vertex iterator */
+  typedef boost::graph_traits<
+    GraphType>::vertex_descriptor               VertexType;
+  typedef boost::graph_traits<
+    GraphType>::vertex_iterator                 VertexIteratorType;
 
-    /** Edge descriptor, edge iterator and edge-weight information */
-    typedef boost::graph_traits<
-      GraphType>::edge_descriptor             EdgeDescriptorType;
-    typedef boost::graph_traits<
-      GraphType>::edge_iterator               EdgeIteratorType;
-    typedef boost::property_map<
-      GraphType, boost::edge_weight_t>::type  EdgeWeightMapType;
+  /** Edge descriptor, edge iterator and edge-weight information */
+  typedef boost::graph_traits<
+    GraphType>::edge_descriptor                 EdgeDescriptorType;
+  typedef boost::graph_traits<
+    GraphType>::edge_iterator                   EdgeIteratorType;
+  typedef boost::property_map<
+    GraphType, boost::edge_weight_t>::type      EdgeWeightMapType;
 
-    /** Types used to access all vertex (+property) information  */
-    typedef boost::property_map<
-      GraphType,
-      boost::vertex_all_t>::const_type        ConstVertexAllMapType;
-    typedef boost::property_map<
-      GraphType,
-      boost::vertex_all_t>::type              VertexAllMapType;
+  /** Types used to access all vertex (+property) information  */
+  typedef boost::property_map<
+    GraphType,
+    boost::vertex_all_t>::const_type            ConstVertexAllMapType;
+  typedef boost::property_map<
+    GraphType,
+    boost::vertex_all_t>::type                  VertexAllMapType;
 
-    /** CTOR */
-    GraphKernel(const GraphType &G0, const GraphType &G1)
-      {
-      m_G0 = G0;
-      m_G1 = G1;
-      }
+  /** CTOR */
+  GraphKernel(const GraphType &G0, const GraphType &G1)
+    {
+    m_G0 = G0;
+    m_G1 = G1;
+    }
 
-    /** Check if the desired default node labeling is supported */
-    static bool IsValidDefaultNodeLabeling( int desiredType );
+  /** Check if the desired default node labeling is supported */
+  static bool IsValidDefaultNodeLabeling( int desiredType );
 
-    /** Read graph from adj file */
-    static GraphType GraphFromAdjFile( const char *graphFile,
-                                       const char *labelFile,
-                                       DefaultNodeLabelingType defNodeLabel);
-    /** Read graph from JSON file */
-    static GraphType GraphFromJSONFile(const char *graphFile);
+  /** Read graph from adj file */
+  static GraphType GraphFromAdjFile( const char *graphFile,
+                                     const char *labelFile,
+                                     DefaultNodeLabelingType defNodeLabel);
+  /** Read graph from JSON file */
+  static GraphType GraphFromJSONFile(const char *graphFile);
 
-    /** Compute kernel value among graphs G0,G1 */
-    virtual double Compute(void) { return 0.0; }
+  /** Compute kernel value among graphs G0,G1 */
+  virtual double Compute(void) { return 0.0; }
 
 
-  protected:
+protected:
 
-    /** Two input graphs */
-    GraphType m_G0, m_G1;
+  /** Two input graphs */
+  GraphType m_G0, m_G1;
 
-    /** Build a string representation of the neighbors of v-th vertex */
-    static std::string BuildNeighborStr(const GraphType &G, int v);
+  /** Build a string representation of the neighbors of v-th vertex */
+  static std::string BuildNeighborStr(const GraphType &G, int v);
 
-    /** Builds and returns a prefix "<i>," string, see [1] for details */
-    static std::string BuildPrefixFromVertexID(int v);
+  /** Builds and returns a prefix "<i>," string, see [1] for details */
+  static std::string BuildPrefixFromVertexID(int v);
 
-    /** Format vector of int as string */
-    static std::string LabelVectorToString(const std::vector<int> &);
+  /** Format vector of int as string */
+  static std::string LabelVectorToString(const std::vector<int> &);
 
-    /** In-place counting sort on int vector */
-    static void CountingSort(std::vector<int> & vec);
-  };
+  /** In-place counting sort on int vector */
+  static void CountingSort(std::vector<int> & vec);
+};
 
 
 }

@@ -33,15 +33,13 @@ namespace itk
 namespace Function
 {
 
-/**
- * \class TubeParametricExponentialWithBoundsResolutionWeightFunction
+/** \class TubeParametricExponentialWithBoundsResolutionWeightFunction
  *
  * \brief Weight tube points exponentially by their radius if within bounds.
  *
  * This is similar to TubeParametricExponentialResolutionWeightFunction except that values
  * outside the UpperBound or LowerBound are given a weight of zero.
- *
- * */
+ */
 template< class TTubePoint, class TOperatorValue=double >
 class TubeParametricExponentialWithBoundsResolutionWeightFunction:
   public TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >

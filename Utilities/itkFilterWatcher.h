@@ -1,25 +1,30 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkFilterWatcher.h,v $
+  Module:    $RCSfile: itkFilterWatcher.h, v $
   Language:  C++
   Date:      $Date: 2007-01-29 14:42:11 $
   Version:   $Revision: 1.15 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright ( c ) Insight Software Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _itkFilterWatcher_h
-#define _itkFilterWatcher_h
+
+#ifndef __itkFilterWatcher_h
+#define __itkFilterWatcher_h
 
 #include "itkCommand.h"
 #include "itkProcessObject.h"
 #include <time.h>
+
+namespace itk
+{
+
 // The following class is a convenience  to watch the progress of a filter
 
 class FilterWatcher
@@ -28,7 +33,7 @@ class FilterWatcher
 public:
 
   FilterWatcher(itk::ProcessObject* o, const char *comment="")
-  {
+    {
     m_Start = 0;
     m_End = 0;
     m_Process = o;
@@ -67,12 +72,12 @@ public:
     m_Process->AddObserver(itk::ProgressEvent(), progressFilterCommand);
     m_Process->AddObserver(itk::IterationEvent(), iterationFilterCommand);
     m_Process->AddObserver(itk::AbortEvent(), abortFilterCommand);
-  }
+    }
 
   virtual ~FilterWatcher() {}
 
   virtual void ShowProgress()
-  {
+    {
     m_Steps++;
     if (!m_Quiet)
       {
@@ -89,21 +94,21 @@ public:
         m_Process->AbortGenerateDataOn();
         }
       }
-  }
+    }
 
   virtual void ShowAbort()
-  {
+    {
     std::cout << std::endl << "      ABORT" << std::endl << std::flush;
-  }
+    }
 
   virtual void ShowIteration()
-  {
+    {
     std::cout << " # " << std::flush;
     m_Iterations++;
-  }
+    }
 
   virtual void StartFilter()
-  {
+    {
     m_Steps = 0;
     m_Iterations = 0;
     m_Start = ::clock();
@@ -112,11 +117,11 @@ public:
               << m_Process
               << (m_Quiet ? "Progress Quiet " : "Progress ")
               << std::flush;
-  }
+    }
 
   const char *GetNameOfClass () {return m_Process->GetNameOfClass();}
   virtual void EndFilter()
-  {
+    {
     m_End = ::clock();
     std::cout << std::endl << "Filter took "
               << static_cast<double>(m_End - m_Start) / CLOCKS_PER_SEC
@@ -129,7 +134,7 @@ public:
       {
       itkExceptionMacro ("Filter does not have progress.");
       }
-  }
+    }
   
   void QuietOn() {m_Quiet = true;}
   void QuietOff() {m_Quiet = false;}
@@ -138,13 +143,13 @@ public:
 
 protected:
 
-  clock_t m_Start;
-  clock_t m_End;
-  int m_Steps;
-  int m_Iterations;
-  bool m_Quiet;
-  bool m_TestAbort;
-  std::string m_Comment;
+  clock_t                     m_Start;
+  clock_t                     m_End;
+  int                         m_Steps;
+  int                         m_Iterations;
+  bool                        m_Quiet;
+  bool                        m_TestAbort;
+  std::string                 m_Comment;
   itk::ProcessObject::Pointer m_Process;
 
 private:
@@ -152,5 +157,7 @@ private:
   FilterWatcher(); // Purposely not implemented
 
 };
+
+} // End namespace itk
 
 #endif

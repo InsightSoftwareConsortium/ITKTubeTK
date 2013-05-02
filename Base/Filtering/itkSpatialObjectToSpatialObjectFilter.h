@@ -31,7 +31,6 @@ namespace itk
  *
  * \brief Base class for filters that take a SpatialObject as input and produce
  * a SpatialObject as output.
- *
  */
 template< class TInputSpatialObject, class TOutputSpatialObject >
 class ITK_EXPORT SpatialObjectToSpatialObjectFilter:

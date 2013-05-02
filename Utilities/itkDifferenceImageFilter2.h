@@ -47,7 +47,7 @@ class ITK_EXPORT DifferenceImageFilter2 :
 {
 public:
   /** Standard class typedefs. */
-  typedef DifferenceImageFilter2                           Self;
+  typedef DifferenceImageFilter2                          Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage>    Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
