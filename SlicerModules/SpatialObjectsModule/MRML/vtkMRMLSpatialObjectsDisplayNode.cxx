@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // MRML includes
 #include "vtkMRMLDisplayableNode.h"
 #include "vtkMRMLScene.h"

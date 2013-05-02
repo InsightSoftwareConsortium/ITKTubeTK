@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // qMRML includes
 #include "qSlicerSpatialObjectsGlyphWidget.h"
 #include "ui_qSlicerSpatialObjectsGlyphWidget.h"

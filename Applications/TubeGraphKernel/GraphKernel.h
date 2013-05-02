@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __GraphKernel_h
 #define __GraphKernel_h
 

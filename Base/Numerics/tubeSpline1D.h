@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeSpline1D_h
 #define __tubeSpline1D_h
 

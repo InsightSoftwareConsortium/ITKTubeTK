@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __itkInverseIntensityImageFilter_txx
 #define __itkInverseIntensityImageFilter_txx
 

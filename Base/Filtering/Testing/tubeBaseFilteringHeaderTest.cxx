@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif

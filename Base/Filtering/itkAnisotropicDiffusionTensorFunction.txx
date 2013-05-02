@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusionTensorFunction_txx
 #define __itkAnisotropicDiffusionTensorFunction_txx
 
