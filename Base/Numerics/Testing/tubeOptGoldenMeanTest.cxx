@@ -41,13 +41,13 @@ class MyOGMFunc:
     MyOGMFunc( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cVal = vcl_sin(x);
       std::cout << x << " : " << cVal << std::endl;
       return cVal;
-      };
+      }
   };
 
 class MyOGMFunc2:
@@ -59,13 +59,13 @@ class MyOGMFunc2:
     MyOGMFunc2( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cVal = vcl_cos( x/100 );
       std::cout << x << " : " << cVal << std::endl;
       return cVal;
-      };
+      }
   };
 
 int tubeOptGoldenMeanTest( int argc, char *argv[] )

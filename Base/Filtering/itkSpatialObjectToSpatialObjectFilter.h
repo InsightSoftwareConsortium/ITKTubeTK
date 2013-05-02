@@ -62,7 +62,7 @@ public:
 
 protected:
   SpatialObjectToSpatialObjectFilter();
-  virtual ~SpatialObjectToSpatialObjectFilter() {};
+  virtual ~SpatialObjectToSpatialObjectFilter() {}
 
 private:
   SpatialObjectToSpatialObjectFilter( const Self & ); // purposely not implemented

@@ -184,7 +184,7 @@ DateLastModified(void) const
 void MetaDocument::
 DateLastModified( const std::string & _date )
 {
-  m_DateLastModified = _date ;
+  m_DateLastModified = _date;
 }
 
 

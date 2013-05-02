@@ -33,8 +33,8 @@ class OptionList
 
   public:
 
-    typedef std::multimap<std::string, std::string> OptionMap ;
-    typedef std::vector<std::string>                StringVector ;
+    typedef std::multimap<std::string, std::string> OptionMap;
+    typedef std::vector<std::string>                StringVector;
     typedef std::string                             LabelType;
 
     static const std::string              INPUT_DELIMITER;
@@ -44,7 +44,7 @@ class OptionList
     static LabelType                      DUAL_ELEMENT_DELIMITER;
 
 
-    OptionList(int argc, char* argv[]) ;
+    OptionList(int argc, char* argv[]);
     ~OptionList() {}
 
     class RequiredOptionMissing
@@ -52,7 +52,7 @@ class OptionList
       public:
 
         RequiredOptionMissing(const std::string & tag) : OptionTag( tag ) {}
-        std::string OptionTag ;
+        std::string OptionTag;
     };
 
     int GetOption(const std::string & option_tag, StringVector & values) const;

@@ -177,7 +177,7 @@ class ITK_EXPORT CompleteImageResampleFilter:
       PointType& origin ) const;
 
     CompleteImageResampleFilter();
-    ~CompleteImageResampleFilter() {};
+    ~CompleteImageResampleFilter() {}
 
     void PrintSelf( std::ostream& os, Indent indent ) const;
 

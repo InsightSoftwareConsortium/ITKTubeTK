@@ -407,7 +407,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
       {
       fixedCenter[i] = sizeValue / 2.0;
       }
-    double fixedRadius = sizeValue / 3.0;;
+    double fixedRadius = sizeValue / 3.0;
     FillWithSphere<ImageType>( fixed, fixedCenter, fixedRadius, fgnd, bgnd );
 
     // setup the normals

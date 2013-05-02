@@ -123,7 +123,7 @@ public:
 #endif
 protected:
   OtsuThresholdMaskedImageFilter();
-  ~OtsuThresholdMaskedImageFilter(){};
+  ~OtsuThresholdMaskedImageFilter(){}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   void GenerateInputRequestedRegion();

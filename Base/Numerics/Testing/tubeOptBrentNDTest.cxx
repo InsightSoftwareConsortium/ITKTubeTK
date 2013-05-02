@@ -42,13 +42,13 @@ public tube::UserFunc< vnl_vector<double>, double >
     MyNDFunc( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const vnl_vector<double> & x )
       {
       cVal = vcl_sin(x(0)) + vcl_sin(x(1));
       std::cout << "val = " << cVal << std::endl;
       return cVal;
-      };
+      }
   private:
     double cVal;
   };
@@ -61,14 +61,14 @@ public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
     MyNDFuncD( )
       {
       cDx.set_size(2);
-      };
+      }
     const vnl_vector<double> & value( const vnl_vector<double> & x )
       {
       cDx[0] = vcl_cos(x(0));
       cDx[1] = vcl_cos(x(1));
       std::cout << "deriv = " << cDx[0] << ", " << cDx[1] << std::endl;
       return cDx;
-      };
+      }
   private:
     vnl_vector<double> cDx;
   };

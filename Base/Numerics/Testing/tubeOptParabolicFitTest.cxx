@@ -41,12 +41,12 @@ class MyOPFunc:
     MyOPFunc( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cVal = vcl_sin(x);
       return cVal;
-      };
+      }
   };
 
 class MyOPFuncD:
@@ -58,12 +58,12 @@ class MyOPFuncD:
     MyOPFuncD( )
       {
       cDeriv = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cDeriv = vcl_cos(x);
       return cDeriv;
-      };
+      }
   };
 
 int tubeOptParabolicFitTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )

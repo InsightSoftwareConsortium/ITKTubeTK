@@ -183,7 +183,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
 
 #endif
 
-}; // namespace tube
+} // namespace tube
 
 #endif
 

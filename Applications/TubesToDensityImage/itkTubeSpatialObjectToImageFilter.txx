@@ -306,9 +306,9 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
             }
           if(ObjectDimension == 2)
             {
-            for (double x=-radius; x<=radius+step/2 ; x+=step)
+            for (double x=-radius; x<=radius+step/2; x+=step)
               {
-              for (double y=-radius; y<=radius+step/2 ; y+=step)
+              for (double y=-radius; y<=radius+step/2; y+=step)
                 {
                 if ( ( (x*x) +(y*y)) <= (radius*radius) )
                   // test  inside the sphere
@@ -346,9 +346,9 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
             {
             for (double x=-radius; x<=radius+step/2; x+=step)
               {
-              for (double y=-radius; y<=radius+step/2 ; y+=step)
+              for (double y=-radius; y<=radius+step/2; y+=step)
                 {
-                for (double z=-radius; z<=radius+step/2 ; z+=step)
+                for (double z=-radius; z<=radius+step/2; z+=step)
                   {
                   if ( ( (x*x) +(y*y) +(z*z)) <= (radius*radius) )
                     // test  inside the sphere

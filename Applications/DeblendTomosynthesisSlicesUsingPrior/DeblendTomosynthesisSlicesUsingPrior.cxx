@@ -243,8 +243,8 @@ public:
 protected:
 
   BlendCostFunction() : m_Mode(0),
-                        m_CallsToGetValue(0) {};
-  virtual ~BlendCostFunction() {};
+                        m_CallsToGetValue(0) {}
+  virtual ~BlendCostFunction() {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -472,8 +472,8 @@ public:
 protected:
 
   BlendScaleCostFunction() : m_Mode(0),
-                             m_CallsToGetValue(0) {};
-  virtual ~BlendScaleCostFunction() {};
+                             m_CallsToGetValue(0) {}
+  virtual ~BlendScaleCostFunction() {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -500,7 +500,7 @@ private:
 
 };
 
-}; //namespace itk
+} //namespace itk
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )

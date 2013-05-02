@@ -124,7 +124,7 @@ public:
 
 protected:
   StructureTensorRecursiveGaussianImageFilter();
-  virtual ~StructureTensorRecursiveGaussianImageFilter() {};
+  virtual ~StructureTensorRecursiveGaussianImageFilter() {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** StructureTensorRecursiveGaussianImageFilter needs all of the input to produce an

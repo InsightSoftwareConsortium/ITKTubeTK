@@ -45,13 +45,13 @@ class MySA1DFunc:
     MySA1DFunc( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const int & x )
       {
       cVal = vcl_sin((double)x);
       std::cout << "s: x = " << x << " : v = " << cVal << std::endl;
       return cVal;
-      };
+      }
   };
 
 class MySA1DFuncV:
@@ -63,12 +63,12 @@ class MySA1DFuncV:
     MySA1DFuncV( )
       {
       cVal = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cVal = vcl_sin((double)x);
       return cVal;
-      };
+      }
   };
 
 class MySA1DFuncD:
@@ -80,12 +80,12 @@ class MySA1DFuncD:
     MySA1DFuncD( )
       {
       cDeriv = 0;
-      };
+      }
     const double & value( const double & x )
       {
       cDeriv = vcl_cos((double)x);
       return cDeriv;
-      };
+      }
   };
 
 int tubeSplineApprox1DTest( int argc, char *argv[] )
@@ -203,7 +203,7 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
         itIm.Set( spline.valueJet(x, &d, &d2) );
         break;
         }
-      };
+      }
     ++itIm;
     }
 

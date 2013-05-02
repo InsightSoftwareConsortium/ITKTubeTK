@@ -174,14 +174,14 @@ class RobustMeanAndSigmaImageBuilder :
      * Used to determine median.  Order is ascending pixel value
      */
     InputImageListType& GetLowerOutlierImages()
-      { return m_LowerOutlierImages; };
+      { return m_LowerOutlierImages; }
 
     /*
      * Set the ordered image list representing the lower half of voxel values.
      * Used to determine median.
      */
     void  SetLowerOutlierImages( InputImageListType& list )
-      { m_LowerOutlierImages = list; };
+      { m_LowerOutlierImages = list; }
 
     /*
      * Get the ordered image list representing the upper outlier values.
@@ -190,7 +190,7 @@ class RobustMeanAndSigmaImageBuilder :
      * decending starting from highest intensity
      */
     InputImageListType& GetUpperOutlierImages()
-      { return m_UpperOutlierImages; };
+      { return m_UpperOutlierImages; }
 
     /*
      * Set the ordered image list representing the upper outlier values.
@@ -199,7 +199,7 @@ class RobustMeanAndSigmaImageBuilder :
      * decending starting from highest intensity
      */
     void SetUpperOutlierImages( InputImageListType& list )
-      { m_UpperOutlierImages = list; };
+      { m_UpperOutlierImages = list; }
 
     void SetUpperImages( InputImagePointer i );
     void SetLowerImages( InputImagePointer i );

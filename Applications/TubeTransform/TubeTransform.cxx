@@ -172,7 +172,7 @@ TransformType::Pointer ReadTransformFile( const char * fileName )
 
   double scale[3] = { 1, 1, 1 };
   itk::Vector<double,3> v ( scale );
-  satp->SetScale( v ) ;
+  satp->SetScale( v );
 
   std::cout << "Transl " << satp->GetTranslation() << std::endl;
   std::cout << "Center " << satp->GetCenter() << std::endl;

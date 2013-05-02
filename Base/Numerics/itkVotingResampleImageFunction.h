@@ -93,7 +93,7 @@ public:
 
 protected:
   VotingResampleImageFunction();
-  ~VotingResampleImageFunction(){};
+  ~VotingResampleImageFunction(){}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
