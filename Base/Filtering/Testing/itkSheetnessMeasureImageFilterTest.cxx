@@ -154,5 +154,4 @@ int itkSheetnessMeasureImageFilterTest(int ,char*[] )
   writer->Update();
 
   return EXIT_SUCCESS;
-
 }

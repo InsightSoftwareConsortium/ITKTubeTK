@@ -236,8 +236,9 @@ private:
   /** Prevent copying and assignment */
   Spline1D(const Spline1D &);
   Spline1D& operator=(const Spline1D &);
-};
 
-} // end namespace itk
+}; // End class Spline1D
 
-#endif /* __itkRadiusExtractor_h */
+} // End namespace itk
+
+#endif // End !defined(__tubeSpline1D_h)

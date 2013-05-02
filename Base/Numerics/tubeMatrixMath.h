@@ -84,11 +84,11 @@ template <class PointType>
 double
 ComputeEuclideanDistance(PointType x, PointType y);
 
-} // end namespace tube
+} // End namespace tube
 
 
 #ifndef TUBE_MANUAL_INSTANTIATION
 #include "tubeMatrixMath.txx"
 #endif
 
-#endif /* __tubeMatrixMath_h */
+#endif // End !defined(__tubeMatrixMath_h)

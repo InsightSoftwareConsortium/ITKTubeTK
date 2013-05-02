@@ -176,6 +176,7 @@ public:
 
   static std::vector<int> GetSupportedColorModes( void );
   int ColorMode;
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsDisplayNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsDisplayNode_h)

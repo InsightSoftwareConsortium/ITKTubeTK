@@ -118,6 +118,6 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
   return ret;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkVotingResampleImageFunction_txx)

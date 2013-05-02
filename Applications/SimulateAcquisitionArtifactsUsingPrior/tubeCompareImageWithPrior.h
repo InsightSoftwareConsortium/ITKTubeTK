@@ -127,10 +127,10 @@ private:
 
   float                          m_GoF;
 
-};
+}; // End class CompareImageWithPrior
 
-}
+} // End namespace tube
 
 #include "tubeCompareImageWithPrior.txx"
 
-#endif
+#endif // End !defined(__tubeCompareImageWithPrior_h)

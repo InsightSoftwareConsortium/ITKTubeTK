@@ -30,8 +30,11 @@ limitations under the License.
 #include "itkDataObjectDecorator.h"
 #include "itkFixedArray.h"
 
-namespace itk {
-namespace Statistics {
+namespace itk
+{
+
+namespace Statistics
+{
 
 /** \class VectorImageToListGenerator
  *  \brief The class takes an image as input and generates a list sample as
@@ -175,13 +178,14 @@ private:
   MaskPixelType       m_MaskValue;
   bool                m_UseSingleMaskValue;
 
-}; // end of class VectorImageToListGenerator
+}; // End class VectorImageToListGenerator
 
-} // end of namespace Statistics
-} // end of namespace itk
+} // End namespace Statistics
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkVectorImageToListGenerator.txx"
 #endif
 
-#endif
+#endif // End !defined(VectorImageToListGenerator)

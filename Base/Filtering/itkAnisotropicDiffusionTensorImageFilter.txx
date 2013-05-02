@@ -38,7 +38,8 @@ limitations under the License.
 
 //#define INTERMEDIATE_OUTPUTS
 
-namespace itk {
+namespace itk
+{
 
 /**
  * Constructor
@@ -526,6 +527,6 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   os << indent << "TimeStep: " << m_TimeStep  << std::endl;
 }
 
-}// end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusionTensorImageFilter_txx)

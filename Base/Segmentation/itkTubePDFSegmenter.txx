@@ -1450,8 +1450,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
     << m_HistoNumBins1D << std::endl;
 }
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif //PDFSegmenter_txx
+#endif // End !defined(__itkTubePDFSegmenter_txx)

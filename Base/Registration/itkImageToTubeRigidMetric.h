@@ -207,12 +207,13 @@ private:
 
   ImageToTubeRigidMetric( const Self& ); // purposely not implemented
   void operator=( const Self& ); // purposely not implemented
-};
 
-} // end namespace itk
+}; // End class ImageToTubeRigidMetric
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkImageToTubeRigidMetric.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidMetric_h)

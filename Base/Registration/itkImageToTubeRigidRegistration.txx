@@ -173,6 +173,6 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     ->GetCurrentPosition();
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidRegistration_txx)

@@ -129,6 +129,6 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   delete children;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSubSampleTubeTreeSpatialObjectFilter_txx)

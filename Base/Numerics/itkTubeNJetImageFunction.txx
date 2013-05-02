@@ -1975,8 +1975,8 @@ NJetImageFunction<TInputImage>
   return 0;
 }
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeNJetImageFunction_txx)

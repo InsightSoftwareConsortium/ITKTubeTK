@@ -95,9 +95,8 @@ protected:
   ObjectListType           m_objects;
   const unsigned int       m_MaxNumTransforms;  //Maximum number of transforms
 
-private:
-};
+}; // End class MetaObjectDocument
 
 } // End namespace tube
 
-#endif
+#endif // End !defined(__tubeMetaObjectDocument_h)

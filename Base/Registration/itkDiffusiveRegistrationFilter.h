@@ -57,7 +57,7 @@ struct EnergiesStruct
     IntensityDistanceEnergy = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
     RegularizationEnergy = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
     }
-};
+}; // End struct EnergiesStruct
 
 /** \class itkDiffusiveRegistrationFilter
  * \brief Registration filter for registrations using anisotropic diffusive
@@ -576,7 +576,7 @@ protected:
         lhs.SumOfRegularizationUpdateMagnitude
           - rhs.SumOfRegularizationUpdateMagnitude;
       }
-    };
+    }; // End struct UpdateMetricsIntermediateStruct
 
   struct UpdateMetricsStruct
     {
@@ -633,7 +633,7 @@ protected:
         lhs.MeanRegularizationUpdateMagnitude
           - rhs.MeanRegularizationUpdateMagnitude;
       }
-    };
+    }; // End strut UpdateMetricsStruct
 
   /** This method populates an update buffer with changes for each pixel in the
    * output.  Uses CalculateChangeGradient to determine
@@ -755,7 +755,7 @@ private:
     TimeStepType TimeStep;
     TimeStepType *TimeStepList;
     bool *ValidTimeStepList;
-    };
+    }; // End struct DenseFDThreadStruct
 
   /** Structure for passing information into static callback methods.  Used in
    *  the threading mechanism for
@@ -768,7 +768,7 @@ private:
     int Dimension;
     SpacingType Spacing;
     typename OutputImageType::SizeType Radius;
-    };
+    }; // End struct ComputeDeformationComponentDerivativeImageHelperThreadStruct
 
   /** Structure for passing information into static callback methods.  Used in
    *  the threading mechanism for CalculateChangeGradient. */
@@ -779,7 +779,7 @@ private:
     std::vector< TimeStepType > TimeStepList;
     std::vector< bool > ValidTimeStepList;
     UpdateMetricsIntermediateStruct *UpdateMetricsIntermediate;
-    };
+    }; // End struct CalculateChangeGradientThreadStruct
 
   /** Structure for passing information into static callback methods.  Used in
    *  the threading mechanism for CalculateEnergies. */
@@ -789,7 +789,7 @@ private:
     OutputImagePointer OutputImage;
     double * IntensityDistanceEnergies;
     double * RegularizationEnergies;
-    };
+    }; // End struct CalculateEnergiesThreadStruct
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
@@ -852,13 +852,13 @@ private:
   EnergiesStruct                            m_PreviousEnergies;
   UpdateMetricsStruct                       m_UpdateMetrics;
   UpdateMetricsStruct                       m_PreviousUpdateMetrics;
-};
 
+}; // End class DiffusiveRegistrationFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkDiffusiveRegistrationFilter.txx"
+#include "itkDiffusiveRegistrationFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkDiffusiveRegistrationFilter_h)

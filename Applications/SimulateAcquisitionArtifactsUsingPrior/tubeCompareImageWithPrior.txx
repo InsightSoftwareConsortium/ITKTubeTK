@@ -23,7 +23,7 @@ limitations under the License.
 #ifndef __tubeCompareImageWithPrior_txx
 #define __tubeCompareImageWithPrior_txx
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -815,6 +815,6 @@ GetGoodnessOfFit( void )
   return m_GoF;
 }
 
-}
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeCompareImageWithPrior_txx)

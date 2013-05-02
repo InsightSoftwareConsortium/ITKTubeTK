@@ -137,13 +137,7 @@ public:
   //----------------------------------------------------------------------------
   /// Display Information: Types of glyph geometry that can be displayed
   //----------------------------------------------------------------------------
-  enum
-  {
-    Lines = 0,
-    Tubes = 1,
-    Cones = 2,
-    Disks = 3
-  };
+  enum { Lines = 0, Tubes = 1, Cones = 2, Disks = 3 };
 
   //----------------------------------------------------------------------------
   /// Display Information: Functions to choose the type of glyph geometry
@@ -289,6 +283,7 @@ protected:
 
   /// Pipeline
   vtkPolyData* GlyphSource;
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsDisplayPropertiesNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsDisplayPropertiesNode_h)

@@ -187,5 +187,4 @@ void Optimizer1D::PrintSelf( std::ostream & os ) const
   os << "m_FuncDeriv = " << m_FuncDeriv << std::endl;
 }
 
-
-} // end namespace tube
+} // End namespace tube

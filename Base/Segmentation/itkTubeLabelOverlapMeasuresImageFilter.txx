@@ -28,9 +28,11 @@ limitations under the License.
 #include "itkImageRegionConstIterator.h"
 #include "itkProgressReporter.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 //NOTE: This class needs a mutex for gnu 2.95
 #if defined(__GNUC__) && (__GNUC__ <= 2)
@@ -430,8 +432,8 @@ LabelOverlapMeasuresImageFilter<TLabelImage>
 
 }
 
+} // End namespace tube
 
-}// end namespace tube
+} // End namespace itk
 
-}// end namespace itk
-#endif
+#endif // End !defined(__itkTubeLabelOverlapMeasuresImageFilter_txx)

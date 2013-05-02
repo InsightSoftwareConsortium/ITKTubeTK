@@ -104,8 +104,8 @@ public:
   typedef typename DefaultMetricType::TransformType               TransformType;
 
   /**  Dimension of the images.  */
-  enum {ImageDimension = FixedImageType::ImageDimension,
-    ParametersDimension = TransformType::ParametersDimension};
+  enum { ImageDimension = FixedImageType::ImageDimension,
+    ParametersDimension = TransformType::ParametersDimension };
 
   typedef typename Superclass::InterpolatorType   InterpolatorType;
 
@@ -144,12 +144,13 @@ private:
   double                                   m_LearningRate;
   ParametersType                           m_InitialPosition;
   ParametersType                           m_ParametersScale;
-};
 
-} // end namespace itk
+}; // End class ImageToTubeRigidRegistration
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkImageToTubeRigidRegistration.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidRegistration_h)

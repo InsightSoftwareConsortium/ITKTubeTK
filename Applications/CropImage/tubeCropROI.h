@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __tubeCropROI_h
 #define __tubeCropROI_h
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -111,10 +111,10 @@ private:
   float                          m_ProgressStart;
   float                          m_ProgressRange;
 
-}; //class
+}; // End class CropROI
 
-} //namespace tube
+} // End namespace tube
 
 #include "tubeCropROI.txx"
 
-#endif
+#endif // End !defined(__tubeCropROI_h)

@@ -313,5 +313,4 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
     }
 }
 
-
-} // End of namespace tube
+} // End namespace tube

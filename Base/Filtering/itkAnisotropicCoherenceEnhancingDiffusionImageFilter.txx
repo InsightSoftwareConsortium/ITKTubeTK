@@ -37,7 +37,8 @@ limitations under the License.
 
 //#define INTERMEDIATE_OUTPUTS
 
-namespace itk{
+namespace itk
+{
 
 /**
  * Constructor
@@ -301,6 +302,6 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   os << indent << "Alpha: " << m_Alpha << std::endl;
 }
 
-}// end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicCoherenceEnhancingDiffusionImageFilter_txx)

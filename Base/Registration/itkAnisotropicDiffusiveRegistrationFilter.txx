@@ -787,6 +787,6 @@ AnisotropicDiffusiveRegistrationFilter
   normalDeformationField->Modified();
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveRegistrationFilter_txx)

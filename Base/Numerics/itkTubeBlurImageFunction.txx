@@ -561,8 +561,8 @@ BlurImageFunction<TInputImage>
   return res/wTotal;
 }
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeBlurImageFunction_txx)

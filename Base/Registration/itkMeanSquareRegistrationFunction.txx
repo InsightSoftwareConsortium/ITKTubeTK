@@ -27,7 +27,8 @@ limitations under the License.
 #include "itkExceptionObject.h"
 #include "vnl/vnl_math.h"
 
-namespace itk {
+namespace itk
+{
 
 /**
  * Default constructor
@@ -203,6 +204,6 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
   return difference;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkMeanSquareRegistrationFunction_txx)

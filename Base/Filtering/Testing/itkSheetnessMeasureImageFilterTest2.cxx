@@ -253,5 +253,4 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
   eigenVectorWriter->Update();
 
   return EXIT_SUCCESS;
-
 }

@@ -172,5 +172,4 @@ double WLSubtreeKernel::Compute( void )
   return (double)kVal;
 }
 
-
-} // End of namespace tube
+} // End namespace tube

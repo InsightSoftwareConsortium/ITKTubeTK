@@ -524,8 +524,8 @@ void TubeExtractor<TInputImage>
   os << indent << "Color.a = " << this->m_Color[3] << std::endl;
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeTubeExtractor_txx)

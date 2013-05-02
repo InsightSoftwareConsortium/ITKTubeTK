@@ -86,8 +86,9 @@ private:
       std::swap( first, second );
       }
     }
-};
 
+}; // End class ShortestPathKernel
 
-} // End of namespace tube
-#endif
+} // End namespace tube
+
+#endif // End !defined(__tubeShortestPathKernel_h)

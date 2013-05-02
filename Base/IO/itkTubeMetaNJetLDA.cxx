@@ -28,9 +28,11 @@ limitations under the License.
 #include <string.h> // for memcpy
 #include <math.h>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 //
 // MetaNJetLDA Constructors
@@ -750,6 +752,6 @@ M_Read( void )
   return true;
 }
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk

@@ -64,13 +64,14 @@ public:
 private:
   const LookupTableType * m_LookupTable;
 
-};
+}; // End class LabelMapToAcousticImpedanceFunctor
 
-} // end namespace Functor
-} // end namespace itk
+} // End namespace Functor
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkLabelMapToAcousticImpedanceFunctor.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkLabelMapToAcousticImpedanceFunctor_h)

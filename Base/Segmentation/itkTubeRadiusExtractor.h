@@ -282,15 +282,15 @@ private:
   bool ( *m_IdleCallBack )( void );
   void ( *m_StatusCallBack )( const char *, const char *, int );
 
-};
+}; // End class RadiusExtractor
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeRadiusExtractor.txx"
 #endif
 
-#endif /* __itkTubeRadiusExtractor_h */
+#endif // End !defined(__itkTubeRadiusExtractor_h)

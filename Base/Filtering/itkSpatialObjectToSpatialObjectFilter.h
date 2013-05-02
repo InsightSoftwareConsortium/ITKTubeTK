@@ -33,7 +33,7 @@ namespace itk
  * a SpatialObject as output.
  */
 template< class TInputSpatialObject, class TOutputSpatialObject >
-class ITK_EXPORT SpatialObjectToSpatialObjectFilter:
+class ITK_EXPORT SpatialObjectToSpatialObjectFilter :
   public SpatialObjectSource< TOutputSpatialObject >
 {
 public:
@@ -66,12 +66,12 @@ protected:
 private:
   SpatialObjectToSpatialObjectFilter( const Self & ); // purposely not implemented
   void operator=( const Self & );                     // purposely not implemented
-};
+}; // End class SpatialObjectToSpatialObjectFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSpatialObjectToSpatialObjectFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSpatialObjectToSpatialObjectFilter_h)

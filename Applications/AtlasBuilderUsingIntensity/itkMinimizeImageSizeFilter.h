@@ -159,14 +159,15 @@ private:
 
   bool                                    m_ClipEndIndices;
   bool                                    m_ClipStartIndices;
-};
 
-} // End of namespace tube
+}; // End class MinimizeImageSizeFilter
 
-} // End of namespace itk
+} // End namespace tube
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkMinimizeImageSizeFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkMinimizeImageSizeFilter_h)

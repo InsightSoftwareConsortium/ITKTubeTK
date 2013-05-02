@@ -50,7 +50,7 @@ namespace itk
  */
 
 template< typename  TPixel >
-class ITK_EXPORT SheetnessMeasureImageFilter:public
+class ITK_EXPORT SheetnessMeasureImageFilter : public
   ImageToImageFilter< Image< SymmetricSecondRankTensor< double, 3 >, 3 >,
                       Image< TPixel, 3 > >
 {
@@ -129,11 +129,13 @@ private:
   double m_Beta;
   double m_Cfactor;
   bool   m_DetectBrightSheets;
-};
-} // end namespace itk
+
+}; // End class SheetnessMeasureImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSheetnessMeasureImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSheetnessMeasureImageFilter_h)

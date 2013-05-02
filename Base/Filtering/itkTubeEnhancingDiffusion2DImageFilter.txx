@@ -575,7 +575,6 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
   progress.CompletedPixel();
 }
 
+} // End namespace itk
 
-} // end namespace itk
-
-#endif
+#endif // End !defined(__itkTubeEnhancingDiffusion2DImageFilter_txx)

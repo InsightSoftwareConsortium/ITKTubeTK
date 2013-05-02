@@ -38,7 +38,8 @@ limitations under the License.
 
 //#define INTERMEDIATE_OUTPUTS
 
-namespace itk {
+namespace itk
+{
 
 /**
  * Constructor
@@ -327,6 +328,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     << m_ThresholdParameterC << std::endl;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicEdgeEnhancementDiffusionImageFilter_txx)

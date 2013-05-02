@@ -201,6 +201,6 @@ SheetnessMeasureImageFilter< TPixel >
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSheetnessMeasureImageFilter_txx)

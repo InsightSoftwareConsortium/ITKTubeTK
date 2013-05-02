@@ -49,7 +49,8 @@ public:
     { this->SetDescription( "No valid image moments are availble." );}
 
   itkTypeMacro( InvalidImageRegionMomentsError, ExceptionObject );
-};
+
+}; // End class InvalidImageRegionMomentsError
 
 
 //----------------------------------------------------------------------
@@ -409,6 +410,6 @@ GetPhysicalAxesToPrincipalAxesTransform( void ) const
   return inverse;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkImageRegionMomentsCalculator_txx)

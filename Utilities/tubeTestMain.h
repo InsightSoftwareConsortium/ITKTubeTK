@@ -496,4 +496,4 @@ std::map<std::string,int> RegressionTestBaselines (char *baselineFilename)
 // Needed for explicit instantiation
 #include "itkDifferenceImageFilter2.txx"
 
-#endif
+#endif // End !defined(__tubeTestMain_h)

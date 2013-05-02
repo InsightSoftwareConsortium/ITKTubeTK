@@ -294,4 +294,4 @@ void AtlasSummation
 }
 
 
-} // End of namespace tube
+} // End namespace tube

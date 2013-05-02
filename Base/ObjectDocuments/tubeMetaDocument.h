@@ -96,10 +96,8 @@ protected:
 
   std::vector<MET_FieldRecordType *> m_Fields;
 
-private:
+}; // End class MetaDocument
 
-};
+} // End namespace tube
 
-} // Namespace tube end
-
-#endif
+#endif // End !defined(__tubeMetaDocument_h)

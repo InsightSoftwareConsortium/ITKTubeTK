@@ -76,7 +76,7 @@ protected:
   typename TInputImage::IndexType m_XIndx;
   double                          m_XVal;
 
-};
+}; // End class RidgeExtractorSplineValue
 
 
 /**
@@ -2135,9 +2135,8 @@ RidgeExtractor<TInputImage>
   m_StatusCallBack = statusCallBack;
 }
 
+} // End namespace tube
 
-} // end namespace tube
+} // End namespace itk
 
-} // end namespace itk
-
-#endif
+#endif // End !defined(__itkTubeRidgeExtractor_txx)

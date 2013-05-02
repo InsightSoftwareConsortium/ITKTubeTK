@@ -29,7 +29,8 @@ limitations under the License.
 #include "itkDiffusionTensor3D.h"
 #include "itkSymmetricSecondRankTensor.h"
 
-namespace itk {
+namespace itk
+{
 
 /** \class AnisotropicDiffusionTensorFunction
  * \brief This class is a function object that is used
@@ -117,7 +118,8 @@ public:
     ScalarDerivativeType  m_dx;
 
     ScalarValueType       m_GradMagSqr;
-    };
+
+    }; // End struct GlobalDataStruct
 
   /** Compute the equation value.  Inherited from the superclass: call
    *  one of the other two ComputeUpdate() functions instead. */
@@ -250,12 +252,13 @@ private:
 
   TimeStepType    m_TimeStep;
   bool            m_UseImageSpacing;
-};
 
-} // namespace itk
+}; // End class AnisotropicDiffusionTensorFunction
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusionTensorFunction.txx"
+#include "itkAnisotropicDiffusionTensorFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusionTensorFunction_h)

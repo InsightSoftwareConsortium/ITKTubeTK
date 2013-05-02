@@ -80,11 +80,10 @@ protected:
   BlobSpatialObjectDocument( void ) : LABEL_BLOBTYPE("Blob") {}
   ~BlobSpatialObjectDocument( void ) {}
 
-private:
-};
+}; // End class BlobSpatialObjectDocument
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkBlobSpatialObjectDocument_h)

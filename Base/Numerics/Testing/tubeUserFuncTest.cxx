@@ -29,7 +29,8 @@ limitations under the License.
 
 #include "tubeMacro.h"
 
-namespace tube {
+namespace tube
+{
 
 /** Derive this class to pass functions to Spline and Optimization Classes
  * \author Stephen R. Aylward
@@ -45,33 +46,34 @@ public :
   virtual const vnl_vector<double> & value( const vnl_vector<double> & x )
     = 0;
 
-};
+}; // End class UserFunc2
 
 inline UserFunc2::~UserFunc2( void )
 {
 }
 
-} // namespace tube
+} // End namespace tube
 
-class MyFunc2:
+class MyFunc2 :
 public tube::UserFunc2
-  {
-  public:
+{
+public:
 
-    MyFunc2( void )
-      {
-      cVal.set_size(1);
-      }
-    const vnl_vector<double> & value( const vnl_vector<double> & x )
-      {
-      std::cout << "func:x = " << x[0] << ", " << x[1] << std::endl;
-      cVal[0] = vcl_sin(x[0]) + vcl_cos(x[1]/2);
-      std::cout << "  val = " << cVal << std::endl;
-      return cVal;
-      }
-  private:
-    vnl_vector<double> cVal;
-  };
+  MyFunc2( void )
+    {
+    cVal.set_size(1);
+    }
+  const vnl_vector<double> & value( const vnl_vector<double> & x )
+    {
+    std::cout << "func:x = " << x[0] << ", " << x[1] << std::endl;
+    cVal[0] = vcl_sin(x[0]) + vcl_cos(x[1]/2);
+    std::cout << "  val = " << cVal << std::endl;
+    return cVal;
+    }
+private:
+  vnl_vector<double> cVal;
+
+}; // End class MyFunc2
 
 int tubeUserFuncTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
 {

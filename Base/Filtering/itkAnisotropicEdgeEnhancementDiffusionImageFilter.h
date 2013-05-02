@@ -32,7 +32,8 @@ limitations under the License.
 #include "itkSymmetricEigenAnalysisImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 /** \class AnisotropicEdgeEnhancementDiffusionImageFilter
  *  This class is an implementation of Edge-enhancing diffusion:
  *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
@@ -148,13 +149,13 @@ private:
   double    m_ThresholdParameterC;
   double    m_Sigma;
   double    m_SigmaOuter;
-};
 
+}; // End class AnisotropicEdgeEnhancementDiffusionImageFilter
 
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx"
+#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicEdgeEnhancementDiffusionImageFilter_h)

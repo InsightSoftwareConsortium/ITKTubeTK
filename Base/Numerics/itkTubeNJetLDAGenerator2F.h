@@ -101,10 +101,10 @@ private:
   NJetLDAGenerator2F( const Self & );    // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-};
+}; // End class NJetLDAGenerator2F
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeNJetLDAGenerator2F_h)

@@ -233,15 +233,14 @@ private:
   typename ImageType::Pointer  m_InputImage;
   float                        m_Color[4];
 
-};
+}; // End class TubeExtractor
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeTubeExtractor.txx"
 #endif
 
-#endif /* __itkTubeTubeExtractor_h */
+#endif // End !defined(__itkTubeTubeExtractor_h)

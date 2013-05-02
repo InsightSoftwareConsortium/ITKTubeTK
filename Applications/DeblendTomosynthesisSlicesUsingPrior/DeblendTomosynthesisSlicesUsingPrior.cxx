@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -63,7 +63,8 @@ int DoIt( int argc, char * argv[] );
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
 
-namespace itk {
+namespace itk
+{
 
 template< class pixelT, unsigned int dimensionT >
 class BlendCostFunction
@@ -269,7 +270,7 @@ private:
 
   mutable unsigned int                m_CallsToGetValue;
 
-};
+}; // End class BlendCostFunction
 
 template< class pixelT, unsigned int dimensionT >
 class BlendScaleCostFunction
@@ -498,9 +499,9 @@ private:
 
   mutable unsigned int                m_CallsToGetValue;
 
-};
+}; // End class BlendScaleCostFunction
 
-} //namespace itk
+} // End namespace itk
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )

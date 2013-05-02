@@ -60,7 +60,7 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage, class TOperatorValue=float >
-class ITK_EXPORT AcousticImpulseResponseImageFilter:
+class ITK_EXPORT AcousticImpulseResponseImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
@@ -117,12 +117,13 @@ private:
 
   typedef CastImageFilter< InputImageType, OperatorImageType > CastImageFilterType;
   typename CastImageFilterType::Pointer m_CastImageFilter;
-};
 
-} // end namespace itk
+}; // End class AcousticImpulseResponseImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkAcousticImpulseResponseImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAcousticImpulseResponseImageFilter_h)

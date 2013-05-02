@@ -289,6 +289,6 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   << std::endl;
 }
 
+} // End namespace itk
 
-} // end namespace itk
-#endif
+#endif // End !defined(__itkAngleOfIncidenceImageFilter_txx)

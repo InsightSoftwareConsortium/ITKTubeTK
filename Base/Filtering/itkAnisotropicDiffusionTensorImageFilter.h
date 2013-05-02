@@ -196,7 +196,8 @@ private:
     TimeStepType TimeStep;
     std::vector< TimeStepType > TimeStepList;
     std::vector< bool > ValidTimeStepList;
-    };
+
+    }; // End struct DenseFDThreadStruct
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
@@ -213,13 +214,12 @@ private:
 
   TimeStepType                                          m_TimeStep;
 
-};
+}; // End class AnisotropicDiffusionTensorImageFilter
 
-
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusionTensorImageFilter.txx"
+#include "itkAnisotropicDiffusionTensorImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusionTensorImageFilter_h)

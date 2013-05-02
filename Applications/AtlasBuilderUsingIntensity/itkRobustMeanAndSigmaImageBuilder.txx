@@ -483,4 +483,4 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
     }
 }
 
-#endif
+#endif // End !defined(__itkRobustMeanAndSigmaImageBuilder_txx)

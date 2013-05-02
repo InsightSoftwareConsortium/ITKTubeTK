@@ -311,10 +311,7 @@ protected:
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Handy for array indexing. */
-  enum DivTerm { SMOOTH_TANGENTIAL,
-                 SMOOTH_NORMAL,
-                 PROP_TANGENTIAL,
-                 PROP_NORMAL };
+  enum DivTerm { SMOOTH_TANGENTIAL, SMOOTH_NORMAL, PROP_TANGENTIAL, PROP_NORMAL };
 
   /** Allocate the deformation component images and their derivative images.
    *  (which may be updated throughout the registration). Reimplement in derived
@@ -430,7 +427,7 @@ private:
     bool ComputeNormals;
     bool ComputeWeightStructures;
     bool ComputeWeightRegularizations;
-    };
+    }; // End struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to
@@ -465,12 +462,12 @@ private:
   WeightComponentType                 m_Lambda;
   WeightComponentType                 m_Gamma;
 
-};
+}; // End class AnisotropicDiffusiveSparseRegistrationFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusiveSparseRegistrationFilter.txx"
+#include "itkAnisotropicDiffusiveSparseRegistrationFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveSparseRegistrationFilter_h)

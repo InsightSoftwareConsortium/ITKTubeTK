@@ -45,7 +45,7 @@ template <typename TInputImage,
   ::RealType,
   TInputImage::ImageDimension >,
   TInputImage::ImageDimension > >
-class ITK_EXPORT StructureTensorRecursiveGaussianImageFilter:
+class ITK_EXPORT StructureTensorRecursiveGaussianImageFilter :
     public ImageToImageFilter<TInputImage,TOutputImage>
 {
 public:
@@ -151,12 +151,13 @@ private:
 
   RealType      m_Sigma;
   RealType      m_SigmaOuter;
-};
 
-} // end namespace itk
+}; // End class StructureTensorRecursiveGaussianImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkStructureTensorRecursiveGaussianImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkStructureTensorRecursiveGaussianImageFilter_h)

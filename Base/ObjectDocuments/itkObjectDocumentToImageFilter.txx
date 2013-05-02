@@ -158,4 +158,4 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkObjectDocumentToImageFilter_txx)

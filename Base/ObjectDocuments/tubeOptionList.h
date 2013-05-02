@@ -50,10 +50,10 @@ public:
   class RequiredOptionMissing
     {
     public:
-
       RequiredOptionMissing(const std::string & tag) : OptionTag( tag ) {}
       std::string OptionTag;
-    };
+
+    }; // End class RequiredOptionMissing
 
   int GetOption(const std::string & option_tag, StringVector & values) const;
 
@@ -88,8 +88,9 @@ protected:
 private:
 
   OptionMap m_Map;
-};
+
+}; // End class OptionList
 
 } // End namespace tube
 
-#endif
+#endif // End !defined(__tubeOptionList_h)

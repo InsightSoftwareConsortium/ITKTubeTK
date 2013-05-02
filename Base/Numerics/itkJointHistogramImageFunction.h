@@ -211,10 +211,10 @@ private:
 
 }; // End class JointHistogramImageFunction
 
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkJointHistogramImageFunction.txx"
+#include "itkJointHistogramImageFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkJointHistogramImageFunction_h)

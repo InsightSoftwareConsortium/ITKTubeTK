@@ -399,6 +399,6 @@ AnisotropicDiffusiveRegistrationFunction
   return regularizationEnergy;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveRegistrationFunction_txx)

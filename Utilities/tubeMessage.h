@@ -38,9 +38,10 @@ namespace tube
 
 namespace MessageLevel
 {
-enum { Information, Warning, Error, Debug };
-}
 
+enum { Information, Warning, Error, Debug };
+
+} // End namespace MessageLevel
 
 template <class T>
 void Message( const T& str, int level = 0 )
@@ -226,6 +227,6 @@ void DebugMessage( const T& str )
   Message( str, MessageLevel::Debug );
 }
 
-}
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeMessage_h)

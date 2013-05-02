@@ -135,7 +135,7 @@ private:
   double                 m_Ridgeness; // default -1
   double                 m_Medialness; // default -1
 
-};
+}; // End class TubeToTubeTransformFilter
 
 } // End namespace tube
 
@@ -146,4 +146,4 @@ private:
 #include "itkTubeToTubeTransformFilter.txx"
 #endif
 
-#endif /* __itkTubeToTubeTransformFilter_h */
+#endif // End !defined(__itkTubeToTubeTransformFilter_h)

@@ -106,9 +106,11 @@ public:
 private:
   OperatorValueType m_Delta;
   OperatorValueType m_Alpha;
-};
 
-} // end namespace Function
-} // end namespace itk
+}; // End class TubeParametricExponentialResolutionWeightFunction
 
-#endif
+} // End namespace Function
+
+} // End namespace itk
+
+#endif // End !defined(__itkTubeParametricExponentialResolutionWeightFunction_h)

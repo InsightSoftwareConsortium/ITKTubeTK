@@ -36,57 +36,60 @@ limitations under the License.
 #include "tubeSplineApproximation1D.h"
 #include "tubeUserFunc.h"
 
-class MySA1DFunc:
-  public tube::UserFunc< int, double >
-  {
-  private:
-    double cVal;
-  public:
-    MySA1DFunc( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const int & x )
-      {
-      cVal = vcl_sin((double)x);
-      std::cout << "s: x = " << x << " : v = " << cVal << std::endl;
-      return cVal;
-      }
-  };
+class MySA1DFunc : public tube::UserFunc< int, double >
+{
+private:
+  double cVal;
 
-class MySA1DFuncV:
-  public tube::UserFunc< double, double >
-  {
-  private:
-    double cVal;
-  public:
-    MySA1DFuncV( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const double & x )
-      {
-      cVal = vcl_sin((double)x);
-      return cVal;
-      }
-  };
+public:
+  MySA1DFunc( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const int & x )
+    {
+    cVal = vcl_sin((double)x);
+    std::cout << "s: x = " << x << " : v = " << cVal << std::endl;
+    return cVal;
+    }
 
-class MySA1DFuncD:
-  public tube::UserFunc< double, double >
-  {
-  private:
-    double cDeriv;
-  public:
-    MySA1DFuncD( void )
-      {
-      cDeriv = 0;
-      }
-    const double & value( const double & x )
-      {
-      cDeriv = vcl_cos((double)x);
-      return cDeriv;
-      }
-  };
+}; // End class MySA1DFunc
+
+class MySA1DFuncV : public tube::UserFunc< double, double >
+{
+private:
+  double cVal;
+
+public:
+  MySA1DFuncV( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const double & x )
+    {
+    cVal = vcl_sin((double)x);
+    return cVal;
+    }
+
+}; // End class MySA1DFuncV
+
+class MySA1DFuncD : public tube::UserFunc< double, double >
+{
+private:
+  double cDeriv;
+
+public:
+  MySA1DFuncD( void )
+    {
+    cDeriv = 0;
+    }
+  const double & value( const double & x )
+    {
+    cDeriv = vcl_cos((double)x);
+    return cDeriv;
+    }
+
+}; // End class MySA1DFuncD
 
 int tubeSplineApprox1DTest( int argc, char *argv[] )
 {

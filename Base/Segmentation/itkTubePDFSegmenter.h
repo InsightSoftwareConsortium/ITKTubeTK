@@ -213,14 +213,14 @@ private:
   double                          m_ProgressFraction;
   double                          m_ProgressStart;
 
-};
+}; // End class PDFSegmenter
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubePDFSegmenter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubePDFSegmenter_h)

@@ -125,14 +125,15 @@ private:
   bool m_ForceOrientationInsensitivity;
 
   NJetImageListType m_NJetImageList;
-};
 
-}
+}; // End class NJetLDAGenerator
 
-}
+} // End namespace tube
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeNJetLDAGenerator.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeNJetLDAGenerator_h)

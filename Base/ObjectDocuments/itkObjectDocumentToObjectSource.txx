@@ -179,6 +179,6 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 
 } // End tube namespace
 
-} // End of itk namespace
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkObjectDocumentToObjectSource_txx)

@@ -37,7 +37,8 @@ limitations under the License.
 
 #include <vnl/vnl_vector.h>
 
-namespace VTREE {
+namespace VTREE
+{
 
 class TubeRegistratorPoint
 {
@@ -57,7 +58,8 @@ public:
     vnl_vector<double> m_DXT;
 
     TubeRegistratorPoint( void );
-};
+
+}; // End class TubeRegistratorPoint
 
 class TubeRegistrator : public Registrator
 {
@@ -105,8 +107,9 @@ public:
                        double * dA, double * dB, double * dG);
 
   bool Fit( void );
-};
 
-}
+}; // End class TubeRegistrator
 
-#endif
+} // End namespace VTREE
+
+#endif // End !defined(__TubeRegistrator_h)

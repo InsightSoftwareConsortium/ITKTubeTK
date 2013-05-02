@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -158,12 +158,10 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv[] )
 
 
   // All objects should be automatically destroyed at this point
-  if( !error )
-    {
-    return EXIT_SUCCESS;
-    }
-  else
+  if( error )
     {
     return EXIT_FAILURE;
     }
+
+  return EXIT_SUCCESS;
 }

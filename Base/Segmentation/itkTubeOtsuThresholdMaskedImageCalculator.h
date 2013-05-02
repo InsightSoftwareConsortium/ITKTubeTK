@@ -27,9 +27,11 @@ limitations under the License.
 #include "itkObjectFactory.h"
 #include "itkNumericTraits.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class OtsuThresholdMaskedImageCalculator
  * \brief Computes the Otsu's threshold for an image.
@@ -114,15 +116,14 @@ private:
   RegionType           m_Region;
   bool                 m_RegionSetByUser;
 
-};
+}; // End class OtsuThresholdMaskedImageCalculator
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeOtsuThresholdMaskedImageCalculator.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeOtsuThresholdMaskedImageCalculator_h)

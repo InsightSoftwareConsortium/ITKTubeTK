@@ -34,44 +34,44 @@ limitations under the License.
 #include "tubeOptimizerND.h"
 #include "tubeUserFunc.h"
 
-class MyNDFunc:
-public tube::UserFunc< vnl_vector<double>, double >
-  {
-  public:
+class MyNDFunc : public tube::UserFunc< vnl_vector<double>, double >
+{
+public:
+  MyNDFunc( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const vnl_vector<double> & x )
+    {
+    cVal = vcl_sin(x(0)) + vcl_sin(x(1));
+    std::cout << "val = " << cVal << std::endl;
+    return cVal;
+    }
 
-    MyNDFunc( void )
-      {
-      cVal = 0;
-      }
-    const double & value( const vnl_vector<double> & x )
-      {
-      cVal = vcl_sin(x(0)) + vcl_sin(x(1));
-      std::cout << "val = " << cVal << std::endl;
-      return cVal;
-      }
-  private:
-    double cVal;
-  };
+private:
+  double cVal;
 
-class MyNDFuncD:
-public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
-  {
-  public:
+}; // End class MyNDFunc
 
-    MyNDFuncD( void )
-      {
-      cDx.set_size(2);
-      }
-    const vnl_vector<double> & value( const vnl_vector<double> & x )
-      {
-      cDx[0] = vcl_cos(x(0));
-      cDx[1] = vcl_cos(x(1));
-      std::cout << "deriv = " << cDx[0] << ", " << cDx[1] << std::endl;
-      return cDx;
-      }
-  private:
-    vnl_vector<double> cDx;
-  };
+class MyNDFuncD : public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
+{
+public:
+  MyNDFuncD( void )
+    {
+    cDx.set_size(2);
+    }
+  const vnl_vector<double> & value( const vnl_vector<double> & x )
+    {
+    cDx[0] = vcl_cos(x(0));
+    cDx[1] = vcl_cos(x(1));
+    std::cout << "deriv = " << cDx[0] << ", " << cDx[1] << std::endl;
+    return cDx;
+    }
+
+private:
+  vnl_vector<double> cDx;
+
+}; // End class MyNDFuncD
 
 int tubeOptBrentNDTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
 {

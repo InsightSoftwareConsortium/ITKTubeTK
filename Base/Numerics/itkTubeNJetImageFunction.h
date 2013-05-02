@@ -326,14 +326,14 @@ protected:
 
   bool                    m_UseProjection;
 
-};
+}; // End class NJetImageFunction
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkTubeNJetImageFunction.txx"
+#include "itkTubeNJetImageFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeNJetImageFunction_h)

@@ -86,6 +86,7 @@ public:
 
   /// Pipeline
   vtkGlyph3DMapper* Glyph3DMapper;
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsGlyphDisplayNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsGlyphDisplayNode_h)

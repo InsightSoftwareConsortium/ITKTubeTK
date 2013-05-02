@@ -130,9 +130,10 @@ private:
   void operator=(const Self&); //purposely not implemented
 
   bool m_IgnoreBoundaryPixels;
-};
 
-} // end namespace itk
+}; // End class DifferenceImageFilter2
+
+} // End namespace itk
 
 // Define instantiation macro for this template.
 #define ITK_TEMPLATE_DifferenceImageFilter2(_, EXPORT, x, y) namespace itk { \
@@ -142,7 +143,7 @@ private:
   }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkDifferenceImageFilter2.txx"
+#include "itkDifferenceImageFilter2.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkDifferenceImageFilter2_h)

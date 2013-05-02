@@ -199,14 +199,14 @@ private:
   double                          m_ProgressFraction;
   double                          m_ProgressStart;
 
-};
+}; // End class LDAGenerator
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeLDAGenerator.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeLDAGenerator_h)

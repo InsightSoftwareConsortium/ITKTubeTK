@@ -125,6 +125,6 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
      << std::endl;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAcousticImpulseResponseImageFilter_txx)

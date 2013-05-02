@@ -397,6 +397,6 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
   return true;
 }
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeTubeMath_txx)

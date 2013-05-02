@@ -224,6 +224,6 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
   os << indent << "Transformation: " << m_Transform << std::endl;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeToTubeTransformFilter_txx)

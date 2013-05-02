@@ -332,7 +332,7 @@ protected:
     {
     void *                              m_RegularizationGlobalDataStruct;
     void *                              m_IntensityDistanceGlobalDataStruct;
-    };
+    }; // End struct GlobalDataStruct
 
 private:
   // Purposely not implemented
@@ -362,12 +362,13 @@ private:
   /** Mutex locks to protect modifications to metric values. */
   mutable itk::SimpleFastMutexLock      m_MetricCalculationLock;
   mutable itk::SimpleFastMutexLock      m_EnergyCalculationLock;
-};
 
-} // end namespace itk
+}; // End class AnisotropicDiffusiveRegistrationFunction
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusiveRegistrationFunction.txx"
+#include "itkAnisotropicDiffusiveRegistrationFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveRegistrationFunction_h)

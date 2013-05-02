@@ -103,9 +103,9 @@ private:
   /** Number of neighbors used in the interpolation */
   static const unsigned long  m_Neighbors;
 
-};
+}; // End class VotingResampleImageFunction
 
-} // end namespace itk
+} // End namespace itk
 
 // Define instantiation macro for this template.
 #define ITK_TEMPLATE_VotingResampleImageFunction(_, EXPORT, x, y) \
@@ -116,7 +116,7 @@ private:
   }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkVotingResampleImageFunction.txx"
+#include "itkVotingResampleImageFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkVotingResampleImageFunction_h)

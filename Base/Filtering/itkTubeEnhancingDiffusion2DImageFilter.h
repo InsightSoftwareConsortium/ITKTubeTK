@@ -176,12 +176,12 @@ private:
   // Sorted increasing magnitude: l1, l2
   inline Precision TubenessFunction2D ( const Precision, const Precision );
 
-};
+}; // End class TubeEnhancingDiffusion2DImageFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeEnhancingDiffusion2DImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeEnhancingDiffusion2DImageFilter_h)

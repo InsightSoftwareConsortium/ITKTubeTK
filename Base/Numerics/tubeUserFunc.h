@@ -29,7 +29,8 @@ limitations under the License.
  *  \example TestOptimizerND/testOptimizerND.cpp
  */
 
-namespace tube {
+namespace tube
+{
 
 /** Derive this class to pass functions to Spline and Optimization Classes
  * \class UserFunc
@@ -40,19 +41,18 @@ template <class InVarT, class OutVarT>
 class UserFunc
 {
 public:
-
   virtual ~UserFunc( void ) = 0;
 
   /** Derive this function */
   virtual const OutVarT & value( const InVarT & x ) = 0;
 
-};
+}; // End class UserFunc
 
 template <class InVarT, class OutVarT>
 inline UserFunc< InVarT, OutVarT >::~UserFunc( void )
 {
 }
 
-} // namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeUserFunc_h)

@@ -29,9 +29,11 @@ limitations under the License.
 
 #include "vnl/vnl_math.h"
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /**
  * Constructor
@@ -285,8 +287,8 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
   os << indent << "Image: " << m_Image.GetPointer() << std::endl;
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeOtsuThresholdMaskedImageCalculator_txx)

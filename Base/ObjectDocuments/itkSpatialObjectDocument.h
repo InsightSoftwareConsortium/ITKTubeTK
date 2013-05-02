@@ -81,12 +81,10 @@ protected:
   SpatialObjectDocument( void ) : LABEL_SOTYPE("SpatialObject") {}
   ~SpatialObjectDocument( void ) {}
 
-private:
-
-};
+}; // End class SpatialObjectDocument
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkSpatialObjectDocument_h)

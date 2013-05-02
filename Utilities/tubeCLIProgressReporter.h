@@ -207,8 +207,8 @@ protected:
   std::string                m_Process;
   ModuleProcessInformation * m_ProcessInformation;
 
-};
+}; // End class CLIProgressReporter
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__tubeCLIProgressReporter_h)

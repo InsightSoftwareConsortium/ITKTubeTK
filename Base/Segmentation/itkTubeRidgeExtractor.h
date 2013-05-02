@@ -413,15 +413,14 @@ private:
   bool  ( *m_IdleCallBack )( void );
   void  ( *m_StatusCallBack )( const char *, const char *, int );
 
-};
+}; // End class RidgeExtractor
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeRidgeExtractor.txx"
 #endif
 
-#endif /* __itkTubeRidgeExtractor_h */
+#endif // End !defined(__itkTubeRidgeExtractor_h)

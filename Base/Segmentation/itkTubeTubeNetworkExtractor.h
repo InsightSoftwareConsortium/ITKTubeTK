@@ -157,15 +157,15 @@ private:
   bool                             m_AEUseMask;
   typename MaskType::Pointer       m_AEMask;
   float                            m_AEThresh;
-};
 
-} // end namespace tube
+}; // End class TubeNetworkExtractor
 
-} // end namespace itk
+} // End namespace tube
 
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeTubeNetworkExtractor.txx"
 #endif
 
-#endif /* __itkTubeTubeNetworkExtractor_h */
+#endif // End !defined(__itkTubeTubeNetworkExtractor_h)

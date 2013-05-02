@@ -283,5 +283,4 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     }
 
   return EXIT_SUCCESS;
-
 }
