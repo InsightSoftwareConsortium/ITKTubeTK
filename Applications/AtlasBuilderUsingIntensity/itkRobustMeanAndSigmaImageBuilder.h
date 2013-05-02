@@ -102,7 +102,7 @@ public:
    * function will eliminate the results of this output and will start a new
    * summation.
    */
-  void FinalizeOutput();
+  void FinalizeOutput( void );
 
   /*
    * Get the number of outliers on either side of the mean to remove prior
@@ -138,8 +138,8 @@ public:
 
 protected:
 
-   RobustMeanAndSigmaImageBuilder();
-  ~RobustMeanAndSigmaImageBuilder(){}
+   RobustMeanAndSigmaImageBuilder( void );
+  ~RobustMeanAndSigmaImageBuilder( void ) {}
 
   /** Processing image types */
   typedef typename Superclass::ProcessImageType         ProcessImageType;
@@ -172,7 +172,7 @@ protected:
    * Get the ordered image list representing the lower half of voxel values.
    * Used to determine median.  Order is ascending pixel value
    */
-  InputImageListType& GetLowerOutlierImages()
+  InputImageListType& GetLowerOutlierImages( void )
     { return m_LowerOutlierImages; }
 
   /*
@@ -188,7 +188,7 @@ protected:
    * deviation calculation.  Used to determine sigma calculations. Order is
    * decending starting from highest intensity
    */
-  InputImageListType& GetUpperOutlierImages()
+  InputImageListType& GetUpperOutlierImages( void )
     { return m_UpperOutlierImages; }
 
   /*
@@ -209,7 +209,7 @@ protected:
                                             InputImageListType& list,
                                             bool ListIsAscending );
 
-  bool UseMedian()
+  bool UseMedian( void )
     { return ( m_TotalNumberOfImages > 0 ); }
 
   /*

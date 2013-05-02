@@ -41,7 +41,7 @@ class UserFunc
 {
 public:
 
-  virtual ~UserFunc() = 0;
+  virtual ~UserFunc( void ) = 0;
 
   /** Derive this function */
   virtual const OutVarT & value( const InVarT & x ) = 0;
@@ -49,7 +49,7 @@ public:
 };
 
 template <class InVarT, class OutVarT>
-inline UserFunc< InVarT, OutVarT >::~UserFunc()
+inline UserFunc< InVarT, OutVarT >::~UserFunc( void )
 {
 }
 

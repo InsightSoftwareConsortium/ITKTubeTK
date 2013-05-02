@@ -126,10 +126,10 @@ public:
 protected:
 
   /** Does the real work! */
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
-  MinimizeImageSizeFilter();
-  ~MinimizeImageSizeFilter(){}
+  MinimizeImageSizeFilter( void );
+  ~MinimizeImageSizeFilter( void ) {}
 
   itkGetConstMacro( ClipEndIndices, bool );
   itkSetMacro( ClipEndIndices, bool );

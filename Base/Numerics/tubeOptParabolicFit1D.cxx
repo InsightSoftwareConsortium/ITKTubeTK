@@ -35,7 +35,7 @@ limitations under the License.
 namespace tube
 {
 
-OptParabolicFit1D::OptParabolicFit1D()
+OptParabolicFit1D::OptParabolicFit1D( void )
 : Optimizer1D()
 {
 }
@@ -46,7 +46,7 @@ OptParabolicFit1D::OptParabolicFit1D( UserFunc<double, double> *newFuncVal )
 }
 
 
-OptParabolicFit1D::~OptParabolicFit1D()
+OptParabolicFit1D::~OptParabolicFit1D( void )
 {
 }
 

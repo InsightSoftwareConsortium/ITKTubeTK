@@ -48,7 +48,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
  */
 template<class TInputImage, class TCoordRep>
 VotingResampleImageFunction< TInputImage, TCoordRep >
-::VotingResampleImageFunction()
+::VotingResampleImageFunction( void )
 {
 
 }

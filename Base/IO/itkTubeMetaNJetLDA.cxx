@@ -36,7 +36,7 @@ namespace tube {
 // MetaNJetLDA Constructors
 //
 MetaNJetLDA::
-MetaNJetLDA()
+MetaNJetLDA( void )
 {
   if( META_DEBUG )
     {
@@ -100,14 +100,14 @@ MetaNJetLDA(
 
 //
 MetaNJetLDA::
-~MetaNJetLDA()
+~MetaNJetLDA( void )
 {
   M_Destroy();
 }
 
 //
 void MetaNJetLDA::
-PrintInfo() const
+PrintInfo( void ) const
 {
   MetaLDA::PrintInfo();
 

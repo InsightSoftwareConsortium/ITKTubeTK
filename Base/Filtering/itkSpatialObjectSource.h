@@ -115,8 +115,8 @@ public:
     MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx );
 
 protected:
-  SpatialObjectSource();
-  virtual ~SpatialObjectSource() {}
+  SpatialObjectSource( void );
+  virtual ~SpatialObjectSource( void ) {}
 
 private:
   SpatialObjectSource( const Self & ); // purposely not implemented

@@ -43,7 +43,7 @@ namespace itk {
  */
 template <class TInputImage, class TOutputImage>
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::AnisotropicHybridDiffusionImageFilter()
+::AnisotropicHybridDiffusionImageFilter( void )
 {
   m_ThresholdParameterC = 3.31488;
   m_ContrastParameterLambdaHybrid = 30.0;
@@ -57,7 +57,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::UpdateDiffusionTensorImage()
+::UpdateDiffusionTensorImage( void )
 {
   itkDebugMacro( << "UpdateDiffusionTensorImage() called" );
 

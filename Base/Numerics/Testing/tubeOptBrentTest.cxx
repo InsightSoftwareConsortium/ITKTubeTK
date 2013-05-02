@@ -38,7 +38,7 @@ class MyOBFunc:
   private:
     double cVal;
   public:
-    MyOBFunc( )
+    MyOBFunc( void )
       {
       cVal = 0;
       }
@@ -55,7 +55,7 @@ class MyOBFuncD:
   private:
     double cDeriv;
   public:
-    MyOBFuncD( )
+    MyOBFuncD( void )
       {
       cDeriv = 0;
       }

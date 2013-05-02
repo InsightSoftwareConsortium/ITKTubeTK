@@ -37,7 +37,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
                                TOutputImage,
                                TRadiusImage,
                                TTangentImage>
-::TubeSpatialObjectToImageFilter()
+::TubeSpatialObjectToImageFilter( void )
 {
   m_UseRadius = false;
   m_Cumulative = false;
@@ -71,7 +71,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
                                TOutputImage,
                                TRadiusImage,
                                TTangentImage>
-::~TubeSpatialObjectToImageFilter()
+::~TubeSpatialObjectToImageFilter( void )
 {
 }
 
@@ -88,7 +88,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
                                TOutputImage,
                                TRadiusImage,
                                TTangentImage>
-::GetRadiusImage()
+::GetRadiusImage( void )
 {
   return dynamic_cast< TRadiusImage * >(this->ProcessObject::GetOutput(1) );
 }
@@ -106,7 +106,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
                                TOutputImage,
                                TRadiusImage,
                                TTangentImage>
-::GetTangentImage()
+::GetTangentImage( void )
 {
   return dynamic_cast< TTangentImage * >(this->ProcessObject::GetOutput(2) );
 }
@@ -121,7 +121,7 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
                                TOutputImage,
                                TRadiusImage,
                                TTangentImage>
-::GenerateData(void)
+::GenerateData( void )
 {
   itkDebugMacro(<< "TubeSpatialObjectToImageFilter::Update() called");
 

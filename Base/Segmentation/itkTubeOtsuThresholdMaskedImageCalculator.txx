@@ -38,7 +38,7 @@ namespace tube {
  */
 template<class TInputImage>
 OtsuThresholdMaskedImageCalculator<TInputImage>
-::OtsuThresholdMaskedImageCalculator()
+::OtsuThresholdMaskedImageCalculator( void )
 {
   m_Image = NULL;
   m_MaskImage = NULL;
@@ -54,7 +54,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
 template<class TInputImage>
 void
 OtsuThresholdMaskedImageCalculator<TInputImage>
-::Compute(void)
+::Compute( void )
 {
 
   unsigned int j;

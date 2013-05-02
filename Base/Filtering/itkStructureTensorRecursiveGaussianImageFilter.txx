@@ -34,7 +34,7 @@ namespace itk
  */
 template <typename TInputImage, typename TOutputImage >
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
-::StructureTensorRecursiveGaussianImageFilter()
+::StructureTensorRecursiveGaussianImageFilter( void )
 {
   m_NormalizeAcrossScale = false;
 
@@ -171,7 +171,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 template <typename TInputImage, typename TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
-::GenerateData()
+::GenerateData( void )
 {
   // Create a process accumulator for tracking the progress of this
   // minipipeline

@@ -43,7 +43,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT
 vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
 {
  public:
-  static vtkMRMLSpatialObjectsTubeDisplayNode* New();
+  static vtkMRMLSpatialObjectsTubeDisplayNode* New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsTubeDisplayNode,
                vtkMRMLSpatialObjectsDisplayNode);
   void PrintSelf(ostream& os, vtkIndent indent);
@@ -52,7 +52,7 @@ vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
   /// MRMLNode methods
   //----------------------------------------------------------------------------
 
-  virtual vtkMRMLNode* CreateNodeInstance();
+  virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
   /// Read node attributes from XML (MRML) file
@@ -69,16 +69,16 @@ vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
 
   ///
   /// Get node XML tag name (like Volume, UnstructuredGrid)
-  virtual const char* GetNodeTagName()
+  virtual const char* GetNodeTagName( void )
   {return "SpatialObjectsTubeDisplayNode";}
 
   ///
   /// Return the polydata that was set by SetInputPolyData
-  virtual vtkPolyData* GetInputPolyData();
+  virtual vtkPolyData* GetInputPolyData( void );
 
   ///
   /// Update the pipeline based on this node attributes
-  virtual void UpdatePolyDataPipeline();
+  virtual void UpdatePolyDataPipeline( void );
 
   //----------------------------------------------------------------------------
   /// Display Information: Geometry to display (not mutually exclusive)
@@ -95,8 +95,8 @@ vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
   vtkGetMacro(TubeNumberOfSides, int);
 
 protected:
-  vtkMRMLSpatialObjectsTubeDisplayNode();
-  ~vtkMRMLSpatialObjectsTubeDisplayNode();
+  vtkMRMLSpatialObjectsTubeDisplayNode( void );
+  ~vtkMRMLSpatialObjectsTubeDisplayNode( void );
   vtkMRMLSpatialObjectsTubeDisplayNode(
     const vtkMRMLSpatialObjectsTubeDisplayNode&);
   void operator=(const vtkMRMLSpatialObjectsTubeDisplayNode&);
@@ -106,7 +106,7 @@ protected:
 
   /// Return the polydata that is processed by the display node.
   /// This is the polydata that needs to be connected with the mappers.
-  virtual vtkAlgorithmOutput* GetOutputPort();
+  virtual vtkAlgorithmOutput* GetOutputPort( void );
 
   /// Properties
   int    TubeNumberOfSides;

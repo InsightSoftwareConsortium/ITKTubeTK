@@ -123,7 +123,7 @@ public:
     { m_MovingImageInterpolator = ptr; }
 
   /** Get the moving image interpolator. */
-  InterpolatorType * GetMovingImageInterpolator(void)
+  InterpolatorType * GetMovingImageInterpolator( void )
     { return m_MovingImageInterpolator; }
 
   /** This class uses a constant timestep of 1. */
@@ -132,7 +132,7 @@ public:
 
   /** Return a pointer to a global data structure that is passed to
    * this object from the solver at each calculation.  */
-  virtual void *GetGlobalDataPointer() const
+  virtual void *GetGlobalDataPointer( void ) const
     {
     GlobalDataStruct *global = new GlobalDataStruct();
     return global;
@@ -143,7 +143,7 @@ public:
     { delete (GlobalDataStruct *) GlobalData;  }
 
   /** Set the object's state before each iteration. */
-  virtual void InitializeIteration();
+  virtual void InitializeIteration( void );
 
   /** This method is called by a finite difference solver image filter at
    * each pixel that does not lie on a data set boundary */
@@ -166,18 +166,18 @@ public:
 
   void SetBackgroundIntensity( MovingImagePixelType intensity )
     { m_BackgroundIntensity = intensity; }
-  MovingImagePixelType GetBackgroundIntensity() const
+  MovingImagePixelType GetBackgroundIntensity( void ) const
     { return m_BackgroundIntensity; }
 
   void SetIntensityDifferenceThreshold( double threshold )
     { m_IntensityDifferenceThreshold = threshold; }
-  double GetIntensityDifferenceThreshold() const
+  double GetIntensityDifferenceThreshold( void ) const
     { return m_IntensityDifferenceThreshold; }
 
 
 protected:
-  MeanSquareRegistrationFunction();
-  ~MeanSquareRegistrationFunction() {}
+  MeanSquareRegistrationFunction( void );
+  ~MeanSquareRegistrationFunction( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** FixedImage image neighborhood iterator type. */

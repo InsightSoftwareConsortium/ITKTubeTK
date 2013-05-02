@@ -95,7 +95,7 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
 
 
 //-----------------------------------------------------------------------------
-double ShortestPathKernel::Compute(void)
+double ShortestPathKernel::Compute( void )
 {
   double kernelValue = 0.0;
   long int cntEdgeEvaluations = 0;

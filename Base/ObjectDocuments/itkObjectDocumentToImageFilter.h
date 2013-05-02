@@ -84,11 +84,11 @@ public:
   itkNewMacro( Self );
   itkTypeMacro( Self, Superclass );
 
-  OutputImageType * GetOutput();
+  OutputImageType * GetOutput( void );
 
 protected:
 
-  void GenerateData();
+  void GenerateData( void );
 
   typedef ImageFileReader< OutputImageType >                        ImageFileReaderType;
   typedef ResampleImageFilter<OutputImageType,OutputImageType>      ResampleImageFilterType;
@@ -101,8 +101,8 @@ protected:
   /** Resample the input image using the inputted transform */
   OutputImagePointer ResampleImage( OutputImagePointer, TransformPointer );
 
-  ObjectDocumentToImageFilter();
-  ~ObjectDocumentToImageFilter(){}
+  ObjectDocumentToImageFilter( void );
+  ~ObjectDocumentToImageFilter( void ) {}
 
 private:
 

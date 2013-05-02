@@ -31,7 +31,7 @@ template< class TInputImageType,
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
                                 TOutputSigmaImageType >
-::RobustMeanAndSigmaImageBuilder()
+::RobustMeanAndSigmaImageBuilder( void )
 : m_NumberOfOutlierImagesToRemove(0),
   m_TotalNumberOfImages(0)
 {
@@ -282,7 +282,7 @@ void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
                                 TOutputSigmaImageType >
-::FinalizeOutput()
+::FinalizeOutput( void )
 {
   if( !( this->GetIsProcessing() ) )
     {
@@ -373,7 +373,7 @@ typename RobustMeanAndSigmaImageBuilder<
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
                                 TOutputSigmaImageType>
-::GetMedianImage()
+::GetMedianImage( void )
 {
   unsigned int totalNumImages = this->GetTotalNumberOfImages();
   InputImageListType  lowerImages = this->GetLowerOutlierImages();

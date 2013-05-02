@@ -156,7 +156,7 @@ public:
       updates. */
   void SetTimeStep(const TimeStepType & t)
     { m_TimeStep = t; }
-  const TimeStepType & GetTimeStep() const
+  const TimeStepType & GetTimeStep( void ) const
     { return m_TimeStep; }
 
   /** Utility function to check whether the timestep is stable, optionally based
@@ -186,12 +186,12 @@ public:
    *  you want derivatives in isotropic pixel space.  Default is ON. */
   void SetUseImageSpacing( bool newUseImageSpacing )
     { m_UseImageSpacing = newUseImageSpacing; }
-  bool GetUseImageSpacing() const
+  bool GetUseImageSpacing( void ) const
     { return m_UseImageSpacing; }
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
-  virtual void * GetGlobalDataPointer() const
+  virtual void * GetGlobalDataPointer( void ) const
     {
     GlobalDataStruct *ans = new GlobalDataStruct();
     return ans;
@@ -200,8 +200,8 @@ public:
   virtual void ReleaseGlobalDataPointer(void * GlobalData) const
     { delete static_cast<GlobalDataStruct *>( GlobalData ); }
 protected:
-  AnisotropicDiffusionTensorFunction();
-  virtual ~AnisotropicDiffusionTensorFunction() {}
+  AnisotropicDiffusionTensorFunction( void );
+  virtual ~AnisotropicDiffusionTensorFunction( void ) {}
   void PrintSelf(std::ostream &s, Indent indent) const;
 
   /** The offset of the center pixel in the neighborhood. */

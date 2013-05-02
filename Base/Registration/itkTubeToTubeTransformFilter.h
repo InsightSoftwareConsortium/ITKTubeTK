@@ -36,7 +36,7 @@ namespace itk
  *  This class applies a transformation to tubes in a group and returns
  *  a the group with transformed tubes.
  *  \warning Transform Class MUST have a proper implementation of
- *    ::TransformCovariantVector()
+ *    ::TransformCovariantVector( void )
  *  \warning The scale is applied before computing the transformation.
  *  The resulting tube could be cropped and/or a narrow band could be
  *  defined.
@@ -69,7 +69,7 @@ public:
   itkTypeMacro(Self, Object);
 
   /** Apply the transformation to the tube */
-  void Update(void);
+  void Update( void );
 
   /** Set the Transformation */
   itkSetObjectMacro(Transform, TransformType);
@@ -105,8 +105,8 @@ public:
 
 protected:
 
-  TubeToTubeTransformFilter();
-  virtual ~TubeToTubeTransformFilter() {}
+  TubeToTubeTransformFilter( void );
+  virtual ~TubeToTubeTransformFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:

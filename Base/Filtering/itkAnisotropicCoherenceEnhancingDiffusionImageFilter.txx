@@ -44,7 +44,7 @@ namespace itk{
  */
 template <class TInputImage, class TOutputImage>
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::AnisotropicCoherenceEnhancingDiffusionImageFilter()
+::AnisotropicCoherenceEnhancingDiffusionImageFilter( void )
 {
   m_ContrastParameterLambdaC = 15.0;
   m_Alpha = 0.001;
@@ -55,7 +55,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::UpdateDiffusionTensorImage()
+::UpdateDiffusionTensorImage( void )
 {
   itkDebugMacro( << "UpdateDiffusionTensorImage() called" );
 

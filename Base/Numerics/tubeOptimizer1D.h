@@ -62,7 +62,7 @@ public:
     UserFunc< double, double > * newFuncDeriv );
 
   /**  Destructor */
-  virtual ~Optimizer1D();
+  virtual ~Optimizer1D( void );
 
   /** Specify new functions to be optimized
   * \param newFuncVal User derivation of UserFunc to define

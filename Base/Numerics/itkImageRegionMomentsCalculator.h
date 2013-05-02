@@ -172,33 +172,33 @@ public:
    * This method returns the sum of pixel intensities (also known as
    * the zeroth moment or the total mass) of the image whose moments
    * were last computed by this object. */
-  ScalarType GetTotalMass() const;
+  ScalarType GetTotalMass( void ) const;
 
   /** Return first moments about origin, in index coordinates.
    * This method returns the first moments around the origin of the
    * image whose moments were last computed by this object.  For
    * simplicity, these moments are computed in index coordinates
    * rather than physical coordinates. */
-  VectorType GetFirstMoments() const;
+  VectorType GetFirstMoments( void ) const;
 
   /** Return second moments about origin, in index coordinates.
    * This method returns the second moments around the origin
    * of the image whose moments were last computed by this object.
    * For simplicity, these moments are computed in index coordinates
    * rather than physical coordinates. */
-  MatrixType GetSecondMoments() const;
+  MatrixType GetSecondMoments( void ) const;
 
   /** Return center of gravity, in physical coordinates.
    * This method returns the center of gravity of the image whose
    * moments were last computed by this object.  The center of
    * gravity is computed in physical coordinates. */
-  VectorType GetCenterOfGravity() const;
+  VectorType GetCenterOfGravity( void ) const;
 
   /** Return second central moments, in physical coordinates.
    * This method returns the central second moments of the image
    * whose moments were last computed by this object.  The central
    * moments are computed in physical coordinates. */
-  MatrixType GetCentralMoments() const;
+  MatrixType GetCentralMoments( void ) const;
 
   /** Return principal moments, in physical coordinates.
    * This method returns the principal moments of the image whose
@@ -206,7 +206,7 @@ public:
    * returned as a vector, with the principal moments ordered from
    * smallest to largest.  The moments are computed in physical
    * coordinates.   */
-  VectorType GetPrincipalMoments() const;
+  VectorType GetPrincipalMoments( void ) const;
 
   /** Return principal axes, in physical coordinates.
    * This method returns the principal axes of the image whose
@@ -220,22 +220,22 @@ public:
    * have foolishly made one or more of the spacing values negative;
    * in that case, _you_ get to figure out the consequences.)  The
    * moments are computed in physical coordinates. */
-  MatrixType GetPrincipalAxes() const;
+  MatrixType GetPrincipalAxes( void ) const;
 
   /** Get the affine transform from principal axes to physical axes
    * This method returns an affine transform which transforms from
    * the principal axes coordinate system to physical coordinates. */
-  AffineTransformPointer GetPrincipalAxesToPhysicalAxesTransform(void) const;
+  AffineTransformPointer GetPrincipalAxesToPhysicalAxesTransform( void ) const;
 
   /** Get the affine transform from physical axes to principal axes
    * This method returns an affine transform which transforms from
    * the physical coordinate system to the principal axes coordinate
    * system. */
-  AffineTransformPointer GetPhysicalAxesToPrincipalAxesTransform(void) const;
+  AffineTransformPointer GetPhysicalAxesToPrincipalAxesTransform( void ) const;
 
 protected:
-  ImageRegionMomentsCalculator();
-  virtual ~ImageRegionMomentsCalculator();
+  ImageRegionMomentsCalculator( void );
+  virtual ~ImageRegionMomentsCalculator( void );
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:

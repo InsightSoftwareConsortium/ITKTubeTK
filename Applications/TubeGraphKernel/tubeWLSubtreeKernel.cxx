@@ -155,7 +155,7 @@ std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
 
 
 //-----------------------------------------------------------------------------
-double WLSubtreeKernel::Compute()
+double WLSubtreeKernel::Compute( void )
 {
   std::vector<int> phiG0 = BuildPhi(m_G0);
   std::vector<int> phiG1 = BuildPhi(m_G1);

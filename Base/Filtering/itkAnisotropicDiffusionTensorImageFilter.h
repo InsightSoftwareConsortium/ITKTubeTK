@@ -111,17 +111,17 @@ public:
 #endif
 
 protected:
-  AnisotropicDiffusionTensorImageFilter();
- ~AnisotropicDiffusionTensorImageFilter() {}
+  AnisotropicDiffusionTensorImageFilter( void );
+ ~AnisotropicDiffusionTensorImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /* overloaded GenerateData method */
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
   /** A simple method to copy the data from the input to the output. ( Supports
    * "read-only" image adaptors in the case where the input image type converts
    * to a different output image type. )  */
-  virtual void CopyInputToOutput();
+  virtual void CopyInputToOutput( void );
 
   /** This method applies changes from the m_UpdateBuffer to the output using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
@@ -130,23 +130,23 @@ protected:
 
   /** Method to allow subclasses to get direct access to the update
    * buffer */
-  virtual UpdateBufferType* GetUpdateBuffer()
+  virtual UpdateBufferType* GetUpdateBuffer( void )
     { return m_UpdateBuffer; }
 
   /** This method populates an update buffer with changes for each pixel in the
    * output using the ThreadedCalculateChange() method and a multithreading
    * mechanism. Returns value is a time step to be used for the update. */
-  virtual TimeStepType CalculateChange();
+  virtual TimeStepType CalculateChange( void );
 
   /** This method allocates storage in m_UpdateBuffer.  It is called from
    * Superclass::GenerateData(). */
-  virtual void AllocateUpdateBuffer();
+  virtual void AllocateUpdateBuffer( void );
 
   /** This method allocates storage for the diffusion tensor image */
-  void AllocateDiffusionTensorImage();
+  void AllocateDiffusionTensorImage( void );
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage() = 0;
+  void virtual UpdateDiffusionTensorImage( void ) = 0;
 
   /** The type of region used for multithreading */
   typedef typename UpdateBufferType::RegionType ThreadRegionType;
@@ -179,9 +179,9 @@ protected:
       ThreadIdType threadId );
 
   /** Prepare for the iteration process. */
-  virtual void InitializeIteration();
+  virtual void InitializeIteration( void );
 
-  DiffusionTensorImagePointerType GetDiffusionTensorImage();
+  DiffusionTensorImagePointerType GetDiffusionTensorImage( void );
 
 private:
   //purposely not implemented

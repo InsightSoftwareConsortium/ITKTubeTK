@@ -47,10 +47,10 @@ public:
   typedef itk::tube::ImageDocument                    ImageDocumentType;
   typedef std::vector<ObjectDocumentType::Pointer>    ObjectListType;
 
-  MetaObjectDocument();
-  ~MetaObjectDocument();
+  MetaObjectDocument( void );
+  ~MetaObjectDocument( void );
 
-  void  PrintInfo() const;
+  void  PrintInfo( void ) const;
 
   bool  Read(const std::string & _fileName = std::string());
 
@@ -59,24 +59,24 @@ public:
   bool  Write(const std::string & _fileName = std::string());
 
   /** Clear tube information */
-  void Clear();
+  void Clear( void );
 
   void AddObject( ObjectDocumentType::Pointer );
 
   /** Overrides any previously added objects */
   void SetObjectList( ObjectListType& list );
 
-  ObjectListType * GetObjectList(void);
+  ObjectListType * GetObjectList( void );
 
 
 protected:
-  bool M_Write(void);
-  bool M_Read(void);
+  bool M_Write( void );
+  bool M_Read( void );
 
-  void M_SetupReadFields(void);
-  void M_SetupObjectReadFields(void);
+  void M_SetupReadFields( void );
+  void M_SetupObjectReadFields( void );
 
-  void M_SetupWriteFields(void);
+  void M_SetupWriteFields( void );
   void M_SetupObjectWriteFields(unsigned int);
 
   static const std::string LABEL_NOBJECTS;

@@ -36,7 +36,7 @@ template< class TInputImage, class TOutputImage, class TOperatorValue >
 GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   TOutputImage,
   TOperatorValue >
-::GradientBasedAngleOfIncidenceImageFilter()
+::GradientBasedAngleOfIncidenceImageFilter( void )
 {
   typedef GradientImageFilter<
       OperatorImageType, OperatorValueType, OperatorValueType >

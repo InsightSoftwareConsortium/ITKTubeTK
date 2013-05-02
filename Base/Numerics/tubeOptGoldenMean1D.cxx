@@ -32,8 +32,8 @@ limitations under the License.
 namespace tube
 {
 
-OptGoldenMean1D::OptGoldenMean1D( )
-: Optimizer1D( )
+OptGoldenMean1D::OptGoldenMean1D( void )
+: Optimizer1D()
 {
 }
 
@@ -43,7 +43,7 @@ OptGoldenMean1D::OptGoldenMean1D( UserFunc<double, double> *newFuncVal )
 }
 
 
-OptGoldenMean1D::~OptGoldenMean1D( )
+OptGoldenMean1D::~OptGoldenMean1D( void )
 {
 }
 

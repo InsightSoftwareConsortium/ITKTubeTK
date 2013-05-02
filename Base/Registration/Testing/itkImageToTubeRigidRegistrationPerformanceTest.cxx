@@ -54,8 +54,8 @@ public:
   itkNewMacro( Self );
 
 protected:
-  CommandIterationUpdate(){}
-  ~CommandIterationUpdate()
+  CommandIterationUpdate( void ) {}
+  ~CommandIterationUpdate( void )
     {
     if ( measuresFileStream.is_open() )
       {

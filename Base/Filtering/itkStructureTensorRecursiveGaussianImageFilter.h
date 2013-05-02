@@ -119,8 +119,8 @@ public:
  
 
 protected:
-  StructureTensorRecursiveGaussianImageFilter();
-  virtual ~StructureTensorRecursiveGaussianImageFilter() {}
+  StructureTensorRecursiveGaussianImageFilter( void );
+  virtual ~StructureTensorRecursiveGaussianImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** StructureTensorRecursiveGaussianImageFilter needs all of the input to produce an
@@ -128,10 +128,10 @@ protected:
    * an implementation for GenerateInputRequestedRegion in order to inform
    * the pipeline execution model.
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
+  virtual void GenerateInputRequestedRegion( void ) throw(InvalidRequestedRegionError);
 
   /** Generate Data */
-  void GenerateData();
+  void GenerateData( void );
 
   // Override since the filter produces the entire dataset
   void EnlargeOutputRequestedRegion(DataObject *output);

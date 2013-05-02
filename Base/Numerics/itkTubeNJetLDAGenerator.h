@@ -97,8 +97,8 @@ public:
   virtual typename NJetImageType::Pointer GetNJetImage( unsigned int num );
   virtual unsigned int GetNumberOfNJetImages( void );
 
-  void Update();
-  void UpdateLDAImages();
+  void Update( void );
+  void UpdateLDAImages( void );
 
 protected:
 

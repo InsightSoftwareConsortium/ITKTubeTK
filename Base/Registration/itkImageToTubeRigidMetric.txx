@@ -37,7 +37,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::ImageToTubeRigidMetric()
+::ImageToTubeRigidMetric( void )
 {
   m_Kappa = 1.0;
   m_Extent = 3.0;
@@ -59,7 +59,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::~ImageToTubeRigidMetric()
+::~ImageToTubeRigidMetric( void )
 {
 }
 
@@ -76,7 +76,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::GetResolutionWeightFunction()
+::GetResolutionWeightFunction( void )
 {
   return this->m_ResolutionWeightFunction;
 }
@@ -94,7 +94,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::GetResolutionWeightFunction() const
+::GetResolutionWeightFunction( void ) const
 {
   return this->m_ResolutionWeightFunction;
 }
@@ -176,7 +176,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::ComputeTubePointResolutionWeights()
+::ComputeTubePointResolutionWeights( void )
 {
   typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
 
@@ -248,7 +248,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::GetTubes() const
+::GetTubes( void ) const
 {
   if (!this->m_MovingSpatialObject)
     {

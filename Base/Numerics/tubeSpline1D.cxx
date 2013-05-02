@@ -78,8 +78,8 @@ protected:
 //
 //
 Spline1D::
-Spline1D():
-  m_Data(4, 0.0)
+Spline1D( void )
+  : m_Data(4, 0.0)
 {
   m_Defined = false;
 
@@ -97,8 +97,8 @@ Spline1D():
 }
 
 Spline1D::
-Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D):
-  m_Data(4, 0.0)
+Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+  : m_Data(4, 0.0)
 {
   m_Defined = false;
 
@@ -116,7 +116,7 @@ Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D):
 }
 
 Spline1D::
-~Spline1D()
+~Spline1D( void )
 {
   if(m_Defined)
     {
@@ -150,7 +150,7 @@ use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 //
 //
 bool Spline1D::
-clipEdge(void)
+clipEdge( void )
 {
   return m_Clip;
 }
@@ -162,7 +162,7 @@ clipEdge(bool newClip)
 }
 
 int Spline1D::
-xMin(void)
+xMin( void )
 {
   return m_XMin;
 }
@@ -178,7 +178,7 @@ xMin(int newXMin)
 }
 
 int Spline1D::
-xMax(void)
+xMax( void )
 {
   return m_XMax;
 }
@@ -197,7 +197,7 @@ xMax(int newXMax)
 //
 //
 bool Spline1D::
-newData(void)
+newData( void )
 {
   return m_NewData;
 }

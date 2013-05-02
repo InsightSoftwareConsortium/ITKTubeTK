@@ -124,7 +124,7 @@ public:
       }
     }
 
-  unsigned int GetMeasurementVectorSize() const
+  unsigned int GetMeasurementVectorSize( void ) const
     {
     return MeasurementVectorSize;
     }
@@ -132,16 +132,16 @@ public:
   /** Method to set/get the image */
   using Superclass::SetInput;
   void SetInput( const ImageType* image );
-  const ImageType* GetInput() const;
+  const ImageType* GetInput( void ) const;
 
   /** Method to set/get the mask */
   void SetMaskImage( const MaskImageType* image );
-  const MaskImageType* GetMaskImage() const;
+  const MaskImageType* GetMaskImage( void ) const;
 
   /** Method to get the list sample, the generated output. Note that this does
    * not invoke Update(). You should have called update on this class to get
    * any meaningful output. */
-  const ListSampleType * GetListSample() const;
+  const ListSampleType * GetListSample( void ) const;
 
   /** Set the pixel value treated as on in the mask. If a mask has been
    * specified, only pixels with this value will be added to the list sample, if
@@ -154,18 +154,18 @@ public:
   itkGetMacro( UseSingleMaskValue, bool );
 
   /** This method causes the filter to generate its output. */
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
   /** This method ensures that a mask image if specified has requested regions
    * that at least contain the input image's buffered region. */
-  virtual void GenerateInputRequestedRegion()
+  virtual void GenerateInputRequestedRegion( void )
     throw(InvalidRequestedRegionError);
 
-  virtual void GenerateOutputInformation();
+  virtual void GenerateOutputInformation( void );
 
 protected:
-  VectorImageToListGenerator();
-  virtual ~VectorImageToListGenerator() {}
+  VectorImageToListGenerator( void );
+  virtual ~VectorImageToListGenerator( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:

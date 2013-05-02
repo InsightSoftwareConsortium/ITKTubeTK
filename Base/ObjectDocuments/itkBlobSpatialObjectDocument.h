@@ -71,14 +71,14 @@ public:
   itkTypeMacro( Self, Superclass );
 
   /** Return the type of the object within the Document (ie. "Blob") */
-  std::string GetObjectType() const { return "Blob"; }
+  std::string GetObjectType( void ) const { return "Blob"; }
 
   const std::string LABEL_BLOBTYPE;
 
 protected:
 
-  BlobSpatialObjectDocument() : LABEL_BLOBTYPE("Blob"){}
-  ~BlobSpatialObjectDocument(){}
+  BlobSpatialObjectDocument( void ) : LABEL_BLOBTYPE("Blob") {}
+  ~BlobSpatialObjectDocument( void ) {}
 
 private:
 };

@@ -40,7 +40,7 @@ vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsDisplayPropertiesNode);
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayPropertiesNode::
-vtkMRMLSpatialObjectsDisplayPropertiesNode()
+vtkMRMLSpatialObjectsDisplayPropertiesNode( void )
 {
   // Default display
   this->ScalarInvariant = this->LinearMeasure;
@@ -67,7 +67,7 @@ vtkMRMLSpatialObjectsDisplayPropertiesNode()
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayPropertiesNode::
-~vtkMRMLSpatialObjectsDisplayPropertiesNode()
+~vtkMRMLSpatialObjectsDisplayPropertiesNode( void )
 {
   if ( this->GlyphSource != NULL )
     {
@@ -205,7 +205,7 @@ void vtkMRMLSpatialObjectsDisplayPropertiesNode::SetGlyphGeometry(int geometry)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource()
+void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource( void )
 {
   vtkDebugMacro("Get Glyph Source");
 
@@ -245,20 +245,20 @@ void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource()
         vtkDebugMacro("Get Glyph Source: Lines");
         this->SetGlyphSource(line->GetOutput());
         }
-      line->Delete( );
+      line->Delete();
       }
       break;
     }
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstScalarInvariant()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstScalarInvariant( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::LinearMeasure;
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastScalarInvariant()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastScalarInvariant( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::RelativeAnisotropy;
 }
@@ -288,14 +288,14 @@ GetScalarEnumAsString(int var)
 
 //------------------------------------------------------------------------------
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
-GetScalarInvariantAsString()
+GetScalarInvariantAsString( void )
 {
   return this->GetScalarEnumAsString(this->ScalarInvariant);
 }
 
 //------------------------------------------------------------------------------
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
-GetGlyphGeometryAsString()
+GetGlyphGeometryAsString( void )
 {
   return this->GetGlyphGeometryAsString(this->GlyphGeometry);
 }
@@ -317,19 +317,19 @@ GetGlyphGeometryAsString(int geometry)
 
 //------------------------------------------------------------------------------
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
-GetColorGlyphByAsString()
+GetColorGlyphByAsString( void )
 {
   return this->GetScalarEnumAsString(this->ColorGlyphBy);
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstColorGlyphBy()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstColorGlyphBy( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::LinearMeasure;
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastColorGlyphBy()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastColorGlyphBy( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::RelativeAnisotropy;
 }

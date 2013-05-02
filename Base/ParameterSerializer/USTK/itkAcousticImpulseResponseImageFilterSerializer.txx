@@ -39,7 +39,7 @@ namespace tube
 
 template< class TAcousticImpulseResponseImageFilter >
 AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilter >
-::AcousticImpulseResponseImageFilterSerializer()
+::AcousticImpulseResponseImageFilterSerializer( void )
 {
   this->m_AngleDependence = new DoubleValue;
   this->m_AngleDependence->SetValue( 1.0 );
@@ -60,7 +60,7 @@ AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilte
 
 template< class TAcousticImpulseResponseImageFilter >
 AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilter >
-::~AcousticImpulseResponseImageFilterSerializer()
+::~AcousticImpulseResponseImageFilterSerializer( void )
 {
   delete m_AngleDependence;
   delete m_GradientMagnitudeFilter;
@@ -139,7 +139,7 @@ AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilte
 template< class TAcousticImpulseResponseImageFilter >
 void
 AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilter >
-::Serialize()
+::Serialize( void )
 {
   AcousticImpulseResponseImageFilterType * filter =
     dynamic_cast< AcousticImpulseResponseImageFilterType * >
@@ -164,7 +164,7 @@ AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilte
 template< class TAcousticImpulseResponseImageFilter >
 void
 AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilter >
-::DeSerialize()
+::DeSerialize( void )
 {
   AcousticImpulseResponseImageFilterType * filter =
     dynamic_cast< AcousticImpulseResponseImageFilterType * >

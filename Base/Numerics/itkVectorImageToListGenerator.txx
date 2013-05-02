@@ -31,7 +31,7 @@ namespace Statistics {
 
 template < class TImage, class TMaskImage >
 VectorImageToListGenerator< TImage, TMaskImage >
-::VectorImageToListGenerator()
+::VectorImageToListGenerator( void )
 {
   m_UseSingleMaskValue = false;
   m_MaskValue = 1;
@@ -95,7 +95,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 const TImage*
 VectorImageToListGenerator< TImage, TMaskImage >
-::GetInput() const
+::GetInput( void ) const
 {
   if (this->GetNumberOfInputs() < 1)
     {
@@ -109,7 +109,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 const TMaskImage*
 VectorImageToListGenerator< TImage, TMaskImage >
-::GetMaskImage() const
+::GetMaskImage( void ) const
 {
   if (this->GetNumberOfInputs() < 2)
     {
@@ -134,7 +134,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::GenerateData()
+::GenerateData( void )
 {
   ListSampleOutputType * decoratedOutput =
     static_cast< ListSampleOutputType * >(
@@ -209,7 +209,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::GenerateOutputInformation()
+::GenerateOutputInformation( void )
 {
   Superclass::GenerateOutputInformation();
 
@@ -254,7 +254,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 const typename VectorImageToListGenerator< TImage, TMaskImage >::ListSampleType *
 VectorImageToListGenerator< TImage, TMaskImage >
-::GetListSample() const
+::GetListSample( void ) const
 {
   const ListSampleOutputType * decoratedOutput =
     static_cast< const ListSampleOutputType * >(

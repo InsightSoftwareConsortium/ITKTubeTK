@@ -38,7 +38,7 @@ namespace itk
 //----------------------------------------------------------------------------
 template <class TInputImage, class TOutputImage>
 DifferenceImageFilter2<TInputImage, TOutputImage>
-::DifferenceImageFilter2()
+::DifferenceImageFilter2( void )
 {
   // We require two inputs to execute.
   this->SetNumberOfRequiredInputs(2);
@@ -97,7 +97,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 template<class TInputImage, class TOutputImage>
 void
 DifferenceImageFilter2<TInputImage, TOutputImage>
-::BeforeThreadedGenerateData()
+::BeforeThreadedGenerateData( void )
 {
   int numberOfThreads = this->GetNumberOfThreads();
 
@@ -232,7 +232,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 DifferenceImageFilter2<TInputImage, TOutputImage>
-::AfterThreadedGenerateData()
+::AfterThreadedGenerateData( void )
 {
   // Set statistics about difference image.
   int numberOfThreads = this->GetNumberOfThreads();

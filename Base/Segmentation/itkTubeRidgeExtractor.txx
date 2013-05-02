@@ -83,7 +83,7 @@ protected:
  * Constructor */
 template<class TInputImage>
 RidgeExtractor<TInputImage>
-::RidgeExtractor()
+::RidgeExtractor( void )
 {
   m_DataFunc = BlurImageFunction<ImageType>::New();
   m_DataFunc->SetScale( 3 ); // 1.5
@@ -150,7 +150,7 @@ RidgeExtractor<TInputImage>
  * Destructor */
 template<class TInputImage>
 RidgeExtractor<TInputImage>
-::~RidgeExtractor()
+::~RidgeExtractor( void )
 {
   if( m_SplineValueFunc != NULL )
     {

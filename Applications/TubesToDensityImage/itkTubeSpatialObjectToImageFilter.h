@@ -98,10 +98,10 @@ public:
   itkGetMacro(BuildTangentImage, bool);
 
   /**Image Pointer Definition and GetRadius return method */
-  RadiusImagePointer GetRadiusImage();
+  RadiusImagePointer GetRadiusImage( void );
 
   /**Image Pointer Definition and GetRadius return method */
-  TangentImagePointer GetTangentImage();
+  TangentImagePointer GetTangentImage( void );
 
   /** Set the FallOff value */
   itkSetMacro(FallOff,double);
@@ -115,11 +115,11 @@ public:
 
 protected:
 
-  TubeSpatialObjectToImageFilter();
-  ~TubeSpatialObjectToImageFilter();
+  TubeSpatialObjectToImageFilter( void );
+  ~TubeSpatialObjectToImageFilter( void );
 
   /** Create the ouptut images and fill it */
-  void GenerateData();
+  void GenerateData( void );
 
   void PrintSelf(std::ostream& os, Indent indent) const
     {

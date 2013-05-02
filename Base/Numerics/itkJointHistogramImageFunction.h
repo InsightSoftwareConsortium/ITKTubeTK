@@ -83,7 +83,7 @@ public:
   virtual void SetInputMask( const typename InputImageType::Pointer mask );
 
   /** Get the mask or second image used in the comparison. */
-  virtual typename InputImageType::Pointer GetInputMask() const
+  virtual typename InputImageType::Pointer GetInputMask( void ) const
     {
     return m_InputMask;
     }
@@ -165,15 +165,15 @@ public:
    * Compute the mean and standard deviation histograms for use in Z-score
    * calculation.
    */
-  void ComputeMeanAndStandardDeviation() const;
+  void ComputeMeanAndStandardDeviation( void ) const;
 
 protected:
 
   /** Default constructor */
-  JointHistogramImageFunction();
+  JointHistogramImageFunction( void );
 
   /** Default destructor */
-  ~JointHistogramImageFunction() {}
+  ~JointHistogramImageFunction( void ) {}
 
   /** Printself function for introspection. */
   void PrintSelf( std::ostream & os, Indent indent ) const;

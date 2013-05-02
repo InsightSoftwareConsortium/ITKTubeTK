@@ -34,7 +34,7 @@ namespace tube
 
 template< class TInputObjectDocument, class TOutputImageType >
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
-::ObjectDocumentToImageFilter()
+::ObjectDocumentToImageFilter( void )
 {
   OutputImagePointer object = OutputImageType::New();
   this->ProcessObject::SetNthOutput(0, object);
@@ -44,7 +44,7 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 template< class TInputObjectDocument, class TOutputImageType >
 typename ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>::OutputImageType *
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
-::GetOutput()
+::GetOutput( void )
 {
   return static_cast<OutputImageType *>( (this->ProcessObject::GetOutput(0)) );
 }
@@ -53,7 +53,7 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 template< class TInputObjectDocument, class TOutputImageType >
 void
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
-::GenerateData()
+::GenerateData( void )
 {
   ConstDocumentPointer document = this->GetInput();
 

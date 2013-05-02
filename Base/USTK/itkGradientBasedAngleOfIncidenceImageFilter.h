@@ -123,8 +123,8 @@ public:
   itkGetConstMacro( GradientMagnitudeTolerance, double );
 
 protected:
-  GradientBasedAngleOfIncidenceImageFilter();
-  virtual ~GradientBasedAngleOfIncidenceImageFilter() {}
+  GradientBasedAngleOfIncidenceImageFilter( void );
+  virtual ~GradientBasedAngleOfIncidenceImageFilter( void ) {}
 
   virtual void PrintSelf(std::ostream & os, Indent indent) const;
 

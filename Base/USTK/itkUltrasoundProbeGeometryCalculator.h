@@ -85,21 +85,21 @@ template< class TInputImage > class ITK_EXPORT
 
   using Superclass::SetInput;
   virtual void SetInput( const InputImageType * image );
-  virtual const InputImageType * GetInput() const;
+  virtual const InputImageType * GetInput( void ) const;
 
-  const OriginType & GetUltrasoundProbeOrigin() const;
-  const RadiusType & GetStartOfAcquisitionRadius() const;
+  const OriginType & GetUltrasoundProbeOrigin( void ) const;
+  const RadiusType & GetStartOfAcquisitionRadius( void ) const;
 
 protected:
-  UltrasoundProbeGeometryCalculator();
-  virtual ~UltrasoundProbeGeometryCalculator();
+  UltrasoundProbeGeometryCalculator( void );
+  virtual ~UltrasoundProbeGeometryCalculator( void );
 
   virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
   using Superclass::MakeOutput;
   virtual DataObject::Pointer MakeOutput(DataObjectPointerArraySizeType index);
 
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
 private:
   UltrasoundProbeGeometryCalculator( const Self & ); // purposely not implemented

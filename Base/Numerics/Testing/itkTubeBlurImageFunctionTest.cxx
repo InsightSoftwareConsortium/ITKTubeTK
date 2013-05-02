@@ -39,7 +39,7 @@ int itkTubeBlurImageFunctionTest( int argc, char * argv[] )
   typedef ImageType::SizeType    ImageSizeType;
   typedef ImageType::SpacingType ImageSpacingType;
 
-  ImageType::Pointer im = ImageType::New( );
+  ImageType::Pointer im = ImageType::New();
 
   ImageType::RegionType imRegion;
 
@@ -63,7 +63,7 @@ int itkTubeBlurImageFunctionTest( int argc, char * argv[] )
   imSpacing[2] = 2;
   im->SetSpacing( imSpacing );
 
-  im->Allocate( );
+  im->Allocate();
   im->FillBuffer( 0 );
 
   ImageType::IndexType index;
@@ -73,40 +73,40 @@ int itkTubeBlurImageFunctionTest( int argc, char * argv[] )
   im->SetPixel( index, 100 );
 
   typedef itk::tube::BlurImageFunction<ImageType> ImageOpType;
-  ImageOpType::Pointer imOp = ImageOpType::New( );
+  ImageOpType::Pointer imOp = ImageOpType::New();
 
   imOp->SetInputImage( im );
   imOp->SetScale( 2 );
 
-  ImageType::Pointer imOut = ImageType::New( );
+  ImageType::Pointer imOut = ImageType::New();
   imOut->SetRegions( imRegion );
   imOut->SetSpacing( imSpacing );
-  imOut->Allocate( );
+  imOut->Allocate();
 
   itk::ImageRegionIteratorWithIndex<ImageType> itOut( imOut,
-    imOut->GetLargestPossibleRegion( ) );
+    imOut->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
   unsigned int count = 0;
-  itOut.GoToBegin( );
-  while( !itOut.IsAtEnd( ) )
+  itOut.GoToBegin();
+  while( !itOut.IsAtEnd() )
     {
     if( count/2.0 == count/2 )
       {
-      itOut.Set( imOp->EvaluateAtIndex( itOut.GetIndex( ) ) );
+      itOut.Set( imOp->EvaluateAtIndex( itOut.GetIndex() ) );
       }
     else
       {
-      imOut->TransformIndexToPhysicalPoint( itOut.GetIndex( ), pnt );
+      imOut->TransformIndexToPhysicalPoint( itOut.GetIndex(), pnt );
       itOut.Set( imOp->Evaluate( pnt ) );
       }
     ++itOut;
     }
 
   typedef itk::ImageFileWriter<ImageType> ImageWriterType;
-  ImageWriterType::Pointer imWriter = ImageWriterType::New( );
+  ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( imOut );
-  imWriter->Update( );
+  imWriter->Update();
 
   return EXIT_SUCCESS;
   }

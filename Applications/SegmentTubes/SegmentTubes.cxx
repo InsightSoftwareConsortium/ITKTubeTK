@@ -157,7 +157,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Ridge Extractor");
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

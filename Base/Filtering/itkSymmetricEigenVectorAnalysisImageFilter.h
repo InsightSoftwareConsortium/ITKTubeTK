@@ -36,7 +36,7 @@ namespace itk
 // [] operator. Input pixel matrices should be symmetric.
 //
 // The default operation is to order eigen values in ascending order.
-// You may also use OrderEigenValuesBy( ) to order eigen values by
+// You may also use OrderEigenValuesBy() to order eigen values by
 // magnitude as is common with use of tensors in vessel extraction.
 namespace Functor {
 
@@ -44,8 +44,8 @@ template< typename TInput, typename TOutput, typename TMatrix >
 class SymmetricEigenVectorAnalysisFunction
 {
 public:
-  SymmetricEigenVectorAnalysisFunction() {}
-  ~SymmetricEigenVectorAnalysisFunction() {}
+  SymmetricEigenVectorAnalysisFunction( void ) {}
+  ~SymmetricEigenVectorAnalysisFunction( void ) {}
   typedef SymmetricEigenAnalysis< TInput, TOutput, TMatrix > CalculatorType;
   bool operator!=( const SymmetricEigenVectorAnalysisFunction & ) const
     {
@@ -159,8 +159,8 @@ public:
     }
 
 protected:
-  SymmetricEigenVectorAnalysisImageFilter() {}
-  virtual ~SymmetricEigenVectorAnalysisImageFilter() {}
+  SymmetricEigenVectorAnalysisImageFilter( void ) {}
+  virtual ~SymmetricEigenVectorAnalysisImageFilter( void ) {}
 
 private:
   SymmetricEigenVectorAnalysisImageFilter(const Self&); //purposely not implemented

@@ -29,7 +29,7 @@ namespace tube
 template <class T>
 void StringToVector( const std::string & s, std::vector< T > & vec )
 {
-  vec.clear( );
+  vec.clear();
 
   std::string::size_type prevPos = 0;
   std::string::size_type pos = s.find( ",", prevPos );

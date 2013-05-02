@@ -72,11 +72,11 @@ public:
 
 protected:
 
-  InverseIntensityImageFilter();
-  ~InverseIntensityImageFilter() {}
+  InverseIntensityImageFilter( void );
+  ~InverseIntensityImageFilter( void ) {}
 
   /* GenerateData produce the main work */
-  void GenerateData();
+  void GenerateData( void );
 
 private:
 

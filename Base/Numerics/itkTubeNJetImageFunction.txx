@@ -41,7 +41,7 @@ namespace tube
  */
 template <class TInputImage>
 NJetImageFunction<TInputImage>
-::NJetImageFunction()
+::NJetImageFunction( void )
 {
   m_InputImage = 0;
   m_InputImageMask = 0;
@@ -193,7 +193,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
-::ComputeStatistics(void)
+::ComputeStatistics( void )
 {
   if(m_InputImage)
     {
@@ -265,7 +265,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
-::GetMin(void) const
+::GetMin( void ) const
 {
   return m_StatsMin;
 }
@@ -276,7 +276,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
-::GetMax(void) const
+::GetMax( void ) const
 {
   return m_StatsMax;
 }

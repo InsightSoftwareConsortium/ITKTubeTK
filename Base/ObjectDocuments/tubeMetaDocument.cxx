@@ -35,7 +35,7 @@ namespace tube
 {
 
 MetaDocument::
-MetaDocument(void)
+MetaDocument( void )
 {
   this->Clear();
 }
@@ -50,14 +50,14 @@ MetaDocument(const std::string & _fileName)
 
 
 MetaDocument::
-~MetaDocument(void)
+~MetaDocument( void )
 {
   this->ClearFields();
 }
 
 
 void MetaDocument::
-ClearFields()
+ClearFields( void )
 {
   if(META_DEBUG)
     {
@@ -86,7 +86,7 @@ FileName(const std::string & _fileName)
 
 
 std::string MetaDocument::
-FileName(void) const
+FileName( void ) const
 {
   return m_FileName;
 }
@@ -166,7 +166,7 @@ Write(const std::string & _fileName)
 
 
 void MetaDocument::
-PrintInfo(void) const
+PrintInfo( void ) const
 {
   std::cout << "Date Modified = _" << m_DateLastModified << "_" << std::endl;
   std::cout << "Comment = _" << m_Comment << "_" << std::endl;
@@ -175,7 +175,7 @@ PrintInfo(void) const
 
 
 std::string MetaDocument::
-DateLastModified(void) const
+DateLastModified( void ) const
 {
   return m_DateLastModified;
 }
@@ -189,7 +189,7 @@ DateLastModified( const std::string & _date )
 
 
 std::string MetaDocument::
-Comment(void) const
+Comment( void ) const
 {
   return m_Comment;
 }
@@ -213,13 +213,13 @@ Name(const std::string & _Name)
 
 
 std::string MetaDocument::
-Name(void) const
+Name( void ) const
 {
   return m_Name;
 }
 
 void MetaDocument::
-Clear(void)
+Clear( void )
 {
   if(META_DEBUG)
     {
@@ -240,7 +240,7 @@ Clear(void)
 
 
 void MetaDocument::
-M_SetupReadFields(void)
+M_SetupReadFields( void )
 {
   this->ClearFields();
   if(META_DEBUG)
@@ -265,7 +265,7 @@ M_SetupReadFields(void)
 
 
 void MetaDocument::
-M_SetupWriteFields(void)
+M_SetupWriteFields( void )
 {
   if(META_DEBUG)
     {
@@ -307,7 +307,7 @@ M_SetupWriteFields(void)
 
 
 bool MetaDocument::
-M_Read(void)
+M_Read( void )
 {
   if(!MET_Read(m_ReadStream, & m_Fields, '='))
     {
@@ -340,7 +340,7 @@ M_Read(void)
 
 
 bool MetaDocument::
-M_Write(void)
+M_Write( void )
 {
   if(!MET_Write(m_WriteStream, & m_Fields))
     {
@@ -353,7 +353,7 @@ M_Write(void)
 
 
 void MetaDocument::
-M_PrepareNewReadStream()
+M_PrepareNewReadStream( void )
 {
   if(m_ReadStream.is_open())
     {
@@ -364,7 +364,7 @@ M_PrepareNewReadStream()
 
 
 void MetaDocument::
-M_PrepareNewWriteStream()
+M_PrepareNewWriteStream( void )
 {
   if(m_WriteStream.is_open())
     {

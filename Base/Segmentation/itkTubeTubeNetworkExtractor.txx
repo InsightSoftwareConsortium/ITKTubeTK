@@ -40,7 +40,7 @@ namespace tube
 * Constructor */
 template<class TInputImage, class TInputMask>
 TubeNetworkExtractor<TInputImage, TInputMask>
-::TubeNetworkExtractor()
+::TubeNetworkExtractor( void )
 {
   m_TubeNum = 0;
   m_AEUseMask = false;
@@ -52,7 +52,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
  * Destructor */
 template<class TInputImage, class TInputMask>
 TubeNetworkExtractor<TInputImage, TInputMask>
-::~TubeNetworkExtractor()
+::~TubeNetworkExtractor( void )
 {
 }
 

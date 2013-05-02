@@ -67,16 +67,16 @@ public:
   /** Set/Get the image input of this process object.  */
   virtual void SetInput( const InputSpatialObjectType *object);
   virtual void SetInput( unsigned int, const InputSpatialObjectType * object);
-  const InputSpatialObjectType *  GetInput(void);
+  const InputSpatialObjectType *  GetInput( void );
   const InputSpatialObjectType *  GetInput(unsigned int idx);
 
-  void GenerateOutputInformation() {} // do nothing
-  void GenerateData() {} // do nothing
+  void GenerateOutputInformation( void ) {} // do nothing
+  void GenerateData( void ) {} // do nothing
 
 protected:
 
-  SpatialObjectToSpatialObjectFilter();
-  ~SpatialObjectToSpatialObjectFilter();
+  SpatialObjectToSpatialObjectFilter( void );
+  ~SpatialObjectToSpatialObjectFilter( void );
 
   virtual void PrintSelf(std::ostream& os, Indent indent) const;
 

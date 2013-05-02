@@ -44,7 +44,7 @@ namespace itk
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 AnisotropicDiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::AnisotropicDiffusiveRegistrationFilter()
+::AnisotropicDiffusiveRegistrationFilter( void )
 {
   // Initialize attributes to NULL
   m_BorderSurface                               = 0;
@@ -104,7 +104,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeDeformationComponentAndDerivativeImages()
+::InitializeDeformationComponentAndDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -154,7 +154,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::SetupNormalVectorAndWeightImages()
+::SetupNormalVectorAndWeightImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -266,7 +266,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeBorderSurfaceNormals()
+::ComputeBorderSurfaceNormals( void )
 {
   assert( m_BorderSurface );
   vtkSmartPointer< vtkPolyDataNormals > normalsFilter = vtkSmartPointer< vtkPolyDataNormals >::New();
@@ -584,7 +584,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorImages()
+::ComputeDiffusionTensorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_NormalVectorImage );
@@ -682,7 +682,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeMultiplicationVectorImages()
+::ComputeMultiplicationVectorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );

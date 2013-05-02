@@ -36,7 +36,7 @@ namespace tube
 /** Constructor */
 template < class TInputImage, class TOutputImage >
 CVTImageFilter< TInputImage, TOutputImage >
-::CVTImageFilter()
+::CVTImageFilter( void )
 {
   m_Seed = -1;
   m_RandomGenerator =
@@ -81,7 +81,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 template < class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
-::GenerateInputRequestedRegion()
+::GenerateInputRequestedRegion( void )
 {
   Superclass::GenerateInputRequestedRegion();
   if ( this->GetInput() )
@@ -107,7 +107,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 template < class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
-::GenerateData()
+::GenerateData( void )
 {
   m_InputImage = this->GetInput();
 

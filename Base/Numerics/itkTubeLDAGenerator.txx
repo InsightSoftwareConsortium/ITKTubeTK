@@ -46,7 +46,7 @@ namespace tube
 
 template< class ImageT, class LabelmapT >
 LDAGenerator< ImageT, LabelmapT >
-::LDAGenerator()
+::LDAGenerator( void )
 {
   m_PerformLDA = true;
   m_PerformPCA = false;
@@ -73,7 +73,7 @@ LDAGenerator< ImageT, LabelmapT >
 
 template< class ImageT, class LabelmapT >
 LDAGenerator< ImageT, LabelmapT >
-::~LDAGenerator()
+::~LDAGenerator( void )
 {
 }
 
@@ -811,7 +811,7 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
-::GenerateLDA()
+::GenerateLDA( void )
 {
   itk::TimeProbesCollectorBase timeCollector;
 
@@ -901,7 +901,7 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
-::Update()
+::Update( void )
 {
   this->GenerateStatistics();
   this->GenerateLDA();
@@ -910,7 +910,7 @@ LDAGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 LDAGenerator< ImageT, LabelmapT >
-::UpdateLDAImages()
+::UpdateLDAImages( void )
 {
 }
 

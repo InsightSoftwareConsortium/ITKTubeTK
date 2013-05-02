@@ -55,14 +55,14 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT vtkMRMLSpatialObjectsNode :
 public:
   typedef itk::GroupSpatialObject<3> TubeNetType;
 
-  static vtkMRMLSpatialObjectsNode* New();
+  static vtkMRMLSpatialObjectsNode* New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsNode, vtkMRMLModelNode);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   //----------------------------------------------------------------------------
   /// MRMLNode methods
   //----------------------------------------------------------------------------
-  virtual vtkMRMLNode* CreateNodeInstance();
+  virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
   /// Read node attributes from XML (MRML) file
@@ -80,7 +80,7 @@ public:
   ///
   /// Updates this node if it depends on other nodes
   /// when the node is deleted in the scene
-  virtual void UpdateReferences();
+  virtual void UpdateReferences( void );
 
   ///
   /// Finds the storage node and read the data
@@ -88,7 +88,7 @@ public:
 
   ///
   /// Get node XML tag name (like Volume, Model)
-  virtual const char* GetNodeTagName()
+  virtual const char* GetNodeTagName( void )
   {return "SpatialObjects";}
 
   /// Get the subsampling ratio for the polydata
@@ -97,44 +97,44 @@ public:
   /// Set the subsampling ratio for the polydata
   //
   virtual void SetSubsamplingRatio(float);
-  virtual float GetSubsamplingRatioMinValue(){return 0.;}
-  virtual float GetSubsamplingRatioMaxValue(){return 1.;}
+  virtual float GetSubsamplingRatioMinValue( void ) {return 0.;}
+  virtual float GetSubsamplingRatioMaxValue( void ) {return 1.;}
 
   ///
   /// Get the subsampled PolyData converted from the real data in the node.
-  virtual vtkPolyData* GetFilteredPolyData();
+  virtual vtkPolyData* GetFilteredPolyData( void );
 
   ///
   /// Get associated line display node or NULL if not set.
-  vtkMRMLSpatialObjectsDisplayNode* GetLineDisplayNode();
+  vtkMRMLSpatialObjectsDisplayNode* GetLineDisplayNode( void );
 
   ///
   /// Get associated tube display node or NULL if not set.
-  vtkMRMLSpatialObjectsDisplayNode* GetTubeDisplayNode();
+  vtkMRMLSpatialObjectsDisplayNode* GetTubeDisplayNode( void );
 
   ///
   /// Get associated glyph display node or NULL if not set.
-  vtkMRMLSpatialObjectsDisplayNode* GetGlyphDisplayNode();
+  vtkMRMLSpatialObjectsDisplayNode* GetGlyphDisplayNode( void );
 
   ///
   /// Add line display node if not already present and return it.
-  vtkMRMLSpatialObjectsDisplayNode* AddLineDisplayNode();
+  vtkMRMLSpatialObjectsDisplayNode* AddLineDisplayNode( void );
 
   ///
   /// Add tube display node if not already present and return it.
-  vtkMRMLSpatialObjectsDisplayNode* AddTubeDisplayNode();
+  vtkMRMLSpatialObjectsDisplayNode* AddTubeDisplayNode( void );
 
   ///
   /// Add glyph display node if not already present and return it.
-  vtkMRMLSpatialObjectsDisplayNode* AddGlyphDisplayNode();
+  vtkMRMLSpatialObjectsDisplayNode* AddGlyphDisplayNode( void );
 
   ///
   /// Create and return default storage node or NULL if does not have one.
-  virtual vtkMRMLStorageNode* CreateDefaultStorageNode();
+  virtual vtkMRMLStorageNode* CreateDefaultStorageNode( void );
 
   ///
   /// Create default display nodes
-  virtual void CreateDefaultDisplayNodes();
+  virtual void CreateDefaultDisplayNodes( void );
 
   // Description:
   // Get/Set the SpatialObject when a new node is set
@@ -145,8 +145,8 @@ public:
   virtual void SetAndObservePolyData(vtkPolyData* polyData);
 
 protected:
-  vtkMRMLSpatialObjectsNode();
-  ~vtkMRMLSpatialObjectsNode();
+  vtkMRMLSpatialObjectsNode( void );
+  ~vtkMRMLSpatialObjectsNode( void );
   vtkMRMLSpatialObjectsNode(const vtkMRMLSpatialObjectsNode&);
   void operator=(const vtkMRMLSpatialObjectsNode&);
 
@@ -158,9 +158,9 @@ protected:
 
   vtkIdTypeArray* ShuffledIds;
 
-  virtual void PrepareSubsampling();
-  virtual void UpdateSubsampling();
-  virtual void CleanSubsampling();
+  virtual void PrepareSubsampling( void );
+  virtual void UpdateSubsampling( void );
+  virtual void CleanSubsampling( void );
 
   vtkCleanPolyData* CleanPolyDataPostSubsampling;
   float SubsamplingRatio;

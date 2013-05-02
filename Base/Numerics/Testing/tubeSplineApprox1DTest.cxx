@@ -42,7 +42,7 @@ class MySA1DFunc:
   private:
     double cVal;
   public:
-    MySA1DFunc( )
+    MySA1DFunc( void )
       {
       cVal = 0;
       }
@@ -60,7 +60,7 @@ class MySA1DFuncV:
   private:
     double cVal;
   public:
-    MySA1DFuncV( )
+    MySA1DFuncV( void )
       {
       cVal = 0;
       }
@@ -77,7 +77,7 @@ class MySA1DFuncD:
   private:
     double cDeriv;
   public:
-    MySA1DFuncD( )
+    MySA1DFuncD( void )
       {
       cDeriv = 0;
       }
@@ -102,7 +102,7 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
   MySA1DFuncV * myFuncV = new MySA1DFuncV();
   MySA1DFuncD * myFuncD = new MySA1DFuncD();
 
-  tube::OptBrent1D * opt = new tube::OptBrent1D( );
+  tube::OptBrent1D * opt = new tube::OptBrent1D();
   opt->smallDouble( epsilon );
   opt->searchForMin( true );
   opt->xStep( 0.01 );
@@ -130,7 +130,7 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
 
   typedef itk::Image< float, 3 >  ImageType;
 
-  ImageType::Pointer im = ImageType::New( );
+  ImageType::Pointer im = ImageType::New();
   ImageType::RegionType imRegion;
   ImageType::SizeType imSize;
   imSize[0] = 40;
@@ -148,10 +148,10 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
   imSpacing[1] = 0.15;
   imSpacing[2] = 0.3;
   im->SetSpacing( imSpacing );
-  im->Allocate( );
+  im->Allocate();
 
   itk::ImageRegionIteratorWithIndex<ImageType> itIm( im,
-    im->GetLargestPossibleRegion( ) );
+    im->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
   itIm.GoToBegin();
   double x, d, d2;
@@ -208,11 +208,11 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
     }
 
   typedef itk::ImageFileWriter<ImageType> ImageWriterType;
-  ImageWriterType::Pointer imWriter = ImageWriterType::New( );
+  ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );
   imWriter->SetUseCompression( true );
-  imWriter->Update( );
+  imWriter->Update();
 
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();

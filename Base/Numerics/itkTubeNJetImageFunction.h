@@ -120,15 +120,15 @@ public:
   itkSetMacro( UseInputImageMask, bool );
   itkGetMacro( UseInputImageMask, bool );
 
-  void ComputeStatistics(void);
+  void ComputeStatistics( void );
 
   /** Return the min over the (possibly masked) image.
    * Requires previous call to ComputeStatistics */
-  double GetMin(void) const;
+  double GetMin( void ) const;
 
   /** Return the max over the (possibly masked) image.
    * Requires previous call to ComputeStatistics */
-  double GetMax(void) const;
+  double GetMax( void ) const;
 
   itkGetConstMacro( MostRecentIntensity, double );
   itkGetConstMacro( MostRecentDerivative, VectorType );
@@ -292,12 +292,12 @@ public:
   itkGetMacro( UseProjection, bool);
 
 protected:
-  NJetImageFunction();
-  NJetImageFunction( const Self& ){}
+  NJetImageFunction( void );
+  NJetImageFunction( const Self& ) {}
 
-  ~NJetImageFunction(){}
+  ~NJetImageFunction( void ) {}
 
-  void operator=( const Self& ){}
+  void operator=( const Self& ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   typename InputImageType::ConstPointer  m_InputImage;

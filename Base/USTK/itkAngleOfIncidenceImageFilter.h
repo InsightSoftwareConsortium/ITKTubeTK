@@ -109,14 +109,14 @@ public:
   itkGetConstMacro(UltrasoundProbeOrigin, VectorType);
 
 protected:
-  AngleOfIncidenceImageFilter();
-  virtual ~AngleOfIncidenceImageFilter() {}
+  AngleOfIncidenceImageFilter( void );
+  virtual ~AngleOfIncidenceImageFilter( void ) {}
   void PrintSelf(std::ostream & os, Indent indent) const;
 
   /* Generate Data */
-  void GenerateData(void);
+  void GenerateData( void );
 
-  void ComputeNormalVectorImage();
+  void ComputeNormalVectorImage( void );
 private:
   AngleOfIncidenceImageFilter(const Self &); //purposely not implemented
   void operator=(const Self &);          //purposely not implemented

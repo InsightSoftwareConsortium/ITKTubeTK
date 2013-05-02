@@ -105,7 +105,7 @@ public:
   itkSetMacro(BatchSamplingMethod, SamplingMethodEnum);
 
   /** */
-  PointArrayType * GetCentroids()
+  PointArrayType * GetCentroids( void )
     { return & m_Centroids; }
   void SetCentroids(const PointArrayType * centroids);
 
@@ -115,14 +115,14 @@ public:
 
 
 protected:
-  CVTImageFilter();
-  ~CVTImageFilter() {}
+  CVTImageFilter( void );
+  ~CVTImageFilter( void ) {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  void GenerateInputRequestedRegion();
+  void GenerateInputRequestedRegion( void );
   void EnlargeOutputRequestedRegion(DataObject * output);
-  void GenerateData();
+  void GenerateData( void );
 
   double ComputeIteration(double & energyDiff);
   void ComputeSample(PointArrayType * sample, unsigned int sampleSize,

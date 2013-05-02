@@ -196,7 +196,7 @@ public:
     // Intensity distance function doesn't have a SetTimeStep(), but it's ok
     // because we only use ComputeUpdate() for it.
     }
-  const TimeStepType &GetTimeStep() const
+  const TimeStepType &GetTimeStep( void ) const
     { return m_TimeStep; }
 
   /** Utility function to check whether the timestep is stable, optionally based
@@ -212,31 +212,31 @@ public:
    *  Default: true */
   void SetComputeRegularizationTerm( bool compute )
     { m_ComputeRegularizationTerm = compute; }
-  bool GetComputeRegularizationTerm() const
+  bool GetComputeRegularizationTerm( void ) const
     { return m_ComputeRegularizationTerm; }
 
   /** Set/get whether to compute the intensity distance term
    *  Default: true */
   void SetComputeIntensityDistanceTerm( bool compute )
     { m_ComputeIntensityDistanceTerm = compute; }
-  bool GetComputeIntensityDistanceTerm() const
+  bool GetComputeIntensityDistanceTerm( void ) const
     { return m_ComputeIntensityDistanceTerm; }
 
   /** Set/get the weighting for the regularization update term.  Default 1.0 */
   void SetRegularizationWeighting( double weighting )
     { m_RegularizationWeighting = weighting; }
-  double GetRegularizationWeighting() const
+  double GetRegularizationWeighting( void ) const
     { return m_RegularizationWeighting; }
 
   /** Set/get the background intensity in the moving image.  Default 0.0 */
   void SetBackgroundIntensity( MovingImagePixelType bg )
     { m_IntensityDistanceFunction->SetBackgroundIntensity( bg ); }
 
-  MovingImagePixelType GetBackgroundIntensity() const
+  MovingImagePixelType GetBackgroundIntensity( void ) const
     { return m_IntensityDistanceFunction->GetBackgroundIntensity(); }
 
   /** Set the object's state before each iteration. */
-  virtual void InitializeIteration();
+  virtual void InitializeIteration( void );
 
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead */
@@ -276,30 +276,30 @@ public:
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
-  virtual void * GetGlobalDataPointer() const;
+  virtual void * GetGlobalDataPointer( void ) const;
 
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
 
   /** Returns the pointers to the regularization function and the intensity
     difference function */
-  const RegularizationFunctionType * GetRegularizationFunctionPointer() const
+  const RegularizationFunctionType * GetRegularizationFunctionPointer( void ) const
     { return m_RegularizationFunction.GetPointer(); }
-  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer()
+  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer( void )
       const
     { return m_IntensityDistanceFunction.GetPointer(); }
 
   /** Get the intensity distance and regularization energies.
    *  The regularization energy incorporates the weighting between the
    *  intensity distance term and the regularization term. */
-  double GetIntensityDistanceEnergy() const
+  double GetIntensityDistanceEnergy( void ) const
     { return this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
-  double GetRegularizationEnergy() const
+  double GetRegularizationEnergy( void ) const
     { return m_RegularizationEnergy; }
 
 protected:
-  AnisotropicDiffusiveRegistrationFunction();
-  virtual ~AnisotropicDiffusiveRegistrationFunction() {}
+  AnisotropicDiffusiveRegistrationFunction( void );
+  virtual ~AnisotropicDiffusiveRegistrationFunction( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Returns the update from the regularization component */

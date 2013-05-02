@@ -41,7 +41,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT
 vtkMRMLSpatialObjectsGlyphDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
 {
 public:
-  static vtkMRMLSpatialObjectsGlyphDisplayNode* New();
+  static vtkMRMLSpatialObjectsGlyphDisplayNode* New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsGlyphDisplayNode,
                vtkMRMLSpatialObjectsDisplayNode);
   void PrintSelf(ostream& os, vtkIndent indent);
@@ -49,7 +49,7 @@ public:
   //----------------------------------------------------------------------------
   /// MRMLNode methods
   //----------------------------------------------------------------------------
-  virtual vtkMRMLNode* CreateNodeInstance();
+  virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
   /// Read node attributes from XML (MRML) file
@@ -66,23 +66,23 @@ public:
 
   ///
   /// Get node XML tag name (like Volume, UnstructuredGrid)
-  virtual const char* GetNodeTagName()
+  virtual const char* GetNodeTagName( void )
   {return "SpatialObjectsGlyphDisplayNode";}
 
   ///
   /// Update the pipeline based on this node attributes
-  virtual void UpdatePolyDataPipeline();
+  virtual void UpdatePolyDataPipeline( void );
 
  protected:
-  vtkMRMLSpatialObjectsGlyphDisplayNode();
-  ~vtkMRMLSpatialObjectsGlyphDisplayNode();
+  vtkMRMLSpatialObjectsGlyphDisplayNode( void );
+  ~vtkMRMLSpatialObjectsGlyphDisplayNode( void );
   vtkMRMLSpatialObjectsGlyphDisplayNode(
     const vtkMRMLSpatialObjectsGlyphDisplayNode&);
   void operator=(const vtkMRMLSpatialObjectsGlyphDisplayNode&);
 
   /// Return the polydata that is processed by the display node.
   /// This is the polydata that needs to be connected with the mappers.
-  virtual vtkAlgorithmOutput* GetOutputPort();
+  virtual vtkAlgorithmOutput* GetOutputPort( void );
 
   /// Pipeline
   vtkGlyph3DMapper* Glyph3DMapper;

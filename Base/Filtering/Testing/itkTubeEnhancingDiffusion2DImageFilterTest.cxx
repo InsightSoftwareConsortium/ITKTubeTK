@@ -75,7 +75,7 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
 
   // Connect the pipeline
   filter->SetInput( reader->GetOutput() );
-  filter->SetDefaultPars( ); // duplicates assignments given below
+  filter->SetDefaultPars(); // duplicates assignments given below
   filter->SetIterations( 50 ); // Default is 200
   filter->SetRecalculateTubeness( 11 ); // Default is 100
   std::vector< float > scales;

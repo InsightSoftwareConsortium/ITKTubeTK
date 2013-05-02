@@ -38,14 +38,14 @@ limitations under the License.
 vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsGlyphDisplayNode);
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsGlyphDisplayNode::vtkMRMLSpatialObjectsGlyphDisplayNode()
+vtkMRMLSpatialObjectsGlyphDisplayNode::vtkMRMLSpatialObjectsGlyphDisplayNode( void )
 {
   this->Glyph3DMapper = vtkGlyph3DMapper::New();
   this->ColorMode = vtkMRMLSpatialObjectsDisplayNode::colorModeScalar;
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsGlyphDisplayNode::~vtkMRMLSpatialObjectsGlyphDisplayNode()
+vtkMRMLSpatialObjectsGlyphDisplayNode::~vtkMRMLSpatialObjectsGlyphDisplayNode( void )
 {
   this->RemoveObservers(vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
   this->Glyph3DMapper->Delete();
@@ -81,13 +81,13 @@ void vtkMRMLSpatialObjectsGlyphDisplayNode::PrintSelf(ostream& os,
 }
 
 //------------------------------------------------------------------------------
-vtkAlgorithmOutput* vtkMRMLSpatialObjectsGlyphDisplayNode::GetOutputPort()
+vtkAlgorithmOutput* vtkMRMLSpatialObjectsGlyphDisplayNode::GetOutputPort( void )
 {
   return this->Glyph3DMapper->GetOutputPort();
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsGlyphDisplayNode::UpdatePolyDataPipeline()
+void vtkMRMLSpatialObjectsGlyphDisplayNode::UpdatePolyDataPipeline( void )
 {
   if (!this->GetInputPolyData()|| !this->Visibility)
     {

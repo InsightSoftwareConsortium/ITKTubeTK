@@ -42,13 +42,13 @@ class MetaDocument
 public:
 
   /** CTOR, DTOR */
-  MetaDocument(void);
+  MetaDocument( void );
   MetaDocument(const std::string & _fileName);
 
-  virtual ~MetaDocument(void);
+  virtual ~MetaDocument( void );
 
   void  FileName(const std::string & _fileName);
-  std::string FileName(void) const;
+  std::string FileName( void ) const;
 
   void  CopyInfo(const MetaDocument * _object);
 
@@ -57,22 +57,22 @@ public:
   virtual bool  Write(const std::string & _fileName = std::string());
 
   /** Writes image parameters to stdout */
-  virtual void  PrintInfo(void) const;
+  virtual void  PrintInfo( void ) const;
 
-  std::string DateLastModified(void) const;
+  std::string DateLastModified( void ) const;
   void DateLastModified(const std::string & _dateModified);
 
   /** Comment(...), Optional Field, Arbitrary String */
-  std::string Comment(void) const;
+  std::string Comment( void ) const;
   void Comment(const std::string & _comment);
 
   /** Name(...), Optional Field, Name of the current MetaDocument */
   virtual void  Name(const std::string & _Name);
-  virtual std::string Name(void) const;
+  virtual std::string Name( void ) const;
 
-  virtual void Clear(void);
+  virtual void Clear( void );
 
-  void ClearFields(void);
+  void ClearFields( void );
 
 protected:
 
@@ -84,15 +84,15 @@ protected:
   std::string m_Name;
   std::string m_FileName;
 
-  virtual void M_SetupReadFields(void);
-  void M_PrepareNewReadStream(void);
+  virtual void M_SetupReadFields( void );
+  void M_PrepareNewReadStream( void );
 
-  virtual void M_SetupWriteFields(void);
-  void M_PrepareNewWriteStream(void);
+  virtual void M_SetupWriteFields( void );
+  void M_PrepareNewWriteStream( void );
 
-  virtual bool M_Read(void);
+  virtual bool M_Read( void );
 
-  virtual bool M_Write(void);
+  virtual bool M_Write( void );
 
   std::vector<MET_FieldRecordType *> m_Fields;
 

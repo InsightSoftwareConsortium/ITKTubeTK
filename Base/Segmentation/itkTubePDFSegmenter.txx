@@ -59,7 +59,7 @@ namespace tube
 
 template< class ImageT, unsigned int N, class LabelmapT >
 PDFSegmenter< ImageT, N, LabelmapT >
-::PDFSegmenter()
+::PDFSegmenter( void )
 {
   m_SampleUpToDate = false;
   m_PDFsUpToDate = false;
@@ -102,7 +102,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 
 template< class ImageT, unsigned int N, class LabelmapT >
 PDFSegmenter< ImageT, N, LabelmapT >
-::~PDFSegmenter()
+::~PDFSegmenter( void )
 {
 }
 
@@ -267,7 +267,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
-::GenerateSample()
+::GenerateSample( void )
 {
   m_SampleUpToDate = true;
 
@@ -371,7 +371,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
-::GeneratePDFs()
+::GeneratePDFs( void )
 {
   if( !m_SampleUpToDate )
     {
@@ -792,7 +792,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
-::ApplyPDFs()
+::ApplyPDFs( void )
 {
   if( !m_SampleUpToDate )
     {
@@ -1349,7 +1349,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
-::Update()
+::Update( void )
 {
   this->GenerateSample();
   this->GeneratePDFs();
@@ -1358,7 +1358,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
 template < class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
-::ClassifyImages()
+::ClassifyImages( void )
 {
   this->ApplyPDFs();
 }

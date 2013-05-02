@@ -166,7 +166,7 @@ public:
 protected:
 
   /** This is where the work is done! */
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
   /** Determine the output bounding box for the 3D case */
   void FindOutput3DParameters(
@@ -175,8 +175,8 @@ protected:
     SizeType &outputSize,
     PointType& origin ) const;
 
-  CompleteImageResampleFilter();
-  ~CompleteImageResampleFilter() {}
+  CompleteImageResampleFilter( void );
+  ~CompleteImageResampleFilter( void ) {}
 
   void PrintSelf( std::ostream& os, Indent indent ) const;
 

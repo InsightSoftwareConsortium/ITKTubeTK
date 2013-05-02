@@ -60,8 +60,8 @@ public:
   const InputSpatialObjectType * GetInput( unsigned int idx ) const;
 
 protected:
-  SpatialObjectToSpatialObjectFilter();
-  virtual ~SpatialObjectToSpatialObjectFilter() {}
+  SpatialObjectToSpatialObjectFilter( void );
+  virtual ~SpatialObjectToSpatialObjectFilter( void ) {}
 
 private:
   SpatialObjectToSpatialObjectFilter( const Self & ); // purposely not implemented

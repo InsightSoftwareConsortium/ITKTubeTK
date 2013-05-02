@@ -78,7 +78,7 @@ private:
 };
 
 
-SplineND::SplineND()
+SplineND::SplineND( void )
 {
   m_Debug = false;
 
@@ -134,7 +134,7 @@ SplineND::SplineND( unsigned int newNDims,
   this->use( newNDims, newFunm_Val, newSpline1D, newOpt1D );
 }
 
-SplineND::~SplineND()
+SplineND::~SplineND( void )
 {
   delete m_OptNDVal;
   delete m_OptNDDeriv;

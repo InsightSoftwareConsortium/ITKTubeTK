@@ -96,11 +96,11 @@ private:
 public:
 
   /** CTOR, DTOR */
-  AtlasSummation();
-  ~AtlasSummation();
+  AtlasSummation( void );
+  ~AtlasSummation( void );
 
   /** Initiate image for new atlas images to be inputted */
-  void Clear(void) { m_isProcessing = false; }
+  void Clear( void ) { m_isProcessing = false; }
 
   /** Add image with or without a transform */
   void AddImage( InputImageType::Pointer );
@@ -109,17 +109,17 @@ public:
   void AddImage( InputImageType::Pointer, TransformType::Pointer );
 
   /** Build Mean and variance image & end AddImage() addition abilities */
-  void Finalize();
+  void Finalize( void );
 
   /*
    * Return final Summation products-Mean (or median) & Variance
    * (or standard deviation & image count for # of valid images
    */
-  MeanImageType * GetMeanImage() const
+  MeanImageType * GetMeanImage( void ) const
     { return m_meanBuilder->GetOutputMeanImage(); }
-  VarianceImageType * GetVarianceImage() const
+  VarianceImageType * GetVarianceImage( void ) const
     { return m_meanBuilder->GetOutputSigmaImage(); }
-  CountImageType * GetValidCountImage() const
+  CountImageType * GetValidCountImage( void ) const
     { return m_meanBuilder->GetValidCountImage(); }
 
   /*
@@ -147,18 +147,18 @@ public:
     m_OutOriginSet = true;
   }
 
-  const SpacingType GetOutputSpacing() const
+  const SpacingType GetOutputSpacing( void ) const
     { return m_OutputSpacing; }
-  const SizeType GetOutputSize() const
+  const SizeType GetOutputSize( void ) const
     { return m_OutputSize; }
-  const PointType GetOutputOrigin() const
+  const PointType GetOutputOrigin( void ) const
     { return m_OutputOrigin; }
 
   /*
    * Do we want to use the variance (S^2) or std. deviation (S)
    * Default is to use std. deviation
    */
-  bool GetUseStdDeviation() const
+  bool GetUseStdDeviation( void ) const
     { return m_isStdDeviation; }
   void SetUseStdDeviation( bool b )
     { m_isStdDeviation = b; }
@@ -170,7 +170,7 @@ public:
    */
   void SetImageCountThreshold( unsigned int t )
     { m_ImageCountThreshold = t; }
-  unsigned int GetImageCountThreshold() const
+  unsigned int GetImageCountThreshold( void ) const
     { return m_ImageCountThreshold; }
 
   /*
@@ -179,7 +179,7 @@ public:
    */
   void UseMedian( unsigned int numOfImages )
     { m_numOfImages = numOfImages; }
-  bool UseMedian() const
+  bool UseMedian( void ) const
     { return (m_numOfImages > 0); }
 
   /*
@@ -239,9 +239,9 @@ private:
   void WriteImage( ProcessImagePointer, const std::string & );
 
   /** Median specific functions */
-  MedianImageListType&  GetInputImageList() { return m_medianList; }
+  MedianImageListType&  GetInputImageList( void ) { return m_medianList; }
   void SetupImageList( InputImagePointer example );
-  void UpdateImageImageList();
+  void UpdateImageImageList( void );
   void AddMedianImage( InputImagePointer image );
 
   RobustMeanBuilderType::Pointer   m_meanBuilder;

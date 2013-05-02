@@ -74,9 +74,9 @@ public:
     m_Process->AddObserver(itk::AbortEvent(), abortFilterCommand);
     }
 
-  virtual ~FilterWatcher() {}
+  virtual ~FilterWatcher( void ) {}
 
-  virtual void ShowProgress()
+  virtual void ShowProgress( void )
     {
     m_Steps++;
     if (!m_Quiet)
@@ -96,18 +96,18 @@ public:
       }
     }
 
-  virtual void ShowAbort()
+  virtual void ShowAbort( void )
     {
     std::cout << std::endl << "      ABORT" << std::endl << std::flush;
     }
 
-  virtual void ShowIteration()
+  virtual void ShowIteration( void )
     {
     std::cout << " # " << std::flush;
     m_Iterations++;
     }
 
-  virtual void StartFilter()
+  virtual void StartFilter( void )
     {
     m_Steps = 0;
     m_Iterations = 0;
@@ -119,8 +119,8 @@ public:
               << std::flush;
     }
 
-  const char *GetNameOfClass () {return m_Process->GetNameOfClass();}
-  virtual void EndFilter()
+  const char *GetNameOfClass ( void ) {return m_Process->GetNameOfClass();}
+  virtual void EndFilter( void )
     {
     m_End = ::clock();
     std::cout << std::endl << "Filter took "
@@ -136,10 +136,10 @@ public:
       }
     }
   
-  void QuietOn() {m_Quiet = true;}
-  void QuietOff() {m_Quiet = false;}
-  void TestAbortOn() {m_TestAbort = true;}
-  void TestAbortOff() {m_TestAbort = false;}
+  void QuietOn( void ) {m_Quiet = true;}
+  void QuietOff( void ) {m_Quiet = false;}
+  void TestAbortOn( void ) {m_TestAbort = true;}
+  void TestAbortOff( void ) {m_TestAbort = false;}
 
 protected:
 
@@ -154,7 +154,7 @@ protected:
 
 private:
 
-  FilterWatcher(); // Purposely not implemented
+  FilterWatcher( void ); // Purposely not implemented
 
 };
 

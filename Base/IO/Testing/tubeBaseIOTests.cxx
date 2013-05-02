@@ -27,7 +27,7 @@ limitations under the License.
 #include <iostream>
 #include "tubeTestMain.h"
 
-void RegisterTests()
+void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseIOPrintTest );
   REGISTER_TEST( itkTubeMetaLDATest );

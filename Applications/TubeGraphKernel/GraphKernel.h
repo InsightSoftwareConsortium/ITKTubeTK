@@ -132,7 +132,7 @@ public:
   static GraphType GraphFromJSONFile(const char *graphFile);
 
   /** Compute kernel value among graphs G0,G1 */
-  virtual double Compute(void) { return 0.0; }
+  virtual double Compute( void ) { return 0.0; }
 
 
 protected:

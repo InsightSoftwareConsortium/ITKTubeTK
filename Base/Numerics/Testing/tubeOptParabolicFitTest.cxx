@@ -38,7 +38,7 @@ class MyOPFunc:
   private:
     double cVal;
   public:
-    MyOPFunc( )
+    MyOPFunc( void )
       {
       cVal = 0;
       }
@@ -55,7 +55,7 @@ class MyOPFuncD:
   private:
     double cDeriv;
   public:
-    MyOPFuncD( )
+    MyOPFuncD( void )
       {
       cDeriv = 0;
       }

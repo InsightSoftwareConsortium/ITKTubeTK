@@ -39,7 +39,7 @@ namespace tube
 
 template <class TInputImage>
 InverseIntensityImageFilter<TInputImage>
-::InverseIntensityImageFilter()
+::InverseIntensityImageFilter( void )
 {
   m_InverseMaximumIntensity = 0;
 }
@@ -48,7 +48,7 @@ InverseIntensityImageFilter<TInputImage>
 template <class TInputImage>
 void
 InverseIntensityImageFilter<TInputImage>
-::GenerateData(void)
+::GenerateData( void )
 {
   itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data() called");
 

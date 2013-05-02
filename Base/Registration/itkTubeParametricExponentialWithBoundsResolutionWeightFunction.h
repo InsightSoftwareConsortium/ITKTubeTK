@@ -53,11 +53,11 @@ public:
   typedef typename Superclass::OperatorValueType OperatorValueType;
   typedef typename Superclass::TubePointType     TubePointType;
 
-  TubeParametricExponentialWithBoundsResolutionWeightFunction():
-    m_LowerBound( NumericTraits< OperatorValueType >::min() ),
-    m_UpperBound( NumericTraits< OperatorValueType >::max() )
+  TubeParametricExponentialWithBoundsResolutionWeightFunction( void )
+    : m_LowerBound( NumericTraits< OperatorValueType >::min() ),
+      m_UpperBound( NumericTraits< OperatorValueType >::max() )
     {}
-  ~TubeParametricExponentialWithBoundsResolutionWeightFunction()
+  ~TubeParametricExponentialWithBoundsResolutionWeightFunction( void )
     {}
 
   inline OperatorValueType operator()( const TubePointType & tubePoint )

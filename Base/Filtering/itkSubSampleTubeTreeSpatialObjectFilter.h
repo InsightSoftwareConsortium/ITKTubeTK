@@ -69,9 +69,9 @@ public:
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
-  SubSampleTubeTreeSpatialObjectFilter();
+  SubSampleTubeTreeSpatialObjectFilter( void );
 
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
   typedef SpatialObject< ObjectDimension > SpatialObjectBaseType;
 

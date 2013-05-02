@@ -76,7 +76,7 @@ ImageRegionMomentsCalculator<TImage>::ImageRegionMomentsCalculator( void )
 // Destructor
 template<class TImage>
 ImageRegionMomentsCalculator<TImage>::
-~ImageRegionMomentsCalculator()
+~ImageRegionMomentsCalculator( void )
 {
 }
 
@@ -105,7 +105,7 @@ ImageRegionMomentsCalculator<TInputImage>
 template<class TImage>
 void
 ImageRegionMomentsCalculator<TImage>::
-Compute()
+Compute( void )
 {
   m_M0 = NumericTraits<ScalarType>::Zero;
   m_M1.Fill( NumericTraits<typename VectorType::ValueType>::Zero );
@@ -246,7 +246,7 @@ Compute()
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::ScalarType
 ImageRegionMomentsCalculator<TImage>::
-GetTotalMass() const
+GetTotalMass( void ) const
 {
   if( !m_Valid )
     {
@@ -262,7 +262,7 @@ GetTotalMass() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
-GetFirstMoments() const
+GetFirstMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -278,7 +278,7 @@ GetFirstMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
-GetSecondMoments() const
+GetSecondMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -294,7 +294,7 @@ GetSecondMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
-GetCenterOfGravity() const
+GetCenterOfGravity( void ) const
 {
   if( !m_Valid )
     {
@@ -310,7 +310,7 @@ GetCenterOfGravity() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
-GetCentralMoments() const
+GetCentralMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -326,7 +326,7 @@ GetCentralMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
-GetPrincipalMoments() const
+GetPrincipalMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -342,7 +342,7 @@ GetPrincipalMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
-GetPrincipalAxes() const
+GetPrincipalAxes( void ) const
 {
   if( !m_Valid )
     {

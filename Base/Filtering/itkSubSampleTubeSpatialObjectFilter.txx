@@ -25,8 +25,8 @@ namespace itk
 
 template< typename TTubeSpatialObject >
 SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
-::SubSampleTubeSpatialObjectFilter():
-  m_Sampling(1)
+::SubSampleTubeSpatialObjectFilter( void )
+  : m_Sampling(1)
 {
 }
 
@@ -34,7 +34,7 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 template< typename TTubeSpatialObject >
 void
 SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
-::GenerateData()
+::GenerateData( void )
 {
   TubeSpatialObjectType * output = this->GetOutput();
   const TubeSpatialObjectType * input = this->GetInput();

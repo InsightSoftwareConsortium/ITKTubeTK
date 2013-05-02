@@ -38,7 +38,7 @@ class MyOGMFunc:
   private:
     double cVal;
   public:
-    MyOGMFunc( )
+    MyOGMFunc( void )
       {
       cVal = 0;
       }
@@ -56,7 +56,7 @@ class MyOGMFunc2:
   private:
     double cVal;
   public:
-    MyOGMFunc2( )
+    MyOGMFunc2( void )
       {
       cVal = 0;
       }

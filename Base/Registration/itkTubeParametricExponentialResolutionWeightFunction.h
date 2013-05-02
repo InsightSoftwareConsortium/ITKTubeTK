@@ -55,10 +55,10 @@ public:
   typedef TOperatorValue OperatorValueType;
   typedef TTubePoint     TubePointType;
 
-  TubeParametricExponentialResolutionWeightFunction():
-    m_Alpha( 2.0 )
+  TubeParametricExponentialResolutionWeightFunction( void )
+    : m_Alpha( 2.0 )
     {}
-  ~TubeParametricExponentialResolutionWeightFunction()
+  ~TubeParametricExponentialResolutionWeightFunction( void )
     {}
 
   inline OperatorValueType operator()( const TubePointType & tubePoint )

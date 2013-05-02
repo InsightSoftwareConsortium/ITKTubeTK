@@ -43,7 +43,7 @@ vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsTubeDisplayNode);
 
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode()
+vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode( void )
 {
   this->ColorMode = vtkMRMLSpatialObjectsDisplayNode::colorModeSolid;
 
@@ -70,7 +70,7 @@ vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode()
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsTubeDisplayNode::~vtkMRMLSpatialObjectsTubeDisplayNode()
+vtkMRMLSpatialObjectsTubeDisplayNode::~vtkMRMLSpatialObjectsTubeDisplayNode( void )
 {
   this->RemoveObservers(vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
   this->amontAssignAttribute->Delete();
@@ -153,19 +153,19 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::SetInputToPolyDataPipeline(vtkPolyDat
 }
 
 //------------------------------------------------------------------------------
-vtkPolyData* vtkMRMLSpatialObjectsTubeDisplayNode::GetInputPolyData()
+vtkPolyData* vtkMRMLSpatialObjectsTubeDisplayNode::GetInputPolyData( void )
 {
   return vtkPolyData::SafeDownCast(this->amontAssignAttribute->GetInput());
 }
 
 //------------------------------------------------------------------------------
-vtkAlgorithmOutput* vtkMRMLSpatialObjectsTubeDisplayNode::GetOutputPort()
+vtkAlgorithmOutput* vtkMRMLSpatialObjectsTubeDisplayNode::GetOutputPort( void )
 {
   return this->AssignAttribute->GetOutputPort();
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline()
+void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline( void )
 {
   if (!this->GetInputPolyData() || !this->Visibility)
     {

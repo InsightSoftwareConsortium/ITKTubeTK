@@ -25,7 +25,7 @@ limitations under the License.
 #include "tubeTestMain.h"
 
 
-void RegisterTests()
+void RegisterTests( void )
 {
   REGISTER_TEST( itkLabelMapToAcousticImpedanceImageFilterTest );
   REGISTER_TEST( itkAngleOfIncidenceImageFilterTest );

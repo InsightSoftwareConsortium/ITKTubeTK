@@ -29,7 +29,7 @@ namespace itk {
 
 template< class TImageType >
 AnisotropicDiffusionTensorFunction< TImageType>
-::AnisotropicDiffusionTensorFunction()
+::AnisotropicDiffusionTensorFunction( void )
 {
   typename Superclass::RadiusType r;
   r.Fill( 1 );

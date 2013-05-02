@@ -80,7 +80,7 @@ public:
   void SetInputVolume( unsigned int featureNumber,
     typename ImageType::Pointer vol );
 
-  void ClearObjectIds()
+  void ClearObjectIds( void )
     {
     m_ObjectIdList.clear();
     }

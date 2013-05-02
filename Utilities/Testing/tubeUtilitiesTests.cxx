@@ -28,7 +28,7 @@ limitations under the License.
 #include "tubeTestMain.h"
 
 
-void RegisterTests()
+void RegisterTests( void )
 {
   REGISTER_TEST( tubeUtilitiesPrintTest );
   REGISTER_TEST( tubeMessageTest );

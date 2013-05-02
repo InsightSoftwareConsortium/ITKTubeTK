@@ -58,8 +58,8 @@ int RegressionTestImage (const char *testImageFilename,
 
 std::map<std::string,int> RegressionTestBaselines (char *);
 
-void RegisterTests();
-void PrintAvailableTests()
+void RegisterTests( void );
+void PrintAvailableTests( void )
 {
   std::cout << "Available tests:\n";
   std::map<std::string, MainFuncPointer>::iterator j = StringToTestFunctionMap.begin();

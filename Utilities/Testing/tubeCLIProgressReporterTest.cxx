@@ -59,19 +59,19 @@ int tubeCLIProgressReporterTest(int argc, char *itkNotUsed(argv)[] )
   tube::CLIProgressReporter reporter( processName.c_str(),
                                       &CLPProcessInfo,
                                       true );
-  reporter.Start( );
+  reporter.Start();
   reporter.Report( 0.0 );
   reporter.Report( 0.5 );
   CLPProcessInfo.Abort = 1;
   reporter.Report( 1.0 );
-  reporter.End( );
-  if( reporter.GetProcess( ) != processName )
+  reporter.End();
+  if( reporter.GetProcess() != processName )
     {
     std::cerr << "Process name does not match." << std::endl;
     std::cerr << reporter.GetProcess() << " != " << processName
               << std::endl;
     }
-  if( reporter.GetProcessInformation( ) != &CLPProcessInfo )
+  if( reporter.GetProcessInformation() != &CLPProcessInfo )
     {
     std::cerr << "Process info does not match." << std::endl;
     }

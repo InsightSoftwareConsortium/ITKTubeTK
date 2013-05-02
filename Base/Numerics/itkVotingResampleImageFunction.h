@@ -92,8 +92,8 @@ public:
     const ContinuousIndexType & index ) const;
 
 protected:
-  VotingResampleImageFunction();
-  ~VotingResampleImageFunction(){}
+  VotingResampleImageFunction( void );
+  ~VotingResampleImageFunction( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:

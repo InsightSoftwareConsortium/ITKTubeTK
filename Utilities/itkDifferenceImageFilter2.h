@@ -94,8 +94,8 @@ public:
   itkGetConstMacro(NumberOfPixelsWithDifferences, unsigned long);
 
 protected:
-  DifferenceImageFilter2();
-  virtual ~DifferenceImageFilter2() {}
+  DifferenceImageFilter2( void );
+  virtual ~DifferenceImageFilter2( void ) {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 
@@ -113,8 +113,8 @@ protected:
   void ThreadedGenerateData(const OutputImageRegionType& threadRegion,
                               ThreadIdType threadId);
 
-  void BeforeThreadedGenerateData();
-  void AfterThreadedGenerateData();
+  void BeforeThreadedGenerateData( void );
+  void AfterThreadedGenerateData( void );
 
   OutputPixelType          m_DifferenceThreshold;
   RealType                 m_MeanDifference;
