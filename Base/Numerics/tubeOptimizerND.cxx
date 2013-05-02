@@ -265,7 +265,10 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
 {
   m_X0 = x;
   double a = 1;
-  double xmin, xmax;
+
+  double xmin;
+  double xmax;
+
   unsigned int count = 0;
   while( fabs(a) > m_Tolerance )
     {

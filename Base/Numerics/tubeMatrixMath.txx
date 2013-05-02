@@ -170,21 +170,19 @@ ComputeEigen(vnl_matrix<T> const & mat,
       break;
     }
 
-  int i, j, k;
-  double tf;
   if(orderByAbs)
     {
-    for(i=0; i<n-1; i++)
+    for(int i=0; i<n-1; i++)
       {
-      for(j=i+1; j<n; j++)
+      for(int j=i+1; j<n; j++)
         {
         if( ( fabs(eVals(j))>fabs(eVals(i)) && !minToMax )
           || ( fabs(eVals(j))<fabs(eVals(i)) && minToMax ) )
           {
-          tf = eVals(j);
+          double tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
-          for(k=0; k<n; k++)
+          for(int k=0; k<n; k++)
             {
             tf = eVects(k,j);
             eVects(k,j) = eVects(k,i);
@@ -196,17 +194,17 @@ ComputeEigen(vnl_matrix<T> const & mat,
     }
   else
     {
-    for(i=0; i<n-1; i++)
+    for(int i=0; i<n-1; i++)
       {
-      for(j=i+1; j<n; j++)
+      for(int j=i+1; j<n; j++)
         {
         if( ( eVals(j)>eVals(i) && !minToMax )
           || ( eVals(j)<eVals(i) && minToMax ) )
           {
-          tf = eVals(j);
+          double tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
-          for(k=0; k<n; k++)
+          for(int k=0; k<n; k++)
             {
             tf = eVects(k,j);
             eVects(k,j) = eVects(k,i);
@@ -230,8 +228,12 @@ ComputeTriDiag2D(vnl_matrix<T> &mat,
   diag(1) = mat(1,1);
   subD(0) = mat(0,1);
   subD(1) = 0;
-  mat(0,0) = 1;  mat(0,1) = 0;
-  mat(1,0) = 0;  mat(1,1) = 1;
+
+  mat(0,0) = 1;
+  mat(0,1) = 0;
+
+  mat(1,0) = 0;
+  mat(1,1) = 1;
 }
 
 /**
@@ -256,9 +258,18 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
     diag(2) = f-c*q;
     subD(0) = s;
     subD(1) = e-b*q;
-    mat(0,0) = 1; mat(0,1) = 0; mat(0,2) = 0;
-    mat(1,0) = 0; mat(1,1) = b; mat(1,2) = c;
-    mat(2,0) = 0; mat(2,1) = c; mat(2,2) = -b;
+
+    mat(0,0) = 1;
+    mat(0,1) = 0;
+    mat(0,2) = 0;
+
+    mat(1,0) = 0;
+    mat(1,1) = b;
+    mat(1,2) = c;
+
+    mat(2,0) = 0;
+    mat(2,1) = c;
+    mat(2,2) = -b;
     }
   else
     {
@@ -266,9 +277,18 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
     diag(2) = f;
     subD(0) = b;
     subD(1) = e;
-    mat(0,0) = 1; mat(0,1) = 0; mat(0,2) = 0;
-    mat(1,0) = 0; mat(1,1) = 1; mat(1,2) = 0;
-    mat(2,0) = 0; mat(2,1) = 0; mat(2,2) = 1;
+
+    mat(0,0) = 1;
+    mat(0,1) = 0;
+    mat(0,2) = 0;
+
+    mat(1,0) = 0;
+    mat(1,1) = 1;
+    mat(1,2) = 0;
+
+    mat(2,0) = 0;
+    mat(2,1) = 0;
+    mat(2,2) = 1;
     }
 }
 
@@ -276,8 +296,20 @@ template <class T>
 void
 ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
 {
-  int iter, i, k, l, m;
-  double dd, g, r, f, s, c, p, b;
+  int iter;
+  int i;
+  int k;
+  int l;
+  int m;
+
+  double dd;
+  double g;
+  double r;
+  double f;
+  double s;
+  double c;
+  double p;
+  double b;
 
   int n = mat.rows();
 

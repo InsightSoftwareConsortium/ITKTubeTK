@@ -833,7 +833,8 @@ double SplineND::valueVDD2( const VectorType & x,
 
   itWSX  = m_DataWSX->Begin();
   itWSXX = m_DataWSXX->Begin();
-  double vD, vD2;
+  double vD;
+  double vD2;
 
   for( int i=( int )m_NDims-1; i>=0; i-- )
     {

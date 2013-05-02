@@ -502,7 +502,8 @@ ImageToTubeRigidMetric< TFixedImage,
   weightIterator = m_ResolutionWeights.begin();
 
   double dPosition[TubeDimension] = { 0.0, 0.0, 0.0 };
-  double dXProj1, dXProj2;
+  double dXProj1;
+  double dXProj2;
 
   vnl_vector<double> tV( TubeDimension );
   vnl_matrix<double> tM( TubeDimension, TubeDimension );

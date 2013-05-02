@@ -1269,7 +1269,9 @@ int DoIt( MetaCommand & command )
             im2DRef->GetLargestPossibleRegion() );
       itk::ImageRegionIterator< ImageType2D > it2DIn( im2DIn,
             im2DIn->GetLargestPossibleRegion() );
-      unsigned int z, y, x;
+      unsigned int x;
+      unsigned int y;
+      unsigned int z;
       it3D.GoToBegin();
       unsigned int zMax = 1;
       if( dimensionT == 3 )
