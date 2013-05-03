@@ -63,9 +63,11 @@ public:
 
   typedef typename ImageT::PixelType           FeatureValueType;
   typedef vnl_vector< FeatureValueType >       FeatureVectorType;
-
   typedef Image< FeatureValueType, ImageT::ImageDimension >
                                                FeatureImageType;
+
+  typedef double                               ValueType;
+  typedef std::vector< ValueType >             ValueListType;
 
   //
   // Methods
@@ -80,11 +82,11 @@ public:
 
   void UpdateWhitenFeatureImageStats( void );
 
-  void SetWhitenMeans( const FeatureVectorType & means );
-  const FeatureVectorType & GetWhitenMeans( void ) const;
+  void SetWhitenMeans( const ValueListType & means );
+  const ValueListType & GetWhitenMeans( void ) const;
 
-  void SetWhitenStdDevs( const FeatureVectorType & stdDevs );
-  const FeatureVectorType & GetWhitenStdDevs( void ) const;
+  void SetWhitenStdDevs( const ValueListType & stdDevs );
+  const ValueListType & GetWhitenStdDevs( void ) const;
 
   void SetWhitenFeatureImageMean( unsigned int num, double mean );
   double GetWhitenFeatureImageMean( unsigned int num ) const;
@@ -119,8 +121,8 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   //  Data
-  FeatureVectorType                   m_WhitenFeatureImageMean;
-  FeatureVectorType                   m_WhitenFeatureImageStdDev;
+  ValueListType                   m_WhitenFeatureImageMean;
+  ValueListType                   m_WhitenFeatureImageStdDev;
 
 };
 

@@ -36,6 +36,7 @@ void RegisterTests()
   REGISTER_TEST( itkTubeNJetImageFunctionTest );
   REGISTER_TEST( itkTubeBlurImageFunctionTest );
   REGISTER_TEST( itkTubeNJetFeatureVectorGeneratorTest );
+  REGISTER_TEST( itkTubeNJetBasisFeatureVectorGeneratorTest );
   REGISTER_TEST( itkVotingResampleImageFunctionTest );
   REGISTER_TEST( tubeMatrixMathTest );
   REGISTER_TEST( tubeOptBrentNDTest );

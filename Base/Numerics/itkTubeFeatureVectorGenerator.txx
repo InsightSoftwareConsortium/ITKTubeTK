@@ -109,16 +109,16 @@ FeatureVectorGenerator< ImageT >
 {
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  m_WhitenFeatureImageMean.set_size( numFeatures );
-  m_WhitenFeatureImageStdDev.set_size( numFeatures );
-  FeatureVectorType imVal;
-  imVal.set_size( numFeatures );
-  FeatureVectorType delta;
-  delta.set_size( numFeatures );
-  FeatureVectorType imMean;
-  imMean.set_size( numFeatures );
-  FeatureVectorType imStdDev;
-  imStdDev.set_size( numFeatures );
+  m_WhitenFeatureImageMean.resize( numFeatures );
+  m_WhitenFeatureImageStdDev.resize( numFeatures );
+  ValueListType imVal;
+  imVal.resize( numFeatures );
+  ValueListType delta;
+  delta.resize( numFeatures );
+  ValueListType imMean;
+  imMean.resize( numFeatures );
+  ValueListType imStdDev;
+  imStdDev.resize( numFeatures );
   for( unsigned int i=0; i<numFeatures; i++ )
     {
     m_WhitenFeatureImageMean[i] = 0;
@@ -175,13 +175,13 @@ FeatureVectorGenerator< ImageT >
 template < class ImageT >
 void
 FeatureVectorGenerator< ImageT >
-::SetWhitenMeans( const FeatureVectorType & means )
+::SetWhitenMeans( const ValueListType & means )
 {
   m_WhitenFeatureImageMean = means;
 }
 
 template < class ImageT >
-const typename FeatureVectorGenerator< ImageT >::FeatureVectorType &
+const typename FeatureVectorGenerator< ImageT >::ValueListType &
 FeatureVectorGenerator< ImageT >
 ::GetWhitenMeans( void ) const
 {
@@ -191,13 +191,13 @@ FeatureVectorGenerator< ImageT >
 template < class ImageT >
 void
 FeatureVectorGenerator< ImageT >
-::SetWhitenStdDevs( const FeatureVectorType & stdDevs )
+::SetWhitenStdDevs( const ValueListType & stdDevs )
 {
   m_WhitenFeatureImageStdDev = stdDevs;
 }
 
 template < class ImageT >
-const typename FeatureVectorGenerator< ImageT >::FeatureVectorType &
+const typename FeatureVectorGenerator< ImageT >::ValueListType &
 FeatureVectorGenerator< ImageT >
 ::GetWhitenStdDevs( void ) const
 {

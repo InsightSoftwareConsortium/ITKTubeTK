@@ -49,6 +49,7 @@ set( tubeBaseNumerics_SRCS
   itkTubeNJetImageFunctionTest.cxx
   itkTubeBlurImageFunctionTest.cxx
   itkTubeNJetFeatureVectorGeneratorTest.cxx
+  itkTubeNJetBasisFeatureVectorGeneratorTest.cxx
   itkVotingResampleImageFunctionTest.cxx
   tubeMatrixMathTest.cxx
   tubeOptBrentNDTest.cxx
@@ -268,13 +269,22 @@ MIDAS_ADD_TEST( itkTubeBlurImageFunctionTest
 
 #MIDAS_ADD_TEST( itkTubeNJetFeatureVectorGeneratorTest
   #${BASE_NUMERICS_TESTS}
-  #--compare MIDAS{itkTubeNJetFeatureVectorGeneratorTest_lda0.mha.md5}
-            #${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_lda0.mha
+  #--compare MIDAS{itkTubeNJetFeatureVectorGeneratorTest_f0.mha.md5}
+            #${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f0.mha
 MIDAS_ADD_TEST( itkTubeNJetFeatureVectorGeneratorTest
   ${BASE_NUMERICS_TESTS}
   itkTubeNJetFeatureVectorGeneratorTest
     MIDAS{ES0015_Large_Subs.mha.md5}
     MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
-    ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_lda0.mha
-    ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_lda1.mha
+    ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f0.mha
+    ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f1.mha
+  )
+
+MIDAS_ADD_TEST( itkTubeNJetBasisFeatureVectorGeneratorTest
+  ${BASE_NUMERICS_TESTS}
+  itkTubeNJetBasisFeatureVectorGeneratorTest
+    MIDAS{ES0015_Large_Subs.mha.md5}
+    MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
+    ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda1.mha
   )
