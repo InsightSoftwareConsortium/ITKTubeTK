@@ -21,29 +21,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
-#include <cstdlib>
-
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
 
-
-int tubeBaseIOPrintTest( int, char*[] )
+int tubeBaseIOPrintTest( int, char *[] )
 {
-  itk::tube::MetaLDA metalda;
+  itk::tube::MetaLDA metaLDA;
   std::cout << "-------------metaLDA" << std::endl;
-  metalda.PrintInfo();
+  metaLDA.PrintInfo();
 
-  itk::tube::MetaNJetLDA metanjlda;
+  itk::tube::MetaNJetLDA metaNJetLDA;
   std::cout << "-------------metaNJetLDA" << std::endl;
-  metanjlda.PrintInfo();
+  metaNJetLDA.PrintInfo();
 
   return EXIT_SUCCESS;
 }

@@ -24,33 +24,10 @@ limitations under the License.
 #ifndef __itkTubeMetaNJetLDA_h
 #define __itkTubeMetaNJetLDA_h
 
-#include "metaTypes.h"
-
-#include <vector>
-
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
-
-#include "metaUtils.h"
-#include "metaForm.h"
 #include "itkTubeMetaLDA.h"
-
-/**    MetaNJetLDA ( .h and .cpp )
-
-Description:
-  Reads and Writes MetaNJetLDA Files, typically designated .mnda files
-
-REQUIRED: itkTubeNJetLDAGenerator instance
-
-\author Stephen R. Aylward
-
-\date August 29, 1999
-
-Depends on:
-MetaUtils.h
-MetaLDA.h
-MetaForm.h
-*/
+#include "metaForm.h"
+#include "vnl/vnl_matrix.h"
+#include "vnl/vnl_vector.h"
 
 namespace itk
 {
@@ -58,97 +35,93 @@ namespace itk
 namespace tube
 {
 
-class METAIO_EXPORT MetaNJetLDA
-: public MetaLDA
+/**
+ * \brief    Reads and writes MetaNJetLDA files, typically designated .mnda files.
+ * \pre      itkTubeNJetLDAGenerator instance.
+ *
+ * \author   Stephen R. Aylward
+ * \date     August 29, 1999
+ *
+ * \ingroup  IO
+ */
+class METAIO_EXPORT MetaNJetLDA : public MetaLDA
 {
-  /////
-  //
-  // PUBLIC
-  //
-  ////
 public:
 
-  typedef std::vector<double>     NJetScalesType;
-
+  typedef std::vector< double >   NJetScalesType;
   typedef MetaLDA::LDAValuesType  LDAValuesType;
-
   typedef MetaLDA::LDAMatrixType  LDAMatrixType;
 
-  ////
-  //
-  // Constructors & Destructor
-  //
-  ////
   MetaNJetLDA( void );
 
-  MetaNJetLDA( const char *_headerName );
+  MetaNJetLDA( const char * headerName );
 
-  MetaNJetLDA( const MetaNJetLDA & _metaNJetLDA );
+  MetaNJetLDA( const MetaNJetLDA & metaNJetLDA );
 
-  MetaNJetLDA( const NJetScalesType & _zeroScales,
-      const NJetScalesType & _firstScales,
-      const NJetScalesType & _secondScales,
-      const NJetScalesType & _ridgeScales,
-      const LDAValuesType & _ldaValues,
-      const LDAMatrixType & _ldaMatrix,
-      const ValueListType & _whitenMeans,
-      const ValueListType & _whitenStdDevs);
+  MetaNJetLDA( const NJetScalesType & zeroScales,
+               const NJetScalesType & firstScales,
+               const NJetScalesType & secondScales,
+               const NJetScalesType & ridgeScales,
+               const LDAValuesType & ldaValues,
+               const LDAMatrixType & ldaMatrix,
+               const ValueListType & whitenMeans,
+               const ValueListType & whitenStdDevs );
 
   ~MetaNJetLDA( void );
 
-  virtual void  PrintInfo( void ) const;
+  virtual void PrintInfo( void ) const;
 
   using MetaLDA::CopyInfo;
-  virtual void  CopyInfo( const MetaNJetLDA & _lda );
+  virtual void CopyInfo( const MetaNJetLDA & lda );
 
-  virtual void  Clear( void );
+  virtual void Clear( void );
 
-  bool  InitializeEssential(
-    const NJetScalesType & _zeroScales,
-    const NJetScalesType & _firstScales,
-    const NJetScalesType & _secondScales,
-    const NJetScalesType & _ridgeScales,
-    const LDAValuesType & _ldaValues,
-    const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs);
+  bool InitializeEssential( const NJetScalesType & zeroScales,
+                            const NJetScalesType & firstScales,
+                            const NJetScalesType & secondScales,
+                            const NJetScalesType & ridgeScales,
+                            const LDAValuesType & ldaValues,
+                            const LDAMatrixType & ldaMatrix,
+                            const ValueListType & whitenMeans,
+                            const ValueListType & whitenStdDevs );
 
-  //
-  //
-  //
-  void  SetZeroScales( const NJetScalesType & _zeroScales );
+  void SetZeroScales( const NJetScalesType & zeroScales );
+
   const NJetScalesType & GetZeroScales( void ) const;
 
-  void  SetFirstScales( const NJetScalesType & _firstScales );
+  void SetFirstScales( const NJetScalesType & firstScales );
+
   const NJetScalesType & GetFirstScales( void ) const;
 
-  void  SetSecondScales( const NJetScalesType & _secondScales );
+  void SetSecondScales( const NJetScalesType & secondScales );
+
   const NJetScalesType & GetSecondScales( void ) const;
 
-  void  SetRidgeScales( const NJetScalesType & _ridgeScales );
+  void SetRidgeScales( const NJetScalesType & ridgeScales );
+
   const NJetScalesType & GetRidgeScales( void ) const;
 
-  //
-  //
-  //
-  virtual bool CanRead( const char *_headerName=NULL ) const;
+  virtual bool CanRead( const char * headerName = NULL ) const;
 
-  virtual bool Read( const char *_headerName=NULL );
+  virtual bool Read( const char * headerName = NULL );
 
-  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * stream ) const;
 
-  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * stream );
 
-  virtual bool Write( const char *_headName=NULL );
+  virtual bool Write( const char * headerName = NULL );
 
-  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
+  virtual bool WriteStream( METAIO_STREAM::ofstream * stream );
 
-  ////
-  //
-  // PROTECTED
-  //
-  ////
 protected:
+
+  void M_Destroy( void );
+
+  void M_SetupReadFields( void );
+
+  void M_SetupWriteFields( void );
+
+  bool M_Read( void );
 
   NJetScalesType  m_ZeroScales;
   NJetScalesType  m_FirstScales;
@@ -159,14 +132,6 @@ protected:
   LDAValuesType   m_FirstScalesTmp;
   LDAValuesType   m_SecondScalesTmp;
   LDAValuesType   m_RidgeScalesTmp;
-
-  void  M_Destroy( void );
-
-  void  M_SetupReadFields( void );
-
-  void  M_SetupWriteFields( void );
-
-  bool  M_Read( void );
 
 }; // End class MetaNJetLDA
 
