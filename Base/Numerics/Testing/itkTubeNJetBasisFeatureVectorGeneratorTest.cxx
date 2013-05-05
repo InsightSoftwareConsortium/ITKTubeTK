@@ -100,10 +100,10 @@ int itkTubeNJetBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
   LabelmapType::Pointer maskImage = mReader->GetOutput();
 
   FilterType::NJetScalesType scales(2);
-  scales[0] = 1;
-  scales[1] = 4;
+  scales[0] = 4;
+  scales[1] = 8;
   FilterType::NJetScalesType scales2(1);
-  scales2[0] = 2;
+  scales2[0] = 8;
   FilterType::Pointer filter = FilterType::New();
   filter->SetInputImage( inputImage );
   filter->SetZeroScales( scales );
@@ -123,6 +123,8 @@ int itkTubeNJetBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
   basisFilter->GenerateBasis();
   std::cout << basisFilter << std::endl;
 
+  basisFilter->SetLabelmap( NULL );
+
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[5] );
   writer->SetUseCompression( true );
@@ -140,7 +142,7 @@ int itkTubeNJetBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
   WriterType::Pointer writer2 = WriterType::New();
   writer2->SetFileName( argv[6] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( basisFilter->GetFeatureImage(3) );
+  writer2->SetInput( basisFilter->GetFeatureImage(1) );
   try
     {
     writer2->Update();

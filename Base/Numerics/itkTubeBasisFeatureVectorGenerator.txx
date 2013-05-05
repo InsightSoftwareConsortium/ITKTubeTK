@@ -373,15 +373,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
         else
           {
           IndexType indx = itBasisIm.GetIndex();
-          fv = this->GetFeatureVector( indx );
-          for( unsigned int f=0; f<numFeatures; f++ )
-            {
-            v[f] = fv[f];
-            }
-
-          vBasis = v * m_BasisMatrix;
-
-          itBasisIm.Set( vBasis[ fNum ] );
+          itBasisIm.Set( this->GetFeatureVectorValue( indx, fNum ) );
           }
         ++itBasisIm;
         ++itInMask;
@@ -392,15 +384,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
       while( !itBasisIm.IsAtEnd() )
         {
         IndexType indx = itBasisIm.GetIndex();
-        fv = this->GetFeatureVector( indx );
-        for( unsigned int f=0; f<numFeatures; f++ )
-          {
-          v[f] = fv[f];
-          }
-
-        vBasis = v * m_BasisMatrix;
-
-        itBasisIm.Set( vBasis[ fNum ] );
+        itBasisIm.Set( this->GetFeatureVectorValue( indx, fNum ) );
         ++itBasisIm;
         }
       }
@@ -431,23 +415,23 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     m_Labelmap->GetLargestPossibleRegion() );
 
   unsigned int numClasses = this->GetNumberOfObjectIds();
-  unsigned int numFeatures = this->GetNumberOfFeatures();
-
+  unsigned int numInputFeatures =
+    m_InputFeatureVectorGenerator->GetNumberOfFeatures();
   m_ObjectMeanList.resize( numClasses );
   m_ObjectCovarianceList.resize( numClasses );
   std::vector< unsigned int > countList( numClasses );
   for( unsigned int i=0; i<numClasses; i++ )
     {
-    m_ObjectMeanList[i].set_size( numFeatures );
+    m_ObjectMeanList[i].set_size( numInputFeatures );
     m_ObjectMeanList[i].fill( 0 );
-    m_ObjectCovarianceList[i].set_size( numFeatures, numFeatures );
+    m_ObjectCovarianceList[i].set_size( numInputFeatures, numInputFeatures );
     m_ObjectCovarianceList[i].fill( 0 );
     countList[i] = 0;
     }
 
-  m_GlobalMean.set_size( numFeatures );
+  m_GlobalMean.set_size( numInputFeatures );
   m_GlobalMean.fill( 0 );
-  m_GlobalCovariance.set_size( numFeatures, numFeatures );
+  m_GlobalCovariance.set_size( numInputFeatures, numInputFeatures );
   m_GlobalCovariance.fill( 0 );
 
   unsigned int globalCount = 0;
@@ -478,11 +462,12 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     if( found )
       {
       IndexType indx = itInMask.GetIndex();
-      FeatureVectorType v = this->GetFeatureVector( indx );
+      FeatureVectorType v = m_InputFeatureVectorGenerator->
+        GetFeatureVector( indx );
 
       ++globalCount;
       ++countList[valC];
-      for( unsigned int i=0; i<numFeatures; i++ )
+      for( unsigned int i=0; i<numInputFeatures; i++ )
         {
         delta = v[i] - m_GlobalMean[i];
         m_GlobalMean[i] += delta / globalCount;
@@ -490,9 +475,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
         delta = v[i] - m_ObjectMeanList[valC][i];
         m_ObjectMeanList[valC][i] += delta / countList[valC];
         }
-      for( unsigned int i=0; i<numFeatures; i++ )
+      for( unsigned int i=0; i<numInputFeatures; i++ )
         {
-        for( unsigned int j=0; j<numFeatures; j++ )
+        for( unsigned int j=0; j<numInputFeatures; j++ )
           {
           delta = v[i] - m_GlobalMean[i];
           deltaJ = v[j] - m_GlobalMean[j];
@@ -507,9 +492,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     ++itInMask;
     }
 
-  for( unsigned int i=0; i<numFeatures; i++ )
+  for( unsigned int i=0; i<numInputFeatures; i++ )
     {
-    for( unsigned int j=0; j<numFeatures; j++ )
+    for( unsigned int j=0; j<numInputFeatures; j++ )
       {
       m_GlobalCovariance[i][j] /= globalCount - 1;
       for( unsigned int c=0; c<numClasses; c++ )
@@ -534,9 +519,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     {
     std::cout << "LDA Global Means = " << m_GlobalMean << std::endl;
     std::cout << "LDA Global Cov = " << m_GlobalCovariance << std::endl;
-    MatrixType covOfMeans( numFeatures, numFeatures );
+    MatrixType covOfMeans( numInputFeatures, numInputFeatures );
     covOfMeans.fill( 0 );
-    MatrixType meanCov( numFeatures, numFeatures );
+    MatrixType meanCov( numInputFeatures, numInputFeatures );
     meanCov.fill( 0 );
     for( unsigned int c=0; c<numClasses; c++ )
       {
@@ -544,9 +529,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
         << m_ObjectMeanList[c] << std::endl;
       std::cout << "LDA Cov[" << m_ObjectIdList[c] << "] = "
         << m_ObjectCovarianceList[c] << std::endl;
-      for( unsigned int i=0; i<numFeatures; i++ )
+      for( unsigned int i=0; i<numInputFeatures; i++ )
         {
-        for( unsigned int j=0; j<numFeatures; j++ )
+        for( unsigned int j=0; j<numInputFeatures; j++ )
           {
           covOfMeans[i][j] += ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
             * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
@@ -555,9 +540,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
         }
       }
 
-    for( unsigned int i=0; i<numFeatures; i++ )
+    for( unsigned int i=0; i<numInputFeatures; i++ )
       {
-      for( unsigned int j=0; j<numFeatures; j++ )
+      for( unsigned int j=0; j<numInputFeatures; j++ )
         {
         covOfMeans[i][j] /= numClasses;
         meanCov[i][j] /= numClasses;
@@ -579,13 +564,13 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
   else
     {
-    MatrixType covOfMeans( numFeatures, numFeatures );
+    MatrixType covOfMeans( numInputFeatures, numInputFeatures );
     covOfMeans.fill( 0 );
     for( unsigned int c=0; c<numClasses; c++ )
       {
-      for( unsigned int i=0; i<numFeatures; i++ )
+      for( unsigned int i=0; i<numInputFeatures; i++ )
         {
-        for( unsigned int j=0; j<numFeatures; j++ )
+        for( unsigned int j=0; j<numInputFeatures; j++ )
           {
           covOfMeans[i][j] += ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
             * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
@@ -593,9 +578,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
         }
       }
 
-    for( unsigned int i=0; i<numFeatures; i++ )
+    for( unsigned int i=0; i<numInputFeatures; i++ )
       {
-      for( unsigned int j=0; j<numFeatures; j++ )
+      for( unsigned int j=0; j<numInputFeatures; j++ )
         {
         covOfMeans[i][j] /= numClasses;
         }
@@ -605,6 +590,8 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     ::tube::ComputeEigen<double>( covOfMeans, m_BasisMatrix, m_BasisValues,
       true, false );
     }
+
+  m_NumberOfBasisToUseAsFeatures = m_BasisValues.size();
 
   timeCollector.Stop( "GenerateBasis" );
 
