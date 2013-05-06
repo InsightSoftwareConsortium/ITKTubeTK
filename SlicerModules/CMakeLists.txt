@@ -22,3 +22,4 @@
 ##############################################################################
 
 add_subdirectory( SpatialObjectsModule )
+add_subdirectory( InteractiveConnectedComponentsUsingParzenPDFs )

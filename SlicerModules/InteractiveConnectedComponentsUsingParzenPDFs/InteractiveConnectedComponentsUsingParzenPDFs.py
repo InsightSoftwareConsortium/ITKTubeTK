@@ -20,18 +20,19 @@
 # limitations under the License.
 #
 ##############################################################################
-import __main__
-import qt, vtk
-
+import qt, vtk, slicer
 #
 # InteractivePDFSegmenter
 #
 
-class InteractivePDFSegmenter:
+class InteractiveConnectedComponentsUsingParzenPDFs:
   def __init__(self, parent):
     parent.title = "Interactive PDF Segmenter (TubeTK)"
-    parent.category = "Segmentation"
-    parent.contributor = ""
+    parent.categories = ["Segmentation"]
+    parent.dependencies = []
+    parent.contributors = ["Danielle Pace (Kitware)",
+                           "Christopher Mullins (Kitware)",
+                           "Stephen Aylward (Kitware)"]
     parent.helpText = """
     TODO
     """
@@ -46,7 +47,7 @@ class InteractivePDFSegmenter:
 # qSlicerPythonModuleExampleWidget
 #
 
-class InteractivePDFSegmenterWidget:
+class InteractiveConnectedComponentsUsingParzenPDFsWidget:
   def __init__(self, parent=None):
 
     self.labelMapNode = None
@@ -86,10 +87,9 @@ class InteractivePDFSegmenterWidget:
 
   def exit(self):
     if self.editorWidget:
-      self.editorWidget.pauseEffect()
+      self.editorWidget.exit()
 
   def setup(self):
-
     #->> TODO could also specify with Qt Designer instead in future (QtUiTools)
 
     # IO COLLAPSIBLE BUTTON
@@ -176,7 +176,7 @@ class InteractivePDFSegmenterWidget:
     labelMapNodeSelector.objectName = 'labelMapNodeSelector'
     labelMapNodeSelector.toolTip = "Select the label map roughly outlining the structure to be segmented and its background."
     labelMapNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    labelMapNodeSelector.addAttribute("vtkMRMLScalarVolumeNode", "LabelMap", True);
+    labelMapNodeSelector.addAttribute("vtkMRMLScalarVolumeNode", "LabelMap", "1");
     labelMapNodeSelector.noneEnabled = False
     labelMapNodeSelector.addEnabled = True
     labelMapNodeSelector.removeEnabled = False
@@ -198,8 +198,24 @@ class InteractivePDFSegmenterWidget:
     labelMapFormLayout.addRow(editorFrame)
     self.editorFrame = editorFrame
 
-    # initialize editor widget: using parent frame, embedded is true and list of effects
-    self.editorWidget = __main__.EditorWidget(parent=self.editorFrame, embedded=True, suppliedEffects=self.editorEffects, showVolumesFrame=False)
+    # initialize editor widget: using parent frame
+    self.editorWidget = EditorWidget(parent=self.editorFrame, showVolumesFrame=True)
+    self.editorWidget.setup()
+    # set nodes for use in helper box
+    compositeNode = self.editorWidget.editUtil.getCompositeNode()
+    selectionNode = slicer.app.applicationLogic().GetSelectionNode()
+    selectionNode.SetReferenceSecondaryVolumeID( compositeNode.GetForegroundVolumeID() )
+    bgID = lbID = ""
+    if compositeNode.GetBackgroundVolumeID():
+      bgID = compositeNode.GetBackgroundVolumeID()
+    if compositeNode.GetLabelVolumeID():
+      lbID = compositeNode.GetLabelVolumeID()
+    masterNode = slicer.mrmlScene.GetNodeByID( bgID )
+    mergeNode = slicer.mrmlScene.GetNodeByID( lbID )
+    self.editorWidget.setMasterNode(masterNode)
+    self.editorWidget.setMergeNode(mergeNode)
+    self.editorWidget.parameterNode = self.editorWidget.editUtil.getParameterNode()
+    self.editorWidget.parameterNodeTag = self.editorWidget.parameterNode.AddObserver(vtk.vtkCommand.ModifiedEvent, self.editorWidget.updateGUIFromMRML)
 
     # voidLabel selector
     # The voidLabel selector selects which label corresponds to the void label
@@ -535,7 +551,7 @@ class InteractivePDFSegmenterWidget:
     # segmentation type and image properties
 
     # get the pdf segmenter module and run the cli
-    tubepdfSegmenter = slicer.modules.tubepdfsegmenter
+    tubepdfSegmenter = slicer.modules.segmentconnectedcomponentsusingparzenpdfs
     self.CLINode = slicer.cli.run(tubepdfSegmenter, self.CLINode, parameters)
 
     # For a nice display in Slicer, make the output node a label map with the same
