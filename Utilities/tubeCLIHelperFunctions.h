@@ -82,20 +82,20 @@ int ParseArgsAndCallDoIt( std::string inputImage,
           return DoIt<unsigned short, 2>( argc, argv );
         case itk::ImageIOBase::SHORT:
           return DoIt<short, 2>( argc, argv );
-        case itk::ImageIOBase::UINT:
-          return DoIt<unsigned int, 2>( argc, argv );
-        case itk::ImageIOBase::INT:
-          return DoIt<int, 2>( argc, argv );
-        case itk::ImageIOBase::ULONG:
-          return DoIt<unsigned long, 2>( argc, argv );
-        case itk::ImageIOBase::LONG:
-          return DoIt<long, 2>( argc, argv );
+//        case itk::ImageIOBase::UINT:
+//          return DoIt<unsigned int, 2>( argc, argv );
+//        case itk::ImageIOBase::INT:
+//          return DoIt<int, 2>( argc, argv );
+//        case itk::ImageIOBase::ULONG:
+//          return DoIt<unsigned long, 2>( argc, argv );
+//        case itk::ImageIOBase::LONG:
+//          return DoIt<long, 2>( argc, argv );
         case itk::ImageIOBase::FLOAT:
           return DoIt<float, 2>( argc, argv );
         case itk::ImageIOBase::DOUBLE:
           return DoIt<double, 2>( argc, argv );
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-//      default:
+      default:
           std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;
         }
@@ -112,20 +112,20 @@ int ParseArgsAndCallDoIt( std::string inputImage,
           return DoIt<unsigned short, 3>( argc, argv );
         case itk::ImageIOBase::SHORT:
           return DoIt<short, 3>( argc, argv );
-        case itk::ImageIOBase::UINT:
-          return DoIt<unsigned int, 3>( argc, argv );
-        case itk::ImageIOBase::INT:
-          return DoIt<int, 3>( argc, argv );
-        case itk::ImageIOBase::ULONG:
-          return DoIt<unsigned long, 3>( argc, argv );
-        case itk::ImageIOBase::LONG:
-          return DoIt<long, 3>( argc, argv );
+//        case itk::ImageIOBase::UINT:
+//          return DoIt<unsigned int, 3>( argc, argv );
+//        case itk::ImageIOBase::INT:
+//          return DoIt<int, 3>( argc, argv );
+//        case itk::ImageIOBase::ULONG:
+//          return DoIt<unsigned long, 3>( argc, argv );
+//        case itk::ImageIOBase::LONG:
+//          return DoIt<long, 3>( argc, argv );
         case itk::ImageIOBase::FLOAT:
           return DoIt<float, 3>( argc, argv );
         case itk::ImageIOBase::DOUBLE:
           return DoIt<double, 3>( argc, argv );
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-//      default:
+        default:
           std::cout << "unknown component type" << std::endl;
           return EXIT_FAILURE;
         }
