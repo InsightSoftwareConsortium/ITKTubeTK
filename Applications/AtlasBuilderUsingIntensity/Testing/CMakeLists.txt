@@ -51,8 +51,8 @@ MIDAS_ADD_Test( ${MODULE_NAME}-Test1
                   ${TEMP}/${MODULE_NAME}-List.txt
                   ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
                   ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
-                  --outputSize 256,256,256
-                  --outputSpacing 1,1,1 )
+                  --outputSize 128,128,128
+                  --outputSpacing 2,2,2 )
 
 #######
 # Test1-Compare
