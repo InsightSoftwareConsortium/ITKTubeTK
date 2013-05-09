@@ -378,6 +378,14 @@ class InteractiveConnectedComponentsUsingParzenPDFsWidget:
     advancedFormLayout.addRow("Reclassify Not Object Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
+    # force classification check box
+    forceClassificationCheckBox = qt.QCheckBox()
+    forceClassificationCheckBox.objectName = 'forceClassificationCheckBox'
+    forceClassificationCheckBox.toolTip = "Perform the classification of all voxels?"
+    forceClassificationCheckBox.setChecked(False)
+    advancedFormLayout.addRow("Force Classification: ", forceClassificationCheckBox)
+    self.forceClassificationCheckBox = forceClassificationCheckBox
+
     # SEGMENTATION BUTTON
     segmentCollapsibleButton = ctk.ctkCollapsibleButton()
     segmentCollapsibleButton.text = "Run Segmentation"
@@ -544,6 +552,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsWidget:
     parameters['draft'] = self.draftCheckBox.checked
     parameters['reclassifyObjectMask'] = self.reclassifyObjectMaskCheckBox.checked
     parameters['reclassifyNotObjectMask'] = self.reclassifyNotObjectMaskCheckBox.checked
+    parameters['forceClassification'] = self.forceClassificationCheckBox.checked
 
     #->> TODO additional processing here
     #->> cropping
