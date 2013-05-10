@@ -36,7 +36,7 @@ int tubeMessageTest(int argc, char* argv[] )
     std::cerr << argv[0] << std::endl;
     return EXIT_FAILURE;
     }
-  
+
   tube::Message( "This is a debug test", tube::MessageLevel::Debug );
   tube::Message( "This is a info test", tube::MessageLevel::Information );
   tube::Message( "This is a warning test", tube::MessageLevel::Warning );

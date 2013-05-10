@@ -117,7 +117,7 @@ public:
 
   //Sigma value for the outer Gaussian smoothing filter
   itkGetMacro( SigmaOuter,   RealType );
- 
+
 
 protected:
   StructureTensorRecursiveGaussianImageFilter( void );

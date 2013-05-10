@@ -32,10 +32,10 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
 
   if( argc < 12 )
     {
-    std::cerr << "Missing Parameters: " 
+    std::cerr << "Missing Parameters: "
               << argv[0]
-              << " Input_Vessel " << "Output_Vessel " 
-              << "Example_Image " << "Output_Image " 
+              << " Input_Vessel " << "Output_Vessel "
+              << "Example_Image " << "Output_Image "
               << "R1 R2 R3 T1 T2 T3 Write_Image_Flag"
               << std::endl;
     return EXIT_FAILURE;
@@ -43,14 +43,14 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
 
   typedef itk::GroupSpatialObject<3>                      TubeNetType;
   typedef itk::SpatialObjectReader<3>                     TubeNetReaderType;
-  typedef itk::SpatialObjectWriter<3>                     TubeNetWriterType;  
-  typedef itk::Euler3DTransform<double>                   TransformType; 
+  typedef itk::SpatialObjectWriter<3>                     TubeNetWriterType;
+  typedef itk::Euler3DTransform<double>                   TransformType;
   typedef itk::TubeToTubeTransformFilter<TransformType,3> TubeTransformFilterType;
 
   // read in vessel
   TubeNetReaderType::Pointer reader = TubeNetReaderType::New();
   reader->SetFileName(argv[1]);
-  
+
   try
     {
     reader->Update();
@@ -102,7 +102,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
   std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
   std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;
   std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1) << " " << rotationMatrix(2,2) << std::endl;
-  
+
   //transform->SetRotation(rotation[0], rotation[1], rotation[2]);
 
   transform->Translate(translation);
@@ -115,7 +115,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
   transformFilter->SetInput(reader->GetGroup());
   transformFilter->SetScale(1.0);
   transformFilter->SetTransform(transform);
-  
+
   try
     {
     transformFilter->Update();
@@ -125,7 +125,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
     std::cerr << "Exception caught: " << err << std::endl;
     return EXIT_FAILURE;
     }
-  
+
   // write vessel
   TubeNetWriterType::Pointer writer = TubeNetWriterType::New();
   writer->SetFileName(argv[2]);
@@ -152,9 +152,9 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
     imageReader->SetFileName(argv[3]);
     imageReader->Update();
 
-    typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType> 
+    typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
                                                 SpatialObjectToImageFilterType;
-    SpatialObjectToImageFilterType::Pointer vesselToImageFilter = 
+    SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
       SpatialObjectToImageFilterType::New();
 
     vesselToImageFilter->SetInput(transformFilter->GetOutput());
@@ -165,7 +165,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
     vesselToImageFilter->SetInsideValue(1.0);
     vesselToImageFilter->SetOutsideValue(0.0);
     vesselToImageFilter->Update();
-    
+
     ImageWriterType::Pointer imageWriter = ImageWriterType::New();
     imageWriter->SetFileName(argv[4]);
     imageWriter->SetUseCompression( true );

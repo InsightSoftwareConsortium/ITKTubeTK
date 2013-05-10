@@ -58,7 +58,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
   m_TensorComponentSmoothingFilter->SetOrder( GaussianFilterType::ZeroOrder );
   m_TensorComponentSmoothingFilter->SetNormalizeAcrossScale( m_NormalizeAcrossScale );
   //m_TensorComponentSmoothingFilter->ReleaseDataFlagOn();
- 
+
   m_DerivativeFilter = DerivativeFilterType::New();
   m_DerivativeFilter->SetOrder( DerivativeFilterType::FirstOrder );
   m_DerivativeFilter->SetNormalizeAcrossScale( m_NormalizeAcrossScale );
@@ -293,7 +293,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
   //Finally, smooth the outer product components
   typedef typename itk::Image<InternalRealType, ImageDimension> ComponentImageType;
-    
+
   for(unsigned int i =0; i < numberTensorElements; i++)
     {
     typename ComponentImageType::Pointer componentImage = ComponentImageType::New();
@@ -301,13 +301,13 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     componentImage->SetBufferedRegion( inputImage->GetBufferedRegion() );
     componentImage->SetRequestedRegion( inputImage->GetRequestedRegion() );
     componentImage->Allocate();
-    
+
     ImageRegionIteratorWithIndex< ComponentImageType >
               compit(
                     componentImage,
                     componentImage->GetRequestedRegion()
                     );
-    
+
     ottensor.GoToBegin();
     compit.GoToBegin();
     while( !compit.IsAtEnd() )
@@ -316,14 +316,14 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
       ++compit;
       ++ottensor;
       }
-    
+
     m_TensorComponentSmoothingFilter->SetInput(componentImage);
     m_TensorComponentSmoothingFilter->Update();
-    
+
     ImageRegionIteratorWithIndex< ComponentImageType >
     smoothedCompIt( m_TensorComponentSmoothingFilter->GetOutput(),
                     m_TensorComponentSmoothingFilter->GetOutput()->GetRequestedRegion());
-    
+
     ottensor.GoToBegin();
     smoothedCompIt.GoToBegin();
 
@@ -333,7 +333,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
       ++smoothedCompIt;
       ++ottensor;
       }
-    
+
     }
 }
 

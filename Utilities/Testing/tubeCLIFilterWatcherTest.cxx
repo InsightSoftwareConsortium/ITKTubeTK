@@ -71,7 +71,7 @@ int tubeCLIFilterWatcherTest(int argc, char* argv[] )
   CLPProcessInfo.SetProgressCallback( testCallbackFunction, NULL );
   tube::CLIFilterWatcher watcher( filter, "RecursiveGaussianFilter",
                                   &CLPProcessInfo );
-  
+
   filter->Update();
 
   return EXIT_SUCCESS;
