@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __qSlicerSpatialObjectsWidget_h
 #define __qSlicerSpatialObjectsWidget_h
 

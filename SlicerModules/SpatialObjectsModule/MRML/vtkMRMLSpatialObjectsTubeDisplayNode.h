@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 /// vtkMRMLSpatialObjectsTubeDisplayNode -
 /// MRML node to represent display properties for spatial objects.
 ///

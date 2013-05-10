@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __itkObjectDocumentToImageFilter_h
 #define __itkObjectDocumentToImageFilter_h
 

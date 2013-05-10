@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __tubeShortestPathKernel_h
 #define __tubeShortestPathKernel_h
 

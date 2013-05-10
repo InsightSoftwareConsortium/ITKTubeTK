@@ -25,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRidgeExtractor_txx
 #define __itkTubeRidgeExtractor_txx
 

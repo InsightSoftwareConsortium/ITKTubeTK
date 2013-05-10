@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #include "itkImage.h"
 #include "itkImageFileWriter.h"
 #include "itkStatisticsImageFilter.h"

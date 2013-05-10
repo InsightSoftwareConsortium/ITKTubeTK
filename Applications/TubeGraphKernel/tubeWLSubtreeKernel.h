@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __tubeWLSubtreeKernel_h
 #define __tubeWLSubtreeKernel_h
 

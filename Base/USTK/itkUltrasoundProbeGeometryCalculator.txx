@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkUltrasoundProbeGeometryCalculator_txx
 #define __itkUltrasoundProbeGeometryCalculator_txx
 

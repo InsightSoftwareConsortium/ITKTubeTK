@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __itkDocument_h
 #define __itkDocument_h
 

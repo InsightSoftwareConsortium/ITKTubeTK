@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusionTensorImageFilter_h
 #define __itkAnisotropicDiffusionTensorImageFilter_h
 
