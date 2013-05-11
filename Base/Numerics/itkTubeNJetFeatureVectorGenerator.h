@@ -80,10 +80,10 @@ public:
   void SetSecondScales( const NJetScalesType & scales );
   void SetRidgeScales( const NJetScalesType & scales );
 
-  NJetScalesType & GetZeroScales( void ) const;
-  NJetScalesType & GetFirstScales( void ) const;
-  NJetScalesType & GetSecondScales( void ) const;
-  NJetScalesType & GetRidgeScales( void ) const;
+  const NJetScalesType & GetZeroScales( void ) const;
+  const NJetScalesType & GetFirstScales( void ) const;
+  const NJetScalesType & GetSecondScales( void ) const;
+  const NJetScalesType & GetRidgeScales( void ) const;
 
   void SetForceOrientationInsensitivity( bool _forceOrientation );
   bool GetForceOrientationInsensitivity( void ) const;

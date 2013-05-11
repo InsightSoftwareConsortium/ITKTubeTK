@@ -38,21 +38,19 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT, class LabelmapT >
+template< class ImageT >
 class RidgeFeatureVectorGenerator :
-  public FeatureVectorGenerator< itk::Image< float,
-    ImageT::ImageDimension >, LabelmapT >
+  public FeatureVectorGenerator<
+    Image< typename ImageT::PixelType, ImageT::ImageDimension > >
 {
 public:
 
-  typedef RidgeFeatureVectorGenerator                Self;
-  typedef FeatureVectorGenerator< ImageT, LabelmapT >    Superclass;
-
+  typedef RidgeFeatureVectorGenerator          Self;
+  typedef FeatureVectorGenerator< ImageT >     Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( RidgeFeatureVectorGenerator,
-    FeatureVectorGenerator );
+  itkTypeMacro( RidgeFeatureVectorGenerator, FeatureVectorGenerator );
 
   itkNewMacro( Self );
 
@@ -62,30 +60,35 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef typename Superclass::MaskImageType         MaskImageType;
+  typedef typename Superclass::FeatureValueType      FeatureValueType;
 
-  typedef typename Superclass::FeatureType           FeatureType;
   typedef typename Superclass::FeatureVectorType     FeatureVectorType;
+
+  typedef typename Superclass::ImageType             ImageType;
+
+  typedef typename Superclass::IndexType             IndexType;
 
   typedef std::vector< double >                      RidgeScalesType;
 
   //
   // Methods
   //
-  virtual unsigned int GetNumberOfFeatures( void );
+  virtual unsigned int GetNumberOfFeatures( void ) const;
 
   void SetIntensityRange( float intensityMin, float intensityMax );
-  float GetIntensityMin( void );
-  float GetIntensityMax( void );
+  float GetIntensityMin( void ) const;
+  float GetIntensityMax( void ) const;
 
   void SetIntensityRangeByPercentile( float percentile,
     bool findBrightPoints=true );
 
   void SetScales( const RidgeScalesType & scales );
+  const RidgeScalesType & GetScales( void ) const;
 
-  RidgeScalesType & GetScales( void );
+  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const;
 
-  FeatureVectorType GetFeatureVector( IndexType indx );
+  virtual FeatureValueType GetFeatureVectorValue( const IndexType & indx,
+    unsigned int fNum ) const;
 
 protected:
 
@@ -104,6 +107,7 @@ private:
   double                             m_IntensityMax;
 
   RidgeScalesType                    m_Scales;
+
 };
 
 }

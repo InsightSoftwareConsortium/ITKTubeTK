@@ -31,6 +31,8 @@ limitations under the License.
 #include "itkTubeNJetImageFunction.h"
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeNJetFeatureVectorGenerator.h"
+#include "itkTubeBasisFeatureVectorGenerator.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 #include "tubeMatrixMath.h"

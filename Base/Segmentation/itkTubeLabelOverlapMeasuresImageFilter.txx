@@ -58,13 +58,13 @@ LabelOverlapMeasuresImageFilter<TLabelImage>
   Superclass::GenerateInputRequestedRegion();
   if( this->GetSourceImage() )
     {
-    LabelImagePointer source = const_cast
+    typename LabelImageType::Pointer source = const_cast
       <LabelImageType *>( this->GetSourceImage() );
     source->SetRequestedRegionToLargestPossibleRegion();
     }
   if( this->GetTargetImage() )
     {
-    LabelImagePointer target = const_cast
+    typename LabelImageType::Pointer target = const_cast
       <LabelImageType *>( this->GetTargetImage() );
     target->SetRequestedRegionToLargestPossibleRegion();
     }

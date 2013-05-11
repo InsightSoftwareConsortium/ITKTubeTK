@@ -59,15 +59,13 @@ public:
   itkTypeMacro( LabelOverlapMeasuresImageFilter, ImageToImageFilter );
 
   /** Image related typedefs. */
-  typedef TLabelImage                                   LabelImageType;
-  typedef typename TLabelImage::Pointer                 LabelImagePointer;
-  typedef typename TLabelImage::ConstPointer            LabelImageConstPointer;
+  typedef TLabelImage                              LabelImageType;
 
-  typedef typename TLabelImage::RegionType              RegionType;
-  typedef typename TLabelImage::SizeType                SizeType;
-  typedef typename TLabelImage::IndexType               IndexType;
+  typedef typename TLabelImage::RegionType         RegionType;
+  typedef typename TLabelImage::SizeType           SizeType;
+  typedef typename TLabelImage::IndexType          IndexType;
 
-  typedef typename TLabelImage::PixelType               LabelType;
+  typedef typename TLabelImage::PixelType          LabelType;
 
   /** Type to use form computations. */
   typedef typename NumericTraits<LabelType>::RealType RealType;

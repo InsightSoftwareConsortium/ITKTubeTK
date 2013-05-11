@@ -299,7 +299,7 @@ NJetFeatureVectorGenerator< ImageT >
 }
 
 template < class ImageT >
-std::vector< double > &
+const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetZeroScales( void ) const
 {
@@ -307,7 +307,7 @@ NJetFeatureVectorGenerator< ImageT >
 }
 
 template < class ImageT >
-std::vector< double > &
+const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetFirstScales( void ) const
 {
@@ -315,7 +315,7 @@ NJetFeatureVectorGenerator< ImageT >
 }
 
 template < class ImageT >
-std::vector< double > &
+const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetSecondScales( void ) const
 {
@@ -323,7 +323,7 @@ NJetFeatureVectorGenerator< ImageT >
 }
 
 template < class ImageT >
-std::vector< double > &
+const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetRidgeScales( void ) const
 {

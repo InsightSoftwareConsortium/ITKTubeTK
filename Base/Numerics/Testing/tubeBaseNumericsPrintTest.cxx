@@ -30,8 +30,10 @@ limitations under the License.
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
 #include "itkTubeBlurImageFunction.h"
-#include "itkTubeNJetFeatureVectorGenerator.h"
 #include "itkTubeNJetImageFunction.h"
+#include "itkTubeNJetFeatureVectorGenerator.h"
+#include "itkTubeBasisFeatureVectorGenerator.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 
@@ -70,6 +72,19 @@ int tubeBaseNumericsPrintTest( int, char* [] )
     itk::tube::NJetFeatureVectorGenerator< ImageType >::New();
   std::cout << "-------------NJetFeatureVectorGenerator"
     << njetFeatureVectorGenerator << std::endl;
+
+  itk::tube::BasisFeatureVectorGenerator< ImageType, ImageType >::Pointer
+    basisFeatureVectorGenerator =
+    itk::tube::BasisFeatureVectorGenerator< ImageType, ImageType >::New();
+  std::cout << "-------------BasisFeatureVectorGenerator"
+    << basisFeatureVectorGenerator << std::endl;
+
+  itk::tube::RidgeFeatureVectorGenerator< ImageType >::Pointer
+    ridgeFeatureVectorGenerator =
+    itk::tube::RidgeFeatureVectorGenerator< ImageType >::New();
+  std::cout << "-------------RidgeFeatureVectorGenerator"
+    << ridgeFeatureVectorGenerator << std::endl;
+
 
   itk::Statistics::VectorImageToListGenerator< VectorImageType,
       ImageType >::Pointer

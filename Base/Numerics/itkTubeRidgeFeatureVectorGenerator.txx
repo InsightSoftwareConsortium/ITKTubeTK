@@ -44,149 +44,185 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT, class LabelmapT >
-RidgeFeatureVectorGenerator< ImageT, LabelmapT >
+template< class ImageT >
+RidgeFeatureVectorGenerator< ImageT >
 ::RidgeFeatureVectorGenerator()
 {
   m_Scales.resize( 0 );
 }
 
-template< class ImageT, class LabelmapT >
-RidgeFeatureVectorGenerator< ImageT, LabelmapT >
+template< class ImageT >
+RidgeFeatureVectorGenerator< ImageT >
 ::~RidgeFeatureVectorGenerator()
 {
 }
 
-template < class ImageT, class LabelmapT >
+template < class ImageT >
 unsigned int
-RidgeFeatureVectorGenerator< ImageT, LabelmapT >
-::GetNumberOfFeatures( void )
+RidgeFeatureVectorGenerator< ImageT >
+::GetNumberOfFeatures( void ) const
 {
-  unsigned int numFeatures = m_Scales.size() * 5 + 9;
+  unsigned int numFeatures = m_Scales.size() * 5 + 8;
 
   return numFeatures;
 }
 
-template < class ImageT, class LabelmapT >
-FeatureVectorType
-RidgeFeatureVectorGenerator< ImageT, LabelmapT >
-::GetFeatureVector( IndexType indx )
+template < class ImageT >
+typename RidgeFeatureVectorGenerator< ImageT >::FeatureVectorType
+RidgeFeatureVectorGenerator< ImageT >
+::GetFeatureVector( const IndexType & indx ) const
 {
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  this->m_FeatureVector.resize( numFeatures );
+  FeatureVectorType fv;
+  fv.set_size( numFeatures );
 
-  typedef NJetImageFunction< RidgeImageType > NJetFunctionType;
+  typedef NJetImageFunction< ImageType > NJetFunctionType;
   typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
   typename NJetFunctionType::VectorType v;
   typename NJetFunctionType::MatrixType m;
-  njet->SetInputImage( this->m_InputImage[0] );
+  njet->SetInputImage( this->m_InputImageList[0] );
 
-  ProgressReporter progress( this, 0,
-    m_RidgeImage->GetLargestPossibleRegion().GetNumberOfPixels()*2, 100 );
+  unsigned int fcount = 0;
+  double extremeScale = 0;
+  double extremeIntensity = 0;
+  double extremeRidgeness = 0;
+  double extremeRoundness = 0;
+  double extremeLevelness = 0;
+  double extremeCurvature = 0;
+  typename NJetFunctionType::VectorType extremeTangent;
+  extremeTangent.Fill( 0 );
+  for( unsigned int s=0; s<m_Scales.size(); s++ )
+    {
+    double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
+    fv[ fcount++ ] = njet->GetMostRecentIntensity();
+    fv[ fcount++ ] = ridgeness;
+    fv[ fcount++ ] = njet->GetMostRecentRidgeRoundness();
+    fv[ fcount++ ] = njet->GetMostRecentRidgeLevelness();
+    fv[ fcount++ ] = njet->GetMostRecentRidgeCurvature();
+    if( s == 0 || ridgeness > extremeRidgeness )
+      {
+      extremeScale = m_Scales[s];
+      extremeIntensity = njet->GetMostRecentIntensity();
+      extremeRidgeness = ridgeness;
+      extremeRoundness = njet->GetMostRecentRidgeRoundness();
+      extremeLevelness = njet->GetMostRecentRidgeLevelness();
+      extremeCurvature = njet->GetMostRecentRidgeCurvature();
+      extremeTangent = njet->GetMostRecentRidgeTangent();
+      }
+    }
+  fv[ fcount++ ] = extremeScale;
+  fv[ fcount++ ] = extremeIntensity;
+  fv[ fcount++ ] = extremeRidgeness;
+  fv[ fcount++ ] = extremeRoundness;
+  fv[ fcount++ ] = extremeLevelness;
+  fv[ fcount++ ] = extremeCurvature;
+  typename ImageType::IndexType indx2 = indx;
+  typename NJetFunctionType::VectorType t;
+  typename NJetFunctionType::VectorType t2;
+  indx2[0] = indx[0] + vnl_math_rnd( extremeScale *
+    extremeTangent[0] );
+  indx2[1] = indx[1] + vnl_math_rnd( extremeScale *
+    extremeTangent[1] );
+  if( ImageDimension > 2 )
+    {
+    indx2[2] = indx[2] + vnl_math_rnd( extremeScale *
+      extremeTangent[2] );
+    }
+  double intensity = extremeIntensity;
+  if( this->m_InputImageList[ 0 ]
+    ->GetLargestPossibleRegion().IsInside( indx2 ) )
+    {
+    intensity = njet->EvaluateAtIndex( indx2, extremeScale );
+    }
+  fv[ fcount++ ] = intensity;
 
-        unsigned int fcount = 0;
-        double extremeScale = 0;
-        double extremeIntensity = 0;
-        double extremeRidgeness = 0;
-        double extremeRoundness = 0;
-        double extremeLevelness = 0;
-        double extremeCurvature = 0;
-        typename NJetFunctionType::VectorType extremeTangent;
-        extremeTangent.Fill( 0 );
-        for( unsigned int s=0; s<m_Scales.size(); s++ )
-          {
-          double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentIntensity() );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            ridgeness );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentRidgeRoundness() );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentRidgeLevelness() );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentRidgeCurvature() );
-          if( s == 0 || ridgeness > extremeRidgeness )
-            {
-            extremeScale = m_Scales[s];
-            extremeIntensity = njet->GetMostRecentIntensity();
-            extremeRidgeness = ridgeness;
-            extremeRoundness = njet->GetMostRecentRidgeRoundness();
-            extremeLevelness = njet->GetMostRecentRidgeLevelness();
-            extremeCurvature = njet->GetMostRecentRidgeCurvature();
-            extremeTangent = njet->GetMostRecentRidgeTangent();
-            }
-          }
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          extremeScale );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          extremeIntensity );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          extremeRidgeness );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          extremeRoundness );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          extremeLevelness );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          extremeCurvature );
-        typename RidgeImageType::IndexType indx2 = indx;
-        typename NJetFunctionType::VectorType t;
-        typename NJetFunctionType::VectorType t2;
-        indx2[0] = indx[0] + vnl_math_rnd( extremeScale *
-          extremeTangent[0] );
-        indx2[1] = indx[1] + vnl_math_rnd( extremeScale *
-          extremeTangent[1] );
-        if( ImageDimension > 2 )
-          {
-          indx2[2] = indx[2] + vnl_math_rnd( extremeScale *
-            extremeTangent[2] );
-          }
-        double intensity = extremeIntensity;
-        if( this->m_FeatureImageList[ 0 ]
-          ->GetLargestPossibleRegion().IsInside( indx2 ) )
-          {
-          intensity = njet->EvaluateAtIndex( indx2, extremeScale );
-          }
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, intensity );
+  indx2[0] = indx[0] - vnl_math_rnd( extremeScale *
+    extremeTangent[0] );
+  indx2[1] = indx[1] - vnl_math_rnd( extremeScale *
+    extremeTangent[1] );
+  if( ImageDimension > 2 )
+    {
+    indx2[2] = indx[2] - vnl_math_rnd( extremeScale *
+      extremeTangent[2] );
+    }
+  intensity = extremeIntensity;
+  if( this->m_InputImageList[ 0 ]
+    ->GetLargestPossibleRegion().IsInside( indx2 ) )
+    {
+    intensity = njet->EvaluateAtIndex( indx2, extremeScale );
+    }
+  fv[ fcount++ ] = intensity;
 
-        indx2[0] = indx[0] - vnl_math_rnd( extremeScale *
-          extremeTangent[0] );
-        indx2[1] = indx[1] - vnl_math_rnd( extremeScale *
-          extremeTangent[1] );
-        if( ImageDimension > 2 )
-          {
-          indx2[2] = indx[2] - vnl_math_rnd( extremeScale *
-            extremeTangent[2] );
-          }
-        intensity = extremeIntensity;
-        if( this->m_FeatureImageList[ 0 ]
-          ->GetLargestPossibleRegion().IsInside( indx2 ) )
-          {
-          intensity = njet->EvaluateAtIndex( indx2, extremeScale );
-          }
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, intensity );
+  return fv;
 }
 
-template < class ImageT, class LabelmapT >
+template < class ImageT >
+typename RidgeFeatureVectorGenerator< ImageT >::FeatureValueType
+RidgeFeatureVectorGenerator< ImageT >
+::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
+{
+  unsigned int numFeatures = this->GetNumberOfFeatures();
+
+  if( fNum < numFeatures - 8 )
+    {
+    typedef NJetImageFunction< ImageType > NJetFunctionType;
+    typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
+    typename NJetFunctionType::VectorType v;
+    typename NJetFunctionType::MatrixType m;
+    njet->SetInputImage( this->m_InputImageList[0] );
+
+    unsigned int fcount = 0;
+    for( unsigned int s=0; s<m_Scales.size(); s++ )
+      {
+      double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
+      if( fcount++ == fNum )
+        {
+        return njet->GetMostRecentIntensity();
+        }
+      if( fcount++ == fNum )
+        {
+        return ridgeness;
+        }
+      if( fcount++ == fNum )
+        {
+        return njet->GetMostRecentRidgeRoundness();
+        }
+      if( fcount++ == fNum )
+        {
+        return njet->GetMostRecentRidgeLevelness();
+        }
+      if( fcount++ == fNum )
+        {
+        return njet->GetMostRecentRidgeCurvature();
+        }
+      }
+    }
+  else
+    {
+    return this->GetFeatureVector( indx )[fNum];
+    }
+}
+
+template < class ImageT >
 void
-RidgeFeatureVectorGenerator< ImageT, LabelmapT >
+RidgeFeatureVectorGenerator< ImageT >
 ::SetScales( const RidgeScalesType & scales )
 {
   m_Scales = scales;
 }
 
-template < class ImageT, class LabelmapT >
-std::vector< double > &
-RidgeFeatureVectorGenerator< ImageT, LabelmapT >
-::GetScales( void )
+template < class ImageT >
+const std::vector< double > &
+RidgeFeatureVectorGenerator< ImageT >
+::GetScales( void ) const
 {
   return m_Scales;
 }
 
-template <class ImageT, class LabelmapT >
+template <class ImageT >
 void
-RidgeFeatureVectorGenerator< ImageT, LabelmapT >
+RidgeFeatureVectorGenerator< ImageT >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

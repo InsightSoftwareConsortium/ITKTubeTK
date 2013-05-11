@@ -50,6 +50,8 @@ set( tubeBaseNumerics_SRCS
   itkTubeBlurImageFunctionTest.cxx
   itkTubeNJetFeatureVectorGeneratorTest.cxx
   itkTubeNJetBasisFeatureVectorGeneratorTest.cxx
+  itkTubeRidgeFeatureVectorGeneratorTest.cxx
+  itkTubeRidgeBasisFeatureVectorGeneratorTest.cxx
   itkVotingResampleImageFunctionTest.cxx
   tubeMatrixMathTest.cxx
   tubeOptBrentNDTest.cxx
@@ -288,4 +290,26 @@ MIDAS_ADD_TEST( itkTubeNJetBasisFeatureVectorGeneratorTest
     255 0
     ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
     ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda1.mha
+  )
+
+  #--compare MIDAS{itkTubeRidgeFeatureVectorGeneratorTest_f0.mha.md5}
+            #${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f0.mha
+MIDAS_ADD_TEST( itkTubeRidgeFeatureVectorGeneratorTest
+  ${BASE_NUMERICS_TESTS}
+  itkTubeRidgeFeatureVectorGeneratorTest
+    MIDAS{im0001.crop.contrast.mha.md5}
+    ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f0.mha
+    ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f1.mha
+  )
+
+  #--compare MIDAS{itkTubeRidgeBasisFeatureVectorGeneratorTest_lda0.mha.md5}
+            #${TEMP}/itkTubeRidgeBasisFeatureVectorGeneratorTest_lda0.mha
+MIDAS_ADD_TEST( itkTubeRidgeBasisFeatureVectorGeneratorTest
+  ${BASE_NUMERICS_TESTS}
+  itkTubeRidgeBasisFeatureVectorGeneratorTest
+    MIDAS{im0001.crop.contrast.mha.md5}
+    MIDAS{im0001.vk.mask.crop.mha.md5}
+    255 127
+    ${TEMP}/itkTubeRidgeBasisFeatureVectorGeneratorTest_lda0.mha
+    ${TEMP}/itkTubeRidgeBasisFeatureVectorGeneratorTest_lda1.mha
   )
