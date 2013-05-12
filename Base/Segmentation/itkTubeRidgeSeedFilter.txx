@@ -406,6 +406,8 @@ RidgeSeedGenerator< ImageT, LabelmapT >
   Superclass::PrintSelf( os, indent );
 
   os << indent << "Scales.size() = " << m_Scales.size() << std::endl;
+  os << indent << "IntensityMin = " << m_IntensityMin << std::endl;
+  os << indent << "IntensityMax = " << m_IntensityMax << std::endl;
 }
 
 }
