@@ -91,17 +91,17 @@ public:
 
   /** Set the "outside" pixel value. The default value
    * NumericTraits<OutputPixelType>::Zero. */
-  itkSetMacro( OutsideValue,OutputPixelType );
+  itkSetMacro( OutsideValue, OutputPixelType );
 
   /** Get the "outside" pixel value. */
-  itkGetConstMacro( OutsideValue,OutputPixelType );
+  itkGetConstMacro( OutsideValue, OutputPixelType );
 
   /** Set the "inside" pixel value. The default value
    * NumericTraits<OutputPixelType>::max() */
-  itkSetMacro( InsideValue,OutputPixelType );
+  itkSetMacro( InsideValue, OutputPixelType );
 
   /** Get the "inside" pixel value. */
-  itkGetConstMacro( InsideValue,OutputPixelType );
+  itkGetConstMacro( InsideValue, OutputPixelType );
 
   /** Set/Get the number of histogram bins. Defaults is 128. */
   itkSetClampMacro( NumberOfHistogramBins, unsigned long, 1,
@@ -109,7 +109,7 @@ public:
   itkGetConstMacro( NumberOfHistogramBins, unsigned long );
 
   /** Get the computed threshold. */
-  itkGetConstMacro( Threshold,InputPixelType );
+  itkGetConstMacro( Threshold, InputPixelType );
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
