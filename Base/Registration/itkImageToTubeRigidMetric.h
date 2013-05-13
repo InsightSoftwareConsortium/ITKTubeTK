@@ -204,6 +204,10 @@ private:
     const InternalComputationValueType scale,
     const OutputPointType & currentPoint ) const;
 
+  /**
+   * \warning User is responsible for freeing the list, but not the elements
+   * of the list.
+   */
   typename TubeNetType::ChildrenListType* GetTubes( void ) const;
 
   ImageToTubeRigidMetric( const Self& ); // purposely not implemented

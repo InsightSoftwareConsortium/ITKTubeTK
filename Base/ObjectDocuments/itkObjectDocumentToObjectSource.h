@@ -160,7 +160,7 @@ private:
 
 } // End namespace tube
 
-} // End namespace itk`
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkObjectDocumentToObjectSource.txx"

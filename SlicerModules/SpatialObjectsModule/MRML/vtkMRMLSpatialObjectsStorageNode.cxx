@@ -282,6 +282,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
 
       spatialObjectsNode->SetAndObservePolyData(vesselsPD.GetPointer());
       spatialObjectsNode->SetSpatialObject(reader->GetGroup());
+      delete tubeList;
     }
   }
   catch(...)

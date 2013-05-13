@@ -76,6 +76,7 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
   if( numTubes != 2 )
     {
     std::cerr << "Wrong number of tubes" << std::endl;
+    delete tubeList;
     return EXIT_FAILURE;
     }
 

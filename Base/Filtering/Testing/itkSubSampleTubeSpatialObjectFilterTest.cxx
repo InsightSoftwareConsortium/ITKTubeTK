@@ -89,6 +89,7 @@ int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv[] )
       catch( itk::ExceptionObject & error )
         {
         std::cerr << "Error: " << error << std::endl;
+        delete children;
         return EXIT_FAILURE;
         }
       output->AddSpatialObject( subSampleFilter->GetOutput() );
@@ -107,10 +108,10 @@ int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv[] )
   catch( itk::ExceptionObject & error )
     {
     std::cerr << "Error: " << error << std::endl;
+    delete children;
     return EXIT_FAILURE;
     }
 
   delete children;
-
   return EXIT_SUCCESS;
 }
