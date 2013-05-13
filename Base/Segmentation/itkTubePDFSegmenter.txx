@@ -67,7 +67,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
   m_ImagesUpToDate = false;
 
   m_InClassList.clear();
-  m_OutList = NULL;
+  m_OutList  = NULL;
+  m_VoidList = NULL;
 
   m_InClassHisto.clear();
   m_OutHisto = NULL;
@@ -282,7 +283,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
     {
     m_InClassList[c] = ListSampleType::New();
     }
-  m_OutList = ListSampleType::New();
+  m_OutList  = ListSampleType::New();
+  m_VoidList = ListSampleType::New();
 
   itk::TimeProbesCollectorBase timeCollector;
 
@@ -328,6 +330,19 @@ PDFSegmenter< ImageT, N, LabelmapT >
         break;
         }
       }
+    if ( val == m_VoidId )
+      {
+      found = true;
+      for( unsigned int i=0; i<N; i++ )
+        {
+        v[i] = static_cast< PixelType >( itInIm[i]->Get() );
+        }
+      for (unsigned int i=0; i<ImageDimension; i++ )
+        {
+        v[N+i] = indx[i];
+        }
+      m_VoidList->PushBack(v);
+      }
     if( !found && itInMask.Get() != m_VoidId )
       {
       for( unsigned int i=0; i<N; i++ )
@@ -358,7 +373,8 @@ PDFSegmenter< ImageT, N, LabelmapT >
     std::cout << "  size = " << m_InClassList[i]->Size() << std::endl;
     }
   std::cout << "VoidId = " << m_VoidId << std::endl;
-  std::cout << "  size = " << m_OutList->Size() << std::endl;
+  std::cout << "  size = " << m_VoidList->Size() << std::endl;
+  std::cout << "NotObjectId size = " << m_OutList->Size() << std::endl;
   for( unsigned int i=0; i<N; i++ )
     {
     delete itInIm[i];

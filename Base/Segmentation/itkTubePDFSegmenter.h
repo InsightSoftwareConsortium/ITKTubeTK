@@ -182,6 +182,7 @@ private:
 
   ClassListSampleType                      m_InClassList;
   typename ListSampleType::Pointer         m_OutList;
+  typename ListSampleType::Pointer         m_VoidList;
 
   ClassHistogramImageType                  m_InClassHisto;
   typename HistogramImageType::Pointer     m_OutHisto;
