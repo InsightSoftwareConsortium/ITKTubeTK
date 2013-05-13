@@ -1047,9 +1047,17 @@ PDFSegmenter< ImageT, N, LabelmapT >
             inClassListIt.GetMeasurementVector()[N+i] );
           }
         insideConnecter->AddSeed( indx );
+        // The pixels with maximum probability for the current
+        // class are all set to 128 before the update of the
+        // ConnectedThresholdImageFilter, so if the input label
+        // map is not to be reclassified, set the pixels belonging
+        // to this class to 128 before updating the filter regardless
+        // of the probability.  Setting input labels to 255 before the update
+        // of the ConnectedThresholdFilter will cause the filter to
+        // return only the values at 255 (the input label map).
         if( !m_ReclassifyObjectMask )
           {
-          tmpLabelImage->SetPixel( indx, 255 );
+          tmpLabelImage->SetPixel( indx, 128 );
           }
         ++inClassListIt;
         }
