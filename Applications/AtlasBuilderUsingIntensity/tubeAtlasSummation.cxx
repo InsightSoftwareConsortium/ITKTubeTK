@@ -33,10 +33,10 @@ namespace tube
 AtlasSummation
 ::AtlasSummation( void )
 {
-  m_isStdDeviation = true;
-  m_isProcessing = false;
+  m_UseStdDeviation = true;
+  m_IsProcessing = false;
 
-  m_meanBuilder = RobustMeanBuilderType::New();
+  m_MeanBuilder = RobustMeanBuilderType::New();
 
   m_AdjustResampledImageSize    = false;
   m_AdjustResampledImageOrigin  = false;
@@ -44,16 +44,16 @@ AtlasSummation
   m_OutputSize.Fill(256);
   m_OutputSpacing.Fill(1);
   m_OutputOrigin.Fill(0);
-  m_OutSizeSet    = false;
-  m_OutSpacingSet = false;
-  m_OutOriginSet  = false;
+  m_OutputSizeSet    = false;
+  m_OutputSpacingSet = false;
+  m_OutputOriginSet  = false;
 
   m_ImageCountThreshold = 1; // Must be > than 0.
 
-  m_image_number = 0;
-  m_numOfImages  = 0;  // Variable used for median calculations
-  TMedianDefaultPixelValue = itk::NumericTraits<InputPixelType>::max();
-  count = 0;
+  m_ImageNumber = 0;
+  m_NumOfImages  = 0;  // Variable used for median calculations
+  m_MedianDefaultPixelValue = itk::NumericTraits<InputPixelType>::max();
+  m_Count = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,48 +84,48 @@ void AtlasSummation
     SizeType inputSize = image->GetLargestPossibleRegion().GetSize();
 
     // Did we not start processing
-    if( !m_isProcessing )
+    if( !m_IsProcessing )
       {
       Start( image ); // Make sure m_image_nr is reset to 0
-      m_meanBuilder->AddImage(image); // Actually add the image
-      m_isProcessing = true; // Now, processing has started
-      ++m_image_number;
+      m_MeanBuilder->AddImage(image); // Actually add the image
+      m_IsProcessing = true; // Now, processing has started
+      ++m_ImageNumber;
       return;
       }
     else if( UpdateOutputSizeParameter( inputSize ) )
       {
       ::tube::DebugMessage("Updating output image size!");
-      m_meanBuilder->UpdateOutputImageSize( inputSize );
+      m_MeanBuilder->UpdateOutputImageSize( inputSize );
       }
 
     TransformPointer identity = TransformType::New();
     identity->SetIdentity();
     image2 = TransformInputImage( image, identity,
-      m_meanBuilder->GetOutputSize(),
-      m_meanBuilder->GetOutputSpacing(),
-      m_meanBuilder->GetOutputOrigin() );
+      m_MeanBuilder->GetOutputSize(),
+      m_MeanBuilder->GetOutputSpacing(),
+      m_MeanBuilder->GetOutputOrigin() );
     }
   else // No adjustments or resampling
     {
-    if(!m_isProcessing)
+    if(!m_IsProcessing)
       {
       Start( image );
-      m_meanBuilder->AddImage(image);
-      m_isProcessing = true;
-      ++m_image_number;
+      m_MeanBuilder->AddImage(image);
+      m_IsProcessing = true;
+      ++m_ImageNumber;
       return;
       }
     else
       {
       image2 = TransformInputImage( image, t,
-        m_meanBuilder->GetOutputSize(),
-        m_meanBuilder->GetOutputSpacing(),
-        m_meanBuilder->GetOutputOrigin() );
+        m_MeanBuilder->GetOutputSize(),
+        m_MeanBuilder->GetOutputSpacing(),
+        m_MeanBuilder->GetOutputOrigin() );
       }
     }
 
-  m_meanBuilder->AddImage( image2 );
-  ++m_image_number;
+  m_MeanBuilder->AddImage( image2 );
+  ++m_ImageNumber;
 }
 
 
@@ -168,7 +168,7 @@ AtlasSummation::InputImagePointer AtlasSummation
 void AtlasSummation
 ::Start( InputImageType::Pointer )
 {
-  m_image_number = 0;
+  m_ImageNumber = 0;
 }
 
 
@@ -227,7 +227,7 @@ AtlasSummation::InputImagePointer AtlasSummation
 bool AtlasSummation
 ::UpdateOutputSizeParameter( SizeType& inputSize )
 {
-  SizeType outputSize = m_meanBuilder->GetOutputSize();
+  SizeType outputSize = m_MeanBuilder->GetOutputSize();
 
   bool sizeChanged = false;
   for( int i = 0; i < TDimensions; i++ )
@@ -246,7 +246,7 @@ bool AtlasSummation
 void AtlasSummation
 ::Finalize( void )
 {
-  m_meanBuilder->FinalizeOutput();
+  m_MeanBuilder->FinalizeOutput();
 }
 
 
@@ -255,9 +255,9 @@ void AtlasSummation
 ::WriteImage( MeanImageType::Pointer image, const std::string & file )
 {
   typedef itk::ImageFileWriter< MeanImageType > FileWriterType;
-  ++count;
+  ++m_Count;
   std::stringstream file1;
-  file1 << file << count << ".mhd";
+  file1 << file << m_Count << ".mhd";
 
   try
     {

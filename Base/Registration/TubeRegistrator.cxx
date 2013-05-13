@@ -51,91 +51,90 @@ TubeRegistratorPoint( void )
 
 TubeRegistrator::
 TubeRegistrator( void )
-: cBiasV(3,3), cBiasVI(3,3)
+: m_BiasV(3,3), m_BiasVI(3,3)
 {
-  cKappa = 1;
-  cTubeNet = NULL;
-  cRegPoints.clear();
-  cIm = NULL;
-  cImMin = 0;
-  cImRange = 0;
-  cSampling = 100;
-  cCount = 0;
-  cWeight = 0;
-  cBiasV = 0;
-  cBiasVI = 0;
-  cMetric = 0;
-
-  cRegImThresh = 0;
+  m_Kappa = 1;
+  m_TubeNet = NULL;
+  m_RegPoints.clear();
+  m_Im = NULL;
+  m_ImMin = 0;
+  m_ImRange = 0;
+  m_Sampling = 100;
+  m_Count = 0;
+  m_Weight = 0;
+  m_BiasV = 0;
+  m_BiasVI = 0;
+  m_Metric = 0;
+  m_RegImThresh = 0;
 }
 
 void TubeRegistrator::
 SetTubeNet(TubeNet * tubes)
 {
-  cTubeNet = tubes;
+  m_TubeNet = tubes;
 }
 
 void TubeRegistrator::
 SetImage(Image3D<short> * im)
 {
-  cIm = im;
-  cImOp.use(cIm);
+  m_Im = im;
+  m_ImOp.use(m_Im);
 
-  cImMin = cIm->dataMin();
-  cImRange = cIm->dataMax()-cImMin;
+  m_ImMin = m_Im->dataMin();
+  m_ImRange = m_Im->dataMax()-m_ImMin;
 }
 
 void TubeRegistrator::
 SetSampling(int newSampling)
 {
-  cSampling = newSampling;
+  m_Sampling = newSampling;
 }
 
 int TubeRegistrator::
 GetSampling( void )
 {
-  return cSampling;
+  return m_Sampling;
 }
 
 int TubeRegistrator::
 SetNumSamples( void )
 {
-  return cCount;
+  return m_Count;
 }
 
 std::list<TubeRegistratorPoint *> * TubeRegistrator::
 GetSamples( void )
 {
-  return & cRegPoints;
+  return & m_RegPoints;
 }
 
 void TubeRegistrator::
 SetKappa(double kappa)
 {
-  cKappa = kappa;
+  m_Kappa = kappa;
 }
 
 void TubeRegistrator::
 SetImThresh(double newRegThresh)
 {
-  cRegImThresh = newRegThresh;
+  m_RegImThresh = newRegThresh;
 }
 
 double TubeRegistrator::
 GetImThresh( void )
 {
-  return cRegImThresh;
+  return m_RegImThresh;
 }
 
 void TubeRegistrator::
 MetricPreProc( void )
 {
-  if(cIm == NULL)
+  if(m_Im == NULL)
     {
     return;
     }
 
-  if(cTubeNet == NULL)
+  if(m_TubeNet == NULL)
     {
     return;
     }
@@ -146,30 +145,30 @@ MetricPreProc( void )
   vnl_vector<double> tV(3);
   vnl_matrix<double> tM(3,3);
 
-  for(l=cRegPoints.begin(); l!=cRegPoints.end(); ++l)
+  for(l=m_RegPoints.begin(); l!=m_RegPoints.end(); ++l)
     {
     delete * l;
     }
-  cRegPoints.clear();
+  m_RegPoints.clear();
 
-  cCount = 0;
-  cWeight = 0;
-  cBiasV = 0;
+  m_Count = 0;
+  m_Weight = 0;
+  m_BiasV = 0;
 
   vnl_vector<double> tv(3);
   double cX = 0;
   double cY = 0;
   double cZ = 0;
   TubeRegistratorPoint * tPnt;
-  for(i=cTubeNet->tubes()->begin(); i!=cTubeNet->tubes()->end(); ++i)
+  for(i=m_TubeNet->tubes()->begin(); i!=m_TubeNet->tubes()->end(); ++i)
     {
     int tubeSize = (*i)->points()->size();
-    if(tubeSize>cSampling)
+    if(tubeSize>m_Sampling)
       {
       int skipped = 0;
       for(j=(*i)->points()->begin(); j!=(*i)->points()->end(); ++j)
         {
-        while(skipped++%(cSampling/2) != 0 && j!=(*i)->points()->end())
+        while(skipped++%(m_Sampling/2) != 0 && j!=(*i)->points()->end())
           {
           ++j;
           }
@@ -193,7 +192,7 @@ MetricPreProc( void )
 
           tPnt->m_W = 2/(1+exp(-4*tPnt->m_R))-1;
 
-          cRegPoints.push_back(tPnt);
+          m_RegPoints.push_back(tPnt);
 
           cX += tPnt->m_W*tPnt->m_X(0);
           cY += tPnt->m_W*tPnt->m_X(1);
@@ -202,12 +201,12 @@ MetricPreProc( void )
           tM = outer_product(tPnt->m_V1T, tPnt->m_V1T);
           tM = tM + outer_product(tPnt->m_V2T, tPnt->m_V2T);
           tM = tPnt->m_W * tM;
-          cBiasV = cBiasV + tM;
+          m_BiasV = m_BiasV + tM;
 
-          cWeight += tPnt->m_W;
-          cCount++;
+          m_Weight += tPnt->m_W;
+          m_Count++;
           }
-        while(skipped++%(cSampling/2) != 0 && j!=(*i)->points()->end())
+        while(skipped++%(m_Sampling/2) != 0 && j!=(*i)->points()->end())
           {
           ++j;
           }
@@ -218,13 +217,13 @@ MetricPreProc( void )
         }
       }
     }
-  cBiasV = (1.0/cWeight) * cBiasV;
+  m_BiasV = (1.0/m_Weight) * m_BiasV;
 
-  SetCenter(cX/cWeight, cY/cWeight, cZ/cWeight);
+  SetCenter(cX/m_Weight, cY/m_Weight, cZ/m_Weight);
 
-  std::cout << "Sampling = " << cSampling << std::endl;
-  std::cout << "Num Samples = " << cCount << std::endl;
-  std::cout << "Center = " << cX/cWeight << ", " << cY/cWeight << ", " << cZ/cWeight << std::endl;
+  std::cout << "Sampling = " << m_Sampling << std::endl;
+  std::cout << "Num Samples = " << m_Count << std::endl;
+  std::cout << "Center = " << cX/m_Weight << ", " << cY/m_Weight << ", " << cZ/m_Weight << std::endl;
 }
 
 double TubeRegistrator::
@@ -241,77 +240,77 @@ Metric( void )
     {
     std::cout << "Metric: !recalc" << std::endl;
     std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
-    return cMetric;
+    return m_Metric;
     }
 
-  cMetric = 0;
-  cCount = 0;
-  cWeight = 0;
+  m_Metric = 0;
+  m_Count = 0;
+  m_Weight = 0;
 
-  if(cKappa == 0)
+  if(m_Kappa == 0)
     {
-    for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
+    for(j=m_RegPoints.begin(); j!=m_RegPoints.end(); ++j)
       {
       TransformPoint(&((*j)->m_X), &((*j)->m_XT));
-      if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<cIm->dimSizeX()-1 &&
-         (*j)->m_XT(1)>=0 && (*j)->m_XT(1)<cIm->dimSizeY()-1 &&
-         (*j)->m_XT(2)>=0 && (*j)->m_XT(2)<cIm->dimSizeZ()-1)
+      if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<m_Im->dimSizeX()-1 &&
+         (*j)->m_XT(1)>=0 && (*j)->m_XT(1)<m_Im->dimSizeY()-1 &&
+         (*j)->m_XT(2)>=0 && (*j)->m_XT(2)<m_Im->dimSizeZ()-1)
         {
-        cWeight += 1;
-        cCount++;
-        (*j)->m_VAL = (*cIm)((int)(*j)->m_XT(0),
-                             (int)(*j)->m_XT(1),
-                             (int)(*j)->m_XT(2));
-        cMetric += (*j)->m_VAL;
+        m_Weight += 1;
+        m_Count++;
+        (*j)->m_VAL = (*m_Im)((int)(*j)->m_XT(0),
+                              (int)(*j)->m_XT(1),
+                              (int)(*j)->m_XT(2));
+        m_Metric += (*j)->m_VAL;
         }
       }
     }
   else
     {
-    for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
+    for(j=m_RegPoints.begin(); j!=m_RegPoints.end(); ++j)
       {
       TransformPoint(&((*j)->m_X), &((*j)->m_XT));
-      if((*j)->m_XT(0)>0 && (*j)->m_XT(0)<cIm->dimSizeX()-2 &&
-         (*j)->m_XT(1)>0 && (*j)->m_XT(1)<cIm->dimSizeY()-2 &&
-         (*j)->m_XT(2)>0 && (*j)->m_XT(2)<cIm->dimSizeZ()-2 &&
-         (*cIm)((*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2)) > cRegImThresh)
+      if((*j)->m_XT(0)>0 && (*j)->m_XT(0)<m_Im->dimSizeX()-2 &&
+         (*j)->m_XT(1)>0 && (*j)->m_XT(1)<m_Im->dimSizeY()-2 &&
+         (*j)->m_XT(2)>0 && (*j)->m_XT(2)<m_Im->dimSizeZ()-2 &&
+         (*m_Im)((*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2)) > m_RegImThresh)
         {
         xTV(1) = (*j)->m_XT(0);
         xTV(2) = (*j)->m_XT(1);
         xTV(3) = (*j)->m_XT(2);
-        cWeight += (*j)->m_W;
-        cCount++;
+        m_Weight += (*j)->m_W;
+        m_Count++;
         double opR = (*j)->r;
         if(opR<0.5)
           opR = 0.5;
-        cImOp.opScale(opR * cKappa);
-        //(*j)->m_VAL = (*j)->m_W * cImOp.valueIso(xTV);
-        (*j)->m_VAL = (*j)->m_W * cImOp.valueIsoD(xTV, dXTV);
+        m_ImOp.opScale(opR * m_Kappa);
+        //(*j)->m_VAL = (*j)->m_W * m_ImOp.valueIso(xTV);
+        (*j)->m_VAL = (*j)->m_W * m_ImOp.valueIsoD(xTV, dXTV);
         (*j)->m_DXT(0) = dXTV(1);
         (*j)->m_DXT(1) = dXTV(2);
         (*j)->m_DXT(2) = dXTV(3);
-        cMetric += (*j)->m_VAL;
+        m_Metric += (*j)->m_VAL;
         }
       }
     }
 
-  if(cWeight == 0 || cImRange == 0)
+  if(m_Weight == 0 || m_ImRange == 0)
     {
-    cMetric = 10;
+    m_Metric = 10;
     }
   else
     {
-    cMetric = (cMetric/cWeight-cImMin)/cImRange;
+    m_Metric = (m_Metric/m_Weight-m_ImMin)/m_ImRange;
     }
 
   //std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
 
-  return cMetric;
+  return m_Metric;
 }
 
 double TubeRegistrator::
-MetricDeriv(double *dX, double *dY, double *dZ,
-            double *dA, double *dB, double *dG)
+Metrim_Deriv(double *dX, double *dY, double *dZ,
+             double *dA, double *dB, double *dG)
 {
 
   long c0 = clock();
@@ -322,12 +321,12 @@ MetricDeriv(double *dX, double *dY, double *dZ,
 
   if(recalc)
     {
-    cMetric = 0;
-    cWeight = 0;
-    cCount = 0;
+    m_Metric = 0;
+    m_Weight = 0;
+    m_Count = 0;
     }
   else
-    std::cout << "MetricDeriv: !recalc" << std::endl;
+    std::cout << "Metrim_Deriv: !recalc" << std::endl;
 
   *dX = 0;
   *dY = 0;
@@ -336,7 +335,7 @@ MetricDeriv(double *dX, double *dY, double *dZ,
   *dB = 0;
   *dG = 0;
 
-  cBiasV = 0;
+  m_BiasV = 0;
 
   double dXProj1;
   double dXProj2;
@@ -352,31 +351,31 @@ MetricDeriv(double *dX, double *dY, double *dZ,
   double tDG;
 
   //FILE * fp = fopen("test.dat", "m_W");
-  for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
+  for(j=m_RegPoints.begin(); j!=m_RegPoints.end(); ++j)
     {
     if(recalc)
       TransformPoint(&((*j)->m_X), &((*j)->m_XT));
-    if((*j)->m_XT(0)>0 && (*j)->m_XT(0)<cIm->dimSizeX()-2 &&
-       (*j)->m_XT(1)>0 && (*j)->m_XT(1)<cIm->dimSizeY()-2 &&
-       (*j)->m_XT(2)>0 && (*j)->m_XT(2)<cIm->dimSizeZ()-2 &&
-       (*cIm)((*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2)) > cRegImThresh)
+    if((*j)->m_XT(0)>0 && (*j)->m_XT(0)<m_Im->dimSizeX()-2 &&
+       (*j)->m_XT(1)>0 && (*j)->m_XT(1)<m_Im->dimSizeY()-2 &&
+       (*j)->m_XT(2)>0 && (*j)->m_XT(2)<m_Im->dimSizeZ()-2 &&
+       (*m_Im)((*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2)) > m_RegImThresh)
       {
       if(recalc)
         {
-        cWeight += (*j)->m_W;
-        cCount++;
+        m_Weight += (*j)->m_W;
+        m_Count++;
         opR = (*j)->r;
         if(opR<0.5)
           opR = 0.5;
-        cImOp.opScale(opR * cKappa);
+        m_ImOp.opScale(opR * m_Kappa);
         xTV(1) = (*j)->m_XT(0);
         xTV(2) = (*j)->m_XT(1);
         xTV(3) = (*j)->m_XT(2);
-        (*j)->m_VAL = (*j)->m_W * cImOp.valueIsoD(xTV, dXTV);
+        (*j)->m_VAL = (*j)->m_W * m_ImOp.valueIsoD(xTV, dXTV);
         (*j)->m_DXT(0) = dXTV(1);
         (*j)->m_DXT(1) = dXTV(2);
         (*j)->m_DXT(2) = dXTV(3);
-        cMetric += (*j)->m_VAL;
+        m_Metric += (*j)->m_VAL;
         }
 
       TransformCoVector(&((*j)->m_V1), &((*j)->m_V1T));
@@ -397,7 +396,7 @@ MetricDeriv(double *dX, double *dY, double *dZ,
       tM = outer_product((*j)->m_V1T, (*j)->m_V1T);
       tM = tM + outer_product((*j)->m_V2T, (*j)->m_V2T);
       tM = (*j)->m_W * tM;
-      cBiasV = cBiasV + tM;
+      m_BiasV = m_BiasV + tM;
 
       *dX += (*j)->m_W * (*j)->m_DXT(0);
       *dY += (*j)->m_W * (*j)->m_DXT(1);
@@ -406,37 +405,37 @@ MetricDeriv(double *dX, double *dY, double *dZ,
     }
   //fclose(fp);
 
-  cBiasVI = vnl_matrix_inverse<double>(cBiasV).inverse();
+  m_BiasVI = vnl_matrix_inverse<double>(m_BiasV).inverse();
   tV(0) = *dX;
   tV(1) = *dY;
   tV(2) = *dZ;
-  tV = tV * cBiasVI;
+  tV = tV * m_BiasVI;
   *dX = tV(0);
   *dY = tV(1);
   *dZ = tV(2);
 
-  if(cWeight == 0)
+  if(m_Weight == 0)
     {
-    cBiasV = 0;
+    m_BiasV = 0;
     *dA = 0;
     *dB = 0;
     *dG = 0;
-    cMetric = 10;
+    m_Metric = 10;
     return 10;
     }
   else
     {
-    cBiasV = 1.0/cWeight * cBiasV;
+    m_BiasV = 1.0/m_Weight * m_BiasV;
     }
-  cBiasVI = vnl_matrix_inverse<double>(cBiasV).inverse();
+  m_BiasVI = vnl_matrix_inverse<double>(m_BiasV).inverse();
 
-  for(j=cRegPoints.begin(); j!=cRegPoints.end(); ++j)
+  for(j=m_RegPoints.begin(); j!=m_RegPoints.end(); ++j)
     {
-    if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<cIm->dimSizeX()-1 &&
-       (*j)->m_XT(1)>=0 && (*j)->m_XT(1)<cIm->dimSizeY()-1 &&
-       (*j)->m_XT(2)>=0 && (*j)->m_XT(2)<cIm->dimSizeZ()-1)
+    if((*j)->m_XT(0)>=0 && (*j)->m_XT(0)<m_Im->dimSizeX()-1 &&
+       (*j)->m_XT(1)>=0 && (*j)->m_XT(1)<m_Im->dimSizeY()-1 &&
+       (*j)->m_XT(2)>=0 && (*j)->m_XT(2)<m_Im->dimSizeZ()-1)
       {
-      (*j)->m_DXT = (*j)->m_DXT * cBiasVI;
+      (*j)->m_DXT = (*j)->m_DXT * m_BiasVI;
       //(*j)->m_DXT(0) -= (*dX);
       //(*j)->m_DXT(1) -= (*dY);
       //(*j)->m_DXT(2) -= (*dZ);
@@ -448,15 +447,15 @@ MetricDeriv(double *dX, double *dY, double *dZ,
       *dG += (*j)->m_W * tDG;
       }
     }
-  *dA /= cWeight;
-  *dB /= cWeight;
-  *dG /= cWeight;
+  *dA /= m_Weight;
+  *dB /= m_Weight;
+  *dG /= m_Weight;
 
-  cMetric = (cMetric/cWeight-cImMin)/cImRange;
+  m_Metric = (m_Metric/m_Weight-m_ImMin)/m_ImRange;
 
   std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
 
-  return cMetric;
+  return m_Metric;
 }
 
 //
@@ -478,17 +477,17 @@ class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
 {
 public:
   mVMetricCost( void )
-    : cRegOp(0)
+    : m_RegOp(0)
     {
     }
   void use(TubeRegistrator * newRegOp)
     {
-    cRegOp = newRegOp;
+    m_RegOp = newRegOp;
     }
   double value(TNT::Vector<double> * m_X)
     {
-    cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
-    cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
+    m_RegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
+    m_RegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
     /*
     std::cout << "V "
               << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
@@ -499,33 +498,31 @@ public:
               << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
               << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
     */
-    double tf = cRegOp->Metric();
+    double tf = m_RegOp->Metric();
     //std::cout << "   v = " << tf << std::endl;
     return tf;
     }
+
 protected:
-  TubeRegistrator * cRegOp;
+  TubeRegistrator  * m_RegOp;
 
 }; // End class mVMetricCost
 
 class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double> *>
 {
-protected:
-  TNT::Vector<double> cD;
-  TubeRegistrator * cRegOp;
 public:
   mVMetricDeriv( void )
-    : cRegOp(0), cD(6, 0.0)
+    : m_RegOp(0), m_D(6, 0.0)
     {
     }
   void use(TubeRegistrator * newRegOp)
     {
-    cRegOp = newRegOp;
+    m_RegOp = newRegOp;
     }
   TNT::Vector<double> * value(TNT::Vector<double> * m_X)
     {
-    cRegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
-    cRegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
+    m_RegOp->SetOffset((*m_X)(1)*offsetUnit, (*m_X)(2)*offsetUnit, (*m_X)(3)*offsetUnit);
+    m_RegOp->SetAngles((*m_X)(4)*rotUnit, (*m_X)(5)*rotUnit, (*m_X)(6)*rotUnit);
     /*
     std::cout << "D "
              << (*m_X)(1) << " (" << (*m_X)(1)*offsetUnit << ")  "
@@ -536,26 +533,30 @@ public:
              << (*m_X)(5) << " (" << (*m_X)(5)*rotUnit << ")  "
              << (*m_X)(6) << " (" << (*m_X)(6)*rotUnit << ")  " << std::endl;
     */
-    cRegOp->MetricDeriv(&cD(1), &cD(2), &cD(3),
-                        &cD(4), &cD(5), &cD(6));
+    m_RegOp->Metrim_Deriv(&m_D(1), &m_D(2), &m_D(3),
+                        &m_D(4), &m_D(5), &m_D(6));
     /*
     std::cout << "  "
-             << cD(1) << " (" << cD(1)/offsetDUnit << ")  "
-             << cD(2) << " (" << cD(2)/offsetDUnit << ")  "
-             << cD(3) << " (" << cD(3)/offsetDUnit << ")  " << std::endl;
+             << m_D(1) << " (" << m_D(1)/offsetDUnit << ")  "
+             << m_D(2) << " (" << m_D(2)/offsetDUnit << ")  "
+             << m_D(3) << " (" << m_D(3)/offsetDUnit << ")  " << std::endl;
     std::cout << "  "
-             << cD(4) << " (" << cD(4)/rotDUnit << ")  "
-             << cD(5) << " (" << cD(5)/rotDUnit << ")  "
-             << cD(6) << " (" << cD(6)/rotDUnit << ")  " << std::endl;
+             << m_D(4) << " (" << m_D(4)/rotDUnit << ")  "
+             << m_D(5) << " (" << m_D(5)/rotDUnit << ")  "
+             << m_D(6) << " (" << m_D(6)/rotDUnit << ")  " << std::endl;
     */
-    cD(1) /= offsetDUnit;
-    cD(2) /= offsetDUnit;
-    cD(3) /= offsetDUnit;
-    cD(4) /= rotDUnit;
-    cD(5) /= rotDUnit;
-    cD(6) /= rotDUnit;
-    return &cD;
+    m_D(1) /= offsetDUnit;
+    m_D(2) /= offsetDUnit;
+    m_D(3) /= offsetDUnit;
+    m_D(4) /= rotDUnit;
+    m_D(5) /= rotDUnit;
+    m_D(6) /= rotDUnit;
+    return &m_D;
     }
+
+protected:
+  TNT::Vector<double>  m_D;
+  TubeRegistrator    * m_RegOp;
 
 }; // End class mVMetricDeriv
 
@@ -598,8 +599,8 @@ bool TubeRegistrator::Fit( void )
   m(5) = b/rotUnit;
   m(6) = g/rotUnit;
 
-  cSampling *= 2;
-  //cKappa *= 1.5;
+  m_Sampling *= 2;
+  //m_Kappa *= 1.5;
   this->MetricPreProc();
 
   std::cout << "Bounding min..." << std::endl;
@@ -614,8 +615,8 @@ bool TubeRegistrator::Fit( void )
            << m(5) << " (" << m(5)*rotUnit << ")  "
            << m(6) << " (" << m(6)*rotUnit << ")  " << std::endl;
 
-  cSampling /= 2;
-  //cKappa /= 1.5;
+  m_Sampling /= 2;
+  //m_Kappa /= 1.5;
   MetricPreProc();
   xVal = func->value(&m);
   op.maxIterations(20);

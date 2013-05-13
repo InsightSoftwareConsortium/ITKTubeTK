@@ -76,14 +76,6 @@ public:
 
 protected:
 
-  std::ifstream m_ReadStream;
-  std::ofstream m_WriteStream;
-
-  std::string m_Comment;
-  std::string m_DateLastModified;
-  std::string m_Name;
-  std::string m_FileName;
-
   virtual void M_SetupReadFields( void );
   void M_PrepareNewReadStream( void );
 
@@ -93,6 +85,14 @@ protected:
   virtual bool M_Read( void );
 
   virtual bool M_Write( void );
+
+  std::ifstream                      m_ReadStream;
+  std::ofstream                      m_WriteStream;
+
+  std::string                        m_Comment;
+  std::string                        m_DateLastModified;
+  std::string                        m_Name;
+  std::string                        m_FileName;
 
   std::vector<MET_FieldRecordType *> m_Fields;
 

@@ -99,7 +99,7 @@ public:
   ~AtlasSummation( void );
 
   /** Initiate image for new atlas images to be inputted */
-  void Clear( void ) { m_isProcessing = false; }
+  void Clear( void ) { m_IsProcessing = false; }
 
   /** Add image with or without a transform */
   void AddImage( InputImageType::Pointer );
@@ -115,11 +115,13 @@ public:
    * (or standard deviation & image count for # of valid images
    */
   MeanImageType * GetMeanImage( void ) const
-    { return m_meanBuilder->GetOutputMeanImage(); }
+    { return m_MeanBuilder->GetOutputMeanImage(); }
+
   VarianceImageType * GetVarianceImage( void ) const
-    { return m_meanBuilder->GetOutputSigmaImage(); }
+    { return m_MeanBuilder->GetOutputSigmaImage(); }
+
   CountImageType * GetValidCountImage( void ) const
-    { return m_meanBuilder->GetValidCountImage(); }
+    { return m_MeanBuilder->GetValidCountImage(); }
 
   /*
    * OPTIONAL PARAMETERS
@@ -128,28 +130,30 @@ public:
    *
    * Note: Parameters need to be set before adding any images!
    */
-  void SetOutputSpacing( const SpacingType& s )
+  void SetOutputSpacing( const SpacingType& outputSpacing )
     {
-    m_OutputSpacing = s;
-    m_OutSpacingSet = true;
+    m_OutputSpacing = outputSpacing;
+    m_OutputSpacingSet = true;
     }
 
-  void SetOutputSize( const SizeType& s )
+  void SetOutputSize( const SizeType& outputSize )
     {
-    m_OutputSize = s;
-    m_OutSizeSet = true;
+    m_OutputSize = outputSize;
+    m_OutputSizeSet = true;
     }
 
-  void SetOutputOrigin( const PointType& o )
+  void SetOutputOrigin( const PointType& outputOrigin )
     {
-    m_OutputOrigin = o;
-    m_OutOriginSet = true;
+    m_OutputOrigin = outputOrigin;
+    m_OutputOriginSet = true;
     }
 
   const SpacingType GetOutputSpacing( void ) const
     { return m_OutputSpacing; }
+
   const SizeType GetOutputSize( void ) const
     { return m_OutputSize; }
+
   const PointType GetOutputOrigin( void ) const
     { return m_OutputOrigin; }
 
@@ -158,17 +162,19 @@ public:
    * Default is to use std. deviation
    */
   bool GetUseStdDeviation( void ) const
-    { return m_isStdDeviation; }
-  void SetUseStdDeviation( bool b )
-    { m_isStdDeviation = b; }
+    { return m_UseStdDeviation; }
+
+  void SetUseStdDeviation( bool useStdDeviation )
+    { m_UseStdDeviation = useStdDeviation; }
 
   /*
    * Set the minimum number of contributing images to a pixel
    * to consider that pixel valid for the mean and variance images,
    * default is 1
    */
-  void SetImageCountThreshold( unsigned int t )
-    { m_ImageCountThreshold = t; }
+  void SetImageCountThreshold( unsigned int imageCountThreshold )
+    { m_ImageCountThreshold = imageCountThreshold; }
+
   unsigned int GetImageCountThreshold( void ) const
     { return m_ImageCountThreshold; }
 
@@ -177,9 +183,10 @@ public:
    * Note: Needs to be called BEFORE adding the first image!!!
    */
   void UseMedian( unsigned int numOfImages )
-    { m_numOfImages = numOfImages; }
+    { m_NumOfImages = numOfImages; }
+
   bool UseMedian( void ) const
-    { return (m_numOfImages > 0); }
+    { return (m_NumOfImages > 0); }
 
   /*
    * Adjust all the resampled images origins and size (if not already defined)
@@ -191,10 +198,11 @@ public:
    * the output mean is assumed to be identical to the first image as far as size
    * and origin is at (0,0,0).
    */
-  void AdjustResampledImageSize( bool b )
-    { m_AdjustResampledImageSize = b; }
-  void AdjustResampledImageOrigin( bool b )
-    { m_AdjustResampledImageOrigin = b; }
+  void AdjustResampledImageSize( bool adjustResampledImageSize )
+    { m_AdjustResampledImageSize = adjustResampledImageSize; }
+
+  void AdjustResampledImageOrigin( bool adjustResampledImageOrigin )
+    { m_AdjustResampledImageOrigin = adjustResampledImageOrigin; }
 
 
 private:
@@ -238,37 +246,37 @@ private:
   void WriteImage( ProcessImagePointer, const std::string & );
 
   /** Median specific functions */
-  MedianImageListType&  GetInputImageList( void ) { return m_medianList; }
+  MedianImageListType&  GetInputImageList( void ) { return m_MedianList; }
   void SetupImageList( InputImagePointer example );
   void UpdateImageImageList( void );
   void AddMedianImage( InputImagePointer image );
 
-  RobustMeanBuilderType::Pointer   m_meanBuilder;
+  RobustMeanBuilderType::Pointer m_MeanBuilder;
 
   /** Median Image calculation variables */
-  MedianImageListType       m_medianList;
-  InputPixelType            TMedianDefaultPixelValue;
-  unsigned int              m_numOfImages;
+  MedianImageListType            m_MedianList;
+  InputPixelType                 m_MedianDefaultPixelValue;
+  unsigned int                   m_NumOfImages;
 
   /** Output size, spacing & origin values */
-  SizeType                  m_OutputSize;
-  SpacingType               m_OutputSpacing;
-  PointType                 m_OutputOrigin;
+  SizeType                       m_OutputSize;
+  SpacingType                    m_OutputSpacing;
+  PointType                      m_OutputOrigin;
 
-  bool                      m_OutSizeSet;
-  bool                      m_OutSpacingSet;
-  bool                      m_OutOriginSet;
+  bool                           m_OutputSizeSet;
+  bool                           m_OutputSpacingSet;
+  bool                           m_OutputOriginSet;
 
   /* State markers and Setting values */
-  unsigned int              m_image_number;
-  unsigned int              m_ImageCountThreshold;
+  unsigned int                   m_ImageNumber;
+  unsigned int                   m_ImageCountThreshold;
 
-  bool                      m_isStdDeviation; // Defaults to TRUE
-  bool                      m_isProcessing;   // Indicates processing
-  bool                      m_AdjustResampledImageSize;
-  bool                      m_AdjustResampledImageOrigin;
+  bool                           m_UseStdDeviation; // Defaults to TRUE
+  bool                           m_IsProcessing;   // Indicates processing
+  bool                           m_AdjustResampledImageSize;
+  bool                           m_AdjustResampledImageOrigin;
 
-  int count;
+  int                            m_Count;
 
 }; // End class AtlasSummation
 

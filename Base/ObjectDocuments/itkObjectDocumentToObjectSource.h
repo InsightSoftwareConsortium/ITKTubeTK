@@ -146,8 +146,8 @@ protected:
   bool                                    m_ApplyTransforms;
 
   /** Selected range of transforms to be applied  */
-  int                                     m_startTransforms;
-  int                                     m_endTransforms;
+  int                                     m_StartTransforms;
+  int                                     m_EndTransforms;
   mutable bool                            m_ComposedTransformIsIdentity;
 
 private:

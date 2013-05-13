@@ -70,9 +70,9 @@ void MetaObjectDocument::
 PrintInfo( void ) const
 {
   MetaDocument::PrintInfo();
-  ObjectListType::const_iterator  it = m_objects.begin();
+  ObjectListType::const_iterator  it = m_Objects.begin();
   int index = 1;
-  while( it != m_objects.end() )
+  while( it != m_Objects.end() )
     {
     std::cout << "object Number: " << index <<std::endl;
     std::cout << "objectName = " << (*it)->GetObjectName() << std::endl;
@@ -86,7 +86,7 @@ PrintInfo( void ) const
 void MetaObjectDocument::
 AddObject(ObjectDocumentType::Pointer object )
 {
-  m_objects.push_back( object );
+  m_Objects.push_back( object );
   m_NObjects++;
 }
 
@@ -94,7 +94,7 @@ AddObject(ObjectDocumentType::Pointer object )
 void MetaObjectDocument::
 SetObjectList( ObjectListType& list )
 {
-  m_objects = list;
+  m_Objects = list;
   m_NObjects = static_cast<int>(list.size());
 }
 
@@ -103,7 +103,7 @@ MetaObjectDocument::ObjectListType *
 MetaObjectDocument::
 GetObjectList( void )
 {
-  return &m_objects;
+  return &m_Objects;
 }
 
 
@@ -116,7 +116,7 @@ Clear( void )
     }
 
   MetaDocument::Clear();
-  m_objects.clear();
+  m_Objects.clear();
 }
 
 
@@ -218,7 +218,7 @@ M_SetupWriteFields( void )
   mF->required = true;
   m_Fields.push_back(mF);
 
-  for( unsigned int i = 0; i < m_objects.size(); i++ )
+  for( unsigned int i = 0; i < m_Objects.size(); i++ )
     {
     M_SetupObjectWriteFields(i);
     }
@@ -265,26 +265,26 @@ M_SetupObjectWriteFields( unsigned int object_idx )
   //Record the type of object
   mF = new MET_FieldRecordType();
   MET_InitWriteField(mF, LABEL_TYPE.c_str(), MET_STRING,
-    m_objects[object_idx]->GetObjectType().length(),
-    m_objects[object_idx]->GetObjectType().c_str() );
+    m_Objects[object_idx]->GetObjectType().length(),
+    m_Objects[object_idx]->GetObjectType().c_str() );
   m_Fields.push_back(mF);
 
   //Record the object Name
   mF = new MET_FieldRecordType();
   MET_InitWriteField(mF, LABEL_NAME.c_str(), MET_STRING,
-    m_objects[object_idx]->GetObjectName().length(),
-    m_objects[object_idx]->GetObjectName().c_str() );
+    m_Objects[object_idx]->GetObjectName().length(),
+    m_Objects[object_idx]->GetObjectName().c_str() );
   m_Fields.push_back(mF);
 
   //Record Names of each Transform
-  for( unsigned int i=0; i < m_objects[object_idx]->GetNumberOfTransforms(); i++ )
+  for( unsigned int i=0; i < m_Objects[object_idx]->GetNumberOfTransforms(); i++ )
     {
     std::stringstream label;
     label << LABEL_TRANSFORM << i;
     mF = new MET_FieldRecordType();
     MET_InitWriteField(mF, label.str().c_str(), MET_STRING,
-      m_objects[object_idx]->GetTransformNames()[i].length(),
-      m_objects[object_idx]->GetTransformNames()[i].c_str() );
+      m_Objects[object_idx]->GetTransformNames()[i].length(),
+      m_Objects[object_idx]->GetTransformNames()[i].c_str() );
     m_Fields.push_back(mF);
   }
 
@@ -378,7 +378,7 @@ M_Read( void )
         if(META_DEBUG) std::cout <<" Transform : " << (const char *)mF->value <<std::endl;
         }
       }
-    m_objects.push_back( object );
+    m_Objects.push_back( object );
     }
   return true;
 }

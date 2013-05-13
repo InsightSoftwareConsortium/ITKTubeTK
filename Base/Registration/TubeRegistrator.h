@@ -64,27 +64,6 @@ public:
 
 class TubeRegistrator : public Registrator
 {
-
-protected:
-
-  double cKappa;
-
-  double cMetric;
-
-  TubeNet * cTubeNet;
-  std::list<TubeRegistratorPoint *> cRegPoints;
-  Image3D<short> * cIm;
-  double cImMin;
-  double cImRange;
-  int cSampling;
-  int cCount;
-  double cWeight;
-  ImageValueOp3D<short> cImOp;
-  vnl_matrix<double> cBiasV;
-  vnl_matrix<double> cBiasVI;
-
-  double cRegImThresh;
-
 public:
 
   TubeRegistrator( void );
@@ -108,6 +87,23 @@ public:
                        double * dA, double * dB, double * dG);
 
   bool Fit( void );
+
+protected:
+
+  double                             m_Kappa;
+  double                             m_Metric;
+  TubeNet *                          m_TubeNet;
+  std::list<TubeRegistratorPoint *>  m_RegPoints;
+  Image3D<short> *                   m_Im;
+  double                             m_ImMin;
+  double                             m_ImRange;
+  int                                m_Sampling;
+  int                                m_Count;
+  double                             m_Weight;
+  ImageValueOp3D<short>              m_ImOp;
+  vnl_matrix<double>                 m_BiasV;
+  vnl_matrix<double>                 m_BiasVI;
+  double                             m_RegImThresh;
 
 }; // End class TubeRegistrator
 

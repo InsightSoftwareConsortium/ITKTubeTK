@@ -40,7 +40,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     m_Size[i] = 0;
     m_Spacing[i] = 1;
     }
-  m_max = 255;                   //NumericTraits<DensityPixelType>::max();
+  m_Max = 255;                   //NumericTraits<DensityPixelType>::max();
   m_UseSquareDistance = false;
 }
 
@@ -193,7 +193,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     InverseFilter = InverseIntensityImageFilter<DensityImageType>::New();
 
     InverseFilter->SetInput( m_DensityImage );  //  inverse intensity
-    InverseFilter->SetInverseMaximumIntensity( m_max );
+    InverseFilter->SetInverseMaximumIntensity( m_Max );
     InverseFilter->Update();
 
     m_DensityImage = InverseFilter->GetOutput();
