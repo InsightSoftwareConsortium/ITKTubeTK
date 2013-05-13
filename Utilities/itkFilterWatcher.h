@@ -50,7 +50,7 @@ public:
     itk::SimpleMemberCommand<FilterWatcher>::Pointer progressFilterCommand;
     itk::SimpleMemberCommand<FilterWatcher>::Pointer iterationFilterCommand;
     itk::SimpleMemberCommand<FilterWatcher>::Pointer abortFilterCommand;
-  
+
     startFilterCommand =    itk::SimpleMemberCommand<FilterWatcher>::New();
     endFilterCommand =      itk::SimpleMemberCommand<FilterWatcher>::New();
     progressFilterCommand = itk::SimpleMemberCommand<FilterWatcher>::New();
@@ -135,7 +135,7 @@ public:
       itkExceptionMacro ("Filter does not have progress.");
       }
     }
-  
+
   void QuietOn( void ) {m_Quiet = true;}
   void QuietOff( void ) {m_Quiet = false;}
   void TestAbortOn( void ) {m_TestAbort = true;}

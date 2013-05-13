@@ -190,7 +190,7 @@ private:
   ListDoubleType                           m_HistoBinScale;
   unsigned int                             m_HistoNumBinsND;
   unsigned int                             m_HistoNumBins1D;
-  
+
   //  Data
   std::vector< typename ImageType::Pointer > m_InputVolumeList;
 

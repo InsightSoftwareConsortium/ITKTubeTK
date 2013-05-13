@@ -15,11 +15,11 @@ The source code is available on the web:
 
 The development of TubeTK is being funded, in part, by the following grants
   1. NIH/NIBIB sponsored "National Alliance of Medical Image Computing"
-     (NA-MIC, PI: Kikinis) 
+     (NA-MIC, PI: Kikinis)
      1U54EB005149-01
      http://www.na-mic.org
-  2. DARPA sponsored "Trust in Integrated Circuits" 
-     (EXPOSE, PI: Bajura) 
+  2. DARPA sponsored "Trust in Integrated Circuits"
+     (EXPOSE, PI: Bajura)
      USC/ISI Team
      http://www.darpa.mil/MTO/Programs/trust/index.html
   3. NIH/NCI sponsored "Image Registration for Ultrasound-Based Neurosurgical

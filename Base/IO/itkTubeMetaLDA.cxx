@@ -438,7 +438,7 @@ WriteStream( METAIO_STREAM::ofstream * _stream )
 
   return true;
 }
-        
+
 void MetaLDA::
 M_Destroy( void )
 {
@@ -552,7 +552,7 @@ M_Read( void )
                         << METAIO_STREAM::endl;
     }
   MET_FieldRecordType * mF;
-     
+
   unsigned int nDims = 0;
   mF = MET_GetFieldRecord( "NDims", &m_Fields );
   if( mF && mF->defined )
