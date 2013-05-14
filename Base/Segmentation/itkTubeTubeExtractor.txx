@@ -51,6 +51,8 @@ TubeExtractor<TInputImage>
   m_NewTubeCallBack = NULL;
   m_AbortProcess = NULL;
 
+  m_InputImage = NULL;
+
   m_Color[0] = 0.0f;
   m_Color[1] = 0.0f;
   m_Color[2] = 0.0f;
