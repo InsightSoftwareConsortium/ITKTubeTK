@@ -120,6 +120,10 @@ public:
     m_G1 = G1;
     }
 
+  virtual ~GraphKernel( void )
+    {
+    }
+
   /** Check if the desired default node labeling is supported */
   static bool IsValidDefaultNodeLabeling( int desiredType );
 
