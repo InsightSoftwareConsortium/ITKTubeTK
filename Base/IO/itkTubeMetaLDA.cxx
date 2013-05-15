@@ -23,123 +23,105 @@ limitations under the License.
 
 #include "itkTubeMetaLDA.h"
 
-#include <stdio.h>
-#include <ctype.h>
-#include <string>
-#include <string.h> // for memcpy
-#include <math.h>
-
 namespace itk
 {
 
 namespace tube
 {
 
-//
-// MetaLDA Constructors
-//
-MetaLDA::
-MetaLDA( void )
+MetaLDA
+::MetaLDA( void )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
     }
 
-  Clear();
+  this->Clear();
 }
 
-//
-MetaLDA::
-MetaLDA( const char *_headerName )
+MetaLDA
+::MetaLDA( const char * headerName )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
     }
 
-  Clear();
+  this->Clear();
   m_ReadStream = NULL;
 
-  MetaLDA::Read( _headerName );
+  MetaLDA::Read( headerName );
 }
 
-//
-MetaLDA::
-MetaLDA( const MetaLDA & _metaLDA )
-  : MetaForm()
+MetaLDA
+::MetaLDA( const MetaLDA & metaLDA ) : MetaForm()
 {
   if( META_DEBUG )
-   {
-   METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
-   }
+    {
+    METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
+    }
 
-  Clear();
-
-  CopyInfo( _metaLDA );
+  this->Clear();
+  this->CopyInfo( metaLDA );
 }
 
-//
-MetaLDA::
-MetaLDA( const LDAValuesType & _ldaValues,
-  const LDAMatrixType & _ldaMatrix,
-  const ValueListType & _whitenMeans,
-  const ValueListType & _whitenStdDevs )
+MetaLDA
+::MetaLDA( const LDAValuesType & ldaValues,
+           const LDAMatrixType & ldaMatrix,
+           const ValueListType & whitenMeans,
+           const ValueListType & whitenStdDevs )
 {
   if( META_DEBUG )
-   {
-   METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
-   }
+    {
+    METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
+    }
 
-  Clear();
-
-  InitializeEssential( _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs );
+  this->Clear();
+  this->InitializeEssential( ldaValues, ldaMatrix, whitenMeans, whitenStdDevs );
 }
 
-//
-MetaLDA::
-~MetaLDA( void )
+MetaLDA
+::~MetaLDA( void )
 {
-  M_Destroy();
+  this->M_Destroy();
 }
 
-//
-void MetaLDA::
-PrintInfo( void ) const
+void MetaLDA
+::PrintInfo( void ) const
 {
   MetaForm::PrintInfo();
 
-  METAIO_STREAM::cout << "LDAValues = " << m_LDAValues
-    << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix
-    << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "LDAValues = " << m_LDAValues << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix << METAIO_STREAM::endl;
   METAIO_STREAM::cout << "WhitenMeans = " << METAIO_STREAM::endl;
-  for( unsigned int i=0; i<m_WhitenMeans.size(); i++ )
+  for( unsigned int i = 0; i < m_WhitenMeans.size(); i++ )
     {
     METAIO_STREAM::cout << m_WhitenMeans[i] << " ";
     }
+
   METAIO_STREAM::cout << METAIO_STREAM::endl;
   METAIO_STREAM::cout << "WhitenStdDevs = " << METAIO_STREAM::endl;
-  for( unsigned int i=0; i<m_WhitenStdDevs.size(); i++ )
+  for( unsigned int i = 0; i < m_WhitenStdDevs.size(); i++ )
     {
     METAIO_STREAM::cout << m_WhitenStdDevs[i] << " ";
     }
+
   METAIO_STREAM::cout << METAIO_STREAM::endl;
 }
 
-void MetaLDA::
-CopyInfo( const MetaLDA & _lda )
+void MetaLDA
+::CopyInfo( const MetaLDA & lda )
 {
-  MetaForm::CopyInfo( dynamic_cast< const MetaForm * >( &_lda ) );
-
-  SetLDAValues( _lda.GetLDAValues() );
-  SetLDAMatrix( _lda.GetLDAMatrix() );
-  SetWhitenMeans( _lda.GetWhitenMeans() );
-  SetWhitenStdDevs( _lda.GetWhitenStdDevs() );
+  MetaForm::CopyInfo( dynamic_cast< const MetaForm * >( &lda ) );
+  this->SetLDAValues( lda.GetLDAValues() );
+  this->SetLDAMatrix( lda.GetLDAMatrix() );
+  this->SetWhitenMeans( lda.GetWhitenMeans() );
+  this->SetWhitenStdDevs( lda.GetWhitenStdDevs() );
 }
 
-void MetaLDA::
-Clear( void )
+void MetaLDA
+::Clear( void )
 {
   if( META_DEBUG )
     {
@@ -150,15 +132,14 @@ Clear( void )
   m_LDAMatrix.set_size( 0, 0 );
   m_WhitenMeans.clear();
   m_WhitenStdDevs.clear();
-
   MetaForm::Clear();
 }
 
-bool MetaLDA::
-InitializeEssential( const LDAValuesType & _ldaValues,
-  const LDAMatrixType & _ldaMatrix,
-  const ValueListType & _whitenMeans,
-  const ValueListType & _whitenStdDevs )
+bool MetaLDA
+::InitializeEssential( const LDAValuesType & ldaValues,
+                       const LDAMatrixType & ldaMatrix,
+                       const ValueListType & whitenMeans,
+                       const ValueListType & whitenStdDevs )
 {
   if( META_DEBUG )
     {
@@ -166,31 +147,26 @@ InitializeEssential( const LDAValuesType & _ldaValues,
     }
 
   MetaForm::InitializeEssential();
-
-  SetLDAValues( _ldaValues );
-  SetLDAMatrix( _ldaMatrix );
-  SetWhitenMeans( _whitenMeans );
-  SetWhitenStdDevs( _whitenStdDevs );
-
+  this->SetLDAValues( ldaValues );
+  this->SetLDAMatrix( ldaMatrix );
+  this->SetWhitenMeans( whitenMeans );
+  this->SetWhitenStdDevs( whitenStdDevs );
   return true;
 }
 
-//
-//
-//
-void MetaLDA::
-SetLDAValues( const LDAValuesType & _ldaValues )
+void MetaLDA
+::SetLDAValues( const LDAValuesType & ldaValues )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA: SetLDAValues" << METAIO_STREAM::endl;
     }
 
-  m_LDAValues = _ldaValues;
+  m_LDAValues = ldaValues;
 }
 
-const MetaLDA::LDAValuesType & MetaLDA::
-GetLDAValues( void ) const
+const MetaLDA::LDAValuesType & MetaLDA
+::GetLDAValues( void ) const
 {
   if( META_DEBUG )
     {
@@ -200,19 +176,19 @@ GetLDAValues( void ) const
   return m_LDAValues;
 }
 
-void MetaLDA::
-SetLDAMatrix( const LDAMatrixType & _ldaMatrix )
+void MetaLDA
+::SetLDAMatrix( const LDAMatrixType & ldaMatrix )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA: SetLDAMatrix" << METAIO_STREAM::endl;
     }
 
-  m_LDAMatrix = _ldaMatrix;
+  m_LDAMatrix = ldaMatrix;
 }
 
-const MetaLDA::LDAMatrixType & MetaLDA::
-GetLDAMatrix( void ) const
+const MetaLDA::LDAMatrixType & MetaLDA
+::GetLDAMatrix( void ) const
 {
   if( META_DEBUG )
     {
@@ -222,19 +198,19 @@ GetLDAMatrix( void ) const
   return m_LDAMatrix;
 }
 
-void MetaLDA::
-SetWhitenMeans( const ValueListType & _whitenMeans )
+void MetaLDA
+::SetWhitenMeans( const ValueListType & whitenMeans )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA: SetWhitenMeans" << METAIO_STREAM::endl;
     }
 
-  m_WhitenMeans = _whitenMeans;
+  m_WhitenMeans = whitenMeans;
 }
 
-const MetaLDA::ValueListType & MetaLDA::
-GetWhitenMeans( void ) const
+const MetaLDA::ValueListType & MetaLDA
+::GetWhitenMeans( void ) const
 {
   if( META_DEBUG )
     {
@@ -244,19 +220,19 @@ GetWhitenMeans( void ) const
   return m_WhitenMeans;
 }
 
-void MetaLDA::
-SetWhitenStdDevs( const ValueListType & _whitenStdDevs )
+void MetaLDA
+::SetWhitenStdDevs( const ValueListType & whitenStdDevs )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA: SetWhitenStdDevs" << METAIO_STREAM::endl;
     }
 
-  m_WhitenStdDevs = _whitenStdDevs;
+  m_WhitenStdDevs = whitenStdDevs;
 }
 
-const MetaLDA::ValueListType & MetaLDA::
-GetWhitenStdDevs( void ) const
+const MetaLDA::ValueListType & MetaLDA
+::GetWhitenStdDevs( void ) const
 {
   if( META_DEBUG )
     {
@@ -266,10 +242,11 @@ GetWhitenStdDevs( void ) const
   return m_WhitenStdDevs;
 }
 
-bool MetaLDA::CanRead( const char *_headerName ) const
+bool MetaLDA
+::CanRead( const char * headerName ) const
 {
-  // First check the extension
-  METAIO_STL::string fname = _headerName;
+  // First check the extension.
+  METAIO_STL::string fname = headerName;
   if( fname == "" )
     {
     return false;
@@ -289,58 +266,58 @@ bool MetaLDA::CanRead( const char *_headerName ) const
     return false;
     }
 
-  // Now check the file content
+  // Now check the file content.
   METAIO_STREAM::ifstream inputStream;
 
-  inputStream.open( _headerName, METAIO_STREAM::ios::in |
-                                 METAIO_STREAM::ios::binary );
+  inputStream.open( headerName,
+                    METAIO_STREAM::ios::in | METAIO_STREAM::ios::binary );
 
   if( !inputStream.rdbuf()->is_open() )
     {
     return false;
     }
 
-  bool result = !strncmp( MET_ReadForm( inputStream ).c_str(), "LDA", 3 );
+  const bool result = !std::strncmp( MET_ReadForm(
+                                       inputStream ).c_str(), "LDA", 3 );
 
   inputStream.close();
 
   return result;
 }
 
-
-bool MetaLDA::
-Read( const char *_headerName )
+bool MetaLDA
+::Read( const char * headerName )
 {
-  if( _headerName != NULL && strlen( _headerName ) > 1 )
+  if( headerName != NULL && std::strlen( headerName ) > 1 )
     {
-    FileName( _headerName );
+    this->FileName( headerName );
     }
 
-  METAIO_STREAM::ifstream * tmpStream = new METAIO_STREAM::ifstream;
+  METAIO_STREAM::ifstream * const tmpStream = new METAIO_STREAM::ifstream();
 
-  tmpStream->open( m_FileName, METAIO_STREAM::ios::in |
-                              METAIO_STREAM::ios::binary );
+  tmpStream->open( m_FileName,
+                   METAIO_STREAM::ios::in | METAIO_STREAM::ios::binary );
 
   if( !tmpStream->rdbuf()->is_open() )
     {
-    METAIO_STREAM::cout << "MetaLDA: Read: Cannot open file _"
-                        << m_FileName << "_" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: Read: Cannot open file _" << m_FileName
+                        << "_" << METAIO_STREAM::endl;
     delete tmpStream;
     return false;
     }
 
-  bool result = ReadStream( tmpStream );
+  const bool result = ReadStream( tmpStream );
 
   tmpStream->close();
-
   delete tmpStream;
 
   return result;
 }
 
-bool MetaLDA::CanReadStream( METAIO_STREAM::ifstream * _stream ) const
+bool MetaLDA
+::CanReadStream( METAIO_STREAM::ifstream * stream ) const
 {
-  if( !strncmp( MET_ReadForm( *_stream ).c_str(), "LDA", 3 ) )
+  if( !std::strncmp( MET_ReadForm( *stream ).c_str(), "LDA", 3 ) )
     {
     return true;
     }
@@ -348,32 +325,30 @@ bool MetaLDA::CanReadStream( METAIO_STREAM::ifstream * _stream ) const
   return false;
 }
 
-bool MetaLDA::
-ReadStream( METAIO_STREAM::ifstream * _stream )
+bool MetaLDA
+::ReadStream( METAIO_STREAM::ifstream * stream )
 {
   if( META_DEBUG )
     {
     METAIO_STREAM::cout << "MetaLDA: ReadStream" << METAIO_STREAM::endl;
     }
 
-  M_Destroy();
-
-  Clear();
-
-  M_SetupReadFields();
+  this->M_Destroy();
+  this->Clear();
+  this->M_SetupReadFields();
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaLDA: ReadStream: two files open?"
+    METAIO_STREAM::cout << "MetaLDA: ReadStream: Are two files open?"
                         << METAIO_STREAM::endl;
     delete m_ReadStream;
     }
 
-  m_ReadStream = _stream;
+  m_ReadStream = stream;
 
-  if( !M_Read() )
+  if( !this->M_Read() )
     {
-    METAIO_STREAM::cout << "MetaLDA: Read: Cannot parse file"
+    METAIO_STREAM::cout << "MetaLDA: Read: Cannot parse file."
                         << METAIO_STREAM::endl;
     m_ReadStream = NULL;
     return false;
@@ -381,25 +356,26 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   m_ReadStream = NULL;
 
-  InitializeEssential( m_LDAValues, m_LDAMatrix,
-    m_WhitenMeans, m_WhitenStdDevs );
+  this->InitializeEssential( m_LDAValues, m_LDAMatrix, m_WhitenMeans,
+                             m_WhitenStdDevs );
 
   return true;
 }
 
-bool MetaLDA::Write( const char *_headName )
+bool MetaLDA
+::Write( const char * headerName )
 {
-  if( _headName != NULL && strlen( _headName ) > 1 )
+  if( headerName != NULL && std::strlen( headerName ) > 1 )
     {
-    FileName( _headName );
+    this->FileName( headerName );
     }
 
   MET_SetFileSuffix( m_FileName, "mlda" );
 
-  METAIO_STREAM::ofstream * tmpWriteStream = new METAIO_STREAM::ofstream;
+  METAIO_STREAM::ofstream * const tmpWriteStream = new METAIO_STREAM::ofstream();
 
-  tmpWriteStream->open( m_FileName, METAIO_STREAM::ios::binary |
-                                   METAIO_STREAM::ios::out );
+  tmpWriteStream->open( m_FileName,
+                        METAIO_STREAM::ios::binary | METAIO_STREAM::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
     {
@@ -407,154 +383,145 @@ bool MetaLDA::Write( const char *_headName )
     return false;
     }
 
-  bool result = WriteStream( tmpWriteStream );
+  const bool result = this->WriteStream( tmpWriteStream );
 
   tmpWriteStream->close();
-
   delete tmpWriteStream;
 
   return result;
 }
 
-bool MetaLDA::
-WriteStream( METAIO_STREAM::ofstream * _stream )
+bool MetaLDA
+::WriteStream( METAIO_STREAM::ofstream * stream )
 {
   if( m_WriteStream != NULL )
     {
-    METAIO_STREAM::cout << "MetaLDA: WriteStream: two files open?"
+    METAIO_STREAM::cout << "MetaLDA: WriteStream: Are two files open?"
                         << METAIO_STREAM::endl;
     delete m_WriteStream;
     }
 
-  m_WriteStream = _stream;
+  m_WriteStream = stream;
 
-  M_SetupWriteFields();
-
-  M_Write();
+  this->M_SetupWriteFields();
+  this->M_Write();
 
   m_WriteStream->flush();
-
   m_WriteStream = NULL;
 
   return true;
 }
 
-void MetaLDA::
-M_Destroy( void )
+void MetaLDA
+::M_Destroy( void )
 {
   MetaForm::M_Destroy();
 }
 
-void MetaLDA::
-M_SetupReadFields( void )
+void MetaLDA
+::M_SetupReadFields( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_SetupReadFields"
-                        << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: M_SetupReadFields" << METAIO_STREAM::endl;
     }
 
   MetaForm::M_SetupReadFields();
 
-  MET_FieldRecordType * mF;
-
-  mF = new MET_FieldRecordType;
+  MET_FieldRecordType * mF = new MET_FieldRecordType();
   MET_InitReadField( mF, "NDims", MET_INT, true );
   m_Fields.push_back( mF );
 
-  int nDimsRecNum = MET_GetFieldRecordNumber( "NDims", &m_Fields );
+  const int nDimsRecNum = MET_GetFieldRecordNumber( "NDims", &m_Fields );
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitReadField( mF, "Values", MET_FLOAT_ARRAY, true, nDimsRecNum );
   m_Fields.push_back( mF );
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitReadField( mF, "Matrix", MET_FLOAT_MATRIX, true, nDimsRecNum );
   m_Fields.push_back( mF );
 
-  mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "WhitenMeans", MET_FLOAT_ARRAY, false,
-    nDimsRecNum );
+  mF = new MET_FieldRecordType();
+  MET_InitReadField( mF, "WhitenMeans", MET_FLOAT_ARRAY, false, nDimsRecNum );
   m_Fields.push_back( mF );
 
-  mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "WhitenStdDevs", MET_FLOAT_ARRAY, false,
-    nDimsRecNum );
+  mF = new MET_FieldRecordType();
+  MET_InitReadField( mF, "WhitenStdDevs", MET_FLOAT_ARRAY, false, nDimsRecNum );
   m_Fields.push_back( mF );
 }
 
-void MetaLDA::
-M_SetupWriteFields( void )
+void MetaLDA
+::M_SetupWriteFields( void )
 {
-  strcpy( m_FormTypeName, "LDA" );
+  std::strcpy( m_FormTypeName, "LDA" );
   MetaForm::M_SetupWriteFields();
 
-  MET_FieldRecordType * mF;
-
-  mF = new MET_FieldRecordType;
+  MET_FieldRecordType * mF = new MET_FieldRecordType();
   MET_InitWriteField( mF, "NDims", MET_INT, m_LDAValues.size() );
   m_Fields.push_back( mF );
 
-  int nDims = m_LDAValues.size();
+  const int nDims = m_LDAValues.size();
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitWriteField( mF, "Values", MET_FLOAT_ARRAY, nDims,
-    m_LDAValues.data_block() );
+                      m_LDAValues.data_block() );
   m_Fields.push_back( mF );
 
-  mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType();
   MET_InitWriteField( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
-    m_LDAMatrix.data_block() );
+                      m_LDAMatrix.data_block() );
   m_Fields.push_back( mF );
 
-  int tfCount = m_WhitenMeans.size();
+  const int tfCount = m_WhitenMeans.size();
 
   if( tfCount > 0 )
     {
-    double tf[ 4096 ];
-    mF = new MET_FieldRecordType;
-    for( int i=0; i<tfCount; i++ )
+    double tf[4096];
+    mF = new MET_FieldRecordType();
+    for( int i = 0; i < tfCount; i++ )
       {
       tf[i] = m_WhitenMeans[i];
       }
+
     MET_InitWriteField( mF, "WhitenMeans", MET_FLOAT_ARRAY, tfCount, tf );
     m_Fields.push_back( mF );
 
-    mF = new MET_FieldRecordType;
-    for( int i=0; i<tfCount; i++ )
+    mF = new MET_FieldRecordType();
+    for( int i = 0; i < tfCount; i++ )
       {
       tf[i] = m_WhitenStdDevs[i];
       }
-    MET_InitWriteField( mF, "WhitenStdDevs", MET_FLOAT_ARRAY, tfCount, tf);
+
+    MET_InitWriteField( mF, "WhitenStdDevs", MET_FLOAT_ARRAY, tfCount, tf );
     m_Fields.push_back( mF );
     }
 }
 
-
-bool MetaLDA::
-M_Read( void )
+bool MetaLDA
+::M_Read( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Loading Header"
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Loading header."
                         << METAIO_STREAM::endl;
     }
+
   if( !MetaForm::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error parsing file"
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Error parsing file."
                         << METAIO_STREAM::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Parsing Header"
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Parsing header."
                         << METAIO_STREAM::endl;
     }
-  MET_FieldRecordType * mF;
 
   unsigned int nDims = 0;
-  mF = MET_GetFieldRecord( "NDims", &m_Fields );
+  MET_FieldRecordType * mF = MET_GetFieldRecord( "NDims", &m_Fields );
   if( mF && mF->defined )
     {
     nDims = ( unsigned int )mF->value[0];
@@ -567,50 +534,50 @@ M_Read( void )
     }
   else
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: NDims required"
-      << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: NDims required."
+                        << METAIO_STREAM::endl;
     return false;
     }
 
   mF = MET_GetFieldRecord( "Values", &m_Fields );
   if( mF && mF->defined )
     {
-    for( unsigned int i=0; i<nDims; i++ )
+    for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_LDAValues[i] = ( double )mF->value[i];
+      m_LDAValues[i] = (double)mF->value[i];
       }
     }
   else
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: Values required"
-      << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: Values required."
+                        << METAIO_STREAM::endl;
     return false;
     }
 
   mF = MET_GetFieldRecord( "Matrix", &m_Fields );
   if( mF && mF->defined )
     {
-    for( unsigned int i=0; i<nDims; i++ )
+    for( unsigned int i = 0; i < nDims; i++ )
       {
-      for( unsigned int j=0; j<nDims; j++ )
+      for( unsigned int j = 0; j < nDims; j++ )
         {
-        m_LDAMatrix[i][j] = ( double )mF->value[i*nDims + j];
+        m_LDAMatrix[i][j] = (double)mF->value[i * nDims + j];
         }
       }
     }
   else
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: Matrix required"
-      << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: Matrix required."
+                        << METAIO_STREAM::endl;
     return false;
     }
 
   mF = MET_GetFieldRecord( "WhitenMeans", &m_Fields );
   if( mF && mF->defined )
     {
-    for( unsigned int i=0; i<nDims; i++ )
+    for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_WhitenMeans[i] = ( double )mF->value[i];
+      m_WhitenMeans[i] = (double)mF->value[i];
       }
     }
   else
@@ -621,9 +588,9 @@ M_Read( void )
   mF = MET_GetFieldRecord( "WhitenStdDevs", &m_Fields );
   if( mF && mF->defined )
     {
-    for( unsigned int i=0; i<nDims; i++ )
+    for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_WhitenStdDevs[i] = ( double )mF->value[i];
+      m_WhitenStdDevs[i] = (double)mF->value[i];
       }
     }
   else

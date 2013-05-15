@@ -21,17 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#include <cstdlib>
-#include <iostream>
-
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
 
-int main ( int , char ** )
+int main( int, char *[] )
 {
   return EXIT_SUCCESS;
 }
