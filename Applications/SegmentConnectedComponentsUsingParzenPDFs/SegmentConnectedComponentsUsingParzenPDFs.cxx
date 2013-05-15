@@ -76,6 +76,24 @@ void GetImageTypes (std::vector<std::string> fileNames,
     }
 }
 
+//
+// Helper function to check whether the attributes of input image match
+// those of the labelmap.
+//
+template < class InputImageType, class MaskImageType >
+bool
+CheckImageAttributes(const InputImageType * input,
+                     const MaskImageType * mask)
+{
+  assert( input );
+  assert( mask );
+  return input->GetOrigin() == mask->GetOrigin()
+         && input->GetSpacing() == mask->GetSpacing()
+         && input->GetDirection() == mask->GetDirection()
+         && input->GetLargestPossibleRegion().GetIndex() == mask->GetLargestPossibleRegion().GetIndex()
+         && input->GetLargestPossibleRegion().GetSize() == mask->GetLargestPossibleRegion().GetSize();
+}
+
 template <class T, unsigned int N>
 int DoIt( int argc, char *argv[] )
 {
@@ -101,6 +119,11 @@ int DoIt( int argc, char *argv[] )
   typename PDFSegmenterType::Pointer pdfSegmenter = PDFSegmenterType::New();
 
   timeCollector.Start("LoadData");
+
+  MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
+  inMaskReader->SetFileName( labelmap.c_str() );
+  inMaskReader->Update();
+  pdfSegmenter->SetLabelmap( inMaskReader->GetOutput() );
 
   typename ImageReaderType::Pointer reader;
   for(unsigned int i=0; i<N; i++)
@@ -129,13 +152,13 @@ int DoIt( int argc, char *argv[] )
       return 1;
       }
     reader->Update();
+    if ( !CheckImageAttributes(reader->GetOutput(), inMaskReader->GetOutput()) )
+      {
+      std::cout << "Image attributes of inputVolume" << i+1 << " and labelmap do not match.  Please check size, spacing, origin." << std::endl;
+      return EXIT_FAILURE;
+      }
     pdfSegmenter->SetInputVolume( i, reader->GetOutput() );
     }
-
-  MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
-  inMaskReader->SetFileName( labelmap.c_str() );
-  inMaskReader->Update();
-  pdfSegmenter->SetLabelmap( inMaskReader->GetOutput() );
 
   timeCollector.Stop("LoadData");
 
