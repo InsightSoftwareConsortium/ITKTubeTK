@@ -62,7 +62,7 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
   ConstDocumentPointer doc = static_cast<const DocumentType * > (this->ProcessObject::GetInput(0) );
   if( m_ApplyTransforms )
     {
-    return ComposeTransforms( doc, m_startTransforms, m_endTransforms );
+    return ComposeTransforms( doc, m_StartTransforms, m_EndTransforms );
     }
   else
     {
@@ -77,8 +77,8 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 ::ApplyTransforms( int start, int end )
 {
   m_ApplyTransforms = true;
-  m_startTransforms = start;
-  m_endTransforms = end;
+  m_StartTransforms = start;
+  m_EndTransforms = end;
 }
 
 

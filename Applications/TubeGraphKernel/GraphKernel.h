@@ -140,9 +140,6 @@ public:
 
 protected:
 
-  /** Two input graphs */
-  GraphType m_G0, m_G1;
-
   /** Build a string representation of the neighbors of v-th vertex */
   static std::string BuildNeighborStr(const GraphType &G, int v);
 
@@ -154,6 +151,10 @@ protected:
 
   /** In-place counting sort on int vector */
   static void CountingSort(std::vector<int> & vec);
+
+  /** Two input graphs */
+  GraphType m_G0;
+  GraphType m_G1;
 
 }; // End class GraphKernel
 

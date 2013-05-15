@@ -58,21 +58,16 @@ public:
 
   /** CTOR - Consumer sets graphs */
   ShortestPathKernel(const GraphType &G0, const GraphType &G1)
-    : GraphKernel(G0, G1), m_edgeKernelType(EDGE_KERNEL_DEL) {}
+    : GraphKernel(G0, G1), m_EdgeKernelType(EDGE_KERNEL_DEL) {}
 
   /** Sets edge-kernel type */
-  void SetEdgeKernel(int type)
-    { m_edgeKernelType = type; }
+  void SetEdgeKernel(int edgeKernelType)
+    { m_EdgeKernelType = edgeKernelType; }
 
   /** Computes the SP kernel value, see [1], Section 4.2 */
   double Compute( void );
 
 private:
-
-  /** Floyd-transformed graphs */
-  GraphType m_FG0, m_FG1;
-
-  int m_edgeKernelType;
 
   /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
   GraphType FloydTransform(const GraphType &in);
@@ -85,6 +80,11 @@ private:
       std::swap( first, second );
       }
     }
+
+  /** Floyd-transformed graphs */
+  GraphType m_FG0;
+  GraphType m_FG1;
+  int       m_EdgeKernelType;
 
 }; // End class ShortestPathKernel
 

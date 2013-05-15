@@ -108,7 +108,7 @@ void WLSubtreeKernel::UpdateLabelCompression( GraphType &G,
 //-----------------------------------------------------------------------------
 std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
 {
-  int dim = m_labelCount;
+  int dim = m_LabelCount;
   std::vector<int> phi(dim, 0);
   int N = num_vertices(G);
 
@@ -117,8 +117,8 @@ std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
   for( int i=0; i<N; ++i )
     {
     int tp = G[vertex(i,G)].type;
-    it = m_labelMap[h].find(boost::lexical_cast<std::string>(tp));
-    if( it != m_labelMap[h].end() )
+    it = m_LabelMap[h].find(boost::lexical_cast<std::string>(tp));
+    if( it != m_LabelMap[h].end() )
       {
       int cLab = (*it).second;
       //tube::FmtDebugMessage( "(N) Relabel %d (%s) -> %d",
@@ -128,14 +128,14 @@ std::vector<int> WLSubtreeKernel::BuildPhi( GraphType &G )
       }
     }
 
-  for( h=1; h<m_subtreeHeight; ++h )
+  for( h=1; h<m_SubtreeHeight; ++h )
     {
     std::vector<int> relabel(N,-1);
     for( int i=0; i<N; ++i )
       {
       std::string nbStr = BuildNeighborStr(G, i);
-      it = m_labelMap[h].find(nbStr);
-      if( it != m_labelMap[h].end() )
+      it = m_LabelMap[h].find(nbStr);
+      if( it != m_LabelMap[h].end() )
         {
         int cLab = (*it).second;
         relabel[i] = cLab;

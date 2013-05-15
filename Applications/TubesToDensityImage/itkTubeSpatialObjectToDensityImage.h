@@ -110,7 +110,7 @@ public:
   /** Sets the element spacing */
   void SetSpacing( SpacingType );
 
-  void SetMaxDensityIntensity( DensityPixelType max ) { m_max = max; }
+  void SetMaxDensityIntensity( DensityPixelType max ) { m_Max = max; }
 
   void Update( void );
 
@@ -138,7 +138,7 @@ private:
   SpacingType                       m_Spacing;
 
   /** Max value allowed for inverse intensity filter */
-  DensityPixelType                  m_max;
+  DensityPixelType                  m_Max;
   bool                              m_UseSquareDistance;
 
 }; // End class TubeSpatialObjectToDensityImage

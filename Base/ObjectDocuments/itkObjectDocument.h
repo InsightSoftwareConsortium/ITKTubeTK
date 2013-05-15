@@ -83,21 +83,21 @@ public:
   /** Get the number of transforms associated with the object */
   unsigned int GetNumberOfTransforms( void ) const
     {
-    return static_cast<unsigned int>(m_transformList.size());
+    return static_cast<unsigned int>(m_TransformList.size());
     }
 
   /** Get a std::vector of all the transform file names in order */
-  TransformNameListType GetTransformNames( void ) const { return m_transformList; }
+  TransformNameListType GetTransformNames( void ) const { return m_TransformList; }
 
   /** Add a transform name to the end of the transform list */
-  void AddTransformNameToBack( const std::string & trans ) { m_transformList.push_back( trans ); }
+  void AddTransformNameToBack( const std::string & trans ) { m_TransformList.push_back( trans ); }
 
   /** Remove last transform from the list -- Does nothing if there are no transforms */
   void RemoveTransformNameFromBack( void )
     {
-    if( !m_transformList.empty() )
+    if( !m_TransformList.empty() )
       {
-      m_transformList.pop_back();
+      m_TransformList.pop_back();
       }
     }
 
@@ -106,8 +106,8 @@ public:
     os << "ObjectName: " << m_ObjectName << std::endl;
 
     os<< "Transform List: " << std::endl;
-    TransformNameListType::const_iterator it = m_transformList.begin();
-    while( it != m_transformList.end() )
+    TransformNameListType::const_iterator it = m_TransformList.begin();
+    while( it != m_TransformList.end() )
       {
       std::cout << *it << std::endl;
       ++it;
@@ -127,8 +127,8 @@ protected:
     os << indent << "ObjectName: " << m_ObjectName << std::endl;
 
     os << indent << "Transform List: " << std::endl;
-    TransformNameListType::const_iterator it = m_transformList.begin();
-    while( it != m_transformList.end() )
+    TransformNameListType::const_iterator it = m_TransformList.begin();
+    while( it != m_TransformList.end() )
       {
       std::cout << *it << std::endl;
       ++it;
@@ -138,7 +138,7 @@ protected:
 private:
 
   ObjectNameType                    m_ObjectName;
-  TransformNameListType             m_transformList;
+  TransformNameListType             m_TransformList;
 
 }; // End class ObjectDocument
 

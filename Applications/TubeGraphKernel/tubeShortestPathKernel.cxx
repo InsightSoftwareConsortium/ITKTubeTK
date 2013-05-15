@@ -145,7 +145,7 @@ double ShortestPathKernel::Compute( void )
         }
 
       double edgeKernelValue = 0.0;
-      switch( m_edgeKernelType )
+      switch( m_EdgeKernelType )
         {
         case EDGE_KERNEL_DEL:
           int cmpSrcLabel = m_FG1[source(e1, m_FG1)].type;

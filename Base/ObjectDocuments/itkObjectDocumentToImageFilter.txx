@@ -60,7 +60,7 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
   OutputImagePointer output = ReadDocument( document );
   if( this->m_ApplyTransforms )
     {
-    TransformPointer trans = this->ComposeTransforms( document, this->m_startTransforms, this->m_endTransforms );
+    TransformPointer trans = this->ComposeTransforms( document, this->m_StartTransforms, this->m_EndTransforms );
     output = ResampleImage( output, trans );
     }
   this->ProcessObject::SetNthOutput( 0, output );

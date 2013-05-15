@@ -49,7 +49,7 @@ namespace tube
  *
  * [1]  N. Shervashidze, P. Schweitzer, E.-J. Van Leeuwen and
  *      K. M. Borgwardt, "Weisfeiler-Lehman graph kernels", In:
- *      JMLR 12(Sep), pp. 2539−2561, 2011.
+ *      JMLR 12(Sep), pp. 2539-2561, 2011.
  *
  * Please read this article for any further details on this
  * kind of graph kernel. Naming of variables in this class
@@ -69,9 +69,9 @@ public:
                    const int & labelCount,
                    int subtreeHeight)
                      : GraphKernel(G0, G1),
-                       m_subtreeHeight(subtreeHeight),
-                       m_labelMap(labelMap),
-                       m_labelCount(labelCount)
+                       m_SubtreeHeight(subtreeHeight),
+                       m_LabelMap(labelMap),
+                       m_LabelCount(labelCount)
     {
     }
 
@@ -89,18 +89,7 @@ public:
                              int & cLabCounter,
                              int subtreeHeight);
 
-
 private:
-
-  /** Our initial set of vertex labels */
-  std::set<int>              m_initialLabelSet;
-
-  /** Subtree height */
-  int                        m_subtreeHeight;
-
-  /** Label map + Count */
-  const LabelMapVectorType & m_labelMap;
-  const int                  m_labelCount;
 
   /*
    * Take a graph 'G' and use the label map information and the number of
@@ -108,6 +97,16 @@ private:
    * for the graph, see [1]
    */
   std::vector<int> BuildPhi( GraphType &G );
+
+  /** Our initial set of vertex labels */
+  std::set<int>              m_InitialLabelSet;
+
+  /** Subtree height */
+  int                        m_SubtreeHeight;
+
+  /** Label map + Count */
+  const LabelMapVectorType & m_LabelMap;
+  const int                  m_LabelCount;
 
 }; // End class WLSubtreeKernel
 

@@ -91,7 +91,7 @@ protected:
 
   int                      m_NObjects;
 
-  ObjectListType           m_objects;
+  ObjectListType           m_Objects;
   const unsigned int       m_MaxNumTransforms;  //Maximum number of transforms
 
 }; // End class MetaObjectDocument
