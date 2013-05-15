@@ -258,8 +258,6 @@ ImageToTubeRigidMetric< TFixedImage,
 
   char childName[] = "Tube";
   return this->m_MovingSpatialObject->GetChildren( 999999, childName );
-  //return this->m_MovingSpatialObject
-  // ->GetChildren( this->m_MovingSpatialObject->GetMaximumDepth(), childName );
 }
 
 

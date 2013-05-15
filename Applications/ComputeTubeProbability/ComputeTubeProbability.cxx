@@ -147,6 +147,7 @@ int DoIt(int argc, char **argv)
     ++tubeIt;
     }
   writeStream.close();
+  delete tubeList;
 
   progressReporter.Report(1.0);
   progressReporter.End();

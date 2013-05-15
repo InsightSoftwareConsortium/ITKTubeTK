@@ -67,21 +67,6 @@ TubeNetworkExtractor<TInputImage, TInputMask>
   m_Image = inputImage;
   m_TubeNum = 0;
 
-  /*
-  m_TubeNetwork->GetTubes()->clear();
-  m_TubeNetwork->SetNumDimensions( 3 );
-  vnl_vector<unsigned int> size_( 3 );
-  ImageType::SizeType imageSize =
-  m_Image->GetLargestPossibleRegion().GetSize();
-
-  for( unsigned int i=0;i<ImageDimension;i++ )
-    {
-    size_( i ) = imageSize[i];
-    }
-
-  m_TubeNetwork->SetDimSize( size_ );
-  */
-
   TubeExtractor<TInputImage>::SetInputImage( m_Image );
 
   m_AEThresh = 0;
@@ -208,6 +193,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
     }
 
   tubeList->clear();
+  delete tubeList;
   */
 }
 

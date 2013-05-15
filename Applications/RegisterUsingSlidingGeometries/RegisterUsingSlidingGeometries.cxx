@@ -562,6 +562,10 @@ int DoIt( int argc, char * argv[] )
       else
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         return EXIT_FAILURE;
         }
       }
@@ -602,6 +606,10 @@ int DoIt( int argc, char * argv[] )
       else
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         return EXIT_FAILURE;
         }
       }
@@ -623,6 +631,10 @@ int DoIt( int argc, char * argv[] )
     else
       {
       timeCollector.Report();
+      if( tubeSpatialObjectFileName != "" )
+        {
+        delete tubeList;
+        }
       return EXIT_FAILURE;
       }
     timeCollector.Stop( "Loading weight structures image" );
@@ -633,6 +645,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "Lambda must be positive." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -641,6 +657,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "Gamma must be positive." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -649,6 +669,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "You must provide a list of number of iterations." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -657,6 +681,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "You must provide regularization weightings." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -808,36 +836,15 @@ int DoIt( int argc, char * argv[] )
       tube::ErrorMessage( "Writing volume: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
+      if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+        {
+        delete tubeList;
+        }
       delete [] iterations;
       return EXIT_FAILURE;
       }
     timeCollector.Stop( "Write deformation field" );
     }
-
-//  // Output the transformation gridTransform (commented out for now, as not yet
-//  // supported in 3D Slicer)
-//  if( outputTransformFileName != "" )
-//    {
-//    timeCollector.Start( "Write output transform" );
-//    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
-//    GridWriterType::Pointer gridWriter = GridWriterType::New();
-//    gridWriter->SetFileName( outputTransformFileName );
-//    gridWriter->SetUseCompression( true );
-//    gridWriter->SetInput( orientOutput->GetOutput() );
-//    try
-//      {
-//      gridWriter->Update();
-//      }
-//    catch( itk::ExceptionObject & err )
-//      {
-//      tube::ErrorMessage( "Writing volume: Exception caught: "
-//                          + std::string(err.GetDescription()) );
-//      timeCollector.Report();
-//      delete [] iterations;
-//      return EXIT_FAILURE;
-//      }
-//    timeCollector.Stop( "Write output transform" );
-//    }
 
   // Write the resampled moving image (in the space of the fixed image)
   if( outputResampledImageFileName != "" )
@@ -857,6 +864,10 @@ int DoIt( int argc, char * argv[] )
       tube::ErrorMessage( "Writing volume: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
+      if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+        {
+        delete tubeList;
+        }
       delete [] iterations;
       return EXIT_FAILURE;
       }
@@ -912,6 +923,10 @@ int DoIt( int argc, char * argv[] )
         {
         tube::ErrorMessage( "Failed to find an extension for normal matrix" );
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         delete [] iterations;
         return EXIT_FAILURE;
         }
@@ -932,6 +947,10 @@ int DoIt( int argc, char * argv[] )
           outputFileName ) )
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         delete [] iterations;
         return EXIT_FAILURE;
         }
@@ -963,6 +982,10 @@ int DoIt( int argc, char * argv[] )
             outputFileName ) )
           {
           timeCollector.Report();
+          if( tubeSpatialObjectFileName != "" )
+            {
+            delete tubeList;
+            }
           delete [] iterations;
           return EXIT_FAILURE;
           }
@@ -1016,6 +1039,10 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          if( tubeSpatialObjectFileName != "" )
+            {
+            delete tubeList;
+            }
           delete [] iterations;
           return EXIT_FAILURE;
           }
@@ -1028,6 +1055,10 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          if( tubeSpatialObjectFileName != "" )
+            {
+            delete tubeList;
+            }
           delete [] iterations;
           return EXIT_FAILURE;
           }
@@ -1051,6 +1082,10 @@ int DoIt( int argc, char * argv[] )
           outputWeightStructuresImageFileName ) )
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         delete [] iterations;
         return EXIT_FAILURE;
         }
@@ -1063,6 +1098,10 @@ int DoIt( int argc, char * argv[] )
           outputWeightStructuresImageFileName ) )
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         delete [] iterations;
         return EXIT_FAILURE;
         }
