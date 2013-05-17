@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __tubeCLIProgressReporter_h
 #define __tubeCLIProgressReporter_h
 
-#include "ModuleProcessInformation.h"
-#include "itkTimeProbe.h"
+#include <itkTimeProbe.h>
+#include <ModuleProcessInformation.h>
 
 namespace tube
 {
@@ -57,7 +57,7 @@ public:
     {
     if( m_ProcessInformation )
       {
-      strncpy( m_ProcessInformation->ProgressMessage,
+      std::strncpy( m_ProcessInformation->ProgressMessage,
               this->m_Process.c_str(), 1023 );
       m_ProcessInformation->Progress = fraction;
       // if( m_Fraction != 1.0 )
@@ -114,7 +114,7 @@ public:
       {
       m_ProcessInformation->Progress = 0;
       m_ProcessInformation->StageProgress = 0;
-      strncpy( m_ProcessInformation->ProgressMessage,
+      std::strncpy( m_ProcessInformation->ProgressMessage,
               m_Process.c_str(), 1023 );
 
       if( m_ProcessInformation->ProgressCallbackFunction

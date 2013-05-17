@@ -24,7 +24,9 @@ limitations under the License.
 #ifndef __tubeMatrixMath_h
 #define __tubeMatrixMath_h
 
+#include <vnl/vnl_math.h>
 #include <vnl/vnl_vector_ref.h>
+
 #define EIGEN_MAX_ITERATIONS 100
 
 namespace tube

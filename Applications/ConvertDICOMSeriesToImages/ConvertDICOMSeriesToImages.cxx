@@ -36,7 +36,7 @@ limitations under the License.
 #include <gdcm/src/gdcmDocEntry.h>
 #include <gdcm/src/gdcmSerieHelper.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 const int PatientNameGroup = 0x0010;
 const int PatientNameElement = 0x0010;
@@ -592,9 +592,9 @@ int main( int argc, char* argv[] )
           }
         else
           {
-          double sliceThickness = atof(sequenceName.c_str());
+          double sliceThickness = std::atof(sequenceName.c_str());
           char st[80];
-          sprintf(st, "%0.2f", sliceThickness);
+          std::sprintf(st, "%0.2f", sliceThickness);
           sequenceName = st;
           }
         }
@@ -616,16 +616,16 @@ int main( int argc, char* argv[] )
                                                    SpacingElement );
         int split = spacing.find_first_of("\\");
         // int len = spacing.size()-split-1; UNUSED
-        double xSpacing = atof(spacing.substr(0,split).c_str());
-        // double ySpacing = atof(spacing.substr(split+1,len).c_str()); UNUSED
+        double xSpacing = std::atof(spacing.substr(0,split).c_str());
+        // double ySpacing = std::atof(spacing.substr(split+1,len).c_str()); UNUSED
         std::string pos = file->GetEntryValue( PositionGroup, PositionElement );
         int splitX = pos.find_first_of("\\");
         int splitY = pos.find_first_of("\\", splitX+1);
         int lenY = splitY-splitX-1;
         int lenZ = pos.size()-splitY-1;
-        double xPos = atof(pos.substr(0, splitY).c_str());
-        double yPos = atof(pos.substr(splitX+1, lenY).c_str());
-        double zPos = atof(pos.substr(splitY+1, lenZ).c_str());
+        double xPos = std::atof(pos.substr(0, splitY).c_str());
+        double yPos = std::atof(pos.substr(splitX+1, lenY).c_str());
+        double zPos = std::atof(pos.substr(splitY+1, lenZ).c_str());
         file = (*(nameGenerator->GetSeriesHelper()
                                ->GetSingleSerieUIDFileSet(
                                         seriesIdentifier )))[1];
@@ -634,20 +634,20 @@ int main( int argc, char* argv[] )
         splitY = pos.find_first_of("\\", splitX+1);
         lenY = splitY-splitX-1;
         lenZ = pos.size()-splitY-1;
-        xPos = (xPos - atof(pos.substr(0, splitY).c_str()));
-        yPos = (yPos - atof(pos.substr(splitX+1, lenY).c_str()));
-        zPos = (zPos - atof(pos.substr(splitY+1, lenZ).c_str()));
-        double zSpacing = sqrt(xPos*xPos + yPos*yPos + zPos*zPos);
+        xPos = (xPos - std::atof(pos.substr(0, splitY).c_str()));
+        yPos = (yPos - std::atof(pos.substr(splitX+1, lenY).c_str()));
+        zPos = (zPos - std::atof(pos.substr(splitY+1, lenZ).c_str()));
+        double zSpacing = vcl_sqrt(xPos*xPos + yPos*yPos + zPos*zPos);
         if(processingSplit)
           {
-          sprintf(coord, "%0.2f_%0.2f_%d_%03d", xSpacing, zSpacing,
+          std::sprintf(coord, "%0.2f_%0.2f_%d_%03d", xSpacing, zSpacing,
                                                 (int)(fileNames.size()),
                                                 (int)(splitVolumeStart
                                                      /(double)splitNumber));
           }
         else
           {
-          sprintf(coord, "%0.2f_%0.2f_%d", xSpacing, zSpacing,
+          std::sprintf(coord, "%0.2f_%0.2f_%d", xSpacing, zSpacing,
                                            (int)(fileNames.size()));
           }
         }
@@ -736,7 +736,7 @@ int main( int argc, char* argv[] )
           fileNum++)
         {
         char fileNumString[100];
-        sprintf(fileNumString, "%04d", fileNum-splitVolumeStart);
+        std::sprintf(fileNumString, "%04d", fileNum-splitVolumeStart);
 
         gdcm::File *newfile = (*(nameGenerator->GetSeriesHelper()
                                            ->GetSingleSerieUIDFileSet(
@@ -790,7 +790,7 @@ int main( int argc, char* argv[] )
 
           // fileReader = new gdcm::FileHelper( newfile );
 
-          // uint8_t * imageData = fileReader->GetImageData();
+          // unsigned char * imageData = fileReader->GetImageData();
 
           //StudyDate : 0x0008, 0x0020);
           //std::string studyDate = newfile->GetEntryValue(0x0008, 0x0020).c_str();

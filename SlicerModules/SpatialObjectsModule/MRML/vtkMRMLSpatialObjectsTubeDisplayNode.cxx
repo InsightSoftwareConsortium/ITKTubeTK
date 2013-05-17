@@ -102,14 +102,14 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::ReadXMLAttributes(const char** atts)
     attName = *(atts++);
     attValue = *(atts++);
 
-    if(!strcmp(attName, "tubeRadius"))
+    if(!std::strcmp(attName, "tubeRadius"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> this->TubeRadius;
       }
 
-    if(!strcmp(attName, "tubeNumberOfSides"))
+    if(!std::strcmp(attName, "tubeNumberOfSides"))
       {
       std::stringstream ss;
       ss << attValue;

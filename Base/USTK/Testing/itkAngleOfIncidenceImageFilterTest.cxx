@@ -93,7 +93,7 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv[] )
   double sheetnessThresholdValue = 0.1;
   if( argc > 7 )
     {
-    sheetnessThresholdValue = atof( argv[7] );
+    sheetnessThresholdValue = std::atof( argv[7] );
     }
   thresholdFilter->ThresholdBelow ( sheetnessThresholdValue );
   thresholdFilter->Update();
@@ -106,9 +106,9 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv[] )
   AngleOfIncidenceImageFilterType::Pointer filterAngleOfIncidence = AngleOfIncidenceImageFilterType::New();
 
   //Read in the ultrasound probe origin (X,Y,Z)
-  double UltrasoundProbeOriginX = atof( argv[4] );
-  double UltrasoundProbeOriginY = atof( argv[5] );
-  double UltrasoundProbeOriginZ = atof( argv[6] );
+  double UltrasoundProbeOriginX = std::atof( argv[4] );
+  double UltrasoundProbeOriginY = std::atof( argv[5] );
+  double UltrasoundProbeOriginZ = std::atof( argv[6] );
 
   itk::Vector< double, 3 > UltrasoundProbeOriginVector;
 

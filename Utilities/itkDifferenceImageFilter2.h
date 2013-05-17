@@ -24,9 +24,8 @@ limitations under the License.
 #ifndef __itkDifferenceImageFilter2_h
 #define __itkDifferenceImageFilter2_h
 
-#include "itkImageToImageFilter.h"
-#include "itkNumericTraits.h"
-#include "itkArray.h"
+#include <itkArray.h>
+#include <itkImageToImageFilter.h>
 
 namespace itk
 {

@@ -125,7 +125,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv[] )
   std::cout << "Number of LDA = " << func->GetNumberOfLDA() << std::endl;
   for( unsigned int i=0; i<3; i++ )
     {
-    sprintf( filename, "%s.lda%02u.mha", argv[3], i );
+    std::sprintf( filename, "%s.lda%02u.mha", argv[3], i );
     writer->SetFileName( filename );
     writer->SetInput( func->GetLDAImage(i) );
     std::cout << "LDA" << i << " = " << func->GetLDAValue(i) << " : "
@@ -143,7 +143,7 @@ int itkTubeRidgeSeedGeneratorTest(int argc, char* argv[] )
 
   for( unsigned int i=0; i<func->GetNumberOfFeatures(); i++ )
     {
-    sprintf( filename, "%s.f%02u.mha", argv[3], i );
+    std::sprintf( filename, "%s.f%02u.mha", argv[3], i );
     writer->SetFileName( filename );
     writer->SetInput( func->GetFeatureImage(i) );
     try

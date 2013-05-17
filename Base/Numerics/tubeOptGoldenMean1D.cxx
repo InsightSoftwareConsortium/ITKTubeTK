@@ -27,8 +27,8 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeOptGoldenMean1D.h"
-#include <cmath>
-#include <iostream>
+
+#include <vnl/vnl_math.h>
 
 namespace tube
 {
@@ -68,13 +68,13 @@ bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
   double xstep = m_XStep;
   int dir = 1;
 
-  double v1 = v-std::abs(v*0.0001);
+  double v1 = v-vnl_math_abs(v*0.0001);
   if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
     {
     v1 = maxSign * m_FuncVal->value( *extX+dir*xstep );
     }
 
-  double v2 = v1-std::abs(v1*0.0001);
+  double v2 = v1-vnl_math_abs(v1*0.0001);
   if( *extX-dir*xstep <= m_XMax && *extX-dir*xstep >= m_XMin )
     {
     v2 = maxSign * m_FuncVal->value( *extX-dir*xstep );

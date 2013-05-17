@@ -225,7 +225,7 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
 
     SheetnessImageType::PixelType sheetnessValue;
     sheetnessValue = sheetnessValueImageIterator.Get();
-    if( (fabs(largest) >  toleranceEigenValues)  &&
+    if( (vnl_math_abs(largest) >  toleranceEigenValues)  &&
         (sheetnessValue >  sheetnessThresholdValue) )
       {
       //Assuming eigenvectors are rows

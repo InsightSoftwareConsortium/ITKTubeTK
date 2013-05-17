@@ -360,7 +360,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
       ev[0] = ES.get_eigenvalue(0);
       ev[1] = ES.get_eigenvalue(1);
 
-      if( vcl_abs(ev[0]) > vcl_abs(ev[1])  )
+      if( vnl_math_abs(ev[0]) > vnl_math_abs(ev[1])  )
         {
         std::swap(ev[0], ev[1]);
         }
@@ -401,7 +401,7 @@ TubeEnhancingDiffusion2DImageFilter<PixelT,DimensionT>::TubenessFunction2D(
 
   const Precision   Rb2 = (l1 * l1) / (l2 * l2); // btwn 0 and 1
   const Precision   S2 =  (l1 * l1) + (l2 *l2);
-  //const Precision   T = vcl_exp(-(2*smoothC*smoothC)/(vcl_abs(l1)*l2*l2));
+  //const Precision   T = vcl_exp(-(2*smoothC*smoothC)/(vnl_math_abs(l1)*l2*l2));
 
   vesselness = vcl_exp( -Rb2/vb2 ) * (1.0 - vcl_exp( -S2/vc2 ) );
 
@@ -439,7 +439,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
     ev[0] = ES.get_eigenvalue(0);
     ev[1] = ES.get_eigenvalue(1);
 
-    if( vcl_abs(ev[0]) > vcl_abs(ev[1]) )
+    if( vnl_math_abs(ev[0]) > vnl_math_abs(ev[1]) )
       {
       std::swap(ev[0], ev[1]);
       }

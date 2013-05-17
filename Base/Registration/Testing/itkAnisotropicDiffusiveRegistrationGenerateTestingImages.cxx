@@ -42,7 +42,7 @@ limitations under the License.
 #include "vtkPolyDataNormals.h"
 #include "vtkVersion.h"
 
-#include <math.h>
+#include <cmath>
 
 // Template function to fill in an image with a sphere.
 template <class TImage>
@@ -161,7 +161,7 @@ bool PointInTube( TIndex index, double * tubeLeftPoint, double radius)
     distance += vnl_math_sqr(index[i] - centerPoint[i]);
     }
 
-  return sqrt(distance) <= radius;
+  return vcl_sqrt(distance) <= radius;
 }
 
 // Template function to fill in an image with two tubes
@@ -345,7 +345,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
   std::cout << "Generate registration input images" << std::endl;
 
   // Image parameters
-  ImageType::SizeValueType sizeValue = atoi( argv[6] );
+  ImageType::SizeValueType sizeValue = std::atoi( argv[6] );
   double      originValue = 0.0;
   double      spacingValue = 1.0;
 
@@ -387,7 +387,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
 
   enum geometryTypes { circles, boxes, tubes };
 
-  int geometry = atoi( argv[4] );
+  int geometry = std::atoi( argv[4] );
   if( geometry == circles )
     {
     double movingCenter[ImageDimension];
@@ -512,8 +512,8 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     if( defineShortTube )
       {
       numPoints = static_cast<int>(length) + 1;
-      bottomX = ceil( fixedBottomTubeLeftPoint[0] );
-      topX = ceil( fixedTopTubeLeftPoint[0] );
+      bottomX = vnl_math_ceil( fixedBottomTubeLeftPoint[0] );
+      topX = vnl_math_ceil( fixedTopTubeLeftPoint[0] );
       }
     else
       {
@@ -560,7 +560,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     }
 
   // Scale the images to 0..1
-  bool intensityWindow = atoi( argv[5] ) == 1;
+  bool intensityWindow = std::atoi( argv[5] ) == 1;
   if(intensityWindow)
     {
     IntensityWindow<ImageType>( fixed );

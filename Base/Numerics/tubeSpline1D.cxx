@@ -22,9 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeSpline1D.h"
-#include <cmath>
-#include <iostream>
 
+#include <iostream>
 
 namespace tube
 {
@@ -348,7 +347,7 @@ curv(double x)
 
   double xpp = valueD2(x);
 
-  return xpp/pow(1.0+xp*xp, 1.5);
+  return xpp/vcl_pow(1.0+xp*xp, 1.5);
 }
 
 double Spline1D::

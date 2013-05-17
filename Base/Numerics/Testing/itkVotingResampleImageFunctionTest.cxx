@@ -71,7 +71,7 @@ int itkVotingResampleImageFunctionTest(int argc, char* argv[] )
   imReader->SetFileName( argv[2] );
   imReader->Update();
 
-  int testNumber = atoi( argv[1] );
+  int testNumber = std::atoi( argv[1] );
 
   double scale = 1;
   ImageSizeType size = imReader->GetOutput()->GetLargestPossibleRegion().GetSize();

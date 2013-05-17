@@ -92,7 +92,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
       TubeIterator++)
     {
 
-    if(!strcmp((*TubeIterator)->GetTypeName(),"VesselTubeSpatialObject"))
+    if(!std::strcmp((*TubeIterator)->GetTypeName(),"VesselTubeSpatialObject"))
       {
 
       typename TubeType::Pointer tub = TubeType::New();

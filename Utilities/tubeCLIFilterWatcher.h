@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __tubeCLIFilterWatcher_h
 #define __tubeCLIFilterWatcher_h
 
-#include "itkSimpleFilterWatcher.h"
-#include "ModuleProcessInformation.h"
+#include <itkSimpleFilterWatcher.h>
+#include <ModuleProcessInformation.h>
 
 namespace tube
 {
@@ -70,7 +70,7 @@ protected:
         {
         if( m_ProcessInformation )
           {
-          strncpy(m_ProcessInformation->ProgressMessage,
+          std::strncpy(m_ProcessInformation->ProgressMessage,
                   this->GetComment().c_str(), 1023);
           m_ProcessInformation->Progress =
             (this->GetProcess()->GetProgress() * m_Fraction + m_Start);
@@ -132,7 +132,7 @@ protected:
         {
         m_ProcessInformation->Progress = 0;
         m_ProcessInformation->StageProgress = 0;
-        strncpy(m_ProcessInformation->ProgressMessage,
+        std::strncpy(m_ProcessInformation->ProgressMessage,
                 this->GetComment().c_str(), 1023);
 
         if(m_ProcessInformation->ProgressCallbackFunction

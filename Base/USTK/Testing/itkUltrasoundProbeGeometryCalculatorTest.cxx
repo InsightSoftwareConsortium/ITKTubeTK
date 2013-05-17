@@ -83,14 +83,14 @@ int itkUltrasoundProbeGeometryCalculatorTest( int argc, char* argv[] )
   std::cout << "Start of Acquisition Radius: " << startOfAcquisitionRadius << std::endl;
 
   const double tolerance = 1.0;
-  if( vcl_abs( ultrasoundProbeOrigin[0] - 331.6 ) > tolerance ||
-      vcl_abs( ultrasoundProbeOrigin[1] - -528.6 ) >  tolerance )
+  if( vnl_math_abs( ultrasoundProbeOrigin[0] - 331.6 ) > tolerance ||
+      vnl_math_abs( ultrasoundProbeOrigin[1] - -528.6 ) >  tolerance )
     {
     std::cerr << "Did not find the correct probe origin!" << std::endl;
     return EXIT_FAILURE;
     }
 
-  if( vcl_abs( startOfAcquisitionRadius - 556.1 ) > tolerance )
+  if( vnl_math_abs( startOfAcquisitionRadius - 556.1 ) > tolerance )
     {
     std::cerr << "Did not find the correct start of acquisition radius!" << std::endl;
     return EXIT_FAILURE;

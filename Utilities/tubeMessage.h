@@ -24,14 +24,11 @@ limitations under the License.
 #ifndef __tubeMessage_h
 #define __tubeMessage_h
 
-#include <iostream>
-#include <ostream>
-#include <string>
-
 #include <cstdarg>
-#include <cstring>
 #include <cstdio>
-
+#include <cstring>
+#include <iostream>
+#include <string>
 
 namespace tube
 {

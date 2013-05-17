@@ -27,9 +27,9 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeOptBrent1D.h"
-#include "vnl/vnl_math.h"
-#include <cmath>
+
 #include <iostream>
+#include <vnl/vnl_math.h>
 
 namespace tube
 {
@@ -183,15 +183,15 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
     //std::cout << "  fx = " << fx << std::endl;
     //std::cout << "  a = " << a << std::endl;
     //std::cout << "  b = " << b << std::endl;
-    double tol1 = m_Tolerance * fabs(x) + m_Small;
+    double tol1 = m_Tolerance * vnl_math_abs(x) + m_Small;
     double tol2 = 2.0 * tol1;
-    if(fabs(x-xm) <= (tol2 - 0.5*(b-a)))
+    if(vnl_math_abs(x-xm) <= (tol2 - 0.5*(b-a)))
       {
       *extX = x;
       *extVal = maxSign*fx;
       return true;
       }
-    if(fabs(e) > tol1)
+    if(vnl_math_abs(e) > tol1)
       {
       d1 = 2.0*(b-a);
       d2 = d1;
@@ -215,7 +215,7 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
         {
         if(ok1 && ok2)
           {
-          d = (fabs(d1) < fabs(d2) ? d1 : d2);
+          d = (vnl_math_abs(d1) < vnl_math_abs(d2) ? d1 : d2);
           }
         else
           {
@@ -229,7 +229,7 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
             }
           }
 
-        if(fabs(d) <= fabs(0.5 * olde))
+        if(vnl_math_abs(d) <= vnl_math_abs(0.5 * olde))
           {
           u = x+d;
           if(u-a < tol2 || b-u < tol2)
@@ -251,7 +251,7 @@ bool OptBrent1D::m_Extreme( double *extX, double *extVal )
       {
       d = (double)0.5 * (e = (dx >= 0.0 ? a-x : b-x));
       }
-    if(fabs(d) >= tol1)
+    if(vnl_math_abs(d) >= tol1)
       {
       u = x + d;
       fu = maxSign * m_FuncVal->value(u);

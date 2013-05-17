@@ -257,7 +257,7 @@ int DoIt( MetaCommand & command )
             }
 
           metaImage->AddUserField( "ElementByteOrderMSB",
-                                  MET_STRING, strlen( "False" ), "False" );
+                                  MET_STRING, std::strlen( "False" ), "False" );
 
           writer->Write();
           break;
@@ -1500,7 +1500,7 @@ int DoIt( MetaCommand & command )
       {
       unsigned int seed = ( unsigned int )command.GetValueAsInt( *it,
         "seedValue" );
-      srand( seed );
+      std::srand( seed );
       gaussGen->Initialize( ( int )seed );
       uniformGen->Initialize( ( int )seed );
       } // end -S

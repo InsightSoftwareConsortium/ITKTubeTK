@@ -113,7 +113,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv[] )
   FunctionType::MatrixType h;
   FunctionType::MatrixType h2;
 
-  int function = atoi( argv[1] );
+  int function = std::atoi( argv[1] );
 
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( outputImage,
     outputImage->GetLargestPossibleRegion() );

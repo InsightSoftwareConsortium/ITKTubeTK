@@ -184,10 +184,10 @@ void MeanAndSigmaImageBuilder< TInputImageType,
         ProcessPixelType variance =
           ( sumSqr - ( (sum * sum ) / number )) / (number - 1);
 
-        // If Standard Deviation Calc. s = sqrt(s^2)
+        // If Standard Deviation Calc. s = vcl_sqrt(s^2)
         if( isStdDeviation )
           {
-          variance = sqrt(variance);
+          variance = vcl_sqrt(variance);
           }
         it_dev.Set( (OutputSigmaPixelType) variance );
         it_mean.Set( (OutputMeanPixelType)

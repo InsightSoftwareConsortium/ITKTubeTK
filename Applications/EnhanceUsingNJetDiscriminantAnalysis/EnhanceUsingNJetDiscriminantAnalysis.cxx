@@ -61,7 +61,7 @@ void WriteLDA( const typename imageT::Pointer & img,
     LDAImageWriterType::New();
   std::string fname = base;
   char c[80];
-  sprintf( c, ext.c_str(), num );
+  std::sprintf( c, ext.c_str(), num );
   fname += std::string( c );
   ldaImageWriter->SetUseCompression( true );
   ldaImageWriter->SetFileName( fname.c_str() );
@@ -195,7 +195,7 @@ int DoIt( int argc, char * argv[] )
         LDAImageWriterType::New();
       std::string fname = outputBase;
       char c[80];
-      sprintf( c, ".lda%02u.mha", i );
+      std::sprintf( c, ".lda%02u.mha", i );
       fname += std::string( c );
       ldaImageWriter->SetUseCompression( true );
       ldaImageWriter->SetFileName( fname.c_str() );

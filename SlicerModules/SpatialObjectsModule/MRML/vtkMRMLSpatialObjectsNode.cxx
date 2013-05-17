@@ -47,7 +47,7 @@ limitations under the License.
 #include <vtkMRMLScene.h>
 
 // STD includes
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <algorithm>
 
@@ -88,9 +88,9 @@ void vtkMRMLSpatialObjectsNode::ReadXMLAttributes(const char** atts)
     attName = *(atts++);
     attValue = *(atts++);
 
-    if(!strcmp(attName, "SubsamplingRatio"))
+    if(!std::strcmp(attName, "SubsamplingRatio"))
       {
-      this->SubsamplingRatio = atof(attValue);
+      this->SubsamplingRatio = std::atof(attValue);
       }
     }
 

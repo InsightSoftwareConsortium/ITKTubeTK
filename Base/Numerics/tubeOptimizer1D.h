@@ -33,6 +33,8 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
+#include <ostream>
+
 #include "tubeUserFunc.h"
 
 namespace tube

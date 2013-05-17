@@ -24,8 +24,6 @@ limitations under the License.
 #ifndef __tubeUserFunc_h
 #define __tubeUserFunc_h
 
-#include <vnl/vnl_vector.h>
-
 /** UserFunc Derivation Examples
  *  \example TestOptimizerND/testOptimizerND.cpp
  */

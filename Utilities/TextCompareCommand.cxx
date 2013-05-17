@@ -15,13 +15,11 @@
 
 =========================================================================*/
 
-#include <metaCommand.h>
-
-#include <math.h>
-#include <string>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
+#include <metaCommand.h>
+#include <vnl/vnl_math.h>
 
 int RegressionTestFile ( const char *testFilename,
   const char *baselineFilename, bool reportErrors,
@@ -245,7 +243,7 @@ int RegressionTestFile ( const char *testFilename,
       double baselineVal = 0.0;
       if( testInStream >> testVal && baselineInStream >> baselineVal )
         {
-        if( fabs( testVal - baselineVal ) > valueTolerance )
+        if( vnl_math_abs( testVal - baselineVal ) > valueTolerance )
           {
           if( reportErrors )
             {

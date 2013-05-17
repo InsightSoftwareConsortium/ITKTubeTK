@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "tubeShortestPathKernel.h"
 
+#include <vnl/vnl_math.h>
 
 namespace tube
 {
@@ -139,7 +140,7 @@ double ShortestPathKernel::Compute( void )
       double weightE1 = wmFG1[*bIt];
 
       // Skip edges, unless the weights are equal
-      if( !( fabs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon() ) )
+      if( !( vnl_math_abs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon() ) )
         {
         continue;
         }

@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __tubeTubeMath_h
 #define __tubeTubeMath_h
 
+#include <vector>
+
 namespace tube
 {
 

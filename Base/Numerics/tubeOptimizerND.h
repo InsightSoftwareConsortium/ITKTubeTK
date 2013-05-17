@@ -24,13 +24,12 @@ limitations under the License.
 #ifndef __tubeOptimizerND_h
 #define __tubeOptimizerND_h
 
-#include "tubeUserFunc.h"
-#include "tubeOptimizer1D.h"
-
-#include <vnl/vnl_vector.h>
 #include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
 #include "tubeMatrixMath.h"
+#include "tubeOptimizer1D.h"
+#include "tubeUserFunc.h"
 
 namespace tube
 {

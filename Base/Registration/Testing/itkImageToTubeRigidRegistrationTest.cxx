@@ -132,7 +132,7 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv[] )
     {
     for(unsigned int ii = 0; ii < 6; ++ii)
       {
-      initialPosition[ii] = atof( argv[5+ii] );
+      initialPosition[ii] = std::atof( argv[5+ii] );
       }
     }
 

@@ -26,9 +26,9 @@ limitations under the License.
 
 #include <cstdlib>
 #include <iostream>
-#include "tubeMatrixMath.h"
-#include "vnl/algo/vnl_symmetric_eigensystem.h"
+#include <vnl/algo/vnl_symmetric_eigensystem.h>
 
+#include "tubeMatrixMath.h"
 
 namespace tube
 {
@@ -112,7 +112,7 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
     {
     s += (x(i)-y(i))*(x(i)-y(i));
     }
-  return sqrt(s);
+  return vcl_sqrt(s);
 }
 
 /**
@@ -126,7 +126,7 @@ ComputeEuclideanDistance(PointType x, PointType y)
     {
     s += (x[i]-y[i])*(x[i]-y[i]);
     }
-  return sqrt(s);
+  return vcl_sqrt(s);
 }
 
 /**
@@ -177,8 +177,8 @@ ComputeEigen(vnl_matrix<T> const & mat,
       {
       for(int j=i+1; j<n; j++)
         {
-        if( ( fabs(eVals(j))>fabs(eVals(i)) && !minToMax )
-          || ( fabs(eVals(j))<fabs(eVals(i)) && minToMax ) )
+        if( ( vnl_math_abs(eVals(j))>vnl_math_abs(eVals(i)) && !minToMax )
+          || ( vnl_math_abs(eVals(j))<vnl_math_abs(eVals(i)) && minToMax ) )
           {
           double tf = eVals(j);
           eVals(j) = eVals(i);
@@ -251,7 +251,7 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
   subD(2) = 0;
   if(c != 0)
     {
-    const double s = sqrt(b*b+c*c);
+    const double s = vcl_sqrt(b*b+c*c);
     b /= s;
     c /= s;
     const double q = 2*b*e+c*(f-d);
@@ -322,14 +322,14 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
         {
         if(m!=(n-1))
           {
-          dd = fabs(diag(m))+fabs(diag(m+1));
+          dd = vnl_math_abs(diag(m))+vnl_math_abs(diag(m+1));
           }
         else
           {
-          dd = fabs(diag(m));
+          dd = vnl_math_abs(diag(m));
           }
 
-        if(fabs(subD(m))+dd == dd)
+        if(vnl_math_abs(subD(m))+dd == dd)
           {
           break;
           }
@@ -339,7 +339,7 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
         break;
         }
       g = (diag(l+1)-diag(l))/(2*subD(l));
-      r = sqrt(g*g+1);
+      r = vcl_sqrt(g*g+1);
       if(g<0)
         {
         g = diag(m)-diag(l)+subD(l)/(g-r);
@@ -355,17 +355,17 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
         {
         f = s*subD(i);
         b = c*subD(i);
-        if(fabs(f)>=fabs(g))
+        if(vnl_math_abs(f)>=vnl_math_abs(g))
           {
           c = g/f;
-          r = sqrt(c*c+1);
+          r = vcl_sqrt(c*c+1);
           subD(i+1) = f*r;
           c *= (s = 1/r);
           }
         else
           {
           s = f/g;
-          r = sqrt(s*s+1);
+          r = vcl_sqrt(s*s+1);
           subD(i+1) = g*r;
           s *= (c = 1/r);
           }

@@ -22,23 +22,15 @@
 // in a lookup table.   By including this file, it creates a main function
 // that calls RegisterTests() then looks up the function pointer for the test
 // specified on the command line.
-#include "itkWin32Header.h"
-#include <map>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include "itkNumericTraits.h"
-#include "itkMultiThreader.h"
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkSubtractImageFilter.h"
-#include "itkRescaleIntensityImageFilter.h"
-#include "itkExtractImageFilter.h"
+#include <itkWin32Header.h>
+#include <itkExtractImageFilter.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionConstIterator.h>
+#include <itkRescaleIntensityImageFilter.h>
+#include <itkSubtractImageFilter.h>
+
 #include "itkDifferenceImageFilter2.h"
-#include "itkImageRegion.h"
-#include "itksys/SystemTools.hxx"
 
 #define ITK_TEST_DIMENSION_MAX 6
 
@@ -107,40 +99,40 @@ int main(int ac, char* av[] )
     {
     while( ac > 0 && testToRun.empty() )
       {
-      if(strcmp(av[1], "--with-threads") == 0)
+      if(std::strcmp(av[1], "--with-threads") == 0)
         {
-        int numThreads = atoi(av[2]);
+        int numThreads = std::atoi(av[2]);
         itk::MultiThreader::SetGlobalDefaultNumberOfThreads(numThreads);
         av += 2;
         ac -= 2;
         }
-      else if(strcmp(av[1], "--without-threads") == 0)
+      else if(std::strcmp(av[1], "--without-threads") == 0)
         {
         itk::MultiThreader::SetGlobalDefaultNumberOfThreads(1);
         av += 1;
         ac -= 1;
         }
-      else if(ac > 3 && strcmp(av[1], "--compare") == 0)
+      else if(ac > 3 && std::strcmp(av[1], "--compare") == 0)
         {
         compareList.push_back( ComparePairType( av[2], av[3] ) );
         av += 3;
         ac -= 3;
         }
-      else if(ac > 2 && strcmp(av[1], "--compareNumberOfPixelsTolerance") == 0)
+      else if(ac > 2 && std::strcmp(av[1], "--compareNumberOfPixelsTolerance") == 0)
         {
-        numberOfPixelsTolerance = atoi( av[2] );
+        numberOfPixelsTolerance = std::atoi( av[2] );
         av += 2;
         ac -= 2;
         }
-      else if(ac > 2 && strcmp(av[1], "--compareRadiusTolerance") == 0)
+      else if(ac > 2 && std::strcmp(av[1], "--compareRadiusTolerance") == 0)
         {
-        radiusTolerance = atoi( av[2] );
+        radiusTolerance = std::atoi( av[2] );
         av += 2;
         ac -= 2;
         }
-      else if(ac > 2 && strcmp(av[1], "--compareIntensityTolerance") == 0)
+      else if(ac > 2 && std::strcmp(av[1], "--compareIntensityTolerance") == 0)
         {
-        intensityTolerance = atof( av[2] );
+        intensityTolerance = std::atof( av[2] );
         av += 2;
         ac -= 2;
         }
