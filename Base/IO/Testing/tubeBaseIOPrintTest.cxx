@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <cstdlib>
+
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
 
