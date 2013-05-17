@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itkTubeMetaNJetLDA.h"
 
+#include <cstring>
+
 namespace itk
 {
 
