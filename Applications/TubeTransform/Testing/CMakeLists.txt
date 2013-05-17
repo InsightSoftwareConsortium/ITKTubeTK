@@ -42,7 +42,7 @@ set( TEXTCOMPARE_EXE
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
                 ${PROJ_EXE}
                   MIDAS{VascularNetwork.tre.md5}
-                  MIDAS{VascularNetwork-TestTransform.tfm.md5}
+                  --transformFile MIDAS{VascularNetwork-TestTransform.tfm.md5}
                   ${TEMP}/${MODULE_NAME}Test1.tre )
 
 ###############
