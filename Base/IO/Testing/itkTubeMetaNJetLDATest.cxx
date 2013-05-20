@@ -23,8 +23,10 @@ limitations under the License.
 
 #include "itkTubeMetaNJetLDA.h"
 
+#include <cstdlib>
+#include <itkImage.h>
+
 #include "itkFilterWatcher.h"
-#include "itkImage.h"
 
 int itkTubeMetaNJetLDATest( int argc, char * argv[] )
 {
