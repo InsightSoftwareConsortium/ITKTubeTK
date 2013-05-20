@@ -217,6 +217,18 @@ class InteractiveConnectedComponentsUsingParzenPDFsWidget:
     self.editorWidget.parameterNode = self.editorWidget.editUtil.getParameterNode()
     self.editorWidget.parameterNodeTag = self.editorWidget.parameterNode.AddObserver(vtk.vtkCommand.ModifiedEvent, self.editorWidget.updateGUIFromMRML)
 
+    # objectId selector
+    # The objectId selector selects which label corresponds to the object label
+    # All other labels in the label map will be either voidId or NotObjectId
+    objectIdSpinBox = qt.QSpinBox()
+    objectIdSpinBox.objectName = 'objectIdSpinBox'
+    objectIdSpinBox.toolTip = "Value that represents the object in the label map.  All other labels represent NotObject or voidId."
+    objectIdSpinBox.setMinimum(0)
+    objectIdSpinBox.setMaximum(255)
+    objectIdSpinBox.enabled = True
+    labelMapFormLayout.addRow("Object Id:", objectIdSpinBox)
+    self.objectIdSpinBox = objectIdSpinBox
+
     # voidLabel selector
     # The voidLabel selector selects which label corresponds to the void label
     # All other labels in the label map will be extracted and set to object labels
@@ -532,17 +544,18 @@ class InteractiveConnectedComponentsUsingParzenPDFsWidget:
     # The void ID is provided by the voidLabelSpinBox (for now) and the object IDs
     # are any other labels in the label map that are not the void ID
     voidId = self.voidLabelSpinBox.value
-    objectIds = self.getObjectIds(self.labelMapNode, voidId)
-    if len(objectIds) == 0:
-      print "Error - no valid object Ids"
-      return
+    objectId = self.objectIdSpinBox.value
+    #objectIds = self.getObjectIds(self.labelMapNode, voidId)
+    #if len(objectIds) == 0:
+    #  print "Error - no valid object Ids"
+    #  return
 
     parameters = {}
     parameters['inputVolume1'] = self.inputNode1
     parameters['inputVolume2'] = self.inputNode2
     parameters['inputVolume3'] = self.inputNode3
     parameters['voidId'] = voidId
-    parameters['objectId'] = objectIds
+    parameters['objectId'] = objectId
     parameters['labelmap'] = self.labelMapNode
     parameters['outputVolume'] = self.outputNode
     parameters['erodeRadius'] = self.erosionRadius
