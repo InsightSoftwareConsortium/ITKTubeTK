@@ -65,9 +65,9 @@ slicer4_set_plugins_output_path( TubeObjectDocuments )
 set( TARGETS TubeObjectDocuments )
 slicer4_install_plugins( ${TARGETS} )
 
-#if( BUILD_TESTING )
-#  add_subdirectory( Testing )
-#endif( BUILD_TESTING )
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_ObjectDocuments_H_Files}
