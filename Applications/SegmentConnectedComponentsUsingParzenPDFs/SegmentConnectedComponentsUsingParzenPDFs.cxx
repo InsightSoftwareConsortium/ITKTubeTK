@@ -88,8 +88,6 @@ CheckImageAttributes(const InputImageType * input,
   assert( input );
   assert( mask );
   return input->GetOrigin() == mask->GetOrigin()
-         && input->GetSpacing() == mask->GetSpacing()
-         && input->GetDirection() == mask->GetDirection()
          && input->GetLargestPossibleRegion().GetIndex() == mask->GetLargestPossibleRegion().GetIndex()
          && input->GetLargestPossibleRegion().GetSize() == mask->GetLargestPossibleRegion().GetSize();
 }
