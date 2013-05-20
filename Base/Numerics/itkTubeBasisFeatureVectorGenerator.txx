@@ -82,6 +82,15 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
+typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::
+  FeatureVectorGeneratorType::Pointer
+BasisFeatureVectorGenerator< ImageT, LabelmapT >
+::GetInputFeatureVectorGenerator( void )
+{
+  return m_InputFeatureVectorGenerator;
+}
+
+template < class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetObjectId( ObjectIdType objectId )

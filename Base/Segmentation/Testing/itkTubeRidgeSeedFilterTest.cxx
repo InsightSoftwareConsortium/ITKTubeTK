@@ -29,21 +29,17 @@ limitations under the License.
 #include <itkExceptionObject.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 
-#include "itkRecursiveGaussianImageFilter.h"
+#include "itkTubeRidgeSeedFilter.h"
 
-#include "itkTubeRidgeFeatureVectorGenerator.h"
-#include "itkTubeBasisFeatureVectorGenerator.h"
-
-int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
+int itkTubeRidgeSeedFilterTest(int argc, char* argv [] )
 {
   if( argc != 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage maskImage objId bkgId outputLDA0Image outputLDA1Image"
+      << " inputImage labelmapImage objId bkgId outputClass0PDF outputImage"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -61,15 +57,16 @@ int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef itk::Image<unsigned char, Dimension>      LabelmapType;
+  typedef itk::Image< unsigned char, Dimension >    LabelmapType;
   typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
+  typedef itk::ImageFileWriter< LabelmapType >      LabelmapWriterType;
 
+  typedef itk::Image< float, 3 >                    PDFImageType;
+  typedef itk::ImageFileWriter< PDFImageType >      PDFImageWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeFeatureVectorGenerator< ImageType >
+  typedef itk::tube::RidgeSeedFilter< ImageType, LabelmapType >
     FilterType;
-  typedef itk::tube::BasisFeatureVectorGenerator< ImageType, LabelmapType >
-    BasisFilterType;
 
   // Create the reader
   ReaderType::Pointer reader = ReaderType::New();
@@ -97,7 +94,7 @@ int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
     std::cerr << "Exception caught during input mask read:\n"  << e;
     return EXIT_FAILURE;
     }
-  LabelmapType::Pointer maskImage = mReader->GetOutput();
+  LabelmapType::Pointer labelmapImage = mReader->GetOutput();
 
   FilterType::RidgeScalesType scales(3);
   scales[0] = 0.4;
@@ -105,31 +102,24 @@ int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
   scales[2] = 1.6;
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputImage( inputImage );
+  filter->SetInput( inputImage );
+  filter->SetLabelmap( labelmapImage );
   filter->SetScales( scales );
-  std::cout << filter << std::endl;
-
-  BasisFilterType::Pointer basisFilter = BasisFilterType::New();
-  basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
-  basisFilter->SetInputImage( inputImage );
-  basisFilter->SetLabelmap( maskImage );
   int objId = atoi( argv[3] );
   int bkgId = atoi( argv[4] );
-  basisFilter->SetObjectId( objId );
-  basisFilter->AddObjectId( bkgId );
-  basisFilter->AddObjectId( 0 );
-  std::cout << "Start" << std::endl;
-  std::cout << basisFilter << std::endl;
-  basisFilter->GenerateBasis();
-  std::cout << "Stop" << std::endl;
-  std::cout << basisFilter << std::endl;
+  filter->SetObjectId( objId );
+  filter->AddObjectId( bkgId );
+  std::cout << filter << std::endl;
+  filter->Update();
+  std::cout << "Update done." << std::endl;
 
-  basisFilter->SetLabelmap( NULL );
+  filter->ClassifyImages();
+  std::cout << "Classification done." << std::endl;
 
-  WriterType::Pointer writer = WriterType::New();
+  PDFImageWriterType::Pointer writer = PDFImageWriterType::New();
   writer->SetFileName( argv[5] );
   writer->SetUseCompression( true );
-  writer->SetInput( basisFilter->GetFeatureImage(0) );
+  writer->SetInput( filter->GetPDFSegmenter()->GetClassPDFImage( 0 ) );
   try
     {
     writer->Update();
@@ -140,10 +130,10 @@ int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
     return EXIT_FAILURE;
     }
 
-  WriterType::Pointer writer2 = WriterType::New();
+  LabelmapWriterType::Pointer writer2 = LabelmapWriterType::New();
   writer2->SetFileName( argv[6] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( basisFilter->GetFeatureImage(1) );
+  writer2->SetInput( filter->GetOutput() );
   try
     {
     writer2->Update();

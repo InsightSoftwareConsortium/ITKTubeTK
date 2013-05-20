@@ -20,12 +20,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkTubeRidgeSeedGenerator_txx
-#define __itkTubeRidgeSeedGenerator_txx
+#ifndef __itkTubeRidgeSeedFilter_txx
+#define __itkTubeRidgeSeedFilter_txx
 
 #include <limits>
 
-#include "itkTubeRidgeSeedGenerator.h"
+#include "itkTubeRidgeSeedFilter.h"
 
 #include "itkProgressReporter.h"
 #include "itkTimeProbesCollectorBase.h"
@@ -34,9 +34,7 @@ limitations under the License.
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkImageRegionConstIteratorWithIndex.h"
 
-
 #include "tubeMatrixMath.h"
-#include "itkTubeNJetImageFunction.h"
 
 namespace itk
 {
@@ -45,373 +43,240 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-RidgeSeedGenerator< ImageT, LabelmapT >
-::RidgeSeedGenerator()
+RidgeSeedFilter< ImageT, LabelmapT >
+::RidgeSeedFilter()
 {
-  m_RidgeImage = NULL;
+  m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
+  m_RidgeFeatureGenerator = RidgeFeatureGeneratorType::New();
+  m_SeedFeatureGenerator->SetInputFeatureVectorGenerator(
+    m_RidgeFeatureGenerator );
 
-  m_Scales.resize( 0 );
+  m_PDFSegmenter = PDFSegmenterType::New();
 }
 
 template< class ImageT, class LabelmapT >
-RidgeSeedGenerator< ImageT, LabelmapT >
-::~RidgeSeedGenerator()
+RidgeSeedFilter< ImageT, LabelmapT >
+::~RidgeSeedFilter()
 {
 }
 
 template < class ImageT, class LabelmapT >
 void
-RidgeSeedGenerator< ImageT, LabelmapT >
-::SetRidgeImage( typename RidgeImageType::Pointer img )
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetInput( typename ImageType::Pointer img )
 {
-  m_RidgeImage = img;
+  m_SeedFeatureGenerator->SetInputImage( img );
+  m_RidgeFeatureGenerator->SetInputImage( img );
 }
 
 template < class ImageT, class LabelmapT >
 typename ImageT::Pointer
-RidgeSeedGenerator< ImageT, LabelmapT >
-::GetRidgeImage( void )
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetInput( void )
 {
-  return m_RidgeImage;
+  return m_SeedFeatureGenerator->GetInputImage();
 }
 
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetLabelmap( typename LabelmapType::Pointer img )
+{
+  m_SeedFeatureGenerator->SetLabelmap( img );
+
+  m_PDFSegmenter->SetLabelmap( img );
+}
+
+template < class ImageT, class LabelmapT >
+typename RidgeSeedFilter< ImageT, LabelmapT >::LabelmapType::Pointer
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetLabelmap( void )
+{
+  return m_SeedFeatureGenerator->GetLabelmap();
+}
+
+template < class ImageT, class LabelmapT >
+typename RidgeSeedFilter< ImageT, LabelmapT >::SeedFeatureGeneratorType::
+Pointer
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetSeedFeatureGenerator( void )
+{
+  return m_SeedFeatureGenerator;
+}
+
+template < class ImageT, class LabelmapT >
+typename RidgeSeedFilter< ImageT, LabelmapT >::RidgeFeatureGeneratorType::
+Pointer
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetRidgeFeatureGenerator( void )
+{
+  return m_RidgeFeatureGenerator;
+}
+
+template < class ImageT, class LabelmapT >
+typename RidgeSeedFilter< ImageT, LabelmapT>::PDFSegmenterType::Pointer
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetPDFSegmenter( void )
+{
+  return m_PDFSegmenter;
+}
+
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetIntensityRange( float intensityMin, float intensityMax )
+{
+  m_RidgeFeatureGenerator->SetIntensityRange( intensityMin, intensityMax );
+}
+
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetIntensityMin( float intensityMin )
+{
+  m_RidgeFeatureGenerator->SetIntensityMin( intensityMin );
+}
+
+template < class ImageT, class LabelmapT >
+float
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetIntensityMin( void )
+{
+  return m_RidgeFeatureGenerator->GetIntensityMin( );
+}
+
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetIntensityMax( float intensityMax )
+{
+  m_RidgeFeatureGenerator->SetIntensityMax( intensityMax );
+}
+
+template < class ImageT, class LabelmapT >
+float
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetIntensityMax( void )
+{
+  return m_RidgeFeatureGenerator->GetIntensityMax( );
+}
+
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetIntensityRangeByPercentile( float percentile )
+{
+  m_RidgeFeatureGenerator->SetIntensityRangeByPercentile( percentile );
+}
+
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetScales( const RidgeScalesType & scales )
+{
+  m_RidgeFeatureGenerator->SetScales( scales );
+}
+
+template < class ImageT, class LabelmapT >
+typename RidgeSeedFilter< ImageT, LabelmapT >::RidgeScalesType
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetScales( void )
+{
+  return m_RidgeFeatureGenerator->GetScales();
+}
+
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::SetObjectId( ObjectIdType id )
+{
+  m_SeedFeatureGenerator->SetObjectId( id );
+  m_PDFSegmenter->SetObjectId( id );
+}
+
+template < class ImageT, class LabelmapT >
+void
+RidgeSeedFilter< ImageT, LabelmapT >
+::AddObjectId( ObjectIdType id )
+{
+  m_SeedFeatureGenerator->AddObjectId( id );
+  m_PDFSegmenter->AddObjectId( id );
+}
+
+template < class ImageT, class LabelmapT >
+typename RidgeSeedFilter< ImageT, LabelmapT >::ObjectIdType
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetObjectId( unsigned int num ) const
+{
+  return m_PDFSegmenter->GetObjectId( num );
+}
 
 template < class ImageT, class LabelmapT >
 unsigned int
-RidgeSeedGenerator< ImageT, LabelmapT >
-::GetNumberOfFeatures( void )
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetNumberOfObjectIds( void ) const
 {
-  unsigned int numFeatures = m_Scales.size() * 5 + 9;
-
-  return numFeatures;
+  return m_PDFSegmenter->GetNumberOfObjectIds();
 }
 
 template < class ImageT, class LabelmapT >
 void
-RidgeSeedGenerator< ImageT, LabelmapT >
-::GenerateFeatureImages( void )
-{
-  unsigned int numFeatures = this->GetNumberOfFeatures();
-
-  this->m_FeatureImageList.resize( numFeatures );
-
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    this->m_FeatureImageList[ i ] = LDAImageType::New();
-    this->m_FeatureImageList[ i ]->SetRegions(
-      m_RidgeImage->GetLargestPossibleRegion() );
-    this->m_FeatureImageList[ i ]->Allocate();
-    this->m_FeatureImageList[ i ]->CopyInformation( m_RidgeImage );
-    this->m_FeatureImageList[ i ]->FillBuffer( 0 );
-    }
-
-  typedef NJetImageFunction< RidgeImageType > NJetFunctionType;
-  typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
-  typename NJetFunctionType::VectorType v;
-  typename NJetFunctionType::MatrixType m;
-  njet->SetInputImage( m_RidgeImage );
-
-  ProgressReporter progress( this, 0,
-    m_RidgeImage->GetLargestPossibleRegion().GetNumberOfPixels()*2, 100 );
-
-  if( this->m_Labelmap.IsNotNull() )
-    {
-    unsigned int numClasses = this->GetNumberOfObjectIds();
-
-    ImageRegionIteratorWithIndex< RidgeImageType > iter(
-      m_RidgeImage, m_RidgeImage->GetLargestPossibleRegion() );
-    typedef ImageRegionConstIteratorWithIndex< MaskImageType >
-      ConstMaskImageIteratorType;
-    ConstMaskImageIteratorType itInMask( this->m_Labelmap,
-      this->m_Labelmap->GetLargestPossibleRegion() );
-    bool found = false;
-    ObjectIdType prevObjVal = static_cast<ObjectIdType>( itInMask.Get() )+1;
-    while( !iter.IsAtEnd() )
-      {
-      progress.CompletedPixel();
-
-      ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-      if( val != prevObjVal )
-        {
-        found = false;
-        prevObjVal = val;
-        for( unsigned int c=0; c<numClasses; c++ )
-          {
-          if( val == this->m_ObjectIdList[c] )
-            {
-            found = true;
-            break;
-            }
-          }
-        }
-      if( found )
-        {
-        typename RidgeImageType::IndexType indx = iter.GetIndex();
-        unsigned int fcount = 0;
-        double extremeScale = 0;
-        double extremeIntensity = 0;
-        double extremeRidgeness = 0;
-        double extremeRoundness = 0;
-        double extremeLevelness = 0;
-        double extremeCurvature = 0;
-        typename NJetFunctionType::VectorType extremeTangent;
-        extremeTangent.Fill( 0 );
-        for( unsigned int s=0; s<m_Scales.size(); s++ )
-          {
-          double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentIntensity() );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            ridgeness );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentRidgeRoundness() );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentRidgeLevelness() );
-          this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-            njet->GetMostRecentRidgeCurvature() );
-          if( s == 0 || ridgeness > extremeRidgeness )
-            {
-            extremeScale = m_Scales[s];
-            extremeIntensity = njet->GetMostRecentIntensity();
-            extremeRidgeness = ridgeness;
-            extremeRoundness = njet->GetMostRecentRidgeRoundness();
-            extremeLevelness = njet->GetMostRecentRidgeLevelness();
-            extremeCurvature = njet->GetMostRecentRidgeCurvature();
-            extremeTangent = njet->GetMostRecentRidgeTangent();
-            }
-          }
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeScale );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeIntensity );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeRidgeness );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeRoundness );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeLevelness );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeCurvature );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeTangent[0] );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeTangent[1] );
-        }
-      ++iter;
-      ++itInMask;
-      }
-    int xPos = numFeatures-3;
-    int yPos = numFeatures-2;
-    int dotPos = numFeatures-1;
-    iter.GoToBegin();
-    itInMask.GoToBegin();
-    while( !iter.IsAtEnd() )
-      {
-      progress.CompletedPixel();
-      ObjectIdType val = static_cast<ObjectIdType>( itInMask.Get() );
-      if( val != prevObjVal )
-        {
-        found = false;
-        prevObjVal = val;
-        for( unsigned int c=0; c<numClasses; c++ )
-          {
-          if( val == this->m_ObjectIdList[c] )
-            {
-            found = true;
-            break;
-            }
-          }
-        }
-      if( found )
-        {
-        typename RidgeImageType::IndexType indx = iter.GetIndex();
-        typename RidgeImageType::IndexType indx2 = iter.GetIndex();
-        typename NJetFunctionType::VectorType t;
-        typename NJetFunctionType::VectorType t2;
-        t[0] = this->m_FeatureImageList[ xPos ]->GetPixel( indx );
-        t[1] = this->m_FeatureImageList[ yPos ]->GetPixel( indx );
-        indx2[0] = indx[0] + vnl_math_rnd( 2*t[0] );
-        indx2[1] = indx[1] + vnl_math_rnd( 2*t[1] );
-        if( ImageDimension > 2 )
-          {
-          t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
-          indx2[2] = indx[2] + vnl_math_rnd( 2*t[2] );
-          }
-        double dot = 0;
-        if( this->m_FeatureImageList[ xPos ]->GetLargestPossibleRegion().IsInside( indx2 ) )
-          {
-          t2[0] = this->m_FeatureImageList[ xPos ]->GetPixel( indx2 );
-          t2[1] = this->m_FeatureImageList[ yPos ]->GetPixel( indx2 );
-          dot = t[0]*t2[0] + t[1]*t2[1];
-          if( ImageDimension>2 )
-            {
-            t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
-            t2[2] = vcl_sqrt( vnl_math_abs( 1 - ( t2[0]*t2[0] + t2[1]*t2[1] ) ) );
-            dot += t[2]*t2[2];
-            }
-          }
-        this->m_FeatureImageList[ dotPos ]->SetPixel( indx, vnl_math_abs( dot ) );
-        }
-      ++iter;
-      ++itInMask;
-      }
-    }
-  else
-    {
-    ImageRegionIteratorWithIndex< LDAImageType > iter(
-      m_RidgeImage, m_RidgeImage->GetLargestPossibleRegion() );
-    while( !iter.IsAtEnd() )
-      {
-      progress.CompletedPixel();
-
-      typename RidgeImageType::IndexType indx = iter.GetIndex();
-      unsigned int fcount = 0;
-      double extremeScale = 0;
-      double extremeIntensity = 0;
-      double extremeRidgeness = 0;
-      double extremeRoundness = 0;
-      double extremeLevelness = 0;
-      double extremeCurvature = 0;
-      typename NJetFunctionType::VectorType extremeTangent;
-      extremeTangent.Fill( 0 );
-      for( unsigned int s=0; s<m_Scales.size(); s++ )
-        {
-        double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          njet->GetMostRecentIntensity() );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          ridgeness );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          njet->GetMostRecentRidgeRoundness() );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          njet->GetMostRecentRidgeLevelness() );
-        this->m_FeatureImageList[ fcount++ ]->SetPixel( indx,
-          njet->GetMostRecentRidgeCurvature() );
-        if( s == 0 || ridgeness > extremeRidgeness )
-          {
-          extremeScale = m_Scales[s];
-          extremeIntensity = njet->GetMostRecentIntensity();
-          extremeRidgeness = ridgeness;
-          extremeRoundness = njet->GetMostRecentRidgeRoundness();
-          extremeLevelness = njet->GetMostRecentRidgeLevelness();
-          extremeCurvature = njet->GetMostRecentRidgeCurvature();
-          extremeTangent = njet->GetMostRecentRidgeTangent();
-          }
-        }
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeScale );
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeIntensity );
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeRidgeness );
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeRoundness );
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeLevelness );
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeCurvature );
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeTangent[0] );
-      this->m_FeatureImageList[ fcount++ ]->SetPixel( indx, extremeTangent[1] );
-      ++iter;
-      }
-    int xPos = numFeatures-3;
-    int yPos = numFeatures-2;
-    int dotPos = numFeatures-1;
-    iter.GoToBegin();
-    while( !iter.IsAtEnd() )
-      {
-      progress.CompletedPixel();
-
-      typename RidgeImageType::IndexType indx = iter.GetIndex();
-      typename RidgeImageType::IndexType indx2 = iter.GetIndex();
-      typename NJetFunctionType::VectorType t;
-      typename NJetFunctionType::VectorType t2;
-      t[0] = this->m_FeatureImageList[ xPos ]->GetPixel( indx );
-      t[1] = this->m_FeatureImageList[ yPos ]->GetPixel( indx );
-      indx2[0] = indx[0] + vnl_math_rnd( 2*t[0] );
-      indx2[1] = indx[1] + vnl_math_rnd( 2*t[1] );
-      if( ImageDimension > 2 )
-        {
-        t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
-        indx2[2] = indx[2] + vnl_math_rnd( 2*t[2] );
-        }
-      double dot = 0;
-      if( this->m_FeatureImageList[ xPos ]->GetLargestPossibleRegion().IsInside( indx2 ) )
-        {
-        t2[0] = this->m_FeatureImageList[ xPos ]->GetPixel( indx2 );
-        t2[1] = this->m_FeatureImageList[ yPos ]->GetPixel( indx2 );
-        dot = t[0]*t2[0] + t[1]*t2[1];
-        if( ImageDimension>2 )
-          {
-          t[2] = vcl_sqrt( vnl_math_abs( 1 - ( t[0]*t[0] + t[1]*t[1] ) ) );
-          t2[2] = vcl_sqrt( vnl_math_abs( 1 - ( t2[0]*t2[0] + t2[1]*t2[1] ) ) );
-          dot += t[2]*t2[2];
-          }
-        }
-      this->m_FeatureImageList[ dotPos ]->SetPixel( indx, vnl_math_abs( dot ) );
-      ++iter;
-      }
-    }
-
-}
-
-template < class ImageT, class LabelmapT >
-void
-RidgeSeedGenerator< ImageT, LabelmapT >
-::SetScales( const RidgeScalesType & scales )
-{
-  m_Scales = scales;
-}
-
-template < class ImageT, class LabelmapT >
-std::vector< double > &
-RidgeSeedGenerator< ImageT, LabelmapT >
-::GetScales( void )
-{
-  return m_Scales;
-}
-
-template < class ImageT, class LabelmapT >
-void
-RidgeSeedGenerator< ImageT, LabelmapT >
-::GenerateLDA()
-{
-  Superclass::GenerateLDA();
-}
-
-template <class ImageT, class LabelmapT >
-void
-RidgeSeedGenerator< ImageT, LabelmapT >
+RidgeSeedFilter< ImageT, LabelmapT >
 ::Update( void )
 {
-  this->GenerateFeatureImages();
-
-  unsigned int numFeatures = this->GetNumberOfFeatures();
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    this->UpdateWhitenFeatureImageStats( i );
-    this->WhitenFeatureImage( i );
-    }
-
-  Superclass::Update();
+  m_SeedFeatureGenerator->GenerateBasis();
+  m_PDFSegmenter->SetInputVolume( 0,
+    m_SeedFeatureGenerator->GetFeatureImage(0) );
+  m_PDFSegmenter->SetInputVolume( 1,
+    m_SeedFeatureGenerator->GetFeatureImage(1) );
+  m_PDFSegmenter->SetInputVolume( 2,
+    m_SeedFeatureGenerator->GetFeatureImage(2) );
+  m_PDFSegmenter->Update();
 }
 
 template <class ImageT, class LabelmapT >
 void
-RidgeSeedGenerator< ImageT, LabelmapT >
-::UpdateLDAImages( void )
+RidgeSeedFilter< ImageT, LabelmapT >
+::ClassifyImages( void )
 {
-  this->GenerateFeatureImages();
-
-  unsigned int numFeatures = this->GetNumberOfFeatures();
-  for( unsigned int i=0; i<numFeatures; i++ )
-    {
-    this->WhitenFeatureImage( i );
-    }
-
-  Superclass::UpdateLDAImages();
+  typename LabelmapType::Pointer tmpLabelmap =
+    m_SeedFeatureGenerator->GetLabelmap();
+  m_SeedFeatureGenerator->SetLabelmap( NULL );
+  m_PDFSegmenter->SetInputVolume( 0,
+    m_SeedFeatureGenerator->GetFeatureImage(0) );
+  m_PDFSegmenter->SetInputVolume( 1,
+    m_SeedFeatureGenerator->GetFeatureImage(1) );
+  m_PDFSegmenter->SetInputVolume( 2,
+    m_SeedFeatureGenerator->GetFeatureImage(2) );
+  m_PDFSegmenter->ClassifyImages();
+  m_SeedFeatureGenerator->SetLabelmap( tmpLabelmap );
 }
 
 template <class ImageT, class LabelmapT >
+typename RidgeSeedFilter< ImageT, LabelmapT >::LabelmapType::Pointer
+RidgeSeedFilter< ImageT, LabelmapT >
+::GetOutput( void )
+{
+  return m_PDFSegmenter->GetLabelmap();
+}
+
+
+template <class ImageT, class LabelmapT >
 void
-RidgeSeedGenerator< ImageT, LabelmapT >
+RidgeSeedFilter< ImageT, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
 
-  os << indent << "Scales.size() = " << m_Scales.size() << std::endl;
-  os << indent << "IntensityMin = " << m_IntensityMin << std::endl;
-  os << indent << "IntensityMax = " << m_IntensityMax << std::endl;
+  os << indent << "PDFSegmenter = " << m_PDFSegmenter << std::endl;
+  os << indent << "RidgeFeatureGenerator = " << m_RidgeFeatureGenerator
+    << std::endl;
+  os << indent << "SeedFeatureGenerator = " << m_SeedFeatureGenerator
+    << std::endl;
 }
 
 }
 
 }
 
-#endif //RidgeSeedGenerator_txx
+#endif //RidgeSeedFilter_txx

@@ -85,6 +85,12 @@ public:
     m_ObjectIdList.clear();
     }
 
+  void SetObjectId( ObjectIdType objectId )
+    {
+    m_ObjectIdList.clear();
+    m_ObjectIdList.push_back( objectId );
+    }
+
   void AddObjectId( ObjectIdType objectId )
     {
     m_ObjectIdList.push_back( objectId );
@@ -169,11 +175,11 @@ private:
     ClassHistogramImageType;
 
   typedef itk::Vector< PixelType, N+ImageDimension >
-  ListVectorType;
+    ListVectorType;
   typedef itk::Statistics::ListSample< ListVectorType >
-  ListSampleType;
+    ListSampleType;
   typedef std::vector< typename ListSampleType::Pointer >
-  ClassListSampleType;
+    ClassListSampleType;
 
   bool                                     m_SampleUpToDate;
   bool                                     m_PDFsUpToDate;

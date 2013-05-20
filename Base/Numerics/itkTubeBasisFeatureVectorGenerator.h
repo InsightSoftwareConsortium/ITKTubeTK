@@ -88,7 +88,7 @@ public:
   //
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );
-  typename FeatureVectorGeneratorType::Pointer GetFeatureVectorGenerator(
+  typename FeatureVectorGeneratorType::Pointer GetInputFeatureVectorGenerator(
                  void );
 
   itkSetObjectMacro( Labelmap, LabelmapType );

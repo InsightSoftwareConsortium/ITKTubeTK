@@ -36,6 +36,7 @@ void RegisterTests()
   REGISTER_TEST( itkTubePDFSegmenterTest );
   REGISTER_TEST( itkTubeRidgeExtractorTest );
   REGISTER_TEST( itkTubeRidgeExtractorTest2 );
+  REGISTER_TEST( itkTubeRidgeSeedFilterTest );
   REGISTER_TEST( itkTubeRadiusExtractorTest );
   REGISTER_TEST( itkTubeRadiusExtractorTest2 );
   REGISTER_TEST( itkTubeTubeExtractorTest );

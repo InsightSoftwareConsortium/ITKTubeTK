@@ -54,6 +54,7 @@ set( tubeBaseSegmentation_SRCS
   itkTubeRadiusExtractorTest2.cxx
   itkTubeRidgeExtractorTest.cxx
   itkTubeRidgeExtractorTest2.cxx
+  itkTubeRidgeSeedFilterTest.cxx
   itkTubeTubeExtractorTest.cxx
   )
 
@@ -170,10 +171,12 @@ MIDAS_ADD_TEST( itkTubeTubeExtractorTest
     MIDAS{Branch-truth.tre.md5}
   )
 
-#MIDAS_ADD_TEST( itkTubeRidgeSeedSupervisedLinearBasisGeneratorTest
-  #${BASE_SEGMENTATION_TESTS}
-  #itkTubeRidgeSeedSupervisedLinearBasisGeneratorTest 1
-    #MIDAS{Branch.n010.sub.mha.md5}
-    #${TEMP}/Branch-truth.mask.sub.mha
-    #${TEMP}/itkTubeRidgeSeedSupervisedLinearBasisGeneratorTest
-  #)
+MIDAS_ADD_TEST( itkTubeRidgeSeedFilterTest
+  ${BASE_SEGMENTATION_TESTS}
+  itkTubeRidgeSeedFilterTest
+    MIDAS{im0001.crop.contrast.mha.md5}
+    MIDAS{im0001.vk.mask.crop.mha.md5}
+    255 127
+    ${TEMP}/itkTubeRidgeSeedFilterTest_Class0PDF.mha
+    ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha
+  )

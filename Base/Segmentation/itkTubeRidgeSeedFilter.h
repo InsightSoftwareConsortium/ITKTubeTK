@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itkTubeRidgeSeedGenerator_h
-#define __itkTubeRidgeSeedGenerator_h
+#ifndef __itkTubeRidgeSeedFilter_h
+#define __itkTubeRidgeSeedFilter_h
 
 #include <vector>
 
@@ -30,7 +30,9 @@ limitations under the License.
 
 #include "itkImage.h"
 
-#include "itkTubeLDAGenerator.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
+#include "itkTubeBasisFeatureVectorGenerator.h"
+#include "itkTubePDFSegmenter.h"
 
 namespace itk
 {
@@ -39,91 +41,110 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class ITK_EXPORT RidgeSeedGenerator :
-  public ImageToImageFilter< ImageT,
-           Image< float, ImageT::ImageDimension > >
+class ITK_EXPORT RidgeSeedFilter :
+  public Object
 {
 public:
 
-  typedef RidgeSeedGenerator                   Self;
-  typedef ImageToImageFilter< ImageT, LabelmapT >    Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+  typedef RidgeSeedFilter                            Self;
+  typedef Object                                     Superclass;
+  typedef SmartPointer< Self >                       Pointer;
+  typedef SmartPointer< const Self >                 ConstPointer;
 
-  itkTypeMacro( RidgeSeedGenerator, ImageToImageFilter );
+  itkTypeMacro( RidgeSeedFilter, ImageToImageFilter );
 
   itkNewMacro( Self );
 
   //
   // Custom Typedefs
   //
-  typedef ImageT                                     InputImageType;
-  typedef Image< float, Image::ImageDimension >      OutputImageType;
+  typedef ImageT                                  ImageType;
+  typedef ImageT                                  InputImageType;
+  typedef Image< float, ImageT::ImageDimension >  OutputImageType;
 
-  typedef typename LabelmapT                         MaskImageType;
+  typedef LabelmapT                               LabelmapType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef LDAGenerator< OutputImageType, LabelmapT >    LDAGeneratorType;
+  typedef RidgeFeatureVectorGenerator< ImageT >   RidgeFeatureGeneratorType;
 
-  typedef typename LDAGeneratorType::FeatureType        FeatureType;
-  typedef typename LDAGeneratorType::FeatureVectorType  FeatureVectorType;
-  typedef typename LDAGeneratorType::ObjectIdType       ObjectIdType;
+  typedef BasisFeatureVectorGenerator< ImageT, LabelmapType >
+                                                  SeedFeatureGeneratorType;
 
-  typedef typename LDAGeneratorType::LDAValuesType      LDAValuesType;
-  typedef typename LDAGeneratorType::LDAVectorType      LDAVectorType;
-  typedef typename LDAGeneratorType::LDAMatrixType      LDAMatrixType;
-  typedef typename LDAGeneratorType::LDAImageType       LDAImageType;
+  typedef typename RidgeFeatureGeneratorType::FeatureValueType
+                                                  FeatureValueType;
+  typedef typename RidgeFeatureGeneratorType::FeatureVectorType
+                                                  FeatureVectorType;
 
-  typedef std::vector< double >                         RidgeScalesType;
+  typedef typename RidgeFeatureGeneratorType::IndexType
+                                                  IndexType;
+
+  typedef typename RidgeFeatureGeneratorType::RidgeScalesType
+                                                  RidgeScalesType;
+
+  typedef typename SeedFeatureGeneratorType::ObjectIdType
+                                                  ObjectIdType;
+
+  typedef PDFSegmenter< OutputImageType, 3, LabelmapType >
+                                                  PDFSegmenterType;
 
   //
   // Methods
   //
-  void SetInputImage( typename RidgeImageType::Pointer img );
-  typename RidgeImageType::Pointer GetRidgeImage( void );
+  void SetInput( typename ImageType::Pointer img );
+  typename ImageType::Pointer GetInput( void );
 
-  virtual unsigned int GetNumberOfFeatures( void );
+  void SetLabelmap( typename LabelmapType::Pointer img );
+  typename LabelmapType::Pointer GetLabelmap( void );
 
-  void SetIntensityRange( float intensityMin, float intensityMax );
-  itkSetMacro( IntensityMin, float );
-  itkGetMacro( IntensityMin, float );
-  itkSetMacro( IntensityMax, float );
-  itkGetMacro( IntensityMax, float );
+  typename SeedFeatureGeneratorType::Pointer
+    GetSeedFeatureGenerator( void );
 
-  void SetIntensityRangeByPercentile( float percentile,
-    bool findBrightPoints=true );
+  typename RidgeFeatureGeneratorType::Pointer
+    GetRidgeFeatureGenerator( void );
 
-  itkSetMacro( Scales, RidgeScalesType );
-  itkGetMacro( Scales, RidgeScalesType );
+  typename PDFSegmenterType::Pointer GetPDFSegmenter( void );
 
-  void UpdateLDAImages();
+  // Ridge
+  void  SetIntensityRange( float intensityMin, float intensityMax );
+  void  SetIntensityMin( float intensityMin );
+  float GetIntensityMin( void );
+  void  SetIntensityMax( float intensityMax );
+  float GetIntensityMax( void );
+  void  SetIntensityRangeByPercentile( float percentile );
+
+  void  SetScales( const RidgeScalesType & Scales );
+  RidgeScalesType GetScales( void );
+
+  // Ridge and PDFSegmenter
+  void         SetObjectId( ObjectIdType objectId );
+  void         AddObjectId( ObjectIdType objectId );
+  ObjectIdType GetObjectId( unsigned int num = 0 ) const;
+  unsigned int GetNumberOfObjectIds( void ) const;
+
+  // Local
+  void Update();
+  void ClassifyImages();
+
+  typename LabelmapType::Pointer GetOutput( void );
 
 protected:
 
-  RidgeSeedGenerator( void );
-  virtual ~RidgeSeedGenerator( void );
-
-  typedef ContinuousIndex< double, ImageDimension > ContinuousIndexType;
-
-  void GenerateInputRequestedRegion();
-
-  void GenerateData();
+  RidgeSeedFilter( void );
+  virtual ~RidgeSeedFilter( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  RidgeSeedGenerator( const Self & );    // Purposely not implemented
+  RidgeSeedFilter( const Self & );    // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
-  LDAGenerator::Pointer              m_LDAGenerator;
+  typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
+  typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
+  typename PDFSegmenterType::Pointer              m_PDFSegmenter;
 
-  double                             m_IntensityMin;
-  double                             m_IntensityMax;
-
-  RidgeScalesType                    m_Scales;
 };
 
 }
@@ -131,7 +152,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTubeRidgeSeedGenerator.txx"
+#include "itkTubeRidgeSeedFilter.txx"
 #endif
 
 #endif
