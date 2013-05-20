@@ -35,7 +35,7 @@ namespace tube
 /**
  * Constructor
  */
-template <class TTransformType, unsigned int TDimension>
+template < class TTransformType, unsigned int TDimension >
 TubeToTubeTransformFilter<TTransformType,TDimension>
 ::TubeToTubeTransformFilter( void )
 {
@@ -54,9 +54,9 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
 /**
  * Apply the transformation to the tube
  */
-template <class TTransformType, unsigned int TDimension>
+template < class TTransformType, unsigned int TDimension >
 void
-TubeToTubeTransformFilter<TTransformType,TDimension>
+TubeToTubeTransformFilter< TTransformType, TDimension >
 ::Update( void )
 {
   m_Output = GroupType::New();
@@ -65,7 +65,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
   double* groupspacing = new double[TDimension];
   const double* tubespacing;
 
-  for( unsigned int i=0 ; i < TDimension ; i++ )
+  for( unsigned int i = 0; i < TDimension; i++ )
     {
     groupspacing[i]= this->GetInput()->GetIndexToObjectTransform()
                                 ->GetScaleComponent()[i]/m_Scale;
@@ -80,8 +80,8 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
     }
 
   Point<double, TDimension> point;
-  CovariantVector<double, TDimension> normal1;
-  CovariantVector<double, TDimension> normal2;
+  CovariantVector< double, TDimension > normal1;
+  CovariantVector< double, TDimension > normal2;
 
   typename TubeType::ChildrenListType::iterator TubeIterator;
   typedef typename TubeType::PointListType      TubePointListType;
@@ -111,11 +111,11 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
       while( TubePointIterator != tubeList.end() )
         {
         point = (*TubePointIterator).GetPosition();
-        for( unsigned int i=0 ; i < TDimension ; i++ )
+        for( unsigned int i = 0; i < TDimension; i++ )
           {
           point[i] *= tubespacing[i]*groupspacing[i]*m_Scale;
           }
-        if(m_TransformAsGroup)
+        if( m_TransformAsGroup )
           {
           point = m_TransformAsGroup->GetObjectToParentTransform()->
                   TransformPoint( point );
@@ -125,7 +125,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
           point = m_Transform->TransformPoint( point );
           }
 
-        for( unsigned int i=0 ; i < TDimension ; i++ )
+        for( unsigned int i = 0; i < TDimension; i++ )
           {
           point[i] /= tubespacing[i]*groupspacing[i];
           }
@@ -134,7 +134,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
         bool IsInside = true;
         if( m_Crop )
           {
-          for( unsigned int i=0 ; i < TDimension ; i++ )
+          for( unsigned int i = 0; i < TDimension; i++ )
             {
             if( ( point[i] > m_CropSize[i] + m_NarrowBandSize )
                 || ( point[i] < 0 ) )
@@ -180,7 +180,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
             }
           pnt.SetRadius( (*TubePointIterator).GetRadius()*m_Scale );
 
-          if(m_Medialness == -1)
+          if( m_Medialness == -1 )
             {
             pnt.SetMedialness( (*TubePointIterator).GetMedialness() );
             }
@@ -189,7 +189,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
             pnt.SetMedialness(m_Medialness);
             }
 
-          if(m_Ridgeness == -1)
+          if( m_Ridgeness == -1 )
             {
             pnt.SetRidgeness( (*TubePointIterator).GetRidgeness() );
             }
@@ -199,7 +199,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
             }
 
           pnt.SetBranchness( (*TubePointIterator).GetBranchness() );
-          tub->GetPoints().push_back(pnt);
+          tub->GetPoints().push_back( pnt );
           }
         TubePointIterator++;
         }
@@ -216,9 +216,9 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
 }
 
 
-template <class TTransformType, unsigned int TDimension>
+template < class TTransformType, unsigned int TDimension >
 void
-TubeToTubeTransformFilter<TTransformType,TDimension>
+TubeToTubeTransformFilter< TTransformType,TDimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);

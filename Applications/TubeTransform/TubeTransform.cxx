@@ -73,12 +73,13 @@ itk::Transform<double, TDimension>            TransformType;
 
 typedef itk::DisplacementFieldTransform<double,
                                         TDimension> DisplacementFieldTransformType;
+
 typedef DisplacementFieldTransformType
-  ::DisplacementFieldType                           DisplacementFieldType;
-typedef itk::ImageFileReader<DisplacementFieldType> DisplacementFieldReaderType;
-typedef itk::MatrixOffsetTransformBase<double,
-                                       TDimension,
-                                       TDimension>  MatrixOffsetTransformType;
+  ::DisplacementFieldType                             DisplacementFieldType;
+typedef itk::ImageFileReader< DisplacementFieldType > DisplacementFieldReaderType;
+typedef itk::MatrixOffsetTransformBase< double,
+                                        TDimension,
+                                        TDimension >  MatrixOffsetTransformType;
 
 typedef itk::tube::TubeToTubeTransformFilter< TransformType, TDimension >
   TransformFilterType;
@@ -179,7 +180,7 @@ ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
     }
 
   itk::TransformFileReader::TransformListType::const_iterator tListIt;
-  for( tListIt=tList->begin(); tListIt != tList->end(); tListIt++)
+  for( tListIt = tList->begin(); tListIt != tList->end(); tListIt++ )
     {
     outputTubes = ProcessTubes( *tListIt, inputTubes, useInverseTransform ); 
     }  
