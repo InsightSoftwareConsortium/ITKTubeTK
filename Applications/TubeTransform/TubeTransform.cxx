@@ -61,6 +61,7 @@ using namespace tube;
 
 enum { TDimension = 3 };
 
+<<<<<<< HEAD
 typedef itk::GroupSpatialObject< TDimension >       GroupSpatialObjectType;
 typedef itk::VesselTubeSpatialObject< TDimension >  TubeSpatialObjectType;
 typedef itk::SpatialObjectReader< TDimension >      SpatialObjectReaderType;
@@ -73,6 +74,13 @@ itk::Transform<double, TDimension>            TransformType;
 
 typedef itk::DisplacementFieldTransform<double,
                                         TDimension> DisplacementFieldTransformType;
+=======
+typedef itk::GroupSpatialObject< TDimension >         GroupSpatialObjectType;
+typedef itk::VesselTubeSpatialObject< TDimension >    TubeSpatialObjectType;
+typedef itk::SpatialObjectReader< TDimension >        SpatialObjectReaderType;
+typedef itk::SpatialObjectWriter< TDimension >        SpatialObjectWriterType;
+typedef itk::Transform<double, TDimension>            TransformType;
+>>>>>>> ENH: Use generic itk::Transform in TubeTransform insead of specializing.
 
 typedef DisplacementFieldTransformType
   ::DisplacementFieldType                             DisplacementFieldType;
@@ -80,15 +88,23 @@ typedef itk::ImageFileReader< DisplacementFieldType > DisplacementFieldReaderTyp
 typedef itk::MatrixOffsetTransformBase< double,
                                         TDimension,
                                         TDimension >  MatrixOffsetTransformType;
+<<<<<<< HEAD
 
 typedef itk::tube::TubeToTubeTransformFilter< TransformType, TDimension >
   TransformFilterType;
 
+=======
+typedef itk::tube::TubeToTubeTransformFilter< TransformType, TDimension >
+                                                      TransformFilterType;
+>>>>>>> ENH: Use generic itk::Transform in TubeTransform insead of specializing.
 
 /** ProcessTubes handles the actual transformation of the tubes; if required,
   * the inverse transform is computed and applied.
   */
+<<<<<<< HEAD
 //template < typename TransformType >
+=======
+>>>>>>> ENH: Use generic itk::Transform in TubeTransform insead of specializing.
 GroupSpatialObjectType::Pointer ProcessTubes(
   itk::TransformFileReader::TransformPointer genericInputTransform,
   GroupSpatialObjectType::Pointer inputTubes,
@@ -125,12 +141,16 @@ void WriteOutput( GroupSpatialObjectType::Pointer, const char * );
 int DoIt( int, char *[] );
 
 
+<<<<<<< HEAD
 //template < typename TransformType >
+=======
+>>>>>>> ENH: Use generic itk::Transform in TubeTransform insead of specializing.
 GroupSpatialObjectType::Pointer
 ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
               GroupSpatialObjectType::Pointer inputTubes,
               bool useInverseTransform )
 {
+<<<<<<< HEAD
   // Get pointer to transform
   //typename TransformType::Pointer transform =
   TransformType::Pointer transform =
@@ -145,6 +165,14 @@ ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
   if( useInverseTransform )
     {
 	  //typename TransformType::InverseTransformBaseType::Pointer ivT =
+=======
+  TransformType::Pointer transform =
+    dynamic_cast<TransformType *>( genericInputTransform.GetPointer() );
+  TransformFilterType::Pointer filter = TransformFilterType::New();
+
+  if( useInverseTransform )
+	  {
+>>>>>>> ENH: Use generic itk::Transform in TubeTransform insead of specializing.
     TransformType::InverseTransformBaseType::Pointer ivT =
       transform->GetInverseTransform();
     transform = ( TransformType * )ivT.GetPointer();
@@ -174,16 +202,29 @@ ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
   itk::TransformFileReader::TransformListType *tList =
     reader->GetTransformList();
 
+<<<<<<< HEAD
   if( tList->size() != 1 )
     {
     tube::ErrorMessage( "#Transforms > 1!" );
+=======
+  // For now, only one transform per file is supported!
+  if( tList->size() != 1)
+    {
+    tube::ErrorMessage("#Transforms > 1!");
+    throw std::exception();
+>>>>>>> ENH: Use generic itk::Transform in TubeTransform insead of specializing.
     }
 
   itk::TransformFileReader::TransformListType::const_iterator tListIt;
   for( tListIt = tList->begin(); tListIt != tList->end(); tListIt++ )
     {
+<<<<<<< HEAD
     outputTubes = ProcessTubes( *tListIt, inputTubes, useInverseTransform ); 
     }  
+=======
+    outputTubes = ProcessTubes( *tListIt, inputTubes, useInverseTransform );
+    }
+>>>>>>> ENH: Use generic itk::Transform in TubeTransform insead of specializing.
   return outputTubes;
 }
 
