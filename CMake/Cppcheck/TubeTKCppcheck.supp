@@ -5,8 +5,7 @@ unreadVariable:*/Registration/Testing/itkTubeParametricExponentialResolutionWeig
 unusedFunction:*/Filtering/Testing/tubeBaseFilteringTests.cxx:32
 unusedFunction:*/IO/itkTubeMetaLDA.cxx:248
 unusedFunction:*/IO/itkTubeMetaLDA.cxx:320
-unusedFunction:*/Numerics/tubeSplineND.cxx:991
-unusedFunction:*/ObjectDocuments/OptionList.cxx
+unusedFunction:*/Numerics/tubeSplineND.cxx:989
 unusedFunction:*/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/ObjectDocuments/tubeOptionList.cxx
 unusedFunction:*/Registration/Testing/itkAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx:230

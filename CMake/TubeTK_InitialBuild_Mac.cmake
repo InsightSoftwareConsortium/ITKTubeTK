@@ -1,4 +1,4 @@
-#############################################################################
+##############################################################################
 #
 # Library:   TubeTK
 #
@@ -19,12 +19,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#############################################################################
+##############################################################################
 
 #############################################################################
 #
 # Configure the following variables and move this file to the directory above
-#   the tubetk source directory.
+#   the TubeTK source directory.
 #
 set( SITE_NAME "Eden.Kitware" )
 set( SITE_PLATFORM "MacOSX Mountain Lion" )
@@ -76,19 +76,15 @@ set( CTEST_CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 
-set( SITE_CXX_FLAGS
-  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
-set( SITE_C_FLAGS
-  "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
+set( SITE_CXX_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings -Wno-deprecated -Woverloaded-virtual" )
+set( SITE_C_FLAGS "-fPIC -fdiagnostics-show-option -W -Wall -Wextra -Wshadow -Wno-system-headers -Wwrite-strings" )
 set( SITE_EXE_LINKER_FLAGS "" )
 set( SITE_SHARED_LINKER_FLAGS "" )
 
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SITE_C_FLAGS}" )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SITE_CXX_FLAGS}" )
-set( CMAKE_EXE_LINKER_FLAGS
-  "${CMAKE_EXE_LINKER_FLAGS} ${SITE_EXE_LINKER_FLAGS}" )
-set( CMAKE_SHARED_LINKER_FLAGS
-  "${CMAKE_SHARED_LINKER_FLAGS} ${SITE_SHARED_LINKER_FLAGS}" )
+set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SITE_EXE_LINKER_FLAGS}" )
+set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${SITE_SHARED_LINKER_FLAGS}" )
 
 set( GITCOMMAND "${SITE_GIT_COMMAND}" )
 set( GIT_EXECUTABLE "${SITE_GIT_COMMAND}" )
@@ -104,7 +100,7 @@ if( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
     ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
     ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
   ctest_run_script()
-else()
+else( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
   configure_file(
     ${TUBETK_SCRIPT_DIR}/InitCMakeCache.cmake.in
     ${TUBETK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
@@ -115,6 +111,6 @@ else()
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
   ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
   ctest_submit( PARTS Notes Update Configure Build Test )
-endif()
+endif( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
 
-set(CTEST_RUN_CURRENT_SCRIPT 0)
+set( CTEST_RUN_CURRENT_SCRIPT 0 )
