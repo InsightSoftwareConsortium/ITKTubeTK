@@ -1,69 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Tube to density image (TubeTK)</title>
-  <description> Computes an Euclidean distance map from tubes</description>
+  <title>Tube to Density Image (TubeTK)</title>
+  <description>Computes an Euclidean distance map from tubes.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Stephen R. Aylward, Roland Kwitt (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <file>
       <name>inputTubeFile</name>
-      <description>File containing the input tubes</description>
+      <label>Input Tube File</label>
+      <description>File containing the input tubes.</description>
     </file>
     <image>
       <name>outputDensityImage</name>
-      <label>Density image</label>
+      <label>Density Image</label>
       <channel>output</channel>
       <index>0</index>
-      <description>Density image that is being generated</description>
+      <description>Density image that is being generated.</description>
     </image>
     <image>
       <name>outputRadiusImage</name>
-      <label>Radius image</label>
+      <label>Radius Image</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Radius image that is being generated</description>
+      <description>Radius image that is being generated.</description>
     </image>
     <image>
       <name>outputTangentImage</name>
-      <label>Tangent image</label>
+      <label>Tangent Image</label>
       <channel>output</channel>
       <index>2</index>
-      <description>Tangent image that is being generated</description>
+      <description>Tangent image that is being generated.</description>
     </image>
   </parameters>
   <parameters>
     <label>Constraint Options</label>
-    <description>Parameters that determine the output image(s) creation</description>
+    <description>Parameters that determine the output image(s) creation.</description>
     <image>
       <name>inputTemplateImage</name>
-      <label>Template image</label>
+      <label>Template Image</label>
       <longflag>inputTemplateImage</longflag>
-      <description>Template image for determining space constraints</description>
+      <description>Template image for determining space constraints.</description>
     </image>
     <double-vector>
       <name>outputSpacing</name>
+      <label>Output Spacing</label>
       <longflag>outputSpacing</longflag>
-      <description>Sets the output element spacing (in case of no template image)</description>
+      <description>Sets the output element spacing (in case of no template image).</description>
     </double-vector>
     <integer-vector>
       <name>outputSize</name>
+      <label>Output Size</label>
       <longflag>outputSize</longflag>
-      <description>Sets the output image dimension (in case of no template image)</description>
+      <description>Sets the output image dimension (in case of no template image).</description>
     </integer-vector>
     <boolean>
       <name>useSquareDistance</name>
+      <label>Use Squared Distance</label>
       <longflag>useSquareDistance</longflag>
-      <description>Use squared distance instead of linear</description>
+      <description>Use squared distance instead of linear.</description>
       <default>false</default>
     </boolean>
   </parameters>
-
 </executable>

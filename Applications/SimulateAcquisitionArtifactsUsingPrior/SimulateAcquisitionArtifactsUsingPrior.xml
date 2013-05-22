@@ -1,68 +1,62 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Simulate acquisition artifacts using prior (TubeTK)</title>
+  <title>Simulate Acquisition Artifacts Using Prior (TubeTK)</title>
   <description>Given an image and a mask, process the mask to match the image.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url></documentation-url>
-  <license></license>
-  <contributor>Stephen R. Aylward</contributor>
-  <acknowledgements>This work was funded, in part, by USC:EXPOSE.</acknowledgements>
-
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware. It was funded in part by USC:EXPOSE.</acknowledgements>
   <parameters>
-
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input volume</description>
+      <description>Input volume.</description>
     </image>
     <image>
       <name>inputMask</name>
       <label>Input Mask</label>
       <channel>input</channel>
       <index>1</index>
-      <description>Input mask</description>
+      <description>Input mask.</description>
     </image>
     <image>
       <name>outputVolume</name>
-      <label>Output Volume </label>
+      <label>Output Volume</label>
       <channel>output</channel>
       <index>2</index>
-      <description>Output volume </description>
+      <description>Output volume.</description>
     </image>
     <image>
       <name>outputMask</name>
-      <label>Output Mask </label>
+      <label>Output Mask</label>
       <channel>output</channel>
       <index>3</index>
-      <description>Output mask </description>
+      <description>Output mask.</description>
     </image>
-
   </parameters>
-
   <parameters>
-
     <label>Options</label>
-    <description>Steps of the pipeline</description>
-
+    <description>Steps of the pipeline.</description>
     <float>
       <name>foreground</name>
-      <label>Foreground intensity</label>
-      <description>Foreground intensity value, i.e., object value</description>
+      <label>Foreground Intensity</label>
+      <description>Foreground intensity value, i.e., object value.</description>
       <flag>f</flag>
       <longflag>foreground</longflag>
       <default>255</default>
     </float>
     <float>
       <name>background</name>
-      <label>Background intensity</label>
+      <label>Background Intensity</label>
       <flag>b</flag>
-      <description>Background intensity value</description>
+      <description>Background intensity value.</description>
       <longflag>background</longflag>
       <default>0</default>
     </float>
@@ -72,37 +66,37 @@
       <flag>m</flag>
       <longflag>metricMask</longflag>
       <channel>input</channel>
-      <description>Points with non-zero values in this mask are used in match computations</description>
+      <description>Points with non-zero values in this mask are used in match computations.</description>
     </image>
     <integer>
       <name>erode</name>
-      <label>Erosion radius</label>
+      <label>Erosion Radius</label>
       <flag>e</flag>
-      <description>Radius to use for erosion to simulate tomosynthesis</description>
+      <description>Radius to use for erosion to simulate tomosynthesis.</description>
       <longflag>erode</longflag>
       <default>6</default>
     </integer>
     <integer>
       <name>dilate</name>
-      <label>Dilation radius</label>
+      <label>Dilation Radius</label>
       <flag>d</flag>
-      <description>Radius to use for dilation (after erosion) to simulate tomosynthesis</description>
+      <description>Radius to use for dilation (after erosion) to simulate tomosynthesis.</description>
       <longflag>dilate</longflag>
       <default>10</default>
     </integer>
     <float>
       <name>gaussianBlur</name>
-      <label>Blur sigma</label>
+      <label>Blur Sigma</label>
       <flag>g</flag>
-      <description>Radius to use for blurring to simulate tomosynthesis</description>
+      <description>Radius to use for blurring to simulate tomosynthesis.</description>
       <longflag>gaussianBlur</longflag>
       <default>9</default>
     </float>
     <float>
       <name>samplingRate</name>
-      <label>Image match sampling rate</label>
+      <label>Image Match Sampling Rate</label>
       <flag>s</flag>
-      <description>Portion of voxels to use when computing image-match metric</description>
+      <description>Portion of voxels to use when computing image-match metric.</description>
       <longflag>samplingRate</longflag>
       <default>0.1</default>
     </float>
@@ -110,65 +104,60 @@
       <name>disableRegistrationOptimization</name>
       <label>Disable Registration Optimization</label>
       <flag>o</flag>
-      <description>Turn off the optimization of the registration of the prior to the image </description>
+      <description>Turn off the optimization of the registration of the prior to the image.</description>
       <longflag>disableRegistrationOptimization</longflag>
       <default>false</default>
     </boolean>
     <transform fileExtensions=".tfm">
       <name>saveTransform</name>
       <label>Save Transform</label>
-      <description>Save the registration transform</description>
+      <description>Save the registration transform.</description>
       <longflag>saveTransform</longflag>
       <channel>output</channel>
-      <default></default>
+      <default/>
     </transform>
     <transform fileExtensions=".tfm">
       <name>loadTransform</name>
       <label>Load Transform</label>
-      <description>Load the transform to be used instead of registration</description>
+      <description>Load the transform to be used instead of registration.</description>
       <longflag>loadTransform</longflag>
       <channel>input</channel>
-      <default></default>
+      <default/>
     </transform>
     <boolean>
       <name>disableParameterOptimization</name>
-      <label>Disable Parameter Optimization </label>
+      <label>Disable Parameter Optimization</label>
       <flag>r</flag>
-      <description>Turn off the optimization of the erode, dilate, blur parameters</description>
+      <description>Turn off the optimization of the erode, dilate, blur parameters.</description>
       <longflag>disableParameterOptimization</longflag>
       <default>false</default>
     </boolean>
     <integer-vector>
       <name>outputBoundary</name>
-      <label>Output boundary size</label>
-      <description>Size of boundary to be excluded from match computation and then cropped</description>
+      <label>Output Boundary Size</label>
+      <description>Size of boundary to be excluded from match computation and then cropped.</description>
       <flag>B</flag>
       <longflag>outputBoundary</longflag>
     </integer-vector>
     <boolean>
       <name>disableNormalize</name>
-      <label>Disable normalization of output mask</label>
+      <label>Disable Normalization of Output Mask</label>
       <flag>n</flag>
-      <description>Disable attempt to match mask intensity range with volume intensity range</description>
+      <description>Disable attempt to match mask intensity range with volume intensity range.</description>
       <longflag>disableNormalize</longflag>
       <default>false</default>
     </boolean>
   </parameters>
-
   <parameters>
-
-    <label>Misc. Options</label>
-    <description>Specialized options</description>
-
+    <label>Miscellaneous Options</label>
+    <description>Specialized options.</description>
     <integer>
       <name>seed</name>
-      <label>Random number seed</label>
-      <description>Seed for random processes in the method.  0 = no seed</description>
+      <label>Random Number Seed</label>
+      <description>Seed for random processes in the method (0 = no seed).</description>
       <flag>S</flag>
       <longflag>seed</longflag>
       <default>0</default>
     </integer>
-
   </parameters>
-
 </executable>

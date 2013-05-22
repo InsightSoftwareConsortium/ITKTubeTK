@@ -1,81 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
   <title>Segment Tube Seeds (TubeTK)</title>
   <description>Given an image and foreground and background masks, computes multiscale Jet (0, 1, and 2 order) features at each pixel, performs a multivariate discriminant analysis for separating the classes, and generates the LDA/PCA instances of the images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url></documentation-url>
-  <license></license>
-  <contributor>Stephen R. Aylward</contributor>
-  <acknowledgements></acknowledgements>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <image>
       <name>inputImage</name>
-      <label>Input image</label>
+      <label>Input Image</label>
       <index>0</index>
-      <description>Input volume list</description>
-      <default></default>
+      <description>Input volume list.</description>
+      <default/>
     </image>
     <image>
       <name>outputSeedImage</name>
-      <label>Output seed image</label>
+      <label>Output Seed Image</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output seed image</description>
-      <default></default>
+      <description>Output seed image.</description>
+      <default/>
     </image>
   </parameters>
   <parameters advanced="false">
     <label>General Parameters</label>
-    <description>Parameters that control training and seed finding</description>
+    <description>Parameters that control training and seed finding.</description>
     <image>
       <name>labelmap</name>
-      <label>Train label map</label>
+      <label>Train Label Map</label>
       <channel>input</channel>
-      <description>Labelmap that designates the object of interest</description>
-      <default></default>
+      <description>Labelmap that designates the object of interest.</description>
+      <default/>
       <longflag>labelmap</longflag>
     </image>
   </parameters>
   <parameters advanced="false">
     <label>Seed Finding Parameters</label>
-    <description>Parameters that control seed finding</description>
+    <description>Parameters that control seed finding.</description>
     <file>
       <name>loadVesselSeedInfo</name>
-      <description>Load vessel seed info from a file</description>
-      <label>Load vessel seed Info</label>
+      <label>Load Vessel Seed Information</label>
+      <description>Load vessel seed information from a file.</description>
       <longflag>loadVesselSeedInfo</longflag>
     </file>
   </parameters>
   <parameters advanced="true">
     <label>Training Parameters</label>
-    <description>Parameters that determine how the seed finder is generated</description>
+    <description>Parameters that determine how the seed finder is generated.</description>
     <double-vector>
       <name>ridgeScales</name>
-      <description>Scales at which Ridge features are computed</description>
-      <label>Ridge scales</label>
+      <label>Ridge Scales</label>
+      <description>Scales at which Ridge features are computed.</description>
       <default>0.5,1.0,2.5</default>
       <longflag>ridgeScales</longflag>
     </double-vector>
     <integer>
       <name>objectId</name>
-      <description>Id to be used in labelmap</description>
-      <label>Id of vessels in the labelmap</label>
+      <label>ID of Vessels in the Label Map</label>
+      <description>ID to be used in label map.</description>
       <default>255</default>
       <longflag>objectId</longflag>
     </integer>
     <file>
       <name>saveVesselSeedInfo</name>
-      <description>Save vessel seed info to a file</description>
-      <label>Save vessel seed Info</label>
+      <label>Save Vessel Seed Information</label>
+      <description>Save vessel seed information to a file.</description>
       <longflag>saveVesselSeedInfo</longflag>
     </file>
     <string>
       <name>saveFeatureImages</name>
-      <description>Base filename for saving feature images</description>
-      <label>Feature images base filename</label>
+      <label>Feature Images Base Filename</label>
+      <description>Base filename for saving feature images.</description>
       <longflag>saveFeatureImages</longflag>
     </string>
   </parameters>
