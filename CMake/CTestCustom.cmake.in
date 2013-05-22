@@ -1,48 +1,48 @@
-set(CTEST_CUSTOM_WARNING_MATCH
+set( CTEST_CUSTOM_WARNING_MATCH
   ${CTEST_CUSTOM_WARNING_MATCH}
   "{standard input}:[0-9][0-9]*: Warning: "
   "{standard input}:[0-9][0-9]*: warning: "
   )
 
-set(CTEST_CUSTOM_WARNING_EXCEPTION
+set( CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
     "ctk"
-    "itkjpeg"
-    "itktiff"
+    "ExternalProjectsContrib_DIR"
+    "FLTK"
+    "fltk"
+    "gdcmUtil"
+    "has no symbols"
+    "is here"
     "itkCenteredSimilarity2DTransform"
+    "itkjpeg"
     "itkPhilipsPAR"
     "itkSimilarity2DTransform"
     "itkSmapsFileParser"
-    "gdcmUtil"
+    "itktiff"
+    "JsonCpp"
     "log4qt"
     "mrmpi"
     "netlib"
     "niftilib"
+    "no public symbols found"
+    "not define any previously undefined public symbols"
     "openjpeg"
+    "PluginsContrib_DIR"
     "qglobal"
     "qhash"
     "qlist"
     "qmutex"
     "qstringbuilder"
     "qtconcurrentiteratekernel"
-    "qvector"
     "QtSql"
+    "qvector"
     "SharedForward"
     "vtk3DSImporter"
     "vtk3DWidget"
+    "vtkAbstractContextItem"
     "vtkalglib"
-    "vtkexodus2"
-    "vtkexpat"
-    "vtkfreetype"
-    "vtkjpeg"
-    "vtklibproj4"
-    "vtkpng"
-    "vtksqlite"
-    "vtktiff"
-    "vtkArrayWriter"
     "vtkArrayNorm"
-    "vtkAbstractContextItem"
-    "vtkAbstractContextItem"
+    "vtkArrayWriter"
     "vtkBMPReader"
     "vtkBYUReader"
     "vtkCellTreeLocator"
@@ -50,19 +50,24 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkDelimitedTextReader"
     "vtkDEMReader"
     "vtkEnSightGoldReader"
+    "vtkexodus2"
+    "vtkexpat"
     "vtkExtractSelectedIds"
+    "vtkFixedPointVolumeRay"
     "vtkFixedPointVolumeRayCastCompositeGOHelper"
     "vtkFixedPointVolumeRayCastCompositeGOShadeHelper"
     "vtkFixedPointVolumeRayCastCompositeHelper"
     "vtkFixedPointVolumeRayCastCompositeShadeHelper"
-    "vtkFixedPointVolumeRay"
     "vtkFLUENTReader"
+    "vtkfreetype"
     "vtkGaussianCubeReader"
     "vtkGeoAdaptiveArcs"
     "vtkGESignaReader"
+    "vtkImageCroppingRegionsWidget"
     "vtkImageReader"
     "vtkImageReslice"
-    "vtkImageCroppingRegionsWidget"
+    "vtkjpeg"
+    "vtklibproj4"
     "vtkLookupTable"
     "vtkMCubesReader"
     "vtkMINCImageReader"
@@ -72,6 +77,7 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkPlotStacked"
     "vtkPLY"
     "vtkPLYReader"
+    "vtkpng"
     "vtkPNGReader"
     "vtkPolyhedron"
     "vtkProp3D"
@@ -80,35 +86,29 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkSeedRepresentation"
     "vtkShrinkPolyData"
     "vtkSLCReader"
+    "vtksqlite"
     "vtkSTLReader"
-    "vtkTubeFilter"
     "vtkTecplotReader"
     "vtkTextCodec"
     "vtkTextCodecFactory"
-    "vtkUTF8TextCodec"
+    "vtktiff"
+    "vtkTubeFilter"
     "vtkUTF16TextCodec"
+    "vtkUTF8TextCodec"
     "vtkVariantArray"
     "vxl"
-    "FLTK"
-    "fltk"
-    "JsonCpp"
-    "is here"
-    "has no symbols"
-    "no public symbols found"
-    "not define any previously undefined public symbols"
     "warning: jobserver unavailable"
     )
 
-set(CTEST_CUSTOM_COVERAGE_EXCLUDE
+set( CTEST_CUSTOM_COVERAGE_EXCLUDE
     ".*CLP.h"
     "Slicer4"
     "Slicer4-Build"
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
     )
 
-set(CTEST_CUSTOM_MEMCHECK_IGNORE
-  # Ignore possible memory leaks in the python interpreter.
-  PrintSelf-UtilitiesFilters
+set( CTEST_CUSTOM_MEMCHECK_IGNORE
+  # Ignore possible memory leaks in the Python interpreter.
   PrintSelf-BaseFiltering
   PrintSelf-BaseIO
   PrintSelf-BaseNumerics
@@ -117,18 +117,19 @@ set(CTEST_CUSTOM_MEMCHECK_IGNORE
   PrintSelf-BaseRegistration
   PrintSelf-BaseSegmentation
   PrintSelf-BaseUSTK
+  PrintSelf-UtilitiesFilters
   )
 
-# GLOB automatically recurses in subdirs
-set(CTEST_EXTRA_COVERAGE_GLOB
-   Utilities/*.cxx
-   Utilities/*.txx
-   Base/*.cxx
-   Base/*.txx
+# GLOB automatically recurses in subdirectories.
+set( CTEST_EXTRA_COVERAGE_GLOB
    Applications/*.cxx
    Applications/*.txx
+   Base/*.cxx
+   Base/*.txx
+   Utilities/*.cxx
+   Utilities/*.txx
    )
 
-set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 2500)
+set( CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 2500 )
 
-set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 2500)
+set( CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 2500 )
