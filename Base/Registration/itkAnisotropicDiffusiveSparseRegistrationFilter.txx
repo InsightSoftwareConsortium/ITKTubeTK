@@ -710,9 +710,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
       surfaceDistance = 0.0;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        surfaceDistance += pow( imageCoord[i] - borderCoord[i], 2 );
+        surfaceDistance += vcl_pow( imageCoord[i] - borderCoord[i], 2 );
         }
-      surfaceDistance = sqrt( surfaceDistance );
+      surfaceDistance = vcl_sqrt( surfaceDistance );
       }
     if( tubePointLocator )
       {
@@ -737,7 +737,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
       double distanceToCenterCoord = ComputeDistanceToPointOnPlane(
             centerlineCoord, normal1, normal2, imageCoord );
       tubeDistance
-          = abs( distanceToCenterCoord - tubeRadiusData->GetValue( tubeId ));
+          = std::abs( distanceToCenterCoord - tubeRadiusData->GetValue( tubeId ));
       }
 
     // Find the normal of the surface point that is closest to the current voxel
@@ -814,11 +814,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   double projection2 = 0.0;
   for( int i = 0; i < ImageDimension; i++ )
     {
-    projection1 += pow(relativePoint[i] * tangentVector1[i], 2);
-    projection2 += pow(relativePoint[i] * tangentVector2[i], 2);
+    projection1 += vcl_pow(relativePoint[i] * tangentVector1[i], 2);
+    projection2 += vcl_pow(relativePoint[i] * tangentVector2[i], 2);
     }
-  projection1 = sqrt( projection1 );
-  projection2 = sqrt( projection2 );
+  projection1 = vcl_sqrt( projection1 );
+  projection2 = vcl_sqrt( projection2 );
 
   double pointOnPlane[ImageDimension];
   for( int i = 0; i < ImageDimension; i++ )
@@ -830,9 +830,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   double distance = 0.0;
   for( int i = 0; i < ImageDimension; i++ )
     {
-    distance += pow( pointOnPlane[i], 2 );
+    distance += vcl_pow( pointOnPlane[i], 2 );
     }
-  distance = sqrt( distance );
+  distance = vcl_sqrt( distance );
   return distance;
 }
 
@@ -940,7 +940,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistanceExponential( const WeightComponentType distance ) const
 {
-  return exp( -1.0 * m_Lambda * distance );
+  return vcl_exp( -1.0 * m_Lambda * distance );
 }
 
 /**
@@ -957,7 +957,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::ComputeWeightFromDistanceDirac( const WeightComponentType distance ) const
 {
   return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
-                         * exp( -1.0 * m_Lambda * distance * distance ) ) );
+                         * vcl_exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**

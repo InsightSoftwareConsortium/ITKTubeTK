@@ -42,8 +42,8 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
   typedef typename TubeSpatialObjectType::PointListType PointListType;
   const PointListType & inputPoints = input->GetPoints();
   PointListType & outputPoints = output->GetPoints();
-  const size_t numberOfInputPoints = inputPoints.size();
-  size_t numberOfOutputPoints;
+  const unsigned int numberOfInputPoints = inputPoints.size();
+  unsigned int numberOfOutputPoints;
   if( this->m_Sampling == 1 )
     {
     numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 0;
@@ -57,7 +57,7 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
     numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 2;
     }
   outputPoints.resize( numberOfOutputPoints );
-  for( size_t inputIndex = 0, outputIndex = 0;
+  for( unsigned int inputIndex = 0, outputIndex = 0;
     outputIndex < numberOfOutputPoints - 1;
     ++outputIndex, inputIndex += this->m_Sampling )
     {

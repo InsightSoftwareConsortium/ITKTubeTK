@@ -26,12 +26,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cmath>
+#include "tubeOptParabolicFit1D.h"
+
 #include <iostream>
 
 #include "tubeMacro.h"
-
-#include "tubeOptParabolicFit1D.h"
 
 namespace tube
 {

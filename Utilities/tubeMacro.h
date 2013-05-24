@@ -34,21 +34,12 @@ limitations under the License.
 #ifndef __tubeMacro_h
 #define __tubeMacro_h
 
-#include <string>
-#include <cstdlib>
-
 #ifndef NDEBUG
 #include <cassert>
 #endif
-
-// Determine type of string stream to use.
-#if !defined(CMAKE_NO_ANSI_STRING_STREAM)
+#include <cstdlib>
 #include <sstream>
-#elif !defined(CMAKE_NO_ANSI_STREAM_HEADERS)
-#include <strstream>
-#else
-#include <strstream.h>
-#endif
+#include <string>
 
 /** A convenience macro marks variables as not being used by a method,
  * avoiding compile-time warnings. */

@@ -26,12 +26,10 @@ limitations under the License.
 
 #include "itkDifferenceImageFilter2.h"
 
-#include "itkConstNeighborhoodIterator.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkNeighborhoodAlgorithm.h"
-#include "itkProgressReporter.h"
-#include "itkZeroFluxNeumannBoundaryCondition.h"
+#include <itkImageRegionIterator.h>
+#include <itkNeighborhoodAlgorithm.h>
+#include <itkProgressReporter.h>
+#include <itkZeroFluxNeumannBoundaryCondition.h>
 
 namespace itk
 {

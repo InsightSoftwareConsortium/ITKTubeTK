@@ -34,11 +34,10 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkSpatialObjectReader.h>
-#include <stdio.h>
+#include <cstdio>
 #include "metaCommand.h"
 
 #include <AtlasBuilderUsingIntensityCLP.h>
-
 
 using namespace tube;
 
@@ -47,7 +46,6 @@ const unsigned int Dimensions = 3;
 /** Processors */
 typedef AtlasSummation                                AtlasBuilderType;
 typedef itk::AffineTransform< double, Dimensions >    TransformType;
-
 
 /** Object types */
 typedef AtlasBuilderType::InputPixelType              InputPixelType;
@@ -61,7 +59,6 @@ typedef itk::Image< unsigned short, Dimensions >      UShortImageType;
 typedef UShortImageType::Pointer                      UShortImagePointer;
 typedef itk::Image< float, Dimensions >               FloatImageType;
 
-
 /** IO */
 typedef MetaObjectDocument                            DocumentReaderType;
 typedef itk::tube::ImageDocument                      ImageDocumentType;
@@ -69,23 +66,18 @@ typedef DocumentReaderType::ObjectListType            ImageDocumentListType;
 typedef itk::tube::ObjectDocumentToImageFilter<
   ImageDocumentType, InputImageType >                 DocumentToImageFilter;
 
-
 /** Function declarations */
 void WriteImage( UShortImagePointer image, const std::string & file );
 void WriteImage( FloatImageType::Pointer image, const std::string & file );
 void SetParameterList( AtlasBuilderType * atlasBuilder , MetaCommand command);
 int DoIt( int argc, char *argv[] );
 
-
-//-----------------------------------------------------------------------------
 int main( int argc, char* argv[] )
 {
   PARSE_ARGS;
   return DoIt( argc, argv );
 }
 
-
-//-----------------------------------------------------------------------------
 int DoIt( int argc, char *argv[] )
 {
   PARSE_ARGS;
@@ -98,15 +90,15 @@ int DoIt( int argc, char *argv[] )
     tube::ErrorMessage( "Could not read input document!" );
     return EXIT_FAILURE;
     }
-  tube::FmtInfoMessage("Read input document %s", imageDocFile.c_str());
-  ImageDocumentListType* imageObjects = reader->GetObjectList();
+  tube::FmtInfoMessage( "Read input document %s", imageDocFile.c_str() );
+  ImageDocumentListType * imageObjects = reader->GetObjectList();
 
   AtlasBuilderType * atlasBuilder = new AtlasBuilderType();
 
-  assert(outputSize.size() == Dimensions);
+  assert( outputSize.size() == Dimensions );
 
   AtlasBuilderType::SizeType size;
-  for(size_t i=0; i < outputSpacing.size(); ++i)
+  for( unsigned int i = 0; i < outputSpacing.size(); ++i )
     {
     size[i] = outputSpacing[i];
     }
@@ -115,7 +107,7 @@ int DoIt( int argc, char *argv[] )
   assert( outputSpacing.size() > 0 );
 
   AtlasBuilderType::SpacingType spacing;
-  for(size_t i=0; i < outputSpacing.size(); ++i)
+  for( unsigned int i = 0; i < outputSpacing.size(); ++i )
     {
     spacing[i] = outputSpacing[i];
     }
@@ -139,7 +131,7 @@ int DoIt( int argc, char *argv[] )
   while( it_imgDoc != imageObjects->end() )
     {
     ImageDocumentType::Pointer doc =
-      static_cast<ImageDocumentType*>( (*it_imgDoc).GetPointer() );
+      static_cast< ImageDocumentType * >( (*it_imgDoc).GetPointer() );
 
     tube::FmtInfoMessage("Adding image: " + doc->GetObjectName());
 
@@ -177,12 +169,10 @@ int DoIt( int argc, char *argv[] )
   return EXIT_SUCCESS;
 }
 
-
-//-----------------------------------------------------------------------------
 void WriteImage( UShortImageType::Pointer i, const std::string & name )
 {
-  typedef itk::ImageFileWriter< UShortImageType >   UShortWriterType;
-  UShortWriterType::Pointer   writer  = UShortWriterType::New();
+  typedef itk::ImageFileWriter< UShortImageType > UShortWriterType;
+  UShortWriterType::Pointer writer  = UShortWriterType::New();
 
   writer->SetInput( i );
   writer->SetFileName( name );
@@ -190,12 +180,10 @@ void WriteImage( UShortImageType::Pointer i, const std::string & name )
   writer->Update();
 }
 
-
-//-----------------------------------------------------------------------------
 void WriteImage( FloatImageType::Pointer i, const std::string & name )
 {
-  typedef itk::ImageFileWriter< FloatImageType >   WriterType;
-  WriterType::Pointer   writer  = WriterType::New();
+  typedef itk::ImageFileWriter< FloatImageType > WriterType;
+  WriterType::Pointer writer  = WriterType::New();
 
   writer->SetInput( i );
   writer->SetFileName( name );

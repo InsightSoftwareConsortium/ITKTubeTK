@@ -190,7 +190,7 @@ MetricPreProc( void )
           tPnt->m_V2(1) = (*((*j)->m_V2()))(2);
           tPnt->m_V2(2) = (*((*j)->m_V2()))(3);
 
-          tPnt->m_W = 2/(1+exp(-4*tPnt->m_R))-1;
+          tPnt->m_W = 2/(1+vcl_exp(-4*tPnt->m_R))-1;
 
           m_RegPoints.push_back(tPnt);
 
@@ -229,7 +229,7 @@ MetricPreProc( void )
 double TubeRegistrator::
 Metric( void )
 {
-  long c0 = clock();
+  long c0 = std::clock();
 
   std::list<TubeRegistratorPoint *>::iterator j;
   static TNT::Vector<double> xTV(3);
@@ -239,7 +239,7 @@ Metric( void )
   if(!recalc)
     {
     std::cout << "Metric: !recalc" << std::endl;
-    std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
+    std::cout << "Time = " << (std::clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
     return m_Metric;
     }
 
@@ -303,7 +303,7 @@ Metric( void )
     m_Metric = (m_Metric/m_Weight-m_ImMin)/m_ImRange;
     }
 
-  //std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
+  //std::cout << "Time = " << (std::clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
 
   return m_Metric;
 }
@@ -313,7 +313,7 @@ Metrim_Deriv(double *dX, double *dY, double *dZ,
              double *dA, double *dB, double *dG)
 {
 
-  long c0 = clock();
+  long c0 = std::clock();
 
   double opR;
 
@@ -350,7 +350,7 @@ Metrim_Deriv(double *dX, double *dY, double *dZ,
   double tDB;
   double tDG;
 
-  //FILE * fp = fopen("test.dat", "m_W");
+  //FILE * fp = std::fopen("test.dat", "m_W");
   for(j=m_RegPoints.begin(); j!=m_RegPoints.end(); ++j)
     {
     if(recalc)
@@ -383,7 +383,7 @@ Metrim_Deriv(double *dX, double *dY, double *dZ,
 
       dXProj1 = dot_product((*j)->m_DXT, (*j)->m_V1T);
       dXProj2 = dot_product((*j)->m_DXT, (*j)->m_V2T);
-      //fprintf(fp, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n",
+      //std::fprintf(fp, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n",
       //        (*j)->m_X(0), (*j)->m_X(1), (*j)->m_X(2),
       //        (*j)->m_XT(0), (*j)->m_XT(1), (*j)->m_XT(2),
       //        (*j)->m_VAL,
@@ -403,7 +403,7 @@ Metrim_Deriv(double *dX, double *dY, double *dZ,
       *dZ += (*j)->m_W * (*j)->m_DXT(2);
       }
     }
-  //fclose(fp);
+  //std::fclose(fp);
 
   m_BiasVI = vnl_matrix_inverse<double>(m_BiasV).inverse();
   tV(0) = *dX;
@@ -453,7 +453,7 @@ Metrim_Deriv(double *dX, double *dY, double *dZ,
 
   m_Metric = (m_Metric/m_Weight-m_ImMin)/m_ImRange;
 
-  std::cout << "Time = " << (clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
+  std::cout << "Time = " << (std::clock()-c0)/(double)CLOCKS_PER_SEC << std::endl;
 
   return m_Metric;
 }

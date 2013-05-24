@@ -24,6 +24,10 @@ limitations under the License.
 #ifndef __tubeStringUtilities_h
 #define __tubeStringUtilities_h
 
+#include <sstream>
+#include <string>
+#include <vector>
+
 namespace tube
 {
 

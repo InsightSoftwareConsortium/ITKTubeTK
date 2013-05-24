@@ -24,11 +24,10 @@ limitations under the License.
 #ifndef __tubeTubeMath_txx
 #define __tubeTubeMath_txx
 
-#include <cstdlib>
 #include <iostream>
-#include "tubeTubeMath.h"
-#include "tubeMatrixMath.h"
 
+#include "tubeMatrixMath.h"
+#include "tubeTubeMath.h"
 
 namespace tube
 {

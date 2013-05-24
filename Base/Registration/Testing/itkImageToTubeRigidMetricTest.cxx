@@ -137,8 +137,8 @@ int itkImageToTubeRigidMetricTest(int argc, char* argv[] )
 
   const double epsilonReg = 0.05; // Delta threshold on the measure checking.
   MetricType::MeasureType value = metric->GetValue( parameters );
-  if(value < ( atof(argv[3]) - epsilonReg ) ||
-      value > ( atof(argv[3]) + epsilonReg ) )
+  if(value < ( std::atof(argv[3]) - epsilonReg ) ||
+      value > ( std::atof(argv[3]) + epsilonReg ) )
     {
     std::cerr << "Distance value different than expected: "
               << value

@@ -18,9 +18,10 @@
 #ifndef __itkFilterWatcher_h
 #define __itkFilterWatcher_h
 
-#include "itkCommand.h"
-#include "itkProcessObject.h"
-#include <time.h>
+#include <ctime>
+
+#include <itkCommand.h>
+#include <itkProcessObject.h>
 
 namespace itk
 {
@@ -111,7 +112,7 @@ public:
     {
     m_Steps = 0;
     m_Iterations = 0;
-    m_Start = ::clock();
+    m_Start = std::clock();
     std::cout << "-------- Start " << m_Process->GetNameOfClass()
               << " \"" << m_Comment << "\" "
               << m_Process
@@ -122,7 +123,7 @@ public:
   const char *GetNameOfClass ( void ) {return m_Process->GetNameOfClass();}
   virtual void EndFilter( void )
     {
-    m_End = ::clock();
+    m_End = std::clock();
     std::cout << std::endl << "Filter took "
               << static_cast<double>(m_End - m_Start) / CLOCKS_PER_SEC
               << " seconds.";
@@ -143,8 +144,8 @@ public:
 
 protected:
 
-  clock_t                     m_Start;
-  clock_t                     m_End;
+  std::clock_t                m_Start;
+  std::clock_t                m_End;
   int                         m_Steps;
   int                         m_Iterations;
   bool                        m_Quiet;

@@ -15,19 +15,13 @@
 
 =========================================================================*/
 
-#include "itkNumericTraits.h"
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkRescaleIntensityImageFilter.h"
-#include "itkExtractImageFilter.h"
+#include <itkExtractImageFilter.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkRescaleIntensityImageFilter.h>
+#include <metaCommand.h>
+
 #include "itkDifferenceImageFilter2.h"
-
-#include "metaCommand.h"
-
-#include <iostream>
-#include <fstream>
-
 
 // Description:
 // Get the ComponentType and dimension of the image

@@ -69,7 +69,7 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
 
   // Get the list of tubes from the group
   char tubeName[17];
-  strcpy( tubeName, "Tube" );
+  std::strcpy( tubeName, "Tube" );
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
   const unsigned int numTubes = tubeList->size();
   std::cout << "Number of tubes: " << numTubes << std::endl;

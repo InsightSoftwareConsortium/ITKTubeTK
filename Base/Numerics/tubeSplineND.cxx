@@ -22,9 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeSplineND.h"
-#include "tubeUserFunc.h"
-#include <cmath>
-#include <itkVectorContainer.h>
+
 #include <itkImageRegionIterator.h>
 
 namespace tube
@@ -569,7 +567,7 @@ const double & SplineND::value( const VectorType & x )
 
   for( int i=( int )m_NDims-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
     for( unsigned int j=0; j<k; j++ )
@@ -626,7 +624,7 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
     {
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
     switch( dx( ( int )m_NDims-i-1 ) )
       {
       default:
@@ -833,7 +831,7 @@ double SplineND::valueVDD2( const VectorType & x,
 
   for( int i=( int )m_NDims-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
 
     itk::ImageRegionIterator<ImageType> itImageWSX( itWSX->Value(),
       itWSX->Value()->GetLargestPossibleRegion() );

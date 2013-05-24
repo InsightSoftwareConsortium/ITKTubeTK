@@ -24,11 +24,9 @@ limitations under the License.
 // Compare a test JSON file to a baseline JSON file.  Implementation is
 // adapted from CalaTK.
 
-#include "metaCommand.h"
-
-#include "json/json.h"
-
-#include <cmath>
+#include <json/json.h>
+#include <metaCommand.h>
+#include <vnl/vnl_math.h>
 
 /** Return 0 if the test file and baseline file have the same JSON content and 1
  * otherwise. Values within the JSON object can be ignored by setting them to
@@ -255,7 +253,7 @@ int compareJSON( const Json::Value & test,
         }
       else if( (*baselineIt).isDouble() )
         {
-        if( std::fabs((*baselineIt).asDouble() - (*testIt).asDouble())
+        if( vnl_math_abs((*baselineIt).asDouble() - (*testIt).asDouble())
               > toleranceValue )
           {
           if( reportErrors )

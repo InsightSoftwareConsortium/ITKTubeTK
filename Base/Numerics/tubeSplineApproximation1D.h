@@ -24,12 +24,12 @@ limitations under the License.
 #ifndef __tubeSplineApproximation1D_h
 #define __tubeSplineApproximation1D_h
 
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix_fixed.h"
+#include <vnl/vnl_matrix_fixed.h>
+#include <vnl/vnl_vector.h>
 
+#include "tubeOptimizer1D.h"
 #include "tubeSpline1D.h"
 #include "tubeUserFunc.h"
-#include "tubeOptimizer1D.h"
 
 namespace tube
 {

@@ -64,17 +64,17 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
   // generate transform
   TransformType::Pointer transform = TransformType::New();
   itk::Vector<double,3> rotation;
-  rotation[0] = atof(argv[5]);//-0.5/itk::Math::one_over_pi;
-  rotation[1] = atof(argv[6]);//-0.5/itk::Math::one_over_pi;
-  rotation[2] = atof(argv[7]);//0.0
+  rotation[0] = std::atof(argv[5]);//-0.5/itk::Math::one_over_pi;
+  rotation[1] = std::atof(argv[6]);//-0.5/itk::Math::one_over_pi;
+  rotation[2] = std::atof(argv[7]);//0.0
 
   std::cout << "input rotation: " << rotation[0] << " " << rotation[1] << " "
     << rotation[2] << std::endl;
 
   itk::Vector<double,3> translation;
-  translation[0] = atof(argv[8]);
-  translation[1] = atof(argv[9]);
-  translation[2] = atof(argv[10]);
+  translation[0] = std::atof(argv[8]);
+  translation[1] = std::atof(argv[9]);
+  translation[2] = std::atof(argv[10]);
 
   std::cout << "input translation: " << translation[0] << " " << translation[1] << " "
     << translation[2] << std::endl;
@@ -141,7 +141,7 @@ int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
     return EXIT_FAILURE;
     }
 
-  if(atoi(argv[11]))
+  if(std::atoi(argv[11]))
     {
     // Write vessel as an image
     typedef itk::Image<double, 3>                           ImageType;

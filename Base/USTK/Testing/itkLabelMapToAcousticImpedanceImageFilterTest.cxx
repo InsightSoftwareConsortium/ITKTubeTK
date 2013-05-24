@@ -126,7 +126,7 @@ int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable )
     return EXIT_FAILURE;
     }
 
-  size_t label = 0;
+  unsigned int label = 0;
   char tissueType[256];
   float acousticImpedance;
   inputStream >> label;

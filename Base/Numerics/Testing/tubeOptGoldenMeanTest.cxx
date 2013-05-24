@@ -81,14 +81,14 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
     return EXIT_FAILURE;
     }
 
-  double factor = atof( argv[1] );
-  int funcType = atoi( argv[2] );
-  double xMin = atof( argv[3] );
-  double xMax = atof( argv[4] );
-  int minimizing = atoi( argv[5] );
-  double x = atof( argv[6] );
-  double idealXPiScaling = atof( argv[7] );
-  double idealV = atof( argv[8] );
+  double factor = std::atof( argv[1] );
+  int funcType = std::atoi( argv[2] );
+  double xMin = std::atof( argv[3] );
+  double xMax = std::atof( argv[4] );
+  int minimizing = std::atoi( argv[5] );
+  double x = std::atof( argv[6] );
+  double idealXPiScaling = std::atof( argv[7] );
+  double idealV = std::atof( argv[8] );
 
   MyOGMFunc * myFunc = new MyOGMFunc();
   tube::OptGoldenMean1D * opt = new tube::OptGoldenMean1D( myFunc );

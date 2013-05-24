@@ -161,7 +161,7 @@ int DoIt( int argc, char * argv[] )
         LDAImageWriterType::New();
       std::string fname = outputBase;
       char c[80];
-      sprintf( c, ".lda%02u.mha", i );
+      std::sprintf( c, ".lda%02u.mha", i );
       fname += std::string( c );
       ldaImageWriter->SetUseCompression( true );
       ldaImageWriter->SetFileName( fname.c_str() );

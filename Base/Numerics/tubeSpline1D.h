@@ -24,8 +24,10 @@ limitations under the License.
 #ifndef __tubeSpline1D_h
 #define __tubeSpline1D_h
 
-#include "tubeUserFunc.h"
+#include <vnl/vnl_vector.h>
+
 #include "tubeOptimizer1D.h"
+#include "tubeUserFunc.h"
 
 namespace tube
 {

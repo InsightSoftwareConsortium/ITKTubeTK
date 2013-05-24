@@ -24,9 +24,8 @@ limitations under the License.
 #ifndef __tubeCLIHelperFunctions_h
 #define __tubeCLIHelperFunctions_h
 
-#include "itkImage.h"
-#include "itkImageIOBase.h"
-#include "itkImageIOFactory.h"
+#include <itkImage.h>
+#include <itkImageIOFactory.h>
 
 namespace tube
 {

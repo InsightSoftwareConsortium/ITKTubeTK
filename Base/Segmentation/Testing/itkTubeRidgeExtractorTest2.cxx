@@ -77,7 +77,7 @@ int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
     << std::endl;
 
   char tubeName[17];
-  strcpy( tubeName, "Tube" );
+  std::strcpy( tubeName, "Tube" );
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
 
   unsigned int numTubes = tubeList->size();
