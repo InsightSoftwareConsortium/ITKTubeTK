@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Compute TubeGraph Probability</title>
-  <description>Propagates averaged information of a (MEAN) graph to the current graph, based on connectivity information.</description>
+  <title>Compute Tube Graph Probability (TubeTK)</title>
+  <description>Propagates averaged information of a (mean) graph to the current graph based on connectivity information.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Stephen R. Aylward, Roland Kwitt (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <file>
       <name>inGraphFile</name>
+      <label>Input Graph File</label>
       <index>0</index>
-      <description>Input graph file (Filename serves as base for output files, .matProb.txt, .cntProb.txt, .brcProb.txt)</description>
+      <description>Input graph file. Filename serves as base for output files, .matProb.txt, .cntProb.txt, .brcProb.txt.</description>
     </file>
     <file>
       <name>meanGraphFile</name>
+      <label>Mean Graph File</label>
       <index>1</index>
-      <description>Mean input graph</description>
+      <description>Mean input graph.</description>
     </file>
     <file>
       <name>outGraphFile</name>
+      <label>Output Graph File</label>
       <index>2</index>
-      <description>Output graph file (basename)</description>
+      <description>Output graph file (base name).</description>
     </file>
   </parameters>
-
 </executable>

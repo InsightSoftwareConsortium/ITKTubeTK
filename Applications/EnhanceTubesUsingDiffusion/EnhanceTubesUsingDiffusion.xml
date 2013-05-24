@@ -1,29 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Enhance tubes using diffusion (TubeTK)</title>
+  <title>Enhance Tubes Using Diffusion (TubeTK)</title>
   <description>Compute vesselness score of an image using Frangi's method.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url></documentation-url>
-  <license></license>
-  <contributor>Patrick Reynolds</contributor>
-<acknowledgements>This work was funded by USC:EXPOSE and is an adaptation of Hua Yang's work.</acknowledgements>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Patrick Reynolds (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware. It was funded by USC:EXPOSE and is an adaptation of the work of Hua Yang.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input volume</description>
+      <description>Input volume.</description>
     </image>
     <image>
       <name>outputVolume</name>
       <label>Output Volume</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Blurred Volume</description>
+      <description>Blurred volume.</description>
     </image>
     <double>
       <name>timeStep</name>
@@ -34,29 +35,29 @@
     </double>
     <double>
       <name>minSigma</name>
-      <label>Min Sigma</label>
-      <description>Minimum sigma scale</description>
+      <label>Minimum Sigma</label>
+      <description>Minimum sigma scale.</description>
       <longflag>min</longflag>
       <default>1.0</default>
     </double>
     <double>
       <name>maxSigma</name>
-      <label>Max Sigma</label>
-      <description>Maximum sigma scale</description>
+      <label>Maximum Sigma</label>
+      <description>Maximum sigma scale.</description>
       <longflag>max</longflag>
       <default>1.0</default>
     </double>
     <integer>
       <name>numSigmaSteps</name>
-      <label>Num Sigma Steps</label>
-      <description>Number of sigma steps</description>
+      <label>Number of Sigma Steps</label>
+      <description>Number of sigma steps.</description>
       <longflag>steps</longflag>
       <default>1</default>
     </integer>
     <integer>
       <name>numIterations</name>
-      <label>Num Iterations</label>
-      <description>Number of iterations</description>
+      <label>Number of Iterations</label>
+      <description>Number of iterations.</description>
       <longflag>iterations</longflag>
       <default>50</default>
     </integer>
@@ -65,27 +66,23 @@
       <label>Recalculate Tubeness</label>
       <flag>r</flag>
       <longflag>recalculate</longflag>
-      <description>
-        How many iterations do we recalculate vesselness.
-      </description>
+      <description>How many iterations do we recalculate vesselness.</description>
       <default>11</default>
     </integer>
     <double>
       <name>beta</name>
-      <label>beta</label>
+      <label>Beta</label>
       <flag>b</flag>
       <longflag>beta</longflag>
-      <description>How sensitive the filter is to blobness</description>
+      <description>How sensitive the filter is to blobness.</description>
       <default>0.5</default>
     </double>
     <double>
       <name>gamma</name>
-      <label>gamma</label>
+      <label>Gamma</label>
       <flag>g</flag>
       <longflag>gamma</longflag>
-      <description>
-        How sensitive the filter is to second order structureness.
-      </description>
+      <description>How sensitive the filter is to second order structureness.</description>
       <default>5.0</default>
     </double>
     <double>
@@ -101,7 +98,7 @@
       <label>Omega</label>
       <flag>w</flag>
       <longflag>omega</longflag>
-      <description>Our Omega value.</description>
+      <description>Our omega value.</description>
       <default>25.0</default>
     </double>
     <double>
@@ -109,10 +106,8 @@
       <label>Sensitivity</label>
       <flag>s</flag>
       <longflag>sensitivity</longflag>
-      <description>How Sensitive the filter is.</description>
+      <description>How sensitive the filter is.</description>
       <default>20.0</default>
     </double>
-
   </parameters>
-
 </executable>
