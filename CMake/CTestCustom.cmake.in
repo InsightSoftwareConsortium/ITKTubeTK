@@ -153,8 +153,6 @@ set( CTEST_EXTRA_COVERAGE_GLOB
    Applications/*.txx
    Base/*.cxx
    Base/*.txx
-   Utilities/*.cxx
-   Utilities/*.txx
    )
 
 set( CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 2500 )

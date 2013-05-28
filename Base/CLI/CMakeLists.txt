@@ -21,25 +21,25 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-set( MODULE_NAME ResampleImage )
-project( ${MODULE_NAME} )
-
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
+project( TubeCLI )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-#-----------------------------------------------------------------------------
-SEMMacroBuildCLI(
-  NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES}
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
+set( TubeTK_Base_CLI_H_Files
+  tubeCLIFilterWatcher.h
+  tubeCLIHelperFunctions.h
+  tubeCLIProgressReporter.h
+  TubeTKLogo.h
+  )
+
+set( TubeTK_Base_CLI_SRCS
+  tubeCLISharedLibraryWrapper.cxx
+  )
+
+add_custom_target( TubeCLI SOURCES
+  ${TubeTK_Base_CLI_H_Files}
+  ${TubeTK_Base_CLI_SRCS}
   )
 
 if( BUILD_TESTING )

@@ -125,7 +125,6 @@ if( TubeTK_USE_CPPCHECK )
   set( cppcheck_paths_to_check
     "${TubeTK_SOURCE_DIR}/Applications"
     "${TubeTK_SOURCE_DIR}/Base"
-    "${TubeTK_SOURCE_DIR}/Utilities"
     )
   set( cppcheck_suppressions_file
     "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheck.supp" )
