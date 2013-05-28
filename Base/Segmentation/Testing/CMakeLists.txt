@@ -101,7 +101,7 @@ MIDAS_ADD_TEST( itkTubeCVTImageFilterTest
 MIDAS_ADD_TEST( itkTubeOtsuThresholdMaskedImageFilterTest
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubeOtsuThresholdMaskedImageFilterTest2.mha.md5}
-            ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
+    ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
   itkTubeOtsuThresholdMaskedImageFilterTest
     MIDAS{ES0015_1.mha.md5}
     ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest1.mha
@@ -111,26 +111,34 @@ MIDAS_ADD_TEST( itkTubeOtsuThresholdMaskedImageFilterTest
 MIDAS_ADD_TEST( itkTubePDFSegmenterTest
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubePDFSegmenterTest_mask.mha.md5}
-            ${TEMP}/itkTubePDFSegmenterTest_mask.mha
+    ${TEMP}/itkTubePDFSegmenterTest_mask.mha
   itkTubePDFSegmenterTest
     MIDAS{ES0015_Large.mha.md5}
-    false
+    MIDAS{ES0015_Large.mha.md5}
+    true
+    5.0
     MIDAS{GDS0015_Large-TrainingMask.mha.md5}
     ${TEMP}/itkTubePDFSegmenterTest_prob0.mha
+    ${TEMP}/itkTubePDFSegmenterTest_pdf0.mha
     ${TEMP}/itkTubePDFSegmenterTest_prob1.mha
+    ${TEMP}/itkTubePDFSegmenterTest_pdf1.mha
     ${TEMP}/itkTubePDFSegmenterTest_mask.mha
   )
 
 MIDAS_ADD_TEST( itkTubePDFSegmenterTest2
   ${BASE_SEGMENTATION_TESTS}
   --compare MIDAS{itkTubePDFSegmenterTest2_mask.mha.md5}
-            ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
+    ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
   itkTubePDFSegmenterTest
-    MIDAS{ES0015_Large.mha.md5}
-    true
-    MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+    MIDAS{im0001.crop.mha.md5}
+    MIDAS{im0001.crop.contrast.mha.md5}
+    false
+    0.4
+    MIDAS{im0001.vk.mask.crop.mha.md5}
     ${TEMP}/itkTubePDFSegmenterTest2_prob0.mha
+    ${TEMP}/itkTubePDFSegmenterTest2_pdf0.mha
     ${TEMP}/itkTubePDFSegmenterTest2_prob1.mha
+    ${TEMP}/itkTubePDFSegmenterTest2_pdf1.mha
     ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
   )
 
