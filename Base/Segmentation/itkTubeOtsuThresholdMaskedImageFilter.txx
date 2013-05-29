@@ -26,9 +26,9 @@ limitations under the License.
 
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
 
-#include "itkBinaryThresholdImageFilter.h"
+#include <itkBinaryThresholdImageFilter.h>
 #include "itkTubeOtsuThresholdMaskedImageCalculator.h"
-#include "itkProgressAccumulator.h"
+#include <itkProgressAccumulator.h>
 
 namespace itk
 {

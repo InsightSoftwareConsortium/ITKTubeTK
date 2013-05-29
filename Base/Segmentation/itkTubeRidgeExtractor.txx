@@ -34,9 +34,9 @@ limitations under the License.
 #include "tubeMatrixMath.h"
 
 #include "itkTubeRidgeExtractor.h"
-#include "itkImageRegionIterator.h"
-#include "itkNeighborhoodIterator.h"
-#include "itkMinimumMaximumImageFilter.h"
+#include <itkImageRegionIterator.h>
+#include <itkNeighborhoodIterator.h>
+#include <itkMinimumMaximumImageFilter.h>
 
 namespace itk
 {

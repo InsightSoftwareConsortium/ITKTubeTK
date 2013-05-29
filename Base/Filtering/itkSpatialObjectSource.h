@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkSpatialObjectSource_h
 #define __itkSpatialObjectSource_h
 
-#include "itkProcessObject.h"
-#include "itkSpatialObject.h"
+#include <itkProcessObject.h>
+#include <itkSpatialObject.h>
 
 namespace itk
 {

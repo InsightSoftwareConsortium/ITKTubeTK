@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "vtkObjectFactory.h"
+#include <vtkObjectFactory.h>
 
 // MRML includes
 #include "vtkMRMLSpatialObjectsStorageNode.h"

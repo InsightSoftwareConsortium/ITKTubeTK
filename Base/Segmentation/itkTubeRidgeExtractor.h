@@ -39,8 +39,8 @@ limitations under the License.
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeRadiusExtractor.h"
 
-#include "itkContinuousIndex.h"
-#include "itkVesselTubeSpatialObject.h"
+#include <itkContinuousIndex.h>
+#include <itkVesselTubeSpatialObject.h>
 
 
 namespace itk

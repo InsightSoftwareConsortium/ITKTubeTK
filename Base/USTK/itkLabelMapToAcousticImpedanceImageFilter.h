@@ -25,7 +25,7 @@ limitations under the License.
 #define __itkLabelMapToAcousticImpedanceImageFilter_h
 
 #include <itkUnaryFunctorImageFilter.h>
-#include <itkLabelMapToAcousticImpedanceFunctor.h>
+#include "itkLabelMapToAcousticImpedanceFunctor.h"
 
 namespace itk
 {

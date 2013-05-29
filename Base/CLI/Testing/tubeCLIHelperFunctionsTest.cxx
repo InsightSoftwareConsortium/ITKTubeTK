@@ -27,7 +27,7 @@ limitations under the License.
 
 #include <cstdlib>
 
-#include "itkImage.h"
+#include <itkImage.h>
 
 // Forward declaration required by CLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >

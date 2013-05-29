@@ -24,9 +24,9 @@ limitations under the License.
 #ifndef __itkTubeOtsuThresholdMaskedImageCalculator_h
 #define __itkTubeOtsuThresholdMaskedImageCalculator_h
 
-#include "itkObject.h"
-#include "itkObjectFactory.h"
-#include "itkNumericTraits.h"
+#include <itkObject.h>
+#include <itkObjectFactory.h>
+#include <itkNumericTraits.h>
 
 namespace itk
 {

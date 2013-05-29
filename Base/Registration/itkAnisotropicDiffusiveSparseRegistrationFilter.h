@@ -26,9 +26,9 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilter.h"
 
-#include "itkGroupSpatialObject.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "vtkSmartPointer.h"
+#include <itkGroupSpatialObject.h>
+#include <itkVesselTubeSpatialObject.h>
+#include <vtkSmartPointer.h>
 class vtkFloatArray;
 class vtkPointLocator;
 class vtkPolyData;

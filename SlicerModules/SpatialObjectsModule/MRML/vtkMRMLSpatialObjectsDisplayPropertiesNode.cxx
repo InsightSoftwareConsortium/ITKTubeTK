@@ -24,7 +24,7 @@ limitations under the License.
 #include <sstream>
 #include <cstring>
 
-#include "vtkObjectFactory.h"
+#include <vtkObjectFactory.h>
 
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 

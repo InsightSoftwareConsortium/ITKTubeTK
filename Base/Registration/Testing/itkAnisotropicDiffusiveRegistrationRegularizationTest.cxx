@@ -23,16 +23,16 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 
-#include "itkImageLinearIteratorWithIndex.h"
-#include "itkImageFileWriter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkImageLinearIteratorWithIndex.h>
+#include <itkImageFileWriter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
-#include "vtkPlaneSource.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkSmartPointer.h"
-#include "vtkDataArray.h"
-#include "vtkPointData.h"
-#include "vtkPolyDataWriter.h"
+#include <vtkPlaneSource.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkSmartPointer.h>
+#include <vtkDataArray.h>
+#include <vtkPointData.h>
+#include <vtkPolyDataWriter.h>
 
 int itkAnisotropicDiffusiveRegistrationRegularizationTest(
                                                       int argc, char* argv[] )

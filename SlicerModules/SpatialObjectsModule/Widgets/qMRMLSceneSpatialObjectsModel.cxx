@@ -23,7 +23,7 @@ limitations under the License.
 
 // qMRML includes
 #include "qMRMLSceneSpatialObjectsModel.h"
-#include "qMRMLSceneDisplayableModel_p.h"
+#include <qMRMLSceneDisplayableModel_p.h>
 
 // MRML includes
 #include <vtkMRMLScene.h>

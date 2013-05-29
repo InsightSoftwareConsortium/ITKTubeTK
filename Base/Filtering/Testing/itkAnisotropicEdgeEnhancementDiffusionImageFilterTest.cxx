@@ -19,8 +19,8 @@
 #endif
 
 #include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv[] )
 {

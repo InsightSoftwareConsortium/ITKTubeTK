@@ -24,9 +24,9 @@ limitations under the License.
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkMatrix.h"
+#include <itkMatrix.h>
 #include "tubeShortestPathKernel.h"
 #include "tubeWLSubtreeKernel.h"
 

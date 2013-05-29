@@ -28,9 +28,6 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkImageFileReader.h>
 #include <itkResampleImageFilter.h>
-#include <itkInterpolateImageFunction.h>
-#include <itkImageBase.h>
-#include <itkSpatialObject.h>
 
 namespace itk
 {

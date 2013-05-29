@@ -24,14 +24,14 @@ limitations under the License.
 #ifndef __itkJointHistogramImageFunction_txx
 #define __itkJointHistogramImageFunction_txx
 
-#include "itkMinimumMaximumImageCalculator.h"
-#include "itkAddImageFilter.h"
-#include "itkSubtractImageFilter.h"
-#include "itkSquareImageFilter.h"
-#include "itkDivideImageFilter.h"
-#include "itkMultiplyImageFilter.h"
-#include "itkSqrtImageFilter.h"
-#include "itkDiscreteGaussianImageFilter.h"
+#include <itkMinimumMaximumImageCalculator.h>
+#include <itkAddImageFilter.h>
+#include <itkSubtractImageFilter.h>
+#include <itkSquareImageFilter.h>
+#include <itkDivideImageFilter.h>
+#include <itkMultiplyImageFilter.h>
+#include <itkSqrtImageFilter.h>
+#include <itkDiscreteGaussianImageFilter.h>
 
 #include "itkJointHistogramImageFunction.h"
 

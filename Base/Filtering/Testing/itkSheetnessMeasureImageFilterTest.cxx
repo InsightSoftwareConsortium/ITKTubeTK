@@ -16,9 +16,9 @@
  *
  *=========================================================================*/
 
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkSheetnessMeasureImageFilter.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileWriter.h>
 
 int itkSheetnessMeasureImageFilterTest(int ,char*[] )
 {

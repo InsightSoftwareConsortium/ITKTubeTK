@@ -24,10 +24,10 @@ limitations under the License.
 #ifndef __itkDiffusiveRegistrationFilter_h
 #define __itkDiffusiveRegistrationFilter_h
 
-#include "itkPDEDeformableRegistrationFilter.h"
+#include <itkPDEDeformableRegistrationFilter.h>
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
 
-#include "itkVectorIndexSelectionCastImageFilter.h"
+#include <itkVectorIndexSelectionCastImageFilter.h>
 
 namespace itk
 {

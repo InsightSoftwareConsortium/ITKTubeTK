@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkUltrasoundProbeGeometryCalculator_h
 #define __itkUltrasoundProbeGeometryCalculator_h
 
-#include "itkProcessObject.h"
-#include "itkSimpleDataObjectDecorator.h"
+#include <itkProcessObject.h>
+#include <itkSimpleDataObjectDecorator.h>
 
 namespace itk
 {

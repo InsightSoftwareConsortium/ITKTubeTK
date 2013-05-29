@@ -29,28 +29,28 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageSpatialObject.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageSpatialObject.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Application-specific includes
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkFRPROptimizer.h"
-#include "itkOnePlusOneEvolutionaryOptimizer.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkImageRegionIterator.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-#include "itkIdentityTransform.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkNormalizeImageFilter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkFRPROptimizer.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkImageRegionIterator.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itkIdentityTransform.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkNormalizeImageFilter.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions

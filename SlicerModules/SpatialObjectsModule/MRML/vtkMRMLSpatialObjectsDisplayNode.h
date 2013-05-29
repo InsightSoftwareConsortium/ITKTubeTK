@@ -36,7 +36,7 @@ limitations under the License.
 #include <vtkMRMLModelDisplayNode.h>
 
 // Tractography includes
-#include "vtkSlicerSpatialObjectsModuleMRMLExport.h"
+#include <vtkSlicerSpatialObjectsModuleMRMLExport.h>
 
 class vtkMRMLSpatialObjectsDisplayPropertiesNode;
 

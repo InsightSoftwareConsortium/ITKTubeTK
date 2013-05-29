@@ -26,13 +26,13 @@ limitations under the License.
 #endif
 
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
+#include "itkFilterWatcher.h"
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-#include "itkRecursiveGaussianImageFilter.h"
+#include <itkRecursiveGaussianImageFilter.h>
 
 #include "itkTubeNJetLDAGenerator.h"
 

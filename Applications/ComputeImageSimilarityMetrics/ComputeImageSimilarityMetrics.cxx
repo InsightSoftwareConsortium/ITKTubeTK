@@ -29,13 +29,13 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkIdentityTransform.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkMutualInformationImageToImageMetric.h"
-#include "itkNormalizedCorrelationImageToImageMetric.h"
-#include "itkNormalizeImageFilter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkIdentityTransform.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkMutualInformationImageToImageMetric.h>
+#include <itkNormalizedCorrelationImageToImageMetric.h>
+#include <itkNormalizeImageFilter.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions

@@ -19,8 +19,8 @@
 #endif
 
 #include "itkAnisotropicHybridDiffusionImageFilter.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv[] )
 {

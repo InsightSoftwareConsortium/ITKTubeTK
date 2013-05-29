@@ -29,17 +29,17 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkTransformFileReader.h"
-#include "itkTransformFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTransformFileReader.h>
+#include <itkTransformFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Application-specific includes
 #include "tubeCompareImageWithPrior.h"

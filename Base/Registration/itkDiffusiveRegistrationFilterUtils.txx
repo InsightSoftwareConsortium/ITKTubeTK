@@ -26,10 +26,10 @@ limitations under the License.
 
 #include "itkDiffusiveRegistrationFilterUtils.h"
 
-#include "itkMinimumMaximumImageCalculator.h"
-#include "itkResampleImageFilter.h"
-#include "itkVectorResampleImageFilter.h"
-#include "itkVectorIndexSelectionCastImageFilter.h"
+#include <itkMinimumMaximumImageCalculator.h>
+#include <itkResampleImageFilter.h>
+#include <itkVectorResampleImageFilter.h>
+#include <itkVectorIndexSelectionCastImageFilter.h>
 
 namespace itk
 {

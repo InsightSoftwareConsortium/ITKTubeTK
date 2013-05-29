@@ -21,19 +21,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "vtkObjectFactory.h"
+#include <vtkObjectFactory.h>
 
 // VTK includes
-#include "vtkAssignAttribute.h"
-#include "vtkCallbackCommand.h"
-#include "vtkCellData.h"
-#include "vtkPointData.h"
-#include "vtkPolyData.h"
-#include "vtkSmartPointer.h"
+#include <vtkAssignAttribute.h>
+#include <vtkCallbackCommand.h>
+#include <vtkCellData.h>
+#include <vtkPointData.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
 
 // MRML includes
-#include "vtkMRMLScene.h"
-#include "vtkMRMLNode.h"
+#include <vtkMRMLScene.h>
+#include <vtkMRMLNode.h>
 #include "vtkMRMLSpatialObjectsLineDisplayNode.h"
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 

@@ -30,22 +30,22 @@ limitations under the License.
 #endif
 
 // ITK Includes
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkTransformFileReader.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTransformFileReader.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
-#include "itkResampleImageFilter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkBSplineInterpolateImageFunction.h"
+#include <itkResampleImageFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkBSplineInterpolateImageFunction.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions

@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __itkObjectDocumentToObjectSource_txx
 #define __itkObjectDocumentToObjectSource_txx
 
+#include "itkObjectDocumentToObjectSource.h"
+
 namespace itk
 {
 

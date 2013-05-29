@@ -26,9 +26,9 @@ limitations under the License.
 
 #include "itkImageToTubeRigidRegistration.h"
 
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkSpatialObjectDuplicator.h"
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkSpatialObjectDuplicator.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
 namespace itk
