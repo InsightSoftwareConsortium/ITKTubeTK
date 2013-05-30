@@ -29,17 +29,17 @@ limitations under the License.
 
 #include "tubeMacro.h"
 
-#include "tubeOptBrent1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeOptimizer1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
-class MyOBFunc : public tube::UserFunc< double, double >
+class MyOPFunc : public tube::UserFunction< double, double >
 {
 private:
   double cVal;
 
 public:
-  MyOBFunc( void )
+  MyOPFunc( void )
     {
     cVal = 0;
     }
@@ -49,15 +49,15 @@ public:
     return cVal;
     }
 
-}; // End class MyOBFunc
+}; // End class MyOPFunc
 
-class MyOBFuncD : public tube::UserFunc< double, double >
+class MyOPFuncD : public tube::UserFunction< double, double >
 {
 private:
   double cDeriv;
 
 public:
-  MyOBFuncD( void )
+  MyOPFuncD( void )
     {
     cDeriv = 0;
     }
@@ -67,24 +67,19 @@ public:
     return cDeriv;
     }
 
-}; // End class MyOBFuncD
+}; // End class MyOPFuncD
 
-int tubeOptBrentTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
+int tubeParabolicFitOptimizer1DTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
 {
   double epsilon = 0.000001;
 
-  MyOBFunc * myFunc = new MyOBFunc();
-  MyOBFuncD * myFuncD = new MyOBFuncD();
-  tube::OptBrent1D * opt = new tube::OptBrent1D( myFunc, myFuncD );
+  MyOPFunc * myFunc = new MyOPFunc();
+  tube::ParabolicFitOptimizer1D * opt = new tube::ParabolicFitOptimizer1D( myFunc );
 
-  opt->smallDouble( epsilon );
-
-  MyOBFunc * myFunc2 = new MyOBFunc();
-  MyOBFuncD * myFuncD2 = new MyOBFuncD();
-  opt->use( myFunc2, myFuncD2 );
+  MyOPFunc * myFunc2 = new MyOPFunc();
+  opt->use( myFunc2 );
 
   delete myFunc;
-  delete myFuncD;
 
   int returnStatus = EXIT_SUCCESS;
 
@@ -141,7 +136,7 @@ int tubeOptBrentTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  double idealX = - vnl_math::pi / 2;
+  double idealX = -vnl_math::pi / 2;
   if( vnl_math_abs( idealX - x ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  x=" << x
@@ -158,7 +153,6 @@ int tubeOptBrentTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
 
   delete opt;
   delete myFunc2;
-  delete myFuncD2;
 
   return returnStatus;
 }

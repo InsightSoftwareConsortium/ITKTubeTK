@@ -34,12 +34,12 @@ limitations under the License.
 
 #include "tubeMacro.h"
 #include "tubeSplineND.h"
-#include "tubeOptBrent1D.h"
-#include "tubeOptParabolicFit1D.h"
+#include "tubeBrentOptimizer1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
-class MySANDFunc : public tube::UserFunc< vnl_vector<int>, double >
+class MySANDFunc : public tube::UserFunction< vnl_vector<int>, double >
 {
 private:
   double cVal;
@@ -58,7 +58,7 @@ public:
 
 }; // End class MySANDFunc
 
-class MySANDFuncV : public tube::UserFunc< vnl_vector<double>, double >
+class MySANDFuncV : public tube::UserFunction< vnl_vector<double>, double >
 {
 private:
   double cVal;
@@ -77,7 +77,7 @@ public:
 
 }; // End class MySANDFuncV
 
-class MySANDFuncD : public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
+class MySANDFuncD : public tube::UserFunction< vnl_vector<double>, vnl_vector<double> >
 {
 private:
   vnl_vector<double> cDeriv;
@@ -111,8 +111,8 @@ int tubeSplineNDTest( int argc, char *argv[] )
 
   tube::SplineApproximation1D * spline1D = new tube::SplineApproximation1D();
 
-  //tube::OptParabolicFit1D * opt = new tube::OptParabolicFit1D();
-  tube::OptBrent1D * opt = new tube::OptBrent1D();
+  //tube::ParabolicFitOptimizer1D * opt = new tube::ParabolicFitOptimizer1D();
+  tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();
 
   tube::SplineND spline( 2, myFunc, spline1D, opt );
 

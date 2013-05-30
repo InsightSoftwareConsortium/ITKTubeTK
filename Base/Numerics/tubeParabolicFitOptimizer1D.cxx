@@ -26,7 +26,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeOptParabolicFit1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 
 #include <iostream>
 
@@ -35,30 +35,30 @@ limitations under the License.
 namespace tube
 {
 
-OptParabolicFit1D::OptParabolicFit1D( void )
+ParabolicFitOptimizer1D::ParabolicFitOptimizer1D( void )
 : Optimizer1D()
 {
 }
 
-OptParabolicFit1D::OptParabolicFit1D( UserFunc<double, double> *newFuncVal )
+ParabolicFitOptimizer1D::ParabolicFitOptimizer1D( UserFunction<double, double> *newFuncVal )
 : Optimizer1D( newFuncVal, NULL )
 {
 }
 
 
-OptParabolicFit1D::~OptParabolicFit1D( void )
+ParabolicFitOptimizer1D::~ParabolicFitOptimizer1D( void )
 {
 }
 
 
-void OptParabolicFit1D::use( UserFunc<double, double> * newFuncVal,
-  UserFunc<double,double> * tubeNotUsed( derivative ) )
+void ParabolicFitOptimizer1D::use( UserFunction<double, double> * newFuncVal,
+  UserFunction<double,double> * tubeNotUsed( derivative ) )
 {
   Optimizer1D::use( newFuncVal, NULL );
 }
 
 
-double OptParabolicFit1D:: m_Center( double x1, double y1,
+double ParabolicFitOptimizer1D:: m_Center( double x1, double y1,
   double x2, double y2, double x3, double y3 )
 {
   double a = ( y1 - ( ( y2-y3 )*x1 )/( x2-x3 ) - y3 + ( ( y2-y3 )*x3 )/( x2-x3 ) ) /
@@ -69,7 +69,7 @@ double OptParabolicFit1D:: m_Center( double x1, double y1,
   return -b/( 2*a );
 }
 
-bool OptParabolicFit1D::m_Extreme( double *extX, double *extVal )
+bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
 {
   double minSign = 1;
   if( !m_SearchForMin )

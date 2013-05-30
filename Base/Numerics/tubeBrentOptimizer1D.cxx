@@ -26,7 +26,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeOptBrent1D.h"
+#include "tubeBrentOptimizer1D.h"
 
 #include <iostream>
 #include <vnl/vnl_math.h>
@@ -34,43 +34,43 @@ limitations under the License.
 namespace tube
 {
 
-OptBrent1D::OptBrent1D( void )
+BrentOptimizer1D::BrentOptimizer1D( void )
 : Optimizer1D()
 {
   m_Small = 1.0e-20;
 }
 
-OptBrent1D::OptBrent1D( UserFunc< double, double > * newFuncVal,
-                        UserFunc< double, double > * newFuncDeriv )
+BrentOptimizer1D::BrentOptimizer1D( UserFunction< double, double > * newFuncVal,
+                        UserFunction< double, double > * newFuncDeriv )
 : Optimizer1D( newFuncVal, newFuncDeriv )
 {
   m_Small = 1.0e-20;
 }
 
 
-OptBrent1D::~OptBrent1D( void )
+BrentOptimizer1D::~BrentOptimizer1D( void )
 {
 }
 
 
-double OptBrent1D::smallDouble( void )
+double BrentOptimizer1D::smallDouble( void )
 {
   return m_Small;
 }
 
-void OptBrent1D::smallDouble( double newSmall )
+void BrentOptimizer1D::smallDouble( double newSmall )
 {
   m_Small = newSmall;
 }
 
-void OptBrent1D::use( UserFunc< double, double > * newFuncVal,
-                      UserFunc< double, double > * newFuncDeriv )
+void BrentOptimizer1D::use( UserFunction< double, double > * newFuncVal,
+                      UserFunction< double, double > * newFuncDeriv )
 {
   Optimizer1D::use( newFuncVal, newFuncDeriv );
 }
 
 
-void OptBrent1D::m_Move( double & a, double & b, double & c,
+void BrentOptimizer1D::m_Move( double & a, double & b, double & c,
   double d, double e, double f )
 {
   a = d;
@@ -78,7 +78,7 @@ void OptBrent1D::m_Move( double & a, double & b, double & c,
   c = f;
 }
 
-bool OptBrent1D::m_Extreme( double *extX, double *extVal )
+bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
 {
   unsigned int iter;
 

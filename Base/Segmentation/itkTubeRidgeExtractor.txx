@@ -46,7 +46,7 @@ namespace tube
 
 template <class TInputImage>
 class RidgeExtractorSplineValue
-: public ::tube::UserFunc< vnl_vector<int>, double >
+: public ::tube::UserFunction< vnl_vector<int>, double >
 {
 public:
 

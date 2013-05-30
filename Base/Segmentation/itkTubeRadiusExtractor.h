@@ -36,8 +36,8 @@ limitations under the License.
 
 #include "itkTubeBlurImageFunction.h"
 
-#include "tubeOptBrent1D.h"
-#include "tubeOptParabolicFit1D.h"
+#include "tubeBrentOptimizer1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 
 namespace itk
@@ -63,7 +63,7 @@ public:
   typedef SmartPointer<Self>                                 Pointer;
   typedef SmartPointer<const Self>                           ConstPointer;
 
-  typedef ::tube::OptParabolicFit1D                          OptimizerType;
+  typedef ::tube::ParabolicFitOptimizer1D                    OptimizerType;
   typedef ::tube::SplineApproximation1D                      SplineType;
 
   itkTypeMacro( RadiusExtractor, Object );
@@ -275,7 +275,7 @@ private:
   double                                  m_ThreshMedialness;
   double                                  m_ThreshMedialnessStart;
 
-  ::tube::UserFunc<int, double> *         m_MedialnessFunc;
+  ::tube::UserFunction<int, double> *     m_MedialnessFunc;
 
   unsigned int                            m_KernNumDirs;
   MatrixType                              m_KernX;

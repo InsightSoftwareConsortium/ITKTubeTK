@@ -30,12 +30,12 @@ limitations under the License.
 
 #include "tubeMacro.h"
 
-#include "tubeOptBrent1D.h"
+#include "tubeBrentOptimizer1D.h"
 #include "tubeOptimizer1D.h"
 #include "tubeOptimizerND.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
-class MyNDFunc : public tube::UserFunc< vnl_vector<double>, double >
+class MyNDFunc : public tube::UserFunction< vnl_vector<double>, double >
 {
 public:
   MyNDFunc( void )
@@ -54,7 +54,7 @@ private:
 
 }; // End class MyNDFunc
 
-class MyNDFuncD : public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
+class MyNDFuncD : public tube::UserFunction< vnl_vector<double>, vnl_vector<double> >
 {
 public:
   MyNDFuncD( void )
@@ -74,13 +74,13 @@ private:
 
 }; // End class MyNDFuncD
 
-int tubeOptBrentNDTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
+int tubeBrentOptimizerNDTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
 {
   double epsilon = 0.000001;
 
   MyNDFunc myFunc;
   MyNDFuncD myFuncD;
-  tube::OptBrent1D opt1D;
+  tube::BrentOptimizer1D opt1D;
 
   tube::OptimizerND opt( 2, &myFunc, &myFuncD, &opt1D );
 

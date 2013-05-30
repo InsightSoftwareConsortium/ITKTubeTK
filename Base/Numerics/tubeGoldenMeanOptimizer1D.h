@@ -26,37 +26,33 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeOptParabolicFit1D_h
-#define __tubeOptParabolicFit1D_h
+#ifndef __tubeGoldenMeanOptimizer1D_h
+#define __tubeGoldenMeanOptimizer1D_h
 
 #include "tubeOptimizer1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
-class OptParabolicFit1D : public Optimizer1D
+class GoldenMeanOptimizer1D : public Optimizer1D
 {
 
 public:
 
-  OptParabolicFit1D( void );
-  OptParabolicFit1D( UserFunc< double, double > * newFuncVal );
-  ~OptParabolicFit1D( void );
+  GoldenMeanOptimizer1D( void );
+  GoldenMeanOptimizer1D(UserFunction<double, double> *newFuncVal);
+  ~GoldenMeanOptimizer1D( void );
 
-  void use( UserFunc< double, double > * newFuncVal,
-            UserFunc< double, double > * deriv = NULL );
+  void use(UserFunction<double, double> *newFuncVal);
 
 protected:
 
-  double m_Center( double x1, double y1,
-                  double x2, double y2,
-                  double x3, double y3 );
-  bool m_Extreme( double * x, double * xVal );
+  bool m_Extreme(double * x, double * xVal);
 
 
-}; // End class OptParabolicFit1D
+}; // End class GoldenMeanOptimizer1D
 
 } // End namespace tube
 
-#endif // End !defined(__tubeOptParabolicFit1D_h)
+#endif // End !defined(__tubeGoldenMeanOptimizer1D_h)

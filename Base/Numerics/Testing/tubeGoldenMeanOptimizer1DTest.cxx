@@ -29,11 +29,11 @@ limitations under the License.
 
 #include "tubeMacro.h"
 
-#include "tubeOptGoldenMean1D.h"
+#include "tubeGoldenMeanOptimizer1D.h"
 #include "tubeOptimizer1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
-class MyOGMFunc : public tube::UserFunc< double, double >
+class MyOGMFunc : public tube::UserFunction< double, double >
 {
 private:
   double cVal;
@@ -53,7 +53,7 @@ public:
 
 }; // End class MyOGMFunc
 
-class MyOGMFunc2 : public tube::UserFunc< double, double >
+class MyOGMFunc2 : public tube::UserFunction< double, double >
 {
 private:
   double cVal;
@@ -73,7 +73,7 @@ public:
 
 }; // End class MyOGMFunc2
 
-int tubeOptGoldenMeanTest( int argc, char *argv[] )
+int tubeGoldenMeanOptimizer1DTest( int argc, char *argv[] )
 {
   if( argc < 9 )
     {
@@ -91,7 +91,7 @@ int tubeOptGoldenMeanTest( int argc, char *argv[] )
   double idealV = std::atof( argv[8] );
 
   MyOGMFunc * myFunc = new MyOGMFunc();
-  tube::OptGoldenMean1D * opt = new tube::OptGoldenMean1D( myFunc );
+  tube::GoldenMeanOptimizer1D * opt = new tube::GoldenMeanOptimizer1D( myFunc );
   MyOGMFunc2 * myFunc2 = NULL;
   if( funcType == 2 )
     {

@@ -26,36 +26,36 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeOptGoldenMean1D.h"
+#include "tubeGoldenMeanOptimizer1D.h"
 
 #include <vnl/vnl_math.h>
 
 namespace tube
 {
 
-OptGoldenMean1D::OptGoldenMean1D( void )
+GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( void )
 : Optimizer1D()
 {
 }
 
-OptGoldenMean1D::OptGoldenMean1D( UserFunc<double, double> *newFuncVal )
+GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( UserFunction<double, double> *newFuncVal )
 : Optimizer1D( newFuncVal, NULL )
 {
 }
 
 
-OptGoldenMean1D::~OptGoldenMean1D( void )
+GoldenMeanOptimizer1D::~GoldenMeanOptimizer1D( void )
 {
 }
 
 
-void OptGoldenMean1D::use( UserFunc<double, double> * newFuncVal )
+void GoldenMeanOptimizer1D::use( UserFunction<double, double> * newFuncVal )
 {
   Optimizer1D::use( newFuncVal, NULL );
 }
 
 
-bool OptGoldenMean1D::m_Extreme( double *extX, double *extVal )
+bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
 {
   double maxSign = 1;
   if( m_SearchForMin )
