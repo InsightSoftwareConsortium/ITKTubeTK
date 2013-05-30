@@ -22,6 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #include <sstream>
+#include <cstring>
 
 #include "vtkObjectFactory.h"
 
