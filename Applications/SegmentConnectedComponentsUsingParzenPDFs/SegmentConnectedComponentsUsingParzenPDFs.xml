@@ -1,154 +1,155 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Segment connected components using Parzen PDFs (TubeTK)</title>
+  <title>Segment Connected Components Using Parzen PDFs (TubeTK)</title>
   <description>Given multiple, registered images and foreground and background masks, computes multivariate PDFs for inside and outside classes, and then performs competitive region growing.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url></documentation-url>
-  <license></license>
-  <contributor>Stephen R. Aylward</contributor>
-  <acknowledgements></acknowledgements>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <image>
       <name>inputVolume1</name>
       <label>Input Volume 1</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input volume 1</description>
-      <default></default>
+      <description>Input volume 1.</description>
+      <default/>
     </image>
     <image>
       <name>inputVolume2</name>
       <label>Input Volume 2</label>
       <longflag>inputVolume2</longflag>
       <channel>input</channel>
-      <description>Input volume 2</description>
-      <default></default>
+      <description>Input volume 2.</description>
+      <default/>
     </image>
     <image>
       <name>inputVolume3</name>
       <label>Input Volume 3</label>
       <longflag>inputVolume3</longflag>
       <channel>input</channel>
-      <description>Input volume 3</description>
-      <default></default>
+      <description>Input volume 3.</description>
+      <default/>
     </image>
     <image>
       <name>inputVolume4</name>
       <label>Input Volume 4</label>
       <longflag>inputVolume4</longflag>
       <channel>input</channel>
-      <description>Input volume 4</description>
-      <default></default>
+      <description>Input volume 4.</description>
+      <default/>
     </image>
     <integer-vector>
       <name>objectId</name>
       <label>Object ID</label>
       <longflag>objectId</longflag>
-      <description>List of values that represent the objects in the label map</description>
+      <description>List of values that represent the objects in the label map.</description>
       <default>255</default>
     </integer-vector>
     <integer>
       <name>voidId</name>
       <label>Void ID</label>
       <longflag>voidId</longflag>
-      <description>Value that represents NOTHING in the label map</description>
+      <description>Value that represents "nothing" in the label map.</description>
       <default>0</default>
     </integer>
     <image>
       <name>labelmap</name>
-      <label>Label map</label>
+      <label>Label Map</label>
       <channel>input</channel>
       <index>3</index>
-      <description>Labelmap that designates the object of interest and "other"</description>
-      <default></default>
+      <description>Label map that designates the object of interest and "other."</description>
+      <default/>
     </image>
     <image>
       <name>outputVolume</name>
       <label>Output Volume</label>
       <channel>output</channel>
       <index>4</index>
-      <description>Segmentation results</description>
-      <default></default>
+      <description>Segmentation results.</description>
+      <default/>
     </image>
   </parameters>
   <parameters advanced="true">
     <label>PDF Parameters</label>
-    <description>Parameters that determine how the PDF is generated</description>
+    <description>Parameters that determine how the PDF is generated.</description>
     <integer>
       <name>erodeRadius</name>
-      <description>Radius of noise to clip from edges</description>
-      <label>Erode radius</label>
+      <label>Erode Radius</label>
+      <description>Radius of noise to clip from edges.</description>
       <default>1</default>
       <longflag>erodeRadius</longflag>
     </integer>
     <integer>
       <name>holeFillIterations</name>
-      <description>Number of iterations for hole filling</description>
-      <label>Hole fille iterations</label>
+      <label>Hole Fill Iterations</label>
+      <description>Number of iterations for hole filling.</description>
       <default>1</default>
       <longflag>holeFillIterations</longflag>
     </integer>
     <double-vector>
       <name>objectPDFWeight</name>
-      <description>Relative weight (multiplier) of each PDF.</description>
       <label>PDF Weight</label>
+      <description>Relative weight (multiplier) of each PDF.</description>
       <default>1</default>
       <longflag>objectPDFWeight</longflag>
     </double-vector>
     <double>
       <name>probSmoothingStdDev</name>
-      <description>Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel</description>
       <label>Probability Smoothing Standard Deviation</label>
+      <description>Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel</description>
       <default>3.0</default>
       <longflag>probSmoothingStdDev</longflag>
     </double>
     <boolean>
       <name>draft</name>
-      <description>Generate draft results</description>
-      <label>Draft mode</label>
+      <label>Draft Mode</label>
+      <description>Generate draft results.</description>
       <longflag>draft</longflag>
       <default>false</default>
     </boolean>
     <boolean>
       <name>reclassifyObjectMask</name>
-      <description>Perform classification on voxels within the object mask</description>
       <label>Reclassify Object Mask</label>
+      <description>Perform classification on voxels within the object mask.</description>
       <longflag>reclassifyObjectMask</longflag>
       <default>false</default>
     </boolean>
     <boolean>
       <name>reclassifyNotObjectMask</name>
-      <description>Perform classification on all non-void voxels</description>
-      <label>Reclassify Not Object Mask</label>
+      <label>Reclassify Not-Object Mask</label>
+      <description>Perform classification on all non-void voxels.</description>
       <longflag>reclassifyNotObjectMask</longflag>
       <default>false</default>
     </boolean>
     <boolean>
       <name>forceClassification</name>
-      <description>Force classification using simple maximum likelihood</description>
       <label>Force Classification</label>
+      <description>Force classification using simple maximum likelihood.</description>
       <longflag>forceClassification</longflag>
       <default>false</default>
     </boolean>
     <string>
       <name>saveClassProbabilityVolumeBase</name>
-      <description>Save images where each represents the probability of being a particular object at each voxel.  Image files create = base.classNum.mha</description>
-      <label>Output class probability images base filename</label>
+      <label>Output Class Probability Images Base Filename</label>
+      <description>Save images where each represents the probability of being a particular object at each voxel. Image files create = base.classNum.mha.</description>
       <longflag>saveClassProbabilityVolumeBase</longflag>
     </string>
     <string>
       <name>loadClassPDFBase</name>
-      <description>Load images that represent probability density functions</description>
-      <label>Load PDF basename</label>
+      <label>Load PDF Base Name</label>
+      <description>Load images that represent probability density functions.</description>
       <longflag>loadClassPDFBase</longflag>
     </string>
     <string>
       <name>saveClassPDFBase</name>
-      <description>Save images that represent probability density functions</description>
       <label>Output Probability Volume for Object 2</label>
+      <description>Save images that represent probability density functions.</description>
       <longflag>saveClassPDFBase</longflag>
     </string>
   </parameters>

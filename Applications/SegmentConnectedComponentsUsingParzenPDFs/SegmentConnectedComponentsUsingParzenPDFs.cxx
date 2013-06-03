@@ -33,10 +33,10 @@ limitations under the License.
 
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTimeProbesCollectorBase.h>
 
 // Description:
 // Get the PixelType and ComponentType from fileName
@@ -153,7 +153,9 @@ int DoIt( int argc, char *argv[] )
     if( !CheckImageAttributes( reader->GetOutput(),
         inMaskReader->GetOutput() ) )
       {
-      std::cout << "Image attributes of inputVolume" << i+1 << " and labelmap do not match.  Please check size, spacing, origin." << std::endl;
+      std::cout << "Image attributes of inputVolume" << i+1 <<
+        " and labelmap do not match.  Please check size, spacing, origin."
+        << std::endl;
       return EXIT_FAILURE;
       }
     pdfSegmenter->SetInputVolume( i, reader->GetOutput() );
@@ -193,7 +195,7 @@ int DoIt( int argc, char *argv[] )
       {
       std::string fname = loadClassPDFBase;
       char c[80];
-      sprintf( c, ".c%u.mha", i );
+      std::sprintf(c, ".c%u.mha", i );
       fname += std::string( c );
       typename PDFImageReaderType::Pointer pdfImageReader =
         PDFImageReaderType::New();
@@ -233,12 +235,13 @@ int DoIt( int argc, char *argv[] )
       {
       std::string fname = saveClassProbabilityVolumeBase;
       char c[80];
-      sprintf( c, ".c%u.mha", i );
+      std::sprintf(c, ".c%u.mha", i );
       fname += std::string( c );
       ProbImageWriterType::Pointer probImageWriter =
         ProbImageWriterType::New();
       probImageWriter->SetFileName( fname.c_str() );
-      probImageWriter->SetInput( pdfSegmenter->GetClassProbabilityVolume( i ) );
+      probImageWriter->SetInput( pdfSegmenter->GetClassProbabilityVolume(
+          i ) );
       probImageWriter->Update();
       }
     }
@@ -257,7 +260,7 @@ int DoIt( int argc, char *argv[] )
       indx.Fill( 100 );
       std::string fname = saveClassPDFBase;
       char c[80];
-      sprintf( c, ".c%u.mha", i );
+      std::sprintf(c, ".c%u.mha", i );
       fname += std::string( c );
       typename PDFImageWriterType::Pointer pdfImageWriter =
         PDFImageWriterType::New();

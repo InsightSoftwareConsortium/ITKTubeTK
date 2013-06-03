@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 // MRML includes
-#include "vtkMRMLDisplayableNode.h"
-#include "vtkMRMLScene.h"
+#include <vtkMRMLDisplayableNode.h>
+#include <vtkMRMLScene.h>
 #include "vtkMRMLSpatialObjectsDisplayNode.h"
 #include "vtkMRMLSpatialObjectsNode.h"
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
@@ -89,7 +89,7 @@ void vtkMRMLSpatialObjectsDisplayNode::ReadXMLAttributes(const char** atts)
     attName = *(atts++);
     attValue = *(atts++);
 
-    if(!strcmp(attName, "colorMode"))
+    if(!std::strcmp(attName, "colorMode"))
       {
       std::stringstream ss;
       ss << attValue;
@@ -98,7 +98,7 @@ void vtkMRMLSpatialObjectsDisplayNode::ReadXMLAttributes(const char** atts)
       this->SetColorMode(colorMode);
       }
 
-    else if(!strcmp(attName, "SpatialObjectsDisplayPropertiesNodeRef"))
+    else if(!std::strcmp(attName, "SpatialObjectsDisplayPropertiesNodeRef"))
       {
       this->SetSpatialObjectsDisplayPropertiesNodeID(attValue);
       }
@@ -158,7 +158,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateReferenceID(const char *oldID,
                                                          const char *newID)
 {
   if(this->SpatialObjectsDisplayPropertiesNodeID &&
-      !strcmp(oldID, this->SpatialObjectsDisplayPropertiesNodeID))
+      !std::strcmp(oldID, this->SpatialObjectsDisplayPropertiesNodeID))
     {
     this->SetSpatialObjectsDisplayPropertiesNodeID(newID);
     }
@@ -188,7 +188,7 @@ SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id )
   if(
       (id != this->GetSpatialObjectsDisplayPropertiesNodeID())
       && id != NULL && this->GetSpatialObjectsDisplayPropertiesNodeID() != NULL
-      && (strcmp(id, this->GetSpatialObjectsDisplayPropertiesNodeID()) == 0)
+      && (std::strcmp(id, this->GetSpatialObjectsDisplayPropertiesNodeID()) == 0)
       )
     {
     return;

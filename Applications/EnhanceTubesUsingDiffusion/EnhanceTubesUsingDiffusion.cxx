@@ -38,9 +38,9 @@ int DoIt( int argc, char **argv );
 
 #include "tubeCLIHelperFunctions.h"
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
 template< class pixelT, unsigned int dimensionT >

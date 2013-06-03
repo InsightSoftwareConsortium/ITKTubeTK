@@ -26,11 +26,11 @@ limitations under the License.
 #endif
 
 #include <itkImage.h>
-#include <itkStructureTensorRecursiveGaussianImageFilter.h>
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include <itkSymmetricSecondRankTensor.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkSymmetricEigenVectorAnalysisImageFilter.h>
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include <itkMatrix.h>
 #include <itkVectorImage.h>
 #include <itkVariableLengthVector.h>
@@ -51,13 +51,13 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv[]
   double sigma = 0.1;
   if(argc > 4)
     {
-    sigma = atof(argv[4] );
+    sigma = std::atof(argv[4] );
     }
 
   double threshold = 0.05;
   if(argc > 5)
     {
-    threshold = atof(argv[5]);
+    threshold = std::atof(argv[5]);
     }
 
   // Create test image I = f(x)
@@ -99,7 +99,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv[]
     ImageType::IndexType index = it.GetIndex();
     ImageType::PointType point;
     inImage->TransformIndexToPhysicalPoint(index, point);
-    it.Set(static_cast<ImageType::PixelType>(sin(point[0]))); //sinx
+    it.Set(static_cast<ImageType::PixelType>(vcl_sin(point[0]))); //sinx
     }
 
   typedef itk::ImageFileWriter<ImageType>        WriterType;
@@ -125,7 +125,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv[]
     ImageType::IndexType index = pt.GetIndex();
     ImageType::PointType point;
     prodImage->TransformIndexToPhysicalPoint(index, point);
-    double cosValue = cos(point[0]);
+    double cosValue = vcl_cos(point[0]);
     pt.Set(static_cast<ImageType::PixelType>(cosValue*cosValue)); //cosx*cosx
     }
 

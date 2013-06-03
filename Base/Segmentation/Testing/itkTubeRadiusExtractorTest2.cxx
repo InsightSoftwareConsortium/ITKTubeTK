@@ -21,13 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkGroupSpatialObject.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkGroupSpatialObject.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 #include "tubeMessage.h"
 #include "tubeMatrixMath.h"
@@ -97,7 +97,7 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     << std::endl;
 
   char tubeName[17];
-  strcpy( tubeName, "Tube" );
+  std::strcpy( tubeName, "Tube" );
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
 
   unsigned int numTubes = tubeList->size();

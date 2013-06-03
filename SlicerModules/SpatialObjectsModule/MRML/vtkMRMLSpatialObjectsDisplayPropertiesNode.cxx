@@ -22,8 +22,9 @@ limitations under the License.
 =========================================================================*/
 
 #include <sstream>
+#include <cstring>
 
-#include "vtkObjectFactory.h"
+#include <vtkObjectFactory.h>
 
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 
@@ -111,7 +112,7 @@ ReadXMLAttributes(const char** atts)
   {
       attName = *(atts++);
       attValue = *(atts++);
-      if(!strcmp(attName, "glyphGeometry"))
+      if(!std::strcmp(attName, "glyphGeometry"))
       {
       int glyphGeometry;
       std::stringstream ss;
@@ -119,31 +120,31 @@ ReadXMLAttributes(const char** atts)
       ss >> glyphGeometry;
       this->SetGlyphGeometry(glyphGeometry);
       }
-      else if(!strcmp(attName, "colorGlyphBy"))
+      else if(!std::strcmp(attName, "colorGlyphBy"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> ColorGlyphBy;
       }
-      else if(!strcmp(attName, "glyphScaleFactor"))
+      else if(!std::strcmp(attName, "glyphScaleFactor"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> GlyphScaleFactor;
       }
-      else if(!strcmp(attName, "lineGlyphResolution"))
+      else if(!std::strcmp(attName, "lineGlyphResolution"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> LineGlyphResolution;
       }
-      else if(!strcmp(attName, "tubeGlyphRadius"))
+      else if(!std::strcmp(attName, "tubeGlyphRadius"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> TubeGlyphRadius;
       }
-      else if(!strcmp(attName, "tubeGlyphNumberOfSides"))
+      else if(!std::strcmp(attName, "tubeGlyphNumberOfSides"))
       {
       std::stringstream ss;
       ss << attValue;

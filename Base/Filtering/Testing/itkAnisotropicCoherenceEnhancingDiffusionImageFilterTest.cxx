@@ -19,8 +19,8 @@
 #endif
 
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* argv[] )
 {
@@ -75,7 +75,7 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   //Set sigma
   if( argc > 3 )
     {
-    double sigma = atof( argv[3] );
+    double sigma = std::atof( argv[3] );
     std::cout << "Set sigma parameter value \t" << sigma << std::endl;
     CoherenceEnhancingFilter->SetSigma( sigma );
     }
@@ -83,7 +83,7 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   //set sigma outer
   if( argc > 4 )
     {
-    double sigmaOuter = atof( argv[4] );
+    double sigmaOuter = std::atof( argv[4] );
     std::cout << "Set outer sigma parameter value \t" << sigmaOuter << std::endl;
     CoherenceEnhancingFilter->SetSigmaOuter( sigmaOuter );
     }
@@ -91,7 +91,7 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   //set alpha
   if( argc > 5 )
     {
-    double alpha = atof( argv[5] );
+    double alpha = std::atof( argv[5] );
     std::cout << "Set alpha parameter value \t" << alpha << std::endl;
     CoherenceEnhancingFilter->SetAlpha( alpha );
     }
@@ -99,7 +99,7 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   //Set contrast parameter
   if( argc > 6 )
     {
-    double contrastParamter = atof( argv[6] );
+    double contrastParamter = std::atof( argv[6] );
     std::cout << "Set contrast parameter value \t" << contrastParamter << std::endl;
     CoherenceEnhancingFilter->SetContrastParameterLambdaC( contrastParamter );
     }
@@ -107,14 +107,14 @@ int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* arg
   //Set time step
   if( argc > 7 )
     {
-    double timeStep = atof(argv[7]);
+    double timeStep = std::atof(argv[7]);
     CoherenceEnhancingFilter->SetTimeStep( timeStep );
     }
 
   //Set number of iterations
   if( argc > 8 )
     {
-    double numberOfIterations = atoi(argv[8]);
+    double numberOfIterations = std::atoi(argv[8]);
     CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
     }
 

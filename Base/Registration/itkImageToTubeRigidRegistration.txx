@@ -26,9 +26,9 @@ limitations under the License.
 
 #include "itkImageToTubeRigidRegistration.h"
 
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkSpatialObjectDuplicator.h"
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkSpatialObjectDuplicator.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
 namespace itk
@@ -116,7 +116,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   Statistics::NormalVariateGenerator::Pointer generator =
       Statistics::NormalVariateGenerator::New();
   generator->SetReferenceCount( 2 );
-  generator->Initialize( time( NULL ) );
+  generator->Initialize( std::time( NULL ) );
 
   optimizer->SetNormalVariateGenerator( generator );
   optimizer->Initialize( 40 );

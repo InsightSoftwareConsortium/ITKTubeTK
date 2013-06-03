@@ -45,7 +45,7 @@ set( tubeBaseIOTests_SRCS
   itkTubeMetaNJetLDATest.cxx )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/IO )
 

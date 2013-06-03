@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __itkAcousticImpulseResponseImageFilterSerializer_h
 #define __itkAcousticImpulseResponseImageFilterSerializer_h
 
-#include "itkImageToImageFilterSerializer.h"
+#include <itkImageToImageFilterSerializer.h>
 
 namespace itk
 {

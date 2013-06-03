@@ -24,18 +24,18 @@ limitations under the License.
 #ifndef __itkImageToTubeRigidRegistration_h
 #define __itkImageToTubeRigidRegistration_h
 
-#include "itkTransform.h"
-#include "itkImageToSpatialObjectRegistrationMethod.h"
+#include <itkTransform.h>
+#include <itkImageToSpatialObjectRegistrationMethod.h>
 #include "itkImageToTubeRigidMetric.h"
-#include "itkGradientDescentOptimizer.h"
-#include "itkImage.h"
-#include "itkLevenbergMarquardtOptimizer.h"
-#include "itkConjugateGradientOptimizer.h"
-#include "itkOnePlusOneEvolutionaryOptimizer.h"
-#include "itkEuler3DTransform.h"
-#include "itkImageRegionIterator.h"
-#include "itkVectorContainer.h"
-#include "itkTubeSpatialObject.h"
+#include <itkGradientDescentOptimizer.h>
+#include <itkImage.h>
+#include <itkLevenbergMarquardtOptimizer.h>
+#include <itkConjugateGradientOptimizer.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
+#include <itkEuler3DTransform.h>
+#include <itkImageRegionIterator.h>
+#include <itkVectorContainer.h>
+#include <itkTubeSpatialObject.h>
 #include "itkTubeExponentialResolutionWeightFunction.h"
 
 namespace itk

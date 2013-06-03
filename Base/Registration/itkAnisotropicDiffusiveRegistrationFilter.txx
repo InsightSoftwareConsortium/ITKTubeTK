@@ -27,14 +27,14 @@ limitations under the License.
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilterUtils.h"
 
-#include "itkImageRegionSplitter.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-#include "vtkFloatArray.h"
-#include "vtkPointData.h"
-#include "vtkPointLocator.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkVersion.h"
+#include <itkImageRegionSplitter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <vtkFloatArray.h>
+#include <vtkPointData.h>
+#include <vtkPointLocator.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVersion.h>
 
 namespace itk
 {
@@ -458,9 +458,9 @@ AnisotropicDiffusiveRegistrationFilter
       distance = 0.0;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        distance += pow( imageCoord[i] - borderCoord[i], 2 );
+        distance += vcl_pow( imageCoord[i] - borderCoord[i], 2 );
         }
-      distance = sqrt( distance );
+      distance = vcl_sqrt( distance );
       // The weight image will temporarily store distances
       weightIt.Set( distance );
       }
@@ -558,7 +558,7 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistanceExponential( const WeightType distance ) const
 {
-  return exp( -1.0 * m_Lambda * distance );
+  return vcl_exp( -1.0 * m_Lambda * distance );
 }
 
 /**
@@ -575,7 +575,7 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeWeightFromDistanceDirac( const WeightType distance ) const
 {
   return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
-                         * exp( -1.0 * m_Lambda * distance * distance ) ) );
+                         * vcl_exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**

@@ -28,13 +28,13 @@ limitations under the License.
 
 #include <iostream>
 
-#include "itkAffineTransform.h"
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionIterator.h"
-#include "itkResampleImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
+#include <itkAffineTransform.h>
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIterator.h>
+#include <itkResampleImageFilter.h>
+#include <itkImageRegionIteratorWithIndex.h>
 #include "itkVotingResampleImageFunction.h"
 
 int itkVotingResampleImageFunctionTest(int argc, char* argv[] )
@@ -71,7 +71,7 @@ int itkVotingResampleImageFunctionTest(int argc, char* argv[] )
   imReader->SetFileName( argv[2] );
   imReader->Update();
 
-  int testNumber = atoi( argv[1] );
+  int testNumber = std::atoi( argv[1] );
 
   double scale = 1;
   ImageSizeType size = imReader->GetOutput()->GetLargestPossibleRegion().GetSize();

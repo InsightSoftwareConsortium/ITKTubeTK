@@ -25,9 +25,9 @@ limitations under the License.
 #define __itkImageRegionMomentsCalculator_txx
 #include "itkImageRegionMomentsCalculator.h"
 
-#include "vnl/algo/vnl_real_eigensystem.h"
-#include "vnl/algo/vnl_symmetric_eigensystem.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
+#include <vnl/algo/vnl_real_eigensystem.h>
+#include <vnl/algo/vnl_symmetric_eigensystem.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
 
 namespace itk
 {

@@ -46,7 +46,8 @@ include( ${USE_ITK_FILE} )
 
 # Include Utilities to access tubeCLIHelperFunctions.h
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/CLI
+  ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Segmentation

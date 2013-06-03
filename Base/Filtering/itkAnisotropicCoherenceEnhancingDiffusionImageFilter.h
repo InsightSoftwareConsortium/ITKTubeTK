@@ -26,11 +26,11 @@ limitations under the License.
 
 #include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkMultiThreader.h"
-#include "itkDiffusionTensor3D.h"
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkMultiThreader.h>
+#include <itkDiffusionTensor3D.h>
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 namespace itk

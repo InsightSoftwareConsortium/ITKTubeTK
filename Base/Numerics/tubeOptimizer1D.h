@@ -33,13 +33,15 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "tubeUserFunc.h"
+#include <ostream>
+
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
 /** Solve for local extremes of 1D functions
- *  Must be derived to specify specific optimization method (e.g., OptBrent1D)
+ *  Must be derived to specify specific optimization method (e.g., BrentOptimizer1D)
  *  \class Optimizer1D
  *  \author Stephen R. Aylward
  *  \rewritten Julien Jomier
@@ -55,23 +57,23 @@ public:
   Optimizer1D( void );
 
   /** Constructor
-   * \param newFuncVal User derivation of UserFunc to define
+   * \param newFuncVal User derivation of UserFunction to define
    * function to be optimized
-   * \param newFuncDeriv User derivation of UserFunc to define
+   * \param newFuncDeriv User derivation of UserFunction to define
    * derivative of function to be optimized */
-  Optimizer1D( UserFunc< double, double > * newFuncVal,
-    UserFunc< double, double > * newFuncDeriv );
+  Optimizer1D( UserFunction< double, double > * newFuncVal,
+    UserFunction< double, double > * newFuncDeriv );
 
   /**  Destructor */
   virtual ~Optimizer1D( void );
 
   /** Specify new functions to be optimized
-  * \param newFuncVal User derivation of UserFunc to define
+  * \param newFuncVal User derivation of UserFunction to define
   * function to be optimized
-  * \param newFuncDeriv User derivation of UserFunc to define
+  * \param newFuncDeriv User derivation of UserFunction to define
   * derivative of function to be optimized */
-  void     use( UserFunc< double, double > * newFuncVal,
-    UserFunc< double, double > * newFuncDeriv );
+  void     use( UserFunction< double, double > * newFuncVal,
+    UserFunction< double, double > * newFuncDeriv );
 
   double   xMin( void );
   void     xMin( double newXMin );
@@ -105,8 +107,8 @@ protected:
   double       m_Tolerance;
   unsigned int m_MaxIterations;
 
-  UserFunc< double, double > * m_FuncVal;
-  UserFunc< double, double > * m_FuncDeriv;
+  UserFunction< double, double > * m_FuncVal;
+  UserFunction< double, double > * m_FuncDeriv;
 
   virtual  bool m_Extreme( double * x, double * xVal );
 

@@ -24,14 +24,14 @@ limitations under the License.
 #ifndef __itkImageRegionMomentsCalculator_h
 #define __itkImageRegionMomentsCalculator_h
 
-#include "itkAffineTransform.h"
-#include "itkMacro.h"
-#include "itkImage.h"
-#include "itkSpatialObject.h"
+#include <itkAffineTransform.h>
+#include <itkMacro.h>
+#include <itkImage.h>
+#include <itkSpatialObject.h>
 
-#include "vnl/vnl_vector_fixed.h"
-#include "vnl/vnl_matrix_fixed.h"
-#include "vnl/vnl_diag_matrix.h"
+#include <vnl/vnl_vector_fixed.h>
+#include <vnl/vnl_matrix_fixed.h>
+#include <vnl/vnl_diag_matrix.h>
 
 namespace itk
 {

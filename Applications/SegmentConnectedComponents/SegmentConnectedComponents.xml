@@ -1,40 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Segment Connected Components</title>
-  <description>Label each connected region in a binary image with a unique value</description>
+  <title>Segment Connected Components (TubeTK)</title>
+  <description>Label each connected region in a binary image with a unique value.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <image>
       <name>inputMask</name>
       <label>Input Mask</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input mask</description>
+      <description>Input mask.</description>
     </image>
     <image>
       <name>outputMask</name>
       <label>Output Mask</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output mask of labeled connected components</description>
+      <description>Output mask of labeled connected components.</description>
     </image>
   </parameters>
   <parameters>
     <label>Advanced</label>
-    <description>Optional parameters</description>
+    <description>Optional parameters.</description>
     <integer>
       <name>minSize</name>
-      <label>Minimum size</label>
-      <description>Any connected component who size is less than this is ignored</description>
+      <label>Minimum Size</label>
+      <description>Any connected component whose size is less than this is ignored.</description>
       <longflag>minSize</longflag>
       <default>0</default>
     </integer>
@@ -42,9 +40,8 @@
       <name>seedMask</name>
       <label>Seed Mask</label>
       <channel>input</channel>
-      <description>Seed mask of connected components to keep</description>
+      <description>Seed mask of connected components to keep.</description>
       <longflag>seedMask</longflag>
     </image>
   </parameters>
-
 </executable>

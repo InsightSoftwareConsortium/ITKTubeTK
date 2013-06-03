@@ -22,15 +22,16 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeOptimizerND.h"
-#include "tubeOptimizer1D.h"
-#include "tubeUserFunc.h"
+
 #include <iostream>
-#include <cmath>
+
+#include "tubeOptimizer1D.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
-class OptValFuncND : public UserFunc<double, double>
+class OptValFuncND : public UserFunction<double, double>
 {
 public:
   OptValFuncND( OptimizerND * newOpt )
@@ -51,7 +52,7 @@ private:
 
 }; // End class OptValFuncND
 
-class OptDerivFuncND : public UserFunc<double, double>
+class OptDerivFuncND : public UserFunction<double, double>
 {
 public:
   OptDerivFuncND( OptimizerND * newOpt )
@@ -93,8 +94,8 @@ OptimizerND::OptimizerND( void )
 
 
 OptimizerND::OptimizerND( int newNDims,
-  UserFunc< vnl_vector<double>, double > * newFuncValND,
-  UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
+  UserFunction< vnl_vector<double>, double > * newFuncValND,
+  UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
   Optimizer1D * newOpt1D )
 {
   m_NDims = 0;
@@ -122,8 +123,8 @@ OptimizerND::~OptimizerND( void )
 }
 
 void OptimizerND::use( int newNDims,
-  UserFunc< vnl_vector<double>, double > * newFuncValND,
-  UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
+  UserFunction< vnl_vector<double>, double > * newFuncValND,
+  UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
   Optimizer1D * newOpt1D )
 {
   m_NDims = newNDims;
@@ -266,7 +267,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
   double xmax;
 
   unsigned int count = 0;
-  while( fabs(a) > m_Tolerance )
+  while( vnl_math_abs(a) > m_Tolerance )
     {
     m_X0Dir = m_FuncDerivND->value( m_X0 );
     if( m_X0Dir.magnitude() < m_Tolerance * m_Tolerance )
@@ -330,7 +331,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
       break;
       }
 
-    double xstep = fabs( dot_product(m_XStep, m_X0Dir) );
+    double xstep = vnl_math_abs( dot_product(m_XStep, m_X0Dir) );
 
     a = 0;
     m_Opt1D->xMin( xmin );
@@ -348,7 +349,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
 
   x = m_X0;
 
-  if( fabs(a) > m_Tolerance )
+  if( vnl_math_abs(a) > m_Tolerance )
     {
     std::cout << "Scanned " << count
       << " directions without convergence - aborting" << std::endl;
@@ -422,7 +423,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
       continue;
       }
 
-    xstep = fabs( dot_product( m_XStep, m_X0Dir) );
+    xstep = vnl_math_abs( dot_product( m_XStep, m_X0Dir) );
 
     a = 0;
 

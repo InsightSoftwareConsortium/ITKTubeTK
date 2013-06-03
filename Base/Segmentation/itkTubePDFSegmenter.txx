@@ -32,21 +32,21 @@ limitations under the License.
 
 #include "itkVectorImageToListGenerator.h"
 
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkHistogram.h"
-#include "itkJoinImageFilter.h"
-#include "itkHistogramToProbabilityImageFilter.h"
-#include "itkDiscreteGaussianImageFilter.h"
-#include "itkCurvatureAnisotropicDiffusionImageFilter.h"
-#include "itkConnectedThresholdImageFilter.h"
-#include "itkBinaryErodeImageFilter.h"
-#include "itkBinaryDilateImageFilter.h"
-#include "itkBinaryBallStructuringElement.h"
-#include "itkVotingBinaryIterativeHoleFillingImageFilter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkHistogram.h>
+#include <itkJoinImageFilter.h>
+#include <itkHistogramToProbabilityImageFilter.h>
+#include <itkDiscreteGaussianImageFilter.h>
+#include <itkCurvatureAnisotropicDiffusionImageFilter.h>
+#include <itkConnectedThresholdImageFilter.h>
+#include <itkBinaryErodeImageFilter.h>
+#include <itkBinaryDilateImageFilter.h>
+#include <itkBinaryBallStructuringElement.h>
+#include <itkVotingBinaryIterativeHoleFillingImageFilter.h>
 
 
 //#include "itkPluginFilterWatcher.h"

@@ -22,15 +22,13 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeSplineND.h"
-#include "tubeUserFunc.h"
-#include <cmath>
-#include <itkVectorContainer.h>
+
 #include <itkImageRegionIterator.h>
 
 namespace tube
 {
 
-class SplineNDValFunc : public UserFunc< vnl_vector<double>, double >
+class SplineNDValFunc : public UserFunction< vnl_vector<double>, double >
 {
 public:
   SplineNDValFunc( SplineND * newSpline )
@@ -51,7 +49,7 @@ private:
 
 }; // End class SplineNDValFunc
 
-class SplineNDDerivFunc : public UserFunc< vnl_vector<double>, vnl_vector<double> >
+class SplineNDDerivFunc : public UserFunction< vnl_vector<double>, vnl_vector<double> >
 {
 public:
   SplineNDDerivFunc( SplineND * newSpline )
@@ -101,7 +99,7 @@ SplineND::SplineND( void )
 }
 
 SplineND::SplineND( unsigned int newNDims,
-  UserFunc<IntVectorType, double> * newFunm_Val,
+  UserFunction<IntVectorType, double> * newFunm_Val,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
 {
@@ -141,7 +139,7 @@ SplineND::~SplineND( void )
 
 
 void SplineND::use( unsigned int newNDims,
-  UserFunc< IntVectorType, double > * newFunm_Val,
+  UserFunction< IntVectorType, double > * newFunm_Val,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
 {
@@ -569,7 +567,7 @@ const double & SplineND::value( const VectorType & x )
 
   for( int i=( int )m_NDims-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
     for( unsigned int j=0; j<k; j++ )
@@ -626,7 +624,7 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
     {
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
     switch( dx( ( int )m_NDims-i-1 ) )
       {
       default:
@@ -833,7 +831,7 @@ double SplineND::valueVDD2( const VectorType & x,
 
   for( int i=( int )m_NDims-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
 
     itk::ImageRegionIterator<ImageType> itImageWSX( itWSX->Value(),
       itWSX->Value()->GetLargestPossibleRegion() );

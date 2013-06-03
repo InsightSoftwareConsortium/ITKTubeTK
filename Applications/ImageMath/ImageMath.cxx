@@ -24,30 +24,30 @@ limitations under the License.
 #include <cmath>
 #include <iostream>
 
-#include "itkImage.h"
-#include "itkImageIOBase.h"
-#include "itkImageIOFactory.h"
-#include "itkImageFileWriter.h"
-#include "itkImageFileReader.h"
-#include "itkMetaImageIO.h"
-#include "itkImageRegionIterator.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
-#include "itkHistogramMatchingImageFilter.h"
-#include "itkResampleImageFilter.h"
-#include "itkCastImageFilter.h"
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkErodeObjectMorphologyImageFilter.h"
-#include "itkBinaryBallStructuringElement.h"
-#include "itkDilateObjectMorphologyImageFilter.h"
-#include "itkConnectedThresholdImageFilter.h"
-#include "itkExtractImageFilter.h"
-#include "itkContinuousIndex.h"
-#include "itkNormalizeImageFilter.h"
-#include "itkMirrorPadImageFilter.h"
-#include "metaCommand.h"
+#include <itkImage.h>
+#include <itkImageIOBase.h>
+#include <itkImageIOFactory.h>
+#include <itkImageFileWriter.h>
+#include <itkImageFileReader.h>
+#include <itkMetaImageIO.h>
+#include <itkImageRegionIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
+#include <itkHistogramMatchingImageFilter.h>
+#include <itkResampleImageFilter.h>
+#include <itkCastImageFilter.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkErodeObjectMorphologyImageFilter.h>
+#include <itkBinaryBallStructuringElement.h>
+#include <itkDilateObjectMorphologyImageFilter.h>
+#include <itkConnectedThresholdImageFilter.h>
+#include <itkExtractImageFilter.h>
+#include <itkContinuousIndex.h>
+#include <itkNormalizeImageFilter.h>
+#include <itkMirrorPadImageFilter.h>
+#include <metaCommand.h>
 
 // tubetk includes
 #include "itkTubeRidgeExtractor.h"
@@ -257,7 +257,7 @@ int DoIt( MetaCommand & command )
             }
 
           metaImage->AddUserField( "ElementByteOrderMSB",
-                                  MET_STRING, strlen( "False" ), "False" );
+                                  MET_STRING, std::strlen( "False" ), "False" );
 
           writer->Write();
           break;
@@ -1500,7 +1500,7 @@ int DoIt( MetaCommand & command )
       {
       unsigned int seed = ( unsigned int )command.GetValueAsInt( *it,
         "seedValue" );
-      srand( seed );
+      std::srand( seed );
       gaussGen->Initialize( ( int )seed );
       uniformGen->Initialize( ( int )seed );
       } // end -S

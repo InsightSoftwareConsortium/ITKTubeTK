@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkGradientBasedAngleOfIncidenceImageFilter_h
 #define __itkGradientBasedAngleOfIncidenceImageFilter_h
 
-#include "itkCastImageFilter.h"
-#include "itkCovariantVector.h"
+#include <itkCastImageFilter.h>
+#include <itkCovariantVector.h>
 
 namespace itk
 {

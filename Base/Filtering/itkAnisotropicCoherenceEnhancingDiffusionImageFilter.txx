@@ -27,14 +27,14 @@ limitations under the License.
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 
 #include <list>
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkNumericTraits.h"
-#include "itkNeighborhoodAlgorithm.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
+#include <itkNumericTraits.h>
+#include <itkNeighborhoodAlgorithm.h>
 
-#include "itkImageFileWriter.h"
-#include "itkVector.h"
-#include "itkFixedArray.h"
+#include <itkImageFileWriter.h>
+#include <itkVector.h>
+#include <itkFixedArray.h>
 
 //#define INTERMEDIATE_OUTPUTS
 
@@ -215,8 +215,8 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 
     /* largest > middle > smallest */
 
-    if((fabs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
-       (fabs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
+    if((vnl_math_abs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
+       (vnl_math_abs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
       {
       Lambda3 = 1.0;
       }
@@ -228,7 +228,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
       double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC
         * m_ContrastParameterLambdaC;
 
-      double expVal = exp((-1.0 * (vcl_log( 2.0)
+      double expVal = vcl_exp((-1.0 * (vcl_log( 2.0)
         * contrastParameterLambdaCSquare )/kappa ));
       Lambda3 = m_Alpha + (1.0 - m_Alpha)*expVal;
 

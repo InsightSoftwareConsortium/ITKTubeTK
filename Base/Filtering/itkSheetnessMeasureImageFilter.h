@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkSheetnessMeasureImageFilter_h
 #define __itkSheetnessMeasureImageFilter_h
 
-#include "itkSymmetricSecondRankTensor.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include <itkSymmetricSecondRankTensor.h>
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 
 namespace itk
 {

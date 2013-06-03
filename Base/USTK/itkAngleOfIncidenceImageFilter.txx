@@ -25,10 +25,10 @@ limitations under the License.
 #define __itkAngleOfIncidenceImageFilter_txx
 
 #include "itkAngleOfIncidenceImageFilter.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkProgressReporter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkResampleImageFilter.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkProgressReporter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkResampleImageFilter.h>
 
 namespace itk
 {
@@ -161,7 +161,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
       //compute dot product
       double dotProduct = beamVector*primaryEigenVector;
 
-      outputIt.Set( fabs(dotProduct) );
+      outputIt.Set( vnl_math_abs(dotProduct) );
       }
 
     ++inputIt;
@@ -260,7 +260,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
                                          << smallest << ","
                                          << largest << ")" << std::endl;
     */
-    if( fabs(largest) >  toleranceEigenValues  )
+    if( vnl_math_abs(largest) >  toleranceEigenValues  )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );

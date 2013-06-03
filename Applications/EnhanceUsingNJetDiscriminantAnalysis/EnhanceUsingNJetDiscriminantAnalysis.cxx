@@ -25,15 +25,15 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following four should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"
@@ -61,7 +61,7 @@ void WriteLDA( const typename imageT::Pointer & img,
     LDAImageWriterType::New();
   std::string fname = base;
   char c[80];
-  sprintf( c, ext.c_str(), num );
+  std::sprintf( c, ext.c_str(), num );
   fname += std::string( c );
   ldaImageWriter->SetUseCompression( true );
   ldaImageWriter->SetFileName( fname.c_str() );
@@ -195,7 +195,7 @@ int DoIt( int argc, char * argv[] )
         LDAImageWriterType::New();
       std::string fname = outputBase;
       char c[80];
-      sprintf( c, ".lda%02u.mha", i );
+      std::sprintf( c, ".lda%02u.mha", i );
       fname += std::string( c );
       ldaImageWriter->SetUseCompression( true );
       ldaImageWriter->SetFileName( fname.c_str() );

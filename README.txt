@@ -1,4 +1,4 @@
-TubeTK: Tubular object extraction, registration, and analysis
+TubeTK: Tubular Object Extraction, Registration, and Analysis
 
 TubeTK is being developed by Kitware, Inc.
 
@@ -13,7 +13,7 @@ license is available on the web:
 The source code is available on the web:
   http://tubetk.org/TubeTK.git
 
-The development of TubeTK is being funded, in part, by the following grants
+The development of TubeTK is being funded, in part, by the following grants:
   1. NIH/NIBIB sponsored "National Alliance of Medical Image Computing"
      (NA-MIC, PI: Kikinis)
      1U54EB005149-01
@@ -27,5 +27,3 @@ The development of TubeTK is being funded, in part, by the following grants
      (NeuralNav, PI: Aylward, Wells)
      1R01CA138419-01
      http://public.kitware.com/Wiki/NeuralNav
-
-

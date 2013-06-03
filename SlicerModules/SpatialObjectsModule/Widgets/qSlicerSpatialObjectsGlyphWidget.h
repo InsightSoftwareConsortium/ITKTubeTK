@@ -34,7 +34,7 @@ limitations under the License.
 #include <qSlicerWidget.h>
 
 // qMRML includes
-#include "qSlicerSpatialObjectsModuleWidgetsExport.h"
+#include <qSlicerSpatialObjectsModuleWidgetsExport.h>
 
 class qSlicerSpatialObjectsGlyphWidgetPrivate;
 class vtkMRMLNode;

@@ -24,12 +24,12 @@ limitations under the License.
 #ifndef __itkVectorImageToListGenerator_h
 #define __itkVectorImageToListGenerator_h
 
-#include "itkListSample.h"
-#include "itkPixelTraits.h"
-#include "itkProcessObject.h"
-#include "itkDataObject.h"
-#include "itkDataObjectDecorator.h"
-#include "itkFixedArray.h"
+#include <itkListSample.h>
+#include <itkPixelTraits.h>
+#include <itkProcessObject.h>
+#include <itkDataObject.h>
+#include <itkDataObjectDecorator.h>
+#include <itkFixedArray.h>
 
 namespace itk
 {

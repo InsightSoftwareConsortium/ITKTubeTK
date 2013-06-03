@@ -1,52 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Transfer labels to regions (TubeTK)</title>
+  <title>Transfer Labels to Regions (TubeTK)</title>
   <description>Label regions in one image based on overlap with labels in another image (TubeTK).</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Roland Kwitt, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Roland Kwitt (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <file>
       <name>argInImageFileName</name>
+      <label>Input Image Filename</label>
       <index>0</index>
       <description>Filename of the input CVT image.</description>
     </file>
     <file>
       <name>argInLabelFileName</name>
+      <label>Input Label Filename</label>
       <index>1</index>
       <description>Filename of the label map image.</description>
     </file>
     <file>
       <name>argOutImageFileName</name>
+      <label>Output Image Filename</label>
       <index>2</index>
       <description>File name of the labeled output CVT image.</description>
     </file>
     <file>
-     <name>argOutMappingFileName</name>
+      <name>argOutMappingFileName</name>
+      <label>Output Mapping Filename</label>
       <index>3</index>
       <description>File name of the output mapping file, mapping CVT cell IDs to discrete labels or a label histogram.</description>
     </file>
     <boolean>
       <name>argOutputHistogram</name>
-      <label>Output feature histogram</label>
+      <label>Output Feature Histogram</label>
       <longflag>outputHistogram</longflag>
-      <description>Produces a mapping file with CVT cell -> feature histogram, instead of CVT cell -> Dominant label.</description>
+      <description>Produces a mapping file with CVT cell -&gt;feature histogram, instead of CVT cell -&gt;Dominant label.</description>
       <default>false</default>
     </boolean>
     <integer-vector>
       <name>argOmit</name>
+      <label>Omit Regions</label>
       <longflag>omitRegions</longflag>
       <description>Omit these segmentation regions.</description>
-      <label>omitRegions</label>
-      <default></default>
+      <default/>
     </integer-vector>
   </parameters>
-
 </executable>

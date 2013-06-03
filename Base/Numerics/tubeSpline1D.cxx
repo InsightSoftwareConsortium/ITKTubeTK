@@ -22,14 +22,13 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeSpline1D.h"
-#include <cmath>
-#include <iostream>
 
+#include <iostream>
 
 namespace tube
 {
 
-class Spline1DValFunc : public UserFunc<double, double>
+class Spline1DValFunc : public UserFunction<double, double>
 {
 public:
   Spline1DValFunc(Spline1D * newSpline)
@@ -50,7 +49,7 @@ protected:
 
 }; // End class Spline1DValFunc
 
-class Spline1DDerivFunc : public UserFunc<double, double>
+class Spline1DDerivFunc : public UserFunction<double, double>
 {
 public:
   Spline1DDerivFunc(Spline1D * newSpline)
@@ -94,7 +93,7 @@ Spline1D( void )
 }
 
 Spline1D::
-Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+Spline1D(UserFunction<int, double> *newFuncVal, Optimizer1D *newOpt1D)
   : m_Data(4, 0.0)
 {
   m_Defined = false;
@@ -128,7 +127,7 @@ Spline1D::
 //
 //
 void Spline1D::
-use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+use(UserFunction<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
   m_Defined = true;
 
@@ -348,7 +347,7 @@ curv(double x)
 
   double xpp = valueD2(x);
 
-  return xpp/pow(1.0+xp*xp, 1.5);
+  return xpp/vcl_pow(1.0+xp*xp, 1.5);
 }
 
 double Spline1D::

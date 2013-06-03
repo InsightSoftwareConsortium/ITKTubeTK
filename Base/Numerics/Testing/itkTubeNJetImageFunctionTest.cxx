@@ -27,11 +27,11 @@ limitations under the License.
 
 #include <itkImage.h>
 #include "itkFilterWatcher.h"
-#include <itkExceptionObject.h>
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-#include <itkTubeNJetImageFunction.h>
+#include "itkTubeNJetImageFunction.h"
 
 int itkTubeNJetImageFunctionTest(int argc, char* argv[] )
 {
@@ -113,7 +113,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv[] )
   FunctionType::MatrixType h;
   FunctionType::MatrixType h2;
 
-  int function = atoi( argv[1] );
+  int function = std::atoi( argv[1] );
 
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( outputImage,
     outputImage->GetLargestPossibleRegion() );

@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __itkTubeExponentialResolutionWeightFunction_h
 #define __itkTubeExponentialResolutionWeightFunction_h
 
-#include "vnl/vnl_math.h"
+#include <vnl/vnl_math.h>
 
 namespace itk
 {

@@ -48,7 +48,7 @@ set( tubeBaseParameterSerializerTests_SRCS
   )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/USTK
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering

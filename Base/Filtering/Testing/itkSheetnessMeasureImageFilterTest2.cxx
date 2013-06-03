@@ -16,12 +16,12 @@
  *
  *=========================================================================*/
 
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkSheetnessMeasureImageFilter.h"
 #include <itkImage.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkSymmetricEigenVectorAnalysisImageFilter.h>
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include <itkMatrix.h>
 #include <itkVectorImage.h>
 #include <itkVariableLengthVector.h>
@@ -225,7 +225,7 @@ int itkSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
 
     SheetnessImageType::PixelType sheetnessValue;
     sheetnessValue = sheetnessValueImageIterator.Get();
-    if( (fabs(largest) >  toleranceEigenValues)  &&
+    if( (vnl_math_abs(largest) >  toleranceEigenValues)  &&
         (sheetnessValue >  sheetnessThresholdValue) )
       {
       //Assuming eigenvectors are rows

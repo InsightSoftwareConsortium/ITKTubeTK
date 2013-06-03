@@ -155,7 +155,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
       if( j/10 == j/10.0 && m_StatusCallBack )
         {
         char s[80];
-        sprintf( s, "%d.%d of %d.%d", i, j, size[2]-1,size[1]-1 );
+        std::sprintf( s, "%d.%d of %d.%d", i, j, size[2]-1,size[1]-1 );
         m_StatusCallBack( "Auto Extract", s, 0 );
         if( m_IdleCallBack )
           {

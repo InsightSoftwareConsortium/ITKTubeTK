@@ -24,12 +24,12 @@ limitations under the License.
 #ifndef __itkUltrasoundProbeGeometryCalculator_txx
 #define __itkUltrasoundProbeGeometryCalculator_txx
 
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionReverseConstIterator.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionReverseConstIterator.h>
 
-#include "itkListSample.h"
-#include "itkStatisticsAlgorithm.h"
-#include "vnl/algo/vnl_qr.h"
+#include <itkListSample.h>
+#include <itkStatisticsAlgorithm.h>
+#include <vnl/algo/vnl_qr.h>
 
 namespace itk
 {

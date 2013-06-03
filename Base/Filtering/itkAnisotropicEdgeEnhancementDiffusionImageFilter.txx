@@ -27,15 +27,15 @@ limitations under the License.
 #include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 
 #include <list>
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkNumericTraits.h"
-#include "itkNeighborhoodAlgorithm.h"
-#include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
+#include <itkNumericTraits.h>
+#include <itkNeighborhoodAlgorithm.h>
+#include <itkGradientMagnitudeRecursiveGaussianImageFilter.h>
 
-#include "itkImageFileWriter.h"
-#include "itkVector.h"
-#include "itkFixedArray.h"
+#include <itkImageFileWriter.h>
+#include <itkVector.h>
+#include <itkFixedArray.h>
 
 //#define INTERMEDIATE_OUTPUTS
 
@@ -253,7 +253,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
         * gradientMagnitude;
       double ratio = (gradientMagnitudeSquare) /
         (m_ContrastParameterLambdaE*m_ContrastParameterLambdaE);
-      double expVal = exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio,
+      double expVal = vcl_exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio,
         4.0 )));
       Lambda1 = 1.0 - expVal;
       }

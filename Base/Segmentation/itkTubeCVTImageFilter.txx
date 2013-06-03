@@ -25,8 +25,8 @@ limitations under the License.
 #define __itkTubeCVTImageFilter_txx
 
 #include "itkTubeCVTImageFilter.h"
-#include "itkDanielssonDistanceMapImageFilter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkDanielssonDistanceMapImageFilter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 namespace itk
 {
@@ -318,7 +318,7 @@ CVTImageFilter< TInputImage, TOutputImage >
         dist = ( m_Centroids[j2][i] - batch[j][i] )
                * ( m_Centroids[j2][i] - batch[j][i] );
         }
-      energy = energy + sqrt(dist);
+      energy = energy + vcl_sqrt(dist);
       count[j2] = count[j2] + 1;
       }
     }
@@ -394,7 +394,7 @@ CVTImageFilter< TInputImage, TOutputImage >
         len = len * m_InputImageSize[i];
         }
       double factor = len / (double)sampleSize;
-      factor = pow(factor, 1.0 / ImageDimension);
+      factor = vcl_pow(factor, 1.0 / ImageDimension);
       int * gridSize = new int[ImageDimension];
       len = 1;
       for(i=0; i<ImageDimension; i++)

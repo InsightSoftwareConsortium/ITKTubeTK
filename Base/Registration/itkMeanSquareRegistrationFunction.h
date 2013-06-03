@@ -24,12 +24,12 @@ limitations under the License.
 #ifndef __itkMeanSquareRegistrationFunction_h
 #define __itkMeanSquareRegistrationFunction_h
 
-#include "itkPDEDeformableRegistrationFunction.h"
-#include "itkPoint.h"
-#include "itkCovariantVector.h"
-#include "itkInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkCentralDifferenceImageFunction.h"
+#include <itkPDEDeformableRegistrationFunction.h>
+#include <itkPoint.h>
+#include <itkCovariantVector.h>
+#include <itkInterpolateImageFunction.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkCentralDifferenceImageFunction.h>
 
 namespace itk
 {

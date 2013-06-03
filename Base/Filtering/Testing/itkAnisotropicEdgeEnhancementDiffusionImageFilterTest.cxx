@@ -19,8 +19,8 @@
 #endif
 
 #include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv[] )
 {
@@ -73,25 +73,25 @@ int itkAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv[]
   //Set scale/sigma value
   if( argc > 3 )
   {
-  double scaleParameter = atof(argv[3]);
+  double scaleParameter = std::atof(argv[3]);
   EdgeEnhancementFilter->SetSigma( scaleParameter );
   }
   //Set contrast parameter
   if( argc > 4 )
   {
-  double contrastParameter = atof(argv[4]);
+  double contrastParameter = std::atof(argv[4]);
   EdgeEnhancementFilter->SetContrastParameterLambdaE( contrastParameter );
   }
   //Set time step
   if( argc > 5 )
   {
-  double timeStep = atof(argv[5]);
+  double timeStep = std::atof(argv[5]);
   EdgeEnhancementFilter->SetTimeStep( timeStep );
   }
   //Set number of iterations
   if( argc > 6 )
   {
-  double numberOfIterations = atoi(argv[6]);
+  double numberOfIterations = std::atoi(argv[6]);
   EdgeEnhancementFilter->SetNumberOfIterations( numberOfIterations );
   }
 

@@ -20,7 +20,7 @@
 
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
-#include "itkSpatialObjectFactory.h"
+#include <itkSpatialObjectFactory.h>
 #include "itkSubSampleTubeSpatialObjectFilter.h"
 
 namespace itk

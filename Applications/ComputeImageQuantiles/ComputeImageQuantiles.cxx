@@ -21,11 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImage.h"
-#include "itkImageFileWriter.h"
-#include "itkStatisticsImageFilter.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkImageFileReader.h"
+#include <itkImage.h>
+#include <itkImageFileWriter.h>
+#include <itkStatisticsImageFilter.h>
+#include <itkImageRegionConstIterator.h>
+#include <itkImageFileReader.h>
 
 #include <boost/ref.hpp>
 #include <boost/bind.hpp>
@@ -164,7 +164,7 @@ void writeQuantilesToJSONFile( const std::vector<float>& quantiles,
     boost::property_tree::ptree quantilesJSON;
     boost::property_tree::ptree quantileValuesJSON;
 
-    for( size_t i=0; i<quantiles.size(); ++i )
+    for( unsigned int i=0; i<quantiles.size(); ++i )
       {
       boost::property_tree::ptree quantileElementJSON;
       boost::property_tree::ptree quantileValueElementJSON;

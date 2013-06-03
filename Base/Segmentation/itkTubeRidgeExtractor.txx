@@ -34,9 +34,9 @@ limitations under the License.
 #include "tubeMatrixMath.h"
 
 #include "itkTubeRidgeExtractor.h"
-#include "itkImageRegionIterator.h"
-#include "itkNeighborhoodIterator.h"
-#include "itkMinimumMaximumImageFilter.h"
+#include <itkImageRegionIterator.h>
+#include <itkNeighborhoodIterator.h>
+#include <itkMinimumMaximumImageFilter.h>
 
 namespace itk
 {
@@ -46,7 +46,7 @@ namespace tube
 
 template <class TInputImage>
 class RidgeExtractorSplineValue
-: public ::tube::UserFunc< vnl_vector<int>, double >
+: public ::tube::UserFunction< vnl_vector<int>, double >
 {
 public:
 
@@ -850,7 +850,7 @@ RidgeExtractor<TInputImage>
         SetScale( iScale0+0.5*( iScale0-GetScale() ) );
         }
 
-      if( fabs( dot_product( lStepDir, pStepDir ) ) <
+      if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
         1-0.5*( 1-m_ThreshT ) )
         {
         if( this->GetDebug() )
@@ -951,7 +951,7 @@ RidgeExtractor<TInputImage>
         {
         tV[j] = m_XHEVect( j, i );
         }
-      prod[i] = fabs( dot_product( lStepDir, tV ) );
+      prod[i] = vnl_math_abs( dot_product( lStepDir, tV ) );
       }
 
     unsigned int closestV = 0;
@@ -1013,12 +1013,12 @@ RidgeExtractor<TInputImage>
       }
 
     dProd = dot_product( lStepDir, pStepDir );
-    if( m_ThreshT>0 && fabs( dProd )<m_ThreshT )
+    if( m_ThreshT>0 && vnl_math_abs( dProd )<m_ThreshT )
       {
       if( this->GetDebug() )
         {
         std::cout << "*** Ridge term: Rapid change in step direction "
-          << "( " << fabs( dProd ) << " )" << std::endl;
+          << "( " << vnl_math_abs( dProd ) << " )" << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
@@ -1149,7 +1149,7 @@ RidgeExtractor<TInputImage>
       if( m_StatusCallBack )
         {
         char st[80];
-        sprintf( st, "Point #%d", tubePointCount );
+        std::sprintf( st, "Point #%d", tubePointCount );
         m_StatusCallBack( NULL, st, 0 );
         }
       }
@@ -1239,7 +1239,7 @@ RidgeExtractor<TInputImage>
           if( m_StatusCallBack )
             {
             char s[80];
-            sprintf( s, "Extract: Ridge: DS = %1.1f",
+            std::sprintf( s, "Extract: Ridge: DS = %1.1f",
               m_DynamicScaleUsed );
             m_StatusCallBack( s, NULL, 0 );
             }
@@ -1804,7 +1804,7 @@ RidgeExtractor<TInputImage>
   if( m_StatusCallBack )
     {
     char s[80];
-    sprintf( s, "%d points", (int)(m_Tube->GetPoints().size()) );
+    std::sprintf( s, "%d points", (int)(m_Tube->GetPoints().size()) );
     m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
   return m_Tube;

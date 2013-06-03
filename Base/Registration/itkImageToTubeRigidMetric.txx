@@ -25,7 +25,7 @@ limitations under the License.
 #define __itkImageToTubeRigidMetric_txx
 
 #include "itkImageToTubeRigidMetric.h"
-#include "itkLinearInterpolateImageFunction.h"
+#include <itkLinearInterpolateImageFunction.h>
 
 namespace itk
 {
@@ -323,7 +323,7 @@ ImageToTubeRigidMetric< TFixedImage,
 
           const InternalComputationValueType scale = scalingRadius * m_Kappa;
 
-          matchMeasure += *weightIterator * vcl_abs(
+          matchMeasure += *weightIterator * vnl_math_abs(
             this->ComputeLaplacianMagnitude( pointIterator->GetNormal1(),
               scale,
               currentPoint ) );
@@ -714,7 +714,7 @@ ImageToTubeRigidMetric< TFixedImage,
     const InternalComputationValueType kernelValue =
       2.0 * distance * vcl_exp( -0.5 * distanceSquared / scaleSquared );
 
-    kernelSum += vcl_abs( kernelValue );
+    kernelSum += vnl_math_abs( kernelValue );
 
     typename FixedImageType::PointType point;
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )

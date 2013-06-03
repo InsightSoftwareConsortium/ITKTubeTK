@@ -26,10 +26,10 @@ limitations under the License.
 #endif
 
 #include <itkImage.h>
-#include <itkStructureTensorRecursiveGaussianImageFilter.h>
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkSymmetricEigenVectorAnalysisImageFilter.h>
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include <itkMatrix.h>
 #include <itkVectorImage.h>
 #include <itkVariableLengthVector.h>
@@ -78,7 +78,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv[]  )
   // Set the value of sigma if specificed in command line
   if( argc > 4 )
     {
-    double sigma = atof( argv[4] );
+    double sigma = std::atof( argv[4] );
     filter->SetSigma( sigma );
     }
 
@@ -242,7 +242,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv[]  )
     */
 
 
-    if( fabs(largest) >  toleranceEigenValues  )
+    if( vnl_math_abs(largest) >  toleranceEigenValues  )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );

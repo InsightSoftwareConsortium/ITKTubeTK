@@ -27,15 +27,15 @@ limitations under the License.
 #include "itkAnisotropicHybridDiffusionImageFilter.h"
 
 #include <list>
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkNumericTraits.h"
-#include "itkNeighborhoodAlgorithm.h"
-#include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
+#include <itkNumericTraits.h>
+#include <itkNeighborhoodAlgorithm.h>
+#include <itkGradientMagnitudeRecursiveGaussianImageFilter.h>
 
-#include "itkImageFileWriter.h"
-#include "itkVector.h"
-#include "itkFixedArray.h"
+#include <itkImageFileWriter.h>
+#include <itkVector.h>
+#include <itkFixedArray.h>
 
 namespace itk
 {
@@ -252,7 +252,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
         * gradientMagnitude;
       double ratio = (gradientMagnitudeSquare) /
                (m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED);
-      double expVal = exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio,
+      double expVal = vcl_exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio,
         4.0 )));
       LambdaEED1 = 1.0 - expVal;
       }
@@ -272,8 +272,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     double zeroValueTolerance = 1.0e-20;
 
-    if((fabs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
-       (fabs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
+    if((vnl_math_abs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
+       (vnl_math_abs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
       {
       LambdaCED3 = 1.0;
       }
@@ -287,7 +287,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
       double contrastParameterLambdaCEDSquare
         = m_ContrastParameterLambdaCED * m_ContrastParameterLambdaCED;
 
-      double expVal = exp((-1.0 * (vcl_log( 2.0)
+      double expVal = vcl_exp((-1.0 * (vcl_log( 2.0)
         * contrastParameterLambdaCEDSquare )/kappa ));
       LambdaCED3 = m_Alpha + (1.0 - m_Alpha)*expVal;
       }
@@ -304,13 +304,13 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     double numerator = eigenValue[middleEigenValueIndex] *
       ( (m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid)
-      * (xi - fabs(xi)) - 2.0 * eigenValue[smallestEigenValueIndex] );
+      * (xi - vnl_math_abs(xi)) - 2.0 * eigenValue[smallestEigenValueIndex] );
 
 
     double denominator = 2.0 * vcl_pow( m_ContrastParameterLambdaHybrid,
       4.0 );
 
-    double epsilon = exp(numerator/denominator);
+    double epsilon = vcl_exp(numerator/denominator);
 
     Lambda1 = (1 - epsilon ) * LambdaCED1 + epsilon*LambdaEED1;
     Lambda2 = (1 - epsilon ) * LambdaCED2 + epsilon*LambdaEED2;

@@ -38,14 +38,15 @@ endif()
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Utilities
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
   )
 
-#if( BUILD_TESTING )
-  #add_subdirectory( Testing )
-#endif( BUILD_TESTING )
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
