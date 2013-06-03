@@ -38,6 +38,6 @@ git config alias.stage-branch "!bash -c \"${stage_cmd} print\"" &&
 git config alias.stage-merge "!bash -c \"${stage_cmd} merge ${git_branch}\"" &&
 
 # Alias to push the current topic branch to Gerrit
-git config alias.gerrit-push "!bash CMake/GitSetup/git-gerrit-push" &&
+git config alias.gerrit-push "!bash Utilities/GitSetup/git-gerrit-push" &&
 
 true

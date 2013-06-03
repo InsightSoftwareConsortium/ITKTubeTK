@@ -55,7 +55,7 @@ add_custom_target( TubeFiltering SOURCES
   )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   )
 

@@ -21,19 +21,23 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
+#include <cstdlib>
 #include <iostream>
-#include "tubeTestMain.h"
 
+#include <itkImage.h>
 
-void RegisterTests( void )
+#include "itkDifferenceImageFilter2.h"
+
+int tubeBaseCommonPrintTest( int, char ** )
 {
-  REGISTER_TEST( tubeUtilitiesPrintTest );
-  REGISTER_TEST( tubeMessageTest );
-  REGISTER_TEST( tubeCLIFilterWatcherTest );
-  REGISTER_TEST( tubeCLIHelperFunctionsTest );
-  REGISTER_TEST( tubeCLIProgressReporterTest );
+  typedef itk::Image< float, 2 > ImageType;
+
+  itk::DifferenceImageFilter2< ImageType, ImageType >::Pointer
+    differenceImageFilter2
+    = itk::DifferenceImageFilter2< ImageType, ImageType >::New();
+
+  std::cout << "-------------itkDifferenceImageFilter2"
+            << differenceImageFilter2 << std::endl;
+
+  return EXIT_SUCCESS;
 }

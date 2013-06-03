@@ -21,27 +21,28 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include <cstdlib>
 
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
+#include "tubeMessage.h"
 
-#include "itkImage.h"
-
-//#include "itkTubeEnhancingDiffusion2DImageFilter.h"
-
-int tubeUtilitiesPrintTest( int, char*[] )
+int tubeMessageTest(int argc, char* argv[] )
 {
-  /*
-  itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer
-       vesselEnahncingObj =
-    itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
-  std::cout << "-------------TubeEnhancingDiffusion2DImageFilter"
-            << vesselEnahncingObj;
-  */
+  if( argc > 1 )
+    {
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  tube::Message( "This is a debug test", tube::MessageLevel::Debug );
+  tube::Message( "This is a info test", tube::MessageLevel::Information );
+  tube::Message( "This is a warning test", tube::MessageLevel::Warning );
+  tube::Message( "This is a Error test", tube::MessageLevel::Error );
+
+  tube::DebugMessage( "Debug2" );
+  tube::InfoMessage( "Info2" );
+  tube::WarningMessage( "Warning2" );
+  tube::ErrorMessage( "Error2" );
 
   return EXIT_SUCCESS;
 }

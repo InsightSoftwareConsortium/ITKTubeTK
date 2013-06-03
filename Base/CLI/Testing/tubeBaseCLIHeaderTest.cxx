@@ -21,19 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include <cstdlib>
 
-#include <iostream>
-
-#include "itkFilterWatcher.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "tubeMessage.h"
+#include "TubeTKLogo.h"
 
 int main ( int , char ** )
 {
-
   return EXIT_SUCCESS;
 }

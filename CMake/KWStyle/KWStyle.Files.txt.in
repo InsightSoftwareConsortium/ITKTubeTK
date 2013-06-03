@@ -7,6 +7,3 @@
 @TubeTK_SOURCE_DIR@/SlicerModules/*/*.h
 @TubeTK_SOURCE_DIR@/SlicerModules/*/*.txx
 @TubeTK_SOURCE_DIR@/SlicerModules/*/*.cxx
-@TubeTK_SOURCE_DIR@/Utilities/*.h
-@TubeTK_SOURCE_DIR@/Utilities/*.txx
-@TubeTK_SOURCE_DIR@/Utilities/*.cxx
