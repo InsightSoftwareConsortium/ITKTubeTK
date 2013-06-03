@@ -28,7 +28,7 @@ limitations under the License.
 namespace tube
 {
 
-class Spline1DValFunc : public UserFunc<double, double>
+class Spline1DValFunc : public UserFunction<double, double>
 {
 public:
   Spline1DValFunc(Spline1D * newSpline)
@@ -49,7 +49,7 @@ protected:
 
 }; // End class Spline1DValFunc
 
-class Spline1DDerivFunc : public UserFunc<double, double>
+class Spline1DDerivFunc : public UserFunction<double, double>
 {
 public:
   Spline1DDerivFunc(Spline1D * newSpline)
@@ -93,7 +93,7 @@ Spline1D( void )
 }
 
 Spline1D::
-Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+Spline1D(UserFunction<int, double> *newFuncVal, Optimizer1D *newOpt1D)
   : m_Data(4, 0.0)
 {
   m_Defined = false;
@@ -127,7 +127,7 @@ Spline1D::
 //
 //
 void Spline1D::
-use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+use(UserFunction<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
   m_Defined = true;
 

@@ -43,7 +43,7 @@ limitations under the License.
 
 // Application-specific includes
 #include "tubeCompareImageWithPrior.h"
-#include "tubeOptBrent1D.h"
+#include "tubeBrentOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
 
@@ -56,7 +56,7 @@ int DoIt( int argc, char * argv[] );
 
 template< class pixelT, unsigned int dimensionT >
 class MyMIWPFunc :
-public tube::UserFunc< vnl_vector<int>, double >
+public tube::UserFunction< vnl_vector<int>, double >
 {
 public:
 
@@ -250,7 +250,7 @@ int DoIt( int argc, char * argv[] )
       MyMIWPFunc< pixelT, dimensionT >( eval );
     tube::SplineApproximation1D * spline1D = new
       tube::SplineApproximation1D();
-    tube::OptBrent1D * opt = new tube::OptBrent1D();
+    tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();
     tube::SplineND spline( 3, myFunc, spline1D, opt );
 
     vnl_vector< int > xMin(3);

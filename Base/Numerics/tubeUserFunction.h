@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeUserFunc_h
-#define __tubeUserFunc_h
+#ifndef __tubeUserFunction_h
+#define __tubeUserFunction_h
 
-/** UserFunc Derivation Examples
+/** UserFunction Derivation Examples
  *  \example TestOptimizerND/testOptimizerND.cpp
  */
 
@@ -32,26 +32,26 @@ namespace tube
 {
 
 /** Derive this class to pass functions to Spline and Optimization Classes
- * \class UserFunc
+ * \class UserFunction
  * \author Stephen R. Aylward
  * \date 11/22/99
  */
 template <class InVarT, class OutVarT>
-class UserFunc
+class UserFunction
 {
 public:
-  virtual ~UserFunc( void ) = 0;
+  virtual ~UserFunction( void ) = 0;
 
   /** Derive this function */
   virtual const OutVarT & value( const InVarT & x ) = 0;
 
-}; // End class UserFunc
+}; // End class UserFunction
 
 template <class InVarT, class OutVarT>
-inline UserFunc< InVarT, OutVarT >::~UserFunc( void )
+inline UserFunction< InVarT, OutVarT >::~UserFunction( void )
 {
 }
 
 } // End namespace tube
 
-#endif // End !defined(__tubeUserFunc_h)
+#endif // End !defined(__tubeUserFunction_h)

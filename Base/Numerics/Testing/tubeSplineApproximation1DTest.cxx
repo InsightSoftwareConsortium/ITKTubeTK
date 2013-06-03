@@ -33,11 +33,11 @@ limitations under the License.
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 
 #include "tubeMacro.h"
-#include "tubeOptBrent1D.h"
+#include "tubeBrentOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
-class MySA1DFunc : public tube::UserFunc< int, double >
+class MySA1DFunc : public tube::UserFunction< int, double >
 {
 private:
   double cVal;
@@ -56,7 +56,7 @@ public:
 
 }; // End class MySA1DFunc
 
-class MySA1DFuncV : public tube::UserFunc< double, double >
+class MySA1DFuncV : public tube::UserFunction< double, double >
 {
 private:
   double cVal;
@@ -74,7 +74,7 @@ public:
 
 }; // End class MySA1DFuncV
 
-class MySA1DFuncD : public tube::UserFunc< double, double >
+class MySA1DFuncD : public tube::UserFunction< double, double >
 {
 private:
   double cDeriv;
@@ -92,7 +92,7 @@ public:
 
 }; // End class MySA1DFuncD
 
-int tubeSplineApprox1DTest( int argc, char *argv[] )
+int tubeSplineApproximation1DTest( int argc, char *argv[] )
 {
   if( argc != 2 )
     {
@@ -106,7 +106,7 @@ int tubeSplineApprox1DTest( int argc, char *argv[] )
   MySA1DFuncV * myFuncV = new MySA1DFuncV();
   MySA1DFuncD * myFuncD = new MySA1DFuncD();
 
-  tube::OptBrent1D * opt = new tube::OptBrent1D();
+  tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();
   opt->smallDouble( epsilon );
   opt->searchForMin( true );
   opt->xStep( 0.01 );

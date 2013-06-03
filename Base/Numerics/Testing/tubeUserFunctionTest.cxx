@@ -37,26 +37,26 @@ namespace tube
  * \author Stephen R. Aylward
  * \date 11/22/99
  */
-class UserFunc2
+class UserFunction2
 {
 public :
 
-  virtual ~UserFunc2( void ) = 0;
+  virtual ~UserFunction2( void ) = 0;
 
   /** Derive this function */
   virtual const vnl_vector<double> & value( const vnl_vector<double> & x )
     = 0;
 
-}; // End class UserFunc2
+}; // End class UserFunction2
 
-inline UserFunc2::~UserFunc2( void )
+inline UserFunction2::~UserFunction2( void )
 {
 }
 
 } // End namespace tube
 
 class MyFunc2 :
-public tube::UserFunc2
+public tube::UserFunction2
 {
 public:
 
@@ -76,7 +76,7 @@ private:
 
 }; // End class MyFunc2
 
-int tubeUserFuncTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
+int tubeUserFunctionTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
 {
   MyFunc2 myFunc;
 
@@ -84,7 +84,7 @@ int tubeUserFuncTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
   xTest[0] = 0.01;
   xTest[1] = 0.01;
 
-  tube::UserFunc2 * op = &myFunc;
+  tube::UserFunction2 * op = &myFunc;
   std::cout << "test:func(0.01,0.01) = " << op->value( xTest )[0]
     << std::endl;
 

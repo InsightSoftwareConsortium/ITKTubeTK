@@ -26,48 +26,37 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeOptBrent1D_h
-#define __tubeOptBrent1D_h
-
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#ifndef __tubeParabolicFitOptimizer1D_h
+#define __tubeParabolicFitOptimizer1D_h
 
 #include "tubeOptimizer1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
-class OptBrent1D : public Optimizer1D
+class ParabolicFitOptimizer1D : public Optimizer1D
 {
 
 public:
 
-  OptBrent1D( void );
-  OptBrent1D( UserFunc< double, double > * newFuncVal,
-              UserFunc< double, double > * newFuncDeriv );
+  ParabolicFitOptimizer1D( void );
+  ParabolicFitOptimizer1D( UserFunction< double, double > * newFuncVal );
+  ~ParabolicFitOptimizer1D( void );
 
-  ~OptBrent1D( void );
-
-  void use( UserFunc< double, double > * newFuncVal,
-            UserFunc< double, double > * newFuncDeriv );
-
-  double   smallDouble( void );
-  void     smallDouble( double newSmall );
-
+  void use( UserFunction< double, double > * newFuncVal,
+            UserFunction< double, double > * deriv = NULL );
 
 protected:
 
-  void m_Move( double & a, double & b, double & c,
-              double d, double e, double f );
-
+  double m_Center( double x1, double y1,
+                  double x2, double y2,
+                  double x3, double y3 );
   bool m_Extreme( double * x, double * xVal );
 
-  double m_Small;
 
-}; // End class OptBrent1D
+}; // End class ParabolicFitOptimizer1D
 
 } // End namespace tube
 
-#endif // End !defined(__tubeOptBrent1D_h)
+#endif // End !defined(__tubeParabolicFitOptimizer1D_h)

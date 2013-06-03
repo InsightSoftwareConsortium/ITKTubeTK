@@ -31,7 +31,7 @@ limitations under the License.
 
 #include <itkMinimumMaximumImageFilter.h>
 
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 #include "tubeTubeMath.h"
 #include "tubeMatrixMath.h"
 
@@ -47,7 +47,7 @@ namespace tube
  * \class RadiusExtractorMedialnessFunc
  */
 template < class ImageT >
-class RadiusExtractorMedialnessFunc : public ::tube::UserFunc<int, double>
+class RadiusExtractorMedialnessFunc : public ::tube::UserFunction<int, double>
 {
 public:
 

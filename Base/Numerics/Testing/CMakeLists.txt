@@ -46,20 +46,20 @@ set( tubeBaseNumerics_SRCS
   tubeBaseNumericsPrintTest.cxx
   itkImageRegionMomentsCalculatorTest.cxx
   itkJointHistogramImageFunctionTest.cxx
-  itkTubeNJetImageFunctionTest.cxx
   itkTubeBlurImageFunctionTest.cxx
   itkTubeLDAGeneratorTest.cxx
-  itkTubeNJetLDAGeneratorTest.cxx
+  itkTubeNJetImageFunctionTest.cxx
   itkTubeNJetLDAGenerator2FTest.cxx
+  itkTubeNJetLDAGeneratorTest.cxx
   itkVotingResampleImageFunctionTest.cxx
+  tubeBrentOptimizer1DTest.cxx
+  tubeBrentOptimizerNDTest.cxx
+  tubeGoldenMeanOptimizer1DTest.cxx
   tubeMatrixMathTest.cxx
-  tubeOptBrentNDTest.cxx
-  tubeOptBrentTest.cxx
-  tubeOptGoldenMeanTest.cxx
-  tubeOptParabolicFitTest.cxx
-  tubeSplineApprox1DTest.cxx
+  tubeParabolicFitOptimizer1DTest.cxx
+  tubeSplineApproximation1DTest.cxx
   tubeSplineNDTest.cxx
-  tubeUserFuncTest.cxx
+  tubeUserFunctionTest.cxx
   )
 
 include_directories(
@@ -98,74 +98,74 @@ add_test( tubeMatrixMathTest
   tubeMatrixMathTest
   )
 
-add_test( tubeOptBrentTest
+add_test( tubeBrentOptimizer1DTest
   ${BASE_NUMERICS_TESTS}
-  tubeOptBrentTest
+  tubeBrentOptimizer1DTest
   )
 
 # Minimization - initialized at middle of interval
-add_test( tubeOptGoldenMeanTest
+add_test( tubeGoldenMeanOptimizer1DTest
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest
+  tubeGoldenMeanOptimizer1DTest
   1 1 -3 3.5 1 0.01 -0.5 -1
   )
 
 # impossible maximization - not unimodal distribution
-add_test( tubeOptGoldenMeanTest1
+add_test( tubeGoldenMeanOptimizer1DTest1
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest
+  tubeGoldenMeanOptimizer1DTest
   100 2 -300 350 0 350 100 -1
   )
-set_tests_properties( tubeOptGoldenMeanTest1
+set_tests_properties( tubeGoldenMeanOptimizer1DTest1
                       PROPERTIES WILL_FAIL true )
 
 # minimization - initialized at xMax
-add_test( tubeOptGoldenMeanTest2
+add_test( tubeGoldenMeanOptimizer1DTest2
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest
+  tubeGoldenMeanOptimizer1DTest
   100 2 -300 350 1 350 100 -1
   )
 
 # minimization - initialized at xMin
-add_test( tubeOptGoldenMeanTest3
+add_test( tubeGoldenMeanOptimizer1DTest3
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest
+  tubeGoldenMeanOptimizer1DTest
   1 1 -3 3.5 1 -3 -0.5 -1  )
 
 # maximization - initialized at middle of interval
-add_test( tubeOptGoldenMeanTest4
+add_test( tubeGoldenMeanOptimizer1DTest4
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest
+  tubeGoldenMeanOptimizer1DTest
   100 2 -300 300 0 100 0 1
   )
 
 # maximization - initialized at xMax
-add_test( tubeOptGoldenMeanTest5
+add_test( tubeGoldenMeanOptimizer1DTest5
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest
+  tubeGoldenMeanOptimizer1DTest
   100 2 -300 300 0 300 0 1
   )
 
 # maximization - initialized at xMin
-add_test( tubeOptGoldenMeanTest6
+add_test( tubeGoldenMeanOptimizer1DTest6
   ${BASE_NUMERICS_TESTS}
-  tubeOptGoldenMeanTest
+  tubeGoldenMeanOptimizer1DTest
   100 2 -300 300 0 -300 0 1
   )
 
-add_test( tubeOptParabolicFitTest
+add_test( tubeParabolicFitOptimizer1DTest
   ${BASE_NUMERICS_TESTS}
-  tubeOptParabolicFitTest
+  tubeParabolicFitOptimizer1DTest
   )
 
-add_test( tubeOptBrentNDTest
+add_test( tubeBrentOptimizerNDTest
   ${BASE_NUMERICS_TESTS}
-  tubeOptBrentNDTest
+  tubeBrentOptimizerNDTest
   )
 
-add_test( tubeUserFuncTest
+add_test( tubeUserFunctionTest
   ${BASE_NUMERICS_TESTS}
-  tubeUserFuncTest
+  tubeUserFunctionTest
   )
 
 MIDAS_ADD_TEST( itkJointHistogramImageFunctionTest01
@@ -244,11 +244,11 @@ MIDAS_ADD_TEST( itkVotingResampleImageFunctionTest2
       ${TEMP}/itkVotingResampleImageFunctionTest2.png
   )
 
-MIDAS_ADD_TEST( tubeSplineApprox1DTest
+MIDAS_ADD_TEST( tubeSplineApproximation1DTest
   ${BASE_NUMERICS_TESTS}
   --compare MIDAS{tubeSplineApprox1DTest.mha.md5}
             ${TEMP}/tubeSplineApprox1DTest.mha
-  tubeSplineApprox1DTest
+  tubeSplineApproximation1DTest
     ${TEMP}/tubeSplineApprox1DTest.mha
   )
 

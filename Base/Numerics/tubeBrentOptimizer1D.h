@@ -26,33 +26,48 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __tubeOptGoldenMean1D_h
-#define __tubeOptGoldenMean1D_h
+#ifndef __tubeBrentOptimizer1D_h
+#define __tubeBrentOptimizer1D_h
+
+#ifdef _MSC_VER
+#pragma warning ( disable : 4786 )
+#endif
 
 #include "tubeOptimizer1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
-class OptGoldenMean1D : public Optimizer1D
+class BrentOptimizer1D : public Optimizer1D
 {
 
 public:
 
-  OptGoldenMean1D( void );
-  OptGoldenMean1D(UserFunc<double, double> *newFuncVal);
-  ~OptGoldenMean1D( void );
+  BrentOptimizer1D( void );
+  BrentOptimizer1D( UserFunction< double, double > * newFuncVal,
+              UserFunction< double, double > * newFuncDeriv );
 
-  void use(UserFunc<double, double> *newFuncVal);
+  ~BrentOptimizer1D( void );
+
+  void use( UserFunction< double, double > * newFuncVal,
+            UserFunction< double, double > * newFuncDeriv );
+
+  double   smallDouble( void );
+  void     smallDouble( double newSmall );
+
 
 protected:
 
-  bool m_Extreme(double * x, double * xVal);
+  void m_Move( double & a, double & b, double & c,
+              double d, double e, double f );
 
+  bool m_Extreme( double * x, double * xVal );
 
-}; // End class OptGoldenMean1D
+  double m_Small;
+
+}; // End class BrentOptimizer1D
 
 } // End namespace tube
 
-#endif // End !defined(__tubeOptGoldenMean1D_h)
+#endif // End !defined(__tubeBrentOptimizer1D_h)
