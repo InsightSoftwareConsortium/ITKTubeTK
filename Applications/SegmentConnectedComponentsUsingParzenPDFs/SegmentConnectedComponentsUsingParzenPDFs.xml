@@ -49,7 +49,7 @@
       <label>Object ID</label>
       <longflag>objectId</longflag>
       <description>List of values that represent the objects in the label map.</description>
-      <default>128</default>
+      <default>255</default>
     </integer-vector>
     <integer>
       <name>voidId</name>
@@ -92,17 +92,17 @@
       <default>1</default>
       <longflag>holeFillIterations</longflag>
     </integer>
-    <double>
-      <name>fprWeight</name>
-      <label>FPR Weight</label>
-      <description>Relative cost of a FP versus a FN.</description>
-      <default>1.0</default>
-      <longflag>fprWeight</longflag>
-    </double>
+    <double-vector>
+      <name>objectPDFWeight</name>
+      <label>PDF Weight</label>
+      <description>Relative weight (multiplier) of each PDF.</description>
+      <default>1</default>
+      <longflag>objectPDFWeight</longflag>
+    </double-vector>
     <double>
       <name>probSmoothingStdDev</name>
       <label>Probability Smoothing Standard Deviation</label>
-      <description>Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel.</description>
+      <description>Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel</description>
       <default>3.0</default>
       <longflag>probSmoothingStdDev</longflag>
     </double>

@@ -472,6 +472,7 @@ endif( TubeTK_USE_LIBSVM )
 ## TubeTK - Normal Build
 ##
 set( proj TubeTK )
+
 if( TubeTK_USE_KWSTYLE )
   set( kwstyle_dashboard_submission_arg
     "-DKWSTYLE_DASHBOARD_SUBMISSION:BOOL=${KWSTYLE_DASHBOARD_SUBMISSION}" )
@@ -485,7 +486,6 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
-    ${TubeTK_SimpleITK_Def}
     )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
