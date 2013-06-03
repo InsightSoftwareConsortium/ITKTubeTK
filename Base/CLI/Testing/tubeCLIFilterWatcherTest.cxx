@@ -26,7 +26,7 @@ limitations under the License.
 #endif
 
 #include <cstdlib>
-#include <tubeCLIFilterWatcher.h>
+#include "tubeCLIFilterWatcher.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>

@@ -25,15 +25,15 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following four should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"

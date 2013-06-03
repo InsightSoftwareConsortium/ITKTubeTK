@@ -39,7 +39,7 @@ limitations under the License.
 #define __vtkMRMLSpatialObjectsDisplayPropertiesNode_h
 
 #include "vtkMRMLSpatialObjectsDisplayNode.h"
-#include "vtkMRMLColorTableNode.h"
+#include <vtkMRMLColorTableNode.h>
 
 //
 // Set built-in type. Creates member Set"name"() (e.g., SetVisibility());

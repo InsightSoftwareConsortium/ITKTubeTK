@@ -21,14 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImage.h"
-#include "itkImageFileWriter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkGroupSpatialObject.h"
+#include <itkImage.h>
+#include <itkImageFileWriter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkGroupSpatialObject.h>
 #include "tubeMessage.h"
 #include "tubeTubeMath.h"
-#include "itkSpatialObjectToImageFilter.h"
-#include "itkImageFileWriter.h"
+#include <itkSpatialObjectToImageFilter.h>
+#include <itkImageFileWriter.h>
 
 int itkTubePointsToImageTest( int argc, char * argv[] )
 {

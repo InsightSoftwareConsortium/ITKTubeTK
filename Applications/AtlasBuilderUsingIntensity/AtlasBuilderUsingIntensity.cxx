@@ -28,14 +28,14 @@ limitations under the License.
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkSpatialObjectReader.h>
 #include <cstdio>
-#include "metaCommand.h"
+#include <metaCommand.h>
 
 #include <AtlasBuilderUsingIntensityCLP.h>
 

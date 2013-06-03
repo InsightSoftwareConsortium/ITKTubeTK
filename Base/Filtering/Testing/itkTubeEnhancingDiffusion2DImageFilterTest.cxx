@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
+#include "itkFilterWatcher.h"
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 

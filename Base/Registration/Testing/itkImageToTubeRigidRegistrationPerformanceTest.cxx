@@ -26,17 +26,17 @@ limitations under the License.
 #endif
 
 #include "itkImageToTubeRigidRegistration.h"
-#include "itkSpatialObjectReader.h"
+#include <itkSpatialObjectReader.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itkImageFileReader.h"
+#include <itkImageFileReader.h>
 #include "itkTubeToTubeTransformFilter.h"
-#include "itkEuler3DTransform.h"
-#include "itkMath.h"
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkEuler3DTransform.h>
+#include <itkMath.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
-#include "itkTimeProbesCollectorBase.h"
-#include "itkMemoryProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
+#include <itkMemoryProbesCollectorBase.h>
 
 // STD includes
 #include <iostream>
@@ -45,7 +45,7 @@ limitations under the License.
 //  The following section of code implements a Command observer
 //  used to monitor the evolution of the registration process.
 //
-#include "itkCommand.h"
+#include <itkCommand.h>
 class CommandIterationUpdate : public itk::Command
 {
 public:

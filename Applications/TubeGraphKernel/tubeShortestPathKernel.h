@@ -34,7 +34,7 @@ limitations under the License.
 #include "GraphKernel.h"
 
 #include "tubeMessage.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 
 namespace tube

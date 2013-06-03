@@ -28,12 +28,12 @@ limitations under the License.
 
 #include "itkTubeRidgeSeedGenerator.h"
 
-#include "itkProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkProgressReporter.h>
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
+#include <itkImage.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
 
 
 #include "tubeMatrixMath.h"

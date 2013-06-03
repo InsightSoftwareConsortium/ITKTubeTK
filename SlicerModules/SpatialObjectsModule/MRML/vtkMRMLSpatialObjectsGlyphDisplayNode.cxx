@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "vtkObjectFactory.h"
-#include "vtkCallbackCommand.h"
+#include <vtkObjectFactory.h>
+#include <vtkCallbackCommand.h>
 
 // VTK includes
 #include <vtkConeSource.h>
@@ -30,10 +30,10 @@ limitations under the License.
 #include <vtkSource.h>
 
 // MRML includes
-#include "vtkMRMLScene.h"
-#include "vtkMRMLNode.h"
+#include <vtkMRMLScene.h>
+#include <vtkMRMLNode.h>
 #include "vtkMRMLSpatialObjectsGlyphDisplayNode.h"
-#include "vtkMRMLDiffusionTensorDisplayPropertiesNode.h"
+#include <vtkMRMLDiffusionTensorDisplayPropertiesNode.h>
 
 //------------------------------------------------------------------------------
 vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsGlyphDisplayNode);

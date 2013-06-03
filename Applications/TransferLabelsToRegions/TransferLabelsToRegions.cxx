@@ -24,22 +24,22 @@ limitations under the License.
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkMacro.h"
+#include <itkMacro.h>
 
-#include "itkResampleImageFilter.h"
-#include "itkImage.h"
-#include "itkMatrix.h"
-#include "itkImageFileReader.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkTranslationTransform.h"
-#include "itkImageFileWriter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkOrientImageFilter.h"
-#include "itkImageMomentsCalculator.h"
-#include "itkLabelImageToLabelMapFilter.h"
-#include "itkImageDuplicator.h"
+#include <itkResampleImageFilter.h>
+#include <itkImage.h>
+#include <itkMatrix.h>
+#include <itkImageFileReader.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkTranslationTransform.h>
+#include <itkImageFileWriter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkOrientImageFilter.h>
+#include <itkImageMomentsCalculator.h>
+#include <itkLabelImageToLabelMapFilter.h>
+#include <itkImageDuplicator.h>
 
 
 // BOOST includes

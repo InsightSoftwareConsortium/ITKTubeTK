@@ -21,13 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
-#include <fstream>
-#include <iostream>
-#include <string>
-
 #include "tubeMetaDocument.h"
 
 namespace tube

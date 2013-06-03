@@ -16,12 +16,12 @@
  *
  *=========================================================================*/
 
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkSheetnessMeasureImageFilter.h"
 #include <itkImage.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkSymmetricEigenVectorAnalysisImageFilter.h>
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include <itkMatrix.h>
 #include <itkVectorImage.h>
 #include <itkVariableLengthVector.h>

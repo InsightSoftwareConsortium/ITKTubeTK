@@ -24,21 +24,21 @@ limitations under the License.
 #include <sstream>
 #include <cstring>
 
-#include "vtkAssignAttribute.h"
-#include "vtkObjectFactory.h"
-#include "vtkCallbackCommand.h"
-#include "vtkCellData.h"
-#include "vtkPointData.h"
+#include <vtkAssignAttribute.h>
+#include <vtkObjectFactory.h>
+#include <vtkCallbackCommand.h>
+#include <vtkCellData.h>
+#include <vtkPointData.h>
 
-#include "vtkAssignAttribute.h"
-#include "vtkPolyDataTensorToColor.h"
-#include "vtkTubeFilter.h"
+#include <vtkAssignAttribute.h>
+#include <vtkPolyDataTensorToColor.h>
+#include <vtkTubeFilter.h>
 
-#include "vtkMRMLScene.h"
-#include "vtkMRMLModelDisplayNode.h"
+#include <vtkMRMLScene.h>
+#include <vtkMRMLModelDisplayNode.h>
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 #include "vtkMRMLSpatialObjectsTubeDisplayNode.h"
-#include "vtkPolyDataColorLinesByOrientation.h"
+#include <vtkPolyDataColorLinesByOrientation.h>
 
 //------------------------------------------------------------------------------
 vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsTubeDisplayNode);

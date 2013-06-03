@@ -26,11 +26,11 @@ limitations under the License.
 
 #include "itkAcousticImpulseResponseImageFilterSerializer.h"
 
-#include "itkGradientMagnitudeImageFilter.h"
-#include "itkGradientMagnitudeImageFilterSerializer.h"
-#include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
-#include "itkGradientMagnitudeRecursiveGaussianImageFilterSerializer.h"
-#include "itkParameterSerializerValue.h"
+#include <itkGradientMagnitudeImageFilter.h>
+#include <itkGradientMagnitudeImageFilterSerializer.h>
+#include <itkGradientMagnitudeRecursiveGaussianImageFilter.h>
+#include <itkGradientMagnitudeRecursiveGaussianImageFilterSerializer.h>
+#include <itkParameterSerializerValue.h>
 
 namespace itk
 {

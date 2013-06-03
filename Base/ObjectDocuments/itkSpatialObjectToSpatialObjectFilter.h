@@ -19,8 +19,8 @@
 #ifndef __itkSpatialObjectToSpatialObjectFilter_h
 #define __itkSpatialObjectToSpatialObjectFilter_h
 
-#include "itkProcessObject.h"
-#include "itkConceptChecking.h"
+#include <itkConceptChecking.h>
+#include <itkProcessObject.h>
 
 namespace itk
 {

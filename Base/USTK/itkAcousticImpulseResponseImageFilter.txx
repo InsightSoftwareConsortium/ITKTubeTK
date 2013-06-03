@@ -26,7 +26,7 @@ limitations under the License.
 
 #include "itkAcousticImpulseResponseImageFilter.h"
 
-#include "itkGradientMagnitudeImageFilter.h"
+#include <itkGradientMagnitudeImageFilter.h>
 
 namespace itk
 {

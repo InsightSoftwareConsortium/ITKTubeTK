@@ -27,15 +27,15 @@ limitations under the License.
 #include "itkAnisotropicHybridDiffusionImageFilter.h"
 
 #include <list>
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkNumericTraits.h"
-#include "itkNeighborhoodAlgorithm.h"
-#include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
+#include <itkNumericTraits.h>
+#include <itkNeighborhoodAlgorithm.h>
+#include <itkGradientMagnitudeRecursiveGaussianImageFilter.h>
 
-#include "itkImageFileWriter.h"
-#include "itkVector.h"
-#include "itkFixedArray.h"
+#include <itkImageFileWriter.h>
+#include <itkVector.h>
+#include <itkFixedArray.h>
 
 namespace itk
 {

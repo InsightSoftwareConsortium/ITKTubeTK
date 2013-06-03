@@ -24,10 +24,10 @@ limitations under the License.
 #ifndef __itkTubeNJetImageFunction_h
 #define __itkTubeNJetImageFunction_h
 
-#include "itkImageFunction.h"
-#include "itkMatrix.h"
-#include "itkVector.h"
-#include "itkArray.h"
+#include <itkImageFunction.h>
+#include <itkMatrix.h>
+#include <itkVector.h>
+#include <itkArray.h>
 
 
 // Remove vnl warning
@@ -35,7 +35,7 @@ limitations under the License.
 #undef VNL_CONFIG_CHECK_BOUNDS
 #endif
 
-#include "vnl/vnl_vector.h"
+#include <vnl/vnl_vector.h>
 #include "vnl/vnl_c_vector.txx"
 
 namespace itk

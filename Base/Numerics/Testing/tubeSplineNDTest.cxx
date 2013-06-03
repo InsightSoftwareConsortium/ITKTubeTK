@@ -27,10 +27,10 @@ limitations under the License.
 #include <vnl/vnl_math.h>
 #include <vcl_cmath.h>
 
-#include "itkImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageFileWriter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkImage.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageFileWriter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 #include "tubeMacro.h"
 #include "tubeSplineND.h"

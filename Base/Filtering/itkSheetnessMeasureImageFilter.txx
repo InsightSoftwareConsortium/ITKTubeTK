@@ -25,8 +25,8 @@ limitations under the License.
 #define __itkSheetnessMeasureImageFilter_txx
 
 #include "itkSheetnessMeasureImageFilter.h"
-#include "itkImageRegionIterator.h"
-#include "vnl/vnl_math.h"
+#include <itkImageRegionIterator.h>
+#include <vnl/vnl_math.h>
 
 namespace itk
 {

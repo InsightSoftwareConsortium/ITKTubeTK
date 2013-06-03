@@ -26,8 +26,8 @@ limitations under the License.
 
 #include <vector>
 
-#include "itkImage.h"
-#include "itkListSample.h"
+#include <itkImage.h>
+#include <itkListSample.h>
 
 namespace itk
 {

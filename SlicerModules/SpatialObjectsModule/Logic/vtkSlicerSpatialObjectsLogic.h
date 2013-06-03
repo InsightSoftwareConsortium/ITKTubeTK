@@ -30,8 +30,8 @@ limitations under the License.
 #ifndef __vtkSlicerSpatialObjectsLogic_h
 #define __vtkSlicerSpatialObjectsLogic_h
 
-#include "vtkSlicerModuleLogic.h"
-#include "vtkSlicerSpatialObjectsModuleLogicExport.h"
+#include <vtkSlicerModuleLogic.h>
+#include <vtkSlicerSpatialObjectsModuleLogicExport.h>
 
 // STD includes
 #include <cstdlib>

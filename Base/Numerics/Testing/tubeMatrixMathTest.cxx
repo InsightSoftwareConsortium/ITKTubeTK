@@ -23,7 +23,7 @@ limitations under the License.
 
 #include <cstdlib>
 
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 #include "tubeMacro.h"
 #include "tubeMatrixMath.h"

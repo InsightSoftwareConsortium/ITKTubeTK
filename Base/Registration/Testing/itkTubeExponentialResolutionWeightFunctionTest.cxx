@@ -23,7 +23,7 @@ limitations under the License.
 
 #include "itkTubeExponentialResolutionWeightFunction.h"
 
-#include "itkTubeSpatialObjectPoint.h"
+#include <itkTubeSpatialObjectPoint.h>
 
 #include <fstream>
 

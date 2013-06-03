@@ -31,7 +31,7 @@ limitations under the License.
 #include <qSlicerNodeWriter.h>
 
 // SpatialObjects Logic includes
-#include <vtkSlicerSpatialObjectsLogic.h>
+#include "vtkSlicerSpatialObjectsLogic.h"
 
 // SpatialObjects QTModule includes
 #include "qSlicerSpatialObjectsModule.h"

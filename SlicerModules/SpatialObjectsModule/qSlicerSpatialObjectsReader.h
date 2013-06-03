@@ -25,7 +25,7 @@ limitations under the License.
 #define __qSlicerSpatialObjectsReader_h
 
 // SlicerQt includes
-#include "qSlicerFileReader.h"
+#include <qSlicerFileReader.h>
 
 class qSlicerSpatialObjectsReaderPrivate;
 class vtkSlicerSpatialObjectsLogic;

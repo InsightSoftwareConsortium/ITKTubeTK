@@ -26,7 +26,7 @@ limitations under the License.
 #include "ui_qSlicerSpatialObjectsWidget.h"
 
 // CTK
-#include "ctkDoubleRangeSlider.h"
+#include <ctkDoubleRangeSlider.h>
 
 // MRML includes
 #include <vtkDataSet.h>

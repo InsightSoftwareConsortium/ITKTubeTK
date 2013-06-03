@@ -33,10 +33,10 @@ limitations under the License.
 
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTimeProbesCollectorBase.h>
 
 // Description:
 // Get the PixelType and ComponentType from fileName

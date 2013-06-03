@@ -19,8 +19,8 @@
 #endif
 
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 int itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* argv[] )
 {

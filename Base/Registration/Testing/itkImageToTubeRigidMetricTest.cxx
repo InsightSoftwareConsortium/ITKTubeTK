@@ -21,16 +21,16 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImageFileReader.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkEuler3DTransform.h"
+#include <itkImageFileReader.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkEuler3DTransform.h>
 #include "itkImageToTubeRigidMetric.h"
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkSpatialObjectToImageFilter.h"
-#include "itkSpatialObjectReader.h"
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkSpatialObjectToImageFilter.h>
+#include <itkSpatialObjectReader.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itkSpatialObjectFactory.h"
-#include "itkVesselTubeSpatialObject.h"
+#include <itkSpatialObjectFactory.h>
+#include <itkVesselTubeSpatialObject.h>
 
 /**
  *  This test exercised the metric evaluation methods in the

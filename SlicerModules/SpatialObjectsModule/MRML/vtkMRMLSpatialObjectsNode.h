@@ -36,10 +36,10 @@ limitations under the License.
 #ifndef __vtkMRMLSpatialObjectsNode_h
 #define __vtkMRMLSpatialObjectsNode_h
 
-#include "vtkMRMLModelNode.h"
+#include <vtkMRMLModelNode.h>
 
 // Spatial Objects includes
-#include "vtkSlicerSpatialObjectsModuleMRMLExport.h"
+#include <vtkSlicerSpatialObjectsModuleMRMLExport.h>
 #include <itkGroupSpatialObject.h>
 
 class vtkMRMLSpatialObjectsDisplayNode;

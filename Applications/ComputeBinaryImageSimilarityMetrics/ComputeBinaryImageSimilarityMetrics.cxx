@@ -23,8 +23,8 @@ limitations under the License.
 
 #include <fstream>
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
 
 // TubeTK Filters
 #include "itkTubeLabelOverlapMeasuresImageFilter.h"

@@ -27,12 +27,12 @@ limitations under the License.
 #include "qMRMLSceneSpatialObjectsModel.h"
 
 // MRML includes
-#include "vtkMRMLNode.h"
+#include <vtkMRMLNode.h>
 #include "vtkMRMLSpatialObjectsNode.h"
 #include "vtkMRMLSpatialObjectsDisplayNode.h"
 #include "vtkMRMLSpatialObjectsStorageNode.h"
 #include "vtkMRMLSpatialObjectsTubeDisplayNode.h"
-#include "vtkMRMLScene.h"
+#include <vtkMRMLScene.h>
 
 //------------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_SpatialObjects

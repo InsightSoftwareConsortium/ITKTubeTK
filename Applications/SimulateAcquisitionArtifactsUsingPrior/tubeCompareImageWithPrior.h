@@ -24,9 +24,9 @@ limitations under the License.
 #ifndef __tubeCompareImageWithPrior_h
 #define __tubeCompareImageWithPrior_h
 
-#include "itkImage.h"
-#include "itkRigidImageToImageRegistrationMethod.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkImage.h>
+#include <itkRigidImageToImageRegistrationMethod.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "tubeCLIProgressReporter.h"
 

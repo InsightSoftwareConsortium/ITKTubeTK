@@ -21,7 +21,6 @@
 
 #include "itkSpatialObjectToSpatialObjectFilter.h"
 
-
 namespace itk
 {
 

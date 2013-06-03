@@ -26,9 +26,9 @@ limitations under the License.
 
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
 
-#include "itkImageRegionConstIteratorWithIndex.h"
-#include "itkGradientImageFilter.h"
-#include "itkProgressReporter.h"
+#include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkGradientImageFilter.h>
+#include <itkProgressReporter.h>
 
 namespace itk
 {

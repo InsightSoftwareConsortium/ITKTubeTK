@@ -29,8 +29,8 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkMatrix.h"
+#include <itkImage.h>
+#include <itkMatrix.h>
 
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"

@@ -24,11 +24,11 @@ limitations under the License.
 #ifndef __itkAnisotropicDiffusionTensorFunction_h
 #define __itkAnisotropicDiffusionTensorFunction_h
 
-#include "itkFiniteDifferenceFunction.h"
-#include "vnl/vnl_matrix_fixed.h"
-#include "vnl/vnl_vector_fixed.h"
-#include "itkDiffusionTensor3D.h"
-#include "itkSymmetricSecondRankTensor.h"
+#include <itkFiniteDifferenceFunction.h>
+#include <vnl/vnl_matrix_fixed.h>
+#include <vnl/vnl_vector_fixed.h>
+#include <itkDiffusionTensor3D.h>
+#include <itkSymmetricSecondRankTensor.h>
 
 namespace itk
 {

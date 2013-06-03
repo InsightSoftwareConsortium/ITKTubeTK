@@ -25,10 +25,10 @@ limitations under the License.
 #define __itkTubeNJetImageFunction_txx
 
 #include "itkTubeNJetImageFunction.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIteratorWithIndex.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
 
-#include "vnl/algo/vnl_symmetric_eigensystem.h"
+#include <vnl/algo/vnl_symmetric_eigensystem.h>
 
 
 namespace itk

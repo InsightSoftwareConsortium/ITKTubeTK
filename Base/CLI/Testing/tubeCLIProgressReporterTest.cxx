@@ -26,7 +26,7 @@ limitations under the License.
 #endif
 
 #include <cstdlib>
-#include <tubeCLIProgressReporter.h>
+#include "tubeCLIProgressReporter.h"
 
 void cliProgressReporterTestCallbackFunction( void * data )
 {

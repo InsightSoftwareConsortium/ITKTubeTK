@@ -29,7 +29,7 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
+#include <itkImage.h>
 
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
