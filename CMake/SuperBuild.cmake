@@ -426,7 +426,7 @@ if( TubeTK_BUILD_ImageViewer )
   set( proj ImageViewer )
   ExternalProject_Add( ImageViewer
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
-    GIT_TAG "b2ac8ef25da64f17b1e2e08ddb5415ec95783515"
+    GIT_TAG "9fbaa236d14a5364893b73c53fd7e20268a0d165"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
     BINARY_DIR ImageViewer-Build
     CMAKE_GENERATOR ${gen}
