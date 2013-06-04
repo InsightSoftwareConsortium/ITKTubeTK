@@ -21,35 +21,35 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilter.h"
-#include "itkGroupSpatialObject.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkOrientImageFilter.h"
-#include "itkMultiResolutionPDEDeformableRegistration.h"
-#include "itkRecursiveMultiResolutionPyramidImageFilter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkTransform.h"
-#include "itkTransformFileReader.h"
-#include "itkWarpImageFilter.h"
+#include <itkGroupSpatialObject.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkOrientImageFilter.h>
+#include <itkMultiResolutionPDEDeformableRegistration.h>
+#include <itkRecursiveMultiResolutionPyramidImageFilter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkTransform.h>
+#include <itkTransformFileReader.h>
+#include <itkWarpImageFilter.h>
 
-#include "vtkPolyDataReader.h"
-#include "vtkSmartPointer.h"
-#include "vtkTransform.h"
-#include "vtkTransformPolyDataFilter.h"
-#include "vtkXMLPolyDataReader.h"
+#include <vtkPolyDataReader.h>
+#include <vtkSmartPointer.h>
+#include <vtkTransform.h>
+#include <vtkTransformPolyDataFilter.h>
+#include <vtkXMLPolyDataReader.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions

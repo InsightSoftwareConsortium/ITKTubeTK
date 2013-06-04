@@ -30,13 +30,13 @@ limitations under the License.
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkImage.h"
-#include "itkMatrix.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionIterator.h"
+#include <itkImage.h>
+#include <itkMatrix.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIterator.h>
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );

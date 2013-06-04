@@ -35,7 +35,7 @@ set( TubeTK_Base_IO_TXX_Files
   )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Common
   )
 
 set( TubeTK_Base_IO_SRCS

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+
+  <category>TubeTK</category>
+  <title>Build image from tubes (TubeTK)</title>
+  <description>Computes a binary image from tubes</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+    <file>
+      <name>inputTubeFile</name>
+      <description>File containing the input tubes.</description>
+    </file>
+    <image>
+      <name>outputImageFile</name>
+      <label>Output image</label>
+      <channel>output</channel>
+      <index>0</index>
+      <description>Binary output image that is being generated.</description>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Constraint Options</label>
+    <description>Parameters that determine the output image(s) creation</description>
+    <image>
+      <name>inputTemplateImage</name>
+      <label>Template image</label>
+      <longflag>inputTemplateImage</longflag>
+      <description>Template image for determining space constraints.</description>
+    </image>
+  </parameters>
+
+</executable>

@@ -27,11 +27,11 @@ limitations under the License.
 
 #include <itkImage.h>
 #include "itkFilterWatcher.h"
-#include <itkExceptionObject.h>
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-#include <itkTubeNJetImageFunction.h>
+#include "itkTubeNJetImageFunction.h"
 
 int itkTubeNJetImageFunctionTest(int argc, char* argv[] )
 {

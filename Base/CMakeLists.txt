@@ -21,6 +21,7 @@
 #
 ##############################################################################
 
+add_subdirectory( CLI )
 add_subdirectory( Common )
 add_subdirectory( Filtering )
 add_subdirectory( IO )

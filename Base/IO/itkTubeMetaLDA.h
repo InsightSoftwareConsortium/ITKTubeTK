@@ -24,9 +24,9 @@ limitations under the License.
 #ifndef __itkTubeMetaLDA_h
 #define __itkTubeMetaLDA_h
 
-#include "metaForm.h"
-#include "vnl/vnl_matrix.h"
-#include "vnl/vnl_vector.h"
+#include <metaForm.h>
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
 namespace itk
 {

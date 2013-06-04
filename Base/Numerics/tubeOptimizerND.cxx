@@ -26,12 +26,12 @@ limitations under the License.
 #include <iostream>
 
 #include "tubeOptimizer1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
-class OptValFuncND : public UserFunc<double, double>
+class OptValFuncND : public UserFunction<double, double>
 {
 public:
   OptValFuncND( OptimizerND * newOpt )
@@ -52,7 +52,7 @@ private:
 
 }; // End class OptValFuncND
 
-class OptDerivFuncND : public UserFunc<double, double>
+class OptDerivFuncND : public UserFunction<double, double>
 {
 public:
   OptDerivFuncND( OptimizerND * newOpt )
@@ -94,8 +94,8 @@ OptimizerND::OptimizerND( void )
 
 
 OptimizerND::OptimizerND( int newNDims,
-  UserFunc< vnl_vector<double>, double > * newFuncValND,
-  UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
+  UserFunction< vnl_vector<double>, double > * newFuncValND,
+  UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
   Optimizer1D * newOpt1D )
 {
   m_NDims = 0;
@@ -123,8 +123,8 @@ OptimizerND::~OptimizerND( void )
 }
 
 void OptimizerND::use( int newNDims,
-  UserFunc< vnl_vector<double>, double > * newFuncValND,
-  UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
+  UserFunction< vnl_vector<double>, double > * newFuncValND,
+  UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
   Optimizer1D * newOpt1D )
 {
   m_NDims = newNDims;

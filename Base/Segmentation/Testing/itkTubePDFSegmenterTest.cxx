@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -26,22 +26,23 @@ limitations under the License.
 #endif
 
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
+#include "itkFilterWatcher.h"
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
 #include <itkTubePDFSegmenter.h>
 
-int itkTubePDFSegmenterTest(int argc, char* argv[] )
+int itkTubePDFSegmenterTest( int argc, char* argv[] )
 {
-  if( argc != 7 )
+  if( argc != 11 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage inputMask force outputProbImage0 outputProbImage1 outputMask"
+      << " inputImage1 inputImage2 inputMask force blur outputProbImage0"
+      << " outputPDF0 outputProbImage1 outputPDF1 outputMask"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -61,7 +62,7 @@ int itkTubePDFSegmenterTest(int argc, char* argv[] )
 
 
   // Declare the type for the Filter
-  typedef itk::tube::PDFSegmenter< ImageType, 1, ImageType > FilterType;
+  typedef itk::tube::PDFSegmenter< ImageType, 2, ImageType > FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -70,21 +71,35 @@ int itkTubePDFSegmenterTest(int argc, char* argv[] )
     {
     reader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
 
+  ReaderType::Pointer reader2 = ReaderType::New();
+  reader2->SetFileName( argv[2] );
+  try
+    {
+    reader2->Update();
+    }
+  catch( itk::ExceptionObject& e )
+    {
+    std::cerr << "Exception caught during input image2 read:" << std::endl
+      << e;
+    return EXIT_FAILURE;
+    }
+  ImageType::Pointer inputImage2 = reader2->GetOutput();
+
   // Create the reader and writer
   ReaderType::Pointer maskReader = ReaderType::New();
-  maskReader->SetFileName( argv[3] );
+  maskReader->SetFileName( argv[5] );
   try
     {
     maskReader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -93,65 +108,99 @@ int itkTubePDFSegmenterTest(int argc, char* argv[] )
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInputVolume( 0, inputImage );
+  filter->SetInputVolume( 1, inputImage2 );
   filter->SetLabelmap( maskImage );
-  filter->AddObjectId( 255 );
+  filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
-  filter->SetErodeRadius( 1 );
-  filter->SetHoleFillIterations( 4 );
-  filter->SetProbabilitySmoothingStandardDeviation( 1 );
-  filter->SetFprWeight( 1.0 );
+  filter->SetErodeRadius( 0 );
+  filter->SetHoleFillIterations( 5 );
+  float blur = atof( argv[4] );
+  filter->SetProbabilityImageSmoothingStandardDeviation( blur );
+  filter->SetHistogramSmoothingStandardDeviation( 2 );
+  filter->SetOutlierRejectPortion( 0.1 );
+  filter->SetObjectPDFWeight( 0, 1.5 );
   filter->SetDraft( false );
-  filter->SetReclassifyObjectMask( true );
-  filter->SetReclassifyNotObjectMask( true );
-  if( argv[2][0] == 't' || argv[2][0] == 'T' || argv[2][0] == '1' )
+  if( argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1' )
     {
+    filter->SetReclassifyObjectMask( true );
+    filter->SetReclassifyNotObjectMask( true );
     filter->SetForceClassification( true );
     }
   else
     {
+    filter->SetReclassifyObjectMask( false );
+    filter->SetReclassifyNotObjectMask( false );
     filter->SetForceClassification( false );
     }
   filter->Update();
   filter->ClassifyImages();
 
-  WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[4] );
-  writer->SetUseCompression( true );
-  writer->SetInput( filter->GetClassProbabilityVolume(0) );
+  WriterType::Pointer probWriter0 = WriterType::New();
+  probWriter0->SetFileName( argv[6] );
+  probWriter0->SetUseCompression( true );
+  probWriter0->SetInput( filter->GetClassProbabilityVolume( 0 ) );
   try
     {
-    writer->Update();
+    probWriter0->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;
     }
 
-  WriterType::Pointer writer2 = WriterType::New();
-  writer2->SetFileName( argv[5] );
-  writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetClassProbabilityVolume(1) );
+  WriterType::Pointer pdfWriter0 = WriterType::New();
+  pdfWriter0->SetFileName( argv[7] );
+  pdfWriter0->SetUseCompression( true );
+  pdfWriter0->SetInput( filter->GetClassPDFImage( 0 ) );
   try
     {
-    writer2->Update();
+    pdfWriter0->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
+    {
+    std::cerr << "Exception caught during write:\n"  << e;
+    return EXIT_FAILURE;
+    }
+
+  WriterType::Pointer probWriter1 = WriterType::New();
+  probWriter1->SetFileName( argv[8] );
+  probWriter1->SetUseCompression( true );
+  probWriter1->SetInput( filter->GetClassProbabilityVolume( 1 ) );
+  try
+    {
+    probWriter1->Update();
+    }
+  catch( itk::ExceptionObject& e )
+    {
+    std::cerr << "Exception caught during write:\n"  << e;
+    return EXIT_FAILURE;
+    }
+
+  WriterType::Pointer pdfWriter1 = WriterType::New();
+  pdfWriter1->SetFileName( argv[9] );
+  pdfWriter1->SetUseCompression( true );
+  pdfWriter1->SetInput( filter->GetClassPDFImage( 1 ) );
+  try
+    {
+    pdfWriter1->Update();
+    }
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;
     }
 
   WriterType::Pointer maskWriter = WriterType::New();
-  maskWriter->SetFileName( argv[6] );
+  maskWriter->SetFileName( argv[10] );
   maskWriter->SetUseCompression( true );
   maskWriter->SetInput( filter->GetLabelmap() );
   try
     {
     maskWriter->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

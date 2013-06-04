@@ -41,12 +41,12 @@ void RegisterTests( void )
   REGISTER_TEST( itkTubeNJetLDAGenerator2FTest );
   REGISTER_TEST( itkVotingResampleImageFunctionTest );
   REGISTER_TEST( tubeMatrixMathTest );
-  REGISTER_TEST( tubeOptBrentNDTest );
-  REGISTER_TEST( tubeOptBrentTest );
-  REGISTER_TEST( tubeOptGoldenMeanTest );
-  REGISTER_TEST( tubeOptParabolicFitTest );
-  REGISTER_TEST( tubeSplineApprox1DTest );
+  REGISTER_TEST( tubeBrentOptimizerNDTest );
+  REGISTER_TEST( tubeBrentOptimizer1DTest );
+  REGISTER_TEST( tubeGoldenMeanOptimizer1DTest );
+  REGISTER_TEST( tubeParabolicFitOptimizer1DTest );
+  REGISTER_TEST( tubeSplineApproximation1DTest );
   REGISTER_TEST( tubeSplineNDTest );
-  REGISTER_TEST( tubeUserFuncTest );
+  REGISTER_TEST( tubeUserFunctionTest );
 }
 

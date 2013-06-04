@@ -21,11 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImage.h"
-#include "itkImageFileWriter.h"
-#include "itkStatisticsImageFilter.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkImageFileReader.h"
+#include <itkImage.h>
+#include <itkImageFileWriter.h>
+#include <itkStatisticsImageFilter.h>
+#include <itkImageRegionConstIterator.h>
+#include <itkImageFileReader.h>
 
 #include <boost/ref.hpp>
 #include <boost/bind.hpp>

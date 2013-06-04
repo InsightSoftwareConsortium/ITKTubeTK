@@ -34,31 +34,31 @@ limitations under the License.
 
 #include <sstream>
 
-#include "itkImage.h"
+#include <itkImage.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Application-specific includes
-#include "itkCropImageFilter.h"
-#include "itkBinaryThresholdImageFilter.h"
+#include <itkCropImageFilter.h>
+#include <itkBinaryThresholdImageFilter.h>
 
-#include "itkBinaryBallStructuringElement.h"
-#include "itkBinaryErodeImageFilter.h"
-#include "itkBinaryDilateImageFilter.h"
+#include <itkBinaryBallStructuringElement.h>
+#include <itkBinaryErodeImageFilter.h>
+#include <itkBinaryDilateImageFilter.h>
 
-#include "itkRecursiveGaussianImageFilter.h"
+#include <itkRecursiveGaussianImageFilter.h>
 
-#include "itkNormalizeImageFilter.h"
-#include "itkRigidImageToImageRegistrationMethod.h"
-#include "itkResampleImageFilter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
+#include <itkNormalizeImageFilter.h>
+#include <itkRigidImageToImageRegistrationMethod.h>
+#include <itkResampleImageFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkLinearInterpolateImageFunction.h>
 
-#include "itkShiftScaleImageFilter.h"
+#include <itkShiftScaleImageFilter.h>
 
 namespace tube
 {

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -33,21 +33,21 @@ limitations under the License.
 
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTimeProbesCollectorBase.h>
 
 // Description:
 // Get the PixelType and ComponentType from fileName
-void GetImageType (std::string fileName,
+void GetImageType( std::string fileName,
   itk::ImageIOBase::IOPixelType &pixelType,
-  itk::ImageIOBase::IOComponentType &componentType)
+  itk::ImageIOBase::IOComponentType &componentType )
 {
   typedef itk::Image<short, 3> ImageType;
   itk::ImageFileReader<ImageType>::Pointer imageReader =
         itk::ImageFileReader<ImageType>::New();
-  imageReader->SetFileName(fileName.c_str());
+  imageReader->SetFileName( fileName.c_str() );
   imageReader->UpdateOutputInformation();
 
   pixelType = imageReader->GetImageIO()->GetPixelType();
@@ -56,23 +56,23 @@ void GetImageType (std::string fileName,
 
 // Description:
 // Get the PixelTypes and ComponentTypes from fileNames
-void GetImageTypes (std::vector<std::string> fileNames,
+void GetImageTypes( std::vector<std::string> fileNames,
   std::vector<itk::ImageIOBase::IOPixelType> &pixelTypes,
-  std::vector<itk::ImageIOBase::IOComponentType> &componentTypes)
+  std::vector<itk::ImageIOBase::IOComponentType> &componentTypes )
 {
   pixelTypes.clear();
   componentTypes.clear();
 
   // For each file, find the pixel and component type
-  for(std::vector<std::string>::size_type i = 0; i < fileNames.size(); i++)
+  for( std::vector<std::string>::size_type i = 0; i < fileNames.size(); i++ )
     {
     itk::ImageIOBase::IOPixelType pixelType;
     itk::ImageIOBase::IOComponentType componentType;
-    GetImageType (fileNames[i],
+    GetImageType( fileNames[i],
                   pixelType,
-                  componentType);
-    pixelTypes.push_back(pixelType);
-    componentTypes.push_back(componentType);
+                  componentType );
+    pixelTypes.push_back( pixelType );
+    componentTypes.push_back( componentType );
     }
 }
 
@@ -82,8 +82,8 @@ void GetImageTypes (std::vector<std::string> fileNames,
 //
 template < class InputImageType, class MaskImageType >
 bool
-CheckImageAttributes(const InputImageType * input,
-                     const MaskImageType * mask)
+CheckImageAttributes( const InputImageType * input,
+                     const MaskImageType * mask )
 {
   assert( input );
   assert( mask );
@@ -116,7 +116,7 @@ int DoIt( int argc, char *argv[] )
     PDFSegmenterType;
   typename PDFSegmenterType::Pointer pdfSegmenter = PDFSegmenterType::New();
 
-  timeCollector.Start("LoadData");
+  timeCollector.Start( "LoadData" );
 
   MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
   inMaskReader->SetFileName( labelmap.c_str() );
@@ -124,22 +124,22 @@ int DoIt( int argc, char *argv[] )
   pdfSegmenter->SetLabelmap( inMaskReader->GetOutput() );
 
   typename ImageReaderType::Pointer reader;
-  for(unsigned int i=0; i<N; i++)
+  for( unsigned int i = 0; i < N; i++ )
     {
     reader = ImageReaderType::New();
-    if(i == 0)
+    if( i == 0 )
       {
       reader->SetFileName( inputVolume1.c_str() );
       }
-    else if(i == 1)
+    else if( i == 1 )
       {
       reader->SetFileName( inputVolume2.c_str() );
       }
-    else if(i == 2)
+    else if( i == 2 )
       {
       reader->SetFileName( inputVolume3.c_str() );
       }
-    else if(i == 3)
+    else if( i == 3 )
       {
       reader->SetFileName( inputVolume4.c_str() );
       }
@@ -150,25 +150,34 @@ int DoIt( int argc, char *argv[] )
       return 1;
       }
     reader->Update();
-    if ( !CheckImageAttributes(reader->GetOutput(), inMaskReader->GetOutput()) )
+    if( !CheckImageAttributes( reader->GetOutput(),
+        inMaskReader->GetOutput() ) )
       {
-      std::cout << "Image attributes of inputVolume" << i+1 << " and labelmap do not match.  Please check size, spacing, origin." << std::endl;
+      std::cout << "Image attributes of inputVolume" << i+1 <<
+        " and labelmap do not match.  Please check size, spacing, origin."
+        << std::endl;
       return EXIT_FAILURE;
       }
     pdfSegmenter->SetInputVolume( i, reader->GetOutput() );
     }
 
-  timeCollector.Stop("LoadData");
+  timeCollector.Stop( "LoadData" );
 
-  for( unsigned int o=0; o<objectId.size(); o++ )
+  for( unsigned int o = 0; o < objectId.size(); o++ )
     {
     pdfSegmenter->AddObjectId( objectId[o] );
     }
   pdfSegmenter->SetVoidId( voidId );
   pdfSegmenter->SetErodeRadius( erodeRadius );
   pdfSegmenter->SetHoleFillIterations( holeFillIterations );
-  pdfSegmenter->SetFprWeight( fprWeight );
-  pdfSegmenter->SetProbabilitySmoothingStandardDeviation(
+  if( objectPDFWeight.size() == objectId.size() )
+    {
+    for( unsigned int i = 0; i < objectPDFWeight.size(); i++ )
+      {
+      pdfSegmenter->SetObjectPDFWeight( i, objectPDFWeight[i] );
+      }
+    }
+  pdfSegmenter->SetProbabilityImageSmoothingStandardDeviation(
     probSmoothingStdDev );
   pdfSegmenter->SetDraft( draft );
   pdfSegmenter->SetReclassifyNotObjectMask( reclassifyNotObjectMask );
@@ -182,7 +191,7 @@ int DoIt( int argc, char *argv[] )
     {
     unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
     std::cout << "loading classes" << std::endl;
-    for( unsigned int i=0; i<numClasses; i++ )
+    for( unsigned int i = 0; i < numClasses; i++ )
       {
       std::string fname = loadClassPDFBase;
       char c[80];
@@ -195,7 +204,7 @@ int DoIt( int argc, char *argv[] )
       typename PDFImageType::Pointer img = pdfImageReader->GetOutput();
       typename PDFImageType::PointType origin = img->GetOrigin();
       typename PDFImageType::SpacingType spacing = img->GetSpacing();
-      for( unsigned int d=0; d<N; d++ )
+      for( unsigned int d = 0; d < N; d++ )
         {
         if( i == 0 )
           {
@@ -207,7 +216,7 @@ int DoIt( int argc, char *argv[] )
         }
       img->SetOrigin( origin );
       img->SetSpacing( spacing );
-      pdfSegmenter->SetClassPDFImage(i, img );
+      pdfSegmenter->SetClassPDFImage( i, img );
       }
     pdfSegmenter->ClassifyImages();
     }
@@ -217,12 +226,12 @@ int DoIt( int argc, char *argv[] )
     pdfSegmenter->ClassifyImages();
     }
 
-  timeCollector.Start("Save");
+  timeCollector.Start( "Save" );
 
   if( saveClassProbabilityVolumeBase.size() > 0 )
     {
     unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
-    for( unsigned int i=0; i<numClasses; i++ )
+    for( unsigned int i = 0; i < numClasses; i++ )
       {
       std::string fname = saveClassProbabilityVolumeBase;
       char c[80];
@@ -231,7 +240,8 @@ int DoIt( int argc, char *argv[] )
       ProbImageWriterType::Pointer probImageWriter =
         ProbImageWriterType::New();
       probImageWriter->SetFileName( fname.c_str() );
-      probImageWriter->SetInput( pdfSegmenter->GetClassProbabilityVolume(i) );
+      probImageWriter->SetInput( pdfSegmenter->GetClassProbabilityVolume(
+          i ) );
       probImageWriter->Update();
       }
     }
@@ -244,7 +254,7 @@ int DoIt( int argc, char *argv[] )
   if( saveClassPDFBase.size() > 0 )
     {
     unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
-    for( unsigned int i=0; i<numClasses; i++ )
+    for( unsigned int i = 0; i < numClasses; i++ )
       {
       itk::Index< PDFImageType::ImageDimension > indx;
       indx.Fill( 100 );
@@ -257,7 +267,7 @@ int DoIt( int argc, char *argv[] )
       pdfImageWriter->SetFileName( fname.c_str() );
       typename PDFImageType::PointType origin;
       typename PDFImageType::SpacingType spacing;
-      for( unsigned int d=0; d<N; d++ )
+      for( unsigned int d = 0; d < N; d++ )
         {
         origin[d] = pdfSegmenter->GetPDFBinMin( d );
         spacing[d] = pdfSegmenter->GetPDFBinScale( d );
@@ -277,7 +287,7 @@ int DoIt( int argc, char *argv[] )
       }
     }
 
-  timeCollector.Stop("Save");
+  timeCollector.Stop( "Save" );
 
   timeCollector.Report();
 
@@ -293,34 +303,34 @@ int main( int argc, char * argv[] )
 
   try
     {
-    GetImageType (inputVolume1, pixelType, componentType);
+    GetImageType( inputVolume1, pixelType, componentType );
 
     int N = 1;
-    if(inputVolume2.length() > 1)
+    if( inputVolume2.length() > 1 )
       {
       ++N;
-      if(inputVolume3.length() > 1)
+      if( inputVolume3.length() > 1 )
         {
         ++N;
-        if(inputVolume4.length() > 1)
+        if( inputVolume4.length() > 1 )
           {
           ++N;
           }
         }
       }
 
-    switch(componentType)
+    switch( componentType )
       {
       case itk::ImageIOBase::UCHAR:
-        if(N == 1)
+        if( N == 1 )
           {
           return DoIt<unsigned char, 1>( argc, argv );
           }
-        else if(N == 2)
+        else if( N == 2 )
           {
           return DoIt<unsigned char, 2>( argc, argv );
           }
-        else if(N == 3)
+        else if( N == 3 )
           {
           return DoIt<unsigned char, 3>( argc, argv );
           }
@@ -330,15 +340,15 @@ int main( int argc, char * argv[] )
           }
         break;
       case itk::ImageIOBase::USHORT:
-        if(N == 1)
+        if( N == 1 )
           {
           return DoIt<unsigned short, 1>( argc, argv );
           }
-        else if(N == 2)
+        else if( N == 2 )
           {
           return DoIt<unsigned short, 2>( argc, argv );
           }
-        else if(N == 3)
+        else if( N == 3 )
           {
           return DoIt<unsigned short, 3>( argc, argv );
           }
@@ -349,15 +359,15 @@ int main( int argc, char * argv[] )
         break;
       case itk::ImageIOBase::CHAR:
       case itk::ImageIOBase::SHORT:
-        if(N == 1)
+        if( N == 1 )
           {
           return DoIt<short, 1>( argc, argv );
           }
-        else if(N == 2)
+        else if( N == 2 )
           {
           return DoIt<short, 2>( argc, argv );
           }
-        else if(N == 3)
+        else if( N == 3 )
           {
           return DoIt<short, 3>( argc, argv );
           }
@@ -372,15 +382,15 @@ int main( int argc, char * argv[] )
       case itk::ImageIOBase::LONG:
       case itk::ImageIOBase::FLOAT:
       case itk::ImageIOBase::DOUBLE:
-        if(N == 1)
+        if( N == 1 )
           {
           return DoIt<float, 1>( argc, argv );
           }
-        else if(N == 2)
+        else if( N == 2 )
           {
           return DoIt<float, 2>( argc, argv );
           }
-        else if(N == 3)
+        else if( N == 3 )
           {
           return DoIt<float, 3>( argc, argv );
           }
@@ -395,7 +405,7 @@ int main( int argc, char * argv[] )
         break;
       }
     }
-  catch( itk::ExceptionObject &excep)
+  catch( itk::ExceptionObject &excep )
     {
     std::cerr << argv[0] << ": exception caught !" << std::endl;
     std::cerr << excep << std::endl;

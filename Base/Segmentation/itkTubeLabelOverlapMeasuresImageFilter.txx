@@ -26,8 +26,8 @@ limitations under the License.
 
 #include "itkTubeLabelOverlapMeasuresImageFilter.h"
 
-#include "itkImageRegionConstIterator.h"
-#include "itkProgressReporter.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkProgressReporter.h>
 
 namespace itk
 {

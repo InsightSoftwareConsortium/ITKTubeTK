@@ -58,8 +58,8 @@ Optimizer1D
 }
 
 
-Optimizer1D::Optimizer1D( UserFunc< double, double > * newFuncVal,
-  UserFunc< double, double > * newFuncDeriv )
+Optimizer1D::Optimizer1D( UserFunction< double, double > * newFuncVal,
+  UserFunction< double, double > * newFuncDeriv )
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -77,8 +77,8 @@ Optimizer1D::~Optimizer1D( void )
 {
 }
 
-void Optimizer1D::use( UserFunc< double, double > * newFuncVal,
-  UserFunc< double, double > * newFuncDeriv )
+void Optimizer1D::use( UserFunction< double, double > * newFuncVal,
+  UserFunction< double, double > * newFuncDeriv )
 {
   m_FuncVal = newFuncVal;
   m_FuncDeriv = newFuncDeriv;

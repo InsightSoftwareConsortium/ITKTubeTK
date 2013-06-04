@@ -27,14 +27,14 @@ limitations under the License.
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilterUtils.h"
 
-#include "itkImageRegionSplitter.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-#include "vtkFloatArray.h"
-#include "vtkPointData.h"
-#include "vtkPointLocator.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkVersion.h"
+#include <itkImageRegionSplitter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <vtkFloatArray.h>
+#include <vtkPointData.h>
+#include <vtkPointLocator.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVersion.h>
 
 namespace itk
 {

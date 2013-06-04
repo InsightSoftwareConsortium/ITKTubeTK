@@ -26,11 +26,11 @@ limitations under the License.
 
 #include "itkVotingResampleImageFunction.h"
 
-#include "itkConstNeighborhoodIterator.h"
-#include "itkNeighborhood.h"
+#include <itkConstNeighborhoodIterator.h>
+#include <itkNeighborhood.h>
 #include <map>
 
-#include "vnl/vnl_math.h"
+#include <vnl/vnl_math.h>
 
 namespace itk
 {

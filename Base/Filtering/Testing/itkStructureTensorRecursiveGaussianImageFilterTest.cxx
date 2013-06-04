@@ -26,10 +26,10 @@ limitations under the License.
 #endif
 
 #include <itkImage.h>
-#include <itkStructureTensorRecursiveGaussianImageFilter.h>
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkSymmetricEigenVectorAnalysisImageFilter.h>
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include <itkMatrix.h>
 #include <itkVectorImage.h>
 #include <itkVariableLengthVector.h>

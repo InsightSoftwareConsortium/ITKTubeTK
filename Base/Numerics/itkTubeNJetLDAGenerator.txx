@@ -28,12 +28,12 @@ limitations under the License.
 
 #include "itkTubeNJetLDAGenerator.h"
 
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
-#include "itkRecursiveGaussianImageFilter.h"
+#include <itkImage.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkRecursiveGaussianImageFilter.h>
 
 
 #include "tubeMatrixMath.h"

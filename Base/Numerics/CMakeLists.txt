@@ -36,17 +36,17 @@ set( TubeTK_Base_Numerics_H_Files
   itkTubeNJetLDAGenerator2F.h
   itkVectorImageToListGenerator.h
   itkVotingResampleImageFunction.h
+  tubeBrentOptimizer1D.h
+  tubeGoldenMeanOptimizer1D.h
   tubeMatrixMath.h
-  tubeOptBrent1D.h
-  tubeOptGoldenMean1D.h
   tubeOptimizer1D.h
   tubeOptimizerND.h
-  tubeOptParabolicFit1D.h
+  tubeParabolicFitOptimizer1D.h
   tubeSpline1D.h
   tubeSplineApproximation1D.h
   tubeSplineND.h
   tubeTubeMath.h
-  tubeUserFunc.h
+  tubeUserFunction.h
   )
 
 set( TubeTK_Base_Numerics_TXX_Files
@@ -62,16 +62,16 @@ set( TubeTK_Base_Numerics_TXX_Files
   )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Common
   )
 
 set( TubeTK_Base_Numerics_SRCS
   itkTubeNJetLDAGenerator2F.cxx
-  tubeOptBrent1D.cxx
-  tubeOptGoldenMean1D.cxx
+  tubeBrentOptimizer1D.cxx
+  tubeGoldenMeanOptimizer1D.cxx
   tubeOptimizer1D.cxx
   tubeOptimizerND.cxx
-  tubeOptParabolicFit1D.cxx
+  tubeParabolicFitOptimizer1D.cxx
   tubeSpline1D.cxx
   tubeSplineApproximation1D.cxx
   tubeSplineND.cxx

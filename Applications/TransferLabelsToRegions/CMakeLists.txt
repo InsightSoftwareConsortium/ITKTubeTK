@@ -41,10 +41,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ffast-math -msse3" ${CMAKE_FLAGS_RELEASE})
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Utilities
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
   )
 

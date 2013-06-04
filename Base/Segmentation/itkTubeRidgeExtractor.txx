@@ -34,9 +34,9 @@ limitations under the License.
 #include "tubeMatrixMath.h"
 
 #include "itkTubeRidgeExtractor.h"
-#include "itkImageRegionIterator.h"
-#include "itkNeighborhoodIterator.h"
-#include "itkMinimumMaximumImageFilter.h"
+#include <itkImageRegionIterator.h>
+#include <itkNeighborhoodIterator.h>
+#include <itkMinimumMaximumImageFilter.h>
 
 namespace itk
 {
@@ -46,7 +46,7 @@ namespace tube
 
 template <class TInputImage>
 class RidgeExtractorSplineValue
-: public ::tube::UserFunc< vnl_vector<int>, double >
+: public ::tube::UserFunction< vnl_vector<int>, double >
 {
 public:
 

@@ -24,9 +24,9 @@ limitations under the License.
 #ifndef __itkObjectDocumentToObjectSource_h
 #define __itkObjectDocumentToObjectSource_h
 
-#include <itkProcessObject.h>
-#include "itkObjectDocument.h"
 #include <itkSpatialObjectReader.h>
+
+#include "itkObjectDocument.h"
 
 namespace itk
 {

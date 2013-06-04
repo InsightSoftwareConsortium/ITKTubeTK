@@ -26,13 +26,13 @@ limitations under the License.
 
 #include <vector>
 
-#include "itkImage.h"
-#include "itkProcessObject.h"
-#include "itkIndex.h"
-#include "itkContinuousIndex.h"
-#include "itkImageToImageFilter.h"
-#include "itkImageRegionIterator.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkImage.h>
+#include <itkProcessObject.h>
+#include <itkIndex.h>
+#include <itkContinuousIndex.h>
+#include <itkImageToImageFilter.h>
+#include <itkImageRegionIterator.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 namespace itk
 {

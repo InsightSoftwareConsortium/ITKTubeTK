@@ -25,22 +25,22 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkGroupSpatialObject.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkSpatialObjectWriter.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkVesselTubeSpatialObjectPoint.h"
+#include <itkGroupSpatialObject.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkSpatialObjectWriter.h>
+#include <itkVesselTubeSpatialObject.h>
+#include <itkVesselTubeSpatialObjectPoint.h>
 
-#include "vtkSphereSource.h"
-#include "vtkPlaneSource.h"
-#include "vtkCubeSource.h"
-#include "vtkPolyDataWriter.h"
-#include "vtkAppendPolyData.h"
-#include "vtkDensifyPolyData.h"
-#include "vtkSmoothPolyDataFilter.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkVersion.h"
+#include <vtkSphereSource.h>
+#include <vtkPlaneSource.h>
+#include <vtkCubeSource.h>
+#include <vtkPolyDataWriter.h>
+#include <vtkAppendPolyData.h>
+#include <vtkDensifyPolyData.h>
+#include <vtkSmoothPolyDataFilter.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVersion.h>
 
 #include <cmath>
 

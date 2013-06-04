@@ -29,8 +29,8 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
-#include "itkImage.h"
-#include "itkContinuousIndex.h"
+#include <itkImage.h>
+#include <itkContinuousIndex.h>
 
 
 namespace itk

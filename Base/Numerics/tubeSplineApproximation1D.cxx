@@ -51,7 +51,7 @@ SplineApproximation1D( void )
 
 
 SplineApproximation1D::
-SplineApproximation1D( UserFunc<int, double> *newFunval,
+SplineApproximation1D( UserFunction<int, double> *newFunval,
   Optimizer1D *newOpt1D )
 : Spline1D(newFunval, newOpt1D)
 {

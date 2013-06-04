@@ -22,14 +22,14 @@ limitations under the License.
 =========================================================================*/
 
 #include "itkAcousticImpulseResponseImageFilter.h"
-#include "itkImageFileWriter.h"
-#include "itkImageFileReader.h"
+#include <itkImageFileWriter.h>
+#include <itkImageFileReader.h>
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
-#include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
-#include "itkAbsImageAdaptor.h"
-#include "itkAddImageFilter.h"
-#include "itkLog10ImageAdaptor.h"
-#include "itkIntensityWindowingImageFilter.h"
+#include <itkGradientMagnitudeRecursiveGaussianImageFilter.h>
+#include <itkAbsImageAdaptor.h>
+#include <itkAddImageFilter.h>
+#include <itkLog10ImageAdaptor.h>
+#include <itkIntensityWindowingImageFilter.h>
 
 #include <sstream>
 

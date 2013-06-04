@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkTubeOtsuThresholdMaskedImageFilter_h
 #define __itkTubeOtsuThresholdMaskedImageFilter_h
 
-#include "itkImageToImageFilter.h"
-#include "itkFixedArray.h"
+#include <itkImageToImageFilter.h>
+#include <itkFixedArray.h>
 
 namespace itk
 {

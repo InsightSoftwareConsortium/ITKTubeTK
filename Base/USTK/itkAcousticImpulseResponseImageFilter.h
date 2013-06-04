@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkAcousticImpulseResponseImageFilter_h
 #define __itkAcousticImpulseResponseImageFilter_h
 
-#include "itkCastImageFilter.h"
-#include "itkCovariantVector.h"
+#include <itkCastImageFilter.h>
+#include <itkCovariantVector.h>
 
 namespace itk
 {

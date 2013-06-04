@@ -25,7 +25,7 @@ limitations under the License.
 #define __itkVectorImageToListGenerator_txx
 
 #include "itkVectorImageToListGenerator.h"
-#include "itkImageRegionConstIterator.h"
+#include <itkImageRegionConstIterator.h>
 
 namespace itk
 {

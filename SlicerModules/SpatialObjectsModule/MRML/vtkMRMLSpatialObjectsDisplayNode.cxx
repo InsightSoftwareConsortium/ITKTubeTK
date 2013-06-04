@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 // MRML includes
-#include "vtkMRMLDisplayableNode.h"
-#include "vtkMRMLScene.h"
+#include <vtkMRMLDisplayableNode.h>
+#include <vtkMRMLScene.h>
 #include "vtkMRMLSpatialObjectsDisplayNode.h"
 #include "vtkMRMLSpatialObjectsNode.h"
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"

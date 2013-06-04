@@ -28,13 +28,13 @@ limitations under the License.
 
 #include <iostream>
 
-#include "itkAffineTransform.h"
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionIterator.h"
-#include "itkResampleImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
+#include <itkAffineTransform.h>
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIterator.h>
+#include <itkResampleImageFilter.h>
+#include <itkImageRegionIteratorWithIndex.h>
 #include "itkVotingResampleImageFunction.h"
 
 int itkVotingResampleImageFunctionTest(int argc, char* argv[] )

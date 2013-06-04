@@ -24,10 +24,10 @@ limitations under the License.
 #ifndef __qMRMLSceneSpatialObjectsModel_h
 #define __qMRMLSceneSpatialObjectsModel_h
 
-#include "qSlicerSpatialObjectsModuleWidgetsExport.h"
+#include <qSlicerSpatialObjectsModuleWidgetsExport.h>
 
 // MRMLWidgets includes
-#include "qMRMLSceneDisplayableModel.h"
+#include <qMRMLSceneDisplayableModel.h>
 class qMRMLSceneSpatialObjectsModelPrivate;
 
 /// The Visibility icon is in the same column than the name by default.

@@ -31,10 +31,10 @@ limitations under the License.
 #define __vtkMRMLSpatialObjectsStorageNode_h
 
 // MRML includes
-#include "vtkMRMLModelStorageNode.h"
+#include <vtkMRMLModelStorageNode.h>
 
 // SpatialObjects includes
-#include "vtkSlicerSpatialObjectsModuleMRMLExport.h"
+#include <vtkSlicerSpatialObjectsModuleMRMLExport.h>
 
 #include <itkVesselTubeSpatialObject.h>
 #include <itkSpatialObjectReader.h>

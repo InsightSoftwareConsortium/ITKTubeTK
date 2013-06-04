@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __itkVotingResampleImageFunction_h
 #define __itkVotingResampleImageFunction_h
 
-#include "itkInterpolateImageFunction.h"
+#include <itkInterpolateImageFunction.h>
 
 namespace itk
 {

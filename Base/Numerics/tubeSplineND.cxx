@@ -28,7 +28,7 @@ limitations under the License.
 namespace tube
 {
 
-class SplineNDValFunc : public UserFunc< vnl_vector<double>, double >
+class SplineNDValFunc : public UserFunction< vnl_vector<double>, double >
 {
 public:
   SplineNDValFunc( SplineND * newSpline )
@@ -49,7 +49,7 @@ private:
 
 }; // End class SplineNDValFunc
 
-class SplineNDDerivFunc : public UserFunc< vnl_vector<double>, vnl_vector<double> >
+class SplineNDDerivFunc : public UserFunction< vnl_vector<double>, vnl_vector<double> >
 {
 public:
   SplineNDDerivFunc( SplineND * newSpline )
@@ -99,7 +99,7 @@ SplineND::SplineND( void )
 }
 
 SplineND::SplineND( unsigned int newNDims,
-  UserFunc<IntVectorType, double> * newFunm_Val,
+  UserFunction<IntVectorType, double> * newFunm_Val,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
 {
@@ -139,7 +139,7 @@ SplineND::~SplineND( void )
 
 
 void SplineND::use( unsigned int newNDims,
-  UserFunc< IntVectorType, double > * newFunm_Val,
+  UserFunction< IntVectorType, double > * newFunm_Val,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
 {

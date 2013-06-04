@@ -23,14 +23,14 @@ limitations under the License.
 
 #include "tubeMessage.h"
 
-#include "itkImage.h"
-#include "itkMatrix.h"
-#include "itkImageFileReader.h"
-#include "itkTranslationTransform.h"
-#include "itkResampleImageFilter.h"
-#include "itkImageFileWriter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkOrientImageFilter.h"
+#include <itkImage.h>
+#include <itkMatrix.h>
+#include <itkImageFileReader.h>
+#include <itkTranslationTransform.h>
+#include <itkResampleImageFilter.h>
+#include <itkImageFileWriter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkOrientImageFilter.h>
 
 #include "RegisterUsingImageCentersCLP.h"
 

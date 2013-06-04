@@ -29,7 +29,7 @@ limitations under the License.
 
 #include "tubeOptimizer1D.h"
 #include "tubeSpline1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
@@ -41,7 +41,7 @@ public:
   typedef vnl_vector<double> VectorType;
 
   SplineApproximation1D( void );
-  SplineApproximation1D( UserFunc<int, double> *newFunval,
+  SplineApproximation1D( UserFunction<int, double> *newFunval,
     Optimizer1D * newOpt1D );
 
   virtual ~SplineApproximation1D( void );

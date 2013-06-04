@@ -463,17 +463,17 @@ Metrim_Deriv(double *dX, double *dY, double *dZ,
 //
 
 #include <MathLib/OptimizerND.h>
-#include <MathLib/OptParabolicFit1D.h>
-#include <MathLib/OptBrent1D.h>
+#include <MathLib/ParabolicFitOptimizer1D.h>
+#include <MathLib/BrentOptimizer1D.h>
 #include <MathLib/OptGrad1D.h>
-#include <MathLib/UserFunc.h>
+#include <MathLib/UserFunction.h>
 
 double offsetUnit=2.5;
 double rotUnit=0.1;
 double offsetDUnit=3.5;
 double rotDUnit=0.1;
 
-class mVMetricCost : public UserFunc<TNT::Vector<double> *, double>
+class mVMetricCost : public UserFunction<TNT::Vector<double> *, double>
 {
 public:
   mVMetricCost( void )
@@ -508,7 +508,7 @@ protected:
 
 }; // End class mVMetricCost
 
-class mVMetricDeriv : public UserFunc<TNT::Vector<double> *, TNT::Vector<double> *>
+class mVMetricDeriv : public UserFunction<TNT::Vector<double> *, TNT::Vector<double> *>
 {
 public:
   mVMetricDeriv( void )
@@ -568,7 +568,7 @@ bool TubeRegistrator::Fit( void )
   mVMetricDeriv * funcD = new mVMetricDeriv;
   funcD->use(this);
 
-  OptParabolicFit1D op1D;
+  ParabolicFitOptimizer1D op1D;
   OptimizerND op(6, func, funcD, &op1D);
   op.searchForMin(false);
 

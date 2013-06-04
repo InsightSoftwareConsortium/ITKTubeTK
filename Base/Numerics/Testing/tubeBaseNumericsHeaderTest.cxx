@@ -36,16 +36,16 @@ limitations under the License.
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 #include "tubeMatrixMath.h"
-#include "tubeOptBrent1D.h"
-#include "tubeOptGoldenMean1D.h"
+#include "tubeBrentOptimizer1D.h"
+#include "tubeGoldenMeanOptimizer1D.h"
 #include "tubeOptimizer1D.h"
 #include "tubeOptimizerND.h"
-#include "tubeOptParabolicFit1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSpline1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
 #include "tubeTubeMath.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
 int main ( int , char ** )
 {
