@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-<<<<<<< HEAD
   <title>Spatially Transform Tubes (TubeTK)</title>
-  <description>Applies a transform to tubes (i.e., spatial objects).</description>
+  <description>Applies a transform / displacement field to tubes (i.e., spatial objects).</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
-=======
-  <title>Transform tubes, spatially (TubeTK)</title>
-  <description> Applies a transform or a displacement field to tubes (i.e., Spatial Objects).</description>
-  <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
-  <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
 
->>>>>>> ADD: Support for DisplacementField transform in TubeTransform.
   <parameters>
     <label>IO</label>
     <description>Input/output parameters.</description>
@@ -27,20 +17,12 @@
       <label>Input Tube File</label>
       <description>Input tubes.</description>
     </file>
-<<<<<<< HEAD
-    <file>
-      <name>transformFile</name>
-      <label>Transform File</label>
-      <description>Transform to apply (in ITK format, AffineTransform).</description>
-    </file>
-=======
     <string>
-    <name>transformFile</name>
+      <name>transformFile</name>
       <longflag>transformFile</longflag>
-      <description>Transform to apply (in ITK format). Currently supported transform types are (1) AffineTransform, (2) VersorRigid3DTransform and (3) MatrixOffsetTransformBase. NOTE: In case a displacement field is specified, any additional transforms are currently ignored!
+      <description>Transform to apply (in ITK format). NOTE: In case a displacement field is specified, any additional transforms are currently ignored!
       </description>
     </string>
->>>>>>> ADD: Support for DisplacementField transform in TubeTransform.
     <file>
       <name>outputTubeFile</name>
       <label>Output Tube File</label>

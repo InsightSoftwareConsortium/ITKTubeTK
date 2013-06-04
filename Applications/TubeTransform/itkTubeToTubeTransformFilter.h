@@ -24,10 +24,10 @@ limitations under the License.
 #ifndef __itkTubeToTubeTransformFilter_h
 #define __itkTubeToTubeTransformFilter_h
 
-#include "itkObject.h"
-#include "itkObjectFactory.h"
-#include "itkGroupSpatialObject.h"
-#include "itkSpatialObjectToSpatialObjectFilter.h"
+#include <itkObject.h>
+#include <itkObjectFactory.h>
+#include <itkGroupSpatialObject.h>
+#include <itkSpatialObjectToSpatialObjectFilter.h>
 #include <itkVesselTubeSpatialObject.h>
 #include <itkVesselTubeSpatialObjectPoint.h>
 
