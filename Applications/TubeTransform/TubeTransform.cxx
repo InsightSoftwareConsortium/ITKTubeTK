@@ -25,7 +25,6 @@ limitations under the License.
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include <itkTimeProbesCollectorBase.h>
@@ -34,39 +33,264 @@ limitations under the License.
 #include <itkSpatialObjectWriter.h>
 #include <itkSpatialObjectReader.h>
 
-#include "itkTubeToTubeTransformFilter.h"
+#include <itkVector.h>
+#include <itkImage.h>
+#include <itkDisplacementFieldTransform.h>
+#include <itkInverseDisplacementFieldImageFilter.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFactoryBase.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkVectorImage.h>
 
+#include <itkTransformFileReader.h>
+#include <itkResampleImageFilter.h>
+#include <itkTransformFactory.h>
+
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_inverse.h>
+
+#include "tubeMessage.h"
 #include "TubeTransformCLP.h"
+#include "itkTubeToTubeTransformFilter.h"
 
 
 using namespace tube;
 
 enum { TDimension = 3 };
 
-/** Data typedefs **/
-typedef itk::GroupSpatialObject<TDimension>       GroupSpatialObjectType;
-typedef itk::VesselTubeSpatialObject<TDimension>  TubeSpatialObjectType;
+typedef itk::GroupSpatialObject< TDimension >       GroupSpatialObjectType;
+typedef itk::VesselTubeSpatialObject< TDimension >  TubeSpatialObjectType;
+typedef itk::SpatialObjectReader< TDimension >      SpatialObjectReaderType;
+typedef itk::SpatialObjectWriter< TDimension >      SpatialObjectWriterType;
+typedef itk::Transform< double, TDimension >        TransformType;
 
-/** IO typedefs */
-typedef itk::SpatialObjectReader<TDimension>  SpatialObjectReaderType;
-typedef itk::SpatialObjectWriter<TDimension>  SpatialObjectWriterType;
-typedef TubeSpatialObjectType::TransformType  TransformType;
-typedef itk::tube::TubeToTubeTransformFilter< TransformType, TDimension > TransformFilterType;
+typedef itk::DisplacementFieldTransform< double,
+                                         TDimension > DisplacementFieldTransformType;
+typedef DisplacementFieldTransformType::DisplacementFieldType
+                                                      DisplacementFieldType;
+typedef itk::ImageFileReader< DisplacementFieldType > DisplacementFieldReaderType;
+typedef itk::MatrixOffsetTransformBase< double,
+                                        TDimension,
+                                        TDimension >  MatrixOffsetTransformType;
+typedef itk::tube::TubeToTubeTransformFilter< TransformType, TDimension >
+                                                    TransformFilterType;
 
-typedef itk::TransformFileReader                    TransformFileReaderType;
-typedef itk::TransformFileReader::TransformType     BaseTransformType;
-typedef itk::TransformFileReader::TransformListType TransformListType;
-typedef itk::ScalableAffineTransform<double, 3>     ScalableAffineTransformType;
-typedef itk::AffineTransform<double, 3>             AffineTransformType;
 
-/** Forward decl. */
-GroupSpatialObjectType::Pointer ProcessTube( const char *, const char * );
-GroupSpatialObjectType::Pointer ReadTubeFile( const char * );
-TransformType::Pointer          ReadTransformFile( const char * );
+/** ProcessTubes handles the actual transformation of the tubes; if required,
+  * the inverse transform is computed and applied.
+  */
+GroupSpatialObjectType::Pointer ProcessTubes(
+  itk::TransformFileReader::TransformPointer genericInputTransform,
+  GroupSpatialObjectType::Pointer inputTubes,
+  bool useInverseTransform = false);
+
+GroupSpatialObjectType::Pointer ApplyTransform(
+  GroupSpatialObjectType::Pointer inputTubes,
+  const std::string &transformFile,
+  bool useInverseTransform = false );
+
+/** Displacement fields are handled differently than transforms. The user is
+  * responsible for providing the inverse displacement field (if this is what
+  * is needed). ApplyDisplacementField reads in a displacement field from a
+  * file, creates the correct filter type for transformation and executes the
+  * filter.
+  */
+GroupSpatialObjectType::Pointer ApplyDisplacementField(
+  GroupSpatialObjectType::Pointer inputTubes,
+  const std::string &displacementFieldFile );
+
+/** ReadTubeFile is responsible for reading in the spatial objects from
+  * a file.
+  */
+GroupSpatialObjectType::Pointer ReadTubeFile( const char *tubeFile );
+
+/** WriteOutput writes transformed tubes to an output file. */
 void WriteOutput( GroupSpatialObjectType::Pointer, const char * );
+
+/* Main routine */
 int DoIt( int, char *[] );
+
+
+GroupSpatialObjectType::Pointer
+ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
+              GroupSpatialObjectType::Pointer inputTubes,
+              bool useInverseTransform )
+{
+  TransformType::Pointer transform =
+    dynamic_cast<TransformType *>( genericInputTransform.GetPointer() );
+  TransformFilterType::Pointer filter = TransformFilterType::New();
+
+  if( useInverseTransform )
+    {
+      TransformType::InverseTransformBaseType::Pointer ivT =
+      transform->GetInverseTransform();
+    transform = ( TransformType * )ivT.GetPointer();
+    }
+
+  filter->SetInput( inputTubes );
+  filter->SetTransform( transform );
+  filter->Update();
+  return filter->GetOutput();
+}
+
+
+GroupSpatialObjectType::Pointer
+ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
+                const std::string &transformFile,
+                bool useInverseTransform )
+{
+  // Read transform from file
+  itk::TransformFileReader::Pointer reader =
+    itk::TransformFileReader::New();
+  reader->SetFileName( transformFile.c_str() );
+  reader->Update();
+
+  // Transformed tubes
+  GroupSpatialObjectType::Pointer outputTubes;
+
+  // Get list of transforms
+  itk::TransformFileReader::TransformListType *tList =
+    reader->GetTransformList();
+
+  if( tList->size() != 1 )
+    {
+    tube::ErrorMessage( "#Transforms > 1!" );
+    }
+
+  itk::TransformFileReader::TransformListType::const_iterator tListIt;
+  for( tListIt = tList->begin(); tListIt != tList->end(); tListIt++ )
+    {
+    outputTubes = ProcessTubes( *tListIt, inputTubes, useInverseTransform );
+    }
+  return outputTubes;
+}
+
+
+GroupSpatialObjectType::Pointer
+ApplyDisplacementField( GroupSpatialObjectType::Pointer inputTubes,
+                        const std::string &displacementFieldFile )
+{
+  // Read the displacement field
+  DisplacementFieldReaderType::Pointer dfReader =
+    DisplacementFieldReaderType::New();
+  dfReader->SetFileName( displacementFieldFile.c_str() );
+  dfReader->Update();
+
+  // Create new transform
+  DisplacementFieldTransformType::Pointer dft =
+    DisplacementFieldTransformType::New();
+  dft->SetDisplacementField( dfReader->GetOutput() );
+
+  // Define the transform filter type
+  typedef itk::tube::TubeToTubeTransformFilter<
+    DisplacementFieldTransformType,
+    TDimension> TransformFilterType;
+
+  // Create the filter and apply
+  TransformFilterType::Pointer filter = TransformFilterType::New();
+  filter->SetInput( inputTubes );
+  filter->SetTransform( dft );
+  filter->Update();
+
+  return filter->GetOutput();
+}
+
+
+int DoIt( int argc, char * argv[] )
+{
+  PARSE_ARGS;
+
+  // Register transform type (this is the one produced by ANTS)
+  itk::TransformFactory<MatrixOffsetTransformType>::RegisterTransform();
+
+  double progress = 0.0;
+  itk::TimeProbesCollectorBase timeCollector;
+
+  CLIProgressReporter progressReporter( "TubeTransform",
+                                        CLPProcessInformation );
+
+  progressReporter.Start();
+  progressReporter.Report( progress );
+
+  // Read in the tubes
+  timeCollector.Start( "Read tubes" );
+  GroupSpatialObjectType::Pointer tubes =
+    ReadTubeFile( inputTubeFile.c_str() );
+  timeCollector.Stop( "Read tubes" );
+
+  progress = 0.3;
+  progressReporter.Report( progress );
+
+  GroupSpatialObjectType::Pointer outputTubes;
+  try
+    {
+    /** NOTE: In case a displacement field file is given by the user, we
+      * ignore any other given transform and just apply the displacement field
+      * to the tubes.
+      */
+    if( !displacementField.empty() )
+      {
+      timeCollector.Start(" Apply displacement field ");
+      outputTubes = ApplyDisplacementField( tubes,
+                                            displacementField );
+      timeCollector.Stop(" Apply displacement field ");
+      }
+    else
+      {
+      timeCollector.Start( "Apply transform" );
+      outputTubes = ApplyTransform( tubes,
+                                    transformFile,
+                                    useInverseTransform );
+      timeCollector.Stop( "Apply transform" );
+      }
+    }
+  catch( const std::exception &e )
+    {
+    tube::ErrorMessage( e.what() );
+    return EXIT_FAILURE;
+    }
+
+  progress = 0.9;
+  progressReporter.Report( progress );
+
+  timeCollector.Start( "Write output");
+  WriteOutput( outputTubes, outputTubeFile.c_str() );
+  timeCollector.Stop( "Write output" );
+
+  progress = 1.0;
+  progressReporter.Report( progress );
+  progressReporter.End();
+
+  timeCollector.Report();
+  return EXIT_SUCCESS;
+}
+
+
+GroupSpatialObjectType::Pointer ReadTubeFile( const char * fileName )
+{
+  SpatialObjectReaderType::Pointer reader =
+    SpatialObjectReaderType::New();
+  reader->SetFileName( fileName );
+  reader->Update();
+
+  SpatialObjectReaderType::GroupType::Pointer group =
+    reader->GetGroup();
+  group->ComputeObjectToWorldTransform();
+  return group;
+}
+
+
+void WriteOutput( GroupSpatialObjectType::Pointer object,
+                  const char * fileName )
+{
+  SpatialObjectWriterType::Pointer writer =
+    SpatialObjectWriterType::New();
+  writer->SetInput( object );
+  writer->SetFileName( fileName );
+  writer->Update();
+}
 
 
 int main( int argc, char * argv[] )
@@ -74,119 +298,4 @@ int main( int argc, char * argv[] )
   PARSE_ARGS;
 
   return DoIt( argc, argv );
-}
-
-
-/** The work happens here */
-int DoIt( int argc, char * argv[] )
-{
-  PARSE_ARGS;
-
-  itk::TimeProbesCollectorBase timeCollector;
-
-  tube::CLIProgressReporter progressReporter(
-    "TubeTransform",
-    CLPProcessInformation );
-
-  progressReporter.Start();
-
-  timeCollector.Start( "Load data" );
-  GroupSpatialObjectType::Pointer tube = ProcessTube(
-      inputTubeFile.c_str(),
-      transformFile.c_str()
-      );
-
-  timeCollector.Stop( "Load data" );
-
-  double progress = 0.5;
-  progressReporter.Report( progress );
-
-  timeCollector.Start( "Save data" );
-  WriteOutput( tube, outputTubeFile.c_str() );
-  timeCollector.Stop( "Save data" );
-
-  progress = 1.0;
-  progressReporter.Report( progress );
-
-  progressReporter.End();
-  timeCollector.Report();
-
-  return EXIT_SUCCESS;
-}
-
-
-/** Pipeline = Read tubes; Read transform; Perform transform */
-GroupSpatialObjectType::Pointer ProcessTube(
-  const char * tubeFileName, const char * transFileName )
-{
-  GroupSpatialObjectType::Pointer tubes = ReadTubeFile( tubeFileName );
-  TransformType::Pointer trans = ReadTransformFile( transFileName );
-
-  TransformFilterType::Pointer filter = TransformFilterType::New();
-  filter->SetInput( tubes );
-  filter->SetTransform( trans );
-  filter->Update();
-
-  return filter->GetOutput();
-}
-
-
-/** Reads tubes from file */
-GroupSpatialObjectType::Pointer ReadTubeFile( const char * fileName )
-{
-  SpatialObjectReaderType::Pointer reader = SpatialObjectReaderType::New();
-  reader->SetFileName( fileName );
-  reader->Update();
-
-  SpatialObjectReaderType::GroupType::Pointer group = reader->GetGroup();
-
-  group->ComputeObjectToWorldTransform();
-  return group;
-}
-
-
-/** Reads a 'ScalableAffineTransform' from file */
-TransformType::Pointer ReadTransformFile( const char * fileName )
-{
-  TransformFileReaderType::Pointer reader = itk::TransformFileReader::New();
-  reader->SetFileName( fileName );
-  reader->Update();
-
-  TransformListType *tList =  reader->GetTransformList();
-  TransformListType::const_iterator it = tList->begin();
-
-  /**
-   * CAUTION: We assume an ITK 'AffineTransform' to be read in - which
-   * is usually the output of an image registration algorithm, configured
-   * to use affine registration.
-   */
-  AffineTransformType::Pointer atp =
-    static_cast< AffineTransformType * >( (*it).GetPointer() );
-
-  // Build an ITK 'ScalableAffineTransform' based on the affine one
-  ScalableAffineTransformType::Pointer satp = ScalableAffineTransformType::New();
-  satp->SetTranslation( atp->GetTranslation() );
-  satp->SetCenter( atp->GetCenter() );
-  satp->SetMatrix( atp->GetMatrix() );
-
-  double scale[3] = { 1, 1, 1 };
-  itk::Vector<double,3> v ( scale );
-  satp->SetScale( v );
-
-  std::cout << "Transl " << satp->GetTranslation() << std::endl;
-  std::cout << "Center " << satp->GetCenter() << std::endl;
-  std::cout << "Matrix " << satp->GetMatrix() << std::endl;
-  std::cout << "Offset " << satp->GetOffset() << std::endl;
-  return satp;
-}
-
-
-void WriteOutput(
-  GroupSpatialObjectType::Pointer object,
-  const char * fileName )
-{
-  SpatialObjectWriterType::Pointer writer = SpatialObjectWriterType::New();
-  writer->SetInput( object );
-  writer->SetFileName( fileName );
-  writer->Update();
 }
