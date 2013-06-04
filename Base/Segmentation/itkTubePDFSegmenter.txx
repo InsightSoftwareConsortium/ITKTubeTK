@@ -172,7 +172,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
     }
 
   return -1;
-   
+
 }
 
 template< class ImageT, unsigned int N, class LabelmapT >
