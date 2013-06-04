@@ -28,7 +28,7 @@ limitations under the License.
 
 #include "itkDifferenceImageFilter2.h"
 
-int tubeBaseCommonPrintTest( int, char ** )
+int tubeBaseCommonPrintTest( int, char *[] )
 {
   typedef itk::Image< float, 2 > ImageType;
 

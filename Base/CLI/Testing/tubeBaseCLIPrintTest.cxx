@@ -23,7 +23,7 @@ limitations under the License.
 
 #include <cstdlib>
 
-int tubeBaseCLIPrintTest( int, char ** )
+int tubeBaseCLIPrintTest( int, char *[] )
 {
   return EXIT_SUCCESS;
 }
