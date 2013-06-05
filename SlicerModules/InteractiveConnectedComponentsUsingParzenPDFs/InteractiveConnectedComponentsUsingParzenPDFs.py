@@ -78,19 +78,38 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     # Layout within the io collapsible button
     objectFormLayout = qt.QFormLayout(objectCollapsibleButton)
     objectLabel = slicer.qMRMLLabelComboBox()
-    objectLabel.objectName = 'Object label selector'
+    objectLabel.objectName = 'Foreground label selector'
     objectLabel.setMRMLScene(slicer.mrmlScene)
     objectLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
     objectLabel.labelValueVisible = True
     objectLabel.currentColor = 1
-    objectFormLayout.addRow("Object Label:", objectLabel)
+    objectFormLayout.addRow("Foreground Label:", objectLabel)
     self.objectLabel = objectLabel
+
+    backgroundLabel = slicer.qMRMLLabelComboBox()
+    backgroundLabel.objectName = 'Background label selector'
+    backgroundLabel.setMRMLScene(slicer.mrmlScene)
+    backgroundLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    backgroundLabel.labelValueVisible = True
+    backgroundLabel.currentColor = 2
+    objectFormLayout.addRow("Background Label:", backgroundLabel)
+    self.backgroundLabel = backgroundLabel
+
+    barrierLabel = slicer.qMRMLLabelComboBox()
+    barrierLabel.objectName = 'Barrier label selector'
+    barrierLabel.setMRMLScene(slicer.mrmlScene)
+    barrierLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    barrierLabel.labelValueVisible = True
+    barrierLabel.currentColor = 3
+    objectFormLayout.addRow("Barrier Label:", barrierLabel)
+    self.barrierLabel = barrierLabel
 
     voidLabel = slicer.qMRMLLabelComboBox()
     voidLabel.objectName = 'Void label selector'
     voidLabel.setMRMLScene(slicer.mrmlScene)
     voidLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
     voidLabel.labelValueVisible = True
+    # HACK: Set this to 1 first to get around a bug in the labelComboBox MRML interaction
     #voidLabel.setCurrentColor(1)
     voidLabel.setCurrentColor(0)
     objectFormLayout.addRow("Void Label:", voidLabel)
@@ -98,6 +117,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     self.voidLabel.currentColor = 0
 
     # Presets
+    # Placeholder
     presetsCollapsibleButton = ctk.ctkCollapsibleButton()
     presetsCollapsibleButton.text = "Preset"
     self.frame.layout().addWidget(presetsCollapsibleButton)
@@ -147,24 +167,24 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     # draft check box
     draftCheckBox = qt.QCheckBox()
     draftCheckBox.objectName = 'draftCheckBox'
-    draftCheckBox.toolTip = "Generate draft results?"
+    draftCheckBox.toolTip = "Downsamples results by a factor of 4."
     paramsFormLayout.addRow("Draft Mode:", draftCheckBox)
     self.draftCheckBox = draftCheckBox
 
     # reclassifyObjectMask check box
     reclassifyObjectMaskCheckBox = qt.QCheckBox()
     reclassifyObjectMaskCheckBox.objectName = 'reclassifyObjectMaskCheckBox'
-    reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the object mask?"
+    reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the foreground mask?"
     reclassifyObjectMaskCheckBox.setChecked(True)
-    paramsFormLayout.addRow("Reclassify Object Mask:", reclassifyObjectMaskCheckBox)
+    paramsFormLayout.addRow("Reclassify Foreground Mask:", reclassifyObjectMaskCheckBox)
     self.reclassifyObjectMaskCheckBox = reclassifyObjectMaskCheckBox
 
     # reclassifyNotObjectMask check box
     reclassifyNotObjectMaskCheckBox = qt.QCheckBox()
     reclassifyNotObjectMaskCheckBox.objectName = 'reclassifyNotObjectMaskCheckBox'
-    reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on all non-void voxels?"
+    reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on voxels within the barrier mask?"
     reclassifyNotObjectMaskCheckBox.setChecked(True)
-    paramsFormLayout.addRow("Reclassify Not Object Mask:", reclassifyNotObjectMaskCheckBox)
+    paramsFormLayout.addRow("Reclassify Barrier Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
     # force classification check box
@@ -183,7 +203,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     self.frame.layout().addWidget(self.apply)
     self.widgets.append(self.apply)
 
-    EditorLib.HelpButton(self.frame, "Use this tool to apply segmentation using Parzen windowed PDFs.\n\n Select different label colors and paint on the object and NotObject or as many different classes as you want using the standard drawing tools.\nTo run segmentation correctly, you need to supply a minimum or two class labels.")
+    EditorLib.HelpButton(self.frame, "Use this tool to apply segmentation using Parzen windowed PDFs.\n\n Select different label colors and paint on the foreground, background, or barrier voxels using the paint effect.\nTo run segmentation correctly, you need to supply a minimum or two class labels.")
 
     self.connections.append( (self.apply, 'clicked()', self.onApply) )
 
@@ -212,12 +232,15 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
   def onApply(self):
 
     self.undoRedo.saveState()
+    objectIds = []
+    objectIds.append(self.objectLabel.currentColor)
+    objectIds.append(self.backgroundLabel.currentColor)
     parameters = {}
     parameters['inputVolume1'] = self.inputNodeSelector1.currentNode()
     parameters['inputVolume2'] = self.inputNodeSelector2.currentNode()
     parameters['inputVolume3'] = self.inputNodeSelector3.currentNode()
     parameters['voidId'] = self.voidLabel.currentColor
-    parameters['objectId'] = self.objectLabel.currentColor
+    parameters['objectId'] = objectIds
     parameters['labelmap'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
     parameters['outputVolume'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
     parameters['erodeRadius'] = self.erosionSpinBox.value
