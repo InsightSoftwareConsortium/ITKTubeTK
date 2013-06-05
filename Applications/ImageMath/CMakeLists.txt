@@ -44,7 +44,7 @@ endif( WIN32)
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-# Include Utilities to access tubeCLIHelperFunctions.h
+# Include Base/CLI to access tubeCLIHelperFunctions.h
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/CLI
   ${TubeTK_SOURCE_DIR}/Base/Common
