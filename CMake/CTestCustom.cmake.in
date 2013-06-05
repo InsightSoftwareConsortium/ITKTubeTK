@@ -136,6 +136,8 @@ set( CTEST_CUSTOM_COVERAGE_EXCLUDE
 
 set( CTEST_CUSTOM_MEMCHECK_IGNORE
   # Ignore possible memory leaks in the Python interpreter.
+  PrintSelf-BaseCLI
+  PrintSelf-BaseCommon
   PrintSelf-BaseFiltering
   PrintSelf-BaseIO
   PrintSelf-BaseNumerics
@@ -144,7 +146,6 @@ set( CTEST_CUSTOM_MEMCHECK_IGNORE
   PrintSelf-BaseRegistration
   PrintSelf-BaseSegmentation
   PrintSelf-BaseUSTK
-  PrintSelf-UtilitiesFilters
   )
 
 # GLOB automatically recurses in subdirectories.

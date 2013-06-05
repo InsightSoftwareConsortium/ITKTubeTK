@@ -47,7 +47,7 @@ tests (-N option).
 
 For example:
 
-   ~/src/TubeTK/Utilities/Valgrind/runValgrind.sh    \
+   ~/src/TubeTK/CMake/Valgrind/runValgrind.sh    \
       -R itkTubeRidgeExtractorTest2$
 
 This will run the selected tests under valgrind and generate HTML that can be
