@@ -301,6 +301,12 @@ int main( int argc, char * argv[] )
   itk::ImageIOBase::IOPixelType pixelType;
   itk::ImageIOBase::IOComponentType componentType;
 
+  if( objectId.size() < 2)
+    {
+    std::cout << "Please specify a foreground and a background object." << std::endl;
+    return EXIT_FAILURE;
+    }
+
   try
     {
     GetImageType( inputVolume1, pixelType, componentType );
