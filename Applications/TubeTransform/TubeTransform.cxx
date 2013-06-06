@@ -160,7 +160,7 @@ ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
     }
 
   itk::TransformFileReader::TransformListType::const_iterator tListIt;
-  for( tListIt = tList->begin(); tListIt != tList->end(); tListIt++ )
+  for( tListIt = tList->begin(); tListIt != tList->end(); ++tListIt )
     {
     outputTubes = ProcessTubes( *tListIt, inputTubes, useInverseTransform );
     }
