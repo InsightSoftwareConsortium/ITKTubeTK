@@ -110,11 +110,10 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     voidLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
     voidLabel.labelValueVisible = True
     # HACK: Set this to 1 first to get around a bug in the labelComboBox MRML interaction
-    #voidLabel.setCurrentColor(1)
+    voidLabel.setCurrentColor(1)
     voidLabel.setCurrentColor(0)
     objectFormLayout.addRow("Void Label:", voidLabel)
     self.voidLabel = voidLabel
-    self.voidLabel.currentColor = 0
 
     # Presets
     # Placeholder
