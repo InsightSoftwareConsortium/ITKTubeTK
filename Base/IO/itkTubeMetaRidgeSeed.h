@@ -24,16 +24,9 @@ limitations under the License.
 #ifndef __itkTubeMetaRidgeSeed_h
 #define __itkTubeMetaRidgeSeed_h
 
-#include <vector>
-
-#include <vnl/vnl_vector.h>
-#include <vnl/vnl_matrix.h>
-
-#include "metaTypes.h"
-#include "metaUtils.h"
-#include "metaForm.h"
-
 #include "itkTubeMetaLDA.h"
+
+#include <metaForm.h>
 
 namespace itk
 {
@@ -63,7 +56,6 @@ public:
 
   typedef MetaLDA::LDAMatrixType  LDAMatrixType;
 
-  //
   MetaRidgeSeed( void );
 
   MetaRidgeSeed( const char * _headerName );
@@ -93,11 +85,9 @@ public:
     const ValueListType & _whitenMeans,
     const ValueListType & _whitenStdDevs);
 
-  //
   void  SetRidgeSeedScales( const RidgeSeedScalesType & _ridgeScales );
   const RidgeSeedScalesType & GetRidgeSeedScales( void ) const;
 
-  //
   virtual bool CanRead( const char * _headerName = NULL ) const;
 
   virtual bool Read( const char * _headerName = NULL );
@@ -111,11 +101,6 @@ public:
   virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
 
 protected:
-
-  RidgeSeedScalesType  m_RidgeSeedScales;
-
-  LDAValuesType   m_RidgeSeedScalesTmp;
-
   void  M_Destroy( void );
 
   void  M_SetupReadFields( void );
@@ -124,10 +109,13 @@ protected:
 
   bool  M_Read( void );
 
-}; // class
+  RidgeSeedScalesType  m_RidgeSeedScales;
+  LDAValuesType        m_RidgeSeedScalesTmp;
 
-} // namespace tube
+}; // End class MetaRidgeSeed
 
-} // namespace itk
+} // End namespace tube
 
-#endif // __itkTubeMetaRidgeSeed_h
+} // End namespace itk
+
+#endif // End !defined(__itkTubeMetaRidgeSeed_h)
