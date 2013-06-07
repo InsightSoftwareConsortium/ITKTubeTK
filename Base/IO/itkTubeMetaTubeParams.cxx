@@ -20,23 +20,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include "itkTubeMetaTubeParams.h"
 
-#include <stdio.h>
-#include <ctype.h>
-#include <string>
-#include <string.h> // for memcpy
-#include <math.h>
+#include <cstring>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
-//
-// MetaTubeParams Constructors
-//
 MetaTubeParams::
-MetaTubeParams()
+MetaTubeParams( void )
 {
   if( META_DEBUG )
     {
@@ -63,8 +59,7 @@ MetaTubeParams( const char *_headerName )
 
 //
 MetaTubeParams::
-MetaTubeParams( const MetaTubeParams & _metaTubeParams ):
-  MetaForm()
+MetaTubeParams( const MetaTubeParams & _metaTubeParams ) : MetaForm()
 {
   if( META_DEBUG )
    {
@@ -78,14 +73,14 @@ MetaTubeParams( const MetaTubeParams & _metaTubeParams ):
 
 //
 MetaTubeParams::
-~MetaTubeParams()
+~MetaTubeParams( void )
 {
   M_Destroy();
 }
 
 //
 void MetaTubeParams::
-PrintInfo() const
+PrintInfo( void ) const
 {
   MetaForm::PrintInfo();
 
@@ -561,7 +556,7 @@ CanRead( const char *_headerName ) const
     return false;
     }
 
-  bool result = !strncmp( MET_ReadForm( inputStream ).c_str(), "TubeParams", 10 );
+  bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(), "TubeParams", 10 );
 
   inputStream.close();
 
@@ -572,7 +567,7 @@ CanRead( const char *_headerName ) const
 bool MetaTubeParams::
 Read( const char *_headerName )
 {
-  if( _headerName != NULL && strlen( _headerName ) > 1 )
+  if( _headerName != NULL && std::strlen( _headerName ) > 1 )
     {
     FileName( _headerName );
     }
@@ -603,7 +598,7 @@ Read( const char *_headerName )
 bool MetaTubeParams::
 CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
-  if( !strncmp( MET_ReadForm( *_stream ).c_str(), "TubeParams", 10 ) )
+  if( !std::strncmp( MET_ReadForm( *_stream ).c_str(), "TubeParams", 10 ) )
     {
     return true;
     }

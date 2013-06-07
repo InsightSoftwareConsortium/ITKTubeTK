@@ -24,13 +24,10 @@ limitations under the License.
 #ifndef __itkTubeMetaTubeParams_h
 #define __itkTubeMetaTubeParams_h
 
-#include "metaTypes.h"
+#include <metaForm.h>
 
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
-
-#include "metaUtils.h"
-#include "metaForm.h"
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
 namespace itk
 {
@@ -189,10 +186,10 @@ protected:
   double       m_TubeRadiusThresholdMedialnessStart;
 
 
-}; // class MetaTubeParams
+}; // End class MetaTubeParams
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
-#endif // __itkTubeMetaTubeParams_h
+#endif // End !defined(__itkTubeMetaTubeParams_h)
