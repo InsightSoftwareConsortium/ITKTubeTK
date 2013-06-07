@@ -55,7 +55,6 @@ public:
 
   itkNewMacro( Self );
 
-  //
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
@@ -69,7 +68,6 @@ public:
 
   typedef std::vector< double >                   NJetScalesType;
 
-  //
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
   void SetZeroScales( const NJetScalesType & scales );
@@ -111,14 +109,14 @@ private:
 
   bool m_ForceOrientationInsensitivity;
 
-}; // class
+}; // End class NJetFeatureVectorGenerator
 
-}  // tube namespace
+}  // End namespace tube
 
-}  // itk namespace
+}  // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeNJetFeatureVectorGenerator.txx"
 #endif
 
-#endif // __itkTubeNJetFeatureVectorGenerator_h
+#endif // End !defined(__itkTubeNJetFeatureVectorGenerator_h)

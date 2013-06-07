@@ -174,14 +174,14 @@ private:
 
   MatrixType                      m_BasisMatrix;
   VectorType                      m_BasisValues;
-}; // class
+}; // End class BasisFeatureVectorGenerator
 
-} // tube namespace
+} // End namespace tube
 
-} // itk namespace
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeBasisFeatureVectorGenerator.txx"
 #endif
 
-#endif // __itkTubeBasisFeatureVectorGenerator_h
+#endif // End !defined(__itkTubeBasisFeatureVectorGenerator_h)
