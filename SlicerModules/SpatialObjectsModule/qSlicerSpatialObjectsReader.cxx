@@ -46,7 +46,7 @@ limitations under the License.
 //------------------------------------------------------------------------------
 class qSlicerSpatialObjectsReaderPrivate
 {
-  public:
+public:
   vtkSmartPointer<vtkSlicerSpatialObjectsLogic> Logic;
 };
 
@@ -124,7 +124,7 @@ bool qSlicerSpatialObjectsReader::load(const IOProperties& properties)
   QString fileName = properties["fileName"].toString();
 
   QStringList fileNames;
-  if (properties.contains("suffix"))
+  if(properties.contains("suffix"))
     {
     QStringList suffixList = properties["suffix"].toStringList();
     suffixList.removeDuplicates();
@@ -147,9 +147,9 @@ bool qSlicerSpatialObjectsReader::load(const IOProperties& properties)
     vtkMRMLSpatialObjectsNode* node =
       d->Logic->AddSpatialObject(file.toLatin1());
 
-    if (node)
+    if(node)
       {
-      if (properties.contains("name"))
+      if(properties.contains("name"))
         {
         std::string uname = this->mrmlScene()->GetUniqueNameByString(
           properties["name"].toString().toLatin1());

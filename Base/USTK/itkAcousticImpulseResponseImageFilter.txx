@@ -20,20 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAcousticImpulseResponseImageFilter_txx
 #define __itkAcousticImpulseResponseImageFilter_txx
 
 #include "itkAcousticImpulseResponseImageFilter.h"
 
-#include "itkGradientMagnitudeImageFilter.h"
+#include <itkGradientMagnitudeImageFilter.h>
 
 namespace itk
 {
 
 template< class TInputImage, class TOutputImage, class TOperatorValue >
 AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
-::AcousticImpulseResponseImageFilter():
-  m_AngleDependence( 1.0 )
+::AcousticImpulseResponseImageFilter( void )
+  : m_AngleDependence( 1.0 )
 {
   this->SetNumberOfRequiredInputs( 2 );
 
@@ -125,6 +126,6 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
      << std::endl;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAcousticImpulseResponseImageFilter_txx)

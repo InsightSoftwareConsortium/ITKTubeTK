@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "vtkObjectFactory.h"
+#include <vtkObjectFactory.h>
 
 // MRML includes
 #include "vtkMRMLSpatialObjectsStorageNode.h"
@@ -67,13 +67,13 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
   vtkMRMLSpatialObjectsNode* spatialObjectsNode =
     vtkMRMLSpatialObjectsNode::SafeDownCast(refNode);
 
-  if (Superclass::ReadDataInternal(refNode) != 0)
+  if(Superclass::ReadDataInternal(refNode) != 0)
     {
     return 0;
     }
 
   std::string fullName = this->GetFullNameFromFileName();
-  if (fullName == std::string(""))
+  if(fullName == std::string(""))
     {
     vtkErrorMacro("ReadData: File name not specified");
     return 0;
@@ -93,7 +93,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
   int result = 1;
   try
   {
-    if (extension == std::string(".tre"))
+    if(extension == std::string(".tre"))
       {
       ReaderType::Pointer reader = ReaderType::New();
       reader->SetFileName(fullName);
@@ -113,7 +113,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
       // Initialize the SpatialObject
       // Count number of points && remove dupplicate
       int totalNumberOfPoints = 0;
-      for (TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+      for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
            tubeIT != tubeList->end();
            ++tubeIT )
         {
@@ -171,7 +171,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
       ridgeness->SetNumberOfTuples(totalNumberOfPoints);
 
       int pointID = 0;
-      for (TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+      for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
            tubeIT != tubeList->end(); ++tubeIT )
         {
         TubeType* currTube =
@@ -194,7 +194,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
 
         int index = 0;
         std::vector<TubePointType>::iterator  tubePointIterator;
-        for (tubePointIterator = currTube->GetPoints().begin();
+        for(tubePointIterator = currTube->GetPoints().begin();
              tubePointIterator != currTube->GetPoints().end();
              ++tubePointIterator, ++pointID, ++index)
           {
@@ -225,13 +225,13 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
                           (*tubePointIterator).GetNormal2()[2]);
 
           // Medialness & Ridgness
-          if (tubePointIterator->GetMedialness() != 0)
+          if(tubePointIterator->GetMedialness() != 0)
             {
             containsMidialnessInfo = true;
             }
           medialness->SetTuple1(pointID, tubePointIterator->GetMedialness());
 
-          if (tubePointIterator->GetRidgeness() != 0)
+          if(tubePointIterator->GetRidgeness() != 0)
             {
             containsRidgnessInfo = true;
             }
@@ -242,7 +242,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
                                pointIDs,
                                vesselsPoints.GetPointer());
         vesselLinesCA->InsertNextCell(vesselLine.GetPointer());
-        delete[] pointIDs;
+        delete [] pointIDs;
         }
 
       // Convert spatial objects to a PolyData
@@ -262,12 +262,12 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
       vesselsPD->GetPointData()->AddArray(tan2.GetPointer());
 
       // Add Medialness & Ridgness if contains information
-      if (containsMidialnessInfo == true)
+      if(containsMidialnessInfo == true)
         {
         vesselsPD->GetPointData()->AddArray(medialness.GetPointer());
         }
 
-      if (containsRidgnessInfo == true)
+      if(containsRidgnessInfo == true)
         {
         vesselsPD->GetPointData()->AddArray(ridgeness.GetPointer());
         }
@@ -282,6 +282,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
 
       spatialObjectsNode->SetAndObservePolyData(vesselsPD.GetPointer());
       spatialObjectsNode->SetSpatialObject(reader->GetGroup());
+      delete tubeList;
     }
   }
   catch(...)
@@ -289,13 +290,13 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
     result = 0;
   }
 
-  if (spatialObjectsNode->GetPolyData() != NULL)
+  if(spatialObjectsNode->GetPolyData() != NULL)
     {
     // is there an active scalar array?
-    if (spatialObjectsNode->GetDisplayNode())
+    if(spatialObjectsNode->GetDisplayNode())
       {
       double *scalarRange = spatialObjectsNode->GetPolyData()->GetScalarRange();
-      if (scalarRange)
+      if(scalarRange)
         {
         vtkDebugMacro("ReadData: setting scalar range " << scalarRange[0]
                       << ", " << scalarRange[1]);
@@ -316,7 +317,7 @@ int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
     vtkMRMLSpatialObjectsNode::SafeDownCast(refNode);
 
   std::string fullName = this->GetFullNameFromFileName();
-  if (fullName == std::string(""))
+  if(fullName == std::string(""))
     {
     vtkErrorMacro("vtkMRMLModelNode: File name not specified");
     return 0;
@@ -326,7 +327,7 @@ int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
     itksys::SystemTools::GetFilenameLastExtension(fullName);
 
   int result = 1;
-  if (extension == ".tre")
+  if(extension == ".tre")
     {
     try
       {
@@ -335,7 +336,7 @@ int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
       writer->SetInput(spatialObjects->GetSpatialObject());
       writer->Update();
       }
-    catch (...)
+    catch(...)
       {
       result = 0;
       vtkErrorMacro("Error occured writing Spatial Objects: "
@@ -352,19 +353,19 @@ int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedReadFileTypes()
+void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedReadFileTypes( void )
 {
   this->SupportedReadFileTypes->InsertNextValue("SpatialObject (.tre)");
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedWriteFileTypes()
+void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedWriteFileTypes( void )
 {
   this->SupportedWriteFileTypes->InsertNextValue("SpatialObject (.tre)");
 }
 
 //------------------------------------------------------------------------------
-const char* vtkMRMLSpatialObjectsStorageNode::GetDefaultWriteFileExtension()
+const char* vtkMRMLSpatialObjectsStorageNode::GetDefaultWriteFileExtension( void )
 {
   return "tre";
 }

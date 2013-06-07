@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __TubeRegistrator_h
 #define __TubeRegistrator_h
 
@@ -37,7 +38,8 @@ limitations under the License.
 
 #include <vnl/vnl_vector.h>
 
-namespace VTREE {
+namespace VTREE
+{
 
 class TubeRegistratorPoint
 {
@@ -56,56 +58,55 @@ public:
     vnl_vector<double> m_V2T;
     vnl_vector<double> m_DXT;
 
-    TubeRegistratorPoint();
-};
+    TubeRegistratorPoint( void );
+
+}; // End class TubeRegistratorPoint
 
 class TubeRegistrator : public Registrator
 {
-
-protected:
-
-  double cKappa;
-
-  double cMetric;
-
-  TubeNet * cTubeNet;
-  std::list<TubeRegistratorPoint *> cRegPoints;
-  Image3D<short> * cIm;
-  double cImMin, cImRange;
-  int cSampling;
-  int cCount;
-  double cWeight;
-  ImageValueOp3D<short> cImOp;
-  vnl_matrix<double> cBiasV;
-  vnl_matrix<double> cBiasVI;
-
-  double cRegImThresh;
-
 public:
 
-  TubeRegistrator();
+  TubeRegistrator( void );
 
   void SetTubeNet(TubeNet * tubes);
   void SetImage(Image3D<short> * im);
 
-  int GetSampling(void);
+  int GetSampling( void );
   void SetSampling(int newSampling);
-  int SetNumSamples(void);
-  std::list<TubeRegistratorPoint *> * GetSamples(void);
+  int SetNumSamples( void );
+  std::list<TubeRegistratorPoint *> * GetSamples( void );
 
   void SetKappa(double kappa);
 
   void SetImThresh(double newRegThresh);
-  double GetImThresh(void);
+  double GetImThresh( void );
 
-  void MetricPreProc(void);
-  double Metric(void);
+  void MetricPreProc( void );
+  double Metric( void );
   double MetricDeriv(double * dX, double * dY, double * dZ,
                        double * dA, double * dB, double * dG);
 
-  bool Fit(void);
-};
+  bool Fit( void );
 
-}
+protected:
 
-#endif
+  double                             m_Kappa;
+  double                             m_Metric;
+  TubeNet *                          m_TubeNet;
+  std::list<TubeRegistratorPoint *>  m_RegPoints;
+  Image3D<short> *                   m_Im;
+  double                             m_ImMin;
+  double                             m_ImRange;
+  int                                m_Sampling;
+  int                                m_Count;
+  double                             m_Weight;
+  ImageValueOp3D<short>              m_ImOp;
+  vnl_matrix<double>                 m_BiasV;
+  vnl_matrix<double>                 m_BiasVI;
+  double                             m_RegImThresh;
+
+}; // End class TubeRegistrator
+
+} // End namespace VTREE
+
+#endif // End !defined(__TubeRegistrator_h)

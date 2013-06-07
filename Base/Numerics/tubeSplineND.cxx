@@ -20,20 +20,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include "tubeSplineND.h"
-#include "tubeUserFunc.h"
-#include <cmath>
-#include <itkVectorContainer.h>
+
 #include <itkImageRegionIterator.h>
 
 namespace tube
 {
 
-class SplineNDValFunc :
-public UserFunc< vnl_vector<double>, double >
+class SplineNDValFunc : public UserFunction< vnl_vector<double>, double >
 {
 public:
-
   SplineNDValFunc( SplineND * newSpline )
     {
     m_Spline = newSpline;
@@ -47,17 +44,14 @@ public:
     }
 
 private:
-
   SplineND * m_Spline;
   double     m_Val;
 
-};
+}; // End class SplineNDValFunc
 
-class SplineNDDerivFunc :
-public UserFunc< vnl_vector<double>, vnl_vector<double> >
+class SplineNDDerivFunc : public UserFunction< vnl_vector<double>, vnl_vector<double> >
 {
 public:
-
   SplineNDDerivFunc( SplineND * newSpline )
     {
     m_Spline = newSpline;
@@ -71,14 +65,13 @@ public:
     }
 
 private:
-
   SplineND * m_Spline;
   vnl_vector<double> m_Dx;
 
-};
+}; // End class SplineNDDerivFunc
 
 
-SplineND::SplineND()
+SplineND::SplineND( void )
 {
   m_Debug = false;
 
@@ -106,7 +99,7 @@ SplineND::SplineND()
 }
 
 SplineND::SplineND( unsigned int newNDims,
-  UserFunc<IntVectorType, double> * newFunm_Val,
+  UserFunction<IntVectorType, double> * newFunm_Val,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
 {
@@ -134,7 +127,7 @@ SplineND::SplineND( unsigned int newNDims,
   this->use( newNDims, newFunm_Val, newSpline1D, newOpt1D );
 }
 
-SplineND::~SplineND()
+SplineND::~SplineND( void )
 {
   delete m_OptNDVal;
   delete m_OptNDDeriv;
@@ -146,7 +139,7 @@ SplineND::~SplineND()
 
 
 void SplineND::use( unsigned int newNDims,
-  UserFunc< IntVectorType, double > * newFunm_Val,
+  UserFunction< IntVectorType, double > * newFunm_Val,
   Spline1D * newSpline1D,
   Optimizer1D * newOpt1D )
 {
@@ -574,7 +567,7 @@ const double & SplineND::value( const VectorType & x )
 
   for( int i=( int )m_NDims-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
     for( unsigned int j=0; j<k; j++ )
@@ -631,7 +624,7 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
     {
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
     switch( dx( ( int )m_NDims-i-1 ) )
       {
       default:
@@ -833,11 +826,12 @@ double SplineND::valueVDD2( const VectorType & x,
 
   itWSX  = m_DataWSX->Begin();
   itWSXX = m_DataWSXX->Begin();
-  double vD, vD2;
+  double vD;
+  double vD2;
 
   for( int i=( int )m_NDims-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
 
     itk::ImageRegionIterator<ImageType> itImageWSX( itWSX->Value(),
       itWSX->Value()->GetLargestPossibleRegion() );
@@ -1003,4 +997,4 @@ bool SplineND::extremeConjGrad( VectorType & extX, double * extVal )
   return m_OptND->extreme( extX, extVal, m_NDims, eVects );
 }
 
-} // namespace
+} // End namespace tube

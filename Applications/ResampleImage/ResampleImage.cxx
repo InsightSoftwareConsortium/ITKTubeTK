@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,7 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined( _MSC_VER )
+
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -29,22 +30,22 @@ limitations under the License.
 #endif
 
 // ITK Includes
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkTransformFileReader.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTransformFileReader.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
-#include "itkResampleImageFilter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkBSplineInterpolateImageFunction.h"
+#include <itkResampleImageFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkBSplineInterpolateImageFunction.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -75,27 +76,27 @@ int DoIt( int argc, char *argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   tube::CLIProgressReporter reporter( "Resample", CLPProcessInformation );
-  reporter.Start( );
+  reporter.Start();
 
   typename InputImageType::Pointer inIm;
     {
     timeCollector.Start( "LoadData" );
-    typename InputReaderType::Pointer reader = InputReaderType::New( );
-    reader->SetFileName( inputVolume.c_str( ) );
-    reader->Update( );
-    inIm = reader->GetOutput( );
+    typename InputReaderType::Pointer reader = InputReaderType::New();
+    reader->SetFileName( inputVolume.c_str() );
+    reader->Update();
+    inIm = reader->GetOutput();
     timeCollector.Stop( "LoadData" );
     }
   reporter.Report( 0.1 );
 
-  typename InputImageType::SpacingType     inSpacing = inIm->GetSpacing( );
-  typename InputImageType::PointType       inOrigin = inIm->GetOrigin( );
+  typename InputImageType::SpacingType     inSpacing = inIm->GetSpacing();
+  typename InputImageType::PointType       inOrigin = inIm->GetOrigin();
   typename InputImageType::SizeType        inSize =
-    inIm->GetLargestPossibleRegion( ).GetSize( );
+    inIm->GetLargestPossibleRegion().GetSize();
   typename InputImageType::IndexType       inIndex =
-    inIm->GetLargestPossibleRegion( ).GetIndex( );
+    inIm->GetLargestPossibleRegion().GetIndex();
   typename InputImageType::DirectionType   inDirection =
-    inIm->GetDirection( );
+    inIm->GetDirection();
 
   typename OutputImageType::SizeType       outSize;
   typename OutputImageType::SpacingType    outSpacing;
@@ -111,24 +112,22 @@ int DoIt( int argc, char *argv[] )
     }
   outDirection = inDirection;
 
-  if( matchImage.size( ) > 1 )
+  if( matchImage.size() > 1 )
     {
     typename InputReaderType::Pointer matchImReader =
-      InputReaderType::New( );
+      InputReaderType::New();
     matchImReader->SetFileName( matchImage );
-    matchImReader->Update( );
-    outSpacing = matchImReader->GetOutput( )->GetSpacing( );
-    outOrigin = matchImReader->GetOutput( )->GetOrigin( );
-    outDirection = matchImReader->GetOutput( )->GetDirection( );
-    outSize = matchImReader->GetOutput( )->GetLargestPossibleRegion()
-                           .GetSize( );
-    outIndex = matchImReader->GetOutput( )->GetLargestPossibleRegion()
-                           .GetIndex( );
+    matchImReader->Update();
+    outSpacing = matchImReader->GetOutput()->GetSpacing();
+    outOrigin = matchImReader->GetOutput()->GetOrigin();
+    outDirection = matchImReader->GetOutput()->GetDirection();
+    outSize = matchImReader->GetOutput()->GetLargestPossibleRegion().GetSize();
+    outIndex = matchImReader->GetOutput()->GetLargestPossibleRegion().GetIndex();
 
     reporter.Report( 0.2 );
     }
 
-  if( spacing.size( ) > 0 )
+  if( spacing.size() > 0 )
     {
     for( unsigned int i=0; i< DimensionI; i++ )
       {
@@ -136,7 +135,7 @@ int DoIt( int argc, char *argv[] )
       }
     }
 
-  if( origin.size( ) > 0 )
+  if( origin.size() > 0 )
     {
     for( unsigned int i=0; i< DimensionI; i++ )
       {
@@ -144,7 +143,7 @@ int DoIt( int argc, char *argv[] )
       }
     }
 
-  if( index.size( ) > 0 )
+  if( index.size() > 0 )
     {
     for( unsigned int i=0; i< DimensionI; i++ )
       {
@@ -152,7 +151,7 @@ int DoIt( int argc, char *argv[] )
       }
     }
 
-  if( resampleFactor.size( ) > 0 )
+  if( resampleFactor.size() > 0 )
     {
     for( unsigned int i=0; i< DimensionI; i++ )
       {
@@ -186,7 +185,7 @@ int DoIt( int argc, char *argv[] )
       }
     }
 
-  if( matchImage.size( ) == 0 )
+  if( matchImage.size() == 0 )
     {
     std::vector< double > outResampleFactor;
     outResampleFactor.resize( DimensionI );
@@ -205,7 +204,7 @@ int DoIt( int argc, char *argv[] )
   typedef typename itk::ResampleImageFilter< InputImageType,
           OutputImageType >             ResampleFilterType;
 
-  typename ResampleFilterType::Pointer filter = ResampleFilterType::New( );
+  typename ResampleFilterType::Pointer filter = ResampleFilterType::New();
 
   filter->SetInput( inIm );
 
@@ -216,19 +215,19 @@ int DoIt( int argc, char *argv[] )
     {
     typedef typename itk::BSplineInterpolateImageFunction< InputImageType,
             double >                    MyInterpType;
-    interp = MyInterpType::New( );
+    interp = MyInterpType::New();
     }
   else if( interpolator == "NearestNeighbor" )
     {
     typedef typename itk::NearestNeighborInterpolateImageFunction<
             InputImageType, double >    MyInterpType;
-    interp = MyInterpType::New( );
+    interp = MyInterpType::New();
     }
   else // default = if( interpolator == "Linear" )
     {
     typedef typename itk::LinearInterpolateImageFunction<
             InputImageType, double >    MyInterpType;
-    interp = MyInterpType::New( );
+    interp = MyInterpType::New();
     }
   filter->SetInterpolator( interp );
 
@@ -258,19 +257,19 @@ int DoIt( int argc, char *argv[] )
                                    0.7,
                                    0.25,
                                    true );
-  filter->Update( );
+  filter->Update();
 
-  outIm = filter->GetOutput( );
+  outIm = filter->GetOutput();
   }
   reporter.Report( 0.95 );
   timeCollector.Stop( "Resample" );
 
   timeCollector.Start( "Write" );
-  typename OutputWriterType::Pointer  writer = OutputWriterType::New( );
-  writer->SetFileName( outputVolume.c_str( ) );
+  typename OutputWriterType::Pointer  writer = OutputWriterType::New();
+  writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( outIm );
   writer->SetUseCompression( true );
-  writer->Update( );
+  writer->Update();
   timeCollector.Stop( "Write" );
 
   /*
@@ -281,9 +280,9 @@ int DoIt( int argc, char *argv[] )
                                     CLPProcessInformation, 0.5, 0.5 );
   */
 
-  timeCollector.Report( );
+  timeCollector.Report();
 
-  reporter.End( );
+  reporter.End();
 
   return 0;
 }

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,13 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkGroupSpatialObject.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkGroupSpatialObject.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 #include "tubeMessage.h"
 #include "tubeMatrixMath.h"
@@ -96,7 +97,7 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     << std::endl;
 
   char tubeName[17];
-  strcpy( tubeName, "Tube" );
+  std::strcpy( tubeName, "Tube" );
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
 
   unsigned int numTubes = tubeList->size();
@@ -218,13 +219,12 @@ int itkTubeRadiusExtractorTest2( int argc, char * argv[] )
     //radiusOp->SetDebug( true );
     radiusOp->ExtractRadii( tubep );
 
-    double diff;
     double avgDiff = 0;
     double maxDiff = 0;
     pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
-      diff = vnl_math_abs( pntIter->GetRadius() - idealR[i] );
+      double diff = vnl_math_abs( pntIter->GetRadius() - idealR[i] );
       avgDiff += diff;
       if( diff > maxDiff )
         {

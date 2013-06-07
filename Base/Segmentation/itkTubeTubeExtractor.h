@@ -25,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeTubeExtractor_h
 #define __itkTubeTubeExtractor_h
 
@@ -196,7 +197,7 @@ public:
 
   /**
    * Set the idle callback */
-  void   IdleCallBack( bool ( *idleCallBack )() );
+  void   IdleCallBack( bool ( *idleCallBack )( void ) );
 
   /**
    * Set the status callback */
@@ -209,12 +210,12 @@ public:
 
   /**
    * Set the status callback */
-  void   AbortProcess( bool ( *abortProcess )() );
+  void   AbortProcess( bool ( *abortProcess )( void ) );
 
 protected:
 
-  TubeExtractor();
-  virtual ~TubeExtractor();
+  TubeExtractor( void );
+  virtual ~TubeExtractor( void );
   TubeExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
@@ -223,25 +224,24 @@ protected:
   typename RidgeExtractor<ImageType>::Pointer  m_RidgeOp;
   typename RadiusExtractor<ImageType>::Pointer m_RadiusOp;
 
-  bool ( *m_IdleCallBack )();
+  bool ( *m_IdleCallBack )( void );
   void ( *m_StatusCallBack )( const char *, const char *, int );
   void ( *m_NewTubeCallBack )( TubeType * );
-  bool ( *m_AbortProcess )();
+  bool ( *m_AbortProcess )( void );
 
 private:
 
   typename ImageType::Pointer  m_InputImage;
   float                        m_Color[4];
 
-};
+}; // End class TubeExtractor
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeTubeExtractor.txx"
 #endif
 
-#endif /* __itkTubeTubeExtractor_h */
+#endif // End !defined(__itkTubeTubeExtractor_h)

@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <QtGui>
 #include <QFileDialog>
 #include <fstream>
@@ -77,7 +78,7 @@ void MetaImageImporterUI::GoToPreviousPage()
     }
 }
 
-void MetaImageImporterUI::BuildPreviousNextPushButtons()
+void MetaImageImporterUI::BuildPreviousNextPushButtons( void )
 {
   connect( page1NextPushButton, SIGNAL( clicked() ),
             this, SLOT( GoToNextPage() ) );
@@ -131,7 +132,7 @@ void MetaImageImporterUI::BuildPage1()
   page1NextPushButton->setEnabled( false );
 }
 
-void MetaImageImporterUI::BuildPage2()
+void MetaImageImporterUI::BuildPage2( void )
 {
   // dimensions
   connect( dimensionalitySpinBox, SIGNAL( valueChanged(int) ),
@@ -192,7 +193,7 @@ void MetaImageImporterUI::BuildPage6()
     this, SLOT( BrowseImportFileNames() ) );
   connect( importFileNamesFPrintFPushButton, SIGNAL( clicked() ),
     this, SLOT( BrowseImportFileNamesFPrintF() ) );
-  connect( importFilenamesTextEdit, SIGNAL( textChanged( ) ),
+  connect( importFilenamesTextEdit, SIGNAL( textChanged() ),
     this, SLOT( FileNamesStyleChanged() ) );
 
   connect( listOfNamesRadioButton, SIGNAL( toggled( bool ) ),
@@ -381,7 +382,6 @@ void MetaImageImporterUI::BrowseImportFileNamesFPrintF()
 bool MetaImageImporterUI::Import()
 {
   int i;
-  QSpinBox* spinBox = NULL;
   QDoubleSpinBox* doubleSpinBox = NULL;
   std::ofstream fp;
   fp.open(generatedMHDFileLineEdit->text().toStdString().c_str());
@@ -390,6 +390,7 @@ bool MetaImageImporterUI::Import()
   fp << "DimSize =";
   for( i = 0; i < dimensionalitySpinBox->value(); i++)
     {
+    QSpinBox* spinBox = NULL;
     spinBox =
       this->findChild<QSpinBox *>( QString("dimension%1SpinBox").arg(i) );
     if( spinBox )
@@ -461,21 +462,21 @@ bool MetaImageImporterUI::Import()
 
   switch( elementTypeComboBox->currentIndex() )
     {
-    case 0 : fp << "ElementType = MET_CHAR" << std::endl;
+    case 0: fp << "ElementType = MET_CHAR" << std::endl;
       break;
-    case 1 : fp << "ElementType = MET_UCHAR" << std::endl;
+    case 1: fp << "ElementType = MET_UCHAR" << std::endl;
       break;
-    case 2 : fp << "ElementType = MET_SHORT" << std::endl;
+    case 2: fp << "ElementType = MET_SHORT" << std::endl;
       break;
-    case 3 : fp << "ElementType = MET_USHORT" << std::endl;
+    case 3: fp << "ElementType = MET_USHORT" << std::endl;
       break;
-    case 4 : fp << "ElementType = MET_INT" << std::endl;
+    case 4: fp << "ElementType = MET_INT" << std::endl;
       break;
-    case 5 : fp << "ElementType = MET_UINT" << std::endl;
+    case 5: fp << "ElementType = MET_UINT" << std::endl;
       break;
-    case 6 : fp << "ElementType = MET_FLOAT" << std::endl;
+    case 6: fp << "ElementType = MET_FLOAT" << std::endl;
       break;
-    case 7 : fp << "ElementType = MET_DOUBLE" << std::endl;
+    case 7: fp << "ElementType = MET_DOUBLE" << std::endl;
       break;
     default: fp.close();
       QMessageBox::critical( this, "Import", "Wrong Element type" );

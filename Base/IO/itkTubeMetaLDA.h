@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,16 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeMetaLDA_h
 #define __itkTubeMetaLDA_h
 
-#include "metaTypes.h"
-
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
-
-#include "metaUtils.h"
-#include "metaForm.h"
+#include <metaForm.h>
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
 namespace itk
 {
@@ -38,32 +35,27 @@ namespace tube
 {
 
 /**
-*
-* Reads and Writes MetaLDA Files, typically designated .mlda files
-*
-* REQUIRED: itkTubeLDAGenerator instance
-*
-* \author Stephen R. Aylward
-*
-* \date August 29, 1999
-*
-*/
-class METAIO_EXPORT MetaLDA
-: public MetaForm
+ * \brief    Reads and writes MetaLDA files, typically designated .mlda files.
+ * \pre      itkTubeLDAGenerator instance.
+ *
+ * \author   Stephen R. Aylward
+ * \date     August 29, 1999
+ *
+ * \ingroup  IO
+ */
+class METAIO_EXPORT MetaLDA : public MetaForm
 {
 public:
 
-  typedef std::vector< double >   ValueListType;
-
-  typedef vnl_vector< double >    LDAValuesType;
-
-  typedef vnl_matrix< double >    LDAMatrixType;
+  typedef std::vector< double >  ValueListType;
+  typedef vnl_vector< double >   LDAValuesType;
+  typedef vnl_matrix< double >   LDAMatrixType;
 
   MetaLDA( void );
 
-  MetaLDA( const char *_headerName );
+  MetaLDA( const char * headerName );
 
-  MetaLDA( const MetaLDA & _metaLDA );
+  MetaLDA( const MetaLDA & metaLDA );
 
   MetaLDA( const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
@@ -72,60 +64,66 @@ public:
 
   ~MetaLDA( void );
 
-  virtual void  PrintInfo( void ) const;
+  virtual void PrintInfo( void ) const;
 
   using MetaForm::CopyInfo;
-  virtual void  CopyInfo( const MetaLDA & _lda );
+  virtual void CopyInfo( const MetaLDA & lda );
 
-  virtual void  Clear( void );
+  virtual void Clear( void );
 
   bool  InitializeEssential( const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
     const ValueListType & _whitenStdDevs );
 
-  void  SetLDAValues( const LDAValuesType & _ldaValues );
+  void SetLDAValues( const LDAValuesType & ldaValues );
+
   const LDAValuesType & GetLDAValues( void ) const;
 
-  void  SetLDAMatrix( const LDAMatrixType & _ldaMatrix );
+  void SetLDAMatrix( const LDAMatrixType & ldaMatrix );
+
   const LDAMatrixType & GetLDAMatrix( void ) const;
 
-  void  SetWhitenMeans( const ValueListType & _whitenMeans );
+  void SetWhitenMeans( const ValueListType & whitenMeans );
+
   const ValueListType & GetWhitenMeans( void ) const;
 
-  void  SetWhitenStdDevs( const ValueListType & _whitenStdDevs );
+  void SetWhitenStdDevs( const ValueListType & whitenStdDevs );
+
   const ValueListType & GetWhitenStdDevs( void ) const;
 
-  virtual bool CanRead( const char * _headerName = NULL ) const;
-  virtual bool Read( const char * _headerName = NULL );
-  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
+  virtual bool CanRead( const char * headerName = NULL ) const;
 
-  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
+  virtual bool Read( const char * headerName = NULL );
 
-  virtual bool Write( const char * _headName = NULL );
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * stream ) const;
 
-  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * stream );
+
+  virtual bool Write( const char * headerName = NULL );
+
+  virtual bool WriteStream( METAIO_STREAM::ofstream * stream );
 
 protected:
 
-  LDAValuesType   m_LDAValues;
+  void M_Destroy( void );
 
-  ValueListType   m_WhitenMeans;
-  ValueListType   m_WhitenStdDevs;
+  void M_SetupReadFields( void );
 
-  LDAMatrixType   m_LDAMatrix;
+  void M_SetupWriteFields( void );
 
-  void  M_Destroy( void );
+  bool M_Read( void );
 
-  void  M_SetupReadFields( void );
+  LDAValuesType  m_LDAValues;
 
-  void  M_SetupWriteFields( void );
+  ValueListType  m_WhitenMeans;
+  ValueListType  m_WhitenStdDevs;
 
-  bool  M_Read( void );
+  LDAMatrixType  m_LDAMatrix;
 
-};
+}; // End class MetaLDA
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeMetaLDA_h)

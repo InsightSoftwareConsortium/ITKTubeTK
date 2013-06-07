@@ -21,15 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkMatrix.h"
-#include "ShortestPathKernel.h"
-#include "WLSubtreeKernel.h"
+#include <itkMatrix.h>
+#include "tubeShortestPathKernel.h"
+#include "tubeWLSubtreeKernel.h"
 
 // Convenient string formatting and FS stuff ...
 #include <boost/format.hpp>
@@ -37,11 +36,7 @@ limitations under the License.
 
 #include "TubeGraphKernelCLP.h"
 
-enum
-  {
-  GK_SPKernel = 0,
-  GK_WLKernel = 1
-  };
+enum { GK_SPKernel = 0, GK_WLKernel = 1 };
 
 
 /** Read-in a list of graphs from a list.
@@ -243,7 +238,9 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
   tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM,
   const std::string & globalLabelFile = std::string() )
 {
-  const char * labelFile = 0;
+  const char * labelFile = 0; // Will stay 0 as long as there is NO per-graph label file
+  std::string labelFileStr; // Used to build the graph-specific label file name
+
   // Global label file given
   if( !globalLabelFile.empty() )
     {
@@ -254,7 +251,7 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
   // Build graph-specific label file name
   else
     {
-    std::string labelFileStr = graphFile + ".vertexLabel";
+    labelFileStr = graphFile + ".vertexLabel";
     labelFile = labelFileStr.c_str();
     tube::FmtInfoMessage( "Trying to use graph-specific label file %s",
       labelFile );
@@ -268,7 +265,9 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
     }
   // Load graph and return
   return tube::GraphKernel::GraphFromAdjFile(
-    graphFile.c_str(), labelFile, defNodeLabel );
+    graphFile.c_str(),
+    labelFile,
+    defNodeLabel );
 }
 
 
@@ -289,11 +288,9 @@ int main(int argc, char **argv)
       }
 
     /*
-     *
      * Read graph lists 'listA' and 'listB' and fill class labels;
      * NOTE: The labels are currently unused, since classification
      * is done in the driver script.
-     *
      */
 
     std::vector<std::string> listA, listB;
@@ -313,7 +310,6 @@ int main(int argc, char **argv)
     K.fill(0.0);
 
     /*
-     *
      * In case we use the Weisfeiler-Lehman kernel, we need to build
      * the label compression mapping beforehand. This means, we need
      * to load the graphs, compress labels and store the mappings.
@@ -323,7 +319,6 @@ int main(int argc, char **argv)
      * In case of testing, the first list is still the list of training
      * graphs and the second list will use that mapping. TODO: Make the
      * list loadable from file/
-     *
      */
 
     if( !tube::GraphKernel::IsValidDefaultNodeLabeling( argDefaultLabelType ) )
@@ -356,12 +351,10 @@ int main(int argc, char **argv)
 
 
     /*
-     *
      * Next, we build the kernel matrix K, where the K_ij-th entry
      * is the WL kernel value between the i-th graph of the first
      * (i.e., 'listA') list and the j-th graph of the second list
      * (i.e., 'listB').
-     *
      */
 
     for( int i = 0; i < N; ++i )
@@ -385,6 +378,7 @@ int main(int argc, char **argv)
             {
             gk = new tube::ShortestPathKernel(f, g);
             K[i][j] = gk->Compute();
+            delete gk;
             break;
             }
           case GK_WLKernel:
@@ -396,6 +390,7 @@ int main(int argc, char **argv)
                                             argSubtreeHeight );
 
             K[i][j] = gk->Compute();
+            delete gk;
             break;
             }
           }
@@ -403,12 +398,10 @@ int main(int argc, char **argv)
       }
 
     /*
-     *
      * Eventually, dump the kernel to disk - 1) in LIBSVM comp.
      * format (directly usable by svm-train), 2) as a binary
      * kernel matrix that can be loaded in Python for instance
      * (e.g., for scikits-learn SVM) and 3) as plain text.
-     *
      */
 
     writeKernel( argOutputKernel, K );

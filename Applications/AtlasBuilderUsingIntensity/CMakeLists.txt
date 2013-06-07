@@ -21,7 +21,29 @@
 #
 ##############################################################################
 
+#-----------------------------------------------------------------------------
 set( MODULE_NAME AtlasBuilderUsingIntensity )
+project( ${MODULE_NAME} )
+
+set( AtlasBuilderUsingIntensity_H_Files
+  itkCompleteImageResampleFilter.h
+  itkMeanAndSigmaImageBuilder.h
+  itkMinimizeImageSizeFilter.h
+  itkRobustMeanAndSigmaImageBuilder.h
+  tubeAtlasSummation.h
+  )
+
+set( AtlasBuilderUsingIntensity_TXX_Files
+  itkCompleteImageResampleFilter.txx
+  itkMeanAndSigmaImageBuilder.txx
+  itkMinimizeImageSizeFilter.txx
+  itkRobustMeanAndSigmaImageBuilder.txx
+  )
+
+add_custom_target( AtlasBuilderUsingIntensityInclude SOURCES
+  ${AtlasBuilderUsingIntensity_H_Files}
+  ${AtlasBuilderUsingIntensity_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -32,17 +54,21 @@ include( ${USE_ITK_FILE} )
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  ADDITIONAL_SRCS AtlasSummation.cxx
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
+  ADDITIONAL_SRCS tubeAtlasSummation.cxx
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} TubeObjectDocuments
   INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Utilities
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
     ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
   )
 
 #-----------------------------------------------------------------------------
-#if( BUILD_TESTING )
-  #add_subdirectory( Testing )
-#endif( BUILD_TESTING )
+if( BUILD_TESTING )
+  find_package( PythonInterp )
+  if( PYTHON_EXECUTABLE )
+    add_subdirectory( Testing )
+  endif( PYTHON_EXECUTABLE )
+endif( BUILD_TESTING )

@@ -20,17 +20,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkJointHistogramImageFunction_txx
 #define __itkJointHistogramImageFunction_txx
 
-#include "itkMinimumMaximumImageCalculator.h"
-#include "itkAddImageFilter.h"
-#include "itkSubtractImageFilter.h"
-#include "itkSquareImageFilter.h"
-#include "itkDivideImageFilter.h"
-#include "itkMultiplyImageFilter.h"
-#include "itkSqrtImageFilter.h"
-#include "itkDiscreteGaussianImageFilter.h"
+#include <itkMinimumMaximumImageCalculator.h>
+#include <itkAddImageFilter.h>
+#include <itkSubtractImageFilter.h>
+#include <itkSquareImageFilter.h>
+#include <itkDivideImageFilter.h>
+#include <itkMultiplyImageFilter.h>
+#include <itkSqrtImageFilter.h>
+#include <itkDiscreteGaussianImageFilter.h>
 
 #include "itkJointHistogramImageFunction.h"
 
@@ -43,7 +44,7 @@ namespace itk
  */
 template <class TInputImage, class TCoordRep>
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::JointHistogramImageFunction()
+::JointHistogramImageFunction( void )
 {
   m_InputMask = NULL;
   m_FeatureWidth = 40;
@@ -198,7 +199,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 template <class TInputImage, class TCoordRep>
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
-::ComputeMeanAndStandardDeviation() const
+::ComputeMeanAndStandardDeviation( void ) const
 {
   typedef itk::DivideImageFilter< HistogramType, double,
     HistogramType >                                          DividerType;
@@ -490,6 +491,6 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   return m_Histogram;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkJointHistogramImageFunction_txx)

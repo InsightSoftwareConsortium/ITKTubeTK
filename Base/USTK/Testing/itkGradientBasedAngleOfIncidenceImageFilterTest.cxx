@@ -17,13 +17,13 @@
  *=========================================================================*/
 
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
-#include "itkImageFileWriter.h"
-#include "itkImageFileReader.h"
-#include "itkGradientRecursiveGaussianImageFilter.h"
+#include <itkImageFileWriter.h>
+#include <itkImageFileReader.h>
+#include <itkGradientRecursiveGaussianImageFilter.h>
 
 #include <sstream>
 
-int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv [] )
+int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char* argv[] )
 {
   // Argument parsing.
   if( argc < 7 )

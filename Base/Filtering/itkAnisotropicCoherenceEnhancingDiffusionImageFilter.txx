@@ -20,31 +20,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_txx
 #define __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_txx
 
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 
 #include <list>
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkNumericTraits.h"
-#include "itkNeighborhoodAlgorithm.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
+#include <itkNumericTraits.h>
+#include <itkNeighborhoodAlgorithm.h>
 
-#include "itkImageFileWriter.h"
-#include "itkVector.h"
-#include "itkFixedArray.h"
+#include <itkImageFileWriter.h>
+#include <itkVector.h>
+#include <itkFixedArray.h>
 
 //#define INTERMEDIATE_OUTPUTS
 
-namespace itk{
+namespace itk
+{
 
 /**
  * Constructor
  */
 template <class TInputImage, class TOutputImage>
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::AnisotropicCoherenceEnhancingDiffusionImageFilter()
+::AnisotropicCoherenceEnhancingDiffusionImageFilter( void )
 {
   m_ContrastParameterLambdaC = 15.0;
   m_Alpha = 0.001;
@@ -55,7 +57,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
-::UpdateDiffusionTensorImage()
+::UpdateDiffusionTensorImage( void )
 {
   itkDebugMacro( << "UpdateDiffusionTensorImage() called" );
 
@@ -174,9 +176,9 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
     // Find the smallest eigenvalue
     double smallest = vnl_math_abs( eigenValue[0] );
     unsigned int smallestEigenValueIndex=0;
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if ( vnl_math_abs( eigenValue[i] ) < smallest )
+      if( vnl_math_abs( eigenValue[i] ) < smallest )
         {
         Lambda1 = eigenValue[i];
         smallest = vnl_math_abs( eigenValue[i] );
@@ -187,9 +189,9 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
     // Find the largest eigenvalue
     double largest = vnl_math_abs( eigenValue[0] );
     unsigned int largestEigenValueIndex=0;
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if (  vnl_math_abs( eigenValue[i] > largest ) )
+      if(  vnl_math_abs( eigenValue[i] > largest ) )
         {
         largest = vnl_math_abs( eigenValue[i] );
         largestEigenValueIndex = i;
@@ -197,9 +199,9 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
       }
 
     unsigned int middleEigenValueIndex=0;
-    for ( unsigned int i=0; i <=2; i++ )
+    for( unsigned int i=0; i <=2; i++ )
       {
-      if ( eigenValue[i] != smallest && eigenValue[i] != largest )
+      if( eigenValue[i] != smallest && eigenValue[i] != largest )
         {
         middleEigenValueIndex = i;
         break;
@@ -213,8 +215,8 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 
     /* largest > middle > smallest */
 
-    if((fabs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
-       (fabs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
+    if((vnl_math_abs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
+       (vnl_math_abs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
       {
       Lambda3 = 1.0;
       }
@@ -226,7 +228,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
       double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC
         * m_ContrastParameterLambdaC;
 
-      double expVal = exp((-1.0 * (vcl_log( 2.0)
+      double expVal = vcl_exp((-1.0 * (vcl_log( 2.0)
         * contrastParameterLambdaCSquare )/kappa ));
       Lambda3 = m_Alpha + (1.0 - m_Alpha)*expVal;
 
@@ -244,7 +246,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
     itk::VariableLengthVector<double> secondEigenVector( vectorLength );
     itk::VariableLengthVector<double> thirdEigenVector( vectorLength );
 
-    for ( unsigned int i=0; i < vectorLength; i++ ) {
+    for( unsigned int i=0; i < vectorLength; i++ ) {
     // Get eigenvectors belonging to eigenvalue order
       firstEigenVector[i] = eigenVectorMatrix[largestEigenValueIndex][i];
       secondEigenVector[i] = eigenVectorMatrix[middleEigenValueIndex][i];
@@ -301,6 +303,6 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   os << indent << "Alpha: " << m_Alpha << std::endl;
 }
 
-}// end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicCoherenceEnhancingDiffusionImageFilter_txx)

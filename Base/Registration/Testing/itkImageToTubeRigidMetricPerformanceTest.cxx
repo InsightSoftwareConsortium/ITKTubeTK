@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -21,18 +21,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImageFileReader.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkEuler3DTransform.h"
+#include <itkImageFileReader.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkEuler3DTransform.h>
 #include "itkImageToTubeRigidMetric.h"
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkSpatialObjectToImageFilter.h"
-#include "itkSpatialObjectReader.h"
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkSpatialObjectToImageFilter.h>
+#include <itkSpatialObjectReader.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itkTubeSpatialObjectPoint.h"
+#include <itkTubeSpatialObjectPoint.h>
 
-#include "itkTimeProbesCollectorBase.h"
-#include "itkMemoryProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
+#include <itkMemoryProbesCollectorBase.h>
 
 /**
  *  This test exercised the metric evaluation methods in the
@@ -40,7 +40,7 @@ limitations under the License.
  *  a 3D binary images (32x32x32) and a .tre image is computed.
  */
 
-int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv [] )
+int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv[] )
 {
   if( argc < 4 )
     {
@@ -133,7 +133,7 @@ int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv [] )
   // Create stream to record the measure
   std::ofstream measuresFile;
   measuresFile.open( argv[3] );
-  if ( !measuresFile.is_open() )
+  if( !measuresFile.is_open() )
     {
     std::cerr << "Unable to open: " << argv[3] << std::endl;
     return EXIT_FAILURE;
@@ -156,7 +156,7 @@ int itkImageToTubeRigidMetricPerformanceTest(int argc, char* argv [] )
 
     std::cout << "Metric value: " << value << std::endl;
     }
-  catch ( itk::ExceptionObject &excp )
+  catch( itk::ExceptionObject &excp )
     {
     std::cerr << "Exception caught while initializing metric." << std::endl;
     std::cerr << excp << std::endl;

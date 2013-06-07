@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
 #include <iostream>
 #include "tubeTestMain.h"
 
-void RegisterTests()
+void RegisterTests( void )
 {
 #ifdef TubeTK_USE_VTK
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationGenerateTestingImages );

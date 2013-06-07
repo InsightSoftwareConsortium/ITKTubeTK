@@ -20,30 +20,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <iostream>
 #include <fstream>
 #include <list>
 #include <vector>
 #include <sstream>
 
-#include "itkImageFileReader.h"
-#include "itkMatrix.h"
-#include "metaScene.h"
-#include "metaTubeGraph.h"
-#include "itkSpatialObjectReader.h"
-#include "itkSpatialObjectWriter.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkMinimumMaximumImageFilter.h"
+#include <itkImageFileReader.h>
+#include <itkMatrix.h>
+#include <metaScene.h>
+#include <metaTubeGraph.h>
+#include <itkSpatialObjectReader.h>
+#include <itkSpatialObjectWriter.h>
+#include <itkVesselTubeSpatialObject.h>
+#include <itkMinimumMaximumImageFilter.h>
 #include <vnl/algo/vnl_matrix_inverse.h>
 
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 #include "MergeTubeGraphsCLP.h"
 
-#include "MetaObjectDocument.h"
+#include "tubeMetaObjectDocument.h"
 #include "itkObjectDocument.h"
 
 using namespace tube;
@@ -82,6 +83,7 @@ int DoIt( int argc, char *argv[] )
   if( !reader->Read( listFile.c_str() ) )
     {
     tube::ErrorMessage( "Could not read ObjectDocument file!" );
+    delete reader;
     return EXIT_FAILURE;
     }
 
@@ -92,7 +94,6 @@ int DoIt( int argc, char *argv[] )
   logMsg << "Number of graphs " << numberOfGraphs;
   tube::InfoMessage( logMsg.str() );
 
-  std::ifstream readStream;
   vnl_matrix<double> aMat(numberOfCentroids, numberOfCentroids);
   aMat.fill(0);
   vnl_vector<double> bVect(numberOfCentroids);
@@ -121,6 +122,7 @@ int DoIt( int argc, char *argv[] )
                 << std::endl;
       std::cerr << numberOfCentroids << " != " << numberOfCentroids2
                 << std::endl;
+      delete reader;
       return 0;
       }
     for(int i=0; i<numberOfCentroids; i++)
@@ -143,6 +145,7 @@ int DoIt( int argc, char *argv[] )
       {
       std::cerr << "Error: fileList's #Centroids != branch #Centroids"
                 << std::endl;
+      delete reader;
       return 0;
       }
     for(int i=0; i<numberOfCentroids; i++)
@@ -162,6 +165,7 @@ int DoIt( int argc, char *argv[] )
       {
       std::cerr << "Error: fileList's #Centroids != root #Centroids"
                 << std::endl;
+      delete reader;
       return 0;
       }
     for(int i=0; i<numberOfCentroids; i++)
@@ -232,5 +236,6 @@ int DoIt( int argc, char *argv[] )
     }
   writeStream.close();
 
+  delete reader;
   return 1;
-  }
+}

@@ -22,14 +22,13 @@ limitations under the License.
 =========================================================================*/
 
 #include <cstdlib>
-#include <iostream>
 
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
 #include "itkTubeMetaRidgeSeed.h"
 #include "itkTubeMetaTubeParams.h"
 
-int main ( int , char ** )
+int main( int, char *[] )
 {
   return EXIT_SUCCESS;
 }

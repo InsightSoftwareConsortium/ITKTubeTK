@@ -16,14 +16,14 @@
  *
  *=========================================================================*/
 
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkSheetnessMeasureImageFilter.h"
 #include "itkAngleOfIncidenceImageFilter.h"
-#include "itkImageFileWriter.h"
-#include "itkImageFileReader.h"
-#include "itkThresholdImageFilter.h"
+#include <itkImageFileWriter.h>
+#include <itkImageFileReader.h>
+#include <itkThresholdImageFilter.h>
 
-int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
+int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv[] )
 {
   // Argument parsing.
   if( argc < 7 )
@@ -91,9 +91,9 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
   thresholdFilter->SetOutsideValue( 0 );
 
   double sheetnessThresholdValue = 0.1;
-  if ( argc > 7 )
+  if( argc > 7 )
     {
-    sheetnessThresholdValue = atof( argv[7] );
+    sheetnessThresholdValue = std::atof( argv[7] );
     }
   thresholdFilter->ThresholdBelow ( sheetnessThresholdValue );
   thresholdFilter->Update();
@@ -106,9 +106,9 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
   AngleOfIncidenceImageFilterType::Pointer filterAngleOfIncidence = AngleOfIncidenceImageFilterType::New();
 
   //Read in the ultrasound probe origin (X,Y,Z)
-  double UltrasoundProbeOriginX = atof( argv[4] );
-  double UltrasoundProbeOriginY = atof( argv[5] );
-  double UltrasoundProbeOriginZ = atof( argv[6] );
+  double UltrasoundProbeOriginX = std::atof( argv[4] );
+  double UltrasoundProbeOriginY = std::atof( argv[5] );
+  double UltrasoundProbeOriginZ = std::atof( argv[6] );
 
   itk::Vector< double, 3 > UltrasoundProbeOriginVector;
 
@@ -130,5 +130,4 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv [] )
 
 
   return EXIT_SUCCESS;
-
 }

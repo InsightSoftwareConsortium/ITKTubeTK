@@ -1,3 +1,31 @@
+/*=========================================================================
+
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
+
+#ifndef __itkObjectDocumentToObjectSource_txx
+#define __itkObjectDocumentToObjectSource_txx
+
+#include "itkObjectDocumentToObjectSource.h"
+
 namespace itk
 {
 
@@ -6,7 +34,7 @@ namespace tube
 
 template< class TInputObjectDocument, unsigned int TDimension >
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::ObjectDocumentToObjectSource()
+::ObjectDocumentToObjectSource( void )
 {
   m_ComposedTransformIsIdentity = true;
   this->ApplyTransforms( true );  // Set transforms to be built (default value)
@@ -17,9 +45,9 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 template< class TInputObjectDocument, unsigned int TDimension >
 const typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::DocumentType *
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::GetInput()
+::GetInput( void )
 {
-  if (this->GetNumberOfInputs() < 1)
+  if(this->GetNumberOfInputs() < 1)
     {
     return 0;
     }
@@ -31,12 +59,12 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 template< class TInputObjectDocument, unsigned int TDimension >
 typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::TransformPointer
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::GetComposedTransform()
+::GetComposedTransform( void )
 {
   ConstDocumentPointer doc = static_cast<const DocumentType * > (this->ProcessObject::GetInput(0) );
   if( m_ApplyTransforms )
     {
-    return ComposeTransforms( doc, m_startTransforms, m_endTransforms );
+    return ComposeTransforms( doc, m_StartTransforms, m_EndTransforms );
     }
   else
     {
@@ -51,8 +79,8 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 ::ApplyTransforms( int start, int end )
 {
   m_ApplyTransforms = true;
-  m_startTransforms = start;
-  m_endTransforms = end;
+  m_StartTransforms = start;
+  m_EndTransforms = end;
 }
 
 
@@ -115,7 +143,7 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 template< class TInputObjectDocument, unsigned int TDimension >
 typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::TransformPointer
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::ReadTransform( const char * file ) const
+  ::ReadTransform( const std::string & file ) const
 {
   typename TransformReaderType::Pointer reader = TransformReaderType::New();
   reader->SetFileName( file );
@@ -153,4 +181,6 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 
 } // End tube namespace
 
-} // End of itk namespace
+} // End namespace itk
+
+#endif // End !defined(__itkObjectDocumentToObjectSource_txx)

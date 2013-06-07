@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __tubeCropROI_h
 #define __tubeCropROI_h
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -32,18 +32,18 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 #include "tubeMessage.h"
 
 // Includes specific to this CLI application
-#include "itkCropImageFilter.h"
+#include <itkCropImageFilter.h>
 
 namespace tube
 {
@@ -111,10 +111,10 @@ private:
   float                          m_ProgressStart;
   float                          m_ProgressRange;
 
-}; //class
+}; // End class CropROI
 
-} //namespace tube
+} // End namespace tube
 
 #include "tubeCropROI.txx"
 
-#endif
+#endif // End !defined(__tubeCropROI_h)

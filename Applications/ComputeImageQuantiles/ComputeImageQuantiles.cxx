@@ -21,12 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-
-#include "itkImage.h"
-#include "itkImageFileWriter.h"
-#include "itkStatisticsImageFilter.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkImageFileReader.h"
+#include <itkImage.h>
+#include <itkImageFileWriter.h>
+#include <itkStatisticsImageFilter.h>
+#include <itkImageRegionConstIterator.h>
+#include <itkImageFileReader.h>
 
 #include <boost/ref.hpp>
 #include <boost/bind.hpp>
@@ -74,7 +73,7 @@ void computeQuantiles( ImageType::Pointer image,
                        const std::vector<float> & quantiles,
                        std::vector<ImagePixelType> & quantileValues)
 {
-  assert(!quantileValues.size());
+  assert(quantileValues.empty());
 
   /*
    * Create a and configure a vector of length N of pointers
@@ -124,6 +123,8 @@ void computeQuantiles( ImageType::Pointer image,
     {
     ImagePixelType qVal = p_square_quantile(*acc);
     quantileValues.push_back(qVal);
+    delete acc;
+    acc = NULL;
     }
   return;
 }
@@ -163,7 +164,7 @@ void writeQuantilesToJSONFile( const std::vector<float>& quantiles,
     boost::property_tree::ptree quantilesJSON;
     boost::property_tree::ptree quantileValuesJSON;
 
-    for( size_t i=0; i<quantiles.size(); ++i )
+    for( unsigned int i=0; i<quantiles.size(); ++i )
       {
       boost::property_tree::ptree quantileElementJSON;
       boost::property_tree::ptree quantileValueElementJSON;
@@ -201,8 +202,6 @@ void writeQuantilesToTextFile( const std::vector<float> &quantiles,
 }
 
 
-
-
 int main( int argc, char*argv[] )
 {
   PARSE_ARGS;
@@ -230,7 +229,7 @@ int main( int argc, char*argv[] )
     computeQuantiles(im, quantiles, quantileValues);
     if( outputPlainText )
       {
-      writeQuantilesToTextFile( quantiles, outFile );
+      writeQuantilesToTextFile( quantileValues, outFile );
       }
     else
       {

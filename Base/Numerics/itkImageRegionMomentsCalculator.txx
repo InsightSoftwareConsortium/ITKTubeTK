@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,13 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkImageRegionMomentsCalculator_txx
 #define __itkImageRegionMomentsCalculator_txx
 #include "itkImageRegionMomentsCalculator.h"
 
-#include "vnl/algo/vnl_real_eigensystem.h"
-#include "vnl/algo/vnl_symmetric_eigensystem.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
+#include <vnl/algo/vnl_real_eigensystem.h>
+#include <vnl/algo/vnl_symmetric_eigensystem.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
 
 namespace itk
 {
@@ -49,7 +50,8 @@ public:
     { this->SetDescription( "No valid image moments are availble." );}
 
   itkTypeMacro( InvalidImageRegionMomentsError, ExceptionObject );
-};
+
+}; // End class InvalidImageRegionMomentsError
 
 
 //----------------------------------------------------------------------
@@ -76,7 +78,7 @@ ImageRegionMomentsCalculator<TImage>::ImageRegionMomentsCalculator( void )
 // Destructor
 template<class TImage>
 ImageRegionMomentsCalculator<TImage>::
-~ImageRegionMomentsCalculator()
+~ImageRegionMomentsCalculator( void )
 {
 }
 
@@ -105,7 +107,7 @@ ImageRegionMomentsCalculator<TInputImage>
 template<class TImage>
 void
 ImageRegionMomentsCalculator<TImage>::
-Compute()
+Compute( void )
 {
   m_M0 = NumericTraits<ScalarType>::Zero;
   m_M1.Fill( NumericTraits<typename VectorType::ValueType>::Zero );
@@ -137,7 +139,7 @@ Compute()
       {
       for( unsigned int i=0; i<ImageDimension; i++ )
         {
-        if( ! ( ( physicalPosition[i]<=m_RegionOfInterestPoint1[i]
+        if( !( ( physicalPosition[i]<=m_RegionOfInterestPoint1[i]
                && physicalPosition[i]>=m_RegionOfInterestPoint2[i] )
               || ( physicalPosition[i]<=m_RegionOfInterestPoint2[i]
                   && physicalPosition[i]>=m_RegionOfInterestPoint1[i] ) ) )
@@ -246,7 +248,7 @@ Compute()
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::ScalarType
 ImageRegionMomentsCalculator<TImage>::
-GetTotalMass() const
+GetTotalMass( void ) const
 {
   if( !m_Valid )
     {
@@ -262,7 +264,7 @@ GetTotalMass() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
-GetFirstMoments() const
+GetFirstMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -278,7 +280,7 @@ GetFirstMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
-GetSecondMoments() const
+GetSecondMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -294,7 +296,7 @@ GetSecondMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
-GetCenterOfGravity() const
+GetCenterOfGravity( void ) const
 {
   if( !m_Valid )
     {
@@ -310,7 +312,7 @@ GetCenterOfGravity() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
-GetCentralMoments() const
+GetCentralMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -326,7 +328,7 @@ GetCentralMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::VectorType
 ImageRegionMomentsCalculator<TImage>::
-GetPrincipalMoments() const
+GetPrincipalMoments( void ) const
 {
   if( !m_Valid )
     {
@@ -342,7 +344,7 @@ GetPrincipalMoments() const
 template<class TImage>
 typename ImageRegionMomentsCalculator<TImage>::MatrixType
 ImageRegionMomentsCalculator<TImage>::
-GetPrincipalAxes() const
+GetPrincipalAxes( void ) const
 {
   if( !m_Valid )
     {
@@ -362,10 +364,10 @@ GetPrincipalAxesToPhysicalAxesTransform( void ) const
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     offset[i]  = m_Cg [i];
-    for ( unsigned int j = 0; j < ImageDimension; j++ )
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       matrix[j][i] = m_Pa[i][j];    // Note the transposition
       }
@@ -390,10 +392,10 @@ GetPhysicalAxesToPrincipalAxesTransform( void ) const
 {
   typename AffineTransformType::MatrixType matrix;
   typename AffineTransformType::OffsetType offset;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     offset[i]    = m_Cg [i];
-    for ( unsigned int j = 0; j < ImageDimension; j++ )
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       matrix[j][i] = m_Pa[i][j];    // Note the transposition
       }
@@ -409,6 +411,6 @@ GetPhysicalAxesToPrincipalAxesTransform( void ) const
   return inverse;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkImageRegionMomentsCalculator_txx)

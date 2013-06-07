@@ -20,11 +20,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkGradientBasedAngleOfIncidenceImageFilter_h
 #define __itkGradientBasedAngleOfIncidenceImageFilter_h
 
-#include "itkCastImageFilter.h"
-#include "itkCovariantVector.h"
+#include <itkCastImageFilter.h>
+#include <itkCovariantVector.h>
 
 namespace itk
 {
@@ -48,7 +49,7 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage, class TOperatorValue=float >
-class ITK_EXPORT GradientBasedAngleOfIncidenceImageFilter:
+class ITK_EXPORT GradientBasedAngleOfIncidenceImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
@@ -89,11 +90,13 @@ public:
   /** Probe type.  Determines how the beam angle is calculated.  For
    * CURVILINEAR or PHASED, the UltrasoundProbeOrigin must be set.  For
    * a LINEAR probe, the UltrasoundProbeDirection must be set. */
-  typedef enum {
+  typedef enum
+    {
     CURVILINEAR,
     PHASED,
     LINEAR
-  } ProbeType;
+    }
+  ProbeType;
 
   /** Set/Get the probe type.  This determines how the beam direction is
    * computed. */
@@ -121,8 +124,8 @@ public:
   itkGetConstMacro( GradientMagnitudeTolerance, double );
 
 protected:
-  GradientBasedAngleOfIncidenceImageFilter();
-  virtual ~GradientBasedAngleOfIncidenceImageFilter() {}
+  GradientBasedAngleOfIncidenceImageFilter( void );
+  virtual ~GradientBasedAngleOfIncidenceImageFilter( void ) {}
 
   virtual void PrintSelf(std::ostream & os, Indent indent) const;
 
@@ -144,12 +147,13 @@ private:
   ProbeType         m_UltrasoundProbeType;
   OriginType        m_UltrasoundProbeOrigin;
   BeamDirectionType m_UltrasoundProbeBeamDirection;
-};
 
-} // end namespace itk
+}; // End class GradientBasedAngleOfIncidenceImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkGradientBasedAngleOfIncidenceImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkGradientBasedAngleOfIncidenceImageFilter_h)

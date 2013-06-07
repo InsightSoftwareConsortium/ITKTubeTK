@@ -20,20 +20,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeSplineND_h
 #define __tubeSplineND_h
 
-#include "itkImage.h"
-#include "itkVectorContainer.h"
+#include <itkImage.h>
+#include <itkVectorContainer.h>
 
-#include "tubeSpline1D.h"
 #include "tubeOptimizer1D.h"
 #include "tubeOptimizerND.h"
+#include "tubeSpline1D.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
-/*! Multidimensional spline class
+/** Multidimensional spline class
  *  Evaluates user supplied function to determine values at integers
  *  and will then interpolate (based on derivation used) non-integer
  *  values.  Includes methods for determining value, first derivative,
@@ -60,7 +62,7 @@ public:
   typedef itk::Image< double, 4 >   ImageType;
 
   /** Default constructor: insufficient for using class */
-  SplineND();
+  SplineND( void );
 
   /** Constructor produces usable instance of this class
   *  \param newNDims dimensionality of the space being interpolated
@@ -73,14 +75,14 @@ public:
   *  \warning xMin and xMax must be set!
   */
   SplineND(unsigned int newNDims,
-    UserFunc< IntVectorType, double > * newFuncVal,
+    UserFunction< IntVectorType, double > * newFuncVal,
     Spline1D * newSpline1D,
     Optimizer1D * newOptND);
 
   /** Destructor
   *  This class is not usually derived
   */
-  virtual ~SplineND();
+  virtual ~SplineND( void );
 
   /** Specify a new spline function
   *  \param newNDims dimensionality of the space being interpolated
@@ -93,7 +95,7 @@ public:
   *  \warning xMin and xMax must be set!
   */
   void use(unsigned int newNDims,
-    UserFunc<IntVectorType, double > * newFuncVal,
+    UserFunction<IntVectorType, double > * newFuncVal,
     Spline1D * newSpline1D,
     Optimizer1D * newOptND);
 
@@ -102,7 +104,7 @@ public:
   *   set to zero.  If false, values beyond edges are faded to 0 as a
   *   function of distance from edge, squeared.
   */
-  bool clipEdge();
+  bool clipEdge( void );
 
   /** Sets the characteristics of spline evaluations near data bounds
   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
@@ -112,34 +114,34 @@ public:
   void clipEdge(bool newClip);
 
   /** Returns the number of dimensions of the problem's domain.  */
-  int nDims() { return m_NDims; }
+  int nDims( void ) { return m_NDims; }
 
   /** User specification of lower bound */
   void xMin(const IntVectorType & newXMin);
 
   /** Returns the control points' (integer value locations) lower bound */
-  const IntVectorType & xMin();
+  const IntVectorType & xMin( void );
 
   /** User Specification of upper bound */
   void xMax(const IntVectorType & newXMax);
 
   /** Sets control points' (integer value locations) upper bound */
-  const IntVectorType & xMax();
+  const IntVectorType & xMax( void );
 
   /** Tracks the validity of internally maintained intermediate
    * calculations and data. Returns true if a new spline instance has been
    * created (e.g., use has been called)
    */
-  bool newData();
+  bool newData( void );
 
   /** User sets to true to force recalcuation of internal data.
-   * For example, use to flag that UserFunc has changed externally
+   * For example, use to flag that UserFunction has changed externally
    */
   void newData(bool newNewData);
 
   /** Returns spline interpolated value at x.
    * Calculates the values at control (integer) points by calling the
-   * UserFunc and returns the interpolated value between those points.
+   * UserFunction and returns the interpolated value between those points.
    * Type of interpolation is dependent on which spline derivation is used
    * (e.g., SplApprox1D).   Intermediate calculations and control point
    * evaluations are stored to speed subsequent calls.
@@ -148,7 +150,7 @@ public:
 
   /** Returns spline interpolated first derivative at x projected onto dx.
    *  Calculates the values at control (integer) points by calling the
-   *  UserFunc and returns the interpolated first derivative between those
+   *  UserFunction and returns the interpolated first derivative between those
    *  points.  Type of interpolation is dependent on which spline derivation
    *  is used (e.g., SplApprox1D).   Intermediate calculations and control
    *  point evaluations are stored to speed subsequent calls.
@@ -157,7 +159,7 @@ public:
 
   /** Returns spline interpolated first derivative at x.
    * Calculates the values at control (integer) points by calling the
-   * UserFunc and returns the interpolated first derivative between those
+   * UserFunction and returns the interpolated first derivative between those
    * points.  Type of interpolation is dependent on which spline derivation
    * is used (e.g., SplApprox1D).  Intermediate calculations and control
    * point evaluations are stored to speed subsequent calls.
@@ -166,7 +168,7 @@ public:
 
   /** Returns spline interpolated Hessian at x.
    * Calculates the values at control (integer) points by calling the
-   * UserFunc and returns the interpolated Hessian between those points.
+   * UserFunction and returns the interpolated Hessian between those points.
    * Type of interpolation is dependent on which spline derivation is used
    * (e.g., SplApprox1D).  Intermediate calculations and control point
    * evaluations are stored to speed subsequent calls
@@ -175,7 +177,7 @@ public:
 
   /** Returns spline interpolated derivative jet (value, 1st deriv,
    * Hessian) at x. Calculates the values at control (integer) points by
-   * calling the UserFunc and returns the interpolated derivative jet
+   * calling the UserFunction and returns the interpolated derivative jet
    * between those points.   Type of interpolation is dependent on which
    * spline derivation is used (e.g., SplApprox1D).   Intermediate
    * calculations and control point evaluations are stored to speed
@@ -185,7 +187,7 @@ public:
 
   /** Returns spline interpolated 1st derivatives and 2nd derivatives at x
    * Calculates the values at control (integer) points by calling the
-   * UserFunc and returns the interpolated 1st derivatives and 2nd
+   * UserFunction and returns the interpolated 1st derivatives and 2nd
    * derivatives between those points.  Type of interpolation is dependent
    * on which spline derivation is used (e.g., SplApprox1D). Intermediate
    * calculations and control point evaluations are stored to speed
@@ -261,18 +263,24 @@ protected:
   VectorImageType::Pointer m_DataWSX;
   VectorImageType::Pointer m_DataWSXX;
 
-  UserFunc< IntVectorType, double >   * m_FuncVal;
+  UserFunction< IntVectorType, double >   * m_FuncVal;
 
-  UserFunc< VectorType, double >      * m_OptNDVal;
-  UserFunc< VectorType, VectorType >  * m_OptNDDeriv;
+  UserFunction< VectorType, double >      * m_OptNDVal;
+  UserFunction< VectorType, VectorType >  * m_OptNDDeriv;
 
   OptimizerND       * m_OptND;
   Spline1D          * m_Spline1D;
 
   void  m_GetData(const VectorType &x);
 
-};
+private:
 
-} //end namespace tube
+  /** Prevent copying and assignment */
+  SplineND(const SplineND &);
+  SplineND& operator=(const SplineND &);
 
-#endif
+}; // End class SplineND
+
+} // End namespace tube
+
+#endif // End !defined(__tubeSplineND_h)

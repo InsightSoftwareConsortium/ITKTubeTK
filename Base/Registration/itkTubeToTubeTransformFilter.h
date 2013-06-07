@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeToTubeTransformFilter_h
 #define __itkTubeToTubeTransformFilter_h
 
-#include "itkObject.h"
-#include "itkGroupSpatialObject.h"
+#include <itkObject.h>
+#include <itkGroupSpatialObject.h>
 #include "itkSpatialObjectToSpatialObjectFilter.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkVesselTubeSpatialObjectPoint.h"
+#include <itkVesselTubeSpatialObject.h>
+#include <itkVesselTubeSpatialObjectPoint.h>
 
 namespace itk
 {
@@ -36,7 +37,7 @@ namespace itk
  *  This class applies a transformation to tubes in a group and returns
  *  a the group with transformed tubes.
  *  \warning Transform Class MUST have a proper implementation of
- *    ::TransformCovariantVector()
+ *    ::TransformCovariantVector( void )
  *  \warning The scale is applied before computing the transformation.
  *  The resulting tube could be cropped and/or a narrow band could be
  *  defined.
@@ -69,7 +70,7 @@ public:
   itkTypeMacro(Self, Object);
 
   /** Apply the transformation to the tube */
-  void Update(void);
+  void Update( void );
 
   /** Set the Transformation */
   itkSetObjectMacro(Transform, TransformType);
@@ -105,8 +106,8 @@ public:
 
 protected:
 
-  TubeToTubeTransformFilter();
-  virtual ~TubeToTubeTransformFilter() {};
+  TubeToTubeTransformFilter( void );
+  virtual ~TubeToTubeTransformFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
@@ -125,13 +126,12 @@ private:
   double                 m_Ridgeness; // default -1
   double                 m_Medialness; // default -1
 
-};
+}; // End class TubeToTubeTransformFilter
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeToTubeTransformFilter.txx"
 #endif
 
-#endif /* __itkTubeToTubeTransformFilter_h */
+#endif // End !defined(__itkTubeToTubeTransformFilter_h)

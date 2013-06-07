@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -25,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeTubeExtractor_txx
 #define __itkTubeTubeExtractor_txx
 
@@ -40,7 +41,7 @@ namespace tube
  * Constructor */
 template<class TInputImage>
 TubeExtractor<TInputImage>
-::TubeExtractor()
+::TubeExtractor( void )
 {
   m_RidgeOp = NULL;
   m_RadiusOp = NULL;
@@ -49,6 +50,8 @@ TubeExtractor<TInputImage>
   m_StatusCallBack = NULL;
   m_NewTubeCallBack = NULL;
   m_AbortProcess = NULL;
+
+  m_InputImage = NULL;
 
   m_Color[0] = 0.0f;
   m_Color[1] = 0.0f;
@@ -60,7 +63,7 @@ TubeExtractor<TInputImage>
  * Destructor */
 template<class TInputImage>
 TubeExtractor<TInputImage>
-::~TubeExtractor()
+::~TubeExtractor( void )
 {
 }
 
@@ -387,7 +390,7 @@ TubeExtractor<TInputImage>
   if( this->m_StatusCallBack )
     {
     char s[80];
-    sprintf( s, "%ld points", tube->GetPoints().size() );
+    std::sprintf( s, "%ld points", tube->GetPoints().size() );
     this->m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
 
@@ -524,8 +527,8 @@ void TubeExtractor<TInputImage>
   os << indent << "Color.a = " << this->m_Color[3] << std::endl;
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeTubeExtractor_txx)

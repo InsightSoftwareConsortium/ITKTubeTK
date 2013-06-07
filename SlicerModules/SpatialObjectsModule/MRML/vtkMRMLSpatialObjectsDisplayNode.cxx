@@ -20,9 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // MRML includes
-#include "vtkMRMLDisplayableNode.h"
-#include "vtkMRMLScene.h"
+#include <vtkMRMLDisplayableNode.h>
+#include <vtkMRMLScene.h>
 #include "vtkMRMLSpatialObjectsDisplayNode.h"
 #include "vtkMRMLSpatialObjectsNode.h"
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
@@ -38,7 +39,7 @@ vtkCxxSetReferenceStringMacro(vtkMRMLSpatialObjectsDisplayNode,
                               SpatialObjectsDisplayPropertiesNodeID);
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsDisplayNode::vtkMRMLSpatialObjectsDisplayNode()
+vtkMRMLSpatialObjectsDisplayNode::vtkMRMLSpatialObjectsDisplayNode( void )
 {
   this->BackfaceCulling = 0;
 
@@ -54,7 +55,7 @@ vtkMRMLSpatialObjectsDisplayNode::vtkMRMLSpatialObjectsDisplayNode()
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsDisplayNode::~vtkMRMLSpatialObjectsDisplayNode()
+vtkMRMLSpatialObjectsDisplayNode::~vtkMRMLSpatialObjectsDisplayNode( void )
 {
   this->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(NULL);
 }
@@ -67,7 +68,7 @@ void vtkMRMLSpatialObjectsDisplayNode::WriteXML(ostream& of, int nIndent)
   vtkIndent indent(nIndent);
   of << indent << " colorMode =\"" << this->ColorMode << "\"";
 
-  if (this->SpatialObjectsDisplayPropertiesNodeID != NULL)
+  if(this->SpatialObjectsDisplayPropertiesNodeID != NULL)
     {
     of << indent << " SpatialObjectsDisplayPropertiesNodeRef=\""
        << this->SpatialObjectsDisplayPropertiesNodeID << "\"";
@@ -83,12 +84,12 @@ void vtkMRMLSpatialObjectsDisplayNode::ReadXMLAttributes(const char** atts)
 
   const char* attName;
   const char* attValue;
-  while (*atts != NULL)
+  while(*atts != NULL)
     {
     attName = *(atts++);
     attValue = *(atts++);
 
-    if (!strcmp(attName, "colorMode"))
+    if(!std::strcmp(attName, "colorMode"))
       {
       std::stringstream ss;
       ss << attValue;
@@ -97,7 +98,7 @@ void vtkMRMLSpatialObjectsDisplayNode::ReadXMLAttributes(const char** atts)
       this->SetColorMode(colorMode);
       }
 
-    else if (!strcmp(attName, "SpatialObjectsDisplayPropertiesNodeRef"))
+    else if(!std::strcmp(attName, "SpatialObjectsDisplayPropertiesNodeRef"))
       {
       this->SetSpatialObjectsDisplayPropertiesNodeID(attValue);
       }
@@ -140,11 +141,11 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateScene(vtkMRMLScene *scene)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences()
+void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences( void )
 {
   Superclass::UpdateReferences();
 
-  if (this->SpatialObjectsDisplayPropertiesNodeID != NULL &&
+  if(this->SpatialObjectsDisplayPropertiesNodeID != NULL &&
       this->Scene->GetNodeByID(
         this->SpatialObjectsDisplayPropertiesNodeID) == NULL)
     {
@@ -156,8 +157,8 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences()
 void vtkMRMLSpatialObjectsDisplayNode::UpdateReferenceID(const char *oldID,
                                                          const char *newID)
 {
-  if (this->SpatialObjectsDisplayPropertiesNodeID &&
-      !strcmp(oldID, this->SpatialObjectsDisplayPropertiesNodeID))
+  if(this->SpatialObjectsDisplayPropertiesNodeID &&
+      !std::strcmp(oldID, this->SpatialObjectsDisplayPropertiesNodeID))
     {
     this->SetSpatialObjectsDisplayPropertiesNodeID(newID);
     }
@@ -165,7 +166,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateReferenceID(const char *oldID,
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayPropertiesNode* vtkMRMLSpatialObjectsDisplayNode::
-GetSpatialObjectsDisplayPropertiesNode()
+GetSpatialObjectsDisplayPropertiesNode( void )
 {
   vtkMRMLSpatialObjectsDisplayPropertiesNode* node = NULL;
 
@@ -184,10 +185,10 @@ GetSpatialObjectsDisplayPropertiesNode()
 void vtkMRMLSpatialObjectsDisplayNode::
 SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id )
 {
-  if (
+  if(
       (id != this->GetSpatialObjectsDisplayPropertiesNodeID())
       && id != NULL && this->GetSpatialObjectsDisplayPropertiesNodeID() != NULL
-      && (strcmp(id, this->GetSpatialObjectsDisplayPropertiesNodeID()) == 0)
+      && (std::strcmp(id, this->GetSpatialObjectsDisplayPropertiesNodeID()) == 0)
       )
     {
     return;
@@ -210,14 +211,14 @@ SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id )
 
   //The new SpatialObjectsDisplayPropertiesNode can have a different setting
   // on the properties so we emit the event that the polydata has been modified.
-  if (cnode)
+  if(cnode)
     {
     this->InvokeEvent(vtkMRMLModelNode::PolyDataModifiedEvent, this);
     }
 }
 
 //------------------------------------------------------------------------------
-std::vector<int> vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes()
+std::vector<int> vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes( void )
 {
   std::vector<int> modes;
 
@@ -231,7 +232,7 @@ std::vector<int> vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes()
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayNode::GetNumberOfScalarInvariants()
+int vtkMRMLSpatialObjectsDisplayNode::GetNumberOfScalarInvariants( void )
 {
   static std::vector<int> modes =
     vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes();

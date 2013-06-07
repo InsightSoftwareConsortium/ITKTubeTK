@@ -20,25 +20,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeOtsuThresholdMaskedImageCalculator_txx
 #define __itkTubeOtsuThresholdMaskedImageCalculator_txx
 
 #include "itkTubeOtsuThresholdMaskedImageCalculator.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
-#include "itkMinimumMaximumImageCalculator.h"
+#include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkMinimumMaximumImageCalculator.h>
 
-#include "vnl/vnl_math.h"
+#include <vnl/vnl_math.h>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /**
  * Constructor
  */
 template<class TInputImage>
 OtsuThresholdMaskedImageCalculator<TInputImage>
-::OtsuThresholdMaskedImageCalculator()
+::OtsuThresholdMaskedImageCalculator( void )
 {
   m_Image = NULL;
   m_MaskImage = NULL;
@@ -54,12 +57,12 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
 template<class TInputImage>
 void
 OtsuThresholdMaskedImageCalculator<TInputImage>
-::Compute(void)
+::Compute( void )
 {
 
   unsigned int j;
 
-  if ( !m_Image )
+  if( !m_Image )
     {
     return;
     }
@@ -69,7 +72,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
     }
 
   double totalPixels = (double) m_Region.GetNumberOfPixels();
-  if ( totalPixels == 0 )
+  if( totalPixels == 0 )
     {
     return;
     }
@@ -125,7 +128,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
       }
     }
 
-  if ( imageMin >= imageMax )
+  if( imageMin >= imageMax )
     {
     m_Threshold = imageMin;
     return;
@@ -134,7 +137,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
   // create a histogram
   std::vector<double> relativeFrequency;
   relativeFrequency.resize( m_NumberOfHistogramBins );
-  for ( j = 0; j < m_NumberOfHistogramBins; j++ )
+  for( j = 0; j < m_NumberOfHistogramBins; j++ )
     {
     relativeFrequency[j] = 0.0;
     }
@@ -149,12 +152,12 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
     std::cout << "Using mask2" << std::endl;
     while( !iter.IsAtEnd() )
       {
-      unsigned int binNumber;
       if( maskIter.Get() != 0 )
         {
+        unsigned int binNumber;
         PixelType value = iter.Get();
 
-        if ( value == imageMin )
+        if( value == imageMin )
           {
           binNumber = 0;
           }
@@ -162,7 +165,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
           {
           binNumber = (unsigned int) vcl_ceil((value - imageMin)
             * binMultiplier ) - 1;
-          if ( binNumber == m_NumberOfHistogramBins )
+          if( binNumber == m_NumberOfHistogramBins )
             {
             binNumber -= 1;
             }
@@ -181,7 +184,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
       unsigned int binNumber;
       PixelType value = iter.Get();
 
-      if ( value == imageMin )
+      if( value == imageMin )
         {
         binNumber = 0;
         }
@@ -189,7 +192,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
         {
         binNumber = (unsigned int) vcl_ceil((value - imageMin)
           * binMultiplier ) - 1;
-        if ( binNumber == m_NumberOfHistogramBins )
+        if( binNumber == m_NumberOfHistogramBins )
           {
           binNumber -= 1;
           }
@@ -202,7 +205,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
 
   // normalize the frequencies
   double totalMean = 0.0;
-  for ( j = 0; j < m_NumberOfHistogramBins; j++ )
+  for( j = 0; j < m_NumberOfHistogramBins; j++ )
     {
     relativeFrequency[j] /= totalPixels;
     totalMean += (j+1) * relativeFrequency[j];
@@ -222,12 +225,12 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
   double freqLeftOld = freqLeft;
   double meanLeftOld = meanLeft;
 
-  for ( j = 1; j < m_NumberOfHistogramBins; j++ )
+  for( j = 1; j < m_NumberOfHistogramBins; j++ )
     {
     freqLeft += relativeFrequency[j];
     meanLeft = ( meanLeftOld * freqLeftOld +
                  (j+1) * relativeFrequency[j] ) / freqLeft;
-    if (freqLeft == 1.0)
+    if(freqLeft == 1.0)
       {
       meanRight = 0.0;
       }
@@ -239,7 +242,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
     double varBetween = freqLeft * ( 1.0 - freqLeft ) *
       vnl_math_sqr( meanLeft - meanRight );
 
-    if ( varBetween > maxVarBetween )
+    if( varBetween > maxVarBetween )
       {
       maxVarBetween = varBetween;
       maxBinNumber = j;
@@ -285,8 +288,8 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
   os << indent << "Image: " << m_Image.GetPointer() << std::endl;
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeOtsuThresholdMaskedImageCalculator_txx)

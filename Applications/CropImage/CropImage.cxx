@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -29,14 +29,14 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 #include "tubeMessage.h"
 
 // Includes specific to this CLI application
@@ -178,7 +178,7 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Stop("CropFilter");
       throw( out.str() );
       }
-    catch( std::string s )
+    catch( const std::string & s )
       {
       std::cerr << "Error during crop filter: " << s << std::endl;
       timeCollector.Stop("CropFilter");
@@ -278,7 +278,7 @@ int DoIt( int argc, char * argv[] )
         timeCollector.Stop("CropFilter");
         throw( out.str() );
         }
-      catch( std::string s )
+      catch( const std::string & s )
         {
         std::stringstream out;
         out << "Error during crop filter: " << s << std::endl;
@@ -336,7 +336,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
 

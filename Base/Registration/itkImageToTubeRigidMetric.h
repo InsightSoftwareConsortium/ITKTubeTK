@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,20 +20,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkImageToTubeRigidMetric_h
 #define __itkImageToTubeRigidMetric_h
 
-#include "itkMinimumMaximumImageCalculator.h"
-#include "itkEuler3DTransform.h"
-#include "itkImageToSpatialObjectMetric.h"
-#include "itkGaussianDerivativeImageFunction.h"
+#include <itkMinimumMaximumImageCalculator.h>
+#include <itkEuler3DTransform.h>
+#include <itkImageToSpatialObjectMetric.h>
+#include <itkGaussianDerivativeImageFunction.h>
 #include "itkTubeExponentialResolutionWeightFunction.h"
 
 namespace itk
 {
 
-/**
- * \class ImageToTubeRigidMetric
+/** \class ImageToTubeRigidMetric
  * \brief Computes similarity between two objects to be registered
  * The metric implemented here corresponds to the following paper:
  * \link http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
@@ -47,7 +47,7 @@ namespace itk
  * TMovingSpatialObject to use for the registration.
  *
  * \warning (Derivative)
-*/
+ */
 
 template < class TFixedImage,
   class TMovingSpatialObject,
@@ -144,8 +144,8 @@ public:
 
   /** Set/Get the function used to determine the resolution weights.  This function
    *  takes a tube point as an input and outputs a weight for that point. */
-  ResolutionWeightFunctionType & GetResolutionWeightFunction();
-  const ResolutionWeightFunctionType & GetResolutionWeightFunction() const;
+  ResolutionWeightFunctionType & GetResolutionWeightFunction( void );
+  const ResolutionWeightFunctionType & GetResolutionWeightFunction( void ) const;
   void SetResolutionWeightFunction( const ResolutionWeightFunctionType & function );
 
   TransformPointer GetTransform( void ) const
@@ -154,8 +154,8 @@ public:
   /** Downsample the tube points by this integer value. */
 
 protected:
-  ImageToTubeRigidMetric();
-  virtual ~ImageToTubeRigidMetric();
+  ImageToTubeRigidMetric( void );
+  virtual ~ImageToTubeRigidMetric( void );
 
   void ComputeImageRange( void );
 
@@ -166,7 +166,7 @@ protected:
 
   /** Calculate the weighting for each tube point and its scale, which is based
    * on the local radius. */
-  virtual void ComputeTubePointResolutionWeights();
+  virtual void ComputeTubePointResolutionWeights( void );
 
 private:
   typedef std::list< InternalComputationValueType > ResolutionWeightsContainerType;
@@ -204,16 +204,21 @@ private:
     const InternalComputationValueType scale,
     const OutputPointType & currentPoint ) const;
 
-  typename TubeNetType::ChildrenListType* GetTubes() const;
+  /**
+   * \warning User is responsible for freeing the list, but not the elements
+   * of the list.
+   */
+  typename TubeNetType::ChildrenListType* GetTubes( void ) const;
 
   ImageToTubeRigidMetric( const Self& ); // purposely not implemented
   void operator=( const Self& ); // purposely not implemented
-};
 
-} // end namespace itk
+}; // End class ImageToTubeRigidMetric
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkImageToTubeRigidMetric.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidMetric_h)

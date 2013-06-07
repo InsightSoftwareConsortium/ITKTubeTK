@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -21,22 +21,21 @@ limitations under the License.
 
 =========================================================================*/
 
-
-#include "itkImageFileReader.h"
-#include "itkMatrix.h"
-#include "metaScene.h"
-#include "metaTubeGraph.h"
-#include "itkSpatialObjectReader.h"
-#include "itkSpatialObjectWriter.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkMinimumMaximumImageFilter.h"
+#include <itkImageFileReader.h>
+#include <itkMatrix.h>
+#include <metaScene.h>
+#include <metaTubeGraph.h>
+#include <itkSpatialObjectReader.h>
+#include <itkSpatialObjectWriter.h>
+#include <itkVesselTubeSpatialObject.h>
+#include <itkMinimumMaximumImageFilter.h>
 #include <iostream>
 #include <sstream>
 
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 #include "TubeToTubeGraphCLP.h"
 
@@ -129,7 +128,7 @@ int DoIt( int argc, char *argv[] )
 
   int count = 0;
   char tubeName[10];
-  sprintf( tubeName, "Tube" );
+  std::sprintf( tubeName, "Tube" );
   TubeSpatialObjectType::ChildrenListType *
     tubeList = group->GetChildren( 99999, tubeName );
   TubeSpatialObjectType::ChildrenListType::const_iterator
@@ -167,7 +166,6 @@ int DoIt( int argc, char *argv[] )
       cVect[i] = tubePoint.GetTangent()[i];
       }
     cMat = outer_product(cVect, cVect);
-    int tNode;
     if(tube->GetRoot())
       {
       rootNodes[cNode-1] = rootNodes[cNode-1]+1;
@@ -180,7 +178,7 @@ int DoIt( int argc, char *argv[] )
       pnt = tubePoint.GetPosition();
       pnt = tubeTransform->TransformPoint(pnt);
       image->TransformPhysicalPointToIndex(pnt, indx);
-      tNode = image->GetPixel(indx);
+      int tNode = image->GetPixel(indx);
       if(tNode == cNode)
         {
         cCount++;
@@ -193,7 +191,6 @@ int DoIt( int argc, char *argv[] )
         }
       else
         {
-        TubeGraphPnt * tgP;
         int len = graph->GetPoints().size();
         if(graph->GetPoints().size()>3
           && graph->GetPoints().at(len-1)->m_GraphNode == tNode
@@ -208,8 +205,7 @@ int DoIt( int argc, char *argv[] )
                   << " " << cNode << " " << tNode;
           tube::WarningMessage( logMsg.str() );
 
-          tgP = graph->GetPoints().at(len-1);
-          graph->GetPoints().pop_back();
+          TubeGraphPnt * tgP = graph->GetPoints().back();
           cNode = tNode;
           cRadius = tgP->m_R;
           for(int i=0; i<3; i++)
@@ -220,12 +216,18 @@ int DoIt( int argc, char *argv[] )
               }
             }
           cCount = tgP->m_P;
+          graph->GetPoints().pop_back();
+          /* Memory allocated for each element of list returned by
+          graph->GetPoints() usually released when destructor of graph called,
+          but since tgP is popped off back of list, memory would not be
+          released without explicit delete. */
+          delete tgP;
           }
         else
           {
           numberOfNodesCrossed++;
           aMat[cNode-1][tNode-1] = aMat[cNode-1][tNode-1]+1;
-          tgP = new TubeGraphPnt(3);
+          TubeGraphPnt * tgP = new TubeGraphPnt(3);
           tgP->m_GraphNode = cNode;
           tgP->m_R = cRadius/cCount;
           tgP->m_P = cCount;
@@ -250,8 +252,7 @@ int DoIt( int argc, char *argv[] )
       }
     if(numberOfNodesCrossed>0)
       {
-      TubeGraphPnt * tgP;
-      tgP = new TubeGraphPnt(3);
+      TubeGraphPnt * tgP = new TubeGraphPnt(3);
       tgP->m_GraphNode = cNode;
       tgP->m_R = cRadius/cCount;
       for(int i=0; i<3; i++)
@@ -317,5 +318,5 @@ int DoIt( int argc, char *argv[] )
   delete tubeList;
   timeCollector.Report();
 
-  return 1;
+  return EXIT_SUCCESS;
 }

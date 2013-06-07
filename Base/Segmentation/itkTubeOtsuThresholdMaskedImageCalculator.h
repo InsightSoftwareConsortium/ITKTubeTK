@@ -20,16 +20,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeOtsuThresholdMaskedImageCalculator_h
 #define __itkTubeOtsuThresholdMaskedImageCalculator_h
 
-#include "itkObject.h"
-#include "itkObjectFactory.h"
-#include "itkNumericTraits.h"
+#include <itkObject.h>
+#include <itkObjectFactory.h>
+#include <itkNumericTraits.h>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class OtsuThresholdMaskedImageCalculator
  * \brief Computes the Otsu's threshold for an image.
@@ -84,7 +87,7 @@ public:
   itkSetConstObjectMacro(MaskImage,ImageType);
 
   /** Compute the Otsu's threshold for the input image. */
-  void Compute(void);
+  void Compute( void );
 
   /** Return the Otsu's threshold value. */
   itkGetConstMacro(Threshold,PixelType);
@@ -98,8 +101,8 @@ public:
   void SetRegion( const RegionType & region );
 
 protected:
-  OtsuThresholdMaskedImageCalculator();
-  virtual ~OtsuThresholdMaskedImageCalculator() {};
+  OtsuThresholdMaskedImageCalculator( void );
+  virtual ~OtsuThresholdMaskedImageCalculator( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
 private:
@@ -114,15 +117,14 @@ private:
   RegionType           m_Region;
   bool                 m_RegionSetByUser;
 
-};
+}; // End class OtsuThresholdMaskedImageCalculator
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeOtsuThresholdMaskedImageCalculator.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeOtsuThresholdMaskedImageCalculator_h)

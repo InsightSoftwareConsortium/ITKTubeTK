@@ -20,12 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusiveRegistrationFilter_h
 #define __itkAnisotropicDiffusiveRegistrationFilter_h
 
 #include "itkDiffusiveRegistrationFilter.h"
 
-#include "vtkSmartPointer.h"
+#include <vtkSmartPointer.h>
 class vtkFloatArray;
 class vtkPointLocator;
 class vtkPolyData;
@@ -179,7 +180,7 @@ public:
 
   /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
-  virtual int GetNumberOfTerms() const
+  virtual int GetNumberOfTerms( void ) const
     { return 2; }
 
   /** Set/get the organ boundary polydata, which must be in the same space as
@@ -187,7 +188,7 @@ public:
    *  may be changed over the course of the registration. */
   virtual void SetBorderSurface( BorderSurfaceType * border )
     { m_BorderSurface = border; }
-  virtual BorderSurfaceType * GetBorderSurface() const
+  virtual BorderSurfaceType * GetBorderSurface( void ) const
     { return m_BorderSurface; }
 
   /** Set/get the lambda that controls the decay of the weight value w as a
@@ -197,8 +198,8 @@ public:
    *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Lambda must
    *  be positive. */
   void SetLambda( WeightType l )
-    { if ( l > 0 ) { m_Lambda = l; } }
-  WeightType GetLambda() const
+    { if( l > 0 ) { m_Lambda = l; } }
+  WeightType GetLambda( void ) const
     { return m_Lambda; }
 
   /** Set/get the gamma that controls the decay of the weight value w as a
@@ -208,8 +209,8 @@ public:
    *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Gamma must
    *  be positive or -1.0. */
   void SetGamma( WeightType g )
-    { if ( g > 0 || g == -1.0 ) { m_Gamma = g; } }
-  WeightType GetGamma() const
+    { if( g > 0 || g == -1.0 ) { m_Gamma = g; } }
+  WeightType GetGamma( void ) const
     { return m_Gamma; }
 
   /** Set/get the image of the normal vectors.  Setting the normal vector
@@ -217,9 +218,9 @@ public:
    * also supplied. */
   virtual void SetNormalVectorImage( NormalVectorImageType * normalImage )
     { m_NormalVectorImage = normalImage; }
-  virtual NormalVectorImageType * GetNormalVectorImage() const
+  virtual NormalVectorImageType * GetNormalVectorImage( void ) const
     { return m_NormalVectorImage; }
-  virtual NormalVectorImageType * GetHighResolutionNormalVectorImage() const
+  virtual NormalVectorImageType * GetHighResolutionNormalVectorImage( void ) const
     { return m_HighResolutionNormalVectorImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
@@ -227,21 +228,21 @@ public:
    * supplied.  */
   virtual void SetWeightImage( WeightImageType * weightImage )
     { m_WeightImage = weightImage; }
-  virtual WeightImageType * GetWeightImage() const
+  virtual WeightImageType * GetWeightImage( void ) const
     { return m_WeightImage; }
-  virtual WeightImageType * GetHighResolutionWeightImage() const
+  virtual WeightImageType * GetHighResolutionWeightImage( void ) const
     { return m_HighResolutionWeightImage; }
 
   /** Get the normal components of the deformation field. */
-  virtual const DeformationFieldType * GetNormalDeformationComponentImage()
+  virtual const DeformationFieldType * GetNormalDeformationComponentImage( void )
       const
     {
     return this->GetDeformationComponentImage( NORMAL );
     }
 
 protected:
-  AnisotropicDiffusiveRegistrationFilter();
-  virtual ~AnisotropicDiffusiveRegistrationFilter() {}
+  AnisotropicDiffusiveRegistrationFilter( void );
+  virtual ~AnisotropicDiffusiveRegistrationFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Handy for array indexing. */
@@ -250,26 +251,26 @@ protected:
   /** Allocate the deformation component images and their derivative images.
    *  (which may be updated throughout the registration). Reimplement in derived
    *  classes. */
-  virtual void InitializeDeformationComponentAndDerivativeImages();
+  virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
   /** Allocate and populate the diffusion tensor images.
    *  Reimplement in derived classes. */
-  virtual void ComputeDiffusionTensorImages();
+  virtual void ComputeDiffusionTensorImages( void );
 
   /** Allocate and populate the images of multiplication vectors that the
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
    *  some of the multiplication vector images in derived classes.  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
-  virtual void ComputeMultiplicationVectorImages();
+  virtual void ComputeMultiplicationVectorImages( void );
 
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages( OutputImageType * output );
 
   /** If needed, allocates and computes the normal vector and weight images. */
-  virtual void SetupNormalVectorAndWeightImages();
+  virtual void SetupNormalVectorAndWeightImages( void );
 
   /** Compute the normals for the border surface. */
-  void ComputeBorderSurfaceNormals();
+  void ComputeBorderSurfaceNormals( void );
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
@@ -322,7 +323,7 @@ private:
     ThreadWeightImageRegionType WeightImageLargestPossibleRegion;
     bool ComputeNormals;
     bool ComputeWeights;
-    };
+    }; // End struct AnisotropicDiffusiveRegistrationFilterThreadStruct
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to
@@ -352,16 +353,12 @@ private:
   WeightType                          m_Lambda;
   WeightType                          m_Gamma;
 
-};
+}; // End class AnisotropicDiffusiveRegistrationFilter
 
-} // end namespace itk
-
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkAnisotropicDiffusiveRegistrationFilter+-.h"
-#endif
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusiveRegistrationFilter.txx"
+#include "itkAnisotropicDiffusiveRegistrationFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveRegistrationFilter_h)

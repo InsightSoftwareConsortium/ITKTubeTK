@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeTubeNetworkExtractor_h
 #define __itkTubeTubeNetworkExtractor_h
 
@@ -92,14 +93,6 @@ public:
   itkGetConstObjectMacro( Image, ImageType );
 
   /**
-   * Extract a 3D tube */
-  bool ExtractTube( float x, float y, float z );
-
-  /**
-   * Delete a tube */
-  bool DeleteTube( TubeType * newTube );
-
-  /**
    * Get the tube Network */
   typename TubeType::Pointer GetTubeNetwork( void );
 
@@ -128,10 +121,6 @@ public:
   void   AutoExtractThresh( double newAEThresh );
 
   /**
-   * Auto extract tubes using a mask */
-  void   AutoExtractAutoThresh( double alpha=0.002 );
-
-  /**
    * AutoExtract tubes */
   bool   AutoExtract( int zMin, int zMax );
 
@@ -153,8 +142,8 @@ public:
 
 protected:
 
-  TubeNetworkExtractor();
-  virtual ~TubeNetworkExtractor();
+  TubeNetworkExtractor( void );
+  virtual ~TubeNetworkExtractor( void );
   TubeNetworkExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
@@ -169,15 +158,15 @@ private:
   bool                             m_AEUseMask;
   typename MaskType::Pointer       m_AEMask;
   float                            m_AEThresh;
-};
 
-} // end namespace tube
+}; // End class TubeNetworkExtractor
 
-} // end namespace itk
+} // End namespace tube
 
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeTubeNetworkExtractor.txx"
 #endif
 
-#endif /* __itkTubeTubeNetworkExtractor_h */
+#endif // End !defined(__itkTubeTubeNetworkExtractor_h)

@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicHybridDiffusionImageFilter_h
 #define __itkAnisotropicHybridDiffusionImageFilter_h
 
 #include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkDiffusionTensor3D.h"
+#include <itkDiffusionTensor3D.h>
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 namespace itk
@@ -140,12 +141,12 @@ public:
   itkGetMacro( SigmaOuter, double);
 
 protected:
-  AnisotropicHybridDiffusionImageFilter();
- ~AnisotropicHybridDiffusionImageFilter() {}
+  AnisotropicHybridDiffusionImageFilter( void );
+ ~AnisotropicHybridDiffusionImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage();
+  void virtual UpdateDiffusionTensorImage( void );
 
 private:
   //purposely not implemented
@@ -159,13 +160,13 @@ private:
   double    m_Sigma;
   double    m_SigmaOuter;
   double    m_Alpha;
-};
 
+}; // End class AnisotropicHybridDiffusionImageFilter
 
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicHybridDiffusionImageFilter.txx"
+#include "itkAnisotropicHybridDiffusionImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicHybridDiffusionImageFilter_h)

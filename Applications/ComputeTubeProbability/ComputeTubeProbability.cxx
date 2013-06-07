@@ -21,20 +21,19 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #include <iostream>
 #include <fstream>
 #include <list>
 #include <vector>
 
-#include "itkSpatialObjectReader.h"
-#include "itkImageFileReader.h"
-#include "itkVesselTubeSpatialObject.h"
+#include <itkSpatialObjectReader.h>
+#include <itkImageFileReader.h>
+#include <itkVesselTubeSpatialObject.h>
 
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 #include "ComputeTubeProbabilityCLP.h"
 
@@ -44,7 +43,7 @@ int DoIt( int argc, char **argv );
 
 // This needs to be declared for tubeCLIHelperFunctions.
 template< class TPixel, unsigned int VDimension >
-int DoIt( int itkNotUsed(argc), char **itkNotUsed(argv) ){ return 0; }
+int DoIt( int itkNotUsed(argc), char **itkNotUsed(argv) ) { return 0; }
 #include "tubeCLIHelperFunctions.h"
 
 int main(int argc, char **argv)
@@ -52,10 +51,10 @@ int main(int argc, char **argv)
   PARSE_ARGS;
 
   itk::ImageIOBase::IOComponentType componentType;
-  unsigned int dimension;
 
   try
     {
+    unsigned int dimension;
     tube::GetImageInformation( inMeanImageFile, componentType, dimension );
     switch( dimension )
       {
@@ -136,7 +135,7 @@ int DoIt(int argc, char **argv)
     itk::Index< Dimension > indx;
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
-    for( unsigned int i=0; i<tube->GetNumberOfPoints() ; i++)
+    for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++)
       {
       tubePoint = static_cast<TubePointType>(tube->GetPoints()[i]); // Get point
       pnt = tubePoint.GetPosition(); // Get point's position
@@ -148,9 +147,10 @@ int DoIt(int argc, char **argv)
     ++tubeIt;
     }
   writeStream.close();
+  delete tubeList;
 
   progressReporter.Report(1.0);
   progressReporter.End();
 
   return 1;
-  }
+}

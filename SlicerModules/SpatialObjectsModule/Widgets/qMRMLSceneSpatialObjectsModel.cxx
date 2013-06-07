@@ -20,9 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // qMRML includes
 #include "qMRMLSceneSpatialObjectsModel.h"
-#include "qMRMLSceneDisplayableModel_p.h"
+#include <qMRMLSceneDisplayableModel_p.h>
 
 // MRML includes
 #include <vtkMRMLScene.h>
@@ -112,22 +113,22 @@ QFlags<Qt::ItemFlag> qMRMLSceneSpatialObjectsModel::nodeFlags(vtkMRMLNode* node,
   Q_D(const qMRMLSceneSpatialObjectsModel);
 
   QFlags<Qt::ItemFlag> flags = this->Superclass::nodeFlags(node, column);
-  if (column == this->lineVisibilityColumn() &&
+  if(column == this->lineVisibilityColumn() &&
       d->displayNode(node) != 0)
     {
     flags |= Qt::ItemIsEditable;
     }
-  if (column == this->tubeVisibilityColumn() &&
+  if(column == this->tubeVisibilityColumn() &&
       d->displayNode(node) != 0)
     {
     flags |= Qt::ItemIsEditable;
     }
-  if (column == this->glyphVisibilityColumn() &&
+  if(column == this->glyphVisibilityColumn() &&
       d->displayNode(node) != 0)
     {
     flags |= Qt::ItemIsEditable;
     }
-  if (column == this->colorColumn() &&
+  if(column == this->colorColumn() &&
       d->displayNode(node) != 0)
     {
     flags |= Qt::ItemIsEditable;
@@ -142,17 +143,17 @@ void qMRMLSceneSpatialObjectsModel
 {
   vtkMRMLSpatialObjectsNode *soNode =
     vtkMRMLSpatialObjectsNode::SafeDownCast(node);
-  if (!soNode)
+  if(!soNode)
     {
     return;
     }
 
-  if (column == this->colorColumn())
+  if(column == this->colorColumn())
     {
     vtkMRMLSpatialObjectsDisplayNode* displayNode =
         soNode->GetTubeDisplayNode();
 
-    if (displayNode)
+    if(displayNode)
       {
       double* rgbF = displayNode->GetColor();
       QColor color =
@@ -160,7 +161,7 @@ void qMRMLSceneSpatialObjectsModel
       item->setData(color, Qt::DecorationRole);
       item->setToolTip("Color");
 
-      if (displayNode->GetColorMode() ==
+      if(displayNode->GetColorMode() ==
             vtkMRMLSpatialObjectsDisplayNode::colorModeSolid)
         {
         item->setEnabled(true);
@@ -171,29 +172,29 @@ void qMRMLSceneSpatialObjectsModel
         }
       }
     }
-  else if (column == this->lineVisibilityColumn())
+  else if(column == this->lineVisibilityColumn())
     {
     vtkMRMLSpatialObjectsDisplayNode* displayNode =
       soNode->GetLineDisplayNode();
-    if (displayNode)
+    if(displayNode)
       {
       this->updateVilibilityFromNode(item, displayNode);
       }
   }
-  else if (column == this->tubeVisibilityColumn())
+  else if(column == this->tubeVisibilityColumn())
     {
     vtkMRMLSpatialObjectsDisplayNode* displayNode =
       soNode->GetTubeDisplayNode();
-    if (displayNode)
+    if(displayNode)
       {
       this->updateVilibilityFromNode(item, displayNode);
       }
     }
-  else if (column == this->glyphVisibilityColumn())
+  else if(column == this->glyphVisibilityColumn())
     {
     vtkMRMLSpatialObjectsDisplayNode* displayNode =
       soNode->GetGlyphDisplayNode();
-    if (displayNode)
+    if(displayNode)
       {
       this->updateVilibilityFromNode(item, displayNode);
       }
@@ -215,17 +216,17 @@ updateVilibilityFromNode(QStandardItem* item,
   vtkMRMLDisplayNode* displayNode = vtkMRMLDisplayNode::SafeDownCast(node);
 
   int visible = -1;
-  if (displayNode)
+  if(displayNode)
     {
     visible = displayNode->GetVisibility();
     }
-  switch (visible)
+  switch(visible)
     {
     case 0:
       // It should be fine to set the icon even if it is the same, but due
       // to a bug in Qt (http://bugreports.qt.nokia.com/browse/QTBUG-20248),
       // it would fire a superflous itemChanged() signal.
-      if (item->icon().cacheKey() != d->HiddenIcon.cacheKey())
+      if(item->icon().cacheKey() != d->HiddenIcon.cacheKey())
         {
         item->setIcon(d->HiddenIcon);
         }
@@ -234,7 +235,7 @@ updateVilibilityFromNode(QStandardItem* item,
       // It should be fine to set the icon even if it is the same, but due
       // to a bug in Qt (http://bugreports.qt.nokia.com/browse/QTBUG-20248),
       // it would fire a superflous itemChanged() signal.
-      if (item->icon().cacheKey() != d->VisibleIcon.cacheKey())
+      if(item->icon().cacheKey() != d->VisibleIcon.cacheKey())
         {
         item->setIcon(d->VisibleIcon);
         }
@@ -243,7 +244,7 @@ updateVilibilityFromNode(QStandardItem* item,
       // It should be fine to set the icon even if it is the same, but due
       // to a bug in Qt (http://bugreports.qt.nokia.com/browse/QTBUG-20248),
       // it would fire a superflous itemChanged() signal.
-      if (item->icon().cacheKey() != d->PartiallyVisibleIcon.cacheKey())
+      if(item->icon().cacheKey() != d->PartiallyVisibleIcon.cacheKey())
         {
         item->setIcon(d->PartiallyVisibleIcon);
         }
@@ -259,20 +260,20 @@ updateNodeFromItemData(vtkMRMLNode* node, QStandardItem* item)
 {
   vtkMRMLSpatialObjectsNode *soNode =
     vtkMRMLSpatialObjectsNode::SafeDownCast(node);
-  if (!soNode)
+  if(!soNode)
     {
     return;
     }
 
-  if (item->column() == this->colorColumn())
+  if(item->column() == this->colorColumn())
     {
     QColor color = item->data(Qt::DecorationRole).value<QColor>();
     // Invalid color can happen when the item hasn't been initialized yet
-    if (color.isValid())
+    if(color.isValid())
       {
       vtkMRMLSpatialObjectsDisplayNode* displayNode =
         soNode->GetTubeDisplayNode();
-      if (displayNode)
+      if(displayNode)
         {
         int wasModifying = displayNode->StartModify();
 
@@ -282,7 +283,7 @@ updateNodeFromItemData(vtkMRMLNode* node, QStandardItem* item)
                                            displayNode->GetColor()[1],
                                            displayNode->GetColor()[2],
                                            displayNode->GetOpacity());
-        if (oldColor != color)
+        if(oldColor != color)
           {
           displayNode->SetColor(color.redF(), color.greenF(), color.blueF());
           displayNode->SetOpacity(color.alphaF());
@@ -293,29 +294,29 @@ updateNodeFromItemData(vtkMRMLNode* node, QStandardItem* item)
       }
     }
 
-  else if (item->column() == this->lineVisibilityColumn())
+  else if(item->column() == this->lineVisibilityColumn())
     {
     vtkMRMLSpatialObjectsDisplayNode* displayNode =
       soNode->GetLineDisplayNode();
-    if (displayNode)
+    if(displayNode)
       {
       this->updateVilibilityFromItem(item, displayNode);
       }
   }
-  else if (item->column() == this->tubeVisibilityColumn())
+  else if(item->column() == this->tubeVisibilityColumn())
     {
     vtkMRMLSpatialObjectsDisplayNode* displayNode =
       soNode->GetTubeDisplayNode();
-    if (displayNode)
+    if(displayNode)
       {
       this->updateVilibilityFromItem(item, displayNode);
       }
     }
-  else if (item->column() == this->glyphVisibilityColumn())
+  else if(item->column() == this->glyphVisibilityColumn())
     {
     vtkMRMLSpatialObjectsDisplayNode* displayNode =
       soNode->GetGlyphDisplayNode();
-    if (displayNode)
+    if(displayNode)
       {
       this->updateVilibilityFromItem(item, displayNode);
       }
@@ -335,19 +336,19 @@ updateVilibilityFromItem(QStandardItem* item,
   vtkMRMLDisplayNode* displayNode = vtkMRMLDisplayNode::SafeDownCast(node);
 
   int visible = -1;
-  if (item->icon().cacheKey() == d->HiddenIcon.cacheKey())
+  if(item->icon().cacheKey() == d->HiddenIcon.cacheKey())
     {
     visible = 0;
     }
-  else if (item->icon().cacheKey() == d->VisibleIcon.cacheKey())
+  else if(item->icon().cacheKey() == d->VisibleIcon.cacheKey())
     {
     visible = 1;
     }
-  else if (item->icon().cacheKey() == d->PartiallyVisibleIcon.cacheKey())
+  else if(item->icon().cacheKey() == d->PartiallyVisibleIcon.cacheKey())
     {
     visible = 2;
     }
-  if (displayNode)
+  if(displayNode)
     {
     displayNode->SetVisibility(visible);
     }

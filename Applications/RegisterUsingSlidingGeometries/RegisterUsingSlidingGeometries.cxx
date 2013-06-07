@@ -21,35 +21,35 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilter.h"
-#include "itkGroupSpatialObject.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkOrientImageFilter.h"
-#include "itkMultiResolutionPDEDeformableRegistration.h"
-#include "itkRecursiveMultiResolutionPyramidImageFilter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkTransform.h"
-#include "itkTransformFileReader.h"
-#include "itkWarpImageFilter.h"
+#include <itkGroupSpatialObject.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkOrientImageFilter.h>
+#include <itkMultiResolutionPDEDeformableRegistration.h>
+#include <itkRecursiveMultiResolutionPyramidImageFilter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkTransform.h>
+#include <itkTransformFileReader.h>
+#include <itkWarpImageFilter.h>
 
-#include "vtkPolyDataReader.h"
-#include "vtkSmartPointer.h"
-#include "vtkTransform.h"
-#include "vtkTransformPolyDataFilter.h"
-#include "vtkXMLPolyDataReader.h"
+#include <vtkPolyDataReader.h>
+#include <vtkSmartPointer.h>
+#include <vtkTransform.h>
+#include <vtkTransformPolyDataFilter.h>
+#include <vtkXMLPolyDataReader.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -448,7 +448,7 @@ int DoIt( int argc, char * argv[] )
     if( extension == std::string(".vtk") )
       {
       vtkSmartPointer< vtkPolyDataReader > polyDataReader
-          = vtkPolyDataReader::New();
+          = vtkSmartPointer< vtkPolyDataReader >::New();
       polyDataReader->SetFileName( organBoundaryFileName.c_str() );
       polyDataReader->Update();
       borderSurface = polyDataReader->GetOutput();
@@ -456,7 +456,7 @@ int DoIt( int argc, char * argv[] )
     else if( extension == std::string(".vtp") )
       {
       vtkSmartPointer< vtkXMLPolyDataReader > polyDataReader
-          = vtkXMLPolyDataReader::New();
+          = vtkSmartPointer< vtkXMLPolyDataReader >::New();
       polyDataReader->SetFileName( organBoundaryFileName.c_str() );
       polyDataReader->Update();
       borderSurface = polyDataReader->GetOutput();
@@ -473,10 +473,10 @@ int DoIt( int argc, char * argv[] )
     // space.  It's easiest to transform the model to LPS space.
     if( worldCoordinateSystem == "RAS" )
       {
-      vtkSmartPointer< vtkTransform > RAStoLPS = vtkTransform::New();
+      vtkSmartPointer< vtkTransform > RAStoLPS = vtkSmartPointer< vtkTransform >::New();
       RAStoLPS->RotateZ(180); // flip in superior-inferior
       vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
-          = vtkTransformPolyDataFilter::New();
+          = vtkSmartPointer< vtkTransformPolyDataFilter >::New();
 #if VTK_MAJOR_VERSION > 5
       transformPolyDataFilter->SetInputData( borderSurface );
 #else
@@ -503,6 +503,9 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Loading organ boundary" );
     }
 
+  typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
+    tubeList = 0;
+
   // Read tube spatial object if we are using the sparse anisotropic regularizer
   if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
     {
@@ -523,10 +526,7 @@ int DoIt( int argc, char * argv[] )
       }
     typedef itk::GroupSpatialObject< ImageDimension > GroupType;
     typename GroupType::Pointer group = tubeReader->GetGroup();
-    char tubeName[17];
-    strcpy( tubeName, "Tube" );
-    typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
-        tubeList = group->GetChildren();
+    tubeList = group->GetChildren();
     sparseAnisotropicRegistrator->SetTubeList( tubeList );
     timeCollector.Stop( "Loading tube list" );
     }
@@ -562,6 +562,10 @@ int DoIt( int argc, char * argv[] )
       else
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         return EXIT_FAILURE;
         }
       }
@@ -602,6 +606,10 @@ int DoIt( int argc, char * argv[] )
       else
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
         return EXIT_FAILURE;
         }
       }
@@ -623,6 +631,10 @@ int DoIt( int argc, char * argv[] )
     else
       {
       timeCollector.Report();
+      if( tubeSpatialObjectFileName != "" )
+        {
+        delete tubeList;
+        }
       return EXIT_FAILURE;
       }
     timeCollector.Stop( "Loading weight structures image" );
@@ -633,6 +645,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "Lambda must be positive." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -641,6 +657,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "Gamma must be positive." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -649,6 +669,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "You must provide a list of number of iterations." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -657,6 +681,10 @@ int DoIt( int argc, char * argv[] )
     {
     tube::ErrorMessage( "You must provide regularization weightings." );
     timeCollector.Report();
+    if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+      {
+      delete tubeList;
+      }
     return EXIT_FAILURE;
     }
 
@@ -808,34 +836,15 @@ int DoIt( int argc, char * argv[] )
       tube::ErrorMessage( "Writing volume: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
+      if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+        {
+        delete tubeList;
+        }
+      delete [] iterations;
       return EXIT_FAILURE;
       }
     timeCollector.Stop( "Write deformation field" );
     }
-
-//  // Output the transformation gridTransform (commented out for now, as not yet
-//  // supported in 3D Slicer)
-//  if( outputTransformFileName != "" )
-//    {
-//    timeCollector.Start( "Write output transform" );
-//    typedef itk::ImageFileWriter< VectorImageType > GridWriterType;
-//    GridWriterType::Pointer gridWriter = GridWriterType::New();
-//    gridWriter->SetFileName( outputTransformFileName );
-//    gridWriter->SetUseCompression( true );
-//    gridWriter->SetInput( orientOutput->GetOutput() );
-//    try
-//      {
-//      gridWriter->Update();
-//      }
-//    catch( itk::ExceptionObject & err )
-//      {
-//      tube::ErrorMessage( "Writing volume: Exception caught: "
-//                          + std::string(err.GetDescription()) );
-//      timeCollector.Report();
-//      return EXIT_FAILURE;
-//      }
-//    timeCollector.Stop( "Write output transform" );
-//    }
 
   // Write the resampled moving image (in the space of the fixed image)
   if( outputResampledImageFileName != "" )
@@ -855,6 +864,11 @@ int DoIt( int argc, char * argv[] )
       tube::ErrorMessage( "Writing volume: Exception caught: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
+      if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+        {
+        delete tubeList;
+        }
+      delete [] iterations;
       return EXIT_FAILURE;
       }
     timeCollector.Stop( "Write resampled moving image" );
@@ -875,6 +889,7 @@ int DoIt( int argc, char * argv[] )
             outputNormalVectorImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -886,6 +901,7 @@ int DoIt( int argc, char * argv[] )
             outputNormalVectorImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -907,6 +923,11 @@ int DoIt( int argc, char * argv[] )
         {
         tube::ErrorMessage( "Failed to find an extension for normal matrix" );
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
+        delete [] iterations;
         return EXIT_FAILURE;
         }
 
@@ -926,6 +947,11 @@ int DoIt( int argc, char * argv[] )
           outputFileName ) )
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
+        delete [] iterations;
         return EXIT_FAILURE;
         }
 
@@ -956,6 +982,11 @@ int DoIt( int argc, char * argv[] )
             outputFileName ) )
           {
           timeCollector.Report();
+          if( tubeSpatialObjectFileName != "" )
+            {
+            delete tubeList;
+            }
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -979,6 +1010,7 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -990,6 +1022,7 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -1006,6 +1039,11 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          if( tubeSpatialObjectFileName != "" )
+            {
+            delete tubeList;
+            }
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -1017,6 +1055,11 @@ int DoIt( int argc, char * argv[] )
             outputWeightRegularizationsImageFileName ) )
           {
           timeCollector.Report();
+          if( tubeSpatialObjectFileName != "" )
+            {
+            delete tubeList;
+            }
+          delete [] iterations;
           return EXIT_FAILURE;
           }
         }
@@ -1039,6 +1082,11 @@ int DoIt( int argc, char * argv[] )
           outputWeightStructuresImageFileName ) )
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
+        delete [] iterations;
         return EXIT_FAILURE;
         }
       }
@@ -1050,6 +1098,11 @@ int DoIt( int argc, char * argv[] )
           outputWeightStructuresImageFileName ) )
         {
         timeCollector.Report();
+        if( tubeSpatialObjectFileName != "" )
+          {
+          delete tubeList;
+          }
+        delete [] iterations;
         return EXIT_FAILURE;
         }
       }
@@ -1065,9 +1118,15 @@ int DoIt( int argc, char * argv[] )
 
   // Clean up, we're done
   delete [] iterations;
+
+  if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
+    {
+    delete tubeList;
+    }
+
   if( reportProgress )
     {
-    progressReporter.End( );
+    progressReporter.End();
     }
   timeCollector.Report();
   return EXIT_SUCCESS;

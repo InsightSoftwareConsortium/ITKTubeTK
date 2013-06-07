@@ -7,7 +7,7 @@
 #
 # All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0( the "License" );
+# Licensed under the Apache License, Version 2.0(the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
@@ -84,3 +84,7 @@ if( TubeTK_USE_QT )
 endif( TubeTK_USE_QT )
 
 add_executable( ConvertToMetaImageCLI ConvertToMetaImageCLI.cxx )
+
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )

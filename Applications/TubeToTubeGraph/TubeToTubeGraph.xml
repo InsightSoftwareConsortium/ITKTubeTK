@@ -1,35 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Tube to tube graph mapping (TubeTK)</title>
-  <description> Maps tubes into a graph structure using an central Voronoi tessalation</description>
+  <title>Tube to Tube Graph Mapping (TubeTK)</title>
+  <description>Maps tubes into a graph structure using an central Voronoi tessellation.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Stephen R. Aylward, Roland Kwitt (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <string>
       <name>tubeFile</name>
+      <label>Input Tube File</label>
       <index>0</index>
-      <description>Input tubes that are supposed to be converted</description>
+      <description>Input tubes that are supposed to be converted.</description>
     </string>
     <image>
       <name>voronoiFile</name>
-      <label>Central Voronoi tesselation</label>
+      <label>Central Voronoi Tessellation</label>
       <channel>input</channel>
       <index>1</index>
-      <description>Central Voronoi tesselation upon which the mapping is based</description>
+      <description>Central Voronoi tesselation upon which the mapping is based.</description>
     </image>
     <file>
       <name>graphFile</name>
+      <label>Output Graph File</label>
       <index>2</index>
-      <description>Graph file that is about to be written</description>
+      <description>Graph file that is about to be written.</description>
     </file>
   </parameters>
-
 </executable>

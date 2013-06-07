@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,18 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeMetaNJetLDA_h
 #define __itkTubeMetaNJetLDA_h
 
-#include "metaTypes.h"
+#include <metaForm.h>
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
-#include <vector>
-
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
-
-#include "metaUtils.h"
-#include "metaForm.h"
 #include "itkTubeMetaLDA.h"
 
 namespace itk
@@ -41,32 +37,27 @@ namespace tube
 {
 
 /**
-*
-* Reads and Writes MetaNJetLDA Files, typically designated .mnda files
-*
-* REQUIRED: itkTubeNJetLDAGenerator instance
-*
-* \author Stephen R. Aylward
-*
-* \date August 29, 1999
-*
-*/
-class METAIO_EXPORT MetaNJetLDA
-: public MetaLDA
+ * \brief    Reads and writes MetaNJetLDA files, typically designated .mnda files.
+ * \pre      itkTubeNJetLDAGenerator instance.
+ *
+ * \author   Stephen R. Aylward
+ * \date     August 29, 1999
+ *
+ * \ingroup  IO
+ */
+class METAIO_EXPORT MetaNJetLDA : public MetaLDA
 {
 public:
 
-  typedef std::vector<double>     NJetScalesType;
-
+  typedef std::vector< double >   NJetScalesType;
   typedef MetaLDA::LDAValuesType  LDAValuesType;
-
   typedef MetaLDA::LDAMatrixType  LDAMatrixType;
 
   MetaNJetLDA( void );
 
-  MetaNJetLDA( const char *_headerName );
+  MetaNJetLDA( const char * headerName );
 
-  MetaNJetLDA( const MetaNJetLDA & _metaNJetLDA );
+  MetaNJetLDA( const MetaNJetLDA & metaNJetLDA );
 
   MetaNJetLDA( const NJetScalesType & _zeroScales,
     const NJetScalesType & _firstScales,
@@ -79,7 +70,7 @@ public:
 
   ~MetaNJetLDA( void );
 
-  virtual void  PrintInfo( void ) const;
+  virtual void PrintInfo( void ) const;
 
   using MetaLDA::CopyInfo;
   virtual void  CopyInfo( const MetaNJetLDA & _lda );
@@ -98,31 +89,42 @@ public:
 
   //
   void  SetZeroScales( const NJetScalesType & _zeroScales );
+
   const NJetScalesType & GetZeroScales( void ) const;
 
-  void  SetFirstScales( const NJetScalesType & _firstScales );
+  void SetFirstScales( const NJetScalesType & firstScales );
+
   const NJetScalesType & GetFirstScales( void ) const;
 
-  void  SetSecondScales( const NJetScalesType & _secondScales );
+  void SetSecondScales( const NJetScalesType & secondScales );
+
   const NJetScalesType & GetSecondScales( void ) const;
 
-  void  SetRidgeScales( const NJetScalesType & _ridgeScales );
+  void SetRidgeScales( const NJetScalesType & ridgeScales );
+
   const NJetScalesType & GetRidgeScales( void ) const;
 
-  //
-  virtual bool CanRead( const char * _headerName = NULL ) const;
+  virtual bool CanRead( const char * headerName = NULL ) const;
 
-  virtual bool Read( const char * _headerName = NULL );
+  virtual bool Read( const char * headerName = NULL );
 
-  virtual bool CanReadStream( METAIO_STREAM::ifstream * _stream ) const;
+  virtual bool CanReadStream( METAIO_STREAM::ifstream * stream ) const;
 
-  virtual bool ReadStream( METAIO_STREAM::ifstream * _stream );
+  virtual bool ReadStream( METAIO_STREAM::ifstream * stream );
 
-  virtual bool Write( const char * _headName = NULL );
+  virtual bool Write( const char * headerName = NULL );
 
-  virtual bool WriteStream( METAIO_STREAM::ofstream * _stream );
+  virtual bool WriteStream( METAIO_STREAM::ofstream * stream );
 
 protected:
+
+  void M_Destroy( void );
+
+  void M_SetupReadFields( void );
+
+  void M_SetupWriteFields( void );
+
+  bool M_Read( void );
 
   NJetScalesType  m_ZeroScales;
   NJetScalesType  m_FirstScales;
@@ -134,18 +136,10 @@ protected:
   LDAValuesType   m_SecondScalesTmp;
   LDAValuesType   m_RidgeScalesTmp;
 
-  void  M_Destroy( void );
+}; // End class MetaNJetLDA
 
-  void  M_SetupReadFields( void );
+} // End namespace tube
 
-  void  M_SetupWriteFields( void );
+} // End namespace itk
 
-  bool  M_Read( void );
-
-};
-
-}
-
-}
-
-#endif
+#endif // End !defined(__itkTubeMetaNJetLDA_h)

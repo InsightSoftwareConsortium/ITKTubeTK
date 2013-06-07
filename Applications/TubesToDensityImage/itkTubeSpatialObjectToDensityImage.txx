@@ -20,6 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
+#ifndef __itkTubeSpatialObjectToDensityImage_txx
+#define __itkTubeSpatialObjectToDensityImage_txx
+
 #include "itkTubeSpatialObjectToDensityImage.h"
 
 /** Constructor */
@@ -29,14 +33,14 @@ template < class TDensityImageType,
 TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TRadiusImageType,
                                 TTangentImageType>
-::TubeSpatialObjectToDensityImage()
+::TubeSpatialObjectToDensityImage( void )
 {
   for(short i = 0; i < TDimension; i++ )
     {
     m_Size[i] = 0;
     m_Spacing[i] = 1;
     }
-  m_max = 255;                   //NumericTraits<DensityPixelType>::max();
+  m_Max = 255;                   //NumericTraits<DensityPixelType>::max();
   m_UseSquareDistance = false;
 }
 
@@ -47,7 +51,7 @@ template < class TDensityImageType,
 TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TRadiusImageType,
                                 TTangentImageType>
-::~TubeSpatialObjectToDensityImage()
+::~TubeSpatialObjectToDensityImage( void )
 {
 }
 
@@ -60,7 +64,6 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TTangentImageType>
 ::SetSpacing( SpacingType s )
 {
-  m_Spacing = new double[TDimension];
   for( unsigned int i = 0; i < TDimension; i++ )
     {
     m_Spacing[i] = s[i];
@@ -75,7 +78,7 @@ void
 TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TRadiusImageType,
                                 TTangentImageType>
-::Update()
+::Update( void )
 {
   if(m_Size[0] == 0)
     {
@@ -190,7 +193,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     InverseFilter = InverseIntensityImageFilter<DensityImageType>::New();
 
     InverseFilter->SetInput( m_DensityImage );  //  inverse intensity
-    InverseFilter->SetInverseMaximumIntensity( m_max );
+    InverseFilter->SetInverseMaximumIntensity( m_Max );
     InverseFilter->Update();
 
     m_DensityImage = InverseFilter->GetOutput();
@@ -202,3 +205,5 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     std::cerr << e.GetDescription() <<std::endl;
     }
 }
+
+#endif // End !defined(__itkTubeSpatialObjectToDensityImage_txx)

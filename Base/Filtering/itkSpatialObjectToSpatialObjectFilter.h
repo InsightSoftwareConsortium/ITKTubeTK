@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkSpatialObjectToSpatialObjectFilter_h
 #define __itkSpatialObjectToSpatialObjectFilter_h
 
@@ -31,10 +32,9 @@ namespace itk
  *
  * \brief Base class for filters that take a SpatialObject as input and produce
  * a SpatialObject as output.
- *
  */
 template< class TInputSpatialObject, class TOutputSpatialObject >
-class ITK_EXPORT SpatialObjectToSpatialObjectFilter:
+class ITK_EXPORT SpatialObjectToSpatialObjectFilter :
   public SpatialObjectSource< TOutputSpatialObject >
 {
 public:
@@ -61,18 +61,18 @@ public:
   const InputSpatialObjectType * GetInput( unsigned int idx ) const;
 
 protected:
-  SpatialObjectToSpatialObjectFilter();
-  virtual ~SpatialObjectToSpatialObjectFilter() {};
+  SpatialObjectToSpatialObjectFilter( void );
+  virtual ~SpatialObjectToSpatialObjectFilter( void ) {}
 
 private:
   SpatialObjectToSpatialObjectFilter( const Self & ); // purposely not implemented
   void operator=( const Self & );                     // purposely not implemented
-};
+}; // End class SpatialObjectToSpatialObjectFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSpatialObjectToSpatialObjectFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSpatialObjectToSpatialObjectFilter_h)

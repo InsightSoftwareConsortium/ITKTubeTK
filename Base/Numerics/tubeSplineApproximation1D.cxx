@@ -20,13 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include "tubeSplineApproximation1D.h"
 
 namespace tube
 {
 
 SplineApproximation1D::
-SplineApproximation1D()
+SplineApproximation1D( void )
 : Spline1D()
 {
   m_SplineApproximation1DMatrixConst = (double)(1.0/6.0);
@@ -50,7 +51,7 @@ SplineApproximation1D()
 
 
 SplineApproximation1D::
-SplineApproximation1D( UserFunc<int, double> *newFunval,
+SplineApproximation1D( UserFunction<int, double> *newFunval,
   Optimizer1D *newOpt1D )
 : Spline1D(newFunval, newOpt1D)
 {
@@ -75,7 +76,7 @@ SplineApproximation1D( UserFunc<int, double> *newFunval,
 
 
 SplineApproximation1D::
-~SplineApproximation1D()
+~SplineApproximation1D( void )
 {
 
 }
@@ -89,11 +90,10 @@ dataValue(const VectorType & y, double x)
   u[1] = u[2]*u[2];
   u[0] = u[1]*u[2];
 
-  double b;
   double s = 0;
   for(unsigned int i=0; i<4; i++)
     {
-    b = 0;
+    double b = 0;
     for(unsigned int p=0; p<4; p++)
       {
       b += m_SplineApproximation1DMatrix(i, p) * u[p];
@@ -113,11 +113,10 @@ dataValueD(const VectorType & y, double x)
   u[1] = x-(int)x;
   u[0] = u[1]*u[1];
 
-  double b;
   double s = 0;
   for(unsigned int i=0; i<4; i++)
     {
-    b = 0;
+    double b = 0;
     for(unsigned int p=0; p<3; p++)
       {
       b += (3-p)*m_SplineApproximation1DMatrix(i, p) * u[p];
@@ -136,11 +135,10 @@ dataValueD2(const VectorType & y, double x)
   u[1] = 1.0;
   u[0] = x-(int)x;
 
-  double b;
   double s = 0;
   for(unsigned int i=0; i<4; i++)
     {
-    b = 0;
+    double b = 0;
     for(unsigned int p=0; p<2; p++)
       {
       b += (2-p) * m_SplineApproximation1DMatrix(i, p) * u[p];
@@ -161,17 +159,14 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
   u[1] = u[2]*u[2];
   u[0] = u[1]*u[2];
 
-  double b;
-  double bD;
-  double bD2;
   double s = 0;
   *d = 0;
   *d2 = 0;
   for(unsigned int i=0; i<4; i++)
     {
-    b = 0;
-    bD = 0;
-    bD2 = 0;
+    double b = 0;
+    double bD = 0;
+    double bD2 = 0;
     for(unsigned int p=0; p<4; p++)
       {
       b += m_SplineApproximation1DMatrix(i, p) * u[p];
@@ -192,4 +187,4 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
   return s;
 }
 
-} // end namespace tube
+} // End namespace tube

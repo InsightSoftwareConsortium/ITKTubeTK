@@ -20,18 +20,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "tubeSpline1D.h"
-#include <cmath>
-#include <iostream>
 
+#include "tubeSpline1D.h"
+
+#include <iostream>
 
 namespace tube
 {
 
-class Spline1DValFunc : public UserFunc<double, double>
+class Spline1DValFunc : public UserFunction<double, double>
 {
 public:
-
   Spline1DValFunc(Spline1D * newSpline)
     {
     m_Spline = newSpline;
@@ -45,16 +44,14 @@ public:
     }
 
 protected:
-
   Spline1D * m_Spline;
   double     m_Val;
 
-};
+}; // End class Spline1DValFunc
 
-class Spline1DDerivFunc : public UserFunc<double, double>
+class Spline1DDerivFunc : public UserFunction<double, double>
 {
 public:
-
   Spline1DDerivFunc(Spline1D * newSpline)
     {
     m_Spline = newSpline;
@@ -68,18 +65,17 @@ public:
     }
 
 protected:
-
   Spline1D * m_Spline;
   double m_Deriv;
 
-};
+}; // End class Spline1DDerivFunc
 
 //
 //
 //
 Spline1D::
-Spline1D():
-  m_Data(4, 0.0)
+Spline1D( void )
+  : m_Data(4, 0.0)
 {
   m_Defined = false;
 
@@ -97,8 +93,8 @@ Spline1D():
 }
 
 Spline1D::
-Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D):
-  m_Data(4, 0.0)
+Spline1D(UserFunction<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+  : m_Data(4, 0.0)
 {
   m_Defined = false;
 
@@ -116,7 +112,7 @@ Spline1D(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D):
 }
 
 Spline1D::
-~Spline1D()
+~Spline1D( void )
 {
   if(m_Defined)
     {
@@ -131,7 +127,7 @@ Spline1D::
 //
 //
 void Spline1D::
-use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
+use(UserFunction<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 {
   m_Defined = true;
 
@@ -150,7 +146,7 @@ use(UserFunc<int, double> *newFuncVal, Optimizer1D *newOpt1D)
 //
 //
 bool Spline1D::
-clipEdge(void)
+clipEdge( void )
 {
   return m_Clip;
 }
@@ -162,7 +158,7 @@ clipEdge(bool newClip)
 }
 
 int Spline1D::
-xMin(void)
+xMin( void )
 {
   return m_XMin;
 }
@@ -178,7 +174,7 @@ xMin(int newXMin)
 }
 
 int Spline1D::
-xMax(void)
+xMax( void )
 {
   return m_XMax;
 }
@@ -197,7 +193,7 @@ xMax(int newXMax)
 //
 //
 bool Spline1D::
-newData(void)
+newData( void )
 {
   return m_NewData;
 }
@@ -351,7 +347,7 @@ curv(double x)
 
   double xpp = valueD2(x);
 
-  return xpp/pow(1.0+xp*xp, 1.5);
+  return xpp/vcl_pow(1.0+xp*xp, 1.5);
 }
 
 double Spline1D::
@@ -424,4 +420,4 @@ PrintSelf( std::ostream & os ) const
     }
 }
 
-} // namespace
+} // End namespace tube

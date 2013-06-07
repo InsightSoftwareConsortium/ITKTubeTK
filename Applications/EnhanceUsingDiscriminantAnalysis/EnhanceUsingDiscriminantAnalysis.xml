@@ -1,26 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Enhance image using Discriminant Analysis (TubeTK)</title>
+  <title>Enhance Image Using Discriminant Analysis (TubeTK)</title>
   <description>Given multiple, registered images and foreground and background masks, computes a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url></documentation-url>
-  <license></license>
-  <contributor>Stephen R. Aylward</contributor>
-  <acknowledgements></acknowledgements>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <string>
       <name>inputVolumesString</name>
-      <label>Input volume list</label>
+      <label>Input Volume List</label>
       <index>0</index>
-      <description>Input volume list</description>
-      <default></default>
+      <description>Input volume list.</description>
+      <default/>
     </string>
     <image>
       <name>labelmap</name>
-      <label>Label map</label>
+      <label>Label Map</label>
       <channel>input</channel>
       <longflag>labelmap</longflag>
       <description>Label map that designates the object of interest and "other."</description>
@@ -28,7 +29,7 @@
     </image>
     <string>
       <name>outputBase</name>
-      <label>Output base name</label>
+      <label>Output Base Name</label>
       <index>1</index>
       <description>Basename for output basis images.</description>
       <default></default>

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,20 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkMeanSquareRegistrationFunction_h
 #define __itkMeanSquareRegistrationFunction_h
 
-#include "itkPDEDeformableRegistrationFunction.h"
-#include "itkPoint.h"
-#include "itkCovariantVector.h"
-#include "itkInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkCentralDifferenceImageFunction.h"
+#include <itkPDEDeformableRegistrationFunction.h>
+#include <itkPoint.h>
+#include <itkCovariantVector.h>
+#include <itkInterpolateImageFunction.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkCentralDifferenceImageFunction.h>
 
-namespace itk {
+namespace itk
+{
 
-/**
- * \class MeanSquareRegistrationFunction
+/** \class MeanSquareRegistrationFunction
  *
  * This class encapsulate the PDE which drives the demons registration
  * algorithm. It is used by MeanSquareRegistrationFilter to compute the
@@ -124,7 +125,7 @@ public:
     { m_MovingImageInterpolator = ptr; }
 
   /** Get the moving image interpolator. */
-  InterpolatorType * GetMovingImageInterpolator(void)
+  InterpolatorType * GetMovingImageInterpolator( void )
     { return m_MovingImageInterpolator; }
 
   /** This class uses a constant timestep of 1. */
@@ -133,7 +134,7 @@ public:
 
   /** Return a pointer to a global data structure that is passed to
    * this object from the solver at each calculation.  */
-  virtual void *GetGlobalDataPointer() const
+  virtual void *GetGlobalDataPointer( void ) const
     {
     GlobalDataStruct *global = new GlobalDataStruct();
     return global;
@@ -144,7 +145,7 @@ public:
     { delete (GlobalDataStruct *) GlobalData;  }
 
   /** Set the object's state before each iteration. */
-  virtual void InitializeIteration();
+  virtual void InitializeIteration( void );
 
   /** This method is called by a finite difference solver image filter at
    * each pixel that does not lie on a data set boundary */
@@ -167,18 +168,18 @@ public:
 
   void SetBackgroundIntensity( MovingImagePixelType intensity )
     { m_BackgroundIntensity = intensity; }
-  MovingImagePixelType GetBackgroundIntensity() const
+  MovingImagePixelType GetBackgroundIntensity( void ) const
     { return m_BackgroundIntensity; }
 
   void SetIntensityDifferenceThreshold( double threshold )
     { m_IntensityDifferenceThreshold = threshold; }
-  double GetIntensityDifferenceThreshold() const
+  double GetIntensityDifferenceThreshold( void ) const
     { return m_IntensityDifferenceThreshold; }
 
 
 protected:
-  MeanSquareRegistrationFunction();
-  ~MeanSquareRegistrationFunction() {}
+  MeanSquareRegistrationFunction( void );
+  ~MeanSquareRegistrationFunction( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** FixedImage image neighborhood iterator type. */
@@ -189,7 +190,7 @@ protected:
   struct GlobalDataStruct
     {
     FixedImageNeighborhoodIteratorType   m_FixedImageIterator;
-    };
+    }; // End struct GlobalDataStruct
 
 private:
   MeanSquareRegistrationFunction(const Self&); //purposely not implemented
@@ -216,13 +217,13 @@ private:
   mutable SimpleFastMutexLock     m_EnergyCalculationLock;
 
   MovingImagePixelType            m_BackgroundIntensity;
-};
 
+}; // End class MeanSquareRegistrationFunction
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkMeanSquareRegistrationFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkMeanSquareRegistrationFunction_h)

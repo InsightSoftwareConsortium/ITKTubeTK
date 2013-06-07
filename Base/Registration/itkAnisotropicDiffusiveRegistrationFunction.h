@@ -20,10 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusiveRegistrationFunction_h
 #define __itkAnisotropicDiffusiveRegistrationFunction_h
 
-#include "itkPDEDeformableRegistrationFunction.h"
+#include <itkPDEDeformableRegistrationFunction.h>
 
 #include "itkAnisotropicDiffusionTensorFunction.h"
 #include "itkMeanSquareRegistrationFunction.h"
@@ -87,17 +88,17 @@ public:
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Convenient typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType                FixedImageType;
-  typedef typename Superclass::FixedImagePointer             FixedImagePointer;
-  typedef typename Superclass::MovingImageType               MovingImageType;
-  typedef typename Superclass::MovingImagePointer            MovingImagePointer;
-  typedef typename MovingImageType::PixelType                MovingImagePixelType;
+  typedef typename Superclass::FixedImageType            FixedImageType;
+  typedef typename Superclass::FixedImagePointer         FixedImagePointer;
+  typedef typename Superclass::MovingImageType           MovingImageType;
+  typedef typename Superclass::MovingImagePointer        MovingImagePointer;
+  typedef typename MovingImageType::PixelType            MovingImagePixelType;
   typedef typename Superclass::DisplacementFieldType     DeformationFieldType;
   typedef typename DeformationFieldType::Pointer         DeformationFieldPointer;
-  typedef typename Superclass::TimeStepType                  TimeStepType;
-  typedef typename Superclass::NeighborhoodType              NeighborhoodType;
-  typedef typename Superclass::PixelType                     PixelType;
-  typedef typename Superclass::FloatOffsetType               FloatOffsetType;
+  typedef typename Superclass::TimeStepType              TimeStepType;
+  typedef typename Superclass::NeighborhoodType          NeighborhoodType;
+  typedef typename Superclass::PixelType                 PixelType;
+  typedef typename Superclass::FloatOffsetType           FloatOffsetType;
 
   /** Deformation field types */
   typedef typename DeformationFieldType::PixelType
@@ -196,7 +197,7 @@ public:
     // Intensity distance function doesn't have a SetTimeStep(), but it's ok
     // because we only use ComputeUpdate() for it.
     }
-  const TimeStepType &GetTimeStep() const
+  const TimeStepType &GetTimeStep( void ) const
     { return m_TimeStep; }
 
   /** Utility function to check whether the timestep is stable, optionally based
@@ -212,31 +213,31 @@ public:
    *  Default: true */
   void SetComputeRegularizationTerm( bool compute )
     { m_ComputeRegularizationTerm = compute; }
-  bool GetComputeRegularizationTerm() const
+  bool GetComputeRegularizationTerm( void ) const
     { return m_ComputeRegularizationTerm; }
 
   /** Set/get whether to compute the intensity distance term
    *  Default: true */
   void SetComputeIntensityDistanceTerm( bool compute )
     { m_ComputeIntensityDistanceTerm = compute; }
-  bool GetComputeIntensityDistanceTerm() const
+  bool GetComputeIntensityDistanceTerm( void ) const
     { return m_ComputeIntensityDistanceTerm; }
 
   /** Set/get the weighting for the regularization update term.  Default 1.0 */
   void SetRegularizationWeighting( double weighting )
     { m_RegularizationWeighting = weighting; }
-  double GetRegularizationWeighting() const
+  double GetRegularizationWeighting( void ) const
     { return m_RegularizationWeighting; }
 
   /** Set/get the background intensity in the moving image.  Default 0.0 */
   void SetBackgroundIntensity( MovingImagePixelType bg )
     { m_IntensityDistanceFunction->SetBackgroundIntensity( bg ); }
 
-  MovingImagePixelType GetBackgroundIntensity() const
+  MovingImagePixelType GetBackgroundIntensity( void ) const
     { return m_IntensityDistanceFunction->GetBackgroundIntensity(); }
 
   /** Set the object's state before each iteration. */
-  virtual void InitializeIteration();
+  virtual void InitializeIteration( void );
 
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead */
@@ -276,30 +277,30 @@ public:
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
-  virtual void * GetGlobalDataPointer() const;
+  virtual void * GetGlobalDataPointer( void ) const;
 
   /** Release the global data structure. */
   virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
 
   /** Returns the pointers to the regularization function and the intensity
     difference function */
-  const RegularizationFunctionType * GetRegularizationFunctionPointer() const
+  const RegularizationFunctionType * GetRegularizationFunctionPointer( void ) const
     { return m_RegularizationFunction.GetPointer(); }
-  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer()
+  const IntensityDistanceFunctionType * GetIntensityDistanceFunctionPointer( void )
       const
     { return m_IntensityDistanceFunction.GetPointer(); }
 
   /** Get the intensity distance and regularization energies.
    *  The regularization energy incorporates the weighting between the
    *  intensity distance term and the regularization term. */
-  double GetIntensityDistanceEnergy() const
+  double GetIntensityDistanceEnergy( void ) const
     { return this->GetIntensityDistanceFunctionPointer()->GetEnergy(); }
-  double GetRegularizationEnergy() const
+  double GetRegularizationEnergy( void ) const
     { return m_RegularizationEnergy; }
 
 protected:
-  AnisotropicDiffusiveRegistrationFunction();
-  virtual ~AnisotropicDiffusiveRegistrationFunction() {}
+  AnisotropicDiffusiveRegistrationFunction( void );
+  virtual ~AnisotropicDiffusiveRegistrationFunction( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Returns the update from the regularization component */
@@ -332,7 +333,7 @@ protected:
     {
     void *                              m_RegularizationGlobalDataStruct;
     void *                              m_IntensityDistanceGlobalDataStruct;
-    };
+    }; // End struct GlobalDataStruct
 
 private:
   // Purposely not implemented
@@ -362,16 +363,13 @@ private:
   /** Mutex locks to protect modifications to metric values. */
   mutable itk::SimpleFastMutexLock      m_MetricCalculationLock;
   mutable itk::SimpleFastMutexLock      m_EnergyCalculationLock;
-};
 
-} // end namespace itk
+}; // End class AnisotropicDiffusiveRegistrationFunction
 
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkAnisotropicDiffusiveRegistrationFunction+-.h"
-#endif
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusiveRegistrationFunction.txx"
+#include "itkAnisotropicDiffusiveRegistrationFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveRegistrationFunction_h)

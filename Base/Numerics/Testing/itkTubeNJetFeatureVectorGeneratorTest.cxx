@@ -20,22 +20,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
+#include "itkFilterWatcher.h"
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-#include "itkRecursiveGaussianImageFilter.h"
+#include <itkRecursiveGaussianImageFilter.h>
 
 #include "itkTubeNJetFeatureVectorGenerator.h"
 
-int itkTubeNJetFeatureVectorGeneratorTest(int argc, char* argv [] )
+int itkTubeNJetFeatureVectorGeneratorTest(int argc, char * argv [] )
 {
   if( argc != 5 )
     {
@@ -71,18 +68,32 @@ int itkTubeNJetFeatureVectorGeneratorTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
     std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
 
+  // Create the reader and writer
+  ReaderType::Pointer maskReader = ReaderType::New();
+  maskReader->SetFileName( argv[2] );
+  try
+    {
+    maskReader->Update();
+    }
+  catch(itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during input read:\n"  << e;
+    return EXIT_FAILURE;
+    }
+  ImageType::Pointer maskImage = maskReader->GetOutput();
+
   FilterType::NJetScalesType scales( 2 );
-  scales[0] = 4;
-  scales[1] = 8;
+  scales[0] = 1;
+  scales[1] = 4;
   FilterType::NJetScalesType scales2( 1 );
-  scales2[0] = 8;
+  scales2[0] = 2;
   FilterType::Pointer filter = FilterType::New();
   filter->SetInputImage( inputImage );
   filter->SetZeroScales( scales );
@@ -99,7 +110,7 @@ int itkTubeNJetFeatureVectorGeneratorTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
@@ -113,7 +124,7 @@ int itkTubeNJetFeatureVectorGeneratorTest(int argc, char* argv [] )
     {
     writer2->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;

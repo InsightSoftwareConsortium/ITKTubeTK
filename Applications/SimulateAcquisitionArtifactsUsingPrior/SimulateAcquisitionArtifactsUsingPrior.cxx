@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -29,21 +29,21 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkTransformFileReader.h"
-#include "itkTransformFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTransformFileReader.h>
+#include <itkTransformFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Application-specific includes
 #include "tubeCompareImageWithPrior.h"
-#include "tubeOptBrent1D.h"
+#include "tubeBrentOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
 
@@ -55,34 +55,32 @@ template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
 template< class pixelT, unsigned int dimensionT >
-class MyMIWPFunc:
-public tube::UserFunc< vnl_vector<int>, double >
+class MyMIWPFunc :
+public tube::UserFunction< vnl_vector<int>, double >
 {
 public:
 
   typedef tube::CompareImageWithPrior< pixelT, dimensionT > ImageEvalType;
-  MyMIWPFunc( ImageEvalType & eval )
+  MyMIWPFunc( ImageEvalType & eval ) : m_Eval(eval), m_GoF(0)
     {
-    cEval = eval;
-    cGof = 0;
-    };
+    }
 
   const double & value( const vnl_vector<int> & x )
     {
-    cEval.SetErode( x[0] );
-    cEval.SetDilate( x[1] );
-    cEval.SetGaussianBlur( x[2] );
-    cEval.Update();
-    cGof = cEval.GetGoodnessOfFit();
-    return cGof;
-    };
+    m_Eval.SetErode( x[0] );
+    m_Eval.SetDilate( x[1] );
+    m_Eval.SetGaussianBlur( x[2] );
+    m_Eval.Update();
+    m_GoF = m_Eval.GetGoodnessOfFit();
+    return m_GoF;
+    }
 
 private:
 
-  ImageEvalType cEval;
-  double cGof;
+  ImageEvalType m_Eval;
+  double        m_GoF;
 
-};
+}; // End class MyMIWPFunc
 
 // Must include CLP before including tubeCLIHleperFunctions
 #include "SimulateAcquisitionArtifactsUsingPriorCLP.h"
@@ -252,7 +250,7 @@ int DoIt( int argc, char * argv[] )
       MyMIWPFunc< pixelT, dimensionT >( eval );
     tube::SplineApproximation1D * spline1D = new
       tube::SplineApproximation1D();
-    tube::OptBrent1D * opt = new tube::OptBrent1D( );
+    tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();
     tube::SplineND spline( 3, myFunc, spline1D, opt );
 
     vnl_vector< int > xMin(3);
@@ -341,7 +339,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

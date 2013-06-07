@@ -25,8 +25,8 @@ namespace itk
 
 template< typename TTubeSpatialObject >
 SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
-::SubSampleTubeSpatialObjectFilter():
-  m_Sampling(1)
+::SubSampleTubeSpatialObjectFilter( void )
+  : m_Sampling(1)
 {
 }
 
@@ -34,7 +34,7 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 template< typename TTubeSpatialObject >
 void
 SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
-::GenerateData()
+::GenerateData( void )
 {
   TubeSpatialObjectType * output = this->GetOutput();
   const TubeSpatialObjectType * input = this->GetInput();
@@ -42,8 +42,8 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
   typedef typename TubeSpatialObjectType::PointListType PointListType;
   const PointListType & inputPoints = input->GetPoints();
   PointListType & outputPoints = output->GetPoints();
-  const size_t numberOfInputPoints = inputPoints.size();
-  size_t numberOfOutputPoints;
+  const unsigned int numberOfInputPoints = inputPoints.size();
+  unsigned int numberOfOutputPoints;
   if( this->m_Sampling == 1 )
     {
     numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 0;
@@ -57,7 +57,7 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
     numberOfOutputPoints = numberOfInputPoints / this->m_Sampling + 2;
     }
   outputPoints.resize( numberOfOutputPoints );
-  for( size_t inputIndex = 0, outputIndex = 0;
+  for( unsigned int inputIndex = 0, outputIndex = 0;
     outputIndex < numberOfOutputPoints - 1;
     ++outputIndex, inputIndex += this->m_Sampling )
     {
@@ -66,6 +66,6 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
   outputPoints[numberOfOutputPoints - 1] = inputPoints[numberOfInputPoints - 1];
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSubSampleTubeSpatialObjectFilter_txx)

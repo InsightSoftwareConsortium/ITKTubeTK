@@ -20,13 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubePDFSegmenter_h
 #define __itkTubePDFSegmenter_h
 
 #include <vector>
 
-#include "itkImage.h"
-#include "itkListSample.h"
+#include <itkImage.h>
+#include <itkListSample.h>
 
 namespace itk
 {
@@ -69,10 +70,15 @@ public:
   typedef Image< ProbabilityPixelType,
     ImageT::ImageDimension >
                                                ProbabilityImageType;
+  typedef std::vector< ProbabilityPixelType >  ProbabilityListType;
 
-  typedef Image<float, N>                      HistogramImageType;
+  typedef float                                HistogramPixelType;
+  typedef Image< HistogramPixelType, N >       HistogramImageType;
+
+  typedef HistogramPixelType                   PDFPixelType;
   typedef HistogramImageType                   PDFImageType;
-  typedef Vector<double, N>                    ListDoubleType;
+
+  typedef Vector< double, N >                  VectorDoubleNType;
 
   //
   // Methods
@@ -80,26 +86,15 @@ public:
   void SetInputVolume( unsigned int featureNumber,
     typename ImageType::Pointer vol );
 
-  void ClearObjectIds()
-    {
-    m_ObjectIdList.clear();
-    }
+  void ClearObjectIds( void );
+  void SetObjectId( ObjectIdType objectId );
+  void AddObjectId( ObjectIdType objectId );
 
-  void SetObjectId( ObjectIdType objectId )
-    {
-    m_ObjectIdList.clear();
-    m_ObjectIdList.push_back( objectId );
-    }
+  ObjectIdType GetObjectId( unsigned int num = 0 ) const;
+  unsigned int GetObjectNumberFromId( ObjectIdType id ) const;
 
-  void AddObjectId( ObjectIdType objectId )
-    {
-    m_ObjectIdList.push_back( objectId );
-    }
-
-  ObjectIdType GetObjectId( int num = 0 )
-    {
-    return m_ObjectIdList[ num ];
-    }
+  void   SetObjectPDFWeight( unsigned int num, double weight );
+  double GetObjectPDFWeight( unsigned int num ) const;
 
   itkSetMacro( VoidId, ObjectIdType );
   itkGetMacro( VoidId, ObjectIdType );
@@ -109,16 +104,15 @@ public:
 
   itkSetMacro( ErodeRadius, int );
   itkSetMacro( HoleFillIterations, int );
-  itkSetMacro( FprWeight, double );
-  itkSetMacro( ProbabilitySmoothingStandardDeviation, double );
+  itkSetMacro( ProbabilityImageSmoothingStandardDeviation, double );
+  itkSetMacro( HistogramSmoothingStandardDeviation, double );
+  itkSetMacro( OutlierRejectPortion, double );
   itkSetMacro( Draft, bool );
 
   int GetNumberOfClasses( void );
 
-  int GetClassId( unsigned int classNum );
-
   const typename ProbabilityImageType::Pointer GetClassProbabilityVolume(
-    unsigned int classNum );
+    unsigned int classNum ) const;
 
   const typename PDFImageType::Pointer GetClassPDFImage(
     unsigned int classNum );
@@ -186,16 +180,16 @@ private:
   bool                                     m_ImagesUpToDate;
 
   ClassListSampleType                      m_InClassList;
-  typename ListSampleType::Pointer         m_OutList;
+  typename ListSampleType::Pointer         m_OutClassList;
 
-  ClassHistogramImageType                  m_InClassHisto;
-  typename HistogramImageType::Pointer     m_OutHisto;
-  ListDoubleType                           m_HistoBinMin;
-  ListDoubleType                           m_HistoBinMax;
-  ListDoubleType                           m_HistoBinScale;
-  unsigned int                             m_HistoNumBinsND;
-  unsigned int                             m_HistoNumBins1D;
-  
+  ClassHistogramImageType                  m_InClassHistogram;
+  typename HistogramImageType::Pointer     m_OutHistogram;
+  VectorDoubleNType                        m_HistogramBinMin;
+  VectorDoubleNType                        m_HistogramBinMax;
+  VectorDoubleNType                        m_HistogramBinScale;
+  unsigned int                             m_HistogramNumBinsND;
+  unsigned int                             m_HistogramNumBins1D;
+
   //  Data
   std::vector< typename ImageType::Pointer > m_InputVolumeList;
 
@@ -204,10 +198,13 @@ private:
   ObjectIdListType                m_ObjectIdList;
   ObjectIdType                    m_VoidId;
 
+  ProbabilityListType             m_PDFWeightList;
+
   int                             m_ErodeRadius;
   int                             m_HoleFillIterations;
-  double                          m_ProbabilitySmoothingStandardDeviation;
-  double                          m_FprWeight;
+  double                          m_ProbabilityImageSmoothingStandardDeviation;
+  double                          m_HistogramSmoothingStandardDeviation;
+  double                          m_OutlierRejectPortion;
   bool                            m_Draft;
   bool                            m_ReclassifyObjectMask;
   bool                            m_ReclassifyNotObjectMask;
@@ -219,14 +216,14 @@ private:
   double                          m_ProgressFraction;
   double                          m_ProgressStart;
 
-};
+}; // End class PDFSegmenter
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubePDFSegmenter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubePDFSegmenter_h)

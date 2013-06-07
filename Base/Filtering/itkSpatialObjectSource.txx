@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkSpatialObjectSource_txx
 #define __itkSpatialObjectSource_txx
 
@@ -30,7 +31,7 @@ namespace itk
 
 template< class TOutputSpatialObject >
 SpatialObjectSource< TOutputSpatialObject >
-::SpatialObjectSource()
+::SpatialObjectSource( void )
 {
   // Create the output. We use static_cast<> here because we know the default
   // output must be of type TOutputSpatialObject
@@ -80,7 +81,7 @@ SpatialObjectSource< TOutputSpatialObject >
   OutputSpatialObjectType * output = dynamic_cast< OutputSpatialObjectType * >
                       ( this->ProcessObject::GetOutput(idx) );
 
-  if ( output == NULL && this->ProcessObject::GetOutput(idx) != NULL )
+  if( output == NULL && this->ProcessObject::GetOutput(idx) != NULL )
     {
     itkWarningMacro (<< "Unable to convert output number " << idx
       << " to type " <<  typeid( OutputSpatialObjectType ).name() );
@@ -103,7 +104,7 @@ void
 SpatialObjectSource< TOutputSpatialObject >
 ::GraftOutput(const DataObjectIdentifierType & key, DataObject *graft)
 {
-  if ( !graft )
+  if( !graft )
     {
     itkExceptionMacro(<< "Requested to graft output that is a NULL pointer");
     }
@@ -122,7 +123,7 @@ void
 SpatialObjectSource< TOutputSpatialObject >
 ::GraftNthOutput(unsigned int idx, DataObject *graft)
 {
-  if ( idx >= this->GetNumberOfIndexedOutputs() )
+  if( idx >= this->GetNumberOfIndexedOutputs() )
     {
     itkExceptionMacro(<< "Requested to graft output " << idx
                       << " but this filter only has " << this->GetNumberOfIndexedOutputs() << " indexed Outputs.");
@@ -130,6 +131,6 @@ SpatialObjectSource< TOutputSpatialObject >
   this->GraftOutput( this->MakeNameFromOutputIndex(idx), graft );
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSpatialObjectSource_txx)

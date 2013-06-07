@@ -20,11 +20,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkLabelMapToAcousticImpedanceImageFilter_h
 #define __itkLabelMapToAcousticImpedanceImageFilter_h
 
 #include <itkUnaryFunctorImageFilter.h>
-#include <itkLabelMapToAcousticImpedanceFunctor.h>
+#include "itkLabelMapToAcousticImpedanceFunctor.h"
 
 namespace itk
 {
@@ -33,10 +34,9 @@ namespace itk
  *
  * \brief Creates an image of approximate acoustic impedance from a label map of
  * classified tissues.
- *
  */
 template< class TInputImage, class TOutputImage, class TLookupTable >
-class LabelMapToAcousticImpedanceImageFilter:
+class LabelMapToAcousticImpedanceImageFilter :
   public UnaryFunctorImageFilter< TInputImage, TOutputImage,
     Functor::LabelMapToAcousticImpedanceFunctor< typename TInputImage::PixelType,
       typename TOutputImage::PixelType, TLookupTable > >
@@ -63,21 +63,21 @@ public:
   typedef typename Superclass::FunctorType FunctorType;
 
 protected:
-  LabelMapToAcousticImpedanceImageFilter() {}
-  virtual ~LabelMapToAcousticImpedanceImageFilter() {}
+  LabelMapToAcousticImpedanceImageFilter( void ) {}
+  virtual ~LabelMapToAcousticImpedanceImageFilter( void ) {}
 
-  virtual void BeforeThreadedGenerateData();
+  virtual void BeforeThreadedGenerateData( void );
 
 private:
   LabelMapToAcousticImpedanceImageFilter( const Self & ); // purposely not implemented
   void operator=( const Self & ); // purposely not implemented
 
-};
+}; // End class LabelMapToAcousticImpedanceImageFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkLabelMapToAcousticImpedanceImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkLabelMapToAcousticImpedanceImageFilter_h)

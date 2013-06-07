@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#ifndef __itkObjectDocumentToImageFilter_txx
+#define __itkObjectDocumentToImageFilter_txx
 
 #include "itkObjectDocumentToImageFilter.h"
 
@@ -32,7 +34,7 @@ namespace tube
 
 template< class TInputObjectDocument, class TOutputImageType >
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
-::ObjectDocumentToImageFilter()
+::ObjectDocumentToImageFilter( void )
 {
   OutputImagePointer object = OutputImageType::New();
   this->ProcessObject::SetNthOutput(0, object);
@@ -42,7 +44,7 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 template< class TInputObjectDocument, class TOutputImageType >
 typename ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>::OutputImageType *
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
-::GetOutput()
+::GetOutput( void )
 {
   return static_cast<OutputImageType *>( (this->ProcessObject::GetOutput(0)) );
 }
@@ -51,14 +53,14 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 template< class TInputObjectDocument, class TOutputImageType >
 void
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
-::GenerateData()
+::GenerateData( void )
 {
   ConstDocumentPointer document = this->GetInput();
 
   OutputImagePointer output = ReadDocument( document );
   if( this->m_ApplyTransforms )
     {
-    TransformPointer trans = this->ComposeTransforms( document, this->m_startTransforms, this->m_endTransforms );
+    TransformPointer trans = this->ComposeTransforms( document, this->m_StartTransforms, this->m_EndTransforms );
     output = ResampleImage( output, trans );
     }
   this->ProcessObject::SetNthOutput( 0, output );
@@ -69,14 +71,14 @@ template< class TInputObjectDocument, class TOutputImageType >
 typename ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>::OutputImagePointer
 ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 ::ReadDocument( ConstDocumentPointer doc )
-  {
+{
 
   typename ImageFileReaderType::Pointer reader = ImageFileReaderType::New();
   reader->SetFileName( doc->GetObjectName() );
 
   reader->Update();
   return reader->GetOutput();
-  }
+}
 
 
 template< class TInputObjectDocument, class TOutputImageType >
@@ -150,8 +152,10 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
     {
     outputSize[i] = (long int)(( max[i] - origin[i] ) / spacing[i] );
     }
-  }
+}
 
 } // End namespace tube
 
 } // End namespace itk
+
+#endif // End !defined(__itkObjectDocumentToImageFilter_txx)

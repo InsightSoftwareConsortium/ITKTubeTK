@@ -20,13 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkDiffusiveRegistrationFilter_h
 #define __itkDiffusiveRegistrationFilter_h
 
-#include "itkPDEDeformableRegistrationFilter.h"
+#include <itkPDEDeformableRegistrationFilter.h>
 #include "itkAnisotropicDiffusiveRegistrationFunction.h"
 
-#include "itkVectorIndexSelectionCastImageFilter.h"
+#include <itkVectorIndexSelectionCastImageFilter.h>
 
 namespace itk
 {
@@ -37,7 +38,7 @@ struct EnergiesStruct
   double  IntensityDistanceEnergy;
   double  RegularizationEnergy;
 
-  void zero()
+  void zero( void )
     {
     TotalEnergy = 0.0;
     IntensityDistanceEnergy = 0.0;
@@ -57,7 +58,7 @@ struct EnergiesStruct
     IntensityDistanceEnergy = lhs.IntensityDistanceEnergy - rhs.IntensityDistanceEnergy;
     RegularizationEnergy = lhs.RegularizationEnergy - rhs.RegularizationEnergy;
     }
-};
+}; // End struct EnergiesStruct
 
 /** \class itkDiffusiveRegistrationFilter
  * \brief Registration filter for registrations using anisotropic diffusive
@@ -146,8 +147,8 @@ public:
   typedef typename Superclass::MovingImageType          MovingImageType;
   typedef typename Superclass::MovingImagePointer       MovingImagePointer;
   typedef typename MovingImageType::PixelType           MovingImagePixelType;
-  typedef typename Superclass::DisplacementFieldType     DeformationFieldType;
-  typedef typename Superclass::DisplacementFieldPointer  DeformationFieldPointer;
+  typedef typename Superclass::DisplacementFieldType    DeformationFieldType;
+  typedef typename Superclass::DisplacementFieldPointer DeformationFieldPointer;
   typedef typename Superclass::TimeStepType             TimeStepType;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;
@@ -274,7 +275,7 @@ public:
   /** Convenience functions to set/get the registration functions timestep. */
   virtual void SetTimeStep( const TimeStepType t )
     { m_OriginalTimeStep = t; }
-  virtual const TimeStepType& GetTimeStep() const
+  virtual const TimeStepType& GetTimeStep( void ) const
     { return m_OriginalTimeStep; }
 
   /** Set/get whether to compute the motion field regularization term
@@ -282,7 +283,7 @@ public:
   void SetComputeRegularizationTerm( bool compute )
     { this->GetRegistrationFunctionPointer()->
       SetComputeRegularizationTerm( compute ); }
-  bool GetComputeRegularizationTerm() const
+  bool GetComputeRegularizationTerm( void ) const
     { return this->GetRegistrationFunctionPointer()->
       GetComputeRegularizationTerm(); }
 
@@ -291,7 +292,7 @@ public:
   void SetComputeIntensityDistanceTerm( bool compute )
     { this->GetRegistrationFunctionPointer()->
       SetComputeIntensityDistanceTerm( compute ); }
-  bool GetComputeIntensityDistanceTerm() const
+  bool GetComputeIntensityDistanceTerm( void ) const
     { return this->GetRegistrationFunctionPointer()->
       GetComputeIntensityDistanceTerm(); }
 
@@ -301,19 +302,19 @@ public:
    *  Default: 1.0 */
   void SetRegularizationWeightings( std::vector< double >& weightings )
     { m_RegularizationWeightings = weightings; }
-  const std::vector< double >& GetRegularizationWeightings() const
+  const std::vector< double >& GetRegularizationWeightings( void ) const
     { return m_RegularizationWeightings; }
 
   /** Set/get the background intensity of the moving image, used by the
    *  intensity distance function.  Default 0.0 */
   void SetBackgroundIntensity( MovingImagePixelType bg )
     { this->GetRegistrationFunctionPointer()->SetBackgroundIntensity( bg ); }
-  MovingImagePixelType GetBackgroundIntensity() const
+  MovingImagePixelType GetBackgroundIntensity( void ) const
     { return this->GetRegistrationFunctionPointer()->GetBackgroundIntensity(); }
 
   /** The number of div(T\grad(u))v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
-  virtual int GetNumberOfTerms() const
+  virtual int GetNumberOfTerms( void ) const
     { return 1; }
 
   /** Set/get a pointer to an image that is to be used for the template when
@@ -323,7 +324,7 @@ public:
    *  multiresolution registration. */
   virtual void SetHighResolutionTemplate( FixedImageType * templateImage )
     { m_HighResolutionTemplate = templateImage; }
-  virtual FixedImageType * GetHighResolutionTemplate()
+  virtual FixedImageType * GetHighResolutionTemplate( void )
     { return m_HighResolutionTemplate; }
 
   /** Get current resolution level being processed. */
@@ -334,14 +335,14 @@ public:
    *  the stopping criterion. */
   void SetStoppingCriterionMask( StoppingCriterionMaskImageType * mask )
     { m_StoppingCriterionMask = mask; }
-  StoppingCriterionMaskImageType * GetStoppingCriterionMask() const
+  StoppingCriterionMaskImageType * GetStoppingCriterionMask( void ) const
     { return m_StoppingCriterionMask; }
 
   /** Set/get the number of iterations that elapse between evaluations of the stopping
    *  criterion.  Default 50. */
   void SetStoppingCriterionEvaluationPeriod( unsigned int numIterations )
     { m_StoppingCriterionEvaluationPeriod = numIterations; }
-  unsigned int GetStoppingCriterionEvaluationPeriod() const
+  unsigned int GetStoppingCriterionEvaluationPeriod( void ) const
     { return m_StoppingCriterionEvaluationPeriod; }
 
   /** Set/get the total energy change, summed over the stopping criterion evaluation
@@ -351,37 +352,37 @@ public:
    *  Specify in absolute value. */
   void SetStoppingCriterionMaxTotalEnergyChange( double energyChange )
     { m_StoppingCriterionMaxTotalEnergyChange = energyChange; }
-  double GetStoppingCriterionMaxTotalEnergyChange() const
+  double GetStoppingCriterionMaxTotalEnergyChange( void ) const
     { return m_StoppingCriterionMaxTotalEnergyChange; }
 
 protected:
-  DiffusiveRegistrationFilter();
-  virtual ~DiffusiveRegistrationFilter() {}
+  DiffusiveRegistrationFilter( void );
+  virtual ~DiffusiveRegistrationFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Handy for array indexing. */
   enum DivTerm { GAUSSIAN };
 
   /** Initialization occuring before the registration iterations begin. */
-  virtual void Initialize();
+  virtual void Initialize( void );
 
   /** Allocate images used during the registration. */
-  virtual void AllocateImageMembers();
+  virtual void AllocateImageMembers( void );
 
   /** Allocate the deformation component images and their derivative images.
    *  (which may be updated throughout the registration). Reimplement in derived
    *  classes. */
-  virtual void InitializeDeformationComponentAndDerivativeImages();
+  virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
   /** Allocate and populate the diffusion tensor images.
    *  Reimplement in derived classes. */
-  virtual void ComputeDiffusionTensorImages();
+  virtual void ComputeDiffusionTensorImages( void );
 
   /** Computes the first-order partial derivatives of the diffusion tensor
    *  images.  Override in derived classes if the diffusion tensor image
    *  pointers are not unique, to avoid computing the derivatives multiple
    *  times. */
-  virtual void ComputeDiffusionTensorDerivativeImages();
+  virtual void ComputeDiffusionTensorDerivativeImages( void );
 
   /** Helper to compute the first-order partial derivatives of the diffusion
    *  tensor images */
@@ -395,10 +396,10 @@ protected:
    *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
    *  some of the multiplication vector images in derived classes.  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
-  virtual void ComputeMultiplicationVectorImages() {};
+  virtual void ComputeMultiplicationVectorImages( void ) {}
 
   /** Initialize the state of the filter before each iteration. */
-  virtual void InitializeIteration();
+  virtual void InitializeIteration( void );
 
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages( OutputImageType * output );
@@ -407,7 +408,7 @@ protected:
    *  deformation component images on each iteration.  Override in derived
    *  classes if the deformation components image pointers are not unique, to
    *  avoid computing the same derivatives multiple times. */
-  virtual void ComputeDeformationComponentDerivativeImages();
+  virtual void ComputeDeformationComponentDerivativeImages( void );
 
   /** Helper to compute the first- and second-order partial derivatives of the
    *  deformation component images, using the
@@ -529,7 +530,7 @@ protected:
     double  SumOfIntensityDistanceUpdateMagnitude;
     double  SumOfRegularizationUpdateMagnitude;
 
-    void zero()
+    void zero( void )
       {
       NumberOfPixelsProcessed = 0;
       SumOfSquaredTotalUpdateMagnitude = 0.0;
@@ -576,7 +577,7 @@ protected:
         lhs.SumOfRegularizationUpdateMagnitude
           - rhs.SumOfRegularizationUpdateMagnitude;
       }
-    };
+    }; // End struct UpdateMetricsIntermediateStruct
 
   struct UpdateMetricsStruct
     {
@@ -588,7 +589,7 @@ protected:
     double                          MeanIntensityDistanceUpdateMagnitude;
     double                          MeanRegularizationUpdateMagnitude;
 
-    void zero()
+    void zero( void )
       {
       IntermediateStruct.zero();
       RMSTotalUpdateMagnitude = 0.0;
@@ -633,7 +634,7 @@ protected:
         lhs.MeanRegularizationUpdateMagnitude
           - rhs.MeanRegularizationUpdateMagnitude;
       }
-    };
+    }; // End strut UpdateMetricsStruct
 
   /** This method populates an update buffer with changes for each pixel in the
    * output.  Uses CalculateChangeGradient to determine
@@ -642,7 +643,7 @@ protected:
    * parameter, which is incorporated in ApplyUpdate
    * Return value is a time step to be used for the update.
    * \sa CalculateChangeGradient */
-  virtual TimeStepType CalculateChange();
+  virtual TimeStepType CalculateChange( void );
 
   /** Inherited from superclass - do not call this function! */
   TimeStepType ThreadedCalculateChange(
@@ -653,7 +654,7 @@ protected:
    * ThreadedCalculateChange() method and a multithreading
    * mechanism. Return value is a time step to be used for the update.
    * \sa ThreadedCalculateChangeGradient */
-  virtual TimeStepType CalculateChangeGradient();
+  virtual TimeStepType CalculateChangeGradient( void );
 
   /** Does the actual work of calculating the gradient part of the line search
    * over a region supplied by the multithreading mechanism.
@@ -725,16 +726,16 @@ protected:
 
   /** Create the registration function, with default parameters for
     * ComputeRegularizationTerm and ComputeIntensityDistanceTerm. */
-  virtual void CreateRegistrationFunction();
+  virtual void CreateRegistrationFunction( void );
 
   /** Get the registration function pointer */
-  virtual RegistrationFunctionType * GetRegistrationFunctionPointer() const;
+  virtual RegistrationFunctionType * GetRegistrationFunctionPointer( void ) const;
 
   /** Allocate the update buffer. */
-  virtual void AllocateUpdateBuffer();
+  virtual void AllocateUpdateBuffer( void );
 
   /** Get the update buffer. */
-  virtual UpdateBufferType * GetUpdateBuffer()
+  virtual UpdateBufferType * GetUpdateBuffer( void )
     { return m_UpdateBuffer; }
 
   /** This method is called after ApplyUpdate() to print out energy and RMS
@@ -755,7 +756,7 @@ private:
     TimeStepType TimeStep;
     TimeStepType *TimeStepList;
     bool *ValidTimeStepList;
-    };
+    }; // End struct DenseFDThreadStruct
 
   /** Structure for passing information into static callback methods.  Used in
    *  the threading mechanism for
@@ -768,7 +769,7 @@ private:
     int Dimension;
     SpacingType Spacing;
     typename OutputImageType::SizeType Radius;
-    };
+    }; // End struct ComputeDeformationComponentDerivativeImageHelperThreadStruct
 
   /** Structure for passing information into static callback methods.  Used in
    *  the threading mechanism for CalculateChangeGradient. */
@@ -779,7 +780,7 @@ private:
     std::vector< TimeStepType > TimeStepList;
     std::vector< bool > ValidTimeStepList;
     UpdateMetricsIntermediateStruct *UpdateMetricsIntermediate;
-    };
+    }; // End struct CalculateChangeGradientThreadStruct
 
   /** Structure for passing information into static callback methods.  Used in
    *  the threading mechanism for CalculateEnergies. */
@@ -789,7 +790,7 @@ private:
     OutputImagePointer OutputImage;
     double * IntensityDistanceEnergies;
     double * RegularizationEnergies;
-    };
+    }; // End struct CalculateEnergiesThreadStruct
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
@@ -852,17 +853,13 @@ private:
   EnergiesStruct                            m_PreviousEnergies;
   UpdateMetricsStruct                       m_UpdateMetrics;
   UpdateMetricsStruct                       m_PreviousUpdateMetrics;
-};
 
+}; // End class DiffusiveRegistrationFilter
 
-} // end namespace itk
-
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkDiffusiveRegistrationFilter+-.h"
-#endif
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkDiffusiveRegistrationFilter.txx"
+#include "itkDiffusiveRegistrationFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkDiffusiveRegistrationFilter_h)

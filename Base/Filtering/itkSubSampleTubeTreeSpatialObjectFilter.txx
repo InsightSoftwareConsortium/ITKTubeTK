@@ -20,7 +20,7 @@
 
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
-#include "itkSpatialObjectFactory.h"
+#include <itkSpatialObjectFactory.h>
 #include "itkSubSampleTubeSpatialObjectFilter.h"
 
 namespace itk
@@ -28,8 +28,8 @@ namespace itk
 
 template< class TSpatialObject, class TTubeSpatialObject >
 SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
-::SubSampleTubeTreeSpatialObjectFilter():
-  m_Sampling(1)
+::SubSampleTubeTreeSpatialObjectFilter( void )
+  : m_Sampling(1)
 {
   //! \todo fix this system.
   SpatialObjectFactoryBase::RegisterDefaultSpatialObjects();
@@ -84,7 +84,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
   ChildrenListType *children = input->GetChildren(0);
   typename ChildrenListType::const_iterator it = children->begin();
-  while ( it != children->end() )
+  while( it != children->end() )
     {
     this->SubSampleLevel( *it, newSpatialObjectBase );
     ++it;
@@ -96,7 +96,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
 template< class TSpatialObject, class TTubeSpatialObject >
 void
 SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
-::GenerateData()
+::GenerateData( void )
 {
   typename SpatialObjectBaseType::Pointer output = this->GetOutput();
   const SpatialObjectType * input = this->GetInput();
@@ -121,7 +121,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
   ChildrenListType *children = input->GetChildren(0);
   typename ChildrenListType::const_iterator it = children->begin();
-  while ( it != children->end() )
+  while( it != children->end() )
     {
     this->SubSampleLevel( *it, output );
     ++it;
@@ -129,6 +129,6 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   delete children;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSubSampleTubeTreeSpatialObjectFilter_txx)

@@ -20,26 +20,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkStructureTensorRecursiveGaussianImageFilter_h
 #define __itkStructureTensorRecursiveGaussianImageFilter_h
 
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkNthElementImageAdaptor.h"
-#include "itkImage.h"
-#include "itkSymmetricSecondRankTensor.h"
-#include "itkPixelTraits.h"
-#include "itkProgressAccumulator.h"
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkNthElementImageAdaptor.h>
+#include <itkImage.h>
+#include <itkSymmetricSecondRankTensor.h>
+#include <itkPixelTraits.h>
+#include <itkProgressAccumulator.h>
 
 namespace itk
 {
 
 /** \class StructureTensorRecursiveGaussianImageFilter
- *
  * \brief Computes the structure tensor of a multidimensional image
- *
- *
  * \warning Operates in image (pixel) space, not physical space
- *
  * \ingroup GradientFilters
  * \ingroup Singlethreaded
  */
@@ -49,7 +46,7 @@ template <typename TInputImage,
   ::RealType,
   TInputImage::ImageDimension >,
   TInputImage::ImageDimension > >
-class ITK_EXPORT StructureTensorRecursiveGaussianImageFilter:
+class ITK_EXPORT StructureTensorRecursiveGaussianImageFilter :
     public ImageToImageFilter<TInputImage,TOutputImage>
 {
 public:
@@ -120,11 +117,11 @@ public:
 
   //Sigma value for the outer Gaussian smoothing filter
   itkGetMacro( SigmaOuter,   RealType );
- 
+
 
 protected:
-  StructureTensorRecursiveGaussianImageFilter();
-  virtual ~StructureTensorRecursiveGaussianImageFilter() {};
+  StructureTensorRecursiveGaussianImageFilter( void );
+  virtual ~StructureTensorRecursiveGaussianImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** StructureTensorRecursiveGaussianImageFilter needs all of the input to produce an
@@ -132,10 +129,10 @@ protected:
    * an implementation for GenerateInputRequestedRegion in order to inform
    * the pipeline execution model.
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion() throw(InvalidRequestedRegionError);
+  virtual void GenerateInputRequestedRegion( void ) throw(InvalidRequestedRegionError);
 
   /** Generate Data */
-  void GenerateData();
+  void GenerateData( void );
 
   // Override since the filter produces the entire dataset
   void EnlargeOutputRequestedRegion(DataObject *output);
@@ -155,12 +152,13 @@ private:
 
   RealType      m_Sigma;
   RealType      m_SigmaOuter;
-};
 
-} // end namespace itk
+}; // End class StructureTensorRecursiveGaussianImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkStructureTensorRecursiveGaussianImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkStructureTensorRecursiveGaussianImageFilter_h)

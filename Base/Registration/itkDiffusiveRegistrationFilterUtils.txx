@@ -20,15 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkDiffusiveRegistrationFilterUtils_txx
 #define __itkDiffusiveRegistrationFilterUtils_txx
 
 #include "itkDiffusiveRegistrationFilterUtils.h"
 
-#include "itkMinimumMaximumImageCalculator.h"
-#include "itkResampleImageFilter.h"
-#include "itkVectorResampleImageFilter.h"
-#include "itkVectorIndexSelectionCastImageFilter.h"
+#include <itkMinimumMaximumImageCalculator.h>
+#include <itkResampleImageFilter.h>
+#include <itkVectorResampleImageFilter.h>
+#include <itkVectorIndexSelectionCastImageFilter.h>
 
 namespace itk
 {
@@ -240,6 +241,6 @@ DiffusiveRegistrationFilterUtils
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkDiffusiveRegistrationFilterUtils_txx)

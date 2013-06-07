@@ -20,16 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeOptimizerND_h
 #define __tubeOptimizerND_h
 
-#include "tubeUserFunc.h"
-#include "tubeOptimizer1D.h"
-
-#include <vnl/vnl_vector.h>
 #include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
 #include "tubeMatrixMath.h"
+#include "tubeOptimizer1D.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
@@ -48,15 +48,15 @@ public:
   OptimizerND( void );
 
   OptimizerND( int newNDims,
-    UserFunc< vnl_vector<double>, double > * newFuncValND,
-    UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
+    UserFunction< vnl_vector<double>, double > * newFuncValND,
+    UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
     Optimizer1D *newOpt1D );
 
   virtual ~OptimizerND( void );
 
   void use( int newNDims,
-    UserFunc< vnl_vector<double>, double > * newFuncValND,
-    UserFunc< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
+    UserFunction< vnl_vector<double>, double > * newFuncValND,
+    UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
     Optimizer1D *newOpt1D );
 
   vnl_vector<double> & xMin( void );
@@ -103,16 +103,22 @@ protected:
   unsigned int         m_MaxIterations;
   unsigned int         m_MaxLineSearches;
 
-  UserFunc< double, double >             * m_Opt1DVal;
-  UserFunc< double, double >             * m_Opt1DDeriv;
+  UserFunction< double, double >             * m_Opt1DVal;
+  UserFunction< double, double >             * m_Opt1DDeriv;
 
   Optimizer1D                            * m_Opt1D;
 
-  UserFunc< vnl_vector<double>, double >               * m_FuncValND;
-  UserFunc< vnl_vector<double>, vnl_vector<double> >   * m_FuncDerivND;
+  UserFunction< vnl_vector<double>, double >               * m_FuncValND;
+  UserFunction< vnl_vector<double>, vnl_vector<double> >   * m_FuncDerivND;
 
-};
+private:
 
-} // end namespace tube
+  /** Prevent copying and assignment */
+  OptimizerND(const OptimizerND &);
+  OptimizerND& operator=(const OptimizerND &);
 
-#endif
+}; // End class OptimizerND
+
+} // End namespace tube
+
+#endif // End !defined(__tubeOptimizerND_h)

@@ -20,15 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAngleOfIncidenceImageFilter_h
 #define __itkAngleOfIncidenceImageFilter_h
 
-#include "itkImageToImageFilter.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include <itkImageToImageFilter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include "itkVectorImage.h"
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkVectorImage.h>
+#include <itkHessianRecursiveGaussianImageFilter.h>
 
 namespace itk
 {
@@ -41,7 +42,7 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage >
-class ITK_EXPORT AngleOfIncidenceImageFilter:
+class ITK_EXPORT AngleOfIncidenceImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
@@ -109,14 +110,14 @@ public:
   itkGetConstMacro(UltrasoundProbeOrigin, VectorType);
 
 protected:
-  AngleOfIncidenceImageFilter();
-  virtual ~AngleOfIncidenceImageFilter() {}
+  AngleOfIncidenceImageFilter( void );
+  virtual ~AngleOfIncidenceImageFilter( void ) {}
   void PrintSelf(std::ostream & os, Indent indent) const;
 
   /* Generate Data */
-  void GenerateData(void);
+  void GenerateData( void );
 
-  void ComputeNormalVectorImage();
+  void ComputeNormalVectorImage( void );
 private:
   AngleOfIncidenceImageFilter(const Self &); //purposely not implemented
   void operator=(const Self &);          //purposely not implemented
@@ -136,11 +137,12 @@ private:
   // Primary eigen vector image
   typename EigenVectorImageType::Pointer m_PrimaryEigenVectorImage;
 
-};
-} // end namespace itk
+}; // End class AngleOfIncidenceImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkAngleOfIncidenceImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAngleOfIncidenceImageFilter_h)

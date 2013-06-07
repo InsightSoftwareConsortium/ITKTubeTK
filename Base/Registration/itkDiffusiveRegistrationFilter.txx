@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkDiffusiveRegistrationFilter_txx
 #define __itkDiffusiveRegistrationFilter_txx
 
@@ -35,7 +36,7 @@ namespace itk
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::DiffusiveRegistrationFilter()
+::DiffusiveRegistrationFilter( void )
 {
   m_UpdateBuffer = UpdateBufferType::New();
 
@@ -153,7 +154,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CreateRegistrationFunction()
+::CreateRegistrationFunction( void )
 {
   typename RegistrationFunctionType::Pointer registrationFunction
       = RegistrationFunctionType::New();
@@ -172,7 +173,7 @@ typename DiffusiveRegistrationFilter
 ::RegistrationFunctionType *
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::GetRegistrationFunctionPointer() const
+::GetRegistrationFunctionPointer( void ) const
 {
   RegistrationFunctionType * df = dynamic_cast< RegistrationFunctionType * >
        ( this->GetDifferenceFunction().GetPointer() );
@@ -186,7 +187,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateUpdateBuffer()
+::AllocateUpdateBuffer( void )
 {
   // The update buffer looks just like the output and holds the voxel changes
   typename OutputImageType::Pointer output = this->GetOutput();
@@ -203,7 +204,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::Initialize()
+::Initialize( void )
 {
   Superclass::Initialize();
 
@@ -261,9 +262,9 @@ DiffusiveRegistrationFilter
   // On subsequent iterations, we just do the resampling.
 
   // Set the high resolution image only once
-  if ( m_StoppingCriterionMask )
+  if( m_StoppingCriterionMask )
     {
-    if ( !m_HighResolutionStoppingCriterionMask )
+    if( !m_HighResolutionStoppingCriterionMask )
       {
       m_HighResolutionStoppingCriterionMask = m_StoppingCriterionMask;
       }
@@ -271,7 +272,7 @@ DiffusiveRegistrationFilter
     // We need to make sure that the attributes of the mask match those of
     // the current output
     OutputImagePointer output = this->GetOutput();
-    if ( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
+    if( !itk::DiffusiveRegistrationFilterUtils::CompareImageAttributes(
           m_StoppingCriterionMask.GetPointer(), output.GetPointer() ) )
       {
       itk::DiffusiveRegistrationFilterUtils::ResampleImageNearestNeighbor(
@@ -321,7 +322,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::AllocateImageMembers()
+::AllocateImageMembers( void )
 {
   assert( this->GetOutput() );
 
@@ -421,7 +422,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeDeformationComponentAndDerivativeImages()
+::InitializeDeformationComponentAndDerivativeImages( void )
 {
   assert( this->GetOutput() );
   assert( this->GetComputeRegularizationTerm() );
@@ -457,7 +458,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorImages()
+::ComputeDiffusionTensorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_DiffusionTensorImages[GAUSSIAN] );
@@ -477,7 +478,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorDerivativeImages()
+::ComputeDiffusionTensorDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -574,7 +575,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDeformationComponentDerivativeImages()
+::ComputeDeformationComponentDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -779,7 +780,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeIteration()
+::InitializeIteration( void )
 {
   assert( this->GetOutput() );
   Superclass::InitializeIteration();
@@ -809,7 +810,7 @@ typename DiffusiveRegistrationFilter
 ::TimeStepType
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateChange()
+::CalculateChange( void )
 {
   // Compute the search direction.  After this,
   // - update buffer as if stepSize = 1
@@ -853,7 +854,7 @@ typename DiffusiveRegistrationFilter
 ::TimeStepType
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateChangeGradient()
+::CalculateChangeGradient( void )
 {
   // Set up for multithreaded processing.
   CalculateChangeGradientThreadStruct str;
@@ -878,7 +879,7 @@ DiffusiveRegistrationFilter
 
   str.TimeStepList.resize( threadCount );
   str.ValidTimeStepList.resize( threadCount );
-  for ( int i = 0; i < threadCount; ++i )
+  for( int i = 0; i < threadCount; ++i )
     {
     str.ValidTimeStepList[i] = false;
     }
@@ -960,7 +961,7 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitStoppingCriterionMaskImageRegion );
 
-  if (threadId < total)
+  if(threadId < total)
     {
     str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChangeGradient(
       splitRegion,
@@ -1326,7 +1327,7 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitStoppingCriterionMaskImageRegion );
 
-  if (threadId < total)
+  if(threadId < total)
     {
     str->Filter->ThreadedCalculateEnergies( str->OutputImage,
                                             splitRegion,
@@ -1655,7 +1656,7 @@ DiffusiveRegistrationFilter
                                              threadCount,
                                              splitRegion );
 
-  if (threadId < total)
+  if(threadId < total)
     {
     str->Filter->ThreadedApplyUpdate(str->OutputImage,
                                      str->TimeStep,
@@ -1734,7 +1735,7 @@ DiffusiveRegistrationFilter
   // evaluation block
   unsigned int elapsedIterations = this->GetElapsedIterations();
   static double totalEnergyChangeInEvaluationPeriod = 0;
-  if (elapsedIterations != 0)
+  if(elapsedIterations != 0)
     {
     totalEnergyChangeInEvaluationPeriod += energiesChange.TotalEnergy;
     }
@@ -1795,11 +1796,11 @@ DiffusiveRegistrationFilter
   // This should never happen with the line search turned on
   // TODO this makes tests fail
   static int numEnergyViolations = 0;
-  if (elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
+  if(elapsedIterations != 0 && energiesChange.TotalEnergy > 0.0)
     {
     numEnergyViolations++;
     }
-  if (numEnergyViolations > 10)
+  if(numEnergyViolations > 10)
     {
     std::cout << "Total energy is increasing, indicating numeric instability. "
               << energiesChange.TotalEnergy << ".  "
@@ -1811,10 +1812,10 @@ DiffusiveRegistrationFilter
   std::cout << std::endl;
 
   // Check for stopping condition every m_StoppingCriterionEvaluationPeriod
-  if (elapsedIterations != 0
+  if(elapsedIterations != 0
       && ((elapsedIterations + 1) % m_StoppingCriterionEvaluationPeriod) == 0)
     {
-    if (totalEnergyChangeInEvaluationPeriod > m_StoppingCriterionMaxTotalEnergyChange)
+    if(totalEnergyChangeInEvaluationPeriod > m_StoppingCriterionMaxTotalEnergyChange)
       {
       std::cout << "Stopping criterion satisfied. "
                 << totalEnergyChangeInEvaluationPeriod << ".  "
@@ -1825,6 +1826,6 @@ DiffusiveRegistrationFilter
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkDiffusiveRegistrationFilter_txx)

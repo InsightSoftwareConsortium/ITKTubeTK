@@ -20,20 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusiveSparseRegistrationFilter_txx
 #define __itkAnisotropicDiffusiveSparseRegistrationFilter_txx
 
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilterUtils.h"
 
-#include "itkImageRegionSplitter.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-#include "vtkFloatArray.h"
-#include "vtkPointData.h"
-#include "vtkPointLocator.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkVersion.h"
+#include <itkImageRegionSplitter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <vtkFloatArray.h>
+#include <vtkPointData.h>
+#include <vtkPointLocator.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVersion.h>
 #include "tubeTubeMath.h"
 
 namespace itk
@@ -45,7 +46,7 @@ namespace itk
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 AnisotropicDiffusiveSparseRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::AnisotropicDiffusiveSparseRegistrationFilter()
+::AnisotropicDiffusiveSparseRegistrationFilter( void )
 {
   // Initialize attributes to NULL
   m_BorderSurface                               = 0;
@@ -129,7 +130,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeDeformationComponentAndDerivativeImages()
+::InitializeDeformationComponentAndDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -154,10 +155,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 
   // Setup the first and second order deformation component image derivatives
   // The two TANGENTIAL and two NORMAL components share images.
-  int termOrder[4] = { SMOOTH_TANGENTIAL,
-                       PROP_TANGENTIAL,
-                       SMOOTH_NORMAL,
-                       PROP_NORMAL };
+  int termOrder[4] = { SMOOTH_TANGENTIAL, PROP_TANGENTIAL, SMOOTH_NORMAL, PROP_NORMAL };
   int t = 0;
   ScalarDerivativeImagePointer firstOrder = 0;
   TensorDerivativeImagePointer secondOrder = 0;
@@ -192,7 +190,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::SetupNormalMatrixAndWeightImages()
+::SetupNormalMatrixAndWeightImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -345,10 +343,10 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeBorderSurfaceNormals()
+::ComputeBorderSurfaceNormals( void )
 {
   assert( m_BorderSurface );
-  vtkPolyDataNormals * normalsFilter = vtkPolyDataNormals::New();
+  vtkSmartPointer< vtkPolyDataNormals > normalsFilter = vtkSmartPointer< vtkPolyDataNormals >::New();
   normalsFilter->ComputePointNormalsOn();
   normalsFilter->ComputeCellNormalsOff();
   //normalsFilter->SetFeatureAngle(30); // TODO
@@ -359,14 +357,13 @@ AnisotropicDiffusiveSparseRegistrationFilter
 #endif
   normalsFilter->Update();
   m_BorderSurface = normalsFilter->GetOutput();
-  normalsFilter->Delete();
 
   // Make sure we now have the normals
-  if ( !m_BorderSurface->GetPointData() )
+  if( !m_BorderSurface->GetPointData() )
     {
     itkExceptionMacro( << "Border surface does not contain point data" );
     }
-  else if ( !m_BorderSurface->GetPointData()->GetNormals() )
+  else if( !m_BorderSurface->GetPointData()->GetNormals() )
     {
     itkExceptionMacro( << "Border surface point data does not have normals" );
     }
@@ -379,13 +376,12 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeTubeNormals()
+::ComputeTubeNormals( void )
 {
   assert( m_TubeList );
   assert( !m_TubeSurface ); // We only want to compute this once
 
-  unsigned int numTubes = m_TubeList->size();
-  if( numTubes <= 0 )
+  if( m_TubeList->empty() )
     {
     itkExceptionMacro( << "Tube list does not contain tubes" );
     }
@@ -410,21 +406,21 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // Slicer ITK that tubeTK relies on.
 
   // Setup the normal float arrays for the tubes
-  vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > positionFloatArray = vtkSmartPointer< vtkFloatArray >::New();
   positionFloatArray->SetNumberOfComponents( ImageDimension );
   positionFloatArray->SetNumberOfTuples( numPoints );
 
-  vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > normal1FloatArray = vtkSmartPointer< vtkFloatArray >::New();
   normal1FloatArray->SetNumberOfComponents( ImageDimension );
   normal1FloatArray->SetNumberOfTuples( numPoints );
   normal1FloatArray->SetName( "normal1" );
 
-  vtkSmartPointer< vtkFloatArray > normal2FloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > normal2FloatArray = vtkSmartPointer< vtkFloatArray >::New();
   normal2FloatArray->SetNumberOfComponents( ImageDimension );
   normal2FloatArray->SetNumberOfTuples( numPoints );
   normal2FloatArray->SetName( "normal2" );
 
-  vtkSmartPointer< vtkFloatArray > radiusFloatArray = vtkFloatArray::New();
+  vtkSmartPointer< vtkFloatArray > radiusFloatArray = vtkSmartPointer< vtkFloatArray >::New();
   radiusFloatArray->SetNumberOfValues( numPoints );
   radiusFloatArray->SetName( "radius ");
 
@@ -463,17 +459,17 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Add the position array to a vtkPoints
-  vtkSmartPointer< vtkPoints > points = vtkPoints::New();
+  vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
   points->SetData( positionFloatArray );
 
   // Add the normal arrays to a vtkFieldData
-  vtkSmartPointer< vtkFieldData > fieldData = vtkFieldData::New();
+  vtkSmartPointer< vtkFieldData > fieldData = vtkSmartPointer< vtkFieldData >::New();
   fieldData->AddArray( normal1FloatArray );
   fieldData->AddArray( normal2FloatArray );
   fieldData->AddArray( radiusFloatArray );
 
   // Finally, we store everything within the vtkPolyData
-  m_TubeSurface = BorderSurfaceType::New();
+  m_TubeSurface = vtkSmartPointer< BorderSurfaceType >::New();
   m_TubeSurface->SetPoints( points );
   m_TubeSurface->SetFieldData( fieldData );
 }
@@ -491,11 +487,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
     bool computeWeightRegularizations )
 {
   // Setup the point locator and get the normals from the surface polydata
-  vtkPointLocator * surfacePointLocator = 0;
+  vtkSmartPointer< vtkPointLocator > surfacePointLocator = 0;
   vtkFloatArray * surfaceNormalData = 0;
   if( this->GetBorderSurface() )
     {
-    surfacePointLocator = vtkPointLocator::New();
+    surfacePointLocator = vtkSmartPointer< vtkPointLocator >::New();
     surfacePointLocator->SetDataSet( m_BorderSurface );
     surfacePointLocator->Initialize();
     surfacePointLocator->BuildLocator();
@@ -505,13 +501,13 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Create a vtk polydata representing the tube points and associated normals
-  vtkPointLocator * tubePointLocator = 0;
+  vtkSmartPointer< vtkPointLocator > tubePointLocator = 0;
   vtkFloatArray * tubeNormal1Data = 0;
   vtkFloatArray * tubeNormal2Data = 0;
   vtkFloatArray * tubeRadiusData = 0;
   if( this->GetTubeSurface() )
     {
-    tubePointLocator = vtkPointLocator::New();
+    tubePointLocator = vtkSmartPointer< vtkPointLocator >::New();
     tubePointLocator->SetDataSet( m_TubeSurface );
     tubePointLocator->Initialize();
     tubePointLocator->BuildLocator();
@@ -558,16 +554,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
   this->m_NormalMatrixImage->Modified();
   this->m_WeightStructuresImage->Modified();
   this->m_WeightRegularizationsImage->Modified();
-
-  // Clean up memory
-  if( surfacePointLocator )
-    {
-    surfacePointLocator->Delete();
-    }
-  if( tubePointLocator )
-    {
-    tubePointLocator->Delete();
-    }
 }
 
 /**
@@ -724,9 +710,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
       surfaceDistance = 0.0;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        surfaceDistance += pow( imageCoord[i] - borderCoord[i], 2 );
+        surfaceDistance += vcl_pow( imageCoord[i] - borderCoord[i], 2 );
         }
-      surfaceDistance = sqrt( surfaceDistance );
+      surfaceDistance = vcl_sqrt( surfaceDistance );
       }
     if( tubePointLocator )
       {
@@ -751,7 +737,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
       double distanceToCenterCoord = ComputeDistanceToPointOnPlane(
             centerlineCoord, normal1, normal2, imageCoord );
       tubeDistance
-          = abs( distanceToCenterCoord - tubeRadiusData->GetValue( tubeId ));
+          = std::abs( distanceToCenterCoord - tubeRadiusData->GetValue( tubeId ));
       }
 
     // Find the normal of the surface point that is closest to the current voxel
@@ -828,11 +814,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   double projection2 = 0.0;
   for( int i = 0; i < ImageDimension; i++ )
     {
-    projection1 += pow(relativePoint[i] * tangentVector1[i], 2);
-    projection2 += pow(relativePoint[i] * tangentVector2[i], 2);
+    projection1 += vcl_pow(relativePoint[i] * tangentVector1[i], 2);
+    projection2 += vcl_pow(relativePoint[i] * tangentVector2[i], 2);
     }
-  projection1 = sqrt( projection1 );
-  projection2 = sqrt( projection2 );
+  projection1 = vcl_sqrt( projection1 );
+  projection2 = vcl_sqrt( projection2 );
 
   double pointOnPlane[ImageDimension];
   for( int i = 0; i < ImageDimension; i++ )
@@ -844,9 +830,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   double distance = 0.0;
   for( int i = 0; i < ImageDimension; i++ )
     {
-    distance += pow( pointOnPlane[i], 2 );
+    distance += vcl_pow( pointOnPlane[i], 2 );
     }
-  distance = sqrt( distance );
+  distance = vcl_sqrt( distance );
   return distance;
 }
 
@@ -954,7 +940,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistanceExponential( const WeightComponentType distance ) const
 {
-  return exp( -1.0 * m_Lambda * distance );
+  return vcl_exp( -1.0 * m_Lambda * distance );
 }
 
 /**
@@ -971,7 +957,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::ComputeWeightFromDistanceDirac( const WeightComponentType distance ) const
 {
   return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
-                         * exp( -1.0 * m_Lambda * distance * distance ) ) );
+                         * vcl_exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**
@@ -981,7 +967,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorImages()
+::ComputeDiffusionTensorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_NormalMatrixImage );
@@ -1081,9 +1067,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
     propNormalMatrix = wP_transpose * wP; // (wP)^T * wP
 
     // Copy the matrices to the diffusion tensor
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      for ( unsigned int j = 0; j < ImageDimension; j++ )
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
         smoothTangentialDiffusionTensor(i,j) = smoothTangentialMatrix(i,j);
         smoothNormalDiffusionTensor(i,j) = smoothNormalMatrix(i,j);
@@ -1107,7 +1093,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeMultiplicationVectorImages()
+::ComputeMultiplicationVectorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -1276,7 +1262,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDeformationComponentDerivativeImages()
+::ComputeDeformationComponentDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -1392,6 +1378,6 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveSparseRegistrationFilter_txx)

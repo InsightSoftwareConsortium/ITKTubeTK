@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <iostream>
 #include <fstream>
 #include <MetaIO/metaCommand.h>
@@ -35,7 +36,7 @@ limitations under the License.
 #include <gdcm/src/gdcmDocEntry.h>
 #include <gdcm/src/gdcmSerieHelper.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 const int PatientNameGroup = 0x0010;
 const int PatientNameElement = 0x0010;
@@ -265,7 +266,7 @@ int main( int argc, char* argv[] )
     {
     nameGenerator->SetInputDirectory( inputDirectory );
     }
-  catch (itk::ExceptionObject &ex)
+  catch(itk::ExceptionObject &ex)
     {
     std::cout << "ERROR: 2D Read: " << ex << std::endl;
     return EXIT_FAILURE;
@@ -278,107 +279,155 @@ int main( int argc, char* argv[] )
   unsigned int elementID[100];
   unsigned int count = 0;
   //  InstitutionCodeSequence
-  groupID[count] = 0x0008; elementID[count++] = 0x0082;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x0082;
   //  ReferringPhysiciansName
-  groupID[count] = 0x0008; elementID[count++] = 0x0090;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x0090;
   //  ReferringPhysiciansAddress
-  groupID[count] = 0x0008; elementID[count++] = 0x0092;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x0092;
   //  ReferringPhysiciansTelephoneNumbers
-  groupID[count] = 0x0008; elementID[count++] = 0x0094;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x0094;
   //  ReferringPhysiciansIdentificationSequence
-  groupID[count] = 0x0008; elementID[count++] = 0x0096;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x0096;
   //  ResponsibleOrganization
-  groupID[count] = 0x0008; elementID[count++] = 0x0116;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x0116;
   //  StationName
-  groupID[count] = 0x0008; elementID[count++] = 0x1010;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1010;
   //  InstitutionalDepartmentName
-  groupID[count] = 0x0008; elementID[count++] = 0x1040;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1040;
   //  PhysiciansOfRecord
-  groupID[count] = 0x0008; elementID[count++] = 0x1048;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1048;
   //  PhysiciansOfRecordIdentificationSequence
-  groupID[count] = 0x0008; elementID[count++] = 0x1049;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1049;
   //  PerformingPhysiciansName
-  groupID[count] = 0x0008; elementID[count++] = 0x1050;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1050;
   //  PerformingPhysicianIdentificationSequence
-  groupID[count] = 0x0008; elementID[count++] = 0x1052;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1052;
   //  NameOfPhysiciansReadingStudy
-  groupID[count] = 0x0008; elementID[count++] = 0x1060;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1060;
   //  NameOfPhysiciansReadingStudyIdentificationSequence
-  groupID[count] = 0x0008; elementID[count++] = 0x1062;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1062;
   //  OperatorsName
-  groupID[count] = 0x0008; elementID[count++] = 0x1070;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1070;
   //  OperatorIdentificationSequence
-  groupID[count] = 0x0008; elementID[count++] = 0x1072;
+  groupID[count] = 0x0008;
+  elementID[count++] = 0x1072;
 
   //  IssuerOfPatientID
-  groupID[count] = 0x0010; elementID[count++] = 0x0021;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x0021;
   //  PatientsInsurancePlanCodeSequence
-  groupID[count] = 0x0010; elementID[count++] = 0x0050;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x0050;
   //  OtherPatientsIDs
-  groupID[count] = 0x0010; elementID[count++] = 0x1000;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x1000;
   //  OtherPatientNames
-  groupID[count] = 0x0010; elementID[count++] = 0x1001;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x1001;
   //  PatientsBirthName
-  groupID[count] = 0x0010; elementID[count++] = 0x1005;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x1005;
   //  PatientsAddress
-  groupID[count] = 0x0010; elementID[count++] = 0x1040;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x1040;
   //  PatientsMothersBirthName
-  groupID[count] = 0x0010; elementID[count++] = 0x1060;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x1060;
   //  MilitaryRank
-  groupID[count] = 0x0010; elementID[count++] = 0x1080;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x1080;
   //  MedicalRecordLocator
-  groupID[count] = 0x0010; elementID[count++] = 0x1090;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x1090;
   //  PatientsTelephoneNumbers
-  groupID[count] = 0x0010; elementID[count++] = 0x2154;
+  groupID[count] = 0x0010;
+  elementID[count++] = 0x2154;
 
   //  DeviceSerialNumber
-  groupID[count] = 0x0018; elementID[count++] = 0x1000;
+  groupID[count] = 0x0018;
+  elementID[count++] = 0x1000;
 
   // RequestingPhysicianIdentificationSequence
-  groupID[count] = 0x0032; elementID[count++] = 0x1031;
+  groupID[count] = 0x0032;
+  elementID[count++] = 0x1031;
   // RequestingPhysician
-  groupID[count] = 0x0032; elementID[count++] = 0x1032;
+  groupID[count] = 0x0032;
+  elementID[count++] = 0x1032;
 
   // AdmissionID
-  groupID[count] = 0x0038; elementID[count++] = 0x0010;
+  groupID[count] = 0x0038;
+  elementID[count++] = 0x0010;
   // IssuerOfAdmissionID
-  groupID[count] = 0x0038; elementID[count++] = 0x0011;
+  groupID[count] = 0x0038;
+  elementID[count++] = 0x0011;
   // PatientsInstitutionResidence
-  groupID[count] = 0x0038; elementID[count++] = 0x0400;
+  groupID[count] = 0x0038;
+  elementID[count++] = 0x0400;
 
   // ScheduledPerformingPhysiciansName
-  groupID[count] = 0x0040; elementID[count++] = 0x0006;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x0006;
   // ScheduledPerformingPhysiciansIdentificationSequence
-  groupID[count] = 0x0040; elementID[count++] = 0x000B;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x000B;
   // PerformedLocation
-  groupID[count] = 0x0040; elementID[count++] = 0x0243;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x0243;
   // NamesOfIntendedRecipientsOfResults
-  groupID[count] = 0x0040; elementID[count++] = 0x1010;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x1010;
   // IntendedRecipientsOfResultsIdentificationSequence
-  groupID[count] = 0x0040; elementID[count++] = 0x1011;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x1011;
   // PersonIdentificationCodeSequence
-  groupID[count] = 0x0040; elementID[count++] = 0x1101;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x1101;
   // PersonAddress
-  groupID[count] = 0x0040; elementID[count++] = 0x1102;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x1102;
   // PersonTelephoneNumbers
-  groupID[count] = 0x0040; elementID[count++] = 0x1103;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x1103;
   // OrderEnteredBy
-  groupID[count] = 0x0040; elementID[count++] = 0x2008;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x2008;
   // OrderEnterersLocation
-  groupID[count] = 0x0040; elementID[count++] = 0x2009;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x2009;
   // OrderCallbackPhoneNumber
-  groupID[count] = 0x0040; elementID[count++] = 0x2010;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x2010;
   // HumanPerformersOrganization
-  groupID[count] = 0x0040; elementID[count++] = 0x4036;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x4036;
   // HumanPerformersName
-  groupID[count] = 0x0040; elementID[count++] = 0x4037;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0x4037;
   // VerifyingObserverName
-  groupID[count] = 0x0040; elementID[count++] = 0xA075;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0xA075;
   // PersonName
-  groupID[count] = 0x0040; elementID[count++] = 0xA123;
+  groupID[count] = 0x0040;
+  elementID[count++] = 0xA123;
 
   // PhysicianApprovingInterpretation
-  groupID[count] = 0x4008; elementID[count++] = 0x0114;
+  groupID[count] = 0x4008;
+  elementID[count++] = 0x0114;
 
   // Number of tags to anonymize
   int numID = count;
@@ -420,20 +469,19 @@ int main( int argc, char* argv[] )
       fileNames = nameGenerator->GetFileNames( seriesIdentifier );
       unsplitNumberOfFileNames = fileNames.size();
 
-      if(optSplit)
+      if( optSplit )
         {
-        if(processingSplit)
+        if( processingSplit )
           {
           fileNames = nameGenerator->GetFileNames( seriesIdentifier );
           splitVolumeStart += splitNumber;
-          FileNamesIterator  fileNamesStart;
-          FileNamesIterator  fileNamesEnd;
-          fileNamesStart = fileNames.begin();
-          fileNamesEnd = fileNames.begin() + splitVolumeStart;
+          FileNamesIterator fileNamesStart  = fileNames.begin();
+          FileNamesIterator fileNamesEnd    = fileNames.end() + splitVolumeStart;
           fileNames.erase(fileNamesStart, fileNamesEnd);
-          if(splitVolumeStart+splitNumber < unsplitNumberOfFileNames)
+
+          if( splitVolumeStart+splitNumber < unsplitNumberOfFileNames )
             {
-            fileNamesStart = fileNames.begin() + splitNumber;
+            FileNamesIterator fileNamesStart = fileNames.begin() + splitNumber;
             fileNamesEnd = fileNames.end();
             fileNames.erase(fileNamesStart, fileNamesEnd);
             }
@@ -474,7 +522,7 @@ int main( int argc, char* argv[] )
           {
           reader2D->Update();
           }
-        catch (itk::ExceptionObject &ex)
+        catch(itk::ExceptionObject &ex)
           {
           std::cout << "ERROR: 2D Read: " << ex << std::endl;
           return EXIT_FAILURE;
@@ -493,7 +541,7 @@ int main( int argc, char* argv[] )
           {
           reader->Update();
           }
-        catch (itk::ExceptionObject &ex)
+        catch(itk::ExceptionObject &ex)
           {
           std::cout << "ERROR: 3D Read: " << ex << std::endl;
           return EXIT_FAILURE;
@@ -544,9 +592,9 @@ int main( int argc, char* argv[] )
           }
         else
           {
-          double sliceThickness = atof(sequenceName.c_str());
+          double sliceThickness = std::atof(sequenceName.c_str());
           char st[80];
-          sprintf(st, "%0.2f", sliceThickness);
+          std::sprintf(st, "%0.2f", sliceThickness);
           sequenceName = st;
           }
         }
@@ -568,16 +616,16 @@ int main( int argc, char* argv[] )
                                                    SpacingElement );
         int split = spacing.find_first_of("\\");
         // int len = spacing.size()-split-1; UNUSED
-        double xSpacing = atof(spacing.substr(0,split).c_str());
-        // double ySpacing = atof(spacing.substr(split+1,len).c_str()); UNUSED
+        double xSpacing = std::atof(spacing.substr(0,split).c_str());
+        // double ySpacing = std::atof(spacing.substr(split+1,len).c_str()); UNUSED
         std::string pos = file->GetEntryValue( PositionGroup, PositionElement );
         int splitX = pos.find_first_of("\\");
         int splitY = pos.find_first_of("\\", splitX+1);
         int lenY = splitY-splitX-1;
         int lenZ = pos.size()-splitY-1;
-        double xPos = atof(pos.substr(0, splitY).c_str());
-        double yPos = atof(pos.substr(splitX+1, lenY).c_str());
-        double zPos = atof(pos.substr(splitY+1, lenZ).c_str());
+        double xPos = std::atof(pos.substr(0, splitY).c_str());
+        double yPos = std::atof(pos.substr(splitX+1, lenY).c_str());
+        double zPos = std::atof(pos.substr(splitY+1, lenZ).c_str());
         file = (*(nameGenerator->GetSeriesHelper()
                                ->GetSingleSerieUIDFileSet(
                                         seriesIdentifier )))[1];
@@ -586,20 +634,20 @@ int main( int argc, char* argv[] )
         splitY = pos.find_first_of("\\", splitX+1);
         lenY = splitY-splitX-1;
         lenZ = pos.size()-splitY-1;
-        xPos = (xPos - atof(pos.substr(0, splitY).c_str()));
-        yPos = (yPos - atof(pos.substr(splitX+1, lenY).c_str()));
-        zPos = (zPos - atof(pos.substr(splitY+1, lenZ).c_str()));
-        double zSpacing = sqrt(xPos*xPos + yPos*yPos + zPos*zPos);
+        xPos = (xPos - std::atof(pos.substr(0, splitY).c_str()));
+        yPos = (yPos - std::atof(pos.substr(splitX+1, lenY).c_str()));
+        zPos = (zPos - std::atof(pos.substr(splitY+1, lenZ).c_str()));
+        double zSpacing = vcl_sqrt(xPos*xPos + yPos*yPos + zPos*zPos);
         if(processingSplit)
           {
-          sprintf(coord, "%0.2f_%0.2f_%d_%03d", xSpacing, zSpacing,
+          std::sprintf(coord, "%0.2f_%0.2f_%d_%03d", xSpacing, zSpacing,
                                                 (int)(fileNames.size()),
                                                 (int)(splitVolumeStart
                                                      /(double)splitNumber));
           }
         else
           {
-          sprintf(coord, "%0.2f_%0.2f_%d", xSpacing, zSpacing,
+          std::sprintf(coord, "%0.2f_%0.2f_%d", xSpacing, zSpacing,
                                            (int)(fileNames.size()));
           }
         }
@@ -667,7 +715,7 @@ int main( int argc, char* argv[] )
         {
         writer->Update();
         }
-      catch (itk::ExceptionObject &ex)
+      catch(itk::ExceptionObject &ex)
         {
         std::cout << ex << std::endl;
         return EXIT_FAILURE;
@@ -688,7 +736,7 @@ int main( int argc, char* argv[] )
           fileNum++)
         {
         char fileNumString[100];
-        sprintf(fileNumString, "%04d", fileNum-splitVolumeStart);
+        std::sprintf(fileNumString, "%04d", fileNum-splitVolumeStart);
 
         gdcm::File *newfile = (*(nameGenerator->GetSeriesHelper()
                                            ->GetSingleSerieUIDFileSet(
@@ -715,8 +763,6 @@ int main( int argc, char* argv[] )
           }
         std::string oldFilename = oldFilenameWithPath.substr(start,
                                       oldFilenameWithPath.size()-start).c_str();
-        std::string oldFilenamePath = oldFilenameWithPath.substr(0,
-                                          start).c_str();
 
         std::string newDicomFilename = filename;
         newDicomFilename += "_DCM/";
@@ -744,7 +790,7 @@ int main( int argc, char* argv[] )
 
           // fileReader = new gdcm::FileHelper( newfile );
 
-          // uint8_t * imageData = fileReader->GetImageData();
+          // unsigned char * imageData = fileReader->GetImageData();
 
           //StudyDate : 0x0008, 0x0020);
           //std::string studyDate = newfile->GetEntryValue(0x0008, 0x0020).c_str();
@@ -841,11 +887,16 @@ int main( int argc, char* argv[] )
           newfile->ClearAnonymizeList();
 
           newfile->CloseFile();
+
+          //delete fileReader;
+          //fileReader = NULL;
+          delete newfile;
+          newfile = NULL;
           }
         }
       if(!processingSplit)
         {
-        seriesItr++;
+        ++seriesItr;
         }
       else
         {
@@ -853,12 +904,12 @@ int main( int argc, char* argv[] )
           {
           processingSplit = false;
           splitVolumeStart = 0;
-          seriesItr++;
+          ++seriesItr;
           }
         }
       }
     }
-  catch (itk::ExceptionObject &ex)
+  catch(itk::ExceptionObject &ex)
     {
     std::cout << "ERROR : " << ex << std::endl;
     return EXIT_FAILURE;

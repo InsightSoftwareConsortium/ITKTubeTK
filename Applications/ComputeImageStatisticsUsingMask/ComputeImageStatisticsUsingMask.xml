@@ -1,39 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Compute Image Statistics Using Mask</title>
-  <description>Compute image statistics for each region indicated in a mask file</description>
+  <title>Compute Image Statistics Using Mask (TubeTK)</title>
+  <description>Compute image statistics for each region indicated in a mask file.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <image>
       <name>inputMask</name>
       <label>Input Mask</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input mask</description>
+      <description>Input mask.</description>
     </image>
     <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
       <channel>input</channel>
       <index>1</index>
-      <description>Input volume</description>
+      <description>Input volume.</description>
     </image>
     <image>
       <name>outputStatistics</name>
       <label>Output Statistics Volume</label>
       <channel>output</channel>
       <index>2</index>
-      <description>Output statistics volume</description>
+      <description>Output statistics volume.</description>
     </image>
   </parameters>
-
 </executable>

@@ -20,8 +20,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "vtkObjectFactory.h"
-#include "vtkCallbackCommand.h"
+
+#include <vtkObjectFactory.h>
+#include <vtkCallbackCommand.h>
 
 // VTK includes
 #include <vtkConeSource.h>
@@ -29,23 +30,23 @@ limitations under the License.
 #include <vtkSource.h>
 
 // MRML includes
-#include "vtkMRMLScene.h"
-#include "vtkMRMLNode.h"
+#include <vtkMRMLScene.h>
+#include <vtkMRMLNode.h>
 #include "vtkMRMLSpatialObjectsGlyphDisplayNode.h"
-#include "vtkMRMLDiffusionTensorDisplayPropertiesNode.h"
+#include <vtkMRMLDiffusionTensorDisplayPropertiesNode.h>
 
 //------------------------------------------------------------------------------
 vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsGlyphDisplayNode);
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsGlyphDisplayNode::vtkMRMLSpatialObjectsGlyphDisplayNode()
+vtkMRMLSpatialObjectsGlyphDisplayNode::vtkMRMLSpatialObjectsGlyphDisplayNode( void )
 {
   this->Glyph3DMapper = vtkGlyph3DMapper::New();
   this->ColorMode = vtkMRMLSpatialObjectsDisplayNode::colorModeScalar;
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsGlyphDisplayNode::~vtkMRMLSpatialObjectsGlyphDisplayNode()
+vtkMRMLSpatialObjectsGlyphDisplayNode::~vtkMRMLSpatialObjectsGlyphDisplayNode( void )
 {
   this->RemoveObservers(vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
   this->Glyph3DMapper->Delete();
@@ -81,22 +82,22 @@ void vtkMRMLSpatialObjectsGlyphDisplayNode::PrintSelf(ostream& os,
 }
 
 //------------------------------------------------------------------------------
-vtkAlgorithmOutput* vtkMRMLSpatialObjectsGlyphDisplayNode::GetOutputPort()
+vtkAlgorithmOutput* vtkMRMLSpatialObjectsGlyphDisplayNode::GetOutputPort( void )
 {
   return this->Glyph3DMapper->GetOutputPort();
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsGlyphDisplayNode::UpdatePolyDataPipeline()
+void vtkMRMLSpatialObjectsGlyphDisplayNode::UpdatePolyDataPipeline( void )
 {
-  if (!this->GetInputPolyData()|| !this->Visibility)
+  if(!this->GetInputPolyData()|| !this->Visibility)
     {
     return;
     }
 
   this->Superclass::UpdatePolyDataPipeline();
 
-  /*if (this->Glyph3DMapper)
+  /*if(this->Glyph3DMapper)
     {
     this->Glyph3DMapper->SetInputConnection(
       this->PolyData->GetSource()->GetOutputPort());

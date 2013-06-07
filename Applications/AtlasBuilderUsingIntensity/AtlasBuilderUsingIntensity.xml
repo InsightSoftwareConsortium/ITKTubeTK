@@ -1,80 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Atlas Computation</title>
-  <description> Computes an Atlas from a set of subject-specific files</description>
+  <title>Atlas Computation (TubeTK)</title>
+  <description>Computes an atlas from a set of subject-specific files.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Stephen R. Aylward, Roland Kwitt (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <file>
       <name>imageDocFile</name>
+      <label>Image Document File</label>
       <index>0</index>
-      <description>ObjectDocument with Euclidean distance map information</description>
+      <description>Object document with Euclidean distance map information.</description>
     </file>
     <image>
       <name>outputMeanAtlas</name>
-      <label>Output(mean) Atlas image</label>
+      <label>Output (Mean) Atlas Image</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output (mean) Atlas computed from subject-specific files</description>
+      <description>Output (mean) atlas computed from subject-specific files.</description>
     </image>
     <image>
       <name>outputVarianceAtlas</name>
-      <label>Output (variance) Atlas image</label>
+      <label>Output (Variance) Atlas Image</label>
       <channel>output</channel>
       <index>2</index>
-      <description>Output (variance) Atlas computed from subject-specific files</description>
+      <description>Output (variance) atlas computed from subject-specific files.</description>
     </image>
   </parameters>
   <parameters>
     <label>Additional Parameters</label>
-    <description>Additional Atlas generation parameters</description>
+    <description>Additional atlas generation parameters.</description>
     <image>
       <name>outputCountImage</name>
+      <label>Output Count Image</label>
       <longflag>outputCountImage</longflag>
-      <description>Filename to save the count image</description>
+      <description>Filename to save the count image.</description>
     </image>
     <boolean>
       <name>doImageSizeAdjustment</name>
+      <label>Do Image Size Adjustment</label>
       <longflag>doImageSizeAdjustment</longflag>
-      <description>Adjust the mean size to the input images</description>
+      <description>Adjust the mean size to the input images.</description>
       <default>false</default>
     </boolean>
     <boolean>
       <name>doImageOriginAdjustment</name>
+      <label>Do Image Origin Adjustment</label>
       <longflag>doImageOriginAdjustment</longflag>
-      <description>Adjust the mean origin to the input images</description>
+      <description>Adjust the mean origin to the input images.</description>
       <default>false</default>
     </boolean>
     <boolean>
       <name>useStdDeviation</name>
+      <label>Use Standard Deviation</label>
       <longflag>useStdDeviation</longflag>
       <description>Is the sigma image standard deviation?</description>
       <default>false</default>
     </boolean>
     <integer>
       <name>lowerThreshold</name>
+      <label>Lower Threshold</label>
       <longflag>lowerThreshold</longflag>
-      <description>Min. nr. of contributing images for pixel to be counted in output</description>
+      <description>Minimum number of contributing images for pixel to be counted in output.</description>
       <default>4</default>
     </integer>
     <double-vector>
       <name>outputSize</name>
+      <label>Output Size</label>
       <longflag>outputSize</longflag>
-      <description>Output image size (X,Y,Z) - Can't use with --doImageSizeAdjustment</description>
+      <description>Output image size (X,Y,Z). Cannot use with --doImageSizeAdjustment.</description>
     </double-vector>
     <integer-vector>
       <name>outputSpacing</name>
+      <label>Output Spacing</label>
       <longflag>outputSpacing</longflag>
-      <description>Output image spacing (default - initial image spacing)</description>
+      <description>Output image spacing. Default is the initial image spacing.</description>
     </integer-vector>
   </parameters>
-
 </executable>

@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,37 +20,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
+#include "itkFilterWatcher.h"
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-#include <itkJointHistogramImageFunction.h>
+#include "itkJointHistogramImageFunction.h"
 
-int itkJointHistogramImageFunctionTest(int argc, char* argv [] ) 
+int itkJointHistogramImageFunctionTest(int argc, char* argv[] )
 {
   if( argc < 4 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << 
+    std::cerr << argv[0] <<
       " Image1 Image2 mask <1=linearize> outZImage [meanHist] [stdDevHist]"
       << std::endl;
     return EXIT_FAILURE;
     }
-  
+
   // Define the dimension of the images
   const unsigned int Dimension = 2;
 
   // Define the pixel type
   typedef float PixelType;
-  
+
   // Declare the types of the images
   typedef itk::Image<PixelType, Dimension>  ImageType;
 
@@ -61,7 +58,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
   // Declare the type for the Filter
   typedef itk::JointHistogramImageFunction< ImageType > FunctionType;
 
-  typedef itk::ImageFileWriter< FunctionType::HistogramType > 
+  typedef itk::ImageFileWriter< FunctionType::HistogramType >
                                                         HistoWriterType;
 
   // Create the reader and writer
@@ -71,7 +68,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -86,13 +83,13 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during mask read:\n"  << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage2 = reader->GetOutput();
-    
+
   // Read the mask
   reader = ReaderType::New();
   reader->SetFileName( argv[3] );
@@ -100,13 +97,13 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during mask read:\n"  << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer maskImage = reader->GetOutput();
-    
+
   FunctionType::Pointer func = FunctionType::New();
   func->SetInputImage( inputImage1 );
   func->SetInputMask( inputImage2 );
@@ -136,8 +133,8 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
       }
     ++maskIter;
     ++outIter;
-    }     
-  
+    }
+
   func->ComputeMeanAndStandardDeviation();
 
   if( argc > 4 )
@@ -150,7 +147,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
       {
       writerMean->Update();
       }
-    catch (itk::ExceptionObject& e)
+    catch(itk::ExceptionObject& e)
       {
       std::cerr << "Exception caught during mean write:\n"  << e;
       return EXIT_FAILURE;
@@ -167,7 +164,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
       {
       writerStdDev->Update();
       }
-    catch (itk::ExceptionObject& e)
+    catch(itk::ExceptionObject& e)
       {
       std::cerr << "Exception caught during std. dev. write:\n"  << e;
       return EXIT_FAILURE;
@@ -184,7 +181,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
       double tf = func->EvaluateAtIndex( outIter.GetIndex() );
       if( outIter.GetIndex()[0] == outIter.GetIndex()[1] )
         {
-        std::cout << "i = " << outIter.GetIndex()[0] 
+        std::cout << "i = " << outIter.GetIndex()[0]
                   << " : " << tf << std::endl;
         }
       outIter.Set( tf );
@@ -195,7 +192,7 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
       }
     ++maskIter;
     ++outIter;
-    }     
+    }
 
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[5] );
@@ -205,13 +202,13 @@ int itkJointHistogramImageFunctionTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;
     }
 
-  
+
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 }

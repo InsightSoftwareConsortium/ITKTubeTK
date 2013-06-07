@@ -21,22 +21,21 @@ limitations under the License.
 
 =========================================================================*/
 
-
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkAffineTransform.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkAffineTransform.h>
 #include "itkTubeSpatialObjectToDensityImage.h"
 
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 #include "itkTubeToTubeTransformFilter.h"
-#include "itkTransformFileReader.h"
-#include "itkTransformFactoryBase.h"
+#include <itkTransformFileReader.h>
+#include <itkTransformFactoryBase.h>
 
 // CLI parsing
 #include "TubesToDensityImageCLP.h"
@@ -101,7 +100,7 @@ int DoIt( int argc, char *argv[] )
 
   builder->SetMaxDensityIntensity( max_densityIntensity ); // Const
 
-  if ( !inputTemplateImage.empty() )
+  if( !inputTemplateImage.empty() )
     {
     std::cout << "Trying to use template image as constraints!" << std::endl;
 
@@ -129,8 +128,7 @@ int DoIt( int argc, char *argv[] )
     {
     std::cout << "Trying to use user-specified constraints!" << std::endl;
 
-    std::vector<int> size;
-    if ( !outputSize.size() )
+    if( !outputSize.size() )
       {
       std::cerr << "Output size is missing!" << std::endl;
       return -1;
@@ -142,7 +140,7 @@ int DoIt( int argc, char *argv[] )
       }
     builder->SetSize( sizeValue );
 
-    if ( !outputSpacing.size() )
+    if( !outputSpacing.size() )
       {
       std::cerr << "Output spacing is missing!" << std::endl;
       return -1;
@@ -155,18 +153,18 @@ int DoIt( int argc, char *argv[] )
     builder->SetSpacing( sp );
     }
 
-    builder->UseSquareDistance( useSquareDistance );
-    builder->SetTubes( ReadTubes( inputTubeFile.c_str() ) );
+  builder->UseSquareDistance( useSquareDistance );
+  builder->SetTubes( ReadTubes( inputTubeFile.c_str() ) );
 
-    progress = 0.1; // At about 10% done
-    progressReporter.Report( progress );
+  progress = 0.1; // At about 10% done
+  progressReporter.Report( progress );
 
-    timeCollector.Start( "Update filter" );
-    builder->Update();
-    timeCollector.Stop( "Update filter" );
+  timeCollector.Start( "Update filter" );
+  builder->Update();
+  timeCollector.Stop( "Update filter" );
 
-    progress = 0.8; // At about 80% done after filter
-    progressReporter.Report( progress );
+  progress = 0.8; // At about 80% done after filter
+  progressReporter.Report( progress );
 
   timeCollector.Start( "Save data" );
   WriteImage( outputDensityImage.c_str(), builder->GetDensityMap() );
@@ -190,7 +188,7 @@ TubesType::Pointer ReadTubes( const char * file )
   try
     {
     reader->SetFileName( file );
-    std::cout << "Reading Tube group... " ;
+    std::cout << "Reading Tube group... ";
     reader->Update();
     std::cout << "Done." << std::endl;
     }

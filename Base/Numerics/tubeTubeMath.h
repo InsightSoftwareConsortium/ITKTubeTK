@@ -20,8 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeTubeMath_h
 #define __tubeTubeMath_h
+
+#include <vector>
 
 namespace tube
 {
@@ -34,9 +37,8 @@ template< class TubePointT >
 bool
 ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tube );
 
-} // end namespace tube
-
+} // End namespace tube
 
 #include "tubeTubeMath.txx"
 
-#endif /* __tubeTubeMath_h */
+#endif // End !defined(__tubeTubeMath_h)

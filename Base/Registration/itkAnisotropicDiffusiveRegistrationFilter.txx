@@ -20,20 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusiveRegistrationFilter_txx
 #define __itkAnisotropicDiffusiveRegistrationFilter_txx
 
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilterUtils.h"
 
-#include "itkImageRegionSplitter.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-#include "vtkFloatArray.h"
-#include "vtkPointData.h"
-#include "vtkPointLocator.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkVersion.h"
+#include <itkImageRegionSplitter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <vtkFloatArray.h>
+#include <vtkPointData.h>
+#include <vtkPointLocator.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVersion.h>
 
 namespace itk
 {
@@ -44,7 +45,7 @@ namespace itk
 template < class TFixedImage, class TMovingImage, class TDeformationField >
 AnisotropicDiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
-::AnisotropicDiffusiveRegistrationFilter()
+::AnisotropicDiffusiveRegistrationFilter( void )
 {
   // Initialize attributes to NULL
   m_BorderSurface                               = 0;
@@ -104,7 +105,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::InitializeDeformationComponentAndDerivativeImages()
+::InitializeDeformationComponentAndDerivativeImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -154,7 +155,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::SetupNormalVectorAndWeightImages()
+::SetupNormalVectorAndWeightImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -266,10 +267,10 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeBorderSurfaceNormals()
+::ComputeBorderSurfaceNormals( void )
 {
   assert( m_BorderSurface );
-  vtkPolyDataNormals * normalsFilter = vtkPolyDataNormals::New();
+  vtkSmartPointer< vtkPolyDataNormals > normalsFilter = vtkSmartPointer< vtkPolyDataNormals >::New();
   normalsFilter->ComputePointNormalsOn();
   normalsFilter->ComputeCellNormalsOff();
   //normalsFilter->SetFeatureAngle(30); // TODO
@@ -280,14 +281,13 @@ AnisotropicDiffusiveRegistrationFilter
 #endif
   normalsFilter->Update();
   m_BorderSurface = normalsFilter->GetOutput();
-  normalsFilter->Delete();
 
   // Make sure we now have the normals
-  if ( !m_BorderSurface->GetPointData() )
+  if( !m_BorderSurface->GetPointData() )
     {
     itkExceptionMacro( << "Border surface does not contain point data" );
     }
-  else if ( !m_BorderSurface->GetPointData()->GetNormals() )
+  else if( !m_BorderSurface->GetPointData()->GetNormals() )
     {
     itkExceptionMacro( << "Border surface point data does not have normals" );
     }
@@ -304,7 +304,7 @@ AnisotropicDiffusiveRegistrationFilter
                                                  bool computeWeights )
 {
   // Setup the point locator and get the normals from the polydata
-  vtkPointLocator * pointLocator = vtkPointLocator::New();
+  vtkSmartPointer< vtkPointLocator > pointLocator = vtkSmartPointer< vtkPointLocator >::New();
   pointLocator->SetDataSet( m_BorderSurface );
   pointLocator->Initialize();
   pointLocator->BuildLocator();
@@ -336,9 +336,6 @@ AnisotropicDiffusiveRegistrationFilter
   // through iterators which do not increment the update buffer timestamp
   this->m_NormalVectorImage->Modified();
   this->m_WeightImage->Modified();
-
-  // Clean up memory
-  pointLocator->Delete();
 }
 
 /**
@@ -461,9 +458,9 @@ AnisotropicDiffusiveRegistrationFilter
       distance = 0.0;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        distance += pow( imageCoord[i] - borderCoord[i], 2 );
+        distance += vcl_pow( imageCoord[i] - borderCoord[i], 2 );
         }
-      distance = sqrt( distance );
+      distance = vcl_sqrt( distance );
       // The weight image will temporarily store distances
       weightIt.Set( distance );
       }
@@ -561,7 +558,7 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistanceExponential( const WeightType distance ) const
 {
-  return exp( -1.0 * m_Lambda * distance );
+  return vcl_exp( -1.0 * m_Lambda * distance );
 }
 
 /**
@@ -578,7 +575,7 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeWeightFromDistanceDirac( const WeightType distance ) const
 {
   return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
-                         * exp( -1.0 * m_Lambda * distance * distance ) ) );
+                         * vcl_exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**
@@ -588,7 +585,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDiffusionTensorImages()
+::ComputeDiffusionTensorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_NormalVectorImage );
@@ -645,10 +642,10 @@ AnisotropicDiffusiveRegistrationFilter
 
     // Create the normalMatrix used to calculate nn^T
     // (The first column is filled with the values of n, the rest are 0s)
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       normalMatrix( i, 0 ) = n[i];
-      for ( unsigned int j = 1; j < ImageDimension; j++ )
+      for( unsigned int j = 1; j < ImageDimension; j++ )
         {
         normalMatrix( i, j ) = 0;
         }
@@ -664,9 +661,9 @@ AnisotropicDiffusiveRegistrationFilter
     normalMatrix = normalMatrix * w; // w^2nn^T
 
     // Copy the matrices to the diffusion tensor
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      for ( unsigned int j = 0; j < ImageDimension; j++ )
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
         tangentialDiffusionTensor( i, j ) = tangentialMatrix( i, j );
         normalDiffusionTensor( i, j ) = normalMatrix( i, j );
@@ -686,7 +683,7 @@ template < class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeMultiplicationVectorImages()
+::ComputeMultiplicationVectorImages( void )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( this->GetOutput() );
@@ -791,6 +788,6 @@ AnisotropicDiffusiveRegistrationFilter
   normalDeformationField->Modified();
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusiveRegistrationFilter_txx)

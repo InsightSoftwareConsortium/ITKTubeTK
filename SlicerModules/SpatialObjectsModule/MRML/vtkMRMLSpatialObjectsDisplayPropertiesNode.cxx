@@ -20,9 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include <sstream>
 
-#include "vtkObjectFactory.h"
+#include <sstream>
+#include <cstring>
+
+#include <vtkObjectFactory.h>
 
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 
@@ -40,7 +42,7 @@ vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsDisplayPropertiesNode);
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayPropertiesNode::
-vtkMRMLSpatialObjectsDisplayPropertiesNode()
+vtkMRMLSpatialObjectsDisplayPropertiesNode( void )
 {
   // Default display
   this->ScalarInvariant = this->LinearMeasure;
@@ -67,9 +69,9 @@ vtkMRMLSpatialObjectsDisplayPropertiesNode()
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayPropertiesNode::
-~vtkMRMLSpatialObjectsDisplayPropertiesNode()
+~vtkMRMLSpatialObjectsDisplayPropertiesNode( void )
 {
-  if ( this->GlyphSource != NULL )
+  if( this->GlyphSource != NULL )
     {
     this->GlyphSource->Delete();
     }
@@ -106,11 +108,11 @@ ReadXMLAttributes(const char** atts)
 
   const char* attName;
   const char* attValue;
-  while (*atts != NULL)
+  while(*atts != NULL)
   {
       attName = *(atts++);
       attValue = *(atts++);
-      if (!strcmp(attName, "glyphGeometry"))
+      if(!std::strcmp(attName, "glyphGeometry"))
       {
       int glyphGeometry;
       std::stringstream ss;
@@ -118,31 +120,31 @@ ReadXMLAttributes(const char** atts)
       ss >> glyphGeometry;
       this->SetGlyphGeometry(glyphGeometry);
       }
-      else if (!strcmp(attName, "colorGlyphBy"))
+      else if(!std::strcmp(attName, "colorGlyphBy"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> ColorGlyphBy;
       }
-      else if (!strcmp(attName, "glyphScaleFactor"))
+      else if(!std::strcmp(attName, "glyphScaleFactor"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> GlyphScaleFactor;
       }
-      else if (!strcmp(attName, "lineGlyphResolution"))
+      else if(!std::strcmp(attName, "lineGlyphResolution"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> LineGlyphResolution;
       }
-      else if (!strcmp(attName, "tubeGlyphRadius"))
+      else if(!std::strcmp(attName, "tubeGlyphRadius"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> TubeGlyphRadius;
       }
-      else if (!strcmp(attName, "tubeGlyphNumberOfSides"))
+      else if(!std::strcmp(attName, "tubeGlyphNumberOfSides"))
       {
       std::stringstream ss;
       ss << attValue;
@@ -196,7 +198,7 @@ void vtkMRMLSpatialObjectsDisplayPropertiesNode::PrintSelf(ostream& os,
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsDisplayPropertiesNode::SetGlyphGeometry(int geometry)
 {
-  if ( this->GlyphGeometry != geometry )
+  if( this->GlyphGeometry != geometry )
     {
     this->GlyphGeometry = geometry;
     this->UpdateGlyphSource();
@@ -205,19 +207,19 @@ void vtkMRMLSpatialObjectsDisplayPropertiesNode::SetGlyphGeometry(int geometry)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource()
+void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource( void )
 {
   vtkDebugMacro("Get Glyph Source");
 
   // Get rid of any old glyph source
-  if ( this->GlyphSource != NULL )
+  if( this->GlyphSource != NULL )
     {
     this->GlyphSource->Delete();
     this->GlyphSource = NULL;
     }
 
   // Create a new glyph source according to current settings
-  switch (this->GlyphGeometry)
+  switch(this->GlyphGeometry)
     {
     case Lines:
     case Tubes:
@@ -227,7 +229,7 @@ void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource()
       line->Update();
 
       // if we are doing tubes, put a tube on the line
-      if (this->GlyphGeometry == Tubes)
+      if(this->GlyphGeometry == Tubes)
         {
         vtkTubeFilter *tube = vtkTubeFilter::New();
         tube->SetInput(line->GetOutput());
@@ -245,20 +247,20 @@ void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource()
         vtkDebugMacro("Get Glyph Source: Lines");
         this->SetGlyphSource(line->GetOutput());
         }
-      line->Delete( );
+      line->Delete();
       }
       break;
     }
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstScalarInvariant()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstScalarInvariant( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::LinearMeasure;
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastScalarInvariant()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastScalarInvariant( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::RelativeAnisotropy;
 }
@@ -267,19 +269,19 @@ int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastScalarInvariant()
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
 GetScalarEnumAsString(int var)
 {
-  if (var == vtkMRMLSpatialObjectsDisplayPropertiesNode::RelativeAnisotropy)
+  if(var == vtkMRMLSpatialObjectsDisplayPropertiesNode::RelativeAnisotropy)
     {
     return "RelativeAnisotropy";
     }
-  if (var == vtkMRMLSpatialObjectsDisplayPropertiesNode::LinearMeasure)
+  if(var == vtkMRMLSpatialObjectsDisplayPropertiesNode::LinearMeasure)
     {
     return "LinearMeasure";
     }
-  if (var == vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorOrientation)
+  if(var == vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorOrientation)
     {
     return "ColorOrientation";
     }
-  if (var == vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorMode)
+  if(var == vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorMode)
     {
     return "ColorMode";
     }
@@ -288,14 +290,14 @@ GetScalarEnumAsString(int var)
 
 //------------------------------------------------------------------------------
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
-GetScalarInvariantAsString()
+GetScalarInvariantAsString( void )
 {
   return this->GetScalarEnumAsString(this->ScalarInvariant);
 }
 
 //------------------------------------------------------------------------------
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
-GetGlyphGeometryAsString()
+GetGlyphGeometryAsString( void )
 {
   return this->GetGlyphGeometryAsString(this->GlyphGeometry);
 }
@@ -304,11 +306,11 @@ GetGlyphGeometryAsString()
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
 GetGlyphGeometryAsString(int geometry)
 {
-  if (geometry == this->Lines)
+  if(geometry == this->Lines)
     {
     return "Lines";
     }
-  if (geometry == this->Tubes)
+  if(geometry == this->Tubes)
     {
     return "Tubes";
     }
@@ -317,19 +319,19 @@ GetGlyphGeometryAsString(int geometry)
 
 //------------------------------------------------------------------------------
 const char* vtkMRMLSpatialObjectsDisplayPropertiesNode::
-GetColorGlyphByAsString()
+GetColorGlyphByAsString( void )
 {
   return this->GetScalarEnumAsString(this->ColorGlyphBy);
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstColorGlyphBy()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetFirstColorGlyphBy( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::LinearMeasure;
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastColorGlyphBy()
+int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastColorGlyphBy( void )
 {
   return vtkMRMLSpatialObjectsDisplayPropertiesNode::RelativeAnisotropy;
 }
@@ -338,7 +340,7 @@ int vtkMRMLSpatialObjectsDisplayPropertiesNode::GetLastColorGlyphBy()
 bool vtkMRMLSpatialObjectsDisplayPropertiesNode::
 ScalarInvariantHasKnownScalarRange(int ScalarInvariant)
 {
-  switch (ScalarInvariant)
+  switch(ScalarInvariant)
     {
     case vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorOrientation:
     case vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorMode:
@@ -362,7 +364,7 @@ ScalarInvariantHasKnownScalarRange(int ScalarInvariant)
 void vtkMRMLSpatialObjectsDisplayPropertiesNode
 ::ScalarInvariantKnownScalarRange(int ScalarInvariant, double range[2])
 {
-  switch (ScalarInvariant)
+  switch(ScalarInvariant)
     {
     case vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorOrientation:
     case vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorMode:

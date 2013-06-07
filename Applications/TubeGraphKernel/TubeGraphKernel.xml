@@ -1,69 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
   <title>Tube Graph Kernel (TubeTK)</title>
-  <description>Computes a (p.d.) kernel matrix K of similarity values between two collections of input graphs. \
-Given a list A of N graphs and a list B of M graphs, the K(i,j)-th entry of K contains the similarity \
-value among the i-th graph of A and the j-th graph of B. K will eventually be a N x M matrix.</description>
+  <description>Computes a (p.d.) kernel matrix K of similarity values between two collections of input graphs. Given a list A of N graphs and a list B of M graphs, the K(i,j)-th entry of K contains the similarity value among the i-th graph of A and the j-th graph of B. K will eventually be a N x M matrix.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Roland Kwitt, Stephen R. Aylward, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Roland Kwitt, Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <file>
       <name>argGraphListA</name>
+      <label>Graph List A</label>
       <description>First list of input graphs.</description>
       <index>0</index>
     </file>
     <file>
       <name>argGraphListB</name>
+       <label>Graph List B</label>
       <description>Second list of input graphs.</description>
       <index>1</index>
     </file>
     <file>
       <name>argOutputKernel</name>
+      <label>Output Kernel</label>
       <description>Basename for output kernel (will write .bin, .libsvm, .txt files).</description>
       <index>2</index>
     </file>
     <string>
       <name>argBasePath</name>
+      <label>Absolute Path to Graph Files</label>
       <longflag>basePath</longflag>
-      <description>Absolute path to the graph files (Optional).</description>
+      <description>Absolute path to the graph files (optional).</description>
     </string>
     <string>
       <name>argGlobalLabelFileName</name>
+      <label>Global Label File</label>
       <longflag>globalLabelFile</longflag>
-      <description>Specify a global label file to use (Optional).</description>
+      <description>Specify a global label file to use (optional).</description>
     </string>
     <integer>
       <name>argGraphKernelType</name>
+      <label>Graph Kernel Type</label>
       <longflag>graphKernelType</longflag>
-      <description>
-      0 ... Shortest-Path kernel, 1 ... Weisfeiler-Lehman subtree kernel.
-      </description>
+      <description>0 ... Shortest-path kernel, 1 ... Weisfeiler-Lehman subtree kernel.</description>
       <default>0</default>
     </integer>
     <integer>
       <name>argSubtreeHeight</name>
+      <label>Subtree Height</label>
       <longflag>subtreeHeight</longflag>
-      <description>
-      Subtree height for Weisfeiler-Lehman kernel.
-      </description>
+      <description>Subtree height for Weisfeiler-Lehman kernel.</description>
       <default>1</default>
     </integer>
     <integer>
       <name>argDefaultLabelType</name>
+      <label>Default Label Type</label>
       <longflag>defaultLabelType</longflag>
-      <description>
-      If no label file is associated with graphs, or no global label file is given, this specifies the default node labeling strategy (0 ... label by node ID, 1 ... label by node degree).
-      </description>
+      <description>If no label file is associated with graphs, or no global label file is given, this specifies the default node labeling strategy (0 ... label by node ID, 1 ... label by node degree).</description>
       <default>0</default>
     </integer>
   </parameters>
-
 </executable>

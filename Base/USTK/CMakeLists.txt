@@ -21,34 +21,39 @@
 #
 ##############################################################################
 
-project( USTK )
+project( TubeUSTK )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_USTK_H_Files
-  itkLabelMapToAcousticImpedanceImageFilter.h
-  itkLabelMapToAcousticImpedanceFunctor.h
+  itkAcousticImpulseResponseImageFilter.h
   itkAngleOfIncidenceImageFilter.h
+  itkGradientBasedAngleOfIncidenceImageFilter.h
+  itkLabelMapToAcousticImpedanceFunctor.h
+  itkLabelMapToAcousticImpedanceImageFilter.h
+  itkUltrasoundProbeGeometryCalculator.h
   )
 
 set( TubeTK_Base_USTK_TXX_Files
-  itkLabelMapToAcousticImpedanceImageFilter.txx
-  itkLabelMapToAcousticImpedanceFunctor.txx
+  itkAcousticImpulseResponseImageFilter.txx
   itkAngleOfIncidenceImageFilter.txx
+  itkGradientBasedAngleOfIncidenceImageFilter.txx
+  itkLabelMapToAcousticImpedanceFunctor.txx
+  itkLabelMapToAcousticImpedanceImageFilter.txx
+  itkUltrasoundProbeGeometryCalculator.txx
   )
 
-#set( TubeTK_Base_USTK_SRCS
-  #)
-
-#add_library( TubeUSTK ${TubeTK_Base_USTK_SRCS} )
-#target_link_libraries( TubeUSTK ${ITK_LIBRARIES} )
+add_custom_target( TubeUSTK SOURCES
+  ${TubeTK_Base_USTK_H_Files}
+  ${TubeTK_Base_USTK_TXX_Files}
+  )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
-endif()
+endif( BUILD_TESTING )
 
-install(FILES
+install( FILES
   ${TubeTK_Base_USTK_H_Files}
   ${TubeTK_Base_USTK_TXX_Files}
   DESTINATION include

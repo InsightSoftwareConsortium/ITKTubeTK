@@ -20,18 +20,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeCVTImageFilter_h
 #define __itkTubeCVTImageFilter_h
 
 #include <vector>
 
-#include "itkImage.h"
-#include "itkProcessObject.h"
-#include "itkIndex.h"
-#include "itkContinuousIndex.h"
-#include "itkImageToImageFilter.h"
-#include "itkImageRegionIterator.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkImage.h>
+#include <itkProcessObject.h>
+#include <itkIndex.h>
+#include <itkContinuousIndex.h>
+#include <itkImageToImageFilter.h>
+#include <itkImageRegionIterator.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 namespace itk
 {
@@ -105,7 +106,7 @@ public:
   itkSetMacro(BatchSamplingMethod, SamplingMethodEnum);
 
   /** */
-  PointArrayType * GetCentroids()
+  PointArrayType * GetCentroids( void )
     { return & m_Centroids; }
   void SetCentroids(const PointArrayType * centroids);
 
@@ -115,14 +116,14 @@ public:
 
 
 protected:
-  CVTImageFilter();
-  ~CVTImageFilter() {};
+  CVTImageFilter( void );
+  ~CVTImageFilter( void ) {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  void GenerateInputRequestedRegion();
+  void GenerateInputRequestedRegion( void );
   void EnlargeOutputRequestedRegion(DataObject * output);
-  void GenerateData();
+  void GenerateData( void );
 
   double ComputeIteration(double & energyDiff);
   void ComputeSample(PointArrayType * sample, unsigned int sampleSize,
@@ -158,15 +159,14 @@ private:
   unsigned int          m_NumberOfIterationsPerBatch;
   unsigned int          m_NumberOfSamplesPerBatch;
 
-}; // end of class
+}; // End class CVTImageFilter
 
-}// end namespace tube
+} // End namespace tube
 
-}// end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeCVTImageFilter.txx"
-#endif   // ITK_MANUAL_INSTANTIATION
+#endif
 
-#endif  // _itkCVTImageFilter_h
+#endif // End !defined(_itkCVTImageFilter_h)

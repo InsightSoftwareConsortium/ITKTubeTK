@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // qMRML includes
 #include "qSlicerSpatialObjectsGlyphWidget.h"
 #include "ui_qSlicerSpatialObjectsGlyphWidget.h"
@@ -166,7 +167,7 @@ setSpatialObjectsDisplayPropertiesNode(
   d->GlyphTypeSelector->clear();
 
   int i = d->SpatialObjectsDisplayPropertiesNode->GetFirstGlyphGeometry();
-  for (; i <= d->SpatialObjectsDisplayPropertiesNode->GetLastGlyphGeometry();
+  for(; i <= d->SpatialObjectsDisplayPropertiesNode->GetLastGlyphGeometry();
        ++i)
     {
       std::cout << "Glyph" << i << ": "
@@ -183,7 +184,7 @@ void qSlicerSpatialObjectsGlyphWidget::setGlyphType(int type)
 {
   Q_D(qSlicerSpatialObjectsGlyphWidget);
 
-  if (!d->SpatialObjectsDisplayPropertiesNode)
+  if(!d->SpatialObjectsDisplayPropertiesNode)
     {
     return;
     }
@@ -192,7 +193,7 @@ void qSlicerSpatialObjectsGlyphWidget::setGlyphType(int type)
   QWidget* widget = d->GlyphSubPropertiesWidget->findChild<QWidget*>(
     d->SpatialObjectsDisplayPropertiesNode->GetGlyphGeometryAsString());
 
-  if (widget)
+  if(widget)
     {
     d->GlyphSubPropertiesWidget->setCurrentWidget(widget);
     d->GlyphSubPropertiesWidget->setEnabled(true);
@@ -208,7 +209,7 @@ void qSlicerSpatialObjectsGlyphWidget::setGlyphScaleFactor(double scale)
 {
   Q_D(qSlicerSpatialObjectsGlyphWidget);
 
-  if (!d->SpatialObjectsDisplayPropertiesNode)
+  if(!d->SpatialObjectsDisplayPropertiesNode)
     {
     return;
     }
@@ -221,7 +222,7 @@ void qSlicerSpatialObjectsGlyphWidget::setGlyphSpacing(double spacing)
 {
   Q_D(qSlicerSpatialObjectsGlyphWidget);
 
-  if (!d->SpatialObjectsDisplayPropertiesNode)
+  if(!d->SpatialObjectsDisplayPropertiesNode)
     {
     return;
     }
@@ -235,7 +236,7 @@ void qSlicerSpatialObjectsGlyphWidget::setTubeGlyphNumberOfSides(double sides)
 {
   Q_D(qSlicerSpatialObjectsGlyphWidget);
 
-  if (!d->SpatialObjectsDisplayPropertiesNode)
+  if(!d->SpatialObjectsDisplayPropertiesNode)
     {
     return;
     }
@@ -249,7 +250,7 @@ void qSlicerSpatialObjectsGlyphWidget::setTubeGlyphRadius(double radius)
 {
   Q_D(qSlicerSpatialObjectsGlyphWidget);
 
-  if (!d->SpatialObjectsDisplayPropertiesNode)
+  if(!d->SpatialObjectsDisplayPropertiesNode)
     {
     return;
     }
@@ -262,12 +263,12 @@ void qSlicerSpatialObjectsGlyphWidget::updateWidgetFromMRMLDisplayNode()
 {
   Q_D(qSlicerSpatialObjectsGlyphWidget);
 
-  if (!d->SpatialObjectsDisplayNode)
+  if(!d->SpatialObjectsDisplayNode)
     {
     return;
     }
 
-  if (d->SpatialObjectsDisplayPropertiesNode !=
+  if(d->SpatialObjectsDisplayPropertiesNode !=
       d->SpatialObjectsDisplayNode->GetSpatialObjectsDisplayPropertiesNode())
     {
     this->setSpatialObjectsDisplayPropertiesNode(
@@ -283,7 +284,7 @@ updateWidgetFromMRMLDisplayPropertiesNode()
 {
   Q_D(qSlicerSpatialObjectsGlyphWidget);
 
-  if (!d->SpatialObjectsDisplayNode ||
+  if(!d->SpatialObjectsDisplayNode ||
       !d->SpatialObjectsDisplayPropertiesNode)
     {
     return;

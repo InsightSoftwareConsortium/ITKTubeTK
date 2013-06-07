@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __itkInverseIntensityImageFilter_h
 #define __itkInverseIntensityImageFilter_h
 
@@ -41,59 +40,58 @@ template <class TInputImage>
 class ITK_EXPORT InverseIntensityImageFilter :
   public ImageToImageFilter< TInputImage, TInputImage>
 {
-  public:
+public:
 
-    /** Standard class typedefs. **/
-    typedef InverseIntensityImageFilter                     Self;
-    typedef ImageToImageFilter< TInputImage, TInputImage>   SuperClass;
+  /** Standard class typedefs. **/
+  typedef InverseIntensityImageFilter                     Self;
+  typedef ImageToImageFilter< TInputImage, TInputImage>   SuperClass;
 
-    typedef SmartPointer<Self>                              Pointer;
-    typedef SmartPointer<const Self>                        ConstPointer;
+  typedef SmartPointer<Self>                              Pointer;
+  typedef SmartPointer<const Self>                        ConstPointer;
 
-    typedef TInputImage                                     InputImageType;
-    typedef typename InputImageType::PixelType              InputPixelType;
-    typedef typename InputImageType::Pointer                InputImagePointer;
-    typedef typename InputImageType::ConstPointer           InputImageConstPointer;
+  typedef TInputImage                                     InputImageType;
+  typedef typename InputImageType::PixelType              InputPixelType;
+  typedef typename InputImageType::Pointer                InputImagePointer;
+  typedef typename InputImageType::ConstPointer           InputImageConstPointer;
 
-    typedef TInputImage                                     OutputImageType;
-    typedef typename OutputImageType::PixelType             OutputPixelType;
-    typedef typename OutputImageType::Pointer               OutputImagePointer;
+  typedef TInputImage                                     OutputImageType;
+  typedef typename OutputImageType::PixelType             OutputPixelType;
+  typedef typename OutputImageType::Pointer               OutputImagePointer;
 
-    typedef typename InputImageType::RegionType             RegionType;
+  typedef typename InputImageType::RegionType             RegionType;
 
-    /** Method for creation through the object factory. **/
-    itkNewMacro(Self);
+  /** Method for creation through the object factory. **/
+  itkNewMacro(Self);
 
-    itkSetMacro(InverseMaximumIntensity, InputPixelType);
-    itkGetMacro(InverseMaximumIntensity, InputPixelType);
+  itkSetMacro(InverseMaximumIntensity, InputPixelType);
+  itkGetMacro(InverseMaximumIntensity, InputPixelType);
 
-    /** Run-time type information (and related methods). **/
-    itkTypeMacro(TubeNetworkSpatialObjectToImageFilter, ImageToImageFilter);
+  /** Run-time type information (and related methods). **/
+  itkTypeMacro(TubeNetworkSpatialObjectToImageFilter, ImageToImageFilter);
 
-  protected:
+protected:
 
-    InverseIntensityImageFilter() {};
-    ~InverseIntensityImageFilter(){};
+  InverseIntensityImageFilter( void );
+  ~InverseIntensityImageFilter( void ) {}
 
-    /* GenerateData produce the main work */
-    void GenerateData();
+  /* GenerateData produce the main work */
+  void GenerateData( void );
 
-  private:
+private:
 
-    void PrintSelf(std::ostream& os, Indent indent) const
-               { SuperClass::PrintSelf(os,indent);   }
+  void PrintSelf(std::ostream& os, Indent indent) const
+             { SuperClass::PrintSelf(os,indent);   }
 
-   InputPixelType                 m_InverseMaximumIntensity;
+  InputPixelType                 m_InverseMaximumIntensity;
 
-}; // end of class
+}; // End class InverseIntensityImageFilter
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkInverseIntensityImageFilter.txx"
-#endif   // ITK_MANUAL_INSTANTIATION
+#endif
 
-#endif  // _itkInverseIntensityImageFilter_h
+#endif // End !defined(_itkInverseIntensityImageFilter_h)

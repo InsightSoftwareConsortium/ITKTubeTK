@@ -20,12 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkSheetnessMeasureImageFilter_txx
 #define __itkSheetnessMeasureImageFilter_txx
 
 #include "itkSheetnessMeasureImageFilter.h"
-#include "itkImageRegionIterator.h"
-#include "vnl/vnl_math.h"
+#include <itkImageRegionIterator.h>
+#include <vnl/vnl_math.h>
 
 namespace itk
 {
@@ -34,7 +35,7 @@ namespace itk
  */
 template< typename TPixel >
 SheetnessMeasureImageFilter< TPixel >
-::SheetnessMeasureImageFilter()
+::SheetnessMeasureImageFilter( void )
 {
   m_Alpha = 0.5;
   m_Beta = 0.5;
@@ -51,7 +52,7 @@ SheetnessMeasureImageFilter< TPixel >
 template< typename TPixel >
 void
 SheetnessMeasureImageFilter< TPixel >
-::GenerateData()
+::GenerateData( void )
 {
   itkDebugMacro(<< "SheetnessMeasureImageFilter generating data ");
 
@@ -78,7 +79,7 @@ SheetnessMeasureImageFilter< TPixel >
                                                 output->GetRequestedRegion() );
   oit.GoToBegin();
   it.GoToBegin();
-  while ( !it.IsAtEnd() )
+  while( !it.IsAtEnd() )
     {
     // Get the eigen value
     eigenValue = it.Get();
@@ -201,6 +202,6 @@ SheetnessMeasureImageFilter< TPixel >
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSheetnessMeasureImageFilter_txx)

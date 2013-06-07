@@ -1,33 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Enhance Image Using NJet Measures fed into Discriminant Analysis (TubeTK)</title>
+  <title>Enhance Image Using NJet Measures Fed into Discriminant Analysis (TubeTK)</title>
   <description>Given an image and foreground and background masks, computes multiscale Jet (0, 1, and 2 order) features at each pixel, performs a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
-  <documentation-url></documentation-url>
-  <license></license>
-  <contributor>Stephen R. Aylward</contributor>
-  <acknowledgements></acknowledgements>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <string>
       <name>inputVolumesString</name>
-      <label>Input volume list</label>
+      <label>Input Volume List</label>
       <index>0</index>
-      <description>Input volume list</description>
-      <default></default>
+      <description>Input volume list.</description>
+      <default/>
     </string>
     <image>
       <name>labelmap</name>
-      <label>Label map</label>
+      <label>Label Map</label>
       <longflag>labelmap</longflag>
       <description>Label map that designates the object of interest and "other."</description>
       <default></default>
     </image>
     <string>
       <name>outputBase</name>
-      <label>Output base name</label>
+      <label>Output Base Name</label>
       <index>1</index>
       <description>Base name for output basis images</description>
       <default></default>
@@ -94,16 +95,16 @@
     </double-vector>
     <double-vector>
       <name>whitenMeans</name>
-      <description>Whiten means</description>
-      <label>Whiten means</label>
-      <default></default>
+      <label>Whiten Means</label>
+      <description>Whiten means.</description>
+      <default/>
       <longflag>whitenMeans</longflag>
     </double-vector>
     <double-vector>
       <name>whitenStdDevs</name>
-      <description>Whiten std. devs.</description>
-      <label>Whiten std. devs.</label>
-      <default></default>
+      <label>Whiten Standard Deviations</label>
+      <description>Whiten standard deviationss.</description>
+      <default/>
       <longflag>whitenStdDevs</longflag>
     </double-vector>
     <integer>

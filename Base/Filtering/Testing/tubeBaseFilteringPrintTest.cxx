@@ -23,8 +23,8 @@ limitations under the License.
 
 #define ITK_LEAN_AND_MEAN
 
-#include "itkImage.h"
-#include "itkMatrix.h"
+#include <itkImage.h>
+#include <itkMatrix.h>
 
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
@@ -36,7 +36,7 @@ limitations under the License.
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
 #include "itkSheetnessMeasureImageFilter.h"
 
-int tubeBaseFilteringPrintTest( int, char* [] )
+int tubeBaseFilteringPrintTest( int, char*[] )
 {
   typedef itk::Image< float, 3 >  ImageType;
   typedef itk::Matrix< float, 3 > MatrixType;

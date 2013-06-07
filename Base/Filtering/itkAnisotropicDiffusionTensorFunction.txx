@@ -20,16 +20,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusionTensorFunction_txx
 #define __itkAnisotropicDiffusionTensorFunction_txx
 
 #include "itkAnisotropicDiffusionTensorFunction.h"
 
-namespace itk {
+namespace itk
+{
 
 template< class TImageType >
 AnisotropicDiffusionTensorFunction< TImageType>
-::AnisotropicDiffusionTensorFunction()
+::AnisotropicDiffusionTensorFunction( void )
 {
   typename Superclass::RadiusType r;
   r.Fill( 1 );
@@ -100,7 +102,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
                 const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
-  GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
+  GlobalDataStruct *gd = static_cast<GlobalDataStruct *>( globalData );
   assert( gd );
   gd->m_GradMagSqr = 1.0e-6;
 
@@ -128,7 +130,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
     const FloatOffsetType& itkNotUsed(offset) )
 {
   // Global data structure
-  GlobalDataStruct *gd = (GlobalDataStruct *)globalData;
+  GlobalDataStruct *gd = static_cast<GlobalDataStruct *>( globalData );
   assert( gd );
   gd->m_GradMagSqr = 1.0e-6;
 
@@ -332,6 +334,6 @@ AnisotropicDiffusionTensorFunction<TImageType>
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusionTensorFunction_txx)

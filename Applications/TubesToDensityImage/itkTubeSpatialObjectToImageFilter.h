@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __itkTubeSpatialObjectToImageFilter_h
 #define __itkTubeSpatialObjectToImageFilter_h
 
@@ -37,8 +36,7 @@ namespace itk
 namespace tube
 {
 
-/**
- * \class itkTubeSpatialObjectToImageFilter
+/** \class itkTubeSpatialObjectToImageFilter
  * \brief This filter creates a binary image with 1 representing the
  * vessel existence in that voxels and 0 not.
  * Also, forms the same image, but with the radius value in place of the 1.
@@ -55,100 +53,100 @@ class ITK_EXPORT TubeSpatialObjectToImageFilter :
   public SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
                                      TOutputImage>
 {
-  public:
+public:
 
-    /** Standard class typedefs. */
-    typedef TubeSpatialObjectToImageFilter                 Self;
-    typedef SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
-                                        TOutputImage>      SuperClass;
-    typedef SmartPointer<Self>                             Pointer;
-    typedef SmartPointer<const Self>                       ConstPointer;
+  /** Standard class typedefs. */
+  typedef TubeSpatialObjectToImageFilter                 Self;
+  typedef SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
+                                      TOutputImage>      SuperClass;
+  typedef SmartPointer<Self>                             Pointer;
+  typedef SmartPointer<const Self>                       ConstPointer;
 
-    /**Tube class typedef **/
-    typedef TOutputImage                                   OutputImageType;
-    typedef SpatialObject<ObjectDimension>                 SpatialObjectType;
-    typedef typename SpatialObjectType::ChildrenListType   ChildrenListType;
-    typedef TubeSpatialObject<ObjectDimension>             TubeType;
-    typedef typename TOutputImage::SizeType                SizeType;
+  /**Tube class typedef **/
+  typedef TOutputImage                                   OutputImageType;
+  typedef SpatialObject<ObjectDimension>                 SpatialObjectType;
+  typedef typename SpatialObjectType::ChildrenListType   ChildrenListType;
+  typedef TubeSpatialObject<ObjectDimension>             TubeType;
+  typedef typename TOutputImage::SizeType                SizeType;
 
-    typedef TRadiusImage                                   RadiusImage;
-    typedef typename TRadiusImage::Pointer                 RadiusImagePointer;
-    typedef typename TRadiusImage::PixelType               RadiusPixelType;
+  typedef TRadiusImage                                   RadiusImage;
+  typedef typename TRadiusImage::Pointer                 RadiusImagePointer;
+  typedef typename TRadiusImage::PixelType               RadiusPixelType;
 
-    typedef TTangentImage                                  TangentImage;
-    typedef typename TTangentImage::Pointer                TangentImagePointer;
-    typedef typename TTangentImage::PixelType              TangentPixelType;
+  typedef TTangentImage                                  TangentImage;
+  typedef typename TTangentImage::Pointer                TangentImagePointer;
+  typedef typename TTangentImage::PixelType              TangentPixelType;
 
-    /** Method for creation through the object factory. */
-    itkNewMacro(Self);
+  /** Method for creation through the object factory. */
+  itkNewMacro(Self);
 
-    /** Run-time type information (and related methods). */
-    itkTypeMacro(TubeSpatialObjectToImageFilter,
-                 SpatialObjectToImageFilter);
+  /** Run-time type information (and related methods). */
+  itkTypeMacro(TubeSpatialObjectToImageFilter,
+               SpatialObjectToImageFilter);
 
-    /** Set if the tube should be full inside */
-    itkSetMacro(UseRadius,bool);
-    itkGetMacro(UseRadius,bool);
+  /** Set if the tube should be full inside */
+  itkSetMacro(UseRadius,bool);
+  itkGetMacro(UseRadius,bool);
 
-    /** Set if the filter should build a radius image in parallel */
-    itkSetMacro(BuildRadiusImage, bool);
-    itkGetMacro(BuildRadiusImage, bool);
+  /** Set if the filter should build a radius image in parallel */
+  itkSetMacro(BuildRadiusImage, bool);
+  itkGetMacro(BuildRadiusImage, bool);
 
-    /** Set if the filter should build a tangent image in parallel */
-    itkSetMacro(BuildTangentImage, bool);
-    itkGetMacro(BuildTangentImage, bool);
+  /** Set if the filter should build a tangent image in parallel */
+  itkSetMacro(BuildTangentImage, bool);
+  itkGetMacro(BuildTangentImage, bool);
 
-    /**Image Pointer Definition and GetRadius return method */
-    RadiusImagePointer GetRadiusImage();
+  /**Image Pointer Definition and GetRadius return method */
+  RadiusImagePointer GetRadiusImage( void );
 
-    /**Image Pointer Definition and GetRadius return method */
-    TangentImagePointer GetTangentImage();
+  /**Image Pointer Definition and GetRadius return method */
+  TangentImagePointer GetTangentImage( void );
 
-    /** Set the FallOff value */
-    itkSetMacro(FallOff,double);
-    itkGetMacro(FallOff,double);
+  /** Set the FallOff value */
+  itkSetMacro(FallOff,double);
+  itkGetMacro(FallOff,double);
 
-    /** Set if the value of tubes that are crossing should accumulate
-     *  their values to produce the image */
-    itkSetMacro(Cumulative,bool);
-    itkGetMacro(Cumulative,bool);
+  /** Set if the value of tubes that are crossing should accumulate
+   *  their values to produce the image */
+  itkSetMacro(Cumulative,bool);
+  itkGetMacro(Cumulative,bool);
 
 
-  protected:
+protected:
 
-    TubeSpatialObjectToImageFilter() ;
-    ~TubeSpatialObjectToImageFilter();
+  TubeSpatialObjectToImageFilter( void );
+  ~TubeSpatialObjectToImageFilter( void );
 
-    /** Create the ouptut images and fill it */
-    void GenerateData();
+  /** Create the ouptut images and fill it */
+  void GenerateData( void );
 
-    void PrintSelf(std::ostream& os, Indent indent) const
-      {
-      SuperClass::PrintSelf(os,indent);
-      os << indent << "m_UseRadius: " << m_UseRadius << std::endl;
-      os << indent << "m_FallOff: " << m_FallOff << std::endl;
-      os << indent << "m_Cumulative: " << m_Cumulative << std::endl;
-      }
+  void PrintSelf(std::ostream& os, Indent indent) const
+    {
+    SuperClass::PrintSelf(os,indent);
+    os << indent << "m_UseRadius: " << m_UseRadius << std::endl;
+    os << indent << "m_FallOff: " << m_FallOff << std::endl;
+    os << indent << "m_Cumulative: " << m_Cumulative << std::endl;
+    }
 
-  private:
+private:
 
-    bool        m_BuildRadiusImage;
-    bool        m_BuildTangentImage;
-    bool        m_UseRadius;
-    double      m_FallOff;
-    bool        m_Cumulative;
+  bool        m_BuildRadiusImage;
+  bool        m_BuildTangentImage;
+  bool        m_UseRadius;
+  double      m_FallOff;
+  bool        m_Cumulative;
 
-    typename RadiusImage::Pointer     m_RadiusImage;
-    typename TangentImage::Pointer    m_TangentImage;
+  typename RadiusImage::Pointer     m_RadiusImage;
+  typename TangentImage::Pointer    m_TangentImage;
 
-}; // end of class
+}; // End class TubeSpatialObjectToImageFilter
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkTubeSpatialObjectToImageFilter.txx"
-#endif   // ITK_MANUAL_INSTANTIATION
+#include "itkTubeSpatialObjectToImageFilter.txx"
+#endif
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of namespace itk
+} // End namespace itk
 
-#endif  // _itkTubeSpatialObjectToImageFilter_h
+#endif // End !defined(_itkTubeSpatialObjectToImageFilter_h)

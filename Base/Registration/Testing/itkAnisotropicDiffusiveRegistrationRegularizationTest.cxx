@@ -20,21 +20,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 
-#include "itkImageLinearIteratorWithIndex.h"
-#include "itkImageFileWriter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkImageLinearIteratorWithIndex.h>
+#include <itkImageFileWriter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
-#include "vtkPlaneSource.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkSmartPointer.h"
-#include "vtkDataArray.h"
-#include "vtkPointData.h"
-#include "vtkPolyDataWriter.h"
+#include <vtkPlaneSource.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkSmartPointer.h>
+#include <vtkDataArray.h>
+#include <vtkPointData.h>
+#include <vtkPolyDataWriter.h>
 
 int itkAnisotropicDiffusiveRegistrationRegularizationTest(
-                                                      int argc, char* argv [] )
+                                                      int argc, char* argv[] )
 {
   if( argc < 7 )
     {
@@ -98,7 +99,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   VectorType  borderN( 0.0 ); // normal to the border
   VectorType  perpN;   // perpendicular to the border
 
-  borderSlope = atof( argv[3] );
+  borderSlope = std::atof( argv[3] );
   if( borderSlope == 0 )
     {
     borderN[0] = 0.0;
@@ -135,7 +136,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     }
 
   // Create the polydata for the surface
-  vtkSmartPointer< vtkPlaneSource > plane = vtkPlaneSource::New();
+  vtkSmartPointer< vtkPlaneSource > plane = vtkSmartPointer< vtkPlaneSource >::New();
   plane->SetCenter( center[0], center[1], center[2] );
   plane->SetNormal( borderN[0], borderN[1], borderN[2] );
   plane->Update();
@@ -148,13 +149,10 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randGenerator
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   randGenerator->Initialize( 137593424 );
-  PixelType     randX = 0;
-  PixelType     randY = 0;
-  PixelType     randZ = 0;
   double        mean = 0;
-  double        variance = atof(argv[2]);
+  double        variance = std::atof(argv[2]);
 
-  for( it.GoToBegin(); ! it.IsAtEnd(); ++it )
+  for( it.GoToBegin(); !it.IsAtEnd(); ++it )
     {
     index = it.GetIndex();
 
@@ -164,7 +162,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
       }
 
     // Use definition of a plane to decide which side we are on
-    if ( borderN * ( center - indexAsVector ) < 0 )
+    if( borderN * ( center - indexAsVector ) < 0 )
       {
       pixel = bottomHalfPixel;
       }
@@ -174,9 +172,9 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
       }
 
     // Add random noise
-    randX = randGenerator->GetNormalVariate( mean, variance );
-    randY = randGenerator->GetNormalVariate( mean, variance );
-    randZ = randGenerator->GetNormalVariate( mean, variance );
+    PixelType randX = randGenerator->GetNormalVariate( mean, variance );
+    PixelType randY = randGenerator->GetNormalVariate( mean, variance );
+    PixelType randZ = randGenerator->GetNormalVariate( mean, variance );
     pixel[0] += randX;
     pixel[1] += randY;
     pixel[2] += randZ;
@@ -211,7 +209,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   DiffusiveRegistrationFilterType::Pointer registrator = 0;
   AnisotropicDiffusiveRegistrationFilterType::Pointer anisotropicRegistrator
       = 0;
-  int useAnisotropic = atoi( argv[6] );
+  int useAnisotropic = std::atoi( argv[6] );
   if( useAnisotropic )
     {
     registrator = AnisotropicDiffusiveRegistrationFilterType::New();
@@ -228,8 +226,8 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
   registrator->SetFixedImage( fixedImage );
   // because we are just doing motion field regularization in this test:
   registrator->SetComputeIntensityDistanceTerm( false );
-  registrator->SetTimeStep( atof( argv[5] ) );
-  registrator->SetNumberOfIterations( atoi( argv[4] ) );
+  registrator->SetTimeStep( std::atof( argv[5] ) );
+  registrator->SetNumberOfIterations( std::atoi( argv[4] ) );
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetBorderSurface( plane->GetOutput() );
@@ -265,9 +263,9 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     for( int i = 0; i < normalData->GetNumberOfTuples(); i++ )
       {
       normalData->GetTuple( i, test );
-      if( fabs( test[0] - borderN[0] ) > ep
-          || fabs( test[1] - borderN[1] ) > ep
-          || fabs( test[2] - borderN[2] ) > ep )
+      if( vnl_math_abs( test[0] - borderN[0] ) > ep
+          || vnl_math_abs( test[1] - borderN[1] ) > ep
+          || vnl_math_abs( test[2] - borderN[2] ) > ep )
         {
         std::cerr << "index i=" << i << ": extracted normal [" << test[0] << " "
             << test[1] << " " << test[2] << "]" << std::endl;
@@ -286,5 +284,4 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest(
     }
 
   return EXIT_SUCCESS;
-
 }

@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -29,28 +29,28 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageSpatialObject.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageSpatialObject.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Application-specific includes
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkFRPROptimizer.h"
-#include "itkOnePlusOneEvolutionaryOptimizer.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkImageRegionIterator.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-#include "itkIdentityTransform.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkNormalizeImageFilter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkFRPROptimizer.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkImageRegionIterator.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itkIdentityTransform.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkNormalizeImageFilter.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -63,7 +63,8 @@ int DoIt( int argc, char * argv[] );
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
 
-namespace itk {
+namespace itk
+{
 
 template< class pixelT, unsigned int dimensionT >
 class BlendCostFunction
@@ -242,8 +243,9 @@ public:
 
 protected:
 
-  BlendCostFunction() {};
-  virtual ~BlendCostFunction() {};
+  BlendCostFunction( void )
+    : m_Mode(0), m_CallsToGetValue(0) {}
+  virtual ~BlendCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -268,7 +270,7 @@ private:
 
   mutable unsigned int                m_CallsToGetValue;
 
-};
+}; // End class BlendCostFunction
 
 template< class pixelT, unsigned int dimensionT >
 class BlendScaleCostFunction
@@ -470,8 +472,9 @@ public:
 
 protected:
 
-  BlendScaleCostFunction() {};
-  virtual ~BlendScaleCostFunction() {};
+  BlendScaleCostFunction( void )
+    : m_Mode(0), m_CallsToGetValue(0) {}
+  virtual ~BlendScaleCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -496,9 +499,9 @@ private:
 
   mutable unsigned int                m_CallsToGetValue;
 
-};
+}; // End class BlendScaleCostFunction
 
-}; //namespace itk
+} // End namespace itk
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )
@@ -817,7 +820,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

@@ -20,21 +20,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
+#ifndef __itkMeanAndSigmaImageBuilder_txx
+#define __itkMeanAndSigmaImageBuilder_txx
+
 template< class TInputImageType,
           class TOutputMeanImageType,
           class TOutputSigmaImageType>
 MeanAndSigmaImageBuilder< TInputImageType,
                           TOutputMeanImageType,
                           TOutputSigmaImageType>
-::MeanAndSigmaImageBuilder(void)
+::MeanAndSigmaImageBuilder( void )
+: m_ImageCountThreshold(1),
+  m_ThresholdInputImageBelowOn(false),
+  m_ThresholdInputImageBelow(0),
+  m_IsProcessing(false),
+  m_UseStandardDeviation(true),
+  m_DynamicallyAdjustOutputSize(false)
 {
-  this->SetIsProcessing( false );
-  this->SetThresholdInputImageBelow( 0 );
-
-  // This must be called AFTER SetThresholdInputImageBelow()
-  this->SetThresholdInputImageBelowOn( false );
-  this->SetUseStandardDeviation( true );
-  this->SetImageCountThreshold( 1 );
+  m_OutputSize.Fill(0);
+  m_OutputSpacing.Fill(0);
+  m_OutputOrigin.Fill(0);
 }
 
 
@@ -111,7 +117,7 @@ template< class TInputImageType,
 void MeanAndSigmaImageBuilder< TInputImageType,
                                TOutputMeanImageType,
                                TOutputSigmaImageType>
-::FinalizeOutput()
+::FinalizeOutput( void )
 {
   if( !( this->GetIsProcessing() ) )
     {
@@ -128,15 +134,13 @@ void MeanAndSigmaImageBuilder< TInputImageType,
   PointType   outputOrigin  = sumImage->GetOrigin();
 
   // Build Mean and Variance Images
-  OutputMeanImagePointer meanImage = this->GetOutputMeanImage();
-  meanImage = OutputMeanImageType::New();
+  OutputMeanImagePointer meanImage = OutputMeanImageType::New();
   meanImage->SetRegions( outputRegion );
   meanImage->SetSpacing( outputSpacing );
   meanImage->SetOrigin( outputOrigin );
   meanImage->Allocate();
 
-  OutputSigmaImagePointer sigmaImage = this->GetOutputSigmaImage();
-  sigmaImage = OutputSigmaImageType::New();
+  OutputSigmaImagePointer sigmaImage = OutputSigmaImageType::New();
   sigmaImage->SetRegions( outputRegion );
   sigmaImage->SetSpacing( outputSpacing );
   sigmaImage->SetOrigin( outputOrigin );
@@ -180,10 +184,10 @@ void MeanAndSigmaImageBuilder< TInputImageType,
         ProcessPixelType variance =
           ( sumSqr - ( (sum * sum ) / number )) / (number - 1);
 
-        // If Standard Deviation Calc. s = sqrt(s^2)
+        // If Standard Deviation Calc. s = vcl_sqrt(s^2)
         if( isStdDeviation )
           {
-          variance = sqrt(variance);
+          variance = vcl_sqrt(variance);
           }
         it_dev.Set( (OutputSigmaPixelType) variance );
         it_mean.Set( (OutputMeanPixelType)
@@ -213,8 +217,6 @@ void MeanAndSigmaImageBuilder< TInputImageType,
 
   // Unset the processing flag and dump the processing image pointers
   this->SetIsProcessing( false );
-  sumImage->Delete();
-  sumSquareImage->Delete();
 }
 
 
@@ -335,3 +337,5 @@ MeanAndSigmaImageBuilder< TInputImageType,
 
   this->SetOutputSize( inputSize );
 }
+
+#endif // End !defined(__itkMeanAndSigmaImageBuilder_txx)

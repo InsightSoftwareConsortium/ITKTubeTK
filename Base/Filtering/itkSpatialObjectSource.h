@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,11 +20,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkSpatialObjectSource_h
 #define __itkSpatialObjectSource_h
 
-#include "itkProcessObject.h"
-#include "itkSpatialObject.h"
+#include <itkProcessObject.h>
+#include <itkSpatialObject.h>
 
 namespace itk
 {
@@ -37,7 +38,7 @@ namespace itk
  * that returns a pointer to the output SpatialObject.
  */
 template< class TOutputSpatialObject >
-class ITK_EXPORT SpatialObjectSource: public ProcessObject
+class ITK_EXPORT SpatialObjectSource : public ProcessObject
 {
 public:
   /** Standard class typedefs. */
@@ -115,18 +116,19 @@ public:
     MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx );
 
 protected:
-  SpatialObjectSource();
-  virtual ~SpatialObjectSource() {}
+  SpatialObjectSource( void );
+  virtual ~SpatialObjectSource( void ) {}
 
 private:
   SpatialObjectSource( const Self & ); // purposely not implemented
   void operator=( const Self & );      // purposely not implemented
-};
 
-} // end namespace itk
+}; // End class SpatialObjectSource
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSpatialObjectSource.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSpatialObjectSource_h)

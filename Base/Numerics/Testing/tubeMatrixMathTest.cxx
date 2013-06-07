@@ -20,9 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <cstdlib>
 
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 #include "tubeMacro.h"
 #include "tubeMatrixMath.h"
@@ -133,5 +134,4 @@ int tubeMatrixMathTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
     }
 
   return EXIT_SUCCESS;
-
 }

@@ -20,16 +20,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkSheetnessMeasureImageFilter_h
 #define __itkSheetnessMeasureImageFilter_h
 
-#include "itkSymmetricSecondRankTensor.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include <itkSymmetricSecondRankTensor.h>
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 
 namespace itk
 {
 
-/**\class itkSheetnessMeasureImageFilter
+/** \class itkSheetnessMeasureImageFilter
  *
  * \brief Computes a measure of sheetness from the Hessian Eigenvalues
  *
@@ -50,7 +51,7 @@ namespace itk
  */
 
 template< typename  TPixel >
-class ITK_EXPORT SheetnessMeasureImageFilter:public
+class ITK_EXPORT SheetnessMeasureImageFilter : public
   ImageToImageFilter< Image< SymmetricSecondRankTensor< double, 3 >, 3 >,
                       Image< TPixel, 3 > >
 {
@@ -112,12 +113,12 @@ public:
   /** End concept checking */
 #endif
 protected:
-  SheetnessMeasureImageFilter();
-  ~SheetnessMeasureImageFilter() {}
+  SheetnessMeasureImageFilter( void );
+  ~SheetnessMeasureImageFilter( void ) {}
   void PrintSelf(std::ostream & os, Indent indent) const;
 
   /** Generate Data */
-  void GenerateData(void);
+  void GenerateData( void );
 
 private:
   SheetnessMeasureImageFilter(const Self &); //purposely not implemented
@@ -129,11 +130,13 @@ private:
   double m_Beta;
   double m_Cfactor;
   bool   m_DetectBrightSheets;
-};
-} // end namespace itk
+
+}; // End class SheetnessMeasureImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSheetnessMeasureImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSheetnessMeasureImageFilter_h)

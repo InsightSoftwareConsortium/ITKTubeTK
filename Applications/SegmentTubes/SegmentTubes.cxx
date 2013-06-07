@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -29,22 +29,22 @@ limitations under the License.
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
 #include "itkTubeRidgeExtractor.h"
-#include "itkSpatialObjectReader.h"
-#include "itkGroupSpatialObject.h"
-#include "itkTubeSpatialObjectPoint.h"
-#include "itkVesselTubeSpatialObject.h"
+#include <itkSpatialObjectReader.h>
+#include <itkGroupSpatialObject.h>
+#include <itkTubeSpatialObjectPoint.h>
+#include <itkVesselTubeSpatialObject.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -157,7 +157,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Ridge Extractor");
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

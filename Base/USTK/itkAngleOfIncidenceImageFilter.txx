@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAngleOfIncidenceImageFilter_txx
 #define __itkAngleOfIncidenceImageFilter_txx
 
 #include "itkAngleOfIncidenceImageFilter.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkProgressReporter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkResampleImageFilter.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkProgressReporter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkResampleImageFilter.h>
 
 namespace itk
 {
@@ -36,7 +37,7 @@ namespace itk
  */
 template< class TInputImage, class TOutputImage >
 AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
-::AngleOfIncidenceImageFilter()
+::AngleOfIncidenceImageFilter( void )
 {
   m_UltrasoundProbeOrigin.Fill(0);
 
@@ -62,12 +63,9 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
 }
 
-/**
- *
- */
 template< class TInputImage, class TOutputImage >
 void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
-::GenerateData(void)
+::GenerateData( void )
 {
   typedef typename TInputImage::SizeType          InputImageSizeType;
   typedef typename TInputImage::PointType         InputImagePointType;
@@ -119,7 +117,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   InputImageSpacingType inputImageSpacing;
   InputImagePointType   inputImageOrigin;
 
-  while ( !inputIt.IsAtEnd() )
+  while( !inputIt.IsAtEnd() )
     {
     //Compute the angle and set it to output iterator.
 
@@ -154,7 +152,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     //Normalize the vectors
     const double zeroNormVectorTolerance = 1e-8;
 
-    if ( (beamVector.GetNorm() > zeroNormVectorTolerance) &&
+    if( (beamVector.GetNorm() > zeroNormVectorTolerance) &&
          (primaryEigenVector.GetNorm() > zeroNormVectorTolerance) )
       {
       beamVector.Normalize();
@@ -163,7 +161,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
       //compute dot product
       double dotProduct = beamVector*primaryEigenVector;
 
-      outputIt.Set( fabs(dotProduct) );
+      outputIt.Set( vnl_math_abs(dotProduct) );
       }
 
     ++inputIt;
@@ -174,7 +172,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
 template< class TInputImage, class TOutputImage >
 void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
-::ComputeNormalVectorImage()
+::ComputeNormalVectorImage( void )
 {
   m_HessianFilter->SetInput( this->GetInput() );
 
@@ -203,7 +201,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   //Fill up the buffer with null vector
   unsigned int vectorLength = 3;
   itk::VariableLengthVector< double > nullVector( vectorLength );
-  for ( unsigned int i=0; i < vectorLength; i++ )
+  for( unsigned int i=0; i < vectorLength; i++ )
     {
     nullVector[i] = 0.0;
     }
@@ -233,7 +231,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
   const double toleranceEigenValues = 1e-4;
 
-  while (!eigenValueImageIterator.IsAtEnd())
+  while(!eigenValueImageIterator.IsAtEnd())
     {
     // Get the eigen value
     EigenValueArrayType eigenValue;
@@ -243,9 +241,9 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     double largest = vnl_math_abs( eigenValue[0] );
     unsigned int largestEigenValueIndex=0;
 
-    for ( unsigned int i=1; i <=2; i++ )
+    for( unsigned int i=1; i <=2; i++ )
       {
-      if (  vnl_math_abs( eigenValue[i] > largest ) )
+      if(  vnl_math_abs( eigenValue[i] > largest ) )
         {
         largest = vnl_math_abs( eigenValue[i] );
         largestEigenValueIndex = i;
@@ -262,11 +260,11 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
                                          << smallest << ","
                                          << largest << ")" << std::endl;
     */
-    if( fabs(largest) >  toleranceEigenValues  )
+    if( vnl_math_abs(largest) >  toleranceEigenValues  )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );
-      for ( unsigned int i=0; i < vectorLength; i++ )
+      for( unsigned int i=0; i < vectorLength; i++ )
         {
         primaryEigenVector[i] = matrixPixel[largestEigenValueIndex][i];
         }
@@ -292,6 +290,6 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   << std::endl;
 }
 
+} // End namespace itk
 
-} // end namespace itk
-#endif
+#endif // End !defined(__itkAngleOfIncidenceImageFilter_txx)

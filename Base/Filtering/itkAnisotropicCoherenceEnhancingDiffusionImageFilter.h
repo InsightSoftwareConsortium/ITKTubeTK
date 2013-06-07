@@ -20,19 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h
 #define __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h
 
 #include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkMultiThreader.h"
-#include "itkDiffusionTensor3D.h"
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkMultiThreader.h>
+#include <itkDiffusionTensor3D.h>
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 /** \class AnisotropicCoherenceEnhancingDiffusionImageFilter
  *
  * \brief This class is implementation of Coherence-enhancing diffusion (CED):
@@ -133,12 +135,12 @@ public:
 
 
 protected:
-  AnisotropicCoherenceEnhancingDiffusionImageFilter();
- ~AnisotropicCoherenceEnhancingDiffusionImageFilter() {}
+  AnisotropicCoherenceEnhancingDiffusionImageFilter( void );
+ ~AnisotropicCoherenceEnhancingDiffusionImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage();
+  void virtual UpdateDiffusionTensorImage( void );
 
 private:
   //purposely not implemented
@@ -149,13 +151,13 @@ private:
   double     m_Alpha;
   double     m_Sigma;
   double     m_SigmaOuter;
-};
 
+}; // End class AnisotropicCoherenceEnhancingDiffusionImageFilter
 
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx"
+#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h)

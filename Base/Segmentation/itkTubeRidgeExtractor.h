@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -25,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRidgeExtractor_h
 #define __itkTubeRidgeExtractor_h
 
@@ -33,13 +34,13 @@ limitations under the License.
 
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
-#include "tubeOptBrent1D.h"
+#include "tubeBrentOptimizer1D.h"
 
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeRadiusExtractor.h"
 
-#include "itkContinuousIndex.h"
-#include "itkVesselTubeSpatialObject.h"
+#include <itkContinuousIndex.h>
+#include <itkVesselTubeSpatialObject.h>
 
 
 namespace itk
@@ -257,11 +258,11 @@ public:
 
   /**
    * Get the data spline 1D */
-  ::tube::Spline1D * GetDataSpline1D(void);
+  ::tube::Spline1D * GetDataSpline1D( void );
 
   /**
    * Get the data spline optimizer */
-  ::tube::Optimizer1D * GetDataSplineOptimizer(void);
+  ::tube::Optimizer1D * GetDataSplineOptimizer( void );
 
   /**
    * Set the scale */
@@ -336,7 +337,7 @@ public:
 
   /**
    * Set the idle callback */
-  void   IdleCallBack( bool ( *idleCallBack )() );
+  void   IdleCallBack( bool ( *idleCallBack )( void ) );
 
   /**
    * Set the status callback */
@@ -345,8 +346,8 @@ public:
 
 protected:
 
-  RidgeExtractor();
-  virtual ~RidgeExtractor();
+  RidgeExtractor( void );
+  virtual ~RidgeExtractor( void );
 
   RidgeExtractor( const Self& ) {}
   void operator=( const Self& ) {}
@@ -360,68 +361,67 @@ protected:
 
 private:
 
-  typename ImageType::Pointer                      m_InputImage;
+  typename ImageType::Pointer                        m_InputImage;
 
-  typename BlurImageFunction<ImageType>::Pointer   m_DataFunc;
+  typename BlurImageFunction<ImageType>::Pointer     m_DataFunc;
 
-  typename TubeMaskImageType::Pointer              m_TubeMaskImage;
+  typename TubeMaskImageType::Pointer                m_TubeMaskImage;
 
-  bool                                             m_DynamicScale;
-  double                                           m_DynamicScaleUsed;
-  RadiusExtractor<TInputImage>                   * m_RadiusExtractor;
+  bool                                               m_DynamicScale;
+  double                                             m_DynamicScaleUsed;
+  RadiusExtractor<TInputImage>                     * m_RadiusExtractor;
 
-  int                                              m_RecoveryMax;
+  int                                                m_RecoveryMax;
 
-  double                                           m_DataMin;
-  double                                           m_DataMax;
-  double                                           m_DataRange;
+  double                                             m_DataMin;
+  double                                             m_DataMax;
+  double                                             m_DataRange;
 
-  double                                           m_StepX;
-  double                                           m_ThreshT;
-  double                                           m_ThreshX;
+  double                                             m_StepX;
+  double                                             m_ThreshT;
+  double                                             m_ThreshX;
 
-  IndexType                                        m_ExtractBoundMin;
-  IndexType                                        m_ExtractBoundMax;
+  IndexType                                          m_ExtractBoundMin;
+  IndexType                                          m_ExtractBoundMax;
 
-  ::tube::SplineApproximation1D                    m_DataSpline1D;
-  ::tube::OptBrent1D                               m_DataSplineOpt;
-  ::tube::SplineND                               * m_DataSpline;
-  ::tube::UserFunc< vnl_vector<int>, double >    * m_SplineValueFunc;
+  ::tube::SplineApproximation1D                      m_DataSpline1D;
+  ::tube::BrentOptimizer1D                           m_DataSplineOpt;
+  ::tube::SplineND                                 * m_DataSpline;
+  ::tube::UserFunction< vnl_vector<int>, double >  * m_SplineValueFunc;
 
-  double                                           m_CurvatureExpectedMax;
+  double                                             m_CurvatureExpectedMax;
 
-  double                                           m_ThreshRidgeness;
-  double                                           m_ThreshRidgenessStart;
-  double                                           m_ThreshRoundness;
-  double                                           m_ThreshRoundnessStart;
-  double                                           m_ThreshCurvature;
-  double                                           m_ThreshCurvatureStart;
-  double                                           m_ThreshLinearity;
-  double                                           m_ThreshLinearityStart;
+  double                                             m_ThreshRidgeness;
+  double                                             m_ThreshRidgenessStart;
+  double                                             m_ThreshRoundness;
+  double                                             m_ThreshRoundnessStart;
+  double                                             m_ThreshCurvature;
+  double                                             m_ThreshCurvatureStart;
+  double                                             m_ThreshLinearity;
+  double                                             m_ThreshLinearityStart;
 
-  VectorType                                       m_X;
-  VectorType                                       m_XP;
-  double                                           m_XVal;
+  VectorType                                         m_X;
+  VectorType                                         m_XP;
+  double                                             m_XVal;
 
-  VectorType                                       m_XD;
-  MatrixType                                       m_XH;
-  VectorType                                       m_XHEVal;
-  MatrixType                                       m_XHEVect;
+  VectorType                                         m_XD;
+  MatrixType                                         m_XH;
+  VectorType                                         m_XHEVal;
+  MatrixType                                         m_XHEVect;
 
-  typename TubeType::Pointer                       m_Tube;
+  typename TubeType::Pointer                         m_Tube;
 
-  bool  ( *m_IdleCallBack )();
+  bool  ( *m_IdleCallBack )( void );
   void  ( *m_StatusCallBack )( const char *, const char *, int );
 
-};
+}; // End class RidgeExtractor
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
-
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeRidgeExtractor.txx"
 #endif
 
-#endif /* __itkTubeRidgeExtractor_h */
+#endif // End !defined(__itkTubeRidgeExtractor_h)

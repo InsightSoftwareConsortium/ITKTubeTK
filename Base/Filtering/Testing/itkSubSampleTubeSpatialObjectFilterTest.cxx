@@ -23,12 +23,12 @@ limitations under the License.
 
 #include "itkSubSampleTubeSpatialObjectFilter.h"
 
-#include "itkGroupSpatialObject.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkSpatialObjectReader.h"
-#include "itkSpatialObjectWriter.h"
+#include <itkGroupSpatialObject.h>
+#include <itkVesselTubeSpatialObject.h>
+#include <itkSpatialObjectReader.h>
+#include <itkSpatialObjectWriter.h>
 
-int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
+int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv[] )
 {
   if( argc < 3 )
     {
@@ -89,6 +89,7 @@ int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
       catch( itk::ExceptionObject & error )
         {
         std::cerr << "Error: " << error << std::endl;
+        delete children;
         return EXIT_FAILURE;
         }
       output->AddSpatialObject( subSampleFilter->GetOutput() );
@@ -107,10 +108,10 @@ int itkSubSampleTubeSpatialObjectFilterTest( int argc, char* argv [] )
   catch( itk::ExceptionObject & error )
     {
     std::cerr << "Error: " << error << std::endl;
+    delete children;
     return EXIT_FAILURE;
     }
 
   delete children;
-
   return EXIT_SUCCESS;
 }

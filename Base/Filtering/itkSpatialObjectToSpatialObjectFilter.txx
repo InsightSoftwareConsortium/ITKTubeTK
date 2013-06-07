@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkSpatialObjectToSpatialObjectFilter_txx
 #define __itkSpatialObjectToSpatialObjectFilter_txx
 
@@ -30,7 +31,7 @@ namespace itk
 
 template< typename TInputSpatialObject, typename TOutputSpatialObject >
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
-::SpatialObjectToSpatialObjectFilter()
+::SpatialObjectToSpatialObjectFilter( void )
 {
   this->SetNumberOfRequiredInputs( 1 );
 }
@@ -78,7 +79,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
   const TInputSpatialObject * input = dynamic_cast< const TInputSpatialObject * >
     ( this->ProcessObject::GetInput( index ) );
 
-  if ( input == NULL && this->ProcessObject::GetInput( input ) != NULL )
+  if( input == NULL && this->ProcessObject::GetInput( input ) != NULL )
     {
     itkWarningMacro (<< "Unable to convert input number " << index
       << " to type " <<  typeid( InputSpatialObjectType ).name () );
@@ -86,6 +87,6 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
   return input;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkSpatialObjectToSpatialObjectFilter_txx)

@@ -29,53 +29,63 @@ include( ${ITK_USE_FILE} )
 set( TubeTK_Base_Numerics_H_Files
   itkImageRegionMomentsCalculator.h
   itkJointHistogramImageFunction.h
+  itkTubeBasisFeatureVectorGenerator.h
   itkTubeBlurImageFunction.h
-  itkTubeSupervisedLinearBasisGenerator.h
+  itkTubeFeatureVectorGenerator.h
+  itkTubeNJetFeatureVectorGenerator.h
   itkTubeNJetImageFunction.h
-  itkTubeNJetSupervisedLinearBasisGenerator.h
+  itkTubeRidgeFeatureVectorGenerator.h
   itkVectorImageToListGenerator.h
   itkVotingResampleImageFunction.h
+  tubeBrentOptimizer1D.h
+  tubeGoldenMeanOptimizer1D.h
   tubeMatrixMath.h
-  tubeOptBrent1D.h
-  tubeOptGoldenMean1D.h
   tubeOptimizer1D.h
   tubeOptimizerND.h
-  tubeOptParabolicFit1D.h
+  tubeParabolicFitOptimizer1D.h
   tubeSpline1D.h
   tubeSplineApproximation1D.h
   tubeSplineND.h
   tubeTubeMath.h
-  tubeUserFunc.h
+  tubeUserFunction.h
   )
 
 set( TubeTK_Base_Numerics_TXX_Files
   itkImageRegionMomentsCalculator.txx
   itkJointHistogramImageFunction.txx
-  itkTubeSupervisedLinearBasisGenerator.txx
+  itkTubeBasisFeatureVectorGenerator.txx
+  itkTubeBlurImageFunction.txx
+  itkTubeFeatureVectorGenerator.txx
+  itkTubeNJetFeatureVectorGenerator.txx
   itkTubeNJetImageFunction.txx
-  itkTubeNJetSupervisedLinearBasisGenerator.txx
+  itkTubeRidgeFeatureVectorGenerator.txx
   itkVectorImageToListGenerator.txx
   itkVotingResampleImageFunction.txx
-  tubeTubeMath.txx
   tubeMatrixMath.txx
+  tubeTubeMath.txx
   )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Utilities
+  ${TubeTK_SOURCE_DIR}/Base/Common
   )
 
 set( TubeTK_Base_Numerics_SRCS
-  tubeOptBrent1D.cxx
-  tubeOptGoldenMean1D.cxx
-  tubeOptParabolicFit1D.cxx
+  tubeBrentOptimizer1D.cxx
+  tubeGoldenMeanOptimizer1D.cxx
   tubeOptimizer1D.cxx
   tubeOptimizerND.cxx
+  tubeParabolicFitOptimizer1D.cxx
   tubeSpline1D.cxx
   tubeSplineApproximation1D.cxx
   tubeSplineND.cxx
   )
 
-add_library( TubeNumerics STATIC ${TubeTK_Base_Numerics_SRCS} )
+add_library( TubeNumerics STATIC
+  ${TubeTK_Base_Numerics_H_Files}
+  ${TubeTK_Base_Numerics_TXX_Files}
+  ${TubeTK_Base_Numerics_SRCS}
+  )
+
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
 slicer4_set_plugins_output_path( TubeNumerics )
@@ -86,7 +96,7 @@ if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
 
-install(FILES
+install( FILES
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_TXX_Files}
   DESTINATION include

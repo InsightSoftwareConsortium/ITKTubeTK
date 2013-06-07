@@ -20,21 +20,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeEnhancingDiffusion2DImageFilter_txx
 #define __itkTubeEnhancingDiffusion2DImageFilter_txx
 
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
-#include "itkCastImageFilter.h"
-#include "itkConstShapedNeighborhoodIterator.h"
-#include "itkHessianRecursiveGaussianImageFilter.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkMinimumMaximumImageFilter.h"
-#include "itkNeighborhoodAlgorithm.h"
-#include "itkNumericTraits.h"
-#include "itkZeroFluxNeumannBoundaryCondition.h"
-#include "itkProgressAccumulator.h"
+#include <itkCastImageFilter.h>
+#include <itkConstShapedNeighborhoodIterator.h>
+#include <itkHessianRecursiveGaussianImageFilter.h>
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
+#include <itkMinimumMaximumImageFilter.h>
+#include <itkNeighborhoodAlgorithm.h>
+#include <itkNumericTraits.h>
+#include <itkZeroFluxNeumannBoundaryCondition.h>
+#include <itkProgressAccumulator.h>
 
 #include <vnl/vnl_vector.h>
 #include <vnl/vnl_matrix.h>
@@ -48,8 +49,8 @@ namespace itk
 // constructor
 template <class PixelT, unsigned int DimensionT>
 TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
-::TubeEnhancingDiffusion2DImageFilter():
-    m_TimeStep(0.2),
+::TubeEnhancingDiffusion2DImageFilter( void )
+  : m_TimeStep(0.2),
     m_Iterations(200),
     m_RecalculateTubeness(100),
     m_Beta(0.5),
@@ -79,7 +80,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
   os << indent << "RecalculateTubeness       : " << m_RecalculateTubeness
      << std::endl;
   os << indent << "Scales                    : ";
-  for (unsigned int i=0; i<m_Scales.size(); ++i)
+  for(unsigned int i=0; i<m_Scales.size(); ++i)
     {
     os << m_Scales[i] << " ";
     }
@@ -359,14 +360,14 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
       ev[0] = ES.get_eigenvalue(0);
       ev[1] = ES.get_eigenvalue(1);
 
-      if ( vcl_abs(ev[0]) > vcl_abs(ev[1])  )
+      if( vnl_math_abs(ev[0]) > vnl_math_abs(ev[1])  )
         {
         std::swap(ev[0], ev[1]);
         }
 
       const Precision vesselness = TubenessFunction2D( ev[0], ev[1] );
 
-      if ( vesselness > 0 && vesselness > vit.Value() )
+      if( vesselness > 0 && vesselness > vit.Value() )
         {
         vit.Value() = vesselness;
 
@@ -400,7 +401,7 @@ TubeEnhancingDiffusion2DImageFilter<PixelT,DimensionT>::TubenessFunction2D(
 
   const Precision   Rb2 = (l1 * l1) / (l2 * l2); // btwn 0 and 1
   const Precision   S2 =  (l1 * l1) + (l2 *l2);
-  //const Precision   T = vcl_exp(-(2*smoothC*smoothC)/(vcl_abs(l1)*l2*l2));
+  //const Precision   T = vcl_exp(-(2*smoothC*smoothC)/(vnl_math_abs(l1)*l2*l2));
 
   vesselness = vcl_exp( -Rb2/vb2 ) * (1.0 - vcl_exp( -S2/vc2 ) );
 
@@ -410,7 +411,7 @@ TubeEnhancingDiffusion2DImageFilter<PixelT,DimensionT>::TubenessFunction2D(
 // diffusiontensor
 template <class PixelT, unsigned int DimensionT>
 void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
-::DiffusionTensor()
+::DiffusionTensor( void )
 {
   ImageRegionIterator<PrecisionImageType>
     itxx( m_Dxx, m_Dxx->GetLargestPossibleRegion() );
@@ -438,7 +439,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
     ev[0] = ES.get_eigenvalue(0);
     ev[1] = ES.get_eigenvalue(1);
 
-    if( vcl_abs(ev[0]) > vcl_abs(ev[1]) )
+    if( vnl_math_abs(ev[0]) > vnl_math_abs(ev[1]) )
       {
       std::swap(ev[0], ev[1]);
       }
@@ -470,9 +471,9 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 // generatedata
 template <class PixelT, unsigned int DimensionT>
 void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
-::GenerateData()
+::GenerateData( void )
 {
-  if (m_Verbose)
+  if(m_Verbose)
     {
     std::cout << std::endl <<
       "begin vesselenhancingdiffusion2Dimagefilter ... " << std::endl;
@@ -515,7 +516,7 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
     std::cout << "recalc v            \t" << m_RecalculateTubeness
               << std::endl;
     std::cout << "scales              \t";
-    for (unsigned int i=0; i<m_Scales.size(); ++i)
+    for(unsigned int i=0; i<m_Scales.size(); ++i)
       {
       std::cout << m_Scales[i] << " ";
       }
@@ -575,7 +576,6 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
   progress.CompletedPixel();
 }
 
+} // End namespace itk
 
-} // end namespace itk
-
-#endif
+#endif // End !defined(__itkTubeEnhancingDiffusion2DImageFilter_txx)

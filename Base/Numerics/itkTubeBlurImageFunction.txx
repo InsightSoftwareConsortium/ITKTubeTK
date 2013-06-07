@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeBlurImageFunction_txx
 #define __itkTubeBlurImageFunction_txx
 
@@ -28,8 +29,8 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
-#include "itkImage.h"
-#include "itkContinuousIndex.h"
+#include <itkImage.h>
+#include <itkContinuousIndex.h>
 
 
 namespace itk
@@ -42,7 +43,7 @@ namespace tube
  * Set the input Image */
 template <class TInputImage>
 BlurImageFunction<TInputImage>
-::BlurImageFunction()
+::BlurImageFunction( void )
 {
   this->m_Image = NULL;
 
@@ -204,7 +205,7 @@ BlurImageFunction<TInputImage>
           {
           double dist = index[0] * m_Spacing[0];
           dist = dist * dist + distY;
-          double w = exp( gfact*( dist ) );
+          double w = vcl_exp( gfact*( dist ) );
           m_KernelWeights.push_back( w );
           m_KernelX.push_back( index );
           m_KernelTotal += w;
@@ -222,7 +223,7 @@ BlurImageFunction<TInputImage>
         {
         double dist = index[0] * m_Spacing[0];
         dist = dist * dist + distY;
-        double w = exp( gfact*( dist ) );
+        double w = vcl_exp( gfact*( dist ) );
         m_KernelWeights.push_back( w );
         m_KernelX.push_back( index );
         m_KernelTotal += w;
@@ -459,7 +460,7 @@ BlurImageFunction<TInputImage>
             double dist = distX * distX + distY;
             if( dist <= kernrad )
               {
-              w = exp( gfact*dist );
+              w = vcl_exp( gfact*dist );
               wTotal += w;
               res += this->m_Image->GetPixel( kernelX ) * w;
               }
@@ -481,7 +482,7 @@ BlurImageFunction<TInputImage>
           double dist = distX * distX + distY;
           if( dist <= kernrad )
             {
-            w = exp( gfact*dist );
+            w = vcl_exp( gfact*dist );
             wTotal += w;
             res += this->m_Image->GetPixel( kernelX ) * w;
             }
@@ -521,7 +522,7 @@ BlurImageFunction<TInputImage>
             double dist = distX * distX + distY;
             if( dist <= kernrad )
               {
-              w = exp( gfact*( dist ) );
+              w = vcl_exp( gfact*( dist ) );
               wTotal += w;
               res += this->m_Image->GetPixel( kernelX ) * w;
               }
@@ -541,7 +542,7 @@ BlurImageFunction<TInputImage>
           double dist = distX * distX + distY;
           if( dist <= kernrad )
             {
-            w = exp( gfact*( dist ) );
+            w = vcl_exp( gfact*( dist ) );
             wTotal += w;
             res += this->m_Image->GetPixel( kernelX ) * w;
             }
@@ -561,8 +562,8 @@ BlurImageFunction<TInputImage>
   return res/wTotal;
 }
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeBlurImageFunction_txx)

@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeToTubeTransformFilter_txx
 #define __itkTubeToTubeTransformFilter_txx
 
@@ -33,7 +34,7 @@ namespace itk
  */
 template <class TTransformType, unsigned int TDimension>
 TubeToTubeTransformFilter<TTransformType,TDimension>
-::TubeToTubeTransformFilter()
+::TubeToTubeTransformFilter( void )
 {
   m_Output = 0;
   m_CropSize = NULL;
@@ -53,7 +54,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
 template <class TTransformType, unsigned int TDimension>
 void
 TubeToTubeTransformFilter<TTransformType,TDimension>
-::Update(void)
+::Update( void )
 {
   m_Output = GroupType::New();
 
@@ -91,7 +92,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
       TubeIterator++)
     {
 
-    if(!strcmp((*TubeIterator)->GetTypeName(),"VesselTubeSpatialObject"))
+    if(!std::strcmp((*TubeIterator)->GetTypeName(),"VesselTubeSpatialObject"))
       {
 
       typename TubeType::Pointer tub = TubeType::New();
@@ -224,6 +225,6 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
   os << indent << "Transformation: " << m_Transform << std::endl;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeToTubeTransformFilter_txx)

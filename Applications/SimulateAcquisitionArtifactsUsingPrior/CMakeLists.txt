@@ -23,6 +23,20 @@
 
 #-----------------------------------------------------------------------------
 set( MODULE_NAME SimulateAcquisitionArtifactsUsingPrior )
+project( ${MODULE_NAME} )
+
+set( SimulateAcquisitionArtifactsUsingPrior_H_Files
+  tubeCompareImageWithPrior.h
+  )
+
+set( SimulateAcquisitionArtifactsUsingPrior_TXX_Files
+  tubeCompareImageWithPrior.txx
+  )
+
+add_custom_target( SimulateAcquisitionArtifactsUsingPriorInclude SOURCES
+  ${SimulateAcquisitionArtifactsUsingPrior_H_Files}
+  ${SimulateAcquisitionArtifactsUsingPrior_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -32,10 +46,11 @@ include( ${USE_ITK_FILE} )
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} TubeNumerics
   INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Utilities
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Segmentation

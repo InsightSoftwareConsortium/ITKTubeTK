@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // Qt includes
 #include <QtPlugin>
 
@@ -30,7 +31,7 @@ limitations under the License.
 #include <qSlicerNodeWriter.h>
 
 // SpatialObjects Logic includes
-#include <vtkSlicerSpatialObjectsLogic.h>
+#include "vtkSlicerSpatialObjectsLogic.h"
 
 // SpatialObjects QTModule includes
 #include "qSlicerSpatialObjectsModule.h"

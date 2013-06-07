@@ -53,11 +53,36 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
               --subtreeHeight 2 )
 
 #######
-# Test1-Compare
+# Test2
 #######
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
+            ${PROJ_EXE}
+              MIDAS_FETCH_ONLY{mutag_1.mat.md5}
+              MIDAS_FETCH_ONLY{mutag_2.mat.md5}
+              MIDAS_FETCH_ONLY{mutag_1.mat.vertexLabel.md5}
+              MIDAS_FETCH_ONLY{mutag_2.mat.vertexLabel.md5}
+              MIDAS{mutag_test_graphs.json.md5}
+              MIDAS{mutag_test_graphs.json.md5}
+              ${TEMP}/${MODULE_NAME}Test2
+              --basePath ${MIDAS_DATA_DIR}
+              --graphKernelType 0)
+
+###############
+# Test1-Compare
+###############
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
             ${TEXTCOMPARE_EXE}
               -t ${TEMP}/${MODULE_NAME}Test1.txt
               -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
 set_property(TEST ${MODULE_NAME}-Test1-Compare
            APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+###############
+# Test2-Compare
+###############
+MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
+            ${TEXTCOMPARE_EXE}
+              -t ${TEMP}/${MODULE_NAME}Test2.txt
+              -b MIDAS{${MODULE_NAME}Test2.txt.md5} )
+set_property(TEST ${MODULE_NAME}-Test2-Compare
+           APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )

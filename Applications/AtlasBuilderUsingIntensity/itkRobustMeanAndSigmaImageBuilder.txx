@@ -21,6 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
+#ifndef __itkRobustMeanAndSigmaImageBuilder_txx
+#define __itkRobustMeanAndSigmaImageBuilder_txx
+
 //-----------------------------------------------------------------------------
 template< class TInputImageType,
           class TOutputMeanImageType,
@@ -28,9 +31,10 @@ template< class TInputImageType,
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
                                 TOutputSigmaImageType >
-::RobustMeanAndSigmaImageBuilder()
+::RobustMeanAndSigmaImageBuilder( void )
+: m_NumberOfOutlierImagesToRemove(0),
+  m_TotalNumberOfImages(0)
 {
-  m_TotalNumberOfImages = 0;
 }
 
 
@@ -221,10 +225,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
          * ( same as itkMeanAndSigmaImageBuilder )
          */
         }
-      /*
-       * List is ascending & the input value is less than list swap, and
-       * vise-versa
-       */
+      /* List is ascending & the input value is less than list swap, and vice versa */
       else if( ( ListIsAscending && it_input.Get() < it_list.Get() ) ||
                   ( !ListIsAscending && it_input.Get() > it_list.Get() )  )
         {
@@ -281,7 +282,7 @@ void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
                                 TOutputSigmaImageType >
-::FinalizeOutput()
+::FinalizeOutput( void )
 {
   if( !( this->GetIsProcessing() ) )
     {
@@ -372,7 +373,7 @@ typename RobustMeanAndSigmaImageBuilder<
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
                                 TOutputSigmaImageType>
-::GetMedianImage()
+::GetMedianImage( void )
 {
   unsigned int totalNumImages = this->GetTotalNumberOfImages();
   InputImageListType  lowerImages = this->GetLowerOutlierImages();
@@ -399,7 +400,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
 
     while( !it_middle.IsAtEnd() )
       {
-      it_median.Set( it_middle.Get() ) ;
+      it_median.Set( it_middle.Get() );
       ++it_middle;
       ++it_median;
       }
@@ -481,3 +482,5 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
     ++it_upper;
     }
 }
+
+#endif // End !defined(__itkRobustMeanAndSigmaImageBuilder_txx)

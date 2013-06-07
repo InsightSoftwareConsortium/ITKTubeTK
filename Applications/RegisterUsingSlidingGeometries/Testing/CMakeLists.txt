@@ -36,13 +36,7 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-# expect image comparison perfection on 64-bit linux machines
-if( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( imageCompareTolerance 0 )
-# ... and give a bit of tolerance for 32-bit machines or windows/mac
-else()
-  set( imageCompareTolerance 0.000001 )
-endif()
+set( imageCompareTolerance 0.000001 )
 
 #######
 # Test1
@@ -170,15 +164,13 @@ set_property(TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled
             ${PROJ_EXE}
-               MIDAS{Sphere_fixedDownsampled.mhd.md5}
-               MIDAS{Sphere_moving.mhd.md5}
+               MIDAS{Sphere_fixedDownsampled.mha.md5}
+               MIDAS{Sphere_movingDownsampled.mha.md5}
                -b MIDAS{Sphere_surfaceBorderRAS.vtk.md5}
                -d ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRASDownsampled_motionField.mha
                -i 5
                -s 0.125
                -l 0.05
-               MIDAS_FETCH_ONLY{Sphere_fixedDownsampled.zraw.md5}
-               MIDAS_FETCH_ONLY{Sphere_moving.zraw.md5}
             )
 
 #######
@@ -187,7 +179,7 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled
 MIDAS_ADD_TEST( ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRASDownsampled_motionField.mha
-               -b MIDAS{${MODULE_NAME}-Sphere_anisotropicSurfaceDownsampled_motionField.mha.md5}
+               -b MIDAS{${MODULE_NAME}-Sphere_anisotropicSurfaceRASDownsampled_motionField.mha.md5}
                -i ${imageCompareTolerance}
               )
 set_property(TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare

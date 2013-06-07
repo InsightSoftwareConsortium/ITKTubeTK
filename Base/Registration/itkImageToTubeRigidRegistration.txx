@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkImageToTubeRigidRegistration_txx
 #define __itkImageToTubeRigidRegistration_txx
 
 #include "itkImageToTubeRigidRegistration.h"
 
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkSpatialObjectDuplicator.h"
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkSpatialObjectDuplicator.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
 namespace itk
@@ -35,7 +36,7 @@ namespace itk
 
 template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
-::ImageToTubeRigidRegistration()
+::ImageToTubeRigidRegistration( void )
 {
   this->m_InitialTransformParameters = ParametersType( ParametersDimension );
   this->m_LastTransformParameters = ParametersType( ParametersDimension );
@@ -115,7 +116,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   Statistics::NormalVariateGenerator::Pointer generator =
       Statistics::NormalVariateGenerator::New();
   generator->SetReferenceCount( 2 );
-  generator->Initialize( time( NULL ) );
+  generator->Initialize( std::time( NULL ) );
 
   optimizer->SetNormalVariateGenerator( generator );
   optimizer->Initialize( 40 );
@@ -130,12 +131,12 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     // initialize the interconnects between components
     Superclass::Initialize();
     }
-  catch( ExceptionObject& err )
+  catch( const ExceptionObject& )
     {
     this->m_LastTransformParameters = ParametersType( 1 );
     this->m_LastTransformParameters.Fill( 0.0f );
     // pass exception to caller
-    throw err;
+    throw;
     }
   this->GetOptimizer()->SetCostFunction( this->GetMetric() );
 
@@ -158,14 +159,14 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     // do the optimization
     this->GetOptimizer()->StartOptimization();
     }
-  catch( ExceptionObject& err )
+  catch( const ExceptionObject& err )
     {
     // An error has occurred in the optimization.
     // Update the parameters
     this->m_LastTransformParameters = this->GetOptimizer()
       ->GetCurrentPosition();
     // Pass exception to caller
-    throw err;
+    throw;
     }
 
   // give the result to the superclass
@@ -173,6 +174,6 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     ->GetCurrentPosition();
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidRegistration_txx)

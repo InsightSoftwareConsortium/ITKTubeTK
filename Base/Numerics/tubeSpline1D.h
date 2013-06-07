@@ -20,77 +20,80 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeSpline1D_h
 #define __tubeSpline1D_h
 
-#include "tubeUserFunc.h"
+#include <vnl/vnl_vector.h>
+
 #include "tubeOptimizer1D.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
 
 /** Example of how to use Spline1D.   Program is run to verify methods
-*  \example TestSpline1D/testSpline1D.cpp
-*/
+ *  \example TestSpline1D/testSpline1D.cpp
+ */
 
 /** 1D Spline abstract base class
-*
-*  Provides a consistent interface to setting the common
-*      parameters of spline functions.   Also, hides the
-*      archiving of previous calculations and control point
-*      evaluations to speed subsequent spline evaluations.
-*      Example derivation in SplApprox1D class
-*  \class Spline1D
-*  \author Stephen R. Aylward
-*  \date   11/19/99 */
+ *
+ *  Provides a consistent interface to setting the common
+ *      parameters of spline functions.   Also, hides the
+ *      archiving of previous calculations and control point
+ *      evaluations to speed subsequent spline evaluations.
+ *      Example derivation in SplApprox1D class
+ *  \class Spline1D
+ *  \author Stephen R. Aylward
+ *  \date   11/19/99 */
 class  Spline1D
 {
 public:
 
   typedef vnl_vector<double> VectorType;
 
-  Spline1D();
+  Spline1D( void );
 
   /** Construct a viable class instance
-   * \param newFuncVal an instance of a derivation of the UserFunc class
+   * \param newFuncVal an instance of a derivation of the UserFunction class
    *        used to specify values at control points (i.e., integer values)
    * \param newOpt1D a (possibly NULL constructed) instance of a derivation
-   *        of the Optimizer1D class (e.g., OptBrent1D). Use to find local
+   *        of the Optimizer1D class (e.g., BrentOptimizer1D). Use to find local
    *        maxs and mins.
    * \warning Must set xMin and xMax
    */
-  Spline1D( UserFunc<int, double> * newFuncVal, Optimizer1D * newOpt1D);
+  Spline1D( UserFunction<int, double> * newFuncVal, Optimizer1D * newOpt1D);
 
   //! Virtual destructor
-  virtual ~Spline1D();
+  virtual ~Spline1D( void );
 
   /** Supply a new spline definition
-   * \param newFuncVal an instance of a derivation of the UserFunc class
+   * \param newFuncVal an instance of a derivation of the UserFunction class
    *        used to specify values at control points (i.e., integer values)
    * \param newOpt1D a (possibly NULL constructed) instance of a derivation
-   *        of the Optimizer1D class (e.g., OptBrent1D). Use to find local
+   *        of the Optimizer1D class (e.g., BrentOptimizer1D). Use to find local
    *        maxs and mins.
    * \warning Must set xMin and xMax
    */
-  void    use( UserFunc<int, double> * newFuncVal, Optimizer1D * newOpt1D);
+  void    use( UserFunction<int, double> * newFuncVal, Optimizer1D * newOpt1D);
 
   /** Returns the characteristics of spline evaluations near data bounds
    * (xMin and xMax). If true, values beyond edges (xMin and xMax) are set
    * to zero. If false, values beyond edges are faded to 0 as a function of
    * distance from edge, squeared.
    */
-  bool    clipEdge();
+  bool    clipEdge( void );
 
   /** User specification of characteristics */
   void    clipEdge(bool newClip);
 
   /** Returns the control points' (integer value locations) lower bound */
-  int     xMin();
+  int     xMin( void );
   /** User specification of lower bound */
   void    xMin(int newXMin);
 
   /** Sets control points' (integer value locations) upper bound */
-  int     xMax();
+  int     xMax( void );
   /** User Specification of upper bound */
   void    xMax(int newXMax);
 
@@ -98,10 +101,10 @@ public:
    * calculations and data.  Returns true if a new spline instance has been
    * created (e.g., use has been called)
    */
-  bool    newData();
+  bool    newData( void );
 
   /** User sets to true to force recalcuation of internal data
-   *  For example, use to flag that UserFunc has changed externally
+   *  For example, use to flag that UserFunction has changed externally
    */
   void    newData(bool newNewData);
 
@@ -158,7 +161,7 @@ public:
 
   /** Returns spline interpolated value at x
    * Calculates the values at control (integer) points by calling the
-   * UserFunc and returns the interpolated value between those points.
+   * UserFunction and returns the interpolated value between those points.
    * Type of interpolation is dependent on which spline derivation is
    * used (e.g., SplApprox1D).   Intermediate calculations and control
    * point evaluations are stored to speed subsequent calls
@@ -167,7 +170,7 @@ public:
 
   /** Returns spline interpolated first derivative at x
    *  Calculates the values at control (integer) points by calling the
-   *  UserFunc and returns the interpolated first derivative between those
+   *  UserFunction and returns the interpolated first derivative between those
    *  points.   Type of interpolation is dependent on which spline
    *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
    *  and control point evaluations are stored to speed subsequent calls
@@ -176,7 +179,7 @@ public:
 
   /** Returns spline interpolated second derivative at x
    *  Calculates the values at control (integer) points by calling the
-   *  UserFunc and returns the interpolated second derivative between those
+   *  UserFunction and returns the interpolated second derivative between those
    *  points.   Type of interpolation is dependent on which spline
    *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
    *  and control point evaluations are stored to speed subsequent calls
@@ -185,7 +188,7 @@ public:
 
   /** Returns spline interpolated derivative jet at x
    *  Calculates the values at control (integer) points by calling the
-   *  UserFunc and returns the interpolated value, first, and second
+   *  UserFunction and returns the interpolated value, first, and second
    *  derivatives between those points.  Type of interpolation is dependent
    *  on which spline derivation is used (e.g., SplApprox1D).  Intermediate
    *  calculations and control point evaluations are stored to speed
@@ -195,7 +198,7 @@ public:
 
   /** Returns spline interpolated curvature at x
    *  Calculates the values at control (integer) points by calling the
-   *  UserFunc and returns the interpolated curvature value between those
+   *  UserFunction and returns the interpolated curvature value between those
    *  points. Type of interpolation is dependent on which spline derivation
    *  is used (e.g., SplApprox1D).
    *  Intermediate calculations and control point evaluations are stored to
@@ -217,7 +220,7 @@ public:
 protected:
 
   bool                       m_Defined;
-  UserFunc<int, double>    * m_FuncVal;
+  UserFunction<int, double>    * m_FuncVal;
   bool                       m_Clip;
   int                        m_XMin;
   int                        m_XMax;
@@ -225,14 +228,20 @@ protected:
   bool                       m_NewData;
   VectorType                 m_Data;
 
-  UserFunc<double, double> * m_Opt1DVal;
-  UserFunc<double, double> * m_Opt1DDeriv;
+  UserFunction<double, double> * m_Opt1DVal;
+  UserFunction<double, double> * m_Opt1DDeriv;
   Optimizer1D              * m_Opt1D;
 
   void                       m_GetData(double x);
 
-};
+private:
 
-} // end namespace itk
+  /** Prevent copying and assignment */
+  Spline1D(const Spline1D &);
+  Spline1D& operator=(const Spline1D &);
 
-#endif /* __itkRadiusExtractor_h */
+}; // End class Spline1D
+
+} // End namespace itk
+
+#endif // End !defined(__tubeSpline1D_h)

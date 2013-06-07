@@ -31,10 +31,10 @@ limitations under the License.
 #define __vtkMRMLSpatialObjectsStorageNode_h
 
 // MRML includes
-#include "vtkMRMLModelStorageNode.h"
+#include <vtkMRMLModelStorageNode.h>
 
 // SpatialObjects includes
-#include "vtkSlicerSpatialObjectsModuleMRMLExport.h"
+#include <vtkSlicerSpatialObjectsModuleMRMLExport.h>
 
 #include <itkVesselTubeSpatialObject.h>
 #include <itkSpatialObjectReader.h>
@@ -54,43 +54,44 @@ public:
   typedef itk::Point<double, 3>                PointType;
   typedef itk::VesselTubeSpatialObject<3>      TubeType;
 
-  static vtkMRMLSpatialObjectsStorageNode *New();
+  static vtkMRMLSpatialObjectsStorageNode *New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsStorageNode, vtkMRMLModelStorageNode);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  virtual vtkMRMLNode* CreateNodeInstance();
+  virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
   /// Get node XML tag name (like Storage, Model)
-  virtual const char* GetNodeTagName() {return "SpatialObjectsStorage";};
+  virtual const char* GetNodeTagName( void ) {return "SpatialObjectsStorage";}
 
   ///
   /// Return a default file extension for writting
-  virtual const char* GetDefaultWriteFileExtension();
+  virtual const char* GetDefaultWriteFileExtension( void );
 
   ///
   /// Return true if the node can be read in
   virtual bool CanReadInReferenceNode(vtkMRMLNode *refNode);
 
 protected:
-  vtkMRMLSpatialObjectsStorageNode(){};
-  ~vtkMRMLSpatialObjectsStorageNode(){};
+  vtkMRMLSpatialObjectsStorageNode( void ) {}
+  ~vtkMRMLSpatialObjectsStorageNode( void ) {}
   vtkMRMLSpatialObjectsStorageNode(const vtkMRMLSpatialObjectsStorageNode&);
   void operator=(const vtkMRMLSpatialObjectsStorageNode&);
 
   ///
   /// Initialize all the supported read file types
-   virtual void InitializeSupportedReadFileTypes();
+   virtual void InitializeSupportedReadFileTypes( void );
 
   ///
   /// Initialize all the supported write file types
-  virtual void InitializeSupportedWriteFileTypes();
+  virtual void InitializeSupportedWriteFileTypes( void );
 
   /// Read data and set it in the referenced node
   virtual int ReadDataInternal(vtkMRMLNode *refNode);
 
   /// Write data from a  referenced node
   virtual int WriteDataInternal(vtkMRMLNode *refNode);
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsStorageNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsStorageNode_h)

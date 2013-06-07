@@ -21,28 +21,28 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImage.h"
-#include "itkImageSpatialObject.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageSpatialObject.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Application-specific includes
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkFRPROptimizer.h"
-#include "itkOnePlusOneEvolutionaryOptimizer.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkImageRegionIterator.h"
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
-#include "itkIdentityTransform.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkNormalizeImageFilter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkFRPROptimizer.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkImageRegionIterator.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itkIdentityTransform.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkNormalizeImageFilter.h>
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
@@ -55,7 +55,8 @@ int DoIt( int argc, char * argv[] );
 // Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
 
-namespace itk {
+namespace itk
+{
 
 template< class pixelT, unsigned int dimensionT >
 class ContrastCostFunction
@@ -252,8 +253,11 @@ public:
 
 protected:
 
-  ContrastCostFunction() {};
-  virtual ~ContrastCostFunction() {};
+  ContrastCostFunction() : m_InputMean(0.0),
+                           m_MaskObjectValue(0),
+                           m_MaskBackgroundValue(0),
+                           m_CallsToGetValue(0) {}
+  virtual ~ContrastCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
     {
@@ -278,9 +282,9 @@ private:
 
   mutable unsigned int                m_CallsToGetValue;
 
-};
+}; // End class ContrastCostFunction
 
-}; //namespace itk
+} // End namespace itk
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )
@@ -363,8 +367,6 @@ int DoIt( int argc, char * argv[] )
     inputImage->GetLargestPossibleRegion() );
   double inputMin = iter.Get();
   double inputMax = inputMin;
-  double inputMean = 0;
-  unsigned inputCount = 0;
   while( !iter.IsAtEnd() )
     {
     double tf = iter.Get();
@@ -376,11 +378,8 @@ int DoIt( int argc, char * argv[] )
       {
       inputMax = tf;
       }
-    inputMean += tf;
-    ++inputCount;
     ++iter;
     }
-  inputMean /= inputCount;
 
   itk::Array<double> params(3);
   params[0] = objectScale;
@@ -488,7 +487,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   progressReporter.Report( 1.0 );
-  progressReporter.End( );
+  progressReporter.End();
 
   timeCollector.Report();
   return EXIT_SUCCESS;

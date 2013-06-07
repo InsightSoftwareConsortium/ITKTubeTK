@@ -15,10 +15,11 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _itkSpatialObjectToSpatialObjectFilter_txx
-#define _itkSpatialObjectToSpatialObjectFilter_txx
-#include "itkSpatialObjectToSpatialObjectFilter.h"
 
+#ifndef __itkSpatialObjectToSpatialObjectFilter_txx
+#define __itkSpatialObjectToSpatialObjectFilter_txx
+
+#include "itkSpatialObjectToSpatialObjectFilter.h"
 
 namespace itk
 {
@@ -27,9 +28,9 @@ namespace tube
 {
 
 
-  template <class TInputSpatialObject, class TOutputSpatialObject>
+template <class TInputSpatialObject, class TOutputSpatialObject>
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
-::SpatialObjectToSpatialObjectFilter()
+::SpatialObjectToSpatialObjectFilter( void )
 {
   // Modify superclass default values, can be overridden by subclasses
   this->SetNumberOfRequiredInputs(1);
@@ -38,7 +39,7 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 
 template <class TInputSpatialObject, class TOutputSpatialObject>
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
-::~SpatialObjectToSpatialObjectFilter()
+::~SpatialObjectToSpatialObjectFilter( void )
 {
 }
 
@@ -76,9 +77,9 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 template <class TInputSpatialObject, class TOutputSpatialObject>
 const typename SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>::InputSpatialObjectType *
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
-::GetInput(void)
+::GetInput( void )
 {
-  if (this->GetNumberOfInputs() < 1)
+  if(this->GetNumberOfInputs() < 1)
     {
     return 0;
     }
@@ -110,4 +111,4 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 
 } // End namespace itk
 
-#endif
+#endif // End !defined(__itkSpatialObjectToSpatialObjectFilter_txx)

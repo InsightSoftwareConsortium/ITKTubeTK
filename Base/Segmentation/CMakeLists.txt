@@ -21,6 +21,8 @@
 #
 ##############################################################################
 
+project( TubeSegmentation )
+
 set( TubeTK_Base_Segmentation_H_Files
   itkTubeCVTImageFilter.h
   itkTubeLabelOverlapMeasuresImageFilter.h
@@ -29,12 +31,12 @@ set( TubeTK_Base_Segmentation_H_Files
   itkTubePDFSegmenter.h
   itkTubeRadiusExtractor.h
   itkTubeRidgeExtractor.h
-  itkTubeRidgeSeedExtractor.h
+  itkTubeRidgeSeedFilter.h
   itkTubeTubeExtractor.h
   itkTubeTubeNetworkExtractor.h
   )
 
-set(TubeTK_Base_Segmentation_TXX_Files
+set( TubeTK_Base_Segmentation_TXX_Files
   itkTubeCVTImageFilter.txx
   itkTubeLabelOverlapMeasuresImageFilter.txx
   itkTubeOtsuThresholdMaskedImageCalculator.txx
@@ -42,18 +44,22 @@ set(TubeTK_Base_Segmentation_TXX_Files
   itkTubePDFSegmenter.txx
   itkTubeRadiusExtractor.txx
   itkTubeRidgeExtractor.txx
-  itkTubeRidgeSeedExtractor.txx
+  itkTubeRidgeSeedFilter.txx
   itkTubeTubeExtractor.txx
   itkTubeTubeNetworkExtractor.txx
   )
 
-IF( BUILD_TESTING )
-  add_subdirectory( Testing )
-ENDIF( BUILD_TESTING )
+add_custom_target( TubeSegmentation SOURCES
+  ${TubeTK_Base_Segmentation_H_Files}
+  ${TubeTK_Base_Segmentation_TXX_Files}
+  )
 
-install(FILES
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
+
+install( FILES
   ${TubeTK_Base_Segmentation_H_Files}
   ${TubeTK_Base_Segmentation_TXX_Files}
   DESTINATION include
   )
-

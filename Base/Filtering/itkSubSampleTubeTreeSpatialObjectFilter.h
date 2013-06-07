@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkSubSampleTubeTreeSpatialObjectFilter_h
 #define __itkSubSampleTubeTreeSpatialObjectFilter_h
 
@@ -29,7 +30,6 @@ namespace itk
 {
 
 /** \class itkSubSampleTubeTreeSpatialObjectFilter
- *
  * \brief Sub-sample tubes within a SpatialObject hierarchy.
  *
  * The input to this SpatialObjectFilter can be a single TubeSpatialObject or a
@@ -38,10 +38,9 @@ namespace itk
  * factor.  Non-Tube spatial objects are passed to the output unchanged.
  *
  * \sa SubSampleTubeSpatialObjectFilter
- *
  */
 template< class TSpatialObject, class TTubeSpatialObject >
-class SubSampleTubeTreeSpatialObjectFilter:
+class SubSampleTubeTreeSpatialObjectFilter :
   public SpatialObjectToSpatialObjectFilter< TSpatialObject, TSpatialObject >
 {
 public:
@@ -71,9 +70,9 @@ public:
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
-  SubSampleTubeTreeSpatialObjectFilter();
+  SubSampleTubeTreeSpatialObjectFilter( void );
 
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
   typedef SpatialObject< ObjectDimension > SpatialObjectBaseType;
 
@@ -87,12 +86,13 @@ private:
   void operator=( const Self & ); // purposely not implemented
 
   SizeValueType m_Sampling;
-};
 
-} // end namespace itk
+}; // End class SubSampleTubeTreeSpatialObjectFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSubSampleTubeTreeSpatialObjectFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSubSampleTubeTreeSpatialObjectFilter_h)

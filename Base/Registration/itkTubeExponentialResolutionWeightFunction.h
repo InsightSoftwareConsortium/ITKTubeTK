@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,18 +20,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef itkTubeExponentialResolutionWeightFunction_h
-#define itkTubeExponentialResolutionWeightFunction_h
 
-#include "vnl/vnl_math.h"
+#ifndef __itkTubeExponentialResolutionWeightFunction_h
+#define __itkTubeExponentialResolutionWeightFunction_h
+
+#include <vnl/vnl_math.h>
 
 namespace itk
 {
 namespace Function
 {
 
-/**
- * \class TubeExponentialResolutionWeightFunction
+/** \class TubeExponentialResolutionWeightFunction
  *
  * \brief Weight tube points exponentially by their radius.
  *
@@ -42,8 +42,7 @@ namespace Function
  *
  * \sa TubeExponentialResolutionWeightFunction
  * \sa TubeExponentialWithBoundsResolutionWeightFunction
- *
- * */
+ */
 template< class TTubePoint, class TOperatorValue=double >
 class TubeExponentialResolutionWeightFunction
 {
@@ -51,9 +50,9 @@ public:
   typedef TOperatorValue OperatorValueType;
   typedef TTubePoint     TubePointType;
 
-  TubeExponentialResolutionWeightFunction()
+  TubeExponentialResolutionWeightFunction( void )
     {}
-  ~TubeExponentialResolutionWeightFunction()
+  ~TubeExponentialResolutionWeightFunction( void )
     {}
 
   inline OperatorValueType operator()( const TubePointType & tubePoint )
@@ -62,9 +61,11 @@ public:
     return static_cast< OperatorValueType >( 2.0 /
       (1.0 + vcl_exp( -2.0 * radius ) ));
     }
-};
 
-} // end namespace Function
-} // end namespace itk
+}; // End class TubeExponentialResolutionWeightFunction
 
-#endif
+} // End namespace Function
+
+} // End namespace itk
+
+#endif // End !defined(__itkTubeExponentialResolutionWeightFunction_h)

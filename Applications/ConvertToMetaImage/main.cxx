@@ -20,10 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <qapplication.h>
 
 #ifdef WIN32
-  #include <QPlastiqueStyle.h>
+#include <QPlastiqueStyle.h>
 #endif
 
 #include "MetaImageImporterUI.h"

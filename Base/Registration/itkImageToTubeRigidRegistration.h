@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,21 +20,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkImageToTubeRigidRegistration_h
 #define __itkImageToTubeRigidRegistration_h
 
-#include "itkTransform.h"
-#include "itkImageToSpatialObjectRegistrationMethod.h"
+#include <itkTransform.h>
+#include <itkImageToSpatialObjectRegistrationMethod.h>
 #include "itkImageToTubeRigidMetric.h"
-#include "itkGradientDescentOptimizer.h"
-#include "itkImage.h"
-#include "itkLevenbergMarquardtOptimizer.h"
-#include "itkConjugateGradientOptimizer.h"
-#include "itkOnePlusOneEvolutionaryOptimizer.h"
-#include "itkEuler3DTransform.h"
-#include "itkImageRegionIterator.h"
-#include "itkVectorContainer.h"
-#include "itkTubeSpatialObject.h"
+#include <itkGradientDescentOptimizer.h>
+#include <itkImage.h>
+#include <itkLevenbergMarquardtOptimizer.h>
+#include <itkConjugateGradientOptimizer.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
+#include <itkEuler3DTransform.h>
+#include <itkImageRegionIterator.h>
+#include <itkVectorContainer.h>
+#include <itkTubeSpatialObject.h>
 #include "itkTubeExponentialResolutionWeightFunction.h"
 
 namespace itk
@@ -104,8 +105,8 @@ public:
   typedef typename DefaultMetricType::TransformType               TransformType;
 
   /**  Dimension of the images.  */
-  enum {ImageDimension = FixedImageType::ImageDimension,
-    ParametersDimension = TransformType::ParametersDimension};
+  enum { ImageDimension = FixedImageType::ImageDimension,
+    ParametersDimension = TransformType::ParametersDimension };
 
   typedef typename Superclass::InterpolatorType   InterpolatorType;
 
@@ -129,11 +130,11 @@ public:
   void SetParametersScale( const double scales[6] );
 
   /** Initialize the registration */
-  void Initialize() throw ( ExceptionObject );
+  void Initialize( void ) throw ( ExceptionObject );
 
 protected:
-  ImageToTubeRigidRegistration();
-  virtual ~ImageToTubeRigidRegistration() {};
+  ImageToTubeRigidRegistration( void );
+  virtual ~ImageToTubeRigidRegistration( void ) {}
 
 private:
   ImageToTubeRigidRegistration( const Self& ); //purposely not implemented
@@ -144,12 +145,13 @@ private:
   double                                   m_LearningRate;
   ParametersType                           m_InitialPosition;
   ParametersType                           m_ParametersScale;
-};
 
-} // end namespace itk
+}; // End class ImageToTubeRigidRegistration
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkImageToTubeRigidRegistration.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidRegistration_h)

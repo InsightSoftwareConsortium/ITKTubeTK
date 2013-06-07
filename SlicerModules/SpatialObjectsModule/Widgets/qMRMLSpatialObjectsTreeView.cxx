@@ -117,7 +117,7 @@ bool qMRMLSpatialObjectsTreeView::viewportEvent(QEvent* e)
 //------------------------------------------------------------------------------
 void qMRMLSpatialObjectsTreeView::onVisibilityColumnClicked(vtkMRMLNode* node)
 {
-  if (!node)
+  if(!node)
     {
     return;
     }
@@ -128,7 +128,7 @@ void qMRMLSpatialObjectsTreeView::onVisibilityColumnClicked(vtkMRMLNode* node)
 //-----------------------------------------------------------------------------
 void qMRMLSpatialObjectsTreeView::setLogic(vtkSlicerSpatialObjectsLogic* logic)
 {
-  if (!logic)
+  if(!logic)
     {
     return;
     }
@@ -163,32 +163,32 @@ bool qMRMLSpatialObjectsTreeView::clickDecoration(const QModelIndex& index)
   qMRMLSceneSpatialObjectsModel* model =
     dynamic_cast<qMRMLSceneSpatialObjectsModel*>(this->sceneModel());
 
-  if (!(sourceIndex.flags() & Qt::ItemIsEnabled))
+  if(!(sourceIndex.flags() & Qt::ItemIsEnabled))
     {
     res = false;
     }
-  else if (sourceIndex.column() == model->lineVisibilityColumn())
+  else if(sourceIndex.column() == model->lineVisibilityColumn())
     {
     type = 0;
-    if (lineDisplayNode)
+    if(lineDisplayNode)
       {
       lineDisplayNode->SetVisibility(lineDisplayNode->GetVisibility() ? 0 : 1);
       res = true;
       }
     }
-  else if (sourceIndex.column() == model->tubeVisibilityColumn())
+  else if(sourceIndex.column() == model->tubeVisibilityColumn())
     {
     type = 1;
-    if (tubeDisplayNode)
+    if(tubeDisplayNode)
       {
       tubeDisplayNode->SetVisibility(tubeDisplayNode->GetVisibility() ? 0 : 1);
       res = true;
       }
     }
-  else if (sourceIndex.column() == model->glyphVisibilityColumn())
+  else if(sourceIndex.column() == model->glyphVisibilityColumn())
     {
     type = 2;
-    if (glyphDisplayNode)
+    if(glyphDisplayNode)
       {
       glyphDisplayNode->
         SetVisibility(glyphDisplayNode->GetVisibility() ? 0 : 1);
@@ -196,30 +196,30 @@ bool qMRMLSpatialObjectsTreeView::clickDecoration(const QModelIndex& index)
       }
     }
 
-  if (glyphDisplayNode->GetVisibility() == 0 &&
+  if(glyphDisplayNode->GetVisibility() == 0 &&
       tubeDisplayNode->GetVisibility() == 0  &&
       lineDisplayNode->GetVisibility() == 1)
     {
     type = 0;
     }
-  if (glyphDisplayNode->GetVisibility() == 0 &&
+  if(glyphDisplayNode->GetVisibility() == 0 &&
       tubeDisplayNode->GetVisibility() == 1  &&
       lineDisplayNode->GetVisibility() == 0)
     {
     type = 1;
     }
-  if (glyphDisplayNode->GetVisibility() == 1 &&
+  if(glyphDisplayNode->GetVisibility() == 1 &&
       tubeDisplayNode->GetVisibility() == 0  &&
       lineDisplayNode->GetVisibility() == 0)
     {
     type = 2;
     }
 
-  if (res)
+  if(res)
     {
     emit decorationClicked(index);
     }
-  if (type > -1)
+  if(type > -1)
     {
     emit visibilityChanged(type);
     }

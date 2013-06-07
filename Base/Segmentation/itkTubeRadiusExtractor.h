@@ -25,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRadiusExtractor_h
 #define __itkTubeRadiusExtractor_h
 
@@ -35,8 +36,8 @@ limitations under the License.
 
 #include "itkTubeBlurImageFunction.h"
 
-#include "tubeOptBrent1D.h"
-#include "tubeOptParabolicFit1D.h"
+#include "tubeBrentOptimizer1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 
 namespace itk
@@ -47,7 +48,6 @@ namespace tube
 
 /**
  * This class extract the radius of a tube given an image
- *
  * /sa itkTubeRidgeExtractor
  */
 
@@ -63,7 +63,7 @@ public:
   typedef SmartPointer<Self>                                 Pointer;
   typedef SmartPointer<const Self>                           ConstPointer;
 
-  typedef ::tube::OptParabolicFit1D                          OptimizerType;
+  typedef ::tube::ParabolicFitOptimizer1D                    OptimizerType;
   typedef ::tube::SplineApproximation1D                      SplineType;
 
   itkTypeMacro( RadiusExtractor, Object );
@@ -187,9 +187,6 @@ public:
    * Return the optimizer */
   SplineType & GetMedialnessOptimizerSpline( void );
 
-  /**
-   *
-   */
   void MeasuresAtPoint( TubePointType & pnt, double pntR,
     double & mness, double & bness, bool doBNess );
 
@@ -209,14 +206,14 @@ public:
    */
   bool ExtractRadii( TubeType * tube );
 
-  void SetIdleCallBack( bool ( *idleCallBack )() );
+  void SetIdleCallBack( bool ( *idleCallBack )( void ) );
   void SetStatusCallBack( void ( *statusCallBack )( const char *,
       const char *, int ) );
 
 protected:
 
-  RadiusExtractor();
-  virtual ~RadiusExtractor();
+  RadiusExtractor( void );
+  virtual ~RadiusExtractor( void );
   RadiusExtractor( const Self& ) {}
   void operator=( const Self& ) {}
 
@@ -278,23 +275,23 @@ private:
   double                                  m_ThreshMedialness;
   double                                  m_ThreshMedialnessStart;
 
-  ::tube::UserFunc<int, double> *         m_MedialnessFunc;
+  ::tube::UserFunction<int, double> *     m_MedialnessFunc;
 
   unsigned int                            m_KernNumDirs;
   MatrixType                              m_KernX;
 
-  bool ( *m_IdleCallBack )();
+  bool ( *m_IdleCallBack )( void );
   void ( *m_StatusCallBack )( const char *, const char *, int );
 
-};
+}; // End class RadiusExtractor
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeRadiusExtractor.txx"
 #endif
 
-#endif /* __itkTubeRadiusExtractor_h */
+#endif // End !defined(__itkTubeRadiusExtractor_h)

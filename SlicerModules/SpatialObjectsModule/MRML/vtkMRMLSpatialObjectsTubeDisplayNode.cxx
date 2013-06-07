@@ -20,30 +20,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <sstream>
+#include <cstring>
 
-#include "vtkAssignAttribute.h"
-#include "vtkObjectFactory.h"
-#include "vtkCallbackCommand.h"
-#include "vtkCellData.h"
-#include "vtkPointData.h"
+#include <vtkAssignAttribute.h>
+#include <vtkObjectFactory.h>
+#include <vtkCallbackCommand.h>
+#include <vtkCellData.h>
+#include <vtkPointData.h>
 
-#include "vtkAssignAttribute.h"
-#include "vtkPolyDataTensorToColor.h"
-#include "vtkTubeFilter.h"
+#include <vtkAssignAttribute.h>
+#include <vtkPolyDataTensorToColor.h>
+#include <vtkTubeFilter.h>
 
-#include "vtkMRMLScene.h"
-#include "vtkMRMLModelDisplayNode.h"
+#include <vtkMRMLScene.h>
+#include <vtkMRMLModelDisplayNode.h>
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 #include "vtkMRMLSpatialObjectsTubeDisplayNode.h"
-#include "vtkPolyDataColorLinesByOrientation.h"
+#include <vtkPolyDataColorLinesByOrientation.h>
 
 //------------------------------------------------------------------------------
 vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsTubeDisplayNode);
 
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode()
+vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode( void )
 {
   this->ColorMode = vtkMRMLSpatialObjectsDisplayNode::colorModeSolid;
 
@@ -70,7 +72,7 @@ vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode()
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsTubeDisplayNode::~vtkMRMLSpatialObjectsTubeDisplayNode()
+vtkMRMLSpatialObjectsTubeDisplayNode::~vtkMRMLSpatialObjectsTubeDisplayNode( void )
 {
   this->RemoveObservers(vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
   this->amontAssignAttribute->Delete();
@@ -96,19 +98,19 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::ReadXMLAttributes(const char** atts)
 
   const char* attName;
   const char* attValue;
-  while (*atts != NULL)
+  while(*atts != NULL)
     {
     attName = *(atts++);
     attValue = *(atts++);
 
-    if (!strcmp(attName, "tubeRadius"))
+    if(!std::strcmp(attName, "tubeRadius"))
       {
       std::stringstream ss;
       ss << attValue;
       ss >> this->TubeRadius;
       }
 
-    if (!strcmp(attName, "tubeNumberOfSides"))
+    if(!std::strcmp(attName, "tubeNumberOfSides"))
       {
       std::stringstream ss;
       ss << attValue;
@@ -153,21 +155,21 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::SetInputToPolyDataPipeline(vtkPolyDat
 }
 
 //------------------------------------------------------------------------------
-vtkPolyData* vtkMRMLSpatialObjectsTubeDisplayNode::GetInputPolyData()
+vtkPolyData* vtkMRMLSpatialObjectsTubeDisplayNode::GetInputPolyData( void )
 {
   return vtkPolyData::SafeDownCast(this->amontAssignAttribute->GetInput());
 }
 
 //------------------------------------------------------------------------------
-vtkAlgorithmOutput* vtkMRMLSpatialObjectsTubeDisplayNode::GetOutputPort()
+vtkAlgorithmOutput* vtkMRMLSpatialObjectsTubeDisplayNode::GetOutputPort( void )
 {
   return this->AssignAttribute->GetOutputPort();
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline()
+void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline( void )
 {
-  if (!this->GetInputPolyData() || !this->Visibility)
+  if(!this->GetInputPolyData() || !this->Visibility)
     {
     return;
     }
@@ -185,17 +187,17 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline()
                                 vtkDataSetAttributes::SCALARS,
                                 vtkAssignAttribute::POINT_DATA);
 
-  if (SpatialObjectsDisplayPropertiesNode != NULL)
+  if(SpatialObjectsDisplayPropertiesNode != NULL)
     {
     const int colorMode = this->GetColorMode();
-    if (colorMode ==
+    if(colorMode ==
           vtkMRMLSpatialObjectsDisplayNode::colorModeSolid)
       {
       this->ScalarVisibilityOff();
 
       vtkMRMLNode* colorNode =
         this->GetScene()->GetNodeByID("vtkMRMLColorTableNodeFullRainbow");
-      if (colorNode)
+      if(colorNode)
         {
         this->SetAndObserveColorNodeID(colorNode->GetID());
         }
@@ -204,7 +206,7 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline()
       this->SetScalarRange(0, 255);
       }
 
-    else if (colorMode ==
+    else if(colorMode ==
                vtkMRMLSpatialObjectsDisplayNode::colorModeScalarData)
       {
       this->ScalarVisibilityOn();

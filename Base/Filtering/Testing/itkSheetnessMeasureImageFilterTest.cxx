@@ -16,11 +16,11 @@
  *
  *=========================================================================*/
 
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkSheetnessMeasureImageFilter.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileWriter.h>
 
-int itkSheetnessMeasureImageFilterTest(int ,char* [] )
+int itkSheetnessMeasureImageFilterTest(int ,char*[] )
 {
   std::cout << "itkSheetnessMeasureImageFilterTest running..." << std::endl;
 
@@ -154,5 +154,4 @@ int itkSheetnessMeasureImageFilterTest(int ,char* [] )
   writer->Update();
 
   return EXIT_SUCCESS;
-
 }

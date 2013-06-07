@@ -20,10 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeCompareImageWithPrior_txx
 #define __tubeCompareImageWithPrior_txx
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -33,31 +34,31 @@ limitations under the License.
 
 #include <sstream>
 
-#include "itkImage.h"
+#include <itkImage.h>
 
 // The following three should be used in every CLI application
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
 // Application-specific includes
-#include "itkCropImageFilter.h"
-#include "itkBinaryThresholdImageFilter.h"
+#include <itkCropImageFilter.h>
+#include <itkBinaryThresholdImageFilter.h>
 
-#include "itkBinaryBallStructuringElement.h"
-#include "itkBinaryErodeImageFilter.h"
-#include "itkBinaryDilateImageFilter.h"
+#include <itkBinaryBallStructuringElement.h>
+#include <itkBinaryErodeImageFilter.h>
+#include <itkBinaryDilateImageFilter.h>
 
-#include "itkRecursiveGaussianImageFilter.h"
+#include <itkRecursiveGaussianImageFilter.h>
 
-#include "itkNormalizeImageFilter.h"
-#include "itkRigidImageToImageRegistrationMethod.h"
-#include "itkResampleImageFilter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkLinearInterpolateImageFunction.h"
+#include <itkNormalizeImageFilter.h>
+#include <itkRigidImageToImageRegistrationMethod.h>
+#include <itkResampleImageFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkLinearInterpolateImageFunction.h>
 
-#include "itkShiftScaleImageFilter.h"
+#include <itkShiftScaleImageFilter.h>
 
 namespace tube
 {
@@ -226,7 +227,7 @@ SetUseRegistration( bool reg )
 
 template< class pixelT, unsigned int dimensionT >
 bool CompareImageWithPrior< pixelT, dimensionT>::
-GetUseRegistration( )
+GetUseRegistration( void )
 {
   return m_UseRegistration;
 }
@@ -240,7 +241,7 @@ SetUseRegistrationTransform( bool reg )
 
 template< class pixelT, unsigned int dimensionT >
 bool CompareImageWithPrior< pixelT, dimensionT>::
-GetUseRegistrationTransform( )
+GetUseRegistrationTransform( void )
 {
   return m_UseRegistrationTransform;
 }
@@ -254,7 +255,7 @@ SetUseRegistrationOptimization( bool reg )
 
 template< class pixelT, unsigned int dimensionT >
 bool CompareImageWithPrior< pixelT, dimensionT>::
-GetUseRegistrationOptimization( )
+GetUseRegistrationOptimization( void )
 {
   return m_UseRegistrationOptimization;
 }
@@ -718,13 +719,12 @@ Update( void )
     std::cout << "MBg = " << meanMaskBg <<  " - "
               << "MFg = " << meanMaskFg << std::endl;
 
-    typedef itk::ShiftScaleImageFilter< ImageType, ImageType >
-      FilterType;
-    typename FilterType::Pointer filter = FilterType::New();
-
     double scale = (meanVolFg - meanVolBg) / (meanMaskFg - meanMaskBg);
     double shift = meanVolBg/scale - meanMaskBg;
-    filter = FilterType::New();
+
+     typedef itk::ShiftScaleImageFilter< ImageType, ImageType >
+      FilterType;
+    typename FilterType::Pointer filter = FilterType::New();
     filter->SetInput( m_OutputMaskImage );
     filter->SetShift( shift );
     filter->SetScale( scale );
@@ -816,6 +816,6 @@ GetGoodnessOfFit( void )
   return m_GoF;
 }
 
-}
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeCompareImageWithPrior_txx)

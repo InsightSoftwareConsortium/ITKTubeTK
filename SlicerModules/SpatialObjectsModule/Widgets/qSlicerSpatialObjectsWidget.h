@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __qSlicerSpatialObjectsWidget_h
 #define __qSlicerSpatialObjectsWidget_h
 
@@ -33,7 +34,7 @@ limitations under the License.
 #include <qSlicerWidget.h>
 
 // qMRML includes
-#include "qSlicerSpatialObjectsModuleWidgetsExport.h"
+#include <qSlicerSpatialObjectsModuleWidgetsExport.h>
 
 class qSlicerSpatialObjectsWidgetPrivate;
 class vtkMRMLNode;

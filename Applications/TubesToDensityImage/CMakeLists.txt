@@ -7,7 +7,7 @@
 #
 # All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 ( the "License" );
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
@@ -22,19 +22,25 @@
 ##############################################################################
 
 #-----------------------------------------------------------------------------
-# Style Guidelines
-#   * Place a space after ( and before )
-#   * Test input and output images should be in .mha format
-#   * Test coverage should be > 85% before committing
-#   * Test outputs and baselines should be pre-pended with ${MODULE_NAME}
-#   * Use appropriate TubeTK comment blocks at the top every file
-#   * Follow our naming convention - if you are uncertain, ask
-#   * Use the tube namespace for all classes
-#   * Your code is a part of TubeTK - don't be "different" - it makes the code
-#        harder to maintain and understand, even if you think your way is
-#        "better."
-
 set( MODULE_NAME TubesToDensityImage )
+project( ${MODULE_NAME} )
+
+set( TubesToDensityImage_H_Files
+  itkInverseIntensityImageFilter.h
+  itkTubeSpatialObjectToDensityImage.h
+  itkTubeSpatialObjectToImageFilter.h
+  )
+
+set( TubesToDensityImage_TXX_Files
+  itkInverseIntensityImageFilter.txx
+  itkTubeSpatialObjectToDensityImage.txx
+  itkTubeSpatialObjectToImageFilter.txx
+  )
+
+add_custom_target( TubesToDensityImageInclude SOURCES
+  ${TubesToDensityImage_H_Files}
+  ${TubesToDensityImage_TXX_Files}
+  )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -45,15 +51,16 @@ include( ${USE_ITK_FILE} )
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Utilities/TubeTKLogo.h
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Utilities
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
     ${TubeTK_SOURCE_DIR}/Base/ObjectDocument
   )
 
-#if( BUILD_TESTING )
-#  add_subdirectory( Testing )
-#endif( BUILD_TESTING )
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )

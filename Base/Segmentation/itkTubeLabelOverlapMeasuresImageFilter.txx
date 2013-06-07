@@ -26,8 +26,8 @@ limitations under the License.
 
 #include "itkTubeLabelOverlapMeasuresImageFilter.h"
 
-#include "itkImageRegionConstIterator.h"
-#include "itkProgressReporter.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkProgressReporter.h>
 
 namespace itk
 {
@@ -47,7 +47,7 @@ namespace tube
 
 template< class TLabelImage >
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::LabelOverlapMeasuresImageFilter()
+::LabelOverlapMeasuresImageFilter( void )
 {
   // this filter requires two input images
   this->SetNumberOfRequiredInputs( 2 );
@@ -56,7 +56,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 void
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GenerateInputRequestedRegion()
+::GenerateInputRequestedRegion( void )
 {
   Superclass::GenerateInputRequestedRegion();
   if( this->GetSourceImage() )
@@ -86,7 +86,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 void
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::BeforeThreadedGenerateData()
+::BeforeThreadedGenerateData( void )
 {
   int numberOfThreads = this->GetNumberOfThreads();
 
@@ -106,7 +106,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 void
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::AfterThreadedGenerateData()
+::AfterThreadedGenerateData( void )
 {
   // Run through the map for each thread and accumulate the set measures.
   for( ThreadIdType n = 0; n < this->GetNumberOfThreads(); n++ )
@@ -215,7 +215,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetTotalOverlap()
+::GetTotalOverlap( void )
 {
   RealType numerator = 0.0;
   RealType denominator = 0.0;
@@ -253,7 +253,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetUnionOverlap()
+::GetUnionOverlap( void )
 {
   RealType numerator = 0.0;
   RealType denominator = 0.0;
@@ -291,7 +291,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetMeanOverlap()
+::GetMeanOverlap( void )
 {
   RealType uo = this->GetUnionOverlap();
   return ( 2.0 * uo / ( 1.0 + uo ) );
@@ -309,7 +309,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetVolumeSimilarity()
+::GetVolumeSimilarity( void )
 {
   RealType numerator = 0.0;
   RealType denominator = 0.0;
@@ -351,7 +351,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetFalseNegativeError()
+::GetFalseNegativeError( void )
 {
   RealType numerator = 0.0;
   RealType denominator = 0.0;
@@ -389,7 +389,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetFalsePositiveError()
+::GetFalsePositiveError( void )
 {
   RealType numerator = 0.0;
   RealType denominator = 0.0;
@@ -433,8 +433,8 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 
 }
 
+} // End namespace tube
 
-}// end namespace tube
+} // End namespace itk
 
-}// end namespace itk
-#endif
+#endif // End !defined(__itkTubeLabelOverlapMeasuresImageFilter_txx)

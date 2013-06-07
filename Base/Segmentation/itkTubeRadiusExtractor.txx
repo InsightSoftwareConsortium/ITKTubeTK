@@ -25,12 +25,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRadiusExtractor_txx
 #define __itkTubeRadiusExtractor_txx
 
 #include <itkMinimumMaximumImageFilter.h>
 
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 #include "tubeTubeMath.h"
 #include "tubeMatrixMath.h"
 
@@ -46,8 +47,7 @@ namespace tube
  * \class RadiusExtractorMedialnessFunc
  */
 template < class ImageT >
-class RadiusExtractorMedialnessFunc
-: public ::tube::UserFunc<int, double>
+class RadiusExtractorMedialnessFunc : public ::tube::UserFunction<int, double>
 {
 public:
 
@@ -58,6 +58,8 @@ public:
   RadiusExtractorMedialnessFunc( RadiusExtractor< ImageT > *
     newRadiusExtractor,
     double newMedialnessScaleStep )
+    : m_KernelArray(0),
+      m_Value(0.0)
     {
     m_RadiusExtractor = newRadiusExtractor;
     m_MedialnessScaleStep = newMedialnessScaleStep;
@@ -103,12 +105,12 @@ private:
 
   double                                   m_MedialnessScaleStep;
 
-};
+}; // End class RadiusExtractorMedialnessFunc
 
 /** Constructor */
 template<class TInputImage>
 RadiusExtractor<TInputImage>
-::RadiusExtractor()
+::RadiusExtractor( void )
 {
   m_Image = NULL;
   m_ImageXMin.Fill( 0 );
@@ -149,8 +151,8 @@ RadiusExtractor<TInputImage>
     for( double theta=0; theta<vnl_math::pi-vnl_math::pi/8;
       theta+=( double )( vnl_math::pi/4 ) )
       {
-      m_KernX(0, dir) = cos( theta );
-      m_KernX(1, dir) = sin( theta );
+      m_KernX(0, dir) = vcl_cos( theta );
+      m_KernX(1, dir) = vcl_sin( theta );
       m_KernX(2, dir) = 0;
       ++dir;
       m_KernX(0, dir) = -cos( theta );
@@ -193,7 +195,7 @@ RadiusExtractor<TInputImage>
 /** Destructor */
 template<class TInputImage>
 RadiusExtractor<TInputImage>
-::~RadiusExtractor()
+::~RadiusExtractor( void )
 {
   if( m_MedialnessFunc != NULL )
     {
@@ -931,7 +933,7 @@ RadiusExtractor<TInputImage>
 
   double e = 1.1;
   double f = 4.0;
-  if( ( pntR / f ) * e < 0.71 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
+  if( ( pntR / f ) * e < 0.71 )  // std::sqrt( 2 )/2 = 0.7071 approx = 0.71
     {
     f = ( ( pntR * e ) / 0.71 + f ) / 2;
     e = 0.71 / ( pntR / f );
@@ -963,7 +965,7 @@ RadiusExtractor<TInputImage>
     {
     e = 1.1;
     f = 3.0;
-    if( ( pntR / f ) * e < 1.1 )  // sqrt( 2 )/2 = 0.7071 approx = 0.71
+    if( ( pntR / f ) * e < 1.1 )  // std::sqrt( 2 )/2 = 0.7071 approx = 0.71
       {
       f = ( ( pntR * e ) / 1.1 + f ) / 2;
       e = 1.1 / ( pntR / f );
@@ -1245,7 +1247,8 @@ RadiusExtractor<TInputImage>
   if( doBNess )
     {
     unsigned int kernBrnMaxI = m_KernNumDirs;
-    double kernBrnMax, kernBrnAvg;
+    double kernBrnMax;
+    double kernBrnAvg;
     double kernBrnAvgCnt = 1;
     for( unsigned int i=0; i<m_KernNumDirs; i++ )
       {
@@ -1451,10 +1454,10 @@ RadiusExtractor<TInputImage>
     if( count/5 == count/5.0 && m_StatusCallBack )
       {
       char mesg[80];
-      sprintf( mesg, "Radius at %d = %f", count*m_KernelPointSpacing,
+      std::sprintf( mesg, "Radius at %d = %f", count*m_KernelPointSpacing,
         pntR );
       char loc[80];
-      sprintf( loc, "Extract:Widths" );
+      std::sprintf( loc, "Extract:Widths" );
       m_StatusCallBack( loc, mesg, 0 );
       }
     }
@@ -1570,7 +1573,10 @@ RadiusExtractor<TInputImage>
     ++pntCnt;
     }
 
-  double w, r, m, b;
+  double w;
+  double r;
+  double m;
+  double b;
 
   double r1 = kernArray[1].GetRadius();
   double m1 = kernArray[1].GetMedialness();
@@ -1624,10 +1630,10 @@ RadiusExtractor<TInputImage>
   if( m_StatusCallBack )
     {
     char mesg[80];
-    sprintf( mesg, "Applied to %ld tube points.",
+    std::sprintf( mesg, "Applied to %ld tube points.",
       (long int)(tube->GetPoints().size()) );
     char loc[80];
-    sprintf( loc, "Extract:Widths" );
+    std::sprintf( loc, "Extract:Widths" );
     m_StatusCallBack( loc, mesg, 0 );
     }
   else
@@ -1767,8 +1773,8 @@ RadiusExtractor<TInputImage>
 }
 
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeRadiusExtractor_txx)

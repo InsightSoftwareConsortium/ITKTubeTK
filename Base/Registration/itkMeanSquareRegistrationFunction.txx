@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,21 +20,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkMeanSquareRegistrationFunction_txx
 #define __itkMeanSquareRegistrationFunction_txx
 
 #include "itkMeanSquareRegistrationFunction.h"
-#include "itkExceptionObject.h"
-#include "vnl/vnl_math.h"
+#include <itkMacro.h>
+#include <vnl/vnl_math.h>
 
-namespace itk {
+namespace itk
+{
 
 /**
  * Default constructor
  */
 template <class TFixedImage, class TMovingImage, class TDeformationField>
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::MeanSquareRegistrationFunction()
+::MeanSquareRegistrationFunction( void )
 {
 
   RadiusType r;
@@ -93,7 +95,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 template <class TFixedImage, class TMovingImage, class TDeformationField>
 void
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::InitializeIteration()
+::InitializeIteration( void )
 {
   if( !this->GetMovingImage() || !this->GetFixedImage() || !m_MovingImageInterpolator )
     {
@@ -142,17 +144,17 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 
   const bool normalizemetric=this->GetNormalizeGradient();
   double denominator = 1.0;
-  if (normalizemetric)
+  if(normalizemetric)
     {
     denominator = speedValue*speedValue *fixedGradientSquaredMagnitude;
     denominator = vcl_sqrt(denominator);
     }
-  if (denominator == 0)
+  if(denominator == 0)
     {
     denominator=1.0;
     }
   PixelType update;
-  if ( vnl_math_abs(speedValue) < m_IntensityDifferenceThreshold ||
+  if( vnl_math_abs(speedValue) < m_IntensityDifferenceThreshold ||
     denominator < m_DenominatorThreshold )
     {
     update.Fill(0.0);
@@ -163,7 +165,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     {
     update[j] = speedValue * fixedGradient[j] /
       denominator*this->m_GradientStep;
-    if (normalizemetric)
+    if(normalizemetric)
       {
       update[j] *= vnl_math_sqr(m_FixedImageSpacing[j]);
       }
@@ -203,6 +205,6 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
   return difference;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkMeanSquareRegistrationFunction_txx)

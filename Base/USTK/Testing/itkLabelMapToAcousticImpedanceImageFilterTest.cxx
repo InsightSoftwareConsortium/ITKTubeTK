@@ -20,17 +20,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include <itkLabelMapToAcousticImpedanceImageFilter.h>
+
+#include "itkLabelMapToAcousticImpedanceImageFilter.h"
 #include <fstream>
 
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 
 template< class TLookupTable >
 int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable );
 
-int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
+int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv[] )
 {
   // Argument parsing.
   if( argc < 4 )
@@ -57,7 +58,6 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv [] )
     AcousticImpedanceImageType;
 
   typedef std::vector< float > LookupTableType;
-
 
 
   // Reader.
@@ -126,7 +126,7 @@ int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable )
     return EXIT_FAILURE;
     }
 
-  size_t label = 0;
+  unsigned int label = 0;
   char tissueType[256];
   float acousticImpedance;
   inputStream >> label;

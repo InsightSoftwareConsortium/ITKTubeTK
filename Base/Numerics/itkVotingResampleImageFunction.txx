@@ -20,16 +20,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkVotingResampleImageFunction_txx
 #define __itkVotingResampleImageFunction_txx
 
 #include "itkVotingResampleImageFunction.h"
 
-#include "itkConstNeighborhoodIterator.h"
-#include "itkNeighborhood.h"
+#include <itkConstNeighborhoodIterator.h>
+#include <itkNeighborhood.h>
 #include <map>
 
-#include "vnl/vnl_math.h"
+#include <vnl/vnl_math.h>
 
 namespace itk
 {
@@ -48,7 +49,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
  */
 template<class TInputImage, class TCoordRep>
 VotingResampleImageFunction< TInputImage, TCoordRep >
-::VotingResampleImageFunction()
+::VotingResampleImageFunction( void )
 {
 
 }
@@ -95,11 +96,11 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
     it.GetNeighborhood();
   std::map<typename TInputImage::PixelType, int> tally;
   typename std::map<typename TInputImage::PixelType, int>::const_iterator itr;
-  for (unsigned int i = 0; i < n.Size(); i++)
+  for(unsigned int i = 0; i < n.Size(); i++)
     {
     tally[n[i]] = 0;
     }
-  for (unsigned int i = 0; i < n.Size(); i++)
+  for(unsigned int i = 0; i < n.Size(); i++)
     {
     tally[n[i]] += 1;
     }
@@ -118,6 +119,6 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
   return ret;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkVotingResampleImageFunction_txx)

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#include "itkImage.h"
-#include "itkImageFileWriter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkGroupSpatialObject.h"
+
+#include <itkImage.h>
+#include <itkImageFileWriter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkGroupSpatialObject.h>
 #include "tubeMessage.h"
 #include "tubeTubeMath.h"
-#include "itkSpatialObjectToImageFilter.h"
-#include "itkImageFileWriter.h"
+#include <itkSpatialObjectToImageFilter.h>
+#include <itkImageFileWriter.h>
 
 int itkTubePointsToImageTest( int argc, char * argv[] )
 {
@@ -68,13 +69,14 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
 
   // Get the list of tubes from the group
   char tubeName[17];
-  strcpy( tubeName, "Tube" );
+  std::strcpy( tubeName, "Tube" );
   ObjectListType * tubeList = group->GetChildren( -1, tubeName );
   const unsigned int numTubes = tubeList->size();
   std::cout << "Number of tubes: " << numTubes << std::endl;
   if( numTubes != 2 )
     {
     std::cerr << "Wrong number of tubes" << std::endl;
+    delete tubeList;
     return EXIT_FAILURE;
     }
 
@@ -82,7 +84,6 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
   ObjectListType::iterator            tubeIt = tubeList->begin();
   TubeType::Pointer                   tube;
   PointListType                       tubePointList;
-  unsigned int                        numPoints = 0;
   PointListType::iterator             pointIt;
   TubePointType *                     point;
   TubePointType::PointType            position;
@@ -98,7 +99,7 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
 
     // Get the list of points in the tube
     tubePointList = tube->GetPoints();
-    numPoints = tubePointList.size();
+    unsigned int numPoints = tubePointList.size();
 
     // Iterate through the points
     pointIt = tubePointList.begin();
@@ -119,6 +120,7 @@ int itkTubePointsToImageTest( int argc, char * argv[] )
       }
     ++tubeIt;
     }
+  delete tubeList;
 
   typedef itk::SpatialObjectToImageFilter<GroupType, ImageType>
                                               SpatialObjectToImageFilterType;

@@ -20,11 +20,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAcousticImpulseResponseImageFilter_h
 #define __itkAcousticImpulseResponseImageFilter_h
 
-#include "itkCastImageFilter.h"
-#include "itkCovariantVector.h"
+#include <itkCastImageFilter.h>
+#include <itkCovariantVector.h>
 
 namespace itk
 {
@@ -60,7 +61,7 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage, class TOperatorValue=float >
-class ITK_EXPORT AcousticImpulseResponseImageFilter:
+class ITK_EXPORT AcousticImpulseResponseImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
@@ -101,8 +102,8 @@ public:
   itkGetObjectMacro( GradientMagnitudeFilter, GradientMagnitudeFilterType );
 
 protected:
-  AcousticImpulseResponseImageFilter();
-  virtual ~AcousticImpulseResponseImageFilter() {}
+  AcousticImpulseResponseImageFilter( void );
+  virtual ~AcousticImpulseResponseImageFilter( void ) {}
 
   virtual void PrintSelf(std::ostream & os, Indent indent) const;
 
@@ -117,12 +118,13 @@ private:
 
   typedef CastImageFilter< InputImageType, OperatorImageType > CastImageFilterType;
   typename CastImageFilterType::Pointer m_CastImageFilter;
-};
 
-} // end namespace itk
+}; // End class AcousticImpulseResponseImageFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkAcousticImpulseResponseImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAcousticImpulseResponseImageFilter_h)

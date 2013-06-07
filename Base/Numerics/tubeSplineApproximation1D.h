@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,15 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeSplineApproximation1D_h
 #define __tubeSplineApproximation1D_h
 
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix_fixed.h"
+#include <vnl/vnl_matrix_fixed.h>
+#include <vnl/vnl_vector.h>
 
-#include "tubeSpline1D.h"
-#include "tubeUserFunc.h"
 #include "tubeOptimizer1D.h"
+#include "tubeSpline1D.h"
+#include "tubeUserFunction.h"
 
 namespace tube
 {
@@ -39,11 +40,11 @@ public:
 
   typedef vnl_vector<double> VectorType;
 
-  SplineApproximation1D();
-  SplineApproximation1D( UserFunc<int, double> *newFunval,
+  SplineApproximation1D( void );
+  SplineApproximation1D( UserFunction<int, double> *newFunval,
     Optimizer1D * newOpt1D );
 
-  virtual ~SplineApproximation1D();
+  virtual ~SplineApproximation1D( void );
 
   double  dataValue( const VectorType & y, double x );
 
@@ -62,8 +63,8 @@ protected:
 
   MatrixType  m_SplineApproximation1DMatrix;
 
-};
+}; // End class SplineApproximation1D
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeSplineApproximation1D_h)

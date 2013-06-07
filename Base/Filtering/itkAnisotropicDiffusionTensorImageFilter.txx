@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusionTensorImageFilter_txx
 #define __itkAnisotropicDiffusionTensorImageFilter_txx
 
@@ -27,25 +28,26 @@ limitations under the License.
 #include "itkAnisotropicDiffusionTensorFunction.h"
 
 #include <list>
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIterator.h"
-#include "itkNumericTraits.h"
-#include "itkNeighborhoodAlgorithm.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
+#include <itkNumericTraits.h>
+#include <itkNeighborhoodAlgorithm.h>
 
-#include "itkImageFileWriter.h"
-#include "itkVector.h"
-#include "itkFixedArray.h"
+#include <itkImageFileWriter.h>
+#include <itkVector.h>
+#include <itkFixedArray.h>
 
 //#define INTERMEDIATE_OUTPUTS
 
-namespace itk {
+namespace itk
+{
 
 /**
  * Constructor
  */
 template <class TInputImage, class TOutputImage>
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::AnisotropicDiffusionTensorImageFilter()
+::AnisotropicDiffusionTensorImageFilter( void )
 {
   m_UpdateBuffer = UpdateBufferType::New();
   m_DiffusionTensorImage = DiffusionTensorImageType::New();
@@ -64,7 +66,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
  template <class TInputImage, class TOutputImage>
  void
  AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
- ::InitializeIteration()
+ ::InitializeIteration( void )
 {
   itkDebugMacro( << "InitializeIteration() called " );
 
@@ -72,7 +74,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
      dynamic_cast<AnisotropicDiffusionTensorFunction<UpdateBufferType> *>
      (this->GetDifferenceFunction().GetPointer());
 
-  if ( !f )
+  if( !f )
     {
     throw ExceptionObject(__FILE__, __LINE__,
         "Anisotropic diffusion Vessel Enhancement function is not set.",
@@ -86,7 +88,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 
   f->InitializeIteration();
 
-  if (this->GetNumberOfIterations() != 0)
+  if(this->GetNumberOfIterations() != 0)
     {
     this->UpdateProgress(((float)(this->GetElapsedIterations()))
                           /((float)(this->GetNumberOfIterations())));
@@ -104,22 +106,22 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::CopyInputToOutput()
+::CopyInputToOutput( void )
 {
   typename TInputImage::ConstPointer  input  = this->GetInput();
   typename TOutputImage::Pointer      output = this->GetOutput();
 
-  if ( !input || !output )
+  if( !input || !output )
     {
     itkExceptionMacro(<< "Either input and/or output is NULL.");
     }
 
   // Check if we are doing in-place filtering
-  if ( this->GetInPlace() && (typeid(TInputImage) == typeid(TOutputImage)) )
+  if( this->GetInPlace() && (typeid(TInputImage) == typeid(TOutputImage)) )
     {
     typename TInputImage::Pointer tempPtr =
       dynamic_cast<TInputImage *>( output.GetPointer() );
-    if ( tempPtr && tempPtr->GetPixelContainer() == input->GetPixelContainer() )
+    if( tempPtr && tempPtr->GetPixelContainer() == input->GetPixelContainer() )
       {
       // the input and output container are the same - no need to copy
       return;
@@ -129,7 +131,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   ImageRegionConstIterator<TInputImage> in(input, output->GetRequestedRegion());
   ImageRegionIterator<TOutputImage> out(output, output->GetRequestedRegion());
 
-  while( ! out.IsAtEnd() )
+  while( !out.IsAtEnd() )
     {
     out.Value() = static_cast<PixelType>(in.Get());
     ++in;
@@ -140,7 +142,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::AllocateUpdateBuffer()
+::AllocateUpdateBuffer( void )
 {
   itkDebugMacro( << "AllocateUpdateBuffer() called" );
 
@@ -161,7 +163,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::AllocateDiffusionTensorImage()
+::AllocateDiffusionTensorImage( void )
 {
   itkDebugMacro( << "AllocateDiffusionTensorImage() called" );
 
@@ -221,13 +223,13 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // First find out how many pieces the extent can be split into.
   // Using the SplitRequestedRegion method from itk::ImageSource.
   ThreadRegionType splitRegion;
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitRegion);
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitRegion );
 
-  ThreadDiffusionTensorImageRegionType    splitRegionDiffusionTensorImage;
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitRegionDiffusionTensorImage);
-  if (threadId < total)
+  ThreadDiffusionTensorImageRegionType splitRegionDiffusionTensorImage;
+  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                             splitRegionDiffusionTensorImage );
+  if(threadId < total)
     {
     str->Filter->ThreadedApplyUpdate(str->TimeStep,
                                      splitRegion,
@@ -242,7 +244,7 @@ template <class TInputImage, class TOutputImage>
 typename
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>::TimeStepType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::CalculateChange()
+::CalculateChange( void )
 {
   itkDebugMacro( << "CalculateChange called" );
 
@@ -261,7 +263,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   ThreadIdType threadCount = this->GetMultiThreader()->GetNumberOfThreads();
   str.TimeStepList.resize( threadCount );
   str.ValidTimeStepList.resize( threadCount );
-  for (ThreadIdType i =0; i < threadCount; ++i)
+  for(ThreadIdType i =0; i < threadCount; ++i)
     {      str.ValidTimeStepList[i] = false;    }
 
   // Multithread the execution
@@ -292,15 +294,15 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   // Using the SplitRequestedRegion method from itk::ImageSource.
   ThreadRegionType splitRegion;
 
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitRegion);
+  str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                     splitRegion );
 
   ThreadDiffusionTensorImageRegionType splitDiffusionimageRegion;
 
-  total = str->Filter->SplitRequestedRegion(threadId, threadCount,
-                                            splitDiffusionimageRegion);
+  total = str->Filter->SplitRequestedRegion( threadId, threadCount,
+                                             splitDiffusionimageRegion );
 
-  if (threadId < total)
+  if(threadId < total)
     {
     str->TimeStepList[threadId]
       = str->Filter->ThreadedCalculateChange(splitRegion,
@@ -325,7 +327,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   u.GoToBegin();
   o.GoToBegin();
 
-  while ( !u.IsAtEnd() )
+  while( !u.IsAtEnd() )
     {
 
     o.Value() += static_cast<PixelType>(u.Value() * dt);  // no adaptor support
@@ -424,7 +426,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   DiffusionTensorNeighborhoodType bDD;
   UpdateIteratorType   bU;
   ++dfIt;
-  for (++fIt; fIt != faceList.end(); ++fIt)
+  for(++fIt; fIt != faceList.end(); ++fIt)
     {
     bD = NeighborhoodIteratorType(radius, output, *fIt);
     bDD = DiffusionTensorNeighborhoodType(radius, m_DiffusionTensorImage, *dfIt);
@@ -433,7 +435,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     bD.GoToBegin();
     bU.GoToBegin();
     bDD.GoToBegin();
-    while ( !bD.IsAtEnd() )
+    while( !bD.IsAtEnd() )
       {
       bU.Value() = df->ComputeUpdate(bD,bDD,spacing,globalData);
       ++bD;
@@ -455,11 +457,11 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 template <class TInputImage, class TOutputImage>
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::GenerateData()
+::GenerateData( void )
 {
   itkDebugMacro( << "GenerateData is called" );
 
-  if (!this->GetIsInitialized())
+  if(!this->GetIsInitialized())
     {
     // Allocate the output image
     this->AllocateOutputs();
@@ -483,7 +485,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   TimeStepType dt;
   unsigned int iter = 0;
 
-  while ( ! this->Halt() )
+  while( !this->Halt() )
     {
     this->InitializeIteration(); // An optional method for precalculating
                                  // global values, or otherwise setting up
@@ -511,7 +513,7 @@ template <class TInputImage, class TOutputImage>
 typename AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::DiffusionTensorImagePointerType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
-::GetDiffusionTensorImage()
+::GetDiffusionTensorImage( void )
 {
   return m_DiffusionTensorImage;
 }
@@ -526,6 +528,6 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   os << indent << "TimeStep: " << m_TimeStep  << std::endl;
 }
 
-}// end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusionTensorImageFilter_txx)

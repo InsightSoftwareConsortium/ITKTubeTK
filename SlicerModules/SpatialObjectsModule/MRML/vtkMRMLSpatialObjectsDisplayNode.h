@@ -36,7 +36,7 @@ limitations under the License.
 #include <vtkMRMLModelDisplayNode.h>
 
 // Tractography includes
-#include "vtkSlicerSpatialObjectsModuleMRMLExport.h"
+#include <vtkSlicerSpatialObjectsModuleMRMLExport.h>
 
 class vtkMRMLSpatialObjectsDisplayPropertiesNode;
 
@@ -66,12 +66,12 @@ public:
 
   ///
   /// Get node XML tag name (like Volume, model...)
-  virtual const char* GetNodeTagName() = 0;
+  virtual const char* GetNodeTagName( void ) = 0;
 
   ///
   /// Updates this node if it depends on other nodes
   /// when the node is deleted in the scene
-  virtual void UpdateReferences();
+  virtual void UpdateReferences( void );
 
   ///
   /// Finds the storage node and read the data
@@ -112,17 +112,17 @@ public:
 
   ///
   /// Color by solid color (for example the whole vessel bundle red. blue, etc.)
-  void SetColorModeToSolid()
+  void SetColorModeToSolid( void )
   {this->SetColorMode(this->colorModeSolid );}
 
   ///
   /// Color according to the vessels using various scalar invariants.
-  void SetColorModeToScalar()
+  void SetColorModeToScalar( void )
   {this->SetColorMode(this->colorModeScalar );}
 
   ///
   /// Color function of scalar invariants along the tract.
-  void SetColorModeToFunctionOfScalar()
+  void SetColorModeToFunctionOfScalar( void )
   {this->SetColorMode(this->colorModeFunctionOfScalar);}
 
   ///
@@ -132,13 +132,13 @@ public:
   /// of that vessel variation from the registration.
   /// Then by making that information the active cell scalar field,
   /// this will allow coloring by that information.
-  void SetColorModeToUseCellScalars()
+  void SetColorModeToUseCellScalars( void )
   {this->SetColorMode(this->colorModeUseCellScalars );}
 
   ///
   /// Color according to the vessels using scalars
   /// from the original SpatialObjectsNode.
-  void SetColorModeToScalarData()
+  void SetColorModeToScalarData( void )
   {this->SetColorMode(this->colorModeScalarData );}
 
   //----------------------------------------------------------------------------
@@ -148,7 +148,7 @@ public:
   ///
   /// Get spatial object display properties MRML node object for vessels glyph.
   vtkMRMLSpatialObjectsDisplayPropertiesNode*
-    GetSpatialObjectsDisplayPropertiesNode();
+    GetSpatialObjectsDisplayPropertiesNode( void );
 
   ///
   /// Set spatial object display properties MRML node object for vessels glyph.
@@ -159,12 +159,12 @@ public:
   /// MRML node object for vessels glyph.
   vtkGetStringMacro(SpatialObjectsDisplayPropertiesNodeID);
 
-  static int GetNumberOfScalarInvariants();
+  static int GetNumberOfScalarInvariants( void );
   static int GetNthScalarInvariant(int i);
 
  protected:
-  vtkMRMLSpatialObjectsDisplayNode();
-  ~vtkMRMLSpatialObjectsDisplayNode();
+  vtkMRMLSpatialObjectsDisplayNode( void );
+  ~vtkMRMLSpatialObjectsDisplayNode( void );
   vtkMRMLSpatialObjectsDisplayNode(const vtkMRMLSpatialObjectsDisplayNode&);
   void operator=(const vtkMRMLSpatialObjectsDisplayNode&);
 
@@ -174,8 +174,9 @@ public:
     SpatialObjectsDisplayPropertiesNode;
   char* SpatialObjectsDisplayPropertiesNodeID;
 
-  static std::vector<int> GetSupportedColorModes();
+  static std::vector<int> GetSupportedColorModes( void );
   int ColorMode;
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsDisplayNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsDisplayNode_h)

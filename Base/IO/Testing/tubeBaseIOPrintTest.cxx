@@ -30,8 +30,7 @@ limitations under the License.
 #include "itkTubeMetaRidgeSeed.h"
 #include "itkTubeMetaTubeParams.h"
 
-
-int tubeBaseIOPrintTest( int, char * [] )
+int tubeBaseIOPrintTest( int, char *[] )
 {
   itk::tube::MetaLDA metaLDA;
   std::cout << "-------------metaLDA" << std::endl;

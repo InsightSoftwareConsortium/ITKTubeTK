@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkLabelMapToAcousticImpedanceImageFilter_txx
 #define __itkLabelMapToAcousticImpedanceImageFilter_txx
 
@@ -31,7 +32,7 @@ namespace itk
 template< class TInputImage, class TOutputImage, class TLookupTable >
 void
 LabelMapToAcousticImpedanceImageFilter< TInputImage, TOutputImage, TLookupTable >
-::BeforeThreadedGenerateData()
+::BeforeThreadedGenerateData( void )
 {
   Superclass::BeforeThreadedGenerateData();
 
@@ -44,6 +45,6 @@ LabelMapToAcousticImpedanceImageFilter< TInputImage, TOutputImage, TLookupTable 
     }
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkLabelMapToAcousticImpedanceImageFilter_txx)

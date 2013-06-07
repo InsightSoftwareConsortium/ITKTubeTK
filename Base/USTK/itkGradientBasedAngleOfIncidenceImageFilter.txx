@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkGradientBasedAngleOfIncidenceImageFilter_txx
 #define __itkGradientBasedAngleOfIncidenceImageFilter_txx
 
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
 
-#include "itkImageRegionConstIteratorWithIndex.h"
-#include "itkGradientImageFilter.h"
-#include "itkProgressReporter.h"
+#include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkGradientImageFilter.h>
+#include <itkProgressReporter.h>
 
 namespace itk
 {
@@ -36,7 +37,7 @@ template< class TInputImage, class TOutputImage, class TOperatorValue >
 GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   TOutputImage,
   TOperatorValue >
-::GradientBasedAngleOfIncidenceImageFilter()
+::GradientBasedAngleOfIncidenceImageFilter( void )
 {
   typedef GradientImageFilter<
       OperatorImageType, OperatorValueType, OperatorValueType >
@@ -167,17 +168,17 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
      << indent << "UltrasoundProbeType: ";
   switch( this->m_UltrasoundProbeType )
     {
-  case CURVILINEAR:
-    os << "CURVILINEAR";
-    break;
-  case PHASED:
-    os << "PHASED";
-    break;
-  case LINEAR:
-    os << "LINEAR";
-    break;
-  default:
-    os << "INVALID";
+    case CURVILINEAR:
+      os << "CURVILINEAR";
+      break;
+    case PHASED:
+      os << "PHASED";
+      break;
+    case LINEAR:
+      os << "LINEAR";
+      break;
+    default:
+      os << "INVALID";
     }
   os << indent << "UltrasoundProbeOrigin: "
      << this->m_UltrasoundProbeOrigin
@@ -186,6 +187,6 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
      << std::endl;
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkGradientBasedAngleOfIncidenceImageFilter_txx)

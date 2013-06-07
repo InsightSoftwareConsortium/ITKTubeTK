@@ -5,7 +5,7 @@ Library:   TubeTK
 Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
-All rights reserved. 
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,16 +33,16 @@ limitations under the License.
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 #include "tubeMatrixMath.h"
-#include "tubeOptBrent1D.h"
-#include "tubeOptGoldenMean1D.h"
+#include "tubeBrentOptimizer1D.h"
+#include "tubeGoldenMeanOptimizer1D.h"
 #include "tubeOptimizer1D.h"
 #include "tubeOptimizerND.h"
-#include "tubeOptParabolicFit1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSpline1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
 #include "tubeTubeMath.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
 int main ( int , char ** )
 {

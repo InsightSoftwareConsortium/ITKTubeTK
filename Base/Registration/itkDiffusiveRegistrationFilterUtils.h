@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkDiffusiveRegistrationFilterUtils_h
 #define __itkDiffusiveRegistrationFilterUtils_h
 
@@ -79,7 +80,7 @@ public:
       const DeformationFieldType * deformationField,
       DeformationComponentImageArrayType & deformationComponentImages );
 
-};
+}; // End class DiffusiveRegistrationFilterUtils
 
 
 /** Struct to simply get the face list and an iterator over the face list
@@ -92,7 +93,7 @@ struct FaceStruct
         typedef typename FaceCalculatorType::FaceListType FaceListType;
         typedef typename FaceListType::iterator           FaceListIteratorType;
 
-  FaceStruct()
+  FaceStruct( void )
     {
     numberOfTerms = 0;
     }
@@ -160,7 +161,7 @@ struct FaceStruct
       }
     }
 
-  void GoToBegin()
+  void GoToBegin( void )
     {
     if( (int) faceListIts.size() != numberOfTerms )
       {
@@ -178,7 +179,7 @@ struct FaceStruct
       }
     }
 
-  bool IsAtEnd()
+  bool IsAtEnd( void )
     {
     for( int i = 0; i < numberOfTerms; i++ )
       {
@@ -190,7 +191,7 @@ struct FaceStruct
     return false;
     }
 
-  void Increment()
+  void Increment( void )
     {
     for( int i = 0; i < numberOfTerms; i++ )
       {
@@ -353,16 +354,13 @@ struct FaceStruct
   std::vector< FaceListType >            faceLists;
   std::vector< FaceListIteratorType >    faceListIts;
   int                                    numberOfTerms;
-};
 
-} // end namespace itk
+}; // End struct FaceStruct
 
-#if ITK_TEMPLATE_EXPLICIT
-# include "Templates/itkDiffusiveRegistrationFilterUtils+-.h"
-#endif
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkDiffusiveRegistrationFilterUtils.txx"
+#include "itkDiffusiveRegistrationFilterUtils.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkDiffusiveRegistrationFilterUtils_h)

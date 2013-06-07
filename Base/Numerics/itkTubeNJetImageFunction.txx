@@ -25,10 +25,10 @@ limitations under the License.
 #define __itkTubeNJetImageFunction_txx
 
 #include "itkTubeNJetImageFunction.h"
-#include "itkImageRegionConstIterator.h"
-#include "itkImageRegionIteratorWithIndex.h"
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
 
-#include "vnl/algo/vnl_symmetric_eigensystem.h"
+#include <vnl/algo/vnl_symmetric_eigensystem.h>
 
 namespace itk
 {
@@ -41,7 +41,7 @@ namespace tube
  */
 template <class TInputImage>
 NJetImageFunction<TInputImage>
-::NJetImageFunction()
+::NJetImageFunction( void )
 {
   m_InputImage = 0;
   m_InputImageMask = 0;
@@ -192,7 +192,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 void
 NJetImageFunction<TInputImage>
-::ComputeStatistics( void)
+::ComputeStatistics( void )
 {
   if( m_InputImage)
     {
@@ -264,7 +264,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
-::GetMin( void) const
+::GetMin( void ) const
 {
   return m_StatsMin;
 }
@@ -275,7 +275,7 @@ NJetImageFunction<TInputImage>
 template <class TInputImage>
 double
 NJetImageFunction<TInputImage>
-::GetMax( void) const
+::GetMax( void ) const
 {
   return m_StatsMax;
 }
@@ -771,10 +771,10 @@ NJetImageFunction<TInputImage>
   d.Fill( 0);
   dTotal.Fill( 0);
 
+  int xRadius;
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
-  int xRadius;
 
   for( unsigned int i = 0; i < ImageDimension; i++)
     {
@@ -785,7 +785,7 @@ NJetImageFunction<TInputImage>
       xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    xRadius = ( int) vnl_math_floor( cIndex[i] - xMin[i]);
+    xRadius = static_cast< int >( vnl_math_floor( cIndex[i] - xMin[i] ) );
 
     xMax[i] = ( int) vnl_math_ceil( cIndex[i] + xRadius);
     if( xMax[i] > ( int) m_InputImageMaxX[i])
@@ -1183,6 +1183,8 @@ NJetImageFunction<TInputImage>
     HessianAtContinuousIndex( cIndex, scale, m);
     vnl_symmetric_eigensystem< double > eigSys( m.GetVnlMatrix());
 
+    assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
+
     double dp = 0;
     for( unsigned int i = 0; i < ImageDimension; i++)
       {
@@ -1231,6 +1233,8 @@ NJetImageFunction<TInputImage>
     {
     HessianAtContinuousIndex( cIndex, scale, m);
     vnl_symmetric_eigensystem< double > eigSys( m.GetVnlMatrix());
+
+    assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
 
     double dp0 = 0;
     double dp1 = 0;
@@ -1361,10 +1365,10 @@ NJetImageFunction<TInputImage>
   h.Fill( 0);
   hTotal.Fill( 0);
 
+  int xRadius;
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
-  int xRadius;
 
   for( unsigned int i = 0; i < ImageDimension; i++)
     {
@@ -1375,7 +1379,7 @@ NJetImageFunction<TInputImage>
       xMin[i] = m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    xRadius = ( int) vnl_math_floor( cIndex[i] - xMin[i] );
+    xRadius = static_cast< int >( vnl_math_floor( cIndex[i] - xMin[i] ) );
 
     xMax[i] = ( int) vnl_math_ceil( cIndex[i] + xRadius );
     if( xMax[i] > ( int) m_InputImageMaxX[i])
@@ -1643,7 +1647,10 @@ NJetImageFunction<TInputImage>
 
   vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix());
 
-  assert( eigSys.get_eigenvalue( 0) <= eigSys.get_eigenvalue( 1) );
+  // Ensure ordering of eigenvalues; According to VNL documentation,
+  // eigenvalues are in increasing order (with smallest eigenvalues
+  // first)
+  assert( eigSys.get_eigenvalue( 0 ) <= eigSys.get_eigenvalue( 1 ) );
 
   const double dNorm = d.GetNorm();
   if( dNorm == 0 )
@@ -1761,6 +1768,8 @@ NJetImageFunction<TInputImage>
 
   vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix());
 
+  assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
+
   if( d.GetNorm() != 0 )
     {
     d.Normalize();
@@ -1829,6 +1838,8 @@ NJetImageFunction<TInputImage>
   val = JetAtContinuousIndex( cIndex, d, h, scale);
 
   vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix());
+
+  assert( eigSys.get_eigenvalue(0) <= eigSys.get_eigenvalue(1) );
 
   if( d.GetNorm() != 0 )
     {
@@ -1965,8 +1976,8 @@ NJetImageFunction<TInputImage>
   return 0;
 }
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeNJetImageFunction_txx)

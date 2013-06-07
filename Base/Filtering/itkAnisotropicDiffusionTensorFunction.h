@@ -20,16 +20,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicDiffusionTensorFunction_h
 #define __itkAnisotropicDiffusionTensorFunction_h
 
-#include "itkFiniteDifferenceFunction.h"
-#include "vnl/vnl_matrix_fixed.h"
-#include "vnl/vnl_vector_fixed.h"
-#include "itkDiffusionTensor3D.h"
-#include "itkSymmetricSecondRankTensor.h"
+#include <itkFiniteDifferenceFunction.h>
+#include <vnl/vnl_matrix_fixed.h>
+#include <vnl/vnl_vector_fixed.h>
+#include <itkDiffusionTensor3D.h>
+#include <itkSymmetricSecondRankTensor.h>
 
-namespace itk {
+namespace itk
+{
 
 /** \class AnisotropicDiffusionTensorFunction
  * \brief This class is a function object that is used
@@ -117,7 +119,8 @@ public:
     ScalarDerivativeType  m_dx;
 
     ScalarValueType       m_GradMagSqr;
-    };
+
+    }; // End struct GlobalDataStruct
 
   /** Compute the equation value.  Inherited from the superclass: call
    *  one of the other two ComputeUpdate() functions instead. */
@@ -156,7 +159,7 @@ public:
       updates. */
   void SetTimeStep(const TimeStepType & t)
     { m_TimeStep = t; }
-  const TimeStepType & GetTimeStep() const
+  const TimeStepType & GetTimeStep( void ) const
     { return m_TimeStep; }
 
   /** Utility function to check whether the timestep is stable, optionally based
@@ -186,23 +189,22 @@ public:
    *  you want derivatives in isotropic pixel space.  Default is ON. */
   void SetUseImageSpacing( bool newUseImageSpacing )
     { m_UseImageSpacing = newUseImageSpacing; }
-  bool GetUseImageSpacing() const
+  bool GetUseImageSpacing( void ) const
     { return m_UseImageSpacing; }
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
-  virtual void * GetGlobalDataPointer() const
+  virtual void * GetGlobalDataPointer( void ) const
     {
     GlobalDataStruct *ans = new GlobalDataStruct();
     return ans;
     }
 
   virtual void ReleaseGlobalDataPointer(void * GlobalData) const
-    { delete (GlobalDataStruct *) GlobalData; }
-
+    { delete static_cast<GlobalDataStruct *>( GlobalData ); }
 protected:
-  AnisotropicDiffusionTensorFunction();
-  virtual ~AnisotropicDiffusionTensorFunction() {}
+  AnisotropicDiffusionTensorFunction( void );
+  virtual ~AnisotropicDiffusionTensorFunction( void ) {}
   void PrintSelf(std::ostream &s, Indent indent) const;
 
   /** The offset of the center pixel in the neighborhood. */
@@ -251,12 +253,13 @@ private:
 
   TimeStepType    m_TimeStep;
   bool            m_UseImageSpacing;
-};
 
-} // namespace itk
+}; // End class AnisotropicDiffusionTensorFunction
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicDiffusionTensorFunction.txx"
+#include "itkAnisotropicDiffusionTensorFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicDiffusionTensorFunction_h)

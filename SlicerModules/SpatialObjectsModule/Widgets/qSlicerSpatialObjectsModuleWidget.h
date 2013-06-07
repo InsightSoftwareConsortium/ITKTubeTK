@@ -28,8 +28,8 @@ limitations under the License.
 #include <ctkPimpl.h>
 
 // SlicerQt includes
-#include "qSlicerAbstractModuleWidget.h"
-#include "qSlicerSpatialObjectsModuleWidgetsExport.h"
+#include <qSlicerAbstractModuleWidget.h>
+#include <qSlicerSpatialObjectsModuleWidgetsExport.h>
 
 class qSlicerSpatialObjectsModuleWidgetPrivate;
 class vtkMRMLNode;

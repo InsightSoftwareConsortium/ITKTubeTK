@@ -20,18 +20,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkVectorImageToListGenerator_txx
 #define __itkVectorImageToListGenerator_txx
 
 #include "itkVectorImageToListGenerator.h"
-#include "itkImageRegionConstIterator.h"
+#include <itkImageRegionConstIterator.h>
 
-namespace itk {
-namespace Statistics {
+namespace itk
+{
+
+namespace Statistics
+{
 
 template < class TImage, class TMaskImage >
 VectorImageToListGenerator< TImage, TMaskImage >
-::VectorImageToListGenerator()
+::VectorImageToListGenerator( void )
 {
   m_UseSingleMaskValue = false;
   m_MaskValue = 1;
@@ -95,9 +99,9 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 const TImage*
 VectorImageToListGenerator< TImage, TMaskImage >
-::GetInput() const
+::GetInput( void ) const
 {
-  if (this->GetNumberOfInputs() < 1)
+  if(this->GetNumberOfInputs() < 1)
     {
     return 0;
     }
@@ -109,9 +113,9 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 const TMaskImage*
 VectorImageToListGenerator< TImage, TMaskImage >
-::GetMaskImage() const
+::GetMaskImage( void ) const
 {
-  if (this->GetNumberOfInputs() < 2)
+  if(this->GetNumberOfInputs() < 2)
     {
     return 0;
     }
@@ -134,7 +138,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::GenerateData()
+::GenerateData( void )
 {
   ListSampleOutputType * decoratedOutput =
     static_cast< ListSampleOutputType * >(
@@ -148,7 +152,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 
   output->Clear();
 
-  if (this->GetNumberOfInputs() > 1)
+  if(this->GetNumberOfInputs() > 1)
     {
     maskImage = const_cast< MaskImageType * >(this->GetMaskImage());
     }
@@ -157,16 +161,16 @@ VectorImageToListGenerator< TImage, TMaskImage >
   IteratorType it( input, input->GetBufferedRegion() );
   it.GoToBegin();
 
-  if (maskImage) // mask specified
+  if(maskImage) // mask specified
     {
     if(m_UseSingleMaskValue)
       {
       typedef ImageRegionConstIterator< MaskImageType > MaskIteratorType;
       MaskIteratorType mit( maskImage, maskImage->GetBufferedRegion() );
       mit.GoToBegin();
-      while (!it.IsAtEnd())
+      while(!it.IsAtEnd())
         {
-        if (mit.Get() == this->m_MaskValue)
+        if(mit.Get() == this->m_MaskValue)
           {
           MeasurementVectorType m;
           m = it.Get();
@@ -181,9 +185,9 @@ VectorImageToListGenerator< TImage, TMaskImage >
       typedef ImageRegionConstIterator< MaskImageType > MaskIteratorType;
       MaskIteratorType mit( maskImage, maskImage->GetBufferedRegion() );
       mit.GoToBegin();
-      while (!it.IsAtEnd())
+      while(!it.IsAtEnd())
         {
-        if (mit.Get() != 0)
+        if(mit.Get() != 0)
           {
           MeasurementVectorType m;
           m = it.Get();
@@ -196,7 +200,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     }
   else // no mask specified
     {
-    while (!it.IsAtEnd())
+    while(!it.IsAtEnd())
       {
       MeasurementVectorType m;
       m = it.Get();
@@ -209,7 +213,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::GenerateOutputInformation()
+::GenerateOutputInformation( void )
 {
   Superclass::GenerateOutputInformation();
 
@@ -238,13 +242,13 @@ VectorImageToListGenerator< TImage, TMaskImage >
   // TODO: Why don't most other ITK filters that take multiple inputs check
   // for this ?
   //
-  if (this->GetNumberOfInputs() > 1)
+  if(this->GetNumberOfInputs() > 1)
     {
     MaskImageType *maskImage =
       const_cast< MaskImageType * >(this->GetMaskImage());
     ImageType     *image =
       const_cast< ImageType * >( this->GetInput() );
-    if (!image->GetBufferedRegion().IsInside( maskImage->GetBufferedRegion()) )
+    if(!image->GetBufferedRegion().IsInside( maskImage->GetBufferedRegion()) )
       {
       maskImage->SetRequestedRegion( image->GetBufferedRegion() );
       }
@@ -254,7 +258,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 const typename VectorImageToListGenerator< TImage, TMaskImage >::ListSampleType *
 VectorImageToListGenerator< TImage, TMaskImage >
-::GetListSample() const
+::GetListSample( void ) const
 {
   const ListSampleOutputType * decoratedOutput =
     static_cast< const ListSampleOutputType * >(
@@ -262,7 +266,8 @@ VectorImageToListGenerator< TImage, TMaskImage >
   return decoratedOutput->Get();
 }
 
-} // end of namespace Statistics
-} // end of namespace itk
+} // End namespace Statistics
 
-#endif
+} // End namespace itk
+
+#endif // End !defined(__itkVectorImageToListGenerator_txx)

@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // Qt includes
 #include <QApplication>
 #include <QTimer>
@@ -57,7 +58,7 @@ int qSlicerSpatialObjectsGlyphWidgetTest1( int argc, char * argv[] )
   widget.setSpatialObjectsDisplayNode(soDisplay.GetPointer());
   widget.show();
 
-  if (argc < 2 || QString(argv[1]) != "-I")
+  if(argc < 2 || QString(argv[1]) != "-I")
     {
     QTimer::singleShot(200, &app, SLOT(quit()));
     }

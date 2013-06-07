@@ -24,7 +24,6 @@ namespace itk
 {
 
 /** \class itkSubSampleTubeSpatialObjectFilter
- *
  * \brief Sub-sample points from a tube.
  *
  * The input tube are sub-sampled by the \c Sampling
@@ -32,10 +31,9 @@ namespace itk
  * points of the tube are always included.
  *
  * \sa SubSampleTubeTreeSpatialObjectFilter
- *
  */
 template< typename TTubeSpatialObject >
-class SubSampleTubeSpatialObjectFilter:
+class SubSampleTubeSpatialObjectFilter :
   public SpatialObjectToSpatialObjectFilter< TTubeSpatialObject, TTubeSpatialObject >
 {
 public:
@@ -61,21 +59,22 @@ public:
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
-  SubSampleTubeSpatialObjectFilter();
+  SubSampleTubeSpatialObjectFilter( void );
 
-  virtual void GenerateData();
+  virtual void GenerateData( void );
 
 private:
   SubSampleTubeSpatialObjectFilter( const Self & ); // purposely not implemented
   void operator=( const Self & ); // purposely not implemented
 
   SizeValueType m_Sampling;
-};
 
-} // end namespace itk
+}; // End class SubSampleTubeSpatialObjectFilter
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkSubSampleTubeSpatialObjectFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkSubSampleTubeSpatialObjectFilter_h)

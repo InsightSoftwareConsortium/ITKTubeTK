@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __itkInverseIntensityImageFilter_txx
 #define __itkInverseIntensityImageFilter_txx
 
@@ -36,11 +35,19 @@ namespace itk
 namespace tube
 {
 
+
+template <class TInputImage>
+InverseIntensityImageFilter<TInputImage>
+::InverseIntensityImageFilter( void )
+{
+  m_InverseMaximumIntensity = 0;
+}
+
 /** Generate Data */
 template <class TInputImage>
 void
 InverseIntensityImageFilter<TInputImage>
-::GenerateData(void)
+::GenerateData( void )
 {
   itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data() called");
 
@@ -76,7 +83,7 @@ InverseIntensityImageFilter<TInputImage>
 
   // ** Build Input and output iterators for inversion ** //
   typedef  ImageRegionConstIterator<InputImageType>      InputIteratorType;
-  typedef  ImageRegionIterator<OutputImageType>     OutputIteratorType;
+  typedef  ImageRegionIterator<OutputImageType>          OutputIteratorType;
   InputIteratorType it_input( InputImage, region );
   OutputIteratorType it_output( OutputImage, region );
 
@@ -103,10 +110,10 @@ InverseIntensityImageFilter<TInputImage>
     }
 
   itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data()  finished");
-} // end GenerateData function
+}
 
-} // End of namespace tube
+} // End namespace tube
 
-} // End of namespace itk
+} // End namespace itk
 
-#endif  // end of__itkInverseIntensityImageFilter_txx
+#endif // End !defined(__itkInverseIntensityImageFilter_txx)

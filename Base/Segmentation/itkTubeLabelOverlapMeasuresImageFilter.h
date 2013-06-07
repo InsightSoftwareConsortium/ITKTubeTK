@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeLabelOverlapMeasuresImageFilter_h
 #define __itkTubeLabelOverlapMeasuresImageFilter_h
 
@@ -104,7 +105,7 @@ public:
       unsigned long m_Intersection;
       unsigned long m_SourceComplement;
       unsigned long m_TargetComplement;
-    };
+    }; // End class LabelSetMeasures
 
   /** Type of the map used to store data per label */
   typedef itksys::hash_map< LabelType, LabelSetMeasures >  MapType;
@@ -132,19 +133,19 @@ public:
     { return this->GetInput( 1 ); }
 
   /** Get the label set measures */
-  MapType GetLabelSetMeasures()
+  MapType GetLabelSetMeasures( void )
     { return this->m_LabelSetMeasures; }
 
   /**
    * tric overlap measures
    */
   /** measures over all labels */
-  RealType GetTotalOverlap();
-  RealType GetUnionOverlap();
-  RealType GetMeanOverlap();
-  RealType GetVolumeSimilarity();
-  RealType GetFalseNegativeError();
-  RealType GetFalsePositiveError();
+  RealType GetTotalOverlap( void );
+  RealType GetUnionOverlap( void );
+  RealType GetMeanOverlap( void );
+  RealType GetVolumeSimilarity( void );
+  RealType GetFalseNegativeError( void );
+  RealType GetFalsePositiveError( void );
   /** measures over individual labels */
   RealType GetTargetOverlap( LabelType );
   RealType GetUnionOverlap( LabelType );
@@ -153,11 +154,11 @@ public:
   RealType GetFalseNegativeError( LabelType );
   RealType GetFalsePositiveError( LabelType );
   /** alternative names */
-  RealType GetJaccardCoefficient()
+  RealType GetJaccardCoefficient( void )
     { return this->GetUnionOverlap(); }
   RealType GetJaccardCoefficient( LabelType label )
     { return this->GetUnionOverlap( label ); }
-  RealType GetDiceCoefficient()
+  RealType GetDiceCoefficient( void )
     { return this->GetMeanOverlap(); }
   RealType GetDiceCoefficient( LabelType label )
     { return this->GetMeanOverlap( label ); }
@@ -172,19 +173,19 @@ public:
 
 protected:
   LabelOverlapMeasuresImageFilter( void );
-  ~LabelOverlapMeasuresImageFilter( void ){};
+  ~LabelOverlapMeasuresImageFilter( void ) {};
 
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
-  void BeforeThreadedGenerateData();
+  void BeforeThreadedGenerateData( void );
 
-  void AfterThreadedGenerateData();
+  void AfterThreadedGenerateData( void );
 
   /** Multi-thread version GenerateData. */
   void ThreadedGenerateData( const RegionType&, ThreadIdType );
 
   // Override since the filter needs all the data for the algorithm
-  void GenerateInputRequestedRegion();
+  void GenerateInputRequestedRegion( void );
 
   // Override since the filter produces all of its output
   void EnlargeOutputRequestedRegion( DataObject *data );
@@ -200,14 +201,14 @@ private:
 
   SimpleFastMutexLock                           m_Mutex;
 
-}; // end of class
+}; // End class LabelOverlapMeasuresImageFilter
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeLabelOverlapMeasuresImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeLabelOverlapMeasuresImageFilter_h)

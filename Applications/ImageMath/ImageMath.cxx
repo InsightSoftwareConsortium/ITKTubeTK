@@ -24,30 +24,30 @@ limitations under the License.
 #include <cmath>
 #include <iostream>
 
-#include "itkImage.h"
-#include "itkImageIOBase.h"
-#include "itkImageIOFactory.h"
-#include "itkImageFileWriter.h"
-#include "itkImageFileReader.h"
-#include "itkMetaImageIO.h"
-#include "itkImageRegionIterator.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkNormalVariateGenerator.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
-#include "itkHistogramMatchingImageFilter.h"
-#include "itkResampleImageFilter.h"
-#include "itkCastImageFilter.h"
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkErodeObjectMorphologyImageFilter.h"
-#include "itkBinaryBallStructuringElement.h"
-#include "itkDilateObjectMorphologyImageFilter.h"
-#include "itkConnectedThresholdImageFilter.h"
-#include "itkExtractImageFilter.h"
-#include "itkContinuousIndex.h"
-#include "itkNormalizeImageFilter.h"
-#include "itkMirrorPadImageFilter.h"
-#include "metaCommand.h"
+#include <itkImage.h>
+#include <itkImageIOBase.h>
+#include <itkImageIOFactory.h>
+#include <itkImageFileWriter.h>
+#include <itkImageFileReader.h>
+#include <itkMetaImageIO.h>
+#include <itkImageRegionIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
+#include <itkHistogramMatchingImageFilter.h>
+#include <itkResampleImageFilter.h>
+#include <itkCastImageFilter.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkErodeObjectMorphologyImageFilter.h>
+#include <itkBinaryBallStructuringElement.h>
+#include <itkDilateObjectMorphologyImageFilter.h>
+#include <itkConnectedThresholdImageFilter.h>
+#include <itkExtractImageFilter.h>
+#include <itkContinuousIndex.h>
+#include <itkNormalizeImageFilter.h>
+#include <itkMirrorPadImageFilter.h>
+#include <metaCommand.h>
 
 // tubetk includes
 #include "itkTubeRidgeExtractor.h"
@@ -257,7 +257,7 @@ int DoIt( MetaCommand & command )
             }
 
           metaImage->AddUserField( "ElementByteOrderMSB",
-                                  MET_STRING, strlen( "False" ), "False" );
+                                  MET_STRING, std::strlen( "False" ), "False" );
 
           writer->Write();
           break;
@@ -1101,7 +1101,7 @@ int DoIt( MetaCommand & command )
         }
       std::ofstream writeStream;
       writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;
@@ -1145,7 +1145,7 @@ int DoIt( MetaCommand & command )
         }
       std::ofstream writeStream;
       writeStream.open( filename.c_str(), std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;
@@ -1269,7 +1269,9 @@ int DoIt( MetaCommand & command )
             im2DRef->GetLargestPossibleRegion() );
       itk::ImageRegionIterator< ImageType2D > it2DIn( im2DIn,
             im2DIn->GetLargestPossibleRegion() );
-      unsigned int z, y, x;
+      unsigned int x;
+      unsigned int y;
+      unsigned int z;
       it3D.GoToBegin();
       unsigned int zMax = 1;
       if( dimensionT == 3 )
@@ -1498,7 +1500,7 @@ int DoIt( MetaCommand & command )
       {
       unsigned int seed = ( unsigned int )command.GetValueAsInt( *it,
         "seedValue" );
-      srand( seed );
+      std::srand( seed );
       gaussGen->Initialize( ( int )seed );
       uniformGen->Initialize( ( int )seed );
       } // end -S
@@ -1526,7 +1528,7 @@ int DoIt( MetaCommand & command )
       std::ofstream writeStream;
       writeStream.open( filename.c_str(),
         std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;
@@ -1560,19 +1562,16 @@ int DoIt( MetaCommand & command )
       itk::Index<dimensionT> indx3;
       indx.Fill( 0 );
       bool done = false;
-      bool invalid = false;
-      bool done2 = false;
-      int c, n;
+      int n;
       while( !done )
         {
-        c = ( int )( imIn->GetPixel( indx )-1 );
+        int c = ( int )( imIn->GetPixel( indx )-1 );
         indx2.Fill( 0 );
         indx2[0] = 1;
-        invalid = false;
-        done2 = false;
+        bool done2 = false;
         while( !done2 )
           {
-          invalid = false;
+          bool invalid = false;
           for( unsigned int d=0; d<dimensionT; d++ )
             {
             indx3[d] = indx[d] + indx2[d];
@@ -1631,7 +1630,7 @@ int DoIt( MetaCommand & command )
 
       writeStream.open( filename.c_str(),
         std::ios::binary | std::ios::out );
-      if( ! writeStream.rdbuf()->is_open() )
+      if( !writeStream.rdbuf()->is_open() )
         {
         std::cerr << "Cannot write to file : " << filename << std::endl;
         return EXIT_FAILURE;
@@ -1691,7 +1690,7 @@ int DoIt( MetaCommand & command )
       imIn = filter->GetOutput();
       } // end -e
 
-    it++;
+    ++it;
     }
 
   return EXIT_SUCCESS;
@@ -1973,10 +1972,11 @@ int main( int argc, char *argv[] )
     }
 
   itk::ImageIOBase::IOComponentType componentType;
-  unsigned int dimension;
+
 
   try
     {
+    unsigned int dimension;
     GetImageInformation( command.GetValueAsString( "infile" ),
                          componentType, dimension );
     if( dimension == 2 )

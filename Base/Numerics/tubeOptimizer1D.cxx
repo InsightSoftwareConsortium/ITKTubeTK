@@ -25,7 +25,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include "tubeOptimizer1D.h"
+
 #include <iostream>
 
 #include "tubeMacro.h"
@@ -51,11 +53,13 @@ Optimizer1D
   m_XMax = 1;
   m_XStep = 0.01;
   m_Defined = false;
+  m_FuncVal = 0;
+  m_FuncDeriv = 0;
 }
 
 
-Optimizer1D::Optimizer1D( UserFunc< double, double > * newFuncVal,
-  UserFunc< double, double > * newFuncDeriv )
+Optimizer1D::Optimizer1D( UserFunction< double, double > * newFuncVal,
+  UserFunction< double, double > * newFuncDeriv )
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -73,8 +77,8 @@ Optimizer1D::~Optimizer1D( void )
 {
 }
 
-void Optimizer1D::use( UserFunc< double, double > * newFuncVal,
-  UserFunc< double, double > * newFuncDeriv )
+void Optimizer1D::use( UserFunction< double, double > * newFuncVal,
+  UserFunction< double, double > * newFuncDeriv )
 {
   m_FuncVal = newFuncVal;
   m_FuncDeriv = newFuncDeriv;
@@ -185,5 +189,4 @@ void Optimizer1D::PrintSelf( std::ostream & os ) const
   os << "m_FuncDeriv = " << m_FuncDeriv << std::endl;
 }
 
-
-} // end namespace tube
+} // End namespace tube

@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #include "GraphKernel.h"
 
 
@@ -89,7 +88,7 @@ std::string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
   int nNeighbors = std::distance(nb.first, nb.second);
 
   // No neighbors
-  if (!nNeighbors)
+  if(!nNeighbors)
     {
     return BuildPrefixFromVertexID(G[vertex(v,G)].type);
     }
@@ -204,12 +203,12 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
   reader.get();
 
   assert(nLabels == nVertices);
-  for ( int i=0; i<nLabels; ++i )
+  for( int i=0; i<nLabels; ++i )
     {
-      int lab;
-      reader >> lab;
-      reader.get();
-      g[vertex(i, g)].type = lab;
+    int lab;
+    reader >> lab;
+    reader.get();
+    g[vertex(i, g)].type = lab;
 
     }
   reader.close();
@@ -305,13 +304,12 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
       }
     return g;
     }
-  catch (const std::exception &e)
+  catch(const std::exception &e)
     {
     tube::FmtErrorMessage("Error reading JSON graph file %s (Msg: %s)",
       graphFile, e.what());
-    throw e;
+    throw;
     }
 }
 
-
-} // End of namespace tube
+} // End namespace tube

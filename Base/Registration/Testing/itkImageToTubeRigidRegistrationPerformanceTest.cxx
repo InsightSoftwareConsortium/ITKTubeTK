@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,22 +20,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
 #include "itkImageToTubeRigidRegistration.h"
-#include "itkSpatialObjectReader.h"
+#include <itkSpatialObjectReader.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itkImageFileReader.h"
+#include <itkImageFileReader.h>
 #include "itkTubeToTubeTransformFilter.h"
-#include "itkEuler3DTransform.h"
-#include "itkMath.h"
-#include "itkRecursiveGaussianImageFilter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkEuler3DTransform.h>
+#include <itkMath.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
-#include "itkTimeProbesCollectorBase.h"
-#include "itkMemoryProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
+#include <itkMemoryProbesCollectorBase.h>
 
 // STD includes
 #include <iostream>
@@ -44,7 +45,7 @@ limitations under the License.
 //  The following section of code implements a Command observer
 //  used to monitor the evolution of the registration process.
 //
-#include "itkCommand.h"
+#include <itkCommand.h>
 class CommandIterationUpdate : public itk::Command
 {
 public:
@@ -54,10 +55,10 @@ public:
   itkNewMacro( Self );
 
 protected:
-  CommandIterationUpdate(){}
-  ~CommandIterationUpdate()
+  CommandIterationUpdate( void ) {}
+  ~CommandIterationUpdate( void )
     {
-    if ( measuresFileStream.is_open() )
+    if( measuresFileStream.is_open() )
       {
       measuresFileStream.close();
       }
@@ -83,7 +84,7 @@ public:
       return;
       }
 
-    if ( measuresFileStream.is_open() )
+    if( measuresFileStream.is_open() )
       {
       measuresFileStream << optimizer->GetCurrentIteration() << ";";
       measuresFileStream << optimizer->GetValue() << std::endl;
@@ -94,9 +95,10 @@ public:
     {
     measuresFileStream.open( fileName, std::ios::trunc );
     }
-};
 
-int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv [] )
+}; // End class CommandIterationUpdate
+
+int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv[] )
 {
   if( argc < 4 )
     {
@@ -135,7 +137,7 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv [] )
     <ImageType, ImageType> GaussianBlurFilterType;
 
   GaussianBlurFilterType::Pointer blurFilters[3];
-  for (int i = 0; i < 3; i++)
+  for(int i = 0; i < 3; i++)
     {
     blurFilters[i] = GaussianBlurFilterType::New();
     blurFilters[i]->SetSigma( 3.0 );
@@ -219,7 +221,7 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv [] )
   // Create stream to record the measure
   std::ofstream measuresFile;
   measuresFile.open( timeFile );
-  if ( !measuresFile.is_open() )
+  if( !measuresFile.is_open() )
     {
     std::cerr << "Unable to open: " << timeFile << std::endl;
     return EXIT_FAILURE;

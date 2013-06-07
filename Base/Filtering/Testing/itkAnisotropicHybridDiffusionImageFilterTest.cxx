@@ -14,18 +14,17 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
-
 #include "itkAnisotropicHybridDiffusionImageFilter.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
-int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv [] )
+int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv[] )
 {
-  if ( argc < 3 )
+  if( argc < 3 )
     {
     std::cerr << "Missing Parameters: "
               << argv[0]
@@ -56,7 +55,7 @@ int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch ( itk::ExceptionObject &err )
+  catch( itk::ExceptionObject &err )
     {
     std::cerr << "Exception thrown: " << err << std::endl;
     return EXIT_FAILURE;
@@ -78,49 +77,49 @@ int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv [] )
   //Sigma
   if( argc > 3 )
     {
-    double sigma = atof( argv[3] );
+    double sigma = std::atof( argv[3] );
     HybridFilter->SetSigma( sigma );
     }
   if( argc > 4 )
     {
-    double sigmaOuter = atof( argv[4] );
+    double sigmaOuter = std::atof( argv[4] );
     HybridFilter->SetSigmaOuter( sigmaOuter );
     }
   //Contrast EED
   if( argc > 5 )
     {
-    double contrastEED = atof( argv[5] );
+    double contrastEED = std::atof( argv[5] );
     HybridFilter->SetContrastParameterLambdaEED( contrastEED );
     }
   //Contrast CED
   if( argc > 6 )
     {
-    double contrastCED = atof( argv[6] );
+    double contrastCED = std::atof( argv[6] );
     HybridFilter->SetContrastParameterLambdaCED( contrastCED );
     }
   //Contrast Hybrid
   if( argc > 7 )
     {
-    double contrastHybrid = atof( argv[7] );
+    double contrastHybrid = std::atof( argv[7] );
     HybridFilter->SetContrastParameterLambdaHybrid( contrastHybrid );
     }
   //alpha
   if( argc > 8 )
     {
-    double alpha = atof( argv[8] );
+    double alpha = std::atof( argv[8] );
     HybridFilter->SetAlpha( alpha );
     }
   // time step size
   if( argc > 9 )
     {
-    double timestep = atof( argv[9] );
+    double timestep = std::atof( argv[9] );
     HybridFilter->SetTimeStep( timestep );
     }
 
   // Number Of iterations
   if( argc > 10 )
     {
-    int numberOfIterations= atoi( argv[10] );
+    int numberOfIterations= std::atoi( argv[10] );
     HybridFilter->SetNumberOfIterations( numberOfIterations );
     }
 
@@ -156,5 +155,4 @@ int itkAnisotropicHybridDiffusionImageFilterTest(int argc, char* argv [] )
     }
 
   return EXIT_SUCCESS;
-
 }

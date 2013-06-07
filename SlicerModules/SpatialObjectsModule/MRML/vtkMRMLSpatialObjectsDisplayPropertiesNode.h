@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 /// vtkMRMLSpatialObjectsDisplayPropertiesNode -
 /// MRML node for display of a spatial objects.
 ///
@@ -38,7 +39,7 @@ limitations under the License.
 #define __vtkMRMLSpatialObjectsDisplayPropertiesNode_h
 
 #include "vtkMRMLSpatialObjectsDisplayNode.h"
-#include "vtkMRMLColorTableNode.h"
+#include <vtkMRMLColorTableNode.h>
 
 //
 // Set built-in type. Creates member Set"name"() (e.g., SetVisibility());
@@ -47,10 +48,10 @@ limitations under the License.
 virtual void Set##name (type _arg) \
   { \
   vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting " #name " to " << _arg); \
-  if (this->name != _arg) \
+  if(this->name != _arg) \
     { \
     this->name = _arg; \
-    if (this->GlyphGeometry == this->Lines || \
+    if(this->GlyphGeometry == this->Lines || \
         this->GlyphGeometry == this->Tubes) \
       { \
       this->UpdateGlyphSource(); \
@@ -65,7 +66,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT
 vtkMRMLSpatialObjectsDisplayPropertiesNode : public vtkMRMLColorTableNode
 {
 public:
-  static vtkMRMLSpatialObjectsDisplayPropertiesNode* New();
+  static vtkMRMLSpatialObjectsDisplayPropertiesNode* New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsDisplayPropertiesNode,
                vtkMRMLColorTableNode);
   void PrintSelf(ostream& os, vtkIndent indent);
@@ -73,7 +74,7 @@ public:
   //----------------------------------------------------------------------------
   /// MRMLNode methods
   //----------------------------------------------------------------------------
-  virtual vtkMRMLNode* CreateNodeInstance();
+  virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
   /// Read node attributes from a MRML file in XML format.
@@ -90,7 +91,7 @@ public:
 
   ///
   /// Get node XML tag name (like Volume, Model)
-  virtual const char* GetNodeTagName()
+  virtual const char* GetNodeTagName( void )
   {return "SpatialObjectsDisplayProperties";}
 
   //----------------------------------------------------------------------------
@@ -127,23 +128,17 @@ public:
 
   ///
   /// Set scalar invariant to relative anisotropy
-  void SetScalarInvariantToRelativeAnisotropy()
+  void SetScalarInvariantToRelativeAnisotropy( void )
   {this->SetScalarInvariant(this->RelativeAnisotropy);}
 
   ///
   /// Return a text string describing the ScalarInvariant variable
-  virtual const char * GetScalarInvariantAsString();
+  virtual const char * GetScalarInvariantAsString( void );
 
   //----------------------------------------------------------------------------
   /// Display Information: Types of glyph geometry that can be displayed
   //----------------------------------------------------------------------------
-  enum
-  {
-    Lines = 0,
-    Tubes = 1,
-    Cones = 2,
-    Disks = 3
-  };
+  enum { Lines = 0, Tubes = 1, Cones = 2, Disks = 3 };
 
   //----------------------------------------------------------------------------
   /// Display Information: Functions to choose the type of glyph geometry
@@ -157,26 +152,26 @@ public:
   /// Update the glyph polydata source
   void SetGlyphGeometry(int geometry);
 
-  void SetGlyphGeometryToLines()
+  void SetGlyphGeometryToLines( void )
   {this->SetGlyphGeometry(this->Lines);}
 
-  void SetGlyphGeometryToTubes()
+  void SetGlyphGeometryToTubes( void )
   {this->SetGlyphGeometry(this->Tubes);}
 
-  void SetGlyphGeometryToCones()
+  void SetGlyphGeometryToCones( void )
   {this->SetGlyphGeometry(this->Cones);}
 
-  void SetGlyphGeometryToDisks()
+  void SetGlyphGeometryToDisks( void )
   {this->SetGlyphGeometry(this->Disks);}
 
   ///
   /// Return the lowest and highest integers, for use in looping
-  int GetFirstGlyphGeometry() {return this->Lines;}
-  int GetLastGlyphGeometry() {return this->Disks;}
+  int GetFirstGlyphGeometry( void ) {return this->Lines;}
+  int GetLastGlyphGeometry( void ) {return this->Disks;}
 
   ///
   /// Return a text string describing the GlyphGeometry variable
-  virtual const char * GetGlyphGeometryAsString();
+  virtual const char * GetGlyphGeometryAsString( void );
   virtual const char * GetGlyphGeometryAsString(int);
 
   //----------------------------------------------------------------------------
@@ -216,31 +211,31 @@ public:
 
   ///
   /// Return the lowest and highest integers, for use in looping
-  static int GetFirstColorGlyphBy();
-  static int GetLastColorGlyphBy();
+  static int GetFirstColorGlyphBy( void );
+  static int GetLastColorGlyphBy( void );
 
   ///
   /// Return a text string describing the ColorGlyphBy
-  virtual const char* GetColorGlyphByAsString();
+  virtual const char* GetColorGlyphByAsString( void );
 
   ///
   /// Set scalar invariant to LinearMeasure.
-  void ColorGlyphByLinearMeasure()
+  void ColorGlyphByLinearMeasure( void )
   {this->SetColorGlyphBy(this->LinearMeasure);}
 
   ///
   /// Set scalar invariant to ColorOrientation.
-  void ColorGlyphByColorOrientation()
+  void ColorGlyphByColorOrientation( void )
   {this->SetColorGlyphBy(this->ColorOrientation);}
 
   ///
   /// Set scalar invariant to ColorMode.
-  void ColorGlyphByColorMode()
+  void ColorGlyphByColorMode( void )
   {this->SetColorGlyphBy(this->ColorMode);}
 
   ///
   /// Set scalar invariant to RelativeAnisotropy.
-  void ColorGlyphByRelativeAnisotropy()
+  void ColorGlyphByRelativeAnisotropy( void )
   {this->SetColorGlyphBy(this->RelativeAnisotropy);}
 
   //--------------------------------------------------------------------------
@@ -257,18 +252,18 @@ public:
   static const char* GetScalarEnumAsString(int val);
 
   /// Return the lowest and highest integers, for use in looping
-  static int GetFirstScalarInvariant();
-  static int GetLastScalarInvariant();
+  static int GetFirstScalarInvariant( void );
+  static int GetLastScalarInvariant( void );
 
 protected:
-  vtkMRMLSpatialObjectsDisplayPropertiesNode();
-  ~vtkMRMLSpatialObjectsDisplayPropertiesNode();
+  vtkMRMLSpatialObjectsDisplayPropertiesNode( void );
+  ~vtkMRMLSpatialObjectsDisplayPropertiesNode( void );
   vtkMRMLSpatialObjectsDisplayPropertiesNode(
     const vtkMRMLSpatialObjectsDisplayPropertiesNode&);
   void operator=(const vtkMRMLSpatialObjectsDisplayPropertiesNode&);
 
   virtual void SetGlyphSource(vtkPolyData* glyphSource);
-  virtual void UpdateGlyphSource();
+  virtual void UpdateGlyphSource( void );
 
   /// ---- Parameters that should be written to MRML --- //
   /// Scalar display parameters
@@ -289,6 +284,7 @@ protected:
 
   /// Pipeline
   vtkPolyData* GlyphSource;
-};
 
-#endif
+}; // End class vtkMRMLSpatialObjectsDisplayPropertiesNode
+
+#endif // End !defined(__vtkMRMLSpatialObjectsDisplayPropertiesNode_h)

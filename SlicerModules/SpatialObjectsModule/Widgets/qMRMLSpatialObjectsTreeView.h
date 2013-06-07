@@ -32,9 +32,9 @@ limitations under the License.
 #include <ctkPimpl.h>
 
 // qMRML includes
-#include "qMRMLTreeView.h"
+#include <qMRMLTreeView.h>
 
-#include "qSlicerSpatialObjectsModuleWidgetsExport.h"
+#include <qSlicerSpatialObjectsModuleWidgetsExport.h>
 
 class qMRMLSpatialObjectsTreeViewPrivate;
 class vtkMRMLNode;

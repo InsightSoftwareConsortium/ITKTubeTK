@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,27 +20,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h
-#define itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h
+
+#ifndef __itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h
+#define __itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h
 
 #include "itkTubeParametricExponentialResolutionWeightFunction.h"
 
-#include "itkNumericTraits.h"
+#include <itkNumericTraits.h>
 
 namespace itk
 {
 namespace Function
 {
 
-/**
- * \class TubeParametricExponentialWithBoundsResolutionWeightFunction
+/** \class TubeParametricExponentialWithBoundsResolutionWeightFunction
  *
  * \brief Weight tube points exponentially by their radius if within bounds.
  *
  * This is similar to TubeParametricExponentialResolutionWeightFunction except that values
  * outside the UpperBound or LowerBound are given a weight of zero.
- *
- * */
+ */
 template< class TTubePoint, class TOperatorValue=double >
 class TubeParametricExponentialWithBoundsResolutionWeightFunction:
   public TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
@@ -54,11 +53,11 @@ public:
   typedef typename Superclass::OperatorValueType OperatorValueType;
   typedef typename Superclass::TubePointType     TubePointType;
 
-  TubeParametricExponentialWithBoundsResolutionWeightFunction():
-    m_LowerBound( NumericTraits< OperatorValueType >::min() ),
-    m_UpperBound( NumericTraits< OperatorValueType >::max() )
+  TubeParametricExponentialWithBoundsResolutionWeightFunction( void )
+    : m_LowerBound( NumericTraits< OperatorValueType >::min() ),
+      m_UpperBound( NumericTraits< OperatorValueType >::max() )
     {}
-  ~TubeParametricExponentialWithBoundsResolutionWeightFunction()
+  ~TubeParametricExponentialWithBoundsResolutionWeightFunction( void )
     {}
 
   inline OperatorValueType operator()( const TubePointType & tubePoint )
@@ -112,9 +111,11 @@ public:
 private:
   OperatorValueType m_LowerBound;
   OperatorValueType m_UpperBound;
-};
 
-} // end namespace Function
-} // end namespace itk
+}; // End class TubeParametricExponentialWithBoundsResolutionWeightFunction
 
-#endif
+} // End namespace Function
+
+} // End namespace itk
+
+#endif // End !defined(__itkTubeParametricExponentialWithBoundsResolutionWeightFunction_h)

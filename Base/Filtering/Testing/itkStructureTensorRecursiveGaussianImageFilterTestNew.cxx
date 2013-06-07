@@ -21,17 +21,16 @@ limitations under the License.
 
 =========================================================================*/
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
-
 #include <itkImage.h>
-#include <itkStructureTensorRecursiveGaussianImageFilter.h>
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include <itkSymmetricSecondRankTensor.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkSymmetricEigenVectorAnalysisImageFilter.h>
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include <itkMatrix.h>
 #include <itkVectorImage.h>
 #include <itkVariableLengthVector.h>
@@ -41,7 +40,7 @@ limitations under the License.
 #include <itkImageDuplicator.h>
 #include <itkRecursiveGaussianImageFilter.h>
 
-int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv []  )
+int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv[]  )
 {
   // Define image
   const unsigned int Dimension = 3;
@@ -50,15 +49,15 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
 
   // Set the value of sigma if specificed in command line
   double sigma = 0.1;
-  if (argc > 4)
+  if(argc > 4)
     {
-    sigma = atof(argv[4] );
+    sigma = std::atof(argv[4] );
     }
 
   double threshold = 0.05;
-  if (argc > 5)
+  if(argc > 5)
     {
-    threshold = atof(argv[5]);
+    threshold = std::atof(argv[5]);
     }
 
   // Create test image I = f(x)
@@ -95,12 +94,12 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   itk::ImageRegionIteratorWithIndex<ImageType> it(inImage,
                                            inImage->GetLargestPossibleRegion());
 
-  for (it.GoToBegin(); !it.IsAtEnd(); ++it)
+  for(it.GoToBegin(); !it.IsAtEnd(); ++it)
     {
     ImageType::IndexType index = it.GetIndex();
     ImageType::PointType point;
     inImage->TransformIndexToPhysicalPoint(index, point);
-    it.Set(static_cast<ImageType::PixelType>(sin(point[0]))); //sinx
+    it.Set(static_cast<ImageType::PixelType>(vcl_sin(point[0]))); //sinx
     }
 
   typedef itk::ImageFileWriter<ImageType>        WriterType;
@@ -121,12 +120,12 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   itk::ImageRegionIteratorWithIndex<ImageType> pt(prodImage,
                                            prodImage->GetLargestPossibleRegion());
 
-  for (pt.GoToBegin(); !pt.IsAtEnd(); ++pt)
+  for(pt.GoToBegin(); !pt.IsAtEnd(); ++pt)
     {
     ImageType::IndexType index = pt.GetIndex();
     ImageType::PointType point;
     prodImage->TransformIndexToPhysicalPoint(index, point);
-    double cosValue = cos(point[0]);
+    double cosValue = vcl_cos(point[0]);
     pt.Set(static_cast<ImageType::PixelType>(cosValue*cosValue)); //cosx*cosx
     }
 
@@ -135,7 +134,7 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
                                                  GaussianFilterType;
 
   ImageType::Pointer refImage = prodImage;
-  for (unsigned int i = 0; i < Dimension; i++)
+  for(unsigned int i = 0; i < Dimension; i++)
     {
     GaussianFilterType::Pointer gaussian = GaussianFilterType::New();
     gaussian->SetInput(refImage);
@@ -183,20 +182,20 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
   itk::ImageRegionIteratorWithIndex<ImageType> rt(refImage,
                                            refImage->GetLargestPossibleRegion());
 
-  for (ot.GoToBegin(), rt.GoToBegin(); !ot.IsAtEnd(); ++ot, ++rt)
+  for(ot.GoToBegin(), rt.GoToBegin(); !ot.IsAtEnd(); ++ot, ++rt)
     {
     TensorImageType::IndexType index = ot.GetIndex();
 
     bool boundaryPixel = false;
-    for (unsigned int i = 0; i < 3; i++)
+    for(unsigned int i = 0; i < 3; i++)
       {
-      if (index[i] < 10 || index[i] >= 90)
+      if(index[i] < 10 || index[i] >= 90)
         {
         boundaryPixel = true;
         break;
         }
       }
-    if (boundaryPixel)
+    if(boundaryPixel)
       {
       continue;
       }
@@ -206,16 +205,16 @@ int itkStructureTensorRecursiveGaussianImageFilterTestNew(int argc, char* argv [
 
     TensorImagePixelType tensor = ot.Get();
 
-    for (unsigned int i = 0; i < Dimension; i++)
+    for(unsigned int i = 0; i < Dimension; i++)
       {
-      for (unsigned int j = i; j < Dimension; j++)
+      for(unsigned int j = i; j < Dimension; j++)
         {
         double refValue = 0.0;
-        if (i == 0 && j == 0)
+        if(i == 0 && j == 0)
           {
           refValue = rt.Get();
           }
-        if (tensor(i, j) - refValue > threshold || tensor(i, j) - refValue < -threshold)
+        if(tensor(i, j) - refValue > threshold || tensor(i, j) - refValue < -threshold)
           {
           std::cout << "Found mismatch at pixel of index[" << index[0] << " " <<
             index[1] << " " << index[2] << "] or point [" << point[0] << " " <<

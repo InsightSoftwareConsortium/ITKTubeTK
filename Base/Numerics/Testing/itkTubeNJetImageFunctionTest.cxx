@@ -20,19 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
 #include "itkFilterWatcher.h"
-#include <itkExceptionObject.h>
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-#include <itkTubeNJetImageFunction.h>
+#include "itkTubeNJetImageFunction.h"
 
-int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
+int itkTubeNJetImageFunctionTest(int argc, char* argv[] )
 {
   if( argc < 4 )
     {
@@ -66,7 +63,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during read:\n"  << e;
     return EXIT_FAILURE;
@@ -112,7 +109,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
   FunctionType::MatrixType h;
   FunctionType::MatrixType h2;
 
-  int function = atoi( argv[1] );
+  int function = std::atoi( argv[1] );
 
   itk::ImageRegionIteratorWithIndex< ImageType > outIter( outputImage,
     outputImage->GetLargestPossibleRegion() );
@@ -252,21 +249,21 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 21:
         {
-        val = func->Ridgeness( pnt, scale );
+        func->Ridgeness( pnt, scale );
         val = func->GetMostRecentRidgeLevelness();
         outIter.Set( val );
         break;
         }
       case 22:
         {
-        val = func->Ridgeness( pnt, scale );
+        func->Ridgeness( pnt, scale );
         val = func->GetMostRecentRidgeRoundness();
         outIter.Set( val );
         break;
         }
       case 23:
         {
-        val = func->Ridgeness( pnt, scale );
+        func->Ridgeness( pnt, scale );
         val = func->GetMostRecentRidgeCurvature();
         outIter.Set( val );
         break;
@@ -312,7 +309,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
         }
       case 28:
         {
-        val = func->RidgenessAtIndex( outIter.GetIndex(), scale );
+        func->RidgenessAtIndex( outIter.GetIndex(), scale );
         h = func->GetMostRecentHessian();
         val2 = func->HessianAtIndex( outIter.GetIndex(), scale, h2 );
         val = vnl_math_abs( h[0][0] - h2[0][0] ) +
@@ -426,7 +423,7 @@ int itkTubeNJetImageFunctionTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

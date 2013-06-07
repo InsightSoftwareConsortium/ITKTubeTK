@@ -1,32 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <executable>
-
   <category>TubeTK</category>
-  <title>Tube Graph to image</title>
-  <description> Computes an image from a graph representation and the CVT centroids</description>
+  <title>Tube Graph to Image (TubeTK)</title>
+  <description>Computes an image from a graph representation and the CVT centroids.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Stephen R. Aylward, Roland Kwitt, Kitware</contributor>
-  <acknowledgements>This work is part of the TubeTK project at Kitware</acknowledgements>
-
+  <contributor>Stephen R. Aylward, Roland Kwitt (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters</description>
+    <description>Input/output parameters.</description>
     <string>
       <name>inCentroidsFile</name>
+      <label>Input Centroids File</label>
       <index>0</index>
-      <description>File with CVT centroids</description>
+      <description>File with CVT centroids.</description>
     </string>
     <string>
       <name>inGraphFile</name>
+      <label>Input Graph File</label>
       <index>1</index>
-      <description>Input graph</description>
+      <description>Input graph.</description>
     </string>
     <string>
       <name>outImageFile</name>
-      <description>Output image filename (will be used as basename for more image output)</description>
+      <label>Output Image File</label>
+      <description>Output image filename (will be used as base name for more image output).</description>
     </string>
   </parameters>
-
 </executable>

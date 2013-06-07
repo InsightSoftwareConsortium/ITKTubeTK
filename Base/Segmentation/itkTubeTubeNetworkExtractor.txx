@@ -25,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeTubeNetworkExtractor_txx
 #define __itkTubeTubeNetworkExtractor_txx
 
@@ -40,7 +41,7 @@ namespace tube
 * Constructor */
 template<class TInputImage, class TInputMask>
 TubeNetworkExtractor<TInputImage, TInputMask>
-::TubeNetworkExtractor()
+::TubeNetworkExtractor( void )
 {
   m_TubeNum = 0;
   m_AEUseMask = false;
@@ -52,7 +53,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
  * Destructor */
 template<class TInputImage, class TInputMask>
 TubeNetworkExtractor<TInputImage, TInputMask>
-::~TubeNetworkExtractor()
+::~TubeNetworkExtractor( void )
 {
 }
 
@@ -65,21 +66,6 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 {
   m_Image = inputImage;
   m_TubeNum = 0;
-
-  /*
-  m_TubeNetwork->GetTubes()->clear();
-  m_TubeNetwork->SetNumDimensions( 3 );
-  vnl_vector<unsigned int> size_( 3 );
-  ImageType::SizeType imageSize =
-  m_Image->GetLargestPossibleRegion().GetSize();
-
-  for( unsigned int i=0;i<ImageDimension;i++ )
-    {
-    size_( i ) = imageSize[i];
-    }
-
-  m_TubeNetwork->SetDimSize( size_ );
-  */
 
   TubeExtractor<TInputImage>::SetInputImage( m_Image );
 
@@ -96,41 +82,6 @@ TubeNetworkExtractor<TInputImage, TInputMask>
   //m_TubeNetwork.newTubeCallBack( newNewTubeCallBack );
   TubeExtractor<TInputImage>::NewTubeCallBack( newTubeCallBack );
 }
-
-/**
- * Extract a 3D tube */
-template<class TInputImage, class TInputMask>
-bool
-TubeNetworkExtractor<TInputImage, TInputMask>
-::ExtractTube( float x, float y, float z )
-{
-  /*if( TubeExtractor<TInputImage>::ExtractTube( x, y, z, m_TubeNum ) )
-    {
-    if( !m_Tube )
-      {
-      std::cout << "Extract Tube: TubeExtractor returns no tube !"
-        << std::endl;
-      return false;
-      }
-    m_TubeNetwork->AddSpatialObject( m_Tube );
-    m_TubeNum++;
-    return true;
-    }*/
-  return false;
-}
-
-/**
- * Delete a tube */
-template<class TInputImage, class TInputMask>
-bool
-TubeNetworkExtractor<TInputImage, TInputMask>
-::DeleteTube( TubeType * newTube )
-{
-  //TubeExtractor<TInputImage>::DeleteTube( newTube );
-  //return m_TubeNetwork->DeleteTube( newTube );
-  return false;
-}
-
 
 /**
  * Get the tube net */
@@ -173,83 +124,13 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 }
 
 /**
- * Auto extract tubes using a mask */
-template<class TInputImage, class TInputMask>
-void
-TubeNetworkExtractor<TInputImage, TInputMask>
-::AutoExtractAutoThresh( double alpha )
-{
-/*  vnl_vector<int> bin( 256,0.0 );
-  int i, j, k, l;
-  long n;
-  int bnd, tot;
-  unsigned int size[ImageDimension];
-  for( unsigned int i=0;i<ImageDimension;i++ )
-    {
-    size[i]=m_Image->GetLargestPossibleRegion().GetSize()[i];
-    }
-  bin = 0.0;
-  n = 0;
-  for( i=0; i<size[2]; i++ )
-    {
-    for( j=0; j<size[1]; j++ )
-      {
-      for( k=0; k<size[0]; k++ )
-        {
-        ImageType::IndexType index;
-        index[0]=k;
-        index[1]=j;
-        index[2]=i;
-        if( !m_AEUseMask || m_AEMask->GetPixel( index )>0 )
-          {
-          l = ( m_Image->GetPixel( index )-m_RidgeOp->GetDataMin() )
-              / ( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )*255;
-          if( l<0 )
-            {
-            l = 0;
-            }
-          if( l>255 )
-            {
-            l = 255;
-            }
-          bin[l]++;
-          n++;
-          }
-        }
-      }
-    }
-  bnd = ( int )( alpha*n );
-  if( n > 0 )
-    {
-    tot=0;
-    for( l=255; l>=0; l-- )
-      {
-      tot += bin[l];
-      if( tot>bnd )
-        {
-        break;
-        }
-      }
-    m_AEThresh = ( l + 0.5 ) / 256.0 *
-      ( m_RidgeOp->GetDataMax()-m_RidgeOp->GetDataMin() )
-      + m_RidgeOp->GetDataMin();
-    }
-  else
-    {
-    m_AEThresh = m_RidgeOp->GetDataMax();
-    }
-  std::cout << "AEThesh = " << m_AEThresh << std::endl;
-*/
-}
-
-/**
  * AutoExtract tubes */
 template<class TInputImage, class TInputMask>
 bool
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::AutoExtract( int , int ) // zMin, int zMax )
 {
-/*  itk::Size<3> size;
+  /* itk::Size<3> size;
   size = m_Image->GetLargestPossibleRegion().GetSize();
 
   int i, j, k;
@@ -274,7 +155,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
       if( j/10 == j/10.0 && m_StatusCallBack )
         {
         char s[80];
-        sprintf( s, "%d.%d of %d.%d", i, j, size[2]-1,size[1]-1 );
+        std::sprintf( s, "%d.%d of %d.%d", i, j, size[2]-1,size[1]-1 );
         m_StatusCallBack( "Auto Extract", s, 0 );
         if( m_IdleCallBack )
           {
@@ -287,7 +168,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
     {
     m_StatusCallBack( "Auto Extract", "Done!", 1 );
     }
-*/
+  */
   return true;
 }
 
@@ -312,6 +193,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
     }
 
   tubeList->clear();
+  delete tubeList;
   */
 }
 
@@ -362,8 +244,8 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeTubeNetworkExtractor_txx)

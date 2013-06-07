@@ -20,12 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeCompareImageWithPrior_h
 #define __tubeCompareImageWithPrior_h
 
-#include "itkImage.h"
-#include "itkRigidImageToImageRegistrationMethod.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkImage.h>
+#include <itkRigidImageToImageRegistrationMethod.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "tubeCLIProgressReporter.h"
 
@@ -75,11 +76,11 @@ public:
   void SetSeed( unsigned int seed );
 
   void SetUseRegistration( bool reg );
-  bool GetUseRegistration( );
+  bool GetUseRegistration( void );
   void SetUseRegistrationTransform( bool reg );
-  bool GetUseRegistrationTransform( );
+  bool GetUseRegistrationTransform( void );
   void SetUseRegistrationOptimization( bool reg );
-  bool GetUseRegistrationOptimization( );
+  bool GetUseRegistrationOptimization( void );
   void SetRegistrationTransform(
     typename RegistrationMethodType::TransformType::Pointer tfm );
   typename RegistrationMethodType::TransformType::Pointer
@@ -127,10 +128,10 @@ private:
 
   float                          m_GoF;
 
-};
+}; // End class CompareImageWithPrior
 
-}
+} // End namespace tube
 
 #include "tubeCompareImageWithPrior.txx"
 
-#endif
+#endif // End !defined(__tubeCompareImageWithPrior_h)

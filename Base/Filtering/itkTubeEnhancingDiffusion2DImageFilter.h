@@ -20,10 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeEnhancingDiffusion2DImageFilter_h
 #define __itkTubeEnhancingDiffusion2DImageFilter_h
 
-#include "itkImageToImageFilter.h"
+#include <itkImageToImageFilter.h>
 #include <vector>
 
 namespace itk
@@ -60,7 +61,6 @@ namespace itk
  * - PixelT         short, 2D
  *   Precision      float, 2D
  *
- *
  * - todo
  *   - using parallelism/threading eg over scales
  *   - completely itk-fying, eg eigenvalues calculation
@@ -69,7 +69,6 @@ namespace itk
  *     (there must be a potential gain there)
  *
  * email: r.manniesing@erasmusmc.nl
- *
  */
 template <class PixelT = short int, unsigned int DimensionT = 2>
 class ITK_EXPORT TubeEnhancingDiffusion2DImageFilter :
@@ -102,7 +101,7 @@ public:
   itkSetMacro(Omega, Precision);
   itkSetMacro(Sensitivity, Precision);
 
-  void SetScales(const std::vector<Precision> scales)
+  void SetScales(const std::vector<Precision> &scales)
     {
     m_Scales = scales;
     }
@@ -114,7 +113,7 @@ public:
 
   // some defaults for lowdose example
   // used in the paper
-  void SetDefaultPars()
+  void SetDefaultPars( void )
     {
     m_TimeStep                  = 0.25;
     m_Iterations                = 200;
@@ -134,10 +133,10 @@ public:
     }
 
 protected:
-  TubeEnhancingDiffusion2DImageFilter();
-  ~TubeEnhancingDiffusion2DImageFilter() {};
+  TubeEnhancingDiffusion2DImageFilter( void );
+  ~TubeEnhancingDiffusion2DImageFilter( void ) {}
   void PrintSelf(std::ostream &os, Indent indent) const;
-  void GenerateData();
+  void GenerateData( void );
 
 private:
 
@@ -173,17 +172,17 @@ private:
   // calculates diffusion tensor
   // based on current values of hessian (for which we have
   // maximim vessel response).
-  void DiffusionTensor();
+  void DiffusionTensor( void );
 
   // Sorted increasing magnitude: l1, l2
   inline Precision TubenessFunction2D ( const Precision, const Precision );
 
-};
+}; // End class TubeEnhancingDiffusion2DImageFilter
 
-} // end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeEnhancingDiffusion2DImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeEnhancingDiffusion2DImageFilter_h)

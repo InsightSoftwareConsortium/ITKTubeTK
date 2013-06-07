@@ -20,28 +20,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
+
+#ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "itkGroupSpatialObject.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkSpatialObjectWriter.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkVesselTubeSpatialObjectPoint.h"
+#include <itkGroupSpatialObject.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkSpatialObjectWriter.h>
+#include <itkVesselTubeSpatialObject.h>
+#include <itkVesselTubeSpatialObjectPoint.h>
 
-#include "vtkSphereSource.h"
-#include "vtkPlaneSource.h"
-#include "vtkCubeSource.h"
-#include "vtkPolyDataWriter.h"
-#include "vtkAppendPolyData.h"
-#include "vtkDensifyPolyData.h"
-#include "vtkSmoothPolyDataFilter.h"
-#include "vtkPolyDataNormals.h"
-#include "vtkVersion.h"
+#include <vtkSphereSource.h>
+#include <vtkPlaneSource.h>
+#include <vtkCubeSource.h>
+#include <vtkPolyDataWriter.h>
+#include <vtkAppendPolyData.h>
+#include <vtkDensifyPolyData.h>
+#include <vtkSmoothPolyDataFilter.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkVersion.h>
 
-#include <math.h>
+#include <cmath>
 
 // Template function to fill in an image with a sphere.
 template <class TImage>
@@ -155,12 +156,12 @@ bool PointInTube( TIndex index, double * tubeLeftPoint, double radius)
   centerPoint[2] = tubeLeftPoint[2];
 
   double distance = 0;
-  for (int i = 0; i < 3; i++)
+  for(int i = 0; i < 3; i++)
     {
     distance += vnl_math_sqr(index[i] - centerPoint[i]);
     }
 
-  return sqrt(distance) <= radius;
+  return vcl_sqrt(distance) <= radius;
 }
 
 // Template function to fill in an image with two tubes
@@ -188,7 +189,7 @@ typename TImage::PixelType topIntensity
     index = it.GetIndex();
     bool inTube = false;
 
-    if ( index[0] > bottomTubeLeftPoint[0] && index[0] < bottomTubeLeftPoint[0] + length )
+    if( index[0] > bottomTubeLeftPoint[0] && index[0] < bottomTubeLeftPoint[0] + length )
       {
       if( PointInTube(index, bottomTubeLeftPoint, radius) )
         {
@@ -199,14 +200,14 @@ typename TImage::PixelType topIntensity
 
     if( index[0] > topTubeLeftPoint[0] && index[0] < topTubeLeftPoint[0] + length )
       {
-      if ( PointInTube(index, topTubeLeftPoint, radius) )
+      if( PointInTube(index, topTubeLeftPoint, radius) )
         {
         it.Set( topIntensity );
         inTube = true;
         }
       }
 
-    if ( !inTube )
+    if( !inTube )
       {
       it.Set( backgnd );
       }
@@ -278,6 +279,7 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
   return densify->GetOutput();
 }
 
+
 // Intensity windowing from 0..255 to 0..1
 template <class TImage>
 void IntensityWindow(
@@ -308,8 +310,9 @@ TImage * image )
     }
 }
 
+
 int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
-                                                      int argc, char* argv [] )
+                                                      int argc, char* argv[] )
 {
   if( argc < 7 )
     {
@@ -342,7 +345,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
   std::cout << "Generate registration input images" << std::endl;
 
   // Image parameters
-  ImageType::SizeValueType sizeValue = atoi( argv[6] );
+  ImageType::SizeValueType sizeValue = std::atoi( argv[6] );
   double      originValue = 0.0;
   double      spacingValue = 1.0;
 
@@ -384,15 +387,15 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
 
   enum geometryTypes { circles, boxes, tubes };
 
-  int geometry = atoi( argv[4] );
-  if ( geometry == circles )
+  int geometry = std::atoi( argv[4] );
+  if( geometry == circles )
     {
     double movingCenter[ImageDimension];
     double fixedCenter[ImageDimension];
     PixelType fgnd = 250;
 
     // fill moving with sphere
-    for ( unsigned int i = 0; i < ImageDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       movingCenter[i] = sizeValue / 2.0;
       }
@@ -401,11 +404,11 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
 
     // fill fixed with sphere
     fixedCenter[0] = (sizeValue / 2.0) - 2.0;
-    for ( unsigned int i = 1; i < ImageDimension; i++ )
+    for( unsigned int i = 1; i < ImageDimension; i++ )
       {
       fixedCenter[i] = sizeValue / 2.0;
       }
-    double fixedRadius = sizeValue / 3.0;;
+    double fixedRadius = sizeValue / 3.0;
     FillWithSphere<ImageType>( fixed, fixedCenter, fixedRadius, fgnd, bgnd );
 
     // setup the normals
@@ -416,7 +419,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
       return EXIT_FAILURE;
       }
     }
-  else if ( geometry == boxes )
+  else if( geometry == boxes )
     {
     double boxSize[3] = { sizeValue / (8.0/3.0),
                           sizeValue / 5.0,
@@ -470,7 +473,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
       return EXIT_FAILURE;
       }
     }
-  else if ( geometry == tubes )
+  else if( geometry == tubes )
     {
     double length = sizeValue / (8.0/3.0);
     double radius = sizeValue / 10.0;
@@ -509,8 +512,8 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     if( defineShortTube )
       {
       numPoints = static_cast<int>(length) + 1;
-      bottomX = ceil( fixedBottomTubeLeftPoint[0] );
-      topX = ceil( fixedTopTubeLeftPoint[0] );
+      bottomX = vnl_math_ceil( fixedBottomTubeLeftPoint[0] );
+      topX = vnl_math_ceil( fixedTopTubeLeftPoint[0] );
       }
     else
       {
@@ -557,8 +560,8 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     }
 
   // Scale the images to 0..1
-  bool intensityWindow = atoi( argv[5] ) == 1;
-  if (intensityWindow)
+  bool intensityWindow = std::atoi( argv[5] ) == 1;
+  if(intensityWindow)
     {
     IntensityWindow<ImageType>( fixed );
     IntensityWindow<ImageType>( moving );
@@ -596,7 +599,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     }
 
   // ---------------------------------------------------------
-  if ( geometry == circles || geometry == boxes )
+  if( geometry == circles || geometry == boxes )
     {
     std::cout << "Saving the normal surface border" << std::endl;
 
@@ -620,7 +623,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
 #endif
     polyWriter->Write();
     }
-  else if ( geometry == tubes )
+  else if( geometry == tubes )
     {
     std::cout << "Saving the tube spatial objects" << std::endl;
 
@@ -632,5 +635,4 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
     }
 
   return EXIT_SUCCESS;
-
 }

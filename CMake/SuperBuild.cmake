@@ -7,7 +7,7 @@
 #
 # All rights reserved.
 #
-# Licensed under the Apache License, Version 2.0 ( the "License" );
+# Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
@@ -20,21 +20,22 @@
 # limitations under the License.
 #
 ##############################################################################
+
 include( ExternalProject )
 
 set( base "${CMAKE_BINARY_DIR}" )
 set_property( DIRECTORY PROPERTY EP_BASE ${base} )
 
-if( BUILD_SHARED_LIBS )
+if( DEFINED BUILD_SHARED_LIBS )
   set( shared ${BUILD_SHARED_LIBS} )
-else()
+else( DEFINED BUILD_SHARED_LIBS )
   set( shared ON ) # use for BUILD_SHARED_LIBS on all subsequent projects
-endif()
+endif( DEFINED BUILD_SHARED_LIBS )
 set( testing OFF ) # use for BUILD_TESTING on all subsequent projects
 set( build_type "Debug" )
 if( CMAKE_BUILD_TYPE )
   set( build_type "${CMAKE_BUILD_TYPE}" )
-endif()
+endif( CMAKE_BUILD_TYPE )
 
 set( TubeTK_DEPENDS "" )
 
@@ -57,8 +58,20 @@ else( GIT_PROTOCOL_HTTP )
 endif( GIT_PROTOCOL_HTTP )
 mark_as_advanced( GIT_PROTOCOL )
 
+#
+# Use for CMAKE_OSX_* in external projects.
+#
+set( CMAKE_OSX_EXTERNAL_PROJECT_ARGS )
+if( APPLE )
+  list( APPEND CMAKE_OSX_EXTERNAL_PROJECT_ARGS
+    -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+    -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+  )
+endif( APPLE )
+
 ##
-## Check if system TubeTK or superbuild TubeTK
+## Check if system JsonCpp or superbuild JsonCpp
 ##
 if( NOT USE_SYSTEM_JsonCpp )
   ##
@@ -67,22 +80,25 @@ if( NOT USE_SYSTEM_JsonCpp )
   set( proj JsonCpp )
   ExternalProject_Add( JsonCpp
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/jsoncpp-cmake.git"
-    GIT_TAG "b1d742628d5dbf22ad250fa71af5b8f2c482b15c"
+    GIT_TAG "838583b52ba3fac143ec4e09bd189498a7ff9686"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/JsonCpp"
     BINARY_DIR JsonCpp-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
     INSTALL_COMMAND ""
     )
   set( JsonCpp_DIR "${base}/JsonCpp-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "JsonCpp" )
 endif( NOT USE_SYSTEM_JsonCpp )
-
 
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   ##
@@ -103,11 +119,12 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
       CMAKE_ARGS
         -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
         -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
         -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
         -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
         -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
         -DBUILD_SHARED_LIBS:BOOL=${shared}
         -DBUILD_EXAMPLES:BOOL=OFF
         -DBUILD_TESTING:BOOL=OFF
@@ -130,11 +147,12 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
         CMAKE_ARGS
           -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
           -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-          -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
           -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+          -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
           -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
           -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
           -DCMAKE_BUILD_TYPE:STRING=${build_type}
+          ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
           -DITK_DIR:STRING=${CMAKE_BINARY_DIR}/Insight-Build
           -DBUILD_SHARED_LIBS:BOOL=${shared}
           -DBUILD_TESTING:BOOL=OFF
@@ -152,8 +170,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
       set( SimpleITK_DIR "${base}/SimpleITK-Build" )
       set( TubeTK_SimpleITK_Def "-DSimpleITK_DIR:PATH=${SimpleITK_DIR}" )
-  #     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SimpleITK" )
-    endif()
+    endif( TubeTK_USE_SimpleITK )
     set( SimpleITK_DIR "" )
     set( TubeTK_SimpleITK_Def "" )
 
@@ -167,7 +184,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   if( TubeTK_USE_VTK )
 
     ##
-    ## Check if sytem VTK or superbuild VTK
+    ## Check if system VTK or superbuild VTK
     ##
     if( NOT USE_SYSTEM_VTK )
 
@@ -184,11 +201,14 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
           BINARY_DIR VTK-Build
           CMAKE_GENERATOR ${gen}
           CMAKE_ARGS
-            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
             -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
             -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
             -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
             -DCMAKE_BUILD_TYPE:STRING=${build_type}
+            ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
             -DBUILD_SHARED_LIBS:BOOL=${shared}
             -DBUILD_EXAMPLES:BOOL=OFF
             -DBUILD_TESTING:BOOL=OFF
@@ -213,11 +233,14 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
           BINARY_DIR VTK-Build
           CMAKE_GENERATOR ${gen}
           CMAKE_ARGS
-            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
             -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
             -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
             -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
             -DCMAKE_BUILD_TYPE:STRING=${build_type}
+            ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
             -DBUILD_SHARED_LIBS:BOOL=${shared}
             -DBUILD_EXAMPLES:BOOL=OFF
             -DBUILD_TESTING:BOOL=OFF
@@ -234,32 +257,91 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   endif( TubeTK_USE_VTK )
 
-  set( proj SlicerExecutionModel )
+  ##
+  ## Check if system ParameterSerializer or superbuild ParameterSerializer
+  ##
+  if( NOT USE_SYSTEM_ParameterSerializer )
+    ##
+    ## ParameterSerializer
+    ##
+    set( proj ParameterSerializer )
+    # Set dependency list
+    if( NOT USE_SYSTEM_ITK )
+      # Depends on ITK if ITK was build using superbuild
+      set( ${proj}_DEPENDS "Insight")
+    else()
+      set( ${proj}_DEPENDS "" )
+    endif()
+    if( NOT USE_SYSTEM_JsonCpp )
+      # Depends on ITK if ITK was build using superbuild
+      set( ${proj}_DEPENDS ${${proj}_DEPENDS} "JsonCpp")
+    else()
+      set( ${proj}_DEPENDS "" )
+    endif()
+    ExternalProject_Add( ${proj}
+      GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ParameterSerializer.git"
+      GIT_TAG "23911582d78ced102946c95dd67294d4057bb645"
+      SOURCE_DIR "${CMAKE_BINARY_DIR}/ParameterSerializer"
+      BINARY_DIR ParameterSerializer-Build
+      CMAKE_GENERATOR ${gen}
+      CMAKE_ARGS
+        -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+        -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+        -DBUILD_SHARED_LIBS:BOOL=OFF
+        -DITK_DIR:PATH=${ITK_DIR}
+        -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+      INSTALL_COMMAND ""
+      DEPENDS
+        ${${proj}_DEPENDS}
+      )
+    set( ParameterSerializer_DIR "${base}/ParameterSerializer-Build" )
+    set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "ParameterSerializer" )
+  endif( NOT USE_SYSTEM_ParameterSerializer )
 
+  set( proj SlicerExecutionModel )
   # Set dependency list
   if( NOT USE_SYSTEM_ITK )
     # Depends on ITK if ITK was build using superbuild
-    set(SlicerExecutionModel_DEPENDS "Insight")
-  else( NOT USE_SYSTEM_ITK )
-    set(SlicerExecutionModel_DEPENDS "" )
-  endif( NOT USE_SYSTEM_ITK )
-
-  ExternalProject_Add(${proj}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/SlicerExecutionModel.git"
-    GIT_TAG "origin/master"
+    set( SlicerExecutionModel_DEPENDS "Insight")
+  else()
+    set( SlicerExecutionModel_DEPENDS "" )
+  endif()
+  if( NOT USE_SYSTEM_ParameterSerializer )
+    # Depends on ITK if ITK was build using superbuild
+    set( SlicerExecutionModel_DEPENDS "ParameterSerializer")
+  else()
+    set( SlicerExecutionModel_DEPENDS "" )
+  endif()
+  ExternalProject_Add( ${proj}
+    # Has enhancements required for the SEM ParameterSerializer.
+    # Change back to upstream after pull request merged.
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/SlicerExecutionModel.git"
+    GIT_TAG "8ebf568a7b90a1d0e5ec7cf4cf2e8e490a24d0ab"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-Build
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_TESTING:BOOL=OFF
       -DITK_DIR:PATH=${ITK_DIR}
-        ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      -DSlicerExecutionModel_USE_SERIALIZER:BOOL=ON
+      -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+      -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
     INSTALL_COMMAND ""
     DEPENDS
       ${SlicerExecutionModel_DEPENDS}
@@ -292,7 +374,12 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
           BINARY_DIR CTK-Build
           CMAKE_GENERATOR ${gen}
           CMAKE_ARGS
+            -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+            -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+            -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+            -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
             -DCMAKE_BUILD_TYPE:STRING=${build_type}
+            ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
             -DBUILD_SHARED_LIBS:BOOL=${shared}
             -DBUILD_TESTING:BOOL=OFF
             -DCTK_USE_GIT_PROTOCOL:BOOL=TRUE
@@ -325,45 +412,58 @@ else( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
-##
-## A conventient 2D/3D image viewer that can handle anisotropic spacing.
-##
-set( ImageViewer_DEPENDS )
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  if( NOT USE_SYSTEM_ITK )
-    set( ImageViewer_DEPENDS Insight )
-  endif()
-else( NOT TubeTK_BUILD_SLICER_EXTENSION )
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
-set( proj ImageViewer )
-ExternalProject_Add( ImageViewer
-  GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
-  GIT_TAG "914c6127d5c07332ed3b365ae8308a584f276445"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
-  BINARY_DIR ImageViewer-Build
-  CMAKE_GENERATOR ${gen}
-  CMAKE_ARGS
-    "-DCMAKE_BUILD_TYPE:STRING=${build_type}"
-    "-DITK_DIR:PATH=${ITK_DIR}"
-  INSTALL_COMMAND ""
-  DEPENDS
-    ${ImageViewer_DEPENDS}
-  )
+if( TubeTK_BUILD_ImageViewer )
+  ##
+  ## A convenient 2D/3D image viewer that can handle anisotropic spacing.
+  ##
+  set( ImageViewer_DEPENDS )
+  if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+    if( NOT USE_SYSTEM_ITK )
+      set( ImageViewer_DEPENDS Insight )
+    endif( NOT USE_SYSTEM_ITK )
+  else( NOT TubeTK_BUILD_SLICER_EXTENSION )
+  endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+  set( proj ImageViewer )
+  ExternalProject_Add( ImageViewer
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
+    GIT_TAG "9fbaa236d14a5364893b73c53fd7e20268a0d165"
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/ImageViewer"
+    BINARY_DIR ImageViewer-Build
+    CMAKE_GENERATOR ${gen}
+    CMAKE_ARGS
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      -DITK_DIR:PATH=${ITK_DIR}
+    INSTALL_COMMAND ""
+    DEPENDS
+      ${ImageViewer_DEPENDS}
+    )
+endif( TubeTK_BUILD_ImageViewer )
 
 ## LibSVM
 ##
 if( TubeTK_USE_LIBSVM )
   set( proj LIBSVM )
-  ExternalProject_Add(
-    ${proj}
+  ExternalProject_Add( ${proj}
     SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
     BINARY_DIR ${proj}-Build
-    GIT_REPOSITORY https://github.com/TubeTK/cmake-libsvm
-    GIT_TAG a802a4224a6c3d7458e46887e77d75bf305a105b
+    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/cmake-libsvm.git"
+    GIT_TAG "a802a4224a6c3d7458e46887e77d75bf305a105b"
     CMAKE_ARGS
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-Build
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=ON}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      -DBUILD_SHARED_LIBS:BOOL=${shared}
   )
   set( LIBSVM_DIR "${CMAKE_BINARY_DIR}/${proj}-Build" )
 endif( TubeTK_USE_LIBSVM )
@@ -372,20 +472,20 @@ endif( TubeTK_USE_LIBSVM )
 ## TubeTK - Normal Build
 ##
 set( proj TubeTK )
+
 if( TubeTK_USE_KWSTYLE )
   set( kwstyle_dashboard_submission_arg
     "-DKWSTYLE_DASHBOARD_SUBMISSION:BOOL=${KWSTYLE_DASHBOARD_SUBMISSION}" )
-endif()
+endif( TubeTK_USE_KWSTYLE )
 
 set( TubeTK_cmake_args )
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  list(APPEND TubeTK_cmake_args
+  list( APPEND TubeTK_cmake_args
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
-    ${TubeTK_SimpleITK_Def}
     )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
@@ -397,17 +497,18 @@ ExternalProject_Add( ${proj}
   CMAKE_ARGS
     -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
     -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+    -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+    -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+    -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
     -DBUILDNAME:STRING=${BUILDNAME}
     -DSITE:STRING=${SITE}
     -DMAKECOMMAND:STRING=${MAKECOMMAND}
-    -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DBUILD_SHARED_LIBS:BOOL=${shared}
     -DBUILD_TESTING:BOOL=${BUILD_TESTING}
     -DBUILD_DOCUMENTATION:BOOL=${BUILD_DOCUMENTATION}
-    -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-    -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
     -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
     -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
@@ -419,6 +520,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_Boost:BOOL=${TubeTK_USE_Boost}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
     -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+    -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
     -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}

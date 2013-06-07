@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkLabelMapToAcousticImpedanceFunctor_txx
 #define __itkLabelMapToAcousticImpedanceFunctor_txx
 
@@ -32,8 +33,8 @@ namespace Functor
 
 template< class TLabelPixel, class TImpedancePixel, class TLookupTable >
 LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
-::LabelMapToAcousticImpedanceFunctor():
-  m_LookupTable( NULL )
+::LabelMapToAcousticImpedanceFunctor( void )
+  : m_LookupTable( NULL )
 {
 }
 
@@ -52,7 +53,7 @@ const typename
 LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
 ::LookupTableType *
 LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
-::GetLookupTable() const
+::GetLookupTable( void ) const
 {
   return this->m_LookupTable;
 }
@@ -75,7 +76,8 @@ LabelMapToAcousticImpedanceFunctor< TLabelPixel, TImpedancePixel, TLookupTable >
     return !( *this != other );
 }
 
-} // end namespace Functor
-} // end namespace itk
+} // End namespace Functor
 
-#endif
+} // End namespace itk
+
+#endif // End !defined(__itkLabelMapToAcousticImpedanceFunctor_txx)

@@ -20,19 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkAnisotropicEdgeEnhancementDiffusionImageFilter_h
 #define __itkAnisotropicEdgeEnhancementDiffusionImageFilter_h
 
 #include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkMultiThreader.h"
-#include "itkDiffusionTensor3D.h"
-#include "itkHessianRecursiveGaussianImageFilter.h"
+#include <itkMultiThreader.h>
+#include <itkDiffusionTensor3D.h>
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include "itkSymmetricEigenAnalysisImageFilter.h"
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
-namespace itk {
+namespace itk
+{
 /** \class AnisotropicEdgeEnhancementDiffusionImageFilter
  *  This class is an implementation of Edge-enhancing diffusion:
  *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
@@ -132,12 +134,12 @@ public:
 
 
 protected:
-  AnisotropicEdgeEnhancementDiffusionImageFilter();
- ~AnisotropicEdgeEnhancementDiffusionImageFilter() {}
+  AnisotropicEdgeEnhancementDiffusionImageFilter( void );
+ ~AnisotropicEdgeEnhancementDiffusionImageFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** Update diffusion tensor image */
-  void virtual UpdateDiffusionTensorImage();
+  void virtual UpdateDiffusionTensorImage( void );
 
 private:
   //purposely not implemented
@@ -148,13 +150,13 @@ private:
   double    m_ThresholdParameterC;
   double    m_Sigma;
   double    m_SigmaOuter;
-};
 
+}; // End class AnisotropicEdgeEnhancementDiffusionImageFilter
 
-}// end namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-# include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx"
+#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkAnisotropicEdgeEnhancementDiffusionImageFilter_h)

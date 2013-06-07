@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 // .NAME vtkSlicerSpatialObjectsLogic -
 // slicer logic class for spatial objects manipulation.
 // .SECTION Description
@@ -29,8 +30,8 @@ limitations under the License.
 #ifndef __vtkSlicerSpatialObjectsLogic_h
 #define __vtkSlicerSpatialObjectsLogic_h
 
-#include "vtkSlicerModuleLogic.h"
-#include "vtkSlicerSpatialObjectsModuleLogicExport.h"
+#include <vtkSlicerModuleLogic.h>
+#include <vtkSlicerSpatialObjectsModuleLogicExport.h>
 
 // STD includes
 #include <cstdlib>
@@ -42,7 +43,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_LOGIC_EXPORT vtkSlicerSpatialObjectsLogic
  : public vtkSlicerModuleLogic
 {
 public:
-  static vtkSlicerSpatialObjectsLogic *New();
+  static vtkSlicerSpatialObjectsLogic *New( void );
   vtkTypeRevisionMacro(vtkSlicerSpatialObjectsLogic,vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
@@ -74,11 +75,11 @@ public:
   // Description:
   // Register MRML Node classes to Scene.
   // Called automatically when the MRMLScene is attached to this logic class.
-  virtual void RegisterNodes();
+  virtual void RegisterNodes( void );
 
 protected:
-  vtkSlicerSpatialObjectsLogic();
-  ~vtkSlicerSpatialObjectsLogic();
+  vtkSlicerSpatialObjectsLogic( void );
+  ~vtkSlicerSpatialObjectsLogic( void );
   vtkSlicerSpatialObjectsLogic(const vtkSlicerSpatialObjectsLogic&);
   void operator=(const vtkSlicerSpatialObjectsLogic&);
 
@@ -86,6 +87,7 @@ protected:
   // Collection of pointers to display logic objects
   // for spatial objects nodes in the scene.
   vtkCollection *DisplayLogicCollection;
-};
 
-#endif
+}; // End class vtkSlicerSpatialObjectsLogic
+
+#endif // End !defined(__vtkSlicerSpatialObjectsLogic_h)

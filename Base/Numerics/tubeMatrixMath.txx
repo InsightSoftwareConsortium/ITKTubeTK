@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeMatrixMath_txx
 #define __tubeMatrixMath_txx
 
 #include <cstdlib>
 #include <iostream>
-#include "tubeMatrixMath.h"
-#include "vnl/algo/vnl_symmetric_eigensystem.h"
+#include <vnl/algo/vnl_symmetric_eigensystem.h>
 
+#include "tubeMatrixMath.h"
 
 namespace tube
 {
@@ -111,7 +112,7 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
     {
     s += (x(i)-y(i))*(x(i)-y(i));
     }
-  return sqrt(s);
+  return vcl_sqrt(s);
 }
 
 /**
@@ -125,7 +126,7 @@ ComputeEuclideanDistance(PointType x, PointType y)
     {
     s += (x[i]-y[i])*(x[i]-y[i]);
     }
-  return sqrt(s);
+  return vcl_sqrt(s);
 }
 
 /**
@@ -170,21 +171,19 @@ ComputeEigen(vnl_matrix<T> const & mat,
       break;
     }
 
-  int i, j, k;
-  double tf;
   if(orderByAbs)
     {
-    for(i=0; i<n-1; i++)
+    for(int i=0; i<n-1; i++)
       {
-      for(j=i+1; j<n; j++)
+      for(int j=i+1; j<n; j++)
         {
-        if( ( fabs(eVals(j))>fabs(eVals(i)) && !minToMax )
-          || ( fabs(eVals(j))<fabs(eVals(i)) && minToMax ) )
+        if( ( vnl_math_abs(eVals(j))>vnl_math_abs(eVals(i)) && !minToMax )
+          || ( vnl_math_abs(eVals(j))<vnl_math_abs(eVals(i)) && minToMax ) )
           {
-          tf = eVals(j);
+          double tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
-          for(k=0; k<n; k++)
+          for(int k=0; k<n; k++)
             {
             tf = eVects(k,j);
             eVects(k,j) = eVects(k,i);
@@ -196,17 +195,17 @@ ComputeEigen(vnl_matrix<T> const & mat,
     }
   else
     {
-    for(i=0; i<n-1; i++)
+    for(int i=0; i<n-1; i++)
       {
-      for(j=i+1; j<n; j++)
+      for(int j=i+1; j<n; j++)
         {
         if( ( eVals(j)>eVals(i) && !minToMax )
           || ( eVals(j)<eVals(i) && minToMax ) )
           {
-          tf = eVals(j);
+          double tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
-          for(k=0; k<n; k++)
+          for(int k=0; k<n; k++)
             {
             tf = eVects(k,j);
             eVects(k,j) = eVects(k,i);
@@ -230,8 +229,12 @@ ComputeTriDiag2D(vnl_matrix<T> &mat,
   diag(1) = mat(1,1);
   subD(0) = mat(0,1);
   subD(1) = 0;
-  mat(0,0) = 1;  mat(0,1) = 0;
-  mat(1,0) = 0;  mat(1,1) = 1;
+
+  mat(0,0) = 1;
+  mat(0,1) = 0;
+
+  mat(1,0) = 0;
+  mat(1,1) = 1;
 }
 
 /**
@@ -243,23 +246,31 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
 {
   double  a = mat(0,0), b = mat(0,1), c = mat(0,2),
           d = mat(1,1), e = mat(1,2), f = mat(2,2);
-  double s, q;
 
   diag(0) = a;
   subD(2) = 0;
   if(c != 0)
     {
-    s = sqrt(b*b+c*c);
+    const double s = vcl_sqrt(b*b+c*c);
     b /= s;
     c /= s;
-    q = 2*b*e+c*(f-d);
+    const double q = 2*b*e+c*(f-d);
     diag(1) = d+c*q;
     diag(2) = f-c*q;
     subD(0) = s;
     subD(1) = e-b*q;
-    mat(0,0) = 1; mat(0,1) = 0; mat(0,2) = 0;
-    mat(1,0) = 0; mat(1,1) = b; mat(1,2) = c;
-    mat(2,0) = 0; mat(2,1) = c; mat(2,2) = -b;
+
+    mat(0,0) = 1;
+    mat(0,1) = 0;
+    mat(0,2) = 0;
+
+    mat(1,0) = 0;
+    mat(1,1) = b;
+    mat(1,2) = c;
+
+    mat(2,0) = 0;
+    mat(2,1) = c;
+    mat(2,2) = -b;
     }
   else
     {
@@ -267,39 +278,58 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
     diag(2) = f;
     subD(0) = b;
     subD(1) = e;
-    mat(0,0) = 1; mat(0,1) = 0; mat(0,2) = 0;
-    mat(1,0) = 0; mat(1,1) = 1; mat(1,2) = 0;
-    mat(2,0) = 0; mat(2,1) = 0; mat(2,2) = 1;
+
+    mat(0,0) = 1;
+    mat(0,1) = 0;
+    mat(0,2) = 0;
+
+    mat(1,0) = 0;
+    mat(1,1) = 1;
+    mat(1,2) = 0;
+
+    mat(2,0) = 0;
+    mat(2,1) = 0;
+    mat(2,2) = 1;
     }
 }
 
-/**
- *                         */
 template <class T>
 void
 ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
 {
-  int iter, i, k, l, m;
-  double dd, g, r, f, s, c, p, b;
+  int iter;
+  int i;
+  int k;
+  int l;
+  int m;
+
+  double dd;
+  double g;
+  double r;
+  double f;
+  double s;
+  double c;
+  double p;
+  double b;
 
   int n = mat.rows();
 
-  for (l=0; l<n; l++)
+  for(l=0; l<n; l++)
     {
-    for (iter = 0; iter < EIGEN_MAX_ITERATIONS; iter++)
+    for(iter = 0; iter < EIGEN_MAX_ITERATIONS; iter++)
       {
-      for (m=l; m<n; m++)
+      for(m=l; m<n; m++)
         {
         if(m!=(n-1))
           {
-          dd = fabs(diag(m))+fabs(diag(m+1));
+          dd = vnl_math_abs(diag(m))+vnl_math_abs(diag(m+1));
           }
         else
           {
-          dd = fabs(diag(m));
+          dd = vnl_math_abs(diag(m));
           }
 
-        if(fabs(subD(m))+dd == dd)
+        if(vnl_math_abs(subD(m))+dd == dd)
           {
           break;
           }
@@ -309,7 +339,7 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
         break;
         }
       g = (diag(l+1)-diag(l))/(2*subD(l));
-      r = sqrt(g*g+1);
+      r = vcl_sqrt(g*g+1);
       if(g<0)
         {
         g = diag(m)-diag(l)+subD(l)/(g-r);
@@ -321,21 +351,21 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
       s = 1;
       c = 1;
       p = 0;
-      for (i=m-1; i>=l; i--)
+      for(i=m-1; i>=l; i--)
         {
         f = s*subD(i);
         b = c*subD(i);
-        if(fabs(f)>=fabs(g))
+        if(vnl_math_abs(f)>=vnl_math_abs(g))
           {
           c = g/f;
-          r = sqrt(c*c+1);
+          r = vcl_sqrt(c*c+1);
           subD(i+1) = f*r;
           c *= (s = 1/r);
           }
         else
           {
           s = f/g;
-          r = sqrt(s*s+1);
+          r = vcl_sqrt(s*s+1);
           subD(i+1) = g*r;
           s *= (c = 1/r);
           }
@@ -363,6 +393,6 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
     }
 }
 
-} // end namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeMatrixMath_txx)

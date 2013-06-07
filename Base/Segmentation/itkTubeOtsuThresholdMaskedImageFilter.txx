@@ -20,14 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeOtsuThresholdMaskedImageFilter_txx
 #define __itkTubeOtsuThresholdMaskedImageFilter_txx
 
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
 
+#include <itkProgressAccumulator.h>
 #include <itkBinaryThresholdImageFilter.h>
 #include <itkTubeOtsuThresholdMaskedImageCalculator.h>
-#include <itkProgressAccumulator.h>
 
 namespace itk
 {
@@ -37,7 +38,7 @@ namespace tube
 
 template<class TInputImage, class TOutputImage>
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
-::OtsuThresholdMaskedImageFilter()
+::OtsuThresholdMaskedImageFilter( void )
 {
   m_MaskImage      = NULL;
   m_OutsideValue   = NumericTraits<OutputPixelType>::Zero;
@@ -49,7 +50,7 @@ OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
 template<class TInputImage, class TOutputImage>
 void
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
-::GenerateData()
+::GenerateData( void )
 {
   typename ProgressAccumulator::Pointer progress =
     ProgressAccumulator::New();
@@ -87,7 +88,7 @@ OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
 template<class TInputImage, class TOutputImage>
 void
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
-::GenerateInputRequestedRegion()
+::GenerateInputRequestedRegion( void )
 {
   TInputImage * input = const_cast<TInputImage *>( this->GetInput() );
   if( input )
@@ -125,8 +126,8 @@ OtsuThresholdMaskedImageFilter<TInputImage,TOutputImage>
 
 }
 
-} // end namespace tube
+} // End namespace tube
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkTubeOtsuThresholdMaskedImageFilter_txx)

@@ -43,11 +43,11 @@ vtkCxxRevisionMacro(vtkSlicerSpatialObjectsLogic, "$Revision: 1.9.12.1 $");
 vtkStandardNewMacro(vtkSlicerSpatialObjectsLogic);
 
 //------------------------------------------------------------------------------
-vtkSlicerSpatialObjectsLogic::vtkSlicerSpatialObjectsLogic()
+vtkSlicerSpatialObjectsLogic::vtkSlicerSpatialObjectsLogic( void )
 {}
 
 //------------------------------------------------------------------------------
-vtkSlicerSpatialObjectsLogic::~vtkSlicerSpatialObjectsLogic()
+vtkSlicerSpatialObjectsLogic::~vtkSlicerSpatialObjectsLogic( void )
 {}
 
 //------------------------------------------------------------------------------
@@ -60,15 +60,15 @@ int vtkSlicerSpatialObjectsLogic::AddSpatialObjects(const char* dirname,
 
   int nfiles = dir.GetNumberOfFiles();
   int res = 1;
-  for (int i = 0; i < nfiles; ++i) {
+  for(int i = 0; i < nfiles; ++i) {
     const char* filename = dir.GetFile(i);
     std::string sname = filename;
-    if (!itksys::SystemTools::FileIsDirectory(filename))
+    if(!itksys::SystemTools::FileIsDirectory(filename))
       {
-      if (sname.find(ssuf) != std::string::npos)
+      if(sname.find(ssuf) != std::string::npos)
         {
         std::string fullPath = std::string(dir.GetPath()) + "/" + filename;
-        if (this->AddSpatialObject(fullPath.c_str()) == NULL)
+        if(this->AddSpatialObject(fullPath.c_str()) == NULL)
           {
           res = 0;
           }
@@ -89,20 +89,20 @@ AddSpatialObjects(const char* dirname, std::vector<std::string> suffix)
   int nfiles = dir.GetNumberOfFiles();
   int res = 1;
 
-  for (int i = 0; i < nfiles; ++i) {
+  for(int i = 0; i < nfiles; ++i) {
     const char* filename = dir.GetFile(i);
     std::string name = filename;
 
-    if (!itksys::SystemTools::FileIsDirectory(filename))
+    if(!itksys::SystemTools::FileIsDirectory(filename))
       {
-      for (unsigned int s = 0; s < suffix.size(); ++s)
+      for(unsigned int s = 0; s < suffix.size(); ++s)
         {
         std::string ssuf = suffix[s];
-        if (name.find(ssuf) != std::string::npos)
+        if(name.find(ssuf) != std::string::npos)
           {
           std::string fullPath = std::string(dir.GetPath()) + "/" + filename;
 
-          if (this->AddSpatialObject(fullPath.c_str()) == NULL)
+          if(this->AddSpatialObject(fullPath.c_str()) == NULL)
             {
             res = 0;
             }
@@ -133,7 +133,7 @@ vtkSlicerSpatialObjectsLogic::AddSpatialObject(const char* filename)
     vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines);
 
   storageNode->SetFileName(filename);
-  if (storageNode->ReadData(spatialObjectsNode.GetPointer()) != 0)
+  if(storageNode->ReadData(spatialObjectsNode.GetPointer()) != 0)
     {
     const itksys_stl::string fname(filename);
     itksys_stl::string name =
@@ -199,19 +199,19 @@ int vtkSlicerSpatialObjectsLogic::
 SaveSpatialObject(const char* filename,
                   vtkMRMLSpatialObjectsNode *spatialObjectsNode)
 {
-   if (spatialObjectsNode == NULL || filename == NULL)
+   if(spatialObjectsNode == NULL || filename == NULL)
     {
     return 0;
     }
 
   vtkMRMLSpatialObjectsStorageNode* storageNode = NULL;
   vtkMRMLStorageNode* snode = spatialObjectsNode->GetStorageNode();
-  if (snode != NULL)
+  if(snode != NULL)
     {
     storageNode = vtkMRMLSpatialObjectsStorageNode::SafeDownCast(snode);
     }
 
-  if (storageNode == NULL)
+  if(storageNode == NULL)
     {
     storageNode = vtkMRMLSpatialObjectsStorageNode::New();
     storageNode->SetScene(this->GetMRMLScene());
@@ -235,7 +235,7 @@ void vtkSlicerSpatialObjectsLogic::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //------------------------------------------------------------------------------
-void vtkSlicerSpatialObjectsLogic::RegisterNodes()
+void vtkSlicerSpatialObjectsLogic::RegisterNodes( void )
 {
   if(!this->GetMRMLScene())
     {

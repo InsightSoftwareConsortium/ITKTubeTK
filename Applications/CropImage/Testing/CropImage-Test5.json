@@ -1,0 +1,181 @@
+
+{
+	"Category" : "TubeTK",
+	"Contributor" : "Stephen R. Aylward, Kitware",
+	"Description" : "Extract a hyper-rectangular region from an image.",
+	"DocumentationURL" : "http://public.kitware.com/Wiki/TubeTK",
+	"License" : "Apache 2.0",
+	"ParameterGroups" :
+	[
+
+		{
+			"Description" : "Input/output parameters",
+			"Label" : "IO",
+			"Parameters" :
+			[
+
+				{
+					"CPPType" : "std::string",
+					"Channel" : "input",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "Input volume",
+					"Flag" : "",
+					"Index" : "0",
+					"Label" : "Input Volume",
+					"LongFlag" : "",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "inputVolume",
+					"Step" : "",
+					"Tag" : "image",
+					"Value" : "ES0015_Large.mha"
+				},
+
+				{
+					"CPPType" : "std::string",
+					"Channel" : "output",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "Output Volume",
+					"Flag" : "",
+					"Index" : "1",
+					"Label" : "Output Volume",
+					"LongFlag" : "",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "outputVolume",
+					"Step" : "",
+					"Tag" : "image",
+					"Value" : "CropImageTest3.mha"
+				}
+			]
+		},
+
+		{
+			"Description" : "",
+			"Label" : "Crop filter",
+			"Parameters" :
+			[
+
+				{
+					"CPPType" : "std::vector<int>",
+					"Channel" : "",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "One corner of the hyper-rectangle",
+					"Flag" : "m",
+					"Index" : "",
+					"Label" : "Min coordinate",
+					"LongFlag" : "min",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "min",
+					"Step" : "",
+					"Tag" : "integer-vector",
+					"Value" : [ 15, 15 ]
+				},
+
+				{
+					"CPPType" : "std::vector<int>",
+					"Channel" : "",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "Adjacent corner of the hyper-rectangle",
+					"Flag" : "M",
+					"Index" : "",
+					"Label" : "Max coordinate (use instead of size)",
+					"LongFlag" : "max",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "max",
+					"Step" : "",
+					"Tag" : "integer-vector",
+					"Value" : []
+				},
+
+				{
+					"CPPType" : "std::vector<int>",
+					"Channel" : "",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "Distance to the adjacent corner of the hyper-rectangle",
+					"Flag" : "s",
+					"Index" : "",
+					"Label" : "Size of roi (use instead of max)",
+					"LongFlag" : "size",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "size",
+					"Step" : "",
+					"Tag" : "integer-vector",
+					"Value" : [ 81, 81 ]
+				},
+
+				{
+					"CPPType" : "std::vector<int>",
+					"Channel" : "",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "Center of the hyper-rectangle",
+					"Flag" : "c",
+					"Index" : "",
+					"Label" : "Center of roi (use instead of min/max)",
+					"LongFlag" : "center",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "center",
+					"Step" : "",
+					"Tag" : "integer-vector",
+					"Value" : []
+				},
+
+				{
+					"CPPType" : "std::vector<int>",
+					"Channel" : "",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "Add pixels beyond specified edges",
+					"Flag" : "b",
+					"Index" : "",
+					"Label" : "Additional boundary pixels",
+					"LongFlag" : "boundary",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "boundary",
+					"Step" : "",
+					"Tag" : "integer-vector",
+					"Value" : [ 7, 7 ]
+				},
+
+				{
+					"CPPType" : "std::vector<int>",
+					"Channel" : "",
+					"CoordinateSystem" : "",
+					"Default" : "",
+					"Description" : "Split into an array of MxN sub-images that span the full image",
+					"Flag" : "S",
+					"Index" : "",
+					"Label" : "Split array",
+					"LongFlag" : "split",
+					"Maximum" : "",
+					"Minimum" : "",
+					"Multiple" : "false",
+					"Name" : "split",
+					"Step" : "",
+					"Tag" : "integer-vector",
+					"Value" : []
+				}
+			]
+		}
+	],
+	"Title" : "Crop Image (TubeTK)",
+	"Version" : "0.1.0.$Revision: 2104 $(alpha)"
+}

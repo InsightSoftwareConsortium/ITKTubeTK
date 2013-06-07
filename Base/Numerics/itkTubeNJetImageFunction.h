@@ -20,13 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeNJetImageFunction_h
 #define __itkTubeNJetImageFunction_h
 
-#include "itkImageFunction.h"
-#include "itkMatrix.h"
-#include "itkVector.h"
-#include "itkArray.h"
+#include <itkImageFunction.h>
+#include <itkMatrix.h>
+#include <itkVector.h>
+#include <itkArray.h>
 
 
 // Remove vnl warning
@@ -34,7 +35,7 @@ limitations under the License.
 #undef VNL_CONFIG_CHECK_BOUNDS
 #endif
 
-#include "vnl/vnl_vector.h"
+#include <vnl/vnl_vector.h>
 #include "vnl/vnl_c_vector.txx"
 
 namespace itk
@@ -43,13 +44,11 @@ namespace itk
 namespace tube
 {
 
-/**
- * \class NJetImageFunction
+/** \class NJetImageFunction
  * \brief Calculate the gaussian blurred value, 1st derivatives, and
  *        second derivatives at point
  *        given a scale and extent of the gaussian.
  * This class is templated over the input image type.
- *
  */
 template <class TInputImage>
 class ITK_EXPORT NJetImageFunction :
@@ -122,15 +121,15 @@ public:
   itkSetMacro( UseInputImageMask, bool );
   itkGetMacro( UseInputImageMask, bool );
 
-  void ComputeStatistics(void);
+  void ComputeStatistics( void );
 
   /** Return the min over the (possibly masked) image.
    * Requires previous call to ComputeStatistics */
-  double GetMin(void) const;
+  double GetMin( void ) const;
 
   /** Return the max over the (possibly masked) image.
    * Requires previous call to ComputeStatistics */
-  double GetMax(void) const;
+  double GetMax( void ) const;
 
   itkGetConstMacro( MostRecentIntensity, double );
   itkGetConstMacro( MostRecentDerivative, VectorType );
@@ -294,12 +293,12 @@ public:
   itkGetMacro( UseProjection, bool);
 
 protected:
-  NJetImageFunction();
-  NJetImageFunction( const Self& ){};
+  NJetImageFunction( void );
+  NJetImageFunction( const Self& ) {}
 
-  ~NJetImageFunction(){};
+  ~NJetImageFunction( void ) {}
 
-  void operator=( const Self& ){};
+  void operator=( const Self& ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   typename InputImageType::ConstPointer  m_InputImage;
@@ -328,14 +327,14 @@ protected:
 
   bool                    m_UseProjection;
 
-};
+}; // End class NJetImageFunction
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "itkTubeNJetImageFunction.txx"
+#include "itkTubeNJetImageFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeNJetImageFunction_h)

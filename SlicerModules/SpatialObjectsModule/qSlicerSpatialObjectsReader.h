@@ -21,11 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __qSlicerSpatialObjectsReader
-#define __qSlicerSpatialObjectsReader
+#ifndef __qSlicerSpatialObjectsReader_h
+#define __qSlicerSpatialObjectsReader_h
 
 // SlicerQt includes
-#include "qSlicerFileReader.h"
+#include <qSlicerFileReader.h>
 
 class qSlicerSpatialObjectsReaderPrivate;
 class vtkSlicerSpatialObjectsLogic;
@@ -34,7 +34,7 @@ class vtkSlicerSpatialObjectsLogic;
 /// \ingroup Slicer_QtModules_SpatialObjects
 class qSlicerSpatialObjectsReader : public qSlicerFileReader
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   typedef qSlicerFileReader Superclass;

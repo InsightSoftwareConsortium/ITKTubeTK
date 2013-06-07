@@ -22,14 +22,14 @@ limitations under the License.
 =========================================================================*/
 
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
+#include "itkFilterWatcher.h"
+#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
 #include <itkTubeEnhancingDiffusion2DImageFilter.h>
 
-int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
+int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv[] )
 {
   if( argc < 3 )
     {
@@ -75,7 +75,7 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
 
   // Connect the pipeline
   filter->SetInput( reader->GetOutput() );
-  filter->SetDefaultPars( ); // duplicates assignments given below
+  filter->SetDefaultPars(); // duplicates assignments given below
   filter->SetIterations( 50 ); // Default is 200
   filter->SetRecalculateTubeness( 11 ); // Default is 100
   std::vector< float > scales;
@@ -113,7 +113,7 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch(itk::ExceptionObject& e)
     {
     std::cerr << "Exception caught during pipeline Update\n"  << e;
     return EXIT_FAILURE;
@@ -121,5 +121,4 @@ int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv [] )
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
-
 }

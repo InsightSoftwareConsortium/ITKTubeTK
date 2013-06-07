@@ -20,21 +20,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __tubeCropROI_txx
 #define __tubeCropROI_txx
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 #include "tubeMessage.h"
 
 // Includes specific to this CLI application
-#include "itkCropImageFilter.h"
+#include <itkCropImageFilter.h>
 
 namespace tube
 {
@@ -419,6 +420,6 @@ PrintSelf( void )
     }
 }
 
-} //namespace tube
+} // End namespace tube
 
-#endif
+#endif // End !defined(__tubeCropROI_txx)

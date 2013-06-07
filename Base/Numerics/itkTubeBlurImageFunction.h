@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeBlurImageFunction_h
 #define __itkTubeBlurImageFunction_h
 
@@ -32,12 +33,10 @@ namespace itk
 namespace tube
 {
 
-/**
- * \class BlurImageFunction
+/** \class BlurImageFunction
  * \brief Calculate the gaussian blurred value at point
  *        given a scale and extent of the gaussian.
  * This class is templated over the input image type.
- *
  */
 template <class TInputImage>
 class ITK_EXPORT BlurImageFunction :
@@ -120,8 +119,8 @@ public:
 
 protected:
 
-  BlurImageFunction();
-  virtual ~BlurImageFunction(){};
+  BlurImageFunction( void );
+  virtual ~BlurImageFunction( void ) {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 
@@ -151,14 +150,14 @@ private:
   IndexType               m_ImageIndexMin;
   IndexType               m_ImageIndexMax;
 
-};
+}; // End class BlurImageFunction
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeBlurImageFunction.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeBlurImageFunction_h)

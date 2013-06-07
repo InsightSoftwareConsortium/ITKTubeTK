@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkLabelMapToAcousticImpedanceFunctor_h
 #define __itkLabelMapToAcousticImpedanceFunctor_h
 
@@ -46,10 +47,10 @@ public:
   /** Set/Get the lookup table.  It must be persistant throughout the life of the
    * functor. */
   void SetLookupTable( const LookupTableType * lookupTable );
-  const LookupTableType * GetLookupTable() const;
+  const LookupTableType * GetLookupTable( void ) const;
 
-  LabelMapToAcousticImpedanceFunctor();
-  ~LabelMapToAcousticImpedanceFunctor() {}
+  LabelMapToAcousticImpedanceFunctor( void );
+  ~LabelMapToAcousticImpedanceFunctor( void ) {}
 
   /** Comparison operator. */
   bool operator!=(const LabelMapToAcousticImpedanceFunctor &) const;
@@ -64,13 +65,14 @@ public:
 private:
   const LookupTableType * m_LookupTable;
 
-};
+}; // End class LabelMapToAcousticImpedanceFunctor
 
-} // end namespace Functor
-} // end namespace itk
+} // End namespace Functor
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkLabelMapToAcousticImpedanceFunctor.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkLabelMapToAcousticImpedanceFunctor_h)

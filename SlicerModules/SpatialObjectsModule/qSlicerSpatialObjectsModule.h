@@ -20,13 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __qSlicerSpatialObjectsModule_h
 #define __qSlicerSpatialObjectsModule_h
 
 // SlicerQt includes
-#include "qSlicerLoadableModule.h"
+#include <qSlicerLoadableModule.h>
 
-#include "qSlicerSpatialObjectsModuleExport.h"
+#include <qSlicerSpatialObjectsModuleExport.h>
 
 class qSlicerAbstractModuleWidget;
 class qSlicerSpatialObjectsModulePrivate;

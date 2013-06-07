@@ -20,77 +20,82 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #include <cstdlib>
 #include <iostream>
 
 #include <vnl/vnl_math.h>
 #include <vcl_cmath.h>
 
-#include "itkImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageFileWriter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
+#include <itkImage.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageFileWriter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 
 #include "tubeMacro.h"
 #include "tubeSplineND.h"
-#include "tubeOptBrent1D.h"
-#include "tubeOptParabolicFit1D.h"
+#include "tubeBrentOptimizer1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
-#include "tubeUserFunc.h"
+#include "tubeUserFunction.h"
 
-class MySANDFunc:
-  public tube::UserFunc< vnl_vector<int>, double >
-  {
-  private:
-    double cVal;
-  public:
-    MySANDFunc( )
-      {
-      cVal = 0;
-      };
-    const double & value( const vnl_vector<int> & x )
-      {
-      cVal = vcl_sin((double)x[0]/2);
-      cVal += vcl_cos((double)x[1]/2);
-      return cVal;
-      };
-  };
+class MySANDFunc : public tube::UserFunction< vnl_vector<int>, double >
+{
+private:
+  double cVal;
 
-class MySANDFuncV:
-  public tube::UserFunc< vnl_vector<double>, double >
-  {
-  private:
-    double cVal;
-  public:
-    MySANDFuncV( )
-      {
-      cVal = 0;
-      };
-    const double & value( const vnl_vector<double> & x )
-      {
-      cVal = vcl_sin((double)x[0]/2);
-      cVal += vcl_cos((double)x[1]/2);
-      return cVal;
-      };
-  };
-class MySANDFuncD:
-  public tube::UserFunc< vnl_vector<double>, vnl_vector<double> >
-  {
-  private:
-    vnl_vector<double> cDeriv;
-  public:
-    MySANDFuncD( )
-      {
-      cDeriv.set_size(2);
-      cDeriv.fill( 0 );
-      };
-    const vnl_vector<double> & value( const vnl_vector<double> & x )
-      {
-      cDeriv[0] = vcl_cos((double)x[0]/2);
-      cDeriv[1] = -vcl_sin((double)x[1]/2);
-      return cDeriv;
-      };
-  };
+public:
+  MySANDFunc( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const vnl_vector<int> & x )
+    {
+    cVal = vcl_sin((double)x[0]/2);
+    cVal += vcl_cos((double)x[1]/2);
+    return cVal;
+    }
+
+}; // End class MySANDFunc
+
+class MySANDFuncV : public tube::UserFunction< vnl_vector<double>, double >
+{
+private:
+  double cVal;
+
+public:
+  MySANDFuncV( void )
+    {
+    cVal = 0;
+    }
+  const double & value( const vnl_vector<double> & x )
+    {
+    cVal = vcl_sin((double)x[0]/2);
+    cVal += vcl_cos((double)x[1]/2);
+    return cVal;
+    }
+
+}; // End class MySANDFuncV
+
+class MySANDFuncD : public tube::UserFunction< vnl_vector<double>, vnl_vector<double> >
+{
+private:
+  vnl_vector<double> cDeriv;
+
+public:
+  MySANDFuncD( void )
+    {
+    cDeriv.set_size(2);
+    cDeriv.fill( 0 );
+    }
+  const vnl_vector<double> & value( const vnl_vector<double> & x )
+    {
+    cDeriv[0] = vcl_cos((double)x[0]/2);
+    cDeriv[1] = -vcl_sin((double)x[1]/2);
+    return cDeriv;
+    }
+
+}; // End class MySANDFuncD
 
 int tubeSplineNDTest( int argc, char *argv[] )
 {
@@ -106,8 +111,8 @@ int tubeSplineNDTest( int argc, char *argv[] )
 
   tube::SplineApproximation1D * spline1D = new tube::SplineApproximation1D();
 
-  //tube::OptParabolicFit1D * opt = new tube::OptParabolicFit1D( );
-  tube::OptBrent1D * opt = new tube::OptBrent1D( );
+  //tube::ParabolicFitOptimizer1D * opt = new tube::ParabolicFitOptimizer1D();
+  tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();
 
   tube::SplineND spline( 2, myFunc, spline1D, opt );
 
@@ -133,7 +138,7 @@ int tubeSplineNDTest( int argc, char *argv[] )
 
   typedef itk::Image< float, 3 >  ImageType;
 
-  ImageType::Pointer im = ImageType::New( );
+  ImageType::Pointer im = ImageType::New();
   ImageType::RegionType imRegion;
   ImageType::SizeType imSize;
   imSize[0] = 60;
@@ -151,10 +156,10 @@ int tubeSplineNDTest( int argc, char *argv[] )
   imSpacing[1] = 0.2;
   imSpacing[2] = 0.2;
   im->SetSpacing( imSpacing );
-  im->Allocate( );
+  im->Allocate();
 
   itk::ImageRegionIteratorWithIndex<ImageType> itIm( im,
-    im->GetLargestPossibleRegion( ) );
+    im->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
   itIm.GoToBegin();
   vnl_vector<double> x(2);
@@ -220,16 +225,16 @@ int tubeSplineNDTest( int argc, char *argv[] )
         itIm.Set( spline.valueVDD2(x, d, d2) );
         break;
         }
-      };
+      }
     ++itIm;
     }
 
   typedef itk::ImageFileWriter<ImageType> ImageWriterType;
-  ImageWriterType::Pointer imWriter = ImageWriterType::New( );
+  ImageWriterType::Pointer imWriter = ImageWriterType::New();
   imWriter->SetFileName( argv[1] );
   imWriter->SetInput( im );
   imWriter->SetUseCompression( true );
-  imWriter->Update( );
+  imWriter->Update();
 
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer rndGen
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();

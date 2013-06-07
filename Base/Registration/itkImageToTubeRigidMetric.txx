@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,11 +20,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkImageToTubeRigidMetric_txx
 #define __itkImageToTubeRigidMetric_txx
 
 #include "itkImageToTubeRigidMetric.h"
-#include "itkLinearInterpolateImageFunction.h"
+#include <itkLinearInterpolateImageFunction.h>
 
 namespace itk
 {
@@ -37,7 +38,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::ImageToTubeRigidMetric()
+::ImageToTubeRigidMetric( void )
 {
   m_Kappa = 1.0;
   m_Extent = 3.0;
@@ -59,7 +60,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::~ImageToTubeRigidMetric()
+::~ImageToTubeRigidMetric( void )
 {
 }
 
@@ -76,7 +77,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::GetResolutionWeightFunction()
+::GetResolutionWeightFunction( void )
 {
   return this->m_ResolutionWeightFunction;
 }
@@ -94,7 +95,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::GetResolutionWeightFunction() const
+::GetResolutionWeightFunction( void ) const
 {
   return this->m_ResolutionWeightFunction;
 }
@@ -176,7 +177,7 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::ComputeTubePointResolutionWeights()
+::ComputeTubePointResolutionWeights( void )
 {
   typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
 
@@ -200,7 +201,7 @@ ImageToTubeRigidMetric< TFixedImage,
         = currentTube->GetPoints();
       typedef typename TubeType::PointListType::const_iterator
         TubePointIteratorType;
-      for ( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
+      for( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
             tubePointIterator != currentTubePoints.end();
             ++tubePointIterator )
         {
@@ -220,7 +221,7 @@ ImageToTubeRigidMetric< TFixedImage,
     }
   delete tubeList;
 
-  for ( unsigned int ii = 0; ii < TubeDimension; ++ii )
+  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
     {
     this->m_CenterOfRotation[ii] /= resolutionWeightSum;
     }
@@ -248,17 +249,15 @@ ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject,
   TTubeSpatialObject,
   TResolutionWeightFunction >
-::GetTubes() const
+::GetTubes( void ) const
 {
-  if (!this->m_MovingSpatialObject)
+  if(!this->m_MovingSpatialObject)
     {
     return NULL;
     }
 
   char childName[] = "Tube";
   return this->m_MovingSpatialObject->GetChildren( 999999, childName );
-  //return this->m_MovingSpatialObject
-  // ->GetChildren( this->m_MovingSpatialObject->GetMaximumDepth(), childName );
 }
 
 
@@ -324,7 +323,7 @@ ImageToTubeRigidMetric< TFixedImage,
 
           const InternalComputationValueType scale = scalingRadius * m_Kappa;
 
-          matchMeasure += *weightIterator * vcl_abs(
+          matchMeasure += *weightIterator * vnl_math_abs(
             this->ComputeLaplacianMagnitude( pointIterator->GetNormal1(),
               scale,
               currentPoint ) );
@@ -502,7 +501,8 @@ ImageToTubeRigidMetric< TFixedImage,
   weightIterator = m_ResolutionWeights.begin();
 
   double dPosition[TubeDimension] = { 0.0, 0.0, 0.0 };
-  double dXProj1, dXProj2;
+  double dXProj1;
+  double dXProj2;
 
   vnl_vector<double> tV( TubeDimension );
   vnl_matrix<double> tM( TubeDimension, TubeDimension );
@@ -580,7 +580,7 @@ ImageToTubeRigidMetric< TFixedImage,
           }
         dtransformedTubePoints.push_back( dtransformedTubePoint );
         }
-      weightIterator++;
+      ++weightIterator;
       }
     }
   delete tubeList;
@@ -714,7 +714,7 @@ ImageToTubeRigidMetric< TFixedImage,
     const InternalComputationValueType kernelValue =
       2.0 * distance * vcl_exp( -0.5 * distanceSquared / scaleSquared );
 
-    kernelSum += vcl_abs( kernelValue );
+    kernelSum += vnl_math_abs( kernelValue );
 
     typename FixedImageType::PointType point;
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )
@@ -751,6 +751,6 @@ ImageToTubeRigidMetric< TFixedImage,
   return ( this->m_Interpolator->IsInsideBuffer( outputPoint ) );
 }
 
-} // end namespace itk
+} // End namespace itk
 
-#endif
+#endif // End !defined(__itkImageToTubeRigidMetric_txx)
