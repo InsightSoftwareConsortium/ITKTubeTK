@@ -20,15 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeBasisFeatureVectorGenerator_h
 #define __itkTubeBasisFeatureVectorGenerator_h
 
 #include <vector>
 
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_matrix.h>
 
-#include "itkImage.h"
+#include <itkImage.h>
 
 #include "itkTubeFeatureVectorGenerator.h"
 
@@ -53,8 +54,6 @@ public:
 
   itkNewMacro( Self );
 
-  //
-  // Custom Typedefs
   //
   typedef typename Superclass::ImageType         ImageType;
 
@@ -84,12 +83,10 @@ public:
   typedef std::vector< MatrixType >              MatrixListType;
 
   //
-  // Methods
-  //
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );
-  typename FeatureVectorGeneratorType::Pointer GetInputFeatureVectorGenerator(
-                 void );
+  typename FeatureVectorGeneratorType::Pointer
+               GetInputFeatureVectorGenerator( void );
 
   itkSetObjectMacro( Labelmap, LabelmapType );
   itkGetObjectMacro( Labelmap, LabelmapType );
@@ -177,14 +174,14 @@ private:
 
   MatrixType                      m_BasisMatrix;
   VectorType                      m_BasisValues;
-};
+}; // class
 
-}
+} // tube namespace
 
-}
+} // itk namespace
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeBasisFeatureVectorGenerator.txx"
 #endif
 
-#endif
+#endif // __itkTubeBasisFeatureVectorGenerator_h

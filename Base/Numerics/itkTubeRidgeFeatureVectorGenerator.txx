@@ -20,23 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRidgeFeatureVectorGenerator_txx
 #define __itkTubeRidgeFeatureVectorGenerator_txx
 
 #include <limits>
 
-#include "itkTubeRidgeFeatureVectorGenerator.h"
-
-#include "itkProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
-
-#include "itkImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
-
+#include <itkImage.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkProgressReporter.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "tubeMatrixMath.h"
 #include "itkTubeNJetImageFunction.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
 
 namespace itk
 {
@@ -46,14 +44,14 @@ namespace tube
 
 template< class ImageT >
 RidgeFeatureVectorGenerator< ImageT >
-::RidgeFeatureVectorGenerator()
+::RidgeFeatureVectorGenerator( void )
 {
   m_Scales.resize( 0 );
 }
 
 template< class ImageT >
 RidgeFeatureVectorGenerator< ImageT >
-::~RidgeFeatureVectorGenerator()
+::~RidgeFeatureVectorGenerator( void )
 {
 }
 
@@ -62,7 +60,7 @@ unsigned int
 RidgeFeatureVectorGenerator< ImageT >
 ::GetNumberOfFeatures( void ) const
 {
-  unsigned int numFeatures = m_Scales.size() * 5 + 8;
+  const unsigned int numFeatures = m_Scales.size() * 5 + 8;
 
   return numFeatures;
 }
@@ -72,10 +70,10 @@ typename RidgeFeatureVectorGenerator< ImageT >::FeatureVectorType
 RidgeFeatureVectorGenerator< ImageT >
 ::GetFeatureVector( const IndexType & indx ) const
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  FeatureVectorType fv;
-  fv.set_size( numFeatures );
+  FeatureVectorType featureVector;
+  featureVector.set_size( numFeatures );
 
   typedef NJetImageFunction< ImageType > NJetFunctionType;
   typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
@@ -83,7 +81,7 @@ RidgeFeatureVectorGenerator< ImageT >
   typename NJetFunctionType::MatrixType m;
   njet->SetInputImage( this->m_InputImageList[0] );
 
-  unsigned int fcount = 0;
+  unsigned int featureCount = 0;
   double extremeScale = 0;
   double extremeIntensity = 0;
   double extremeRidgeness = 0;
@@ -95,11 +93,11 @@ RidgeFeatureVectorGenerator< ImageT >
   for( unsigned int s=0; s<m_Scales.size(); s++ )
     {
     double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
-    fv[ fcount++ ] = njet->GetMostRecentIntensity();
-    fv[ fcount++ ] = ridgeness;
-    fv[ fcount++ ] = njet->GetMostRecentRidgeRoundness();
-    fv[ fcount++ ] = njet->GetMostRecentRidgeLevelness();
-    fv[ fcount++ ] = njet->GetMostRecentRidgeCurvature();
+    featureVector[featureCount++] = njet->GetMostRecentIntensity();
+    featureVector[featureCount++] = ridgeness;
+    featureVector[featureCount++] = njet->GetMostRecentRidgeRoundness();
+    featureVector[featureCount++] = njet->GetMostRecentRidgeLevelness();
+    featureVector[featureCount++] = njet->GetMostRecentRidgeCurvature();
     if( s == 0 || ridgeness > extremeRidgeness )
       {
       extremeScale = m_Scales[s];
@@ -111,12 +109,12 @@ RidgeFeatureVectorGenerator< ImageT >
       extremeTangent = njet->GetMostRecentRidgeTangent();
       }
     }
-  fv[ fcount++ ] = extremeScale;
-  fv[ fcount++ ] = extremeIntensity;
-  fv[ fcount++ ] = extremeRidgeness;
-  fv[ fcount++ ] = extremeRoundness;
-  fv[ fcount++ ] = extremeLevelness;
-  fv[ fcount++ ] = extremeCurvature;
+  featureVector[featureCount++] = extremeScale;
+  featureVector[featureCount++] = extremeIntensity;
+  featureVector[featureCount++] = extremeRidgeness;
+  featureVector[featureCount++] = extremeRoundness;
+  featureVector[featureCount++] = extremeLevelness;
+  featureVector[featureCount++] = extremeCurvature;
   typename ImageType::IndexType indx2 = indx;
   typename NJetFunctionType::VectorType t;
   typename NJetFunctionType::VectorType t2;
@@ -130,12 +128,12 @@ RidgeFeatureVectorGenerator< ImageT >
       extremeTangent[2] );
     }
   double intensity = extremeIntensity;
-  if( this->m_InputImageList[ 0 ]
+  if( this->m_InputImageList[0]
     ->GetLargestPossibleRegion().IsInside( indx2 ) )
     {
     intensity = njet->EvaluateAtIndex( indx2, extremeScale );
     }
-  fv[ fcount++ ] = intensity;
+  featureVector[featureCount++] = intensity;
 
   indx2[0] = indx[0] - vnl_math_rnd( extremeScale *
     extremeTangent[0] );
@@ -147,14 +145,14 @@ RidgeFeatureVectorGenerator< ImageT >
       extremeTangent[2] );
     }
   intensity = extremeIntensity;
-  if( this->m_InputImageList[ 0 ]
+  if( this->m_InputImageList[0]
     ->GetLargestPossibleRegion().IsInside( indx2 ) )
     {
     intensity = njet->EvaluateAtIndex( indx2, extremeScale );
     }
-  fv[ fcount++ ] = intensity;
+  featureVector[featureCount++] = intensity;
 
-  return fv;
+  return featureVector;
 }
 
 template < class ImageT >
@@ -162,7 +160,7 @@ typename RidgeFeatureVectorGenerator< ImageT >::FeatureValueType
 RidgeFeatureVectorGenerator< ImageT >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
   if( fNum < numFeatures - 8 )
     {
@@ -172,27 +170,27 @@ RidgeFeatureVectorGenerator< ImageT >
     typename NJetFunctionType::MatrixType m;
     njet->SetInputImage( this->m_InputImageList[0] );
 
-    unsigned int fcount = 0;
+    unsigned int featureCount = 0;
     for( unsigned int s=0; s<m_Scales.size(); s++ )
       {
       double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
-      if( fcount++ == fNum )
+      if( featureCount++ == fNum )
         {
         return njet->GetMostRecentIntensity();
         }
-      if( fcount++ == fNum )
+      if( featureCount++ == fNum )
         {
         return ridgeness;
         }
-      if( fcount++ == fNum )
+      if( featureCount++ == fNum )
         {
         return njet->GetMostRecentRidgeRoundness();
         }
-      if( fcount++ == fNum )
+      if( featureCount++ == fNum )
         {
         return njet->GetMostRecentRidgeLevelness();
         }
-      if( fcount++ == fNum )
+      if( featureCount++ == fNum )
         {
         return njet->GetMostRecentRidgeCurvature();
         }
@@ -230,8 +228,8 @@ RidgeFeatureVectorGenerator< ImageT >
   os << indent << "Scales.size() = " << m_Scales.size() << std::endl;
 }
 
-}
+}  // tube namespace
 
-}
+}  // itk namespace
 
-#endif //RidgeFeatureVectorGenerator_txx
+#endif // RidgeFeatureVectorGenerator_txx

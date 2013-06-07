@@ -20,9 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
 #include <itkFilterWatcher.h>
@@ -32,7 +29,7 @@ limitations under the License.
 
 #include "itkTubeRidgeSeedFilter.h"
 
-int itkTubeRidgeSeedFilterTest(int argc, char* argv [] )
+int itkTubeRidgeSeedFilterTest( int argc, char * argv [] )
 {
   if( argc != 7 )
     {
@@ -75,9 +72,9 @@ int itkTubeRidgeSeedFilterTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
@@ -91,7 +88,7 @@ int itkTubeRidgeSeedFilterTest(int argc, char* argv [] )
     }
   catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during input mask read:\n"  << e;
+    std::cerr << "Exception caught during input mask read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   LabelmapType::Pointer labelmapImage = mReader->GetOutput();
@@ -116,31 +113,31 @@ int itkTubeRidgeSeedFilterTest(int argc, char* argv [] )
   filter->ClassifyImages();
   std::cout << "Classification done." << std::endl;
 
-  PDFImageWriterType::Pointer writer = PDFImageWriterType::New();
-  writer->SetFileName( argv[5] );
-  writer->SetUseCompression( true );
-  writer->SetInput( filter->GetPDFSegmenter()->GetClassPDFImage( 0 ) );
+  PDFImageWriterType::Pointer pdfImageWriter = PDFImageWriterType::New();
+  pdfImageWriter->SetFileName( argv[5] );
+  pdfImageWriter->SetUseCompression( true );
+  pdfImageWriter->SetInput( filter->GetPDFSegmenter()->GetClassPDFImage( 0 ) );
   try
     {
-    writer->Update();
+    pdfImageWriter->Update();
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
-  LabelmapWriterType::Pointer writer2 = LabelmapWriterType::New();
-  writer2->SetFileName( argv[6] );
-  writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetOutput() );
+  LabelmapWriterType::Pointer labelmapWriter = LabelmapWriterType::New();
+  labelmapWriter->SetFileName( argv[6] );
+  labelmapWriter->SetUseCompression( true );
+  labelmapWriter->SetInput( filter->GetOutput() );
   try
     {
-    writer2->Update();
+    labelmapWriter->Update();
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 

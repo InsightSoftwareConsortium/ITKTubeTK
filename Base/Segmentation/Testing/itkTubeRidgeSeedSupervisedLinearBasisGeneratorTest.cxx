@@ -20,12 +20,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
-#include "itkFilterWatcher.h"
+#include <itkFilterWatcher.h>
 #include <itkExceptionObject.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -107,7 +104,7 @@ int DoIt(int argc, char * argv [] )
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during read:\n"  << e;
+    std::cerr << "Exception caught during read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   typename ImageType::Pointer inputImage = reader->GetOutput();
@@ -121,7 +118,7 @@ int DoIt(int argc, char * argv [] )
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during mask read:\n"  << e;
+    std::cerr << "Exception caught during mask read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   typename MaskImageType::Pointer maskImage = maskReader->GetOutput();
@@ -143,18 +140,18 @@ int DoIt(int argc, char * argv [] )
 
   func->Update();
 
-  // Save RidgeSeedInfo
-
+  // Re-run without a labelmap to cause it to label the entire image
   func->SetLabelmap( NULL );
   func->UpdateBasisImages();
 
   char filename[4096];
   typename WriterType::Pointer writer = WriterType::New();
   writer->SetUseCompression( true );
-  std::cout << "Number of Basis = " << func->GetNumberOfBasis() << std::endl;
+  std::cout << "Number of Basis = " << func->GetNumberOfBasis()
+    << std::endl;
   for( unsigned int i=0; i<3; i++ )
     {
-    std::sprintf( filename, "%s.lda%02d.mha", argv[4], i );
+    std::sprintf( filename, "%s.basis%02d.mha", argv[4], i );
     writer->SetFileName( filename );
     writer->SetInput( func->GetBasisImage(i) );
     std::cout << "Basis" << i << " = " << func->GetBasisValue(i) << " : "
@@ -165,7 +162,7 @@ int DoIt(int argc, char * argv [] )
       }
     catch (itk::ExceptionObject& e)
       {
-      std::cerr << "Exception caught during write:\n"  << e;
+      std::cerr << "Exception caught during write:" << std::endl << e;
       error = true;
       }
     }
@@ -181,7 +178,7 @@ int DoIt(int argc, char * argv [] )
       }
     catch (itk::ExceptionObject& e)
       {
-      std::cerr << "Exception caught during write:\n"  << e;
+      std::cerr << "Exception caught during write:" << std::endl << e;
       error = true;
       }
     }

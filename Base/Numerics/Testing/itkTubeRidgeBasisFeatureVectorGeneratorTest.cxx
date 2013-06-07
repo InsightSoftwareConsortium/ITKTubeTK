@@ -20,9 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
 #include <itkFilterWatcher.h>
@@ -36,7 +33,7 @@ limitations under the License.
 #include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkTubeBasisFeatureVectorGenerator.h"
 
-int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
+int itkTubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv [] )
 {
   if( argc != 7 )
     {
@@ -78,9 +75,9 @@ int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
@@ -94,12 +91,12 @@ int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
     }
   catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during input mask read:\n"  << e;
+    std::cerr << "Exception caught during input mask read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   LabelmapType::Pointer maskImage = mReader->GetOutput();
 
-  FilterType::RidgeScalesType scales(3);
+  FilterType::RidgeScalesType scales( 3 );
   scales[0] = 0.4;
   scales[1] = 0.8;
   scales[2] = 1.6;
@@ -126,34 +123,33 @@ int itkTubeRidgeBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
 
   basisFilter->SetLabelmap( NULL );
 
-  WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[5] );
-  writer->SetUseCompression( true );
-  writer->SetInput( basisFilter->GetFeatureImage(0) );
+  WriterType::Pointer featureImage0Writer = WriterType::New();
+  featureImage0Writer->SetFileName( argv[5] );
+  featureImage0Writer->SetUseCompression( true );
+  featureImage0Writer->SetInput( basisFilter->GetFeatureImage( 0 ) );
   try
     {
-    writer->Update();
+    featureImage0Writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
-  WriterType::Pointer writer2 = WriterType::New();
-  writer2->SetFileName( argv[6] );
-  writer2->SetUseCompression( true );
-  writer2->SetInput( basisFilter->GetFeatureImage(1) );
+  WriterType::Pointer featureImage1Writer = WriterType::New();
+  featureImage1Writer->SetFileName( argv[6] );
+  featureImage1Writer->SetUseCompression( true );
+  featureImage1Writer->SetInput( basisFilter->GetFeatureImage( 1 ) );
   try
     {
-    writer2->Update();
+    featureImage1Writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
-  // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 }

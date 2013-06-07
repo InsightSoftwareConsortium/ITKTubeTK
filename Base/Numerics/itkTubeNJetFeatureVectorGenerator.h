@@ -20,15 +20,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeNJetFeatureVectorGenerator_h
 #define __itkTubeNJetFeatureVectorGenerator_h
 
 #include <vector>
 
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_matrix.h>
 
-#include "itkImage.h"
+#include <itkImage.h>
 
 #include "itkTubeFeatureVectorGenerator.h"
 
@@ -55,8 +56,6 @@ public:
   itkNewMacro( Self );
 
   //
-  // Custom Typedefs
-  //
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
@@ -70,8 +69,6 @@ public:
 
   typedef std::vector< double >                   NJetScalesType;
 
-  //
-  // Methods
   //
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
@@ -88,7 +85,8 @@ public:
   void SetForceOrientationInsensitivity( bool _forceOrientation );
   bool GetForceOrientationInsensitivity( void ) const;
 
-  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const;
+  virtual FeatureVectorType GetFeatureVector(
+    const IndexType & indx ) const;
 
   virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
     unsigned int fNum ) const;
@@ -113,14 +111,14 @@ private:
 
   bool m_ForceOrientationInsensitivity;
 
-};
+}; // class
 
-}
+}  // tube namespace
 
-}
+}  // itk namespace
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeNJetFeatureVectorGenerator.txx"
 #endif
 
-#endif
+#endif // __itkTubeNJetFeatureVectorGenerator_h

@@ -20,15 +20,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeOtsuThresholdMaskedImageFilter_h
 #define __itkTubeOtsuThresholdMaskedImageFilter_h
 
-#include "itkImageToImageFilter.h"
-#include "itkFixedArray.h"
+#include <itkFixedArray.h>
+#include <itkImageToImageFilter.h>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class OtsuThresholdMaskedImageFilter
  * \brief Threshold an image using the Otsu Threshold
@@ -48,14 +51,14 @@ namespace tube {
 
 template<class TInputImage, class TOutputImage>
 class ITK_EXPORT OtsuThresholdMaskedImageFilter :
-    public ImageToImageFilter<TInputImage, TOutputImage>
+    public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard Self typedef */
-  typedef OtsuThresholdMaskedImageFilter                Self;
-  typedef ImageToImageFilter<TInputImage,TOutputImage>  Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef OtsuThresholdMaskedImageFilter                   Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage >  Superclass;
+  typedef SmartPointer< Self >                             Pointer;
+  typedef SmartPointer< const Self >                       ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -97,7 +100,7 @@ public:
   itkGetConstMacro( OutsideValue, OutputPixelType );
 
   /** Set the "inside" pixel value. The default value
-   * NumericTraits<OutputPixelType>::max() */
+   * NumericTraits< OutputPixelType >::max(). */
   itkSetMacro( InsideValue, OutputPixelType );
 
   /** Get the "inside" pixel value. */
@@ -105,7 +108,7 @@ public:
 
   /** Set/Get the number of histogram bins. Defaults is 128. */
   itkSetClampMacro( NumberOfHistogramBins, unsigned long, 1,
-                    NumericTraits<unsigned long>::max() );
+                    NumericTraits< unsigned long >::max() );
   itkGetConstMacro( NumberOfHistogramBins, unsigned long );
 
   /** Get the computed threshold. */
@@ -114,11 +117,11 @@ public:
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro( OutputEqualityComparableCheck,
-    ( Concept::EqualityComparable<OutputPixelType> ) );
+    ( Concept::EqualityComparable< OutputPixelType > ) );
   itkConceptMacro( InputOStreamWritableCheck,
-    ( Concept::OStreamWritable<InputPixelType> ) );
+    ( Concept::OStreamWritable< InputPixelType > ) );
   itkConceptMacro( OutputOStreamWritableCheck,
-    ( Concept::OStreamWritable<OutputPixelType> ) );
+    ( Concept::OStreamWritable< OutputPixelType > ) );
   /** End concept checking */
 #endif
 protected:

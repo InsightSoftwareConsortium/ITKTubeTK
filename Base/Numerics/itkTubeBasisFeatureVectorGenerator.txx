@@ -20,23 +20,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeBasisFeatureVectorGenerator_txx
 #define __itkTubeBasisFeatureVectorGenerator_txx
 
 #include <limits>
 #include <iostream>
 
-#include "itkTubeBasisFeatureVectorGenerator.h"
 
-#include "itkTimeProbesCollectorBase.h"
+#include <itkTimeProbesCollectorBase.h>
 
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
 
 #include "tubeMatrixMath.h"
+#include "itkTubeBasisFeatureVectorGenerator.h"
 
 namespace itk
 {
@@ -46,7 +47,7 @@ namespace tube
 
 template< class ImageT, class LabelmapT >
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
-::BasisFeatureVectorGenerator()
+::BasisFeatureVectorGenerator( void )
 {
   m_PerformLDA = true;
   m_PerformPCA = false;
@@ -69,7 +70,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 
 template< class ImageT, class LabelmapT >
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
-::~BasisFeatureVectorGenerator()
+::~BasisFeatureVectorGenerator( void )
 {
 }
 
@@ -114,7 +115,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
   if( num < m_ObjectIdList.size() )
     {
-    return m_ObjectIdList[ num ];
+    return m_ObjectIdList[num];
     }
   else
     {
@@ -137,7 +138,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
   if( num < m_ObjectIdList.size() )
     {
-    return m_ObjectMeanList[ num ];
+    return m_ObjectMeanList[num];
     }
   else
     {
@@ -152,7 +153,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
   if( num < m_ObjectIdList.size() )
     {
-    m_ObjectMeanList[ num ] = val;
+    m_ObjectMeanList[num] = val;
     }
 }
 
@@ -163,7 +164,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
   if( num < m_ObjectIdList.size() )
     {
-    return m_ObjectCovarianceList[ num ];
+    return m_ObjectCovarianceList[num];
     }
   else
     {
@@ -178,7 +179,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
   if( num < m_ObjectIdList.size() )
     {
-    m_ObjectCovarianceList[ num ] = val;
+    m_ObjectCovarianceList[num] = val;
     }
   else
     {
@@ -249,7 +250,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
   if( basisNum < m_BasisValues.size() )
     {
-    return m_BasisValues[ basisNum ];
+    return m_BasisValues[basisNum];
     }
   else
     {
@@ -280,7 +281,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
   if( basisNum < m_BasisValues.size() )
     {
-    m_BasisValues[ basisNum ] = value;
+    m_BasisValues[basisNum] = value;
     }
   else
     {
@@ -322,9 +323,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::FeatureImageType::Pointer
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
-::GetFeatureImage( unsigned int fNum ) const
+::GetFeatureImage( unsigned int featureNum ) const
 {
-  if( fNum < m_NumberOfBasisToUseAsFeatures  )
+  if( featureNum < m_NumberOfBasisToUseAsFeatures  )
     {
     itk::TimeProbesCollectorBase timeCollector;
 
@@ -333,40 +334,38 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     typedef itk::ImageRegionIteratorWithIndex< FeatureImageType >
       ImageIteratorType;
 
-    unsigned int numFeatures = this->GetNumberOfFeatures();
+    const unsigned int numFeatures = this->GetNumberOfFeatures();
 
     typename FeatureImageType::RegionType region;
     region = this->m_InputImageList[0]->GetLargestPossibleRegion();
 
-    typename FeatureImageType::Pointer fi = FeatureImageType::New();
-    fi->SetRegions( region );
-    fi->CopyInformation( this->m_InputImageList[0] );
-    fi->Allocate();
+    typename FeatureImageType::Pointer featureImage =
+      FeatureImageType::New();
+    featureImage->SetRegions( region );
+    featureImage->CopyInformation( this->m_InputImageList[0] );
+    featureImage->Allocate();
 
-    ImageIteratorType itBasisIm( fi, fi->GetLargestPossibleRegion() );
-
-    FeatureVectorType fv( numFeatures );
-    VectorType v( numFeatures );
-    VectorType vBasis( numFeatures );
+    ImageIteratorType itBasisIm( featureImage,
+      featureImage->GetLargestPossibleRegion() );
 
     if( m_Labelmap.IsNotNull() )
       {
-      unsigned int numClasses = this->GetNumberOfObjectIds();
+      const unsigned int numClasses = this->GetNumberOfObjectIds();
       typedef itk::ImageRegionConstIteratorWithIndex< LabelmapType >
         ConstLabelmapIteratorType;
       ConstLabelmapIteratorType itInMask( m_Labelmap,
         m_Labelmap->GetLargestPossibleRegion() );
       bool found = false;
-      ObjectIdType prevMaskVal = static_cast<ObjectIdType>(itInMask.Get())
-        + 1;
+      ObjectIdType previousMaskValue =
+        static_cast<ObjectIdType>( itInMask.Get() ) + 1;
       while( !itBasisIm.IsAtEnd() )
         {
         ObjectIdType maskVal = static_cast<ObjectIdType>( itInMask.Get() );
-        if( maskVal != prevMaskVal )
+        if( maskVal != previousMaskValue )
           {
           found = false;
-          prevMaskVal = maskVal;
-          for( unsigned int c=0; c<numClasses; c++ )
+          previousMaskValue = maskVal;
+          for( unsigned int c = 0; c < numClasses; c++ )
             {
             if( maskVal == m_ObjectIdList[c] )
               {
@@ -382,7 +381,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
         else
           {
           IndexType indx = itBasisIm.GetIndex();
-          itBasisIm.Set( this->GetFeatureVectorValue( indx, fNum ) );
+          itBasisIm.Set( this->GetFeatureVectorValue( indx, featureNum ) );
           }
         ++itBasisIm;
         ++itInMask;
@@ -393,7 +392,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
       while( !itBasisIm.IsAtEnd() )
         {
         IndexType indx = itBasisIm.GetIndex();
-        itBasisIm.Set( this->GetFeatureVectorValue( indx, fNum ) );
+        itBasisIm.Set( this->GetFeatureVectorValue( indx, featureNum ) );
         ++itBasisIm;
         }
       }
@@ -401,7 +400,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     timeCollector.Stop( "GenerateBasisImage" );
     timeCollector.Report();
 
-    return fi;
+    return featureImage;
     }
   else
     {
@@ -423,17 +422,18 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   ConstLabelmapIteratorType itInMask( m_Labelmap,
     m_Labelmap->GetLargestPossibleRegion() );
 
-  unsigned int numClasses = this->GetNumberOfObjectIds();
-  unsigned int numInputFeatures =
+  const unsigned int numClasses = this->GetNumberOfObjectIds();
+  const unsigned int numInputFeatures =
     m_InputFeatureVectorGenerator->GetNumberOfFeatures();
   m_ObjectMeanList.resize( numClasses );
   m_ObjectCovarianceList.resize( numClasses );
   std::vector< unsigned int > countList( numClasses );
-  for( unsigned int i=0; i<numClasses; i++ )
+  for( unsigned int i = 0; i < numClasses; i++ )
     {
     m_ObjectMeanList[i].set_size( numInputFeatures );
     m_ObjectMeanList[i].fill( 0 );
-    m_ObjectCovarianceList[i].set_size( numInputFeatures, numInputFeatures );
+    m_ObjectCovarianceList[i].set_size( numInputFeatures,
+      numInputFeatures );
     m_ObjectCovarianceList[i].fill( 0 );
     countList[i] = 0;
     }
@@ -450,15 +450,16 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   unsigned int valC = 0;
   bool found = false;
   itInMask.GoToBegin();
-  ObjectIdType prevMaskVal = static_cast<ObjectIdType>(itInMask.Get()) + 1;
+  ObjectIdType previousMaskValue =
+    static_cast<ObjectIdType>( itInMask.Get() ) + 1;
   while( !itInMask.IsAtEnd() )
     {
     ObjectIdType maskVal = static_cast<ObjectIdType>( itInMask.Get() );
-    if( maskVal != prevMaskVal )
+    if( maskVal != previousMaskValue )
       {
-      prevMaskVal = maskVal;
+      previousMaskValue = maskVal;
       found = false;
-      for( unsigned int c=0; c<numClasses; c++ )
+      for( unsigned int c = 0; c < numClasses; c++ )
         {
         if( maskVal == m_ObjectIdList[c] )
           {
@@ -476,7 +477,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 
       ++globalCount;
       ++countList[valC];
-      for( unsigned int i=0; i<numInputFeatures; i++ )
+      for( unsigned int i = 0; i < numInputFeatures; i++ )
         {
         delta = v[i] - m_GlobalMean[i];
         m_GlobalMean[i] += delta / globalCount;
@@ -484,9 +485,9 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
         delta = v[i] - m_ObjectMeanList[valC][i];
         m_ObjectMeanList[valC][i] += delta / countList[valC];
         }
-      for( unsigned int i=0; i<numInputFeatures; i++ )
+      for( unsigned int i = 0; i < numInputFeatures; i++ )
         {
-        for( unsigned int j=0; j<numInputFeatures; j++ )
+        for( unsigned int j = 0; j < numInputFeatures; j++ )
           {
           delta = v[i] - m_GlobalMean[i];
           deltaJ = v[j] - m_GlobalMean[j];
@@ -501,12 +502,12 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     ++itInMask;
     }
 
-  for( unsigned int i=0; i<numInputFeatures; i++ )
+  for( unsigned int i = 0; i < numInputFeatures; i++ )
     {
-    for( unsigned int j=0; j<numInputFeatures; j++ )
+    for( unsigned int j = 0; j < numInputFeatures; j++ )
       {
       m_GlobalCovariance[i][j] /= globalCount - 1;
-      for( unsigned int c=0; c<numClasses; c++ )
+      for( unsigned int c = 0; c < numClasses; c++ )
         {
         if( countList[c] > 1 )
           {
@@ -526,40 +527,35 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 
   if( m_PerformLDA )
     {
-    std::cout << "LDA Global Means = " << m_GlobalMean << std::endl;
-    std::cout << "LDA Global Cov = " << m_GlobalCovariance << std::endl;
-    MatrixType covOfMeans( numInputFeatures, numInputFeatures );
-    covOfMeans.fill( 0 );
-    MatrixType meanCov( numInputFeatures, numInputFeatures );
-    meanCov.fill( 0 );
-    for( unsigned int c=0; c<numClasses; c++ )
+    MatrixType covarianceOfMeans( numInputFeatures, numInputFeatures );
+    covarianceOfMeans.fill( 0 );
+    MatrixType meanCovariance( numInputFeatures, numInputFeatures );
+    meanCovariance.fill( 0 );
+    for( unsigned int c = 0; c < numClasses; c++ )
       {
-      std::cout << "Object Means[" << m_ObjectIdList[c] << "] = "
-        << m_ObjectMeanList[c] << std::endl;
-      std::cout << "LDA Cov[" << m_ObjectIdList[c] << "] = "
-        << m_ObjectCovarianceList[c] << std::endl;
-      for( unsigned int i=0; i<numInputFeatures; i++ )
+      for( unsigned int i = 0; i < numInputFeatures; i++ )
         {
-        for( unsigned int j=0; j<numInputFeatures; j++ )
+        for( unsigned int j = 0; j < numInputFeatures; j++ )
           {
-          covOfMeans[i][j] += ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
+          covarianceOfMeans[i][j] +=
+            ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
             * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
-          meanCov[i][j] += m_ObjectCovarianceList[c][i][j];
+          meanCovariance[i][j] += m_ObjectCovarianceList[c][i][j];
           }
         }
       }
 
-    for( unsigned int i=0; i<numInputFeatures; i++ )
+    for( unsigned int i = 0; i < numInputFeatures; i++ )
       {
-      for( unsigned int j=0; j<numInputFeatures; j++ )
+      for( unsigned int j = 0; j < numInputFeatures; j++ )
         {
-        covOfMeans[i][j] /= numClasses;
-        meanCov[i][j] /= numClasses;
+        covarianceOfMeans[i][j] /= numClasses;
+        meanCovariance[i][j] /= numClasses;
         }
       }
 
     MatrixType H;
-    H = covOfMeans * vnl_matrix_inverse<double>(meanCov);
+    H = covarianceOfMeans * vnl_matrix_inverse<double>( meanCovariance );
 
     // true = re-order by abs(eval) - zeros will be at end
     ::tube::ComputeEigen<double>( H, m_BasisMatrix, m_BasisValues,
@@ -573,31 +569,32 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
   else
     {
-    MatrixType covOfMeans( numInputFeatures, numInputFeatures );
-    covOfMeans.fill( 0 );
-    for( unsigned int c=0; c<numClasses; c++ )
+    MatrixType covarianceOfMeans( numInputFeatures, numInputFeatures );
+    covarianceOfMeans.fill( 0 );
+    for( unsigned int c = 0; c < numClasses; c++ )
       {
-      for( unsigned int i=0; i<numInputFeatures; i++ )
+      for( unsigned int i = 0; i < numInputFeatures; i++ )
         {
-        for( unsigned int j=0; j<numInputFeatures; j++ )
+        for( unsigned int j = 0; j < numInputFeatures; j++ )
           {
-          covOfMeans[i][j] += ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
+          covarianceOfMeans[i][j] +=
+            ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
             * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
           }
         }
       }
 
-    for( unsigned int i=0; i<numInputFeatures; i++ )
+    for( unsigned int i = 0; i < numInputFeatures; i++ )
       {
-      for( unsigned int j=0; j<numInputFeatures; j++ )
+      for( unsigned int j = 0; j < numInputFeatures; j++ )
         {
-        covOfMeans[i][j] /= numClasses;
+        covarianceOfMeans[i][j] /= numClasses;
         }
       }
 
     // true = re-order by abs(eval) - zeros will be at end
-    ::tube::ComputeEigen<double>( covOfMeans, m_BasisMatrix, m_BasisValues,
-      true, false );
+    ::tube::ComputeEigen<double>( covarianceOfMeans, m_BasisMatrix,
+      m_BasisValues, true, false );
     }
 
   m_NumberOfBasisToUseAsFeatures = m_BasisValues.size();
@@ -628,45 +625,46 @@ typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::FeatureVectorType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetFeatureVector( const IndexType & indx ) const
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  FeatureVectorType fv;
-  fv.set_size( numFeatures );
+  FeatureVectorType featureVector;
+  featureVector.set_size( numFeatures );
 
   VectorType vBasis;
   FeatureVectorType vInput;
 
-  for( unsigned int i=0; i<numFeatures; i++ )
+  for( unsigned int i = 0; i < numFeatures; i++ )
     {
     vBasis = this->GetBasisVector( i );
     vInput = m_InputFeatureVectorGenerator->GetFeatureVector( indx );
-    fv[i] = 0;
-    for( unsigned int j=0; j<vBasis.size(); j++ )
+    featureVector[i] = 0;
+    for( unsigned int j = 0; j < vBasis.size(); j++ )
       {
-      fv[i] += vBasis[j] * vInput[j];
+      featureVector[i] += vBasis[j] * vInput[j];
       }
     }
 
-  return fv;
+  return featureVector;
 }
 
 template < class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::FeatureValueType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
-::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
+::GetFeatureVectorValue( const IndexType & indx,
+  unsigned int featureNum ) const
 {
   VectorType vBasis;
   FeatureVectorType vInput;
 
-  vBasis = this->GetBasisVector( fNum );
+  vBasis = this->GetBasisVector( featureNum );
   vInput = m_InputFeatureVectorGenerator->GetFeatureVector( indx );
 
-  FeatureValueType fv = 0;
-  for( unsigned int j=0; j<vBasis.size(); j++ )
+  FeatureValueType featureVector = 0;
+  for( unsigned int j = 0; j < vBasis.size(); j++ )
     {
-    fv += vBasis[j] * vInput[j];
+    featureVector += vBasis[j] * vInput[j];
     }
-  return fv;
+  return featureVector;
 }
 
 template <class ImageT, class LabelmapT >
@@ -713,8 +711,8 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   os << indent << "BasisValues = " << m_BasisValues << std::endl;
 }
 
-}
+} // tube namespace
 
-}
+} // itk namespace
 
 #endif //BasisFeatureVectorGenerator_txx

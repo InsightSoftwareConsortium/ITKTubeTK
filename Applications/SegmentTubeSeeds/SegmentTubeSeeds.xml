@@ -29,12 +29,12 @@
   </parameters>
   <parameters advanced="false">
     <label>General Parameters</label>
-    <description>Parameters that control training and seed finding</description>
+    <description>Parameters that control training and seed finding.</description>
     <image>
       <name>labelmap</name>
       <label>Train label map</label>
       <channel>input</channel>
-      <description>Labelmap that designates the object of interest</description>
+      <description>Label map that designates the object of interest.</description>
       <default></default>
       <longflag>labelmap</longflag>
     </image>
@@ -51,30 +51,30 @@
   </parameters>
   <parameters advanced="true">
     <label>Training Parameters</label>
-    <description>Parameters that determine how the seed finder is generated</description>
+    <description>Parameters that determine how the seed finder is generated.</description>
     <double-vector>
       <name>ridgeScales</name>
-      <description>Scales at which ridge features are computed</description>
+      <description>Scales at which ridge features are computed.</description>
       <label>Ridge scales</label>
       <default>0.3,0.5,1.0,1.5,2.0,3.0</default>
       <longflag>ridgeScales</longflag>
     </double-vector>
     <integer>
       <name>objectId</name>
-      <description>ID to be used in labelmap</description>
-      <label>ID of vessels in the labelmap</label>
+      <description>ID to be used in label map.</description>
+      <label>ID of vessels in the label map</label>
       <default>255</default>
       <longflag>objectId</longflag>
     </integer>
     <file>
       <name>saveTubeSeedInfo</name>
-      <description>Save vessel seed info to a file</description>
+      <description>Save vessel seed info to a file.</description>
       <label>Save vessel seed information</label>
       <longflag>saveTubeSeedInfo</longflag>
     </file>
     <string>
       <name>saveFeatureImages</name>
-      <description>Base filename for saving feature images</description>
+      <description>Base filename for saving feature images.</description>
       <label>Feature images base filename</label>
       <longflag>saveFeatureImages</longflag>
     </string>

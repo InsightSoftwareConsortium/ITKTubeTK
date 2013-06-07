@@ -22,72 +22,72 @@
       <name>labelmap</name>
       <label>Label map</label>
       <longflag>labelmap</longflag>
-      <description>Labelmap that designates the object of interest and "other"</description>
+      <description>Label map that designates the object of interest and "other."</description>
       <default></default>
     </image>
     <string>
       <name>outputBase</name>
       <label>Output base name</label>
       <index>1</index>
-      <description>Basename for output Basis images</description>
+      <description>Base name for output basis images</description>
       <default></default>
     </string>
     <integer-vector>
       <name>objectIdList</name>
-      <label>Object Id</label>
+      <label>Object ID</label>
       <longflag>objectId</longflag>
-      <description>List of values that represent the objects in the label map</description>
+      <description>List of values that represent the objects in the label map.</description>
       <default>255</default>
     </integer-vector>
   </parameters>
   <parameters advanced="true">
     <label>Basis Parameters</label>
-    <description>Parameters that determine how the Basis is generated</description>
+    <description>Parameters that determine how the basis is generated.</description>
     <boolean>
       <name>usePCA</name>
-      <description>Use PCA instead of LDA</description>
+      <description>Use PCA</description>
       <label>Use pca</label>
       <default>false</default>
       <longflag>usePCA</longflag>
     </boolean>
     <boolean>
       <name>forceSymmetry</name>
-      <description>Post-process the eigenvectors so that x/y directions are weighted equally</description>
+      <description>Post-process the eigenvectors so that x/y directions are weighted equally.</description>
       <label>Force x/y symmetry</label>
       <default>false</default>
       <longflag>forceSymmetry</longflag>
     </boolean>
     <boolean>
       <name>forceSignOff</name>
-      <description>Do not post-process so that lda images match input</description>
-      <label>Force sign off</label>
+      <description>Do not post-process so that basis images' contrast match the input.</description>
+      <label>Force sign consistency off</label>
       <default>false</default>
       <longflag>forceSignOff</longflag>
     </boolean>
     <double-vector>
       <name>zeroScales</name>
-      <description>Scales at which 0th-order features are computed</description>
+      <description>Scales at which 0th-order features are computed.</description>
       <label>Zero-order scales</label>
       <default>1</default>
       <longflag>zeroScales</longflag>
     </double-vector>
     <double-vector>
       <name>firstScales</name>
-      <description>Scales at which 1st-order features are computed</description>
+      <description>Scales at which 1st-order features are computed.</description>
       <label>First-order scales</label>
       <default></default>
       <longflag>firstScales</longflag>
     </double-vector>
     <double-vector>
       <name>secondScales</name>
-      <description>Scales at which 2nd-order features are computed</description>
+      <description>Scales at which 2nd-order features are computed.</description>
       <label>Second-order scales</label>
       <default></default>
       <longflag>secondScales</longflag>
     </double-vector>
     <double-vector>
       <name>ridgeScales</name>
-      <description>Scales at which Ridge features are computed</description>
+      <description>Scales at which Ridge features are computed.</description>
       <label>Ridge scales</label>
       <default></default>
       <longflag>ridgeScales</longflag>
@@ -108,27 +108,27 @@
     </double-vector>
     <integer>
       <name>useNumberOfBasis</name>
-      <description>Maximum number of linear discriminants to compute (0=all)</description>
-      <label>Number of Basis</label>
+      <description>Maximum number of basis to compute (0=all).</description>
+      <label>Number of basis</label>
       <default>0</default>
       <longflag>useNumberOfBasis</longflag>
     </integer>
     <string>
       <name>saveFeatureImages</name>
-      <description>Save intermediate feature images to a file</description>
+      <description>Save intermediate feature images to a file.</description>
       <label>Save feature images</label>
       <longflag>saveFeatureImages</longflag>
     </string>
     <string>
       <name>saveBasisInfo</name>
-      <description>Save Basis info to a file</description>
-      <label>Save Basis Info</label>
+      <description>Save basis to a file.</description>
+      <label>Save basis to file</label>
       <longflag>saveBasisInfo</longflag>
     </string>
     <string>
       <name>loadBasisInfo</name>
-      <description>Load Basis info from a file</description>
-      <label>Load Basis Info</label>
+      <description>Load basis from a file.</description>
+      <label>Load basis from file</label>
       <longflag>loadBasisInfo</longflag>
     </string>
   </parameters>

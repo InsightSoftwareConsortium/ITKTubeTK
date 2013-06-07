@@ -20,23 +20,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeFeatureVectorGenerator_txx
 #define __itkTubeFeatureVectorGenerator_txx
 
 #include <limits>
 #include <iostream>
 
-#include "itkTubeFeatureVectorGenerator.h"
-
-#include "itkTimeProbesCollectorBase.h"
-
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "tubeMatrixMath.h"
+
+#include "itkTubeFeatureVectorGenerator.h"
 
 namespace itk
 {
@@ -46,7 +46,7 @@ namespace tube
 
 template< class ImageT >
 FeatureVectorGenerator< ImageT >
-::FeatureVectorGenerator()
+::FeatureVectorGenerator( void )
 {
   m_InputImageList.clear();
 
@@ -56,7 +56,7 @@ FeatureVectorGenerator< ImageT >
 
 template< class ImageT >
 FeatureVectorGenerator< ImageT >
-::~FeatureVectorGenerator()
+::~FeatureVectorGenerator( void )
 {
 }
 
@@ -88,10 +88,8 @@ FeatureVectorGenerator< ImageT >
     {
     return m_InputImageList[num];
     }
-  else
-    {
-    return NULL;
-    }
+
+  return NULL;
 }
 
 template < class ImageT >
@@ -107,7 +105,7 @@ void
 FeatureVectorGenerator< ImageT >
 ::UpdateWhitenFeatureImageStats( void )
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
   m_WhitenFeatureImageMean.resize( numFeatures );
   m_WhitenFeatureImageStdDev.resize( numFeatures );
@@ -119,7 +117,7 @@ FeatureVectorGenerator< ImageT >
   imMean.resize( numFeatures );
   ValueListType imStdDev;
   imStdDev.resize( numFeatures );
-  for( unsigned int i=0; i<numFeatures; i++ )
+  for( unsigned int i = 0; i < numFeatures; i++ )
     {
     m_WhitenFeatureImageMean[i] = 0;
     m_WhitenFeatureImageStdDev[i] = 1;
@@ -141,30 +139,30 @@ FeatureVectorGenerator< ImageT >
     indx = itIm.GetIndex();
     imVal = this->GetFeatureVector( indx );
     ++imCount;
-    for( unsigned int i=0; i<numFeatures; i++ )
+    for( unsigned int i = 0; i < numFeatures; i++ )
       {
       delta[i] = imVal[i] - imMean[i];
       imMean[i] += delta[i] / imCount;
-      imStdDev[i] += delta[i] * (imVal[i] - imMean[i]);
+      imStdDev[i] += delta[i] * ( imVal[i] - imMean[i] );
       }
     ++itIm;
     }
   if( imCount > 1 )
     {
-    for( unsigned int i=0; i<numFeatures; i++ )
+    for( unsigned int i = 0; i < numFeatures; i++ )
       {
       imStdDev[i] = vcl_sqrt( imStdDev[i] / ( imCount - 1 ) );
       }
     }
   else
     {
-    for( unsigned int i=0; i<numFeatures; i++ )
+    for( unsigned int i = 0; i < numFeatures; i++ )
       {
       imStdDev[i] = 0;
       }
     }
 
-  for( unsigned int i=0; i<numFeatures; i++ )
+  for( unsigned int i = 0; i < numFeatures; i++ )
     {
     m_WhitenFeatureImageMean[i] = imMean[i];
     m_WhitenFeatureImageStdDev[i] = imStdDev[i];
@@ -250,10 +248,8 @@ FeatureVectorGenerator< ImageT >
     {
     return m_WhitenFeatureImageStdDev[num];
     }
-  else
-    {
-    return 1;
-    }
+
+  return 1;
 }
 
 template < class ImageT >
@@ -269,17 +265,17 @@ typename FeatureVectorGenerator< ImageT >::FeatureVectorType
 FeatureVectorGenerator< ImageT >
 ::GetFeatureVector( const IndexType & indx ) const
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  FeatureVectorType fv;
-  fv.set_size( numFeatures );
+  FeatureVectorType featureVector;
+  featureVector.set_size( numFeatures );
 
-  for( unsigned int i=0; i<numFeatures; i++ )
+  for( unsigned int i = 0; i < numFeatures; i++ )
     {
-    fv[i] = this->GetFeatureVectorValue( indx, i );
+    featureVector[i] = this->GetFeatureVectorValue( indx, i );
     }
 
-  return fv;
+  return featureVector;
 }
 
 template < class ImageT >
@@ -288,17 +284,17 @@ FeatureVectorGenerator< ImageT >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
   if( m_WhitenFeatureImageStdDev.size() > 0 &&
-    m_WhitenFeatureImageStdDev[ fNum ] > 0 )
+    m_WhitenFeatureImageStdDev[fNum] > 0 )
     {
     return static_cast< FeatureValueType >(
-        ( m_InputImageList[ fNum ]->GetPixel( indx )
-          - m_WhitenFeatureImageMean[ fNum ] )
-        / m_WhitenFeatureImageStdDev[ fNum ] );
+        ( m_InputImageList[fNum]->GetPixel( indx )
+          - m_WhitenFeatureImageMean[fNum] )
+        / m_WhitenFeatureImageStdDev[fNum] );
     }
   else
     {
     return static_cast< FeatureValueType >(
-      m_InputImageList[ fNum ]->GetPixel( indx ) );
+      m_InputImageList[fNum]->GetPixel( indx ) );
     }
 }
 
@@ -307,7 +303,7 @@ typename FeatureVectorGenerator< ImageT >::FeatureImageType::Pointer
 FeatureVectorGenerator< ImageT >
 ::GetFeatureImage( unsigned int featureNum ) const
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
   if( featureNum < numFeatures )
     {
     itk::TimeProbesCollectorBase timeCollector;
@@ -364,8 +360,8 @@ FeatureVectorGenerator< ImageT >
     << std::endl;
 }
 
-}
+} // tube namespace
 
-}
+} // itk namespace
 
 #endif //FeatureVectorGenerator_txx

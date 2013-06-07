@@ -20,9 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <itkImage.h>
 #include <itkFilterWatcher.h>
@@ -30,13 +27,12 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
-
-#include "itkRecursiveGaussianImageFilter.h"
+#include <itkRecursiveGaussianImageFilter.h>
 
 #include "itkTubeNJetFeatureVectorGenerator.h"
 #include "itkTubeBasisFeatureVectorGenerator.h"
 
-int itkTubeNJetBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
+int itkTubeNJetBasisFeatureVectorGeneratorTest(int argc, char * argv [] )
 {
   if( argc != 7 )
     {
@@ -61,11 +57,11 @@ int itkTubeNJetBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef itk::Image<unsigned char, Dimension>  LabelmapType;
+  typedef itk::Image< unsigned char, Dimension >    LabelmapType;
   typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
 
 
-  // Declare the type for the Filter
+  // Declare the type for the filter
   typedef itk::tube::NJetFeatureVectorGenerator< ImageType >
     FilterType;
   typedef itk::tube::BasisFeatureVectorGenerator< ImageType, LabelmapType >
@@ -78,81 +74,85 @@ int itkTubeNJetBasisFeatureVectorGeneratorTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
 
   // Create the mask reader
-  LabelmapReaderType::Pointer mReader = LabelmapReaderType::New();
-  mReader->SetFileName( argv[2] );
+  LabelmapReaderType::Pointer maskReader = LabelmapReaderType::New();
+  maskReader->SetFileName( argv[2] );
   try
     {
-    mReader->Update();
+    maskReader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input mask read:\n"  << e;
+    std::cerr << "Exception caught during input mask read:" << std::endl
+      << e;
     return EXIT_FAILURE;
     }
-  LabelmapType::Pointer maskImage = mReader->GetOutput();
+  LabelmapType::Pointer maskImage = maskReader->GetOutput();
 
-  FilterType::NJetScalesType scales(2);
+  FilterType::NJetScalesType scales( 2 );
   scales[0] = 4;
   scales[1] = 8;
-  FilterType::NJetScalesType scales2(1);
+
+  FilterType::NJetScalesType scales2( 1 );
   scales2[0] = 8;
+
   FilterType::Pointer filter = FilterType::New();
   filter->SetInputImage( inputImage );
   filter->SetZeroScales( scales );
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );
   filter->SetRidgeScales( scales2 );
+
   std::cout << filter << std::endl;
 
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
   basisFilter->SetInputImage( inputImage );
   basisFilter->SetLabelmap( maskImage );
-  int objId = atoi( argv[3] );
-  int bkgId = atoi( argv[4] );
+  int objId = std::atoi( argv[3] );
+  int bkgId = std::atoi( argv[4] );
   basisFilter->SetObjectId( objId );
   basisFilter->AddObjectId( bkgId );
   basisFilter->GenerateBasis();
+
   std::cout << basisFilter << std::endl;
 
   basisFilter->SetLabelmap( NULL );
 
-  WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[5] );
-  writer->SetUseCompression( true );
-  writer->SetInput( basisFilter->GetFeatureImage(0) );
+  WriterType::Pointer featureImage0Writer = WriterType::New();
+  featureImage0Writer->SetFileName( argv[5] );
+  featureImage0Writer->SetUseCompression( true );
+  featureImage0Writer->SetInput( basisFilter->GetFeatureImage( 0 ) );
   try
     {
-    writer->Update();
+    featureImage0Writer->Update();
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
-  WriterType::Pointer writer2 = WriterType::New();
-  writer2->SetFileName( argv[6] );
-  writer2->SetUseCompression( true );
-  writer2->SetInput( basisFilter->GetFeatureImage(1) );
+  WriterType::Pointer featureImage1Writer = WriterType::New();
+  featureImage1Writer->SetFileName( argv[6] );
+  featureImage1Writer->SetUseCompression( true );
+  featureImage1Writer->SetInput( basisFilter->GetFeatureImage( 1 ) );
   try
     {
-    writer2->Update();
+    featureImage1Writer->Update();
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
-  // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 }

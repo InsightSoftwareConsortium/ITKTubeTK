@@ -20,15 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRidgeFeatureVectorGenerator_h
 #define __itkTubeRidgeFeatureVectorGenerator_h
 
 #include <vector>
 
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
-
-#include "itkImage.h"
+#include <itkImage.h>
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_matrix.h>
 
 #include "itkTubeFeatureVectorGenerator.h"
 
@@ -55,8 +55,6 @@ public:
   itkNewMacro( Self );
 
   //
-  // Custom Typedefs
-  //
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
@@ -71,8 +69,6 @@ public:
   typedef std::vector< double >                      RidgeScalesType;
 
   //
-  // Methods
-  //
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
   void SetIntensityRange( float intensityMin, float intensityMax );
@@ -85,7 +81,8 @@ public:
   void SetScales( const RidgeScalesType & scales );
   const RidgeScalesType & GetScales( void ) const;
 
-  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const;
+  virtual FeatureVectorType GetFeatureVector(
+    const IndexType & indx ) const;
 
   virtual FeatureValueType GetFeatureVectorValue( const IndexType & indx,
     unsigned int fNum ) const;
@@ -108,14 +105,14 @@ private:
 
   RidgeScalesType                    m_Scales;
 
-};
+}; // class
 
-}
+}  // tube namespace
 
-}
+}  // itk namespace
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeRidgeFeatureVectorGenerator.txx"
 #endif
 
-#endif
+#endif  // __itkTubeRidgeFeatureVectorGenerator_h

@@ -61,7 +61,7 @@ int itkTubeSupervisedLinearBasisGeneratorTest(int argc, char* argv [] )
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
 
-  // Declare the type for the Filter
+  // Declare the type for the filter
   typedef itk::tube::SupervisedLinearBasisGenerator< ImageType,
     ImageType > FilterType;
 
@@ -72,9 +72,9 @@ int itkTubeSupervisedLinearBasisGeneratorTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
@@ -86,9 +86,9 @@ int itkTubeSupervisedLinearBasisGeneratorTest(int argc, char* argv [] )
     {
     maskReader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer maskImage = maskReader->GetOutput();
@@ -166,9 +166,9 @@ int itkTubeSupervisedLinearBasisGeneratorTest(int argc, char* argv [] )
     {
     writer->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
@@ -180,9 +180,9 @@ int itkTubeSupervisedLinearBasisGeneratorTest(int argc, char* argv [] )
     {
     writer2->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 

@@ -25,13 +25,15 @@ limitations under the License.
 
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
 
-#include "itkBinaryThresholdImageFilter.h"
-#include "itkTubeOtsuThresholdMaskedImageCalculator.h"
-#include "itkProgressAccumulator.h"
+#include <itkBinaryThresholdImageFilter.h>
+#include <itkTubeOtsuThresholdMaskedImageCalculator.h>
+#include <itkProgressAccumulator.h>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 template<class TInputImage, class TOutputImage>
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
@@ -123,8 +125,8 @@ OtsuThresholdMaskedImageFilter<TInputImage,TOutputImage>
 
 }
 
-}// end namespace tube
+} // end namespace tube
 
-}// end namespace itk
+} // end namespace itk
 
 #endif

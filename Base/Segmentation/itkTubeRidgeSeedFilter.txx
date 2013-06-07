@@ -25,16 +25,14 @@ limitations under the License.
 
 #include <limits>
 
-#include "itkTubeRidgeSeedFilter.h"
-
-#include "itkProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
-
-#include "itkImage.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkImageRegionConstIteratorWithIndex.h"
+#include <itkImage.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkProgressReporter.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "tubeMatrixMath.h"
+#include "itkTubeRidgeSeedFilter.h"
 
 namespace itk
 {
@@ -44,7 +42,7 @@ namespace tube
 
 template< class ImageT, class LabelmapT >
 RidgeSeedFilter< ImageT, LabelmapT >
-::RidgeSeedFilter()
+::RidgeSeedFilter( void )
 {
   m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
   m_RidgeFeatureGenerator = RidgeFeatureGeneratorType::New();
@@ -56,7 +54,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
 
 template< class ImageT, class LabelmapT >
 RidgeSeedFilter< ImageT, LabelmapT >
-::~RidgeSeedFilter()
+::~RidgeSeedFilter( void )
 {
 }
 
@@ -226,11 +224,11 @@ RidgeSeedFilter< ImageT, LabelmapT >
 {
   m_SeedFeatureGenerator->GenerateBasis();
   m_PDFSegmenter->SetInputVolume( 0,
-    m_SeedFeatureGenerator->GetFeatureImage(0) );
+    m_SeedFeatureGenerator->GetFeatureImage( 0 ) );
   m_PDFSegmenter->SetInputVolume( 1,
-    m_SeedFeatureGenerator->GetFeatureImage(1) );
+    m_SeedFeatureGenerator->GetFeatureImage( 1 ) );
   m_PDFSegmenter->SetInputVolume( 2,
-    m_SeedFeatureGenerator->GetFeatureImage(2) );
+    m_SeedFeatureGenerator->GetFeatureImage( 2 ) );
   m_PDFSegmenter->Update();
 }
 
@@ -243,11 +241,11 @@ RidgeSeedFilter< ImageT, LabelmapT >
     m_SeedFeatureGenerator->GetLabelmap();
   m_SeedFeatureGenerator->SetLabelmap( NULL );
   m_PDFSegmenter->SetInputVolume( 0,
-    m_SeedFeatureGenerator->GetFeatureImage(0) );
+    m_SeedFeatureGenerator->GetFeatureImage( 0 ) );
   m_PDFSegmenter->SetInputVolume( 1,
-    m_SeedFeatureGenerator->GetFeatureImage(1) );
+    m_SeedFeatureGenerator->GetFeatureImage( 1 ) );
   m_PDFSegmenter->SetInputVolume( 2,
-    m_SeedFeatureGenerator->GetFeatureImage(2) );
+    m_SeedFeatureGenerator->GetFeatureImage( 2 ) );
   m_PDFSegmenter->ClassifyImages();
   m_SeedFeatureGenerator->SetLabelmap( tmpLabelmap );
 }
@@ -275,8 +273,8 @@ RidgeSeedFilter< ImageT, LabelmapT >
     << std::endl;
 }
 
-}
+} // tube namespace
 
-}
+} // itk namespace
 
 #endif //RidgeSeedFilter_txx

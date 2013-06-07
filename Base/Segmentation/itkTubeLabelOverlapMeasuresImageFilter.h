@@ -23,15 +23,17 @@ limitations under the License.
 #ifndef __itkTubeLabelOverlapMeasuresImageFilter_h
 #define __itkTubeLabelOverlapMeasuresImageFilter_h
 
-#include "itkInPlaceImageFilter.h"
-#include "itkFastMutexLock.h"
-#include "itkNumericTraits.h"
+#include <itkInPlaceImageFilter.h>
+#include <itkFastMutexLock.h>
+#include <itkNumericTraits.h>
 
-#include "itksys/hash_map.hxx"
+#include <itksys/hash_map.hxx>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
 
 /** \class LabelOverlapMeasuresImageFilter
  * \brief Computes overlap measures between the set same set of labels of
@@ -47,10 +49,10 @@ class ITK_EXPORT LabelOverlapMeasuresImageFilter :
 {
 public:
   /** Standard Self typedef */
-  typedef LabelOverlapMeasuresImageFilter                Self;
-  typedef ImageToImageFilter<TLabelImage,TLabelImage>    Superclass;
-  typedef SmartPointer<Self>                             Pointer;
-  typedef SmartPointer<const Self>                       ConstPointer;
+  typedef LabelOverlapMeasuresImageFilter                  Self;
+  typedef ImageToImageFilter< TLabelImage, TLabelImage >   Superclass;
+  typedef SmartPointer< Self >                             Pointer;
+  typedef SmartPointer< const Self >                       ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -59,56 +61,55 @@ public:
   itkTypeMacro( LabelOverlapMeasuresImageFilter, ImageToImageFilter );
 
   /** Image related typedefs. */
-  typedef TLabelImage                              LabelImageType;
+  typedef TLabelImage                                      LabelImageType;
 
-  typedef typename TLabelImage::RegionType         RegionType;
-  typedef typename TLabelImage::SizeType           SizeType;
-  typedef typename TLabelImage::IndexType          IndexType;
+  typedef typename TLabelImage::RegionType                 RegionType;
+  typedef typename TLabelImage::SizeType                   SizeType;
+  typedef typename TLabelImage::IndexType                  IndexType;
 
-  typedef typename TLabelImage::PixelType          LabelType;
+  typedef typename TLabelImage::PixelType                  LabelType;
 
   /** Type to use form computations. */
-  typedef typename NumericTraits<LabelType>::RealType RealType;
+  typedef typename NumericTraits< LabelType >::RealType    RealType;
 
   /** \class LabelLabelOverlapMeasuress
    * \brief Metrics stored per label */
   class LabelSetMeasures
     {
     public:
-    // default constructor
-    LabelSetMeasures()
-      {
-      m_Source = 0;
-      m_Target = 0;
-      m_Union = 0;
-      m_Intersection = 0;
-      m_SourceComplement = 0;
-      m_TargetComplement = 0;
-      }
+      LabelSetMeasures( void )
+        {
+        m_Source = 0;
+        m_Target = 0;
+        m_Union = 0;
+        m_Intersection = 0;
+        m_SourceComplement = 0;
+        m_TargetComplement = 0;
+        }
 
-    // added for completeness
-    LabelSetMeasures& operator=( const LabelSetMeasures& l )
-      {
-      m_Source = l.m_Source;
-      m_Target = l.m_Target;
-      m_Union = l.m_Union;
-      m_Intersection = l.m_Intersection;
-      m_SourceComplement = l.m_SourceComplement;
-      m_TargetComplement = l.m_TargetComplement;
-      }
+      // added for completeness
+      LabelSetMeasures& operator=( const LabelSetMeasures& l )
+        {
+        m_Source = l.m_Source;
+        m_Target = l.m_Target;
+        m_Union = l.m_Union;
+        m_Intersection = l.m_Intersection;
+        m_SourceComplement = l.m_SourceComplement;
+        m_TargetComplement = l.m_TargetComplement;
+        }
 
-    unsigned long m_Source;
-    unsigned long m_Target;
-    unsigned long m_Union;
-    unsigned long m_Intersection;
-    unsigned long m_SourceComplement;
-    unsigned long m_TargetComplement;
+      unsigned long m_Source;
+      unsigned long m_Target;
+      unsigned long m_Union;
+      unsigned long m_Intersection;
+      unsigned long m_SourceComplement;
+      unsigned long m_TargetComplement;
     };
 
   /** Type of the map used to store data per label */
-  typedef itksys::hash_map<LabelType, LabelSetMeasures> MapType;
-  typedef typename MapType::iterator                    MapIterator;
-  typedef typename MapType::const_iterator              MapConstIterator;
+  typedef itksys::hash_map< LabelType, LabelSetMeasures >  MapType;
+  typedef typename MapType::iterator                       MapIterator;
+  typedef typename MapType::const_iterator                 MapConstIterator;
 
   /** Image related typedefs. */
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -170,8 +171,9 @@ public:
 #endif
 
 protected:
-  LabelOverlapMeasuresImageFilter();
-  ~LabelOverlapMeasuresImageFilter(){};
+  LabelOverlapMeasuresImageFilter( void );
+  ~LabelOverlapMeasuresImageFilter( void ){};
+
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
   void BeforeThreadedGenerateData();

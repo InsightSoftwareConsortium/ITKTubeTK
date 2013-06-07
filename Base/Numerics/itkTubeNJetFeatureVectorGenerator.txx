@@ -25,14 +25,12 @@ limitations under the License.
 
 #include <limits>
 
-#include "itkTubeNJetFeatureVectorGenerator.h"
-
-#include "itkTimeProbesCollectorBase.h"
-
-#include "itkImage.h"
+#include <itkImage.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "tubeMatrixMath.h"
 #include "itkTubeNJetImageFunction.h"
+#include "itkTubeNJetFeatureVectorGenerator.h"
 
 namespace itk
 {
@@ -42,7 +40,7 @@ namespace tube
 
 template< class ImageT >
 NJetFeatureVectorGenerator< ImageT >
-::NJetFeatureVectorGenerator()
+::NJetFeatureVectorGenerator( void )
 {
   m_ZeroScales.resize( 0 );
   m_FirstScales.resize( 0 );
@@ -63,12 +61,12 @@ unsigned int
 NJetFeatureVectorGenerator< ImageT >
 ::GetNumberOfFeatures( void ) const
 {
-  unsigned int featuresPerImage = m_ZeroScales.size()
+  const unsigned int featuresPerImage = m_ZeroScales.size()
     + (m_FirstScales.size()*(ImageDimension+1))
     + (m_SecondScales.size()*(ImageDimension+1))
     + m_RidgeScales.size() * 4;
 
-  unsigned int numFeatures = this->GetNumberOfInputImages()
+  const unsigned int numFeatures = this->GetNumberOfInputImages()
     * featuresPerImage;
 
   return numFeatures;
@@ -79,9 +77,9 @@ typename NJetFeatureVectorGenerator< ImageT >::FeatureVectorType
 NJetFeatureVectorGenerator< ImageT >
 ::GetFeatureVector( const IndexType & indx ) const
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  unsigned int numInputImages = this->GetNumberOfInputImages();
+  const unsigned int numInputImages = this->GetNumberOfInputImages();
 
   typedef NJetImageFunction< ImageType > NJetFunctionType;
   typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
@@ -89,60 +87,61 @@ NJetFeatureVectorGenerator< ImageT >
   typename NJetFunctionType::MatrixType m;
 
   double val;
-  FeatureVectorType fv;
-  fv.set_size( numFeatures );
-  unsigned int vCount = 0;
-  for( unsigned int inputImageNum=0; inputImageNum<numInputImages;
+  FeatureVectorType featureVector;
+  featureVector.set_size( numFeatures );
+  unsigned int featureCount = 0;
+  for( unsigned int inputImageNum = 0; inputImageNum < numInputImages;
     inputImageNum++ )
     {
-    njet->SetInputImage( this->m_InputImageList[ inputImageNum ] );
+    njet->SetInputImage( this->m_InputImageList[inputImageNum] );
 
-    for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
+    for( unsigned int s = 0; s < m_ZeroScales.size(); s++ )
       {
-      fv[ vCount++ ] = njet->EvaluateAtIndex( indx,
+      featureVector[featureCount++] = njet->EvaluateAtIndex( indx,
         this->m_ZeroScales[s] );
       }
 
-    for( unsigned int s=0; s<m_FirstScales.size(); s++ )
+    for( unsigned int s = 0; s < m_FirstScales.size(); s++ )
       {
       val = 0;
       njet->DerivativeAtIndex( indx, m_FirstScales[s], v );
-      for( unsigned int d=0; d<ImageDimension; d++ )
+      for( unsigned int d = 0; d < ImageDimension; d++ )
         {
         if( m_ForceOrientationInsensitivity && v[d] < 0 )
           {
           v[d] *= -1;
           }
-        fv[ vCount++ ] = v[d];
-        val += v[d]*v[d];
+        featureVector[featureCount++] = v[d];
+        val += v[d] * v[d];
         }
-      fv[ vCount++ ] = vcl_sqrt( val );
+      featureVector[featureCount++] = vcl_sqrt( val );
       }
 
-    for( unsigned int s=0; s<m_SecondScales.size(); s++ )
+    for( unsigned int s = 0; s < m_SecondScales.size(); s++ )
       {
       njet->HessianAtIndex( indx, m_SecondScales[s], m );
-      for( unsigned int d=0; d<ImageDimension; d++ )
+      for( unsigned int d = 0; d < ImageDimension; d++ )
         {
         if( m_ForceOrientationInsensitivity && m[d][d] < 0 )
           {
           m[d][d] *= -1;
           }
-        fv[ vCount++ ] = m[d][d];
+        featureVector[featureCount++] = m[d][d];
         val += m[d][d]*m[d][d];
         }
-      fv[ vCount++ ] = vcl_sqrt( val );
+      featureVector[featureCount++] = vcl_sqrt( val );
       }
 
-    for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
+    for( unsigned int s = 0; s < m_RidgeScales.size(); s++ )
       {
-      fv[ vCount++ ] = njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
-      fv[ vCount++ ] = njet->GetMostRecentRidgeRoundness();
-      fv[ vCount++ ] = njet->GetMostRecentRidgeCurvature();
-      fv[ vCount++ ] = njet->GetMostRecentRidgeLevelness();
+      featureVector[featureCount++] = njet->RidgenessAtIndex( indx,
+        m_RidgeScales[s] );
+      featureVector[featureCount++] = njet->GetMostRecentRidgeRoundness();
+      featureVector[featureCount++] = njet->GetMostRecentRidgeCurvature();
+      featureVector[featureCount++] = njet->GetMostRecentRidgeLevelness();
       }
     }
-  return fv;
+  return featureVector;
 }
 
 template < class ImageT >
@@ -150,9 +149,9 @@ typename NJetFeatureVectorGenerator< ImageT >::FeatureValueType
 NJetFeatureVectorGenerator< ImageT >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
-  unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  unsigned int numInputImages = this->GetNumberOfInputImages();
+  const unsigned int numInputImages = this->GetNumberOfInputImages();
 
   typedef NJetImageFunction< ImageType > NJetFunctionType;
   typename NJetFunctionType::Pointer njet = NJetFunctionType::New();
@@ -160,107 +159,107 @@ NJetFeatureVectorGenerator< ImageT >
   typename NJetFunctionType::MatrixType m;
 
   double val;
-  unsigned int vCount = 0;
-  for( unsigned int inputImageNum=0; inputImageNum<numInputImages;
+  unsigned int featureCount = 0;
+  for( unsigned int inputImageNum = 0; inputImageNum < numInputImages;
     inputImageNum++ )
     {
-    njet->SetInputImage( this->m_InputImageList[ inputImageNum ] );
+    njet->SetInputImage( this->m_InputImageList[inputImageNum] );
 
     if( fNum < m_ZeroScales.size() )
       {
-      for( unsigned int s=0; s<m_ZeroScales.size(); s++ )
+      for( unsigned int s = 0; s < m_ZeroScales.size(); s++ )
         {
-        if( vCount == fNum )
+        if( featureCount == fNum )
           {
           return njet->EvaluateAtIndex( indx, this->m_ZeroScales[s] );
           }
-        vCount++;
+        featureCount++;
         }
       }
     else if( fNum < m_ZeroScales.size()
       + (m_FirstScales.size() * ImageDimension) + 1 )
       {
-      vCount = m_ZeroScales.size();
-      for( unsigned int s=0; s<m_FirstScales.size(); s++ )
+      featureCount = m_ZeroScales.size();
+      for( unsigned int s = 0; s < m_FirstScales.size(); s++ )
         {
         val = 0;
         njet->DerivativeAtIndex( indx, 4, v );
-        for( unsigned int d=0; d<ImageDimension; d++ )
+        for( unsigned int d = 0; d < ImageDimension; d++ )
           {
           if( m_ForceOrientationInsensitivity && v[d] < 0 )
             {
             v[d] *= -1;
             }
-          if( vCount == fNum )
+          if( featureCount == fNum )
             {
             return v[d];
             }
-          vCount++;
+          featureCount++;
           val += v[d]*v[d];
           }
-        if( vCount == fNum )
+        if( featureCount == fNum )
           {
           return vcl_sqrt( val );
           }
-        vCount++;
+        featureCount++;
         }
       }
     else if( fNum < m_ZeroScales.size()
       + (m_FirstScales.size() * ImageDimension) + 1
       + (m_SecondScales.size() * ImageDimension) + 1 )
       {
-      vCount = m_ZeroScales.size()
+      featureCount = m_ZeroScales.size()
         + (m_FirstScales.size() * ImageDimension) + 1;
-      for( unsigned int s=0; s<m_SecondScales.size(); s++ )
+      for( unsigned int s = 0; s < m_SecondScales.size(); s++ )
         {
         njet->HessianAtIndex( indx, m_SecondScales[s], m );
-        for( unsigned int d=0; d<ImageDimension; d++ )
+        for( unsigned int d = 0; d < ImageDimension; d++ )
           {
           if( m_ForceOrientationInsensitivity && m[d][d] < 0 )
             {
             m[d][d] *= -1;
             }
-          if( vCount == fNum )
+          if( featureCount == fNum )
             {
             return m[d][d];
             }
-          vCount++;
+          featureCount++;
           val += m[d][d]*m[d][d];
           }
-        if( vCount == fNum )
+        if( featureCount == fNum )
           {
           return vcl_sqrt( val );
           }
-        vCount++;
+        featureCount++;
         }
       }
     else
       {
-      vCount = m_ZeroScales.size()
+      featureCount = m_ZeroScales.size()
         + (m_FirstScales.size() * ImageDimension) + 1
         + (m_SecondScales.size() * ImageDimension) + 1;
-      for( unsigned int s=0; s<m_RidgeScales.size(); s++ )
+      for( unsigned int s = 0; s < m_RidgeScales.size(); s++ )
         {
-        if( vCount == fNum )
+        if( featureCount == fNum )
           {
           return njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           }
-        vCount++;
-        if( vCount == fNum )
+        featureCount++;
+        if( featureCount == fNum )
           {
           return njet->GetMostRecentRidgeRoundness();
           }
-        vCount++;
-        if( vCount == fNum )
+        featureCount++;
+        if( featureCount == fNum )
           {
           return njet->GetMostRecentRidgeCurvature();
           }
-        vCount++;
-        if( vCount == fNum )
+        featureCount++;
+        if( featureCount == fNum )
           {
           return njet->GetMostRecentRidgeLevelness();
           }
-        vCount++;
+        featureCount++;
         }
       }
     }

@@ -23,51 +23,51 @@
       <label>Label map</label>
       <channel>input</channel>
       <longflag>labelmap</longflag>
-      <description>Labelmap that designates the object of interest and "other"</description>
+      <description>Label map that designates the object of interest and "other."</description>
       <default></default>
     </image>
     <string>
       <name>outputBase</name>
       <label>Output base name</label>
       <index>1</index>
-      <description>Basename for output basis images</description>
+      <description>Basename for output basis images.</description>
       <default></default>
     </string>
     <integer-vector>
       <name>objectId</name>
-      <label>Object Id</label>
+      <label>Object ID</label>
       <longflag>objectId</longflag>
-      <description>List of values that represent the objects in the label map</description>
+      <description>List of values that represent the objects in the label map.</description>
       <default></default>
     </integer-vector>
   </parameters>
   <parameters advanced="true">
     <label>Basis Parameters</label>
-    <description>Parameters that determine how the basis is generated</description>
+    <description>Parameters that determine how the basis is generated.</description>
     <boolean>
       <name>usePCA</name>
-      <description>Use PCA instead of LDA</description>
+      <description>Use PCA</description>
       <label>Use pca</label>
       <default>false</default>
       <longflag>usePCA</longflag>
     </boolean>
     <integer>
       <name>useNumberOfBasis</name>
-      <description>Maximum number of linear discriminants to compute (0=all)</description>
-      <label>Number of Basis</label>
+      <description>Maximum number of basis discriminants to compute (0=all).</description>
+      <label>Number of basis</label>
       <default>0</default>
       <longflag>useNumberOfBasis</longflag>
     </integer>
     <string>
       <name>saveBasisInfo</name>
-      <description>Save Basis info to a file</description>
-      <label>Save Basis Info</label>
+      <description>Save basis information to a file</description>
+      <label>Save basis to file</label>
       <longflag>saveBasisInfo</longflag>
     </string>
     <string>
       <name>loadBasisInfo</name>
-      <description>Load Basis info from a file</description>
-      <label>Load Basis Info</label>
+      <description>Load Basis information from a file</description>
+      <label>Load basis from file</label>
       <longflag>loadBasisInfo</longflag>
     </string>
   </parameters>

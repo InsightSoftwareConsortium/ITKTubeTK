@@ -20,15 +20,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
 
 #include <iostream>
 #include "tubeTestMain.h"
 
-
-void RegisterTests()
+void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseNumericsPrintTest );
   REGISTER_TEST( itkImageRegionMomentsCalculatorTest );
@@ -49,4 +45,3 @@ void RegisterTests()
   REGISTER_TEST( tubeSplineNDTest );
   REGISTER_TEST( tubeUserFuncTest );
 }
-

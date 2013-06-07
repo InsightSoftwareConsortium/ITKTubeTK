@@ -20,12 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
+
 #define ITK_LEAN_AND_MEAN
 
-#include "itkImage.h"
+#include <itkImage.h>
 
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
@@ -37,7 +35,7 @@ limitations under the License.
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 
-int tubeBaseNumericsPrintTest( int, char* [] )
+int tubeBaseNumericsPrintTest( int, char ** )
 {
   typedef itk::Image< float, 2 >                 ImageType;
   typedef itk::Image< itk::Vector<float, 2>, 2 > VectorImageType;
@@ -61,17 +59,17 @@ int tubeBaseNumericsPrintTest( int, char* [] )
   std::cout << "-------------tbif" << tbif << std::endl;
 
   itk::tube::NJetImageFunction< ImageType >::Pointer
-    njetObject =
+    nJetObject =
     itk::tube::NJetImageFunction< ImageType >::New();
   std::cout << "-------------itkTubeNJetImageFunction"
-            << njetObject
+            << nJetObject
             << std::endl;
 
   itk::tube::NJetFeatureVectorGenerator< ImageType >::Pointer
-    njetFeatureVectorGenerator =
+    nJetFeatureVectorGenerator =
     itk::tube::NJetFeatureVectorGenerator< ImageType >::New();
   std::cout << "-------------NJetFeatureVectorGenerator"
-    << njetFeatureVectorGenerator << std::endl;
+    << nJetFeatureVectorGenerator << std::endl;
 
   itk::tube::BasisFeatureVectorGenerator< ImageType, ImageType >::Pointer
     basisFeatureVectorGenerator =
@@ -104,4 +102,3 @@ int tubeBaseNumericsPrintTest( int, char* [] )
 
   return EXIT_SUCCESS;
 }
-

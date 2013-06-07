@@ -20,9 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
+
 #define ITK_LEAN_AND_MEAN
 
 #include "itkImage.h"
@@ -37,7 +35,7 @@ limitations under the License.
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
 
-int tubeBaseSegmentationPrintTest( int, char* [] )
+int tubeBaseSegmentationPrintTest( int, char ** )
 {
   typedef itk::Image< float, 2 > ImageType;
   typedef itk::Image< unsigned char, 2 > CharImageType;

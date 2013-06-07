@@ -71,17 +71,17 @@ int itkTubeNJetFeatureVectorGeneratorTest(int argc, char* argv [] )
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
 
-  FilterType::NJetScalesType scales(2);
+  FilterType::NJetScalesType scales( 2 );
   scales[0] = 4;
   scales[1] = 8;
-  FilterType::NJetScalesType scales2(1);
+  FilterType::NJetScalesType scales2( 1 );
   scales2[0] = 8;
   FilterType::Pointer filter = FilterType::New();
   filter->SetInputImage( inputImage );
@@ -94,28 +94,28 @@ int itkTubeNJetFeatureVectorGeneratorTest(int argc, char* argv [] )
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[3] );
   writer->SetUseCompression( true );
-  writer->SetInput( filter->GetFeatureImage(0) );
+  writer->SetInput( filter->GetFeatureImage( 0 ) );
   try
     {
     writer->Update();
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
   WriterType::Pointer writer2 = WriterType::New();
   writer2->SetFileName( argv[4] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetFeatureImage(3) );
+  writer2->SetInput( filter->GetFeatureImage( 3 ) );
   try
     {
     writer2->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
