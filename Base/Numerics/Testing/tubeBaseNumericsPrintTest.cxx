@@ -21,26 +21,21 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
 #define ITK_LEAN_AND_MEAN
-#endif
 
 #include <itkImage.h>
 
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
 #include "itkTubeBlurImageFunction.h"
-#include "itkTubeLDAGenerator.h"
-#include "itkTubeNJetLDAGenerator.h"
 #include "itkTubeNJetImageFunction.h"
+#include "itkTubeNJetFeatureVectorGenerator.h"
+#include "itkTubeBasisFeatureVectorGenerator.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 
-int tubeBaseNumericsPrintTest( int, char*[] )
+int tubeBaseNumericsPrintTest( int, char ** )
 {
   typedef itk::Image< float, 2 >                 ImageType;
   typedef itk::Image< itk::Vector<float, 2>, 2 > VectorImageType;
@@ -64,23 +59,30 @@ int tubeBaseNumericsPrintTest( int, char*[] )
   std::cout << "-------------tbif" << tbif << std::endl;
 
   itk::tube::NJetImageFunction< ImageType >::Pointer
-    njetObject =
+    nJetObject =
     itk::tube::NJetImageFunction< ImageType >::New();
   std::cout << "-------------itkTubeNJetImageFunction"
-            << njetObject
+            << nJetObject
             << std::endl;
 
-  itk::tube::LDAGenerator< ImageType, ImageType >::Pointer
-    ldaGenerator =
-    itk::tube::LDAGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------LDAGenerator"
-    << ldaGenerator << std::endl;
+  itk::tube::NJetFeatureVectorGenerator< ImageType >::Pointer
+    nJetFeatureVectorGenerator =
+    itk::tube::NJetFeatureVectorGenerator< ImageType >::New();
+  std::cout << "-------------NJetFeatureVectorGenerator"
+    << nJetFeatureVectorGenerator << std::endl;
 
-  itk::tube::NJetLDAGenerator< ImageType, ImageType >::Pointer
-    njetLDAGenerator =
-    itk::tube::NJetLDAGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------LDANJetGenerator"
-    << njetLDAGenerator << std::endl;
+  itk::tube::BasisFeatureVectorGenerator< ImageType, ImageType >::Pointer
+    basisFeatureVectorGenerator =
+    itk::tube::BasisFeatureVectorGenerator< ImageType, ImageType >::New();
+  std::cout << "-------------BasisFeatureVectorGenerator"
+    << basisFeatureVectorGenerator << std::endl;
+
+  itk::tube::RidgeFeatureVectorGenerator< ImageType >::Pointer
+    ridgeFeatureVectorGenerator =
+    itk::tube::RidgeFeatureVectorGenerator< ImageType >::New();
+  std::cout << "-------------RidgeFeatureVectorGenerator"
+    << ridgeFeatureVectorGenerator << std::endl;
+
 
   itk::Statistics::VectorImageToListGenerator< VectorImageType,
       ImageType >::Pointer
@@ -100,4 +102,3 @@ int tubeBaseNumericsPrintTest( int, char*[] )
 
   return EXIT_SUCCESS;
 }
-

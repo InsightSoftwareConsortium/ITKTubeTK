@@ -41,6 +41,8 @@ include_directories(
 set( TubeTK_Base_IO_SRCS
   itkTubeMetaLDA.cxx
   itkTubeMetaNJetLDA.cxx
+  itkTubeMetaRidgeSeed.cxx
+  itkTubeMetaTubeParams.cxx
   )
 
 add_library( TubeIO STATIC

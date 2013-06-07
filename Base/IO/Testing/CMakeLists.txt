@@ -42,7 +42,9 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseIOTests_SRCS
   tubeBaseIOPrintTest.cxx
   itkTubeMetaLDATest.cxx
-  itkTubeMetaNJetLDATest.cxx )
+  itkTubeMetaNJetLDATest.cxx
+  itkTubeMetaRidgeSeedTest.cxx
+  itkTubeMetaTubeParamsTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -77,4 +79,16 @@ add_test( itkTubeMetaNJetLDATest
   ${BASE_IO_TESTS}
   itkTubeMetaNJetLDATest
     ${TEMP}/itkTubeMetaNJetLDATest.mnda
+  )
+
+add_test( itkTubeMetaRidgeSeedTest
+  ${BASE_IO_TESTS}
+  itkTubeMetaRidgeSeedTest
+    ${TEMP}/itkTubeMetaRidgeSeedTest.mrs
+  )
+
+add_test( itkTubeMetaTubeParamsTest
+  ${BASE_IO_TESTS}
+  itkTubeMetaTubeParamsTest
+    ${TEMP}/itkTubeMetaTubeParamsTest.mtp
   )

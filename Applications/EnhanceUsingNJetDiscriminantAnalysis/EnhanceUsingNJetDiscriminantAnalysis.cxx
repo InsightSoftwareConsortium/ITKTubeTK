@@ -21,10 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -37,7 +33,7 @@ limitations under the License.
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"
-#include "itkTubeNJetLDAGenerator.h"
+#include "itkTubeNJetSupervisedLinearBasisGenerator.h"
 #include "itkTubeMetaNJetLDA.h"
 
 // Must do a forward declaraction of DoIt before including
@@ -52,21 +48,21 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template < class imageT >
-void WriteLDA( const typename imageT::Pointer & img,
+void WriteBasis( const typename imageT::Pointer & img,
   std::string base, std::string ext, int num )
 {
-  typedef itk::ImageFileWriter< imageT >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< imageT >     BasisImageWriterType;
 
-  typename LDAImageWriterType::Pointer ldaImageWriter =
-    LDAImageWriterType::New();
-  std::string fname = base;
-  char c[80];
+  typename BasisImageWriterType::Pointer basisImageWriter =
+    BasisImageWriterType::New();
+  std::string basename = base;
+  char c[4096];
   std::sprintf( c, ext.c_str(), num );
-  fname += std::string( c );
-  ldaImageWriter->SetUseCompression( true );
-  ldaImageWriter->SetFileName( fname.c_str() );
-  ldaImageWriter->SetInput( img );
-  ldaImageWriter->Update();
+  basename += std::string( c );
+  basisImageWriter->SetUseCompression( true );
+  basisImageWriter->SetFileName( basename.c_str() );
+  basisImageWriter->SetInput( img );
+  basisImageWriter->Update();
 }
 
 template< class pixelT, unsigned int dimensionT >
@@ -85,155 +81,158 @@ int DoIt( int argc, char * argv[] )
   typedef pixelT                                   InputPixelType;
   typedef itk::Image< InputPixelType, dimensionT > InputImageType;
   typedef itk::Image< unsigned short, dimensionT > MaskImageType;
-  typedef itk::Image< float, dimensionT >          LDAImageType;
+  typedef itk::Image< float, dimensionT >          BasisImageType;
 
-  typedef itk::ImageFileReader< LDAImageType >     ImageReaderType;
+  typedef itk::ImageFileReader< BasisImageType >   ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
-  typedef itk::ImageFileWriter< LDAImageType >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< BasisImageType >   BasisImageWriterType;
 
-  typedef itk::tube::NJetLDAGenerator< LDAImageType, MaskImageType >
-    LDAGeneratorType;
-  typename LDAGeneratorType::Pointer ldaGenerator = LDAGeneratorType::New();
+  typedef itk::tube::NJetSupervisedLinearBasisGenerator< BasisImageType,
+          MaskImageType >            SupervisedLinearBasisGeneratorType;
+
+  typename SupervisedLinearBasisGeneratorType::Pointer basisGenerator =
+    SupervisedLinearBasisGeneratorType::New();
 
   timeCollector.Start( "LoadData" );
 
   typename ImageReaderType::Pointer reader;
-  for( unsigned int vNum=0; vNum<inputVolumesList.size(); vNum++ )
+  for( unsigned int vNum = 0; vNum < inputVolumesList.size(); vNum++ )
     {
     reader = ImageReaderType::New();
     reader->SetFileName( inputVolumesList[vNum].c_str() );
     reader->Update();
     if( vNum == 0 )
       {
-      ldaGenerator->SetNJetImage( reader->GetOutput() );
+      basisGenerator->SetNJetImage( reader->GetOutput() );
       }
     else
       {
-      ldaGenerator->AddNJetImage( reader->GetOutput() );
+      basisGenerator->AddNJetImage( reader->GetOutput() );
       }
     }
 
-  if( labelmap.size() > 0 )
+  if( !labelmap.empty() )
     {
     typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
     inMaskReader->SetFileName( labelmap.c_str() );
     inMaskReader->Update();
-    ldaGenerator->SetLabelmap( inMaskReader->GetOutput() );
+    basisGenerator->SetLabelmap( inMaskReader->GetOutput() );
     }
 
   timeCollector.Stop( "LoadData" );
 
-  if( objectIdList.size() > 0 )
+  if( !objectIdList.empty() )
     {
-    ldaGenerator->SetObjectId( objectIdList[0] );
-    for( unsigned int o=1; o<objectIdList.size(); o++ )
+    basisGenerator->SetObjectId( objectIdList[0] );
+    for( unsigned int o = 1; o < objectIdList.size(); o++ )
       {
-      ldaGenerator->AddObjectId( objectIdList[o] );
+      basisGenerator->AddObjectId( objectIdList[o] );
       }
     }
 
   if( usePCA )
     {
-    ldaGenerator->SetPerformPCA( true );
+    basisGenerator->SetPerformPCA( true );
     }
 
-  if( loadLDAInfo.size() > 0 )
+  if( !loadBasisInfo.empty() )
     {
-    timeCollector.Start( "LoadLDA" );
+    timeCollector.Start( "LoadBasis" );
 
-    itk::tube::MetaNJetLDA ldaReader( loadLDAInfo.c_str() );
-    ldaReader.Read();
+    itk::tube::MetaNJetLDA basisReader( loadBasisInfo.c_str() );
+    basisReader.Read();
 
-    ldaGenerator->SetZeroScales( ldaReader.GetZeroScales() );
-    ldaGenerator->SetFirstScales( ldaReader.GetFirstScales() );
-    ldaGenerator->SetSecondScales( ldaReader.GetSecondScales() );
-    ldaGenerator->SetRidgeScales( ldaReader.GetRidgeScales() );
-    ldaGenerator->SetWhitenMeans( ldaReader.GetWhitenMeans() );
-    ldaGenerator->SetWhitenStdDevs( ldaReader.GetWhitenStdDevs() );
-    ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
-    ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
+    basisGenerator->SetZeroScales( basisReader.GetZeroScales() );
+    basisGenerator->SetFirstScales( basisReader.GetFirstScales() );
+    basisGenerator->SetSecondScales( basisReader.GetSecondScales() );
+    basisGenerator->SetRidgeScales( basisReader.GetRidgeScales() );
+    basisGenerator->SetWhitenMeans( basisReader.GetWhitenMeans() );
+    basisGenerator->SetWhitenStdDevs( basisReader.GetWhitenStdDevs() );
+    basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
+    basisGenerator->SetBasisMatrix( basisReader.GetLDAMatrix() );
 
-    ldaGenerator->SetForceIntensityConsistency( !forceSignOff );
-    ldaGenerator->SetForceOrientationInsensitivity( forceSymmetry );
+    basisGenerator->SetForceIntensityConsistency( !forceSignOff );
+    basisGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
-    timeCollector.Stop( "LoadLDA" );
+    timeCollector.Stop( "LoadBasis" );
     }
   else
     {
     timeCollector.Start( "Update" );
 
-    ldaGenerator->SetZeroScales( zeroScales );
-    ldaGenerator->SetFirstScales( firstScales );
-    ldaGenerator->SetSecondScales( secondScales );
-    ldaGenerator->SetRidgeScales( ridgeScales );
-    ldaGenerator->SetWhitenMeans( whitenMeans );
-    ldaGenerator->SetWhitenStdDevs( whitenStdDevs );
+    basisGenerator->SetZeroScales( zeroScales );
+    basisGenerator->SetFirstScales( firstScales );
+    basisGenerator->SetSecondScales( secondScales );
+    basisGenerator->SetRidgeScales( ridgeScales );
+    basisGenerator->SetWhitenMeans( whitenMeans );
+    basisGenerator->SetWhitenStdDevs( whitenStdDevs );
 
-    ldaGenerator->SetForceIntensityConsistency( !forceSignOff );
-    ldaGenerator->SetForceOrientationInsensitivity( forceSymmetry );
+    basisGenerator->SetForceIntensityConsistency( !forceSignOff );
+    basisGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
-    ldaGenerator->Update();
+    basisGenerator->Update();
 
     timeCollector.Stop( "Update" );
     }
 
-  unsigned int numLDA = ldaGenerator->GetNumberOfLDA();
-  if( useNumberOfLDA > 0 && useNumberOfLDA < (int)numLDA )
+  unsigned int numBasis = basisGenerator->GetNumberOfBasis();
+  if( useNumberOfBasis > 0 &&
+    useNumberOfBasis < static_cast<int>( numBasis ) )
     {
-    numLDA = useNumberOfLDA;
+    numBasis = useNumberOfBasis;
     }
 
-  if( outputBase.size() > 0 )
+  if( !outputBase.empty() )
     {
-    timeCollector.Start( "SaveLDAImages" );
+    timeCollector.Start( "SaveBasisImages" );
 
-    ldaGenerator->UpdateLDAImages();
+    basisGenerator->UpdateBasisImages();
 
-    for( unsigned int i=0; i<numLDA; i++ )
+    for( unsigned int i = 0; i < numBasis; i++ )
       {
-      typename LDAImageWriterType::Pointer ldaImageWriter =
-        LDAImageWriterType::New();
-      std::string fname = outputBase;
-      char c[80];
-      std::sprintf( c, ".lda%02u.mha", i );
-      fname += std::string( c );
-      ldaImageWriter->SetUseCompression( true );
-      ldaImageWriter->SetFileName( fname.c_str() );
-      ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( i ) );
-      ldaImageWriter->Update();
+      typename BasisImageWriterType::Pointer basisImageWriter =
+        BasisImageWriterType::New();
+      std::string basename = outputBase;
+      char c[4096];
+      std::sprintf( c, ".basis%02d.mha", i );
+      basename += std::string( c );
+      basisImageWriter->SetUseCompression( true );
+      basisImageWriter->SetFileName( basename.c_str() );
+      basisImageWriter->SetInput( basisGenerator->GetBasisImage( i ) );
+      basisImageWriter->Update();
       }
-    timeCollector.Stop( "SaveLDAImages" );
+    timeCollector.Stop( "SaveBasisImages" );
     }
 
-  if( saveLDAInfo.size() > 0 )
+  if( !saveBasisInfo.empty() )
     {
-    timeCollector.Start( "SaveLDA" );
-    itk::tube::MetaNJetLDA ldaWriter(
-      ldaGenerator->GetZeroScales(),
-      ldaGenerator->GetFirstScales(),
-      ldaGenerator->GetSecondScales(),
-      ldaGenerator->GetRidgeScales(),
-      ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix(),
-      ldaGenerator->GetWhitenMeans(),
-      ldaGenerator->GetWhitenStdDevs() );
-    ldaWriter.Write( saveLDAInfo.c_str() );
-    timeCollector.Stop( "SaveLDA" );
+    timeCollector.Start( "SaveBasis" );
+    itk::tube::MetaNJetLDA basisWriter(
+      basisGenerator->GetZeroScales(),
+      basisGenerator->GetFirstScales(),
+      basisGenerator->GetSecondScales(),
+      basisGenerator->GetRidgeScales(),
+      basisGenerator->GetBasisValues(),
+      basisGenerator->GetBasisMatrix(),
+      basisGenerator->GetWhitenMeans(),
+      basisGenerator->GetWhitenStdDevs() );
+    basisWriter.Write( saveBasisInfo.c_str() );
+    timeCollector.Stop( "SaveBasis" );
     }
 
-  if( saveFeatureImages.size() > 0 )
+  if( !saveFeatureImages.empty() )
     {
-    unsigned int numFeatures = ldaGenerator->GetNumberOfFeatures();
-    for( unsigned int i=0; i<numFeatures; i++ )
+    unsigned int numFeatures = basisGenerator->GetNumberOfFeatures();
+    for( unsigned int i = 0; i < numFeatures; i++ )
       {
-      WriteLDA< LDAImageType >( ldaGenerator->GetFeatureImage( i ),
+      WriteBasis< BasisImageType >( basisGenerator->GetFeatureImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }
     }
 
   timeCollector.Report();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 // Main

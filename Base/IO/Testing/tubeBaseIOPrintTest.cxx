@@ -21,10 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
+#define ITK_LEAN_AND_MEAN
+
 #include <cstdlib>
 
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
+#include "itkTubeMetaRidgeSeed.h"
+#include "itkTubeMetaTubeParams.h"
 
 int tubeBaseIOPrintTest( int, char *[] )
 {
@@ -35,6 +39,14 @@ int tubeBaseIOPrintTest( int, char *[] )
   itk::tube::MetaNJetLDA metaNJetLDA;
   std::cout << "-------------metaNJetLDA" << std::endl;
   metaNJetLDA.PrintInfo();
+
+  itk::tube::MetaRidgeSeed metaRidgeSeed;
+  std::cout << "-------------metaRidgeSeed" << std::endl;
+  metaRidgeSeed.PrintInfo();
+
+  itk::tube::MetaTubeParams metaTubeParams;
+  std::cout << "-------------metaTubeParams" << std::endl;
+  metaTubeParams.PrintInfo();
 
   return EXIT_SUCCESS;
 }

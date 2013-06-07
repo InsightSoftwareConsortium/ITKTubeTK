@@ -21,17 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <iostream>
 
 #include "itkTubeCVTImageFilter.h"
+#include "itkTubeLabelOverlapMeasuresImageFilter.h"
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
 #include "itkTubePDFSegmenter.h"
 #include "itkTubeRadiusExtractor.h"
 #include "itkTubeRidgeExtractor.h"
+#include "itkTubeRidgeSeedFilter.h"
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
 

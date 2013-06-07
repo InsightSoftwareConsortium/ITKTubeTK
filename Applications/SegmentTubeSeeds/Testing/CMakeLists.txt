@@ -44,18 +44,7 @@ set( TEXTCOMPARE_EXE
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
-               --saveVesselSeedInfo ${TEMP}/${MODULE_NAME}Test1.vsi
+               --saveTubeSeedInfo ${TEMP}/${MODULE_NAME}Test1.mtsi
                --labelmap MIDAS{im0001.vk.mask.mha.md5}
                MIDAS{im0001.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )
-
-#######
-# Test1-Compare
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
-            ${IMAGECOMPARE_EXE}
-               -i 0.01
-               -t ${TEMP}/${MODULE_NAME}Test1.mha
-               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

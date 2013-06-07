@@ -21,13 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <iostream>
 #include "tubeTestMain.h"
-
 
 void RegisterTests( void )
 {
@@ -36,9 +31,10 @@ void RegisterTests( void )
   REGISTER_TEST( itkJointHistogramImageFunctionTest );
   REGISTER_TEST( itkTubeNJetImageFunctionTest );
   REGISTER_TEST( itkTubeBlurImageFunctionTest );
-  REGISTER_TEST( itkTubeLDAGeneratorTest );
-  REGISTER_TEST( itkTubeNJetLDAGeneratorTest );
-  REGISTER_TEST( itkTubeNJetLDAGenerator2FTest );
+  REGISTER_TEST( itkTubeNJetFeatureVectorGeneratorTest );
+  REGISTER_TEST( itkTubeNJetBasisFeatureVectorGeneratorTest );
+  REGISTER_TEST( itkTubeRidgeFeatureVectorGeneratorTest );
+  REGISTER_TEST( itkTubeRidgeBasisFeatureVectorGeneratorTest );
   REGISTER_TEST( itkVotingResampleImageFunctionTest );
   REGISTER_TEST( tubeMatrixMathTest );
   REGISTER_TEST( tubeBrentOptimizerNDTest );
@@ -49,4 +45,3 @@ void RegisterTests( void )
   REGISTER_TEST( tubeSplineNDTest );
   REGISTER_TEST( tubeUserFunctionTest );
 }
-

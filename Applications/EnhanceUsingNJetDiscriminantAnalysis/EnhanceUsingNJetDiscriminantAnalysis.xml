@@ -23,15 +23,15 @@
       <name>labelmap</name>
       <label>Label Map</label>
       <longflag>labelmap</longflag>
-      <description>Label map that designates the object of interest and "other".</description>
-      <default/>
+      <description>Label map that designates the object of interest and "other."</description>
+      <default></default>
     </image>
     <string>
       <name>outputBase</name>
       <label>Output Base Name</label>
       <index>1</index>
-      <description>Base name for output LDA images.</description>
-      <default/>
+      <description>Base name for output basis images</description>
+      <default></default>
     </string>
     <integer-vector>
       <name>objectIdList</name>
@@ -42,55 +42,55 @@
     </integer-vector>
   </parameters>
   <parameters advanced="true">
-    <label>LDA Parameters</label>
-    <description>Parameters that determine how the LDA is generated.</description>
+    <label>Basis Parameters</label>
+    <description>Parameters that determine how the basis is generated.</description>
     <boolean>
       <name>usePCA</name>
-      <label>Use PCA</label>
-      <description>Use PCA instead of LDA.</description>
+      <description>Use PCA</description>
+      <label>Use pca</label>
       <default>false</default>
       <longflag>usePCA</longflag>
     </boolean>
     <boolean>
       <name>forceSymmetry</name>
-      <label>Force X-Y Symmetry</label>
       <description>Post-process the eigenvectors so that x/y directions are weighted equally.</description>
+      <label>Force x/y symmetry</label>
       <default>false</default>
       <longflag>forceSymmetry</longflag>
     </boolean>
     <boolean>
       <name>forceSignOff</name>
-      <label>Force Sign Off</label>
-      <description>Do not post-process so that LDA images match input.</description>
+      <description>Do not post-process so that basis images' contrast match the input.</description>
+      <label>Force sign consistency off</label>
       <default>false</default>
       <longflag>forceSignOff</longflag>
     </boolean>
     <double-vector>
       <name>zeroScales</name>
-      <label>Zero-Order Scales</label>
       <description>Scales at which 0th-order features are computed.</description>
+      <label>Zero-order scales</label>
       <default>1</default>
       <longflag>zeroScales</longflag>
     </double-vector>
     <double-vector>
       <name>firstScales</name>
-      <label>First-Order Scales</label>
       <description>Scales at which 1st-order features are computed.</description>
-      <default/>
+      <label>First-order scales</label>
+      <default></default>
       <longflag>firstScales</longflag>
     </double-vector>
     <double-vector>
       <name>secondScales</name>
-      <label>Second-Order Scales</label>
       <description>Scales at which 2nd-order features are computed.</description>
-      <default/>
+      <label>Second-order scales</label>
+      <default></default>
       <longflag>secondScales</longflag>
     </double-vector>
     <double-vector>
       <name>ridgeScales</name>
-      <label>Ridge Scales</label>
-      <description>Scales at which ridge features are computed.</description>
-      <default/>
+      <description>Scales at which Ridge features are computed.</description>
+      <label>Ridge scales</label>
+      <default></default>
       <longflag>ridgeScales</longflag>
     </double-vector>
     <double-vector>
@@ -108,29 +108,29 @@
       <longflag>whitenStdDevs</longflag>
     </double-vector>
     <integer>
-      <name>useNumberOfLDA</name>
-      <label>Number of LDA</label>
-      <description>Maximum number of linear discriminants to compute (0 = all).</description>
+      <name>useNumberOfBasis</name>
+      <description>Maximum number of basis to compute (0=all).</description>
+      <label>Number of basis</label>
       <default>0</default>
-      <longflag>useNumberOfLDA</longflag>
+      <longflag>useNumberOfBasis</longflag>
     </integer>
     <string>
       <name>saveFeatureImages</name>
-      <label>Save Feature Images</label>
       <description>Save intermediate feature images to a file.</description>
+      <label>Save feature images</label>
       <longflag>saveFeatureImages</longflag>
     </string>
     <string>
-      <name>saveLDAInfo</name>
-      <label>Save LDA Information</label>
-      <description>Save LDA information to a file.</description>
-      <longflag>saveLDAInfo</longflag>
+      <name>saveBasisInfo</name>
+      <description>Save basis to a file.</description>
+      <label>Save basis to file</label>
+      <longflag>saveBasisInfo</longflag>
     </string>
     <string>
-      <name>loadLDAInfo</name>
-      <label>Load LDA Information</label>
-      <description>Load LDA information from a file.</description>
-      <longflag>loadLDAInfo</longflag>
+      <name>loadBasisInfo</name>
+      <description>Load basis from a file.</description>
+      <label>Load basis from file</label>
+      <longflag>loadBasisInfo</longflag>
     </string>
   </parameters>
 </executable>

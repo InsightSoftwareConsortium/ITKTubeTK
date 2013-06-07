@@ -21,10 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <itkImage.h>
 #include "itkFilterWatcher.h"
 #include <itkMacro.h>
@@ -34,16 +30,16 @@ limitations under the License.
 
 #include <itkRecursiveGaussianImageFilter.h>
 
-#include "itkTubeNJetLDAGenerator.h"
+#include "itkTubeNJetFeatureVectorGenerator.h"
 
-int itkTubeNJetLDAGeneratorTest(int argc, char* argv[] )
+int itkTubeNJetFeatureVectorGeneratorTest(int argc, char * argv [] )
 {
   if( argc != 5 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage inputMask outputLDA0Image outputLDA1Image"
+      << " inputImage outputF0Image outputF1Image"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -63,7 +59,7 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv[] )
 
 
   // Declare the type for the Filter
-  typedef itk::tube::NJetLDAGenerator< ImageType, ImageType > FilterType;
+  typedef itk::tube::NJetFeatureVectorGenerator< ImageType > FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -72,9 +68,9 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv[] )
     {
     reader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cerr << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
@@ -93,58 +89,44 @@ int itkTubeNJetLDAGeneratorTest(int argc, char* argv[] )
     }
   ImageType::Pointer maskImage = maskReader->GetOutput();
 
-  FilterType::NJetScalesType scales(2);
+  FilterType::NJetScalesType scales( 2 );
   scales[0] = 1;
   scales[1] = 4;
-  FilterType::NJetScalesType scales2(1);
+  FilterType::NJetScalesType scales2( 1 );
   scales2[0] = 2;
   FilterType::Pointer filter = FilterType::New();
-  filter->SetNJetImage( inputImage );
-  filter->SetLabelmap( maskImage );
-  filter->SetObjectId( 255 );
-  filter->AddObjectId( 0 );
+  filter->SetInputImage( inputImage );
   filter->SetZeroScales( scales );
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );
   filter->SetRidgeScales( scales2 );
   std::cout << filter << std::endl;
-  filter->Update();
-
-  filter->SetLabelmap( NULL );
-  filter->UpdateLDAImages();
-
-  std::cout << "Number of LDA = " << filter->GetNumberOfLDA() << std::endl;
-  for( unsigned int i=0; i<filter->GetNumberOfLDA(); i++ )
-    {
-    std::cout << "LDA" << i << " = " << filter->GetLDAValue(i) << " : "
-      << filter->GetLDAVector(i) << std::endl;
-    }
 
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[3] );
   writer->SetUseCompression( true );
-  writer->SetInput( filter->GetLDAImage(0) );
+  writer->SetInput( filter->GetFeatureImage( 0 ) );
   try
     {
     writer->Update();
     }
   catch(itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
   WriterType::Pointer writer2 = WriterType::New();
   writer2->SetFileName( argv[4] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetLDAImage(1) );
+  writer2->SetInput( filter->GetFeatureImage( 3 ) );
   try
     {
     writer2->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 

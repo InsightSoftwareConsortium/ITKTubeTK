@@ -21,13 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <iostream>
 #include "tubeTestMain.h"
-
 
 void RegisterTests( void )
 {
@@ -37,8 +32,8 @@ void RegisterTests( void )
   REGISTER_TEST( itkTubePDFSegmenterTest );
   REGISTER_TEST( itkTubeRidgeExtractorTest );
   REGISTER_TEST( itkTubeRidgeExtractorTest2 );
+  REGISTER_TEST( itkTubeRidgeSeedFilterTest );
   REGISTER_TEST( itkTubeRadiusExtractorTest );
   REGISTER_TEST( itkTubeRadiusExtractorTest2 );
-  REGISTER_TEST( itkTubeRidgeSeedGeneratorTest );
   REGISTER_TEST( itkTubeTubeExtractorTest );
 }

@@ -59,34 +59,36 @@ public:
 
   MetaNJetLDA( const MetaNJetLDA & metaNJetLDA );
 
-  MetaNJetLDA( const NJetScalesType & zeroScales,
-               const NJetScalesType & firstScales,
-               const NJetScalesType & secondScales,
-               const NJetScalesType & ridgeScales,
-               const LDAValuesType & ldaValues,
-               const LDAMatrixType & ldaMatrix,
-               const ValueListType & whitenMeans,
-               const ValueListType & whitenStdDevs );
+  MetaNJetLDA( const NJetScalesType & _zeroScales,
+    const NJetScalesType & _firstScales,
+    const NJetScalesType & _secondScales,
+    const NJetScalesType & _ridgeScales,
+    const LDAValuesType & _ldaValues,
+    const LDAMatrixType & _ldaMatrix,
+    const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs);
 
   ~MetaNJetLDA( void );
 
   virtual void PrintInfo( void ) const;
 
   using MetaLDA::CopyInfo;
-  virtual void CopyInfo( const MetaNJetLDA & lda );
+  virtual void  CopyInfo( const MetaNJetLDA & _lda );
 
-  virtual void Clear( void );
+  virtual void  Clear( void );
 
-  bool InitializeEssential( const NJetScalesType & zeroScales,
-                            const NJetScalesType & firstScales,
-                            const NJetScalesType & secondScales,
-                            const NJetScalesType & ridgeScales,
-                            const LDAValuesType & ldaValues,
-                            const LDAMatrixType & ldaMatrix,
-                            const ValueListType & whitenMeans,
-                            const ValueListType & whitenStdDevs );
+  bool  InitializeEssential(
+    const NJetScalesType & _zeroScales,
+    const NJetScalesType & _firstScales,
+    const NJetScalesType & _secondScales,
+    const NJetScalesType & _ridgeScales,
+    const LDAValuesType & _ldaValues,
+    const LDAMatrixType & _ldaMatrix,
+    const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs);
 
-  void SetZeroScales( const NJetScalesType & zeroScales );
+  //
+  void  SetZeroScales( const NJetScalesType & _zeroScales );
 
   const NJetScalesType & GetZeroScales( void ) const;
 

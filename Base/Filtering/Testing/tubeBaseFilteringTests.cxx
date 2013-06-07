@@ -21,13 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <iostream>
 #include "tubeTestMain.h"
-
 
 void RegisterTests( void )
 {

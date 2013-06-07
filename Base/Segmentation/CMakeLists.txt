@@ -31,7 +31,7 @@ set( TubeTK_Base_Segmentation_H_Files
   itkTubePDFSegmenter.h
   itkTubeRadiusExtractor.h
   itkTubeRidgeExtractor.h
-  itkTubeRidgeSeedGenerator.h
+  itkTubeRidgeSeedFilter.h
   itkTubeTubeExtractor.h
   itkTubeTubeNetworkExtractor.h
   )
@@ -44,7 +44,7 @@ set( TubeTK_Base_Segmentation_TXX_Files
   itkTubePDFSegmenter.txx
   itkTubeRadiusExtractor.txx
   itkTubeRidgeExtractor.txx
-  itkTubeRidgeSeedGenerator.txx
+  itkTubeRidgeSeedFilter.txx
   itkTubeTubeExtractor.txx
   itkTubeTubeNetworkExtractor.txx
   )

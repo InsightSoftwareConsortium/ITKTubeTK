@@ -130,11 +130,14 @@ void MetaLDA
     METAIO_STREAM::cout << "MetaLDA: Clear" << METAIO_STREAM::endl;
     }
 
+  MetaForm::Clear();
+
+  strcpy( m_FormTypeName, "LDA" );
+
   m_LDAValues.set_size( 0 );
   m_LDAMatrix.set_size( 0, 0 );
   m_WhitenMeans.clear();
   m_WhitenStdDevs.clear();
-  MetaForm::Clear();
 }
 
 bool MetaLDA

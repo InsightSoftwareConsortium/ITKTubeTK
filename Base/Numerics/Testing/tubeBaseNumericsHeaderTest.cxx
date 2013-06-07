@@ -21,18 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <iostream>
 
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
 #include "itkTubeNJetImageFunction.h"
 #include "itkTubeBlurImageFunction.h"
-#include "itkTubeLDAGenerator.h"
-#include "itkTubeNJetLDAGenerator.h"
+#include "itkTubeNJetFeatureVectorGenerator.h"
+#include "itkTubeBasisFeatureVectorGenerator.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
 #include "tubeMatrixMath.h"
@@ -51,4 +48,3 @@ int main ( int , char ** )
 {
   return EXIT_SUCCESS;
 }
-

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkTubeOtsuThresholdMaskedImageFilter_h
 #define __itkTubeOtsuThresholdMaskedImageFilter_h
 
-#include <itkImageToImageFilter.h>
 #include <itkFixedArray.h>
+#include <itkImageToImageFilter.h>
 
 namespace itk
 {
@@ -51,20 +51,20 @@ namespace tube
 
 template<class TInputImage, class TOutputImage>
 class ITK_EXPORT OtsuThresholdMaskedImageFilter :
-    public ImageToImageFilter<TInputImage, TOutputImage>
+    public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard Self typedef */
-  typedef OtsuThresholdMaskedImageFilter                Self;
-  typedef ImageToImageFilter<TInputImage,TOutputImage>  Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef OtsuThresholdMaskedImageFilter                   Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage >  Superclass;
+  typedef SmartPointer< Self >                             Pointer;
+  typedef SmartPointer< const Self >                       ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Runtime information support. */
-  itkTypeMacro(OtsuThresholdMaskedImageFilter, ImageToImageFilter);
+  itkTypeMacro( OtsuThresholdMaskedImageFilter, ImageToImageFilter );
 
   /** Image pixel value typedef. */
   typedef typename TInputImage::PixelType   InputPixelType;
@@ -83,10 +83,10 @@ public:
 
 
   /** Image related typedefs. */
-  itkStaticConstMacro(InputImageDimension, unsigned int,
+  itkStaticConstMacro( InputImageDimension, unsigned int,
                       TInputImage::ImageDimension );
 
-  itkStaticConstMacro(OutputImageDimension, unsigned int,
+  itkStaticConstMacro( OutputImageDimension, unsigned int,
                       TOutputImage::ImageDimension );
 
   itkSetObjectMacro( MaskImage, TInputImage );
@@ -94,47 +94,48 @@ public:
 
   /** Set the "outside" pixel value. The default value
    * NumericTraits<OutputPixelType>::Zero. */
-  itkSetMacro(OutsideValue,OutputPixelType);
+  itkSetMacro( OutsideValue, OutputPixelType );
 
   /** Get the "outside" pixel value. */
-  itkGetConstMacro(OutsideValue,OutputPixelType);
+  itkGetConstMacro( OutsideValue, OutputPixelType );
 
   /** Set the "inside" pixel value. The default value
-   * NumericTraits<OutputPixelType>::max() */
-  itkSetMacro(InsideValue,OutputPixelType);
+   * NumericTraits< OutputPixelType >::max(). */
+  itkSetMacro( InsideValue, OutputPixelType );
 
   /** Get the "inside" pixel value. */
-  itkGetConstMacro(InsideValue,OutputPixelType);
+  itkGetConstMacro( InsideValue, OutputPixelType );
 
   /** Set/Get the number of histogram bins. Defaults is 128. */
   itkSetClampMacro( NumberOfHistogramBins, unsigned long, 1,
-                    NumericTraits<unsigned long>::max() );
+                    NumericTraits< unsigned long >::max() );
   itkGetConstMacro( NumberOfHistogramBins, unsigned long );
 
   /** Get the computed threshold. */
-  itkGetConstMacro(Threshold,InputPixelType);
+  itkGetConstMacro( Threshold, InputPixelType );
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(OutputEqualityComparableCheck,
-    (Concept::EqualityComparable<OutputPixelType>));
-  itkConceptMacro(InputOStreamWritableCheck,
-    (Concept::OStreamWritable<InputPixelType>));
-  itkConceptMacro(OutputOStreamWritableCheck,
-    (Concept::OStreamWritable<OutputPixelType>));
+  itkConceptMacro( OutputEqualityComparableCheck,
+    ( Concept::EqualityComparable< OutputPixelType > ) );
+  itkConceptMacro( InputOStreamWritableCheck,
+    ( Concept::OStreamWritable< InputPixelType > ) );
+  itkConceptMacro( OutputOStreamWritableCheck,
+    ( Concept::OStreamWritable< OutputPixelType > ) );
   /** End concept checking */
 #endif
 protected:
   OtsuThresholdMaskedImageFilter( void );
-  ~OtsuThresholdMaskedImageFilter( void ) {}
+  ~OtsuThresholdMaskedImageFilter( void ) {};
+
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   void GenerateInputRequestedRegion( void );
   void GenerateData( void );
 
 private:
-  OtsuThresholdMaskedImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  OtsuThresholdMaskedImageFilter( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
   InputPixelType      m_Threshold;
   OutputPixelType     m_InsideValue;

@@ -25,6 +25,8 @@ limitations under the License.
 
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
+#include "itkTubeMetaRidgeSeed.h"
+#include "itkTubeMetaTubeParams.h"
 
 int main( int, char *[] )
 {

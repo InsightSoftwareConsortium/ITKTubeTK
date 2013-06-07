@@ -57,10 +57,10 @@ public:
 
   MetaLDA( const MetaLDA & metaLDA );
 
-  MetaLDA( const LDAValuesType & ldaValues,
-           const LDAMatrixType & ldaMatrix,
-           const ValueListType & whitenMeans,
-           const ValueListType & whitenStdDevs );
+  MetaLDA( const LDAValuesType & _ldaValues,
+    const LDAMatrixType & _ldaMatrix,
+    const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs );
 
   ~MetaLDA( void );
 
@@ -71,10 +71,9 @@ public:
 
   virtual void Clear( void );
 
-  bool InitializeEssential( const LDAValuesType & ldaValues,
-                            const LDAMatrixType & ldaMatrix,
-                            const ValueListType & whitenMeans,
-                            const ValueListType & whitenStdDevs );
+  bool  InitializeEssential( const LDAValuesType & _ldaValues,
+    const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
+    const ValueListType & _whitenStdDevs );
 
   void SetLDAValues( const LDAValuesType & ldaValues );
 

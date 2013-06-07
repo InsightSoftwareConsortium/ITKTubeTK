@@ -35,8 +35,8 @@
       <name>labelmap</name>
       <label>Train Label Map</label>
       <channel>input</channel>
-      <description>Labelmap that designates the object of interest.</description>
-      <default/>
+      <description>Label map that designates the object of interest.</description>
+      <default></default>
       <longflag>labelmap</longflag>
     </image>
   </parameters>
@@ -44,10 +44,10 @@
     <label>Seed Finding Parameters</label>
     <description>Parameters that control seed finding.</description>
     <file>
-      <name>loadVesselSeedInfo</name>
-      <label>Load Vessel Seed Information</label>
-      <description>Load vessel seed information from a file.</description>
-      <longflag>loadVesselSeedInfo</longflag>
+      <name>loadTubeSeedInfo</name>
+      <description>Load vessel seed information from a file</description>
+      <label>Load vessel seed information</label>
+      <longflag>loadTubeSeedInfo</longflag>
     </file>
   </parameters>
   <parameters advanced="true">
@@ -62,21 +62,21 @@
     </double-vector>
     <integer>
       <name>objectId</name>
-      <label>ID of Vessels in the Label Map</label>
       <description>ID to be used in label map.</description>
+      <label>ID of vessels in the label map</label>
       <default>255</default>
       <longflag>objectId</longflag>
     </integer>
     <file>
-      <name>saveVesselSeedInfo</name>
-      <label>Save Vessel Seed Information</label>
-      <description>Save vessel seed information to a file.</description>
-      <longflag>saveVesselSeedInfo</longflag>
+      <name>saveTubeSeedInfo</name>
+      <description>Save tube seed information to a file.</description>
+      <label>Save vessel seed information</label>
+      <longflag>saveTubeSeedInfo</longflag>
     </file>
     <string>
       <name>saveFeatureImages</name>
-      <label>Feature Images Base Filename</label>
       <description>Base filename for saving feature images.</description>
+      <label>Feature images base filename</label>
       <longflag>saveFeatureImages</longflag>
     </string>
   </parameters>

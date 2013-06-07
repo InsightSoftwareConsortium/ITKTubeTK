@@ -21,10 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef  _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -33,17 +29,18 @@ limitations under the License.
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
+
 #include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
 #include "tubeStringUtilities.h"
-#include "itkTubeLDAGenerator.h"
+#include "itkTubeSupervisedLinearBasisGenerator.h"
 #include "itkTubeMetaLDA.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char * argv[] );
+int DoIt( int argc, char * argv [] );
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "EnhanceUsingDiscriminantAnalysisCLP.h"
@@ -52,7 +49,7 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char * argv[] )
+int DoIt( int argc, char * argv [] )
 {
   PARSE_ARGS;
 
@@ -61,37 +58,39 @@ int DoIt( int argc, char * argv[] )
     inputVolumesList );
 
   // The timeCollector is used to perform basic profiling of the components
-  //   of your algorithm.
+  //   of this algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
   typedef pixelT                                   InputPixelType;
   typedef itk::Image< InputPixelType, dimensionT > InputImageType;
   typedef itk::Image< unsigned short, dimensionT > MaskImageType;
-  typedef itk::Image< float, dimensionT >          LDAImageType;
+  typedef itk::Image< float, dimensionT >          BasisImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
-  typedef itk::ImageFileWriter< LDAImageType >     LDAImageWriterType;
+  typedef itk::ImageFileWriter< BasisImageType >   BasisImageWriterType;
 
-  typedef itk::tube::LDAGenerator< InputImageType, MaskImageType >
-    LDAGeneratorType;
-  typename LDAGeneratorType::Pointer ldaGenerator = LDAGeneratorType::New();
+  typedef itk::tube::SupervisedLinearBasisGenerator< InputImageType,
+    MaskImageType >                  SupervisedLinearBasisGeneratorType;
+
+  typename SupervisedLinearBasisGeneratorType::Pointer basisGenerator =
+    SupervisedLinearBasisGeneratorType::New();
 
   timeCollector.Start( "LoadData" );
 
   typename ImageReaderType::Pointer reader;
-  for( unsigned int i=0; i<inputVolumesList.size(); i++ )
+  for( unsigned int i = 0; i < inputVolumesList.size(); i++ )
     {
     reader = ImageReaderType::New();
     reader->SetFileName( inputVolumesList[i].c_str() );
     reader->Update();
     if( i == 0 )
       {
-      ldaGenerator->SetFeatureImage( reader->GetOutput() );
+      basisGenerator->SetFeatureImage( reader->GetOutput() );
       }
     else
       {
-      ldaGenerator->AddFeatureImage( reader->GetOutput() );
+      basisGenerator->AddFeatureImage( reader->GetOutput() );
       }
     }
 
@@ -100,95 +99,94 @@ int DoIt( int argc, char * argv[] )
     typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
     inMaskReader->SetFileName( labelmap.c_str() );
     inMaskReader->Update();
-    ldaGenerator->SetLabelmap( inMaskReader->GetOutput() );
+    basisGenerator->SetLabelmap( inMaskReader->GetOutput() );
     }
 
   timeCollector.Stop( "LoadData" );
 
-  ldaGenerator->SetObjectId( objectId[0] );
+  basisGenerator->SetObjectId( objectId[0] );
   if( objectId.size() > 1 )
     {
-    for( unsigned int o=1; o<objectId.size(); o++ )
+    for( unsigned int o = 1; o < objectId.size(); o++ )
       {
-      ldaGenerator->AddObjectId( objectId[o] );
+      basisGenerator->AddObjectId( objectId[o] );
       }
     }
 
   if( usePCA )
     {
-    ldaGenerator->SetPerformPCA( true );
+    basisGenerator->SetPerformPCA( true );
     }
 
-  if( loadLDAInfo.size() > 0 )
+  if( loadBasisInfo.size() > 0 )
     {
-    timeCollector.Start( "LoadLDA" );
+    timeCollector.Start( "LoadBasis" );
 
-    itk::tube::MetaLDA ldaReader( loadLDAInfo.c_str() );
-    ldaReader.Read();
+    itk::tube::MetaLDA basisReader( loadBasisInfo.c_str() );
+    basisReader.Read();
 
-    ldaGenerator->SetLDAValues( ldaReader.GetLDAValues() );
-    ldaGenerator->SetLDAMatrix( ldaReader.GetLDAMatrix() );
-    ldaGenerator->SetWhitenMeans( ldaReader.GetWhitenMeans() );
-    ldaGenerator->SetWhitenStdDevs( ldaReader.GetWhitenStdDevs() );
+    basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
+    basisGenerator->SetBasisMatrix( basisReader.GetLDAMatrix() );
+    basisGenerator->SetWhitenMeans( basisReader.GetWhitenMeans() );
+    basisGenerator->SetWhitenStdDevs( basisReader.GetWhitenStdDevs() );
 
-    timeCollector.Stop( "LoadLDA" );
+    timeCollector.Stop( "LoadBasis" );
     }
   else
     {
     timeCollector.Start( "Update" );
 
-    ldaGenerator->Update();
+    basisGenerator->Update();
 
     timeCollector.Stop( "Update" );
     }
 
   if( outputBase.size() > 0 )
     {
-    timeCollector.Start( "SaveLDAImages" );
+    timeCollector.Start( "SaveBasisImages" );
 
-    unsigned int numLDA = ldaGenerator->GetNumberOfLDA();
-    if( useNumberOfLDA>0 && useNumberOfLDA < (int)numLDA )
+    unsigned int numBasis = basisGenerator->GetNumberOfBasis();
+    if( useNumberOfBasis>0 && useNumberOfBasis < (int)numBasis )
       {
-      numLDA = useNumberOfLDA;
+      numBasis = useNumberOfBasis;
       }
-    std::cout << "number of lda = " << numLDA << std::endl;
 
-    ldaGenerator->UpdateLDAImages();
+    basisGenerator->UpdateBasisImages();
 
-    for( unsigned int i=0; i<numLDA; i++ )
+    for( unsigned int i = 0; i < numBasis; i++ )
       {
-      typename LDAImageWriterType::Pointer ldaImageWriter =
-        LDAImageWriterType::New();
+      typename BasisImageWriterType::Pointer basisImageWriter =
+        BasisImageWriterType::New();
       std::string fname = outputBase;
-      char c[80];
-      std::sprintf( c, ".lda%02u.mha", i );
+      char c[4096];
+      std::sprintf( c, ".basis%02d.mha", i );
       fname += std::string( c );
-      ldaImageWriter->SetUseCompression( true );
-      ldaImageWriter->SetFileName( fname.c_str() );
-      ldaImageWriter->SetInput( ldaGenerator->GetLDAImage( i ) );
-      ldaImageWriter->Update();
+      basisImageWriter->SetUseCompression( true );
+      basisImageWriter->SetFileName( fname.c_str() );
+      basisImageWriter->SetInput( basisGenerator->GetBasisImage( i ) );
+      basisImageWriter->Update();
       }
-    timeCollector.Stop( "SaveLDAImages" );
+    timeCollector.Stop( "SaveBasisImages" );
     }
 
-  if( saveLDAInfo.size() > 0 )
+  if( saveBasisInfo.size() > 0 )
     {
-    timeCollector.Start( "SaveLDA" );
-    itk::tube::MetaLDA ldaWriter( ldaGenerator->GetLDAValues(),
-      ldaGenerator->GetLDAMatrix(),
-      ldaGenerator->GetWhitenMeans(),
-      ldaGenerator->GetWhitenStdDevs() );
-    ldaWriter.Write( saveLDAInfo.c_str() );
-    timeCollector.Stop( "SaveLDA" );
+    timeCollector.Start( "SaveBasis" );
+    itk::tube::MetaLDA basisWriter( basisGenerator->GetBasisValues(),
+      basisGenerator->GetBasisMatrix(),
+      basisGenerator->GetWhitenMeans(),
+      basisGenerator->GetWhitenStdDevs() );
+    basisWriter.Write( saveBasisInfo.c_str() );
+    timeCollector.Stop( "SaveBasis" );
     }
 
   timeCollector.Report();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 // Main
-int main( int argc, char **argv )
+int main( int argc, char ** argv )
 {
   PARSE_ARGS;
 

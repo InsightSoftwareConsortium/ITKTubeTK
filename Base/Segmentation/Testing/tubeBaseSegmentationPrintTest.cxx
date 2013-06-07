@@ -21,40 +21,35 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
 #define ITK_LEAN_AND_MEAN
-#endif
 
 #include <itkImage.h>
 
 #include "itkTubeCVTImageFilter.h"
-//#include "itkTubeLabelOverlapMeasuresImageFilter.h"
+#include "itkTubeLabelOverlapMeasuresImageFilter.h"
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
 #include "itkTubePDFSegmenter.h"
 #include "itkTubeRadiusExtractor.h"
 #include "itkTubeRidgeExtractor.h"
-#include "itkTubeRidgeSeedGenerator.h"
+#include "itkTubeRidgeSeedFilter.h"
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
 
-int tubeBaseSegmentationPrintTest( int, char*[] )
+int tubeBaseSegmentationPrintTest( int, char ** )
 {
   typedef itk::Image< float, 2 > ImageType;
+  typedef itk::Image< unsigned char, 2 > CharImageType;
 
   itk::tube::CVTImageFilter< ImageType >::Pointer
     cvtObject = itk::tube::CVTImageFilter< ImageType >::New();
   std::cout << "-------------itkTubeCVTImageFilter" << cvtObject
     << std::endl;
 
-  //itk::tube::LabelOverlapMeasuresImageFilter< ImageType >::Pointer
-    //loObject =
-    //itk::tube::LabelOverlapMeasuresImageFilter< ImageType >::New();
-  //std::cout << "-------------itkTubeLabelOverlapMeasuresImageFilter"
-    //<< loObject << std::endl;
+  itk::tube::LabelOverlapMeasuresImageFilter< CharImageType >::Pointer
+    loObject =
+    itk::tube::LabelOverlapMeasuresImageFilter< CharImageType >::New();
+  std::cout << "-------------itkTubeLabelOverlapMeasuresImageFilter"
+    << loObject << std::endl;
 
   itk::tube::OtsuThresholdMaskedImageFilter< ImageType, ImageType >::Pointer
     otsuObject = itk::tube::OtsuThresholdMaskedImageFilter< ImageType,
@@ -77,11 +72,11 @@ int tubeBaseSegmentationPrintTest( int, char*[] )
   std::cout << "-------------itkTubeRidgeExtractor" << ridgeObject
     << std::endl;
 
-  itk::tube::RidgeSeedGenerator< ImageType, ImageType >::Pointer
-    ridgeSeedObject =
-    itk::tube::RidgeSeedGenerator< ImageType, ImageType >::New();
-  std::cout << "-------------itkTubeRidgeSeedGenerator"
-    << ridgeSeedObject << std::endl;
+  itk::tube::RidgeSeedFilter< ImageType, CharImageType >::Pointer
+    seedObject = itk::tube::RidgeSeedFilter< ImageType,
+      CharImageType >::New();
+  std::cout << "-------------itkTubeRidgeSeedFilter" << seedObject
+    << std::endl;
 
   itk::tube::TubeExtractor< ImageType >::Pointer
     tubeObject = itk::tube::TubeExtractor< ImageType >::New();

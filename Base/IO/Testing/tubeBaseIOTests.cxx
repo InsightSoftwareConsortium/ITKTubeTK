@@ -28,4 +28,6 @@ void RegisterTests( void )
   REGISTER_TEST( tubeBaseIOPrintTest );
   REGISTER_TEST( itkTubeMetaLDATest );
   REGISTER_TEST( itkTubeMetaNJetLDATest );
+  REGISTER_TEST( itkTubeMetaRidgeSeedTest );
+  REGISTER_TEST( itkTubeMetaTubeParamsTest );
 }
