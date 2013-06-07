@@ -23,11 +23,7 @@ limitations under the License.
 
 #include "itkTubeMetaRidgeSeed.h"
 
-#include <stdio.h>
-#include <ctype.h>
-#include <string>
-#include <string.h> // for memcpy
-#include <math.h>
+#include <cstring>
 
 namespace itk
 {
