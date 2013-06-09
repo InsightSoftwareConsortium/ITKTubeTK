@@ -38,6 +38,8 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
 
+#include <vnl/vnl_vector.h>
+
 // Description:
 // Get the PixelType and ComponentType from fileName
 void GetImageType( std::string fileName,
@@ -87,7 +89,15 @@ CheckImageAttributes( const InputImageType * input,
 {
   assert( input );
   assert( mask );
-  return input->GetOrigin() == mask->GetOrigin()
+  std::cout << "inputVolume1: " << std::endl;
+  std::cout << "  size =  " << input->GetLargestPossibleRegion().GetSize() << std::endl;
+  std::cout << "  index = " << input->GetLargestPossibleRegion().GetIndex() << std::endl;
+  std::cout << "  origin = " << input->GetOrigin() << std::endl;
+  std::cout << "mask: " << std::endl;
+  std::cout << "  size =  " << mask->GetLargestPossibleRegion().GetSize() << std::endl;
+  std::cout << "  index = " << mask->GetLargestPossibleRegion().GetIndex() << std::endl;
+  std::cout << "  origin = " << mask->GetOrigin() << std::endl;
+  return input->GetOrigin().GetVnlVector().is_equal(mask->GetOrigin().GetVnlVector(), 0.01)
          && input->GetLargestPossibleRegion().GetIndex() == mask->GetLargestPossibleRegion().GetIndex()
          && input->GetLargestPossibleRegion().GetSize() == mask->GetLargestPossibleRegion().GetSize();
 }
