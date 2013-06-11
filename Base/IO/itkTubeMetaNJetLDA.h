@@ -24,11 +24,12 @@ limitations under the License.
 #ifndef __itkTubeMetaNJetLDA_h
 #define __itkTubeMetaNJetLDA_h
 
+#include "itkTubeMetaLDA.h"
+
 #include <metaForm.h>
+
 #include <vnl/vnl_matrix.h>
 #include <vnl/vnl_vector.h>
-
-#include "itkTubeMetaLDA.h"
 
 namespace itk
 {

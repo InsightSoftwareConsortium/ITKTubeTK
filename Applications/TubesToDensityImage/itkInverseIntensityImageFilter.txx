@@ -24,10 +24,10 @@ limitations under the License.
 #ifndef __itkInverseIntensityImageFilter_txx
 #define __itkInverseIntensityImageFilter_txx
 
-#include <itkMinimumMaximumImageFilter.h>
-#include <itkImageRegionIterator.h>
-
 #include "itkInverseIntensityImageFilter.h"
+
+#include <itkImageRegionIterator.h>
+#include <itkMinimumMaximumImageFilter.h>
 
 namespace itk
 {

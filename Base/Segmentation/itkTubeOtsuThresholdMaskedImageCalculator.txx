@@ -25,6 +25,7 @@ limitations under the License.
 #define __itkTubeOtsuThresholdMaskedImageCalculator_txx
 
 #include "itkTubeOtsuThresholdMaskedImageCalculator.h"
+
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkMinimumMaximumImageCalculator.h>
 

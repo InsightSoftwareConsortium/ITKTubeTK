@@ -29,16 +29,16 @@ limitations under the License.
 #ifndef __itkTubeRadiusExtractor_h
 #define __itkTubeRadiusExtractor_h
 
-#include <vector>
-
-#include <vnl/vnl_vector.h>
-#include <itkVesselTubeSpatialObject.h>
-
 #include "itkTubeBlurImageFunction.h"
-
 #include "tubeBrentOptimizer1D.h"
 #include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
+
+#include <itkVesselTubeSpatialObject.h>
+
+#include <vnl/vnl_vector.h>
+
+#include <vector>
 
 namespace itk
 {

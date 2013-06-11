@@ -15,19 +15,20 @@
 
 =========================================================================*/
 
+#include "itkImageToTubeRigidMetric.h"
+#include "itkTubeToTubeTransformFilter.h"
+
 #include <itkEuler3DTransform.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
-#include "itkImageToTubeRigidMetric.h"
 #include <itkMetaDataDictionary.h>
 #include <itkMetaDataObject.h>
 #include <itkRecursiveGaussianImageFilter.h>
+#include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
 #include <itkTubeSpatialObjectPoint.h>
-#include "itkTubeToTubeTransformFilter.h"
 #include <itkVesselTubeSpatialObjectPoint.h>
-#include <itkSpatialObjectReader.h>
 
 /**
  *  This test is a base to generate images and spatial objects for the

@@ -21,12 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
+#include "tubeMacro.h"
+#include "tubeMatrixMath.h"
 
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 
-#include "tubeMacro.h"
-#include "tubeMatrixMath.h"
+#include <cstdlib>
 
 template< int dimensionT >
 int Test( void )

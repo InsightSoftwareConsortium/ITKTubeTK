@@ -21,10 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#define ITK_LEAN_AND_MEAN
-
-#include <itkImage.h>
-
 #include "itkTubeCVTImageFilter.h"
 #include "itkTubeLabelOverlapMeasuresImageFilter.h"
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
@@ -34,6 +30,8 @@ limitations under the License.
 #include "itkTubeRidgeSeedFilter.h"
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
+
+#include <itkImage.h>
 
 int tubeBaseSegmentationPrintTest( int, char ** )
 {

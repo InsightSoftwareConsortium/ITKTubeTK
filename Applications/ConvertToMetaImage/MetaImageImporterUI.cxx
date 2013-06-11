@@ -21,13 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <QtGui>
-#include <QFileDialog>
-#include <fstream>
-
 #include "MetaImageImporterUI.h"
-
 #include "MetaImageImporterBanner.xpm"
+
+#include <QFileDialog>
+#include <QtGui>
+
+#include <fstream>
 
 MetaImageImporterUI::MetaImageImporterUI(QWidget *)
 {

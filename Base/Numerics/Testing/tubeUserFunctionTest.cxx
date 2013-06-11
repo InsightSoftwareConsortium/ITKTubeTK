@@ -21,14 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
-#include <iostream>
+#include "tubeMacro.h"
 
 #include <vcl_cmath.h>
-
 #include <vnl/vnl_vector.h>
 
-#include "tubeMacro.h"
+#include <cstdlib>
+#include <iostream>
 
 namespace tube
 {

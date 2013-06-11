@@ -25,7 +25,9 @@ limitations under the License.
 // adapted from CalaTK.
 
 #include <json/json.h>
+
 #include <metaCommand.h>
+
 #include <vnl/vnl_math.h>
 
 /** Return 0 if the test file and baseline file have the same JSON content and 1

@@ -24,16 +24,16 @@ limitations under the License.
 #ifndef __tubeAtlasSummation_h
 #define __tubeAtlasSummation_h
 
+#include "itkCompleteImageResampleFilter.h"
+#include "itkMeanAndSigmaImageBuilder.h"
+#include "itkMinimizeImageSizeFilter.h"
+#include "itkRobustMeanAndSigmaImageBuilder.h"
+
+#include <itkAffineTransform.h>
 #include <itkImage.h>
+#include <itkImageFileWriter.h>
 #include <itkImageRegionIterator.h>
 #include <itkResampleImageFilter.h>
-#include <itkAffineTransform.h>
-#include "itkMinimizeImageSizeFilter.h"
-#include "itkCompleteImageResampleFilter.h"
-#include "itkRobustMeanAndSigmaImageBuilder.h"
-#include "itkMeanAndSigmaImageBuilder.h"
-
-#include <itkImageFileWriter.h>
 
 namespace tube
 {

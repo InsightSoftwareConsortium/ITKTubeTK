@@ -21,43 +21,28 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "itkTubeRidgeExtractor.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
 
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
+#include <itkGroupSpatialObject.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
-
-// Includes specific to this CLI application
-#include "itkTubeRidgeExtractor.h"
 #include <itkSpatialObjectReader.h>
-#include <itkGroupSpatialObject.h>
+#include <itkTimeProbesCollectorBase.h>
 #include <itkTubeSpatialObjectPoint.h>
 #include <itkVesselTubeSpatialObject.h>
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
+#include "SegmentTubesCLP.h"
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHelperFunctions
-#include "SegmentTubesCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-// Your code should be within the DoIt function...
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )
 {

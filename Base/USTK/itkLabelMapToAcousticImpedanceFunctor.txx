@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "itkLabelMapToAcousticImpedanceFunctor.h"
 
+#include <cstddef>
+
 namespace itk
 {
 namespace Functor

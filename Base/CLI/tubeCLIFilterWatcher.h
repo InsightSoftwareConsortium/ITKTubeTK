@@ -25,6 +25,7 @@ limitations under the License.
 #define __tubeCLIFilterWatcher_h
 
 #include <itkSimpleFilterWatcher.h>
+
 #include <ModuleProcessInformation.h>
 
 namespace tube

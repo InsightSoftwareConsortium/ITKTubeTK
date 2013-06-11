@@ -21,19 +21,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
-#include <iostream>
-
-#include <vnl/vnl_math.h>
-#include <vnl/vnl_vector.h>
-#include <vcl_cmath.h>
-
-#include "tubeMacro.h"
-
 #include "tubeBrentOptimizer1D.h"
+#include "tubeMacro.h"
 #include "tubeOptimizer1D.h"
 #include "tubeOptimizerND.h"
 #include "tubeUserFunction.h"
+
+#include <vcl_cmath.h>
+#include <vnl/vnl_math.h>
+#include <vnl/vnl_vector.h>
+
+#include <cstdlib>
+#include <iostream>
 
 class MyNDFunc : public tube::UserFunction< vnl_vector<double>, double >
 {

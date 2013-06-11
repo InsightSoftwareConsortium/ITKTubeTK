@@ -25,6 +25,7 @@ limitations under the License.
 #define __itkDiffusiveRegistrationFilter_txx
 
 #include "itkDiffusiveRegistrationFilter.h"
+
 #include "itkDiffusiveRegistrationFilterUtils.h"
 
 namespace itk

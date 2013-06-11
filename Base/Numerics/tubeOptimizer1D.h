@@ -29,13 +29,9 @@ limitations under the License.
 #ifndef __tubeOptimizer1D_h
 #define __tubeOptimizer1D_h
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "tubeUserFunction.h"
 
 #include <ostream>
-
-#include "tubeUserFunction.h"
 
 namespace tube
 {

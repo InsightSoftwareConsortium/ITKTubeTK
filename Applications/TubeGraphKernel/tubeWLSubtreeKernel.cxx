@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "tubeWLSubtreeKernel.h"
 
-
 namespace tube
 {
 

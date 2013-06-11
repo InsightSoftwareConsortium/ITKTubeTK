@@ -21,14 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkFilterWatcher.h"
+#include "itkTubeCVTImageFilter.h"
+
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
-
-#include <itkTubeCVTImageFilter.h>
 
 #define numCentroids 4
 

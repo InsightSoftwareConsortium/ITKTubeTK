@@ -21,23 +21,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <fstream>
+#include "itkTubeLabelOverlapMeasuresImageFilter.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 
-// TubeTK Filters
-#include "itkTubeLabelOverlapMeasuresImageFilter.h"
+#include <fstream>
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
+#include "ComputeBinaryImageSimilarityMetricsCLP.h"
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "ComputeBinaryImageSimilarityMetricsCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >

@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __itkRobustMeanAndSigmaImageBuilder_txx
 #define __itkRobustMeanAndSigmaImageBuilder_txx
 
+#include "itkRobustMeanAndSigmaImageBuilder.h"
+
 //-----------------------------------------------------------------------------
 template< class TInputImageType,
           class TOutputMeanImageType,

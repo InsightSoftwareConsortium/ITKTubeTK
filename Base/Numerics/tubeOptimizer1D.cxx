@@ -28,9 +28,9 @@ limitations under the License.
 
 #include "tubeOptimizer1D.h"
 
-#include <iostream>
-
 #include "tubeMacro.h"
+
+#include <iostream>
 
 namespace tube
 {

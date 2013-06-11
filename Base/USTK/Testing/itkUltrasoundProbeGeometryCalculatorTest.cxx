@@ -21,8 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImageFileReader.h>
 #include "itkUltrasoundProbeGeometryCalculator.h"
+
+#include <itkImageFileReader.h>
 #include <itkThresholdImageFilter.h>
 
 int itkUltrasoundProbeGeometryCalculatorTest( int argc, char* argv[] )

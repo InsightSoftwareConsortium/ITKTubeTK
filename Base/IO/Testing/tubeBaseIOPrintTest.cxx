@@ -21,14 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#define ITK_LEAN_AND_MEAN
-
-#include <cstdlib>
-
 #include "itkTubeMetaLDA.h"
 #include "itkTubeMetaNJetLDA.h"
 #include "itkTubeMetaRidgeSeed.h"
 #include "itkTubeMetaTubeParams.h"
+
+#include <cstdlib>
 
 int tubeBaseIOPrintTest( int, char *[] )
 {

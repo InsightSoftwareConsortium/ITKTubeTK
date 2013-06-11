@@ -26,6 +26,7 @@ limitations under the License.
 
 #include <itkCastImageFilter.h>
 #include <itkCovariantVector.h>
+#include <itkImageToImageFilter.h>
 
 namespace itk
 {

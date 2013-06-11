@@ -21,31 +21,20 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
+#include <itkIdentityTransform.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
-#include <itkIdentityTransform.h>
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkMutualInformationImageToImageMetric.h>
 #include <itkNormalizedCorrelationImageToImageMetric.h>
 #include <itkNormalizeImageFilter.h>
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
+#include "ComputeImageSimilarityMetricsCLP.h"
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "ComputeImageSimilarityMetricsCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >

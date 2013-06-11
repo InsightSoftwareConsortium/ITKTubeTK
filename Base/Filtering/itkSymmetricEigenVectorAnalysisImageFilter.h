@@ -24,9 +24,8 @@ limitations under the License.
 #ifndef __itkSymmetricEigenVectorAnalysisImageFilter_h
 #define __itkSymmetricEigenVectorAnalysisImageFilter_h
 
-#include <itkUnaryFunctorImageFilter.h>
 #include <itkSymmetricEigenAnalysis.h>
-
+#include <itkUnaryFunctorImageFilter.h>
 
 namespace itk
 {

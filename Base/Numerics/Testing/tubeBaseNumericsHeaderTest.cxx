@@ -21,20 +21,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <iostream>
-
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
-#include "itkTubeNJetImageFunction.h"
+#include "itkTubeBasisFeatureVectorGenerator.h"
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeNJetFeatureVectorGenerator.h"
-#include "itkTubeBasisFeatureVectorGenerator.h"
+#include "itkTubeNJetImageFunction.h"
 #include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
-#include "tubeMatrixMath.h"
 #include "tubeBrentOptimizer1D.h"
 #include "tubeGoldenMeanOptimizer1D.h"
+#include "tubeMatrixMath.h"
 #include "tubeOptimizer1D.h"
 #include "tubeOptimizerND.h"
 #include "tubeParabolicFitOptimizer1D.h"
@@ -43,6 +41,8 @@ limitations under the License.
 #include "tubeSplineND.h"
 #include "tubeTubeMath.h"
 #include "tubeUserFunction.h"
+
+#include <iostream>
 
 int main ( int , char ** )
 {

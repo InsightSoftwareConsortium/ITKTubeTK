@@ -21,23 +21,24 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeAtlasSummation.h"
-#include "tubeMetaObjectDocument.h"
 #include "itkObjectDocumentToImageFilter.h"
-
-#include "tubeMessage.h"
+#include "tubeAtlasSummation.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
+#include "tubeMessage.h"
+#include "tubeMetaObjectDocument.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkSpatialObjectReader.h>
-#include <cstdio>
+#include <itkTimeProbesCollectorBase.h>
+
 #include <metaCommand.h>
 
-#include <AtlasBuilderUsingIntensityCLP.h>
+#include <cstdio>
+
+#include "AtlasBuilderUsingIntensityCLP.h"
 
 using namespace tube;
 

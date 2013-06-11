@@ -21,29 +21,30 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <iostream>
-#include <fstream>
-#include <list>
-#include <vector>
-#include <sstream>
-
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
+#include "tubeMessage.h"
 
 #include <itkImage.h>
-#include <itkMatrix.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIterator.h>
+#include <itkMatrix.h>
+#include <itkTimeProbesCollectorBase.h>
+
+#include <fstream>
+#include <iostream>
+#include <list>
+#include <sstream>
+#include <vector>
+
+#include "TubeGraphToImageCLP.h"
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-#include "TubeGraphToImageCLP.h"
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
-
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )

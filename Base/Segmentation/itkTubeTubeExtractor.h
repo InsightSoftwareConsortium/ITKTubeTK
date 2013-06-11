@@ -29,8 +29,10 @@ limitations under the License.
 #ifndef __itkTubeTubeExtractor_h
 #define __itkTubeTubeExtractor_h
 
-#include "itkTubeRidgeExtractor.h"
 #include "itkTubeRadiusExtractor.h"
+#include "itkTubeRidgeExtractor.h"
+
+#include <itkObject.h>
 
 namespace itk
 {

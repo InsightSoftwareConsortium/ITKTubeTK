@@ -28,7 +28,9 @@ limitations under the License.
 
 #include <itkGroupSpatialObject.h>
 #include <itkVesselTubeSpatialObject.h>
+
 #include <vtkSmartPointer.h>
+
 class vtkFloatArray;
 class vtkPointLocator;
 class vtkPolyData;

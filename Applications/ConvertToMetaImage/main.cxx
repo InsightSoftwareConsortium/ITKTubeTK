@@ -21,14 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "MetaImageImporterUI.h"
+
 #include <qapplication.h>
 
 #ifdef WIN32
 #include <QPlastiqueStyle.h>
 #endif
-
-#include "MetaImageImporterUI.h"
-
 
 int main(int argc, char **argv)
 {

@@ -21,42 +21,27 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
 
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
+#include <itkDanielssonDistanceMapImageFilter.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageToImageRegistrationHelper.h>
+#include <itkSignedDanielssonDistanceMapImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
 
-// Includes specific to this CLI application
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkDanielssonDistanceMapImageFilter.h>
-#include <itkSignedDanielssonDistanceMapImageFilter.h>
+#include "MergeAdjacentImagesCLP.h"
 
-// Include Slicer4's registration method
-#include <itkImageToImageRegistrationHelper.h>
-
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "MergeAdjacentImagesCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
 #define PARSE_ARGS_FLOAT_ONLY 1
+
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...

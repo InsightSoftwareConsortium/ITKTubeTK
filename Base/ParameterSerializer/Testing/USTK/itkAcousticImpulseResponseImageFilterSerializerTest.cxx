@@ -21,12 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkAcousticImpulseResponseImageFilter.h"
 #include "itkAcousticImpulseResponseImageFilterSerializer.h"
 
-#include <itkJsonCppArchiver.h>
-
-#include "itkAcousticImpulseResponseImageFilter.h"
 #include <itkGradientMagnitudeRecursiveGaussianImageFilter.h>
+#include <itkJsonCppArchiver.h>
 
 int itkAcousticImpulseResponseImageFilterSerializerTest( int argc, char * argv[] )
 {

@@ -21,15 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkFilterWatcher.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
+
 #include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkRecursiveGaussianImageFilter.h>
-
-#include "itkTubeRidgeFeatureVectorGenerator.h"
 
 int itkTubeRidgeFeatureVectorGeneratorTest( int argc, char * argv [] )
 {

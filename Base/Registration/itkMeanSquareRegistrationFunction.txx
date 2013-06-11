@@ -25,7 +25,7 @@ limitations under the License.
 #define __itkMeanSquareRegistrationFunction_txx
 
 #include "itkMeanSquareRegistrationFunction.h"
-#include <itkMacro.h>
+
 #include <vnl/vnl_math.h>
 
 namespace itk

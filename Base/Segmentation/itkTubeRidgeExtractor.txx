@@ -29,14 +29,14 @@ limitations under the License.
 #ifndef __itkTubeRidgeExtractor_txx
 #define __itkTubeRidgeExtractor_txx
 
-#include <list>
-
+#include "itkTubeRidgeExtractor.h"
 #include "tubeMatrixMath.h"
 
-#include "itkTubeRidgeExtractor.h"
 #include <itkImageRegionIterator.h>
-#include <itkNeighborhoodIterator.h>
 #include <itkMinimumMaximumImageFilter.h>
+#include <itkNeighborhoodIterator.h>
+
+#include <list>
 
 namespace itk
 {

@@ -21,20 +21,18 @@ limitations under the License.
 
 =========================================================================*/
 
-#define ITK_LEAN_AND_MEAN
-
-#include <itkImage.h>
-#include <itkMatrix.h>
-
 #include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
 #include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 #include "itkAnisotropicHybridDiffusionImageFilter.h"
+#include "itkSheetnessMeasureImageFilter.h"
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itkTubeEnhancingDiffusion2DImageFilter.h"
-#include "itkSheetnessMeasureImageFilter.h"
+
+#include <itkImage.h>
+#include <itkMatrix.h>
 
 int tubeBaseFilteringPrintTest( int, char*[] )
 {

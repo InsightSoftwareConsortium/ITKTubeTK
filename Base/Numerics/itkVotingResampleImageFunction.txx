@@ -28,9 +28,10 @@ limitations under the License.
 
 #include <itkConstNeighborhoodIterator.h>
 #include <itkNeighborhood.h>
-#include <map>
 
 #include <vnl/vnl_math.h>
+
+#include <map>
 
 namespace itk
 {

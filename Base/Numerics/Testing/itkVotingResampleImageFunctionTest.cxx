@@ -21,21 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-
-#include <iostream>
+#include "itkVotingResampleImageFunction.h"
 
 #include <itkAffineTransform.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIterator.h>
-#include <itkResampleImageFilter.h>
 #include <itkImageRegionIteratorWithIndex.h>
-#include "itkVotingResampleImageFunction.h"
+#include <itkResampleImageFilter.h>
+
+#include <iostream>
 
 int itkVotingResampleImageFunctionTest(int argc, char* argv[] )
 {

@@ -21,11 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
-
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "TubeTKLogo.h"
+
+#include <cstdlib>
 
 int main ( int , char ** )
 {

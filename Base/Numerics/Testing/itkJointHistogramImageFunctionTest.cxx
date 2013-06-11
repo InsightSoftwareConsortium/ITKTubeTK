@@ -21,14 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
 #include "itkFilterWatcher.h"
-#include <itkMacro.h>
+#include "itkJointHistogramImageFunction.h"
+
+#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
-
-#include "itkJointHistogramImageFunction.h"
 
 int itkJointHistogramImageFunctionTest(int argc, char* argv[] )
 {

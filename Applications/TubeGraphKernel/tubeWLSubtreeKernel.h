@@ -24,21 +24,20 @@ limitations under the License.
 #ifndef __tubeWLSubtreeKernel_h
 #define __tubeWLSubtreeKernel_h
 
-#include <iostream>
-#include <utility>
-#include <algorithm>
-#include <iomanip>
-#include <fstream>
-#include <numeric>
-#include <map>
-#include <set>
-#include <exception>
-
 #include "GraphKernel.h"
-
 #include "tubeMessage.h"
+
 #include <itkTimeProbesCollectorBase.h>
 
+#include <algorithm>
+#include <exception>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <set>
+#include <utility>
 
 namespace tube
 {

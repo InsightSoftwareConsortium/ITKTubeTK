@@ -24,13 +24,13 @@ limitations under the License.
 #ifndef __tubeSplineND_h
 #define __tubeSplineND_h
 
-#include <itkImage.h>
-#include <itkVectorContainer.h>
-
 #include "tubeOptimizer1D.h"
 #include "tubeOptimizerND.h"
 #include "tubeSpline1D.h"
 #include "tubeUserFunction.h"
+
+#include <itkImage.h>
+#include <itkVectorContainer.h>
 
 namespace tube
 {

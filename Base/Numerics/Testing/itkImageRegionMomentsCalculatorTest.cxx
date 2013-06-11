@@ -21,17 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "itkFilterWatcher.h"
+#include "itkImageRegionMomentsCalculator.h"
 
 #include <itkImage.h>
-#include "itkFilterWatcher.h"
-#include <itkMacro.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
-#include "itkImageRegionMomentsCalculator.h"
 
 int itkImageRegionMomentsCalculatorTest(int argc, char* argv[] )
 {

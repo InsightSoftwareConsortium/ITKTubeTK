@@ -25,6 +25,7 @@ limitations under the License.
 #define __itkImageToTubeRigidMetric_txx
 
 #include "itkImageToTubeRigidMetric.h"
+
 #include <itkLinearInterpolateImageFunction.h>
 
 namespace itk

@@ -21,12 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "tubeCLIProgressReporter.h"
 
 #include <cstdlib>
-#include "tubeCLIProgressReporter.h"
 
 void cliProgressReporterTestCallbackFunction( void * data )
 {

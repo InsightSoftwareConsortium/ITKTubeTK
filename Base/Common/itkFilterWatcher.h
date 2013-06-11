@@ -18,10 +18,10 @@
 #ifndef __itkFilterWatcher_h
 #define __itkFilterWatcher_h
 
-#include <ctime>
-
 #include <itkCommand.h>
 #include <itkProcessObject.h>
+
+#include <ctime>
 
 namespace itk
 {

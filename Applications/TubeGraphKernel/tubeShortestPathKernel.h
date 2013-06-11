@@ -24,18 +24,17 @@ limitations under the License.
 #ifndef __tubeShortestPathKernel_h
 #define __tubeShortestPathKernel_h
 
-#include <iostream>
-#include <utility>
-#include <algorithm>
-#include <iomanip>
-#include <fstream>
-#include <exception>
-
 #include "GraphKernel.h"
-
 #include "tubeMessage.h"
+
 #include <itkTimeProbesCollectorBase.h>
 
+#include <algorithm>
+#include <exception>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <utility>
 
 namespace tube
 {

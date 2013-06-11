@@ -21,46 +21,30 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
-#include <itkImage.h>
-#include <itkImageSpatialObject.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
+#include "tubeMessage.h"
 
-// Application-specific includes
+#include <itkFRPROptimizer.h>
+#include <itkIdentityTransform.h>
+#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkFRPROptimizer.h>
-#include <itkOnePlusOneEvolutionaryOptimizer.h>
-#include <itkNormalVariateGenerator.h>
 #include <itkImageRegionIterator.h>
-#include <itkSmoothingRecursiveGaussianImageFilter.h>
-#include <itkIdentityTransform.h>
+#include <itkImageSpatialObject.h>
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkNormalizeImageFilter.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itkTimeProbesCollectorBase.h>
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
+#include "DeblendTomosynthesisSlicesUsingPriorCLP.h"
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "DeblendTomosynthesisSlicesUsingPriorCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 namespace itk

@@ -21,21 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 #include <itkImage.h>
-#include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkSymmetricEigenAnalysisImageFilter.h>
-#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include <itkMatrix.h>
-#include <itkVectorImage.h>
-#include <itkVariableLengthVector.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkMatrix.h>
+#include <itkSymmetricEigenAnalysisImageFilter.h>
+#include <itkVariableLengthVector.h>
+#include <itkVectorImage.h>
 
 int itkStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv[]  )
 {

@@ -21,27 +21,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
-// Must declare a forward declaration of DoIt before tubeCLIHelperFunctions
-template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char **argv );
-
-// Must include CLP file before tubeCLIHelperFunctions
-#include "EnhanceTubesUsingDiffusionCLP.h"
-
-#include "tubeCLIHelperFunctions.h"
+#include "itkTubeEnhancingDiffusion2DImageFilter.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include "itkTubeEnhancingDiffusion2DImageFilter.h"
+
+#include "EnhanceTubesUsingDiffusionCLP.h"
+
+template< class pixelT, unsigned int dimensionT >
+int DoIt( int argc, char **argv );
+
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+#include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char **argv )

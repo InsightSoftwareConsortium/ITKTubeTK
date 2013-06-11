@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkTubeBlurImageFunction_h
 #define __itkTubeBlurImageFunction_h
 
-#include <itkIndex.h>
 #include <itkImageFunction.h>
+#include <itkIndex.h>
 
 namespace itk
 {

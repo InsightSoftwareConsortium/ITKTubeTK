@@ -21,12 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
-#include <iostream>
+#include "itkDifferenceImageFilter2.h"
 
 #include <itkImage.h>
 
-#include "itkDifferenceImageFilter2.h"
+#include <cstdlib>
+#include <iostream>
 
 int tubeBaseCommonPrintTest( int, char *[] )
 {

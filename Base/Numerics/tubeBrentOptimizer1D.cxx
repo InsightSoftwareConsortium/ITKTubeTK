@@ -28,8 +28,9 @@ limitations under the License.
 
 #include "tubeBrentOptimizer1D.h"
 
-#include <iostream>
 #include <vnl/vnl_math.h>
+
+#include <iostream>
 
 namespace tube
 {

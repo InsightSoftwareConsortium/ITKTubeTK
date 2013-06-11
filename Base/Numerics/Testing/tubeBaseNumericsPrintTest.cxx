@@ -21,19 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#define ITK_LEAN_AND_MEAN
-
-#include <itkImage.h>
-
 #include "itkImageRegionMomentsCalculator.h"
 #include "itkJointHistogramImageFunction.h"
-#include "itkTubeBlurImageFunction.h"
-#include "itkTubeNJetImageFunction.h"
-#include "itkTubeNJetFeatureVectorGenerator.h"
 #include "itkTubeBasisFeatureVectorGenerator.h"
+#include "itkTubeBlurImageFunction.h"
+#include "itkTubeNJetFeatureVectorGenerator.h"
+#include "itkTubeNJetImageFunction.h"
 #include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkVectorImageToListGenerator.h"
 #include "itkVotingResampleImageFunction.h"
+
+#include <itkImage.h>
 
 int tubeBaseNumericsPrintTest( int, char ** )
 {

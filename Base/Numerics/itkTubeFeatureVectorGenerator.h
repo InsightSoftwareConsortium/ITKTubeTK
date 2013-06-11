@@ -20,15 +20,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeFeatureVectorGenerator_h
 #define __itkTubeFeatureVectorGenerator_h
 
+#include <itkImage.h>
+#include <itkProcessObject.h>
+
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_matrix.h>
+
 #include <vector>
-
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
-
-#include "itkImage.h"
 
 namespace itk
 {
@@ -50,9 +52,6 @@ public:
 
   itkNewMacro( Self );
 
-  //
-  // Custom Typedefs
-  //
   typedef ImageT                                        ImageType;
   typedef std::vector< typename ImageType::Pointer >    ImageListType;
 
@@ -69,9 +68,6 @@ public:
   typedef double                               ValueType;
   typedef std::vector< ValueType >             ValueListType;
 
-  //
-  // Methods
-  //
   void SetInputImage( typename ImageType::Pointer img );
   void AddInputImage( typename ImageType::Pointer img );
 
@@ -124,14 +120,14 @@ private:
   ValueListType                   m_WhitenFeatureImageMean;
   ValueListType                   m_WhitenFeatureImageStdDev;
 
-};
+}; // End class FeatureVectorGenerator
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeFeatureVectorGenerator.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeFeatureVectorGenerator_h)

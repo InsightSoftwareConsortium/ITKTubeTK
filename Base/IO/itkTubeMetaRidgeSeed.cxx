@@ -42,7 +42,6 @@ MetaRidgeSeed( void )
   Clear();
 }
 
-//
 MetaRidgeSeed::
 MetaRidgeSeed( const char * _headerName )
 {
@@ -56,7 +55,6 @@ MetaRidgeSeed( const char * _headerName )
   MetaRidgeSeed::Read( _headerName );
 }
 
-//
 MetaRidgeSeed::
 MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed )
 : MetaLDA()
@@ -71,7 +69,6 @@ MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed )
   CopyInfo( _metaRidgeSeed );
 }
 
-//
 MetaRidgeSeed::
 MetaRidgeSeed(
   const RidgeSeedScalesType & _ridgeSeedScales,
@@ -91,14 +88,12 @@ MetaRidgeSeed(
     _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs );
 }
 
-//
 MetaRidgeSeed::
 ~MetaRidgeSeed()
 {
   M_Destroy();
 }
 
-//
 void MetaRidgeSeed::
 PrintInfo() const
 {
@@ -111,7 +106,6 @@ PrintInfo() const
     << m_RidgeSeedScalesTmp.size() << METAIO_STREAM::endl;
 }
 
-//
 void MetaRidgeSeed::
 CopyInfo( const MetaRidgeSeed & _lda )
 {
@@ -120,7 +114,6 @@ CopyInfo( const MetaRidgeSeed & _lda )
   SetRidgeSeedScales( _lda.GetRidgeSeedScales() );
 }
 
-//
 void MetaRidgeSeed::
 Clear( void )
 {
@@ -136,7 +129,6 @@ Clear( void )
   m_RidgeSeedScales.clear();
 }
 
-//
 bool MetaRidgeSeed::
 InitializeEssential(
   const RidgeSeedScalesType & _ridgeSeedScales,
@@ -159,7 +151,6 @@ InitializeEssential(
   return true;
 }
 
-//
 void MetaRidgeSeed::
 SetRidgeSeedScales( const RidgeSeedScalesType & _RidgeSeedScales )
 {
@@ -184,7 +175,6 @@ GetRidgeSeedScales( void ) const
   return m_RidgeSeedScales;
 }
 
-//
 bool MetaRidgeSeed::
 CanRead( const char * _headerName ) const
 {
@@ -228,8 +218,6 @@ CanRead( const char * _headerName ) const
   return result;
 }
 
-
-//
 bool MetaRidgeSeed::
 Read( const char * _headerName )
 {
@@ -260,8 +248,6 @@ Read( const char * _headerName )
   return result;
 }
 
-
-//
 bool MetaRidgeSeed::
 CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
@@ -273,7 +259,6 @@ CanReadStream( METAIO_STREAM::ifstream * _stream ) const
   return false;
 }
 
-//
 bool MetaRidgeSeed::
 ReadStream( METAIO_STREAM::ifstream * _stream )
 {
@@ -314,7 +299,6 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   return true;
 }
 
-//
 bool MetaRidgeSeed::
 Write( const char * _headName )
 {
@@ -345,7 +329,6 @@ Write( const char * _headName )
   return result;
 }
 
-//
 bool MetaRidgeSeed::
 WriteStream( METAIO_STREAM::ofstream * _stream )
 {
@@ -369,7 +352,6 @@ WriteStream( METAIO_STREAM::ofstream * _stream )
   return true;
 }
 
-//
 void MetaRidgeSeed::
 M_Destroy( void )
 {
@@ -382,7 +364,6 @@ M_Destroy( void )
   MetaLDA::M_Destroy();
 }
 
-//
 void MetaRidgeSeed::
 M_SetupReadFields( void )
 {
@@ -408,13 +389,10 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 }
 
-//
 void MetaRidgeSeed::
 M_SetupWriteFields( void )
 {
   MetaLDA::M_SetupWriteFields();
-
-  MET_FieldRecordType * mF;
 
   if( m_RidgeSeedScales.size() > 0 )
     {
@@ -423,7 +401,7 @@ M_SetupWriteFields( void )
       {
       m_RidgeSeedScalesTmp[i] = m_RidgeSeedScales[i];
       }
-    mF = new MET_FieldRecordType;
+    MET_FieldRecordType * mF = new MET_FieldRecordType;
     MET_InitWriteField( mF, "NRidgeSeedScales", MET_INT,
       m_RidgeSeedScales.size() );
     m_Fields.push_back( mF );
@@ -437,7 +415,6 @@ M_SetupWriteFields( void )
 
 }
 
-//
 bool MetaRidgeSeed::
 M_Read( void )
 {
@@ -458,7 +435,6 @@ M_Read( void )
     METAIO_STREAM::cout << "MetaRidgeSeed: M_Read: Parsing Header"
                         << METAIO_STREAM::endl;
     }
-  MET_FieldRecordType * mF;
 
   if( META_DEBUG )
     {
@@ -471,11 +447,10 @@ M_Read( void )
       }
     }
 
-  unsigned int nRidgeSeedScales = 0;
-  mF = MET_GetFieldRecord( "NRidgeSeedScales", &m_Fields );
+  MET_FieldRecordType * mF = MET_GetFieldRecord( "NRidgeSeedScales", &m_Fields );
   if( mF && mF->defined )
     {
-    nRidgeSeedScales = ( unsigned int )mF->value[0];
+    unsigned int nRidgeSeedScales = ( unsigned int )mF->value[0];
     m_RidgeSeedScales.resize( nRidgeSeedScales, 0 );
     mF = MET_GetFieldRecord( "RidgeSeedScales", &m_Fields );
     if( mF && mF->defined )
@@ -494,6 +469,6 @@ M_Read( void )
   return true;
 }
 
-} // namespace tube
+} // End namespace tube
 
-} // namespace itk
+} // End namespace itk

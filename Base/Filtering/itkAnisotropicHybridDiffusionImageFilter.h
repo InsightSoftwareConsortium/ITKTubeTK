@@ -24,12 +24,13 @@ limitations under the License.
 #ifndef __itkAnisotropicHybridDiffusionImageFilter_h
 #define __itkAnisotropicHybridDiffusionImageFilter_h
 
-#include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
-#include <itkDiffusionTensor3D.h>
+#include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include <itkSymmetricEigenAnalysisImageFilter.h>
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
+
+#include <itkDiffusionTensor3D.h>
+#include <itkSymmetricEigenAnalysisImageFilter.h>
 
 namespace itk
 {

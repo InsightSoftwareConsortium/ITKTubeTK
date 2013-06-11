@@ -27,7 +27,6 @@ limitations under the License.
 
 #include <fstream>
 
-
 int itkTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
 {
   if( argc < 2 )

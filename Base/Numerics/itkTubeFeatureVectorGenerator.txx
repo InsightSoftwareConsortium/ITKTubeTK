@@ -24,19 +24,20 @@ limitations under the License.
 #ifndef __itkTubeFeatureVectorGenerator_txx
 #define __itkTubeFeatureVectorGenerator_txx
 
-#include <limits>
-#include <iostream>
+
+#include "itkTubeFeatureVectorGenerator.h"
+
+#include "tubeMatrixMath.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkImageRegionIteratorWithIndex.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include "tubeMatrixMath.h"
-
-#include "itkTubeFeatureVectorGenerator.h"
+#include <limits>
+#include <iostream>
 
 namespace itk
 {
@@ -360,8 +361,8 @@ FeatureVectorGenerator< ImageT >
     << std::endl;
 }
 
-} // tube namespace
+} // End namespace tube
 
-} // itk namespace
+} // End namespace itk
 
-#endif //FeatureVectorGenerator_txx
+#endif // End !defined(__itkTubeFeatureVectorGenerator_txx)

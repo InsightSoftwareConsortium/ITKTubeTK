@@ -21,34 +21,24 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "itkTubeMetaRidgeSeed.h"
+#include "itkTubeRidgeSeedSupervisedLinearBasisGenerator.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+#include "tubeStringUtilities.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
-// The following four should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include <itkTimeProbesCollectorBase.h>
 
-// Includes specific to this CLI application
-#include "tubeStringUtilities.h"
-#include "itkTubeMetaRidgeSeed.h"
-#include "itkTubeRidgeSeedSupervisedLinearBasisGenerator.h"
+#include "SegmentTubeSeedsCLP.h"
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHelperFunctions
-#include "SegmentTubeSeedsCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template < class imageT >
