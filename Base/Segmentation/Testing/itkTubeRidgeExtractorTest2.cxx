@@ -21,15 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkTubeRidgeExtractor.h"
+
+#include <itkGroupSpatialObject.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkSpatialObjectReader.h>
-#include <itkGroupSpatialObject.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
-
-#include "itkTubeRidgeExtractor.h"
+#include <itkSpatialObjectReader.h>
 
 int itkTubeRidgeExtractorTest2( int argc, char * argv[] )
   {

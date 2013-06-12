@@ -24,41 +24,28 @@ limitations under the License.
 #ifndef __tubeCompareImageWithPrior_txx
 #define __tubeCompareImageWithPrior_txx
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "tubeCompareImageWithPrior.h"
 
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
-#include <sstream>
-
-#include <itkImage.h>
-
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
-
-// Application-specific includes
-#include <itkCropImageFilter.h>
-#include <itkBinaryThresholdImageFilter.h>
+#include "tubeMessage.h"
 
 #include <itkBinaryBallStructuringElement.h>
-#include <itkBinaryErodeImageFilter.h>
 #include <itkBinaryDilateImageFilter.h>
-
-#include <itkRecursiveGaussianImageFilter.h>
-
-#include <itkNormalizeImageFilter.h>
-#include <itkRigidImageToImageRegistrationMethod.h>
-#include <itkResampleImageFilter.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkBinaryErodeImageFilter.h>
+#include <itkBinaryThresholdImageFilter.h>
+#include <itkCropImageFilter.h>
+#include <itkImage.h>
 #include <itkLinearInterpolateImageFunction.h>
-
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkNormalizeImageFilter.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkResampleImageFilter.h>
+#include <itkRigidImageToImageRegistrationMethod.h>
 #include <itkShiftScaleImageFilter.h>
+#include <itkTimeProbesCollectorBase.h>
+
+#include <sstream>
 
 namespace tube
 {

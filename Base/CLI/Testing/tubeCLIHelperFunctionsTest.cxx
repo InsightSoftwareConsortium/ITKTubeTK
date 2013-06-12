@@ -21,18 +21,16 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
+#include "tubeCLIHelperFunctionsTestCLP.h"
 
 #include <itkImage.h>
 
-// Forward declaration required by CLIHelperFunctions
+#include <cstdlib>
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv [] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "tubeCLIHelperFunctionsTestCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >

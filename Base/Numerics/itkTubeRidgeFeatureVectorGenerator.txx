@@ -24,17 +24,17 @@ limitations under the License.
 #ifndef __itkTubeRidgeFeatureVectorGenerator_txx
 #define __itkTubeRidgeFeatureVectorGenerator_txx
 
-#include <limits>
+#include "itkTubeNJetImageFunction.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
+#include "tubeMatrixMath.h"
 
 #include <itkImage.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkImageRegionIteratorWithIndex.h>
 #include <itkProgressReporter.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include "tubeMatrixMath.h"
-#include "itkTubeNJetImageFunction.h"
-#include "itkTubeRidgeFeatureVectorGenerator.h"
+#include <limits>
 
 namespace itk
 {

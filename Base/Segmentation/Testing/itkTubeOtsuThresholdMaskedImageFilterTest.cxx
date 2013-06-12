@@ -21,14 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
 #include "itkFilterWatcher.h"
-#include <itkMacro.h>
+#include "itkTubeOtsuThresholdMaskedImageFilter.h"
+
+#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
-
-#include <itkTubeOtsuThresholdMaskedImageFilter.h>
 
 int itkTubeOtsuThresholdMaskedImageFilterTest(int argc, char* argv[] )
 {

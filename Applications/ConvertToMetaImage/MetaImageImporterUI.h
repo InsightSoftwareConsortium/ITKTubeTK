@@ -24,8 +24,9 @@ limitations under the License.
 #ifndef __MetaImageImporterUI_h
 #define __MetaImageImporterUI_h
 
-#include <QMainWindow>
 #include "ui_MetaImageImporterUI.h"
+
+#include <QMainWindow>
 
 /** \class MetaImageImporterUI Main UI class */
 class MetaImageImporterUI : public QMainWindow, public Ui::MainWindow

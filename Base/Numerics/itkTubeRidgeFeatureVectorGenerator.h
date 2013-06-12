@@ -24,13 +24,14 @@ limitations under the License.
 #ifndef __itkTubeRidgeFeatureVectorGenerator_h
 #define __itkTubeRidgeFeatureVectorGenerator_h
 
-#include <vector>
+#include "itkTubeFeatureVectorGenerator.h"
 
 #include <itkImage.h>
-#include <vnl/vnl_vector.h>
-#include <vnl/vnl_matrix.h>
 
-#include "itkTubeFeatureVectorGenerator.h"
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
+
+#include <vector>
 
 namespace itk
 {

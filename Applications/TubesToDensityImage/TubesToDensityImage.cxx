@@ -21,23 +21,21 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkTubeSpatialObjectToDensityImage.h"
+#include "itkTubeToTubeTransformFilter.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+
+#include <itkAffineTransform.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkSpatialObjectReader.h>
-#include <itkAffineTransform.h>
-#include "itkTubeSpatialObjectToDensityImage.h"
-
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include <itkTimeProbesCollectorBase.h>
-
-#include "itkTubeToTubeTransformFilter.h"
-#include <itkTransformFileReader.h>
 #include <itkTransformFactoryBase.h>
+#include <itkTransformFileReader.h>
 
-// CLI parsing
 #include "TubesToDensityImageCLP.h"
 
 using namespace tube;

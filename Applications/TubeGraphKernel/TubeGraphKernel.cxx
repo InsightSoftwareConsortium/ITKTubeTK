@@ -21,23 +21,21 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
-
-#include <itkMatrix.h>
+#include "tubeMessage.h"
 #include "tubeShortestPathKernel.h"
 #include "tubeWLSubtreeKernel.h"
 
-// Convenient string formatting and FS stuff ...
-#include <boost/format.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
+
+#include <itkMatrix.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "TubeGraphKernelCLP.h"
 
 enum { GK_SPKernel = 0, GK_WLKernel = 1 };
-
 
 /** Read-in a list of graphs from a list.
  *  Reads a list of input graphs from JSON file 'fileName' and stores the full

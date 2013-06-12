@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __itkMeanAndSigmaImageBuilder_txx
 #define __itkMeanAndSigmaImageBuilder_txx
 
+#include "itkMeanAndSigmaImageBuilder.h"
+
 template< class TInputImageType,
           class TOutputMeanImageType,
           class TOutputSigmaImageType>

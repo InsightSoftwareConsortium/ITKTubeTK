@@ -21,38 +21,30 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
+#include "tubeBrentOptimizer1D.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeCompareImageWithPrior.h"
+#include "tubeMessage.h"
+#include "tubeSplineApproximation1D.h"
+#include "tubeSplineND.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
+#include <itkTimeProbesCollectorBase.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
 
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
-
-// Application-specific includes
-#include "tubeCompareImageWithPrior.h"
-#include "tubeBrentOptimizer1D.h"
-#include "tubeSplineApproximation1D.h"
-#include "tubeSplineND.h"
-
 #include <map>
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
+#include "SimulateAcquisitionArtifactsUsingPriorCLP.h"
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
+
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+#include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >
 class MyMIWPFunc :
@@ -81,12 +73,6 @@ private:
   double        m_GoF;
 
 }; // End class MyMIWPFunc
-
-// Must include CLP before including tubeCLIHleperFunctions
-#include "SimulateAcquisitionArtifactsUsingPriorCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
-#include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )

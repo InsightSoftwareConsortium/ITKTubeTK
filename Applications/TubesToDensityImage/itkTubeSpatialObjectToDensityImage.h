@@ -24,14 +24,14 @@ limitations under the License.
 #ifndef __itkTubeSpatialObjectToDensityImage_h
 #define __itkTubeSpatialObjectToDensityImage_h
 
-#include <itkObject.h>
-#include <itkImage.h>
-#include <itkGroupSpatialObject.h>
-#include <itkDanielssonDistanceMapImageFilter.h>
-#include "itkTubeSpatialObjectToImageFilter.h"
 #include "itkInverseIntensityImageFilter.h"
+#include "itkTubeSpatialObjectToImageFilter.h"
 
+#include <itkDanielssonDistanceMapImageFilter.h>
+#include <itkGroupSpatialObject.h>
+#include <itkImage.h>
 #include <itkImageFileWriter.h>
+#include <itkVesselTubeSpatialObject.h>
 
 namespace itk
 {

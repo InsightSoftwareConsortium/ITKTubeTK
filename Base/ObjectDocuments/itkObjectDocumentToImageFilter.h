@@ -25,9 +25,10 @@ limitations under the License.
 #define __itkObjectDocumentToImageFilter_h
 
 #include "itkObjectDocumentToObjectSource.h"
-#include <itkSpatialObjectReader.h>
+
 #include <itkImageFileReader.h>
 #include <itkResampleImageFilter.h>
+#include <itkSpatialObjectReader.h>
 
 namespace itk
 {

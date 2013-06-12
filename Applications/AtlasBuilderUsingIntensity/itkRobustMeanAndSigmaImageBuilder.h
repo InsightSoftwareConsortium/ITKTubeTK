@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkRobustMeanAndSigmaImageBuilder_h
 #define __itkRobustMeanAndSigmaImageBuilder_h
 
-#include "tubeMessage.h"
 #include "itkMeanAndSigmaImageBuilder.h"
+#include "tubeMessage.h"
 
 namespace itk
 {

@@ -25,6 +25,7 @@ limitations under the License.
 #define __itkMeanAndSigmaImageBuilder_h
 
 #include "tubeMessage.h"
+
 #include <itkObject.h>
 #include <itkResampleImageFilter.h>
 

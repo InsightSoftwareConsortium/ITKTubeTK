@@ -24,15 +24,15 @@ limitations under the License.
 #ifndef __itkTubeCVTImageFilter_h
 #define __itkTubeCVTImageFilter_h
 
-#include <vector>
-
-#include <itkImage.h>
-#include <itkProcessObject.h>
-#include <itkIndex.h>
 #include <itkContinuousIndex.h>
-#include <itkImageToImageFilter.h>
+#include <itkImage.h>
 #include <itkImageRegionIterator.h>
+#include <itkImageToImageFilter.h>
+#include <itkIndex.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
+#include <itkProcessObject.h>
+
+#include <vector>
 
 namespace itk
 {

@@ -25,9 +25,10 @@ limitations under the License.
 #define __itkAngleOfIncidenceImageFilter_txx
 
 #include "itkAngleOfIncidenceImageFilter.h"
+
 #include <itkImageRegionConstIterator.h>
-#include <itkProgressReporter.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkProgressReporter.h>
 #include <itkResampleImageFilter.h>
 
 namespace itk

@@ -24,8 +24,9 @@ limitations under the License.
 #ifndef __itkAnisotropicDiffusionTensorImageFilter_h
 #define __itkAnisotropicDiffusionTensorImageFilter_h
 
-#include <itkFiniteDifferenceImageFilter.h>
 #include "itkAnisotropicDiffusionTensorFunction.h"
+
+#include <itkFiniteDifferenceImageFilter.h>
 #include <itkMultiThreader.h>
 
 namespace itk

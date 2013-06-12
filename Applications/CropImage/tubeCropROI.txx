@@ -24,18 +24,17 @@ limitations under the License.
 #ifndef __tubeCropROI_txx
 #define __tubeCropROI_txx
 
+#include "tubeCropROI.h"
+
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+
+#include <itkCropImageFilter.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
-// The following three should be used in every CLI application
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include <itkTimeProbesCollectorBase.h>
-#include "tubeMessage.h"
-
-// Includes specific to this CLI application
-#include <itkCropImageFilter.h>
 
 namespace tube
 {

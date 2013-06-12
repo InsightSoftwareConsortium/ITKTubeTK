@@ -29,10 +29,6 @@ limitations under the License.
 #ifndef __tubeBrentOptimizer1D_h
 #define __tubeBrentOptimizer1D_h
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include "tubeOptimizer1D.h"
 #include "tubeUserFunction.h"
 

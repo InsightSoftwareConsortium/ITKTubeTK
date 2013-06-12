@@ -24,10 +24,9 @@ limitations under the License.
 #ifndef __itkTubeLabelOverlapMeasuresImageFilter_h
 #define __itkTubeLabelOverlapMeasuresImageFilter_h
 
-#include <itkInPlaceImageFilter.h>
 #include <itkFastMutexLock.h>
+#include <itkInPlaceImageFilter.h>
 #include <itkNumericTraits.h>
-
 #include <itksys/hash_map.hxx>
 
 namespace itk
@@ -97,6 +96,7 @@ public:
         m_Intersection = l.m_Intersection;
         m_SourceComplement = l.m_SourceComplement;
         m_TargetComplement = l.m_TargetComplement;
+        return *this;
         }
 
       unsigned long m_Source;

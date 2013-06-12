@@ -21,40 +21,32 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
+#include "itkTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
+#include "tubeMessage.h"
 
-#include <itkVesselTubeSpatialObject.h>
-#include <itkSpatialObjectWriter.h>
-#include <itkSpatialObjectReader.h>
-
-#include <itkVector.h>
-#include <itkImage.h>
 #include <itkDisplacementFieldTransform.h>
-#include <itkInverseDisplacementFieldImageFilter.h>
-#include <itkTransformFileReader.h>
-#include <itkTransformFactoryBase.h>
+#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkVectorImage.h>
-
-#include <itkTransformFileReader.h>
+#include <itkInverseDisplacementFieldImageFilter.h>
 #include <itkResampleImageFilter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkSpatialObjectWriter.h>
+#include <itkTimeProbesCollectorBase.h>
 #include <itkTransformFactory.h>
+#include <itkTransformFactoryBase.h>
+#include <itkTransformFileReader.h>
+#include <itkVector.h>
+#include <itkVectorImage.h>
+#include <itkVesselTubeSpatialObject.h>
 
-#include <vnl/vnl_vector.h>
-#include <vnl/vnl_matrix.h>
 #include <vnl/vnl_inverse.h>
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
-#include "tubeMessage.h"
 #include "TubeTransformCLP.h"
-#include "itkTubeToTubeTransformFilter.h"
-
 
 using namespace tube;
 

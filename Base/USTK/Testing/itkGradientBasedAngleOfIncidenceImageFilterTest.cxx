@@ -17,9 +17,10 @@
  *=========================================================================*/
 
 #include "itkGradientBasedAngleOfIncidenceImageFilter.h"
-#include <itkImageFileWriter.h>
-#include <itkImageFileReader.h>
+
 #include <itkGradientRecursiveGaussianImageFilter.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 #include <sstream>
 

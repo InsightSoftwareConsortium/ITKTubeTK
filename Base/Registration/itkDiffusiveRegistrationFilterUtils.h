@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __itkDiffusiveRegistrationFilterUtils_h
 #define __itkDiffusiveRegistrationFilterUtils_h
 
+#include <vector>
+
 namespace itk
 {
 

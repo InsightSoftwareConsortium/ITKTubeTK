@@ -26,23 +26,23 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 
 // The following three should be used in every CLI application
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
 #include <itkTimeProbesCollectorBase.h>
 
 // Includes specific to this CLI application
 #include <itkRecursiveGaussianImageFilter.h>
+
+// Must include CLP before including tubeCLIHelperFunctions
+#include "SampleCLIApplicationCLP.h"
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHelperFunctions
-#include "SampleCLIApplicationCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...

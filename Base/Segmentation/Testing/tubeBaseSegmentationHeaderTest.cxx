@@ -21,8 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <iostream>
-
 #include "itkTubeCVTImageFilter.h"
 #include "itkTubeLabelOverlapMeasuresImageFilter.h"
 #include "itkTubeOtsuThresholdMaskedImageFilter.h"
@@ -32,6 +30,8 @@ limitations under the License.
 #include "itkTubeRidgeSeedFilter.h"
 #include "itkTubeTubeExtractor.h"
 #include "itkTubeTubeNetworkExtractor.h"
+
+#include <iostream>
 
 int main ( int , char ** )
 {

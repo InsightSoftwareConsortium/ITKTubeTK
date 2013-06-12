@@ -25,6 +25,7 @@ limitations under the License.
 #define __itkTubeEnhancingDiffusion2DImageFilter_h
 
 #include <itkImageToImageFilter.h>
+
 #include <vector>
 
 namespace itk

@@ -26,17 +26,16 @@ limitations under the License.
 
 #include <list>
 
-#include <VHTK.h>
+#include <vnl/vnl_vector.h>
 
 #include <ImageLib/Image3D.h>
 #include <MathLib/ImageValueOp3D.h>
 #include <MathLib/Registrator.h>
+#include <VHTK.h>
 
-#include "TubePoint.h"
 #include "Tube.h"
 #include "TubeNet.h"
-
-#include <vnl/vnl_vector.h>
+#include "TubePoint.h"
 
 namespace VTREE
 {

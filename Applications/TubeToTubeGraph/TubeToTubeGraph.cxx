@@ -21,26 +21,27 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImageFileReader.h>
-#include <itkMatrix.h>
-#include <metaScene.h>
-#include <metaTubeGraph.h>
-#include <itkSpatialObjectReader.h>
-#include <itkSpatialObjectWriter.h>
-#include <itkVesselTubeSpatialObject.h>
-#include <itkMinimumMaximumImageFilter.h>
-#include <iostream>
-#include <sstream>
-
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+
+#include <itkImageFileReader.h>
+#include <itkMatrix.h>
+#include <itkMinimumMaximumImageFilter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkSpatialObjectWriter.h>
 #include <itkTimeProbesCollectorBase.h>
+#include <itkVesselTubeSpatialObject.h>
+
+#include <metaScene.h>
+#include <metaTubeGraph.h>
+
+#include <iostream>
+#include <sstream>
 
 #include "TubeToTubeGraphCLP.h"
 
 int DoIt( int, char *[] );
-
 
 int main(int argc, char **argv)
 {
@@ -48,7 +49,6 @@ int main(int argc, char **argv)
 
   return DoIt( argc, argv );
 }
-
 
 int DoIt( int argc, char *argv[] )
 {

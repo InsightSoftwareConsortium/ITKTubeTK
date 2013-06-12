@@ -21,11 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkImageFileWriter.h>
-
 #include "itkTubeBlurImageFunction.h"
+
+#include <itkImage.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIteratorWithIndex.h>
 
 int itkTubeBlurImageFunctionTest( int argc, char * argv[] )
   {

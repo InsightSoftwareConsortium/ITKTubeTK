@@ -21,26 +21,23 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
-
-// Includes specific to this CLI application
 #include "itkAnisotropicDiffusiveRegistrationFilter.h"
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
 #include "itkDiffusiveRegistrationFilter.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+
 #include <itkGroupSpatialObject.h>
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 #include <itkLinearInterpolateImageFunction.h>
-#include <itkOrientImageFilter.h>
 #include <itkMultiResolutionPDEDeformableRegistration.h>
+#include <itkOrientImageFilter.h>
 #include <itkRecursiveMultiResolutionPyramidImageFilter.h>
 #include <itkSpatialObjectReader.h>
+#include <itkTimeProbesCollectorBase.h>
 #include <itkTransform.h>
 #include <itkTransformFileReader.h>
 #include <itkWarpImageFilter.h>
@@ -51,15 +48,12 @@ limitations under the License.
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkXMLPolyDataReader.h>
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
+#include "RegisterUsingSlidingGeometriesCLP.h"
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHelperFunctions
-#include "RegisterUsingSlidingGeometriesCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 // Read and orient an image

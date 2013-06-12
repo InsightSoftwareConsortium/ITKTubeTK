@@ -21,38 +21,31 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkImageToTubeRigidRegistration.h"
+#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itkTubeToTubeTransformFilter.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+
+#include <itkEuler3DTransform.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
-
-// Includes specific to this CLI application
-#include <itkEuler3DTransform.h>
-#include "itkImageToTubeRigidRegistration.h"
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
-#include "itkTubeToTubeTransformFilter.h"
+#include <itkTimeProbesCollectorBase.h>
 #include <itkVesselTubeSpatialObject.h>
-#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
+#include "RegisterImageToTubesUsingRigidTransformCLP.h"
+
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHelperFunctions
-#include "RegisterImageToTubesUsingRigidTransformCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-// Your code should be within the DoIt function...
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] )
 {

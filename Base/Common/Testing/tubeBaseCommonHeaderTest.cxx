@@ -21,13 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
-
 #include "itkDifferenceImageFilter2.h"
 #include "itkFilterWatcher.h"
 #include "tubeMacro.h"
 #include "tubeMessage.h"
 #include "tubeStringUtilities.h"
+
+#include <cstdlib>
 
 int main ( int , char ** )
 {

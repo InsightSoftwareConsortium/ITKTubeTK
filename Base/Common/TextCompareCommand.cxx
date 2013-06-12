@@ -15,11 +15,12 @@
 
 =========================================================================*/
 
+#include <metaCommand.h>
+
+#include <vnl/vnl_math.h>
+
 #include <iostream>
 #include <sstream>
-
-#include <metaCommand.h>
-#include <vnl/vnl_math.h>
 
 int RegressionTestFile ( const char *testFilename,
   const char *baselineFilename, bool reportErrors,

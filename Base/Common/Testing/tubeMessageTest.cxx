@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
-
 #include "tubeMessage.h"
+
+#include <cstdlib>
 
 int tubeMessageTest(int argc, char* argv[] )
 {

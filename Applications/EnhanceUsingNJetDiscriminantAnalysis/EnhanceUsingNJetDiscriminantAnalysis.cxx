@@ -21,30 +21,24 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkTubeMetaNJetLDA.h"
+#include "itkTubeNJetSupervisedLinearBasisGenerator.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+#include "tubeStringUtilities.h"
+
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
-// The following four should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include <itkTimeProbesCollectorBase.h>
 
-// Includes specific to this CLI application
-#include "tubeStringUtilities.h"
-#include "itkTubeNJetSupervisedLinearBasisGenerator.h"
-#include "itkTubeMetaNJetLDA.h"
+#include "EnhanceUsingNJetDiscriminantAnalysisCLP.h"
 
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHelperFunctions
-#include "EnhanceUsingNJetDiscriminantAnalysisCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template < class imageT >
@@ -194,7 +188,7 @@ int DoIt( int argc, char * argv[] )
         BasisImageWriterType::New();
       std::string basename = outputBase;
       char c[4096];
-      std::sprintf( c, ".basis%02d.mha", i );
+      std::sprintf( c, ".basis%02u.mha", i );
       basename += std::string( c );
       basisImageWriter->SetUseCompression( true );
       basisImageWriter->SetFileName( basename.c_str() );

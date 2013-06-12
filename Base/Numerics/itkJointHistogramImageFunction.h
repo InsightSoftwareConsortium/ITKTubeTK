@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __itkJointHistogramImageFunction_h
 #define __itkJointHistogramImageFunction_h
 
-#include <itkImageFunction.h>
 #include <itkImage.h>
+#include <itkImageFunction.h>
 
 namespace itk
 {

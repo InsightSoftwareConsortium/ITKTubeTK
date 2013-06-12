@@ -21,16 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#include <cstdlib>
 #include "tubeCLIFilterWatcher.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkRecursiveGaussianImageFilter.h>
+
+#include <cstdlib>
 
 void testCallbackFunction( void * data )
 {

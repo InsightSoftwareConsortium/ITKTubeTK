@@ -24,14 +24,15 @@ limitations under the License.
 #ifndef __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h
 #define __itkAnisotropicCoherenceEnhancingDiffusionImageFilter_h
 
-#include "itkAnisotropicDiffusionTensorImageFilter.h"
 #include "itkAnisotropicDiffusionTensorFunction.h"
-#include <itkMultiThreader.h>
+#include "itkAnisotropicDiffusionTensorImageFilter.h"
+#include "itkStructureTensorRecursiveGaussianImageFilter.h"
+#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
+
 #include <itkDiffusionTensor3D.h>
 #include <itkHessianRecursiveGaussianImageFilter.h>
-#include "itkStructureTensorRecursiveGaussianImageFilter.h"
+#include <itkMultiThreader.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
-#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
 
 namespace itk
 {

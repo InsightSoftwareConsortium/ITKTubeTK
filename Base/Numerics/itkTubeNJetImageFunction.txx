@@ -25,6 +25,7 @@ limitations under the License.
 #define __itkTubeNJetImageFunction_txx
 
 #include "itkTubeNJetImageFunction.h"
+
 #include <itkImageRegionConstIterator.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
@@ -771,7 +772,6 @@ NJetImageFunction<TInputImage>
   d.Fill( 0);
   dTotal.Fill( 0);
 
-  int xRadius;
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
@@ -785,7 +785,7 @@ NJetImageFunction<TInputImage>
       xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    xRadius = static_cast< int >( vnl_math_floor( cIndex[i] - xMin[i] ) );
+    int xRadius = static_cast< int >( vnl_math_floor( cIndex[i] - xMin[i] ) );
 
     xMax[i] = ( int) vnl_math_ceil( cIndex[i] + xRadius);
     if( xMax[i] > ( int) m_InputImageMaxX[i])
@@ -1365,7 +1365,6 @@ NJetImageFunction<TInputImage>
   h.Fill( 0);
   hTotal.Fill( 0);
 
-  int xRadius;
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
@@ -1379,7 +1378,7 @@ NJetImageFunction<TInputImage>
       xMin[i] = m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    xRadius = static_cast< int >( vnl_math_floor( cIndex[i] - xMin[i] ) );
+    int xRadius = static_cast< int >( vnl_math_floor( cIndex[i] - xMin[i] ) );
 
     xMax[i] = ( int) vnl_math_ceil( cIndex[i] + xRadius );
     if( xMax[i] > ( int) m_InputImageMaxX[i])

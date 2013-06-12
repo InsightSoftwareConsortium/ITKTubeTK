@@ -28,9 +28,9 @@ limitations under the License.
 
 #include "tubeParabolicFitOptimizer1D.h"
 
-#include <iostream>
-
 #include "tubeMacro.h"
+
+#include <iostream>
 
 namespace tube
 {

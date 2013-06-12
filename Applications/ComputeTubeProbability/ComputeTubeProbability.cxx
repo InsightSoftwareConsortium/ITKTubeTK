@@ -21,22 +21,21 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <iostream>
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+
+#include <itkImageFileReader.h>
+#include <itkSpatialObjectReader.h>
+#include <itkTimeProbesCollectorBase.h>
+#include <itkVesselTubeSpatialObject.h>
+
 #include <fstream>
+#include <iostream>
 #include <list>
 #include <vector>
 
-#include <itkSpatialObjectReader.h>
-#include <itkImageFileReader.h>
-#include <itkVesselTubeSpatialObject.h>
-
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
-
 #include "ComputeTubeProbabilityCLP.h"
-
 
 template< unsigned int VDimension >
 int DoIt( int argc, char **argv );
@@ -44,6 +43,7 @@ int DoIt( int argc, char **argv );
 // This needs to be declared for tubeCLIHelperFunctions.
 template< class TPixel, unsigned int VDimension >
 int DoIt( int itkNotUsed(argc), char **itkNotUsed(argv) ) { return 0; }
+
 #include "tubeCLIHelperFunctions.h"
 
 int main(int argc, char **argv)

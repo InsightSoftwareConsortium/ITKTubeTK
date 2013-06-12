@@ -28,8 +28,8 @@ limitations under the License.
 
 #include <itkMinimumMaximumImageCalculator.h>
 #include <itkResampleImageFilter.h>
-#include <itkVectorResampleImageFilter.h>
 #include <itkVectorIndexSelectionCastImageFilter.h>
+#include <itkVectorResampleImageFilter.h>
 
 namespace itk
 {

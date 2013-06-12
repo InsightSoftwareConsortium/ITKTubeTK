@@ -21,22 +21,24 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <iostream>
-#include <fstream>
-#include <MetaIO/metaCommand.h>
+#include <gdcm/src/gdcmCommon.h>
+#include <gdcm/src/gdcmDocEntry.h>
+#include <gdcm/src/gdcmFile.h>
+#include <gdcm/src/gdcmFileHelper.h>
+#include <gdcm/src/gdcmSerieHelper.h>
+
 #include <itkGDCMImageIO.h>
 #include <itkGDCMSeriesFileNames.h>
 #include <itkImageFileReader.h>
-#include <itkImageSeriesReader.h>
 #include <itkImageFileWriter.h>
+#include <itkImageSeriesReader.h>
 #include <itksys/SystemTools.hxx>
-#include <gdcm/src/gdcmFile.h>
-#include <gdcm/src/gdcmFileHelper.h>
-#include <gdcm/src/gdcmCommon.h>
-#include <gdcm/src/gdcmDocEntry.h>
-#include <gdcm/src/gdcmSerieHelper.h>
+
+#include <metaCommand.h>
 
 #include <cstdio>
+#include <fstream>
+#include <iostream>
 
 const int PatientNameGroup = 0x0010;
 const int PatientNameElement = 0x0010;

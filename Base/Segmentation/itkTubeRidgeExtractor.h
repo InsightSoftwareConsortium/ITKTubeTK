@@ -29,19 +29,17 @@ limitations under the License.
 #ifndef __itkTubeRidgeExtractor_h
 #define __itkTubeRidgeExtractor_h
 
-#include <cmath>
-#include <list>
-
-#include "tubeSplineApproximation1D.h"
-#include "tubeSplineND.h"
-#include "tubeBrentOptimizer1D.h"
-
 #include "itkTubeBlurImageFunction.h"
 #include "itkTubeRadiusExtractor.h"
+#include "tubeBrentOptimizer1D.h"
+#include "tubeSplineApproximation1D.h"
+#include "tubeSplineND.h"
 
 #include <itkContinuousIndex.h>
 #include <itkVesselTubeSpatialObject.h>
 
+#include <cmath>
+#include <list>
 
 namespace itk
 {

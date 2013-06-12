@@ -21,37 +21,36 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <iostream>
-#include <fstream>
-#include <list>
-#include <vector>
-#include <sstream>
+#include "itkObjectDocument.h"
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
+#include "tubeMetaObjectDocument.h"
 
 #include <itkImageFileReader.h>
 #include <itkMatrix.h>
-#include <metaScene.h>
-#include <metaTubeGraph.h>
+#include <itkMinimumMaximumImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
+#include <itkTimeProbesCollectorBase.h>
 #include <itkVesselTubeSpatialObject.h>
-#include <itkMinimumMaximumImageFilter.h>
+
+#include <metaScene.h>
+#include <metaTubeGraph.h>
+
 #include <vnl/algo/vnl_matrix_inverse.h>
 
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
+#include <fstream>
+#include <iostream>
+#include <list>
+#include <sstream>
+#include <vector>
 
 #include "MergeTubeGraphsCLP.h"
 
-#include "tubeMetaObjectDocument.h"
-#include "itkObjectDocument.h"
-
-using namespace tube;
-
-
 int DoIt( int, char *[] );
 
+using namespace tube;
 
 int main(int argc, char **argv)
 {
@@ -59,7 +58,6 @@ int main(int argc, char **argv)
 
   return DoIt( argc, argv );
 }
-
 
 int DoIt( int argc, char *argv[] )
 {

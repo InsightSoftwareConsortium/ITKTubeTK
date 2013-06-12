@@ -34,14 +34,14 @@ limitations under the License.
 #include <itkMinimumMaximumImageFilter.h>
 #include <itkNeighborhoodAlgorithm.h>
 #include <itkNumericTraits.h>
-#include <itkZeroFluxNeumannBoundaryCondition.h>
 #include <itkProgressAccumulator.h>
+#include <itkZeroFluxNeumannBoundaryCondition.h>
 
-#include <vnl/vnl_vector.h>
-#include <vnl/vnl_matrix.h>
 #include <vnl/algo/vnl_symmetric_eigensystem.h>
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
 
-#include<iostream>
+#include <iostream>
 
 namespace itk
 {

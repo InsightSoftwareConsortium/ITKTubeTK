@@ -23,14 +23,14 @@ limitations under the License.
 #ifndef __itkTubeNJetFeatureVectorGenerator_txx
 #define __itkTubeNJetFeatureVectorGenerator_txx
 
-#include <limits>
+#include "itkTubeNJetFeatureVectorGenerator.h"
+#include "itkTubeNJetImageFunction.h"
+#include "tubeMatrixMath.h"
 
 #include <itkImage.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include "tubeMatrixMath.h"
-#include "itkTubeNJetImageFunction.h"
-#include "itkTubeNJetFeatureVectorGenerator.h"
+#include <limits>
 
 namespace itk
 {
@@ -149,8 +149,6 @@ typename NJetFeatureVectorGenerator< ImageT >::FeatureValueType
 NJetFeatureVectorGenerator< ImageT >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
-  const unsigned int numFeatures = this->GetNumberOfFeatures();
-
   const unsigned int numInputImages = this->GetNumberOfInputImages();
 
   typedef NJetImageFunction< ImageType > NJetFunctionType;

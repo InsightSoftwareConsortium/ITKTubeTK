@@ -24,10 +24,10 @@ limitations under the License.
 #ifndef __itkTubePDFSegmenter_h
 #define __itkTubePDFSegmenter_h
 
-#include <vector>
-
 #include <itkImage.h>
 #include <itkListSample.h>
+
+#include <vector>
 
 namespace itk
 {

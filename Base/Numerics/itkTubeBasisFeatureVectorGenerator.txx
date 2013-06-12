@@ -24,20 +24,19 @@ limitations under the License.
 #ifndef __itkTubeBasisFeatureVectorGenerator_txx
 #define __itkTubeBasisFeatureVectorGenerator_txx
 
-#include <limits>
-#include <iostream>
 
-
-#include <itkTimeProbesCollectorBase.h>
+#include "itkTubeBasisFeatureVectorGenerator.h"
+#include "tubeMatrixMath.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkTimeProbesCollectorBase.h>
 
-#include "tubeMatrixMath.h"
-#include "itkTubeBasisFeatureVectorGenerator.h"
+#include <iostream>
+#include <limits>
 
 namespace itk
 {
@@ -333,8 +332,6 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 
     typedef itk::ImageRegionIteratorWithIndex< FeatureImageType >
       ImageIteratorType;
-
-    const unsigned int numFeatures = this->GetNumberOfFeatures();
 
     typename FeatureImageType::RegionType region;
     region = this->m_InputImageList[0]->GetLargestPossibleRegion();

@@ -24,18 +24,21 @@ limitations under the License.
 #ifndef __itkAnisotropicDiffusiveSparseRegistrationFilter_txx
 #define __itkAnisotropicDiffusiveSparseRegistrationFilter_txx
 
+
 #include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
+
 #include "itkDiffusiveRegistrationFilterUtils.h"
+#include "tubeTubeMath.h"
 
 #include <itkImageRegionSplitter.h>
 #include <itkSmoothingRecursiveGaussianImageFilter.h>
+
 #include <vtkFloatArray.h>
 #include <vtkPointData.h>
 #include <vtkPointLocator.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkVersion.h>
-#include "tubeTubeMath.h"
 
 namespace itk
 {

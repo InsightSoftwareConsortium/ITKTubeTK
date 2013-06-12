@@ -20,19 +20,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRidgeSeedFilter_h
 #define __itkTubeRidgeSeedFilter_h
 
-#include <vector>
-
-#include "vnl/vnl_vector.h"
-#include "vnl/vnl_matrix.h"
-
-#include "itkImage.h"
-
-#include "itkTubeRidgeFeatureVectorGenerator.h"
 #include "itkTubeBasisFeatureVectorGenerator.h"
 #include "itkTubePDFSegmenter.h"
+#include "itkTubeRidgeFeatureVectorGenerator.h"
+
+#include <itkImage.h>
+
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
+
+#include <vector>
 
 namespace itk
 {
@@ -55,9 +56,6 @@ public:
 
   itkNewMacro( Self );
 
-  //
-  // Custom Typedefs
-  //
   typedef ImageT                                  ImageType;
   typedef ImageT                                  InputImageType;
   typedef Image< float, ImageT::ImageDimension >  OutputImageType;
@@ -89,9 +87,6 @@ public:
   typedef PDFSegmenter< OutputImageType, 3, LabelmapType >
                                                   PDFSegmenterType;
 
-  //
-  // Methods
-  //
   void SetInput( typename ImageType::Pointer img );
   typename ImageType::Pointer GetInput( void );
 
@@ -145,14 +140,14 @@ private:
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
   typename PDFSegmenterType::Pointer              m_PDFSegmenter;
 
-};
+}; // End class RidgeSeedFilter
 
-}
+} // End namespace tube
 
-}
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkTubeRidgeSeedFilter.txx"
 #endif
 
-#endif
+#endif // End !defined(__itkTubeRidgeSeedFilter_h)

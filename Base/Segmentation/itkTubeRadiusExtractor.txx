@@ -29,13 +29,13 @@ limitations under the License.
 #ifndef __itkTubeRadiusExtractor_txx
 #define __itkTubeRadiusExtractor_txx
 
-#include <itkMinimumMaximumImageFilter.h>
-
-#include "tubeUserFunction.h"
-#include "tubeTubeMath.h"
-#include "tubeMatrixMath.h"
-
 #include "itkTubeRadiusExtractor.h"
+
+#include "tubeMatrixMath.h"
+#include "tubeTubeMath.h"
+#include "tubeUserFunction.h"
+
+#include <itkMinimumMaximumImageFilter.h>
 
 namespace itk
 {

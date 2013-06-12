@@ -26,12 +26,12 @@ limitations under the License.
 
 #include "itkTubeBlurImageFunction.h"
 
+#include <itkContinuousIndex.h>
+#include <itkImage.h>
+#include <itkImageRegionConstIterator.h>
+
 #include <cmath>
 #include <algorithm>
-
-#include <itkImage.h>
-#include <itkContinuousIndex.h>
-
 
 namespace itk
 {

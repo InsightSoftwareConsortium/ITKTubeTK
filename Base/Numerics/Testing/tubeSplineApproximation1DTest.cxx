@@ -21,21 +21,21 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
-#include <iostream>
-
-#include <vnl/vnl_math.h>
-#include <vcl_cmath.h>
-
-#include <itkImage.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkImageFileWriter.h>
-#include <itkMersenneTwisterRandomVariateGenerator.h>
-
-#include "tubeMacro.h"
 #include "tubeBrentOptimizer1D.h"
+#include "tubeMacro.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeUserFunction.h"
+
+#include <vcl_cmath.h>
+#include <vnl/vnl_math.h>
+
+#include <itkImage.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
+
+#include <cstdlib>
+#include <iostream>
 
 class MySA1DFunc : public tube::UserFunction< int, double >
 {

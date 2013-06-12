@@ -24,9 +24,11 @@ limitations under the License.
 #ifndef __itkTubeSpatialObjectToImageFilter_txx
 #define __itkTubeSpatialObjectToImageFilter_txx
 
-#include <vnl/vnl_vector.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include "itkTubeSpatialObjectToImageFilter.h"
+
+#include <itkImageRegionIteratorWithIndex.h>
+
+#include <vnl/vnl_vector.h>
 
 /** Constructor */
 template <unsigned int ObjectDimension,

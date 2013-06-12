@@ -21,11 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
-#include <itkFilterWatcher.h>
-#include <itkExceptionObject.h>
-
+#include "itkFilterWatcher.h"
 #include "itkTubeMetaRidgeSeed.h"
+
+#include <itkImage.h>
 
 int itkTubeMetaRidgeSeedTest( int argc, char * argv [] )
 {

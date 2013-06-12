@@ -21,51 +21,44 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
+#include "tubeMessage.h"
 
-#include <itkMacro.h>
-
-#include <itkResampleImageFilter.h>
-#include <itkImage.h>
-#include <itkMatrix.h>
-#include <itkImageFileReader.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkTranslationTransform.h>
-#include <itkImageFileWriter.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkOrientImageFilter.h>
-#include <itkImageMomentsCalculator.h>
-#include <itkLabelImageToLabelMapFilter.h>
-#include <itkImageDuplicator.h>
-
-
-// BOOST includes
 #include <boost/dynamic_bitset.hpp>
 
-#include "TransferLabelsToRegionsCLP.h"
+#include <itkImage.h>
+#include <itkImageDuplicator.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageMomentsCalculator.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkLabelImageToLabelMapFilter.h>
+#include <itkMatrix.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkOrientImageFilter.h>
+#include <itkResampleImageFilter.h>
+#include <itkTimeProbesCollectorBase.h>
+#include <itkTranslationTransform.h>
 
-// STL includes
 #include <algorithm>
-#include <vector>
-#include <set>
 #include <map>
+#include <set>
+#include <vector>
+
+#include "TransferLabelsToRegionsCLP.h"
 
 template< class TPixel, unsigned int VImageDimension >
 int DoIt( int argc, char * argv[] );
 
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
-
 
 int main( int argc, char **argv )
 {
   PARSE_ARGS;
   return tube::ParseArgsAndCallDoIt( argInImageFileName, argc, argv );
 }
-
 
 /** Check if image contains discrete values.
  *

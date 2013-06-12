@@ -22,15 +22,15 @@
 // in a lookup table.   By including this file, it creates a main function
 // that calls RegisterTests() then looks up the function pointer for the test
 // specified on the command line.
-#include <itkWin32Header.h>
+
+#include "itkDifferenceImageFilter2.h"
+
 #include <itkExtractImageFilter.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionConstIterator.h>
 #include <itkRescaleIntensityImageFilter.h>
 #include <itkSubtractImageFilter.h>
-
-#include "itkDifferenceImageFilter2.h"
 
 #define ITK_TEST_DIMENSION_MAX 6
 

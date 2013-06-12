@@ -16,11 +16,12 @@
  *
  *=========================================================================*/
 
-#include <itkHessianRecursiveGaussianImageFilter.h>
-#include "itkSheetnessMeasureImageFilter.h"
 #include "itkAngleOfIncidenceImageFilter.h"
-#include <itkImageFileWriter.h>
+#include "itkSheetnessMeasureImageFilter.h"
+
+#include <itkHessianRecursiveGaussianImageFilter.h>
 #include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 #include <itkThresholdImageFilter.h>
 
 int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv[] )

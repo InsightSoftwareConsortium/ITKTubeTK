@@ -14,18 +14,16 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
 
 #include "itkTubeToTubeTransformFilter.h"
-#include <itkSpatialObjectReader.h>
-#include <itkSpatialObjectWriter.h>
+
 #include <itkEuler3DTransform.h>
-#include <itkMath.h>
-#include <itkSpatialObjectToImageFilter.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
+#include <itkMath.h>
+#include <itkSpatialObjectReader.h>
+#include <itkSpatialObjectToImageFilter.h>
+#include <itkSpatialObjectWriter.h>
 
 int itkTubeToTubeTransformFilterTest(int argc, char* argv[] )
 {

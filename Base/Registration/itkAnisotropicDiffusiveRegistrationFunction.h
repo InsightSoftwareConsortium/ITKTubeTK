@@ -24,10 +24,11 @@ limitations under the License.
 #ifndef __itkAnisotropicDiffusiveRegistrationFunction_h
 #define __itkAnisotropicDiffusiveRegistrationFunction_h
 
-#include <itkPDEDeformableRegistrationFunction.h>
-
 #include "itkAnisotropicDiffusionTensorFunction.h"
 #include "itkMeanSquareRegistrationFunction.h"
+
+#include <itkPDEDeformableRegistrationFunction.h>
+
 #include <vector>
 
 namespace itk

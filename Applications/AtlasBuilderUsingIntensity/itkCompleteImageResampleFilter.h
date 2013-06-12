@@ -25,13 +25,13 @@ limitations under the License.
 #define __itkCompleteImageResampleFilter_h
 
 #include <itkFixedArray.h>
-#include <itkTransform.h>
 #include <itkImageFunction.h>
 #include <itkImageRegionIterator.h>
 #include <itkImageToImageFilter.h>
 #include <itkInterpolateImageFunction.h>
+#include <itkResampleImageFilter.h>
 #include <itkSize.h>
-#include <itkMacro.h>
+#include <itkTransform.h>
 
 namespace itk
 {

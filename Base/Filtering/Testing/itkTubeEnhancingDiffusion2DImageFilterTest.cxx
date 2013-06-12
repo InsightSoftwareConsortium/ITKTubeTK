@@ -21,12 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
 #include "itkFilterWatcher.h"
-#include <itkMacro.h>
+
+#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
 #include <itkTubeEnhancingDiffusion2DImageFilter.h>
 
 int itkTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv[] )

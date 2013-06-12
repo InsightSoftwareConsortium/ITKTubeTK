@@ -21,17 +21,16 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubeMacro.h"
+#include "tubeOptimizer1D.h"
+#include "tubeParabolicFitOptimizer1D.h"
+#include "tubeUserFunction.h"
+
+#include <vcl_cmath.h>
+#include <vnl/vnl_math.h>
+
 #include <cstdlib>
 #include <iostream>
-
-#include <vnl/vnl_math.h>
-#include <vcl_cmath.h>
-
-#include "tubeMacro.h"
-
-#include "tubeParabolicFitOptimizer1D.h"
-#include "tubeOptimizer1D.h"
-#include "tubeUserFunction.h"
 
 class MyOPFunc : public tube::UserFunction< double, double >
 {

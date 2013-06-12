@@ -22,11 +22,11 @@ limitations under the License.
 =========================================================================*/
 
 #include "itkLabelMapToAcousticImpedanceImageFilter.h"
-#include <fstream>
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
+#include <fstream>
 
 template< class TLookupTable >
 int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable );

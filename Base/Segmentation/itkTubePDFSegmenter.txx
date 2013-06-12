@@ -24,33 +24,27 @@ limitations under the License.
 #ifndef __itkTubePDFSegmenter_txx
 #define __itkTubePDFSegmenter_txx
 
-#include <limits>
-
-#include <vnl/vnl_matrix.h>
-
 #include "itkTubePDFSegmenter.h"
-
 #include "itkVectorImageToListGenerator.h"
 
-#include <itkTimeProbesCollectorBase.h>
-
+#include <itkBinaryBallStructuringElement.h>
+#include <itkBinaryDilateImageFilter.h>
+#include <itkBinaryErodeImageFilter.h>
+#include <itkConnectedThresholdImageFilter.h>
+#include <itkCurvatureAnisotropicDiffusionImageFilter.h>
+#include <itkDiscreteGaussianImageFilter.h>
+#include <itkHistogram.h>
+#include <itkHistogramToProbabilityImageFilter.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkHistogram.h>
 #include <itkJoinImageFilter.h>
-#include <itkHistogramToProbabilityImageFilter.h>
-#include <itkDiscreteGaussianImageFilter.h>
-#include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkConnectedThresholdImageFilter.h>
-#include <itkBinaryErodeImageFilter.h>
-#include <itkBinaryDilateImageFilter.h>
-#include <itkBinaryBallStructuringElement.h>
+#include <itkTimeProbesCollectorBase.h>
 #include <itkVotingBinaryIterativeHoleFillingImageFilter.h>
 
+#include <vnl/vnl_matrix.h>
 
-//#include "itkPluginFilterWatcher.h"
-
+#include <limits>
 
 namespace itk
 {

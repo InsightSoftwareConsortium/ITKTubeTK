@@ -21,15 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #ifndef __itkTubeSpatialObjectToImageFilter_h
 #define __itkTubeSpatialObjectToImageFilter_h
 
-#include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObject.h>
+#include <itkSpatialObjectToImageFilter.h>
 #include <itkTubeSpatialObject.h>
 #include <itkTubeSpatialObjectPoint.h>
-
 
 namespace itk
 {

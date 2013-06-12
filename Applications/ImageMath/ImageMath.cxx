@@ -21,37 +21,37 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cmath>
-#include <iostream>
+#include "itkTubeCVTImageFilter.h"
+#include "itkTubeRidgeExtractor.h"
 
+#include <itkBinaryBallStructuringElement.h>
+#include <itkCastImageFilter.h>
+#include <itkConnectedThresholdImageFilter.h>
+#include <itkContinuousIndex.h>
+#include <itkDilateObjectMorphologyImageFilter.h>
+#include <itkErodeObjectMorphologyImageFilter.h>
+#include <itkExtractImageFilter.h>
+#include <itkHistogramMatchingImageFilter.h>
 #include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 #include <itkImageIOBase.h>
 #include <itkImageIOFactory.h>
-#include <itkImageFileWriter.h>
-#include <itkImageFileReader.h>
-#include <itkMetaImageIO.h>
 #include <itkImageRegionIterator.h>
 #include <itkImageRegionIteratorWithIndex.h>
-#include <itkNormalVariateGenerator.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
-#include <itkHistogramMatchingImageFilter.h>
-#include <itkResampleImageFilter.h>
-#include <itkCastImageFilter.h>
-#include <itkRecursiveGaussianImageFilter.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkErodeObjectMorphologyImageFilter.h>
-#include <itkBinaryBallStructuringElement.h>
-#include <itkDilateObjectMorphologyImageFilter.h>
-#include <itkConnectedThresholdImageFilter.h>
-#include <itkExtractImageFilter.h>
-#include <itkContinuousIndex.h>
-#include <itkNormalizeImageFilter.h>
+#include <itkMetaImageIO.h>
 #include <itkMirrorPadImageFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkNormalizeImageFilter.h>
+#include <itkNormalVariateGenerator.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkResampleImageFilter.h>
+
 #include <metaCommand.h>
 
-// tubetk includes
-#include "itkTubeRidgeExtractor.h"
-#include "itkTubeCVTImageFilter.h"
+#include <cmath>
+#include <iostream>
 
 /** Resamples image a to b if they are different, returns resampled_a */
 template< class pixelT, unsigned int dimensionT >

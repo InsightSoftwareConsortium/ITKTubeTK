@@ -18,11 +18,11 @@
 #ifndef __tubeOptionList_h
 #define __tubeOptionList_h
 
+#include <itkArray.h>
+
 #include <map>
 #include <string>
 #include <vector>
-
-#include <itkArray.h>
 
 namespace tube
 {

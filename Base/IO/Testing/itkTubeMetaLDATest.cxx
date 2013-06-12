@@ -21,12 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkFilterWatcher.h"
 #include "itkTubeMetaLDA.h"
 
-#include <cstdlib>
 #include <itkImage.h>
 
-#include "itkFilterWatcher.h"
+#include <cstdlib>
 
 int itkTubeMetaLDATest( int argc, char * argv[] )
 {

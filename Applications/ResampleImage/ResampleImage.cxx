@@ -21,44 +21,28 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
 
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
-// ITK Includes
+#include <itkBSplineInterpolateImageFunction.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkResampleImageFilter.h>
+#include <itkTimeProbesCollectorBase.h>
 #include <itkTransformFileReader.h>
 
-// The following three should be used in every CLI application
-#include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include <itkTimeProbesCollectorBase.h>
+#include "ResampleImageCLP.h"
 
-// Includes specific to this CLI application
-#include <itkResampleImageFilter.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkLinearInterpolateImageFunction.h>
-#include <itkBSplineInterpolateImageFunction.h>
-
-// Must do a forward declaraction of DoIt before including
-// tubeCLIHelperFunctions
 template< class PixelT, unsigned int DimensionT >
 int DoIt( int argc, char * argv[] );
 
-// Must include CLP before including tubeCLIHleperFunctions
-#include "ResampleImageCLP.h"
-
-// Includes tube::ParseArgsAndCallDoIt function
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-// Resample code begins
 template< class PixelT, unsigned int DimensionI >
 int DoIt( int argc, char *argv[] )
 {

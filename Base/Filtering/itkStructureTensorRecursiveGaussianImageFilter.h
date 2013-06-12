@@ -24,12 +24,13 @@ limitations under the License.
 #ifndef __itkStructureTensorRecursiveGaussianImageFilter_h
 #define __itkStructureTensorRecursiveGaussianImageFilter_h
 
-#include <itkRecursiveGaussianImageFilter.h>
-#include <itkNthElementImageAdaptor.h>
 #include <itkImage.h>
-#include <itkSymmetricSecondRankTensor.h>
+#include <itkImageToImageFilter.h>
+#include <itkNthElementImageAdaptor.h>
 #include <itkPixelTraits.h>
 #include <itkProgressAccumulator.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkSymmetricSecondRankTensor.h>
 
 namespace itk
 {
@@ -41,7 +42,7 @@ namespace itk
  * \ingroup Singlethreaded
  */
 template <typename TInputImage,
-          typename TOutputImage= Image< SymmetricSecondRankTensor<
+          typename TOutputImage = Image< SymmetricSecondRankTensor<
   typename NumericTraits< typename TInputImage::PixelType >
   ::RealType,
   TInputImage::ImageDimension >,

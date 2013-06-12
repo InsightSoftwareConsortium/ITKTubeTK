@@ -24,11 +24,12 @@ limitations under the License.
 #ifndef __itkImageToTubeRigidMetric_h
 #define __itkImageToTubeRigidMetric_h
 
-#include <itkMinimumMaximumImageCalculator.h>
-#include <itkEuler3DTransform.h>
-#include <itkImageToSpatialObjectMetric.h>
-#include <itkGaussianDerivativeImageFunction.h>
 #include "itkTubeExponentialResolutionWeightFunction.h"
+
+#include <itkEuler3DTransform.h>
+#include <itkGaussianDerivativeImageFunction.h>
+#include <itkImageToSpatialObjectMetric.h>
+#include <itkMinimumMaximumImageCalculator.h>
 
 namespace itk
 {

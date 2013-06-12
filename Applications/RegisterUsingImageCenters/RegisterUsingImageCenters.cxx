@@ -24,13 +24,13 @@ limitations under the License.
 #include "tubeMessage.h"
 
 #include <itkImage.h>
-#include <itkMatrix.h>
 #include <itkImageFileReader.h>
-#include <itkTranslationTransform.h>
-#include <itkResampleImageFilter.h>
 #include <itkImageFileWriter.h>
+#include <itkMatrix.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkOrientImageFilter.h>
+#include <itkResampleImageFilter.h>
+#include <itkTranslationTransform.h>
 
 #include "RegisterUsingImageCentersCLP.h"
 
@@ -44,12 +44,11 @@ int DoIt( int argc, char **argv )
   (void)argv;
   return 0;
 }
-#include "tubeCLIHelperFunctions.h"
 
+#include "tubeCLIHelperFunctions.h"
 
 // Typdefs independent of image type
 typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
-
 
 int main(int argc, char **argv)
 {

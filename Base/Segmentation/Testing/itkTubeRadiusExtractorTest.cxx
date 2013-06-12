@@ -21,19 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkSpatialObjectReader.h>
-#include <itkGroupSpatialObject.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkMersenneTwisterRandomVariateGenerator.h>
-
+#include "itkTubeRadiusExtractor.h"
 #include "tubeMatrixMath.h"
 #include "tubeMessage.h"
 
-#include "itkTubeRadiusExtractor.h"
-
+#include <itkGroupSpatialObject.h>
+#include <itkImage.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
+#include <itkSpatialObjectReader.h>
 
 int itkTubeRadiusExtractorTest( int argc, char * argv[] )
   {

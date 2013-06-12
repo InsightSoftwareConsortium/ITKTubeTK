@@ -24,11 +24,12 @@ limitations under the License.
 #ifndef __tubeMatrixMath_txx
 #define __tubeMatrixMath_txx
 
-#include <cstdlib>
-#include <iostream>
+#include "tubeMatrixMath.h"
+
 #include <vnl/algo/vnl_symmetric_eigensystem.h>
 
-#include "tubeMatrixMath.h"
+#include <cstdlib>
+#include <iostream>
 
 namespace tube
 {

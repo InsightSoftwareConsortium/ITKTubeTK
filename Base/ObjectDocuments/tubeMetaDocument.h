@@ -24,8 +24,9 @@ limitations under the License.
 #ifndef __tubeMetaDocument_h
 #define __tubeMetaDocument_h
 
-#include <fstream>
 #include <metaUtils.h>
+
+#include <fstream>
 
 extern int META_DEBUG;
 

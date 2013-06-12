@@ -30,6 +30,7 @@ limitations under the License.
 
 namespace itk
 {
+
 namespace Function
 {
 

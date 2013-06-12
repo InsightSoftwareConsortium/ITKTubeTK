@@ -24,12 +24,13 @@ limitations under the License.
 #ifndef __itkAngleOfIncidenceImageFilter_h
 #define __itkAngleOfIncidenceImageFilter_h
 
-#include <itkImageToImageFilter.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkSymmetricEigenAnalysisImageFilter.h>
 #include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include <itkVectorImage.h>
+
 #include <itkHessianRecursiveGaussianImageFilter.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageToImageFilter.h>
+#include <itkSymmetricEigenAnalysisImageFilter.h>
+#include <itkVectorImage.h>
 
 namespace itk
 {

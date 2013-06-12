@@ -21,12 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkTubeRidgeExtractor.h"
+
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
-
-#include "itkTubeRidgeExtractor.h"
 
 int itkTubeRidgeExtractorTest( int argc, char * argv[] )
   {

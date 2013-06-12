@@ -20,19 +20,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
 #ifndef __itkTubeRidgeSeedFilter_txx
 #define __itkTubeRidgeSeedFilter_txx
 
-#include <limits>
+#include "itkTubeRidgeSeedFilter.h"
+
+#include "tubeMatrixMath.h"
 
 #include <itkImage.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
+#include <itkImageRegionIteratorWithIndex.h>
 #include <itkProgressReporter.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include "tubeMatrixMath.h"
-#include "itkTubeRidgeSeedFilter.h"
+#include <limits>
 
 namespace itk
 {
@@ -273,8 +275,8 @@ RidgeSeedFilter< ImageT, LabelmapT >
     << std::endl;
 }
 
-} // tube namespace
+} // End namespace tube
 
-} // itk namespace
+} // End namespace itk
 
-#endif //RidgeSeedFilter_txx
+#endif // End !defined(__itkTubeRidgeSeedFilter_txx)

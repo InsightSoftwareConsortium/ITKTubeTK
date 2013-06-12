@@ -21,17 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
-#ifdef __BORLANDC__
-#define ITK_LEAN_AND_MEAN
-#endif
-
 #include "itkTubePDFSegmenter.h"
-
-#include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
@@ -39,6 +29,11 @@ limitations under the License.
 #include <itkTimeProbesCollectorBase.h>
 
 #include <vnl/vnl_vector.h>
+
+#include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
+
+template <class T, unsigned int N>
+int DoIt( int argc, char * argv[] );
 
 // Description:
 // Get the PixelType and ComponentType from fileName

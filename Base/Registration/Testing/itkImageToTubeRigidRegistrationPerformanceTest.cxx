@@ -21,31 +21,26 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifdef _MSC_VER
-#pragma warning ( disable : 4786 )
-#endif
-
 #include "itkImageToTubeRigidRegistration.h"
-#include <itkSpatialObjectReader.h>
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
-#include <itkImageFileReader.h>
 #include "itkTubeToTubeTransformFilter.h"
+
+#include <itkCommand.h>
 #include <itkEuler3DTransform.h>
+#include <itkImageFileReader.h>
 #include <itkMath.h>
-#include <itkRecursiveGaussianImageFilter.h>
-#include <itkMersenneTwisterRandomVariateGenerator.h>
-
-#include <itkTimeProbesCollectorBase.h>
 #include <itkMemoryProbesCollectorBase.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
+#include <itkRecursiveGaussianImageFilter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkTimeProbesCollectorBase.h>
 
-// STD includes
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 //  The following section of code implements a Command observer
 //  used to monitor the evolution of the registration process.
 //
-#include <itkCommand.h>
 class CommandIterationUpdate : public itk::Command
 {
 public:
