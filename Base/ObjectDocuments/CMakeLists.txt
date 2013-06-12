@@ -28,22 +28,22 @@ find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
 set( TubeTK_Base_ObjectDocuments_H_Files
-  itkBlobSpatialObjectDocument.h
-  itkDocument.h
-  itkImageDocument.h
-  itkObjectDocument.h
-  itkObjectDocumentToImageFilter.h
-  itkObjectDocumentToObjectSource.h
-  itkSpatialObjectDocument.h
-  itkSpatialObjectToSpatialObjectFilter.h
+  itktubeBlobSpatialObjectDocument.h
+  itktubeDocument.h
+  itktubeImageDocument.h
+  itktubeObjectDocument.h
+  itktubeObjectDocumentToImageFilter.h
+  itktubeObjectDocumentToObjectSource.h
+  itktubeSpatialObjectDocument.h
+  itktubeSpatialObjectToSpatialObjectFilter.h
   tubeMetaDocument.h
   tubeMetaObjectDocument.h
   tubeOptionList.h )
 
-set( TubeTk_Base_ObjectDocuments_TXX_Files
-  itkObjectDocumentToImageFilter.txx
-  itkObjectDocumentToObjectSource.txx
-  itkSpatialObjectToSpatialObjectFilter.txx )
+set( TubeTk_Base_ObjectDocuments_HXX_Files
+  itktubeObjectDocumentToImageFilter.hxx
+  itktubeObjectDocumentToObjectSource.hxx
+  itktubeSpatialObjectToSpatialObjectFilter.hxx )
 
 set( TubeTk_Base_ObjectDocuments_SRCS
   tubeMetaDocument.cxx
@@ -52,7 +52,7 @@ set( TubeTk_Base_ObjectDocuments_SRCS
 
 add_library( TubeObjectDocuments STATIC
   ${TubeTK_Base_ObjectDocuments_H_Files}
-  ${TubeTk_Base_ObjectDocuments_TXX_Files}
+  ${TubeTk_Base_ObjectDocuments_HXX_Files}
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
 target_link_libraries( TubeObjectDocuments ${ITK_LIBRARIES} )
@@ -67,5 +67,5 @@ endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_ObjectDocuments_H_Files}
-  ${TubeTK_Base_ObjectDocuments_TXX_Files}
+  ${TubeTK_Base_ObjectDocuments_HXX_Files}
   DESTINATION include )

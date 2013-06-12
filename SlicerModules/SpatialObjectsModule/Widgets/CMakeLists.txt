@@ -29,8 +29,7 @@ set(${KIT}_EXPORT_DIRECTIVE "Q_SLICER_MODULE_${MODULE_NAME_UPPER}_WIDGETS_EXPORT
 set(${KIT}_INCLUDE_DIRECTORIES
   ${CMAKE_BUILD_DIR}
   ${vtkSlicerSpatialObjectsModuleMRML_SOURCE_DIR}
-  ${vtkSlicerSpatialObjectsModuleMRML_BINARY_DIR}
-  )
+  ${vtkSlicerSpatialObjectsModuleMRML_BINARY_DIR} )
 
 set(${KIT}_SRCS
   qMRMLSpatialObjectsTreeView.h
@@ -44,8 +43,7 @@ set(${KIT}_SRCS
   qSlicerSpatialObjectsGlyphWidget.cxx
   qSlicerSpatialObjectsGlyphWidget.h
   qSlicerSpatialObjectsWidget.cxx
-  qSlicerSpatialObjectsWidget.h
-  )
+  qSlicerSpatialObjectsWidget.h )
 
 set(${KIT}_MOC_SRCS
   qSlicerSpatialObjectsModuleWidget.h
@@ -53,24 +51,20 @@ set(${KIT}_MOC_SRCS
   qSlicerSpatialObjectsGlyphWidget.h
   qSlicerSpatialObjectsWidget.h
   qMRMLSpatialObjectsTreeView.h
-  qMRMLSceneSpatialObjectsModel.h
-  )
+  qMRMLSceneSpatialObjectsModel.h )
 
 set(${KIT}_UI_SRCS
   Resources/UI/qSlicerSpatialObjectsModule.ui
   Resources/UI/qSlicerSpatialObjectsBasicWidget.ui
   Resources/UI/qSlicerSpatialObjectsGlyphWidget.ui
-  Resources/UI/qSlicerSpatialObjectsWidget.ui
-  )
+  Resources/UI/qSlicerSpatialObjectsWidget.ui )
 
-set(${KIT}_RESOURCES
-  )
+set(${KIT}_RESOURCES )
 
 set(${KIT}_TARGET_LIBRARIES
   vtkSlicerSpatialObjectsModuleLogic
   ${MRML_LIBRARIES}
-  vtkSlicerAnnotationsModuleMRML
-  )
+  vtkSlicerAnnotationsModuleMRML )
 
 #-----------------------------------------------------------------------------
 SlicerMacroBuildModuleWidgets(
@@ -82,8 +76,7 @@ SlicerMacroBuildModuleWidgets(
   UI_SRCS ${${KIT}_UI_SRCS}
   TARGET_LIBRARIES ${${KIT}_TARGET_LIBRARIES}
   RESOURCES ${${KIT}_RESOURCES}
-  WRAP_PYTHONQT
-  )
+  WRAP_PYTHONQT )
 
 # Plugin
 #add_subdirectory(Plugins)

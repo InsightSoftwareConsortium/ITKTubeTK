@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkAnisotropicDiffusiveRegistrationFilter.h"
-#include "itkAnisotropicDiffusiveSparseRegistrationFilter.h"
-#include "itkDiffusiveRegistrationFilter.h"
+#include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
+#include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
+#include "itktubeDiffusiveRegistrationFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -156,13 +156,13 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< VectorType, ImageDimension >        VectorImageType;
 
   // Initialize the registration filter
-  typedef itk::DiffusiveRegistrationFilter
+  typedef itk::tube::DiffusiveRegistrationFilter
       < FixedImageType, MovingImageType, VectorImageType >
       DiffusiveRegistrationFilterType;
-  typedef itk::AnisotropicDiffusiveRegistrationFilter
+  typedef itk::tube::AnisotropicDiffusiveRegistrationFilter
       < FixedImageType, MovingImageType, VectorImageType >
       AnisotropicDiffusiveRegistrationFilterType;
-  typedef itk::AnisotropicDiffusiveSparseRegistrationFilter
+  typedef itk::tube::AnisotropicDiffusiveSparseRegistrationFilter
       < FixedImageType, MovingImageType, VectorImageType >
       AnisotropicDiffusiveSparseRegistrationFilterType;
 

@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
+#include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -108,7 +108,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Edge enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion edge enhancement filter
-  typedef itk::AnisotropicEdgeEnhancementDiffusionImageFilter<
+  typedef itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter<
     FilterInputImageType, FilterOutputImageType>  EdgeEnhancementFilterType;
 
   // Create a edge enhancement Filter

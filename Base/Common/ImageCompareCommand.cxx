@@ -15,7 +15,7 @@
 
 =========================================================================*/
 
-#include "itkDifferenceImageFilter2.h"
+#include "itktubeDifferenceImageFilter2.h"
 
 #include <itkExtractImageFilter.h>
 #include <itkImageFileReader.h>
@@ -370,7 +370,7 @@ int RegressionTestImage( const char *testImageFilename,
     }
 
   // Now compare the two images
-  typedef itk::DifferenceImageFilter2<ImageType, ImageType> DiffType;
+  typedef itk::tube::DifferenceImageFilter2<ImageType, ImageType> DiffType;
   typename DiffType::Pointer diff = DiffType::New();
   diff->SetValidInput( baselineReader->GetOutput() );
   diff->SetTestInput( testReader->GetOutput() );

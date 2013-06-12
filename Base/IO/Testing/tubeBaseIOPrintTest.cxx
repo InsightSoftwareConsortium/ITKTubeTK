@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeMetaLDA.h"
-#include "itkTubeMetaNJetLDA.h"
-#include "itkTubeMetaRidgeSeed.h"
-#include "itkTubeMetaTubeParams.h"
+#include "itktubeMetaLDA.h"
+#include "itktubeMetaNJetLDA.h"
+#include "itktubeMetaRidgeSeed.h"
+#include "itktubeMetaTubeParams.h"
 
 #include <cstdlib>
 

@@ -26,17 +26,14 @@ set( MODULE_NAME CropImage )
 project( ${MODULE_NAME} )
 
 set( CropImage_H_Files
-  tubeCropROI.h
-  )
+  tubeCropROI.h )
 
-set( CropImage_TXX_Files
-  tubeCropROI.txx
-  )
+set( CropImage_HXX_Files
+  tubeCropROI.hxx )
 
 add_custom_target( CropImageInclude SOURCES
   ${CropImage_H_Files}
-  ${CropImage_TXX_Files}
-  )
+  ${CropImage_HXX_Files} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -52,8 +49,7 @@ SEMMacroBuildCLI(
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-  )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

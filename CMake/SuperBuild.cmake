@@ -66,8 +66,7 @@ if( APPLE )
   list( APPEND CMAKE_OSX_EXTERNAL_PROJECT_ARGS
     -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
     -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT}
-    -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
-  )
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
 ##
@@ -94,8 +93,7 @@ if( NOT USE_SYSTEM_JsonCpp )
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
-    INSTALL_COMMAND ""
-    )
+    INSTALL_COMMAND "" )
   set( JsonCpp_DIR "${base}/JsonCpp-Build" )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "JsonCpp" )
 endif( NOT USE_SYSTEM_JsonCpp )
@@ -130,8 +128,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
         -DBUILD_TESTING:BOOL=OFF
         -DITK_USE_REVIEW:BOOL=ON
         -DITKV3_COMPATIBILITY:BOOL=ON
-      INSTALL_COMMAND ""
-      )
+      INSTALL_COMMAND "" )
 
     set( ITK_DIR "${base}/Insight-Build" )
 
@@ -165,8 +162,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
           -DWRAP_RUBY:BOOL=OFF
         INSTALL_COMMAND ""
         DEPENDS
-          "Insight"
-        )
+          "Insight" )
 
       set( SimpleITK_DIR "${base}/SimpleITK-Build" )
       set( TubeTK_SimpleITK_Def "-DSimpleITK_DIR:PATH=${SimpleITK_DIR}" )
@@ -216,8 +212,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
             -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
             -DVTK_USE_QT:BOOL=ON
             -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-          INSTALL_COMMAND ""
-          )
+          INSTALL_COMMAND "" )
         set( VTK_DIR "${base}/VTK-Build" )
 
       else( TubeTK_USE_QT )
@@ -245,8 +240,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
             -DBUILD_EXAMPLES:BOOL=OFF
             -DBUILD_TESTING:BOOL=OFF
             -DVTK_USE_GUISUPPORT:BOOL=ON
-          INSTALL_COMMAND ""
-          )
+          INSTALL_COMMAND "" )
         set( VTK_DIR "${base}/VTK-Build" )
 
       endif( TubeTK_USE_QT )
@@ -298,8 +292,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
         -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
       INSTALL_COMMAND ""
       DEPENDS
-        ${${proj}_DEPENDS}
-      )
+        ${${proj}_DEPENDS} )
     set( ParameterSerializer_DIR "${base}/ParameterSerializer-Build" )
     set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "ParameterSerializer" )
   endif( NOT USE_SYSTEM_ParameterSerializer )
@@ -344,8 +337,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
     INSTALL_COMMAND ""
     DEPENDS
-      ${SlicerExecutionModel_DEPENDS}
-    )
+      ${SlicerExecutionModel_DEPENDS} )
   set( SlicerExecutionModel_DIR ${CMAKE_BINARY_DIR}/${proj}-Build )
   set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "SlicerExecutionModel" )
 
@@ -390,8 +382,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
             -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
           INSTALL_COMMAND ""
           DEPENDS
-            ${CTK_DEPENDS}
-          )
+            ${CTK_DEPENDS} )
         set( CTK_DIR "${CMAKE_BINARY_DIR}/CTK-Build" )
 
         set( TubeTK_DEPENDS ${TubeTK_DEPENDS} "CTK" )
@@ -440,8 +431,7 @@ if( TubeTK_BUILD_ImageViewer )
       -DITK_DIR:PATH=${ITK_DIR}
     INSTALL_COMMAND ""
     DEPENDS
-      ${ImageViewer_DEPENDS}
-    )
+      ${ImageViewer_DEPENDS} )
 endif( TubeTK_BUILD_ImageViewer )
 
 ## LibSVM
@@ -463,8 +453,7 @@ if( TubeTK_USE_LIBSVM )
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-Build
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-  )
+      -DBUILD_SHARED_LIBS:BOOL=${shared} )
   set( LIBSVM_DIR "${CMAKE_BINARY_DIR}/${proj}-Build" )
 endif( TubeTK_USE_LIBSVM )
 
@@ -485,8 +474,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     -DVTK_DIR:PATH=${VTK_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-    -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
-    )
+    -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR} )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
 ExternalProject_Add( ${proj}
@@ -527,5 +515,4 @@ ExternalProject_Add( ${proj}
     ${TubeTK_SimpleITK_Def}
   INSTALL_COMMAND ""
   DEPENDS
-    ${TubeTK_DEPENDS}
-  )
+    ${TubeTK_DEPENDS} )

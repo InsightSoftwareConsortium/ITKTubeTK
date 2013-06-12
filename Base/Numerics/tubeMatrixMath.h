@@ -91,7 +91,7 @@ ComputeEuclideanDistance(PointType x, PointType y);
 
 
 #ifndef TUBE_MANUAL_INSTANTIATION
-#include "tubeMatrixMath.txx"
+#include "tubeMatrixMath.hxx"
 #endif
 
 #endif // End !defined(__tubeMatrixMath_h)

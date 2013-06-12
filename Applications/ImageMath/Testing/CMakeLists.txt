@@ -351,8 +351,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test16
                MIDAS{CroppedWholeLungCTScan.mhd.md5}
                -c 100 10
                -w ${TEMP}/${PROJECT_NAME}Test16.mha
-               MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
-               )
+               MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
 #######
 # Test16-Compare

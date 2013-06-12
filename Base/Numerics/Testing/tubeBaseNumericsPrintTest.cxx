@@ -21,15 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImageRegionMomentsCalculator.h"
-#include "itkJointHistogramImageFunction.h"
-#include "itkTubeBasisFeatureVectorGenerator.h"
-#include "itkTubeBlurImageFunction.h"
-#include "itkTubeNJetFeatureVectorGenerator.h"
-#include "itkTubeNJetImageFunction.h"
-#include "itkTubeRidgeFeatureVectorGenerator.h"
-#include "itkVectorImageToListGenerator.h"
-#include "itkVotingResampleImageFunction.h"
+#include "itktubeBasisFeatureVectorGenerator.h"
+#include "itktubeBlurImageFunction.h"
+#include "itktubeImageRegionMomentsCalculator.h"
+#include "itktubeJointHistogramImageFunction.h"
+#include "itktubeNJetFeatureVectorGenerator.h"
+#include "itktubeNJetImageFunction.h"
+#include "itktubeRidgeFeatureVectorGenerator.h"
+#include "itktubeVectorImageToListGenerator.h"
+#include "itktubeVotingResampleImageFunction.h"
 
 #include <itkImage.h>
 
@@ -38,17 +38,17 @@ int tubeBaseNumericsPrintTest( int, char ** )
   typedef itk::Image< float, 2 >                 ImageType;
   typedef itk::Image< itk::Vector<float, 2>, 2 > VectorImageType;
 
-  itk::ImageRegionMomentsCalculator< ImageType >::Pointer
+  itk::tube::ImageRegionMomentsCalculator< ImageType >::Pointer
     regionMomentsObject =
-    itk::ImageRegionMomentsCalculator< ImageType >::New();
-  std::cout << "-------------itkImageRegionMomentsCalculator"
+    itk::tube::ImageRegionMomentsCalculator< ImageType >::New();
+  std::cout << "-------------itktubeImageRegionMomentsCalculator"
             << regionMomentsObject
             << std::endl;
 
-  itk::JointHistogramImageFunction< ImageType >::Pointer
+  itk::tube::JointHistogramImageFunction< ImageType >::Pointer
     jointHistoObject =
-    itk::JointHistogramImageFunction< ImageType >::New();
-  std::cout << "-------------itkJointHistogramImageFunction"
+    itk::tube::JointHistogramImageFunction< ImageType >::New();
+  std::cout << "-------------itktubeJointHistogramImageFunction"
             << jointHistoObject
             << std::endl;
 
@@ -59,7 +59,7 @@ int tubeBaseNumericsPrintTest( int, char ** )
   itk::tube::NJetImageFunction< ImageType >::Pointer
     nJetObject =
     itk::tube::NJetImageFunction< ImageType >::New();
-  std::cout << "-------------itkTubeNJetImageFunction"
+  std::cout << "-------------itktubeNJetImageFunction"
             << nJetObject
             << std::endl;
 
@@ -82,19 +82,19 @@ int tubeBaseNumericsPrintTest( int, char ** )
     << ridgeFeatureVectorGenerator << std::endl;
 
 
-  itk::Statistics::VectorImageToListGenerator< VectorImageType,
+  itk::tube::Statistics::VectorImageToListGenerator< VectorImageType,
       ImageType >::Pointer
     vectorImageToListObject =
-    itk::Statistics::VectorImageToListGenerator< VectorImageType,
+    itk::tube::Statistics::VectorImageToListGenerator< VectorImageType,
       ImageType >::New();
-  std::cout << "-------------itkVectorImageToListGenerator"
+  std::cout << "-------------itktubeVectorImageToListGenerator"
             << vectorImageToListObject
             << std::endl;
 
-  itk::VotingResampleImageFunction< ImageType >::Pointer
+  itk::tube::VotingResampleImageFunction< ImageType >::Pointer
     votingResampleObject =
-    itk::VotingResampleImageFunction< ImageType >::New();
-  std::cout << "-------------itkVotingResampleImageFunction"
+    itk::tube::VotingResampleImageFunction< ImageType >::New();
+  std::cout << "-------------itktubeVotingResampleImageFunction"
             << votingResampleObject
             << std::endl;
 

@@ -24,8 +24,8 @@ limitations under the License.
 #ifndef __tubeMetaObjectDocument_h
 #define __tubeMetaObjectDocument_h
 
-#include "itkBlobSpatialObjectDocument.h"
-#include "itkImageDocument.h"
+#include "itktubeBlobSpatialObjectDocument.h"
+#include "itktubeImageDocument.h"
 #include "tubeMetaDocument.h"
 
 namespace tube

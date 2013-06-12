@@ -50,6 +50,9 @@ int DoIt( int argc, char * argv[] );
 namespace itk
 {
 
+namespace tube
+{
+
 template< class pixelT, unsigned int dimensionT >
 class ContrastCostFunction
 : public SingleValuedCostFunction
@@ -276,6 +279,8 @@ private:
 
 }; // End class ContrastCostFunction
 
+} // End namespace tube
+
 } // End namespace itk
 
 template< class pixelT, unsigned int dimensionT >
@@ -349,7 +354,7 @@ int DoIt( int argc, char * argv[] )
   outputImage->Allocate();
   progressReporter.Report( 0.2 );
 
-  typedef itk::ContrastCostFunction< PixelType, dimensionT >
+  typedef itk::tube::ContrastCostFunction< PixelType, dimensionT >
                                                 ContrastCostFunctionType;
   typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
   typedef itk::FRPROptimizer                    OptimizerType;

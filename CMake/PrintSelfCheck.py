@@ -47,8 +47,8 @@ class ClassErrors(object):
 
         if class_name and printself_found:
             class_path = fname[:-2]
-            if os.path.exists(class_path + '.txx'):
-                self._check_printself(class_path + '.txx', ivars,
+            if os.path.exists(class_path + '.hxx'):
+                self._check_printself(class_path + '.hxx', ivars,
                         superclass_name)
             elif os.path.exists(class_path + '.cxx'):
                 self._check_printself(class_path + '.cxx', ivars,

@@ -27,23 +27,25 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_IO_H_Files
-  itkTubeMetaLDA.h
-  itkTubeMetaNJetLDA.h )
+  itktubeMetaLDA.h
+  itktubeMetaNJetLDA.h
+  itktubeMetaRidgeSeed.h
+  itktubeMetaTubeParams.h )
 
-set( TubeTK_Base_IO_TXX_Files )
+set( TubeTK_Base_IO_HXX_Files )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common )
 
 set( TubeTK_Base_IO_SRCS
-  itkTubeMetaLDA.cxx
-  itkTubeMetaNJetLDA.cxx
-  itkTubeMetaRidgeSeed.cxx
-  itkTubeMetaTubeParams.cxx )
+  itktubeMetaLDA.cxx
+  itktubeMetaNJetLDA.cxx
+  itktubeMetaRidgeSeed.cxx
+  itktubeMetaTubeParams.cxx )
 
 add_library( TubeIO STATIC
   ${TubeTK_Base_IO_H_Files}
-  ${TubeTK_Base_IO_TXX_Files}
+  ${TubeTK_Base_IO_HXX_Files}
   ${TubeTK_Base_IO_SRCS} )
 
 target_link_libraries( TubeIO ${ITK_LIBRARIES} )
@@ -58,5 +60,5 @@ endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Numerics_H_Files}
-  ${TubeTK_Base_Numerics_TXX_Files}
+  ${TubeTK_Base_Numerics_HXX_Files}
   DESTINATION include )

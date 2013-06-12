@@ -28,14 +28,14 @@ limitations under the License.
 void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseFilteringPrintTest );
-  REGISTER_TEST( itkSubSampleTubeSpatialObjectFilterTest );
-  REGISTER_TEST( itkSubSampleTubeTreeSpatialObjectFilterTest );
-  REGISTER_TEST( itkStructureTensorRecursiveGaussianImageFilterTest );
-  REGISTER_TEST( itkStructureTensorRecursiveGaussianImageFilterTestNew );
-  REGISTER_TEST( itkTubeEnhancingDiffusion2DImageFilterTest );
-  REGISTER_TEST( itkSheetnessMeasureImageFilterTest );
-  REGISTER_TEST( itkSheetnessMeasureImageFilterTest2 );
-  REGISTER_TEST( itkAnisotropicHybridDiffusionImageFilterTest );
-  REGISTER_TEST( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest );
-  REGISTER_TEST( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest );
+  REGISTER_TEST( itktubeSubSampleTubeSpatialObjectFilterTest );
+  REGISTER_TEST( itktubeSubSampleTubeTreeSpatialObjectFilterTest );
+  REGISTER_TEST( itktubeStructureTensorRecursiveGaussianImageFilterTest );
+  REGISTER_TEST( itktubeStructureTensorRecursiveGaussianImageFilterTestNew );
+  REGISTER_TEST( itktubeTubeEnhancingDiffusion2DImageFilterTest );
+  REGISTER_TEST( itktubeSheetnessMeasureImageFilterTest );
+  REGISTER_TEST( itktubeSheetnessMeasureImageFilterTest2 );
+  REGISTER_TEST( itktubeAnisotropicHybridDiffusionImageFilterTest );
+  REGISTER_TEST( itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest );
+  REGISTER_TEST( itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest );
 }

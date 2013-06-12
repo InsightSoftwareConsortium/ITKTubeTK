@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeMetaRidgeSeed.h"
-#include "itkTubeRidgeSeedSupervisedLinearBasisGenerator.h"
+#include "itktubeMetaRidgeSeed.h"
+#include "itktubeRidgeSeedSupervisedLinearBasisGenerator.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"

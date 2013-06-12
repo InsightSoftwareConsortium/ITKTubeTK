@@ -61,8 +61,7 @@ macro( svnGetSlicerCLI FILENAME )
     COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${Slicer_SOURCE_DIR}/${FILENAME}
     OUTPUT_VARIABLE svnOutput
     ERROR_VARIABLE svnError
-    RESULT_VARIABLE svnResult
-    )
+    RESULT_VARIABLE svnResult )
   if( svnError )
     message( "Error while fetching CLI module from Slicer4 SVN..." )
     message( "Svn = ${SVNCOMMAND}" )
@@ -83,8 +82,7 @@ macro( svnGetSlicerBase FILENAME )
     COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${Slicer_SOURCE_DIR}/${FILENAME}
     OUTPUT_VARIABLE svnOutput
     ERROR_VARIABLE svnError
-    RESULT_VARIABLE svnResult
-    )
+    RESULT_VARIABLE svnResult )
   if( svnError )
     message( "Error while fetching module from Slicer4 SVN..." )
     message( "Svn = ${SVNCOMMAND}" )

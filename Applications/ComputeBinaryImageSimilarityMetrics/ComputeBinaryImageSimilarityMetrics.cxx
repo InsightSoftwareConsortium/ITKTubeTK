@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeLabelOverlapMeasuresImageFilter.h"
+#include "itktubeLabelOverlapMeasuresImageFilter.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>

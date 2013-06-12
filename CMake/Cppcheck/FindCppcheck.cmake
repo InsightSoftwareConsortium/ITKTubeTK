@@ -79,8 +79,7 @@ if(CPPCHECK_EXECUTABLE)
     RESULT_VARIABLE
       _cppcheck_enable_style_result
     OUTPUT_QUIET
-    ERROR_QUIET
-    )
+    ERROR_QUIET )
 
   if( "${_cppcheck_enable_style_result}" EQUAL 0 )
 
@@ -116,8 +115,7 @@ if(CPPCHECK_EXECUTABLE)
     RESULT_VARIABLE
       _cppcheck_enable_unused_functions_results
     OUTPUT_QUIET
-    ERROR_QUIET
-    )
+    ERROR_QUIET )
 
   if("${_cppcheck_enable_unused_functions_results}" EQUAL 0)
     set(CPPCHECK_UNUSEDFUNC_ARG --enable=unusedFunctions)
@@ -130,8 +128,7 @@ if(CPPCHECK_EXECUTABLE)
     RESULT_VARIABLE
       _cppcheck_enable_unused_function_results
     OUTPUT_QUIET
-    ERROR_QUIET
-    )
+    ERROR_QUIET )
 
     if( "${_cppcheck_enable_unused_function_results}" EQUAL 0 )
       set(CPPCHECK_UNUSEDFUNC_ARG --enable=unusedFunction)
@@ -149,8 +146,7 @@ if(CPPCHECK_EXECUTABLE)
     RESULT_VARIABLE
       _cppcheck_enable_information_results
     OUTPUT_QUIET
-    ERROR_QUIET
-    )
+    ERROR_QUIET )
 
   if("${_cppcheck_enable_information_results}" EQUAL 0)
     # supported since
@@ -167,8 +163,7 @@ if(CPPCHECK_EXECUTABLE)
     RESULT_VARIABLE
       _cppcheck_missingInclude_results
     OUTPUT_QUIET
-    ERROR_QUIET
-    )
+    ERROR_QUIET )
 
   if("${_cppcheck_missingInclude_results}" EQUAL 0)
     # supported since
@@ -196,8 +191,7 @@ find_package_handle_standard_args(cppcheck
   CPPCHECK_DEFINITION_ARG
   CPPCHECK_QUIET_ARG
   CPPCHECK_FORCE_ARG
-  CPPCHECK_VERBOSE_ARG
-)
+  CPPCHECK_VERBOSE_ARG )
 
 if(CPPCHECK_FOUND OR CPPCHECK_MARK_AS_ADVANCED)
   mark_as_advanced(CPPCHECK_ROOT_DIR)

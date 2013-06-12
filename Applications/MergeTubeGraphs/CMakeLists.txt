@@ -41,8 +41,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
-  )
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

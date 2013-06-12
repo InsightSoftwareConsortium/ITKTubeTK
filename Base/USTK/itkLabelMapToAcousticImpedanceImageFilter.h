@@ -78,7 +78,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkLabelMapToAcousticImpedanceImageFilter.txx"
+#include "itkLabelMapToAcousticImpedanceImageFilter.hxx"
 #endif
 
 #endif // End !defined(__itkLabelMapToAcousticImpedanceImageFilter_h)

@@ -26,17 +26,14 @@ set( MODULE_NAME SimulateAcquisitionArtifactsUsingPrior )
 project( ${MODULE_NAME} )
 
 set( SimulateAcquisitionArtifactsUsingPrior_H_Files
-  tubeCompareImageWithPrior.h
-  )
+  tubeCompareImageWithPrior.h )
 
-set( SimulateAcquisitionArtifactsUsingPrior_TXX_Files
-  tubeCompareImageWithPrior.txx
-  )
+set( SimulateAcquisitionArtifactsUsingPrior_HXX_Files
+  tubeCompareImageWithPrior.hxx )
 
 add_custom_target( SimulateAcquisitionArtifactsUsingPriorInclude SOURCES
   ${SimulateAcquisitionArtifactsUsingPrior_H_Files}
-  ${SimulateAcquisitionArtifactsUsingPrior_TXX_Files}
-  )
+  ${SimulateAcquisitionArtifactsUsingPrior_HXX_Files} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -55,8 +52,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Segmentation
     ${TubeTK_BINARY_DIR}/Slicer4/ExpertAutomatedRegistration
-    ${TubeTK_BINARY_DIR}/Slicer4/ExpertAutomatedRegistration/ITKRegistrationHelper
-  )
+    ${TubeTK_BINARY_DIR}/Slicer4/ExpertAutomatedRegistration/ITKRegistrationHelper )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

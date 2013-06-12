@@ -17,7 +17,7 @@
  *=========================================================================*/
 
 #include "itkAngleOfIncidenceImageFilter.h"
-#include "itkSheetnessMeasureImageFilter.h"
+#include "itktubeSheetnessMeasureImageFilter.h"
 
 #include <itkHessianRecursiveGaussianImageFilter.h>
 #include <itkImageFileReader.h>
@@ -53,7 +53,7 @@ int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv[] )
   typedef itk::HessianRecursiveGaussianImageFilter< UltrasoundImageType >  HessianFilterType;
 
   // Declare the type for the sheetness measure filter
-  typedef itk::SheetnessMeasureImageFilter< float >  SheetnessMeasureImageFilterType;
+  typedef itk::tube::SheetnessMeasureImageFilter< float >  SheetnessMeasureImageFilterType;
 
 
   // Create a Hessian Filter

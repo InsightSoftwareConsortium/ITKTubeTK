@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeCVTImageFilter.h"
-#include "itkTubeRidgeExtractor.h"
+#include "itktubeCVTImageFilter.h"
+#include "itktubeRidgeExtractor.h"
 
 #include <itkBinaryBallStructuringElement.h>
 #include <itkCastImageFilter.h>

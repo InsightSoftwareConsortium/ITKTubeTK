@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: main.cxx,v $
+  Module:    $RCSfile: tubeTestMain.h,v $
   Language:  C++
   Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
   Version:   $Revision: 48 $
@@ -23,7 +23,7 @@
 // that calls RegisterTests() then looks up the function pointer for the test
 // specified on the command line.
 
-#include "itkDifferenceImageFilter2.h"
+#include "itktubeDifferenceImageFilter2.h"
 
 #include <itkExtractImageFilter.h>
 #include <itkImageFileReader.h>
@@ -281,7 +281,7 @@ int RegressionTestImage (const char *testImageFilename,
     }
 
   // Now compare the two images
-  typedef itk::DifferenceImageFilter2<ImageType,ImageType> DiffType;
+  typedef itk::tube::DifferenceImageFilter2<ImageType,ImageType> DiffType;
   DiffType::Pointer diff = DiffType::New();
     diff->SetValidInput(baselineReader->GetOutput());
     diff->SetTestInput(testReader->GetOutput());
@@ -485,7 +485,8 @@ std::map<std::string,int> RegressionTestBaselines (char *baselineFilename)
   return baselines;
 }
 
-// Needed for explicit instantiation
-#include "itkDifferenceImageFilter2.txx"
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "itktubeDifferenceImageFilter2.hxx"
+#endif
 
 #endif // End !defined(__tubeTestMain_h)

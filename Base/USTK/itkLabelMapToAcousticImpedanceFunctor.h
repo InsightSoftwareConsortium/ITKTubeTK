@@ -72,7 +72,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkLabelMapToAcousticImpedanceFunctor.txx"
+#include "itkLabelMapToAcousticImpedanceFunctor.hxx"
 #endif
 
 #endif // End !defined(__itkLabelMapToAcousticImpedanceFunctor_h)

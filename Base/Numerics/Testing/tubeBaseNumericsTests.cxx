@@ -28,20 +28,20 @@ limitations under the License.
 void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseNumericsPrintTest );
-  REGISTER_TEST( itkImageRegionMomentsCalculatorTest );
-  REGISTER_TEST( itkJointHistogramImageFunctionTest );
-  REGISTER_TEST( itkRecordOptimizationParameterProgressionCommandTest );
-  REGISTER_TEST( itkTubeNJetImageFunctionTest );
-  REGISTER_TEST( itkTubeBlurImageFunctionTest );
-  REGISTER_TEST( itkTubeNJetFeatureVectorGeneratorTest );
-  REGISTER_TEST( itkTubeNJetBasisFeatureVectorGeneratorTest );
-  REGISTER_TEST( itkTubeRidgeFeatureVectorGeneratorTest );
-  REGISTER_TEST( itkTubeRidgeBasisFeatureVectorGeneratorTest );
-  REGISTER_TEST( itkVotingResampleImageFunctionTest );
-  REGISTER_TEST( tubeMatrixMathTest );
-  REGISTER_TEST( tubeBrentOptimizerNDTest );
+  REGISTER_TEST( itktubeBlurImageFunctionTest );
+  REGISTER_TEST( itktubeImageRegionMomentsCalculatorTest );
+  REGISTER_TEST( itktubeJointHistogramImageFunctionTest );
+  REGISTER_TEST( itktubeNJetBasisFeatureVectorGeneratorTest );
+  REGISTER_TEST( itktubeNJetFeatureVectorGeneratorTest );
+  REGISTER_TEST( itktubeNJetImageFunctionTest );
+  REGISTER_TEST( itktubeRecordOptimizationParameterProgressionCommandTest );
+  REGISTER_TEST( itktubeRidgeBasisFeatureVectorGeneratorTest );
+  REGISTER_TEST( itktubeRidgeFeatureVectorGeneratorTest );
+  REGISTER_TEST( itktubeVotingResampleImageFunctionTest );
   REGISTER_TEST( tubeBrentOptimizer1DTest );
+  REGISTER_TEST( tubeBrentOptimizerNDTest );
   REGISTER_TEST( tubeGoldenMeanOptimizer1DTest );
+  REGISTER_TEST( tubeMatrixMathTest );
   REGISTER_TEST( tubeParabolicFitOptimizer1DTest );
   REGISTER_TEST( tubeSplineApproximation1DTest );
   REGISTER_TEST( tubeSplineNDTest );

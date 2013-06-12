@@ -21,15 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
-#include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkAnisotropicDiffusionTensorImageFilter.h"
-#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
-#include "itkAnisotropicHybridDiffusionImageFilter.h"
-#include "itkSheetnessMeasureImageFilter.h"
-#include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include "itkTubeEnhancingDiffusion2DImageFilter.h"
+#include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
+#include "itktubeAnisotropicDiffusionTensorFunction.h"
+#include "itktubeAnisotropicDiffusionTensorImageFilter.h"
+#include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
+#include "itktubeAnisotropicHybridDiffusionImageFilter.h"
+#include "itktubeSheetnessMeasureImageFilter.h"
+#include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
+#include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
+#include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 
 #include <itkImage.h>
 #include <itkMatrix.h>
@@ -39,33 +39,33 @@ int tubeBaseFilteringPrintTest( int, char*[] )
   typedef itk::Image< float, 3 >  ImageType;
   typedef itk::Matrix< float, 3 > MatrixType;
 
-  itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
+  itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
     ImageType >
     ::Pointer acedif =
-    itk::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
+    itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
     ImageType >::New();
   std::cout << "-------------acedif" << acedif << std::endl;
 
-  itk::AnisotropicDiffusionTensorFunction< ImageType >
+  itk::tube::AnisotropicDiffusionTensorFunction< ImageType >
     ::Pointer adtf =
-    itk::AnisotropicDiffusionTensorFunction< ImageType >::New();
+    itk::tube::AnisotropicDiffusionTensorFunction< ImageType >::New();
   std::cout << "-------------adtf" << adtf << std::endl;
 
-  itk::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
+  itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
     ::Pointer aeedif =
-    itk::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
+    itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
     ::New();
   std::cout << "-------------aeedif" << aeedif << std::endl;
 
-  itk::AnisotropicHybridDiffusionImageFilter< ImageType, ImageType >
+   itk::tube::AnisotropicHybridDiffusionImageFilter< ImageType, ImageType >
     ::Pointer ahdif =
-    itk::AnisotropicHybridDiffusionImageFilter< ImageType, ImageType >
+    itk::tube::AnisotropicHybridDiffusionImageFilter< ImageType, ImageType >
     ::New();
   std::cout << "-------------ahdif" << ahdif << std::endl;
 
-  itk::StructureTensorRecursiveGaussianImageFilter< ImageType >
+  itk::tube::StructureTensorRecursiveGaussianImageFilter< ImageType >
     ::Pointer strgif =
-    itk::StructureTensorRecursiveGaussianImageFilter< ImageType >
+    itk::tube::StructureTensorRecursiveGaussianImageFilter< ImageType >
     ::New();
   std::cout << "-------------strgif" << strgif << std::endl;
 
@@ -73,27 +73,27 @@ int tubeBaseFilteringPrintTest( int, char*[] )
   typedef itk::Matrix< float, 3, 3 >             EigenVectorMatrixType;
   typedef itk::Image< EigenValueArrayType, 3>    EigenValueImageType;
   typedef itk::Image< EigenVectorMatrixType, 3>  EigenVectorImageType;
-  typedef itk::StructureTensorRecursiveGaussianImageFilter< ImageType >::
+  typedef itk::tube::StructureTensorRecursiveGaussianImageFilter< ImageType >::
     OutputImageType SymmetricSecondRankTensorImageType;
-  itk::SymmetricEigenVectorAnalysisImageFilter<
+  itk::tube::SymmetricEigenVectorAnalysisImageFilter<
     SymmetricSecondRankTensorImageType,
     EigenValueImageType,
     EigenVectorImageType >::Pointer sevaif =
-      itk::SymmetricEigenVectorAnalysisImageFilter<
+      itk::tube::SymmetricEigenVectorAnalysisImageFilter<
         SymmetricSecondRankTensorImageType,
         EigenValueImageType,
         EigenVectorImageType >::New();
   std::cout << "-------------sevaif" << sevaif << std::endl;
 
-  itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer
+  itk::tube::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer
     vesselEnahncingObj =
-    itk::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
+    itk::tube::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
   std::cout << "-------------TubeEnhancingDiffusion2DImageFilter"
     << vesselEnahncingObj << std::endl;
 
-  itk::SheetnessMeasureImageFilter< float >::Pointer
+  itk::tube::SheetnessMeasureImageFilter< float >::Pointer
     sheetnessMeasureImageFilterObj =
-    itk::SheetnessMeasureImageFilter< float >::New();
+    itk::tube::SheetnessMeasureImageFilter< float >::New();
   std::cout << "-------------SheetnessMeasureImageFilter"
     << sheetnessMeasureImageFilterObj << std::endl;
 

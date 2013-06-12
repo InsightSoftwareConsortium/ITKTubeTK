@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeSpatialObjectToImageFilter.h"
-#include "itkTubeToTubeTransformFilter.h"
+#include "itktubeSpatialObjectToImageFilter.h"
+#include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"

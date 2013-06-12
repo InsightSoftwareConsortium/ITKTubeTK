@@ -91,7 +91,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAcousticImpulseResponseImageFilterSerializer.txx"
+#include "itkAcousticImpulseResponseImageFilterSerializer.hxx"
 #endif
 
 #endif // End !defined(__itkAcousticImpulseResponseImageFilterSerializer_h)

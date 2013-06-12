@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
+#include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -108,7 +108,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Coherence enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion coherence enhancing filter
-  typedef itk::AnisotropicCoherenceEnhancingDiffusionImageFilter<
+  typedef itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter<
     FilterInputImageType, FilterOutputImageType>
     CoherenceEnhancingFilterType;
 

@@ -132,6 +132,6 @@ private:
 
 } // End namespace tube
 
-#include "tubeCompareImageWithPrior.txx"
+#include "tubeCompareImageWithPrior.hxx"
 
 #endif // End !defined(__tubeCompareImageWithPrior_h)

@@ -40,10 +40,10 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseIOTests_SRCS
   tubeBaseIOPrintTest.cxx
-  itkTubeMetaLDATest.cxx
-  itkTubeMetaNJetLDATest.cxx
-  itkTubeMetaRidgeSeedTest.cxx
-  itkTubeMetaTubeParamsTest.cxx )
+  itktubeMetaLDATest.cxx
+  itktubeMetaNJetLDATest.cxx
+  itktubeMetaRidgeSeedTest.cxx
+  itktubeMetaTubeParamsTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -66,24 +66,24 @@ add_test( tubeBaseIOHeaderTest
 
 add_test( tubeBaseIOPrintTest
   ${BASE_IO_TESTS}
-   tubeBaseIOPrintTest )
+  tubeBaseIOPrintTest )
 
-add_test( itkTubeMetaLDATest
+add_test( itktubeMetaLDATest
   ${BASE_IO_TESTS}
-    itkTubeMetaLDATest
-      ${TEMP}/itkTubeMetaLDATest.mlda )
+  itktubeMetaLDATest
+    ${TEMP}/itkTubeMetaLDATest.mlda )
 
-add_test( itkTubeMetaNJetLDATest
+add_test( itktubeMetaNJetLDATest
   ${BASE_IO_TESTS}
-    itkTubeMetaNJetLDATest
-      ${TEMP}/itkTubeMetaNJetLDATest.mnda )
+  itktubeMetaNJetLDATest
+    ${TEMP}/itkTubeMetaNJetLDATest.mnda )
 
-add_test( itkTubeMetaRidgeSeedTest
+add_test( itktubeMetaRidgeSeedTest
   ${BASE_IO_TESTS}
-    itkTubeMetaRidgeSeedTest
-      ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
+  itktubeMetaRidgeSeedTest
+    ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
 
-add_test( itkTubeMetaTubeParamsTest
+add_test( itktubeMetaTubeParamsTest
   ${BASE_IO_TESTS}
-    itkTubeMetaTubeParamsTest
-      ${TEMP}/itkTubeMetaTubeParamsTest.mtp )
+  itktubeMetaTubeParamsTest
+    ${TEMP}/itkTubeMetaTubeParamsTest.mtp )

@@ -28,13 +28,13 @@ limitations under the License.
 void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseSegmentationPrintTest );
-  REGISTER_TEST( itkTubeCVTImageFilterTest );
-  REGISTER_TEST( itkTubeOtsuThresholdMaskedImageFilterTest );
-  REGISTER_TEST( itkTubePDFSegmenterTest );
-  REGISTER_TEST( itkTubeRidgeExtractorTest );
-  REGISTER_TEST( itkTubeRidgeExtractorTest2 );
-  REGISTER_TEST( itkTubeRidgeSeedFilterTest );
-  REGISTER_TEST( itkTubeRadiusExtractorTest );
-  REGISTER_TEST( itkTubeRadiusExtractorTest2 );
-  REGISTER_TEST( itkTubeTubeExtractorTest );
+  REGISTER_TEST( itktubeCVTImageFilterTest );
+  REGISTER_TEST( itktubeOtsuThresholdMaskedImageFilterTest );
+  REGISTER_TEST( itktubePDFSegmenterTest );
+  REGISTER_TEST( itktubeRidgeExtractorTest );
+  REGISTER_TEST( itktubeRidgeExtractorTest2 );
+  REGISTER_TEST( itktubeRidgeSeedFilterTest );
+  REGISTER_TEST( itktubeRadiusExtractorTest );
+  REGISTER_TEST( itktubeRadiusExtractorTest2 );
+  REGISTER_TEST( itktubeTubeExtractorTest );
 }

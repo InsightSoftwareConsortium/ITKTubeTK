@@ -49,27 +49,19 @@ set( TubeTK_FOUND 0 )
 set( TubeTK_DIR_MESSAGE
 "TubeTK not found.  Set the TubeTK_DIR cmake cache entry to the directory containing TubeTKConfig.cmake.  This is either the root of the build tree or PREFIX/lib/tubetk for an installation." )
 
-# Use the Config mode of the find_package() command to find TubeTKConfig.
+# Use the Config mode of the find_package command to find TubeTKConfig.
 # If this succeeds (possibly because TubeTK_DIR is already set), the
 # command will have already loaded TubeTKConfig.cmake and set TubeTK_FOUND.
 if( NOT TubeTK_FOUND )
-
   find_package( TubeTK QUIET NO_MODULE )
-
-endif()
+endif( NOT TubeTK_FOUND )
 
 if( NOT TubeTK_DIR )
-
   find_path( TubeTK_DIR
-
     NAMES UseTubeTK.cmake
-
     PATH_SUFFIXES TubeTK tubetk
-
     HINTS $ENV{TubeTK_DIR}
-
     PATHS
-
     ..
 
     [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild1]
@@ -81,13 +73,10 @@ if( NOT TubeTK_DIR )
     [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild7]
     [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild8]
     [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild9]
-    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild10]
+    [HKEY_CURRENT_USER\\Software\\Kitware\\CMakeSetup\\Settings\\StartPath;WhereBuild10] )
 
-  )
+endif( NOT TubeTK_DIR )
 
-endif()
-
-#-----------------------------------------------------------------------------
 if( NOT TubeTK_FOUND )
   # TubeTK not found, explain to the user how to specify its location.
   if( TubeTK_FIND_REQUIRED )
@@ -97,4 +86,4 @@ if( NOT TubeTK_FOUND )
       message( STATUS ${TubeTK_DIR_MESSAGE} )
     endif( NOT TubeTK_FIND_QUIETLY )
   endif( TubeTK_FIND_REQUIRED )
-endif()
+endif( NOT TubeTK_FOUND )

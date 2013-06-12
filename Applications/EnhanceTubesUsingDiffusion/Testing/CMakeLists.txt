@@ -49,7 +49,6 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5}
-               -n 90
-                )
+               -n 90 )
 set_property(TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

@@ -47,12 +47,10 @@ include( ${USE_ITK_FILE} )
 # Include Base/CLI to access tubeCLIHelperFunctions.h
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/CLI
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  )
+  ${TubeTK_SOURCE_DIR}/Base/Common )
 
 set( PROJECT_SOURCE
-  ${PROJECT_NAME}.cxx
-  )
+  ${PROJECT_NAME}.cxx )
 
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
 target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} )

@@ -24,32 +24,32 @@
 project( TubeSegmentation )
 
 set( TubeTK_Base_Segmentation_H_Files
-  itkTubeCVTImageFilter.h
-  itkTubeLabelOverlapMeasuresImageFilter.h
-  itkTubeOtsuThresholdMaskedImageCalculator.h
-  itkTubeOtsuThresholdMaskedImageFilter.h
-  itkTubePDFSegmenter.h
-  itkTubeRadiusExtractor.h
-  itkTubeRidgeExtractor.h
-  itkTubeRidgeSeedFilter.h
-  itkTubeTubeExtractor.h
-  itkTubeTubeNetworkExtractor.h )
+  itktubeCVTImageFilter.h
+  itktubeLabelOverlapMeasuresImageFilter.h
+  itktubeOtsuThresholdMaskedImageCalculator.h
+  itktubeOtsuThresholdMaskedImageFilter.h
+  itktubePDFSegmenter.h
+  itktubeRadiusExtractor.h
+  itktubeRidgeExtractor.h
+  itktubeRidgeSeedFilter.h
+  itktubeTubeExtractor.h
+  itktubeTubeNetworkExtractor.h )
 
-set( TubeTK_Base_Segmentation_TXX_Files
-  itkTubeCVTImageFilter.txx
-  itkTubeLabelOverlapMeasuresImageFilter.txx
-  itkTubeOtsuThresholdMaskedImageCalculator.txx
-  itkTubeOtsuThresholdMaskedImageFilter.txx
-  itkTubePDFSegmenter.txx
-  itkTubeRadiusExtractor.txx
-  itkTubeRidgeExtractor.txx
-  itkTubeRidgeSeedFilter.txx
-  itkTubeTubeExtractor.txx
-  itkTubeTubeNetworkExtractor.txx )
+set( TubeTK_Base_Segmentation_HXX_Files
+  itktubeCVTImageFilter.hxx
+  itktubeLabelOverlapMeasuresImageFilter.hxx
+  itktubeOtsuThresholdMaskedImageCalculator.hxx
+  itktubeOtsuThresholdMaskedImageFilter.hxx
+  itktubePDFSegmenter.hxx
+  itktubeRadiusExtractor.hxx
+  itktubeRidgeExtractor.hxx
+  itktubeRidgeSeedFilter.hxx
+  itktubeTubeExtractor.hxx
+  itktubeTubeNetworkExtractor.hxx )
 
 add_custom_target( TubeSegmentation SOURCES
   ${TubeTK_Base_Segmentation_H_Files}
-  ${TubeTK_Base_Segmentation_TXX_Files} )
+  ${TubeTK_Base_Segmentation_HXX_Files} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -57,5 +57,5 @@ endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Segmentation_H_Files}
-  ${TubeTK_Base_Segmentation_TXX_Files}
+  ${TubeTK_Base_Segmentation_HXX_Files}
   DESTINATION include )
