@@ -126,7 +126,8 @@ public:
   double GetTubeRadiusThresholdMedialness( void ) const;
   double GetTubeRadiusThresholdMedialnessStart( void ) const;
 
-  void  CopyInfo( const MetaTubeParams & _tubeParams );
+  using MetaForm::CopyInfo;
+  virtual void  CopyInfo( const MetaTubeParams & _tubeParams );
 
   virtual void  Clear( void );
 
