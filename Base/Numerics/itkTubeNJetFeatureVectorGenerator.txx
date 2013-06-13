@@ -86,7 +86,7 @@ NJetFeatureVectorGenerator< ImageT >
   typename NJetFunctionType::VectorType v;
   typename NJetFunctionType::MatrixType m;
 
-  double val;
+  double val = 0.0;
   FeatureVectorType featureVector;
   featureVector.set_size( numFeatures );
   unsigned int featureCount = 0;
@@ -103,7 +103,7 @@ NJetFeatureVectorGenerator< ImageT >
 
     for( unsigned int s = 0; s < m_FirstScales.size(); s++ )
       {
-      val = 0;
+      val = 0.0;
       njet->DerivativeAtIndex( indx, m_FirstScales[s], v );
       for( unsigned int d = 0; d < ImageDimension; d++ )
         {
@@ -156,7 +156,7 @@ NJetFeatureVectorGenerator< ImageT >
   typename NJetFunctionType::VectorType v;
   typename NJetFunctionType::MatrixType m;
 
-  double val;
+  double val = 0.0;
   unsigned int featureCount = 0;
   for( unsigned int inputImageNum = 0; inputImageNum < numInputImages;
     inputImageNum++ )
@@ -180,7 +180,7 @@ NJetFeatureVectorGenerator< ImageT >
       featureCount = m_ZeroScales.size();
       for( unsigned int s = 0; s < m_FirstScales.size(); s++ )
         {
-        val = 0;
+        val = 0.0;
         njet->DerivativeAtIndex( indx, 4, v );
         for( unsigned int d = 0; d < ImageDimension; d++ )
           {
