@@ -1,7 +1,7 @@
 
 {
 	"Category" : "TubeTK",
-	"Contributor" : "Stephen R. Aylward, Kitware",
+	"Contributor" : "Stephen R. Aylward (Kitware)",
 	"Description" : "Extract a hyper-rectangular region from an image.",
 	"DocumentationURL" : "http://public.kitware.com/Wiki/TubeTK",
 	"License" : "Apache 2.0",
@@ -9,7 +9,7 @@
 	[
 
 		{
-			"Description" : "Input/output parameters",
+			"Description" : "Input/output parameters.",
 			"Label" : "IO",
 			"Parameters" :
 			[
@@ -19,7 +19,7 @@
 					"Channel" : "input",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "Input volume",
+					"Description" : "Input volume.",
 					"Flag" : "",
 					"Index" : "0",
 					"Label" : "Input Volume",
@@ -38,7 +38,7 @@
 					"Channel" : "output",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "Output Volume",
+					"Description" : "Output volume.",
 					"Flag" : "",
 					"Index" : "1",
 					"Label" : "Output Volume",
@@ -49,14 +49,14 @@
 					"Name" : "outputVolume",
 					"Step" : "",
 					"Tag" : "image",
-					"Value" : "CropImageTest3.mha"
+					"Value" : "CropImageTest5.mha"
 				}
 			]
 		},
 
 		{
 			"Description" : "",
-			"Label" : "Crop filter",
+			"Label" : "Crop Filter",
 			"Parameters" :
 			[
 
@@ -65,10 +65,10 @@
 					"Channel" : "",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "One corner of the hyper-rectangle",
+					"Description" : "One corner of the hyper-rectangle.",
 					"Flag" : "m",
 					"Index" : "",
-					"Label" : "Min coordinate",
+					"Label" : "Minimum Coordinate",
 					"LongFlag" : "min",
 					"Maximum" : "",
 					"Minimum" : "",
@@ -84,10 +84,10 @@
 					"Channel" : "",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "Adjacent corner of the hyper-rectangle",
+					"Description" : "Adjacent corner of the hyper-rectangle.",
 					"Flag" : "M",
 					"Index" : "",
-					"Label" : "Max coordinate (use instead of size)",
+					"Label" : "Maximum Coordinate (Use Instead of Size)",
 					"LongFlag" : "max",
 					"Maximum" : "",
 					"Minimum" : "",
@@ -103,10 +103,10 @@
 					"Channel" : "",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "Distance to the adjacent corner of the hyper-rectangle",
+					"Description" : "Distance to the adjacent corner of the hyper-rectangle.",
 					"Flag" : "s",
 					"Index" : "",
-					"Label" : "Size of roi (use instead of max)",
+					"Label" : "Size of ROI (Use Instead of Maximum)",
 					"LongFlag" : "size",
 					"Maximum" : "",
 					"Minimum" : "",
@@ -122,10 +122,10 @@
 					"Channel" : "",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "Center of the hyper-rectangle",
+					"Description" : "Center of the hyper-rectangle.",
 					"Flag" : "c",
 					"Index" : "",
-					"Label" : "Center of roi (use instead of min/max)",
+					"Label" : "Center of ROI (Use Instead of Minimum/Maximum)",
 					"LongFlag" : "center",
 					"Maximum" : "",
 					"Minimum" : "",
@@ -141,10 +141,10 @@
 					"Channel" : "",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "Add pixels beyond specified edges",
+					"Description" : "Add pixels beyond specified edges.",
 					"Flag" : "b",
 					"Index" : "",
-					"Label" : "Additional boundary pixels",
+					"Label" : "Additional Boundary Pixels",
 					"LongFlag" : "boundary",
 					"Maximum" : "",
 					"Minimum" : "",
@@ -160,10 +160,10 @@
 					"Channel" : "",
 					"CoordinateSystem" : "",
 					"Default" : "",
-					"Description" : "Split into an array of MxN sub-images that span the full image",
+					"Description" : "Split into an array of MxN sub-images that span the full image.",
 					"Flag" : "S",
 					"Index" : "",
-					"Label" : "Split array",
+					"Label" : "Split Array",
 					"LongFlag" : "split",
 					"Maximum" : "",
 					"Minimum" : "",
