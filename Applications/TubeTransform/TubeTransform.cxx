@@ -52,31 +52,14 @@ using namespace tube;
 
 enum { TDimension = 3 };
 
-typedef itk::GroupSpatialObject< TDimension >       GroupSpatialObjectType;
-typedef itk::VesselTubeSpatialObject< TDimension >  TubeSpatialObjectType;
-typedef itk::SpatialObjectReader< TDimension >      SpatialObjectReaderType;
-typedef itk::SpatialObjectWriter< TDimension >      SpatialObjectWriterType;
-typedef itk::Transform< double, TDimension >        TransformType;
-
-typedef itk::DisplacementFieldTransform< double,
-                                         TDimension > DisplacementFieldTransformType;
-typedef DisplacementFieldTransformType::DisplacementFieldType
-                                                      DisplacementFieldType;
-typedef itk::ImageFileReader< DisplacementFieldType > DisplacementFieldReaderType;
-typedef itk::MatrixOffsetTransformBase< double,
-                                        TDimension,
-                                        TDimension >  MatrixOffsetTransformType;
-typedef itk::tube::TubeToTubeTransformFilter< TransformType, TDimension >
-                                                    TransformFilterType;
-
+typedef itk::GroupSpatialObject< TDimension > GroupSpatialObjectType;
 
 /** ProcessTubes handles the actual transformation of the tubes; if required,
   * the inverse transform is computed and applied.
   */
 GroupSpatialObjectType::Pointer ProcessTubes(
   itk::TransformFileReader::TransformPointer genericInputTransform,
-  GroupSpatialObjectType::Pointer inputTubes,
-  bool useInverseTransform = false);
+  GroupSpatialObjectType::Pointer inputTubes, bool useInverseTransform = false);
 
 GroupSpatialObjectType::Pointer ApplyTransform(
   GroupSpatialObjectType::Pointer inputTubes,
@@ -104,12 +87,15 @@ void WriteOutput( GroupSpatialObjectType::Pointer, const char * );
 /* Main routine */
 int DoIt( int, char *[] );
 
-
 GroupSpatialObjectType::Pointer
 ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
               GroupSpatialObjectType::Pointer inputTubes,
               bool useInverseTransform )
 {
+  typedef itk::Transform< double, TDimension > TransformType;
+  typedef itk::tube::TubeToTubeTransformFilter< TransformType, TDimension >
+    TransformFilterType;
+
   TransformType::Pointer transform =
     dynamic_cast<TransformType *>( genericInputTransform.GetPointer() );
   TransformFilterType::Pointer filter = TransformFilterType::New();
@@ -126,7 +112,6 @@ ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
   filter->Update();
   return filter->GetOutput();
 }
-
 
 GroupSpatialObjectType::Pointer
 ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
@@ -159,11 +144,16 @@ ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
   return outputTubes;
 }
 
-
 GroupSpatialObjectType::Pointer
 ApplyDisplacementField( GroupSpatialObjectType::Pointer inputTubes,
                         const std::string &displacementFieldFile )
 {
+  typedef itk::DisplacementFieldTransform< double, TDimension > DisplacementFieldTransformType;
+  typedef DisplacementFieldTransformType::DisplacementFieldType
+    DisplacementFieldType;
+  typedef itk::ImageFileReader< DisplacementFieldType >
+    DisplacementFieldReaderType;
+
   // Read the displacement field
   DisplacementFieldReaderType::Pointer dfReader =
     DisplacementFieldReaderType::New();
@@ -178,10 +168,11 @@ ApplyDisplacementField( GroupSpatialObjectType::Pointer inputTubes,
   // Define the transform filter type
   typedef itk::tube::TubeToTubeTransformFilter<
     DisplacementFieldTransformType,
-    TDimension> TransformFilterType;
+    TDimension> DisplacementFieldTransformFilterType;
 
   // Create the filter and apply
-  TransformFilterType::Pointer filter = TransformFilterType::New();
+  DisplacementFieldTransformFilterType::Pointer filter
+    = DisplacementFieldTransformFilterType::New();
   filter->SetInput( inputTubes );
   filter->SetTransform( dft );
   filter->Update();
@@ -189,13 +180,15 @@ ApplyDisplacementField( GroupSpatialObjectType::Pointer inputTubes,
   return filter->GetOutput();
 }
 
-
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
+  typedef itk::MatrixOffsetTransformBase< double, TDimension, TDimension >
+    MatrixOffsetTransformType;
+
   // Register transform type (this is the one produced by ANTS)
-  itk::TransformFactory<MatrixOffsetTransformType>::RegisterTransform();
+  itk::TransformFactory< MatrixOffsetTransformType >::RegisterTransform();
 
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
@@ -259,9 +252,10 @@ int DoIt( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-
 GroupSpatialObjectType::Pointer ReadTubeFile( const char * fileName )
 {
+  typedef itk::SpatialObjectReader< TDimension > SpatialObjectReaderType;
+
   SpatialObjectReaderType::Pointer reader =
     SpatialObjectReaderType::New();
   reader->SetFileName( fileName );
@@ -273,17 +267,17 @@ GroupSpatialObjectType::Pointer ReadTubeFile( const char * fileName )
   return group;
 }
 
-
 void WriteOutput( GroupSpatialObjectType::Pointer object,
                   const char * fileName )
 {
+  typedef itk::SpatialObjectWriter< TDimension > SpatialObjectWriterType;
+
   SpatialObjectWriterType::Pointer writer =
     SpatialObjectWriterType::New();
   writer->SetInput( object );
   writer->SetFileName( fileName );
   writer->Update();
 }
-
 
 int main( int argc, char * argv[] )
 {
