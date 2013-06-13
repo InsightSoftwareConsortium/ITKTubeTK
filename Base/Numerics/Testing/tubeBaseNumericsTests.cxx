@@ -30,6 +30,7 @@ void RegisterTests( void )
   REGISTER_TEST( tubeBaseNumericsPrintTest );
   REGISTER_TEST( itkImageRegionMomentsCalculatorTest );
   REGISTER_TEST( itkJointHistogramImageFunctionTest );
+  REGISTER_TEST( itkRecordOptimizationParameterProgressionCommandTest );
   REGISTER_TEST( itkTubeNJetImageFunctionTest );
   REGISTER_TEST( itkTubeBlurImageFunctionTest );
   REGISTER_TEST( itkTubeNJetFeatureVectorGeneratorTest );
