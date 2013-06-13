@@ -196,10 +196,8 @@ RidgeFeatureVectorGenerator< ImageT >
         }
       }
     }
-  else
-    {
-    return this->GetFeatureVector( indx )[fNum];
-    }
+
+  return this->GetFeatureVector( indx )[fNum];
 }
 
 template < class ImageT >
