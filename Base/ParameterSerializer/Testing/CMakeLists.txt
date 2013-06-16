@@ -31,8 +31,7 @@ find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseParameterSerializer ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
-    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer
-    )
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer )
 endif()
 
 set( BASE_PARAMETERSERIALIZER_TESTS
@@ -44,8 +43,7 @@ set( BASE_PARAMETERSERIALIZER_HEADER_TEST
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseParameterSerializerTests_SRCS
-  USTK/itkAcousticImpulseResponseImageFilterSerializerTest.cxx
-  )
+  USTK/itkAcousticImpulseResponseImageFilterSerializerTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -72,11 +70,9 @@ add_test( tubeBaseParameterSerializerHeaderTest
 add_test( itkAcousticImpulseResponseImageFilterSerializerTest
   ${BASE_PARAMETERSERIALIZER_TESTS}
   itkAcousticImpulseResponseImageFilterSerializerTest
-  ${TEMP}/itkAcousticImpulseResponseImageFilterSerializerTest.json
-  )
+  ${TEMP}/itkAcousticImpulseResponseImageFilterSerializerTest.json )
 
 MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterSerializerTestBaseline
   ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
   -t ${TEMP}/itkAcousticImpulseResponseImageFilterSerializerTest.json
-  -b MIDAS{itkAcousticImpulseResponseImageFilterSerializerTest.json.md5}
-  )
+  -b MIDAS{itkAcousticImpulseResponseImageFilterSerializerTest.json.md5} )

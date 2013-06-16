@@ -27,8 +27,7 @@ find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseIO ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
-    ${TubeTK_SOURCE_DIR}/Base/IO
-    )
+    ${TubeTK_SOURCE_DIR}/Base/IO )
 endif()
 
 set( BASE_IO_TESTS
@@ -67,28 +66,24 @@ add_test( tubeBaseIOHeaderTest
 
 add_test( tubeBaseIOPrintTest
   ${BASE_IO_TESTS}
-  tubeBaseIOPrintTest )
+   tubeBaseIOPrintTest )
 
 add_test( itkTubeMetaLDATest
   ${BASE_IO_TESTS}
-  itkTubeMetaLDATest
-    ${TEMP}/itkTubeMetaLDATest.mlda
-  )
+    itkTubeMetaLDATest
+      ${TEMP}/itkTubeMetaLDATest.mlda )
 
 add_test( itkTubeMetaNJetLDATest
   ${BASE_IO_TESTS}
-  itkTubeMetaNJetLDATest
-    ${TEMP}/itkTubeMetaNJetLDATest.mnda
-  )
+    itkTubeMetaNJetLDATest
+      ${TEMP}/itkTubeMetaNJetLDATest.mnda )
 
 add_test( itkTubeMetaRidgeSeedTest
   ${BASE_IO_TESTS}
-  itkTubeMetaRidgeSeedTest
-    ${TEMP}/itkTubeMetaRidgeSeedTest.mrs
-  )
+    itkTubeMetaRidgeSeedTest
+      ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
 
 add_test( itkTubeMetaTubeParamsTest
   ${BASE_IO_TESTS}
-  itkTubeMetaTubeParamsTest
-    ${TEMP}/itkTubeMetaTubeParamsTest.mtp
-  )
+    itkTubeMetaTubeParamsTest
+      ${TEMP}/itkTubeMetaTubeParamsTest.mtp )

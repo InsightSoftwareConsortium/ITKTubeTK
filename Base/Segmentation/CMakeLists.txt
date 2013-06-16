@@ -33,8 +33,7 @@ set( TubeTK_Base_Segmentation_H_Files
   itkTubeRidgeExtractor.h
   itkTubeRidgeSeedFilter.h
   itkTubeTubeExtractor.h
-  itkTubeTubeNetworkExtractor.h
-  )
+  itkTubeTubeNetworkExtractor.h )
 
 set( TubeTK_Base_Segmentation_TXX_Files
   itkTubeCVTImageFilter.txx
@@ -46,13 +45,11 @@ set( TubeTK_Base_Segmentation_TXX_Files
   itkTubeRidgeExtractor.txx
   itkTubeRidgeSeedFilter.txx
   itkTubeTubeExtractor.txx
-  itkTubeTubeNetworkExtractor.txx
-  )
+  itkTubeTubeNetworkExtractor.txx )
 
 add_custom_target( TubeSegmentation SOURCES
   ${TubeTK_Base_Segmentation_H_Files}
-  ${TubeTK_Base_Segmentation_TXX_Files}
-  )
+  ${TubeTK_Base_Segmentation_TXX_Files} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -61,5 +58,4 @@ endif( BUILD_TESTING )
 install( FILES
   ${TubeTK_Base_Segmentation_H_Files}
   ${TubeTK_Base_Segmentation_TXX_Files}
-  DESTINATION include
-  )
+  DESTINATION include )

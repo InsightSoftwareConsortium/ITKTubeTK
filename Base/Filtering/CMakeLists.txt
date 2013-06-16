@@ -35,8 +35,7 @@ set( TubeTK_Base_Filtering_H_Files
   itkSheetnessMeasureImageFilter.h
   itkStructureTensorRecursiveGaussianImageFilter.h
   itkSymmetricEigenVectorAnalysisImageFilter.h
-  itkTubeEnhancingDiffusion2DImageFilter.h
-  )
+  itkTubeEnhancingDiffusion2DImageFilter.h )
 
 set( TubeTK_Base_Filtering_TXX_Files
   itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx
@@ -46,18 +45,15 @@ set( TubeTK_Base_Filtering_TXX_Files
   itkAnisotropicHybridDiffusionImageFilter.txx
   itkSheetnessMeasureImageFilter.txx
   itkStructureTensorRecursiveGaussianImageFilter.txx
-  itkTubeEnhancingDiffusion2DImageFilter.txx
-  )
+  itkTubeEnhancingDiffusion2DImageFilter.txx )
 
 add_custom_target( TubeFiltering SOURCES
   ${TubeTK_Base_Filtering_H_Files}
-  ${TubeTK_Base_Filtering_TXX_Files}
-  )
+  ${TubeTK_Base_Filtering_TXX_Files} )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
-  )
+  ${TubeTK_SOURCE_DIR}/Base/Numerics )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -66,5 +62,4 @@ endif( BUILD_TESTING )
 install( FILES
   ${TubeTK_Base_Filtering_H_Files}
   ${TubeTK_Base_Filtering_TXX_Files}
-  DESTINATION include
-  )
+  DESTINATION include )

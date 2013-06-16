@@ -31,8 +31,7 @@ find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseCLI ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    )
+    ${TubeTK_SOURCE_DIR}/Base/CLI )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_CLI_TESTS
@@ -50,41 +49,34 @@ set( tubeBaseCLITests_SRCS
   tubeBaseCLIPrintTest.cxx
   tubeCLIFilterWatcherTest.cxx
   tubeCLIProgressReporterTest.cxx
-  ${tubeCLIHelperFunctionsTest_SOURCE}
-  )
+  ${tubeCLIHelperFunctionsTest_SOURCE} )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/CLI
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  )
+  ${TubeTK_SOURCE_DIR}/Base/Common )
 
 add_executable( tubeBaseCLIHeaderTest tubeBaseCLIHeaderTest.cxx )
 target_link_libraries( tubeBaseCLIHeaderTest ${ITK_LIBRARIES} )
 
 add_executable( tubeBaseCLITests
   tubeBaseCLITests.cxx
-  ${tubeBaseCLITests_SRCS}
-  )
+  ${tubeBaseCLITests_SRCS} )
 target_link_libraries( tubeBaseCLITests ${ITK_LIBRARIES} ${JsonCpp_LIBRARIES} )
 
 add_test( tubeBaseCLIHeaderTest ${BASE_CLI_HEADER_TEST} )
 
 add_test( tubeBaseCLIPrintTest
   ${BASE_CLI_TESTS}
-  tubeBaseCLIPrintTest
-  )
+  tubeBaseCLIPrintTest )
 
 midas_add_test( tubeCLIFilterWatcherTest
   ${BASE_CLI_TESTS}
-  tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5}
-  )
+  tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5} )
 
 midas_add_test( tubeCLIHelperFunctionsTest
   ${BASE_CLI_TESTS}
-  tubeCLIHelperFunctionsTest MIDAS{Branch.n010.mha.md5}
-  )
+  tubeCLIHelperFunctionsTest MIDAS{Branch.n010.mha.md5} )
 
 add_test( tubeCLIProgressReporterTest
   ${BASE_CLI_TESTS}
-  tubeCLIProgressReporterTest
-  )
+  tubeCLIProgressReporterTest )

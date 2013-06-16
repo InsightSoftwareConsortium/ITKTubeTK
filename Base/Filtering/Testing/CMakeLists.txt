@@ -31,8 +31,7 @@ find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseFiltering ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 endif()
 
 set( BASE_FILTERING_TESTS
@@ -54,8 +53,7 @@ set( tubeBaseFilteringTests_SRCS
   itkSubSampleTubeTreeSpatialObjectFilterTest.cxx
   itkTubeEnhancingDiffusion2DImageFilterTest.cxx
   itkSheetnessMeasureImageFilterTest.cxx
-  itkSheetnessMeasureImageFilterTest2.cxx
-  )
+  itkSheetnessMeasureImageFilterTest2.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -97,7 +95,6 @@ MIDAS_ADD_TEST( itkSheetnessMeasureImageFilterTest3
       MIDAS{UltrasoundCroppedResampled.mha.md5}
       ${TEMP}/UltrasoundCroppedResampledSheetnessMeasure.mha
       ${TEMP}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0)
-
 
 MIDAS_ADD_TEST( itkStructureTensorRecursiveGaussianImageFilterTest
   ${BASE_FILTERING_TESTS}
@@ -159,27 +156,22 @@ MIDAS_ADD_TEST( itkTubeEnhancingDiffusion2DImageFilterRetina10Test
       true )
 
 MIDAS_ADD_TEST( itkAnisotropicHybridDiffusionImageFilterTest
- ${BASE_FILTERING_TESTS}
- itkAnisotropicHybridDiffusionImageFilterTest
- MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha
- MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
- )
-
+  ${BASE_FILTERING_TESTS}
+    itkAnisotropicHybridDiffusionImageFilterTest
+      MIDAS{CroppedWholeLungCTScan.mhd.md5}
+      ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha
+      MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
 MIDAS_ADD_TEST( itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
- ${BASE_FILTERING_TESTS}
- itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
- MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha
- MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
-)
-
+  ${BASE_FILTERING_TESTS}
+    itkAnisotropicCoherenceEnhancingDiffusionImageFilterTest
+      MIDAS{CroppedWholeLungCTScan.mhd.md5}
+      ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha
+      MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
 MIDAS_ADD_TEST( itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
- ${BASE_FILTERING_TESTS}
- itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
- MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha
- MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5}
-)
+  ${BASE_FILTERING_TESTS}
+    itkAnisotropicEdgeEnhancementDiffusionImageFilterTest
+      MIDAS{CroppedWholeLungCTScan.mhd.md5}
+      ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha
+      MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
